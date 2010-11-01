@@ -77,7 +77,7 @@ OSStatus main_wind_event_callback(EventHandlerCallRef eventhandler,EventRef even
                     GlobalToLocal(&pt);
  					dpt.x=pt.h;
 					dpt.y=pt.v;
-					walk_view_cursor(&dpt);
+					view_cursor(&dpt);
                     return(noErr);
 
 				case kEventWindowClickContentRgn:
@@ -118,7 +118,7 @@ OSStatus main_wind_event_callback(EventHandlerCallRef eventhandler,EventRef even
 					
 						// click in main window
 						
-                    if (walk_view_click(&dpt,(nclick!=1))) return(noErr);
+                    if (view_click(&dpt,(nclick!=1))) return(noErr);
                     
                     return(eventNotHandledErr);
 					
@@ -409,7 +409,7 @@ void main_wind_draw(void)
 	glClearColor(1.0f,1.0f,1.0f,0.0f);
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 	
-	walk_view_draw();
+	view_draw();
 
 		// palettes
 		
@@ -430,7 +430,7 @@ void main_wind_draw_no_swap(void)
 	glClearColor(1.0f,1.0f,1.0f,0.0f);
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 	
-	walk_view_draw();
+	view_draw();
 
 		// palettes
 		
@@ -455,7 +455,7 @@ void main_wind_key_cursor(void)
 	dpt.x=pt.h;
 	dpt.y=pt.v;
 	
-	walk_view_cursor(&dpt);
+	view_cursor(&dpt);
 }
 
 void main_wind_key_down(char ch)
@@ -484,7 +484,7 @@ void main_wind_key_down(char ch)
 	
 		// panel keys
 		
-	walk_view_key(ch);
+	view_key(ch);
 }
 
 /* =======================================================
@@ -499,11 +499,11 @@ void main_wind_scroll_wheel(d3pnt *pt,int delta)
 	
 		// switch to proper pane
 		
-	walk_view_select_view(pt);
+	view_select_view(pt);
 
 		// run wheel change
 	
-	view=walk_view_get_current_view();
-	walk_view_scroll_wheel_z_movement(view,delta);
+	view=view_get_current_view();
+	view_scroll_wheel_z_movement(view,delta);
 }
 

@@ -160,7 +160,7 @@ bool file_new_map(void)
 	
 		// start models
 		
-	walk_view_models_start();
+	view_models_start();
 		
 		// redraw the window
     
@@ -216,8 +216,8 @@ bool file_open_map(void)
 	
 		// start models
 		
-	walk_view_models_start();
-	walk_view_models_reset();
+	view_models_start();
+	view_models_reset();
 	
 		// set flags as opened
 		
@@ -271,7 +271,7 @@ void file_close_map(void)
 	os_set_wait_cursor();
 
 	map_close(&map);
-	walk_view_models_close();
+	view_models_close();
     file_close_windows();
 	
 	undo_clear();

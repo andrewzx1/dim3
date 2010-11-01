@@ -131,10 +131,10 @@ bool tool_get_highlight_state(int tool_idx)
 			// normals and culling
 
 		case 20:
-			view=walk_view_get_current_view();
+			view=view_get_current_view();
 			return(state.show_normals);
 		case 21:
-			view=walk_view_get_current_view();
+			view=view_get_current_view();
 			return(view->cull);
 	}
 
@@ -260,8 +260,8 @@ void tool_click(int tool_idx)
 			break;
 			
 		case 21:
-			view=walk_view_get_current_view();
-			walk_view_cull(!view->cull);
+			view=view_get_current_view();
+			view_cull(!view->cull);
 			break;
 			
 			// script and run buttons

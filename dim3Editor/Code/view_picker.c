@@ -73,13 +73,13 @@ bool view_pick_list_start(editor_view_type *view,bool in_2D,int count)
 		// start the back buffer drawing
 		// disable smoothing so colors stay true
 
-	walk_view_set_viewport(view,FALSE,FALSE);
+	view_set_viewport(view,FALSE,FALSE);
 	
 	if (!in_2D) {
-		walk_view_set_3D_projection(view,map.settings.editor.view_near_dist,map.settings.editor.view_far_dist,walk_view_near_offset);
+		view_set_3D_projection(view,map.settings.editor.view_near_dist,map.settings.editor.view_far_dist,view_near_offset);
 	}
 	else {
-		walk_view_set_2D_projection(view);
+		view_set_2D_projection(view);
 	}
 	
 	glClearColor(0.0f,0.0f,0.0f,0.0f);
@@ -119,7 +119,7 @@ void view_pick_list_end(editor_view_type *view,d3pnt *pnt,int *type,int *main_id
 		// need to make click point global
 		// and swap Y for OpenGL read
 
-	walk_view_get_pixel_box(view,&box);
+	view_get_pixel_box(view,&box);
 	os_get_window_box(&wbox);
 
 	click_pnt.x=pnt->x+box.lx;
@@ -173,7 +173,7 @@ bool view_pick_list_multiple_setup(editor_view_type *view)
 
 		// grab the pixels
 
-	walk_view_get_pixel_box(view,&box);
+	view_get_pixel_box(view,&box);
 	os_get_window_box(&wbox);
 
 	wid=box.rx-box.lx;
@@ -202,7 +202,7 @@ int view_pick_list_multiple_pick(editor_view_type *view,d3pnt *start_pnt,d3pnt *
 
 		// get the starting position and size
 
-	walk_view_get_pixel_box(view,&box);
+	view_get_pixel_box(view,&box);
 	
 	wid=box.rx-box.lx;
 	high=box.by-box.ty;

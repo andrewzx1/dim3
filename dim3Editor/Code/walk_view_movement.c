@@ -43,13 +43,13 @@ extern editor_state_type		state;
       
 ======================================================= */
 
-void walk_view_get_direction(d3pnt *pnt)
+void view_get_direction(d3pnt *pnt)
 {
 	float			fx,fy,fz;
 	d3ang			ang;
 	matrix_type		mat;
 	
-	walk_view_get_angle(&ang);
+	view_get_angle(&ang);
 	
 	fx=(float)pnt->x;
 	fy=(float)pnt->y;
@@ -75,7 +75,7 @@ void walk_view_get_direction(d3pnt *pnt)
 	pnt->z=(int)fz;
 }
 
-void walk_view_mouse_get_scroll_horizontal_axis(editor_view_type *view,d3pnt *pnt,int dist)
+void view_mouse_get_scroll_horizontal_axis(editor_view_type *view,d3pnt *pnt,int dist)
 {
 	float			fx,fy,fz;
 	matrix_type		mat;
@@ -93,7 +93,7 @@ void walk_view_mouse_get_scroll_horizontal_axis(editor_view_type *view,d3pnt *pn
 	pnt->z+=(int)fz;
 }
 
-void walk_view_mouse_get_scroll_vertical_axis(editor_view_type *view,d3pnt *pnt,int dist)
+void view_mouse_get_scroll_vertical_axis(editor_view_type *view,d3pnt *pnt,int dist)
 {
 	float			fx,fy,fz;
 	matrix_type		mat;
@@ -140,7 +140,7 @@ void walk_view_mouse_get_scroll_vertical_axis(editor_view_type *view,d3pnt *pnt,
 	pnt->y+=dist;
 }
 
-void walk_view_mouse_get_forward_axis(editor_view_type *view,d3pnt *pnt,int dist)
+void view_mouse_get_forward_axis(editor_view_type *view,d3pnt *pnt,int dist)
 {
 	float			fx,fy,fz,ang_x;
 	matrix_type		mat;
@@ -165,7 +165,7 @@ void walk_view_mouse_get_forward_axis(editor_view_type *view,d3pnt *pnt,int dist
 	pnt->z+=(int)fz;
 }
 
-void walk_view_mouse_scroll_movement(editor_view_type *view,d3pnt *pnt)
+void view_mouse_scroll_movement(editor_view_type *view,d3pnt *pnt)
 {
 	int						x,y;
 	d3pnt					old_pnt,move_pnt;
@@ -188,16 +188,16 @@ void walk_view_mouse_scroll_movement(editor_view_type *view,d3pnt *pnt)
 		
 		move_pnt.x=move_pnt.y=move_pnt.z=0;
 		
-		walk_view_mouse_get_scroll_horizontal_axis(view,&move_pnt,(x*move_mouse_scale));
-		walk_view_mouse_get_scroll_vertical_axis(view,&move_pnt,(y*move_mouse_scale));
+		view_mouse_get_scroll_horizontal_axis(view,&move_pnt,(x*move_mouse_scale));
+		view_mouse_get_scroll_vertical_axis(view,&move_pnt,(y*move_mouse_scale));
 
-		walk_view_move_position(&move_pnt);
+		view_move_position(&move_pnt);
 		
         main_wind_draw();
 	}
 }
 
-void walk_view_mouse_forward_movement(editor_view_type *view,d3pnt *pnt)
+void view_mouse_forward_movement(editor_view_type *view,d3pnt *pnt)
 {
 	int				x,y;
 	d3pnt			old_pnt,move_pnt;
@@ -220,8 +220,8 @@ void walk_view_mouse_forward_movement(editor_view_type *view,d3pnt *pnt)
 		
 		move_pnt.x=move_pnt.y=move_pnt.z=0;
 
-		walk_view_mouse_get_forward_axis(view,&move_pnt,(y*move_mouse_scale));
-		walk_view_move_position(&move_pnt);
+		view_mouse_get_forward_axis(view,&move_pnt,(y*move_mouse_scale));
+		view_move_position(&move_pnt);
 		
 			// y turn
 			
@@ -229,7 +229,7 @@ void walk_view_mouse_forward_movement(editor_view_type *view,d3pnt *pnt)
 			turn_ang.x=turn_ang.z=0.0f;
 			turn_ang.y=((float)x)/move_mouse_turn_reduce_scale;
 			if (setup.flip_forward_movement) turn_ang.y=-turn_ang.y;
-			walk_view_turn_angle(&turn_ang);
+			view_turn_angle(&turn_ang);
 		}
 
         main_wind_draw();
@@ -242,7 +242,7 @@ void walk_view_mouse_forward_movement(editor_view_type *view,d3pnt *pnt)
       
 ======================================================= */
 
-void walk_view_scroll_wheel_z_movement(editor_view_type *view,int delta)
+void view_scroll_wheel_z_movement(editor_view_type *view,int delta)
 {
 	int				mv;
 	d3vct			move_vct;
@@ -256,13 +256,13 @@ void walk_view_scroll_wheel_z_movement(editor_view_type *view,int delta)
 		// free look
 
 	if ((select_count()!=1) || (state.free_look)) {
-		walk_view_mouse_get_forward_axis(view,&move_pnt,-mv);
+		view_mouse_get_forward_axis(view,&move_pnt,-mv);
 	}
 	
 		// look at
 
 	else {
-		walk_view_get_position(&pnt);
+		view_get_position(&pnt);
 		
 		select_get_center(&look_pnt);
 
@@ -274,7 +274,7 @@ void walk_view_scroll_wheel_z_movement(editor_view_type *view,int delta)
 		move_pnt.z=(int)(move_vct.z*((float)mv));
 	}
 
-	walk_view_move_position(&move_pnt);
+	view_move_position(&move_pnt);
 	
 	main_wind_draw();
 }
@@ -285,7 +285,7 @@ void walk_view_scroll_wheel_z_movement(editor_view_type *view,int delta)
       
 ======================================================= */
 
-void walk_view_mouse_turn_free(d3pnt *pnt)
+void view_mouse_turn_free(d3pnt *pnt)
 {
 	int				x,y;
 	bool			redraw;
@@ -313,7 +313,7 @@ void walk_view_mouse_turn_free(d3pnt *pnt)
 			
 			turn_ang.x=turn_ang.z=0.0f;
 			turn_ang.y=((float)x)/move_mouse_turn_reduce_scale;
-			walk_view_turn_angle(&turn_ang);
+			view_turn_angle(&turn_ang);
 
 			redraw=TRUE;
 		}
@@ -325,7 +325,7 @@ void walk_view_mouse_turn_free(d3pnt *pnt)
 			
 			turn_ang.y=turn_ang.z=0.0f;
 			turn_ang.x=-((float)y)/move_mouse_turn_reduce_scale;
-			walk_view_turn_angle(&turn_ang);
+			view_turn_angle(&turn_ang);
 
 			redraw=TRUE;
 		}
@@ -334,7 +334,7 @@ void walk_view_mouse_turn_free(d3pnt *pnt)
 	}
 }
 
-void walk_view_mouse_turn_center(d3pnt *pnt,d3pnt *cnt)
+void view_mouse_turn_center(d3pnt *pnt,d3pnt *cnt)
 {
 	int				x,y;
 	float			ang_y,ang_x;
@@ -347,8 +347,8 @@ void walk_view_mouse_turn_center(d3pnt *pnt,d3pnt *cnt)
 	memmove(&old_pnt,pnt,sizeof(d3pnt));
 	memmove(&org_pnt,pnt,sizeof(d3pnt));
 	
-	walk_view_get_position(&org_view_pnt);
-	walk_view_get_angle(&org_view_ang);
+	view_get_position(&org_view_pnt);
+	view_get_angle(&org_view_ang);
 	
 	while (!os_track_mouse_location(pnt,NULL)) {
 		
@@ -372,12 +372,12 @@ void walk_view_mouse_turn_center(d3pnt *pnt,d3pnt *cnt)
 		memmove(&view_ang,&org_view_ang,sizeof(d3ang));
 		view_ang.x=angle_add(view_ang.x,ang_x);
 		view_ang.y=angle_add(view_ang.y,ang_y);
-		walk_view_set_angle(&view_ang);
+		view_set_angle(&view_ang);
 
 			// rebuild the angle change
 			// as setting the angle can constraint it
 
-		walk_view_get_angle(&view_ang);
+		view_get_angle(&view_ang);
 		ang_x=view_ang.x-org_view_ang.x;
 		ang_y=view_ang.y-org_view_ang.y;
 
@@ -386,25 +386,25 @@ void walk_view_mouse_turn_center(d3pnt *pnt,d3pnt *cnt)
 		memmove(&view_pnt,&org_view_pnt,sizeof(d3pnt));
 		rotate_point(&view_pnt.x,&view_pnt.y,&view_pnt.z,cnt->x,cnt->y,cnt->z,0.0f,ang_y,0.0f);
 		rotate_point(&view_pnt.x,&view_pnt.y,&view_pnt.z,cnt->x,cnt->y,cnt->z,ang_x,0.0f,0.0f);
-		walk_view_set_position(&view_pnt);
+		view_set_position(&view_pnt);
 		
 		main_wind_draw();
 	}
 }
 
-void walk_view_mouse_turn(editor_view_type *view,d3pnt *pnt)
+void view_mouse_turn(editor_view_type *view,d3pnt *pnt)
 {
 	d3pnt			cnt;
 
 		// free look
 
 	if ((select_count()!=1) || (state.free_look)) {
-		walk_view_mouse_turn_free(pnt);
+		view_mouse_turn_free(pnt);
 		return;
 	}
 
 		// look at
 
 	select_get_center(&cnt);
-	walk_view_mouse_turn_center(pnt,&cnt);
+	view_mouse_turn_center(pnt,&cnt);
 }

@@ -72,7 +72,7 @@ void view_get_sprite_vertexes(d3pnt *pnt,d3ang *ang,d3pnt *v_pnts)
 	}
 }
 
-void walk_view_draw_sprite(d3pnt *pnt,d3ang *ang,unsigned long gl_id)
+void view_draw_sprite(d3pnt *pnt,d3ang *ang,unsigned long gl_id)
 {
 	int				n,idx,face_idx[24]={0,1,2,3,4,5,6,7,0,1,5,4,3,2,6,7,1,2,6,5,0,3,7,4};
 	d3pnt			v_pnts[8];
@@ -112,7 +112,7 @@ void walk_view_draw_sprite(d3pnt *pnt,d3ang *ang,unsigned long gl_id)
 	glDisable(GL_TEXTURE_2D);
 }
 
-void walk_view_draw_circle(d3pnt *pnt,d3col *col,int dist)
+void view_draw_circle(d3pnt *pnt,d3col *col,int dist)
 {
     int				n,kx,ky,kz;
 	
@@ -162,7 +162,7 @@ void walk_view_draw_circle(d3pnt *pnt,d3col *col,int dist)
       
 ======================================================= */
 
-bool walk_view_cull_poly(editor_view_type *view,map_mesh_type *mesh,map_mesh_poly_type *poly)
+bool view_cull_poly(editor_view_type *view,map_mesh_type *mesh,map_mesh_poly_type *poly)
 {
 	int			n;
 	d3pnt		center,camera_pnt;
@@ -188,13 +188,13 @@ bool walk_view_cull_poly(editor_view_type *view,map_mesh_type *mesh,map_mesh_pol
 	
 		// is normal facing away?
 	
-	walk_view_get_position(&camera_pnt);
+	view_get_position(&camera_pnt);
 	
 	vector_create(&face_vct,center.x,center.y,center.z,camera_pnt.x,camera_pnt.y,camera_pnt.z);
 	return(vector_dot_product(&poly->tangent_space.normal,&face_vct)>0.0f);
 }
 
-bool walk_view_clip_poly(editor_view_type *view,map_mesh_type *mesh,map_mesh_poly_type *poly)
+bool view_clip_poly(editor_view_type *view,map_mesh_type *mesh,map_mesh_poly_type *poly)
 {
 	int			n,dist;
 	d3pnt		center;
@@ -229,7 +229,7 @@ bool walk_view_clip_poly(editor_view_type *view,map_mesh_type *mesh,map_mesh_pol
 	return(dist<(map_enlarge*setup.clip_distance));
 }
 
-bool walk_view_hidden_poly(editor_view_type *view,map_mesh_type *mesh,map_mesh_poly_type *poly)
+bool view_hidden_poly(editor_view_type *view,map_mesh_type *mesh,map_mesh_poly_type *poly)
 {
 	int			n,wid,high;
 	bool		above_z,behind_z,lft,rgt,top,bot;
@@ -259,7 +259,7 @@ bool walk_view_hidden_poly(editor_view_type *view,map_mesh_type *mesh,map_mesh_p
 		// are points grouped completely
 		// off one side of the screen?
 
-	walk_view_get_pixel_box(view,&box);
+	view_get_pixel_box(view,&box);
 	
 	wid=box.rx-box.lx;
 	high=box.by-box.ty;
@@ -284,7 +284,7 @@ bool walk_view_hidden_poly(editor_view_type *view,map_mesh_type *mesh,map_mesh_p
       
 ======================================================= */
 
-void walk_view_draw_meshes_texture(editor_view_type *view,bool opaque)
+void view_draw_meshes_texture(editor_view_type *view,bool opaque)
 {
 	int						n,k,t;
 	unsigned long			old_gl_id;
@@ -343,11 +343,11 @@ void walk_view_draw_meshes_texture(editor_view_type *view,bool opaque)
 			
 				// clipping
 				
-			if (walk_view_clip_poly(view,mesh,mesh_poly)) continue;
+			if (view_clip_poly(view,mesh,mesh_poly)) continue;
 			
 				// hidden
 				
-			if (walk_view_hidden_poly(view,mesh,mesh_poly)) continue;
+			if (view_hidden_poly(view,mesh,mesh_poly)) continue;
 			
 				// no light map?
 				
@@ -376,7 +376,7 @@ void walk_view_draw_meshes_texture(editor_view_type *view,bool opaque)
 			
 				// culling
 			
-			culled=walk_view_cull_poly(view,mesh,mesh_poly);
+			culled=view_cull_poly(view,mesh,mesh_poly);
 		
 				// setup texture
 				
@@ -419,7 +419,7 @@ void walk_view_draw_meshes_texture(editor_view_type *view,bool opaque)
 	glDisable(GL_TEXTURE_2D);
 }
 
-void walk_view_draw_meshes_line(editor_view_type *view,bool opaque)
+void view_draw_meshes_line(editor_view_type *view,bool opaque)
 {
 	int					n,k,t;
 	d3pnt				*pt;
@@ -449,11 +449,11 @@ void walk_view_draw_meshes_line(editor_view_type *view,bool opaque)
 			
 				// clipping
 				
-			if (walk_view_clip_poly(view,mesh,mesh_poly)) continue;
+			if (view_clip_poly(view,mesh,mesh_poly)) continue;
 			
 				// hidden
 				
-			if (walk_view_hidden_poly(view,mesh,mesh_poly)) continue;
+			if (view_hidden_poly(view,mesh,mesh_poly)) continue;
 			
 				// opaque or transparent flag
 		
@@ -484,7 +484,7 @@ void walk_view_draw_meshes_line(editor_view_type *view,bool opaque)
       
 ======================================================= */
 
-void walk_view_draw_liquids(editor_view_type *view,bool opaque)
+void view_draw_liquids(editor_view_type *view,bool opaque)
 {
 	int					n,nliquid,x,y,z,y2,lx,rx,tz,bz;
 	unsigned long		old_gl_id;
@@ -635,7 +635,7 @@ void walk_view_draw_liquids(editor_view_type *view,bool opaque)
       
 ======================================================= */
 
-void walk_view_draw_meshes_normals(editor_view_type *view_setup)
+void view_draw_meshes_normals(editor_view_type *view_setup)
 {
 	int					n,k,t;
 	d3pnt				*pt,cnt;
@@ -715,7 +715,7 @@ void walk_view_draw_meshes_normals(editor_view_type *view_setup)
       
 ======================================================= */
 
-void walk_view_draw_nodes(editor_view_type *view_setup)
+void view_draw_nodes(editor_view_type *view_setup)
 {
 	int			n,k;
 	float		fx,fy,fz;
@@ -780,15 +780,15 @@ void walk_view_draw_nodes(editor_view_type *view_setup)
 		node=&map.nodes[n];
 		
 		if (node->name[0]==0x0) {
-			walk_view_draw_sprite(&node->pnt,NULL,node_bitmap.gl_id);
+			view_draw_sprite(&node->pnt,NULL,node_bitmap.gl_id);
 		}
 		else {
-			walk_view_draw_sprite(&node->pnt,NULL,node_defined_bitmap.gl_id);
+			view_draw_sprite(&node->pnt,NULL,node_defined_bitmap.gl_id);
 		}
 	}
 }
 
-void walk_view_draw_spots_scenery(editor_view_type *view_setup)
+void view_draw_spots_scenery(editor_view_type *view_setup)
 {
 	int					n;
 	spot_type			*spot;
@@ -799,37 +799,37 @@ void walk_view_draw_spots_scenery(editor_view_type *view_setup)
 	for (n=0;n!=map.nspot;n++) {
 		spot=&map.spots[n];
 	
-		if (!walk_view_model_draw(&spot->pnt,&spot->ang,spot->display_model,NULL,0)) {
-			walk_view_draw_sprite(&spot->pnt,&spot->ang,spot_bitmap.gl_id);
+		if (!view_model_draw(&spot->pnt,&spot->ang,spot->display_model,NULL,0)) {
+			view_draw_sprite(&spot->pnt,&spot->ang,spot_bitmap.gl_id);
 		}
 	}		
     
 	for (n=0;n!=map.nscenery;n++) {
 		scenery=&map.sceneries[n];
 	
-		if (!walk_view_model_draw(&scenery->pnt,&scenery->ang,scenery->model_name,scenery->texture_frame,max_map_scenery_model_texture_frame)) {
-			walk_view_draw_sprite(&scenery->pnt,&scenery->ang,scenery_bitmap.gl_id);
+		if (!view_model_draw(&scenery->pnt,&scenery->ang,scenery->model_name,scenery->texture_frame,max_map_scenery_model_texture_frame)) {
+			view_draw_sprite(&scenery->pnt,&scenery->ang,scenery_bitmap.gl_id);
 		}
 	}		
 }
 
-void walk_view_draw_lights_sounds_particles(editor_view_type *view_setup)
+void view_draw_lights_sounds_particles(editor_view_type *view_setup)
 {
 	int				n;
 	
 	if (!state.show_lightsoundparticle) return;
 	
 	for (n=0;n!=map.nlight;n++) {
-		walk_view_draw_sprite(&map.lights[n].pnt,NULL,light_bitmap.gl_id);
-		if (select_check(light_piece,n,-1)) walk_view_draw_circle(&map.lights[n].pnt,&map.lights[n].col,map.lights[n].intensity);
+		view_draw_sprite(&map.lights[n].pnt,NULL,light_bitmap.gl_id);
+		if (select_check(light_piece,n,-1)) view_draw_circle(&map.lights[n].pnt,&map.lights[n].col,map.lights[n].intensity);
 	}
 	
 	for (n=0;n!=map.nsound;n++) {
-		walk_view_draw_sprite(&map.sounds[n].pnt,NULL,sound_bitmap.gl_id);
+		view_draw_sprite(&map.sounds[n].pnt,NULL,sound_bitmap.gl_id);
 	}
 	
 	for (n=0;n!=map.nparticle;n++) {
-		walk_view_draw_sprite(&map.particles[n].pnt,NULL,particle_bitmap.gl_id);
+		view_draw_sprite(&map.particles[n].pnt,NULL,particle_bitmap.gl_id);
 	}
 }
 
@@ -839,12 +839,12 @@ void walk_view_draw_lights_sounds_particles(editor_view_type *view_setup)
       
 ======================================================= */
 
-void walk_view_draw_view(editor_view_type *view)
+void view_draw_view(editor_view_type *view)
 {
        // 3D view
         
-	walk_view_set_viewport(view,TRUE,TRUE);
-	walk_view_set_3D_projection(view,map.settings.editor.view_near_dist,map.settings.editor.view_far_dist,walk_view_near_offset);
+	view_set_viewport(view,TRUE,TRUE);
+	view_set_3D_projection(view,map.settings.editor.view_near_dist,map.settings.editor.view_far_dist,view_near_offset);
 
 		// setup item drawing
 
@@ -853,41 +853,41 @@ void walk_view_draw_view(editor_view_type *view)
 
         // draw opaque parts of portals in sight path
         
-	walk_view_draw_meshes_texture(view,TRUE);
-	walk_view_draw_nodes(view);
-	walk_view_draw_spots_scenery(view);
-	walk_view_draw_lights_sounds_particles(view);
-	walk_view_draw_liquids(view,TRUE);
+	view_draw_meshes_texture(view,TRUE);
+	view_draw_nodes(view);
+	view_draw_spots_scenery(view);
+	view_draw_lights_sounds_particles(view);
+	view_draw_liquids(view,TRUE);
 	
 		// draw opaque mesh lines
 		// push view forward to better z-buffer lines
 		
-	walk_view_set_3D_projection(view,(map.settings.editor.view_near_dist+10),(map.settings.editor.view_far_dist-10),walk_view_near_offset);
-	walk_view_draw_meshes_line(view,TRUE);
+	view_set_3D_projection(view,(map.settings.editor.view_near_dist+10),(map.settings.editor.view_far_dist-10),view_near_offset);
+	view_draw_meshes_line(view,TRUE);
 
         // draw transparent parts of portals in sight path
         
-	walk_view_set_3D_projection(view,map.settings.editor.view_near_dist,map.settings.editor.view_far_dist,walk_view_near_offset);
+	view_set_3D_projection(view,map.settings.editor.view_near_dist,map.settings.editor.view_far_dist,view_near_offset);
 
-	walk_view_draw_meshes_texture(view,FALSE);
-	walk_view_draw_liquids(view,FALSE);
+	view_draw_meshes_texture(view,FALSE);
+	view_draw_liquids(view,FALSE);
  	
         // draw transparent mesh lines
 		// push view forward to better z-buffer lines
         
-	walk_view_set_3D_projection(view,(map.settings.editor.view_near_dist+10),(map.settings.editor.view_far_dist-10),walk_view_near_offset);
-	walk_view_draw_meshes_line(view,TRUE);
+	view_set_3D_projection(view,(map.settings.editor.view_near_dist+10),(map.settings.editor.view_far_dist-10),view_near_offset);
+	view_draw_meshes_line(view,TRUE);
 	
         // draw normals mesh lines
 		// push view forward to better z-buffer lines
       
 	if (state.show_normals) {
-		walk_view_set_3D_projection(view,(map.settings.editor.view_near_dist+20),(map.settings.editor.view_far_dist-20),walk_view_near_offset);
-		walk_view_draw_meshes_normals(view);
+		view_set_3D_projection(view,(map.settings.editor.view_near_dist+20),(map.settings.editor.view_far_dist-20),view_near_offset);
+		view_draw_meshes_normals(view);
 	}
 		
 		// draw selection
 		
-	walk_view_draw_select(view);
+	view_draw_select(view);
 }
 

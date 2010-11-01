@@ -162,7 +162,7 @@ void palette_spot_save(void)
 	
 		// need to reset object combo and loaded models
 		
-	walk_view_models_reset();
+	view_models_reset();
 	main_wind_draw();
 }
 

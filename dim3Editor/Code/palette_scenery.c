@@ -109,7 +109,7 @@ void palette_scenery_save(void)
 	
 		// need to reset models
 		
-	walk_view_models_reset();
+	view_models_reset();
 	main_wind_draw();
 }
 

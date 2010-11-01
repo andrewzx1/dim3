@@ -45,7 +45,7 @@ model_type						*models;
 	        
 ======================================================= */
 
-void walk_view_models_start(void)
+void view_models_start(void)
 {
 	nmodel=0;
 	
@@ -54,7 +54,7 @@ void walk_view_models_start(void)
 	model_setup(&file_path_setup,anisotropic_mode_none,mipmap_mode_none,texture_quality_mode_high,FALSE);
 }
 
-void walk_view_models_close(void)
+void view_models_close(void)
 {
 	int					n;
 	model_type			*model;
@@ -80,7 +80,7 @@ void walk_view_models_close(void)
 	        
 ======================================================= */
 
-int walk_view_models_find_model(char *name)
+int view_models_find_model(char *name)
 {
 	int			n;
 	model_type	*model;
@@ -95,7 +95,7 @@ int walk_view_models_find_model(char *name)
 	return(-1);
 }
 
-void walk_view_models_reset(void)
+void view_models_reset(void)
 {
 	int					n,idx;
 	bool				used[max_model];
@@ -114,7 +114,7 @@ void walk_view_models_reset(void)
 	
 	for (n=0;n!=map.nspot;n++) {
 		if (spot->display_model[0]!=0x0) {
-			idx=walk_view_models_find_model(spot->display_model);
+			idx=view_models_find_model(spot->display_model);
 			if (idx!=-1) used[idx]=TRUE;
 		}
 		spot++;
@@ -124,7 +124,7 @@ void walk_view_models_reset(void)
 	
 	for (n=0;n!=map.nscenery;n++) {
 		if (scenery->model_name[0]!=0x0) {
-			idx=walk_view_models_find_model(scenery->model_name);
+			idx=view_models_find_model(scenery->model_name);
 			if (idx!=-1) used[idx]=TRUE;
 		}
 		scenery++;
@@ -159,7 +159,7 @@ void walk_view_models_reset(void)
 	
 		if (spot->display_model[0]!=0x0) {
 		
-			idx=walk_view_models_find_model(spot->display_model);
+			idx=view_models_find_model(spot->display_model);
 			
 			if ((idx==-1) && (nmodel<max_model)) {
 				if (model_open(&models[nmodel],spot->display_model,TRUE)) {
@@ -177,7 +177,7 @@ void walk_view_models_reset(void)
 	
 		if (scenery->model_name[0]!=0x0) {
 		
-			idx=walk_view_models_find_model(scenery->model_name);
+			idx=view_models_find_model(scenery->model_name);
 			
 			if ((idx==-1) && (nmodel<max_model)) {
 				if (model_open(&models[nmodel],scenery->model_name,TRUE)) {
@@ -196,7 +196,7 @@ void walk_view_models_reset(void)
       
 ======================================================= */
 
-void walk_view_get_model_size(char *model_name,d3pnt *size)
+void view_get_model_size(char *model_name,d3pnt *size)
 {
 	int					idx;
 
@@ -204,7 +204,7 @@ void walk_view_get_model_size(char *model_name,d3pnt *size)
 
 	if (model_name[0]==0x0) return;
 	
-	idx=walk_view_models_find_model(model_name);
+	idx=view_models_find_model(model_name);
 	if (idx==-1) return;
 	
 	memmove(size,&models[idx].view_box.size,sizeof(d3pnt));
@@ -216,7 +216,7 @@ void walk_view_get_model_size(char *model_name,d3pnt *size)
       
 ======================================================= */
 
-void walk_view_model_draw_material(model_type *model,texture_type *texture,model_material_type *material,int frame)
+void view_model_draw_material(model_type *model,texture_type *texture,model_material_type *material,int frame)
 {
 	int					k,trig_count,bitmap_gl_id;
     model_trig_type		*trig;
@@ -251,7 +251,7 @@ void walk_view_model_draw_material(model_type *model,texture_type *texture,model
 	glEnd();
 }
 
-bool walk_view_model_draw(d3pnt *pnt,d3ang *ang,char *name,short *texture_frame,int frame_count)
+bool view_model_draw(d3pnt *pnt,d3ang *ang,char *name,short *texture_frame,int frame_count)
 {
 	int								idx,n,frame;
 	model_type						*model;
@@ -262,7 +262,7 @@ bool walk_view_model_draw(d3pnt *pnt,d3ang *ang,char *name,short *texture_frame,
 
 	if (name[0]==0x0) return(FALSE);
 	
-	idx=walk_view_models_find_model(name);
+	idx=view_models_find_model(name);
 	if (idx==-1) return(FALSE);
 	
 	model=&models[idx];
@@ -311,7 +311,7 @@ bool walk_view_model_draw(d3pnt *pnt,d3ang *ang,char *name,short *texture_frame,
     for (n=0;n!=max_model_texture;n++) {
 		frame=0;
 		if (n<frame_count) frame=(int)texture_frame[n];
-		if (texture->frames[0].bitmap.alpha_mode!=alpha_mode_transparent) walk_view_model_draw_material(model,texture,material,frame);
+		if (texture->frames[0].bitmap.alpha_mode!=alpha_mode_transparent) view_model_draw_material(model,texture,material,frame);
 		texture++;
 		material++;
 	}
@@ -327,7 +327,7 @@ bool walk_view_model_draw(d3pnt *pnt,d3ang *ang,char *name,short *texture_frame,
     for (n=0;n!=max_model_texture;n++) {
 		frame=0;
 		if (n<frame_count) frame=(int)texture_frame[n];
-		if (texture->frames[0].bitmap.alpha_mode==alpha_mode_transparent) walk_view_model_draw_material(model,texture,material,frame);
+		if (texture->frames[0].bitmap.alpha_mode==alpha_mode_transparent) view_model_draw_material(model,texture,material,frame);
 		texture++;
 		material++;
 	}
@@ -352,7 +352,7 @@ bool walk_view_model_draw(d3pnt *pnt,d3ang *ang,char *name,short *texture_frame,
       
 ======================================================= */
 
-void walk_view_model_cube_vertexes(char *name,d3pnt *pnt,d3ang *ang,d3pnt *v_pnts)
+void view_model_cube_vertexes(char *name,d3pnt *pnt,d3ang *ang,d3pnt *v_pnts)
 {
 	int						n,idx,cx,cy,cz,wid_x,wid_z,high,
 							px[8],py[8],pz[8];
@@ -372,7 +372,7 @@ void walk_view_model_cube_vertexes(char *name,d3pnt *pnt,d3ang *ang,d3pnt *v_pnt
 	if (name!=NULL) {
 		if (name[0]!=0x0) {
 	
-			idx=walk_view_models_find_model(name);
+			idx=view_models_find_model(name);
 			if (idx!=-1) {
 	
 				model=&models[idx];

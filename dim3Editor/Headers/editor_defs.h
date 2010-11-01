@@ -150,15 +150,13 @@ and can be sold or given away.
 // clicking
 //
 
-#define walk_view_max_z_click					1000000
-
 #define view_max_box_select_item				256
 
 //
 // opengl settings
 //
 
-#define walk_view_near_offset					(3*map_enlarge)
+#define view_near_offset						(3*map_enlarge)
 
 //
 // display sizes

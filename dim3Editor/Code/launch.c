@@ -79,8 +79,8 @@ void launch_engine(void)
 	
 		// map position
 		
-	walk_view_get_position(&pnt);
-	walk_view_get_angle(&ang);
+	view_get_position(&pnt);
+	view_get_angle(&ang);
 		
 	fwrite(&pnt,1,sizeof(d3pnt),file);
 	fwrite(&ang,1,sizeof(d3ang),file);

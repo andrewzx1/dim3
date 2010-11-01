@@ -639,7 +639,7 @@ void mesh_snap_to_grid(int mesh_idx)
 
 	map_mesh_calculate_center(&map,mesh_idx,&mpt);
 	memmove(&mpt2,&mpt,sizeof(d3pnt));
-	walk_view_click_grid(&mpt2);
+	view_click_grid(&mpt2);
 	
 	x=mpt2.x-mpt.x;
 	y=mpt2.y-mpt.y;
@@ -668,7 +668,7 @@ void mesh_poly_snap_to_grid(int mesh_idx,int poly_idx)
 	
 	for (n=0;n!=poly->ptsz;n++) {
 		pt=&mesh->vertexes[poly->v[n]];
-		walk_view_click_grid(pt);
+		view_click_grid(pt);
 	}
 }
 
@@ -684,7 +684,7 @@ void mesh_vertexes_snap_to_grid(int mesh_idx)
 	pt=mesh->vertexes;
 
 	for (n=0;n!=nvertex;n++) {
-		walk_view_click_grid(pt);
+		view_click_grid(pt);
 		pt++;
 	}
 }
@@ -1039,32 +1039,32 @@ void piece_key(char ch)
 	
 		// nudge works with grid
 	
-	mv=walk_view_get_grid()*move_key_scale;
+	mv=view_get_grid()*move_key_scale;
 	if (!os_key_shift_down()) mv/=move_key_shift_reduce_scale;
 	
 	if (mv<1) mv=1;
 	
 		// nudge keys movement
 
-	view=walk_view_get_current_view();
+	view=view_get_current_view();
 	move_pnt.x=move_pnt.y=move_pnt.z=0;
 		
 	switch (ch) {
 	
 		case 0x1C:
-			walk_view_mouse_get_scroll_horizontal_axis(view,&move_pnt,-mv);
+			view_mouse_get_scroll_horizontal_axis(view,&move_pnt,-mv);
 			break;
 			
 		case 0x1D:
-			walk_view_mouse_get_scroll_horizontal_axis(view,&move_pnt,+mv);
+			view_mouse_get_scroll_horizontal_axis(view,&move_pnt,+mv);
 			break;
 			
 		case 0x1E:
-			walk_view_mouse_get_scroll_vertical_axis(view,&move_pnt,-mv);
+			view_mouse_get_scroll_vertical_axis(view,&move_pnt,-mv);
 			break;
 			
 		case 0x1F:
-			walk_view_mouse_get_scroll_vertical_axis(view,&move_pnt,mv);
+			view_mouse_get_scroll_vertical_axis(view,&move_pnt,mv);
 			break;
 			
 	}
