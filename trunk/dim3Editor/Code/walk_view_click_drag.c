@@ -42,7 +42,7 @@ extern editor_state_type		state;
       
 ======================================================= */
 
-bool walk_view_click_drag_mesh_handle(editor_view_type *view,d3pnt *pt)
+bool view_click_drag_mesh_handle(editor_view_type *view,d3pnt *pt)
 {
 	int						n,x,y,mx,my,mz,sub_idx,
 							px[8],py[8],pz[8],
@@ -66,7 +66,7 @@ bool walk_view_click_drag_mesh_handle(editor_view_type *view,d3pnt *pt)
 	
 		// are we clicking in the grow handles?
 		
-	walk_view_draw_select_mesh_get_grow_handles(mesh_idx,px,py,pz);
+	view_draw_select_mesh_get_grow_handles(mesh_idx,px,py,pz);
 		
 	view_pick_list_start(view,FALSE,8);
 	
@@ -104,7 +104,7 @@ bool walk_view_click_drag_mesh_handle(editor_view_type *view,d3pnt *pt)
 	
 	map_mesh_calculate_extent(&map,mesh_idx,&org_min,&org_max);
 	
-	walk_view_get_pixel_box(view,&box);
+	view_get_pixel_box(view,&box);
 	memmove(&old_pt,pt,sizeof(d3pnt));
 	
 	mx=my=mz=0;
@@ -129,8 +129,8 @@ bool walk_view_click_drag_mesh_handle(editor_view_type *view,d3pnt *pt)
 
 		move_pnt.x=move_pnt.y=move_pnt.z=0;
 		
-		walk_view_mouse_get_scroll_horizontal_axis(view,&move_pnt,-(x*move_mouse_scale));
-		walk_view_mouse_get_scroll_vertical_axis(view,&move_pnt,-(y*move_mouse_scale));
+		view_mouse_get_scroll_horizontal_axis(view,&move_pnt,-(x*move_mouse_scale));
+		view_mouse_get_scroll_vertical_axis(view,&move_pnt,-(y*move_mouse_scale));
 
 		mx+=move_pnt.x;
 		my+=move_pnt.y;
@@ -140,7 +140,7 @@ bool walk_view_click_drag_mesh_handle(editor_view_type *view,d3pnt *pt)
 		mpt.y=my;
 		mpt.z=mz;
 		
-		walk_view_click_grid(&mpt);
+		view_click_grid(&mpt);
 		
 		memmove(&min,&org_min,sizeof(d3pnt));
 		memmove(&max,&org_max,sizeof(d3pnt));
@@ -197,7 +197,7 @@ bool walk_view_click_drag_mesh_handle(editor_view_type *view,d3pnt *pt)
       
 ======================================================= */
 
-bool walk_view_click_drag_mesh(editor_view_type *view,d3pnt *pt)
+bool view_click_drag_mesh(editor_view_type *view,d3pnt *pt)
 {
 	int						n,k,x,y,mx,my,mz,nsel,nvertex,
 							type,mesh_idx,poly_idx;
@@ -256,7 +256,7 @@ bool walk_view_click_drag_mesh(editor_view_type *view,d3pnt *pt)
 			
 	first_drag=TRUE;
 	
-	walk_view_get_pixel_box(view,&box);
+	view_get_pixel_box(view,&box);
 	memmove(&old_pt,pt,sizeof(d3pnt));
 	
 	while (!os_track_mouse_location(pt,&box)) {
@@ -279,8 +279,8 @@ bool walk_view_click_drag_mesh(editor_view_type *view,d3pnt *pt)
 
 		move_pnt.x=move_pnt.y=move_pnt.z=0;
 		
-		walk_view_mouse_get_scroll_horizontal_axis(view,&move_pnt,-(x*move_mouse_scale));
-		walk_view_mouse_get_scroll_vertical_axis(view,&move_pnt,-(y*move_mouse_scale));
+		view_mouse_get_scroll_horizontal_axis(view,&move_pnt,-(x*move_mouse_scale));
+		view_mouse_get_scroll_vertical_axis(view,&move_pnt,-(y*move_mouse_scale));
 		
 		mx+=move_pnt.x;
 		my+=move_pnt.y;
@@ -297,7 +297,7 @@ bool walk_view_click_drag_mesh(editor_view_type *view,d3pnt *pt)
 		mpt.y+=old_dpt[0].y;
 		mpt.z+=old_dpt[0].z;
 
-		walk_view_click_grid(&mpt);
+		view_click_grid(&mpt);
 		
 		mpt.x-=old_dpt[0].x;
 		mpt.y-=old_dpt[0].y;
@@ -321,7 +321,7 @@ bool walk_view_click_drag_mesh(editor_view_type *view,d3pnt *pt)
 				spt.y=old_dpt_ptr->y+mpt.y;
 				spt.z=old_dpt_ptr->z+mpt.z;
 				
-				if (walk_view_click_snap_mesh(mesh_idx,&spt)) {
+				if (view_click_snap_mesh(mesh_idx,&spt)) {
 					mpt.x=spt.x-old_dpt_ptr->x;
 					mpt.y=spt.y-old_dpt_ptr->y;
 					mpt.z=spt.z-old_dpt_ptr->z;
@@ -376,7 +376,7 @@ bool walk_view_click_drag_mesh(editor_view_type *view,d3pnt *pt)
       
 ======================================================= */
 
-bool walk_view_click_drag_mesh_poly(editor_view_type *view,d3pnt *pt)
+bool view_click_drag_mesh_poly(editor_view_type *view,d3pnt *pt)
 {
 	int						n,x,y,mx,my,mz,
 							type,mesh_idx,poly_idx;
@@ -417,7 +417,7 @@ bool walk_view_click_drag_mesh_poly(editor_view_type *view,d3pnt *pt)
 	
 	mx=my=mz=0;
 	
-	walk_view_get_pixel_box(view,&box);
+	view_get_pixel_box(view,&box);
 	memmove(&old_pt,pt,sizeof(d3pnt));
 	
 	while (!os_track_mouse_location(pt,&box)) {
@@ -440,8 +440,8 @@ bool walk_view_click_drag_mesh_poly(editor_view_type *view,d3pnt *pt)
 
 		move_pnt.x=move_pnt.y=move_pnt.z=0;
 		
-		walk_view_mouse_get_scroll_horizontal_axis(view,&move_pnt,-(x*move_mouse_scale));
-		walk_view_mouse_get_scroll_vertical_axis(view,&move_pnt,-(y*move_mouse_scale));
+		view_mouse_get_scroll_horizontal_axis(view,&move_pnt,-(x*move_mouse_scale));
+		view_mouse_get_scroll_vertical_axis(view,&move_pnt,-(y*move_mouse_scale));
 		
 		mx+=move_pnt.x;
 		my+=move_pnt.y;
@@ -458,7 +458,7 @@ bool walk_view_click_drag_mesh_poly(editor_view_type *view,d3pnt *pt)
 		mpt.y+=old_dpt[0].y;
 		mpt.z+=old_dpt[0].z;
 
-		walk_view_click_grid(&mpt);
+		view_click_grid(&mpt);
 		
 		mpt.x-=old_dpt[0].x;
 		mpt.y-=old_dpt[0].y;
@@ -472,7 +472,7 @@ bool walk_view_click_drag_mesh_poly(editor_view_type *view,d3pnt *pt)
 			spt.y=old_dpt[n].y+mpt.y;
 			spt.z=old_dpt[n].z+mpt.z;
 				
-			if (walk_view_click_snap_poly(mesh_idx,poly_idx,&spt)) {
+			if (view_click_snap_poly(mesh_idx,poly_idx,&spt)) {
 				mpt.x=spt.x-old_dpt[n].x;
 				mpt.y=spt.y-old_dpt[n].y;
 				mpt.z=spt.z-old_dpt[n].z;
@@ -508,7 +508,7 @@ bool walk_view_click_drag_mesh_poly(editor_view_type *view,d3pnt *pt)
       
 ======================================================= */
 
-bool walk_view_click_drag_vertex(editor_view_type *view,d3pnt *pt)
+bool view_click_drag_vertex(editor_view_type *view,d3pnt *pt)
 {
 	int						n,x,y,mx,my,mz,sub_idx,
 							type,mesh_idx,poly_idx,vertex_idx;
@@ -561,7 +561,7 @@ bool walk_view_click_drag_vertex(editor_view_type *view,d3pnt *pt)
 	dpt=&mesh->vertexes[vertex_idx];
 	memmove(&old_dpt,dpt,sizeof(d3pnt));
 	
-	walk_view_get_pixel_box(view,&box);
+	view_get_pixel_box(view,&box);
 	memmove(&old_pt,pt,sizeof(d3pnt));
 	
 	mx=my=mz=0;
@@ -586,8 +586,8 @@ bool walk_view_click_drag_vertex(editor_view_type *view,d3pnt *pt)
 
 		move_pnt.x=move_pnt.y=move_pnt.z=0;
 		
-		walk_view_mouse_get_scroll_horizontal_axis(view,&move_pnt,-(x*move_mouse_scale));
-		walk_view_mouse_get_scroll_vertical_axis(view,&move_pnt,-(y*move_mouse_scale));
+		view_mouse_get_scroll_horizontal_axis(view,&move_pnt,-(x*move_mouse_scale));
+		view_mouse_get_scroll_vertical_axis(view,&move_pnt,-(y*move_mouse_scale));
 			
 		mx+=move_pnt.x;
 		my+=move_pnt.y;
@@ -605,8 +605,8 @@ bool walk_view_click_drag_vertex(editor_view_type *view,d3pnt *pt)
 			
 			// grid and snap
 			
-		walk_view_click_grid(dpt);
-		walk_view_click_snap(mesh_idx,dpt);
+		view_click_grid(dpt);
+		view_click_snap(mesh_idx,dpt);
 	
 		if ((state.auto_texture) && (!mesh->flag.lock_uv)) map_mesh_reset_uv(&map,mesh_idx);
 
@@ -630,7 +630,7 @@ bool walk_view_click_drag_vertex(editor_view_type *view,d3pnt *pt)
       
 ======================================================= */
 
-bool walk_view_click_drag_liquid_vertex(editor_view_type *view,d3pnt *pt)
+bool view_click_drag_liquid_vertex(editor_view_type *view,d3pnt *pt)
 {
 	int						n,x,y,mx,my,mz,chk_x,chk_z,
 							px[4],py[4],pz[4],
@@ -649,7 +649,7 @@ bool walk_view_click_drag_liquid_vertex(editor_view_type *view,d3pnt *pt)
 
 	liq=&map.liquid.liquids[liquid_idx];
 	
-	walk_view_draw_select_liquid_get_grow_handles(liquid_idx,px,py,pz);
+	view_draw_select_liquid_get_grow_handles(liquid_idx,px,py,pz);
 		
 	view_pick_list_start(view,FALSE,4);
 	
@@ -682,7 +682,7 @@ bool walk_view_click_drag_liquid_vertex(editor_view_type *view,d3pnt *pt)
 	old_dpt.y=py[handle_idx];
 	old_dpt.z=pz[handle_idx];
 	
-	walk_view_get_pixel_box(view,&box);
+	view_get_pixel_box(view,&box);
 	memmove(&old_pt,pt,sizeof(d3pnt));
 	
 	mx=my=mz=0;
@@ -707,8 +707,8 @@ bool walk_view_click_drag_liquid_vertex(editor_view_type *view,d3pnt *pt)
 
 		move_pnt.x=move_pnt.y=move_pnt.z=0;
 		
-		walk_view_mouse_get_scroll_horizontal_axis(view,&move_pnt,-(x*move_mouse_scale));
-		walk_view_mouse_get_scroll_vertical_axis(view,&move_pnt,-(y*move_mouse_scale));
+		view_mouse_get_scroll_horizontal_axis(view,&move_pnt,-(x*move_mouse_scale));
+		view_mouse_get_scroll_vertical_axis(view,&move_pnt,-(y*move_mouse_scale));
 			
 		mx+=move_pnt.x;
 		my=liq->y;
@@ -718,7 +718,7 @@ bool walk_view_click_drag_liquid_vertex(editor_view_type *view,d3pnt *pt)
 		mpt.y=my;
 		mpt.z=mz;
 		
-		walk_view_click_grid(&mpt);
+		view_click_grid(&mpt);
 		
 			// move vertex
 			
@@ -777,7 +777,7 @@ bool walk_view_click_drag_liquid_vertex(editor_view_type *view,d3pnt *pt)
       
 ======================================================= */
 
-bool walk_view_click_drag_liquid(editor_view_type *view,d3pnt *pt)
+bool view_click_drag_liquid(editor_view_type *view,d3pnt *pt)
 {
 	int						x,y,mx,my,mz,
 							old_lft,old_rgt,old_top,old_bot,old_y,
@@ -808,7 +808,7 @@ bool walk_view_click_drag_liquid(editor_view_type *view,d3pnt *pt)
 	old_bot=liq->bot;
 	old_y=liq->y;
 	
-	walk_view_get_pixel_box(view,&box);
+	view_get_pixel_box(view,&box);
 	memmove(&old_pt,pt,sizeof(d3pnt));
 	
 	mx=my=mz=0;
@@ -833,8 +833,8 @@ bool walk_view_click_drag_liquid(editor_view_type *view,d3pnt *pt)
 
 		move_pnt.x=move_pnt.y=move_pnt.z=0;
 		
-		walk_view_mouse_get_scroll_horizontal_axis(view,&move_pnt,-(x*move_mouse_scale));
-		walk_view_mouse_get_scroll_vertical_axis(view,&move_pnt,-(y*move_mouse_scale));
+		view_mouse_get_scroll_horizontal_axis(view,&move_pnt,-(x*move_mouse_scale));
+		view_mouse_get_scroll_vertical_axis(view,&move_pnt,-(y*move_mouse_scale));
 			
 		mx+=move_pnt.x;
 		my+=move_pnt.y;
@@ -844,7 +844,7 @@ bool walk_view_click_drag_liquid(editor_view_type *view,d3pnt *pt)
 		mpt.y=my;
 		mpt.z=mz;
 		
-		walk_view_click_grid(&mpt);
+		view_click_grid(&mpt);
 		
 			// move liquid
 			
@@ -872,7 +872,7 @@ bool walk_view_click_drag_liquid(editor_view_type *view,d3pnt *pt)
       
 ======================================================= */
 
-bool walk_view_click_drag_item(editor_view_type *view,d3pnt *pt)
+bool view_click_drag_item(editor_view_type *view,d3pnt *pt)
 {
 	int						x,y,mx,my,mz,
 							type,main_idx,sub_idx;
@@ -919,7 +919,7 @@ bool walk_view_click_drag_item(editor_view_type *view,d3pnt *pt)
 
 	first_drag=TRUE;
 	
-	walk_view_get_pixel_box(view,&box);
+	view_get_pixel_box(view,&box);
 	memmove(&old_pt,pt,sizeof(d3pnt));
 	memmove(&old_pnt,pnt,sizeof(d3pnt));
 	
@@ -945,8 +945,8 @@ bool walk_view_click_drag_item(editor_view_type *view,d3pnt *pt)
 
 		move_pnt.x=move_pnt.y=move_pnt.z=0;
 		
-		walk_view_mouse_get_scroll_horizontal_axis(view,&move_pnt,-(x*move_mouse_scale));
-		walk_view_mouse_get_scroll_vertical_axis(view,&move_pnt,-(y*move_mouse_scale));
+		view_mouse_get_scroll_horizontal_axis(view,&move_pnt,-(x*move_mouse_scale));
+		view_mouse_get_scroll_vertical_axis(view,&move_pnt,-(y*move_mouse_scale));
 			
 		mx+=move_pnt.x;
 		my+=move_pnt.y;
@@ -956,7 +956,7 @@ bool walk_view_click_drag_item(editor_view_type *view,d3pnt *pt)
 		mpt.y=my;
 		mpt.z=mz;
 		
-		walk_view_click_grid(&mpt);
+		view_click_grid(&mpt);
 		
 		pnt->x=old_pnt.x+mpt.x;
 		pnt->y=old_pnt.y+mpt.y;
@@ -978,7 +978,7 @@ bool walk_view_click_drag_item(editor_view_type *view,d3pnt *pt)
       
 ======================================================= */
 
-void walk_view_click_box_select(editor_view_type *view,d3pnt *pt)
+void view_click_box_select(editor_view_type *view,d3pnt *pt)
 {
 	int						n,x,y,item_count,
 							type[view_max_box_select_item],
@@ -987,11 +987,11 @@ void walk_view_click_box_select(editor_view_type *view,d3pnt *pt)
 	d3pnt					old_pt;
 	d3rect					box;
 		
-	walk_view_get_pixel_box(view,&box);
+	view_get_pixel_box(view,&box);
 	
 		// draw map and get pixels
 		
-	walk_view_click_piece_map_pick_start(view);
+	view_click_piece_map_pick_start(view);
 	if (!view_pick_list_multiple_setup(view)) {	
 		view_pick_list_multiple_end();
 		return;

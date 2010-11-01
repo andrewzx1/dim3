@@ -867,7 +867,7 @@ void piece_add_obj_mesh_uv(void)
         
         npt=0;
 		
-		if (walk_view_get_uv_layer()==uv_layer_normal) {
+		if (view_get_uv_layer()==uv_layer_normal) {
 			uv_ptr=&poly->main_uv;
 		}
 		else {

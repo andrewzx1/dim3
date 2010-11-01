@@ -101,8 +101,8 @@ bool view_handle_create_rot_handle(editor_view_type *view,d3pnt *pnt,d3ang *ang,
 		// project the points
 		// no points if z is behind the camera
 
-	walk_view_set_viewport(view,FALSE,FALSE);
-	walk_view_set_3D_projection(view,map.settings.editor.view_near_dist,map.settings.editor.view_far_dist,walk_view_near_offset);
+	view_set_viewport(view,FALSE,FALSE);
+	view_set_3D_projection(view,map.settings.editor.view_near_dist,map.settings.editor.view_far_dist,view_near_offset);
 
 	if (!view_project_point_in_z(center_pnt)) return(FALSE);
 

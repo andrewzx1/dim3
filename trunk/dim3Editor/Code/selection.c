@@ -268,7 +268,7 @@ void select_get_extent(d3pnt *min,d3pnt *max)
 				break;
 				
 			case spot_piece:
-				walk_view_get_model_size(map.spots[main_idx].display_model,&size);
+				view_get_model_size(map.spots[main_idx].display_model,&size);
 				t_min.x=map.spots[main_idx].pnt.x-(size.x>>1);
 				t_max.x=map.spots[main_idx].pnt.x+(size.x>>1);
 				t_min.y=map.spots[main_idx].pnt.y-size.y;
@@ -278,7 +278,7 @@ void select_get_extent(d3pnt *min,d3pnt *max)
 				break;
 				
 			case scenery_piece:
-				walk_view_get_model_size(map.sceneries[main_idx].model_name,&size);
+				view_get_model_size(map.sceneries[main_idx].model_name,&size);
 				t_min.x=map.sceneries[main_idx].pnt.x-(size.x>>1);
 				t_max.x=map.sceneries[main_idx].pnt.x+(size.x>>1);
 				t_min.y=map.sceneries[main_idx].pnt.y-size.y;

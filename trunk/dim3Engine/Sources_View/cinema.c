@@ -389,9 +389,8 @@ void cinema_action_run_hud_text(map_cinema_action_type *action)
 	}
 
 		// do text replacement
-
-	strncpy(text->data,action->text_str,max_hud_text_str_sz);
-	text->data[max_hud_text_str_sz-1]=0x0;
+		
+	hud_text_set(text,action->text_str);
 }
 
 /* =======================================================

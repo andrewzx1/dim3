@@ -116,7 +116,7 @@ void menu_update_view(void)
 {
 	editor_view_type			*view;
 	
-	view=walk_view_get_current_view();
+	view=view_get_current_view();
 	
 	os_menu_check_item(app_menu_view,8,(!view->ortho));
 	os_menu_check_item(app_menu_view,9,view->ortho);
@@ -243,71 +243,71 @@ bool menu_event_run(int cmd)
 			// view menu
 			
 		case kCommandViewFront:
-			walk_view_face_front();
+			view_face_front();
 			main_wind_draw();
 			break;
 			
 		case kCommandViewLeft:
-			walk_view_face_left();
+			view_face_left();
 			main_wind_draw();
 			break;
 			
 		case kCommandViewRight:
-			walk_view_face_right();
+			view_face_right();
 			main_wind_draw();
 			break;
 			
 		case kCommandViewBack:
-			walk_view_face_back();
+			view_face_back();
 			main_wind_draw();
 			break;
 			
 		case kCommandViewTop:
-			walk_view_face_top();
+			view_face_top();
 			main_wind_draw();
 			break;
 			
 		case kCommandViewBottom:
-			walk_view_face_bottom();
+			view_face_bottom();
 			main_wind_draw();
 			break;
 
 		case kCommandViewPerspective:
-			walk_view_perspective_ortho(FALSE);
+			view_perspective_ortho(FALSE);
 			menu_update_view();
 			main_wind_draw();
 			return(TRUE);
 			
 		case kCommandViewOrtho:
-			walk_view_perspective_ortho(TRUE);
+			view_perspective_ortho(TRUE);
 			menu_update_view();
 			main_wind_draw();
 			return(TRUE);
 			
 		case kCommandViewUVLayer1:
-			walk_view_set_uv_layer(uv_layer_normal);
+			view_set_uv_layer(uv_layer_normal);
 			menu_update_view();
 			main_wind_draw();
 			return(TRUE);
 			
 		case kCommandViewUVLayer2:
-			walk_view_set_uv_layer(uv_layer_light_map);
+			view_set_uv_layer(uv_layer_light_map);
 			menu_update_view();
 			main_wind_draw();
 			return(TRUE);
 			
 		case kCommandViewGotoSelect:
-			walk_view_goto_select();
+			view_goto_select();
 			main_wind_draw();
 			return(TRUE);
 			
 		case kCommandViewGotoMapCenter:
-			walk_view_goto_map_center();
+			view_goto_map_center();
 			main_wind_draw();
 			return(TRUE);
 			
 		case kCommandViewClip:
-			walk_view_flip_clip();
+			view_flip_clip();
 			menu_update_view();
 			main_wind_draw();
 			return(TRUE);
@@ -403,14 +403,14 @@ bool menu_event_run(int cmd)
 			
 		case kCommandClearLightMaps:
 			light_maps_clear();
-			walk_view_set_uv_layer(uv_layer_normal);
+			view_set_uv_layer(uv_layer_normal);
 			menu_update_view();
 			main_wind_draw();
 			return(TRUE);
 			
 		case kCommandBuildLightMaps:
 			if (dialog_light_map_run()) {
-				walk_view_set_uv_layer(uv_layer_light_map);
+				view_set_uv_layer(uv_layer_light_map);
 				menu_update_view();
 				main_wind_draw();
 			}

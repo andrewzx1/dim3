@@ -901,7 +901,7 @@ bool ag_generate_map(ag_build_setup_type *build_setup)
 		// center view, reset UVs
 		// and redraw
 
-	walk_view_goto_map_center_all();
+	view_goto_map_center_all();
 	map_mesh_reset_uv_all();
 
 	main_wind_draw();

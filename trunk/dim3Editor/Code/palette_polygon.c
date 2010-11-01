@@ -59,7 +59,7 @@ void palette_polygon_load(void)
 	map_liquid_type			*liq;
 	editor_view_type		*view;
 	
-	view=walk_view_get_current_view();
+	view=view_get_current_view();
 	
 		// get polygon
 		
@@ -127,7 +127,7 @@ void palette_polygon_save(void)
 	map_liquid_type			*liq;
 	editor_view_type		*view;
 	
-	view=walk_view_get_current_view();
+	view=view_get_current_view();
 	
 		// get polygon
 		

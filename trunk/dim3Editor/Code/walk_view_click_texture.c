@@ -44,7 +44,7 @@ extern editor_state_type		state;
       
 ======================================================= */
 
-bool walk_view_click_drag_texture(editor_view_type *view_setup,d3pnt *pt,bool entire_mesh)
+bool view_click_drag_texture(editor_view_type *view_setup,d3pnt *pt,bool entire_mesh)
 {
 	int						n,k,x,y,
 							type,mesh_idx,poly_idx;
@@ -70,7 +70,7 @@ bool walk_view_click_drag_texture(editor_view_type *view_setup,d3pnt *pt,bool en
 			
 	first_drag=TRUE;
 	
-	walk_view_get_pixel_box(view_setup,&box);
+	view_get_pixel_box(view_setup,&box);
 	memmove(&old_pt,pt,sizeof(d3pnt));
 	
 	while (!os_track_mouse_location(pt,&box)) {

@@ -45,7 +45,7 @@ extern editor_state_type	state;
       
 ======================================================= */
 
-int walk_view_get_grid(void)
+int view_get_grid(void)
 {
 	switch (state.grid_mode) {
 		case grid_mode_small:
@@ -57,11 +57,11 @@ int walk_view_get_grid(void)
 	return(1);
 }
 
-void walk_view_click_grid(d3pnt *pt)
+void view_click_grid(d3pnt *pt)
 {
 	int			sz;
 	
-	sz=walk_view_get_grid();
+	sz=view_get_grid();
 	
 	pt->x/=sz;
 	pt->y/=sz;
@@ -72,7 +72,7 @@ void walk_view_click_grid(d3pnt *pt)
 	pt->z*=sz;
 }
 
-bool walk_view_click_snap(int mesh_idx,d3pnt *pt)
+bool view_click_snap(int mesh_idx,d3pnt *pt)
 {
 	int				n,t;
 	d3pnt			*dpt;
@@ -109,7 +109,7 @@ bool walk_view_click_snap(int mesh_idx,d3pnt *pt)
 	return(FALSE);
 }
 
-bool walk_view_click_snap_poly(int mesh_idx,int poly_idx,d3pnt *pt)
+bool view_click_snap_poly(int mesh_idx,int poly_idx,d3pnt *pt)
 {
 	int					n,d,cur_dist;
 	d3pnt				hpt;
@@ -124,7 +124,7 @@ bool walk_view_click_snap_poly(int mesh_idx,int poly_idx,d3pnt *pt)
 	for (n=0;n!=poly->ptsz;n++) {
 		memmove(&hpt,pt,sizeof(d3pnt));
 		
-		if (walk_view_click_snap(mesh_idx,&hpt)) {
+		if (view_click_snap(mesh_idx,&hpt)) {
 			d=distance_get(pt->x,pt->y,pt->z,hpt.x,hpt.y,hpt.z);
 			if (d>(setup.snap_size*map_enlarge)) continue;
 			
@@ -138,7 +138,7 @@ bool walk_view_click_snap_poly(int mesh_idx,int poly_idx,d3pnt *pt)
 	return(cur_dist!=-1);
 }
 
-bool walk_view_click_snap_mesh(int mesh_idx,d3pnt *pt)
+bool view_click_snap_mesh(int mesh_idx,d3pnt *pt)
 {
 	int					n,d,cur_dist;
 	d3pnt				hpt;
@@ -151,7 +151,7 @@ bool walk_view_click_snap_mesh(int mesh_idx,d3pnt *pt)
 	for (n=0;n!=mesh->nvertex;n++) {
 		memmove(&hpt,pt,sizeof(d3pnt));
 		
-		if (walk_view_click_snap(mesh_idx,&hpt)) {
+		if (view_click_snap(mesh_idx,&hpt)) {
 			d=distance_get(pt->x,pt->y,pt->z,hpt.x,hpt.y,hpt.z);
 			if (d>(setup.snap_size*map_enlarge)) continue;
 			
@@ -171,7 +171,7 @@ bool walk_view_click_snap_mesh(int mesh_idx,d3pnt *pt)
       
 ======================================================= */
 
-void walk_view_click_rot_handle_rotate_run_axis(float *value,float org_value,float ang_add)
+void view_click_rot_handle_rotate_run_axis(float *value,float org_value,float ang_add)
 {
 	int				k;
 	
@@ -184,17 +184,17 @@ void walk_view_click_rot_handle_rotate_run_axis(float *value,float org_value,flo
 	}
 }
 
-void walk_view_click_rot_handle_rotate_run(d3ang *ang,d3ang *org_ang,float ang_add,int which_axis)
+void view_click_rot_handle_rotate_run(d3ang *ang,d3ang *org_ang,float ang_add,int which_axis)
 {
 	switch (which_axis) {
 		case 0:
-			walk_view_click_rot_handle_rotate_run_axis(&ang->x,org_ang->x,ang_add);
+			view_click_rot_handle_rotate_run_axis(&ang->x,org_ang->x,ang_add);
 			break;
 		case 1:
-			walk_view_click_rot_handle_rotate_run_axis(&ang->y,org_ang->y,ang_add);
+			view_click_rot_handle_rotate_run_axis(&ang->y,org_ang->y,ang_add);
 			break;
 		case 2:
-			walk_view_click_rot_handle_rotate_run_axis(&ang->z,org_ang->z,ang_add);
+			view_click_rot_handle_rotate_run_axis(&ang->z,org_ang->z,ang_add);
 			break;
 	}
 }
@@ -205,24 +205,24 @@ void walk_view_click_rot_handle_rotate_run(d3ang *ang,d3ang *org_ang,float ang_a
       
 ======================================================= */
 
-void walk_view_click_rot_handle_move_run_axis(int *value,int org_value,int mv_add)
+void view_click_rot_handle_move_run_axis(int *value,int org_value,int mv_add)
 {
 	*value=org_value+mv_add;
 }
 
-void walk_view_click_rot_handle_move_run(d3pnt *pnt,d3pnt *org_pnt,int mv_add,int which_axis)
+void view_click_rot_handle_move_run(d3pnt *pnt,d3pnt *org_pnt,int mv_add,int which_axis)
 {
 	mv_add=-(mv_add*view_handle_move_scale);
 	
 	switch (which_axis) {
 		case 0:
-			walk_view_click_rot_handle_move_run_axis(&pnt->x,org_pnt->x,mv_add);
+			view_click_rot_handle_move_run_axis(&pnt->x,org_pnt->x,mv_add);
 			break;
 		case 1:
-			walk_view_click_rot_handle_move_run_axis(&pnt->y,org_pnt->y,mv_add);
+			view_click_rot_handle_move_run_axis(&pnt->y,org_pnt->y,mv_add);
 			break;
 		case 2:
-			walk_view_click_rot_handle_move_run_axis(&pnt->z,org_pnt->z,mv_add);
+			view_click_rot_handle_move_run_axis(&pnt->z,org_pnt->z,mv_add);
 			break;
 	}
 }
@@ -233,7 +233,7 @@ void walk_view_click_rot_handle_move_run(d3pnt *pnt,d3pnt *org_pnt,int mv_add,in
       
 ======================================================= */
 
-bool walk_view_click_rot_handles(editor_view_type *view,d3pnt *click_pt)
+bool view_click_rot_handles(editor_view_type *view,d3pnt *click_pt)
 {
 	int			n,k,idx,type,main_idx,sub_idx,which_axis,sel_count,item_count;
 	int			*type_list,*idx_list;
@@ -359,7 +359,7 @@ bool walk_view_click_rot_handles(editor_view_type *view,d3pnt *click_pt)
 	
 	first_drag=TRUE;
 	
-	walk_view_get_pixel_box(view,&box);
+	view_get_pixel_box(view,&box);
 	
 	while (!os_track_mouse_location(&pt,&box)) {
 		
@@ -373,10 +373,10 @@ bool walk_view_click_rot_handles(editor_view_type *view,d3pnt *click_pt)
 			// handle movement
 			
 		if (state.handle_mode==handle_mode_rotate) {
-			walk_view_click_rot_handle_rotate_run(ang,&org_ang,(float)(click_pt->x-pt.x),which_axis);
+			view_click_rot_handle_rotate_run(ang,&org_ang,(float)(click_pt->x-pt.x),which_axis);
 		}
 		else {
-			walk_view_click_rot_handle_move_run(pnt,&org_pnt,(click_pt->x-pt.x),which_axis);
+			view_click_rot_handle_move_run(pnt,&org_pnt,(click_pt->x-pt.x),which_axis);
 		}
 		
         main_wind_draw();
@@ -393,7 +393,7 @@ bool walk_view_click_rot_handles(editor_view_type *view,d3pnt *click_pt)
       
 ======================================================= */
 
-void walk_view_click_piece_map_pick_start(editor_view_type *view)
+void view_click_piece_map_pick_start(editor_view_type *view)
 {
 	int					n,k,t,count;
 	d3pnt				*pt;
@@ -457,14 +457,14 @@ void walk_view_click_piece_map_pick_start(editor_view_type *view)
 					
 				// clipping
 				
-			if (walk_view_clip_poly(view,mesh,poly)) {
+			if (view_clip_poly(view,mesh,poly)) {
 				poly++;
 				continue;
 			}
 			
 				// hidden
 				
-			if (walk_view_hidden_poly(view,mesh,poly)) {
+			if (view_hidden_poly(view,mesh,poly)) {
 				poly++;
 				continue;
 			}
@@ -516,7 +516,7 @@ void walk_view_click_piece_map_pick_start(editor_view_type *view)
 		spot=map.spots;
 
 		for (n=0;n!=map.nspot;n++) {
-			walk_view_model_cube_vertexes(spot->display_model,&spot->pnt,&spot->ang,v_pnts);
+			view_model_cube_vertexes(spot->display_model,&spot->pnt,&spot->ang,v_pnts);
 			view_pick_list_add_cube(v_pnts,spot_piece,n,-1);
 			spot++;
 		}
@@ -524,7 +524,7 @@ void walk_view_click_piece_map_pick_start(editor_view_type *view)
 		scenery=map.sceneries;
 
 		for (n=0;n!=map.nscenery;n++) {
-			walk_view_model_cube_vertexes(scenery->model_name,&scenery->pnt,&scenery->ang,v_pnts);
+			view_model_cube_vertexes(scenery->model_name,&scenery->pnt,&scenery->ang,v_pnts);
 			view_pick_list_add_cube(v_pnts,scenery_piece,n,-1);
 			scenery++;
 		}
@@ -579,7 +579,7 @@ void walk_view_click_piece_map_pick_start(editor_view_type *view)
       
 ======================================================= */
 
-void walk_view_click_piece(editor_view_type *view,d3pnt *pt,bool dblclick)
+void view_click_piece(editor_view_type *view,d3pnt *pt,bool dblclick)
 {
 	int				type,main_idx,sub_idx;
 	bool			toggle_select;
@@ -587,7 +587,7 @@ void walk_view_click_piece(editor_view_type *view,d3pnt *pt,bool dblclick)
 
 		// convert point to view
 
-	walk_view_get_pixel_box(view,&box);
+	view_get_pixel_box(view,&box);
 
 	pt->x-=box.lx;
 	pt->y-=box.ty;
@@ -595,35 +595,35 @@ void walk_view_click_piece(editor_view_type *view,d3pnt *pt,bool dblclick)
 		// box selection
 
 	if (os_key_shift_down()) {
-		walk_view_click_box_select(view,pt);
+		view_click_box_select(view,pt);
 		return;
 	}
 
 		// rotation handles
 
-	if (walk_view_click_rot_handles(view,pt)) return;
+	if (view_click_rot_handles(view,pt)) return;
 	
 		// liquid vertex drags
 		
-	if (walk_view_click_drag_liquid_vertex(view,pt)) return;
+	if (view_click_drag_liquid_vertex(view,pt)) return;
 	
 		// mesh vertex drags
 		
 	switch (state.drag_mode) {
 	
 		case drag_mode_vertex:
-			if (walk_view_click_drag_vertex(view,pt)) return;
+			if (view_click_drag_vertex(view,pt)) return;
 			break;
 	
 		case drag_mode_mesh:
-			if (walk_view_click_drag_mesh_handle(view,pt)) return;
+			if (view_click_drag_mesh_handle(view,pt)) return;
 			break;
 			
 	}
 
 		// pick clicked map item (mesh, liquid, nodes, etc)
 		
-	walk_view_click_piece_map_pick_start(view);
+	view_click_piece_map_pick_start(view);
 	view_pick_list_end(view,pt,&type,&main_idx,&sub_idx);
 	
 		// if a node, check link
@@ -673,11 +673,11 @@ void walk_view_click_piece(editor_view_type *view,d3pnt *pt,bool dblclick)
 
 		// item (spots, lights, sounds, etc) drags
 
-	if (walk_view_click_drag_item(view,pt)) return;
+	if (view_click_drag_item(view,pt)) return;
 	
 		// liquid drags
 		
-	if (walk_view_click_drag_liquid(view,pt)) return;
+	if (view_click_drag_liquid(view,pt)) return;
 	
 		// mesh or poly drags
 
@@ -685,19 +685,19 @@ void walk_view_click_piece(editor_view_type *view,d3pnt *pt,bool dblclick)
 	
 		case drag_mode_mesh:
 			if (!os_key_control_down()) {
-				walk_view_click_drag_mesh(view,pt);
+				view_click_drag_mesh(view,pt);
 			}
 			else {
-				walk_view_click_drag_texture(view,pt,TRUE);
+				view_click_drag_texture(view,pt,TRUE);
 			}
 			break;
 
 		case drag_mode_polygon:
 			if (!os_key_control_down()) {
-				walk_view_click_drag_mesh_poly(view,pt);
+				view_click_drag_mesh_poly(view,pt);
 			}
 			else {
-				walk_view_click_drag_texture(view,pt,FALSE);
+				view_click_drag_texture(view,pt,FALSE);
 			}
 			break;
 			
