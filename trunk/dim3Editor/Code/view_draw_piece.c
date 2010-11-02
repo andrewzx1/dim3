@@ -799,7 +799,7 @@ void view_draw_spots_scenery(editor_view_type *view_setup)
 	for (n=0;n!=map.nspot;n++) {
 		spot=&map.spots[n];
 	
-		if (!view_model_draw(&spot->pnt,&spot->ang,spot->display_model,NULL,0)) {
+		if (!view_model_draw(&spot->pnt,&spot->ang,spot->display_model,1.0f,NULL,0)) {
 			view_draw_sprite(&spot->pnt,&spot->ang,spot_bitmap.gl_id);
 		}
 	}		
@@ -807,7 +807,7 @@ void view_draw_spots_scenery(editor_view_type *view_setup)
 	for (n=0;n!=map.nscenery;n++) {
 		scenery=&map.sceneries[n];
 	
-		if (!view_model_draw(&scenery->pnt,&scenery->ang,scenery->model_name,scenery->texture_frame,max_map_scenery_model_texture_frame)) {
+		if (!view_model_draw(&scenery->pnt,&scenery->ang,scenery->model_name,scenery->resize,scenery->texture_frame,max_map_scenery_model_texture_frame)) {
 			view_draw_sprite(&scenery->pnt,&scenery->ang,scenery_bitmap.gl_id);
 		}
 	}		

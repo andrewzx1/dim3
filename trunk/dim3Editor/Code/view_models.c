@@ -251,7 +251,7 @@ void view_model_draw_material(model_type *model,texture_type *texture,model_mate
 	glEnd();
 }
 
-bool view_model_draw(d3pnt *pnt,d3ang *ang,char *name,short *texture_frame,int frame_count)
+bool view_model_draw(d3pnt *pnt,d3ang *ang,char *name,float resize,short *texture_frame,int frame_count)
 {
 	int								idx,n,frame;
 	model_type						*model;
@@ -281,6 +281,7 @@ bool view_model_draw(d3pnt *pnt,d3ang *ang,char *name,short *texture_frame,int f
 	
 	model_create_draw_bones(model,&draw_setup);
 	model_create_draw_vertexes(model,0,&draw_setup);
+	if (resize!=1.0f) model_resize_draw_vertex(model,0,resize,&draw_setup);
 
 	model_translate_draw_vertex(model,0,pnt->x,pnt->y,pnt->z,&draw_setup);
 
@@ -352,9 +353,9 @@ bool view_model_draw(d3pnt *pnt,d3ang *ang,char *name,short *texture_frame,int f
       
 ======================================================= */
 
-void view_model_cube_vertexes(char *name,d3pnt *pnt,d3ang *ang,d3pnt *v_pnts)
+void view_model_cube_vertexes(char *name,d3pnt *pnt,d3ang *ang,float resize,d3pnt *v_pnts)
 {
-	int						n,idx,cx,cy,cz,wid_x,wid_z,high,
+	int						n,idx,cx,cy,cz,wid_x,wid_z,high,ty,by,
 							px[8],py[8],pz[8];
 	float					fx,fy,fz;
 	matrix_type				mat;
@@ -387,14 +388,27 @@ void view_model_cube_vertexes(char *name,d3pnt *pnt,d3ang *ang,d3pnt *v_pnts)
 			}
 		}
 	}
+	
+		// resize
+		
+	ty=-high;
+	by=0;
+	
+	if (resize!=1.0f) {
+		wid_x=(int)(((float)wid_x)*resize);
+		wid_z=(int)(((float)wid_z)*resize);
+		
+		ty=((int)(((float)(ty+(high>>1)))*resize))-(high>>1);
+		by=((int)(((float)(by+(high>>1)))*resize))-(high>>1);
+	}
 
 		// get polygons
 	
 	px[0]=px[3]=px[4]=px[7]=-wid_x;
 	px[1]=px[2]=px[5]=px[6]=wid_x;
 	
-	py[0]=py[1]=py[2]=py[3]=-high;
-	py[4]=py[5]=py[6]=py[7]=0;
+	py[0]=py[1]=py[2]=py[3]=ty;
+	py[4]=py[5]=py[6]=py[7]=by;
 		
 	pz[0]=pz[1]=pz[4]=pz[5]=-wid_z;
 	pz[2]=pz[3]=pz[6]=pz[7]=wid_z;
