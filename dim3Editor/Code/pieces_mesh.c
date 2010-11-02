@@ -208,12 +208,12 @@ int import_texture_pick(char *material_name)
 		// pick a bitmap
 		
 	sprintf(title,"Material %s Found - Select Bitmap",material_name);
-	dialog_alert(title,"Please select a PNG file to be used for this material.  The PNG file must be 32-bit and have width and height that are squares of 2 (2, 4, 8, 16, 32, 64, 128, 256, etc).");
+	dialog_alert(title,"Please select a PNG file to be used for this material.\nThe PNG file must be 32-bit and have width and height that are squares of 2 (2, 4, 8, 16, 32, 64, 128, 256, etc).");
 	
 	if (!os_load_file(path,"png")) return(0);
 	
 		// is it good?
-		
+
 	if (!bitmap_check(path,err_str)) {
 		dialog_alert("Error",err_str);
 		return(0);
@@ -222,9 +222,15 @@ int import_texture_pick(char *material_name)
 		// get the actual file name
 		
 	c=strrchr(path,'/');
-	strcpy(file_name,c);
-	c=strrchr(file_name,'.');
-	*c=0x0;
+	if (c==NULL) c=strrchr(path,'\\');
+	if (c==NULL) {
+		strcpy(file_name,"unknown");
+	}
+	else {
+		strcpy(file_name,c);
+		c=strrchr(file_name,'.');
+		if (c!=NULL) *c=0x0;
+	}
 	
 		// copy bitmaps to texture folder
 		// copy selected bitmap and any addition _n, _s, or _g files

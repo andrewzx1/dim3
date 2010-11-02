@@ -487,7 +487,6 @@ void view_loop_input(void)
 void view_loop_draw(void)
 {
 	int			raw_tick,tick,y_add;
-	bool		draw_hud;
 
 		// time for view draw?
 		// use raw ticks so it works through pauses

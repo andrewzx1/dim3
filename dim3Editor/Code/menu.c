@@ -160,7 +160,7 @@ bool menu_save_changes_dialog(void)
 {
 	int			choice;
 	
-	choice=dialog_confirm("Save Changes?","Do you want to save the changes to this map?","Save","Cancel","Don't Save");
+	choice=dialog_confirm("Save Changes?","Do you want to save the changes to this map?");
 	if (choice==1) return(FALSE);
 	
 	if (choice==0) file_save_map();

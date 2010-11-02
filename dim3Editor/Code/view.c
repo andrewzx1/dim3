@@ -458,30 +458,41 @@ bool view_project_point_in_z(d3pnt *pnt)
       
 ======================================================= */
 
+float view_get_lookat_x_angle(editor_view_type *view)
+{
+	float			ang_x;
+
+		// put in the snaps
+
+	ang_x=view->ang.x;
+	if (ang_x<180.0f) {
+		if (ang_x<view_look_snap) {
+			ang_x=0.0f;
+		}
+		else {
+			ang_x-=view_look_snap;
+		}
+	}
+	else {
+		if (ang_x>(360.0f-view_look_snap)) {
+			ang_x=0.0f;
+		}
+		else {
+			ang_x+=view_look_snap;
+		}
+	}
+
+	return(ang_x);
+}
+
 void view_get_lookat_point(editor_view_type *view,float dist,d3vct *look_vct)
 {
 	float				fx,fy,fz,ang_x;
 	matrix_type			mat;
 	
-		// put in snaps
+		// get x angle with snaps
 		
-	ang_x=view->ang.x;
-	if (ang_x<180.0f) {
-		if (ang_x<10.0f) {
-			ang_x=0.0f;
-		}
-		else {
-			ang_x-=10.0f;
-		}
-	}
-	else {
-		if (ang_x>350.0f) {
-			ang_x=0.0f;
-		}
-		else {
-			ang_x+=10.0f;
-		}
-	}
+	ang_x=view_get_lookat_x_angle(view);
 	
 		// stop gimble effect on extreme X angle
 

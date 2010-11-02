@@ -211,10 +211,6 @@
 				Name="EditorHeaders"
 				>
 				<File
-					RelativePath="..\..\dim3Editor\Headers\common_view.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\dim3Editor\Headers\dialog.h"
 					>
 				</File>
@@ -231,33 +227,17 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\dim3Editor\Headers\import.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\dim3Editor\Headers\interface.h"
 					>
 				</File>
 				<File
-					RelativePath="..\..\dim3Editor\Headers\walk_view.h"
+					RelativePath="..\..\dim3Editor\Headers\view.h"
 					>
 				</File>
 			</Filter>
 			<Filter
 				Name="EditorSources"
 				>
-				<File
-					RelativePath="..\..\dim3Editor\Code\auto_generate.c"
-					>
-				</File>
-				<File
-					RelativePath="..\..\dim3Editor\Code\auto_generate_setup.c"
-					>
-				</File>
-				<File
-					RelativePath="..\..\dim3Editor\Code\auto_generate_utility.c"
-					>
-				</File>
 				<File
 					RelativePath="..\..\dim3Editor\Code\dos.c"
 					>
@@ -323,121 +303,73 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\dim3Editor\Code\view_handle.c"
-					>
-				</File>
-				<File
-					RelativePath="..\..\dim3Editor\Code\view_picker.c"
-					>
-				</File>
-				<File
-					RelativePath="..\..\dim3Editor\Code\walk_view.c"
-					>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\..\dim3Editor\Code\walk_view_click_drag.c"
-					>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\..\dim3Editor\Code\walk_view_click_piece.c"
-					>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\..\dim3Editor\Code\walk_view_click_texture.c"
-					>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\..\dim3Editor\Code\walk_view_draw_piece.c"
-					>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\..\dim3Editor\Code\walk_view_draw_select.c"
-					>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\..\dim3Editor\Code\walk_view_models.c"
-					>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\..\dim3Editor\Code\walk_view_movement.c"
-					>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-						/>
-					</FileConfiguration>
-				</File>
-				<File
 					RelativePath="..\..\dim3Editor\Code\xml_setup.c"
 					>
 				</File>
+				<Filter
+					Name="Auto Generator"
+					>
+					<File
+						RelativePath="..\..\dim3Editor\Code\auto_generate.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Editor\Code\auto_generate_setup.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Editor\Code\auto_generate_story.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Editor\Code\auto_generate_utility.c"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="View"
+					>
+					<File
+						RelativePath="..\..\dim3Editor\Code\view.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Editor\Code\view_click_drag.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Editor\Code\view_click_piece.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Editor\Code\view_click_texture.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Editor\Code\view_draw_piece.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Editor\Code\view_draw_select.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Editor\Code\view_handle.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Editor\Code\view_models.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Editor\Code\view_movement.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Editor\Code\view_picker.c"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="EditorWin32"
@@ -460,7 +392,7 @@
 					>
 				</File>
 				<File
-					RelativePath=".\win32Code\dim3Editor_win32_glue.c"
+					RelativePath=".\win32Code\dim3Editor_menu_patch.c"
 					>
 				</File>
 				<File
@@ -469,6 +401,10 @@
 				</File>
 				<File
 					RelativePath=".\win32Code\win32_dialog_file_open.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3Common\Code\win32_glue.c"
 					>
 				</File>
 			</Filter>

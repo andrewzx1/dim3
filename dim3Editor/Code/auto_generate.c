@@ -40,12 +40,14 @@ ag_state_type					ag_state;
 extern bool ag_initialize(void);
 extern void ag_release(void);
 extern int ag_shape_find(char *name);
+extern int ag_shape_get_connector_index(ag_shape_type *shape,int v1_idx,int v2_idx);
 extern void ag_random_seed(int seed);
 extern int ag_random_int(int max);
 extern void ag_generate_mirror_meshes(void);
 extern bool ag_generate_is_poly_straight_wall(int mesh_idx,int poly_idx);
 extern void ag_generate_delete_shared_polygons(void);
 extern void ag_generate_spots_add(void);
+extern void ag_generate_additional_stories(void);
 
 /* =======================================================
 
@@ -345,7 +347,7 @@ int ag_get_room_position(int shape_idx,d3pnt *pnt,d3vct *size,bool mirror)
 
 void ag_add_room(int shape_idx,int connect_idx,d3pnt *pnt,d3vct *size)
 {
-	int					n,k,t,x,z,mesh_idx,poly_idx;
+	int					n,k,x,z,mesh_idx;
 	int					px[4],py[4],pz[4];
 	float				gx[4],gy[4];
 	ag_shape_type		*shape;
@@ -368,6 +370,8 @@ void ag_add_room(int shape_idx,int connect_idx,d3pnt *pnt,d3vct *size)
 	room->shape_idx=shape_idx;
 	room->corridor=shape->corridor;
 	room->mesh_idx=mesh_idx;
+
+	room->multi_story=FALSE;
 
 	room->min.x=pnt->x;
 	room->max.x=pnt->x+(int)(100.0f*size->x);
@@ -397,18 +401,7 @@ void ag_add_room(int shape_idx,int connect_idx,d3pnt *pnt,d3vct *size)
 
 			// is this a connector?
 
-		connect_idx=-1;
-
-		for (t=0;t!=shape->nconnector;t++) {
-			if ((shape->connectors[t].v[0]==n) && (shape->connectors[t].v[1]==k)) {
-				connect_idx=t;
-				break;
-			}
-			if ((shape->connectors[t].v[0]==k) && (shape->connectors[t].v[1]==n)) {
-				connect_idx=t;
-				break;
-			}
-		}
+		connect_idx=ag_shape_get_connector_index(shape,n,k);
 
 			// build the wall
 
@@ -416,18 +409,18 @@ void ag_add_room(int shape_idx,int connect_idx,d3pnt *pnt,d3vct *size)
 		px[1]=px[2]=(int)(((float)shape->vertexes[k].x)*size->x)+pnt->x;
 		pz[0]=pz[3]=(int)(((float)shape->vertexes[n].z)*size->z)+pnt->z;
 		pz[1]=pz[2]=(int)(((float)shape->vertexes[k].z)*size->z)+pnt->z;
-		py[0]=py[1]=pnt->y-(int)(100.0f*size->y);
-		py[2]=py[3]=pnt->y;
+		py[0]=py[1]=room->min.y;
+		py[2]=py[3]=room->max.y;
 
 		gx[0]=gx[3]=0.0f;
 		gx[1]=gx[2]=1.0f;
 		gy[0]=gy[1]=0.0f;
 		gy[2]=gy[3]=1.0f;
 	
-		poly_idx=map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,((connect_idx!=-1)?4:0));
+		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,((connect_idx!=-1)?4:0));
 	}
 
-		// add floors
+		// add floors and ceilings
 
 	shape_poly=shape->polys;
 
@@ -439,13 +432,21 @@ void ag_add_room(int shape_idx,int connect_idx,d3pnt *pnt,d3vct *size)
 
 			px[k]=(int)(((float)x)*size->x)+pnt->x;
 			pz[k]=(int)(((float)z)*size->z)+pnt->z;
-			py[k]=pnt->y;
+			py[k]=room->max.y;
 
 			gx[k]=((float)x)/100.0f;
 			gy[k]=((float)z)/100.0f;
 		}
 	
 		map_mesh_add_poly(&map,mesh_idx,shape_poly->npt,px,py,pz,gx,gy,1);
+
+		if (room->corridor) {
+			for (k=0;k!=shape_poly->npt;k++) {
+				py[k]=room->min.y;
+			}
+
+			map_mesh_add_poly(&map,mesh_idx,shape_poly->npt,px,py,pz,gx,gy,2);
+		}
 
 		shape_poly++;
 	}
@@ -560,7 +561,7 @@ void ag_add_extra_corridor_room(d3pnt *min,d3pnt *max,int wall_sz)
 		if (tz>=max->z) break;
 	}
 
-		// add floors
+		// add floors and ceilings
 
 	lx=min->x;
 	tz=min->z;
@@ -574,14 +575,17 @@ void ag_add_extra_corridor_room(d3pnt *min,d3pnt *max,int wall_sz)
 		px[1]=px[2]=rx;
 		pz[0]=pz[1]=tz;
 		pz[2]=pz[3]=bz;
-		py[0]=py[1]=py[2]=py[3]=max->y;
 
 		gx[0]=gx[3]=0.0f;
 		gx[1]=gx[2]=1.0f;
 		gy[0]=gy[1]=0.0f;
 		gy[2]=gy[3]=1.0f;
 	
+		py[0]=py[1]=py[2]=py[3]=max->y;
 		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,1);
+
+		py[0]=py[1]=py[2]=py[3]=min->y;
+		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,2);
 
 		lx=rx;
 		if (lx>=max->x) {
@@ -824,7 +828,7 @@ bool ag_generate_map(ag_build_setup_type *build_setup)
 			// the default size
 
 		size.x=size.z=(float)build_setup->room_sz;
-		size.y=(float)build_setup->floor_sz;
+		size.y=(float)build_setup->room_high;
 
 			// if this is the first room, pick a non-corridor
 			// type room and put it at the center of the map.
@@ -877,9 +881,19 @@ bool ag_generate_map(ag_build_setup_type *build_setup)
 	ag_generate_clip_bad_corridors();
 
 		// add corridors where two
-		// polygons are equal and not blocked
+		// polygons are equal and facing each
+		// other and not blocked
 
-	ag_generate_extra_corridors();
+	for (n=0;n!=build_setup->extra_connect_count;n++) {
+		ag_generate_extra_corridors();
+	}
+
+		// add additional stories for rooms
+		// that are connected to other rooms
+
+	for (n=0;n!=build_setup->story_count;n++) {
+		ag_generate_additional_stories();
+	}
 
 		// mirroring
 

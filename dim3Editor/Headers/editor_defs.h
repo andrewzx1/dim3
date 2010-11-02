@@ -157,6 +157,7 @@ and can be sold or given away.
 //
 
 #define view_near_offset						(3*map_enlarge)
+#define view_look_snap							10.0f
 
 //
 // display sizes
@@ -388,7 +389,7 @@ typedef struct		{
 
 typedef struct		{
 						int						shape_idx,mesh_idx;
-						bool					corridor,clip,
+						bool					corridor,clip,multi_story,
 												connectors_used[ag_max_shape_connector];
 						d3pnt					min,max;
 						d3vct					size;
@@ -403,7 +404,8 @@ typedef struct		{
 
 typedef struct		{
 						int						style_idx,seed,
-												room_count,room_sz,floor_sz;
+												room_count,room_sz,room_high,
+												story_count,extra_connect_count;
 						bool					mirror;
 					} ag_build_setup_type;
 

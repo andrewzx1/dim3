@@ -79,13 +79,6 @@ extern void dialog_fill_texture_combo(WindowRef wind,unsigned long sig,int id,bo
 extern int dialog_get_texture_combo(WindowRef wind,unsigned long sig,int id,bool none);
 
 //
-// misc dialogs
-//
-
-extern int dialog_alert(char *title,char *msg);
-extern int dialog_confirm(char *title,char *msg,char *button_1,char *button_2,char *button_3);
-
-//
 // editor dialogs
 //
 
@@ -135,7 +128,7 @@ extern bool dialog_mesh_scale_run(d3fpnt *min,d3fpnt *max,bool replace_ok,float 
 // texture dialogs
 //
 
-extern void dialog_texture_setting_run(int txt);
+extern void dialog_texture_setting_run(int txt_idx);
 
 //
 // import dialogs
