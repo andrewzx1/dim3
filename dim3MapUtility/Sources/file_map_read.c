@@ -435,6 +435,7 @@ void read_map_editor_views_xml(map_type *map,int map_head)
   		view->ortho=xml_get_attribute_boolean(view_tag,"ortho");
     	view->cull=xml_get_attribute_boolean(view_tag,"cull");
      	view->clip=xml_get_attribute_boolean(view_tag,"clip");
+     	view->no_rot=xml_get_attribute_boolean(view_tag,"no_rot");
     
 		view_tag=xml_findnextchild(view_tag);
         view++;

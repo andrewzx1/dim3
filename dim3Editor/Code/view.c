@@ -2,7 +2,7 @@
 
 Module: dim3 Editor
 Author: Brian Barnes
- Usage: Main Walk View Routines
+ Usage: Main View Routines
 
 ***************************** License ********************************
 
@@ -140,6 +140,7 @@ void view_setup_default_views(void)
 	view->cull=FALSE;
 	view->ortho=FALSE;
 	view->clip=FALSE;
+	view->no_rot=FALSE;
 }
 
 /* =======================================================
@@ -462,9 +463,28 @@ void view_get_lookat_point(editor_view_type *view,float dist,d3vct *look_vct)
 	float				fx,fy,fz,ang_x;
 	matrix_type			mat;
 	
-		// stop gimble effect on extreme X angle
+		// put in snaps
 		
 	ang_x=view->ang.x;
+	if (ang_x<180.0f) {
+		if (ang_x<10.0f) {
+			ang_x=0.0f;
+		}
+		else {
+			ang_x-=10.0f;
+		}
+	}
+	else {
+		if (ang_x>350.0f) {
+			ang_x=0.0f;
+		}
+		else {
+			ang_x+=10.0f;
+		}
+	}
+	
+		// stop gimble effect on extreme X angle
+
 	if ((ang_x<271.0f) && (ang_x>180.0f)) ang_x=271.0f;
 	if ((ang_x>89.0f) && (ang_x<180.0f)) ang_x=89.0f;
 	
@@ -621,21 +641,20 @@ bool view_point_in_view(editor_view_type *view,d3pnt *pnt)
 
 void view_cursor(d3pnt *pnt)
 {
- 	int					n;
-	bool				in_view;
+ 	int					n,view_idx;
 	
 		// only change cursor if in view
 		
-	in_view=FALSE;
+	view_idx=-1;
 	
 	for (n=0;n!=map.editor_views.count;n++) {
 		if (view_point_in_view(&map.editor_views.views[n],pnt)) {
-			in_view=TRUE;
+			view_idx=n;
 			break;
 		}
 	}
 	
-	if (!in_view) return;
+	if (view_idx==-1) return;
 
 		// setup cursor
 		
@@ -649,7 +668,7 @@ void view_cursor(d3pnt *pnt)
         return;
     }
 	
-    if (os_key_command_down()) {
+    if ((os_key_command_down()) && (!map.editor_views.views[view_idx].no_rot)) {
         os_set_drag_cursor();
         return;
     }
@@ -783,6 +802,11 @@ void view_set_uv_layer(int uv_layer)
 	map.editor_views.views[state.view_select_idx].uv_layer=uv_layer;
 }
 
+void view_no_rot(bool on)
+{
+	map.editor_views.views[state.view_select_idx].no_rot=on;
+}
+
 /* =======================================================
 
       View Goto
@@ -878,6 +902,8 @@ void view_face_front(void)
 	ang.z=0.0f;
 	
 	view_set_angle(&ang);
+	
+	view_no_rot(FALSE);
 }
 
 void view_face_left(void)
@@ -889,6 +915,8 @@ void view_face_left(void)
 	ang.z=0.0f;
 	
 	view_set_angle(&ang);
+	
+	view_no_rot(FALSE);
 }
 
 void view_face_right(void)
@@ -900,6 +928,8 @@ void view_face_right(void)
 	ang.z=0.0f;
 	
 	view_set_angle(&ang);
+	
+	view_no_rot(FALSE);
 }
 
 void view_face_back(void)
@@ -911,6 +941,8 @@ void view_face_back(void)
 	ang.z=0.0f;
 	
 	view_set_angle(&ang);
+	
+	view_no_rot(FALSE);
 }
 
 void view_face_top(void)
@@ -922,6 +954,8 @@ void view_face_top(void)
 	ang.z=0.0f;
 	
 	view_set_angle(&ang);
+	
+	view_no_rot(TRUE);
 }
 
 void view_face_bottom(void)
@@ -933,6 +967,8 @@ void view_face_bottom(void)
 	ang.z=0.0f;
 	
 	view_set_angle(&ang);
+	
+	view_no_rot(TRUE);
 }
 
 /* =======================================================

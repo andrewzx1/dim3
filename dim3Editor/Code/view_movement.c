@@ -2,7 +2,7 @@
 
 Module: dim3 Editor
 Author: Brian Barnes
- Usage: Walk View Movement Routines
+ Usage: View Movement Routines
 
 ***************************** License ********************************
 
@@ -395,6 +395,10 @@ void view_mouse_turn_center(d3pnt *pnt,d3pnt *cnt)
 void view_mouse_turn(editor_view_type *view,d3pnt *pnt)
 {
 	d3pnt			cnt;
+	
+		// is the view locked?
+		
+	if (view->no_rot) return;
 
 		// free look
 

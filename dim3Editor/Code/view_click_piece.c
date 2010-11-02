@@ -516,7 +516,7 @@ void view_click_piece_map_pick_start(editor_view_type *view)
 		spot=map.spots;
 
 		for (n=0;n!=map.nspot;n++) {
-			view_model_cube_vertexes(spot->display_model,&spot->pnt,&spot->ang,v_pnts);
+			view_model_cube_vertexes(spot->display_model,&spot->pnt,&spot->ang,1.0f,v_pnts);
 			view_pick_list_add_cube(v_pnts,spot_piece,n,-1);
 			spot++;
 		}
@@ -524,7 +524,7 @@ void view_click_piece_map_pick_start(editor_view_type *view)
 		scenery=map.sceneries;
 
 		for (n=0;n!=map.nscenery;n++) {
-			view_model_cube_vertexes(scenery->model_name,&scenery->pnt,&scenery->ang,v_pnts);
+			view_model_cube_vertexes(scenery->model_name,&scenery->pnt,&scenery->ang,scenery->resize,v_pnts);
 			view_pick_list_add_cube(v_pnts,scenery_piece,n,-1);
 			scenery++;
 		}
