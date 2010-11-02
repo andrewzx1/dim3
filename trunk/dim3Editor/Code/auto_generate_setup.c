@@ -56,6 +56,18 @@ int ag_shape_find(char *name)
 	return(-1);
 }
 
+int ag_shape_get_connector_index(ag_shape_type *shape,int v1_idx,int v2_idx)
+{
+	int				n;
+
+	for (n=0;n!=shape->nconnector;n++) {
+		if ((shape->connectors[n].v[0]==v1_idx) && (shape->connectors[n].v[1]==v2_idx)) return(n);
+		if ((shape->connectors[n].v[0]==v2_idx) && (shape->connectors[n].v[1]==v1_idx)) return(n);
+	}
+
+	return(-1);
+}
+
 /* =======================================================
 
       Auto Generate PreCalc

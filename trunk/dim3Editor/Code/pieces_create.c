@@ -29,6 +29,7 @@ and can be sold or given away.
 	#include "dim3editor.h"
 #endif
 
+#include "glue.h"
 #include "interface.h"
 #include "dialog.h"
 #include "view.h"

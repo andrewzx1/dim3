@@ -43,6 +43,7 @@ d3rect						txt_palette_box;
 
 extern int texture_palette_get_selected_texture(void);
 extern void texture_palette_put_selected_texture(int txt_idx);
+extern void dialog_texture_setting_run(int txt);
 
 /* =======================================================
 

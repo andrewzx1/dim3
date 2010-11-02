@@ -1,97 +1,8 @@
 #include "dim3Editor.h"
 
-#include "common_view.h"
-
-	// remapping for menu items
-
-int				win32_menu_remap[][2]={
-					{kCommandFileNew,100},
-					{kCommandFileOpen,101},
-					{kCommandFileClose,102},
-					{kCommandFileSave,103},
-					{kCommandFileAutoGenerateMap,104},
-					{kCommandFileQuit,105},
-
-					{kCommandEditUndo,200},
-					{kCommandEditDelete,201},
-					{kCommandEditDuplicate,202},
-					{kCommandEditSelectMore,203},
-
-					{kCommandViewFront,300},
-					{kCommandViewLeft,301},
-					{kCommandViewRight,302},
-					{kCommandViewBack,303},
-					{kCommandViewTop,304},
-					{kCommandViewBottom,305},
-					{kCommandViewPerspective,306},
-					{kCommandViewOrtho,307},
-					{kCommandViewUVLayer1,308},
-					{kCommandViewUVLayer2,309},
-					{kCommandViewGotoSelect,310},
-					{kCommandViewGotoMapCenter,311},
-					{kCommandViewClip,312},
-					{kCommandViewShowHideLiquids,313},
-					{kCommandViewShowHideSpots,314},
-					{kCommandViewShowHideLights,315},
-					{kCommandViewShowHideNodes,316},
-					{kCommandViewSplitHorizontal,317},
-					{kCommandViewSplitVertical,318},
-					{kCommandViewRemoveSplit,319},
-
-					{kCommandMapSettings,400},
-					{kCommandMapCinemas,401},
-					{kCommandMapRaiseY,402},
-					{kCommandMapLowerY,403},
-					{kCommandMapCenter,404},
-					{kCommandMapResetUV,405},
-					{kCommandMapOptimize,406},
-					{kCommandMapCreateNormals,407},
-					{kCommandClearLightMaps,408},
-					{kCommandBuildLightMaps,409},
-					{kCommandRun,410},
-
-					{kCommandMeshCombine,500},
-					{kCommandMeshSplit,501},
-					{kCommandMeshTesselate,502},
-					{kCommandMeshResize,503},
-					{kCommandMeshReposition,504},
-					{kCommandMeshSkew,505},
-					{kCommandMeshFlipX,506},
-					{kCommandMeshFlipY,507},
-					{kCommandMeshFlipZ,508},
-					{kCommandMeshRotateX,509},
-					{kCommandMeshRotateY,510},
-					{kCommandMeshRotateZ,511},
-					{kCommandMeshFreeRotate,512},
-					{kCommandMeshRaiseY,513},
-					{kCommandMeshLowerY,514},
-					{kCommandMeshSelectAllPoly,515},
-					{kCommandMeshSnapToGrid,516},
-					{kCommandMeshSnapClosestVertex,517},
-					{kCommandMeshResetUV,518},
-					{kCommandMeshWholeUV,519},
-					{kCommandMeshSingleUV,520},
-					{kCommandMeshCreateNormals,521},
-					{kCommandMeshInvertNormals,522},
-
-					{kCommandPolygonHole,600},
-					{kCommandPolygonSnapToGrid,601},
-					{kCommandPolygonRotateUV,602},
-					{kCommandPolygonFlipU,603},
-					{kCommandPolygonFlipV,604},
-					{kCommandPolygonInvertNormal,605},
-					{kCommandPolygonResetUV,606},
-					{kCommandPolygonWholeUV,607},
-					{kCommandPolygonSingleUV,608},
-
-					{kCommandVertexSnapToGrid,700},
-
-					{kCommandGroups,800},
-					{kCommandGroupMovements,801},
-					{-1,-1},
-				};
-
 extern bool				quit;
+
+extern HINSTANCE		hinst;
 extern HWND				wnd;
 extern HDC				wnd_gl_dc;
 
@@ -127,7 +38,7 @@ void glue_end(void)
 
 /* =======================================================
 
-      Win32 Glue Routines
+      Files
       
 ======================================================= */
 		
@@ -141,6 +52,17 @@ void os_create_directory(char *path)
 	CreateDirectory(path,NULL);
 }
 
+/* =======================================================
+
+      Windows
+      
+======================================================= */
+
+void os_application_quit(void)
+{
+	quit=TRUE;
+}
+
 void os_get_window_box(d3rect *box)
 {
 	RECT			wbox;
@@ -151,11 +73,6 @@ void os_get_window_box(d3rect *box)
 	box->rx=wbox.right;
 	box->ty=wbox.top;
 	box->by=wbox.bottom;
-}
-
-void os_application_quit(void)
-{
-	quit=TRUE;
 }
 
 void os_select_window(void)
@@ -172,6 +89,12 @@ void os_swap_gl_buffer(void)
 {
 	SwapBuffers(wnd_gl_dc);
 }
+
+/* =======================================================
+
+      Cursors
+      
+======================================================= */
 
 void os_set_arrow_cursor(void)
 {
@@ -197,6 +120,12 @@ void os_set_resize_cursor(void)
 {
 	SetCursor(cur_resize);
 }
+
+/* =======================================================
+
+      Menus
+      
+======================================================= */
 
 void os_menu_enable_item(int menu_idx,int item_idx,bool enable)
 {
@@ -245,6 +174,12 @@ void os_menu_redraw(void)
 	DrawMenuBar(wnd);
 }
 
+/* =======================================================
+
+      Keyboard
+      
+======================================================= */
+
 bool os_key_space_down(void)
 {
 	return(GetAsyncKeyState(VK_SPACE)!=0x0);
@@ -270,6 +205,12 @@ bool os_key_shift_down(void)
 {
 	return(GetAsyncKeyState(VK_SHIFT)!=0x0);
 }
+
+/* =======================================================
+
+      Mouse
+      
+======================================================= */
 
 bool os_button_down(void)
 {
@@ -302,22 +243,93 @@ bool os_track_mouse_location(d3pnt *pt,d3rect *offset_box)
 
 /* =======================================================
 
-      Menu Lookups
+      Dialog Alerts and Messages
       
 ======================================================= */
-		
-int os_win32_menu_lookup(int id)
+
+void dialog_alert(char *title,char *msg)
 {
-	int			idx;
-
-	idx=0;
-
-	while (TRUE) {
-		if (win32_menu_remap[idx][1]==-1) return(-1);
-		if (win32_menu_remap[idx][1]==id) return(win32_menu_remap[idx][0]);
-		idx++;
-	}
-
-	return(-1);
+	MessageBox(NULL,msg,title,MB_ICONINFORMATION|MB_OK);
 }
 
+int dialog_confirm(char *title,char *msg)
+{
+	int			rtn;
+	
+	rtn=MessageBox(NULL,msg,title,MB_ICONINFORMATION|MB_YESNOCANCEL);
+
+	if (rtn==IDYES) return(0);
+	if (rtn==IDNO) return(2);
+
+	return(1);
+}
+
+/* =======================================================
+
+      Open Files
+      
+======================================================= */
+
+bool os_load_file(char *path,char *ext)
+{
+	char			filter[256],file_title[256],ext2[8],
+					initial_dir[1024],*c;
+	OPENFILENAME	ofn;
+
+		// setup call
+
+	ext2[0]=toupper(ext[0]);
+	ext2[1]=toupper(ext[1]);
+	ext2[2]=toupper(ext[2]);
+	ext2[3]=0x0;
+
+	sprintf(filter,"%s Files\0*.%s\0\0",ext2,ext);
+
+	GetModuleFileName(NULL,initial_dir,1024);
+
+	if (initial_dir[0]=='\"') {				// parse out the quotes
+		strcpy(initial_dir,(char*)&initial_dir[1]);
+		c=strchr(initial_dir,'\"');
+		if (c!=NULL) *c=0x0;
+	}
+
+	path[0]=0x0;
+	file_title[0]=0x0;
+
+		// get file
+
+	ofn.lStructSize=sizeof(OPENFILENAME);
+	ofn.hwndOwner=wnd;
+	ofn.hInstance=hinst;
+	ofn.lpstrFilter=filter;
+	ofn.lpstrCustomFilter=NULL;
+	ofn.nMaxCustFilter=0;
+	ofn.nFilterIndex=1;
+	ofn.lpstrFile=path;
+	ofn.nMaxFile=1024;
+	ofn.lpstrFileTitle=file_title;
+	ofn.nMaxFileTitle=256;
+	ofn.lpstrInitialDir=initial_dir;
+	ofn.lpstrTitle=NULL;
+	ofn.Flags=OFN_HIDEREADONLY|OFN_LONGNAMES|OFN_OVERWRITEPROMPT|OFN_PATHMUSTEXIST;
+	ofn.nFileOffset=0;
+	ofn.nFileExtension=0;
+	ofn.lpstrDefExt=ext;
+	ofn.lCustData=(LPARAM)NULL;
+	ofn.lpfnHook=NULL;
+	ofn.lpTemplateName=NULL;
+
+	if (!GetOpenFileName(&ofn)) return(FALSE);
+
+		// check for proper extension
+
+	c=strrchr(path,'.');
+	if (c!=NULL) {
+		if (strcasecmp((c+1),ext)!=0) {
+			MessageBox(wnd,"Please pick a file of the correct type.","Wrong File Type",MB_OK);
+			return(FALSE);
+		}
+	}
+
+	return(TRUE);
+}

@@ -39,6 +39,7 @@ extern void view_center_all(bool reset_ang);
 extern void view_get_pixel_box(editor_view_type *view,d3rect *box);
 extern void view_set_viewport_box(d3rect *box,bool erase,bool use_background);
 extern void view_set_viewport(editor_view_type *view,bool erase,bool use_background);
+extern float view_get_lookat_x_angle(editor_view_type *view);
 extern void view_set_2D_projection(editor_view_type *view);
 extern void view_set_3D_projection(editor_view_type *view,int near_z,int far_z,int near_z_offset);
 extern void view_setup_project_point(void);

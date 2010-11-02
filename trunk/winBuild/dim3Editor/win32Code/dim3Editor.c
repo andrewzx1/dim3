@@ -1,8 +1,7 @@
 #include "dim3Editor.h"
 
-#include "walk_view.h"
-#include "common_view.h"
 #include "interface.h"
+#include "view.h"
 
 #include "resource.h"
 
@@ -35,9 +34,6 @@ extern void edit_view_draw(d3pnt *pt,d3ang *ang,d3rect *box,int wnd_high,bool fo
 void editor_button_down(int x,int y);
 extern void glue_start(void);
 extern void glue_end(void);
-extern void walk_view_draw(void);
-extern bool walk_view_initialize(void);
-extern void walk_view_shutdown(void);
 extern void editor_menu_commands(int id);
 extern void editor_menu_create(void);
 extern bool dialog_file_open_run(char *dialog_name,char *search_path,char *extension,char *required_file_name,char *file_name);
@@ -58,33 +54,6 @@ void launch_map_script_editor(void)
 void launch_engine(void)
 {
 }
-bool import_load_file(char *path,char *ext)
-{
-	return(FALSE);
-}
-void auto_generate_map(void)
-{
-	ag_build_setup_type		build_setup;
-
-	build_setup.style_idx=0;
-	build_setup.seed=5;
-	build_setup.mirror=FALSE;
-	build_setup.room_count=20;
-	build_setup.room_sz=200;
-	build_setup.floor_sz=50;
-
-	ag_generate_map(&build_setup);
-}
-
-int dialog_alert(char *title,char *msg)
-{
-	MessageBox(NULL,title,msg,MB_OK);
-	return(0);
-}
-int dialog_confirm(char *title,char *msg,char *button_1,char *button_2,char *button_3)
-{
-	return(0);
-}
 void dialog_about_run(void)
 {
 }
@@ -94,21 +63,6 @@ void dialog_preference_run(void)
 bool dialog_file_new_run(char *title,char *file_name)
 {
 	return(FALSE);
-}
-bool dialog_save_run(void)
-{
-	bool				ok;
-
-	progress_start("Saving Map",3);
-	node_path_rebuild();
-	progress_next();
-	map_recalc_normals(&map,FALSE);
-	progress_next();
-	ok=map_save(&map);
-	progress_next();
-	progress_end();
-
-	return(ok);
 }
 bool dialog_map_settings_run(void)
 {
@@ -170,15 +124,29 @@ bool dialog_mesh_scale_run(d3fpnt *min,d3fpnt *max,bool replace_ok,float old_sca
 {
 	return(FALSE);
 }
-void dialog_texture_setting_run(int txt)
-{}
+void dialog_texture_setting_run(int txt_idx)
+{
+}
 bool dialog_height_import_run(int *div_cnt,int *size,int *high)
 {
 	return(FALSE);
 }
 bool dialog_map_auto_generate_setting_run(bool first)
 {
-	return(FALSE);
+	ag_build_setup_type		build_setup;
+
+	build_setup.style_idx=0;
+	build_setup.seed=5;
+	build_setup.mirror=FALSE;
+	build_setup.room_count=20;
+	build_setup.room_sz=300;
+	build_setup.room_high=60;
+	build_setup.story_count=1;
+	build_setup.extra_connect_count=2;
+
+	ag_generate_map(&build_setup);
+
+	return(TRUE);
 }
 
 
@@ -214,7 +182,7 @@ LRESULT CALLBACK editor_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam)
 		case WM_MOUSEMOVE:
 			pnt.x=LOWORD(lParam);
 			pnt.y=HIWORD(lParam);
-			walk_view_cursor(&pnt);
+			view_cursor(&pnt);
 			break;
 
 		case WM_LBUTTONDOWN:
@@ -231,7 +199,7 @@ LRESULT CALLBACK editor_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam)
 					texture_palette_click(map.textures,&pnt,FALSE);
 				}
 				else {
-					walk_view_click(&pnt,FALSE);
+					view_click(&pnt,FALSE);
 				}
 			}
 
@@ -239,13 +207,13 @@ LRESULT CALLBACK editor_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam)
 			break;
 
 		case WM_MOUSEWHEEL:
-			view=walk_view_get_current_view();
+			view=view_get_current_view();
 			delta=GET_WHEEL_DELTA_WPARAM(wParam)/60;
-			walk_view_scroll_wheel_z_movement(view,delta);
+			view_scroll_wheel_z_movement(view,delta);
 			break;
 
 		case WM_CHAR:
-			walk_view_key((char)wParam);
+			view_key((char)wParam);
 			break;
 
 		case WM_COMMAND:
@@ -396,12 +364,12 @@ void main_wind_open(void)
 
 	texture_palette_setup();
 	
-	walk_view_initialize();
+	view_initialize();
 }
 
 void main_wind_close(void)
 {
-	walk_view_shutdown();
+	view_shutdown();
 	tool_palette_shutdown();
 	text_shutdown();
 
@@ -464,8 +432,8 @@ bool editor_open_map(char *err_str)
 		return(FALSE);
 	}
 
-	walk_view_models_start();
-	walk_view_models_reset();
+	view_models_start();
+	view_models_reset();
 
 	state.map_opened=TRUE;
 
@@ -477,15 +445,15 @@ bool editor_open_map(char *err_str)
 	pnt.y=252000;
 	pnt.z=354000;
 
-	walk_view_setup_default_views();
-	walk_view_set_position(&pnt);
+	view_setup_default_views();
+	view_set_position(&pnt);
 
 	return(TRUE);
 }
 
 void editor_close_map(void)
 {
-	walk_view_models_close();
+	view_models_close();
 
 	map_close(&map);
 }
@@ -525,7 +493,7 @@ void main_wind_draw(void)
 		// draw window
 
 	if (state.map_opened) {
-		walk_view_draw();
+		view_draw();
 
 		tool_palette_draw();
 		texture_palette_draw(map.textures);
@@ -551,7 +519,7 @@ void main_wind_draw_no_swap(void)
 		// draw window
 
 	if (state.map_opened) {
-		walk_view_draw();
+		view_draw();
 
 		tool_palette_draw();
 		texture_palette_draw(map.textures);
