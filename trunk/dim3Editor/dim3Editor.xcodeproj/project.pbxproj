@@ -19,6 +19,7 @@
 		26452F1E127F9BA800043C34 /* view_draw_piece.c in Sources */ = {isa = PBXBuildFile; fileRef = 26452F18127F9BA800043C34 /* view_draw_piece.c */; };
 		26452F1F127F9BA800043C34 /* view_draw_select.c in Sources */ = {isa = PBXBuildFile; fileRef = 26452F19127F9BA800043C34 /* view_draw_select.c */; };
 		26452F20127F9BA800043C34 /* view_models.c in Sources */ = {isa = PBXBuildFile; fileRef = 26452F1A127F9BA800043C34 /* view_models.c */; };
+		264530221280CF6B00043C34 /* auto_generate_story.c in Sources */ = {isa = PBXBuildFile; fileRef = 264530211280CF6B00043C34 /* auto_generate_story.c */; };
 		2647AD820E4F48D000BA3338 /* dialog_height_import.c in Sources */ = {isa = PBXBuildFile; fileRef = 2647AD810E4F48D000BA3338 /* dialog_height_import.c */; };
 		264A46FB0F75C1D80054BAA6 /* palette_scenery.c in Sources */ = {isa = PBXBuildFile; fileRef = 264A46FA0F75C1D80054BAA6 /* palette_scenery.c */; };
 		264A47110F75FB6D0054BAA6 /* palette_node.c in Sources */ = {isa = PBXBuildFile; fileRef = 264A47100F75FB6D0054BAA6 /* palette_node.c */; };
@@ -296,6 +297,7 @@
 		26452F18127F9BA800043C34 /* view_draw_piece.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = view_draw_piece.c; path = Code/view_draw_piece.c; sourceTree = "<group>"; };
 		26452F19127F9BA800043C34 /* view_draw_select.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = view_draw_select.c; path = Code/view_draw_select.c; sourceTree = "<group>"; };
 		26452F1A127F9BA800043C34 /* view_models.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = view_models.c; path = Code/view_models.c; sourceTree = "<group>"; };
+		264530211280CF6B00043C34 /* auto_generate_story.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = auto_generate_story.c; path = Code/auto_generate_story.c; sourceTree = "<group>"; };
 		2647AD810E4F48D000BA3338 /* dialog_height_import.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_height_import.c; path = Code/dialog_height_import.c; sourceTree = "<group>"; };
 		264A46FA0F75C1D80054BAA6 /* palette_scenery.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = palette_scenery.c; path = Code/palette_scenery.c; sourceTree = "<group>"; };
 		264A47100F75FB6D0054BAA6 /* palette_node.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = palette_node.c; path = Code/palette_node.c; sourceTree = "<group>"; };
@@ -605,8 +607,9 @@
 			isa = PBXGroup;
 			children = (
 				26EE476712696220001D0025 /* auto_generate.c */,
-				26EE476612696220001D0025 /* auto_generate_setup.c */,
+				264530211280CF6B00043C34 /* auto_generate_story.c */,
 				266B1D2C126E5F02006CC1E9 /* auto_generate_utility.c */,
+				26EE476612696220001D0025 /* auto_generate_setup.c */,
 			);
 			name = "Auto Generator";
 			sourceTree = "<group>";
@@ -897,6 +900,7 @@
 				26452F1E127F9BA800043C34 /* view_draw_piece.c in Sources */,
 				26452F1F127F9BA800043C34 /* view_draw_select.c in Sources */,
 				26452F20127F9BA800043C34 /* view_models.c in Sources */,
+				264530221280CF6B00043C34 /* auto_generate_story.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

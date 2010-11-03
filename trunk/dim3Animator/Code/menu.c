@@ -515,7 +515,7 @@ bool menu_save_changes_dialog(void)
 {
 	int			choice;
 	
-	choice=dialog_confirm("Save Changes?","Do you want to save the changes to this model?","Save","Cancel","Don't Save");
+	choice=dialog_confirm("Save Changes?","Do you want to save the changes to this model?");
 	if (choice==1) return(FALSE);
 	
 	if (choice==0) save_binary();

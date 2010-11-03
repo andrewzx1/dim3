@@ -557,7 +557,7 @@ static pascal OSStatus texture_setting_event_proc(EventHandlerCallRef handler,Ev
       
 ======================================================= */
 
-void dialog_texture_setting_run(int txt)
+void dialog_texture_setting_run(int txt_idx)
 {
 	EventHandlerUPP			event_upp;
 	EventTypeSpec			event_list[]={{kEventClassCommand,kEventProcessCommand}};
@@ -565,7 +565,7 @@ void dialog_texture_setting_run(int txt)
 
 		// the texture
 		
-	texture=&map.textures[txt];
+	texture=&map.textures[txt_idx];
 
 		// open the dialog
 		
@@ -578,7 +578,7 @@ void dialog_texture_setting_run(int txt)
 
 		// frames
 		
-	dialog_texture_wind_current_txt=txt;
+	dialog_texture_wind_current_txt=txt_idx;
 	texture_setting_frame_build_combo(TRUE);
 	
 		// other dialog controls

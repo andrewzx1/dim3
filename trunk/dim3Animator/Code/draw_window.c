@@ -175,7 +175,6 @@ void draw_model_wind(model_type *model,int mesh_idx,model_draw_setup *draw_setup
 	if (state.texture) {
 		if ((state.first_mesh) && (mesh_idx!=0)) draw_model(model,0,draw_setup);
 		draw_model(model,mesh_idx,draw_setup);
-		draw_model_selected_vertexes(model,mesh_idx,draw_setup);
 	}
 	
 	if (state.mesh) {
@@ -188,7 +187,13 @@ void draw_model_wind(model_type *model,int mesh_idx,model_draw_setup *draw_setup
 	if (state.bone) draw_model_bones(model,draw_setup,cur_bone);
 	
 	if ((state.texture) || (state.mesh)) {
-		draw_model_selected_vertexes(model,mesh_idx,draw_setup);
+		if (state.select_mode==select_mode_vertex) {
+			draw_model_selected_vertexes(model,mesh_idx,draw_setup);
+		}
+		else {
+		//	draw_model_selected_trig(model,mesh_idx,draw_setup);
+		// supergumba
+		}
 	}
 	
 		// boxes and normals
