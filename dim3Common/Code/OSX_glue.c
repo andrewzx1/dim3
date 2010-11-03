@@ -213,6 +213,57 @@ bool os_track_mouse_location(d3pnt *pt,d3rect *offset_box)
 
 /* =======================================================
 
+      Alerts
+      
+======================================================= */
+
+int dialog_alert(char *title,char *msg)
+{
+	CFStringRef			cf_title_str,cf_msg_str;
+	CFOptionFlags		resp;
+
+	os_set_arrow_cursor();
+	
+	cf_title_str=CFStringCreateWithCString(kCFAllocatorDefault,title,kCFStringEncodingMacRoman);
+	cf_msg_str=CFStringCreateWithCString(kCFAllocatorDefault,msg,kCFStringEncodingMacRoman);
+
+	CFUserNotificationDisplayAlert(0,kCFUserNotificationStopAlertLevel,NULL,NULL,NULL,cf_title_str,cf_msg_str,NULL,NULL,NULL,&resp);
+	
+	CFRelease(cf_title_str);
+	CFRelease(cf_msg_str);
+	
+	return(resp);
+}
+
+int dialog_confirm(char *title,char *msg)
+{
+	CFStringRef			cf_title_str,cf_msg_str,
+						cf_butt_1_str,cf_butt_2_str,cf_butt_3_str;
+	CFOptionFlags		resp;
+
+	os_set_arrow_cursor();
+	
+	cf_title_str=CFStringCreateWithCString(kCFAllocatorDefault,title,kCFStringEncodingMacRoman);
+	cf_msg_str=CFStringCreateWithCString(kCFAllocatorDefault,msg,kCFStringEncodingMacRoman);
+
+	cf_butt_1_str=CFStringCreateWithCString(kCFAllocatorDefault,"Yes",kCFStringEncodingMacRoman);
+	cf_butt_2_str=CFStringCreateWithCString(kCFAllocatorDefault,"Cancel",kCFStringEncodingMacRoman);
+	cf_butt_3_str=CFStringCreateWithCString(kCFAllocatorDefault,"No",kCFStringEncodingMacRoman);
+	
+	CFUserNotificationDisplayAlert(0,kCFUserNotificationNoteAlertLevel,NULL,NULL,NULL,cf_title_str,cf_msg_str,cf_butt_1_str,cf_butt_2_str,cf_butt_3_str,&resp);
+	
+	CFRelease(cf_butt_1_str);
+	CFRelease(cf_butt_2_str);
+	CFRelease(cf_butt_3_str);
+	
+	CFRelease(cf_title_str);
+	CFRelease(cf_msg_str);
+	
+	return(resp);
+}
+
+/* =======================================================
+
       Load a File
       
 ======================================================= */

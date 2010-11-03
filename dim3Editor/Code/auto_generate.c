@@ -884,7 +884,7 @@ bool ag_generate_map(ag_build_setup_type *build_setup)
 		// polygons are equal and facing each
 		// other and not blocked
 
-	for (n=0;n!=build_setup->extra_connect_count;n++) {
+	for (n=0;n!=build_setup->merge_count;n++) {
 		ag_generate_extra_corridors();
 	}
 

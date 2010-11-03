@@ -35,6 +35,8 @@ and can be sold or given away.
 #define kAutoGenerateRoomCount						FOUR_CHAR_CODE('nrom')
 #define kAutoGenerateRoomSize						FOUR_CHAR_CODE('nsiz')
 #define kAutoGenerateRoomHeight						FOUR_CHAR_CODE('nhgh')
+#define kAutoGenerateStoryCount						FOUR_CHAR_CODE('nsct')
+#define kAutoGenerateMergeCount						FOUR_CHAR_CODE('nmct')
 
 #define kMapGenerateNewSeed							FOUR_CHAR_CODE('nsed')
 
@@ -107,7 +109,9 @@ bool dialog_map_auto_generate_setting_run(void)
 		ag_build_setup.mirror=FALSE;
 		ag_build_setup.room_count=20;
 		ag_build_setup.room_sz=400;
-		ag_build_setup.floor_sz=60;
+		ag_build_setup.room_high=60;
+		ag_build_setup.story_count=2;
+		ag_build_setup.merge_count=2;
 	}
 											  
 		// open the dialog
@@ -129,7 +133,9 @@ bool dialog_map_auto_generate_setting_run(void)
 
 	dialog_set_value(dialog_map_generate_wind,kAutoGenerateRoomCount,0,ag_build_setup.room_count);
 	dialog_set_value(dialog_map_generate_wind,kAutoGenerateRoomSize,0,ag_build_setup.room_sz);
-	dialog_set_value(dialog_map_generate_wind,kAutoGenerateRoomHeight,0,ag_build_setup.floor_sz);
+	dialog_set_value(dialog_map_generate_wind,kAutoGenerateRoomHeight,0,ag_build_setup.room_high);
+	dialog_set_value(dialog_map_generate_wind,kAutoGenerateStoryCount,0,ag_build_setup.story_count);
+	dialog_set_value(dialog_map_generate_wind,kAutoGenerateMergeCount,0,ag_build_setup.merge_count);
 
 		// show window
 	
@@ -153,7 +159,9 @@ bool dialog_map_auto_generate_setting_run(void)
 
 	ag_build_setup.room_count=dialog_get_value(dialog_map_generate_wind,kAutoGenerateRoomCount,0);
 	ag_build_setup.room_sz=dialog_get_value(dialog_map_generate_wind,kAutoGenerateRoomSize,0);
-	ag_build_setup.floor_sz=dialog_get_value(dialog_map_generate_wind,kAutoGenerateRoomHeight,0);
+	ag_build_setup.room_high=dialog_get_value(dialog_map_generate_wind,kAutoGenerateRoomHeight,0);
+	ag_build_setup.story_count=dialog_get_value(dialog_map_generate_wind,kAutoGenerateStoryCount,0);
+	ag_build_setup.merge_count=dialog_get_value(dialog_map_generate_wind,kAutoGenerateMergeCount,0);
 
 		// close window
 		

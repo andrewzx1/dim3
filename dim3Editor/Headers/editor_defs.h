@@ -405,7 +405,7 @@ typedef struct		{
 typedef struct		{
 						int						style_idx,seed,
 												room_count,room_sz,room_high,
-												story_count,extra_connect_count;
+												story_count,merge_count;
 						bool					mirror;
 					} ag_build_setup_type;
 

@@ -66,8 +66,6 @@ extern void dialog_special_combo_get_shader(WindowRef wind,unsigned long sig,int
 extern void dialog_special_combo_get_node(WindowRef wind,unsigned long sig,int id,char *sel_name,int str_len);
 extern void dialog_fill_texture_combo(WindowRef wind,unsigned long sig,int id,bool none,int idx);
 extern int dialog_get_texture_combo(WindowRef wind,unsigned long sig,int id,bool none);
-extern int dialog_alert(char *title,char *msg);
-extern int dialog_confirm(char *title,char *msg,char *button_1,char *button_2,char *button_3);
 
 //
 // dialogs
