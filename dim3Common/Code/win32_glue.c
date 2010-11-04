@@ -1,5 +1,7 @@
 #include "dim3Editor.h"
 
+#include "glue.h"
+
 extern bool				quit;
 
 extern HINSTANCE		hinst;
@@ -247,12 +249,12 @@ bool os_track_mouse_location(d3pnt *pt,d3rect *offset_box)
       
 ======================================================= */
 
-void dialog_alert(char *title,char *msg)
+void os_dialog_alert(char *title,char *msg)
 {
 	MessageBox(NULL,msg,title,MB_ICONINFORMATION|MB_OK);
 }
 
-int dialog_confirm(char *title,char *msg)
+int os_dialog_confirm(char *title,char *msg)
 {
 	int			rtn;
 	

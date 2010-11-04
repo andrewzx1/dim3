@@ -67,6 +67,15 @@ extern void texture_palette_reset(void);
 extern void texture_palette_click(texture_type *txt_list,d3pnt *pnt,bool dbl_click);
 
 //
+// item palette
+//
+
+extern void item_palette_initialize(void);
+extern void item_palette_setup(void);
+extern void item_palette_draw(void);
+extern void item_palette_click(d3pnt *pnt);
+
+//
 // main window
 //
 

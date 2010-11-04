@@ -38,7 +38,7 @@ and can be sold or given away.
 
 extern file_path_setup_type		file_path_setup;
 
-int								tool_pixel_sz,tool_palette_push_idx;
+int								tool_palette_pixel_sz,tool_palette_push_idx;
 d3rect							tool_palette_box;
 
 bitmap_type						tool_bitmaps[tool_count];
@@ -116,10 +116,10 @@ void tool_palette_draw_icon(int x,int y,unsigned long gl_id,bool is_highlight,bo
 	glBegin(GL_QUADS);
 	glColor4f(top_col,top_col,top_col,1.0f);
 	glVertex2i(x,y);
-	glVertex2i((x+tool_pixel_sz),y);
+	glVertex2i((x+tool_palette_pixel_sz),y);
 	glColor4f(bot_col,bot_col,bot_col,1.0f);
-	glVertex2i((x+tool_pixel_sz),(y+tool_pixel_sz));
-	glVertex2i(x,(y+tool_pixel_sz));
+	glVertex2i((x+tool_palette_pixel_sz),(y+tool_palette_pixel_sz));
+	glVertex2i(x,(y+tool_palette_pixel_sz));
 	glEnd();
 
 		// bitmap
@@ -133,11 +133,11 @@ void tool_palette_draw_icon(int x,int y,unsigned long gl_id,bool is_highlight,bo
 	glTexCoord2f(0.0f,0.0f);
 	glVertex2i(x,y);
 	glTexCoord2f(1.0f,0.0f);
-	glVertex2i((x+tool_pixel_sz),y);
+	glVertex2i((x+tool_palette_pixel_sz),y);
 	glTexCoord2f(1.0f,1.0f);
-	glVertex2i((x+tool_pixel_sz),(y+tool_pixel_sz));
+	glVertex2i((x+tool_palette_pixel_sz),(y+tool_palette_pixel_sz));
 	glTexCoord2f(0.0f,1.0f);
-	glVertex2i(x,(y+tool_pixel_sz));
+	glVertex2i(x,(y+tool_palette_pixel_sz));
 	glEnd();
 
 	glDisable(GL_TEXTURE_2D);
@@ -148,9 +148,9 @@ void tool_palette_draw_icon(int x,int y,unsigned long gl_id,bool is_highlight,bo
 		
 	glBegin(GL_LINE_LOOP);
 	glVertex2i(x,y);
-	glVertex2i((x+tool_pixel_sz),y);
-	glVertex2i((x+tool_pixel_sz),(y+(tool_pixel_sz+1)));
-	glVertex2i(x,(y+(tool_pixel_sz+1)));
+	glVertex2i((x+tool_palette_pixel_sz),y);
+	glVertex2i((x+tool_palette_pixel_sz),(y+(tool_palette_pixel_sz+1)));
+	glVertex2i(x,(y+(tool_palette_pixel_sz+1)));
 	glEnd();
 }
 
@@ -205,7 +205,7 @@ void tool_palette_draw(void)
 			// splitter?
 			
 		if (tool_bitmaps_file_name[n][0]==0x0) {
-			x=tool_palette_box.rx-(((tool_count-1)-n)*tool_pixel_sz);
+			x=tool_palette_box.rx-(((tool_count-1)-n)*tool_palette_pixel_sz);
 			continue;
 		}
 		
@@ -216,7 +216,7 @@ void tool_palette_draw(void)
 			// draw tool
 			
 		tool_palette_draw_icon(x,tool_palette_box.ty,tool_bitmaps[n].gl_id,tool_get_highlight_state(n),(tool_palette_push_idx==n));
-		x+=tool_pixel_sz;
+		x+=tool_palette_pixel_sz;
 	}
 	
 		// border
@@ -224,8 +224,8 @@ void tool_palette_draw(void)
 	glColor4f(0.0f,0.0f,0.0f,1.0f);
 
 	glBegin(GL_LINES);
-	glVertex2i(tool_palette_box.lx,tool_palette_box.by);
-	glVertex2i(tool_palette_box.rx,tool_palette_box.by);
+	glVertex2i(tool_palette_box.lx,(tool_palette_box.by-1));
+	glVertex2i(tool_palette_box.rx,(tool_palette_box.by-1));
 	glEnd();
 
 	glDisable(GL_ALPHA_TEST);
@@ -247,7 +247,7 @@ bool tool_palette_click_mouse_down(int push_idx,int lx,int ty)
 	main_wind_draw();
 
 	while (!os_track_mouse_location(&pt,NULL)) {
-		if ((pt.x<lx) || (pt.x>=(lx+tool_pixel_sz)) || (pt.y<ty) || (pt.y>=(ty+tool_pixel_sz))) {
+		if ((pt.x<lx) || (pt.x>=(lx+tool_palette_pixel_sz)) || (pt.y<ty) || (pt.y>=(ty+tool_palette_pixel_sz))) {
 			tool_palette_push_idx=-1;
 		}
 		else {
@@ -280,7 +280,7 @@ void tool_palette_click(d3pnt *pnt)
 			// splitter?
 			
 		if (tool_bitmaps_file_name[n][0]==0x0) {
-			x=tool_palette_box.rx-(((tool_count-1)-n)*tool_pixel_sz);
+			x=tool_palette_box.rx-(((tool_count-1)-n)*tool_palette_pixel_sz);
 			continue;
 		}
 		
@@ -290,12 +290,12 @@ void tool_palette_click(d3pnt *pnt)
 		
 			// check click
 			
-		if ((pnt->x>=x) && (pnt->x<(x+tool_pixel_sz))) {
+		if ((pnt->x>=x) && (pnt->x<(x+tool_palette_pixel_sz))) {
 			if (tool_palette_click_mouse_down(n,x,tool_palette_box.ty)) tool_click(n);
 			return;
 		}
 		
-		x+=tool_pixel_sz;
+		x+=tool_palette_pixel_sz;
 	}
 }
 

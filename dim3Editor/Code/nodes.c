@@ -139,7 +139,7 @@ bool node_link_click(int node_idx)
 		k2=node_link_get_free_link(node_idx);
 		
 		if ((k1==-1) || (k2==-1)) {
-			dialog_alert("Can not connect nodes","You've reached the maximum number of connected nodes for this node.");
+			os_dialog_alert("Can not connect nodes","You've reached the maximum number of connected nodes for this node.");
 			return(FALSE);
 		}
 		

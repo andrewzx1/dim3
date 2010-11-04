@@ -34,7 +34,7 @@ and can be sold or given away.
 #include "view.h"
 
 extern int						top_view_x,top_view_z,
-								tool_pixel_sz,txt_palette_pixel_sz;
+								tool_palette_pixel_sz,txt_palette_pixel_sz,item_palette_pixel_sz;
 extern d3rect					main_wind_box;
 
 extern file_path_setup_type		file_path_setup;
@@ -158,8 +158,9 @@ void view_get_pixel_box(editor_view_type *view,d3rect *box)
 		
 	os_get_window_box(&wbox);
 	
-	wbox.ty+=tool_pixel_sz;
+	wbox.ty+=tool_palette_pixel_sz;
 	wbox.by-=txt_palette_pixel_sz;
+	wbox.rx-=item_palette_pixel_sz;
 	
 	wid=(float)(wbox.rx-wbox.lx);
 	high=(float)(wbox.by-wbox.ty);
@@ -1064,13 +1065,12 @@ void view_draw(void)
 	for (n=0;n!=map.editor_views.count;n++) {
 		view_draw_view(&map.editor_views.views[n]);
 	}
-	
-	view_set_viewport_box(&main_wind_box,FALSE,FALSE);
 
 		// view box outlines
 		
 	for (n=0;n!=map.editor_views.count;n++) {
 		view=&map.editor_views.views[n];
+		view_set_viewport(view,FALSE,FALSE);
 		view_get_pixel_box(view,&box);
 
 		glLineWidth(1.0f);
@@ -1089,6 +1089,7 @@ void view_draw(void)
 	if ((state.view_select_idx>=0) && (state.view_select_idx<map.editor_views.count)) {
 	
 		view=&map.editor_views.views[state.view_select_idx];
+		view_set_viewport(view,FALSE,FALSE);
 		view_get_pixel_box(view,&box);
 		
 		glEnable(GL_BLEND);
