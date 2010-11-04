@@ -57,7 +57,7 @@ extern bool os_key_shift_down(void);
 extern bool os_button_down(void);
 extern bool os_track_mouse_location(d3pnt *pt,d3rect *offset_box);
 
-extern void dialog_alert(char *title,char *msg);
-extern int dialog_confirm(char *title,char *msg);
+extern void os_dialog_alert(char *title,char *msg);
+extern int os_dialog_confirm(char *title,char *msg);
 
 extern bool os_load_file(char *path,char *ext);

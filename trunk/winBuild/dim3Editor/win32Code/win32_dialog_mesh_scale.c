@@ -25,24 +25,15 @@ and can be sold or given away.
  
 *********************************************************************/
 
-#ifdef D3_PCH
-	#include "dim3editor.h"
-	#include "resource.h"
-#endif
+#include "dim3editor.h"
+#include "resource.h"
 
-#include "glue.h"
-#include "interface.h"
-#include "dialog.h"
+extern HINSTANCE				hinst;
+extern HWND						wnd;
 
-extern map_type				map;
+extern map_type					map;
 
-#define kMeshScaleAxis							FOUR_CHAR_CODE('axis')
-#define kMeshScaleScale							FOUR_CHAR_CODE('scle')
-#define kMeshScaleButtonScale					FOUR_CHAR_CODE('scal')
-#define kMeshScaleButtonReplace					FOUR_CHAR_CODE('repl')
-
-bool						dialog_mesh_scale_replace;
-WindowRef					dialog_mesh_scale_wind;
+bool							dialog_mesh_scale_replace;
 
 /* =======================================================
 
@@ -50,35 +41,52 @@ WindowRef					dialog_mesh_scale_wind;
       
 ======================================================= */
 
-static pascal OSStatus dialog_mesh_scale_event_proc(EventHandlerCallRef handler,EventRef event,void *data)
+LRESULT CALLBACK dialog_mesh_scale_proc(HWND diag,UINT msg,WPARAM wparam,LPARAM lparam)
 {
-	HICommand		cmd;
-	
-	switch (GetEventKind(event)) {
-	
-		case kEventProcessCommand:
-			GetEventParameter(event,kEventParamDirectObject,typeHICommand,NULL,sizeof(HICommand),NULL,&cmd);
+//	LPNMHDR			hdr;
+
+	switch (msg) {
+
+		case WM_INITDIALOG:
+		//	SetWindowText(diag,fp_dialog_name);
+		//	dialog_file_open_set(diag);
+			return(TRUE);
+
+		case WM_COMMAND:
 			
-			switch (cmd.commandID) {
-				
-				case kMeshScaleButtonScale:
+			switch (wparam) {
+
+				case ID_MESH_SCALE_SCALE:
 					dialog_mesh_scale_replace=FALSE;
-					QuitAppModalLoopForWindow(dialog_mesh_scale_wind);
-					return(noErr);
-					
-				case kMeshScaleButtonReplace:
+					EndDialog(diag,0);
+					return(TRUE);
+
+				case ID_MESH_SCALE_REPLACE:
 					dialog_mesh_scale_replace=TRUE;
-					QuitAppModalLoopForWindow(dialog_mesh_scale_wind);
-					return(noErr);
-					
+					EndDialog(diag,0);
+					return(TRUE);
+
 			}
 
-			return(eventNotHandledErr);
-	
+			break;
+
+		case WM_NOTIFY:
+
+		//	hdr=(LPNMHDR)lparam;
+
+		//	if ((hdr->idFrom==IDC_FILE_OPEN_TREE) && (hdr->code==NM_DBLCLK)) {
+		//		if (!dialog_file_open_get(diag)) return(FALSE);
+		//		EndDialog(diag,0);
+		//	}
+
+			break;
+
 	}
-	
-	return(eventNotHandledErr);
+
+	return(FALSE);
 }
+
+
 
 /* =======================================================
 
@@ -88,6 +96,27 @@ static pascal OSStatus dialog_mesh_scale_event_proc(EventHandlerCallRef handler,
 
 bool dialog_mesh_scale_run(d3fpnt *min,d3fpnt *max,bool replace_ok,float old_scale,float *scale)
 {
+	*scale=1000.0f;
+	return(FALSE);
+
+	/*
+	bool			ok;
+
+		// run dialog
+
+	dialog_mesh_scale_replace=FALSE;
+
+	ok=(DialogBox(hinst,MAKEINTRESOURCE(IDD_MESH_SCALE),NULL,dialog_mesh_scale_proc)==0);
+	
+	if (!ok) return(FALSE);
+
+
+
+
+	return(dialog_mesh_scale_replace);
+*/
+/*
+
 	int						sz;
 	EventHandlerUPP			event_upp;
 	EventTypeSpec			event_list[]={{kEventClassCommand,kEventProcessCommand}};
@@ -147,7 +176,6 @@ bool dialog_mesh_scale_run(d3fpnt *min,d3fpnt *max,bool replace_ok,float old_sca
 		// close window
 		
 	DisposeWindow(dialog_mesh_scale_wind);
-	
-	return(dialog_mesh_scale_replace);
+	*/
 }
 

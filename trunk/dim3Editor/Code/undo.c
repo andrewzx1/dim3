@@ -277,7 +277,7 @@ void undo_push(void)
 		return;
 	}
 	
-	dialog_alert("Undo","Not enough memory to setup undo");
+	os_dialog_alert("Undo","Not enough memory to setup undo");
 	undo_clear();
 	
 	os_menu_enable_item(app_menu_edit,1,FALSE);

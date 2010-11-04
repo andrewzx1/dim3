@@ -208,14 +208,14 @@ int import_texture_pick(char *material_name)
 		// pick a bitmap
 		
 	sprintf(title,"Material %s Found - Select Bitmap",material_name);
-	dialog_alert(title,"Please select a PNG file to be used for this material.\nThe PNG file must be 32-bit and have width and height that are squares of 2 (2, 4, 8, 16, 32, 64, 128, 256, etc).");
+	os_dialog_alert(title,"Please select a PNG file to be used for this material.\nThe PNG file must be 32-bit and have width and height that are squares of 2 (2, 4, 8, 16, 32, 64, 128, 256, etc).");
 	
 	if (!os_load_file(path,"png")) return(0);
 	
 		// is it good?
 
 	if (!bitmap_check(path,err_str)) {
-		dialog_alert("Error",err_str);
+		os_dialog_alert("Error",err_str);
 		return(0);
 	}
 	
@@ -283,7 +283,7 @@ void piece_add_obj_mesh(void)
 	if (!os_load_file(path,"obj")) return;
 
 	if (!textdecode_open(path,0x20)) {
-		dialog_alert("Import Failed","Could not open OBJ file.");
+		os_dialog_alert("Import Failed","Could not open OBJ file.");
 		return;
     }
 	
@@ -325,12 +325,12 @@ void piece_add_obj_mesh(void)
 		
 	if (nvertex==0) {
 		textdecode_close();
-		dialog_alert("Import Failed","No vertexes in OBJ.");
+		os_dialog_alert("Import Failed","No vertexes in OBJ.");
 		return;
     }
 	if (npoly==0) {
 		textdecode_close();
-		dialog_alert("Import Failed","No faces in OBJ.");
+		os_dialog_alert("Import Failed","No faces in OBJ.");
 		return;
     }
 	
@@ -437,7 +437,7 @@ void piece_add_obj_mesh(void)
 	if (vertexes==NULL) {
 		textdecode_close();
 		progress_end();
-		dialog_alert("Import Failed","Out of Memory.");
+		os_dialog_alert("Import Failed","Out of Memory.");
 		return;
     }
 	
@@ -499,7 +499,7 @@ void piece_add_obj_mesh(void)
 		if (uvs==NULL) {
 			textdecode_close();
 			progress_end();
-			dialog_alert("Import Failed","Out of Memory.");
+			os_dialog_alert("Import Failed","Out of Memory.");
 			return;
 		}
 
@@ -525,7 +525,7 @@ void piece_add_obj_mesh(void)
 		if (normals==NULL) {
 			textdecode_close();
 			progress_end();
-			dialog_alert("Import Failed","Out of Memory.");
+			os_dialog_alert("Import Failed","Out of Memory.");
 			return;
 		}
 
@@ -588,7 +588,7 @@ void piece_add_obj_mesh(void)
 				if (mesh_idx==-1) {
 					textdecode_close();
 					progress_end();
-					dialog_alert("Import Failed","Not enough memory to create mesh.");
+					os_dialog_alert("Import Failed","Not enough memory to create mesh.");
 					return;
 				}
 	
@@ -703,7 +703,7 @@ void piece_add_obj_mesh(void)
 		// were any meshes imported?
 		
 	if (old_nmesh==map.mesh.nmesh) {
-		dialog_alert("Import Failed","Could not find mesh.  OBJ is missing a material (usemtl) deceleration.");
+		os_dialog_alert("Import Failed","Could not find mesh.  OBJ is missing a material (usemtl) deceleration.");
 		progress_end();
 		return;
 	}
@@ -758,7 +758,7 @@ void piece_add_obj_mesh_uv(void)
 		
 	select_get(0,&type,&mesh_idx,&poly_idx);
 	if (type!=mesh_piece) {
-		dialog_alert("No mesh selected","You need to select a mesh to replace the UVs on.");
+		os_dialog_alert("No mesh selected","You need to select a mesh to replace the UVs on.");
 		return;
 	}
 	
@@ -769,7 +769,7 @@ void piece_add_obj_mesh_uv(void)
 	if (!os_load_file(path,"obj")) return;
 
 	if (!textdecode_open(path,0x20)) {
-		dialog_alert("Import Failed","Could not open OBJ file.");
+		os_dialog_alert("Import Failed","Could not open OBJ file.");
 		return;
     }
 	
@@ -820,13 +820,13 @@ void piece_add_obj_mesh_uv(void)
 		
 	if (nuv==0) {
 		textdecode_close();
-		dialog_alert("Import Failed","The imported OBJ has no UVs.");
+		os_dialog_alert("Import Failed","The imported OBJ has no UVs.");
 		return;
     }
 		
 	if (npoly!=mesh->npoly) {
 		textdecode_close();
-		dialog_alert("Import Failed","The imported OBJ must have the same number of polygons as the selected mesh.");
+		os_dialog_alert("Import Failed","The imported OBJ must have the same number of polygons as the selected mesh.");
 		return;
     }
 	
@@ -835,7 +835,7 @@ void piece_add_obj_mesh_uv(void)
 	uvs=(float*)malloc(sizeof(float)*(2*nuv));
 	if (uvs==NULL) {
 		textdecode_close();
-		dialog_alert("Import Failed","Out of Memory.");
+		os_dialog_alert("Import Failed","Out of Memory.");
 		return;
 	}
 
@@ -1408,5 +1408,5 @@ void map_optimize(void)
 	os_set_arrow_cursor();
 	
 	sprintf(str,"%d small meshes were combined with larger meshes.",comb_count);
-	dialog_alert("Optimize",str);
+	os_dialog_alert("Optimize",str);
 }

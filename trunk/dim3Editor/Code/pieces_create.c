@@ -48,7 +48,7 @@ bool piece_create_texture_ok(void)
 {
 	if (map.textures[0].frames[0].bitmap.gl_id!=-1) return(TRUE);
 
-	dialog_alert("You need at least one texture","You need a default texture in the first spot to add pieces with.  Please add a texture (by double clicking the first open texture) before adding pieces to the map.");
+	os_dialog_alert("You need at least one texture","You need a default texture in the first spot to add pieces with.  Please add a texture (by double clicking the first open texture) before adding pieces to the map.");
 	return(FALSE);
 }
 
@@ -90,7 +90,7 @@ void piece_create_spot(void)
 	spot_type		*spot;
 	
 	if (map.nspot==max_spot) {
-		dialog_alert("Can Not Create Spot","You've reached the maximum number of spots for this map.");
+		os_dialog_alert("Can Not Create Spot","You've reached the maximum number of spots for this map.");
 	}
 			
 		// create spot
@@ -133,7 +133,7 @@ void piece_create_scenery(void)
 	map_scenery_type	*scenery;
 	
 	if (map.nscenery==max_map_scenery) {
-		dialog_alert("Can Not Create Scenery","You've reached the maximum number of sceneries for this map.");
+		os_dialog_alert("Can Not Create Scenery","You've reached the maximum number of sceneries for this map.");
 	}
 			
 		// create spot
@@ -187,7 +187,7 @@ void piece_create_light(void)
 	map_light_type		*lit;
 	
 	if (map.nlight==max_map_light) {
-		dialog_alert("Can Not Create Light","You've reached the maximum number of lights for this map.");
+		os_dialog_alert("Can Not Create Light","You've reached the maximum number of lights for this map.");
         return;
     }
 	
@@ -233,7 +233,7 @@ void piece_create_sound(void)
 	map_sound_type		*snd;
 	
 	if (map.nsound==max_map_sound) {
-		dialog_alert("Can Not Create Sound","You've reached the maximum number of sounds for this map.");
+		os_dialog_alert("Can Not Create Sound","You've reached the maximum number of sounds for this map.");
         return;
     }
 	
@@ -273,7 +273,7 @@ void piece_create_particle(void)
 	map_particle_type	*prt;
 	
 	if (map.nparticle==max_map_particle) {
-		dialog_alert("Can Not Create Particle","You've reached the maximum number of particles for this map.");
+		os_dialog_alert("Can Not Create Particle","You've reached the maximum number of particles for this map.");
         return;
     }
 	
@@ -314,7 +314,7 @@ void piece_create_node(void)
 	node_type		*node;
 			
 	if (map.nnode==max_node) {
-		dialog_alert("Can Not Create Node","You've reached the maximum number of nodes for a map.");
+		os_dialog_alert("Can Not Create Node","You've reached the maximum number of nodes for a map.");
 	}
 	
 		// create node
@@ -371,7 +371,7 @@ void piece_create_liquid(void)
 		
 	index=map_liquid_add(&map);
 	if (index==-1) {
-		dialog_alert("Can Not Create Liquid","Not enough memory.");
+		os_dialog_alert("Can Not Create Liquid","Not enough memory.");
 		return;
 	}
 	

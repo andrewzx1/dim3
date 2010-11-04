@@ -7,8 +7,8 @@
 
 #define EDITOR_WIN_X						10
 #define EDITOR_WIN_Y						40
-#define EDITOR_WIN_WIDTH					1100
-#define EDITOR_WIN_HEIGHT					700
+#define EDITOR_WIN_WIDTH					1200
+#define EDITOR_WIN_HEIGHT					800
 #define EDITOR_WIN_EXTRA_HEIGHT				20
 
 HINSTANCE				hinst;
@@ -27,7 +27,7 @@ editor_state_type		state;
 
 d3rect					main_wind_box;
 
-extern d3rect			tool_palette_box,txt_palette_box;
+extern d3rect			tool_palette_box,txt_palette_box,item_palette_box;
 
 extern bool setup_xml_read(void);
 extern void edit_view_draw(d3pnt *pt,d3ang *ang,d3rect *box,int wnd_high,bool focus);
@@ -120,10 +120,6 @@ bool dialog_create_grid_mesh_run(int *xdiv,int *ydiv,int *zdiv)
 {
 	return(FALSE);
 }
-bool dialog_mesh_scale_run(d3fpnt *min,d3fpnt *max,bool replace_ok,float old_scale,float *scale)
-{
-	return(FALSE);
-}
 void dialog_texture_setting_run(int txt_idx)
 {
 }
@@ -142,7 +138,7 @@ bool dialog_map_auto_generate_setting_run(bool first)
 	build_setup.room_sz=300;
 	build_setup.room_high=60;
 	build_setup.story_count=1;
-	build_setup.extra_connect_count=2;
+	build_setup.merge_count=2;
 
 	ag_generate_map(&build_setup);
 
@@ -176,6 +172,7 @@ LRESULT CALLBACK editor_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam)
 		case WM_SIZE:
 			tool_palette_setup();
 			texture_palette_setup();
+			item_palette_setup();
 			// supergumba -- deal with these, need to check if map is loaded, reset main_wind_box
 			break;
 
@@ -199,7 +196,12 @@ LRESULT CALLBACK editor_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam)
 					texture_palette_click(map.textures,&pnt,FALSE);
 				}
 				else {
-					view_click(&pnt,FALSE);
+					if (pnt.x>=item_palette_box.lx) {
+						item_palette_click(&pnt);
+					}
+					else {
+						view_click(&pnt,FALSE);
+					}
 				}
 			}
 
@@ -296,7 +298,7 @@ void main_wind_open(void)
 
 		// show window
 
-    ShowWindow(wnd,SW_SHOW);
+    ShowWindow(wnd,SW_SHOWNORMAL);
 
 		// start opengl
 
@@ -363,6 +365,9 @@ void main_wind_open(void)
 	tool_palette_setup();
 
 	texture_palette_setup();
+
+	item_palette_initialize();
+	item_palette_setup();
 	
 	view_initialize();
 }
@@ -412,7 +417,6 @@ void editor_pump(void)
       
 ======================================================= */
 
-
 bool editor_open_map(char *err_str)
 {
 	char			file_name[256];
@@ -438,12 +442,6 @@ bool editor_open_map(char *err_str)
 	state.map_opened=TRUE;
 
 	menu_fix_enable();
-
-		// supergumba -- fake starting point
-
-	pnt.x=346000;
-	pnt.y=252000;
-	pnt.z=354000;
 
 	view_setup_default_views();
 	view_set_position(&pnt);
@@ -497,6 +495,7 @@ void main_wind_draw(void)
 
 		tool_palette_draw();
 		texture_palette_draw(map.textures);
+		item_palette_draw();
 	}
 
 		// swap buffers
@@ -523,6 +522,7 @@ void main_wind_draw_no_swap(void)
 
 		tool_palette_draw();
 		texture_palette_draw(map.textures);
+		item_palette_draw();
 	}
 }
 
@@ -571,27 +571,6 @@ int APIENTRY WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmdLine
 		glue_end();
 		return(0);
 	}
-
-
-
-/*
-	if (!editor_setup(err_str)) {
-		MessageBox(NULL,err_str,"Error",MB_OK);
-		return(0);
-	}
-
-	if (!editor_start(err_str)) {
-		editor_end();
-		MessageBox(NULL,err_str,"Error",MB_OK);
-		return(0);
-	}
-
-	if (!editor_open_map(err_str)) {
-		editor_end();
-		MessageBox(NULL,err_str,"Error",MB_OK);
-		return(0);
-	}
-*/
 
 	editor_pump();
 

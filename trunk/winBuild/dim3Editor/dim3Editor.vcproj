@@ -247,6 +247,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\dim3Editor\Code\item_palette.c"
+					>
+				</File>
+				<File
 					RelativePath="..\..\dim3Editor\Code\light_maps.c"
 					>
 				</File>
@@ -401,6 +405,10 @@
 				</File>
 				<File
 					RelativePath=".\win32Code\win32_dialog_file_open.c"
+					>
+				</File>
+				<File
+					RelativePath=".\win32Code\win32_dialog_mesh_scale.c"
 					>
 				</File>
 				<File

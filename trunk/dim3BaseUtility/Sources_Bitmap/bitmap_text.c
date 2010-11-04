@@ -314,9 +314,9 @@ void bitmap_text(texture_font_type *d3_font,char *name,char *alt_name)
 
 		// draw the characters
 
-	font=CreateFont(-font_bitmap_point,0,0,0,FW_BOLD,0,0,0,0,OUT_OUTLINE_PRECIS,0,ANTIALIASED_QUALITY,0,name);
+	font=CreateFont(-font_bitmap_point,0,0,0,FW_MEDIUM,0,0,0,0,OUT_OUTLINE_PRECIS,0,ANTIALIASED_QUALITY,0,name);
 	if (font==NULL) {
-		font=CreateFont(-font_bitmap_point,0,0,0,FW_BOLD,0,0,0,0,OUT_OUTLINE_PRECIS,0,ANTIALIASED_QUALITY,0,alt_name);
+		font=CreateFont(-font_bitmap_point,0,0,0,FW_MEDIUM,0,0,0,0,OUT_OUTLINE_PRECIS,0,ANTIALIASED_QUALITY,0,alt_name);
 	}
 
 	old_font=SelectObject(dc,font);
