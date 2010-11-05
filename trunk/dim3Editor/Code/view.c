@@ -833,8 +833,9 @@ void view_goto_select(void)
 	matrix_type		mat;
 	
 	if (select_count()==0) return;
-	
-	view_get_angle(&ang);
+
+	ang.x=view_get_lookat_x_angle(&map.editor_views.views[state.view_select_idx]);
+	ang.y=map.editor_views.views[state.view_select_idx].ang.y;
 	
 	select_get_center(&pnt);
 	

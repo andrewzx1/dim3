@@ -661,9 +661,11 @@ void view_click_piece(editor_view_type *view,d3pnt *pt,bool dblclick)
 		
 	menu_fix_enable();
 	
-	main_wind_draw();
 	texture_palette_reset();
+	item_palette_reset();
 	palette_reset();
+
+	main_wind_draw();
 
 		// if no item or item was toggled off,
 		// nothing to drag

@@ -149,6 +149,35 @@ void select_remove_type(int type)
 
 /* =======================================================
 
+      Group and Movement Selects
+      
+======================================================= */
+
+void select_add_group(int group_idx)
+{
+	int				n;
+
+	if (group_idx==-1) return;
+
+	for (n=0;n!=map.mesh.nmesh;n++) {
+		if (map.mesh.meshes[n].group_idx==group_idx) select_add(mesh_piece,n,-1);
+	}
+
+	for (n=0;n!=map.liquid.nliquid;n++) {
+		if (map.liquid.liquids[n].group_idx==group_idx) select_add(liquid_piece,n,-1);
+	}
+}
+
+void select_add_movement(int movement_idx)
+{
+	if (movement_idx==-1) return;
+
+	select_add_group(map.movements[movement_idx].group_idx);
+	select_add_group(map.movements[movement_idx].reverse_group_idx);
+}
+
+/* =======================================================
+
       Changing Selection For Deletions
       
 ======================================================= */

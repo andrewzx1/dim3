@@ -259,7 +259,8 @@ void piece_add_obj_mesh(void)
 {
 	int					n,k,nline,nvertex,npoly,nuv,nnormal,npt,
 						v_idx,uv_idx,normal_idx,normal_count,
-						mesh_idx,poly_idx,txt_idx,old_nmesh,x,y,z;
+						mesh_idx,poly_idx,txt_idx,old_nmesh,x,y,z,
+						scale_axis,scale_unit;
 	int					px[8],py[8],pz[8];
 	char				*c,txt[256],material_name[256],
 						vstr[256],uvstr[256],normalstr[256],path[1024];
@@ -417,7 +418,27 @@ void piece_add_obj_mesh(void)
 		
 	os_set_arrow_cursor();
 
-	replace=dialog_mesh_scale_run(&min,&max,replace_ok,f_old_scale,&f_scale);
+	replace=dialog_mesh_scale_run(replace_ok,&scale_axis,&scale_unit);
+
+	if (replace) {
+		f_scale=f_old_scale;
+		if (f_scale==0.0f) f_scale=1.0f;
+	}
+	else {
+		f_scale=1.0f;
+		
+		switch (scale_axis) {
+			case 0:
+				f_scale=((float)scale_unit)/(max.x-min.x);
+				break;
+			case 1:
+				f_scale=((float)scale_unit)/(max.y-min.y);
+				break;
+			case 2:
+				f_scale=((float)scale_unit)/(max.z-min.z);
+				break;
+		}
+	}
 	
 		// start progress
 		

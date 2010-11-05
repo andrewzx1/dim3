@@ -33,7 +33,43 @@ extern HWND						wnd;
 
 extern map_type					map;
 
+int								dialog_mesh_scale_axis,dialog_mesh_scale_unit;
 bool							dialog_mesh_scale_replace;
+
+// supergumba -- dialog helpers
+
+void win32_dialog_set_int(HWND diag,int id,int value)
+{
+	char			str[32];
+
+	sprintf(str,"%d",value);
+	SendDlgItemMessage(diag,id,WM_SETTEXT,0,(LPARAM)str);
+}
+
+int win32_dialog_get_int(HWND diag,int id)
+{
+	char			str[32];
+
+	SendDlgItemMessage(diag,id,WM_GETTEXT,32,(LPARAM)str);
+	return(atoi(str));
+}
+
+void win32_dialog_combo_add(HWND diag,int id,char *str)
+{
+	SendDlgItemMessage(diag,id,CB_ADDSTRING,0,(LPARAM)str);
+}
+
+void win32_dialog_combo_set_value(HWND diag,int id,int value)
+{
+	SendDlgItemMessage(diag,id,CB_SETCURSEL,value,0);
+}
+
+int win32_dialog_combo_get_value(HWND diag,int id)
+{
+	return(SendDlgItemMessage(diag,id,CB_GETCURSEL,0,0));
+}
+
+
 
 /* =======================================================
 
@@ -41,15 +77,27 @@ bool							dialog_mesh_scale_replace;
       
 ======================================================= */
 
+void dialog_mesh_scale_set(HWND diag)
+{
+	win32_dialog_combo_add(diag,IDC_MESH_SCALE_AXIS,"X");
+	win32_dialog_combo_add(diag,IDC_MESH_SCALE_AXIS,"Y");
+	win32_dialog_combo_add(diag,IDC_MESH_SCALE_AXIS,"Z");
+	win32_dialog_combo_set_value(diag,IDC_MESH_SCALE_AXIS,0);
+	win32_dialog_set_int(diag,IDC_MESH_SCALE_UNITS,(20*map_enlarge));
+}
+
+void dialog_mesh_scale_get(HWND diag)
+{
+	dialog_mesh_scale_axis=win32_dialog_combo_get_value(diag,IDC_MESH_SCALE_AXIS);
+	dialog_mesh_scale_unit=win32_dialog_get_int(diag,IDC_MESH_SCALE_UNITS);
+}
+
 LRESULT CALLBACK dialog_mesh_scale_proc(HWND diag,UINT msg,WPARAM wparam,LPARAM lparam)
 {
-//	LPNMHDR			hdr;
-
 	switch (msg) {
 
 		case WM_INITDIALOG:
-		//	SetWindowText(diag,fp_dialog_name);
-		//	dialog_file_open_set(diag);
+			dialog_mesh_scale_set(diag);
 			return(TRUE);
 
 		case WM_COMMAND:
@@ -58,26 +106,17 @@ LRESULT CALLBACK dialog_mesh_scale_proc(HWND diag,UINT msg,WPARAM wparam,LPARAM 
 
 				case ID_MESH_SCALE_SCALE:
 					dialog_mesh_scale_replace=FALSE;
+					dialog_mesh_scale_get(diag);
 					EndDialog(diag,0);
 					return(TRUE);
 
 				case ID_MESH_SCALE_REPLACE:
 					dialog_mesh_scale_replace=TRUE;
+					dialog_mesh_scale_get(diag);
 					EndDialog(diag,0);
 					return(TRUE);
 
 			}
-
-			break;
-
-		case WM_NOTIFY:
-
-		//	hdr=(LPNMHDR)lparam;
-
-		//	if ((hdr->idFrom==IDC_FILE_OPEN_TREE) && (hdr->code==NM_DBLCLK)) {
-		//		if (!dialog_file_open_get(diag)) return(FALSE);
-		//		EndDialog(diag,0);
-		//	}
 
 			break;
 
@@ -86,96 +125,21 @@ LRESULT CALLBACK dialog_mesh_scale_proc(HWND diag,UINT msg,WPARAM wparam,LPARAM 
 	return(FALSE);
 }
 
-
-
 /* =======================================================
 
       Run Mesh Scale Dialog
       
 ======================================================= */
 
-bool dialog_mesh_scale_run(d3fpnt *min,d3fpnt *max,bool replace_ok,float old_scale,float *scale)
+bool dialog_mesh_scale_run(bool replace_ok,int *scale_axis,int *scale_unit)
 {
-	*scale=1000.0f;
-	return(FALSE);
-
-	/*
-	bool			ok;
-
-		// run dialog
-
 	dialog_mesh_scale_replace=FALSE;
 
-	ok=(DialogBox(hinst,MAKEINTRESOURCE(IDD_MESH_SCALE),NULL,dialog_mesh_scale_proc)==0);
-	
-	if (!ok) return(FALSE);
+	DialogBox(hinst,MAKEINTRESOURCE(IDD_MESH_SCALE),NULL,dialog_mesh_scale_proc);
 
-
-
+	*scale_axis=dialog_mesh_scale_axis;
+	*scale_unit=dialog_mesh_scale_unit;
 
 	return(dialog_mesh_scale_replace);
-*/
-/*
-
-	int						sz;
-	EventHandlerUPP			event_upp;
-	EventTypeSpec			event_list[]={{kEventClassCommand,kEventProcessCommand}};
-	
-		// open the dialog
-		
-	dialog_open(&dialog_mesh_scale_wind,"MeshScale");
-
-		// set controls
-		
-	dialog_set_combo(dialog_mesh_scale_wind,kMeshScaleAxis,0,0);
-	dialog_set_int(dialog_mesh_scale_wind,kMeshScaleScale,0,(20*map_enlarge));
-	dialog_set_focus(dialog_mesh_scale_wind,kMeshScaleScale,0);
-	
-	dialog_enable(dialog_mesh_scale_wind,kMeshScaleButtonReplace,0,replace_ok);
-	
-		// show window
-	
-	ShowWindow(dialog_mesh_scale_wind);
-	
-		// install event handler
-		
-	event_upp=NewEventHandlerUPP(dialog_mesh_scale_event_proc);
-	InstallWindowEventHandler(dialog_mesh_scale_wind,event_upp,GetEventTypeCount(event_list),event_list,NULL,NULL);
-	
-		// modal window
-		
-	dialog_mesh_scale_replace=FALSE;
-	
-	RunAppModalLoopForWindow(dialog_mesh_scale_wind);
-	
-		// dialog to data
-		
-	if (dialog_mesh_scale_replace) {
-		*scale=old_scale;
-		if (*scale==0.0f) *scale=1.0f;
-	}
-	else {
-		*scale=1.0f;
-		
-		sz=dialog_get_int(dialog_mesh_scale_wind,kMeshScaleScale,0);
-		
-		switch (dialog_get_combo(dialog_mesh_scale_wind,kMeshScaleAxis,0)) {
-			case 0:
-				*scale=((float)sz)/(max->x-min->x);
-				break;
-			case 1:
-				*scale=((float)sz)/(max->y-min->y);
-				break;
-			case 2:
-				*scale=((float)sz)/(max->z-min->z);
-				break;
-		}
-		
-	}
-	
-		// close window
-		
-	DisposeWindow(dialog_mesh_scale_wind);
-	*/
 }
 
