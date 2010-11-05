@@ -60,7 +60,6 @@ void menu_fix_enable(void)
 		os_menu_enable_item(app_menu_mesh,0,FALSE);
 		os_menu_enable_item(app_menu_polygon,0,FALSE);
 		os_menu_enable_item(app_menu_vertex,0,FALSE);
-		os_menu_enable_item(app_menu_groups,0,FALSE);
 	}
 	else {
 	
@@ -77,7 +76,6 @@ void menu_fix_enable(void)
 		os_menu_enable_item(app_menu_edit,0,TRUE);
 		os_menu_enable_item(app_menu_view,0,TRUE);
 		os_menu_enable_item(app_menu_map,0,TRUE);
-		os_menu_enable_item(app_menu_groups,0,TRUE);
         
             // pieces menu
         
@@ -367,8 +365,16 @@ bool menu_event_run(int cmd)
 			dialog_map_settings_run();
 			return(TRUE);
 			
-		case kCommandMapCinemas:
-			dialog_map_cinemas_run();
+		case kCommandMapAddCinema:
+			dialog_map_cinemas_run(-1);
+			return(TRUE);
+
+		case kCommandMapAddGroup:
+			dialog_map_groups_run(-1);
+			return(TRUE);
+
+		case kCommandMapAddMovement:
+			dialog_map_movements_run(-1);
 			return(TRUE);
 			
 		case kCommandMapRaiseY:
@@ -577,16 +583,6 @@ bool menu_event_run(int cmd)
 		case kCommandVertexSnapToGrid:
 			piece_mesh_vertexes_snap_to_grid();
 			main_wind_draw();
-			return(TRUE);
-			
-			// group menu
-			
-		case kCommandGroups:
-			dialog_map_groups_run();
-			return(TRUE);
-
-		case kCommandGroupMovements:
-			dialog_map_movements_run();
 			return(TRUE);
 
 	}

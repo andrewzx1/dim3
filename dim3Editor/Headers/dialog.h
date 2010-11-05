@@ -97,11 +97,11 @@ extern bool dialog_file_open_run(char *dialog_name,char *search_path,char *exten
 //
 
 extern bool dialog_map_settings_run(void);
-extern bool dialog_map_cinemas_run(void);
+extern bool dialog_map_cinemas_run(int cinema_idx);
 extern bool dialog_cinema_settings_run(map_cinema_type *cinema);
 extern bool dialog_cinema_action_settings_run(map_cinema_action_type *action);
-extern bool dialog_map_groups_run(void);
-extern bool dialog_map_movements_run(void);
+extern bool dialog_map_groups_run(int group_idx);
+extern bool dialog_map_movements_run(int movement_idx);
 extern bool dialog_movement_settings_run(movement_type *movement);
 extern bool dialog_movement_move_settings_run(movement_move_type *move);
 extern bool dialog_optimize_run(int *poly_threshold);
@@ -122,7 +122,7 @@ extern bool dialog_free_rotate_run(float *rot_x,float *rot_y,float *rot_z);
 //
 
 extern bool dialog_create_grid_mesh_run(int *xdiv,int *ydiv,int *zdiv);
-extern bool dialog_mesh_scale_run(d3fpnt *min,d3fpnt *max,bool replace_ok,float old_scale,float *scale);
+extern bool dialog_mesh_scale_run(bool replace_ok,int *scale_axis,int *scale_unit);
 
 //
 // texture dialogs

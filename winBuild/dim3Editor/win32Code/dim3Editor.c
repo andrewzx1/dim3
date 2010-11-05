@@ -1,5 +1,6 @@
 #include "dim3Editor.h"
 
+#include "glue.h"
 #include "interface.h"
 #include "view.h"
 
@@ -68,19 +69,19 @@ bool dialog_map_settings_run(void)
 {
 	return(FALSE);
 }
-bool dialog_map_cinemas_run(void)
+bool dialog_map_cinemas_run(int cinema_idx)
 {
 	return(FALSE);
 }
-bool dialog_map_movements_run(void)
+bool dialog_map_groups_run(int group_idx)
+{
+	return(FALSE);
+}
+bool dialog_map_movements_run(int movement_idx)
 {
 	return(FALSE);
 }
 bool dialog_movement_settings_run(movement_type *movement)
-{
-	return(FALSE);
-}
-bool dialog_map_groups_run(void)
 {
 	return(FALSE);
 }
@@ -193,11 +194,11 @@ LRESULT CALLBACK editor_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam)
 			}
 			else {
 				if (pnt.y>=txt_palette_box.ty) {
-					texture_palette_click(map.textures,&pnt,FALSE);
+					texture_palette_click(map.textures,&pnt,FALSE);	// supergumba -- need double click here!
 				}
 				else {
 					if (pnt.x>=item_palette_box.lx) {
-						item_palette_click(&pnt);
+						item_palette_click(&pnt,FALSE);		// supergumba -- need double click here!
 					}
 					else {
 						view_click(&pnt,FALSE);
@@ -226,7 +227,11 @@ LRESULT CALLBACK editor_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam)
 			break;
 
 		case WM_CLOSE:
-			quit=TRUE;
+			if (state.map_opened) {
+				if (!menu_save_changes_dialog()) return(0);
+				file_close_map();
+			}
+			os_application_quit();
 			break;
 
 		default:
@@ -375,6 +380,7 @@ void main_wind_open(void)
 void main_wind_close(void)
 {
 	view_shutdown();
+	item_palette_shutdown();
 	tool_palette_shutdown();
 	text_shutdown();
 

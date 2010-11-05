@@ -62,21 +62,23 @@ BEGIN
     BEGIN
         MENUITEM "Settings...",					400
 		MENUITEM SEPARATOR
-        MENUITEM "Cinemas...",					401
+        MENUITEM "Add Cinema...",				401
+        MENUITEM "Add Group...",				402
+        MENUITEM "Add Movement...",				403
 		MENUITEM SEPARATOR
-        MENUITEM "Raise Y",						402
-        MENUITEM "Lower Y",						403
-        MENUITEM "Center",						404
+        MENUITEM "Raise Y",						404
+        MENUITEM "Lower Y",						405
+        MENUITEM "Center",						406
 		MENUITEM SEPARATOR
-        MENUITEM "Reset UVs",					405
-        MENUITEM "Optimize Meshes...",			406
+        MENUITEM "Reset UVs",					407
+        MENUITEM "Optimize Meshes...",			408
 		MENUITEM SEPARATOR
-        MENUITEM "Recalc Normals",				407
+        MENUITEM "Recalc Normals",				409
 		MENUITEM SEPARATOR
-        MENUITEM "Clear Light Maps",			408
-        MENUITEM "Build Light Maps...",			409
+        MENUITEM "Clear Light Maps",			410
+        MENUITEM "Build Light Maps...",			411
 		MENUITEM SEPARATOR
-        MENUITEM "Run...",						410
+        MENUITEM "Run...",						412
     END
     POPUP "Mesh"
     BEGIN
@@ -132,11 +134,6 @@ BEGIN
     BEGIN
         MENUITEM "Snap All Vertexes To Grid",	700
     END
-    POPUP "Group"
-    BEGIN
-        MENUITEM "Groups...",					800
-        MENUITEM "Group Movements...",			801
-    END
 END
 
 /////////////////////////////////////////////////////////////////////////////
@@ -172,7 +169,7 @@ BEGIN
     PUSHBUTTON      "Replace",ID_MESH_SCALE_REPLACE,7,73,50,14
     LTEXT           "Click Scale to import this OBJ to the specific dim3 unit size on the specific axis.  Click Replace to replace the currently selected mesh with this OBJ using the scale the original mesh was loaded in on.",
                     IDC_STATIC,7,7,252,27
-    COMBOBOX        IDC_MESH_SCALE_AXIS,42,45,48,30,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    COMBOBOX        IDC_MESH_SCALE_AXIS,42,45,48,130,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
     LTEXT           "Scale",IDC_STATIC,19,47,21,8
     LTEXT           "to",IDC_STATIC,97,47,12,8
     LTEXT           "dim3 Units",IDC_STATIC,180,47,43,8

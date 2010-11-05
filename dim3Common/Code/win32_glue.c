@@ -254,11 +254,16 @@ void os_dialog_alert(char *title,char *msg)
 	MessageBox(NULL,msg,title,MB_ICONINFORMATION|MB_OK);
 }
 
-int os_dialog_confirm(char *title,char *msg)
+int os_dialog_confirm(char *title,char *msg,bool include_cancel)
 {
 	int			rtn;
 	
-	rtn=MessageBox(NULL,msg,title,MB_ICONINFORMATION|MB_YESNOCANCEL);
+	if (include_cancel) {
+		rtn=MessageBox(NULL,msg,title,MB_ICONINFORMATION|MB_YESNOCANCEL);
+	}
+	else {
+		rtn=MessageBox(NULL,msg,title,MB_ICONINFORMATION|MB_YESNO);
+	}
 
 	if (rtn==IDYES) return(0);
 	if (rtn==IDNO) return(2);
@@ -278,6 +283,17 @@ bool os_load_file(char *path,char *ext)
 					initial_dir[1024],*c;
 	OPENFILENAME	ofn;
 
+	GetModuleFileName(NULL,initial_dir,1024);
+
+	if (initial_dir[0]=='\"') {				// parse out the quotes
+		strcpy(initial_dir,(char*)&initial_dir[1]);
+		c=strchr(initial_dir,'\"');
+		if (c!=NULL) *c=0x0;
+	}
+
+	c=strrchr(initial_dir,'\\');
+	if (c!=0x0) *(c+1)=0x0;
+
 		// setup call
 
 	ext2[0]=toupper(ext[0]);
@@ -287,16 +303,8 @@ bool os_load_file(char *path,char *ext)
 
 	sprintf(filter,"%s Files\0*.%s\0\0",ext2,ext);
 
-	GetModuleFileName(NULL,initial_dir,1024);
-
-	if (initial_dir[0]=='\"') {				// parse out the quotes
-		strcpy(initial_dir,(char*)&initial_dir[1]);
-		c=strchr(initial_dir,'\"');
-		if (c!=NULL) *c=0x0;
-	}
-
-	path[0]=0x0;
 	file_title[0]=0x0;
+	sprintf(path,"*.%s",ext);
 
 		// get file
 

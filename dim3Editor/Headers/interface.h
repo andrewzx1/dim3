@@ -71,9 +71,11 @@ extern void texture_palette_click(texture_type *txt_list,d3pnt *pnt,bool dbl_cli
 //
 
 extern void item_palette_initialize(void);
+extern void item_palette_shutdown(void);
 extern void item_palette_setup(void);
 extern void item_palette_draw(void);
-extern void item_palette_click(d3pnt *pnt);
+extern void item_palette_reset(void);
+extern void item_palette_click(d3pnt *pnt,bool dblclick);
 
 //
 // main window
@@ -157,6 +159,8 @@ extern bool select_check(int type,int main_idx,int sub_idx);
 extern bool select_has_type(int type);
 extern void select_flip(int type,int main_idx,int sub_idx);
 extern void select_remove_type(int type);
+extern void select_add_group(int group_idx);
+extern void select_add_movement(int movement_idx);
 extern void select_delete_move_index(int type,int main_idx,int sub_idx);
 extern void select_sort(void);
 extern void select_duplicate_clear(void);

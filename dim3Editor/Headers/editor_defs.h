@@ -131,6 +131,9 @@ and can be sold or given away.
 #define light_piece								105
 #define sound_piece								106
 #define particle_piece							107
+#define group_piece								108
+#define movement_piece							109
+#define cinema_piece							110
 
 //
 // movement scales
@@ -198,7 +201,6 @@ and can be sold or given away.
 #define app_menu_mesh							133
 #define app_menu_polygon						134
 #define app_menu_vertex							135
-#define app_menu_groups							136
 
 #define kCommandAbout							FOUR_CHAR_CODE('abot')
 #define kCommandPreference						FOUR_CHAR_CODE('pref')
@@ -237,7 +239,9 @@ and can be sold or given away.
 #define kCommandViewRemoveSplit					FOUR_CHAR_CODE('sprm')
 
 #define kCommandMapSettings						FOUR_CHAR_CODE('mset')
-#define kCommandMapCinemas						FOUR_CHAR_CODE('cinm')
+#define kCommandMapAddCinema					FOUR_CHAR_CODE('macn')
+#define kCommandMapAddGroup						FOUR_CHAR_CODE('magp')
+#define kCommandMapAddMovement					FOUR_CHAR_CODE('mamv')
 #define kCommandMapRaiseY						FOUR_CHAR_CODE('mrsy')
 #define kCommandMapLowerY						FOUR_CHAR_CODE('mlwy')
 #define kCommandMapCenter						FOUR_CHAR_CODE('mctr')
