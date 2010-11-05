@@ -252,7 +252,8 @@ typedef struct		{
 					} play_blend_type;
 					
 typedef struct		{
-						int					drag_bone_mode,select_mode;
+						int					drag_bone_mode,select_mode,
+											sel_trig_idx;
 						bool				texture,mesh,bone,hit_box,
 											normal,view_box,first_mesh,
 											playing,play_animate_blend;

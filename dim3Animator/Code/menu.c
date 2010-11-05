@@ -73,6 +73,8 @@ void menu_start(void)
 	state.select_mode=select_mode_vertex;
 	state.drag_bone_mode=drag_bone_mode_rotate;
 	
+	state.sel_trig_idx=-1;
+	
 	fix_menus();
 }
 
@@ -92,6 +94,8 @@ void windows_start(void)
 	
 	state.playing=FALSE;
 	state.play_animate_blend=FALSE;
+	
+	state.sel_trig_idx=1;		// supergumba -- testing
 	
 	for (n=0;n!=max_model_blend_animation;n++) {
 		state.blend[n].animate_idx=-1;
@@ -151,7 +155,7 @@ bool save_binary(void)
 	ok=model_save(&model);
 	os_set_arrow_cursor();
 	
-	if (!ok) dialog_alert("dim3 Animator could not save model.","The disk might be locked or a folder might be missing.\n\nIf you are running dim3 directly from the DMG file, then you need to move the files to your harddrive (DMGs are read-only).");
+	if (!ok) os_dialog_alert("dim3 Animator could not save model.","The disk might be locked or a folder might be missing.\n\nIf you are running dim3 directly from the DMG file, then you need to move the files to your harddrive (DMGs are read-only).");
 	
 	return(ok);
 }
@@ -314,7 +318,7 @@ void import_mesh_obj(void)
 	model.meshes[cur_mesh].nvertex=model.meshes[cur_mesh].ntrig=0;
 	
 	if (!import_obj(path,&found_normals,err_str)) {
-		dialog_alert("Could not import .OBJ file",err_str);
+		os_dialog_alert("Could not import .OBJ file",err_str);
 		return;
 	}
 
@@ -347,7 +351,7 @@ void import_mesh_lightwave(void)
 	model.meshes[cur_mesh].nvertex=model.meshes[cur_mesh].ntrig=0;
 	
 	if (!import_lightwave(path,err_str)) {
-		dialog_alert("Could not import .LWO file",err_str);
+		os_dialog_alert("Could not import .LWO file",err_str);
 		return;
 	}
 	
@@ -380,7 +384,7 @@ void import_mesh_c4d_xml(void)
 	model.meshes[cur_mesh].nvertex=model.meshes[cur_mesh].ntrig=0;
 	
 	if (!import_c4d_xml(path,err_str)) {
-		dialog_alert("Could not import .XML file",err_str);
+		os_dialog_alert("Could not import .XML file",err_str);
 		return;
 	}
 	
@@ -515,7 +519,7 @@ bool menu_save_changes_dialog(void)
 {
 	int			choice;
 	
-	choice=dialog_confirm("Save Changes?","Do you want to save the changes to this model?");
+	choice=os_dialog_confirm("Save Changes?","Do you want to save the changes to this model?",TRUE);
 	if (choice==1) return(FALSE);
 	
 	if (choice==0) save_binary();
@@ -985,7 +989,7 @@ OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,void *us
 			
 		case kCommandNewPose:
  			if (model.nbone==0) {
-				dialog_alert("Can't Create Pose","You need to have at least one bone before creating a pose.");
+				os_dialog_alert("Can't Create Pose","You need to have at least one bone before creating a pose.");
 				return(noErr);
 			}
 			
@@ -1048,7 +1052,7 @@ OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,void *us
 			if (cur_pose==-1) return(noErr);
 
 			if (model_check_pose_in_animation(&model,cur_pose)) {
-				dialog_alert("Can't Delete Pose","This pose is being used in an animation.");
+				os_dialog_alert("Can't Delete Pose","This pose is being used in an animation.");
 				return(noErr);
 			}
 			
@@ -1111,7 +1115,7 @@ OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,void *us
 			
 		case kCommandNewAnimate:
 			if (model.npose==0) {
-				dialog_alert("Can't Create Animation","You need to have at least one pose before creating an animation.");
+				os_dialog_alert("Can't Create Animation","You need to have at least one pose before creating an animation.");
 				return(noErr);
 			}
 			

@@ -58,6 +58,6 @@ extern bool os_button_down(void);
 extern bool os_track_mouse_location(d3pnt *pt,d3rect *offset_box);
 
 extern void os_dialog_alert(char *title,char *msg);
-extern int os_dialog_confirm(char *title,char *msg);
+extern int os_dialog_confirm(char *title,char *msg,bool include_cancel);
 
 extern bool os_load_file(char *path,char *ext);

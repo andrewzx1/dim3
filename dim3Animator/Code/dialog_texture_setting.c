@@ -263,7 +263,7 @@ bool texture_setting_bitmap_open(char *bitmap_name)
 		
 	file_paths_data(&file_path_setup,path,sub_path,bitmap_name,"png");
 	if (!bitmap_check(path,err_str)) {
-		dialog_alert("Texture Error",err_str);
+		os_dialog_alert("Texture Error",err_str);
 		return(FALSE);
 	}
 	

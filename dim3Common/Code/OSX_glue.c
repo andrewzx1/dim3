@@ -217,7 +217,7 @@ bool os_track_mouse_location(d3pnt *pt,d3rect *offset_box)
       
 ======================================================= */
 
-int dialog_alert(char *title,char *msg)
+int os_dialog_alert(char *title,char *msg)
 {
 	CFStringRef			cf_title_str,cf_msg_str;
 	CFOptionFlags		resp;
@@ -235,7 +235,7 @@ int dialog_alert(char *title,char *msg)
 	return(resp);
 }
 
-int dialog_confirm(char *title,char *msg)
+int os_dialog_confirm(char *title,char *msg,bool include_cancel)
 {
 	CFStringRef			cf_title_str,cf_msg_str,
 						cf_butt_1_str,cf_butt_2_str,cf_butt_3_str;
@@ -247,13 +247,18 @@ int dialog_confirm(char *title,char *msg)
 	cf_msg_str=CFStringCreateWithCString(kCFAllocatorDefault,msg,kCFStringEncodingMacRoman);
 
 	cf_butt_1_str=CFStringCreateWithCString(kCFAllocatorDefault,"Yes",kCFStringEncodingMacRoman);
-	cf_butt_2_str=CFStringCreateWithCString(kCFAllocatorDefault,"Cancel",kCFStringEncodingMacRoman);
+	if (include_cancel) {
+		cf_butt_2_str=CFStringCreateWithCString(kCFAllocatorDefault,"Cancel",kCFStringEncodingMacRoman);
+	}
+	else {
+		cf_butt_2_str=NULL;
+	}
 	cf_butt_3_str=CFStringCreateWithCString(kCFAllocatorDefault,"No",kCFStringEncodingMacRoman);
 	
 	CFUserNotificationDisplayAlert(0,kCFUserNotificationNoteAlertLevel,NULL,NULL,NULL,cf_title_str,cf_msg_str,cf_butt_1_str,cf_butt_2_str,cf_butt_3_str,&resp);
 	
 	CFRelease(cf_butt_1_str);
-	CFRelease(cf_butt_2_str);
+	if (include_cancel) CFRelease(cf_butt_2_str);
 	CFRelease(cf_butt_3_str);
 	
 	CFRelease(cf_title_str);

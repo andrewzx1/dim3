@@ -33,7 +33,7 @@ extern model_type				model;
 extern animator_state_type		state;
 extern file_path_setup_type		file_path_setup;
 
-extern int						tool_pixel_sz;
+extern int						tool_palette_pixel_sz;
 extern d3rect					tool_palette_box;
 
 /* =======================================================
@@ -48,13 +48,13 @@ void tool_palette_setup(void)
 	
 	os_get_window_box(&wbox);
 
-	tool_pixel_sz=(wbox.rx-wbox.lx)/tool_count;
-	if (tool_pixel_sz>tool_button_size) tool_pixel_sz=tool_button_size;
+	tool_palette_pixel_sz=(wbox.rx-wbox.lx)/tool_count;
+	if (tool_palette_pixel_sz>tool_button_size) tool_palette_pixel_sz=tool_button_size;
 	
 	tool_palette_box.lx=wbox.lx;
 	tool_palette_box.rx=wbox.rx;
 	tool_palette_box.ty=wbox.ty;
-	tool_palette_box.by=wbox.ty+(tool_pixel_sz+1);
+	tool_palette_box.by=wbox.ty+(tool_palette_pixel_sz+1);
 }
 
 /* =======================================================

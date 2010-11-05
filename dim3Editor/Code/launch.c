@@ -52,13 +52,13 @@ void launch_engine(void)
 	file_paths_base(&file_path_setup,path,setup.engine_name,"app");
 
 	if (FSPathMakeRef((unsigned char*)path,&fsref,NULL)!=0) {
-		dialog_alert("Launch Engine","Could not find Engine, check engine name in preferences.");
+		os_dialog_alert("Launch Engine","Could not find Engine, check engine name in preferences.");
 		return;
     }
 	
 		// ok to save?
 	
-	if (dialog_confirm("Save Changes and Launch Engine?","You need to save changes to this map before you can launch the engine.  Click Run to save changes and launch the map in the engine.","Run","Cancel",NULL)!=0) return;
+	if (os_dialog_confirm("Save Changes and Launch Engine?","You need to save changes to this map before you can launch the engine.  Click Yes to save changes and launch the map in the engine.",FALSE)!=0) return;
 
 		// save the map
 		
@@ -111,7 +111,7 @@ void launch_map_script_editor(void)
 	
 	cf_url=CFURLCreateFromFSRef(kCFAllocatorDefault,&fsref);
 	if (cf_url==NULL) {
-		dialog_alert("Could not locate script file","No script file with this name exists.");
+		os_dialog_alert("Could not locate script file","No script file with this name exists.");
 		return;
 	}
 
@@ -138,7 +138,7 @@ void launch_spot_script_editor(char *script_name)
 	
 	cf_url=CFURLCreateFromFSRef(kCFAllocatorDefault,&fsref);
 	if (cf_url==NULL) {
-		dialog_alert("Could not locate script file","No script file with this name exists.");
+		os_dialog_alert("Could not locate script file","No script file with this name exists.");
 		return;
 	}
 	

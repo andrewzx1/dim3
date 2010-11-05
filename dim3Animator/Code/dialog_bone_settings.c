@@ -97,7 +97,7 @@ static pascal OSStatus bone_settings_event_proc(EventHandlerCallRef handler,Even
 					memmove(&tag,str,4);
 						
 					if (tag==model_null_tag) {
-						dialog_alert("Bad Bone Tag","Bones require a tag to uniquely identify them.  ???? is the null tag and is not allowed.  Please pick a proper 4 charater tag.");
+						os_dialog_alert("Bad Bone Tag","Bones require a tag to uniquely identify them.  ???? is the null tag and is not allowed.  Please pick a proper 4 charater tag.");
 						return(noErr);
 					}
 					
@@ -106,7 +106,7 @@ static pascal OSStatus bone_settings_event_proc(EventHandlerCallRef handler,Even
 					
 					if (model_check_bone_duplicate_tag(&model,bone)) {
 						bone->tag=old_bone_tag;
-						dialog_alert("Bad Bone Tag","Bones require a tag to uniquely identify them.  This tag is already being used by another bone, choose another 4 character tag.");
+						os_dialog_alert("Bad Bone Tag","Bones require a tag to uniquely identify them.  This tag is already being used by another bone, choose another 4 character tag.");
 						return(noErr);
 					}
 					
@@ -119,7 +119,7 @@ static pascal OSStatus bone_settings_event_proc(EventHandlerCallRef handler,Even
 						
 					if (model_check_bone_circular(&model,bone)) {
 						bone->parent_idx=old_parent_idx;
-						dialog_alert("Bad Bone Parenting","The parent of this bone will make a set of bones with circular references.  Please change the parent tag.");
+						os_dialog_alert("Bad Bone Parenting","The parent of this bone will make a set of bones with circular references.  Please change the parent tag.");
 						return(noErr);
 					}
 					

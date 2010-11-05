@@ -26,6 +26,7 @@
 		264A47620F760AD40054BAA6 /* palette_particle.c in Sources */ = {isa = PBXBuildFile; fileRef = 264A47610F760AD40054BAA6 /* palette_particle.c */; };
 		264A47890F760CC60054BAA6 /* palette_light.c in Sources */ = {isa = PBXBuildFile; fileRef = 264A47880F760CC60054BAA6 /* palette_light.c */; };
 		264A478B0F760CCA0054BAA6 /* palette_sound.c in Sources */ = {isa = PBXBuildFile; fileRef = 264A478A0F760CCA0054BAA6 /* palette_sound.c */; };
+		265AB84712835C9E00F3F965 /* item_palette.c in Sources */ = {isa = PBXBuildFile; fileRef = 265AB84612835C9E00F3F965 /* item_palette.c */; };
 		265DCEA00F6CC13100C1E65D /* palette_mesh.c in Sources */ = {isa = PBXBuildFile; fileRef = 265DCE9F0F6CC13100C1E65D /* palette_mesh.c */; };
 		265DCEFB0F6D6A3E00C1E65D /* palette_polygon.c in Sources */ = {isa = PBXBuildFile; fileRef = 265DCEFA0F6D6A3E00C1E65D /* palette_polygon.c */; };
 		265DCF4D0F6DBF9D00C1E65D /* palette_liquid.c in Sources */ = {isa = PBXBuildFile; fileRef = 265DCF4C0F6DBF9D00C1E65D /* palette_liquid.c */; };
@@ -304,6 +305,7 @@
 		264A47610F760AD40054BAA6 /* palette_particle.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = palette_particle.c; path = Code/palette_particle.c; sourceTree = "<group>"; };
 		264A47880F760CC60054BAA6 /* palette_light.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = palette_light.c; path = Code/palette_light.c; sourceTree = "<group>"; };
 		264A478A0F760CCA0054BAA6 /* palette_sound.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = palette_sound.c; path = Code/palette_sound.c; sourceTree = "<group>"; };
+		265AB84612835C9E00F3F965 /* item_palette.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = item_palette.c; path = Code/item_palette.c; sourceTree = "<group>"; };
 		265DCE9F0F6CC13100C1E65D /* palette_mesh.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = palette_mesh.c; path = Code/palette_mesh.c; sourceTree = "<group>"; };
 		265DCEFA0F6D6A3E00C1E65D /* palette_polygon.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = palette_polygon.c; path = Code/palette_polygon.c; sourceTree = "<group>"; };
 		265DCF4C0F6DBF9D00C1E65D /* palette_liquid.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = palette_liquid.c; path = Code/palette_liquid.c; sourceTree = "<group>"; };
@@ -722,6 +724,7 @@
 		F5EC0BB200DDC1F701000001 /* Windows */ = {
 			isa = PBXGroup;
 			children = (
+				265AB84612835C9E00F3F965 /* item_palette.c */,
 				F54CD2090233430101250BB8 /* main_window.c */,
 				26C5F0EA126135DC000B0F9E /* tool_palette.c */,
 				26CF62A4126BDE55002DCC2A /* tool_palette_common.c */,
@@ -901,6 +904,7 @@
 				26452F1F127F9BA800043C34 /* view_draw_select.c in Sources */,
 				26452F20127F9BA800043C34 /* view_models.c in Sources */,
 				264530221280CF6B00043C34 /* auto_generate_story.c in Sources */,
+				265AB84712835C9E00F3F965 /* item_palette.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
