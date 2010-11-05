@@ -666,6 +666,10 @@ void model_wind_open(void)
 	
 	model_wind_setup();
 	
+		// vertex masks
+		
+	vertex_mask_initialize();
+	
 		// box from the controls
 		
 	GetWindowPortBounds(wind,&box);
@@ -725,6 +729,10 @@ void model_wind_close(void)
 		// close tool palette
 		
 	tool_palette_shutdown();
+	
+		// free vertex masks
+		
+	vertex_mask_shutdown();
 	
 		// close OpenGL contexts
 		

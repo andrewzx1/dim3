@@ -135,7 +135,7 @@ bool dialog_light_map_run(void)
 	map.settings.light_map.blur_count=blur_count;
 
 	ok=light_maps_create(err_str);
-	if (!ok) dialog_alert("Can not build light maps",err_str);
+	if (!ok) os_dialog_alert("Can not build light maps",err_str);
 	
 	return(ok);
 }

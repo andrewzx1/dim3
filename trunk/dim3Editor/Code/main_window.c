@@ -28,7 +28,7 @@ and can be sold or given away.
 #include "interface.h"
 #include "view.h"
 
-extern d3rect				tool_palette_box,txt_palette_box;
+extern d3rect				tool_palette_box,txt_palette_box,item_palette_box;
 
 extern map_type				map;
 extern editor_setup_type	setup;
@@ -113,6 +113,13 @@ OSStatus main_wind_event_callback(EventHandlerCallRef eventhandler,EventRef even
 					
 					if ((pt.v>=txt_palette_box.ty) && (pt.v<=txt_palette_box.by)) {
 						texture_palette_click(map.textures,&dpt,(nclick!=1));
+						return(noErr);
+					}
+					
+						// click in item palette
+						
+					if (pt.h>=item_palette_box.lx) {
+						item_palette_click(&dpt);
 						return(noErr);
 					}
 					
@@ -307,6 +314,9 @@ void main_wind_open(void)
 	
 	texture_palette_setup();
 	
+	item_palette_initialize();
+	item_palette_setup();
+	
 	main_wind_setup();
 	view_initialize();
    
@@ -387,6 +397,7 @@ void main_wind_resize(void)
 
 	tool_palette_setup();
 	texture_palette_setup();
+	item_palette_setup();
 	
 	main_wind_setup();
 	DrawControls(wind);
@@ -415,6 +426,7 @@ void main_wind_draw(void)
 		
 	tool_palette_draw();
 	texture_palette_draw(map.textures);
+	item_palette_draw();
 	
 		// swap GL buffer
 		
@@ -436,6 +448,7 @@ void main_wind_draw_no_swap(void)
 		
 	tool_palette_draw();
 	texture_palette_draw(map.textures);
+	item_palette_draw();
 }
 
 /* =======================================================

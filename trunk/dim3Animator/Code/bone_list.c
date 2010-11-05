@@ -347,7 +347,7 @@ static pascal Boolean bone_list_drag_receive_proc(ControlRef browser,DragReferen
 	
 	if (model_check_bone_circular(&model,&model.bones[idx])) {
 		model.bones[idx].parent_idx=old_parent_idx;
-		dialog_alert("Bad Bone Parenting","Dragging a bone to this location will make a set of bones with circular references.");
+		os_dialog_alert("Bad Bone Parenting","Dragging a bone to this location will make a set of bones with circular references.");
 	}
 	
 	model_calculate_parents(&model);

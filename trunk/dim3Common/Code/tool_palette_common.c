@@ -224,8 +224,8 @@ void tool_palette_draw(void)
 	glColor4f(0.0f,0.0f,0.0f,1.0f);
 
 	glBegin(GL_LINES);
-	glVertex2i(tool_palette_box.lx,(tool_palette_box.by-1));
-	glVertex2i(tool_palette_box.rx,(tool_palette_box.by-1));
+	glVertex2i(tool_palette_box.lx,tool_palette_box.by);
+	glVertex2i(tool_palette_box.rx,tool_palette_box.by);
 	glEnd();
 
 	glDisable(GL_ALPHA_TEST);

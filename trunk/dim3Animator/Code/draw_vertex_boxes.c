@@ -27,9 +27,13 @@ and can be sold or given away.
 
 #include "model.h"
 
+#define draw_model_normal_size			50.0f
+
+extern animator_state_type	state;
+
 /* =======================================================
 
-      Draw Vertexes
+      Draw Selected Vertexes
       
 ======================================================= */
 
@@ -38,8 +42,8 @@ void draw_model_selected_vertexes(model_type *model,int mesh_idx,model_draw_setu
 	int				n,nvertex;
 	float			*pv;
 	
-	glColor4f(0,0,0,1);
-	glPointSize(5);
+	glColor4f(0.0f,0.0f,0.0f,1.0f);
+	glPointSize(5.0f);
 	
 	nvertex=model->meshes[mesh_idx].nvertex;
 	pv=draw_setup->mesh_arrays[mesh_idx].gl_vertex_array;
@@ -52,7 +56,62 @@ void draw_model_selected_vertexes(model_type *model,int mesh_idx,model_draw_setu
 	}
 	
 	glEnd();
-	glPointSize(1);
+	
+	glPointSize(1.0f);
+}
+
+/* =======================================================
+
+      Draw Selected Trig
+      
+======================================================= */
+
+void draw_model_selected_trig(model_type *model,int mesh_idx,model_draw_setup *draw_setup)
+{
+	int					n,vertex_idx;
+	float				*pv;
+	model_trig_type		*trig;
+
+	if (state.sel_trig_idx==-1) return;
+	
+		// draw the selected trig
+		
+	glColor4f(1.0f,1.0f,0.0f,1.0f);
+	glLineWidth(5.0f);
+	
+	trig=&model->meshes[mesh_idx].trigs[state.sel_trig_idx];
+
+	glBegin(GL_LINE_LOOP);
+	
+	for (n=0;n!=3;n++) {
+		pv=draw_setup->mesh_arrays[mesh_idx].gl_vertex_array+(3*trig->v[n]);
+		glVertex3f(*pv,*(pv+1),*(pv+2));
+	}
+	
+	glEnd();
+	
+	glLineWidth(1.0f);
+	
+		// draw any selected vertexes
+		// on the trig
+	
+	glColor4f(0.0f,0.0f,0.0f,1.0f);
+	glPointSize(5.0f);
+	
+	glBegin(GL_POINTS);
+	
+	for (n=0;n!=3;n++) {
+		vertex_idx=trig->v[n];
+		if ((vertex_check_sel_mask(mesh_idx,vertex_idx)) && (!vertex_check_hide_mask(mesh_idx,vertex_idx))) {
+			pv=draw_setup->mesh_arrays[mesh_idx].gl_vertex_array+(3*vertex_idx);
+			glVertex3f(*pv,*(pv+1),*(pv+2));
+		}
+	}
+	
+	glEnd();
+	
+	glPointSize(1.0f);
+	
 }
 
 /* =======================================================
@@ -154,81 +213,6 @@ void draw_model_box_hit_boxes(model_type *model,model_draw_setup *draw_setup)
 
 /* =======================================================
 
-      Draw Model Normals
-      
-======================================================= */
-
-void draw_model_normals(model_type *model,int mesh_idx,model_draw_setup *draw_setup)
-{
-	int				n,k,ntrig;
-	float			fx,fy,fz,fx2,fy2,fz2,flsz;
-	float			*pv,*pt,*pn;
-	bool			has_sel;
-	model_trig_type	*trig;
-	
-		// normal line size
-		
-	flsz=50.0f;
-	
-		// is there a vertex selection?
-		
-	has_sel=vertex_check_any(mesh_idx);
-	
-		// draw normals
-	
-	glLineWidth(2.0f);
-	
-	glColor4f(1.0f,0.0f,1.0f,1.0f);
-	
-	glBegin(GL_LINES);
-	
-	ntrig=model->meshes[mesh_idx].ntrig;
-
-	for (n=0;n!=ntrig;n++) {
-	
-		trig=&model->meshes[mesh_idx].trigs[n];
-	
-			// only show normals for triangles
-			// with all vertexes showing
-			
-		if (vertex_check_hide_mask_trig(mesh_idx,trig)) continue;
-		
-		pt=draw_setup->mesh_arrays[mesh_idx].gl_tangent_array+(n*9);
-		pn=draw_setup->mesh_arrays[mesh_idx].gl_normal_array+(n*9);
-		
-			// vertex normals
-			
-		for (k=0;k!=3;k++) {
-				
-			if (has_sel) {
-				if (!vertex_check_sel_mask(mesh_idx,trig->v[k])) {
-					pn+=3;
-					continue;
-				}
-			}
-			
-			pv=draw_setup->mesh_arrays[mesh_idx].gl_vertex_array+(trig->v[k]*3);
-			fx=*pv++;
-			fy=*pv++;
-			fz=*pv;
-				
-			glVertex3f(fx,fy,fz);
-			
-			fx2=fx+((*pn++)*flsz);
-			fy2=fy+((*pn++)*flsz);
-			fz2=fz+((*pn++)*flsz);
-
-			glVertex3f(fx2,fy2,fz2);
-		}
-	}
-	
-	glEnd();
-	
-	glLineWidth(1.0f);
-}
-
-/* =======================================================
-
       Draw Model Axis
       
 ======================================================= */
@@ -261,5 +245,121 @@ void draw_model_axis(model_type *model)
 	glVertex3i(model->center.x,model->center.y,-20000);
 	glVertex3i(model->center.x,model->center.y,20000);
     glEnd();
+}
+
+/* =======================================================
+
+      Draw Model Normals
+      
+======================================================= */
+
+void draw_model_normals_vertexes(model_type *model,int mesh_idx,model_draw_setup *draw_setup)
+{
+	int				n,k,ntrig;
+	float			fx,fy,fz,fx2,fy2,fz2;
+	float			*pv,*pn;
+	bool			has_sel;
+	model_trig_type	*trig;
+	
+		// is there a vertex selection?
+		
+	has_sel=vertex_check_any(mesh_idx);
+	
+		// draw normals
+	
+	glLineWidth(2.0f);
+	
+	glColor4f(1.0f,0.0f,1.0f,1.0f);
+	
+	glBegin(GL_LINES);
+	
+	ntrig=model->meshes[mesh_idx].ntrig;
+
+	for (n=0;n!=ntrig;n++) {
+	
+		trig=&model->meshes[mesh_idx].trigs[n];
+	
+			// only show normals for triangles
+			// with all vertexes showing
+			
+		if (vertex_check_hide_mask_trig(mesh_idx,trig)) continue;
+		
+		pn=draw_setup->mesh_arrays[mesh_idx].gl_normal_array+(n*9);
+		
+			// vertex normals
+			
+		for (k=0;k!=3;k++) {
+				
+			if (has_sel) {
+				if (!vertex_check_sel_mask(mesh_idx,trig->v[k])) {
+					pn+=3;
+					continue;
+				}
+			}
+			
+			pv=draw_setup->mesh_arrays[mesh_idx].gl_vertex_array+(trig->v[k]*3);
+			fx=*pv++;
+			fy=*pv++;
+			fz=*pv;
+				
+			glVertex3f(fx,fy,fz);
+			
+			fx2=fx+((*pn++)*draw_model_normal_size);
+			fy2=fy+((*pn++)*draw_model_normal_size);
+			fz2=fz+((*pn++)*draw_model_normal_size);
+
+			glVertex3f(fx2,fy2,fz2);
+		}
+	}
+	
+	glEnd();
+	
+	glLineWidth(1.0f);
+}
+
+void draw_model_normals_trig(model_type *model,int mesh_idx,model_draw_setup *draw_setup)
+{
+	int				n;
+	float			fx,fy,fz,fx2,fy2,fz2;
+	float			*pv,*pn;
+	model_trig_type	*trig;
+	
+		// is there a trig selection?
+		
+	if (state.sel_trig_idx==-1) return;
+	
+		// get trig
+		
+	trig=&model->meshes[mesh_idx].trigs[state.sel_trig_idx];
+	
+		// draw trig normals
+	
+	glLineWidth(2.0f);
+	
+	glColor4f(1.0f,0.0f,1.0f,1.0f);
+	
+	glBegin(GL_LINES);
+	
+	pn=draw_setup->mesh_arrays[mesh_idx].gl_normal_array+(state.sel_trig_idx*9);
+		
+	for (n=0;n!=3;n++) {
+		
+		pv=draw_setup->mesh_arrays[mesh_idx].gl_vertex_array+(trig->v[n]*3);
+		fx=*pv++;
+		fy=*pv++;
+		fz=*pv;
+			
+		glVertex3f(fx,fy,fz);
+		
+		fx2=fx+((*pn++)*draw_model_normal_size);
+		fy2=fy+((*pn++)*draw_model_normal_size);
+		fz2=fz+((*pn++)*draw_model_normal_size);
+
+		glVertex3f(fx2,fy2,fz2);
+	}
+	
+	glEnd();
+	
+	glLineWidth(1.0f);
 }
 

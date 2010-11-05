@@ -177,8 +177,10 @@ void select_model_wind_vertex(d3pnt *start_pnt,unsigned long modifiers,float *pv
 	free(org_vertex_sel);
 }
 
-void select_model_wind_polygon(d3pnt *start_pnt,float *pv,double *mod_matrix,double *proj_matrix,double *vport)
+bool select_model_wind_polygon(d3pnt *start_pnt,float *pv,double *mod_matrix,double *proj_matrix,double *vport)
 {
+// supergumba -- do this!
+	return(FALSE);
 }
 
 void select_model_wind(d3pnt *start_pnt,unsigned long modifiers)
@@ -219,11 +221,13 @@ void select_model_wind(d3pnt *start_pnt,unsigned long modifiers)
 
 		// run the correct click
 		
-	if (state.select_mode==select_mode_vertex) {
-		select_model_wind_vertex(start_pnt,modifiers,pv,mod_matrix,proj_matrix,vport);
+	if (state.select_mode==select_mode_polygon) {
+		if (!select_model_wind_polygon(start_pnt,pv,mod_matrix,proj_matrix,vport)) {
+			select_model_wind_vertex(start_pnt,modifiers,pv,mod_matrix,proj_matrix,vport);
+		}
 	}
 	else {
-		select_model_wind_polygon(start_pnt,pv,mod_matrix,proj_matrix,vport);
+		select_model_wind_vertex(start_pnt,modifiers,pv,mod_matrix,proj_matrix,vport);
 	}
 	
 		// free the saved vertexes

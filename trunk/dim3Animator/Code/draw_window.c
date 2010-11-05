@@ -30,7 +30,7 @@ and can be sold or given away.
 d3rect						model_box,drag_sel_box;
 
 extern int					cur_mesh,cur_bone,magnify_z,
-							tool_pixel_sz,txt_palette_pixel_sz;
+							tool_palette_pixel_sz,txt_palette_pixel_sz;
 extern bool					fileopen,drag_sel_on;
 extern d3pnt				shift;
 extern d3ang				ang;
@@ -59,7 +59,7 @@ void model_wind_setup(void)
 	
 	model_box.lx=0;
 	model_box.rx=model_box.lx+x_sz;
-	model_box.ty=tool_pixel_sz;
+	model_box.ty=tool_palette_pixel_sz;
 	model_box.by=(wbox.by-wbox.ty)-txt_palette_pixel_sz;
 }
 
@@ -191,16 +191,25 @@ void draw_model_wind(model_type *model,int mesh_idx,model_draw_setup *draw_setup
 			draw_model_selected_vertexes(model,mesh_idx,draw_setup);
 		}
 		else {
-		//	draw_model_selected_trig(model,mesh_idx,draw_setup);
-		// supergumba
+			draw_model_selected_trig(model,mesh_idx,draw_setup);
 		}
 	}
 	
-		// boxes and normals
+		// boxes
 		
 	if (state.hit_box) draw_model_box_hit_boxes(model,draw_setup);
-	if (state.normal) draw_model_normals(model,mesh_idx,draw_setup);
 	if (state.view_box) draw_model_box_view(model,draw_setup);
+	
+		// normals
+		
+	if (state.normal) {
+		if (state.select_mode==select_mode_vertex) {
+			draw_model_normals_vertexes(model,mesh_idx,draw_setup);
+		}
+		else {
+			draw_model_normals_trig(model,mesh_idx,draw_setup);
+		}
+	}
 	
 		// free memory
 		

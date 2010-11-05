@@ -32,15 +32,19 @@ extern void draw_model_mesh(model_type *model,int mesh_idx,model_draw_setup *dra
 extern void draw_model_bones(model_type *model,model_draw_setup *draw_setup,int sel_bone_idx);
 
 extern void draw_model_selected_vertexes(model_type *model,int mesh_idx,model_draw_setup *draw_setup);
+extern void draw_model_selected_trig(model_type *model,int mesh_idx,model_draw_setup *draw_setup);
 extern void draw_model_box_view(model_type *model,model_draw_setup *draw_setup);
 extern void draw_model_box_hit_boxes(model_type *model,model_draw_setup *draw_setup);
-extern void draw_model_normals(model_type *model,int mesh_idx,model_draw_setup *draw_setup);
 extern void draw_model_axis(model_type *model);
+extern void draw_model_normals_vertexes(model_type *model,int mesh_idx,model_draw_setup *draw_setup);
+extern void draw_model_normals_trig(model_type *model,int mesh_idx,model_draw_setup *draw_setup);
 
 extern void draw_model_gl_setup(model_type *model,int z_offset);
 extern void draw_model_setup_pose(model_type *model,model_draw_setup *draw_setup,int wpose);
 extern void draw_model_wind_pose(model_type *model,int wmesh,int wpose);
 
+extern bool vertex_mask_initialize(void);
+extern void vertex_mask_shutdown(void);
 extern void vertex_clear_sel_mask(int mesh_idx);
 extern void vertex_set_sel_mask(int mesh_idx,int vertex_idx,bool value);
 extern void vertex_set_sel_mask_all(int mesh_idx);
