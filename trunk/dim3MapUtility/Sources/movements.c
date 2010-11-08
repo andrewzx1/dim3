@@ -40,8 +40,8 @@ int map_movement_find(map_type *map,char *name)
 	int				n,nmovement;
 	movement_type	*movement;
 	
-	nmovement=map->nmovement;
-	movement=map->movements;
+	nmovement=map->movement.nmovement;
+	movement=map->movement.movements;
 	
 	for (n=0;n!=nmovement;n++) {
 		if (strcmp(movement->name,name)==0) return(n);
@@ -61,10 +61,10 @@ int map_movement_add(map_type *map)
 {
 	movement_type		*movement;
 	
-	if (map->nmovement>=max_movement) return(-1);
+	if (map->movement.nmovement>=max_movement) return(-1);
 	
-	movement=&map->movements[map->nmovement];
-	map->nmovement++;
+	movement=&map->movement.movements[map->movement.nmovement];
+	map->movement.nmovement++;
 	
 	strcpy(movement->name,"New Movement");
 	movement->group_idx=0;
@@ -78,15 +78,15 @@ int map_movement_add(map_type *map)
 	
 	movement->nmove=0;
 	
-	return(map->nmovement-1);
+	return(map->movement.nmovement-1);
 }
 
 void map_movement_delete(map_type *map,int movement_idx)
 {
-	if (movement_idx<(map->nmovement-1)) {
-		memmove(&map->movements[movement_idx],&map->movements[movement_idx+1],(sizeof(movement_type)*((map->nmovement-movement_idx)-1)));
+	if (movement_idx<(map->movement.nmovement-1)) {
+		memmove(&map->movement.movements[movement_idx],&map->movement.movements[movement_idx+1],(sizeof(movement_type)*((map->movement.nmovement-movement_idx)-1)));
 	}
-	map->nmovement--;
+	map->movement.nmovement--;
 }
 
 /* =======================================================
@@ -100,7 +100,7 @@ int map_movement_move_add(map_type *map,int movement_idx)
 	movement_type		*movement;
 	movement_move_type	*move;
 	
-	movement=&map->movements[movement_idx];
+	movement=&map->movement.movements[movement_idx];
 	if (movement->nmove>=max_movement_move) return(-1);
 	
 	move=&movement->moves[movement->nmove];
@@ -120,7 +120,7 @@ void map_movement_move_delete(map_type *map,int movement_idx,int move_idx)
 {
 	movement_type		*movement;
 	
-	movement=&map->movements[movement_idx];
+	movement=&map->movement.movements[movement_idx];
 	
 	if (move_idx<(movement->nmove-1)) {
 		memmove(&movement->moves[move_idx],&movement->moves[move_idx+1],(sizeof(movement_move_type)*((movement->nmove-move_idx)-1)));

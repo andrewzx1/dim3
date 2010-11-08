@@ -224,30 +224,6 @@ extern char light_type_str[][32];
 #define cinema_actor_hud_bitmap								6
 
 //
-// group structure
-//
-
-typedef struct		{
-						int									type,idx;
-					} group_unit_type;
-
-typedef struct		{
-						int									count,user_id,attach_obj_idx,
-															movement_idx,movement_move_idx;
-						bool								on,was_moved,freeze,main_move;
-						d3pnt								mov_add,cuml_mov_add;
-						d3ang								rot_add,cuml_rot_add;
-					} group_move_type;
-
-typedef struct		{
-						int									unit_count;
-						char								name[name_str_len];
-						d3pnt								center_pnt;
-						group_move_type						move;
-						group_unit_type						*unit_list;
-					} group_type;
-
-//
 // shared light cache
 //
 
@@ -494,6 +470,35 @@ typedef struct		{
 					} node_type;
 
 //
+// group structure
+//
+
+typedef struct		{
+						int									type,idx;
+					} group_unit_type;
+
+typedef struct		{
+						int									count,user_id,attach_obj_idx,
+															movement_idx,movement_move_idx;
+						bool								on,was_moved,freeze,main_move;
+						d3pnt								mov_add,cuml_mov_add;
+						d3ang								rot_add,cuml_rot_add;
+					} group_move_type;
+
+typedef struct		{
+						int									unit_count;
+						char								name[name_str_len];
+						d3pnt								center_pnt;
+						group_move_type						move;
+						group_unit_type						*unit_list;
+					} group_type;
+					
+typedef struct		{
+						int									ngroup;
+						group_type							*groups;
+					} map_group_collection_type;
+
+//
 // movement structures
 //
  
@@ -514,6 +519,11 @@ typedef struct		{
 															loop,started,opened,reverse;
 						movement_move_type					moves[max_movement_move];
 					} movement_type;
+
+typedef struct		{
+						int									nmovement;
+						movement_type						*movements;
+					} map_movement_collection_type;
 
 //
 // map media and music
@@ -687,8 +697,8 @@ typedef struct		{
 typedef struct		{
 
 						int									nlight,nsound,nparticle,
-															nspot,nnode,nscenery,nmovement,
-															ngroup,narea,start_game_tick;
+															nspot,nnode,nscenery,
+															start_game_tick;
 													
 						map_info_type						info;
 						
@@ -714,12 +724,11 @@ typedef struct		{
 						spot_type							*spots;
 						node_type							*nodes;
 						
-						movement_type						*movements;
-						group_type							*groups;
-	
 						map_mesh_collection_type			mesh;
 						map_liquid_collection_type			liquid;
 
+						map_group_collection_type			group;
+						map_movement_collection_type		movement;
 						map_cinema_collection_type			cinema;
 						
 					} map_type;

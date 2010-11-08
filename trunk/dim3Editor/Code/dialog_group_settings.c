@@ -30,8 +30,12 @@ and can be sold or given away.
 
 extern map_type				map;
 
-#define kGroupName									FOUR_CHAR_CODE('name')
+#define kGroupName							FOUR_CHAR_CODE('name')
+#define kGroupCount							FOUR_CHAR_CODE('attc')
 
+#define kGroupClear							FOUR_CHAR_CODE('cler')
+
+int							dialog_groups_idx;
 bool						dialog_group_settings_cancel;
 WindowRef					dialog_group_settings_wind;
 
@@ -51,6 +55,12 @@ static pascal OSStatus group_setting_event_proc(EventHandlerCallRef handler,Even
 			GetEventParameter(event,kEventParamDirectObject,typeHICommand,NULL,sizeof(HICommand),NULL,&cmd);
 			
 			switch (cmd.commandID) {
+			
+				case kGroupClear:
+					group_clear(dialog_groups_idx,FALSE);
+					dialog_set_int(dialog_group_settings_wind,kGroupCount,0,0);
+					dialog_redraw(dialog_group_settings_wind,kGroupCount,0);
+					return(noErr);
 				
 				case kHICommandCancel:
 					dialog_group_settings_cancel=TRUE;
@@ -76,10 +86,26 @@ static pascal OSStatus group_setting_event_proc(EventHandlerCallRef handler,Even
       
 ======================================================= */
 
-bool dialog_group_settings_run(group_type *group)
+int dialog_group_settings_run(int group_idx)
 {
 	EventHandlerUPP			event_upp;
 	EventTypeSpec			event_list[]={{kEventClassCommand,kEventProcessCommand}};
+	group_type				*group;
+	
+		// new or existing group?
+		
+	if (group_idx==-1) {
+		if (map.group.ngroup==max_group) {
+			os_dialog_alert("Groups","Reached maximum number of groups");
+			return(-1);
+		}
+		
+		group_idx=map.group.ngroup;
+		map.group.ngroup++;
+	}
+	
+	dialog_groups_idx=group_idx;
+	group=&map.group.groups[group_idx];
 	
 		// open the dialog
 		
@@ -88,6 +114,7 @@ bool dialog_group_settings_run(group_type *group)
 		// set controls
 		
 	dialog_set_text(dialog_group_settings_wind,kGroupName,0,group->name);
+	dialog_set_int(dialog_group_settings_wind,kGroupCount,0,group_count(group_idx));
 	
 		// show window
 	
@@ -113,6 +140,6 @@ bool dialog_group_settings_run(group_type *group)
 		
 	DisposeWindow(dialog_group_settings_wind);
 	
-	return(!dialog_group_settings_cancel);
+	return(group_idx);
 }
 

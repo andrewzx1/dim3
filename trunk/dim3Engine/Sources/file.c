@@ -405,8 +405,8 @@ bool game_file_save(char *err_str)
 
 	progress_draw(60);
 
-	game_file_add_chunk(map.groups,1,sizeof(group_type)*map.ngroup);
-	game_file_add_chunk(map.movements,1,sizeof(movement_type)*map.nmovement);
+	game_file_add_chunk(map.group.groups,1,sizeof(group_type)*map.group.ngroup);
+	game_file_add_chunk(map.movement.movements,1,sizeof(movement_type)*map.movement.nmovement);
 	
 		// script states
 		
@@ -734,10 +734,10 @@ bool game_file_load(char *file_name,char *err_str)
 	progress_draw(60);
 	
 	map_group_dispose_unit_list(&map);			// need to destroy and rebuild unit lists
-	game_file_get_chunk(map.groups);
+	game_file_get_chunk(map.group.groups);
 	map_group_create_unit_list(&map);
 
-	game_file_get_chunk(map.movements);
+	game_file_get_chunk(map.movement.movements);
 
 	group_moves_synch_with_load();
 	

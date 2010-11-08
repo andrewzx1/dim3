@@ -204,12 +204,9 @@ bool map_new(map_type *map,char *name)
 	map->nspot=0;
 	map->nnode=0;
 	map->nscenery=0;
-	map->nmovement=0;
 	map->nlight=0;
 	map->nsound=0;
 	map->nparticle=0;
-	map->ngroup=0;
-	map->narea=0;
 
 		// meshes and liquids
 
@@ -219,7 +216,13 @@ bool map_new(map_type *map,char *name)
 	map->liquid.nliquid=0;
 	map->liquid.liquids=NULL;
 		
-		// cinemas
+		// groups, movements, cinemas
+		
+	map->group.ngroup=0;
+	map->group.groups=NULL;
+	
+	map->movement.nmovement=0;
+	map->movement.movements=NULL;
 
 	map->cinema.ncinema=0;
 	map->cinema.cinemas=NULL;
@@ -238,8 +241,8 @@ bool map_new(map_type *map,char *name)
 	map->sceneries=(map_scenery_type*)malloc(max_map_scenery*sizeof(map_scenery_type));
 	if (map->sceneries==NULL) return(FALSE);
 	
-	map->movements=(movement_type*)malloc(max_movement*sizeof(movement_type));
-	if (map->movements==NULL) return(FALSE);
+	map->movement.movements=(movement_type*)malloc(max_movement*sizeof(movement_type));
+	if (map->movement.movements==NULL) return(FALSE);
 	
 	map->lights=(map_light_type*)malloc(max_map_light*sizeof(map_light_type));
 	if (map->lights==NULL) return(FALSE);
@@ -250,8 +253,8 @@ bool map_new(map_type *map,char *name)
 	map->particles=(map_particle_type*)malloc(max_map_particle*sizeof(map_particle_type));
 	if (map->particles==NULL) return(FALSE);
 	
-	map->groups=(group_type*)malloc(max_group*sizeof(group_type));
-	if (map->groups==NULL) return(FALSE);
+	map->group.groups=(group_type*)malloc(max_group*sizeof(group_type));
+	if (map->group.groups==NULL) return(FALSE);
 
 		// zero memory
 		
@@ -259,11 +262,11 @@ bool map_new(map_type *map,char *name)
 	bzero(map->spots,(max_spot*sizeof(spot_type)));
 	bzero(map->nodes,(max_node*sizeof(node_type)));
 	bzero(map->sceneries,(max_map_scenery*sizeof(map_scenery_type)));
-	bzero(map->movements,(max_movement*sizeof(movement_type)));
+	bzero(map->movement.movements,(max_movement*sizeof(movement_type)));
 	bzero(map->lights,(max_map_light*sizeof(map_light_type)));
 	bzero(map->sounds,(max_map_sound*sizeof(map_sound_type)));
 	bzero(map->particles,(max_map_particle*sizeof(map_particle_type)));
-	bzero(map->groups,(max_group*sizeof(group_type)));
+	bzero(map->group.groups,(max_group*sizeof(group_type)));
 	
 		// bitmaps
 		
@@ -343,17 +346,25 @@ void map_close(map_type *map)
 		map->liquid.liquids=NULL;
 	}
 	
+		// groups, movements, cinemas
+		
+	if (map->cinema.cinemas!=NULL) {
+		free(map->cinema.cinemas);
+		map->cinema.ncinema=0;
+		map->cinema.cinemas=NULL;
+	}
+	
 		// memory
 		
 	free(map->textures);
 	free(map->spots);
 	free(map->nodes);
 	free(map->sceneries);
-	free(map->movements);
+	free(map->movement.movements);
 	free(map->lights);
 	free(map->sounds);
 	free(map->particles);
-	free(map->groups);
+	free(map->group.groups);
 }
 
 /* =======================================================

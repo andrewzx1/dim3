@@ -54,14 +54,14 @@ void map_movements_get_center(movement_type *movement,d3pnt *pt)
 {
 	group_type	*group;
 
-	group=&map.groups[movement->group_idx];
+	group=&map.group.groups[movement->group_idx];
 
 	pt->x=group->center_pnt.x;
 	pt->y=group->center_pnt.y;
 	pt->z=group->center_pnt.z;
 	
 	if (movement->reverse_group_idx!=-1) {
-		group=&map.groups[movement->reverse_group_idx];
+		group=&map.group.groups[movement->reverse_group_idx];
 		pt->x=(pt->x+group->center_pnt.x)>>1;
 		pt->y=(pt->y+group->center_pnt.y)>>1;
 		pt->z=(pt->z+group->center_pnt.z)>>1;
@@ -82,7 +82,7 @@ void map_movements_start(int movement_idx,int move_idx,int obj_idx)
 	movement_type			*movement;
 	movement_move_type		*move;
 
-	movement=&map.movements[movement_idx];
+	movement=&map.movement.movements[movement_idx];
 	if (movement->nmove==0) return;
 	
 		// started
@@ -141,8 +141,8 @@ void map_movements_initialize(void)
 	int				n,nmovement;
 	movement_type	*movement;
 	
-	nmovement=map.nmovement;
-	movement=map.movements;
+	nmovement=map.movement.nmovement;
+	movement=map.movement.movements;
 	
 	for (n=0;n!=nmovement;n++) {
 	
@@ -172,7 +172,7 @@ void map_movements_script_start(int movement_idx,bool reverse)
 {
 	movement_type	*movement;
 	
-	movement=&map.movements[movement_idx];
+	movement=&map.movement.movements[movement_idx];
 
 	if (movement->started) return;
 	
@@ -190,7 +190,7 @@ void map_movements_script_freeze(int movement_idx)
 {
 	movement_type	*movement;
 	
-	movement=&map.movements[movement_idx];
+	movement=&map.movement.movements[movement_idx];
 	
 	group_move_freeze(movement->group_idx,TRUE);
 	if (movement->reverse_group_idx!=-1) group_move_freeze(movement->reverse_group_idx,TRUE);
@@ -200,7 +200,7 @@ void map_movements_script_thaw(int movement_idx)
 {
 	movement_type	*movement;
 	
-	movement=&map.movements[movement_idx];
+	movement=&map.movement.movements[movement_idx];
 	
 	group_move_freeze(movement->group_idx,FALSE);
 	if (movement->reverse_group_idx!=-1) group_move_freeze(movement->reverse_group_idx,FALSE);
@@ -210,7 +210,7 @@ void map_movements_script_start_or_thaw(int movement_idx)
 {
 	movement_type	*movement;
 	
-	movement=&map.movements[movement_idx];
+	movement=&map.movement.movements[movement_idx];
 
 		// is movement started?
 		
@@ -227,7 +227,7 @@ void map_movements_script_start_or_thaw(int movement_idx)
 
 bool map_movements_script_is_looping(int movement_idx)
 {	
-	return(map.movements[movement_idx].loop);
+	return(map.movement.movements[movement_idx].loop);
 }
 
 /* =======================================================
@@ -240,7 +240,7 @@ bool map_movements_cinema_start(int movement_idx,bool reverse,char *err_str)
 {
 	movement_type	*movement;
 	
-	movement=&map.movements[movement_idx];
+	movement=&map.movement.movements[movement_idx];
 
 	if (movement->started) {
 		sprintf(err_str,"Can't start another movement during a movement: %s",movement->name);
@@ -269,7 +269,7 @@ bool map_movement_next_move(int movement_idx,int move_idx,int obj_idx)
 {
 	movement_type	*movement;
 	
-	movement=&map.movements[movement_idx];
+	movement=&map.movement.movements[movement_idx];
 	
 		// get next movement
 		
@@ -331,8 +331,8 @@ void map_movements_auto_open(void)
 
 		// check movements
 		
-	nmovement=map.nmovement;
-	movement=map.movements;
+	nmovement=map.movement.nmovement;
+	movement=map.movement.movements;
 	
 	for (n=0;n!=nmovement;n++) {
 	

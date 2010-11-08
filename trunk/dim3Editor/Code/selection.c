@@ -172,8 +172,8 @@ void select_add_movement(int movement_idx)
 {
 	if (movement_idx==-1) return;
 
-	select_add_group(map.movements[movement_idx].group_idx);
-	select_add_group(map.movements[movement_idx].reverse_group_idx);
+	select_add_group(map.movement.movements[movement_idx].group_idx);
+	select_add_group(map.movement.movements[movement_idx].reverse_group_idx);
 }
 
 /* =======================================================

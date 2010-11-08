@@ -46,9 +46,9 @@ int group_find_by_index(char *name)
 	int				n;
 	group_type		*group;
 	
-	group=map.groups;
+	group=map.group.groups;
 	
-	for (n=0;n!=map.ngroup;n++) {
+	for (n=0;n!=map.group.ngroup;n++) {
 		if (strcasecmp(group->name,name)==0) return(n);
 		group++;
 	}
@@ -69,7 +69,7 @@ void group_show(int group_idx,bool show)
 	group_unit_type		*unit_list;
 	map_mesh_type		*mesh;
 
-	group=&map.groups[group_idx];
+	group=&map.group.groups[group_idx];
 	
 	unit_cnt=group->unit_count;
 	unit_list=group->unit_list;
@@ -95,7 +95,7 @@ void group_solid(int group_idx,bool solid)
 	group_unit_type		*unit_list;
 	map_mesh_type		*mesh;
 
-	group=&map.groups[group_idx];
+	group=&map.group.groups[group_idx];
 	
 	unit_cnt=group->unit_count;
 	unit_list=group->unit_list;
@@ -128,7 +128,7 @@ void group_texture(int group_idx,int index)
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 	
-	group=&map.groups[group_idx];
+	group=&map.group.groups[group_idx];
 	
 	unit_cnt=group->unit_count;
 	unit_list=group->unit_list;
@@ -161,7 +161,7 @@ void group_texture_shift(int group_idx,float x_shift,float y_shift)
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 
-	group=&map.groups[group_idx];
+	group=&map.group.groups[group_idx];
 	
 	unit_cnt=group->unit_count;
 	unit_list=group->unit_list;

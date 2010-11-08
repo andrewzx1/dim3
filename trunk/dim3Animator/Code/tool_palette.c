@@ -29,6 +29,8 @@ and can be sold or given away.
 	#include "dim3animator.h"
 #endif
 
+extern int						cur_mesh;
+
 extern model_type				model;
 extern animator_state_type		state;
 extern file_path_setup_type		file_path_setup;
@@ -135,10 +137,12 @@ void tool_click(int tool_idx)
 			break;
 			
 		case 4:
+			vertex_clear_sel_mask(cur_mesh);
 			state.select_mode=select_mode_polygon;
 			break;
 			
 		case 5:
+			vertex_clear_sel_mask(cur_mesh);
 			state.select_mode=select_mode_vertex;
 			break;
 			

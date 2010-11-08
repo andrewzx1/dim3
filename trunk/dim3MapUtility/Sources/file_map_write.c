@@ -272,9 +272,9 @@ void write_map_groups_xml(map_type *map)
 	xml_add_tagstart("Groups");
     xml_add_tagend(FALSE);
     
-    group=map->groups;
+    group=map->group.groups;
     
-    for (n=0;n!=map->ngroup;n++) {
+    for (n=0;n!=map->group.ngroup;n++) {
 		xml_add_tagstart("Group");
 		xml_add_attribute_text("name",group->name);
 		xml_add_tagend(TRUE);
@@ -332,9 +332,9 @@ void write_map_movements_xml(map_type *map)
 	xml_add_tagstart("Movements");
     xml_add_tagend(FALSE);
     
-    movement=map->movements;
+    movement=map->movement.movements;
     
-    for (n=0;n!=map->nmovement;n++) {
+    for (n=0;n!=map->movement.nmovement;n++) {
     
 		xml_add_tagstart("Movement");
 		xml_add_attribute_text("name",movement->name);

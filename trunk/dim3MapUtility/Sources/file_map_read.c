@@ -203,11 +203,11 @@ void decode_map_groups_xml(map_type *map,int map_head)
     main_group_tag=xml_findfirstchild("Groups",map_head);
     if (main_group_tag==-1) return;
     
-    map->ngroup=xml_countchildren(main_group_tag);
+    map->group.ngroup=xml_countchildren(main_group_tag);
 	group_tag=xml_findfirstchild("Group",main_group_tag);
 
-    for (i=0;i!=map->ngroup;i++) {
- 		xml_get_attribute_text(group_tag,"name",map->groups[i].name,name_str_len);
+    for (i=0;i!=map->group.ngroup;i++) {
+ 		xml_get_attribute_text(group_tag,"name",map->group.groups[i].name,name_str_len);
 		group_tag=xml_findnextchild(group_tag);
 	}
 }
@@ -251,12 +251,12 @@ void decode_map_movements_xml(map_type *map,int map_head)
     main_movement_tag=xml_findfirstchild("Movements",map_head);
     if (main_movement_tag==-1) return;
     
-    map->nmovement=xml_countchildren(main_movement_tag);
+    map->movement.nmovement=xml_countchildren(main_movement_tag);
 	movement_tag=xml_findfirstchild("Movement",main_movement_tag);
 
-	movement=map->movements;
+	movement=map->movement.movements;
 	
-    for (i=0;i!=map->nmovement;i++) {
+    for (i=0;i!=map->movement.nmovement;i++) {
  		xml_get_attribute_text(movement_tag,"name",movement->name,name_str_len);
 		movement->group_idx=xml_get_attribute_int(movement_tag,"group");
 		movement->reverse_group_idx=xml_get_attribute_int_default(movement_tag,"group_reverse",-1);

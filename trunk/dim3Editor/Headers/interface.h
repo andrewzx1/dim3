@@ -75,6 +75,7 @@ extern void item_palette_shutdown(void);
 extern void item_palette_setup(void);
 extern void item_palette_draw(void);
 extern void item_palette_reset(void);
+extern void item_palette_select(int sel_type,int sel_idx);
 extern void item_palette_click(d3pnt *pnt,bool dblclick);
 
 //
