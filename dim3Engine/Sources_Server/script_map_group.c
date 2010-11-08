@@ -92,8 +92,8 @@ JSValueRef js_map_group_get_center_func(JSContextRef cx,JSObjectRef func,JSObjec
 	group_idx=script_find_group_from_name(cx,argv[0],exception);
 	if (group_idx==-1) return(FALSE);
 
-	if ((group_idx>=0) && (group_idx<map.ngroup)) {
-		group=&map.groups[group_idx];
+	if ((group_idx>=0) && (group_idx<map.group.ngroup)) {
+		group=&map.group.groups[group_idx];
 		return(script_point_to_value(cx,group->center_pnt.x,group->center_pnt.y,group->center_pnt.z));
 	}
 

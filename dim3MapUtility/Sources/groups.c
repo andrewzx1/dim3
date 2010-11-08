@@ -43,7 +43,7 @@ bool map_group_create_single_unit_list(map_type *map,int group_idx)
 	group_type		*group;
 	group_unit_type	*unit_list;
 
-	group=&map->groups[group_idx];
+	group=&map->group.groups[group_idx];
 	
 		// default setting
 		
@@ -121,7 +121,7 @@ bool map_group_create_unit_list(map_type *map)
 {
 	int				n;
 	
-	for (n=0;n!=map->ngroup;n++) {
+	for (n=0;n!=map->group.ngroup;n++) {
 		if (!map_group_create_single_unit_list(map,n)) return(FALSE);
 	}
 	
@@ -133,9 +133,9 @@ void map_group_dispose_unit_list(map_type *map)
 	int				n;
 	group_type		*group;
 	
-	group=map->groups;
+	group=map->group.groups;
 	
-	for (n=0;n!=map->ngroup;n++) {
+	for (n=0;n!=map->group.ngroup;n++) {
 		if (group->unit_list!=NULL) free(group->unit_list);
 	
 		group->unit_count=0;
@@ -159,7 +159,7 @@ void map_group_get_center(map_type *map,int group_idx,d3pnt *center_pnt)
 	group_unit_type		*unit_list;
 	map_liquid_type		*liq;
 	
-	group=&map->groups[group_idx];
+	group=&map->group.groups[group_idx];
 	
 	unit_cnt=group->unit_count;
 	if (unit_cnt==0) {

@@ -356,9 +356,9 @@ void net_host_player_remote_group_synch(int net_uid)
 		// send a synch for all groups that were
 		// ever moved
 
-	for (n=0;n!=map.ngroup;n++) {
+	for (n=0;n!=map.group.ngroup;n++) {
 
-		if (map.groups[n].move.was_moved) {
+		if (map.group.groups[n].move.was_moved) {
 			group_moves_synch_with_client(n,&reply_synch);
 			net_host_player_send_message_single(net_uid,net_action_reply_group_synch,(unsigned char*)&reply_synch,sizeof(network_reply_group_synch));
 		}

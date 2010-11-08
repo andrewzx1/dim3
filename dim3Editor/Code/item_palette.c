@@ -36,13 +36,13 @@ and can be sold or given away.
 
 #define item_max_count			4096
 #define item_font_size			12.0f
-#define item_font_high			14
+#define item_font_high			16
 #define item_palette_border_sz	10
 #define item_palette_tree_sz	150
 
 typedef struct		{
 						int						x,y,piece_type,piece_idx;
-						bool					selected,is_col;
+						bool					selected,header,is_col;
 						char					name[name_str_len];
 						d3col					col;
 					} item_palette_item_type;
@@ -107,19 +107,21 @@ void item_palette_setup(void)
       
 ======================================================= */
 
-void item_palette_add_item(int indent,int piece_type,int piece_idx,char *name,d3col *col,bool selected)
+void item_palette_add_item(int piece_type,int piece_idx,char *name,d3col *col,bool selected,bool header)
 {
 	item_palette_item_type		*item;
 
 	item=&item_palette_items[item_palette_item_count];
 	item_palette_item_count++;
 
-	item->x=indent+(item_palette_box.lx+(item_palette_border_sz+4));
+	item->x=item_palette_box.lx+(item_palette_border_sz+4);
+	if (!header) item->x+=10;
 	item->y=(item_palette_item_count*item_font_high)+item_palette_box.ty;
 
 	item->piece_type=piece_type;
 	item->piece_idx=piece_idx;
 	item->selected=selected;
+	item->header=header;
 
 	if (name!=NULL) {
 		strcpy(item->name,name);
@@ -157,91 +159,91 @@ void item_palette_fill_tree(void)
 
 		// spots
 
-	item_palette_add_item(0,spot_piece,-1,"Spots",NULL,(item_palette_piece_type==spot_piece));
+	item_palette_add_item(spot_piece,-1,"Spots",NULL,(item_palette_piece_type==spot_piece),TRUE);
 
 	if (item_palette_piece_type==spot_piece) {
 		for (n=0;n!=map.nspot;n++) {
-			item_palette_add_item(10,spot_piece,n,map.spots[n].name,NULL,(n==item_palette_piece_idx));
+			item_palette_add_item(spot_piece,n,map.spots[n].name,NULL,(n==item_palette_piece_idx),FALSE);
 		}
 	}
 
 		// lights
 
-	item_palette_add_item(0,light_piece,-1,"Lights",NULL,(item_palette_piece_type==light_piece));
+	item_palette_add_item(light_piece,-1,"Lights",NULL,(item_palette_piece_type==light_piece),TRUE);
 
 	if (item_palette_piece_type==light_piece) {
 		for (n=0;n!=map.nlight;n++) {
-			item_palette_add_item(10,light_piece,n,NULL,&map.lights[n].col,(n==item_palette_piece_idx));
+			item_palette_add_item(light_piece,n,NULL,&map.lights[n].col,(n==item_palette_piece_idx),FALSE);
 		}
 	}
 
 		// sounds
 
-	item_palette_add_item(0,sound_piece,-1,"Sounds",NULL,(item_palette_piece_type==sound_piece));
+	item_palette_add_item(sound_piece,-1,"Sounds",NULL,(item_palette_piece_type==sound_piece),TRUE);
 
 	if (item_palette_piece_type==sound_piece) {
 		for (n=0;n!=map.nsound;n++) {
-			item_palette_add_item(10,sound_piece,n,map.sounds[n].name,NULL,(n==item_palette_piece_idx));
+			item_palette_add_item(sound_piece,n,map.sounds[n].name,NULL,(n==item_palette_piece_idx),FALSE);
 		}
 	}
 
 		// particles
 
-	item_palette_add_item(0,particle_piece,-1,"Particles",NULL,(item_palette_piece_type==particle_piece));
+	item_palette_add_item(particle_piece,-1,"Particles",NULL,(item_palette_piece_type==particle_piece),TRUE);
 
 	if (item_palette_piece_type==particle_piece) {
 		for (n=0;n!=map.nparticle;n++) {
-			item_palette_add_item(10,particle_piece,n,map.particles[n].name,NULL,(n==item_palette_piece_idx));
+			item_palette_add_item(particle_piece,n,map.particles[n].name,NULL,(n==item_palette_piece_idx),FALSE);
 		}
 	}
 
 		// sceneries
 
-	item_palette_add_item(0,scenery_piece,-1,"Scenery",NULL,(item_palette_piece_type==scenery_piece));
+	item_palette_add_item(scenery_piece,-1,"Scenery",NULL,(item_palette_piece_type==scenery_piece),TRUE);
 
 	if (item_palette_piece_type==scenery_piece) {
 		for (n=0;n!=map.nscenery;n++) {
-			item_palette_add_item(10,scenery_piece,n,map.sceneries[n].model_name,NULL,(n==item_palette_piece_idx));
+			item_palette_add_item(scenery_piece,n,map.sceneries[n].model_name,NULL,(n==item_palette_piece_idx),FALSE);
 		}
 	}
 
 		// nodes
 
-	item_palette_add_item(0,node_piece,-1,"Nodes",NULL,(item_palette_piece_type==node_piece));
+	item_palette_add_item(node_piece,-1,"Nodes",NULL,(item_palette_piece_type==node_piece),TRUE);
 
 	if (item_palette_piece_type==node_piece) {
 		for (n=0;n!=map.nnode;n++) {
-			if (map.nodes[n].name[0]!=0x0) item_palette_add_item(10,node_piece,n,map.nodes[n].name,NULL,(n==item_palette_piece_idx));
+			if (map.nodes[n].name[0]!=0x0) item_palette_add_item(node_piece,n,map.nodes[n].name,NULL,(n==item_palette_piece_idx),FALSE);
 		}
 	}
 
 		// groups
 
-	item_palette_add_item(0,group_piece,-1,"Groups",NULL,(item_palette_piece_type==group_piece));
+	item_palette_add_item(group_piece,-1,"Groups",NULL,(item_palette_piece_type==group_piece),TRUE);
 
 	if (item_palette_piece_type==group_piece) {
-		for (n=0;n!=map.ngroup;n++) {
-			item_palette_add_item(10,group_piece,n,map.groups[n].name,NULL,(n==item_palette_piece_idx));
+		for (n=0;n!=map.group.ngroup;n++) {
+			item_palette_add_item(group_piece,n,map.group.groups[n].name,NULL,(n==item_palette_piece_idx),FALSE);
 		}
 	}
 
 		// movements
 
-	item_palette_add_item(0,movement_piece,-1,"Movements",NULL,(item_palette_piece_type==movement_piece));
+	item_palette_add_item(movement_piece,-1,"Movements",NULL,(item_palette_piece_type==movement_piece),TRUE);
 
 	if (item_palette_piece_type==movement_piece) {
-		for (n=0;n!=map.nmovement;n++) {
-			item_palette_add_item(10,movement_piece,n,map.movements[n].name,NULL,(n==item_palette_piece_idx));
+		for (n=0;n!=map.movement.nmovement;n++) {
+			item_palette_add_item(movement_piece,n,map.movement.movements[n].name,NULL,(n==item_palette_piece_idx),FALSE);
 		}
 	}
 
 		// cinemas
 
-	item_palette_add_item(0,cinema_piece,-1,"Cinemas",NULL,(item_palette_piece_type==cinema_piece));
+	item_palette_add_item(cinema_piece,-1,"Cinemas",NULL,(item_palette_piece_type==cinema_piece),TRUE);
 
 	if (item_palette_piece_type==cinema_piece) {
 		for (n=0;n!=map.cinema.ncinema;n++) {
-			item_palette_add_item(10,cinema_piece,n,map.cinema.cinemas[n].name,NULL,(n==item_palette_piece_idx));
+			item_palette_add_item(cinema_piece,n,map.cinema.cinemas[n].name,NULL,(n==item_palette_piece_idx),FALSE);
 		}
 	}
 }
@@ -258,23 +260,62 @@ void item_palette_draw_tree_item(item_palette_item_type *item)
 
 	if ((item->y<item_palette_box.ty) || ((item->y-item_font_high)>item_palette_box.by)) return;
 
-		// draw selection
-
-	if (item->selected) {
-		glColor4f(1.0f,1.0f,0.0f,1.0f);
+		// draw header
 		
-		glBegin(GL_QUADS);
+	if (item->header) {
+	
+		if (!item->selected) {
+			glBegin(GL_QUADS);
+			glColor4f(0.9f,0.9f,0.9f,1.0f);
+			glVertex2i(item_palette_box.lx,(item->y-item_font_high));
+			glVertex2i(item_palette_box.rx,(item->y-item_font_high));
+			glColor4f(0.8f,0.8f,0.8f,1.0f);
+			glVertex2i(item_palette_box.rx,item->y);
+			glVertex2i(item_palette_box.lx,item->y);
+			glEnd();
+		}
+		else {
+			glBegin(GL_QUADS);
+			glColor4f(0.8f,0.8f,0.8f,1.0f);
+			glVertex2i(item_palette_box.lx,(item->y-item_font_high));
+			glVertex2i(item_palette_box.rx,(item->y-item_font_high));
+			glColor4f(0.5f,0.5f,0.5f,1.0f);
+			glVertex2i(item_palette_box.rx,item->y);
+			glVertex2i(item_palette_box.lx,item->y);
+			glEnd();
+		}
+		
+		glColor4f(0.0f,0.0f,0.0f,1.0f);
+		
+		glBegin(GL_LINES);
 		glVertex2i(item_palette_box.lx,(item->y-item_font_high));
 		glVertex2i(item_palette_box.rx,(item->y-item_font_high));
-		glVertex2i(item_palette_box.rx,item->y);
-		glVertex2i(item_palette_box.lx,item->y);
+		glVertex2i(item_palette_box.lx,(item->y+1));
+		glVertex2i(item_palette_box.rx,(item->y+1));
 		glEnd();
+	
+	}
+		
+		// draw selected item
+	
+	else {
+
+		if (item->selected) {
+			glColor4f(1.0f,1.0f,0.0f,1.0f);
+			
+			glBegin(GL_QUADS);
+			glVertex2i(item_palette_box.lx,(item->y-item_font_high));
+			glVertex2i(item_palette_box.rx,(item->y-item_font_high));
+			glVertex2i(item_palette_box.rx,item->y);
+			glVertex2i(item_palette_box.lx,item->y);
+			glEnd();
+		}
 	}
 
 		// draw text
 
 	if (!item->is_col) {
-		text_draw(item->x,item->y,item_font_size,FALSE,item->name);
+		text_draw(item->x,(item->y-1),item_font_size,FALSE,item->name);
 	}
 
 		// draw color
@@ -306,7 +347,7 @@ void item_palette_draw_tree_item(item_palette_item_type *item)
 
 void item_palette_draw(void)
 {
-	int						n;
+	int						n,lx,mx,rx;
 	d3rect					wbox;
 	item_palette_item_type	*item;
 
@@ -359,14 +400,24 @@ void item_palette_draw(void)
 	}
 	
 		// click-close border
+	
+	lx=item_palette_box.lx;
+	rx=item_palette_box.lx+item_palette_border_sz;
+	mx=(lx+rx)>>1;
 		
-	glColor4f(0.0f,0.0f,0.5f,1.0f);
-
 	glBegin(GL_QUADS);
-	glVertex2i(item_palette_box.lx,item_palette_box.ty);
-	glVertex2i((item_palette_box.lx+item_palette_border_sz),item_palette_box.ty);
-	glVertex2i((item_palette_box.lx+item_palette_border_sz),item_palette_box.by);
-	glVertex2i(item_palette_box.lx,item_palette_box.by);
+	glColor4f(0.0f,0.0f,0.5f,1.0f);
+	glVertex2i(lx,item_palette_box.by);
+	glVertex2i(lx,item_palette_box.ty);
+	glColor4f(0.0f,0.0f,1.0f,1.0f);
+	glVertex2i(mx,item_palette_box.ty);
+	glVertex2i(mx,item_palette_box.by);
+	glColor4f(0.0f,0.0f,0.5f,1.0f);
+	glVertex2i(rx,item_palette_box.by);
+	glVertex2i(rx,item_palette_box.ty);
+	glColor4f(0.0f,0.0f,1.0f,1.0f);
+	glVertex2i(mx,item_palette_box.ty);
+	glVertex2i(mx,item_palette_box.by);
 	glEnd();
 
 	glDisable(GL_ALPHA_TEST);
@@ -383,13 +434,27 @@ void item_palette_reset(void)
 {
 	int				sel_type,main_idx,sub_idx;
 
-	if (select_count()==0) return;
-
+	if (select_count()==0) {
+		item_palette_piece_idx=-1;
+		return;
+	}
+	
 	select_get(0,&sel_type,&main_idx,&sub_idx);
-	if ((sel_type==mesh_piece) || (sel_type==liquid_piece)) return;
+	if ((sel_type==mesh_piece) || (sel_type==liquid_piece)) {
+		item_palette_piece_idx=-1;
+		return;
+	}
 
 	item_palette_piece_type=sel_type;
 	item_palette_piece_idx=main_idx;
+}
+
+void item_palette_select(int sel_type,int sel_idx)
+{
+	item_palette_piece_type=sel_type;
+	item_palette_piece_idx=sel_idx;
+	
+	main_wind_draw();
 }
 
 /* =======================================================
@@ -430,6 +495,8 @@ void item_palette_click(d3pnt *pnt,bool dblclick)
 		item_palette_piece_type=-1;
 		item_palette_piece_idx=-1;
 
+		select_clear();
+		palette_reset();
 		main_wind_draw();
 		return;
 	}
@@ -477,22 +544,27 @@ void item_palette_click(d3pnt *pnt,bool dblclick)
 			break;
 	}
 	
-		// redraw
+		// reset the palette
+		
+	palette_reset();
+	
+		// just redraw if no double click
 
-	main_wind_draw();
-
+	if ((!dblclick) || (item_palette_piece_idx==-1)) {
+		main_wind_draw();
+		return;
+	}
+	
 		// if double click, edit
-
-	if (!dblclick) return;
 
 	switch (item_palette_piece_type) {
 
 		case cinema_piece:
-			dialog_map_cinemas_run(item_palette_piece_idx);
+			dialog_cinema_settings_run(item_palette_piece_idx);
 			break;
 
 		case group_piece:
-			dialog_map_groups_run(item_palette_piece_idx);
+			dialog_group_settings_run(item_palette_piece_idx);
 			break;
 
 		case movement_piece:
@@ -500,4 +572,6 @@ void item_palette_click(d3pnt *pnt,bool dblclick)
 			break;
 
 	}
+	
+	main_wind_draw();
 }

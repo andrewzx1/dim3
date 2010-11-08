@@ -119,7 +119,7 @@ OSStatus main_wind_event_callback(EventHandlerCallRef eventhandler,EventRef even
 						// click in item palette
 						
 					if (pt.h>=item_palette_box.lx) {
-						item_palette_click(&dpt);
+						item_palette_click(&dpt,(nclick!=1));
 						return(noErr);
 					}
 					
@@ -353,6 +353,8 @@ void main_wind_close(void)
         // close views
 		
 	view_shutdown();
+	
+	item_palette_shutdown();
 	tool_palette_shutdown();
 	
 	text_shutdown();

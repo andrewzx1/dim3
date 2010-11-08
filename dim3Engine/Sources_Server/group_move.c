@@ -55,7 +55,7 @@ bool group_move_start(int group_idx,int movement_idx,int movement_move_idx,d3pnt
 	group_move_type		*move;
 	group_unit_type		*unit_list;
 
-	group=&map.groups[group_idx];
+	group=&map.group.groups[group_idx];
 
 		// no negative move counts
 		
@@ -127,9 +127,9 @@ void group_move_clear_all(void)
 	int				n;
 	group_type		*group;
 
-	group=map.groups;
+	group=map.group.groups;
 
-	for (n=0;n!=map.ngroup;n++) {
+	for (n=0;n!=map.group.ngroup;n++) {
 
 			// no movements yet
 
@@ -156,12 +156,12 @@ void group_move_clear_all(void)
 
 void group_move_freeze(int group_idx,bool freeze)
 {
-	map.groups[group_idx].move.freeze=freeze;
+	map.group.groups[group_idx].move.freeze=freeze;
 }
 
 bool group_move_frozen(int group_idx)
 {
-	return(map.groups[group_idx].move.freeze);
+	return(map.group.groups[group_idx].move.freeze);
 }
 
 /* =======================================================
@@ -178,7 +178,7 @@ bool group_move_object_stand(int group_idx,int stand_mesh_idx)
 
 	if (group_idx==-1) return(FALSE);
 
-	group=&map.groups[group_idx];
+	group=&map.group.groups[group_idx];
 
 	unit_cnt=group->unit_count;
 	unit_list=group->unit_list;
@@ -362,9 +362,9 @@ void group_moves_run(bool run_events)
 
 		// run all moves
 		
-	for (n=0;n!=map.ngroup;n++) {
+	for (n=0;n!=map.group.ngroup;n++) {
 
-		group=&map.groups[n];
+		group=&map.group.groups[n];
 		move=&group->move;
 		if ((!move->on) || (move->freeze)) continue;
 		
@@ -380,9 +380,9 @@ void group_moves_run(bool run_events)
 		// we do this separately as multiple group moves
 		// hooked up to a move can interfere with each other
 		
-	for (n=0;n!=map.ngroup;n++) {
+	for (n=0;n!=map.group.ngroup;n++) {
 
-		move=&map.groups[n].move;
+		move=&map.group.groups[n].move;
 		if ((!move->on) || (move->freeze) || (move->count!=0)) continue;
 
 		move->on=FALSE;
@@ -432,9 +432,9 @@ void group_moves_synch_with_load(void)
 	int				n;
 	group_type		*group;
 
-	group=map.groups;
+	group=map.group.groups;
 
-	for (n=0;n!=map.ngroup;n++) {
+	for (n=0;n!=map.group.ngroup;n++) {
 
 		if (group->move.was_moved) {
 			group_move(group,&group->move.cuml_mov_add);
@@ -460,7 +460,7 @@ void group_moves_synch_with_client(int group_idx,network_reply_group_synch *sync
 
 	synch->group_idx=htons((short)group_idx);
 
-	group=&map.groups[group_idx];
+	group=&map.group.groups[group_idx];
 
 	flags=0;
 	if (group->move.on) flags|=net_group_synch_flag_on;
@@ -501,7 +501,7 @@ void group_moves_synch_with_host(network_reply_group_synch *synch)
 		// get the group
 
 	group_idx=(int)ntohs(synch->group_idx);
-	group=&map.groups[group_idx];
+	group=&map.group.groups[group_idx];
 
 		// fix the movement
 

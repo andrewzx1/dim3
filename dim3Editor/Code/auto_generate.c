@@ -65,14 +65,21 @@ void ag_map_clear(void)
 	map.nlight=0;
 	map.nsound=0;
 	map.nparticle=0;
-	map.nmovement=0;
-	map.ngroup=0;
 
 	map.mesh.nmesh=0;
 	if (map.mesh.meshes!=NULL) free(map.mesh.meshes);
 
 	map.liquid.nliquid=0;
 	if (map.liquid.liquids!=NULL) free(map.liquid.liquids);
+	
+	map.group.ngroup=0;
+	if (map.group.groups!=NULL) free(map.group.groups);
+	
+	map.movement.nmovement=0;
+	if (map.movement.movements!=NULL) free(map.movement.movements);
+	
+	map.cinema.ncinema=0;
+	if (map.cinema.cinemas!=NULL) free(map.cinema.cinemas);
 }
 
 /* =======================================================

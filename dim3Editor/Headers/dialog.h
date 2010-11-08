@@ -97,11 +97,10 @@ extern bool dialog_file_open_run(char *dialog_name,char *search_path,char *exten
 //
 
 extern bool dialog_map_settings_run(void);
-extern bool dialog_map_cinemas_run(int cinema_idx);
-extern bool dialog_cinema_settings_run(map_cinema_type *cinema);
+extern int dialog_cinema_settings_run(int cinema_idx);
 extern bool dialog_cinema_action_settings_run(map_cinema_action_type *action);
-extern bool dialog_map_groups_run(int group_idx);
-extern bool dialog_map_movements_run(int movement_idx);
+extern int dialog_group_settings_run(int group_idx);
+extern int dialog_map_movements_run(int movement_idx);
 extern bool dialog_movement_settings_run(movement_type *movement);
 extern bool dialog_movement_move_settings_run(movement_move_type *move);
 extern bool dialog_optimize_run(int *poly_threshold);
@@ -111,7 +110,6 @@ extern bool dialog_light_map_run(void);
 // piece dialogs
 //
 
-extern bool dialog_group_settings_run(group_type *group);
 extern bool dialog_resize_run(float *fct_x,float *fct_y,float *fct_z);
 extern bool dialog_reposition_run(d3pnt *min,d3pnt *max);
 extern bool dialog_skew_run(int *axis,int *dir,int *size);

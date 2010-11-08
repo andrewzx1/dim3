@@ -922,11 +922,11 @@ void dialog_special_combo_fill_movement(WindowRef wind,unsigned long sig,int id,
 	int							n;
 	char						movement_names[max_movement][name_str_len];
 	
-	for (n=0;n!=map.nmovement;n++) {
-		strcpy(movement_names[n],map.movements[n].name);
+	for (n=0;n!=map.movement.nmovement;n++) {
+		strcpy(movement_names[n],map.movement.movements[n].name);
 	}
 	
-	dialog_special_combo_fill(wind,sig,id,map.nmovement,(char*)movement_names,name_str_len,sel_name);
+	dialog_special_combo_fill(wind,sig,id,map.movement.nmovement,(char*)movement_names,name_str_len,sel_name);
 	
 #endif
 }
@@ -1004,8 +1004,8 @@ void dialog_fill_group_combo(WindowRef wind,unsigned long sig,int id,int idx)
 	
 		// groups
 		
-	for (n=0;n!=map.ngroup;n++) {
-		dialog_add_combo_item(wind,sig,id,map.groups[n].name,0);
+	for (n=0;n!=map.group.ngroup;n++) {
+		dialog_add_combo_item(wind,sig,id,map.group.groups[n].name,0);
 	}
 	
 	if (idx==-1) {
