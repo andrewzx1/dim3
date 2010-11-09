@@ -25,7 +25,7 @@ and can be sold or given away.
  
 *********************************************************************/
 
-#include "import.h"
+#include "interface.h"
 
 extern int						cur_mesh;
 extern file_path_setup_type		file_path_setup;

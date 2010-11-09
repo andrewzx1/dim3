@@ -27,7 +27,6 @@ and can be sold or given away.
 
 #include "interface.h"
 #include "dialog.h"
-#include "import.h"
 
 char							filename[256];
 
@@ -95,7 +94,7 @@ void windows_start(void)
 	state.playing=FALSE;
 	state.play_animate_blend=FALSE;
 	
-	state.sel_trig_idx=1;		// supergumba -- testing
+	state.sel_trig_idx=-1;
 	
 	for (n=0;n!=max_model_blend_animation;n++) {
 		state.blend[n].animate_idx=-1;
@@ -462,7 +461,6 @@ void fix_menus(void)
 		DisableMenuItem(GetMenuHandle(bonemenu),0);
 		DisableMenuItem(GetMenuHandle(posemenu),0);
 		DisableMenuItem(GetMenuHandle(animatemenu),0);
-		DisableMenuItem(GetMenuHandle(hitboxmenu),0);
 	}
 	else {
 		DisableMenuItem(GetMenuRef(filemenu),1);
@@ -478,7 +476,6 @@ void fix_menus(void)
 		EnableMenuItem(GetMenuRef(bonemenu),0);
 		EnableMenuItem(GetMenuRef(posemenu),0);
 		EnableMenuItem(GetMenuRef(animatemenu),0);
-		EnableMenuItem(GetMenuRef(hitboxmenu),0);
 	}
 	
 	DrawMenuBar();
@@ -891,7 +888,7 @@ OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,void *us
 			return(noErr);
 			
 		case kCommandVertexInvertNormals:
-			vertex_invert_normal_sel_vertexes(cur_mesh);
+			vertex_invert_normals(cur_mesh);
 			main_wind_draw();
 			return(noErr);
 		

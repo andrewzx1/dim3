@@ -43,6 +43,9 @@ extern void draw_model_bones_get_handle_rot(model_type *model,model_draw_setup *
 extern float draw_model_bones_drag_handle_offset(model_type *model);
 extern void draw_model_bones_drag_handle_calc(float x,float y,float z,d3vct *vct,d3ang *ang,float *hx,float *hy,float *hz);
 
+// supergumba -- this code repeats draw setups and only uses the
+//               view picker for trig hits, fix all this
+
 /* =======================================================
 
       Model Vertex Selection
@@ -177,11 +180,79 @@ void select_model_wind_vertex(d3pnt *start_pnt,unsigned long modifiers,float *pv
 	free(org_vertex_sel);
 }
 
-bool select_model_wind_polygon(d3pnt *start_pnt,float *pv,double *mod_matrix,double *proj_matrix,double *vport)
+/* =======================================================
+
+      Model Trig Selection
+      
+======================================================= */
+
+bool select_model_wind_polygon(d3pnt *start_pnt)
 {
-// supergumba -- do this!
-	return(FALSE);
+	int					n,k,idx,ntrig;
+	float				*pv;
+	d3pnt				v_pnts[3];
+    model_trig_type		*trig;
+	model_mesh_type		*mesh;
+	
+		// clicking mesh
+		
+	mesh=&model.meshes[cur_mesh];
+	
+		// draw and pick the triangles
+		
+	if (!model_pick_list_start(mesh->ntrig)) return(FALSE);
+	
+		// draw the mesh
+		
+	model_draw_setup_initialize(&model,&draw_setup,TRUE);
+	draw_model_setup_bones_vertexes(&model,cur_mesh,&draw_setup);
+
+	ntrig=mesh->ntrig;
+	trig=mesh->trigs;
+    
+    for (n=0;n!=ntrig;n++) {
+	
+		if (!vertex_check_hide_mask_trig(cur_mesh,trig)) {
+			
+			for (k=0;k!=3;k++) {
+				pv=draw_setup.mesh_arrays[cur_mesh].gl_vertex_array+(trig->v[k]*3);
+				v_pnts[k].x=(int)*pv++;
+				v_pnts[k].y=(int)*pv++;
+				v_pnts[k].z=(int)*pv;
+			}
+			
+			model_pick_list_add_trig(n,v_pnts);
+		}
+		
+		trig++;
+    }
+	
+	model_draw_setup_shutdown(&model,&draw_setup);
+	
+	model_pick_list_end(start_pnt,&idx);
+	
+	state.sel_trig_idx=idx;
+
+	if (state.sel_trig_idx==-1) return(FALSE);
+	
+		// select all the vertexes attached to trig
+	
+	vertex_clear_sel_mask(cur_mesh);
+	
+	trig=&mesh->trigs[idx];
+	
+	for (k=0;k!=3;k++) {
+		vertex_set_sel_mask(cur_mesh,trig->v[k],TRUE);
+	}
+
+	return(TRUE);
 }
+
+/* =======================================================
+
+      Model Select Main Line
+      
+======================================================= */
 
 void select_model_wind(d3pnt *start_pnt,unsigned long modifiers)
 {
@@ -222,7 +293,7 @@ void select_model_wind(d3pnt *start_pnt,unsigned long modifiers)
 		// run the correct click
 		
 	if (state.select_mode==select_mode_polygon) {
-		if (!select_model_wind_polygon(start_pnt,pv,mod_matrix,proj_matrix,vport)) {
+		if (!select_model_wind_polygon(start_pnt)) {
 			select_model_wind_vertex(start_pnt,modifiers,pv,mod_matrix,proj_matrix,vport);
 		}
 	}

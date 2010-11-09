@@ -25,8 +25,8 @@ and can be sold or given away.
  
 *********************************************************************/
 
+#include "interface.h"
 #include "dialog.h"
-#include "import.h"
 
 extern int					cur_mesh;
 extern model_type			model;

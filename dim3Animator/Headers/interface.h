@@ -96,6 +96,29 @@ extern void texture_palette_draw(texture_type *txt_list);
 extern void texture_palette_click(texture_type *txt_list,d3pnt *pnt,bool dblclick);
 
 //
+// importing
+//
+
+extern bool import_obj(char *path,bool *found_normals,char *err_str);
+extern bool import_lightwave(char *path,char *err_str);
+extern bool import_c4d_xml(char *path,char *err_str);
+extern void insert_model(char *file_name);
+
+extern int textdecode_count_linestarts(void);
+extern void textdecode_linestarts(void);
+extern bool textdecode_open(char *path,char p_piece_break);
+extern void textdecode_close(void);
+extern int textdecode_count(void);
+extern int textdecode_find(int line_idx,char *txt);
+extern void textdecode_get_line(int line_idx,char *txt,int len);
+extern void textdecode_get_piece(int line_idx,int piece_idx,char *txt);
+
+extern void clear_materials(void);
+extern int texture_count(void);
+extern int texture_pick(char *material_name,char *err_str);
+extern bool texture_use_single(void);
+
+//
 // controls
 //
 
