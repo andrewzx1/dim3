@@ -239,6 +239,12 @@ void vertex_invert_normals(int mesh_idx)
 	}
 }
 
+void vertex_set_normals(int mesh_idx)
+{
+	// supergumba -- work on this
+	//		if (!dialog_nudge_rotate_run(&x,&z,&y,"RotatePick",0)) return(noErr);
+}
+
 /* =======================================================
 
       Clear Bones From Vertexes
