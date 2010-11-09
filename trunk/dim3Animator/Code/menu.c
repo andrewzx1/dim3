@@ -891,6 +891,11 @@ OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,void *us
 			vertex_invert_normals(cur_mesh);
 			main_wind_draw();
 			return(noErr);
+			
+		case kCommandVertexSetNormals:
+			vertex_set_normals(cur_mesh);
+			main_wind_draw();
+			return(noErr);
 		
 		case kCommandVertexClearBones:
 			vertex_clear_bone_attachments_sel_vertexes(cur_mesh);
