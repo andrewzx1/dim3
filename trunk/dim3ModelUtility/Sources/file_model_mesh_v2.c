@@ -259,7 +259,7 @@ void decode_mesh_v2_xml(model_type *model,int model_head)
 		mesh=&model->meshes[mesh_idx];
 		xml_get_attribute_text(mesh_tag,"name",mesh->name,name_str_len);
 		mesh->no_lighting=xml_get_attribute_boolean(mesh_tag,"no_lighting");
-		mesh->diffuse=xml_get_attribute_boolean_default_true(mesh_tag,"diffuse");
+		mesh->diffuse=xml_get_attribute_boolean(mesh_tag,"diffuse");
 		mesh->blend_add=xml_get_attribute_boolean(mesh_tag,"additive");
 		mesh->tintable=xml_get_attribute_boolean(mesh_tag,"tintable");
 		

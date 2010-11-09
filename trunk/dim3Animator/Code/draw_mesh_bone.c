@@ -2,7 +2,7 @@
 
 Module: dim3 Animator
 Author: Brian Barnes
- Usage: Draw Mesh, Bones, Vertexes, Boxes
+ Usage: Draw Model Mesh and Bones
 
 ***************************** License ********************************
 
@@ -41,10 +41,6 @@ void draw_model_mesh(model_type *model,int mesh_idx,model_draw_setup *draw_setup
     model_trig_type		*trig;
 	model_mesh_type		*mesh;
 	
-	glMatrixMode(GL_PROJECTION);
-	glPushMatrix();
-	glTranslatef(0,0,1);
-	
 		// draw the mesh
 		
 	mesh=&model->meshes[mesh_idx];
@@ -52,7 +48,7 @@ void draw_model_mesh(model_type *model,int mesh_idx,model_draw_setup *draw_setup
 	glVertexPointer(3,GL_FLOAT,0,draw_setup->mesh_arrays[mesh_idx].gl_vertex_array);
 	glLockArraysEXT(0,mesh->nvertex);
 	
-	glColor4f(0.75,0.75,0.75,1);
+	glColor4f(0.75f,0.75f,0.75f,1.0f);
     
 	ntrig=mesh->ntrig;
 	trig=mesh->trigs;
@@ -71,8 +67,6 @@ void draw_model_mesh(model_type *model,int mesh_idx,model_draw_setup *draw_setup
     }
     
 	glUnlockArraysEXT();
-	
-	glPopMatrix();
 }
 
 /* =======================================================

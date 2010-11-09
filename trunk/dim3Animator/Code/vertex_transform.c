@@ -28,6 +28,7 @@ and can be sold or given away.
 #include "model.h"
 
 extern model_type				model;
+extern animator_state_type		state;
 
 /* =======================================================
 
@@ -162,7 +163,7 @@ void vertex_rotate_sel_vertexes(int mesh_idx,float ang_x,float ang_y,float ang_z
       
 ======================================================= */
 
-void vertex_invert_normal_sel_vertexes(int mesh_idx)
+void vertex_invert_normals_vertexes(int mesh_idx)
 {
 	int					n,k,ntrig;
 	model_trig_type		*trig;
@@ -192,6 +193,49 @@ void vertex_invert_normal_sel_vertexes(int mesh_idx)
 		}
 		
 		trig++;
+	}
+}
+
+void vertex_invert_normals_trigs(int mesh_idx)
+{
+	int					n;
+	model_trig_type		*trig;
+	
+		// is there a trig selection?
+		
+	if (state.sel_trig_idx==-1) return;
+	
+		// get trig
+		
+	trig=&model.meshes[mesh_idx].trigs[state.sel_trig_idx];
+	
+	for (n=0;n!=3;n++) {
+	
+			// this triangle vertex in the select list?
+			
+		if (!vertex_check_sel_mask(mesh_idx,trig->v[n])) continue;
+		
+		trig->tangent_space[n].tangent.x=-trig->tangent_space[n].tangent.x;
+		trig->tangent_space[n].tangent.y=-trig->tangent_space[n].tangent.y;
+		trig->tangent_space[n].tangent.z=-trig->tangent_space[n].tangent.z;
+
+		trig->tangent_space[n].binormal.x=-trig->tangent_space[n].binormal.x;
+		trig->tangent_space[n].binormal.y=-trig->tangent_space[n].binormal.y;
+		trig->tangent_space[n].binormal.z=-trig->tangent_space[n].binormal.z;
+
+		trig->tangent_space[n].normal.x=-trig->tangent_space[n].normal.x;
+		trig->tangent_space[n].normal.y=-trig->tangent_space[n].normal.y;
+		trig->tangent_space[n].normal.z=-trig->tangent_space[n].normal.z;
+	}
+}
+
+void vertex_invert_normals(int mesh_idx)
+{
+	if (state.select_mode==select_mode_vertex) {
+		vertex_invert_normals_vertexes(mesh_idx);
+	}
+	else {
+		vertex_invert_normals_trigs(mesh_idx);
 	}
 }
 

@@ -67,7 +67,12 @@ extern void vertex_find_center_sel_vertexes(int mesh_idx,int *p_cx,int *p_cy,int
 extern void vertex_move_sel_vertexes(int mesh_idx,int x,int y,int z);
 extern void vertex_scale_sel_vertexes(int mesh_idx,float x,float y,float z);
 extern void vertex_rotate_sel_vertexes(int mesh_idx,float ang_x,float ang_y,float ang_z);
-extern void vertex_invert_normal_sel_vertexes(int mesh_idx);
+extern void vertex_invert_normals(int mesh_idx);
 extern void vertex_clear_bone_attachments_sel_vertexes(int mesh_idx);
 extern void vertex_delete_sel_vertex(int mesh_idx);
 extern void vertex_delete_unused_vertexes(int mesh_idx);
+
+extern bool model_pick_list_start(int count);
+extern void model_pick_list_end(d3pnt *pnt,int *idx);
+extern void model_pick_list_add_trig(int idx,d3pnt *v_pnts);
+

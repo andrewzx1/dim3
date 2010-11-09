@@ -76,7 +76,6 @@ and can be sold or given away.
 #define bonemenu						135
 #define posemenu						136
 #define animatemenu						137
-#define hitboxmenu						138
 
 #define modeltransformmenu				141
 #define meshimportmenu					140
@@ -236,6 +235,16 @@ and can be sold or given away.
 #define drag_handle_x					0
 #define drag_handle_y					1
 #define drag_handle_z					2
+
+//
+// drawing sizes
+//
+
+#define draw_trig_select_line_size		4.0f
+#define draw_vertex_handle_size			8.0f
+
+#define draw_model_normal_size			3.0f
+#define draw_model_normal_len			50.0f
 
 //
 // import Settings

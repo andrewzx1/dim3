@@ -2,7 +2,7 @@
 
 Module: dim3 Animator
 Author: Brian Barnes
- Usage: Draw Mesh, Bones, Vertexes, Boxes
+ Usage: Draw Model Selection and Normals
 
 ***************************** License ********************************
 
@@ -27,8 +27,6 @@ and can be sold or given away.
 
 #include "model.h"
 
-#define draw_model_normal_size			50.0f
-
 extern animator_state_type	state;
 
 /* =======================================================
@@ -43,7 +41,7 @@ void draw_model_selected_vertexes(model_type *model,int mesh_idx,model_draw_setu
 	float			*pv;
 	
 	glColor4f(0.0f,0.0f,0.0f,1.0f);
-	glPointSize(5.0f);
+	glPointSize(draw_vertex_handle_size);
 	
 	nvertex=model->meshes[mesh_idx].nvertex;
 	pv=draw_setup->mesh_arrays[mesh_idx].gl_vertex_array;
@@ -77,7 +75,7 @@ void draw_model_selected_trig(model_type *model,int mesh_idx,model_draw_setup *d
 		// draw the selected trig
 		
 	glColor4f(1.0f,1.0f,0.0f,1.0f);
-	glLineWidth(5.0f);
+	glLineWidth(draw_trig_select_line_size);
 	
 	trig=&model->meshes[mesh_idx].trigs[state.sel_trig_idx];
 
@@ -96,7 +94,7 @@ void draw_model_selected_trig(model_type *model,int mesh_idx,model_draw_setup *d
 		// on the trig
 	
 	glColor4f(0.0f,0.0f,0.0f,1.0f);
-	glPointSize(5.0f);
+	glPointSize(draw_vertex_handle_size);
 	
 	glBegin(GL_POINTS);
 	
@@ -111,140 +109,6 @@ void draw_model_selected_trig(model_type *model,int mesh_idx,model_draw_setup *d
 	glEnd();
 	
 	glPointSize(1.0f);
-	
-}
-
-/* =======================================================
-
-      Draw Model Box
-      
-======================================================= */
-
-void draw_model_box(model_box_type *box,model_draw_setup *draw_setup,bool draw_floor,bool draw_handles)
-{
-	int				n,xsz,zsz,ysz,offx,offz,offy,
-					x[8],y[8],z[8];
-	
-    xsz=box->size.x/2;
-    offx=box->offset.x;
-    zsz=box->size.z/2;
-    offz=box->offset.z;
-    ysz=box->size.y;
-    offy=box->offset.y;
-	
-	x[0]=x[1]=x[4]=x[5]=offx-xsz;
-	x[2]=x[3]=x[6]=x[7]=offx+xsz;
-	y[0]=y[1]=y[2]=y[3]=offy-ysz;
-	y[4]=y[5]=y[6]=y[7]=offy;
-	z[0]=z[3]=z[4]=z[7]=offz-zsz;
-	z[1]=z[2]=z[5]=z[6]=offz+zsz;
-	
-	for (n=0;n!=8;n++) {
-		model_get_point_position(draw_setup,&x[n],&y[n],&z[n]);
-	}
-    
-    glLineWidth(4);
-    
-    glBegin(GL_LINE_LOOP);
-	for (n=0;n!=4;n++) {
-		glVertex3i(x[n],y[n],z[n]);
-	}
-    glEnd();
-    
-    glBegin(GL_LINE_LOOP);
-	for (n=4;n!=8;n++) {
-		glVertex3i(x[n],y[n],z[n]);
-	}
-    glEnd();
-    
-    glBegin(GL_LINES);
-	for (n=0;n!=4;n++) {
-		glVertex3i(x[n],y[n],z[n]);
-		glVertex3i(x[n+4],y[n+4],z[n+4]);
-	}
-    glEnd();
-		
-    glLineWidth(1);
-	
-	if (draw_handles) {
-		glDisable(GL_DEPTH_TEST);
-		
-		glColor4f(0,0,0,1);
-		glPointSize(10);
-		
-		glBegin(GL_POINTS);
-		
-		for (n=0;n!=8;n++) {
-			glVertex3f(x[n],y[n],z[n]);
-		}
-		
-		glEnd();
-		glPointSize(1);
-		
-		glEnable(GL_DEPTH_TEST);
-	}
-    
-    if (draw_floor) {
-		glColor4f(0.75,0.75,0.75,0.5);
-		
-		glBegin(GL_POLYGON);
-		for (n=4;n!=8;n++) {
-			glVertex3i(x[n],y[n],z[n]);
-		}
-		glEnd();
-	}
-}
-
-void draw_model_box_view(model_type *model,model_draw_setup *draw_setup)
-{
-	glColor4f(0,1,0,0.5);
-	draw_model_box(&model->view_box,draw_setup,TRUE,FALSE);
-}
-
-void draw_model_box_hit_boxes(model_type *model,model_draw_setup *draw_setup)
-{
-	int				n;
-	
-	for (n=0;n<model->nhit_box;n++) {
-		glColor4f(1,1,0,0.5);
-		draw_model_box(&model->hit_boxes[n].box,draw_setup,FALSE,TRUE);
-	}
-}
-
-/* =======================================================
-
-      Draw Model Axis
-      
-======================================================= */
-
-void draw_model_axis(model_type *model)
-{
-		// x axis
-		
-	glColor4f(1,0,0,1);
-	
-    glBegin(GL_LINES);
-	glVertex3i(-20000,model->center.y,model->center.z);
-	glVertex3i(20000,model->center.y,model->center.z);
-	glEnd();
-	
-		// y axis
-		
-	glColor4f(0,1,0,1);
-	
-    glBegin(GL_LINES);
-	glVertex3i(model->center.x,-20000,model->center.z);
-	glVertex3i(model->center.x,20000,model->center.z);
-    glEnd();
-
-		// z axis
-		
-	glColor4f(0,0,1,1);
-	
-    glBegin(GL_LINES);
-	glVertex3i(model->center.x,model->center.y,-20000);
-	glVertex3i(model->center.x,model->center.y,20000);
-    glEnd();
 }
 
 /* =======================================================
@@ -267,7 +131,7 @@ void draw_model_normals_vertexes(model_type *model,int mesh_idx,model_draw_setup
 	
 		// draw normals
 	
-	glLineWidth(2.0f);
+	glLineWidth(draw_model_normal_size);
 	
 	glColor4f(1.0f,0.0f,1.0f,1.0f);
 	
@@ -304,9 +168,9 @@ void draw_model_normals_vertexes(model_type *model,int mesh_idx,model_draw_setup
 				
 			glVertex3f(fx,fy,fz);
 			
-			fx2=fx+((*pn++)*draw_model_normal_size);
-			fy2=fy+((*pn++)*draw_model_normal_size);
-			fz2=fz+((*pn++)*draw_model_normal_size);
+			fx2=fx+((*pn++)*draw_model_normal_len);
+			fy2=fy+((*pn++)*draw_model_normal_len);
+			fz2=fz+((*pn++)*draw_model_normal_len);
 
 			glVertex3f(fx2,fy2,fz2);
 		}
@@ -334,7 +198,7 @@ void draw_model_normals_trig(model_type *model,int mesh_idx,model_draw_setup *dr
 	
 		// draw trig normals
 	
-	glLineWidth(2.0f);
+	glLineWidth(draw_model_normal_size);
 	
 	glColor4f(1.0f,0.0f,1.0f,1.0f);
 	
@@ -351,9 +215,9 @@ void draw_model_normals_trig(model_type *model,int mesh_idx,model_draw_setup *dr
 			
 		glVertex3f(fx,fy,fz);
 		
-		fx2=fx+((*pn++)*draw_model_normal_size);
-		fy2=fy+((*pn++)*draw_model_normal_size);
-		fz2=fz+((*pn++)*draw_model_normal_size);
+		fx2=fx+((*pn++)*draw_model_normal_len);
+		fy2=fy+((*pn++)*draw_model_normal_len);
+		fz2=fz+((*pn++)*draw_model_normal_len);
 
 		glVertex3f(fx2,fy2,fz2);
 	}

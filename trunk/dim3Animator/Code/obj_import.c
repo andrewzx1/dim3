@@ -25,8 +25,8 @@ and can be sold or given away.
  
 *********************************************************************/
 
+#include "interface.h"
 #include "dialog.h"
-#include "import.h"
 
 #define obj_max_face_vertex		128
 

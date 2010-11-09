@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		261F12440ED3CB3000A8A0D8 /* vertex_masks.c in Sources */ = {isa = PBXBuildFile; fileRef = 261F12430ED3CB2F00A8A0D8 /* vertex_masks.c */; };
 		261F128A0ED3D04A00A8A0D8 /* vertex_transform.c in Sources */ = {isa = PBXBuildFile; fileRef = 261F12890ED3D04A00A8A0D8 /* vertex_transform.c */; };
+		269AF83E12887DEF001344EC /* model_picker.c in Sources */ = {isa = PBXBuildFile; fileRef = 269AF83D12887DEF001344EC /* model_picker.c */; };
+		269AF91C1288D007001344EC /* draw_axis_boxes.c in Sources */ = {isa = PBXBuildFile; fileRef = 269AF91B1288D007001344EC /* draw_axis_boxes.c */; };
+		269AF91E1288D016001344EC /* draw_selection.c in Sources */ = {isa = PBXBuildFile; fileRef = 269AF91D1288D016001344EC /* draw_selection.c */; };
 		26A59FA50F327FB5007C6209 /* mesh_list.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A59FA40F327FB5007C6209 /* mesh_list.c */; };
 		26AA925C0DF2457E004A03AE /* dialog_particle_settings.c in Sources */ = {isa = PBXBuildFile; fileRef = 26AA925B0DF2457E004A03AE /* dialog_particle_settings.c */; };
 		26AA925E0DF24582004A03AE /* dialog_ring_settings.c in Sources */ = {isa = PBXBuildFile; fileRef = 26AA925D0DF24582004A03AE /* dialog_ring_settings.c */; };
@@ -36,7 +39,6 @@
 		26EE4A32126B8DBF001D0025 /* import_text_decode_common.c in Sources */ = {isa = PBXBuildFile; fileRef = 26EE4A31126B8DBF001D0025 /* import_text_decode_common.c */; };
 		F503D2570981A35B00DEDC74 /* draw_model.c in Sources */ = {isa = PBXBuildFile; fileRef = F503D2560981A35B00DEDC74 /* draw_model.c */; };
 		F503D25F0981A3DC00DEDC74 /* draw_mesh_bone.c in Sources */ = {isa = PBXBuildFile; fileRef = F503D25E0981A3DC00DEDC74 /* draw_mesh_bone.c */; };
-		F503D2680981A42C00DEDC74 /* draw_vertex_boxes.c in Sources */ = {isa = PBXBuildFile; fileRef = F503D2670981A42C00DEDC74 /* draw_vertex_boxes.c */; };
 		F50AF97A0886010300F261B1 /* os_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = F50AF9790886010300F261B1 /* os_defs.h */; };
 		F5239B8F0AFD9BEA00241092 /* undo.c in Sources */ = {isa = PBXBuildFile; fileRef = F5239B8E0AFD9BEA00241092 /* undo.c */; };
 		F5263C1E0CC58C7E00A84EB9 /* c4d_xml_import.c in Sources */ = {isa = PBXBuildFile; fileRef = F5263C1D0CC58C7E00A84EB9 /* c4d_xml_import.c */; };
@@ -44,7 +46,6 @@
 		F54B62DB0C4030A8005CB612 /* texture_palette.c in Sources */ = {isa = PBXBuildFile; fileRef = F54B62DA0C4030A8005CB612 /* texture_palette.c */; };
 		F5537D8E0C87B7FE00ADA34F /* maputility.h in Headers */ = {isa = PBXBuildFile; fileRef = F5537D8D0C87B7FE00ADA34F /* maputility.h */; };
 		F572771106D1A010002DAE5D /* vertex_tab.c in Sources */ = {isa = PBXBuildFile; fileRef = F572771006D1A010002DAE5D /* vertex_tab.c */; };
-		F57463DC0927218300E1BFEE /* import.h in Headers */ = {isa = PBXBuildFile; fileRef = F57463DB0927218300E1BFEE /* import.h */; };
 		F579A01E07DFDF8400DB4213 /* insert.c in Sources */ = {isa = PBXBuildFile; fileRef = F579A01D07DFDF8400DB4213 /* insert.c */; };
 		F5895D3F0C6570EC00AA2669 /* dialog_animation_time_reset.c in Sources */ = {isa = PBXBuildFile; fileRef = F5895D3E0C6570EC00AA2669 /* dialog_animation_time_reset.c */; };
 		F5934BB7099E79150063E081 /* PNG.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5934BB6099E79150063E081 /* PNG.framework */; };
@@ -167,6 +168,9 @@
 		266FFE92125EBCFB00E40F28 /* Tool Rotate Mode.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool Rotate Mode.png"; sourceTree = "<group>"; };
 		266FFE93125EBCFB00E40F28 /* Tool Show First Mesh.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool Show First Mesh.png"; sourceTree = "<group>"; };
 		266FFE94125EBCFB00E40F28 /* Tool Textured.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool Textured.png"; sourceTree = "<group>"; };
+		269AF83D12887DEF001344EC /* model_picker.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = model_picker.c; path = Code/model_picker.c; sourceTree = "<group>"; };
+		269AF91B1288D007001344EC /* draw_axis_boxes.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = draw_axis_boxes.c; path = Code/draw_axis_boxes.c; sourceTree = "<group>"; };
+		269AF91D1288D016001344EC /* draw_selection.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = draw_selection.c; path = Code/draw_selection.c; sourceTree = "<group>"; };
 		26A59FA40F327FB5007C6209 /* mesh_list.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = mesh_list.c; path = Code/mesh_list.c; sourceTree = "<group>"; };
 		26AA925B0DF2457E004A03AE /* dialog_particle_settings.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_particle_settings.c; path = Code/dialog_particle_settings.c; sourceTree = "<group>"; };
 		26AA925D0DF24582004A03AE /* dialog_ring_settings.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_ring_settings.c; path = Code/dialog_ring_settings.c; sourceTree = "<group>"; };
@@ -182,7 +186,6 @@
 		26EE4A31126B8DBF001D0025 /* import_text_decode_common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = import_text_decode_common.c; path = ../dim3Common/Code/import_text_decode_common.c; sourceTree = SOURCE_ROOT; };
 		F503D2560981A35B00DEDC74 /* draw_model.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = draw_model.c; path = Code/draw_model.c; sourceTree = "<group>"; };
 		F503D25E0981A3DC00DEDC74 /* draw_mesh_bone.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = draw_mesh_bone.c; path = Code/draw_mesh_bone.c; sourceTree = "<group>"; };
-		F503D2670981A42C00DEDC74 /* draw_vertex_boxes.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = draw_vertex_boxes.c; path = Code/draw_vertex_boxes.c; sourceTree = "<group>"; };
 		F50AF9790886010300F261B1 /* os_defs.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = os_defs.h; path = ../dim3Common/Headers/os_defs.h; sourceTree = SOURCE_ROOT; };
 		F5197CF8014F1AFA0140F45C /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
 		F5239B8E0AFD9BEA00241092 /* undo.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = undo.c; path = Code/undo.c; sourceTree = "<group>"; };
@@ -192,7 +195,6 @@
 		F54B62DA0C4030A8005CB612 /* texture_palette.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = texture_palette.c; path = Code/texture_palette.c; sourceTree = "<group>"; };
 		F5537D8D0C87B7FE00ADA34F /* maputility.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = maputility.h; path = ../dim3Common/Headers/maputility.h; sourceTree = SOURCE_ROOT; };
 		F572771006D1A010002DAE5D /* vertex_tab.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = vertex_tab.c; path = Code/vertex_tab.c; sourceTree = "<group>"; };
-		F57463DB0927218300E1BFEE /* import.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = import.h; path = Headers/import.h; sourceTree = "<group>"; };
 		F579A01D07DFDF8400DB4213 /* insert.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = insert.c; path = Code/insert.c; sourceTree = "<group>"; };
 		F5895D3E0C6570EC00AA2669 /* dialog_animation_time_reset.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = dialog_animation_time_reset.c; path = Code/dialog_animation_time_reset.c; sourceTree = "<group>"; };
 		F5934BB6099E79150063E081 /* PNG.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PNG.framework; path = ../dim3Common/Frameworks/PNG.framework; sourceTree = SOURCE_ROOT; };
@@ -261,7 +263,8 @@
 			children = (
 				F503D2560981A35B00DEDC74 /* draw_model.c */,
 				F503D25E0981A3DC00DEDC74 /* draw_mesh_bone.c */,
-				F503D2670981A42C00DEDC74 /* draw_vertex_boxes.c */,
+				269AF91B1288D007001344EC /* draw_axis_boxes.c */,
+				269AF91D1288D016001344EC /* draw_selection.c */,
 				0111608A00BE2A8F7F000001 /* draw_window.c */,
 				F5B4082707104E7700600D33 /* click_window.c */,
 			);
@@ -333,7 +336,6 @@
 				F5C5352A09267BF600663E36 /* model.h */,
 				26EE49C6126B896F001D0025 /* interface.h */,
 				F5C5354609267C6D00663E36 /* dialog.h */,
-				F57463DB0927218300E1BFEE /* import.h */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -401,6 +403,7 @@
 			children = (
 				261F12430ED3CB2F00A8A0D8 /* vertex_masks.c */,
 				261F12890ED3D04A00A8A0D8 /* vertex_transform.c */,
+				269AF83D12887DEF001344EC /* model_picker.c */,
 			);
 			name = Vertexes;
 			sourceTree = "<group>";
@@ -495,7 +498,6 @@
 				F50AF97A0886010300F261B1 /* os_defs.h in Headers */,
 				F5C5352B09267BF600663E36 /* model.h in Headers */,
 				F5C5354709267C6D00663E36 /* dialog.h in Headers */,
-				F57463DC0927218300E1BFEE /* import.h in Headers */,
 				F5AD54300BBE1F56001C7C04 /* baseutility.h in Headers */,
 				F5537D8E0C87B7FE00ADA34F /* maputility.h in Headers */,
 				26C5F11212613805000B0F9E /* glue.h in Headers */,
@@ -593,7 +595,6 @@
 				F5941295097878F300223F2A /* dialog_mesh_info.c in Sources */,
 				F503D2570981A35B00DEDC74 /* draw_model.c in Sources */,
 				F503D25F0981A3DC00DEDC74 /* draw_mesh_bone.c in Sources */,
-				F503D2680981A42C00DEDC74 /* draw_vertex_boxes.c in Sources */,
 				F594B44709A947F800408388 /* dialog_pose_settings.c in Sources */,
 				F594B46909A9494800408388 /* dialog_pose_bone_settings.c in Sources */,
 				F594B48609A96EFB00408388 /* dialog_hit_box_settings.c in Sources */,
@@ -624,6 +625,9 @@
 				26EE4A32126B8DBF001D0025 /* import_text_decode_common.c in Sources */,
 				26CF62F0126BF0F8002DCC2A /* tool_palette_common.c in Sources */,
 				26CF633E126BF3ED002DCC2A /* dialog_utility_common.c in Sources */,
+				269AF83E12887DEF001344EC /* model_picker.c in Sources */,
+				269AF91C1288D007001344EC /* draw_axis_boxes.c in Sources */,
+				269AF91E1288D016001344EC /* draw_selection.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
