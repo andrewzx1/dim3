@@ -69,15 +69,17 @@ _map_liquid_calculate_distance
 _map_liquid_move
 _map_liquid_reset_uv
 
+_map_group_add
+_map_group_delete
 _map_group_create_unit_list
 _map_group_dispose_unit_list
 _map_group_get_center
 
-_map_movement_find
 _map_movement_add
 _map_movement_delete
 _map_movement_move_add
 _map_movement_move_delete
+_map_movement_find
 
 _map_setup
 _map_new

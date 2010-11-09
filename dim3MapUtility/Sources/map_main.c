@@ -241,9 +241,6 @@ bool map_new(map_type *map,char *name)
 	map->sceneries=(map_scenery_type*)malloc(max_map_scenery*sizeof(map_scenery_type));
 	if (map->sceneries==NULL) return(FALSE);
 	
-	map->movement.movements=(movement_type*)malloc(max_movement*sizeof(movement_type));
-	if (map->movement.movements==NULL) return(FALSE);
-	
 	map->lights=(map_light_type*)malloc(max_map_light*sizeof(map_light_type));
 	if (map->lights==NULL) return(FALSE);
 	
@@ -252,9 +249,6 @@ bool map_new(map_type *map,char *name)
 	
 	map->particles=(map_particle_type*)malloc(max_map_particle*sizeof(map_particle_type));
 	if (map->particles==NULL) return(FALSE);
-	
-	map->group.groups=(group_type*)malloc(max_group*sizeof(group_type));
-	if (map->group.groups==NULL) return(FALSE);
 
 		// zero memory
 		
@@ -262,11 +256,9 @@ bool map_new(map_type *map,char *name)
 	bzero(map->spots,(max_spot*sizeof(spot_type)));
 	bzero(map->nodes,(max_node*sizeof(node_type)));
 	bzero(map->sceneries,(max_map_scenery*sizeof(map_scenery_type)));
-	bzero(map->movement.movements,(max_movement*sizeof(movement_type)));
 	bzero(map->lights,(max_map_light*sizeof(map_light_type)));
 	bzero(map->sounds,(max_map_sound*sizeof(map_sound_type)));
 	bzero(map->particles,(max_map_particle*sizeof(map_particle_type)));
-	bzero(map->group.groups,(max_group*sizeof(group_type)));
 	
 		// bitmaps
 		
@@ -329,6 +321,8 @@ bool map_save(map_type *map)
 
 void map_close(map_type *map)
 {
+	int					n;
+
 		// bitmaps
 		
 	map_textures_close(map);
@@ -336,10 +330,15 @@ void map_close(map_type *map)
 		// meshes and liquids
 
 	if (map->mesh.meshes!=NULL) {
+		for (n=0;n!=map->mesh.nmesh;n++) {
+			if (map->mesh.meshes[n].polys!=NULL) free(map->mesh.meshes[n].polys);
+		}
+
 		free(map->mesh.meshes);
 		map->mesh.nmesh=0;
 		map->mesh.meshes=NULL;
 	}
+
 	if (map->liquid.liquids!=NULL) {
 		free(map->liquid.liquids);
 		map->liquid.nliquid=0;
@@ -347,8 +346,28 @@ void map_close(map_type *map)
 	}
 	
 		// groups, movements, cinemas
+
+	if (map->group.groups!=NULL) {
+		free(map->group.groups);
+		map->group.ngroup=0;
+		map->group.groups=NULL;
+	}
+
+	if (map->movement.movements!=NULL) {
+		for (n=0;n!=map->movement.nmovement;n++) {
+			if (map->movement.movements[n].moves!=NULL) free(map->movement.movements[n].moves);
+		}
+
+		free(map->movement.movements);
+		map->movement.nmovement=0;
+		map->movement.movements=NULL;
+	}
 		
 	if (map->cinema.cinemas!=NULL) {
+		for (n=0;n!=map->cinema.ncinema;n++) {
+			if (map->cinema.cinemas[n].actions!=NULL) free(map->cinema.cinemas[n].actions);
+		}
+
 		free(map->cinema.cinemas);
 		map->cinema.ncinema=0;
 		map->cinema.cinemas=NULL;
@@ -360,11 +379,9 @@ void map_close(map_type *map)
 	free(map->spots);
 	free(map->nodes);
 	free(map->sceneries);
-	free(map->movement.movements);
 	free(map->lights);
 	free(map->sounds);
 	free(map->particles);
-	free(map->group.groups);
 }
 
 /* =======================================================

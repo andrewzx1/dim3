@@ -31,6 +31,74 @@ and can be sold or given away.
 
 /* =======================================================
 
+      Add and Delete Map Group
+      
+======================================================= */
+
+int map_group_add(map_type *map)
+{
+	int					group_idx;
+	group_type			*nptr,*group;
+	
+	group_idx=map->group.ngroup;
+
+		// create new memory
+
+	if (map->group.ngroup==0) {
+		map->group.groups=(group_type*)malloc(sizeof(group_type));
+		if (map->group.groups==NULL) return(-1);
+	}
+	else {
+		nptr=(group_type*)malloc((map->group.ngroup+1)*sizeof(group_type));
+		if (nptr==NULL) return(-1);
+
+		memmove(nptr,map->group.groups,(map->group.ngroup*sizeof(group_type)));
+		free(map->group.groups);
+
+		map->group.groups=nptr;
+	}
+	
+	group=&map->group.groups[group_idx];
+	
+	strcpy(group->name,"New Group");
+	
+	map->group.ngroup++;
+
+	return(group_idx);
+}
+
+bool map_group_delete(map_type *map,int group_idx)
+{
+	int					sz;
+	group_type			*nptr;
+	
+	if (map->group.ngroup<=1) {
+		map->group.ngroup=0;
+		free(map->group.groups);
+		return(TRUE);
+	}
+
+	nptr=(group_type*)malloc((map->group.ngroup-1)*sizeof(group_type));
+	if (nptr==NULL) return(FALSE);
+
+	if (group_idx>0) {
+		sz=(group_idx+1)*sizeof(group_type);
+		memmove(nptr,map->group.groups,sz);
+	}
+
+	sz=(map->group.ngroup-group_idx)*sizeof(group_type);
+	if (sz>0) memmove(&nptr[group_idx],&map->group.groups[group_idx+1],sz);
+
+	free(map->group.groups);
+
+	map->group.groups=nptr;
+	map->group.ngroup--;
+
+	return(TRUE);
+}
+
+/* =======================================================
+
       Create and Dispose Single Group Unit List
       
 ======================================================= */

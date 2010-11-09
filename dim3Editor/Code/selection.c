@@ -47,37 +47,6 @@ void select_clear(void)
 	nselect_item=0;
 }
 
-void select_add(int type,int main_idx,int sub_idx)
-{
-	if (nselect_item==select_max_item) return;
-		
-		// add to selection list
-	
-	select_items[nselect_item].type=type;
-	select_items[nselect_item].main_idx=main_idx;
-	select_items[nselect_item].sub_idx=sub_idx;
-	nselect_item++;
-}
-
-int select_count(void)
-{
-	return(nselect_item);
-}
-
-void select_get(int sel_idx,int *type,int *main_idx,int *sub_idx)
-{
-	*type=select_items[sel_idx].type;
-	*main_idx=select_items[sel_idx].main_idx;
-	*sub_idx=select_items[sel_idx].sub_idx;
-}
-
-void select_switch(int sel_idx,int type,int main_idx,int sub_idx)
-{
-	select_items[sel_idx].type=type;
-	select_items[sel_idx].main_idx=main_idx;
-	select_items[sel_idx].sub_idx=sub_idx;
-}
-
 int select_find(int type,int main_idx,int sub_idx)
 {
 	int					n;
@@ -106,6 +75,41 @@ bool select_check(int type,int main_idx,int sub_idx)
 bool select_has_type(int type)
 {
 	return(select_find(type,-1,-1)!=-1);
+}
+
+void select_add(int type,int main_idx,int sub_idx)
+{
+	if (nselect_item==select_max_item) return;
+
+		// already in list?
+
+	if (select_check(type,main_idx,sub_idx)) return;
+		
+		// add to selection list
+	
+	select_items[nselect_item].type=type;
+	select_items[nselect_item].main_idx=main_idx;
+	select_items[nselect_item].sub_idx=sub_idx;
+	nselect_item++;
+}
+
+int select_count(void)
+{
+	return(nselect_item);
+}
+
+void select_get(int sel_idx,int *type,int *main_idx,int *sub_idx)
+{
+	*type=select_items[sel_idx].type;
+	*main_idx=select_items[sel_idx].main_idx;
+	*sub_idx=select_items[sel_idx].sub_idx;
+}
+
+void select_switch(int sel_idx,int type,int main_idx,int sub_idx)
+{
+	select_items[sel_idx].type=type;
+	select_items[sel_idx].main_idx=main_idx;
+	select_items[sel_idx].sub_idx=sub_idx;
 }
 
 void select_flip(int type,int main_idx,int sub_idx)
@@ -149,7 +153,7 @@ void select_remove_type(int type)
 
 /* =======================================================
 
-      Group and Movement Selects
+      Group, Movement, and Cinema Selects
       
 ======================================================= */
 
@@ -160,7 +164,7 @@ void select_add_group(int group_idx)
 	if (group_idx==-1) return;
 
 	for (n=0;n!=map.mesh.nmesh;n++) {
-		if (map.mesh.meshes[n].group_idx==group_idx) select_add(mesh_piece,n,-1);
+		if (map.mesh.meshes[n].group_idx==group_idx) select_add(mesh_piece,n,0);
 	}
 
 	for (n=0;n!=map.liquid.nliquid;n++) {
@@ -174,6 +178,42 @@ void select_add_movement(int movement_idx)
 
 	select_add_group(map.movement.movements[movement_idx].group_idx);
 	select_add_group(map.movement.movements[movement_idx].reverse_group_idx);
+}
+
+void select_add_cinema(int cinema_idx)
+{
+	int						n,idx;
+	map_cinema_type			*cinema;
+	map_cinema_action_type	*action;
+
+	if (cinema_idx==-1) return;
+
+	cinema=&map.cinema.cinemas[cinema_idx];
+
+	action=cinema->actions;
+
+	for (n=0;n!=cinema->naction;n++) {
+
+		switch (action->actor_type) {
+
+			case cinema_actor_player:
+				idx=map_find_spot(&map,"Start",spot_type_player);
+				if (idx!=-1) select_add(spot_piece,idx,-1);
+				break;
+
+			case cinema_actor_object:
+				idx=map_find_spot(&map,action->actor_name,spot_type_object);
+				if (idx!=-1) select_add(spot_piece,idx,-1);
+				break;
+
+			case cinema_actor_movement:
+				idx=map_movement_find(&map,action->actor_name);
+				if (idx!=-1) select_add_movement(idx);
+				break;
+		}
+
+		action++;
+	}
 }
 
 /* =======================================================

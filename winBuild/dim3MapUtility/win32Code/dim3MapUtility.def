@@ -72,15 +72,17 @@ EXPORTS
 	map_liquid_move									@265
 	map_liquid_reset_uv								@266
 
-	map_group_create_unit_list						@270
-	map_group_dispose_unit_list						@271
-	map_group_get_center							@272
+	map_group_add									@270
+	map_group_delete								@271
+	map_group_create_unit_list						@272
+	map_group_dispose_unit_list						@273
+	map_group_get_center							@274
 
-	map_movement_find								@280
-	map_movement_add								@281
-	map_movement_delete								@282
-	map_movement_move_add							@283
-	map_movement_move_delete						@284
+	map_movement_add								@280
+	map_movement_delete								@281
+	map_movement_move_add							@282
+	map_movement_move_delete						@283
+	map_movement_find								@284
 
 	map_setup										@290
 	map_new											@291

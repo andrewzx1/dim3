@@ -53,8 +53,6 @@ extern char light_type_str[][32];
 
 #define max_map_texture										256				// maximum number of textures in a map
 
-#define max_group											128				// maximum number of mesh groups
-
 #define max_map_scenery										1024			// maximum number of ambient scenery
 #define max_map_scenery_model_texture_frame					8				// maximum number of changable texture frames
 
@@ -65,9 +63,6 @@ extern char light_type_str[][32];
 #define max_spot											512				// maximum number of spot in a map
 #define max_node											512				// maximum number of nodes in a map
 #define max_node_link										16				// maximum number of connected nodes
-
-#define max_movement										64				// maximum number of movements
-#define max_movement_move									16				// maximum number of separate moves in a movement
 
 #define max_sort_poly										2048			// maximum number of transparent polys in a single scene
 
@@ -517,7 +512,7 @@ typedef struct		{
 						bool								auto_start,auto_open,auto_open_stand,
 															auto_open_never_close,
 															loop,started,opened,reverse;
-						movement_move_type					moves[max_movement_move];
+						movement_move_type					*moves;
 					} movement_type;
 
 typedef struct		{
@@ -822,15 +817,17 @@ extern double map_liquid_calculate_distance(map_liquid_type *liq,d3pnt *pnt);
 extern void map_liquid_move(map_type *map,int liquid_idx,int x,int y,int z);
 extern void map_liquid_reset_uv(map_type *map,int liquid_idx);
 
+extern int map_group_add(map_type *map);
+extern bool map_group_delete(map_type *map,int group_idx);
 extern bool map_group_create_unit_list(map_type *map);
 extern void map_group_dispose_unit_list(map_type *map);
 extern void map_group_get_center(map_type *map,int group_idx,d3pnt *center_pnt);
 
-extern int map_movement_find(map_type *map,char *name);
 extern int map_movement_add(map_type *map);
-extern void map_movement_delete(map_type *map,int movement_idx);
+extern bool map_movement_delete(map_type *map,int movement_idx);
 extern int map_movement_move_add(map_type *map,int movement_idx);
-extern void map_movement_move_delete(map_type *map,int movement_idx,int move_idx);
+extern bool map_movement_move_delete(map_type *map,int movement_idx,int move_idx);
+extern int map_movement_find(map_type *map,char *name);
 
 extern bool map_add_texture_frame(map_type *map,int txt,char *bitmap_name);
 extern bool map_delete_texture_frame(map_type *map,int txt);

@@ -69,23 +69,19 @@ bool dialog_map_settings_run(void)
 {
 	return(FALSE);
 }
-bool dialog_map_cinemas_run(int cinema_idx)
+bool dialog_group_settings_run(group_type *group)
 {
 	return(FALSE);
 }
-bool dialog_map_groups_run(int group_idx)
-{
-	return(FALSE);
-}
-bool dialog_map_movements_run(int movement_idx)
-{
-	return(FALSE);
-}
-bool dialog_movement_settings_run(movement_type *movement)
+bool dialog_movement_settings_run(int movement_idx)
 {
 	return(FALSE);
 }
 bool dialog_movement_move_settings_run(movement_move_type *move)
+{
+	return(FALSE);
+}
+bool dialog_cinema_settings_run(int cinema_idx)
 {
 	return(FALSE);
 }
@@ -96,10 +92,6 @@ bool dialog_optimize_run(int *poly_threshold)
 bool dialog_light_map_run(void)
 {
 	return(TRUE);
-}
-bool dialog_group_settings_run(group_type *group)
-{
-	return(FALSE);
 }
 bool dialog_resize_run(float *fct_x,float *fct_y,float *fct_z)
 {
@@ -184,6 +176,7 @@ LRESULT CALLBACK editor_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam)
 			break;
 
 		case WM_LBUTTONDOWN:
+		case WM_LBUTTONDBLCLK:
 			pnt.x=LOWORD(lParam);
 			pnt.y=HIWORD(lParam);
 			
@@ -194,11 +187,11 @@ LRESULT CALLBACK editor_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam)
 			}
 			else {
 				if (pnt.y>=txt_palette_box.ty) {
-					texture_palette_click(map.textures,&pnt,FALSE);	// supergumba -- need double click here!
+					texture_palette_click(map.textures,&pnt,(msg==WM_LBUTTONDBLCLK));
 				}
 				else {
 					if (pnt.x>=item_palette_box.lx) {
-						item_palette_click(&pnt,FALSE);		// supergumba -- need double click here!
+						item_palette_click(&pnt,(msg==WM_LBUTTONDBLCLK));
 					}
 					else {
 						view_click(&pnt,FALSE);
@@ -266,7 +259,7 @@ void main_wind_open(void)
 	hInst=GetModuleHandle(NULL);
  
     wcx.cbSize=sizeof(wcx);
-    wcx.style=0;
+    wcx.style=CS_DBLCLKS;
     wcx.lpfnWndProc=editor_wnd_proc;
     wcx.cbClsExtra=0;
     wcx.cbWndExtra=0;
