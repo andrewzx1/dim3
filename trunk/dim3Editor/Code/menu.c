@@ -378,7 +378,7 @@ bool menu_event_run(int cmd)
 			return(TRUE);
 
 		case kCommandMapAddMovement:
-			idx=dialog_map_movements_run(-1);
+			idx=dialog_movement_settings_run(-1);
 			item_palette_select(movement_piece,idx);
 			return(TRUE);
 			

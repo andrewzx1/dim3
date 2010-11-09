@@ -57,7 +57,9 @@ extern void ag_generate_additional_stories(void);
 
 void ag_map_clear(void)
 {
-		// clear map
+	int				n;
+
+		// clear static memory
 
 	map.nspot=0;
 	map.nnode=0;
@@ -66,20 +68,51 @@ void ag_map_clear(void)
 	map.nsound=0;
 	map.nparticle=0;
 
-	map.mesh.nmesh=0;
-	if (map.mesh.meshes!=NULL) free(map.mesh.meshes);
+		// meshes and liquids
 
-	map.liquid.nliquid=0;
-	if (map.liquid.liquids!=NULL) free(map.liquid.liquids);
+	if (map.mesh.meshes!=NULL) {
+		for (n=0;n!=map.mesh.nmesh;n++) {
+			if (map.mesh.meshes[n].polys!=NULL) free(map.mesh.meshes[n].polys);
+		}
+
+		free(map.mesh.meshes);
+		map.mesh.nmesh=0;
+		map.mesh.meshes=NULL;
+	}
+
+	if (map.liquid.liquids!=NULL) {
+		free(map.liquid.liquids);
+		map.liquid.nliquid=0;
+		map.liquid.liquids=NULL;
+	}
 	
-	map.group.ngroup=0;
-	if (map.group.groups!=NULL) free(map.group.groups);
-	
-	map.movement.nmovement=0;
-	if (map.movement.movements!=NULL) free(map.movement.movements);
-	
-	map.cinema.ncinema=0;
-	if (map.cinema.cinemas!=NULL) free(map.cinema.cinemas);
+		// groups, movements, cinemas
+
+	if (map.group.groups!=NULL) {
+		free(map.group.groups);
+		map.group.ngroup=0;
+		map.group.groups=NULL;
+	}
+
+	if (map.movement.movements!=NULL) {
+		for (n=0;n!=map.movement.nmovement;n++) {
+			if (map.movement.movements[n].moves!=NULL) free(map.movement.movements[n].moves);
+		}
+
+		free(map.movement.movements);
+		map.movement.nmovement=0;
+		map.movement.movements=NULL;
+	}
+		
+	if (map.cinema.cinemas!=NULL) {
+		for (n=0;n!=map.cinema.ncinema;n++) {
+			if (map.cinema.cinemas[n].actions!=NULL) free(map.cinema.cinemas[n].actions);
+		}
+
+		free(map.cinema.cinemas);
+		map.cinema.ncinema=0;
+		map.cinema.cinemas=NULL;
+	}
 }
 
 /* =======================================================

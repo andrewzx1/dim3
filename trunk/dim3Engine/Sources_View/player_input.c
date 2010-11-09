@@ -99,15 +99,15 @@ void player_clear_input(void)
 
 void player_command_input(obj_type *obj)
 {
-	int			i,k;
+	int			n,k;
 
         // game keys
         
-	for (i=nc_game_start;i<=nc_game_end;i++) {
+	for (n=nc_game_start;n<=nc_game_end;n++) {
     
-        k=i-nc_game_start;
+        k=n-nc_game_start;
         
-        if (input_action_get_state(i)) {
+        if (input_action_get_state(n)) {
             if (!command_key_down[k]) {
                 command_key_down[k]=TRUE;
 				scripts_post_event_console(&js.game_attach,sd_event_message,sd_event_message_from_key_down,k);
@@ -123,11 +123,11 @@ void player_command_input(obj_type *obj)
     
         // player keys
         
-	for (i=nc_player_start;i<=nc_player_end;i++) {
+	for (n=nc_player_start;n<=nc_player_end;n++) {
     
-        k=i-nc_player_start;
+        k=n-nc_player_start;
         
-        if (input_action_get_state(i)) {
+        if (input_action_get_state(n)) {
             if (!player_key_down[k]) {
                 player_key_down[k]=TRUE;
 				scripts_post_event_console(&obj->attach,sd_event_message,sd_event_message_from_key_down,k);
@@ -324,7 +324,7 @@ void player_weapon_change_input(obj_type *obj,weapon_type *weap)
 		
 	down_key=next_weapon_key||previous_weapon_key;
 
-	for (n=nc_weapon_start;n!=nc_weapon_end;n++) {
+	for (n=nc_weapon_start;n<=nc_weapon_end;n++) {
 		k=n-nc_weapon_start;
 		weapon_key[k]=input_action_get_state(n);
 		down_key=down_key||weapon_key[k];
@@ -356,7 +356,7 @@ void player_weapon_change_input(obj_type *obj,weapon_type *weap)
 		return;
 	}
 	
-	for (n=nc_weapon_start;n!=nc_weapon_end;n++) {
+	for (n=nc_weapon_start;n<=nc_weapon_end;n++) {
 		k=n-nc_weapon_start;
 		if (weapon_key[k]) {
 			weapon_pick(obj,k);
@@ -376,7 +376,7 @@ void player_weapon_fire_input(obj_type *obj,weapon_type *weap)
 	
 		// check keys
 		
-	for (n=nc_fire_start;n!=nc_fire_end;n++) {
+	for (n=nc_fire_start;n<=nc_fire_end;n++) {
 	
 		method=n-nc_fire_start;
 		

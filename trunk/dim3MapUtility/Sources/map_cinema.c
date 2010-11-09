@@ -31,7 +31,7 @@ and can be sold or given away.
 
 /* =======================================================
 
-      Add Cinema to Map
+      Add and Delete Map Cinema
       
 ======================================================= */
 
@@ -60,7 +60,7 @@ int map_cinema_add(map_type *map)
 	
 	cinema=&map->cinema.cinemas[cinema_idx];
 	
-	cinema->name[0]=0x0;
+	strcpy(cinema->name,"New Cinema");
 	cinema->len_msec=0;
 	cinema->freeze_input=TRUE;
 	cinema->show_hud=FALSE;
@@ -77,6 +77,12 @@ bool map_cinema_delete(map_type *map,int cinema_idx)
 {
 	int					sz;
 	map_cinema_type		*nptr;
+
+		// free actions
+
+	if (map->cinema.cinemas[cinema_idx].actions!=NULL) free(map->cinema.cinemas[cinema_idx].actions);
+
+		// free cinema
 	
 	if (map->cinema.ncinema<=1) {
 		map->cinema.ncinema=0;
@@ -105,7 +111,7 @@ bool map_cinema_delete(map_type *map,int cinema_idx)
 
 /* =======================================================
 
-      Add Action to Cinema
+      Add and Delete Cinema Action
       
 ======================================================= */
 

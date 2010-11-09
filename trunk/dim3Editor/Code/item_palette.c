@@ -39,6 +39,7 @@ and can be sold or given away.
 #define item_font_high			16
 #define item_palette_border_sz	10
 #define item_palette_tree_sz	150
+#define item_scroll_button_high	20
 
 typedef struct		{
 						int						x,y,piece_type,piece_idx;
@@ -55,6 +56,7 @@ extern file_path_setup_type		file_path_setup;
 extern int						tool_palette_pixel_sz,txt_palette_pixel_sz;
 
 int								item_palette_pixel_sz,item_palette_item_count,
+								item_palette_scroll_pos,item_palette_total_high,
 								item_palette_piece_type,item_palette_piece_idx;
 bool							item_palette_open;
 d3rect							item_palette_box;
@@ -70,6 +72,9 @@ item_palette_item_type			*item_palette_items;
 void item_palette_initialize(void)
 {
 	item_palette_open=TRUE;
+
+	item_palette_scroll_pos=0;
+	item_palette_total_high=0;
 
 	item_palette_piece_type=spot_piece;
 	item_palette_piece_idx=-1;
@@ -116,7 +121,9 @@ void item_palette_add_item(int piece_type,int piece_idx,char *name,d3col *col,bo
 
 	item->x=item_palette_box.lx+(item_palette_border_sz+4);
 	if (!header) item->x+=10;
-	item->y=(item_palette_item_count*item_font_high)+item_palette_box.ty;
+	item->y=(((item_palette_item_count*item_font_high)+item_scroll_button_high)-item_palette_scroll_pos)+item_palette_box.ty;
+
+	if (item->y>item_palette_total_high) item_palette_total_high=item->y;
 
 	item->piece_type=piece_type;
 	item->piece_idx=piece_idx;
@@ -156,6 +163,8 @@ void item_palette_fill_tree(void)
 	int			n;
 
 	item_palette_delete_all_items();
+
+	item_palette_total_high=0;
 
 		// spots
 
@@ -258,7 +267,7 @@ void item_palette_draw_tree_item(item_palette_item_type *item)
 {
 		// early exits
 
-	if ((item->y<item_palette_box.ty) || ((item->y-item_font_high)>item_palette_box.by)) return;
+	if ((item->y<(item_palette_box.ty+item_scroll_button_high)) || ((item->y-item_font_high)>(item_palette_box.by-item_scroll_button_high))) return;
 
 		// draw header
 		
@@ -347,7 +356,7 @@ void item_palette_draw_tree_item(item_palette_item_type *item)
 
 void item_palette_draw(void)
 {
-	int						n,lx,mx,rx;
+	int						n,lx,mx,rx,ty,by;
 	d3rect					wbox;
 	item_palette_item_type	*item;
 
@@ -398,6 +407,78 @@ void item_palette_draw(void)
 		item_palette_draw_tree_item(item);
 		item++;
 	}
+
+		// scroll up button
+
+	ty=item_palette_box.ty;
+	by=item_palette_box.ty+item_scroll_button_high;
+	mx=(item_palette_box.lx+item_palette_box.rx)>>1;
+
+	glColor4f(0.9f,0.9f,0.9f,1.0f);
+		
+	glBegin(GL_QUADS);
+	glVertex2i(item_palette_box.lx,ty);
+	glVertex2i(item_palette_box.rx,ty);
+	glVertex2i(item_palette_box.rx,by);
+	glVertex2i(item_palette_box.lx,by);
+	glEnd();
+
+	glDisable(GL_BLEND);
+
+	glColor4f(0.0f,0.0f,0.0f,1.0f);
+		
+	glBegin(GL_LINE_LOOP);
+	glVertex2i(item_palette_box.lx,ty);
+	glVertex2i(item_palette_box.rx,ty);
+	glVertex2i(item_palette_box.rx,by);
+	glVertex2i(item_palette_box.lx,by);
+	glEnd();
+
+	glEnable(GL_BLEND);
+
+	glBegin(GL_TRIANGLES);
+	glColor4f(0.2f,0.2f,1.0f,1.0f);
+	glVertex2i(mx,(ty+5));
+	glColor4f(0.0f,0.0f,1.0f,1.0f);
+	glVertex2i((mx+10),(by-5));
+	glVertex2i((mx-10),(by-5));
+	glEnd();
+
+		// scroll down button
+
+	ty=item_palette_box.by-item_scroll_button_high;
+	by=item_palette_box.by;
+	mx=(item_palette_box.lx+item_palette_box.rx)>>1;
+
+	glColor4f(0.9f,0.9f,0.9f,1.0f);
+		
+	glBegin(GL_QUADS);
+	glVertex2i(item_palette_box.lx,ty);
+	glVertex2i(item_palette_box.rx,ty);
+	glVertex2i(item_palette_box.rx,by);
+	glVertex2i(item_palette_box.lx,by);
+	glEnd();
+
+	glDisable(GL_BLEND);
+
+	glColor4f(0.0f,0.0f,0.0f,1.0f);
+		
+	glBegin(GL_LINE_LOOP);
+	glVertex2i(item_palette_box.lx,ty);
+	glVertex2i(item_palette_box.rx,ty);
+	glVertex2i(item_palette_box.rx,by);
+	glVertex2i(item_palette_box.lx,by);
+	glEnd();
+
+	glEnable(GL_BLEND);
+
+	glBegin(GL_TRIANGLES);
+	glColor4f(0.2f,0.2f,1.0f,1.0f);
+	glVertex2i(mx,(by-5));
+	glColor4f(0.0f,0.0f,1.0f,1.0f);
+	glVertex2i((mx+10),(ty+5));
+	glVertex2i((mx-10),(ty+5));
+	glEnd();
 	
 		// click-close border
 	
@@ -465,7 +546,7 @@ void item_palette_select(int sel_type,int sel_idx)
 
 void item_palette_click(d3pnt *pnt,bool dblclick)
 {
-	int						item_idx;
+	int						item_idx,scroll_sz;
 	item_palette_item_type	*item;
 
 	pnt->x-=item_palette_box.lx;
@@ -481,9 +562,25 @@ void item_palette_click(d3pnt *pnt,bool dblclick)
 		return;
 	}
 
+		// click in scroll item
+
+	scroll_sz=item_palette_box.by-item_palette_box.ty;
+
+	if (pnt->y<=item_scroll_button_high) {
+		if (item_palette_scroll_pos>0) item_palette_scroll_pos-=scroll_sz;
+		main_wind_draw();
+		return;
+	}
+
+	if (pnt->y>=(scroll_sz-item_scroll_button_high)) {
+		if (item_palette_scroll_pos<(item_palette_total_high-scroll_sz)) item_palette_scroll_pos+=scroll_sz;
+		main_wind_draw();
+		return;
+	}
+
 		// click in item
 
-	item_idx=pnt->y/item_font_high;
+	item_idx=((pnt->y-item_scroll_button_high)+item_palette_scroll_pos)/item_font_high;
 	if ((item_idx<0) || (item_idx>=item_palette_item_count)) return;
 
 		// if we click on a header that
@@ -506,7 +603,7 @@ void item_palette_click(d3pnt *pnt,bool dblclick)
 	item_palette_piece_type=item->piece_type;
 	item_palette_piece_idx=item->piece_idx;
 
-	if ((item->piece_idx!=-1) && (item->piece_type!=cinema_piece)) {
+	if (item->piece_idx!=-1) {
 		select_clear();
 
 		switch (item->piece_type) {
@@ -516,12 +613,15 @@ void item_palette_click(d3pnt *pnt,bool dblclick)
 			case movement_piece:
 				select_add_movement(item->piece_idx);
 				break;
+			case cinema_piece:
+				select_add_cinema(item->piece_idx);
+				break;
 			default:
 				select_add(item->piece_type,item->piece_idx,-1);
 				break;
 		}
 
-		view_goto_select();
+		if (dblclick) view_goto_select();
 	}
 
 		// turn on any hidden items
@@ -568,7 +668,7 @@ void item_palette_click(d3pnt *pnt,bool dblclick)
 			break;
 
 		case movement_piece:
-			dialog_map_movements_run(item_palette_piece_idx);
+			dialog_movement_settings_run(item_palette_piece_idx);
 			break;
 
 	}

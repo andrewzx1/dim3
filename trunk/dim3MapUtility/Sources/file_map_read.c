@@ -198,17 +198,89 @@ void decode_map_settings_xml(map_type *map,int map_head)
 
 void decode_map_groups_xml(map_type *map,int map_head)
 {
-	int						i,main_group_tag,group_tag;
+	int				n,ngroup,idx,
+					main_group_tag,group_tag;
 
     main_group_tag=xml_findfirstchild("Groups",map_head);
     if (main_group_tag==-1) return;
     
-    map->group.ngroup=xml_countchildren(main_group_tag);
+	map->group.ngroup=0;
+
+    ngroup=xml_countchildren(main_group_tag);
 	group_tag=xml_findfirstchild("Group",main_group_tag);
 
-    for (i=0;i!=map->group.ngroup;i++) {
- 		xml_get_attribute_text(group_tag,"name",map->group.groups[i].name,name_str_len);
+    for (n=0;n!=ngroup;n++) {
+		idx=map_group_add(map);
+		if (idx==-1) break;
+
+ 		xml_get_attribute_text(group_tag,"name",map->group.groups[idx].name,name_str_len);
 		group_tag=xml_findnextchild(group_tag);
+	}
+}
+
+/* =======================================================
+
+      Read Movements
+      
+======================================================= */
+
+void decode_map_movements_xml(map_type *map,int map_head)
+{
+	int						n,k,nmovement,nmove,movement_idx,move_idx,
+							main_movement_tag,movement_tag,main_movement_move_tag,movement_move_tag;
+	movement_type			*movement;
+	movement_move_type		*move;
+    
+    main_movement_tag=xml_findfirstchild("Movements",map_head);
+    if (main_movement_tag==-1) return;
+
+	map->movement.nmovement=0;
+    
+    nmovement=xml_countchildren(main_movement_tag);
+	movement_tag=xml_findfirstchild("Movement",main_movement_tag);
+
+    for (n=0;n!=nmovement;n++) {
+		movement_idx=map_movement_add(map);
+		if (movement_idx==-1) break;
+
+		movement=&map->movement.movements[movement_idx];
+	
+ 		xml_get_attribute_text(movement_tag,"name",movement->name,name_str_len);
+		movement->group_idx=xml_get_attribute_int(movement_tag,"group");
+		movement->reverse_group_idx=xml_get_attribute_int_default(movement_tag,"group_reverse",-1);
+ 		movement->auto_start=xml_get_attribute_boolean(movement_tag,"auto_start");
+ 		movement->auto_open=xml_get_attribute_boolean(movement_tag,"auto_open");
+ 		movement->auto_open_stand=xml_get_attribute_boolean(movement_tag,"auto_open_stand");
+ 		movement->auto_open_never_close=xml_get_attribute_boolean(movement_tag,"auto_open_never_close");
+ 		movement->auto_open_distance=xml_get_attribute_int(movement_tag,"auto_open_distance");
+		movement->loop=xml_get_attribute_boolean(movement_tag,"loop");
+		
+		main_movement_move_tag=xml_findfirstchild("Moves",movement_tag);
+		if (main_movement_move_tag!=-1) {
+			
+			movement->nmove=0;
+
+			nmove=xml_countchildren(main_movement_move_tag);
+			movement_move_tag=xml_findfirstchild("Move",main_movement_move_tag);
+		
+			for (k=0;k!=nmove;k++) {
+				move_idx=map_movement_move_add(map,movement_idx);
+				if (move_idx==-1) break;
+
+				move=&movement->moves[move_idx];
+
+				xml_get_attribute_3_coord_int(movement_move_tag,"c3",&move->mov.x,&move->mov.y,&move->mov.z);
+				xml_get_attribute_3_coord_float(movement_move_tag,"r3",&move->rot.x,&move->rot.y,&move->rot.z);
+				move->msec=(short)xml_get_attribute_int(movement_move_tag,"msec");
+				move->user_id=(short)xml_get_attribute_int(movement_move_tag,"user_id");
+				xml_get_attribute_text(movement_move_tag,"sound_name",move->sound_name,name_str_len);
+				move->sound_pitch=xml_get_attribute_float(movement_move_tag,"sound_pitch");
+				
+				movement_move_tag=xml_findnextchild(movement_move_tag);
+			}
+		}
+		
+		movement_tag=xml_findnextchild(movement_tag);
 	}
 }
 
@@ -234,66 +306,6 @@ void decode_map_textures_xml(map_type *map,int map_head)
 		bitmap_texture_read_xml(&map->textures[id],fill_tag,TRUE);
 		fill_tag=xml_findnextchild(fill_tag);
     }
-}
-
-/* =======================================================
-
-      Read Movements
-      
-======================================================= */
-
-void decode_map_movements_xml(map_type *map,int map_head)
-{
-	int						i,k,main_movement_tag,movement_tag,main_movement_move_tag,movement_move_tag;
-	movement_type			*movement;
-	movement_move_type		*move;
-    
-    main_movement_tag=xml_findfirstchild("Movements",map_head);
-    if (main_movement_tag==-1) return;
-    
-    map->movement.nmovement=xml_countchildren(main_movement_tag);
-	movement_tag=xml_findfirstchild("Movement",main_movement_tag);
-
-	movement=map->movement.movements;
-	
-    for (i=0;i!=map->movement.nmovement;i++) {
- 		xml_get_attribute_text(movement_tag,"name",movement->name,name_str_len);
-		movement->group_idx=xml_get_attribute_int(movement_tag,"group");
-		movement->reverse_group_idx=xml_get_attribute_int_default(movement_tag,"group_reverse",-1);
- 		movement->auto_start=xml_get_attribute_boolean(movement_tag,"auto_start");
- 		movement->auto_open=xml_get_attribute_boolean(movement_tag,"auto_open");
- 		movement->auto_open_stand=xml_get_attribute_boolean(movement_tag,"auto_open_stand");
- 		movement->auto_open_never_close=xml_get_attribute_boolean(movement_tag,"auto_open_never_close");
- 		movement->auto_open_distance=xml_get_attribute_int(movement_tag,"auto_open_distance");
-		movement->loop=xml_get_attribute_boolean(movement_tag,"loop");
-		
-		movement->nmove=0;
-		
-		main_movement_move_tag=xml_findfirstchild("Moves",movement_tag);
-		if (main_movement_move_tag!=-1) {
-
-			movement->nmove=xml_countchildren(main_movement_move_tag);
-			movement_move_tag=xml_findfirstchild("Move",main_movement_move_tag);
-		
-			move=movement->moves;
-			
-			for (k=0;k!=movement->nmove;k++) {
-				xml_get_attribute_3_coord_int(movement_move_tag,"c3",&move->mov.x,&move->mov.y,&move->mov.z);
-				xml_get_attribute_3_coord_float(movement_move_tag,"r3",&move->rot.x,&move->rot.y,&move->rot.z);
-				move->msec=(short)xml_get_attribute_int(movement_move_tag,"msec");
-				move->user_id=(short)xml_get_attribute_int(movement_move_tag,"user_id");
-				xml_get_attribute_text(movement_move_tag,"sound_name",move->sound_name,name_str_len);
-				move->sound_pitch=xml_get_attribute_float(movement_move_tag,"sound_pitch");
-				
-				movement_move_tag=xml_findnextchild(movement_move_tag);
-				move++;
-			}
-		
-		}
-		
-		movement_tag=xml_findnextchild(movement_tag);
-		movement++;
-	}
 }
 
 /* =======================================================

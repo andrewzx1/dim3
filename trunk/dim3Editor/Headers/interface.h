@@ -162,6 +162,7 @@ extern void select_flip(int type,int main_idx,int sub_idx);
 extern void select_remove_type(int type);
 extern void select_add_group(int group_idx);
 extern void select_add_movement(int movement_idx);
+extern void select_add_cinema(int cinema_idx);
 extern void select_delete_move_index(int type,int main_idx,int sub_idx);
 extern void select_sort(void);
 extern void select_duplicate_clear(void);
