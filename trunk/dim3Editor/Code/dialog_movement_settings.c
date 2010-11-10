@@ -282,7 +282,7 @@ static pascal void moves_list_notify_proc(ControlRef ctrl,DataBrowserItemID item
       
 ======================================================= */
 
-int dialog_map_movements_run(int movement_idx)
+int dialog_movement_settings_run(int movement_idx)
 {
 	int								n;
 	ControlRef						ctrl;
@@ -296,17 +296,17 @@ int dialog_map_movements_run(int movement_idx)
 		// new or existing movement?
 		
 	if (movement_idx==-1) {
-		if (map.movement.nmovement==max_movement) {
-			os_dialog_alert("Movements","Reached maximum number of movements");
+		dialog_movement_idx=map_movement_add(&map);
+		if (dialog_movement_idx==-1) {
+			os_dialog_alert("Movement","Out of Memory -- could not create a new movement");
 			return(-1);
 		}
-		
-		movement_idx=map.movement.nmovement;
-		map.movement.nmovement++;
 	}
-	
-	dialog_movement_idx=movement_idx;
-	movement=&map.movement.movements[movement_idx];
+	else {
+		dialog_movement_idx=movement_idx;
+	}
+
+	movement=&map.movement.movements[dialog_movement_idx];
 	
 		// open the dialog
 		
@@ -389,7 +389,7 @@ int dialog_map_movements_run(int movement_idx)
 	
 	DisposeWindow(dialog_movement_settings_wind);
 	
-	return(TRUE);
+	return(dialog_movement_idx);
 }
 
 

@@ -919,10 +919,13 @@ void dialog_special_combo_fill_movement(WindowRef wind,unsigned long sig,int id,
 {
 #ifdef D3_EDITOR
 
-	int							n;
-	char						movement_names[max_movement][name_str_len];
+	int							n,count;
+	char						movement_names[256][name_str_len];
 	
-	for (n=0;n!=map.movement.nmovement;n++) {
+	count=map.movement.nmovement;
+	if (count>256) count=256;
+	
+	for (n=0;n!=count;n++) {
 		strcpy(movement_names[n],map.movement.movements[n].name);
 	}
 	

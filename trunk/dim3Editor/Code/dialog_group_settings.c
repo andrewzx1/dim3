@@ -35,7 +35,7 @@ extern map_type				map;
 
 #define kGroupClear							FOUR_CHAR_CODE('cler')
 
-int							dialog_groups_idx;
+int							dialog_group_idx;
 bool						dialog_group_settings_cancel;
 WindowRef					dialog_group_settings_wind;
 
@@ -57,7 +57,7 @@ static pascal OSStatus group_setting_event_proc(EventHandlerCallRef handler,Even
 			switch (cmd.commandID) {
 			
 				case kGroupClear:
-					group_clear(dialog_groups_idx,FALSE);
+					group_clear(dialog_group_idx,FALSE);
 					dialog_set_int(dialog_group_settings_wind,kGroupCount,0,0);
 					dialog_redraw(dialog_group_settings_wind,kGroupCount,0);
 					return(noErr);
@@ -95,17 +95,17 @@ int dialog_group_settings_run(int group_idx)
 		// new or existing group?
 		
 	if (group_idx==-1) {
-		if (map.group.ngroup==max_group) {
-			os_dialog_alert("Groups","Reached maximum number of groups");
+		dialog_group_idx=map_group_add(&map);
+		if (dialog_group_idx==-1) {
+			os_dialog_alert("Group","Out of Memory -- could not create a new group");
 			return(-1);
 		}
-		
-		group_idx=map.group.ngroup;
-		map.group.ngroup++;
+	}
+	else {
+		dialog_group_idx=group_idx;
 	}
 	
-	dialog_groups_idx=group_idx;
-	group=&map.group.groups[group_idx];
+	group=&map.group.groups[dialog_group_idx];
 	
 		// open the dialog
 		
@@ -114,7 +114,7 @@ int dialog_group_settings_run(int group_idx)
 		// set controls
 		
 	dialog_set_text(dialog_group_settings_wind,kGroupName,0,group->name);
-	dialog_set_int(dialog_group_settings_wind,kGroupCount,0,group_count(group_idx));
+	dialog_set_int(dialog_group_settings_wind,kGroupCount,0,group_count(dialog_group_idx));
 	
 		// show window
 	
