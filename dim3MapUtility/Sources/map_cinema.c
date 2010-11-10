@@ -87,6 +87,7 @@ bool map_cinema_delete(map_type *map,int cinema_idx)
 	if (map->cinema.ncinema<=1) {
 		map->cinema.ncinema=0;
 		free(map->cinema.cinemas);
+		map->cinema.cinemas=NULL;
 		return(TRUE);
 	}
 
@@ -94,11 +95,11 @@ bool map_cinema_delete(map_type *map,int cinema_idx)
 	if (nptr==NULL) return(FALSE);
 
 	if (cinema_idx>0) {
-		sz=(cinema_idx+1)*sizeof(map_cinema_type);
+		sz=cinema_idx*sizeof(map_cinema_type);
 		memmove(nptr,map->cinema.cinemas,sz);
 	}
 
-	sz=(map->cinema.ncinema-cinema_idx)*sizeof(map_cinema_type);
+	sz=((map->cinema.ncinema-cinema_idx)+1)*sizeof(map_cinema_type);
 	if (sz>0) memmove(&nptr[cinema_idx],&map->cinema.cinemas[cinema_idx+1],sz);
 
 	free(map->cinema.cinemas);

@@ -55,10 +55,11 @@ extern file_path_setup_type		file_path_setup;
 
 extern int						tool_palette_pixel_sz,txt_palette_pixel_sz;
 
-int								item_palette_pixel_sz,item_palette_item_count,
-								item_palette_scroll_pos,item_palette_total_high,
+int								item_palette_pixel_sz,item_palette_page_high,
+								item_palette_item_count,
+								item_palette_scroll_page,item_palette_total_high,
 								item_palette_piece_type,item_palette_piece_idx;
-bool							item_palette_open;
+bool							item_palette_open,item_palette_piece_open[piece_count];
 d3rect							item_palette_box;
 
 item_palette_item_type			*item_palette_items;
@@ -71,9 +72,17 @@ item_palette_item_type			*item_palette_items;
 
 void item_palette_initialize(void)
 {
+	int				n;
+
 	item_palette_open=TRUE;
 
-	item_palette_scroll_pos=0;
+	for (n=0;n!=piece_count;n++) {
+		item_palette_piece_open[n]=FALSE;
+	}
+
+	item_palette_piece_open[spot_piece]=TRUE;
+
+	item_palette_scroll_page=0;
 	item_palette_total_high=0;
 
 	item_palette_piece_type=spot_piece;
@@ -104,6 +113,8 @@ void item_palette_setup(void)
 	item_palette_box.rx=wbox.rx;
 	item_palette_box.ty=wbox.ty+(tool_palette_pixel_sz+1);
 	item_palette_box.by=wbox.by-txt_palette_pixel_sz;
+
+	item_palette_page_high=((item_palette_box.by-item_palette_box.ty)-(item_scroll_button_high*2))-item_font_high;
 }
 
 /* =======================================================
@@ -121,9 +132,11 @@ void item_palette_add_item(int piece_type,int piece_idx,char *name,d3col *col,bo
 
 	item->x=item_palette_box.lx+(item_palette_border_sz+4);
 	if (!header) item->x+=10;
-	item->y=(((item_palette_item_count*item_font_high)+item_scroll_button_high)-item_palette_scroll_pos)+item_palette_box.ty;
 
-	if (item->y>item_palette_total_high) item_palette_total_high=item->y;
+	item->y=((item_palette_item_count*item_font_high)+item_scroll_button_high)+item_palette_box.ty;
+	item->y-=(item_palette_scroll_page*item_palette_page_high);
+
+	item_palette_total_high+=item_font_high;
 
 	item->piece_type=piece_type;
 	item->piece_idx=piece_idx;
@@ -150,6 +163,7 @@ void item_palette_add_item(int piece_type,int piece_idx,char *name,d3col *col,bo
 void item_palette_delete_all_items(void)
 {
 	item_palette_item_count=0;
+	item_palette_total_high=0;
 }
 
 /* =======================================================
@@ -164,15 +178,13 @@ void item_palette_fill_tree(void)
 
 	item_palette_delete_all_items();
 
-	item_palette_total_high=0;
-
 		// spots
 
 	item_palette_add_item(spot_piece,-1,"Spots",NULL,(item_palette_piece_type==spot_piece),TRUE);
 
-	if (item_palette_piece_type==spot_piece) {
+	if (item_palette_piece_open[spot_piece]) {
 		for (n=0;n!=map.nspot;n++) {
-			item_palette_add_item(spot_piece,n,map.spots[n].name,NULL,(n==item_palette_piece_idx),FALSE);
+			item_palette_add_item(spot_piece,n,map.spots[n].name,NULL,((item_palette_piece_type==spot_piece)&&(n==item_palette_piece_idx)),FALSE);
 		}
 	}
 
@@ -180,9 +192,9 @@ void item_palette_fill_tree(void)
 
 	item_palette_add_item(light_piece,-1,"Lights",NULL,(item_palette_piece_type==light_piece),TRUE);
 
-	if (item_palette_piece_type==light_piece) {
+	if (item_palette_piece_open[light_piece]) {
 		for (n=0;n!=map.nlight;n++) {
-			item_palette_add_item(light_piece,n,NULL,&map.lights[n].col,(n==item_palette_piece_idx),FALSE);
+			item_palette_add_item(light_piece,n,NULL,&map.lights[n].col,((item_palette_piece_type==light_piece)&&(n==item_palette_piece_idx)),FALSE);
 		}
 	}
 
@@ -190,9 +202,9 @@ void item_palette_fill_tree(void)
 
 	item_palette_add_item(sound_piece,-1,"Sounds",NULL,(item_palette_piece_type==sound_piece),TRUE);
 
-	if (item_palette_piece_type==sound_piece) {
+	if (item_palette_piece_open[sound_piece]) {
 		for (n=0;n!=map.nsound;n++) {
-			item_palette_add_item(sound_piece,n,map.sounds[n].name,NULL,(n==item_palette_piece_idx),FALSE);
+			item_palette_add_item(sound_piece,n,map.sounds[n].name,NULL,((item_palette_piece_type==sound_piece)&&(n==item_palette_piece_idx)),FALSE);
 		}
 	}
 
@@ -200,9 +212,9 @@ void item_palette_fill_tree(void)
 
 	item_palette_add_item(particle_piece,-1,"Particles",NULL,(item_palette_piece_type==particle_piece),TRUE);
 
-	if (item_palette_piece_type==particle_piece) {
+	if (item_palette_piece_open[particle_piece]) {
 		for (n=0;n!=map.nparticle;n++) {
-			item_palette_add_item(particle_piece,n,map.particles[n].name,NULL,(n==item_palette_piece_idx),FALSE);
+			item_palette_add_item(particle_piece,n,map.particles[n].name,NULL,((item_palette_piece_type==particle_piece)&&(n==item_palette_piece_idx)),FALSE);
 		}
 	}
 
@@ -210,9 +222,9 @@ void item_palette_fill_tree(void)
 
 	item_palette_add_item(scenery_piece,-1,"Scenery",NULL,(item_palette_piece_type==scenery_piece),TRUE);
 
-	if (item_palette_piece_type==scenery_piece) {
+	if (item_palette_piece_open[scenery_piece]) {
 		for (n=0;n!=map.nscenery;n++) {
-			item_palette_add_item(scenery_piece,n,map.sceneries[n].model_name,NULL,(n==item_palette_piece_idx),FALSE);
+			item_palette_add_item(scenery_piece,n,map.sceneries[n].model_name,NULL,((item_palette_piece_type==scenery_piece)&&(n==item_palette_piece_idx)),FALSE);
 		}
 	}
 
@@ -220,9 +232,9 @@ void item_palette_fill_tree(void)
 
 	item_palette_add_item(node_piece,-1,"Nodes",NULL,(item_palette_piece_type==node_piece),TRUE);
 
-	if (item_palette_piece_type==node_piece) {
+	if (item_palette_piece_open[node_piece]) {
 		for (n=0;n!=map.nnode;n++) {
-			if (map.nodes[n].name[0]!=0x0) item_palette_add_item(node_piece,n,map.nodes[n].name,NULL,(n==item_palette_piece_idx),FALSE);
+			if (map.nodes[n].name[0]!=0x0) item_palette_add_item(node_piece,n,map.nodes[n].name,NULL,((item_palette_piece_type==node_piece)&&(n==item_palette_piece_idx)),FALSE);
 		}
 	}
 
@@ -230,9 +242,9 @@ void item_palette_fill_tree(void)
 
 	item_palette_add_item(group_piece,-1,"Groups",NULL,(item_palette_piece_type==group_piece),TRUE);
 
-	if (item_palette_piece_type==group_piece) {
+	if (item_palette_piece_open[group_piece]) {
 		for (n=0;n!=map.group.ngroup;n++) {
-			item_palette_add_item(group_piece,n,map.group.groups[n].name,NULL,(n==item_palette_piece_idx),FALSE);
+			item_palette_add_item(group_piece,n,map.group.groups[n].name,NULL,((item_palette_piece_type==group_piece)&&(n==item_palette_piece_idx)),FALSE);
 		}
 	}
 
@@ -240,9 +252,9 @@ void item_palette_fill_tree(void)
 
 	item_palette_add_item(movement_piece,-1,"Movements",NULL,(item_palette_piece_type==movement_piece),TRUE);
 
-	if (item_palette_piece_type==movement_piece) {
+	if (item_palette_piece_open[movement_piece]) {
 		for (n=0;n!=map.movement.nmovement;n++) {
-			item_palette_add_item(movement_piece,n,map.movement.movements[n].name,NULL,(n==item_palette_piece_idx),FALSE);
+			item_palette_add_item(movement_piece,n,map.movement.movements[n].name,NULL,((item_palette_piece_type==movement_piece)&&(n==item_palette_piece_idx)),FALSE);
 		}
 	}
 
@@ -250,9 +262,9 @@ void item_palette_fill_tree(void)
 
 	item_palette_add_item(cinema_piece,-1,"Cinemas",NULL,(item_palette_piece_type==cinema_piece),TRUE);
 
-	if (item_palette_piece_type==cinema_piece) {
+	if (item_palette_piece_open[cinema_piece]) {
 		for (n=0;n!=map.cinema.ncinema;n++) {
-			item_palette_add_item(cinema_piece,n,map.cinema.cinemas[n].name,NULL,(n==item_palette_piece_idx),FALSE);
+			item_palette_add_item(cinema_piece,n,map.cinema.cinemas[n].name,NULL,((item_palette_piece_type==cinema_piece)&&(n==item_palette_piece_idx)),FALSE);
 		}
 	}
 }
@@ -273,26 +285,14 @@ void item_palette_draw_tree_item(item_palette_item_type *item)
 		
 	if (item->header) {
 	
-		if (!item->selected) {
-			glBegin(GL_QUADS);
-			glColor4f(0.9f,0.9f,0.9f,1.0f);
-			glVertex2i(item_palette_box.lx,(item->y-item_font_high));
-			glVertex2i(item_palette_box.rx,(item->y-item_font_high));
-			glColor4f(0.8f,0.8f,0.8f,1.0f);
-			glVertex2i(item_palette_box.rx,item->y);
-			glVertex2i(item_palette_box.lx,item->y);
-			glEnd();
-		}
-		else {
-			glBegin(GL_QUADS);
-			glColor4f(0.8f,0.8f,0.8f,1.0f);
-			glVertex2i(item_palette_box.lx,(item->y-item_font_high));
-			glVertex2i(item_palette_box.rx,(item->y-item_font_high));
-			glColor4f(0.5f,0.5f,0.5f,1.0f);
-			glVertex2i(item_palette_box.rx,item->y);
-			glVertex2i(item_palette_box.lx,item->y);
-			glEnd();
-		}
+		glBegin(GL_QUADS);
+		glColor4f(0.9f,0.9f,0.9f,1.0f);
+		glVertex2i(item_palette_box.lx,(item->y-item_font_high));
+		glVertex2i(item_palette_box.rx,(item->y-item_font_high));
+		glColor4f(0.8f,0.8f,0.8f,1.0f);
+		glVertex2i(item_palette_box.rx,item->y);
+		glVertex2i(item_palette_box.lx,item->y);
+		glEnd();
 		
 		glColor4f(0.0f,0.0f,0.0f,1.0f);
 		
@@ -516,6 +516,7 @@ void item_palette_reset(void)
 	int				sel_type,main_idx,sub_idx;
 
 	if (select_count()==0) {
+		item_palette_piece_type=-1;
 		item_palette_piece_idx=-1;
 		return;
 	}
@@ -540,13 +541,85 @@ void item_palette_select(int sel_type,int sel_idx)
 
 /* =======================================================
 
+      Item Palette Delete
+      
+======================================================= */
+
+bool item_palette_delete(void)
+{
+		// anything to delete?
+
+	if ((item_palette_piece_type==-1) || (item_palette_piece_idx==-1)) return(FALSE);
+
+	switch (item_palette_piece_type) {
+
+		case group_piece:
+			if (os_dialog_confirm("Delete Group","Is it okay to delete this group?",FALSE)!=0) return(FALSE);
+			map_group_delete(&map,item_palette_piece_idx);
+			item_palette_reset();
+			return(TRUE);
+
+		case movement_piece:
+			if (os_dialog_confirm("Delete Movement","Is it okay to delete this movement?",FALSE)!=0) return(FALSE);
+			map_movement_delete(&map,item_palette_piece_idx);
+			item_palette_reset();
+			return(TRUE);
+
+		case cinema_piece:
+			if (os_dialog_confirm("Delete Cinema","Is it okay to delete this cinema?",FALSE)!=0) return(FALSE);
+			map_cinema_delete(&map,item_palette_piece_idx);
+			item_palette_reset();
+			return(TRUE);
+
+	}
+
+	return(FALSE);
+}
+
+/* =======================================================
+
+      Item Palette Scrolling
+      
+======================================================= */
+
+void item_palette_scroll_up(void)
+{
+	if (item_palette_scroll_page>0) {
+		item_palette_scroll_page--;
+		main_wind_draw();
+	}
+}
+
+void item_palette_scroll_down(void)
+{
+	if (item_palette_scroll_page<(item_palette_total_high/item_palette_page_high)) {
+		item_palette_scroll_page++;
+		main_wind_draw();
+	}
+}
+
+void item_palette_scroll_wheel(d3pnt *pnt,int move)
+{
+	if (move>0) {
+		item_palette_scroll_up();
+		return;
+	}
+
+	if (move<0) {
+		item_palette_scroll_down();
+		return;
+	}
+}
+
+/* =======================================================
+
       Item Palette Click
       
 ======================================================= */
 
 void item_palette_click(d3pnt *pnt,bool dblclick)
 {
-	int						item_idx,scroll_sz;
+	int						item_idx;
 	item_palette_item_type	*item;
 
 	pnt->x-=item_palette_box.lx;
@@ -564,36 +637,27 @@ void item_palette_click(d3pnt *pnt,bool dblclick)
 
 		// click in scroll item
 
-	scroll_sz=item_palette_box.by-item_palette_box.ty;
-
 	if (pnt->y<=item_scroll_button_high) {
-		if (item_palette_scroll_pos>0) item_palette_scroll_pos-=scroll_sz;
-		main_wind_draw();
+		item_palette_scroll_up();
 		return;
 	}
 
-	if (pnt->y>=(scroll_sz-item_scroll_button_high)) {
-		if (item_palette_scroll_pos<(item_palette_total_high-scroll_sz)) item_palette_scroll_pos+=scroll_sz;
-		main_wind_draw();
+	if (pnt->y>=((item_palette_box.by-item_palette_box.ty)-item_scroll_button_high)) {
+		item_palette_scroll_down();
 		return;
 	}
 
 		// click in item
 
-	item_idx=((pnt->y-item_scroll_button_high)+item_palette_scroll_pos)/item_font_high;
+	item_idx=((pnt->y-item_scroll_button_high)+(item_palette_scroll_page*item_palette_page_high))/item_font_high;
 	if ((item_idx<0) || (item_idx>=item_palette_item_count)) return;
 
-		// if we click on a header that
-		// is already open, close it
+		// clicking in header
 
 	item=&item_palette_items[item_idx];
 
-	if ((item->piece_type==item_palette_piece_type) && (item->piece_idx==-1)) {
-		item_palette_piece_type=-1;
-		item_palette_piece_idx=-1;
-
-		select_clear();
-		palette_reset();
+	if (item->piece_idx==-1) {
+		item_palette_piece_open[item->piece_type]=!item_palette_piece_open[item->piece_type];
 		main_wind_draw();
 		return;
 	}
