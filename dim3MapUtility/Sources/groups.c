@@ -69,9 +69,56 @@ int map_group_add(map_type *map)
 
 bool map_group_delete(map_type *map,int group_idx)
 {
-	int					sz;
+	int					n,sz;
+	map_mesh_type		*mesh;
+	map_liquid_type		*liq;
 	group_type			*nptr;
+		
+		// fix group indexes in movements
+		
+	for (n=0;n!=map->movement.nmovement;n++) {
+		if (map->movement.movements[n].group_idx==group_idx) {
+			map->movement.movements[n].group_idx=-1;
+		}
+		else {
+			if (map->movement.movements[n].group_idx>group_idx) map->movement.movements[n].group_idx--;
+		}
+		if (map->movement.movements[n].reverse_group_idx==group_idx) {
+			map->movement.movements[n].reverse_group_idx=-1;
+		}
+		else {
+			if (map->movement.movements[n].reverse_group_idx>group_idx) map->movement.movements[n].reverse_group_idx--;
+		}
+	}
 	
+		// clear group from meshes and liquids
+		
+	mesh=map->mesh.meshes;
+	
+	for (n=0;n!=map->mesh.nmesh;n++) {
+		if (mesh->group_idx==group_idx) {
+			mesh->group_idx=-1;
+		}
+		else {
+			if (mesh->group_idx>group_idx) mesh->group_idx--;
+		}
+		mesh++;
+	}
+	
+	liq=map->liquid.liquids;
+	
+	for (n=0;n!=map->liquid.nliquid;n++) {
+		if (liq->group_idx==group_idx) {
+			liq->group_idx=-1;
+		}
+		else {
+			if (liq->group_idx>group_idx) liq->group_idx--;
+		}
+		liq++;
+	}
+
+		// delete
+		
 	if (map->group.ngroup<=1) {
 		map->group.ngroup=0;
 		free(map->group.groups);
