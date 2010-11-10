@@ -712,8 +712,18 @@ void view_key(char ch)
 		main_wind_draw();
 		return;
 	}
+
+		// check for deletes
+		// on selected item tree
+
+	if (ch==0x08) {
+		if (item_palette_delete()) {
+			main_wind_draw();
+			return;
+		}
+	}
 	
-		// piece movement
+		// pieces
 
 	piece_key(ch);
 }

@@ -203,6 +203,16 @@ LRESULT CALLBACK editor_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam)
 			break;
 
 		case WM_MOUSEWHEEL:
+
+				// scroll wheel in item palette
+
+			if ((pnt.y>=tool_palette_box.by) && (pnt.y<txt_palette_box.ty) && (pnt.x>=item_palette_box.lx)) {
+				item_palette_scroll_wheel(&pnt,GET_WHEEL_DELTA_WPARAM(wParam));
+				break;
+			}
+
+				// scroll wheel in view
+
 			view=view_get_current_view();
 			delta=GET_WHEEL_DELTA_WPARAM(wParam)/60;
 			view_scroll_wheel_z_movement(view,delta);

@@ -70,49 +70,64 @@ int map_group_add(map_type *map)
 bool map_group_delete(map_type *map,int group_idx)
 {
 	int					n,sz;
+	movement_type		*movement;
 	map_mesh_type		*mesh;
 	map_liquid_type		*liq;
 	group_type			*nptr;
 		
 		// fix group indexes in movements
+
+	movement=map->movement.movements;
 		
 	for (n=0;n!=map->movement.nmovement;n++) {
-		if (map->movement.movements[n].group_idx==group_idx) {
-			map->movement.movements[n].group_idx=-1;
+
+		if (movement->group_idx==group_idx) {
+			movement->group_idx=0;
 		}
 		else {
-			if (map->movement.movements[n].group_idx>group_idx) map->movement.movements[n].group_idx--;
+			if (movement->group_idx>group_idx) movement->group_idx--;
 		}
-		if (map->movement.movements[n].reverse_group_idx==group_idx) {
-			map->movement.movements[n].reverse_group_idx=-1;
+
+		if (movement->reverse_group_idx!=-1) {
+			if (movement->reverse_group_idx==group_idx) {
+				movement->reverse_group_idx=-1;
+			}
+			else {
+				if (movement->reverse_group_idx>group_idx) movement->reverse_group_idx--;
+			}
 		}
-		else {
-			if (map->movement.movements[n].reverse_group_idx>group_idx) map->movement.movements[n].reverse_group_idx--;
-		}
+
+		movement++;
 	}
 	
-		// clear group from meshes and liquids
+		// fix group indexes in meshes
 		
 	mesh=map->mesh.meshes;
 	
 	for (n=0;n!=map->mesh.nmesh;n++) {
-		if (mesh->group_idx==group_idx) {
-			mesh->group_idx=-1;
-		}
-		else {
-			if (mesh->group_idx>group_idx) mesh->group_idx--;
+		if (mesh->group_idx!=-1) {
+			if (mesh->group_idx==group_idx) {
+				mesh->group_idx=-1;
+			}
+			else {
+				if (mesh->group_idx>group_idx) mesh->group_idx--;
+			}
 		}
 		mesh++;
 	}
+
+		// fix group indexes in liquids
 	
 	liq=map->liquid.liquids;
 	
 	for (n=0;n!=map->liquid.nliquid;n++) {
-		if (liq->group_idx==group_idx) {
-			liq->group_idx=-1;
-		}
-		else {
-			if (liq->group_idx>group_idx) liq->group_idx--;
+		if (liq->group_idx!=-1) {
+			if (liq->group_idx==group_idx) {
+				liq->group_idx=-1;
+			}
+			else {
+				if (liq->group_idx>group_idx) liq->group_idx--;
+			}
 		}
 		liq++;
 	}
@@ -122,6 +137,7 @@ bool map_group_delete(map_type *map,int group_idx)
 	if (map->group.ngroup<=1) {
 		map->group.ngroup=0;
 		free(map->group.groups);
+		map->group.groups=NULL;
 		return(TRUE);
 	}
 
@@ -129,11 +145,11 @@ bool map_group_delete(map_type *map,int group_idx)
 	if (nptr==NULL) return(FALSE);
 
 	if (group_idx>0) {
-		sz=(group_idx+1)*sizeof(group_type);
+		sz=group_idx*sizeof(group_type);
 		memmove(nptr,map->group.groups,sz);
 	}
 
-	sz=(map->group.ngroup-group_idx)*sizeof(group_type);
+	sz=((map->group.ngroup-group_idx)-1)*sizeof(group_type);
 	if (sz>0) memmove(&nptr[group_idx],&map->group.groups[group_idx+1],sz);
 
 	free(map->group.groups);

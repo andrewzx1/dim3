@@ -123,17 +123,19 @@ and can be sold or given away.
 // selection types
 //
 
-#define mesh_piece								100
-#define liquid_piece							101
-#define node_piece								102
-#define spot_piece								103
-#define scenery_piece							104
-#define light_piece								105
-#define sound_piece								106
-#define particle_piece							107
-#define group_piece								108
-#define movement_piece							109
-#define cinema_piece							110
+#define piece_count								11
+
+#define mesh_piece								0
+#define liquid_piece							1
+#define node_piece								2
+#define spot_piece								3
+#define scenery_piece							4
+#define light_piece								5
+#define sound_piece								6
+#define particle_piece							7
+#define group_piece								8
+#define movement_piece							9
+#define cinema_piece							10
 
 //
 // movement scales
