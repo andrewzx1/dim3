@@ -102,5 +102,6 @@ extern bool dialog_play_blend_animation_run(void);
 
 extern bool dialog_scale_run(model_type *mdl,float *x,float *z,float *y);
 extern bool dialog_nudge_rotate_run(int *x,int *z,int *y,char *diag_name,int def_value);
+extern bool dialog_set_normal_run(d3vct *normal);
 
 
