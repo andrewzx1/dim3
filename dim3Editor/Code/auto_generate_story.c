@@ -45,10 +45,18 @@ extern int ag_shape_get_connector_index(ag_shape_type *shape,int v1_idx,int v2_i
       
 ======================================================= */
 
-bool ag_room_touch_other_room(int room_idx)
+bool ag_room_touch_other_room(int room_idx,bool *floor_flags)
 {
 	int				n;
 	ag_room_type	*room,*chk_room;
+
+		// clear floor flags
+
+	for (n=0;n!=4;n++) {
+		floor_flags[n]=FALSE;
+	}
+
+		// find connected items
 
 	room=&ag_state.rooms[room_idx];
 
@@ -63,14 +71,27 @@ bool ag_room_touch_other_room(int room_idx)
 			// check for collisions
 
 		if (((chk_room->min.z>=room->min.z) && (chk_room->min.z<=room->max.z)) || ((chk_room->max.z>=room->min.z) && (chk_room->max.z<=room->max.z))) {
-			if (chk_room->min.x==room->max.x) return(TRUE);
-			if (chk_room->max.x==room->min.x) return(TRUE);
+			if (chk_room->min.x==room->max.x) floor_flags[ag_floor_right]=TRUE;
+			if (chk_room->max.x==room->min.x) floor_flags[ag_floor_left]=TRUE;
 		}
 
 		if (((chk_room->min.x>=room->min.x) && (chk_room->min.x<=room->max.x)) || ((chk_room->max.x>=room->min.x) && (chk_room->max.x<=room->max.x))) {
-			if (chk_room->min.z==room->max.z) return(TRUE);
-			if (chk_room->max.z==room->min.z) return(TRUE);
+			if (chk_room->min.z==room->max.z) floor_flags[ag_floor_bottom]=TRUE;
+			if (chk_room->max.z==room->min.z) floor_flags[ag_floor_top]=TRUE;
 		}
+	}
+
+		// any floor flags set?
+
+	return(floor_flags[ag_floor_left]||floor_flags[ag_floor_right]||floor_flags[ag_floor_top]||floor_flags[ag_floor_bottom]);
+}
+
+bool ag_room_equal_floor_touch(bool *floor_flags_1,bool *floor_flags_2)
+{
+	int					n;
+
+	for (n=0;n!=4;n++) {
+		if ((floor_flags_1[n]) && (floor_flags_2[n])) return(TRUE);
 	}
 
 	return(FALSE);
@@ -84,11 +105,13 @@ bool ag_room_touch_other_room(int room_idx)
 
 void ag_generate_additional_stories(void)
 {
-	int					n,k,t,ty,by,mesh_idx,connect_idx;
+	int					n,k,t,x,z,ty,by,mesh_idx,connect_idx;
 	int					px[4],py[4],pz[4];
 	float				gx[4],gy[4];
+	bool				floor_flags[4];
 	d3vct				*size;
 	ag_shape_type		*shape;
+	ag_shape_poly_type	*shape_poly;
 	ag_room_type		*room;
 
 		// find all the rooms that
@@ -105,7 +128,7 @@ void ag_generate_additional_stories(void)
 
 			// is it touching another room?
 
-		if (!ag_room_touch_other_room(n)) continue;
+		if (!ag_room_touch_other_room(n,floor_flags)) continue;
 
 			// get height
 
@@ -143,6 +166,39 @@ void ag_generate_additional_stories(void)
 			gy[2]=gy[3]=1.0f;
 		
 			map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,((connect_idx!=-1)?4:0));
+		}
+
+			// build in the floor
+			// we put in a floor for every side
+			// that has a connection to another room
+
+		mesh_idx=map_mesh_add(&map);
+
+		for (k=0;k!=shape->npoly;k++) {
+
+			shape_poly=&shape->polys[k];
+
+			if (!ag_room_equal_floor_touch(shape_poly->floor_flags,floor_flags)) continue;
+
+			for (t=0;t!=shape_poly->npt;t++) {
+				x=shape->vertexes[shape_poly->v[t]].x;
+				z=shape->vertexes[shape_poly->v[t]].z;
+
+				px[t]=(int)(((float)x)*size->x)+room->min.x;
+				pz[t]=(int)(((float)z)*size->z)+room->min.z;
+				py[t]=by;
+
+				gx[t]=((float)x)/100.0f;
+				gy[t]=((float)z)/100.0f;
+			}
+		
+			map_mesh_add_poly(&map,mesh_idx,shape_poly->npt,px,py,pz,gx,gy,7);
+
+			for (t=0;t!=shape_poly->npt;t++) {
+				py[t]=by-(int)(10.0f*size->y);
+			}
+
+			map_mesh_add_poly(&map,mesh_idx,shape_poly->npt,px,py,pz,gx,gy,7);
 		}
 
 			// move up the room min

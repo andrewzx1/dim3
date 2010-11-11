@@ -716,7 +716,7 @@ void view_key(char ch)
 		// check for deletes
 		// on selected item tree
 
-	if (ch==0x08) {
+	if ((ch==0x08) || (ch==0x2E)) {
 		if (item_palette_delete()) {
 			main_wind_draw();
 			return;
