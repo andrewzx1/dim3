@@ -711,13 +711,11 @@ void item_palette_click(d3pnt *pnt,bool dblclick)
 		// reset the palette
 		
 	palette_reset();
+	main_wind_draw();
 	
-		// just redraw if no double click
+		// any double click
 
-	if ((!dblclick) || (item_palette_piece_idx==-1)) {
-		main_wind_draw();
-		return;
-	}
+	if ((!dblclick) || (item_palette_piece_idx==-1)) return;
 	
 		// if double click, edit
 
@@ -736,6 +734,4 @@ void item_palette_click(d3pnt *pnt,bool dblclick)
 			break;
 
 	}
-	
-	main_wind_draw();
 }

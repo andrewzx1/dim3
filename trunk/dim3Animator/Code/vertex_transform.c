@@ -27,6 +27,8 @@ and can be sold or given away.
 
 #include "model.h"
 
+d3vct							cur_set_normal={0.0f,-1.0f,0.0f};
+
 extern model_type				model;
 extern animator_state_type		state;
 
@@ -239,10 +241,72 @@ void vertex_invert_normals(int mesh_idx)
 	}
 }
 
+void vertex_set_normals_vertexes(int mesh_idx,d3vct *normal)
+{
+	int					n,k,ntrig;
+	model_trig_type		*trig;
+
+	ntrig=model.meshes[mesh_idx].ntrig;
+	trig=model.meshes[mesh_idx].trigs;
+	
+	for (n=0;n!=ntrig;n++) {
+	
+		for (k=0;k!=3;k++) {
+		
+				// this triangle vertex in the select list?
+				
+			if (!vertex_check_sel_mask(mesh_idx,trig->v[k])) continue;
+			
+			trig->tangent_space[k].normal.x=normal->x;
+			trig->tangent_space[k].normal.y=normal->y;
+			trig->tangent_space[k].normal.z=normal->z;
+		}
+		
+		trig++;
+	}
+}
+
+void vertex_set_normals_trigs(int mesh_idx,d3vct *normal)
+{
+	int					n;
+	model_trig_type		*trig;
+	
+		// is there a trig selection?
+		
+	if (state.sel_trig_idx==-1) return;
+	
+		// get trig
+		
+	trig=&model.meshes[mesh_idx].trigs[state.sel_trig_idx];
+	
+	for (n=0;n!=3;n++) {
+	
+			// this triangle vertex in the select list?
+			
+		if (!vertex_check_sel_mask(mesh_idx,trig->v[n])) continue;
+		
+		trig->tangent_space[n].normal.x=normal->x;
+		trig->tangent_space[n].normal.y=normal->y;
+		trig->tangent_space[n].normal.z=normal->z;
+	}
+}
+
 void vertex_set_normals(int mesh_idx)
 {
-	// supergumba -- work on this
-	//		if (!dialog_nudge_rotate_run(&x,&z,&y,"RotatePick",0)) return(noErr);
+	d3vct			normal;
+	
+	memmove(&normal,&cur_set_normal,sizeof(d3vct));
+	
+	if (!dialog_set_normal_run(&normal)) return;
+	
+	memmove(&cur_set_normal,&normal,sizeof(d3vct));
+
+	if (state.select_mode==select_mode_vertex) {
+		vertex_set_normals_vertexes(mesh_idx,&normal);
+	}
+	else {
+		vertex_set_normals_trigs(mesh_idx,&normal);
+	}
 }
 
 /* =======================================================
