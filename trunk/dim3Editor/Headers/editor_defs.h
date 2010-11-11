@@ -369,6 +369,11 @@ typedef struct		{
 #define ag_connector_type_min_z					2
 #define ag_connector_type_max_z					3
 
+#define ag_floor_left							0
+#define ag_floor_right							1
+#define ag_floor_top							2
+#define ag_floor_bottom							3
+
 typedef struct		{
 						int						nshape,
 												shape_list[ag_max_shape];
@@ -377,6 +382,7 @@ typedef struct		{
 
 typedef struct		{
 						int						npt,v[4];
+						bool					floor_flags[4];
 					} ag_shape_poly_type;
 
 typedef struct		{

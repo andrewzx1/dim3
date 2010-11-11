@@ -203,6 +203,8 @@ LRESULT CALLBACK editor_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam)
 			break;
 
 		case WM_MOUSEWHEEL:
+			pnt.x=LOWORD(lParam);
+			pnt.y=HIWORD(lParam);
 
 				// scroll wheel in item palette
 
@@ -218,7 +220,7 @@ LRESULT CALLBACK editor_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam)
 			view_scroll_wheel_z_movement(view,delta);
 			break;
 
-		case WM_CHAR:
+		case WM_KEYDOWN:
 			view_key((char)wParam);
 			break;
 

@@ -135,7 +135,8 @@ bool ag_read_settings(void)
 						polys_tag,poly_tag,
 						connectors_tag,connector_tag,
 						corridor_tag,styles_tag,style_tag;
-	char				path[1024],sub_path[1024],name[256];
+	char				path[1024],sub_path[1024],name[256],
+						poly_floor[8];
 	ag_shape_type		*shape;
 	ag_style_type		*style;
 	
@@ -200,6 +201,13 @@ bool ag_read_settings(void)
 
 			for (k=0;k!=shape->npoly;k++) {
 				shape->polys[k].npt=xml_get_attribute_int_array(poly_tag,"v",shape->polys[k].v,4);
+
+				xml_get_attribute_text(poly_tag,"floor",poly_floor,8);
+				shape->polys[k].floor_flags[ag_floor_left]=(strchr(poly_floor,'l')!=NULL);
+				shape->polys[k].floor_flags[ag_floor_right]=(strchr(poly_floor,'r')!=NULL);
+				shape->polys[k].floor_flags[ag_floor_top]=(strchr(poly_floor,'t')!=NULL);
+				shape->polys[k].floor_flags[ag_floor_bottom]=(strchr(poly_floor,'b')!=NULL);
+
 				poly_tag=xml_findnextchild(poly_tag);
 			}
 		}

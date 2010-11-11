@@ -1030,7 +1030,7 @@ void piece_key(char ch)
 	
 		// special check for delete key
 		
-	if (ch==0x08) {
+	if ((ch==0x08) || (ch==0x2E)) {
 		piece_delete();
 		main_wind_draw();
 		menu_fix_enable();
