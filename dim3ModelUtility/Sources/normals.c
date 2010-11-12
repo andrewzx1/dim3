@@ -70,7 +70,7 @@ void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent_
     float				u10,u20,v10,v20,f_denom,f;
 	bool				is_out;
 	d3vct				p10,p20,vlft,vrgt,v_num,face_vct;
-	d3vct				*tangents,*tptr,*binormals,*bptr;
+	d3vct				*normals,*nptr,*tangents,*tptr,*binormals,*bptr;
 	d3pnt				*pt,*pt_1,*pt_2,v_center;
 	model_mesh_type		*mesh;
     model_vertex_type	*vertex;
@@ -82,11 +82,18 @@ void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent_
 
 		// memory for tangent space
 
+	normals=(d3vct*)malloc(mesh->ntrig*sizeof(d3vct));
+	if (normals==NULL) return;
+
 	tangents=(d3vct*)malloc(mesh->ntrig*sizeof(d3vct));
-	if (tangents==NULL) return;
-	
+	if (tangents==NULL) {
+		free(normals);
+		return;
+	}
+
 	binormals=(d3vct*)malloc(mesh->ntrig*sizeof(d3vct));
 	if (binormals==NULL) {
+		free(normals);
 		free(tangents);
 		return;
 	}
@@ -94,6 +101,8 @@ void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent_
         // find tangent and binormal for triangles
 		
 	trig=mesh->trigs;
+
+	nptr=normals;
 	tptr=tangents;
 	bptr=binormals;
 	
@@ -136,32 +145,23 @@ void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent_
 		f_denom=(v10*u20)-(u10*v20);
 		if (f_denom!=0.0f) f_denom=1.0f/f_denom;
 		vector_scalar_multiply(bptr,&v_num,f_denom);
-		
-		
-		
-		
-		//supergumba -- testing
-			/*
+
 		vector_normalize(tptr);
 		vector_normalize(bptr);
 
-		vector_cross_product(&p10,tptr,bptr);
-		
-		for (t=0;t!=3;t++) {
-			memmove(&trig->tangent_space[t].tangent,tptr,sizeof(d3vct));
-			memmove(&trig->tangent_space[t].binormal,bptr,sizeof(d3vct));
-			memmove(&trig->tangent_space[t].normal,&p10,sizeof(d3vct));
-		}
-*/
+		vector_cross_product(nptr,tptr,bptr);
 			
 		trig++;
+
+		nptr++;
 		tptr++;
 		bptr++;
 	}
     
-		// average tangent and binormal for each
-		// trig vertex that have the same material
-		// and UV coordinates
+		// average tangent space for each
+		// trig vertex that are within 45 degrees
+		// of each other.  otherwise, treat as a hard
+		// edge
 		
 	trig=mesh->trigs;
 
@@ -175,30 +175,42 @@ void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent_
 
 		for (t=0;t!=3;t++) {
 	
-			cnt=0;
+			cnt=1;
 
-			avg_space.tangent.x=avg_space.tangent.y=avg_space.tangent.z=0.0f;
-			avg_space.binormal.x=avg_space.binormal.y=avg_space.binormal.z=0.0f;
+			memmove(&avg_space.normal,(normals+n),sizeof(d3vct));
+			memmove(&avg_space.tangent,(tangents+n),sizeof(d3vct));
+			memmove(&avg_space.binormal,(binormals+n),sizeof(d3vct));
 			
-			chk_trig=mesh->trigs;
 			tptr=tangents;
 			bptr=binormals;
 			
 			for (k=0;k!=mesh->ntrig;k++) {
 
-					// same trig or in different material?
+					// same trig
 
-				if (model_recalc_normals_find_material(model,mesh_idx,k)!=trig_material_idx) {
-					chk_trig++;
-					tptr++;
-					bptr++;
-					continue;
-				}
+				if (n==k) continue;
 
-					// check for shared vertexes and UVs
+					// get trig
+
+				chk_trig=&mesh->trigs[k];
+
+				nptr=normals+k;
+				tptr=tangents+k;
+				bptr=binormals+k;
+
+					// check for shared vertexes
+					// and normals within 45 degrees
 
 				for (j=0;j!=3;j++) {
-					if ((trig->v[t]==chk_trig->v[j]) && (trig->gx[t]==chk_trig->gx[j]) && (trig->gy[t]==chk_trig->gy[j])) {
+
+					if (trig->v[t]==chk_trig->v[j]) {
+
+						if (vector_dot_product(&avg_space.normal,nptr)<0.7f) continue;
+
+						avg_space.normal.x+=nptr->x;
+						avg_space.normal.y+=nptr->y;
+						avg_space.normal.z+=nptr->z;
+
 						avg_space.tangent.x+=tptr->x;
 						avg_space.tangent.y+=tptr->y;
 						avg_space.tangent.z+=tptr->z;
@@ -211,10 +223,6 @@ void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent_
 						break;
 					}
 				}
-
-				chk_trig++;
-				tptr++;
-				bptr++;
 			}
 			
 				// create average vector
@@ -222,22 +230,25 @@ void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent_
 			if (cnt>1) {
 				f=(float)cnt;
 
+				avg_space.normal.x/=f;
+				avg_space.normal.y/=f;
+				avg_space.normal.z/=f;
+				vector_normalize(&avg_space.normal);
+
 				avg_space.tangent.x/=f;
 				avg_space.tangent.y/=f;
 				avg_space.tangent.z/=f;
+				vector_normalize(&avg_space.tangent);
 
 				avg_space.binormal.x/=f;
 				avg_space.binormal.y/=f;
 				avg_space.binormal.z/=f;
+				vector_normalize(&avg_space.binormal);
 			}
 
+			if (!only_tangent_binormal) memmove(&trig->tangent_space[t].normal,&avg_space.normal,sizeof(d3vct));
 			memmove(&trig->tangent_space[t].tangent,&avg_space.tangent,sizeof(d3vct));
-			vector_normalize(&trig->tangent_space[t].tangent);
-			
 			memmove(&trig->tangent_space[t].binormal,&avg_space.binormal,sizeof(d3vct));
-			vector_normalize(&trig->tangent_space[t].binormal);
-			
-			if (!only_tangent_binormal) vector_cross_product(&trig->tangent_space[t].normal,&trig->tangent_space[t].tangent,&trig->tangent_space[t].binormal);
 		}
 
 		trig++;
@@ -245,6 +256,7 @@ void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent_
 
 		// free the tangent spaces
 
+	free(normals);
 	free(tangents);
 	free(binormals);
 

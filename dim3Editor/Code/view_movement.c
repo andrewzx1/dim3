@@ -238,49 +238,6 @@ void view_mouse_forward_movement(editor_view_type *view,d3pnt *pnt)
 
 /* =======================================================
 
-      Scroll Wheel Mouse Movement
-      
-======================================================= */
-
-void view_scroll_wheel_z_movement(editor_view_type *view,int delta)
-{
-	int				mv;
-	d3vct			move_vct;
-	d3pnt			pnt,move_pnt,look_pnt;
-
-	move_pnt.x=move_pnt.y=move_pnt.z=0;
-
-	mv=delta*move_scroll_wheel_scale;
-	if (setup.flip_forward_movement) mv=-mv;
-
-		// free look
-
-	if ((select_count()!=1) || (state.free_look)) {
-		view_mouse_get_forward_axis(view,&move_pnt,-mv);
-	}
-	
-		// look at
-
-	else {
-		view_get_position(&pnt);
-		
-		select_get_center(&look_pnt);
-
-		vector_create(&move_vct,look_pnt.x,look_pnt.y,look_pnt.z,pnt.x,pnt.y,pnt.z);
-		vector_normalize(&move_vct);
-
-		move_pnt.x=(int)(move_vct.x*((float)mv));
-		move_pnt.y=(int)(move_vct.y*((float)mv));
-		move_pnt.z=(int)(move_vct.z*((float)mv));
-	}
-
-	view_move_position(&move_pnt);
-	
-	main_wind_draw();
-}
-
-/* =======================================================
-
       Turn Mouse Movement
       
 ======================================================= */

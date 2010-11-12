@@ -149,9 +149,8 @@ bool dialog_map_auto_generate_setting_run(bool first)
 
 LRESULT CALLBACK editor_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam)
 {
-	int					cmd,delta;
+	int					cmd;
 	d3pnt				pnt;
-	editor_view_type	*view;
 	PAINTSTRUCT			ps;
 
 	switch (msg) {
@@ -215,9 +214,7 @@ LRESULT CALLBACK editor_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam)
 
 				// scroll wheel in view
 
-			view=view_get_current_view();
-			delta=GET_WHEEL_DELTA_WPARAM(wParam)/60;
-			view_scroll_wheel_z_movement(view,delta);
+			view_scroll_wheel(&pnt,(GET_WHEEL_DELTA_WPARAM(wParam)/60));
 			break;
 
 		case WM_KEYDOWN:

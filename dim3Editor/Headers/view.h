@@ -73,6 +73,7 @@ extern void view_face_back(void);
 extern void view_face_top(void);
 extern void view_face_bottom(void);
 extern void view_select_view(d3pnt *pnt);
+extern void view_scroll_wheel(d3pnt *pnt,int delta);
 extern bool view_click(d3pnt *pnt,bool dblclick);
 extern void view_draw(void);
 
@@ -137,7 +138,7 @@ extern void view_mouse_get_scroll_horizontal_axis(editor_view_type *view,d3pnt *
 extern void view_mouse_get_scroll_vertical_axis(editor_view_type *view,d3pnt *pnt,int dist);
 extern void view_mouse_scroll_movement(editor_view_type *view,d3pnt *pnt);
 extern void view_mouse_forward_movement(editor_view_type *view,d3pnt *pnt);
-extern void view_scroll_wheel_z_movement(editor_view_type *view,int delta);
+extern void view_mouse_get_forward_axis(editor_view_type *view,d3pnt *pnt,int dist);
 extern void view_mouse_turn(editor_view_type *view,d3pnt *pnt);
 
 //
