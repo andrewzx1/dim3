@@ -63,6 +63,15 @@ and can be sold or given away.
 #define D3_OS_LINUX			    1
 
 //
+// os specific keys
+//
+
+#define D3_KEY_TAB				0x9
+#define D3_KEY_ESC				0x1B
+#define D3_KEY_BACKSPACE		0x8
+#define D3_KEY_DELETE			0x7F
+
+//
 // os specific types
 //
 

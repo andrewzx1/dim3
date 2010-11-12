@@ -110,7 +110,7 @@ bool dialog_map_auto_generate_setting_run(void)
 		ag_build_setup.room_count=20;
 		ag_build_setup.room_sz=400;
 		ag_build_setup.room_high=60;
-		ag_build_setup.story_count=2;
+		ag_build_setup.story_count=1;
 		ag_build_setup.merge_count=2;
 	}
 											  

@@ -181,10 +181,20 @@ OSStatus main_wind_event_callback(EventHandlerCallRef eventhandler,EventRef even
 					dpt.y=pt.v;
 					
 					GetEventParameter(event,kEventParamMouseWheelAxis,typeMouseWheelAxis,NULL,sizeof(EventMouseWheelAxis),NULL,&axis);
-					if (axis==kEventMouseWheelAxisY) {
-						GetEventParameter(event,kEventParamMouseWheelDelta,typeLongInteger,NULL,sizeof(long),NULL,&delta);
-						main_wind_scroll_wheel(&dpt,delta);
+					if (axis!=kEventMouseWheelAxisY) return(noErr);
+					
+					GetEventParameter(event,kEventParamMouseWheelDelta,typeLongInteger,NULL,sizeof(long),NULL,&delta);
+					
+						// item palette scrolling
+						
+					if ((dpt.y>=tool_palette_box.by) && (dpt.y<txt_palette_box.ty) && (dpt.x>=item_palette_box.lx)) {
+						item_palette_scroll_wheel(&dpt,delta);
+						return(noErr);
 					}
+
+						// view scrolling
+						
+					main_wind_scroll_wheel(&dpt,delta);
 					return(noErr);
 					
 			}
