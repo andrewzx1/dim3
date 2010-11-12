@@ -62,7 +62,16 @@ and can be sold or given away.
 #define D3_OS_WINDOWS			1
 
 //
-// undefined types, constants, and functions
+// os specific keys
+//
+
+#define D3_KEY_TAB				0x9
+#define D3_KEY_ESC				0x1B
+#define D3_KEY_BACKSPACE		0x8
+#define D3_KEY_DELETE			0x2E
+
+//
+// os specific types
 //
 
 typedef unsigned char			bool;

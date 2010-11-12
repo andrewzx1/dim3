@@ -698,7 +698,7 @@ void view_key(char ch)
 {
 		// tab switches view
 		
-	if (ch==0x9) {
+	if (ch==D3_KEY_TAB) {
 		state.view_select_idx++;
 		if (state.view_select_idx>=map.editor_views.count) state.view_select_idx=0;
 		main_wind_draw();
@@ -707,7 +707,7 @@ void view_key(char ch)
 	
 		// esc key deselects
 		
-	if (ch==0x1B) {
+	if (ch==D3_KEY_ESC) {
 		select_clear();
 		main_wind_draw();
 		return;
@@ -716,7 +716,7 @@ void view_key(char ch)
 		// check for deletes
 		// on selected item tree
 
-	if ((ch==0x08) || (ch==0x2E)) {
+	if ((ch==D3_KEY_BACKSPACE) || (ch==D3_KEY_DELETE)) {
 		if (item_palette_delete()) {
 			main_wind_draw();
 			return;

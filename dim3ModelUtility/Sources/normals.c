@@ -67,7 +67,7 @@ bool model_recalc_normals_compare_sign(float f1,float f2)
 void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent_binormal)
 {
 	int					n,k,t,j,cnt,trig_material_idx;
-    float				u10,u20,v10,v20,f_denom;
+    float				u10,u20,v10,v20,f_denom,f;
 	bool				is_out;
 	d3vct				p10,p20,vlft,vrgt,v_num,face_vct;
 	d3vct				*tangents,*tptr,*binormals,*bptr;
@@ -75,6 +75,7 @@ void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent_
 	model_mesh_type		*mesh;
     model_vertex_type	*vertex;
 	model_trig_type		*trig,*chk_trig;
+	tangent_space_type	avg_space;
 	
 	mesh=&model->meshes[mesh_idx];
 	if ((mesh->nvertex==0) || (mesh->ntrig==0)) return;
@@ -136,8 +137,11 @@ void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent_
 		if (f_denom!=0.0f) f_denom=1.0f/f_denom;
 		vector_scalar_multiply(bptr,&v_num,f_denom);
 		
-			// create the normal
-			
+		
+		
+		
+		//supergumba -- testing
+			/*
 		vector_normalize(tptr);
 		vector_normalize(bptr);
 
@@ -148,12 +152,97 @@ void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent_
 			memmove(&trig->tangent_space[t].binormal,bptr,sizeof(d3vct));
 			memmove(&trig->tangent_space[t].normal,&p10,sizeof(d3vct));
 		}
+*/
 			
 		trig++;
 		tptr++;
 		bptr++;
 	}
+    
+		// average tangent and binormal for each
+		// trig vertex that have the same material
+		// and UV coordinates
+		
+	trig=mesh->trigs;
+
+	for (n=0;n!=mesh->ntrig;n++) {
+
+			// get the material for the trig
+
+		trig_material_idx=model_recalc_normals_find_material(model,mesh_idx,n);
+
+			// average each vertex of the trig
+
+		for (t=0;t!=3;t++) {
 	
+			cnt=0;
+
+			avg_space.tangent.x=avg_space.tangent.y=avg_space.tangent.z=0.0f;
+			avg_space.binormal.x=avg_space.binormal.y=avg_space.binormal.z=0.0f;
+			
+			chk_trig=mesh->trigs;
+			tptr=tangents;
+			bptr=binormals;
+			
+			for (k=0;k!=mesh->ntrig;k++) {
+
+					// same trig or in different material?
+
+				if (model_recalc_normals_find_material(model,mesh_idx,k)!=trig_material_idx) {
+					chk_trig++;
+					tptr++;
+					bptr++;
+					continue;
+				}
+
+					// check for shared vertexes and UVs
+
+				for (j=0;j!=3;j++) {
+					if ((trig->v[t]==chk_trig->v[j]) && (trig->gx[t]==chk_trig->gx[j]) && (trig->gy[t]==chk_trig->gy[j])) {
+						avg_space.tangent.x+=tptr->x;
+						avg_space.tangent.y+=tptr->y;
+						avg_space.tangent.z+=tptr->z;
+					
+						avg_space.binormal.x+=bptr->x;
+						avg_space.binormal.y+=bptr->y;
+						avg_space.binormal.z+=bptr->z;
+
+						cnt++;
+						break;
+					}
+				}
+
+				chk_trig++;
+				tptr++;
+				bptr++;
+			}
+			
+				// create average vector
+
+			if (cnt>1) {
+				f=(float)cnt;
+
+				avg_space.tangent.x/=f;
+				avg_space.tangent.y/=f;
+				avg_space.tangent.z/=f;
+
+				avg_space.binormal.x/=f;
+				avg_space.binormal.y/=f;
+				avg_space.binormal.z/=f;
+			}
+
+			memmove(&trig->tangent_space[t].tangent,&avg_space.tangent,sizeof(d3vct));
+			vector_normalize(&trig->tangent_space[t].tangent);
+			
+			memmove(&trig->tangent_space[t].binormal,&avg_space.binormal,sizeof(d3vct));
+			vector_normalize(&trig->tangent_space[t].binormal);
+			
+			if (!only_tangent_binormal) vector_cross_product(&trig->tangent_space[t].normal,&trig->tangent_space[t].tangent,&trig->tangent_space[t].binormal);
+		}
+
+		trig++;
+	}
+
 		// free the tangent spaces
 
 	free(tangents);

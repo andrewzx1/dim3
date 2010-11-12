@@ -1030,8 +1030,10 @@ void piece_key(char ch)
 	
 		// special check for delete key
 		
-	if ((ch==0x08) || (ch==0x2E)) {
+	if ((ch==D3_KEY_BACKSPACE) || (ch==D3_KEY_DELETE)) {
 		piece_delete();
+		item_palette_reset();
+		palette_reset();
 		main_wind_draw();
 		menu_fix_enable();
 		return;
