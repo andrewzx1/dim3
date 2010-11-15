@@ -94,8 +94,11 @@ bool dialog_light_map_run(void)
 	dialog_open(&dialog_light_map_wind,"LightMap");
 	
 		// set controls
+		
+	size=(log2(map.settings.light_map.size)-8);
+	if ((size<0) || (size>2)) size=0;
 	
-	dialog_set_combo(dialog_light_map_wind,kLightMapSize,0,(log2(map.settings.light_map.size)-8));
+	dialog_set_combo(dialog_light_map_wind,kLightMapSize,0,size);
 	dialog_set_value(dialog_light_map_wind,kLightMapQuality,0,map.settings.light_map.quality);
 	dialog_set_value(dialog_light_map_wind,kLightMapSmearCount,0,map.settings.light_map.pixel_border_count);
 	dialog_set_value(dialog_light_map_wind,kLightMapBlurCount,0,map.settings.light_map.blur_count);

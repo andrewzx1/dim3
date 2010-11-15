@@ -94,7 +94,6 @@ void gl_shader_cache_dynamic_variable_locations(shader_type *shader)
 	shader->var_locs.dim3TintColor=glGetUniformLocationARB(shader->program_obj,"dim3TintColor");
 	shader->var_locs.dim3Alpha=glGetUniformLocationARB(shader->program_obj,"dim3Alpha");
 	shader->var_locs.dim3DiffuseVector=glGetUniformLocationARB(shader->program_obj,"dim3DiffuseVector");
-	shader->var_locs.dim3DiffuseFactor=glGetUniformLocationARB(shader->program_obj,"dim3DiffuseFactor");
 	shader->var_locs.dim3DiffuseBoost=glGetUniformLocationARB(shader->program_obj,"dim3DiffuseBoost");
 
 	shader->var_locs.dim3Tangent=glGetUniformLocationARB(shader->program_obj,"dim3Tangent");
@@ -534,15 +533,6 @@ void gl_shader_set_diffuse_variables(shader_type *shader,view_light_list_type *l
 		}
 	}
 	
-		// diffuse factor
-
-	if (shader->var_locs.dim3DiffuseFactor!=-1) {
-		if (shader->var_values.diffuse_factor!=light_list->diffuse_factor) {
-			shader->var_values.diffuse_factor=light_list->diffuse_factor;
-			glUniform1fARB(shader->var_locs.dim3DiffuseFactor,light_list->diffuse_factor);
-		}
-	}
-
 		// diffuse boost
 
 	if (shader->var_locs.dim3DiffuseBoost!=-1) {
@@ -638,7 +628,6 @@ void gl_shader_draw_scene_initialize_code(shader_type *shader)
 	shader->var_values.shine_factor=-1.0f;
 	shader->var_values.tint_col.r=shader->var_values.tint_col.g=shader->var_values.tint_col.b=-1.0f;
 	shader->var_values.diffuse_vct.x=shader->var_values.diffuse_vct.y=shader->var_values.diffuse_vct.z=-1.0f;
-	shader->var_values.diffuse_factor=-1.0f;
 	shader->var_values.diffuse_boost=-1.0f;
 
 	shader->var_values.tangent.x=shader->var_values.tangent.y=shader->var_values.tangent.z=0.0f;

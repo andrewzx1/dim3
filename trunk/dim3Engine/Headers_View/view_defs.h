@@ -158,8 +158,8 @@ typedef struct		{
 
 typedef struct		{
 						int									nlight,light_idx[max_shader_light];
-						float								diffuse_factor,diffuse_boost;
 						bool								hilite;
+						float								diffuse_boost;
 						d3col								tint;
 						d3vct								diffuse_vct;
 					} view_light_list_type;
@@ -257,8 +257,7 @@ typedef struct		{
 															dim3CameraPosition,dim3AmbientColor,
 															dim3LightMapBoost,dim3ShineFactor,
 															dim3TintColor,dim3Alpha,
-															dim3DiffuseVector,
-															dim3DiffuseFactor,dim3DiffuseBoost,
+															dim3DiffuseVector,dim3DiffuseBoost,
 															dim3Tangent,dim3Normal,
 															dim3VertexTangent,dim3VertexNormal;
 						shader_cached_var_light_loc			dim3Lights[max_shader_light];
@@ -273,8 +272,7 @@ typedef struct		{
 
 typedef struct		{
 						int									nlight,light_idx[max_shader_light];
-						float								alpha,shine_factor,
-															diffuse_factor,diffuse_boost;
+						float								alpha,shine_factor,diffuse_boost;
 						d3col								tint_col;
 						d3vct								diffuse_vct,tangent,normal;
 						shader_current_var_light_value		lights[max_shader_light];

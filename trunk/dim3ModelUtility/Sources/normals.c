@@ -167,10 +167,6 @@ void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent_
 
 	for (n=0;n!=mesh->ntrig;n++) {
 
-			// get the material for the trig
-
-		trig_material_idx=model_recalc_normals_find_material(model,mesh_idx,n);
-
 			// average each vertex of the trig
 
 		for (t=0;t!=3;t++) {

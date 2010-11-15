@@ -92,7 +92,6 @@ extern void main_wind_draw(void);
 extern void main_wind_draw_no_swap(void);
 extern void main_wind_key_cursor(void);
 extern void main_wind_key_down(char ch);
-extern void main_wind_scroll_wheel(d3pnt *pt,int delta);
 
 //
 // text

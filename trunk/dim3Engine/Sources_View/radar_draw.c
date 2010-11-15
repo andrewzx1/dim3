@@ -121,6 +121,7 @@ void radar_draw(void)
     *vp++=(float)lx;
 	*vp++=(float)by;
     *uv++=0.0f;
+    *uv++=1.0f;
 
     *vp++=(float)rx;
 	*vp++=(float)ty;
@@ -129,7 +130,6 @@ void radar_draw(void)
 
     *vp++=(float)rx;
 	*vp++=(float)by;
-    *uv++=1.0f;
 	*uv++=1.0f;
 	*uv++=1.0f;
 	

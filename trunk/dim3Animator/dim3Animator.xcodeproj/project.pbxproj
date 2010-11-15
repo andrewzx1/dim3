@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		261F12440ED3CB3000A8A0D8 /* vertex_masks.c in Sources */ = {isa = PBXBuildFile; fileRef = 261F12430ED3CB2F00A8A0D8 /* vertex_masks.c */; };
 		261F128A0ED3D04A00A8A0D8 /* vertex_transform.c in Sources */ = {isa = PBXBuildFile; fileRef = 261F12890ED3D04A00A8A0D8 /* vertex_transform.c */; };
+		265552AE128B744E00662A94 /* dialog_normal.c in Sources */ = {isa = PBXBuildFile; fileRef = 265552AD128B744E00662A94 /* dialog_normal.c */; };
 		269AF83E12887DEF001344EC /* model_picker.c in Sources */ = {isa = PBXBuildFile; fileRef = 269AF83D12887DEF001344EC /* model_picker.c */; };
 		269AF91C1288D007001344EC /* draw_axis_boxes.c in Sources */ = {isa = PBXBuildFile; fileRef = 269AF91B1288D007001344EC /* draw_axis_boxes.c */; };
 		269AF91E1288D016001344EC /* draw_selection.c in Sources */ = {isa = PBXBuildFile; fileRef = 269AF91D1288D016001344EC /* draw_selection.c */; };
@@ -156,6 +157,7 @@
 		20286C33FDCF999611CA2CEA /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
 		261F12430ED3CB2F00A8A0D8 /* vertex_masks.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = vertex_masks.c; path = Code/vertex_masks.c; sourceTree = "<group>"; };
 		261F12890ED3D04A00A8A0D8 /* vertex_transform.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = vertex_transform.c; path = Code/vertex_transform.c; sourceTree = "<group>"; };
+		265552AD128B744E00662A94 /* dialog_normal.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_normal.c; path = Code/dialog_normal.c; sourceTree = "<group>"; };
 		266FFE89125EBCFB00E40F28 /* Tool Bones.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool Bones.png"; sourceTree = "<group>"; };
 		266FFE8A125EBCFB00E40F28 /* Tool Boxes.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool Boxes.png"; sourceTree = "<group>"; };
 		266FFE8B125EBCFB00E40F28 /* Tool Edit Polygons.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool Edit Polygons.png"; sourceTree = "<group>"; };
@@ -482,6 +484,7 @@
 				F5D1A7A30CF933E6001B5E1B /* dialog_play_blend_animation.c */,
 				F5C48B850C88F5CE0011D6B1 /* dialog_scale.c */,
 				F5C48B870C88F5E10011D6B1 /* dialog_nudge_rotate.c */,
+				265552AD128B744E00662A94 /* dialog_normal.c */,
 			);
 			name = Dialogs;
 			sourceTree = "<group>";
@@ -628,6 +631,7 @@
 				269AF83E12887DEF001344EC /* model_picker.c in Sources */,
 				269AF91C1288D007001344EC /* draw_axis_boxes.c in Sources */,
 				269AF91E1288D016001344EC /* draw_selection.c in Sources */,
+				265552AE128B744E00662A94 /* dialog_normal.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -648,7 +652,8 @@
 		F5DB0C230856A7FD005A7CB7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = i386;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1)";
+				ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1 = "ppc i386";
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
 				DEPLOYMENT_POSTPROCESSING = YES;

@@ -194,7 +194,7 @@ OSStatus main_wind_event_callback(EventHandlerCallRef eventhandler,EventRef even
 
 						// view scrolling
 						
-					main_wind_scroll_wheel(&dpt,delta);
+					view_scroll_wheel(&dpt,delta);
 					return(noErr);
 					
 			}
@@ -510,25 +510,5 @@ void main_wind_key_down(char ch)
 		// panel keys
 		
 	view_key(ch);
-}
-
-/* =======================================================
-
-      Scroll Wheel
-      
-======================================================= */
-
-void main_wind_scroll_wheel(d3pnt *pt,int delta)
-{
-	editor_view_type			*view;
-	
-		// switch to proper pane
-		
-	view_select_view(pt);
-
-		// run wheel change
-	
-	view=view_get_current_view();
-	view_scroll_wheel_z_movement(view,delta);
 }
 
