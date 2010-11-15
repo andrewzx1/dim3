@@ -74,7 +74,7 @@ extern void view_face_top(void);
 extern void view_face_bottom(void);
 extern void view_select_view(d3pnt *pnt);
 extern void view_scroll_wheel(d3pnt *pnt,int delta);
-extern bool view_click(d3pnt *pnt,bool dblclick);
+extern bool view_click(d3pnt *pnt,bool double_click);
 extern void view_draw(void);
 
 //
@@ -112,7 +112,7 @@ extern bool view_click_snap(int mesh_idx,d3pnt *pt);
 extern bool view_click_snap_poly(int mesh_idx,int poly_idx,d3pnt *pt);
 extern bool view_click_snap_mesh(int mesh_idx,d3pnt *pt);
 extern void view_click_piece_map_pick_start(editor_view_type *view);
-extern void view_click_piece(editor_view_type *view,d3pnt *pt,bool dblclick);
+extern void view_click_piece(editor_view_type *view,d3pnt *pt,bool double_click);
 extern bool view_click_drag_mesh_handle(editor_view_type *view,d3pnt *pt);
 extern bool view_click_drag_mesh(editor_view_type *view,d3pnt *pt);
 extern bool view_click_drag_mesh_poly(editor_view_type *view,d3pnt *pt);

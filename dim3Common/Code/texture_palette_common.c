@@ -251,7 +251,7 @@ void texture_palette_draw(texture_type *txt_list)
       
 ======================================================= */
 
-void texture_palette_click(texture_type *txt_list,d3pnt *pnt,bool dblclick)
+void texture_palette_click(texture_type *txt_list,d3pnt *pnt,bool double_click)
 {
 	int				nsel,page;
 	
@@ -277,7 +277,7 @@ void texture_palette_click(texture_type *txt_list,d3pnt *pnt,bool dblclick)
 		
 		// double clicks
 		
-	if (dblclick) {
+	if (double_click) {
 		dialog_texture_setting_run(nsel);
 		main_wind_draw();
 		return;

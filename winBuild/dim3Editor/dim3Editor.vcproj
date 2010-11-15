@@ -247,10 +247,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\dim3Editor\Code\item_palette.c"
-					>
-				</File>
-				<File
 					RelativePath="..\..\dim3Editor\Code\light_maps.c"
 					>
 				</File>
@@ -284,22 +280,6 @@
 				</File>
 				<File
 					RelativePath="..\..\dim3Common\Code\text_common.c"
-					>
-				</File>
-				<File
-					RelativePath="..\..\dim3Editor\Code\texture_palette.c"
-					>
-				</File>
-				<File
-					RelativePath="..\..\dim3Common\Code\texture_palette_common.c"
-					>
-				</File>
-				<File
-					RelativePath="..\..\dim3Editor\Code\tool_palette.c"
-					>
-				</File>
-				<File
-					RelativePath="..\..\dim3Common\Code\tool_palette_common.c"
 					>
 				</File>
 				<File
@@ -371,6 +351,38 @@
 					</File>
 					<File
 						RelativePath="..\..\dim3Editor\Code\view_picker.c"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Palettes"
+					>
+					<File
+						RelativePath="..\..\dim3Editor\Code\item_palette.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Editor\Code\list_palette_common.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Editor\Code\property_palette.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Editor\Code\texture_palette.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Common\Code\texture_palette_common.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Editor\Code\tool_palette.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Common\Code\tool_palette_common.c"
 						>
 					</File>
 				</Filter>

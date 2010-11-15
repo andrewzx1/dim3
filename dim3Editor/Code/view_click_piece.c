@@ -579,7 +579,7 @@ void view_click_piece_map_pick_start(editor_view_type *view)
       
 ======================================================= */
 
-void view_click_piece(editor_view_type *view,d3pnt *pt,bool dblclick)
+void view_click_piece(editor_view_type *view,d3pnt *pt,bool double_click)
 {
 	int				type,main_idx,sub_idx;
 	bool			toggle_select;
@@ -663,6 +663,7 @@ void view_click_piece(editor_view_type *view,d3pnt *pt,bool dblclick)
 	
 	texture_palette_reset();
 	item_palette_reset();
+	property_palette_reset();
 	palette_reset();
 
 	main_wind_draw();
