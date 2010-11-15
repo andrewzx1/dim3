@@ -402,7 +402,7 @@ char* gl_core_model_shader_build_frag(int nlight,bool fog,bool bump,bool spec)
 	if (spec) strcat(buf,",dim3TexSpecular");
 	strcat(buf,";\n");
 
-	strcat(buf,"uniform float dim3Alpha,dim3DiffuseBoost,dim3DiffuseFactor");
+	strcat(buf,"uniform float dim3Alpha,dim3DiffuseBoost");
 	if (spec) strcat(buf,",dim3ShineFactor");
 	strcat(buf,";\n");
 	
@@ -445,7 +445,7 @@ char* gl_core_model_shader_build_frag(int nlight,bool fog,bool bump,bool spec)
 		// diffuse
 		
 	strcat(buf,"float diffuse=(dot(dim3DiffuseVector,tangentSpaceNormal)+1.0)*0.5;\n");
-	strcat(buf,"diffuse=(dim3DiffuseFactor*diffuse)+dim3DiffuseBoost;\n");
+	strcat(buf,"diffuse=clamp((diffuse+dim3DiffuseBoost),0.0,1.0);\n");
 	
 		// the texture lighting
 		

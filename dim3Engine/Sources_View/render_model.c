@@ -225,17 +225,20 @@ void render_model_create_normal_vertexes(model_type *mdl,int mesh_mask,model_dra
 void render_model_diffuse_color_vertexes(model_type *mdl,int mesh_idx,model_draw *draw,float *vertex_ptr)
 {
 	int				n,k;
-	float			diffuse,factor,boost;
+	float			diffuse;
 	float			*cl,*nl;
 	d3vct			diffuse_vct;
+	d3col			ambient_col;
 	model_mesh_type	*mesh;
 
 	mesh=&mdl->meshes[mesh_idx];
 
 	gl_lights_calc_diffuse_vector(&draw->pnt,draw->light_cache.count,draw->light_cache.indexes,&diffuse_vct);
 	
-	factor=mdl->diffuse.factor;
-	boost=mdl->diffuse.boost;
+	gl_lights_calc_ambient_color(&ambient_col);
+	ambient_col.r*=0.75f;
+	ambient_col.g*=0.75f;
+	ambient_col.b*=0.75f;
 	
 		// run through the colors and add
 		// in the diffuse
@@ -254,11 +257,22 @@ void render_model_diffuse_color_vertexes(model_type *mdl,int mesh_idx,model_draw
 			nl+=3;
 			
 			diffuse=(diffuse+1.0f)*0.5f;
-			diffuse=(factor*diffuse)+boost;
+		
+				// clamp it to ambient
+				// this is kind of ugly, might find a better
+				// way in the future
 			
-			*cl++=(*cl)*diffuse;
-			*cl++=(*cl)*diffuse;
-			*cl++=(*cl)*diffuse;
+			*cl=(*cl)*diffuse;
+			if ((*cl)<ambient_col.r) *cl=ambient_col.r;
+			cl++;
+			
+			*cl=(*cl)*diffuse;
+			if ((*cl)<ambient_col.g) *cl=ambient_col.g;
+			cl++;
+			
+			*cl=(*cl)*diffuse;
+			if ((*cl)<ambient_col.b) *cl=ambient_col.b;
+			cl++;
 		}
 	}
 }
@@ -351,7 +365,7 @@ bool render_model_initialize_vertex_objects(model_type *mdl,int mesh_idx,model_d
 			trig++;
 		}
 		
-		if (mesh->diffuse) render_model_diffuse_color_vertexes(mdl,mesh_idx,draw,vertex_ptr);
+		if ((mesh->diffuse) && (!mesh->no_lighting) && (!draw->no_lighting)) render_model_diffuse_color_vertexes(mdl,mesh_idx,draw,vertex_ptr);
 	}
 
 		// shader drawing requires
@@ -555,17 +569,21 @@ void render_model_opaque_shader(model_type *mdl,int mesh_idx,model_draw *draw,vi
 
 		trig_idx=material->trig_start*3;
 		
-			// set hilite and diffuse on a per
+			// set hilite and tint on per
 			// mesh basis
-		
+					
 		light_list->hilite=((mesh->no_lighting)||(draw->no_lighting));
 		if (!mesh->diffuse) {
-			light_list->diffuse_factor=0.0f;
 			light_list->diffuse_boost=1.0f;
 		}
 		else {
-			light_list->diffuse_factor=mdl->diffuse.factor;
-			light_list->diffuse_boost=mdl->diffuse.boost;
+			light_list->diffuse_boost=0.0f;
+		}
+		if (mesh->tintable) {
+			memmove(&light_list->tint,&draw->tint,sizeof(d3col));
+		}
+		else {
+			light_list->tint.r=light_list->tint.g=light_list->tint.b=1.0f;
 		}
 
 			// run the shader
@@ -732,12 +750,16 @@ void render_model_transparent_shader(model_type *mdl,int mesh_idx,model_draw *dr
 		
 		light_list->hilite=((mesh->no_lighting)||(draw->no_lighting));
 		if (!mesh->diffuse) {
-			light_list->diffuse_factor=0.0f;
 			light_list->diffuse_boost=1.0f;
 		}
 		else {
-			light_list->diffuse_factor=mdl->diffuse.factor;
-			light_list->diffuse_boost=mdl->diffuse.boost;
+			light_list->diffuse_boost=0.0f;
+		}
+		if (mesh->tintable) {
+			memmove(&light_list->tint,&draw->tint,sizeof(d3col));
+		}
+		else {
+			light_list->tint.r=light_list->tint.g=light_list->tint.b=1.0f;
 		}
 
 			// run the shader

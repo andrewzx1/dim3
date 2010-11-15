@@ -40,7 +40,7 @@ extern char					deform_mode_str[][32],model_bump_mode_str[][32];
 void decode_mesh_v2_xml(model_type *model,int model_head)
 {
 	int						i,n,k,j,bone_idx,nbone,hit_box_idx,nhit_box,
-							mesh_idx,nmesh,nfill,trig_idx,diffuse_tag,
+							mesh_idx,nmesh,nfill,trig_idx,
 							tag,hit_box_tag,rigid_body_tag,meshes_tag,mesh_tag,
 							vertex_tag,bone_tag,vtag,trig_tag,
 							materials_tag,material_tag,fills_tag,fill_tag;
@@ -166,18 +166,6 @@ void decode_mesh_v2_xml(model_type *model,int model_head)
 		model->rigid_body.z.max_ang=45.0f;
 		model->rigid_body.z.reset_factor=0.8f;
 		model->rigid_body.z.smooth_factor=0.2f;
-	}
-	
-		// diffuse
-		
-	diffuse_tag=xml_findfirstchild("Diffuse",model_head);
-	if (diffuse_tag!=-1) {
-		model->diffuse.factor=xml_get_attribute_float_default(diffuse_tag,"factor",0.75f);
-		model->diffuse.boost=xml_get_attribute_float_default(diffuse_tag,"boost",0.25f);
-	}
-	else {
-		model->diffuse.factor=0.75f;
-		model->diffuse.boost=0.25f;
 	}
    
         // bones
@@ -505,13 +493,6 @@ void encode_mesh_v2_xml(model_type *model)
 	xml_add_attribute_float("z_max_ang",model->rigid_body.z.max_ang);
 	xml_add_attribute_float("z_factor",model->rigid_body.z.reset_factor);
 	xml_add_attribute_float("z_smooth",model->rigid_body.z.smooth_factor);
-    xml_add_tagend(TRUE);
-	
-		// diffuse
-
-    xml_add_tagstart("Diffuse");
-	xml_add_attribute_float("factor",model->diffuse.factor);
-	xml_add_attribute_float("boost",model->diffuse.boost);
     xml_add_tagend(TRUE);
    
         // bones
