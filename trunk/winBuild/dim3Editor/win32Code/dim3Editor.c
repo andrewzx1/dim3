@@ -12,23 +12,24 @@
 #define EDITOR_WIN_HEIGHT					800
 #define EDITOR_WIN_EXTRA_HEIGHT				20
 
-HINSTANCE				hinst;
-ATOM					wnd_rg_class;
-HFONT					fnt;
-HWND					wnd;
-HDC						wnd_gl_dc;
-HGLRC					wnd_gl_ctx;
+HINSTANCE					hinst;
+ATOM						wnd_rg_class;
+HFONT						fnt;
+HWND						wnd;
+HDC							wnd_gl_dc;
+HGLRC						wnd_gl_ctx;
 
-bool					quit;
+bool						quit;
 
-map_type				map;
-file_path_setup_type	file_path_setup;
-editor_setup_type		setup;
-editor_state_type		state;
+map_type					map;
+file_path_setup_type		file_path_setup;
+editor_setup_type			setup;
+editor_state_type			state;
 
-d3rect					main_wind_box;
+d3rect						main_wind_box;
 
-extern d3rect			tool_palette_box,txt_palette_box,item_palette_box;
+extern d3rect				tool_palette_box,txt_palette_box;
+extern list_palette_type	item_palette;
 
 extern bool setup_xml_read(void);
 extern void edit_view_draw(d3pnt *pt,d3ang *ang,d3rect *box,int wnd_high,bool focus);
@@ -165,6 +166,7 @@ LRESULT CALLBACK editor_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam)
 			tool_palette_setup();
 			texture_palette_setup();
 			item_palette_setup();
+			property_palette_setup();
 			// supergumba -- deal with these, need to check if map is loaded, reset main_wind_box
 			break;
 
@@ -180,24 +182,7 @@ LRESULT CALLBACK editor_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam)
 			pnt.y=HIWORD(lParam);
 			
 			SetCapture(wnd);
-
-			if (pnt.y<tool_palette_box.by) {
-				tool_palette_click(&pnt);
-			}
-			else {
-				if (pnt.y>=txt_palette_box.ty) {
-					texture_palette_click(map.textures,&pnt,(msg==WM_LBUTTONDBLCLK));
-				}
-				else {
-					if (pnt.x>=item_palette_box.lx) {
-						item_palette_click(&pnt,(msg==WM_LBUTTONDBLCLK));
-					}
-					else {
-						view_click(&pnt,FALSE);
-					}
-				}
-			}
-
+			main_wind_click(&pnt,(msg==WM_LBUTTONDBLCLK));
 			ReleaseCapture();
 			break;
 
@@ -205,16 +190,7 @@ LRESULT CALLBACK editor_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam)
 			pnt.x=LOWORD(lParam);
 			pnt.y=HIWORD(lParam);
 
-				// scroll wheel in item palette
-
-			if ((pnt.y>=tool_palette_box.by) && (pnt.y<txt_palette_box.ty) && (pnt.x>=item_palette_box.lx)) {
-				item_palette_scroll_wheel(&pnt,GET_WHEEL_DELTA_WPARAM(wParam));
-				break;
-			}
-
-				// scroll wheel in view
-
-			view_scroll_wheel(&pnt,(GET_WHEEL_DELTA_WPARAM(wParam)/60));
+			main_wind_scroll_wheel(&pnt,(GET_WHEEL_DELTA_WPARAM(wParam)/60));
 			break;
 
 		case WM_KEYDOWN:
@@ -373,8 +349,13 @@ void main_wind_open(void)
 
 	texture_palette_setup();
 
+	list_palette_initialize();
+
 	item_palette_initialize();
 	item_palette_setup();
+
+	property_palette_initialize();
+	property_palette_setup();
 	
 	view_initialize();
 }
@@ -382,9 +363,16 @@ void main_wind_open(void)
 void main_wind_close(void)
 {
 	view_shutdown();
+
+		// close palettes
+
+	property_palette_shutdown();
 	item_palette_shutdown();
-	tool_palette_shutdown();
+	list_palette_shutdown();
+
 	text_shutdown();
+
+	tool_palette_shutdown();
 
 		// close opengl
 
@@ -466,11 +454,11 @@ void editor_close_map(void)
 
 /* =======================================================
 
-      Testing
+      supergumba -- move this stuff!
       
 ======================================================= */
 
-void editor_clear_viewport(void)
+void main_wind_clear_viewport(void)
 {
 	int				wid,high;
 	RECT			wbox;
@@ -491,7 +479,7 @@ void main_wind_draw(void)
 	glEnable(GL_DEPTH_TEST);
 	glDepthMask(GL_TRUE);
 
-	editor_clear_viewport();
+	main_wind_clear_viewport();
 
 	glClearColor(0.75f,0.75f,0.75f,0.0f);
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
@@ -504,6 +492,7 @@ void main_wind_draw(void)
 		tool_palette_draw();
 		texture_palette_draw(map.textures);
 		item_palette_draw();
+		property_palette_draw();
 	}
 
 		// swap buffers
@@ -518,7 +507,7 @@ void main_wind_draw_no_swap(void)
 	glEnable(GL_DEPTH_TEST);
 	glDepthMask(GL_TRUE);
 
-	editor_clear_viewport();
+	main_wind_clear_viewport();
 
 	glClearColor(0.75f,0.75f,0.75f,0.0f);
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
@@ -531,7 +520,60 @@ void main_wind_draw_no_swap(void)
 		tool_palette_draw();
 		texture_palette_draw(map.textures);
 		item_palette_draw();
+		property_palette_draw();
 	}
+}
+
+void main_wind_click(d3pnt *pnt,bool double_click)
+{
+		// tool palette
+
+	if (pnt->y<tool_palette_box.by) {
+		tool_palette_click(pnt);
+		return;
+	}
+
+		// texture palette
+
+	if (pnt->y>=txt_palette_box.ty) {
+		texture_palette_click(map.textures,pnt,double_click);
+		return;
+	}
+
+		// item and property palette
+
+	if (pnt->x>=item_palette.box.lx) {
+		if (pnt->y<=item_palette.box.by) {
+			item_palette_click(pnt,double_click);
+		}
+		else {
+			property_palette_click(pnt,double_click);
+		}
+		return;
+	}
+
+		// view clicks
+
+	view_click(pnt,double_click);
+}
+
+void main_wind_scroll_wheel(d3pnt *pnt,int delta)
+{
+		// scroll wheel in item or property palette
+
+	if (pnt->x>=item_palette.box.lx) {
+		if ((pnt->y>=item_palette_box.ty) && (pnt->y<item_palette_box.by)) {
+			item_palette_scroll_wheel(pnt,delta);
+		}
+		if ((pnt->y>=property_palette_box.ty) && (pnt->y<property_palette_box.by)) {
+			property_palette_scroll_wheel(pnt,delta);
+		}
+		return;
+	}
+
+		// scroll wheel in view
+
+	view_scroll_wheel(pnt,delta);
 }
 
 /* =======================================================

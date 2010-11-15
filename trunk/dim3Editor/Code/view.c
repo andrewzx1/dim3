@@ -34,8 +34,9 @@ and can be sold or given away.
 #include "view.h"
 
 extern int						top_view_x,top_view_z,
-								tool_palette_pixel_sz,txt_palette_pixel_sz,item_palette_pixel_sz;
+								tool_palette_pixel_sz,txt_palette_pixel_sz;
 extern d3rect					main_wind_box;
+extern list_palette_type		item_palette;
 
 extern file_path_setup_type		file_path_setup;
 extern map_type					map;
@@ -160,7 +161,7 @@ void view_get_pixel_box(editor_view_type *view,d3rect *box)
 	
 	wbox.ty+=tool_palette_pixel_sz;
 	wbox.by-=txt_palette_pixel_sz;
-	wbox.rx-=item_palette_pixel_sz;
+	wbox.rx-=item_palette.pixel_sz;
 	
 	wid=(float)(wbox.rx-wbox.lx);
 	high=(float)(wbox.by-wbox.ty);
@@ -1083,7 +1084,7 @@ void view_scroll_wheel(d3pnt *pnt,int delta)
       
 ======================================================= */
 
-bool view_click(d3pnt *pnt,bool dblclick)
+bool view_click(d3pnt *pnt,bool double_click)
 {
 	editor_view_type	*view;
 	
@@ -1115,7 +1116,7 @@ bool view_click(d3pnt *pnt,bool dblclick)
 
 		// click the view pieces
 
-	view_click_piece(view,pnt,dblclick);
+	view_click_piece(view,pnt,double_click);
 	return(TRUE);
 }
 

@@ -67,7 +67,23 @@ extern void texture_palette_reset(void);
 extern void texture_palette_click(texture_type *txt_list,d3pnt *pnt,bool dbl_click);
 
 //
-// item palette
+// common list palette
+//
+
+extern void list_palette_initialize(void);
+extern void list_palette_shutdown(void);
+extern void list_palette_list_initialize(list_palette_type *list,int section_count);
+extern void list_palette_list_shutdown(list_palette_type *list);
+extern void list_palette_add_item(list_palette_type *list,int piece_type,int piece_idx,char *name,d3col *col,bool selected,bool header);
+extern void list_palette_delete_all_items(list_palette_type *list);
+extern void list_palette_draw(list_palette_type *list);
+extern void list_palette_scroll_up(list_palette_type *list);
+extern void list_palette_scroll_down(list_palette_type *list);
+extern void list_palette_scroll_wheel(list_palette_type *list,d3pnt *pnt,int move);
+extern bool list_palette_click(list_palette_type *list,d3pnt *pnt,bool double_click);
+
+//
+// item list palette
 //
 
 extern void item_palette_initialize(void);
@@ -78,7 +94,19 @@ extern void item_palette_reset(void);
 extern void item_palette_select(int sel_type,int sel_idx);
 extern bool item_palette_delete(void);
 extern void item_palette_scroll_wheel(d3pnt *pnt,int move);
-extern void item_palette_click(d3pnt *pnt,bool dblclick);
+extern void item_palette_click(d3pnt *pnt,bool double_click);
+
+//
+// property list palette
+//
+
+extern void property_palette_initialize(void);
+extern void property_palette_shutdown(void);
+extern void property_palette_setup(void);
+extern void property_palette_draw(void);
+extern void property_palette_reset(void);
+extern void property_palette_scroll_wheel(d3pnt *pnt,int move);
+extern void property_palette_click(d3pnt *pnt,bool double_click);
 
 //
 // main window

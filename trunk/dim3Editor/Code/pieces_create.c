@@ -117,6 +117,7 @@ void piece_create_spot(void)
 	select_add(spot_piece,index,-1);
 
 	item_palette_reset();
+	property_palette_reset();
 	menu_update_view();
 	
 	main_wind_draw();
@@ -172,6 +173,7 @@ void piece_create_scenery(void)
 	select_add(scenery_piece,index,-1);
 
 	item_palette_reset();
+	property_palette_reset();
 	menu_update_view();
 	
 	main_wind_draw();
@@ -220,6 +222,7 @@ void piece_create_light(void)
 	select_add(light_piece,index,-1);
 
 	item_palette_reset();
+	property_palette_reset();
 	menu_update_view();
 	
 	main_wind_draw();
@@ -262,6 +265,7 @@ void piece_create_sound(void)
 	select_add(sound_piece,index,-1);
 
 	item_palette_reset();
+	property_palette_reset();
 	menu_update_view();
 	
 	main_wind_draw();
@@ -305,6 +309,7 @@ void piece_create_particle(void)
 	select_add(particle_piece,index,-1);
 
 	item_palette_reset();
+	property_palette_reset();
 	menu_update_view();
 	
 	main_wind_draw();
@@ -355,6 +360,7 @@ void piece_create_node(void)
 	select_add(node_piece,index,-1);
 
 	item_palette_reset();
+	property_palette_reset();
 	menu_update_view();
 	
 	main_wind_draw();
