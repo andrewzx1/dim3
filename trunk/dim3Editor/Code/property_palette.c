@@ -79,11 +79,11 @@ void property_palette_setup(void)
 		property_palette.pixel_sz=list_palette_border_sz;
 	}
 
-	y=wbox.ty+((wbox.by-wbox.ty)/3);
+	y=wbox.ty+(((wbox.by-wbox.ty)/3)*2);
 
 	property_palette.box.lx=wbox.rx-property_palette.pixel_sz;
 	property_palette.box.rx=wbox.rx;
-	property_palette.box.ty=y+1;
+	property_palette.box.ty=y;
 	property_palette.box.by=wbox.by-txt_palette_pixel_sz;
 
 	property_palette.page_high=((property_palette.box.by-property_palette.box.ty)-(list_scroll_button_high*2))-list_item_font_high;

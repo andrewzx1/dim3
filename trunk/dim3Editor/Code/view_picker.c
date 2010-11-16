@@ -33,8 +33,6 @@ and can be sold or given away.
 #include "interface.h"
 #include "view.h"
 
-extern d3rect				main_wind_box;
-
 extern map_type				map;
 extern editor_setup_type	setup;
 extern editor_state_type	state;
