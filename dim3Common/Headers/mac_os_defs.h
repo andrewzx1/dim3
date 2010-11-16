@@ -53,9 +53,6 @@ and can be sold or given away.
 #include <OpenGL/glext.h>
 #include <OpenGL/glu.h>
 
-#include <QuickTime/ImageCompression.h>
-#include <QuickTime/QuickTimeComponents.h>
-
 #include <zlib.h>
 
 //

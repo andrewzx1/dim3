@@ -2,7 +2,7 @@
 
 Module: dim3 Editor
 Author: Brian Barnes
- Usage: Main Map Window
+ Usage: Main Window Routines
 
 ***************************** License ********************************
 
@@ -25,309 +25,48 @@ and can be sold or given away.
  
 *********************************************************************/
 
+#ifdef D3_PCH
+	#include "dim3editor.h"
+#endif
+
 #include "interface.h"
 #include "view.h"
 
-extern d3rect				tool_palette_box,txt_palette_box,item_palette_box;
+extern d3rect					tool_palette_box,txt_palette_box;
+extern list_palette_type		item_palette,property_palette;
 
-extern map_type				map;
-extern editor_setup_type	setup;
+extern map_type					map;
+extern editor_setup_type		setup;
 
-d3rect						main_wind_box;
-
-WindowRef					wind;
-EventHandlerRef				main_wind_event;
-EventHandlerUPP				main_wind_upp;
-
-AGLContext					ctx;
-
-file_path_setup_type		file_path_setup;
-editor_state_type			state;
+file_path_setup_type			file_path_setup;
+editor_state_type				state;
 
 /* =======================================================
 
-      Main Window Events
-      
+      Initialize and Shutdown
+	        
 ======================================================= */
 
-OSStatus main_wind_event_callback(EventHandlerCallRef eventhandler,EventRef event,void *userdata)
+void main_wind_initialize(void)
 {
-	unsigned long		modifiers,nclick;
-	unsigned short		btn;
-	long				delta;
-	char				ch;
-	Point				pt;
-	Rect				wbox;
-	EventMouseWheelAxis	axis;
-	d3pnt				dpt;
-	
-	switch (GetEventClass(event)) {
-	
-		case kEventClassWindow:
-		
-			switch (GetEventKind(event)) {
-			
-				case kEventWindowDrawContent:
-					main_wind_draw();
-					DrawControls(wind);
-					return(noErr);
-					
-                case kEventWindowCursorChange:
-					GetEventParameter(event,kEventParamMouseLocation,typeQDPoint,NULL,sizeof(Point),NULL,&pt);
-                    GlobalToLocal(&pt);
- 					dpt.x=pt.h;
-					dpt.y=pt.v;
-					view_cursor(&dpt);
-                    return(noErr);
-
-				case kEventWindowClickContentRgn:
-					GetEventParameter(event,kEventParamMouseLocation,typeQDPoint,NULL,sizeof(Point),NULL,&pt);
-
-                    SetPort(GetWindowPort(wind));
-                    GlobalToLocal(&pt);
-					
-					GetWindowPortBounds(wind,&wbox);
-					
-					dpt.x=pt.h;
-					dpt.y=pt.v;
-					
-						// middle button vertex change mode
-						
-					GetEventParameter(event,kEventParamMouseButton,typeMouseButton,NULL,sizeof(unsigned short),NULL,&btn);
-					
-					if (btn==kEventMouseButtonTertiary) {
-						tool_switch_drag_mode();
-						return(noErr);
-					}
-					
-						// click in tool palette
-						
-					if ((pt.v>=tool_palette_box.ty) && (pt.v<=tool_palette_box.by)) {
-						tool_palette_click(&dpt);
-						return(noErr);
-					}
-	
-						// click in texture palette
-						
-					GetEventParameter(event,kEventParamClickCount,typeUInt32,NULL,sizeof(unsigned long),NULL,&nclick);
-					
-					if ((pt.v>=txt_palette_box.ty) && (pt.v<=txt_palette_box.by)) {
-						texture_palette_click(map.textures,&dpt,(nclick!=1));
-						return(noErr);
-					}
-					
-						// click in item palette
-						
-					if (pt.h>=item_palette_box.lx) {
-						item_palette_click(&dpt,(nclick!=1));
-						return(noErr);
-					}
-					
-						// click in main window
-						
-                    if (view_click(&dpt,(nclick!=1))) return(noErr);
-                    
-                    return(eventNotHandledErr);
-					
-				case kEventWindowBoundsChanged:
-				case kEventWindowResizeCompleted:
-					main_wind_resize();
-					return(noErr);
-				
-				case kEventWindowClose:
-					if (state.map_opened) {
-						if (!menu_save_changes_dialog()) return(noErr);
-						file_close_map();
-					}
-					return(noErr);
-					
-			}
-			break;
-			
-		case kEventClassKeyboard:
-		
-			switch (GetEventKind(event)) {
-			
-				case kEventRawKeyDown:
-				case kEventRawKeyRepeat:
-					GetEventParameter(event,kEventParamKeyMacCharCodes,typeChar,NULL,sizeof(char),NULL,&ch);
-					main_wind_key_down(ch);
-					main_wind_key_cursor();
-					return(noErr);
-				
-				case kEventRawKeyUp:
-					GetEventParameter(event,kEventParamKeyMacCharCodes,typeChar,NULL,sizeof(char),NULL,&ch);
-					main_wind_key_cursor();
-					return(noErr);
-                   
-                case kEventRawKeyModifiersChanged:
- 					GetEventParameter(event,kEventParamKeyModifiers,typeUInt32,NULL,sizeof(unsigned long),NULL,&modifiers);
-					main_wind_key_cursor();
-                    return(noErr);
-					
-			}
-			break;
-			
-		case kEventClassMouse:
-		
-			switch (GetEventKind(event)) {
-			
-				case kEventMouseWheelMoved:
-					GetEventParameter(event,kEventParamMouseLocation,typeQDPoint,NULL,sizeof(Point),NULL,&pt);
-					SetPort(GetWindowPort(wind));
-                    GlobalToLocal(&pt);
-					
-					dpt.x=pt.h;
-					dpt.y=pt.v;
-					
-					GetEventParameter(event,kEventParamMouseWheelAxis,typeMouseWheelAxis,NULL,sizeof(EventMouseWheelAxis),NULL,&axis);
-					if (axis!=kEventMouseWheelAxisY) return(noErr);
-					
-					GetEventParameter(event,kEventParamMouseWheelDelta,typeLongInteger,NULL,sizeof(long),NULL,&delta);
-					
-						// item palette scrolling
-						
-					if ((dpt.y>=tool_palette_box.by) && (dpt.y<txt_palette_box.ty) && (dpt.x>=item_palette_box.lx)) {
-						item_palette_scroll_wheel(&dpt,delta);
-						return(noErr);
-					}
-
-						// view scrolling
-						
-					view_scroll_wheel(&dpt,delta);
-					return(noErr);
-					
-			}
-			break;
-			
-	}
-
-	return(eventNotHandledErr);
-}
-
-/* =======================================================
-
-      Main Window Viewport Coordinates
-      
-======================================================= */
-
-void main_wind_setup(void)
-{
-	Rect			wbox;
-	GLint			rect[4];
-	
-		// setup view box
-		
-	GetWindowPortBounds(wind,&wbox);
-
-	main_wind_box.lx=wbox.left;
-	main_wind_box.rx=wbox.right;
-	main_wind_box.ty=wbox.top;
-	main_wind_box.by=wbox.bottom;
-	
-		// buffer rect clipping
-		
-	rect[0]=0;
-	rect[1]=0;
-	rect[2]=wbox.right-wbox.left;
-	rect[3]=wbox.bottom-wbox.top;
-	
-	aglSetInteger(ctx,AGL_BUFFER_RECT,rect);
-	aglEnable(ctx,AGL_BUFFER_RECT);
-}
-
-/* =======================================================
-
-      UI Icon Loader
-      
-======================================================= */
-
-IconRef main_wind_load_icon_ref(char *name)
-{
-	char					path[1024];
-	FSRef					fsref;
-	IconRef					iconRef;
-
-	file_paths_app(&file_path_setup,path,"Contents/Resources",name,"icns");
-	FSPathMakeRef((unsigned char*)path,&fsref,NULL);
-	
-	RegisterIconRefFromFSRef(0,0,&fsref,&iconRef);
-
-	return(iconRef);
-}
-
-/* =======================================================
-
-      Open & Close Main Window
-      
-======================================================= */
-
-void main_wind_open(void)
-{
-	Rect						wbox;
-	GLint						attrib[]={AGL_NO_RECOVERY,AGL_RGBA,AGL_DOUBLEBUFFER,AGL_ACCELERATED,AGL_PIXEL_SIZE,24,AGL_ALPHA_SIZE,8,AGL_DEPTH_SIZE,16,AGL_STENCIL_SIZE,8,AGL_NONE};
-	GDHandle					gdevice;
-	AGLPixelFormat				pf;
-	EventTypeSpec				wind_events[]={	{kEventClassWindow,kEventWindowDrawContent},
-												{kEventClassWindow,kEventWindowCursorChange},
-												{kEventClassWindow,kEventWindowClickContentRgn},
-												{kEventClassWindow,kEventWindowBoundsChanged},
-												{kEventClassWindow,kEventWindowResizeCompleted},
-												{kEventClassWindow,kEventWindowClose},
-												{kEventClassKeyboard,kEventRawKeyDown},
-												{kEventClassKeyboard,kEventRawKeyUp},
-												{kEventClassKeyboard,kEventRawKeyRepeat},
-												{kEventClassKeyboard,kEventRawKeyModifiersChanged},
-												{kEventClassMouse,kEventMouseWheelMoved}};
-	
-        // open window
-        
-    GetAvailableWindowPositioningBounds(GetMainDevice(),&wbox);
-
-	SetRect(&wbox,wbox.left,(wbox.top+25),wbox.right,wbox.bottom);
-	CreateNewWindow(kDocumentWindowClass,kWindowCloseBoxAttribute|kWindowCollapseBoxAttribute|kWindowFullZoomAttribute|kWindowResizableAttribute|kWindowLiveResizeAttribute|kWindowStandardHandlerAttribute|kWindowInWindowMenuAttribute,&wbox,&wind);
-
-		// show window before additional setup
-		
-	ShowWindow(wind);
-   
-	SetPort(GetWindowPort(wind));
-		
-	TextFont(FMGetFontFamilyFromName("\pMonaco"));
-	TextSize(10);
-	
-		// opengl setup
-		
-	gdevice=GetMainDevice();
-
-	pf=aglChoosePixelFormat(&gdevice,1,attrib);
-	ctx=aglCreateContext(pf,NULL);
-	aglSetCurrentContext(ctx);
-	aglDestroyPixelFormat(pf);
-
-	glEnable(GL_SMOOTH);
-	glDisable(GL_DITHER);
-	
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-	
-	glEnable(GL_DEPTH_TEST);
-	
-	aglSetDrawable(ctx,(AGLDrawable)GetWindowPort(wind));
-
-		// setup view sizes
+		// initializations
 		
 	text_initialize();
 	
 	tool_palette_initialize("Editor");
-	tool_palette_setup();
 	
+	list_palette_initialize();
+	item_palette_initialize();
+	property_palette_initialize();
+
+		// size setups
+		
+	tool_palette_setup();
 	texture_palette_setup();
 	
-	item_palette_initialize();
 	item_palette_setup();
-	
-	main_wind_setup();
+	property_palette_setup();
+
 	view_initialize();
    
         // misc setup
@@ -342,125 +81,158 @@ void main_wind_open(void)
 	
 	state.drag_handle_idx=-1;
 	
+		// update view
+	
 	menu_update_view();
-	
-        // events
-    
-	main_wind_upp=NewEventHandlerUPP(main_wind_event_callback);
-	InstallEventHandler(GetWindowEventTarget(wind),main_wind_upp,GetEventTypeCount(wind_events),wind_events,NULL,&main_wind_event);
-	
-		// start palettes
-		
-	palette_initialize();
 }
 
-void main_wind_close(void)
+void main_wind_shutdown(void)
 {
-		// close the palettes
-		
-	palette_shutdown();
-	
-        // close views
-		
 	view_shutdown();
 	
+	property_palette_shutdown();
 	item_palette_shutdown();
+	list_palette_shutdown();
+	
 	tool_palette_shutdown();
 	
 	text_shutdown();
-	
-		// gl shutdown
-		
-	aglSetCurrentContext(NULL);
-	aglSetDrawable(ctx,NULL);
-	aglDestroyContext(ctx);
-	
-        // dispose of events and window
-        
-	RemoveEventHandler(main_wind_event);
-	DisposeEventHandlerUPP(main_wind_upp);
-	DisposeWindow(wind);
 }
 
 /* =======================================================
 
-      Resizing
+      Drawing
       
 ======================================================= */
 
-void main_wind_resize(void)
+void main_wind_clear_viewport(void)
 {
-	Rect			wbox;
-	CGrafPtr		saveport;
-	
-		// erase window
-		
-	GetPort(&saveport);
-	SetPort(GetWindowPort(wind));
-    
-	GetWindowPortBounds(wind,&wbox);
-	EraseRect(&wbox);
-	
-	SetPort(saveport);
+	int				wid,high;
+	d3rect			wbox;
 
-		// fix all views and palettes
-		
-	aglUpdateContext(ctx);
+	os_get_window_box(&wbox);
 
-	tool_palette_setup();
-	texture_palette_setup();
-	item_palette_setup();
-	
-	main_wind_setup();
-	DrawControls(wind);
+	wid=wbox.rx-wbox.lx;
+	high=wbox.by-wbox.ty;
 
-	main_wind_draw();
+	glScissor(0,0,wid,high);
+	glViewport(0,0,wid,high);
 }
-
-/* =======================================================
-
-      View Drawing
-      
-======================================================= */
 
 void main_wind_draw(void)
 {
-		// clear gl buffer
-		
-	glDisable(GL_SCISSOR_TEST);
-	
-	glClearColor(1.0f,1.0f,1.0f,0.0f);
-	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-	
-	view_draw();
+		// clear draw buffer
 
-		// palettes
-		
-	tool_palette_draw();
-	texture_palette_draw(map.textures);
-	item_palette_draw();
-	
-		// swap GL buffer
-		
-	aglSwapBuffers(ctx);
+	glEnable(GL_DEPTH_TEST);
+	glDepthMask(GL_TRUE);
+
+	main_wind_clear_viewport();
+
+	glClearColor(0.75f,0.75f,0.75f,0.0f);
+	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+
+		// draw window
+
+	if (state.map_opened) {
+		view_draw();
+
+		tool_palette_draw();
+		texture_palette_draw(map.textures);
+		item_palette_draw();
+		property_palette_draw();
+	}
+
+		// swap buffers
+
+	os_swap_gl_buffer();
 }
 
 void main_wind_draw_no_swap(void)
 {
-		// clear gl buffer
-		
-	glDisable(GL_SCISSOR_TEST);
-	
-	glClearColor(1.0f,1.0f,1.0f,0.0f);
-	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-	
-	view_draw();
+		// clear draw buffer
 
-		// palettes
-		
-	tool_palette_draw();
-	texture_palette_draw(map.textures);
-	item_palette_draw();
+	glEnable(GL_DEPTH_TEST);
+	glDepthMask(GL_TRUE);
+
+	main_wind_clear_viewport();
+
+	glClearColor(0.75f,0.75f,0.75f,0.0f);
+	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+
+		// draw window
+
+	if (state.map_opened) {
+		view_draw();
+
+		tool_palette_draw();
+		texture_palette_draw(map.textures);
+		item_palette_draw();
+		property_palette_draw();
+	}
+}
+
+/* =======================================================
+
+      Clicking
+      
+======================================================= */
+
+void main_wind_click(d3pnt *pnt,bool double_click)
+{
+		// tool palette
+
+	if (pnt->y<tool_palette_box.by) {
+		tool_palette_click(pnt);
+		return;
+	}
+
+		// texture palette
+
+	if (pnt->y>=txt_palette_box.ty) {
+		texture_palette_click(map.textures,pnt,double_click);
+		return;
+	}
+
+		// item and property palette
+
+	if (pnt->x>=item_palette.box.lx) {
+		if (pnt->y<=item_palette.box.by) {
+			item_palette_click(pnt,double_click);
+		}
+		else {
+			property_palette_click(pnt,double_click);
+		}
+		return;
+	}
+
+		// view clicks
+
+	view_click(pnt,double_click);
+}
+
+/* =======================================================
+
+      Scroll Wheel
+      
+======================================================= */
+
+void main_wind_scroll_wheel(d3pnt *pnt,int delta)
+{
+		// scroll wheel in item or property palette
+
+	if (pnt->x>=item_palette.box.lx) {
+		if ((pnt->y>=item_palette.box.ty) && (pnt->y<item_palette.box.by)) {
+			item_palette_scroll_wheel(pnt,delta);
+		}
+		if ((pnt->y>=property_palette.box.ty) && (pnt->y<property_palette.box.by)) {
+			property_palette_scroll_wheel(pnt,delta);
+		}
+		return;
+	}
+
+		// scroll wheel in view
+
+	view_scroll_wheel(pnt,delta);
 }
 
 /* =======================================================
@@ -511,4 +283,31 @@ void main_wind_key_down(char ch)
 		
 	view_key(ch);
 }
+
+/* =======================================================
+
+      Resize Setup
+      
+======================================================= */
+
+void main_wind_setup(void)
+{
+	tool_palette_setup();
+	texture_palette_setup();
+	item_palette_setup();
+	property_palette_setup();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 

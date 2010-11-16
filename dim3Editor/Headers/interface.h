@@ -26,6 +26,20 @@ and can be sold or given away.
 *********************************************************************/
 
 //
+// main window
+//
+
+extern void main_wind_initialize(void);
+extern void main_wind_shutdown(void);
+extern void main_wind_draw(void);
+extern void main_wind_draw_no_swap(void);
+extern void main_wind_click(d3pnt *pnt,bool double_click);
+extern void main_wind_scroll_wheel(d3pnt *pnt,int delta);
+extern void main_wind_key_cursor(void);
+extern void main_wind_key_down(char ch);
+extern void main_wind_setup(void);
+
+//
 // menu
 //
 
@@ -33,6 +47,10 @@ extern void menu_fix_enable(void);
 extern void menu_update_view(void);
 extern bool menu_save_changes_dialog(void);
 extern bool menu_event_run(int cmd);
+
+//
+// undo
+//
 
 extern void undo_initialize(void);
 extern void undo_clear(void);

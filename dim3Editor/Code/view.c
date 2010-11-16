@@ -35,7 +35,6 @@ and can be sold or given away.
 
 extern int						top_view_x,top_view_z,
 								tool_palette_pixel_sz,txt_palette_pixel_sz;
-extern d3rect					main_wind_box;
 extern list_palette_type		item_palette;
 
 extern file_path_setup_type		file_path_setup;
