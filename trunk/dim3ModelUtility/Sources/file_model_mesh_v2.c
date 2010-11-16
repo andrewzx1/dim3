@@ -61,6 +61,7 @@ void decode_mesh_v2_xml(model_type *model,int model_head)
     tag=xml_findfirstchild("Options",model_head);
     if (tag!=-1) {
 		model->deform_mode=xml_get_attribute_list(tag,"deform",(char*)deform_mode_str);
+		model->diffuse_boost=xml_get_attribute_float_default(tag,"diffuse_boost",0.0f);
 	}
 	
         // center
@@ -419,6 +420,7 @@ void encode_mesh_v2_xml(model_type *model)
     
     xml_add_tagstart("Options");
 	xml_add_attribute_list("deform",(char*)deform_mode_str,model->deform_mode);
+	xml_add_attribute_float("diffuse_boost",model->diffuse_boost);
     xml_add_tagend(TRUE);
  	
         // center

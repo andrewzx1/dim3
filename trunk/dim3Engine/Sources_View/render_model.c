@@ -225,7 +225,7 @@ void render_model_create_normal_vertexes(model_type *mdl,int mesh_mask,model_dra
 void render_model_diffuse_color_vertexes(model_type *mdl,int mesh_idx,model_draw *draw,float *vertex_ptr)
 {
 	int				n,k;
-	float			diffuse;
+	float			diffuse,boost;
 	float			*cl,*nl;
 	d3vct			diffuse_vct;
 	d3col			ambient_col;
@@ -234,11 +234,13 @@ void render_model_diffuse_color_vertexes(model_type *mdl,int mesh_idx,model_draw
 	mesh=&mdl->meshes[mesh_idx];
 
 	gl_lights_calc_diffuse_vector(&draw->pnt,draw->light_cache.count,draw->light_cache.indexes,&diffuse_vct);
+
+	boost=mdl->diffuse_boost;
 	
 	gl_lights_calc_ambient_color(&ambient_col);
-	ambient_col.r*=0.75f;
-	ambient_col.g*=0.75f;
-	ambient_col.b*=0.75f;
+	ambient_col.r*=gl_diffuse_ambient_factor;
+	ambient_col.g*=gl_diffuse_ambient_factor;
+	ambient_col.b*=gl_diffuse_ambient_factor;
 	
 		// run through the colors and add
 		// in the diffuse
@@ -256,7 +258,12 @@ void render_model_diffuse_color_vertexes(model_type *mdl,int mesh_idx,model_draw
 			
 			nl+=3;
 			
-			diffuse=(diffuse+1.0f)*0.5f;
+			diffuse=((diffuse+1.0f)*0.5f)+boost;
+
+			if (diffuse>=1.0f) {
+				cl+=3;
+				continue;
+			}
 		
 				// clamp it to ambient
 				// this is kind of ugly, might find a better
@@ -577,7 +584,7 @@ void render_model_opaque_shader(model_type *mdl,int mesh_idx,model_draw *draw,vi
 			light_list->diffuse_boost=1.0f;
 		}
 		else {
-			light_list->diffuse_boost=0.0f;
+			light_list->diffuse_boost=mdl->diffuse_boost;
 		}
 		if (mesh->tintable) {
 			memmove(&light_list->tint,&draw->tint,sizeof(d3col));
@@ -753,7 +760,7 @@ void render_model_transparent_shader(model_type *mdl,int mesh_idx,model_draw *dr
 			light_list->diffuse_boost=1.0f;
 		}
 		else {
-			light_list->diffuse_boost=0.0f;
+			light_list->diffuse_boost=mdl->diffuse_boost;
 		}
 		if (mesh->tintable) {
 			memmove(&light_list->tint,&draw->tint,sizeof(d3col));

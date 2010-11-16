@@ -477,23 +477,23 @@ char* gl_core_model_shader_build_frag(int nlight,bool fog,bool bump,bool spec)
 
 		// output the fragment
 
-	if (!fog) {
-		strcat(buf,"gl_FragColor.rgb=");
-	}
-	else {
-		strcat(buf,"vec3 frag=");
-	}
-	
-	strcat(buf,"(");
+	strcat(buf,"vec3 frag=(");
 	if (bump) strcat(buf,"(");
 	if (spec) strcat(buf,"(");
 	strcat(buf,"(tex.rgb*ambient)");
 	if (bump) strcat(buf,"*bump)");
 	if (spec) strcat(buf,"+spec)");
 	strcat(buf,"*diffuse)*dim3TintColor;\n");
+
+	sprintf(strchr(buf,0),"frag=max(frag,(dim3AmbientColor*%.2ff));\n",gl_diffuse_ambient_factor);	// diffuse is clamped by a percentage of the ambient
 	
-	if (fog) strcat(buf,"gl_FragColor.rgb=mix(gl_Fog.color.rgb,frag,fogFactor);\n");
-	
+	if (!fog) {
+		strcat(buf,"gl_FragColor.rgb=frag;\n");
+	}
+	else {
+		strcat(buf,"gl_FragColor.rgb=mix(gl_Fog.color.rgb,frag,fogFactor);\n");
+	}
+
 	strcat(buf,"gl_FragColor.a=tex.a*dim3Alpha;\n");
 	strcat(buf,"}\n");
 

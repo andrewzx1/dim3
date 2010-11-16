@@ -358,11 +358,13 @@ typedef struct		{
 #define list_max_item_count						4096
 #define list_max_section_count					32
 
+#define list_title_font_size					14.0f
 #define list_item_font_size						12.0f
 #define list_item_font_high						16
 
 #define list_palette_border_sz					10
 #define list_palette_tree_sz					200
+#define list_title_high							20
 #define list_scroll_button_high					20
 
 typedef struct		{
@@ -378,6 +380,7 @@ typedef struct		{
 												pixel_sz,scroll_page,
 												total_high,page_high;
 						bool					section_open[list_max_section_count];
+						char					title[name_str_len];
 						d3rect					box;
 						list_palette_item_type	*items;
 					} list_palette_type;

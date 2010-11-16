@@ -214,15 +214,26 @@ bool os_key_shift_down(void)
       
 ======================================================= */
 
+void os_get_cursor(d3pnt *pnt)
+{
+	POINT			ui_pt;
+
+	GetCursorPos(&ui_pt);
+	ScreenToClient(wnd,&ui_pt);
+	
+	pnt->x=ui_pt.x;
+	pnt->y=ui_pt.y;
+}
+
 bool os_button_down(void)
 {
 	if (!GetSystemMetrics(SM_SWAPBUTTON)) return(GetAsyncKeyState(VK_LBUTTON)!=0);
 	return(GetAsyncKeyState(VK_RBUTTON)!=0);
 }
 
-bool os_track_mouse_location(d3pnt *pt,d3rect *offset_box)
+bool os_track_mouse_location(d3pnt *pnt,d3rect *offset_box)
 {
-	POINT					ui_pt;
+	POINT			ui_pt;
 
 		// get cursor pos in window
 
@@ -232,12 +243,12 @@ bool os_track_mouse_location(d3pnt *pt,d3rect *offset_box)
 		// add in offsets
 	
 	if (offset_box==NULL) {
-		pt->x=ui_pt.x;
-		pt->y=ui_pt.y;
+		pnt->x=ui_pt.x;
+		pnt->y=ui_pt.y;
 	}
 	else {
-		pt->x=ui_pt.x-offset_box->lx;
-		pt->y=ui_pt.y-offset_box->ty;
+		pnt->x=ui_pt.x-offset_box->lx;
+		pnt->y=ui_pt.y-offset_box->ty;
 	}
 	
 	return(!os_button_down());

@@ -56,9 +56,11 @@ void list_palette_shutdown(void)
 {
 }
 
-void list_palette_list_initialize(list_palette_type *list,int section_count)
+void list_palette_list_initialize(list_palette_type *list,char *title,int section_count)
 {
 	int				n;
+	
+	strcpy(list->title,title);
 
 	list->section_count=section_count;
 
@@ -96,7 +98,7 @@ void list_palette_add_item(list_palette_type *list,int piece_type,int piece_idx,
 	item->x=list->box.lx+(list_palette_border_sz+4);
 	if (!header) item->x+=10;
 
-	item->y=((list->item_count*list_item_font_high)+list_scroll_button_high)+list->box.ty;
+	item->y=((list->item_count*list_item_font_high)+(list_scroll_button_high+list_title_high))+list->box.ty;
 	item->y-=(list->scroll_page*list->page_high);
 
 	list->total_high+=list_item_font_high;
@@ -139,7 +141,7 @@ void list_palette_draw_item(list_palette_type *list,list_palette_item_type *item
 {
 		// early exits
 
-	if ((item->y<(list->box.ty+list_scroll_button_high)) || ((item->y-list_item_font_high)>(list->box.by-list_scroll_button_high))) return;
+	if ((item->y<(list->box.ty+(list_scroll_button_high+list_title_high))) || ((item->y-list_item_font_high)>(list->box.by-list_scroll_button_high))) return;
 
 		// draw header
 		
@@ -257,6 +259,35 @@ void list_palette_draw(list_palette_type *list)
 	glVertex2i(list->box.lx,list->box.by);
 	glEnd();
 
+		// title
+
+	ty=list->box.ty;
+	by=ty+list_title_high;
+
+	glBegin(GL_QUADS);
+	glColor4f(0.6f,0.6f,0.6f,1.0f);
+	glVertex2i(list->box.lx,ty);
+	glVertex2i(list->box.rx,ty);
+	glColor4f(0.7f,0.7f,0.7f,1.0f);
+	glVertex2i(list->box.rx,by);
+	glVertex2i(list->box.lx,by);
+	glEnd();
+	
+	text_draw(((list->box.lx+list->box.rx)>>1),(by-2),list_title_font_size,TRUE,list->title);
+
+	glDisable(GL_BLEND);
+
+	glColor4f(0.0f,0.0f,0.0f,1.0f);
+	
+	glBegin(GL_LINES);
+	glVertex2i(list->box.lx,ty);
+	glVertex2i(list->box.rx,ty);
+	glVertex2i(list->box.lx,by);
+	glVertex2i(list->box.rx,by);
+	glEnd();
+
+	glEnable(GL_BLEND);
+
 		// items
 
 	item=list->items;
@@ -268,8 +299,8 @@ void list_palette_draw(list_palette_type *list)
 
 		// scroll up button
 
-	ty=list->box.ty;
-	by=list->box.ty+list_scroll_button_high;
+	ty=list->box.ty+list_title_high;
+	by=ty+list_scroll_button_high;
 	mx=(list->box.lx+list->box.rx)>>1;
 
 	glColor4f(0.9f,0.9f,0.9f,1.0f);
@@ -285,11 +316,11 @@ void list_palette_draw(list_palette_type *list)
 
 	glColor4f(0.0f,0.0f,0.0f,1.0f);
 		
-	glBegin(GL_LINE_LOOP);
+	glBegin(GL_LINES);
 	glVertex2i(list->box.lx,ty);
 	glVertex2i(list->box.rx,ty);
-	glVertex2i(list->box.rx,by);
 	glVertex2i(list->box.lx,by);
+	glVertex2i(list->box.rx,by);
 	glEnd();
 
 	glEnable(GL_BLEND);
@@ -321,11 +352,11 @@ void list_palette_draw(list_palette_type *list)
 
 	glColor4f(0.0f,0.0f,0.0f,1.0f);
 		
-	glBegin(GL_LINE_LOOP);
+	glBegin(GL_LINES);
 	glVertex2i(list->box.lx,ty);
 	glVertex2i(list->box.rx,ty);
-	glVertex2i(list->box.rx,by);
 	glVertex2i(list->box.lx,by);
+	glVertex2i(list->box.rx,by);
 	glEnd();
 
 	glEnable(GL_BLEND);
@@ -415,7 +446,7 @@ bool list_palette_click(list_palette_type *list,d3pnt *pnt,bool double_click)
 
 		// click in scroll item
 
-	if (pnt->y<=list_scroll_button_high) {
+	if ((pnt->y>=list_title_high) && (pnt->y<=(list_title_high+list_scroll_button_high))) {
 		list_palette_scroll_up(list);
 		return(FALSE);
 	}
@@ -427,7 +458,7 @@ bool list_palette_click(list_palette_type *list,d3pnt *pnt,bool double_click)
 
 		// click in item
 
-	item_idx=((pnt->y-list_scroll_button_high)+(list->scroll_page*list->page_high))/list_item_font_high;
+	item_idx=((pnt->y-(list_scroll_button_high+list_title_high))+(list->scroll_page*list->page_high))/list_item_font_high;
 	if ((item_idx<0) || (item_idx>=list->item_count)) return(FALSE);
 
 		// clicking in header
