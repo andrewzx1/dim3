@@ -54,8 +54,9 @@ extern bool os_key_control_down(void);
 extern bool os_key_command_down(void);
 extern bool os_key_shift_down(void);
 
+extern void os_get_cursor(d3pnt *pnt);
 extern bool os_button_down(void);
-extern bool os_track_mouse_location(d3pnt *pt,d3rect *offset_box);
+extern bool os_track_mouse_location(d3pnt *pnt,d3rect *offset_box);
 
 extern void os_dialog_alert(char *title,char *msg);
 extern int os_dialog_confirm(char *title,char *msg,bool include_cancel);

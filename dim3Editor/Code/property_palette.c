@@ -52,7 +52,7 @@ list_palette_type				property_palette;
 
 void property_palette_initialize(void)
 {
-	list_palette_list_initialize(&property_palette,1);
+	list_palette_list_initialize(&property_palette,"Item Properties",1);
 
 	property_palette.section_open[0]=TRUE;
 
@@ -86,7 +86,7 @@ void property_palette_setup(void)
 	property_palette.box.ty=y;
 	property_palette.box.by=wbox.by-txt_palette_pixel_sz;
 
-	property_palette.page_high=((property_palette.box.by-property_palette.box.ty)-(list_scroll_button_high*2))-list_item_font_high;
+	property_palette.page_high=((property_palette.box.by-property_palette.box.ty)-((list_scroll_button_high*2)+list_title_high))-list_item_font_high;
 }
 
 /* =======================================================

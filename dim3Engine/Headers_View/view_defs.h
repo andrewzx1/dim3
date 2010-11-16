@@ -64,6 +64,12 @@ and can be sold or given away.
 #define gl_shader_core_index								1000
 
 //
+// diffuse
+//
+
+#define gl_diffuse_ambient_factor							0.75f
+
+//
 // input rate
 //
 

@@ -298,6 +298,7 @@ typedef struct		{
 						int								uid,reference_count,
 														nmesh,nbone,npose,nanimate,nhit_box,
 														deform_mode;
+						float							diffuse_boost;
 						char							name[name_str_len],load_base_path[1024];
 						d3pnt							center;
 						model_box_type					view_box;

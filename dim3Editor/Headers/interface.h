@@ -90,7 +90,7 @@ extern void texture_palette_click(texture_type *txt_list,d3pnt *pnt,bool dbl_cli
 
 extern void list_palette_initialize(void);
 extern void list_palette_shutdown(void);
-extern void list_palette_list_initialize(list_palette_type *list,int section_count);
+extern void list_palette_list_initialize(list_palette_type *list,char *title,int section_count);
 extern void list_palette_list_shutdown(list_palette_type *list);
 extern void list_palette_add_item(list_palette_type *list,int piece_type,int piece_idx,char *name,d3col *col,bool selected,bool header);
 extern void list_palette_delete_all_items(list_palette_type *list);

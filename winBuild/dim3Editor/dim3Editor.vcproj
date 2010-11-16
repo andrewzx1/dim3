@@ -366,6 +366,10 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\dim3Editor\Code\main_window.c"
+						>
+					</File>
+					<File
 						RelativePath="..\..\dim3Editor\Code\property_palette.c"
 						>
 					</File>
@@ -391,24 +395,7 @@
 				Name="EditorWin32"
 				>
 				<File
-					RelativePath="win32Code\dim3Editor.c"
-					>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-						/>
-					</FileConfiguration>
-				</File>
-				<File
 					RelativePath=".\dim3Editor.rc"
-					>
-				</File>
-				<File
-					RelativePath=".\win32Code\dim3Editor_menu_patch.c"
 					>
 				</File>
 				<File
@@ -425,6 +412,14 @@
 				</File>
 				<File
 					RelativePath="..\..\dim3Common\Code\win32_glue.c"
+					>
+				</File>
+				<File
+					RelativePath=".\win32Code\win32_main.c"
+					>
+				</File>
+				<File
+					RelativePath=".\win32Code\win32_menu_patch.c"
 					>
 				</File>
 			</Filter>

@@ -52,7 +52,7 @@ list_palette_type				item_palette;
 
 void item_palette_initialize(void)
 {
-	list_palette_list_initialize(&item_palette,piece_count);
+	list_palette_list_initialize(&item_palette,"Map Items",piece_count);
 
 	item_palette.section_open[spot_piece]=TRUE;
 
@@ -86,7 +86,7 @@ void item_palette_setup(void)
 	item_palette.box.ty=wbox.ty+(tool_palette_pixel_sz+1);
 	item_palette.box.by=y;
 
-	item_palette.page_high=((item_palette.box.by-item_palette.box.ty)-(list_scroll_button_high*2))-list_item_font_high;
+	item_palette.page_high=((item_palette.box.by-item_palette.box.ty)-((list_scroll_button_high*2)+list_title_high))-list_item_font_high;
 }
 
 /* =======================================================

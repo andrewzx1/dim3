@@ -69,6 +69,7 @@ bool model_new(model_type *model,char *name)
 		// default settings
 	
 	model->deform_mode=deform_mode_comulative_rotate;
+	model->diffuse_boost=0.0f;
 	
 	for (n=0;n!=max_model_light;n++) {
 		model->tags.light_bone_tag[n]=model_null_tag;

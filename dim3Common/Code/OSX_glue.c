@@ -187,25 +187,36 @@ bool os_key_shift_down(void)
       
 ======================================================= */
 
+void os_get_cursor(d3pnt *pnt)
+{
+	Point			ui_pt;
+	
+	GetMouse(&ui_pt);
+	GlobalToLocal(&ui_pt);
+
+	pnt->x=ui_pt.h;
+	pnt->y=ui_pt.v;
+}
+
 bool os_button_down(void)
 {
 	return(Button());
 }
 
-bool os_track_mouse_location(d3pnt *pt,d3rect *offset_box)
+bool os_track_mouse_location(d3pnt *pnt,d3rect *offset_box)
 {
-	Point					uipt;
+	Point					ui_pt;
 	MouseTrackingResult		track;
 
-	TrackMouseLocation(NULL,&uipt,&track);
+	TrackMouseLocation(NULL,&ui_pt,&track);
 	
 	if (offset_box==NULL) {
-		pt->x=uipt.h;
-		pt->y=uipt.v;
+		pnt->x=ui_pt.h;
+		pnt->y=ui_pt.v;
 	}
 	else {
-		pt->x=uipt.h-offset_box->lx;
-		pt->y=uipt.v-offset_box->ty;
+		pnt->x=ui_pt.h-offset_box->lx;
+		pnt->y=ui_pt.v-offset_box->ty;
 	}
 	
 	return(track==kMouseTrackingMouseReleased);

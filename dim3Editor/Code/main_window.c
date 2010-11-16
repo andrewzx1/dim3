@@ -29,6 +29,7 @@ and can be sold or given away.
 	#include "dim3editor.h"
 #endif
 
+#include "glue.h"
 #include "interface.h"
 #include "view.h"
 
@@ -243,16 +244,10 @@ void main_wind_scroll_wheel(d3pnt *pnt,int delta)
 
 void main_wind_key_cursor(void)
 {
-	Point			pt;
-	d3pnt			dpt;
+	d3pnt			pnt;
 	
-	GetMouse(&pt);
-	GlobalToLocal(&pt);
-	
-	dpt.x=pt.h;
-	dpt.y=pt.v;
-	
-	view_cursor(&dpt);
+	os_get_cursor(&pnt);
+	view_cursor(&pnt);
 }
 
 void main_wind_key_down(char ch)
