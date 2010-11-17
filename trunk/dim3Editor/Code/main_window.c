@@ -238,17 +238,23 @@ void main_wind_scroll_wheel(d3pnt *pnt,int delta)
 
 /* =======================================================
 
-      Key States
+      Cursors
       
 ======================================================= */
 
-void main_wind_key_cursor(void)
+bool main_wind_cursor(void)
 {
 	d3pnt			pnt;
 	
 	os_get_cursor(&pnt);
-	view_cursor(&pnt);
+	return(view_cursor(&pnt));
 }
+
+/* =======================================================
+
+      Keys
+      
+======================================================= */
 
 void main_wind_key_down(char ch)
 {

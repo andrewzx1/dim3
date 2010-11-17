@@ -29,13 +29,15 @@ and can be sold or given away.
 // main window
 //
 
+extern void main_wind_open(void);
+extern void main_wind_close(void);
 extern void main_wind_initialize(void);
 extern void main_wind_shutdown(void);
 extern void main_wind_draw(void);
 extern void main_wind_draw_no_swap(void);
 extern void main_wind_click(d3pnt *pnt,bool double_click);
 extern void main_wind_scroll_wheel(d3pnt *pnt,int delta);
-extern void main_wind_key_cursor(void);
+extern bool main_wind_cursor(void);
 extern void main_wind_key_down(char ch);
 extern void main_wind_setup(void);
 
@@ -90,9 +92,14 @@ extern void texture_palette_click(texture_type *txt_list,d3pnt *pnt,bool dbl_cli
 
 extern void list_palette_initialize(void);
 extern void list_palette_shutdown(void);
-extern void list_palette_list_initialize(list_palette_type *list,char *title,int section_count);
+extern void list_palette_list_initialize(list_palette_type *list,char *title);
 extern void list_palette_list_shutdown(list_palette_type *list);
-extern void list_palette_add_item(list_palette_type *list,int piece_type,int piece_idx,char *name,d3col *col,bool selected,bool header);
+extern void list_palette_add_header(list_palette_type *list,int piece_type,char *name);
+extern void list_palette_add_item(list_palette_type *list,int piece_type,int piece_idx,char *name,bool selected);
+extern void list_palette_add_color(list_palette_type *list,int piece_type,int piece_idx,d3col *col,bool selected);
+extern void list_palette_add_string(list_palette_type *list,int id,char *name,char *value);
+extern void list_palette_add_checkbox(list_palette_type *list,int id,char *name,bool value);
+extern void list_palette_add_combo(list_palette_type *list,int id,char *name,char *combo_list,int value);
 extern void list_palette_delete_all_items(list_palette_type *list);
 extern void list_palette_draw(list_palette_type *list);
 extern void list_palette_scroll_up(list_palette_type *list);
@@ -118,6 +125,9 @@ extern void item_palette_click(d3pnt *pnt,bool double_click);
 // property list palette
 //
 
+extern void property_palette_fill_mesh(map_mesh_type *mesh);
+extern void property_palette_click_mesh(map_mesh_type *mesh,int id);
+
 extern void property_palette_initialize(void);
 extern void property_palette_shutdown(void);
 extern void property_palette_setup(void);
@@ -125,19 +135,6 @@ extern void property_palette_draw(void);
 extern void property_palette_reset(void);
 extern void property_palette_scroll_wheel(d3pnt *pnt,int move);
 extern void property_palette_click(d3pnt *pnt,bool double_click);
-
-//
-// main window
-//
-
-extern void main_wind_open(void);
-extern void main_wind_close(void);
-extern void main_wind_resize(void);
-extern void main_wind_rotate_view(void);
-extern void main_wind_draw(void);
-extern void main_wind_draw_no_swap(void);
-extern void main_wind_key_cursor(void);
-extern void main_wind_key_down(char ch);
 
 //
 // text

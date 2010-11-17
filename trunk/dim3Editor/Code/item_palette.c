@@ -52,9 +52,7 @@ list_palette_type				item_palette;
 
 void item_palette_initialize(void)
 {
-	list_palette_list_initialize(&item_palette,"Map Items",piece_count);
-
-	item_palette.section_open[spot_piece]=TRUE;
+	list_palette_list_initialize(&item_palette,"Map Items");
 
 	item_palette.item_type=spot_piece;
 	item_palette.item_idx=-1;
@@ -86,7 +84,7 @@ void item_palette_setup(void)
 	item_palette.box.ty=wbox.ty+(tool_palette_pixel_sz+1);
 	item_palette.box.by=y;
 
-	item_palette.page_high=((item_palette.box.by-item_palette.box.ty)-((list_scroll_button_high*2)+list_title_high))-list_item_font_high;
+	item_palette.scroll_size=((item_palette.box.by-item_palette.box.ty)-((list_scroll_button_high*2)+list_title_high))>>1;
 }
 
 /* =======================================================
@@ -103,92 +101,74 @@ void item_palette_fill(void)
 
 		// spots
 
-	list_palette_add_item(&item_palette,spot_piece,-1,"Spots",NULL,(item_palette.item_type==spot_piece),TRUE);
+	list_palette_add_header(&item_palette,spot_piece,"Spots");
 
-	if (item_palette.section_open[spot_piece]) {
-		for (n=0;n!=map.nspot;n++) {
-			list_palette_add_item(&item_palette,spot_piece,n,map.spots[n].name,NULL,((item_palette.item_type==spot_piece)&&(n==item_palette.item_idx)),FALSE);
-		}
+	for (n=0;n!=map.nspot;n++) {
+		list_palette_add_item(&item_palette,spot_piece,n,map.spots[n].name,((item_palette.item_type==spot_piece)&&(n==item_palette.item_idx)));
 	}
 
 		// lights
 
-	list_palette_add_item(&item_palette,light_piece,-1,"Lights",NULL,(item_palette.item_type==light_piece),TRUE);
+	list_palette_add_header(&item_palette,light_piece,"Lights");
 
-	if (item_palette.section_open[light_piece]) {
-		for (n=0;n!=map.nlight;n++) {
-			list_palette_add_item(&item_palette,light_piece,n,NULL,&map.lights[n].col,((item_palette.item_type==light_piece)&&(n==item_palette.item_idx)),FALSE);
-		}
+	for (n=0;n!=map.nlight;n++) {
+		list_palette_add_color(&item_palette,light_piece,n,&map.lights[n].col,((item_palette.item_type==light_piece)&&(n==item_palette.item_idx)));
 	}
 
 		// sounds
 
-	list_palette_add_item(&item_palette,sound_piece,-1,"Sounds",NULL,(item_palette.item_type==sound_piece),TRUE);
+	list_palette_add_header(&item_palette,sound_piece,"Sounds");
 
-	if (item_palette.section_open[sound_piece]) {
-		for (n=0;n!=map.nsound;n++) {
-			list_palette_add_item(&item_palette,sound_piece,n,map.sounds[n].name,NULL,((item_palette.item_type==sound_piece)&&(n==item_palette.item_idx)),FALSE);
-		}
+	for (n=0;n!=map.nsound;n++) {
+		list_palette_add_item(&item_palette,sound_piece,n,map.sounds[n].name,((item_palette.item_type==sound_piece)&&(n==item_palette.item_idx)));
 	}
 
 		// particles
 
-	list_palette_add_item(&item_palette,particle_piece,-1,"Particles",NULL,(item_palette.item_type==particle_piece),TRUE);
+	list_palette_add_header(&item_palette,particle_piece,"Particles");
 
-	if (item_palette.section_open[particle_piece]) {
-		for (n=0;n!=map.nparticle;n++) {
-			list_palette_add_item(&item_palette,particle_piece,n,map.particles[n].name,NULL,((item_palette.item_type==particle_piece)&&(n==item_palette.item_idx)),FALSE);
-		}
+	for (n=0;n!=map.nparticle;n++) {
+		list_palette_add_item(&item_palette,particle_piece,n,map.particles[n].name,((item_palette.item_type==particle_piece)&&(n==item_palette.item_idx)));
 	}
 
 		// sceneries
 
-	list_palette_add_item(&item_palette,scenery_piece,-1,"Scenery",NULL,(item_palette.item_type==scenery_piece),TRUE);
+	list_palette_add_header(&item_palette,scenery_piece,"Scenery");
 
-	if (item_palette.section_open[scenery_piece]) {
-		for (n=0;n!=map.nscenery;n++) {
-			list_palette_add_item(&item_palette,scenery_piece,n,map.sceneries[n].model_name,NULL,((item_palette.item_type==scenery_piece)&&(n==item_palette.item_idx)),FALSE);
-		}
+	for (n=0;n!=map.nscenery;n++) {
+		list_palette_add_item(&item_palette,scenery_piece,n,map.sceneries[n].model_name,((item_palette.item_type==scenery_piece)&&(n==item_palette.item_idx)));
 	}
 
 		// nodes
 
-	list_palette_add_item(&item_palette,node_piece,-1,"Nodes",NULL,(item_palette.item_type==node_piece),TRUE);
+	list_palette_add_header(&item_palette,node_piece,"Nodes");
 
-	if (item_palette.section_open[node_piece]) {
-		for (n=0;n!=map.nnode;n++) {
-			if (map.nodes[n].name[0]!=0x0) list_palette_add_item(&item_palette,node_piece,n,map.nodes[n].name,NULL,((item_palette.item_type==node_piece)&&(n==item_palette.item_idx)),FALSE);
-		}
+	for (n=0;n!=map.nnode;n++) {
+		if (map.nodes[n].name[0]!=0x0) list_palette_add_item(&item_palette,node_piece,n,map.nodes[n].name,((item_palette.item_type==node_piece)&&(n==item_palette.item_idx)));
 	}
 
 		// groups
 
-	list_palette_add_item(&item_palette,group_piece,-1,"Groups",NULL,(item_palette.item_type==group_piece),TRUE);
+	list_palette_add_header(&item_palette,group_piece,"Groups");
 
-	if (item_palette.section_open[group_piece]) {
-		for (n=0;n!=map.group.ngroup;n++) {
-			list_palette_add_item(&item_palette,group_piece,n,map.group.groups[n].name,NULL,((item_palette.item_type==group_piece)&&(n==item_palette.item_idx)),FALSE);
-		}
+	for (n=0;n!=map.group.ngroup;n++) {
+		list_palette_add_item(&item_palette,group_piece,n,map.group.groups[n].name,((item_palette.item_type==group_piece)&&(n==item_palette.item_idx)));
 	}
 
 		// movements
 
-	list_palette_add_item(&item_palette,movement_piece,-1,"Movements",NULL,(item_palette.item_type==movement_piece),TRUE);
+	list_palette_add_header(&item_palette,movement_piece,"Movements");
 
-	if (item_palette.section_open[movement_piece]) {
-		for (n=0;n!=map.movement.nmovement;n++) {
-			list_palette_add_item(&item_palette,movement_piece,n,map.movement.movements[n].name,NULL,((item_palette.item_type==movement_piece)&&(n==item_palette.item_idx)),FALSE);
-		}
+	for (n=0;n!=map.movement.nmovement;n++) {
+		list_palette_add_item(&item_palette,movement_piece,n,map.movement.movements[n].name,((item_palette.item_type==movement_piece)&&(n==item_palette.item_idx)));
 	}
 
 		// cinemas
 
-	list_palette_add_item(&item_palette,cinema_piece,-1,"Cinemas",NULL,(item_palette.item_type==cinema_piece),TRUE);
+	list_palette_add_header(&item_palette,cinema_piece,"Cinemas");
 
-	if (item_palette.section_open[cinema_piece]) {
-		for (n=0;n!=map.cinema.ncinema;n++) {
-			list_palette_add_item(&item_palette,cinema_piece,n,map.cinema.cinemas[n].name,NULL,((item_palette.item_type==cinema_piece)&&(n==item_palette.item_idx)),FALSE);
-		}
+	for (n=0;n!=map.cinema.ncinema;n++) {
+		list_palette_add_item(&item_palette,cinema_piece,n,map.cinema.cinemas[n].name,((item_palette.item_type==cinema_piece)&&(n==item_palette.item_idx)));
 	}
 }
 
@@ -311,28 +291,28 @@ void item_palette_click(d3pnt *pnt,bool double_click)
 		return;
 	}
 
+	if (item_palette.item_idx==-1) return;
+
 		// handle click
 
-	if (item_palette.item_idx!=-1) {
-		select_clear();
+	select_clear();
 
-		switch (item_palette.item_type) {
-			case group_piece:
-				select_add_group(item_palette.item_idx);
-				break;
-			case movement_piece:
-				select_add_movement(item_palette.item_idx);
-				break;
-			case cinema_piece:
-				select_add_cinema(item_palette.item_idx);
-				break;
-			default:
-				select_add(item_palette.item_type,item_palette.item_idx,-1);
-				break;
-		}
-
-		if (double_click) view_goto_select();
+	switch (item_palette.item_type) {
+		case group_piece:
+			select_add_group(item_palette.item_idx);
+			break;
+		case movement_piece:
+			select_add_movement(item_palette.item_idx);
+			break;
+		case cinema_piece:
+			select_add_cinema(item_palette.item_idx);
+			break;
+		default:
+			select_add(item_palette.item_type,item_palette.item_idx,-1);
+			break;
 	}
+
+	if (double_click) view_goto_select();
 
 		// turn on any hidden items
 

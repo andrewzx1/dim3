@@ -374,6 +374,10 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\dim3Editor\Code\property_palette_mesh.c"
+						>
+					</File>
+					<File
 						RelativePath="..\..\dim3Editor\Code\texture_palette.c"
 						>
 					</File>

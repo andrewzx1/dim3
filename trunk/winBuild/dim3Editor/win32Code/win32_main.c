@@ -168,12 +168,6 @@ LRESULT CALLBACK editor_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam)
 			// supergumba -- deal with these, need to check if map is loaded
 			break;
 
-		case WM_MOUSEMOVE:
-			pnt.x=LOWORD(lParam);
-			pnt.y=HIWORD(lParam);
-			view_cursor(&pnt);
-			break;
-
 		case WM_LBUTTONDOWN:
 		case WM_LBUTTONDBLCLK:
 			pnt.x=LOWORD(lParam);
@@ -196,7 +190,7 @@ LRESULT CALLBACK editor_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam)
 			break;
 
 		case WM_SETCURSOR:
-			main_wind_key_cursor();
+			if (!main_wind_cursor()) return(DefWindowProc(hWnd,msg,wParam,lParam));
 			break;
 
 		case WM_COMMAND:

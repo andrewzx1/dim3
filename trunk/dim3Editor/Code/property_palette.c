@@ -52,9 +52,7 @@ list_palette_type				property_palette;
 
 void property_palette_initialize(void)
 {
-	list_palette_list_initialize(&property_palette,"Item Properties",1);
-
-	property_palette.section_open[0]=TRUE;
+	list_palette_list_initialize(&property_palette,"Item Properties");
 
 	property_palette.item_type=0;
 	property_palette.item_idx=-1;
@@ -86,7 +84,7 @@ void property_palette_setup(void)
 	property_palette.box.ty=y;
 	property_palette.box.by=wbox.by-txt_palette_pixel_sz;
 
-	property_palette.page_high=((property_palette.box.by-property_palette.box.ty)-((list_scroll_button_high*2)+list_title_high))-list_item_font_high;
+	property_palette.scroll_size=((property_palette.box.by-property_palette.box.ty)-((list_scroll_button_high*2)+list_title_high))>>1;
 }
 
 /* =======================================================
@@ -97,9 +95,36 @@ void property_palette_setup(void)
 
 void property_palette_fill(void)
 {
+	int					sel_type,main_idx,sub_idx;
+
+		// delete the properties
+
 	list_palette_delete_all_items(&property_palette);
-//	list_palette_add_item(&property_palette,0,-1,"Test",NULL,FALSE,TRUE);
-// supergumba -- work on this
+
+		// fill in the properties for
+		// the currently selected item
+
+	if (select_count()==0) return;
+
+	select_get(0,&sel_type,&main_idx,&sub_idx);
+	if (main_idx==-1) return;
+
+	switch (sel_type) {
+
+		case mesh_piece:
+			property_palette_fill_mesh(&map.mesh.meshes[main_idx]);
+			break;
+
+		case liquid_piece:
+		case node_piece:
+		case spot_piece:
+		case scenery_piece:
+		case light_piece:
+		case sound_piece:
+		case particle_piece:
+			break;
+
+	}
 }
 
 /* =======================================================
@@ -122,15 +147,7 @@ void property_palette_draw(void)
 
 void property_palette_reset(void)
 {
-	int				sub_idx;
-
-	if (select_count()==0) {
-		property_palette.item_type=-1;
-		property_palette.item_idx=-1;
-		return;
-	}
-	
-	select_get(0,&property_palette.item_type,&property_palette.item_idx,&sub_idx);
+	// supergumba -- nothing to do here, can delete later if not needed
 }
 
 /* =======================================================
@@ -152,7 +169,8 @@ void property_palette_scroll_wheel(d3pnt *pnt,int move)
 
 void property_palette_click(d3pnt *pnt,bool double_click)
 {
-	bool					old_open;
+	int					sel_type,main_idx,sub_idx;
+	bool				old_open;
 
 		// check if open changes
 	
@@ -169,7 +187,31 @@ void property_palette_click(d3pnt *pnt,bool double_click)
 		return;
 	}
 
+		// click editing
 
-	//property_palette.item_type
-	//property_palette.item_idx
+	if (property_palette.item_id==-1) return;
+
+		// get the selection
+
+	if (select_count()==0) return;
+	
+	select_get(0,&sel_type,&main_idx,&sub_idx);
+	if (main_idx==-1) return;
+
+	switch (sel_type) {
+
+		case mesh_piece:
+			property_palette_click_mesh(&map.mesh.meshes[main_idx],property_palette.item_id);
+			break;
+
+		case liquid_piece:
+		case node_piece:
+		case spot_piece:
+		case scenery_piece:
+		case light_piece:
+		case sound_piece:
+		case particle_piece:
+			break;
+
+	}
 }

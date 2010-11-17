@@ -123,8 +123,6 @@ and can be sold or given away.
 // selection types
 //
 
-#define piece_count								11
-
 #define mesh_piece								0
 #define liquid_piece							1
 #define node_piece								2
@@ -360,29 +358,48 @@ typedef struct		{
 
 #define list_title_font_size					14.0f
 #define list_item_font_size						12.0f
-#define list_item_font_high						16
+#define list_item_font_high						14
 
 #define list_palette_border_sz					10
 #define list_palette_tree_sz					200
 #define list_title_high							20
 #define list_scroll_button_high					20
 
+#define list_item_ctrl_header					0
+#define list_item_ctrl_text						1
+#define list_item_ctrl_color					2
+#define list_item_ctrl_string					3
+#define list_item_ctrl_checkbox					4
+#define list_item_ctrl_combo					5
+
 typedef struct		{
-						int						x,y,piece_type,piece_idx;
-						bool					selected,header,is_col;
-						char					name[name_str_len];
-						d3col					col;
+						int									idx;
+						char								*list;
+					} list_palette_item_value_combo_type;
+
+typedef union		{
+						bool								checkbox;
+						char								str[name_str_len];
+						d3col								col;
+						list_palette_item_value_combo_type	combo;
+					} list_palette_item_value_type;
+
+typedef struct		{
+						int									x,y,ctrl_type,
+															id,type,idx;
+						bool								selected;
+						char								name[name_str_len];
+						list_palette_item_value_type		value;
 					} list_palette_item_type;
 
 typedef struct		{
-						int						item_count,section_count,
-												item_type,item_idx,
-												pixel_sz,scroll_page,
-												total_high,page_high;
-						bool					section_open[list_max_section_count];
-						char					title[name_str_len];
-						d3rect					box;
-						list_palette_item_type	*items;
+						int									item_count,
+															item_id,item_type,item_idx,
+															pixel_sz,scroll_page,scroll_size,
+															total_high;
+						char								title[name_str_len];
+						d3rect								box;
+						list_palette_item_type				*items;
 					} list_palette_type;
 
 //
