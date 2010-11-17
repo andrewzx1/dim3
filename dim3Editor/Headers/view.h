@@ -47,7 +47,7 @@ extern void view_project_point(editor_view_type *view,d3pnt *pnt);
 extern bool view_project_point_in_z(d3pnt *pnt);
 extern editor_view_type* view_get_current_view(void);
 extern bool view_point_in_view(editor_view_type *view,d3pnt *pnt);
-extern void view_cursor(d3pnt *pnt);
+extern bool view_cursor(d3pnt *pnt);
 extern void view_key(char ch);
 extern void view_get_position(d3pnt *pnt);
 extern void view_set_position(d3pnt *pnt);

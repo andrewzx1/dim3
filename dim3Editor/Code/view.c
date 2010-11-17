@@ -651,7 +651,7 @@ bool view_point_in_view(editor_view_type *view,d3pnt *pnt)
       
 ======================================================= */
 
-void view_cursor(d3pnt *pnt)
+bool view_cursor(d3pnt *pnt)
 {
  	int					n,view_idx;
 	
@@ -666,26 +666,28 @@ void view_cursor(d3pnt *pnt)
 		}
 	}
 	
-	if (view_idx==-1) return;
+	if (view_idx==-1) return(FALSE);
 
 		// setup cursor
 		
 	if (os_key_space_down()) {
 		os_set_hand_cursor();
-        return;
+        return(TRUE);
     }
 	
     if ((os_key_option_down()) && (!os_key_control_down())) {
         os_set_drag_cursor();
-        return;
+        return(TRUE);
     }
 	
     if ((os_key_command_down()) && (!map.editor_views.views[view_idx].no_rot)) {
         os_set_drag_cursor();
-        return;
+        return(TRUE);
     }
     
     os_set_arrow_cursor();
+
+	return(TRUE);
 }
 
 /* =======================================================

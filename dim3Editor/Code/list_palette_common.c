@@ -56,17 +56,9 @@ void list_palette_shutdown(void)
 {
 }
 
-void list_palette_list_initialize(list_palette_type *list,char *title,int section_count)
+void list_palette_list_initialize(list_palette_type *list,char *title)
 {
-	int				n;
-	
 	strcpy(list->title,title);
-
-	list->section_count=section_count;
-
-	for (n=0;n!=list->section_count;n++) {
-		list->section_open[n]=FALSE;
-	}
 
 	list->scroll_page=0;
 	list->total_high=0;
@@ -88,7 +80,7 @@ void list_palette_list_shutdown(list_palette_type *list)
       
 ======================================================= */
 
-void list_palette_add_item(list_palette_type *list,int piece_type,int piece_idx,char *name,d3col *col,bool selected,bool header)
+list_palette_item_type* list_palette_create_item(list_palette_type *list)
 {
 	list_palette_item_type		*item;
 
@@ -96,33 +88,120 @@ void list_palette_add_item(list_palette_type *list,int piece_type,int piece_idx,
 	list->item_count++;
 
 	item->x=list->box.lx+(list_palette_border_sz+4);
-	if (!header) item->x+=10;
+	if (item->type!=list_item_ctrl_header) item->x+=10;
 
 	item->y=((list->item_count*list_item_font_high)+(list_scroll_button_high+list_title_high))+list->box.ty;
-	item->y-=(list->scroll_page*list->page_high);
+	item->y-=(list->scroll_page*list->scroll_size);
 
 	list->total_high+=list_item_font_high;
 
-	item->piece_type=piece_type;
-	item->piece_idx=piece_idx;
+	return(item);
+}
+
+void list_palette_add_header(list_palette_type *list,int piece_type,char *name)
+{
+	list_palette_item_type		*item;
+
+	item=list_palette_create_item(list);
+
+	item->ctrl_type=list_item_ctrl_header;
+
+	item->type=piece_type;
+	item->idx=-1;
+	item->id=-1;
+
+	item->selected=FALSE;
+
+	strcpy(item->name,name);
+}
+
+void list_palette_add_item(list_palette_type *list,int piece_type,int piece_idx,char *name,bool selected)
+{
+	list_palette_item_type		*item;
+
+	item=list_palette_create_item(list);
+
+	item->ctrl_type=list_item_ctrl_text;
+
+	item->type=piece_type;
+	item->idx=piece_idx;
+	item->id=-1;
+
 	item->selected=selected;
-	item->header=header;
 
-	if (name!=NULL) {
-		strcpy(item->name,name);
-	}
-	else {
-		item->name[0]=0x0;
-	}
+	strcpy(item->name,name);
+}
 
-	if (col!=NULL) {
-		item->is_col=TRUE;
-		memmove(&item->col,col,sizeof(d3col));
-	}
-	else {
-		item->is_col=FALSE;
-		item->col.r=item->col.g=item->col.b=0.0f;
-	}
+void list_palette_add_color(list_palette_type *list,int piece_type,int piece_idx,d3col *col,bool selected)
+{
+	list_palette_item_type		*item;
+
+	item=list_palette_create_item(list);
+
+	item->ctrl_type=list_item_ctrl_color;
+
+	item->type=piece_type;
+	item->idx=piece_idx;
+	item->id=-1;
+
+	item->selected=selected;
+
+	memmove(&item->value.col,col,sizeof(d3col));
+}
+
+void list_palette_add_string(list_palette_type *list,int id,char *name,char *value)
+{
+	list_palette_item_type		*item;
+
+	item=list_palette_create_item(list);
+
+	item->ctrl_type=list_item_ctrl_string;
+
+	item->type=-1;
+	item->idx=-1;
+	item->id=id;
+
+	item->selected=FALSE;
+
+	strcpy(item->name,name);
+	strcpy(item->value.str,value);
+}
+
+void list_palette_add_checkbox(list_palette_type *list,int id,char *name,bool value)
+{
+	list_palette_item_type		*item;
+
+	item=list_palette_create_item(list);
+
+	item->ctrl_type=list_item_ctrl_checkbox;
+
+	item->type=-1;
+	item->idx=-1;
+	item->id=id;
+
+	item->selected=FALSE;
+
+	strcpy(item->name,name);
+	item->value.checkbox=value;
+}
+
+void list_palette_add_combo(list_palette_type *list,int id,char *name,char *combo_list,int value)
+{
+	list_palette_item_type		*item;
+
+	item=list_palette_create_item(list);
+
+	item->ctrl_type=list_item_ctrl_combo;
+
+	item->type=-1;
+	item->idx=-1;
+	item->id=id;
+
+	item->selected=FALSE;
+
+	strcpy(item->name,name);
+	item->value.combo.list=combo_list;
+	item->value.combo.idx=value;
 }
 
 void list_palette_delete_all_items(list_palette_type *list)
@@ -133,25 +212,87 @@ void list_palette_delete_all_items(list_palette_type *list)
 
 /* =======================================================
 
+      List Palette Draw Utilities
+      
+======================================================= */
+
+void list_palette_draw_item_color_box(list_palette_type *list,list_palette_item_type *item,d3col *col)
+{
+	glColor4f(col->r,col->g,col->b,1.0f);
+			
+	glBegin(GL_QUADS);
+	glVertex2i(item->x,((item->y-list_item_font_high)+2));
+	glVertex2i((item->x+list_item_font_high),((item->y-list_item_font_high)+2));
+	glVertex2i((item->x+list_item_font_high),(item->y-2));
+	glVertex2i(item->x,(item->y-2));
+	glEnd();
+
+	glDisable(GL_BLEND);
+
+	glColor4f(0.0f,0.0f,0.0f,1.0f);
+
+	glBegin(GL_LINE_LOOP);
+	glVertex2i(item->x,((item->y-list_item_font_high)+2));
+	glVertex2i((item->x+list_item_font_high),((item->y-list_item_font_high)+2));
+	glVertex2i((item->x+list_item_font_high),(item->y-2));
+	glVertex2i(item->x,(item->y-2));
+	glEnd();
+
+	glEnable(GL_BLEND);
+}
+
+void list_palette_draw_item_check_box(list_palette_type *list,list_palette_item_type *item,bool checked)
+{
+	glDisable(GL_BLEND);
+
+	if (checked) {
+		glColor4f(0.0f,0.8f,0.0f,1.0f);
+
+		glBegin(GL_LINES);
+		glVertex2i(item->x,((item->y-list_item_font_high)+2));
+		glVertex2i((item->x+list_item_font_high),(item->y-2));
+		glVertex2i((item->x+list_item_font_high),((item->y-list_item_font_high)+2));
+		glVertex2i(item->x,(item->y-2));
+		glEnd();
+	}
+
+	glColor4f(0.0f,0.0f,0.0f,1.0f);
+
+	glBegin(GL_LINE_LOOP);
+	glVertex2i(item->x,((item->y-list_item_font_high)+2));
+	glVertex2i((item->x+list_item_font_high),((item->y-list_item_font_high)+2));
+	glVertex2i((item->x+list_item_font_high),(item->y-2));
+	glVertex2i(item->x,(item->y-2));
+	glEnd();
+
+	glEnable(GL_BLEND);
+}
+
+/* =======================================================
+
       List Palette Draw
       
 ======================================================= */
 
-void list_palette_draw_item(list_palette_type *list,list_palette_item_type *item)
+void list_palette_draw_item(list_palette_type *list,int idx)
 {
+	list_palette_item_type		*item;
+	
+	item=&list->items[idx];
+
 		// early exits
 
 	if ((item->y<(list->box.ty+(list_scroll_button_high+list_title_high))) || ((item->y-list_item_font_high)>(list->box.by-list_scroll_button_high))) return;
 
 		// draw header
 		
-	if (item->header) {
+	if (item->ctrl_type==list_item_ctrl_header) {
 	
 		glBegin(GL_QUADS);
-		glColor4f(0.9f,0.9f,0.9f,1.0f);
+		glColor4f(0.5f,0.5f,0.9f,1.0f);
 		glVertex2i(list->box.lx,(item->y-list_item_font_high));
 		glVertex2i(list->box.rx,(item->y-list_item_font_high));
-		glColor4f(0.8f,0.8f,0.8f,1.0f);
+		glColor4f(0.5f,0.5f,0.8f,1.0f);
 		glVertex2i(list->box.rx,item->y);
 		glVertex2i(list->box.lx,item->y);
 		glEnd();
@@ -161,8 +302,8 @@ void list_palette_draw_item(list_palette_type *list,list_palette_item_type *item
 		glBegin(GL_LINES);
 		glVertex2i(list->box.lx,(item->y-list_item_font_high));
 		glVertex2i(list->box.rx,(item->y-list_item_font_high));
-		glVertex2i(list->box.lx,(item->y+1));
-		glVertex2i(list->box.rx,(item->y+1));
+		glVertex2i(list->box.lx,item->y);
+		glVertex2i(list->box.rx,item->y);
 		glEnd();
 	
 	}
@@ -173,46 +314,55 @@ void list_palette_draw_item(list_palette_type *list,list_palette_item_type *item
 
 		if (item->selected) {
 			glColor4f(1.0f,1.0f,0.0f,1.0f);
-			
-			glBegin(GL_QUADS);
-			glVertex2i(list->box.lx,(item->y-list_item_font_high));
-			glVertex2i(list->box.rx,(item->y-list_item_font_high));
-			glVertex2i(list->box.rx,item->y);
-			glVertex2i(list->box.lx,item->y);
-			glEnd();
 		}
-	}
-
-		// draw text
-
-	if (!item->is_col) {
-		text_draw(item->x,(item->y-1),list_item_font_size,FALSE,item->name);
-	}
-
-		// draw color
-
-	else {
-		glColor4f(item->col.r,item->col.g,item->col.b,1.0f);
-		
+		else {
+			if ((idx%2)==0) {
+				glColor4f(1.0f,1.0f,1.0f,1.0f);
+			}
+			else {
+				glColor4f(0.95f,0.95f,0.95f,1.0f);
+			}
+		}
+			
 		glBegin(GL_QUADS);
-		glVertex2i(item->x,((item->y-list_item_font_high)+1));
-		glVertex2i((item->x+list_item_font_high),((item->y-list_item_font_high)+1));
-		glVertex2i((item->x+list_item_font_high),(item->y-1));
-		glVertex2i(item->x,(item->y-1));
+		glVertex2i(list->box.lx,((item->y-list_item_font_high)+1));
+		glVertex2i(list->box.rx,((item->y-list_item_font_high)+1));
+		glVertex2i(list->box.rx,item->y);
+		glVertex2i(list->box.lx,item->y);
 		glEnd();
+	}
 
-		glDisable(GL_BLEND);
+		// draw item
 
-		glColor4f(0.0f,0.0f,0.0f,1.0f);
+	switch (item->ctrl_type) {
 
-		glBegin(GL_LINE_LOOP);
-		glVertex2i(item->x,((item->y-list_item_font_high)+1));
-		glVertex2i((item->x+list_item_font_high),((item->y-list_item_font_high)+1));
-		glVertex2i((item->x+list_item_font_high),(item->y-1));
-		glVertex2i(item->x,(item->y-1));
-		glEnd();
+			// text or header
 
-		glEnable(GL_BLEND);
+		case list_item_ctrl_header:
+		case list_item_ctrl_text:
+			text_draw(item->x,item->y,list_item_font_size,FALSE,item->name);
+			break;
+
+			// color
+
+		case list_item_ctrl_color:
+			list_palette_draw_item_color_box(list,item,&item->value.col);
+			text_draw((item->x+(list_item_font_high+2)),item->y,list_item_font_size,FALSE,"Light");
+			break;
+
+			// checkbox
+
+		case list_item_ctrl_checkbox:
+			list_palette_draw_item_check_box(list,item,item->value.checkbox);
+			text_draw((item->x+(list_item_font_high+4)),item->y,list_item_font_size,FALSE,item->name);
+			break;
+
+			// combo
+
+		case list_item_ctrl_combo:
+			text_draw(item->x,item->y,list_item_font_size,FALSE,item->name);
+			break;
+
 	}
 }
 
@@ -220,7 +370,6 @@ void list_palette_draw(list_palette_type *list)
 {
 	int						n,lx,mx,rx,ty,by;
 	d3rect					wbox;
-	list_palette_item_type	*item;
 
 		// viewport setup
 		
@@ -265,10 +414,10 @@ void list_palette_draw(list_palette_type *list)
 	by=ty+list_title_high;
 
 	glBegin(GL_QUADS);
-	glColor4f(0.6f,0.6f,0.6f,1.0f);
+	glColor4f(0.6f,0.4f,0.6f,1.0f);
 	glVertex2i(list->box.lx,ty);
 	glVertex2i(list->box.rx,ty);
-	glColor4f(0.7f,0.7f,0.7f,1.0f);
+	glColor4f(0.6f,0.4f,0.7f,1.0f);
 	glVertex2i(list->box.rx,by);
 	glVertex2i(list->box.lx,by);
 	glEnd();
@@ -290,11 +439,8 @@ void list_palette_draw(list_palette_type *list)
 
 		// items
 
-	item=list->items;
-
 	for (n=0;n!=list->item_count;n++) {
-		list_palette_draw_item(list,item);
-		item++;
+		list_palette_draw_item(list,n);
 	}
 
 		// scroll up button
@@ -410,7 +556,7 @@ void list_palette_scroll_up(list_palette_type *list)
 
 void list_palette_scroll_down(list_palette_type *list)
 {
-	if (list->scroll_page<(list->total_high/list->page_high)) {
+	if (list->scroll_page<(list->total_high/list->scroll_size)) {
 		list->scroll_page++;
 		main_wind_draw();
 	}
@@ -458,23 +604,18 @@ bool list_palette_click(list_palette_type *list,d3pnt *pnt,bool double_click)
 
 		// click in item
 
-	item_idx=((pnt->y-(list_scroll_button_high+list_title_high))+(list->scroll_page*list->page_high))/list_item_font_high;
+	item_idx=((pnt->y-(list_scroll_button_high+list_title_high))+(list->scroll_page*list->scroll_size))/list_item_font_high;
 	if ((item_idx<0) || (item_idx>=list->item_count)) return(FALSE);
 
 		// clicking in header
 
 	item=&list->items[item_idx];
 
-	if (item->piece_idx==-1) {
-		list->section_open[item->piece_type]=!list->section_open[item->piece_type];
-		main_wind_draw();
-		return(FALSE);
-	}
-
 		// select clicked item
 
-	list->item_type=item->piece_type;
-	list->item_idx=item->piece_idx;
+	list->item_type=item->type;
+	list->item_idx=item->idx;
+	list->item_id=item->id;
 
 	return(TRUE);
 }
