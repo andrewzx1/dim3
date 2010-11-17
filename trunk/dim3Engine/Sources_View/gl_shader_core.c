@@ -485,7 +485,7 @@ char* gl_core_model_shader_build_frag(int nlight,bool fog,bool bump,bool spec)
 	if (spec) strcat(buf,"+spec)");
 	strcat(buf,"*diffuse)*dim3TintColor;\n");
 
-	sprintf(strchr(buf,0),"frag=max(frag,(dim3AmbientColor*%.2ff));\n",gl_diffuse_ambient_factor);	// diffuse is clamped by a percentage of the ambient
+	sprintf(strchr(buf,0),"frag=min(frag,(dim3AmbientColor*%.2f));\n",gl_diffuse_ambient_factor);	// diffuse is clamped by a percentage of the ambient
 	
 	if (!fog) {
 		strcat(buf,"gl_FragColor.rgb=frag;\n");

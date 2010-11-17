@@ -122,12 +122,12 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 311373501;
-			PBXWorkspaceStateSaveDate = 311373501;
+			PBXPerProjectTemplateStateSaveDate = 311642890;
+			PBXWorkspaceStateSaveDate = 311642890;
 		};
 		perUserProjectItems = {
+			2617F5DC12937FCF0036DA8D /* PBXTextBookmark */ = 2617F5DC12937FCF0036DA8D /* PBXTextBookmark */;
 			2625C584128F2F2B00FCBB26 /* PBXTextBookmark */ = 2625C584128F2F2B00FCBB26 /* PBXTextBookmark */;
-			26C83340128DFEE5003AE9EA /* PBXTextBookmark */ = 26C83340128DFEE5003AE9EA /* PBXTextBookmark */;
 		};
 		sourceControlManager = 260AFEEF0D40506700F6C42F /* Source Control */;
 		userBuildSettings = {
@@ -263,6 +263,16 @@
 		path = "../../dim3/dim3 Animator.app";
 		sourceTree = SOURCE_ROOT;
 	};
+	2617F5DC12937FCF0036DA8D /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 0867D6ABFE840B52C02AAC07 /* English */;
+		name = "InfoPlist.strings: 5";
+		rLen = 0;
+		rLoc = 206;
+		rType = 0;
+		vrLen = 0;
+		vrLoc = 0;
+	};
 	261F12430ED3CB2F00A8A0D8 /* vertex_masks.c */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1026, 5096}}";
@@ -385,16 +395,6 @@
 			sepNavVisRange = "{0, 2076}";
 			sepNavWindowFrame = "{{38, 92}, {1026, 910}}";
 		};
-	};
-	26C83340128DFEE5003AE9EA /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 0867D6ABFE840B52C02AAC07 /* English */;
-		name = "InfoPlist.strings: 5";
-		rLen = 0;
-		rLoc = 206;
-		rType = 0;
-		vrLen = 0;
-		vrLoc = 0;
 	};
 	26CC06B10F02C88E00807FEA /* bone_list.c */ = {
 		uiCtxt = {
@@ -724,10 +724,10 @@
 	};
 	F5C6C64A09D659BB005DFE3D /* dialog_model_settings.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 3419}}";
-			sepNavSelRange = "{1536, 0}";
-			sepNavVisRange = "{655, 1901}";
-			sepNavWindowFrame = "{{477, 193}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 3562}}";
+			sepNavSelRange = "{5357, 0}";
+			sepNavVisRange = "{4166, 2721}";
+			sepNavWindowFrame = "{{268, 208}, {1041, 747}}";
 		};
 	};
 	F5CA4EF7051010AD0055C8B8 /* modelutility.h */ = {

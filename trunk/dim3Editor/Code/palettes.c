@@ -56,7 +56,7 @@ void palette_initialize(void)
 	palette_cur_type=palette_type_none;
 	
     GetAvailableWindowPositioningBounds(GetMainDevice(),&wbox);
-	palette_x=wbox.right-440; // 290; -- supergumba -- including tree here
+	palette_x=wbox.right-490; // 290; -- supergumba -- including tree here
 	palette_y=((wbox.bottom-wbox.top)/2)-150;
 }
 

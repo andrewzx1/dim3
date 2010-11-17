@@ -276,9 +276,9 @@ void file_close_map(void)
 	
 	undo_clear();
 
-	os_set_arrow_cursor();
-
 	state.map_opened=FALSE;
+	menu_fix_enable();
 	
+	os_set_arrow_cursor();
 }
 

@@ -40,6 +40,7 @@ and can be sold or given away.
 #define kViewXOff							FOUR_CHAR_CODE('vxof')
 #define kViewYOff							FOUR_CHAR_CODE('vyof')
 #define kViewZOff							FOUR_CHAR_CODE('vzof')
+#define kDiffuseBoost						FOUR_CHAR_CODE('dbst')
 
 #define kLightBoneTag						FOUR_CHAR_CODE('lbtg')
 #define kHaloBoneTag						FOUR_CHAR_CODE('hbtg')
@@ -153,6 +154,8 @@ bool dialog_model_settings_run(void)
 	dialog_set_int(dialog_model_settings_wind,kViewYOff,0,model.view_box.offset.y);
 	dialog_set_int(dialog_model_settings_wind,kViewZOff,0,model.view_box.offset.z);
 	
+	dialog_set_float(dialog_model_settings_wind,kDiffuseBoost,0,model.diffuse_boost);
+	
 	dialog_set_boolean(dialog_model_settings_wind,kRotateMode,0,(model.deform_mode==deform_mode_comulative_rotate));
 
 	idx=model_find_bone(&model,model.tags.name_bone_tag);
@@ -206,6 +209,8 @@ bool dialog_model_settings_run(void)
 		model.view_box.offset.x=dialog_get_int(dialog_model_settings_wind,kViewXOff,0);
 		model.view_box.offset.y=dialog_get_int(dialog_model_settings_wind,kViewYOff,0);
 		model.view_box.offset.z=dialog_get_int(dialog_model_settings_wind,kViewZOff,0);
+		
+		model.diffuse_boost=dialog_get_float(dialog_model_settings_wind,kDiffuseBoost,0);
 		
 		if (dialog_get_boolean(dialog_model_settings_wind,kRotateMode,0)) {
 			model.deform_mode=deform_mode_comulative_rotate;
