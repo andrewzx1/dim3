@@ -171,7 +171,7 @@ void model_draw_setup_object(obj_type *obj)
 		// angles
 		
 	if (draw->face_forward) {
-		setup->ang.x=angle_find(view.render->camera.pnt.y,view.render->camera.pnt.z,draw->pnt.y,draw->pnt.z);
+		setup->ang.x=0.0f;
 		setup->ang.y=angle_find(view.render->camera.pnt.x,view.render->camera.pnt.z,draw->pnt.x,draw->pnt.z);
 		setup->ang.z=0.0f;
 	}

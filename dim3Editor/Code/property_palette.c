@@ -98,7 +98,8 @@ void property_palette_setup(void)
 void property_palette_fill(void)
 {
 	list_palette_delete_all_items(&property_palette);
-	list_palette_add_item(&property_palette,0,-1,"Test",NULL,FALSE,TRUE);
+//	list_palette_add_item(&property_palette,0,-1,"Test",NULL,FALSE,TRUE);
+// supergumba -- work on this
 }
 
 /* =======================================================
