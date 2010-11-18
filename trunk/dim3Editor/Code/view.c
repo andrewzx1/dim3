@@ -1165,8 +1165,6 @@ void view_draw(void)
 		view_set_viewport(view,FALSE,FALSE);
 		view_get_pixel_box(view,&box);
 		
-		glEnable(GL_BLEND);
-		
 		glColor4f(0.8f,0.8f,0.8f,0.5f);
 
 		glBegin(GL_QUADS);
@@ -1200,8 +1198,6 @@ void view_draw(void)
 		glVertex2i((box.rx-view_selection_size),(box.by-view_selection_size));
 
 		glEnd();
-		
-		glDisable(GL_BLEND);
 	}
 }
 

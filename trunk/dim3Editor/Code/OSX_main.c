@@ -264,13 +264,7 @@ void main_wind_open(void)
 	aglSetCurrentContext(ctx);
 	aglDestroyPixelFormat(pf);
 
-	glEnable(GL_SMOOTH);
-	glDisable(GL_DITHER);
-	
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-	
-	glEnable(GL_DEPTH_TEST);
+	main_wind_gl_setup();
 	
 	aglSetDrawable(ctx,(AGLDrawable)GetWindowPort(wind));
 	

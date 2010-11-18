@@ -42,6 +42,7 @@ extern file_path_setup_type		file_path_setup;
 extern int						tool_palette_pixel_sz,txt_palette_pixel_sz;
 extern bool						list_palette_open;
 
+int								prop_last_sel_type;
 list_palette_type				property_palette;
 
 /* =======================================================
@@ -56,6 +57,8 @@ void property_palette_initialize(void)
 
 	property_palette.item_type=0;
 	property_palette.item_idx=-1;
+
+	prop_last_sel_type=-1;
 }
 
 void property_palette_shutdown(void)
@@ -81,7 +84,7 @@ void property_palette_setup(void)
 
 	property_palette.box.lx=wbox.rx-property_palette.pixel_sz;
 	property_palette.box.rx=wbox.rx;
-	property_palette.box.ty=y;
+	property_palette.box.ty=y-1;
 	property_palette.box.by=wbox.by-txt_palette_pixel_sz;
 
 	property_palette.scroll_size=((property_palette.box.by-property_palette.box.ty)-((list_scroll_button_high*2)+list_title_high))>>1;
@@ -116,12 +119,18 @@ void property_palette_fill(void)
 			break;
 
 		case liquid_piece:
-		case node_piece:
+			property_palette_fill_liquid(&map.liquid.liquids[main_idx]);
+			break;
+
 		case spot_piece:
+			property_palette_fill_spot(&map.spots[main_idx]);
+			break;
+
 		case scenery_piece:
 		case light_piece:
 		case sound_piece:
 		case particle_piece:
+		case node_piece:
 			break;
 
 	}
@@ -147,7 +156,25 @@ void property_palette_draw(void)
 
 void property_palette_reset(void)
 {
-	// supergumba -- nothing to do here, can delete later if not needed
+	int				sel_type,main_idx,sub_idx;
+
+	if (select_count()==0) {
+		prop_last_sel_type=-1;
+		property_palette.scroll_page=0;
+		return;
+	}
+
+	select_get(0,&sel_type,&main_idx,&sub_idx);
+	if (main_idx==-1) {
+		prop_last_sel_type=-1;
+		property_palette.scroll_page=0;
+		return;
+	}
+
+	if (prop_last_sel_type!=sel_type) {
+		prop_last_sel_type=sel_type;
+		property_palette.scroll_page=0;
+	}
 }
 
 /* =======================================================
@@ -205,12 +232,18 @@ void property_palette_click(d3pnt *pnt,bool double_click)
 			break;
 
 		case liquid_piece:
-		case node_piece:
+			property_palette_click_liquid(&map.liquid.liquids[main_idx],property_palette.item_id);
+			break;
+
 		case spot_piece:
+			property_palette_click_spot(&map.spots[main_idx],property_palette.item_id);
+			break;
+
 		case scenery_piece:
 		case light_piece:
 		case sound_piece:
 		case particle_piece:
+		case node_piece:
 			break;
 
 	}

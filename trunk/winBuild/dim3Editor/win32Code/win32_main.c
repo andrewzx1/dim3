@@ -303,29 +303,8 @@ void main_wind_open(void)
 	glewInit();
 
 		// default opengl setup
-	
-	glHint(GL_PERSPECTIVE_CORRECTION_HINT,GL_NICEST);
 
-	glEnable(GL_SMOOTH);
-
-	glEnable(GL_LINE_SMOOTH);
-	glHint(GL_LINE_SMOOTH_HINT,GL_NICEST);
-		
-	glHint(GL_TEXTURE_COMPRESSION_HINT,GL_NICEST);
-	glHint(GL_GENERATE_MIPMAP_HINT,GL_NICEST);
-
-	glDisable(GL_BLEND);
-	glDisable(GL_DEPTH_TEST);
-	glDisable(GL_ALPHA_TEST);
-
-	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-
-		// initial clear
-
-	glClearColor(1.0f,1.0f,1.0f,0.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
-
-	SwapBuffers(wnd_gl_dc);
+	main_wind_gl_setup();
 
 		// initialize
 

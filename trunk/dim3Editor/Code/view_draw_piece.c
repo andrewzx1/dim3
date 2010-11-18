@@ -414,8 +414,10 @@ void view_draw_meshes_texture(editor_view_type *view,bool opaque)
 		mesh++;
 	}
 	
+	glDisable(GL_ALPHA_TEST);
+	if (opaque) glEnable(GL_BLEND);
 	if (!opaque) glDepthMask(GL_TRUE);
-	
+
 	glDisable(GL_TEXTURE_2D);
 }
 
@@ -428,9 +430,7 @@ void view_draw_meshes_line(editor_view_type *view,bool opaque)
 	texture_type		*texture;
 							
 	glDisable(GL_TEXTURE_2D);
-
 	glDisable(GL_ALPHA_TEST);
-	glDisable(GL_BLEND);
 	
 	glColor4f(setup.col.mesh_line.r,setup.col.mesh_line.g,setup.col.mesh_line.b,1.0f);
 	
@@ -621,10 +621,9 @@ void view_draw_liquids(editor_view_type *view,bool opaque)
 		glEnd();
 	}
 	
-	if (!opaque) glDepthMask(GL_TRUE);
-	
 	glDisable(GL_ALPHA_TEST);
 	if (opaque) glEnable(GL_BLEND);
+	if (!opaque) glDepthMask(GL_TRUE);
 	
 	glDisable(GL_TEXTURE_2D);
 }
@@ -643,9 +642,7 @@ void view_draw_meshes_normals(editor_view_type *view_setup)
 	map_mesh_poly_type	*poly;
 							
 	glDisable(GL_TEXTURE_2D);
-
 	glDisable(GL_ALPHA_TEST);
-	glDisable(GL_BLEND);
 	
 	glLineWidth(2.0f);
 	
@@ -727,7 +724,6 @@ void view_draw_nodes(editor_view_type *view_setup)
 		// angles
 		
 	glDisable(GL_ALPHA_TEST);
-	glDisable(GL_BLEND);
 		
 	glLineWidth(3.0f);
 	glColor4f(1.0f,0.7f,0.0f,1.0f);

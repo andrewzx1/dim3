@@ -182,9 +182,6 @@ void tool_palette_draw(void)
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_NOTEQUAL,0);
 
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-
 		// background
 
 	glColor4f(0.75f,0.75f,0.75f,1.0f);
@@ -224,12 +221,13 @@ void tool_palette_draw(void)
 	glColor4f(0.0f,0.0f,0.0f,1.0f);
 
 	glBegin(GL_LINES);
+	glVertex2i(tool_palette_box.lx,tool_palette_box.ty);
+	glVertex2i(tool_palette_box.rx,tool_palette_box.ty);
 	glVertex2i(tool_palette_box.lx,tool_palette_box.by);
 	glVertex2i(tool_palette_box.rx,tool_palette_box.by);
 	glEnd();
 
 	glDisable(GL_ALPHA_TEST);
-	glDisable(GL_BLEND);
 }
 
 /* =======================================================

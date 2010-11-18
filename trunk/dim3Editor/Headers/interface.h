@@ -33,6 +33,7 @@ extern void main_wind_open(void);
 extern void main_wind_close(void);
 extern void main_wind_initialize(void);
 extern void main_wind_shutdown(void);
+extern void main_wind_gl_setup(void);
 extern void main_wind_draw(void);
 extern void main_wind_draw_no_swap(void);
 extern void main_wind_click(d3pnt *pnt,bool double_click);
@@ -98,8 +99,10 @@ extern void list_palette_add_header(list_palette_type *list,int piece_type,char 
 extern void list_palette_add_item(list_palette_type *list,int piece_type,int piece_idx,char *name,bool selected);
 extern void list_palette_add_color(list_palette_type *list,int piece_type,int piece_idx,d3col *col,bool selected);
 extern void list_palette_add_string(list_palette_type *list,int id,char *name,char *value);
+extern void list_palette_add_string_int(list_palette_type *list,int id,char *name,int value);
+extern void list_palette_add_string_float(list_palette_type *list,int id,char *name,float value);
 extern void list_palette_add_checkbox(list_palette_type *list,int id,char *name,bool value);
-extern void list_palette_add_combo(list_palette_type *list,int id,char *name,char *combo_list,int value);
+extern void list_palette_add_pick_color(list_palette_type *list,int id,char *name,d3col *col);
 extern void list_palette_delete_all_items(list_palette_type *list);
 extern void list_palette_draw(list_palette_type *list);
 extern void list_palette_scroll_up(list_palette_type *list);
@@ -126,7 +129,12 @@ extern void item_palette_click(d3pnt *pnt,bool double_click);
 //
 
 extern void property_palette_fill_mesh(map_mesh_type *mesh);
+extern void property_palette_fill_liquid(map_liquid_type *liq);
+extern void property_palette_fill_spot(spot_type *spot);
+
 extern void property_palette_click_mesh(map_mesh_type *mesh,int id);
+extern void property_palette_click_liquid(map_liquid_type *liq,int id);
+extern void property_palette_click_spot(spot_type *spot,int id);
 
 extern void property_palette_initialize(void);
 extern void property_palette_shutdown(void);
@@ -142,7 +150,9 @@ extern void property_palette_click(d3pnt *pnt,bool double_click);
 
 extern void text_initialize(void);
 extern void text_shutdown(void);
-extern void text_draw(int x,int y,float txt_size,bool center,char *str);
+extern void text_draw(int x,int y,float txt_size,char *str);
+extern void text_draw_center(int x,int y,float txt_size,char *str);
+extern void text_draw_right(int x,int y,float txt_size,char *str);
 
 //
 // progress

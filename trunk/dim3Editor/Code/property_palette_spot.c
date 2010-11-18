@@ -2,7 +2,7 @@
 
 Module: dim3 Editor
 Author: Brian Barnes
- Usage: Property Palette Mesh
+ Usage: Property Palette Spot
 
 ***************************** License ********************************
 
@@ -71,18 +71,15 @@ extern editor_setup_type		setup;
 
 extern list_palette_type		property_palette;
 
-char							mesh_property_hide_list[][name_str_len]={"Never","Single Player","Multiplayer",""},
-								mesh_property_normal_list[][name_str_len]={"Auto","In","Out","In & Out","Edge","Locked",""},
-								mesh_property_team_list[][name_str_len]={"None","Red","Blue",""};
-
 /* =======================================================
 
-      Property Palette Fill Mesh
+      Property Palette Fill Spot
       
 ======================================================= */
 
-void property_palette_fill_mesh(map_mesh_type *mesh)
+void property_palette_fill_spot(spot_type *spot)
 {
+	/*
 	list_palette_add_header(&property_palette,0,"Mesh Settings");
 
 	list_palette_add_checkbox(&property_palette,kMeshPropertyOn,"On",mesh->flag.on);
@@ -124,16 +121,18 @@ void property_palette_fill_mesh(map_mesh_type *mesh)
 	list_palette_add_string(&property_palette,kMeshPropertyMessageMapChangeSpotName,"Map Spot Name",mesh->msg.map_spot_name);
 	list_palette_add_checkbox(&property_palette,kMeshPropertyMessageBase,"Base On",mesh->msg.base_on);
 	list_palette_add_string(&property_palette,kMeshPropertyMessageBaseTeam,"Base Team",mesh_property_team_list[mesh->msg.base_team]);
+	*/
 }
 
 /* =======================================================
 
-      Property Palette Click Mesh
+      Property Palette Click Spot
       
 ======================================================= */
 
-void property_palette_click_mesh(map_mesh_type *mesh,int id)
+void property_palette_click_spot(spot_type *spot,int id)
 {
+	/*
 	switch (id) {
 
 		case kMeshPropertyOn:
@@ -218,7 +217,7 @@ void property_palette_click_mesh(map_mesh_type *mesh,int id)
 			break;
 
 	}
-
+*/
 	main_wind_draw();
 }
 
