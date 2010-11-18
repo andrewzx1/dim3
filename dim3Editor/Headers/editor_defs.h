@@ -370,18 +370,12 @@ typedef struct		{
 #define list_item_ctrl_color					2
 #define list_item_ctrl_string					3
 #define list_item_ctrl_checkbox					4
-#define list_item_ctrl_combo					5
-
-typedef struct		{
-						int									idx;
-						char								*list;
-					} list_palette_item_value_combo_type;
+#define list_item_ctrl_pick_color				5
 
 typedef union		{
 						bool								checkbox;
 						char								str[name_str_len];
 						d3col								col;
-						list_palette_item_value_combo_type	combo;
 					} list_palette_item_value_type;
 
 typedef struct		{

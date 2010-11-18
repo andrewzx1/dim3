@@ -365,8 +365,6 @@ void view_draw_select_box(editor_view_type *view)
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_NOTEQUAL,0);
 
-	glEnable(GL_BLEND);
-
 	glColor4f(0.5f,0.5f,0.5f,0.7f);
 	
 	glBegin(GL_QUADS);
@@ -386,7 +384,6 @@ void view_draw_select_box(editor_view_type *view)
 	glEnd();
 
 	glDisable(GL_ALPHA_TEST);
-	glDisable(GL_BLEND);
 }
 
 /* =======================================================

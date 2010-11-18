@@ -60,10 +60,47 @@ void text_shutdown(void)
       
 ======================================================= */
 
-void text_draw(int x,int y,float txt_size,bool center,char *str)
+int text_width(float txt_size,char *str)
+{
+	int			n,len,ch;
+	float		f_wid;
+	char		*c;
+
+		// get text length
+
+	len=strlen(str);
+	if (len==0) return(0);
+	
+		// calc width
+		
+	c=str;
+	f_wid=0.0f;
+
+	for (n=0;n!=len;n++) {
+	
+		ch=(int)*c++;
+		if ((ch<'!') || (ch>'z')) {
+			f_wid+=(txt_size*0.34f);
+		}
+		else {
+			ch-='!';
+			f_wid+=txt_size*txt_font.char_size[ch];
+		}
+	}
+	
+	return((int)f_wid);
+}
+
+/* =======================================================
+
+      Text Drawing
+      
+======================================================= */
+
+void text_draw(int x,int y,float txt_size,char *str)
 {
 	int			n,len,ch,xoff,yoff;
-	float		f_lx,f_rx,f_wid,f_ty,f_by,
+	float		f_lx,f_rx,f_ty,f_by,
 				gx_lft,gx_rgt,gy_top,gy_bot;
 	char		*c;
 
@@ -71,28 +108,6 @@ void text_draw(int x,int y,float txt_size,bool center,char *str)
 
 	len=strlen(str);
 	if (len==0) return;
-	
-		// centering
-		
-	if (center) {
-	
-		c=str;
-		f_wid=0.0f;
-	
-		for (n=0;n!=len;n++) {
-		
-			ch=(int)*c++;
-			if ((ch<'!') || (ch>'z')) {
-				f_wid+=(txt_size*0.34f);
-			}
-			else {
-				ch-='!';
-				f_wid+=txt_size*txt_font.char_size[ch];
-			}
-		}
-		
-		x-=(int)(f_wid*0.5f);
-	}
 	
         // setup drawing
 		
@@ -170,3 +185,14 @@ void text_draw(int x,int y,float txt_size,bool center,char *str)
 	glDisable(GL_TEXTURE_2D);
 }
 
+void text_draw_center(int x,int y,float txt_size,char *str)
+{
+	x-=(text_width(txt_size,str)>>1);
+	text_draw(x,y,txt_size,str);
+}
+
+void text_draw_right(int x,int y,float txt_size,char *str)
+{
+	x-=text_width(txt_size,str);
+	text_draw(x,y,txt_size,str);
+}

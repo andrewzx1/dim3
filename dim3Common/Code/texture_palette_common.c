@@ -80,8 +80,6 @@ void texture_palette_draw(texture_type *txt_list)
 
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_NOTEQUAL,0);
-
-	glDisable(GL_BLEND);
 	
 		// texture page switch
 	

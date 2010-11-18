@@ -161,7 +161,7 @@ void progress_draw(void)
 
 		// title
 
-	text_draw(((lx+rx)>>1),(ty-5),20.0f,TRUE,progress_title);
+	text_draw_center(((lx+rx)>>1),(ty-5),20.0f,progress_title);
 
 	os_swap_gl_buffer();
 }

@@ -2,7 +2,7 @@
 
 Module: dim3 Editor
 Author: Brian Barnes
- Usage: Property Palette Mesh
+ Usage: Property Palette Liquid
 
 ***************************** License ********************************
 
@@ -34,36 +34,26 @@ and can be sold or given away.
 #include "view.h"
 #include "dialog.h"
 
-#define kMeshPropertyOn							0
-#define kMeshPropertyPassThrough				1
-#define kMeshPropertyMovable					2
-#define kMeshPropertyShiftable					3
-#define kMeshPropertyHilite						4
-#define kMeshPropertyLockUV						5
-#define kMeshPropertyLockMove					6
-#define kMeshPropertyShadow						7
-#define kMeshPropertyNeverObscure				8
-#define kMeshPropertyRotIndependent				9
-#define kMeshPropertyNoLightMap					10
-#define kMeshPropertySkipLightMapTrace			11
+#define kLiquidPropertyNeverObscure			0
+#define kLiquidPropertyNoDraw				1
 
-#define kMeshPropertyRotX						12
-#define kMeshPropertyRotY						13
-#define kMeshPropertyRotZ						14
+#define kLiquidPropertyColor				2
+#define kLiquidPropertyTintAlpha			3
+#define kLiquidPropertyDepth				4
+#define kLiquidPropertySpeedAlter			6
+#define kLiquidPropertySoundName			5
 
-#define kMeshPropertyGroup						15
-#define kMeshPropertyHideMode					16
-#define kMeshPropertyNormalMode					17
+#define kLiquidPropertyWaveSize				7
+#define kLiquidPropertyTideSize				8
+#define kLiquidPropertyTideRate				9
+#define kLiquidPropertyTideDirection		10
+#define kLiquidPropertyWaveFlat				11
 
-#define kMeshPropertyMessageEnter				18
-#define kMeshPropertyMessageEnterId				19
-#define kMeshPropertyMessageExit				20
-#define kMeshPropertyMessageExitId				21
-#define kMeshPropertyMessageMapChange			22
-#define kMeshPropertyMessageMapChangeName		23
-#define kMeshPropertyMessageMapChangeSpotName	24
-#define kMeshPropertyMessageBase				25
-#define kMeshPropertyMessageBaseTeam			26
+#define kLiquidPropertyGroup				12
+
+#define kLiquidPropertyHarm					13
+#define kLiquidPropertyDrownTick			14
+#define kLiquidPropertyDrownHarm			15
 
 extern map_type					map;
 extern editor_state_type		state;
@@ -71,20 +61,54 @@ extern editor_setup_type		setup;
 
 extern list_palette_type		property_palette;
 
-char							mesh_property_hide_list[][name_str_len]={"Never","Single Player","Multiplayer",""},
-								mesh_property_normal_list[][name_str_len]={"Auto","In","Out","In & Out","Edge","Locked",""},
-								mesh_property_team_list[][name_str_len]={"None","Red","Blue",""};
-
 /* =======================================================
 
-      Property Palette Fill Mesh
+      Property Palette Fill Liquid
       
 ======================================================= */
 
-void property_palette_fill_mesh(map_mesh_type *mesh)
-{
-	list_palette_add_header(&property_palette,0,"Mesh Settings");
+/*
+	
+	dialog_set_value(palette_liquid_wind,kLiquidWaveSize,0,liq->tide.division);
+	dialog_set_value(palette_liquid_wind,kLiquidTideSize,0,liq->tide.high);
+	dialog_set_value(palette_liquid_wind,kLiquidTideRate,0,liq->tide.rate);
+	dialog_set_combo(palette_liquid_wind,kLiquidTideDirection,0,liq->tide.direction);
+	dialog_set_boolean(palette_liquid_wind,kLiquidWaveFlat,0,liq->tide.flat);
+	
+	dialog_set_int(palette_liquid_wind,kLiquidHarm,0,liq->harm.in_harm);
+	dialog_set_int(palette_liquid_wind,kLiquidDrownTick,0,liq->harm.drown_tick);
+	dialog_set_int(palette_liquid_wind,kLiquidDrownHarm,0,liq->harm.drown_harm);
+	
+	
+	dialog_fill_group_combo(palette_liquid_wind,kLiquidGroup,0,liq->group_idx);
+	
+	
+*/
 
+void property_palette_fill_liquid(map_liquid_type *liq)
+{
+	list_palette_add_header(&property_palette,0,"Liquid Settings");
+
+	list_palette_add_checkbox(&property_palette,kLiquidPropertyNeverObscure,"Never Obscure",liq->never_obscure);
+	list_palette_add_checkbox(&property_palette,kLiquidPropertyNoDraw,"No Draw",liq->no_draw);
+	list_palette_add_pick_color(&property_palette,kLiquidPropertyColor,"Color",&liq->col);
+	list_palette_add_string_float(&property_palette,kLiquidPropertyTintAlpha,"Tint Alpha",liq->tint_alpha);
+	list_palette_add_string_int(&property_palette,kLiquidPropertyDepth,"Depth",liq->depth);
+	list_palette_add_string_float(&property_palette,kLiquidPropertySpeedAlter,"Speed Alter",liq->speed_alter);
+	list_palette_add_string(&property_palette,kLiquidPropertySoundName,"Sound",liq->ambient.sound_name);
+
+	list_palette_add_header(&property_palette,0,"Liquid Waves");
+
+	list_palette_add_header(&property_palette,0,"Liquid Group");
+	if (liq->group_idx==-1) {
+		list_palette_add_string(&property_palette,kLiquidPropertyGroup,"Group","");
+	}
+	else {
+		list_palette_add_string(&property_palette,kLiquidPropertyGroup,"Group",map.group.groups[liq->group_idx].name);
+	}
+
+
+/*
 	list_palette_add_checkbox(&property_palette,kMeshPropertyOn,"On",mesh->flag.on);
 	list_palette_add_checkbox(&property_palette,kMeshPropertyPassThrough,"Pass Through",mesh->flag.pass_through);
 	list_palette_add_checkbox(&property_palette,kMeshPropertyMovable,"Movable",mesh->flag.moveable);
@@ -124,16 +148,18 @@ void property_palette_fill_mesh(map_mesh_type *mesh)
 	list_palette_add_string(&property_palette,kMeshPropertyMessageMapChangeSpotName,"Map Spot Name",mesh->msg.map_spot_name);
 	list_palette_add_checkbox(&property_palette,kMeshPropertyMessageBase,"Base On",mesh->msg.base_on);
 	list_palette_add_string(&property_palette,kMeshPropertyMessageBaseTeam,"Base Team",mesh_property_team_list[mesh->msg.base_team]);
+	*/
 }
 
 /* =======================================================
 
-      Property Palette Click Mesh
+      Property Palette Click Liquid
       
 ======================================================= */
 
-void property_palette_click_mesh(map_mesh_type *mesh,int id)
+void property_palette_click_liquid(map_liquid_type *liq,int id)
 {
+	/*
 	switch (id) {
 
 		case kMeshPropertyOn:
@@ -218,7 +244,7 @@ void property_palette_click_mesh(map_mesh_type *mesh,int id)
 			break;
 
 	}
-
+*/
 	main_wind_draw();
 }
 
