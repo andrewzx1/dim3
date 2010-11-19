@@ -261,7 +261,14 @@
 			isa = PBXProject;
 			buildConfigurationList = F5DB0B6508566F8A005A7CB7 /* Build configuration list for PBXProject "dim3MapUtility" */;
 			compatibilityVersion = "Xcode 2.4";
+			developmentRegion = English;
 			hasScannedForEncodings = 1;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
 			mainGroup = F5C5352C051C058600968AF1;
 			productRefGroup = F5C53537051C059F00968AF1 /* Products */;
 			projectDirPath = "";

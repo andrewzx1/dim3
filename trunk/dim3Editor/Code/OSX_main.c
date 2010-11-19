@@ -168,17 +168,17 @@ OSStatus main_wind_event_callback(EventHandlerCallRef eventhandler,EventRef even
 				case kEventRawKeyRepeat:
 					GetEventParameter(event,kEventParamKeyMacCharCodes,typeChar,NULL,sizeof(char),NULL,&ch);
 					main_wind_key_down(ch);
-					main_wind_key_cursor();
+					main_wind_cursor();
 					return(noErr);
 				
 				case kEventRawKeyUp:
 					GetEventParameter(event,kEventParamKeyMacCharCodes,typeChar,NULL,sizeof(char),NULL,&ch);
-					main_wind_key_cursor();
+					main_wind_cursor();
 					return(noErr);
                    
                 case kEventRawKeyModifiersChanged:
  					GetEventParameter(event,kEventParamKeyModifiers,typeUInt32,NULL,sizeof(unsigned long),NULL,&modifiers);
-					main_wind_key_cursor();
+					main_wind_cursor();
                     return(noErr);
 					
 			}

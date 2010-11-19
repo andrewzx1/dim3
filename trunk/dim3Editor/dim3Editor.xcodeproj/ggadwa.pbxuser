@@ -129,8 +129,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 311657777;
-			PBXWorkspaceStateSaveDate = 311657777;
+			PBXPerProjectTemplateStateSaveDate = 311820863;
+			PBXWorkspaceStateSaveDate = 311820863;
 		};
 		sourceControlManager = 260AFF050D4050B200F6C42F /* Source Control */;
 		userBookmarkGroup = 268BC83C0F646E8B00E900C2 /* PBXBookmarkGroup */;
@@ -234,6 +234,14 @@
 		name = "dim3 Editor.app";
 		path = "../../dim3/dim3 Editor.app";
 		sourceTree = SOURCE_ROOT;
+	};
+	260D584A1295E85E00D0D14F /* property_palette_liquid.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {986, 3120}}";
+			sepNavSelRange = "{3808, 0}";
+			sepNavVisRange = "{2583, 3288}";
+			sepNavWindowFrame = "{{430, 137}, {1001, 891}}";
+		};
 	};
 	2614C5D31058891B00B09EAB /* main_window.c:314 */ = {
 		isa = PBXFileBreakpoint;
@@ -415,9 +423,9 @@
 	};
 	264D965D12921024005039CD /* OSX_main.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {986, 5317}}";
-			sepNavSelRange = "{0, 0}";
-			sepNavVisRange = "{0, 1589}";
+			sepNavIntBoundsRect = "{{0, 0}, {986, 5369}}";
+			sepNavSelRange = "{4587, 0}";
+			sepNavVisRange = "{3692, 1688}";
 			sepNavWindowFrame = "{{344, 136}, {1001, 891}}";
 		};
 	};
@@ -738,9 +746,9 @@
 	};
 	F54581BA094F75D200CBE89A /* interface.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 4147}}";
-			sepNavSelRange = "{1352, 0}";
-			sepNavVisRange = "{605, 1324}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 4173}}";
+			sepNavSelRange = "{5266, 264}";
+			sepNavVisRange = "{4513, 1506}";
 			sepNavWindowFrame = "{{238, 125}, {1041, 747}}";
 		};
 	};
