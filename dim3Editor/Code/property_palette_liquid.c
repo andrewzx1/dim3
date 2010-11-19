@@ -89,8 +89,12 @@ void property_palette_fill_liquid(map_liquid_type *liq)
 {
 	list_palette_add_header(&property_palette,0,"Liquid Settings");
 
+	list_palette_add_checkbox(&property_palette,kLiquidPropertyWaveFlat,"Draw as Flat Surface",liq->tide.flat);
 	list_palette_add_checkbox(&property_palette,kLiquidPropertyNeverObscure,"Never Obscure",liq->never_obscure);
-	list_palette_add_checkbox(&property_palette,kLiquidPropertyNoDraw,"No Draw",liq->no_draw);
+	list_palette_add_checkbox(&property_palette,kLiquidPropertyNoDraw,"No Draw (Volume Only)",liq->no_draw);
+
+	list_palette_add_header(&property_palette,0,"Liquid Under");
+
 	list_palette_add_pick_color(&property_palette,kLiquidPropertyColor,"Color",&liq->col);
 	list_palette_add_string_float(&property_palette,kLiquidPropertyTintAlpha,"Tint Alpha",liq->tint_alpha);
 	list_palette_add_string_int(&property_palette,kLiquidPropertyDepth,"Depth",liq->depth);
@@ -98,6 +102,11 @@ void property_palette_fill_liquid(map_liquid_type *liq)
 	list_palette_add_string(&property_palette,kLiquidPropertySoundName,"Sound",liq->ambient.sound_name);
 
 	list_palette_add_header(&property_palette,0,"Liquid Waves");
+	
+	
+	list_palette_add_header(&property_palette,0,"Liquid Harm");
+	
+	
 
 	list_palette_add_header(&property_palette,0,"Liquid Group");
 	if (liq->group_idx==-1) {

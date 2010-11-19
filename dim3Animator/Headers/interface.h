@@ -67,6 +67,8 @@ extern void undo_run(void);
 extern void text_initialize(void);
 extern void text_shutdown(void);
 extern void text_draw(int x,int y,float txt_size,char *str);
+extern void text_draw_center(int x,int y,float txt_size,char *str);
+extern void text_draw_right(int x,int y,float txt_size,char *str);
 
 //
 // progress
