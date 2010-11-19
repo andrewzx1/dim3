@@ -126,10 +126,16 @@ void property_palette_fill(void)
 			property_palette_fill_spot(&map.spots[main_idx]);
 			break;
 
-		case scenery_piece:
 		case light_piece:
+			property_palette_fill_light(&map.lights[main_idx]);
+			break;
+
 		case sound_piece:
+			property_palette_fill_sound(&map.sounds[main_idx]);
+			break;
+
 		case particle_piece:
+		case scenery_piece:
 		case node_piece:
 			break;
 
@@ -239,10 +245,16 @@ void property_palette_click(d3pnt *pnt,bool double_click)
 			property_palette_click_spot(&map.spots[main_idx],property_palette.item_id);
 			break;
 
-		case scenery_piece:
 		case light_piece:
+			property_palette_click_light(&map.lights[main_idx],property_palette.item_id);
+			break;
+
 		case sound_piece:
+			property_palette_click_sound(&map.sounds[main_idx],property_palette.item_id);
+			break;
+
 		case particle_piece:
+		case scenery_piece:
 		case node_piece:
 			break;
 

@@ -34,42 +34,106 @@ and can be sold or given away.
 #include "view.h"
 #include "dialog.h"
 
-#define kMeshPropertyOn							0
-#define kMeshPropertyPassThrough				1
-#define kMeshPropertyMovable					2
-#define kMeshPropertyShiftable					3
-#define kMeshPropertyHilite						4
-#define kMeshPropertyLockUV						5
-#define kMeshPropertyLockMove					6
-#define kMeshPropertyShadow						7
-#define kMeshPropertyNeverObscure				8
-#define kMeshPropertyRotIndependent				9
-#define kMeshPropertyNoLightMap					10
-#define kMeshPropertySkipLightMapTrace			11
+#define kSpotPropertyName						0
+#define kSpotPropertyType						1
+#define kSpotPropertyScript						2
+#define kSpotPropertySkill						3
+#define kSpotPropertySpawn						4
+#define kSpotPropertyDisplayModel				5
 
-#define kMeshPropertyRotX						12
-#define kMeshPropertyRotY						13
-#define kMeshPropertyRotZ						14
-
-#define kMeshPropertyGroup						15
-#define kMeshPropertyHideMode					16
-#define kMeshPropertyNormalMode					17
-
-#define kMeshPropertyMessageEnter				18
-#define kMeshPropertyMessageEnterId				19
-#define kMeshPropertyMessageExit				20
-#define kMeshPropertyMessageExitId				21
-#define kMeshPropertyMessageMapChange			22
-#define kMeshPropertyMessageMapChangeName		23
-#define kMeshPropertyMessageMapChangeSpotName	24
-#define kMeshPropertyMessageBase				25
-#define kMeshPropertyMessageBaseTeam			26
+#define kSpotPropertyParamsStart				10
+#define kSpotPropertyParamsEnd					19
 
 extern map_type					map;
 extern editor_state_type		state;
 extern editor_setup_type		setup;
 
 extern list_palette_type		property_palette;
+
+char							spot_property_type_list[][name_str_len]={"Object","Bot","Player","Spawn",""},
+								spot_property_skill_list[][name_str_len]={"Easy","Medium","Hard",""},
+								spot_property_spawn_list[][name_str_len]={"Always","Single Player Only","Multiplayer Only",""};
+
+/* =======================================================
+
+      Property Palette Fill Spot Parameters
+      
+======================================================= */
+
+void palette_palette_spot_get_parameter(int idx,char *param_list,char *str)
+{
+	int				n;
+	char			*c;
+	
+	c=param_list;
+	
+	for (n=0;n!=idx;n++) {
+		c=strchr(c,'|');
+		if (c==NULL) return;
+	}
+
+	strncpy(str,c,256);
+	str[255]=0x0;
+
+	c=strchr(str,'|');
+	if (c!=NULL) *c=0x0;
+}
+
+void palette_palette_spot_set_parameter(int idx,char *param_list,char *str)
+{
+	int				n,count;
+	char			*c,*c2,tstr[10][256];
+	
+		// clear param list
+
+	for (n=0;n!=10;n++) {
+		tstr[n][0]=0x0;
+	}
+
+		// break up param list
+
+	c=str;
+	
+	for (n=0;n!=10;n++) {
+		if (c==0x0) break;
+		
+		c2=strchr(c,'|');
+		if (c2==NULL) {
+			strcpy(tstr[n],c);
+			break;
+		}
+		
+		strcpy(tstr[n],c);
+		c=strchr(tstr[n],'|');
+		*c=0x0;
+		
+		c=c2+1;
+	}
+
+		// fix the list
+
+	strncpy(tstr[idx],str,256);
+	tstr[idx][255]=0x0;
+
+		// find last item
+
+	count=0;
+
+	for (n=9;n>=0;n++) {
+		if (tstr[n][0]!=0x0) count=n+1;
+	}
+
+		// rebuild the list
+
+	param_list[0]=0x0;
+
+	for (n=0;n!=count;n++) {
+		if (n!=0) strncpy(param_list,"|",param_str_len);
+		strncpy(param_list,tstr[idx],param_str_len);
+	}
+
+	param_list[param_str_len-1]=0x0;
+}
 
 /* =======================================================
 
@@ -79,49 +143,23 @@ extern list_palette_type		property_palette;
 
 void property_palette_fill_spot(spot_type *spot)
 {
-	/*
-	list_palette_add_header(&property_palette,0,"Mesh Settings");
+	int				n;
+	char			name[256],str[256];
 
-	list_palette_add_checkbox(&property_palette,kMeshPropertyOn,"On",mesh->flag.on);
-	list_palette_add_checkbox(&property_palette,kMeshPropertyPassThrough,"Pass Through",mesh->flag.pass_through);
-	list_palette_add_checkbox(&property_palette,kMeshPropertyMovable,"Movable",mesh->flag.moveable);
-	list_palette_add_checkbox(&property_palette,kMeshPropertyHilite,"High Lighted",mesh->flag.hilite);
-	list_palette_add_checkbox(&property_palette,kMeshPropertyLockUV,"Lock UVs",mesh->flag.lock_uv);
-	list_palette_add_checkbox(&property_palette,kMeshPropertyLockMove,"Lock Position",mesh->flag.lock_move);
-	list_palette_add_checkbox(&property_palette,kMeshPropertyShadow,"Shadow",mesh->flag.shadow);
-	list_palette_add_checkbox(&property_palette,kMeshPropertyNeverObscure,"Never Obscure",mesh->flag.never_obscure);
-	list_palette_add_checkbox(&property_palette,kMeshPropertyRotIndependent,"Rotate Independently",mesh->flag.rot_independent);
-	list_palette_add_checkbox(&property_palette,kMeshPropertyNoLightMap,"No Light Map",mesh->flag.no_light_map);
-	list_palette_add_checkbox(&property_palette,kMeshPropertySkipLightMapTrace,"Skip Light Map Trace",mesh->flag.skip_light_map_trace);
+	list_palette_add_header(&property_palette,0,"Spot Settings");
+	list_palette_add_string(&property_palette,kSpotPropertyName,"Name",spot->name);
+	list_palette_add_string(&property_palette,kSpotPropertyType,"Type",spot_property_type_list[spot->type]);
+	list_palette_add_string(&property_palette,kSpotPropertyScript,"Script",spot->script);
+	list_palette_add_string(&property_palette,kSpotPropertySkill,"Skill",spot_property_skill_list[spot->skill]);
+	list_palette_add_string(&property_palette,kSpotPropertySpawn,"Spawn",spot_property_spawn_list[spot->spawn]);
+	list_palette_add_string(&property_palette,kSpotPropertyDisplayModel,"Display Model",spot->display_model);
 
-	list_palette_add_header(&property_palette,0,"Mesh Modes");
-	list_palette_add_string(&property_palette,kMeshPropertyHideMode,"Hide",mesh_property_hide_list[mesh->hide_mode]);
-	list_palette_add_string(&property_palette,kMeshPropertyNormalMode,"Normals",mesh_property_normal_list[mesh->normal_mode]);
-
-	list_palette_add_header(&property_palette,0,"Mesh Group");
-	if (mesh->group_idx==-1) {
-		list_palette_add_string(&property_palette,kMeshPropertyGroup,"Group","");
+	list_palette_add_header(&property_palette,0,"Spot Parameters");
+	for (n=0;n!=10;n++) {
+		sprintf(name,"%d",n);
+		palette_palette_spot_get_parameter(n,spot->params,str);
+		list_palette_add_string(&property_palette,(kSpotPropertyParamsStart+n),name,str);
 	}
-	else {
-		list_palette_add_string(&property_palette,kMeshPropertyGroup,"Group",map.group.groups[mesh->group_idx].name);
-	}
-
-	list_palette_add_header(&property_palette,0,"Mesh Rotational Center");
-	list_palette_add_string_int(&property_palette,kMeshPropertyRotX,"X",mesh->rot_off.x);
-	list_palette_add_string_int(&property_palette,kMeshPropertyRotY,"Y",mesh->rot_off.y);
-	list_palette_add_string_int(&property_palette,kMeshPropertyRotZ,"Z",mesh->rot_off.z);
-
-	list_palette_add_header(&property_palette,0,"Mesh Messages");
-	list_palette_add_checkbox(&property_palette,kMeshPropertyMessageEnter,"Entry On",mesh->msg.entry_on);
-	list_palette_add_string_int(&property_palette,kMeshPropertyMessageEnterId,"Entry ID",mesh->msg.entry_id);
-	list_palette_add_checkbox(&property_palette,kMeshPropertyMessageExit,"Exit On",mesh->msg.exit_on);
-	list_palette_add_string_int(&property_palette,kMeshPropertyMessageExitId,"Exit ID",mesh->msg.exit_id);
-	list_palette_add_checkbox(&property_palette,kMeshPropertyMessageMapChange,"Map Change On",mesh->msg.map_change_on);
-	list_palette_add_string(&property_palette,kMeshPropertyMessageMapChangeName,"Map Name",mesh->msg.map_name);
-	list_palette_add_string(&property_palette,kMeshPropertyMessageMapChangeSpotName,"Map Spot Name",mesh->msg.map_spot_name);
-	list_palette_add_checkbox(&property_palette,kMeshPropertyMessageBase,"Base On",mesh->msg.base_on);
-	list_palette_add_string(&property_palette,kMeshPropertyMessageBaseTeam,"Base Team",mesh_property_team_list[mesh->msg.base_team]);
-	*/
 }
 
 /* =======================================================
@@ -132,92 +170,26 @@ void property_palette_fill_spot(spot_type *spot)
 
 void property_palette_click_spot(spot_type *spot,int id)
 {
-	/*
+		// parameters
+
+	if ((id>=kSpotPropertyParamsStart) && (id<=kSpotPropertyParamsEnd)) {
+
+		main_wind_draw();
+		return;
+	}
+
 	switch (id) {
 
-		case kMeshPropertyOn:
-			mesh->flag.on=!mesh->flag.on;
-			break;
-
-		case kMeshPropertyPassThrough:
-			mesh->flag.pass_through=!mesh->flag.pass_through;
-			break;
-
-		case kMeshPropertyMovable:
-			mesh->flag.moveable=!mesh->flag.moveable;
-			break;
-
-		case kMeshPropertyHilite:
-			mesh->flag.hilite=!mesh->flag.hilite;
-			break;
-
-		case kMeshPropertyLockUV:
-			mesh->flag.lock_uv=!mesh->flag.lock_uv;
-			break;
-
-		case kMeshPropertyLockMove:
-			mesh->flag.lock_move=!mesh->flag.lock_move;
-			break;
-
-		case kMeshPropertyShadow:
-			mesh->flag.shadow=!mesh->flag.shadow;
-			break;
-
-		case kMeshPropertyNeverObscure:
-			mesh->flag.never_obscure=!mesh->flag.never_obscure;
-			break;
-
-		case kMeshPropertyRotIndependent:
-			mesh->flag.rot_independent=!mesh->flag.rot_independent;
-			break;
-
-		case kMeshPropertyNoLightMap:
-			mesh->flag.no_light_map=!mesh->flag.no_light_map;
-			break;
-
-		case kMeshPropertySkipLightMapTrace:
-			mesh->flag.skip_light_map_trace=!mesh->flag.skip_light_map_trace;
-			break;
-
-		case kMeshPropertyHideMode:
-		case kMeshPropertyNormalMode:
-		case kMeshPropertyGroup:
-		case kMeshPropertyRotX:
-		case kMeshPropertyRotY:
-		case kMeshPropertyRotZ:
-			break;
-
-		case kMeshPropertyMessageEnter:
-			mesh->msg.entry_on=!mesh->msg.entry_on;
-			break;
-
-		case kMeshPropertyMessageEnterId:
-			break;
-
-		case kMeshPropertyMessageExit:
-			mesh->msg.exit_on=!mesh->msg.exit_on;
-			break;
-
-		case kMeshPropertyMessageExitId:
-			break;
-
-		case kMeshPropertyMessageMapChange:
-			mesh->msg.map_change_on=!mesh->msg.map_change_on;
-			break;
-
-		case kMeshPropertyMessageMapChangeName:
-		case kMeshPropertyMessageMapChangeSpotName:
-			break;
-
-		case kMeshPropertyMessageBase:
-			mesh->msg.base_on=!mesh->msg.base_on;
-			break;
-
-		case kMeshPropertyMessageBaseTeam:
+		case kSpotPropertyName:
+		case kSpotPropertyType:
+		case kSpotPropertyScript:
+		case kSpotPropertySkill:
+		case kSpotPropertySpawn:
+		case kSpotPropertyDisplayModel:
 			break;
 
 	}
-*/
+
 	main_wind_draw();
 }
 
