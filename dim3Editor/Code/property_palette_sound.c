@@ -2,7 +2,7 @@
 
 Module: dim3 Editor
 Author: Brian Barnes
- Usage: Property Palette Liquid
+ Usage: Property Palette Sound
 
 ***************************** License ********************************
 
@@ -61,16 +61,15 @@ extern editor_setup_type		setup;
 
 extern list_palette_type		property_palette;
 
-char							liquid_property_tide_direction_list[][name_str_len]={"Horizontal","Vertical",""};
-
 /* =======================================================
 
-      Property Palette Fill Liquid
+      Property Palette Fill Sound
       
 ======================================================= */
 
-void property_palette_fill_liquid(map_liquid_type *liq)
+void property_palette_fill_sound(map_sound_type *map_sound)
 {
+	/*
 	list_palette_add_header(&property_palette,0,"Liquid Settings");
 	list_palette_add_checkbox(&property_palette,kLiquidPropertyWaveFlat,"Draw as Flat Surface",liq->tide.flat);
 	list_palette_add_checkbox(&property_palette,kLiquidPropertyNeverObscure,"Never Obscure",liq->never_obscure);
@@ -101,16 +100,18 @@ void property_palette_fill_liquid(map_liquid_type *liq)
 	else {
 		list_palette_add_string(&property_palette,kLiquidPropertyGroup,"Group",map.group.groups[liq->group_idx].name);
 	}
+	*/
 }
 
 /* =======================================================
 
-      Property Palette Click Liquid
+      Property Palette Click Sound
       
 ======================================================= */
 
-void property_palette_click_liquid(map_liquid_type *liq,int id)
+void property_palette_click_sound(map_sound_type *map_sound,int id)
 {
+	/*
 	switch (id) {
 
 		case kLiquidPropertyWaveFlat:
@@ -141,7 +142,7 @@ void property_palette_click_liquid(map_liquid_type *liq,int id)
 			break;
 
 	}
-
+*/
 	main_wind_draw();
 }
 

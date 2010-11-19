@@ -131,10 +131,14 @@ extern void item_palette_click(d3pnt *pnt,bool double_click);
 extern void property_palette_fill_mesh(map_mesh_type *mesh);
 extern void property_palette_fill_liquid(map_liquid_type *liq);
 extern void property_palette_fill_spot(spot_type *spot);
+extern void property_palette_fill_light(map_light_type *map_light);
+extern void property_palette_fill_sound(map_sound_type *map_sound);
 
 extern void property_palette_click_mesh(map_mesh_type *mesh,int id);
 extern void property_palette_click_liquid(map_liquid_type *liq,int id);
 extern void property_palette_click_spot(spot_type *spot,int id);
+extern void property_palette_click_light(map_light_type *map_light,int id);
+extern void property_palette_click_sound(map_sound_type *map_sound,int id);
 
 extern void property_palette_initialize(void);
 extern void property_palette_shutdown(void);

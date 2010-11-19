@@ -2,7 +2,7 @@
 
 Module: dim3 Editor
 Author: Brian Barnes
- Usage: Property Palette Liquid
+ Usage: Property Palette Light
 
 ***************************** License ********************************
 
@@ -61,16 +61,17 @@ extern editor_setup_type		setup;
 
 extern list_palette_type		property_palette;
 
-char							liquid_property_tide_direction_list[][name_str_len]={"Horizontal","Vertical",""};
+char							light_property_type_list[][name_str_len]={"Normal","Blink","Glow","Pulse","Flicker","Failing",""};
 
 /* =======================================================
 
-      Property Palette Fill Liquid
+      Property Palette Fill Light
       
 ======================================================= */
 
-void property_palette_fill_liquid(map_liquid_type *liq)
+void property_palette_fill_light(map_light_type *map_light)
 {
+	/*
 	list_palette_add_header(&property_palette,0,"Liquid Settings");
 	list_palette_add_checkbox(&property_palette,kLiquidPropertyWaveFlat,"Draw as Flat Surface",liq->tide.flat);
 	list_palette_add_checkbox(&property_palette,kLiquidPropertyNeverObscure,"Never Obscure",liq->never_obscure);
@@ -101,16 +102,18 @@ void property_palette_fill_liquid(map_liquid_type *liq)
 	else {
 		list_palette_add_string(&property_palette,kLiquidPropertyGroup,"Group",map.group.groups[liq->group_idx].name);
 	}
+	*/
 }
 
 /* =======================================================
 
-      Property Palette Click Liquid
+      Property Palette Click Light
       
 ======================================================= */
 
-void property_palette_click_liquid(map_liquid_type *liq,int id)
+void property_palette_click_light(map_light_type *map_light,int id)
 {
+	/*
 	switch (id) {
 
 		case kLiquidPropertyWaveFlat:
@@ -141,7 +144,7 @@ void property_palette_click_liquid(map_liquid_type *liq,int id)
 			break;
 
 	}
-
+*/
 	main_wind_draw();
 }
 

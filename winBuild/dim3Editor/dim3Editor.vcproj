@@ -374,11 +374,19 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\dim3Editor\Code\property_palette_light.c"
+						>
+					</File>
+					<File
 						RelativePath="..\..\dim3Editor\Code\property_palette_liquid.c"
 						>
 					</File>
 					<File
 						RelativePath="..\..\dim3Editor\Code\property_palette_mesh.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Editor\Code\property_palette_sound.c"
 						>
 					</File>
 					<File
