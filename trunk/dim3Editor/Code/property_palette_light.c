@@ -34,26 +34,14 @@ and can be sold or given away.
 #include "view.h"
 #include "dialog.h"
 
-#define kLiquidPropertyNeverObscure			0
-#define kLiquidPropertyNoDraw				1
-
-#define kLiquidPropertyColor				2
-#define kLiquidPropertyTintAlpha			3
-#define kLiquidPropertyDepth				4
-#define kLiquidPropertySpeedAlter			6
-#define kLiquidPropertySoundName			5
-
-#define kLiquidPropertyWaveSize				7
-#define kLiquidPropertyTideSize				8
-#define kLiquidPropertyTideRate				9
-#define kLiquidPropertyTideDirection		10
-#define kLiquidPropertyWaveFlat				11
-
-#define kLiquidPropertyGroup				12
-
-#define kLiquidPropertyHarm					13
-#define kLiquidPropertyDrownTick			14
-#define kLiquidPropertyDrownHarm			15
+#define kLightPropertyOn					0
+#define kLightPropertyLightMap				1
+#define kLightPropertyName					2
+#define kLightPropertyType					3
+#define kLightPropertyDirection				4
+#define kLightPropertyIntensity				5
+#define kLightPropertyExponent				6
+#define kLightPropertyColor					7
 
 extern map_type					map;
 extern editor_state_type		state;
@@ -61,7 +49,8 @@ extern editor_setup_type		setup;
 
 extern list_palette_type		property_palette;
 
-char							light_property_type_list[][name_str_len]={"Normal","Blink","Glow","Pulse","Flicker","Failing",""};
+char							light_property_type_list[][name_str_len]={"Normal","Blink","Glow","Pulse","Flicker","Failing",""},
+								light_property_direction_list[][name_str_len]={"All","-X","+X","-Y","+Y","-Z","+Z",""};
 
 /* =======================================================
 
@@ -69,40 +58,21 @@ char							light_property_type_list[][name_str_len]={"Normal","Blink","Glow","Pu
       
 ======================================================= */
 
-void property_palette_fill_light(map_light_type *map_light)
+void property_palette_fill_light(map_light_type *light)
 {
-	/*
-	list_palette_add_header(&property_palette,0,"Liquid Settings");
-	list_palette_add_checkbox(&property_palette,kLiquidPropertyWaveFlat,"Draw as Flat Surface",liq->tide.flat);
-	list_palette_add_checkbox(&property_palette,kLiquidPropertyNeverObscure,"Never Obscure",liq->never_obscure);
-	list_palette_add_checkbox(&property_palette,kLiquidPropertyNoDraw,"No Draw (Volume Only)",liq->no_draw);
+	list_palette_add_header(&property_palette,0,"Light Settings");
+	list_palette_add_checkbox(&property_palette,kLightPropertyOn,"On",light->on);
+	list_palette_add_checkbox(&property_palette,kLightPropertyLightMap,"Used in Light Map",light->light_map);
 
-	list_palette_add_header(&property_palette,0,"Liquid Under");
-	list_palette_add_pick_color(&property_palette,kLiquidPropertyColor,"Color",&liq->col);
-	list_palette_add_string_float(&property_palette,kLiquidPropertyTintAlpha,"Tint Alpha",liq->tint_alpha);
-	list_palette_add_string_int(&property_palette,kLiquidPropertyDepth,"Depth",liq->depth);
-	list_palette_add_string_float(&property_palette,kLiquidPropertySpeedAlter,"Speed Alter",liq->speed_alter);
-	list_palette_add_string(&property_palette,kLiquidPropertySoundName,"Sound",liq->ambient.sound_name);
+	list_palette_add_header(&property_palette,0,"Light Naming");
+	list_palette_add_string(&property_palette,kLightPropertyName,"Name",light->name);
 
-	list_palette_add_header(&property_palette,0,"Liquid Waves");
-	list_palette_add_string_int(&property_palette,kLiquidPropertyWaveSize,"Wave Size",liq->tide.division);
-	list_palette_add_string_int(&property_palette,kLiquidPropertyTideSize,"Tide Size",liq->tide.high);
-	list_palette_add_string_int(&property_palette,kLiquidPropertyTideRate,"Tide Rate",liq->tide.rate);
-	list_palette_add_string(&property_palette,kLiquidPropertyTideDirection,"Tide Direction",liquid_property_tide_direction_list[liq->tide.direction]);
-	
-	list_palette_add_header(&property_palette,0,"Liquid Harm");
-	list_palette_add_string_int(&property_palette,kLiquidPropertyHarm,"In Damage",liq->harm.in_harm);
-	list_palette_add_string_int(&property_palette,kLiquidPropertyDrownTick,"Drowning Tick",liq->harm.drown_tick);
-	list_palette_add_string_int(&property_palette,kLiquidPropertyDrownHarm,"Drowning Damage",liq->harm.drown_harm);
-
-	list_palette_add_header(&property_palette,0,"Liquid Group");
-	if (liq->group_idx==-1) {
-		list_palette_add_string(&property_palette,kLiquidPropertyGroup,"Group","");
-	}
-	else {
-		list_palette_add_string(&property_palette,kLiquidPropertyGroup,"Group",map.group.groups[liq->group_idx].name);
-	}
-	*/
+	list_palette_add_header(&property_palette,0,"Light Display");
+	list_palette_add_string(&property_palette,kLightPropertyType,"Type",light_property_type_list[light->type]);
+	list_palette_add_string(&property_palette,kLightPropertyDirection,"Direction",light_property_direction_list[light->direction]);
+	list_palette_add_string_int(&property_palette,kLightPropertyIntensity,"Intensity",light->intensity);
+	list_palette_add_string_float(&property_palette,kLightPropertyExponent,"Exponent",light->exponent);
+	list_palette_add_pick_color(&property_palette,kLightPropertyColor,"Color",&light->col);
 }
 
 /* =======================================================
@@ -111,40 +81,28 @@ void property_palette_fill_light(map_light_type *map_light)
       
 ======================================================= */
 
-void property_palette_click_light(map_light_type *map_light,int id)
+void property_palette_click_light(map_light_type *light,int id)
 {
-	/*
 	switch (id) {
 
-		case kLiquidPropertyWaveFlat:
-			liq->tide.flat=!liq->tide.flat;
+		case kLightPropertyOn:
+			light->on=!light->on;
 			break;
 
-		case kLiquidPropertyNeverObscure:
-			liq->never_obscure=!liq->never_obscure;
+		case kLightPropertyLightMap:
+			light->light_map=!light->light_map;
 			break;
 
-		case kLiquidPropertyNoDraw:
-			liq->no_draw=!liq->no_draw;
-			break;
-
-		case kLiquidPropertyColor:
-		case kLiquidPropertyTintAlpha:
-		case kLiquidPropertyDepth:
-		case kLiquidPropertySpeedAlter:
-		case kLiquidPropertySoundName:
-		case kLiquidPropertyWaveSize:
-		case kLiquidPropertyTideSize:
-		case kLiquidPropertyTideRate:
-		case kLiquidPropertyTideDirection:
-		case kLiquidPropertyHarm:
-		case kLiquidPropertyDrownTick:
-		case kLiquidPropertyDrownHarm:
-		case kLiquidPropertyGroup:
+		case kLightPropertyName:
+		case kLightPropertyType:
+		case kLightPropertyDirection:
+		case kLightPropertyIntensity:
+		case kLightPropertyExponent:
+		case kLightPropertyColor:
 			break;
 
 	}
-*/
+
 	main_wind_draw();
 }
 

@@ -47,12 +47,12 @@ bool						mouse_button_state[input_max_mouse_button_define];
 
 void input_mouse_initialize(void)
 {
-	SDL_SetRelativeMouseMode(SDL_TRUE);	
+	SDL_SetRelativeMouseMode(TRUE);
 }
 
 void input_mouse_shutdown(void)
 {
-	SDL_SetRelativeMouseMode(SDL_FALSE);
+	SDL_SetRelativeMouseMode(FALSE);
 }
 
 /* =======================================================

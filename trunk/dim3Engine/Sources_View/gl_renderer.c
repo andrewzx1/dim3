@@ -127,7 +127,7 @@ bool gl_initialize(int screen_wid,int screen_high,bool lock_fps_refresh,int fsaa
 
 		// start window or full screen
 		
-	sdl_flags=SDL_WINDOW_OPENGL|SDL_WINDOW_SHOWN|SDL_WINDOW_INPUT_GRABBED;
+	sdl_flags=SDL_WINDOW_OPENGL|SDL_WINDOW_SHOWN;
 	if (!gl_in_window_mode()) sdl_flags|=SDL_WINDOW_FULLSCREEN;
 	
 	sdl_wind=SDL_CreateWindow("dim3",SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,setup.screen.x_sz,setup.screen.y_sz,sdl_flags);
