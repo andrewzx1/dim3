@@ -130,15 +130,23 @@ extern void item_palette_click(d3pnt *pnt,bool double_click);
 
 extern void property_palette_fill_mesh(map_mesh_type *mesh);
 extern void property_palette_fill_liquid(map_liquid_type *liq);
+extern void property_palette_fill_polygon(map_mesh_poly_type *poly,map_liquid_type *liq);
 extern void property_palette_fill_spot(spot_type *spot);
-extern void property_palette_fill_light(map_light_type *map_light);
-extern void property_palette_fill_sound(map_sound_type *map_sound);
+extern void property_palette_fill_light(map_light_type *light);
+extern void property_palette_fill_sound(map_sound_type *sound);
+extern void property_palette_fill_particle(map_particle_type *particle);
+extern void property_palette_fill_scenery(map_scenery_type *scenery);
+extern void property_palette_fill_node(node_type *node);
 
 extern void property_palette_click_mesh(map_mesh_type *mesh,int id);
 extern void property_palette_click_liquid(map_liquid_type *liq,int id);
+extern void property_palette_click_polygon(map_mesh_poly_type *poly,map_liquid_type *liq,int id);
 extern void property_palette_click_spot(spot_type *spot,int id);
-extern void property_palette_click_light(map_light_type *map_light,int id);
-extern void property_palette_click_sound(map_sound_type *map_sound,int id);
+extern void property_palette_click_light(map_light_type *light,int id);
+extern void property_palette_click_sound(map_sound_type *sound,int id);
+extern void property_palette_click_particle(map_particle_type *particle,int id);
+extern void property_palette_click_scenery(map_scenery_type *scenery,int id);
+extern void property_palette_click_node(node_type *node,int id);
 
 extern void property_palette_initialize(void);
 extern void property_palette_shutdown(void);

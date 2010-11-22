@@ -386,6 +386,22 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\dim3Editor\Code\property_palette_node.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Editor\Code\property_palette_particle.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Editor\Code\property_palette_polygon.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Editor\Code\property_palette_scenery.c"
+						>
+					</File>
+					<File
 						RelativePath="..\..\dim3Editor\Code\property_palette_sound.c"
 						>
 					</File>

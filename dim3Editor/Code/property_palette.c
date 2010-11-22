@@ -115,11 +115,21 @@ void property_palette_fill(void)
 	switch (sel_type) {
 
 		case mesh_piece:
-			property_palette_fill_mesh(&map.mesh.meshes[main_idx]);
+			if (state.drag_mode!=drag_mode_polygon) {
+				property_palette_fill_mesh(&map.mesh.meshes[main_idx]);
+			}
+			else {
+				property_palette_fill_polygon(&map.mesh.meshes[main_idx].polys[sub_idx],NULL);
+			}
 			break;
 
 		case liquid_piece:
-			property_palette_fill_liquid(&map.liquid.liquids[main_idx]);
+			if (state.drag_mode!=drag_mode_polygon) {
+				property_palette_fill_liquid(&map.liquid.liquids[main_idx]);
+			}
+			else {
+				property_palette_fill_polygon(NULL,&map.liquid.liquids[main_idx]);
+			}
 			break;
 
 		case spot_piece:
@@ -135,8 +145,15 @@ void property_palette_fill(void)
 			break;
 
 		case particle_piece:
+			property_palette_fill_particle(&map.particles[main_idx]);
+			break;
+
 		case scenery_piece:
+			property_palette_fill_scenery(&map.sceneries[main_idx]);
+			break;
+
 		case node_piece:
+			property_palette_fill_node(&map.nodes[main_idx]);
 			break;
 
 	}
@@ -234,11 +251,21 @@ void property_palette_click(d3pnt *pnt,bool double_click)
 	switch (sel_type) {
 
 		case mesh_piece:
-			property_palette_click_mesh(&map.mesh.meshes[main_idx],property_palette.item_id);
+			if (state.drag_mode!=drag_mode_polygon) {
+				property_palette_click_mesh(&map.mesh.meshes[main_idx],property_palette.item_id);
+			}
+			else {
+				property_palette_click_polygon(&map.mesh.meshes[main_idx].polys[sub_idx],NULL,property_palette.item_id);
+			}
 			break;
 
 		case liquid_piece:
-			property_palette_click_liquid(&map.liquid.liquids[main_idx],property_palette.item_id);
+			if (state.drag_mode!=drag_mode_polygon) {
+				property_palette_click_liquid(&map.liquid.liquids[main_idx],property_palette.item_id);
+			}
+			else {
+				property_palette_click_polygon(NULL,&map.liquid.liquids[main_idx],property_palette.item_id);
+			}
 			break;
 
 		case spot_piece:
@@ -254,8 +281,15 @@ void property_palette_click(d3pnt *pnt,bool double_click)
 			break;
 
 		case particle_piece:
+			property_palette_click_particle(&map.particles[main_idx],property_palette.item_id);
+			break;
+
 		case scenery_piece:
+			property_palette_click_scenery(&map.sceneries[main_idx],property_palette.item_id);
+			break;
+
 		case node_piece:
+			property_palette_click_node(&map.nodes[main_idx],property_palette.item_id);
 			break;
 
 	}
