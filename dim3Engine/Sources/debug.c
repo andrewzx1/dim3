@@ -178,7 +178,6 @@ void debug_dump(void)
 	debug_dump_header(file,"App");
 
 	debug_dump_info_enable(file,"Game State",game_app_active);
-	debug_dump_info_int(file,"SDL State",SDL_GetAppState());
 
 		// engine
 

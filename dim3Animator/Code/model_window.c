@@ -598,7 +598,7 @@ IconRef main_wind_load_icon_ref(char *name)
 void model_wind_open(void)
 {
 	Rect						wbox,box;
-	GLint						attrib[]={AGL_RGBA,AGL_DOUBLEBUFFER,AGL_DEPTH_SIZE,16,AGL_ALL_RENDERERS,AGL_NONE};
+	GLint						attrib[]={AGL_RGBA,AGL_DOUBLEBUFFER,AGL_DEPTH_SIZE,24,AGL_ALL_RENDERERS,AGL_NONE};
 	AGLPixelFormat				pf;
 	GLint						rect[4];
 	EventTypeSpec	wind_events[]={	{kEventClassWindow,kEventWindowDrawContent},

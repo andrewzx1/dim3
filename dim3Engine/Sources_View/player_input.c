@@ -1090,10 +1090,5 @@ void player_get_input(void)
 		// enter and exit
 		
 	player_enter_exit_input(obj);
-	
-		// clear mouse wheel state (since it's single state instead of held, like buttons)
-		// supergumba -- SDL 1.3 will probably change this
-		
-	input_clear_mouse_wheel_state();
 }
 

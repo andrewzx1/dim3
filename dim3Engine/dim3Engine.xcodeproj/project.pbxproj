@@ -224,8 +224,6 @@
 		F5AD547C0BBE2155001C7C04 /* libBaseUtility.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5AD547B0BBE2155001C7C04 /* libBaseUtility.dylib */; };
 		F5AD547D0BBE216E001C7C04 /* libBaseUtility.dylib in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = F5AD547B0BBE2155001C7C04 /* libBaseUtility.dylib */; };
 		F5AEF0F60D1CD57B00C99FF6 /* view_images.c in Sources */ = {isa = PBXBuildFile; fileRef = F5AEF0F50D1CD57B00C99FF6 /* view_images.c */; };
-		F5B01D2E08F8650600AE5F87 /* SDLMain.h in Headers */ = {isa = PBXBuildFile; fileRef = F5B01D2B08F8650600AE5F87 /* SDLMain.h */; };
-		F5B01D3008F8650600AE5F87 /* SDLMain.m in Sources */ = {isa = PBXBuildFile; fileRef = F5B01D2D08F8650600AE5F87 /* SDLMain.m */; };
 		F5B01DA908F867E600AE5F87 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5B01DA808F867E600AE5F87 /* Cocoa.framework */; };
 		F5B140530B44910300486A6C /* script_game_join.c in Sources */ = {isa = PBXBuildFile; fileRef = F5B140520B44910300486A6C /* script_game_join.c */; };
 		F5BE44EC09F5C18700292ECD /* script_weap_alt_ammo.c in Sources */ = {isa = PBXBuildFile; fileRef = F5BE44EB09F5C18700292ECD /* script_weap_alt_ammo.c */; };
@@ -602,8 +600,6 @@
 		F5AD54760BBE2121001C7C04 /* baseutility.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = baseutility.h; path = ../dim3Common/Headers/baseutility.h; sourceTree = SOURCE_ROOT; };
 		F5AD547B0BBE2155001C7C04 /* libBaseUtility.dylib */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libBaseUtility.dylib; path = ../dim3Common/Libraries/libBaseUtility.dylib; sourceTree = SOURCE_ROOT; };
 		F5AEF0F50D1CD57B00C99FF6 /* view_images.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = view_images.c; path = Sources_View/view_images.c; sourceTree = "<group>"; };
-		F5B01D2B08F8650600AE5F87 /* SDLMain.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = SDLMain.h; path = SDL/SDLMain.h; sourceTree = "<group>"; };
-		F5B01D2D08F8650600AE5F87 /* SDLMain.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = SDLMain.m; path = SDL/SDLMain.m; sourceTree = "<group>"; };
 		F5B01DA808F867E600AE5F87 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
 		F5B140520B44910300486A6C /* script_game_join.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = script_game_join.c; path = Sources_Server/script_game_join.c; sourceTree = "<group>"; };
 		F5BE44EB09F5C18700292ECD /* script_weap_alt_ammo.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = script_weap_alt_ammo.c; path = Sources_Server/script_weap_alt_ammo.c; sourceTree = "<group>"; };
@@ -1310,15 +1306,6 @@
 			name = Main;
 			sourceTree = "<group>";
 		};
-		F5B01D2A08F864F700AE5F87 /* SDL */ = {
-			isa = PBXGroup;
-			children = (
-				F5B01D2B08F8650600AE5F87 /* SDLMain.h */,
-				F5B01D2D08F8650600AE5F87 /* SDLMain.m */,
-			);
-			name = SDL;
-			sourceTree = "<group>";
-		};
 		F5B3E1010374C2B201AF1585 /* Models */ = {
 			isa = PBXGroup;
 			children = (
@@ -1344,12 +1331,12 @@
 				F5DD1A7809085BC600721649 /* intro.c */,
 				2657380D0DB07F650061E1B4 /* setup_game.c */,
 				2657380C0DB07F650061E1B4 /* setup_network.c */,
+				26BE14270F44FA57008DB7DB /* score_limit.c */,
 				F5DD1A7709085BC600721649 /* files.c */,
 				F5DD1A7909085BC600721649 /* join.c */,
 				26D109600DAC797D006666F2 /* host.c */,
 				F5DD1A7E09085BC600721649 /* title.c */,
 				26E8DBB21270E88C00ACA294 /* cinema.c */,
-				26BE14270F44FA57008DB7DB /* score_limit.c */,
 				F5FD1E470CDECD9500CB5AC7 /* error.c */,
 			);
 			name = Interfaces;
@@ -1410,7 +1397,6 @@
 				F5BC91C608F99C1200E02596 /* Interfaces */,
 				F5A57F2B090AB1E600BE7C36 /* XML */,
 				F510733808F9C66900D0B135 /* Input */,
-				F5B01D2A08F864F700AE5F87 /* SDL */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -1525,7 +1511,6 @@
 				F5CD872D055771B80023AD9B /* modelutility.h in Headers */,
 				F5CD872F055771B80023AD9B /* maputility.h in Headers */,
 				F50AF8A40885FBA200F261B1 /* os_defs.h in Headers */,
-				F5B01D2E08F8650600AE5F87 /* SDLMain.h in Headers */,
 				F5A58249090B512000BE7C36 /* weapons.h in Headers */,
 				F5A5824A090B512000BE7C36 /* xmls.h in Headers */,
 				F5A5824B090B512000BE7C36 /* effects.h in Headers */,
@@ -1633,7 +1618,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F5B01D3008F8650600AE5F87 /* SDLMain.m in Sources */,
 				F5DD198A09080E9600721649 /* crosshair.c in Sources */,
 				F5DD198B09080E9600721649 /* hud.c in Sources */,
 				F5DD198C09080E9600721649 /* console.c in Sources */,
@@ -1942,8 +1926,7 @@
 		F5DB0BF1085671A9005A7CB7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1)";
-				ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1 = "ppc i386";
+				ARCHS = i386;
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
 				DEPLOYMENT_POSTPROCESSING = YES;

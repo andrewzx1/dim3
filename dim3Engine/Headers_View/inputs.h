@@ -31,7 +31,7 @@ extern void input_clear(void);
 extern void input_set_key_start(void);
 extern bool input_set_key_wait(char *name,bool *no_key_up);
 extern bool input_app_active(void);
-extern void input_event_pump(void);
+extern bool input_event_pump(void);
 
 extern void input_action_clear(void);
 extern void input_action_attach(char *attach_name,int action_index);
@@ -45,11 +45,11 @@ extern void input_mouse_shutdown(void);
 extern void input_clear_mouse(void);
 extern void input_mouse_pause(void);
 extern void input_mouse_resume(void);
-extern void input_event_mouse_button_down(int button);
+extern void input_event_mouse_button(int button,bool down);
 extern void input_event_mouse_motion(int x,int y);
+extern void input_event_mouse_wheel(int y);
 extern bool input_get_mouse_button(int button_idx);
 extern void input_get_mouse_movement(float *x,float *y);
-extern void input_clear_mouse_wheel_state(void);
 
 extern void input_gui_set_mouse(int x,int y);
 extern void input_gui_get_mouse_position(int *x,int *y);
