@@ -37,7 +37,7 @@ char						key_define_str[input_max_keyboard_define][32]=key_names,
 							mouse_button_define_str[input_max_mouse_button_define][32]=mouse_button_names,
 							joystick_button_define_str[input_max_joystick_button_define][32]=joystick_button_names,
 							control_names_str[][32]=control_names;
-bool						input_key_set_skip_flag[input_max_keyboard_define];
+bool						input_app_active_flag,input_key_set_skip_flag[input_max_keyboard_define];
 												
 input_action_type			input_actions[256];
 
@@ -54,21 +54,18 @@ extern setup_type			setup;
 
 void input_initialize(bool in_window)
 {
+		// app starts activated
+		
+	input_app_active_flag=TRUE;
+	
 		// setup events
 
-	SDL_EventState(SDL_ACTIVEEVENT,SDL_IGNORE);
 	SDL_EventState(SDL_KEYUP,SDL_IGNORE);
-	SDL_EventState(SDL_MOUSEBUTTONUP,SDL_IGNORE);
 	SDL_EventState(SDL_JOYBALLMOTION,SDL_IGNORE);
 	SDL_EventState(SDL_JOYHATMOTION,SDL_IGNORE);
-	SDL_EventState(SDL_JOYBUTTONUP,SDL_IGNORE);
-	SDL_EventState(SDL_JOYBUTTONDOWN,SDL_IGNORE);
-	SDL_EventState(SDL_JOYAXISMOTION,SDL_IGNORE);
 	SDL_EventState(SDL_SYSWMEVENT,SDL_IGNORE);
 	SDL_EventState(SDL_VIDEORESIZE,SDL_IGNORE);
 	SDL_EventState(SDL_USEREVENT,SDL_IGNORE);
-
-	if (!in_window) SDL_EventState(SDL_QUIT,SDL_IGNORE);
 
 		// initialize mouse
 
@@ -111,12 +108,12 @@ void input_clear(void)
 
 void input_action_clear(void)
 {
-    int					i;
+    int					n;
 	input_action_type	*action;
 	
 	action=input_actions;
     
-	for (i=0;i!=256;i++) {
+	for (n=0;n!=256;n++) {
 		action->nitem=0;
 		action->still_down=FALSE;
 		action++;
@@ -181,32 +178,32 @@ void setup_to_input(void)
 
 void input_set_key_start(void)
 {
-	int				i;
+	int				n;
 
 		// get a list of keys to ignore if they
 		// are started out down (works around problems
 		// with capsLock, numLock, scrollLock, etc
 
-	for (i=0;i!=input_max_keyboard_define;i++) {
-		input_key_set_skip_flag[i]=input_get_keyboard_key(key_define_code[i]);
+	for (n=0;n!=input_max_keyboard_define;n++) {
+		input_key_set_skip_flag[n]=input_get_keyboard_key(key_define_code[n]);
 	}
 
 }
 
 bool input_set_key_wait(char *name,bool *no_key_up)
 {
-	int				i;
+	int				n;
 	
 	name[0]=0x0;
 	*no_key_up=FALSE;
 
 		// any keys pressed?
 		
-	for (i=0;i!=input_max_keyboard_define;i++) {
-		if (!input_key_set_skip_flag[i]) {
-			if (input_get_keyboard_key(key_define_code[i])) {
-				strcpy(name,key_define_str[i]);
-				*no_key_up=((key_define_code[i]==SDLK_NUMLOCK) || (key_define_code[i]==SDLK_CAPSLOCK) || (key_define_code[i]==SDLK_SCROLLOCK));
+	for (n=0;n!=input_max_keyboard_define;n++) {
+		if (!input_key_set_skip_flag[n]) {
+			if (input_get_keyboard_key(key_define_code[n])) {
+				strcpy(name,key_define_str[n]);
+				*no_key_up=(key_define_code[n]==SDL_SCANCODE_CAPSLOCK);
 				return(TRUE);
 			}
 		}
@@ -214,10 +211,10 @@ bool input_set_key_wait(char *name,bool *no_key_up)
 	
 		// any mouse buttons
 		
-	for (i=0;i!=input_max_mouse_button_define;i++) {
-		if (input_get_mouse_button(mouse_button_define_code[i])) {
-			strcpy(name,mouse_button_define_str[i]);
-			*no_key_up=((mouse_button_define_code[i]==SDL_BUTTON_WHEELUP) || (mouse_button_define_code[i]==SDL_BUTTON_WHEELDOWN));
+	for (n=0;n!=input_max_mouse_button_define;n++) {
+		if (input_get_mouse_button(mouse_button_define_code[n])) {
+			strcpy(name,mouse_button_define_str[n]);
+			*no_key_up=((mouse_button_define_code[n]==SDL_BUTTON_WHEELUP) || (mouse_button_define_code[n]==SDL_BUTTON_WHEELDOWN));
 			return(TRUE);
 		}
 	}
@@ -226,9 +223,9 @@ bool input_set_key_wait(char *name,bool *no_key_up)
 		
 	if (input_check_joystick_ok()) {
 
-		for (i=0;i!=input_max_joystick_button_define;i++) {
-			if (input_get_joystick_button(i)) {
-				strcpy(name,joystick_button_define_str[i]);
+		for (n=0;n!=input_max_joystick_button_define;n++) {
+			if (input_get_joystick_button(n)) {
+				strcpy(name,joystick_button_define_str[n]);
 				*no_key_up=FALSE;
 				return(TRUE);
 			}
@@ -247,7 +244,24 @@ bool input_set_key_wait(char *name,bool *no_key_up)
 
 inline bool input_app_active(void)
 {
-	return((SDL_GetAppState()&SDL_APPINPUTFOCUS)!=0);
+	return(input_app_active_flag);
+}
+
+bool input_event_window(int event)
+{
+	switch (event) {
+	
+		case SDL_WINDOWEVENT_FOCUS_GAINED:
+			input_app_active_flag=TRUE;
+			return(TRUE);
+			
+		case SDL_WINDOWEVENT_FOCUS_LOST:
+			input_app_active_flag=FALSE;
+			return(TRUE);
+			
+	}
+	
+	return(FALSE);
 }
 
 /* =======================================================
@@ -256,26 +270,44 @@ inline bool input_app_active(void)
       
 ======================================================= */
 
-void input_event_pump(void)
+bool input_event_pump(void)
 {
+	bool				active_change;
 	SDL_Event			event;
 	
-	SDL_PumpEvents();
+	active_change=FALSE;
 	
 	while (SDL_PollEvent(&event)!=0) {
 	
 		switch (event.type) {
+		
+			case SDL_WINDOWEVENT:
+				active_change|=input_event_window(event.window.event);
+				break;
 
 			case SDL_KEYDOWN:
 				input_event_keydown(event.key.keysym.sym);
 				break;
 				
-			case SDL_MOUSEBUTTONDOWN:		// specific case to deal with wheel up/down
-				input_event_mouse_button_down(event.button.button);
+			case SDL_MOUSEBUTTONDOWN:
+				input_event_mouse_button(event.button.button,TRUE);
+				break;
+				
+			case SDL_MOUSEBUTTONUP:
+				input_event_mouse_button(event.button.button,FALSE);
 				break;
 
 			case SDL_MOUSEMOTION:
 				input_event_mouse_motion(event.motion.xrel,event.motion.yrel);
+				break;
+				
+			case SDL_MOUSEWHEEL:
+				input_event_mouse_wheel(event.wheel.y);
+				break;
+				
+			case SDL_JOYAXISMOTION:
+			// supergumba -- work on this
+			//	fprintf(stdout,"axis %d = %d\n",event.jaxis.axis,event.jaxis.value);
 				break;
 
 			case SDL_QUIT:
@@ -284,6 +316,8 @@ void input_event_pump(void)
 				
 		}
 	}
+	
+	return(active_change);
 }
 
 /* =======================================================

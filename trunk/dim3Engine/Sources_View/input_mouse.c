@@ -35,9 +35,9 @@ and can be sold or given away.
 extern hud_type				hud;
 extern setup_type			setup;
 
-int							mouse_tick,mouse_motion_x,mouse_motion_y,
-							mouse_wheel_up_count,mouse_wheel_down_count;
-bool						mouse_wheel_up_reset,mouse_wheel_down_reset;
+int							mouse_tick;
+d3pnt						mouse_motion,mouse_gui_pnt;
+bool						mouse_button_state[input_max_mouse_button_define];
 
 /* =======================================================
 
@@ -47,13 +47,12 @@ bool						mouse_wheel_up_reset,mouse_wheel_down_reset;
 
 void input_mouse_initialize(void)
 {
-	SDL_ShowCursor(0);
-	SDL_WM_GrabInput(SDL_GRAB_ON);
+	SDL_SetRelativeMouseMode(SDL_TRUE);	
 }
 
 void input_mouse_shutdown(void)
 {
-	SDL_WM_GrabInput(SDL_GRAB_OFF);
+	SDL_SetRelativeMouseMode(SDL_FALSE);
 }
 
 /* =======================================================
@@ -64,16 +63,16 @@ void input_mouse_shutdown(void)
 
 void input_clear_mouse(void)
 {
+	int				n;
+	
 	mouse_tick=-1;
 
-	mouse_motion_x=0;
-	mouse_motion_y=0;
+	mouse_motion.x=0;
+	mouse_motion.y=0;
 	
-	mouse_wheel_up_count=0;
-	mouse_wheel_down_count=0;
-
-	mouse_wheel_up_reset=FALSE;
-	mouse_wheel_down_reset=FALSE;
+	for (n=0;n!=input_max_mouse_button_define;n++) {
+		mouse_button_state[n]=FALSE;
+	}
 }
 
 /* =======================================================
@@ -84,16 +83,14 @@ void input_clear_mouse(void)
 
 void input_mouse_pause(void)
 {
-	SDL_WM_GrabInput(SDL_GRAB_OFF);
-	SDL_ShowCursor(1);
+	SDL_SetRelativeMouseMode(FALSE);
 }
 
 void input_mouse_resume(void)
 {
 		// turn back off cursor
-
-	SDL_ShowCursor(0);
-	SDL_WM_GrabInput(SDL_GRAB_ON);
+		
+	SDL_SetRelativeMouseMode(TRUE);
 
 		// pump out any changes
 
@@ -107,28 +104,31 @@ void input_mouse_resume(void)
       
 ======================================================= */
 
-void input_event_mouse_button_down(int button)
+void input_event_mouse_button(int button,bool down)
 {
-		// treat wheel up/down as special cases as they
-		// don't last long enough to be caught and we
-		// also need to make sure there are paused between
-		// multiple ups/downs so it doesn't look like a
-		// continous key press
-
-	if (button==SDL_BUTTON_WHEELUP) {
-		mouse_wheel_up_count++;
-		return;
-	}
-	if (button==SDL_BUTTON_WHEELDOWN) {
-		mouse_wheel_down_count++;
-		return;
-	}
+	switch (button) {
+		case 1:
+			mouse_button_state[input_mouse_button_left]=down;
+			break;
+		case 2:
+			mouse_button_state[input_mouse_button_middle]=down;
+			break;
+		case 3:
+			mouse_button_state[input_mouse_button_right]=down;
+			break;
+	}	
 }
 
 void input_event_mouse_motion(int x,int y)
 {
-	mouse_motion_x+=x;
-	mouse_motion_y+=y;
+	mouse_motion.x+=x;
+	mouse_motion.y+=y;
+}
+
+void input_event_mouse_wheel(int y)
+{
+	if (y>0) mouse_button_state[input_mouse_button_wheel_up]=TRUE;
+	if (y<0) mouse_button_state[input_mouse_button_wheel_down]=TRUE;
 }
 
 /* =======================================================
@@ -144,11 +144,11 @@ void input_get_mouse_movement(float *x,float *y)
 	
 		// get movement and clear
 		
-	fx=(float)mouse_motion_x;
-	mouse_motion_x=0;
+	fx=(float)mouse_motion.x;
+	mouse_motion.x=0;
 
-	fy=(float)mouse_motion_y;
-	mouse_motion_y=0;
+	fy=(float)mouse_motion.y;
+	mouse_motion.y=0;
 
 		// calculate time change
 		
@@ -173,51 +173,16 @@ void input_get_mouse_movement(float *x,float *y)
 
 bool input_get_mouse_button(int button_idx)
 {
-	switch (button_idx) {
-
-		case SDL_BUTTON_LEFT:
-			return(SDL_GetMouseState(NULL,NULL)&SDL_BUTTON_LMASK);
-			
-		case SDL_BUTTON_RIGHT:
-			return(SDL_GetMouseState(NULL,NULL)&SDL_BUTTON_RMASK);
-		
-		case SDL_BUTTON_MIDDLE:
-			return(SDL_GetMouseState(NULL,NULL)&SDL_BUTTON_MMASK);
-		
-		case SDL_BUTTON_WHEELUP:
-			if (mouse_wheel_up_reset) return(FALSE);			// always send a single NOT DOWN message between DOWNs
-			return(mouse_wheel_up_count>0);
-		
-		case SDL_BUTTON_WHEELDOWN:
-			if (mouse_wheel_down_reset) return(FALSE);			// always send a single NOT DOWN message between DOWNs
-			return(mouse_wheel_down_count>0);
-
-	}
+	bool			down;
 	
-	return(FALSE);
-}
-
-void input_clear_mouse_wheel_state(void)
-{
-	if (mouse_wheel_up_reset) {
-		mouse_wheel_up_reset=FALSE;
-	}
-	else {
-		if (mouse_wheel_up_count>0) {
-			mouse_wheel_up_count--;
-			mouse_wheel_up_reset=TRUE;			// go into reset so you get NOT DOWN event
-		}
-	}
-
-	if (mouse_wheel_down_reset) {
-		mouse_wheel_down_reset=FALSE;
-	}
-	else {
-		if (mouse_wheel_down_count>0) {
-			mouse_wheel_down_count--;
-			mouse_wheel_down_reset=TRUE;			// go into reset so you get NOT DOWN event
-		}
-	}
+	down=mouse_button_state[button_idx];
+	
+		// need to release mouse wheel state
+		
+	if (button_idx==input_mouse_button_wheel_up) mouse_button_state[input_mouse_button_wheel_up]=FALSE;
+	if (button_idx==input_mouse_button_wheel_down) mouse_button_state[input_mouse_button_wheel_down]=FALSE;
+	
+	return(down);
 }
 
 /* =======================================================
@@ -228,39 +193,42 @@ void input_clear_mouse_wheel_state(void)
 
 void input_gui_set_mouse(int x,int y)
 {
-		// scale from window to screen
-
-	x=(x*setup.screen.x_sz)/hud.scale_x;
-	y=(y*setup.screen.y_sz)/hud.scale_y;
-
-		// set mouse
+		// clear mouse
 		
-	SDL_WarpMouse((unsigned short)x,(unsigned short)y);
+	input_clear_mouse();
+	
+		// center to window
+		
+	mouse_gui_pnt.x=hud.scale_x>>1;
+	mouse_gui_pnt.y=hud.scale_y>>1;
 }
 
 void input_gui_get_mouse_position(int *x,int *y)
 {
-		// get mouse
+	mouse_gui_pnt.x+=mouse_motion.x;
+	mouse_motion.x=0;
 
-	SDL_PumpEvents();
-	SDL_GetMouseState(x,y);
+	if (mouse_gui_pnt.x<0) mouse_gui_pnt.x=0;
+	if (mouse_gui_pnt.x>=hud.scale_x) mouse_gui_pnt.x=hud.scale_x-1;
+	
+	mouse_gui_pnt.y+=mouse_motion.y;
+	mouse_motion.y=0;
 
-		// scale from window to screen
-
-	*x=((*x)*hud.scale_x)/setup.screen.x_sz;
-	*y=((*y)*hud.scale_y)/setup.screen.y_sz;
+	if (mouse_gui_pnt.y<0) mouse_gui_pnt.y=0;
+	if (mouse_gui_pnt.y>=hud.scale_y) mouse_gui_pnt.y=hud.scale_y-1;
+	
+	*x=mouse_gui_pnt.x;
+	*y=mouse_gui_pnt.y;
 }
 
-bool input_gui_get_mouse_left_button_down(void)
+inline bool input_gui_get_mouse_left_button_down(void)
 {
-	SDL_PumpEvents();
-	return((SDL_GetMouseState(NULL,NULL)&SDL_BUTTON_LMASK)!=0);
+	return(input_get_mouse_button(input_mouse_button_left));
 }
 
-void input_gui_wait_mouse_left_button_up(void)
+inline void input_gui_wait_mouse_left_button_up(void)
 {
 	while (input_gui_get_mouse_left_button_down()) {
-		SDL_PumpEvents();
 		usleep(1000);
 	}
 }

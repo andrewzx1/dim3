@@ -335,9 +335,12 @@ void loop_state_next_open(void)
 
 bool loop_main(char *err_str)
 {
-		// check for app activation changes
-
-	loop_app_active();
+		// pump the input
+		// if there's an activation change, handle it
+		
+	if (input_event_pump()) {
+		loop_app_active();
+	}
 	
 		// calculate timing
 		

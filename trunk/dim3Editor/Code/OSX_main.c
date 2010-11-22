@@ -221,7 +221,7 @@ OSStatus main_wind_event_callback(EventHandlerCallRef eventhandler,EventRef even
 void main_wind_open(void)
 {
 	Rect						wbox;
-	GLint						attrib[]={AGL_NO_RECOVERY,AGL_RGBA,AGL_DOUBLEBUFFER,AGL_ACCELERATED,AGL_PIXEL_SIZE,24,AGL_ALPHA_SIZE,8,AGL_DEPTH_SIZE,16,AGL_STENCIL_SIZE,8,AGL_NONE};
+	GLint						attrib[]={AGL_NO_RECOVERY,AGL_RGBA,AGL_DOUBLEBUFFER,AGL_ACCELERATED,AGL_PIXEL_SIZE,24,AGL_ALPHA_SIZE,8,AGL_DEPTH_SIZE,24,AGL_STENCIL_SIZE,8,AGL_NONE};
 	GLint						rect[4];
 	GDHandle					gdevice;
 	AGLPixelFormat				pf;
