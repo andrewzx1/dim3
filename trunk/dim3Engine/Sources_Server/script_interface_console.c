@@ -100,7 +100,7 @@ JSValueRef js_interface_console_open_func(JSContextRef cx,JSObjectRef func,JSObj
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
 	view.console.on=TRUE;
-	input_clear_all_last_raw_key();
+	input_clear_text_input();
 
 	return(script_null_to_value(cx));
 }

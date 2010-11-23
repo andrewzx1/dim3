@@ -173,7 +173,7 @@ void console_input(void)
 	if (!view.console.on) {
 		if (input_action_get_state_single(nc_console)) {
 			view.console.on=TRUE;
-			input_clear_all_last_raw_key();
+			input_clear_text_input();
 		}
 		return;
 	}
@@ -187,9 +187,7 @@ void console_input(void)
 	
 		// typing
 	
-	ch=input_get_last_raw_key();
-	input_clear_last_raw_key();
-
+	ch=input_get_text_input_key();
 	if (ch==0x0) return;
 	
 		// backspace

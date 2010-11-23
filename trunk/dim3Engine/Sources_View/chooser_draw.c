@@ -207,22 +207,15 @@ bool chooser_setup(char *name,char *sub_txt,char *err_str)
 
 void chooser_click(void)
 {
-	int					id,idx,next_idx,ch;
+	int					id,idx,next_idx;
 	chooser_piece_type	*piece;
 	
 	id=-1;
 	
 		// check for ok/cancel keys
-		
-	ch=input_gui_get_keyboard_key(FALSE);
-	if (ch!=0x0) {
-		if (ch==0x1B) id=hud.choosers[chooser_idx].key.cancel_id;
-		if (ch==0xD) id=hud.choosers[chooser_idx].key.ok_id;
-	}
-	
-	if (id!=-1) {			// wait for key up
-		while (input_gui_get_keyboard_key(FALSE)==ch) {}
-	}
+
+	if (input_get_keyboard_escape()) id=hud.choosers[chooser_idx].key.cancel_id;
+	if (input_get_keyboard_return()) id=hud.choosers[chooser_idx].key.ok_id;
 
 		// if no key check clicking
 		

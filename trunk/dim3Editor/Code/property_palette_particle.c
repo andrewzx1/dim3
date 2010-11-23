@@ -51,8 +51,12 @@ extern list_palette_type		property_palette;
       
 ======================================================= */
 
-void property_palette_fill_particle(map_particle_type *particle)
+void property_palette_fill_particle(int particle_idx)
 {
+	map_particle_type		*particle;
+
+	particle=&map.particles[particle_idx];
+
 	/*
 		dialog_special_combo_fill_particle(palette_particle_wind,kParticleName,0,particle->name);
 	dialog_set_int(palette_particle_wind,kParticleSpawnTick,0,particle->spawn_tick);
@@ -99,8 +103,12 @@ void property_palette_fill_particle(map_particle_type *particle)
       
 ======================================================= */
 
-void property_palette_click_particle(map_particle_type *particle,int id)
+void property_palette_click_particle(int particle_idx,int id)
 {
+	map_particle_type		*particle;
+
+	particle=&map.particles[particle_idx];
+
 	/*
 	switch (id) {
 

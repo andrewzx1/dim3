@@ -56,8 +56,12 @@ extern list_palette_type		property_palette;
       
 ======================================================= */
 
-void property_palette_fill_scenery(map_scenery_type *scenery)
+void property_palette_fill_scenery(int scenery_idx)
 {
+	map_scenery_type			*scenery;
+
+	scenery=&map.sceneries[scenery_idx];
+
 	/*
 	dialog_set_text(palette_scenery_wind,kSceneryModelName,0,scenery->model_name);
 	dialog_set_text(palette_scenery_wind,kSceneryAnimationName,0,scenery->animation_name);
@@ -112,8 +116,12 @@ void property_palette_fill_scenery(map_scenery_type *scenery)
       
 ======================================================= */
 
-void property_palette_click_scenery(map_scenery_type *scenery,int id)
+void property_palette_click_scenery(int scenery_idx,int id)
 {
+	map_scenery_type			*scenery;
+
+	scenery=&map.sceneries[scenery_idx];
+
 	/*
 	switch (id) {
 

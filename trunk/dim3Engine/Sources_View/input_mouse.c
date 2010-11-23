@@ -39,6 +39,11 @@ int							mouse_tick;
 d3pnt						mouse_motion,mouse_gui_pnt;
 bool						mouse_button_state[input_max_mouse_button_define];
 
+#ifndef D3_SDL_1_3
+int							mouse_wheel_up_count,mouse_wheel_down_count;
+bool						mouse_wheel_up_reset,mouse_wheel_down_reset;
+#endif
+
 /* =======================================================
 
       Mouse Initialize
@@ -47,12 +52,21 @@ bool						mouse_button_state[input_max_mouse_button_define];
 
 void input_mouse_initialize(void)
 {
+#ifdef D3_SDL_1_3
 	SDL_SetRelativeMouseMode(TRUE);
+#else
+	SDL_ShowCursor(0);
+	SDL_WM_GrabInput(SDL_GRAB_ON);
+#endif
 }
 
 void input_mouse_shutdown(void)
 {
+#ifdef D3_SDL_1_3
 	SDL_SetRelativeMouseMode(FALSE);
+#else
+	SDL_WM_GrabInput(SDL_GRAB_OFF);
+#endif
 }
 
 /* =======================================================
@@ -73,6 +87,13 @@ void input_clear_mouse(void)
 	for (n=0;n!=input_max_mouse_button_define;n++) {
 		mouse_button_state[n]=FALSE;
 	}
+
+	#ifndef D3_SDL_1_3
+		mouse_wheel_up_count=0;
+		mouse_wheel_down_count=0;
+		mouse_wheel_up_reset=FALSE;
+		mouse_wheel_down_reset=FALSE;
+	#endif
 }
 
 /* =======================================================
@@ -83,14 +104,24 @@ void input_clear_mouse(void)
 
 void input_mouse_pause(void)
 {
+#ifdef D3_SDL_1_3
 	SDL_SetRelativeMouseMode(FALSE);
+#else
+	SDL_WM_GrabInput(SDL_GRAB_OFF);
+	SDL_ShowCursor(1);
+#endif
 }
 
 void input_mouse_resume(void)
 {
 		// turn back off cursor
 		
+#ifdef D3_SDL_1_3
 	SDL_SetRelativeMouseMode(TRUE);
+#else
+	SDL_ShowCursor(0);
+	SDL_WM_GrabInput(SDL_GRAB_ON);
+#endif
 
 		// pump out any changes
 
@@ -116,7 +147,20 @@ void input_event_mouse_button(int button,bool down)
 		case 3:
 			mouse_button_state[input_mouse_button_right]=down;
 			break;
-	}	
+	}
+
+#ifndef D3_SDL_1_3
+	if (down) {
+		if (button==SDL_BUTTON_WHEELUP) {
+			mouse_button_state[input_mouse_button_wheel_up]=TRUE;
+			return;
+		}
+		if (button==SDL_BUTTON_WHEELDOWN) {
+			mouse_button_state[input_mouse_button_wheel_down]=TRUE;
+			return;
+		}
+	}
+#endif
 }
 
 void input_event_mouse_motion(int x,int y)
@@ -125,11 +169,13 @@ void input_event_mouse_motion(int x,int y)
 	mouse_motion.y+=y;
 }
 
+#ifdef D3_SDL_1_3
 void input_event_mouse_wheel(int y)
 {
 	if (y>0) mouse_button_state[input_mouse_button_wheel_up]=TRUE;
 	if (y<0) mouse_button_state[input_mouse_button_wheel_down]=TRUE;
 }
+#endif
 
 /* =======================================================
 
@@ -171,18 +217,15 @@ void input_get_mouse_movement(float *x,float *y)
 	*y=fy+(fy*setup.mouse.acceleration);
 }
 
-bool input_get_mouse_button(int button_idx)
+inline bool input_get_mouse_button(int button_idx)
 {
-	bool			down;
-	
-	down=mouse_button_state[button_idx];
-	
-		// need to release mouse wheel state
-		
-	if (button_idx==input_mouse_button_wheel_up) mouse_button_state[input_mouse_button_wheel_up]=FALSE;
-	if (button_idx==input_mouse_button_wheel_down) mouse_button_state[input_mouse_button_wheel_down]=FALSE;
-	
-	return(down);
+	return(mouse_button_state[button_idx]);
+}
+
+void input_mouse_wheel_reset(void)
+{
+	mouse_button_state[input_mouse_button_wheel_up]=FALSE;
+	mouse_button_state[input_mouse_button_wheel_down]=FALSE;
 }
 
 /* =======================================================

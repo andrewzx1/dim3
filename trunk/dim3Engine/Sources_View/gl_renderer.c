@@ -34,10 +34,12 @@ and can be sold or given away.
 extern setup_type			setup;
 extern render_info_type		render_info;
 
-SDL_Window					*sdl_wind;
-SDL_GLContext				*sdl_gl_ctx;
-
-int							orig_scrn_x,orig_scrn_y,orig_scrn_refresh;
+#ifdef D3_SDL_1_3
+	SDL_Window					*sdl_wind;
+	SDL_GLContext				*sdl_gl_ctx;
+#else
+	SDL_Surface					*surface;
+#endif
 
 /* =======================================================
 
@@ -83,16 +85,21 @@ void gl_setup_context(void)
 
 bool gl_initialize(int screen_wid,int screen_high,bool lock_fps_refresh,int fsaa_mode,bool reset,char *err_str)
 {
+#ifdef D3_SDL_1_3
 	int					sdl_flags;
+#endif
     GLint				ntxtunit,ntxtsize;
 #ifdef D3_OS_MAC
-    long				rect[4];
+    long				swapint,rect[4];
 	CGLContextObj		current_ctx;
+	CFDictionaryRef		mode_info;
 #else
 	GLenum				glew_error;
 #endif
+#ifdef D3_SDL_1_3
 	SDL_DisplayMode		dsp_mode;
-		
+#endif
+
 		// setup rendering sizes
         
 	setup.screen.x_sz=screen_wid;
@@ -124,9 +131,10 @@ bool gl_initialize(int screen_wid,int screen_high,bool lock_fps_refresh,int fsaa
 			SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES,8);
 			break;
 	}
-
+	
 		// start window or full screen
-		
+
+#ifdef D3_SDL_1_3
 	sdl_flags=SDL_WINDOW_OPENGL|SDL_WINDOW_SHOWN;
 	if (!gl_in_window_mode()) sdl_flags|=SDL_WINDOW_FULLSCREEN;
 	
@@ -137,7 +145,25 @@ bool gl_initialize(int screen_wid,int screen_high,bool lock_fps_refresh,int fsaa
 	}
 	
 	sdl_gl_ctx=SDL_GL_CreateContext(sdl_wind);
-	
+#else
+	if (gl_in_window_mode()) {
+		surface=SDL_SetVideoMode(setup.screen.x_sz,setup.screen.y_sz,32,SDL_OPENGL|SDL_HWSURFACE);
+		SDL_WM_SetCaption("dim3",NULL);
+	}
+	else {
+		surface=SDL_SetVideoMode(setup.screen.x_sz,setup.screen.y_sz,32,SDL_OPENGL|SDL_FULLSCREEN);
+	}
+
+	if (surface==NULL) {
+		sprintf(err_str,"SDL: Could not set video mode (Error: %s)",SDL_GetError());
+		return(FALSE);
+	}
+		
+	#ifdef D3_OS_MAC
+		if (!gl_in_window_mode()) SetSystemUIMode(kUIModeContentSuppressed,0);
+	#endif
+#endif
+
 		// use glew on linux and windows
 		
 #ifndef D3_OS_MAC
@@ -166,24 +192,48 @@ bool gl_initialize(int screen_wid,int screen_high,bool lock_fps_refresh,int fsaa
 
 		// in case screen is bigger than window
 		
+#ifdef D3_SDL_1_3
 	SDL_GetWindowSize(sdl_wind,&render_info.monitor_x_sz,&render_info.monitor_y_sz);
+#else
+	render_info.monitor_x_sz=surface->w;
+	render_info.monitor_y_sz=surface->h;
+#endif
 
 	render_info.view_x=(render_info.monitor_x_sz-setup.screen.x_sz)>>1;
 	render_info.view_y=(render_info.monitor_y_sz-setup.screen.y_sz)>>1;
 	
 		// determine the referesh rate
 
+#ifdef D3_SDL_1_3
 	SDL_GetWindowDisplayMode(sdl_wind,&dsp_mode);
 
 	render_info.monitor_refresh_rate=dsp_mode.refresh_rate;
 	if (render_info.monitor_refresh_rate==0) render_info.monitor_refresh_rate=60;
+#else
+	render_info.monitor_refresh_rate=60;				// windows XP has a stuck refresh rate of 60
+		
+	#ifdef D3_OS_MAC
+		mode_info=CGDisplayCurrentMode(CGMainDisplayID());
+		if (mode_info!=NULL) {
+			cf_rate=(CFNumberRef)CFDictionaryGetValue(mode_info,kCGDisplayRefreshRate);
+			if (cf_rate) {
+				CFNumberGetValue(cf_rate,kCFNumberIntType,&render_info.monitor_refresh_rate);
+				if (render_info.monitor_refresh_rate==0) render_info.monitor_refresh_rate=60;
+			}
+		}
+	#endif
+#endif
 
         // clear the entire window so it doesn't flash
         
 	glClearColor(0,0,0,0);
 	glClear(GL_COLOR_BUFFER_BIT);
    
+#ifdef D3_SDL_1_3
 	SDL_GL_SwapWindow(sdl_wind);
+#else
+	SDL_GL_SwapBuffers();
+#endif
 
         // setup renderer
 
@@ -199,7 +249,16 @@ bool gl_initialize(int screen_wid,int screen_high,bool lock_fps_refresh,int fsaa
 	CGLEnable(current_ctx,kCGLCESwapRectangle);
 #endif
 
+#ifdef D3_SDL_1_3
 	if (lock_fps_refresh) SDL_GL_SetSwapInterval(1);
+#else
+	#ifdef D3_OS_MAC
+		if (lock_fps_refresh) {
+			swapint=1;
+			CGLSetParameter(current_ctx,kCGLCPSwapInterval,&swapint);
+		}
+	#endif
+#endif
 
 	glViewport(render_info.view_x,render_info.view_y,setup.screen.x_sz,setup.screen.y_sz);
 	
@@ -221,7 +280,11 @@ bool gl_initialize(int screen_wid,int screen_high,bool lock_fps_refresh,int fsaa
 		glClearColor(0,0,0,0);
 		glClear(GL_COLOR_BUFFER_BIT);
 		
-		SDL_GL_SwapWindow(sdl_wind);
+		#ifdef D3_SDL_1_3
+			SDL_GL_SwapWindow(sdl_wind);
+		#else
+			SDL_GL_SwapBuffers();
+		#endif
 	}
 	
 	return(TRUE);
@@ -231,8 +294,10 @@ void gl_shutdown(void)
 {
 	gl_texture_shutdown();
 	
+#ifdef D3_SDL_1_3
 	SDL_GL_DeleteContext(sdl_gl_ctx);
 	SDL_DestroyWindow(sdl_wind);
+#endif
 }
 
 /* =======================================================

@@ -360,7 +360,7 @@ int gui_keyboard(void)
 
 		// key press?
 
-	ch=input_gui_get_keyboard_key(TRUE);
+	ch=input_get_text_input_key();
 	if (ch==0x0) {
 		gui_last_key=0x0;
 		return(-1);

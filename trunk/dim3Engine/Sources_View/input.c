@@ -46,6 +46,10 @@ SDL_Joystick				*input_joy;
 extern bool					game_loop_quit;
 extern setup_type			setup;
 
+#ifndef D3_SDL_1_3
+	#define SDL_SCANCODE_CAPSLOCK	SDLK_CAPSLOCK
+#endif
+
 /* =======================================================
 
       Input Start and Stop
@@ -60,7 +64,6 @@ void input_initialize(bool in_window)
 	
 		// setup events
 
-	SDL_EventState(SDL_KEYUP,SDL_IGNORE);
 	SDL_EventState(SDL_JOYBALLMOTION,SDL_IGNORE);
 	SDL_EventState(SDL_JOYHATMOTION,SDL_IGNORE);
 	SDL_EventState(SDL_SYSWMEVENT,SDL_IGNORE);
@@ -247,6 +250,7 @@ inline bool input_app_active(void)
 	return(input_app_active_flag);
 }
 
+#ifdef D3_SDL_1_3
 bool input_event_window(int event)
 {
 	switch (event) {
@@ -263,6 +267,15 @@ bool input_event_window(int event)
 	
 	return(FALSE);
 }
+#else
+bool input_event_active(int state,int gain)
+{
+	if ((state&SDL_APPINPUTFOCUS)!=0) {
+		input_app_active_flag=(gain!=0);
+	}
+	return(TRUE);
+}
+#endif
 
 /* =======================================================
 
@@ -281,12 +294,22 @@ bool input_event_pump(void)
 	
 		switch (event.type) {
 		
-			case SDL_WINDOWEVENT:
-				active_change|=input_event_window(event.window.event);
-				break;
+			#ifdef D3_SDL_1_3
+				case SDL_WINDOWEVENT:
+					active_change|=input_event_window(event.window.event);
+					break;
+			#else
+				case SDL_ACTIVEEVENT:
+					active_change|=input_event_active(event.active.state,event.active.gain);
+					break;
+			#endif
 
 			case SDL_KEYDOWN:
-				input_event_keydown(event.key.keysym.sym);
+				input_event_key(event.key.keysym.sym,TRUE);
+				break;
+
+			case SDL_KEYUP:
+				input_event_key(event.key.keysym.sym,FALSE);
 				break;
 				
 			case SDL_MOUSEBUTTONDOWN:
@@ -301,9 +324,11 @@ bool input_event_pump(void)
 				input_event_mouse_motion(event.motion.xrel,event.motion.yrel);
 				break;
 				
-			case SDL_MOUSEWHEEL:
-				input_event_mouse_wheel(event.wheel.y);
-				break;
+			#ifdef D3_SDL_1_3
+				case SDL_MOUSEWHEEL:
+					input_event_mouse_wheel(event.wheel.y);
+					break;
+			#endif
 				
 			case SDL_JOYAXISMOTION:
 			// supergumba -- work on this

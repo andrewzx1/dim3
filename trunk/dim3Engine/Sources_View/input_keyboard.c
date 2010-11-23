@@ -35,8 +35,36 @@ extern setup_type			setup;
 
 extern bool					game_loop_quit;
 
-int							last_raw_key[last_raw_key_count];
-char						raw_key_shift_numbs[10]={'!','@','#','$','%','^','&','*','(',')'};
+int							text_input_keys[text_input_keys_count];
+char						text_input_shift_numbs[10]={'!','@','#','$','%','^','&','*','(',')'};
+unsigned char				key_states[1024];
+
+#ifndef D3_SDL_1_3
+	#define SDL_SCANCODE_A			SDLK_a
+	#define SDL_SCANCODE_Q			SDLK_q
+	#define SDL_SCANCODE_Z			SDLK_z
+	#define SDL_SCANCODE_0			SDLK_0
+	#define SDL_SCANCODE_1			SDLK_1
+	#define SDL_SCANCODE_9			SDLK_9
+	#define SDL_SCANCODE_KP_0		SDLK_KP0
+	#define SDL_SCANCODE_KP_9		SDLK_KP9
+	#define SDL_SCANCODE_SPACE		SDLK_SPACE
+	#define SDL_SCANCODE_BACKSPACE	SDLK_BACKSPACE
+	#define SDL_SCANCODE_ESCAPE		SDLK_ESCAPE
+	#define SDL_SCANCODE_RETURN		SDLK_RETURN
+	#define SDL_SCANCODE_KP_ENTER	SDLK_KP_ENTER
+	#define SDL_SCANCODE_MINUS		SDLK_MINUS
+	#define SDL_SCANCODE_EQUALS		SDLK_EQUALS
+	#define SDL_SCANCODE_COMMA		SDLK_COMMA
+	#define SDL_SCANCODE_PERIOD		SDLK_PERIOD
+	#define SDL_SCANCODE_SLASH		SDLK_SLASH
+	#define SDL_SCANCODE_SEMICOLON	SDLK_SEMICOLON
+	#define SDL_SCANCODE_APOSTROPHE	SDLK_QUOTE
+	#define SDL_SCANCODE_PERIOD		SDLK_PERIOD
+	#define SDL_SCANCODE_KP_PERIOD	SDLK_KP_PERIOD
+	#define SDL_SCANCODE_TAB		SDLK_TAB
+	#define SDL_SCANCODE_CAPSLOCK	SDLK_CAPSLOCK
+#endif
 
 /* =======================================================
 
@@ -46,7 +74,8 @@ char						raw_key_shift_numbs[10]={'!','@','#','$','%','^','&','*','(',')'};
 
 void input_clear_keyboard(void)
 {
-	bzero(last_raw_key,(sizeof(int)*last_raw_key_count));
+	bzero(key_states,1024);
+	bzero(text_input_keys,(sizeof(int)*text_input_keys_count));
 }
 
 /* =======================================================
@@ -55,27 +84,42 @@ void input_clear_keyboard(void)
       
 ======================================================= */
 
-void input_event_keydown(int key)
+void input_event_key(int key_idx,bool down)
 {
-	int					n,mod;
+	int					n;
+#ifdef D3_OS_MAC
+	int					mod;
+#endif
+
+		// set the key
+
+	key_states[key_idx]=down;
+
+		// rest of function only cares
+		// about key downs
+
+	if (!down) return;
 	
-		// save last key for message typing
+		// save the key in the text
+		// input list
 		
-	for (n=0;n!=last_raw_key_count;n++) {
-		if (last_raw_key[n]==0x0) {
-			last_raw_key[n]=key;
+	for (n=0;n!=text_input_keys_count;n++) {
+		if (text_input_keys[n]==0x0) {
+			text_input_keys[n]=key_idx;
 			break;
 		}
 	}
-	
+
 		// check for cmd-q quits
-		
+
+#ifdef D3_OS_MAC
 	if (key==SDL_SCANCODE_Q) {
 		mod=SDL_GetModState();
 		if (((mod&KMOD_LMETA)!=0) || ((mod&KMOD_RMETA))) {
 			game_loop_quit=TRUE;
 		}
 	}
+#endif
 }
 
 /* =======================================================
@@ -86,41 +130,50 @@ void input_event_keydown(int key)
 
 bool input_get_keyboard_key(int key_idx)
 {
-	Uint8			*keystate;
-	
-	keystate=SDL_GetKeyboardState(NULL);
-	return(keystate[key_idx]);
+	return(key_states[key_idx]);
 }
 
-void input_clear_last_raw_key(void)
+bool input_get_keyboard_escape(void)
 {
-	if (last_raw_key[0]==0x0) return;
-
-	memmove(&last_raw_key[0],&last_raw_key[1],(sizeof(int)*(last_raw_key_count-1)));
-	last_raw_key[last_raw_key_count-1]=0x0;
+	return(key_states[SDL_SCANCODE_ESCAPE]);
 }
 
-void input_clear_all_last_raw_key(void)
+bool input_get_keyboard_return(void)
 {
-	bzero(last_raw_key,(sizeof(int)*last_raw_key_count));
+	return((key_states[SDL_SCANCODE_RETURN]) || (key_states[SDL_SCANCODE_KP_ENTER]));
 }
 
-char input_get_last_raw_key(void)
+/* =======================================================
+
+      Text Input
+      
+======================================================= */
+
+void input_clear_text_input(void)
+{
+	bzero(text_input_keys,(sizeof(int)*text_input_keys_count));
+}
+
+char input_get_text_input_key(void)
 {
 	int				mod,key;
 	bool			shifted;
 
-	key=last_raw_key[0];
+	key=text_input_keys[0];
 	
 	if (key==0x0) return(0x0);
+
+		// clear the key
+
+	memmove(&text_input_keys[0],&text_input_keys[1],(sizeof(int)*(text_input_keys_count-1)));
+	text_input_keys[text_input_keys_count-1]=0x0;
 	
 		// special keys
 		
 	if (key==SDL_SCANCODE_SPACE) return(0x20);
 	if (key==SDL_SCANCODE_BACKSPACE) return(0x8);
-	if (key==SDL_SCANCODE_ESCAPE) return(0x1B);
-	if ((key==SDL_SCANCODE_RETURN) || (key==SDL_SCANCODE_KP_ENTER)) return(0xD);
-	
+	if ((key==SDL_SCANCODE_RETURN) || (key==SDL_SCANCODE_KP_ENTER) || (key==SDL_SCANCODE_ESCAPE)) return(0xD);
+
 		// get shift state
 		
 	mod=SDL_GetModState();
@@ -136,7 +189,7 @@ char input_get_last_raw_key(void)
 	if ((key>=SDL_SCANCODE_0) && (key<=SDL_SCANCODE_9)) {
 		if (!shifted) return('0'+(char)(key-SDL_SCANCODE_0));
 		if (key==SDL_SCANCODE_0) return(')');
-		return(raw_key_shift_numbs[key-SDL_SCANCODE_1]);
+		return(text_input_shift_numbs[key-SDL_SCANCODE_1]);
 	}
 	
 		// couple misc characters
@@ -170,61 +223,6 @@ char input_get_last_raw_key(void)
 		return('"');
 	}
 
-	return(0x0);
-}
-
-/* =======================================================
-
-      Keyboard Input
-      
-======================================================= */
-
-char input_gui_get_keyboard_key(bool filter_esc)
-{
-	int				n,mod;
-	bool			shifted;
-	Uint8			*keystate;
-	
-	keystate=SDL_GetKeyboardState(NULL);
-
-		// special keys
-
-	if (keystate[SDL_SCANCODE_SPACE]) return(0x20);
-	if ((keystate[SDL_SCANCODE_PERIOD]) || (keystate[SDL_SCANCODE_KP_PERIOD])) return('.');
-	if (keystate[SDL_SCANCODE_BACKSPACE]) return(0x8);
-	if (keystate[SDL_SCANCODE_TAB]) return(0x9);
-	if ((keystate[SDL_SCANCODE_RETURN]) || (keystate[SDL_SCANCODE_KP_ENTER])) return(0xD);
-	
-	if (keystate[SDL_SCANCODE_ESCAPE]) {
-		if (filter_esc) return(0x0);
-		return(0x1B);
-	}
-
-		// numbers
-
-	for (n=SDL_SCANCODE_0;n<=SDL_SCANCODE_9;n++) {
-		if (keystate[n]) return('0'+(n-SDL_SCANCODE_0));
-	}
-	for (n=SDL_SCANCODE_KP_0;n<=SDL_SCANCODE_KP_9;n++) {
-		if (keystate[n]) return('0'+(n-SDL_SCANCODE_KP_0));
-	}
-
-		// letters
-
-	mod=SDL_GetModState();
-	shifted=(((mod&KMOD_LSHIFT)!=0) || ((mod&KMOD_RSHIFT)));
-
-	for (n=SDL_SCANCODE_A;n<=SDL_SCANCODE_Z;n++) {
-		if (keystate[n]) {
-			if (shifted) {
-				return('A'+(n-SDL_SCANCODE_A));
-			}
-			else {
-				return('a'+(n-SDL_SCANCODE_A));
-			}
-		}
-	}
-	
 	return(0x0);
 }
 

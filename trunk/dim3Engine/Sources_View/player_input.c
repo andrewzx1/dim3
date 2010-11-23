@@ -480,9 +480,7 @@ bool player_message_input(obj_type *obj)
 	
 			// get last raw key as character
 			
-		ch=input_get_last_raw_key();
-		input_clear_last_raw_key();
-		
+		ch=input_get_text_input_key();
 		if (ch==0x0) return(FALSE);
 		
 			// get current message len
@@ -562,7 +560,7 @@ bool player_message_input(obj_type *obj)
 	if (input_action_get_state(nc_message)) {
 		hud.chat.type_on=TRUE;
 		
-		input_clear_all_last_raw_key();
+		input_clear_text_input();
 		
 		hud.chat.type_str[0]='_';
 		hud.chat.type_str[1]=0x0;
@@ -1090,5 +1088,10 @@ void player_get_input(void)
 		// enter and exit
 		
 	player_enter_exit_input(obj);
+
+		// mouse wheels don't have a state
+		// so we need to reset state
+
+	input_mouse_wheel_reset();
 }
 

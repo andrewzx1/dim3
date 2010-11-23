@@ -51,8 +51,12 @@ extern list_palette_type		property_palette;
       
 ======================================================= */
 
-void property_palette_fill_node(node_type *node)
+void property_palette_fill_node(int node_idx)
 {
+	node_type			*node;
+
+	node=&map.nodes[node_idx];
+
 	/*
 			dialog_set_text(palette_node_wind,kNodeName,0,node->name);
 	dialog_set_int(palette_node_wind,kNodeEventID,0,node->event_id);
@@ -99,8 +103,12 @@ void property_palette_fill_node(node_type *node)
       
 ======================================================= */
 
-void property_palette_click_node(node_type *node,int id)
+void property_palette_click_node(int node_idx,int id)
 {
+	node_type			*node;
+
+	node=&map.nodes[node_idx];
+
 	/*
 	switch (id) {
 
