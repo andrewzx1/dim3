@@ -65,6 +65,18 @@ and can be sold or given away.
 #define kMeshPropertyMessageBase				25
 #define kMeshPropertyMessageBaseTeam			26
 
+#define kMeshPolyPropertyClimbable				30
+#define kMeshPolyPropertyNeverCull				31
+
+#define kMeshPolyPropertyOffX					32
+#define kMeshPolyPropertyOffY					33
+#define kMeshPolyPropertySizeX					34
+#define kMeshPolyPropertySizeY					35
+#define kMeshPolyPropertyShiftX					36
+#define kMeshPolyPropertyShiftY					37
+
+#define kMeshPolyPropertyCamera					38
+
 extern map_type					map;
 extern editor_state_type		state;
 extern editor_setup_type		setup;
@@ -81,10 +93,18 @@ char							mesh_property_hide_list[][name_str_len]={"Never","Single Player","Mul
       
 ======================================================= */
 
-void property_palette_fill_mesh(map_mesh_type *mesh)
+void property_palette_fill_mesh(int mesh_idx,int poly_idx)
 {
-	list_palette_add_header(&property_palette,0,"Mesh Settings");
+	float					x_txtoff,y_txtoff,x_txtfact,y_txtfact;
+	map_mesh_type			*mesh;
+	map_mesh_poly_type		*poly;
+	editor_view_type		*view;
+	
+		// mesh settings
 
+	mesh=&map.mesh.meshes[mesh_idx];
+
+	list_palette_add_header(&property_palette,0,"Mesh Settings");
 	list_palette_add_checkbox(&property_palette,kMeshPropertyOn,"On",mesh->flag.on);
 	list_palette_add_checkbox(&property_palette,kMeshPropertyPassThrough,"Pass Through",mesh->flag.pass_through);
 	list_palette_add_checkbox(&property_palette,kMeshPropertyMovable,"Movable",mesh->flag.moveable);
@@ -124,6 +144,30 @@ void property_palette_fill_mesh(map_mesh_type *mesh)
 	list_palette_add_string(&property_palette,kMeshPropertyMessageMapChangeSpotName,"Map Spot Name",mesh->msg.map_spot_name);
 	list_palette_add_checkbox(&property_palette,kMeshPropertyMessageBase,"Base On",mesh->msg.base_on);
 	list_palette_add_string(&property_palette,kMeshPropertyMessageBaseTeam,"Base Team",mesh_property_team_list[mesh->msg.base_team]);
+
+		// polygon settings
+
+	if (poly_idx==-1) return;
+
+	view=view_get_current_view();
+	poly=&mesh->polys[poly_idx];
+
+	map_mesh_get_poly_uv_as_box(&map,mesh_idx,poly_idx,(view->uv_layer==uv_layer_light_map),&x_txtoff,&y_txtoff,&x_txtfact,&y_txtfact);
+	
+	list_palette_add_header(&property_palette,0,"Poly Settings");
+	list_palette_add_checkbox(&property_palette,kMeshPolyPropertyClimbable,"Cimbable",poly->climbable);
+	list_palette_add_checkbox(&property_palette,kMeshPolyPropertyNeverCull,"Never Cull",poly->never_cull);
+	
+	list_palette_add_header(&property_palette,0,"Poly UVs");
+	list_palette_add_string_float(&property_palette,kMeshPolyPropertyOffX,"X Offset",x_txtoff);
+	list_palette_add_string_float(&property_palette,kMeshPolyPropertyOffY,"Y Offset",y_txtoff);
+	list_palette_add_string_float(&property_palette,kMeshPolyPropertySizeX,"X Size",x_txtfact);
+	list_palette_add_string_float(&property_palette,kMeshPolyPropertySizeY,"Y Size",y_txtfact);
+	list_palette_add_string_float(&property_palette,kMeshPolyPropertyShiftX,"X Shift",poly->x_shift);
+	list_palette_add_string_float(&property_palette,kMeshPolyPropertyShiftY,"Y Shift",poly->y_shift);
+		
+	list_palette_add_header(&property_palette,0,"Poly Camera");
+	list_palette_add_string(&property_palette,kMeshPolyPropertyCamera,"Node",poly->camera);
 }
 
 /* =======================================================
@@ -132,8 +176,16 @@ void property_palette_fill_mesh(map_mesh_type *mesh)
       
 ======================================================= */
 
-void property_palette_click_mesh(map_mesh_type *mesh,int id)
+void property_palette_click_mesh(int mesh_idx,int poly_idx,int id)
 {
+	map_mesh_type			*mesh;
+	map_mesh_poly_type		*poly;
+	editor_view_type		*view;
+
+		// mesh settings
+
+	mesh=&map.mesh.meshes[mesh_idx];
+
 	switch (id) {
 
 		case kMeshPropertyOn:
@@ -218,6 +270,37 @@ void property_palette_click_mesh(map_mesh_type *mesh,int id)
 			break;
 
 	}
+
+		// polygon settings
+
+	if (poly_idx!=-1) {
+
+		view=view_get_current_view();
+		poly=&mesh->polys[poly_idx];
+
+		switch (id) {
+
+			case kMeshPolyPropertyClimbable:
+				poly->climbable=!poly->climbable;
+				break;
+
+			case kMeshPolyPropertyNeverCull:
+				poly->never_cull=!poly->never_cull;
+				break;
+
+			case kMeshPolyPropertyOffX:
+			case kMeshPolyPropertyOffY:
+			case kMeshPolyPropertySizeX:
+			case kMeshPolyPropertySizeY:
+			case kMeshPolyPropertyShiftX:
+			case kMeshPolyPropertyShiftY:
+			case kMeshPolyPropertyCamera:
+				break;
+
+		}
+	}
+
+		// redraw
 
 	main_wind_draw();
 }

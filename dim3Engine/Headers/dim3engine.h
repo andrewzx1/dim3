@@ -47,6 +47,12 @@ and can be sold or given away.
 #endif
 
 //
+// SDL switch
+//
+
+// #define D3_SDL_1_3				1
+
+//
 // Application Headers
 //
 

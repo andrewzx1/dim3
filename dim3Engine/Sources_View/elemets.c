@@ -1184,9 +1184,9 @@ bool element_click_text_field_open(element_type *element,int x,int y)
 
 void element_draw_text_field(element_type *element,int sel_id)
 {
-	int				x,y,ky,lft,rgt,top,bot;
+	int				x,y,ky,wid,
+					lft,rgt,top,bot;
 	float			alpha;
-	char			txt[256];
 	d3col			col;
 	
 	x=element->x;
@@ -1226,24 +1226,35 @@ void element_draw_text_field(element_type *element,int sel_id)
 
 		// control text
 
-	strcpy(txt,element->value_str);
-	if (element_open_text_field_id==element->id) strcat(txt,"_");
-
 	gl_text_start(font_interface_index,hud.font.text_size_small);
 		
 	if (element->enabled) {
 		if (element->id==element_open_text_field_id) {
-			gl_text_draw((x+15),(ky-1),txt,tx_left,TRUE,&hud.color.control_mouse_over,1.0f);
+			gl_text_draw((x+15),(ky-2),element->value_str,tx_left,TRUE,&hud.color.control_mouse_over,1.0f);
 		}
 		else {
-			gl_text_draw((x+15),(ky-1),txt,tx_left,TRUE,&hud.color.control_text,1.0f);
+			gl_text_draw((x+15),(ky-2),element->value_str,tx_left,TRUE,&hud.color.control_text,1.0f);
 		}
 	}
 	else {
-		gl_text_draw((x+15),(ky-1),txt,tx_left,TRUE,&hud.color.control_disabled,1.0f);
+		gl_text_draw((x+15),(ky-2),element->value_str,tx_left,TRUE,&hud.color.control_disabled,1.0f);
 	}
 	
 	gl_text_end();
+
+		// flashing cursor
+
+	if (element_open_text_field_id!=element->id) return;
+	if ((game_time_get_raw()&0x200)==0x0) return;
+
+	wid=gl_text_get_string_width(font_interface_index,hud.font.text_size_small,element->value_str);
+
+	top+=3;
+	bot-=3;
+	lft+=(wid+8);
+	rgt=lft+((bot-top)>>1);
+
+	view_draw_next_vertex_object_2D_color_quad(&hud.color.control_mouse_over,1.0f,lft,rgt,top,bot);
 }
 
 /* =======================================================

@@ -168,7 +168,7 @@ void console_add_error(char *txt)
 		
 	if (setup.debug_console) {
 		view.console.on=TRUE;
-		input_clear_all_last_raw_key();
+		input_clear_text_input();
 	}
 }
 

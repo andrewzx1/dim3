@@ -141,10 +141,13 @@ void palette_palette_spot_set_parameter(int idx,char *param_list,char *str)
       
 ======================================================= */
 
-void property_palette_fill_spot(spot_type *spot)
+void property_palette_fill_spot(int spot_idx)
 {
 	int				n;
 	char			name[256],str[256];
+	spot_type		*spot;
+
+	spot=&map.spots[spot_idx];
 
 	list_palette_add_header(&property_palette,0,"Spot Settings");
 	list_palette_add_string(&property_palette,kSpotPropertyName,"Name",spot->name);
@@ -168,8 +171,12 @@ void property_palette_fill_spot(spot_type *spot)
       
 ======================================================= */
 
-void property_palette_click_spot(spot_type *spot,int id)
+void property_palette_click_spot(int spot_idx,int id)
 {
+	spot_type		*spot;
+
+	spot=&map.spots[spot_idx];
+
 		// parameters
 
 	if ((id>=kSpotPropertyParamsStart) && (id<=kSpotPropertyParamsEnd)) {

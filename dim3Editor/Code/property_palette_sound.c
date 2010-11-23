@@ -50,8 +50,12 @@ extern list_palette_type		property_palette;
       
 ======================================================= */
 
-void property_palette_fill_sound(map_sound_type *sound)
+void property_palette_fill_sound(int sound_idx)
 {
+	map_sound_type		*sound;
+
+	sound=&map.sounds[sound_idx];
+
 	list_palette_add_header(&property_palette,0,"Sound Settings");
 	list_palette_add_checkbox(&property_palette,kSoundPropertyOn,"On",sound->on);
 
@@ -66,8 +70,12 @@ void property_palette_fill_sound(map_sound_type *sound)
       
 ======================================================= */
 
-void property_palette_click_sound(map_sound_type *sound,int id)
+void property_palette_click_sound(int sound_idx,int id)
 {
+	map_sound_type		*sound;
+
+	sound=&map.sounds[sound_idx];
+
 	switch (id) {
 
 		case kSoundPropertyOn:

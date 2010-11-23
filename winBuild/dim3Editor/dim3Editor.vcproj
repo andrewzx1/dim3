@@ -394,10 +394,6 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\dim3Editor\Code\property_palette_polygon.c"
-						>
-					</File>
-					<File
 						RelativePath="..\..\dim3Editor\Code\property_palette_scenery.c"
 						>
 					</File>

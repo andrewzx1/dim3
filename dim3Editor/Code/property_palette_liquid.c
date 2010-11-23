@@ -34,26 +34,35 @@ and can be sold or given away.
 #include "view.h"
 #include "dialog.h"
 
-#define kLiquidPropertyNeverObscure			0
-#define kLiquidPropertyNoDraw				1
+#define kLiquidPropertyWaveFlat				0
+#define kLiquidPropertyNeverObscure			1
+#define kLiquidPropertyNeverCull			2
+#define kLiquidPropertyNoDraw				3
 
-#define kLiquidPropertyColor				2
-#define kLiquidPropertyTintAlpha			3
-#define kLiquidPropertyDepth				4
-#define kLiquidPropertySpeedAlter			6
-#define kLiquidPropertySoundName			5
+#define kLiquidPropertyColor				4
+#define kLiquidPropertyTintAlpha			5
+#define kLiquidPropertyDepth				6
+#define kLiquidPropertySpeedAlter			7
+#define kLiquidPropertySoundName			8
 
-#define kLiquidPropertyWaveSize				7
-#define kLiquidPropertyTideSize				8
-#define kLiquidPropertyTideRate				9
-#define kLiquidPropertyTideDirection		10
-#define kLiquidPropertyWaveFlat				11
-
-#define kLiquidPropertyGroup				12
+#define kLiquidPropertyWaveSize				9
+#define kLiquidPropertyTideSize				10
+#define kLiquidPropertyTideRate				11
+#define kLiquidPropertyTideDirection		12
 
 #define kLiquidPropertyHarm					13
 #define kLiquidPropertyDrownTick			14
 #define kLiquidPropertyDrownHarm			15
+
+#define kLiquidPropertyGroup				16
+
+#define kLiquidPropertyOffX					20
+#define kLiquidPropertyOffY					21
+#define kLiquidPropertySizeX				22
+#define kLiquidPropertySizeY				23
+#define kLiquidPropertyShiftX				24
+#define kLiquidPropertyShiftY				25
+#define kLiquidPropertyCamera				26
 
 extern map_type					map;
 extern editor_state_type		state;
@@ -69,11 +78,17 @@ char							liquid_property_tide_direction_list[][name_str_len]={"Horizontal","Ve
       
 ======================================================= */
 
-void property_palette_fill_liquid(map_liquid_type *liq)
+void property_palette_fill_liquid(int liq_idx)
 {
+	map_liquid_type			*liq;
+	editor_view_type		*view;
+
+	liq=&map.liquid.liquids[liq_idx];
+
 	list_palette_add_header(&property_palette,0,"Liquid Settings");
 	list_palette_add_checkbox(&property_palette,kLiquidPropertyWaveFlat,"Draw as Flat Surface",liq->tide.flat);
 	list_palette_add_checkbox(&property_palette,kLiquidPropertyNeverObscure,"Never Obscure",liq->never_obscure);
+	list_palette_add_checkbox(&property_palette,kLiquidPropertyNeverCull,"Never Cull",liq->never_cull);
 	list_palette_add_checkbox(&property_palette,kLiquidPropertyNoDraw,"No Draw (Volume Only)",liq->no_draw);
 
 	list_palette_add_header(&property_palette,0,"Liquid Under");
@@ -101,6 +116,27 @@ void property_palette_fill_liquid(map_liquid_type *liq)
 	else {
 		list_palette_add_string(&property_palette,kLiquidPropertyGroup,"Group",map.group.groups[liq->group_idx].name);
 	}
+
+	view=view_get_current_view();
+	
+	list_palette_add_header(&property_palette,0,"Liquid UVs");
+	if (view->uv_layer==uv_layer_normal) {
+		list_palette_add_string_float(&property_palette,kLiquidPropertyOffX,"X Offset",liq->main_uv.x_offset);
+		list_palette_add_string_float(&property_palette,kLiquidPropertyOffY,"Y Offset",liq->main_uv.y_offset);
+		list_palette_add_string_float(&property_palette,kLiquidPropertySizeX,"X Size",liq->main_uv.x_size);
+		list_palette_add_string_float(&property_palette,kLiquidPropertySizeY,"Y Size",liq->main_uv.y_size);
+	}
+	else {
+		list_palette_add_string_float(&property_palette,kLiquidPropertyOffX,"X Offset",liq->lmap_uv.x_offset);
+		list_palette_add_string_float(&property_palette,kLiquidPropertyOffY,"Y Offset",liq->lmap_uv.y_offset);
+		list_palette_add_string_float(&property_palette,kLiquidPropertySizeX,"X Size",liq->lmap_uv.x_size);
+		list_palette_add_string_float(&property_palette,kLiquidPropertySizeY,"Y Size",liq->lmap_uv.y_size);
+	}
+	list_palette_add_string_float(&property_palette,kLiquidPropertyShiftX,"X Shift",liq->x_shift);
+	list_palette_add_string_float(&property_palette,kLiquidPropertyShiftY,"Y Shift",liq->y_shift);
+
+	list_palette_add_header(&property_palette,0,"Liquid Camera");
+	list_palette_add_string(&property_palette,kLiquidPropertyCamera,"Node",liq->camera);
 }
 
 /* =======================================================
@@ -109,8 +145,13 @@ void property_palette_fill_liquid(map_liquid_type *liq)
       
 ======================================================= */
 
-void property_palette_click_liquid(map_liquid_type *liq,int id)
+void property_palette_click_liquid(int liq_idx,int id)
 {
+	map_liquid_type			*liq;
+//	editor_view_type		*view;
+
+	liq=&map.liquid.liquids[liq_idx];
+
 	switch (id) {
 
 		case kLiquidPropertyWaveFlat:
@@ -119,6 +160,10 @@ void property_palette_click_liquid(map_liquid_type *liq,int id)
 
 		case kLiquidPropertyNeverObscure:
 			liq->never_obscure=!liq->never_obscure;
+			break;
+
+		case kLiquidPropertyNeverCull:
+			liq->never_cull=!liq->never_cull;
 			break;
 
 		case kLiquidPropertyNoDraw:
@@ -138,6 +183,13 @@ void property_palette_click_liquid(map_liquid_type *liq,int id)
 		case kLiquidPropertyDrownTick:
 		case kLiquidPropertyDrownHarm:
 		case kLiquidPropertyGroup:
+		case kLiquidPropertyOffX:
+		case kLiquidPropertyOffY:
+		case kLiquidPropertySizeX:
+		case kLiquidPropertySizeY:
+		case kLiquidPropertyShiftX:
+		case kLiquidPropertyShiftY:
+		case kLiquidPropertyCamera:
 			break;
 
 	}

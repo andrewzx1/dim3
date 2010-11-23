@@ -48,8 +48,9 @@ extern void input_mouse_resume(void);
 extern void input_event_mouse_button(int button,bool down);
 extern void input_event_mouse_motion(int x,int y);
 extern void input_event_mouse_wheel(int y);
-extern bool input_get_mouse_button(int button_idx);
 extern void input_get_mouse_movement(float *x,float *y);
+extern bool input_get_mouse_button(int button_idx);
+extern void input_mouse_wheel_reset(void);
 
 extern void input_gui_set_mouse(int x,int y);
 extern void input_gui_get_mouse_position(int *x,int *y);
@@ -57,12 +58,12 @@ extern bool input_gui_get_mouse_left_button_down(void);
 extern void input_gui_wait_mouse_left_button_up(void);
 
 extern void input_clear_keyboard(void);
-extern void input_event_keydown(int key);
+extern void input_event_key(int key_idx,bool down);
+extern bool input_get_keyboard_escape(void);
+extern bool input_get_keyboard_return(void);
 extern bool input_get_keyboard_key(int key_idx);
-extern void input_clear_last_raw_key(void);
-extern void input_clear_all_last_raw_key(void);
-extern char input_get_last_raw_key(void);
-extern char input_gui_get_keyboard_key(bool filter_esc);
+extern void input_clear_text_input(void);
+extern char input_get_text_input_key(void);
 
 extern bool input_joystick_initialize(void);
 extern void input_joystick_shutdown(void);

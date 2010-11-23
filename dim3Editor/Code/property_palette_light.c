@@ -58,8 +58,12 @@ char							light_property_type_list[][name_str_len]={"Normal","Blink","Glow","Pu
       
 ======================================================= */
 
-void property_palette_fill_light(map_light_type *light)
+void property_palette_fill_light(int light_idx)
 {
+	map_light_type		*light;
+
+	light=&map.lights[light_idx];
+
 	list_palette_add_header(&property_palette,0,"Light Settings");
 	list_palette_add_checkbox(&property_palette,kLightPropertyOn,"On",light->on);
 	list_palette_add_checkbox(&property_palette,kLightPropertyLightMap,"Used in Light Map",light->light_map);
@@ -81,8 +85,12 @@ void property_palette_fill_light(map_light_type *light)
       
 ======================================================= */
 
-void property_palette_click_light(map_light_type *light,int id)
+void property_palette_click_light(int light_idx,int id)
 {
+	map_light_type		*light;
+
+	light=&map.lights[light_idx];
+
 	switch (id) {
 
 		case kLightPropertyOn:

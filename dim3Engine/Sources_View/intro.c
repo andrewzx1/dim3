@@ -290,12 +290,9 @@ void intro_click(void)
 
 void intro_key(void)
 {
-	char			ch;
-	
 		// check for esc
 		
-	ch=input_gui_get_keyboard_key(FALSE);
-	if (ch!=0x1B) {
+	if (!input_get_keyboard_escape()) {
 		intro_esc_down=FALSE;
 		return;
 	}
