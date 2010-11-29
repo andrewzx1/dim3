@@ -40,11 +40,15 @@ extern js_type			js;
 JSValueRef js_script_implements_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_script_attach_event_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_script_call_parent_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_script_get_parent_variable_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_script_call_parent_function_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 JSStaticFunction	script_functions[]={
-							{"implements",			js_script_implements_func,			kJSPropertyAttributeDontDelete},
-							{"attachEvent",			js_script_attach_event_func,		kJSPropertyAttributeDontDelete},
-							{"callParent",			js_script_call_parent_func,			kJSPropertyAttributeDontDelete},
+							{"implements",			js_script_implements_func,				kJSPropertyAttributeDontDelete},
+							{"attachEvent",			js_script_attach_event_func,			kJSPropertyAttributeDontDelete},
+							{"callParent",			js_script_call_parent_func,				kJSPropertyAttributeDontDelete},
+							{"getParentVariable",	js_script_get_parent_variable_func,		kJSPropertyAttributeDontDelete},
+							{"callParentFunction",	js_script_call_parent_function_func,	kJSPropertyAttributeDontDelete},
 							{0,0,0}};
 
 JSClassRef			script_class;
@@ -134,4 +138,49 @@ JSValueRef js_script_call_parent_func(JSContextRef cx,JSObjectRef func,JSObjectR
 	}
 
 	return(script_null_to_value(cx));
+}
+
+JSValueRef js_script_get_parent_variable_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+{
+	char			prop_name[256],err_str[256];
+	JSValueRef		rval;
+	
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+
+	script_value_to_string(cx,argv[0],prop_name,256);
+
+	rval=scripts_get_parent_variable(&js.attach,prop_name,err_str);
+	if (rval==NULL) {
+		*exception=script_create_exception(cx,err_str);
+		return(script_null_to_value(cx));
+	}
+
+	return(rval);
+}
+
+JSValueRef js_script_call_parent_function_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+{
+	int				n,arg_count;
+	char			func_name[256],err_str[256];
+	JSValueRef		rval,args[20];
+	
+	if (!script_check_param_at_least_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+
+	script_value_to_string(cx,argv[0],func_name,256);
+
+	arg_count=argc-1;
+	if (arg_count<0) arg_count=0;
+	if (arg_count>20) arg_count=20;
+
+	for (n=0;n!=arg_count;n++) {
+		args[n]=argv[n+1];
+	}
+
+	rval=scripts_call_parent_function(&js.attach,func_name,arg_count,args,err_str);
+	if (rval==NULL) {
+		*exception=script_create_exception(cx,err_str);
+		return(script_null_to_value(cx));
+	}
+
+	return(rval);
 }

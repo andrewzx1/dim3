@@ -128,6 +128,8 @@ void palette_reset(void)
 {
 	int			type,main_idx,sub_idx,cur_type;
 	
+	return;	// supergumba
+	
 		// if no palettes
 		
 	if (select_count()==0) {

@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		260AE9350F832A5B00451942 /* gl_back_render.c in Sources */ = {isa = PBXBuildFile; fileRef = 260AE9340F832A5B00451942 /* gl_back_render.c */; };
+		260C145C129C770800B6D5B5 /* SDLMain.h in Headers */ = {isa = PBXBuildFile; fileRef = 260C145A129C770800B6D5B5 /* SDLMain.h */; };
+		260C145D129C770800B6D5B5 /* SDLMain.m in Sources */ = {isa = PBXBuildFile; fileRef = 260C145B129C770800B6D5B5 /* SDLMain.m */; };
 		26100DED10BB5156002B3FA1 /* gl_shader_core.c in Sources */ = {isa = PBXBuildFile; fileRef = 26100DEA10BB5156002B3FA1 /* gl_shader_core.c */; };
 		26100DEE10BB5156002B3FA1 /* gl_shader_fullscreen.c in Sources */ = {isa = PBXBuildFile; fileRef = 26100DEB10BB5156002B3FA1 /* gl_shader_fullscreen.c */; };
 		26100DEF10BB5156002B3FA1 /* gl_shader_user.c in Sources */ = {isa = PBXBuildFile; fileRef = 26100DEC10BB5156002B3FA1 /* gl_shader_user.c */; };
@@ -386,6 +388,8 @@
 		0867D6ABFE840B52C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		20286C33FDCF999611CA2CEA /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
 		260AE9340F832A5B00451942 /* gl_back_render.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = gl_back_render.c; path = Sources_View/gl_back_render.c; sourceTree = "<group>"; };
+		260C145A129C770800B6D5B5 /* SDLMain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDLMain.h; path = SDL/SDLMain.h; sourceTree = "<group>"; };
+		260C145B129C770800B6D5B5 /* SDLMain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SDLMain.m; path = SDL/SDLMain.m; sourceTree = "<group>"; };
 		26100DEA10BB5156002B3FA1 /* gl_shader_core.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = gl_shader_core.c; path = Sources_View/gl_shader_core.c; sourceTree = "<group>"; };
 		26100DEB10BB5156002B3FA1 /* gl_shader_fullscreen.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = gl_shader_fullscreen.c; path = Sources_View/gl_shader_fullscreen.c; sourceTree = "<group>"; };
 		26100DEC10BB5156002B3FA1 /* gl_shader_user.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = gl_shader_user.c; path = Sources_View/gl_shader_user.c; sourceTree = "<group>"; };
@@ -1497,6 +1501,8 @@
 				F5C5EB0D0913264E00F94729 /* file.c */,
 				F5C5EB0E0913264E00F94729 /* debug.c */,
 				F5C5EB0A0913264E00F94729 /* main.c */,
+				260C145A129C770800B6D5B5 /* SDLMain.h */,
+				260C145B129C770800B6D5B5 /* SDLMain.m */,
 			);
 			name = Sources;
 			sourceTree = "<group>";
@@ -1540,6 +1546,7 @@
 				26F08CBA0DAC7E990097E249 /* network_defs.h in Headers */,
 				268CBC8C0DD2AA6700CF0256 /* network.h in Headers */,
 				26FDC442113A45A6002D987E /* timing.h in Headers */,
+				260C145C129C770800B6D5B5 /* SDLMain.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1906,6 +1913,7 @@
 				262CFBBA1212046200BD4214 /* gl_es_patches.c in Sources */,
 				26A6D507122A203E00EE3149 /* script_script.c in Sources */,
 				26E8DBB31270E88C00ACA294 /* cinema.c in Sources */,
+				260C145D129C770800B6D5B5 /* SDLMain.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

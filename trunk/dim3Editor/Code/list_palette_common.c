@@ -158,7 +158,14 @@ void list_palette_add_string(list_palette_type *list,int id,char *name,char *val
 	item->selected=FALSE;
 
 	strcpy(item->name,name);
-	strcpy(item->value.str,value);
+	
+	if (strlen(value)>=20) {
+		strncpy(item->value.str,value,20);
+		strcpy((char*)&item->value.str[20],"...");
+	}
+	else {
+		strcpy(item->value.str,value);
+	}
 }
 
 void list_palette_add_string_int(list_palette_type *list,int id,char *name,int value)

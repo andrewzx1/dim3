@@ -276,3 +276,60 @@ void property_palette_click(d3pnt *pnt,bool double_click)
 
 	}
 }
+
+/* =======================================================
+
+      Property Palette Editing Utilities
+      
+======================================================= */
+
+void property_palette_pick_group(int *group_idx)
+{
+	dialog_property_list_index_run((char*)map.group.groups,map.group.ngroup,sizeof(group_type),(int)offsetof(group_type,name),TRUE,group_idx);
+}
+
+void property_palette_pick_node(char *name)
+{
+	int				n,count,mem_sz,list_pos,idx;
+	char			*list_ptr,*list;
+	
+		// only pick from nodes with names
+		
+	count=0;
+	
+	for (n=0;n!=map.nnode;n++) {
+		if (map.nodes[n].name[0]!=0x0) count++;
+	}
+	
+	if (count==0) {
+		mem_sz=name_str_len;
+	}
+	else {
+		mem_sz=count*name_str_len;
+	}
+	
+	list_ptr=(char*)malloc(mem_sz);
+	if (list_ptr==NULL) return;
+	
+	idx=-1;
+	list_pos=0;
+	
+	for (n=0;n!=map.nnode;n++) {
+		if (map.nodes[n].name[0]==0x0) continue;
+		
+		list=list_ptr+(list_pos*name_str_len);
+		strcpy(list,map.nodes[n].name);
+			
+		if (strcmp(map.nodes[n].name,name)==0) idx=list_pos;
+		list_pos++;
+	}
+	
+	dialog_property_list_index_run(list_ptr,count,name_str_len,0,TRUE,&idx);
+	
+	name[0]=0x0;
+	if (idx!=-1) strcpy(name,(list_ptr+(idx*name_str_len)));
+	
+	free(list_ptr);
+}
+
+

@@ -455,7 +455,7 @@ bool script_is_prop_global_object(char *name)
       
 ======================================================= */
 
-inline void script_set_single_property(JSContextRef cx,JSObjectRef j_obj,const char *prop_name,JSValueRef vp,int flags)
+void script_set_single_property(JSContextRef cx,JSObjectRef j_obj,const char *prop_name,JSValueRef vp,int flags)
 {
 	JSStringRef			j_prop_name;
 
@@ -464,7 +464,7 @@ inline void script_set_single_property(JSContextRef cx,JSObjectRef j_obj,const c
 	JSStringRelease(j_prop_name);
 }
 
-inline JSValueRef script_get_single_property(JSContextRef cx,JSObjectRef j_obj,const char *prop_name)
+JSValueRef script_get_single_property(JSContextRef cx,JSObjectRef j_obj,const char *prop_name)
 {
 	JSStringRef			j_prop_name;
 	JSValueRef			vp;
@@ -474,6 +474,38 @@ inline JSValueRef script_get_single_property(JSContextRef cx,JSObjectRef j_obj,c
 	JSStringRelease(j_prop_name);
 
 	return(vp);
+}
+
+JSValueRef script_get_single_property_with_has_check(JSContextRef cx,JSObjectRef j_obj,const char *prop_name)
+{
+	JSStringRef			j_prop_name;
+	JSValueRef			vp;
+
+	j_prop_name=JSStringCreateWithUTF8CString(prop_name);
+	
+	if (!JSObjectHasProperty(cx,j_obj,j_prop_name)) {
+		JSStringRelease(j_prop_name);
+		return(NULL);
+	}
+
+	vp=JSObjectGetProperty(cx,j_obj,j_prop_name,NULL);
+	
+	JSStringRelease(j_prop_name);
+
+	return(vp);
+}
+
+JSObjectRef script_get_single_function(JSContextRef cx,JSObjectRef j_obj,const char *func_name)
+{
+	JSValueRef			vp;
+	
+	vp=script_get_single_property(cx,j_obj,func_name);
+	if (vp==NULL) return(NULL);
+	if (JSValueIsNull(cx,vp)) return(NULL);
+	if (!JSValueIsObject(cx,vp)) return(NULL);
+	if (!JSObjectIsFunction(cx,(JSObjectRef)vp)) return(NULL);
+	
+	return((JSObjectRef)vp);
 }
 
 bool script_check_param_count(JSContextRef cx,JSObjectRef func,int argc,int need_argc,JSValueRef *exception)

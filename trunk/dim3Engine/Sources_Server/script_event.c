@@ -475,8 +475,8 @@ JSValueRef js_event_get_message_data_func(JSContextRef cx,JSObjectRef func,JSObj
 JSValueRef js_event_call_object_by_id_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				n,arg_count;
-	char			func_name[64];
-	JSValueRef		args[20];
+	char			func_name[64],err_str[256];
+	JSValueRef		rval,args[20];
 	obj_type		*obj;
 
 	if (!script_check_param_at_least_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
@@ -484,7 +484,7 @@ JSValueRef js_event_call_object_by_id_func(JSContextRef cx,JSObjectRef func,JSOb
 		// get arguments
 
 	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
-	if (obj==NULL) return(script_bool_to_value(cx,FALSE));
+	if (obj==NULL) return(script_null_to_value(cx));
 
 	script_value_to_string(cx,argv[1],func_name,64);
 
@@ -498,14 +498,20 @@ JSValueRef js_event_call_object_by_id_func(JSContextRef cx,JSObjectRef func,JSOb
 
 		// call function
 
-	return(scripts_direct_call(&obj->attach,func_name,arg_count,args,exception));
+	rval=scripts_direct_call(&obj->attach,func_name,arg_count,args,err_str);
+	if (rval==NULL) {
+		*exception=script_create_exception(cx,err_str);
+		return(script_null_to_value(cx));
+	}
+	
+	return(rval);
 }
 
 JSValueRef js_event_call_course_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				n,arg_count;
-	char			func_name[64];
-	JSValueRef		args[20];
+	char			func_name[64],err_str[256];
+	JSValueRef		rval,args[20];
 
 	if (!script_check_param_at_least_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
@@ -523,14 +529,20 @@ JSValueRef js_event_call_course_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 
 		// call function
 
-	return(scripts_direct_call(&js.course_attach,func_name,arg_count,args,exception));
+	rval=scripts_direct_call(&js.course_attach,func_name,arg_count,args,err_str);
+	if (rval==NULL) {
+		*exception=script_create_exception(cx,err_str);
+		return(script_null_to_value(cx));
+	}
+	
+	return(rval);
 }
 
 JSValueRef js_event_call_game_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				n,arg_count;
-	char			func_name[64];
-	JSValueRef			args[20];
+	char			func_name[64],err_str[256];
+	JSValueRef		rval,args[20];
 
 	if (!script_check_param_at_least_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
@@ -548,5 +560,11 @@ JSValueRef js_event_call_game_func(JSContextRef cx,JSObjectRef func,JSObjectRef 
 
 		// call function
 
-	return(scripts_direct_call(&js.game_attach,func_name,arg_count,args,exception));
+	rval=scripts_direct_call(&js.game_attach,func_name,arg_count,args,err_str);
+	if (rval==NULL) {
+		*exception=script_create_exception(cx,err_str);
+		return(script_null_to_value(cx));
+	}
+	
+	return(rval);
 }
