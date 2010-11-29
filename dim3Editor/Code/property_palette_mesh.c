@@ -234,7 +234,12 @@ void property_palette_click_mesh(int mesh_idx,int poly_idx,int id)
 
 		case kMeshPropertyHideMode:
 		case kMeshPropertyNormalMode:
+			break;
+			
 		case kMeshPropertyGroup:
+			property_palette_pick_group(&mesh->group_idx);
+			break;
+			
 		case kMeshPropertyRotX:
 		case kMeshPropertyRotY:
 		case kMeshPropertyRotZ:
@@ -294,7 +299,10 @@ void property_palette_click_mesh(int mesh_idx,int poly_idx,int id)
 			case kMeshPolyPropertySizeY:
 			case kMeshPolyPropertyShiftX:
 			case kMeshPolyPropertyShiftY:
+				break;
+				
 			case kMeshPolyPropertyCamera:
+				property_palette_pick_node(poly->camera);
 				break;
 
 		}

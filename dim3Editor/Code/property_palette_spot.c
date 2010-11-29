@@ -155,7 +155,7 @@ void property_palette_fill_spot(int spot_idx)
 	list_palette_add_string(&property_palette,kSpotPropertyScript,"Script",spot->script);
 	list_palette_add_string(&property_palette,kSpotPropertySkill,"Skill",spot_property_skill_list[spot->skill]);
 	list_palette_add_string(&property_palette,kSpotPropertySpawn,"Spawn",spot_property_spawn_list[spot->spawn]);
-	list_palette_add_string(&property_palette,kSpotPropertyDisplayModel,"Display Model",spot->display_model);
+	list_palette_add_string(&property_palette,kSpotPropertyDisplayModel,"Model",spot->display_model);
 
 	list_palette_add_header(&property_palette,0,"Spot Parameters");
 	for (n=0;n!=10;n++) {

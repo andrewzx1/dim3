@@ -134,5 +134,9 @@ extern void dialog_texture_setting_run(int txt_idx);
 extern bool dialog_height_import_run(int *div_cnt,int *size,int *high);
 extern bool dialog_map_auto_generate_setting_run(void);
 
+//
+// property dialogs
+//
 
+extern void dialog_property_list_index_run(char *list_ptr,int list_count,int list_item_sz,int list_name_offset,bool include_none,int *idx);
 

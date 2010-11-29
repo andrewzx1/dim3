@@ -113,7 +113,7 @@ void input_event_key(int key_idx,bool down)
 		// check for cmd-q quits
 
 #ifdef D3_OS_MAC
-	if (key==SDL_SCANCODE_Q) {
+	if (key_idx==SDL_SCANCODE_Q) {
 		mod=SDL_GetModState();
 		if (((mod&KMOD_LMETA)!=0) || ((mod&KMOD_RMETA))) {
 			game_loop_quit=TRUE;

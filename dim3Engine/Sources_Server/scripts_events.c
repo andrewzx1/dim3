@@ -46,22 +46,9 @@ extern setup_type			setup;
       
 ======================================================= */
 
-bool scripts_setup_events(script_type *script,char *err_str)
+void scripts_setup_events(script_type *script)
 {
-		// cache event function
-		
-	script->event_func=(JSObjectRef)script_get_single_property(script->cx,script->global_obj,"event");
-	
-		// determine if event exists and is callable
-		
-	if (!JSValueIsObject(script->cx,script->event_func)) {
-		script->event_func=NULL;
-	}
-	else {
-		if (!JSObjectIsFunction(script->cx,script->event_func)) script->event_func=NULL;
-	}
-	
-	return(TRUE);
+	script->event_func=script_get_single_function(script->cx,script->global_obj,"event");
 }
 
 bool scripts_setup_event_attach(attach_type *attach,int main_event,char *func_name,char *err_str)
@@ -77,18 +64,8 @@ bool scripts_setup_event_attach(attach_type *attach,int main_event,char *func_na
 
 		// get the func and determine if
 		// it exists and is callable
-
-	func=(JSObjectRef)script_get_single_property(script->cx,script->global_obj,func_name);
 		
-	if (func!=NULL) {
-		if (!JSValueIsObject(script->cx,func)) {
-			func=NULL;
-		}
-		else {
-			if (!JSObjectIsFunction(script->cx,func)) func=NULL;
-		}
-	}
-
+	func=script_get_single_function(script->cx,script->global_obj,func_name);
 	if (func==NULL) {
 		sprintf(err_str,"[%s] '%s' does not exist or is not a callable function",script->name,func_name);
 		return(FALSE);
@@ -301,6 +278,65 @@ bool scripts_post_event_call_parent(attach_type *attach,char *err_str)
 	return(scripts_post_event(&parent_attach,attach->event_state.main_event,attach->event_state.sub_event,attach->event_state.id,err_str));
 }
 
+JSValueRef scripts_get_parent_variable(attach_type *attach,char *prop_name,char *err_str)
+{
+	script_type		*script,*parent_script;
+	JSValueRef		rval;
+
+	if (attach->script_idx==-1) {
+		strcpy(err_str,"Script in bad state");
+		return(NULL);
+	}
+	
+		// get the parent script
+
+	script=js.script_list.scripts[attach->script_idx];
+	if (script->parent_idx==-1) {
+		strcpy(err_str,"Can not get parent variable; this script does not implement a parent script");
+		return(FALSE);
+	}
+	
+	parent_script=js.script_list.scripts[script->parent_idx];
+
+		// get variable
+
+	rval=script_get_single_property_with_has_check(parent_script->cx,parent_script->global_obj,prop_name);
+	if (rval==NULL) {
+		sprintf(err_str,"Parent has no variable named: %s",prop_name);
+		return(NULL);
+	}
+
+	return(rval);
+}
+
+JSValueRef scripts_call_parent_function(attach_type *attach,char *func_name,int arg_count,JSValueRef *args,char *err_str)
+{
+	attach_type		parent_attach;
+	script_type		*script;
+
+	if (attach->script_idx==-1) {
+		strcpy(err_str,"Script in bad state");
+		return(NULL);
+	}
+	
+		// get the parent script
+
+	script=js.script_list.scripts[attach->script_idx];
+	if (script->parent_idx==-1) {
+		strcpy(err_str,"Can not get parent variable; this script does not implement a parent script");
+		return(FALSE);
+	}
+	
+		// create attach
+
+	memmove(&parent_attach,attach,sizeof(attach_type));
+	parent_attach.script_idx=script->parent_idx;
+
+		// call the function
+
+	return(scripts_direct_call(&parent_attach,func_name,arg_count,args,err_str));
+}
+
 /* =======================================================
 
       Script Chains
@@ -309,8 +345,7 @@ bool scripts_post_event_call_parent(attach_type *attach,char *err_str)
 
 bool scripts_chain(attach_type *attach,char *func_name,char *err_str)
 {
-	bool			good_chain;
-	JSValueRef		vp,rval,exception,argv[2];
+	JSValueRef		rval,exception,argv[2];
 	JSObjectRef		func_obj;
 	script_type		*script;
 	attach_type		old_attach;
@@ -327,19 +362,8 @@ bool scripts_chain(attach_type *attach,char *func_name,char *err_str)
 	
 		// is the chain a good function?
 		
-	good_chain=FALSE;
-
-	vp=script_get_single_property(script->cx,script->global_obj,func_name);
-	if (vp!=NULL) {
-		if (!JSValueIsNull(script->cx,vp)) {
-			if (JSValueIsObject(script->cx,vp)) {
-				func_obj=(JSObjectRef)vp;
-				if (JSObjectIsFunction(script->cx,func_obj)) good_chain=TRUE;
-			}
-		}
-	}
-
-	if (!good_chain) {
+	func_obj=script_get_single_function(script->cx,script->global_obj,func_name);
+	if (func_obj==NULL) {
 		sprintf(err_str,"Timer: Chaining failed, unknown or non-callable function: %s",func_name);
 		return(FALSE);
 	}
@@ -392,11 +416,10 @@ void scripts_chain_console(attach_type *attach,char *func_name)
       
 ======================================================= */
 
-JSValueRef scripts_direct_call(attach_type *attach,char *func_name,int arg_count,JSValueRef *args,JSValueRef *exception)
+JSValueRef scripts_direct_call(attach_type *attach,char *func_name,int arg_count,JSValueRef *args,char *err_str)
 {
 	int				n;
-	char			err_str[256];
-	JSValueRef		rval,argv[5];
+	JSValueRef		rval,exception,argv[5];
 	JSObjectRef		func_obj;
 	script_type		*script;
 	attach_type		old_attach;
@@ -407,18 +430,14 @@ JSValueRef scripts_direct_call(attach_type *attach,char *func_name,int arg_count
 
 		// enter recursion
 
-	if (!scripts_recursion_in(script,err_str)) {
-		*exception=script_create_exception(script->cx,err_str);
-		return(script_null_to_value(script->cx));
-	}
+	if (!scripts_recursion_in(script,err_str)) return(NULL);
 
 		// find function
 
-	func_obj=(JSObjectRef)script_get_single_property(script->cx,script->global_obj,func_name);
+	func_obj=script_get_single_function(script->cx,script->global_obj,func_name);
 	if (func_obj==NULL) {
 		sprintf(err_str,"Call failed, unknown function: %s",func_name);
-		*exception=script_create_exception(script->cx,err_str);
-		return(script_null_to_value(script->cx));
+		return(NULL);
 	}
 	
 		// save current attach in case event called within another script
@@ -429,7 +448,7 @@ JSValueRef scripts_direct_call(attach_type *attach,char *func_name,int arg_count
 		
 	memmove(&js.attach,attach,sizeof(attach_type));
 
-		// run the event function
+		// call the function
 		
 	argv[0]=(JSValueRef)script->obj;
 
@@ -437,9 +456,12 @@ JSValueRef scripts_direct_call(attach_type *attach,char *func_name,int arg_count
 		argv[n+1]=args[n];
 	}
 
-	rval=JSObjectCallAsFunction(script->cx,func_obj,NULL,(arg_count+1),argv,exception);
-	if (rval==NULL) rval=script_null_to_value(script->cx);
-		
+	rval=JSObjectCallAsFunction(script->cx,func_obj,NULL,(arg_count+1),argv,&exception);
+	if (rval==NULL) {
+		script_exception_to_string(script->cx,exception,err_str,256);
+		return(NULL);
+	}
+	
 		// restore old attach
 		
 	memmove(&js.attach,&old_attach,sizeof(attach_type));

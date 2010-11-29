@@ -183,19 +183,21 @@ bool scripts_execute(attach_type *attach,script_type *script,char *err_str)
 
 	JSStringRelease(j_script_name);
 	JSStringRelease(j_script_data);
-
-	if (rval==NULL) {
-		script_exception_to_string(script->cx,exception,err_str,256);
-		return(FALSE);
-	}
 	
 		// restore attach
 		
 	memmove(&js.attach,&old_attach,sizeof(attach_type));
 
+		// check for errors
+		
+	if (rval==NULL) {
+		script_exception_to_string(script->cx,exception,err_str,256);
+		return(FALSE);
+	}
+
 		// get a pointer to the event object
 		
-	if (!scripts_setup_events(script,err_str)) return(FALSE);
+	scripts_setup_events(script);
 	
 		// send the construct event
 	

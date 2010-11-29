@@ -90,9 +90,10 @@ bool gl_initialize(int screen_wid,int screen_high,bool lock_fps_refresh,int fsaa
 #endif
     GLint				ntxtunit,ntxtsize;
 #ifdef D3_OS_MAC
-    long				swapint,rect[4];
+    long				swapint;
 	CGLContextObj		current_ctx;
 	CFDictionaryRef		mode_info;
+	CFNumberRef			cf_rate;
 #else
 	GLenum				glew_error;
 #endif
@@ -236,18 +237,6 @@ bool gl_initialize(int screen_wid,int screen_high,bool lock_fps_refresh,int fsaa
 #endif
 
         // setup renderer
-
-#ifdef D3_OS_MAC
-	current_ctx=CGLGetCurrentContext();
-	
-	rect[0]=render_info.view_x;
-	rect[1]=render_info.view_y;
-	rect[2]=setup.screen.x_sz;
-	rect[3]=setup.screen.y_sz;
- 
- 	CGLSetParameter(current_ctx,kCGLCPSwapRectangle,rect);
-	CGLEnable(current_ctx,kCGLCESwapRectangle);
-#endif
 
 #ifdef D3_SDL_1_3
 	if (lock_fps_refresh) SDL_GL_SetSwapInterval(1);
