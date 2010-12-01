@@ -29,7 +29,7 @@ extern void input_initialize(bool in_window);
 extern void input_shutdown(void);
 extern void input_clear(void);
 extern void input_set_key_start(void);
-extern bool input_set_key_wait(char *name,bool *no_key_up);
+extern bool input_set_key_wait(char *name);
 extern bool input_app_active(void);
 extern bool input_event_pump(void);
 
@@ -49,7 +49,7 @@ extern void input_event_mouse_button(int button,bool down);
 extern void input_event_mouse_motion(int x,int y);
 extern void input_event_mouse_wheel(int y);
 extern void input_get_mouse_movement(float *x,float *y);
-extern bool input_get_mouse_button(int button_idx);
+extern bool input_get_mouse_button(int button);
 extern void input_mouse_wheel_reset(void);
 
 extern void input_gui_set_mouse(int x,int y);
@@ -68,7 +68,9 @@ extern char input_get_text_input_key(void);
 extern bool input_joystick_initialize(void);
 extern void input_joystick_shutdown(void);
 extern bool input_check_joystick_ok(void);
+extern void input_clear_joystick(void);
+extern void input_event_joystick_button(int button,bool down);
 extern float input_get_joystick_axis(int axis);
 extern bool input_get_joystick_axis_as_button_min(int axis);
 extern bool input_get_joystick_axis_as_button_max(int axis);
-extern bool input_get_joystick_button(int button_idx);
+extern bool input_get_joystick_button(int button);

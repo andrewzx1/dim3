@@ -105,7 +105,7 @@ char						setup_screen_size_list[max_screen_size][32],
 							setup_control_names[][32]=control_names,
 							setup_action_list[ncontrol+1][128];
 							
-bool						setup_action_set_flag,setup_action_set_last_click,
+bool						setup_action_set_flag,
 							setup_in_game,setup_close_save_flag;
 setup_type					setup_backup;
 
@@ -448,20 +448,12 @@ void setup_game_action_wait_for_input(void)
 {
 	int					n,ctrl_idx,action_idx;
 	char				name[32];
-	bool				no_key_up,already_set;
+	bool				already_set;
 	setup_action_type	*action;
-	
-		// if we already got input, wait for it to clear
-		// before releasing
-		
-	if (setup_action_set_last_click) {
-		if (!input_set_key_wait(name,&no_key_up)) setup_action_set_flag=FALSE;
-		return;
-	}
 	
 		// any input?
 		
-	if (!input_set_key_wait(name,&no_key_up)) return;
+	if (!input_set_key_wait(name)) return;
 	
 		// set current action
 		
@@ -493,6 +485,10 @@ void setup_game_action_wait_for_input(void)
 		if (n!=-1) strcpy(action->attach[n],name);
 	}
 	
+		// don't let set key get back to interface
+	
+	input_clear();
+	
 		// rebuild list
 		
 	setup_game_create_pane();
@@ -500,15 +496,9 @@ void setup_game_action_wait_for_input(void)
 	element_set_scroll_position(ctrl_action_id,setup_action_scroll_pos);
 	setup_game_action_enable_buttons();
 	
-		// got action, if key up needed, wait for it to be released
+		// got action
 		
-	if (no_key_up) {
-		setup_action_set_last_click=FALSE;
-		setup_action_set_flag=FALSE;
-		return;
-	}
-
-	setup_action_set_last_click=TRUE;
+	setup_action_set_flag=FALSE;
 }
 
 /* =======================================================
@@ -649,7 +639,6 @@ void setup_game_handle_click(int id)
 			
 		case setup_action_set_button:
 			setup_action_scroll_pos=element_get_scroll_position(ctrl_action_id);
-			setup_action_set_last_click=FALSE;
 			setup_action_set_flag=TRUE;
 			input_clear();
 			input_set_key_start();
@@ -814,7 +803,6 @@ void setup_game_run(void)
 		
 	if (setup_action_set_flag) {
 		gui_draw_message("Press a Key or Click a Button");
-		input_event_pump();
 		setup_game_action_wait_for_input();
 		return;
 	}

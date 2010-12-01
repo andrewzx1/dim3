@@ -827,7 +827,7 @@ bool game_file_load(char *file_name,char *err_str)
 		 // fix all the timing
 		 // and state informaton
 		 
-	input_clear_mouse();
+	input_clear();
 
 	game_time_reset(head.tick);
 	view_game_reset_timing();

@@ -37,7 +37,7 @@ extern setup_type			setup;
 
 int							mouse_tick;
 d3pnt						mouse_motion,mouse_gui_pnt;
-bool						mouse_button_state[input_max_mouse_button_define];
+bool						mouse_button_state[input_max_mouse_button];
 
 #ifndef D3_SDL_1_3
 int							mouse_wheel_up_count,mouse_wheel_down_count;
@@ -84,7 +84,7 @@ void input_clear_mouse(void)
 	mouse_motion.x=0;
 	mouse_motion.y=0;
 	
-	for (n=0;n!=input_max_mouse_button_define;n++) {
+	for (n=0;n!=input_max_mouse_button;n++) {
 		mouse_button_state[n]=FALSE;
 	}
 
@@ -217,9 +217,9 @@ void input_get_mouse_movement(float *x,float *y)
 	*y=fy+(fy*setup.mouse.acceleration);
 }
 
-inline bool input_get_mouse_button(int button_idx)
+inline bool input_get_mouse_button(int button)
 {
-	return(mouse_button_state[button_idx]);
+	return(mouse_button_state[button]);
 }
 
 void input_mouse_wheel_reset(void)

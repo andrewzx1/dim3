@@ -110,7 +110,7 @@ void input_event_key(int key_idx,bool down)
 		}
 	}
 
-		// check for cmd-q quits
+		// check for OS X cmd-q quits
 
 #ifdef D3_OS_MAC
 	if (key_idx==SDL_SCANCODE_Q) {
