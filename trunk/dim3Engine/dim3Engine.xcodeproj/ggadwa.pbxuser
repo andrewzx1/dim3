@@ -79,8 +79,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 312310752;
-			PBXWorkspaceStateSaveDate = 312310752;
+			PBXPerProjectTemplateStateSaveDate = 312850728;
+			PBXWorkspaceStateSaveDate = 312850728;
 		};
 		sourceControlManager = 260AFF610D40531F00F6C42F /* Source Control */;
 		userBookmarkGroup = 265B38440D84C1E5004AE124 /* PBXBookmarkGroup */;
@@ -315,10 +315,10 @@
 	};
 	2657380D0DB07F650061E1B4 /* setup_game.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 10907}}";
-			sepNavSelRange = "{21179, 16}";
-			sepNavVisRange = "{20635, 732}";
-			sepNavWindowFrame = "{{446, 162}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 10647}}";
+			sepNavSelRange = "{14025, 0}";
+			sepNavVisRange = "{13201, 1254}";
+			sepNavWindowFrame = "{{537, 191}, {1041, 747}}";
 		};
 	};
 	265B377C0D7F8D3A004AE124 /* group_change.c */ = {
@@ -652,10 +652,10 @@
 	};
 	F51AB0DC0CFE3BDA0085DC72 /* input_joystick.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1063, 1872}}";
-			sepNavSelRange = "{2334, 0}";
-			sepNavVisRange = "{2021, 1382}";
-			sepNavWindowFrame = "{{297, 159}, {1078, 758}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1063, 2392}}";
+			sepNavSelRange = "{3412, 0}";
+			sepNavVisRange = "{2734, 1285}";
+			sepNavWindowFrame = "{{652, 218}, {1078, 758}}";
 		};
 	};
 	F51B6B990936F0A800505E9C /* xml_action.c */ = {
@@ -1740,10 +1740,10 @@
 	};
 	F5A5825A090B51B800BE7C36 /* inputs.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 962}}";
-			sepNavSelRange = "{1924, 0}";
-			sepNavVisRange = "{743, 2253}";
-			sepNavWindowFrame = "{{153, 150}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 1001}}";
+			sepNavSelRange = "{2112, 0}";
+			sepNavVisRange = "{896, 2276}";
+			sepNavWindowFrame = "{{428, 119}, {1041, 747}}";
 		};
 	};
 	F5A58285090B589C00BE7C36 /* interfaces.h */ = {
@@ -1804,10 +1804,10 @@
 	};
 	F5A582CB090C993000BE7C36 /* input_defs.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {2224, 3744}}";
-			sepNavSelRange = "{9554, 26}";
-			sepNavVisRange = "{8460, 1863}";
-			sepNavWindowFrame = "{{218, 112}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 4602}}";
+			sepNavSelRange = "{948, 0}";
+			sepNavVisRange = "{218, 2188}";
+			sepNavWindowFrame = "{{598, 86}, {1041, 747}}";
 		};
 	};
 	F5A582CD090C993400BE7C36 /* view_defs.h */ = {
@@ -1956,9 +1956,9 @@
 	};
 	F5C5EB0D0913264E00F94729 /* file.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 11232}}";
-			sepNavSelRange = "{16635, 0}";
-			sepNavVisRange = "{15903, 1050}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 11180}}";
+			sepNavSelRange = "{18435, 0}";
+			sepNavVisRange = "{10944, 1185}";
 			sepNavWindowFrame = "{{245, 161}, {1041, 747}}";
 		};
 	};
@@ -2599,26 +2599,26 @@
 	};
 	F5DD1AAB09085DC300721649 /* input_keyboard.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 2899}}";
-			sepNavSelRange = "{3103, 0}";
-			sepNavVisRange = "{2711, 878}";
-			sepNavWindowFrame = "{{156, 200}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 2938}}";
+			sepNavSelRange = "{3055, 0}";
+			sepNavVisRange = "{2953, 1015}";
+			sepNavWindowFrame = "{{258, 219}, {1041, 747}}";
 		};
 	};
 	F5DD1AAD09085DC300721649 /* input_mouse.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 3055}}";
-			sepNavSelRange = "{4662, 0}";
-			sepNavVisRange = "{0, 1431}";
-			sepNavWindowFrame = "{{328, 206}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 3822}}";
+			sepNavSelRange = "{5574, 22}";
+			sepNavVisRange = "{2858, 1133}";
+			sepNavWindowFrame = "{{312, 166}, {1041, 747}}";
 		};
 	};
 	F5DD1AAE09085DC300721649 /* input.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1160, 6656}}";
-			sepNavSelRange = "{6938, 0}";
-			sepNavVisRange = "{5970, 1150}";
-			sepNavWindowFrame = "{{177, 158}, {1175, 850}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1160, 7098}}";
+			sepNavSelRange = "{8299, 0}";
+			sepNavVisRange = "{7720, 1147}";
+			sepNavWindowFrame = "{{807, 121}, {1175, 850}}";
 		};
 	};
 	F5DD1AD609085FE100721649 /* ambients.c */ = {

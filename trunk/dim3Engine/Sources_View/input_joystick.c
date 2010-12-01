@@ -33,6 +33,8 @@ and can be sold or given away.
 
 extern setup_type			setup;
 
+bool						joystick_button_state[input_max_joystick_button];
+
 SDL_Joystick				*input_joystick;
 
 /* =======================================================
@@ -82,6 +84,34 @@ inline bool input_check_joystick_ok(void)
 
 /* =======================================================
 
+      Joystick Clear
+      
+======================================================= */
+
+void input_clear_joystick(void)
+{
+	int				n;
+	
+	for (n=0;n!=input_max_joystick_button;n++) {
+		joystick_button_state[n]=FALSE;
+	}
+}
+
+/* =======================================================
+
+      Joystick Events
+      
+======================================================= */
+
+void input_event_joystick_button(int button,bool down)
+{
+	if ((button<0) || (button>=input_max_joystick_button)) return;
+	
+	joystick_button_state[button]=down;
+}
+
+/* =======================================================
+
       Game JoyStick Input
       
 ======================================================= */
@@ -111,18 +141,18 @@ inline bool input_get_joystick_axis_as_button_max(int axis)
 	return(SDL_JoystickGetAxis(input_joystick,axis)>8192);
 }
 
-bool input_get_joystick_button(int button_idx)
+bool input_get_joystick_button(int button)
 {
 		// regular joystick input buttons
 		
-	if ((button_idx>=input_joystick_button_1) && (button_idx<=input_joystick_button_16)) {
-		return(SDL_JoystickGetButton(input_joystick,(button_idx-input_joystick_button_1))!=0);
+	if ((button>=input_joystick_button_1) && (button<=input_joystick_button_16)) {
+		return(joystick_button_state[button-input_joystick_button_1]);
 	}
 
 		// these inputs are hard left/right/up/down on an axis
 		// we determine this by a movement greater then halfway
 	
-	switch (button_idx) {
+	switch (button) {
 
 		case input_joystick_button_left:
 			return(SDL_JoystickGetAxis(input_joystick,0)<-8192);

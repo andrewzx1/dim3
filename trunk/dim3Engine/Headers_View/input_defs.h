@@ -26,21 +26,6 @@ and can be sold or given away.
 *********************************************************************/
 
 //
-// input structures
-//
-
-#define input_max_mouse_button			8
-#define input_max_keyboard_key			512
-
-#ifdef D3_SDL_1_3
-	#define input_max_keyboard_define		103
-#else
-	#define input_max_keyboard_define		133
-#endif
-
-#define text_input_keys_count			4
-
-//
 // configurable control names
 //
 
@@ -207,6 +192,14 @@ and can be sold or given away.
 //
 
 #ifdef D3_SDL_1_3
+	#define input_max_keyboard		103
+#else
+	#define input_max_keyboard		133
+#endif
+
+#define text_input_keys_count		4
+
+#ifdef D3_SDL_1_3
 
 #define key_names							{ \
 												"Escape","F1","F2","F3","F4","F5","F6","F7","F8","F9","F10","F11","F12","F13","F14","F15", \
@@ -282,7 +275,7 @@ and can be sold or given away.
 
 #endif
 
-#define input_max_mouse_button_define		5
+#define input_max_mouse_button				5
 
 #define input_mouse_button_left				0
 #define input_mouse_button_right			1
@@ -293,7 +286,7 @@ and can be sold or given away.
 #define mouse_button_names					{"MouseLeft","MouseRight","MouseMiddle","MouseWheelUp","MouseWheelDown"}
 #define mouse_button_codes					{input_mouse_button_left,input_mouse_button_right,input_mouse_button_middle,input_mouse_button_wheel_up,input_mouse_button_wheel_down}
 
-#define input_max_joystick_button_define	20
+#define input_max_joystick_button			20
 
 #define joystick_button_names				{ \
 												"Left","Right","Up","Down", \

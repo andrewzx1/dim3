@@ -31,13 +31,13 @@ and can be sold or given away.
 
 #include "inputs.h"
 
-int							key_define_code[input_max_keyboard_define]=key_codes,
-							mouse_button_define_code[input_max_mouse_button_define]=mouse_button_codes;
-char						key_define_str[input_max_keyboard_define][32]=key_names,
-							mouse_button_define_str[input_max_mouse_button_define][32]=mouse_button_names,
-							joystick_button_define_str[input_max_joystick_button_define][32]=joystick_button_names,
+int							key_define_code[input_max_keyboard]=key_codes,
+							mouse_button_define_code[input_max_mouse_button]=mouse_button_codes;
+char						key_define_str[input_max_keyboard][32]=key_names,
+							mouse_button_define_str[input_max_mouse_button][32]=mouse_button_names,
+							joystick_button_define_str[input_max_joystick_button][32]=joystick_button_names,
 							control_names_str[][32]=control_names;
-bool						input_app_active_flag,input_key_set_skip_flag[input_max_keyboard_define];
+bool						input_app_active_flag,input_key_set_skip_flag[input_max_keyboard];
 												
 input_action_type			input_actions[256];
 
@@ -62,10 +62,16 @@ void input_initialize(bool in_window)
 		
 	input_app_active_flag=TRUE;
 	
-		// setup events
+		// setup event ignores
+		// we don't gather joystick axis
+		// but it's a point on a scale, not continious
+		// movement
 
+	SDL_EventState(SDL_JOYAXISMOTION,SDL_IGNORE);
 	SDL_EventState(SDL_JOYBALLMOTION,SDL_IGNORE);
 	SDL_EventState(SDL_JOYHATMOTION,SDL_IGNORE);
+	SDL_EventState(SDL_JOYBUTTONDOWN,SDL_IGNORE);
+	SDL_EventState(SDL_JOYBUTTONUP,SDL_IGNORE);
 	SDL_EventState(SDL_SYSWMEVENT,SDL_IGNORE);
 	SDL_EventState(SDL_VIDEORESIZE,SDL_IGNORE);
 	SDL_EventState(SDL_USEREVENT,SDL_IGNORE);
@@ -97,10 +103,11 @@ void input_clear(void)
 		
 	input_event_pump();
 
-		// clear keyboard and mouse
+		// clear keyboard, mouse, joystick
 		
 	input_clear_keyboard();
 	input_clear_mouse();
+	input_clear_joystick();
 }
 
 /* =======================================================
@@ -187,26 +194,28 @@ void input_set_key_start(void)
 		// are started out down (works around problems
 		// with capsLock, numLock, scrollLock, etc
 
-	for (n=0;n!=input_max_keyboard_define;n++) {
+	for (n=0;n!=input_max_keyboard;n++) {
 		input_key_set_skip_flag[n]=input_get_keyboard_key(key_define_code[n]);
 	}
 
 }
 
-bool input_set_key_wait(char *name,bool *no_key_up)
+bool input_set_key_wait(char *name)
 {
 	int				n;
 	
 	name[0]=0x0;
-	*no_key_up=FALSE;
+	
+		// pump input
+		
+	input_event_pump();
 
 		// any keys pressed?
 		
-	for (n=0;n!=input_max_keyboard_define;n++) {
+	for (n=0;n!=input_max_keyboard;n++) {
 		if (!input_key_set_skip_flag[n]) {
 			if (input_get_keyboard_key(key_define_code[n])) {
 				strcpy(name,key_define_str[n]);
-				*no_key_up=(key_define_code[n]==SDL_SCANCODE_CAPSLOCK);
 				return(TRUE);
 			}
 		}
@@ -214,10 +223,9 @@ bool input_set_key_wait(char *name,bool *no_key_up)
 	
 		// any mouse buttons
 		
-	for (n=0;n!=input_max_mouse_button_define;n++) {
+	for (n=0;n!=input_max_mouse_button;n++) {
 		if (input_get_mouse_button(mouse_button_define_code[n])) {
 			strcpy(name,mouse_button_define_str[n]);
-			*no_key_up=((mouse_button_define_code[n]==SDL_BUTTON_WHEELUP) || (mouse_button_define_code[n]==SDL_BUTTON_WHEELDOWN));
 			return(TRUE);
 		}
 	}
@@ -226,10 +234,9 @@ bool input_set_key_wait(char *name,bool *no_key_up)
 		
 	if (input_check_joystick_ok()) {
 
-		for (n=0;n!=input_max_joystick_button_define;n++) {
+		for (n=0;n!=input_max_joystick_button;n++) {
 			if (input_get_joystick_button(n)) {
 				strcpy(name,joystick_button_define_str[n]);
-				*no_key_up=FALSE;
 				return(TRUE);
 			}
 		}
@@ -329,12 +336,15 @@ bool input_event_pump(void)
 					input_event_mouse_wheel(event.wheel.y);
 					break;
 			#endif
-				
-			case SDL_JOYAXISMOTION:
-			// supergumba -- work on this
-			//	fprintf(stdout,"axis %d = %d\n",event.jaxis.axis,event.jaxis.value);
+			
+			case SDL_JOYBUTTONDOWN:
+				input_event_joystick_button(event.button.button,TRUE);
 				break;
-
+			
+			case SDL_JOYBUTTONUP:
+				input_event_joystick_button(event.button.button,FALSE);
+				break;
+				
 			case SDL_QUIT:
 				game_loop_quit=TRUE;
 				break;
@@ -362,7 +372,7 @@ void input_action_attach(char *attach_name,int action_index)
 	index=-1;
 	type=0;
 	
-    for (i=0;i!=input_max_keyboard_define;i++) {
+    for (i=0;i!=input_max_keyboard;i++) {
         if (strcasecmp(attach_name,key_define_str[i])==0) {
             index=key_define_code[i];
 			type=input_type_key;
@@ -374,7 +384,7 @@ void input_action_attach(char *attach_name,int action_index)
 	
 	if (index==-1) {
 	
-		for (i=0;i!=input_max_mouse_button_define;i++) {
+		for (i=0;i!=input_max_mouse_button;i++) {
 			if (strcasecmp(attach_name,mouse_button_define_str[i])==0) {
 				index=mouse_button_define_code[i];
 				type=input_type_mouse_button;
@@ -388,7 +398,7 @@ void input_action_attach(char *attach_name,int action_index)
 	
 	if ((index==-1) && (input_check_joystick_ok())) {
 	
-		for (i=0;i!=input_max_joystick_button_define;i++) {
+		for (i=0;i!=input_max_joystick_button;i++) {
 			if (strcasecmp(attach_name,joystick_button_define_str[i])==0) {
 				index=i;
 				type=input_type_joystick_button;
