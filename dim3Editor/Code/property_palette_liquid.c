@@ -174,22 +174,40 @@ void property_palette_click_liquid(int liq_idx,int id)
 		case kLiquidPropertyTintAlpha:
 		case kLiquidPropertyDepth:
 		case kLiquidPropertySpeedAlter:
+			break;
+
 		case kLiquidPropertySoundName:
+			property_palette_pick_sound(liq->ambient.sound_name,TRUE);
+			break;
+
 		case kLiquidPropertyWaveSize:
 		case kLiquidPropertyTideSize:
 		case kLiquidPropertyTideRate:
+			break;
+
 		case kLiquidPropertyTideDirection:
+			property_palette_pick_list((char*)liquid_property_tide_direction_list,&liq->tide.direction);
+			break;
+
 		case kLiquidPropertyHarm:
 		case kLiquidPropertyDrownTick:
 		case kLiquidPropertyDrownHarm:
+			break;
+
 		case kLiquidPropertyGroup:
+			property_palette_pick_group(&liq->group_idx);
+			break;
+
 		case kLiquidPropertyOffX:
 		case kLiquidPropertyOffY:
 		case kLiquidPropertySizeX:
 		case kLiquidPropertySizeY:
 		case kLiquidPropertyShiftX:
 		case kLiquidPropertyShiftY:
+			break;
+
 		case kLiquidPropertyCamera:
+			property_palette_pick_node(liq->camera);
 			break;
 
 	}

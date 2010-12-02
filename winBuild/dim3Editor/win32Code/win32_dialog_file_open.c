@@ -110,7 +110,7 @@ LRESULT CALLBACK dialog_file_open_proc(HWND diag,UINT msg,WPARAM wparam,LPARAM l
 
 		case WM_COMMAND:
 			
-			switch (wparam) {
+			switch (LOWORD(wparam)) {
 
 				case IDOK:
 					dialog_file_open_get(diag);

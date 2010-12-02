@@ -36,40 +36,11 @@ extern map_type					map;
 int								dialog_mesh_scale_axis,dialog_mesh_scale_unit;
 bool							dialog_mesh_scale_replace;
 
-// supergumba -- dialog helpers
-
-void win32_dialog_set_int(HWND diag,int id,int value)
-{
-	char			str[32];
-
-	sprintf(str,"%d",value);
-	SendDlgItemMessage(diag,id,WM_SETTEXT,0,(LPARAM)str);
-}
-
-int win32_dialog_get_int(HWND diag,int id)
-{
-	char			str[32];
-
-	SendDlgItemMessage(diag,id,WM_GETTEXT,32,(LPARAM)str);
-	return(atoi(str));
-}
-
-void win32_dialog_combo_add(HWND diag,int id,char *str)
-{
-	SendDlgItemMessage(diag,id,CB_ADDSTRING,0,(LPARAM)str);
-}
-
-void win32_dialog_combo_set_value(HWND diag,int id,int value)
-{
-	SendDlgItemMessage(diag,id,CB_SETCURSEL,value,0);
-}
-
-int win32_dialog_combo_get_value(HWND diag,int id)
-{
-	return(SendDlgItemMessage(diag,id,CB_GETCURSEL,0,0));
-}
-
-
+extern void win32_dialog_set_int(HWND diag,int id,int value);
+extern int win32_dialog_get_int(HWND diag,int id);
+extern void win32_dialog_combo_add(HWND diag,int id,char *str);
+extern void win32_dialog_combo_set_value(HWND diag,int id,int value);
+extern int win32_dialog_combo_get_value(HWND diag,int id);
 
 /* =======================================================
 
@@ -102,7 +73,7 @@ LRESULT CALLBACK dialog_mesh_scale_proc(HWND diag,UINT msg,WPARAM wparam,LPARAM 
 
 		case WM_COMMAND:
 			
-			switch (wparam) {
+			switch (LOWORD(wparam)) {
 
 				case ID_MESH_SCALE_SCALE:
 					dialog_mesh_scale_replace=FALSE;
