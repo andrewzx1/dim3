@@ -233,7 +233,11 @@ void property_palette_click_mesh(int mesh_idx,int poly_idx,int id)
 			break;
 
 		case kMeshPropertyHideMode:
+			property_palette_pick_list((char*)mesh_property_hide_list,&mesh->hide_mode);
+			break;
+
 		case kMeshPropertyNormalMode:
+			property_palette_pick_list((char*)mesh_property_normal_list,&mesh->normal_mode);
 			break;
 			
 		case kMeshPropertyGroup:
@@ -264,7 +268,10 @@ void property_palette_click_mesh(int mesh_idx,int poly_idx,int id)
 			break;
 
 		case kMeshPropertyMessageMapChangeName:
+			break;
+
 		case kMeshPropertyMessageMapChangeSpotName:
+			property_palette_pick_spot(mesh->msg.map_spot_name);
 			break;
 
 		case kMeshPropertyMessageBase:
@@ -272,6 +279,7 @@ void property_palette_click_mesh(int mesh_idx,int poly_idx,int id)
 			break;
 
 		case kMeshPropertyMessageBaseTeam:
+			property_palette_pick_list((char*)mesh_property_team_list,&mesh->msg.base_team);
 			break;
 
 	}

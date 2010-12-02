@@ -154,7 +154,11 @@ extern void property_palette_reset(void);
 extern void property_palette_scroll_wheel(d3pnt *pnt,int move);
 extern void property_palette_click(d3pnt *pnt,bool double_click);
 
+extern void property_palette_pick_list(char *list,int *idx);
 extern void property_palette_pick_group(int *group_idx);
+extern void property_palette_pick_spot(char *name);
+extern void property_palette_pick_sound(char *name,bool include_none);
+extern void property_palette_pick_particle(char *name);
 extern void property_palette_pick_node(char *name);
 
 //

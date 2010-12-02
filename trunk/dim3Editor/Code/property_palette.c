@@ -87,7 +87,7 @@ void property_palette_setup(void)
 	property_palette.box.ty=y-1;
 	property_palette.box.by=wbox.by-txt_palette_pixel_sz;
 
-	property_palette.scroll_size=((property_palette.box.by-property_palette.box.ty)-((list_scroll_button_high*2)+list_title_high))>>1;
+	property_palette.scroll_size=((property_palette.box.by-property_palette.box.ty)-((list_scroll_button_high*2)+list_title_high))>>2;
 }
 
 /* =======================================================
@@ -283,9 +283,150 @@ void property_palette_click(d3pnt *pnt,bool double_click)
       
 ======================================================= */
 
+void property_palette_pick_list(char *list,int *idx)
+{
+	int			count;
+	char		*c;
+
+		// get count
+
+	c=list;
+	count=0;
+
+	while (TRUE) {
+		if (*c==0x0) break;
+		c+=name_str_len;
+		count++;
+	}
+
+		// run dialog
+
+	dialog_property_list_index_run(list,count,name_str_len,0,FALSE,idx);
+}
+
 void property_palette_pick_group(int *group_idx)
 {
 	dialog_property_list_index_run((char*)map.group.groups,map.group.ngroup,sizeof(group_type),(int)offsetof(group_type,name),TRUE,group_idx);
+}
+
+void property_palette_pick_spot(char *name)
+{
+	int				n,idx;
+	
+	idx=-1;
+	
+	for (n=0;n!=map.nnode;n++) {
+		if (strcmp(map.spots[n].name,name)==0) {
+			idx=n;
+			break;
+		}
+	}
+
+	dialog_property_list_index_run((char*)map.spots,map.nspot,sizeof(spot_type),(int)offsetof(spot_type,name),TRUE,&idx);
+	
+	name[0]=0x0;
+	if (idx!=-1) strcpy(name,map.spots[idx].name);
+}
+
+void property_palette_pick_sound(char *name,bool include_none)
+{
+	int				idx,sound_count,head_tag,tag;
+	char			path[1024],sound_names[256][name_str_len];
+	
+		// load in the sounds
+
+	idx=-1;
+	sound_count=0;
+		
+	file_paths_data(&file_path_setup,path,"Settings","Sounds","xml");
+	if (xml_open_file(path)) {
+	
+		head_tag=xml_findrootchild("Sounds");
+		if (head_tag!=-1) {
+	
+			tag=xml_findfirstchild("Sound",head_tag);
+		
+			while (tag!=-1) {
+				xml_get_attribute_text(tag,"name",sound_names[sound_count],name_str_len);
+				if (strcmp(sound_names[sound_count],name)==0) idx=sound_count;
+				sound_count++;
+				tag=xml_findnextchild(tag);
+			}
+		}
+		
+		xml_close_file();
+	}
+	
+		// run the dialog
+
+	dialog_property_list_index_run((char*)sound_names,sound_count,name_str_len,0,include_none,&idx);
+	
+	name[0]=0x0;
+	if (idx!=-1) strcpy(name,sound_names[idx]);
+}
+
+void property_palette_pick_particle(char *name)
+{
+	int				idx,particle_count,head_tag,data_head_tag,tag;
+	char			path[1024],particle_names[256][name_str_len];
+	
+		// load in the particles
+
+	idx=-1;
+	particle_count=0;
+	
+	file_paths_data(&file_path_setup,path,"Settings","Particles","xml");
+	if (xml_open_file(path)) {
+	
+		data_head_tag=xml_findrootchild("Particle_Data");
+		
+		if (data_head_tag==-1) {
+			head_tag=xml_findrootchild("Particles");
+		}
+		else {
+			head_tag=xml_findfirstchild("Particles",data_head_tag);
+		}
+	
+		if (head_tag!=-1) {
+
+			tag=xml_findfirstchild("Particle",head_tag);
+			
+			while (tag!=-1) {
+				xml_get_attribute_text(tag,"name",particle_names[particle_count],name_str_len);
+				if (strcmp(particle_names[particle_count],name)==0) idx=particle_count;
+				particle_count++;
+				tag=xml_findnextchild(tag);
+			}
+		}
+		
+		if (data_head_tag==-1) {
+			head_tag=xml_findrootchild("Particle_Groups");
+		}
+		else {
+			head_tag=xml_findfirstchild("Particle_Groups",data_head_tag);
+		}
+
+		if (head_tag!=-1) {
+
+			tag=xml_findfirstchild("Particle_Group",head_tag);
+			
+			while (tag!=-1) {
+				xml_get_attribute_text(tag,"name",particle_names[particle_count],name_str_len);
+				if (strcmp(particle_names[particle_count],name)==0) idx=particle_count;
+				particle_count++;
+				tag=xml_findnextchild(tag);
+			}
+		}
+	
+		xml_close_file();
+	}
+	
+		// run the dialog
+
+	dialog_property_list_index_run((char*)particle_names,particle_count,name_str_len,0,FALSE,&idx);
+	
+	name[0]=0x0;
+	if (idx!=-1) strcpy(name,particle_names[idx]);
 }
 
 void property_palette_pick_node(char *name)
