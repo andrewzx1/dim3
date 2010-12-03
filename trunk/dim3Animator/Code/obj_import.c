@@ -227,6 +227,7 @@ bool import_obj(char *path,bool *found_normals,char *err_str)
         if (strcmp(txt,"usemtl")==0) {
 		
             textdecode_get_piece(n,1,material_name);
+			material_name[name_str_len-1]=0x0;
 		
 			if (!first_material) {
 			
@@ -250,13 +251,13 @@ bool import_obj(char *path,bool *found_normals,char *err_str)
 			first_material=FALSE;
             
                 // start new material
-             
+        
             texture_idx=texture_pick(material_name,err_str);
 			if (texture_idx==-1) {
 				textdecode_close();
 				return(FALSE);
 			}
-            
+         
 			material=&model.meshes[cur_mesh].materials[texture_idx];
             material->trig_start=ntrig;
             

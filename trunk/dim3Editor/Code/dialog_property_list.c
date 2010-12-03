@@ -30,10 +30,11 @@ and can be sold or given away.
 #define kPropertyList				FOUR_CHAR_CODE('list')
 #define kPropertyListNameColumn		FOUR_CHAR_CODE('name')
 
+#define kPropertyListNone			FOUR_CHAR_CODE('none')
+
 int								dialog_property_list_item_sz,dialog_property_list_name_offset,
 								dialog_property_idx;
 char							*dialog_property_list_ptr;
-bool							dialog_property_cancel;
 WindowRef						dialog_property_list_wind;
 
 /* =======================================================
@@ -53,8 +54,8 @@ static pascal OSStatus property_list_event_proc(EventHandlerCallRef handler,Even
 			
 			switch (cmd.commandID) {
 			
-				case kHICommandCancel:
-					dialog_property_cancel=TRUE;
+				case kPropertyListNone:
+					dialog_property_idx=-1;
 					QuitAppModalLoopForWindow(dialog_property_list_wind);
 					return(noErr);
 			}
@@ -166,7 +167,7 @@ void dialog_property_list_index_run(char *list_ptr,int list_count,int list_item_
 	
 		// none control
 		
-	dialog_enable(dialog_property_list_wind,kHICommandCancel,0,include_none);
+	dialog_enable(dialog_property_list_wind,kPropertyListNone,0,include_none);
 		
 		// show window
 	
@@ -180,7 +181,6 @@ void dialog_property_list_index_run(char *list_ptr,int list_count,int list_item_
 		// modal window
 		
 	dialog_property_idx=*idx;
-	dialog_property_cancel=FALSE;
 	
 	RunAppModalLoopForWindow(dialog_property_list_wind);
 	
@@ -190,13 +190,8 @@ void dialog_property_list_index_run(char *list_ptr,int list_count,int list_item_
 	DisposeDataBrowserItemNotificationUPP(list_notify_upp);
 	DisposeWindow(dialog_property_list_wind);
 	
-		// cancelled?
+		// return value
 		
-	if (dialog_property_cancel) {
-		*idx=-1;
-		return;
-	}
-	
 	*idx=dialog_property_idx;
 }
 
