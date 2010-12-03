@@ -159,7 +159,7 @@ void property_palette_fill_spot(int spot_idx)
 
 	list_palette_add_header(&property_palette,0,"Spot Parameters");
 	for (n=0;n!=10;n++) {
-		sprintf(name,"%d",n);
+		sprintf(name,"Param %d",n);
 		palette_palette_spot_get_parameter(n,spot->params,str);
 		list_palette_add_string(&property_palette,(kSpotPropertyParamsStart+n),name,str);
 	}
@@ -173,6 +173,7 @@ void property_palette_fill_spot(int spot_idx)
 
 void property_palette_click_spot(int spot_idx,int id)
 {
+	char			file_name[256];
 	spot_type		*spot;
 
 	spot=&map.spots[spot_idx];
@@ -185,14 +186,38 @@ void property_palette_click_spot(int spot_idx,int id)
 		return;
 	}
 
+		// regular properties
+
 	switch (id) {
 
 		case kSpotPropertyName:
+			break;
+
 		case kSpotPropertyType:
+			property_palette_pick_list((char*)spot_property_type_list,&spot->type);
+			break;
+
 		case kSpotPropertyScript:
+			if (dialog_file_open_run("Pick a Script","Scripts/Objects","js",NULL,file_name)) {
+				strncpy(spot->script,file_name,file_str_len);
+				spot->script[file_str_len-1]=0x0;
+			}
+			break;
+
 		case kSpotPropertySkill:
+			property_palette_pick_list((char*)spot_property_skill_list,&spot->skill);
+			break;
+
 		case kSpotPropertySpawn:
+			property_palette_pick_list((char*)spot_property_spawn_list,&spot->spawn);
+			break;
+
 		case kSpotPropertyDisplayModel:
+			if (dialog_file_open_run("Pick a Model","Models",NULL,"Mesh.xml",file_name)) {
+				strncpy(spot->display_model,file_name,name_str_len);
+				spot->script[name_str_len-1]=0x0;
+				view_models_reset();		// need to reset view models
+			}
 			break;
 
 	}

@@ -83,6 +83,9 @@ void property_palette_click_sound(int sound_idx,int id)
 			break;
 
 		case kSoundPropertyName:
+			property_palette_pick_sound(sound->name,FALSE);
+			break;
+
 		case kSoundPropertyPitch:
 			break;
 

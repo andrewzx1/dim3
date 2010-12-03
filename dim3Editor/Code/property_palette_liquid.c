@@ -148,7 +148,6 @@ void property_palette_fill_liquid(int liq_idx)
 void property_palette_click_liquid(int liq_idx,int id)
 {
 	map_liquid_type			*liq;
-//	editor_view_type		*view;
 
 	liq=&map.liquid.liquids[liq_idx];
 
