@@ -45,9 +45,6 @@ extern int os_win32_menu_lookup(int id);
       
 ======================================================= */
 
-void palette_reset(void)
-{
-}
 void launch_map_script_editor(void)
 {
 }

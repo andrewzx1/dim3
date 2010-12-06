@@ -73,12 +73,14 @@ LRESULT CALLBACK dialog_property_list_proc(HWND diag,UINT msg,WPARAM wparam,LPAR
 					EndDialog(diag,0);
 					return(TRUE);
 
+				case ID_PROPERTY_LIST_OK:
+					EndDialog(diag,0);
+					return(TRUE);
+
 				case IDC_PROPERTY_LIST_LIST:
-					if (HIWORD(wparam)==LBN_SELCHANGE) {
-						dialog_property_idx=win32_dialog_list_get_value(diag,IDC_PROPERTY_LIST_LIST);
-						EndDialog(diag,0);
-					}
-					break;
+					if ((HIWORD(wparam)==LBN_SELCHANGE) || (HIWORD(wparam)==LBN_DBLCLK)) dialog_property_idx=win32_dialog_list_get_value(diag,IDC_PROPERTY_LIST_LIST);
+					if (HIWORD(wparam)==LBN_DBLCLK) EndDialog(diag,0);
+					return(TRUE);
 
 			}
 
@@ -89,14 +91,13 @@ LRESULT CALLBACK dialog_property_list_proc(HWND diag,UINT msg,WPARAM wparam,LPAR
 	return(FALSE);
 }
 
-
 /* =======================================================
 
       Run Property List
       
 ======================================================= */
 
-void dialog_property_list_index_run(char *list_ptr,int list_count,int list_item_sz,int list_name_offset,bool include_none,int *idx)
+void dialog_property_list_run(char *list_ptr,int list_count,int list_item_sz,int list_name_offset,bool include_none,int *idx)
 {
 		// remember the list
 		
@@ -110,7 +111,7 @@ void dialog_property_list_index_run(char *list_ptr,int list_count,int list_item_
 
 	dialog_property_idx=*idx;
 
-	DialogBox(hinst,MAKEINTRESOURCE(IDD_PROPERTY_LIST),NULL,dialog_property_list_proc);
+	DialogBox(hinst,MAKEINTRESOURCE(IDD_PROPERTY_LIST),wnd,dialog_property_list_proc);
 	
 	*idx=dialog_property_idx;
 }

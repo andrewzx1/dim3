@@ -447,6 +447,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\win32Code\win32_dialog_property_string.c"
+					>
+				</File>
+				<File
 					RelativePath=".\win32Code\win32_dialog_utility.c"
 					>
 				</File>

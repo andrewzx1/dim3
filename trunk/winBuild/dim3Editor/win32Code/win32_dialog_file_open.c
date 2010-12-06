@@ -164,7 +164,7 @@ bool dialog_file_open_run(char *dialog_name,char *search_path,char *extension,ch
 
 	fp_dialog_name=dialog_name;
 
-	ok=(DialogBox(hinst,MAKEINTRESOURCE(IDD_FILE_OPEN),NULL,dialog_file_open_proc)==0);
+	ok=(DialogBox(hinst,MAKEINTRESOURCE(IDD_FILE_OPEN),wnd,dialog_file_open_proc)==0);
 
 		// close the files
 
