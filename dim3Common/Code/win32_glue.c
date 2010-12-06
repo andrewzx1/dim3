@@ -354,3 +354,14 @@ bool os_load_file(char *path,char *ext)
 
 	return(TRUE);
 }
+
+/* =======================================================
+
+      Color Picker
+      
+======================================================= */
+
+void os_pick_color(d3col *col)
+{
+	// supergumba -- need to fill this in
+}

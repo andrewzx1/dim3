@@ -106,7 +106,7 @@ bool dialog_mesh_scale_run(bool replace_ok,int *scale_axis,int *scale_unit)
 {
 	dialog_mesh_scale_replace=FALSE;
 
-	DialogBox(hinst,MAKEINTRESOURCE(IDD_MESH_SCALE),NULL,dialog_mesh_scale_proc);
+	DialogBox(hinst,MAKEINTRESOURCE(IDD_MESH_SCALE),wnd,dialog_mesh_scale_proc);
 
 	*scale_axis=dialog_mesh_scale_axis;
 	*scale_unit=dialog_mesh_scale_unit;

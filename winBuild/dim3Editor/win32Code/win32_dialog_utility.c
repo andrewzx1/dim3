@@ -42,6 +42,21 @@ bool							dialog_mesh_scale_replace;
       
 ======================================================= */
 
+void win32_dialog_set_text(HWND diag,int id,char *value)
+{
+	SendDlgItemMessage(diag,id,WM_SETTEXT,0,(LPARAM)value);
+}
+
+void win32_dialog_get_text(HWND diag,int id,char *value,int value_len)
+{
+	char			str[256];
+
+	SendDlgItemMessage(diag,id,WM_GETTEXT,256,(LPARAM)str);
+
+	strncpy(value,str,value_len);
+	value[value_len-1]=0x0;
+}
+
 void win32_dialog_set_int(HWND diag,int id,int value)
 {
 	char			str[32];
@@ -56,6 +71,22 @@ int win32_dialog_get_int(HWND diag,int id)
 
 	SendDlgItemMessage(diag,id,WM_GETTEXT,32,(LPARAM)str);
 	return(atoi(str));
+}
+
+void win32_dialog_set_float(HWND diag,int id,float value)
+{
+	char			str[32];
+
+	sprintf(str,"%.2f",value);
+	SendDlgItemMessage(diag,id,WM_SETTEXT,0,(LPARAM)str);
+}
+
+float win32_dialog_get_float(HWND diag,int id)
+{
+	char			str[32];
+
+	SendDlgItemMessage(diag,id,WM_GETTEXT,32,(LPARAM)str);
+	return((float)atof(str));
 }
 
 void win32_dialog_combo_add(HWND diag,int id,char *str)
@@ -92,5 +123,11 @@ void win32_dialog_enable(HWND diag,int id,bool enable)
 {
 	EnableWindow(GetDlgItem(diag,id),enable);
 }
+
+void win32_dialog_set_focus(HWND diag,int id)
+{
+	SetFocus(GetDlgItem(diag,id));
+}
+
 
 
