@@ -30,8 +30,8 @@ and can be sold or given away.
 
 #define obj_max_face_vertex		128
 
-extern int						cur_mesh;
 extern model_type				model;
+extern animator_state_type		state;
 
 /* =======================================================
 
@@ -41,7 +41,7 @@ extern model_type				model;
 
 bool import_obj(char *path,bool *found_normals,char *err_str)
 {
-	int						n,k,t,nvertex,ntrig,nobj_uv,nobj_normal,nline,ntexture,texture_idx,
+	int						n,k,t,nvertex,ntrig,nuv,nnormal,nline,ntexture,texture_idx,
 							pvtx[obj_max_face_vertex],npt;
 	char					txt[256],*c,vstr[256],vtstr[256],vnstr[256],
 							material_name[256],last_material_name[256];
@@ -93,6 +93,8 @@ bool import_obj(char *path,bool *found_normals,char *err_str)
 		// count the vertexes and trigs
 		
 	nvertex=0;
+	nuv=0;
+	nnormal=0;
 	ntrig=0;
 
     for (n=0;n!=nline;n++) {
@@ -100,6 +102,16 @@ bool import_obj(char *path,bool *found_normals,char *err_str)
 		
         if (strcmp(txt,"v")==0) {
 			nvertex++;
+			continue;
+		}
+		
+        if (strcmp(txt,"vt")==0) {
+			nuv++;
+			continue;
+		}
+		
+        if (strcmp(txt,"vn")==0) {
+			nnormal++;
 			continue;
 		}
 
@@ -118,22 +130,34 @@ bool import_obj(char *path,bool *found_normals,char *err_str)
 		}
 	}
 	
-	model_mesh_set_vertex_count(&model,cur_mesh,nvertex);
-	model_mesh_set_trig_count(&model,cur_mesh,ntrig);
-	
-		// uv memory
+		// can't import if no UVs
 		
-	uv_ptr=(d3uv*)malloc(nvertex*sizeof(d3uv));
-	normal_ptr=(d3vct*)malloc(nvertex*sizeof(d3vct));
+	if (nuv==0) {
+		textdecode_close();
+		sprintf(err_str,"There are no UVs in this OBJ, please texture map the model before importing.");
+		return(FALSE);
+	}
 	
-		// get the vertex and uv
+		// force at least one normal
 
-	vertex=model.meshes[cur_mesh].vertexes;
-    
-    nobj_uv=0;
-    uv=uv_ptr;
+		// model memory
+		
+	model_mesh_set_vertex_count(&model,state.cur_mesh_idx,nvertex);
+	model_mesh_set_trig_count(&model,state.cur_mesh_idx,ntrig);
+	uv_ptr=(d3uv*)malloc(nuv*sizeof(d3uv));
 	
-	nobj_normal=0;
+	if (nnormal==0) {
+		normal_ptr=(d3vct*)malloc(sizeof(d3vct));
+	}
+	else {
+		normal_ptr=(d3vct*)malloc(nnormal*sizeof(d3vct));
+	}
+	
+		// get the vertexes, uv, and normals
+
+	vertex=model.meshes[state.cur_mesh_idx].vertexes;
+    
+    uv=uv_ptr;
 	normal=normal_ptr;
    
     for (n=0;n!=nline;n++) {
@@ -154,7 +178,6 @@ bool import_obj(char *path,bool *found_normals,char *err_str)
             vertex->bone_factor=1;
         
             vertex++;
-            nvertex++;
         }
         else {
         
@@ -166,8 +189,7 @@ bool import_obj(char *path,bool *found_normals,char *err_str)
                 textdecode_get_piece(n,2,txt);
                 uv->y=strtod(txt,NULL);
                 
-                nobj_uv++;
-				uv++;
+ 				uv++;
             }
 			else {
 			
@@ -182,21 +204,10 @@ bool import_obj(char *path,bool *found_normals,char *err_str)
 					normal->z=-strtod(txt,NULL);
 					
 					normal++;
-					nobj_normal++;
 				}
 			}
         }
     }
-	
-		// can't import if no UVs
-		
-	if (nobj_uv==0) {
-		textdecode_close();
-		free(uv_ptr);
-		free(normal_ptr);
-		sprintf(err_str,"There are no UVs in this OBJ, please texture map the model before importing.");
-		return(FALSE);
-	}
 	
 		// single material import?
 		
@@ -208,13 +219,13 @@ bool import_obj(char *path,bool *found_normals,char *err_str)
 
 		// get the triangles
 		
-	*found_normals=(nobj_normal!=0);
+	*found_normals=(nnormal!=0);
 
 	first_material=TRUE;
 	material=NULL;
     
     ntrig=0;
-	trig=model.meshes[cur_mesh].trigs;
+	trig=model.meshes[state.cur_mesh_idx].trigs;
 	
 	last_material_name[0]=0x0;
         
@@ -258,7 +269,7 @@ bool import_obj(char *path,bool *found_normals,char *err_str)
 				return(FALSE);
 			}
          
-			material=&model.meshes[cur_mesh].materials[texture_idx];
+			material=&model.meshes[state.cur_mesh_idx].materials[texture_idx];
             material->trig_start=ntrig;
             
             continue;
@@ -338,7 +349,7 @@ bool import_obj(char *path,bool *found_normals,char *err_str)
         material->trig_count=ntrig-material->trig_start;
     }
 	
-	model.meshes[cur_mesh].ntrig=ntrig;
+	model.meshes[state.cur_mesh_idx].ntrig=ntrig;
 	
 	free(uv_ptr);
 	free(normal_ptr);

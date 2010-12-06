@@ -178,6 +178,7 @@ void property_palette_fill_mesh(int mesh_idx,int poly_idx)
 
 void property_palette_click_mesh(int mesh_idx,int poly_idx,int id)
 {
+	float					x_txtoff,y_txtoff,x_txtfact,y_txtfact;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
 	editor_view_type		*view;
@@ -245,8 +246,15 @@ void property_palette_click_mesh(int mesh_idx,int poly_idx,int id)
 			break;
 			
 		case kMeshPropertyRotX:
+			dialog_property_string_run(list_string_value_int,(void*)&mesh->rot_off.x,0);
+			break;
+			
 		case kMeshPropertyRotY:
+			dialog_property_string_run(list_string_value_int,(void*)&mesh->rot_off.y,0);
+			break;
+			
 		case kMeshPropertyRotZ:
+			dialog_property_string_run(list_string_value_int,(void*)&mesh->rot_off.z,0);
 			break;
 
 		case kMeshPropertyMessageEnter:
@@ -254,6 +262,7 @@ void property_palette_click_mesh(int mesh_idx,int poly_idx,int id)
 			break;
 
 		case kMeshPropertyMessageEnterId:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&mesh->msg.entry_id,0);
 			break;
 
 		case kMeshPropertyMessageExit:
@@ -261,6 +270,7 @@ void property_palette_click_mesh(int mesh_idx,int poly_idx,int id)
 			break;
 
 		case kMeshPropertyMessageExitId:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&mesh->msg.exit_id,0);
 			break;
 
 		case kMeshPropertyMessageMapChange:
@@ -268,6 +278,7 @@ void property_palette_click_mesh(int mesh_idx,int poly_idx,int id)
 			break;
 
 		case kMeshPropertyMessageMapChangeName:
+			dialog_property_string_run(list_string_value_string,(void*)mesh->msg.map_name,name_str_len);
 			break;
 
 		case kMeshPropertyMessageMapChangeSpotName:
@@ -302,11 +313,35 @@ void property_palette_click_mesh(int mesh_idx,int poly_idx,int id)
 				break;
 
 			case kMeshPolyPropertyOffX:
+				map_mesh_get_poly_uv_as_box(&map,mesh_idx,poly_idx,(view->uv_layer==uv_layer_light_map),&x_txtoff,&y_txtoff,&x_txtfact,&y_txtfact);
+				dialog_property_string_run(list_string_value_0_to_1_float,(void*)&x_txtoff,0);
+				map_mesh_set_poly_uv_as_box(&map,mesh_idx,poly_idx,(view->uv_layer==uv_layer_light_map),x_txtoff,y_txtoff,x_txtfact,y_txtfact);
+				break;
+
 			case kMeshPolyPropertyOffY:
+				map_mesh_get_poly_uv_as_box(&map,mesh_idx,poly_idx,(view->uv_layer==uv_layer_light_map),&x_txtoff,&y_txtoff,&x_txtfact,&y_txtfact);
+				dialog_property_string_run(list_string_value_0_to_1_float,(void*)&y_txtoff,0);
+				map_mesh_set_poly_uv_as_box(&map,mesh_idx,poly_idx,(view->uv_layer==uv_layer_light_map),x_txtoff,y_txtoff,x_txtfact,y_txtfact);
+				break;
+
 			case kMeshPolyPropertySizeX:
+				map_mesh_get_poly_uv_as_box(&map,mesh_idx,poly_idx,(view->uv_layer==uv_layer_light_map),&x_txtoff,&y_txtoff,&x_txtfact,&y_txtfact);
+				dialog_property_string_run(list_string_value_positive_float,(void*)&x_txtfact,0);
+				map_mesh_set_poly_uv_as_box(&map,mesh_idx,poly_idx,(view->uv_layer==uv_layer_light_map),x_txtoff,y_txtoff,x_txtfact,y_txtfact);
+				break;
+
 			case kMeshPolyPropertySizeY:
+				map_mesh_get_poly_uv_as_box(&map,mesh_idx,poly_idx,(view->uv_layer==uv_layer_light_map),&x_txtoff,&y_txtoff,&x_txtfact,&y_txtfact);
+				dialog_property_string_run(list_string_value_positive_float,(void*)&y_txtfact,0);
+				map_mesh_set_poly_uv_as_box(&map,mesh_idx,poly_idx,(view->uv_layer==uv_layer_light_map),x_txtoff,y_txtoff,x_txtfact,y_txtfact);
+				break;
+				
 			case kMeshPolyPropertyShiftX:
+				dialog_property_string_run(list_string_value_float,(void*)&poly->x_shift,0);
+				break;
+				
 			case kMeshPolyPropertyShiftY:
+				dialog_property_string_run(list_string_value_float,(void*)&poly->y_shift,0);
 				break;
 				
 			case kMeshPolyPropertyCamera:

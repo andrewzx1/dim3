@@ -204,7 +204,6 @@ void piece_duplicate(void)
 		
 	select_duplicate_copy();
 	
-	palette_reset();
 	property_palette_reset();
 	
 	main_wind_draw();
@@ -309,7 +308,6 @@ void piece_delete(void)
 	
 	select_clear();
 	
-	palette_reset();
 	property_palette_reset();
     
 	main_wind_draw();
@@ -1036,7 +1034,6 @@ void piece_key(char ch)
 		piece_delete();
 		item_palette_reset();
 		property_palette_reset();
-		palette_reset();
 		main_wind_draw();
 		menu_fix_enable();
 		return;

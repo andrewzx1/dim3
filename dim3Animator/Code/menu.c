@@ -30,36 +30,20 @@ and can be sold or given away.
 
 char							filename[256];
 
-extern int						cur_mesh,cur_bone,cur_pose,cur_animate,magnify_z;
-extern bool						fileopen;
-extern d3pnt					shift;
-extern d3ang					ang;
-
 extern model_type				model;
 extern model_draw_setup			draw_setup;
-extern animator_state_type		state;
 extern file_path_setup_type		file_path_setup;
+extern animator_state_type		state;
 
 /* =======================================================
 
-      Setup Menus
+      App Windows
       
 ======================================================= */
 
-void menu_start(void)
+void windows_start(void)
 {
-	IBNibRef				nib;
-	CFStringRef				cf_str;
-	
-	cf_str=CFStringCreateWithCString(kCFAllocatorDefault,"dim3 Animator",kCFStringEncodingMacRoman);
-	CreateNibReference(cf_str,&nib);
-	CFRelease(cf_str);
-	
-	cf_str=CFStringCreateWithCString(kCFAllocatorDefault,"MenuBar",kCFStringEncodingMacRoman);
-	SetMenuBarFromNib(nib,cf_str);
-	CFRelease(cf_str);
-	
-	DisposeNibReference(nib);
+	int				n;
 	
 	state.texture=TRUE;
 	state.mesh=FALSE;
@@ -74,22 +58,9 @@ void menu_start(void)
 	
 	state.sel_trig_idx=-1;
 	
-	fix_menus();
-}
-
-/* =======================================================
-
-      App Windows
-      
-======================================================= */
-
-void windows_start(void)
-{
-	int				n;
-	
-	cur_mesh=0;
-	cur_bone=-1;
-	cur_pose=-1;
+	state.cur_mesh_idx=0;
+	state.cur_bone_idx=-1;
+	state.cur_pose_idx=-1;
 	
 	state.playing=FALSE;
 	state.play_animate_blend=FALSE;
@@ -120,7 +91,7 @@ bool create_binary(void)
 {
 	char			base_path[1024],path[1024];
 	
-	SetThemeCursor(kThemeWatchCursor);
+	os_set_wait_cursor();
 	
 		// base path
 		
@@ -149,7 +120,7 @@ bool save_binary(void)
 {
 	bool				ok;
 	
-	SetThemeCursor(kThemeWatchCursor);
+	os_set_wait_cursor();
 	
 	ok=model_save(&model);
 	os_set_arrow_cursor();
@@ -167,23 +138,23 @@ bool save_binary(void)
 
 void reset_model_open(void)
 {
-	ang.x=0;
-    ang.y=180;
+	state.ang.x=0;
+    state.ang.y=180;
 	
-	shift.x=0;
-	shift.y=0;
+	state.shift.x=0;
+	state.shift.y=0;
 	
-	vertex_clear_sel_mask(cur_mesh);
-	vertex_clear_hide_mask(cur_mesh);
+	vertex_clear_sel_mask(state.cur_mesh_idx);
+	vertex_clear_hide_mask(state.cur_mesh_idx);
 	
-	cur_mesh=0;
-	cur_bone=-1;
+	state.cur_mesh_idx=0;
+	state.cur_bone_idx=-1;
 	
-	cur_pose=-1;
-	if (model.npose!=0) cur_pose=0;
+	state.cur_pose_idx=-1;
+	if (model.npose!=0) state.cur_pose_idx=0;
 	
-	cur_animate=-1;
-	if (model.nanimate!=0) cur_animate=0;
+	state.cur_animate_idx=-1;
+	if (model.nanimate!=0) state.cur_animate_idx=0;
 	
 	os_set_title_window(filename);
 	
@@ -197,7 +168,7 @@ void reset_model_open(void)
 	
 	undo_clear();
 	
-	fix_menus();
+	menu_fix_enable();
 }
 
 void new_model_xml(void)
@@ -214,7 +185,7 @@ void new_model_xml(void)
 	
 		// create model
 
-	SetThemeCursor(kThemeWatchCursor);
+	os_set_wait_cursor();
 		
 	model_setup(&file_path_setup,anisotropic_mode_none,mipmap_mode_none,texture_quality_mode_high,FALSE);
 	model_new(&model,filename);
@@ -236,7 +207,7 @@ void new_model_xml(void)
 	
 		// finish
 		
-	fileopen=TRUE;
+	state.model_open=TRUE;
 	
 	reset_model_open();
 }
@@ -251,7 +222,7 @@ void open_model_xml(void)
 	
 		// open model
 		
-	SetThemeCursor(kThemeWatchCursor);
+	os_set_wait_cursor();
 
 	windows_start();
     
@@ -262,7 +233,7 @@ void open_model_xml(void)
 	
 		// finish
 		
-	fileopen=TRUE;
+	state.model_open=TRUE;
 	strcpy(filename,file_name);
 	
 	reset_model_open();
@@ -271,6 +242,8 @@ void open_model_xml(void)
 void close_model_xml(void)
 {
 	int				n;
+	
+	if (!state.model_open) return;
 	
 	model_close(&model);
 	
@@ -295,7 +268,7 @@ void close_model_xml(void)
 	
 	windows_end();
 	
-	fileopen=FALSE;
+	state.model_open=FALSE;
 }
 
 /* =======================================================
@@ -313,21 +286,21 @@ void import_mesh_obj(void)
 	os_set_arrow_cursor();
 	if (!os_load_file(path,"obj")) return;
 	
-	if (cur_mesh==-1) cur_mesh=0;
-	model.meshes[cur_mesh].nvertex=model.meshes[cur_mesh].ntrig=0;
+	if (state.cur_mesh_idx==-1) state.cur_mesh_idx=0;
+	model.meshes[state.cur_mesh_idx].nvertex=model.meshes[state.cur_mesh_idx].ntrig=0;
 	
 	if (!import_obj(path,&found_normals,err_str)) {
 		os_dialog_alert("Could not import .OBJ file",err_str);
 		return;
 	}
 
-	vertex_delete_unused_vertexes(cur_mesh);
+	vertex_delete_unused_vertexes(state.cur_mesh_idx);
 	
 	dialog_import_finish_run(&model,&scale);
-	model_scale(&model,cur_mesh,scale,scale,scale);
+	model_scale(&model,state.cur_mesh_idx,scale,scale,scale);
 
-	model_center_xz(&model,cur_mesh);
-	model_floor(&model,cur_mesh);
+	model_center_xz(&model,state.cur_mesh_idx);
+	model_floor(&model,state.cur_mesh_idx);
 	model_recalc_boxes(&model);
     model_recalc_normals(&model,found_normals);
 	
@@ -346,21 +319,21 @@ void import_mesh_lightwave(void)
 	os_set_arrow_cursor();
 	if (!os_load_file(path,"lwo")) return;
 	
-	if (cur_mesh==-1) cur_mesh=0;
-	model.meshes[cur_mesh].nvertex=model.meshes[cur_mesh].ntrig=0;
+	if (state.cur_mesh_idx==-1) state.cur_mesh_idx=0;
+	model.meshes[state.cur_mesh_idx].nvertex=model.meshes[state.cur_mesh_idx].ntrig=0;
 	
 	if (!import_lightwave(path,err_str)) {
 		os_dialog_alert("Could not import .LWO file",err_str);
 		return;
 	}
 	
-	vertex_delete_unused_vertexes(cur_mesh);
+	vertex_delete_unused_vertexes(state.cur_mesh_idx);
 	
 	dialog_import_finish_run(&model,&scale);
-	model_scale(&model,cur_mesh,scale,scale,scale);
+	model_scale(&model,state.cur_mesh_idx,scale,scale,scale);
 	
-    model_center_xz(&model,cur_mesh);
-    model_floor(&model,cur_mesh);
+    model_center_xz(&model,state.cur_mesh_idx);
+    model_floor(&model,state.cur_mesh_idx);
     model_recalc_boxes(&model);
     model_recalc_normals(&model,FALSE);
 	
@@ -379,15 +352,15 @@ void import_mesh_c4d_xml(void)
 	os_set_arrow_cursor();
 	if (!os_load_file(path,"xml")) return;
 	
-	if (cur_mesh==-1) cur_mesh=0;
-	model.meshes[cur_mesh].nvertex=model.meshes[cur_mesh].ntrig=0;
+	if (state.cur_mesh_idx==-1) state.cur_mesh_idx=0;
+	model.meshes[state.cur_mesh_idx].nvertex=model.meshes[state.cur_mesh_idx].ntrig=0;
 	
 	if (!import_c4d_xml(path,err_str)) {
 		os_dialog_alert("Could not import .XML file",err_str);
 		return;
 	}
 	
-	vertex_delete_unused_vertexes(cur_mesh);
+	vertex_delete_unused_vertexes(state.cur_mesh_idx);
 	
 	dialog_import_finish_run(&model,&scale);
 	model_scale_all(&model,scale,scale,scale);
@@ -418,15 +391,15 @@ void insert_mesh_dim3_model(void)
 
     if (!dialog_file_open_run("Open a Model","Models",NULL,"Mesh.xml",file_name)) return;
 	
-	if (cur_mesh==-1) cur_mesh=0;
+	if (state.cur_mesh_idx==-1) state.cur_mesh_idx=0;
 	
-	SetThemeCursor(kThemeWatchCursor);
+	os_set_wait_cursor();
 	
 	insert_model(file_name);
 	
     model_calculate_parents(&model);
-    model_center_xz(&model,cur_mesh);
-    model_floor(&model,cur_mesh);
+    model_center_xz(&model,state.cur_mesh_idx);
+    model_floor(&model,state.cur_mesh_idx);
     model_recalc_boxes(&model);
 	
 	os_set_arrow_cursor();
@@ -445,9 +418,9 @@ void insert_mesh_dim3_model(void)
       
 ======================================================= */
 
-void fix_menus(void)
+void menu_fix_enable(void)
 {
-	if (!fileopen) {
+	if (!state.model_open) {
 		EnableMenuItem(GetMenuHandle(filemenu),1);
 		EnableMenuItem(GetMenuHandle(filemenu),2);
 		DisableMenuItem(GetMenuHandle(filemenu),3);
@@ -529,674 +502,626 @@ bool menu_save_changes_dialog(void)
       
 ======================================================= */
 
-OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,void *userdata)
+bool menu_event_run(int cmd)
 {
 	int				x,y,z,idx,major_bone_idx,minor_bone_idx,parent_idx,old_cur_animate;
 	float			fx,fy,fz,bone_factor;
 	bool			nudge_children,nudge_vertexes;
-	HICommand		cmd;
 	
-	GetEventParameter(event,kEventParamDirectObject,typeHICommand,NULL,sizeof(HICommand),NULL,&cmd);
+	switch (cmd) {
 	
-	switch (cmd.commandID) {
-	
- 			// --------------------------------
-			//
 			// apple menu
-			//
-			// --------------------------------
    
         case kCommandAbout:
 			dialog_about_run();
-            return(noErr);
+            return(TRUE);
 		
 		case kHICommandQuit:
-			if (fileopen) {
-				if (!menu_save_changes_dialog()) return(noErr);
+			if (state.model_open) {
+				if (!menu_save_changes_dialog()) return(TRUE);
 				close_model_xml();
 			}
 			QuitApplicationEventLoop();
-			return(noErr);
+			return(TRUE);
 	
-			// --------------------------------
-			//
 			// file menu
-			//
-			// --------------------------------
 
 		case kCommandNew:
 			model_wind_play(FALSE,FALSE);
 			new_model_xml();
-			return(noErr);
+			return(TRUE);
 
 		case kCommandOpen:
 			model_wind_play(FALSE,FALSE);
 			open_model_xml();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandClose:
-			if (!menu_save_changes_dialog()) return(noErr);
+			if (!menu_save_changes_dialog()) return(TRUE);
 			close_model_xml();
 			model_wind_play(FALSE,FALSE);
-			fix_menus();
-			return(noErr);
+			menu_fix_enable();
+			return(TRUE);
 			
 		case kCommandSave:
 			save_binary();
-			return(noErr);
+			return(TRUE);
 			
-			// --------------------------------
-			//
 			// edit menu
-			//
-			// --------------------------------
 
 		case kCommandUndo:
 			undo_run();
 			main_wind_draw();
-			return(noErr);
+			return(TRUE);
 			
-			// --------------------------------
-			//
 			// model menu
-			//
-			// --------------------------------
         
  		case kCommandSettings:
 			dialog_model_settings_run();
             redraw_model();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandHitBoxes:
 			dialog_hit_box_settings_run();
             redraw_model();
-			return(noErr);
+			return(TRUE);
 		
 		case kCommandPrepareModel:
             prepare_model();
             redraw_model();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandCalcBoxes:
             model_recalc_boxes(&model);
             redraw_model();
-			return(noErr);
+			return(TRUE);
             
 		case kCommandCalcNormals:
             model_recalc_normals(&model,FALSE);
             redraw_model();
-			return(noErr);
+			return(TRUE);
            
 		case kCommandScaleAll:
-			if (!dialog_scale_run(&model,&fx,&fz,&fy)) return(noErr);
+			if (!dialog_scale_run(&model,&fx,&fz,&fy)) return(TRUE);
 			model_scale_all(&model,fx,fy,fz);
             model_calculate_parents(&model);
             redraw_model();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandFlipXAll:
 			model_flip_all(&model,TRUE,FALSE,FALSE);
             model_calculate_parents(&model);
             redraw_model();
-			return(noErr);
+			return(TRUE);
 
 		case kCommandFlipZAll:
 			model_flip_all(&model,FALSE,FALSE,TRUE);
             model_calculate_parents(&model);
             redraw_model();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandFlipYAll:
 			model_flip_all(&model,FALSE,TRUE,FALSE);
             model_calculate_parents(&model);
             redraw_model();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandSwapXZAll:
 			model_swap_xz_all(&model);
             model_calculate_parents(&model);
             redraw_model();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandSwapYZAll:
 			model_swap_yz_all(&model);
             model_calculate_parents(&model);
             redraw_model();
-			return(noErr);
+			return(TRUE);
             
 		case kCommandCenterXZAll:
 			model_center_xz_all(&model);
             model_calculate_parents(&model);
             redraw_model();
-			return(noErr);
+			return(TRUE);
             
 		case kCommandFloorYAll:
 			model_floor_all(&model);
             model_calculate_parents(&model);
             redraw_model();
-			return(noErr);
+			return(TRUE);
 						
-			// --------------------------------
-			//
 			// view menu
-			//
-			// --------------------------------
 					
 		case kCommandFront:
-			ang.x=0;
-			ang.y=180;
+			state.ang.x=0;
+			state.ang.y=180;
 			main_wind_draw();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandLeft:
-			ang.x=0;
-			ang.y=270;
+			state.ang.x=0;
+			state.ang.y=270;
 			main_wind_draw();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandRight:
-			ang.x=0;
-			ang.y=90;
+			state.ang.x=0;
+			state.ang.y=90;
 			main_wind_draw();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandBack:
-			ang.x=0;
-			ang.y=0;
+			state.ang.x=0;
+			state.ang.y=0;
 			main_wind_draw();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandTop:
-			ang.x=270;
-			ang.y=0;
+			state.ang.x=270;
+			state.ang.y=0;
 			main_wind_draw();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandBottom:
-			ang.x=90;
-			ang.y=0;
+			state.ang.x=90;
+			state.ang.y=0;
 			main_wind_draw();
-			return(noErr);
+			return(TRUE);
 						
-			// --------------------------------
-			//
 			// mesh menu
-			//
-			// --------------------------------
 			
 		case kCommandNewMesh:
 			idx=model_mesh_add(&model);
-			if (idx==-1) return(noErr);
+			if (idx==-1) return(TRUE);
 			
 			if (!dialog_mesh_info_run(&model.meshes[idx])) {
 				model_mesh_delete(&model,idx);
-				return(noErr);
+				return(TRUE);
 			}
 			
-			cur_mesh=idx;
+			state.cur_mesh_idx=idx;
 
 			main_wind_draw();
 			reset_mesh_list();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandDuplicateMesh:
-			idx=model_mesh_duplicate(&model,cur_mesh);
-			if (idx==-1) return(noErr);
+			idx=model_mesh_duplicate(&model,state.cur_mesh_idx);
+			if (idx==-1) return(TRUE);
 			
 			if (!dialog_mesh_info_run(&model.meshes[idx])) {
 				model_mesh_delete(&model,idx);
-				return(noErr);
+				return(TRUE);
 			}
 			
-			cur_mesh=idx;
+			state.cur_mesh_idx=idx;
 
 			reset_mesh_list();
 			main_wind_draw();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandCopyMesh:
 			idx=dialog_copy_mesh_run();
-			if (idx==-1) return(noErr);
-			if (idx!=cur_mesh) model_mesh_copy(&model,idx,cur_mesh);
+			if (idx==-1) return(TRUE);
+			if (idx!=state.cur_mesh_idx) model_mesh_copy(&model,idx,state.cur_mesh_idx);
 			redraw_model();
 			reset_mesh_list();
 			reset_vertex_tab();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandDeleteMesh:
-			model_mesh_delete(&model,cur_mesh);
-			cur_mesh=0;
+			model_mesh_delete(&model,state.cur_mesh_idx);
+			state.cur_mesh_idx=0;
 			reset_mesh_list();
 			main_wind_draw();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandImportOBJ:
 			model_wind_play(FALSE,FALSE);
 			import_mesh_obj();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandImportLWO:
 			model_wind_play(FALSE,FALSE);
 			import_mesh_lightwave();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandImportC4DXML:
 			model_wind_play(FALSE,FALSE);
 			import_mesh_c4d_xml();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandInsertXML:
 			model_wind_play(FALSE,FALSE);
 			insert_mesh_dim3_model();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandScale:
-			if (!dialog_scale_run(&model,&fx,&fz,&fy)) return(noErr);
-			model_scale(&model,cur_mesh,fx,fy,fz);
+			if (!dialog_scale_run(&model,&fx,&fz,&fy)) return(TRUE);
+			model_scale(&model,state.cur_mesh_idx,fx,fy,fz);
             redraw_model();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandFlipX:
-			model_flip(&model,cur_mesh,TRUE,FALSE,FALSE);
+			model_flip(&model,state.cur_mesh_idx,TRUE,FALSE,FALSE);
             model_calculate_parents(&model);
             redraw_model();
-			return(noErr);
+			return(TRUE);
 
 		case kCommandFlipZ:
-			model_flip(&model,cur_mesh,FALSE,FALSE,TRUE);
+			model_flip(&model,state.cur_mesh_idx,FALSE,FALSE,TRUE);
             model_calculate_parents(&model);
             redraw_model();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandFlipY:
-			model_flip(&model,cur_mesh,FALSE,TRUE,FALSE);
+			model_flip(&model,state.cur_mesh_idx,FALSE,TRUE,FALSE);
             model_calculate_parents(&model);
             redraw_model();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandFlipU:
-			model_flip_uv(&model,cur_mesh,TRUE,FALSE);
+			model_flip_uv(&model,state.cur_mesh_idx,TRUE,FALSE);
             redraw_model();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandFlipV:
-			model_flip_uv(&model,cur_mesh,FALSE,TRUE);
+			model_flip_uv(&model,state.cur_mesh_idx,FALSE,TRUE);
             redraw_model();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandSwapXZ:
-			model_swap_xz(&model,cur_mesh);
+			model_swap_xz(&model,state.cur_mesh_idx);
             model_calculate_parents(&model);
             redraw_model();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandSwapYZ:
-			model_swap_yz(&model,cur_mesh);
+			model_swap_yz(&model,state.cur_mesh_idx);
             model_calculate_parents(&model);
             redraw_model();
-			return(noErr);
+			return(TRUE);
             
 		case kCommandCenterXZ:
-			model_center_xz(&model,cur_mesh);
+			model_center_xz(&model,state.cur_mesh_idx);
             model_calculate_parents(&model);
             redraw_model();
-			return(noErr);
+			return(TRUE);
             
 		case kCommandFloorY:
-			model_floor(&model,cur_mesh);
+			model_floor(&model,state.cur_mesh_idx);
             model_calculate_parents(&model);
             redraw_model();
-			return(noErr);
+			return(TRUE);
 			
-			// --------------------------------
-			//
 			// vertex menu
-			//
-			// --------------------------------
 			
 		case kCommandVertexSelectAll:
-			vertex_set_sel_mask_all(cur_mesh);
+			vertex_set_sel_mask_all(state.cur_mesh_idx);
 			main_wind_draw();
 			hilite_vertex_rows();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandVertexSelectNotAttached:
-			vertex_set_sel_mask_no_bone(cur_mesh);
+			vertex_set_sel_mask_no_bone(state.cur_mesh_idx);
 			main_wind_draw();
 			hilite_vertex_rows();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandVertexNudge:
-			if (!dialog_nudge_rotate_run(&x,&z,&y,"NudgePick",0)) return(noErr);
-			vertex_move_sel_vertexes(cur_mesh,x,y,z);
+			if (!dialog_nudge_rotate_run(&x,&z,&y,"NudgePick",0)) return(TRUE);
+			vertex_move_sel_vertexes(state.cur_mesh_idx,x,y,z);
 			model_calculate_parents(&model);
 			main_wind_draw();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandVertexScale:
-			if (!dialog_scale_run(&model,&fx,&fz,&fy)) return(noErr);
-			vertex_scale_sel_vertexes(cur_mesh,fx,fy,fz);
+			if (!dialog_scale_run(&model,&fx,&fz,&fy)) return(TRUE);
+			vertex_scale_sel_vertexes(state.cur_mesh_idx,fx,fy,fz);
 			model_calculate_parents(&model);
 			main_wind_draw();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandVertexRotate:
-			if (!dialog_nudge_rotate_run(&x,&z,&y,"RotatePick",0)) return(noErr);
-			vertex_rotate_sel_vertexes(cur_mesh,(float)x,(float)y,(float)z);
+			if (!dialog_nudge_rotate_run(&x,&z,&y,"RotatePick",0)) return(TRUE);
+			vertex_rotate_sel_vertexes(state.cur_mesh_idx,(float)x,(float)y,(float)z);
 			model_calculate_parents(&model);
 			main_wind_draw();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandVertexInvertNormals:
-			vertex_invert_normals(cur_mesh);
+			vertex_invert_normals(state.cur_mesh_idx);
 			main_wind_draw();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandVertexSetNormals:
-			vertex_set_normals(cur_mesh);
+			vertex_set_normals(state.cur_mesh_idx);
 			main_wind_draw();
-			return(noErr);
+			return(TRUE);
 		
 		case kCommandVertexClearBones:
-			vertex_clear_bone_attachments_sel_vertexes(cur_mesh);
+			vertex_clear_bone_attachments_sel_vertexes(state.cur_mesh_idx);
 			reset_vertex_tab();
 			main_wind_draw();
-			return(noErr);
+			return(TRUE);
 				
 		case kCommandVertexHideSelected:
-			vertex_hide_mask_set_sel_vertexes(cur_mesh);
+			vertex_hide_mask_set_sel_vertexes(state.cur_mesh_idx);
 			main_wind_draw();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandVertexHideNonSelected:
-			vertex_hide_mask_set_non_sel_vertexes(cur_mesh);
+			vertex_hide_mask_set_non_sel_vertexes(state.cur_mesh_idx);
 			main_wind_draw();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandVertexShowAll:
-			vertex_hide_mask_show_all_vertexes(cur_mesh);
+			vertex_hide_mask_show_all_vertexes(state.cur_mesh_idx);
 			main_wind_draw();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandVertexDelete:
-			vertex_delete_sel_vertex(cur_mesh);
+			vertex_delete_sel_vertex(state.cur_mesh_idx);
 			model_calculate_parents(&model);
 			redraw_model();
 			reset_vertex_tab();
-			return(noErr);
+			return(TRUE);
 			
-			
-			// --------------------------------
-			//
 			// bone menu
-			//
-			// --------------------------------
 			
 		case kCommandNewBone:
- 			vertex_find_center_sel_vertexes(cur_mesh,&x,&y,&z);
+ 			vertex_find_center_sel_vertexes(state.cur_mesh_idx,&x,&y,&z);
 			
 			idx=model_bone_add(&model,x,y,z);
-			if (idx==-1) return(noErr);
+			if (idx==-1) return(TRUE);
 			
 			if (!dialog_bone_settings_run(&model.bones[idx])) {
 				model_bone_delete(&model,idx);
-				return(noErr);
+				return(TRUE);
 			}
 			
-			vertex_set_sel_vertex_to_bone(cur_mesh,idx,-1,1.0f);
-			cur_bone=idx;
+			vertex_set_sel_vertex_to_bone(state.cur_mesh_idx,idx,-1,1.0f);
+			state.cur_bone_idx=idx;
 
 			reset_pose_list();
 			reset_bone_list();
 			main_wind_draw();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandSetBone:
-			if (!dialog_set_vertex_bone_run(&major_bone_idx,&minor_bone_idx,&bone_factor)) return(noErr);
-			vertex_set_sel_vertex_to_bone(cur_mesh,major_bone_idx,minor_bone_idx,bone_factor);
+			if (!dialog_set_vertex_bone_run(&major_bone_idx,&minor_bone_idx,&bone_factor)) return(TRUE);
+			vertex_set_sel_vertex_to_bone(state.cur_mesh_idx,major_bone_idx,minor_bone_idx,bone_factor);
 			reset_vertex_tab();
 			main_wind_draw();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandNudgeBone:
-			if (cur_bone==-1) return(noErr);
+			if (state.cur_bone_idx==-1) return(TRUE);
 			
-			if (!dialog_bone_nudge_run(&x,&z,&y,&nudge_children,&nudge_vertexes)) return(noErr);
-			model_bone_move(&model,cur_bone,x,y,z,nudge_children,nudge_vertexes);
+			if (!dialog_bone_nudge_run(&x,&z,&y,&nudge_children,&nudge_vertexes)) return(TRUE);
+			model_bone_move(&model,state.cur_bone_idx,x,y,z,nudge_children,nudge_vertexes);
 			model_calculate_parents(&model);
 			main_wind_draw();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandDeleteBone:
-			if (cur_bone==-1) return(noErr);
+			if (state.cur_bone_idx==-1) return(TRUE);
 			
- 			model_bone_delete(&model,cur_bone);
-			cur_bone=-1;
+ 			model_bone_delete(&model,state.cur_bone_idx);
+			state.cur_bone_idx=-1;
 			reset_vertex_tab();
 			reset_pose_list();
 			reset_bone_list();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandSelectVertexNearBone:
-			if (cur_bone!=-1) return(noErr);
-			vertex_set_sel_mask_near_bone(cur_mesh,cur_bone,0.10);
+			if (state.cur_bone_idx!=-1) return(TRUE);
+			vertex_set_sel_mask_near_bone(state.cur_mesh_idx,state.cur_bone_idx,0.10);
 			main_wind_draw();
-			return(noErr);
+			return(TRUE);
 			
-			// --------------------------------
-			//
 			// pose menu
-			//
-			// --------------------------------
 			
 		case kCommandNewPose:
  			if (model.nbone==0) {
 				os_dialog_alert("Can't Create Pose","You need to have at least one bone before creating a pose.");
-				return(noErr);
+				return(TRUE);
 			}
 			
 			idx=model_pose_add(&model);
-			if (idx==-1) return(noErr);
+			if (idx==-1) return(TRUE);
 			
 			if (!dialog_pose_settings_run(&model.poses[idx])) {
 				model_pose_delete(&model,idx);
-				return(noErr);
+				return(TRUE);
 			}
 			
-			cur_pose=idx;
-			cur_bone=-1;
+			state.cur_pose_idx=idx;
+			state.cur_bone_idx=-1;
 
 			reset_pose_list();
 			reset_bone_list();
 			main_wind_draw();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandDupPose:
-			if (cur_pose==-1) return(noErr);
+			if (state.cur_pose_idx==-1) return(TRUE);
 
-			idx=model_pose_duplicate(&model,cur_pose);
-			if (idx==-1) return(noErr);
+			idx=model_pose_duplicate(&model,state.cur_pose_idx);
+			if (idx==-1) return(TRUE);
 			
 			if (!dialog_pose_settings_run(&model.poses[idx])) {
 				model_pose_delete(&model,idx);
-				return(noErr);
+				return(TRUE);
 			}
 			
-			cur_pose=idx;
-			cur_bone=-1;
+			state.cur_pose_idx=idx;
+			state.cur_bone_idx=-1;
 
 			reset_pose_list();
 			reset_bone_list();
 			main_wind_draw();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandPreviousPose:
-			if (cur_pose>0) cur_pose--;
+			if (state.cur_pose_idx>0) state.cur_pose_idx--;
 			reset_pose_list();
 			reset_bone_list();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandNextPose:
-			if (cur_pose<(model.npose-1)) cur_pose++;
+			if (state.cur_pose_idx<(model.npose-1)) state.cur_pose_idx++;
 			reset_pose_list();
 			reset_bone_list();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandClearPose:
-			if (cur_pose==-1) return(noErr);
+			if (state.cur_pose_idx==-1) return(TRUE);
 
-			model_pose_clear(&model,cur_pose);
+			model_pose_clear(&model,state.cur_pose_idx);
 			reset_pose_list();
 			reset_bone_list();
-			return(noErr);
+			return(TRUE);
 			
         case kCommandDeletePose:
-			if (cur_pose==-1) return(noErr);
+			if (state.cur_pose_idx==-1) return(TRUE);
 
-			if (model_check_pose_in_animation(&model,cur_pose)) {
+			if (model_check_pose_in_animation(&model,state.cur_pose_idx)) {
 				os_dialog_alert("Can't Delete Pose","This pose is being used in an animation.");
-				return(noErr);
+				return(TRUE);
 			}
 			
-            model_pose_delete(&model,cur_pose);
+            model_pose_delete(&model,state.cur_pose_idx);
 			
-			cur_pose=-1;
-			cur_bone=-1;
+			state.cur_pose_idx=-1;
+			state.cur_bone_idx=-1;
 			
 			reset_pose_list();
 			reset_bone_list();
-            return(noErr);
+            return(TRUE);
 			
 		case kCommandGoToBoneMoveParent:
-			if ((cur_pose==-1) || (cur_bone==-1)) return(noErr);
+			if ((state.cur_pose_idx==-1) || (state.cur_bone_idx==-1)) return(TRUE);
 			
-			parent_idx=model.bones[cur_bone].parent_idx;
+			parent_idx=model.bones[state.cur_bone_idx].parent_idx;
 			if (parent_idx!=-1) {
-				cur_bone=parent_idx;
+				state.cur_bone_idx=parent_idx;
 				reset_pose_list();
 				reset_bone_list();
 			}
 
-			return(noErr);
+			return(TRUE);
 			
-			// --------------------------------
-			//
 			// blending menu
-			//
-			// --------------------------------
 			
 		case kCommandBlendSetSkipAll:
-			if (cur_pose==-1) return(noErr);
+			if (state.cur_pose_idx==-1) return(TRUE);
 			
-			model_pose_blend_set_all(&model,cur_pose,TRUE);
+			model_pose_blend_set_all(&model,state.cur_pose_idx,TRUE);
 			reset_pose_list();
 			reset_bone_list();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandBlendSetSkipNone:
-			if (cur_pose==-1) return(noErr);
+			if (state.cur_pose_idx==-1) return(TRUE);
 			
-			model_pose_blend_set_all(&model,cur_pose,FALSE);
+			model_pose_blend_set_all(&model,state.cur_pose_idx,FALSE);
 			reset_pose_list();
 			reset_bone_list();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandBlendFlipSkip:
- 			if ((cur_pose==-1) || (cur_bone==-1)) return(noErr);
+ 			if ((state.cur_pose_idx==-1) || (state.cur_bone_idx==-1)) return(TRUE);
 			
-			model.poses[cur_pose].bone_moves[cur_bone].skip_blended=!model.poses[cur_pose].bone_moves[cur_bone].skip_blended;
+			model.poses[state.cur_pose_idx].bone_moves[state.cur_bone_idx].skip_blended=!model.poses[state.cur_pose_idx].bone_moves[state.cur_bone_idx].skip_blended;
 			reset_pose_list();
 			reset_bone_list();
-			return(noErr);
+			return(TRUE);
 						
-			// --------------------------------
-			//
 			// animation menu
-			//
-			// --------------------------------
 			
 		case kCommandNewAnimate:
 			if (model.npose==0) {
 				os_dialog_alert("Can't Create Animation","You need to have at least one pose before creating an animation.");
-				return(noErr);
+				return(TRUE);
 			}
 			
 			model_wind_play(FALSE,FALSE);
 			
 			idx=model_animate_add(&model);
-			if (idx==-1) return(noErr);
+			if (idx==-1) return(TRUE);
 			
-			old_cur_animate=cur_animate;
-			cur_animate=idx;
+			old_cur_animate=state.cur_animate_idx;
+			state.cur_animate_idx=idx;
 			
 			if (!dialog_animation_settings_run(idx)) {
 				model_animate_delete(&model,idx);
-				cur_animate=old_cur_animate;
+				state.cur_animate_idx=old_cur_animate;
 				reset_animate_list();
-				return(noErr);
+				return(TRUE);
 			}
 
 			reset_animate_list();
 			main_wind_draw();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandDupAnimate:
-			if (cur_animate==-1) return(noErr);
+			if (state.cur_animate_idx==-1) return(TRUE);
 			model_wind_play(FALSE,FALSE);
  
-			idx=model_animate_duplicate(&model,cur_animate);
-			if (idx==-1) return(noErr);
+			idx=model_animate_duplicate(&model,state.cur_animate_idx);
+			if (idx==-1) return(TRUE);
 			
-			old_cur_animate=cur_animate;
-			cur_animate=idx;
+			old_cur_animate=state.cur_animate_idx;
+			state.cur_animate_idx=idx;
 			
 			if (!dialog_animation_settings_run(idx)) {
 				model_animate_delete(&model,idx);
-				cur_animate=old_cur_animate;
+				state.cur_animate_idx=old_cur_animate;
 				reset_animate_list();
-				return(noErr);
+				return(TRUE);
 			}
 
 			reset_animate_list();
 			main_wind_draw();
-			return(noErr);
+			return(TRUE);
             
 		case kCommandDeleteAnimate:
-			if (cur_animate==-1) return(noErr);
+			if (state.cur_animate_idx==-1) return(TRUE);
 			model_wind_play(FALSE,FALSE);
 
-			model_animate_delete(&model,cur_animate);
+			model_animate_delete(&model,state.cur_animate_idx);
 			if (model.nanimate==0) {
-				cur_animate=-1;
+				state.cur_animate_idx=-1;
 			}
 			else {
-				cur_animate=0;
+				state.cur_animate_idx=0;
 			}
 			reset_animate_list();
 			main_wind_draw();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandResetTimeAnimate:
-			if (cur_animate==-1) return(noErr);
+			if (state.cur_animate_idx==-1) return(TRUE);
 			model_wind_play(FALSE,FALSE);
 
-			dialog_animation_reset_time_run(cur_animate);
+			dialog_animation_reset_time_run(state.cur_animate_idx);
 			reset_animate_list();
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandPlayAnimate:
 			model_wind_play(!state.playing,FALSE);
-			return(noErr);
+			return(TRUE);
 			
 		case kCommandPlayBlendAnimate:
 			if (dialog_play_blend_animation_run()) {
 				model_wind_play(TRUE,TRUE);
 			}
-			return(noErr);
+			return(TRUE);
 						
 	}
 	
-	return(eventNotHandledErr);
+	return(FALSE);
 }
 
 

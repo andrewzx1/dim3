@@ -27,7 +27,6 @@ and can be sold or given away.
 
 #include "dialog.h"
 
-extern int					cur_mesh,cur_pose;
 extern model_type			model;
 
 #define kHitBoxList							FOUR_CHAR_CODE('list')

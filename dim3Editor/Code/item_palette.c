@@ -333,10 +333,7 @@ void item_palette_click(d3pnt *pnt,bool double_click)
 			state.show_node=TRUE;
 			break;
 	}
-	
-		// reset the palette
-		
-	palette_reset();
+
 	main_wind_draw();
 	
 		// any double click

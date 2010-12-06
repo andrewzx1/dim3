@@ -181,17 +181,14 @@ void tool_click(int tool_idx)
 			
 		case 5:
 			state.drag_mode=drag_mode_mesh;
-			palette_reset();
 			break;
 			
 		case 6:
 			state.drag_mode=drag_mode_polygon;
-			palette_reset();
 			break;
 			
 		case 7:
 			state.drag_mode=drag_mode_vertex;
-			palette_reset();
 			break;
 			
 			// mesh polygons
@@ -326,7 +323,6 @@ void tool_click(int tool_idx)
 			
 	}
 	
-	palette_reset();
 	menu_fix_enable();
 	
 	main_wind_draw();

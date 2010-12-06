@@ -132,13 +132,19 @@ void piece_create_spot(void)
 void piece_create_scenery(void)
 {
 	int					n,index;
+	char				file_name[name_str_len];
 	map_scenery_type	*scenery;
 	
 	if (map.nscenery==max_map_scenery) {
 		os_dialog_alert("Can Not Create Scenery","You've reached the maximum number of sceneries for this map.");
 	}
-			
-		// create spot
+	
+		// scenery must pick a model
+		
+	if (!dialog_file_open_run("Pick a Model","Models",NULL,"Mesh.xml",file_name)) return;
+	if (file_name[0]==0x0) return;
+
+		// create scenery
 		
 	index=map.nscenery;
 	
@@ -153,7 +159,7 @@ void piece_create_scenery(void)
 	
 	scenery->resize=1.0f;
 	
-	scenery->model_name[0]=0x0;
+	strcpy(scenery->model_name,file_name);
 	scenery->animation_name[0]=0x0;
 	scenery->contact_object_on=TRUE;
 	scenery->contact_projectile_on=TRUE;
@@ -237,12 +243,18 @@ void piece_create_light(void)
 void piece_create_sound(void)
 {
 	int					index;
+	char				name[name_str_len];
 	map_sound_type		*snd;
 	
 	if (map.nsound==max_map_sound) {
 		os_dialog_alert("Can Not Create Sound","You've reached the maximum number of sounds for this map.");
         return;
     }
+	
+		// must pick a sound
+		
+	property_palette_pick_sound(name,FALSE);
+	if (name[0]==0x0) return;
 	
 		// create sound
 	
@@ -253,9 +265,9 @@ void piece_create_sound(void)
 	
 	piece_create_get_spot(&snd->pnt);
     
-	snd->pitch=1;
-	snd->name[0]=0x0;
 	snd->on=TRUE;
+	strcpy(snd->name,name);
+	snd->pitch=1.0f;
 	
 		// select sound
 		
@@ -280,12 +292,18 @@ void piece_create_sound(void)
 void piece_create_particle(void)
 {
 	int					index;
+	char				name[name_str_len];
 	map_particle_type	*prt;
 	
 	if (map.nparticle==max_map_particle) {
 		os_dialog_alert("Can Not Create Particle","You've reached the maximum number of particles for this map.");
         return;
     }
+	
+		// must pick a particle
+		
+	property_palette_pick_particle(name);
+	if (name[0]==0x0) return;
 	
 		// create particle
 	
@@ -296,10 +314,10 @@ void piece_create_particle(void)
 	
 	piece_create_get_spot(&prt->pnt);
     
+	prt->on=TRUE;
+	strcpy(prt->name,name);
 	prt->spawn_tick=5000;
 	prt->slop_tick=0;
-	prt->name[0]=0x0;
-	prt->on=TRUE;
 	
 		// select particle
 		

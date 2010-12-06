@@ -284,10 +284,6 @@ void main_wind_open(void)
 		
 	main_wind_initialize();
 	
-		// start palettes
-		
-	palette_initialize();
-	
         // events
     
 	main_wind_upp=NewEventHandlerUPP(main_wind_event_callback);
@@ -296,10 +292,6 @@ void main_wind_open(void)
 
 void main_wind_close(void)
 {
-		// close the palettes
-		
-	palette_shutdown();
-	
         // main window shutdown
 		
 	main_wind_shutdown();

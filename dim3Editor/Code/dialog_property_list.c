@@ -58,6 +58,11 @@ static pascal OSStatus property_list_event_proc(EventHandlerCallRef handler,Even
 					dialog_property_idx=-1;
 					QuitAppModalLoopForWindow(dialog_property_list_wind);
 					return(noErr);
+					
+				case kHICommandOK:
+					QuitAppModalLoopForWindow(dialog_property_list_wind);
+					return(noErr);
+					
 			}
 
 			return(eventNotHandledErr);
@@ -105,7 +110,6 @@ static pascal void property_list_list_notify_proc(ControlRef ctrl,DataBrowserIte
 
 		case kDataBrowserItemSelected:
 			dialog_property_idx=itemID-1;
-			QuitAppModalLoopForWindow(dialog_property_list_wind);
 			break;
 
 	}
@@ -117,7 +121,7 @@ static pascal void property_list_list_notify_proc(ControlRef ctrl,DataBrowserIte
       
 ======================================================= */
 
-void dialog_property_list_index_run(char *list_ptr,int list_count,int list_item_sz,int list_name_offset,bool include_none,int *idx)
+void dialog_property_list_run(char *list_ptr,int list_count,int list_item_sz,int list_name_offset,bool include_none,int *idx)
 {
 	ControlRef						ctrl;
 	ControlID						ctrl_id;

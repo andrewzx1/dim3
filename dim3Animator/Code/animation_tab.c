@@ -34,8 +34,8 @@ ControlRef						animate_list;
 DataBrowserItemDataUPP			animate_list_setitem_upp;
 DataBrowserItemNotificationUPP	animate_list_notify_upp;
 
-extern int						cur_animate,cur_pose;
 extern model_type				model;
+extern animator_state_type		state;
 
 /* =======================================================
 
@@ -56,8 +56,8 @@ void reset_animate_list(void)
 	
 		// select animation
 				
-	if (cur_animate!=-1) {
-		itemID=cur_animate+1;
+	if (state.cur_animate_idx!=-1) {
+		itemID=state.cur_animate_idx+1;
 		SetDataBrowserSelectedItems(animate_list,1,&itemID,kDataBrowserItemsAssign);
 	}
 	
@@ -102,12 +102,12 @@ static pascal void animate_list_notify_proc(ControlRef ctrl,DataBrowserItemID it
 	switch (message) {
 
 		case kDataBrowserItemDoubleClicked:
-			dialog_animation_settings_run(cur_animate);
+			dialog_animation_settings_run(state.cur_animate_idx);
 			reset_animate_list();
 			break;
 			
 		case kDataBrowserItemSelected:
-			cur_animate=itemID-1;
+			state.cur_animate_idx=itemID-1;
 			main_wind_draw();
 			break;
 			

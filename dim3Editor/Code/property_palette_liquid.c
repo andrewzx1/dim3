@@ -148,8 +148,10 @@ void property_palette_fill_liquid(int liq_idx)
 void property_palette_click_liquid(int liq_idx,int id)
 {
 	map_liquid_type			*liq;
+	editor_view_type		*view;
 
 	liq=&map.liquid.liquids[liq_idx];
+	view=view_get_current_view();
 
 	switch (id) {
 
@@ -170,9 +172,19 @@ void property_palette_click_liquid(int liq_idx,int id)
 			break;
 
 		case kLiquidPropertyColor:
+			os_pick_color(&liq->col);
+			break;
+			
 		case kLiquidPropertyTintAlpha:
+			dialog_property_string_run(list_string_value_0_to_1_float,(void*)&liq->tint_alpha,0);
+			break;
+			
 		case kLiquidPropertyDepth:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&liq->depth,0);
+			break;
+
 		case kLiquidPropertySpeedAlter:
+			dialog_property_string_run(list_string_value_positive_float,(void*)&liq->speed_alter,0);
 			break;
 
 		case kLiquidPropertySoundName:
@@ -180,8 +192,15 @@ void property_palette_click_liquid(int liq_idx,int id)
 			break;
 
 		case kLiquidPropertyWaveSize:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&liq->tide.division,0);
+			break;
+			
 		case kLiquidPropertyTideSize:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&liq->tide.high,0);
+			break;
+			
 		case kLiquidPropertyTideRate:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&liq->tide.rate,0);
 			break;
 
 		case kLiquidPropertyTideDirection:
@@ -189,20 +208,63 @@ void property_palette_click_liquid(int liq_idx,int id)
 			break;
 
 		case kLiquidPropertyHarm:
+			dialog_property_string_run(list_string_value_int,(void*)&liq->harm.in_harm,0);
+			break;
+			
 		case kLiquidPropertyDrownTick:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&liq->harm.drown_tick,0);
+			break;
+			
 		case kLiquidPropertyDrownHarm:
+			dialog_property_string_run(list_string_value_int,(void*)&liq->harm.drown_harm,0);
 			break;
 
 		case kLiquidPropertyGroup:
 			property_palette_pick_group(&liq->group_idx);
 			break;
-
+			
 		case kLiquidPropertyOffX:
+			if (view->uv_layer==uv_layer_normal) {
+				dialog_property_string_run(list_string_value_0_to_1_float,(void*)&liq->main_uv.x_offset,0);
+			}
+			else {
+				dialog_property_string_run(list_string_value_0_to_1_float,(void*)&liq->lmap_uv.x_offset,0);
+			}
+			break;
+			
 		case kLiquidPropertyOffY:
+			if (view->uv_layer==uv_layer_normal) {
+				dialog_property_string_run(list_string_value_0_to_1_float,(void*)&liq->main_uv.y_offset,0);
+			}
+			else {
+				dialog_property_string_run(list_string_value_0_to_1_float,(void*)&liq->lmap_uv.y_offset,0);
+			}
+			break;
+
 		case kLiquidPropertySizeX:
+			if (view->uv_layer==uv_layer_normal) {
+				dialog_property_string_run(list_string_value_positive_float,(void*)&liq->main_uv.x_size,0);
+			}
+			else {
+				dialog_property_string_run(list_string_value_positive_float,(void*)&liq->lmap_uv.x_size,0);
+			}
+			break;
+			
 		case kLiquidPropertySizeY:
+			if (view->uv_layer==uv_layer_normal) {
+				dialog_property_string_run(list_string_value_positive_float,(void*)&liq->main_uv.y_size,0);
+			}
+			else {
+				dialog_property_string_run(list_string_value_positive_float,(void*)&liq->lmap_uv.y_size,0);
+			}
+			break;
+
 		case kLiquidPropertyShiftX:
+			dialog_property_string_run(list_string_value_float,(void*)&liq->x_shift,0);
+			break;
+			
 		case kLiquidPropertyShiftY:
+			dialog_property_string_run(list_string_value_float,(void*)&liq->y_shift,0);
 			break;
 
 		case kLiquidPropertyCamera:

@@ -33,9 +33,9 @@ extern void draw_model_bones(model_type *model,model_draw_setup *draw_setup,int 
 
 extern void draw_model_selected_vertexes(model_type *model,int mesh_idx,model_draw_setup *draw_setup);
 extern void draw_model_selected_trig(model_type *model,int mesh_idx,model_draw_setup *draw_setup);
-extern void draw_model_box_view(model_type *model,model_draw_setup *draw_setup);
-extern void draw_model_box_hit_boxes(model_type *model,model_draw_setup *draw_setup);
-extern void draw_model_axis(model_type *model);
+extern void draw_model_box_view(void);
+extern void draw_model_box_hit_boxes(void);
+extern void draw_model_axis(void);
 extern void draw_model_normals_vertexes(model_type *model,int mesh_idx,model_draw_setup *draw_setup);
 extern void draw_model_normals_trig(model_type *model,int mesh_idx,model_draw_setup *draw_setup);
 

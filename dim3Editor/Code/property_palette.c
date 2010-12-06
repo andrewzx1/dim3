@@ -107,43 +107,55 @@ void property_palette_fill(void)
 		// fill in the properties for
 		// the currently selected item
 
-	if (select_count()==0) return;
-
-	select_get(0,&sel_type,&main_idx,&sub_idx);
-	if (main_idx==-1) return;
+	main_idx=-1;
+	
+	if (select_count()!=0)  select_get(0,&sel_type,&main_idx,&sub_idx);
+	
+	if (main_idx==-1) {
+		list_palette_set_title(&property_palette,"No Selection");
+		return;
+	}
 
 	switch (sel_type) {
 
 		case mesh_piece:
+			list_palette_set_title(&property_palette,"Mesh Properties");
 			if (state.drag_mode!=drag_mode_polygon) sub_idx=-1;
 			property_palette_fill_mesh(main_idx,sub_idx);
 			break;
 
 		case liquid_piece:
+			list_palette_set_title(&property_palette,"Liquid Properties");
 			property_palette_fill_liquid(main_idx);
 			break;
 
 		case spot_piece:
+			list_palette_set_title(&property_palette,"Spot Properties");
 			property_palette_fill_spot(main_idx);
 			break;
 
 		case light_piece:
+			list_palette_set_title(&property_palette,"Light Properties");
 			property_palette_fill_light(main_idx);
 			break;
 
 		case sound_piece:
+			list_palette_set_title(&property_palette,"Sound Properties");
 			property_palette_fill_sound(main_idx);
 			break;
 
 		case particle_piece:
+			list_palette_set_title(&property_palette,"Particle Properties");
 			property_palette_fill_particle(main_idx);
 			break;
 
 		case scenery_piece:
+			list_palette_set_title(&property_palette,"Scenery Properties");
 			property_palette_fill_scenery(main_idx);
 			break;
 
 		case node_piece:
+			list_palette_set_title(&property_palette,"Node Properties");
 			property_palette_fill_node(main_idx);
 			break;
 
@@ -301,12 +313,12 @@ void property_palette_pick_list(char *list,int *idx)
 
 		// run dialog
 
-	dialog_property_list_index_run(list,count,name_str_len,0,FALSE,idx);
+	dialog_property_list_run(list,count,name_str_len,0,FALSE,idx);
 }
 
 void property_palette_pick_group(int *group_idx)
 {
-	dialog_property_list_index_run((char*)map.group.groups,map.group.ngroup,sizeof(group_type),(int)offsetof(group_type,name),TRUE,group_idx);
+	dialog_property_list_run((char*)map.group.groups,map.group.ngroup,sizeof(group_type),(int)offsetof(group_type,name),TRUE,group_idx);
 }
 
 void property_palette_pick_spot(char *name)
@@ -322,7 +334,7 @@ void property_palette_pick_spot(char *name)
 		}
 	}
 
-	dialog_property_list_index_run((char*)map.spots,map.nspot,sizeof(spot_type),(int)offsetof(spot_type,name),TRUE,&idx);
+	dialog_property_list_run((char*)map.spots,map.nspot,sizeof(spot_type),(int)offsetof(spot_type,name),TRUE,&idx);
 	
 	name[0]=0x0;
 	if (idx!=-1) strcpy(name,map.spots[idx].name);
@@ -359,7 +371,7 @@ void property_palette_pick_sound(char *name,bool include_none)
 	
 		// run the dialog
 
-	dialog_property_list_index_run((char*)sound_names,sound_count,name_str_len,0,include_none,&idx);
+	dialog_property_list_run((char*)sound_names,sound_count,name_str_len,0,include_none,&idx);
 	
 	name[0]=0x0;
 	if (idx!=-1) strcpy(name,sound_names[idx]);
@@ -423,7 +435,7 @@ void property_palette_pick_particle(char *name)
 	
 		// run the dialog
 
-	dialog_property_list_index_run((char*)particle_names,particle_count,name_str_len,0,FALSE,&idx);
+	dialog_property_list_run((char*)particle_names,particle_count,name_str_len,0,FALSE,&idx);
 	
 	name[0]=0x0;
 	if (idx!=-1) strcpy(name,particle_names[idx]);
@@ -465,12 +477,11 @@ void property_palette_pick_node(char *name)
 		list_pos++;
 	}
 	
-	dialog_property_list_index_run(list_ptr,count,name_str_len,0,TRUE,&idx);
+	dialog_property_list_run(list_ptr,count,name_str_len,0,TRUE,&idx);
 	
 	name[0]=0x0;
 	if (idx!=-1) strcpy(name,(list_ptr+(idx*name_str_len)));
 	
 	free(list_ptr);
 }
-
 

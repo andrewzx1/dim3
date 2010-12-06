@@ -102,6 +102,7 @@ void property_palette_click_light(int light_idx,int id)
 			break;
 
 		case kLightPropertyName:
+			dialog_property_string_run(list_string_value_string,(void*)light->name,name_str_len);
 			break;
 
 		case kLightPropertyType:
@@ -113,8 +114,15 @@ void property_palette_click_light(int light_idx,int id)
 			break;
 
 		case kLightPropertyIntensity:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&light->intensity,0);
+			break;
+			
 		case kLightPropertyExponent:
+			dialog_property_string_run(list_string_value_positive_float,(void*)&light->exponent,0);
+			break;
+			
 		case kLightPropertyColor:
+			os_pick_color(&light->col);
 			break;
 
 	}

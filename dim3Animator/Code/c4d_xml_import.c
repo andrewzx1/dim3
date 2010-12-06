@@ -30,8 +30,8 @@ and can be sold or given away.
 
 #define obj_max_face_vertex		128
 
-extern int						cur_mesh;
 extern model_type				model;
+extern animator_state_type		state;
 
 /* =======================================================
 
@@ -65,7 +65,7 @@ bool import_c4d_xml(char *path,char *err_str)
 		return(FALSE);
     }
 	
-	mesh=&model.meshes[cur_mesh];
+	mesh=&model.meshes[state.cur_mesh_idx];
 	
 		// supergumba -- we need a lot of work here, for now let's assume 1 texture
 		
@@ -102,7 +102,7 @@ bool import_c4d_xml(char *path,char *err_str)
 		
 	nvertex=xml_countchildren(vertex_tag);
 	
-	model_mesh_set_vertex_count(&model,cur_mesh,nvertex);
+	model_mesh_set_vertex_count(&model,state.cur_mesh_idx,nvertex);
 	
 		// bone arrays
 		
@@ -173,7 +173,7 @@ bool import_c4d_xml(char *path,char *err_str)
 		tag=xml_findnextchild(tag);
 	}
 	
-	model_mesh_set_trig_count(&model,cur_mesh,ntrig);
+	model_mesh_set_trig_count(&model,state.cur_mesh_idx,ntrig);
 		
 		// load polygons
 	

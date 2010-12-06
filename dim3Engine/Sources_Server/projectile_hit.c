@@ -99,7 +99,12 @@ void projectile_hit(proj_type *proj)
 			// damage object
 			
         hurt_obj=server.obj_list.objs[idx];
-		object_damage(hurt_obj,obj,weap,proj,NULL,proj_setup->damage);
+		if (proj_setup->damage>=0) {
+			object_damage(hurt_obj,obj,weap,proj,NULL,proj_setup->damage);
+		}
+		else {
+			object_heal(obj,-proj_setup->damage);
+		}
 		
 			// push object
 			

@@ -34,8 +34,8 @@ ControlRef						pose_list;
 DataBrowserItemDataUPP			pose_list_setitem_upp;
 DataBrowserItemNotificationUPP	pose_list_notify_upp;
 
-extern int						cur_mesh,cur_pose,cur_bone;
 extern model_type				model;
+extern animator_state_type		state;
 
 /* =======================================================
 
@@ -56,11 +56,11 @@ void reset_pose_list(void)
 			
 		// select current pose/bone move
 				
-	if (cur_pose==-1) {
+	if (state.cur_pose_idx==-1) {
 		itemID=1;
 	}
 	else {
-		itemID=cur_pose+2;
+		itemID=state.cur_pose_idx+2;
 	}
 	
 	SetDataBrowserSelectedItems(pose_list,1,&itemID,kDataBrowserItemsAssign);
@@ -117,7 +117,7 @@ static pascal void pose_list_notify_proc(ControlRef ctrl,DataBrowserItemID itemI
 
 		case kDataBrowserItemSelected:
 			idx=itemID-2;
-			cur_pose=itemID-2;
+			state.cur_pose_idx=itemID-2;
 			reset_bone_list();
 			main_wind_draw();
 			break;
