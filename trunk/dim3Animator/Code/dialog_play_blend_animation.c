@@ -27,9 +27,6 @@ and can be sold or given away.
 
 #include "dialog.h"
 
-extern model_type			model;
-extern animator_state_type	state;
-
 #define kBlendAnimate1						FOUR_CHAR_CODE('ani1')
 #define kBlendAnimate2						FOUR_CHAR_CODE('ani2')
 #define kBlendAnimate3						FOUR_CHAR_CODE('ani3')
@@ -37,6 +34,9 @@ extern animator_state_type	state;
 
 bool						dialog_play_blend_animation_cancel;
 WindowRef					dialog_play_blend_animation_wind;
+
+extern model_type			model;
+extern animator_state_type	state;
 
 /* =======================================================
 

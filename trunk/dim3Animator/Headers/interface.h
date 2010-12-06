@@ -45,10 +45,9 @@ extern void click_model_wind(d3pnt *pnt,unsigned long modifiers);
 // menus
 //
 
-extern void menu_start(void);
-extern void fix_menus(void);
-
+extern void menu_fix_enable(void);
 extern bool menu_save_changes_dialog(void);
+extern bool menu_event_run(int cmd);
 
 extern void open_model_xml(void);
 

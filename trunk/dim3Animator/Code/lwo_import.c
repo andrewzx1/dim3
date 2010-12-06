@@ -28,8 +28,8 @@ and can be sold or given away.
 #include "interface.h"
 #include "dialog.h"
 
-extern int					cur_mesh;
-extern model_type			model;
+extern model_type				model;
+extern animator_state_type		state;
 
 /* =======================================================
 
@@ -276,9 +276,9 @@ bool import_lightwave(char *path,char *err_str)
     fptr=(float*)chunk;
     nvertex=chunksz/12;
 	
-	model_mesh_set_vertex_count(&model,cur_mesh,nvertex);
+	model_mesh_set_vertex_count(&model,state.cur_mesh_idx,nvertex);
 
-	vertex=model.meshes[cur_mesh].vertexes;
+	vertex=model.meshes[state.cur_mesh_idx].vertexes;
     
     for ((i=0);(i!=nvertex);i++) {
         vertex->pnt.x=(int)((*fptr++)*import_scale_factor);
@@ -313,7 +313,7 @@ bool import_lightwave(char *path,char *err_str)
 		// count trigs
 		
     ntrig=poly=0;
-	trig=model.meshes[cur_mesh].trigs;
+	trig=model.meshes[state.cur_mesh_idx].trigs;
     
     sptr=(short*)chunk;
     
@@ -326,7 +326,7 @@ bool import_lightwave(char *path,char *err_str)
         sptr+=npt;
     }
 	
-	model_mesh_set_trig_count(&model,cur_mesh,ntrig);
+	model_mesh_set_trig_count(&model,state.cur_mesh_idx,ntrig);
 		
 		// load trigs
     
@@ -336,11 +336,11 @@ bool import_lightwave(char *path,char *err_str)
 		return(FALSE);
 	}
 
-	material=&model.meshes[cur_mesh].materials[texture_idx];
+	material=&model.meshes[state.cur_mesh_idx].materials[texture_idx];
     material->trig_start=0;
 
     ntrig=poly=0;
-	trig=model.meshes[cur_mesh].trigs;
+	trig=model.meshes[state.cur_mesh_idx].trigs;
     
     sptr=(short*)chunk;
     

@@ -65,11 +65,14 @@ void palette_palette_spot_get_parameter(int idx,char *param_list,char *str)
 	int				n;
 	char			*c;
 	
+	*str=0x0;
+	
 	c=param_list;
 	
 	for (n=0;n!=idx;n++) {
 		c=strchr(c,'|');
 		if (c==NULL) return;
+		c++;
 	}
 
 	strncpy(str,c,256);
@@ -92,7 +95,7 @@ void palette_palette_spot_set_parameter(int idx,char *param_list,char *str)
 
 		// break up param list
 
-	c=str;
+	c=param_list;
 	
 	for (n=0;n!=10;n++) {
 		if (c==0x0) break;
@@ -109,7 +112,7 @@ void palette_palette_spot_set_parameter(int idx,char *param_list,char *str)
 		
 		c=c2+1;
 	}
-
+	
 		// fix the list
 
 	strncpy(tstr[idx],str,256);
@@ -119,8 +122,11 @@ void palette_palette_spot_set_parameter(int idx,char *param_list,char *str)
 
 	count=0;
 
-	for (n=9;n>=0;n++) {
-		if (tstr[n][0]!=0x0) count=n+1;
+	for (n=9;n>=0;n--) {
+		if (tstr[n][0]!=0x0) {
+			count=n+1;
+			break;
+		}
 	}
 
 		// rebuild the list
@@ -128,8 +134,14 @@ void palette_palette_spot_set_parameter(int idx,char *param_list,char *str)
 	param_list[0]=0x0;
 
 	for (n=0;n!=count;n++) {
-		if (n!=0) strncpy(param_list,"|",param_str_len);
-		strncpy(param_list,tstr[idx],param_str_len);
+
+		if (n!=0) {
+			strncat(param_list,"|",param_str_len);
+			param_list[param_str_len-1]=0x0;
+		}
+		
+		strncat(param_list,tstr[n],param_str_len);
+		param_list[param_str_len-1]=0x0;
 	}
 
 	param_list[param_str_len-1]=0x0;
@@ -173,7 +185,8 @@ void property_palette_fill_spot(int spot_idx)
 
 void property_palette_click_spot(int spot_idx,int id)
 {
-	char			file_name[256];
+	int				param_idx;
+	char			file_name[256],str[256];
 	spot_type		*spot;
 
 	spot=&map.spots[spot_idx];
@@ -181,6 +194,11 @@ void property_palette_click_spot(int spot_idx,int id)
 		// parameters
 
 	if ((id>=kSpotPropertyParamsStart) && (id<=kSpotPropertyParamsEnd)) {
+		param_idx=(id-kSpotPropertyParamsStart);
+		
+		palette_palette_spot_get_parameter(param_idx,spot->params,str);
+		dialog_property_string_run(list_string_value_string,(void*)str,256);
+		palette_palette_spot_set_parameter(param_idx,spot->params,str);
 
 		main_wind_draw();
 		return;
@@ -191,6 +209,7 @@ void property_palette_click_spot(int spot_idx,int id)
 	switch (id) {
 
 		case kSpotPropertyName:
+			dialog_property_string_run(list_string_value_string,(void*)spot->name,name_str_len);
 			break;
 
 		case kSpotPropertyType:

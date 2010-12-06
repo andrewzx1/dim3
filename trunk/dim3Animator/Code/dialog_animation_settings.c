@@ -29,9 +29,6 @@ and can be sold or given away.
 #include "interface.h"
 #include "dialog.h"
 
-extern model_type			model;
-extern animator_state_type	state;
-
 #define kAnimationPoseTabCount				6
 #define kAnimationPoseTab					FOUR_CHAR_CODE('tabb')
 
@@ -99,6 +96,9 @@ int							dialog_animate_idx,dialog_pose_move_idx,dialog_particle_idx,dialog_rin
 bool						dialog_pose_move_change_ok,dialog_animation_settings_cancel;
 
 model_animate_type			animate_backup;
+
+extern model_type			model;
+extern animator_state_type	state;
 
 /* =======================================================
 

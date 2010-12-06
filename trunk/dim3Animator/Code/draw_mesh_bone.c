@@ -27,7 +27,9 @@ and can be sold or given away.
 
 #include "model.h"
 
-extern int					cur_pose;
+extern model_type				model;
+extern model_draw_setup			draw_setup;
+extern animator_state_type		state;
 
 /* =======================================================
 
@@ -150,12 +152,12 @@ void draw_model_bones_drag_handle(float x,float y,float z,d3vct *vct,d3ang *ang,
       
 ======================================================= */
 
-void draw_model_bones_get_handle_rot(model_type *model,model_draw_setup *draw_setup,int bone_idx,d3ang *rot)
+void draw_model_bones_get_handle_rot(int bone_idx,d3ang *rot)
 {
 	int						parent_idx;
 	model_draw_bone_type	*draw_bone;
 	
-	draw_bone=&draw_setup->bones[bone_idx];
+	draw_bone=&draw_setup.bones[bone_idx];
 	
 		// non-comulative rotations
 		
@@ -163,7 +165,7 @@ void draw_model_bones_get_handle_rot(model_type *model,model_draw_setup *draw_se
 	rot->y=draw_bone->rot.y;
 	rot->z=draw_bone->rot.z;
 
-	if (model->deform_mode!=deform_mode_comulative_rotate) return;
+	if (model.deform_mode!=deform_mode_comulative_rotate) return;
 	
 		// cumulative rotations
 		
@@ -173,7 +175,7 @@ void draw_model_bones_get_handle_rot(model_type *model,model_draw_setup *draw_se
 		parent_idx=draw_bone->parent_idx;
 		if (parent_idx==-1) break;
 		
-		draw_bone=&draw_setup->bones[parent_idx];
+		draw_bone=&draw_setup.bones[parent_idx];
 
 		rot->x+=draw_bone->rot.x;
 		rot->y+=draw_bone->rot.y;
@@ -271,8 +273,8 @@ void draw_model_bones(model_type *model,model_draw_setup *draw_setup,int sel_bon
 		
 				// draw drag handles
 				
-			if (cur_pose!=-1) {
-				draw_model_bones_get_handle_rot(model,draw_setup,n,&rot);
+			if (state.cur_pose_idx!=-1) {
+				draw_model_bones_get_handle_rot(n,&rot);
 					
 				vct.x=bone_drag_handle_offset;
 				vct.y=0;

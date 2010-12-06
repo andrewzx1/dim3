@@ -74,6 +74,11 @@ void list_palette_list_shutdown(list_palette_type *list)
 	if (list->items!=NULL) free(list->items);
 }
 
+void list_palette_set_title(list_palette_type *list,char *title)
+{
+	strcpy(list->title,title);
+}
+
 /* =======================================================
 
       List Add Items

@@ -468,7 +468,7 @@ bool texture_setting_frame_add_delete(void)
 		texture_setting_frame_save();
 		
 		if (texture_setting_bitmap_open(bitmap_name)) {
-			SetThemeCursor(kThemeWatchCursor);
+			os_set_wait_cursor();
 			model_add_texture_frame(&model,dialog_texture_wind_current_txt,bitmap_name);
 			os_set_arrow_cursor();
 		}
@@ -482,7 +482,7 @@ bool texture_setting_frame_add_delete(void)
 	
 		texture_setting_frame_save();
 		
-		SetThemeCursor(kThemeWatchCursor);
+		os_set_wait_cursor();
 		model_delete_texture_frame(&model,dialog_texture_wind_current_txt);
 		os_set_arrow_cursor();
 		
@@ -530,7 +530,7 @@ static pascal OSStatus texture_setting_event_proc(EventHandlerCallRef handler,Ev
 				case kTextureSettingFrameBitmapEdit:
 					if (texture_setting_bitmap_open(bitmap_name)) {
 						strcpy(model.textures[dialog_texture_wind_current_txt].frames[dialog_texture_wind_current_frame].name,bitmap_name);
-						SetThemeCursor(kThemeWatchCursor);
+						os_set_wait_cursor();
 						model_refresh_textures(&model);
 						texture_setting_frame_reset();
 						os_set_arrow_cursor();

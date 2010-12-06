@@ -262,11 +262,18 @@ typedef struct		{
 					} play_blend_type;
 					
 typedef struct		{
-						int					drag_bone_mode,select_mode,
-											sel_trig_idx;
-						bool				texture,mesh,bone,hit_box,
+						int					cur_mesh_idx,cur_bone_idx,
+											cur_pose_idx,cur_animate_idx,
+											drag_bone_mode,select_mode,
+											sel_trig_idx,magnify_z;
+						bool				model_open,
+											texture,mesh,bone,hit_box,
 											normal,view_box,first_mesh,
-											playing,play_animate_blend;
+											playing,play_animate_blend,
+											shift_on,rotate_on,size_on,drag_sel_on;
+						d3pnt				shift;
+						d3ang				ang;
+						d3rect				drag_sel_box;
 						play_blend_type		blend[max_model_blend_animation];
 					} animator_state_type;
 

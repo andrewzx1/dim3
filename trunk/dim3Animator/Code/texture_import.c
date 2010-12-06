@@ -27,9 +27,9 @@ and can be sold or given away.
 
 #include "interface.h"
 
-extern int						cur_mesh;
-extern file_path_setup_type		file_path_setup;
 extern model_type				model;
+extern file_path_setup_type		file_path_setup;
+extern animator_state_type		state;
 
 /* =======================================================
 
@@ -42,7 +42,7 @@ void clear_materials(void)
     int						i;
 	model_material_type		*material;
     
-	material=model.meshes[cur_mesh].materials;
+	material=model.meshes[state.cur_mesh_idx].materials;
     
     for (i=0;i!=max_model_texture;i++) {
 		material->trig_start=material->trig_count=0;

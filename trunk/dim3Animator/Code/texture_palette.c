@@ -33,15 +33,13 @@ and can be sold or given away.
 #include "interface.h"
 #include "dialog.h"
 
-extern int					cur_mesh;
-extern d3rect				model_box;
+extern int						txt_palette_max_page_count,txt_palette_per_page_count,
+								txt_palette_cur_page,txt_palette_pixel_sz,
+								txt_palette_page_list_count,txt_palette_page_list_width;
+extern d3rect					txt_palette_box,model_box;
 
-extern model_type			model;
-
-extern int					txt_palette_max_page_count,txt_palette_per_page_count,
-							txt_palette_cur_page,txt_palette_pixel_sz,
-							txt_palette_page_list_count,txt_palette_page_list_width;
-extern d3rect				txt_palette_box;
+extern model_type				model;
+extern animator_state_type		state;
 
 /* =======================================================
 
@@ -88,7 +86,7 @@ int texture_palette_get_selected_texture(void)
 
 void texture_palette_put_selected_texture(int txt_idx)
 {
-	vertex_set_sel_mask_material(cur_mesh,txt_idx);
+	vertex_set_sel_mask_material(state.cur_mesh_idx,txt_idx);
 	hilite_vertex_rows();
 }
 

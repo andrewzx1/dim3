@@ -93,6 +93,7 @@ void property_palette_fill_scenery(int scenery_idx)
 
 void property_palette_click_scenery(int scenery_idx,int id)
 {
+	int							frame_idx,frame;
 	char						file_name[256];
 	map_scenery_type			*scenery;
 
@@ -101,6 +102,11 @@ void property_palette_click_scenery(int scenery_idx,int id)
 		// parameters
 
 	if ((id>=kSceneryPropertyFramesStart) && (id<=kSceneryPropertyFramesEnd)) {
+		frame_idx=(id-kSceneryPropertyFramesStart);
+		
+		frame=(int)scenery->texture_frame[frame_idx];
+		dialog_property_string_run(list_string_value_positive_int,(void*)&frame,0);
+		scenery->texture_frame[frame_idx]=(char)frame;
 
 		main_wind_draw();
 		return;
@@ -119,7 +125,11 @@ void property_palette_click_scenery(int scenery_idx,int id)
 			break;
 
 		case kSceneryPropertyAnimationName:
+			dialog_property_string_run(list_string_value_string,(void*)scenery->animation_name,name_str_len);
+			break;
+			
 		case kSceneryPropertyResize:
+			dialog_property_string_run(list_string_value_positive_float,(void*)&scenery->resize,0);
 			break;
 
 		case kSceneryPropertyContactObject:

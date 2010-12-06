@@ -27,6 +27,8 @@ and can be sold or given away.
 
 #include "model.h"
 
+extern model_type			model;
+extern model_draw_setup		draw_setup;
 extern animator_state_type	state;
 
 /* =======================================================
@@ -35,15 +37,15 @@ extern animator_state_type	state;
       
 ======================================================= */
 
-void draw_model_axis(model_type *model)
+void draw_model_axis(void)
 {
 		// x axis
 		
 	glColor4f(1,0,0,1);
 	
     glBegin(GL_LINES);
-	glVertex3i(-20000,model->center.y,model->center.z);
-	glVertex3i(20000,model->center.y,model->center.z);
+	glVertex3i(-20000,model.center.y,model.center.z);
+	glVertex3i(20000,model.center.y,model.center.z);
 	glEnd();
 	
 		// y axis
@@ -51,8 +53,8 @@ void draw_model_axis(model_type *model)
 	glColor4f(0,1,0,1);
 	
     glBegin(GL_LINES);
-	glVertex3i(model->center.x,-20000,model->center.z);
-	glVertex3i(model->center.x,20000,model->center.z);
+	glVertex3i(model.center.x,-20000,model.center.z);
+	glVertex3i(model.center.x,20000,model.center.z);
     glEnd();
 
 		// z axis
@@ -60,8 +62,8 @@ void draw_model_axis(model_type *model)
 	glColor4f(0,0,1,1);
 	
     glBegin(GL_LINES);
-	glVertex3i(model->center.x,model->center.y,-20000);
-	glVertex3i(model->center.x,model->center.y,20000);
+	glVertex3i(model.center.x,model.center.y,-20000);
+	glVertex3i(model.center.x,model.center.y,20000);
     glEnd();
 }
 
@@ -71,7 +73,7 @@ void draw_model_axis(model_type *model)
       
 ======================================================= */
 
-void draw_model_box(model_box_type *box,model_draw_setup *draw_setup,bool draw_floor,bool draw_handles)
+void draw_model_box(model_box_type *box,bool draw_floor,bool draw_handles)
 {
 	int				n,xsz,zsz,ysz,offx,offz,offy,
 					x[8],y[8],z[8];
@@ -91,7 +93,7 @@ void draw_model_box(model_box_type *box,model_draw_setup *draw_setup,bool draw_f
 	z[1]=z[2]=z[5]=z[6]=offz+zsz;
 	
 	for (n=0;n!=8;n++) {
-		model_get_point_position(draw_setup,&x[n],&y[n],&z[n]);
+		model_get_point_position(&draw_setup,&x[n],&y[n],&z[n]);
 	}
     
     glLineWidth(4);
@@ -146,19 +148,19 @@ void draw_model_box(model_box_type *box,model_draw_setup *draw_setup,bool draw_f
 	}
 }
 
-void draw_model_box_view(model_type *model,model_draw_setup *draw_setup)
+void draw_model_box_view(void)
 {
 	glColor4f(0,1,0,0.5);
-	draw_model_box(&model->view_box,draw_setup,TRUE,FALSE);
+	draw_model_box(&model.view_box,TRUE,FALSE);
 }
 
-void draw_model_box_hit_boxes(model_type *model,model_draw_setup *draw_setup)
+void draw_model_box_hit_boxes(void)
 {
 	int				n;
 	
-	for (n=0;n<model->nhit_box;n++) {
+	for (n=0;n<model.nhit_box;n++) {
 		glColor4f(1,1,0,0.5);
-		draw_model_box(&model->hit_boxes[n].box,draw_setup,FALSE,TRUE);
+		draw_model_box(&model.hit_boxes[n].box,FALSE,TRUE);
 	}
 }
 

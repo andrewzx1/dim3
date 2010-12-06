@@ -43,6 +43,8 @@ extern void os_set_wait_cursor(void);
 extern void os_set_hand_cursor(void);
 extern void os_set_drag_cursor(void);
 extern void os_set_resize_cursor(void);
+extern void os_set_add_cursor(void);
+extern void os_set_subtract_cursor(void);
 
 extern void os_menu_enable_item(int menu_idx,int item_idx,bool enable);
 extern void os_menu_check_item(int menu_idx,int item_idx,bool check);
@@ -62,3 +64,6 @@ extern void os_dialog_alert(char *title,char *msg);
 extern int os_dialog_confirm(char *title,char *msg,bool include_cancel);
 
 extern bool os_load_file(char *path,char *ext);
+
+extern void os_pick_color(d3col *col);
+

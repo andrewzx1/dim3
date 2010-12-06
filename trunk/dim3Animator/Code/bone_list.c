@@ -37,8 +37,8 @@ DataBrowserAddDragItemUPP		bone_list_drag_item_upp;
 DataBrowserAcceptDragUPP		bone_list_drag_accept_upp;
 DataBrowserReceiveDragUPP		bone_list_drag_receive_upp;
 
-extern int						cur_mesh,cur_pose,cur_bone;
 extern model_type				model;
+extern animator_state_type		state;
 
 /* =======================================================
 
@@ -86,7 +86,7 @@ void reset_bone_list(void)
 	int						n,cnt;
 	bool					all_open;
 	DataBrowserItemID		itemID,itemList[max_model_bone];
-	DataBrowserItemState	state;
+	DataBrowserItemState	db_state;
 	
 			// find all non-parent bones
 		
@@ -124,8 +124,8 @@ void reset_bone_list(void)
 	while (TRUE) {
 		all_open=TRUE;
 		for (n=0;n!=model.nbone;n++) {
-			if (GetDataBrowserItemState(bone_list,(n+1),&state)!=errDataBrowserItemNotFound) {
-				if ((state&kDataBrowserContainerIsOpen)==0) {
+			if (GetDataBrowserItemState(bone_list,(n+1),&db_state)!=errDataBrowserItemNotFound) {
+				if ((db_state&kDataBrowserContainerIsOpen)==0) {
 					if (OpenDataBrowserContainer(bone_list,(n+1))==noErr) {
 						all_open=FALSE;
 					}
@@ -137,10 +137,10 @@ void reset_bone_list(void)
 
 		// select item
 		
-	if (cur_bone!=-1) {
+	if (state.cur_bone_idx!=-1) {
 		bone_list_notify_ignore=TRUE;
 	
-		itemID=cur_bone+1;
+		itemID=state.cur_bone_idx+1;
 		SetDataBrowserSelectedItems(bone_list,1,&itemID,kDataBrowserItemsAssign);
 		
 		bone_list_notify_ignore=FALSE;
@@ -183,10 +183,10 @@ static pascal OSStatus pose_bone_move_item_proc(ControlRef ctrl,DataBrowserItemI
 			return(noErr);
 			
 		case kPoseBoneRotDBColumn:
-			if (cur_pose==-1) return(noErr);
+			if (state.cur_pose_idx==-1) return(noErr);
 
 			idx=itemID-1;
-			bone_move=&model.poses[cur_pose].bone_moves[idx];
+			bone_move=&model.poses[state.cur_pose_idx].bone_moves[idx];
 			
 			sprintf(txt,"%d,%d,%d",(int)bone_move->rot.x,(int)bone_move->rot.y,(int)bone_move->rot.z);
 			cfstr=CFStringCreateWithCString(kCFAllocatorDefault,txt,kCFStringEncodingMacRoman);
@@ -195,10 +195,10 @@ static pascal OSStatus pose_bone_move_item_proc(ControlRef ctrl,DataBrowserItemI
 			return(noErr);
 
 		case kPoseBoneMoveDBColumn:
-			if (cur_pose==-1) return(noErr);
+			if (state.cur_pose_idx==-1) return(noErr);
 
 			idx=itemID-1;
-			bone_move=&model.poses[cur_pose].bone_moves[idx];
+			bone_move=&model.poses[state.cur_pose_idx].bone_moves[idx];
 			
 			string_convert_float(s_mov_x,bone_move->mov.x);
 			string_convert_float(s_mov_y,bone_move->mov.y);
@@ -211,10 +211,10 @@ static pascal OSStatus pose_bone_move_item_proc(ControlRef ctrl,DataBrowserItemI
 			return(noErr);
 			
 		case kPoseBoneAccDBColumn:
-			if (cur_pose==-1) return(noErr);
+			if (state.cur_pose_idx==-1) return(noErr);
 			
 			idx=itemID-1;
-			bone_move=&model.poses[cur_pose].bone_moves[idx];
+			bone_move=&model.poses[state.cur_pose_idx].bone_moves[idx];
 			
 			string_convert_float(s_mov_acc,bone_move->acceleration);
 			
@@ -225,10 +225,10 @@ static pascal OSStatus pose_bone_move_item_proc(ControlRef ctrl,DataBrowserItemI
 			return(noErr);
 		
 		case kPoseBoneBlendDBColumn:
-			if (cur_pose==-1) return(noErr);
+			if (state.cur_pose_idx==-1) return(noErr);
 			
 			idx=itemID-1;
-			bone_move=&model.poses[cur_pose].bone_moves[idx];
+			bone_move=&model.poses[state.cur_pose_idx].bone_moves[idx];
 			
 			if (bone_move->skip_blended) {
 				strcpy(txt,"Y");
@@ -263,21 +263,21 @@ static pascal void bone_list_notify_proc(ControlRef ctrl,DataBrowserItemID itemI
 	
 		case kDataBrowserItemDoubleClicked:
 			idx=itemID-1;
-			if (cur_pose==-1) {
+			if (state.cur_pose_idx==-1) {
 				if (dialog_bone_settings_run(&model.bones[idx])) {
 					model_calculate_parents(&model);
 				}
 			}
 			else {
-				dialog_bone_move_settings_run(&model.poses[cur_pose].bone_moves[idx]);
+				dialog_bone_move_settings_run(&model.poses[state.cur_pose_idx].bone_moves[idx]);
 			}
 			reset_bone_list();
 			main_wind_draw();
 			break;
 	
 		case kDataBrowserItemSelected:
-			cur_bone=itemID-1;
-			vertex_set_sel_mask_bone(cur_mesh,cur_bone);
+			state.cur_bone_idx=itemID-1;
+			vertex_set_sel_mask_bone(state.cur_mesh_idx,state.cur_bone_idx);
 			hilite_vertex_rows();
 			main_wind_draw();
 			break;
@@ -285,8 +285,8 @@ static pascal void bone_list_notify_proc(ControlRef ctrl,DataBrowserItemID itemI
 		case kDataBrowserSelectionSetChanged:
 			GetDataBrowserItemCount(ctrl,kDataBrowserNoItem,TRUE,kDataBrowserItemIsSelected,&count);
 			if (count==0) {
-				cur_bone=-1;
-				vertex_set_sel_mask_no_bone(cur_mesh);
+				state.cur_bone_idx=-1;
+				vertex_set_sel_mask_no_bone(state.cur_mesh_idx);
 				hilite_vertex_rows();
 				main_wind_draw();
 			}

@@ -34,21 +34,14 @@ EventHandlerUPP					model_wind_upp;
 EventLoopTimerRef				model_timer_event;
 EventLoopTimerUPP				model_timer_upp;
 
-int								cur_mesh,cur_bone,cur_pose,cur_animate,magnify_z;
-bool							shift_on,rotate_on,size_on,drag_sel_on,vertex_on;
-d3pnt							shift;
-d3ang							ang;
-
 AGLContext						ctx;
 
 model_type						model;
 model_draw_setup				draw_setup;
+file_path_setup_type			file_path_setup;
 animator_state_type				state;
 
 extern d3rect					model_box;
-
-extern bool						fileopen;
-extern file_path_setup_type		file_path_setup;
 
 /* =======================================================
 
@@ -58,12 +51,12 @@ extern file_path_setup_type		file_path_setup;
 
 void model_wind_key(char ch,bool up)
 {
-	if (!fileopen) return;
+	if (!state.model_open) return;
 	
 		// esc key deselects
 		
 	if ((ch==0x1B) && (!up)) {
-		vertex_clear_sel_mask(cur_mesh);
+		vertex_clear_sel_mask(state.cur_mesh_idx);
 		main_wind_draw();
 		return;
 	}
@@ -72,14 +65,15 @@ void model_wind_key(char ch,bool up)
 		
 	if (ch==0x20) {
 		if (up) {
-			shift_on=FALSE;
+			state.shift_on=FALSE;
 			os_set_arrow_cursor();
 		}
 		else {
-			shift_on=TRUE;
-			rotate_on=size_on=FALSE;
-			SetThemeCursor(kThemeOpenHandCursor);
+			state.shift_on=TRUE;
+			state.rotate_on=state.size_on=FALSE;
+			os_set_hand_cursor();
 		}
+		
 		return;
 	}
 }
@@ -87,37 +81,37 @@ void model_wind_key(char ch,bool up)
 void key_modifier_model_wind(unsigned long modifiers)
 {
 	if ((modifiers&cmdKey)!=0) {
-		rotate_on=TRUE;
-		shift_on=size_on=FALSE;
-		SetThemeCursor(kThemeOpenHandCursor);
+		state.rotate_on=TRUE;
+		state.shift_on=state.size_on=FALSE;
+		os_set_hand_cursor();
 		return;
 	}
 	else {
-		rotate_on=FALSE;
+		state.rotate_on=FALSE;
 	}
 	
 	if ((modifiers&optionKey)!=0) {
-		size_on=TRUE;
-		shift_on=rotate_on=FALSE;
-		SetThemeCursor(kThemeResizeUpDownCursor);
+		state.size_on=TRUE;
+		state.shift_on=state.rotate_on=FALSE;
+		os_set_resize_cursor();
 		return;
 	}
 	else {
-		size_on=FALSE;
+		state.size_on=FALSE;
 	}
 	
 	if ((modifiers&shiftKey)!=0) {
-		size_on=shift_on=rotate_on=FALSE;
-		SetThemeCursor(kThemePlusCursor);
+		state.size_on=state.shift_on=state.rotate_on=FALSE;
+		os_set_add_cursor();
 		return;
 	}
 	if ((modifiers&controlKey)!=0) {
-		size_on=shift_on=rotate_on=FALSE;
-		SetThemeCursor(kThemePoofCursor);
+		state.size_on=state.shift_on=state.rotate_on=FALSE;
+		os_set_subtract_cursor();
 		return;
 	}
 	
-	if (!shift_on) os_set_arrow_cursor();
+	if (!state.shift_on) os_set_arrow_cursor();
 }
 
 void model_wind_reset_modifiers(void)
@@ -133,24 +127,24 @@ void model_wind_reset_modifiers(void)
 
 void model_wind_cursor(unsigned long modifiers)
 {
-	if (shift_on) {
-		SetThemeCursor(kThemeOpenHandCursor);
+	if (state.shift_on) {
+		os_set_hand_cursor();
 		return;
 	}
 	if ((modifiers&cmdKey)!=0) {
-		SetThemeCursor(kThemeOpenHandCursor);
+		os_set_hand_cursor();
 		return;
 	}
 	if ((modifiers&optionKey)!=0) {
-		SetThemeCursor(kThemeResizeUpDownCursor);
+		os_set_resize_cursor();
 		return;
 	}
 	if ((modifiers&shiftKey)!=0) {
-		SetThemeCursor(kThemePlusCursor);
+		os_set_add_cursor();
 		return;
 	}
 	if ((modifiers&controlKey)!=0) {
-		SetThemeCursor(kThemePoofCursor);
+		os_set_subtract_cursor();
 		return;
 	}
 	
@@ -288,7 +282,7 @@ void main_wind_draw_play(void)
 	
 		// if no current animation, just do no pose for animated textures
 		
-	if ((cur_animate==-1) && (!state.play_animate_blend)) {
+	if ((state.cur_animate_idx==-1) && (!state.play_animate_blend)) {
 		main_wind_draw();
 		return;
 	}
@@ -302,7 +296,7 @@ void main_wind_draw_play(void)
 	cur_tick=time_get();
 	
 	if (!state.play_animate_blend) {
-		main_wind_draw_play_calc_animation(cur_tick,cur_animate,0,TRUE);
+		main_wind_draw_play_calc_animation(cur_tick,state.cur_animate_idx,0,TRUE);
 	}
 	else {
 		for (n=0;n!=max_model_blend_animation;n++) {
@@ -314,7 +308,7 @@ void main_wind_draw_play(void)
 		
 		// global draw setup
 	
-	draw_model_wind(&model,cur_mesh,&draw_setup);
+	draw_model_wind(&model,state.cur_mesh_idx,&draw_setup);
 }
 
 void main_wind_draw(void)
@@ -329,7 +323,7 @@ void main_wind_draw(void)
 		// model
 		
 	if (!state.playing) {
-		draw_model_wind_pose(&model,cur_mesh,cur_pose);
+		draw_model_wind_pose(&model,state.cur_mesh_idx,state.cur_pose_idx);
 	}
 	else {
 		main_wind_draw_play();
@@ -357,7 +351,7 @@ void main_wind_draw_no_swap(void)
 		// model
 		
 	if (!state.playing) {
-		draw_model_wind_pose(&model,cur_mesh,cur_pose);
+		draw_model_wind_pose(&model,state.cur_mesh_idx,state.cur_pose_idx);
 	}
 	else {
 		main_wind_draw_play();
@@ -443,7 +437,7 @@ OSStatus model_wind_event_handler(EventHandlerCallRef eventhandler,EventRef even
 					if (!menu_save_changes_dialog()) return(noErr);
 					close_model_xml();
 					model_wind_play(FALSE,FALSE);
-					fix_menus();
+					menu_fix_enable();
 					return(noErr);
 					
                 case kEventWindowCursorChange:
@@ -497,7 +491,7 @@ OSStatus model_wind_event_handler(EventHandlerCallRef eventhandler,EventRef even
 					GetEventParameter(event,kEventParamMouseWheelAxis,typeMouseWheelAxis,NULL,sizeof(EventMouseWheelAxis),NULL,&axis);
 					if (axis!=kEventMouseWheelAxisY) return(noErr);
 					GetEventParameter(event,kEventParamMouseWheelDelta,typeLongInteger,NULL,sizeof(long),NULL,&delta);
-					magnify_z+=(delta*20);
+					state.magnify_z+=(delta*20);
 					main_wind_draw();
 					return(noErr);
 					
@@ -522,8 +516,8 @@ void model_wind_play(bool play,bool blend)
 		// good animation?
 		
 	if (play) {
-		if (cur_animate==-1) return;
-		if (model.animates[cur_animate].npose_move==0) return;
+		if (state.cur_animate_idx==-1) return;
+		if (model.animates[state.cur_animate_idx].npose_move==0) return;
 	}
 	
 		// always turn off animation until setup is complete
@@ -547,7 +541,7 @@ void model_wind_play(bool play,bool blend)
 		
 	state.playing=play;
 	
-	if (fileopen) main_wind_draw();
+	if (state.model_open) main_wind_draw();
 }
 
 void model_wind_timer(EventLoopTimerRef inTimer,void *inUserData)
@@ -626,12 +620,12 @@ void model_wind_open(void)
 	
 		// setup and cursors
 		
-	shift_on=FALSE;
-	rotate_on=FALSE;
-	size_on=FALSE;
-	drag_sel_on=FALSE;
+	state.shift_on=FALSE;
+	state.rotate_on=FALSE;
+	state.size_on=FALSE;
+	state.drag_sel_on=FALSE;
 	
-	magnify_z=3000;
+	state.magnify_z=3000;
 	
 		// get gl sizes
 		
@@ -696,7 +690,7 @@ void model_wind_open(void)
 	
 		// animation setup
 		
-	cur_animate=-1;
+	state.cur_animate_idx=-1;
 	model_wind_play(FALSE,FALSE);
 
 		// events

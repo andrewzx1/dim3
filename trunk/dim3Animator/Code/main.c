@@ -28,11 +28,8 @@ and can be sold or given away.
 #include "interface.h"
 #include "dialog.h"
 
-bool					fileopen;
-
-file_path_setup_type	file_path_setup;
-
-extern OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,void *userdata);
+extern file_path_setup_type		file_path_setup;
+extern animator_state_type		state;
 
 /* =======================================================
 
@@ -40,13 +37,24 @@ extern OSStatus app_event_menu(EventHandlerCallRef eventhandler,EventRef event,v
       
 ======================================================= */
 
-void doloop(void)
+OSStatus menu_event_callback(EventHandlerCallRef eventhandler,EventRef event,void *userdata)
+{
+	HICommand		cmd;
+	
+	GetEventParameter(event,kEventParamDirectObject,typeHICommand,NULL,sizeof(HICommand),NULL,&cmd);
+	
+	if (menu_event_run(cmd.commandID)) return(noErr);
+
+	return(eventNotHandledErr);
+}
+
+void main_loop(void)
 {
 	EventHandlerRef		menu_event;
 	EventHandlerUPP		menu_upp;
 	EventTypeSpec		app_menu_events[]={{kEventClassCommand,kEventProcessCommand}};
 	
-	menu_upp=NewEventHandlerUPP(app_event_menu);						   
+	menu_upp=NewEventHandlerUPP(menu_event_callback);						   
 	InstallEventHandler(GetApplicationEventTarget(),menu_upp,GetEventTypeCount(app_menu_events),app_menu_events,NULL,&menu_event);
 	
 	RunApplicationEventLoop();
@@ -57,32 +65,24 @@ void doloop(void)
 
 /* =======================================================
 
-      Initialization Code
+      Start Menu
       
 ======================================================= */
 
-void app_init(void)
+void menu_start(void)
 {
-	RegisterAppearanceClient();
-
-	SetThemeCursor(kThemeArrowCursor);
+	IBNibRef				nib;
+	CFStringRef				cf_str;
 	
-	FlushEvents(everyEvent,0);
-
-	HMSetTagDelay(250);
+	cf_str=CFStringCreateWithCString(kCFAllocatorDefault,"dim3 Animator",kCFStringEncodingMacRoman);
+	CreateNibReference(cf_str,&nib);
+	CFRelease(cf_str);
 	
-		// setup paths
-
-	file_paths_setup(&file_path_setup);
+	cf_str=CFStringCreateWithCString(kCFAllocatorDefault,"MenuBar",kCFStringEncodingMacRoman);
+	SetMenuBarFromNib(nib,cf_str);
+	CFRelease(cf_str);
 	
-		// no open files
-		
-	fileopen=FALSE;
-}
-
-void app_shutdown(void)
-{
-	UnregisterAppearanceClient();
+	DisposeNibReference(nib);
 }
 
 /* =======================================================
@@ -93,14 +93,16 @@ void app_shutdown(void)
 
 int main(int argc,char *argv[])
 {
-	app_init();
+	os_set_arrow_cursor();
+	
+	state.model_open=FALSE;
+	file_paths_setup(&file_path_setup);
 	
 	menu_start();
-    open_model_xml();
 	
-	doloop();
-
-	app_shutdown();
+    open_model_xml();
+	main_loop();
+	close_model_xml();
     
     return(0);
 }

@@ -27,17 +27,14 @@ and can be sold or given away.
 
 #include "model.h"
 
-d3rect						model_box,drag_sel_box;
+d3rect						model_box;
 
-extern int					cur_mesh,cur_bone,magnify_z,
-							tool_palette_pixel_sz,txt_palette_pixel_sz;
-extern bool					fileopen,drag_sel_on;
-extern d3pnt				shift;
-extern d3ang				ang;
+extern int					tool_palette_pixel_sz,txt_palette_pixel_sz;
 
 extern AGLContext			ctx;
 extern WindowRef			wind;
 
+extern model_type			model;
 extern model_draw_setup		draw_setup;
 extern animator_state_type	state;
 
@@ -95,15 +92,15 @@ void draw_model_gl_setup(model_type *model,int z_offset)
 
 	yoff=model->view_box.size.y/2;
 
-	sz=500+((4000-magnify_z)*5);
+	sz=500+((4000-state.magnify_z)*5);
 	
-	glTranslatef(-((GLfloat)shift.x),-((GLfloat)(shift.y-yoff)),(GLfloat)sz);
+	glTranslatef(-((GLfloat)state.shift.x),-((GLfloat)(state.shift.y-yoff)),(GLfloat)sz);
 	
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	
-	glRotatef(-ang.x,1.0f,0.0f,0.0f);
-	glRotatef(angle_add(ang.y,180.0f),0.0f,1.0f,0.0f);
+	glRotatef(-state.ang.x,1.0f,0.0f,0.0f);
+	glRotatef(angle_add(state.ang.y,180.0f),0.0f,1.0f,0.0f);
 
 		// drawing setup
 		
@@ -152,7 +149,7 @@ void draw_model_setup_bones_vertexes(model_type *model,int mesh_idx,model_draw_s
 
 void draw_model_wind(model_type *model,int mesh_idx,model_draw_setup *draw_setup)
 {
-	if (!fileopen) return;
+	if (!state.model_open) return;
 
 		// setup transformation to fit model in middle of screen
 		
@@ -164,7 +161,7 @@ void draw_model_wind(model_type *model,int mesh_idx,model_draw_setup *draw_setup
 	
 		// draw the center
 		
-	draw_model_axis(model);
+	draw_model_axis();
 
 		// create the drawing bones, vertex arrays and normal arrays
 		
@@ -184,7 +181,7 @@ void draw_model_wind(model_type *model,int mesh_idx,model_draw_setup *draw_setup
 		draw_model_gl_setup(model,0);
 	}
 	
-	if (state.bone) draw_model_bones(model,draw_setup,cur_bone);
+	if (state.bone) draw_model_bones(model,draw_setup,state.cur_bone_idx);
 	
 	if ((state.texture) || (state.mesh)) {
 		draw_model_gl_setup(model,2);
@@ -199,8 +196,8 @@ void draw_model_wind(model_type *model,int mesh_idx,model_draw_setup *draw_setup
 	
 		// boxes
 		
-	if (state.hit_box) draw_model_box_hit_boxes(model,draw_setup);
-	if (state.view_box) draw_model_box_view(model,draw_setup);
+	if (state.hit_box) draw_model_box_hit_boxes();
+	if (state.view_box) draw_model_box_view();
 	
 		// normals
 		
@@ -230,14 +227,14 @@ void draw_model_wind(model_type *model,int mesh_idx,model_draw_setup *draw_setup
 	
 		// draw the drag selection
 		
-	if (drag_sel_on) {
+	if (state.drag_sel_on) {
 		glColor4f(0.8,0.8,0.8,0.4);
 		
 		glBegin(GL_QUADS);
-		glVertex2i((drag_sel_box.lx+model_box.lx),(drag_sel_box.ty+model_box.ty));
-		glVertex2i((drag_sel_box.rx+model_box.lx),(drag_sel_box.ty+model_box.ty));
-		glVertex2i((drag_sel_box.rx+model_box.lx),(drag_sel_box.by+model_box.ty));
-		glVertex2i((drag_sel_box.lx+model_box.lx),(drag_sel_box.by+model_box.ty));
+		glVertex2i((state.drag_sel_box.lx+model_box.lx),(state.drag_sel_box.ty+model_box.ty));
+		glVertex2i((state.drag_sel_box.rx+model_box.lx),(state.drag_sel_box.ty+model_box.ty));
+		glVertex2i((state.drag_sel_box.rx+model_box.lx),(state.drag_sel_box.by+model_box.ty));
+		glVertex2i((state.drag_sel_box.lx+model_box.lx),(state.drag_sel_box.by+model_box.ty));
 
 		glEnd();
 	}

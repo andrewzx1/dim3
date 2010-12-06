@@ -138,5 +138,6 @@ extern bool dialog_map_auto_generate_setting_run(void);
 // property dialogs
 //
 
-extern void dialog_property_list_index_run(char *list_ptr,int list_count,int list_item_sz,int list_name_offset,bool include_none,int *idx);
+extern void dialog_property_list_run(char *list_ptr,int list_count,int list_item_sz,int list_name_offset,bool include_none,int *idx);
+extern void dialog_property_string_run(int value_type,void *value,int value_len);
 

@@ -34,8 +34,8 @@ ControlRef						vertex_list;
 DataBrowserItemDataUPP			vertex_list_setitem_upp;
 DataBrowserItemNotificationUPP	vertex_list_notify_upp;
 
-extern int						cur_mesh,cur_pose;
 extern model_type				model;
+extern animator_state_type		state;
 
 /* =======================================================
 
@@ -50,14 +50,14 @@ void hilite_vertex_rows(void)
 	
 	vertex_list_notify_ignore=TRUE;
 	
-	nvertex=model.meshes[cur_mesh].nvertex;
+	nvertex=model.meshes[state.cur_mesh_idx].nvertex;
 	nitem=0;
 	
 	vertex_sel_itemIDs=(DataBrowserItemID*)malloc(nvertex*sizeof(DataBrowserItemID));
 	itemID=vertex_sel_itemIDs;
 	
 	for (n=0;n!=nvertex;n++) {
-		if (vertex_check_sel_mask(cur_mesh,n)) {
+		if (vertex_check_sel_mask(state.cur_mesh_idx,n)) {
 			*itemID=n+1;
 			itemID++;
 			nitem++;
@@ -84,7 +84,7 @@ void reset_vertex_tab(void)
 		// setup vertexes
 		
 	RemoveDataBrowserItems(vertex_list,kDataBrowserNoItem,0,NULL,kDataBrowserItemNoProperty);
-	AddDataBrowserItems(vertex_list,kDataBrowserNoItem,model.meshes[cur_mesh].nvertex,NULL,kDataBrowserItemNoProperty);
+	AddDataBrowserItems(vertex_list,kDataBrowserNoItem,model.meshes[state.cur_mesh_idx].nvertex,NULL,kDataBrowserItemNoProperty);
 
 		// select current bone
 	
@@ -108,7 +108,7 @@ static pascal OSStatus vertex_list_item_proc(ControlRef ctrl,DataBrowserItemID i
 	
 	if (changeValue) return(errDataBrowserPropertyNotSupported);
 	
-	mesh=&model.meshes[cur_mesh];
+	mesh=&model.meshes[state.cur_mesh_idx];
 	
 	switch (property) {
 		
@@ -184,7 +184,7 @@ static pascal void vertex_list_notify_proc(ControlRef ctrl,DataBrowserItemID ite
 	
 		case kDataBrowserItemDoubleClicked:
 			i=itemID-1;
-			if (dialog_vertex_settings_run(&model.meshes[cur_mesh].vertexes[i])) {
+			if (dialog_vertex_settings_run(&model.meshes[state.cur_mesh_idx].vertexes[i])) {
 				model_calculate_parents(&model);
 				reset_vertex_tab();
 				main_wind_draw();
@@ -192,12 +192,12 @@ static pascal void vertex_list_notify_proc(ControlRef ctrl,DataBrowserItemID ite
 			break;
 
 		case kDataBrowserItemSelected:
-			vertex_set_sel_mask(cur_mesh,(itemID-1),TRUE);
+			vertex_set_sel_mask(state.cur_mesh_idx,(itemID-1),TRUE);
 			main_wind_draw();
 			break;
 			
 		case kDataBrowserItemDeselected:
-			vertex_set_sel_mask(cur_mesh,(itemID-1),FALSE);
+			vertex_set_sel_mask(state.cur_mesh_idx,(itemID-1),FALSE);
 			main_wind_draw();
 			break;
 	}

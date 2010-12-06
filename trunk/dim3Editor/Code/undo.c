@@ -433,7 +433,6 @@ void undo_pull(void)
 		
 	item_palette_reset();
 	property_palette_reset();
-	palette_reset();
 
 	main_wind_draw();
 }

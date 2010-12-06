@@ -118,6 +118,16 @@ void os_set_resize_cursor(void)
    SetThemeCursor(kThemeResizeUpDownCursor);
 }
 
+void os_set_add_cursor(void)
+{
+	SetThemeCursor(kThemePlusCursor);
+}
+
+void os_set_subtract_cursor(void)
+{
+	SetThemeCursor(kThemePoofCursor);
+}
+
 /* =======================================================
 
       Menus
@@ -360,6 +370,29 @@ bool os_load_file(char *path,char *ext)
 	return(TRUE);
 }
 
+/* =======================================================
+
+      Color Picker
+      
+======================================================= */
+
+void os_pick_color(d3col *col)
+{
+	RGBColor		color;
+	Point			pt;
+	
+	color.red=(int)(col->r*(float)0xFFFF);
+	color.green=(int)(col->g*(float)0xFFFF);
+	color.blue=(int)(col->b*(float)0xFFFF);
+	
+	pt.h=pt.v=-1;
+	
+	if (GetColor(pt,"\pChoose the Light Color:",&color,&color)) {
+		col->r=((float)color.red/(float)0xFFFF);
+		col->g=((float)color.green/(float)0xFFFF);
+		col->b=((float)color.blue/(float)0xFFFF);
+	}
+}
 
 
 

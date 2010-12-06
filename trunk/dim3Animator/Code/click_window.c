@@ -28,18 +28,13 @@ and can be sold or given away.
 #include "model.h"
 #include "interface.h"
 
-extern int						cur_mesh,cur_pose,cur_bone,magnify_z;
-extern bool						shift_on,rotate_on,size_on,drag_sel_on;
-extern d3pnt					shift;
-extern d3ang					ang;
-extern d3rect					model_box,drag_sel_box;
-
-extern animator_state_type		state;
+extern d3rect					model_box;
 
 extern model_type				model;
 extern model_draw_setup			draw_setup;
+extern animator_state_type		state;
 
-extern void draw_model_bones_get_handle_rot(model_type *model,model_draw_setup *draw_setup,int bone_idx,d3ang *rot);
+extern void draw_model_bones_get_handle_rot(int bone_idx,d3ang *rot);
 extern float draw_model_bones_drag_handle_offset(model_type *model);
 extern void draw_model_bones_drag_handle_calc(float x,float y,float z,d3vct *vct,d3ang *ang,float *hx,float *hy,float *hz);
 
@@ -64,7 +59,7 @@ void model_sel_vertex(float *pv,d3rect *box,bool chg_sel,double *mod_matrix,doub
 
 		// find selection
 		
-	mesh=&model.meshes[cur_mesh];
+	mesh=&model.meshes[state.cur_mesh_idx];
 		
 	nt=mesh->nvertex;
 	vertex=mesh->vertexes;
@@ -78,7 +73,7 @@ void model_sel_vertex(float *pv,d3rect *box,bool chg_sel,double *mod_matrix,doub
 		y=(wbox.by-((int)dy))-model_box.ty;
 		
 		if ((x>=box->lx) && (x<=box->rx) && (y>=box->ty) && (y<=box->by)) {
-			if (!vertex_check_hide_mask(cur_mesh,n)) vertex_set_sel_mask(cur_mesh,n,chg_sel);
+			if (!vertex_check_hide_mask(state.cur_mesh_idx,n)) vertex_set_sel_mask(state.cur_mesh_idx,n,chg_sel);
 		}
 		
 		vertex++;
@@ -90,11 +85,11 @@ void select_model_wind_save_sel_state(char *vertex_sel)
 	int					n,nt;
 	model_vertex_type	*vertex;
 
-	nt=model.meshes[cur_mesh].nvertex;
-	vertex=model.meshes[cur_mesh].vertexes;
+	nt=model.meshes[state.cur_mesh_idx].nvertex;
+	vertex=model.meshes[state.cur_mesh_idx].vertexes;
 
 	for (n=0;n!=nt;n++) {
-		vertex_sel[n]=(char)vertex_check_sel_mask(cur_mesh,n);
+		vertex_sel[n]=(char)vertex_check_sel_mask(state.cur_mesh_idx,n);
 		vertex++;
 	}
 }
@@ -104,11 +99,11 @@ void select_model_wind_restore_sel_state(char *vertex_sel)
 	int					n,nt;
 	model_vertex_type	*vertex;
 
-	nt=model.meshes[cur_mesh].nvertex;
-	vertex=model.meshes[cur_mesh].vertexes;
+	nt=model.meshes[state.cur_mesh_idx].nvertex;
+	vertex=model.meshes[state.cur_mesh_idx].vertexes;
 
 	for (n=0;n!=nt;n++) {
-		vertex_set_sel_mask(cur_mesh,n,(vertex_sel[n]!=0));
+		vertex_set_sel_mask(state.cur_mesh_idx,n,(vertex_sel[n]!=0));
 		vertex++;
 	}
 }
@@ -121,21 +116,21 @@ void select_model_wind_vertex(d3pnt *start_pnt,unsigned long modifiers,float *pv
 	
 		// turn on or off?
 		
-	org_vertex_sel=(char*)malloc(model.meshes[cur_mesh].nvertex);
+	org_vertex_sel=(char*)malloc(model.meshes[state.cur_mesh_idx].nvertex);
 		
 	if ((modifiers&shiftKey)!=0) {
 		select_model_wind_save_sel_state(org_vertex_sel);
-		SetThemeCursor(kThemePlusCursor);
+		os_set_add_cursor();
 		chg_sel=TRUE;
 	}
 	else {
 		if ((modifiers&controlKey)!=0) {
 			select_model_wind_save_sel_state(org_vertex_sel);
-			SetThemeCursor(kThemePoofCursor);
+			os_set_subtract_cursor();
 			chg_sel=FALSE;
 		}
 		else {
-			memset(org_vertex_sel,0x0,model.meshes[cur_mesh].nvertex);
+			memset(org_vertex_sel,0x0,model.meshes[state.cur_mesh_idx].nvertex);
 			os_set_arrow_cursor();
 			chg_sel=TRUE;
 		}
@@ -145,7 +140,7 @@ void select_model_wind_vertex(d3pnt *start_pnt,unsigned long modifiers,float *pv
 
 	last_pnt.x=last_pnt.y=-1;
 	
-	drag_sel_on=TRUE;
+	state.drag_sel_on=TRUE;
 	
 	while (!os_track_mouse_location(&pnt,&model_box)) {
 		
@@ -153,29 +148,29 @@ void select_model_wind_vertex(d3pnt *start_pnt,unsigned long modifiers,float *pv
 		memmove(&last_pnt,&pnt,sizeof(d3pnt));
 		
 		if (start_pnt->x<last_pnt.x) {
-			drag_sel_box.lx=start_pnt->x;
-			drag_sel_box.rx=last_pnt.x;
+			state.drag_sel_box.lx=start_pnt->x;
+			state.drag_sel_box.rx=last_pnt.x;
 		}
 		else {
-			drag_sel_box.rx=start_pnt->x;
-			drag_sel_box.lx=last_pnt.x;
+			state.drag_sel_box.rx=start_pnt->x;
+			state.drag_sel_box.lx=last_pnt.x;
 		}
 		if (start_pnt->y<last_pnt.y) {
-			drag_sel_box.ty=start_pnt->y;
-			drag_sel_box.by=last_pnt.y;
+			state.drag_sel_box.ty=start_pnt->y;
+			state.drag_sel_box.by=last_pnt.y;
 		}
 		else {
-			drag_sel_box.by=start_pnt->y;
-			drag_sel_box.ty=last_pnt.y;
+			state.drag_sel_box.by=start_pnt->y;
+			state.drag_sel_box.ty=last_pnt.y;
 		}
 		
 		select_model_wind_restore_sel_state(org_vertex_sel);
-		model_sel_vertex(pv,&drag_sel_box,chg_sel,mod_matrix,proj_matrix,vport);
+		model_sel_vertex(pv,&state.drag_sel_box,chg_sel,mod_matrix,proj_matrix,vport);
 		
 		main_wind_draw();
 	}
 	
-	drag_sel_on=FALSE;
+	state.drag_sel_on=FALSE;
 	
 	free(org_vertex_sel);
 }
@@ -196,7 +191,7 @@ bool select_model_wind_polygon(d3pnt *start_pnt)
 	
 		// clicking mesh
 		
-	mesh=&model.meshes[cur_mesh];
+	mesh=&model.meshes[state.cur_mesh_idx];
 	
 		// draw and pick the triangles
 		
@@ -205,17 +200,17 @@ bool select_model_wind_polygon(d3pnt *start_pnt)
 		// draw the mesh
 		
 	model_draw_setup_initialize(&model,&draw_setup,TRUE);
-	draw_model_setup_bones_vertexes(&model,cur_mesh,&draw_setup);
+	draw_model_setup_bones_vertexes(&model,state.cur_mesh_idx,&draw_setup);
 
 	ntrig=mesh->ntrig;
 	trig=mesh->trigs;
     
     for (n=0;n!=ntrig;n++) {
 	
-		if (!vertex_check_hide_mask_trig(cur_mesh,trig)) {
+		if (!vertex_check_hide_mask_trig(state.cur_mesh_idx,trig)) {
 			
 			for (k=0;k!=3;k++) {
-				pv=draw_setup.mesh_arrays[cur_mesh].gl_vertex_array+(trig->v[k]*3);
+				pv=draw_setup.mesh_arrays[state.cur_mesh_idx].gl_vertex_array+(trig->v[k]*3);
 				v_pnts[k].x=(int)*pv++;
 				v_pnts[k].y=(int)*pv++;
 				v_pnts[k].z=(int)*pv;
@@ -237,12 +232,12 @@ bool select_model_wind_polygon(d3pnt *start_pnt)
 	
 		// select all the vertexes attached to trig
 	
-	vertex_clear_sel_mask(cur_mesh);
+	vertex_clear_sel_mask(state.cur_mesh_idx);
 	
 	trig=&mesh->trigs[idx];
 	
 	for (k=0;k!=3;k++) {
-		vertex_set_sel_mask(cur_mesh,trig->v[k],TRUE);
+		vertex_set_sel_mask(state.cur_mesh_idx,trig->v[k],TRUE);
 	}
 
 	return(TRUE);
@@ -270,16 +265,16 @@ void select_model_wind(d3pnt *start_pnt,unsigned long modifiers)
 		
 	model_draw_setup_initialize(&model,&draw_setup,TRUE);
 		
-	draw_model_setup_pose(&model,&draw_setup,cur_pose);
+	draw_model_setup_pose(&model,&draw_setup,state.cur_pose_idx);
 	
 	model_create_draw_bones(&model,&draw_setup);
-	model_create_draw_vertexes(&model,cur_mesh,&draw_setup);
+	model_create_draw_vertexes(&model,state.cur_mesh_idx,&draw_setup);
 	
-	sz=(model.meshes[cur_mesh].nvertex*3)*sizeof(float);
+	sz=(model.meshes[state.cur_mesh_idx].nvertex*3)*sizeof(float);
 	pv=(float*)malloc(sz);
 	if (pv==NULL) return;
 	
-	memmove(pv,draw_setup.mesh_arrays[cur_mesh].gl_vertex_array,sz);
+	memmove(pv,draw_setup.mesh_arrays[state.cur_mesh_idx].gl_vertex_array,sz);
 		
 	model_draw_setup_shutdown(&model,&draw_setup);
 	
@@ -332,29 +327,29 @@ void change_model_wind(d3pnt *start_pnt)
 
 	last_pnt.x=last_pnt.y=-1;
 	
-	old_shift.x=shift.x;
-	old_shift.y=shift.y;
+	old_shift.x=state.shift.x;
+	old_shift.y=state.shift.y;
 	
-	old_ang.x=ang.x;
-	old_ang.y=ang.y;
+	old_ang.x=state.ang.x;
+	old_ang.y=state.ang.y;
 	
-	old_magnify_z=magnify_z;
+	old_magnify_z=state.magnify_z;
 	
 	while (!os_track_mouse_location(&pnt,&model_box)) {
 		
 		if ((last_pnt.x==pnt.x) && (last_pnt.y==pnt.y)) continue;
 		memmove(&last_pnt,&pnt,sizeof(d3pnt));
 			
-		if (shift_on) {
-			shift.x=old_shift.x+((last_pnt.x-start_pnt->x)*4);
-			shift.y=old_shift.y-((last_pnt.y-start_pnt->y)*4);
+		if (state.shift_on) {
+			state.shift.x=old_shift.x+((last_pnt.x-start_pnt->x)*4);
+			state.shift.y=old_shift.y-((last_pnt.y-start_pnt->y)*4);
 		}
-		if (rotate_on) {
-			ang.x=old_ang.x-(float)((last_pnt.y-start_pnt->y)/5);
-			ang.y=old_ang.y+(float)((last_pnt.x-start_pnt->x)/5);
+		if (state.rotate_on) {
+			state.ang.x=old_ang.x-(float)((last_pnt.y-start_pnt->y)/5);
+			state.ang.y=old_ang.y+(float)((last_pnt.x-start_pnt->x)/5);
 		}
-		if (size_on) {
-			magnify_z=old_magnify_z+((last_pnt.y-start_pnt->y)*2);
+		if (state.size_on) {
+			state.magnify_z=old_magnify_z+((last_pnt.y-start_pnt->y)*2);
 		}
 		
 		if (!state.playing) main_wind_draw();
@@ -410,7 +405,7 @@ bool drag_bone_model_wind(d3pnt *start_pnt)
 	
 		// setup the draw pose
 		
-	draw_model_setup_pose(&model,&draw_setup,cur_pose);
+	draw_model_setup_pose(&model,&draw_setup,state.cur_pose_idx);
 	model_create_draw_bones(&model,&draw_setup);
 	
 		// setup transforms
@@ -421,9 +416,9 @@ bool drag_bone_model_wind(d3pnt *start_pnt)
 		
 	drag_handle=drag_handle_none;
 	
-	if ((cur_pose==-1) || (cur_bone!=-1)) {
+	if ((state.cur_pose_idx==-1) || (state.cur_bone_idx!=-1)) {
 	
-		draw_bone=&draw_setup.bones[cur_bone];
+		draw_bone=&draw_setup.bones[state.cur_bone_idx];
 		
 		x=draw_bone->fpnt.x+draw_setup.move.x;
 		y=draw_bone->fpnt.y+draw_setup.move.y;
@@ -431,7 +426,7 @@ bool drag_bone_model_wind(d3pnt *start_pnt)
 		
 		bone_drag_handle_offset=draw_model_bones_drag_handle_offset(&model);
 
-		draw_model_bones_get_handle_rot(&model,&draw_setup,cur_bone,&rot);
+		draw_model_bones_get_handle_rot(state.cur_bone_idx,&rot);
 		
 			// x drag bone
 
@@ -491,7 +486,7 @@ bool drag_bone_model_wind(d3pnt *start_pnt)
 	
 			// select as current bone
 			
-		cur_bone=k;
+		state.cur_bone_idx=k;
 		reset_bone_list();
 		main_wind_draw();
 
@@ -503,18 +498,18 @@ bool drag_bone_model_wind(d3pnt *start_pnt)
 	switch (drag_handle) {
 	
 		case drag_handle_x:
-			ang=&model.poses[cur_pose].bone_moves[cur_bone].rot.x;
-			mov=&model.poses[cur_pose].bone_moves[cur_bone].mov.x;
+			ang=&model.poses[state.cur_pose_idx].bone_moves[state.cur_bone_idx].rot.x;
+			mov=&model.poses[state.cur_pose_idx].bone_moves[state.cur_bone_idx].mov.x;
 			break;
 		
 		case drag_handle_y:
-			ang=&model.poses[cur_pose].bone_moves[cur_bone].rot.y;
-			mov=&model.poses[cur_pose].bone_moves[cur_bone].mov.y;
+			ang=&model.poses[state.cur_pose_idx].bone_moves[state.cur_bone_idx].rot.y;
+			mov=&model.poses[state.cur_pose_idx].bone_moves[state.cur_bone_idx].mov.y;
 			break;
 			
 		case drag_handle_z:
-			ang=&model.poses[cur_pose].bone_moves[cur_bone].rot.z;
-			mov=&model.poses[cur_pose].bone_moves[cur_bone].mov.z;
+			ang=&model.poses[state.cur_pose_idx].bone_moves[state.cur_bone_idx].rot.z;
+			mov=&model.poses[state.cur_pose_idx].bone_moves[state.cur_bone_idx].mov.z;
 			break;
 		
 		default:
@@ -530,9 +525,9 @@ bool drag_bone_model_wind(d3pnt *start_pnt)
 	org_mov=*mov;
 	last_pnt.x=last_pnt.y=-1;
 	
-	undo_set_bone_move(cur_pose,cur_bone);
+	undo_set_bone_move(state.cur_pose_idx,state.cur_bone_idx);
 	
-	SetThemeCursor(kThemeClosedHandCursor);
+	os_set_drag_cursor();
 		
 	while (!os_track_mouse_location(&pnt,&model_box)) {
 		
@@ -586,7 +581,7 @@ bool drag_hit_box_handle_model_wind(d3pnt *start_pnt)
 	
 		// setup the draw pose
 		
-	draw_model_setup_pose(&model,&draw_setup,cur_pose);
+	draw_model_setup_pose(&model,&draw_setup,state.cur_pose_idx);
 	model_create_draw_bones(&model,&draw_setup);
 	
 		// setup transforms
@@ -640,7 +635,7 @@ bool drag_hit_box_handle_model_wind(d3pnt *start_pnt)
 
 	last_pnt.x=last_pnt.y=-1;
 	
-	SetThemeCursor(kThemeClosedHandCursor);
+	os_set_drag_cursor();
 		
 	while (!os_track_mouse_location(&pnt,&model_box)) {
 		
@@ -651,7 +646,7 @@ bool drag_hit_box_handle_model_wind(d3pnt *start_pnt)
 		ky=(pnt.y-start_pnt->y)*5;
 		kz=0;
 		
-		rotate_point_center(&kx,&ky,&kz,ang.x,ang.y,0.0f);
+		rotate_point_center(&kx,&ky,&kz,state.ang.x,state.ang.y,0.0f);
 
 		if ((pt_idx==0) || (pt_idx==1) || (pt_idx==4) || (pt_idx==5)) {
 			box->size.x=org_pnt.x-kx;
@@ -705,7 +700,7 @@ void click_model_wind(d3pnt *pnt,unsigned long modifiers)
 	
 		// handle the clicks
 	
-	if ((shift_on) || (rotate_on) || (size_on)) {
+	if ((state.shift_on) || (state.rotate_on) || (state.size_on)) {
 		change_model_wind(pnt);
 		return;
 	}

@@ -95,6 +95,7 @@ extern void list_palette_initialize(void);
 extern void list_palette_shutdown(void);
 extern void list_palette_list_initialize(list_palette_type *list,char *title);
 extern void list_palette_list_shutdown(list_palette_type *list);
+extern void list_palette_set_title(list_palette_type *list,char *title);
 extern void list_palette_add_header(list_palette_type *list,int piece_type,char *name);
 extern void list_palette_add_item(list_palette_type *list,int piece_type,int piece_idx,char *name,bool selected);
 extern void list_palette_add_color(list_palette_type *list,int piece_type,int piece_idx,d3col *col,bool selected);
@@ -247,15 +248,6 @@ extern void select_duplicate_copy(void);
 extern void select_get_extent(d3pnt *min,d3pnt *max);
 extern void select_get_center(d3pnt *mid);
 extern void select_get_angle(d3ang *ang);
-
-//
-// palette routines
-//
-
-extern void palette_initialize(void);
-extern void palette_shutdown(void);
-extern void palette_close(void);
-extern void palette_reset(void);
 
 //
 // groups

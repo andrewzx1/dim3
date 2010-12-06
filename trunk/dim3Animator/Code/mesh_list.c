@@ -34,8 +34,8 @@ ControlRef						mesh_list;
 DataBrowserItemDataUPP			mesh_list_setitem_upp;
 DataBrowserItemNotificationUPP	mesh_list_notify_upp;
 
-extern int						cur_mesh;
 extern model_type				model;
+extern animator_state_type		state;
 
 /* =======================================================
 
@@ -56,8 +56,8 @@ void reset_mesh_list(void)
 
 		// select animation
 				
-	if (cur_mesh!=-1) {
-		itemID=cur_mesh+1;
+	if (state.cur_mesh_idx!=-1) {
+		itemID=state.cur_mesh_idx+1;
 		SetDataBrowserSelectedItems(mesh_list,1,&itemID,kDataBrowserItemsAssign);
 	}
 	
@@ -108,7 +108,7 @@ static pascal void mesh_list_notify_proc(ControlRef ctrl,DataBrowserItemID itemI
 			break;
 
 		case kDataBrowserItemSelected:
-			cur_mesh=itemID-1;
+			state.cur_mesh_idx=itemID-1;
 			main_wind_draw();
 			break;
 			

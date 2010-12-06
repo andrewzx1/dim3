@@ -81,10 +81,15 @@ void property_palette_click_node(int node_idx,int id)
 	switch (id) {
 
 		case kNodePropertyName:
+			dialog_property_string_run(list_string_value_string,(void*)node->name,name_str_len);
+			break;
+
 		case kNodePropertyEventID:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&node->event_id,0);
 			break;
 
 		case kNodePropertyAlpha:
+			dialog_property_string_run(list_string_value_0_to_1_float,(void*)&node->alpha,0);
 			break;
 
 		case kNodePropertyFollowCamera:

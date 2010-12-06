@@ -27,10 +27,9 @@ and can be sold or given away.
 
 model_type						ins_model;
 
-extern int						cur_mesh;
 extern model_type				model;
-
 extern file_path_setup_type		file_path_setup;
+extern animator_state_type		state;
 
 /* =======================================================
 
@@ -97,11 +96,11 @@ void insert_model(char *file_name)
 	
 		// bring in the vertexes
 		
-	v_off=model.meshes[cur_mesh].nvertex;
+	v_off=model.meshes[state.cur_mesh_idx].nvertex;
 	
-	model_mesh_set_vertex_count(&model,cur_mesh,(model.meshes[cur_mesh].nvertex+ins_model.meshes[0].nvertex));
+	model_mesh_set_vertex_count(&model,state.cur_mesh_idx,(model.meshes[state.cur_mesh_idx].nvertex+ins_model.meshes[0].nvertex));
 	
-	vertex=&model.meshes[cur_mesh].vertexes[v_off];
+	vertex=&model.meshes[state.cur_mesh_idx].vertexes[v_off];
 	ins_vertex=ins_model.meshes[0].vertexes;
 	
 	for (i=0;i!=ins_model.meshes[0].nvertex;i++) {
@@ -116,11 +115,11 @@ void insert_model(char *file_name)
 	
 		// bring in the trigs
 		
-	t_off=model.meshes[cur_mesh].ntrig;
+	t_off=model.meshes[state.cur_mesh_idx].ntrig;
 	
-	model_mesh_set_trig_count(&model,cur_mesh,(model.meshes[cur_mesh].ntrig+ins_model.meshes[0].ntrig));
+	model_mesh_set_trig_count(&model,state.cur_mesh_idx,(model.meshes[state.cur_mesh_idx].ntrig+ins_model.meshes[0].ntrig));
 	
-	trig=&model.meshes[cur_mesh].trigs[t_off];
+	trig=&model.meshes[state.cur_mesh_idx].trigs[t_off];
 	ins_trig=ins_model.meshes[0].trigs;
 	
 	for (i=0;i!=ins_model.meshes[0].ntrig;i++) {
@@ -164,7 +163,7 @@ void insert_model(char *file_name)
 			}
 		}
 		
-		material=&model.meshes[cur_mesh].materials[k];
+		material=&model.meshes[state.cur_mesh_idx].materials[k];
 		memmove(material,ins_material,sizeof(model_material_type));
 
 		material->trig_start+=t_off;

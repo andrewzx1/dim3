@@ -538,7 +538,12 @@ void object_melee_hit(obj_type *obj,obj_type *melee_obj,weapon_type *melee_weap,
 	
 		// run damage
         
-	object_damage(obj,melee_obj,melee_weap,NULL,sphere_pnt,damage);
+	if (damage>=0) {
+		object_damage(obj,melee_obj,melee_weap,NULL,sphere_pnt,damage);
+	}
+	else {
+		object_heal(obj,-damage);
+	}
 
 		// events
 
