@@ -25,23 +25,21 @@ and can be sold or given away.
  
 *********************************************************************/
 
-extern void draw_model(model_type *model,int mesh_idx,model_draw_setup *draw_setup);
-extern void draw_model_faded(model_type *model,int mesh_idx,model_draw_setup *draw_setup);
+extern void draw_model(int mesh_idx);
+extern void draw_model_mesh(int mesh_idx);
+extern void draw_model_bones(int sel_bone_idx);
 
-extern void draw_model_mesh(model_type *model,int mesh_idx,model_draw_setup *draw_setup);
-extern void draw_model_bones(model_type *model,model_draw_setup *draw_setup,int sel_bone_idx);
-
-extern void draw_model_selected_vertexes(model_type *model,int mesh_idx,model_draw_setup *draw_setup);
-extern void draw_model_selected_trig(model_type *model,int mesh_idx,model_draw_setup *draw_setup);
+extern void draw_model_selected_vertexes(int mesh_idx);
+extern void draw_model_selected_trig(int mesh_idx);
 extern void draw_model_box_view(void);
 extern void draw_model_box_hit_boxes(void);
 extern void draw_model_axis(void);
-extern void draw_model_normals_vertexes(model_type *model,int mesh_idx,model_draw_setup *draw_setup);
-extern void draw_model_normals_trig(model_type *model,int mesh_idx,model_draw_setup *draw_setup);
+extern void draw_model_normals_vertexes(int mesh_idx);
+extern void draw_model_normals_trig(int mesh_idx);
 
-extern void draw_model_gl_setup(model_type *model,int z_offset);
-extern void draw_model_setup_pose(model_type *model,model_draw_setup *draw_setup,int wpose);
-extern void draw_model_wind_pose(model_type *model,int wmesh,int wpose);
+extern void draw_model_gl_setup(int z_offset);
+extern void draw_model_setup_pose(int pose_idx);
+extern void draw_model_wind_pose(int mesh_idx,int pose_idx);
 
 extern bool vertex_mask_initialize(void);
 extern void vertex_mask_shutdown(void);

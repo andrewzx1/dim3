@@ -308,7 +308,7 @@ void main_wind_draw_play(void)
 		
 		// global draw setup
 	
-	draw_model_wind(&model,state.cur_mesh_idx,&draw_setup);
+	draw_model_wind(state.cur_mesh_idx);
 }
 
 void main_wind_draw(void)
@@ -323,7 +323,7 @@ void main_wind_draw(void)
 		// model
 		
 	if (!state.playing) {
-		draw_model_wind_pose(&model,state.cur_mesh_idx,state.cur_pose_idx);
+		draw_model_wind_pose(state.cur_mesh_idx,state.cur_pose_idx);
 	}
 	else {
 		main_wind_draw_play();
@@ -351,7 +351,7 @@ void main_wind_draw_no_swap(void)
 		// model
 		
 	if (!state.playing) {
-		draw_model_wind_pose(&model,state.cur_mesh_idx,state.cur_pose_idx);
+		draw_model_wind_pose(state.cur_mesh_idx,state.cur_pose_idx);
 	}
 	else {
 		main_wind_draw_play();
