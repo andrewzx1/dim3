@@ -66,7 +66,7 @@ void model_wind_setup(void)
       
 ======================================================= */
 
-void draw_model_gl_setup(model_type *model,int z_offset)
+void draw_model_gl_setup(int z_offset)
 {
 	int				yoff,sz;
 	float			ratio;
@@ -90,7 +90,7 @@ void draw_model_gl_setup(model_type *model,int z_offset)
 	gluPerspective(45.0,ratio,(float)(100+z_offset),(float)(25000-z_offset));
 	glScalef(-1.0f,-1.0f,-1.0f);
 
-	yoff=model->view_box.size.y/2;
+	yoff=model.view_box.size.y/2;
 
 	sz=500+((4000-state.magnify_z)*5);
 	
@@ -122,23 +122,23 @@ void draw_model_gl_setup(model_type *model,int z_offset)
       
 ======================================================= */
 
-void draw_model_setup_bones_vertexes(model_type *model,int mesh_idx,model_draw_setup *draw_setup)
+void draw_model_setup_bones_vertexes(int mesh_idx)
 {
 		// create the drawing bones
 	
-	model_create_draw_bones(model,draw_setup);
+	model_create_draw_bones(&model,&draw_setup);
 	
 		// calculate vertexes for first mesh if "show first mesh" is on
 		
 	if ((state.first_mesh) && (mesh_idx!=0)) {
-		model_create_draw_vertexes(model,0,draw_setup);
-		model_create_draw_normals(model,0,draw_setup);
+		model_create_draw_vertexes(&model,0,&draw_setup);
+		model_create_draw_normals(&model,0,&draw_setup);
 	}
 
 		// calculate vertexes for drawing mesh
 		
-	model_create_draw_vertexes(model,mesh_idx,draw_setup);
-	model_create_draw_normals(model,mesh_idx,draw_setup);
+	model_create_draw_vertexes(&model,mesh_idx,&draw_setup);
+	model_create_draw_normals(&model,mesh_idx,&draw_setup);
 }
 
 /* =======================================================
@@ -147,17 +147,17 @@ void draw_model_setup_bones_vertexes(model_type *model,int mesh_idx,model_draw_s
       
 ======================================================= */
 
-void draw_model_wind(model_type *model,int mesh_idx,model_draw_setup *draw_setup)
+void draw_model_wind(int mesh_idx)
 {
 	if (!state.model_open) return;
 
 		// setup transformation to fit model in middle of screen
 		
-	draw_model_gl_setup(model,0);
+	draw_model_gl_setup(0);
 	
 		// draw memory
 		
-	model_draw_setup_initialize(model,draw_setup,TRUE);
+	model_draw_setup_initialize(&model,&draw_setup,TRUE);
 	
 		// draw the center
 		
@@ -165,33 +165,33 @@ void draw_model_wind(model_type *model,int mesh_idx,model_draw_setup *draw_setup
 
 		// create the drawing bones, vertex arrays and normal arrays
 		
-	draw_model_setup_bones_vertexes(model,mesh_idx,draw_setup);
+	draw_model_setup_bones_vertexes(mesh_idx);
 	
 		// draw the mesh(es) in the current view
 	
 	if (state.texture) {
-		if ((state.first_mesh) && (mesh_idx!=0)) draw_model(model,0,draw_setup);
-		draw_model(model,mesh_idx,draw_setup);
+		if ((state.first_mesh) && (mesh_idx!=0)) draw_model(0);
+		draw_model(mesh_idx);
 	}
 	
 	if (state.mesh) {
-		draw_model_gl_setup(model,1);
-		if ((state.first_mesh) && (mesh_idx!=0)) draw_model_mesh(model,0,draw_setup);
-		draw_model_mesh(model,mesh_idx,draw_setup);
-		draw_model_gl_setup(model,0);
+		draw_model_gl_setup(1);
+		if ((state.first_mesh) && (mesh_idx!=0)) draw_model_mesh(0);
+		draw_model_mesh(mesh_idx);
+		draw_model_gl_setup(0);
 	}
 	
-	if (state.bone) draw_model_bones(model,draw_setup,state.cur_bone_idx);
+	if (state.bone) draw_model_bones(state.cur_bone_idx);
 	
 	if ((state.texture) || (state.mesh)) {
-		draw_model_gl_setup(model,2);
+		draw_model_gl_setup(2);
 		if (state.select_mode==select_mode_vertex) {
-			draw_model_selected_vertexes(model,mesh_idx,draw_setup);
+			draw_model_selected_vertexes(mesh_idx);
 		}
 		else {
-			draw_model_selected_trig(model,mesh_idx,draw_setup);
+			draw_model_selected_trig(mesh_idx);
 		}
-		draw_model_gl_setup(model,0);
+		draw_model_gl_setup(0);
 	}
 	
 		// boxes
@@ -202,19 +202,19 @@ void draw_model_wind(model_type *model,int mesh_idx,model_draw_setup *draw_setup
 		// normals
 		
 	if (state.normal) {
-		draw_model_gl_setup(model,3);
+		draw_model_gl_setup(3);
 		if (state.select_mode==select_mode_vertex) {
-			draw_model_normals_vertexes(model,mesh_idx,draw_setup);
+			draw_model_normals_vertexes(mesh_idx);
 		}
 		else {
-			draw_model_normals_trig(model,mesh_idx,draw_setup);
+			draw_model_normals_trig(mesh_idx);
 		}
-		draw_model_gl_setup(model,0);
+		draw_model_gl_setup(0);
 	}
 	
 		// free memory
 		
-	model_draw_setup_shutdown(model,draw_setup);
+	model_draw_setup_shutdown(&model,&draw_setup);
 	
 		// 2D drawing
 		
@@ -249,25 +249,25 @@ void draw_model_wind(model_type *model,int mesh_idx,model_draw_setup *draw_setup
 	glEnd();
 }
 
-void draw_model_setup_pose(model_type *model,model_draw_setup *draw_setup,int wpose)
+void draw_model_setup_pose(int pose_idx)
 {
-	model_draw_setup_clear(model,draw_setup);
+	model_draw_setup_clear(&model,&draw_setup);
 
-    draw_setup->poses[0].idx_1=wpose;
-	draw_setup->poses[0].idx_2=-1;
-    draw_setup->poses[0].factor=0;
-	draw_setup->poses[0].acceleration=0;
+    draw_setup.poses[0].idx_1=pose_idx;
+	draw_setup.poses[0].idx_2=-1;
+    draw_setup.poses[0].factor=0;
+	draw_setup.poses[0].acceleration=0;
 
-	draw_setup->ang.x=0;
-	draw_setup->ang.y=0;
-	draw_setup->ang.z=0;
+	draw_setup.ang.x=0;
+	draw_setup.ang.y=0;
+	draw_setup.ang.z=0;
 	
-    draw_setup->sway.x=draw_setup->sway.z=draw_setup->sway.y=0;
-    draw_setup->move.x=draw_setup->move.z=draw_setup->move.y=0;
+    draw_setup.sway.x=draw_setup.sway.z=draw_setup.sway.y=0;
+    draw_setup.move.x=draw_setup.move.z=draw_setup.move.y=0;
 }
 
-void draw_model_wind_pose(model_type *model,int wmesh,int wpose)
+void draw_model_wind_pose(int mesh_idx,int pose_idx)
 {
-	draw_model_setup_pose(model,&draw_setup,wpose);
-	draw_model_wind(model,wmesh,&draw_setup);
+	draw_model_setup_pose(pose_idx);
+	draw_model_wind(mesh_idx);
 }

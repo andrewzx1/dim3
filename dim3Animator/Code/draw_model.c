@@ -27,7 +27,9 @@ and can be sold or given away.
 
 #include "model.h"
 
-extern animator_state_type			state;
+extern model_type				model;
+extern model_draw_setup			draw_setup;
+extern animator_state_type		state;
 
 /* =======================================================
 
@@ -97,7 +99,7 @@ void model_end_texture(texture_type *texture)
       
 ======================================================= */
 
-void draw_model_material(model_type *model,int mesh_idx,model_draw_setup *draw_setup,texture_type *texture,model_material_type *material)
+void draw_model_material(int mesh_idx,texture_type *texture,model_material_type *material)
 {
 	int					k,trig_count;
     model_trig_type		*trig;
@@ -111,7 +113,7 @@ void draw_model_material(model_type *model,int mesh_idx,model_draw_setup *draw_s
 	
 	glBegin(GL_TRIANGLES);
 	
-	trig=&model->meshes[mesh_idx].trigs[material->trig_start];
+	trig=&model.meshes[mesh_idx].trigs[material->trig_start];
 
 	for (k=0;k!=trig_count;k++) {
 
@@ -140,7 +142,7 @@ void draw_model_material(model_type *model,int mesh_idx,model_draw_setup *draw_s
 	glColor3f(1.0f,1.0f,1.0f);
 }
 
-void draw_model(model_type *model,int mesh_idx,model_draw_setup *draw_setup)
+void draw_model(int mesh_idx)
 {
 	int						n;
     texture_type			*texture;
@@ -149,9 +151,9 @@ void draw_model(model_type *model,int mesh_idx,model_draw_setup *draw_setup)
 	
 		// model vertexes and normal arrays
 		
-	mesh=&model->meshes[mesh_idx];
+	mesh=&model.meshes[mesh_idx];
 	
-	glVertexPointer(3,GL_FLOAT,0,draw_setup->mesh_arrays[mesh_idx].gl_vertex_array);
+	glVertexPointer(3,GL_FLOAT,0,draw_setup.mesh_arrays[mesh_idx].gl_vertex_array);
 		
 	glLockArraysEXT(0,mesh->nvertex);
 	
@@ -161,7 +163,7 @@ void draw_model(model_type *model,int mesh_idx,model_draw_setup *draw_setup)
 		// setup the current texture frames
 		
 	if (state.playing) {
-		model_setup_animated_textures(model,time_get());
+		model_setup_animated_textures(&model,time_get());
 	}
 	
 	glColor4f(1,1,1,1);
@@ -170,11 +172,11 @@ void draw_model(model_type *model,int mesh_idx,model_draw_setup *draw_setup)
 
 	glDisable(GL_BLEND);
 
-    texture=model->textures;
+    texture=model.textures;
 	material=mesh->materials;
     
     for (n=0;n!=max_model_texture;n++) {
-		if (texture->frames[0].bitmap.alpha_mode!=alpha_mode_transparent) draw_model_material(model,mesh_idx,draw_setup,texture,material);
+		if (texture->frames[0].bitmap.alpha_mode!=alpha_mode_transparent) draw_model_material(mesh_idx,texture,material);
 		texture++;
 		material++;
 	}
@@ -185,11 +187,11 @@ void draw_model(model_type *model,int mesh_idx,model_draw_setup *draw_setup)
 
 	glDepthMask(GL_FALSE);
 	
-	texture=model->textures;
+	texture=model.textures;
 	material=mesh->materials;
     
     for (n=0;n!=max_model_texture;n++) {
-		if (texture->frames[0].bitmap.alpha_mode==alpha_mode_transparent) draw_model_material(model,mesh_idx,draw_setup,texture,material);
+		if (texture->frames[0].bitmap.alpha_mode==alpha_mode_transparent) draw_model_material(mesh_idx,texture,material);
 		texture++;
 		material++;
 	}
@@ -198,60 +200,6 @@ void draw_model(model_type *model,int mesh_idx,model_draw_setup *draw_setup)
     
 	glDisable(GL_ALPHA_TEST);
 	
-	glUnlockArraysEXT();
-	
-	glFlush();
-}
-
-/* =======================================================
-
-      Draw Faded Model
-      
-======================================================= */
-
-void draw_model_faded(model_type *model,int mesh_idx,model_draw_setup *draw_setup)
-{
-	int						n;
-    texture_type			*texture;
-	model_material_type		*material;
-	model_mesh_type			*mesh;
-		
-		// model vertexes and normal arrays
-		
-	mesh=&model->meshes[mesh_idx];
-	
-	glVertexPointer(3,GL_FLOAT,0,draw_setup->mesh_arrays[mesh_idx].gl_vertex_array);
-		
-	glLockArraysEXT(0,mesh->nvertex);
-	
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_NOTEQUAL,0);
-	
-		// setup the current texture frames
-		
-	if (state.playing) {
-		model_setup_animated_textures(model,time_get());
-	}
-	
-	glColor4f(1,1,1,0.25);
-    
-        // all textures are transparent
-
-	glDepthMask(GL_FALSE);
-	
-    texture=model->textures;
-	material=mesh->materials;
-    
-    for (n=0;n!=max_model_texture;n++) {
-		draw_model_material(model,mesh_idx,draw_setup,texture,material);
-		texture++;
-		material++;
-	}
-	
-	glDepthMask(GL_TRUE);
-	
- 	glDisable(GL_ALPHA_TEST);
-   
 	glUnlockArraysEXT();
 	
 	glFlush();

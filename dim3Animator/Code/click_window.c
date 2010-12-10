@@ -35,7 +35,7 @@ extern model_draw_setup			draw_setup;
 extern animator_state_type		state;
 
 extern void draw_model_bones_get_handle_rot(int bone_idx,d3ang *rot);
-extern float draw_model_bones_drag_handle_offset(model_type *model);
+extern float draw_model_bones_drag_handle_offset(void);
 extern void draw_model_bones_drag_handle_calc(float x,float y,float z,d3vct *vct,d3ang *ang,float *hx,float *hy,float *hz);
 
 // supergumba -- this code repeats draw setups and only uses the
@@ -200,7 +200,7 @@ bool select_model_wind_polygon(d3pnt *start_pnt)
 		// draw the mesh
 		
 	model_draw_setup_initialize(&model,&draw_setup,TRUE);
-	draw_model_setup_bones_vertexes(&model,state.cur_mesh_idx,&draw_setup);
+	draw_model_setup_bones_vertexes(state.cur_mesh_idx);
 
 	ntrig=mesh->ntrig;
 	trig=mesh->trigs;
@@ -265,7 +265,7 @@ void select_model_wind(d3pnt *start_pnt,unsigned long modifiers)
 		
 	model_draw_setup_initialize(&model,&draw_setup,TRUE);
 		
-	draw_model_setup_pose(&model,&draw_setup,state.cur_pose_idx);
+	draw_model_setup_pose(state.cur_pose_idx);
 	
 	model_create_draw_bones(&model,&draw_setup);
 	model_create_draw_vertexes(&model,state.cur_mesh_idx,&draw_setup);
@@ -280,7 +280,7 @@ void select_model_wind(d3pnt *start_pnt,unsigned long modifiers)
 	
 		// setup transforms
 		
-	draw_model_gl_setup(&model,0);
+	draw_model_gl_setup(0);
 	glGetDoublev(GL_MODELVIEW_MATRIX,mod_matrix);
 	glGetDoublev(GL_PROJECTION_MATRIX,proj_matrix);
 	glGetIntegerv(GL_VIEWPORT,(GLint*)vport);
@@ -405,12 +405,12 @@ bool drag_bone_model_wind(d3pnt *start_pnt)
 	
 		// setup the draw pose
 		
-	draw_model_setup_pose(&model,&draw_setup,state.cur_pose_idx);
+	draw_model_setup_pose(state.cur_pose_idx);
 	model_create_draw_bones(&model,&draw_setup);
 	
 		// setup transforms
 		
-	draw_model_gl_setup(&model,0);
+	draw_model_gl_setup(0);
 	
 		// click on any drag handles?
 		
@@ -424,7 +424,7 @@ bool drag_bone_model_wind(d3pnt *start_pnt)
 		y=draw_bone->fpnt.y+draw_setup.move.y;
 		z=draw_bone->fpnt.z+draw_setup.move.z;
 		
-		bone_drag_handle_offset=draw_model_bones_drag_handle_offset(&model);
+		bone_drag_handle_offset=draw_model_bones_drag_handle_offset();
 
 		draw_model_bones_get_handle_rot(state.cur_bone_idx,&rot);
 		
@@ -581,12 +581,12 @@ bool drag_hit_box_handle_model_wind(d3pnt *start_pnt)
 	
 		// setup the draw pose
 		
-	draw_model_setup_pose(&model,&draw_setup,state.cur_pose_idx);
+	draw_model_setup_pose(state.cur_pose_idx);
 	model_create_draw_bones(&model,&draw_setup);
 	
 		// setup transforms
 		
-	draw_model_gl_setup(&model,0);
+	draw_model_gl_setup(0);
 
 		// find a click
 		

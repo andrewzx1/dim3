@@ -37,7 +37,7 @@ extern animator_state_type		state;
       
 ======================================================= */
 
-void draw_model_mesh(model_type *model,int mesh_idx,model_draw_setup *draw_setup)
+void draw_model_mesh(int mesh_idx)
 {
 	int					n,ntrig;
     model_trig_type		*trig;
@@ -45,9 +45,9 @@ void draw_model_mesh(model_type *model,int mesh_idx,model_draw_setup *draw_setup
 	
 		// draw the mesh
 		
-	mesh=&model->meshes[mesh_idx];
+	mesh=&model.meshes[mesh_idx];
 		
-	glVertexPointer(3,GL_FLOAT,0,draw_setup->mesh_arrays[mesh_idx].gl_vertex_array);
+	glVertexPointer(3,GL_FLOAT,0,draw_setup.mesh_arrays[mesh_idx].gl_vertex_array);
 	glLockArraysEXT(0,mesh->nvertex);
 	
 	glColor4f(0.75f,0.75f,0.75f,1.0f);
@@ -77,11 +77,11 @@ void draw_model_mesh(model_type *model,int mesh_idx,model_draw_setup *draw_setup
       
 ======================================================= */
 
-float draw_model_bones_drag_handle_offset(model_type *model)
+float draw_model_bones_drag_handle_offset(void)
 {
 	float				f;
 	
-	f=(float)(model->view_box.size.x+model->view_box.size.z+model->view_box.size.y)/3.0f;
+	f=(float)(model.view_box.size.x+model.view_box.size.z+model.view_box.size.y)/3.0f;
 	f*=0.15;
 	
 	if (f<20.0f) return(20.0f);
@@ -189,7 +189,7 @@ void draw_model_bones_get_handle_rot(int bone_idx,d3ang *rot)
       
 ======================================================= */
 
-void draw_model_bones(model_type *model,model_draw_setup *draw_setup,int sel_bone_idx)
+void draw_model_bones(int sel_bone_idx)
 {
 	int						n,nbone,parent_idx;
 	float					x_move,z_move,y_move,
@@ -203,11 +203,11 @@ void draw_model_bones(model_type *model,model_draw_setup *draw_setup,int sel_bon
 
 		// draw the bones
 
-	nbone=model->nbone;
+	nbone=model.nbone;
     
-    x_move=(float)draw_setup->move.x;
-    z_move=(float)draw_setup->move.z;
-    y_move=(float)draw_setup->move.y;
+    x_move=(float)draw_setup.move.x;
+    z_move=(float)draw_setup.move.z;
+    y_move=(float)draw_setup.move.y;
 	
         // connections
         
@@ -216,12 +216,12 @@ void draw_model_bones(model_type *model,model_draw_setup *draw_setup,int sel_bon
 	
 	glBegin(GL_LINES);
 	
-	draw_bone=draw_setup->bones;
+	draw_bone=draw_setup.bones;
 	
 	for (n=0;n!=nbone;n++) {
         parent_idx=draw_bone->parent_idx;
         if (parent_idx!=-1) {
-            parent_bone=&draw_setup->bones[parent_idx];
+            parent_bone=&draw_setup.bones[parent_idx];
 			
 			x=draw_bone->fpnt.x+x_move;
 			y=draw_bone->fpnt.y+y_move;
@@ -245,9 +245,9 @@ void draw_model_bones(model_type *model,model_draw_setup *draw_setup,int sel_bon
         
         // bones
 		
-	draw_bone=draw_setup->bones;
+	draw_bone=draw_setup.bones;
 	
-	bone_drag_handle_offset=draw_model_bones_drag_handle_offset(model);
+	bone_drag_handle_offset=draw_model_bones_drag_handle_offset();
 	
 	for (n=0;n!=nbone;n++) {
 	
