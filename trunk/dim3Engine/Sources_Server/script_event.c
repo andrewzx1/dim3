@@ -56,6 +56,7 @@ JSValueRef js_event_send_message_to_spawn_weapon_func(JSContextRef cx,JSObjectRe
 JSValueRef js_event_set_message_data_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_event_get_message_data_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_event_call_object_by_id_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_event_call_player_by_id_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_event_call_course_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_event_call_game_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
@@ -78,6 +79,7 @@ JSStaticFunction	event_functions[]={
 							{"setMessageData",				js_event_set_message_data_func,					kJSPropertyAttributeDontDelete},
 							{"getMessageData",				js_event_get_message_data_func,					kJSPropertyAttributeDontDelete},
 							{"callObjectById",				js_event_call_object_by_id_func,				kJSPropertyAttributeDontDelete},
+							{"callPlayerById",				js_event_call_player_by_id_func,				kJSPropertyAttributeDontDelete},
 							{"callCourse",					js_event_call_course_func,						kJSPropertyAttributeDontDelete},
 							{"callGame",					js_event_call_game_func,						kJSPropertyAttributeDontDelete},
 							{0,0,0}};
@@ -494,6 +496,40 @@ JSValueRef js_event_call_object_by_id_func(JSContextRef cx,JSObjectRef func,JSOb
 
 	for (n=0;n!=arg_count;n++) {
 		args[n]=argv[n+2];
+	}
+
+		// call function
+
+	rval=scripts_direct_call(&obj->attach,func_name,arg_count,args,err_str);
+	if (rval==NULL) {
+		*exception=script_create_exception(cx,err_str);
+		return(script_null_to_value(cx));
+	}
+	
+	return(rval);
+}
+
+JSValueRef js_event_call_player_by_id_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+{
+	int				n,arg_count;
+	char			func_name[64],err_str[256];
+	JSValueRef		rval,args[20];
+	obj_type		*obj;
+
+	if (!script_check_param_at_least_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
+		// get arguments
+
+	obj=server.obj_list.objs[server.player_obj_idx];
+
+	script_value_to_string(cx,argv[0],func_name,64);
+
+	arg_count=argc-1;
+	if (arg_count<0) arg_count=0;
+	if (arg_count>20) arg_count=20;
+
+	for (n=0;n!=arg_count;n++) {
+		args[n]=argv[n+1];
 	}
 
 		// call function

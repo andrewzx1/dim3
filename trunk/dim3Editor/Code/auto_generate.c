@@ -457,7 +457,7 @@ void ag_add_room(int shape_idx,int connect_idx,d3pnt *pnt,d3vct *size)
 		gy[0]=gy[1]=0.0f;
 		gy[2]=gy[3]=1.0f;
 	
-		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,((connect_idx!=-1)?4:0));
+		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,((connect_idx!=-1)?ag_texture_wall_temp:ag_texture_wall));
 	}
 
 		// add floors and ceilings
@@ -478,14 +478,14 @@ void ag_add_room(int shape_idx,int connect_idx,d3pnt *pnt,d3vct *size)
 			gy[k]=((float)z)/100.0f;
 		}
 	
-		map_mesh_add_poly(&map,mesh_idx,shape_poly->npt,px,py,pz,gx,gy,1);
+		map_mesh_add_poly(&map,mesh_idx,shape_poly->npt,px,py,pz,gx,gy,ag_texture_floor);
 
 		if (room->corridor) {
 			for (k=0;k!=shape_poly->npt;k++) {
 				py[k]=room->min.y;
 			}
 
-			map_mesh_add_poly(&map,mesh_idx,shape_poly->npt,px,py,pz,gx,gy,2);
+			map_mesh_add_poly(&map,mesh_idx,shape_poly->npt,px,py,pz,gx,gy,ag_texture_ceiling);
 		}
 
 		shape_poly++;
@@ -545,7 +545,7 @@ void ag_add_extra_corridor_room(d3pnt *min,d3pnt *max,int wall_sz)
 		gy[0]=gy[1]=0.0f;
 		gy[2]=gy[3]=1.0f;
 	
-		poly_idx=map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,0);
+		poly_idx=map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_wall);
 
 		px[0]=px[3]=lx;
 		px[1]=px[2]=rx;
@@ -558,7 +558,7 @@ void ag_add_extra_corridor_room(d3pnt *min,d3pnt *max,int wall_sz)
 		gy[0]=gy[1]=0.0f;
 		gy[2]=gy[3]=1.0f;
 	
-		poly_idx=map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,0);
+		poly_idx=map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_wall);
 
 		lx=rx;
 		if (lx>=max->x) break;
@@ -582,7 +582,7 @@ void ag_add_extra_corridor_room(d3pnt *min,d3pnt *max,int wall_sz)
 		gy[0]=gy[1]=0.0f;
 		gy[2]=gy[3]=1.0f;
 	
-		poly_idx=map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,0);
+		poly_idx=map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_wall);
 
 		px[0]=px[1]=px[2]=px[3]=max->x;
 		pz[0]=pz[3]=tz;
@@ -595,7 +595,7 @@ void ag_add_extra_corridor_room(d3pnt *min,d3pnt *max,int wall_sz)
 		gy[0]=gy[1]=0.0f;
 		gy[2]=gy[3]=1.0f;
 	
-		poly_idx=map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,0);
+		poly_idx=map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_wall);
 
 		tz=bz;
 		if (tz>=max->z) break;
@@ -622,10 +622,10 @@ void ag_add_extra_corridor_room(d3pnt *min,d3pnt *max,int wall_sz)
 		gy[2]=gy[3]=1.0f;
 	
 		py[0]=py[1]=py[2]=py[3]=max->y;
-		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,1);
+		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_floor);
 
 		py[0]=py[1]=py[2]=py[3]=min->y;
-		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,2);
+		map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_ceiling);
 
 		lx=rx;
 		if (lx>=max->x) {

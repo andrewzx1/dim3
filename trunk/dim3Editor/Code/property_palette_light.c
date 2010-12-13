@@ -77,6 +77,9 @@ void property_palette_fill_light(int light_idx)
 	list_palette_add_string_int(&property_palette,kLightPropertyIntensity,"Intensity",light->intensity);
 	list_palette_add_string_float(&property_palette,kLightPropertyExponent,"Exponent",light->exponent);
 	list_palette_add_pick_color(&property_palette,kLightPropertyColor,"Color",&light->col);
+
+	list_palette_add_header(&property_palette,0,"Light Info [Not Editable]");
+	list_palette_add_point(&property_palette,-1,"Position",&light->pnt);
 }
 
 /* =======================================================

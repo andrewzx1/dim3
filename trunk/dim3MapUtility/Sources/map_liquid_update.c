@@ -39,19 +39,19 @@ extern void map_get_texture_uv_get_scale(map_type *map,int txt_idx,float *txt_sc
       
 ======================================================= */
 
-void map_liquid_move(map_type *map,int liquid_idx,int x,int y,int z)
+void map_liquid_move(map_type *map,int liquid_idx,d3pnt *mov_pt)
 {
 	map_liquid_type			*liq;
 	
 	liq=&map->liquid.liquids[liquid_idx];
 	
-	liq->lft+=x;
-	liq->rgt+=x;
+	liq->lft+=mov_pt->x;
+	liq->rgt+=mov_pt->x;
 	
-	liq->top+=z;
-	liq->bot+=z;
+	liq->top+=mov_pt->z;
+	liq->bot+=mov_pt->z;
 	
-	liq->y+=y;
+	liq->y+=mov_pt->y;
 }
 
 /* =======================================================

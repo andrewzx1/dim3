@@ -62,6 +62,9 @@ void property_palette_fill_sound(int sound_idx)
 	list_palette_add_header(&property_palette,0,"Sound Audio");
 	list_palette_add_string(&property_palette,kSoundPropertyName,"Sound",sound->name);
 	list_palette_add_string_float(&property_palette,kSoundPropertyPitch,"Pitch",sound->pitch);
+	
+	list_palette_add_header(&property_palette,0,"Sound Info [Not Editable]");
+	list_palette_add_point(&property_palette,-1,"Position",&sound->pnt);
 }
 
 /* =======================================================

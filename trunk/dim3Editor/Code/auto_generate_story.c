@@ -165,7 +165,7 @@ void ag_generate_additional_stories(void)
 			gy[0]=gy[1]=0.0f;
 			gy[2]=gy[3]=1.0f;
 		
-			map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,((connect_idx!=-1)?4:0));
+			map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,((connect_idx!=-1)?ag_texture_wall_temp:ag_texture_wall));
 		}
 
 			// build in the floor
@@ -192,13 +192,13 @@ void ag_generate_additional_stories(void)
 				gy[t]=((float)z)/100.0f;
 			}
 		
-			map_mesh_add_poly(&map,mesh_idx,shape_poly->npt,px,py,pz,gx,gy,7);
+			map_mesh_add_poly(&map,mesh_idx,shape_poly->npt,px,py,pz,gx,gy,ag_texture_additional_floor);
 
 			for (t=0;t!=shape_poly->npt;t++) {
 				py[t]=by-(int)(10.0f*size->y);
 			}
 
-			map_mesh_add_poly(&map,mesh_idx,shape_poly->npt,px,py,pz,gx,gy,7);
+			map_mesh_add_poly(&map,mesh_idx,shape_poly->npt,px,py,pz,gx,gy,ag_texture_additional_floor);
 		}
 
 			// move up the room min

@@ -64,6 +64,10 @@ void property_palette_fill_node(int node_idx)
 
 	list_palette_add_header(&property_palette,0,"Node Settings");
 	list_palette_add_checkbox(&property_palette,kNodePropertyFollowCamera,"Follow Camera",node->follow_camera);
+	
+	list_palette_add_header(&property_palette,0,"Node Info [Not Editable]");
+	list_palette_add_point(&property_palette,-1,"Position",&node->pnt);
+	list_palette_add_angle(&property_palette,-1,"Angle",&node->ang);
 }
 
 /* =======================================================

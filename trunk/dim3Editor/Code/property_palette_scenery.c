@@ -83,6 +83,10 @@ void property_palette_fill_scenery(int scenery_idx)
 		sprintf(name,"Mesh %d",n);
 		list_palette_add_string_int(&property_palette,(kSceneryPropertyFramesStart+n),name,(int)scenery->texture_frame[n]);
 	}
+	
+	list_palette_add_header(&property_palette,0,"Scenery Info [Not Editable]");
+	list_palette_add_point(&property_palette,-1,"Position",&scenery->pnt);
+	list_palette_add_angle(&property_palette,-1,"Angle",&scenery->ang);
 }
 
 /* =======================================================

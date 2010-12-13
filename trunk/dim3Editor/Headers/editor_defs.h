@@ -426,6 +426,12 @@ typedef struct		{
 #define ag_floor_top							2
 #define ag_floor_bottom							3
 
+#define ag_texture_wall							0
+#define ag_texture_floor						1
+#define ag_texture_ceiling						2
+#define ag_texture_additional_floor				3
+#define ag_texture_wall_temp					4
+
 typedef struct		{
 						int						nshape,
 												shape_list[ag_max_shape];

@@ -46,6 +46,8 @@ WindowRef					dialog_map_generate_wind;
 bool						dialog_map_generate_first=TRUE;
 ag_build_setup_type			ag_build_setup;
 
+map_type					map;
+
 /* =======================================================
 
       Map Generate Setting Event Handlers
@@ -98,6 +100,15 @@ bool dialog_map_auto_generate_setting_run(void)
 	char					style_names[128][name_str_len];
 	EventHandlerUPP			event_upp;
 	EventTypeSpec			event_list[]={{kEventClassCommand,kEventProcessCommand}};
+	
+		// auto generation requires 4 textures
+		
+	for (n=0;n!=4;n++) {
+		if (map.textures[n].frames[0].name[0]==0x0) {
+			os_dialog_alert("Auto Generator","Auto Generator requires first 4 texture slots to be filled.");
+			return(FALSE);
+		}
+	}
 		
 			// first time, create defaults
 		

@@ -175,6 +175,10 @@ void property_palette_fill_spot(int spot_idx)
 		palette_palette_spot_get_parameter(n,spot->params,str);
 		list_palette_add_string(&property_palette,(kSpotPropertyParamsStart+n),name,str);
 	}
+	
+	list_palette_add_header(&property_palette,0,"Spot Info [Not Editable]");
+	list_palette_add_point(&property_palette,-1,"Position",&spot->pnt);
+	list_palette_add_angle(&property_palette,-1,"Angle",&spot->ang);
 }
 
 /* =======================================================

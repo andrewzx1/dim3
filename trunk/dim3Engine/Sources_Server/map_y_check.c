@@ -124,7 +124,8 @@ int pin_downward_movement_complex(obj_type *obj,int ydist,poly_pointer_type *sta
 	
 		// setup contact
 		
-	base_contact.obj.on=FALSE;
+	base_contact.obj.on=TRUE;
+	base_contact.obj.ignore_idx=obj->idx;
 	base_contact.proj.on=FALSE;
 
 	base_contact.origin=poly_ray_trace_origin_unknown;

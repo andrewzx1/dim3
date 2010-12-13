@@ -80,7 +80,7 @@ void property_palette_setup(void)
 		property_palette.pixel_sz=list_palette_border_sz;
 	}
 
-	y=wbox.ty+(((wbox.by-wbox.ty)/3)*2);
+	y=wbox.ty+((wbox.by-wbox.ty)>>1);
 
 	property_palette.box.lx=wbox.rx-property_palette.pixel_sz;
 	property_palette.box.rx=wbox.rx;
