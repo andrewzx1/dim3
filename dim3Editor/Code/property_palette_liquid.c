@@ -80,9 +80,12 @@ char							liquid_property_tide_direction_list[][name_str_len]={"Horizontal","Ve
 
 void property_palette_fill_liquid(int liq_idx)
 {
+	d3pnt					pnt,size;
 	map_liquid_type			*liq;
 	editor_view_type		*view;
 
+		// liquid settings
+		
 	liq=&map.liquid.liquids[liq_idx];
 
 	list_palette_add_header(&property_palette,0,"Liquid Settings");
@@ -117,6 +120,8 @@ void property_palette_fill_liquid(int liq_idx)
 		list_palette_add_string(&property_palette,kLiquidPropertyGroup,"Group",map.group.groups[liq->group_idx].name);
 	}
 
+		// polygon like settings
+		
 	view=view_get_current_view();
 	
 	list_palette_add_header(&property_palette,0,"Liquid UVs");
@@ -137,6 +142,20 @@ void property_palette_fill_liquid(int liq_idx)
 
 	list_palette_add_header(&property_palette,0,"Liquid Camera");
 	list_palette_add_string(&property_palette,kLiquidPropertyCamera,"Node",liq->camera);
+	
+		// info
+		
+	pnt.x=liq->lft;
+	pnt.y=liq->y;
+	pnt.z=liq->top;
+	
+	size.x=liq->rgt-liq->lft;
+	size.y=liq->depth;
+	size.z=liq->bot-liq->top;
+		
+	list_palette_add_header(&property_palette,0,"Liquid Info [Not Editable]");
+	list_palette_add_point(&property_palette,-1,"Position",&pnt);
+	list_palette_add_point(&property_palette,-1,"Size",&size);
 }
 
 /* =======================================================

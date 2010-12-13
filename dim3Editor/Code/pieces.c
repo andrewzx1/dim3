@@ -44,16 +44,30 @@ extern editor_state_type	state;
       
 ======================================================= */
 
-void piece_duplicate_offset(int *xadd,int *zadd)
+void piece_duplicate_offset(d3pnt *pnt)
 {
-	*xadd=setup.duplicate_offset*map_enlarge;
-	*zadd=setup.duplicate_offset*map_enlarge;
+	editor_view_type		*view;
+	
+	view=view_get_current_view();
+	
+	if (fabs(view->ang.x)<15.0f) {
+		pnt->x=setup.duplicate_offset*map_enlarge;
+		pnt->z=0;
+		pnt->y=0;
+		rotate_2D_point_center(&pnt->x,&pnt->z,view->ang.y);
+		
+		return;
+	}
+	
+	pnt->x=setup.duplicate_offset*map_enlarge;
+	pnt->y=0;
+	pnt->z=setup.duplicate_offset*map_enlarge;
 }
 
 void piece_duplicate(void)
 {
 	int				n,i,nsel_count,type,main_idx,sub_idx,
-					index,xadd,zadd;
+					index;
 	d3pnt			mpt,mov_pt;
 
 	undo_push();
@@ -61,6 +75,10 @@ void piece_duplicate(void)
 		// duplicate selection
 		
 	select_duplicate_clear();
+	
+		// get duplicate offset
+		
+	piece_duplicate_offset(&mov_pt);
 	
 		// duplicate pieces
 		
@@ -79,12 +97,6 @@ void piece_duplicate(void)
 				}
 				
 				map_mesh_calculate_center(&map,index,&mpt);
-				piece_duplicate_offset(&xadd,&zadd);
-				
-				mov_pt.x=xadd;
-				mov_pt.y=0;
-				mov_pt.z=zadd;
-				
 				map_mesh_move(&map,index,&mov_pt);
 				
 				select_duplicate_add(mesh_piece,index,0);
@@ -98,8 +110,7 @@ void piece_duplicate(void)
 				}
 				
 				map_liquid_calculate_center(&map,index,&mpt);
-				piece_duplicate_offset(&xadd,&zadd);
-				map_liquid_move(&map,index,xadd,0,zadd);
+				map_liquid_move(&map,index,&mov_pt);
 				
 				select_duplicate_add(liquid_piece,index,0);
 				break;
@@ -110,11 +121,10 @@ void piece_duplicate(void)
 					return;
 				}
 				
-				piece_duplicate_offset(&xadd,&zadd);
-
 				map.spots[map.nspot]=map.spots[main_idx];
-				map.spots[map.nspot].pnt.x+=xadd;
-				map.spots[map.nspot].pnt.z+=zadd;
+				map.spots[map.nspot].pnt.x+=mov_pt.x;
+				map.spots[map.nspot].pnt.y+=mov_pt.y;
+				map.spots[map.nspot].pnt.z+=mov_pt.z;
 				select_duplicate_add(spot_piece,map.nspot,0);
 				map.nspot++;
 				break;
@@ -125,11 +135,10 @@ void piece_duplicate(void)
 					return;
 				}
 				
-				piece_duplicate_offset(&xadd,&zadd);
-
 				map.sceneries[map.nscenery]=map.sceneries[main_idx];
-				map.sceneries[map.nscenery].pnt.x+=xadd;
-				map.sceneries[map.nscenery].pnt.z+=zadd;
+				map.sceneries[map.nscenery].pnt.x+=mov_pt.x;
+				map.sceneries[map.nscenery].pnt.y+=mov_pt.y;
+				map.sceneries[map.nscenery].pnt.z+=mov_pt.z;
 				select_duplicate_add(scenery_piece,map.nscenery,0);
 				map.nscenery++;
 				break;
@@ -140,11 +149,10 @@ void piece_duplicate(void)
 					return;
 				}
 
-				piece_duplicate_offset(&xadd,&zadd);
-
 				map.nodes[map.nnode]=map.nodes[main_idx];
-				map.nodes[map.nnode].pnt.x+=xadd;
-				map.nodes[map.nnode].pnt.z+=zadd;
+				map.nodes[map.nnode].pnt.x+=mov_pt.x;
+				map.nodes[map.nnode].pnt.y+=mov_pt.y;
+				map.nodes[map.nnode].pnt.z+=mov_pt.z;
 				for (i=0;i!=max_node_link;i++) {
 					map.nodes[map.nnode].link[i]=-1;
 				}
@@ -158,11 +166,10 @@ void piece_duplicate(void)
 					return;
 				}
 
-				piece_duplicate_offset(&xadd,&zadd);
-
 				map.lights[map.nlight]=map.lights[main_idx];
-				map.lights[map.nlight].pnt.x+=xadd;
-				map.lights[map.nlight].pnt.z+=zadd;
+				map.lights[map.nlight].pnt.x+=mov_pt.x;
+				map.lights[map.nlight].pnt.y+=mov_pt.y;
+				map.lights[map.nlight].pnt.z+=mov_pt.z;
 				select_duplicate_add(light_piece,map.nlight,0);
 				map.nlight++;
 				break;
@@ -173,11 +180,10 @@ void piece_duplicate(void)
 					return;
 				}
 
-				piece_duplicate_offset(&xadd,&zadd);
-
 				map.sounds[map.nsound]=map.sounds[main_idx];
-				map.sounds[map.nsound].pnt.x+=xadd;
-				map.sounds[map.nsound].pnt.z+=zadd;
+				map.sounds[map.nsound].pnt.x+=mov_pt.x;
+				map.sounds[map.nsound].pnt.y+=mov_pt.y;
+				map.sounds[map.nsound].pnt.z+=mov_pt.z;
 				select_duplicate_add(sound_piece,map.nsound,0);
 				map.nsound++;
 				break;
@@ -188,11 +194,10 @@ void piece_duplicate(void)
 					return;
 				}
 
-				piece_duplicate_offset(&xadd,&zadd);
-
 				map.particles[map.nparticle]=map.particles[main_idx];
-				map.particles[map.nparticle].pnt.x+=xadd;
-				map.particles[map.nparticle].pnt.z+=zadd;
+				map.particles[map.nparticle].pnt.x+=mov_pt.x;
+				map.particles[map.nparticle].pnt.y+=mov_pt.y;
+				map.particles[map.nparticle].pnt.z+=mov_pt.z;
 				select_duplicate_add(particle_piece,map.nparticle,0);
 				map.nparticle++;
 				break;
@@ -1088,7 +1093,7 @@ void piece_key(char ch)
 				break;
 				
 			case liquid_piece:
-				map_liquid_move(&map,main_idx,move_pnt.x,move_pnt.y,move_pnt.z);
+				map_liquid_move(&map,main_idx,&move_pnt);
 				break;
 				
 			case node_piece:

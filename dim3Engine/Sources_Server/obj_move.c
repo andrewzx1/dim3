@@ -500,7 +500,7 @@ void object_motion_set_script_property(obj_type *obj,d3pnt *motion)
 void object_move_y_up(obj_type *obj,int ymove)
 {
 	int				fy,up_move;
-
+	
 	obj->air_mode=am_up;
 	
 		// have any floors come up from below

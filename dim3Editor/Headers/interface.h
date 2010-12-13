@@ -104,6 +104,8 @@ extern void list_palette_add_string_int(list_palette_type *list,int id,char *nam
 extern void list_palette_add_string_float(list_palette_type *list,int id,char *name,float value);
 extern void list_palette_add_checkbox(list_palette_type *list,int id,char *name,bool value);
 extern void list_palette_add_pick_color(list_palette_type *list,int id,char *name,d3col *col);
+extern void list_palette_add_point(list_palette_type *list,int id,char *name,d3pnt *pnt);
+extern void list_palette_add_angle(list_palette_type *list,int id,char *name,d3ang *ang);
 extern void list_palette_delete_all_items(list_palette_type *list);
 extern void list_palette_draw(list_palette_type *list);
 extern void list_palette_scroll_up(list_palette_type *list);

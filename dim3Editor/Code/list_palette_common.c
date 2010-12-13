@@ -164,9 +164,9 @@ void list_palette_add_string(list_palette_type *list,int id,char *name,char *val
 
 	strcpy(item->name,name);
 	
-	if (strlen(value)>=20) {
-		strncpy(item->value.str,value,20);
-		strcpy((char*)&item->value.str[20],"...");
+	if (strlen(value)>=25) {
+		strncpy(item->value.str,value,25);
+		strcpy((char*)&item->value.str[25],"...");
 	}
 	else {
 		strcpy(item->value.str,value);
@@ -219,6 +219,22 @@ void list_palette_add_pick_color(list_palette_type *list,int id,char *name,d3col
 
 	strcpy(item->name,name);
 	memmove(&item->value.col,col,sizeof(d3col));
+}
+
+void list_palette_add_point(list_palette_type *list,int id,char *name,d3pnt *pnt)
+{
+	char		str[32];
+	
+	sprintf(str,"%d,%d,%d",pnt->x,pnt->y,pnt->z);
+	list_palette_add_string(list,id,name,str);
+}
+
+void list_palette_add_angle(list_palette_type *list,int id,char *name,d3ang *ang)
+{
+	char		str[32];
+	
+	sprintf(str,"%.2f,%.2f,%.2f",ang->x,ang->y,ang->z);
+	list_palette_add_string(list,id,name,str);
 }
 
 /* =======================================================
@@ -622,12 +638,10 @@ bool list_palette_click(list_palette_type *list,d3pnt *pnt,bool double_click)
 	item_idx=((pnt->y-(list_scroll_button_high+list_title_high))+(list->scroll_page*list->scroll_size))/list_item_font_high;
 	if ((item_idx<0) || (item_idx>=list->item_count)) return(FALSE);
 
-		// clicking in header
+		// get clicked item
 
 	item=&list->items[item_idx];
-
-		// select clicked item
-
+		
 	list->item_type=item->type;
 	list->item_idx=item->idx;
 	list->item_id=item->id;

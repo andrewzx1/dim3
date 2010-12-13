@@ -96,6 +96,7 @@ char							mesh_property_hide_list[][name_str_len]={"Never","Single Player","Mul
 void property_palette_fill_mesh(int mesh_idx,int poly_idx)
 {
 	float					x_txtoff,y_txtoff,x_txtfact,y_txtfact;
+	d3pnt					min,max;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
 	editor_view_type		*view;
@@ -147,27 +148,39 @@ void property_palette_fill_mesh(int mesh_idx,int poly_idx)
 
 		// polygon settings
 
-	if (poly_idx==-1) return;
+	if (poly_idx!=-1) {
 
-	view=view_get_current_view();
-	poly=&mesh->polys[poly_idx];
+		view=view_get_current_view();
+		poly=&mesh->polys[poly_idx];
 
-	map_mesh_get_poly_uv_as_box(&map,mesh_idx,poly_idx,(view->uv_layer==uv_layer_light_map),&x_txtoff,&y_txtoff,&x_txtfact,&y_txtfact);
-	
-	list_palette_add_header(&property_palette,0,"Poly Settings");
-	list_palette_add_checkbox(&property_palette,kMeshPolyPropertyClimbable,"Cimbable",poly->climbable);
-	list_palette_add_checkbox(&property_palette,kMeshPolyPropertyNeverCull,"Never Cull",poly->never_cull);
-	
-	list_palette_add_header(&property_palette,0,"Poly UVs");
-	list_palette_add_string_float(&property_palette,kMeshPolyPropertyOffX,"X Offset",x_txtoff);
-	list_palette_add_string_float(&property_palette,kMeshPolyPropertyOffY,"Y Offset",y_txtoff);
-	list_palette_add_string_float(&property_palette,kMeshPolyPropertySizeX,"X Size",x_txtfact);
-	list_palette_add_string_float(&property_palette,kMeshPolyPropertySizeY,"Y Size",y_txtfact);
-	list_palette_add_string_float(&property_palette,kMeshPolyPropertyShiftX,"X Shift",poly->x_shift);
-	list_palette_add_string_float(&property_palette,kMeshPolyPropertyShiftY,"Y Shift",poly->y_shift);
+		map_mesh_get_poly_uv_as_box(&map,mesh_idx,poly_idx,(view->uv_layer==uv_layer_light_map),&x_txtoff,&y_txtoff,&x_txtfact,&y_txtfact);
 		
-	list_palette_add_header(&property_palette,0,"Poly Camera");
-	list_palette_add_string(&property_palette,kMeshPolyPropertyCamera,"Node",poly->camera);
+		list_palette_add_header(&property_palette,0,"Poly Settings");
+		list_palette_add_checkbox(&property_palette,kMeshPolyPropertyClimbable,"Cimbable",poly->climbable);
+		list_palette_add_checkbox(&property_palette,kMeshPolyPropertyNeverCull,"Never Cull",poly->never_cull);
+		
+		list_palette_add_header(&property_palette,0,"Poly UVs");
+		list_palette_add_string_float(&property_palette,kMeshPolyPropertyOffX,"X Offset",x_txtoff);
+		list_palette_add_string_float(&property_palette,kMeshPolyPropertyOffY,"Y Offset",y_txtoff);
+		list_palette_add_string_float(&property_palette,kMeshPolyPropertySizeX,"X Size",x_txtfact);
+		list_palette_add_string_float(&property_palette,kMeshPolyPropertySizeY,"Y Size",y_txtfact);
+		list_palette_add_string_float(&property_palette,kMeshPolyPropertyShiftX,"X Shift",poly->x_shift);
+		list_palette_add_string_float(&property_palette,kMeshPolyPropertyShiftY,"Y Shift",poly->y_shift);
+			
+		list_palette_add_header(&property_palette,0,"Poly Camera");
+		list_palette_add_string(&property_palette,kMeshPolyPropertyCamera,"Node",poly->camera);
+	}
+	
+		// info
+		
+	map_mesh_calculate_extent(&map,mesh_idx,&min,&max);
+	max.x-=min.x;
+	max.y-=min.y;
+	max.z-=min.z;
+		
+	list_palette_add_header(&property_palette,0,"Mesh Info [Not Editable]");
+	list_palette_add_point(&property_palette,-1,"Position",&min);
+	list_palette_add_point(&property_palette,-1,"Size",&max);
 }
 
 /* =======================================================

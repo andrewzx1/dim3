@@ -91,48 +91,47 @@ void object_grow_start(obj_type *obj,int grow_msec,float end_resize,d3pnt *end_s
 
 		// collision changes
 
-	if (end_size==NULL ) {
-		grow->size_end.x=(int)((float)obj->size.x*end_resize);
-		grow->size_end.y=(int)((float)obj->size.y*end_resize);
-		grow->size_end.z=(int)((float)obj->size.z*end_resize);
-	}
-	else {
+	grow->change_size=FALSE;
+	
+	if (end_size!=NULL) {
+		grow->change_size=TRUE;
+		
 		grow->size_end.x=end_size->x;
 		grow->size_end.y=end_size->y;
 		grow->size_end.z=end_size->z;
-	}
 		
-	grow->size_add.x=(float)(grow->size_end.x-obj->size.x)/f_msec;
-	grow->size_accum.x=0.0f;
+		grow->size_add.x=(float)(grow->size_end.x-obj->size.x)/f_msec;
+		grow->size_accum.x=0.0f;
 
-	grow->size_add.y=(float)(grow->size_end.y-obj->size.y)/f_msec;
-	grow->size_accum.y=0.0f;
+		grow->size_add.y=(float)(grow->size_end.y-obj->size.y)/f_msec;
+		grow->size_accum.y=0.0f;
 
-	grow->size_add.z=(float)(grow->size_end.z-obj->size.z)/f_msec;
-	grow->size_accum.z=0.0f;
+		grow->size_add.z=(float)(grow->size_end.z-obj->size.z)/f_msec;
+		grow->size_accum.z=0.0f;
+	
+			// eye offset (part of Y size change)
+
+		grow->eye_offset_end=(int)((float)obj->size.eye_offset*end_resize);
+		grow->eye_offset_add=(float)(grow->eye_offset_end-obj->size.eye_offset)/f_msec;
+		grow->eye_offset_accum=0.0f;
+	}
 	
 		// offset changes
 
-	if (end_offset==NULL) {
-		memmove(&grow->offset_end,&obj->draw.offset,sizeof(d3pnt));
-		grow->offset_add.x=grow->offset_add.y=grow->offset_add.z=0.0f;
-	}
-	else {
+	grow->change_offset=FALSE;
+	
+	if (end_offset!=NULL) {
+		grow->change_offset=TRUE;
+		
 		memmove(&grow->offset_end,end_offset,sizeof(d3pnt));
 		grow->offset_add.x=(float)(end_offset->x-obj->draw.offset.x)/f_msec;
 		grow->offset_add.y=(float)(end_offset->y-obj->draw.offset.y)/f_msec;
 		grow->offset_add.z=(float)(end_offset->z-obj->draw.offset.z)/f_msec;
+
+		grow->offset_accum.x=0.0f;
+		grow->offset_accum.y=0.0f;
+		grow->offset_accum.z=0.0f;
 	}
-
-	grow->offset_accum.x=0.0f;
-	grow->offset_accum.y=0.0f;
-	grow->offset_accum.z=0.0f;
-
-		// eye offset (part of Y change)
-
-	grow->eye_offset_end=(int)((float)obj->size.eye_offset*end_resize);
-	grow->eye_offset_add=(float)(grow->eye_offset_end-obj->size.eye_offset)/f_msec;
-	grow->eye_offset_accum=0.0f;
 
 	grow->on=TRUE;
 }
@@ -145,7 +144,7 @@ void object_grow_start(obj_type *obj,int grow_msec,float end_resize,d3pnt *end_s
 
 void object_grow_run(obj_type *obj)
 {
-	int					n,xmove,ymove,zmove,xoff,yoff,zoff,eye;
+	int					n,xmove,ymove,zmove,xoff,yoff,zoff,eye,yadd;
 	float				ypush;
 	obj_grow			*grow;
 	obj_type			*test_obj;
@@ -163,15 +162,19 @@ void object_grow_run(obj_type *obj)
 		
 		obj->draw.resize=grow->resize_end;
 		
-		obj->size.x=grow->size_end.x;
-		obj->size.y=grow->size_end.y;
-		obj->size.z=grow->size_end.z;
+		if (grow->change_size) {
+			obj->size.x=grow->size_end.x;
+			obj->size.y=grow->size_end.y;
+			obj->size.z=grow->size_end.z;
+			
+			obj->size.eye_offset=grow->eye_offset_end;
+		}
 		
-		obj->draw.offset.x=grow->offset_end.x;
-		obj->draw.offset.y=grow->offset_end.y;
-		obj->draw.offset.z=grow->offset_end.z;
-
-		obj->size.eye_offset=grow->eye_offset_end;
+		if (grow->change_offset) {
+			obj->draw.offset.x=grow->offset_end.x;
+			obj->draw.offset.y=grow->offset_end.y;
+			obj->draw.offset.z=grow->offset_end.z;
+		}
 
 		return;
 	}
@@ -182,67 +185,74 @@ void object_grow_run(obj_type *obj)
 
 		// calculate collision size
 		
-	grow->size_accum.x+=grow->size_add.x;
-	xmove=(int)grow->size_accum.x;
-	grow->size_accum.x-=(float)xmove;
-
-	obj->size.x+=xmove;
-
-	grow->size_accum.y+=grow->size_add.y;
-	ymove=(int)grow->size_accum.y;
-	grow->size_accum.y-=(float)ymove;
-
-	obj->size.y+=ymove;
-
-	grow->size_accum.z+=grow->size_add.z;
-	zmove=(int)grow->size_accum.z;
-	grow->size_accum.z-=(float)zmove;
-
-	obj->size.z+=zmove;
-
-		// calculate model offset
+	yadd=0;
 		
-	grow->offset_accum.x+=grow->offset_add.x;
-	xoff=(int)grow->offset_accum.x;
-	grow->offset_accum.x-=(float)xoff;
+	if (grow->change_size) {
+	
+		grow->size_accum.x+=grow->size_add.x;
+		xmove=(int)grow->size_accum.x;
+		grow->size_accum.x-=(float)xmove;
 
-	obj->draw.offset.x+=xoff;
+		obj->size.x+=xmove;
 
-	grow->offset_accum.y+=grow->offset_add.y;
-	yoff=(int)grow->offset_accum.y;
-	grow->offset_accum.y-=(float)yoff;
+		grow->size_accum.y+=grow->size_add.y;
+		ymove=(int)grow->size_accum.y;
+		grow->size_accum.y-=(float)ymove;
 
-	obj->draw.offset.y+=yoff;
+		obj->size.y+=ymove;
+		yadd+=ymove;
 
-	grow->offset_accum.z+=grow->offset_add.z;
-	zoff=(int)grow->offset_accum.z;
-	grow->offset_accum.z-=(float)zoff;
+		grow->size_accum.z+=grow->size_add.z;
+		zmove=(int)grow->size_accum.z;
+		grow->size_accum.z-=(float)zmove;
 
-	obj->draw.offset.z+=zoff;
+		obj->size.z+=zmove;
+		
+			// calculate eye offset
 
-		// calculate eye offset
+		grow->eye_offset_accum+=grow->eye_offset_add;
+		eye=(int)grow->eye_offset_accum;
+		grow->eye_offset_accum-=(float)eye;
 
-	grow->eye_offset_accum+=grow->eye_offset_add;
-	eye=(int)grow->eye_offset_accum;
-	grow->eye_offset_accum-=(float)eye;
+		obj->size.eye_offset+=eye;
+	}
+	
+		// calculate model offset
+	
+	if (grow->change_offset) {
+		grow->offset_accum.x+=grow->offset_add.x;
+		xoff=(int)grow->offset_accum.x;
+		grow->offset_accum.x-=(float)xoff;
 
-	obj->size.eye_offset+=eye;
+		obj->draw.offset.x+=xoff;
+
+		grow->offset_accum.y+=grow->offset_add.y;
+		yoff=(int)grow->offset_accum.y;
+		grow->offset_accum.y-=(float)yoff;
+
+		obj->draw.offset.y+=yoff;
+		yadd+=yoff;
+
+		grow->offset_accum.z+=grow->offset_add.z;
+		zoff=(int)grow->offset_accum.z;
+		grow->offset_accum.z-=(float)zoff;
+
+		obj->draw.offset.z+=zoff;
+	}
 
 		// move any objects standing on this one
 		// if object is growing upwards
 
-	ymove+=yoff;
-
-	if (ymove>0) {
+	if (yadd>0) {
 	
-		ypush=-(((float)ymove)/10.0f);
+		ypush=-(((float)yadd)/10.0f);
 
 		for (n=0;n!=max_obj_list;n++) {
 			test_obj=server.obj_list.objs[n];
 			if (test_obj==NULL) continue;
 
 			if (test_obj->contact.stand_obj_idx==obj->idx) {
-				object_move_y(test_obj,-ymove);
+				object_move_y(test_obj,-yadd);
 				if (test_obj->force.vct.y>ypush) test_obj->force.vct.y+=ypush;
 			}
 		}

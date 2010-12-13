@@ -388,7 +388,7 @@ typedef struct		{
 						int						count,eye_offset_end;
 						float					resize_end,resize_add,
 												eye_offset_add,eye_offset_accum;
-						bool					on;
+						bool					on,change_size,change_offset;
 						d3pnt					size_end,offset_end;
 						d3vct					size_add,size_accum,
 												offset_add,offset_accum;

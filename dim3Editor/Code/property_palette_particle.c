@@ -64,6 +64,9 @@ void property_palette_fill_particle(int particle_idx)
 	list_palette_add_string(&property_palette,kParticlePropertyName,"Name",particle->name);
 	list_palette_add_string_int(&property_palette,kParticlePropertySpawnTick,"Spawn Tick",particle->spawn_tick);
 	list_palette_add_string_int(&property_palette,kParticlePropertySlopTick,"Slop Tick",particle->slop_tick);
+	
+	list_palette_add_header(&property_palette,0,"Paticle Info [Not Editable]");
+	list_palette_add_point(&property_palette,-1,"Position",&particle->pnt);
 }
 
 /* =======================================================
