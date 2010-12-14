@@ -87,7 +87,7 @@ void property_palette_setup(void)
 	property_palette.box.ty=y-1;
 	property_palette.box.by=wbox.by-txt_palette_pixel_sz;
 
-	property_palette.scroll_size=((property_palette.box.by-property_palette.box.ty)-((list_scroll_button_high*2)+list_title_high))>>2;
+	property_palette.scroll_size=((property_palette.box.by-property_palette.box.ty)-(list_title_high))>>2;
 }
 
 /* =======================================================

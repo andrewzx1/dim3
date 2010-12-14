@@ -361,9 +361,9 @@ typedef struct		{
 #define list_item_font_high						14
 
 #define list_palette_border_sz					10
-#define list_palette_tree_sz					220
+#define list_palette_tree_sz					250
+#define list_palette_scroll_wid					15
 #define list_title_high							20
-#define list_scroll_button_high					20
 
 #define list_item_ctrl_header					0
 #define list_item_ctrl_text						1

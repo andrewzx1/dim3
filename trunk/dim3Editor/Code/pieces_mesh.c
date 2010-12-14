@@ -1261,19 +1261,33 @@ void piece_combine_mesh(void)
 	int				n,k,nsel,org_idx,mesh_combine_idx,new_mesh_combine_idx,
 					type,mesh_idx,poly_idx;
 	int				sel_mesh_idx[select_max_item];
+	bool			skip;
 	
 		// get all selected meshes
 		// select will change as meshes are deleted so
-		// we need our own list
+		// we need our own list.  we also have to check
+		// for duplicates as multiple polygons can be in list
 		
 	nsel=0;
 	
 	for (n=0;n!=select_count();n++) {
 		select_get(n,&type,&mesh_idx,&poly_idx);
-		if (type==mesh_piece) sel_mesh_idx[nsel++]=mesh_idx;
+		if (type!=mesh_piece) continue;
+		
+		skip=FALSE;
+		
+		for (k=0;k!=nsel;k++) {
+			if (sel_mesh_idx[k]==mesh_idx) {
+				skip=TRUE;
+				break;
+			}
+		}
+		
+		if (!skip) sel_mesh_idx[nsel++]=mesh_idx;
 	}
 	
 	if (nsel<2) return;
+	
 	
 		// clear selection
 		
@@ -1302,9 +1316,7 @@ void piece_combine_mesh(void)
 		mesh_combine_idx=new_mesh_combine_idx;
 	}
 	
-	if (mesh_combine_idx!=-1) {
-		select_add(mesh_piece,mesh_combine_idx,0);
-	}
+	if (mesh_combine_idx!=-1) select_add(mesh_piece,mesh_combine_idx,0);
 }
 
 /* =======================================================
