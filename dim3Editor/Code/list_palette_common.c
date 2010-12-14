@@ -97,7 +97,7 @@ list_palette_item_type* list_palette_create_item(list_palette_type *list,int ctr
 	item->x=list->box.lx+(list_palette_border_sz+4);
 	if (ctrl_type!=list_item_ctrl_header) item->x+=10;
 
-	item->y=((list->item_count*list_item_font_high)+(list_scroll_button_high+list_title_high))+list->box.ty;
+	item->y=((list->item_count*list_item_font_high)+list_title_high)+list->box.ty;
 	item->y-=(list->scroll_page*list->scroll_size);
 
 	list->total_high+=list_item_font_high;
@@ -260,7 +260,7 @@ void list_palette_draw_item_color_box(list_palette_type *list,list_palette_item_
 	int					x;
 
 	x=item->x;
-	if (right_align) x=list->box.rx-(list_item_font_high+4);
+	if (right_align) x=list->box.rx-(list_item_font_high+(list_palette_scroll_wid+4));
 
 	glColor4f((col->r*0.5f),(col->g*0.5f),(col->b*0.5f),1.0f);
 
@@ -285,7 +285,7 @@ void list_palette_draw_item_check_box(list_palette_type *list,list_palette_item_
 {
 	int					x;
 
-	x=list->box.rx-(list_item_font_high+4);
+	x=list->box.rx-(list_item_font_high+(list_palette_scroll_wid+4));
 
 	glBegin(GL_QUADS);
 	glColor4f(0.7f,0.7f,0.7f,1.0f);
@@ -322,7 +322,7 @@ void list_palette_draw_item(list_palette_type *list,int idx)
 
 		// early exits
 
-	if ((item->y<(list->box.ty+(list_scroll_button_high+list_title_high))) || ((item->y-list_item_font_high)>(list->box.by-list_scroll_button_high))) return;
+	if ((item->y<(list->box.ty+list_title_high)) || ((item->y-list_item_font_high)>list->box.by)) return;
 
 		// draw header
 		
@@ -331,9 +331,9 @@ void list_palette_draw_item(list_palette_type *list,int idx)
 		glBegin(GL_QUADS);
 		glColor4f(0.5f,0.5f,0.9f,1.0f);
 		glVertex2i(list->box.lx,(item->y-list_item_font_high));
-		glVertex2i(list->box.rx,(item->y-list_item_font_high));
+		glVertex2i((list->box.rx-list_palette_scroll_wid),(item->y-list_item_font_high));
 		glColor4f(0.5f,0.5f,0.8f,1.0f);
-		glVertex2i(list->box.rx,item->y);
+		glVertex2i((list->box.rx-list_palette_scroll_wid),item->y);
 		glVertex2i(list->box.lx,item->y);
 		glEnd();
 		
@@ -341,9 +341,9 @@ void list_palette_draw_item(list_palette_type *list,int idx)
 		
 		glBegin(GL_LINES);
 		glVertex2i(list->box.lx,(item->y-list_item_font_high));
-		glVertex2i(list->box.rx,(item->y-list_item_font_high));
+		glVertex2i((list->box.rx-list_palette_scroll_wid),(item->y-list_item_font_high));
 		glVertex2i(list->box.lx,item->y);
-		glVertex2i(list->box.rx,item->y);
+		glVertex2i((list->box.rx-list_palette_scroll_wid),item->y);
 		glEnd();
 	
 	}
@@ -366,8 +366,8 @@ void list_palette_draw_item(list_palette_type *list,int idx)
 			
 		glBegin(GL_QUADS);
 		glVertex2i(list->box.lx,((item->y-list_item_font_high)+1));
-		glVertex2i(list->box.rx,((item->y-list_item_font_high)+1));
-		glVertex2i(list->box.rx,item->y);
+		glVertex2i((list->box.rx-list_palette_scroll_wid),((item->y-list_item_font_high)+1));
+		glVertex2i((list->box.rx-list_palette_scroll_wid),item->y);
 		glVertex2i(list->box.lx,item->y);
 		glEnd();
 	}
@@ -380,7 +380,7 @@ void list_palette_draw_item(list_palette_type *list,int idx)
 
 		case list_item_ctrl_header:
 		case list_item_ctrl_text:
-			text_draw(item->x,item->y,list_item_font_size,item->name);
+			text_draw(item->x,item->y,list_item_font_size,NULL,item->name);
 			break;
 
 			// color
@@ -392,21 +392,21 @@ void list_palette_draw_item(list_palette_type *list,int idx)
 			// string
 
 		case list_item_ctrl_string:
-			text_draw(item->x,item->y,list_item_font_size,item->name);
-			text_draw_right((list->box.rx-4),item->y,list_item_font_size,item->value.str);
+			text_draw(item->x,item->y,list_item_font_size,NULL,item->name);
+			text_draw_right((list->box.rx-(list_palette_scroll_wid+4)),item->y,list_item_font_size,NULL,item->value.str);
 			break;
 
 			// checkbox
 
 		case list_item_ctrl_checkbox:
-			text_draw(item->x,item->y,list_item_font_size,item->name);
+			text_draw(item->x,item->y,list_item_font_size,NULL,item->name);
 			list_palette_draw_item_check_box(list,item,item->value.checkbox);
 			break;
 
 			// pick color
 
 		case list_item_ctrl_pick_color:
-			text_draw(item->x,item->y,list_item_font_size,item->name);
+			text_draw(item->x,item->y,list_item_font_size,NULL,item->name);
 			list_palette_draw_item_color_box(list,item,TRUE,&item->value.col);
 			break;
 
@@ -452,6 +452,16 @@ void list_palette_draw(list_palette_type *list)
 	glVertex2i(list->box.lx,list->box.by);
 	glEnd();
 
+		// items
+
+	for (n=0;n!=list->item_count;n++) {
+		list_palette_draw_item(list,n);
+	}
+	
+		// scroll bar
+		
+		
+
 		// title
 
 	ty=list->box.ty;
@@ -466,7 +476,7 @@ void list_palette_draw(list_palette_type *list)
 	glVertex2i(list->box.lx,by);
 	glEnd();
 	
-	text_draw_center(((list->box.lx+list->box.rx)>>1),(by-2),list_title_font_size,list->title);
+	text_draw_center(((list->box.lx+list->box.rx)>>1),(by-2),list_title_font_size,NULL,list->title);
 
 	glColor4f(0.0f,0.0f,0.0f,1.0f);
 	
@@ -475,76 +485,6 @@ void list_palette_draw(list_palette_type *list)
 	glVertex2i(list->box.rx,(ty+1));
 	glVertex2i(list->box.lx,by);
 	glVertex2i(list->box.rx,by);
-	glEnd();
-
-		// items
-
-	for (n=0;n!=list->item_count;n++) {
-		list_palette_draw_item(list,n);
-	}
-
-		// scroll up button
-
-	ty=list->box.ty+list_title_high;
-	by=ty+list_scroll_button_high;
-	mx=(list->box.lx+list->box.rx)>>1;
-
-	glColor4f(0.9f,0.9f,0.9f,1.0f);
-		
-	glBegin(GL_QUADS);
-	glVertex2i(list->box.lx,ty);
-	glVertex2i(list->box.rx,ty);
-	glVertex2i(list->box.rx,by);
-	glVertex2i(list->box.lx,by);
-	glEnd();
-
-	glColor4f(0.0f,0.0f,0.0f,1.0f);
-		
-	glBegin(GL_LINES);
-	glVertex2i(list->box.lx,ty);
-	glVertex2i(list->box.rx,ty);
-	glVertex2i(list->box.lx,by);
-	glVertex2i(list->box.rx,by);
-	glEnd();
-
-	glBegin(GL_TRIANGLES);
-	glColor4f(0.2f,0.2f,1.0f,1.0f);
-	glVertex2i(mx,(ty+5));
-	glColor4f(0.0f,0.0f,1.0f,1.0f);
-	glVertex2i((mx+10),(by-5));
-	glVertex2i((mx-10),(by-5));
-	glEnd();
-
-		// scroll down button
-
-	ty=list->box.by-list_scroll_button_high;
-	by=list->box.by;
-	mx=(list->box.lx+list->box.rx)>>1;
-
-	glColor4f(0.9f,0.9f,0.9f,1.0f);
-		
-	glBegin(GL_QUADS);
-	glVertex2i(list->box.lx,ty);
-	glVertex2i(list->box.rx,ty);
-	glVertex2i(list->box.rx,by);
-	glVertex2i(list->box.lx,by);
-	glEnd();
-
-	glColor4f(0.0f,0.0f,0.0f,1.0f);
-		
-	glBegin(GL_LINES);
-	glVertex2i(list->box.lx,ty);
-	glVertex2i(list->box.rx,ty);
-	glVertex2i(list->box.lx,by);
-	glVertex2i(list->box.rx,by);
-	glEnd();
-
-	glBegin(GL_TRIANGLES);
-	glColor4f(0.2f,0.2f,1.0f,1.0f);
-	glVertex2i(mx,(by-5));
-	glColor4f(0.0f,0.0f,1.0f,1.0f);
-	glVertex2i((mx+10),(ty+5));
-	glVertex2i((mx-10),(ty+5));
 	glEnd();
 	
 		// click-close border
@@ -620,22 +560,14 @@ bool list_palette_click(list_palette_type *list,d3pnt *pnt,bool double_click)
 		main_wind_draw();
 		return(FALSE);
 	}
-
-		// click in scroll item
-
-	if ((pnt->y>=list_title_high) && (pnt->y<=(list_title_high+list_scroll_button_high))) {
-		list_palette_scroll_up(list);
-		return(FALSE);
-	}
-
-	if (pnt->y>=((list->box.by-list->box.ty)-list_scroll_button_high)) {
-		list_palette_scroll_down(list);
-		return(FALSE);
-	}
+	
+		// click in title
+		
+	if (pnt->y<list_title_high) return(FALSE);
 
 		// click in item
 
-	item_idx=((pnt->y-(list_scroll_button_high+list_title_high))+(list->scroll_page*list->scroll_size))/list_item_font_high;
+	item_idx=((pnt->y-list_title_high)+(list->scroll_page*list->scroll_size))/list_item_font_high;
 	if ((item_idx<0) || (item_idx>=list->item_count)) return(FALSE);
 
 		// get clicked item

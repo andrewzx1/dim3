@@ -106,7 +106,7 @@ int pin_downward_movement_point(int x,int y,int z,int ydist,poly_pointer_type *s
 	return(y+ydist);
 }
 
-int pin_downward_movement_complex(obj_type *obj,int ydist,poly_pointer_type *stand_poly)
+int pin_downward_movement_obj(obj_type *obj,int my)
 {
 	int						n,cy,x,z,x_sz,z_sz,
 							grid_x,grid_z,lx,tz,idx,ty,by;
@@ -137,8 +137,8 @@ int pin_downward_movement_complex(obj_type *obj,int ydist,poly_pointer_type *sta
 	lx=obj->pnt.x-(obj->size.x>>1);
 	tz=obj->pnt.z-(obj->size.z>>1);
 	
-	ty=obj->pnt.y-ydist;
-	by=obj->pnt.y+ydist;
+	ty=obj->pnt.y-my;
+	by=obj->pnt.y+my;
 	
 	x_sz=obj->size.x/grid_x;
 	z_sz=obj->size.z/grid_z;
@@ -159,7 +159,7 @@ int pin_downward_movement_complex(obj_type *obj,int ydist,poly_pointer_type *sta
 	
 		// find the highest point
 		
-	stand_poly->mesh_idx=-1;
+	obj->contact.stand_poly.mesh_idx=-1;
 	cy=-1;
 	
 	for (n=0;n!=idx;n++) {
@@ -168,35 +168,18 @@ int pin_downward_movement_complex(obj_type *obj,int ydist,poly_pointer_type *sta
 			
 		if (pin_movement_hits[n]) {
 		
-			if (stand_poly->mesh_idx==-1) {
-				stand_poly->mesh_idx=pin_movement_contacts[n].poly.mesh_idx;
-				stand_poly->poly_idx=pin_movement_contacts[n].poly.poly_idx;
+			if ((cy==-1) || (pin_movement_hpt[n].y<cy)) {
+				obj->contact.stand_poly.mesh_idx=pin_movement_contacts[n].poly.mesh_idx;
+				obj->contact.stand_poly.poly_idx=pin_movement_contacts[n].poly.poly_idx;
 				cy=pin_movement_hpt[n].y;
-			}
-			else {
-				if (pin_movement_hpt[n].y<cy) {
-					stand_poly->mesh_idx=pin_movement_contacts[n].poly.mesh_idx;
-					stand_poly->poly_idx=pin_movement_contacts[n].poly.poly_idx;
-					cy=pin_movement_hpt[n].y;
-				}
 			}
 			
 		}
 	}
 	
-	if (cy==-1) return(obj->pnt.y+ydist);
+	if (cy==-1) return(my);
 	
-	return(cy);
-}
-
-int pin_downward_movement_obj(obj_type *obj,int my)
-{
-	int				y;
-
-	y=pin_downward_movement_complex(obj,my,&obj->contact.stand_poly);
-	if (obj->contact.stand_poly.mesh_idx==-1) return(my);
-	
-	return(y-obj->pnt.y);
+	return(cy-obj->pnt.y);
 }
 
 /* =======================================================
@@ -234,6 +217,8 @@ int pin_upward_movement_point(int x,int y,int z,int ydist,poly_pointer_type *hea
 	return(y-ydist);
 }
 
+
+/*
 int pin_upward_movement_complex(obj_type *obj,int ydist,poly_pointer_type *head_poly)
 {
 	int						n,cy,x,z,x_sz,z_sz,sz,
@@ -333,6 +318,84 @@ int pin_upward_movement_obj(obj_type *obj,int my)
 
 	return((obj->pnt.y-sz)-y);
 }
+*/
+
+int pin_upward_movement_obj(obj_type *obj,int my)
+{
+	int						n,cy,x,z,x_sz,z_sz,sz,
+							grid_x,grid_z,lx,tz,idx,ty,by;
+	ray_trace_contact_type	base_contact;
+	
+		// get contact grid
+		
+	grid_x=obj->size.x/map_enlarge;
+	if (grid_x>16) grid_x=16;
+	if (grid_x<5) grid_x=5;
+	
+	grid_z=obj->size.z/map_enlarge;
+	if (grid_z>16) grid_z=16;
+	if (grid_z<5) grid_z=5;
+	
+		// setup contact
+		
+	base_contact.obj.on=FALSE;
+	base_contact.proj.on=FALSE;
+
+	base_contact.origin=poly_ray_trace_origin_unknown;
+
+		// create ray arrays
+	
+	idx=0;
+	
+	lx=obj->pnt.x-(obj->size.x>>1);
+	tz=obj->pnt.z-(obj->size.z>>1);
+	
+	x_sz=obj->size.x/grid_x;
+	z_sz=obj->size.z/grid_z;
+	
+	sz=obj->size.y;
+	if (obj->duck.mode!=dm_stand) sz-=obj->duck.y_move;
+	by=(obj->pnt.y-sz)+my;
+	ty=(obj->pnt.y-sz)-my;
+
+	
+	for (z=0;z!=grid_z;z++) {
+		for (x=0;x!=grid_x;x++) {
+			pin_movement_spt[idx].x=pin_movement_ept[idx].x=lx+(x_sz*x);
+			pin_movement_spt[idx].z=pin_movement_ept[idx].z=tz+(z_sz*z);
+			pin_movement_spt[idx].y=by;
+			pin_movement_ept[idx].y=ty;
+			idx++;
+		}
+	}
+		
+		// run the rays
+		
+	ray_trace_map_by_point_array(idx,pin_movement_spt,pin_movement_ept,pin_movement_hpt,pin_movement_hits,&base_contact,pin_movement_contacts);
+	
+		// find the lowest point
+		
+	obj->contact.head_poly.mesh_idx=-1;
+	cy=-1;
+	
+	for (n=0;n!=idx;n++) {
+		
+			// check poly collisions
+			
+		if (pin_movement_hits[n]) {
+		
+			if ((cy==-1) || (pin_movement_hpt[n].y>cy)) {
+				obj->contact.head_poly.mesh_idx=pin_movement_contacts[n].poly.mesh_idx;
+				obj->contact.head_poly.poly_idx=pin_movement_contacts[n].poly.poly_idx;
+				cy=pin_movement_hpt[n].y;
+			}			
+		}
+	}
+	
+	if (cy==-1) return(my);
+	
+	return(cy-(obj->pnt.y-sz));
+}
 
 /* =======================================================
 
@@ -343,7 +406,6 @@ int pin_upward_movement_obj(obj_type *obj,int my)
 bool map_stand_crush_object(obj_type *obj)
 {
 	int					y,fudge;
-	poly_pointer_type	poly;
 	
 		// pick a crushing fudge, reduce size and
 		// see if you can move up that far
@@ -351,14 +413,14 @@ bool map_stand_crush_object(obj_type *obj)
 	fudge=obj->size.y>>3;
 	
 	obj->size.y-=fudge;
-	y=pin_upward_movement_complex(obj,fudge,&poly);
+	y=pin_upward_movement_obj(obj,fudge);
 	obj->size.y+=fudge;
 	
-	if (poly.mesh_idx==-1) return(FALSE);
+	if (obj->contact.head_poly.mesh_idx==-1) return(FALSE);
 	
 		// can only be crushed by moveable meshes
 		
-	if (!map.mesh.meshes[poly.mesh_idx].flag.moveable) return(FALSE);
+	if (!map.mesh.meshes[obj->contact.head_poly.mesh_idx].flag.moveable) return(FALSE);
 	
 		// if we can, go into auto duck before crushing
 		// if already in duck, crush
@@ -379,7 +441,6 @@ bool map_stand_crush_object(obj_type *obj)
 bool map_stand_check_object(obj_type *obj)
 {
 	int					y,sy;
-	poly_pointer_type	poly;
 
 		// total stand up height
 
@@ -387,7 +448,7 @@ bool map_stand_check_object(obj_type *obj)
 
 		// possible to move up?
 
-	y=pin_upward_movement_complex(obj,sy,&poly);
-	return(poly.mesh_idx==-1);
+	y=pin_upward_movement_obj(obj,sy);
+	return(obj->contact.head_poly.mesh_idx==-1);
 }
 

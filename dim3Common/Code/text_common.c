@@ -97,7 +97,7 @@ int text_width(float txt_size,char *str)
       
 ======================================================= */
 
-void text_draw(int x,int y,float txt_size,char *str)
+void text_draw(int x,int y,float txt_size,d3col *col,char *str)
 {
 	int			n,len,ch,xoff,yoff;
 	float		f_lx,f_rx,f_ty,f_by,
@@ -135,8 +135,13 @@ void text_draw(int x,int y,float txt_size,char *str)
 	
 	c=str;
 
-	glColor4f(0.0f,0.0f,0.0f,1.0f);
-
+	if (col==NULL) {
+		glColor4f(0.0f,0.0f,0.0f,1.0f);
+	}
+	else {
+		glColor4f(col->r,col->g,col->b,1.0f);
+	}
+	
 	glBegin(GL_QUADS);
 	
 	for (n=0;n!=len;n++) {
@@ -185,14 +190,14 @@ void text_draw(int x,int y,float txt_size,char *str)
 	glDisable(GL_TEXTURE_2D);
 }
 
-void text_draw_center(int x,int y,float txt_size,char *str)
+void text_draw_center(int x,int y,float txt_size,d3col *col,char *str)
 {
 	x-=(text_width(txt_size,str)>>1);
-	text_draw(x,y,txt_size,str);
+	text_draw(x,y,txt_size,col,str);
 }
 
-void text_draw_right(int x,int y,float txt_size,char *str)
+void text_draw_right(int x,int y,float txt_size,d3col *col,char *str)
 {
 	x-=text_width(txt_size,str);
-	text_draw(x,y,txt_size,str);
+	text_draw(x,y,txt_size,col,str);
 }
