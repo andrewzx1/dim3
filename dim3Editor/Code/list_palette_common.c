@@ -460,7 +460,14 @@ void list_palette_draw(list_palette_type *list)
 	
 		// scroll bar
 		
+	glColor4f(0.2f,0.2f,0.2f,1.0f);
 		
+	glBegin(GL_QUADS);
+	glVertex2i((list->box.rx-list_palette_scroll_wid),list->box.ty);
+	glVertex2i(list->box.rx,list->box.ty);
+	glVertex2i(list->box.rx,list->box.by);
+	glVertex2i((list->box.rx-list_palette_scroll_wid),list->box.by);
+	glEnd();
 
 		// title
 
