@@ -106,45 +106,45 @@ void property_palette_fill_mesh(int mesh_idx,int poly_idx)
 	mesh=&map.mesh.meshes[mesh_idx];
 
 	list_palette_add_header(&property_palette,0,"Mesh Settings");
-	list_palette_add_checkbox(&property_palette,kMeshPropertyOn,"On",mesh->flag.on);
-	list_palette_add_checkbox(&property_palette,kMeshPropertyPassThrough,"Pass Through",mesh->flag.pass_through);
-	list_palette_add_checkbox(&property_palette,kMeshPropertyMovable,"Movable",mesh->flag.moveable);
-	list_palette_add_checkbox(&property_palette,kMeshPropertyHilite,"High Lighted",mesh->flag.hilite);
-	list_palette_add_checkbox(&property_palette,kMeshPropertyLockUV,"Lock UVs",mesh->flag.lock_uv);
-	list_palette_add_checkbox(&property_palette,kMeshPropertyLockMove,"Lock Position",mesh->flag.lock_move);
-	list_palette_add_checkbox(&property_palette,kMeshPropertyShadow,"Shadow",mesh->flag.shadow);
-	list_palette_add_checkbox(&property_palette,kMeshPropertyNeverObscure,"Never Obscure",mesh->flag.never_obscure);
-	list_palette_add_checkbox(&property_palette,kMeshPropertyRotIndependent,"Rotate Independently",mesh->flag.rot_independent);
-	list_palette_add_checkbox(&property_palette,kMeshPropertyNoLightMap,"No Light Map",mesh->flag.no_light_map);
-	list_palette_add_checkbox(&property_palette,kMeshPropertySkipLightMapTrace,"Skip Light Map Trace",mesh->flag.skip_light_map_trace);
+	list_palette_add_checkbox(&property_palette,kMeshPropertyOn,"On",mesh->flag.on,FALSE);
+	list_palette_add_checkbox(&property_palette,kMeshPropertyPassThrough,"Pass Through",mesh->flag.pass_through,FALSE);
+	list_palette_add_checkbox(&property_palette,kMeshPropertyMovable,"Movable",mesh->flag.moveable,FALSE);
+	list_palette_add_checkbox(&property_palette,kMeshPropertyHilite,"High Lighted",mesh->flag.hilite,FALSE);
+	list_palette_add_checkbox(&property_palette,kMeshPropertyLockUV,"Lock UVs",mesh->flag.lock_uv,FALSE);
+	list_palette_add_checkbox(&property_palette,kMeshPropertyLockMove,"Lock Position",mesh->flag.lock_move,FALSE);
+	list_palette_add_checkbox(&property_palette,kMeshPropertyShadow,"Shadow",mesh->flag.shadow,FALSE);
+	list_palette_add_checkbox(&property_palette,kMeshPropertyNeverObscure,"Never Obscure",mesh->flag.never_obscure,FALSE);
+	list_palette_add_checkbox(&property_palette,kMeshPropertyRotIndependent,"Rotate Independently",mesh->flag.rot_independent,FALSE);
+	list_palette_add_checkbox(&property_palette,kMeshPropertyNoLightMap,"No Light Map",mesh->flag.no_light_map,FALSE);
+	list_palette_add_checkbox(&property_palette,kMeshPropertySkipLightMapTrace,"Skip Light Map Trace",mesh->flag.skip_light_map_trace,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Mesh Modes");
-	list_palette_add_string(&property_palette,kMeshPropertyHideMode,"Hide",mesh_property_hide_list[mesh->hide_mode]);
-	list_palette_add_string(&property_palette,kMeshPropertyNormalMode,"Normals",mesh_property_normal_list[mesh->normal_mode]);
+	list_palette_add_string(&property_palette,kMeshPropertyHideMode,"Hide",mesh_property_hide_list[mesh->hide_mode],FALSE);
+	list_palette_add_string(&property_palette,kMeshPropertyNormalMode,"Normals",mesh_property_normal_list[mesh->normal_mode],FALSE);
 
 	list_palette_add_header(&property_palette,0,"Mesh Group");
 	if (mesh->group_idx==-1) {
-		list_palette_add_string(&property_palette,kMeshPropertyGroup,"Group","");
+		list_palette_add_string(&property_palette,kMeshPropertyGroup,"Group","",FALSE);
 	}
 	else {
-		list_palette_add_string(&property_palette,kMeshPropertyGroup,"Group",map.group.groups[mesh->group_idx].name);
+		list_palette_add_string(&property_palette,kMeshPropertyGroup,"Group",map.group.groups[mesh->group_idx].name,FALSE);
 	}
 
 	list_palette_add_header(&property_palette,0,"Mesh Rotational Center");
-	list_palette_add_string_int(&property_palette,kMeshPropertyRotX,"X",mesh->rot_off.x);
-	list_palette_add_string_int(&property_palette,kMeshPropertyRotY,"Y",mesh->rot_off.y);
-	list_palette_add_string_int(&property_palette,kMeshPropertyRotZ,"Z",mesh->rot_off.z);
+	list_palette_add_string_int(&property_palette,kMeshPropertyRotX,"X",mesh->rot_off.x,FALSE);
+	list_palette_add_string_int(&property_palette,kMeshPropertyRotY,"Y",mesh->rot_off.y,FALSE);
+	list_palette_add_string_int(&property_palette,kMeshPropertyRotZ,"Z",mesh->rot_off.z,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Mesh Messages");
-	list_palette_add_checkbox(&property_palette,kMeshPropertyMessageEnter,"Entry On",mesh->msg.entry_on);
-	list_palette_add_string_int(&property_palette,kMeshPropertyMessageEnterId,"Entry ID",mesh->msg.entry_id);
-	list_palette_add_checkbox(&property_palette,kMeshPropertyMessageExit,"Exit On",mesh->msg.exit_on);
-	list_palette_add_string_int(&property_palette,kMeshPropertyMessageExitId,"Exit ID",mesh->msg.exit_id);
-	list_palette_add_checkbox(&property_palette,kMeshPropertyMessageMapChange,"Map Change On",mesh->msg.map_change_on);
-	list_palette_add_string(&property_palette,kMeshPropertyMessageMapChangeName,"Map Name",mesh->msg.map_name);
-	list_palette_add_string(&property_palette,kMeshPropertyMessageMapChangeSpotName,"Map Spot Name",mesh->msg.map_spot_name);
-	list_palette_add_checkbox(&property_palette,kMeshPropertyMessageBase,"Base On",mesh->msg.base_on);
-	list_palette_add_string(&property_palette,kMeshPropertyMessageBaseTeam,"Base Team",mesh_property_team_list[mesh->msg.base_team]);
+	list_palette_add_checkbox(&property_palette,kMeshPropertyMessageEnter,"Entry On",mesh->msg.entry_on,FALSE);
+	list_palette_add_string_int(&property_palette,kMeshPropertyMessageEnterId,"Entry ID",mesh->msg.entry_id,FALSE);
+	list_palette_add_checkbox(&property_palette,kMeshPropertyMessageExit,"Exit On",mesh->msg.exit_on,FALSE);
+	list_palette_add_string_int(&property_palette,kMeshPropertyMessageExitId,"Exit ID",mesh->msg.exit_id,FALSE);
+	list_palette_add_checkbox(&property_palette,kMeshPropertyMessageMapChange,"Map Change On",mesh->msg.map_change_on,FALSE);
+	list_palette_add_string(&property_palette,kMeshPropertyMessageMapChangeName,"Map Name",mesh->msg.map_name,FALSE);
+	list_palette_add_string(&property_palette,kMeshPropertyMessageMapChangeSpotName,"Map Spot Name",mesh->msg.map_spot_name,FALSE);
+	list_palette_add_checkbox(&property_palette,kMeshPropertyMessageBase,"Base On",mesh->msg.base_on,FALSE);
+	list_palette_add_string(&property_palette,kMeshPropertyMessageBaseTeam,"Base Team",mesh_property_team_list[mesh->msg.base_team],FALSE);
 
 		// polygon settings
 
@@ -156,19 +156,19 @@ void property_palette_fill_mesh(int mesh_idx,int poly_idx)
 		map_mesh_get_poly_uv_as_box(&map,mesh_idx,poly_idx,(view->uv_layer==uv_layer_light_map),&x_txtoff,&y_txtoff,&x_txtfact,&y_txtfact);
 		
 		list_palette_add_header(&property_palette,0,"Poly Settings");
-		list_palette_add_checkbox(&property_palette,kMeshPolyPropertyClimbable,"Cimbable",poly->climbable);
-		list_palette_add_checkbox(&property_palette,kMeshPolyPropertyNeverCull,"Never Cull",poly->never_cull);
+		list_palette_add_checkbox(&property_palette,kMeshPolyPropertyClimbable,"Cimbable",poly->climbable,FALSE);
+		list_palette_add_checkbox(&property_palette,kMeshPolyPropertyNeverCull,"Never Cull",poly->never_cull,FALSE);
 		
 		list_palette_add_header(&property_palette,0,"Poly UVs");
-		list_palette_add_string_float(&property_palette,kMeshPolyPropertyOffX,"X Offset",x_txtoff);
-		list_palette_add_string_float(&property_palette,kMeshPolyPropertyOffY,"Y Offset",y_txtoff);
-		list_palette_add_string_float(&property_palette,kMeshPolyPropertySizeX,"X Size",x_txtfact);
-		list_palette_add_string_float(&property_palette,kMeshPolyPropertySizeY,"Y Size",y_txtfact);
-		list_palette_add_string_float(&property_palette,kMeshPolyPropertyShiftX,"X Shift",poly->x_shift);
-		list_palette_add_string_float(&property_palette,kMeshPolyPropertyShiftY,"Y Shift",poly->y_shift);
+		list_palette_add_string_float(&property_palette,kMeshPolyPropertyOffX,"X Offset",x_txtoff,FALSE);
+		list_palette_add_string_float(&property_palette,kMeshPolyPropertyOffY,"Y Offset",y_txtoff,FALSE);
+		list_palette_add_string_float(&property_palette,kMeshPolyPropertySizeX,"X Size",x_txtfact,FALSE);
+		list_palette_add_string_float(&property_palette,kMeshPolyPropertySizeY,"Y Size",y_txtfact,FALSE);
+		list_palette_add_string_float(&property_palette,kMeshPolyPropertyShiftX,"X Shift",poly->x_shift,FALSE);
+		list_palette_add_string_float(&property_palette,kMeshPolyPropertyShiftY,"Y Shift",poly->y_shift,FALSE);
 			
 		list_palette_add_header(&property_palette,0,"Poly Camera");
-		list_palette_add_string(&property_palette,kMeshPolyPropertyCamera,"Node",poly->camera);
+		list_palette_add_string(&property_palette,kMeshPolyPropertyCamera,"Node",poly->camera,FALSE);
 	}
 	
 		// info
@@ -178,9 +178,9 @@ void property_palette_fill_mesh(int mesh_idx,int poly_idx)
 	max.y-=min.y;
 	max.z-=min.z;
 		
-	list_palette_add_header(&property_palette,0,"Mesh Info [Not Editable]");
-	list_palette_add_point(&property_palette,-1,"Position",&min);
-	list_palette_add_point(&property_palette,-1,"Size",&max);
+	list_palette_add_header(&property_palette,0,"Mesh Info");
+	list_palette_add_point(&property_palette,-1,"Position",&min,TRUE);
+	list_palette_add_point(&property_palette,-1,"Size",&max,TRUE);
 }
 
 /* =======================================================

@@ -252,8 +252,7 @@ bool tool_palette_click_mouse_down(int push_idx,int lx,int ty)
 			tool_palette_push_idx=push_idx;
 		}
 
-		tool_palette_draw();
-		os_swap_gl_buffer();
+		main_wind_draw();
 		
 		usleep(10000);
 	}
@@ -261,8 +260,7 @@ bool tool_palette_click_mouse_down(int push_idx,int lx,int ty)
 	if (tool_palette_push_idx==-1) return(FALSE);
 
 	tool_palette_push_idx=-1;
-	tool_palette_draw();
-	os_swap_gl_buffer();
+	main_wind_draw();
 
 	return(TRUE);
 }

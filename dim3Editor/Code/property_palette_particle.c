@@ -58,15 +58,15 @@ void property_palette_fill_particle(int particle_idx)
 	particle=&map.particles[particle_idx];
 
 	list_palette_add_header(&property_palette,0,"Particle Settings");
-	list_palette_add_checkbox(&property_palette,kParticleOn,"On",particle->on);
+	list_palette_add_checkbox(&property_palette,kParticleOn,"On",particle->on,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Particle Type");
-	list_palette_add_string(&property_palette,kParticlePropertyName,"Name",particle->name);
-	list_palette_add_string_int(&property_palette,kParticlePropertySpawnTick,"Spawn Tick",particle->spawn_tick);
-	list_palette_add_string_int(&property_palette,kParticlePropertySlopTick,"Slop Tick",particle->slop_tick);
+	list_palette_add_string(&property_palette,kParticlePropertyName,"Name",particle->name,FALSE);
+	list_palette_add_string_int(&property_palette,kParticlePropertySpawnTick,"Spawn Tick",particle->spawn_tick,FALSE);
+	list_palette_add_string_int(&property_palette,kParticlePropertySlopTick,"Slop Tick",particle->slop_tick,FALSE);
 	
-	list_palette_add_header(&property_palette,0,"Paticle Info [Not Editable]");
-	list_palette_add_point(&property_palette,-1,"Position",&particle->pnt);
+	list_palette_add_header(&property_palette,0,"Paticle Info");
+	list_palette_add_point(&property_palette,-1,"Position",&particle->pnt,TRUE);
 }
 
 /* =======================================================

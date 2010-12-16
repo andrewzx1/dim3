@@ -58,16 +58,16 @@ void property_palette_fill_node(int node_idx)
 	node=&map.nodes[node_idx];
 
 	list_palette_add_header(&property_palette,0,"Node Identity");
-	list_palette_add_string(&property_palette,kNodePropertyName,"Name",node->name);
-	list_palette_add_string_int(&property_palette,kNodePropertyEventID,"Event ID",node->event_id);
-	list_palette_add_string_float(&property_palette,kNodePropertyAlpha,"Alpha",node->alpha);
+	list_palette_add_string(&property_palette,kNodePropertyName,"Name",node->name,FALSE);
+	list_palette_add_string_int(&property_palette,kNodePropertyEventID,"Event ID",node->event_id,FALSE);
+	list_palette_add_string_float(&property_palette,kNodePropertyAlpha,"Alpha",node->alpha,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Node Settings");
-	list_palette_add_checkbox(&property_palette,kNodePropertyFollowCamera,"Follow Camera",node->follow_camera);
+	list_palette_add_checkbox(&property_palette,kNodePropertyFollowCamera,"Follow Camera",node->follow_camera,FALSE);
 	
-	list_palette_add_header(&property_palette,0,"Node Info [Not Editable]");
-	list_palette_add_point(&property_palette,-1,"Position",&node->pnt);
-	list_palette_add_angle(&property_palette,-1,"Angle",&node->ang);
+	list_palette_add_header(&property_palette,0,"Node Info");
+	list_palette_add_point(&property_palette,-1,"Position",&node->pnt,TRUE);
+	list_palette_add_angle(&property_palette,-1,"Angle",&node->ang,TRUE);
 }
 
 /* =======================================================
