@@ -65,21 +65,21 @@ void property_palette_fill_light(int light_idx)
 	light=&map.lights[light_idx];
 
 	list_palette_add_header(&property_palette,0,"Light Settings");
-	list_palette_add_checkbox(&property_palette,kLightPropertyOn,"On",light->on);
-	list_palette_add_checkbox(&property_palette,kLightPropertyLightMap,"Used in Light Map",light->light_map);
+	list_palette_add_checkbox(&property_palette,kLightPropertyOn,"On",light->on,FALSE);
+	list_palette_add_checkbox(&property_palette,kLightPropertyLightMap,"Used in Light Map",light->light_map,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Light Naming");
-	list_palette_add_string(&property_palette,kLightPropertyName,"Name",light->name);
+	list_palette_add_string(&property_palette,kLightPropertyName,"Name",light->name,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Light Display");
-	list_palette_add_string(&property_palette,kLightPropertyType,"Type",light_property_type_list[light->type]);
-	list_palette_add_string(&property_palette,kLightPropertyDirection,"Direction",light_property_direction_list[light->direction]);
-	list_palette_add_string_int(&property_palette,kLightPropertyIntensity,"Intensity",light->intensity);
-	list_palette_add_string_float(&property_palette,kLightPropertyExponent,"Exponent",light->exponent);
-	list_palette_add_pick_color(&property_palette,kLightPropertyColor,"Color",&light->col);
+	list_palette_add_string(&property_palette,kLightPropertyType,"Type",light_property_type_list[light->type],FALSE);
+	list_palette_add_string(&property_palette,kLightPropertyDirection,"Direction",light_property_direction_list[light->direction],FALSE);
+	list_palette_add_string_int(&property_palette,kLightPropertyIntensity,"Intensity",light->intensity,FALSE);
+	list_palette_add_string_float(&property_palette,kLightPropertyExponent,"Exponent",light->exponent,FALSE);
+	list_palette_add_pick_color(&property_palette,kLightPropertyColor,"Color",&light->col,FALSE);
 
-	list_palette_add_header(&property_palette,0,"Light Info [Not Editable]");
-	list_palette_add_point(&property_palette,-1,"Position",&light->pnt);
+	list_palette_add_header(&property_palette,0,"Light Info");
+	list_palette_add_point(&property_palette,-1,"Position",&light->pnt,TRUE);
 }
 
 /* =======================================================

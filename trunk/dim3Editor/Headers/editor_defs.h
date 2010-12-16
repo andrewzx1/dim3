@@ -388,16 +388,17 @@ typedef union		{
 typedef struct		{
 						int									x,y,ctrl_type,
 															id,type,idx;
-						bool								selected;
+						bool								selected,disabled;
 						char								name[name_str_len];
 						list_palette_item_value_type		value;
 					} list_palette_item_type;
 
 typedef struct		{
-						int									item_count,
+						int									item_count,push_idx,
 															item_id,item_type,item_idx,
 															pixel_sz,scroll_page,scroll_size,
 															total_high;
+						bool								push_on;
 						char								title[name_str_len];
 						d3rect								box;
 						list_palette_item_type				*items;

@@ -63,6 +63,9 @@ void list_palette_list_initialize(list_palette_type *list,char *title)
 	list->scroll_page=0;
 	list->total_high=0;
 
+	list->push_on=FALSE;
+	list->push_idx=-1;
+
 	list->item_type=-1;
 	list->item_idx=-1;
 
@@ -120,7 +123,7 @@ void list_palette_add_header(list_palette_type *list,int piece_type,char *name)
 	strcpy(item->name,name);
 }
 
-void list_palette_add_item(list_palette_type *list,int piece_type,int piece_idx,char *name,bool selected)
+void list_palette_add_item(list_palette_type *list,int piece_type,int piece_idx,char *name,bool selected,bool disabled)
 {
 	list_palette_item_type		*item;
 
@@ -131,11 +134,12 @@ void list_palette_add_item(list_palette_type *list,int piece_type,int piece_idx,
 	item->id=-1;
 
 	item->selected=selected;
+	item->disabled=disabled;
 
 	strcpy(item->name,name);
 }
 
-void list_palette_add_color(list_palette_type *list,int piece_type,int piece_idx,d3col *col,bool selected)
+void list_palette_add_color(list_palette_type *list,int piece_type,int piece_idx,d3col *col,bool selected,bool disabled)
 {
 	list_palette_item_type		*item;
 
@@ -146,11 +150,12 @@ void list_palette_add_color(list_palette_type *list,int piece_type,int piece_idx
 	item->id=-1;
 
 	item->selected=selected;
+	item->disabled=disabled;
 
 	memmove(&item->value.col,col,sizeof(d3col));
 }
 
-void list_palette_add_string(list_palette_type *list,int id,char *name,char *value)
+void list_palette_add_string(list_palette_type *list,int id,char *name,char *value,bool disabled)
 {
 	list_palette_item_type		*item;
 
@@ -161,6 +166,7 @@ void list_palette_add_string(list_palette_type *list,int id,char *name,char *val
 	item->id=id;
 
 	item->selected=FALSE;
+	item->disabled=disabled;
 
 	strcpy(item->name,name);
 	
@@ -173,23 +179,23 @@ void list_palette_add_string(list_palette_type *list,int id,char *name,char *val
 	}
 }
 
-void list_palette_add_string_int(list_palette_type *list,int id,char *name,int value)
+void list_palette_add_string_int(list_palette_type *list,int id,char *name,int value,bool disabled)
 {
 	char		str[32];
 	
 	sprintf(str,"%d",value);
-	list_palette_add_string(list,id,name,str);
+	list_palette_add_string(list,id,name,str,disabled);
 }
 
-void list_palette_add_string_float(list_palette_type *list,int id,char *name,float value)
+void list_palette_add_string_float(list_palette_type *list,int id,char *name,float value,bool disabled)
 {
 	char		str[32];
 	
 	sprintf(str,"%.2f",value);
-	list_palette_add_string(list,id,name,str);
+	list_palette_add_string(list,id,name,str,disabled);
 }
 
-void list_palette_add_checkbox(list_palette_type *list,int id,char *name,bool value)
+void list_palette_add_checkbox(list_palette_type *list,int id,char *name,bool value,bool disabled)
 {
 	list_palette_item_type		*item;
 
@@ -205,7 +211,7 @@ void list_palette_add_checkbox(list_palette_type *list,int id,char *name,bool va
 	item->value.checkbox=value;
 }
 
-void list_palette_add_pick_color(list_palette_type *list,int id,char *name,d3col *col)
+void list_palette_add_pick_color(list_palette_type *list,int id,char *name,d3col *col,bool disabled)
 {
 	list_palette_item_type		*item;
 
@@ -221,20 +227,20 @@ void list_palette_add_pick_color(list_palette_type *list,int id,char *name,d3col
 	memmove(&item->value.col,col,sizeof(d3col));
 }
 
-void list_palette_add_point(list_palette_type *list,int id,char *name,d3pnt *pnt)
+void list_palette_add_point(list_palette_type *list,int id,char *name,d3pnt *pnt,bool disabled)
 {
 	char		str[32];
 	
 	sprintf(str,"%d,%d,%d",pnt->x,pnt->y,pnt->z);
-	list_palette_add_string(list,id,name,str);
+	list_palette_add_string(list,id,name,str,disabled);
 }
 
-void list_palette_add_angle(list_palette_type *list,int id,char *name,d3ang *ang)
+void list_palette_add_angle(list_palette_type *list,int id,char *name,d3ang *ang,bool disabled)
 {
 	char		str[32];
 	
 	sprintf(str,"%.2f,%.2f,%.2f",ang->x,ang->y,ang->z);
-	list_palette_add_string(list,id,name,str);
+	list_palette_add_string(list,id,name,str,disabled);
 }
 
 /* =======================================================
@@ -255,12 +261,11 @@ void list_palette_delete_all_items(list_palette_type *list)
       
 ======================================================= */
 
-void list_palette_draw_item_color_box(list_palette_type *list,list_palette_item_type *item,bool right_align,d3col *col)
+void list_palette_draw_item_color_box(list_palette_type *list,list_palette_item_type *item,d3col *col)
 {
 	int					x;
 
-	x=item->x;
-	if (right_align) x=list->box.rx-(list_item_font_high+(list_palette_scroll_wid+4));
+	x=list->box.rx-(list_item_font_high+(list_palette_scroll_wid+4));
 
 	glColor4f((col->r*0.5f),(col->g*0.5f),(col->b*0.5f),1.0f);
 
@@ -283,29 +288,60 @@ void list_palette_draw_item_color_box(list_palette_type *list,list_palette_item_
 
 void list_palette_draw_item_check_box(list_palette_type *list,list_palette_item_type *item,bool checked)
 {
-	int					x;
+	int					lx,rx,ty,by;
 
-	x=list->box.rx-(list_item_font_high+(list_palette_scroll_wid+4));
+	lx=list->box.rx-(list_item_font_high+(list_palette_scroll_wid+2));
+	rx=lx+(list_item_font_high-2);
+
+	ty=(item->y-list_item_font_high)+2;
+	by=item->y;
+
+	glColor4f(0.0f,0.0f,0.0f,1.0f);
 
 	glBegin(GL_QUADS);
-	glColor4f(0.7f,0.7f,0.7f,1.0f);
-	glVertex2i(x,((item->y-list_item_font_high)+2));
-	glVertex2i((x+list_item_font_high),((item->y-list_item_font_high)+2));
-	glColor4f(0.5f,0.5f,0.5f,1.0f);
-	glVertex2i((x+list_item_font_high),(item->y-2));
-	glVertex2i(x,(item->y-2));
+	glVertex2i(lx,ty);
+	glVertex2i(rx,ty);
+	glVertex2i(rx,by);
+	glVertex2i(lx,by);
+	glEnd();
+
+	glColor4f(0.9f,0.9f,0.9f,1.0f);
+
+	glBegin(GL_QUADS);
+	glVertex2i((lx+1),(ty+1));
+	glVertex2i((rx-1),(ty+1));
+	glVertex2i((rx-1),(by-1));
+	glVertex2i((lx+1),(by-1));
 	glEnd();
 
 	if (checked) {
-		glBegin(GL_QUADS);
-		glColor4f(0.0f,0.9f,0.0f,1.0f);
-		glVertex2i((x+2),((item->y-list_item_font_high)+4));
-		glVertex2i(((x+list_item_font_high)-2),((item->y-list_item_font_high)+4));
-		glColor4f(0.0f,1.0f,0.0f,1.0f);
-		glVertex2i(((x+list_item_font_high)-2),(item->y-4));
-		glVertex2i((x+2),(item->y-4));
+		glLineWidth(3.0f);
+
+		glColor4f(0.0f,0.8f,0.0f,1.0f);
+
+		glBegin(GL_LINES);
+		glVertex2i((lx+1),(ty+1));
+		glVertex2i((rx-1),(by-1));
+		glVertex2i((rx-1),(ty+1));
+		glVertex2i((lx+1),(by-1));
 		glEnd();
+
+		glLineWidth(1.0f);
 	}
+}
+
+void list_palette_draw_item_string(list_palette_type *list,list_palette_item_type *item)
+{
+	d3col						col;
+
+	if (!item->disabled) {
+		text_draw_right((list->box.rx-(list_palette_scroll_wid+4)),item->y,list_item_font_size,NULL,item->value.str);
+		return;
+	}
+
+	col.r=col.g=0.0f;
+	col.b=1.0f;
+	text_draw_right((list->box.rx-(list_palette_scroll_wid+4)),item->y,list_item_font_size,&col,item->value.str);
 }
 
 /* =======================================================
@@ -316,6 +352,7 @@ void list_palette_draw_item_check_box(list_palette_type *list,list_palette_item_
 
 void list_palette_draw_item(list_palette_type *list,int idx)
 {
+	bool						selected;
 	list_palette_item_type		*item;
 	
 	item=&list->items[idx];
@@ -327,49 +364,38 @@ void list_palette_draw_item(list_palette_type *list,int idx)
 		// draw header
 		
 	if (item->ctrl_type==list_item_ctrl_header) {
-	
+
+		glColor4f(0.9f,0.9f,0.9f,1.0f);
+
 		glBegin(GL_QUADS);
-		glColor4f(0.5f,0.5f,0.9f,1.0f);
 		glVertex2i(list->box.lx,(item->y-list_item_font_high));
 		glVertex2i((list->box.rx-list_palette_scroll_wid),(item->y-list_item_font_high));
-		glColor4f(0.5f,0.5f,0.8f,1.0f);
 		glVertex2i((list->box.rx-list_palette_scroll_wid),item->y);
 		glVertex2i(list->box.lx,item->y);
 		glEnd();
-		
-		glColor4f(0.0f,0.0f,0.0f,1.0f);
-		
-		glBegin(GL_LINES);
-		glVertex2i(list->box.lx,(item->y-list_item_font_high));
-		glVertex2i((list->box.rx-list_palette_scroll_wid),(item->y-list_item_font_high));
-		glVertex2i(list->box.lx,item->y);
-		glVertex2i((list->box.rx-list_palette_scroll_wid),item->y);
-		glEnd();
-	
 	}
 		
 		// draw selected item
 	
 	else {
 
-		if (item->selected) {
-			glColor4f(1.0f,1.0f,0.0f,1.0f);
+		if (!list->push_on) {
+			selected=item->selected;
 		}
 		else {
-			if ((idx%2)==0) {
-				glColor4f(1.0f,1.0f,1.0f,1.0f);
-			}
-			else {
-				glColor4f(0.95f,0.95f,0.95f,1.0f);
-			}
+			selected=(idx==list->push_idx);
 		}
-			
-		glBegin(GL_QUADS);
-		glVertex2i(list->box.lx,((item->y-list_item_font_high)+1));
-		glVertex2i((list->box.rx-list_palette_scroll_wid),((item->y-list_item_font_high)+1));
-		glVertex2i((list->box.rx-list_palette_scroll_wid),item->y);
-		glVertex2i(list->box.lx,item->y);
-		glEnd();
+
+		if (selected) {
+			glColor4f(1.0f,1.0f,0.0f,1.0f);
+
+			glBegin(GL_QUADS);
+			glVertex2i(list->box.lx,((item->y-list_item_font_high)+1));
+			glVertex2i((list->box.rx-list_palette_scroll_wid),((item->y-list_item_font_high)+1));
+			glVertex2i((list->box.rx-list_palette_scroll_wid),item->y);
+			glVertex2i(list->box.lx,item->y);
+			glEnd();
+		}
 	}
 
 		// draw item
@@ -386,14 +412,15 @@ void list_palette_draw_item(list_palette_type *list,int idx)
 			// color
 
 		case list_item_ctrl_color:
-			list_palette_draw_item_color_box(list,item,FALSE,&item->value.col);
+			text_draw(item->x,item->y,list_item_font_size,NULL,"Light");
+			list_palette_draw_item_color_box(list,item,&item->value.col);
 			break;
 
 			// string
 
 		case list_item_ctrl_string:
 			text_draw(item->x,item->y,list_item_font_size,NULL,item->name);
-			text_draw_right((list->box.rx-(list_palette_scroll_wid+4)),item->y,list_item_font_size,NULL,item->value.str);
+			list_palette_draw_item_string(list,item);
 			break;
 
 			// checkbox
@@ -407,7 +434,7 @@ void list_palette_draw_item(list_palette_type *list,int idx)
 
 		case list_item_ctrl_pick_color:
 			text_draw(item->x,item->y,list_item_font_size,NULL,item->name);
-			list_palette_draw_item_color_box(list,item,TRUE,&item->value.col);
+			list_palette_draw_item_color_box(list,item,&item->value.col);
 			break;
 
 	}
@@ -459,14 +486,34 @@ void list_palette_draw(list_palette_type *list)
 	}
 	
 		// scroll bar
-		
-	glColor4f(0.2f,0.2f,0.2f,1.0f);
+	
+	lx=list->box.rx-list_palette_scroll_wid;
+	ty=list->box.ty+list_title_high;
+	by=ty+20;
+
+	glColor4f(0.0f,0.0f,0.0f,1.0f);
 		
 	glBegin(GL_QUADS);
-	glVertex2i((list->box.rx-list_palette_scroll_wid),list->box.ty);
-	glVertex2i(list->box.rx,list->box.ty);
-	glVertex2i(list->box.rx,list->box.by);
-	glVertex2i((list->box.rx-list_palette_scroll_wid),list->box.by);
+	glVertex2i(lx,ty);
+	glVertex2i(list->box.rx,ty);
+	glVertex2i(list->box.rx,by);
+	glVertex2i(lx,by);
+	glEnd();
+
+	glColor4f(0.5f,0.5f,0.5f,1.0f);
+		
+	glBegin(GL_QUADS);
+	glVertex2i((lx+1),(ty+1));
+	glVertex2i((list->box.rx-1),(ty+1));
+	glVertex2i((list->box.rx-1),(by-1));
+	glVertex2i((lx+1),(by-1));
+	glEnd();
+		
+	glColor4f(0.0f,0.0f,0.0f,1.0f);
+		
+	glBegin(GL_LINES);
+	glVertex2i(lx,list->box.ty);
+	glVertex2i(lx,list->box.by);
 	glEnd();
 
 		// title
@@ -474,11 +521,11 @@ void list_palette_draw(list_palette_type *list)
 	ty=list->box.ty;
 	by=ty+list_title_high;
 
+	glColor4f(0.6f,0.6f,0.6f,1.0f);
+
 	glBegin(GL_QUADS);
-	glColor4f(0.6f,0.4f,0.6f,1.0f);
 	glVertex2i(list->box.lx,ty);
 	glVertex2i(list->box.rx,ty);
-	glColor4f(0.6f,0.4f,0.7f,1.0f);
 	glVertex2i(list->box.rx,by);
 	glVertex2i(list->box.lx,by);
 	glEnd();
@@ -555,6 +602,7 @@ void list_palette_scroll_wheel(list_palette_type *list,d3pnt *pnt,int move)
 bool list_palette_click(list_palette_type *list,d3pnt *pnt,bool double_click)
 {
 	int						item_idx;
+	d3pnt					pt;
 	list_palette_item_type	*item;
 
 	pnt->x-=list->box.lx;
@@ -580,6 +628,33 @@ bool list_palette_click(list_palette_type *list,d3pnt *pnt,bool double_click)
 		// get clicked item
 
 	item=&list->items[item_idx];
+
+		// do the hold and click
+
+	list->push_on=TRUE;
+	list->push_idx=item_idx;
+
+	while (!os_track_mouse_location(&pt,NULL)) {
+		if ((pt.x<list->box.lx) || (pt.x>=(list->box.rx-list_palette_scroll_wid)) || (pt.y<(item->y-list_item_font_high)) || (pt.y>=item->y)) {
+			list->push_idx=-1;
+		}
+		else {
+			list->push_idx=item_idx;
+		}
+
+		main_wind_draw();
+		
+		usleep(10000);
+	}
+
+	list->push_on=FALSE;
+
+	if (list->push_idx!=item_idx) {
+		main_wind_draw();
+		return(FALSE);
+	}
+
+		// pass back clicked item
 		
 	list->item_type=item->type;
 	list->item_idx=item->idx;

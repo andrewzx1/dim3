@@ -67,26 +67,26 @@ void property_palette_fill_scenery(int scenery_idx)
 	scenery=&map.sceneries[scenery_idx];
 
 	list_palette_add_header(&property_palette,0,"Scenery Model");
-	list_palette_add_string(&property_palette,kSceneryPropertyModelName,"Model",scenery->model_name);
-	list_palette_add_string(&property_palette,kSceneryPropertyAnimationName,"Animation",scenery->animation_name);
-	list_palette_add_string_float(&property_palette,kSceneryPropertyResize,"Resize",scenery->resize);
+	list_palette_add_string(&property_palette,kSceneryPropertyModelName,"Model",scenery->model_name,FALSE);
+	list_palette_add_string(&property_palette,kSceneryPropertyAnimationName,"Animation",scenery->animation_name,FALSE);
+	list_palette_add_string_float(&property_palette,kSceneryPropertyResize,"Resize",scenery->resize,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Scenery Settings");
-	list_palette_add_checkbox(&property_palette,kSceneryPropertyContactObject,"Contact Object",scenery->contact_object_on);
-	list_palette_add_checkbox(&property_palette,kSceneryPropertyContactProjectile,"Contact Projectile",scenery->contact_projectile_on);
-	list_palette_add_checkbox(&property_palette,kSceneryPropertyContactHitBox,"Use Hit Box",scenery->contact_hit_box);
-	list_palette_add_checkbox(&property_palette,kSceneryPropertyFaceFront,"Face Front",scenery->face_forward);
-	list_palette_add_checkbox(&property_palette,kSceneryPropertyShadow,"Shadow",scenery->shadow);
+	list_palette_add_checkbox(&property_palette,kSceneryPropertyContactObject,"Contact Object",scenery->contact_object_on,FALSE);
+	list_palette_add_checkbox(&property_palette,kSceneryPropertyContactProjectile,"Contact Projectile",scenery->contact_projectile_on,FALSE);
+	list_palette_add_checkbox(&property_palette,kSceneryPropertyContactHitBox,"Use Hit Box",scenery->contact_hit_box,FALSE);
+	list_palette_add_checkbox(&property_palette,kSceneryPropertyFaceFront,"Face Front",scenery->face_forward,FALSE);
+	list_palette_add_checkbox(&property_palette,kSceneryPropertyShadow,"Shadow",scenery->shadow,FALSE);
 	
 	list_palette_add_header(&property_palette,0,"Scenery Mesh Frames");
 	for (n=0;n!=max_map_scenery_model_texture_frame;n++) {
 		sprintf(name,"Mesh %d",n);
-		list_palette_add_string_int(&property_palette,(kSceneryPropertyFramesStart+n),name,(int)scenery->texture_frame[n]);
+		list_palette_add_string_int(&property_palette,(kSceneryPropertyFramesStart+n),name,(int)scenery->texture_frame[n],FALSE);
 	}
 	
-	list_palette_add_header(&property_palette,0,"Scenery Info [Not Editable]");
-	list_palette_add_point(&property_palette,-1,"Position",&scenery->pnt);
-	list_palette_add_angle(&property_palette,-1,"Angle",&scenery->ang);
+	list_palette_add_header(&property_palette,0,"Scenery Info");
+	list_palette_add_point(&property_palette,-1,"Position",&scenery->pnt,TRUE);
+	list_palette_add_angle(&property_palette,-1,"Angle",&scenery->ang,TRUE);
 }
 
 /* =======================================================
