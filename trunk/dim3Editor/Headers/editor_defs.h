@@ -167,6 +167,7 @@ and can be sold or given away.
 //
 
 #define view_handle_size						12.0f
+#define view_skew_handle_size					8.0f
 
 #define view_handle_length_factor				0.05f
 #define view_handle_line_width					2.0f
@@ -359,6 +360,7 @@ typedef struct		{
 #define list_title_font_size					14.0f
 #define list_item_font_size						12.0f
 #define list_item_font_high						14
+#define list_item_scroll_size					(list_item_font_high*5)
 
 #define list_palette_border_sz					10
 #define list_palette_tree_sz					250
@@ -396,7 +398,7 @@ typedef struct		{
 typedef struct		{
 						int									item_count,push_idx,
 															item_id,item_type,item_idx,
-															pixel_sz,scroll_page,scroll_size,
+															pixel_sz,scroll_page,
 															total_high;
 						bool								push_on;
 						char								title[name_str_len];

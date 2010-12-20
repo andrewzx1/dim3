@@ -79,7 +79,7 @@ void os_get_window_box(d3rect *box)
 
 void os_select_window(void)
 {
-    ShowWindow(wnd,SW_SHOWNORMAL);
+    ShowWindow(wnd,SW_SHOW);
 }
 
 void os_set_title_window(char *title)

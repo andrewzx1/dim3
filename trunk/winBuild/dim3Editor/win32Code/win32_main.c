@@ -6,12 +6,6 @@
 
 #include "resource.h"
 
-#define EDITOR_WIN_X						10
-#define EDITOR_WIN_Y						40
-#define EDITOR_WIN_WIDTH					1200
-#define EDITOR_WIN_HEIGHT					800
-#define EDITOR_WIN_EXTRA_HEIGHT				20
-
 HINSTANCE					hinst;
 ATOM						wnd_rg_class;
 HFONT						fnt;
@@ -222,7 +216,6 @@ LRESULT CALLBACK editor_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam)
 void main_wind_open(void)
 {
 	int						format;
-	RECT					wbox;
 	WNDCLASSEX				wcx;
 	PIXELFORMATDESCRIPTOR	pf;
 	HINSTANCE				hInst;
@@ -251,14 +244,7 @@ void main_wind_open(void)
 
     RegisterClassEx(&wcx); 
 
-	wbox.left=EDITOR_WIN_X;
-	wbox.right=EDITOR_WIN_X+EDITOR_WIN_WIDTH;
-	wbox.top=EDITOR_WIN_Y;
-	wbox.bottom=EDITOR_WIN_Y+EDITOR_WIN_HEIGHT+EDITOR_WIN_EXTRA_HEIGHT;
-
-	AdjustWindowRect(&wbox,WS_OVERLAPPEDWINDOW,FALSE);
-
-    wnd=CreateWindow("dim3EditorWindowClass","dim3 Editor",WS_OVERLAPPEDWINDOW|WS_CLIPSIBLINGS|WS_CLIPCHILDREN,wbox.left,wbox.top,(wbox.right-wbox.left),(wbox.bottom-wbox.top),NULL,NULL,hInst,NULL);
+    wnd=CreateWindow("dim3EditorWindowClass","dim3 Editor",WS_OVERLAPPEDWINDOW|WS_CLIPSIBLINGS|WS_CLIPCHILDREN|WS_MAXIMIZE,CW_USEDEFAULT,CW_USEDEFAULT,CW_USEDEFAULT,CW_USEDEFAULT,NULL,NULL,hInst,NULL);
 
 		// menu
 
@@ -274,7 +260,7 @@ void main_wind_open(void)
 
 		// show window
 
-    ShowWindow(wnd,SW_SHOWNORMAL);
+	ShowWindow(wnd,SW_MAXIMIZE);
 
 		// start opengl
 

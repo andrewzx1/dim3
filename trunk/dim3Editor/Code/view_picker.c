@@ -74,7 +74,7 @@ bool view_pick_list_start(editor_view_type *view,bool in_2D,int count)
 	view_set_viewport(view,FALSE,FALSE);
 	
 	if (!in_2D) {
-		view_set_3D_projection(view,map.settings.editor.view_near_dist,map.settings.editor.view_far_dist,view_near_offset);
+		view_set_3D_projection(view,map.editor_setup.view_near_dist,map.editor_setup.view_far_dist,view_near_offset);
 	}
 	else {
 		view_set_2D_projection(view);

@@ -131,6 +131,7 @@ extern void item_palette_click(d3pnt *pnt,bool double_click);
 // property list palette
 //
 
+extern void property_palette_fill_map(void);
 extern void property_palette_fill_mesh(int mesh_idx,int poly_idx);
 extern void property_palette_fill_liquid(int liq_idx);
 extern void property_palette_fill_spot(int spot_idx);
@@ -140,6 +141,7 @@ extern void property_palette_fill_particle(int particle_idx);
 extern void property_palette_fill_scenery(int scenery_idx);
 extern void property_palette_fill_node(int node_idx);
 
+extern void property_palette_click_map(int id);
 extern void property_palette_click_mesh(int mesh_idx,int poly_idx,int id);
 extern void property_palette_click_liquid(int liq_idx,int id);
 extern void property_palette_click_spot(int spot_idx,int id);

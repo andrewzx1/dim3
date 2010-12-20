@@ -73,16 +73,16 @@ bool map_new(map_type *map,char *name)
 	
 	map->settings.network_game_list[0]=0x0;
 
-	map->settings.light_map.quality=70;
-	map->settings.light_map.quality=512;
-	map->settings.light_map.pixel_border_count=6;
-	map->settings.light_map.blur_count=3;
+	map->light_map.quality=70;
+	map->light_map.quality=512;
+	map->light_map.pixel_border_count=6;
+	map->light_map.blur_count=3;
 	
-	map->settings.editor.txt_scale_x=0.04f;
-	map->settings.editor.txt_scale_y=0.04f;
-	map->settings.editor.view_near_dist=6*map_enlarge;
-	map->settings.editor.view_far_dist=2000*map_enlarge;
-	map->settings.editor.link_always_start=FALSE;
+	map->editor_setup.txt_scale_x=0.04f;
+	map->editor_setup.txt_scale_y=0.04f;
+	map->editor_setup.view_near_dist=6*map_enlarge;
+	map->editor_setup.view_far_dist=2000*map_enlarge;
+	map->editor_setup.link_always_start=FALSE;
 
 		// camera
 

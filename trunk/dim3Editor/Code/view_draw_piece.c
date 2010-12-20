@@ -840,7 +840,7 @@ void view_draw_view(editor_view_type *view)
        // 3D view
         
 	view_set_viewport(view,TRUE,TRUE);
-	view_set_3D_projection(view,map.settings.editor.view_near_dist,map.settings.editor.view_far_dist,view_near_offset);
+	view_set_3D_projection(view,map.editor_setup.view_near_dist,map.editor_setup.view_far_dist,view_near_offset);
 
 		// setup item drawing
 
@@ -858,12 +858,12 @@ void view_draw_view(editor_view_type *view)
 		// draw opaque mesh lines
 		// push view forward to better z-buffer lines
 		
-	view_set_3D_projection(view,(map.settings.editor.view_near_dist+10),(map.settings.editor.view_far_dist-10),view_near_offset);
+	view_set_3D_projection(view,(map.editor_setup.view_near_dist+10),(map.editor_setup.view_far_dist-10),view_near_offset);
 	view_draw_meshes_line(view,TRUE);
 
         // draw transparent parts of portals in sight path
         
-	view_set_3D_projection(view,map.settings.editor.view_near_dist,map.settings.editor.view_far_dist,view_near_offset);
+	view_set_3D_projection(view,map.editor_setup.view_near_dist,map.editor_setup.view_far_dist,view_near_offset);
 
 	view_draw_meshes_texture(view,FALSE);
 	view_draw_liquids(view,FALSE);
@@ -871,14 +871,14 @@ void view_draw_view(editor_view_type *view)
         // draw transparent mesh lines
 		// push view forward to better z-buffer lines
         
-	view_set_3D_projection(view,(map.settings.editor.view_near_dist+10),(map.settings.editor.view_far_dist-10),view_near_offset);
+	view_set_3D_projection(view,(map.editor_setup.view_near_dist+10),(map.editor_setup.view_far_dist-10),view_near_offset);
 	view_draw_meshes_line(view,TRUE);
 	
         // draw normals mesh lines
 		// push view forward to better z-buffer lines
       
 	if (state.show_normals) {
-		view_set_3D_projection(view,(map.settings.editor.view_near_dist+20),(map.settings.editor.view_far_dist-20),view_near_offset);
+		view_set_3D_projection(view,(map.editor_setup.view_near_dist+20),(map.editor_setup.view_far_dist-20),view_near_offset);
 		view_draw_meshes_normals(view);
 	}
 		

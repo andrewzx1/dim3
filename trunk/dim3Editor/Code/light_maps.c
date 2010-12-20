@@ -96,21 +96,21 @@ bool light_map_textures_create(void)
 		// blocking data
 		// this is used to find empty slots to put in polygons
 		
-	sz=map.settings.light_map.size/light_map_texture_block_size;
+	sz=map.light_map.size/light_map_texture_block_size;
 	sz=sz*sz;
 	lmap->block=(unsigned char*)malloc(sz);
 	bzero(lmap->block,sz);
 	
 		// pixel data
 		
-	sz=(map.settings.light_map.size*map.settings.light_map.size)*3;
+	sz=(map.light_map.size*map.light_map.size)*3;
 	lmap->pixel_data=(unsigned char*)malloc(sz);
 	bzero(lmap->pixel_data,sz);
 	
 		// pixel touch data
 		// this tells if a pixel was written
 		
-	sz=map.settings.light_map.size*map.settings.light_map.size;
+	sz=map.light_map.size*map.light_map.size;
 	lmap->pixel_touch=(unsigned char*)malloc(sz);
 	bzero(lmap->pixel_touch,sz);
 	
@@ -210,7 +210,7 @@ void light_map_textures_save(char *base_path)
 		
 		sprintf(bitmap_name,"LightMaps/%s/lm%.3d",map_name,n);
 		sprintf(path,"%s/%s.png",base_path,bitmap_name);
-		bitmap_write_png_data(light_map_textures[n].pixel_data,map.settings.light_map.size,map.settings.light_map.size,FALSE,path);
+		bitmap_write_png_data(light_map_textures[n].pixel_data,map.light_map.size,map.light_map.size,FALSE,path);
 		
 			// put in texture list
 			
@@ -261,30 +261,30 @@ void light_map_texture_single_pixel_border(int idx,int pixel_border_count)
 					
 		// back pixel/touch data
 		
-	sz=(map.settings.light_map.size*map.settings.light_map.size)*3;
+	sz=(map.light_map.size*map.light_map.size)*3;
 	back_pixel_data=(unsigned char*)malloc(sz);
 		
-	sz=map.settings.light_map.size*map.settings.light_map.size;
+	sz=map.light_map.size*map.light_map.size;
 	back_pixel_touch=(unsigned char*)malloc(sz);
 
 		// add pixel border
 		
 	for (n=0;n!=pixel_border_count;n++) {
 	
-		for (y=0;y!=map.settings.light_map.size;y++) {
+		for (y=0;y!=map.light_map.size;y++) {
 		
-			for (x=0;x!=map.settings.light_map.size;x++) {
+			for (x=0;x!=map.light_map.size;x++) {
 			
 					// get pixels and default to leaving
 					// the same
 					
-				pixel_touch=lmap->pixel_touch+((map.settings.light_map.size*y)+x);
-				back_touch=back_pixel_touch+((map.settings.light_map.size*y)+x);
+				pixel_touch=lmap->pixel_touch+((map.light_map.size*y)+x);
+				back_touch=back_pixel_touch+((map.light_map.size*y)+x);
 				
 				*back_touch=*pixel_touch;
 				
-				pixel=lmap->pixel_data+(((map.settings.light_map.size*3)*y)+(x*3));
-				back=back_pixel_data+(((map.settings.light_map.size*3)*y)+(x*3));
+				pixel=lmap->pixel_data+(((map.light_map.size*3)*y)+(x*3));
+				back=back_pixel_data+(((map.light_map.size*3)*y)+(x*3));
 				
 				*back=*pixel;
 				*(back+1)=*(pixel+1);
@@ -293,7 +293,7 @@ void light_map_texture_single_pixel_border(int idx,int pixel_border_count)
 					// pixel borders only effect non-touched pixels
 					// or pixels set to ignore (for solid color shared maps)
 					
-				pixel_ignore=lmap->pixel_ignore+((map.settings.light_map.size*y)+x);
+				pixel_ignore=lmap->pixel_ignore+((map.light_map.size*y)+x);
 
 				if ((*pixel_touch!=0x0) || (*pixel_ignore!=0x0)) continue;
 			
@@ -307,14 +307,14 @@ void light_map_texture_single_pixel_border(int idx,int pixel_border_count)
 					for (cx=(x-1);cx!=(x+2);cx++) {
 					
 						if ((cy==y) && (cx==x)) continue;
-						if ((cy<0) || (cy>=map.settings.light_map.size) || (cx<0) || (cx>=map.settings.light_map.size)) continue;
+						if ((cy<0) || (cy>=map.light_map.size) || (cx<0) || (cx>=map.light_map.size)) continue;
 					
-						pixel_border_touch=lmap->pixel_touch+((map.settings.light_map.size*cy)+cx);
+						pixel_border_touch=lmap->pixel_touch+((map.light_map.size*cy)+cx);
 						if (*pixel_border_touch==0x0) continue;
 						
 							// is this a bigger hilite?
 							
-						blur=lmap->pixel_data+(((map.settings.light_map.size*3)*cy)+(cx*3));
+						blur=lmap->pixel_data+(((map.light_map.size*3)*cy)+(cx*3));
 						i_col[0]+=(int)*blur;
 						i_col[1]+=(int)*(blur+1);
 						i_col[2]+=(int)*(blur+2);
@@ -341,8 +341,8 @@ void light_map_texture_single_pixel_border(int idx,int pixel_border_count)
 			}
 		}
 		
-		memmove(lmap->pixel_data,back_pixel_data,((map.settings.light_map.size*3)*map.settings.light_map.size));
-		memmove(lmap->pixel_touch,back_pixel_touch,(map.settings.light_map.size*map.settings.light_map.size));
+		memmove(lmap->pixel_data,back_pixel_data,((map.light_map.size*3)*map.light_map.size));
+		memmove(lmap->pixel_touch,back_pixel_touch,(map.light_map.size*map.light_map.size));
 	}
 		
 		// free backgrounds
@@ -357,7 +357,7 @@ void light_map_textures_pixel_border(void)
 	
 	for (n=0;n!=light_map_texture_count;n++) {
 		progress_next();
-		light_map_texture_single_pixel_border(n,map.settings.light_map.pixel_border_count);
+		light_map_texture_single_pixel_border(n,map.light_map.pixel_border_count);
 	}
 }
 
@@ -375,21 +375,21 @@ void light_map_texture_single_blur(int idx,int blur_count)
 					
 		// back pixel data
 		
-	sz=(map.settings.light_map.size*map.settings.light_map.size)*3;
+	sz=(map.light_map.size*map.light_map.size)*3;
 	back_pixel_data=(unsigned char*)malloc(sz);
 
 		// blur pixels
 		
 	for (n=0;n!=blur_count;n++) {
 	
-		for (y=0;y!=map.settings.light_map.size;y++) {
+		for (y=0;y!=map.light_map.size;y++) {
 		
-			for (x=0;x!=map.settings.light_map.size;x++) {
+			for (x=0;x!=map.light_map.size;x++) {
 			
 					// default to back being same as pixels
 					
-				pixel=lmap->pixel_data+(((map.settings.light_map.size*3)*y)+(x*3));
-				back=back_pixel_data+(((map.settings.light_map.size*3)*y)+(x*3));
+				pixel=lmap->pixel_data+(((map.light_map.size*3)*y)+(x*3));
+				back=back_pixel_data+(((map.light_map.size*3)*y)+(x*3));
 				
 				*back=*pixel;
 				*(back+1)=*(pixel+1);
@@ -397,7 +397,7 @@ void light_map_texture_single_blur(int idx,int blur_count)
 			
 					// skip all shared solid colors
 					
-				pixel_ignore=lmap->pixel_ignore+((map.settings.light_map.size*y)+x);
+				pixel_ignore=lmap->pixel_ignore+((map.light_map.size*y)+x);
 				if (*pixel_ignore!=0x0) continue;
 										
 					// get blur from 8 surrounding pixels
@@ -409,11 +409,11 @@ void light_map_texture_single_blur(int idx,int blur_count)
 					for (cx=(x-1);cx!=(x+2);cx++) {
 					
 						if ((cy==y) && (cx==x)) continue;
-						if ((cy<0) || (cy>=map.settings.light_map.size) || (cx<0) || (cx>=map.settings.light_map.size)) continue;
+						if ((cy<0) || (cy>=map.light_map.size) || (cx<0) || (cx>=map.light_map.size)) continue;
 						
 							// add up blur
 							
-						blur=lmap->pixel_data+(((map.settings.light_map.size*3)*cy)+(cx*3));
+						blur=lmap->pixel_data+(((map.light_map.size*3)*cy)+(cx*3));
 						i_col[0]+=(int)*blur;
 						i_col[1]+=(int)*(blur+1);
 						i_col[2]+=(int)*(blur+2);
@@ -439,7 +439,7 @@ void light_map_texture_single_blur(int idx,int blur_count)
 			
 		}
 		
-		memmove(lmap->pixel_data,back_pixel_data,((map.settings.light_map.size*3)*map.settings.light_map.size));
+		memmove(lmap->pixel_data,back_pixel_data,((map.light_map.size*3)*map.light_map.size));
 	}
 		
 		// free backgrounds
@@ -453,7 +453,7 @@ void light_map_textures_blur(void)
 	
 	for (n=0;n!=light_map_texture_count;n++) {
 		progress_next();
-		light_map_texture_single_blur(n,map.settings.light_map.blur_count);
+		light_map_texture_single_blur(n,map.light_map.blur_count);
 	}
 }
 
@@ -487,7 +487,7 @@ void light_map_create_poly_flatten(light_map_poly_type *lm_poly)
 	
 		// largest poly is 1/4 of texture size
 		
-	max_sz=map.settings.light_map.size>>2;
+	max_sz=map.light_map.size>>2;
 	if ((lm_poly->x_sz<=max_sz) && (lm_poly->y_sz<=max_sz)) return;
 	
 		// reduce to 1/4 size
@@ -528,7 +528,7 @@ void light_map_create_mesh_poly_flatten(map_mesh_type *mesh,map_mesh_poly_type *
 	double				dx,dz;
 	d3pnt				*pt;
 	
-	factor=((float)map.settings.light_map.quality)/light_map_quality_to_pixel_factor;
+	factor=((float)map.light_map.quality)/light_map_quality_to_pixel_factor;
 			
 		// flatten the poly
 		// and get 3D points
@@ -563,7 +563,7 @@ void light_map_create_liquid_poly_flatten(map_liquid_type *liq,light_map_poly_ty
 {
 	float				factor;
 	
-	factor=((float)map.settings.light_map.quality)/light_map_quality_to_pixel_factor;
+	factor=((float)map.light_map.quality)/light_map_quality_to_pixel_factor;
 			
 		// flatten the poly
 		// and get 3D points
@@ -764,7 +764,7 @@ bool light_map_texture_find_open_area(int x_sz,int y_sz,int *kx,int *ky,d3rect *
 	bool			hit;
 	unsigned char	*bptr;
 	
-	block_count=map.settings.light_map.size/light_map_texture_block_size;
+	block_count=map.light_map.size/light_map_texture_block_size;
 	
 		// get block size
 	
@@ -868,8 +868,8 @@ void light_map_texture_fill_solid_color(unsigned char *col,int bx,int by,light_m
 		
 	for (y=0;y!=light_map_texture_block_size;y++) {
 	
-		pixel=lmap->pixel_data+(((by+y)*(map.settings.light_map.size*3))+(bx*3));
-		pixel_ignore=lmap->pixel_ignore+(((by+y)*map.settings.light_map.size)+bx);
+		pixel=lmap->pixel_data+(((by+y)*(map.light_map.size*3))+(bx*3));
+		pixel_ignore=lmap->pixel_ignore+(((by+y)*map.light_map.size)+bx);
 		
 		for (x=0;x!=light_map_texture_block_size;x++) {
 			*pixel++=col[0];
@@ -1455,8 +1455,8 @@ bool light_map_render_poly(int lm_poly_idx,unsigned char *solid_color,light_map_
 			// NULL lmap means just check if it's all in black
 			
 		if (lmap!=NULL) {
-			pixel=lmap->pixel_data+(((map.settings.light_map.size*3)*y)+(x_start*3));
-			touch=lmap->pixel_touch+((map.settings.light_map.size*y)+x_start);
+			pixel=lmap->pixel_data+(((map.light_map.size*3)*y)+(x_start*3));
+			touch=lmap->pixel_touch+((map.light_map.size*y)+x_start);
 		}
 		
 			// draw the scan line
@@ -1671,7 +1671,7 @@ void light_map_set_texture_uv_mesh_poly(light_map_poly_type *lm_poly)
 	
 		// UVs across the light map texture size
 		
-	f_pixel_size=(float)map.settings.light_map.size;
+	f_pixel_size=(float)map.light_map.size;
 
 		// solid color maps
 		// put the UV in the center of the block
@@ -1710,7 +1710,7 @@ void light_map_set_texture_uv_liquid(light_map_poly_type *lm_poly)
 	
 		// UVs across the light map texture size
 		
-	f_pixel_size=(float)map.settings.light_map.size;
+	f_pixel_size=(float)map.light_map.size;
 
 		// solid color maps
 		// put the UV in the center of the block

@@ -47,7 +47,7 @@ bool view_click_drag_mesh_handle(editor_view_type *view,d3pnt *pt)
 	int						n,x,y,mx,my,mz,sub_idx,
 							type,mesh_idx,poly_idx,handle_idx;
 	bool					first_drag;
-	d3pnt					pts[8],old_pt,*old_dpt,mpt,move_pnt,
+	d3pnt					pts[20],old_pt,*old_dpt,mpt,move_pnt,
 							org_min,org_max,min,max;
 	d3rect					box;
 	map_mesh_type			*mesh;
