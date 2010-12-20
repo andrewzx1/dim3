@@ -257,6 +257,22 @@ void list_palette_delete_all_items(list_palette_type *list)
 
 /* =======================================================
 
+      List Palette Scroll Pages
+      
+======================================================= */
+
+int list_palette_get_scroll_page_count(list_palette_type *list)
+{
+	int				high;
+	
+	high=list->total_high-(list->box.by-(list->box.ty+list_title_high));
+	if (high<=0) return(0);
+	
+	return((high/list->scroll_size)+1);
+}
+
+/* =======================================================
+
       List Palette Draw Utilities
       
 ======================================================= */
@@ -442,7 +458,8 @@ void list_palette_draw_item(list_palette_type *list,int idx)
 
 void list_palette_draw(list_palette_type *list)
 {
-	int						n,lx,mx,rx,ty,by;
+	int						n,lx,mx,rx,ty,by,
+							thumb_ty,thumb_by,page_count;
 	d3rect					wbox;
 
 		// viewport setup
@@ -489,9 +506,9 @@ void list_palette_draw(list_palette_type *list)
 	
 	lx=list->box.rx-list_palette_scroll_wid;
 	ty=list->box.ty+list_title_high;
-	by=ty+20;
-
-	glColor4f(0.0f,0.0f,0.0f,1.0f);
+	by=list->box.by;
+	
+	glColor4f(0.5f,0.5f,0.5f,1.0f);
 		
 	glBegin(GL_QUADS);
 	glVertex2i(lx,ty);
@@ -500,15 +517,35 @@ void list_palette_draw(list_palette_type *list)
 	glVertex2i(lx,by);
 	glEnd();
 
-	glColor4f(0.5f,0.5f,0.5f,1.0f);
+	page_count=list_palette_get_scroll_page_count(list);
+	
+	if ((list->item_count!=0) && (page_count!=0)) {
 		
-	glBegin(GL_QUADS);
-	glVertex2i((lx+1),(ty+1));
-	glVertex2i((list->box.rx-1),(ty+1));
-	glVertex2i((list->box.rx-1),(by-1));
-	glVertex2i((lx+1),(by-1));
-	glEnd();
+		thumb_ty=ty+(((by-ty)*list->scroll_page)/(page_count+1));
+		if (thumb_ty<ty) thumb_ty=ty;
 		
+		thumb_by=ty+(((by-ty)*(list->scroll_page+1))/(page_count+1));
+		if (thumb_by>by) thumb_by=by;
+
+		glColor4f(0.0f,0.0f,0.0f,1.0f);
+			
+		glBegin(GL_QUADS);
+		glVertex2i(lx,thumb_ty);
+		glVertex2i(list->box.rx,thumb_ty);
+		glVertex2i(list->box.rx,thumb_by);
+		glVertex2i(lx,thumb_by);
+		glEnd();
+
+		glColor4f(0.9f,0.9f,0.9f,1.0f);
+			
+		glBegin(GL_QUADS);
+		glVertex2i((lx+1),(thumb_ty+1));
+		glVertex2i((list->box.rx-1),(thumb_ty+1));
+		glVertex2i((list->box.rx-1),(thumb_by-1));
+		glVertex2i((lx+1),(thumb_by-1));
+		glEnd();
+	}
+	
 	glColor4f(0.0f,0.0f,0.0f,1.0f);
 		
 	glBegin(GL_LINES);
@@ -581,7 +618,11 @@ void list_palette_scroll_up(list_palette_type *list)
 
 void list_palette_scroll_down(list_palette_type *list)
 {
-	if (list->scroll_page<(list->total_high/list->scroll_size)) {
+	int				page_count;
+	
+	page_count=list_palette_get_scroll_page_count(list);
+	
+	if (list->scroll_page<page_count) {
 		list->scroll_page++;
 		main_wind_draw();
 	}
@@ -599,50 +640,37 @@ void list_palette_scroll_wheel(list_palette_type *list,d3pnt *pnt,int move)
       
 ======================================================= */
 
-bool list_palette_click(list_palette_type *list,d3pnt *pnt,bool double_click)
+bool list_palette_click_item(list_palette_type *list,int item_idx)
 {
-	int						item_idx;
 	d3pnt					pt;
 	list_palette_item_type	*item;
-
-	pnt->x-=list->box.lx;
-	pnt->y-=list->box.ty;
-
-		// click in close border
-
-	if (pnt->x<=list_palette_border_sz) {
-		list_palette_open=!list_palette_open;
-		main_wind_draw();
-		return(FALSE);
-	}
-	
-		// click in title
-		
-	if (pnt->y<list_title_high) return(FALSE);
-
-		// click in item
-
-	item_idx=((pnt->y-list_title_high)+(list->scroll_page*list->scroll_size))/list_item_font_high;
-	if ((item_idx<0) || (item_idx>=list->item_count)) return(FALSE);
 
 		// get clicked item
 
 	item=&list->items[item_idx];
+	
+	if (item->disabled) return(FALSE);
 
 		// do the hold and click
 
 	list->push_on=TRUE;
 	list->push_idx=item_idx;
+	
+	main_wind_draw();
 
 	while (!os_track_mouse_location(&pt,NULL)) {
 		if ((pt.x<list->box.lx) || (pt.x>=(list->box.rx-list_palette_scroll_wid)) || (pt.y<(item->y-list_item_font_high)) || (pt.y>=item->y)) {
-			list->push_idx=-1;
+			if (list->push_idx!=-1) {
+				list->push_idx=-1;
+				main_wind_draw();
+			}
 		}
 		else {
-			list->push_idx=item_idx;
+			if (list->push_idx!=item_idx) {
+				list->push_idx=item_idx;
+				main_wind_draw();
+			}
 		}
-
-		main_wind_draw();
 		
 		usleep(10000);
 	}
@@ -661,4 +689,72 @@ bool list_palette_click(list_palette_type *list,d3pnt *pnt,bool double_click)
 	list->item_id=item->id;
 
 	return(TRUE);
+}
+
+void list_palette_click_scroll_bar(list_palette_type *list)
+{
+	int						old_page,page,page_count,
+							page_size,y;
+	d3pnt					pt,org_pt;
+	
+		// scrolling sizes
+		
+	page_count=list_palette_get_scroll_page_count(list);
+	if (page_count==0) return;
+	
+	page_size=((list->box.by-list->box.ty)/(page_count+1));
+
+		// scrolling
+		
+	old_page=list->scroll_page;
+	os_get_cursor(&org_pt);
+	
+	while (!os_track_mouse_location(&pt,NULL)) {
+		
+		y=(pt.y-org_pt.y);
+		page=old_page+(y/page_size);
+		if (page<0) page=0;
+		if (page>page_count) page=page_count;
+		
+		if (page!=list->scroll_page) {
+			list->scroll_page=page;
+			main_wind_draw();
+		}
+		
+		usleep(10000);
+	}
+}
+
+bool list_palette_click(list_palette_type *list,d3pnt *pnt,bool double_click)
+{
+	int						item_idx;
+
+	pnt->x-=list->box.lx;
+	pnt->y-=list->box.ty;
+
+		// click in close border
+
+	if (pnt->x<=list_palette_border_sz) {
+		list_palette_open=!list_palette_open;
+		main_wind_draw();
+		return(FALSE);
+	}
+	
+		// click in title
+		
+	if (pnt->y<list_title_high) return(FALSE);
+	
+		// click in scroll bar
+		
+	if (pnt->x>=((list->box.rx-list->box.lx)-list_palette_scroll_wid)) {
+		list_palette_click_scroll_bar(list);
+		return(FALSE);
+	}
+
+		// click in item
+
+	item_idx=((pnt->y-list_title_high)+(list->scroll_page*list->scroll_size))/list_item_font_high;
+	if ((item_idx<0) || (item_idx>=list->item_count)) return(FALSE);
+	
+	return(list_palette_click_item(list,item_idx));
 }

@@ -41,7 +41,6 @@ and can be sold or given away.
 
 #define kLiquidPropertyColor				4
 #define kLiquidPropertyTintAlpha			5
-#define kLiquidPropertyDepth				6
 #define kLiquidPropertySpeedAlter			7
 #define kLiquidPropertySoundName			8
 
@@ -97,7 +96,6 @@ void property_palette_fill_liquid(int liq_idx)
 	list_palette_add_header(&property_palette,0,"Liquid Under");
 	list_palette_add_pick_color(&property_palette,kLiquidPropertyColor,"Color",&liq->col,FALSE);
 	list_palette_add_string_float(&property_palette,kLiquidPropertyTintAlpha,"Tint Alpha",liq->tint_alpha,FALSE);
-	list_palette_add_string_int(&property_palette,kLiquidPropertyDepth,"Depth",liq->depth,FALSE);
 	list_palette_add_string_float(&property_palette,kLiquidPropertySpeedAlter,"Speed Alter",liq->speed_alter,FALSE);
 	list_palette_add_string(&property_palette,kLiquidPropertySoundName,"Sound",liq->ambient.sound_name,FALSE);
 
@@ -198,10 +196,6 @@ void property_palette_click_liquid(int liq_idx,int id)
 			dialog_property_string_run(list_string_value_0_to_1_float,(void*)&liq->tint_alpha,0);
 			break;
 			
-		case kLiquidPropertyDepth:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&liq->depth,0);
-			break;
-
 		case kLiquidPropertySpeedAlter:
 			dialog_property_string_run(list_string_value_positive_float,(void*)&liq->speed_alter,0);
 			break;

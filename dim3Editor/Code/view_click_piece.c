@@ -314,7 +314,7 @@ bool view_click_rot_handles(editor_view_type *view,d3pnt *click_pt)
 	for (n=0;n!=item_count;n++) {
 		idx=n*3;
 		for (k=0;k!=3;k++) {
-			view_pick_list_add_2D_handle(hand_pnts[idx].x,hand_pnts[idx].y,type_list[n],idx_list[n],k);
+			view_pick_list_add_2D_handle(&hand_pnts[idx],type_list[n],idx_list[n],k);
 			idx++;
 		}
 	}
@@ -393,7 +393,7 @@ bool view_click_rot_handles(editor_view_type *view,d3pnt *click_pt)
 
 void view_click_piece_map_pick_start(editor_view_type *view)
 {
-	int					n,k,t,count;
+	int					n,k,t,y,count;
 	d3pnt				*pt;
 	d3pnt				v_pnts[8];
 	map_mesh_type		*mesh;
@@ -501,6 +501,15 @@ void view_click_piece_map_pick_start(editor_view_type *view)
 			glVertex3i(liq->rgt,liq->y,liq->top);
 			glVertex3i(liq->rgt,liq->y,liq->bot);
 			glVertex3i(liq->lft,liq->y,liq->bot);
+			glEnd();
+			
+			y=liq->y+liq->depth;
+			
+			glBegin(GL_POLYGON);
+			glVertex3i(liq->lft,y,liq->top);
+			glVertex3i(liq->rgt,y,liq->top);
+			glVertex3i(liq->rgt,y,liq->bot);
+			glVertex3i(liq->lft,y,liq->bot);
 			glEnd();
 			
 			liq++;
