@@ -42,24 +42,24 @@ extern editor_state_type		state;
       
 ======================================================= */
 
-void view_draw_select_mesh_get_grow_handles(int mesh_idx,int *px,int *py,int *pz)
+void view_draw_select_mesh_get_grow_handles(int mesh_idx,d3pnt *pts)
 {
 	d3pnt			min,max;
 	
 	map_mesh_calculate_extent(&map,mesh_idx,&min,&max);
 	
-	px[0]=px[3]=px[4]=px[7]=min.x;
-	pz[0]=pz[1]=pz[4]=pz[5]=min.z;
-	px[1]=px[2]=px[5]=px[6]=max.x;
-	pz[2]=pz[3]=pz[6]=pz[7]=max.z;
-	py[0]=py[1]=py[2]=py[3]=min.y;
-	py[4]=py[5]=py[6]=py[7]=max.y;
+	pts[0].x=pts[3].x=pts[4].x=pts[7].x=min.x;
+	pts[0].z=pts[1].z=pts[4].z=pts[5].z=min.z;
+	pts[1].x=pts[2].x=pts[5].x=pts[6].x=max.x;
+	pts[2].z=pts[3].z=pts[6].z=pts[7].z=max.z;
+	pts[0].y=pts[1].y=pts[2].y=pts[3].y=min.y;
+	pts[4].y=pts[5].y=pts[6].y=pts[7].y=max.y;
 }
 
 void view_draw_select_mesh(int mesh_idx)
 {
-	int						n,k,t,px[8],py[8],pz[8];
-	d3pnt					*pt;
+	int						n,k,t;
+	d3pnt					*pt,pts[8];
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*mesh_poly;
 	
@@ -95,7 +95,7 @@ void view_draw_select_mesh(int mesh_idx)
 
 		glPointSize(view_handle_size);
 		
-		view_draw_select_mesh_get_grow_handles(mesh_idx,px,py,pz);
+		view_draw_select_mesh_get_grow_handles(mesh_idx,pts);
 		
 		glBegin(GL_POINTS);
 
@@ -106,7 +106,7 @@ void view_draw_select_mesh(int mesh_idx)
 			else {
 				glColor4f(setup.col.mesh_sel.r,setup.col.mesh_sel.g,setup.col.mesh_sel.b,1.0f);
 			}
-			glVertex3i(px[n],py[n],pz[n]);
+			glVertex3i(pts[n].x,pts[n].y,pts[n].z);
 		}
 
 		glEnd();
@@ -179,22 +179,24 @@ void view_draw_select_mesh_poly(int mesh_idx,int poly_idx)
       
 ======================================================= */
 
-void view_draw_select_liquid_get_grow_handles(int liquid_idx,int *px,int *py,int *pz)
+void view_draw_select_liquid_get_grow_handles(int liquid_idx,d3pnt *pts)
 {
 	map_liquid_type			*liq;
 	
 	liq=&map.liquid.liquids[liquid_idx];
 	
-	px[0]=px[3]=liq->lft;
-	px[1]=px[2]=liq->rgt;
-	pz[0]=pz[1]=liq->top;
-	pz[2]=pz[3]=liq->bot;
-	py[0]=py[1]=py[2]=py[3]=liq->y;
+	pts[0].x=pts[3].x=pts[4].x=pts[7].x=liq->lft;
+	pts[1].x=pts[2].x=pts[5].x=pts[6].x=liq->rgt;
+	pts[0].z=pts[1].z=pts[4].z=pts[5].z=liq->top;
+	pts[2].z=pts[3].z=pts[6].z=pts[7].z=liq->bot;
+	pts[0].y=pts[1].y=pts[2].y=pts[3].y=liq->y;
+	pts[4].y=pts[5].y=pts[6].y=pts[7].y=liq->y+liq->depth;
 }
 
 void view_draw_select_liquid(int liquid_idx)
 {
-	int						n,px[4],py[4],pz[4];
+	int						n,y;
+	d3pnt					pts[8];
 	map_liquid_type			*liq;
 	
 	liq=&map.liquid.liquids[liquid_idx];
@@ -212,22 +214,31 @@ void view_draw_select_liquid(int liquid_idx)
 	glVertex3i(liq->lft,liq->y,liq->bot);
 	glEnd();
 	
+	y=liq->y+liq->depth;
+	
+	glBegin(GL_LINE_LOOP);
+	glVertex3i(liq->lft,y,liq->top);
+	glVertex3i(liq->rgt,y,liq->top);
+	glVertex3i(liq->rgt,y,liq->bot);
+	glVertex3i(liq->lft,y,liq->bot);
+	glEnd();
+	
 		// handles
 
 	glPointSize(view_handle_size);
 		
-	view_draw_select_liquid_get_grow_handles(liquid_idx,px,py,pz);
+	view_draw_select_liquid_get_grow_handles(liquid_idx,pts);
 		
 	glBegin(GL_POINTS);
 
-	for (n=0;n!=4;n++) {
+	for (n=0;n!=8;n++) {
 		if (state.drag_handle_idx==n) {
 			glColor4f(setup.col.poly_sel.r,setup.col.poly_sel.g,setup.col.poly_sel.b,1.0f);
 		}
 		else {
 			glColor4f(setup.col.mesh_sel.r,setup.col.mesh_sel.g,setup.col.mesh_sel.b,1.0f);
 		}
-		glVertex3i(px[n],py[n],pz[n]);
+		glVertex3i(pts[n].x,pts[n].y,pts[n].z);
 	}
 
 	glEnd();

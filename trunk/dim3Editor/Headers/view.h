@@ -83,8 +83,8 @@ extern void view_draw(void);
 
 extern bool view_clip_poly(editor_view_type *view,map_mesh_type *mesh,map_mesh_poly_type *poly);
 extern bool view_hidden_poly(editor_view_type *view,map_mesh_type *mesh,map_mesh_poly_type *poly);
-extern void view_draw_select_mesh_get_grow_handles(int mesh_idx,int *px,int *py,int *pz);
-extern void view_draw_select_liquid_get_grow_handles(int liquid_idx,int *px,int *py,int *pz);
+extern void view_draw_select_mesh_get_grow_handles(int mesh_idx,d3pnt *pts);
+extern void view_draw_select_liquid_get_grow_handles(int liquid_idx,d3pnt *pts);
 extern void view_draw_view(editor_view_type *view);
 extern void view_draw_select(editor_view_type *view);
 
@@ -99,8 +99,8 @@ extern int view_pick_list_multiple_pick(editor_view_type *view,d3pnt *start_pnt,
 extern void view_pick_list_multiple_end(void);
 extern void view_pick_list_add(int type,int main_idx,int sub_idx);
 extern void view_pick_list_add_cube(d3pnt *v_pnts,int type,int main_idx,int sub_idx);
-extern void view_pick_list_add_handle(int x,int y,int z,int type,int main_idx,int sub_idx);
-extern void view_pick_list_add_2D_handle(int x,int y,int type,int main_idx,int sub_idx);
+extern void view_pick_list_add_handle(d3pnt *pnt,int type,int main_idx,int sub_idx);
+extern void view_pick_list_add_2D_handle(d3pnt *pnt,int type,int main_idx,int sub_idx);
 
 //
 // walk view click

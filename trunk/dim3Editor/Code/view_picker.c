@@ -369,7 +369,7 @@ void view_pick_list_add_cube(d3pnt *v_pnts,int type,int main_idx,int sub_idx)
 	glEnd();
 }
 
-void view_pick_list_add_handle(int x,int y,int z,int type,int main_idx,int sub_idx)
+void view_pick_list_add_handle(d3pnt *pnt,int type,int main_idx,int sub_idx)
 {
 		// set the color
 
@@ -380,13 +380,13 @@ void view_pick_list_add_handle(int x,int y,int z,int type,int main_idx,int sub_i
 	glPointSize(view_handle_size);
 	
 	glBegin(GL_POINTS);
-	glVertex3i(x,y,z);
+	glVertex3i(pnt->x,pnt->y,pnt->z);
 	glEnd();
 	
 	glPointSize(1.0f);
 }
 
-void view_pick_list_add_2D_handle(int x,int y,int type,int main_idx,int sub_idx)
+void view_pick_list_add_2D_handle(d3pnt *pnt,int type,int main_idx,int sub_idx)
 {
 		// set the color
 
@@ -397,7 +397,7 @@ void view_pick_list_add_2D_handle(int x,int y,int type,int main_idx,int sub_idx)
 	glPointSize(view_handle_size);
 	
 	glBegin(GL_POINTS);
-	glVertex2i(x,y);
+	glVertex2i(pnt->x,pnt->y);
 	glEnd();
 	
 	glPointSize(1.0f);

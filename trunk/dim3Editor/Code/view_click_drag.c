@@ -45,10 +45,9 @@ extern editor_state_type		state;
 bool view_click_drag_mesh_handle(editor_view_type *view,d3pnt *pt)
 {
 	int						n,x,y,mx,my,mz,sub_idx,
-							px[8],py[8],pz[8],
 							type,mesh_idx,poly_idx,handle_idx;
 	bool					first_drag;
-	d3pnt					old_pt,*old_dpt,mpt,move_pnt,
+	d3pnt					pts[8],old_pt,*old_dpt,mpt,move_pnt,
 							org_min,org_max,min,max;
 	d3rect					box;
 	map_mesh_type			*mesh;
@@ -66,12 +65,12 @@ bool view_click_drag_mesh_handle(editor_view_type *view,d3pnt *pt)
 	
 		// are we clicking in the grow handles?
 		
-	view_draw_select_mesh_get_grow_handles(mesh_idx,px,py,pz);
+	view_draw_select_mesh_get_grow_handles(mesh_idx,pts);
 		
 	view_pick_list_start(view,FALSE,8);
 	
 	for (n=0;n!=8;n++) {
-		view_pick_list_add_handle(px[n],py[n],pz[n],liquid_piece,n,0);
+		view_pick_list_add_handle(&pts[n],liquid_piece,n,0);
 	}
 
 	handle_idx=-1;
@@ -533,7 +532,7 @@ bool view_click_drag_vertex(editor_view_type *view,d3pnt *pt)
 	dpt=mesh->vertexes;
 	
 	for (n=0;n!=mesh->nvertex;n++) {
-		view_pick_list_add_handle(dpt->x,dpt->y,dpt->z,mesh_piece,n,0);
+		view_pick_list_add_handle(dpt,mesh_piece,n,0);
 		dpt++;
 	}
 
@@ -632,10 +631,9 @@ bool view_click_drag_vertex(editor_view_type *view,d3pnt *pt)
 
 bool view_click_drag_liquid_vertex(editor_view_type *view,d3pnt *pt)
 {
-	int						n,x,y,mx,my,mz,chk_x,chk_z,
-							px[4],py[4],pz[4],
+	int						n,x,y,mx,my,mz,chk_x,chk_z,old_depth,
 							type,liquid_idx,sub_idx,handle_idx;
-	d3pnt					old_pt,old_dpt,move_pnt,mpt;
+	d3pnt					pts[8],old_pt,old_dpt,move_pnt,mpt;
 	d3rect					box;
 	bool					first_drag;
 	map_liquid_type			*liq;
@@ -649,12 +647,12 @@ bool view_click_drag_liquid_vertex(editor_view_type *view,d3pnt *pt)
 
 	liq=&map.liquid.liquids[liquid_idx];
 	
-	view_draw_select_liquid_get_grow_handles(liquid_idx,px,py,pz);
+	view_draw_select_liquid_get_grow_handles(liquid_idx,pts);
 		
-	view_pick_list_start(view,FALSE,4);
+	view_pick_list_start(view,FALSE,8);
 	
-	for (n=0;n!=4;n++) {
-		view_pick_list_add_handle(px[n],py[n],pz[n],liquid_piece,n,0);
+	for (n=0;n!=8;n++) {
+		view_pick_list_add_handle(&pts[n],liquid_piece,n,0);
 	}
 
 	handle_idx=-1;
@@ -678,9 +676,11 @@ bool view_click_drag_liquid_vertex(editor_view_type *view,d3pnt *pt)
 
 	first_drag=TRUE;
 	
-	old_dpt.x=px[handle_idx];
-	old_dpt.y=py[handle_idx];
-	old_dpt.z=pz[handle_idx];
+	old_dpt.x=pts[handle_idx].x;
+	old_dpt.y=pts[handle_idx].y;
+	old_dpt.z=pts[handle_idx].z;
+	
+	old_depth=liq->depth;
 	
 	view_get_pixel_box(view,&box);
 	memmove(&old_pt,pt,sizeof(d3pnt));
@@ -711,7 +711,7 @@ bool view_click_drag_liquid_vertex(editor_view_type *view,d3pnt *pt)
 		view_mouse_get_scroll_vertical_axis(view,&move_pnt,-(y*move_mouse_scale));
 			
 		mx+=move_pnt.x;
-		my=liq->y;
+		my+=move_pnt.y;
 		mz+=move_pnt.z;
 		
 		mpt.x=mx;
@@ -725,21 +725,51 @@ bool view_click_drag_liquid_vertex(editor_view_type *view,d3pnt *pt)
 		switch (handle_idx) {
 			case 0:
 				liq->lft=old_dpt.x+mpt.x;
+				liq->y=old_dpt.y+mpt.y;
+				liq->depth=old_depth-mpt.y;
 				liq->top=old_dpt.z+mpt.z;
 				break;
 			case 1:
 				liq->rgt=old_dpt.x+mpt.x;
+				liq->y=old_dpt.y+mpt.y;
+				liq->depth=old_depth-mpt.y;
 				liq->top=old_dpt.z+mpt.z;
 				break;
 			case 2:
 				liq->rgt=old_dpt.x+mpt.x;
+				liq->y=old_dpt.y+mpt.y;
+				liq->depth=old_depth-mpt.y;
 				liq->bot=old_dpt.z+mpt.z;
 				break;
 			case 3:
 				liq->lft=old_dpt.x+mpt.x;
+				liq->y=old_dpt.y+mpt.y;
+				liq->depth=old_depth-mpt.y;
+				liq->bot=old_dpt.z+mpt.z;
+				break;
+			case 4:
+				liq->lft=old_dpt.x+mpt.x;
+				liq->depth=old_depth+mpt.y;
+				liq->top=old_dpt.z+mpt.z;
+				break;
+			case 5:
+				liq->rgt=old_dpt.x+mpt.x;
+				liq->depth=old_depth+mpt.y;
+				liq->top=old_dpt.z+mpt.z;
+				break;
+			case 6:
+				liq->rgt=old_dpt.x+mpt.x;
+				liq->depth=old_depth+mpt.y;
+				liq->bot=old_dpt.z+mpt.z;
+				break;
+			case 7:
+				liq->lft=old_dpt.x+mpt.x;
+				liq->depth=old_depth+mpt.y;
 				liq->bot=old_dpt.z+mpt.z;
 				break;
 		}
+		
+		if (liq->depth<map_enlarge) liq->depth=map_enlarge;
 		
 		if (state.auto_texture) map_liquid_reset_uv(&map,liquid_idx);
 
