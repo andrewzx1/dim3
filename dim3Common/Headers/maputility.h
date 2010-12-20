@@ -548,23 +548,10 @@ typedef struct		{
 					} map_info_type;
 
 typedef struct		{
-						int									quality,size,
-															pixel_border_count,blur_count;
-					} map_settings_light_map_type;
-					
-typedef struct		{
-						int									view_near_dist,view_far_dist;
-						float								txt_scale_x,txt_scale_y;
-						bool								link_always_start;
-					} map_settings_editor_type;
-
-typedef struct		{
 						float								gravity,gravity_max_power,gravity_max_speed,
 															resistance;
 						char								network_game_list[256];
 						bool								never_cull,no_shaders;
-						map_settings_light_map_type			light_map;
-						map_settings_editor_type			editor;
 					} map_settings_type;
 					
 typedef struct		{
@@ -665,7 +652,22 @@ typedef struct		{
 					} map_cinema_collection_type;
 
 //
-// map editor structures
+// map light maps and editor setup
+//
+
+typedef struct		{
+						int									quality,size,
+															pixel_border_count,blur_count;
+					} map_light_map_type;
+					
+typedef struct		{
+						int									view_near_dist,view_far_dist;
+						float								txt_scale_x,txt_scale_y;
+						bool								link_always_start;
+					} map_editor_setup_type;
+
+//
+// map editor view structures
 //
 
 typedef struct		{
@@ -708,6 +710,8 @@ typedef struct		{
 						map_media_type						media;
 						map_music_type						music;
 
+						map_light_map_type					light_map;
+						map_editor_setup_type				editor_setup;
 						editor_views_type					editor_views;
 						
 						texture_type						*textures;

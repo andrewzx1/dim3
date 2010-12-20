@@ -86,8 +86,6 @@ void property_palette_setup(void)
 	property_palette.box.rx=wbox.rx;
 	property_palette.box.ty=y-1;
 	property_palette.box.by=wbox.by-txt_palette_pixel_sz;
-
-	property_palette.scroll_size=((property_palette.box.by-property_palette.box.ty)-(list_title_high))>>2;
 }
 
 /* =======================================================
@@ -112,7 +110,8 @@ void property_palette_fill(void)
 	if (select_count()!=0)  select_get(0,&sel_type,&main_idx,&sub_idx);
 	
 	if (main_idx==-1) {
-		list_palette_set_title(&property_palette,"No Selection");
+		list_palette_set_title(&property_palette,"Map Properties");
+		property_palette_fill_map();
 		return;
 	}
 
@@ -249,7 +248,11 @@ void property_palette_click(d3pnt *pnt,bool double_click)
 	if (select_count()==0) return;
 	
 	select_get(0,&sel_type,&main_idx,&sub_idx);
-	if (main_idx==-1) return;
+
+	if (main_idx==-1) {
+		property_palette_click_map(property_palette.item_id);
+		return;
+	}
 
 	switch (sel_type) {
 

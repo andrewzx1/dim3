@@ -48,18 +48,44 @@ void view_draw_select_mesh_get_grow_handles(int mesh_idx,d3pnt *pts)
 	
 	map_mesh_calculate_extent(&map,mesh_idx,&min,&max);
 	
+		// resize
+
 	pts[0].x=pts[3].x=pts[4].x=pts[7].x=min.x;
 	pts[0].z=pts[1].z=pts[4].z=pts[5].z=min.z;
 	pts[1].x=pts[2].x=pts[5].x=pts[6].x=max.x;
 	pts[2].z=pts[3].z=pts[6].z=pts[7].z=max.z;
 	pts[0].y=pts[1].y=pts[2].y=pts[3].y=min.y;
 	pts[4].y=pts[5].y=pts[6].y=pts[7].y=max.y;
+
+		// skew x
+
+	pts[8].x=pts[9].x=min.x;
+	pts[10].x=pts[11].x=max.x;
+	pts[8].y=pts[10].y=min.y;
+	pts[9].y=pts[11].y=max.y;
+	pts[8].z=pts[9].z=pts[10].z=pts[11].z=(min.z+max.z)>>1;
+
+		// skew y
+
+	pts[12].y=pts[13].y=min.y;
+	pts[14].y=pts[15].y=max.y;
+	pts[12].z=pts[14].z=min.z;
+	pts[13].z=pts[15].z=max.z;
+	pts[12].x=pts[13].x=pts[14].x=pts[15].x=(min.x+max.x)>>1;
+
+		// skew z
+
+	pts[16].z=pts[17].z=min.z;
+	pts[18].z=pts[19].z=max.z;
+	pts[16].x=pts[18].x=min.x;
+	pts[17].x=pts[19].x=max.x;
+	pts[16].y=pts[17].y=pts[18].y=pts[19].y=(min.y+max.y)>>1;
 }
 
 void view_draw_select_mesh(int mesh_idx)
 {
 	int						n,k,t;
-	d3pnt					*pt,pts[8];
+	d3pnt					*pt,pts[20];
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*mesh_poly;
 	
@@ -90,13 +116,14 @@ void view_draw_select_mesh(int mesh_idx)
 		// is mesh only, draw resize handles
 		
 	if (state.drag_mode==drag_mode_mesh) {
-	
+		
+		view_draw_select_mesh_get_grow_handles(mesh_idx,pts);
+
+			// draw the resize handles
+
 		glEnable(GL_DEPTH_TEST);
 
 		glPointSize(view_handle_size);
-		
-		view_draw_select_mesh_get_grow_handles(mesh_idx,pts);
-		
 		glBegin(GL_POINTS);
 
 		for (n=0;n!=8;n++) {
@@ -110,8 +137,26 @@ void view_draw_select_mesh(int mesh_idx)
 		}
 
 		glEnd();
-	
-		return;
+
+			// draw the skew handles
+
+		glPointSize(view_skew_handle_size);
+		glBegin(GL_POINTS);
+
+		for (n=8;n!=20;n++) {
+			if (state.drag_handle_idx==n) {
+				glColor4f(setup.col.poly_sel.r,setup.col.poly_sel.g,setup.col.poly_sel.b,1.0f);
+			}
+			else {
+				glColor4f(setup.col.mesh_sel.r,setup.col.mesh_sel.g,setup.col.mesh_sel.b,1.0f);
+			}
+
+			glVertex3i(pts[n].x,pts[n].y,pts[n].z);
+		}
+
+		glEnd();
+
+		glPointSize(1.0f);
 	}
 }
 
@@ -413,7 +458,7 @@ void view_draw_select(editor_view_type *view)
 		// push view forward so selections
 		// display properly
 
-	view_set_3D_projection(view,(map.settings.editor.view_near_dist+10),(map.settings.editor.view_far_dist-10),view_near_offset);
+	view_set_3D_projection(view,(map.editor_setup.view_near_dist+10),(map.editor_setup.view_far_dist-10),view_near_offset);
 	
 		// if no selection, only the box
 		// select can draw

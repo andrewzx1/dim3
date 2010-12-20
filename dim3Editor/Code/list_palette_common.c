@@ -101,7 +101,7 @@ list_palette_item_type* list_palette_create_item(list_palette_type *list,int ctr
 	if (ctrl_type!=list_item_ctrl_header) item->x+=10;
 
 	item->y=((list->item_count*list_item_font_high)+list_title_high)+list->box.ty;
-	item->y-=(list->scroll_page*list->scroll_size);
+	item->y-=(list->scroll_page*list_item_scroll_size);
 
 	list->total_high+=list_item_font_high;
 
@@ -268,7 +268,7 @@ int list_palette_get_scroll_page_count(list_palette_type *list)
 	high=list->total_high-(list->box.by-(list->box.ty+list_title_high));
 	if (high<=0) return(0);
 	
-	return((high/list->scroll_size)+1);
+	return((high/list_item_scroll_size)+1);
 }
 
 /* =======================================================
@@ -694,7 +694,7 @@ bool list_palette_click_item(list_palette_type *list,int item_idx)
 void list_palette_click_scroll_bar(list_palette_type *list)
 {
 	int						old_page,page,page_count,
-							page_size,y;
+							page_size,y,offset_y,thumb_y;
 	d3pnt					pt,org_pt;
 	
 		// scrolling sizes
@@ -708,10 +708,13 @@ void list_palette_click_scroll_bar(list_palette_type *list)
 		
 	old_page=list->scroll_page;
 	os_get_cursor(&org_pt);
+
+	thumb_y=list->box.ty+(((list->box.by-list->box.ty)*list->scroll_page)/(page_count+1));
+	offset_y=thumb_y-org_pt.y;
 	
 	while (!os_track_mouse_location(&pt,NULL)) {
 		
-		y=(pt.y-org_pt.y);
+		y=(pt.y-org_pt.y)-offset_y;
 		page=old_page+(y/page_size);
 		if (page<0) page=0;
 		if (page>page_count) page=page_count;
@@ -753,7 +756,7 @@ bool list_palette_click(list_palette_type *list,d3pnt *pnt,bool double_click)
 
 		// click in item
 
-	item_idx=((pnt->y-list_title_high)+(list->scroll_page*list->scroll_size))/list_item_font_high;
+	item_idx=((pnt->y-list_title_high)+(list->scroll_page*list_item_scroll_size))/list_item_font_high;
 	if ((item_idx<0) || (item_idx>=list->item_count)) return(FALSE);
 	
 	return(list_palette_click_item(list,item_idx));

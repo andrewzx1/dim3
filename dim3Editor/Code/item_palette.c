@@ -83,8 +83,6 @@ void item_palette_setup(void)
 	item_palette.box.rx=wbox.rx;
 	item_palette.box.ty=wbox.ty+(tool_palette_pixel_sz+1);
 	item_palette.box.by=y;
-
-	item_palette.scroll_size=((item_palette.box.by-item_palette.box.ty)-(list_title_high))>>2;
 }
 
 /* =======================================================
