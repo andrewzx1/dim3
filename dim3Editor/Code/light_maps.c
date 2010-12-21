@@ -1834,10 +1834,13 @@ bool light_maps_create_process(char *err_str)
 	return(TRUE);
 }
 
-bool light_maps_create(char *err_str)
+bool light_maps_create(void)
 {
 	int				n,npoly;
 	bool			ok;
+	char			err_str[256];
+
+	if (os_dialog_confirm("Build Light Maps","Building light maps will replace the last 2 sets of textures and save the map.\nAre you sure you want to build the light maps?",FALSE)!=0) return(FALSE);
 	
 		// see if there are any lights
 		
@@ -1851,7 +1854,7 @@ bool light_maps_create(char *err_str)
 	}
 	
 	if (!ok) {
-		strcpy(err_str,"There are no map lights set to generate light maps in this map.");
+		os_dialog_alert("Can not build light maps","There are no lights set to generate light maps in this map.");
 		return(FALSE);
 	}
 	
@@ -1862,10 +1865,15 @@ bool light_maps_create(char *err_str)
 	progress_start("Generating Light Maps...",(6+(max_light_map_textures*3)+(npoly/10)));
 	ok=light_maps_create_process(err_str);
 	progress_end();
+
+	if (!ok) {
+		os_dialog_alert("Can not build light maps",err_str);
+		return(FALSE);
+	}
+
+	file_save_map();
 	
-	if (ok) file_save_map();
-	
-	return(ok);
+	return(TRUE);
 }
 
 void light_maps_clear(void)

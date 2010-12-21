@@ -27,12 +27,15 @@ and can be sold or given away.
 
 #include "dim3editor.h"
 #include "resource.h"
+#include "interface.h"
 
 extern HINSTANCE				hinst;
 extern HWND						wnd;
 
 int								dialog_property_string_value_type,
-								dialog_property_string_value_len;
+								dialog_property_string_value_len,
+								dialog_property_string_i_min,
+								dialog_property_string_i_max;
 void							*dialog_property_string_value;
 
 extern void win32_dialog_set_text(HWND diag,int id,char *value);
@@ -51,43 +54,13 @@ extern void win32_dialog_set_focus(HWND diag,int id);
 
 LRESULT CALLBACK dialog_property_string_proc(HWND diag,UINT msg,WPARAM wparam,LPARAM lparam)
 {
+	char			str[256],desc[256];
 	switch (msg) {
 
 		case WM_INITDIALOG:
-			switch (dialog_property_string_value_type) {
-
-				case list_string_value_string:
-					win32_dialog_set_text(diag,IDC_PROPERTY_STRING_STRING,(char*)dialog_property_string_value);
-					win32_dialog_set_text(diag,IDC_PROPERTY_STRING_DESCRIPTION,"Enter a string.");
-					break;
-					
-				case list_string_value_int:
-					win32_dialog_set_int(diag,IDC_PROPERTY_STRING_STRING,*((int*)dialog_property_string_value));
-					win32_dialog_set_text(diag,IDC_PROPERTY_STRING_DESCRIPTION,"Enter a integer.");
-					break;
-					
-				case list_string_value_positive_int:
-					win32_dialog_set_int(diag,IDC_PROPERTY_STRING_STRING,*((int*)dialog_property_string_value));
-					win32_dialog_set_text(diag,IDC_PROPERTY_STRING_DESCRIPTION,"Enter a positive integer.");
-					break;
-					
-				case list_string_value_float:
-					win32_dialog_set_float(diag,IDC_PROPERTY_STRING_STRING,*((float*)dialog_property_string_value));
-					win32_dialog_set_text(diag,IDC_PROPERTY_STRING_DESCRIPTION,"Enter a float.");
-					break;
-
-				case list_string_value_positive_float:
-					win32_dialog_set_float(diag,IDC_PROPERTY_STRING_STRING,*((float*)dialog_property_string_value));
-					win32_dialog_set_text(diag,IDC_PROPERTY_STRING_DESCRIPTION,"Enter a positive float.");
-					break;
-
-				case list_string_value_0_to_1_float:
-					win32_dialog_set_float(diag,IDC_PROPERTY_STRING_STRING,*((float*)dialog_property_string_value));
-					win32_dialog_set_text(diag,IDC_PROPERTY_STRING_DESCRIPTION,"Enter a float between 0.0 and 1.0.");
-					break;
-					
-			}
-	
+			property_palette_string_get_values(dialog_property_string_value_type,dialog_property_string_value,dialog_property_string_i_min,dialog_property_string_i_max,str,desc);
+			win32_dialog_set_text(diag,IDC_PROPERTY_STRING_STRING,str);
+			win32_dialog_set_text(diag,IDC_PROPERTY_STRING_DESCRIPTION,desc);
 			win32_dialog_set_focus(diag,IDC_PROPERTY_STRING_STRING);
 			return(FALSE);		// return false when keyboard focus has been set
 
@@ -96,37 +69,8 @@ LRESULT CALLBACK dialog_property_string_proc(HWND diag,UINT msg,WPARAM wparam,LP
 			switch (LOWORD(wparam)) {
 
 				case ID_PROPERTY_STRING_OK:
-
-					switch (dialog_property_string_value_type) {
-					
-						case list_string_value_string:
-							win32_dialog_get_text(diag,IDC_PROPERTY_STRING_STRING,(char*)dialog_property_string_value,dialog_property_string_value_len);
-							break;
-							
-						case list_string_value_int:
-							*((int*)dialog_property_string_value)=win32_dialog_get_int(diag,IDC_PROPERTY_STRING_STRING);
-							break;
-							
-						case list_string_value_positive_int:
-							*((int*)dialog_property_string_value)=abs(win32_dialog_get_int(diag,IDC_PROPERTY_STRING_STRING));
-							break;
-						
-						case list_string_value_float:
-							*((float*)dialog_property_string_value)=win32_dialog_get_float(diag,IDC_PROPERTY_STRING_STRING);
-							break;
-							
-						case list_string_value_positive_float:
-							*((float*)dialog_property_string_value)=(float)fabs(win32_dialog_get_float(diag,IDC_PROPERTY_STRING_STRING));
-							break;
-							
-						case list_string_value_0_to_1_float:
-							*((float*)dialog_property_string_value)=win32_dialog_get_float(diag,IDC_PROPERTY_STRING_STRING);
-							if ((*((float*)dialog_property_string_value))<0.0f) *((float*)dialog_property_string_value)=0.0f;
-							if ((*((float*)dialog_property_string_value))>1.0f) *((float*)dialog_property_string_value)=1.0f;
-							break;
-							
-					}
-
+					win32_dialog_get_text(diag,IDC_PROPERTY_STRING_STRING,str,256);
+					property_palette_string_set_values(dialog_property_string_value_type,dialog_property_string_value,dialog_property_string_value_len,dialog_property_string_i_min,dialog_property_string_i_max,str);
 					EndDialog(diag,0);
 					return(TRUE);
 
@@ -145,11 +89,13 @@ LRESULT CALLBACK dialog_property_string_proc(HWND diag,UINT msg,WPARAM wparam,LP
       
 ======================================================= */
 
-void dialog_property_string_run(int value_type,void *value,int value_len)
+void dialog_property_string_run(int value_type,void *value,int value_len,int i_min,int i_max)
 {
 	dialog_property_string_value_type=value_type;
 	dialog_property_string_value=value;
 	dialog_property_string_value_len=value_len;
+	dialog_property_string_i_min=i_min;
+	dialog_property_string_i_max=i_max;
 
 	DialogBox(hinst,MAKEINTRESOURCE(IDD_PROPERTY_STRING),wnd,dialog_property_string_proc);
 }

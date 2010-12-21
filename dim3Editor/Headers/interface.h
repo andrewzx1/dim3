@@ -219,6 +219,13 @@ extern void textdecode_get_line(int i,char *txt);
 extern void textdecode_get_piece(int i,int k,char *txt);
 
 //
+// light maps
+//
+
+extern bool light_maps_create(void);
+extern void light_maps_clear(void);
+
+//
 // auto-generate maps
 //
 

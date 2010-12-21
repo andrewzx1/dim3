@@ -79,10 +79,6 @@ bool dialog_optimize_run(int *poly_threshold)
 {
 	return(FALSE);
 }
-bool dialog_light_map_run(void)
-{
-	return(TRUE);
-}
 bool dialog_resize_run(float *fct_x,float *fct_y,float *fct_z)
 {
 	return(FALSE);

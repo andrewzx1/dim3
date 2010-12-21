@@ -42,13 +42,132 @@ extern editor_state_type		state;
       
 ======================================================= */
 
+void view_click_drag_mesh_handle_resize(int mesh_idx,d3pnt *old_dpt,int handle_idx,d3pnt *mpt,d3pnt *org_min,d3pnt *org_max)
+{
+	d3pnt			min,max;
+	map_mesh_type	*mesh;
+
+		// start with original size
+
+	memmove(&min,org_min,sizeof(d3pnt));
+	memmove(&max,org_max,sizeof(d3pnt));
+	
+		// use correct handle to alter the mesh
+		
+	if ((handle_idx==0) || (handle_idx==3) || (handle_idx==4) || (handle_idx==7)) {
+		min.x+=mpt->x>>1;
+	}
+	else {
+		max.x+=mpt->x>>1;
+	}
+	
+	if (handle_idx<4) {
+		min.y+=mpt->y>>1;
+	}
+	else {
+		max.y+=mpt->y>>1;
+	}
+	
+	if ((handle_idx==0) || (handle_idx==1) || (handle_idx==4) || (handle_idx==5)) {
+		min.z+=mpt->z>>1;
+	}
+	else {
+		max.z+=mpt->z>>1;
+	}
+	
+		// always resize from original vertexes
+		
+	mesh=&map.mesh.meshes[mesh_idx];
+
+	memmove(mesh->vertexes,old_dpt,(mesh->nvertex*sizeof(d3pnt)));
+	map_mesh_resize(&map,mesh_idx,&min,&max);
+}
+
+void view_click_drag_mesh_handle_skew(int mesh_idx,d3pnt *old_dpt,int handle_idx,d3pnt *mpt)
+{
+	int				axis,dir,size;
+	d3pnt			move_pnt;
+	map_mesh_type	*mesh;
+
+		// always skew from original points
+
+	mesh=&map.mesh.meshes[mesh_idx];
+	memmove(mesh->vertexes,old_dpt,(mesh->nvertex*sizeof(d3pnt)));
+
+		// get proper skew
+
+	axis=0;
+	dir=0;
+	size=mpt->x+mpt->y;
+	
+	move_pnt.x=move_pnt.y=move_pnt.z=0;
+
+	switch (handle_idx) {
+
+			// x skewing
+
+		case 8:
+		case 9:
+			axis=1;
+			dir=0;
+			size=-size;
+			move_pnt.y=size;
+			break;
+
+		case 10:
+		case 11:
+			axis=1;
+			dir=0;
+			break;
+
+			// y skewing
+
+		case 12:
+		case 13:
+			axis=2;
+			dir=1;
+			size=-size;
+			move_pnt.z=-size;
+			break;
+
+		case 14:
+		case 15:
+			axis=2;
+			dir=1;
+			break;
+
+			// z skewing
+
+		case 16:
+		case 17:
+			axis=0;
+			dir=2;
+			size=-size;
+			move_pnt.x=-size;
+			break;
+
+		case 18:
+		case 19:
+			axis=0;
+			dir=2;
+			break;
+	}
+
+		// run the skew
+
+	if (size==0) return;
+	
+	map_mesh_skew(&map,mesh_idx,axis,dir,size);
+	map_mesh_move(&map,mesh_idx,&move_pnt);
+}
+
 bool view_click_drag_mesh_handle(editor_view_type *view,d3pnt *pt)
 {
 	int						n,x,y,mx,my,mz,sub_idx,
 							type,mesh_idx,poly_idx,handle_idx;
 	bool					first_drag;
 	d3pnt					pts[20],old_pt,*old_dpt,mpt,move_pnt,
-							org_min,org_max,min,max;
+							org_min,org_max;
 	d3rect					box;
 	map_mesh_type			*mesh;
 	
@@ -67,9 +186,9 @@ bool view_click_drag_mesh_handle(editor_view_type *view,d3pnt *pt)
 		
 	view_draw_select_mesh_get_grow_handles(mesh_idx,pts);
 		
-	view_pick_list_start(view,FALSE,8);
+	view_pick_list_start(view,FALSE,20);
 	
-	for (n=0;n!=8;n++) {
+	for (n=0;n!=20;n++) {
 		view_pick_list_add_handle(&pts[n],liquid_piece,n,0);
 	}
 
@@ -124,12 +243,18 @@ bool view_click_drag_mesh_handle(editor_view_type *view,d3pnt *pt)
 			first_drag=FALSE;
 		}
 		
-			// resize mesh
+			// get change
 
 		move_pnt.x=move_pnt.y=move_pnt.z=0;
 		
-		view_mouse_get_scroll_horizontal_axis(view,&move_pnt,-(x*move_mouse_scale));
-		view_mouse_get_scroll_vertical_axis(view,&move_pnt,-(y*move_mouse_scale));
+		if (handle_idx<8) {
+			view_mouse_get_scroll_horizontal_axis(view,&move_pnt,-(x*move_mouse_scale));
+			view_mouse_get_scroll_vertical_axis(view,&move_pnt,-(y*move_mouse_scale));
+		}
+		else {
+			move_pnt.x=-(x*move_mouse_scale);
+			move_pnt.y=-(y*move_mouse_scale);
+		}
 
 		mx+=move_pnt.x;
 		my+=move_pnt.y;
@@ -140,37 +265,15 @@ bool view_click_drag_mesh_handle(editor_view_type *view,d3pnt *pt)
 		mpt.z=mz;
 		
 		view_click_grid(&mpt);
-		
-		memmove(&min,&org_min,sizeof(d3pnt));
-		memmove(&max,&org_max,sizeof(d3pnt));
-		
-			// use correct handle to alter the mesh
-			
-		if ((handle_idx==0) || (handle_idx==3) || (handle_idx==4) || (handle_idx==7)) {
-			min.x+=mpt.x/2;
+
+			// resize mesh
+
+		if (handle_idx<8) {
+			view_click_drag_mesh_handle_resize(mesh_idx,old_dpt,handle_idx,&mpt,&org_min,&org_max);
 		}
 		else {
-			max.x+=mpt.x/2;
+			view_click_drag_mesh_handle_skew(mesh_idx,old_dpt,handle_idx,&mpt);
 		}
-		
-		if (handle_idx<4) {
-			min.y+=mpt.y/2;
-		}
-		else {
-			max.y+=mpt.y/2;
-		}
-		
-		if ((handle_idx==0) || (handle_idx==1) || (handle_idx==4) || (handle_idx==5)) {
-			min.z+=mpt.z/2;
-		}
-		else {
-			max.z+=mpt.z/2;
-		}
-		
-			// always resize from original vertexes
-			
-		memmove(mesh->vertexes,old_dpt,(mesh->nvertex*sizeof(d3pnt)));
-		map_mesh_resize(&map,mesh_idx,&min,&max);
 		
 		if ((state.auto_texture) && (!mesh->flag.lock_uv)) map_mesh_reset_uv(&map,mesh_idx);
 

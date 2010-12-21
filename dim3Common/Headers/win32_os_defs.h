@@ -92,6 +92,7 @@ typedef int						socklen_t;
 #define strcasecmp(a,b)			_stricmp(a,b)
 #define strncasecmp(a,b,c)		_strnicmp(a,b,c)
 #define stat					_stat
+#define log2(a)					(log(a)/log(2))
 
 #define D3_NULL_SOCKET			INVALID_SOCKET
 #define EWOULDBLOCK				WSAEWOULDBLOCK

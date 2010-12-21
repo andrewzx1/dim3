@@ -56,13 +56,28 @@ and can be sold or given away.
 #define kMapPropertyLightMapBorderCount		16
 #define kMapPropertyLightMapBlurCount		17
 
+#define kMapPropertyCameraMode				18
+#define kMapPropertyCameraFOV				19
+#define kMapPropertyCameraAspectRatio		20
+#define kMapPropertyCameraNearZ				21
+#define kMapPropertyCameraFarZ				22
+#define kMapPropertyCameraNearZOffset		23
+
+#define kMapPropertyCameraChaseDistance		24
+#define kMapPropertyCameraChaseTrackSpeed	25
+#define kMapPropertyCameraChaseSlop			26
+
+#define kMapPropertyCameraStaticFollow		27
+#define kMapPropertyCameraStaticAttachNode	28
+
 extern map_type					map;
 extern editor_state_type		state;
 extern editor_setup_type		setup;
 
 extern list_palette_type		property_palette;
 
-char							map_property_light_map_size_list[][name_str_len]={"256","512","1024",""};
+char							map_property_light_map_size_list[][name_str_len]={"256","512","1024",""},
+								map_property_camera_mode_list[][name_str_len]={"FPP","Chase","Static","Chase Static",""};
 
 /* =======================================================
 
@@ -94,7 +109,7 @@ void property_palette_fill_map(void)
 	list_palette_add_string(&property_palette,kMapPropertyAmbientSound,"Sound",map.ambient.sound_name,FALSE);
 	list_palette_add_string_float(&property_palette,kMapPropertyAmbientSoundPitch,"Sound Pitch",map.ambient.sound_pitch,FALSE);
 
-	size=(log2(map.light_map.size)-8);
+	size=((int)log2(map.light_map.size))-8;
 	if ((size<0) || (size>2)) size=0;
 
 	list_palette_add_header(&property_palette,0,"Map Light Map");
@@ -103,84 +118,22 @@ void property_palette_fill_map(void)
 	list_palette_add_string_int(&property_palette,kMapPropertyLightMapBorderCount,"Pixel Border Count",map.light_map.pixel_border_count,FALSE);
 	list_palette_add_string_int(&property_palette,kMapPropertyLightMapBlurCount,"Blur Count",map.light_map.blur_count,FALSE);
 
+	list_palette_add_header(&property_palette,0,"Map Camera Settings");
+	list_palette_add_string(&property_palette,kMapPropertyCameraMode,"Mode",map_property_camera_mode_list[map.camera.mode],FALSE);
+	list_palette_add_string_float(&property_palette,kMapPropertyCameraFOV,"FOV",map.camera.plane.fov,FALSE);
+	list_palette_add_string_float(&property_palette,kMapPropertyCameraAspectRatio,"Aspect Ratio",map.camera.plane.aspect_ratio,FALSE);
+	list_palette_add_string_int(&property_palette,kMapPropertyCameraNearZ,"Near Z",map.camera.plane.near_z,FALSE);
+	list_palette_add_string_int(&property_palette,kMapPropertyCameraFarZ,"Far Z",map.camera.plane.far_z,FALSE);
+	list_palette_add_string_int(&property_palette,kMapPropertyCameraNearZOffset,"Near Z Offset",map.camera.plane.near_z_offset,FALSE);
 
-	/*
-	d3pnt					pnt,size;
-	map_liquid_type			*liq;
-	editor_view_type		*view;
+	list_palette_add_header(&property_palette,0,"Map Camera Chase");
+	list_palette_add_string_int(&property_palette,kMapPropertyCameraChaseDistance,"Distance",map.camera.chase.distance,FALSE);
+	list_palette_add_string_float(&property_palette,kMapPropertyCameraChaseTrackSpeed,"Track Speed",map.camera.chase.track_speed,FALSE);
+	list_palette_add_angle(&property_palette,kMapPropertyCameraChaseSlop,"Slop",&map.camera.chase.slop,FALSE);
 
-		// liquid settings
-		
-	liq=&map.liquid.liquids[liq_idx];
-
-	list_palette_add_header(&property_palette,0,"Liquid Settings");
-	list_palette_add_checkbox(&property_palette,kLiquidPropertyWaveFlat,"Draw as Flat Surface",liq->tide.flat,FALSE);
-	list_palette_add_checkbox(&property_palette,kLiquidPropertyNeverObscure,"Never Obscure",liq->never_obscure,FALSE);
-	list_palette_add_checkbox(&property_palette,kLiquidPropertyNeverCull,"Never Cull",liq->never_cull,FALSE);
-	list_palette_add_checkbox(&property_palette,kLiquidPropertyNoDraw,"No Draw (Volume Only)",liq->no_draw,FALSE);
-
-	list_palette_add_header(&property_palette,0,"Liquid Under");
-	list_palette_add_pick_color(&property_palette,kLiquidPropertyColor,"Color",&liq->col,FALSE);
-	list_palette_add_string_float(&property_palette,kLiquidPropertyTintAlpha,"Tint Alpha",liq->tint_alpha,FALSE);
-	list_palette_add_string_float(&property_palette,kLiquidPropertySpeedAlter,"Speed Alter",liq->speed_alter,FALSE);
-	list_palette_add_string(&property_palette,kLiquidPropertySoundName,"Sound",liq->ambient.sound_name,FALSE);
-
-	list_palette_add_header(&property_palette,0,"Liquid Waves");
-	list_palette_add_string_int(&property_palette,kLiquidPropertyWaveSize,"Wave Size",liq->tide.division,FALSE);
-	list_palette_add_string_int(&property_palette,kLiquidPropertyTideSize,"Tide Size",liq->tide.high,FALSE);
-	list_palette_add_string_int(&property_palette,kLiquidPropertyTideRate,"Tide Rate",liq->tide.rate,FALSE);
-	list_palette_add_string(&property_palette,kLiquidPropertyTideDirection,"Tide Direction",liquid_property_tide_direction_list[liq->tide.direction],FALSE);
-	
-	list_palette_add_header(&property_palette,0,"Liquid Harm");
-	list_palette_add_string_int(&property_palette,kLiquidPropertyHarm,"In Damage",liq->harm.in_harm,FALSE);
-	list_palette_add_string_int(&property_palette,kLiquidPropertyDrownTick,"Drowning Tick",liq->harm.drown_tick,FALSE);
-	list_palette_add_string_int(&property_palette,kLiquidPropertyDrownHarm,"Drowning Damage",liq->harm.drown_harm,FALSE);
-
-	list_palette_add_header(&property_palette,0,"Liquid Group");
-	if (liq->group_idx==-1) {
-		list_palette_add_string(&property_palette,kLiquidPropertyGroup,"Group","",FALSE);
-	}
-	else {
-		list_palette_add_string(&property_palette,kLiquidPropertyGroup,"Group",map.group.groups[liq->group_idx].name,FALSE);
-	}
-
-		// polygon like settings
-		
-	view=view_get_current_view();
-	
-	list_palette_add_header(&property_palette,0,"Liquid UVs");
-	if (view->uv_layer==uv_layer_normal) {
-		list_palette_add_string_float(&property_palette,kLiquidPropertyOffX,"X Offset",liq->main_uv.x_offset,FALSE);
-		list_palette_add_string_float(&property_palette,kLiquidPropertyOffY,"Y Offset",liq->main_uv.y_offset,FALSE);
-		list_palette_add_string_float(&property_palette,kLiquidPropertySizeX,"X Size",liq->main_uv.x_size,FALSE);
-		list_palette_add_string_float(&property_palette,kLiquidPropertySizeY,"Y Size",liq->main_uv.y_size,FALSE);
-	}
-	else {
-		list_palette_add_string_float(&property_palette,kLiquidPropertyOffX,"X Offset",liq->lmap_uv.x_offset,FALSE);
-		list_palette_add_string_float(&property_palette,kLiquidPropertyOffY,"Y Offset",liq->lmap_uv.y_offset,FALSE);
-		list_palette_add_string_float(&property_palette,kLiquidPropertySizeX,"X Size",liq->lmap_uv.x_size,FALSE);
-		list_palette_add_string_float(&property_palette,kLiquidPropertySizeY,"Y Size",liq->lmap_uv.y_size,FALSE);
-	}
-	list_palette_add_string_float(&property_palette,kLiquidPropertyShiftX,"X Shift",liq->x_shift,FALSE);
-	list_palette_add_string_float(&property_palette,kLiquidPropertyShiftY,"Y Shift",liq->y_shift,FALSE);
-
-	list_palette_add_header(&property_palette,0,"Liquid Camera");
-	list_palette_add_string(&property_palette,kLiquidPropertyCamera,"Node",liq->camera,FALSE);
-	
-		// info
-		
-	pnt.x=liq->lft;
-	pnt.y=liq->y;
-	pnt.z=liq->top;
-	
-	size.x=liq->rgt-liq->lft;
-	size.y=liq->depth;
-	size.z=liq->bot-liq->top;
-		
-	list_palette_add_header(&property_palette,0,"Liquid Info");
-	list_palette_add_point(&property_palette,-1,"Position",&pnt,TRUE);
-	list_palette_add_point(&property_palette,-1,"Size",&size,TRUE);
-	*/
+	list_palette_add_header(&property_palette,0,"Map Camera Static");
+	list_palette_add_checkbox(&property_palette,kMapPropertyCameraStaticFollow,"Follow Player",map.camera.c_static.follow,FALSE);
+	list_palette_add_string(&property_palette,kMapPropertyCameraStaticAttachNode,"Attach Node",map.camera.c_static.attach_node,FALSE);
 }
 
 /* =======================================================
@@ -194,16 +147,80 @@ void property_palette_click_map(int id)
 	int				size;
 	
 	switch (id) {
+
+			// info
+
+		case kMapPropertyInfoName:
+			dialog_property_string_run(list_string_value_string,(void*)map.info.name,name_str_len,0,0);
+			break;
+
+		case kMapPropertyInfoTitle:
+			dialog_property_string_run(list_string_value_string,(void*)map.info.title,name_str_len,0,0);
+			break;
+
+		case kMapPropertyInfoAuthor:
+			dialog_property_string_run(list_string_value_string,(void*)map.info.author,name_str_len,0,0);
+			break;
+
+			// settings
+
+		case kMapPropertyGravity:
+			dialog_property_string_run(list_string_value_positive_float,(void*)&map.settings.gravity,0,0,0);
+			break;
+
+		case kMapPropertyGravityMaxPower:
+			dialog_property_string_run(list_string_value_positive_float,(void*)&map.settings.gravity_max_power,0,0,0);
+			break;
+
+		case kMapPropertyGravityMaxSpeed:
+			dialog_property_string_run(list_string_value_positive_float,(void*)&map.settings.gravity_max_speed,0,0,0);
+			break;
+
+		case kMapPropertyResistance:
+			dialog_property_string_run(list_string_value_positive_float,(void*)&map.settings.resistance,0,0,0);
+			break;
+
+		case kMapPropertyNeverCull:
+			map.settings.never_cull=!map.settings.never_cull;
+			break;
+
+		case kMapPropertyDisableShaders:
+			map.settings.no_shaders=!map.settings.no_shaders;
+			break;
+
+		case kMapPropertyNetworkGameList:
+			dialog_property_string_run(list_string_value_string,(void*)map.settings.network_game_list,256,0,0);
+			break;
+
+			// ambients
+
+		case kMapPropertyAmbientColor:
+			os_pick_color(&map.ambient.light_color);
+			break;
+
+		case kMapPropertyAmbientLightMapBoost:
+			dialog_property_string_run(list_string_value_positive_float,(void*)&map.ambient.light_map_boost,0,0,0);
+			break;
+
+		case kMapPropertyAmbientSound:
+			property_palette_pick_sound(map.ambient.sound_name,TRUE);
+			break;
+
+		case kMapPropertyAmbientSoundPitch:
+			dialog_property_string_run(list_string_value_0_to_1_float,(void*)&map.ambient.sound_pitch,0,0,0);
+			break;
+
+			// light maps
 	
 		case kMapPropertyLightMapQuality:
 			dialog_property_string_run(list_string_value_range_int,(void*)&map.light_map.quality,0,50,200);
 			break;
 			
 		case kMapPropertyLightMapSize:
-			size=(log2(map.light_map.size)-8);
+			size=((int)log2(map.light_map.size))-8;
 			if ((size<0) || (size>2)) size=0;
 			property_palette_pick_list((char*)map_property_light_map_size_list,&size);
-			map.light_map.size=pow(2,(size+8));
+			map.light_map.size=(int)pow(2,(size+8));
 			break;
 			
 		case kMapPropertyLightMapBorderCount:
@@ -214,131 +231,58 @@ void property_palette_click_map(int id)
 			dialog_property_string_run(list_string_value_range_int,(void*)&map.light_map.blur_count,0,0,6);
 			break;
 
-	}
+			// camera settings
 
-	/*
-	map_liquid_type			*liq;
-	editor_view_type		*view;
-
-	liq=&map.liquid.liquids[liq_idx];
-	view=view_get_current_view();
-
-	switch (id) {
-
-		case kLiquidPropertyWaveFlat:
-			liq->tide.flat=!liq->tide.flat;
+		case kMapPropertyCameraMode:
+			property_palette_pick_list((char*)map_property_camera_mode_list,&map.camera.mode);
 			break;
 
-		case kLiquidPropertyNeverObscure:
-			liq->never_obscure=!liq->never_obscure;
+		case kMapPropertyCameraFOV:
+			dialog_property_string_run(list_string_value_positive_float,(void*)&map.camera.plane.fov,0,0,0);
 			break;
 
-		case kLiquidPropertyNeverCull:
-			liq->never_cull=!liq->never_cull;
+		case kMapPropertyCameraAspectRatio:
+			dialog_property_string_run(list_string_value_positive_float,(void*)&map.camera.plane.aspect_ratio,0,0,0);
 			break;
 
-		case kLiquidPropertyNoDraw:
-			liq->no_draw=!liq->no_draw;
+		case kMapPropertyCameraNearZ:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&map.camera.plane.near_z,0,0,0);
 			break;
 
-		case kLiquidPropertyColor:
-			os_pick_color(&liq->col);
-			break;
-			
-		case kLiquidPropertyTintAlpha:
-			dialog_property_string_run(list_string_value_0_to_1_float,(void*)&liq->tint_alpha,0);
-			break;
-			
-		case kLiquidPropertySpeedAlter:
-			dialog_property_string_run(list_string_value_positive_float,(void*)&liq->speed_alter,0);
+		case kMapPropertyCameraFarZ:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&map.camera.plane.far_z,0,0,0);
 			break;
 
-		case kLiquidPropertySoundName:
-			property_palette_pick_sound(liq->ambient.sound_name,TRUE);
+		case kMapPropertyCameraNearZOffset:
+			dialog_property_string_run(list_string_value_int,(void*)&map.camera.plane.near_z_offset,0,0,0);
 			break;
 
-		case kLiquidPropertyWaveSize:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&liq->tide.division,0);
-			break;
-			
-		case kLiquidPropertyTideSize:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&liq->tide.high,0);
-			break;
-			
-		case kLiquidPropertyTideRate:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&liq->tide.rate,0);
+			// camera chase settings
+
+		case kMapPropertyCameraChaseDistance:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&map.camera.chase.distance,0,0,0);
 			break;
 
-		case kLiquidPropertyTideDirection:
-			property_palette_pick_list((char*)liquid_property_tide_direction_list,&liq->tide.direction);
+		case kMapPropertyCameraChaseTrackSpeed:
+			dialog_property_string_run(list_string_value_positive_float,(void*)&map.camera.chase.track_speed,0,0,0);
 			break;
 
-		case kLiquidPropertyHarm:
-			dialog_property_string_run(list_string_value_int,(void*)&liq->harm.in_harm,0);
-			break;
-			
-		case kLiquidPropertyDrownTick:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&liq->harm.drown_tick,0);
-			break;
-			
-		case kLiquidPropertyDrownHarm:
-			dialog_property_string_run(list_string_value_int,(void*)&liq->harm.drown_harm,0);
+		case kMapPropertyCameraChaseSlop:
+			dialog_property_string_run(list_string_value_angle,(void*)&map.camera.chase.slop,0,0,0);
 			break;
 
-		case kLiquidPropertyGroup:
-			property_palette_pick_group(&liq->group_idx);
-			break;
-			
-		case kLiquidPropertyOffX:
-			if (view->uv_layer==uv_layer_normal) {
-				dialog_property_string_run(list_string_value_0_to_1_float,(void*)&liq->main_uv.x_offset,0);
-			}
-			else {
-				dialog_property_string_run(list_string_value_0_to_1_float,(void*)&liq->lmap_uv.x_offset,0);
-			}
-			break;
-			
-		case kLiquidPropertyOffY:
-			if (view->uv_layer==uv_layer_normal) {
-				dialog_property_string_run(list_string_value_0_to_1_float,(void*)&liq->main_uv.y_offset,0);
-			}
-			else {
-				dialog_property_string_run(list_string_value_0_to_1_float,(void*)&liq->lmap_uv.y_offset,0);
-			}
+			// camera static settings
+
+		case kMapPropertyCameraStaticFollow:
+			map.camera.c_static.follow=!map.camera.c_static.follow;
 			break;
 
-		case kLiquidPropertySizeX:
-			if (view->uv_layer==uv_layer_normal) {
-				dialog_property_string_run(list_string_value_positive_float,(void*)&liq->main_uv.x_size,0);
-			}
-			else {
-				dialog_property_string_run(list_string_value_positive_float,(void*)&liq->lmap_uv.x_size,0);
-			}
-			break;
-			
-		case kLiquidPropertySizeY:
-			if (view->uv_layer==uv_layer_normal) {
-				dialog_property_string_run(list_string_value_positive_float,(void*)&liq->main_uv.y_size,0);
-			}
-			else {
-				dialog_property_string_run(list_string_value_positive_float,(void*)&liq->lmap_uv.y_size,0);
-			}
-			break;
-
-		case kLiquidPropertyShiftX:
-			dialog_property_string_run(list_string_value_float,(void*)&liq->x_shift,0);
-			break;
-			
-		case kLiquidPropertyShiftY:
-			dialog_property_string_run(list_string_value_float,(void*)&liq->y_shift,0);
-			break;
-
-		case kLiquidPropertyCamera:
-			property_palette_pick_node(liq->camera);
+		case kMapPropertyCameraStaticAttachNode:
+			property_palette_pick_node(map.camera.c_static.attach_node);
 			break;
 
 	}
-*/
+
 	main_wind_draw();
 }
 

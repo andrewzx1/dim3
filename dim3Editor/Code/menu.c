@@ -37,8 +37,6 @@ and can be sold or given away.
 extern map_type				map;
 extern editor_state_type	state;
 
-extern void light_maps_clear(void);
-
 /* =======================================================
 
       Mainline Menu Enable/Disable
@@ -420,7 +418,7 @@ bool menu_event_run(int cmd)
 			return(TRUE);
 			
 		case kCommandBuildLightMaps:
-			if (dialog_light_map_run()) {
+			if (light_maps_create()) {
 				view_set_uv_layer(uv_layer_light_map);
 				menu_update_view();
 				main_wind_draw();

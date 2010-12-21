@@ -300,6 +300,9 @@ void property_palette_click(d3pnt *pnt,bool double_click)
 
 void property_palette_string_get_values(int value_type,void *value,int i_min,int i_max,char *str,char *desc)
 {
+	d3pnt			*pnt;
+	d3ang			*ang;
+
 	str[0]=0x0;
 	desc[0]=0x0;
 	
@@ -339,13 +342,29 @@ void property_palette_string_get_values(int value_type,void *value,int i_min,int
 			sprintf(str,"%.2f",*((float*)value));
 			strcpy(desc,"Enter a float between 0.0 and 1.0.");
 			break;
+
+		case list_string_value_point:
+			pnt=(d3pnt*)value;
+			sprintf(str,"%d,%d,%d",pnt->x,pnt->y,pnt->z);
+			strcpy(desc,"Enter a three value (x,y,z) point.");
+			break;
+
+		case list_string_value_angle:
+			ang=(d3ang*)value;
+			sprintf(str,"%.2f,%.2f,%.2f",ang->x,ang->y,ang->z);
+			strcpy(desc,"Enter a three value (x,y,z) angle.");
+			break;
 			
 	}
 }
 
 void property_palette_string_set_values(int value_type,void *value,int value_len,int i_min,int i_max,char *str)
 {
-	char			*v_str;
+	int				n,i[3];
+	float			f[3];
+	char			*v_str,*c,*c2;
+	d3pnt			*pnt;
+	d3ang			*ang;
 	
 	switch (value_type) {
 	
@@ -370,17 +389,53 @@ void property_palette_string_set_values(int value_type,void *value,int value_len
 			break;
 		
 		case list_string_value_float:
-			*((float*)value)=atof(str);
+			*((float*)value)=(float)atof(str);
 			break;
 			
 		case list_string_value_positive_float:
-			*((float*)value)=fabs(atof(str));
+			*((float*)value)=(float)fabs(atof(str));
 			break;
 			
 		case list_string_value_0_to_1_float:
-			*((float*)value)=atof(str);
+			*((float*)value)=(float)atof(str);
 			if ((*((float*)value))<0.0f) *((float*)value)=0.0f;
 			if ((*((float*)value))>1.0f) *((float*)value)=1.0f;
+			break;
+
+		case list_string_value_point:
+			c=str;
+			i[0]=i[1]=i[2]=0;
+
+			for (n=0;n!=3;n++) {
+				c2=strchr(c,',');
+				if (c2!=NULL) *c2=0x0;
+				i[n]=atoi(c);
+				if (c2==NULL) break;
+				c=c2+1;
+			}
+
+			pnt=(d3pnt*)value;
+			pnt->x=i[0];
+			pnt->y=i[1];
+			pnt->z=i[2];
+			break;
+
+		case list_string_value_angle:
+			c=str;
+			f[0]=f[1]=f[2]=0.0f;
+
+			for (n=0;n!=3;n++) {
+				c2=strchr(c,',');
+				if (c2!=NULL) *c2=0x0;
+				f[n]=(float)atof(c);
+				if (c2==NULL) break;
+				c=c2+1;
+			}
+
+			ang=(d3ang*)value;
+			ang->x=f[0];
+			ang->y=f[1];
+			ang->z=f[2];
 			break;
 			
 	}
