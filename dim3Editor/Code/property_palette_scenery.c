@@ -109,7 +109,7 @@ void property_palette_click_scenery(int scenery_idx,int id)
 		frame_idx=(id-kSceneryPropertyFramesStart);
 		
 		frame=(int)scenery->texture_frame[frame_idx];
-		dialog_property_string_run(list_string_value_positive_int,(void*)&frame,0);
+		dialog_property_string_run(list_string_value_positive_int,(void*)&frame,0,0,0);
 		scenery->texture_frame[frame_idx]=(char)frame;
 
 		main_wind_draw();
@@ -129,11 +129,11 @@ void property_palette_click_scenery(int scenery_idx,int id)
 			break;
 
 		case kSceneryPropertyAnimationName:
-			dialog_property_string_run(list_string_value_string,(void*)scenery->animation_name,name_str_len);
+			dialog_property_string_run(list_string_value_string,(void*)scenery->animation_name,name_str_len,0,0);
 			break;
 			
 		case kSceneryPropertyResize:
-			dialog_property_string_run(list_string_value_positive_float,(void*)&scenery->resize,0);
+			dialog_property_string_run(list_string_value_positive_float,(void*)&scenery->resize,0,0,0);
 			break;
 
 		case kSceneryPropertyContactObject:

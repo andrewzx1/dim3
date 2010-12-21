@@ -62,6 +62,8 @@ extern editor_setup_type		setup;
 
 extern list_palette_type		property_palette;
 
+char							map_property_light_map_size_list[][name_str_len]={"256","512","1024",""};
+
 /* =======================================================
 
       Property Palette Fill Map
@@ -70,6 +72,8 @@ extern list_palette_type		property_palette;
 
 void property_palette_fill_map(void)
 {
+	int				size;
+	
 	list_palette_add_header(&property_palette,0,"Map Info");
 	list_palette_add_string(&property_palette,kMapPropertyInfoName,"Name",map.info.name,FALSE);
 	list_palette_add_string(&property_palette,kMapPropertyInfoTitle,"Title",map.info.title,FALSE);
@@ -90,10 +94,12 @@ void property_palette_fill_map(void)
 	list_palette_add_string(&property_palette,kMapPropertyAmbientSound,"Sound",map.ambient.sound_name,FALSE);
 	list_palette_add_string_float(&property_palette,kMapPropertyAmbientSoundPitch,"Sound Pitch",map.ambient.sound_pitch,FALSE);
 
-	list_palette_add_header(&property_palette,0,"Map Light Map");
+	size=(log2(map.light_map.size)-8);
+	if ((size<0) || (size>2)) size=0;
 
+	list_palette_add_header(&property_palette,0,"Map Light Map");
 	list_palette_add_string_int(&property_palette,kMapPropertyLightMapQuality,"Quality",map.light_map.quality,FALSE);
-	list_palette_add_string_int(&property_palette,kMapPropertyLightMapSize,"Size",map.light_map.size,FALSE);
+	list_palette_add_string(&property_palette,kMapPropertyLightMapSize,"Texture Size",map_property_light_map_size_list[size],FALSE);
 	list_palette_add_string_int(&property_palette,kMapPropertyLightMapBorderCount,"Pixel Border Count",map.light_map.pixel_border_count,FALSE);
 	list_palette_add_string_int(&property_palette,kMapPropertyLightMapBlurCount,"Blur Count",map.light_map.blur_count,FALSE);
 
@@ -185,6 +191,31 @@ void property_palette_fill_map(void)
 
 void property_palette_click_map(int id)
 {
+	int				size;
+	
+	switch (id) {
+	
+		case kMapPropertyLightMapQuality:
+			dialog_property_string_run(list_string_value_range_int,(void*)&map.light_map.quality,0,50,200);
+			break;
+			
+		case kMapPropertyLightMapSize:
+			size=(log2(map.light_map.size)-8);
+			if ((size<0) || (size>2)) size=0;
+			property_palette_pick_list((char*)map_property_light_map_size_list,&size);
+			map.light_map.size=pow(2,(size+8));
+			break;
+			
+		case kMapPropertyLightMapBorderCount:
+			dialog_property_string_run(list_string_value_range_int,(void*)&map.light_map.pixel_border_count,0,0,10);
+			break;
+			
+		case kMapPropertyLightMapBlurCount:
+			dialog_property_string_run(list_string_value_range_int,(void*)&map.light_map.blur_count,0,0,6);
+			break;
+
+	}
+
 	/*
 	map_liquid_type			*liq;
 	editor_view_type		*view;

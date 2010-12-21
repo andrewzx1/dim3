@@ -68,48 +68,19 @@ static pascal OSStatus property_string_event_proc(EventHandlerCallRef handler,Ev
       
 ======================================================= */
 
-void dialog_property_string_run(int value_type,void *value,int value_len)
+void dialog_property_string_run(int value_type,void *value,int value_len,int i_min,int i_max)
 {
-	EventHandlerUPP					event_upp;
-	EventTypeSpec					event_list[]={{kEventClassCommand,kEventProcessCommand}};
+	char					str[256],desc[256];
+	EventHandlerUPP			event_upp;
+	EventTypeSpec			event_list[]={{kEventClassCommand,kEventProcessCommand}};
 	
 		// open the dialog
 		
 	dialog_open(&dialog_property_string_wind,"PropertyString");
 	
-	switch (value_type) {
-	
-		case list_string_value_string:
-			dialog_set_text(dialog_property_string_wind,kPropertyString,0,(char*)value);
-			dialog_set_text(dialog_property_string_wind,kPropertyDescription,0,"Enter a string.");
-			break;
-			
-		case list_string_value_int:
-			dialog_set_int(dialog_property_string_wind,kPropertyString,0,*((int*)value));
-			dialog_set_text(dialog_property_string_wind,kPropertyDescription,0,"Enter a integer.");
-			break;
-			
-		case list_string_value_positive_int:
-			dialog_set_int(dialog_property_string_wind,kPropertyString,0,*((int*)value));
-			dialog_set_text(dialog_property_string_wind,kPropertyDescription,0,"Enter a positive integer.");
-			break;
-			
-		case list_string_value_float:
-			dialog_set_float(dialog_property_string_wind,kPropertyString,0,*((float*)value));
-			dialog_set_text(dialog_property_string_wind,kPropertyDescription,0,"Enter a float.");
-			break;
-
-		case list_string_value_positive_float:
-			dialog_set_float(dialog_property_string_wind,kPropertyString,0,*((float*)value));
-			dialog_set_text(dialog_property_string_wind,kPropertyDescription,0,"Enter a positive float.");
-			break;
-
-		case list_string_value_0_to_1_float:
-			dialog_set_float(dialog_property_string_wind,kPropertyString,0,*((float*)value));
-			dialog_set_text(dialog_property_string_wind,kPropertyDescription,0,"Enter a float between 0.0 and 1.0.");
-			break;
-			
-	}
+	property_palette_string_get_values(value_type,value,i_min,i_max,str,desc);
+	dialog_set_text(dialog_property_string_wind,kPropertyString,0,str);
+	dialog_set_text(dialog_property_string_wind,kPropertyDescription,0,desc);
 	
 	dialog_set_focus(dialog_property_string_wind,kPropertyString,0);
 		
@@ -128,35 +99,8 @@ void dialog_property_string_run(int value_type,void *value,int value_len)
 	
 		// get the value
 		
-	switch (value_type) {
-	
-		case list_string_value_string:
-			dialog_get_text(dialog_property_string_wind,kPropertyString,0,(char*)value,value_len);
-			break;
-			
-		case list_string_value_int:
-			*((int*)value)=dialog_get_int(dialog_property_string_wind,kPropertyString,0);
-			break;
-			
-		case list_string_value_positive_int:
-			*((int*)value)=abs(dialog_get_int(dialog_property_string_wind,kPropertyString,0));
-			break;
-		
-		case list_string_value_float:
-			*((float*)value)=dialog_get_float(dialog_property_string_wind,kPropertyString,0);
-			break;
-			
-		case list_string_value_positive_float:
-			*((float*)value)=fabs(dialog_get_float(dialog_property_string_wind,kPropertyString,0));
-			break;
-			
-		case list_string_value_0_to_1_float:
-			*((float*)value)=dialog_get_float(dialog_property_string_wind,kPropertyString,0);
-			if ((*((float*)value))<0.0f) *((float*)value)=0.0f;
-			if ((*((float*)value))>1.0f) *((float*)value)=1.0f;
-			break;
-			
-	}
+	dialog_get_text(dialog_property_string_wind,kPropertyString,0,str,256);
+	property_palette_string_set_values(value_type,value,value_len,i_min,i_max,str);
 	
 		// close window
 		
