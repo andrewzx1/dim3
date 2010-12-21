@@ -47,9 +47,7 @@ and can be sold or given away.
 #define kMeshPropertyNoLightMap					10
 #define kMeshPropertySkipLightMapTrace			11
 
-#define kMeshPropertyRotX						12
-#define kMeshPropertyRotY						13
-#define kMeshPropertyRotZ						14
+#define kMeshPropertyRot						12
 
 #define kMeshPropertyGroup						15
 #define kMeshPropertyHideMode					16
@@ -118,9 +116,10 @@ void property_palette_fill_mesh(int mesh_idx,int poly_idx)
 	list_palette_add_checkbox(&property_palette,kMeshPropertyNoLightMap,"No Light Map",mesh->flag.no_light_map,FALSE);
 	list_palette_add_checkbox(&property_palette,kMeshPropertySkipLightMapTrace,"Skip Light Map Trace",mesh->flag.skip_light_map_trace,FALSE);
 
-	list_palette_add_header(&property_palette,0,"Mesh Modes");
+	list_palette_add_header(&property_palette,0,"Mesh Options");
 	list_palette_add_string(&property_palette,kMeshPropertyHideMode,"Hide",mesh_property_hide_list[mesh->hide_mode],FALSE);
 	list_palette_add_string(&property_palette,kMeshPropertyNormalMode,"Normals",mesh_property_normal_list[mesh->normal_mode],FALSE);
+	list_palette_add_point(&property_palette,kMeshPropertyRot,"Rotational Center",&mesh->rot_off,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Mesh Group");
 	if (mesh->group_idx==-1) {
@@ -129,11 +128,6 @@ void property_palette_fill_mesh(int mesh_idx,int poly_idx)
 	else {
 		list_palette_add_string(&property_palette,kMeshPropertyGroup,"Group",map.group.groups[mesh->group_idx].name,FALSE);
 	}
-
-	list_palette_add_header(&property_palette,0,"Mesh Rotational Center");
-	list_palette_add_string_int(&property_palette,kMeshPropertyRotX,"X",mesh->rot_off.x,FALSE);
-	list_palette_add_string_int(&property_palette,kMeshPropertyRotY,"Y",mesh->rot_off.y,FALSE);
-	list_palette_add_string_int(&property_palette,kMeshPropertyRotZ,"Z",mesh->rot_off.z,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Mesh Messages");
 	list_palette_add_checkbox(&property_palette,kMeshPropertyMessageEnter,"Entry On",mesh->msg.entry_on,FALSE);
@@ -258,16 +252,8 @@ void property_palette_click_mesh(int mesh_idx,int poly_idx,int id)
 			property_palette_pick_group(&mesh->group_idx);
 			break;
 			
-		case kMeshPropertyRotX:
-			dialog_property_string_run(list_string_value_int,(void*)&mesh->rot_off.x,0,0,0);
-			break;
-			
-		case kMeshPropertyRotY:
-			dialog_property_string_run(list_string_value_int,(void*)&mesh->rot_off.y,0,0,0);
-			break;
-			
-		case kMeshPropertyRotZ:
-			dialog_property_string_run(list_string_value_int,(void*)&mesh->rot_off.z,0,0,0);
+		case kMeshPropertyRot:
+			dialog_property_string_run(list_string_value_point,(void*)&mesh->rot_off,0,0,0);
 			break;
 
 		case kMeshPropertyMessageEnter:
