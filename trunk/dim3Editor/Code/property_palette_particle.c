@@ -92,11 +92,11 @@ void property_palette_click_particle(int particle_idx,int id)
 			break;
 
 		case kParticlePropertySpawnTick:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&particle->spawn_tick,0);
+			dialog_property_string_run(list_string_value_positive_int,(void*)&particle->spawn_tick,0,0,0);
 			break;
 			
 		case kParticlePropertySlopTick:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&particle->slop_tick,0);
+			dialog_property_string_run(list_string_value_positive_int,(void*)&particle->slop_tick,0,0,0);
 			break;
 
 	}

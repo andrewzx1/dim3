@@ -377,9 +377,12 @@ typedef struct		{
 #define list_string_value_string				0
 #define list_string_value_int					1
 #define list_string_value_positive_int			2
-#define list_string_value_float					3
-#define list_string_value_positive_float		4
-#define list_string_value_0_to_1_float			5
+#define list_string_value_range_int				3
+#define list_string_value_float					4
+#define list_string_value_positive_float		5
+#define list_string_value_0_to_1_float			6
+#define list_string_value_point					7
+#define list_string_value_angle					8
 
 typedef union		{
 						bool								checkbox;

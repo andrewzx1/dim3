@@ -341,13 +341,13 @@ bool dialog_map_settings_run(void)
 	
 		// editor
 		
-	dialog_set_float(dialog_map_settings_wind,kMapTextureXFactor,0,map.settings.editor.txt_scale_x);
-	dialog_set_float(dialog_map_settings_wind,kMapTextureYFactor,0,map.settings.editor.txt_scale_y);
+	dialog_set_float(dialog_map_settings_wind,kMapTextureXFactor,0,map.editor_setup.txt_scale_x);
+	dialog_set_float(dialog_map_settings_wind,kMapTextureYFactor,0,map.editor_setup.txt_scale_y);
 	
-	dialog_set_int(dialog_map_settings_wind,kMapEditorViewNearZ,0,map.settings.editor.view_near_dist);
-	dialog_set_int(dialog_map_settings_wind,kMapEditorViewFarZ,0,map.settings.editor.view_far_dist);
+	dialog_set_int(dialog_map_settings_wind,kMapEditorViewNearZ,0,map.editor_setup.view_near_dist);
+	dialog_set_int(dialog_map_settings_wind,kMapEditorViewFarZ,0,map.editor_setup.view_far_dist);
 	
-	dialog_set_boolean(dialog_map_settings_wind,kMapEditorLinkStartAlways,0,map.settings.editor.link_always_start);
+	dialog_set_boolean(dialog_map_settings_wind,kMapEditorLinkStartAlways,0,map.editor_setup.link_always_start);
 
 		// counts
 		
@@ -500,13 +500,13 @@ bool dialog_map_settings_run(void)
 		
 			// editor
 			
-		map.settings.editor.txt_scale_x=dialog_get_float(dialog_map_settings_wind,kMapTextureXFactor,0);
-		map.settings.editor.txt_scale_y=dialog_get_float(dialog_map_settings_wind,kMapTextureYFactor,0);
+		map.editor_setup.txt_scale_x=dialog_get_float(dialog_map_settings_wind,kMapTextureXFactor,0);
+		map.editor_setup.txt_scale_y=dialog_get_float(dialog_map_settings_wind,kMapTextureYFactor,0);
 		
-		map.settings.editor.view_near_dist=dialog_get_int(dialog_map_settings_wind,kMapEditorViewNearZ,0);
-		map.settings.editor.view_far_dist=dialog_get_int(dialog_map_settings_wind,kMapEditorViewFarZ,0);
+		map.editor_setup.view_near_dist=dialog_get_int(dialog_map_settings_wind,kMapEditorViewNearZ,0);
+		map.editor_setup.view_far_dist=dialog_get_int(dialog_map_settings_wind,kMapEditorViewFarZ,0);
 		
-		map.settings.editor.link_always_start=dialog_get_boolean(dialog_map_settings_wind,kMapEditorLinkStartAlways,0);
+		map.editor_setup.link_always_start=dialog_get_boolean(dialog_map_settings_wind,kMapEditorLinkStartAlways,0);
 	}
 
 		// close window

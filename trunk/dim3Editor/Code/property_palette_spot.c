@@ -201,7 +201,7 @@ void property_palette_click_spot(int spot_idx,int id)
 		param_idx=(id-kSpotPropertyParamsStart);
 		
 		palette_palette_spot_get_parameter(param_idx,spot->params,str);
-		dialog_property_string_run(list_string_value_string,(void*)str,256);
+		dialog_property_string_run(list_string_value_string,(void*)str,256,0,0);
 		palette_palette_spot_set_parameter(param_idx,spot->params,str);
 
 		main_wind_draw();
@@ -213,7 +213,7 @@ void property_palette_click_spot(int spot_idx,int id)
 	switch (id) {
 
 		case kSpotPropertyName:
-			dialog_property_string_run(list_string_value_string,(void*)spot->name,name_str_len);
+			dialog_property_string_run(list_string_value_string,(void*)spot->name,name_str_len,0,0);
 			break;
 
 		case kSpotPropertyType:

@@ -245,9 +245,9 @@ void property_palette_click(d3pnt *pnt,bool double_click)
 
 		// get the selection
 
-	if (select_count()==0) return;
+	main_idx=-1;
 	
-	select_get(0,&sel_type,&main_idx,&sub_idx);
+	if (select_count()!=0) select_get(0,&sel_type,&main_idx,&sub_idx);
 
 	if (main_idx==-1) {
 		property_palette_click_map(property_palette.item_id);
@@ -294,7 +294,101 @@ void property_palette_click(d3pnt *pnt,bool double_click)
 
 /* =======================================================
 
-      Property Palette Editing Utilities
+      Property Palette String Utilities
+      
+======================================================= */
+
+void property_palette_string_get_values(int value_type,void *value,int i_min,int i_max,char *str,char *desc)
+{
+	str[0]=0x0;
+	desc[0]=0x0;
+	
+	switch (value_type) {
+	
+		case list_string_value_string:
+			strcpy(str,(char*)value);
+			strcpy(desc,"Enter a string.");
+			break;
+			
+		case list_string_value_int:
+			sprintf(str,"%d",*((int*)value));
+			strcpy(desc,"Enter a integer.");
+			break;
+			
+		case list_string_value_positive_int:
+			sprintf(str,"%d",*((int*)value));
+			strcpy(desc,"Enter a positive integer.");
+			break;
+			
+		case list_string_value_range_int:
+			sprintf(str,"%d",*((int*)value));
+			sprintf(desc,"Enter a integer between %d and %d.",i_min,i_max);
+			break;
+			
+		case list_string_value_float:
+			sprintf(str,"%.2f",*((float*)value));
+			strcpy(desc,"Enter a float.");
+			break;
+
+		case list_string_value_positive_float:
+			sprintf(str,"%.2f",*((float*)value));
+			strcpy(desc,"Enter a positive float.");
+			break;
+
+		case list_string_value_0_to_1_float:
+			sprintf(str,"%.2f",*((float*)value));
+			strcpy(desc,"Enter a float between 0.0 and 1.0.");
+			break;
+			
+	}
+}
+
+void property_palette_string_set_values(int value_type,void *value,int value_len,int i_min,int i_max,char *str)
+{
+	char			*v_str;
+	
+	switch (value_type) {
+	
+		case list_string_value_string:
+			v_str=(char*)value;
+			strncpy(v_str,str,value_len);
+			v_str[value_len-1]=0x0;
+			break;
+			
+		case list_string_value_int:
+			*((int*)value)=atoi(str);
+			break;
+			
+		case list_string_value_positive_int:
+			*((int*)value)=abs(atoi(str));
+			break;
+			
+		case list_string_value_range_int:
+			*((int*)value)=atoi(str);
+			if ((*((int*)value))<i_min) *((int*)value)=i_min;
+			if ((*((int*)value))>i_max) *((int*)value)=i_max;
+			break;
+		
+		case list_string_value_float:
+			*((float*)value)=atof(str);
+			break;
+			
+		case list_string_value_positive_float:
+			*((float*)value)=fabs(atof(str));
+			break;
+			
+		case list_string_value_0_to_1_float:
+			*((float*)value)=atof(str);
+			if ((*((float*)value))<0.0f) *((float*)value)=0.0f;
+			if ((*((float*)value))>1.0f) *((float*)value)=1.0f;
+			break;
+			
+	}
+}
+
+/* =======================================================
+
+      Property Palette List Utilities
       
 ======================================================= */
 
