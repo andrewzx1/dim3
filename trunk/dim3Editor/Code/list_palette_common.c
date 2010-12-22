@@ -243,6 +243,32 @@ void list_palette_add_angle(list_palette_type *list,int id,char *name,d3ang *ang
 	list_palette_add_string(list,id,name,str,disabled);
 }
 
+void list_palette_add_uv(list_palette_type *list,int id,char *name,d3fpnt *fpnt,bool disabled)
+{
+	char		str[32];
+	
+	sprintf(str,"%.2f,%.2f",fpnt->x,fpnt->y);
+	list_palette_add_string(list,id,name,str,disabled);
+}
+
+void list_palette_add_texture(list_palette_type *list,int id,char *name,int txt_idx,bool disabled)
+{
+	char		str[name_str_len];
+
+	str[0]=0x0;
+
+	if (txt_idx!=-1) {
+		if (map.textures[txt_idx].frames[0].name[0]==0x0) {
+			strcpy(str,"(none)");
+		}
+		else {
+			strcpy(str,map.textures[txt_idx].frames[0].name);
+		}
+	}
+	
+	list_palette_add_string(list,id,name,str,disabled);
+}
+
 /* =======================================================
 
       List Delete Items

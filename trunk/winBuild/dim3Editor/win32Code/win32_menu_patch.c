@@ -55,7 +55,6 @@ int				win32_menu_remap[][2]={
 					{kCommandMeshTesselate,502},
 					{kCommandMeshResize,503},
 					{kCommandMeshReposition,504},
-					{kCommandMeshSkew,505},
 					{kCommandMeshFlipX,506},
 					{kCommandMeshFlipY,507},
 					{kCommandMeshFlipZ,508},

@@ -88,7 +88,6 @@ BEGIN
 		MENUITEM SEPARATOR
         MENUITEM "Resize...",					503
         MENUITEM "Reposition...",				504
-        MENUITEM "Skew...",						505
 		MENUITEM SEPARATOR
         MENUITEM "Flip X",						506
         MENUITEM "Flip Y",						507

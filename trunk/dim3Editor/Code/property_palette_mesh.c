@@ -66,14 +66,11 @@ and can be sold or given away.
 #define kMeshPolyPropertyClimbable				30
 #define kMeshPolyPropertyNeverCull				31
 
-#define kMeshPolyPropertyOffX					32
-#define kMeshPolyPropertyOffY					33
-#define kMeshPolyPropertySizeX					34
-#define kMeshPolyPropertySizeY					35
-#define kMeshPolyPropertyShiftX					36
-#define kMeshPolyPropertyShiftY					37
+#define kMeshPolyPropertyOff					32
+#define kMeshPolyPropertySize					33
+#define kMeshPolyPropertyShift					34
 
-#define kMeshPolyPropertyCamera					38
+#define kMeshPolyPropertyCamera					35
 
 extern map_type					map;
 extern editor_state_type		state;
@@ -93,8 +90,8 @@ char							mesh_property_hide_list[][name_str_len]={"Never","Single Player","Mul
 
 void property_palette_fill_mesh(int mesh_idx,int poly_idx)
 {
-	float					x_txtoff,y_txtoff,x_txtfact,y_txtfact;
 	d3pnt					min,max;
+	d3fpnt					uv_offset,uv_size,uv_shift;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
 	editor_view_type		*view;
@@ -147,19 +144,18 @@ void property_palette_fill_mesh(int mesh_idx,int poly_idx)
 		view=view_get_current_view();
 		poly=&mesh->polys[poly_idx];
 
-		map_mesh_get_poly_uv_as_box(&map,mesh_idx,poly_idx,(view->uv_layer==uv_layer_light_map),&x_txtoff,&y_txtoff,&x_txtfact,&y_txtfact);
+		map_mesh_get_poly_uv_as_box(&map,mesh_idx,poly_idx,(view->uv_layer==uv_layer_light_map),&uv_offset.x,&uv_offset.y,&uv_size.x,&uv_size.y);
+		uv_shift.x=poly->x_shift;
+		uv_shift.y=poly->y_shift;
 		
 		list_palette_add_header(&property_palette,0,"Poly Settings");
 		list_palette_add_checkbox(&property_palette,kMeshPolyPropertyClimbable,"Cimbable",poly->climbable,FALSE);
 		list_palette_add_checkbox(&property_palette,kMeshPolyPropertyNeverCull,"Never Cull",poly->never_cull,FALSE);
 		
 		list_palette_add_header(&property_palette,0,"Poly UVs");
-		list_palette_add_string_float(&property_palette,kMeshPolyPropertyOffX,"X Offset",x_txtoff,FALSE);
-		list_palette_add_string_float(&property_palette,kMeshPolyPropertyOffY,"Y Offset",y_txtoff,FALSE);
-		list_palette_add_string_float(&property_palette,kMeshPolyPropertySizeX,"X Size",x_txtfact,FALSE);
-		list_palette_add_string_float(&property_palette,kMeshPolyPropertySizeY,"Y Size",y_txtfact,FALSE);
-		list_palette_add_string_float(&property_palette,kMeshPolyPropertyShiftX,"X Shift",poly->x_shift,FALSE);
-		list_palette_add_string_float(&property_palette,kMeshPolyPropertyShiftY,"Y Shift",poly->y_shift,FALSE);
+		list_palette_add_uv(&property_palette,kMeshPolyPropertyOff,"Offset",&uv_offset,FALSE);
+		list_palette_add_uv(&property_palette,kMeshPolyPropertySize,"Size",&uv_size,FALSE);
+		list_palette_add_uv(&property_palette,kMeshPolyPropertyShift,"Shift",&uv_shift,FALSE);
 			
 		list_palette_add_header(&property_palette,0,"Poly Camera");
 		list_palette_add_string(&property_palette,kMeshPolyPropertyCamera,"Node",poly->camera,FALSE);
@@ -186,6 +182,7 @@ void property_palette_fill_mesh(int mesh_idx,int poly_idx)
 void property_palette_click_mesh(int mesh_idx,int poly_idx,int id)
 {
 	float					x_txtoff,y_txtoff,x_txtfact,y_txtfact;
+	d3fpnt					uv;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
 	editor_view_type		*view;
@@ -311,36 +308,24 @@ void property_palette_click_mesh(int mesh_idx,int poly_idx,int id)
 				poly->never_cull=!poly->never_cull;
 				break;
 
-			case kMeshPolyPropertyOffX:
-				map_mesh_get_poly_uv_as_box(&map,mesh_idx,poly_idx,(view->uv_layer==uv_layer_light_map),&x_txtoff,&y_txtoff,&x_txtfact,&y_txtfact);
-				dialog_property_string_run(list_string_value_0_to_1_float,(void*)&x_txtoff,0,0,0);
-				map_mesh_set_poly_uv_as_box(&map,mesh_idx,poly_idx,(view->uv_layer==uv_layer_light_map),x_txtoff,y_txtoff,x_txtfact,y_txtfact);
+			case kMeshPolyPropertyOff:
+				map_mesh_get_poly_uv_as_box(&map,mesh_idx,poly_idx,(view->uv_layer==uv_layer_light_map),&uv.x,&uv.y,&x_txtfact,&y_txtfact);
+				dialog_property_string_run(list_string_value_uv,(void*)&uv,0,0,0);
+				map_mesh_set_poly_uv_as_box(&map,mesh_idx,poly_idx,(view->uv_layer==uv_layer_light_map),uv.x,uv.y,x_txtfact,y_txtfact);
 				break;
 
-			case kMeshPolyPropertyOffY:
-				map_mesh_get_poly_uv_as_box(&map,mesh_idx,poly_idx,(view->uv_layer==uv_layer_light_map),&x_txtoff,&y_txtoff,&x_txtfact,&y_txtfact);
-				dialog_property_string_run(list_string_value_0_to_1_float,(void*)&y_txtoff,0,0,0);
-				map_mesh_set_poly_uv_as_box(&map,mesh_idx,poly_idx,(view->uv_layer==uv_layer_light_map),x_txtoff,y_txtoff,x_txtfact,y_txtfact);
+			case kMeshPolyPropertySize:
+				map_mesh_get_poly_uv_as_box(&map,mesh_idx,poly_idx,(view->uv_layer==uv_layer_light_map),&x_txtoff,&y_txtoff,&uv.x,&uv.y);
+				dialog_property_string_run(list_string_value_uv,(void*)&uv,0,0,0);
+				map_mesh_set_poly_uv_as_box(&map,mesh_idx,poly_idx,(view->uv_layer==uv_layer_light_map),x_txtoff,y_txtoff,uv.x,uv.y);
 				break;
 
-			case kMeshPolyPropertySizeX:
-				map_mesh_get_poly_uv_as_box(&map,mesh_idx,poly_idx,(view->uv_layer==uv_layer_light_map),&x_txtoff,&y_txtoff,&x_txtfact,&y_txtfact);
-				dialog_property_string_run(list_string_value_positive_float,(void*)&x_txtfact,0,0,0);
-				map_mesh_set_poly_uv_as_box(&map,mesh_idx,poly_idx,(view->uv_layer==uv_layer_light_map),x_txtoff,y_txtoff,x_txtfact,y_txtfact);
-				break;
-
-			case kMeshPolyPropertySizeY:
-				map_mesh_get_poly_uv_as_box(&map,mesh_idx,poly_idx,(view->uv_layer==uv_layer_light_map),&x_txtoff,&y_txtoff,&x_txtfact,&y_txtfact);
-				dialog_property_string_run(list_string_value_positive_float,(void*)&y_txtfact,0,0,0);
-				map_mesh_set_poly_uv_as_box(&map,mesh_idx,poly_idx,(view->uv_layer==uv_layer_light_map),x_txtoff,y_txtoff,x_txtfact,y_txtfact);
-				break;
-				
-			case kMeshPolyPropertyShiftX:
-				dialog_property_string_run(list_string_value_float,(void*)&poly->x_shift,0,0,0);
-				break;
-				
-			case kMeshPolyPropertyShiftY:
-				dialog_property_string_run(list_string_value_float,(void*)&poly->y_shift,0,0,0);
+			case kMeshPolyPropertyShift:
+				uv.x=poly->x_shift;
+				uv.y=poly->y_shift;
+				dialog_property_string_run(list_string_value_uv,(void*)&uv,0,0,0);
+				poly->x_shift=uv.x;
+				poly->y_shift=uv.y;
 				break;
 				
 			case kMeshPolyPropertyCamera:

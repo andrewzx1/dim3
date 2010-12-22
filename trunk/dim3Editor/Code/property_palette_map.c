@@ -71,6 +71,27 @@ and can be sold or given away.
 #define kMapPropertyCameraStaticFollow		27
 #define kMapPropertyCameraStaticAttachNode	28
 
+#define kMapPropertyMediaType				29
+#define kMapPropertyMediaName				30
+#define kMapPropertyMediaTitleSound			31
+
+#define kMapPropertyMusicName				32
+#define kMapPropertyMusicFadeTime			33
+
+#define kMapPropertyOn						34
+#define kMapPropertySkyType					35
+#define kMapPropertySkyRadius				36
+#define kMapPropertyDomeY					37
+#define kMapPropertyDomeMirror				38
+#define kMapPropertyTextureRepeat			39
+#define kMapPropertyTextureShift			40
+#define kMapPropertyTextureFill				41
+#define kMapPropertyTextureBottomFill		42
+#define kMapPropertyTextureNorthFill		43
+#define kMapPropertyTextureSouthFill		44
+#define kMapPropertyTextureEastFill			45
+#define kMapPropertyTextureWestFill			46
+
 extern map_type					map;
 extern editor_state_type		state;
 extern editor_setup_type		setup;
@@ -78,7 +99,9 @@ extern editor_setup_type		setup;
 extern list_palette_type		property_palette;
 
 char							map_property_light_map_size_list[][name_str_len]={"256","512","1024",""},
-								map_property_camera_mode_list[][name_str_len]={"FPP","Chase","Static","Chase Static",""};
+								map_property_camera_mode_list[][name_str_len]={"FPP","Chase","Static","Chase Static",""},
+								map_property_media_type_list[][name_str_len]={"None","Chooser","Title","Cinema",""},
+								map_property_sky_type_list[][name_str_len]={"Panoramic","Dome Hemisphere","Cube",""};
 
 /* =======================================================
 
@@ -86,9 +109,25 @@ char							map_property_light_map_size_list[][name_str_len]={"256","512","1024",
       
 ======================================================= */
 
+
+
+/*
+typedef struct		{
+						int									fill;
+						float								x_scroll_fact,y_scroll_fact;
+					} map_background_layer_type;					
+					
+typedef struct		{
+						bool								on;
+						map_background_layer_type			front,middle,back;
+					} map_background_type;					
+					
+*/
+
 void property_palette_fill_map(void)
 {
 	int				size;
+	d3fpnt			uv;
 	
 	list_palette_add_header(&property_palette,0,"Map Info");
 	list_palette_add_string(&property_palette,-1,"Name",map.info.name,TRUE);
@@ -138,6 +177,32 @@ void property_palette_fill_map(void)
 	list_palette_add_header(&property_palette,0,"Map Camera Static");
 	list_palette_add_checkbox(&property_palette,kMapPropertyCameraStaticFollow,"Follow Player",map.camera.c_static.follow,FALSE);
 	list_palette_add_string(&property_palette,kMapPropertyCameraStaticAttachNode,"Attach Node",map.camera.c_static.attach_node,FALSE);
+
+	list_palette_add_header(&property_palette,0,"Map Media");
+	list_palette_add_string(&property_palette,kMapPropertyMediaType,"Startup Type",map_property_media_type_list[map.media.type],FALSE);
+	list_palette_add_string(&property_palette,kMapPropertyMediaName,"Startup Name",map.media.name,FALSE);
+	list_palette_add_string(&property_palette,kMapPropertyMediaTitleSound,"Startup Title Sound",map.media.title_sound_name,FALSE);
+
+	list_palette_add_header(&property_palette,0,"Map Music");
+	list_palette_add_string(&property_palette,kMapPropertyMusicName,"Name",map.music.name,FALSE);
+	list_palette_add_string_int(&property_palette,kMapPropertyMusicFadeTime,"Fade In Time",map.music.fade_msec,FALSE);
+
+	list_palette_add_header(&property_palette,0,"Map Sky");
+	list_palette_add_checkbox(&property_palette,kMapPropertyOn,"On",map.sky.on,FALSE);
+	list_palette_add_string(&property_palette,kMapPropertySkyType,"Type",map_property_sky_type_list[map.sky.type],FALSE);
+	list_palette_add_string_int(&property_palette,kMapPropertySkyRadius,"Radius",map.sky.radius,FALSE);
+	list_palette_add_string_int(&property_palette,kMapPropertyDomeY,"Dome Height",map.sky.dome_y,FALSE);
+	list_palette_add_checkbox(&property_palette,kMapPropertyDomeMirror,"Mirror Dome",map.sky.dome_mirror,FALSE);
+	list_palette_add_string_float(&property_palette,kMapPropertyTextureRepeat,"Texture Repeat",map.sky.txt_fact,FALSE);
+	uv.x=map.sky.txt_x_shift;
+	uv.y=map.sky.txt_y_shift;
+	list_palette_add_uv(&property_palette,kMapPropertyTextureShift,"Texture Shift",&uv,FALSE);
+	list_palette_add_texture(&property_palette,kMapPropertyTextureFill,"Fill/Cube Top Fill",map.sky.fill,FALSE);
+	list_palette_add_texture(&property_palette,kMapPropertyTextureBottomFill,"Cube Bottom Fill",map.sky.bottom_fill,FALSE);
+	list_palette_add_texture(&property_palette,kMapPropertyTextureNorthFill,"Cube North Fill",map.sky.north_fill,FALSE);
+	list_palette_add_texture(&property_palette,kMapPropertyTextureSouthFill,"Cube South Fill",map.sky.south_fill,FALSE);
+	list_palette_add_texture(&property_palette,kMapPropertyTextureEastFill,"Cube East Fill",map.sky.east_fill,FALSE);
+	list_palette_add_texture(&property_palette,kMapPropertyTextureWestFill,"Cube West Fill",map.sky.west_fill,FALSE);
 }
 
 /* =======================================================
@@ -149,6 +214,7 @@ void property_palette_fill_map(void)
 void property_palette_click_map(int id)
 {
 	int				size;
+	d3fpnt			uv;
 	
 	switch (id) {
 
@@ -285,6 +351,88 @@ void property_palette_click_map(int id)
 
 		case kMapPropertyCameraStaticAttachNode:
 			property_palette_pick_node(map.camera.c_static.attach_node);
+			break;
+	
+			// map media
+
+		case kMapPropertyMediaType:
+			property_palette_pick_list((char*)map_property_media_type_list,&map.media.type);
+			break;
+
+		case kMapPropertyMediaName:
+			dialog_property_string_run(list_string_value_string,(void*)map.media.name,name_str_len,0,0);
+			break;
+
+		case kMapPropertyMediaTitleSound:
+			property_palette_pick_sound(map.media.title_sound_name,TRUE);
+			break;
+
+			// map music
+
+		case kMapPropertyMusicName:
+			dialog_property_string_run(list_string_value_string,(void*)map.music.name,name_str_len,0,0);
+			break;
+
+		case kMapPropertyMusicFadeTime:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&map.music.fade_msec,0,0,0);
+			break;
+
+			// map sky
+
+		case kMapPropertyOn:
+			map.sky.on=!map.sky.on;
+			break;
+
+		case kMapPropertySkyType:
+			property_palette_pick_list((char*)map_property_sky_type_list,&map.sky.type);
+			break;
+
+		case kMapPropertySkyRadius:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&map.sky.radius,0,0,0);
+			break;
+
+		case kMapPropertyDomeY:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&map.sky.dome_y,0,0,0);
+			break;
+
+		case kMapPropertyDomeMirror:
+			map.sky.dome_mirror=!map.sky.dome_mirror;
+			break;
+
+		case kMapPropertyTextureRepeat:
+			dialog_property_string_run(list_string_value_positive_float,(void*)&map.sky.txt_fact,0,0,0);
+			break;
+
+		case kMapPropertyTextureShift:
+			uv.x=map.sky.txt_x_shift;
+			uv.y=map.sky.txt_y_shift;
+			dialog_property_string_run(list_string_value_uv,(void*)&uv,0,0,0);
+			map.sky.txt_x_shift=uv.x;
+			map.sky.txt_y_shift=uv.y;
+			break;
+
+		case kMapPropertyTextureFill:
+			property_palette_pick_texture(&map.sky.fill);
+			break;
+
+		case kMapPropertyTextureBottomFill:
+			property_palette_pick_texture(&map.sky.bottom_fill);
+			break;
+
+		case kMapPropertyTextureNorthFill:
+			property_palette_pick_texture(&map.sky.north_fill);
+			break;
+
+		case kMapPropertyTextureSouthFill:
+			property_palette_pick_texture(&map.sky.south_fill);
+			break;
+
+		case kMapPropertyTextureEastFill:
+			property_palette_pick_texture(&map.sky.east_fill);
+			break;
+
+		case kMapPropertyTextureWestFill:
+			property_palette_pick_texture(&map.sky.west_fill);
 			break;
 
 	}

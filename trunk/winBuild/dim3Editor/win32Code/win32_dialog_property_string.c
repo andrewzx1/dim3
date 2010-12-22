@@ -45,6 +45,7 @@ extern int win32_dialog_get_int(HWND diag,int id);
 extern void win32_dialog_set_float(HWND diag,int id,float value);
 extern float win32_dialog_get_float(HWND diag,int id);
 extern void win32_dialog_set_focus(HWND diag,int id);
+extern int win32_dialog_select_all(HWND diag,int id);
 
 /* =======================================================
 
@@ -58,10 +59,14 @@ LRESULT CALLBACK dialog_property_string_proc(HWND diag,UINT msg,WPARAM wparam,LP
 	switch (msg) {
 
 		case WM_INITDIALOG:
+
 			property_palette_string_get_values(dialog_property_string_value_type,dialog_property_string_value,dialog_property_string_i_min,dialog_property_string_i_max,str,desc);
 			win32_dialog_set_text(diag,IDC_PROPERTY_STRING_STRING,str);
 			win32_dialog_set_text(diag,IDC_PROPERTY_STRING_DESCRIPTION,desc);
+
 			win32_dialog_set_focus(diag,IDC_PROPERTY_STRING_STRING);
+			win32_dialog_select_all(diag,IDC_PROPERTY_STRING_STRING);
+
 			return(FALSE);		// return false when keyboard focus has been set
 
 		case WM_COMMAND:
@@ -99,4 +104,3 @@ void dialog_property_string_run(int value_type,void *value,int value_len,int i_m
 
 	DialogBox(hinst,MAKEINTRESOURCE(IDD_PROPERTY_STRING),wnd,dialog_property_string_proc);
 }
-
