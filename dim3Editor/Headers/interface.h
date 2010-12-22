@@ -282,7 +282,6 @@ extern void piece_select_more(void);
 extern void piece_tesselate(void);
 extern void piece_resize(void);
 extern void piece_reposition(void);
-extern void piece_skew(void);
 extern void piece_flip(bool flip_x,bool flip_y,bool flip_z);
 extern void piece_rotate(float rot_x,float rot_y,float rot_z);
 extern void piece_free_rotate(void);

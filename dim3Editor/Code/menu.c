@@ -453,10 +453,6 @@ bool menu_event_run(int cmd)
 			piece_reposition();
 			return(TRUE);
 			
-		case kCommandMeshSkew:
-			piece_skew();
-			return(TRUE);
-			
 		case kCommandMeshFlipX:
 			piece_flip(TRUE,FALSE,TRUE);
 			return(TRUE);

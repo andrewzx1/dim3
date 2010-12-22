@@ -56,7 +56,7 @@ JSValueRef js_event_send_message_to_spawn_weapon_func(JSContextRef cx,JSObjectRe
 JSValueRef js_event_set_message_data_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_event_get_message_data_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_event_call_object_by_id_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_event_call_player_by_id_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_event_call_player_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_event_call_course_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_event_call_game_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
@@ -79,7 +79,7 @@ JSStaticFunction	event_functions[]={
 							{"setMessageData",				js_event_set_message_data_func,					kJSPropertyAttributeDontDelete},
 							{"getMessageData",				js_event_get_message_data_func,					kJSPropertyAttributeDontDelete},
 							{"callObjectById",				js_event_call_object_by_id_func,				kJSPropertyAttributeDontDelete},
-							{"callPlayerById",				js_event_call_player_by_id_func,				kJSPropertyAttributeDontDelete},
+							{"callPlayer",					js_event_call_player_func,						kJSPropertyAttributeDontDelete},
 							{"callCourse",					js_event_call_course_func,						kJSPropertyAttributeDontDelete},
 							{"callGame",					js_event_call_game_func,						kJSPropertyAttributeDontDelete},
 							{0,0,0}};
@@ -509,7 +509,7 @@ JSValueRef js_event_call_object_by_id_func(JSContextRef cx,JSObjectRef func,JSOb
 	return(rval);
 }
 
-JSValueRef js_event_call_player_by_id_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_event_call_player_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				n,arg_count;
 	char			func_name[64],err_str[256];
