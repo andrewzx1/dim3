@@ -258,7 +258,6 @@ and can be sold or given away.
 #define kCommandMeshTesselate					FOUR_CHAR_CODE('ptsl')
 #define kCommandMeshResize						FOUR_CHAR_CODE('mrsz')
 #define kCommandMeshReposition					FOUR_CHAR_CODE('mrps')
-#define kCommandMeshSkew						FOUR_CHAR_CODE('mskw')
 #define kCommandMeshFlipX						FOUR_CHAR_CODE('pfpx')
 #define kCommandMeshFlipY						FOUR_CHAR_CODE('pfpy')
 #define kCommandMeshFlipZ						FOUR_CHAR_CODE('pfpz')

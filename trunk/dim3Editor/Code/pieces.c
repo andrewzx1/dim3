@@ -494,33 +494,6 @@ void piece_reposition(void)
 	main_wind_draw();
 }
 
-void piece_skew(void)
-{
-	int				type,mesh_idx,poly_idx,
-					axis,dir,size;
-	map_mesh_type	*mesh;
-	
-	if (select_count()==0) return;
-	
-	select_get(0,&type,&mesh_idx,&poly_idx);
-	if (type!=mesh_piece) return;
-	
-	mesh=&map.mesh.meshes[mesh_idx];
-	map_prepare_mesh_box(mesh);
-	
-		// get the skew
-		
-    if (!dialog_skew_run(&axis,&dir,&size)) return;
-	
-		// skew
-		
-	undo_push();
-		
-	map_mesh_skew(&map,mesh_idx,axis,dir,size);
-	
-	main_wind_draw();
-}
-
 /* =======================================================
 
       Piece Transforms

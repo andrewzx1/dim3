@@ -34,29 +34,30 @@ and can be sold or given away.
 #include "view.h"
 #include "dialog.h"
 
-#define kMapPropertyInfoName				0
-#define kMapPropertyInfoTitle				1
-#define kMapPropertyInfoAuthor				2
+#define kMapPropertyInfoTitle				0
+#define kMapPropertyInfoAuthor				1
 
-#define kMapPropertyGravity					3
-#define kMapPropertyGravityMaxPower			4
-#define kMapPropertyGravityMaxSpeed			5
-#define kMapPropertyResistance				6
-#define kMapPropertyNeverCull				7
-#define kMapPropertyDisableShaders			8
-#define kMapPropertyNetworkGameList			9
+#define kMapPropertyGravity					2
+#define kMapPropertyGravityMaxPower			3
+#define kMapPropertyGravityMaxSpeed			4
+#define kMapPropertyResistance				5
+#define kMapPropertyNeverCull				6
+#define kMapPropertyDisableShaders			7
+#define kMapPropertyNetworkGameList			8
 
-#define kMapPropertyAmbientColor			10
-#define kMapPropertyAmbientLightMapBoost	11
-#define kMapPropertyAmbientSound			12
-#define kMapPropertyAmbientSoundPitch		13
+#define kMapPropertyAmbientColor			9
+#define kMapPropertyAmbientLightMapBoost	10
+#define kMapPropertyAmbientSound			11
+#define kMapPropertyAmbientSoundPitch		12
 
-#define kMapPropertyLightMapQuality			14
-#define kMapPropertyLightMapSize			15
-#define kMapPropertyLightMapBorderCount		16
-#define kMapPropertyLightMapBlurCount		17
+#define kMapPropertyLightMapQuality			13
+#define kMapPropertyLightMapSize			14
+#define kMapPropertyLightMapBorderCount		15
+#define kMapPropertyLightMapBlurCount		16
 
-#define kMapPropertyCameraMode				18
+#define kMapPropertyCameraMode				17
+#define kMapPropertyCameraAngle				18
+
 #define kMapPropertyCameraFOV				19
 #define kMapPropertyCameraAspectRatio		20
 #define kMapPropertyCameraNearZ				21
@@ -90,7 +91,7 @@ void property_palette_fill_map(void)
 	int				size;
 	
 	list_palette_add_header(&property_palette,0,"Map Info");
-	list_palette_add_string(&property_palette,kMapPropertyInfoName,"Name",map.info.name,FALSE);
+	list_palette_add_string(&property_palette,-1,"Name",map.info.name,TRUE);
 	list_palette_add_string(&property_palette,kMapPropertyInfoTitle,"Title",map.info.title,FALSE);
 	list_palette_add_string(&property_palette,kMapPropertyInfoAuthor,"Author",map.info.author,FALSE);
 
@@ -120,6 +121,9 @@ void property_palette_fill_map(void)
 
 	list_palette_add_header(&property_palette,0,"Map Camera Settings");
 	list_palette_add_string(&property_palette,kMapPropertyCameraMode,"Mode",map_property_camera_mode_list[map.camera.mode],FALSE);
+	list_palette_add_angle(&property_palette,kMapPropertyCameraAngle,"Offset Angle",&map.camera.ang,FALSE);
+
+	list_palette_add_header(&property_palette,0,"Map Camera Plane");
 	list_palette_add_string_float(&property_palette,kMapPropertyCameraFOV,"FOV",map.camera.plane.fov,FALSE);
 	list_palette_add_string_float(&property_palette,kMapPropertyCameraAspectRatio,"Aspect Ratio",map.camera.plane.aspect_ratio,FALSE);
 	list_palette_add_string_int(&property_palette,kMapPropertyCameraNearZ,"Near Z",map.camera.plane.near_z,FALSE);
@@ -149,10 +153,6 @@ void property_palette_click_map(int id)
 	switch (id) {
 
 			// info
-
-		case kMapPropertyInfoName:
-			dialog_property_string_run(list_string_value_string,(void*)map.info.name,name_str_len,0,0);
-			break;
 
 		case kMapPropertyInfoTitle:
 			dialog_property_string_run(list_string_value_string,(void*)map.info.title,name_str_len,0,0);
@@ -236,7 +236,13 @@ void property_palette_click_map(int id)
 		case kMapPropertyCameraMode:
 			property_palette_pick_list((char*)map_property_camera_mode_list,&map.camera.mode);
 			break;
+			
+		case kMapPropertyCameraAngle:
+			dialog_property_string_run(list_string_value_angle,(void*)&map.camera.ang,0,0,0);
+			break;
 
+			// camera plane
+			
 		case kMapPropertyCameraFOV:
 			dialog_property_string_run(list_string_value_positive_float,(void*)&map.camera.plane.fov,0,0,0);
 			break;

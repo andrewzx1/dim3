@@ -110,7 +110,6 @@ extern bool dialog_optimize_run(int *poly_threshold);
 
 extern bool dialog_resize_run(float *fct_x,float *fct_y,float *fct_z);
 extern bool dialog_reposition_run(d3pnt *min,d3pnt *max);
-extern bool dialog_skew_run(int *axis,int *dir,int *size);
 extern bool dialog_free_rotate_run(float *rot_x,float *rot_y,float *rot_z);
 
 //
