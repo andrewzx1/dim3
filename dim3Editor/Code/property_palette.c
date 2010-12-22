@@ -302,6 +302,7 @@ void property_palette_string_get_values(int value_type,void *value,int i_min,int
 {
 	d3pnt			*pnt;
 	d3ang			*ang;
+	d3fpnt			*fpnt;
 
 	str[0]=0x0;
 	desc[0]=0x0;
@@ -354,6 +355,12 @@ void property_palette_string_get_values(int value_type,void *value,int i_min,int
 			sprintf(str,"%.2f,%.2f,%.2f",ang->x,ang->y,ang->z);
 			strcpy(desc,"Enter a three value (x,y,z) angle.");
 			break;
+
+		case list_string_value_uv:
+			fpnt=(d3fpnt*)value;
+			sprintf(str,"%.2f,%.2f",fpnt->x,fpnt->y);
+			strcpy(desc,"Enter a two value (x(u)/y(v)) uv.");
+			break;
 			
 	}
 }
@@ -365,6 +372,7 @@ void property_palette_string_set_values(int value_type,void *value,int value_len
 	char			*v_str,*c,*c2;
 	d3pnt			*pnt;
 	d3ang			*ang;
+	d3fpnt			*fpnt;
 	
 	switch (value_type) {
 	
@@ -436,6 +444,23 @@ void property_palette_string_set_values(int value_type,void *value,int value_len
 			ang->x=f[0];
 			ang->y=f[1];
 			ang->z=f[2];
+			break;
+
+		case list_string_value_uv:
+			c=str;
+			f[0]=f[1]=0.0f;
+
+			for (n=0;n!=2;n++) {
+				c2=strchr(c,',');
+				if (c2!=NULL) *c2=0x0;
+				f[n]=(float)atof(c);
+				if (c2==NULL) break;
+				c=c2+1;
+			}
+
+			fpnt=(d3fpnt*)value;
+			fpnt->x=f[0];
+			fpnt->y=f[1];
 			break;
 			
 	}
@@ -637,3 +662,19 @@ void property_palette_pick_node(char *name)
 	free(list_ptr);
 }
 
+void property_palette_pick_texture(int *txt_idx)
+{
+	int				n;
+	char			texture_names[max_map_texture][name_str_len];
+	
+	for (n=0;n!=max_map_texture;n++) {
+		if (map.textures[n].frames[0].name[0]==0x0) {
+			strcpy((char*)texture_names[n],"(none)");
+		}
+		else {
+			strcpy((char*)texture_names[n],map.textures[n].frames[0].name);
+		}
+	}
+
+	dialog_property_list_run((char*)texture_names,max_map_texture,name_str_len,0,TRUE,txt_idx);
+}

@@ -106,6 +106,8 @@ extern void list_palette_add_checkbox(list_palette_type *list,int id,char *name,
 extern void list_palette_add_pick_color(list_palette_type *list,int id,char *name,d3col *col,bool disabled);
 extern void list_palette_add_point(list_palette_type *list,int id,char *name,d3pnt *pnt,bool disabled);
 extern void list_palette_add_angle(list_palette_type *list,int id,char *name,d3ang *ang,bool disabled);
+extern void list_palette_add_uv(list_palette_type *list,int id,char *name,d3fpnt *fpnt,bool disabled);
+extern void list_palette_add_texture(list_palette_type *list,int id,char *name,int txt_idx,bool disabled);
 extern void list_palette_delete_all_items(list_palette_type *list);
 extern void list_palette_draw(list_palette_type *list);
 extern void list_palette_scroll_up(list_palette_type *list);
@@ -168,6 +170,7 @@ extern void property_palette_pick_spot(char *name);
 extern void property_palette_pick_sound(char *name,bool include_none);
 extern void property_palette_pick_particle(char *name);
 extern void property_palette_pick_node(char *name);
+extern void property_palette_pick_texture(int *txt_idx);
 
 //
 // text

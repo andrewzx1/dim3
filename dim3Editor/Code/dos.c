@@ -42,11 +42,11 @@ map_type						map;
 
 /* =======================================================
 
-      Open Windows
+      Reset and Close Windows
             
 ======================================================= */
 
-void file_reset_windows(void)
+void file_reset_window(void)
 {
         // no selection
         
@@ -65,9 +65,17 @@ void file_reset_windows(void)
 	texture_palette_reset();
 }
 
-void file_close_windows(void)
+void file_close_window(void)
 {
-    main_wind_close();
+	state.map_opened=FALSE;
+	
+		// win32 keeps window open so menu can be
+		// used so we need to reset here
+
+	os_set_title_window("dim3 Editor");
+	main_wind_draw();
+
+	main_wind_close();
 	menu_fix_enable();
 }
 
@@ -77,7 +85,7 @@ void file_close_windows(void)
       
 ======================================================= */
 
-bool create_course_script(char *file_name)
+bool file_create_course_script(char *file_name)
 {
 	int				sz;
 	char			*data,path[1024];
@@ -140,7 +148,7 @@ bool file_new_map(void)
 	
 		// copy the course script
 		
-	if (!create_course_script(file_name)) {
+	if (!file_create_course_script(file_name)) {
 		os_dialog_alert("dim3 Editor could not create map script","The disk might be locked or a folder might be missing.\n\nIf you are running dim3 directly from the DMG file, then you need to move the files to your harddrive (DMGs are read-only).");
 		return(FALSE);
 	}
@@ -164,7 +172,7 @@ bool file_new_map(void)
 		
 		// redraw the window
     
-	file_reset_windows();
+	file_reset_window();
 	
 	return(TRUE);
 }
@@ -200,7 +208,7 @@ bool file_open_map(void)
     os_set_arrow_cursor();
 	
 	if (!ok) {
-		file_close_windows();
+		file_close_window();
 		return(FALSE);
 	}
 	
@@ -223,7 +231,7 @@ bool file_open_map(void)
 		
 	state.map_opened=TRUE;
 	
-	file_reset_windows();
+	file_reset_window();
 	
 	return(TRUE);
 }
@@ -272,12 +280,10 @@ void file_close_map(void)
 
 	map_close(&map);
 	view_models_close();
-    file_close_windows();
 	
 	undo_clear();
 
-	state.map_opened=FALSE;
-	menu_fix_enable();
+	file_close_window();
 	
 	os_set_arrow_cursor();
 }

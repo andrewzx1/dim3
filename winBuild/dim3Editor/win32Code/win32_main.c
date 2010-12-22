@@ -87,10 +87,6 @@ bool dialog_reposition_run(d3pnt *min,d3pnt *max)
 {
 	return(FALSE);
 }
-bool dialog_skew_run(int *axis,int *dir,int *size)
-{
-	return(FALSE);
-}
 bool dialog_free_rotate_run(float *rot_x,float *rot_y,float *rot_z)
 {
 	return(FALSE);
@@ -211,15 +207,21 @@ LRESULT CALLBACK editor_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam)
 
 void main_wind_open(void)
 {
+	// win32 applications always leave the window open so "new" can be used
+	// from the menu
+}
+
+void main_wind_close(void)
+{
+}
+
+void win32_main_wind_open(void)
+{
 	int						format;
 	WNDCLASSEX				wcx;
 	PIXELFORMATDESCRIPTOR	pf;
 	HINSTANCE				hInst;
 	HMENU					menu;
-
-		// settings
-
-	setup_xml_read();
 
 		// create window
 
@@ -292,7 +294,7 @@ void main_wind_open(void)
 	main_wind_draw();
 }
 
-void main_wind_close(void)
+void win32_main_wind_close(void)
 {
 		// shutdown
 
@@ -371,13 +373,24 @@ int APIENTRY WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmdLine
 		MessageBox(NULL,"No data folder","Error",MB_OK);
 		return(0);
 	}
+	
+		// settings
 
-	if (!file_open_map()) {
-		glue_end();
-		return(0);
-	}
+	setup_xml_read();
+
+		// open window
+
+	win32_main_wind_open();
+
+		// open map
+
+	file_open_map();
 
 	editor_pump();
+
+		// close window
+
+	win32_main_wind_close();
 
 		// close glue
 

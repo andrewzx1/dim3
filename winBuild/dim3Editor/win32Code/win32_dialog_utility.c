@@ -129,5 +129,9 @@ void win32_dialog_set_focus(HWND diag,int id)
 	SetFocus(GetDlgItem(diag,id));
 }
 
+int win32_dialog_select_all(HWND diag,int id)
+{
+	return(SendDlgItemMessage(diag,id,EM_SETSEL,0,-1));
+}
 
 
