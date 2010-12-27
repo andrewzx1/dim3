@@ -47,21 +47,22 @@ and can be sold or given away.
 #define kMeshPropertyNoLightMap					10
 #define kMeshPropertySkipLightMapTrace			11
 
-#define kMeshPropertyRot						12
+#define kMeshPropertyGroup						12
 
-#define kMeshPropertyGroup						15
-#define kMeshPropertyHideMode					16
-#define kMeshPropertyNormalMode					17
+#define kMeshPropertyHideMode					13
+#define kMeshPropertyNormalMode					14
+#define kMeshPropertyHarm						15
+#define kMeshPropertyRot						16
 
-#define kMeshPropertyMessageEnter				18
-#define kMeshPropertyMessageEnterId				19
-#define kMeshPropertyMessageExit				20
-#define kMeshPropertyMessageExitId				21
-#define kMeshPropertyMessageMapChange			22
-#define kMeshPropertyMessageMapChangeName		23
-#define kMeshPropertyMessageMapChangeSpotName	24
-#define kMeshPropertyMessageBase				25
-#define kMeshPropertyMessageBaseTeam			26
+#define kMeshPropertyMessageEnter				17
+#define kMeshPropertyMessageEnterId				18
+#define kMeshPropertyMessageExit				19
+#define kMeshPropertyMessageExitId				20
+#define kMeshPropertyMessageMapChange			21
+#define kMeshPropertyMessageMapChangeName		22
+#define kMeshPropertyMessageMapChangeSpotName	23
+#define kMeshPropertyMessageBase				24
+#define kMeshPropertyMessageBaseTeam			25
 
 #define kMeshPolyPropertyClimbable				30
 #define kMeshPolyPropertyNeverCull				31
@@ -116,6 +117,7 @@ void property_palette_fill_mesh(int mesh_idx,int poly_idx)
 	list_palette_add_header(&property_palette,0,"Mesh Options");
 	list_palette_add_string(&property_palette,kMeshPropertyHideMode,"Hide",mesh_property_hide_list[mesh->hide_mode],FALSE);
 	list_palette_add_string(&property_palette,kMeshPropertyNormalMode,"Normals",mesh_property_normal_list[mesh->normal_mode],FALSE);
+	list_palette_add_string_int(&property_palette,kMeshPropertyHarm,"Harm",mesh->harm,FALSE);
 	list_palette_add_point(&property_palette,kMeshPropertyRot,"Rotational Center",&mesh->rot_off,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Mesh Group");
@@ -245,12 +247,16 @@ void property_palette_click_mesh(int mesh_idx,int poly_idx,int id)
 			property_palette_pick_list((char*)mesh_property_normal_list,&mesh->normal_mode);
 			break;
 			
-		case kMeshPropertyGroup:
-			property_palette_pick_group(&mesh->group_idx);
+		case kMeshPropertyHarm:
+			dialog_property_string_run(list_string_value_int,(void*)&mesh->harm,0,0,0);
 			break;
 			
 		case kMeshPropertyRot:
 			dialog_property_string_run(list_string_value_point,(void*)&mesh->rot_off,0,0,0);
+			break;
+			
+		case kMeshPropertyGroup:
+			property_palette_pick_group(&mesh->group_idx);
 			break;
 
 		case kMeshPropertyMessageEnter:

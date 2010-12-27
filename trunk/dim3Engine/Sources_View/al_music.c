@@ -313,6 +313,7 @@ bool al_music_fade_in(char *name,int msec,char *err_str)
 
 	if (msec<=0) {
 		audio_music_fade_mode=music_fade_mode_none;
+		audio_global_music_volume=audio_music_original_volume;
 		return(TRUE);
 	}
 	

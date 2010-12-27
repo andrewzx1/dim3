@@ -112,6 +112,7 @@ extern void object_melee_hit(obj_type *obj,obj_type *melee_obj,weapon_type *mele
 extern void object_heal(obj_type *obj,int heal);
 extern void object_health_recover(obj_type *obj);
 extern void object_crush(obj_type *obj,bool auto_crush);
+extern void object_mesh_harm(obj_type *obj);
 extern void object_hide(obj_type *obj,bool hide);
 extern void object_input_freeze(obj_type *obj,bool freeze);
 extern void object_push(obj_type *obj,d3ang *ang,int force,bool external_force);

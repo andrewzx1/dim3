@@ -239,6 +239,11 @@ void object_clear_draw(model_draw *draw)
 	draw->spin_tick=0;
 	draw->alpha=1;
 	draw->resize=1;
+	
+		// start with non-no_rot
+		// drawings
+		
+	draw->no_rot.on=FALSE;
 
 		// dynamic bones
 
@@ -347,6 +352,7 @@ void object_set_position(obj_type *obj,int x,int y,int z,float ang_y,float ymove
 	pnt->z=z;
 	
 	memmove(&obj->last_pnt,pnt,sizeof(d3pnt));
+	memmove(&obj->draw.pnt,pnt,sizeof(d3pnt));
 	
 	ang=&obj->ang;
 	ang->x=0;
@@ -642,6 +648,7 @@ int object_create(char *name,int type,int bind)
 	obj->status.health_recover_tick=obj->status.health_recover_count=0;
 	obj->status.health_recover_amount=1;
 	obj->status.health_factor=1.0f;
+	obj->status.mesh_harm_count=0;
 	
 	object_clear_draw(&obj->draw);
 	obj->ambient.on=FALSE;
@@ -770,8 +777,16 @@ void object_reset_prepare(obj_type *obj)
 
 void object_reset(obj_type *obj)
 {
+	object_stop(obj);
+	
 	memmove(&obj->pnt,&obj->org_pnt,sizeof(d3pnt));	
 	memmove(&obj->ang,&obj->org_ang,sizeof(d3ang));
+	
+	memmove(&obj->last_pnt,&obj->pnt,sizeof(d3pnt));
+	memmove(&obj->last_ang,&obj->ang,sizeof(d3ang));
+	
+	memmove(&obj->draw.pnt,&obj->pnt,sizeof(d3pnt));
+
 	obj->motion.ang.y=obj->turn.ang_to.y=obj->ang.y;
 	
 	object_set_current_mesh(obj);

@@ -40,13 +40,13 @@ and can be sold or given away.
 
 #define kMapGenerateNewSeed							FOUR_CHAR_CODE('nsed')
 
+extern map_type				map;
+
 bool						dialog_map_generate_cancel;
 WindowRef					dialog_map_generate_wind;
 
 bool						dialog_map_generate_first=TRUE;
 ag_build_setup_type			ag_build_setup;
-
-map_type					map;
 
 /* =======================================================
 

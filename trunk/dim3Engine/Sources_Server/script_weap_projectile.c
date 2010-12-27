@@ -483,7 +483,7 @@ JSValueRef js_weap_projectile_spawn_from_object_bone_offset_angle_func(JSContext
 	d3ang					off_ang;
     obj_type				*obj;
 	weapon_type				*weap;
-
+	
 	if (!script_check_param_count(cx,func,argc,4,exception)) return(script_null_to_value(cx));
 	
 	obj=object_script_lookup();

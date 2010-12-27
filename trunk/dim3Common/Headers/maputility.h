@@ -303,7 +303,7 @@ typedef struct		{
 
 typedef struct		{
 						int									nvertex,npoly,group_idx,
-															hide_mode,normal_mode;
+															hide_mode,normal_mode,harm;
 						float								import_factor;
 						float								*colors_cache;
 						d3pnt								rot_off;

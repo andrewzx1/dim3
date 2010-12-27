@@ -630,6 +630,53 @@ void object_crush(obj_type *obj,bool auto_crush)
 
 /* =======================================================
 
+      Object Mesh Harm
+      
+======================================================= */
+
+void object_mesh_harm(obj_type *obj)
+{
+	int						mesh_idx;
+	map_mesh_type			*mesh;
+	
+		// no damage if no health
+		
+	if (!obj->damage.on) return;
+	if (obj->status.health<=0) return;
+	
+		// check mesh harm
+		
+	mesh_idx=obj->contact.stand_poly.mesh_idx;
+	if (mesh_idx==-1) mesh_idx=obj->contact.hit_poly.mesh_idx;
+	
+	if (mesh_idx==-1) {
+		obj->status.mesh_harm_count=0;
+		return;
+	}
+	
+	mesh=&map.mesh.meshes[obj->contact.stand_poly.mesh_idx];
+	if (mesh->harm==0) return;
+	
+		// run the harm
+		
+	if (obj->status.mesh_harm_count==0) {
+		obj->status.mesh_harm_count=100;
+
+		if (mesh->harm>0) {
+			object_damage(obj,NULL,NULL,NULL,NULL,mesh->harm);
+		}
+		else {
+			object_heal(obj,-mesh->harm);
+		}
+		
+		return;
+	}
+
+	obj->status.mesh_harm_count--;
+}
+
+/* =======================================================
+
       Hide or Freeze State Changes
       
 ======================================================= */
