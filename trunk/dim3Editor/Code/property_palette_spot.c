@@ -41,8 +41,8 @@ and can be sold or given away.
 #define kSpotPropertySpawn						4
 #define kSpotPropertyDisplayModel				5
 
-#define kSpotPropertyParamsStart				10
-#define kSpotPropertyParamsEnd					19
+#define kSpotPropertyParamsStart				100
+#define kSpotPropertyParamsEnd					109
 
 extern map_type					map;
 extern editor_state_type		state;
@@ -53,99 +53,6 @@ extern list_palette_type		property_palette;
 char							spot_property_type_list[][name_str_len]={"Object","Bot","Player","Spawn",""},
 								spot_property_skill_list[][name_str_len]={"Easy","Medium","Hard",""},
 								spot_property_spawn_list[][name_str_len]={"Always","Single Player Only","Multiplayer Only",""};
-
-/* =======================================================
-
-      Property Palette Fill Spot Parameters
-      
-======================================================= */
-
-void palette_palette_spot_get_parameter(int idx,char *param_list,char *str)
-{
-	int				n;
-	char			*c;
-	
-	*str=0x0;
-	
-	c=param_list;
-	
-	for (n=0;n!=idx;n++) {
-		c=strchr(c,'|');
-		if (c==NULL) return;
-		c++;
-	}
-
-	strncpy(str,c,256);
-	str[255]=0x0;
-
-	c=strchr(str,'|');
-	if (c!=NULL) *c=0x0;
-}
-
-void palette_palette_spot_set_parameter(int idx,char *param_list,char *str)
-{
-	int				n,count;
-	char			*c,*c2,tstr[10][256];
-	
-		// clear param list
-
-	for (n=0;n!=10;n++) {
-		tstr[n][0]=0x0;
-	}
-
-		// break up param list
-
-	c=param_list;
-	
-	for (n=0;n!=10;n++) {
-		if (c==0x0) break;
-		
-		c2=strchr(c,'|');
-		if (c2==NULL) {
-			strcpy(tstr[n],c);
-			break;
-		}
-		
-		strcpy(tstr[n],c);
-		c=strchr(tstr[n],'|');
-		*c=0x0;
-		
-		c=c2+1;
-	}
-	
-		// fix the list
-
-	strncpy(tstr[idx],str,256);
-	tstr[idx][255]=0x0;
-
-		// find last item
-
-	count=0;
-
-	for (n=9;n>=0;n--) {
-		if (tstr[n][0]!=0x0) {
-			count=n+1;
-			break;
-		}
-	}
-
-		// rebuild the list
-
-	param_list[0]=0x0;
-
-	for (n=0;n!=count;n++) {
-
-		if (n!=0) {
-			strncat(param_list,"|",param_str_len);
-			param_list[param_str_len-1]=0x0;
-		}
-		
-		strncat(param_list,tstr[n],param_str_len);
-		param_list[param_str_len-1]=0x0;
-	}
-
-	param_list[param_str_len-1]=0x0;
-}
 
 /* =======================================================
 
@@ -172,7 +79,7 @@ void property_palette_fill_spot(int spot_idx)
 	list_palette_add_header(&property_palette,0,"Spot Parameters");
 	for (n=0;n!=10;n++) {
 		sprintf(name,"Param %d",n);
-		palette_palette_spot_get_parameter(n,spot->params,str);
+		property_palette_get_parameter(n,spot->params,str);
 		list_palette_add_string(&property_palette,(kSpotPropertyParamsStart+n),name,str,FALSE);
 	}
 	
@@ -200,9 +107,9 @@ void property_palette_click_spot(int spot_idx,int id)
 	if ((id>=kSpotPropertyParamsStart) && (id<=kSpotPropertyParamsEnd)) {
 		param_idx=(id-kSpotPropertyParamsStart);
 		
-		palette_palette_spot_get_parameter(param_idx,spot->params,str);
+		property_palette_get_parameter(param_idx,spot->params,str);
 		dialog_property_string_run(list_string_value_string,(void*)str,256,0,0);
-		palette_palette_spot_set_parameter(param_idx,spot->params,str);
+		property_palette_set_parameter(param_idx,spot->params,str);
 
 		main_wind_draw();
 		return;

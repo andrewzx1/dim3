@@ -41,6 +41,7 @@ audio_play_type			audio_plays[audio_max_play];
 
 extern float			audio_music_f_sample_len,audio_music_freq_factor;
 extern short			*audio_music_data;
+extern bool				audio_music_loop;
 
 /* =======================================================
 
@@ -202,7 +203,18 @@ void audio_callback(void *userdata,Uint8 *stream,int len)
 			right_channel+=((data*audio_global_music_volume)>>10);
 
 			audio_music_stream_pos+=audio_music_freq_factor;		// in sterio
-			if (audio_music_stream_pos>=audio_music_f_sample_len) audio_music_stream_pos=audio_music_stream_pos-audio_music_f_sample_len;
+
+				// time to loop?
+
+			if (audio_music_stream_pos>=audio_music_f_sample_len) {
+				if (audio_music_loop) {
+					audio_music_stream_pos=audio_music_stream_pos-audio_music_f_sample_len;
+				}
+				else {
+					audio_music_stream_pos=0.0f;
+					audio_music_playing=FALSE;
+				}
+			}
 		}
 
 			// fix any overflow

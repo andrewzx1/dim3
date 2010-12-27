@@ -439,6 +439,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\win32Code\win32_dialog.h"
+					>
+				</File>
+				<File
+					RelativePath=".\win32Code\win32_dialog_file_new.c"
+					>
+				</File>
+				<File
 					RelativePath=".\win32Code\win32_dialog_file_open.c"
 					>
 				</File>

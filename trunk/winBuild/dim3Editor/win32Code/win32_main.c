@@ -51,10 +51,6 @@ void dialog_about_run(void)
 void dialog_preference_run(void)
 {
 }
-bool dialog_file_new_run(char *title,char *file_name)
-{
-	return(FALSE);
-}
 bool dialog_map_settings_run(void)
 {
 	return(FALSE);

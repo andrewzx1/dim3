@@ -27,6 +27,7 @@ and can be sold or given away.
 
 #include "dim3editor.h"
 #include "resource.h"
+#include "win32_dialog.h"
 
 extern HINSTANCE				hinst;
 extern HWND						wnd;

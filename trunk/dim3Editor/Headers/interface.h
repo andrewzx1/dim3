@@ -172,6 +172,9 @@ extern void property_palette_pick_particle(char *name);
 extern void property_palette_pick_node(char *name);
 extern void property_palette_pick_texture(int *txt_idx);
 
+extern void property_palette_get_parameter(int idx,char *param_list,char *str);
+extern void property_palette_set_parameter(int idx,char *param_list,char *str);
+
 //
 // text
 //

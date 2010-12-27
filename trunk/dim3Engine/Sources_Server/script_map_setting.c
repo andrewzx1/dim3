@@ -49,9 +49,9 @@ JSValueRef js_map_setting_get_multiplayerType(JSContextRef cx,JSObjectRef j_obj,
 JSValueRef js_map_setting_get_botSkill(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 bool js_map_setting_set_gravity(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 bool js_map_setting_set_resistance(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_map_get_parameter_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_map_set_ambient_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_map_clear_ambient_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_map_check_option_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 JSStaticValue 		map_setting_props[]={
 							{"scale",				js_map_setting_get_scale,				NULL,								kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
@@ -63,6 +63,7 @@ JSStaticValue 		map_setting_props[]={
 							{0,0,0,0}};
 							
 JSStaticFunction	map_setting_functions[]={
+							{"getParameter",		js_map_get_parameter_func,				kJSPropertyAttributeDontDelete},
 							{"setAmbient",			js_map_set_ambient_func,				kJSPropertyAttributeDontDelete},
 							{"clearAmbient",		js_map_clear_ambient_func,				kJSPropertyAttributeDontDelete},
 							{0,0,0}};
@@ -150,9 +151,38 @@ bool js_map_setting_set_resistance(JSContextRef cx,JSObjectRef j_obj,JSStringRef
 
 /* =======================================================
 
-      Methods
+      Functions
       
 ======================================================= */
+
+JSValueRef js_map_get_parameter_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+{
+	int				idx;
+    char			*c,str[256];
+	
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
+    idx=script_value_to_int(cx,argv[0]);
+    if (idx<0) idx=0;
+    
+    c=map.settings.params;
+    while (idx!=0) {
+        c=strchr(c,'|');
+        if (c==NULL) break;
+        c++;
+        idx--;
+    }
+    
+    if (c==NULL) return(script_null_to_value(cx));
+	
+	strncpy(str,c,256);
+	str[255]=0x0;
+    
+    c=strchr(str,'|');
+    if (c!=NULL) *c=0x0;
+    
+    return(script_string_to_value(cx,str));
+}
 
 JSValueRef js_map_set_ambient_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {

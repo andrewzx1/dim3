@@ -5,6 +5,10 @@
 #define IDD_FILE_OPEN						1000
 #define IDC_FILE_OPEN_TREE					1001
 
+#define IDD_FILE_NEW						1010
+#define IDC_FILE_NEW_NAME					1011
+#define ID_FILE_NEW_NEW						1012
+
 #define IDD_MESH_SCALE						1100
 #define ID_MESH_SCALE_SCALE					1101
 #define ID_MESH_SCALE_REPLACE				1102

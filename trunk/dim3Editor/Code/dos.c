@@ -88,13 +88,16 @@ void file_close_window(void)
 bool file_create_course_script(char *file_name)
 {
 	int				sz;
-	char			*data,path[1024];
+	char			*data,path[1024],sub_path[1024];
 	FILE			*file;
 	struct stat		sb;
 	
 		// read the file
 	
-	file_paths_app(&file_path_setup,path,"Contents/Resources/Defaults","Course","js");
+	os_get_support_file_path(sub_path,"Editor");
+	strcat(sub_path,"/Defaults");
+
+	file_paths_app(&file_path_setup,path,sub_path,"Course","js");
 		
 	if (stat(path,&sb)!=0) return(FALSE);
 	sz=sb.st_size;
@@ -149,7 +152,7 @@ bool file_new_map(void)
 		// copy the course script
 		
 	if (!file_create_course_script(file_name)) {
-		os_dialog_alert("dim3 Editor could not create map script","The disk might be locked or a folder might be missing.\n\nIf you are running dim3 directly from the DMG file, then you need to move the files to your harddrive (DMGs are read-only).");
+		os_dialog_alert("dim3 Editor could not create the map script","The disk might be locked or a folder might be missing.\n\nIf you are running dim3 directly from the DMG file, then you need to move the files to your harddrive (DMGs are read-only).");
 		return(FALSE);
 	}
 	

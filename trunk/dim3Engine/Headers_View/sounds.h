@@ -51,6 +51,7 @@ extern bool al_music_initialize(char *err_str);
 extern void al_music_shutdown(void);
 extern bool al_music_play(char *name,char *err_str);
 extern void al_music_stop(void);
+extern void al_music_set_loop(bool loop);
 extern bool al_music_playing(void);
 extern bool al_music_playing_is_name(char *name);
 extern void al_music_set_volume(float music_volume);
