@@ -80,6 +80,7 @@ void decode_map_settings_xml(map_type *map,int map_head)
 		map->settings.no_shaders=xml_get_attribute_boolean(tag,"no_shaders");
 		
         xml_get_attribute_text(tag,"network_game_list",map->settings.network_game_list,256);
+		xml_get_attribute_text(tag,"params",map->settings.params,param_str_len);
 
         map->light_map.quality=xml_get_attribute_int_default(tag,"light_map_quality",50);
         map->light_map.size=xml_get_attribute_int_default(tag,"light_map_size",1024);

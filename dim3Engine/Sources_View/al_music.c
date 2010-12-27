@@ -35,7 +35,7 @@ and can be sold or given away.
 int							audio_music_fade_mode,audio_music_fade_start_tick,audio_music_fade_msec,
 							audio_music_fade_next_msec,audio_music_original_volume;
 char						audio_music_name[name_str_len],audio_music_fade_next_name[name_str_len];
-bool						audio_music_state_on,audio_music_paused;
+bool						audio_music_state_on,audio_music_paused,audio_music_loop;
 
 float						audio_music_f_sample_len,audio_music_freq_factor;
 short						*audio_music_data;
@@ -68,6 +68,7 @@ bool al_music_initialize(char *err_str)
 
 	audio_music_playing=FALSE;
 	audio_music_paused=FALSE;
+	audio_music_loop=TRUE;
 
 	audio_music_name[0]=0x0;
 	audio_music_data=NULL;
@@ -234,6 +235,13 @@ void al_music_stop(void)
 	audio_music_stream_pos=0.0f;
 	audio_music_playing=FALSE;
 
+	SDL_UnlockAudio();
+}
+
+void al_music_set_loop(bool loop)
+{
+	SDL_LockAudio();
+	audio_music_loop=loop;
 	SDL_UnlockAudio();
 }
 

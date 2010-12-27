@@ -550,7 +550,7 @@ typedef struct		{
 typedef struct		{
 						float								gravity,gravity_max_power,gravity_max_speed,
 															resistance;
-						char								network_game_list[256];
+						char								network_game_list[256],params[param_str_len];
 						bool								never_cull,no_shaders;
 					} map_settings_type;
 					

@@ -2,7 +2,7 @@
 
 Module: dim3 Editor
 Author: Brian Barnes
- Usage: Property String Routines
+ Usage: File New Routines
 
 ***************************** License ********************************
 
@@ -33,43 +33,35 @@ and can be sold or given away.
 extern HINSTANCE				hinst;
 extern HWND						wnd;
 
-int								dialog_property_string_value_type,
-								dialog_property_string_value_len,
-								dialog_property_string_i_min,
-								dialog_property_string_i_max;
-void							*dialog_property_string_value;
+char							dialog_file_new_file_name[256];
 
 /* =======================================================
 
-      Property String Event Handlers
+      File New Event Handlers
       
 ======================================================= */
 
-LRESULT CALLBACK dialog_property_string_proc(HWND diag,UINT msg,WPARAM wparam,LPARAM lparam)
+LRESULT CALLBACK dialog_file_new_proc(HWND diag,UINT msg,WPARAM wparam,LPARAM lparam)
 {
-	char			str[256],desc[256];
-
 	switch (msg) {
 
 		case WM_INITDIALOG:
-
-			property_palette_string_get_values(dialog_property_string_value_type,dialog_property_string_value,dialog_property_string_i_min,dialog_property_string_i_max,str,desc);
-			win32_dialog_set_text(diag,IDC_PROPERTY_STRING_STRING,str);
-			win32_dialog_set_text(diag,IDC_PROPERTY_STRING_DESCRIPTION,desc);
-
-			win32_dialog_set_focus(diag,IDC_PROPERTY_STRING_STRING);
-			win32_dialog_select_all(diag,IDC_PROPERTY_STRING_STRING);
-
+			win32_dialog_set_text(diag,IDC_FILE_NEW_NAME,dialog_file_new_file_name);
+			win32_dialog_set_focus(diag,IDC_FILE_NEW_NAME);
+			win32_dialog_select_all(diag,IDC_FILE_NEW_NAME);
 			return(FALSE);		// return false when keyboard focus has been set
 
 		case WM_COMMAND:
 
 			switch (LOWORD(wparam)) {
 
-				case ID_PROPERTY_STRING_OK:
-					win32_dialog_get_text(diag,IDC_PROPERTY_STRING_STRING,str,256);
-					property_palette_string_set_values(dialog_property_string_value_type,dialog_property_string_value,dialog_property_string_value_len,dialog_property_string_i_min,dialog_property_string_i_max,str);
+				case ID_FILE_NEW_NEW:
+					win32_dialog_get_text(diag,IDC_FILE_NEW_NAME,dialog_file_new_file_name,256);
 					EndDialog(diag,0);
+					return(TRUE);
+
+				case IDCANCEL:
+					EndDialog(diag,1);
 					return(TRUE);
 
 			}
@@ -83,17 +75,16 @@ LRESULT CALLBACK dialog_property_string_proc(HWND diag,UINT msg,WPARAM wparam,LP
 
 /* =======================================================
 
-      Run Property String
+      Run File New
       
 ======================================================= */
 
-void dialog_property_string_run(int value_type,void *value,int value_len,int i_min,int i_max)
+bool dialog_file_new_run(char *title,char *file_name)
 {
-	dialog_property_string_value_type=value_type;
-	dialog_property_string_value=value;
-	dialog_property_string_value_len=value_len;
-	dialog_property_string_i_min=i_min;
-	dialog_property_string_i_max=i_max;
+	strcpy(dialog_file_new_file_name,file_name);
 
-	DialogBox(hinst,MAKEINTRESOURCE(IDD_PROPERTY_STRING),wnd,dialog_property_string_proc);
+	if (DialogBox(hinst,MAKEINTRESOURCE(IDD_FILE_NEW),wnd,dialog_file_new_proc)!=0) return(FALSE);
+
+	strcpy(file_name,dialog_file_new_file_name);
+	return(TRUE);
 }

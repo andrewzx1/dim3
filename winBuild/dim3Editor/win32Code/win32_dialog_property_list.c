@@ -27,6 +27,7 @@ and can be sold or given away.
 
 #include "dim3editor.h"
 #include "resource.h"
+#include "win32_dialog.h"
 
 extern HINSTANCE				hinst;
 extern HWND						wnd;
@@ -36,11 +37,6 @@ int								dialog_property_list_count,
 								dialog_property_idx;
 char							*dialog_property_list_ptr;
 bool							dialog_property_include_none;
-
-extern void win32_dialog_list_add(HWND diag,int id,char *str);
-extern void win32_dialog_list_set_value(HWND diag,int id,int value);
-extern int win32_dialog_list_get_value(HWND diag,int id);
-extern void win32_dialog_enable(HWND diag,int id,bool enable);
 
 /* =======================================================
 

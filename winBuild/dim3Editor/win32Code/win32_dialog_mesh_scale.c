@@ -27,6 +27,7 @@ and can be sold or given away.
 
 #include "dim3editor.h"
 #include "resource.h"
+#include "win32_dialog.h"
 
 extern HINSTANCE				hinst;
 extern HWND						wnd;
@@ -35,12 +36,6 @@ extern map_type					map;
 
 int								dialog_mesh_scale_axis,dialog_mesh_scale_unit;
 bool							dialog_mesh_scale_replace;
-
-extern void win32_dialog_set_int(HWND diag,int id,int value);
-extern int win32_dialog_get_int(HWND diag,int id);
-extern void win32_dialog_combo_add(HWND diag,int id,char *str);
-extern void win32_dialog_combo_set_value(HWND diag,int id,int value);
-extern int win32_dialog_combo_get_value(HWND diag,int id);
 
 /* =======================================================
 

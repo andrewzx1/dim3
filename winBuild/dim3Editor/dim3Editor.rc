@@ -149,9 +149,23 @@ END
 // Dialog
 //
 
+IDD_FILE_NEW DIALOGEX 100, 100, 333, 98
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION
+CAPTION "Create New Map"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    PUSHBUTTON      "Cancel",IDCANCEL,221,77,50,14
+    DEFPUSHBUTTON   "New",ID_FILE_NEW_NEW,276,77,50,14,WS_GROUP
+    LTEXT           "Enter a name for your new map.",IDC_STATIC,7,7,204,9
+    RTEXT           "Name:",IDC_STATIC,17,25,32,9
+    EDITTEXT        IDC_FILE_NEW_NAME,54,23,229,14,ES_AUTOHSCROLL
+    LTEXT           "When a map is created, the map data file is saved in the Data/Maps directory and a default course script is saved in the Data/Scripts/Courses directory.",
+                    IDC_STATIC,7,44,319,21
+END
+
 IDD_FILE_OPEN DIALOGEX 100, 100, 336, 234
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION
-CAPTION "Dialog"
+CAPTION "Choose a File"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     DEFPUSHBUTTON   "OK",IDOK,279,213,50,14

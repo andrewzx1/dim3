@@ -283,9 +283,9 @@ void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent_
 		for (t=0;t!=3;t++) {
 			if ((trig->tangent_space[t].normal.x==0.0f) && (trig->tangent_space[t].normal.y==0.0f) && (trig->tangent_space[t].normal.z==0.0f)) {
 				pt=&mesh->vertexes[trig->v[t]].pnt;
-				trig->tangent_space[t].normal.x=pt->x-v_center.x;
-				trig->tangent_space[t].normal.y=pt->y-v_center.y;
-				trig->tangent_space[t].normal.z=pt->z-v_center.z;
+				trig->tangent_space[t].normal.x=(float)(pt->x-v_center.x);
+				trig->tangent_space[t].normal.y=(float)(pt->y-v_center.y);
+				trig->tangent_space[t].normal.z=(float)(pt->z-v_center.z);
 				vector_normalize(&trig->tangent_space[t].normal);
 			}
 		}

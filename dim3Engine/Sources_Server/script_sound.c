@@ -46,6 +46,7 @@ JSValueRef js_sound_play_global_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 JSValueRef js_sound_play_global_player_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_sound_start_music_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_sound_stop_music_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_sound_set_music_looping_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_sound_fade_in_music_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_sound_fade_out_music_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_sound_fade_out_fade_in_music_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
@@ -57,6 +58,7 @@ JSStaticFunction	sound_functions[]={
 							{"playGlobalPlayer",	js_sound_play_global_player_func,		kJSPropertyAttributeDontDelete},
 							{"startMusic",			js_sound_start_music_func,				kJSPropertyAttributeDontDelete},
 							{"stopMusic",			js_sound_stop_music_func,				kJSPropertyAttributeDontDelete},
+							{"setMusicLooping",		js_sound_set_music_looping_func,		kJSPropertyAttributeDontDelete},
 							{"fadeInMusic",			js_sound_fade_in_music_func,			kJSPropertyAttributeDontDelete},
 							{"fadeOutMusic",		js_sound_fade_out_music_func,			kJSPropertyAttributeDontDelete},
 							{"fadeOutFadeInMusic",	js_sound_fade_out_fade_in_music_func,	kJSPropertyAttributeDontDelete},
@@ -274,6 +276,15 @@ JSValueRef js_sound_stop_music_func(JSContextRef cx,JSObjectRef func,JSObjectRef
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
 	if (setup.music_on) al_music_stop();
+
+	return(script_null_to_value(cx));
+}
+
+JSValueRef js_sound_set_music_looping_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+{
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
+	al_music_set_loop(script_value_to_bool(cx,argv[0]));
 
 	return(script_null_to_value(cx));
 }

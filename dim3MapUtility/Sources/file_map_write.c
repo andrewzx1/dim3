@@ -158,6 +158,7 @@ void write_map_settings_xml(map_type *map)
     xml_add_attribute_boolean("no_shaders",map->settings.no_shaders);
 
 	xml_add_attribute_text("network_game_list",map->settings.network_game_list);
+	xml_add_attribute_text("params",map->settings.params);
 
     xml_add_attribute_int("light_map_quality",map->light_map.quality);
     xml_add_attribute_int("light_map_size",map->light_map.size);
