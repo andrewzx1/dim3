@@ -552,6 +552,9 @@ void write_single_mesh(map_mesh_type *mesh)
 
 	if (mesh->hide_mode!=mesh_hide_mode_never) xml_add_attribute_list("hide",(char*)mesh_hide_mode_str,mesh->hide_mode);
 	if (mesh->normal_mode!=mesh_normal_mode_auto) xml_add_attribute_list("normal",(char*)mesh_normal_mode_str,mesh->normal_mode);
+	
+  	if (mesh->harm!=0) xml_add_attribute_int("harm",mesh->harm);
+	
 	if ((mesh->rot_off.x!=0.0f) || (mesh->rot_off.y!=0.0f) || (mesh->rot_off.z!=0.0f)) xml_add_attribute_3_coord_int("rot_off",mesh->rot_off.x,mesh->rot_off.y,mesh->rot_off.z);
 
 	xml_add_tagend(FALSE);

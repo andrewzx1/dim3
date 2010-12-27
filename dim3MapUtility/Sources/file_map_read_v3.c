@@ -85,6 +85,8 @@ bool read_single_mesh_v3(map_type *map,int mesh_idx,int mesh_tag)
 	
 	mesh->hide_mode=xml_get_attribute_list(mesh_tag,"hide",(char*)mesh_hide_mode_str);
 	mesh->normal_mode=xml_get_attribute_list(mesh_tag,"normal",(char*)mesh_normal_mode_str);
+	
+	mesh->harm=xml_get_attribute_int_default(mesh_tag,"harm",0);
 
 	xml_get_attribute_3_coord_int(mesh_tag,"rot_off",&mesh->rot_off.x,&mesh->rot_off.y,&mesh->rot_off.z);
 	

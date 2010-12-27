@@ -402,7 +402,7 @@ typedef struct		{
 						int						health,max_health,start_health,
 												health_recover_tick,health_recover_amount,health_recover_count,
 												liquid_under_tick,liquid_harm_count,liquid_drown_count,
-												respawn_tick;
+												mesh_harm_count,respawn_tick;
 						float					health_factor;
 					} obj_status;
 			

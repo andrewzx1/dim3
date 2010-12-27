@@ -164,6 +164,7 @@ void run_object_single(obj_type *obj)
 		object_liquid(obj);
 
 		object_crush(obj,FALSE);
+		object_mesh_harm(obj);
 
 		item_pickup_check(obj);
 	}

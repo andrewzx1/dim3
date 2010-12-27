@@ -206,10 +206,15 @@ void projectile_speed(proj_type *proj)
 void projectile_move(proj_type *proj)
 {
 	bool				wall_hit;
-	d3pnt				motion;
+	d3pnt				org_pnt,motion;
 	poly_pointer_type	hit_poly;
 	
 	object_clear_contact(&proj->contact);
+	
+		// save original points for bounces
+		// and reflects
+		
+	memmove(&org_pnt,&proj->pnt,sizeof(d3pnt));
 
 		// project movement
 		
@@ -254,11 +259,15 @@ void projectile_move(proj_type *proj)
 
 		if ((proj->action.reflect) && (wall_hit)) {
 			projectile_reflect(proj,TRUE);
+			memmove(&proj->pnt,&org_pnt,sizeof(d3pnt));
 			return;
 		}
 		
 		if ((proj->action.bounce) && (!wall_hit)) {
-			if (!projectile_bounce(proj,proj->action.bounce_min_move,proj->action.bounce_reduce,TRUE)) return;
+			if (!projectile_bounce(proj,proj->action.bounce_min_move,proj->action.bounce_reduce,TRUE)) {
+				memmove(&proj->pnt,&org_pnt,sizeof(d3pnt));
+				return;
+			}
 		}
 	}
 	
@@ -316,7 +325,7 @@ bool projectile_bounce(proj_type *proj,float min_ymove,float reduce,bool send_ev
 	float				fy,slope_y;
 	d3pnt				motion;
 	poly_pointer_type	*poly;
-
+	
 		// get polygon slope
 
 	poly=&proj->contact.hit_poly;
@@ -349,17 +358,17 @@ bool projectile_bounce(proj_type *proj,float min_ymove,float reduce,bool send_ev
 	projectile_set_motion(proj,proj->speed,proj->motion.ang.y,proj->motion.ang.x,&motion);
 		
 	fy=((float)motion.y)*reduce;
-	if (fy<min_ymove) fy=min_ymove;
+	if (fy<min_ymove) return(TRUE);
 		
 	proj->force.vct.y=-fy;
-	proj->motion.ang.x=-proj->motion.ang.x;
+	proj->motion.ang.x=0.0f;
 
-	proj->force.gravity=gravity_start_power;
+	proj->force.gravity*=reduce;
 	proj->gravity_add=0.0f;
 
 	if (send_event) scripts_post_event_console(&proj->attach,sd_event_projectile,sd_event_projectile_bounce,0);
 	
-	return(motion.y==min_ymove);
+	return(FALSE);
 }
 
 /* =======================================================

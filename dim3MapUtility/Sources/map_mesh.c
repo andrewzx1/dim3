@@ -82,6 +82,8 @@ int map_mesh_add(map_type *map)
 	
 	mesh->hide_mode=mesh_hide_mode_never;
 	mesh->normal_mode=mesh_normal_mode_auto;
+	mesh->harm=0;
+	
 	mesh->rot_off.x=mesh->rot_off.y=mesh->rot_off.z=0;
 	
 	mesh->import_factor=0.0f;

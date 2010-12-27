@@ -146,7 +146,7 @@ int al_find_buffer(char *name)
 	
 	for (n=0;n!=audio_buffer_count;n++) {
 		if (buffer->loaded) {
-			if (strcmp(buffer->name,name)==0) return(n);
+			if (strcasecmp(buffer->name,name)==0) return(n);
 		}
 		buffer++;
 	}
