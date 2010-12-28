@@ -29,7 +29,8 @@ and can be sold or given away.
 	#include "dim3editor.h"
 #endif
 
-#include "view.h"
+#include "glue.h"
+#include "interface.h"
 
 extern map_type					map;
 extern editor_setup_type		setup;

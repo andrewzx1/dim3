@@ -31,7 +31,6 @@ and can be sold or given away.
 
 #include "glue.h"
 #include "interface.h"
-#include "view.h"
 #include "dialog.h"
 
 extern file_path_setup_type		file_path_setup;
@@ -54,20 +53,22 @@ void file_reset_window(void)
 	
 		// redraw
 	
-    tool_default();
-	    
+ 	state.view_texture_idx=-1;
+
+	tool_default();
 	menu_update_view();
 	menu_fix_enable();
+	texture_palette_reset();
 	
     os_select_window();
     
 	main_wind_draw();
-	texture_palette_reset();
 }
 
 void file_close_window(void)
 {
 	state.map_opened=FALSE;
+	state.view_texture_idx=-1;
 	
 		// win32 keeps window open so menu can be
 		// used so we need to reset here

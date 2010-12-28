@@ -31,7 +31,6 @@ and can be sold or given away.
 
 #include "glue.h"
 #include "interface.h"
-#include "view.h"
 
 extern int						top_view_x,top_view_z,
 								tool_palette_pixel_sz,txt_palette_pixel_sz;

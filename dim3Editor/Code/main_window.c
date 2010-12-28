@@ -31,7 +31,6 @@ and can be sold or given away.
 
 #include "glue.h"
 #include "interface.h"
-#include "view.h"
 
 extern d3rect					tool_palette_box,txt_palette_box;
 extern list_palette_type		item_palette,property_palette;
@@ -156,7 +155,13 @@ void main_wind_draw(void)
 		// draw window
 
 	if (state.map_opened) {
-		view_draw();
+
+		if (state.view_texture_idx==-1) {
+			view_draw();
+		}
+		else {
+			view_texture_draw();
+		}
 
 		tool_palette_draw();
 		texture_palette_draw(map.textures);
@@ -184,7 +189,13 @@ void main_wind_draw_no_swap(void)
 		// draw window
 
 	if (state.map_opened) {
-		view_draw();
+
+		if (state.view_texture_idx==-1) {
+			view_draw();
+		}
+		else {
+			view_texture_draw();
+		}
 
 		tool_palette_draw();
 		texture_palette_draw(map.textures);
@@ -229,7 +240,12 @@ void main_wind_click(d3pnt *pnt,bool double_click)
 
 		// view clicks
 
-	view_click(pnt,double_click);
+	if (state.view_texture_idx==-1) {
+		view_click(pnt,double_click);
+	}
+	else {
+		view_texture_click(pnt,double_click);
+	}
 }
 
 /* =======================================================
