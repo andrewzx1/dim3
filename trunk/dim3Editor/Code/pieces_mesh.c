@@ -31,7 +31,6 @@ and can be sold or given away.
 
 #include "glue.h"
 #include "interface.h"
-#include "view.h"
 #include "dialog.h"
 
 #define import_obj_float_to_int			1000.0f
@@ -1425,21 +1424,4 @@ void map_mesh_reset_uv_all(void)
 	for (n=0;n!=map.mesh.nmesh;n++) {
 		if (!map.mesh.meshes[n].flag.lock_uv) map_mesh_reset_uv(&map,n);
 	}
-}
-
-void map_optimize(void)
-{
-	int					poly_threshold,comb_count;
-	char				str[256];
-	
-	if (!dialog_optimize_run(&poly_threshold)) return;
-	
-	select_clear();
-	
-	os_set_wait_cursor();
-	comb_count=map_mesh_combine_small(&map,poly_threshold);
-	os_set_arrow_cursor();
-	
-	sprintf(str,"%d small meshes were combined with larger meshes.",comb_count);
-	os_dialog_alert("Optimize",str);
 }

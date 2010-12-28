@@ -276,8 +276,7 @@ void texture_palette_click(texture_type *txt_list,d3pnt *pnt,bool double_click)
 		// double clicks
 		
 	if (double_click) {
-		dialog_texture_setting_run(nsel);
-		main_wind_draw();
+		view_texture_switch(nsel);
 		return;
 	}
     

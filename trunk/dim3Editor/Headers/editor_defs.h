@@ -149,6 +149,8 @@ and can be sold or given away.
 
 #define view_handle_move_scale					3
 
+#define view_texture_shift_factor				100.0f
+
 //
 // clicking
 //
@@ -239,7 +241,6 @@ and can be sold or given away.
 #define kCommandViewSplitVertical				FOUR_CHAR_CODE('spvt')
 #define kCommandViewRemoveSplit					FOUR_CHAR_CODE('sprm')
 
-#define kCommandMapSettings						FOUR_CHAR_CODE('mset')
 #define kCommandMapAddCinema					FOUR_CHAR_CODE('macn')
 #define kCommandMapAddGroup						FOUR_CHAR_CODE('magp')
 #define kCommandMapAddMovement					FOUR_CHAR_CODE('mamv')
@@ -247,7 +248,6 @@ and can be sold or given away.
 #define kCommandMapLowerY						FOUR_CHAR_CODE('mlwy')
 #define kCommandMapCenter						FOUR_CHAR_CODE('mctr')
 #define kCommandMapResetUV						FOUR_CHAR_CODE('mpuv')
-#define kCommandMapOptimize						FOUR_CHAR_CODE('mopt')
 #define kCommandMapCreateNormals				FOUR_CHAR_CODE('rmnm')
 #define kCommandClearLightMaps					FOUR_CHAR_CODE('clmp')
 #define kCommandBuildLightMaps					FOUR_CHAR_CODE('lmap')
@@ -491,9 +491,10 @@ typedef struct		{
 
 typedef struct		{
 						int						vertex_mode,drag_mode,grid_mode,node_mode,
-												handle_mode,view_select_idx,drag_handle_idx;
-						bool					map_opened,free_look,select_add,auto_texture,
-												select_box_on,
+												handle_mode,view_select_idx,drag_handle_idx,
+												view_texture_idx;
+						bool					map_opened,
+												free_look,select_add,auto_texture,select_box_on,
 												show_liquid,show_normals,show_node,show_object,
 												show_lightsoundparticle;
 						d3pnt					select_box_start_pnt,select_box_end_pnt;

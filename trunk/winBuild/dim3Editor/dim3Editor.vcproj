@@ -230,10 +230,6 @@
 					RelativePath="..\..\dim3Editor\Headers\interface.h"
 					>
 				</File>
-				<File
-					RelativePath="..\..\dim3Editor\Headers\view.h"
-					>
-				</File>
 			</Filter>
 			<Filter
 				Name="EditorSources"
@@ -326,10 +322,6 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\dim3Editor\Code\view_click_texture.c"
-						>
-					</File>
-					<File
 						RelativePath="..\..\dim3Editor\Code\view_draw_piece.c"
 						>
 					</File>
@@ -351,6 +343,10 @@
 					</File>
 					<File
 						RelativePath="..\..\dim3Editor\Code\view_picker.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Editor\Code\view_texture.c"
 						>
 					</File>
 				</Filter>

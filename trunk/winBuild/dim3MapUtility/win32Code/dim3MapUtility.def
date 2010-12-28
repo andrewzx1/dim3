@@ -40,10 +40,9 @@ EXPORTS
 	map_mesh_find_always							@234
 	map_mesh_calculate_distance						@235
 
-	map_mesh_create_colors_cache					@255
+	map_mesh_create_colors_cache					@236
 	
-	map_mesh_combine								@236
-	map_mesh_combine_small							@237
+	map_mesh_combine								@237
 	map_mesh_move									@238
 	map_mesh_resize									@239
 	map_mesh_flip									@240

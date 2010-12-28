@@ -31,7 +31,6 @@ and can be sold or given away.
 
 #include "glue.h"
 #include "interface.h"
-#include "view.h"
 #include "dialog.h"
 
 #define kMapPropertyInfoTitle				0
@@ -101,18 +100,17 @@ and can be sold or given away.
 #define kMapPropertyBackgroundBackShift		56
 
 #define kMapPropertyFogOn					60
-#define kMapPropertyFogCount				61
-#define kMapPropertyFogInnerRadius			62
-#define kMapPropertyFogOuterRadius			63
-#define kMapPropertyFogHigh					64
-#define kMapPropertyFogDrop					65
-#define kMapPropertyFogTextureIndex			66
-#define kMapPropertyFogTextureSpeed			67
-#define kMapPropertyFogTextureXFact			68
-#define kMapPropertyFogTextureYFact			69
-#define kMapPropertyFogColor				70
-#define kMapPropertyFogAlpha				71
-#define kMapPropertyFogUseSolidColor		72
+#define kMapPropertyFogInnerRadius			61
+#define kMapPropertyFogOuterRadius			62
+#define kMapPropertyFogUseSolidColor		63
+#define kMapPropertyFogColor				64
+#define kMapPropertyFogTextureIndex			65
+#define kMapPropertyFogCount				66
+#define kMapPropertyFogHigh					67
+#define kMapPropertyFogDrop					68
+#define kMapPropertyFogAlpha				69
+#define kMapPropertyFogTextureSpeed			70
+#define kMapPropertyFogTextureFact			71
 
 #define kMapPropertyRainOn					75
 #define kMapPropertyRainDensity				76
@@ -125,8 +123,8 @@ and can be sold or given away.
 #define kMapPropertyRainStartColor			83
 #define kMapPropertyRainEndColor			84
 #define kMapPropertyRainSlantAdd			85
-#define kMapPropertyRainSlantTimeMSec		86
-#define kMapPropertyRainSlantChangeMSec		87
+#define kMapPropertyRainSlantMaxTime		86
+#define kMapPropertyRainSlantChangeTime		87
 
 #define kMapPropertyEditorTextureFactor		90
 #define kMapPropertyEditorViewNearZ			91
@@ -152,20 +150,6 @@ char							map_property_light_map_size_list[][name_str_len]={"256","512","1024",
       Property Palette Fill Map
       
 ======================================================= */
-
-// supergumba -- to do -- fog
-
-/*
-typedef struct		{
-						int									count,inner_radius,outer_radius,
-															high,drop,texture_idx;
-						float								speed,txt_x_fact,txt_y_fact,
-															alpha;
-						bool								on,use_solid_color;
-						d3col								col;
-					} map_fog_type;
-
-*/
 
 void property_palette_fill_map(void)
 {
@@ -287,25 +271,50 @@ void property_palette_fill_map(void)
 	list_palette_add_uv(&property_palette,kMapPropertyBackgroundBackShift,"Back Scroll",&uv,FALSE);
 	list_palette_add_texture(&property_palette,kMapPropertyBackgroundBackFill,"Back Fill",map.background.back.fill,FALSE);
 
+		// fog general
 
+	list_palette_add_header(&property_palette,0,"Map Fog General");
+	list_palette_add_checkbox(&property_palette,kMapPropertyFogOn,"On",map.fog.on,FALSE);
+	list_palette_add_string_int(&property_palette,kMapPropertyFogInnerRadius,"Inner Radius",map.fog.inner_radius,FALSE);
+	list_palette_add_string_int(&property_palette,kMapPropertyFogOuterRadius,"Outer Radius",map.fog.outer_radius,FALSE);
 
+		// fog obscure
+
+	list_palette_add_header(&property_palette,0,"Map Fog Obscure");
+	list_palette_add_checkbox(&property_palette,kMapPropertyFogUseSolidColor,"Use Obscure (GL) Type",map.fog.use_solid_color,FALSE);
+	list_palette_add_pick_color(&property_palette,kMapPropertyFogColor,"Color",&map.fog.col,FALSE);
+
+		// fog textured
+
+	list_palette_add_header(&property_palette,0,"Map Fog Textured");
+	list_palette_add_texture(&property_palette,kMapPropertyFogTextureIndex,"Fill",map.fog.texture_idx,FALSE);
+	list_palette_add_string_int(&property_palette,kMapPropertyFogCount,"Layer Count",map.fog.count,FALSE);
+	list_palette_add_string_int(&property_palette,kMapPropertyFogHigh,"Height",map.fog.high,FALSE);
+	list_palette_add_string_int(&property_palette,kMapPropertyFogDrop,"Y Drop",map.fog.drop,FALSE);
+	list_palette_add_string_float(&property_palette,kMapPropertyFogAlpha,"Alpha",map.fog.alpha,FALSE);
+	list_palette_add_string_float(&property_palette,kMapPropertyFogTextureSpeed,"Flow Speed",map.fog.speed,FALSE);
+	uv.x=map.fog.txt_x_fact;
+	uv.y=map.fog.txt_y_fact;
+	list_palette_add_uv(&property_palette,kMapPropertyFogTextureFact,"Texture Stamp",&uv,FALSE);
 
 		// rain
 
-	list_palette_add_header(&property_palette,0,"Map Rain");
+	list_palette_add_header(&property_palette,0,"Map Rain General");
 	list_palette_add_checkbox(&property_palette,kMapPropertyRainOn,"On",map.rain.on,FALSE);
 	list_palette_add_string_int(&property_palette,kMapPropertyRainDensity,"Density",map.rain.density,FALSE);
 	list_palette_add_string_int(&property_palette,kMapPropertyRainRadius,"Radius",map.rain.radius,FALSE);
 	list_palette_add_string_int(&property_palette,kMapPropertyRainHeight,"Height",map.rain.height,FALSE);
 	list_palette_add_string_int(&property_palette,kMapPropertyRainSpeed,"Speed",map.rain.speed,FALSE);
+
+	list_palette_add_header(&property_palette,0,"Map Rain Look");
 	list_palette_add_string_int(&property_palette,kMapPropertyRainWidth,"Line Width",map.rain.line_width,FALSE);
 	list_palette_add_string_int(&property_palette,kMapPropertyRainLength,"Line Length",map.rain.line_length,FALSE);
 	list_palette_add_string_float(&property_palette,kMapPropertyRainAlpha,"Line Alpha",map.rain.alpha,FALSE);
 	list_palette_add_pick_color(&property_palette,kMapPropertyRainStartColor,"Line Start Color",&map.rain.start_color,FALSE);
 	list_palette_add_pick_color(&property_palette,kMapPropertyRainEndColor,"Line End Color",&map.rain.end_color,FALSE);
 	list_palette_add_string_int(&property_palette,kMapPropertyRainSlantAdd,"Slant Add",map.rain.slant_add,FALSE);
-	list_palette_add_string_int(&property_palette,kMapPropertyRainSlantTimeMSec,"Slant Time",map.rain.slant_time_msec,FALSE);
-	list_palette_add_string_int(&property_palette,kMapPropertyRainSlantChangeMSec,"Slant Change",map.rain.slant_change_msec,FALSE);
+	list_palette_add_string_int(&property_palette,kMapPropertyRainSlantMaxTime,"Slant Max Time",map.rain.slant_time_msec,FALSE);
+	list_palette_add_string_int(&property_palette,kMapPropertyRainSlantChangeTime,"Slant Change Time",map.rain.slant_change_msec,FALSE);
 
 		// parameters
 
@@ -625,9 +634,65 @@ void property_palette_click_map(int id)
 			property_palette_pick_texture(&map.background.back.fill);
 			break;
 
+			// fog general
 
+		case kMapPropertyFogOn:
+			map.fog.on=!map.fog.on;
+			break;
 
-		// rain
+		case kMapPropertyFogInnerRadius:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&map.fog.inner_radius,0,0,0);
+			break;
+
+		case kMapPropertyFogOuterRadius:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&map.fog.outer_radius,0,0,0);
+			break;
+
+			// fog obscure
+
+		case kMapPropertyFogUseSolidColor:
+			map.fog.use_solid_color=!map.fog.use_solid_color;
+			break;
+
+		case kMapPropertyFogColor:
+			os_pick_color(&map.fog.col);
+			break;
+
+			// fog textured
+
+		case kMapPropertyFogTextureIndex:
+			property_palette_pick_texture(&map.fog.texture_idx);
+			break;
+
+		case kMapPropertyFogCount:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&map.fog.count,0,0,0);
+			break;
+
+		case kMapPropertyFogHigh:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&map.fog.high,0,0,0);
+			break;
+
+		case kMapPropertyFogDrop:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&map.fog.drop,0,0,0);
+			break;
+
+		case kMapPropertyFogAlpha:
+			dialog_property_string_run(list_string_value_0_to_1_float,(void*)&map.fog.alpha,0,0,0);
+			break;
+
+		case kMapPropertyFogTextureSpeed:
+			dialog_property_string_run(list_string_value_positive_float,(void*)&map.fog.speed,0,0,0);
+			break;
+
+		case kMapPropertyFogTextureFact:
+			uv.x=map.fog.txt_x_fact;
+			uv.y=map.fog.txt_y_fact;
+			dialog_property_string_run(list_string_value_uv,(void*)&uv,0,0,0);
+			map.fog.txt_x_fact=uv.x;
+			map.fog.txt_y_fact=uv.y;
+			break;
+
+			// rain general
 
 		case kMapPropertyRainOn:
 			map.rain.on=!map.rain.on;
@@ -648,6 +713,8 @@ void property_palette_click_map(int id)
 		case kMapPropertyRainSpeed:
 			dialog_property_string_run(list_string_value_positive_int,(void*)&map.rain.speed,0,0,0);
 			break;
+
+			// rain look
 
 		case kMapPropertyRainWidth:
 			dialog_property_string_run(list_string_value_positive_int,(void*)&map.rain.line_width,0,0,0);
@@ -673,11 +740,11 @@ void property_palette_click_map(int id)
 			dialog_property_string_run(list_string_value_positive_int,(void*)&map.rain.slant_add,0,0,0);
 			break;
 
-		case kMapPropertyRainSlantTimeMSec:
+		case kMapPropertyRainSlantMaxTime:
 			dialog_property_string_run(list_string_value_positive_int,(void*)&map.rain.slant_time_msec,0,0,0);
 			break;
 
-		case kMapPropertyRainSlantChangeMSec:
+		case kMapPropertyRainSlantChangeTime:
 			dialog_property_string_run(list_string_value_positive_int,(void*)&map.rain.slant_change_msec,0,0,0);
 			break;
 

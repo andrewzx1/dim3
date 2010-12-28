@@ -31,7 +31,6 @@ and can be sold or given away.
 
 #include "glue.h"
 #include "interface.h"
-#include "view.h"
 
 extern map_type				map;
 extern editor_setup_type	setup;
@@ -697,7 +696,7 @@ void view_click_piece(editor_view_type *view,d3pnt *pt,bool double_click)
 				view_click_drag_mesh(view,pt);
 			}
 			else {
-				view_click_drag_texture(view,pt,TRUE);
+				view_click_drag_texture_uv(view,pt,TRUE);
 			}
 			break;
 
@@ -706,7 +705,7 @@ void view_click_piece(editor_view_type *view,d3pnt *pt,bool double_click)
 				view_click_drag_mesh_poly(view,pt);
 			}
 			else {
-				view_click_drag_texture(view,pt,FALSE);
+				view_click_drag_texture_uv(view,pt,FALSE);
 			}
 			break;
 			

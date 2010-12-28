@@ -2,7 +2,6 @@
 
 #include "glue.h"
 #include "interface.h"
-#include "view.h"
 
 #include "resource.h"
 
@@ -51,10 +50,6 @@ void dialog_about_run(void)
 void dialog_preference_run(void)
 {
 }
-bool dialog_map_settings_run(void)
-{
-	return(FALSE);
-}
 bool dialog_group_settings_run(group_type *group)
 {
 	return(FALSE);
@@ -68,10 +63,6 @@ bool dialog_movement_move_settings_run(movement_move_type *move)
 	return(FALSE);
 }
 bool dialog_cinema_settings_run(int cinema_idx)
-{
-	return(FALSE);
-}
-bool dialog_optimize_run(int *poly_threshold)
 {
 	return(FALSE);
 }

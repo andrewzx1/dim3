@@ -792,7 +792,6 @@ extern double map_mesh_calculate_distance(map_mesh_type *mesh,d3pnt *pnt);
 extern bool map_mesh_create_colors_cache(map_mesh_type *mesh);
 
 extern int map_mesh_combine(map_type *map,int mesh_1_idx,int mesh_2_idx);
-extern int map_mesh_combine_small(map_type *map,int poly_threshold);
 extern void map_mesh_move(map_type *map,int mesh_idx,d3pnt *mov_pnt);
 extern void map_mesh_resize(map_type *map,int mesh_idx,d3pnt *min,d3pnt *max);
 extern void map_mesh_flip(map_type *map,int mesh_idx,bool flip_x,bool flip_y,bool flip_z);

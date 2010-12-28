@@ -60,25 +60,22 @@ BEGIN
     END
     POPUP "Map"
     BEGIN
-        MENUITEM "Settings...",					400
+        MENUITEM "Add Cinema...",				400
+        MENUITEM "Add Group...",				401
+        MENUITEM "Add Movement...",				402
 		MENUITEM SEPARATOR
-        MENUITEM "Add Cinema...",				401
-        MENUITEM "Add Group...",				402
-        MENUITEM "Add Movement...",				403
+        MENUITEM "Raise Y",						403
+        MENUITEM "Lower Y",						404
+        MENUITEM "Center",						405
 		MENUITEM SEPARATOR
-        MENUITEM "Raise Y",						404
-        MENUITEM "Lower Y",						405
-        MENUITEM "Center",						406
+        MENUITEM "Reset UVs",					406
 		MENUITEM SEPARATOR
-        MENUITEM "Reset UVs",					407
-        MENUITEM "Optimize Meshes...",			408
+        MENUITEM "Recalc Normals",				407
 		MENUITEM SEPARATOR
-        MENUITEM "Recalc Normals",				409
+        MENUITEM "Clear Light Maps",			408
+        MENUITEM "Build Light Maps...",			409
 		MENUITEM SEPARATOR
-        MENUITEM "Clear Light Maps",			410
-        MENUITEM "Build Light Maps...",			411
-		MENUITEM SEPARATOR
-        MENUITEM "Run...",						412
+        MENUITEM "Run...",						410
     END
     POPUP "Mesh"
     BEGIN

@@ -31,7 +31,6 @@ and can be sold or given away.
 
 #include "glue.h"
 #include "interface.h"
-#include "view.h"
 #include "dialog.h"
 
 extern map_type				map;
@@ -361,10 +360,6 @@ bool menu_event_run(int cmd)
 			
 			// map menu
 
-		case kCommandMapSettings:
-			dialog_map_settings_run();
-			return(TRUE);
-			
 		case kCommandMapAddCinema:
 			idx=dialog_cinema_settings_run(-1);
 			item_palette_select(cinema_piece,idx);
@@ -397,11 +392,6 @@ bool menu_event_run(int cmd)
 			
 		case kCommandMapResetUV:
 			map_mesh_reset_uv_all();
-			main_wind_draw();
-			return(TRUE);
-			
-		case kCommandMapOptimize:
-			map_optimize();
 			main_wind_draw();
 			return(TRUE);
 			
