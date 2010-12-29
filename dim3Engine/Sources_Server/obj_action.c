@@ -569,6 +569,13 @@ bool object_enter_vehicle(obj_type *obj,char *err_str)
 	obj_type		*vehicle_obj;
 	obj_vehicle		*vehicle;
 
+		// can this object use vehicles?
+
+	if (!obj->vehicle.use_vehicles) {
+		if (err_str!=NULL) strcpy(err_str,"Object is flagged to not be able to enter vehicles");
+		return(FALSE);
+	}
+
 		// find a vehicle within right distance
 		
 	idx=-1;
@@ -625,10 +632,23 @@ bool object_enter_vehicle(obj_type *obj,char *err_str)
 	vehicle->attach_offset.y=y;
 	
 		// send events
+
+	obj->vehicle.in_enter=TRUE;
+	obj->vehicle.in_exit=FALSE;
 		
 	scripts_post_event_console(&obj->attach,sd_event_vehicle,sd_event_vehicle_enter,0);
 	scripts_post_event_console(&vehicle_obj->attach,sd_event_vehicle,sd_event_vehicle_enter,0);
-	
+
+	obj->vehicle.in_enter=FALSE;
+
+		// special check to see if exit
+		// was called from events, if so back out
+
+	if (obj->vehicle.in_exit) {
+		obj->vehicle.in_exit=FALSE;
+		return(TRUE);
+	}
+
 		// hide the object
 		
 	obj->hidden=TRUE;
@@ -661,6 +681,16 @@ bool object_exit_vehicle(obj_type *vehicle_obj,bool ignore_errors,char *err_str)
 	obj_type				*orig_obj;
 	obj_vehicle				*vehicle;
 	ray_trace_contact_type	contact;
+
+		// if we are inside a vehicle enter
+		// event, then we need to just trigger
+		// an exit and leave so the state doesn't
+		// get messed up
+
+	if (vehicle_obj->vehicle.in_enter) {
+		vehicle_obj->vehicle.in_exit=TRUE;
+		return(TRUE);
+	}
 
 		// don't exit moving vehicles
 

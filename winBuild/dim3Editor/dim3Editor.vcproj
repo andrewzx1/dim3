@@ -406,6 +406,10 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\dim3Editor\Code\property_palette_texture.c"
+						>
+					</File>
+					<File
 						RelativePath="..\..\dim3Editor\Code\texture_palette.c"
 						>
 					</File>

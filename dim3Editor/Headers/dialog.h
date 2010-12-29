@@ -90,7 +90,7 @@ extern void dialog_preference_run(void);
 //
 
 extern bool dialog_file_new_run(char *title,char *file_name);
-extern bool dialog_file_open_run(char *dialog_name,char *search_path,char *extension,char *required_file_name,char *file_name);
+extern bool dialog_file_open_run(char *title,char *search_path,char *extension,char *required_file_name,char *file_name);
 
 //
 // map dialogs
@@ -116,12 +116,6 @@ extern bool dialog_free_rotate_run(float *rot_x,float *rot_y,float *rot_z);
 
 extern bool dialog_create_grid_mesh_run(int *xdiv,int *ydiv,int *zdiv);
 extern bool dialog_mesh_scale_run(bool replace_ok,int *scale_axis,int *scale_unit);
-
-//
-// texture dialogs
-//
-
-extern void dialog_texture_setting_run(int txt_idx);
 
 //
 // import dialogs

@@ -635,6 +635,8 @@ int object_create(char *name,int type,int bind)
 	obj->kickback.size=100;
 
 	obj->vehicle.on=FALSE;
+	obj->vehicle.use_vehicles=TRUE;
+	obj->vehicle.in_enter=obj->vehicle.in_exit=FALSE;
 	obj->vehicle.attach_obj_idx=-1;
 
 	obj->radar.on=FALSE;

@@ -40,7 +40,7 @@ extern void main_wind_click(d3pnt *pnt,bool double_click);
 extern void main_wind_scroll_wheel(d3pnt *pnt,int delta);
 extern bool main_wind_cursor(void);
 extern void main_wind_key_down(char ch);
-extern void main_wind_setup(void);
+extern void main_wind_resize(void);
 
 //
 // menu
@@ -108,6 +108,7 @@ extern void list_palette_add_point(list_palette_type *list,int id,char *name,d3p
 extern void list_palette_add_angle(list_palette_type *list,int id,char *name,d3ang *ang,bool disabled);
 extern void list_palette_add_uv(list_palette_type *list,int id,char *name,d3fpnt *fpnt,bool disabled);
 extern void list_palette_add_texture(list_palette_type *list,int id,char *name,int txt_idx,bool disabled);
+extern void list_palette_add_shader(list_palette_type *list,int id,char *name,char *shader_name,bool disabled);
 extern void list_palette_delete_all_items(list_palette_type *list);
 extern void list_palette_draw(list_palette_type *list);
 extern void list_palette_scroll_up(list_palette_type *list);
@@ -133,6 +134,7 @@ extern void item_palette_click(d3pnt *pnt,bool double_click);
 // property list palette
 //
 
+extern void property_palette_fill_texture(int texture_idx);
 extern void property_palette_fill_map(void);
 extern void property_palette_fill_mesh(int mesh_idx,int poly_idx);
 extern void property_palette_fill_liquid(int liq_idx);
@@ -143,6 +145,7 @@ extern void property_palette_fill_particle(int particle_idx);
 extern void property_palette_fill_scenery(int scenery_idx);
 extern void property_palette_fill_node(int node_idx);
 
+extern void property_palette_click_texture(int texture_idx,int id);
 extern void property_palette_click_map(int id);
 extern void property_palette_click_mesh(int mesh_idx,int poly_idx,int id);
 extern void property_palette_click_liquid(int liq_idx,int id);
@@ -171,6 +174,7 @@ extern void property_palette_pick_sound(char *name,bool include_none);
 extern void property_palette_pick_particle(char *name);
 extern void property_palette_pick_node(char *name);
 extern void property_palette_pick_texture(int *txt_idx);
+extern void property_palette_pick_shader(char *name);
 
 extern void property_palette_get_parameter(int idx,char *param_list,char *str);
 extern void property_palette_set_parameter(int idx,char *param_list,char *str);
@@ -403,8 +407,10 @@ extern void view_draw(void);
 //
 
 extern void view_texture_switch(int texture_idx);
-extern bool view_texture_click(d3pnt *pnt,bool double_click);
 extern void view_texture_draw(void);
+extern bool view_texture_cursor(void);
+extern void view_texture_scroll_wheel(int delta);
+extern bool view_texture_click(d3pnt *pnt,bool double_click);
 
 //
 // view draw piece

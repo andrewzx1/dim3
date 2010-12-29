@@ -104,7 +104,7 @@ bool ag_room_equal_floor_touch(bool *floor_flags_1,bool *floor_flags_2)
 
 void ag_generate_additional_stories(void)
 {
-	int					n,k,t,x,z,ty,by,mesh_idx,connect_idx;
+	int					n,k,t,t2,x,z,ty,by,mesh_idx,connect_idx;
 	int					px[4],py[4],pz[4];
 	float				gx[4],gy[4];
 	bool				floor_flags[4];
@@ -179,6 +179,8 @@ void ag_generate_additional_stories(void)
 
 			if (!ag_room_equal_floor_touch(shape_poly->floor_flags,floor_flags)) continue;
 
+				// the ceiling
+
 			for (t=0;t!=shape_poly->npt;t++) {
 				x=shape->vertexes[shape_poly->v[t]].x;
 				z=shape->vertexes[shape_poly->v[t]].z;
@@ -193,11 +195,34 @@ void ag_generate_additional_stories(void)
 		
 			map_mesh_add_poly(&map,mesh_idx,shape_poly->npt,px,py,pz,gx,gy,ag_texture_additional_floor);
 
+				// the floor
+
 			for (t=0;t!=shape_poly->npt;t++) {
 				py[t]=by-(int)(10.0f*size->y);
 			}
 
 			map_mesh_add_poly(&map,mesh_idx,shape_poly->npt,px,py,pz,gx,gy,ag_texture_additional_floor);
+
+				// the walls
+
+			for (t=0;t!=shape_poly->npt;t++) {
+				t2=t+1;
+				if (t2==shape->nvertex) t2=0;
+
+				px[0]=px[3]=(int)(((float)shape->vertexes[t].x)*size->x)+room->min.x;
+				px[1]=px[2]=(int)(((float)shape->vertexes[t2].x)*size->x)+room->min.x;
+				pz[0]=pz[3]=(int)(((float)shape->vertexes[t].z)*size->z)+room->min.z;
+				pz[1]=pz[2]=(int)(((float)shape->vertexes[t2].z)*size->z)+room->min.z;
+				py[0]=py[1]=by-(int)(10.0f*size->y);
+				py[2]=py[3]=by;
+
+				gx[0]=gx[3]=0.0f;
+				gx[1]=gx[2]=1.0f;
+				gy[0]=gy[1]=0.0f;
+				gy[2]=gy[3]=1.0f;
+
+				map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,ag_texture_additional_floor);
+			}
 		}
 
 			// move up the room min

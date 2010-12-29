@@ -31,13 +31,16 @@ and can be sold or given away.
 
 #include "glue.h"
 #include "interface.h"
+#include "dialog.h"
 
 #define view_texture_item_high					140
+#define view_texture_scroll_wheel_move			25
 
 #define view_texture_frame_click_return_idx		100
 #define view_texture_frame_click_delete_idx		101
 
-int								view_texture_frame_click_idx;
+int								view_texture_scroll_pos,
+								view_texture_frame_click_idx;
 
 extern int						tool_palette_pixel_sz,txt_palette_pixel_sz;
 extern list_palette_type		item_palette,property_palette;
@@ -64,6 +67,7 @@ void view_texture_switch(int texture_idx)
 		state.view_texture_idx=texture_idx;
 	}
 	
+	view_texture_scroll_pos=0;
 	view_texture_frame_click_idx=-1;
 
 	main_wind_draw();
@@ -221,7 +225,7 @@ void view_texture_draw(void)
 		// the textures
 
 	for (n=0;n!=max_texture_frame;n++) {
-		ty=view_texture_item_high*n;
+		ty=(view_texture_item_high*n)-view_texture_scroll_pos;
 		by=ty+view_texture_item_high;
 		
 			// the background
@@ -324,6 +328,43 @@ void view_texture_draw(void)
 
 /* =======================================================
 
+      Cursors and Scrolling
+      
+======================================================= */
+
+bool view_texture_cursor(void)
+{
+	if (os_key_space_down()) {
+		os_set_hand_cursor();
+        return(TRUE);
+    }
+
+	return(FALSE);
+}
+
+void view_texture_scroll(int y_move)
+{
+	int			high;
+	d3rect		box;
+
+	view_texture_scroll_pos-=y_move;
+
+	if (view_texture_scroll_pos<0) view_texture_scroll_pos=0;
+	
+	view_texture_get_box(&box);
+	high=(view_texture_item_high*max_texture_frame)-(box.by-box.ty);
+	if (view_texture_scroll_pos>high) view_texture_scroll_pos=high;
+
+	main_wind_draw();
+}
+
+void view_texture_scroll_wheel(int delta)
+{
+	view_texture_scroll(delta*view_texture_scroll_wheel_move);
+}
+
+/* =======================================================
+
       Load New Textures
       
 ======================================================= */
@@ -339,12 +380,44 @@ bool view_texture_click_bitmap_open(char *bitmap_name)
 		// check bitmap
 		
 	file_paths_data(&file_path_setup,path,"Bitmaps/Textures",bitmap_name,"png");
+
 	if (!bitmap_check(path,err_str)) {
 		os_dialog_alert("Texture Error",err_str);
 		return(FALSE);
 	}
 	
 	return(TRUE);
+}
+
+/* =======================================================
+
+      View Texture Scrolling Click
+      
+======================================================= */
+
+void view_texture_click_scroll(void)
+{
+	int				org_y;
+	d3pnt			pt;
+	d3rect			box;
+
+	org_y=-1;
+	view_texture_get_box(&box);
+
+	main_wind_draw();
+
+	while (!os_track_mouse_location(&pt,&box)) {
+
+		if (org_y==-1) org_y=pt.y;
+
+		if (pt.y!=org_y) {
+			view_texture_scroll(pt.y-org_y);
+			main_wind_draw();
+			org_y=pt.y;
+		}
+		
+		usleep(10000);
+	}
 }
 
 /* =======================================================
@@ -356,10 +429,19 @@ bool view_texture_click_bitmap_open(char *bitmap_name)
 bool view_texture_click(d3pnt *pnt,bool double_click)
 {
 	int				wid,high,frame_idx,frame_count;
-   char				bitmap_name[file_str_len];
+    char			bitmap_name[file_str_len];
 	d3pnt			pt;
 	d3rect			box,tbox;
 	texture_type	*texture;
+
+		// check for scrolling
+
+	if (os_key_space_down()) {
+		view_texture_click_scroll();
+		return(TRUE);
+	}
+	
+		// regular clicks
 
 	texture=&map.textures[state.view_texture_idx];
 	frame_count=map_count_texture_frames(&map,state.view_texture_idx);

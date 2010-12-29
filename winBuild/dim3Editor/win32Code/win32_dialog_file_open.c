@@ -32,8 +32,8 @@ and can be sold or given away.
 extern HINSTANCE				hinst;
 extern HWND						wnd;
 
-char							fp_file_name[256],*fp_dialog_name;
-bool							fp_cancel;
+int								dialog_file_open_file_index;
+char							dialog_file_open_title[256];
 file_path_directory_type		*fpd;
 
 extern file_path_setup_type		file_path_setup;
@@ -58,7 +58,7 @@ HTREEITEM dialog_file_open_fill_list(HWND diag,HTREEITEM parent_item,int parent_
 			tv_item.hInsertAfter=TVI_LAST;
 			tv_item.item.mask=TVIF_TEXT|TVIF_PARAM;
 			tv_item.item.pszText=fpd->files[n].file_name;
-			tv_item.item.lParam=fpd->files[n].is_dir?1:0;
+			tv_item.item.lParam=(fpd->files[n].is_dir?0xFFFF0000:0x0)|(n&0xFFFF);
 			item=(HTREEITEM)SendDlgItemMessage(diag,IDC_FILE_OPEN_TREE,TVM_INSERTITEM,0,(LPARAM)&tv_item);
 
 			if (first_item==NULL) first_item=item;
@@ -83,19 +83,25 @@ bool dialog_file_open_get(HWND diag)
 	HTREEITEM			item;
 	TV_ITEM				info;
 	
-	fp_file_name[0]=0x0;
+	dialog_file_open_file_index=-1;
 
 	item=(HTREEITEM)SendDlgItemMessage(diag,IDC_FILE_OPEN_TREE,TVM_GETNEXTITEM,TVGN_CARET,(LPARAM)0);
 	if (item==NULL) return(FALSE);
 
-	info.mask=TVIF_TEXT|TVIF_PARAM;
-	info.pszText=fp_file_name;
-	info.cchTextMax=256;
+	info.mask=TVIF_PARAM;
 	info.hItem=item;
 
 	SendDlgItemMessage(diag,IDC_FILE_OPEN_TREE,TVM_GETITEM,0,(LPARAM)&info);
 
-	return(info.lParam==0);
+		// is it a directory?
+
+	if ((info.lParam>>16)!=0) return(FALSE);
+
+		// get the index
+
+	dialog_file_open_file_index=info.lParam&0xFFFF;
+
+	return(TRUE);
 }
 
 LRESULT CALLBACK dialog_file_open_proc(HWND diag,UINT msg,WPARAM wparam,LPARAM lparam)
@@ -105,7 +111,7 @@ LRESULT CALLBACK dialog_file_open_proc(HWND diag,UINT msg,WPARAM wparam,LPARAM l
 	switch (msg) {
 
 		case WM_INITDIALOG:
-			SetWindowText(diag,fp_dialog_name);
+			SetWindowText(diag,dialog_file_open_title);
 			dialog_file_open_set(diag);
 			return(TRUE);
 
@@ -148,7 +154,7 @@ LRESULT CALLBACK dialog_file_open_proc(HWND diag,UINT msg,WPARAM wparam,LPARAM l
       
 ======================================================= */
 
-bool dialog_file_open_run(char *dialog_name,char *search_path,char *extension,char *required_file_name,char *file_name)
+bool dialog_file_open_run(char *title,char *search_path,char *extension,char *required_file_name,char *file_name)
 {
 	bool			ok;
 
@@ -163,19 +169,16 @@ bool dialog_file_open_run(char *dialog_name,char *search_path,char *extension,ch
 
 		// run dialog
 
-	fp_dialog_name=dialog_name;
+	strcpy(dialog_file_open_title,title);
 
 	ok=(DialogBox(hinst,MAKEINTRESOURCE(IDD_FILE_OPEN),wnd,dialog_file_open_proc)==0);
 
-		// close the files
+		// get the file and close
+
+	if ((ok) && (dialog_file_open_file_index!=-1)) file_paths_get_complete_path_from_index(fpd,dialog_file_open_file_index,file_name);
 
 	file_paths_close_directory(fpd);
 	
-	if (!ok) return(FALSE);
-
-		// get the file
-
-	strcpy(file_name,fp_file_name);
-	return(TRUE);
+	return(ok);
 }
 

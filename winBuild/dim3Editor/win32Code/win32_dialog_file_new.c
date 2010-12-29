@@ -33,7 +33,8 @@ and can be sold or given away.
 extern HINSTANCE				hinst;
 extern HWND						wnd;
 
-char							dialog_file_new_file_name[256];
+char							dialog_file_new_file_name[256],
+								dialog_file_new_title[256];
 
 /* =======================================================
 
@@ -46,9 +47,12 @@ LRESULT CALLBACK dialog_file_new_proc(HWND diag,UINT msg,WPARAM wparam,LPARAM lp
 	switch (msg) {
 
 		case WM_INITDIALOG:
+			SetWindowText(diag,dialog_file_new_title);
+
 			win32_dialog_set_text(diag,IDC_FILE_NEW_NAME,dialog_file_new_file_name);
 			win32_dialog_set_focus(diag,IDC_FILE_NEW_NAME);
 			win32_dialog_select_all(diag,IDC_FILE_NEW_NAME);
+
 			return(FALSE);		// return false when keyboard focus has been set
 
 		case WM_COMMAND:
@@ -81,6 +85,7 @@ LRESULT CALLBACK dialog_file_new_proc(HWND diag,UINT msg,WPARAM wparam,LPARAM lp
 
 bool dialog_file_new_run(char *title,char *file_name)
 {
+	strcpy(dialog_file_new_title,title);
 	strcpy(dialog_file_new_file_name,file_name);
 
 	if (DialogBox(hinst,MAKEINTRESOURCE(IDD_FILE_NEW),wnd,dialog_file_new_proc)!=0) return(FALSE);
