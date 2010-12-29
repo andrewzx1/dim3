@@ -270,7 +270,12 @@ void main_wind_scroll_wheel(d3pnt *pnt,int delta)
 
 		// scroll wheel in view
 
-	view_scroll_wheel(pnt,delta);
+	if (state.view_texture_idx==-1) {
+		view_scroll_wheel(pnt,delta);
+	}
+	else {
+		view_texture_scroll_wheel(delta);
+	}
 }
 
 /* =======================================================
@@ -284,7 +289,9 @@ bool main_wind_cursor(void)
 	d3pnt			pnt;
 	
 	os_get_cursor(&pnt);
-	return(view_cursor(&pnt));
+
+	if (state.view_texture_idx==-1) return(view_cursor(&pnt));
+	return(view_texture_cursor());
 }
 
 /* =======================================================
@@ -328,8 +335,10 @@ void main_wind_key_down(char ch)
       
 ======================================================= */
 
-void main_wind_setup(void)
+void main_wind_resize(void)
 {
+	if (!state.map_opened) return;
+
 	tool_palette_setup();
 	texture_palette_setup();
 	item_palette_setup();

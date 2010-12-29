@@ -69,6 +69,7 @@ JSValueRef js_obj_setting_get_bumpUp(JSContextRef cx,JSObjectRef j_obj,JSStringR
 JSValueRef js_obj_setting_get_slopeGravity(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_setting_get_pushable(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_setting_get_openDoors(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_obj_setting_get_useVehicles(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_setting_get_inputMode(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 bool js_obj_setting_set_team(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 bool js_obj_setting_set_hidden(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
@@ -99,6 +100,7 @@ bool js_obj_setting_set_bumpUp(JSContextRef cx,JSObjectRef j_obj,JSStringRef nam
 bool js_obj_setting_set_slopeGravity(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 bool js_obj_setting_set_pushable(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 bool js_obj_setting_set_openDoors(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_obj_setting_set_useVehicles(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 bool js_obj_setting_set_inputMode(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 JSValueRef js_obj_get_parameter_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_set_ambient_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
@@ -141,6 +143,7 @@ JSStaticValue 		obj_setting_props[]={
 							{"slopeGravity",			js_obj_setting_get_slopeGravity,			js_obj_setting_set_slopeGravity,			kJSPropertyAttributeDontDelete},
 							{"pushable",				js_obj_setting_get_pushable,				js_obj_setting_set_pushable,				kJSPropertyAttributeDontDelete},
 							{"openDoors",				js_obj_setting_get_openDoors,				js_obj_setting_set_openDoors,				kJSPropertyAttributeDontDelete},
+							{"useVehicles",				js_obj_setting_get_useVehicles,				js_obj_setting_set_useVehicles,				kJSPropertyAttributeDontDelete},
 							{"inputMode",				js_obj_setting_get_inputMode,				js_obj_setting_set_inputMode,				kJSPropertyAttributeDontDelete},
 							{0,0,0,0}};
 
@@ -459,6 +462,14 @@ JSValueRef js_obj_setting_get_openDoors(JSContextRef cx,JSObjectRef j_obj,JSStri
 	return(script_bool_to_value(cx,obj->open_doors));
 }
 
+JSValueRef js_obj_setting_get_useVehicles(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
+{
+	obj_type		*obj;
+
+	obj=object_script_lookup();
+	return(script_bool_to_value(cx,obj->vehicle.use_vehicles));
+}
+
 JSValueRef js_obj_setting_get_inputMode(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	obj_type		*obj;
@@ -764,6 +775,16 @@ bool js_obj_setting_set_openDoors(JSContextRef cx,JSObjectRef j_obj,JSStringRef 
 	
 	obj=object_script_lookup();
 	obj->open_doors=script_value_to_bool(cx,vp);
+	
+	return(TRUE);
+}
+
+bool js_obj_setting_set_useVehicles(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+{
+	obj_type		*obj;
+	
+	obj=object_script_lookup();
+	obj->vehicle.use_vehicles=script_value_to_bool(cx,vp);
 	
 	return(TRUE);
 }

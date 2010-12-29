@@ -23,13 +23,10 @@ extern d3rect				tool_palette_box,txt_palette_box;
 extern list_palette_type	item_palette;
 
 extern bool setup_xml_read(void);
-extern void edit_view_draw(d3pnt *pt,d3ang *ang,d3rect *box,int wnd_high,bool focus);
-void editor_button_down(int x,int y);
 extern void glue_start(void);
 extern void glue_end(void);
 extern void editor_menu_commands(int id);
 extern void editor_menu_create(void);
-extern bool dialog_file_open_run(char *dialog_name,char *search_path,char *extension,char *required_file_name,char *file_name);
 extern int os_win32_menu_lookup(int id);
 
 /* =======================================================
@@ -82,9 +79,6 @@ bool dialog_create_grid_mesh_run(int *xdiv,int *ydiv,int *zdiv)
 {
 	return(FALSE);
 }
-void dialog_texture_setting_run(int txt_idx)
-{
-}
 bool dialog_height_import_run(int *div_cnt,int *size,int *high)
 {
 	return(FALSE);
@@ -131,11 +125,7 @@ LRESULT CALLBACK editor_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam)
 			break;
 
 		case WM_SIZE:
-			tool_palette_setup();
-			texture_palette_setup();
-			item_palette_setup();
-			property_palette_setup();
-			// supergumba -- deal with these, need to check if map is loaded
+			main_wind_resize();
 			break;
 
 		case WM_LBUTTONDOWN:

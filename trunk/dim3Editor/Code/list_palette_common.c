@@ -205,6 +205,7 @@ void list_palette_add_checkbox(list_palette_type *list,int id,char *name,bool va
 	item->id=id;
 
 	item->selected=FALSE;
+	item->disabled=disabled;
 
 	strcpy(item->name,name);
 	item->value.checkbox=value;
@@ -221,6 +222,7 @@ void list_palette_add_pick_color(list_palette_type *list,int id,char *name,d3col
 	item->id=id;
 
 	item->selected=FALSE;
+	item->disabled=disabled;
 
 	strcpy(item->name,name);
 	memmove(&item->value.col,col,sizeof(d3col));
@@ -266,6 +268,16 @@ void list_palette_add_texture(list_palette_type *list,int id,char *name,int txt_
 	}
 	
 	list_palette_add_string(list,id,name,str,disabled);
+}
+
+void list_palette_add_shader(list_palette_type *list,int id,char *name,char *shader_name,bool disabled)
+{
+	if (shader_name[0]==0x0) {
+		list_palette_add_string(list,id,name,"Default",disabled);
+		return;
+	}
+	
+	list_palette_add_string(list,id,name,shader_name,disabled);
 }
 
 /* =======================================================

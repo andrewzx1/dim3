@@ -591,7 +591,8 @@ typedef struct		{
 
 typedef struct		{
 						int						attach_obj_idx;
-						bool					on;
+						bool					on,use_vehicles,
+												in_enter,in_exit;
 						d3pnt					attach_offset;
 					} obj_vehicle;
 

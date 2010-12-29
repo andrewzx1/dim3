@@ -101,6 +101,15 @@ void property_palette_fill(void)
 
 	list_palette_delete_all_items(&property_palette);
 
+		// if texture window is up,
+		// put in texture properties
+
+	if (state.view_texture_idx!=-1) {
+		list_palette_set_title(&property_palette,"Texture Properties");
+		property_palette_fill_texture(state.view_texture_idx);
+		return;
+	}
+
 		// fill in the properties for
 		// the currently selected item
 
@@ -108,11 +117,15 @@ void property_palette_fill(void)
 	
 	if (select_count()!=0)  select_get(0,&sel_type,&main_idx,&sub_idx);
 	
+		// no selection, map properties
+
 	if (main_idx==-1) {
 		list_palette_set_title(&property_palette,"Map Properties");
 		property_palette_fill_map();
 		return;
 	}
+
+		// selection properties
 
 	switch (sel_type) {
 
@@ -242,16 +255,27 @@ void property_palette_click(d3pnt *pnt,bool double_click)
 
 	if (property_palette.item_id==-1) return;
 
+		// if texture window is up, texture properties
+
+	if (state.view_texture_idx!=-1) {
+		property_palette_click_texture(state.view_texture_idx,property_palette.item_id);
+		return;
+	}
+
 		// get the selection
 
 	main_idx=-1;
 	
 	if (select_count()!=0) select_get(0,&sel_type,&main_idx,&sub_idx);
 
+		// no selection, map properties
+
 	if (main_idx==-1) {
 		property_palette_click_map(property_palette.item_id);
 		return;
 	}
+
+		// selection properties
 
 	switch (sel_type) {
 
@@ -676,6 +700,39 @@ void property_palette_pick_texture(int *txt_idx)
 	}
 
 	dialog_property_list_run((char*)texture_names,max_map_texture,name_str_len,0,TRUE,txt_idx);
+}
+
+void property_palette_pick_shader(char *name)
+{
+	int					idx,shader_count,head_tag,tag;
+	char				path[1024],shader_names[256][file_str_len];
+
+	idx=-1;
+	shader_count=0;
+	
+	file_paths_data(&file_path_setup,path,"Settings","Shaders","xml");
+	if (xml_open_file(path)) {
+	
+		head_tag=xml_findrootchild("Shaders");
+		if (head_tag!=-1) {
+
+			tag=xml_findfirstchild("Shader",head_tag);
+			
+			while (tag!=-1) {
+				xml_get_attribute_text(tag,"name",shader_names[shader_count],file_str_len);
+				if ((idx==-1) && (strcasecmp(shader_names[shader_count],name)==0)) idx=shader_count;
+				shader_count++;
+				tag=xml_findnextchild(tag);
+			}
+		}
+	
+		xml_close_file();
+	}
+
+	dialog_property_list_run((char*)shader_names,shader_count,file_str_len,0,TRUE,&idx);
+
+	name[0]=0x0;
+	if (idx!=-1) strcpy(name,shader_names[idx]);
 }
 
 /* =======================================================

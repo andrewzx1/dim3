@@ -149,7 +149,14 @@ bool tool_get_highlight_state(int tool_idx)
 void tool_click(int tool_idx)
 {
 	editor_view_type		*view;
-	
+
+		// if in texture view, any tool click
+		// leaves it
+
+	if (state.view_texture_idx!=-1) view_texture_switch(-1);
+
+		// run the click
+
 	switch (tool_idx) {
 	
 			// vertex mode
