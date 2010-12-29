@@ -170,9 +170,9 @@
 	};
 	F5A8B1B105229DA4008D4331 /* map_main.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 5161}}";
-			sepNavSelRange = "{5488, 0}";
-			sepNavVisRange = "{5091, 1064}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 5317}}";
+			sepNavSelRange = "{9684, 20}";
+			sepNavVisRange = "{8693, 1083}";
 			sepNavWindowFrame = "{{552, 215}, {1041, 747}}";
 		};
 	};
@@ -186,10 +186,10 @@
 	};
 	F5C40DAB05439C17002FA7E9 /* map_frames.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 1781}}";
-			sepNavSelRange = "{1729, 0}";
-			sepNavVisRange = "{1113, 1148}";
-			sepNavWindowFrame = "{{389, 121}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 1807}}";
+			sepNavSelRange = "{1895, 21}";
+			sepNavVisRange = "{1740, 1192}";
+			sepNavWindowFrame = "{{639, 93}, {1041, 747}}";
 		};
 	};
 	F5C53530051C058600968AF1 /* Project object */ = {
@@ -247,8 +247,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 315091385;
-			PBXWorkspaceStateSaveDate = 315091385;
+			PBXPerProjectTemplateStateSaveDate = 315283939;
+			PBXWorkspaceStateSaveDate = 315283939;
 		};
 		sourceControlManager = 260AFEBF0D404E9300F6C42F /* Source Control */;
 		userBuildSettings = {
@@ -264,9 +264,9 @@
 	};
 	F5C53548051C085800968AF1 /* maputility.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 11024}}";
-			sepNavSelRange = "{7763, 0}";
-			sepNavVisRange = "{7174, 1351}";
+			sepNavIntBoundsRect = "{{0, 0}, {1167, 10088}}";
+			sepNavSelRange = "{24475, 24}";
+			sepNavVisRange = "{22324, 2758}";
 			sepNavWindowFrame = "{{304, 244}, {1041, 691}}";
 		};
 	};
