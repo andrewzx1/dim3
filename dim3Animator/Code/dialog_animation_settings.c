@@ -296,7 +296,7 @@ static pascal OSStatus animation_settings_event_proc(EventHandlerCallRef handler
 					// dialog buttons
 			
 				case kAnimationPosePlay:
-					model_wind_play(!state.playing,FALSE);
+					main_wind_play(!state.playing,FALSE);
 					return(noErr);
 					
 				case kHICommandCancel:

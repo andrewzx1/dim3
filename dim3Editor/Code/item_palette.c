@@ -99,7 +99,7 @@ void item_palette_fill(void)
 
 		// spots
 
-	list_palette_add_header(&item_palette,spot_piece,"Spots");
+	list_palette_add_header_count(&item_palette,spot_piece,"Spots",map.nspot);
 
 	for (n=0;n!=map.nspot;n++) {
 		list_palette_add_item(&item_palette,spot_piece,n,map.spots[n].name,((item_palette.item_type==spot_piece)&&(n==item_palette.item_idx)),FALSE);
@@ -107,7 +107,7 @@ void item_palette_fill(void)
 
 		// lights
 
-	list_palette_add_header(&item_palette,light_piece,"Lights");
+	list_palette_add_header_count(&item_palette,light_piece,"Lights",map.nlight);
 
 	for (n=0;n!=map.nlight;n++) {
 		list_palette_add_color(&item_palette,light_piece,n,&map.lights[n].col,((item_palette.item_type==light_piece)&&(n==item_palette.item_idx)),FALSE);
@@ -115,7 +115,7 @@ void item_palette_fill(void)
 
 		// sounds
 
-	list_palette_add_header(&item_palette,sound_piece,"Sounds");
+	list_palette_add_header_count(&item_palette,sound_piece,"Sounds",map.nsound);
 
 	for (n=0;n!=map.nsound;n++) {
 		list_palette_add_item(&item_palette,sound_piece,n,map.sounds[n].name,((item_palette.item_type==sound_piece)&&(n==item_palette.item_idx)),FALSE);
@@ -123,7 +123,7 @@ void item_palette_fill(void)
 
 		// particles
 
-	list_palette_add_header(&item_palette,particle_piece,"Particles");
+	list_palette_add_header_count(&item_palette,particle_piece,"Particles",map.nparticle);
 
 	for (n=0;n!=map.nparticle;n++) {
 		list_palette_add_item(&item_palette,particle_piece,n,map.particles[n].name,((item_palette.item_type==particle_piece)&&(n==item_palette.item_idx)),FALSE);
@@ -131,7 +131,7 @@ void item_palette_fill(void)
 
 		// sceneries
 
-	list_palette_add_header(&item_palette,scenery_piece,"Scenery");
+	list_palette_add_header_count(&item_palette,scenery_piece,"Scenery",map.nscenery);
 
 	for (n=0;n!=map.nscenery;n++) {
 		list_palette_add_item(&item_palette,scenery_piece,n,map.sceneries[n].model_name,((item_palette.item_type==scenery_piece)&&(n==item_palette.item_idx)),FALSE);
@@ -139,7 +139,7 @@ void item_palette_fill(void)
 
 		// nodes
 
-	list_palette_add_header(&item_palette,node_piece,"Nodes");
+	list_palette_add_header_count(&item_palette,node_piece,"Nodes",map.nnode);
 
 	for (n=0;n!=map.nnode;n++) {
 		if (map.nodes[n].name[0]!=0x0) list_palette_add_item(&item_palette,node_piece,n,map.nodes[n].name,((item_palette.item_type==node_piece)&&(n==item_palette.item_idx)),FALSE);
@@ -147,7 +147,7 @@ void item_palette_fill(void)
 
 		// groups
 
-	list_palette_add_header(&item_palette,group_piece,"Groups");
+	list_palette_add_header_count(&item_palette,group_piece,"Groups",map.group.ngroup);
 
 	for (n=0;n!=map.group.ngroup;n++) {
 		list_palette_add_item(&item_palette,group_piece,n,map.group.groups[n].name,((item_palette.item_type==group_piece)&&(n==item_palette.item_idx)),FALSE);
@@ -155,7 +155,7 @@ void item_palette_fill(void)
 
 		// movements
 
-	list_palette_add_header(&item_palette,movement_piece,"Movements");
+	list_palette_add_header_count(&item_palette,movement_piece,"Movements",map.movement.nmovement);
 
 	for (n=0;n!=map.movement.nmovement;n++) {
 		list_palette_add_item(&item_palette,movement_piece,n,map.movement.movements[n].name,((item_palette.item_type==movement_piece)&&(n==item_palette.item_idx)),FALSE);
@@ -163,7 +163,7 @@ void item_palette_fill(void)
 
 		// cinemas
 
-	list_palette_add_header(&item_palette,cinema_piece,"Cinemas");
+	list_palette_add_header_count(&item_palette,cinema_piece,"Cinemas",map.cinema.ncinema);
 
 	for (n=0;n!=map.cinema.ncinema;n++) {
 		list_palette_add_item(&item_palette,cinema_piece,n,map.cinema.cinemas[n].name,((item_palette.item_type==cinema_piece)&&(n==item_palette.item_idx)),FALSE);

@@ -248,12 +248,12 @@ void property_palette_fill_map(void)
 	uv.x=map.sky.txt_x_shift;
 	uv.y=map.sky.txt_y_shift;
 	list_palette_add_uv(&property_palette,kMapPropertyTextureShift,"Texture Shift",&uv,FALSE);
-	list_palette_add_texture(&property_palette,kMapPropertyTextureFill,"Fill/Cube Top Fill",map.sky.fill,FALSE);
-	list_palette_add_texture(&property_palette,kMapPropertyTextureBottomFill,"Cube Bottom Fill",map.sky.bottom_fill,FALSE);
-	list_palette_add_texture(&property_palette,kMapPropertyTextureNorthFill,"Cube North Fill",map.sky.north_fill,FALSE);
-	list_palette_add_texture(&property_palette,kMapPropertyTextureSouthFill,"Cube South Fill",map.sky.south_fill,FALSE);
-	list_palette_add_texture(&property_palette,kMapPropertyTextureEastFill,"Cube East Fill",map.sky.east_fill,FALSE);
-	list_palette_add_texture(&property_palette,kMapPropertyTextureWestFill,"Cube West Fill",map.sky.west_fill,FALSE);
+	list_palette_add_texture(&property_palette,map.textures,kMapPropertyTextureFill,"Fill/Cube Top Fill",map.sky.fill,FALSE);
+	list_palette_add_texture(&property_palette,map.textures,kMapPropertyTextureBottomFill,"Cube Bottom Fill",map.sky.bottom_fill,FALSE);
+	list_palette_add_texture(&property_palette,map.textures,kMapPropertyTextureNorthFill,"Cube North Fill",map.sky.north_fill,FALSE);
+	list_palette_add_texture(&property_palette,map.textures,kMapPropertyTextureSouthFill,"Cube South Fill",map.sky.south_fill,FALSE);
+	list_palette_add_texture(&property_palette,map.textures,kMapPropertyTextureEastFill,"Cube East Fill",map.sky.east_fill,FALSE);
+	list_palette_add_texture(&property_palette,map.textures,kMapPropertyTextureWestFill,"Cube West Fill",map.sky.west_fill,FALSE);
 
 		// background
 
@@ -262,15 +262,15 @@ void property_palette_fill_map(void)
 	uv.x=map.background.front.x_scroll_fact;
 	uv.y=map.background.front.y_scroll_fact;
 	list_palette_add_uv(&property_palette,kMapPropertyBackgroundFrontShift,"Front Scroll",&uv,FALSE);
-	list_palette_add_texture(&property_palette,kMapPropertyBackgroundFrontFill,"Front Fill",map.background.front.fill,FALSE);
+	list_palette_add_texture(&property_palette,map.textures,kMapPropertyBackgroundFrontFill,"Front Fill",map.background.front.fill,FALSE);
 	uv.x=map.background.middle.x_scroll_fact;
 	uv.y=map.background.middle.y_scroll_fact;
 	list_palette_add_uv(&property_palette,kMapPropertyBackgroundMiddleShift,"Middle Scroll",&uv,FALSE);
-	list_palette_add_texture(&property_palette,kMapPropertyBackgroundMiddleFill,"Middle Fill",map.background.middle.fill,FALSE);
+	list_palette_add_texture(&property_palette,map.textures,kMapPropertyBackgroundMiddleFill,"Middle Fill",map.background.middle.fill,FALSE);
 	uv.x=map.background.back.x_scroll_fact;
 	uv.y=map.background.back.y_scroll_fact;
 	list_palette_add_uv(&property_palette,kMapPropertyBackgroundBackShift,"Back Scroll",&uv,FALSE);
-	list_palette_add_texture(&property_palette,kMapPropertyBackgroundBackFill,"Back Fill",map.background.back.fill,FALSE);
+	list_palette_add_texture(&property_palette,map.textures,kMapPropertyBackgroundBackFill,"Back Fill",map.background.back.fill,FALSE);
 
 		// fog general
 
@@ -288,7 +288,7 @@ void property_palette_fill_map(void)
 		// fog textured
 
 	list_palette_add_header(&property_palette,0,"Map Fog Textured");
-	list_palette_add_texture(&property_palette,kMapPropertyFogTextureIndex,"Fill",map.fog.texture_idx,FALSE);
+	list_palette_add_texture(&property_palette,map.textures,kMapPropertyFogTextureIndex,"Fill",map.fog.texture_idx,FALSE);
 	list_palette_add_string_int(&property_palette,kMapPropertyFogCount,"Layer Count",map.fog.count,FALSE);
 	list_palette_add_string_int(&property_palette,kMapPropertyFogHigh,"Height",map.fog.high,FALSE);
 	list_palette_add_string_int(&property_palette,kMapPropertyFogDrop,"Y Drop",map.fog.drop,FALSE);

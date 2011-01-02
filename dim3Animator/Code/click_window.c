@@ -257,7 +257,7 @@ void select_model_wind(d3pnt *start_pnt,unsigned long modifiers)
 	
 		// no playing while selecting
 		
-	model_wind_play(FALSE,FALSE);
+	main_wind_play(FALSE,FALSE);
 	
 		// get the draw vertexes
 		// need to save off array as drawing will reuse
@@ -317,7 +317,7 @@ void select_model_wind(d3pnt *start_pnt,unsigned long modifiers)
       
 ======================================================= */
 
-void change_model_wind(d3pnt *start_pnt)
+void change_model_wind(d3pnt *start_pnt,bool shift_on,bool rotate_on,bool size_on)
 {
 	int						old_magnify_z;
 	d3pnt					pnt,last_pnt,old_shift;
@@ -340,15 +340,15 @@ void change_model_wind(d3pnt *start_pnt)
 		if ((last_pnt.x==pnt.x) && (last_pnt.y==pnt.y)) continue;
 		memmove(&last_pnt,&pnt,sizeof(d3pnt));
 			
-		if (state.shift_on) {
+		if (shift_on) {
 			state.shift.x=old_shift.x+((last_pnt.x-start_pnt->x)*4);
 			state.shift.y=old_shift.y-((last_pnt.y-start_pnt->y)*4);
 		}
-		if (state.rotate_on) {
+		if (rotate_on) {
 			state.ang.x=old_ang.x-(float)((last_pnt.y-start_pnt->y)/5);
 			state.ang.y=old_ang.y+(float)((last_pnt.x-start_pnt->x)/5);
 		}
-		if (state.size_on) {
+		if (size_on) {
 			state.magnify_z=old_magnify_z+((last_pnt.y-start_pnt->y)*2);
 		}
 		
@@ -401,7 +401,7 @@ bool drag_bone_model_wind(d3pnt *start_pnt)
 	
 	if (model.nbone==0) return(FALSE);
 	
-	model_wind_play(FALSE,FALSE);
+	main_wind_play(FALSE,FALSE);
 	
 		// setup the draw pose
 		
@@ -577,7 +577,7 @@ bool drag_hit_box_handle_model_wind(d3pnt *start_pnt)
 	d3pnt					org_pnt,org_cnt,last_pnt,pnt;
 	model_box_type			*box;
 	
-	model_wind_play(FALSE,FALSE);
+	main_wind_play(FALSE,FALSE);
 	
 		// setup the draw pose
 		
@@ -691,7 +691,7 @@ bool drag_hit_box_handle_model_wind(d3pnt *start_pnt)
 
 void click_model_wind(d3pnt *pnt,unsigned long modifiers)
 {
-	model_wind_reset_modifiers();
+	bool			shift_on,rotate_on,size_on;
 	
 		// get click within window
 		
@@ -699,9 +699,13 @@ void click_model_wind(d3pnt *pnt,unsigned long modifiers)
 	pnt->y-=model_box.ty;
 	
 		// handle the clicks
+		
+	shift_on=os_key_space_down();
+	rotate_on=os_key_command_down();
+	size_on=os_key_option_down();
 	
-	if ((state.shift_on) || (state.rotate_on) || (state.size_on)) {
-		change_model_wind(pnt);
+	if ((shift_on) || (rotate_on) || (size_on)) {
+		change_model_wind(pnt,shift_on,rotate_on,size_on);
 		return;
 	}
 	
