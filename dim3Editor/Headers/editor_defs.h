@@ -193,6 +193,14 @@ and can be sold or given away.
 #define normal_vector_scale						300.0f
 
 //
+// import modes
+//
+
+#define import_mode_scale						0
+#define import_mode_replace						1
+#define import_mode_replace_all					2
+
+//
 // menus
 //
 
@@ -348,66 +356,6 @@ typedef struct		{
 						short					type,main_idx,sub_idx;
 						bool					hit;
 					} view_picker_type;
-
-//
-// list palette
-//
-
-#define list_max_item_count						4096
-#define list_max_section_count					32
-
-#define list_title_font_size					14.0f
-#define list_item_font_size						12.0f
-#define list_item_font_high						14
-#define list_item_scroll_size					(list_item_font_high*5)
-
-#define list_palette_border_sz					10
-#define list_palette_tree_sz					250
-#define list_palette_scroll_wid					15
-#define list_title_high							20
-
-#define list_item_ctrl_header					0
-#define list_item_ctrl_text						1
-#define list_item_ctrl_color					2
-#define list_item_ctrl_string					3
-#define list_item_ctrl_checkbox					4
-#define list_item_ctrl_pick_color				5
-
-#define list_string_value_string				0
-#define list_string_value_int					1
-#define list_string_value_positive_int			2
-#define list_string_value_range_int				3
-#define list_string_value_float					4
-#define list_string_value_positive_float		5
-#define list_string_value_0_to_1_float			6
-#define list_string_value_point					7
-#define list_string_value_angle					8
-#define list_string_value_uv					9
-
-typedef union		{
-						bool								checkbox;
-						char								str[32];
-						d3col								col;
-					} list_palette_item_value_type;
-
-typedef struct		{
-						int									x,y,ctrl_type,
-															id,type,idx;
-						bool								selected,disabled;
-						char								name[name_str_len];
-						list_palette_item_value_type		value;
-					} list_palette_item_type;
-
-typedef struct		{
-						int									item_count,push_idx,
-															item_id,item_type,item_idx,
-															pixel_sz,scroll_page,
-															total_high;
-						bool								push_on;
-						char								title[name_str_len];
-						d3rect								box;
-						list_palette_item_type				*items;
-					} list_palette_type;
 
 //
 // auto generator

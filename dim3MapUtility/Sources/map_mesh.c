@@ -86,7 +86,8 @@ int map_mesh_add(map_type *map)
 	
 	mesh->rot_off.x=mesh->rot_off.y=mesh->rot_off.z=0;
 	
-	mesh->import_factor=0.0f;
+	mesh->import.factor=0.0f;
+	mesh->import.obj_name[0]=0x0;
 
 	mesh->msg.entry_id=0;
 	mesh->msg.exit_id=0;
@@ -265,6 +266,8 @@ int map_mesh_duplicate(map_type *map,int mesh_idx)
 	memmove(&new_mesh->rot_off,&mesh->rot_off,sizeof(d3pnt));
 	memmove(&new_mesh->flag,&mesh->flag,sizeof(map_mesh_flag_type));
 	memmove(&new_mesh->msg,&mesh->msg,sizeof(map_mesh_message_type));
+	
+	memmove(&new_mesh->import,&mesh->import,sizeof(map_mesh_import_type));
 
 	memmove(new_mesh->vertexes,mesh->vertexes,(sizeof(d3pnt)*mesh->nvertex));
 	memmove(new_mesh->polys,mesh->polys,(sizeof(map_mesh_poly_type)*mesh->npoly));

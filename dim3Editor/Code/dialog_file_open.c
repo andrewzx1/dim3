@@ -163,7 +163,7 @@ static pascal void file_open_list_notify_proc(ControlRef ctrl,DataBrowserItemID 
       
 ======================================================= */
 
-bool dialog_file_open_run(char *dialog_name,char *search_path,char *extension,char *required_file_name,char *file_name)
+bool dialog_file_open_run(char *title,char *search_path,char *extension,char *required_file_name,char *file_name)
 {
 	int								n,count;
 	CFStringRef						cfstr;
@@ -180,7 +180,7 @@ bool dialog_file_open_run(char *dialog_name,char *search_path,char *extension,ch
 		
 	dialog_open(&dialog_file_open_wind,"FileOpen");
 	
-	cfstr=CFStringCreateWithCString(kCFAllocatorDefault,dialog_name,kCFStringEncodingMacRoman);
+	cfstr=CFStringCreateWithCString(kCFAllocatorDefault,title,kCFStringEncodingMacRoman);
 	SetWindowTitleWithCFString(dialog_file_open_wind,cfstr);
 	CFRelease(cfstr);
 	

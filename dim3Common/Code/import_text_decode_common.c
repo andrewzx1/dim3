@@ -33,6 +33,8 @@ and can be sold or given away.
 	#endif
 #endif
 
+#include "glue.h"
+
 int				text_nline,text_data_sz;
 char			piece_break=0x9;
 char			*text_data;

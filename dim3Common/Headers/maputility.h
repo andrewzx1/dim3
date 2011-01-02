@@ -302,9 +302,13 @@ typedef struct		{
 					} map_mesh_draw_type;
 
 typedef struct		{
+						float								factor;
+						char								obj_name[name_str_len];
+					} map_mesh_import_type;
+
+typedef struct		{
 						int									nvertex,npoly,group_idx,
 															hide_mode,normal_mode,harm;
-						float								import_factor;
 						float								*colors_cache;
 						d3pnt								rot_off;
 						d3pnt								*vertexes;
@@ -315,6 +319,7 @@ typedef struct		{
 						map_mesh_message_type				msg;
 						map_mesh_draw_type					draw;
 						map_light_cache_type				light_cache;
+						map_mesh_import_type				import;
 					} map_mesh_type;
 
 //

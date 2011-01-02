@@ -25,7 +25,7 @@ and can be sold or given away.
  
 *********************************************************************/
 
-#include "model.h"
+#include "glue.h"
 #include "interface.h"
 
 extern d3rect					model_box;

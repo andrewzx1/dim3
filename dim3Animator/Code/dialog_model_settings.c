@@ -27,7 +27,7 @@ and can be sold or given away.
 
 #include "dialog.h"
 
-#define kModelSettingTabCount				5
+#define kModelSettingTabCount				6
 #define kModelSettingTab					FOUR_CHAR_CODE('tabb')
 
 #define kRotateMode							FOUR_CHAR_CODE('rotm')
@@ -55,6 +55,9 @@ and can be sold or given away.
 #define kRigidBodyZMaxAngle					FOUR_CHAR_CODE('zmxa')
 #define kRigidBodyZResetFact				FOUR_CHAR_CODE('zrtf')
 #define kRigidBodyZSmoothFact				FOUR_CHAR_CODE('zsmf')
+
+#define kImportSingleTexture				FOUR_CHAR_CODE('istx')
+#define kImportScale						FOUR_CHAR_CODE('iscl')
 
 bool						dialog_model_settings_cancel;
 WindowRef					dialog_model_settings_wind;
@@ -181,6 +184,9 @@ bool dialog_model_settings_run(void)
 	dialog_set_float(dialog_model_settings_wind,kRigidBodyZMaxAngle,0,model.rigid_body.z.max_ang);
 	dialog_set_float(dialog_model_settings_wind,kRigidBodyZResetFact,0,model.rigid_body.z.reset_factor);
 	dialog_set_float(dialog_model_settings_wind,kRigidBodyZSmoothFact,0,model.rigid_body.z.smooth_factor);
+	
+	dialog_set_boolean(dialog_model_settings_wind,kImportSingleTexture,0,model.import.single_texture);
+	dialog_set_float(dialog_model_settings_wind,kImportScale,0,model.import.factor);
 
 		// show window
 	
@@ -257,6 +263,9 @@ bool dialog_model_settings_run(void)
 		model.rigid_body.z.max_ang=dialog_get_float(dialog_model_settings_wind,kRigidBodyZMaxAngle,0);
 		model.rigid_body.z.reset_factor=dialog_get_float(dialog_model_settings_wind,kRigidBodyZResetFact,0);
 		model.rigid_body.z.smooth_factor=dialog_get_float(dialog_model_settings_wind,kRigidBodyZSmoothFact,0);
+		
+		model.import.single_texture=dialog_get_boolean(dialog_model_settings_wind,kImportSingleTexture,0);
+		model.import.factor=dialog_get_float(dialog_model_settings_wind,kImportScale,0);
 	}
 
 		// close window

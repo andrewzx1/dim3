@@ -38,10 +38,12 @@ extern map_type				map;
 
 #define kMeshScaleAxis							FOUR_CHAR_CODE('axis')
 #define kMeshScaleScale							FOUR_CHAR_CODE('scle')
+
 #define kMeshScaleButtonScale					FOUR_CHAR_CODE('scal')
 #define kMeshScaleButtonReplace					FOUR_CHAR_CODE('repl')
+#define kMeshScaleButtonReplaceAll				FOUR_CHAR_CODE('repa')
 
-bool						dialog_mesh_scale_replace;
+int							dialog_mesh_scale_mode;
 WindowRef					dialog_mesh_scale_wind;
 
 /* =======================================================
@@ -62,14 +64,24 @@ static pascal OSStatus dialog_mesh_scale_event_proc(EventHandlerCallRef handler,
 			switch (cmd.commandID) {
 				
 				case kMeshScaleButtonScale:
-					dialog_mesh_scale_replace=FALSE;
+					dialog_mesh_scale_mode=import_mode_scale;
 					QuitAppModalLoopForWindow(dialog_mesh_scale_wind);
 					return(noErr);
 					
 				case kMeshScaleButtonReplace:
-					dialog_mesh_scale_replace=TRUE;
+					dialog_mesh_scale_mode=import_mode_replace;
 					QuitAppModalLoopForWindow(dialog_mesh_scale_wind);
 					return(noErr);
+					
+				case kMeshScaleButtonReplaceAll:
+					dialog_mesh_scale_mode=import_mode_replace_all;
+					QuitAppModalLoopForWindow(dialog_mesh_scale_wind);
+					return(noErr);
+					
+				case kHICommandCancel:
+					dialog_mesh_scale_mode=-1;
+					QuitAppModalLoopForWindow(dialog_mesh_scale_wind);
+					return(noErr);					
 					
 			}
 
@@ -86,7 +98,7 @@ static pascal OSStatus dialog_mesh_scale_event_proc(EventHandlerCallRef handler,
       
 ======================================================= */
 
-bool dialog_mesh_scale_run(bool replace_ok,int *scale_axis,int *scale_unit)
+int dialog_mesh_scale_run(bool replace_ok,int *scale_axis,int *scale_unit)
 {
 	EventHandlerUPP			event_upp;
 	EventTypeSpec			event_list[]={{kEventClassCommand,kEventProcessCommand}};
@@ -114,7 +126,7 @@ bool dialog_mesh_scale_run(bool replace_ok,int *scale_axis,int *scale_unit)
 	
 		// modal window
 		
-	dialog_mesh_scale_replace=FALSE;
+	dialog_mesh_scale_mode=import_mode_scale;
 	
 	RunAppModalLoopForWindow(dialog_mesh_scale_wind);
 	
@@ -127,6 +139,6 @@ bool dialog_mesh_scale_run(bool replace_ok,int *scale_axis,int *scale_unit)
 		
 	DisposeWindow(dialog_mesh_scale_wind);
 	
-	return(dialog_mesh_scale_replace);
+	return(dialog_mesh_scale_mode);
 }
 

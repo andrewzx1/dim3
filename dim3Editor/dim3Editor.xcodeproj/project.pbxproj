@@ -12,6 +12,8 @@
 		260C1473129C777100B6D5B5 /* property_palette_scenery.c in Sources */ = {isa = PBXBuildFile; fileRef = 260C1470129C777100B6D5B5 /* property_palette_scenery.c */; };
 		260D584C1295E85E00D0D14F /* property_palette_liquid.c in Sources */ = {isa = PBXBuildFile; fileRef = 260D584A1295E85E00D0D14F /* property_palette_liquid.c */; };
 		260D584D1295E85E00D0D14F /* property_palette_spot.c in Sources */ = {isa = PBXBuildFile; fileRef = 260D584B1295E85E00D0D14F /* property_palette_spot.c */; };
+		262C38D212D0211200A94FEE /* ui_common.h in Headers */ = {isa = PBXBuildFile; fileRef = 262C38D112D0211200A94FEE /* ui_common.h */; };
+		262C397012D0268500A94FEE /* list_palette_common.c in Sources */ = {isa = PBXBuildFile; fileRef = 262C396F12D0268500A94FEE /* list_palette_common.c */; };
 		263C5EBE122045E3008935B9 /* view_handle.c in Sources */ = {isa = PBXBuildFile; fileRef = 263C5EBD122045E3008935B9 /* view_handle.c */; };
 		2644C95C0DF8E349005CE451 /* dialog_mesh_scale.c in Sources */ = {isa = PBXBuildFile; fileRef = 2644C95B0DF8E349005CE451 /* dialog_mesh_scale.c */; };
 		26452F11127F9B3100043C34 /* view_movement.c in Sources */ = {isa = PBXBuildFile; fileRef = 26452F0F127F9B3100043C34 /* view_movement.c */; };
@@ -62,8 +64,8 @@
 		26E5B14C1274ADB800336C52 /* dialog_cinema_action_settings.c in Sources */ = {isa = PBXBuildFile; fileRef = 26E5B14B1274ADB800336C52 /* dialog_cinema_action_settings.c */; };
 		26E8DBFE1270EA6C00ACA294 /* progress_common.c in Sources */ = {isa = PBXBuildFile; fileRef = 26E8DBFC1270EA6C00ACA294 /* progress_common.c */; };
 		26E8DBFF1270EA6C00ACA294 /* text_common.c in Sources */ = {isa = PBXBuildFile; fileRef = 26E8DBFD1270EA6C00ACA294 /* text_common.c */; };
-		26EA5B221291E5200083C9BF /* list_palette_common.c in Sources */ = {isa = PBXBuildFile; fileRef = 26EA5B201291E5200083C9BF /* list_palette_common.c */; };
 		26EA5B231291E5200083C9BF /* property_palette.c in Sources */ = {isa = PBXBuildFile; fileRef = 26EA5B211291E5200083C9BF /* property_palette.c */; };
+		26EAA3A012CBF01400CF93AF /* property_palette_texture.c in Sources */ = {isa = PBXBuildFile; fileRef = 26EAA39F12CBF01400CF93AF /* property_palette_texture.c */; };
 		26EE4757126961AF001D0025 /* Auto Generate.xml in Resources */ = {isa = PBXBuildFile; fileRef = 26EE4756126961AF001D0025 /* Auto Generate.xml */; };
 		26EE4763126961EF001D0025 /* Auto Generate.xml in Copy (Data) */ = {isa = PBXBuildFile; fileRef = 26EE4756126961AF001D0025 /* Auto Generate.xml */; };
 		26EE476812696220001D0025 /* auto_generate_setup.c in Sources */ = {isa = PBXBuildFile; fileRef = 26EE476612696220001D0025 /* auto_generate_setup.c */; };
@@ -285,6 +287,8 @@
 		260C1470129C777100B6D5B5 /* property_palette_scenery.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_scenery.c; path = Code/property_palette_scenery.c; sourceTree = "<group>"; };
 		260D584A1295E85E00D0D14F /* property_palette_liquid.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_liquid.c; path = Code/property_palette_liquid.c; sourceTree = "<group>"; };
 		260D584B1295E85E00D0D14F /* property_palette_spot.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_spot.c; path = Code/property_palette_spot.c; sourceTree = "<group>"; };
+		262C38D112D0211200A94FEE /* ui_common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ui_common.h; path = ../dim3Common/Headers/ui_common.h; sourceTree = SOURCE_ROOT; };
+		262C396F12D0268500A94FEE /* list_palette_common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = list_palette_common.c; path = ../dim3Common/Code/list_palette_common.c; sourceTree = SOURCE_ROOT; };
 		263C5EBD122045E3008935B9 /* view_handle.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = view_handle.c; path = Code/view_handle.c; sourceTree = "<group>"; };
 		2644C95B0DF8E349005CE451 /* dialog_mesh_scale.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_mesh_scale.c; path = Code/dialog_mesh_scale.c; sourceTree = "<group>"; };
 		26452F0F127F9B3100043C34 /* view_movement.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = view_movement.c; path = Code/view_movement.c; sourceTree = "<group>"; };
@@ -366,8 +370,8 @@
 		26E5B14B1274ADB800336C52 /* dialog_cinema_action_settings.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_cinema_action_settings.c; path = Code/dialog_cinema_action_settings.c; sourceTree = "<group>"; };
 		26E8DBFC1270EA6C00ACA294 /* progress_common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = progress_common.c; path = ../dim3Common/Code/progress_common.c; sourceTree = SOURCE_ROOT; };
 		26E8DBFD1270EA6C00ACA294 /* text_common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = text_common.c; path = ../dim3Common/Code/text_common.c; sourceTree = SOURCE_ROOT; };
-		26EA5B201291E5200083C9BF /* list_palette_common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = list_palette_common.c; path = Code/list_palette_common.c; sourceTree = "<group>"; };
 		26EA5B211291E5200083C9BF /* property_palette.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette.c; path = Code/property_palette.c; sourceTree = "<group>"; };
+		26EAA39F12CBF01400CF93AF /* property_palette_texture.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_texture.c; path = Code/property_palette_texture.c; sourceTree = "<group>"; };
 		26EE4756126961AF001D0025 /* Auto Generate.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "Auto Generate.xml"; sourceTree = "<group>"; };
 		26EE476612696220001D0025 /* auto_generate_setup.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = auto_generate_setup.c; path = Code/auto_generate_setup.c; sourceTree = "<group>"; };
 		26EE476712696220001D0025 /* auto_generate.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = auto_generate.c; path = Code/auto_generate.c; sourceTree = "<group>"; };
@@ -438,6 +442,7 @@
 				F5AD54420BBE1FDB001C7C04 /* baseutility.h */,
 				26AFB4D10D9615C00004805A /* maputility.h */,
 				F595F3390A8BBEF0004AB8BA /* modelutility.h */,
+				262C38D112D0211200A94FEE /* ui_common.h */,
 				F54581BA094F75D200CBE89A /* interface.h */,
 				F5A9881C094BF7D8005E55AE /* dialog.h */,
 			);
@@ -695,10 +700,11 @@
 				26CF62A4126BDE55002DCC2A /* tool_palette_common.c */,
 				F57CACA60C38B76200B595F4 /* texture_palette.c */,
 				26EE494B126B8455001D0025 /* texture_palette_common.c */,
-				26EA5B201291E5200083C9BF /* list_palette_common.c */,
+				262C396F12D0268500A94FEE /* list_palette_common.c */,
 				265AB84612835C9E00F3F965 /* item_palette.c */,
 				26EA5B211291E5200083C9BF /* property_palette.c */,
 				267FA93512C014F20098B4B8 /* property_palette_map.c */,
+				26EAA39F12CBF01400CF93AF /* property_palette_texture.c */,
 				26F4B4DA1294CFB600D754CC /* property_palette_mesh.c */,
 				260D584A1295E85E00D0D14F /* property_palette_liquid.c */,
 				260D584B1295E85E00D0D14F /* property_palette_spot.c */,
@@ -730,6 +736,7 @@
 				26AFB4D20D9615C00004805A /* maputility.h in Headers */,
 				26899FA90F1EBF25007860EB /* editor_defs.h in Headers */,
 				26C5F0B0126130D0000B0F9E /* glue.h in Headers */,
+				262C38D212D0211200A94FEE /* ui_common.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -869,7 +876,6 @@
 				26452F20127F9BA800043C34 /* view_models.c in Sources */,
 				264530221280CF6B00043C34 /* auto_generate_story.c in Sources */,
 				265AB84712835C9E00F3F965 /* item_palette.c in Sources */,
-				26EA5B221291E5200083C9BF /* list_palette_common.c in Sources */,
 				26EA5B231291E5200083C9BF /* property_palette.c in Sources */,
 				264D965E12921024005039CD /* OSX_main.c in Sources */,
 				26F4B4DB1294CFB600D754CC /* property_palette_mesh.c in Sources */,
@@ -884,6 +890,8 @@
 				26AF254E12AAEBF4006781B8 /* dialog_property_string.c in Sources */,
 				267FA93612C014F20098B4B8 /* property_palette_map.c in Sources */,
 				26E0E48312CAA0F500CA5850 /* view_texture.c in Sources */,
+				26EAA3A012CBF01400CF93AF /* property_palette_texture.c in Sources */,
+				262C397012D0268500A94FEE /* list_palette_common.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

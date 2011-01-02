@@ -41,6 +41,16 @@ extern editor_state_type		state;
 
 extern file_path_setup_type		file_path_setup;
 
+
+typedef struct		{
+						int						nline,
+												nvertex,npoly,nuv,nnormal;
+						char					obj_name[name_str_len];
+						float					scale;
+						d3pnt					pnt;
+					} obj_import_state_type;
+
+
 /* =======================================================
 
       Finish Mesh Addition
@@ -99,7 +109,7 @@ bool piece_add_obj_is_replace_ok(float *old_scale)
 		
 		hit_mesh_idx=mesh_idx;
 		
-		*old_scale=map.mesh.meshes[mesh_idx].import_factor;
+		*old_scale=map.mesh.meshes[mesh_idx].import.factor;
 	}
 	
 	return(hit_mesh_idx!=-1);
@@ -226,7 +236,7 @@ int import_texture_pick(char *material_name)
 		strcpy(file_name,"unknown");
 	}
 	else {
-		strcpy(file_name,c);
+		strcpy(file_name,(c+1));
 		c=strrchr(file_name,'.');
 		if (c!=NULL) *c=0x0;
 	}
@@ -254,216 +264,39 @@ int import_texture_pick(char *material_name)
       
 ======================================================= */
 
-void piece_add_obj_mesh(void)
+bool piece_add_obj_mesh_import_obj(obj_import_state_type *import_state,char *err_str)
 {
-	int					n,k,nline,nvertex,npoly,nuv,nnormal,npt,
+	int					n,k,npt,
 						v_idx,uv_idx,normal_idx,normal_count,
-						mesh_idx,poly_idx,txt_idx,old_nmesh,x,y,z,
-						scale_axis,scale_unit;
+						mesh_idx,poly_idx,txt_idx,old_nmesh,x,y,z;
 	int					px[8],py[8],pz[8];
 	char				*c,txt[256],material_name[256],
-						vstr[256],uvstr[256],normalstr[256],path[1024];
-	unsigned char		*vertex_mark;
-	float				fx,fy,fz,f_scale,f_old_scale,gx[8],gy[8];
+						vstr[256],uvstr[256],normalstr[256];
+	float				fx,fy,fz,gx[8],gy[8];
 	float				*uvs,*uv,*normals,*normal;
-	bool				replace,replace_ok,mesh_add;
-	d3pnt				*vertexes,*dpt,pnt;
-	d3fpnt				min,max,scale;
+	bool				mesh_add;
+	d3pnt				*vertexes,*dpt;
 	d3vct				n_v;
 	map_mesh_type		*mesh;
-	
-	if (!piece_create_texture_ok()) return;
-	
-		// get import location
 
-	piece_create_get_spot(&pnt);
-	
-		// import the file
-		
-	if (!os_load_file(path,"obj")) return;
-
-	if (!textdecode_open(path,0x20)) {
-		os_dialog_alert("Import Failed","Could not open OBJ file.");
-		return;
-    }
-	
-	os_set_wait_cursor();
-	
-    nline=textdecode_count();
-	
-		// count vertexes, faces, uvs, and normals
-		
-	nvertex=0;
-	npoly=0;
-	nuv=0;
-	nnormal=0;
-	
-    for (n=0;n!=nline;n++) {
-        textdecode_get_piece(n,0,txt);
-        
-        if (strcmp(txt,"v")==0) {
-			nvertex++;
-		}
-		else {
-			if (strcmp(txt,"f")==0) {
-				npoly++;
-			}
-			else {
-				if (strcmp(txt,"vt")==0) {
-					nuv++;
-				}
-				else {
-					if (strcmp(txt,"vn")==0) {
-						nnormal++;
-					}
-				}
-			}
-		}
-	}
-	
-		// imporper OBJ errors
-		
-	if (nvertex==0) {
-		textdecode_close();
-		os_dialog_alert("Import Failed","No vertexes in OBJ.");
-		return;
-    }
-	if (npoly==0) {
-		textdecode_close();
-		os_dialog_alert("Import Failed","No faces in OBJ.");
-		return;
-    }
-	
-		// some OBJ creators -- especially blender --
-		// like to leave this unconnected and crazy vertexes
-		// in the OBJs.  We need to scan for them.
-		
-	vertex_mark=(unsigned char*)malloc(nvertex);
-	bzero(vertex_mark,nvertex);
-		
-    for (n=0;n!=nline;n++) {
-        textdecode_get_piece(n,0,txt);
-        
-        if (strcmp(txt,"f")==0) {
-		
-			for (k=0;k!=8;k++) {
-				textdecode_get_piece(n,(k+1),vstr);
-				if (vstr[0]==0x0) break;
-            
-				c=strchr(vstr,'/');
-				if (c!=NULL) *c=0x0;
-
-				v_idx=atoi(vstr)-1;
-				vertex_mark[v_idx]=0x1;
-			}
-		}
-	}
-	
-		// let's find total size -- we ignore
-		// any non-connected stray vertexes
-		
-		// mesh add will actually eliminate these
-		// vertexes but we need to keep them around for
-		// now so face numbers line up
-		
-	min.x=min.y=min.z=0.0f;
-	max.x=max.y=max.z=0.0f;
-	
-	v_idx=0;
-	
-	for (n=0;n!=nline;n++) {
-		textdecode_get_piece(n,0,txt);
-		
-		if (strcmp(txt,"v")==0) {
-			
-			if (vertex_mark[v_idx]==0x0) {
-				v_idx++;
-				continue;
-			}
-			
-			textdecode_get_piece(n,1,txt);
-			fx=(float)strtod(txt,NULL);
-			textdecode_get_piece(n,2,txt);
-			fy=-(float)strtod(txt,NULL);
-			textdecode_get_piece(n,3,txt);
-			fz=(float)strtod(txt,NULL);
-			
-			if (v_idx==0) {
-				min.x=max.x=fx;
-				min.y=max.y=fy;
-				min.z=max.z=fz;
-			}
-			else {
-				if (fx<min.x) min.x=fx;
-				if (fx>max.x) max.x=fx;
-				if (fy<min.y) min.y=fy;
-				if (fy>max.y) max.y=fy;
-				if (fz<min.z) min.z=fz;
-				if (fz>max.z) max.z=fz;
-			}
-			
-			v_idx++;
-		}
-	}
-	
-	free(vertex_mark);
-	
-		// if replaceable, get replaceable mesh
-		// scale
-		
-	replace_ok=piece_add_obj_is_replace_ok(&f_old_scale);
-	
-		// get default scale
-		
-	os_set_arrow_cursor();
-
-	replace=dialog_mesh_scale_run(replace_ok,&scale_axis,&scale_unit);
-
-	if (replace) {
-		f_scale=f_old_scale;
-		if (f_scale==0.0f) f_scale=1.0f;
-	}
-	else {
-		f_scale=1.0f;
-		
-		switch (scale_axis) {
-			case 0:
-				f_scale=((float)scale_unit)/(max.x-min.x);
-				break;
-			case 1:
-				f_scale=((float)scale_unit)/(max.y-min.y);
-				break;
-			case 2:
-				f_scale=((float)scale_unit)/(max.z-min.z);
-				break;
-		}
-	}
-	
 		// start progress
 		
 	progress_start("OBJ Import",8);
-	
-	scale.x=scale.y=scale.z=f_scale;
-	
-		// delete old meshes if replace
-		
-	if (replace) piece_add_obj_replace_delete_existing();
 	
 		// get the vertexes
 		
 	progress_next_title("Obj Import: Loading Vertexes");
 
-	vertexes=(d3pnt*)malloc(sizeof(d3pnt)*nvertex);
+	vertexes=(d3pnt*)malloc(sizeof(d3pnt)*import_state->nvertex);
 	if (vertexes==NULL) {
-		textdecode_close();
 		progress_end();
-		os_dialog_alert("Import Failed","Out of Memory.");
-		return;
+		strcpy(err_str,"Out of Memory.");
+		return(FALSE);
     }
 	
 	dpt=vertexes;
 
-	for (n=0;n!=nline;n++) {
+	for (n=0;n!=import_state->nline;n++) {
 
 		textdecode_get_piece(n,0,txt);
 		if (strcmp(txt,"v")!=0) continue;
@@ -475,9 +308,9 @@ void piece_add_obj_mesh(void)
 		textdecode_get_piece(n,3,txt);
 		fz=(float)strtod(txt,NULL);
 		
-		dpt->x=(int)(fx*scale.x);
-		dpt->y=(int)(fy*scale.y);
-		dpt->z=(int)(fz*scale.z);
+		dpt->x=(int)(fx*import_state->scale);
+		dpt->y=(int)(fy*import_state->scale);
+		dpt->z=(int)(fz*import_state->scale);
 		
 		dpt++;
 	}
@@ -490,23 +323,23 @@ void piece_add_obj_mesh(void)
 	
 	dpt=vertexes;
 	
-	for (n=0;n!=nvertex;n++) {
+	for (n=0;n!=import_state->nvertex;n++) {
 		x+=dpt->x;
 		y+=dpt->y;
 		z+=dpt->z;
 		dpt++;
 	}
 	
-	x/=nvertex;
-	y/=nvertex;
-	z/=nvertex;
+	x/=import_state->nvertex;
+	y/=import_state->nvertex;
+	z/=import_state->nvertex;
 		
 	dpt=vertexes;
 	
-	for (n=0;n!=nvertex;n++) {
-		dpt->x=(dpt->x-x)+pnt.x;
-		dpt->y=(dpt->y-y)+pnt.y;
-		dpt->z=(dpt->z-z)+pnt.z;
+	for (n=0;n!=import_state->nvertex;n++) {
+		dpt->x=(dpt->x-x)+import_state->pnt.x;
+		dpt->y=(dpt->y-y)+import_state->pnt.y;
+		dpt->z=(dpt->z-z)+import_state->pnt.z;
 		dpt++;
 	}
 	
@@ -514,18 +347,17 @@ void piece_add_obj_mesh(void)
 		
 	progress_next_title("Obj Import: Loading UVs");
 		
-	if (nuv!=0) {
-		uvs=(float*)malloc(sizeof(float)*(2*nuv));
+	if (import_state->nuv!=0) {
+		uvs=(float*)malloc(sizeof(float)*(2*import_state->nuv));
 		if (uvs==NULL) {
-			textdecode_close();
 			progress_end();
-			os_dialog_alert("Import Failed","Out of Memory.");
-			return;
+			strcpy(err_str,"Out of Memory.");
+			return(FALSE);
 		}
 
 		uv=uvs;
 
-		for (n=0;n!=nline;n++) {
+		for (n=0;n!=import_state->nline;n++) {
 			textdecode_get_piece(n,0,txt);
 			if (strcmp(txt,"vt")!=0) continue;
 					
@@ -540,18 +372,17 @@ void piece_add_obj_mesh(void)
 		
 	progress_next_title("Obj Import: Loading Normals");
 		
-	if (nnormal!=0) {
-		normals=(float*)malloc(sizeof(float)*(3*nnormal));
+	if (import_state->nnormal!=0) {
+		normals=(float*)malloc(sizeof(float)*(3*import_state->nnormal));
 		if (normals==NULL) {
-			textdecode_close();
 			progress_end();
-			os_dialog_alert("Import Failed","Out of Memory.");
-			return;
+			strcpy(err_str,"Out of Memory.");
+			return(FALSE);
 		}
 
 		normal=normals;
 
-		for (n=0;n!=nline;n++) {
+		for (n=0;n!=import_state->nline;n++) {
 			textdecode_get_piece(n,0,txt);
 			if (strcmp(txt,"vn")!=0) continue;
 					
@@ -578,7 +409,7 @@ void piece_add_obj_mesh(void)
 		
 	progress_next_title("Obj Import: Building Polygons");
 
-    for (n=0;n!=nline;n++) {
+    for (n=0;n!=import_state->nline;n++) {
 	
        textdecode_get_piece(n,0,txt);
 	
@@ -606,23 +437,23 @@ void piece_add_obj_mesh(void)
 				mesh_idx=map_mesh_add(&map);
 				
 				if (mesh_idx==-1) {
-					textdecode_close();
 					progress_end();
-					os_dialog_alert("Import Failed","Not enough memory to create mesh.");
-					return;
+					strcpy(err_str,"Not enough memory to create mesh.");
+					return(FALSE);
 				}
 	
 				mesh=&map.mesh.meshes[mesh_idx];
 				
 					// set the scale for replacements
 					
-				mesh->import_factor=f_scale;
+				mesh->import.factor=import_state->scale;
+				strcpy(mesh->import.obj_name,import_state->obj_name);
 				
 					// set UV and Normal locks if uvs and normals
 					// exist in obj
 					
-				mesh->flag.lock_uv=(nuv!=0);
-				if (nnormal!=0) map.mesh.meshes[mesh_idx].normal_mode=mesh_normal_mode_lock;
+				mesh->flag.lock_uv=(import_state->nuv!=0);
+				if (import_state->nnormal!=0) map.mesh.meshes[mesh_idx].normal_mode=mesh_normal_mode_lock;
 			}
 		}
 		
@@ -672,7 +503,7 @@ void piece_add_obj_mesh(void)
             
 				// the UV
 
-			if ((uvstr[0]==0x0) || (nuv==0)) {
+			if ((uvstr[0]==0x0) || (import_state->nuv==0)) {
 				gx[npt]=gy[npt]=0.0f;
 			}
 			else {
@@ -685,7 +516,7 @@ void piece_add_obj_mesh(void)
 
 				// the normal
 
-			if ((normalstr[0]!=0x0) && (nnormal!=0)) {
+			if ((normalstr[0]!=0x0) && (import_state->nnormal!=0)) {
 				normal_idx=atoi(normalstr)-1;
 
 				normal=normals+(normal_idx*3);
@@ -715,24 +546,22 @@ void piece_add_obj_mesh(void)
 	}
 	
 	free(vertexes);
-	if (nuv!=0) free(uvs);
-	if (nnormal!=0) free(normals);
-	
-	textdecode_close();
+	if (import_state->nuv!=0) free(uvs);
+	if (import_state->nnormal!=0) free(normals);
 	
 		// were any meshes imported?
 		
 	if (old_nmesh==map.mesh.nmesh) {
 		os_dialog_alert("Import Failed","Could not find mesh.  OBJ is missing a material (usemtl) deceleration.");
 		progress_end();
-		return;
+		return(FALSE);
 	}
 	
 		// if no uvs, force auto-texture
 		
 	progress_next();
 		
-	if (nuv==0) {
+	if (import_state->nuv==0) {
 		for (n=old_nmesh;n!=map.mesh.nmesh;n++) {
 			map_mesh_reset_uv(&map,n);
 		}
@@ -744,7 +573,7 @@ void piece_add_obj_mesh(void)
 	progress_next();
 
 	for (n=old_nmesh;n!=map.mesh.nmesh;n++) {
-		map_recalc_normals_mesh(&map.mesh.meshes[n],(nnormal!=0));
+		map_recalc_normals_mesh(&map.mesh.meshes[n],(import_state->nnormal!=0));
 	}
 	
 		// finish up
@@ -754,6 +583,288 @@ void piece_add_obj_mesh(void)
 	piece_add_mesh_finish(old_nmesh);
 	
 	progress_end();
+	
+	return(TRUE);
+}
+
+void piece_add_obj_mesh(void)
+{
+	int					n,k,v_idx,nmesh,
+						import_mode,scale_axis,scale_unit;
+	char				*c,txt[256],file_name[256],
+						vstr[256],path[1024];
+	unsigned char		*vertex_mark,*mesh_mark;
+	float				fx,fy,fz,old_scale;
+	bool				replace_ok;
+	d3fpnt				min,max;
+	
+	bool					ok;
+	char					err_str[256];
+	obj_import_state_type	import_state;
+	
+	if (!piece_create_texture_ok()) return;
+	
+		// get import location
+
+	piece_create_get_spot(&import_state.pnt);
+	
+		// import the file
+		
+	if (!os_load_file(path,"obj")) return;
+
+	if (!textdecode_open(path,0x20)) {
+		os_dialog_alert("Import Failed","Could not open OBJ file.");
+		return;
+    }
+	
+	os_set_wait_cursor();
+	
+		// get file name
+		
+	c=strrchr(path,'/');
+	if (c==NULL) c=strrchr(path,'\\');
+	if (c==NULL) {
+		file_name[0]=0x0;
+	}
+	else {
+		strcpy(file_name,(c+1));
+		c=strrchr(file_name,'.');
+		if (c!=NULL) *c=0x0;
+	}
+	
+	strncpy(import_state.obj_name,file_name,name_str_len);
+	import_state.obj_name[name_str_len-1]=0x0;
+	
+		// count vertexes, faces, uvs, and normals
+		
+    import_state.nline=textdecode_count();
+		
+	import_state.nvertex=0;
+	import_state.npoly=0;
+	import_state.nuv=0;
+	import_state.nnormal=0;
+	
+    for (n=0;n!=import_state.nline;n++) {
+        textdecode_get_piece(n,0,txt);
+        
+        if (strcmp(txt,"v")==0) {
+			import_state.nvertex++;
+		}
+		else {
+			if (strcmp(txt,"f")==0) {
+				import_state.npoly++;
+			}
+			else {
+				if (strcmp(txt,"vt")==0) {
+					import_state.nuv++;
+				}
+				else {
+					if (strcmp(txt,"vn")==0) {
+						import_state.nnormal++;
+					}
+				}
+			}
+		}
+	}
+	
+		// imporper OBJ errors
+		
+	if (import_state.nvertex==0) {
+		textdecode_close();
+		os_dialog_alert("Import Failed","No vertexes in OBJ.");
+		return;
+    }
+	if (import_state.npoly==0) {
+		textdecode_close();
+		os_dialog_alert("Import Failed","No faces in OBJ.");
+		return;
+    }
+	
+		// some OBJ creators -- especially blender --
+		// like to leave this unconnected and crazy vertexes
+		// in the OBJs.  We need to scan for them.
+		
+	vertex_mark=(unsigned char*)malloc(import_state.nvertex);
+	bzero(vertex_mark,import_state.nvertex);
+		
+    for (n=0;n!=import_state.nline;n++) {
+        textdecode_get_piece(n,0,txt);
+        
+        if (strcmp(txt,"f")==0) {
+		
+			for (k=0;k!=8;k++) {
+				textdecode_get_piece(n,(k+1),vstr);
+				if (vstr[0]==0x0) break;
+            
+				c=strchr(vstr,'/');
+				if (c!=NULL) *c=0x0;
+
+				v_idx=atoi(vstr)-1;
+				vertex_mark[v_idx]=0x1;
+			}
+		}
+	}
+	
+		// let's find total size -- we ignore
+		// any non-connected stray vertexes
+		
+		// mesh add will actually eliminate these
+		// vertexes but we need to keep them around for
+		// now so face numbers line up
+		
+	min.x=min.y=min.z=0.0f;
+	max.x=max.y=max.z=0.0f;
+	
+	v_idx=0;
+	
+	for (n=0;n!=import_state.nline;n++) {
+		textdecode_get_piece(n,0,txt);
+		
+		if (strcmp(txt,"v")==0) {
+			
+			if (vertex_mark[v_idx]==0x0) {
+				v_idx++;
+				continue;
+			}
+			
+			textdecode_get_piece(n,1,txt);
+			fx=(float)strtod(txt,NULL);
+			textdecode_get_piece(n,2,txt);
+			fy=-(float)strtod(txt,NULL);
+			textdecode_get_piece(n,3,txt);
+			fz=(float)strtod(txt,NULL);
+			
+			if (v_idx==0) {
+				min.x=max.x=fx;
+				min.y=max.y=fy;
+				min.z=max.z=fz;
+			}
+			else {
+				if (fx<min.x) min.x=fx;
+				if (fx>max.x) max.x=fx;
+				if (fy<min.y) min.y=fy;
+				if (fy>max.y) max.y=fy;
+				if (fz<min.z) min.z=fz;
+				if (fz>max.z) max.z=fz;
+			}
+			
+			v_idx++;
+		}
+	}
+	
+	free(vertex_mark);
+	
+	os_set_arrow_cursor();
+	
+		// run the import dialog
+
+	replace_ok=piece_add_obj_is_replace_ok(&old_scale);
+	import_mode=dialog_mesh_scale_run(replace_ok,&scale_axis,&scale_unit);
+	
+	if (import_mode==-1) {
+		textdecode_close();
+		return;
+    }
+	
+	import_state.scale=1.0f;
+	
+		// scale import
+		
+	if (import_mode==import_mode_scale) {
+		
+		switch (scale_axis) {
+			case 0:
+				import_state.scale=((float)scale_unit)/(max.x-min.x);
+				break;
+			case 1:
+				import_state.scale=((float)scale_unit)/(max.y-min.y);
+				break;
+			case 2:
+				import_state.scale=((float)scale_unit)/(max.z-min.z);
+				break;
+		}
+	
+		os_set_wait_cursor();
+		ok=piece_add_obj_mesh_import_obj(&import_state,err_str);
+		os_set_arrow_cursor();
+		
+		textdecode_close();
+
+		if (!ok) os_dialog_alert("Import Error",err_str);
+
+		return;
+	}
+	
+		// replacement import
+
+	if (import_mode==import_mode_replace) {
+		import_state.scale=old_scale;
+		if (import_state.scale==0.0f) import_state.scale=1.0f;
+
+		os_set_wait_cursor();
+		piece_add_obj_replace_delete_existing();
+		ok=piece_add_obj_mesh_import_obj(&import_state,err_str);
+		os_set_arrow_cursor();
+			
+		textdecode_close();
+		
+		if (!ok) os_dialog_alert("Import Error",err_str);
+
+		return;
+	}
+	
+		// replace all
+		
+	os_set_wait_cursor();
+
+	nmesh=map.mesh.nmesh;			// operation will add meshes, so we need to not go into them
+		
+	mesh_mark=(unsigned char*)malloc(nmesh);
+	if (mesh_mark==NULL) {
+		textdecode_close();
+		os_set_arrow_cursor();
+		os_dialog_alert("Import Error","Out of Memory");
+		return;
+	}
+	
+	bzero(mesh_mark,nmesh);
+	
+	for (n=0;n!=nmesh;n++) {
+	
+			// same imported OBJ?
+			
+		if (strcasecmp(map.mesh.meshes[n].import.obj_name,import_state.obj_name)!=0) continue;
+		
+			// get scale and mark for delete
+		
+		import_state.scale=map.mesh.meshes[n].import.factor;
+		if (import_state.scale==0.0f) import_state.scale=1.0f;
+			
+		map_mesh_calculate_center(&map,n,&import_state.pnt);
+		mesh_mark[n]=0x1;
+	
+			// import
+	
+		ok=piece_add_obj_mesh_import_obj(&import_state,err_str);
+		
+		if (!ok) break;
+	}
+	
+	textdecode_close();
+		
+		// delete marked meshes
+
+	for (n=(nmesh-1);n>=0;n--) {
+		if (mesh_mark[n]==0x1) map_mesh_delete(&map,n);
+	}
+
+	free(mesh_mark);
+	
+	select_clear();
+	
+	os_set_arrow_cursor();
+	
+	if (!ok) os_dialog_alert("Import Error",err_str);
 }
 
 /* =======================================================

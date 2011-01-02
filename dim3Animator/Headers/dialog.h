@@ -75,7 +75,7 @@ extern void dialog_about_run(void);
 
 extern bool dialog_file_new_run(char *title,char *file_name);
 extern bool dialog_file_open_run(char *dialog_name,char *search_path,char *extension,char *required_file_name,char *file_name);
-extern void dialog_import_finish_run(model_type *mdl,float *scale);
+extern int dialog_import_finish_run(void);
 
 extern bool dialog_model_settings_run(void);
 

@@ -25,6 +25,8 @@ and can be sold or given away.
  
 *********************************************************************/
 
+// supergumba -- this is all a mess, needs to be cleaned up before port attempted
+
 //
 // main window
 //
@@ -60,31 +62,10 @@ extern void undo_set_bone_move(int pose_idx,int bone_idx);
 extern void undo_run(void);
 
 //
-// text
-//
-
-extern void text_initialize(void);
-extern void text_shutdown(void);
-extern void text_draw(int x,int y,float txt_size,d3col *col,char *str);
-extern void text_draw_center(int x,int y,float txt_size,d3col *col,char *str);
-extern void text_draw_right(int x,int y,float txt_size,d3col *col,char *str);
-
-//
-// progress
-//
-
-extern void progress_start(char *title,int count);
-extern void progress_end(void);
-extern void progress_next(void);
-
-//
 // tool palette
 //
 
-extern void tool_palette_initialize(char *app_name);
-extern void tool_palette_shutdown(void);
 extern void tool_palette_setup(void);
-extern void tool_palette_draw(void);
 
 //
 // texture palette
@@ -92,30 +73,18 @@ extern void tool_palette_draw(void);
 
 extern void texture_palette_setup(void);
 extern int texture_palette_get_selected_texture(void);
-extern void texture_palette_put_selected_texture(int txt_idx);
 extern void texture_palette_draw(texture_type *txt_list);
-extern void texture_palette_click(texture_type *txt_list,d3pnt *pnt,bool dblclick);
 
 //
 // importing
 //
 
-extern bool import_obj(char *path,bool *found_normals,char *err_str);
-extern bool import_lightwave(char *path,char *err_str);
-extern bool import_c4d_xml(char *path,char *err_str);
+extern bool import_obj(char *path,bool replace,bool *found_normals,char *err_str);
 extern void insert_model(char *file_name);
-
-extern int textdecode_count_linestarts(void);
-extern void textdecode_linestarts(void);
-extern bool textdecode_open(char *path,char p_piece_break);
-extern void textdecode_close(void);
-extern int textdecode_count(void);
-extern int textdecode_find(int line_idx,char *txt);
-extern void textdecode_get_line(int line_idx,char *txt,int len);
-extern void textdecode_get_piece(int line_idx,int piece_idx,char *txt);
 
 extern void clear_materials(void);
 extern int texture_count(void);
+extern bool texture_exists(char *material_name);
 extern int texture_pick(char *material_name,char *err_str);
 extern bool texture_use_single(void);
 
@@ -152,4 +121,57 @@ extern void reset_mesh_list(void);
 extern void reset_vertex_tab(void);
 
 extern void hilite_vertex_rows(void);
+
+//
+// models
+//
+
+extern void draw_model(int mesh_idx);
+extern void draw_model_mesh(int mesh_idx);
+extern void draw_model_bones(int sel_bone_idx);
+
+extern void draw_model_selected_vertexes(int mesh_idx);
+extern void draw_model_selected_trig(int mesh_idx);
+extern void draw_model_box_view(void);
+extern void draw_model_box_hit_boxes(void);
+extern void draw_model_axis(void);
+extern void draw_model_normals_vertexes(int mesh_idx);
+extern void draw_model_normals_trig(int mesh_idx);
+
+extern void draw_model_gl_setup(int z_offset);
+extern void draw_model_setup_pose(int pose_idx);
+extern void draw_model_wind_pose(int mesh_idx,int pose_idx);
+
+extern bool vertex_mask_initialize(void);
+extern void vertex_mask_shutdown(void);
+extern void vertex_clear_sel_mask(int mesh_idx);
+extern void vertex_set_sel_mask(int mesh_idx,int vertex_idx,bool value);
+extern void vertex_set_sel_mask_all(int mesh_idx);
+extern bool vertex_check_any(int mesh_idx);
+extern bool vertex_check_sel_mask(int mesh_idx,int vertex_idx);
+extern void vertex_clear_hide_mask(int mesh_idx);
+extern void vertex_set_hide_mask(int mesh_idx,int vertex_idx,bool value);
+extern bool vertex_check_hide_mask(int mesh_idx,int vertex_idx);
+extern void vertex_hide_mask_set_sel_vertexes(int mesh_idx);
+extern void vertex_hide_mask_set_non_sel_vertexes(int mesh_idx);
+extern void vertex_hide_mask_show_all_vertexes(int mesh_idx);
+extern bool vertex_check_hide_mask_trig(int mesh_idx,model_trig_type *trig);
+extern void vertex_set_sel_mask_bone(int mesh_idx,int bone_idx);
+extern void vertex_set_sel_mask_no_bone(int mesh_idx);
+extern void vertex_set_sel_mask_near_bone(int mesh_idx,int bone_idx,float percentage);
+extern void vertex_set_sel_vertex_to_bone(int mesh_idx,int major_bone_idx,int minor_bone_idx,float factor);
+extern void vertex_set_sel_mask_material(int mesh_idx,int material_idx);
+
+extern void vertex_find_center_sel_vertexes(int mesh_idx,int *p_cx,int *p_cy,int *p_cz);
+extern void vertex_move_sel_vertexes(int mesh_idx,int x,int y,int z);
+extern void vertex_scale_sel_vertexes(int mesh_idx,float x,float y,float z);
+extern void vertex_rotate_sel_vertexes(int mesh_idx,float ang_x,float ang_y,float ang_z);
+extern void vertex_invert_normals(int mesh_idx);
+extern void vertex_clear_bone_attachments_sel_vertexes(int mesh_idx);
+extern void vertex_delete_sel_vertex(int mesh_idx);
+extern void vertex_delete_unused_vertexes(int mesh_idx);
+
+extern bool model_pick_list_start(int count);
+extern void model_pick_list_end(d3pnt *pnt,int *idx);
+extern void model_pick_list_add_trig(int idx,d3pnt *v_pnts);
 
