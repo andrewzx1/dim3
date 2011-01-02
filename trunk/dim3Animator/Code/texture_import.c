@@ -25,6 +25,7 @@ and can be sold or given away.
  
 *********************************************************************/
 
+#include "glue.h"
 #include "interface.h"
 
 extern model_type				model;
@@ -101,6 +102,31 @@ void texture_copy(char *path,char *name,char *sub_name)
 	sprintf(sub_path,"Models/%s/Textures",model.name);
 	file_paths_data_default(&file_path_setup,dest_path,sub_path,dest_name,"png");
 	bitmap_copy(srce_path,dest_path);
+}
+
+/* =======================================================
+
+      Does Texture Already Exist?
+      
+======================================================= */
+
+bool texture_exists(char *material_name)
+{
+	int				n;
+	texture_type	*texture;
+	
+	texture=model.textures;
+	
+    for (n=0;n!=max_model_texture;n++) {
+
+		if (texture->frames[0].bitmap.gl_id!=-1) {
+			if (strcasecmp(texture->material_name,material_name)==0) return(TRUE);
+		}
+		
+		texture++;
+	}
+	
+	return(FALSE);
 }
 
 /* =======================================================

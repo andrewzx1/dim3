@@ -25,6 +25,8 @@ and can be sold or given away.
  
 *********************************************************************/
 
+#include "glue.h"
+
 model_type						ins_model;
 
 extern model_type				model;

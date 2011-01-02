@@ -75,9 +75,9 @@ static pascal OSStatus import_finish_event_proc(EventHandlerCallRef handler,Even
       
 ======================================================= */
 
-void dialog_import_finish_run(model_type *mdl,float *scale)
+int dialog_import_finish_run(void)
 {
-	int						minx,maxx,minz,maxz,miny,maxy;
+	int						high;
 	EventHandlerUPP			event_upp;
 	EventTypeSpec			event_list[]={{kEventClassCommand,kEventProcessCommand}};
 	
@@ -101,11 +101,12 @@ void dialog_import_finish_run(model_type *mdl,float *scale)
 	
 		// get scaling factor
 		
-	model_get_vertex_extent_all(mdl,&minx,&maxx,&minz,&maxz,&miny,&maxy);
-	*scale=dialog_get_float(dialog_import_finish_wind,kImportHeight,0)/(float)abs(maxy-miny);
+	high=dialog_get_float(dialog_import_finish_wind,kImportHeight,0);
 
 		// close window
 		
 	DisposeWindow(dialog_import_finish_wind);
+	
+	return(high);
 }
 

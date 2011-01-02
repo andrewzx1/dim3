@@ -46,7 +46,7 @@ extern bool setup_xml_read(void);
       
 ======================================================= */
 
-void main_wind_resize(void)
+void main_wind_event_resize(void)
 {
 	Rect			wbox;
 	GLint			rect[4];
@@ -78,7 +78,7 @@ void main_wind_resize(void)
 	
 		// fix views and redraw
 		
-	main_wind_setup();
+	main_wind_resize();
 	main_wind_draw();
 }
 
@@ -147,7 +147,7 @@ OSStatus main_wind_event_callback(EventHandlerCallRef eventhandler,EventRef even
 
 				case kEventWindowBoundsChanged:
 				case kEventWindowResizeCompleted:
-					main_wind_resize();
+					main_wind_event_resize();
 					return(noErr);
 				
 				case kEventWindowClose:

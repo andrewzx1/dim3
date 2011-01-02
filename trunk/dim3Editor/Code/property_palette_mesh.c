@@ -30,6 +30,7 @@ and can be sold or given away.
 #endif
 
 #include "glue.h"
+#include "ui_common.h"
 #include "interface.h"
 #include "dialog.h"
 
@@ -53,24 +54,27 @@ and can be sold or given away.
 #define kMeshPropertyHarm						15
 #define kMeshPropertyRot						16
 
-#define kMeshPropertyMessageEnter				17
-#define kMeshPropertyMessageEnterId				18
-#define kMeshPropertyMessageExit				19
-#define kMeshPropertyMessageExitId				20
-#define kMeshPropertyMessageMapChange			21
-#define kMeshPropertyMessageMapChangeName		22
-#define kMeshPropertyMessageMapChangeSpotName	23
-#define kMeshPropertyMessageBase				24
-#define kMeshPropertyMessageBaseTeam			25
+#define kMeshPropertyImportOBJName				17
+#define kMeshPropertyImportFactor				18
 
-#define kMeshPolyPropertyClimbable				30
-#define kMeshPolyPropertyNeverCull				31
+#define kMeshPropertyMessageEnter				19
+#define kMeshPropertyMessageEnterId				20
+#define kMeshPropertyMessageExit				21
+#define kMeshPropertyMessageExitId				22
+#define kMeshPropertyMessageMapChange			23
+#define kMeshPropertyMessageMapChangeName		24
+#define kMeshPropertyMessageMapChangeSpotName	25
+#define kMeshPropertyMessageBase				26
+#define kMeshPropertyMessageBaseTeam			27
 
-#define kMeshPolyPropertyOff					32
-#define kMeshPolyPropertySize					33
-#define kMeshPolyPropertyShift					34
+#define kMeshPolyPropertyClimbable				28
+#define kMeshPolyPropertyNeverCull				29
 
-#define kMeshPolyPropertyCamera					35
+#define kMeshPolyPropertyOff					30
+#define kMeshPolyPropertySize					31
+#define kMeshPolyPropertyShift					32
+
+#define kMeshPolyPropertyCamera					33
 
 extern map_type					map;
 extern editor_state_type		state;
@@ -138,6 +142,10 @@ void property_palette_fill_mesh(int mesh_idx,int poly_idx)
 	list_palette_add_checkbox(&property_palette,kMeshPropertyMessageBase,"Base On",mesh->msg.base_on,FALSE);
 	list_palette_add_string(&property_palette,kMeshPropertyMessageBaseTeam,"Base Team",mesh_property_team_list[mesh->msg.base_team],FALSE);
 
+	list_palette_add_header(&property_palette,0,"Mesh Import");
+	list_palette_add_string(&property_palette,kMeshPropertyImportOBJName,"OBJ Name",mesh->import.obj_name,FALSE);
+	list_palette_add_string_float(&property_palette,kMeshPropertyImportFactor,"Scale",mesh->import.factor,FALSE);
+
 		// polygon settings
 
 	if (poly_idx!=-1) {
@@ -170,6 +178,7 @@ void property_palette_fill_mesh(int mesh_idx,int poly_idx)
 	max.z-=min.z;
 		
 	list_palette_add_header(&property_palette,0,"Mesh Info");
+	list_palette_add_string_int(&property_palette,-1,"Index",mesh_idx,FALSE);
 	list_palette_add_point(&property_palette,-1,"Position",&min,TRUE);
 	list_palette_add_point(&property_palette,-1,"Size",&max,TRUE);
 }
@@ -292,6 +301,14 @@ void property_palette_click_mesh(int mesh_idx,int poly_idx,int id)
 
 		case kMeshPropertyMessageBaseTeam:
 			property_palette_pick_list((char*)mesh_property_team_list,&mesh->msg.base_team);
+			break;
+			
+		case kMeshPropertyImportOBJName:
+			dialog_property_string_run(list_string_value_string,(void*)mesh->import.obj_name,name_str_len,0,0);
+			break;
+			
+		case kMeshPropertyImportFactor:
+			dialog_property_string_run(list_string_value_positive_float,(void*)&mesh->import.factor,0,0,0);
 			break;
 
 	}

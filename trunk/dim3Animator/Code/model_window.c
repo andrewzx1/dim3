@@ -25,7 +25,7 @@ and can be sold or given away.
  
 *********************************************************************/
 
-#include "model.h"
+#include "glue.h"
 #include "interface.h"
 
 WindowRef						wind;
@@ -660,6 +660,8 @@ void model_wind_open(void)
 	
 	model_wind_setup();
 	
+	text_initialize();
+	
 		// vertex masks
 		
 	vertex_mask_initialize();
@@ -727,6 +729,8 @@ void model_wind_close(void)
 		// free vertex masks
 		
 	vertex_mask_shutdown();
+	
+	text_shutdown();
 	
 		// close OpenGL contexts
 		

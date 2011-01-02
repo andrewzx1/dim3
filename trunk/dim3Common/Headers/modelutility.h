@@ -289,7 +289,16 @@ typedef struct		{
 														halo_bone_tag[max_model_halo],
 														name_bone_tag;
 					} model_tags;
-					
+
+//
+// Model Import
+//
+
+typedef struct		{
+						float							factor;
+						bool							single_texture;
+					} model_import_type;
+
 //
 // Model Main Structures
 //
@@ -305,6 +314,7 @@ typedef struct		{
 						model_tags						tags;
  						model_mesh_type					meshes[max_model_mesh];
 						model_rigid_body_type			rigid_body;
+						model_import_type				import;
 						model_bone_type					*bones;
 						model_pose_type					*poses;
 						model_animate_type				*animates;

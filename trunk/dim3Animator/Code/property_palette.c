@@ -34,9 +34,9 @@ and can be sold or given away.
 #include "interface.h"
 #include "dialog.h"
 
-extern map_type					map;
-extern editor_state_type		state;
-extern editor_setup_type		setup;
+extern model_type				model;
+extern model_draw_setup			draw_setup;
+extern animator_state_type		state;
 extern file_path_setup_type		file_path_setup;
 
 extern int						tool_palette_pixel_sz,txt_palette_pixel_sz;
@@ -50,7 +50,7 @@ list_palette_type				property_palette;
       Property Palette Setup
       
 ======================================================= */
-
+/*
 void property_palette_initialize(void)
 {
 	list_palette_list_initialize(&property_palette,"Item Properties");
@@ -87,13 +87,13 @@ void property_palette_setup(void)
 	property_palette.box.ty=y-1;
 	property_palette.box.by=wbox.by-txt_palette_pixel_sz;
 }
-
+*/
 /* =======================================================
 
       Property Palette Fill
       
 ======================================================= */
-
+/*
 void property_palette_fill(void)
 {
 	int					sel_type,main_idx,sub_idx;
@@ -173,25 +173,25 @@ void property_palette_fill(void)
 
 	}
 }
-
+*/
 /* =======================================================
 
       Property Palette Draw
       
 ======================================================= */
-
+/*
 void property_palette_draw(void)
 {
 	property_palette_fill();
 	list_palette_draw(&property_palette);
 }
-
+*/
 /* =======================================================
 
       Property Palette Reset For Selection Change
       
 ======================================================= */
-
+/*
 void property_palette_reset(void)
 {
 	int				sel_type,main_idx,sub_idx;
@@ -214,24 +214,24 @@ void property_palette_reset(void)
 		property_palette.scroll_page=0;
 	}
 }
-
+*/
 /* =======================================================
 
       Property Palette Scroll Wheel
       
 ======================================================= */
-
+/*
 void property_palette_scroll_wheel(d3pnt *pnt,int move)
 {
 	list_palette_scroll_wheel(&property_palette,pnt,move);
 }
-
+*/
 /* =======================================================
 
       Property Palette Click
       
 ======================================================= */
-
+/*
 void property_palette_click(d3pnt *pnt,bool double_click)
 {
 	int					sel_type,main_idx,sub_idx;
@@ -315,13 +315,13 @@ void property_palette_click(d3pnt *pnt,bool double_click)
 
 	}
 }
-
+*/
 /* =======================================================
 
       Property Palette String Utilities
       
 ======================================================= */
-
+/*
 void property_palette_string_get_values(int value_type,void *value,int i_min,int i_max,char *str,char *desc)
 {
 	d3pnt			*pnt;
@@ -489,13 +489,13 @@ void property_palette_string_set_values(int value_type,void *value,int value_len
 			
 	}
 }
-
+*/
 /* =======================================================
 
       Property Palette List Utilities
       
 ======================================================= */
-
+/*
 void property_palette_pick_list(char *list,int *idx)
 {
 	int			count;
@@ -735,13 +735,13 @@ void property_palette_pick_shader(char *name)
 	name[0]=0x0;
 	if (idx!=-1) strcpy(name,shader_names[idx]);
 }
-
+*/
 /* =======================================================
 
       Property Palette Parameter Utilities
       
 ======================================================= */
-
+/*
 void property_palette_get_parameter(int idx,char *param_list,char *str)
 {
 	int				n;
@@ -828,4 +828,4 @@ void property_palette_set_parameter(int idx,char *param_list,char *str)
 
 	param_list[param_str_len-1]=0x0;
 }
-
+*/

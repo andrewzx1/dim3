@@ -30,6 +30,7 @@ and can be sold or given away.
 #endif
 
 #include "glue.h"
+#include "ui_common.h"
 #include "interface.h"
 #include "dialog.h"
 
@@ -333,7 +334,7 @@ void property_palette_fill_map(void)
 	list_palette_add_uv(&property_palette,kMapPropertyEditorTextureFactor,"Default Texture Scale",&uv,FALSE);
 	list_palette_add_string_int(&property_palette,kMapPropertyEditorViewNearZ,"Near Z",map.editor_setup.view_near_dist,FALSE);
 	list_palette_add_string_int(&property_palette,kMapPropertyEditorViewFarZ,"Far Z",map.editor_setup.view_far_dist,FALSE);
-	list_palette_add_checkbox(&property_palette,kMapPropertyEditorLinkStartAlways,"On",map.editor_setup.link_always_start,FALSE);
+	list_palette_add_checkbox(&property_palette,kMapPropertyEditorLinkStartAlways,"Always Start at Player Spot",map.editor_setup.link_always_start,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Map Counts");
 	list_palette_add_string_int(&property_palette,-1,"Meshes",map.mesh.nmesh,TRUE);

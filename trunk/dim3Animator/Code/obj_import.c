@@ -25,6 +25,7 @@ and can be sold or given away.
  
 *********************************************************************/
 
+#include "glue.h"
 #include "interface.h"
 #include "dialog.h"
 
@@ -39,18 +40,23 @@ extern animator_state_type		state;
       
 ======================================================= */
 
-bool import_obj(char *path,bool *found_normals,char *err_str)
+bool import_obj(char *path,bool replace,bool *found_normals,char *err_str)
 {
-	int						n,k,t,nvertex,ntrig,nuv,nnormal,nline,ntexture,texture_idx,
-							pvtx[obj_max_face_vertex],npt;
+	int						n,k,t,nvertex,ntrig,nuv,nnormal,nline,ntexture,
+							texture_idx,high,npt,old_nvertex,sz,
+							pvtx[obj_max_face_vertex];
+	float					fy,f_ty,f_by;
 	char					txt[256],*c,vstr[256],vtstr[256],vnstr[256],
 							material_name[256],last_material_name[256];
-	bool					single_material,first_material;
+	bool					first_material,all_material_exists;
 	d3uv					*uv,*uv_ptr,pt_uv[obj_max_face_vertex];
 	d3vct					*normal,*normal_ptr,pnormal[obj_max_face_vertex];
-	model_vertex_type		*vertex;
+	model_mesh_type			*mesh;
+	model_vertex_type		*vertex,*old_vertex,*v1,*v2;
     model_trig_type			*trig;
 	model_material_type		*material;
+	
+	mesh=&model.meshes[state.cur_mesh_idx];
 	
 		// clear mesh materials
     
@@ -63,20 +69,34 @@ bool import_obj(char *path,bool *found_normals,char *err_str)
 		return(FALSE);
     }
 	
+	progress_start("OBJ Import",(replace?4:3));
+	progress_next_title("Obj Import: Parsing OBJ");
+	
     nline=textdecode_count();
 	
 		// count materials
+		// and see if we already have a material
+		// for all the textures
 		
 	ntexture=0;
+	all_material_exists=TRUE;
 	
     for (n=0;n!=nline;n++) {
         textdecode_get_piece(n,0,txt);
-        if (strcmp(txt,"usemtl")==0) ntexture++;
+        if (strcmp(txt,"usemtl")==0) {
+		
+            textdecode_get_piece(n,1,material_name);
+			material_name[name_str_len-1]=0x0;
+			all_material_exists&=texture_exists(material_name);
+			
+			ntexture++;
+		}
 	}
 
 		// can't import if no textures
 		
 	if (ntexture==0) {
+		progress_end();
 		textdecode_close();
 		strcpy(err_str,"OBJ contains no materials.  Animator can only import texture-mapped OBJs.");
 		return(FALSE);
@@ -85,22 +105,38 @@ bool import_obj(char *path,bool *found_normals,char *err_str)
 		// can't import if too many materials?
 		
 	if ((ntexture+texture_count())>=max_model_texture) {
+		progress_end();
 		textdecode_close();
 		sprintf(err_str,"Too many materials, models can have a maximum of %d materials.",max_model_texture);
 		return(FALSE);
 	}
 	
-		// count the vertexes and trigs
+		// count the vertexes, uvs, normals, and trigs
+		// and find the total height
 		
 	nvertex=0;
 	nuv=0;
 	nnormal=0;
 	ntrig=0;
+	
+	f_ty=f_by=0;
 
     for (n=0;n!=nline;n++) {
         textdecode_get_piece(n,0,txt);
 		
         if (strcmp(txt,"v")==0) {
+			
+			textdecode_get_piece(n,2,txt);
+			fy=(float)strtod(txt,NULL);
+			
+			if (nvertex==0) {
+				f_ty=f_by=fy;
+			}
+			else {
+				if (fy<f_ty) f_ty=fy;
+				if (fy>f_by) f_by=fy;
+			}
+			
 			nvertex++;
 			continue;
 		}
@@ -133,14 +169,32 @@ bool import_obj(char *path,bool *found_normals,char *err_str)
 		// can't import if no UVs
 		
 	if (nuv==0) {
+		progress_end();
 		textdecode_close();
 		sprintf(err_str,"There are no UVs in this OBJ, please texture map the model before importing.");
 		return(FALSE);
 	}
 	
-		// force at least one normal
+		// get the scale if not a replace
+		
+	if (!replace) {
+		high=dialog_import_finish_run();
+		model.import.factor=((float)high)/fabs(f_by-f_ty);
+	}
 
+		// if a replacement, remember the old
+		// vertexes so we can reattach bones
+		
+	if (replace) {
+		old_nvertex=mesh->nvertex;
+		sz=sizeof(model_vertex_type)*old_nvertex;
+		old_vertex=(model_vertex_type*)malloc(sz);
+		memmove(old_vertex,mesh->vertexes,sz);
+	}
+	
 		// model memory
+		
+	progress_next_title("Obj Import: Building New Model");
 		
 	model_mesh_set_vertex_count(&model,state.cur_mesh_idx,nvertex);
 	model_mesh_set_trig_count(&model,state.cur_mesh_idx,ntrig);
@@ -155,7 +209,7 @@ bool import_obj(char *path,bool *found_normals,char *err_str)
 	
 		// get the vertexes, uv, and normals
 
-	vertex=model.meshes[state.cur_mesh_idx].vertexes;
+	vertex=mesh->vertexes;
     
     uv=uv_ptr;
 	normal=normal_ptr;
@@ -168,11 +222,11 @@ bool import_obj(char *path,bool *found_normals,char *err_str)
             
         if (strcmp(txt,"v")==0) {
 			textdecode_get_piece(n,1,txt);
-			vertex->pnt.x=-(int)(strtod(txt,NULL)*import_scale_factor);
+			vertex->pnt.x=-(int)(strtod(txt,NULL)*model.import.factor);
 			textdecode_get_piece(n,2,txt);
-			vertex->pnt.y=-(int)(strtod(txt,NULL)*import_scale_factor);
+			vertex->pnt.y=-(int)(strtod(txt,NULL)*model.import.factor);
 			textdecode_get_piece(n,3,txt);
-			vertex->pnt.z=-(int)(strtod(txt,NULL)*import_scale_factor);
+			vertex->pnt.z=-(int)(strtod(txt,NULL)*model.import.factor);
             
             vertex->major_bone_idx=vertex->minor_bone_idx=-1;
             vertex->bone_factor=1;
@@ -210,11 +264,13 @@ bool import_obj(char *path,bool *found_normals,char *err_str)
     }
 	
 		// single material import?
-		
-	single_material=FALSE;
 	
-	if (ntexture>1) {
-		single_material=texture_use_single();
+	if (replace) {
+		model.import.single_texture=FALSE;
+	
+		if ((ntexture>1) && (!all_material_exists)) {
+			model.import.single_texture=texture_use_single();
+		}
 	}
 
 		// get the triangles
@@ -225,7 +281,7 @@ bool import_obj(char *path,bool *found_normals,char *err_str)
 	material=NULL;
     
     ntrig=0;
-	trig=model.meshes[state.cur_mesh_idx].trigs;
+	trig=mesh->trigs;
 	
 	last_material_name[0]=0x0;
         
@@ -244,7 +300,7 @@ bool import_obj(char *path,bool *found_normals,char *err_str)
 			
 					// single material?
 				
-				if (single_material) continue;
+				if (model.import.single_texture) continue;
 			
 					// same as last material?
 				
@@ -269,7 +325,7 @@ bool import_obj(char *path,bool *found_normals,char *err_str)
 				return(FALSE);
 			}
          
-			material=&model.meshes[state.cur_mesh_idx].materials[texture_idx];
+			material=&mesh->materials[texture_idx];
             material->trig_start=ntrig;
             
             continue;
@@ -349,12 +405,54 @@ bool import_obj(char *path,bool *found_normals,char *err_str)
         material->trig_count=ntrig-material->trig_start;
     }
 	
-	model.meshes[state.cur_mesh_idx].ntrig=ntrig;
+	mesh->ntrig=ntrig;
 	
 	free(uv_ptr);
 	free(normal_ptr);
 	
 	textdecode_close();
+	
+		// finish up
+		
+	vertex_delete_unused_vertexes(state.cur_mesh_idx);
+
+	model_center_xz(&model,state.cur_mesh_idx);
+	model_floor(&model,state.cur_mesh_idx);
+	model_recalc_boxes(&model);
+    model_recalc_normals(&model,found_normals);
+	
+		// if replacement, fix all the
+		// bone attachments
+		
+	if (replace) {
+	
+		progress_next_title("Obj Import: Fixing Bone Rigging");
+	
+		v1=mesh->vertexes;
+	
+		for (n=0;n!=mesh->nvertex;n++) {
+		
+			v2=old_vertex;
+		
+			for (k=0;k!=old_nvertex;k++) {
+				
+				if ((v1->pnt.x==v2->pnt.x) && (v1->pnt.y==v2->pnt.y) && (v1->pnt.z==v2->pnt.z)) {
+					v1->major_bone_idx=v2->major_bone_idx;
+					v1->minor_bone_idx=v2->minor_bone_idx;
+					v1->bone_factor=v2->bone_factor;
+					break;
+				}
+				
+				v2++;
+			}
+			
+			v1++;
+		}
+	
+		free(old_vertex);
+	}
+	
+	progress_end();
 
 	return(TRUE);
 }

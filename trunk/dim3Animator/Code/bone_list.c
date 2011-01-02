@@ -25,7 +25,7 @@ and can be sold or given away.
  
 *********************************************************************/
 
-#include "model.h"
+#include "glue.h"
 #include "dialog.h"
 
 bool							bone_list_notify_ignore;

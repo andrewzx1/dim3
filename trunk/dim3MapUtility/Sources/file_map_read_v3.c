@@ -54,6 +54,7 @@ bool read_single_mesh_v3(map_type *map,int mesh_idx,int mesh_tag)
 {
 	int					n,nvertex,npoly,old_mesh_lmap_txt_idx,
 						msg_tag,main_vertex_tag,vertex_tag,main_poly_tag,poly_tag,tag;
+	float				import_factor;
 	bool				mesh_climbable;
 	d3pnt				*pt;
 	map_mesh_type		*mesh;
@@ -90,7 +91,9 @@ bool read_single_mesh_v3(map_type *map,int mesh_idx,int mesh_tag)
 
 	xml_get_attribute_3_coord_int(mesh_tag,"rot_off",&mesh->rot_off.x,&mesh->rot_off.y,&mesh->rot_off.z);
 	
-	mesh->import_factor=xml_get_attribute_float_default(mesh_tag,"import_factor",0.0f);
+		// old version of import factor
+		
+	import_factor=xml_get_attribute_float_default(mesh_tag,"import_factor",0.0f);
 	
 		// old version of climbable at mesh level
 		// push it to polys if it's still there
@@ -127,6 +130,18 @@ bool read_single_mesh_v3(map_type *map,int mesh_idx,int mesh_tag)
 			xml_get_attribute_text(tag,"name",mesh->msg.map_name,name_str_len);
 			xml_get_attribute_text(tag,"spot_name",mesh->msg.map_spot_name,name_str_len);
         }
+	}
+	
+		// import
+		
+	tag=xml_findfirstchild("Import",mesh_tag);
+	if (tag!=-1) {
+		mesh->import.factor=xml_get_attribute_float_default(tag,"factor",0.0f);
+		xml_get_attribute_text(tag,"obj",mesh->import.obj_name,name_str_len);
+	}
+	else {
+		mesh->import.factor=0.0f;
+		mesh->import.obj_name[0]=0x0;
 	}
 
 		// vertexes

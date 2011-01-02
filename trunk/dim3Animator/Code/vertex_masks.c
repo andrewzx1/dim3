@@ -25,7 +25,7 @@ and can be sold or given away.
  
 *********************************************************************/
 
-#include "model.h"
+#include "glue.h"
 
 #define animator_max_vertex					10240
 

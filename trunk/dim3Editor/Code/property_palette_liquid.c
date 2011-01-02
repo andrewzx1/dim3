@@ -30,6 +30,7 @@ and can be sold or given away.
 #endif
 
 #include "glue.h"
+#include "ui_common.h"
 #include "interface.h"
 #include "dialog.h"
 
@@ -155,6 +156,7 @@ void property_palette_fill_liquid(int liq_idx)
 	size.z=liq->bot-liq->top;
 		
 	list_palette_add_header(&property_palette,0,"Liquid Info");
+	list_palette_add_string_int(&property_palette,-1,"Index",liq_idx,FALSE);
 	list_palette_add_point(&property_palette,-1,"Position",&pnt,TRUE);
 	list_palette_add_point(&property_palette,-1,"Size",&size,TRUE);
 }

@@ -34,9 +34,9 @@ and can be sold or given away.
 #include "interface.h"
 #include "dialog.h"
 
-extern map_type					map;
-extern editor_state_type		state;
-extern editor_setup_type		setup;
+extern model_type				model;
+extern model_draw_setup			draw_setup;
+extern animator_state_type		state;
 extern file_path_setup_type		file_path_setup;
 
 extern int						tool_palette_pixel_sz,txt_palette_pixel_sz;
@@ -50,6 +50,7 @@ list_palette_type				item_palette;
       
 ======================================================= */
 
+/*
 void item_palette_initialize(void)
 {
 	list_palette_list_initialize(&item_palette,"Map Items");
@@ -84,13 +85,14 @@ void item_palette_setup(void)
 	item_palette.box.ty=wbox.ty+(tool_palette_pixel_sz+1);
 	item_palette.box.by=y;
 }
+*/
 
 /* =======================================================
 
       Item Palette Fill
       
 ======================================================= */
-
+/*
 void item_palette_fill(void)
 {
 	int			n;
@@ -169,25 +171,25 @@ void item_palette_fill(void)
 		list_palette_add_item(&item_palette,cinema_piece,n,map.cinema.cinemas[n].name,((item_palette.item_type==cinema_piece)&&(n==item_palette.item_idx)),FALSE);
 	}
 }
-
+*/
 /* =======================================================
 
       Item Palette Draw
       
 ======================================================= */
-
+/*
 void item_palette_draw(void)
 {
 	item_palette_fill();
 	list_palette_draw(&item_palette);
 }
-
+*/
 /* =======================================================
 
       Item Palette Reset For Selection Change
       
 ======================================================= */
-
+/*
 void item_palette_reset(void)
 {
 	int				sel_type,main_idx,sub_idx;
@@ -215,13 +217,13 @@ void item_palette_select(int sel_type,int sel_idx)
 	
 	main_wind_draw();
 }
-
+*/
 /* =======================================================
 
       Item Palette Delete
       
 ======================================================= */
-
+/*
 bool item_palette_delete(void)
 {
 		// anything to delete?
@@ -252,24 +254,24 @@ bool item_palette_delete(void)
 
 	return(FALSE);
 }
-
+*/
 /* =======================================================
 
       Item Palette Scroll Wheel
       
 ======================================================= */
-
+/*
 void item_palette_scroll_wheel(d3pnt *pnt,int move)
 {
 	list_palette_scroll_wheel(&item_palette,pnt,move);
 }
-
+*/
 /* =======================================================
 
       Item Palette Click
       
 ======================================================= */
-
+/*
 void item_palette_click(d3pnt *pnt,bool double_click)
 {
 	bool					old_open;
@@ -356,3 +358,4 @@ void item_palette_click(d3pnt *pnt,bool double_click)
 
 	}
 }
+*/

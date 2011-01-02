@@ -277,9 +277,8 @@ void close_model_xml(void)
       
 ======================================================= */
 
-void import_mesh_obj(void)
+void import_mesh_obj(bool replace)
 {
-	float			scale;
 	char			path[1024],err_str[256];
 	bool			found_normals;
     
@@ -287,88 +286,15 @@ void import_mesh_obj(void)
 	if (!os_load_file(path,"obj")) return;
 	
 	if (state.cur_mesh_idx==-1) state.cur_mesh_idx=0;
-	model.meshes[state.cur_mesh_idx].nvertex=model.meshes[state.cur_mesh_idx].ntrig=0;
 	
-	if (!import_obj(path,&found_normals,err_str)) {
-		os_dialog_alert("Could not import .OBJ file",err_str);
+	if (!import_obj(path,replace,&found_normals,err_str)) {
+		os_dialog_alert("OBJ Import",err_str);
 		return;
 	}
 
-	vertex_delete_unused_vertexes(state.cur_mesh_idx);
-	
-	dialog_import_finish_run(&model,&scale);
-	model_scale(&model,state.cur_mesh_idx,scale,scale,scale);
-
-	model_center_xz(&model,state.cur_mesh_idx);
-	model_floor(&model,state.cur_mesh_idx);
-	model_recalc_boxes(&model);
-    model_recalc_normals(&model,found_normals);
-	
-	reset_vertex_tab();
-	reset_pose_list();
-	reset_bone_list();
-	
-	main_wind_draw();
-}
-
-void import_mesh_lightwave(void)
-{
-	float			scale;
-	char			path[1024],err_str[256];
-    
-	os_set_arrow_cursor();
-	if (!os_load_file(path,"lwo")) return;
-	
-	if (state.cur_mesh_idx==-1) state.cur_mesh_idx=0;
-	model.meshes[state.cur_mesh_idx].nvertex=model.meshes[state.cur_mesh_idx].ntrig=0;
-	
-	if (!import_lightwave(path,err_str)) {
-		os_dialog_alert("Could not import .LWO file",err_str);
-		return;
-	}
-	
-	vertex_delete_unused_vertexes(state.cur_mesh_idx);
-	
-	dialog_import_finish_run(&model,&scale);
-	model_scale(&model,state.cur_mesh_idx,scale,scale,scale);
-	
-    model_center_xz(&model,state.cur_mesh_idx);
-    model_floor(&model,state.cur_mesh_idx);
-    model_recalc_boxes(&model);
-    model_recalc_normals(&model,FALSE);
-	
-	reset_vertex_tab();
-	reset_pose_list();
-	reset_bone_list();
-	
-    main_wind_draw();
-}
-
-void import_mesh_c4d_xml(void)
-{
-	char			path[1024],err_str[256];
-	float			scale;
-    
-	os_set_arrow_cursor();
-	if (!os_load_file(path,"xml")) return;
-	
-	if (state.cur_mesh_idx==-1) state.cur_mesh_idx=0;
-	model.meshes[state.cur_mesh_idx].nvertex=model.meshes[state.cur_mesh_idx].ntrig=0;
-	
-	if (!import_c4d_xml(path,err_str)) {
-		os_dialog_alert("Could not import .XML file",err_str);
-		return;
-	}
-	
-	vertex_delete_unused_vertexes(state.cur_mesh_idx);
-	
-	dialog_import_finish_run(&model,&scale);
-	model_scale_all(&model,scale,scale,scale);
-
-    model_center_xz_all(&model);
-    model_floor_all(&model);
-    model_recalc_boxes(&model);
-    model_recalc_normals(&model,FALSE);
+		// finish setup
+		
+	vertex_clear_sel_mask(state.cur_mesh_idx);
 	
 	reset_vertex_tab();
 	reset_pose_list();
@@ -718,17 +644,12 @@ bool menu_event_run(int cmd)
 			
 		case kCommandImportOBJ:
 			model_wind_play(FALSE,FALSE);
-			import_mesh_obj();
+			import_mesh_obj(FALSE);
 			return(TRUE);
 			
-		case kCommandImportLWO:
+		case kCommandReplaceOBJ:
 			model_wind_play(FALSE,FALSE);
-			import_mesh_lightwave();
-			return(TRUE);
-			
-		case kCommandImportC4DXML:
-			model_wind_play(FALSE,FALSE);
-			import_mesh_c4d_xml();
+			import_mesh_obj(TRUE);
 			return(TRUE);
 			
 		case kCommandInsertXML:

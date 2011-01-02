@@ -25,7 +25,7 @@ and can be sold or given away.
  
 *********************************************************************/
 
-#include "model.h"
+#include "glue.h"
 
 extern model_type				model;
 extern model_draw_setup			draw_setup;

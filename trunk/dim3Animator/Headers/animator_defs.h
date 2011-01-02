@@ -116,9 +116,8 @@ and can be sold or given away.
 #define kCommandDuplicateMesh			FOUR_CHAR_CODE('dpmh')
 #define kCommandCopyMesh				FOUR_CHAR_CODE('cmsh')
 #define kCommandDeleteMesh				FOUR_CHAR_CODE('dmsh')
-#define kCommandImportOBJ				FOUR_CHAR_CODE('opOB')
-#define kCommandImportLWO				FOUR_CHAR_CODE('opLW')
-#define kCommandImportC4DXML			FOUR_CHAR_CODE('opC4')
+#define kCommandImportOBJ				FOUR_CHAR_CODE('OBJi')
+#define kCommandReplaceOBJ				FOUR_CHAR_CODE('OBJr')
 #define kCommandInsertXML				FOUR_CHAR_CODE('opDM')
 #define kCommandScale					FOUR_CHAR_CODE('scle')
 #define kCommandFlipX					FOUR_CHAR_CODE('flpx')
@@ -246,12 +245,6 @@ and can be sold or given away.
 
 #define draw_model_normal_size			3.0f
 #define draw_model_normal_len			50.0f
-
-//
-// import Settings
-//
-
-#define import_scale_factor				100000.0f
 
 //
 // animator state

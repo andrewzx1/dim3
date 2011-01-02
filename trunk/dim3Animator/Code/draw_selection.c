@@ -25,7 +25,7 @@ and can be sold or given away.
  
 *********************************************************************/
 
-#include "model.h"
+#include "glue.h"
 
 extern model_type			model;
 extern model_draw_setup		draw_setup;
@@ -41,17 +41,36 @@ void draw_model_selected_vertexes(int mesh_idx)
 {
 	int				n,nvertex;
 	float			*pv;
+	model_mesh_type	*mesh;
 	
-	glColor4f(0.0f,0.0f,0.0f,1.0f);
 	glPointSize(draw_vertex_handle_size);
 	
-	nvertex=model.meshes[mesh_idx].nvertex;
+	mesh=&model.meshes[mesh_idx];
+	nvertex=mesh->nvertex;
+	
 	pv=draw_setup.mesh_arrays[mesh_idx].gl_vertex_array;
 
 	glBegin(GL_POINTS);
 	
 	for (n=0;n!=nvertex;n++) {
-		if ((vertex_check_sel_mask(mesh_idx,n)) && (!vertex_check_hide_mask(mesh_idx,n))) glVertex3f(*pv,*(pv+1),*(pv+2));
+	
+		if ((vertex_check_sel_mask(mesh_idx,n)) && (!vertex_check_hide_mask(mesh_idx,n))) {
+		
+			if (mesh->vertexes[n].major_bone_idx!=-1) {
+				if ((mesh->vertexes[n].major_bone_idx==state.cur_bone_idx) && (state.cur_bone_idx!=-1)) {
+					glColor4f(0.2f,0.2f,1.0f,1.0f);
+				}
+				else {
+					glColor4f(0.0f,0.0f,0.0f,1.0f);
+				}
+			}
+			else {
+				glColor4f(0.5f,0.5f,0.5f,1.0f);
+			}
+			
+			glVertex3f(*pv,*(pv+1),*(pv+2));
+		}
+		
 		pv+=3;
 	}
 	

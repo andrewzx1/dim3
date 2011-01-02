@@ -64,12 +64,7 @@ extern void undo_pull(void);
 // tool palette
 //
 
-extern void tool_palette_initialize(char *app_name);
-extern void tool_palette_shutdown(void);
 extern void tool_palette_setup(void);
-extern void tool_palette_draw(void);
-extern void tool_palette_click(d3pnt *pnt);
-
 extern void tool_default(void);
 extern void tool_switch_vertex_mode(void);
 extern void tool_switch_drag_mode(void);
@@ -83,38 +78,7 @@ extern void tool_switch_node_mode(void);
 extern void texture_palette_setup(void);
 extern int texture_palette_get_selected_texture(void);
 extern void texture_palette_put_selected_texture(int txt_idx);
-extern void texture_palette_draw(texture_type *txt_list);
 extern void texture_palette_reset(void);
-extern void texture_palette_click(texture_type *txt_list,d3pnt *pnt,bool dbl_click);
-
-//
-// common list palette
-//
-
-extern void list_palette_initialize(void);
-extern void list_palette_shutdown(void);
-extern void list_palette_list_initialize(list_palette_type *list,char *title);
-extern void list_palette_list_shutdown(list_palette_type *list);
-extern void list_palette_set_title(list_palette_type *list,char *title);
-extern void list_palette_add_header(list_palette_type *list,int piece_type,char *name);
-extern void list_palette_add_item(list_palette_type *list,int piece_type,int piece_idx,char *name,bool selected,bool disabled);
-extern void list_palette_add_color(list_palette_type *list,int piece_type,int piece_idx,d3col *col,bool selected,bool disabled);
-extern void list_palette_add_string(list_palette_type *list,int id,char *name,char *value,bool disabled);
-extern void list_palette_add_string_int(list_palette_type *list,int id,char *name,int value,bool disabled);
-extern void list_palette_add_string_float(list_palette_type *list,int id,char *name,float value,bool disabled);
-extern void list_palette_add_checkbox(list_palette_type *list,int id,char *name,bool value,bool disabled);
-extern void list_palette_add_pick_color(list_palette_type *list,int id,char *name,d3col *col,bool disabled);
-extern void list_palette_add_point(list_palette_type *list,int id,char *name,d3pnt *pnt,bool disabled);
-extern void list_palette_add_angle(list_palette_type *list,int id,char *name,d3ang *ang,bool disabled);
-extern void list_palette_add_uv(list_palette_type *list,int id,char *name,d3fpnt *fpnt,bool disabled);
-extern void list_palette_add_texture(list_palette_type *list,int id,char *name,int txt_idx,bool disabled);
-extern void list_palette_add_shader(list_palette_type *list,int id,char *name,char *shader_name,bool disabled);
-extern void list_palette_delete_all_items(list_palette_type *list);
-extern void list_palette_draw(list_palette_type *list);
-extern void list_palette_scroll_up(list_palette_type *list);
-extern void list_palette_scroll_down(list_palette_type *list);
-extern void list_palette_scroll_wheel(list_palette_type *list,d3pnt *pnt,int move);
-extern bool list_palette_click(list_palette_type *list,d3pnt *pnt,bool double_click);
 
 //
 // item list palette
@@ -180,25 +144,6 @@ extern void property_palette_get_parameter(int idx,char *param_list,char *str);
 extern void property_palette_set_parameter(int idx,char *param_list,char *str);
 
 //
-// text
-//
-
-extern void text_initialize(void);
-extern void text_shutdown(void);
-extern void text_draw(int x,int y,float txt_size,d3col *col,char *str);
-extern void text_draw_center(int x,int y,float txt_size,d3col *col,char *str);
-extern void text_draw_right(int x,int y,float txt_size,d3col *col,char *str);
-
-//
-// progress
-//
-
-extern void progress_start(char *title,int count);
-extern void progress_end(void);
-extern void progress_next(void);
-extern void progress_next_title(char *title);
-
-//
 // dos
 //
 
@@ -214,19 +159,6 @@ extern void file_close_map(void);
 extern void launch_engine(void);
 extern void launch_map_script_editor(void);
 extern void launch_spot_script_editor(char *script_name);
-
-//
-// import text decoder
-//
-
-extern int textdecode_count_linestarts(void);
-extern void textdecode_linestarts(void);
-extern bool textdecode_open(char *path,char p_piece_break);
-extern void textdecode_close(void);
-extern int textdecode_count(void);
-extern int textdecode_find(int str_line,char *txt);
-extern void textdecode_get_line(int i,char *txt);
-extern void textdecode_get_piece(int i,int k,char *txt);
 
 //
 // light maps
