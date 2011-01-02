@@ -31,15 +31,17 @@ and can be sold or given away.
 // main window
 //
 
+extern void main_wind_initialize(void);
+extern void main_wind_shutdown(void);
+extern void main_wind_gl_setup(void);
 extern void main_wind_draw(void);
 extern void main_wind_draw_no_swap(void);
+extern void main_wind_play(bool play,bool blend);
+extern void main_wind_cursor(void);
+extern void main_wind_key(char ch);
+extern void main_wind_open(void);
+extern void main_wind_close(void);
 
-extern void model_wind_open(void);
-extern void model_wind_close(void);
-extern void model_wind_reset_tools(void);
-extern void model_wind_switch_mesh_mode(void);
-extern void model_wind_reset_modifiers(void);
-extern void model_wind_play(bool play,bool blend);
 
 extern void click_model_wind(d3pnt *pnt,unsigned long modifiers);
 

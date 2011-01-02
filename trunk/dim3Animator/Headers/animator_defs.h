@@ -263,7 +263,7 @@ typedef struct		{
 											texture,mesh,bone,hit_box,
 											normal,view_box,first_mesh,
 											playing,play_animate_blend,
-											shift_on,rotate_on,size_on,drag_sel_on;
+											drag_sel_on;
 						d3pnt				shift;
 						d3ang				ang;
 						d3rect				drag_sel_box;

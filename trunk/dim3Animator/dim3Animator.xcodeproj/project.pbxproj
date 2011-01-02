@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		261CE8E312D02A9A00D1D8BF /* main_window.c in Sources */ = {isa = PBXBuildFile; fileRef = 261CE8E212D02A9A00D1D8BF /* main_window.c */; };
+		261CE99012D034AB00D1D8BF /* OSX_main.c in Sources */ = {isa = PBXBuildFile; fileRef = 261CE98F12D034AB00D1D8BF /* OSX_main.c */; };
 		261F12440ED3CB3000A8A0D8 /* vertex_masks.c in Sources */ = {isa = PBXBuildFile; fileRef = 261F12430ED3CB2F00A8A0D8 /* vertex_masks.c */; };
 		261F128A0ED3D04A00A8A0D8 /* vertex_transform.c in Sources */ = {isa = PBXBuildFile; fileRef = 261F12890ED3D04A00A8A0D8 /* vertex_transform.c */; };
 		262C382412CFA7EB00A94FEE /* text_common.c in Sources */ = {isa = PBXBuildFile; fileRef = 262C380112CFA5AE00A94FEE /* text_common.c */; };
@@ -66,9 +68,7 @@
 		F5A42D9C0555EC87002DF965 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0867D6AAFE840B52C02AAC07 /* InfoPlist.strings */; };
 		F5A42D9D0555EC87002DF965 /* dim3 Animator.icns in Resources */ = {isa = PBXBuildFile; fileRef = 011160A300BE30DC7F000001 /* dim3 Animator.icns */; };
 		F5A42DA00555EC87002DF965 /* draw_window.c in Sources */ = {isa = PBXBuildFile; fileRef = 0111608A00BE2A8F7F000001 /* draw_window.c */; };
-		F5A42DA20555EC87002DF965 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 0111608C00BE2A8F7F000001 /* main.c */; };
 		F5A42DA30555EC87002DF965 /* menu.c in Sources */ = {isa = PBXBuildFile; fileRef = 0111608D00BE2A8F7F000001 /* menu.c */; };
-		F5A42DA40555EC87002DF965 /* model_window.c in Sources */ = {isa = PBXBuildFile; fileRef = 0111608E00BE2A8F7F000001 /* model_window.c */; };
 		F5A42DA60555EC87002DF965 /* texture_import.c in Sources */ = {isa = PBXBuildFile; fileRef = 0111609200BE2A8F7F000001 /* texture_import.c */; };
 		F5A42DA80555EC87002DF965 /* obj_import.c in Sources */ = {isa = PBXBuildFile; fileRef = F5C12EAB0143003C01000001 /* obj_import.c */; };
 		F5A42DAE0555EC87002DF965 /* animation_tab.c in Sources */ = {isa = PBXBuildFile; fileRef = F5C01E8301EABB0C01A091D9 /* animation_tab.c */; };
@@ -150,13 +150,13 @@
 /* Begin PBXFileReference section */
 		0111608500BE29E27F000001 /* AGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AGL.framework; path = /System/Library/Frameworks/AGL.framework; sourceTree = "<absolute>"; };
 		0111608A00BE2A8F7F000001 /* draw_window.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = draw_window.c; path = Code/draw_window.c; sourceTree = "<group>"; };
-		0111608C00BE2A8F7F000001 /* main.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = main.c; path = Code/main.c; sourceTree = "<group>"; };
 		0111608D00BE2A8F7F000001 /* menu.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = menu.c; path = Code/menu.c; sourceTree = "<group>"; };
-		0111608E00BE2A8F7F000001 /* model_window.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = model_window.c; path = Code/model_window.c; sourceTree = "<group>"; };
 		0111609200BE2A8F7F000001 /* texture_import.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = texture_import.c; path = Code/texture_import.c; sourceTree = "<group>"; };
 		011160A300BE30DC7F000001 /* dim3 Animator.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = "dim3 Animator.icns"; path = "Resources/dim3 Animator.icns"; sourceTree = "<group>"; };
 		0867D6ABFE840B52C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		20286C33FDCF999611CA2CEA /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
+		261CE8E212D02A9A00D1D8BF /* main_window.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = main_window.c; path = Code/main_window.c; sourceTree = "<group>"; };
+		261CE98F12D034AB00D1D8BF /* OSX_main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = OSX_main.c; path = Code/OSX_main.c; sourceTree = "<group>"; };
 		261F12430ED3CB2F00A8A0D8 /* vertex_masks.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = vertex_masks.c; path = Code/vertex_masks.c; sourceTree = "<group>"; };
 		261F12890ED3D04A00A8A0D8 /* vertex_transform.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = vertex_transform.c; path = Code/vertex_transform.c; sourceTree = "<group>"; };
 		262C380012CFA5A100A94FEE /* progress_common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = progress_common.c; path = ../dim3Common/Code/progress_common.c; sourceTree = SOURCE_ROOT; };
@@ -290,7 +290,7 @@
 		0123D84A00C09EE17F000001 /* Windows */ = {
 			isa = PBXGroup;
 			children = (
-				0111608E00BE2A8F7F000001 /* model_window.c */,
+				261CE8E212D02A9A00D1D8BF /* main_window.c */,
 				26C5F10C12613790000B0F9E /* tool_palette.c */,
 				26CF62EF126BF0F8002DCC2A /* tool_palette_common.c */,
 				F54B62DA0C4030A8005CB612 /* texture_palette.c */,
@@ -318,7 +318,7 @@
 		0123D84C00C09EE17F000001 /* Main */ = {
 			isa = PBXGroup;
 			children = (
-				0111608C00BE2A8F7F000001 /* main.c */,
+				261CE98F12D034AB00D1D8BF /* OSX_main.c */,
 				0111608D00BE2A8F7F000001 /* menu.c */,
 				F5239B8E0AFD9BEA00241092 /* undo.c */,
 				26C5EEFB1260F027000B0F9E /* OSX_glue.c */,
@@ -580,9 +580,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F5A42DA00555EC87002DF965 /* draw_window.c in Sources */,
-				F5A42DA20555EC87002DF965 /* main.c in Sources */,
 				F5A42DA30555EC87002DF965 /* menu.c in Sources */,
-				F5A42DA40555EC87002DF965 /* model_window.c in Sources */,
 				F5A42DA60555EC87002DF965 /* texture_import.c in Sources */,
 				F5A42DA80555EC87002DF965 /* obj_import.c in Sources */,
 				F5A42DAE0555EC87002DF965 /* animation_tab.c in Sources */,
@@ -635,6 +633,8 @@
 				262C395712D025F700A94FEE /* item_palette.c in Sources */,
 				262C395812D025F700A94FEE /* property_palette.c in Sources */,
 				262C397712D026A500A94FEE /* list_palette_common.c in Sources */,
+				261CE8E312D02A9A00D1D8BF /* main_window.c in Sources */,
+				261CE99012D034AB00D1D8BF /* OSX_main.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

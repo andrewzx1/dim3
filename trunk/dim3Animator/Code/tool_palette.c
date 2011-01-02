@@ -165,7 +165,7 @@ void tool_click(int tool_idx)
 			break;
 			
 		case 11:
-			model_wind_play(!state.playing,FALSE);
+			main_wind_play(!state.playing,FALSE);
 			break;
 	}
 	

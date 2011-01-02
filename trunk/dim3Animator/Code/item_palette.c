@@ -50,22 +50,24 @@ list_palette_type				item_palette;
       
 ======================================================= */
 
-/*
 void item_palette_initialize(void)
 {
+/*
 	list_palette_list_initialize(&item_palette,"Map Items");
 
 	item_palette.item_type=spot_piece;
 	item_palette.item_idx=-1;
+*/
 }
 
 void item_palette_shutdown(void)
 {
-	list_palette_list_shutdown(&item_palette);
+//	list_palette_list_shutdown(&item_palette);
 }
 
 void item_palette_setup(void)
 {
+/*
 	int				y;
 	d3rect			wbox;
 	
@@ -84,8 +86,8 @@ void item_palette_setup(void)
 	item_palette.box.rx=wbox.rx;
 	item_palette.box.ty=wbox.ty+(tool_palette_pixel_sz+1);
 	item_palette.box.by=y;
-}
 */
+}
 
 /* =======================================================
 

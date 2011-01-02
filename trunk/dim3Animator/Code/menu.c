@@ -71,14 +71,14 @@ void windows_start(void)
 		state.blend[n].animate_idx=-1;
 	}
 	
-	model_wind_open();
+	main_wind_open();
 	
 	os_select_window();
 }
 
 void windows_end(void)
 {
-	model_wind_close();
+	main_wind_close();
 }
 
 /* =======================================================
@@ -453,19 +453,19 @@ bool menu_event_run(int cmd)
 			// file menu
 
 		case kCommandNew:
-			model_wind_play(FALSE,FALSE);
+			main_wind_play(FALSE,FALSE);
 			new_model_xml();
 			return(TRUE);
 
 		case kCommandOpen:
-			model_wind_play(FALSE,FALSE);
+			main_wind_play(FALSE,FALSE);
 			open_model_xml();
 			return(TRUE);
 			
 		case kCommandClose:
 			if (!menu_save_changes_dialog()) return(TRUE);
 			close_model_xml();
-			model_wind_play(FALSE,FALSE);
+			main_wind_play(FALSE,FALSE);
 			menu_fix_enable();
 			return(TRUE);
 			
@@ -643,17 +643,17 @@ bool menu_event_run(int cmd)
 			return(TRUE);
 			
 		case kCommandImportOBJ:
-			model_wind_play(FALSE,FALSE);
+			main_wind_play(FALSE,FALSE);
 			import_mesh_obj(FALSE);
 			return(TRUE);
 			
 		case kCommandReplaceOBJ:
-			model_wind_play(FALSE,FALSE);
+			main_wind_play(FALSE,FALSE);
 			import_mesh_obj(TRUE);
 			return(TRUE);
 			
 		case kCommandInsertXML:
-			model_wind_play(FALSE,FALSE);
+			main_wind_play(FALSE,FALSE);
 			insert_mesh_dim3_model();
 			return(TRUE);
 			
@@ -967,7 +967,7 @@ bool menu_event_run(int cmd)
 				return(TRUE);
 			}
 			
-			model_wind_play(FALSE,FALSE);
+			main_wind_play(FALSE,FALSE);
 			
 			idx=model_animate_add(&model);
 			if (idx==-1) return(TRUE);
@@ -988,7 +988,7 @@ bool menu_event_run(int cmd)
 			
 		case kCommandDupAnimate:
 			if (state.cur_animate_idx==-1) return(TRUE);
-			model_wind_play(FALSE,FALSE);
+			main_wind_play(FALSE,FALSE);
  
 			idx=model_animate_duplicate(&model,state.cur_animate_idx);
 			if (idx==-1) return(TRUE);
@@ -1009,7 +1009,7 @@ bool menu_event_run(int cmd)
             
 		case kCommandDeleteAnimate:
 			if (state.cur_animate_idx==-1) return(TRUE);
-			model_wind_play(FALSE,FALSE);
+			main_wind_play(FALSE,FALSE);
 
 			model_animate_delete(&model,state.cur_animate_idx);
 			if (model.nanimate==0) {
@@ -1024,19 +1024,19 @@ bool menu_event_run(int cmd)
 			
 		case kCommandResetTimeAnimate:
 			if (state.cur_animate_idx==-1) return(TRUE);
-			model_wind_play(FALSE,FALSE);
+			main_wind_play(FALSE,FALSE);
 
 			dialog_animation_reset_time_run(state.cur_animate_idx);
 			reset_animate_list();
 			return(TRUE);
 			
 		case kCommandPlayAnimate:
-			model_wind_play(!state.playing,FALSE);
+			main_wind_play(!state.playing,FALSE);
 			return(TRUE);
 			
 		case kCommandPlayBlendAnimate:
 			if (dialog_play_blend_animation_run()) {
-				model_wind_play(TRUE,TRUE);
+				main_wind_play(TRUE,TRUE);
 			}
 			return(TRUE);
 						
