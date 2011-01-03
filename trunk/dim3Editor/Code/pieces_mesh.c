@@ -54,8 +54,10 @@ typedef struct		{
 														nvertex,npoly,nuv,nnormal;
 						char							obj_name[name_str_len],
 														group_name[name_str_len];
-						d3pnt							pnt;
-						d3fpnt							scale;
+						float							scale_new;
+						bool							replace;
+						d3pnt							pnt,replace_min,replace_max;
+						d3fpnt							min,max;
 						obj_import_state_material_type	materials[32];
 					} obj_import_state_type;
 
@@ -318,6 +320,98 @@ void import_find_group_name(obj_import_state_type *import_state)
 
 /* =======================================================
 
+      Get OBJ Size
+      
+======================================================= */
+
+void import_calc_obj_size(obj_import_state_type *import_state)
+{
+	int					n,k,v_idx;
+	float				fx,fy,fz;
+	char				*c,txt[256],vstr[256];
+	unsigned char		*vertex_mark;
+	d3fpnt				min,max;
+	
+		// some OBJ creators -- especially blender --
+		// like to leave this unconnected and crazy vertexes
+		// in the OBJs.  We need to scan for them.
+		
+	vertex_mark=(unsigned char*)malloc(import_state->nvertex);
+	bzero(vertex_mark,import_state->nvertex);
+		
+    for (n=0;n!=import_state->nline;n++) {
+        textdecode_get_piece(n,0,txt);
+        
+        if (strcmp(txt,"f")==0) {
+		
+			for (k=0;k!=8;k++) {
+				textdecode_get_piece(n,(k+1),vstr);
+				if (vstr[0]==0x0) break;
+            
+				c=strchr(vstr,'/');
+				if (c!=NULL) *c=0x0;
+
+				v_idx=atoi(vstr)-1;
+				vertex_mark[v_idx]=0x1;
+			}
+		}
+	}
+	
+		// let's find total size -- we ignore
+		// any non-connected stray vertexes
+		
+		// mesh add will actually eliminate these
+		// vertexes but we need to keep them around for
+		// now so face numbers line up
+		
+	min.x=min.y=min.z=0.0f;
+	max.x=max.y=max.z=0.0f;
+	
+	v_idx=0;
+	
+	for (n=0;n!=import_state->nline;n++) {
+		textdecode_get_piece(n,0,txt);
+		
+		if (strcmp(txt,"v")==0) {
+			
+			if (vertex_mark[v_idx]==0x0) {
+				v_idx++;
+				continue;
+			}
+			
+			textdecode_get_piece(n,1,txt);
+			fx=(float)strtod(txt,NULL);
+			textdecode_get_piece(n,2,txt);
+			fy=-(float)strtod(txt,NULL);
+			textdecode_get_piece(n,3,txt);
+			fz=(float)strtod(txt,NULL);
+			
+			if (v_idx==0) {
+				min.x=max.x=fx;
+				min.y=max.y=fy;
+				min.z=max.z=fz;
+			}
+			else {
+				if (fx<min.x) min.x=fx;
+				if (fx>max.x) max.x=fx;
+				if (fy<min.y) min.y=fy;
+				if (fy>max.y) max.y=fy;
+				if (fz<min.z) min.z=fz;
+				if (fz>max.z) max.z=fz;
+			}
+			
+			v_idx++;
+		}
+	}
+	
+	free(vertex_mark);
+	
+	memmove(&import_state->min,&min,sizeof(d3fpnt));
+	memmove(&import_state->max,&max,sizeof(d3fpnt));
+}
+
+/* =======================================================
+
       Add OBJ Mesh
       
 ======================================================= */
@@ -332,13 +426,25 @@ bool piece_add_obj_mesh_import_obj(obj_import_state_type *import_state,char *err
 						vstr[256],uvstr[256],normalstr[256];
 	float				fx,fy,fz,gx[8],gy[8];
 	float				*uvs,*uv,*normals,*normal;
-	d3pnt				*vertexes,*dpt;
+	d3pnt				*vertexes,*dpt,move_pnt,add_min,add_max;
+	d3fpnt				scale;
 	d3vct				n_v;
 	map_mesh_type		*mesh;
 
 		// start progress
 		
 	progress_start("OBJ Import",8);
+	
+		// create the scale
+		
+	if (!import_state->replace) {
+		scale.x=scale.y=scale.z=import_state->scale_new;
+	}
+	else {
+		scale.x=(float)(import_state->replace_max.x-import_state->replace_min.x)/(import_state->max.x-import_state->min.x);
+		scale.y=(float)(import_state->replace_max.y-import_state->replace_min.y)/(import_state->max.y-import_state->min.y);
+		scale.z=(float)(import_state->replace_max.z-import_state->replace_min.z)/(import_state->max.z-import_state->min.z);
+	}
 	
 		// get the vertexes
 		
@@ -365,9 +471,9 @@ bool piece_add_obj_mesh_import_obj(obj_import_state_type *import_state,char *err
 		textdecode_get_piece(n,3,txt);
 		fz=(float)strtod(txt,NULL);
 		
-		dpt->x=(int)(fx*import_state->scale.x);
-		dpt->y=(int)(fy*import_state->scale.y);
-		dpt->z=(int)(fz*import_state->scale.z);
+		dpt->x=(int)(fx*scale.x);
+		dpt->y=(int)(fy*scale.y);
+		dpt->z=(int)(fz*scale.z);
 		
 		dpt++;
 	}
@@ -532,7 +638,7 @@ bool piece_add_obj_mesh_import_obj(obj_import_state_type *import_state,char *err
 		// exist in obj
 		
 	mesh->flag.lock_uv=(import_state->nuv!=0);
-	if (import_state->nnormal!=0) map.mesh.meshes[mesh_idx].normal_mode=mesh_normal_mode_lock;
+	if (import_state->nnormal!=0) mesh->normal_mode=mesh_normal_mode_lock;
 	
 		// get the polys
 		
@@ -621,27 +727,37 @@ bool piece_add_obj_mesh_import_obj(obj_import_state_type *import_state,char *err
 	
 		vector_normalize(&n_v);
 
-		memmove(&map.mesh.meshes[mesh_idx].polys[poly_idx].tangent_space.normal,&n_v,sizeof(d3vct));
+		memmove(&mesh->polys[poly_idx].tangent_space.normal,&n_v,sizeof(d3vct));
 	}
 	
 	free(vertexes);
 	if (import_state->nuv!=0) free(uvs);
 	if (import_state->nnormal!=0) free(normals);
 	
+		// some OBJS aren't centered correctly
+		// or are part of a multi-mesh set, so we need
+		// to make sure replacements have the same min value
+		
+	if (import_state->replace) {
+		map_mesh_calculate_extent(&map,mesh_idx,&add_min,&add_max);
+	
+		move_pnt.x=import_state->replace_min.x-add_min.x;
+		move_pnt.y=import_state->replace_min.y-add_min.y;
+		move_pnt.z=import_state->replace_min.z-add_min.z;
+		
+		map_mesh_move(&map,mesh_idx,&move_pnt);
+	}
+	
 		// if no uvs, force auto-texture
 		
 	progress_next();
-		
-	if (import_state->nuv==0) {
-		map_mesh_reset_uv(&map,mesh_idx);
-	}
+	if (!mesh->flag.lock_uv) map_mesh_reset_uv(&map,mesh_idx);
 
 		// calc the normals
-		// and lock if this import had normals
+		// or only bi/tangent if normals come with OBJ
 		
 	progress_next();
-
-	map_recalc_normals_mesh(&map.mesh.meshes[mesh_idx],(import_state->nnormal!=0));
+	map_recalc_normals_mesh(&map.mesh.meshes[mesh_idx],(mesh->normal_mode==mesh_normal_mode_lock));
 	
 		// finish up
 		
@@ -654,15 +770,12 @@ bool piece_add_obj_mesh_import_obj(obj_import_state_type *import_state,char *err
 
 void piece_add_obj_mesh(void)
 {
-	int						n,k,v_idx,nmesh,
+	int						n,k,nmesh,
 							import_mode,scale_axis,scale_unit;
 	char					*c,txt[256],file_name[256],
-							vstr[256],path[1024],err_str[256];
-	unsigned char			*vertex_mark,*mesh_mark;
-	float					fx,fy,fz;
+							path[1024],err_str[256];
+	unsigned char			*mesh_mark;
 	bool					ok,replace_ok;
-	d3pnt					replace_min,replace_max;
-	d3fpnt					min,max;
 	obj_import_state_type	import_state;
 	
 	if (!piece_create_texture_ok()) return;
@@ -759,85 +872,16 @@ void piece_add_obj_mesh(void)
 		
 	import_texture_fill_materials(&import_state);
 	
-		// some OBJ creators -- especially blender --
-		// like to leave this unconnected and crazy vertexes
-		// in the OBJs.  We need to scan for them.
+		// calculate the min and max of the
+		// OBJ we are importing
 		
-	vertex_mark=(unsigned char*)malloc(import_state.nvertex);
-	bzero(vertex_mark,import_state.nvertex);
-		
-    for (n=0;n!=import_state.nline;n++) {
-        textdecode_get_piece(n,0,txt);
-        
-        if (strcmp(txt,"f")==0) {
-		
-			for (k=0;k!=8;k++) {
-				textdecode_get_piece(n,(k+1),vstr);
-				if (vstr[0]==0x0) break;
-            
-				c=strchr(vstr,'/');
-				if (c!=NULL) *c=0x0;
-
-				v_idx=atoi(vstr)-1;
-				vertex_mark[v_idx]=0x1;
-			}
-		}
-	}
-	
-		// let's find total size -- we ignore
-		// any non-connected stray vertexes
-		
-		// mesh add will actually eliminate these
-		// vertexes but we need to keep them around for
-		// now so face numbers line up
-		
-	min.x=min.y=min.z=0.0f;
-	max.x=max.y=max.z=0.0f;
-	
-	v_idx=0;
-	
-	for (n=0;n!=import_state.nline;n++) {
-		textdecode_get_piece(n,0,txt);
-		
-		if (strcmp(txt,"v")==0) {
-			
-			if (vertex_mark[v_idx]==0x0) {
-				v_idx++;
-				continue;
-			}
-			
-			textdecode_get_piece(n,1,txt);
-			fx=(float)strtod(txt,NULL);
-			textdecode_get_piece(n,2,txt);
-			fy=-(float)strtod(txt,NULL);
-			textdecode_get_piece(n,3,txt);
-			fz=(float)strtod(txt,NULL);
-			
-			if (v_idx==0) {
-				min.x=max.x=fx;
-				min.y=max.y=fy;
-				min.z=max.z=fz;
-			}
-			else {
-				if (fx<min.x) min.x=fx;
-				if (fx>max.x) max.x=fx;
-				if (fy<min.y) min.y=fy;
-				if (fy>max.y) max.y=fy;
-				if (fz<min.z) min.z=fz;
-				if (fz>max.z) max.z=fz;
-			}
-			
-			v_idx++;
-		}
-	}
-	
-	free(vertex_mark);
+	import_calc_obj_size(&import_state);
 	
 	os_set_arrow_cursor();
 	
 		// run the import dialog
 
-	replace_ok=piece_add_obj_is_replace_ok(&replace_min,&replace_max);
+	replace_ok=piece_add_obj_is_replace_ok(&import_state.replace_min,&import_state.replace_max);
 	import_mode=dialog_obj_import_run(&scale_axis,&scale_unit);
 	
 	if ((import_mode==import_mode_replace) && (!replace_ok)) {
@@ -860,21 +904,20 @@ void piece_add_obj_mesh(void)
 		
 	if (import_mode==import_mode_new) {
 		
-		import_state.scale.x=1.0f;
+		import_state.replace=FALSE;
+		import_state.scale_new=1.0f;
 		
 		switch (scale_axis) {
 			case 0:
-				import_state.scale.x=((float)scale_unit)/(max.x-min.x);
+				import_state.scale_new=((float)scale_unit)/(import_state.max.x-import_state.min.x);
 				break;
 			case 1:
-				import_state.scale.x=((float)scale_unit)/(max.y-min.y);
+				import_state.scale_new=((float)scale_unit)/(import_state.max.y-import_state.min.y);
 				break;
 			case 2:
-				import_state.scale.x=((float)scale_unit)/(max.z-min.z);
+				import_state.scale_new=((float)scale_unit)/(import_state.max.z-import_state.min.z);
 				break;
 		}
-		
-		import_state.scale.y=import_state.scale.z=import_state.scale.x;
 	
 		os_set_wait_cursor();
 		
@@ -900,9 +943,7 @@ void piece_add_obj_mesh(void)
 
 	if (import_mode==import_mode_replace) {
 		
-		import_state.scale.x=(float)(replace_max.x-replace_min.x)/(max.x-min.x);
-		import_state.scale.y=(float)(replace_max.y-replace_min.y)/(max.y-min.y);
-		import_state.scale.z=(float)(replace_max.z-replace_min.z)/(max.z-min.z);
+		import_state.replace=TRUE;
 
 		os_set_wait_cursor();
 		
@@ -946,6 +987,8 @@ void piece_add_obj_mesh(void)
 	
 		import_state.group_idx=n;
 		import_find_group_name(&import_state);
+		
+		ok=TRUE;
 	
 		for (k=0;k!=nmesh;k++) {
 		
@@ -956,15 +999,13 @@ void piece_add_obj_mesh(void)
 			
 				// get scale and mark for delete
 				
-			map_mesh_calculate_extent(&map,k,&replace_min,&replace_max);
+			map_mesh_calculate_extent(&map,k,&import_state.replace_min,&import_state.replace_max);
 			map_mesh_calculate_center(&map,k,&import_state.pnt);
 			mesh_mark[k]=0x1;
 		
 				// import
 				
-			import_state.scale.x=(max.x-min.x)/(float)(replace_max.x-replace_min.x);
-			import_state.scale.y=(max.y-min.y)/(float)(replace_max.y-replace_min.y);
-			import_state.scale.z=(max.z-min.z)/(float)(replace_max.z-replace_min.z);
+			import_state.replace=TRUE;
 		
 			ok=piece_add_obj_mesh_import_obj(&import_state,err_str);
 			
@@ -984,9 +1025,7 @@ void piece_add_obj_mesh(void)
 	}
 
 	free(mesh_mark);
-	
-	select_clear();
-	
+
 	os_set_arrow_cursor();
 	
 	if (!ok) os_dialog_alert("Import Error",err_str);
