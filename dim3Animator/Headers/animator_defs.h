@@ -66,16 +66,16 @@ and can be sold or given away.
 // Menus
 //
 
-#define applemenu						128
-#define filemenu						129
-#define editmenu						130
-#define modelmenu						131
-#define viewmenu						132
-#define meshmenu						133
-#define vertexmenu						134
-#define bonemenu						135
-#define posemenu						136
-#define animatemenu						137
+#define app_menu_apple					128
+#define app_menu_file					129
+#define app_menu_edit					130
+#define app_menu_model					131
+#define app_menu_view					132
+#define app_menu_mesh					133
+#define app_menu_vertex					134
+#define app_menu_bone					135
+#define app_menu_pose					136
+#define app_menu_animate				137
 
 #define modeltransformmenu				141
 #define meshimportmenu					140

@@ -55,7 +55,7 @@ and can be sold or given away.
 #define kMeshPropertyRot						16
 
 #define kMeshPropertyImportOBJName				17
-#define kMeshPropertyImportFactor				18
+#define kMeshPropertyImportGroupName			18
 
 #define kMeshPropertyMessageEnter				19
 #define kMeshPropertyMessageEnterId				20
@@ -144,7 +144,7 @@ void property_palette_fill_mesh(int mesh_idx,int poly_idx)
 
 	list_palette_add_header(&property_palette,0,"Mesh Import");
 	list_palette_add_string(&property_palette,kMeshPropertyImportOBJName,"OBJ Name",mesh->import.obj_name,FALSE);
-	list_palette_add_string_float(&property_palette,kMeshPropertyImportFactor,"Scale",mesh->import.factor,FALSE);
+	list_palette_add_string(&property_palette,kMeshPropertyImportGroupName,"Group Name",mesh->import.group_name,FALSE);
 
 		// polygon settings
 
@@ -307,8 +307,8 @@ void property_palette_click_mesh(int mesh_idx,int poly_idx,int id)
 			dialog_property_string_run(list_string_value_string,(void*)mesh->import.obj_name,name_str_len,0,0);
 			break;
 			
-		case kMeshPropertyImportFactor:
-			dialog_property_string_run(list_string_value_positive_float,(void*)&mesh->import.factor,0,0,0);
+		case kMeshPropertyImportGroupName:
+			dialog_property_string_run(list_string_value_string,(void*)mesh->import.group_name,name_str_len,0,0);
 			break;
 
 	}

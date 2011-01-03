@@ -25,6 +25,10 @@ and can be sold or given away.
  
 *********************************************************************/
 
+#ifdef D3_PCH
+	#include "dim3animator.h"
+#endif
+
 #include "glue.h"
 
 extern model_type			model;
@@ -58,7 +62,7 @@ void draw_model_selected_vertexes(int mesh_idx)
 		
 			if (mesh->vertexes[n].major_bone_idx!=-1) {
 				if ((mesh->vertexes[n].major_bone_idx==state.cur_bone_idx) && (state.cur_bone_idx!=-1)) {
-					glColor4f(0.2f,0.2f,1.0f,1.0f);
+					glColor4f(1.0f,0.2f,1.0f,1.0f);
 				}
 				else {
 					glColor4f(0.0f,0.0f,0.0f,1.0f);

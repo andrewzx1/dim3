@@ -41,48 +41,23 @@ extern editor_state_type		state;
 
 extern file_path_setup_type		file_path_setup;
 
+#define import_max_material								32
 
 typedef struct		{
-						int						nline,
-												nvertex,npoly,nuv,nnormal;
-						char					obj_name[name_str_len];
-						float					scale;
-						d3pnt					pnt;
+						int								txt_idx;
+						char							name[name_str_len];
+					} obj_import_state_material_type;
+					
+typedef struct		{
+						int								nline,nmaterial,
+														ngroup,group_idx,
+														nvertex,npoly,nuv,nnormal;
+						char							obj_name[name_str_len],
+														group_name[name_str_len];
+						d3pnt							pnt;
+						d3fpnt							scale;
+						obj_import_state_material_type	materials[32];
 					} obj_import_state_type;
-
-
-/* =======================================================
-
-      Finish Mesh Addition
-      
-======================================================= */
-
-void piece_add_mesh_finish(int mesh_idx)
-{
-	if (mesh_idx==-1) return;
-	
-		// make selection
-		
-	select_clear();
-	select_add(mesh_piece,mesh_idx,0);
-
-		// change mode to move entire mesh
-		
-	state.drag_mode=drag_mode_mesh;
-	
-		// if import hasn't already locked UV,
-		// lock it if auto texture state is off
-		// otherwise, reset the UVs
-	
-	if ((state.auto_texture) && (!map.mesh.meshes[mesh_idx].flag.lock_uv)) {
-		map_mesh_reset_uv(&map,mesh_idx);
-	}
-	else {
-		map.mesh.meshes[mesh_idx].flag.lock_uv=TRUE;
-	}
-	
-	main_wind_draw();
-}
 
 /* =======================================================
 
@@ -90,29 +65,38 @@ void piece_add_mesh_finish(int mesh_idx)
       
 ======================================================= */
 
-bool piece_add_obj_is_replace_ok(float *old_scale)
+bool piece_add_obj_is_replace_ok(d3pnt *min,d3pnt *max)
 {
-	int				n,type,mesh_idx,poly_idx,sel_cnt,hit_mesh_idx;
+	int				n,sel_count,
+					type,main_idx,sub_idx;
+	bool			hit;
+	d3pnt			t_min,t_max;
 	
-	sel_cnt=select_count();
-	if (sel_cnt==0) return(FALSE);
-
-	hit_mesh_idx=-1;
-		
-	for (n=0;n!=sel_cnt;n++) {
-		select_get(n,&type,&mesh_idx,&poly_idx);
+	sel_count=select_count();
+	if (sel_count==0) return(FALSE);
+	
+	hit=FALSE;
+	
+	min->x=min->z=min->y=map_max_size;
+	max->x=max->z=max->y=-map_max_size;
+	
+	for (n=0;n!=sel_count;n++) {
+		select_get(n,&type,&main_idx,&sub_idx);
 		if (type!=mesh_piece) continue;
 		
-		if (hit_mesh_idx!=-1) {
-			if (hit_mesh_idx!=mesh_idx) return(FALSE);			// can only replace one mesh
-		}
-		
-		hit_mesh_idx=mesh_idx;
-		
-		*old_scale=map.mesh.meshes[mesh_idx].import.factor;
+		hit=TRUE;
+
+		map_mesh_calculate_extent(&map,main_idx,&t_min,&t_max);
+			
+		if (t_min.x<(min->x)) min->x=t_min.x;
+		if (t_min.y<(min->y)) min->y=t_min.y;
+		if (t_min.z<(min->z)) min->z=t_min.z;
+		if (t_max.x>(max->x)) max->x=t_max.x;
+		if (t_max.y>(max->y)) max->y=t_max.y;
+		if (t_max.z>(max->z)) max->z=t_max.z;
 	}
 	
-	return(hit_mesh_idx!=-1);
+	return(hit);
 }
 
 void piece_add_obj_replace_delete_existing(void)
@@ -216,8 +200,8 @@ int import_texture_pick(char *material_name)
 	
 		// pick a bitmap
 		
-	sprintf(title,"Material %s Found - Select Bitmap",material_name);
-	os_dialog_alert(title,"Please select a PNG file to be used for this material.\nThe PNG file must be 32-bit and have width and height that are squares of 2 (2, 4, 8, 16, 32, 64, 128, 256, etc).");
+	sprintf(title,"Material \"%s\" Found",material_name);
+	if (os_dialog_confirm(title,"Do you want to select a PNG file to be used as the texture for this material?\nSelecting No will cause the import to ignore all further materials.",FALSE)!=0) return(-1);
 	
 	if (!os_load_file(path,"png")) return(0);
 	
@@ -258,6 +242,80 @@ int import_texture_pick(char *material_name)
 	return(idx);
 }
 
+void import_texture_fill_materials(obj_import_state_type *import_state)
+{
+	int						n,txt_idx;
+	char					txt[256],material_name[256];
+	
+	import_state->nmaterial=0;
+	
+    for (n=0;n!=import_state->nline;n++) {
+	
+			// is this a material
+			
+		textdecode_get_piece(n,0,txt);
+		if (strcmp(txt,"usemtl")!=0) continue;
+		
+			// get name
+			
+		textdecode_get_piece(n,1,material_name);
+		material_name[name_str_len-1]=0x0;
+		
+			// get texture
+			
+		txt_idx=import_texture_pick(material_name);
+		if (txt_idx==-1) return;
+		
+		strcpy(import_state->materials[import_state->nmaterial].name,material_name);
+		import_state->materials[import_state->nmaterial].txt_idx=txt_idx;
+		
+		import_state->nmaterial++;
+	}
+}
+
+int import_texture_get_material_texture_idx(obj_import_state_type *import_state,char *material_name)
+{
+	int						n;
+	
+	for (n=0;n!=import_state->nmaterial;n++) {
+		if (strcmp(import_state->materials[n].name,material_name)==0) return(import_state->materials[n].txt_idx);
+	}
+	
+	return(0);
+}
+
+/* =======================================================
+
+      Groups
+      
+======================================================= */
+
+void import_find_group_name(obj_import_state_type *import_state)
+{
+	int						n,group_idx;
+	char					txt[256];
+	
+	group_idx=0;
+	import_state->group_name[0]=0x0;
+	
+    for (n=0;n!=import_state->nline;n++) {
+	
+		textdecode_get_piece(n,0,txt);
+		if (strcmp(txt,"g")!=0) continue;
+		
+		if (import_state->group_idx==group_idx) {
+			textdecode_get_piece(n,1,txt);
+			
+			strncpy(import_state->group_name,txt,name_str_len);
+			import_state->group_name[name_str_len-1]=0x0;
+			
+			return;
+		}
+		
+		group_idx++;
+	}
+}		
+
 /* =======================================================
 
       Add OBJ Mesh
@@ -266,7 +324,7 @@ int import_texture_pick(char *material_name)
 
 bool piece_add_obj_mesh_import_obj(obj_import_state_type *import_state,char *err_str)
 {
-	int					n,k,npt,
+	int					n,k,npt,group_idx,start_line_idx,end_line_idx,
 						v_idx,uv_idx,normal_idx,normal_count,
 						mesh_idx,poly_idx,txt_idx,old_nmesh,x,y,z;
 	int					px[8],py[8],pz[8];
@@ -274,7 +332,6 @@ bool piece_add_obj_mesh_import_obj(obj_import_state_type *import_state,char *err
 						vstr[256],uvstr[256],normalstr[256];
 	float				fx,fy,fz,gx[8],gy[8];
 	float				*uvs,*uv,*normals,*normal;
-	bool				mesh_add;
 	d3pnt				*vertexes,*dpt;
 	d3vct				n_v;
 	map_mesh_type		*mesh;
@@ -285,7 +342,7 @@ bool piece_add_obj_mesh_import_obj(obj_import_state_type *import_state,char *err
 	
 		// get the vertexes
 		
-	progress_next_title("Obj Import: Loading Vertexes");
+	progress_next_title("OBJ Import: Loading Vertexes");
 
 	vertexes=(d3pnt*)malloc(sizeof(d3pnt)*import_state->nvertex);
 	if (vertexes==NULL) {
@@ -308,9 +365,9 @@ bool piece_add_obj_mesh_import_obj(obj_import_state_type *import_state,char *err
 		textdecode_get_piece(n,3,txt);
 		fz=(float)strtod(txt,NULL);
 		
-		dpt->x=(int)(fx*import_state->scale);
-		dpt->y=(int)(fy*import_state->scale);
-		dpt->z=(int)(fz*import_state->scale);
+		dpt->x=(int)(fx*import_state->scale.x);
+		dpt->y=(int)(fy*import_state->scale.y);
+		dpt->z=(int)(fz*import_state->scale.z);
 		
 		dpt++;
 	}
@@ -345,7 +402,7 @@ bool piece_add_obj_mesh_import_obj(obj_import_state_type *import_state,char *err
 	
 		// get the UVs
 		
-	progress_next_title("Obj Import: Loading UVs");
+	progress_next_title("OBJ Import: Loading UVs");
 		
 	if (import_state->nuv!=0) {
 		uvs=(float*)malloc(sizeof(float)*(2*import_state->nuv));
@@ -370,7 +427,7 @@ bool piece_add_obj_mesh_import_obj(obj_import_state_type *import_state,char *err
 
 		// get the normals
 		
-	progress_next_title("Obj Import: Loading Normals");
+	progress_next_title("OBJ Import: Loading Normals");
 		
 	if (import_state->nnormal!=0) {
 		normals=(float*)malloc(sizeof(float)*(3*import_state->nnormal));
@@ -395,75 +452,97 @@ bool piece_add_obj_mesh_import_obj(obj_import_state_type *import_state,char *err
 		}
 	}
 
-		// need to split up meshes by materials
-		
-	mesh=NULL;
+		// find the correct group to import
+	
+	sprintf(txt,"OBJ Import: Finding Group %d",import_state->group_idx);
+	progress_next_title(txt);
+
 	txt_idx=0;
+	group_idx=0;
+	
+	start_line_idx=end_line_idx=-1;
+		
+    for (n=0;n!=import_state->nline;n++) {
+	
+       textdecode_get_piece(n,0,txt);
+	
+			// new material, change texture
+			// so we have the right material for
+			// this group
+			
+		if (strcmp(txt,"usemtl")==0) {
+		
+			textdecode_get_piece(n,1,material_name);
+			material_name[name_str_len-1]=0x0;
+
+			txt_idx=import_texture_get_material_texture_idx(import_state,material_name);
+			
+			continue;
+		}
+		
+			// mark the groups boundry
+		
+		if (strcmp(txt,"g")==0) {
+		
+				// looking for end
+				
+			if (start_line_idx!=-1) {
+				end_line_idx=n;
+				break;
+			}
+				
+				// looking for beginning
+				
+			if (group_idx==import_state->group_idx) {
+				start_line_idx=n+1;
+			}
+			
+			group_idx++;
+		}
+	}
+	
+		// do we have anything to use?
+		
+	if (start_line_idx==-1) return(TRUE);
+	if (end_line_idx==-1) end_line_idx=import_state->nline;
 	
 		// remember the number of meshes
 		// we add so we can fix some things later
 		
 	old_nmesh=map.mesh.nmesh;
 	
+		// add the mesh
+		
+	mesh_idx=map_mesh_add(&map);
+		
+	if (mesh_idx==-1) {
+		progress_end();
+		strcpy(err_str,"Not enough memory to create mesh.");
+		return(FALSE);
+	}
+
+	mesh=&map.mesh.meshes[mesh_idx];
+		
+		// set the import settings
+			
+	strcpy(mesh->import.obj_name,import_state->obj_name);
+	strcpy(mesh->import.group_name,import_state->group_name);
+		
+		// set UV and Normal locks if uvs and normals
+		// exist in obj
+		
+	mesh->flag.lock_uv=(import_state->nuv!=0);
+	if (import_state->nnormal!=0) map.mesh.meshes[mesh_idx].normal_mode=mesh_normal_mode_lock;
+	
 		// get the polys
 		
-	progress_next_title("Obj Import: Building Polygons");
-
-    for (n=0;n!=import_state->nline;n++) {
+	progress_next_title("OBJ Import: Building Polygons");
 	
-       textdecode_get_piece(n,0,txt);
+    for (n=start_line_idx;n<end_line_idx;n++) {
 	
-			// new material, add a new mesh
-			// if we don't have one yet and if we do,
-			// the older one actually has polygons
-			
-		if (strcmp(txt,"usemtl")==0) {
-		
-				// get material and texture
-				
-			textdecode_get_piece(n,1,material_name);
-			txt_idx=import_texture_pick(material_name);
-		
-				// add the mesh
-				
-			mesh_add=TRUE;
-			
-			if (mesh!=NULL) {
-				mesh_add=(mesh->npoly!=0);
-			}
-				
-			if (mesh_add) {
-			
-				mesh_idx=map_mesh_add(&map);
-				
-				if (mesh_idx==-1) {
-					progress_end();
-					strcpy(err_str,"Not enough memory to create mesh.");
-					return(FALSE);
-				}
-	
-				mesh=&map.mesh.meshes[mesh_idx];
-				
-					// set the scale for replacements
-					
-				mesh->import.factor=import_state->scale;
-				strcpy(mesh->import.obj_name,import_state->obj_name);
-				
-					// set UV and Normal locks if uvs and normals
-					// exist in obj
-					
-				mesh->flag.lock_uv=(import_state->nuv!=0);
-				if (import_state->nnormal!=0) map.mesh.meshes[mesh_idx].normal_mode=mesh_normal_mode_lock;
-			}
-		}
-		
-			// skip if we don't have a mesh
-			// we have to encounter a material first
-			
-		if (mesh==NULL) continue;
-
 			// a face?
 			
+		textdecode_get_piece(n,0,txt);
 		if (strcmp(txt,"f")!=0) continue;
 		
             // get the face points
@@ -549,22 +628,12 @@ bool piece_add_obj_mesh_import_obj(obj_import_state_type *import_state,char *err
 	if (import_state->nuv!=0) free(uvs);
 	if (import_state->nnormal!=0) free(normals);
 	
-		// were any meshes imported?
-		
-	if (old_nmesh==map.mesh.nmesh) {
-		os_dialog_alert("Import Failed","Could not find mesh.  OBJ is missing a material (usemtl) deceleration.");
-		progress_end();
-		return(FALSE);
-	}
-	
 		// if no uvs, force auto-texture
 		
 	progress_next();
 		
 	if (import_state->nuv==0) {
-		for (n=old_nmesh;n!=map.mesh.nmesh;n++) {
-			map_mesh_reset_uv(&map,n);
-		}
+		map_mesh_reset_uv(&map,mesh_idx);
 	}
 
 		// calc the normals
@@ -572,34 +641,28 @@ bool piece_add_obj_mesh_import_obj(obj_import_state_type *import_state,char *err
 		
 	progress_next();
 
-	for (n=old_nmesh;n!=map.mesh.nmesh;n++) {
-		map_recalc_normals_mesh(&map.mesh.meshes[n],(import_state->nnormal!=0));
-	}
+	map_recalc_normals_mesh(&map.mesh.meshes[mesh_idx],(import_state->nnormal!=0));
 	
 		// finish up
 		
-	progress_next();
-		
-	piece_add_mesh_finish(old_nmesh);
-	
 	progress_end();
+	
+	select_add(mesh_piece,mesh_idx,0);
 	
 	return(TRUE);
 }
 
 void piece_add_obj_mesh(void)
 {
-	int					n,k,v_idx,nmesh,
-						import_mode,scale_axis,scale_unit;
-	char				*c,txt[256],file_name[256],
-						vstr[256],path[1024];
-	unsigned char		*vertex_mark,*mesh_mark;
-	float				fx,fy,fz,old_scale;
-	bool				replace_ok;
-	d3fpnt				min,max;
-	
-	bool					ok;
-	char					err_str[256];
+	int						n,k,v_idx,nmesh,
+							import_mode,scale_axis,scale_unit;
+	char					*c,txt[256],file_name[256],
+							vstr[256],path[1024],err_str[256];
+	unsigned char			*vertex_mark,*mesh_mark;
+	float					fx,fy,fz;
+	bool					ok,replace_ok;
+	d3pnt					replace_min,replace_max;
+	d3fpnt					min,max;
 	obj_import_state_type	import_state;
 	
 	if (!piece_create_texture_ok()) return;
@@ -635,10 +698,11 @@ void piece_add_obj_mesh(void)
 	strncpy(import_state.obj_name,file_name,name_str_len);
 	import_state.obj_name[name_str_len-1]=0x0;
 	
-		// count vertexes, faces, uvs, and normals
+		// count groups, vertexes, faces, uvs, and normals
 		
     import_state.nline=textdecode_count();
 		
+	import_state.ngroup=0;
 	import_state.nvertex=0;
 	import_state.npoly=0;
 	import_state.nuv=0;
@@ -646,29 +710,40 @@ void piece_add_obj_mesh(void)
 	
     for (n=0;n!=import_state.nline;n++) {
         textdecode_get_piece(n,0,txt);
+		
+        if (strcmp(txt,"g")==0) {
+			import_state.ngroup++;
+			continue;
+		}
         
         if (strcmp(txt,"v")==0) {
 			import_state.nvertex++;
+			continue;
 		}
-		else {
-			if (strcmp(txt,"f")==0) {
-				import_state.npoly++;
-			}
-			else {
-				if (strcmp(txt,"vt")==0) {
-					import_state.nuv++;
-				}
-				else {
-					if (strcmp(txt,"vn")==0) {
-						import_state.nnormal++;
-					}
-				}
-			}
+
+		if (strcmp(txt,"f")==0) {
+			import_state.npoly++;
+			continue;
+		}
+
+		if (strcmp(txt,"vt")==0) {
+			import_state.nuv++;
+			continue;
+		}
+
+		if (strcmp(txt,"vn")==0) {
+			import_state.nnormal++;
+			continue;
 		}
 	}
 	
 		// imporper OBJ errors
 		
+	if (import_state.ngroup==0) {
+		textdecode_close();
+		os_dialog_alert("Import Failed","No groups in OBJ.");
+		return;
+    }
 	if (import_state.nvertex==0) {
 		textdecode_close();
 		os_dialog_alert("Import Failed","No vertexes in OBJ.");
@@ -679,6 +754,10 @@ void piece_add_obj_mesh(void)
 		os_dialog_alert("Import Failed","No faces in OBJ.");
 		return;
     }
+	
+		// load up the materials
+		
+	import_texture_fill_materials(&import_state);
 	
 		// some OBJ creators -- especially blender --
 		// like to leave this unconnected and crazy vertexes
@@ -758,34 +837,56 @@ void piece_add_obj_mesh(void)
 	
 		// run the import dialog
 
-	replace_ok=piece_add_obj_is_replace_ok(&old_scale);
-	import_mode=dialog_mesh_scale_run(replace_ok,&scale_axis,&scale_unit);
+	replace_ok=piece_add_obj_is_replace_ok(&replace_min,&replace_max);
+	import_mode=dialog_obj_import_run(&scale_axis,&scale_unit);
+	
+	if ((import_mode==import_mode_replace) && (!replace_ok)) {
+		os_dialog_alert("OBJ Import","You can't use replace if there is no selection.");
+		import_mode=-1;
+	}
 	
 	if (import_mode==-1) {
 		textdecode_close();
 		return;
     }
 	
-	import_state.scale=1.0f;
-	
-		// scale import
+		// always switch to drag mode 
 		
-	if (import_mode==import_mode_scale) {
+	state.drag_mode=drag_mode_mesh;
+	
+	select_clear();
+	
+		// import new
+		
+	if (import_mode==import_mode_new) {
+		
+		import_state.scale.x=1.0f;
 		
 		switch (scale_axis) {
 			case 0:
-				import_state.scale=((float)scale_unit)/(max.x-min.x);
+				import_state.scale.x=((float)scale_unit)/(max.x-min.x);
 				break;
 			case 1:
-				import_state.scale=((float)scale_unit)/(max.y-min.y);
+				import_state.scale.x=((float)scale_unit)/(max.y-min.y);
 				break;
 			case 2:
-				import_state.scale=((float)scale_unit)/(max.z-min.z);
+				import_state.scale.x=((float)scale_unit)/(max.z-min.z);
 				break;
 		}
+		
+		import_state.scale.y=import_state.scale.z=import_state.scale.x;
 	
 		os_set_wait_cursor();
-		ok=piece_add_obj_mesh_import_obj(&import_state,err_str);
+		
+		for (n=0;n!=import_state.ngroup;n++) {
+		
+			import_state.group_idx=n;
+			import_find_group_name(&import_state);
+			
+			ok=piece_add_obj_mesh_import_obj(&import_state,err_str);
+			if (!ok) break;
+		}
+		
 		os_set_arrow_cursor();
 		
 		textdecode_close();
@@ -795,15 +896,27 @@ void piece_add_obj_mesh(void)
 		return;
 	}
 	
-		// replacement import
+		// import replace
 
 	if (import_mode==import_mode_replace) {
-		import_state.scale=old_scale;
-		if (import_state.scale==0.0f) import_state.scale=1.0f;
+		
+		import_state.scale.x=(float)(replace_max.x-replace_min.x)/(max.x-min.x);
+		import_state.scale.y=(float)(replace_max.y-replace_min.y)/(max.y-min.y);
+		import_state.scale.z=(float)(replace_max.z-replace_min.z)/(max.z-min.z);
 
 		os_set_wait_cursor();
+		
 		piece_add_obj_replace_delete_existing();
-		ok=piece_add_obj_mesh_import_obj(&import_state,err_str);
+
+		for (n=0;n!=import_state.ngroup;n++) {
+		
+			import_state.group_idx=n;
+			import_find_group_name(&import_state);
+			
+			ok=piece_add_obj_mesh_import_obj(&import_state,err_str);
+			if (!ok) break;
+		}
+		
 		os_set_arrow_cursor();
 			
 		textdecode_close();
@@ -813,7 +926,7 @@ void piece_add_obj_mesh(void)
 		return;
 	}
 	
-		// replace all
+		// import replace all
 		
 	os_set_wait_cursor();
 
@@ -829,25 +942,34 @@ void piece_add_obj_mesh(void)
 	
 	bzero(mesh_mark,nmesh);
 	
-	for (n=0;n!=nmesh;n++) {
+	for (n=0;n!=import_state.ngroup;n++) {
 	
-			// same imported OBJ?
+		import_state.group_idx=n;
+		import_find_group_name(&import_state);
+	
+		for (k=0;k!=nmesh;k++) {
+		
+				// same imported OBJ?
+				
+			if (strcasecmp(map.mesh.meshes[k].import.obj_name,import_state.obj_name)!=0) continue;
+			if (strcasecmp(map.mesh.meshes[k].import.group_name,import_state.group_name)!=0) continue;
 			
-		if (strcasecmp(map.mesh.meshes[n].import.obj_name,import_state.obj_name)!=0) continue;
+				// get scale and mark for delete
+				
+			map_mesh_calculate_extent(&map,k,&replace_min,&replace_max);
+			map_mesh_calculate_center(&map,k,&import_state.pnt);
+			mesh_mark[k]=0x1;
 		
-			// get scale and mark for delete
+				// import
+				
+			import_state.scale.x=(max.x-min.x)/(float)(replace_max.x-replace_min.x);
+			import_state.scale.y=(max.y-min.y)/(float)(replace_max.y-replace_min.y);
+			import_state.scale.z=(max.z-min.z)/(float)(replace_max.z-replace_min.z);
 		
-		import_state.scale=map.mesh.meshes[n].import.factor;
-		if (import_state.scale==0.0f) import_state.scale=1.0f;
+			ok=piece_add_obj_mesh_import_obj(&import_state,err_str);
 			
-		map_mesh_calculate_center(&map,n,&import_state.pnt);
-		mesh_mark[n]=0x1;
-	
-			// import
-	
-		ok=piece_add_obj_mesh_import_obj(&import_state,err_str);
-		
-		if (!ok) break;
+			if (!ok) break;
+		}
 	}
 	
 	textdecode_close();
@@ -855,7 +977,10 @@ void piece_add_obj_mesh(void)
 		// delete marked meshes
 
 	for (n=(nmesh-1);n>=0;n--) {
-		if (mesh_mark[n]==0x1) map_mesh_delete(&map,n);
+		if (mesh_mark[n]==0x1) {
+			map_mesh_delete(&map,n);
+			select_delete_move_index(mesh_piece,n,0);
+		}
 	}
 
 	free(mesh_mark);
@@ -1196,7 +1321,10 @@ void piece_add_height_map_mesh(void)
 	
 		// finish up
 		
-	piece_add_mesh_finish(mesh_idx);
+	select_clear();
+	select_add(mesh_piece,mesh_idx,0);
+
+	main_wind_draw();
 }
 
 /* =======================================================
@@ -1306,7 +1434,10 @@ void piece_add_grid_mesh(void)
 	
 		// finish up
 		
-	piece_add_mesh_finish(mesh_idx);
+	select_clear();
+	select_add(mesh_piece,mesh_idx,0);
+
+	main_wind_draw();
 }
 
 /* =======================================================
@@ -1357,7 +1488,10 @@ void piece_add_polygon_mesh(void)
 	
 		// finish up
 		
-	piece_add_mesh_finish(mesh_idx);
+	select_clear();
+	select_add(mesh_piece,mesh_idx,0);
+
+	main_wind_draw();
 }
 
 /* =======================================================

@@ -25,6 +25,10 @@ and can be sold or given away.
  
 *********************************************************************/
 
+#ifdef D3_PCH
+	#include "dim3animator.h"
+#endif
+
 #include "interface.h"
 #include "dialog.h"
 
@@ -168,7 +172,7 @@ void reset_model_open(void)
 	
 	undo_clear();
 	
-	menu_fix_enable();
+	menu_update();
 }
 
 void new_model_xml(void)
@@ -344,40 +348,40 @@ void insert_mesh_dim3_model(void)
       
 ======================================================= */
 
-void menu_fix_enable(void)
+void menu_update(void)
 {
 	if (!state.model_open) {
-		EnableMenuItem(GetMenuHandle(filemenu),1);
-		EnableMenuItem(GetMenuHandle(filemenu),2);
-		DisableMenuItem(GetMenuHandle(filemenu),3);
-		DisableMenuItem(GetMenuHandle(filemenu),5);
+		os_menu_enable_item(app_menu_file,1,TRUE);
+		os_menu_enable_item(app_menu_file,2,TRUE);
+		os_menu_enable_item(app_menu_file,3,FALSE);
+		os_menu_enable_item(app_menu_file,5,FALSE);
     
-		DisableMenuItem(GetMenuHandle(editmenu),0);
-		DisableMenuItem(GetMenuHandle(modelmenu),0);
-		DisableMenuItem(GetMenuHandle(viewmenu),0);
-		DisableMenuItem(GetMenuHandle(meshmenu),0);
-		DisableMenuItem(GetMenuHandle(vertexmenu),0);
-		DisableMenuItem(GetMenuHandle(bonemenu),0);
-		DisableMenuItem(GetMenuHandle(posemenu),0);
-		DisableMenuItem(GetMenuHandle(animatemenu),0);
+		os_menu_enable_item(app_menu_edit,0,FALSE);
+		os_menu_enable_item(app_menu_model,0,FALSE);
+		os_menu_enable_item(app_menu_view,0,FALSE);
+		os_menu_enable_item(app_menu_mesh,0,FALSE);
+		os_menu_enable_item(app_menu_vertex,0,FALSE);
+		os_menu_enable_item(app_menu_bone,0,FALSE);
+		os_menu_enable_item(app_menu_pose,0,FALSE);
+		os_menu_enable_item(app_menu_animate,0,FALSE);
 	}
 	else {
-		DisableMenuItem(GetMenuRef(filemenu),1);
-		DisableMenuItem(GetMenuRef(filemenu),2);
-		EnableMenuItem(GetMenuRef(filemenu),3);
-		EnableMenuItem(GetMenuRef(filemenu),5);
+		os_menu_enable_item(app_menu_file,1,FALSE);
+		os_menu_enable_item(app_menu_file,2,FALSE);
+		os_menu_enable_item(app_menu_file,3,TRUE);
+		os_menu_enable_item(app_menu_file,5,TRUE);
 	
-		EnableMenuItem(GetMenuRef(editmenu),0);
-		EnableMenuItem(GetMenuRef(modelmenu),0);
-		EnableMenuItem(GetMenuRef(viewmenu),0);
-		EnableMenuItem(GetMenuRef(meshmenu),0);
-		EnableMenuItem(GetMenuRef(vertexmenu),0);
-		EnableMenuItem(GetMenuRef(bonemenu),0);
-		EnableMenuItem(GetMenuRef(posemenu),0);
-		EnableMenuItem(GetMenuRef(animatemenu),0);
+		os_menu_enable_item(app_menu_edit,0,TRUE);
+		os_menu_enable_item(app_menu_model,0,TRUE);
+		os_menu_enable_item(app_menu_view,0,TRUE);
+		os_menu_enable_item(app_menu_mesh,0,TRUE);
+		os_menu_enable_item(app_menu_vertex,0,TRUE);
+		os_menu_enable_item(app_menu_bone,0,TRUE);
+		os_menu_enable_item(app_menu_pose,0,TRUE);
+		os_menu_enable_item(app_menu_animate,0,TRUE);
 	}
 	
-	DrawMenuBar();
+	os_menu_redraw();
 }
 
 /* =======================================================
@@ -466,7 +470,7 @@ bool menu_event_run(int cmd)
 			if (!menu_save_changes_dialog()) return(TRUE);
 			close_model_xml();
 			main_wind_play(FALSE,FALSE);
-			menu_fix_enable();
+			menu_update();
 			return(TRUE);
 			
 		case kCommandSave:

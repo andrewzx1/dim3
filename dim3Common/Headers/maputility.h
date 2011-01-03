@@ -302,8 +302,8 @@ typedef struct		{
 					} map_mesh_draw_type;
 
 typedef struct		{
-						float								factor;
-						char								obj_name[name_str_len];
+						char								obj_name[name_str_len],
+															group_name[name_str_len];
 					} map_mesh_import_type;
 
 typedef struct		{

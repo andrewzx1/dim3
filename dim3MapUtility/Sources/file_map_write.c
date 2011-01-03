@@ -591,8 +591,8 @@ void write_single_mesh(map_mesh_type *mesh)
 		// import
 		
 	xml_add_tagstart("Import");
-	xml_add_attribute_float("factor",mesh->import.factor);
 	xml_add_attribute_text("obj",mesh->import.obj_name);
+	xml_add_attribute_text("group",mesh->import.group_name);
 	xml_add_tagend(TRUE);
 
 		// vertexes
