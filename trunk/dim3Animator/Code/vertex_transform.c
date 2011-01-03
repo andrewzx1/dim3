@@ -25,6 +25,10 @@ and can be sold or given away.
  
 *********************************************************************/
 
+#ifdef D3_PCH
+	#include "dim3animator.h"
+#endif
+
 #include "glue.h"
 
 d3vct							cur_set_normal={0.0f,-1.0f,0.0f};

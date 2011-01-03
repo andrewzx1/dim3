@@ -25,6 +25,10 @@ and can be sold or given away.
  
 *********************************************************************/
 
+#ifdef D3_PCH
+	#include "dim3animator.h"
+#endif
+
 #include "glue.h"
 #include "interface.h"
 
@@ -33,7 +37,7 @@ model_draw_setup				draw_setup;
 file_path_setup_type			file_path_setup;
 animator_state_type				state;
 
-extern d3rect					model_box;
+d3rect							model_box;
 
 /* =======================================================
 

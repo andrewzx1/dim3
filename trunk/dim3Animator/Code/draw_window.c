@@ -25,18 +25,22 @@ and can be sold or given away.
  
 *********************************************************************/
 
-#include "glue.h"
+#ifdef D3_PCH
+	#include "dim3animator.h"
+#endif
 
-d3rect						model_box;
+#include "glue.h"
+#include "interface.h"
 
 extern int					tool_palette_pixel_sz,txt_palette_pixel_sz;
-
-extern AGLContext			ctx;
-extern WindowRef			wind;
+extern d3rect				model_box;
 
 extern model_type			model;
 extern model_draw_setup		draw_setup;
 extern animator_state_type	state;
+
+double						tran_mod_matrix[16],tran_proj_matrix[16],tran_vport[4];
+d3rect						tran_wbox;
 
 /* =======================================================
 
@@ -116,6 +120,49 @@ void draw_model_gl_setup(int z_offset)
 	glDisable(GL_ALPHA_TEST);
 }
 
+void draw_model_gl_setup_2D(void)
+{
+	d3rect				wbox;
+
+	os_get_window_box(&wbox);
+
+	glEnable(GL_SCISSOR_TEST);
+	glScissor(wbox.lx,0,(wbox.rx-wbox.lx),(wbox.by-wbox.ty));
+
+	glViewport(wbox.lx,0,(wbox.rx-wbox.lx),(wbox.by-wbox.ty));
+		
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho((GLdouble)wbox.lx,(GLdouble)wbox.rx,(GLdouble)wbox.by,(GLdouble)wbox.ty,-1.0,1.0);
+	
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+}
+
+/* =======================================================
+
+      3D to 2D Transform
+      
+======================================================= */
+
+void draw_model_2D_transform_setup(void)
+{
+	os_get_window_box(&tran_wbox);
+	
+	glGetDoublev(GL_MODELVIEW_MATRIX,tran_mod_matrix);
+	glGetDoublev(GL_PROJECTION_MATRIX,tran_proj_matrix);
+	glGetIntegerv(GL_VIEWPORT,(GLint*)tran_vport);
+}
+
+void draw_model_2D_transform(d3fpnt *pnt,d3pnt *tran_pnt)
+{
+	double			dx,dy,dz;
+	
+	gluProject(pnt->x,pnt->y,pnt->z,tran_mod_matrix,tran_proj_matrix,(GLint*)tran_vport,&dx,&dy,&dz);
+	tran_pnt->x=(int)dx;
+	tran_pnt->y=(tran_wbox.by-((int)dy))-model_box.ty;
+}
+
 /* =======================================================
 
       Draw Model Bone and Vertex Setup
@@ -181,7 +228,11 @@ void draw_model_wind(int mesh_idx)
 		draw_model_gl_setup(0);
 	}
 	
-	if (state.bone) draw_model_bones(state.cur_bone_idx);
+	if (state.bone) {
+		draw_model_bones(state.cur_bone_idx);
+		draw_model_bone_names(state.cur_bone_idx);
+		draw_model_gl_setup(0);			// names goes into 2D
+	}
 	
 	if ((state.texture) || (state.mesh)) {
 		draw_model_gl_setup(2);

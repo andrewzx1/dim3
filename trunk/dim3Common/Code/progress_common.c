@@ -34,6 +34,7 @@ and can be sold or given away.
 #endif
 
 #include "glue.h"
+#include "ui_common.h"
 #include "interface.h"
 
 int					progress_count,progress_pos;

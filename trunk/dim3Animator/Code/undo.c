@@ -40,7 +40,7 @@ model_bone_move_type			undo_bone_move;
 
 void undo_clear(void)
 {
-	DisableMenuItem(GetMenuRef(editmenu),1);
+	os_menu_enable_item(app_menu_edit,1,FALSE);
 }
 
 void undo_set_bone_move(int pose_idx,int bone_idx)
@@ -50,7 +50,7 @@ void undo_set_bone_move(int pose_idx,int bone_idx)
 	undo_bone_idx=bone_idx;
 	memmove(&undo_bone_move,&model.poses[pose_idx].bone_moves[bone_idx],sizeof(model_bone_move_type));
 
-	EnableMenuItem(GetMenuRef(editmenu),1);
+	os_menu_enable_item(app_menu_edit,1,TRUE);
 }
 
 void undo_run(void)

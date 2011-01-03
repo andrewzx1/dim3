@@ -25,6 +25,10 @@ and can be sold or given away.
  
 *********************************************************************/
 
+#ifdef D3_PCH
+	#include "dim3animator.h"
+#endif
+
 #include "glue.h"
 #include "interface.h"
 
@@ -36,7 +40,7 @@ extern animator_state_type		state;
 
 extern void draw_model_bones_get_handle_rot(int bone_idx,d3ang *rot);
 extern float draw_model_bones_drag_handle_offset(void);
-extern void draw_model_bones_drag_handle_calc(float x,float y,float z,d3vct *vct,d3ang *ang,float *hx,float *hy,float *hz);
+extern void draw_model_bones_drag_handle_calc(d3fpnt *bone_pnt,d3vct *vct,d3ang *ang,d3fpnt *hand_pnt);
 
 // supergumba -- this code repeats draw setups and only uses the
 //               view picker for trig hits, fix all this
@@ -47,10 +51,11 @@ extern void draw_model_bones_drag_handle_calc(float x,float y,float z,d3vct *vct
       
 ======================================================= */
 
-void model_sel_vertex(float *pv,d3rect *box,bool chg_sel,double *mod_matrix,double *proj_matrix,double *vport)
+void model_sel_vertex(float *pv,d3rect *box,bool chg_sel)
 {
-	int					n,x,y,nt;
-	double				sx,sy,sz,dx,dy,dz;
+	int					n,nt;
+	d3fpnt				pnt;
+	d3pnt				tran_pnt;
 	d3rect				wbox;
 	model_vertex_type	*vertex;
 	model_mesh_type		*mesh;
@@ -65,14 +70,14 @@ void model_sel_vertex(float *pv,d3rect *box,bool chg_sel,double *mod_matrix,doub
 	vertex=mesh->vertexes;
 
 	for (n=0;n!=nt;n++) {
-		sx=(int)*pv++;
-		sy=(int)*pv++;
-		sz=(int)*pv++;
-		gluProject(sx,sy,sz,mod_matrix,proj_matrix,(GLint*)vport,&dx,&dy,&dz);
-		x=(int)dx;
-		y=(wbox.by-((int)dy))-model_box.ty;
+	
+		pnt.x=*pv++;
+		pnt.y=*pv++;
+		pnt.z=*pv++;
 		
-		if ((x>=box->lx) && (x<=box->rx) && (y>=box->ty) && (y<=box->by)) {
+		draw_model_2D_transform(&pnt,&tran_pnt);
+		
+		if ((tran_pnt.x>=box->lx) && (tran_pnt.x<=box->rx) && (tran_pnt.y>=box->ty) && (tran_pnt.y<=box->by)) {
 			if (!vertex_check_hide_mask(state.cur_mesh_idx,n)) vertex_set_sel_mask(state.cur_mesh_idx,n,chg_sel);
 		}
 		
@@ -108,7 +113,7 @@ void select_model_wind_restore_sel_state(char *vertex_sel)
 	}
 }
 
-void select_model_wind_vertex(d3pnt *start_pnt,unsigned long modifiers,float *pv,double *mod_matrix,double *proj_matrix,double *vport)
+void select_model_wind_vertex(d3pnt *start_pnt,unsigned long modifiers,float *pv)
 {
 	char					*org_vertex_sel;
 	bool					chg_sel;
@@ -165,7 +170,7 @@ void select_model_wind_vertex(d3pnt *start_pnt,unsigned long modifiers,float *pv
 		}
 		
 		select_model_wind_restore_sel_state(org_vertex_sel);
-		model_sel_vertex(pv,&state.drag_sel_box,chg_sel,mod_matrix,proj_matrix,vport);
+		model_sel_vertex(pv,&state.drag_sel_box,chg_sel);
 		
 		main_wind_draw();
 	}
@@ -253,7 +258,6 @@ void select_model_wind(d3pnt *start_pnt,unsigned long modifiers)
 {
 	int				sz;
 	float			*pv;
-	double			mod_matrix[16],proj_matrix[16],vport[4];
 	
 		// no playing while selecting
 		
@@ -281,19 +285,17 @@ void select_model_wind(d3pnt *start_pnt,unsigned long modifiers)
 		// setup transforms
 		
 	draw_model_gl_setup(0);
-	glGetDoublev(GL_MODELVIEW_MATRIX,mod_matrix);
-	glGetDoublev(GL_PROJECTION_MATRIX,proj_matrix);
-	glGetIntegerv(GL_VIEWPORT,(GLint*)vport);
+	draw_model_2D_transform_setup();
 
 		// run the correct click
 		
 	if (state.select_mode==select_mode_polygon) {
 		if (!select_model_wind_polygon(start_pnt)) {
-			select_model_wind_vertex(start_pnt,modifiers,pv,mod_matrix,proj_matrix,vport);
+			select_model_wind_vertex(start_pnt,modifiers,pv);
 		}
 	}
 	else {
-		select_model_wind_vertex(start_pnt,modifiers,pv,mod_matrix,proj_matrix,vport);
+		select_model_wind_vertex(start_pnt,modifiers,pv);
 	}
 	
 		// free the saved vertexes
@@ -365,36 +367,22 @@ void change_model_wind(d3pnt *start_pnt,bool shift_on,bool rotate_on,bool size_o
       
 ======================================================= */
 
-bool draw_bone_model_wind_click_box(d3pnt *start_pnt,float x,float y,float z)
+bool draw_bone_model_wind_click_box(d3pnt *click_pnt,d3fpnt *pnt)
 {
-	int				ix,iy;
-	double			dx,dy,dz,mod_matrix[16],proj_matrix[16],vport[4];
-	d3rect			wbox;
+	d3pnt			tran_pnt;
 	
-	os_get_window_box(&wbox);
-	
-		// reverse the projection
-		
-	glGetDoublev(GL_MODELVIEW_MATRIX,mod_matrix);
-	glGetDoublev(GL_PROJECTION_MATRIX,proj_matrix);
-	glGetIntegerv(GL_VIEWPORT,(GLint*)vport);
-	
-	gluProject(x,y,z,mod_matrix,proj_matrix,(GLint*)vport,&dx,&dy,&dz);
-	ix=(int)dx;
-	iy=(wbox.by-((int)dy))-model_box.ty;
-
-		// check box
-		
-	return((start_pnt->x>=(ix-6)) && (start_pnt->x<=(ix+6)) && (start_pnt->y>=(iy-6)) && (start_pnt->y<=(iy+6)));
+	draw_model_2D_transform(pnt,&tran_pnt);
+	return((click_pnt->x>=(tran_pnt.x-6)) && (click_pnt->x<=(tran_pnt.x+6)) && (click_pnt->y>=(tran_pnt.y-6)) && (click_pnt->y<=(tran_pnt.y+6)));
 }
 
 bool drag_bone_model_wind(d3pnt *start_pnt)
 {
-	int						n,k,drag_handle;
-	float					x,y,z,hx,hy,hz,org_ang,org_mov,
+	int						n,k,x,drag_handle;
+	float					org_ang,org_mov,
 							bone_drag_handle_offset;
 	float					*ang,*mov;
 	d3pnt					pnt,last_pnt;
+	d3fpnt					bone_pnt,hand_pnt;
 	d3vct					vct;
 	d3ang					hang,rot;
 	model_draw_bone_type	*draw_bone;
@@ -411,6 +399,7 @@ bool drag_bone_model_wind(d3pnt *start_pnt)
 		// setup transforms
 		
 	draw_model_gl_setup(0);
+	draw_model_2D_transform_setup();
 	
 		// click on any drag handles?
 		
@@ -420,9 +409,9 @@ bool drag_bone_model_wind(d3pnt *start_pnt)
 	
 		draw_bone=&draw_setup.bones[state.cur_bone_idx];
 		
-		x=draw_bone->fpnt.x+draw_setup.move.x;
-		y=draw_bone->fpnt.y+draw_setup.move.y;
-		z=draw_bone->fpnt.z+draw_setup.move.z;
+		bone_pnt.x=draw_bone->fpnt.x+draw_setup.move.x;
+		bone_pnt.y=draw_bone->fpnt.y+draw_setup.move.y;
+		bone_pnt.z=draw_bone->fpnt.z+draw_setup.move.z;
 		
 		bone_drag_handle_offset=draw_model_bones_drag_handle_offset();
 
@@ -436,8 +425,8 @@ bool drag_bone_model_wind(d3pnt *start_pnt)
 		hang.x=0;
 		hang.y=rot.y;
 		hang.z=rot.z;
-		draw_model_bones_drag_handle_calc(x,y,z,&vct,&hang,&hx,&hy,&hz);
-		if (draw_bone_model_wind_click_box(start_pnt,hx,hy,hz)) drag_handle=drag_handle_x;
+		draw_model_bones_drag_handle_calc(&bone_pnt,&vct,&hang,&hand_pnt);
+		if (draw_bone_model_wind_click_box(start_pnt,&hand_pnt)) drag_handle=drag_handle_x;
 		
 			// y drag bone
 			
@@ -447,8 +436,8 @@ bool drag_bone_model_wind(d3pnt *start_pnt)
 		hang.x=rot.x;
 		hang.y=0;
 		hang.z=rot.z;
-		draw_model_bones_drag_handle_calc(x,y,z,&vct,&hang,&hx,&hy,&hz);
-		if (draw_bone_model_wind_click_box(start_pnt,hx,hy,hz)) drag_handle=drag_handle_y;
+		draw_model_bones_drag_handle_calc(&bone_pnt,&vct,&hang,&hand_pnt);
+		if (draw_bone_model_wind_click_box(start_pnt,&hand_pnt)) drag_handle=drag_handle_y;
 		
 			// z drag bone
 			
@@ -458,8 +447,8 @@ bool drag_bone_model_wind(d3pnt *start_pnt)
 		hang.x=rot.x;
 		hang.y=rot.y;
 		hang.z=0;
-		draw_model_bones_drag_handle_calc(x,y,z,&vct,&hang,&hx,&hy,&hz);
-		if (draw_bone_model_wind_click_box(start_pnt,hx,hy,hz)) drag_handle=drag_handle_z;
+		draw_model_bones_drag_handle_calc(&bone_pnt,&vct,&hang,&hand_pnt);
+		if (draw_bone_model_wind_click_box(start_pnt,&hand_pnt)) drag_handle=drag_handle_z;
 	}
 	
 		// click on any bones?
@@ -470,11 +459,11 @@ bool drag_bone_model_wind(d3pnt *start_pnt)
 		draw_bone=draw_setup.bones;
 			
 		for (n=0;n!=model.nbone;n++) {
-			x=draw_bone->fpnt.x+draw_setup.move.x;
-			y=draw_bone->fpnt.y+draw_setup.move.y;
-			z=draw_bone->fpnt.z+draw_setup.move.z;
+			bone_pnt.x=draw_bone->fpnt.x+draw_setup.move.x;
+			bone_pnt.y=draw_bone->fpnt.y+draw_setup.move.y;
+			bone_pnt.z=draw_bone->fpnt.z+draw_setup.move.z;
 			
-			if (draw_bone_model_wind_click_box(start_pnt,x,y,z)) {
+			if (draw_bone_model_wind_click_box(start_pnt,&bone_pnt)) {
 				k=n;
 				break;
 			}
@@ -575,6 +564,7 @@ bool drag_hit_box_handle_model_wind(d3pnt *start_pnt)
 							kx,ky,kz,x[8],y[8],z[8];
 	bool					model_hit_box_drag_on;
 	d3pnt					org_pnt,org_cnt,last_pnt,pnt;
+	d3fpnt					hand_pnt;
 	model_box_type			*box;
 	
 	main_wind_play(FALSE,FALSE);
@@ -611,7 +601,10 @@ bool drag_hit_box_handle_model_wind(d3pnt *start_pnt)
 	
 		for (k=0;k!=8;k++) {
 			model_get_point_position(&draw_setup,&x[k],&y[k],&z[k]);
-			if (draw_bone_model_wind_click_box(start_pnt,x[k],y[k],z[k])) {
+			hand_pnt.x=x[k];
+			hand_pnt.y=y[k];
+			hand_pnt.z=z[k];
+			if (draw_bone_model_wind_click_box(start_pnt,&hand_pnt)) {
 				box_idx=n;
 				pt_idx=k;
 				break;

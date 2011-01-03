@@ -136,12 +136,12 @@ bool read_single_mesh_v3(map_type *map,int mesh_idx,int mesh_tag)
 		
 	tag=xml_findfirstchild("Import",mesh_tag);
 	if (tag!=-1) {
-		mesh->import.factor=xml_get_attribute_float_default(tag,"factor",0.0f);
 		xml_get_attribute_text(tag,"obj",mesh->import.obj_name,name_str_len);
+		xml_get_attribute_text(tag,"group",mesh->import.group_name,name_str_len);
 	}
 	else {
-		mesh->import.factor=0.0f;
 		mesh->import.obj_name[0]=0x0;
+		mesh->import.group_name[0]=0x0;
 	}
 
 		// vertexes

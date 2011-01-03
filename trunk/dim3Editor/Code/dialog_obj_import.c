@@ -36,23 +36,20 @@ and can be sold or given away.
 
 extern map_type				map;
 
-#define kMeshScaleAxis							FOUR_CHAR_CODE('axis')
-#define kMeshScaleScale							FOUR_CHAR_CODE('scle')
+#define kOBJImportType							FOUR_CHAR_CODE('impt')
+#define kOBJImportAxis							FOUR_CHAR_CODE('axis')
+#define kOBJImportScale							FOUR_CHAR_CODE('scle')
 
-#define kMeshScaleButtonScale					FOUR_CHAR_CODE('scal')
-#define kMeshScaleButtonReplace					FOUR_CHAR_CODE('repl')
-#define kMeshScaleButtonReplaceAll				FOUR_CHAR_CODE('repa')
-
-int							dialog_mesh_scale_mode;
-WindowRef					dialog_mesh_scale_wind;
+bool						dialog_obj_import_cancel;
+WindowRef					dialog_obj_import_wind;
 
 /* =======================================================
 
-      Mesh Scale Event Handlers
+      OBJ Import Event Handlers
       
 ======================================================= */
 
-static pascal OSStatus dialog_mesh_scale_event_proc(EventHandlerCallRef handler,EventRef event,void *data)
+static pascal OSStatus dialog_obj_import_event_proc(EventHandlerCallRef handler,EventRef event,void *data)
 {
 	HICommand		cmd;
 	
@@ -63,24 +60,13 @@ static pascal OSStatus dialog_mesh_scale_event_proc(EventHandlerCallRef handler,
 			
 			switch (cmd.commandID) {
 				
-				case kMeshScaleButtonScale:
-					dialog_mesh_scale_mode=import_mode_scale;
-					QuitAppModalLoopForWindow(dialog_mesh_scale_wind);
-					return(noErr);
-					
-				case kMeshScaleButtonReplace:
-					dialog_mesh_scale_mode=import_mode_replace;
-					QuitAppModalLoopForWindow(dialog_mesh_scale_wind);
-					return(noErr);
-					
-				case kMeshScaleButtonReplaceAll:
-					dialog_mesh_scale_mode=import_mode_replace_all;
-					QuitAppModalLoopForWindow(dialog_mesh_scale_wind);
+				case kHICommandOK:
+					QuitAppModalLoopForWindow(dialog_obj_import_wind);
 					return(noErr);
 					
 				case kHICommandCancel:
-					dialog_mesh_scale_mode=-1;
-					QuitAppModalLoopForWindow(dialog_mesh_scale_wind);
+					dialog_obj_import_cancel=TRUE;
+					QuitAppModalLoopForWindow(dialog_obj_import_wind);
 					return(noErr);					
 					
 			}
@@ -94,51 +80,56 @@ static pascal OSStatus dialog_mesh_scale_event_proc(EventHandlerCallRef handler,
 
 /* =======================================================
 
-      Run Mesh Scale Dialog
+      Run OBJ Import Dialog
       
 ======================================================= */
 
-int dialog_mesh_scale_run(bool replace_ok,int *scale_axis,int *scale_unit)
+int dialog_obj_import_run(int *scale_axis,int *scale_unit)
 {
+	int						import_mode;
 	EventHandlerUPP			event_upp;
 	EventTypeSpec			event_list[]={{kEventClassCommand,kEventProcessCommand}};
 	
 		// open the dialog
 		
-	dialog_open(&dialog_mesh_scale_wind,"MeshScale");
+	dialog_open(&dialog_obj_import_wind,"OBJImport");
 
 		// set controls
 		
-	dialog_set_combo(dialog_mesh_scale_wind,kMeshScaleAxis,0,0);
-	dialog_set_int(dialog_mesh_scale_wind,kMeshScaleScale,0,(20*map_enlarge));
-	dialog_set_focus(dialog_mesh_scale_wind,kMeshScaleScale,0);
-	
-	dialog_enable(dialog_mesh_scale_wind,kMeshScaleButtonReplace,0,replace_ok);
+	dialog_set_combo(dialog_obj_import_wind,kOBJImportType,0,0);
+
+	dialog_set_combo(dialog_obj_import_wind,kOBJImportAxis,0,0);
+	dialog_set_int(dialog_obj_import_wind,kOBJImportScale,0,(20*map_enlarge));
+	dialog_set_focus(dialog_obj_import_wind,kOBJImportScale,0);
 	
 		// show window
 	
-	ShowWindow(dialog_mesh_scale_wind);
+	ShowWindow(dialog_obj_import_wind);
 	
 		// install event handler
 		
-	event_upp=NewEventHandlerUPP(dialog_mesh_scale_event_proc);
-	InstallWindowEventHandler(dialog_mesh_scale_wind,event_upp,GetEventTypeCount(event_list),event_list,NULL,NULL);
+	event_upp=NewEventHandlerUPP(dialog_obj_import_event_proc);
+	InstallWindowEventHandler(dialog_obj_import_wind,event_upp,GetEventTypeCount(event_list),event_list,NULL,NULL);
 	
 		// modal window
 		
-	dialog_mesh_scale_mode=import_mode_scale;
+	dialog_obj_import_cancel=FALSE;
 	
-	RunAppModalLoopForWindow(dialog_mesh_scale_wind);
+	RunAppModalLoopForWindow(dialog_obj_import_wind);
 	
 		// dialog to data
 		
-	*scale_axis=dialog_get_combo(dialog_mesh_scale_wind,kMeshScaleAxis,0);
-	*scale_unit=dialog_get_int(dialog_mesh_scale_wind,kMeshScaleScale,0);
+	import_mode=dialog_get_combo(dialog_obj_import_wind,kOBJImportType,0);
+	
+	*scale_axis=dialog_get_combo(dialog_obj_import_wind,kOBJImportAxis,0);
+	*scale_unit=dialog_get_int(dialog_obj_import_wind,kOBJImportScale,0);
 	
 		// close window
 		
-	DisposeWindow(dialog_mesh_scale_wind);
+	DisposeWindow(dialog_obj_import_wind);
 	
-	return(dialog_mesh_scale_mode);
+	if (dialog_obj_import_cancel) return(-1);
+	
+	return(import_mode);
 }
 

@@ -86,8 +86,8 @@ int map_mesh_add(map_type *map)
 	
 	mesh->rot_off.x=mesh->rot_off.y=mesh->rot_off.z=0;
 	
-	mesh->import.factor=0.0f;
 	mesh->import.obj_name[0]=0x0;
+	mesh->import.group_name[0]=0x0;
 
 	mesh->msg.entry_id=0;
 	mesh->msg.exit_id=0;

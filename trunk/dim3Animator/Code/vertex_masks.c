@@ -25,6 +25,10 @@ and can be sold or given away.
  
 *********************************************************************/
 
+#ifdef D3_PCH
+	#include "dim3animator.h"
+#endif
+
 #include "glue.h"
 
 #define animator_max_vertex					10240

@@ -25,11 +25,19 @@ and can be sold or given away.
  
 *********************************************************************/
 
+#ifdef D3_PCH
+	#include "dim3animator.h"
+#endif
+
 #include "glue.h"
+#include "ui_common.h"
+#include "interface.h"
 
 extern model_type				model;
 extern model_draw_setup			draw_setup;
 extern animator_state_type		state;
+
+extern d3rect					model_box;
 
 /* =======================================================
 
@@ -90,7 +98,7 @@ float draw_model_bones_drag_handle_offset(void)
 	return(f);
 }
 
-void draw_model_bones_drag_handle_calc(float x,float y,float z,d3vct *vct,d3ang *ang,float *hx,float *hy,float *hz)
+void draw_model_bones_drag_handle_calc(d3fpnt *bone_pnt,d3vct *vct,d3ang *ang,d3fpnt *hand_pnt)
 {
 	matrix_type		mat;
 	
@@ -111,18 +119,18 @@ void draw_model_bones_drag_handle_calc(float x,float y,float z,d3vct *vct,d3ang 
 		matrix_vertex_multiply(&mat,&vct->x,&vct->y,&vct->z);
 	}
 	
-	*hx=x-vct->x;
-	*hy=y-vct->y;
-	*hz=z-vct->z;
+	hand_pnt->x=bone_pnt->x-vct->x;
+	hand_pnt->y=bone_pnt->y-vct->y;
+	hand_pnt->z=bone_pnt->z-vct->z;
 }
 
-void draw_model_bones_drag_handle(float x,float y,float z,d3vct *vct,d3ang *ang,d3col *col)
+void draw_model_bones_drag_handle(d3fpnt *pnt,d3vct *vct,d3ang *ang,d3col *col)
 {
-	float			x2,y2,z2;
+	d3fpnt			hand_pnt;
 	
 		// handle coordinates
 		
-	draw_model_bones_drag_handle_calc(x,y,z,vct,ang,&x2,&y2,&z2);
+	draw_model_bones_drag_handle_calc(pnt,vct,ang,&hand_pnt);
 		
 		// line
 		
@@ -131,8 +139,8 @@ void draw_model_bones_drag_handle(float x,float y,float z,d3vct *vct,d3ang *ang,
 	glLineWidth(2);
 	
 	glBegin(GL_LINES);
-	glVertex3f(x,y,z);
-	glVertex3f(x2,y2,z2);
+	glVertex3f(pnt->x,pnt->y,pnt->z);
+	glVertex3f(hand_pnt.x,hand_pnt.y,hand_pnt.z);
 	glEnd();
 	
 	glLineWidth(1);
@@ -140,7 +148,7 @@ void draw_model_bones_drag_handle(float x,float y,float z,d3vct *vct,d3ang *ang,
 	glPointSize(10);
 	
 	glBegin(GL_POINTS);
-	glVertex3f(x2,y2,z2);
+	glVertex3f(hand_pnt.x,hand_pnt.y,hand_pnt.z);
 	glEnd();
 	
 	glPointSize(1);
@@ -193,7 +201,8 @@ void draw_model_bones(int sel_bone_idx)
 {
 	int						n,nbone,parent_idx;
 	float					x_move,z_move,y_move,
-							x,z,y,bone_drag_handle_offset;
+							bone_drag_handle_offset;
+	d3fpnt					bone_pnt;
 	d3vct					vct;
 	d3ang					ang,rot;
 	d3col					col;
@@ -211,7 +220,7 @@ void draw_model_bones(int sel_bone_idx)
 	
         // connections
         
-	glColor4f(0.2,0.2,0.2,1);
+	glColor4f(0.2f,0.2f,0.2f,1.0f);
 	glLineWidth(2);
 	
 	glBegin(GL_LINES);
@@ -223,17 +232,17 @@ void draw_model_bones(int sel_bone_idx)
         if (parent_idx!=-1) {
             parent_bone=&draw_setup.bones[parent_idx];
 			
-			x=draw_bone->fpnt.x+x_move;
-			y=draw_bone->fpnt.y+y_move;
-			z=draw_bone->fpnt.z+z_move;
+			bone_pnt.x=draw_bone->fpnt.x+x_move;
+			bone_pnt.y=draw_bone->fpnt.y+y_move;
+			bone_pnt.z=draw_bone->fpnt.z+z_move;
 
-            glVertex3f(x,y,z);
+            glVertex3f(bone_pnt.x,bone_pnt.y,bone_pnt.z);
 			
-			x=parent_bone->fpnt.x+x_move;
-			y=parent_bone->fpnt.y-y_move;
-			z=parent_bone->fpnt.z-z_move;
+			bone_pnt.x=parent_bone->fpnt.x+x_move;
+			bone_pnt.y=parent_bone->fpnt.y-y_move;
+			bone_pnt.z=parent_bone->fpnt.z-z_move;
 			
-            glVertex3f(x,y,z);
+            glVertex3f(bone_pnt.x,bone_pnt.y,bone_pnt.z);
         }
 		
 		draw_bone++;
@@ -253,22 +262,22 @@ void draw_model_bones(int sel_bone_idx)
 	
 			// bone position
 			
-		x=draw_bone->fpnt.x+x_move;
-		y=draw_bone->fpnt.y+y_move;
-		z=draw_bone->fpnt.z+z_move;
+		bone_pnt.x=draw_bone->fpnt.x+x_move;
+		bone_pnt.y=draw_bone->fpnt.y+y_move;
+		bone_pnt.z=draw_bone->fpnt.z+z_move;
 	
 			// selected or normal
 	
 		if (sel_bone_idx==n) {
 
-			glPointSize(10);
+			glPointSize(10.0f);
 			
 				// draw selected bone
 				
-			glColor4f(1,0,1,1);
+			glColor4f(1.0f,0.0f,1.0f,1.0f);
 			
 			glBegin(GL_POINTS);
-			glVertex3f(x,y,z);
+			glVertex3f(bone_pnt.x,bone_pnt.y,bone_pnt.z);
 			glEnd();
 		
 				// draw drag handles
@@ -277,48 +286,48 @@ void draw_model_bones(int sel_bone_idx)
 				draw_model_bones_get_handle_rot(n,&rot);
 					
 				vct.x=bone_drag_handle_offset;
-				vct.y=0;
-				vct.z=0;
-				ang.x=0;
+				vct.y=0.0f;
+				vct.z=0.0f;
+				ang.x=0.0f;
 				ang.y=rot.y;
 				ang.z=rot.z;
-				col.r=1;
-				col.g=0;
-				col.b=0;
-				draw_model_bones_drag_handle(x,y,z,&vct,&ang,&col);
+				col.r=1.0f;
+				col.g=0.0f;
+				col.b=0.0f;
+				draw_model_bones_drag_handle(&bone_pnt,&vct,&ang,&col);
 				
-				vct.x=0;
+				vct.x=0.0f;
 				vct.y=bone_drag_handle_offset;
-				vct.z=0;
+				vct.z=0.0f;
 				ang.x=rot.x;
-				ang.y=0;
+				ang.y=0.0f;
 				ang.z=rot.z;
-				col.r=0;
-				col.g=1;
-				col.b=0;
-				draw_model_bones_drag_handle(x,y,z,&vct,&ang,&col);
+				col.r=0.0f;
+				col.g=1.0f;
+				col.b=0.0f;
+				draw_model_bones_drag_handle(&bone_pnt,&vct,&ang,&col);
 				
-				vct.x=0;
-				vct.y=0;
+				vct.x=0.0f;
+				vct.y=0.0f;
 				vct.z=bone_drag_handle_offset;
 				ang.x=rot.x;
 				ang.y=rot.y;
-				ang.z=0;
-				col.r=0;
-				col.g=0;
-				col.b=1;
-				draw_model_bones_drag_handle(x,y,z,&vct,&ang,&col);
+				ang.z=0.0f;
+				col.r=0.0f;
+				col.g=0.0f;
+				col.b=1.0f;
+				draw_model_bones_drag_handle(&bone_pnt,&vct,&ang,&col);
 			}
 		}
 		else {
 		
 				// draw regular bone
 				
-			glPointSize(8);
-			glColor4f(1,0,0,1);
+			glPointSize(8.0f);
+			glColor4f(1.0f,0.0f,0.0f,1.0f);
 			
 			glBegin(GL_POINTS);
-			glVertex3f(x,y,z);
+			glVertex3f(bone_pnt.x,bone_pnt.y,bone_pnt.z);
 			glEnd();
 		}
 		
@@ -326,6 +335,61 @@ void draw_model_bones(int sel_bone_idx)
 	}
 	
 	glPointSize(1);
+}
+
+void draw_model_bone_names(int sel_bone_idx)
+{
+	int						n,nbone;
+	float					x_move,z_move,y_move;
+	d3pnt					tran_pnt;
+	d3fpnt					pnt;
+	d3col					col;
+	model_bone_type			*bone;
+	model_draw_bone_type	*draw_bone;
+	
+	glDisable(GL_DEPTH_TEST);
+	
+		// get translation matrix
+				
+	draw_model_2D_transform_setup();
+	draw_model_gl_setup_2D();
+	
+		// draw the bone names
+		
+	col.r=col.b=1.0f;
+	col.g=0.0f;
+		
+	nbone=model.nbone;
+    
+    x_move=(float)draw_setup.move.x;
+    z_move=(float)draw_setup.move.z;
+    y_move=(float)draw_setup.move.y;
+		
+	bone=model.bones;
+	draw_bone=draw_setup.bones;
+	
+	for (n=0;n!=nbone;n++) {
+	
+			// bone position
+			
+		pnt.x=draw_bone->fpnt.x+x_move;
+		pnt.y=draw_bone->fpnt.y+y_move;
+		pnt.z=draw_bone->fpnt.z+z_move;
+		
+		draw_model_2D_transform(&pnt,&tran_pnt);
+		
+			// text
+			
+		if (n!=sel_bone_idx) {
+			text_draw_center(tran_pnt.x,(tran_pnt.y+50),12.0f,NULL,bone->name);
+		}
+		else {
+			text_draw_center(tran_pnt.x,(tran_pnt.y+50),12.0f,&col,bone->name);
+		}
+		
+		bone++;
+		draw_bone++;
+	}
 	
 	glEnable(GL_DEPTH_TEST);
 }

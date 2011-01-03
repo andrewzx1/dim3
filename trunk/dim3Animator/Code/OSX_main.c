@@ -163,7 +163,7 @@ OSStatus main_wind_event_handler(EventHandlerCallRef eventhandler,EventRef event
 					if (!menu_save_changes_dialog()) return(noErr);
 					close_model_xml();
 					main_wind_play(FALSE,FALSE);
-					menu_fix_enable();
+					menu_update();
 					return(noErr);
 					
                 case kEventWindowCursorChange:

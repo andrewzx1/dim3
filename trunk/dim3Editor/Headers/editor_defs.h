@@ -196,7 +196,7 @@ and can be sold or given away.
 // import modes
 //
 
-#define import_mode_scale						0
+#define import_mode_new							0
 #define import_mode_replace						1
 #define import_mode_replace_all					2
 

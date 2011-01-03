@@ -16,9 +16,9 @@
 	};
 	2674501B0E513E1900812D9D /* file_map_read_v3.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1097, 6968}}";
-			sepNavSelRange = "{5120, 0}";
-			sepNavVisRange = "{4273, 1587}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 7033}}";
+			sepNavSelRange = "{5013, 0}";
+			sepNavVisRange = "{4273, 1547}";
 			sepNavWindowFrame = "{{227, 119}, {1041, 747}}";
 		};
 	};
@@ -40,9 +40,9 @@
 	};
 	2683177A0E4A8B1900BBCDCA /* map_mesh.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 10725}}";
-			sepNavSelRange = "{6402, 0}";
-			sepNavVisRange = "{5357, 1397}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 10751}}";
+			sepNavSelRange = "{2294, 0}";
+			sepNavVisRange = "{1784, 1230}";
 			sepNavWindowFrame = "{{445, 193}, {1041, 747}}";
 		};
 	};
@@ -162,9 +162,9 @@
 	};
 	F5A8B1B005229DA4008D4331 /* file_map_write.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1244, 12337}}";
-			sepNavSelRange = "{19105, 0}";
-			sepNavVisRange = "{18108, 1447}";
+			sepNavIntBoundsRect = "{{0, 0}, {1244, 12220}}";
+			sepNavSelRange = "{19219, 0}";
+			sepNavVisRange = "{18109, 1479}";
 			sepNavWindowFrame = "{{487, 231}, {1041, 747}}";
 		};
 	};
@@ -247,8 +247,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 315529383;
-			PBXWorkspaceStateSaveDate = 315529383;
+			PBXPerProjectTemplateStateSaveDate = 315715318;
+			PBXWorkspaceStateSaveDate = 315715318;
 		};
 		sourceControlManager = 260AFEBF0D404E9300F6C42F /* Source Control */;
 		userBuildSettings = {
@@ -264,9 +264,9 @@
 	};
 	F5C53548051C085800968AF1 /* maputility.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 11076}}";
-			sepNavSelRange = "{7947, 0}";
-			sepNavVisRange = "{7237, 1381}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 11063}}";
+			sepNavSelRange = "{7889, 0}";
+			sepNavVisRange = "{7237, 1395}";
 			sepNavWindowFrame = "{{304, 244}, {1041, 691}}";
 		};
 	};

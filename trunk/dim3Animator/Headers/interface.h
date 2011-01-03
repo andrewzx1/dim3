@@ -49,7 +49,7 @@ extern void click_model_wind(d3pnt *pnt,unsigned long modifiers);
 // menus
 //
 
-extern void menu_fix_enable(void);
+extern void menu_update(void);
 extern bool menu_save_changes_dialog(void);
 extern bool menu_event_run(int cmd);
 
@@ -131,6 +131,7 @@ extern void hilite_vertex_rows(void);
 extern void draw_model(int mesh_idx);
 extern void draw_model_mesh(int mesh_idx);
 extern void draw_model_bones(int sel_bone_idx);
+extern void draw_model_bone_names(int sel_bone_idx);
 
 extern void draw_model_selected_vertexes(int mesh_idx);
 extern void draw_model_selected_trig(int mesh_idx);
@@ -141,6 +142,11 @@ extern void draw_model_normals_vertexes(int mesh_idx);
 extern void draw_model_normals_trig(int mesh_idx);
 
 extern void draw_model_gl_setup(int z_offset);
+extern void draw_model_gl_setup_2D(void);
+extern void draw_model_2D_transform_setup(void);
+extern void draw_model_2D_transform(d3fpnt *pnt,d3pnt *tran_pnt);
+
+
 extern void draw_model_setup_pose(int pose_idx);
 extern void draw_model_wind_pose(int mesh_idx,int pose_idx);
 
