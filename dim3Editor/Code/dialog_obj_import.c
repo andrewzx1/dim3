@@ -99,7 +99,7 @@ int dialog_obj_import_run(int *scale_axis,int *scale_unit)
 	dialog_set_combo(dialog_obj_import_wind,kOBJImportType,0,0);
 
 	dialog_set_combo(dialog_obj_import_wind,kOBJImportAxis,0,0);
-	dialog_set_int(dialog_obj_import_wind,kOBJImportScale,0,(20*map_enlarge));
+	dialog_set_int(dialog_obj_import_wind,kOBJImportScale,0,5000);
 	dialog_set_focus(dialog_obj_import_wind,kOBJImportScale,0);
 	
 		// show window

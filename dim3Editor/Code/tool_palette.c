@@ -330,6 +330,7 @@ void tool_click(int tool_idx)
 	}
 	
 	menu_fix_enable();
+	texture_palette_reset();
 	
 	main_wind_draw();
 }
