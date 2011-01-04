@@ -35,6 +35,7 @@
 		2681880310A3A28A000B2CD8 /* light_maps.c in Sources */ = {isa = PBXBuildFile; fileRef = 2681880210A3A28A000B2CD8 /* light_maps.c */; };
 		26899FA90F1EBF25007860EB /* editor_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 26899FA80F1EBF25007860EB /* editor_defs.h */; };
 		268BC8A60F64C8E400E900C2 /* dialog_preference.c in Sources */ = {isa = PBXBuildFile; fileRef = 268BC8A50F64C8E400E900C2 /* dialog_preference.c */; };
+		26937AE112D2D5C3001DEEB8 /* import_obj.c in Sources */ = {isa = PBXBuildFile; fileRef = 26937AE012D2D5C3001DEEB8 /* import_obj.c */; };
 		269636E312A1E8E000007B82 /* dialog_property_list.c in Sources */ = {isa = PBXBuildFile; fileRef = 269636E212A1E8E000007B82 /* dialog_property_list.c */; };
 		26A0009D12975A130006F64F /* property_palette_light.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A0009B12975A130006F64F /* property_palette_light.c */; };
 		26A0009E12975A130006F64F /* property_palette_sound.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A0009C12975A130006F64F /* property_palette_sound.c */; };
@@ -341,6 +342,7 @@
 		2681880210A3A28A000B2CD8 /* light_maps.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = light_maps.c; path = Code/light_maps.c; sourceTree = "<group>"; };
 		26899FA80F1EBF25007860EB /* editor_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = editor_defs.h; path = Headers/editor_defs.h; sourceTree = "<group>"; };
 		268BC8A50F64C8E400E900C2 /* dialog_preference.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_preference.c; path = Code/dialog_preference.c; sourceTree = "<group>"; };
+		26937AE012D2D5C3001DEEB8 /* import_obj.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = import_obj.c; path = Code/import_obj.c; sourceTree = "<group>"; };
 		269636E212A1E8E000007B82 /* dialog_property_list.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_property_list.c; path = Code/dialog_property_list.c; sourceTree = "<group>"; };
 		26A0009B12975A130006F64F /* property_palette_light.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_light.c; path = Code/property_palette_light.c; sourceTree = "<group>"; };
 		26A0009C12975A130006F64F /* property_palette_sound.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_sound.c; path = Code/property_palette_sound.c; sourceTree = "<group>"; };
@@ -685,6 +687,7 @@
 				F54797150107EA3C01000001 /* pieces.c */,
 				F54583E3094F868300CBE89A /* pieces_create.c */,
 				26AFB4480D95E0E60004805A /* pieces_mesh.c */,
+				26937AE012D2D5C3001DEEB8 /* import_obj.c */,
 				F5595F7D0918717300B60FAD /* groups.c */,
 				0123D86700C0AFD57F000001 /* nodes.c */,
 				2681880210A3A28A000B2CD8 /* light_maps.c */,
@@ -892,6 +895,7 @@
 				26EAA3A012CBF01400CF93AF /* property_palette_texture.c in Sources */,
 				262C397012D0268500A94FEE /* list_palette_common.c in Sources */,
 				261CEB8112D156D800D1D8BF /* dialog_obj_import.c in Sources */,
+				26937AE112D2D5C3001DEEB8 /* import_obj.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -912,7 +916,8 @@
 		F5DB0C540856A994005A7CB7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = i386;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1)";
+				ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1 = "ppc i386";
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
 				DEPLOYMENT_POSTPROCESSING = YES;
