@@ -2,6 +2,7 @@
 
 #include "glue.h"
 #include "interface.h"
+#include "ui_common.h"
 
 #include "resource.h"
 

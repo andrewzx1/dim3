@@ -2,7 +2,7 @@
 
 Module: dim3 Editor
 Author: Brian Barnes
- Usage: Mesh Scale Dialog
+ Usage: OBJ Import Dialog
 
 ***************************** License ********************************
 
@@ -34,8 +34,7 @@ extern HWND						wnd;
 
 extern map_type					map;
 
-int								dialog_mesh_scale_axis,dialog_mesh_scale_unit;
-bool							dialog_mesh_scale_replace;
+int								dialog_obj_import_type,dialog_obj_import_axis,dialog_obj_import_unit;
 
 /* =======================================================
 
@@ -43,43 +42,47 @@ bool							dialog_mesh_scale_replace;
       
 ======================================================= */
 
-void dialog_mesh_scale_set(HWND diag)
+void dialog_obj_import_set(HWND diag)
 {
-	win32_dialog_combo_add(diag,IDC_MESH_SCALE_AXIS,"X");
-	win32_dialog_combo_add(diag,IDC_MESH_SCALE_AXIS,"Y");
-	win32_dialog_combo_add(diag,IDC_MESH_SCALE_AXIS,"Z");
-	win32_dialog_combo_set_value(diag,IDC_MESH_SCALE_AXIS,0);
-	win32_dialog_set_int(diag,IDC_MESH_SCALE_UNITS,(20*map_enlarge));
+	win32_dialog_combo_add(diag,IDC_OBJ_IMPORT_TYPE,"Import New Mesh(es)");
+	win32_dialog_combo_add(diag,IDC_OBJ_IMPORT_TYPE,"Replace Selected Mesh with Imported Mesh(es)");
+	win32_dialog_combo_add(diag,IDC_OBJ_IMPORT_TYPE,"Replace All Previously Imported Mesh(es) with New Copy");
+	win32_dialog_combo_set_value(diag,IDC_OBJ_IMPORT_TYPE,0);
+
+	win32_dialog_combo_add(diag,IDC_OBJ_IMPORT_AXIS,"X");
+	win32_dialog_combo_add(diag,IDC_OBJ_IMPORT_AXIS,"Y");
+	win32_dialog_combo_add(diag,IDC_OBJ_IMPORT_AXIS,"Z");
+	win32_dialog_combo_set_value(diag,IDC_OBJ_IMPORT_AXIS,0);
+
+	win32_dialog_set_int(diag,IDC_OBJ_IMPORT_UNITS,(20*map_enlarge));
 }
 
-void dialog_mesh_scale_get(HWND diag)
+void dialog_obj_import_get(HWND diag)
 {
-	dialog_mesh_scale_axis=win32_dialog_combo_get_value(diag,IDC_MESH_SCALE_AXIS);
-	dialog_mesh_scale_unit=win32_dialog_get_int(diag,IDC_MESH_SCALE_UNITS);
+	dialog_obj_import_type=win32_dialog_combo_get_value(diag,IDC_OBJ_IMPORT_TYPE);
+	dialog_obj_import_axis=win32_dialog_combo_get_value(diag,IDC_OBJ_IMPORT_AXIS);
+	dialog_obj_import_unit=win32_dialog_get_int(diag,IDC_OBJ_IMPORT_UNITS);
 }
 
-LRESULT CALLBACK dialog_mesh_scale_proc(HWND diag,UINT msg,WPARAM wparam,LPARAM lparam)
+LRESULT CALLBACK dialog_obj_import_proc(HWND diag,UINT msg,WPARAM wparam,LPARAM lparam)
 {
 	switch (msg) {
 
 		case WM_INITDIALOG:
-			dialog_mesh_scale_set(diag);
+			dialog_obj_import_set(diag);
 			return(TRUE);
 
 		case WM_COMMAND:
 			
 			switch (LOWORD(wparam)) {
 
-				case ID_MESH_SCALE_SCALE:
-					dialog_mesh_scale_replace=FALSE;
-					dialog_mesh_scale_get(diag);
+				case ID_OBJ_IMPORT_OK:
+					dialog_obj_import_get(diag);
 					EndDialog(diag,0);
 					return(TRUE);
 
-				case ID_MESH_SCALE_REPLACE:
-					dialog_mesh_scale_replace=TRUE;
-					dialog_mesh_scale_get(diag);
-					EndDialog(diag,0);
+				case ID_OBJ_IMPORT_CANCEL:
+					EndDialog(diag,-1);
 					return(TRUE);
 
 			}
@@ -97,15 +100,15 @@ LRESULT CALLBACK dialog_mesh_scale_proc(HWND diag,UINT msg,WPARAM wparam,LPARAM 
       
 ======================================================= */
 
-bool dialog_mesh_scale_run(bool replace_ok,int *scale_axis,int *scale_unit)
+int dialog_obj_import_run(int *scale_axis,int *scale_unit)
 {
-	dialog_mesh_scale_replace=FALSE;
+	dialog_obj_import_type=0;
 
-	DialogBox(hinst,MAKEINTRESOURCE(IDD_MESH_SCALE),wnd,dialog_mesh_scale_proc);
+	if (DialogBox(hinst,MAKEINTRESOURCE(IDD_OBJ_IMPORT),wnd,dialog_obj_import_proc)!=0) return(-1);
 
-	*scale_axis=dialog_mesh_scale_axis;
-	*scale_unit=dialog_mesh_scale_unit;
+	*scale_axis=dialog_obj_import_axis;
+	*scale_unit=dialog_obj_import_unit;
 
-	return(dialog_mesh_scale_replace);
+	return(dialog_obj_import_type);
 }
 

@@ -170,20 +170,23 @@ BEGIN
     CONTROL         "",IDC_FILE_OPEN_TREE,"SysTreeView32",TVS_HASBUTTONS | TVS_HASLINES | WS_BORDER | WS_TABSTOP,7,7,322,201
 END
 
-IDD_MESH_SCALE DIALOGEX 100, 100, 266, 94
+IDD_OBJ_IMPORT DIALOGEX 100, 100, 376, 102
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION
-CAPTION "Mesh Scale"
+CAPTION "OBJ Import"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    DEFPUSHBUTTON   "Scale",ID_MESH_SCALE_SCALE,209,73,50,14
-    PUSHBUTTON      "Replace",ID_MESH_SCALE_REPLACE,7,73,50,14
-    LTEXT           "Click Scale to import this OBJ to the specific dim3 unit size on the specific axis.  Click Replace to replace the currently selected mesh with this OBJ using the scale the original mesh was loaded in on.",
-                    IDC_STATIC,7,7,252,27
-    COMBOBOX        IDC_MESH_SCALE_AXIS,42,45,48,130,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "Scale",IDC_STATIC,19,47,21,8
-    LTEXT           "to",IDC_STATIC,97,47,12,8
-    LTEXT           "dim3 Units",IDC_STATIC,180,47,43,8
-    EDITTEXT        IDC_MESH_SCALE_UNITS,110,45,62,12,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "Import",ID_OBJ_IMPORT_OK,319,80,50,14
+    PUSHBUTTON      "Cancel",ID_OBJ_IMPORT_CANCEL,261,80,50,14
+    LTEXT           "Choose how to import the OBJ:",IDC_STATIC,7,7,111,9
+    COMBOBOX        IDC_OBJ_IMPORT_AXIS,73,56,48,30,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Scale on:",IDC_STATIC,30,58,38,8,0,WS_EX_RIGHT
+    LTEXT           "axis to",IDC_STATIC,128,58,23,8
+    LTEXT           "dim3 units",IDC_STATIC,221,58,43,8
+    EDITTEXT        IDC_OBJ_IMPORT_UNITS,154,56,62,12,ES_AUTOHSCROLL
+    LTEXT           "Import Type:",IDC_STATIC,19,20,49,8,0,WS_EX_RIGHT
+    COMBOBOX        IDC_OBJ_IMPORT_TYPE,73,19,296,30,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           """Import New Mesh(es)"" import type scaling:",
+                    IDC_STATIC,7,40,223,9
 END
 
 IDD_PROPERTY_LIST DIALOGEX 100, 100, 292, 286

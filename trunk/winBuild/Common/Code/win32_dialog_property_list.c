@@ -25,7 +25,12 @@ and can be sold or given away.
  
 *********************************************************************/
 
-#include "dim3editor.h"
+#ifdef D3_EDITOR
+	#include "dim3editor.h"
+#else
+	#include "dim3Animator.h"
+#endif
+
 #include "resource.h"
 #include "win32_dialog.h"
 

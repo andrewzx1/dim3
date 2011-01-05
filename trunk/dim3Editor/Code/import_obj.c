@@ -31,6 +31,7 @@ and can be sold or given away.
 
 #include "glue.h"
 #include "interface.h"
+#include "ui_common.h"
 #include "dialog.h"
 
 extern map_type					map;
@@ -436,17 +437,17 @@ void import_get_scale_from_axis_unit(obj_import_state_type *import_state,int sca
 	switch (scale_axis) {
 		case 0:
 			scale.x=(float)scale_unit;
-			scale.y=(fabs(import_state->obj_max.y-import_state->obj_min.y)*((float)scale_unit))/fabs(import_state->obj_max.x-import_state->obj_min.x);
-			scale.z=(fabs(import_state->obj_max.z-import_state->obj_min.z)*((float)scale_unit))/fabs(import_state->obj_max.z-import_state->obj_min.z);
+			scale.y=(float)((fabs(import_state->obj_max.y-import_state->obj_min.y)*((double)scale_unit))/fabs(import_state->obj_max.x-import_state->obj_min.x));
+			scale.z=(float)((fabs(import_state->obj_max.z-import_state->obj_min.z)*((double)scale_unit))/fabs(import_state->obj_max.z-import_state->obj_min.z));
 			break;
 		case 1:
-			scale.x=(fabs(import_state->obj_max.x-import_state->obj_min.x)*((float)scale_unit))/fabs(import_state->obj_max.y-import_state->obj_min.y);
+			scale.x=(float)((fabs(import_state->obj_max.x-import_state->obj_min.x)*((double)scale_unit))/fabs(import_state->obj_max.y-import_state->obj_min.y));
 			scale.y=(float)scale_unit;
-			scale.z=(fabs(import_state->obj_max.z-import_state->obj_min.z)*((float)scale_unit))/fabs(import_state->obj_max.y-import_state->obj_min.y);
+			scale.z=(float)((fabs(import_state->obj_max.z-import_state->obj_min.z)*((double)scale_unit))/fabs(import_state->obj_max.y-import_state->obj_min.y));
 			break;
 		case 2:
-			scale.x=(fabs(import_state->obj_max.x-import_state->obj_min.x)*((float)scale_unit))/fabs(import_state->obj_max.z-import_state->obj_min.z);
-			scale.y=(fabs(import_state->obj_max.y-import_state->obj_min.y)*((float)scale_unit))/fabs(import_state->obj_max.z-import_state->obj_min.z);
+			scale.x=(float)((fabs(import_state->obj_max.x-import_state->obj_min.x)*((double)scale_unit))/fabs(import_state->obj_max.z-import_state->obj_min.z));
+			scale.y=(float)((fabs(import_state->obj_max.y-import_state->obj_min.y)*((double)scale_unit))/fabs(import_state->obj_max.z-import_state->obj_min.z));
 			scale.z=(float)scale_unit;
 			break;
 	}
@@ -499,9 +500,9 @@ bool import_create_mesh_from_obj_group(obj_import_state_type *import_state,char 
 	
 		// get the multiply factor
 		
-	factor.x=fabs(import_state->mesh_max.x-import_state->mesh_min.x)/fabs(import_state->obj_max.x-import_state->obj_min.x);
-	factor.y=fabs(import_state->mesh_max.y-import_state->mesh_min.y)/fabs(import_state->obj_max.y-import_state->obj_min.y);
-	factor.z=fabs(import_state->mesh_max.z-import_state->mesh_min.z)/fabs(import_state->obj_max.z-import_state->obj_min.z);
+	factor.x=(float)(fabs(import_state->mesh_max.x-import_state->mesh_min.x)/fabs(import_state->obj_max.x-import_state->obj_min.x));
+	factor.y=(float)(fabs(import_state->mesh_max.y-import_state->mesh_min.y)/fabs(import_state->obj_max.y-import_state->obj_min.y));
+	factor.z=(float)(fabs(import_state->mesh_max.z-import_state->mesh_min.z)/fabs(import_state->obj_max.z-import_state->obj_min.z));
 
 		// get the vertexes
 	
