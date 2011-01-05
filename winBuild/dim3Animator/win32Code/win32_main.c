@@ -2,7 +2,7 @@
 
 Module: dim3 Editor
 Author: Brian Barnes
- Usage: win32 Main
+ Usage: win32 Animator Main
 
 ***************************** License ********************************
 
@@ -25,7 +25,7 @@ and can be sold or given away.
  
 *********************************************************************/
 
-#include "dim3Editor.h"
+#include "dim3Animator.h"
 
 #include "glue.h"
 #include "interface.h"
