@@ -2,7 +2,7 @@
 
 Module: dim3 Editor
 Author: Brian Barnes
- Usage: Dialog Utility Routines
+ Usage: win32 Dialog Utilities
 
 ***************************** License ********************************
 
@@ -25,16 +25,13 @@ and can be sold or given away.
  
 *********************************************************************/
 
-#include "dim3editor.h"
+#ifdef D3_EDITOR
+	#include "dim3editor.h"
+#else
+	#include "dim3Animator.h"
+#endif
+
 #include "resource.h"
-
-extern HINSTANCE				hinst;
-extern HWND						wnd;
-
-extern map_type					map;
-
-int								dialog_mesh_scale_axis,dialog_mesh_scale_unit;
-bool							dialog_mesh_scale_replace;
 
 /* =======================================================
 

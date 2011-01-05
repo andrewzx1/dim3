@@ -49,7 +49,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories=".;..\Libraries;..\Libraries\GLEW;..\Libraries\ZLib;..\Libraries\SDL;..\Libraries\PNG;..\..\dim3Editor\Code;..\..\dim3Editor\Headers;..\..\dim3Common\Headers"
+				AdditionalIncludeDirectories=".;..\Libraries;..\Libraries\GLEW;..\Libraries\ZLib;..\Libraries\SDL;..\Libraries\PNG;..\..\dim3Editor\Code;..\..\dim3Editor\Headers;..\..\dim3Common\Headers;..\Common;..\Common\Code;..\Common\Headers"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;D3_PCH;D3_EDITOR"
 				StringPooling="true"
 				RuntimeLibrary="2"
@@ -230,12 +230,20 @@
 					RelativePath="..\..\dim3Editor\Headers\interface.h"
 					>
 				</File>
+				<File
+					RelativePath="..\..\dim3Common\Headers\ui_common.h"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="EditorSources"
 				>
 				<File
 					RelativePath="..\..\dim3Editor\Code\dos.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3Editor\Code\import_obj.c"
 					>
 				</File>
 				<File
@@ -358,10 +366,6 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\dim3Editor\Code\list_palette_common.c"
-						>
-					</File>
-					<File
 						RelativePath="..\..\dim3Editor\Code\main_window.c"
 						>
 					</File>
@@ -439,35 +443,35 @@
 					>
 				</File>
 				<File
-					RelativePath=".\win32Code\win32_dialog.h"
+					RelativePath="..\Common\Headers\win32_dialog.h"
 					>
 				</File>
 				<File
-					RelativePath=".\win32Code\win32_dialog_file_new.c"
+					RelativePath="..\Common\Code\win32_dialog_file_new.c"
 					>
 				</File>
 				<File
-					RelativePath=".\win32Code\win32_dialog_file_open.c"
+					RelativePath="..\Common\Code\win32_dialog_file_open.c"
 					>
 				</File>
 				<File
-					RelativePath=".\win32Code\win32_dialog_mesh_scale.c"
+					RelativePath=".\win32Code\win32_dialog_obj_import.c"
 					>
 				</File>
 				<File
-					RelativePath=".\win32Code\win32_dialog_property_list.c"
+					RelativePath="..\Common\Code\win32_dialog_property_list.c"
 					>
 				</File>
 				<File
-					RelativePath=".\win32Code\win32_dialog_property_string.c"
+					RelativePath="..\Common\Code\win32_dialog_property_string.c"
 					>
 				</File>
 				<File
-					RelativePath=".\win32Code\win32_dialog_utility.c"
+					RelativePath="..\Common\Code\win32_dialog_utility.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\dim3Common\Code\win32_glue.c"
+					RelativePath="..\Common\Code\win32_glue.c"
 					>
 				</File>
 				<File
