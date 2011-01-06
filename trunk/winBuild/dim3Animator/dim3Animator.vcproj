@@ -99,7 +99,7 @@
 			OutputDirectory=".\Release"
 			IntermediateDirectory=".\Release"
 			ConfigurationType="1"
-			CharacterSet="1"
+			CharacterSet="2"
 			WholeProgramOptimization="1"
 			>
 			<Tool
@@ -125,7 +125,7 @@
 				FavorSizeOrSpeed="1"
 				WholeProgramOptimization="false"
 				AdditionalIncludeDirectories=".;..\Libraries;..\Libraries\GLEW;..\Libraries\ZLib;..\Libraries\SDL;..\Libraries\PNG;..\..\dim3Animator\Code;..\..\dim3Animator\Headers;..\..\dim3Common\Headers;..\Common;..\Common\Code;..\Common\Headers"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;D3_PCH;D3_EDITOR"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;D3_PCH;D3_ANIMATOR"
 				StringPooling="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="false"
@@ -150,11 +150,12 @@
 				Name="VCLinkerTool"
 				OutputFile="..\..\..\dim3\dim3 Animator.exe"
 				LinkIncremental="1"
-				GenerateDebugInformation="true"
+				GenerateDebugInformation="false"
 				ProgramDatabaseFile=".\Release\dim3 Animator.pdb"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
+				LinkTimeCodeGeneration="0"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
 				TargetMachine="1"
@@ -299,6 +300,118 @@
 			<Filter
 				Name="AnimatorSources"
 				>
+				<File
+					RelativePath="..\..\dim3Animator\Code\click_window.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3Animator\Code\draw_axis_boxes.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3Animator\Code\draw_mesh_bone.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3Animator\Code\draw_model.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3Animator\Code\draw_selection.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3Animator\Code\draw_window.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3Common\Code\import_text_decode_common.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3Animator\Code\insert.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3Animator\Code\menu.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3Animator\Code\model_picker.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3Animator\Code\obj_import.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3Animator\Code\texture_import.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3Animator\Code\undo.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3Animator\Code\vertex_masks.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3Animator\Code\vertex_transform.c"
+					>
+				</File>
+				<Filter
+					Name="Palettes"
+					>
+					<File
+						RelativePath="..\..\dim3Animator\Code\item_palette.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Common\Code\list_palette_common.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Animator\Code\main_window.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Common\Code\progress_common.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Animator\Code\property_palette.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Common\Code\property_utility_common.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Common\Code\text_common.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Common\Code\texture_edit_common.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Animator\Code\texture_palette.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Common\Code\texture_palette_common.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Animator\Code\tool_palette.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Common\Code\tool_palette_common.c"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="AnimatorWin32"
@@ -309,6 +422,30 @@
 				</File>
 				<File
 					RelativePath=".\resource.h"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\Code\win32_dialog_file_new.c"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\Code\win32_dialog_file_open.c"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\Code\win32_dialog_property_list.c"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\Code\win32_dialog_property_string.c"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\Code\win32_dialog_utility.c"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\Code\win32_glue.c"
 					>
 				</File>
 				<File

@@ -35,6 +35,7 @@ and can be sold or given away.
 
 #include "glue.h"
 #include "interface.h"
+#include "ui_common.h"
 
 int							txt_palette_max_page_count,txt_palette_per_page_count,
 							txt_palette_cur_page,txt_palette_pixel_sz,
@@ -275,11 +276,7 @@ void texture_palette_click(texture_type *txt_list,d3pnt *pnt,bool double_click)
 		// double clicks
 		
 	if (double_click) {
-		#ifdef D3_EDITOR
-			view_texture_switch(nsel);
-		#else
-			dialog_texture_setting_run(nsel);
-		#endif
+		texture_edit_switch(nsel);
 		main_wind_draw();
 		return;
 	}

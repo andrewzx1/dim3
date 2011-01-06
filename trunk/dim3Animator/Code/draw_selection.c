@@ -30,6 +30,7 @@ and can be sold or given away.
 #endif
 
 #include "glue.h"
+#include "interface.h"
 
 extern model_type			model;
 extern model_draw_setup		draw_setup;

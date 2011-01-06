@@ -25,6 +25,13 @@ and can be sold or given away.
  
 *********************************************************************/
 
+#ifdef D3_PCH
+	#include "dim3animator.h"
+#endif
+
+#include "glue.h"
+#include "interface.h"
+
 #define undo_type_bone_move		0
 
 extern model_type				model;
@@ -37,6 +44,11 @@ model_bone_move_type			undo_bone_move;
       Model Undo
       
 ======================================================= */
+
+void undo_initialize(void)
+{
+	os_menu_enable_item(app_menu_edit,1,FALSE);
+}
 
 void undo_clear(void)
 {

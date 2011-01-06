@@ -75,7 +75,7 @@ void insert_model(char *file_name)
 		
 			// fix duplicate names
 			
-		while (true) {
+		while (TRUE) {
 			
 			bone_ok=TRUE;
 			

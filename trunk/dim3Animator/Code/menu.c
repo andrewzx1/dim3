@@ -29,6 +29,7 @@ and can be sold or given away.
 	#include "dim3animator.h"
 #endif
 
+#include "glue.h"
 #include "interface.h"
 #include "dialog.h"
 
@@ -105,11 +106,10 @@ bool create_binary(void)
 		
 	strcat(base_path,"/");
 	strcat(base_path,filename);
-	
-	mkdir(base_path,S_IRWXU|S_IRWXG|S_IRWXO);
+	os_create_directory(base_path);
 	
 	sprintf(path,"%s/Textures",base_path);
-	mkdir(path,S_IRWXU|S_IRWXG|S_IRWXO);
+	os_create_directory(path);
 
         // write the binary
 	
@@ -420,14 +420,6 @@ bool menu_event_run(int cmd)
 			dialog_about_run();
             return(TRUE);
 		
-		case kHICommandQuit:
-			if (state.model_open) {
-				if (!menu_save_changes_dialog()) return(TRUE);
-				close_model_xml();
-			}
-			QuitApplicationEventLoop();
-			return(TRUE);
-	
 			// file menu
 
 		case kCommandNew:
@@ -449,6 +441,14 @@ bool menu_event_run(int cmd)
 			
 		case kCommandSave:
 			save_binary();
+			return(TRUE);
+
+		case kCommandFileQuit:
+			if (state.model_open) {
+				if (!menu_save_changes_dialog()) return(TRUE);
+				close_model_xml();
+			}
+			os_application_quit();
 			return(TRUE);
 			
 			// edit menu
@@ -800,7 +800,7 @@ bool menu_event_run(int cmd)
 			
 		case kCommandSelectVertexNearBone:
 			if (state.cur_bone_idx!=-1) return(TRUE);
-			vertex_set_sel_mask_near_bone(state.cur_mesh_idx,state.cur_bone_idx,0.10);
+			vertex_set_sel_mask_near_bone(state.cur_mesh_idx,state.cur_bone_idx,0.10f);
 			main_wind_draw();
 			return(TRUE);
 			

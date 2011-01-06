@@ -132,7 +132,7 @@ void draw_model_box(model_box_type *box,bool draw_floor,bool draw_handles)
 		glBegin(GL_POINTS);
 		
 		for (n=0;n!=8;n++) {
-			glVertex3f(x[n],y[n],z[n]);
+			glVertex3i(x[n],y[n],z[n]);
 		}
 		
 		glEnd();

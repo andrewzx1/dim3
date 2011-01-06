@@ -37,8 +37,6 @@ extern model_type				model;
 extern model_draw_setup			draw_setup;
 extern animator_state_type		state;
 
-extern d3rect					model_box;
-
 /* =======================================================
 
       Draw Mesh
@@ -90,7 +88,7 @@ float draw_model_bones_drag_handle_offset(void)
 	float				f;
 	
 	f=(float)(model.view_box.size.x+model.view_box.size.z+model.view_box.size.y)/3.0f;
-	f*=0.15;
+	f*=0.15f;
 	
 	if (f<20.0f) return(20.0f);
 	if (f>250.0f) return(250.0f);

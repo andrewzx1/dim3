@@ -28,6 +28,14 @@ and can be sold or given away.
 #include "dim3Animator.h"
 
 	// remapping for menu items
+
+// supergumba -- temporary
+int				win32_menu_remap[][2]={
+					{kCommandFileQuit,105},
+					{-1,-1}
+				};
+
+
 /*
 int				win32_menu_remap[][2]={
 					{kCommandFileNew,100},
@@ -112,7 +120,7 @@ int				win32_menu_remap[][2]={
 
 					{kCommandGroups,800},
 					{kCommandGroupMovements,801},
-					{-1,-1},
+					{-1,-1}
 				};
 */
 /* =======================================================
@@ -123,7 +131,6 @@ int				win32_menu_remap[][2]={
 
 int os_win32_menu_lookup(int id)
 {
-	/*
 	int			idx;
 
 	idx=0;
@@ -133,6 +140,6 @@ int os_win32_menu_lookup(int id)
 		if (win32_menu_remap[idx][1]==id) return(win32_menu_remap[idx][0]);
 		idx++;
 	}
-*/
+
 	return(-1);
 }

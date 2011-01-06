@@ -248,11 +248,11 @@ void property_palette_click_mesh(int mesh_idx,int poly_idx,int id)
 			break;
 
 		case kMeshPropertyHideMode:
-			property_palette_pick_list((char*)mesh_property_hide_list,&mesh->hide_mode);
+			property_pick_list((char*)mesh_property_hide_list,&mesh->hide_mode);
 			break;
 
 		case kMeshPropertyNormalMode:
-			property_palette_pick_list((char*)mesh_property_normal_list,&mesh->normal_mode);
+			property_pick_list((char*)mesh_property_normal_list,&mesh->normal_mode);
 			break;
 			
 		case kMeshPropertyHarm:
@@ -300,7 +300,7 @@ void property_palette_click_mesh(int mesh_idx,int poly_idx,int id)
 			break;
 
 		case kMeshPropertyMessageBaseTeam:
-			property_palette_pick_list((char*)mesh_property_team_list,&mesh->msg.base_team);
+			property_pick_list((char*)mesh_property_team_list,&mesh->msg.base_team);
 			break;
 			
 		case kMeshPropertyImportOBJName:

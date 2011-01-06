@@ -77,6 +77,7 @@ and can be sold or given away.
 #define kCommandOpen					FOUR_CHAR_CODE('opnB')
 #define kCommandClose					FOUR_CHAR_CODE('clse')
 #define kCommandSave					FOUR_CHAR_CODE('savB')
+#define kCommandFileQuit				FOUR_CHAR_CODE('quit')
 
 #define kCommandUndo					FOUR_CHAR_CODE('undo')
 
@@ -161,10 +162,11 @@ and can be sold or given away.
 // Item types
 //
 
-#define item_animation					0
-#define item_pose						1
-#define item_bone						2
-#define item_hit_box					3
+#define item_mesh						0
+#define item_animation					1
+#define item_pose						2
+#define item_bone						3
+#define item_hit_box					4
 
 //
 // Draw Types
@@ -229,6 +231,7 @@ typedef struct		{
 typedef struct		{
 						int					cur_mesh_idx,cur_bone_idx,
 											cur_pose_idx,cur_animate_idx,
+											texture_edit_idx,
 											drag_bone_mode,select_mode,
 											sel_trig_idx,magnify_z;
 						bool				model_open,

@@ -31,6 +31,7 @@ and can be sold or given away.
 
 #include "glue.h"
 #include "interface.h"
+#include "ui_common.h"
 #include "dialog.h"
 
 #define obj_max_face_vertex		128
@@ -183,7 +184,7 @@ bool import_obj(char *path,bool replace,bool *found_normals,char *err_str)
 		
 	if (!replace) {
 		high=dialog_import_finish_run();
-		model.import.factor=((float)high)/fabs(f_by-f_ty);
+		model.import.factor=((float)high)/(float)fabs(f_by-f_ty);
 	}
 
 		// if a replacement, remember the old
@@ -243,9 +244,9 @@ bool import_obj(char *path,bool replace,bool *found_normals,char *err_str)
             
             if (strcmp(txt,"vt")==0) {
                 textdecode_get_piece(n,1,txt);
-                uv->x=strtod(txt,NULL);
+                uv->x=(float)strtod(txt,NULL);
                 textdecode_get_piece(n,2,txt);
-                uv->y=strtod(txt,NULL);
+                uv->y=(float)strtod(txt,NULL);
                 
  				uv++;
             }
@@ -255,11 +256,11 @@ bool import_obj(char *path,bool replace,bool *found_normals,char *err_str)
 				
 				if (strcmp(txt,"vn")==0) {
 					textdecode_get_piece(n,1,txt);
-					normal->x=-strtod(txt,NULL);
+					normal->x=-(float)strtod(txt,NULL);
 					textdecode_get_piece(n,2,txt);
-					normal->y=-strtod(txt,NULL);
+					normal->y=-(float)strtod(txt,NULL);
 					textdecode_get_piece(n,3,txt);
-					normal->z=-strtod(txt,NULL);
+					normal->z=-(float)strtod(txt,NULL);
 					
 					normal++;
 				}
@@ -423,7 +424,7 @@ bool import_obj(char *path,bool replace,bool *found_normals,char *err_str)
 	model_center_xz(&model,state.cur_mesh_idx);
 	model_floor(&model,state.cur_mesh_idx);
 	model_recalc_boxes(&model);
-    model_recalc_normals(&model,found_normals);
+    model_recalc_normals(&model,(*found_normals));
 	
 		// if replacement, fix all the
 		// bone attachments

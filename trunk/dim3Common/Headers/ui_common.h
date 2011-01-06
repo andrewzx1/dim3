@@ -86,6 +86,18 @@ typedef struct		{
 					} list_palette_type;
 
 //
+// property utilities
+//
+
+extern void property_string_get_values(int value_type,void *value,int i_min,int i_max,char *str,char *desc);
+extern void property_string_set_values(int value_type,void *value,int value_len,int i_min,int i_max,char *str);
+
+extern void property_pick_list(char *list,int *idx);
+
+extern void property_get_parameter(int idx,char *param_list,char *str);
+extern void property_set_parameter(int idx,char *param_list,char *str);
+
+//
 // text
 //
 
@@ -149,6 +161,22 @@ extern void tool_palette_click(d3pnt *pnt);
 
 extern void texture_palette_draw(texture_type *txt_list);
 extern void texture_palette_click(texture_type *txt_list,d3pnt *pnt,bool dbl_click);
+
+//
+// texture editing
+//
+
+#define texture_edit_item_high						140
+#define texture_edit_scroll_wheel_move				25
+
+#define texture_edit_frame_click_return_idx			100
+#define texture_edit_frame_click_delete_idx			101
+
+extern void texture_edit_switch(int texture_idx);
+extern void texture_edit_draw(void);
+extern bool texture_edit_cursor(void);
+extern void texture_edit_scroll_wheel(int delta);
+extern bool texture_edit_click(d3pnt *pnt,bool double_click);
 
 //
 // import text decoder

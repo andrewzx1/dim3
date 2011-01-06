@@ -29,6 +29,9 @@ and can be sold or given away.
 	#include "dim3animator.h"
 #endif
 
+#include "glue.h"
+#include "interface.h"
+
 extern int						tool_palette_pixel_sz;
 extern d3rect					tool_palette_box;
 
