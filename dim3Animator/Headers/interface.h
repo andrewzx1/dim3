@@ -91,40 +91,6 @@ extern int texture_pick(char *material_name,char *err_str);
 extern bool texture_use_single(void);
 
 //
-// controls
-//
-
-extern void add_db_column(ControlRef ctrl,char *name,int idx,int type,int sz,int spot);
-
-extern void start_pose_controls(WindowRef wind,Rect *box);
-extern void end_pose_controls(void);
-extern void resize_pose_controls(Rect *box);
-
-extern void start_bone_controls(WindowRef wind,Rect *box);
-extern void end_bone_controls(void);
-extern void resize_bone_controls(Rect *box);
-
-extern void start_animate_controls(WindowRef wind,Rect *bpx);
-extern void end_animate_controls(void);
-extern void resize_animate_controls(Rect *box);
-
-extern void start_mesh_controls(WindowRef wind,Rect *bpx);
-extern void end_mesh_controls(void);
-extern void resize_mesh_controls(Rect *box);
-
-extern void start_vertex_controls(WindowRef wind,Rect *box);
-extern void end_vertex_controls(void);
-extern void resize_vertex_controls(Rect *box);
-
-extern void reset_pose_list(void);
-extern void reset_bone_list(void);
-extern void reset_animate_list(void);
-extern void reset_mesh_list(void);
-extern void reset_vertex_tab(void);
-
-extern void hilite_vertex_rows(void);
-
-//
 // models
 //
 

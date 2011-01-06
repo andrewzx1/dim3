@@ -135,10 +135,12 @@ void start_mesh_controls(WindowRef wind,Rect *box)
 	ControlFontStyleRec				fontstyle;
 	DataBrowserCallbacks			dbcall;
 	
+	return;
+	
 		// mesh data browser
 		
-	cbox.left=box->left+list_width;
-	cbox.right=cbox.left+list_width;
+//	cbox.left=box->left+list_width;
+//	cbox.right=cbox.left+list_width;
 	
 	cbox.top=(box->bottom-box->top)/2;
 	cbox.bottom=box->bottom;
@@ -172,7 +174,7 @@ void start_mesh_controls(WindowRef wind,Rect *box)
 
 		// columns
 
-	add_db_column(mesh_list,"Meshes",kMeshNameDBColumn,kDataBrowserTextType,(list_width-20),0);
+//	add_db_column(mesh_list,"Meshes",kMeshNameDBColumn,kDataBrowserTextType,(list_width-20),0);
 	
 	mesh_list_notify_ignore=FALSE;
 }
@@ -180,6 +182,8 @@ void start_mesh_controls(WindowRef wind,Rect *box)
 void end_mesh_controls(void)
 {
 	DataBrowserCallbacks			dbcall;
+	
+	return;
 	
 	dbcall.version=kDataBrowserLatestCallbacks;
 	InitDataBrowserCallbacks(&dbcall);
@@ -195,8 +199,10 @@ void resize_mesh_controls(Rect *box)
 {
 	Rect		cbox;
 	
-	cbox.left=box->left+list_width;
-	cbox.right=cbox.left+list_width;
+	return;
+	
+//	cbox.left=box->left+list_width;
+//	cbox.right=cbox.left+list_width;
 	
 	cbox.top=(box->bottom-box->top)/2;
 	cbox.bottom=box->bottom;

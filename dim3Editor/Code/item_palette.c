@@ -54,7 +54,7 @@ void item_palette_initialize(void)
 {
 	list_palette_list_initialize(&item_palette,"Map Items");
 
-	item_palette.item_type=spot_piece;
+	item_palette.item_type=0;
 	item_palette.item_idx=-1;
 }
 

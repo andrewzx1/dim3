@@ -49,18 +49,12 @@ extern animator_state_type		state;
 
 void texture_palette_setup(void)
 {
-	int				x_sz;
 	d3rect			wbox;
 	
 	os_get_window_box(&wbox);
 	
-	x_sz=(wbox.rx-wbox.lx)-total_list_width;
-	if (x_sz<model_view_min_size) x_sz=model_view_min_size;
-	
-	wbox.rx=wbox.lx+x_sz;
-	
 	txt_palette_max_page_count=max_model_texture;
-	txt_palette_per_page_count=16;
+	txt_palette_per_page_count=32;
 
 	txt_palette_page_list_count=txt_palette_max_page_count/txt_palette_per_page_count;
 	txt_palette_page_list_width=(txt_palette_page_list_count>>1)*16;
@@ -87,6 +81,5 @@ int texture_palette_get_selected_texture(void)
 void texture_palette_put_selected_texture(int txt_idx)
 {
 	vertex_set_sel_mask_material(state.cur_mesh_idx,txt_idx);
-	hilite_vertex_rows();
 }
 

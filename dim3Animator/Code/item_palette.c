@@ -1,6 +1,6 @@
 /****************************** File *********************************
 
-Module: dim3 Editor
+Module: dim3 Animator
 Author: Brian Barnes
  Usage: Item Palette
 
@@ -52,22 +52,19 @@ list_palette_type				item_palette;
 
 void item_palette_initialize(void)
 {
-/*
-	list_palette_list_initialize(&item_palette,"Map Items");
+	list_palette_list_initialize(&item_palette,"Model Items");
 
-	item_palette.item_type=spot_piece;
+	item_palette.item_type=0;
 	item_palette.item_idx=-1;
-*/
 }
 
 void item_palette_shutdown(void)
 {
-//	list_palette_list_shutdown(&item_palette);
+	list_palette_list_shutdown(&item_palette);
 }
 
 void item_palette_setup(void)
 {
-/*
 	int				y;
 	d3rect			wbox;
 	
@@ -86,7 +83,6 @@ void item_palette_setup(void)
 	item_palette.box.rx=wbox.rx;
 	item_palette.box.ty=wbox.ty+(tool_palette_pixel_sz+1);
 	item_palette.box.by=y;
-*/
 }
 
 /* =======================================================
@@ -94,21 +90,28 @@ void item_palette_setup(void)
       Item Palette Fill
       
 ======================================================= */
+
 /*
+#define item_animation					0
+#define item_pose						1
+#define item_bone						2
+#define item_hit_box					3
+*/
+
 void item_palette_fill(void)
 {
 	int			n;
 
 	list_palette_delete_all_items(&item_palette);
 
-		// spots
+		// animations
 
-	list_palette_add_header(&item_palette,spot_piece,"Spots");
+	list_palette_add_header(&item_palette,item_animation,"Animations");
 
-	for (n=0;n!=map.nspot;n++) {
-		list_palette_add_item(&item_palette,spot_piece,n,map.spots[n].name,((item_palette.item_type==spot_piece)&&(n==item_palette.item_idx)),FALSE);
+	for (n=0;n!=model.nanimate;n++) {
+		list_palette_add_item(&item_palette,item_animation,n,model.animates[n].name,(state.cur_animate_idx==n),FALSE);
 	}
-
+/*
 		// lights
 
 	list_palette_add_header(&item_palette,light_piece,"Lights");
@@ -172,20 +175,21 @@ void item_palette_fill(void)
 	for (n=0;n!=map.cinema.ncinema;n++) {
 		list_palette_add_item(&item_palette,cinema_piece,n,map.cinema.cinemas[n].name,((item_palette.item_type==cinema_piece)&&(n==item_palette.item_idx)),FALSE);
 	}
+	*/
 }
-*/
+
 /* =======================================================
 
       Item Palette Draw
       
 ======================================================= */
-/*
+
 void item_palette_draw(void)
 {
 	item_palette_fill();
 	list_palette_draw(&item_palette);
 }
-*/
+
 /* =======================================================
 
       Item Palette Reset For Selection Change

@@ -31,6 +31,7 @@ and can be sold or given away.
 
 #include "glue.h"
 #include "interface.h"
+#include "ui_common.h"
 
 extern int					tool_palette_pixel_sz,txt_palette_pixel_sz;
 extern d3rect				model_box;
@@ -50,16 +51,12 @@ d3rect						tran_wbox;
 
 void model_wind_setup(void)
 {
-	int				x_sz;
 	d3rect			wbox;
 	
 	os_get_window_box(&wbox);
 	
-	x_sz=(wbox.rx-wbox.lx)-total_list_width;
-	if (x_sz<model_view_min_size) x_sz=model_view_min_size;
-	
 	model_box.lx=0;
-	model_box.rx=model_box.lx+x_sz;
+	model_box.rx=wbox.rx-list_palette_tree_sz;
 	model_box.ty=tool_palette_pixel_sz;
 	model_box.by=(wbox.by-wbox.ty)-txt_palette_pixel_sz;
 }

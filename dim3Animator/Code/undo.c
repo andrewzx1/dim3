@@ -59,7 +59,6 @@ void undo_run(void)
 	
 		case undo_type_bone_move:
 			memmove(&model.poses[undo_pose_idx].bone_moves[undo_bone_idx],&undo_bone_move,sizeof(model_bone_move_type));
-			reset_bone_list();
 			break;
 			
 	}

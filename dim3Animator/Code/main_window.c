@@ -271,6 +271,9 @@ void main_wind_draw(void)
 
 		// palettes
 		
+	item_palette_draw();
+	property_palette_draw();
+
 	tool_palette_draw();
 	texture_palette_draw(model.textures);
 	
@@ -298,6 +301,9 @@ void main_wind_draw_no_swap(void)
 	}
 
 		// palettes
+		
+	item_palette_draw();
+	property_palette_draw();
 		
 	tool_palette_draw();
 	texture_palette_draw(model.textures);
