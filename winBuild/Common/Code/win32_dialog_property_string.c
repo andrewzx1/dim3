@@ -1,6 +1,6 @@
 /****************************** File *********************************
 
-Module: dim3 Editor
+Module: dim3 Common
 Author: Brian Barnes
  Usage: Property String Routines
 
@@ -33,6 +33,7 @@ and can be sold or given away.
 
 #include "resource.h"
 #include "interface.h"
+#include "ui_common.h"
 #include "win32_dialog.h"
 
 extern HINSTANCE				hinst;
@@ -58,7 +59,7 @@ LRESULT CALLBACK dialog_property_string_proc(HWND diag,UINT msg,WPARAM wparam,LP
 
 		case WM_INITDIALOG:
 
-			property_palette_string_get_values(dialog_property_string_value_type,dialog_property_string_value,dialog_property_string_i_min,dialog_property_string_i_max,str,desc);
+			property_string_get_values(dialog_property_string_value_type,dialog_property_string_value,dialog_property_string_i_min,dialog_property_string_i_max,str,desc);
 			win32_dialog_set_text(diag,IDC_PROPERTY_STRING_STRING,str);
 			win32_dialog_set_text(diag,IDC_PROPERTY_STRING_DESCRIPTION,desc);
 
@@ -73,7 +74,7 @@ LRESULT CALLBACK dialog_property_string_proc(HWND diag,UINT msg,WPARAM wparam,LP
 
 				case ID_PROPERTY_STRING_OK:
 					win32_dialog_get_text(diag,IDC_PROPERTY_STRING_STRING,str,256);
-					property_palette_string_set_values(dialog_property_string_value_type,dialog_property_string_value,dialog_property_string_value_len,dialog_property_string_i_min,dialog_property_string_i_max,str);
+					property_string_set_values(dialog_property_string_value_type,dialog_property_string_value,dialog_property_string_value_len,dialog_property_string_i_min,dialog_property_string_i_max,str);
 					EndDialog(diag,0);
 					return(TRUE);
 

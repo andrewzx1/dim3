@@ -39,7 +39,7 @@ extern void main_wind_draw_no_swap(void);
 extern void main_wind_click(d3pnt *pnt,bool double_click);
 extern void main_wind_scroll_wheel(d3pnt *pnt,int delta);
 extern bool main_wind_cursor(void);
-extern void main_wind_key_down(char ch);
+extern void main_wind_key(char ch);
 extern void main_wind_resize(void);
 
 //
@@ -127,11 +127,6 @@ extern void property_palette_draw(void);
 extern void property_palette_reset(void);
 extern void property_palette_scroll_wheel(d3pnt *pnt,int move);
 extern void property_palette_click(d3pnt *pnt,bool double_click);
-
-extern void property_palette_string_get_values(int value_type,void *value,int i_min,int i_max,char *str,char *desc);
-extern void property_palette_string_set_values(int value_type,void *value,int value_len,int i_min,int i_max,char *str);
-
-extern void property_palette_pick_list(char *list,int *idx);
 extern void property_palette_pick_group(int *group_idx);
 extern void property_palette_pick_spot(char *name);
 extern void property_palette_pick_sound(char *name,bool include_none);
@@ -139,9 +134,6 @@ extern void property_palette_pick_particle(char *name);
 extern void property_palette_pick_node(char *name);
 extern void property_palette_pick_texture(int *txt_idx);
 extern void property_palette_pick_shader(char *name);
-
-extern void property_palette_get_parameter(int idx,char *param_list,char *str);
-extern void property_palette_set_parameter(int idx,char *param_list,char *str);
 
 //
 // dos
@@ -333,16 +325,6 @@ extern void view_select_view(d3pnt *pnt);
 extern void view_scroll_wheel(d3pnt *pnt,int delta);
 extern bool view_click(d3pnt *pnt,bool double_click);
 extern void view_draw(void);
-
-//
-// view texture edit
-//
-
-extern void view_texture_switch(int texture_idx);
-extern void view_texture_draw(void);
-extern bool view_texture_cursor(void);
-extern void view_texture_scroll_wheel(int delta);
-extern bool view_texture_click(d3pnt *pnt,bool double_click);
 
 //
 // view draw piece

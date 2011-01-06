@@ -31,13 +31,15 @@ and can be sold or given away.
 
 #include "glue.h"
 #include "interface.h"
+#include "ui_common.h"
 
 model_type						model;
 model_draw_setup				draw_setup;
 file_path_setup_type			file_path_setup;
 animator_state_type				state;
 
-d3rect							model_box;
+extern d3rect					tool_palette_box,txt_palette_box;
+extern list_palette_type		item_palette,property_palette;
 
 /* =======================================================
 
@@ -73,6 +75,7 @@ void main_wind_initialize(void)
 	
 		// misc setup
 		
+	state.texture_edit_idx=-1;
 	state.drag_sel_on=FALSE;
 	state.magnify_z=3000;
    
@@ -119,24 +122,6 @@ void main_wind_gl_setup(void)
 	glDisable(GL_ALPHA_TEST);
 	
 	glEnableClientState(GL_VERTEX_ARRAY);
-}
-
-/* =======================================================
-
-      Resize Setup
-      
-======================================================= */
-
-void main_wind_resize(void)
-{
-	if (!state.model_open) return;
-
-	tool_palette_setup();
-	texture_palette_setup();
-	item_palette_setup();
-	property_palette_setup();
-	
-	model_wind_setup();
 }
 
 /* =======================================================
@@ -253,6 +238,8 @@ void main_wind_draw_play(void)
 
 void main_wind_draw(void)
 {
+	if (!state.model_open) return;
+
 		// clear gl buffer
 		
 	glDisable(GL_SCISSOR_TEST);
@@ -262,20 +249,29 @@ void main_wind_draw(void)
 	
 		// model
 		
-	if (!state.playing) {
-		draw_model_wind_pose(state.cur_mesh_idx,state.cur_pose_idx);
-	}
-	else {
-		main_wind_draw_play();
+	if (state.model_open) {
+		if (state.texture_edit_idx==-1) {
+			if (!state.playing) {
+				draw_model_wind_pose(state.cur_mesh_idx,state.cur_pose_idx);
+			}
+			else {
+				main_wind_draw_play();
+			}
+		}
+		else {
+			texture_edit_draw();
+		}
 	}
 
 		// palettes
 		
-	item_palette_draw();
-	property_palette_draw();
+	if (state.model_open) {
+		item_palette_draw();
+		property_palette_draw();
 
-	tool_palette_draw();
-	texture_palette_draw(model.textures);
+		tool_palette_draw();
+		texture_palette_draw(model.textures);
+	}
 	
 		// swap GL buffer
 		
@@ -290,14 +286,23 @@ void main_wind_draw_no_swap(void)
 	
 	glClearColor(1.0f,1.0f,1.0f,0.0f);
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+
+		// nothing to draw
+
+	if (!state.model_open) return;
 	
 		// model
 		
-	if (!state.playing) {
-		draw_model_wind_pose(state.cur_mesh_idx,state.cur_pose_idx);
+	if (state.texture_edit_idx==-1) {
+		if (!state.playing) {
+			draw_model_wind_pose(state.cur_mesh_idx,state.cur_pose_idx);
+		}
+		else {
+			main_wind_draw_play();
+		}
 	}
 	else {
-		main_wind_draw_play();
+		texture_edit_draw();
 	}
 
 		// palettes
@@ -352,34 +357,118 @@ void main_wind_play(bool play,bool blend)
 
 /* =======================================================
 
+      Clicking
+      
+======================================================= */
+
+void main_wind_click(d3pnt *pnt,bool double_click)
+{
+		// tool palette
+
+	if (pnt->y<tool_palette_box.by) {
+		tool_palette_click(pnt);
+		return;
+	}
+
+		// texture palette
+
+	if (pnt->y>=txt_palette_box.ty) {
+		texture_palette_click(model.textures,pnt,double_click);
+		return;
+	}
+
+		// item and property palette
+
+	if (pnt->x>=item_palette.box.lx) {
+		if (pnt->y<=item_palette.box.by) {
+			item_palette_click(pnt,double_click);
+		}
+		else {
+			property_palette_click(pnt,double_click);
+		}
+		return;
+	}
+
+		// model clicks
+
+	if (state.texture_edit_idx==-1) {
+		model_wind_click(pnt);
+	}
+	else {
+		texture_edit_click(pnt,double_click);
+	}
+}
+
+/* =======================================================
+
+      Scroll Wheel
+      
+======================================================= */
+
+void main_wind_scroll_wheel(d3pnt *pnt,int delta)
+{
+		// scroll wheel in item or property palette
+
+	if (pnt->x>=item_palette.box.lx) {
+		if ((pnt->y>=item_palette.box.ty) && (pnt->y<item_palette.box.by)) {
+			item_palette_scroll_wheel(pnt,delta);
+		}
+		if ((pnt->y>=property_palette.box.ty) && (pnt->y<property_palette.box.by)) {
+			property_palette_scroll_wheel(pnt,delta);
+		}
+		return;
+	}
+
+		// scroll wheel in model
+
+	if (state.texture_edit_idx==-1) {
+		state.magnify_z+=(delta*20);
+		main_wind_draw();
+	}
+	else {
+		texture_edit_scroll_wheel(delta);
+	}
+}
+
+/* =======================================================
+
       Cursors
       
 ======================================================= */
 
-void main_wind_cursor(void)
+bool main_wind_cursor(void)
 {
+	if (!state.model_open) return(FALSE);
+
+		// texture editing
+
+	if (state.texture_edit_idx==-1) return(texture_edit_cursor());
+
+		// model cursors
+
 	if (os_key_space_down()) {
 		os_set_hand_cursor();
-		return;
+		return(TRUE);
 	}
 	if (os_key_command_down()) {
 		os_set_hand_cursor();
-		return;
+		return(TRUE);
 	}
 	if (os_key_option_down()) {
 		os_set_resize_cursor();
-		return;
+		return(TRUE);
 	}
 	if (os_key_shift_down()) {
 		os_set_add_cursor();
-		return;
+		return(TRUE);
 	}
 	if (os_key_control_down()) {
 		os_set_subtract_cursor();
-		return;
+		return(TRUE);
 	}
 	
 	os_set_arrow_cursor();
+	return(TRUE);
 }
 
 /* =======================================================
@@ -401,4 +490,21 @@ void main_wind_key(char ch)
 	}
 }
 
+/* =======================================================
+
+      Resize Setup
+      
+======================================================= */
+
+void main_wind_resize(void)
+{
+	if (!state.model_open) return;
+
+	tool_palette_setup();
+	texture_palette_setup();
+	item_palette_setup();
+	property_palette_setup();
+	
+	model_wind_setup();
+}
 

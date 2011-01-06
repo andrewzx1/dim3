@@ -440,7 +440,7 @@ typedef struct		{
 typedef struct		{
 						int						vertex_mode,drag_mode,grid_mode,node_mode,
 												handle_mode,view_select_idx,drag_handle_idx,
-												view_texture_idx;
+												texture_edit_idx;
 						bool					map_opened,
 												free_look,select_add,auto_texture,select_box_on,
 												show_liquid,show_normals,show_node,show_object,

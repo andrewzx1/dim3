@@ -113,7 +113,7 @@ void select_model_wind_restore_sel_state(char *vertex_sel)
 	}
 }
 
-void select_model_wind_vertex(d3pnt *start_pnt,unsigned long modifiers,float *pv)
+void select_model_wind_vertex(d3pnt *start_pnt,float *pv)
 {
 	char					*org_vertex_sel;
 	bool					chg_sel;
@@ -123,13 +123,13 @@ void select_model_wind_vertex(d3pnt *start_pnt,unsigned long modifiers,float *pv
 		
 	org_vertex_sel=(char*)malloc(model.meshes[state.cur_mesh_idx].nvertex);
 		
-	if ((modifiers&shiftKey)!=0) {
+	if (os_key_shift_down()) {
 		select_model_wind_save_sel_state(org_vertex_sel);
 		os_set_add_cursor();
 		chg_sel=TRUE;
 	}
 	else {
-		if ((modifiers&controlKey)!=0) {
+		if (os_key_control_down()) {
 			select_model_wind_save_sel_state(org_vertex_sel);
 			os_set_subtract_cursor();
 			chg_sel=FALSE;
@@ -254,7 +254,7 @@ bool select_model_wind_polygon(d3pnt *start_pnt)
       
 ======================================================= */
 
-void select_model_wind(d3pnt *start_pnt,unsigned long modifiers)
+void select_model_wind(d3pnt *start_pnt)
 {
 	int				sz;
 	float			*pv;
@@ -291,11 +291,11 @@ void select_model_wind(d3pnt *start_pnt,unsigned long modifiers)
 		
 	if (state.select_mode==select_mode_polygon) {
 		if (!select_model_wind_polygon(start_pnt)) {
-			select_model_wind_vertex(start_pnt,modifiers,pv);
+			select_model_wind_vertex(start_pnt,pv);
 		}
 	}
 	else {
-		select_model_wind_vertex(start_pnt,modifiers,pv);
+		select_model_wind_vertex(start_pnt,pv);
 	}
 	
 		// free the saved vertexes
@@ -591,9 +591,9 @@ bool drag_hit_box_handle_model_wind(d3pnt *start_pnt)
 	
 		for (k=0;k!=8;k++) {
 			model_get_point_position(&draw_setup,&x[k],&y[k],&z[k]);
-			hand_pnt.x=x[k];
-			hand_pnt.y=y[k];
-			hand_pnt.z=z[k];
+			hand_pnt.x=(float)x[k];
+			hand_pnt.y=(float)y[k];
+			hand_pnt.z=(float)z[k];
 			if (draw_bone_model_wind_click_box(start_pnt,&hand_pnt)) {
 				box_idx=n;
 				pt_idx=k;
@@ -672,7 +672,7 @@ bool drag_hit_box_handle_model_wind(d3pnt *start_pnt)
       
 ======================================================= */
 
-void click_model_wind(d3pnt *pnt,unsigned long modifiers)
+void model_wind_click(d3pnt *pnt)
 {
 	bool			shift_on,rotate_on,size_on;
 	
@@ -701,6 +701,6 @@ void click_model_wind(d3pnt *pnt,unsigned long modifiers)
 		return;
 	}
 		
-	select_model_wind(pnt,modifiers);
+	select_model_wind(pnt);
 }
 

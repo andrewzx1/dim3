@@ -1,6 +1,6 @@
 /****************************** File *********************************
 
-Module: dim3 Editor
+Module: dim3 Common
 Author: Brian Barnes
  Usage: win32 Dialog Utilities
 

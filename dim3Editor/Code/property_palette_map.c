@@ -322,7 +322,7 @@ void property_palette_fill_map(void)
 	list_palette_add_header(&property_palette,0,"Map Parameters");
 	for (n=0;n!=10;n++) {
 		sprintf(name,"Param %d",n);
-		property_palette_get_parameter(n,map.settings.params,str);
+		property_get_parameter(n,map.settings.params,str);
 		list_palette_add_string(&property_palette,(kMapPropertyParamsStart+n),name,str,FALSE);
 	}
 
@@ -364,9 +364,9 @@ void property_palette_click_map(int id)
 	if ((id>=kMapPropertyParamsStart) && (id<=kMapPropertyParamsEnd)) {
 		param_idx=(id-kMapPropertyParamsStart);
 		
-		property_palette_get_parameter(param_idx,map.settings.params,str);
+		property_get_parameter(param_idx,map.settings.params,str);
 		dialog_property_string_run(list_string_value_string,(void*)str,256,0,0);
-		property_palette_set_parameter(param_idx,map.settings.params,str);
+		property_set_parameter(param_idx,map.settings.params,str);
 
 		main_wind_draw();
 		return;
@@ -443,7 +443,7 @@ void property_palette_click_map(int id)
 		case kMapPropertyLightMapSize:
 			size=((int)log2(map.light_map.size))-8;
 			if ((size<0) || (size>2)) size=0;
-			property_palette_pick_list((char*)map_property_light_map_size_list,&size);
+			property_pick_list((char*)map_property_light_map_size_list,&size);
 			map.light_map.size=(int)pow(2,(size+8));
 			break;
 			
@@ -458,7 +458,7 @@ void property_palette_click_map(int id)
 			// camera settings
 
 		case kMapPropertyCameraMode:
-			property_palette_pick_list((char*)map_property_camera_mode_list,&map.camera.mode);
+			property_pick_list((char*)map_property_camera_mode_list,&map.camera.mode);
 			break;
 			
 		case kMapPropertyCameraAngle:
@@ -514,7 +514,7 @@ void property_palette_click_map(int id)
 			// map media
 
 		case kMapPropertyMediaType:
-			property_palette_pick_list((char*)map_property_media_type_list,&map.media.type);
+			property_pick_list((char*)map_property_media_type_list,&map.media.type);
 			break;
 
 		case kMapPropertyMediaName:
@@ -542,7 +542,7 @@ void property_palette_click_map(int id)
 			break;
 
 		case kMapPropertySkyType:
-			property_palette_pick_list((char*)map_property_sky_type_list,&map.sky.type);
+			property_pick_list((char*)map_property_sky_type_list,&map.sky.type);
 			break;
 
 		case kMapPropertySkyRadius:

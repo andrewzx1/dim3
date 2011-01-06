@@ -91,18 +91,19 @@ void item_palette_setup(void)
       
 ======================================================= */
 
-/*
-#define item_animation					0
-#define item_pose						1
-#define item_bone						2
-#define item_hit_box					3
-*/
-
 void item_palette_fill(void)
 {
 	int			n;
 
 	list_palette_delete_all_items(&item_palette);
+
+		// meshes
+
+	list_palette_add_header(&item_palette,item_mesh,"Meshes");
+
+	for (n=0;n!=model.nmesh;n++) {
+		list_palette_add_item(&item_palette,item_mesh,n,model.meshes[n].name,(state.cur_mesh_idx==n),FALSE);
+	}
 
 		// animations
 
@@ -111,71 +112,30 @@ void item_palette_fill(void)
 	for (n=0;n!=model.nanimate;n++) {
 		list_palette_add_item(&item_palette,item_animation,n,model.animates[n].name,(state.cur_animate_idx==n),FALSE);
 	}
-/*
-		// lights
 
-	list_palette_add_header(&item_palette,light_piece,"Lights");
+		// poses
 
-	for (n=0;n!=map.nlight;n++) {
-		list_palette_add_color(&item_palette,light_piece,n,&map.lights[n].col,((item_palette.item_type==light_piece)&&(n==item_palette.item_idx)),FALSE);
+	list_palette_add_header(&item_palette,item_pose,"Poses");
+
+	for (n=0;n!=model.npose;n++) {
+		list_palette_add_item(&item_palette,item_pose,n,model.poses[n].name,(state.cur_pose_idx==n),FALSE);
 	}
 
-		// sounds
+		// bones
 
-	list_palette_add_header(&item_palette,sound_piece,"Sounds");
+	list_palette_add_header(&item_palette,item_bone,"Bones");
 
-	for (n=0;n!=map.nsound;n++) {
-		list_palette_add_item(&item_palette,sound_piece,n,map.sounds[n].name,((item_palette.item_type==sound_piece)&&(n==item_palette.item_idx)),FALSE);
+	for (n=0;n!=model.nbone;n++) {
+		list_palette_add_item(&item_palette,item_bone,n,model.bones[n].name,(state.cur_bone_idx==n),FALSE);
 	}
 
-		// particles
+		// hit boxes
 
-	list_palette_add_header(&item_palette,particle_piece,"Particles");
+	list_palette_add_header(&item_palette,item_hit_box,"Hit Boxes");
 
-	for (n=0;n!=map.nparticle;n++) {
-		list_palette_add_item(&item_palette,particle_piece,n,map.particles[n].name,((item_palette.item_type==particle_piece)&&(n==item_palette.item_idx)),FALSE);
+	for (n=0;n!=model.nhit_box;n++) {
+		list_palette_add_item(&item_palette,item_hit_box,n,model.hit_boxes[n].name,FALSE,FALSE);
 	}
-
-		// sceneries
-
-	list_palette_add_header(&item_palette,scenery_piece,"Scenery");
-
-	for (n=0;n!=map.nscenery;n++) {
-		list_palette_add_item(&item_palette,scenery_piece,n,map.sceneries[n].model_name,((item_palette.item_type==scenery_piece)&&(n==item_palette.item_idx)),FALSE);
-	}
-
-		// nodes
-
-	list_palette_add_header(&item_palette,node_piece,"Nodes");
-
-	for (n=0;n!=map.nnode;n++) {
-		if (map.nodes[n].name[0]!=0x0) list_palette_add_item(&item_palette,node_piece,n,map.nodes[n].name,((item_palette.item_type==node_piece)&&(n==item_palette.item_idx)),FALSE);
-	}
-
-		// groups
-
-	list_palette_add_header(&item_palette,group_piece,"Groups");
-
-	for (n=0;n!=map.group.ngroup;n++) {
-		list_palette_add_item(&item_palette,group_piece,n,map.group.groups[n].name,((item_palette.item_type==group_piece)&&(n==item_palette.item_idx)),FALSE);
-	}
-
-		// movements
-
-	list_palette_add_header(&item_palette,movement_piece,"Movements");
-
-	for (n=0;n!=map.movement.nmovement;n++) {
-		list_palette_add_item(&item_palette,movement_piece,n,map.movement.movements[n].name,((item_palette.item_type==movement_piece)&&(n==item_palette.item_idx)),FALSE);
-	}
-
-		// cinemas
-
-	list_palette_add_header(&item_palette,cinema_piece,"Cinemas");
-
-	for (n=0;n!=map.cinema.ncinema;n++) {
-		list_palette_add_item(&item_palette,cinema_piece,n,map.cinema.cinemas[n].name,((item_palette.item_type==cinema_piece)&&(n==item_palette.item_idx)),FALSE);
-	}
-	*/
 }
 
 /* =======================================================
@@ -195,7 +155,7 @@ void item_palette_draw(void)
       Item Palette Reset For Selection Change
       
 ======================================================= */
-/*
+/* supergumba
 void item_palette_reset(void)
 {
 	int				sel_type,main_idx,sub_idx;
@@ -229,7 +189,7 @@ void item_palette_select(int sel_type,int sel_idx)
       Item Palette Delete
       
 ======================================================= */
-/*
+/* supergumba
 bool item_palette_delete(void)
 {
 		// anything to delete?
@@ -266,18 +226,18 @@ bool item_palette_delete(void)
       Item Palette Scroll Wheel
       
 ======================================================= */
-/*
+
 void item_palette_scroll_wheel(d3pnt *pnt,int move)
 {
 	list_palette_scroll_wheel(&item_palette,pnt,move);
 }
-*/
+
 /* =======================================================
 
       Item Palette Click
       
 ======================================================= */
-/*
+
 void item_palette_click(d3pnt *pnt,bool double_click)
 {
 	bool					old_open;
@@ -292,12 +252,15 @@ void item_palette_click(d3pnt *pnt,bool double_click)
 		if (old_open!=list_palette_open) {
 			item_palette_setup();
 			property_palette_setup();
+			model_wind_setup();
 			main_wind_draw();
 		}
 		return;
 	}
 
 	if (item_palette.item_idx==-1) return;
+
+	/*
 
 		// handle click
 
@@ -363,5 +326,6 @@ void item_palette_click(d3pnt *pnt,bool double_click)
 			break;
 
 	}
+	*/
 }
-*/
+

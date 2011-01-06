@@ -31,12 +31,13 @@ and can be sold or given away.
 
 #include "glue.h"
 #include "interface.h"
+#include "ui_common.h"
 #include "dialog.h"
 
 extern int						txt_palette_max_page_count,txt_palette_per_page_count,
 								txt_palette_cur_page,txt_palette_pixel_sz,
 								txt_palette_page_list_count,txt_palette_page_list_width;
-extern d3rect					txt_palette_box,model_box;
+extern d3rect					txt_palette_box;
 
 extern model_type				model;
 extern animator_state_type		state;

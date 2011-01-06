@@ -1,4 +1,35 @@
-#include "dim3Editor.h"
+/****************************** File *********************************
+
+Module: dim3 Common
+Author: Brian Barnes
+ Usage: win32 Glue Routines
+
+***************************** License ********************************
+
+This code can be freely used as long as these conditions are met:
+
+1. This header, in its entirety, is kept with the code
+2. This credit “Created with dim3 Technology” is given on a single
+application screen and in a single piece of the documentation
+3. It is not resold, in it's current form or modified, as an
+engine-only product
+
+This code is presented as is. The author of dim3 takes no
+responsibilities for any version of this code.
+
+Any non-engine product (games, etc) created with this code is free
+from any and all payment and/or royalties to the author of dim3,
+and can be sold or given away.
+
+(c) 2000-2011 Klink! Software www.klinksoftware.com
+ 
+*********************************************************************/
+
+#ifdef D3_EDITOR
+	#include "dim3editor.h"
+#else
+	#include "dim3Animator.h"
+#endif
 
 #include "glue.h"
 
@@ -8,7 +39,8 @@ extern HINSTANCE		hinst;
 extern HWND				wnd;
 extern HDC				wnd_gl_dc;
 
-HCURSOR					cur_arrow,cur_wait,cur_hand,cur_drag,cur_resize;
+HCURSOR					cur_arrow,cur_wait,cur_hand,cur_drag,cur_resize,
+						cur_add,cur_subtract;
 
 /* =======================================================
 
@@ -25,6 +57,8 @@ void glue_start(void)
 	cur_hand=LoadCursor(NULL,IDC_HAND);
 	cur_drag=LoadCursor(NULL,IDC_HAND);
 	cur_resize=LoadCursor(NULL,IDC_SIZEALL);
+	cur_add=LoadCursor(NULL,IDC_CROSS);
+	cur_subtract=LoadCursor(NULL,IDC_NO);
 }
 
 void glue_end(void)
@@ -36,6 +70,8 @@ void glue_end(void)
 	DestroyCursor(cur_hand);
 	DestroyCursor(cur_drag);
 	DestroyCursor(cur_resize);
+	DestroyCursor(cur_add);
+	DestroyCursor(cur_subtract);
 }
 
 /* =======================================================
@@ -123,6 +159,16 @@ void os_set_resize_cursor(void)
 	SetCursor(cur_resize);
 }
 
+void os_set_add_cursor(void)
+{
+	SetCursor(cur_add);
+}
+
+void os_set_subtract_cursor(void)
+{
+	SetCursor(cur_subtract);
+}
+
 /* =======================================================
 
       Menus
@@ -184,28 +230,27 @@ void os_menu_redraw(void)
 
 bool os_key_space_down(void)
 {
-	return(GetAsyncKeyState(VK_SPACE)!=0x0);
+	return((GetAsyncKeyState(VK_SPACE)&0x8000)!=0x0);
 }
 
 bool os_key_option_down(void)
 {
-	return(FALSE);
-	return((GetAsyncKeyState(VK_LWIN)!=0x0)||(GetAsyncKeyState(VK_RWIN)!=0x0));
+	return(((GetAsyncKeyState(VK_LWIN)&0x8000)!=0x0)||((GetAsyncKeyState(VK_RWIN)&0x8000)!=0x0));
 }
 
 bool os_key_control_down(void)
 {
-	return(GetAsyncKeyState(VK_CONTROL)!=0x0);
+	return((GetAsyncKeyState(VK_CONTROL)&0x8000)!=0x0);
 }
 
 bool os_key_command_down(void)
 {
-	return(GetAsyncKeyState(VK_MENU)!=0x0);
+	return((GetAsyncKeyState(VK_MENU)&0x8000)!=0x0);
 }
 
 bool os_key_shift_down(void)
 {
-	return(GetAsyncKeyState(VK_SHIFT)!=0x0);
+	return((GetAsyncKeyState(VK_SHIFT)&0x8000)!=0x0);
 }
 
 /* =======================================================

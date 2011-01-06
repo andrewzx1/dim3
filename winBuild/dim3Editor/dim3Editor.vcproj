@@ -84,7 +84,7 @@
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
-				LinkTimeCodeGeneration="1"
+				LinkTimeCodeGeneration="0"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
 				TargetMachine="1"
@@ -358,16 +358,16 @@
 						RelativePath="..\..\dim3Editor\Code\view_picker.c"
 						>
 					</File>
-					<File
-						RelativePath="..\..\dim3Editor\Code\view_texture.c"
-						>
-					</File>
 				</Filter>
 				<Filter
 					Name="Palettes"
 					>
 					<File
 						RelativePath="..\..\dim3Editor\Code\item_palette.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Common\Code\list_palette_common.c"
 						>
 					</File>
 					<File
@@ -416,6 +416,14 @@
 					</File>
 					<File
 						RelativePath="..\..\dim3Editor\Code\property_palette_texture.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Common\Code\property_utility_common.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Common\Code\texture_edit_common.c"
 						>
 					</File>
 					<File

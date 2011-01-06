@@ -54,7 +54,7 @@ void file_reset_window(void)
 	
 		// redraw
 	
- 	state.view_texture_idx=-1;
+ 	state.texture_edit_idx=-1;
 
 	tool_default();
 	menu_update_view();
@@ -69,7 +69,7 @@ void file_reset_window(void)
 void file_close_window(void)
 {
 	state.map_opened=FALSE;
-	state.view_texture_idx=-1;
+	state.texture_edit_idx=-1;
 	
 		// win32 keeps window open so menu can be
 		// used so we need to reset here

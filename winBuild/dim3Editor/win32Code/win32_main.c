@@ -35,7 +35,6 @@ and can be sold or given away.
 
 HINSTANCE					hinst;
 ATOM						wnd_rg_class;
-HFONT						fnt;
 HWND						wnd;
 HDC							wnd_gl_dc;
 HGLRC						wnd_gl_ctx;
@@ -53,8 +52,6 @@ extern list_palette_type	item_palette;
 extern bool setup_xml_read(void);
 extern void glue_start(void);
 extern void glue_end(void);
-extern void editor_menu_commands(int id);
-extern void editor_menu_create(void);
 extern int os_win32_menu_lookup(int id);
 
 /* =======================================================
@@ -174,7 +171,7 @@ LRESULT CALLBACK editor_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam)
 			break;
 
 		case WM_KEYDOWN:
-			main_wind_key_down((char)wParam);
+			main_wind_key((char)wParam);
 			break;
 
 		case WM_SETCURSOR:
@@ -257,10 +254,6 @@ void win32_main_wind_open(void)
 	undo_initialize();
 	menu_fix_enable();
 
-		// create font for window
-
-	fnt=CreateFont(-10,0,0,0,FW_DONTCARE,FALSE,FALSE,FALSE,ANSI_CHARSET,OUT_DEFAULT_PRECIS,CLIP_DEFAULT_PRECIS,DEFAULT_QUALITY,(DEFAULT_PITCH|FF_DONTCARE),"Monaco");
-
 		// show window
 
 	ShowWindow(wnd,SW_MAXIMIZE);
@@ -313,7 +306,6 @@ void win32_main_wind_close(void)
 
 		// delete window
 
-	DeleteObject(fnt);
 	DestroyWindow(wnd);
 	UnregisterClass("dim3EditorWindowClass",GetModuleHandle(NULL));
 }

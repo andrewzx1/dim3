@@ -34,14 +34,14 @@ and can be sold or given away.
 #include "ui_common.h"
 
 extern int					tool_palette_pixel_sz,txt_palette_pixel_sz;
-extern d3rect				model_box;
+extern bool					list_palette_open;
 
 extern model_type			model;
 extern model_draw_setup		draw_setup;
 extern animator_state_type	state;
 
 double						tran_mod_matrix[16],tran_proj_matrix[16],tran_vport[4];
-d3rect						tran_wbox;
+d3rect						model_box,tran_wbox;
 
 /* =======================================================
 
@@ -56,7 +56,12 @@ void model_wind_setup(void)
 	os_get_window_box(&wbox);
 	
 	model_box.lx=0;
-	model_box.rx=wbox.rx-list_palette_tree_sz;
+	if (list_palette_open) {
+		model_box.rx=wbox.rx-list_palette_tree_sz;
+	}
+	else {
+		model_box.rx=wbox.rx-list_palette_border_sz;
+	}
 	model_box.ty=tool_palette_pixel_sz;
 	model_box.by=(wbox.by-wbox.ty)-txt_palette_pixel_sz;
 }
@@ -276,7 +281,7 @@ void draw_model_wind(int mesh_idx)
 		// draw the drag selection
 		
 	if (state.drag_sel_on) {
-		glColor4f(0.8,0.8,0.8,0.4);
+		glColor4f(0.8f,0.8f,0.8f,0.4f);
 		
 		glBegin(GL_QUADS);
 		glVertex2i((state.drag_sel_box.lx+model_box.lx),(state.drag_sel_box.ty+model_box.ty));

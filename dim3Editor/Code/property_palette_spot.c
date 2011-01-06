@@ -79,7 +79,7 @@ void property_palette_fill_spot(int spot_idx)
 	list_palette_add_header(&property_palette,0,"Spot Parameters");
 	for (n=0;n!=10;n++) {
 		sprintf(name,"Param %d",n);
-		property_palette_get_parameter(n,spot->params,str);
+		property_get_parameter(n,spot->params,str);
 		list_palette_add_string(&property_palette,(kSpotPropertyParamsStart+n),name,str,FALSE);
 	}
 	
@@ -107,9 +107,9 @@ void property_palette_click_spot(int spot_idx,int id)
 	if ((id>=kSpotPropertyParamsStart) && (id<=kSpotPropertyParamsEnd)) {
 		param_idx=(id-kSpotPropertyParamsStart);
 		
-		property_palette_get_parameter(param_idx,spot->params,str);
+		property_get_parameter(param_idx,spot->params,str);
 		dialog_property_string_run(list_string_value_string,(void*)str,256,0,0);
-		property_palette_set_parameter(param_idx,spot->params,str);
+		property_set_parameter(param_idx,spot->params,str);
 
 		main_wind_draw();
 		return;
@@ -124,7 +124,7 @@ void property_palette_click_spot(int spot_idx,int id)
 			break;
 
 		case kSpotPropertyType:
-			property_palette_pick_list((char*)spot_property_type_list,&spot->type);
+			property_pick_list((char*)spot_property_type_list,&spot->type);
 			break;
 
 		case kSpotPropertyScript:
@@ -135,11 +135,11 @@ void property_palette_click_spot(int spot_idx,int id)
 			break;
 
 		case kSpotPropertySkill:
-			property_palette_pick_list((char*)spot_property_skill_list,&spot->skill);
+			property_pick_list((char*)spot_property_skill_list,&spot->skill);
 			break;
 
 		case kSpotPropertySpawn:
-			property_palette_pick_list((char*)spot_property_spawn_list,&spot->spawn);
+			property_pick_list((char*)spot_property_spawn_list,&spot->spawn);
 			break;
 
 		case kSpotPropertyDisplayModel:

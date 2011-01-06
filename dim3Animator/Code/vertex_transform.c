@@ -30,6 +30,8 @@ and can be sold or given away.
 #endif
 
 #include "glue.h"
+#include "interface.h"
+#include "dialog.h"
 
 d3vct							cur_set_normal={0.0f,-1.0f,0.0f};
 

@@ -31,6 +31,7 @@ and can be sold or given away.
 
 #include "glue.h"
 #include "interface.h"
+#include "ui_common.h"
 #include "dialog.h"
 
 extern map_type					map;
@@ -153,7 +154,7 @@ void tool_click(int tool_idx)
 		// if in texture view, any tool click
 		// leaves it
 
-	if (state.view_texture_idx!=-1) view_texture_switch(-1);
+	if (state.texture_edit_idx!=-1) texture_edit_switch(-1);
 
 		// run the click
 

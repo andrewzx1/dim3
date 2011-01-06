@@ -33,28 +33,25 @@ and can be sold or given away.
 
 #include "resource.h"
 
-HINSTANCE					hinst;
-ATOM						wnd_rg_class;
-HFONT						fnt;
-HWND						wnd;
-HDC							wnd_gl_dc;
-HGLRC						wnd_gl_ctx;
+HINSTANCE						hinst;
+ATOM							wnd_rg_class;
+HWND							wnd;
+HDC								wnd_gl_dc;
+HGLRC							wnd_gl_ctx;
 
-bool						quit;
+bool							quit;
 
-map_type					map;
-file_path_setup_type		file_path_setup;
-editor_setup_type			setup;
-editor_state_type			state;
+extern model_type				model;
+extern model_draw_setup			draw_setup;
+extern file_path_setup_type		file_path_setup;
+extern animator_state_type		state;
 
-extern d3rect				tool_palette_box,txt_palette_box;
-extern list_palette_type	item_palette;
+extern d3rect					tool_palette_box,txt_palette_box;
+extern list_palette_type		item_palette;
 
 extern bool setup_xml_read(void);
 extern void glue_start(void);
 extern void glue_end(void);
-extern void editor_menu_commands(int id);
-extern void editor_menu_create(void);
 extern int os_win32_menu_lookup(int id);
 
 /* =======================================================
@@ -63,74 +60,68 @@ extern int os_win32_menu_lookup(int id);
       
 ======================================================= */
 
-void launch_map_script_editor(void)
+bool dialog_model_settings_run(void)
+{
+	return(TRUE);
+}
+void dialog_set_normal_run(d3vct *vct)
 {
 }
-void launch_engine(void)
+bool dialog_scale_run(model_type *mdl,float *x,float *z,float *y)
 {
+	return(FALSE);
+}
+bool dialog_nudge_rotate_run(int *x,int *z,int *y,char *diag_name,int def_value)
+{
+	return(FALSE);
+}
+bool dialog_bone_settings_run(model_bone_type *bone)
+{
+	return(FALSE);
+}
+bool dialog_set_vertex_bone_run(int *major_bone_idx,int *minor_bone_idx,float *factor)
+{
+	return(FALSE);
+}
+bool dialog_mesh_info_run(model_mesh_type *mesh)
+{
+	return(FALSE);
+}
+bool dialog_pose_settings_run(model_pose_type *pose)
+{
+	return(FALSE);
+}
+bool dialog_animation_settings_run(int animate_idx)
+{
+	return(FALSE);
+}
+bool dialog_play_blend_animation_run(void)
+{
+	return(FALSE);
+}
+int dialog_copy_mesh_run(void)
+{
+	return(-1);
+}
+bool dialog_bone_nudge_run(int *x,int *z,int *y,bool *nudge_children,bool *nudge_vertex)
+{
+	return(FALSE);
+}
+bool dialog_animation_reset_time_run(int animate_idx)
+{
+	return(FALSE);
+}
+bool dialog_hit_box_settings_run(void)
+{
+	return(FALSE);
 }
 void dialog_about_run(void)
 {
 }
-void dialog_preference_run(void)
+int dialog_import_finish_run(void)
 {
+	return(-1);
 }
-bool dialog_group_settings_run(group_type *group)
-{
-	return(FALSE);
-}
-bool dialog_movement_settings_run(int movement_idx)
-{
-	return(FALSE);
-}
-bool dialog_movement_move_settings_run(movement_move_type *move)
-{
-	return(FALSE);
-}
-bool dialog_cinema_settings_run(int cinema_idx)
-{
-	return(FALSE);
-}
-bool dialog_resize_run(float *fct_x,float *fct_y,float *fct_z)
-{
-	return(FALSE);
-}
-bool dialog_reposition_run(d3pnt *min,d3pnt *max)
-{
-	return(FALSE);
-}
-bool dialog_free_rotate_run(float *rot_x,float *rot_y,float *rot_z)
-{
-	return(FALSE);
-}
-bool dialog_create_grid_mesh_run(int *xdiv,int *ydiv,int *zdiv)
-{
-	return(FALSE);
-}
-bool dialog_height_import_run(int *div_cnt,int *size,int *high)
-{
-	return(FALSE);
-}
-bool dialog_map_auto_generate_setting_run(bool first)
-{
-	ag_build_setup_type		build_setup;
-
-	build_setup.style_idx=0;
-	build_setup.seed=5;
-	build_setup.mirror=FALSE;
-	build_setup.room_count=20;
-	build_setup.room_sz=300;
-	build_setup.room_high=60;
-	build_setup.story_count=1;
-	build_setup.merge_count=2;
-
-	ag_generate_map(&build_setup);
-
-	return(TRUE);
-}
-
-
-
 
 /* =======================================================
 
@@ -138,7 +129,7 @@ bool dialog_map_auto_generate_setting_run(bool first)
       
 ======================================================= */
 
-LRESULT CALLBACK editor_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam)
+LRESULT CALLBACK animator_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam)
 {
 	int					cmd;
 	d3pnt				pnt;
@@ -174,7 +165,7 @@ LRESULT CALLBACK editor_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam)
 			break;
 
 		case WM_KEYDOWN:
-			main_wind_key_down((char)wParam);
+			main_wind_key((char)wParam);
 			break;
 
 		case WM_SETCURSOR:
@@ -189,9 +180,9 @@ LRESULT CALLBACK editor_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam)
 			break;
 
 		case WM_CLOSE:
-			if (state.map_opened) {
+			if (state.model_open) {
 				if (!menu_save_changes_dialog()) return(0);
-				file_close_map();
+				close_model_xml();
 			}
 			os_application_quit();
 			break;
@@ -234,7 +225,7 @@ void win32_main_wind_open(void)
  
     wcx.cbSize=sizeof(wcx);
     wcx.style=CS_DBLCLKS;
-    wcx.lpfnWndProc=editor_wnd_proc;
+    wcx.lpfnWndProc=animator_wnd_proc;
     wcx.cbClsExtra=0;
     wcx.cbWndExtra=0;
     wcx.hInstance=hInst;
@@ -242,12 +233,12 @@ void win32_main_wind_open(void)
     wcx.hCursor=LoadCursor(NULL,IDC_ARROW);
     wcx.hbrBackground=(HBRUSH)GetStockObject(WHITE_BRUSH);
     wcx.lpszMenuName=NULL;
-    wcx.lpszClassName="dim3EditorWindowClass";
+    wcx.lpszClassName="dim3AnimatorWindowClass";
     wcx.hIconSm=NULL;
 
-    RegisterClassEx(&wcx); 
+    RegisterClassEx(&wcx);
 
-    wnd=CreateWindow("dim3EditorWindowClass","dim3 Editor",WS_OVERLAPPEDWINDOW|WS_CLIPSIBLINGS|WS_CLIPCHILDREN|WS_MAXIMIZE,CW_USEDEFAULT,CW_USEDEFAULT,CW_USEDEFAULT,CW_USEDEFAULT,NULL,NULL,hInst,NULL);
+    wnd=CreateWindow("dim3AnimatorWindowClass","dim3 Animator",WS_OVERLAPPEDWINDOW|WS_CLIPSIBLINGS|WS_CLIPCHILDREN|WS_MAXIMIZE,CW_USEDEFAULT,CW_USEDEFAULT,CW_USEDEFAULT,CW_USEDEFAULT,NULL,NULL,hInst,NULL);
 
 		// menu
 
@@ -255,11 +246,7 @@ void win32_main_wind_open(void)
 	SetMenu(wnd,menu);
 
 	undo_initialize();
-	menu_fix_enable();
-
-		// create font for window
-
-	fnt=CreateFont(-10,0,0,0,FW_DONTCARE,FALSE,FALSE,FALSE,ANSI_CHARSET,OUT_DEFAULT_PRECIS,CLIP_DEFAULT_PRECIS,DEFAULT_QUALITY,(DEFAULT_PITCH|FF_DONTCARE),"Monaco");
+	menu_update();
 
 		// show window
 
@@ -313,18 +300,17 @@ void win32_main_wind_close(void)
 
 		// delete window
 
-	DeleteObject(fnt);
 	DestroyWindow(wnd);
-	UnregisterClass("dim3EditorWindowClass",GetModuleHandle(NULL));
+	UnregisterClass("dim3AnimatorWindowClass",GetModuleHandle(NULL));
 }
 
 /* =======================================================
 
-      Editor Message Pump
+      Animator Message Pump
       
 ======================================================= */
 
-void editor_pump(void)
+void animator_pump(void)
 {
 	MSG			msg;
 
@@ -359,7 +345,7 @@ void test_debug(char *str)
 
 /* =======================================================
 
-      Editor Main
+      Animator Main
       
 ======================================================= */
 
@@ -367,7 +353,7 @@ int APIENTRY WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmdLine
 {
 	hinst=hInstance;
 
-	state.map_opened=FALSE;
+	state.model_open=FALSE;
 	
 		// glue start
 
@@ -378,20 +364,16 @@ int APIENTRY WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmdLine
 		MessageBox(NULL,"No data folder","Error",MB_OK);
 		return(0);
 	}
-	
-		// settings
-
-	setup_xml_read();
 
 		// open window
 
 	win32_main_wind_open();
 
-		// open map
-
-	file_open_map();
-
-	editor_pump();
+		// run animator
+	
+	open_model_xml();
+	animator_pump();
+	close_model_xml();
 
 		// close window
 
