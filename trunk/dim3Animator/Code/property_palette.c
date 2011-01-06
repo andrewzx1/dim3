@@ -53,24 +53,21 @@ list_palette_type				property_palette;
 
 void property_palette_initialize(void)
 {
-/*
 	list_palette_list_initialize(&property_palette,"Item Properties");
 
 	property_palette.item_type=0;
 	property_palette.item_idx=-1;
 
 	prop_last_sel_type=-1;
-	*/
 }
 
 void property_palette_shutdown(void)
 {
-//	list_palette_list_shutdown(&property_palette);
+	list_palette_list_shutdown(&property_palette);
 }
 
 void property_palette_setup(void)
 {
-/*
 	int				y;
 	d3rect			wbox;
 	
@@ -89,7 +86,6 @@ void property_palette_setup(void)
 	property_palette.box.rx=wbox.rx;
 	property_palette.box.ty=y-1;
 	property_palette.box.by=wbox.by-txt_palette_pixel_sz;
-	*/
 }
 
 /* =======================================================
@@ -97,9 +93,10 @@ void property_palette_setup(void)
       Property Palette Fill
       
 ======================================================= */
-/*
+
 void property_palette_fill(void)
 {
+/*
 	int					sel_type,main_idx,sub_idx;
 
 		// delete the properties
@@ -176,20 +173,21 @@ void property_palette_fill(void)
 			break;
 
 	}
+	*/
 }
-*/
+
 /* =======================================================
 
       Property Palette Draw
       
 ======================================================= */
-/*
+
 void property_palette_draw(void)
 {
 	property_palette_fill();
 	list_palette_draw(&property_palette);
 }
-*/
+
 /* =======================================================
 
       Property Palette Reset For Selection Change

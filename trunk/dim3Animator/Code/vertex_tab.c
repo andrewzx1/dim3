@@ -216,9 +216,11 @@ void start_vertex_controls(WindowRef wind,Rect *box)
 	ControlFontStyleRec				fontstyle;
 	DataBrowserCallbacks			dbcall;
 	
+	return;
+	
 		// vertex data browser
 		
-	cbox.left=box->left+(list_width*2);
+//	cbox.left=box->left+(list_width*2);
 	cbox.right=box->right;
 	
 	cbox.top=(box->bottom-box->top)/2;
@@ -263,6 +265,8 @@ void end_vertex_controls(void)
 {
 	DataBrowserCallbacks			dbcall;
 	
+	return;
+	
 	dbcall.version=kDataBrowserLatestCallbacks;
 	InitDataBrowserCallbacks(&dbcall);
 	SetDataBrowserCallbacks(vertex_list,&dbcall);
@@ -277,7 +281,9 @@ void resize_vertex_controls(Rect *box)
 {
 	Rect		cbox;
 	
-	cbox.left=box->left+(list_width*2);
+	return;
+	
+//	cbox.left=box->left+(list_width*2);
 	cbox.right=box->right;
 	
 	cbox.top=(box->bottom-box->top)/2;

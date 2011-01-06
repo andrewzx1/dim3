@@ -370,10 +370,12 @@ void start_bone_controls(WindowRef wind,Rect *box)
 	Rect							cbox;
 	ControlFontStyleRec				fontstyle;
 	DataBrowserCallbacks			dbcall;
+	
+	return;
 
 		// pose bone move data browser
 		
-	cbox.left=box->left+list_width;
+//	cbox.left=box->left+list_width;
 	cbox.right=box->right;
 	
 	cbox.top=box->top;
@@ -435,6 +437,8 @@ void end_bone_controls(void)
 {
 	DataBrowserCallbacks			dbcall;
 	
+	return;
+	
 	dbcall.version=kDataBrowserLatestCallbacks;
 	InitDataBrowserCallbacks(&dbcall);
 	SetDataBrowserCallbacks(bone_list,&dbcall);
@@ -452,7 +456,9 @@ void resize_bone_controls(Rect *box)
 {
 	Rect		cbox;
 	
-	cbox.left=box->left+list_width;
+	return;
+	
+//	cbox.left=box->left+list_width;
 	cbox.right=box->right;
 	
 	cbox.top=box->top;

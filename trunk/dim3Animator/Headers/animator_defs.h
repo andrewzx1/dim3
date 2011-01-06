@@ -26,17 +26,6 @@ and can be sold or given away.
 *********************************************************************/
 
 //
-// inteface defs
-//
-
-#define model_view_min_size				512
-
-#define mesh_palette_width				64
-
-#define list_width						170
-#define total_list_width				810
-
-//
 // tool bars
 //
 
@@ -169,30 +158,13 @@ and can be sold or given away.
 #define kCommandPlayBlendAnimate		FOUR_CHAR_CODE('plyb')
 
 //
-// Misc UI Constants
+// Item types
 //
 
-#define kMeshNameDBColumn				1050
-
-#define kVertexPosDBColumn				1060
-#define kVertexBoneDBColumn				1061
-
-#define kBoneTagDBColumn				1070
-#define kBonePosDBColumn				1071
-
-#define kPoseNameDBColumn				1080
-#define kPoseBoneDBColumn				1081
-#define kPoseBoneRotDBColumn			1082
-#define kPoseBoneMoveDBColumn			1083
-#define kPoseBoneAccDBColumn			1084
-#define kPoseBoneBlendDBColumn			1085
-
-#define kAnimateNameDBColumn			1090
-#define kAnimatePoseDBColumn			1091
-#define kAnimateSwayMoveDBColumn		1092
-#define kAnimateOtherDBColumn			1093
-
-#define kHitBoxNameDBColumn				1100
+#define item_animation					0
+#define item_pose						1
+#define item_bone						2
+#define item_hit_box					3
 
 //
 // Draw Types

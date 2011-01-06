@@ -27,6 +27,7 @@ and can be sold or given away.
 
 #include "glue.h"
 #include "interface.h"
+#include "ui_common.h"
 #include "dialog.h"
 
 WindowRef						wind;
@@ -63,7 +64,7 @@ void main_wind_event_resize(void)
 	
 	rect[0]=0;
 	rect[1]=0;
-	rect[2]=model_box.rx;
+	rect[2]=box.right;
 	rect[3]=box.bottom;
 
 	aglSetInteger(ctx,AGL_BUFFER_RECT,rect);
@@ -72,22 +73,10 @@ void main_wind_event_resize(void)
 		// resize windows and palettes
 	
 	main_wind_resize();
-
-		// resize controls
-
-	box.left=model_box.rx;
-		
-	resize_pose_controls(&box);
-	resize_bone_controls(&box);
-	resize_animate_controls(&box);
-	resize_mesh_controls(&box);
-	resize_vertex_controls(&box);
 	
 		// redraw
 
 	main_wind_draw();
-	
-	DrawControls(wind);
 }
 
 /* =======================================================
@@ -114,7 +103,6 @@ OSStatus main_wind_event_handler(EventHandlerCallRef eventhandler,EventRef event
 			
 				case kEventWindowDrawContent:
 					main_wind_draw();
-					DrawControls(wind);
 					return(noErr);
 					
 				case kEventWindowBoundsChanged:
@@ -299,23 +287,11 @@ void main_wind_open(void)
 		
 	rect[0]=0;
 	rect[1]=0;
-	rect[2]=model_box.rx;
+	rect[2]=box.right;
 	rect[3]=box.bottom;
 
 	aglSetInteger(ctx,AGL_BUFFER_RECT,rect);
 	aglEnable(ctx,AGL_BUFFER_RECT);
-	
-		// controls
-		
-	box.left+=model_box.rx;
-	
-	start_pose_controls(wind,&box);
-	start_bone_controls(wind,&box);
-    start_animate_controls(wind,&box);
-	start_mesh_controls(wind,&box);
-	start_vertex_controls(wind,&box);
-
-	DrawControls(wind);
 
 		// events
 		
@@ -335,14 +311,6 @@ void main_wind_close(void)
 	
 	RemoveEventHandler(model_wind_event);
 	DisposeEventHandlerUPP(model_wind_upp);
-	
-		// remove controls
-		
-	end_pose_controls();
-	end_bone_controls();
-    end_animate_controls();
-    end_mesh_controls();
-	end_vertex_controls();
 
 		// close window
 		

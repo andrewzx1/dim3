@@ -305,10 +305,6 @@ void select_model_wind(d3pnt *start_pnt,unsigned long modifiers)
 		// redraw the model
 		
 	main_wind_draw();
-		
-		// reset the data browser
-		
-	hilite_vertex_rows();
 
 	os_set_arrow_cursor();	
 }
@@ -476,7 +472,7 @@ bool drag_bone_model_wind(d3pnt *start_pnt)
 			// select as current bone
 			
 		state.cur_bone_idx=k;
-		reset_bone_list();
+
 		main_wind_draw();
 
 		return(TRUE);
@@ -505,8 +501,6 @@ bool drag_bone_model_wind(d3pnt *start_pnt)
 			return(TRUE);
 			
 	}
-
-	reset_bone_list();
 	
 		// drag bone
 
@@ -537,10 +531,6 @@ bool drag_bone_model_wind(d3pnt *start_pnt)
 			// draw the model
 			
 		main_wind_draw();
-		
-		reset_bone_list();
-		redraw_bone_list();
-
 	}
 
 	os_set_arrow_cursor();

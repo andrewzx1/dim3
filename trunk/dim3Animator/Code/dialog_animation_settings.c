@@ -738,8 +738,6 @@ bool dialog_animation_settings_run(int animate_idx)
 	if (dialog_animation_settings_cancel) {
 		memmove(&model.animates[animate_idx],&animate_backup,sizeof(model_animate_type));
 	}
-		
-	reset_animate_list();
 	
 	return(!dialog_animation_settings_cancel);
 }
