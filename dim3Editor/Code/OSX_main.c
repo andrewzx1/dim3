@@ -167,7 +167,7 @@ OSStatus main_wind_event_callback(EventHandlerCallRef eventhandler,EventRef even
 				case kEventRawKeyDown:
 				case kEventRawKeyRepeat:
 					GetEventParameter(event,kEventParamKeyMacCharCodes,typeChar,NULL,sizeof(char),NULL,&ch);
-					main_wind_key_down(ch);
+					main_wind_key(ch);
 					main_wind_cursor();
 					return(noErr);
 				
@@ -247,13 +247,7 @@ void main_wind_open(void)
 		// show window
 		
 	ShowWindow(wind);
-   
-		// set font
-		
 	SetPort(GetWindowPort(wind));
-		
-	TextFont(FMGetFontFamilyFromName("\pMonaco"));
-	TextSize(10);
 	
 		// opengl setup
 		
@@ -371,10 +365,15 @@ void menu_start(void)
 
 int main(int argc,char *argv[])
 {
+	os_glue_start();
 	os_set_arrow_cursor();
     
 	state.map_opened=FALSE;
-	file_paths_setup(&file_path_setup);
+	if (!file_paths_setup(&file_path_setup)) {
+		os_dialog_alert("Error","No data folder found");
+		os_glue_end();
+		return(0);
+	}
 		
 	setup_xml_read();
 
@@ -386,6 +385,8 @@ int main(int argc,char *argv[])
 	file_open_map();
 	main_loop();
 	file_close_map();
+	
+	os_glue_end();
 	
     return(0);
 }

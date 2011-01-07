@@ -37,8 +37,14 @@
 		26C5F3FB12615297000B0F9E /* Tool Rotate Mode.png in Copy (Tool Icons) */ = {isa = PBXBuildFile; fileRef = 266FFE92125EBCFB00E40F28 /* Tool Rotate Mode.png */; };
 		26C5F3FC12615297000B0F9E /* Tool Show First Mesh.png in Copy (Tool Icons) */ = {isa = PBXBuildFile; fileRef = 266FFE93125EBCFB00E40F28 /* Tool Show First Mesh.png */; };
 		26C5F3FD12615297000B0F9E /* Tool Textured.png in Copy (Tool Icons) */ = {isa = PBXBuildFile; fileRef = 266FFE94125EBCFB00E40F28 /* Tool Textured.png */; };
+		26CAEC7A12D675C500310691 /* property_utility_common.c in Sources */ = {isa = PBXBuildFile; fileRef = 26CAEC7812D675C500310691 /* property_utility_common.c */; };
+		26CAEC7B12D675C500310691 /* texture_edit_common.c in Sources */ = {isa = PBXBuildFile; fileRef = 26CAEC7912D675C500310691 /* texture_edit_common.c */; };
 		26CF62F0126BF0F8002DCC2A /* tool_palette_common.c in Sources */ = {isa = PBXBuildFile; fileRef = 26CF62EF126BF0F8002DCC2A /* tool_palette_common.c */; };
 		26CF633E126BF3ED002DCC2A /* dialog_utility_common.c in Sources */ = {isa = PBXBuildFile; fileRef = 26CF633D126BF3ED002DCC2A /* dialog_utility_common.c */; };
+		26E3F10A12D6CE8300C8BE92 /* dialog_file_new.c in Sources */ = {isa = PBXBuildFile; fileRef = 26E3F10612D6CE8300C8BE92 /* dialog_file_new.c */; };
+		26E3F10B12D6CE8300C8BE92 /* dialog_file_open.c in Sources */ = {isa = PBXBuildFile; fileRef = 26E3F10712D6CE8300C8BE92 /* dialog_file_open.c */; };
+		26E3F10C12D6CE8300C8BE92 /* dialog_property_list.c in Sources */ = {isa = PBXBuildFile; fileRef = 26E3F10812D6CE8300C8BE92 /* dialog_property_list.c */; };
+		26E3F10D12D6CE8300C8BE92 /* dialog_property_string.c in Sources */ = {isa = PBXBuildFile; fileRef = 26E3F10912D6CE8300C8BE92 /* dialog_property_string.c */; };
 		26EE4951126B84F8001D0025 /* animator_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 26EE4950126B84F8001D0025 /* animator_defs.h */; };
 		26EE498E126B87A4001D0025 /* texture_palette_common.c in Sources */ = {isa = PBXBuildFile; fileRef = 26EE498D126B87A4001D0025 /* texture_palette_common.c */; };
 		26EE49C7126B896F001D0025 /* interface.h in Headers */ = {isa = PBXBuildFile; fileRef = 26EE49C6126B896F001D0025 /* interface.h */; };
@@ -85,8 +91,6 @@
 		F5C5354709267C6D00663E36 /* dialog.h in Headers */ = {isa = PBXBuildFile; fileRef = F5C5354609267C6D00663E36 /* dialog.h */; };
 		F5C6C64B09D659BB005DFE3D /* dialog_model_settings.c in Sources */ = {isa = PBXBuildFile; fileRef = F5C6C64A09D659BB005DFE3D /* dialog_model_settings.c */; };
 		F5D1A7A40CF933E6001B5E1B /* dialog_play_blend_animation.c in Sources */ = {isa = PBXBuildFile; fileRef = F5D1A7A30CF933E6001B5E1B /* dialog_play_blend_animation.c */; };
-		F5D97E180857E233000BB6A3 /* dialog_file_open.c in Sources */ = {isa = PBXBuildFile; fileRef = F5D97E160857E233000BB6A3 /* dialog_file_open.c */; };
-		F5D97E190857E233000BB6A3 /* dialog_file_new.c in Sources */ = {isa = PBXBuildFile; fileRef = F5D97E170857E233000BB6A3 /* dialog_file_new.c */; };
 		F5DB0C310856A832005A7CB7 /* dim3 Animator.app in CopyFiles */ = {isa = PBXBuildFile; fileRef = F5A42DC40555EC87002DF965 /* dim3 Animator.app */; };
 		F5EA20E90CCB0B6D005A75F6 /* dialog_finish_import.c in Sources */ = {isa = PBXBuildFile; fileRef = F5EA20E80CCB0B6D005A75F6 /* dialog_finish_import.c */; };
 		F5F2FF1509AAC18600F88975 /* dialog_vertex_setting.c in Sources */ = {isa = PBXBuildFile; fileRef = F5F2FF1409AAC18600F88975 /* dialog_vertex_setting.c */; };
@@ -182,8 +186,14 @@
 		26C5EEFB1260F027000B0F9E /* OSX_glue.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = OSX_glue.c; path = ../dim3Common/Code/OSX_glue.c; sourceTree = SOURCE_ROOT; };
 		26C5F10C12613790000B0F9E /* tool_palette.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tool_palette.c; path = Code/tool_palette.c; sourceTree = "<group>"; };
 		26C5F11112613805000B0F9E /* glue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = glue.h; path = ../dim3Common/Headers/glue.h; sourceTree = SOURCE_ROOT; };
+		26CAEC7812D675C500310691 /* property_utility_common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_utility_common.c; path = ../dim3Common/Code/property_utility_common.c; sourceTree = SOURCE_ROOT; };
+		26CAEC7912D675C500310691 /* texture_edit_common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = texture_edit_common.c; path = ../dim3Common/Code/texture_edit_common.c; sourceTree = SOURCE_ROOT; };
 		26CF62EF126BF0F8002DCC2A /* tool_palette_common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tool_palette_common.c; path = ../dim3Common/Code/tool_palette_common.c; sourceTree = SOURCE_ROOT; };
 		26CF633D126BF3ED002DCC2A /* dialog_utility_common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_utility_common.c; path = ../dim3Common/Code/dialog_utility_common.c; sourceTree = SOURCE_ROOT; };
+		26E3F10612D6CE8300C8BE92 /* dialog_file_new.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_file_new.c; path = ../dim3Common/Code/dialog_file_new.c; sourceTree = SOURCE_ROOT; };
+		26E3F10712D6CE8300C8BE92 /* dialog_file_open.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_file_open.c; path = ../dim3Common/Code/dialog_file_open.c; sourceTree = SOURCE_ROOT; };
+		26E3F10812D6CE8300C8BE92 /* dialog_property_list.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_property_list.c; path = ../dim3Common/Code/dialog_property_list.c; sourceTree = SOURCE_ROOT; };
+		26E3F10912D6CE8300C8BE92 /* dialog_property_string.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_property_string.c; path = ../dim3Common/Code/dialog_property_string.c; sourceTree = SOURCE_ROOT; };
 		26EE4950126B84F8001D0025 /* animator_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = animator_defs.h; path = Headers/animator_defs.h; sourceTree = "<group>"; };
 		26EE498D126B87A4001D0025 /* texture_palette_common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = texture_palette_common.c; path = ../dim3Common/Code/texture_palette_common.c; sourceTree = SOURCE_ROOT; };
 		26EE49C6126B896F001D0025 /* interface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = interface.h; path = Headers/interface.h; sourceTree = "<group>"; };
@@ -223,8 +233,6 @@
 		F5C6C64A09D659BB005DFE3D /* dialog_model_settings.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = dialog_model_settings.c; path = Code/dialog_model_settings.c; sourceTree = "<group>"; };
 		F5CA4EF7051010AD0055C8B8 /* modelutility.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = modelutility.h; path = ../dim3Common/Headers/modelutility.h; sourceTree = SOURCE_ROOT; };
 		F5D1A7A30CF933E6001B5E1B /* dialog_play_blend_animation.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = dialog_play_blend_animation.c; path = Code/dialog_play_blend_animation.c; sourceTree = "<group>"; };
-		F5D97E160857E233000BB6A3 /* dialog_file_open.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = dialog_file_open.c; path = Code/dialog_file_open.c; sourceTree = "<group>"; };
-		F5D97E170857E233000BB6A3 /* dialog_file_new.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = dialog_file_new.c; path = Code/dialog_file_new.c; sourceTree = "<group>"; };
 		F5EA20E80CCB0B6D005A75F6 /* dialog_finish_import.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = dialog_finish_import.c; path = Code/dialog_finish_import.c; sourceTree = "<group>"; };
 		F5F2FF1409AAC18600F88975 /* dialog_vertex_setting.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = dialog_vertex_setting.c; path = Code/dialog_vertex_setting.c; sourceTree = "<group>"; };
 		F5F49567067C169C00E809E7 /* libModelUtility.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libModelUtility.dylib; path = ../dim3Common/Libraries/libModelUtility.dylib; sourceTree = SOURCE_ROOT; };
@@ -288,6 +296,8 @@
 				262C397612D026A500A94FEE /* list_palette_common.c */,
 				262C395512D025F700A94FEE /* item_palette.c */,
 				262C395612D025F700A94FEE /* property_palette.c */,
+				26CAEC7812D675C500310691 /* property_utility_common.c */,
+				26CAEC7912D675C500310691 /* texture_edit_common.c */,
 				262C380112CFA5AE00A94FEE /* text_common.c */,
 				262C380012CFA5A100A94FEE /* progress_common.c */,
 			);
@@ -434,8 +444,10 @@
 			children = (
 				26CF633D126BF3ED002DCC2A /* dialog_utility_common.c */,
 				F5B0662C0970936D0045DBE1 /* dialog_about.c */,
-				F5D97E170857E233000BB6A3 /* dialog_file_new.c */,
-				F5D97E160857E233000BB6A3 /* dialog_file_open.c */,
+				26E3F10612D6CE8300C8BE92 /* dialog_file_new.c */,
+				26E3F10712D6CE8300C8BE92 /* dialog_file_open.c */,
+				26E3F10812D6CE8300C8BE92 /* dialog_property_list.c */,
+				26E3F10912D6CE8300C8BE92 /* dialog_property_string.c */,
 				F5EA20E80CCB0B6D005A75F6 /* dialog_finish_import.c */,
 				F5AF0C9C09638E9700F99950 /* dialog_texture_setting.c */,
 				F5C6C64A09D659BB005DFE3D /* dialog_model_settings.c */,
@@ -562,8 +574,6 @@
 				F5A42DA80555EC87002DF965 /* obj_import.c in Sources */,
 				F5B4082807104E7700600D33 /* click_window.c in Sources */,
 				F579A01E07DFDF8400DB4213 /* insert.c in Sources */,
-				F5D97E180857E233000BB6A3 /* dialog_file_open.c in Sources */,
-				F5D97E190857E233000BB6A3 /* dialog_file_new.c in Sources */,
 				F5AF0C9D09638E9700F99950 /* dialog_texture_setting.c in Sources */,
 				F5B0662D0970936D0045DBE1 /* dialog_about.c in Sources */,
 				F5941295097878F300223F2A /* dialog_mesh_info.c in Sources */,
@@ -607,6 +617,12 @@
 				262C397712D026A500A94FEE /* list_palette_common.c in Sources */,
 				261CE8E312D02A9A00D1D8BF /* main_window.c in Sources */,
 				261CE99012D034AB00D1D8BF /* OSX_main.c in Sources */,
+				26CAEC7A12D675C500310691 /* property_utility_common.c in Sources */,
+				26CAEC7B12D675C500310691 /* texture_edit_common.c in Sources */,
+				26E3F10A12D6CE8300C8BE92 /* dialog_file_new.c in Sources */,
+				26E3F10B12D6CE8300C8BE92 /* dialog_file_open.c in Sources */,
+				26E3F10C12D6CE8300C8BE92 /* dialog_property_list.c in Sources */,
+				26E3F10D12D6CE8300C8BE92 /* dialog_property_string.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

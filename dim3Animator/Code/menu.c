@@ -881,26 +881,6 @@ bool menu_event_run(int cmd)
 			main_wind_draw();
 			return(TRUE);
 			
-			// blending menu
-			
-		case kCommandBlendSetSkipAll:
-			if (state.cur_pose_idx==-1) return(TRUE);
-			
-			model_pose_blend_set_all(&model,state.cur_pose_idx,TRUE);
-			return(TRUE);
-			
-		case kCommandBlendSetSkipNone:
-			if (state.cur_pose_idx==-1) return(TRUE);
-			
-			model_pose_blend_set_all(&model,state.cur_pose_idx,FALSE);
-			return(TRUE);
-			
-		case kCommandBlendFlipSkip:
- 			if ((state.cur_pose_idx==-1) || (state.cur_bone_idx==-1)) return(TRUE);
-			
-			model.poses[state.cur_pose_idx].bone_moves[state.cur_bone_idx].skip_blended=!model.poses[state.cur_pose_idx].bone_moves[state.cur_bone_idx].skip_blended;
-			return(TRUE);
-						
 			// animation menu
 			
 		case kCommandNewAnimate:

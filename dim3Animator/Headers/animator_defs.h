@@ -147,10 +147,6 @@ and can be sold or given away.
 #define kCommandDeletePose				FOUR_CHAR_CODE('kpse')
 #define kCommandGoToBoneMoveParent		FOUR_CHAR_CODE('pmbn')
 
-#define kCommandBlendSetSkipAll			FOUR_CHAR_CODE('bsas')
-#define kCommandBlendSetSkipNone		FOUR_CHAR_CODE('bsns')
-#define kCommandBlendFlipSkip			FOUR_CHAR_CODE('bfsk')
-
 #define kCommandNewAnimate				FOUR_CHAR_CODE('nani')
 #define kCommandDupAnimate				FOUR_CHAR_CODE('dani')
 #define kCommandDeleteAnimate			FOUR_CHAR_CODE('kani')

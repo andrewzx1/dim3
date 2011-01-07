@@ -1,8 +1,8 @@
 /****************************** File *********************************
 
-Module: dim3 Animator
+Module: dim3 Common
 Author: Brian Barnes
- Usage: File Open Dialogs
+ Usage: File Open Routines
 
 ***************************** License ********************************
 
@@ -25,19 +25,22 @@ and can be sold or given away.
  
 *********************************************************************/
 
+#include "glue.h"
+#include "interface.h"
 #include "dialog.h"
 
 #define kFileOpenList				FOUR_CHAR_CODE('list')
 #define kFileOpenListNameColumn		FOUR_CHAR_CODE('name')
 #define kFileOpenButton				FOUR_CHAR_CODE('open')
 
-int								fp_file_index;
-char							fp_file_name[256];
-bool							fp_cancel;
-file_path_directory_type		*fpd;
-WindowRef						dialog_file_open_wind;
+int									dialog_file_open_index;
+char								dialog_file_open_name[256];
+bool								dialog_file_cancel;
+WindowRef							dialog_file_open_wind;
 
-extern file_path_setup_type		file_path_setup;
+file_path_directory_type			*fpd;
+
+extern file_path_setup_type			file_path_setup;
 
 /* =======================================================
 
@@ -61,7 +64,7 @@ static pascal OSStatus file_open_event_proc(EventHandlerCallRef handler,EventRef
 					return(noErr);
 					
 				case kHICommandCancel:
-					fp_cancel=TRUE;
+					dialog_file_cancel=TRUE;
 					QuitAppModalLoopForWindow(dialog_file_open_wind);
 					return(noErr);
 			}
@@ -128,16 +131,16 @@ static pascal void file_open_list_notify_proc(ControlRef ctrl,DataBrowserItemID 
 	switch (message) {
 	
 		case kDataBrowserItemDoubleClicked:
-			fp_file_index=itemID-1;
-			if (!fpd->files[fp_file_index].is_dir) QuitAppModalLoopForWindow(dialog_file_open_wind);
+			dialog_file_open_index=itemID-1;
+			if (!fpd->files[dialog_file_open_index].is_dir) QuitAppModalLoopForWindow(dialog_file_open_wind);
 			break;
 
 		case kDataBrowserItemSelected:
-			fp_file_index=itemID-1;
+			dialog_file_open_index=itemID-1;
 			break;
 			
 		case kDataBrowserItemDeselected:
-			if (fp_file_index==(itemID-1)) fp_file_index=-1;
+			if (dialog_file_open_index==(itemID-1)) dialog_file_open_index=-1;
 			break;
 			
 		case kDataBrowserContainerOpened:
@@ -150,8 +153,8 @@ static pascal void file_open_list_notify_proc(ControlRef ctrl,DataBrowserItemID 
 		// enable open button
 		
 	enable=FALSE;
-	if (fp_file_index!=-1) {
-		enable=!fpd->files[fp_file_index].is_dir;
+	if (dialog_file_open_index!=-1) {
+		enable=!fpd->files[dialog_file_open_index].is_dir;
 	}
 
 	dialog_enable(dialog_file_open_wind,kFileOpenButton,0,enable);
@@ -163,10 +166,9 @@ static pascal void file_open_list_notify_proc(ControlRef ctrl,DataBrowserItemID 
       
 ======================================================= */
 
-bool dialog_file_open_run(char *dialog_name,char *search_path,char *extension,char *required_file_name,char *file_name)
+bool dialog_file_open_run(char *title,char *search_path,char *extension,char *required_file_name,char *file_name)
 {
 	int								n,count;
-	CFStringRef						cfstr;
 	ControlRef						ctrl;
 	ControlID						ctrl_id;
 	DataBrowserCallbacks			dbcall;
@@ -179,10 +181,7 @@ bool dialog_file_open_run(char *dialog_name,char *search_path,char *extension,ch
 		// open the dialog
 		
 	dialog_open(&dialog_file_open_wind,"FileOpen");
-	
-	cfstr=CFStringCreateWithCString(kCFAllocatorDefault,dialog_name,kCFStringEncodingMacRoman);
-	SetWindowTitleWithCFString(dialog_file_open_wind,cfstr);
-	CFRelease(cfstr);
+	dialog_set_title(dialog_file_open_wind,title);
 	
 		// scan for files
 		
@@ -236,13 +235,13 @@ bool dialog_file_open_run(char *dialog_name,char *search_path,char *extension,ch
 	
 		// modal window
 		
-	fp_cancel=FALSE;
+	dialog_file_cancel=FALSE;
 	
 	RunAppModalLoopForWindow(dialog_file_open_wind);
 	
-		// get selected file
+		// get the file
 		
-	if (!fp_cancel) file_paths_get_complete_path_from_index(fpd,fp_file_index,file_name);
+	if (!dialog_file_cancel) file_paths_get_complete_path_from_index(fpd,dialog_file_open_index,file_name);
 	
 		// close window
 		
@@ -253,7 +252,7 @@ bool dialog_file_open_run(char *dialog_name,char *search_path,char *extension,ch
 		// clear up memory
 		
 	file_paths_close_directory(fpd);
-
-	return(!fp_cancel);
+		
+	return(!dialog_file_cancel);
 }
 

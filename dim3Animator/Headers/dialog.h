@@ -30,6 +30,7 @@ and can be sold or given away.
 //
 
 extern void dialog_open(WindowRef *wind,char *name);
+extern void dialog_set_title(WindowRef wind,char *title);
 extern void dialog_set_text(WindowRef wind,unsigned long sig,int id,char *str);
 extern void dialog_get_text(WindowRef wind,unsigned long sig,int id,char *str,int len);
 extern void dialog_set_int(WindowRef wind,unsigned long sig,int id,int value);
