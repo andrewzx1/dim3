@@ -58,7 +58,9 @@ and can be sold or given away.
 #define list_string_value_0_to_1_float						6
 #define list_string_value_point								7
 #define list_string_value_angle								8
-#define list_string_value_uv								9
+#define list_string_value_vector							9
+#define list_string_value_uv								10
+#define list_string_value_tag								11
 
 typedef union		{
 						bool								checkbox;
@@ -136,9 +138,11 @@ extern void list_palette_add_checkbox(list_palette_type *list,int id,char *name,
 extern void list_palette_add_pick_color(list_palette_type *list,int id,char *name,d3col *col,bool disabled);
 extern void list_palette_add_point(list_palette_type *list,int id,char *name,d3pnt *pnt,bool disabled);
 extern void list_palette_add_angle(list_palette_type *list,int id,char *name,d3ang *ang,bool disabled);
+extern void list_palette_add_vector(list_palette_type *list,int id,char *name,d3vct *vct,bool disabled);
 extern void list_palette_add_uv(list_palette_type *list,int id,char *name,d3fpnt *fpnt,bool disabled);
 extern void list_palette_add_texture(list_palette_type *list,texture_type *textures,int id,char *name,int txt_idx,bool disabled);
 extern void list_palette_add_shader(list_palette_type *list,int id,char *name,char *shader_name,bool disabled);
+extern void list_palette_add_string_tag(list_palette_type *list,int id,char *name,unsigned long tag,bool disabled);
 extern void list_palette_delete_all_items(list_palette_type *list);
 extern void list_palette_draw(list_palette_type *list);
 extern void list_palette_scroll_up(list_palette_type *list);

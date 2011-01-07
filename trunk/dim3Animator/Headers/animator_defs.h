@@ -88,8 +88,8 @@ and can be sold or given away.
 #define kCommandCalcNormals				FOUR_CHAR_CODE('cnrm')
 #define kCommandScaleAll				FOUR_CHAR_CODE('scal')
 #define kCommandFlipXAll				FOUR_CHAR_CODE('fxal')
-#define kCommandFlipZAll				FOUR_CHAR_CODE('fzal')
 #define kCommandFlipYAll				FOUR_CHAR_CODE('fyal')
+#define kCommandFlipZAll				FOUR_CHAR_CODE('fzal')
 #define kCommandSwapXZAll				FOUR_CHAR_CODE('spal')
 #define kCommandSwapYZAll				FOUR_CHAR_CODE('syal')
 #define kCommandCenterXZAll				FOUR_CHAR_CODE('ctal')
@@ -111,8 +111,8 @@ and can be sold or given away.
 #define kCommandInsertXML				FOUR_CHAR_CODE('opDM')
 #define kCommandScale					FOUR_CHAR_CODE('scle')
 #define kCommandFlipX					FOUR_CHAR_CODE('flpx')
-#define kCommandFlipZ					FOUR_CHAR_CODE('flpz')
 #define kCommandFlipY					FOUR_CHAR_CODE('flpy')
+#define kCommandFlipZ					FOUR_CHAR_CODE('flpz')
 #define kCommandFlipU					FOUR_CHAR_CODE('flpu')
 #define kCommandFlipV					FOUR_CHAR_CODE('flpv')
 #define kCommandSwapXZ					FOUR_CHAR_CODE('spxz')
@@ -158,11 +158,12 @@ and can be sold or given away.
 // Item types
 //
 
-#define item_mesh						0
-#define item_animation					1
-#define item_pose						2
-#define item_bone						3
-#define item_hit_box					4
+#define item_model						0
+#define item_mesh						1
+#define item_animation					2
+#define item_pose						3
+#define item_bone						4
+#define item_hit_box					5
 
 //
 // Draw Types
@@ -225,16 +226,16 @@ typedef struct		{
 					} play_blend_type;
 					
 typedef struct		{
-						int					cur_mesh_idx,cur_bone_idx,
-											cur_pose_idx,cur_animate_idx,
-											texture_edit_idx,
-											drag_bone_mode,select_mode,
+						int					cur_item,cur_mesh_idx,cur_bone_idx,
+											cur_pose_idx,cur_animate_idx,cur_hit_box_idx,
+											texture_edit_idx,drag_bone_mode,select_mode,
 											sel_trig_idx,magnify_z;
 						bool				model_open,
 											texture,mesh,bone,hit_box,
 											normal,view_box,first_mesh,
 											playing,play_animate_blend,
 											drag_sel_on;
+						char				file_name[256];
 						d3pnt				shift;
 						d3ang				ang;
 						d3rect				drag_sel_box;

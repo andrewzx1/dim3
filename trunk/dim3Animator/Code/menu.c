@@ -33,299 +33,10 @@ and can be sold or given away.
 #include "interface.h"
 #include "dialog.h"
 
-char							filename[256];
-
 extern model_type				model;
 extern model_draw_setup			draw_setup;
 extern file_path_setup_type		file_path_setup;
 extern animator_state_type		state;
-
-/* =======================================================
-
-      App Windows
-      
-======================================================= */
-
-void windows_start(void)
-{
-	int				n;
-	
-	state.texture=TRUE;
-	state.mesh=FALSE;
-	state.bone=FALSE;
-    state.hit_box=FALSE;
-	state.normal=FALSE;
-	state.view_box=FALSE;
-	state.first_mesh=FALSE;
-	
-	state.select_mode=select_mode_vertex;
-	state.drag_bone_mode=drag_bone_mode_rotate;
-	
-	state.sel_trig_idx=-1;
-	
-	state.cur_mesh_idx=0;
-	state.cur_bone_idx=-1;
-	state.cur_pose_idx=-1;
-	
-	state.playing=FALSE;
-	state.play_animate_blend=FALSE;
-	
-	state.sel_trig_idx=-1;
-	
-	for (n=0;n!=max_model_blend_animation;n++) {
-		state.blend[n].animate_idx=-1;
-	}
-	
-	main_wind_open();
-	
-	os_select_window();
-}
-
-void windows_end(void)
-{
-	main_wind_close();
-}
-
-/* =======================================================
-
-      XML Creation/Saving
-      
-======================================================= */
-
-bool create_binary(void)
-{
-	char			base_path[1024],path[1024];
-	
-	os_set_wait_cursor();
-	
-		// base path
-		
-	file_paths_data_default(&file_path_setup,base_path,"Models",NULL,NULL);
-    
-        // create the new folders
-		
-	strcat(base_path,"/");
-	strcat(base_path,filename);
-	os_create_directory(base_path);
-	
-	sprintf(path,"%s/Textures",base_path);
-	os_create_directory(path);
-
-        // write the binary
-	
-	model_save(&model);
-	
-	os_set_arrow_cursor();
-    
-	return(TRUE);
-}
-
-bool save_binary(void)
-{
-	bool				ok;
-	
-	os_set_wait_cursor();
-	
-	ok=model_save(&model);
-	os_set_arrow_cursor();
-	
-	if (!ok) os_dialog_alert("dim3 Animator could not save model.","The disk might be locked or a folder might be missing.\n\nIf you are running dim3 directly from the DMG file, then you need to move the files to your harddrive (DMGs are read-only).");
-	
-	return(ok);
-}
-
-/* =======================================================
-
-      Open Model XML
-      
-======================================================= */
-
-void reset_model_open(void)
-{
-	state.ang.x=0;
-    state.ang.y=180;
-	
-	state.shift.x=0;
-	state.shift.y=0;
-	
-	vertex_clear_sel_mask(state.cur_mesh_idx);
-	vertex_clear_hide_mask(state.cur_mesh_idx);
-	
-	state.cur_mesh_idx=0;
-	state.cur_bone_idx=-1;
-	
-	state.cur_pose_idx=-1;
-	if (model.npose!=0) state.cur_pose_idx=0;
-	
-	state.cur_animate_idx=-1;
-	if (model.nanimate!=0) state.cur_animate_idx=0;
-	
-	os_set_title_window(filename);
-	
-    main_wind_draw();
-	
-	undo_clear();
-	
-	menu_update();
-}
-
-void new_model_xml(void)
-{
-	char		fname[256];
-	
-		// get name
-	
-	strcpy(fname,"NewModel");
-	
-	if (!dialog_file_new_run("New Model",fname)) return;
-	
-	strcpy(filename,fname);
-	
-		// create model
-
-	os_set_wait_cursor();
-		
-	model_setup(&file_path_setup,anisotropic_mode_none,mipmap_mode_none,texture_quality_mode_high,FALSE);
-	model_new(&model,filename);
-	
-	model.nmesh=1;
-	strcpy(model.meshes[0].name,"Default");
-	
-	model.view_box.size.x=model.view_box.size.y=model.view_box.size.z=100;
-
-	windows_start();
-	
-	if (!create_binary()) {
-		windows_end();
-		os_set_arrow_cursor();
-		return;
-	}
-	
-	os_set_arrow_cursor();
-	
-		// finish
-		
-	state.model_open=TRUE;
-	
-	reset_model_open();
-}
-
-void open_model_xml(void)
-{
-	char		file_name[256];
-	
-	os_set_arrow_cursor();
-
-    if (!dialog_file_open_run("Open a Model","Models",NULL,"Mesh.xml",file_name)) return;
-	
-		// open model
-		
-	os_set_wait_cursor();
-
-	windows_start();
-    
-	model_setup(&file_path_setup,anisotropic_mode_none,mipmap_mode_none,texture_quality_mode_high,FALSE);
-	model_open(&model,file_name,TRUE);
-    	
-	os_set_arrow_cursor();
-	
-		// finish
-		
-	state.model_open=TRUE;
-	strcpy(filename,file_name);
-	
-	reset_model_open();
-}
-
-void close_model_xml(void)
-{
-	int				n;
-	
-	if (!state.model_open) return;
-	
-	model_close(&model);
-	
-	for (n=0;n!=max_model_mesh;n++) {
-		model.meshes[n].nvertex=0;
-		model.meshes[n].ntrig=0;
-	}
-	
-	model.nbone=0;
-	model.npose=0;
-	model.nanimate=0;
-	
-	for (n=0;n!=max_model_light;n++) {
-		model.tags.light_bone_tag[n]=FOUR_CHAR_CODE('\?\?\?\?');
-	}
-	
-	for (n=0;n!=max_model_halo;n++) {
-		model.tags.halo_bone_tag[n]=FOUR_CHAR_CODE('\?\?\?\?');
-	}
-	
-	model.tags.name_bone_tag=FOUR_CHAR_CODE('\?\?\?\?');
-	
-	windows_end();
-	
-	state.model_open=FALSE;
-}
-
-/* =======================================================
-
-      Import Meshes
-      
-======================================================= */
-
-void import_mesh_obj(bool replace)
-{
-	char			path[1024],err_str[256];
-	bool			found_normals;
-    
-	os_set_arrow_cursor();
-	if (!os_load_file(path,"obj")) return;
-	
-	if (state.cur_mesh_idx==-1) state.cur_mesh_idx=0;
-	
-	if (!import_obj(path,replace,&found_normals,err_str)) {
-		os_dialog_alert("OBJ Import",err_str);
-		return;
-	}
-
-		// finish setup
-		
-	vertex_clear_sel_mask(state.cur_mesh_idx);
-	
-	main_wind_draw();
-}
-
-/* =======================================================
-
-      Insert Meshes
-      
-======================================================= */
-
-void insert_mesh_dim3_model(void)
-{
-	char			file_name[256];
-	
-	os_set_arrow_cursor();
-
-    if (!dialog_file_open_run("Open a Model","Models",NULL,"Mesh.xml",file_name)) return;
-	
-	if (state.cur_mesh_idx==-1) state.cur_mesh_idx=0;
-	
-	os_set_wait_cursor();
-	
-	insert_model(file_name);
-	
-    model_calculate_parents(&model);
-    model_center_xz(&model,state.cur_mesh_idx);
-    model_floor(&model,state.cur_mesh_idx);
-    model_recalc_boxes(&model);
-	
-	os_set_arrow_cursor();
-	
-	main_wind_draw();
-}
 
 /* =======================================================
 
@@ -396,7 +107,7 @@ bool menu_save_changes_dialog(void)
 	choice=os_dialog_confirm("Save Changes?","Do you want to save the changes to this model?",TRUE);
 	if (choice==1) return(FALSE);
 	
-	if (choice==0) save_binary();
+	if (choice==0) file_save_model();
 	return(TRUE);
 }
 
@@ -424,29 +135,29 @@ bool menu_event_run(int cmd)
 
 		case kCommandNew:
 			main_wind_play(FALSE,FALSE);
-			new_model_xml();
+			file_new_model();
 			return(TRUE);
 
 		case kCommandOpen:
 			main_wind_play(FALSE,FALSE);
-			open_model_xml();
+			file_open_model();
 			return(TRUE);
 			
 		case kCommandClose:
 			if (!menu_save_changes_dialog()) return(TRUE);
-			close_model_xml();
+			file_close_model();
 			main_wind_play(FALSE,FALSE);
 			menu_update();
 			return(TRUE);
 			
 		case kCommandSave:
-			save_binary();
+			file_save_model();
 			return(TRUE);
 
 		case kCommandFileQuit:
 			if (state.model_open) {
 				if (!menu_save_changes_dialog()) return(TRUE);
-				close_model_xml();
+				file_close_model();
 			}
 			os_application_quit();
 			return(TRUE);
@@ -617,17 +328,17 @@ bool menu_event_run(int cmd)
 			
 		case kCommandImportOBJ:
 			main_wind_play(FALSE,FALSE);
-			import_mesh_obj(FALSE);
+			file_import_mesh_obj(FALSE);
 			return(TRUE);
 			
 		case kCommandReplaceOBJ:
 			main_wind_play(FALSE,FALSE);
-			import_mesh_obj(TRUE);
+			file_import_mesh_obj(TRUE);
 			return(TRUE);
 			
 		case kCommandInsertXML:
 			main_wind_play(FALSE,FALSE);
-			insert_mesh_dim3_model();
+			file_insert_mesh_dim3_model();
 			return(TRUE);
 			
 		case kCommandScale:

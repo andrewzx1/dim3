@@ -192,6 +192,43 @@ void draw_model_setup_bones_vertexes(int mesh_idx)
 
 /* =======================================================
 
+      Draw Model Info
+      
+======================================================= */
+
+void draw_model_info(void)
+{
+	int				x,y;
+	char			str[256];
+
+	x=model_box.lx+5;
+	y=model_box.ty+20;
+
+	sprintf(str,"Mesh: %s",model.meshes[state.cur_mesh_idx].name);
+	text_draw(x,y,15,NULL,str);
+	y+=15;
+
+	if (state.cur_animate_idx!=-1) {
+		sprintf(str,"Animation: %s",model.animates[state.cur_animate_idx].name);
+	}
+	else {
+		strcpy(str,"Animation: (none)");
+	}
+	text_draw(x,y,15,NULL,str);
+	y+=15;
+
+	if (state.cur_pose_idx!=-1) {
+		sprintf(str,"Pose: %s",model.poses[state.cur_pose_idx].name);
+	}
+	else {
+		strcpy(str,"Pose: (none)");
+	}
+	text_draw(x,y,15,NULL,str);
+	y+=15;
+}
+
+/* =======================================================
+
       Draw Model Window
       
 ======================================================= */
@@ -292,14 +329,9 @@ void draw_model_wind(int mesh_idx)
 		glEnd();
 	}
 	
-		// border
-		
-	glColor4f(0.0f,0.0f,0.0f,1.0f);
+		// info
 
-	glBegin(GL_LINES);
-	glVertex2i(model_box.rx,model_box.ty);
-	glVertex2i(model_box.rx,model_box.by);
-	glEnd();
+	draw_model_info();
 }
 
 void draw_model_setup_pose(int pose_idx)

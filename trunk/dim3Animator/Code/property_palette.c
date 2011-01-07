@@ -96,9 +96,6 @@ void property_palette_setup(void)
 
 void property_palette_fill(void)
 {
-/*
-	int					sel_type,main_idx,sub_idx;
-
 		// delete the properties
 
 	list_palette_delete_all_items(&property_palette);
@@ -106,74 +103,47 @@ void property_palette_fill(void)
 		// if texture window is up,
 		// put in texture properties
 
-	if (state.view_texture_idx!=-1) {
+	if (state.texture_edit_idx!=-1) {
 		list_palette_set_title(&property_palette,"Texture Properties");
-		property_palette_fill_texture(state.view_texture_idx);
-		return;
-	}
-
-		// fill in the properties for
-		// the currently selected item
-
-	main_idx=-1;
-	
-	if (select_count()!=0)  select_get(0,&sel_type,&main_idx,&sub_idx);
-	
-		// no selection, map properties
-
-	if (main_idx==-1) {
-		list_palette_set_title(&property_palette,"Map Properties");
-		property_palette_fill_map();
+		property_palette_fill_texture(state.texture_edit_idx);
 		return;
 	}
 
 		// selection properties
 
-	switch (sel_type) {
+	switch (state.cur_item) {
 
-		case mesh_piece:
+		case item_model:
+			list_palette_set_title(&property_palette,"Model Properties");
+			property_palette_fill_model();
+			break;
+
+		case item_mesh:
 			list_palette_set_title(&property_palette,"Mesh Properties");
-			if (state.drag_mode!=drag_mode_polygon) sub_idx=-1;
-			property_palette_fill_mesh(main_idx,sub_idx);
+			property_palette_fill_mesh(state.cur_mesh_idx);
 			break;
 
-		case liquid_piece:
-			list_palette_set_title(&property_palette,"Liquid Properties");
-			property_palette_fill_liquid(main_idx);
+		case item_animation:
+			list_palette_set_title(&property_palette,"Animation Properties");
+			property_palette_fill_animation(state.cur_animate_idx);
 			break;
 
-		case spot_piece:
-			list_palette_set_title(&property_palette,"Spot Properties");
-			property_palette_fill_spot(main_idx);
+		case item_pose:
+			list_palette_set_title(&property_palette,"Pose Properties");
+			property_palette_fill_pose(state.cur_pose_idx);
 			break;
 
-		case light_piece:
-			list_palette_set_title(&property_palette,"Light Properties");
-			property_palette_fill_light(main_idx);
+		case item_bone:
+			list_palette_set_title(&property_palette,"Bone Properties");
+			property_palette_fill_bone(state.cur_bone_idx);
 			break;
 
-		case sound_piece:
-			list_palette_set_title(&property_palette,"Sound Properties");
-			property_palette_fill_sound(main_idx);
-			break;
-
-		case particle_piece:
-			list_palette_set_title(&property_palette,"Particle Properties");
-			property_palette_fill_particle(main_idx);
-			break;
-
-		case scenery_piece:
-			list_palette_set_title(&property_palette,"Scenery Properties");
-			property_palette_fill_scenery(main_idx);
-			break;
-
-		case node_piece:
-			list_palette_set_title(&property_palette,"Node Properties");
-			property_palette_fill_node(main_idx);
+		case item_hit_box:
+			list_palette_set_title(&property_palette,"Hit Box Properties");
+			property_palette_fill_hit_box(state.cur_hit_box_idx);
 			break;
 
 	}
-	*/
 }
 
 /* =======================================================
@@ -236,7 +206,6 @@ void property_palette_scroll_wheel(d3pnt *pnt,int move)
 
 void property_palette_click(d3pnt *pnt,bool double_click)
 {
-	int					sel_type,main_idx,sub_idx;
 	bool				old_open;
 
 		// check if open changes
@@ -259,67 +228,42 @@ void property_palette_click(d3pnt *pnt,bool double_click)
 
 	if (property_palette.item_id==-1) return;
 
-	/*
-
 		// if texture window is up, texture properties
 
-	if (state.view_texture_idx!=-1) {
-		property_palette_click_texture(state.view_texture_idx,property_palette.item_id);
-		return;
-	}
-
-		// get the selection
-
-	main_idx=-1;
-	
-	if (select_count()!=0) select_get(0,&sel_type,&main_idx,&sub_idx);
-
-		// no selection, map properties
-
-	if (main_idx==-1) {
-		property_palette_click_map(property_palette.item_id);
+	if (state.texture_edit_idx!=-1) {
+		property_palette_click_texture(state.texture_edit_idx,property_palette.item_id);
 		return;
 	}
 
 		// selection properties
 
-	switch (sel_type) {
+	switch (state.cur_item) {
 
-		case mesh_piece:
-			if (state.drag_mode!=drag_mode_polygon) sub_idx=-1;
-			property_palette_click_mesh(main_idx,sub_idx,property_palette.item_id);
+		case item_model:
+			property_palette_click_model(property_palette.item_id);
 			break;
 
-		case liquid_piece:
-			property_palette_click_liquid(main_idx,property_palette.item_id);
+		case item_mesh:
+			property_palette_click_mesh(state.cur_mesh_idx,property_palette.item_id);
 			break;
 
-		case spot_piece:
-			property_palette_click_spot(main_idx,property_palette.item_id);
+		case item_animation:
+			property_palette_click_animation(state.cur_animate_idx,property_palette.item_id);
 			break;
 
-		case light_piece:
-			property_palette_click_light(main_idx,property_palette.item_id);
+		case item_pose:
+			property_palette_click_pose(state.cur_pose_idx,property_palette.item_id);
 			break;
 
-		case sound_piece:
-			property_palette_click_sound(main_idx,property_palette.item_id);
+		case item_bone:
+			property_palette_click_bone(state.cur_bone_idx,property_palette.item_id);
 			break;
 
-		case particle_piece:
-			property_palette_click_particle(main_idx,property_palette.item_id);
-			break;
-
-		case scenery_piece:
-			property_palette_click_scenery(main_idx,property_palette.item_id);
-			break;
-
-		case node_piece:
-			property_palette_click_node(main_idx,property_palette.item_id);
+		case item_hit_box:
+			property_palette_click_hit_box(state.cur_hit_box_idx,property_palette.item_id);
 			break;
 
 	}
-	*/
 }
 
 /* =======================================================
@@ -514,6 +458,12 @@ void property_palette_pick_texture(int *txt_idx)
 
 	dialog_property_list_run((char*)texture_names,max_map_texture,name_str_len,0,TRUE,txt_idx);
 }
+*/
+
+void property_palette_pick_bone(int *bone_idx)
+{
+	dialog_property_list_run((char*)model.bones,model.nbone,sizeof(model_bone_type),(int)offsetof(model_bone_type,name),TRUE,bone_idx);
+}
 
 void property_palette_pick_shader(char *name)
 {
@@ -547,4 +497,4 @@ void property_palette_pick_shader(char *name)
 	name[0]=0x0;
 	if (idx!=-1) strcpy(name,shader_names[idx]);
 }
-*/
+

@@ -16,119 +16,122 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Save",						103
         MENUITEM SEPARATOR
-        MENUITEM "Auto Generate Map...",		104
-        MENUITEM SEPARATOR
-        MENUITEM "Exit",						105
+        MENUITEM "Exit",						104
     END
     POPUP "Edit"
     BEGIN
         MENUITEM "Undo",						200
+    END
+    POPUP "Model"
+    BEGIN
+        MENUITEM "Settings...",					300
+        MENUITEM "Hit Boxes...",				301
 		MENUITEM SEPARATOR
-        MENUITEM "Delete",						201
-        MENUITEM "Duplicate",					202
+        MENUITEM "Prepare Model",				302
+        MENUITEM "Calculate Boxes",				303
+        MENUITEM "Calculate Normals",			304
 		MENUITEM SEPARATOR
-        MENUITEM "Select More",					203
+        MENUITEM "Scale...",					305
+		MENUITEM SEPARATOR
+        MENUITEM "Flip X",						306
+        MENUITEM "Flip Y",						307
+        MENUITEM "Flip Z",						308
+		MENUITEM SEPARATOR
+        MENUITEM "Swap X/Z",					309
+        MENUITEM "Swap Y/Z",					310
+        MENUITEM "Center X/Z",					311
+        MENUITEM "Floor Y",						312
     END
     POPUP "View"
     BEGIN
-        MENUITEM "Front",						300
-        MENUITEM "Left",						301
-        MENUITEM "Right",						302
-        MENUITEM "Back",						303
-        MENUITEM "Top",							304
-        MENUITEM "Bottom",						305
-		MENUITEM SEPARATOR
-        MENUITEM "Perspecitve",					306
-        MENUITEM "Ortho",						307
- 		MENUITEM SEPARATOR
-        MENUITEM "Normal UV Layer",				308
-        MENUITEM "Light Map UV Layer",			309
-		MENUITEM SEPARATOR
-        MENUITEM "Goto Selection",				310
-        MENUITEM "Goto Map Center",				311
-		MENUITEM SEPARATOR
-        MENUITEM "Clipping",					312
-		MENUITEM SEPARATOR
-        MENUITEM "Liquids",						313
-        MENUITEM "Spots and Scenery",			314
-        MENUITEM "Lights, Sounds and Particles",315
-        MENUITEM "Nodes",						316
-		MENUITEM SEPARATOR
-        MENUITEM "Split Panel Horizontal",		317
-        MENUITEM "Split Panel Vertical",		318
-        MENUITEM "Remove Panel",				319
-    END
-    POPUP "Map"
-    BEGIN
-        MENUITEM "Add Cinema...",				400
-        MENUITEM "Add Group...",				401
-        MENUITEM "Add Movement...",				402
-		MENUITEM SEPARATOR
-        MENUITEM "Raise Y",						403
-        MENUITEM "Lower Y",						404
-        MENUITEM "Center",						405
-		MENUITEM SEPARATOR
-        MENUITEM "Reset UVs",					406
-		MENUITEM SEPARATOR
-        MENUITEM "Recalc Normals",				407
-		MENUITEM SEPARATOR
-        MENUITEM "Clear Light Maps",			408
-        MENUITEM "Build Light Maps...",			409
-		MENUITEM SEPARATOR
-        MENUITEM "Run...",						410
+        MENUITEM "Front",						400
+        MENUITEM "Left",						401
+        MENUITEM "Right",						402
+        MENUITEM "Back",						403
+        MENUITEM "Top",							404
+        MENUITEM "Bottom",						405
     END
     POPUP "Mesh"
     BEGIN
-        MENUITEM "Combine",						500
-        MENUITEM "Split",						501
-        MENUITEM "Tesselate",					502
+        MENUITEM "Add Mesh...",					500
+        MENUITEM "Duplicate Mesh...",			501
+        MENUITEM "Copy Mesh...",				502
 		MENUITEM SEPARATOR
-        MENUITEM "Resize...",					503
-        MENUITEM "Reposition...",				504
+        MENUITEM "Delete Mesh",					503
 		MENUITEM SEPARATOR
-        MENUITEM "Flip X",						506
-        MENUITEM "Flip Y",						507
-        MENUITEM "Flip Z",						508
+        MENUITEM "Import OBJ...",				504
+        MENUITEM "Replace OBJ...",				505
+        MENUITEM "Add dim3 Mesh...",			506
 		MENUITEM SEPARATOR
-        MENUITEM "Rotate X",					509
-        MENUITEM "Rotate Y",					510
-        MENUITEM "Rotate Z",					511
-        MENUITEM "Free Rotate...",				512
+        MENUITEM "Scale...",					507
 		MENUITEM SEPARATOR
-        MENUITEM "Raise Y",						513
-        MENUITEM "Lower Y",						514
+        MENUITEM "Flip X",						508
+        MENUITEM "Flip Y",						509
+        MENUITEM "Flip Z",						510
 		MENUITEM SEPARATOR
-        MENUITEM "Select All Polygons",			515
+        MENUITEM "Flip Texture Us",				511
+        MENUITEM "Flip Texture Vs",				512
  		MENUITEM SEPARATOR
-        MENUITEM "Snap Mesh To Grid",			516
-        MENUITEM "Snap Mesh To Closest Vertex",	517
- 		MENUITEM SEPARATOR
-        MENUITEM "Reset Mesh UVs",				518
-        MENUITEM "Whole Mesh UVs",				519
-        MENUITEM "Single Stamp Mesh UVs",		520
-		MENUITEM SEPARATOR
-        MENUITEM "Recalc Normals",				521
-        MENUITEM "Invert Normals",				522
+        MENUITEM "Swap X/Z",					513
+        MENUITEM "Swap Y/Z",					514
+        MENUITEM "Center X/Z",					515
+        MENUITEM "Floor Y",						516
    END
-    POPUP "Polygon"
+    POPUP "Vertexes"
     BEGIN
-        MENUITEM "Punch Middle Hole",			600
+        MENUITEM "Select All",					600
+        MENUITEM "Select Not Attached",			601
 		MENUITEM SEPARATOR
-        MENUITEM "Snap Polygon To Grid",		601
- 		MENUITEM SEPARATOR
-        MENUITEM "Rotate Polygon UVs",			602
-        MENUITEM "Flip Us",						603
-        MENUITEM "Flip Vs",						604
+        MENUITEM "Nudge...",					602
+        MENUITEM "Scale...",					603
+        MENUITEM "Rotate...",					604
  		MENUITEM SEPARATOR
         MENUITEM "Invert Normals",				605
+        MENUITEM "Set Normals",					606
  		MENUITEM SEPARATOR
-        MENUITEM "Reset Polygon UVs",			606
-        MENUITEM "Whole Polygon UVs",			607
-        MENUITEM "Single Stamp Polygon UVs",	608
+        MENUITEM "Clear Bone Attachments",		607
+ 		MENUITEM SEPARATOR
+        MENUITEM "Hide Selected",				608
+        MENUITEM "Hide Non-Selected",			609
+        MENUITEM "Show All",					610
+ 		MENUITEM SEPARATOR
+        MENUITEM "Delete Vertexes",				611
     END
-    POPUP "Vertex"
+    POPUP "Bones"
     BEGIN
-        MENUITEM "Snap All Vertexes To Grid",	700
+        MENUITEM "Add Bone...",					700
+        MENUITEM "Set Bone...",					701
+ 		MENUITEM SEPARATOR
+        MENUITEM "Nudge...",					702
+ 		MENUITEM SEPARATOR
+        MENUITEM "Select Vertexes Near Bone",	703
+ 		MENUITEM SEPARATOR
+        MENUITEM "Delete Bone",					704
+    END
+    POPUP "Poses"
+    BEGIN
+        MENUITEM "New Pose...",					800
+        MENUITEM "Duplicate Pose...",			801
+ 		MENUITEM SEPARATOR
+        MENUITEM "Previous Pose",				802
+        MENUITEM "Next Pose",					803
+		MENUITEM SEPARATOR
+        MENUITEM "Clear Pose",					804
+        MENUITEM "Delete Pose",					805
+ 		MENUITEM SEPARATOR
+        MENUITEM "To Parent Bone Move",			806
+    END
+    POPUP "Animations"
+    BEGIN
+        MENUITEM "New Animation...",			900
+        MENUITEM "Duplicate Animation...",		901
+ 		MENUITEM SEPARATOR
+        MENUITEM "Delete Animation",			902
+		MENUITEM SEPARATOR
+        MENUITEM "Scale Animation Time...",		903
+ 		MENUITEM SEPARATOR
+        MENUITEM "Play Animation",				904
+        MENUITEM "Play Blended Animation...",	905
     END
 END
 

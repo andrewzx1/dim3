@@ -72,17 +72,6 @@ void main_wind_initialize(void)
 		// vertex masks
 		
 	vertex_mask_initialize();
-	
-		// misc setup
-		
-	state.texture_edit_idx=-1;
-	state.drag_sel_on=FALSE;
-	state.magnify_z=3000;
-   
-		// animation setup
-		
-	state.cur_animate_idx=-1;
-	main_wind_play(FALSE,FALSE);
 }
 
 void main_wind_shutdown(void)
@@ -363,6 +352,8 @@ void main_wind_play(bool play,bool blend)
 
 void main_wind_click(d3pnt *pnt,bool double_click)
 {
+	bool			old_playing;
+
 		// tool palette
 
 	if (pnt->y<tool_palette_box.by) {
@@ -390,6 +381,11 @@ void main_wind_click(d3pnt *pnt,bool double_click)
 	}
 
 		// model clicks
+		// turn off animation as it glitches
+		// up the win32 timers
+
+	old_playing=state.playing;
+	state.playing=FALSE;
 
 	if (state.texture_edit_idx==-1) {
 		model_wind_click(pnt);
@@ -397,6 +393,8 @@ void main_wind_click(d3pnt *pnt,bool double_click)
 	else {
 		texture_edit_click(pnt,double_click);
 	}
+
+	state.playing=old_playing;
 }
 
 /* =======================================================

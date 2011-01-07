@@ -55,8 +55,12 @@ extern bool menu_event_run(int cmd);
 // dos
 //
 
-extern void open_model_xml(void);
-extern void close_model_xml(void);
+extern void file_new_model(void);
+extern void file_open_model(void);
+extern bool file_save_model(void);
+extern void file_close_model(void);
+extern void file_import_mesh_obj(bool replace);
+extern void file_insert_mesh_dim3_model(void);
 
 //
 // undo
@@ -106,6 +110,25 @@ extern void property_palette_draw(void);
 extern void property_palette_reset(void);
 extern void property_palette_scroll_wheel(d3pnt *pnt,int move);
 extern void property_palette_click(d3pnt *pnt,bool double_click);
+
+extern void property_palette_pick_bone(int *bone_idx);
+extern void property_palette_pick_shader(char *name);
+
+extern void property_palette_fill_model(void);
+extern void property_palette_fill_mesh(int mesh_idx);
+extern void property_palette_fill_animation(int animate_idx);
+extern void property_palette_fill_pose(int pose_idx);
+extern void property_palette_fill_bone(int bone_idx);
+extern void property_palette_fill_hit_box(int hit_box_idx);
+extern void property_palette_fill_texture(int texture_idx);
+
+extern void property_palette_click_model(int id);
+extern void property_palette_click_mesh(int mesh_idx,int id);
+extern void property_palette_click_animation(int animation_idx,int id);
+extern void property_palette_click_pose(int pose_idx,int id);
+extern void property_palette_click_bone(int bone_idx,int id);
+extern void property_palette_click_hit_box(int hit_box_idx,int id);
+extern void property_palette_click_texture(int texture_idx,int id);
 
 //
 // importing
