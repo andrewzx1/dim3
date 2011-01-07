@@ -63,6 +63,15 @@ void dialog_open(WindowRef *wind,char *name)
 	DisposeNibReference(nib);
 }
 
+void dialog_set_title(WindowRef wind,char *title)
+{
+	CFStringRef				cf_str;
+	
+	cf_str=CFStringCreateWithCString(kCFAllocatorDefault,title,kCFStringEncodingMacRoman);
+	SetWindowTitleWithCFString(wind,cf_str);
+	CFRelease(cf_str);
+}
+
 /* =======================================================
 
       Text and Number Utilities

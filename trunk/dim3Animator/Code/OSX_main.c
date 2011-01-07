@@ -88,7 +88,6 @@ void main_wind_event_resize(void)
 OSStatus main_wind_event_handler(EventHandlerCallRef eventhandler,EventRef event,void *userdata)
 {
 	unsigned long		modifiers,nclick;
-	unsigned short		btn;
 	long				delta;
 	char				ch;
 	d3pnt				pnt;
@@ -118,33 +117,8 @@ OSStatus main_wind_event_handler(EventHandlerCallRef eventhandler,EventRef event
 					pnt.x=pt.h;
 					pnt.y=pt.v;
 					
-						// clicking in right side controls
-						
-					if (pt.h>=model_box.rx) return(eventNotHandledErr);
-
-						// clicking in toolbar
-
-					if (pt.v<=model_box.ty) {
-						tool_palette_click(&pnt);
-						return(noErr);
-					}
-					
-						// clicking in palettes
-						
 					GetEventParameter(event,kEventParamClickCount,typeUInt32,NULL,sizeof(unsigned long),NULL,&nclick);
-					 
-					if (pt.v>=model_box.by) {
-						texture_palette_click(model.textures,&pnt,(nclick!=1));
-						return(noErr);
-					}
-					
-						// clicking in model view
-						
-					GetEventParameter(event,kEventParamKeyModifiers,typeUInt32,NULL,sizeof(unsigned long),NULL,&modifiers);
-					GetEventParameter(event,kEventParamMouseButton,typeMouseButton,NULL,sizeof(unsigned short),NULL,&btn);
-					
-					click_model_wind(&pnt,modifiers);
-					
+					main_wind_click(&pnt,(nclick!=1));
 					return(noErr);
 					
 				case kEventWindowClose:
@@ -191,23 +165,19 @@ OSStatus main_wind_event_handler(EventHandlerCallRef eventhandler,EventRef event
 			
 				case kEventMouseWheelMoved:
 				
-						// are we over model window?
+					GetEventParameter(event,kEventParamMouseWheelAxis,typeMouseWheelAxis,NULL,sizeof(EventMouseWheelAxis),NULL,&axis);
+					if (axis!=kEventMouseWheelAxisY) return(noErr);
 						
 					GetEventParameter(event,kEventParamMouseLocation,typeQDPoint,NULL,sizeof(Point),NULL,&pt);
 					SetPort(GetWindowPort(wind));
 					
 					GlobalToLocal(&pt);
-					if (pt.h>=model_box.rx) return(eventNotHandledErr);
-					if (pt.v<=model_box.ty) return(eventNotHandledErr);
-					if (pt.v>=model_box.by) return(eventNotHandledErr);
+					pnt.x=pt.h;
+					pnt.y=pt.v;
 					
-						// zoom
-						
-					GetEventParameter(event,kEventParamMouseWheelAxis,typeMouseWheelAxis,NULL,sizeof(EventMouseWheelAxis),NULL,&axis);
-					if (axis!=kEventMouseWheelAxisY) return(noErr);
 					GetEventParameter(event,kEventParamMouseWheelDelta,typeLongInteger,NULL,sizeof(long),NULL,&delta);
-					state.magnify_z+=(delta*20);
-					main_wind_draw();
+					main_wind_scroll_wheel(&pnt,delta);
+
 					return(noErr);
 					
 			}
@@ -250,23 +220,13 @@ void main_wind_open(void)
 	SetRect(&box,wbox.left,(wbox.top+25),wbox.right,wbox.bottom);
 	CreateNewWindow(kDocumentWindowClass,kWindowStandardDocumentAttributes|kWindowLiveResizeAttribute|kWindowStandardHandlerAttribute|kWindowInWindowMenuAttribute,&box,&wind);
 	SetWTitle(wind,"\pModel");
-	ShowWindow(wind);
-	
-		// set font
-		
-	SetPort(GetWindowPort(wind));
-	TextFont(FMGetFontFamilyFromName("\pMonaco"));
-	TextSize(10);
-	
-		// get gl sizes
-		
-	GetWindowPortBounds(wind,&box);
 
-		// dragging for bones window
+		// show window
 		
-	SetAutomaticControlDragTrackingEnabledForWindow(wind,TRUE);
+	ShowWindow(wind);
+	SetPort(GetWindowPort(wind));
 	
-		// model OpenGL contexts
+		// OpenGL context
 		
 	pf=aglChoosePixelFormat(NULL,0,attrib);
 	
@@ -275,14 +235,6 @@ void main_wind_open(void)
 	aglSetCurrentContext(ctx);
 	aglDestroyPixelFormat(pf);
 	
-	main_wind_gl_setup();
-	
-		// init window
-		
-	main_wind_initialize();
-	
-		// box from the controls
-		
 	GetWindowPortBounds(wind,&box);
 		
 	rect[0]=0;
@@ -292,6 +244,12 @@ void main_wind_open(void)
 
 	aglSetInteger(ctx,AGL_BUFFER_RECT,rect);
 	aglEnable(ctx,AGL_BUFFER_RECT);
+
+	main_wind_gl_setup();
+	
+		// init window
+		
+	main_wind_initialize();
 
 		// events
 		
@@ -390,16 +348,23 @@ void menu_start(void)
 
 int main(int argc,char *argv[])
 {
+	os_glue_start();
 	os_set_arrow_cursor();
 	
 	state.model_open=FALSE;
-	file_paths_setup(&file_path_setup);
+	if (!file_paths_setup(&file_path_setup)) {
+		os_dialog_alert("Error","No data folder found");
+		os_glue_end();
+		return(0);
+	}
 	
 	menu_start();
 	
     open_model_xml();
 	main_loop();
 	close_model_xml();
+	
+	os_glue_end();
     
     return(0);
 }

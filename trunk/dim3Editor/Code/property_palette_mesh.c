@@ -292,7 +292,7 @@ void property_palette_click_mesh(int mesh_idx,int poly_idx,int id)
 			break;
 
 		case kMeshPropertyMessageMapChangeSpotName:
-			property_palette_pick_spot(mesh->msg.map_spot_name);
+			dialog_property_string_run(list_string_value_string,(void*)mesh->msg.map_spot_name,name_str_len,0,0);
 			break;
 
 		case kMeshPropertyMessageBase:

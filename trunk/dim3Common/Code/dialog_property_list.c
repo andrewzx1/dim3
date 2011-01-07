@@ -1,6 +1,6 @@
 /****************************** File *********************************
 
-Module: dim3 Editor
+Module: dim3 Common
 Author: Brian Barnes
  Usage: File Open Routines
 
@@ -25,6 +25,8 @@ and can be sold or given away.
  
 *********************************************************************/
 
+#include "glue.h"
+#include "interface.h"
 #include "dialog.h"
 
 #define kPropertyList				FOUR_CHAR_CODE('list')

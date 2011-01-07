@@ -1,8 +1,8 @@
 /****************************** File *********************************
 
-Module: dim3 Editor
+Module: dim3 Common
 Author: Brian Barnes
- Usage: File Open Routines
+ Usage: File New Dialog
 
 ***************************** License ********************************
 
@@ -25,20 +25,22 @@ and can be sold or given away.
  
 *********************************************************************/
 
+#include "glue.h"
+#include "interface.h"
 #include "dialog.h"
 
-#define kPropertyString				FOUR_CHAR_CODE('vstr')
-#define kPropertyDescription		FOUR_CHAR_CODE('vdsc')
+#define kFileNewText			FOUR_CHAR_CODE('name')
 
-WindowRef						dialog_property_string_wind;
+bool							dialog_file_new_cancel;
+WindowRef						dialog_file_new_wind;
 
 /* =======================================================
 
-      Property String Event Handlers
+      File New Event Handlers
       
 ======================================================= */
 
-static pascal OSStatus property_string_event_proc(EventHandlerCallRef handler,EventRef event,void *data)
+static pascal OSStatus file_new_event_proc(EventHandlerCallRef handler,EventRef event,void *data)
 {
 	HICommand		cmd;
 	
@@ -49,10 +51,14 @@ static pascal OSStatus property_string_event_proc(EventHandlerCallRef handler,Ev
 			
 			switch (cmd.commandID) {
 			
-				case kHICommandOK:
-					QuitAppModalLoopForWindow(dialog_property_string_wind);
+				case kHICommandNew:
+					QuitAppModalLoopForWindow(dialog_file_new_wind);
 					return(noErr);
 					
+				case kHICommandCancel:
+					dialog_file_new_cancel=TRUE;
+					QuitAppModalLoopForWindow(dialog_file_new_wind);
+					return(noErr);
 			}
 
 			return(eventNotHandledErr);
@@ -64,46 +70,46 @@ static pascal OSStatus property_string_event_proc(EventHandlerCallRef handler,Ev
 
 /* =======================================================
 
-      Run Property String
+      Run File New
       
 ======================================================= */
 
-void dialog_property_string_run(int value_type,void *value,int value_len,int i_min,int i_max)
+bool dialog_file_new_run(char *title,char *file_name)
 {
-	char					str[256],desc[256];
-	EventHandlerUPP			event_upp;
-	EventTypeSpec			event_list[]={{kEventClassCommand,kEventProcessCommand}};
+	EventHandlerUPP					event_upp;
+	EventTypeSpec					event_list[]={{kEventClassCommand,kEventProcessCommand}};
 	
 		// open the dialog
 		
-	dialog_open(&dialog_property_string_wind,"PropertyString");
+	dialog_open(&dialog_file_new_wind,"FileNew");
+	dialog_set_title(dialog_file_new_wind,title);
 	
-	property_palette_string_get_values(value_type,value,i_min,i_max,str,desc);
-	dialog_set_text(dialog_property_string_wind,kPropertyString,0,str);
-	dialog_set_text(dialog_property_string_wind,kPropertyDescription,0,desc);
+	dialog_set_text(dialog_file_new_wind,kFileNewText,0,file_name);
+	dialog_set_focus(dialog_file_new_wind,kFileNewText,0);
 	
-	dialog_set_focus(dialog_property_string_wind,kPropertyString,0);
-		
 		// show window
 	
-	ShowWindow(dialog_property_string_wind);
+	ShowWindow(dialog_file_new_wind);
 	
 		// install event handler
 		
-	event_upp=NewEventHandlerUPP(property_string_event_proc);
-	InstallWindowEventHandler(dialog_property_string_wind,event_upp,GetEventTypeCount(event_list),event_list,NULL,NULL);
+	event_upp=NewEventHandlerUPP(file_new_event_proc);
+	InstallWindowEventHandler(dialog_file_new_wind,event_upp,GetEventTypeCount(event_list),event_list,NULL,NULL);
 	
 		// modal window
 		
-	RunAppModalLoopForWindow(dialog_property_string_wind);
+	dialog_file_new_cancel=FALSE;
 	
-		// get the value
-		
-	dialog_get_text(dialog_property_string_wind,kPropertyString,0,str,256);
-	property_palette_string_set_values(value_type,value,value_len,i_min,i_max,str);
+	RunAppModalLoopForWindow(dialog_file_new_wind);
+	
+	if (!dialog_file_new_cancel) {
+		dialog_get_text(dialog_file_new_wind,kFileNewText,0,file_name,256);
+	}
 	
 		// close window
-		
-	DisposeWindow(dialog_property_string_wind);
+
+	DisposeWindow(dialog_file_new_wind);
+	
+	return(!dialog_file_new_cancel);
 }
 
