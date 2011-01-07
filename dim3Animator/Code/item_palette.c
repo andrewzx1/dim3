@@ -94,47 +94,56 @@ void item_palette_setup(void)
 void item_palette_fill(void)
 {
 	int			n;
+	char		str[256],str_tag[8];
 
 	list_palette_delete_all_items(&item_palette);
 
+		// map
+
+	list_palette_add_header(&item_palette,item_model,"Model");
+	list_palette_add_item(&item_palette,item_model,0,"Settings",(state.cur_item==item_model),FALSE);
+
 		// meshes
 
-	list_palette_add_header(&item_palette,item_mesh,"Meshes");
+	list_palette_add_header_count(&item_palette,item_mesh,"Meshes",model.nmesh);
 
 	for (n=0;n!=model.nmesh;n++) {
-		list_palette_add_item(&item_palette,item_mesh,n,model.meshes[n].name,(state.cur_mesh_idx==n),FALSE);
+		list_palette_add_item(&item_palette,item_mesh,n,model.meshes[n].name,((state.cur_item==item_mesh)&&(state.cur_mesh_idx==n)),FALSE);
 	}
 
 		// animations
 
-	list_palette_add_header(&item_palette,item_animation,"Animations");
+	list_palette_add_header_count(&item_palette,item_animation,"Animations",model.nanimate);
 
 	for (n=0;n!=model.nanimate;n++) {
-		list_palette_add_item(&item_palette,item_animation,n,model.animates[n].name,(state.cur_animate_idx==n),FALSE);
+		list_palette_add_item(&item_palette,item_animation,n,model.animates[n].name,((state.cur_item==item_animation)&&(state.cur_animate_idx==n)),FALSE);
 	}
 
 		// poses
 
-	list_palette_add_header(&item_palette,item_pose,"Poses");
+	list_palette_add_header_count(&item_palette,item_pose,"Poses",model.npose);
 
 	for (n=0;n!=model.npose;n++) {
-		list_palette_add_item(&item_palette,item_pose,n,model.poses[n].name,(state.cur_pose_idx==n),FALSE);
+		list_palette_add_item(&item_palette,item_pose,n,model.poses[n].name,((state.cur_item==item_pose)&&(state.cur_pose_idx==n)),FALSE);
 	}
 
 		// bones
 
-	list_palette_add_header(&item_palette,item_bone,"Bones");
+	list_palette_add_header_count(&item_palette,item_bone,"Bones",model.nbone);
 
 	for (n=0;n!=model.nbone;n++) {
-		list_palette_add_item(&item_palette,item_bone,n,model.bones[n].name,(state.cur_bone_idx==n),FALSE);
+		memmove(str_tag,&model.bones[n].tag,4);
+		str_tag[4]=0x0;
+		sprintf(str,"%s (%s)",model.bones[n].name,str_tag);
+		list_palette_add_item(&item_palette,item_bone,n,str,((state.cur_item==item_bone)&&(state.cur_bone_idx==n)),FALSE);
 	}
 
 		// hit boxes
 
-	list_palette_add_header(&item_palette,item_hit_box,"Hit Boxes");
+	list_palette_add_header_count(&item_palette,item_hit_box,"Hit Boxes",model.nhit_box);
 
 	for (n=0;n!=model.nhit_box;n++) {
-		list_palette_add_item(&item_palette,item_hit_box,n,model.hit_boxes[n].name,FALSE,FALSE);
+		list_palette_add_item(&item_palette,item_hit_box,n,model.hit_boxes[n].name,((state.cur_item==item_hit_box)&&(state.cur_hit_box_idx==n)),FALSE);
 	}
 }
 
@@ -260,46 +269,37 @@ void item_palette_click(d3pnt *pnt,bool double_click)
 
 	if (item_palette.item_idx==-1) return;
 
-	/*
-
 		// handle click
 
-	select_clear();
-
-	switch (item_palette.item_type) {
-		case group_piece:
-			select_add_group(item_palette.item_idx);
-			break;
-		case movement_piece:
-			select_add_movement(item_palette.item_idx);
-			break;
-		case cinema_piece:
-			select_add_cinema(item_palette.item_idx);
-			break;
-		default:
-			select_add(item_palette.item_type,item_palette.item_idx,-1);
-			break;
-	}
-
-	if (double_click) view_goto_select();
-
-		// turn on any hidden items
-
 	switch (item_palette.item_type) {
 
-		case spot_piece:
-		case scenery_piece:
-			state.show_object=TRUE;
+		case item_model:
+			state.cur_item=item_model;
 			break;
 
-		case light_piece:
-		case sound_piece:
-		case particle_piece:
-			state.show_lightsoundparticle=TRUE;
+		case item_mesh:
+			state.cur_item=item_mesh;
+			state.cur_mesh_idx=item_palette.item_idx;
 			break;
 
-		case node_piece:
-			state.show_node=TRUE;
+		case item_animation:
+			state.cur_item=item_animation;
+			state.cur_animate_idx=item_palette.item_idx;
+			break;
+
+		case item_pose:
+			state.cur_item=item_pose;
+			state.cur_pose_idx=item_palette.item_idx;
+			break;
+
+		case item_bone:
+			state.cur_item=item_bone;
+			state.cur_bone_idx=item_palette.item_idx;
+			break;
+
+		case item_hit_box:
+			state.cur_item=item_hit_box;
+			state.cur_hit_box_idx=item_palette.item_idx;
 			break;
 	}
 
@@ -313,19 +313,10 @@ void item_palette_click(d3pnt *pnt,bool double_click)
 
 	switch (item_palette.item_type) {
 
-		case cinema_piece:
-			dialog_cinema_settings_run(item_palette.item_idx);
-			break;
-
-		case group_piece:
-			dialog_group_settings_run(item_palette.item_idx);
-			break;
-
-		case movement_piece:
-			dialog_movement_settings_run(item_palette.item_idx);
+		case item_animation:
+			dialog_animation_settings_run(state.cur_animate_idx);
 			break;
 
 	}
-	*/
 }
 

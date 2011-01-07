@@ -48,7 +48,7 @@ HCURSOR					cur_arrow,cur_wait,cur_hand,cur_drag,cur_resize,
       
 ======================================================= */
 
-void glue_start(void)
+void os_glue_start(void)
 {
 		// load cursors
 
@@ -61,7 +61,7 @@ void glue_start(void)
 	cur_subtract=LoadCursor(NULL,IDC_NO);
 }
 
-void glue_end(void)
+void os_glue_end(void)
 {
 		// destroy cursors
 

@@ -38,6 +38,7 @@ ATOM							wnd_rg_class;
 HWND							wnd;
 HDC								wnd_gl_dc;
 HGLRC							wnd_gl_ctx;
+UINT_PTR						wnd_timer;
 
 bool							quit;
 
@@ -50,8 +51,6 @@ extern d3rect					tool_palette_box,txt_palette_box;
 extern list_palette_type		item_palette;
 
 extern bool setup_xml_read(void);
-extern void glue_start(void);
-extern void glue_end(void);
 extern int os_win32_menu_lookup(int id);
 
 /* =======================================================
@@ -151,7 +150,7 @@ LRESULT CALLBACK animator_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lPara
 		case WM_LBUTTONDBLCLK:
 			pnt.x=LOWORD(lParam);
 			pnt.y=HIWORD(lParam);
-			
+
 			SetCapture(wnd);
 			main_wind_click(&pnt,(msg==WM_LBUTTONDBLCLK));
 			ReleaseCapture();
@@ -182,7 +181,7 @@ LRESULT CALLBACK animator_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lPara
 		case WM_CLOSE:
 			if (state.model_open) {
 				if (!menu_save_changes_dialog()) return(0);
-				close_model_xml();
+				file_close_model();
 			}
 			os_application_quit();
 			break;
@@ -193,6 +192,17 @@ LRESULT CALLBACK animator_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lPara
 	}
 
 	return(0);
+}
+
+/* =======================================================
+
+      Timer
+      
+======================================================= */
+
+void CALLBACK wnd_timer_proc(HWND hwnd,UINT msg,UINT_PTR id,DWORD tick)
+{
+	if ((state.model_open) && (state.playing)) main_wind_draw();
 }
 
 /* =======================================================
@@ -279,6 +289,10 @@ void win32_main_wind_open(void)
 
 	main_wind_gl_setup();
 
+		// start play timer
+
+	wnd_timer=SetTimer(wnd,1,10,wnd_timer_proc);
+
 		// initialize
 
 	main_wind_initialize();
@@ -288,6 +302,10 @@ void win32_main_wind_open(void)
 
 void win32_main_wind_close(void)
 {
+		// kill the timer
+
+	KillTimer(wnd,1);
+
 		// shutdown
 
 	main_wind_shutdown();
@@ -357,11 +375,11 @@ int APIENTRY WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmdLine
 	
 		// glue start
 
-	glue_start();
+	os_glue_start();
 	
 	if (!file_paths_setup(&file_path_setup)) {
-		glue_end();
-		MessageBox(NULL,"No data folder","Error",MB_OK);
+		os_glue_end();
+		os_dialog_alert("Error","No data folder");
 		return(0);
 	}
 
@@ -371,9 +389,9 @@ int APIENTRY WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmdLine
 
 		// run animator
 	
-	open_model_xml();
+	file_open_model();
 	animator_pump();
-	close_model_xml();
+	file_close_model();
 
 		// close window
 
@@ -381,7 +399,7 @@ int APIENTRY WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmdLine
 
 		// close glue
 
-	glue_end();
+	os_glue_end();
 
 	return(0);
 }

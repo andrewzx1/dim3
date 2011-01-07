@@ -305,6 +305,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\dim3Animator\Code\dos.c"
+					>
+				</File>
+				<File
 					RelativePath="..\..\dim3Animator\Code\draw_axis_boxes.c"
 					>
 				</File>
@@ -381,6 +385,34 @@
 					</File>
 					<File
 						RelativePath="..\..\dim3Animator\Code\property_palette.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Animator\Code\property_palette_animation.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Animator\Code\property_palette_bone.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Animator\Code\property_palette_hit_box.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Animator\Code\property_palette_mesh.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Animator\Code\property_palette_model.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Animator\Code\property_palette_pose.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Animator\Code\property_palette_texture.c"
 						>
 					</File>
 					<File

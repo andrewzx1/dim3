@@ -82,73 +82,76 @@ void texture_palette_draw(texture_type *txt_list)
 	glAlphaFunc(GL_NOTEQUAL,0);
 	
 		// texture page switch
+
+	if (txt_palette_page_list_width!=0) {
 	
-	x=0;
-	ty=txt_palette_box.ty;
-	by=ty+(txt_palette_pixel_sz>>1);
+		x=0;
+		ty=txt_palette_box.ty;
+		by=ty+(txt_palette_pixel_sz>>1);
 
-	for (n=0;n!=txt_palette_page_list_count;n++) {
-	
-			// time to move down?
-			
-		if (n==(txt_palette_page_list_count>>1)) {
-			x=0;
-			ty=by;
-			by=txt_palette_box.ty+txt_palette_pixel_sz;
-		}
+		for (n=0;n!=txt_palette_page_list_count;n++) {
 		
-			// draw page
-			
-		if (txt_palette_cur_page==n) {
-			glColor4f(0.3f,0.3f,1.0f,1.0f);
-		}
-		else {
-			glColor4f(0.75f,0.75f,0.75f,1.0f);
-		}
-
-		glBegin(GL_QUADS);
-		glVertex2i(x,ty);
-		glVertex2i((x+16),ty);
-		glVertex2i((x+16),by);
-		glVertex2i(x,by);
-		glEnd();
-
-			// outline
-
-		glColor4f(0.0f,0.0f,0.0f,1.0f);
-		
-		glBegin(GL_LINE_LOOP);
-		glVertex2i(x,ty);
-		glVertex2i((x+16),ty);
-		glVertex2i((x+16),by);
-		glVertex2i(x,by);
-		glEnd();
-		
-		
-			// mark if there are textures
-			
-		has_texture=FALSE;
-		idx=n*txt_palette_per_page_count;
-		
-		for (k=idx;k!=(idx+txt_palette_per_page_count);k++) {
-			if (txt_list[k].frames[0].bitmap.gl_id!=-1) {
-				has_texture=TRUE;
-				break;
+				// time to move down?
+				
+			if (n==(txt_palette_page_list_count>>1)) {
+				x=0;
+				ty=by;
+				by=txt_palette_box.ty+txt_palette_pixel_sz;
 			}
-		}
-		
-		if (has_texture) {
+			
+				// draw page
+				
+			if (txt_palette_cur_page==n) {
+				glColor4f(0.3f,0.3f,1.0f,1.0f);
+			}
+			else {
+				glColor4f(0.75f,0.75f,0.75f,1.0f);
+			}
+
+			glBegin(GL_QUADS);
+			glVertex2i(x,ty);
+			glVertex2i((x+16),ty);
+			glVertex2i((x+16),by);
+			glVertex2i(x,by);
+			glEnd();
+
+				// outline
+
 			glColor4f(0.0f,0.0f,0.0f,1.0f);
 			
-			glBegin(GL_QUADS);
-			glVertex2i((x+11),(by-5));
-			glVertex2i((x+14),(by-5));
-			glVertex2i((x+14),(by-2));
-			glVertex2i((x+11),(by-2));
+			glBegin(GL_LINE_LOOP);
+			glVertex2i(x,ty);
+			glVertex2i((x+16),ty);
+			glVertex2i((x+16),by);
+			glVertex2i(x,by);
 			glEnd();
+			
+			
+				// mark if there are textures
+				
+			has_texture=FALSE;
+			idx=n*txt_palette_per_page_count;
+			
+			for (k=idx;k!=(idx+txt_palette_per_page_count);k++) {
+				if (txt_list[k].frames[0].bitmap.gl_id!=-1) {
+					has_texture=TRUE;
+					break;
+				}
+			}
+			
+			if (has_texture) {
+				glColor4f(0.0f,0.0f,0.0f,1.0f);
+				
+				glBegin(GL_QUADS);
+				glVertex2i((x+11),(by-5));
+				glVertex2i((x+14),(by-5));
+				glVertex2i((x+14),(by-2));
+				glVertex2i((x+11),(by-2));
+				glEnd();
+			}
+			
+			x+=16;
 		}
-		
-		x+=16;
 	}
 
 		// textures

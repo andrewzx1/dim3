@@ -97,6 +97,11 @@ void item_palette_fill(void)
 
 	list_palette_delete_all_items(&item_palette);
 
+		// map
+
+	list_palette_add_header(&item_palette,spot_piece,"Map");
+	list_palette_add_item(&item_palette,map_piece,0,"Settings",(item_palette.item_type==map_piece),FALSE);
+
 		// spots
 
 	list_palette_add_header_count(&item_palette,spot_piece,"Spots",map.nspot);
@@ -193,13 +198,14 @@ void item_palette_reset(void)
 	int				sel_type,main_idx,sub_idx;
 
 	if (select_count()==0) {
-		item_palette.item_type=-1;
+		item_palette.item_type=map_piece;
 		item_palette.item_idx=-1;
 		return;
 	}
 	
 	select_get(0,&sel_type,&main_idx,&sub_idx);
 	if ((sel_type==mesh_piece) || (sel_type==liquid_piece)) {
+		item_palette.item_type=-1;
 		item_palette.item_idx=-1;
 		return;
 	}
@@ -296,18 +302,27 @@ void item_palette_click(d3pnt *pnt,bool double_click)
 	select_clear();
 
 	switch (item_palette.item_type) {
+
+		case map_piece:
+			select_clear();
+			break;
+
 		case group_piece:
 			select_add_group(item_palette.item_idx);
 			break;
+
 		case movement_piece:
 			select_add_movement(item_palette.item_idx);
 			break;
+
 		case cinema_piece:
 			select_add_cinema(item_palette.item_idx);
 			break;
+
 		default:
 			select_add(item_palette.item_type,item_palette.item_idx,-1);
 			break;
+
 	}
 
 	if (double_click) view_goto_select();

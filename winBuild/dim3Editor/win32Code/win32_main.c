@@ -50,8 +50,6 @@ extern d3rect				tool_palette_box,txt_palette_box;
 extern list_palette_type	item_palette;
 
 extern bool setup_xml_read(void);
-extern void glue_start(void);
-extern void glue_end(void);
 extern int os_win32_menu_lookup(int id);
 
 /* =======================================================
@@ -363,11 +361,11 @@ int APIENTRY WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmdLine
 	
 		// glue start
 
-	glue_start();
+	os_glue_start();
 	
 	if (!file_paths_setup(&file_path_setup)) {
-		glue_end();
-		MessageBox(NULL,"No data folder","Error",MB_OK);
+		os_glue_end();
+		os_dialog_alert("Error","No data folder");
 		return(0);
 	}
 	
@@ -391,7 +389,7 @@ int APIENTRY WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmdLine
 
 		// close glue
 
-	glue_end();
+	os_glue_end();
 
 	return(0);
 }

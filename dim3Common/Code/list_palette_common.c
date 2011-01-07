@@ -261,6 +261,14 @@ void list_palette_add_angle(list_palette_type *list,int id,char *name,d3ang *ang
 	list_palette_add_string(list,id,name,str,disabled);
 }
 
+void list_palette_add_vector(list_palette_type *list,int id,char *name,d3vct *vct,bool disabled)
+{
+	char		str[32];
+	
+	sprintf(str,"%.2f,%.2f,%.2f",vct->x,vct->y,vct->z);
+	list_palette_add_string(list,id,name,str,disabled);
+}
+
 void list_palette_add_uv(list_palette_type *list,int id,char *name,d3fpnt *fpnt,bool disabled)
 {
 	char		str[32];
@@ -295,6 +303,16 @@ void list_palette_add_shader(list_palette_type *list,int id,char *name,char *sha
 	}
 	
 	list_palette_add_string(list,id,name,shader_name,disabled);
+}
+
+void list_palette_add_string_tag(list_palette_type *list,int id,char *name,unsigned long tag,bool disabled)
+{
+	char		str[32];
+	
+	memmove(str,&tag,4);
+	str[4]=0x0;
+
+	list_palette_add_string(list,id,name,str,disabled);
 }
 
 /* =======================================================
