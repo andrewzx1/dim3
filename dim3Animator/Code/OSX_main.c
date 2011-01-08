@@ -123,7 +123,7 @@ OSStatus main_wind_event_handler(EventHandlerCallRef eventhandler,EventRef event
 					
 				case kEventWindowClose:
 					if (!menu_save_changes_dialog()) return(noErr);
-					close_model_xml();
+					file_close_model();
 					main_wind_play(FALSE,FALSE);
 					menu_update();
 					return(noErr);
@@ -360,9 +360,9 @@ int main(int argc,char *argv[])
 	
 	menu_start();
 	
-    open_model_xml();
+    file_open_model();
 	main_loop();
-	close_model_xml();
+	file_close_model();
 	
 	os_glue_end();
     

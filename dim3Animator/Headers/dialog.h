@@ -80,9 +80,6 @@ extern int dialog_import_finish_run(void);
 
 extern bool dialog_model_settings_run(void);
 
-extern void dialog_texture_setting_run(int txt);
-extern void dialog_shader_setting_run(int txt);
-
 extern bool dialog_mesh_info_run(model_mesh_type *mesh);
 extern int dialog_copy_mesh_run(void);
 extern void dialog_set_bone_combo(WindowRef wind,unsigned long sig,int id,int sel_idx);
