@@ -40,9 +40,8 @@ extern animator_state_type		state;
 extern file_path_setup_type		file_path_setup;
 
 extern int						tool_palette_pixel_sz,txt_palette_pixel_sz;
-extern bool						list_palette_open;
+extern bool						list_palette_open,alt_property_open;
 
-int								prop_last_sel_type;
 list_palette_type				property_palette;
 
 /* =======================================================
@@ -53,12 +52,10 @@ list_palette_type				property_palette;
 
 void property_palette_initialize(void)
 {
-	list_palette_list_initialize(&property_palette,"Item Properties");
+	list_palette_list_initialize(&property_palette,"No Properties");
 
 	property_palette.item_type=0;
 	property_palette.item_idx=-1;
-
-	prop_last_sel_type=-1;
 }
 
 void property_palette_shutdown(void)
@@ -68,7 +65,7 @@ void property_palette_shutdown(void)
 
 void property_palette_setup(void)
 {
-	int				y;
+	int				x,y;
 	d3rect			wbox;
 	
 	os_get_window_box(&wbox);
@@ -80,10 +77,17 @@ void property_palette_setup(void)
 		property_palette.pixel_sz=list_palette_border_sz;
 	}
 
+	if (alt_property_open) {
+		x=wbox.rx-list_palette_tree_sz;
+	}
+	else {
+		x=wbox.rx;
+	}
+
 	y=wbox.ty+((wbox.by-wbox.ty)>>1);
 
-	property_palette.box.lx=wbox.rx-property_palette.pixel_sz;
-	property_palette.box.rx=wbox.rx;
+	property_palette.box.lx=x-property_palette.pixel_sz;
+	property_palette.box.rx=x;
 	property_palette.box.ty=y-1;
 	property_palette.box.by=wbox.by-txt_palette_pixel_sz;
 }
@@ -159,38 +163,9 @@ void property_palette_fill(void)
 void property_palette_draw(void)
 {
 	property_palette_fill();
-	list_palette_draw(&property_palette);
+	list_palette_draw(&property_palette,TRUE);
 }
 
-/* =======================================================
-
-      Property Palette Reset For Selection Change
-      
-======================================================= */
-/* supergumba
-void property_palette_reset(void)
-{
-	int				sel_type,main_idx,sub_idx;
-
-	if (select_count()==0) {
-		prop_last_sel_type=-1;
-		property_palette.scroll_page=0;
-		return;
-	}
-
-	select_get(0,&sel_type,&main_idx,&sub_idx);
-	if (main_idx==-1) {
-		prop_last_sel_type=-1;
-		property_palette.scroll_page=0;
-		return;
-	}
-
-	if (prop_last_sel_type!=sel_type) {
-		prop_last_sel_type=sel_type;
-		property_palette.scroll_page=0;
-	}
-}
-*/
 /* =======================================================
 
       Property Palette Scroll Wheel
@@ -222,6 +197,7 @@ void property_palette_click(d3pnt *pnt,bool double_click)
 		if (old_open!=list_palette_open) {
 			item_palette_setup();
 			property_palette_setup();
+			alt_property_palette_setup();
 			model_wind_setup();
 			main_wind_draw();
 		}

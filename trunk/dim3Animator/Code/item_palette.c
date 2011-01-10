@@ -40,7 +40,7 @@ extern animator_state_type		state;
 extern file_path_setup_type		file_path_setup;
 
 extern int						tool_palette_pixel_sz,txt_palette_pixel_sz;
-extern bool						list_palette_open;
+extern bool						list_palette_open,alt_property_open;
 
 list_palette_type				item_palette;
 
@@ -65,7 +65,7 @@ void item_palette_shutdown(void)
 
 void item_palette_setup(void)
 {
-	int				y;
+	int				x,y;
 	d3rect			wbox;
 	
 	os_get_window_box(&wbox);
@@ -77,10 +77,17 @@ void item_palette_setup(void)
 		item_palette.pixel_sz=list_palette_border_sz;
 	}
 
+	if (alt_property_open) {
+		x=wbox.rx-list_palette_tree_sz;
+	}
+	else {
+		x=wbox.rx;
+	}
+
 	y=wbox.ty+((wbox.by-wbox.ty)>>1);
 
-	item_palette.box.lx=wbox.rx-item_palette.pixel_sz;
-	item_palette.box.rx=wbox.rx;
+	item_palette.box.lx=x-item_palette.pixel_sz;
+	item_palette.box.rx=x;
 	item_palette.box.ty=wbox.ty+(tool_palette_pixel_sz+1);
 	item_palette.box.by=y;
 }
@@ -157,43 +164,9 @@ void item_palette_fill(void)
 void item_palette_draw(void)
 {
 	item_palette_fill();
-	list_palette_draw(&item_palette);
+	list_palette_draw(&item_palette,TRUE);
 }
 
-/* =======================================================
-
-      Item Palette Reset For Selection Change
-      
-======================================================= */
-/* supergumba
-void item_palette_reset(void)
-{
-	int				sel_type,main_idx,sub_idx;
-
-	if (select_count()==0) {
-		item_palette.item_type=-1;
-		item_palette.item_idx=-1;
-		return;
-	}
-	
-	select_get(0,&sel_type,&main_idx,&sub_idx);
-	if ((sel_type==mesh_piece) || (sel_type==liquid_piece)) {
-		item_palette.item_idx=-1;
-		return;
-	}
-
-	item_palette.item_type=sel_type;
-	item_palette.item_idx=main_idx;
-}
-
-void item_palette_select(int sel_type,int sel_idx)
-{
-	item_palette.item_type=sel_type;
-	item_palette.item_idx=sel_idx;
-	
-	main_wind_draw();
-}
-*/
 /* =======================================================
 
       Item Palette Delete
@@ -262,6 +235,7 @@ void item_palette_click(d3pnt *pnt,bool double_click)
 		if (old_open!=list_palette_open) {
 			item_palette_setup();
 			property_palette_setup();
+			alt_property_palette_setup();
 			model_wind_setup();
 			main_wind_draw();
 		}
@@ -308,6 +282,15 @@ void item_palette_click(d3pnt *pnt,bool double_click)
 			state.cur_hit_box_idx=item_palette.item_idx;
 			break;
 	}
+
+		// need to do the setup again incase
+		// the alt window has open/closed
+
+	alt_property_fix_open_state();
+	item_palette_setup();
+	property_palette_setup();
+	alt_property_palette_setup();
+	model_wind_setup();
 
 	main_wind_draw();
 	

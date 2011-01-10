@@ -183,7 +183,7 @@ void property_palette_fill(void)
 void property_palette_draw(void)
 {
 	property_palette_fill();
-	list_palette_draw(&property_palette);
+	list_palette_draw(&property_palette,TRUE);
 }
 
 /* =======================================================

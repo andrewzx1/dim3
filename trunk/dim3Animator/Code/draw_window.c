@@ -34,7 +34,7 @@ and can be sold or given away.
 #include "ui_common.h"
 
 extern int					tool_palette_pixel_sz,txt_palette_pixel_sz;
-extern bool					list_palette_open;
+extern bool					list_palette_open,alt_property_open;
 
 extern model_type			model;
 extern model_draw_setup		draw_setup;
@@ -58,6 +58,7 @@ void model_wind_setup(void)
 	model_box.lx=0;
 	if (list_palette_open) {
 		model_box.rx=wbox.rx-list_palette_tree_sz;
+		if (alt_property_open) model_box.rx-=list_palette_tree_sz;
 	}
 	else {
 		model_box.rx=wbox.rx-list_palette_border_sz;

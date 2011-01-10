@@ -538,7 +538,7 @@ void list_palette_draw_item(list_palette_type *list,int idx)
 	}
 }
 
-void list_palette_draw(list_palette_type *list)
+void list_palette_draw(list_palette_type *list,bool close_border)
 {
 	int						n,lx,mx,rx,ty,by,
 							thumb_ty,thumb_by,page_count;
@@ -660,8 +660,20 @@ void list_palette_draw(list_palette_type *list)
 	glVertex2i(list->box.rx,by);
 	glEnd();
 	
-		// click-close border
+		// click-close border or
+		// just a line
 	
+	if (!close_border) {
+		glColor4f(0.0f,0.0f,0.0f,1.0f);
+	
+		glBegin(GL_LINES);
+		glVertex2i((list->box.lx+1),list->box.ty);
+		glVertex2i((list->box.lx+1),list->box.by);
+		glEnd();
+
+		return;
+	}
+
 	lx=list->box.lx;
 	rx=list->box.lx+list_palette_border_sz;
 	mx=(lx+rx)>>1;

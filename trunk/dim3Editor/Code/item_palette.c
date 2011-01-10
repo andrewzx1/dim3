@@ -184,7 +184,7 @@ void item_palette_fill(void)
 void item_palette_draw(void)
 {
 	item_palette_fill();
-	list_palette_draw(&item_palette);
+	list_palette_draw(&item_palette,TRUE);
 }
 
 /* =======================================================
