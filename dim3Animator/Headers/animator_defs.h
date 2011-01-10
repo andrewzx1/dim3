@@ -122,12 +122,10 @@ and can be sold or given away.
 
 #define kCommandVertexSelectAll			FOUR_CHAR_CODE('vsla')
 #define kCommandVertexSelectNotAttached	FOUR_CHAR_CODE('vsna')
-#define kCommandVertexNudge				FOUR_CHAR_CODE('vnud')
-#define kCommandVertexScale				FOUR_CHAR_CODE('vscl')
-#define kCommandVertexRotate			FOUR_CHAR_CODE('vrot')
 #define kCommandVertexInvertNormals		FOUR_CHAR_CODE('vinm')
 #define kCommandVertexSetNormals		FOUR_CHAR_CODE('vsnm')
 #define kCommandVertexClearBones		FOUR_CHAR_CODE('vcba')
+#define kCommandVertexAutoBones			FOUR_CHAR_CODE('vsba')
 #define kCommandVertexHideSelected		FOUR_CHAR_CODE('vhsl')
 #define kCommandVertexHideNonSelected	FOUR_CHAR_CODE('vhns')
 #define kCommandVertexShowAll			FOUR_CHAR_CODE('vsal')
@@ -135,17 +133,13 @@ and can be sold or given away.
 
 #define kCommandNewBone					FOUR_CHAR_CODE('nbne')
 #define kCommandSetBone					FOUR_CHAR_CODE('sbn2')
-#define kCommandNudgeBone				FOUR_CHAR_CODE('bnud')
 #define kCommandDeleteBone				FOUR_CHAR_CODE('dbne')
-#define kCommandSelectVertexNearBone	FOUR_CHAR_CODE('svbn')
+#define kCommandGoToParentBone			FOUR_CHAR_CODE('gpbn')
 
 #define kCommandNewPose					FOUR_CHAR_CODE('npse')
 #define kCommandDupPose					FOUR_CHAR_CODE('dpse')
-#define kCommandPreviousPose			FOUR_CHAR_CODE('prvp')
-#define kCommandNextPose				FOUR_CHAR_CODE('nxtp')
 #define kCommandClearPose				FOUR_CHAR_CODE('cpse')
 #define kCommandDeletePose				FOUR_CHAR_CODE('kpse')
-#define kCommandGoToBoneMoveParent		FOUR_CHAR_CODE('pmbn')
 
 #define kCommandNewAnimate				FOUR_CHAR_CODE('nani')
 #define kCommandDupAnimate				FOUR_CHAR_CODE('dani')
@@ -162,8 +156,9 @@ and can be sold or given away.
 #define item_mesh						1
 #define item_animation					2
 #define item_pose						3
-#define item_bone						4
-#define item_hit_box					5
+#define item_neutral_pose				4
+#define item_bone						5
+#define item_hit_box					6
 
 //
 // Draw Types

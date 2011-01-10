@@ -88,7 +88,6 @@ extern bool dialog_vertex_settings_run(model_vertex_type *vertex);
 extern void dialog_bone_fix_string(char *str);
 extern bool dialog_bone_settings_run(model_bone_type *bone);
 extern bool dialog_set_vertex_bone_run(int *major_bone_idx,int *minor_bone_idx,float *factor);
-extern bool dialog_bone_nudge_run(int *x,int *z,int *y,bool *nudge_children,bool *nudge_vertex);
 extern bool dialog_pose_settings_run(model_pose_type *pose);
 extern bool dialog_bone_move_settings_run(model_bone_move_type *bone_move);
 extern bool dialog_animation_settings_run(int animate_idx);
@@ -99,7 +98,6 @@ extern bool dialog_hit_box_settings_run(void);
 extern bool dialog_play_blend_animation_run(void);
 
 extern bool dialog_scale_run(model_type *mdl,float *x,float *z,float *y);
-extern bool dialog_nudge_rotate_run(int *x,int *z,int *y,char *diag_name,int def_value);
 extern bool dialog_set_normal_run(d3vct *normal);
 
 

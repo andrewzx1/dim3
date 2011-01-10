@@ -41,6 +41,99 @@ extern animator_state_type		state;
 
 /* =======================================================
 
+      Import OBJ Re-Rig Vertexes
+      
+======================================================= */
+
+void import_obj_rerig(model_mesh_type *mesh,int old_nvertex,model_vertex_type *old_vertex)
+{
+	int						n,k,v_idx,
+							cur_dist,dist,dist2;
+	model_vertex_type		*v1,*v2;
+	model_bone_type			*bone;
+		
+		// first find vertexes that are equal
+
+	v1=mesh->vertexes;
+
+	for (n=0;n!=mesh->nvertex;n++) {
+	
+		v2=old_vertex;
+	
+		for (k=0;k!=old_nvertex;k++) {
+			
+			if ((v1->pnt.x==v2->pnt.x) && (v1->pnt.y==v2->pnt.y) && (v1->pnt.z==v2->pnt.z)) {
+				v1->major_bone_idx=v2->major_bone_idx;
+				v1->minor_bone_idx=v2->minor_bone_idx;
+				v1->bone_factor=v2->bone_factor;
+				break;
+			}
+			
+			v2++;
+		}
+		
+		v1++;
+	}
+	
+		// now deal with vertexes within
+		// 10% of original distance
+		
+	v1=mesh->vertexes;
+
+	for (n=0;n!=mesh->nvertex;n++) {
+	
+			// find the closest vertex
+			// by distance
+			
+		v_idx=-1;
+		cur_dist=0;
+		
+		v2=old_vertex;
+	
+		for (k=0;k!=old_nvertex;k++) {
+		
+				// skip if not attached
+			
+			if (v2->major_bone_idx==-1) {
+				v2++;
+				continue;
+			}
+			
+				// get distance
+				
+			dist=distance_get(v1->pnt.x,v1->pnt.y,v1->pnt.z,v2->pnt.x,v2->pnt.y,v2->pnt.z);
+			if ((v_idx==-1) || (dist<cur_dist)) {
+				v_idx=k;
+				cur_dist=dist;
+			}
+			
+			v2++;
+		}
+		
+			// if there was a hit, figure
+			// out if it's within 10% of the
+			// bone distance
+			
+		if (v_idx!=-1) {
+			v2=&old_vertex[v_idx];
+			bone=&model.bones[v2->major_bone_idx];
+			
+			dist=distance_get(bone->pnt.x,bone->pnt.y,bone->pnt.z,v2->pnt.x,v2->pnt.y,v2->pnt.z);
+			dist2=distance_get(bone->pnt.x,bone->pnt.y,bone->pnt.z,v1->pnt.x,v1->pnt.y,v1->pnt.z);
+						
+			if (abs(dist2-dist)<(dist/10)) {
+				v1->major_bone_idx=v2->major_bone_idx;
+				v1->minor_bone_idx=v2->minor_bone_idx;
+				v1->bone_factor=v2->bone_factor;
+			}
+		}
+		
+		v1++;
+	}
+}
+
+/* =======================================================
+
       Import OBJ File
       
 ======================================================= */
@@ -57,7 +150,7 @@ bool import_obj(char *path,bool replace,bool *found_normals,char *err_str)
 	d3uv					*uv,*uv_ptr,pt_uv[obj_max_face_vertex];
 	d3vct					*normal,*normal_ptr,pnormal[obj_max_face_vertex];
 	model_mesh_type			*mesh;
-	model_vertex_type		*vertex,*old_vertex,*v1,*v2;
+	model_vertex_type		*vertex,*old_vertex;
     model_trig_type			*trig;
 	model_material_type		*material;
 	
@@ -270,7 +363,7 @@ bool import_obj(char *path,bool replace,bool *found_normals,char *err_str)
 	
 		// single material import?
 	
-	if (replace) {
+	if (!replace) {
 		model.import.single_texture=FALSE;
 	
 		if ((ntexture>1) && (!all_material_exists)) {
@@ -288,7 +381,7 @@ bool import_obj(char *path,bool replace,bool *found_normals,char *err_str)
     ntrig=0;
 	trig=mesh->trigs;
 	
-	last_material_name[0]=0x0;
+	last_texture_idx=-1;
         
     for (n=0;n!=nline;n++) {
 
@@ -300,20 +393,24 @@ bool import_obj(char *path,bool replace,bool *found_normals,char *err_str)
 		
             textdecode_get_piece(n,1,material_name);
 			material_name[name_str_len-1]=0x0;
-		
-			if (!first_material) {
-			
-					// single material?
-				
-				if (model.import.single_texture) continue;
-			
-					// same as last material?
-				
-				if (strcmp(material_name,last_material_name)==0) continue;
-				
-				strcpy(last_material_name,material_name);
+             
+                // get texture
+        
+            texture_idx=texture_pick(material_name,err_str);
+			if (texture_idx==-1) {
+				progress_end();
+				textdecode_close();
+				return(FALSE);
 			}
-            
+			
+				// already used?
+				
+			if (mesh->materials[texture_idx].trig_start!=0) {
+				material=material=&mesh->materials[texture_idx];
+				
+			if (texture_idx==last_texture_idx) continue;
+			last_texture_idx=texture_idx;
+           
                 // close last material
             
             if (!first_material) {
@@ -321,14 +418,6 @@ bool import_obj(char *path,bool replace,bool *found_normals,char *err_str)
             }
 			
 			first_material=FALSE;
-            
-                // start new material
-        
-            texture_idx=texture_pick(material_name,err_str);
-			if (texture_idx==-1) {
-				textdecode_close();
-				return(FALSE);
-			}
          
 			material=&mesh->materials[texture_idx];
             material->trig_start=ntrig;
@@ -430,32 +519,12 @@ bool import_obj(char *path,bool replace,bool *found_normals,char *err_str)
 		// bone attachments
 		
 	if (replace) {
-	
 		progress_next_title("Obj Import: Fixing Bone Rigging");
-	
-		v1=mesh->vertexes;
-	
-		for (n=0;n!=mesh->nvertex;n++) {
-		
-			v2=old_vertex;
-		
-			for (k=0;k!=old_nvertex;k++) {
-				
-				if ((v1->pnt.x==v2->pnt.x) && (v1->pnt.y==v2->pnt.y) && (v1->pnt.z==v2->pnt.z)) {
-					v1->major_bone_idx=v2->major_bone_idx;
-					v1->minor_bone_idx=v2->minor_bone_idx;
-					v1->bone_factor=v2->bone_factor;
-					break;
-				}
-				
-				v2++;
-			}
-			
-			v1++;
-		}
-	
+		import_obj_rerig(mesh,old_nvertex,old_vertex);
 		free(old_vertex);
 	}
+	
+	model_calculate_parents(&model);
 	
 	progress_end();
 
