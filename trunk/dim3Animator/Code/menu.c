@@ -121,7 +121,6 @@ bool menu_event_run(int cmd)
 {
 	int				x,y,z,idx,major_bone_idx,minor_bone_idx,parent_idx,old_cur_animate;
 	float			fx,fy,fz,bone_factor;
-	bool			nudge_children,nudge_vertexes;
 	
 	switch (cmd) {
 	
@@ -208,15 +207,15 @@ bool menu_event_run(int cmd)
             model_calculate_parents(&model);
             main_wind_draw();
 			return(TRUE);
-
-		case kCommandFlipZAll:
-			model_flip_all(&model,FALSE,FALSE,TRUE);
-            model_calculate_parents(&model);
-            main_wind_draw();
-			return(TRUE);
 			
 		case kCommandFlipYAll:
 			model_flip_all(&model,FALSE,TRUE,FALSE);
+            model_calculate_parents(&model);
+            main_wind_draw();
+			return(TRUE);
+
+		case kCommandFlipZAll:
+			model_flip_all(&model,FALSE,FALSE,TRUE);
             model_calculate_parents(&model);
             main_wind_draw();
 			return(TRUE);
@@ -353,14 +352,14 @@ bool menu_event_run(int cmd)
             main_wind_draw();
 			return(TRUE);
 
-		case kCommandFlipZ:
-			model_flip(&model,state.cur_mesh_idx,FALSE,FALSE,TRUE);
+		case kCommandFlipY:
+			model_flip(&model,state.cur_mesh_idx,FALSE,TRUE,FALSE);
             model_calculate_parents(&model);
             main_wind_draw();
 			return(TRUE);
 			
-		case kCommandFlipY:
-			model_flip(&model,state.cur_mesh_idx,FALSE,TRUE,FALSE);
+		case kCommandFlipZ:
+			model_flip(&model,state.cur_mesh_idx,FALSE,FALSE,TRUE);
             model_calculate_parents(&model);
             main_wind_draw();
 			return(TRUE);
@@ -411,27 +410,6 @@ bool menu_event_run(int cmd)
 			main_wind_draw();
 			return(TRUE);
 			
-		case kCommandVertexNudge:
-			if (!dialog_nudge_rotate_run(&x,&z,&y,"NudgePick",0)) return(TRUE);
-			vertex_move_sel_vertexes(state.cur_mesh_idx,x,y,z);
-			model_calculate_parents(&model);
-			main_wind_draw();
-			return(TRUE);
-			
-		case kCommandVertexScale:
-			if (!dialog_scale_run(&model,&fx,&fz,&fy)) return(TRUE);
-			vertex_scale_sel_vertexes(state.cur_mesh_idx,fx,fy,fz);
-			model_calculate_parents(&model);
-			main_wind_draw();
-			return(TRUE);
-			
-		case kCommandVertexRotate:
-			if (!dialog_nudge_rotate_run(&x,&z,&y,"RotatePick",0)) return(TRUE);
-			vertex_rotate_sel_vertexes(state.cur_mesh_idx,(float)x,(float)y,(float)z);
-			model_calculate_parents(&model);
-			main_wind_draw();
-			return(TRUE);
-			
 		case kCommandVertexInvertNormals:
 			vertex_invert_normals(state.cur_mesh_idx);
 			main_wind_draw();
@@ -444,6 +422,11 @@ bool menu_event_run(int cmd)
 		
 		case kCommandVertexClearBones:
 			vertex_clear_bone_attachments_sel_vertexes(state.cur_mesh_idx);
+			main_wind_draw();
+			return(TRUE);
+			
+		case kCommandVertexAutoBones:
+			vertex_auto_bone_attachments(state.cur_mesh_idx);
 			main_wind_draw();
 			return(TRUE);
 				
@@ -493,25 +476,21 @@ bool menu_event_run(int cmd)
 			main_wind_draw();
 			return(TRUE);
 			
-		case kCommandNudgeBone:
-			if (state.cur_bone_idx==-1) return(TRUE);
-			
-			if (!dialog_bone_nudge_run(&x,&z,&y,&nudge_children,&nudge_vertexes)) return(TRUE);
-			model_bone_move(&model,state.cur_bone_idx,x,y,z,nudge_children,nudge_vertexes);
-			model_calculate_parents(&model);
-			main_wind_draw();
-			return(TRUE);
-			
 		case kCommandDeleteBone:
 			if (state.cur_bone_idx==-1) return(TRUE);
 			
  			model_bone_delete(&model,state.cur_bone_idx);
 			state.cur_bone_idx=-1;
+			
+			main_wind_draw();
 			return(TRUE);
 			
-		case kCommandSelectVertexNearBone:
+		case kCommandGoToParentBone:
 			if (state.cur_bone_idx!=-1) return(TRUE);
-			vertex_set_sel_mask_near_bone(state.cur_mesh_idx,state.cur_bone_idx,0.10f);
+			
+			parent_idx=model.bones[state.cur_bone_idx].parent_idx;
+			if (parent_idx!=-1) state.cur_bone_idx=parent_idx;
+
 			main_wind_draw();
 			return(TRUE);
 			
@@ -554,14 +533,6 @@ bool menu_event_run(int cmd)
 			main_wind_draw();
 			return(TRUE);
 			
-		case kCommandPreviousPose:
-			if (state.cur_pose_idx>0) state.cur_pose_idx--;
-			return(TRUE);
-			
-		case kCommandNextPose:
-			if (state.cur_pose_idx<(model.npose-1)) state.cur_pose_idx++;
-			return(TRUE);
-			
 		case kCommandClearPose:
 			if (state.cur_pose_idx==-1) return(TRUE);
 
@@ -582,15 +553,6 @@ bool menu_event_run(int cmd)
 			state.cur_bone_idx=-1;
 			
             return(TRUE);
-			
-		case kCommandGoToBoneMoveParent:
-			if ((state.cur_pose_idx==-1) || (state.cur_bone_idx==-1)) return(TRUE);
-			
-			parent_idx=model.bones[state.cur_bone_idx].parent_idx;
-			if (parent_idx!=-1) state.cur_bone_idx=parent_idx;
-
-			main_wind_draw();
-			return(TRUE);
 			
 			// animation menu
 			

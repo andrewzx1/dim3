@@ -77,96 +77,6 @@ void vertex_find_center_sel_vertexes(int mesh_idx,int *p_cx,int *p_cy,int *p_cz)
 
 /* =======================================================
 
-      Move Vertexes
-      
-======================================================= */
-
-void vertex_move_sel_vertexes(int mesh_idx,int x,int y,int z)
-{
-	int					i,nt;
-	model_vertex_type	*vertex;
-	
-	nt=model.meshes[mesh_idx].nvertex;
-		
-	vertex=model.meshes[mesh_idx].vertexes;
-	
-	for (i=0;i!=nt;i++) {
-		if (vertex_check_sel_mask(mesh_idx,i)) {
-			vertex->pnt.x+=x;
-			vertex->pnt.y+=y;
-			vertex->pnt.z+=z;
-		}
-		vertex++;
-	}
-}
-
-/* =======================================================
-
-      Scale Vertexes
-      
-======================================================= */
-
-void vertex_scale_sel_vertexes(int mesh_idx,float x,float y,float z)
-{
-	int					i,nt,
-						x2,z2,y2,cx,cz,cy;
-	model_vertex_type	*vertex;
-	
-		// find vertex center
-		
-	vertex_find_center_sel_vertexes(mesh_idx,&cx,&cy,&cz);
-	
-		// scale vertexes
-
-	nt=model.meshes[mesh_idx].nvertex;
-	vertex=model.meshes[mesh_idx].vertexes;
-	
-	for (i=0;i!=nt;i++) {
-		if (vertex_check_sel_mask(mesh_idx,i)) {
-			x2=vertex->pnt.x-cx;
-			y2=vertex->pnt.y-cy;
-			z2=vertex->pnt.z-cz;
-			x2=(int)((float)x2*x);
-			y2=(int)((float)y2*y);
-			z2=(int)((float)z2*z);
-			vertex->pnt.x=x2+cx;
-			vertex->pnt.y=y2+cy;
-			vertex->pnt.z=z2+cz;
-		}
-		vertex++;
-	}
-}
-
-/* =======================================================
-
-      Rotate Vertexes
-      
-======================================================= */
-
-void vertex_rotate_sel_vertexes(int mesh_idx,float ang_x,float ang_y,float ang_z)
-{
-	int					i,nt,cx,cz,cy;
-	model_vertex_type	*vertex;
-	
-		// find vertex center
-		
-	vertex_find_center_sel_vertexes(mesh_idx,&cx,&cy,&cz);
-	
-		// rotate vertexes
-
-	nt=model.meshes[mesh_idx].nvertex;
-	vertex=model.meshes[mesh_idx].vertexes;
-	
-	for (i=0;i!=nt;i++) {
-		if (vertex_check_sel_mask(mesh_idx,i)) {
-			rotate_point(&vertex->pnt.x,&vertex->pnt.y,&vertex->pnt.z,cx,cy,cz,ang_x,ang_y,ang_z);
-		}
-		vertex++;
-	}
-}
-
-/* =======================================================
-
       Invert Normal Vertexes
       
 ======================================================= */
@@ -323,17 +233,65 @@ void vertex_set_normals(int mesh_idx)
 
 void vertex_clear_bone_attachments_sel_vertexes(int mesh_idx)
 {
-	int					i,nt;
+	int					n,nt;
 	model_vertex_type	*vertex;
 	
 	nt=model.meshes[mesh_idx].nvertex;
 	vertex=model.meshes[mesh_idx].vertexes;
 	
-	for (i=0;i!=nt;i++) {
-		if (vertex_check_sel_mask(mesh_idx,i)) {
+	for (n=0;n!=nt;n++) {
+		if (vertex_check_sel_mask(mesh_idx,n)) {
 			vertex->major_bone_idx=-1;
 			vertex->minor_bone_idx=-1;
 		}
+		vertex++;
+	}
+}
+
+/* =======================================================
+
+      Automatically Set Vertexes for Bones
+      
+======================================================= */
+
+void vertex_auto_bone_attachments(int mesh_idx)
+{
+	int					n,k,nt,bone_idx,
+						cur_dist,dist;
+	model_bone_type		*bone;
+	model_vertex_type	*vertex;
+	
+	nt=model.meshes[mesh_idx].nvertex;
+	vertex=model.meshes[mesh_idx].vertexes;
+	
+	for (n=0;n!=nt;n++) {
+	
+		if (vertex->major_bone_idx!=-1) {
+			vertex++;
+			continue;
+		}
+		
+		bone_idx=-1;
+		cur_dist=0;
+		
+		bone=model.bones;
+		
+		for (k=0;k!=model.nbone;k++) {
+			dist=distance_get(bone->pnt.x,bone->pnt.y,bone->pnt.z,vertex->pnt.x,vertex->pnt.y,vertex->pnt.z);
+			if ((bone_idx==-1) || (dist<cur_dist)) {
+				bone_idx=k;
+				cur_dist=dist;
+			}
+			
+			bone++;
+		}
+		
+		if (bone_idx!=-1) {
+			vertex->major_bone_idx=bone_idx;
+			vertex->minor_bone_idx=-1;
+			vertex->bone_factor=1.0f;
+		}
+		
 		vertex++;
 	}
 }

@@ -122,6 +122,7 @@ void item_palette_fill(void)
 		// poses
 
 	list_palette_add_header_count(&item_palette,item_pose,"Poses",model.npose);
+	list_palette_add_item(&item_palette,item_neutral_pose,0,"Neutral",((state.cur_item==item_neutral_pose)&&(state.cur_pose_idx==-1)),FALSE);
 
 	for (n=0;n!=model.npose;n++) {
 		list_palette_add_item(&item_palette,item_pose,n,model.poses[n].name,((state.cur_item==item_pose)&&(state.cur_pose_idx==n)),FALSE);
@@ -290,6 +291,11 @@ void item_palette_click(d3pnt *pnt,bool double_click)
 		case item_pose:
 			state.cur_item=item_pose;
 			state.cur_pose_idx=item_palette.item_idx;
+			break;
+			
+		case item_neutral_pose:
+			state.cur_item=item_neutral_pose;
+			state.cur_pose_idx=-1;
 			break;
 
 		case item_bone:

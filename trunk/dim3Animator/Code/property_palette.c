@@ -132,6 +132,10 @@ void property_palette_fill(void)
 			list_palette_set_title(&property_palette,"Pose Properties");
 			property_palette_fill_pose(state.cur_pose_idx);
 			break;
+			
+		case item_neutral_pose:
+			list_palette_set_title(&property_palette,"No Properties");
+			break;
 
 		case item_bone:
 			list_palette_set_title(&property_palette,"Bone Properties");
