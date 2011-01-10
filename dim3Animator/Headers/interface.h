@@ -93,8 +93,6 @@ extern void item_palette_initialize(void);
 extern void item_palette_shutdown(void);
 extern void item_palette_setup(void);
 extern void item_palette_draw(void);
-extern void item_palette_reset(void);
-extern void item_palette_select(int sel_type,int sel_idx);
 extern bool item_palette_delete(void);
 extern void item_palette_scroll_wheel(d3pnt *pnt,int move);
 extern void item_palette_click(d3pnt *pnt,bool double_click);
@@ -107,7 +105,6 @@ extern void property_palette_initialize(void);
 extern void property_palette_shutdown(void);
 extern void property_palette_setup(void);
 extern void property_palette_draw(void);
-extern void property_palette_reset(void);
 extern void property_palette_scroll_wheel(d3pnt *pnt,int move);
 extern void property_palette_click(d3pnt *pnt,bool double_click);
 
@@ -129,6 +126,18 @@ extern void property_palette_click_pose(int pose_idx,int id);
 extern void property_palette_click_bone(int bone_idx,int id);
 extern void property_palette_click_hit_box(int hit_box_idx,int id);
 extern void property_palette_click_texture(int texture_idx,int id);
+
+//
+// alt property list palette
+//
+
+extern void alt_property_palette_initialize(void);
+extern void alt_property_palette_shutdown(void);
+extern void alt_property_palette_setup(void);
+extern void alt_property_fix_open_state(void);
+extern void alt_property_palette_draw(void);
+extern void alt_property_palette_scroll_wheel(d3pnt *pnt,int move);
+extern void alt_property_palette_click(d3pnt *pnt,bool double_click);
 
 //
 // importing

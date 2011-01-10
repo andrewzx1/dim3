@@ -140,13 +140,14 @@ void import_obj_rerig(model_mesh_type *mesh,int old_nvertex,model_vertex_type *o
 
 bool import_obj(char *path,bool replace,bool *found_normals,char *err_str)
 {
-	int						n,k,t,nvertex,ntrig,nuv,nnormal,nline,ntexture,
+	int						n,k,i,idx,nvertex,ntrig,nuv,nnormal,nline,nmaterial,
 							texture_idx,high,npt,old_nvertex,sz,
 							pvtx[obj_max_face_vertex];
 	float					fy,f_ty,f_by;
 	char					txt[256],*c,vstr[256],vtstr[256],vnstr[256],
-							material_name[256],last_material_name[256];
-	bool					first_material,all_material_exists;
+							material_name[256],
+							material_list[max_model_texture][name_str_len];
+	bool					hit_material,in_material,all_material_exists;
 	d3uv					*uv,*uv_ptr,pt_uv[obj_max_face_vertex];
 	d3vct					*normal,*normal_ptr,pnormal[obj_max_face_vertex];
 	model_mesh_type			*mesh;
@@ -172,11 +173,11 @@ bool import_obj(char *path,bool replace,bool *found_normals,char *err_str)
 	
     nline=textdecode_count();
 	
-		// count materials
+		// count materials and get a list
 		// and see if we already have a material
 		// for all the textures
 		
-	ntexture=0;
+	nmaterial=0;
 	all_material_exists=TRUE;
 	
     for (n=0;n!=nline;n++) {
@@ -185,15 +186,30 @@ bool import_obj(char *path,bool replace,bool *found_normals,char *err_str)
 		
             textdecode_get_piece(n,1,material_name);
 			material_name[name_str_len-1]=0x0;
+
+				// already doing this material?
+
+			hit_material=FALSE;
+
+			for (i=0;i!=nmaterial;i++) {
+				if (strcasecmp(material_list[i],material_name)==0) {
+					hit_material=TRUE;
+					break;
+				}
+			}
+
+			if (!hit_material) {
+				strcpy(material_list[nmaterial],material_name);
+				nmaterial++;
+			}
+
 			all_material_exists&=texture_exists(material_name);
-			
-			ntexture++;
 		}
 	}
 
 		// can't import if no textures
 		
-	if (ntexture==0) {
+	if (nmaterial==0) {
 		progress_end();
 		textdecode_close();
 		strcpy(err_str,"OBJ contains no materials.  Animator can only import texture-mapped OBJs.");
@@ -202,7 +218,7 @@ bool import_obj(char *path,bool replace,bool *found_normals,char *err_str)
 	
 		// can't import if too many materials?
 		
-	if ((ntexture+texture_count())>=max_model_texture) {
+	if ((nmaterial+texture_count())>=max_model_texture) {
 		progress_end();
 		textdecode_close();
 		sprintf(err_str,"Too many materials, models can have a maximum of %d materials.",max_model_texture);
@@ -360,144 +376,133 @@ bool import_obj(char *path,bool replace,bool *found_normals,char *err_str)
 			}
         }
     }
+
+	*found_normals=(nnormal!=0);
 	
 		// single material import?
 	
 	if (!replace) {
 		model.import.single_texture=FALSE;
 	
-		if ((ntexture>1) && (!all_material_exists)) {
+		if ((nmaterial>1) && (!all_material_exists)) {
 			model.import.single_texture=texture_use_single();
 		}
 	}
 
 		// get the triangles
+		// we run through the materials to
+		// combine triangles that are on different
+		// materials but with the same name
 		
-	*found_normals=(nnormal!=0);
-
-	first_material=TRUE;
-	material=NULL;
-    
     ntrig=0;
 	trig=mesh->trigs;
-	
-	last_texture_idx=-1;
-        
-    for (n=0;n!=nline;n++) {
 
-        textdecode_get_piece(n,0,txt);
-        
-            // material change
-            
-        if (strcmp(txt,"usemtl")==0) {
-		
-            textdecode_get_piece(n,1,material_name);
-			material_name[name_str_len-1]=0x0;
-             
-                // get texture
-        
-            texture_idx=texture_pick(material_name,err_str);
-			if (texture_idx==-1) {
-				progress_end();
-				textdecode_close();
-				return(FALSE);
-			}
-			
-				// already used?
-				
-			if (mesh->materials[texture_idx].trig_start!=0) {
-				material=material=&mesh->materials[texture_idx];
-				
-			if (texture_idx==last_texture_idx) continue;
-			last_texture_idx=texture_idx;
-           
-                // close last material
-            
-            if (!first_material) {
-				material->trig_count=ntrig-material->trig_start;
-            }
-			
-			first_material=FALSE;
-         
-			material=&mesh->materials[texture_idx];
-            material->trig_start=ntrig;
-            
-            continue;
-        }
+	for (i=0;i!=nmaterial;i++) {
 
-            // a face
-            
-        if (strcmp(txt,"f")!=0) continue;
-        
-            // get the face points
-        
-        npt=0;
-        
-        for (k=0;k!=obj_max_face_vertex;k++) {
-            textdecode_get_piece(n,(k+1),txt);
-            if (txt[0]==0x0) break;
-            
-				// seperate into vertex, UV, and normal
-				
-            vtstr[0]=0x0;
-			vnstr[0]=0x0;
-            
-            strcpy(vstr,txt);
-            c=strchr(vstr,'/');
-            if (c!=NULL) {
-                strcpy(vtstr,(c+1));
-                *c=0x0;
-            }
-            c=strchr(vtstr,'/');
-            if (c!=NULL) {
-				strcpy(vnstr,(c+1));
-				*c=0x0;
-            }
-			
-            pvtx[npt]=atoi(vstr)-1;
-            
-			if (vtstr[0]==0x0) {
-				pt_uv[npt].x=pt_uv[npt].y=0.0f;
-			}
-			else {
-				t=atoi(vtstr)-1;
-				pt_uv[npt].x=uv_ptr[t].x;
-				pt_uv[npt].y=1.0f-uv_ptr[t].y;
-            }
-				
-			if (vnstr[0]!=0x0) {
-				t=atoi(vnstr)-1;
-				memmove(&pnormal[npt],&normal_ptr[t],sizeof(d3vct));
-			}
-			
-            npt++;
-        }
-		
-        for (k=0;k!=(npt-2);k++) {
-            trig->v[0]=pvtx[0];
-            trig->v[1]=pvtx[k+1];
-            trig->v[2]=pvtx[k+2];
-                
-            trig->gx[0]=pt_uv[0].x;
-            trig->gx[1]=pt_uv[k+1].x;
-            trig->gx[2]=pt_uv[k+2].x;
-            
-            trig->gy[0]=pt_uv[0].y;
-            trig->gy[1]=pt_uv[k+1].y;
-            trig->gy[2]=pt_uv[k+2].y;
-			
-			memmove(&trig->tangent_space[0].normal,&pnormal[0],sizeof(d3vct));
-			memmove(&trig->tangent_space[1].normal,&pnormal[k+1],sizeof(d3vct));
-			memmove(&trig->tangent_space[2].normal,&pnormal[k+2],sizeof(d3vct));
-            
-            trig++;
-            ntrig++;
-        }
-    }
+            // get texture
     
-    if (!first_material) {
-        material->trig_count=ntrig-material->trig_start;
-    }
+        texture_idx=texture_pick(material_list[i],err_str);
+		if (texture_idx==-1) {
+			progress_end();
+			textdecode_close();
+			return(FALSE);
+		}
+
+		material=&mesh->materials[texture_idx];
+		material->trig_start=ntrig;
+
+		in_material=FALSE;
+
+			// run through the trigs
+
+		for (n=0;n!=nline;n++) {
+
+			textdecode_get_piece(n,0,txt);
+	        
+				// material change
+	            
+			if (strcmp(txt,"usemtl")==0) {
+				textdecode_get_piece(n,1,material_name);
+				material_name[name_str_len-1]=0x0;
+
+				in_material=(strcasecmp(material_name,material_list[i])==0);
+				continue;
+			}
+
+			if (!in_material) continue;
+
+				// a face
+	            
+			if (strcmp(txt,"f")!=0) continue;
+	        
+				// get the face points
+	        
+			npt=0;
+	        
+			for (k=0;k!=obj_max_face_vertex;k++) {
+				textdecode_get_piece(n,(k+1),txt);
+				if (txt[0]==0x0) break;
+	            
+					// seperate into vertex, UV, and normal
+					
+				vtstr[0]=0x0;
+				vnstr[0]=0x0;
+	            
+				strcpy(vstr,txt);
+				c=strchr(vstr,'/');
+				if (c!=NULL) {
+					strcpy(vtstr,(c+1));
+					*c=0x0;
+				}
+				c=strchr(vtstr,'/');
+				if (c!=NULL) {
+					strcpy(vnstr,(c+1));
+					*c=0x0;
+				}
+				
+				pvtx[npt]=atoi(vstr)-1;
+	            
+				if (vtstr[0]==0x0) {
+					pt_uv[npt].x=pt_uv[npt].y=0.0f;
+				}
+				else {
+					idx=atoi(vtstr)-1;
+					pt_uv[npt].x=uv_ptr[idx].x;
+					pt_uv[npt].y=1.0f-uv_ptr[idx].y;
+				}
+					
+				if (vnstr[0]!=0x0) {
+					idx=atoi(vnstr)-1;
+					memmove(&pnormal[npt],&normal_ptr[idx],sizeof(d3vct));
+				}
+				
+				npt++;
+			}
+			
+			for (k=0;k!=(npt-2);k++) {
+				trig->v[0]=pvtx[0];
+				trig->v[1]=pvtx[k+1];
+				trig->v[2]=pvtx[k+2];
+	                
+				trig->gx[0]=pt_uv[0].x;
+				trig->gx[1]=pt_uv[k+1].x;
+				trig->gx[2]=pt_uv[k+2].x;
+	            
+				trig->gy[0]=pt_uv[0].y;
+				trig->gy[1]=pt_uv[k+1].y;
+				trig->gy[2]=pt_uv[k+2].y;
+				
+				memmove(&trig->tangent_space[0].normal,&pnormal[0],sizeof(d3vct));
+				memmove(&trig->tangent_space[1].normal,&pnormal[k+1],sizeof(d3vct));
+				memmove(&trig->tangent_space[2].normal,&pnormal[k+2],sizeof(d3vct));
+	            
+				trig++;
+				ntrig++;
+			}
+		}
+
+		material->trig_count=ntrig-material->trig_start;
+	}
 	
 	mesh->ntrig=ntrig;
 	

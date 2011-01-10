@@ -81,45 +81,35 @@ BEGIN
     BEGIN
         MENUITEM "Select All",					600
         MENUITEM "Select Not Attached",			601
-		MENUITEM SEPARATOR
-        MENUITEM "Nudge...",					602
-        MENUITEM "Scale...",					603
-        MENUITEM "Rotate...",					604
  		MENUITEM SEPARATOR
-        MENUITEM "Invert Normals",				605
-        MENUITEM "Set Normals",					606
+        MENUITEM "Invert Normals",				602
+        MENUITEM "Set Normals",					603
  		MENUITEM SEPARATOR
-        MENUITEM "Clear Bone Attachments",		607
+        MENUITEM "Clear Bone Attachments",		604
+        MENUITEM "Auto Set Bone Attachments",	605
  		MENUITEM SEPARATOR
-        MENUITEM "Hide Selected",				608
-        MENUITEM "Hide Non-Selected",			609
-        MENUITEM "Show All",					610
+        MENUITEM "Hide Selected",				606
+        MENUITEM "Hide Non-Selected",			607
+        MENUITEM "Show All",					608
  		MENUITEM SEPARATOR
-        MENUITEM "Delete Vertexes",				611
+        MENUITEM "Delete Vertexes",				609
     END
     POPUP "Bones"
     BEGIN
         MENUITEM "Add Bone...",					700
         MENUITEM "Set Bone...",					701
  		MENUITEM SEPARATOR
-        MENUITEM "Nudge...",					702
+        MENUITEM "Delete Bone",					702
  		MENUITEM SEPARATOR
-        MENUITEM "Select Vertexes Near Bone",	703
- 		MENUITEM SEPARATOR
-        MENUITEM "Delete Bone",					704
+        MENUITEM "Goto Parent Bone",			703
     END
     POPUP "Poses"
     BEGIN
         MENUITEM "New Pose...",					800
         MENUITEM "Duplicate Pose...",			801
  		MENUITEM SEPARATOR
-        MENUITEM "Previous Pose",				802
-        MENUITEM "Next Pose",					803
-		MENUITEM SEPARATOR
-        MENUITEM "Clear Pose",					804
-        MENUITEM "Delete Pose",					805
- 		MENUITEM SEPARATOR
-        MENUITEM "To Parent Bone Move",			806
+        MENUITEM "Clear Pose",					802
+        MENUITEM "Delete Pose",					803
     END
     POPUP "Animations"
     BEGIN

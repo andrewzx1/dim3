@@ -368,6 +368,10 @@
 					Name="Palettes"
 					>
 					<File
+						RelativePath="..\..\dim3Animator\Code\alt_property_palette.c"
+						>
+					</File>
+					<File
 						RelativePath="..\..\dim3Animator\Code\item_palette.c"
 						>
 					</File>
