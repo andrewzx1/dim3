@@ -81,8 +81,6 @@ and can be sold or given away.
 
 #define kCommandUndo					FOUR_CHAR_CODE('undo')
 
-#define kCommandSettings				FOUR_CHAR_CODE('sets')
-#define kCommandHitBoxes				FOUR_CHAR_CODE('hbox')
 #define kCommandPrepareModel			FOUR_CHAR_CODE('pmdl')
 #define kCommandCalcBoxes				FOUR_CHAR_CODE('cbox')
 #define kCommandCalcNormals				FOUR_CHAR_CODE('cnrm')
@@ -94,6 +92,7 @@ and can be sold or given away.
 #define kCommandSwapYZAll				FOUR_CHAR_CODE('syal')
 #define kCommandCenterXZAll				FOUR_CHAR_CODE('ctal')
 #define kCommandFloorYAll				FOUR_CHAR_CODE('fral')
+#define kCommandAddHitBox				FOUR_CHAR_CODE('hbox')
 
 #define kCommandFront					FOUR_CHAR_CODE('vfnt')
 #define kCommandLeft					FOUR_CHAR_CODE('vlft')

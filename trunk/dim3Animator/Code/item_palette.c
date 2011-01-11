@@ -165,43 +165,6 @@ void item_palette_draw(void)
 
 /* =======================================================
 
-      Item Palette Delete
-      
-======================================================= */
-/* supergumba
-bool item_palette_delete(void)
-{
-		// anything to delete?
-
-	if ((item_palette.item_type==-1) || (item_palette.item_idx==-1)) return(FALSE);
-
-	switch (item_palette.item_type) {
-
-		case group_piece:
-			if (os_dialog_confirm("Delete Group","Is it okay to delete this group?",FALSE)!=0) return(FALSE);
-			map_group_delete(&map,item_palette.item_idx);
-			item_palette_reset();
-			return(TRUE);
-
-		case movement_piece:
-			if (os_dialog_confirm("Delete Movement","Is it okay to delete this movement?",FALSE)!=0) return(FALSE);
-			map_movement_delete(&map,item_palette.item_idx);
-			item_palette_reset();
-			return(TRUE);
-
-		case cinema_piece:
-			if (os_dialog_confirm("Delete Cinema","Is it okay to delete this cinema?",FALSE)!=0) return(FALSE);
-			map_cinema_delete(&map,item_palette.item_idx);
-			item_palette_reset();
-			return(TRUE);
-
-	}
-
-	return(FALSE);
-}
-*/
-/* =======================================================
-
       Item Palette Scroll Wheel
       
 ======================================================= */
@@ -256,16 +219,19 @@ void item_palette_click(d3pnt *pnt,bool double_click)
 		case item_animation:
 			state.cur_item=item_animation;
 			state.cur_animate_idx=item_palette.item_idx;
+			state.cur_animate_pose_move_idx=-1;
 			break;
 
 		case item_pose:
 			state.cur_item=item_pose;
 			state.cur_pose_idx=item_palette.item_idx;
+			state.cur_pose_bone_move_idx=-1;
 			break;
 			
 		case item_neutral_pose:
 			state.cur_item=item_neutral_pose;
 			state.cur_pose_idx=-1;
+			state.cur_pose_bone_move_idx=-1;
 			break;
 
 		case item_bone:

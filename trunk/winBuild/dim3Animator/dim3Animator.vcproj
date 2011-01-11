@@ -345,6 +345,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\dim3Animator\Code\model_piece.c"
+					>
+				</File>
+				<File
 					RelativePath="..\..\dim3Animator\Code\obj_import.c"
 					>
 				</File>
@@ -369,6 +373,14 @@
 					>
 					<File
 						RelativePath="..\..\dim3Animator\Code\alt_property_palette.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Animator\Code\alt_property_palette_bone_move.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Animator\Code\alt_property_palette_pose_move.c"
 						>
 					</File>
 					<File

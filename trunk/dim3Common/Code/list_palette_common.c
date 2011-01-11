@@ -171,7 +171,7 @@ void list_palette_add_color(list_palette_type *list,int piece_type,int piece_idx
 	memmove(&item->value.col,col,sizeof(d3col));
 }
 
-void list_palette_add_string(list_palette_type *list,int id,char *name,char *value,bool disabled)
+void list_palette_add_string_selectable(list_palette_type *list,int id,char *name,char *value,bool selected,bool disabled)
 {
 	list_palette_item_type		*item;
 
@@ -181,10 +181,15 @@ void list_palette_add_string(list_palette_type *list,int id,char *name,char *val
 	item->idx=-1;
 	item->id=id;
 
-	item->selected=FALSE;
+	item->selected=selected;
 	item->disabled=disabled;
 
 	strcpy(item->name,name);
+
+	if (value==NULL) {
+		item->value.str[0]=0x0;
+		return;
+	}
 	
 	if (strlen(value)>=25) {
 		strncpy(item->value.str,value,25);
@@ -193,6 +198,11 @@ void list_palette_add_string(list_palette_type *list,int id,char *name,char *val
 	else {
 		strcpy(item->value.str,value);
 	}
+}
+
+void list_palette_add_string(list_palette_type *list,int id,char *name,char *value,bool disabled)
+{
+	list_palette_add_string_selectable(list,id,name,value,FALSE,disabled);
 }
 
 void list_palette_add_string_int(list_palette_type *list,int id,char *name,int value,bool disabled)

@@ -36,13 +36,7 @@ and can be sold or given away.
 
 #define kPosePropertyName							0
 
-#define kPosePropertyBoneMoveRot					1000
-#define kPosePropertyBoneMoveMove					2000
-#define kPosePropertyBoneMoveAcceleration			3000
-#define kPosePropertyBoneMoveSkipBlended			4000
-
-#define kPosePropertyBoneMoveConstraintBone			5000
-#define kPosePropertyBoneMoveConstraintOffset		6000
+#define kPosePropertyBoneMove						100
 
 extern model_type				model;
 extern animator_state_type		state;
@@ -59,6 +53,7 @@ extern list_palette_type		property_palette;
 void property_palette_fill_pose(int pose_idx)
 {
 	int						n;
+	char					str_tag[8],str[256];
 	model_pose_type			*pose;
 
 	pose=&model.poses[pose_idx];
@@ -66,19 +61,13 @@ void property_palette_fill_pose(int pose_idx)
 	list_palette_add_header(&property_palette,0,"Pose Options");
 	list_palette_add_string(&property_palette,kPosePropertyName,"Name",pose->name,FALSE);
 
+	list_palette_add_header(&property_palette,0,"Pose Bone Moves");
+
 	for (n=0;n!=model.nbone;n++) {
-		list_palette_add_header(&property_palette,0,model.bones[n].name);
-		list_palette_add_vector(&property_palette,(kPosePropertyBoneMoveRot+n),"Rot",&pose->bone_moves[n].rot,FALSE);
-		list_palette_add_vector(&property_palette,(kPosePropertyBoneMoveMove+n),"Move",&pose->bone_moves[n].mov,FALSE);
-		list_palette_add_string_float(&property_palette,(kPosePropertyBoneMoveAcceleration+n),"Acceleration",pose->bone_moves[n].acceleration,FALSE);
-		list_palette_add_checkbox(&property_palette,(kPosePropertyBoneMoveSkipBlended+n),"Skip Blending",pose->bone_moves[n].skip_blended,FALSE);
-		if (pose->bone_moves[n].constraint.bone_idx==-1) {
-			list_palette_add_string(&property_palette,(kPosePropertyBoneMoveConstraintBone+n),"Constraint Bone","",FALSE);
-		}
-		else {
-			list_palette_add_string(&property_palette,(kPosePropertyBoneMoveConstraintBone+n),"Constraint Bone",model.bones[pose->bone_moves[n].constraint.bone_idx].name,FALSE);
-		}
-		list_palette_add_point(&property_palette,(kPosePropertyBoneMoveConstraintOffset+n),"Constaint Offset",&pose->bone_moves[n].constraint.offset,FALSE);
+		memmove(str_tag,&model.bones[n].tag,4);
+		str_tag[4]=0x0;
+		sprintf(str,"%s (%s)",model.bones[n].name,str_tag);
+		list_palette_add_string_selectable(&property_palette,(kPosePropertyBoneMove+n),str,NULL,((state.cur_pose_idx==pose_idx)&&(state.cur_pose_bone_move_idx==n)),FALSE);
 	}
 }
 
@@ -96,20 +85,15 @@ void property_palette_click_pose(int pose_idx,int id)
 
 		// bone moves
 
-	if ((id>=kPosePropertyBoneMoveRot) && (id<(kPosePropertyBoneMoveRot+max_model_bone))) {
-
-
-
+	if (id>=kPosePropertyBoneMove) {
+		state.cur_pose_bone_move_idx=id-kPosePropertyBoneMove;
+		main_wind_draw();
+		return;
 	}
 
-// supergumba -- do all the bone moves!
+	state.cur_pose_bone_move_idx=-1;
 
-	/*
-
-			case kBonePropertyParent:
-			property_palette_pick_bone(&bone->parent_idx);
-			break;
-*/
+		// regular values
 
 	switch (id) {
 

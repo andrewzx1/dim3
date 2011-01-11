@@ -110,10 +110,6 @@ bool dialog_animation_reset_time_run(int animate_idx)
 {
 	return(FALSE);
 }
-bool dialog_hit_box_settings_run(void)
-{
-	return(FALSE);
-}
 void dialog_about_run(void)
 {
 }

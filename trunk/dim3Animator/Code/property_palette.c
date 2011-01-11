@@ -240,6 +240,17 @@ void property_palette_click(d3pnt *pnt,bool double_click)
 			break;
 
 	}
+
+		// need to do the setup again incase
+		// the alt window has open/closed
+
+	alt_property_fix_open_state();
+	item_palette_setup();
+	property_palette_setup();
+	alt_property_palette_setup();
+	model_wind_setup();
+
+	main_wind_draw();
 }
 
 /* =======================================================
@@ -247,31 +258,6 @@ void property_palette_click(d3pnt *pnt,bool double_click)
       Property Palette List Utilities
       
 ======================================================= */
-
-/* supergumba -- work on these
-void property_palette_pick_group(int *group_idx)
-{
-	dialog_property_list_run((char*)map.group.groups,map.group.ngroup,sizeof(group_type),(int)offsetof(group_type,name),TRUE,group_idx);
-}
-
-void property_palette_pick_spot(char *name)
-{
-	int				n,idx;
-	
-	idx=-1;
-	
-	for (n=0;n!=map.nnode;n++) {
-		if (strcmp(map.spots[n].name,name)==0) {
-			idx=n;
-			break;
-		}
-	}
-
-	dialog_property_list_run((char*)map.spots,map.nspot,sizeof(spot_type),(int)offsetof(spot_type,name),TRUE,&idx);
-	
-	name[0]=0x0;
-	if (idx!=-1) strcpy(name,map.spots[idx].name);
-}
 
 void property_palette_pick_sound(char *name,bool include_none)
 {
@@ -374,71 +360,28 @@ void property_palette_pick_particle(char *name)
 	if (idx!=-1) strcpy(name,particle_names[idx]);
 }
 
-void property_palette_pick_node(char *name)
-{
-	int				n,count,mem_sz,list_pos,idx;
-	char			*list_ptr,*list;
-	
-		// only pick from nodes with names
-		
-	count=0;
-	
-	for (n=0;n!=map.nnode;n++) {
-		if (map.nodes[n].name[0]!=0x0) count++;
-	}
-	
-	if (count==0) {
-		mem_sz=name_str_len;
-	}
-	else {
-		mem_sz=count*name_str_len;
-	}
-	
-	list_ptr=(char*)malloc(mem_sz);
-	if (list_ptr==NULL) return;
-	
-	idx=-1;
-	list_pos=0;
-	
-	for (n=0;n!=map.nnode;n++) {
-		if (map.nodes[n].name[0]==0x0) continue;
-		
-		list=list_ptr+(list_pos*name_str_len);
-		strcpy(list,map.nodes[n].name);
-			
-		if (strcmp(map.nodes[n].name,name)==0) idx=list_pos;
-		list_pos++;
-	}
-	
-	dialog_property_list_run(list_ptr,count,name_str_len,0,TRUE,&idx);
-	
-	name[0]=0x0;
-	if (idx!=-1) strcpy(name,(list_ptr+(idx*name_str_len)));
-	
-	free(list_ptr);
-}
-
-void property_palette_pick_texture(int *txt_idx)
-{
-	int				n;
-	char			texture_names[max_map_texture][name_str_len];
-	
-	for (n=0;n!=max_map_texture;n++) {
-		if (map.textures[n].frames[0].name[0]==0x0) {
-			strcpy((char*)texture_names[n],"(none)");
-		}
-		else {
-			strcpy((char*)texture_names[n],map.textures[n].frames[0].name);
-		}
-	}
-
-	dialog_property_list_run((char*)texture_names,max_map_texture,name_str_len,0,TRUE,txt_idx);
-}
-*/
-
 void property_palette_pick_bone(int *bone_idx)
 {
 	dialog_property_list_run((char*)model.bones,model.nbone,sizeof(model_bone_type),(int)offsetof(model_bone_type,name),TRUE,bone_idx);
+}
+
+void property_palette_pick_bone_tag(unsigned long *bone_tag)
+{
+	int				idx;
+
+	idx=model_find_bone(&model,*bone_tag);
+	property_palette_pick_bone(&idx);
+	if (idx==-1) {
+		*bone_tag=model_null_tag;
+		return;
+	}
+
+	*bone_tag=model.bones[idx].tag;
+}
+
+void property_palette_pick_pose(int *pose_idx)
+{
+	dialog_property_list_run((char*)model.poses,model.npose,sizeof(model_pose_type),(int)offsetof(model_pose_type,name),TRUE,pose_idx);
 }
 
 void property_palette_pick_shader(char *name)
