@@ -77,17 +77,13 @@ void item_palette_setup(void)
 		item_palette.pixel_sz=list_palette_border_sz;
 	}
 
-	if (alt_property_open) {
-		x=wbox.rx-list_palette_tree_sz;
-	}
-	else {
-		x=wbox.rx;
-	}
-
+	x=wbox.rx-item_palette.pixel_sz;
+	if ((list_palette_open) && (alt_property_open)) x-=item_palette.pixel_sz;
+	
 	y=wbox.ty+((wbox.by-wbox.ty)>>1);
 
-	item_palette.box.lx=x-item_palette.pixel_sz;
-	item_palette.box.rx=x;
+	item_palette.box.lx=x;
+	item_palette.box.rx=x+item_palette.pixel_sz;
 	item_palette.box.ty=wbox.ty+(tool_palette_pixel_sz+1);
 	item_palette.box.by=y;
 }

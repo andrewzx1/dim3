@@ -37,6 +37,8 @@ and can be sold or given away.
 #define kAnimationPropertyName					0
 #define kAnimationPropertyLoop					1
 
+#define kAnimationPropertyPose					100
+
 extern model_type				model;
 extern animator_state_type		state;
 extern file_path_setup_type		file_path_setup;
@@ -51,6 +53,8 @@ extern list_palette_type		property_palette;
 
 void property_palette_fill_animation(int animate_idx)
 {
+	int						n;
+	char					str[256];
 	model_animate_type		*animate;
 
 	animate=&model.animates[animate_idx];
@@ -60,6 +64,14 @@ void property_palette_fill_animation(int animate_idx)
 
 	list_palette_add_header(&property_palette,0,"Animation Settings");
 	list_palette_add_checkbox(&property_palette,kAnimationPropertyLoop,"Looping",animate->loop,FALSE);
+	
+	list_palette_add_header(&property_palette,0,"Animation Poses");
+	for (n=0;n!=animate->npose_move;n++) {
+		strcpy(str,model.poses[animate->pose_moves[n].pose_idx].name);
+		if (n==animate->loop_start) strcat(str," (loop start)");
+		if (n==animate->loop_end) strcat(str," (loop end)");
+		list_palette_add_item(&property_palette,0,(kAnimationPropertyName+n),str,(state.cur_animate_pose_move_idx==n),FALSE);
+	}
 }
 
 /* =======================================================
@@ -73,6 +85,16 @@ void property_palette_click_animation(int animate_idx,int id)
 	model_animate_type		*animate;
 
 	animate=&model.animates[animate_idx];
+	
+		// pose moves
+		
+	if (id>=kAnimationPropertyName) {
+		state.cur_animate_pose_move_idx=id-kAnimationPropertyName;
+		main_wind_draw();
+		return;
+	}
+	
+		// regular animation settings
 
 	switch (id) {
 

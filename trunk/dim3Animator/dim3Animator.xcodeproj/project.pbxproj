@@ -25,6 +25,7 @@
 		263AB1D012D8345600954777 /* property_palette_pose.c in Sources */ = {isa = PBXBuildFile; fileRef = 263AB1C912D8345600954777 /* property_palette_pose.c */; };
 		263AB1D112D8345600954777 /* property_palette_texture.c in Sources */ = {isa = PBXBuildFile; fileRef = 263AB1CA12D8345600954777 /* property_palette_texture.c */; };
 		265552AE128B744E00662A94 /* dialog_normal.c in Sources */ = {isa = PBXBuildFile; fileRef = 265552AD128B744E00662A94 /* dialog_normal.c */; };
+		2677B8EB12DBB5280068C921 /* alt_property_palette.c in Sources */ = {isa = PBXBuildFile; fileRef = 2677B8EA12DBB5280068C921 /* alt_property_palette.c */; };
 		269AF83E12887DEF001344EC /* model_picker.c in Sources */ = {isa = PBXBuildFile; fileRef = 269AF83D12887DEF001344EC /* model_picker.c */; };
 		269AF91C1288D007001344EC /* draw_axis_boxes.c in Sources */ = {isa = PBXBuildFile; fileRef = 269AF91B1288D007001344EC /* draw_axis_boxes.c */; };
 		269AF91E1288D016001344EC /* draw_selection.c in Sources */ = {isa = PBXBuildFile; fileRef = 269AF91D1288D016001344EC /* draw_selection.c */; };
@@ -191,6 +192,7 @@
 		266FFE92125EBCFB00E40F28 /* Tool Rotate Mode.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool Rotate Mode.png"; sourceTree = "<group>"; };
 		266FFE93125EBCFB00E40F28 /* Tool Show First Mesh.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool Show First Mesh.png"; sourceTree = "<group>"; };
 		266FFE94125EBCFB00E40F28 /* Tool Textured.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool Textured.png"; sourceTree = "<group>"; };
+		2677B8EA12DBB5280068C921 /* alt_property_palette.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = alt_property_palette.c; path = Code/alt_property_palette.c; sourceTree = "<group>"; };
 		269AF83D12887DEF001344EC /* model_picker.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = model_picker.c; path = Code/model_picker.c; sourceTree = "<group>"; };
 		269AF91B1288D007001344EC /* draw_axis_boxes.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = draw_axis_boxes.c; path = Code/draw_axis_boxes.c; sourceTree = "<group>"; };
 		269AF91D1288D016001344EC /* draw_selection.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = draw_selection.c; path = Code/draw_selection.c; sourceTree = "<group>"; };
@@ -314,6 +316,7 @@
 				263AB1C912D8345600954777 /* property_palette_pose.c */,
 				263AB1C512D8345600954777 /* property_palette_bone.c */,
 				263AB1C612D8345600954777 /* property_palette_hit_box.c */,
+				2677B8EA12DBB5280068C921 /* alt_property_palette.c */,
 				26CAEC7912D675C500310691 /* texture_edit_common.c */,
 				262C380112CFA5AE00A94FEE /* text_common.c */,
 				262C380012CFA5A100A94FEE /* progress_common.c */,
@@ -643,6 +646,7 @@
 				263AB1CF12D8345600954777 /* property_palette_model.c in Sources */,
 				263AB1D012D8345600954777 /* property_palette_pose.c in Sources */,
 				263AB1D112D8345600954777 /* property_palette_texture.c in Sources */,
+				2677B8EB12DBB5280068C921 /* alt_property_palette.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

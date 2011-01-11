@@ -94,6 +94,9 @@ void alt_property_palette_setup(void)
 void alt_property_fix_open_state(void)
 {
 	alt_property_open=((state.cur_item==item_animation) || (state.cur_item==item_pose));
+	
+	state.cur_animate_pose_move_idx=-1;
+	state.cur_pose_bone_move_idx=-1;
 }
 
 /* =======================================================
