@@ -78,6 +78,10 @@ void file_reset_state(void)
 	
 	state.cur_animate_idx=-1;
 	if (model.nanimate!=0) state.cur_animate_idx=0;
+	
+	state.cur_animate_pose_move_idx=-1;
+	state.cur_pose_bone_move_idx=-1;
+	state.cur_hit_box_idx=-1;
 
 	state.playing=FALSE;
 	state.play_animate_blend=FALSE;
