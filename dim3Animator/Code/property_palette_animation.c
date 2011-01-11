@@ -37,7 +37,7 @@ and can be sold or given away.
 #define kAnimationPropertyName					0
 #define kAnimationPropertyLoop					1
 
-#define kAnimationPropertyPose					100
+#define kAnimationPropertyPoseMove				100
 
 extern model_type				model;
 extern animator_state_type		state;
@@ -70,7 +70,7 @@ void property_palette_fill_animation(int animate_idx)
 		strcpy(str,model.poses[animate->pose_moves[n].pose_idx].name);
 		if (n==animate->loop_start) strcat(str," (loop start)");
 		if (n==animate->loop_end) strcat(str," (loop end)");
-		list_palette_add_item(&property_palette,0,(kAnimationPropertyName+n),str,(state.cur_animate_pose_move_idx==n),FALSE);
+		list_palette_add_string_selectable(&property_palette,(kAnimationPropertyPoseMove+n),str,NULL,((state.cur_animate_idx=animate_idx) && (state.cur_animate_pose_move_idx==n)),FALSE);
 	}
 }
 
@@ -88,11 +88,13 @@ void property_palette_click_animation(int animate_idx,int id)
 	
 		// pose moves
 		
-	if (id>=kAnimationPropertyName) {
-		state.cur_animate_pose_move_idx=id-kAnimationPropertyName;
+	if (id>=kAnimationPropertyPoseMove) {
+		state.cur_animate_pose_move_idx=id-kAnimationPropertyPoseMove;
 		main_wind_draw();
 		return;
 	}
+
+	state.cur_animate_pose_move_idx=-1;
 	
 		// regular animation settings
 

@@ -69,7 +69,7 @@ void file_reset_state(void)
 	state.drag_sel_on=FALSE;
 	state.magnify_z=3000;
 
-	state.cur_item=item_mesh;
+	state.cur_item=item_model;
 	state.cur_mesh_idx=0;
 	state.cur_bone_idx=-1;
 

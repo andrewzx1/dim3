@@ -93,10 +93,13 @@ void alt_property_palette_setup(void)
 
 void alt_property_fix_open_state(void)
 {
-	alt_property_open=((state.cur_item==item_animation) || (state.cur_item==item_pose));
+	alt_property_open=((state.cur_item==item_animation) && (state.cur_animate_idx!=-1) && (state.cur_animate_pose_move_idx!=-1));
+	alt_property_open|=((state.cur_item==item_pose) && (state.cur_pose_idx!=-1) && (state.cur_pose_bone_move_idx!=-1));
 	
-	state.cur_animate_pose_move_idx=-1;
-	state.cur_pose_bone_move_idx=-1;
+	if (!alt_property_open) {
+		state.cur_animate_pose_move_idx=-1;
+		state.cur_pose_bone_move_idx=-1;
+	}
 }
 
 /* =======================================================
@@ -117,12 +120,12 @@ void alt_property_palette_fill(void)
 
 		case item_animation:
 			list_palette_set_title(&alt_property_palette,"Animation Pose Properties");
-		//	property_palette_fill_animation(state.cur_animate_idx);
+			alt_property_palette_fill_animate_pose_move(state.cur_animate_idx,state.cur_animate_pose_move_idx);
 			break;
 
 		case item_pose:
 			list_palette_set_title(&alt_property_palette,"Pose Bone Move Properties");
-		//	property_palette_fill_pose(state.cur_pose_idx);
+			alt_property_palette_fill_pose_bone_move(state.cur_pose_idx,state.cur_pose_bone_move_idx);
 			break;
 
 		default:
@@ -163,48 +166,26 @@ void alt_property_palette_scroll_wheel(d3pnt *pnt,int move)
 
 void alt_property_palette_click(d3pnt *pnt,bool double_click)
 {
+		// click
 
-/*
+	if (!list_palette_click(&alt_property_palette,pnt,double_click)) return;
+
 		// click editing
 
 	if (alt_property_palette.item_id==-1) return;
-
-		// if texture window is up, texture properties
-
-	if (state.texture_edit_idx!=-1) {
-		property_palette_click_texture(state.texture_edit_idx,property_palette.item_id);
-		return;
-	}
 
 		// selection properties
 
 	switch (state.cur_item) {
 
-		case item_model:
-			property_palette_click_model(property_palette.item_id);
-			break;
-
-		case item_mesh:
-			property_palette_click_mesh(state.cur_mesh_idx,property_palette.item_id);
-			break;
-
 		case item_animation:
-			property_palette_click_animation(state.cur_animate_idx,property_palette.item_id);
+			alt_property_palette_click_animate_pose_move(state.cur_animate_idx,state.cur_animate_pose_move_idx,alt_property_palette.item_id);
 			break;
 
 		case item_pose:
-			property_palette_click_pose(state.cur_pose_idx,property_palette.item_id);
-			break;
-
-		case item_bone:
-			property_palette_click_bone(state.cur_bone_idx,property_palette.item_id);
-			break;
-
-		case item_hit_box:
-			property_palette_click_hit_box(state.cur_hit_box_idx,property_palette.item_id);
+			alt_property_palette_click_pose_bone_move(state.cur_pose_idx,state.cur_pose_bone_move_idx,alt_property_palette.item_id);
 			break;
 
 	}
-	*/
 }
 

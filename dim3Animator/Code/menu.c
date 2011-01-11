@@ -170,16 +170,6 @@ bool menu_event_run(int cmd)
 			
 			// model menu
         
- 		case kCommandSettings:
-			dialog_model_settings_run();
-            main_wind_draw();
-			return(TRUE);
-			
-		case kCommandHitBoxes:
-			dialog_hit_box_settings_run();
-            main_wind_draw();
-			return(TRUE);
-		
 		case kCommandPrepareModel:
             prepare_model();
             main_wind_draw();
@@ -241,6 +231,11 @@ bool menu_event_run(int cmd)
 		case kCommandFloorYAll:
 			model_floor_all(&model);
             model_calculate_parents(&model);
+            main_wind_draw();
+			return(TRUE);
+
+		case kCommandAddHitBox:
+			model_piece_add_hit_box();
             main_wind_draw();
 			return(TRUE);
 						

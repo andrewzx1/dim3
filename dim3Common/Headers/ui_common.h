@@ -131,6 +131,7 @@ extern void list_palette_add_header(list_palette_type *list,int piece_type,char 
 extern void list_palette_add_header_count(list_palette_type *list,int piece_type,char *name,int count);
 extern void list_palette_add_item(list_palette_type *list,int piece_type,int piece_idx,char *name,bool selected,bool disabled);
 extern void list_palette_add_color(list_palette_type *list,int piece_type,int piece_idx,d3col *col,bool selected,bool disabled);
+extern void list_palette_add_string_selectable(list_palette_type *list,int id,char *name,char *value,bool selected,bool disabled);
 extern void list_palette_add_string(list_palette_type *list,int id,char *name,char *value,bool disabled);
 extern void list_palette_add_string_int(list_palette_type *list,int id,char *name,int value,bool disabled);
 extern void list_palette_add_string_float(list_palette_type *list,int id,char *name,float value,bool disabled);

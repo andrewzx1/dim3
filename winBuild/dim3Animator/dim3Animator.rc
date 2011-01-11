@@ -24,23 +24,22 @@ BEGIN
     END
     POPUP "Model"
     BEGIN
-        MENUITEM "Settings...",					300
-        MENUITEM "Hit Boxes...",				301
+        MENUITEM "Prepare Model",				300
+        MENUITEM "Calculate Boxes",				301
+        MENUITEM "Calculate Normals",			302
 		MENUITEM SEPARATOR
-        MENUITEM "Prepare Model",				302
-        MENUITEM "Calculate Boxes",				303
-        MENUITEM "Calculate Normals",			304
+        MENUITEM "Scale...",					303
 		MENUITEM SEPARATOR
-        MENUITEM "Scale...",					305
+        MENUITEM "Flip X",						304
+        MENUITEM "Flip Y",						305
+        MENUITEM "Flip Z",						306
 		MENUITEM SEPARATOR
-        MENUITEM "Flip X",						306
-        MENUITEM "Flip Y",						307
-        MENUITEM "Flip Z",						308
+        MENUITEM "Swap X/Z",					307
+        MENUITEM "Swap Y/Z",					308
+        MENUITEM "Center X/Z",					309
+        MENUITEM "Floor Y",						310
 		MENUITEM SEPARATOR
-        MENUITEM "Swap X/Z",					309
-        MENUITEM "Swap Y/Z",					310
-        MENUITEM "Center X/Z",					311
-        MENUITEM "Floor Y",						312
+        MENUITEM "Add Hit Box",					311
     END
     POPUP "View"
     BEGIN
