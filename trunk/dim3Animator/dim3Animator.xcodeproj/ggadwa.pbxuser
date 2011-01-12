@@ -107,12 +107,12 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 316413633;
-			PBXWorkspaceStateSaveDate = 316413633;
+			PBXPerProjectTemplateStateSaveDate = 316479623;
+			PBXWorkspaceStateSaveDate = 316479623;
 		};
 		perUserProjectItems = {
-			261E7E9A12DBEC010029C4A1 /* PBXTextBookmark */ = 261E7E9A12DBEC010029C4A1 /* PBXTextBookmark */;
 			2631E37712DC1AE000AEFAFE /* PBXTextBookmark */ = 2631E37712DC1AE000AEFAFE /* PBXTextBookmark */;
+			26C9372B12DD6EE4005C0708 /* PBXTextBookmark */ = 26C9372B12DD6EE4005C0708 /* PBXTextBookmark */;
 		};
 		sourceControlManager = 260AFEEF0D40506700F6C42F /* Source Control */;
 		userBuildSettings = {
@@ -264,16 +264,6 @@
 			sepNavWindowFrame = "{{155, 110}, {1001, 891}}";
 		};
 	};
-	261E7E9A12DBEC010029C4A1 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 0867D6ABFE840B52C02AAC07 /* English */;
-		name = "InfoPlist.strings: 5";
-		rLen = 0;
-		rLoc = 206;
-		rType = 0;
-		vrLen = 0;
-		vrLoc = 0;
-	};
 	261F12430ED3CB2F00A8A0D8 /* vertex_masks.c */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1026, 5070}}";
@@ -393,10 +383,10 @@
 	};
 	263AB1C812D8345600954777 /* property_palette_model.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1027, 3640}}";
-			sepNavSelRange = "{0, 0}";
-			sepNavVisRange = "{0, 1671}";
-			sepNavWindowFrame = "{{343, 108}, {1001, 891}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1083, 2925}}";
+			sepNavSelRange = "{2432, 0}";
+			sepNavVisRange = "{1856, 3121}";
+			sepNavWindowFrame = "{{219, 115}, {1001, 891}}";
 		};
 	};
 	265552AD128B744E00662A94 /* dialog_normal.c */ = {
@@ -495,6 +485,16 @@
 			sepNavVisRange = "{117, 2254}";
 			sepNavWindowFrame = "{{654, 81}, {1026, 910}}";
 		};
+	};
+	26C9372B12DD6EE4005C0708 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 0867D6ABFE840B52C02AAC07 /* English */;
+		name = "InfoPlist.strings: 5";
+		rLen = 0;
+		rLoc = 206;
+		rType = 0;
+		vrLen = 0;
+		vrLoc = 0;
 	};
 	26CF62EF126BF0F8002DCC2A /* tool_palette_common.c */ = {
 		uiCtxt = {
@@ -680,14 +680,6 @@
 			sepNavWindowFrame = "{{213, 263}, {1041, 747}}";
 		};
 	};
-	F594B48509A96EFB00408388 /* dialog_hit_box_settings.c */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 3575}}";
-			sepNavSelRange = "{969, 0}";
-			sepNavVisRange = "{94, 1763}";
-			sepNavWindowFrame = "{{435, 162}, {1041, 747}}";
-		};
-	};
 	F594B4A609A9732300408388 /* dialog_bone_settings.c */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1314, 2665}}";
@@ -780,14 +772,6 @@
 			sepNavSelRange = "{5106, 0}";
 			sepNavVisRange = "{2527, 3197}";
 			sepNavWindowFrame = "{{228, 246}, {1041, 747}}";
-		};
-	};
-	F5C6C64A09D659BB005DFE3D /* dialog_model_settings.c */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 3328}}";
-			sepNavSelRange = "{10326, 0}";
-			sepNavVisRange = "{8535, 1985}";
-			sepNavWindowFrame = "{{268, 208}, {1041, 747}}";
 		};
 	};
 	F5CA4EF7051010AD0055C8B8 /* modelutility.h */ = {
