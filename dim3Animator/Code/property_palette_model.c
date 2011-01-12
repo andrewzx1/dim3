@@ -80,7 +80,7 @@ void property_palette_fill_model(void)
 		// model options
 
 	list_palette_add_header(&property_palette,0,"Model Options");
-	list_palette_add_checkbox(&property_palette,kModelPropertyRotateMode,"Comulative Rotations",(model.deform_mode==deform_mode_comulative_rotate),FALSE);
+	list_palette_add_checkbox(&property_palette,kModelPropertyRotateMode,"Cumulative Rotation",(model.deform_mode==deform_mode_comulative_rotate),FALSE);
 	list_palette_add_string_float(&property_palette,kModelPropertyDiffuseBoost,"Diffuse Boost",model.diffuse_boost,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Model Positions");
