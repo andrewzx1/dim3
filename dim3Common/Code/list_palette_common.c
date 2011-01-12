@@ -738,6 +738,43 @@ void list_palette_scroll_wheel(list_palette_type *list,d3pnt *pnt,int move)
 	if (move<0) list_palette_scroll_down(list);
 }
 
+void list_palette_scroll_item_into_view(list_palette_type *list,int item_type,int item_idx)
+{
+	int							n,y,page_count;
+	bool						hit;
+	list_palette_item_type		*item;
+
+		// find item
+
+	y=0;
+	hit=FALSE;
+
+	item=list->items;
+
+	for (n=0;n!=list->item_count;n++) {
+
+		y+=list_item_font_high;
+
+		if ((item->type==item_type) && (item->idx==item_idx)) {
+			hit=TRUE;
+			break;
+		}
+
+		item++;
+	}
+	
+	if (!hit) return;
+
+		// bring it into view
+		// somewhere near the top if possible
+
+	list->scroll_page=(y/list_item_scroll_size)-1;
+
+	if (list->scroll_page<0) list->scroll_page=0;
+	page_count=list_palette_get_scroll_page_count(list);
+	if (list->scroll_page>page_count) list->scroll_page=page_count;
+}
+
 /* =======================================================
 
       Item Palette Click

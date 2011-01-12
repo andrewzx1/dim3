@@ -34,13 +34,13 @@ and can be sold or given away.
 #include "interface.h"
 #include "dialog.h"
 
-#define kPosePropertyBoneMoveRot					0
-#define kPosePropertyBoneMoveMove					1
-#define kPosePropertyBoneMoveAcceleration			2
-#define kPosePropertyBoneMoveSkipBlended			3
+#define kPoseBoneMovePropertyRot					0
+#define kPoseBoneMovePropertyMove					1
+#define kPoseBoneMovePropertyAcceleration			2
+#define kPoseBoneMovePropertySkipBlended			3
 
-#define kPosePropertyBoneMoveConstraintBone			4
-#define kPosePropertyBoneMoveConstraintOffset		5
+#define kPoseBoneMovePropertyConstraintBone			4
+#define kPoseBoneMovePropertyConstraintOffset		5
 
 extern model_type				model;
 extern animator_state_type		state;
@@ -63,21 +63,16 @@ void alt_property_palette_fill_pose_bone_move(int pose_idx,int bone_move_idx)
 	bone_move=&model.poses[pose_idx].bone_moves[bone_move_idx];
 
 	list_palette_add_header(&alt_property_palette,0,"Pose Bone Move Position");
-	list_palette_add_vector(&alt_property_palette,kPosePropertyBoneMoveRot,"Rot",&bone_move->rot,FALSE);
-	list_palette_add_vector(&alt_property_palette,kPosePropertyBoneMoveMove,"Move",&bone_move->mov,FALSE);
+	list_palette_add_vector(&alt_property_palette,kPoseBoneMovePropertyRot,"Rot",&bone_move->rot,FALSE);
+	list_palette_add_vector(&alt_property_palette,kPoseBoneMovePropertyMove,"Move",&bone_move->mov,FALSE);
 	
 	list_palette_add_header(&alt_property_palette,0,"Pose Bone Move Options");
-	list_palette_add_string_float(&alt_property_palette,kPosePropertyBoneMoveAcceleration,"Acceleration",bone_move->acceleration,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kPosePropertyBoneMoveSkipBlended,"Skip Blending",bone_move->skip_blended,FALSE);
+	list_palette_add_string_float(&alt_property_palette,kPoseBoneMovePropertyAcceleration,"Acceleration",bone_move->acceleration,FALSE);
+	list_palette_add_checkbox(&alt_property_palette,kPoseBoneMovePropertySkipBlended,"Skip Blending",bone_move->skip_blended,FALSE);
 
 	list_palette_add_header(&alt_property_palette,0,"Pose Bone Move Constraint");
-	if (bone_move->constraint.bone_idx==-1) {
-		list_palette_add_string(&alt_property_palette,kPosePropertyBoneMoveConstraintBone,"Constraint Bone","",FALSE);
-	}
-	else {
-		list_palette_add_string(&alt_property_palette,kPosePropertyBoneMoveConstraintBone,"Constraint Bone",model.bones[bone_move->constraint.bone_idx].name,FALSE);
-	}
-	list_palette_add_point(&alt_property_palette,kPosePropertyBoneMoveConstraintOffset,"Constaint Offset",&bone_move->constraint.offset,FALSE);
+	property_palette_add_string_bone(&alt_property_palette,kPoseBoneMovePropertyConstraintBone,"Constraint Bone",bone_move->constraint.bone_idx,FALSE);
+	list_palette_add_point(&alt_property_palette,kPoseBoneMovePropertyConstraintOffset,"Constaint Offset",&bone_move->constraint.offset,FALSE);
 }
 
 /* =======================================================
@@ -96,27 +91,27 @@ void alt_property_palette_click_pose_bone_move(int pose_idx,int bone_move_idx,in
 
 	switch (id) {
 
-		case kPosePropertyBoneMoveRot:
+		case kPoseBoneMovePropertyRot:
 			dialog_property_string_run(list_string_value_vector,(void*)&bone_move->rot,0,0,0);
 			break;
 
-		case kPosePropertyBoneMoveMove:
+		case kPoseBoneMovePropertyMove:
 			dialog_property_string_run(list_string_value_vector,(void*)&bone_move->mov,0,0,0);
 			break;
 
-		case kPosePropertyBoneMoveAcceleration:
+		case kPoseBoneMovePropertyAcceleration:
 			dialog_property_string_run(list_string_value_positive_float,(void*)&bone_move->acceleration,0,0,0);
 			break;
 
-		case kPosePropertyBoneMoveSkipBlended:
+		case kPoseBoneMovePropertySkipBlended:
 			bone_move->skip_blended=!bone_move->skip_blended;
 			break;
 
-		case kPosePropertyBoneMoveConstraintBone:
+		case kPoseBoneMovePropertyConstraintBone:
 			property_palette_pick_bone(&bone_move->constraint.bone_idx);
 			break;
 
-		case kPosePropertyBoneMoveConstraintOffset:
+		case kPoseBoneMovePropertyConstraintOffset:
 			dialog_property_string_run(list_string_value_point,(void*)&bone_move->constraint.offset,0,0,0);
 			break;
 

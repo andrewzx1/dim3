@@ -37,12 +37,37 @@ and can be sold or given away.
 
 int model_bone_add(model_type *model,int x,int y,int z)
 {
-	int					n,bone_idx;
+	int					n,idx,bone_idx;
+	bool				hit;
+	char				str[8];
+	model_tag			tag;
 	model_bone_type		*bone,*ptr;
 
 		// only allow a maximum number of bones
 
 	if (model->nbone>=max_model_bone) return(-1);
+
+		// find a good tag
+
+	idx=0;
+
+	while (TRUE) {
+
+		sprintf(str,"b%03d",idx);
+		tag=text_to_model_tag(str);
+
+		hit=FALSE;
+		for (n=0;n!=model->nbone;n++) {
+			if (tag==model->bones[n].tag) {
+				hit=TRUE;
+				break;
+			}
+		}
+
+		if (!hit) break;
+
+		idx++;
+	}
 
 		// create memory for new bones
 
@@ -64,8 +89,8 @@ int model_bone_add(model_type *model,int x,int y,int z)
 	bone=&model->bones[bone_idx];
 	bzero(bone,sizeof(model_bone_type));
 	
-	bone->name[0]=0x0;
-	bone->tag=model_null_tag;
+	strcpy(bone->name,"New Bone");
+	bone->tag=tag;
 	bone->parent_idx=-1;
 	bone->pnt.x=x;
 	bone->pnt.y=y;

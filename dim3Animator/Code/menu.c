@@ -280,43 +280,13 @@ bool menu_event_run(int cmd)
 			// mesh menu
 			
 		case kCommandNewMesh:
-			idx=model_mesh_add(&model);
-			if (idx==-1) return(TRUE);
-			
-			if (!dialog_mesh_info_run(&model.meshes[idx])) {
-				model_mesh_delete(&model,idx);
-				return(TRUE);
-			}
-			
-			state.cur_mesh_idx=idx;
-
+			model_piece_add_mesh();
 			main_wind_draw();
 			return(TRUE);
 			
 		case kCommandDuplicateMesh:
-			idx=model_mesh_duplicate(&model,state.cur_mesh_idx);
-			if (idx==-1) return(TRUE);
-			
-			if (!dialog_mesh_info_run(&model.meshes[idx])) {
-				model_mesh_delete(&model,idx);
-				return(TRUE);
-			}
-			
-			state.cur_mesh_idx=idx;
-
-			main_wind_draw();
-			return(TRUE);
-			
-		case kCommandCopyMesh:
-			idx=dialog_copy_mesh_run();
-			if (idx==-1) return(TRUE);
-			if (idx!=state.cur_mesh_idx) model_mesh_copy(&model,idx,state.cur_mesh_idx);
-			main_wind_draw();
-			return(TRUE);
-			
-		case kCommandDeleteMesh:
-			model_mesh_delete(&model,state.cur_mesh_idx);
-			state.cur_mesh_idx=0;
+			if (state.cur_mesh_idx==-1) return(TRUE);
+			model_piece_duplicate_mesh(state.cur_mesh_idx);
 			main_wind_draw();
 			return(TRUE);
 			
@@ -449,34 +419,13 @@ bool menu_event_run(int cmd)
 			// bone menu
 			
 		case kCommandNewBone:
- 			vertex_find_center_sel_vertexes(state.cur_mesh_idx,&x,&y,&z);
-			
-			idx=model_bone_add(&model,x,y,z);
-			if (idx==-1) return(TRUE);
-			
-			if (!dialog_bone_settings_run(&model.bones[idx])) {
-				model_bone_delete(&model,idx);
-				return(TRUE);
-			}
-			
-			vertex_set_sel_vertex_to_bone(state.cur_mesh_idx,idx,-1,1.0f);
-			state.cur_bone_idx=idx;
-
+			model_piece_add_bone();
 			main_wind_draw();
 			return(TRUE);
 			
 		case kCommandSetBone:
 			if (!dialog_set_vertex_bone_run(&major_bone_idx,&minor_bone_idx,&bone_factor)) return(TRUE);
 			vertex_set_sel_vertex_to_bone(state.cur_mesh_idx,major_bone_idx,minor_bone_idx,bone_factor);
-			main_wind_draw();
-			return(TRUE);
-			
-		case kCommandDeleteBone:
-			if (state.cur_bone_idx==-1) return(TRUE);
-			
- 			model_bone_delete(&model,state.cur_bone_idx);
-			state.cur_bone_idx=-1;
-			
 			main_wind_draw();
 			return(TRUE);
 			
@@ -492,39 +441,13 @@ bool menu_event_run(int cmd)
 			// pose menu
 			
 		case kCommandNewPose:
- 			if (model.nbone==0) {
-				os_dialog_alert("Can't Create Pose","You need to have at least one bone before creating a pose.");
-				return(TRUE);
-			}
-			
-			idx=model_pose_add(&model);
-			if (idx==-1) return(TRUE);
-			
-			if (!dialog_pose_settings_run(&model.poses[idx])) {
-				model_pose_delete(&model,idx);
-				return(TRUE);
-			}
-			
-			state.cur_pose_idx=idx;
-			state.cur_bone_idx=-1;
-
+			model_piece_add_pose();
 			main_wind_draw();
 			return(TRUE);
 			
 		case kCommandDupPose:
 			if (state.cur_pose_idx==-1) return(TRUE);
-
-			idx=model_pose_duplicate(&model,state.cur_pose_idx);
-			if (idx==-1) return(TRUE);
-			
-			if (!dialog_pose_settings_run(&model.poses[idx])) {
-				model_pose_delete(&model,idx);
-				return(TRUE);
-			}
-			
-			state.cur_pose_idx=idx;
-			state.cur_bone_idx=-1;
-
+			model_piece_duplicate_pose(state.cur_pose_idx);
 			main_wind_draw();
 			return(TRUE);
 			
@@ -534,80 +457,19 @@ bool menu_event_run(int cmd)
 			model_pose_clear(&model,state.cur_pose_idx);
 			return(TRUE);
 			
-        case kCommandDeletePose:
-			if (state.cur_pose_idx==-1) return(TRUE);
-
-			if (model_check_pose_in_animation(&model,state.cur_pose_idx)) {
-				os_dialog_alert("Can't Delete Pose","This pose is being used in an animation.");
-				return(TRUE);
-			}
-			
-            model_pose_delete(&model,state.cur_pose_idx);
-			
-			state.cur_pose_idx=-1;
-			state.cur_bone_idx=-1;
-			
-            return(TRUE);
-			
 			// animation menu
 			
 		case kCommandNewAnimate:
-			if (model.npose==0) {
-				os_dialog_alert("Can't Create Animation","You need to have at least one pose before creating an animation.");
-				return(TRUE);
-			}
-			
-			main_wind_play(FALSE,FALSE);
-			
-			idx=model_animate_add(&model);
-			if (idx==-1) return(TRUE);
-			
-			old_cur_animate=state.cur_animate_idx;
-			state.cur_animate_idx=idx;
-			
-			if (!dialog_animation_settings_run(idx)) {
-				model_animate_delete(&model,idx);
-				state.cur_animate_idx=old_cur_animate;
-				return(TRUE);
-			}
-
+			model_piece_add_animate();
 			main_wind_draw();
 			return(TRUE);
 			
 		case kCommandDupAnimate:
 			if (state.cur_animate_idx==-1) return(TRUE);
-			main_wind_play(FALSE,FALSE);
- 
-			idx=model_animate_duplicate(&model,state.cur_animate_idx);
-			if (idx==-1) return(TRUE);
-			
-			old_cur_animate=state.cur_animate_idx;
-			state.cur_animate_idx=idx;
-			
-			if (!dialog_animation_settings_run(idx)) {
-				model_animate_delete(&model,idx);
-				state.cur_animate_idx=old_cur_animate;
-				return(TRUE);
-			}
-
+			model_piece_duplicate_animate(state.cur_animate_idx);
 			main_wind_draw();
 			return(TRUE);
             
-		case kCommandDeleteAnimate:
-			if (state.cur_animate_idx==-1) return(TRUE);
-			main_wind_play(FALSE,FALSE);
-
-			model_animate_delete(&model,state.cur_animate_idx);
-			if (model.nanimate==0) {
-				state.cur_animate_idx=-1;
-			}
-			else {
-				state.cur_animate_idx=0;
-			}
-
-			main_wind_draw();
-			return(TRUE);
-			
 		case kCommandResetTimeAnimate:
 			if (state.cur_animate_idx==-1) return(TRUE);
 			main_wind_play(FALSE,FALSE);

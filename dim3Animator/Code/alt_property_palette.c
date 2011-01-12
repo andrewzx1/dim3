@@ -93,7 +93,7 @@ void alt_property_palette_setup(void)
 
 void alt_property_fix_open_state(void)
 {
-	alt_property_open=((state.cur_item==item_animation) && (state.cur_animate_idx!=-1) && (state.cur_animate_pose_move_idx!=-1));
+	alt_property_open=((state.cur_item==item_animate) && (state.cur_animate_idx!=-1) && (state.cur_animate_pose_move_idx!=-1));
 	alt_property_open|=((state.cur_item==item_pose) && (state.cur_pose_idx!=-1) && (state.cur_pose_bone_move_idx!=-1));
 	
 	if (!alt_property_open) {
@@ -118,7 +118,7 @@ void alt_property_palette_fill(void)
 
 	switch (state.cur_item) {
 
-		case item_animation:
+		case item_animate:
 			list_palette_set_title(&alt_property_palette,"Animation Pose Properties");
 			alt_property_palette_fill_animate_pose_move(state.cur_animate_idx,state.cur_animate_pose_move_idx);
 			break;
@@ -178,7 +178,7 @@ void alt_property_palette_click(d3pnt *pnt,bool double_click)
 
 	switch (state.cur_item) {
 
-		case item_animation:
+		case item_animate:
 			alt_property_palette_click_animate_pose_move(state.cur_animate_idx,state.cur_animate_pose_move_idx,alt_property_palette.item_id);
 			break;
 

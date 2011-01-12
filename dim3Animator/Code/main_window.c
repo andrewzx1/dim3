@@ -501,6 +501,16 @@ void main_wind_key(char ch)
 		main_wind_draw();
 		return;
 	}
+
+		// check for deletes
+		// on selected item tree
+
+	if ((ch==D3_KEY_BACKSPACE) || (ch==D3_KEY_DELETE)) {
+		if (item_palette_delete()) {
+			main_wind_draw();
+			return;
+		}
+	}
 }
 
 /* =======================================================

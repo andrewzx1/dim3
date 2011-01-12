@@ -116,10 +116,10 @@ void item_palette_fill(void)
 
 		// animations
 
-	list_palette_add_header_count(&item_palette,item_animation,"Animations",model.nanimate);
+	list_palette_add_header_count(&item_palette,item_animate,"Animations",model.nanimate);
 
 	for (n=0;n!=model.nanimate;n++) {
-		list_palette_add_item(&item_palette,item_animation,n,model.animates[n].name,((state.cur_item==item_animation)&&(state.cur_animate_idx==n)),FALSE);
+		list_palette_add_item(&item_palette,item_animate,n,model.animates[n].name,((state.cur_item==item_animate)&&(state.cur_animate_idx==n)),FALSE);
 	}
 
 		// poses
@@ -165,6 +165,83 @@ void item_palette_draw(void)
 
 /* =======================================================
 
+      Item Palette Reset
+      
+======================================================= */
+
+void item_palette_state_rebuild(void)
+{
+		// fixes all the open states
+		// for all the palettes
+
+	alt_property_fix_open_state();
+	item_palette_setup();
+	property_palette_setup();
+	alt_property_palette_setup();
+	model_wind_setup();
+
+		// redraw the window
+
+	main_wind_draw();
+}
+
+void item_palette_scroll_into_view(int item_type,int item_idx)
+{
+	item_palette_fill();
+	list_palette_scroll_item_into_view(&item_palette,item_type,item_idx);
+}
+
+/* =======================================================
+
+      Item Palette Delete
+      
+======================================================= */
+
+bool item_palette_delete(void)
+{
+		// anything to delete?
+
+	if ((item_palette.item_type==-1) || (item_palette.item_idx==-1)) return(FALSE);
+
+	switch (item_palette.item_type) {
+
+		case item_mesh:
+			if (os_dialog_confirm("Delete Mesh","Is it okay to delete this mesh?",FALSE)!=0) return(FALSE);
+			model_piece_delete_mesh(item_palette.item_idx);
+			item_palette_state_rebuild();
+			return(TRUE);
+
+		case item_bone:
+			if (os_dialog_confirm("Delete Bone","Is it okay to delete this bone?",FALSE)!=0) return(FALSE);
+			model_piece_delete_bone(item_palette.item_idx);
+			item_palette_state_rebuild();
+			return(TRUE);
+
+		case item_pose:
+			if (os_dialog_confirm("Delete Pose","Is it okay to delete this pose?",FALSE)!=0) return(FALSE);
+			model_piece_delete_pose(item_palette.item_idx);
+			item_palette_state_rebuild();
+			return(TRUE);
+
+		case item_animate:
+			if (os_dialog_confirm("Delete Animation","Is it okay to delete this animation?",FALSE)!=0) return(FALSE);
+			model_piece_delete_animate(item_palette.item_idx);
+			item_palette_state_rebuild();
+			return(TRUE);
+
+		case item_hit_box:
+			if (os_dialog_confirm("Delete Hit Box","Is it okay to delete this hit box?",FALSE)!=0) return(FALSE);
+			model_piece_delete_hit_box(item_palette.item_idx);
+			item_palette_state_rebuild();
+			return(TRUE);
+
+	}
+
+	return(FALSE);
+}
+
+/* =======================================================
+
       Item Palette Scroll Wheel
       
 ======================================================= */
@@ -191,13 +268,7 @@ void item_palette_click(d3pnt *pnt,bool double_click)
 		// click
 
 	if (!list_palette_click(&item_palette,pnt,double_click)) {
-		if (old_open!=list_palette_open) {
-			item_palette_setup();
-			property_palette_setup();
-			alt_property_palette_setup();
-			model_wind_setup();
-			main_wind_draw();
-		}
+		if (old_open!=list_palette_open) item_palette_state_rebuild();
 		return;
 	}
 
@@ -216,8 +287,8 @@ void item_palette_click(d3pnt *pnt,bool double_click)
 			state.cur_mesh_idx=item_palette.item_idx;
 			break;
 
-		case item_animation:
-			state.cur_item=item_animation;
+		case item_animate:
+			state.cur_item=item_animate;
 			state.cur_animate_idx=item_palette.item_idx;
 			state.cur_animate_pose_move_idx=-1;
 			break;
@@ -264,7 +335,7 @@ void item_palette_click(d3pnt *pnt,bool double_click)
 
 	switch (item_palette.item_type) {
 
-		case item_animation:
+		case item_animate:
 			dialog_animation_settings_run(state.cur_animate_idx);
 			break;
 
