@@ -61,12 +61,7 @@ void property_palette_fill_bone(int bone_idx)
 	list_palette_add_string(&property_palette,kBonePropertyName,"Name",bone->name,FALSE);
 	list_palette_add_point(&property_palette,kBonePropertyPosition,"Position",&bone->pnt,FALSE);
 	list_palette_add_string_tag(&property_palette,kBonePropertyTag,"Tag",bone->tag,FALSE);
-	if (bone->parent_idx==-1) {
-		list_palette_add_string(&property_palette,kBonePropertyParent,"Parent Bone","",FALSE);
-	}
-	else {
-		list_palette_add_string(&property_palette,kBonePropertyParent,"Parent Bone",model.bones[bone->parent_idx].name,FALSE);
-	}
+	property_palette_add_string_bone(&property_palette,kBonePropertyParent,"Parent Bone",bone->parent_idx,FALSE);
 }
 
 /* =======================================================
@@ -84,7 +79,7 @@ void property_palette_click_bone(int bone_idx,int id)
 	switch (id) {
 
 		case kBonePropertyName:
-			dialog_property_string_run(list_string_value_int,(void*)&bone->name,name_str_len,0,0);
+			dialog_property_string_run(list_string_value_string,(void*)&bone->name,name_str_len,0,0);
 			break;
 
 		case kBonePropertyPosition:

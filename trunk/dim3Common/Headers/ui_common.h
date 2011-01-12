@@ -149,6 +149,7 @@ extern void list_palette_draw(list_palette_type *list,bool close_border);
 extern void list_palette_scroll_up(list_palette_type *list);
 extern void list_palette_scroll_down(list_palette_type *list);
 extern void list_palette_scroll_wheel(list_palette_type *list,d3pnt *pnt,int move);
+extern void list_palette_scroll_item_into_view(list_palette_type *list,int item_type,int item_idx);
 extern bool list_palette_click(list_palette_type *list,d3pnt *pnt,bool double_click);
 
 //

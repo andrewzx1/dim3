@@ -123,7 +123,7 @@ void property_palette_fill(void)
 			property_palette_fill_mesh(state.cur_mesh_idx);
 			break;
 
-		case item_animation:
+		case item_animate:
 			list_palette_set_title(&property_palette,"Animation Properties");
 			property_palette_fill_animation(state.cur_animate_idx);
 			break;
@@ -190,13 +190,7 @@ void property_palette_click(d3pnt *pnt,bool double_click)
 		// click
 
 	if (!list_palette_click(&property_palette,pnt,double_click)) {
-		if (old_open!=list_palette_open) {
-			item_palette_setup();
-			property_palette_setup();
-			alt_property_palette_setup();
-			model_wind_setup();
-			main_wind_draw();
-		}
+		if (old_open!=list_palette_open) item_palette_state_rebuild();
 		return;
 	}
 
@@ -223,7 +217,7 @@ void property_palette_click(d3pnt *pnt,bool double_click)
 			property_palette_click_mesh(state.cur_mesh_idx,property_palette.item_id);
 			break;
 
-		case item_animation:
+		case item_animate:
 			property_palette_click_animation(state.cur_animate_idx,property_palette.item_id);
 			break;
 
@@ -241,16 +235,30 @@ void property_palette_click(d3pnt *pnt,bool double_click)
 
 	}
 
-		// need to do the setup again incase
+		// need to reset in case
 		// the alt window has open/closed
 
-	alt_property_fix_open_state();
-	item_palette_setup();
-	property_palette_setup();
-	alt_property_palette_setup();
-	model_wind_setup();
+	item_palette_state_rebuild();
+}
 
-	main_wind_draw();
+/* =======================================================
+
+      Property Palette String Utilities
+      
+======================================================= */
+
+void property_palette_add_string_bone(void *list,int id,char *name,int bone_idx,bool disabled)
+{
+	list_palette_type			*p_list;
+
+	p_list=(list_palette_type*)list;
+
+	if (bone_idx==-1) {
+		list_palette_add_string(p_list,id,name,"",FALSE);
+		return;
+	}
+	
+	list_palette_add_string(p_list,id,name,model.bones[bone_idx].name,disabled);
 }
 
 /* =======================================================

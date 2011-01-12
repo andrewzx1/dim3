@@ -93,6 +93,9 @@ extern void item_palette_initialize(void);
 extern void item_palette_shutdown(void);
 extern void item_palette_setup(void);
 extern void item_palette_draw(void);
+extern void item_palette_state_rebuild(void);
+extern void item_palette_scroll_into_view(int item_type,int item_idx);
+extern bool item_palette_delete(void);
 extern void item_palette_scroll_wheel(d3pnt *pnt,int move);
 extern void item_palette_click(d3pnt *pnt,bool double_click);
 
@@ -106,6 +109,8 @@ extern void property_palette_setup(void);
 extern void property_palette_draw(void);
 extern void property_palette_scroll_wheel(d3pnt *pnt,int move);
 extern void property_palette_click(d3pnt *pnt,bool double_click);
+
+extern void property_palette_add_string_bone(void *list,int id,char *name,int bone_idx,bool disabled);
 
 extern void property_palette_pick_sound(char *name,bool include_none);
 extern void property_palette_pick_particle(char *name);
@@ -152,6 +157,17 @@ extern void alt_property_palette_click_pose_bone_move(int pose_idx,int bone_move
 // pieces
 //
 
+extern void model_piece_add_mesh(void);
+extern void model_piece_duplicate_mesh(int mesh_idx);
+extern void model_piece_delete_mesh(int mesh_idx);
+extern void model_piece_add_bone(void);
+extern void model_piece_delete_bone(int bone_idx);
+extern void model_piece_add_pose(void);
+extern void model_piece_duplicate_pose(int pose_idx);
+extern void model_piece_delete_pose(int pose_idx);
+extern void model_piece_add_animate(void);
+extern void model_piece_duplicate_animate(int animate_idx);
+extern void model_piece_delete_animate(int animate_idx);
 extern void model_piece_add_hit_box(void);
 extern void model_piece_delete_hit_box(int hit_box_idx);
 

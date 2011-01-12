@@ -88,6 +88,7 @@ extern void item_palette_initialize(void);
 extern void item_palette_shutdown(void);
 extern void item_palette_setup(void);
 extern void item_palette_draw(void);
+extern void item_palette_scroll_into_view(int item_type,int item_idx);
 extern void item_palette_reset(void);
 extern void item_palette_select(int sel_type,int sel_idx);
 extern bool item_palette_delete(void);

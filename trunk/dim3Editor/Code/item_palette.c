@@ -193,6 +193,12 @@ void item_palette_draw(void)
       
 ======================================================= */
 
+void item_palette_scroll_into_view(int item_type,int item_idx)
+{
+	item_palette_fill();
+	list_palette_scroll_item_into_view(&item_palette,item_type,item_idx);
+}
+
 void item_palette_reset(void)
 {
 	int				sel_type,main_idx,sub_idx;
@@ -200,6 +206,8 @@ void item_palette_reset(void)
 	if (select_count()==0) {
 		item_palette.item_type=map_piece;
 		item_palette.item_idx=-1;
+
+		item_palette_scroll_into_view(map_piece,0);
 		return;
 	}
 	
@@ -212,6 +220,8 @@ void item_palette_reset(void)
 
 	item_palette.item_type=sel_type;
 	item_palette.item_idx=main_idx;
+
+	item_palette_scroll_into_view(sel_type,main_idx);
 }
 
 void item_palette_select(int sel_type,int sel_idx)
@@ -219,6 +229,8 @@ void item_palette_select(int sel_type,int sel_idx)
 	item_palette.item_type=sel_type;
 	item_palette.item_idx=sel_idx;
 	
+	item_palette_scroll_into_view(sel_type,sel_idx);
+
 	main_wind_draw();
 }
 

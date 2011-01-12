@@ -103,8 +103,6 @@ and can be sold or given away.
 
 #define kCommandNewMesh					FOUR_CHAR_CODE('nmsh')
 #define kCommandDuplicateMesh			FOUR_CHAR_CODE('dpmh')
-#define kCommandCopyMesh				FOUR_CHAR_CODE('cmsh')
-#define kCommandDeleteMesh				FOUR_CHAR_CODE('dmsh')
 #define kCommandImportOBJ				FOUR_CHAR_CODE('OBJi')
 #define kCommandReplaceOBJ				FOUR_CHAR_CODE('OBJr')
 #define kCommandInsertXML				FOUR_CHAR_CODE('opDM')
@@ -132,17 +130,14 @@ and can be sold or given away.
 
 #define kCommandNewBone					FOUR_CHAR_CODE('nbne')
 #define kCommandSetBone					FOUR_CHAR_CODE('sbn2')
-#define kCommandDeleteBone				FOUR_CHAR_CODE('dbne')
 #define kCommandGoToParentBone			FOUR_CHAR_CODE('gpbn')
 
 #define kCommandNewPose					FOUR_CHAR_CODE('npse')
 #define kCommandDupPose					FOUR_CHAR_CODE('dpse')
 #define kCommandClearPose				FOUR_CHAR_CODE('cpse')
-#define kCommandDeletePose				FOUR_CHAR_CODE('kpse')
 
 #define kCommandNewAnimate				FOUR_CHAR_CODE('nani')
 #define kCommandDupAnimate				FOUR_CHAR_CODE('dani')
-#define kCommandDeleteAnimate			FOUR_CHAR_CODE('kani')
 #define kCommandResetTimeAnimate		FOUR_CHAR_CODE('artm')
 #define kCommandPlayAnimate				FOUR_CHAR_CODE('plya')
 #define kCommandPlayBlendAnimate		FOUR_CHAR_CODE('plyb')
@@ -153,7 +148,7 @@ and can be sold or given away.
 
 #define item_model						0
 #define item_mesh						1
-#define item_animation					2
+#define item_animate					2
 #define item_pose						3
 #define item_neutral_pose				4
 #define item_bone						5

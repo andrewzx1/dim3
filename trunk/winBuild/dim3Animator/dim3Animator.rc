@@ -54,27 +54,24 @@ BEGIN
     BEGIN
         MENUITEM "Add Mesh...",					500
         MENUITEM "Duplicate Mesh...",			501
-        MENUITEM "Copy Mesh...",				502
 		MENUITEM SEPARATOR
-        MENUITEM "Delete Mesh",					503
+        MENUITEM "Import OBJ...",				502
+        MENUITEM "Replace OBJ...",				503
+        MENUITEM "Add dim3 Mesh...",			504
 		MENUITEM SEPARATOR
-        MENUITEM "Import OBJ...",				504
-        MENUITEM "Replace OBJ...",				505
-        MENUITEM "Add dim3 Mesh...",			506
+        MENUITEM "Scale...",					505
 		MENUITEM SEPARATOR
-        MENUITEM "Scale...",					507
+        MENUITEM "Flip X",						506
+        MENUITEM "Flip Y",						507
+        MENUITEM "Flip Z",						508
 		MENUITEM SEPARATOR
-        MENUITEM "Flip X",						508
-        MENUITEM "Flip Y",						509
-        MENUITEM "Flip Z",						510
-		MENUITEM SEPARATOR
-        MENUITEM "Flip Texture Us",				511
-        MENUITEM "Flip Texture Vs",				512
+        MENUITEM "Flip Texture Us",				509
+        MENUITEM "Flip Texture Vs",				510
  		MENUITEM SEPARATOR
-        MENUITEM "Swap X/Z",					513
-        MENUITEM "Swap Y/Z",					514
-        MENUITEM "Center X/Z",					515
-        MENUITEM "Floor Y",						516
+        MENUITEM "Swap X/Z",					511
+        MENUITEM "Swap Y/Z",					512
+        MENUITEM "Center X/Z",					513
+        MENUITEM "Floor Y",						514
    END
     POPUP "Vertexes"
     BEGIN
@@ -98,9 +95,7 @@ BEGIN
         MENUITEM "Add Bone...",					700
         MENUITEM "Set Bone...",					701
  		MENUITEM SEPARATOR
-        MENUITEM "Delete Bone",					702
- 		MENUITEM SEPARATOR
-        MENUITEM "Goto Parent Bone",			703
+        MENUITEM "Goto Parent Bone",			702
     END
     POPUP "Poses"
     BEGIN
@@ -108,19 +103,16 @@ BEGIN
         MENUITEM "Duplicate Pose...",			801
  		MENUITEM SEPARATOR
         MENUITEM "Clear Pose",					802
-        MENUITEM "Delete Pose",					803
     END
     POPUP "Animations"
     BEGIN
         MENUITEM "New Animation...",			900
         MENUITEM "Duplicate Animation...",		901
- 		MENUITEM SEPARATOR
-        MENUITEM "Delete Animation",			902
 		MENUITEM SEPARATOR
-        MENUITEM "Scale Animation Time...",		903
+        MENUITEM "Scale Animation Time...",		902
  		MENUITEM SEPARATOR
-        MENUITEM "Play Animation",				904
-        MENUITEM "Play Blended Animation...",	905
+        MENUITEM "Play Animation",				903
+        MENUITEM "Play Blended Animation...",	904
     END
 END
 

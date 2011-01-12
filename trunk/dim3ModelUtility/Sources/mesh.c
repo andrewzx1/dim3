@@ -110,40 +110,11 @@ int model_mesh_duplicate(model_type *model,int mesh_idx)
 	memmove(mesh->materials,org_mesh->materials,(max_model_texture*sizeof(model_material_type)));
 	
 	mesh->no_lighting=org_mesh->no_lighting;
+	mesh->diffuse=org_mesh->diffuse;
 	mesh->blend_add=org_mesh->blend_add;
 	mesh->tintable=org_mesh->tintable;
 	
 	return(idx);
-}
-
-/* =======================================================
-
-      Copy Mesh
-      
-======================================================= */
-
-bool model_mesh_copy(model_type *model,int copy_mesh_idx,int mesh_idx)
-{
-	model_mesh_type		*org_mesh,*mesh;
-	
-	org_mesh=&model->meshes[copy_mesh_idx];
-	mesh=&model->meshes[mesh_idx];
-
-	mesh->nvertex=org_mesh->nvertex;
-	if (!model_mesh_set_vertex_count(model,copy_mesh_idx,org_mesh->nvertex)) return(FALSE);
-	memmove(mesh->vertexes,org_mesh->vertexes,(org_mesh->nvertex*sizeof(model_vertex_type)));
-
-	mesh->ntrig=org_mesh->ntrig;
-	if (!model_mesh_set_trig_count(model,copy_mesh_idx,org_mesh->ntrig)) return(FALSE);
-	memmove(mesh->trigs,org_mesh->trigs,(org_mesh->ntrig*sizeof(model_trig_type)));
-
-	memmove(mesh->materials,org_mesh->materials,(max_model_texture*sizeof(model_material_type)));
-
-	mesh->no_lighting=org_mesh->no_lighting;
-	mesh->blend_add=org_mesh->blend_add;
-	mesh->tintable=org_mesh->tintable;
-
-	return(TRUE);
 }
 
 /* =======================================================
