@@ -100,6 +100,50 @@ model_animate_type			animate_backup;
 extern model_type			model;
 extern animator_state_type	state;
 
+
+// supergumba -- temporary bone combo settings
+void dialog_set_bone_combo(WindowRef wind,unsigned long sig,int id,int sel_idx)
+{
+	int				n;
+	char			txt[128];
+	
+	dialog_clear_combo(wind,sig,id);
+
+	dialog_add_combo_item(wind,sig,id,"None",0);
+	dialog_add_combo_item(wind,sig,id,"-",0);
+	
+	for (n=0;n!=model.nbone;n++) {
+	
+		memmove(txt,&model.bones[n].tag,4);
+		txt[4]=0x0;
+		
+		if (model.bones[n].name[0]!=0x0) {
+			strcat(txt," (");
+			strcat(txt,model.bones[n].name);
+			strcat(txt,")");
+		}
+		
+		dialog_add_combo_item(wind,sig,id,txt,0);
+	}
+	
+	if (sel_idx==-1) {
+		dialog_set_combo(wind,sig,id,0);
+	}
+	else {
+		dialog_set_combo(wind,sig,id,(sel_idx+2));
+	}
+}
+
+int dialog_get_bone_combo(WindowRef wind,unsigned long sig,int id)
+{
+	int				sel_idx;
+	
+	sel_idx=dialog_get_combo(wind,sig,id);
+	if (sel_idx==0) return(-1);
+	
+	return(sel_idx-2);
+}
+
 /* =======================================================
 
       Get and Save Data

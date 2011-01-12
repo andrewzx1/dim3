@@ -119,7 +119,7 @@ bool menu_save_changes_dialog(void)
 
 bool menu_event_run(int cmd)
 {
-	int				x,y,z,idx,major_bone_idx,minor_bone_idx,parent_idx,old_cur_animate;
+	int				major_bone_idx,minor_bone_idx,parent_idx;
 	float			fx,fy,fz,bone_factor;
 	
 	switch (cmd) {

@@ -55,6 +55,7 @@ void model_piece_add_mesh(void)
 	state.cur_mesh_idx=idx;
 
 	item_palette_scroll_into_view(item_mesh,idx);
+	item_palette_state_rebuild();
 }
 
 void model_piece_duplicate_mesh(int mesh_idx)
@@ -71,6 +72,7 @@ void model_piece_duplicate_mesh(int mesh_idx)
 	state.cur_mesh_idx=idx;
 
 	item_palette_scroll_into_view(item_mesh,idx);
+	item_palette_state_rebuild();
 }
 
 void model_piece_delete_mesh(int mesh_idx)
@@ -86,6 +88,7 @@ void model_piece_delete_mesh(int mesh_idx)
 	state.cur_mesh_idx=0;
 
 	item_palette_scroll_into_view(item_model,0);
+	item_palette_state_rebuild();
 }
 
 /* =======================================================
@@ -112,6 +115,7 @@ void model_piece_add_bone(void)
 	state.cur_bone_idx=idx;
 
 	item_palette_scroll_into_view(item_bone,idx);
+	item_palette_state_rebuild();
 }
 
 void model_piece_delete_bone(int bone_idx)
@@ -124,6 +128,7 @@ void model_piece_delete_bone(int bone_idx)
 	state.cur_pose_bone_move_idx=-1;
 
 	item_palette_scroll_into_view(item_model,0);
+	item_palette_state_rebuild();
 }
 
 /* =======================================================
@@ -152,6 +157,7 @@ void model_piece_add_pose(void)
 	state.cur_pose_bone_move_idx=-1;
 
 	item_palette_scroll_into_view(item_pose,idx);
+	item_palette_state_rebuild();
 }
 
 void model_piece_duplicate_pose(int pose_idx)
@@ -169,6 +175,7 @@ void model_piece_duplicate_pose(int pose_idx)
 	state.cur_pose_bone_move_idx=-1;
 
 	item_palette_scroll_into_view(item_pose,idx);
+	item_palette_state_rebuild();
 }
 
 void model_piece_delete_pose(int pose_idx)
@@ -191,6 +198,7 @@ void model_piece_delete_pose(int pose_idx)
 	state.cur_pose_bone_move_idx=-1;
 
 	item_palette_scroll_into_view(item_model,0);
+	item_palette_state_rebuild();
 }
 
 /* =======================================================
@@ -221,6 +229,7 @@ void model_piece_add_animate(void)
 	state.cur_animate_pose_move_idx=-1;
 
 	item_palette_scroll_into_view(item_animate,idx);
+	item_palette_state_rebuild();
 }
 
 void model_piece_duplicate_animate(int animate_idx)
@@ -240,6 +249,7 @@ void model_piece_duplicate_animate(int animate_idx)
 	state.cur_animate_pose_move_idx=-1;
 
 	item_palette_scroll_into_view(item_animate,idx);
+	item_palette_state_rebuild();
 }
 
 void model_piece_delete_animate(int animate_idx)
@@ -259,6 +269,7 @@ void model_piece_delete_animate(int animate_idx)
 	state.cur_animate_pose_move_idx=-1;
 
 	item_palette_scroll_into_view(item_model,0);
+	item_palette_state_rebuild();
 }
 
 /* =======================================================
@@ -282,6 +293,7 @@ void model_piece_add_hit_box(void)
 	state.cur_hit_box_idx=idx;
 
 	item_palette_scroll_into_view(item_hit_box,idx);
+	item_palette_state_rebuild();
 }
 
 void model_piece_delete_hit_box(int hit_box_idx)
@@ -292,4 +304,5 @@ void model_piece_delete_hit_box(int hit_box_idx)
 	state.cur_hit_box_idx=-1;
 
 	item_palette_scroll_into_view(item_model,0);
+	item_palette_state_rebuild();
 }
