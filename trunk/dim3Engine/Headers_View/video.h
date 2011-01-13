@@ -156,8 +156,10 @@ extern bool gl_back_render_get_texture(char *node_name,GLuint *txt_id,float *alp
 
 	// opengl es patches
 
-extern void es_patch_gluPerspective(float fovy,float aspect,float zNear,float zFar);
-extern void es_patch_gluLookAt(float eyex,float eyey,float eyez,float centerx,float centery,float centerz,float upx,float upy,float upz);
+extern void es_patch_gluPerspective(double fovy,double aspect,double zNear,double zFar);
+extern void es_patch_gluLookAt(double eyex,double eyey,double eyez,double centerx,double centery,double centerz,double upx,double upy,double upz);
+extern bool es_patch_gluProject(double objx,double objy,double objz,double modelMatrix[16],double projMatrix[16],int viewport[4],double *winx,double *winy,double *winz);
+extern bool es_patch_gluUnProject(double winx,double winy,double winz,double modelMatrix[16],double projMatrix[16],int viewport[4],double *objx, double *objy, double *objz);
 
 	// view
 	

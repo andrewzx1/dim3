@@ -40,6 +40,7 @@ JSValueRef js_obj_vehicle_get_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
 JSValueRef js_obj_vehicle_get_hasOccupant(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 bool js_obj_vehicle_set_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 JSValueRef js_obj_vehicle_enter_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_obj_vehicle_enter_by_id_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_vehicle_exit_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_vehicle_remove_occupant_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
@@ -50,6 +51,7 @@ JSStaticValue 		obj_vehicle_props[]={
 
 JSStaticFunction	obj_vehicle_functions[]={
 							{"enter",				js_obj_vehicle_enter_func,			kJSPropertyAttributeDontDelete},
+							{"enterById",			js_obj_vehicle_enter_by_id_func,	kJSPropertyAttributeDontDelete},
 							{"exit",				js_obj_vehicle_exit_func,			kJSPropertyAttributeDontDelete},
 							{"removeOccupant",		js_obj_vehicle_exit_func,			kJSPropertyAttributeDontDelete},
 							{0,0,0}};
@@ -130,7 +132,26 @@ JSValueRef js_obj_vehicle_enter_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 	
 	obj=object_script_lookup();
 
-	if (!object_enter_vehicle(obj,err_str)) {
+	if (!object_enter_vehicle(obj,-1,err_str)) {
+		*exception=script_create_exception(cx,err_str);
+	}
+
+	return(script_null_to_value(cx));
+}
+
+JSValueRef js_obj_vehicle_enter_by_id_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+{
+	char			err_str[256];
+	obj_type		*obj,*vehicle_obj;
+	
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
+	obj=object_script_lookup();
+
+	vehicle_obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
+	if (vehicle_obj==NULL) return(script_null_to_value(cx));
+
+	if (!object_enter_vehicle(obj,vehicle_obj->idx,err_str)) {
 		*exception=script_create_exception(cx,err_str);
 	}
 

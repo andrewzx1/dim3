@@ -562,9 +562,9 @@ void object_clear_ambient(obj_type *obj)
       
 ======================================================= */
 
-bool object_enter_vehicle(obj_type *obj,char *err_str)
+bool object_enter_vehicle(obj_type *obj,int vehicle_idx,char *err_str)
 {
-	int				n,idx,x,z,y,sz;
+	int				n,x,z,y,sz;
 	d3pnt			motion;
 	obj_type		*vehicle_obj;
 	obj_vehicle		*vehicle;
@@ -576,37 +576,46 @@ bool object_enter_vehicle(obj_type *obj,char *err_str)
 		return(FALSE);
 	}
 
+		// if vehicle_idx is -1, then
 		// find a vehicle within right distance
-		
-	idx=-1;
-	
-	sz=(obj->size.z*3)>>1;
-	angle_get_movement(obj->motion.ang.y,obj->size.z,&motion.x,&motion.z);
-	
-	motion.y=0;
-	
-	for (n=0;n!=max_obj_list;n++) {
-		vehicle_obj=server.obj_list.objs[n];
-		if (vehicle_obj==NULL) continue;
-    
-		if ((vehicle_obj->hidden) || (!vehicle_obj->contact.object_on) || (!vehicle_obj->vehicle.on) || (vehicle_obj->idx==obj->idx)) continue;
+		// if we do this, we mark it so exiting
+		// causes the original obj to be reset
+		// to an exit position
 
-            // check bounds
-			
-		if (collide_object_to_object(obj,&motion,vehicle_obj,FALSE)) {
-			idx=n;
-			break;
+	obj->vehicle.offset_exit=FALSE;
+	
+	if (vehicle_idx==-1) {
+
+		obj->vehicle.offset_exit=TRUE;
+	
+		sz=(obj->size.z*3)>>1;
+		angle_get_movement(obj->motion.ang.y,obj->size.z,&motion.x,&motion.z);
+		
+		motion.y=0;
+		
+		for (n=0;n!=max_obj_list;n++) {
+			vehicle_obj=server.obj_list.objs[n];
+			if (vehicle_obj==NULL) continue;
+	    
+			if ((vehicle_obj->hidden) || (!vehicle_obj->contact.object_on) || (!vehicle_obj->vehicle.on) || (vehicle_obj->idx==obj->idx)) continue;
+
+				// check bounds
+				
+			if (collide_object_to_object(obj,&motion,vehicle_obj,FALSE)) {
+				vehicle_idx=n;
+				break;
+			}
 		}
 	}
-		
-	if (idx==-1) {
-		if (err_str!=NULL) strcpy(err_str,"No object nearby to enter");
+
+	if (vehicle_idx==-1) {
+		if (err_str!=NULL) strcpy(err_str,"No object to enter");
 		return(FALSE);
 	}
 
-	vehicle_obj=server.obj_list.objs[idx];
+	vehicle_obj=server.obj_list.objs[vehicle_idx];
 	if (!vehicle_obj->vehicle.on) {
-		if (err_str!=NULL) strcpy(err_str,"Nearby object is not a vehicle");
+		if (err_str!=NULL) strcpy(err_str,"Object is not a vehicle");
 		return(FALSE);
 	}
 	
@@ -621,16 +630,18 @@ bool object_enter_vehicle(obj_type *obj,char *err_str)
 
 		// get enter offset
 
-	x=vehicle_obj->pnt.x-obj->pnt.x;
-	z=vehicle_obj->pnt.z-obj->pnt.z;
-	y=vehicle_obj->pnt.y-obj->pnt.y;
-		
-	rotate_2D_point_center(&x,&z,-vehicle_obj->ang.y);
-		
-	vehicle->attach_offset.x=x;
-	vehicle->attach_offset.z=z;
-	vehicle->attach_offset.y=y;
-	
+	if (obj->vehicle.offset_exit) {
+		x=vehicle_obj->pnt.x-obj->pnt.x;
+		z=vehicle_obj->pnt.z-obj->pnt.z;
+		y=vehicle_obj->pnt.y-obj->pnt.y;
+			
+		rotate_2D_point_center(&x,&z,-vehicle_obj->ang.y);
+			
+		vehicle->attach_offset.x=x;
+		vehicle->attach_offset.z=z;
+		vehicle->attach_offset.y=y;
+	}
+
 		// send events
 
 	obj->vehicle.in_enter=TRUE;
@@ -706,45 +717,49 @@ bool object_exit_vehicle(obj_type *vehicle_obj,bool ignore_errors,char *err_str)
 	orig_obj=server.obj_list.objs[vehicle_obj->vehicle.attach_obj_idx];
 	
 		// find exit point
+		// if we entered directly, we just leave the object
+		// where it was
 		
 	vehicle=&vehicle_obj->vehicle;
 	
-	x=vehicle->attach_offset.x;
-	z=vehicle->attach_offset.z;
-	y=vehicle->attach_offset.y;
-	
-	rotate_2D_point_center(&x,&z,vehicle_obj->ang.y);
-	
-	orig_obj->pnt.x=vehicle_obj->pnt.x-x;
-	orig_obj->pnt.z=vehicle_obj->pnt.z-z;
-	orig_obj->pnt.y=vehicle_obj->pnt.y-y;
+	if (orig_obj->vehicle.offset_exit) {
+		x=vehicle->attach_offset.x;
+		z=vehicle->attach_offset.z;
+		y=vehicle->attach_offset.y;
+		
+		rotate_2D_point_center(&x,&z,vehicle_obj->ang.y);
+		
+		orig_obj->pnt.x=vehicle_obj->pnt.x-x;
+		orig_obj->pnt.z=vehicle_obj->pnt.z-z;
+		orig_obj->pnt.y=vehicle_obj->pnt.y-y;
 
-	orig_obj->ang.y=angle_find(orig_obj->pnt.x,orig_obj->pnt.z,vehicle_obj->pnt.x,vehicle_obj->pnt.z);
+		orig_obj->ang.y=angle_find(orig_obj->pnt.x,orig_obj->pnt.z,vehicle_obj->pnt.x,vehicle_obj->pnt.z);
 	
-		// is there enough empty space to exit?
-		// go from center of vehicle to obj + radius
+			// is there enough empty space to exit?
+			// go from center of vehicle to obj + radius
 
-	spt.x=vehicle_obj->pnt.x;
-	spt.y=vehicle_obj->pnt.y;
-	spt.z=vehicle_obj->pnt.z;
+		spt.x=vehicle_obj->pnt.x;
+		spt.y=vehicle_obj->pnt.y;
+		spt.z=vehicle_obj->pnt.z;
 
-	ept.x=orig_obj->pnt.x;
-	ept.y=orig_obj->pnt.y;
-	ept.z=orig_obj->pnt.z;
+		ept.x=orig_obj->pnt.x;
+		ept.y=orig_obj->pnt.y;
+		ept.z=orig_obj->pnt.z;
 
-	ray_push_to_end(&ept,&spt,-orig_obj->size.radius);
-	
-	contact.obj.on=TRUE;
-	contact.proj.on=FALSE;
-	contact.obj.ignore_idx=vehicle_obj->idx;
+		ray_push_to_end(&ept,&spt,-orig_obj->size.radius);
+		
+		contact.obj.on=TRUE;
+		contact.proj.on=FALSE;
+		contact.obj.ignore_idx=vehicle_obj->idx;
 
-	contact.origin=poly_ray_trace_origin_object;
-	
-	empty=!ray_trace_map_by_point(&spt,&ept,&hpt,&contact);
-	
-	if ((!empty) && (!ignore_errors)) {
-		if (err_str!=NULL) strcpy(err_str,"No space in map to exit");
-		return(FALSE);
+		contact.origin=poly_ray_trace_origin_object;
+		
+		empty=!ray_trace_map_by_point(&spt,&ept,&hpt,&contact);
+		
+		if ((!empty) && (!ignore_errors)) {
+			if (err_str!=NULL) strcpy(err_str,"No space in map to exit");
+			return(FALSE);
+		}
 	}
 
 		// send events

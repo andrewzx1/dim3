@@ -31,6 +31,10 @@ and can be sold or given away.
 
 #include "video.h"
 
+typedef struct		{
+						double			x,y,z;
+					} d3_d_vct;
+
 /* =======================================================
 
       OpenGL ES Missing Functions
@@ -38,11 +42,11 @@ and can be sold or given away.
       
 ======================================================= */
 
-void es_patch_gluPerspective(float fovy,float aspect,float zNear,float zFar)
+void es_patch_gluPerspective(double fovy,double aspect,double zNear,double zFar)
 {
-	float		x_min,x_max,y_min,y_max;
+	double		x_min,x_max,y_min,y_max;
 
-	y_max=zNear*(float)tan((fovy*TRIG_PI)/360.0f);
+	y_max=zNear*tan((fovy*D_TRIG_PI)/360.0);
 	y_min=-y_max;
 	x_min=y_min*aspect;
 	x_max=y_max*aspect;
@@ -57,17 +61,37 @@ void es_patch_gluPerspective(float fovy,float aspect,float zNear,float zFar)
       
 ======================================================= */
 
- void es_patch_gluLookAt(float eyex,float eyey,float eyez,float centerx,float centery,float centerz,float upx,float upy,float upz)
+void es_patch_vector_normalize(d3_d_vct *v)
+{
+	double			d;
+	
+	d=sqrt((v->x*v->x)+(v->y*v->y)+(v->z*v->z));
+	if (d==0.0) return;
+	
+	d=1.0/d;
+	v->x*=d;
+	v->y*=d;
+	v->z*=d;
+}
+
+void es_patch_vector_cross_product(d3_d_vct *v,d3_d_vct *v1,d3_d_vct *v2)
+{
+	v->x=(v1->y*v2->z)-(v2->y*v1->z);
+    v->y=(v1->z*v2->x)-(v2->z*v1->x);
+    v->z=(v1->x*v2->y)-(v2->x*v1->y);
+}
+
+ void es_patch_gluLookAt(double eyex,double eyey,double eyez,double centerx,double centery,double centerz,double upx,double upy,double upz)
  {
-	 float			mat[16];
-	 d3vct			x,y,z;
+	 double			mat[16];
+	 d3_d_vct		x,y,z;
 
 		// create the z vector
 
 	z.x=eyex-centerx;
 	z.y=eyey-centery;
 	z.z=eyez-centerz;
-	vector_normalize(&z);
+	es_patch_vector_normalize(&z);
 
 		// create the y vector
 
@@ -77,44 +101,44 @@ void es_patch_gluPerspective(float fovy,float aspect,float zNear,float zFar)
 		
 		// create x vector, y cross z
 
-	vector_cross_product(&x,&y,&z);
+	es_patch_vector_cross_product(&x,&y,&z);
 
 		// recreate the y from z cross x
 
-	vector_cross_product(&y,&z,&x);
+	es_patch_vector_cross_product(&y,&z,&x);
 
 		// normalize x and y
 
-	vector_normalize(&x);
-	vector_normalize(&y);
+	es_patch_vector_normalize(&x);
+	es_patch_vector_normalize(&y);
 
 		// create the rotate matrix
 	
 	mat[0+0]=x.x;
 	mat[0+4]=x.y;
 	mat[0+8]=x.z;
-	mat[0+12]=0.0f;
+	mat[0+12]=0.0;
 
 	mat[1+0]=y.x;
 	mat[1+4]=y.y;
 	mat[1+8]=y.z;
-	mat[1+12]=0.0f;
+	mat[1+12]=0.0;
 
 	mat[2+0]=z.x;
 	mat[2+4]=z.y;
 	mat[2+8]=z.z;
-	mat[2+12]=0.0f;
+	mat[2+12]=0.0;
 
-	mat[3+0]=0.0f;
-	mat[3+4]=0.0f;
-	mat[3+8]=0.0f;
-	mat[3+12]=1.0f;
+	mat[3+0]=0.0;
+	mat[3+4]=0.0;
+	mat[3+8]=0.0;
+	mat[3+12]=1.0;
 
-	glMultMatrixf(mat);
+	glMultMatrixd(mat);
 
 		// translate eye to origin
 
-    glTranslatef(-eyex,-eyey,-eyez);
+    glTranslated(-eyex,-eyey,-eyez);
 }
 
 /* =======================================================
@@ -124,7 +148,7 @@ void es_patch_gluPerspective(float fovy,float aspect,float zNear,float zFar)
       
 ======================================================= */
 
-void es_patch_matrix_mult_vector(float mat[16],float v_in[4],float v_out[4])
+void es_patch_matrix_mult_vector(double mat[16],double v_in[4],double v_out[4])
 {
 	v_out[0]=(v_in[0]*mat[0])+(v_in[1]*mat[4])+(v_in[2]*mat[8])+(v_in[3]*mat[12]);
 	v_out[1]=(v_in[0]*mat[1])+(v_in[1]*mat[5])+(v_in[2]*mat[9])+(v_in[3]*mat[13]);
@@ -132,7 +156,7 @@ void es_patch_matrix_mult_vector(float mat[16],float v_in[4],float v_out[4])
 	v_out[3]=(v_in[0]*mat[3])+(v_in[1]*mat[7])+(v_in[2]*mat[11])+(v_in[3]*mat[15]);
 }
 
-void es_patch_matrix_mult_matrix(float mat_1[16],float mat_2[16],float mat_out[16])
+void es_patch_matrix_mult_matrix(double mat_1[16],double mat_2[16],double mat_out[16])
 {
 	int			n;
 
@@ -160,10 +184,10 @@ void es_patch_matrix_mult_matrix(float mat_1[16],float mat_2[16],float mat_out[1
 	}
 }
 
-bool es_patch_matrix_invert(float mat_in[16],float mat_out[16])
+bool es_patch_matrix_invert(double mat_in[16],double mat_out[16])
 {
 	int					n;
-	float				mat_inv[16],det;
+	double				mat_inv[16],det;
 
     mat_inv[0]=
 		(mat_in[5]*mat_in[10]*mat_in[15])-
@@ -281,7 +305,7 @@ bool es_patch_matrix_invert(float mat_in[16],float mat_out[16])
     det=(mat_in[0]*mat_inv[0])+(mat_in[1]*mat_inv[4])+(mat_in[2]*mat_inv[8])+(mat_in[3]*mat_inv[12]);
     if (det==0.0) return(FALSE);
 
-    det=1.0f/det;
+    det=1.0/det;
 
 	for (n=0;n!=16;n++) {
         mat_out[n]=mat_inv[n]*det;
@@ -290,9 +314,9 @@ bool es_patch_matrix_invert(float mat_in[16],float mat_out[16])
     return(TRUE);
 }
 
-bool es_patch_gluProject(float objx,float objy,float objz,float modelMatrix[16],float projMatrix[16],int viewport[4],float *winx,float *winy,float *winz)
+bool es_patch_gluProject(double objx,double objy,double objz,double modelMatrix[16],double projMatrix[16],int viewport[4],double *winx,double *winy,double *winz)
 {
-    float		in[4],out[4];
+    double		in[4],out[4];
 
     in[0]=objx;
     in[1]=objy;
@@ -303,9 +327,9 @@ bool es_patch_gluProject(float objx,float objy,float objz,float modelMatrix[16],
     es_patch_matrix_mult_vector(projMatrix,out,in);
     if (in[3]==0.0f) return(FALSE);
 
-	in[0]=((in[0]/in[3])*0.5f)+0.5f;
-    in[1]=((in[1]/in[3])*0.5f)+0.5f;
-    in[2]=((in[2]/in[3])*0.5f)+0.5f;
+	in[0]=((in[0]/in[3])*0.5)+0.5;
+    in[1]=((in[1]/in[3])*0.5)+0.5;
+    in[2]=((in[2]/in[3])*0.5)+0.5;
 
     in[0]=(in[0]*viewport[2])+viewport[0];
     in[1]=(in[1]*viewport[3])+viewport[1];
@@ -317,9 +341,9 @@ bool es_patch_gluProject(float objx,float objy,float objz,float modelMatrix[16],
     return(TRUE);
 }
 
-bool es_patch_gluUnProject(float winx,float winy,float winz,float modelMatrix[16],float projMatrix[16],int viewport[4],float *objx, float *objy, float *objz)
+bool es_patch_gluUnProject(double winx,double winy,double winz,double modelMatrix[16],double projMatrix[16],int viewport[4],double *objx, double *objy, double *objz)
 {
-    float		mat[16],in[4],out[4];
+    double		mat[16],in[4],out[4];
 
     es_patch_matrix_mult_matrix(modelMatrix,projMatrix,mat);
     if (!es_patch_matrix_invert(mat,mat)) return(FALSE);

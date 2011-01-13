@@ -444,7 +444,7 @@ void player_enter_exit_input(obj_type *obj)
 		
 		// enter a vehicle?
 	
-	object_enter_vehicle(obj,NULL);
+	object_enter_vehicle(obj,-1,NULL);
 }
 
 /* =======================================================

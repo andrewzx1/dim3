@@ -94,11 +94,14 @@ and can be sold or given away.
 
 #define kMapPropertyBackgroundOn			50
 #define kMapPropertyBackgroundFrontFill		51
-#define kMapPropertyBackgroundFrontShift	52
-#define kMapPropertyBackgroundMiddleFill	53
-#define kMapPropertyBackgroundMiddleShift	54
-#define kMapPropertyBackgroundBackFill		55
-#define kMapPropertyBackgroundBackShift		56
+#define kMapPropertyBackgroundFrontStamp	52
+#define kMapPropertyBackgroundFrontShift	53
+#define kMapPropertyBackgroundMiddleFill	54
+#define kMapPropertyBackgroundMiddleStamp	55
+#define kMapPropertyBackgroundMiddleShift	56
+#define kMapPropertyBackgroundBackFill		57
+#define kMapPropertyBackgroundBackStamp		58
+#define kMapPropertyBackgroundBackShift		59
 
 #define kMapPropertyFogOn					60
 #define kMapPropertyFogInnerRadius			61
@@ -259,14 +262,23 @@ void property_palette_fill_map(void)
 
 	list_palette_add_header(&property_palette,0,"Map Background");
 	list_palette_add_checkbox(&property_palette,kMapPropertyBackgroundOn,"On",map.background.on,FALSE);
+	uv.x=map.background.front.x_fact;
+	uv.y=map.background.front.y_fact;
+	list_palette_add_uv(&property_palette,kMapPropertyBackgroundFrontStamp,"Front Stamp",&uv,FALSE);
 	uv.x=map.background.front.x_scroll_fact;
 	uv.y=map.background.front.y_scroll_fact;
 	list_palette_add_uv(&property_palette,kMapPropertyBackgroundFrontShift,"Front Scroll",&uv,FALSE);
 	list_palette_add_texture(&property_palette,map.textures,kMapPropertyBackgroundFrontFill,"Front Fill",map.background.front.fill,FALSE);
+	uv.x=map.background.middle.x_fact;
+	uv.y=map.background.middle.y_fact;
+	list_palette_add_uv(&property_palette,kMapPropertyBackgroundMiddleStamp,"Middle Stamp",&uv,FALSE);
 	uv.x=map.background.middle.x_scroll_fact;
 	uv.y=map.background.middle.y_scroll_fact;
 	list_palette_add_uv(&property_palette,kMapPropertyBackgroundMiddleShift,"Middle Scroll",&uv,FALSE);
 	list_palette_add_texture(&property_palette,map.textures,kMapPropertyBackgroundMiddleFill,"Middle Fill",map.background.middle.fill,FALSE);
+	uv.x=map.background.back.x_fact;
+	uv.y=map.background.back.y_fact;
+	list_palette_add_uv(&property_palette,kMapPropertyBackgroundBackStamp,"Back Stamp",&uv,FALSE);
 	uv.x=map.background.back.x_scroll_fact;
 	uv.y=map.background.back.y_scroll_fact;
 	list_palette_add_uv(&property_palette,kMapPropertyBackgroundBackShift,"Back Scroll",&uv,FALSE);
@@ -599,6 +611,14 @@ void property_palette_click_map(int id)
 			map.background.on=!map.background.on;
 			break;
 
+		case kMapPropertyBackgroundFrontStamp:
+			uv.x=map.background.front.x_fact;
+			uv.y=map.background.front.y_fact;
+			dialog_property_string_run(list_string_value_uv,(void*)&uv,0,0,0);
+			map.background.front.x_fact=uv.x;
+			map.background.front.y_fact=uv.y;
+			break;
+
 		case kMapPropertyBackgroundFrontShift:
 			uv.x=map.background.front.x_scroll_fact;
 			uv.y=map.background.front.y_scroll_fact;
@@ -611,6 +631,14 @@ void property_palette_click_map(int id)
 			property_palette_pick_texture(&map.background.front.fill);
 			break;
 
+		case kMapPropertyBackgroundMiddleStamp:
+			uv.x=map.background.middle.x_fact;
+			uv.y=map.background.middle.y_fact;
+			dialog_property_string_run(list_string_value_uv,(void*)&uv,0,0,0);
+			map.background.middle.x_fact=uv.x;
+			map.background.middle.y_fact=uv.y;
+			break;
+
 		case kMapPropertyBackgroundMiddleShift:
 			uv.x=map.background.middle.x_scroll_fact;
 			uv.y=map.background.middle.y_scroll_fact;
@@ -621,6 +649,14 @@ void property_palette_click_map(int id)
 
 		case kMapPropertyBackgroundMiddleFill:
 			property_palette_pick_texture(&map.background.middle.fill);
+			break;
+
+		case kMapPropertyBackgroundBackStamp:
+			uv.x=map.background.back.x_fact;
+			uv.y=map.background.back.y_fact;
+			dialog_property_string_run(list_string_value_uv,(void*)&uv,0,0,0);
+			map.background.back.x_fact=uv.x;
+			map.background.back.y_fact=uv.y;
 			break;
 
 		case kMapPropertyBackgroundBackShift:

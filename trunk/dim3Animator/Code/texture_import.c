@@ -156,8 +156,8 @@ int texture_pick(char *material_name,char *err_str)
 	
 			// a free texture
 			
-		if ((texture->frames[0].bitmap.gl_id==-1) && (idx==-1)) {
-			idx=n;
+		if (texture->frames[0].bitmap.gl_id==-1) {
+			if (idx==-1) idx=n;
 		}
 		
 			// a used texture, check to see if
@@ -181,7 +181,7 @@ int texture_pick(char *material_name,char *err_str)
 		// pick a bitmap
 		
 	sprintf(title,"Material %s Found - Select a PNG Bitmap",material_name);
-	os_dialog_alert(title,"Please select a PNG file to be used for this material.  The PNG file must be 32-bit and have width and height that are squares of 2 (2, 4, 8, 16, 32, 64, 128, 256, etc).");
+	os_dialog_alert(title,"Please select a PNG file to be used for this material.\nThe PNG file must be 32-bit and have width and height that are\nsquares of 2 (2, 4, 8, 16, 32, 64, 128, 256, etc).");
 	
 	if (!os_load_file(path,"png")) {
 		strcpy(err_str,"No texture was choosen.");
@@ -195,9 +195,15 @@ int texture_pick(char *material_name,char *err_str)
 		// get the actual file name
 		
 	c=strrchr(path,'/');
-	strcpy(file_name,c);
-	c=strrchr(file_name,'.');
-	*c=0x0;
+	if (c==NULL) c=strrchr(path,'\\');
+	if (c==NULL) {
+		strcpy(file_name,"unknown");
+	}
+	else {
+		strcpy(file_name,(c+1));
+		c=strrchr(file_name,'.');
+		if (c!=NULL) *c=0x0;
+	}
 	
 		// copy bitmaps to model folder
 		// copy selected bitmap and any addition _n, _s, or _g files
