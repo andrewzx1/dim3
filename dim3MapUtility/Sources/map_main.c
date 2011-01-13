@@ -151,12 +151,18 @@ bool map_new(map_type *map,char *name)
 		
 	map->background.on=FALSE;
 	map->background.front.fill=-1;
+	map->background.front.x_fact=1.0f;
+	map->background.front.y_fact=1.0f;
 	map->background.front.x_scroll_fact=0.0f;
 	map->background.front.y_scroll_fact=0.0f;
 	map->background.middle.fill=-1;
+	map->background.middle.x_fact=1.0f;
+	map->background.middle.y_fact=1.0f;
 	map->background.middle.x_scroll_fact=0.0f;
 	map->background.middle.y_scroll_fact=0.0f;
 	map->background.back.fill=-1;
+	map->background.back.x_fact=1.0f;
+	map->background.back.y_fact=1.0f;
 	map->background.back.x_scroll_fact=0.0f;
 	map->background.back.y_scroll_fact=0.0f;
 	

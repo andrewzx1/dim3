@@ -198,10 +198,13 @@ void write_map_settings_xml(map_type *map)
     xml_add_tagstart("Background");
 	xml_add_attribute_boolean("on",map->background.on);
     xml_add_attribute_int("front_fill",map->background.front.fill);
+    xml_add_attribute_2_coord_float("front_stamp",map->background.front.x_fact,map->background.front.y_fact);
     xml_add_attribute_2_coord_float("front_scroll",map->background.front.x_scroll_fact,map->background.front.y_scroll_fact);
     xml_add_attribute_int("middle_fill",map->background.middle.fill);
+    xml_add_attribute_2_coord_float("middle_stamp",map->background.middle.x_fact,map->background.middle.y_fact);
     xml_add_attribute_2_coord_float("middle_scroll",map->background.middle.x_scroll_fact,map->background.middle.y_scroll_fact);
     xml_add_attribute_int("back_fill",map->background.back.fill);
+    xml_add_attribute_2_coord_float("back_stamp",map->background.back.x_fact,map->background.back.y_fact);
     xml_add_attribute_2_coord_float("back_scroll",map->background.back.x_scroll_fact,map->background.back.y_scroll_fact);
     xml_add_tagend(TRUE);
     

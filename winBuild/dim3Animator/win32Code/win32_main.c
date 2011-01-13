@@ -50,7 +50,6 @@ extern animator_state_type		state;
 extern d3rect					tool_palette_box,txt_palette_box;
 extern list_palette_type		item_palette;
 
-extern bool setup_xml_read(void);
 extern int os_win32_menu_lookup(int id);
 
 /* =======================================================
@@ -59,10 +58,6 @@ extern int os_win32_menu_lookup(int id);
       
 ======================================================= */
 
-bool dialog_model_settings_run(void)
-{
-	return(TRUE);
-}
 void dialog_set_normal_run(d3vct *vct)
 {
 }
@@ -70,23 +65,7 @@ bool dialog_scale_run(model_type *mdl,float *x,float *z,float *y)
 {
 	return(FALSE);
 }
-bool dialog_nudge_rotate_run(int *x,int *z,int *y,char *diag_name,int def_value)
-{
-	return(FALSE);
-}
-bool dialog_bone_settings_run(model_bone_type *bone)
-{
-	return(FALSE);
-}
 bool dialog_set_vertex_bone_run(int *major_bone_idx,int *minor_bone_idx,float *factor)
-{
-	return(FALSE);
-}
-bool dialog_mesh_info_run(model_mesh_type *mesh)
-{
-	return(FALSE);
-}
-bool dialog_pose_settings_run(model_pose_type *pose)
 {
 	return(FALSE);
 }
@@ -98,24 +77,12 @@ bool dialog_play_blend_animation_run(void)
 {
 	return(FALSE);
 }
-int dialog_copy_mesh_run(void)
-{
-	return(-1);
-}
-bool dialog_bone_nudge_run(int *x,int *z,int *y,bool *nudge_children,bool *nudge_vertex)
-{
-	return(FALSE);
-}
 bool dialog_animation_reset_time_run(int animate_idx)
 {
 	return(FALSE);
 }
 void dialog_about_run(void)
 {
-}
-int dialog_import_finish_run(void)
-{
-	return(-1);
 }
 
 /* =======================================================

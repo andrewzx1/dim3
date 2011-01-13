@@ -805,7 +805,7 @@ bool import_obj(char *path,char *err_str)
 	c=strrchr(path,'/');
 	if (c==NULL) c=strrchr(path,'\\');
 	if (c==NULL) {
-		file_name[0]=0x0;
+		strcpy(file_name,"unknown");
 	}
 	else {
 		strcpy(file_name,(c+1));

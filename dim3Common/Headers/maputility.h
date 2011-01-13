@@ -576,7 +576,8 @@ typedef struct		{
 
 typedef struct		{
 						int									fill;
-						float								x_scroll_fact,y_scroll_fact;
+						float								x_fact,y_fact,
+															x_scroll_fact,y_scroll_fact;
 					} map_background_layer_type;					
 					
 typedef struct		{

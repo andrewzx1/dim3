@@ -207,12 +207,12 @@ void ag_generate_additional_stories(void)
 
 			for (t=0;t!=shape_poly->npt;t++) {
 				t2=t+1;
-				if (t2==shape->nvertex) t2=0;
+				if (t2==shape_poly->npt) t2=0;
 
-				px[0]=px[3]=(int)(((float)shape->vertexes[t].x)*size->x)+room->min.x;
-				px[1]=px[2]=(int)(((float)shape->vertexes[t2].x)*size->x)+room->min.x;
-				pz[0]=pz[3]=(int)(((float)shape->vertexes[t].z)*size->z)+room->min.z;
-				pz[1]=pz[2]=(int)(((float)shape->vertexes[t2].z)*size->z)+room->min.z;
+				px[0]=px[3]=(int)(((float)shape->vertexes[shape_poly->v[t]].x)*size->x)+room->min.x;
+				px[1]=px[2]=(int)(((float)shape->vertexes[shape_poly->v[t2]].x)*size->x)+room->min.x;
+				pz[0]=pz[3]=(int)(((float)shape->vertexes[shape_poly->v[t]].z)*size->z)+room->min.z;
+				pz[1]=pz[2]=(int)(((float)shape->vertexes[shape_poly->v[t2]].z)*size->z)+room->min.z;
 				py[0]=py[1]=by-(int)(10.0f*size->y);
 				py[2]=py[3]=by;
 

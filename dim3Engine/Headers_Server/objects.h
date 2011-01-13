@@ -185,7 +185,7 @@ extern void object_ducking(obj_type *obj);
 extern void object_set_ambient(obj_type *obj,char *name,float pitch);
 extern void object_change_ambient_pitch(obj_type *obj,float pitch);
 extern void object_clear_ambient(obj_type *obj);
-extern bool object_enter_vehicle(obj_type *obj,char *err_str);
+extern bool object_enter_vehicle(obj_type *obj,int vehicle_idx,char *err_str);
 extern bool object_exit_vehicle(obj_type *vehicle_obj,bool ignore_errors,char *err_str);
 
 extern bool object_auto_walk_node_setup(obj_type *obj,int from_idx,int to_idx,bool skip_event,int event_id,char *err_str);

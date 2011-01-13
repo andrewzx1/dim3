@@ -126,10 +126,13 @@ void decode_map_settings_xml(map_type *map,int map_head)
     if (main_background_tag!=-1) {
 		map->background.on=xml_get_attribute_boolean(main_background_tag,"on");
 		map->background.front.fill=xml_get_attribute_int(main_background_tag,"front_fill");
+		xml_get_attribute_2_coord_float_default(main_background_tag,"front_stamp",&map->background.front.x_fact,&map->background.front.y_fact,1.0f,1.0f);
 		xml_get_attribute_2_coord_float(main_background_tag,"front_scroll",&map->background.front.x_scroll_fact,&map->background.front.y_scroll_fact);
 		map->background.middle.fill=xml_get_attribute_int(main_background_tag,"middle_fill");
+		xml_get_attribute_2_coord_float_default(main_background_tag,"middle_stamp",&map->background.middle.x_fact,&map->background.middle.y_fact,1.0f,1.0f);
 		xml_get_attribute_2_coord_float(main_background_tag,"middle_scroll",&map->background.middle.x_scroll_fact,&map->background.middle.y_scroll_fact);
 		map->background.back.fill=xml_get_attribute_int(main_background_tag,"back_fill");
+		xml_get_attribute_2_coord_float_default(main_background_tag,"back_stamp",&map->background.back.x_fact,&map->background.back.y_fact,1.0f,1.0f);
 		xml_get_attribute_2_coord_float(main_background_tag,"back_scroll",&map->background.back.x_scroll_fact,&map->background.back.y_scroll_fact);
     }
   

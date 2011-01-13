@@ -393,15 +393,15 @@ bool import_obj(char *path,bool replace,bool *found_normals,char *err_str)
 		// we run through the materials to
 		// combine triangles that are on different
 		// materials but with the same name
-		
+
     ntrig=0;
 	trig=mesh->trigs;
 
 	for (i=0;i!=nmaterial;i++) {
 
             // get texture
-    
-        texture_idx=texture_pick(material_list[i],err_str);
+  
+		texture_idx=texture_pick(material_list[i],err_str);
 		if (texture_idx==-1) {
 			progress_end();
 			textdecode_close();
