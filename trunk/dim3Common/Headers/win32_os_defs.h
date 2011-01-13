@@ -60,6 +60,7 @@ and can be sold or given away.
 //
 
 #define D3_OS_WINDOWS			1
+#undef D3_OPENGL_ES
 
 //
 // os specific keys

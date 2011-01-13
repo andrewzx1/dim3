@@ -39,6 +39,7 @@
 		2694E59A0F91A36F004B672A /* script_multiplayer.c in Sources */ = {isa = PBXBuildFile; fileRef = 2694E5990F91A36F004B672A /* script_multiplayer.c */; };
 		2694E5A30F91A501004B672A /* script_multiplayer_bot.c in Sources */ = {isa = PBXBuildFile; fileRef = 2694E5A20F91A501004B672A /* script_multiplayer_bot.c */; };
 		2696A1F60EF1EB8B005359BF /* script_weap_dual.c in Sources */ = {isa = PBXBuildFile; fileRef = 2696A1F50EF1EB8B005359BF /* script_weap_dual.c */; };
+		269D27C312DEBB7E00AF5695 /* mac_os_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 269D27C212DEBB7E00AF5695 /* mac_os_defs.h */; };
 		26A562590EF6D0AB00D38FC0 /* net_socket.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A562580EF6D0AB00D38FC0 /* net_socket.c */; };
 		26A562B90EF6D50D00D38FC0 /* net_utility.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A562B80EF6D50D00D38FC0 /* net_utility.c */; };
 		26A60BD511CC1DCF00E9AB33 /* view_draw_debug.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A60BD411CC1DCF00E9AB33 /* view_draw_debug.c */; };
@@ -418,6 +419,7 @@
 		2694E5990F91A36F004B672A /* script_multiplayer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = script_multiplayer.c; path = Sources_Server/script_multiplayer.c; sourceTree = "<group>"; };
 		2694E5A20F91A501004B672A /* script_multiplayer_bot.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = script_multiplayer_bot.c; path = Sources_Server/script_multiplayer_bot.c; sourceTree = "<group>"; };
 		2696A1F50EF1EB8B005359BF /* script_weap_dual.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = script_weap_dual.c; path = Sources_Server/script_weap_dual.c; sourceTree = "<group>"; };
+		269D27C212DEBB7E00AF5695 /* mac_os_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mac_os_defs.h; path = ../dim3Common/Headers/mac_os_defs.h; sourceTree = SOURCE_ROOT; };
 		26A562580EF6D0AB00D38FC0 /* net_socket.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = net_socket.c; path = Sources_Network/net_socket.c; sourceTree = "<group>"; };
 		26A562B80EF6D50D00D38FC0 /* net_utility.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = net_utility.c; path = Sources_Network/net_utility.c; sourceTree = "<group>"; };
 		26A60BD411CC1DCF00E9AB33 /* view_draw_debug.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = view_draw_debug.c; path = Sources_View/view_draw_debug.c; sourceTree = "<group>"; };
@@ -793,6 +795,7 @@
 			children = (
 				F5C5EA7E091323C400F94729 /* dim3engine.h */,
 				F50AF8A30885FBA200F261B1 /* os_defs.h */,
+				269D27C212DEBB7E00AF5695 /* mac_os_defs.h */,
 				F5AD54760BBE2121001C7C04 /* baseutility.h */,
 				F5CA4F01051012CF0055C8B8 /* modelutility.h */,
 				F57CAC770527D9E000A68578 /* maputility.h */,
@@ -1547,6 +1550,7 @@
 				268CBC8C0DD2AA6700CF0256 /* network.h in Headers */,
 				26FDC442113A45A6002D987E /* timing.h in Headers */,
 				260C145C129C770800B6D5B5 /* SDLMain.h in Headers */,
+				269D27C312DEBB7E00AF5695 /* mac_os_defs.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
