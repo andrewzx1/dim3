@@ -1,7 +1,7 @@
 /****************************** File *********************************
 
 Module: dim3 Common
-Author: Keith Bauer
+Author: Brian Barnes
  Usage: Specific OS Definitions
 
 ***************************** License ********************************
@@ -29,39 +29,12 @@ and can be sold or given away.
 // includes
 //
 
-#include <endian.h>
-#include <errno.h>
-#include <signal.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/stat.h>
-#include <unistd.h>
-#include <math.h>
-#include <dirent.h>
-
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <sys/poll.h>
-#include <sys/fcntl.h>
-#include <sys/time.h>
-#include <netinet/in.h>
-#include <netinet/tcp.h>
-#include <arpa/inet.h>
-#include <netdb.h>
-
-#include <pthread.h>
-
-#include <GL/glew.h>
-
-#include <zlib.h>
-
 //
 // os flags
 //
 
-#define D3_OS_LINUX			    1
-#undef D3_OPENGL_ES
+#define D3_OS_MAC				1
+#define D3_OPENGL_ES			1
 
 //
 // os specific keys
@@ -79,11 +52,7 @@ and can be sold or given away.
 typedef unsigned char			byte;
 typedef unsigned char*			ptr;
 typedef unsigned char			bool8;
-typedef int						bool;
 typedef int						d3socket;
 
-#define TRUE					1
-#define FALSE					0
 #define D3_NULL_SOCKET			-1
-
 #define closesocket(x)			close(x)
