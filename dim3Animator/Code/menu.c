@@ -469,6 +469,30 @@ bool menu_event_run(int cmd)
 			model_piece_duplicate_animate(state.cur_animate_idx);
 			main_wind_draw();
 			return(TRUE);
+
+		case kCommandAddPoseMoveParticle:
+			if ((state.cur_animate_idx==-1) || (state.cur_animate_pose_move_idx==-1)) return(TRUE);
+			model_piece_add_animation_pose_move_particle(state.cur_animate_idx,state.cur_animate_pose_move_idx);
+			main_wind_draw();
+			return(TRUE);
+
+		case kCommandDeletePoseMoveParticle:
+			if ((state.cur_animate_idx==-1) || (state.cur_animate_pose_move_idx==-1)) return(TRUE);
+			model_piece_delete_animation_pose_move_particle(state.cur_animate_idx,state.cur_animate_pose_move_idx);
+			main_wind_draw();
+			return(TRUE);
+
+		case kCommandAddPoseMoveRing:
+			if ((state.cur_animate_idx==-1) || (state.cur_animate_pose_move_idx==-1)) return(TRUE);
+			model_piece_add_animation_pose_move_ring(state.cur_animate_idx,state.cur_animate_pose_move_idx);
+			main_wind_draw();
+			return(TRUE);
+
+		case kCommandDeletePoseMoveRing:
+			if ((state.cur_animate_idx==-1) || (state.cur_animate_pose_move_idx==-1)) return(TRUE);
+			model_piece_delete_animation_pose_move_ring(state.cur_animate_idx,state.cur_animate_pose_move_idx);
+			main_wind_draw();
+			return(TRUE);
             
 		case kCommandResetTimeAnimate:
 			if (state.cur_animate_idx==-1) return(TRUE);

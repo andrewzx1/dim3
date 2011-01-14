@@ -52,8 +52,8 @@ BEGIN
     END
     POPUP "Mesh"
     BEGIN
-        MENUITEM "Add Mesh...",					500
-        MENUITEM "Duplicate Mesh...",			501
+        MENUITEM "Add Mesh",					500
+        MENUITEM "Duplicate Mesh",				501
 		MENUITEM SEPARATOR
         MENUITEM "Import OBJ...",				502
         MENUITEM "Replace OBJ...",				503
@@ -92,27 +92,33 @@ BEGIN
     END
     POPUP "Bones"
     BEGIN
-        MENUITEM "Add Bone...",					700
+        MENUITEM "Add Bone",					700
         MENUITEM "Set Bone...",					701
  		MENUITEM SEPARATOR
         MENUITEM "Goto Parent Bone",			702
     END
     POPUP "Poses"
     BEGIN
-        MENUITEM "New Pose...",					800
-        MENUITEM "Duplicate Pose...",			801
+        MENUITEM "New Pose",					800
+        MENUITEM "Duplicate Pose",				801
  		MENUITEM SEPARATOR
         MENUITEM "Clear Pose",					802
     END
     POPUP "Animations"
     BEGIN
-        MENUITEM "New Animation...",			900
-        MENUITEM "Duplicate Animation...",		901
+        MENUITEM "New Animation",				900
+        MENUITEM "Duplicate Animation",			901
 		MENUITEM SEPARATOR
-        MENUITEM "Scale Animation Time...",		902
+        MENUITEM "Add Pose Move Particle",		902
+        MENUITEM "Delete Last Particle",		903
+		MENUITEM SEPARATOR
+        MENUITEM "Add Pose Move Ring",			904
+        MENUITEM "Delete Last Ring",			905
+		MENUITEM SEPARATOR
+        MENUITEM "Scale Animation Time...",		906
  		MENUITEM SEPARATOR
-        MENUITEM "Play Animation",				903
-        MENUITEM "Play Blended Animation...",	904
+        MENUITEM "Play Animation",				907
+        MENUITEM "Play Blended Animation...",	908
     END
 END
 
@@ -196,7 +202,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTI
 CAPTION "Mesh Height"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    LTEXT           "Enter a height for the imported OBJ:",IDC_STATIC,7,10,120,9
+    LTEXT           "Enter a height for the imported mesh:",IDC_STATIC,7,10,120,9
     EDITTEXT        IDC_IMPORT_FINISH_HEIGHT,130,8,56,12,ES_AUTOHSCROLL
     DEFPUSHBUTTON   "OK",ID_IMPORT_FINISH_OK,195,7,50,14,WS_GROUP
 END
