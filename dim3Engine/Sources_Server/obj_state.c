@@ -654,7 +654,7 @@ void object_mesh_harm(obj_type *obj)
 		return;
 	}
 	
-	mesh=&map.mesh.meshes[obj->contact.stand_poly.mesh_idx];
+	mesh=&map.mesh.meshes[mesh_idx];
 	if (mesh->harm==0) return;
 	
 		// run the harm
