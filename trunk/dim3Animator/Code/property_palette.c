@@ -247,6 +247,20 @@ void property_palette_click(d3pnt *pnt,bool double_click)
       
 ======================================================= */
 
+void property_palette_add_string_mesh(void *list,int id,char *name,int mesh_idx,bool disabled)
+{
+	list_palette_type			*p_list;
+
+	p_list=(list_palette_type*)list;
+
+	if (mesh_idx==-1) {
+		list_palette_add_string(p_list,id,name,"",FALSE);
+		return;
+	}
+	
+	list_palette_add_string(p_list,id,name,model.meshes[mesh_idx].name,disabled);
+}
+
 void property_palette_add_string_bone(void *list,int id,char *name,int bone_idx,bool disabled)
 {
 	list_palette_type			*p_list;
@@ -366,6 +380,48 @@ void property_palette_pick_particle(char *name)
 	
 	name[0]=0x0;
 	if (idx!=-1) strcpy(name,particle_names[idx]);
+}
+
+void property_palette_pick_ring(char *name)
+{
+	int				idx,ring_count,head_tag,tag;
+	char			path[1024],ring_names[256][name_str_len];
+	
+		// load in the rings
+
+	idx=-1;
+	ring_count=0;
+		
+	file_paths_data(&file_path_setup,path,"Settings","Rings","xml");
+	if (xml_open_file(path)) {
+	
+		head_tag=xml_findrootchild("Rings");
+		if (head_tag!=-1) {
+	
+			tag=xml_findfirstchild("Ring",head_tag);
+		
+			while (tag!=-1) {
+				xml_get_attribute_text(tag,"name",ring_names[ring_count],name_str_len);
+				if (strcmp(ring_names[ring_count],name)==0) idx=ring_count;
+				ring_count++;
+				tag=xml_findnextchild(tag);
+			}
+		}
+		
+		xml_close_file();
+	}
+	
+		// run the dialog
+
+	dialog_property_list_run((char*)ring_names,ring_count,name_str_len,0,FALSE,&idx);
+	
+	name[0]=0x0;
+	if (idx!=-1) strcpy(name,ring_names[idx]);
+}
+
+void property_palette_pick_mesh(int *mesh_idx)
+{
+	dialog_property_list_run((char*)model.meshes,model.nmesh,sizeof(model_mesh_type),(int)offsetof(model_mesh_type,name),TRUE,mesh_idx);
 }
 
 void property_palette_pick_bone(int *bone_idx)

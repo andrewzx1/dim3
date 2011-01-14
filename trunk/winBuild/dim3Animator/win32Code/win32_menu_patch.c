@@ -95,9 +95,13 @@ int				win32_menu_remap[][2]={
 
 					{kCommandNewAnimate,900},
 					{kCommandDupAnimate,901},
-					{kCommandResetTimeAnimate,902},
-					{kCommandPlayAnimate,903},
-					{kCommandPlayBlendAnimate,904},
+					{kCommandAddPoseMoveParticle,902},
+					{kCommandDeletePoseMoveParticle,903},
+					{kCommandAddPoseMoveRing,904},
+					{kCommandDeletePoseMoveRing,905},
+					{kCommandResetTimeAnimate,906},
+					{kCommandPlayAnimate,907},
+					{kCommandPlayBlendAnimate,908},
 					{-1,-1}
 				};
 

@@ -69,10 +69,6 @@ bool dialog_set_vertex_bone_run(int *major_bone_idx,int *minor_bone_idx,float *f
 {
 	return(FALSE);
 }
-bool dialog_animation_settings_run(int animate_idx)
-{
-	return(FALSE);
-}
 bool dialog_play_blend_animation_run(void)
 {
 	return(FALSE);

@@ -274,6 +274,81 @@ void model_piece_delete_animate(int animate_idx)
 
 /* =======================================================
 
+      Add or Delete Animation Pose Move Pieces
+      
+======================================================= */
+
+void model_piece_add_animation_pose_move_particle(int animate_idx,int animate_pose_move_idx)
+{
+	model_animate_type		*animate;
+	model_pose_move_type	*pose_move;
+	model_particle_type		*particle;
+
+	animate=&model.animates[animate_idx];
+	pose_move=&animate->pose_moves[animate_pose_move_idx];
+
+	if (pose_move->particle.count>=max_model_animate_particle) {
+		os_dialog_alert("Add Particle Pose Move","You've reached the particle limit for this animation pose move.");
+		return;
+	}
+
+	particle=&pose_move->particle.particles[pose_move->particle.count];
+	pose_move->particle.count++;
+
+	particle->name[0]=0x0;
+	particle->bone_idx=-1;
+	particle->motion_factor=1.0f;
+	particle->motion=particle->rotate=particle->stick=FALSE;
+	particle->slop.x=particle->slop.y=particle->slop.z=0;
+}
+
+void model_piece_delete_animation_pose_move_particle(int animate_idx,int animate_pose_move_idx)
+{
+	model_animate_type		*animate;
+	model_pose_move_type	*pose_move;
+
+	animate=&model.animates[animate_idx];
+	pose_move=&animate->pose_moves[animate_pose_move_idx];
+
+	if (pose_move->particle.count>0) pose_move->particle.count--;
+}
+
+void model_piece_add_animation_pose_move_ring(int animate_idx,int animate_pose_move_idx)
+{
+	model_animate_type		*animate;
+	model_pose_move_type	*pose_move;
+	model_ring_type			*ring;
+
+	animate=&model.animates[animate_idx];
+	pose_move=&animate->pose_moves[animate_pose_move_idx];
+
+	if (pose_move->ring.count>=max_model_animate_ring) {
+		os_dialog_alert("Add Ring Pose Move","You've reached the ring limit for this animation pose move.");
+		return;
+	}
+
+	ring=&pose_move->ring.rings[pose_move->ring.count];
+	pose_move->ring.count++;
+
+	ring->name[0]=0x0;
+	ring->bone_idx=-1;
+	ring->angle=FALSE;
+	ring->slop.x=ring->slop.y=ring->slop.z=0;
+}
+
+void model_piece_delete_animation_pose_move_ring(int animate_idx,int animate_pose_move_idx)
+{
+	model_animate_type		*animate;
+	model_pose_move_type	*pose_move;
+
+	animate=&model.animates[animate_idx];
+	pose_move=&animate->pose_moves[animate_pose_move_idx];
+
+	if (pose_move->ring.count>0) pose_move->ring.count--;
+}
+
+/* =======================================================
+
       Add or Delete Hit Boxes
       
 ======================================================= */
