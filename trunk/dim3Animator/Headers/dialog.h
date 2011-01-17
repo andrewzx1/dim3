@@ -77,8 +77,6 @@ extern void dialog_about_run(void);
 extern bool dialog_file_new_run(char *title,char *file_name);
 extern bool dialog_file_open_run(char *dialog_name,char *search_path,char *extension,char *required_file_name,char *file_name);
 extern int dialog_import_finish_run(void);
-extern void dialog_set_bone_combo(WindowRef wind,unsigned long sig,int id,int sel_idx);
-extern int dialog_get_bone_combo(WindowRef wind,unsigned long sig,int id);
 extern bool dialog_vertex_settings_run(model_vertex_type *vertex);
 extern bool dialog_set_vertex_bone_run(int *major_bone_idx,int *minor_bone_idx,float *factor);
 extern bool dialog_animation_reset_time_run(int animate_idx);

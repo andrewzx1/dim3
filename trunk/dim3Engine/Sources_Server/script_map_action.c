@@ -36,6 +36,7 @@ extern server_type			server;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
 extern js_type				js;
+extern hud_type				hud;
 
 extern bool game_file_reload_ok(void);
 extern bool game_file_reload(char *err_str);
@@ -45,12 +46,14 @@ JSValueRef js_map_action_set_map_func(JSContextRef cx,JSObjectRef func,JSObjectR
 JSValueRef js_map_action_set_host_map_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_map_action_restart_map_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_map_action_restart_map_from_save_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_map_action_set_simple_save_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 JSStaticFunction	map_action_functions[]={
 							{"setMap",				js_map_action_set_map_func,					kJSPropertyAttributeDontDelete},
 							{"setHostMap",			js_map_action_set_host_map_func,			kJSPropertyAttributeDontDelete},
 							{"restartMap",			js_map_action_restart_map_func,				kJSPropertyAttributeDontDelete},
 							{"restartMapFromSave",	js_map_action_restart_map_from_save_func,	kJSPropertyAttributeDontDelete},
+							{"setSimpleSave",		js_map_action_set_simple_save_func,			kJSPropertyAttributeDontDelete},
 							{0,0,0}};
 
 JSClassRef			map_action_class;
@@ -177,3 +180,28 @@ JSValueRef js_map_action_restart_map_from_save_func(JSContextRef cx,JSObjectRef 
 	return(script_null_to_value(cx));
 }
 
+/* =======================================================
+
+      Map Simple Save Functions
+      
+======================================================= */
+
+JSValueRef js_map_action_set_simple_save_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+{
+	hud_simple_save_type		*save;
+	
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+	
+		// set the simple save
+		
+	simple_save_xml_read();
+		
+	save=&hud.simple_save_list.saves[server.simple_save_idx];
+	
+	save->save_id=script_value_to_int(cx,argv[0]);
+	script_value_to_string(cx,argv[1],save->desc,64);
+	
+	simple_save_xml_write();
+	
+	return(script_null_to_value(cx));
+}

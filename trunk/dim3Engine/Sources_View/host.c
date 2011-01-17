@@ -493,7 +493,7 @@ void host_game(void)
 	
 		// start game
 	
-	if (!game_start(FALSE,skill_medium,err_str)) {
+	if (!game_start(FALSE,skill_medium,0,err_str)) {
 		net_host_game_end();
 		error_setup(err_str,"Hosting Game Canceled");
 		server.next_state=gs_error;

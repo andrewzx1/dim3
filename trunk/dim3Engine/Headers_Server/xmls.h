@@ -56,4 +56,8 @@ extern void read_settings_sound(void);
 extern void read_settings_action(void);
 extern void read_settings_shader(void);
 
+extern void simple_save_xml_read(void);
+extern void simple_save_xml_write(void);
+
+
 

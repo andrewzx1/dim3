@@ -193,7 +193,7 @@ void server_shutdown(void)
       
 ======================================================= */
 
-bool server_game_start(bool in_file_load,int skill,char *err_str)
+bool server_game_start(bool in_file_load,int skill,int simple_save_idx,char *err_str)
 {
 		// initialize lists
 
@@ -204,9 +204,10 @@ bool server_game_start(bool in_file_load,int skill,char *err_str)
 	script_global_initialize_list();
 	timers_initialize_list();
 
-		// setup skill level
+		// setup skill and simple save index
 
 	server.skill=skill;
+	server.simple_save_idx=simple_save_idx;
 	
 		// run game script
 

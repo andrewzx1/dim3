@@ -514,7 +514,7 @@ bool game_file_load(char *file_name,char *err_str)
 	if (!server.game_open) {
 
 		scripts_lock_events();
-		ok=game_start(TRUE,skill_medium,err_str);
+		ok=game_start(TRUE,skill_medium,0,err_str);
 		scripts_unlock_events();
 		
 		if (!ok) {

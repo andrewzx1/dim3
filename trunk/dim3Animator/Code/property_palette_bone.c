@@ -72,8 +72,9 @@ void property_palette_fill_bone(int bone_idx)
 
 void property_palette_click_bone(int bone_idx,int id)
 {
+	int						old_parent_bone_idx;
 	model_bone_type			*bone;
-
+	
 	bone=&model.bones[bone_idx];
 
 	switch (id) {
@@ -91,7 +92,16 @@ void property_palette_click_bone(int bone_idx,int id)
 			break;
 
 		case kBonePropertyParent:
+			old_parent_bone_idx=bone->parent_idx;
 			property_palette_pick_bone(&bone->parent_idx);
+			if (bone->parent_idx==bone_idx) {
+				os_dialog_alert("Parent Bone","Can not set itself as the parent bone.");
+				bone->parent_idx=old_parent_bone_idx;
+			}
+			if (model_check_bone_circular(&model,bone)) {
+				os_dialog_alert("Parent Bone","This parent bone will make a circular bone reference.");
+				bone->parent_idx=old_parent_bone_idx;
+			}			
 			break;
 
 	}
