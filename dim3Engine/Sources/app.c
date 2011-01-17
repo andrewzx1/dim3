@@ -109,7 +109,7 @@ bool app_start(char *err_str)
 		
 	server.state=gs_running;
 		
-	if (!game_start(FALSE,skill_medium,err_str)) {
+	if (!game_start(FALSE,skill_medium,0,err_str)) {
 		view_shutdown();
 		server_shutdown();
 		return(FALSE);

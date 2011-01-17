@@ -104,7 +104,7 @@ and can be sold or given away.
 #define element_table_check_column_size			0.05f
 
 //
-// Gradients
+// gradients
 //
 
 #define element_gradient_factor					0.75f
@@ -218,8 +218,6 @@ typedef struct		{
 
 #define max_chooser_sub_txt						16
 
-#define max_story_page							16
-
 #define max_tint_color							8
 
 #define max_character							32
@@ -239,6 +237,12 @@ typedef struct		{
 #define text_special_spread						4
 
 #define text_special_list_def					{"none","fps","score","place","spread",""}
+
+//
+// simple save spots
+//
+
+#define max_simple_save_spot					5
 
 //
 // chat
@@ -443,7 +447,8 @@ typedef struct		{
 						hud_intro_button_type	button_game_new,button_game_load,button_game_setup,
 												button_game_new_easy,button_game_new_medium,button_game_new_hard,button_game_new_cancel,
 												button_multiplayer_host,button_multiplayer_join,button_multiplayer_setup,
-												button_credit,button_quit;
+												button_credit,button_quit,
+												button_simple_save[max_simple_save_spot];
 					} hud_intro_type;
 
 //
@@ -455,6 +460,19 @@ typedef struct		{
 												map_msec;
 					} hud_fade_type;
 
+//
+// simple save structures
+//
+
+typedef struct		{
+						int						save_id;
+						char					desc[64];
+					} hud_simple_save_type;
+
+typedef struct		{
+						hud_simple_save_type	saves[max_simple_save_spot];
+					} hud_simple_save_list;
+					
 //
 // network structures
 //
@@ -555,6 +573,7 @@ typedef struct		{
 						hud_chat_type			chat;
 						hud_score_type			score;
 						hud_character_type		character;
+						hud_simple_save_list	simple_save_list;
 						hud_net_bots_type		net_bot;
 						hud_net_games_type		net_game;
 						hud_net_options_type	net_option;

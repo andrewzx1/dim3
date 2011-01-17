@@ -27,11 +27,11 @@ and can be sold or given away.
 
 #include "dialog.h"
 
-extern int					dialog_animate_idx;
 extern model_type			model;
 
 #define kAnimateResetTime					FOUR_CHAR_CODE('time')
 
+int							dialog_animate_idx;
 bool						dialog_animate_time_reset_cancel;
 WindowRef					dialog_animate_time_reset_wind;
 

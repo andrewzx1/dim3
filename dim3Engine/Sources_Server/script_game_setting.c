@@ -41,11 +41,13 @@ extern network_setup_type	net_setup;
 JSValueRef js_game_setting_get_type(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_game_setting_get_multiplayer(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_game_setting_get_skill(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_game_setting_get_simple_save_id(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 
 JSStaticValue 		game_setting_props[]={
 							{"type",				js_game_setting_get_type,				NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
 							{"multiplayer",			js_game_setting_get_multiplayer,		NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
 							{"skill",				js_game_setting_get_skill,				NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"simpleSaveId",		js_game_setting_get_simple_save_id,		NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
 							{0,0,0,0}};
 
 JSClassRef			game_setting_class;
@@ -92,5 +94,10 @@ JSValueRef js_game_setting_get_multiplayer(JSContextRef cx,JSObjectRef j_obj,JSS
 JSValueRef js_game_setting_get_skill(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	return(script_int_to_value(cx,server.skill));
+}
+
+JSValueRef js_game_setting_get_simple_save_id(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
+{
+	return(script_int_to_value(cx,hud.simple_save_list.saves[server.simple_save_idx].save_id));
 }
 

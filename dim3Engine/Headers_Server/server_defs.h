@@ -1193,7 +1193,7 @@ typedef struct		{
  
  typedef struct		{
 						int								state,next_state,last_state,
-														skill,player_obj_idx;
+														skill,simple_save_idx,player_obj_idx;
 						bool							game_open,map_open,map_change,skip_media;
 						server_time_type				time;
 						obj_list_type					obj_list;
