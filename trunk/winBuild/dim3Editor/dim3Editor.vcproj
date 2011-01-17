@@ -256,6 +256,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\dim3Editor\Code\launch.c"
+					>
+				</File>
+				<File
 					RelativePath="..\..\dim3Editor\Code\light_maps.c"
 					>
 				</File>

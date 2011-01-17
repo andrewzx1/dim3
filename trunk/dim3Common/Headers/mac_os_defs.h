@@ -82,3 +82,5 @@ typedef int						d3socket;
 
 #define D3_NULL_SOCKET			-1
 #define closesocket(x)			close(x)
+
+#define D3_APP_EXTENSION		"app"

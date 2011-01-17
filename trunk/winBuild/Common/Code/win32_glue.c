@@ -41,6 +41,7 @@ extern HDC				wnd_gl_dc;
 
 HCURSOR					cur_arrow,cur_wait,cur_hand,cur_drag,cur_resize,
 						cur_add,cur_subtract;
+COLORREF				custom_colors[16];
 
 /* =======================================================
 
@@ -50,6 +51,12 @@ HCURSOR					cur_arrow,cur_wait,cur_hand,cur_drag,cur_resize,
 
 void os_glue_start(void)
 {
+	int				n;
+
+		// initial com for shell
+
+	CoInitializeEx(NULL,(COINIT_APARTMENTTHREADED|COINIT_DISABLE_OLE1DDE));
+
 		// load cursors
 
 	cur_arrow=LoadCursor(NULL,IDC_ARROW);
@@ -59,6 +66,12 @@ void os_glue_start(void)
 	cur_resize=LoadCursor(NULL,IDC_SIZEALL);
 	cur_add=LoadCursor(NULL,IDC_CROSS);
 	cur_subtract=LoadCursor(NULL,IDC_NO);
+
+		// custom colors
+
+	for (n=0;n!=16;n++) {
+		custom_colors[n]=RGB(0,0,0);
+	}
 }
 
 void os_glue_end(void)
@@ -72,6 +85,10 @@ void os_glue_end(void)
 	DestroyCursor(cur_resize);
 	DestroyCursor(cur_add);
 	DestroyCursor(cur_subtract);
+
+		// unload com
+
+	CoUninitialize();
 }
 
 /* =======================================================
@@ -408,5 +425,45 @@ bool os_load_file(char *path,char *ext)
 
 void os_pick_color(d3col *col)
 {
-	// supergumba -- need to fill this in
+	CHOOSECOLOR			cc;
+
+	bzero(&cc,sizeof(CHOOSECOLOR));
+	cc.lStructSize=sizeof(CHOOSECOLOR);
+	cc.hwndOwner=wnd;
+	cc.lpCustColors=(LPDWORD)custom_colors;
+	cc.rgbResult=RGB((int)(col->r*255.0f),(int)(col->g*255.0f),(int)(col->b*255.0f));
+	cc.Flags=CC_ANYCOLOR|CC_FULLOPEN|CC_SOLIDCOLOR|CC_RGBINIT;
+
+	if (ChooseColor(&cc)) {
+		col->r=((float)GetRValue(cc.rgbResult))/255.0f;
+		col->g=((float)GetGValue(cc.rgbResult))/255.0f;
+		col->b=((float)GetBValue(cc.rgbResult))/255.0f;
+	}
+}
+
+/* =======================================================
+
+      Launch Process
+      
+======================================================= */
+
+bool os_launch_process(char *path)
+{
+	int			n,len,err;
+	char		*c;
+
+		// we need to flip any / to \
+
+	len=strlen(path);
+	c=path;
+
+	for (n=0;n!=len;n++) {
+		if (*c=='/') *c='\\';
+		c++;
+	}
+
+		// run exe
+
+	err=(int)ShellExecute(wnd,"open",path,NULL,NULL,SW_SHOW);
+	return(err>32);
 }

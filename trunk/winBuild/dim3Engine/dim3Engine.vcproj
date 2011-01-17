@@ -900,6 +900,10 @@
 						/>
 					</FileConfiguration>
 				</File>
+				<File
+					RelativePath="..\..\dim3Engine\Sources_Server\xml_simple_save.c"
+					>
+				</File>
 				<Filter
 					Name="Script API"
 					>

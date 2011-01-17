@@ -25,6 +25,11 @@ and can be sold or given away.
  
 *********************************************************************/
 
+#ifdef D3_PCH
+	#include "dim3editor.h"
+#endif
+
+#include "glue.h"
 #include "interface.h"
 
 extern map_type					map;
@@ -39,6 +44,7 @@ extern file_path_setup_type		file_path_setup;
 
 void launch_engine(void)
 {
+	/*
 	char					path[1024];
 	unsigned char			uc_len;
 	d3pnt					pnt;
@@ -49,7 +55,7 @@ void launch_engine(void)
 	
 		// get path to engine
 		
-	file_paths_base(&file_path_setup,path,setup.engine_name,"app");
+	file_paths_base(&file_path_setup,path,setup.engine_name,D3_APP_EXTENSION);
 
 	if (FSPathMakeRef((unsigned char*)path,&fsref,NULL)!=0) {
 		os_dialog_alert("Launch Engine","Could not find Engine, check engine name in preferences.");
@@ -92,6 +98,7 @@ void launch_engine(void)
 	cf_url=CFURLCreateFromFSRef(kCFAllocatorDefault,&fsref);
 	LSOpenCFURLRef(cf_url,NULL);
 	CFRelease(cf_url);
+	*/
 }
 
 /* =======================================================
@@ -102,6 +109,7 @@ void launch_engine(void)
 
 void launch_map_script_editor(void)
 {
+	/*
 	char					path[1024];
 	CFURLRef				cf_url;
 	FSRef					fsref;
@@ -117,6 +125,7 @@ void launch_map_script_editor(void)
 
 	LSOpenCFURLRef(cf_url,NULL);
 	CFRelease(cf_url);
+	*/
 }
 
 /* =======================================================
@@ -125,15 +134,16 @@ void launch_map_script_editor(void)
       
 ======================================================= */
 
-void launch_spot_script_editor(char *script_name)
+void launch_spot_script_editor(spot_type *spot)
 {
+	/*
 	char					path[1024];
 	CFURLRef				cf_url;
 	FSRef					fsref;
 	
-	if (script_name[0]==0x0) return;
+	if (spot->script[0]==0x0) return;
 		
-	file_paths_data(&file_path_setup,path,"Scripts/Objects",script_name,"js");
+	file_paths_data(&file_path_setup,path,"Scripts/Objects",spot->script,"js");
 	FSPathMakeRef((unsigned char*)path,&fsref,NULL);
 	
 	cf_url=CFURLCreateFromFSRef(kCFAllocatorDefault,&fsref);
@@ -144,4 +154,5 @@ void launch_spot_script_editor(char *script_name)
 	
 	LSOpenCFURLRef(cf_url,NULL);
 	CFRelease(cf_url);
+	*/
 }
