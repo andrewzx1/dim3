@@ -99,3 +99,5 @@ typedef int						socklen_t;
 #define EWOULDBLOCK				WSAEWOULDBLOCK
 
 #define WindowRef				HWND
+
+#define D3_APP_EXTENSION		"exe"

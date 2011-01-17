@@ -37,9 +37,10 @@ and can be sold or given away.
 #define kSpotPropertyName						0
 #define kSpotPropertyType						1
 #define kSpotPropertyScript						2
-#define kSpotPropertySkill						3
-#define kSpotPropertySpawn						4
-#define kSpotPropertyDisplayModel				5
+#define kSpotPropertyScriptEdit					3
+#define kSpotPropertySkill						4
+#define kSpotPropertySpawn						5
+#define kSpotPropertyDisplayModel				6
 
 #define kSpotPropertyParamsStart				100
 #define kSpotPropertyParamsEnd					109
@@ -72,6 +73,7 @@ void property_palette_fill_spot(int spot_idx)
 	list_palette_add_string(&property_palette,kSpotPropertyName,"Name",spot->name,FALSE);
 	list_palette_add_string(&property_palette,kSpotPropertyType,"Type",spot_property_type_list[spot->type],FALSE);
 	list_palette_add_string(&property_palette,kSpotPropertyScript,"Script",spot->script,FALSE);
+	list_palette_add_string(&property_palette,kSpotPropertyScriptEdit,"","[Click to Edit Script]",FALSE);
 	list_palette_add_string(&property_palette,kSpotPropertySkill,"Skill",spot_property_skill_list[spot->skill],FALSE);
 	list_palette_add_string(&property_palette,kSpotPropertySpawn,"Spawn",spot_property_spawn_list[spot->spawn],FALSE);
 	list_palette_add_string(&property_palette,kSpotPropertyDisplayModel,"Model",spot->display_model,FALSE);
@@ -128,10 +130,15 @@ void property_palette_click_spot(int spot_idx,int id)
 			break;
 
 		case kSpotPropertyScript:
+			strcpy(file_name,spot->script);
 			if (dialog_file_open_run("Pick a Script","Scripts/Objects","js",NULL,file_name)) {
 				strncpy(spot->script,file_name,file_str_len);
 				spot->script[file_str_len-1]=0x0;
 			}
+			break;
+
+		case kSpotPropertyScriptEdit:
+			launch_spot_script_editor(spot);
 			break;
 
 		case kSpotPropertySkill:
@@ -143,6 +150,7 @@ void property_palette_click_spot(int spot_idx,int id)
 			break;
 
 		case kSpotPropertyDisplayModel:
+			strcpy(file_name,spot->display_model);
 			if (dialog_file_open_run("Pick a Model","Models",NULL,"Mesh.xml",file_name)) {
 				strncpy(spot->display_model,file_name,name_str_len);
 				spot->script[name_str_len-1]=0x0;

@@ -151,7 +151,7 @@ extern void file_close_map(void);
 
 extern void launch_engine(void);
 extern void launch_map_script_editor(void);
-extern void launch_spot_script_editor(char *script_name);
+extern void launch_spot_script_editor(spot_type *spot);
 
 //
 // light maps

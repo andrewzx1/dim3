@@ -58,12 +58,6 @@ extern int os_win32_menu_lookup(int id);
       
 ======================================================= */
 
-void launch_map_script_editor(void)
-{
-}
-void launch_engine(void)
-{
-}
 void dialog_about_run(void)
 {
 }

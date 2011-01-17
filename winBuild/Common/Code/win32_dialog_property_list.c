@@ -31,6 +31,7 @@ and can be sold or given away.
 	#include "dim3Animator.h"
 #endif
 
+#include "glue.h"
 #include "resource.h"
 #include "win32_dialog.h"
 

@@ -121,6 +121,7 @@ void property_palette_click_scenery(int scenery_idx,int id)
 	switch (id) {
 
 		case kSceneryPropertyModelName:
+			strcpy(file_name,scenery->model_name);
 			if (dialog_file_open_run("Pick a Model","Models",NULL,"Mesh.xml",file_name)) {
 				strncpy(scenery->model_name,file_name,name_str_len);
 				scenery->model_name[name_str_len-1]=0x0;
