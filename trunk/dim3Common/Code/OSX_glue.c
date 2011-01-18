@@ -408,5 +408,23 @@ void os_pick_color(d3col *col)
 	}
 }
 
+/* =======================================================
 
+      Launch Process
+      
+======================================================= */
+
+bool os_launch_process(char *path)
+{
+	FSRef					fsref;
+	CFURLRef				cf_url;
+
+	if (FSPathMakeRef((unsigned char*)path,&fsref,NULL)!=0) return(FALSE);
+	
+	cf_url=CFURLCreateFromFSRef(kCFAllocatorDefault,&fsref);
+	LSOpenCFURLRef(cf_url,NULL);
+	CFRelease(cf_url);
+
+	return(TRUE);
+}
 
