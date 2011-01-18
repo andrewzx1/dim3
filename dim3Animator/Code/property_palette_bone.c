@@ -85,6 +85,7 @@ void property_palette_click_bone(int bone_idx,int id)
 
 		case kBonePropertyPosition:
 			dialog_property_string_run(list_string_value_point,(void*)&bone->pnt,0,0,0);
+			model_calculate_parents(&model);
 			break;
 
 		case kBonePropertyTag:

@@ -44,23 +44,11 @@ extern file_path_setup_type		file_path_setup;
 
 void launch_engine(void)
 {
-	/*
 	char					path[1024];
 	unsigned char			uc_len;
 	d3pnt					pnt;
 	d3ang					ang;
-	CFURLRef				cf_url;
-	FSRef					fsref;
 	FILE					*file;
-	
-		// get path to engine
-		
-	file_paths_base(&file_path_setup,path,setup.engine_name,D3_APP_EXTENSION);
-
-	if (FSPathMakeRef((unsigned char*)path,&fsref,NULL)!=0) {
-		os_dialog_alert("Launch Engine","Could not find Engine, check engine name in preferences.");
-		return;
-    }
 	
 		// ok to save?
 	
@@ -95,10 +83,10 @@ void launch_engine(void)
 	
 		// run engine
 		
-	cf_url=CFURLCreateFromFSRef(kCFAllocatorDefault,&fsref);
-	LSOpenCFURLRef(cf_url,NULL);
-	CFRelease(cf_url);
-	*/
+	file_paths_base(&file_path_setup,path,setup.engine_name,D3_APP_EXTENSION);
+	if (!os_launch_process(path)) {
+		os_dialog_alert("Launch Engine","Could not find Engine, check engine name in preferences.");
+    }
 }
 
 /* =======================================================
@@ -109,23 +97,12 @@ void launch_engine(void)
 
 void launch_map_script_editor(void)
 {
-	/*
 	char					path[1024];
-	CFURLRef				cf_url;
-	FSRef					fsref;
 		
 	file_paths_data(&file_path_setup,path,"Scripts/Courses",map.info.name,"js");
-	FSPathMakeRef((unsigned char*)path,&fsref,NULL);
-	
-	cf_url=CFURLCreateFromFSRef(kCFAllocatorDefault,&fsref);
-	if (cf_url==NULL) {
+	if (!os_launch_process(path)) {
 		os_dialog_alert("Could not locate script file","No script file with this name exists.");
-		return;
-	}
-
-	LSOpenCFURLRef(cf_url,NULL);
-	CFRelease(cf_url);
-	*/
+    }
 }
 
 /* =======================================================
@@ -136,23 +113,12 @@ void launch_map_script_editor(void)
 
 void launch_spot_script_editor(spot_type *spot)
 {
-	/*
 	char					path[1024];
-	CFURLRef				cf_url;
-	FSRef					fsref;
 	
 	if (spot->script[0]==0x0) return;
 		
 	file_paths_data(&file_path_setup,path,"Scripts/Objects",spot->script,"js");
-	FSPathMakeRef((unsigned char*)path,&fsref,NULL);
-	
-	cf_url=CFURLCreateFromFSRef(kCFAllocatorDefault,&fsref);
-	if (cf_url==NULL) {
+	if (!os_launch_process(path)) {
 		os_dialog_alert("Could not locate script file","No script file with this name exists.");
-		return;
-	}
-	
-	LSOpenCFURLRef(cf_url,NULL);
-	CFRelease(cf_url);
-	*/
+    }
 }
