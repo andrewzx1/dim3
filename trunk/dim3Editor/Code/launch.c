@@ -84,7 +84,7 @@ void launch_engine(void)
 		// run engine
 		
 	file_paths_base(&file_path_setup,path,setup.engine_name,D3_APP_EXTENSION);
-	if (!os_launch_process(path)) {
+	if (!os_launch_process(path,FALSE)) {
 		os_dialog_alert("Launch Engine","Could not find Engine, check engine name in preferences.");
     }
 }
@@ -100,7 +100,7 @@ void launch_map_script_editor(void)
 	char					path[1024];
 		
 	file_paths_data(&file_path_setup,path,"Scripts/Courses",map.info.name,"js");
-	if (!os_launch_process(path)) {
+	if (!os_launch_process(path,TRUE)) {
 		os_dialog_alert("Could not locate script file","No script file with this name exists.");
     }
 }
@@ -118,7 +118,7 @@ void launch_spot_script_editor(spot_type *spot)
 	if (spot->script[0]==0x0) return;
 		
 	file_paths_data(&file_path_setup,path,"Scripts/Objects",spot->script,"js");
-	if (!os_launch_process(path)) {
+	if (!os_launch_process(path,TRUE)) {
 		os_dialog_alert("Could not locate script file","No script file with this name exists.");
     }
 }

@@ -87,7 +87,7 @@ bool dialog_file_open_get(HWND diag)
 {
 	HTREEITEM			item;
 	TV_ITEM				info;
-	
+
 	dialog_file_open_file_index=-1;
 
 	item=(HTREEITEM)SendDlgItemMessage(diag,IDC_FILE_OPEN_TREE,TVM_GETNEXTITEM,TVGN_CARET,(LPARAM)0);
@@ -118,6 +118,7 @@ LRESULT CALLBACK dialog_file_open_proc(HWND diag,UINT msg,WPARAM wparam,LPARAM l
 		case WM_INITDIALOG:
 			SetWindowText(diag,dialog_file_open_title);
 			dialog_file_open_set(diag);
+			win32_dialog_enable(diag,IDOK,FALSE);
 			return(TRUE);
 
 		case WM_COMMAND:
@@ -141,9 +142,23 @@ LRESULT CALLBACK dialog_file_open_proc(HWND diag,UINT msg,WPARAM wparam,LPARAM l
 
 			hdr=(LPNMHDR)lparam;
 
-			if ((hdr->idFrom==IDC_FILE_OPEN_TREE) && (hdr->code==NM_DBLCLK)) {
-				if (!dialog_file_open_get(diag)) return(FALSE);
-				EndDialog(diag,0);
+			if (hdr->idFrom==IDC_FILE_OPEN_TREE) {
+
+				if (hdr->code==TVN_SELCHANGED) {
+					if (dialog_file_open_get(diag)) {
+						win32_dialog_enable(diag,IDOK,TRUE);
+					}
+					else {
+						win32_dialog_enable(diag,IDOK,FALSE);
+					}
+					break;
+				}
+
+				if (hdr->code==NM_DBLCLK) {
+					if (!dialog_file_open_get(diag)) return(FALSE);
+					EndDialog(diag,0);
+				}
+
 			}
 
 			break;

@@ -62,6 +62,11 @@ and can be sold or given away.
 #define list_string_value_uv								10
 #define list_string_value_tag								11
 
+#define list_button_none									-1
+#define list_button_edit									0
+#define list_button_plus									1
+#define list_button_minus									2
+
 typedef union		{
 						bool								checkbox;
 						char								str[32];
@@ -69,8 +74,8 @@ typedef union		{
 					} list_palette_item_value_type;
 
 typedef struct		{
-						int									x,y,ctrl_type,
-															id,type,count,idx;
+						int									x,y,ctrl_type,button_type,
+															id,button_id,type,count,idx;
 						bool								selected,disabled;
 						char								name[name_str_len];
 						list_palette_item_value_type		value;
@@ -81,7 +86,7 @@ typedef struct		{
 															item_id,item_type,item_idx,
 															pixel_sz,scroll_page,
 															total_high;
-						bool								push_on;
+						bool								push_on,button_click;
 						char								title[name_str_len];
 						d3rect								box;
 						list_palette_item_type				*items;
@@ -122,7 +127,7 @@ extern void progress_next_title(char *title);
 // list palette
 //
 
-extern void list_palette_initialize(void);
+extern void list_palette_initialize(char *app_name);
 extern void list_palette_shutdown(void);
 extern void list_palette_list_initialize(list_palette_type *list,char *title);
 extern void list_palette_list_shutdown(list_palette_type *list);
@@ -133,6 +138,7 @@ extern void list_palette_add_item(list_palette_type *list,int piece_type,int pie
 extern void list_palette_add_color(list_palette_type *list,int piece_type,int piece_idx,d3col *col,bool selected,bool disabled);
 extern void list_palette_add_string_selectable(list_palette_type *list,int id,char *name,char *value,bool selected,bool disabled);
 extern void list_palette_add_string(list_palette_type *list,int id,char *name,char *value,bool disabled);
+extern void list_palette_add_string_edit(list_palette_type *list,int id,int button_id,char *name,char *value,bool disabled);
 extern void list_palette_add_string_int(list_palette_type *list,int id,char *name,int value,bool disabled);
 extern void list_palette_add_string_float(list_palette_type *list,int id,char *name,float value,bool disabled);
 extern void list_palette_add_checkbox(list_palette_type *list,int id,char *name,bool value,bool disabled);
