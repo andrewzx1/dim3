@@ -447,10 +447,10 @@ void os_pick_color(d3col *col)
       
 ======================================================= */
 
-bool os_launch_process(char *path)
+bool os_launch_process(char *path,bool text_editor)
 {
 	int			n,len,err;
-	char		*c;
+	char		*c,path2[1024];
 
 		// we need to flip any / to \
 
@@ -462,8 +462,15 @@ bool os_launch_process(char *path)
 		c++;
 	}
 
-		// run exe
+		// text edit or run link
 
-	err=(int)ShellExecute(wnd,"open",path,NULL,NULL,SW_SHOW);
+	if (text_editor) {
+		sprintf(path2,"\"%s\"",path);
+		err=(int)ShellExecute(wnd,"open","wordpad.exe",path2,NULL,SW_SHOW);
+	}
+	else {
+		err=(int)ShellExecute(wnd,"open",path,NULL,NULL,SW_SHOW);
+	}
+
 	return(err>32);
 }

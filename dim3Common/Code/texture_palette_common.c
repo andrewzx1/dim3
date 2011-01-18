@@ -175,13 +175,13 @@ void texture_palette_draw(texture_type *txt_list)
 			glBindTexture(GL_TEXTURE_2D,texture->frames[0].bitmap.gl_id);
 
 			glBegin(GL_QUADS);
-			glTexCoord2f(0,0);
+			glTexCoord2f(0.0f,0.0f);
 			glVertex2i(x,ty);
-			glTexCoord2f(1,0);
+			glTexCoord2f(1.0f,0.0f);
 			glVertex2i((x+txt_palette_pixel_sz),ty);
-			glTexCoord2f(1,1);
+			glTexCoord2f(1.0f,1.0f);
 			glVertex2i((x+txt_palette_pixel_sz),by);
-			glTexCoord2f(0,1);
+			glTexCoord2f(0.0f,1.0f);
 			glVertex2i(x,by);
 			glEnd();
 		}

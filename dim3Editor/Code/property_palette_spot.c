@@ -72,8 +72,7 @@ void property_palette_fill_spot(int spot_idx)
 	list_palette_add_header(&property_palette,0,"Spot Settings");
 	list_palette_add_string(&property_palette,kSpotPropertyName,"Name",spot->name,FALSE);
 	list_palette_add_string(&property_palette,kSpotPropertyType,"Type",spot_property_type_list[spot->type],FALSE);
-	list_palette_add_string(&property_palette,kSpotPropertyScript,"Script",spot->script,FALSE);
-	list_palette_add_string(&property_palette,kSpotPropertyScriptEdit,"","[Click to Edit Script]",FALSE);
+	list_palette_add_string_edit(&property_palette,kSpotPropertyScript,kSpotPropertyScriptEdit,"Script",spot->script,FALSE);
 	list_palette_add_string(&property_palette,kSpotPropertySkill,"Skill",spot_property_skill_list[spot->skill],FALSE);
 	list_palette_add_string(&property_palette,kSpotPropertySpawn,"Spawn",spot_property_spawn_list[spot->spawn],FALSE);
 	list_palette_add_string(&property_palette,kSpotPropertyDisplayModel,"Model",spot->display_model,FALSE);

@@ -38,7 +38,10 @@ and can be sold or given away.
 #include "interface.h"
 #include "dialog.h"
 
+extern file_path_setup_type		file_path_setup;
+
 bool							list_palette_open;
+bitmap_type						list_bitmaps[3];
 
 /* =======================================================
 
@@ -46,13 +49,34 @@ bool							list_palette_open;
       
 ======================================================= */
 
-void list_palette_initialize(void)
+void list_palette_initialize(char *app_name)
 {
+	int				n;
+	char			sub_path[1024],path[1024];
+	char			btn_names[3][32]={"Edit","Plus","Minus"};
+
+		// start open
+
 	list_palette_open=TRUE;
+
+		// load buttons
+
+	os_get_support_file_path(sub_path,app_name);
+	strcat(sub_path,"/Lists");
+		
+	for (n=0;n!=3;n++) {
+		file_paths_app(&file_path_setup,path,sub_path,btn_names[n],"png");
+		bitmap_open(&list_bitmaps[n],path,anisotropic_mode_none,mipmap_mode_none,texture_quality_mode_high,FALSE,FALSE,FALSE,FALSE,FALSE);
+	}
 }
 
 void list_palette_shutdown(void)
 {
+	int				n;
+
+	for (n=0;n!=3;n++) {
+		bitmap_close(&list_bitmaps[n]);
+	}
 }
 
 void list_palette_list_initialize(list_palette_type *list,char *title)
@@ -95,6 +119,7 @@ list_palette_item_type* list_palette_create_item(list_palette_type *list,int ctr
 	list->item_count++;
 
 	item->ctrl_type=ctrl_type;
+	item->button_type=list_button_none;
 
 	item->x=list->box.lx+(list_palette_border_sz+4);
 	if (ctrl_type!=list_item_ctrl_header) item->x+=10;
@@ -203,6 +228,21 @@ void list_palette_add_string_selectable(list_palette_type *list,int id,char *nam
 void list_palette_add_string(list_palette_type *list,int id,char *name,char *value,bool disabled)
 {
 	list_palette_add_string_selectable(list,id,name,value,FALSE,disabled);
+}
+
+void list_palette_add_string_edit(list_palette_type *list,int id,int button_id,char *name,char *value,bool disabled)
+{
+	list_palette_item_type		*item;
+
+		// add item
+
+	list_palette_add_string_selectable(list,id,name,value,FALSE,disabled);
+
+		// put in the button
+
+	item=&list->items[list->item_count-1];
+	item->button_type=list_button_edit;
+	item->button_id=button_id;
 }
 
 void list_palette_add_string_int(list_palette_type *list,int id,char *name,int value,bool disabled)
@@ -430,16 +470,61 @@ void list_palette_draw_item_check_box(list_palette_type *list,list_palette_item_
 
 void list_palette_draw_item_string(list_palette_type *list,list_palette_item_type *item)
 {
+	int							rx;
 	d3col						col;
 
+	rx=list->box.rx-(list_palette_scroll_wid+4);
+	if (item->button_type!=list_button_none) rx-=(list_item_font_high+2);
+
 	if (!item->disabled) {
-		text_draw_right((list->box.rx-(list_palette_scroll_wid+4)),item->y,list_item_font_size,NULL,item->value.str);
+		text_draw_right(rx,item->y,list_item_font_size,NULL,item->value.str);
 		return;
 	}
 
 	col.r=col.g=0.0f;
 	col.b=1.0f;
-	text_draw_right((list->box.rx-(list_palette_scroll_wid+4)),item->y,list_item_font_size,&col,item->value.str);
+	text_draw_right(rx,item->y,list_item_font_size,&col,item->value.str);
+}
+
+void list_palette_draw_item_button(list_palette_type *list,int idx)
+{
+	int						lx,rx,ty,by;
+	list_palette_item_type *item;
+
+	item=&list->items[idx];
+	if (item->button_type==list_button_none) return;
+
+	rx=list->box.rx-(list_palette_scroll_wid+4);
+	lx=rx-list_item_font_high;
+	ty=item->y-list_item_font_high;
+	by=item->y;
+
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_NOTEQUAL,0);
+	
+	if ((list->push_on) && (list->push_idx==idx) && (list->button_click)) {
+		glColor4f(0.75f,0.75f,0.75f,1.0f);
+	}
+	else {
+		glColor4f(1.0f,1.0f,1.0f,1.0f);
+	}
+
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D,list_bitmaps[item->button_type].gl_id);
+
+	glBegin(GL_QUADS);
+	glTexCoord2f(0.0f,0.0f);
+	glVertex2i(lx,ty);
+	glTexCoord2f(1.0f,0.0f);
+	glVertex2i(rx,ty);
+	glTexCoord2f(1.0f,1.0f);
+	glVertex2i(rx,by);
+	glTexCoord2f(0.0f,1.0f);
+	glVertex2i(lx,by);
+	glEnd();
+	
+	glDisable(GL_TEXTURE_2D);
+	glDisable(GL_ALPHA_TEST);
 }
 
 /* =======================================================
@@ -506,6 +591,7 @@ void list_palette_draw_item(list_palette_type *list,int idx)
 		case list_item_ctrl_header:
 		case list_item_ctrl_text:
 			text_draw(item->x,item->y,list_item_font_size,NULL,item->name);
+			list_palette_draw_item_button(list,idx);
 			break;
 
 			// color
@@ -520,6 +606,7 @@ void list_palette_draw_item(list_palette_type *list,int idx)
 		case list_item_ctrl_string:
 			text_draw(item->x,item->y,list_item_font_size,NULL,item->name);
 			list_palette_draw_item_string(list,item);
+			list_palette_draw_item_button(list,idx);
 			break;
 
 			// checkbox
@@ -827,7 +914,13 @@ bool list_palette_click_item(list_palette_type *list,int item_idx)
 		
 	list->item_type=item->type;
 	list->item_idx=item->idx;
-	list->item_id=item->id;
+
+	if (!list->button_click) {
+		list->item_id=item->id;
+	}
+	else {
+		list->item_id=item->button_id;
+	}
 
 	return(TRUE);
 }
@@ -899,6 +992,18 @@ bool list_palette_click(list_palette_type *list,d3pnt *pnt,bool double_click)
 
 	item_idx=((pnt->y-list_title_high)+(list->scroll_page*list_item_scroll_size))/list_item_font_high;
 	if ((item_idx<0) || (item_idx>=list->item_count)) return(FALSE);
-	
+
+		// is there a button?
+
+	list->button_click=FALSE;
+
+	if (list->items[item_idx].button_type!=list_button_none) {
+		if (pnt->x>=(((list->box.rx-list->box.lx)-list_palette_scroll_wid)-list_item_font_high)) {
+			list->button_click=TRUE;
+		}
+	}
+
+		// run the click
+
 	return(list_palette_click_item(list,item_idx));
 }

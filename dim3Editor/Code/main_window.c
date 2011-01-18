@@ -55,8 +55,7 @@ void main_wind_initialize(void)
 	text_initialize();
 	
 	tool_palette_initialize("Editor");
-	
-	list_palette_initialize();
+	list_palette_initialize("Editor");
 	item_palette_initialize();
 	property_palette_initialize();
 

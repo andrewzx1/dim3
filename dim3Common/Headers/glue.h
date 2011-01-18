@@ -66,5 +66,5 @@ extern bool os_load_file(char *path,char *ext);
 
 extern void os_pick_color(d3col *col);
 
-extern bool os_launch_process(char *path);
+extern bool os_launch_process(char *path,bool text_editor);
 
