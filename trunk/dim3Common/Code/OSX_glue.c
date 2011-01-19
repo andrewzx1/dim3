@@ -414,7 +414,7 @@ void os_pick_color(d3col *col)
       
 ======================================================= */
 
-bool os_launch_process(char *path)
+bool os_launch_process(char *path,bool text_editor)
 {
 	FSRef					fsref;
 	CFURLRef				cf_url;

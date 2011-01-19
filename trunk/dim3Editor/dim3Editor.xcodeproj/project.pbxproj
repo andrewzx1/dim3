@@ -28,6 +28,9 @@
 		264D965E12921024005039CD /* OSX_main.c in Sources */ = {isa = PBXBuildFile; fileRef = 264D965D12921024005039CD /* OSX_main.c */; };
 		265AB84712835C9E00F3F965 /* item_palette.c in Sources */ = {isa = PBXBuildFile; fileRef = 265AB84612835C9E00F3F965 /* item_palette.c */; };
 		266B1D2D126E5F02006CC1E9 /* auto_generate_utility.c in Sources */ = {isa = PBXBuildFile; fileRef = 266B1D2C126E5F02006CC1E9 /* auto_generate_utility.c */; };
+		266DDE6D12E6714A004DA282 /* Edit.png in Copy (Lists Icons) */ = {isa = PBXBuildFile; fileRef = 266DDE5312E670B3004DA282 /* Edit.png */; };
+		266DDE6E12E6714A004DA282 /* Minus.png in Copy (Lists Icons) */ = {isa = PBXBuildFile; fileRef = 266DDE5412E670B3004DA282 /* Minus.png */; };
+		266DDE6F12E6714A004DA282 /* Plus.png in Copy (Lists Icons) */ = {isa = PBXBuildFile; fileRef = 266DDE5512E670B3004DA282 /* Plus.png */; };
 		26772F810EBE8A6600F9E241 /* dialog_reposition.c in Sources */ = {isa = PBXBuildFile; fileRef = 26772F800EBE8A6600F9E241 /* dialog_reposition.c */; };
 		26791D430E4D626700AAD058 /* dialog_grid_mesh.c in Sources */ = {isa = PBXBuildFile; fileRef = 26791D420E4D626700AAD058 /* dialog_grid_mesh.c */; };
 		267FA93612C014F20098B4B8 /* property_palette_map.c in Sources */ = {isa = PBXBuildFile; fileRef = 267FA93512C014F20098B4B8 /* property_palette_map.c */; };
@@ -166,6 +169,19 @@
 /* End PBXBuildRule section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		266DDE7812E67150004DA282 /* Copy (Lists Icons) */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = Lists;
+			dstSubfolderSpec = 7;
+			files = (
+				266DDE6D12E6714A004DA282 /* Edit.png in Copy (Lists Icons) */,
+				266DDE6E12E6714A004DA282 /* Minus.png in Copy (Lists Icons) */,
+				266DDE6F12E6714A004DA282 /* Plus.png in Copy (Lists Icons) */,
+			);
+			name = "Copy (Lists Icons)";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		26EE4765126961F9001D0025 /* Copy (Data) */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -336,6 +352,9 @@
 		26636B1A125A8EE20090A321 /* Tool Tesselate Mesh.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool Tesselate Mesh.png"; sourceTree = "<group>"; };
 		26636B1B125A8EE20090A321 /* Tool Toggle Mode.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool Toggle Mode.png"; sourceTree = "<group>"; };
 		266B1D2C126E5F02006CC1E9 /* auto_generate_utility.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = auto_generate_utility.c; path = Code/auto_generate_utility.c; sourceTree = "<group>"; };
+		266DDE5312E670B3004DA282 /* Edit.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Edit.png; sourceTree = "<group>"; };
+		266DDE5412E670B3004DA282 /* Minus.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Minus.png; sourceTree = "<group>"; };
+		266DDE5512E670B3004DA282 /* Plus.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Plus.png; sourceTree = "<group>"; };
 		26772F800EBE8A6600F9E241 /* dialog_reposition.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_reposition.c; path = Code/dialog_reposition.c; sourceTree = "<group>"; };
 		26791D420E4D626700AAD058 /* dialog_grid_mesh.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_grid_mesh.c; path = Code/dialog_grid_mesh.c; sourceTree = "<group>"; };
 		267FA93512C014F20098B4B8 /* property_palette_map.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_map.c; path = Code/property_palette_map.c; sourceTree = "<group>"; };
@@ -577,6 +596,16 @@
 			path = Tools;
 			sourceTree = "<group>";
 		};
+		266DDE5212E670B3004DA282 /* Lists */ = {
+			isa = PBXGroup;
+			children = (
+				266DDE5312E670B3004DA282 /* Edit.png */,
+				266DDE5412E670B3004DA282 /* Minus.png */,
+				266DDE5512E670B3004DA282 /* Plus.png */,
+			);
+			path = Lists;
+			sourceTree = "<group>";
+		};
 		26EE4755126961AF001D0025 /* Data */ = {
 			isa = PBXGroup;
 			children = (
@@ -649,6 +678,7 @@
 			children = (
 				26636B02125A8EE20090A321 /* Tools */,
 				26636ADA125A8ED10090A321 /* Items */,
+				266DDE5212E670B3004DA282 /* Lists */,
 			);
 			path = Icons;
 			sourceTree = "<group>";
@@ -763,6 +793,7 @@
 				F522DC530BBC726B00DFF256 /* Copy (Defaults) */,
 				F522DC770BBC810E00DFF256 /* Copy (Items Icons) */,
 				26F95ECA125AD24D0016127D /* Copy (Tools Icons) */,
+				266DDE7812E67150004DA282 /* Copy (Lists Icons) */,
 				26EE4765126961F9001D0025 /* Copy (Data) */,
 			);
 			buildRules = (
@@ -920,8 +951,7 @@
 		F5DB0C540856A994005A7CB7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1)";
-				ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1 = "ppc i386";
+				ARCHS = i386;
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
 				DEPLOYMENT_POSTPROCESSING = YES;

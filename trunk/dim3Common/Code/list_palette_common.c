@@ -494,10 +494,10 @@ void list_palette_draw_item_button(list_palette_type *list,int idx)
 	item=&list->items[idx];
 	if (item->button_type==list_button_none) return;
 
-	rx=list->box.rx-(list_palette_scroll_wid+4);
-	lx=rx-list_item_font_high;
-	ty=item->y-list_item_font_high;
-	by=item->y;
+	rx=list->box.rx-(list_palette_scroll_wid+1);
+	lx=rx-16;
+	ty=(item->y-list_item_font_high)+1;
+	by=ty+16;
 
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_NOTEQUAL,0);
