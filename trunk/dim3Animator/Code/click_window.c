@@ -471,7 +471,9 @@ bool drag_bone_model_wind(d3pnt *start_pnt)
 	
 			// select as current bone
 			
+		state.cur_item=item_bone;
 		state.cur_bone_idx=k;
+		item_palette_scroll_into_view(item_bone,state.cur_bone_idx);
 
 		main_wind_draw();
 

@@ -575,7 +575,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>317093282.093319</real>
+	<real>317101366.60814399</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -590,7 +590,6 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>2625B73B12E675A200F51669</string>
 		<string>2625B73C12E675A200F51669</string>
 		<string>2625B73D12E675A200F51669</string>
 		<string>1C78EAAD065D492600B07095</string>
