@@ -387,18 +387,10 @@ void gl_shader_set_light_variables(shader_type *shader,bool map_shader,bool is_c
 	view_light_spot_type			*lspot;
 	shader_cached_var_light_loc		*loc_light;
 	shader_current_var_light_value	*cur_light;
-
-		// if model shader, set diffuse
-
-	if (!map_shader) {
-		glUniform3fARB(shader->var_locs.dim3AmbientColor,1.0f,1.0f,1.0f);
-
-
-	}
 	
 		// if in core and no lights,
 		// skip all this as core shaders ignore lights
-		
+
 	if ((is_core) && (light_list->nlight==0)) return;
 	
 		// have lights changed?
@@ -424,7 +416,7 @@ void gl_shader_set_light_variables(shader_type *shader,bool map_shader,bool is_c
 	for (n=0;n!=light_list->nlight;n++) {
 		shader->var_values.light_idx[n]=light_list->light_idx[n];
 	}
-	
+
 	shader->var_values.nlight=light_list->nlight;
 	
 		// core shaders ignore lights outside their

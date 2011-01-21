@@ -424,6 +424,7 @@ char* gl_core_model_shader_build_frag(int nlight,bool fog,bool bump,bool spec)
 	strcat(buf,"{\n");
 	
 	strcat(buf,"float att,dist;\n");
+	strcat(buf,"float minDiffuse=(dim3AmbientColor.r+dim3AmbientColor.g+dim3AmbientColor.b)*0.33;\n");
 	strcat(buf,"vec3 ambient=dim3AmbientColor;\n");
 	
 		// the texture map
@@ -480,6 +481,10 @@ char* gl_core_model_shader_build_frag(int nlight,bool fog,bool bump,bool spec)
 		// it's dimmed in dark areas
 		
 	if (spec) strcat(buf,"spec=min(spec,1.0)*((ambient.r+ambient.g+ambient.b)*0.33);\n");
+		
+		// the diffuse can't be more than the ambient
+		
+	strcat(buf,"diffuse=max(diffuse,minDiffuse);\n");
 
 		// output the fragment
 
@@ -490,8 +495,6 @@ char* gl_core_model_shader_build_frag(int nlight,bool fog,bool bump,bool spec)
 	if (bump) strcat(buf,"*bump)");
 	if (spec) strcat(buf,"+spec)");
 	strcat(buf,"*diffuse)*dim3TintColor;\n");
-
-	sprintf(strchr(buf,0),"frag=min(frag,(dim3AmbientColor*%.2f));\n",gl_diffuse_ambient_factor);	// diffuse is clamped by a percentage of the ambient
 	
 	if (!fog) {
 		strcat(buf,"gl_FragColor.rgb=frag;\n");

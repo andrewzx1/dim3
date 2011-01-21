@@ -496,14 +496,14 @@ void list_palette_draw_item_button(list_palette_type *list,int idx)
 
 	rx=list->box.rx-(list_palette_scroll_wid+1);
 	lx=rx-16;
-	ty=(item->y-list_item_font_high)+1;
+	ty=item->y-list_item_font_high;
 	by=ty+16;
 
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_NOTEQUAL,0);
 	
 	if ((list->push_on) && (list->push_idx==idx) && (list->button_click)) {
-		glColor4f(0.75f,0.75f,0.75f,1.0f);
+		glColor4f(0.6f,0.6f,0.6f,1.0f);
 	}
 	else {
 		glColor4f(1.0f,1.0f,1.0f,1.0f);
@@ -567,7 +567,12 @@ void list_palette_draw_item(list_palette_type *list,int idx)
 			selected=item->selected;
 		}
 		else {
-			selected=(idx==list->push_idx);
+			if (list->button_click) {
+				selected=FALSE;
+			}
+			else {
+				selected=(idx==list->push_idx);
+			}
 		}
 
 		if (selected) {
@@ -870,6 +875,7 @@ void list_palette_scroll_item_into_view(list_palette_type *list,int item_type,in
 
 bool list_palette_click_item(list_palette_type *list,int item_idx)
 {
+	bool					out_box;
 	d3pnt					pt;
 	list_palette_item_type	*item;
 
@@ -887,7 +893,21 @@ bool list_palette_click_item(list_palette_type *list,int item_idx)
 	main_wind_draw();
 
 	while (!os_track_mouse_location(&pt,NULL)) {
-		if ((pt.x<list->box.lx) || (pt.x>=(list->box.rx-list_palette_scroll_wid)) || (pt.y<(item->y-list_item_font_high)) || (pt.y>=item->y)) {
+	
+		out_box=FALSE;
+		out_box=out_box||(pt.x>=(list->box.rx-list_palette_scroll_wid));
+		out_box=out_box||(pt.y<(item->y-list_item_font_high));
+		out_box=out_box||(pt.y>=item->y);
+		
+	
+		if (!list->button_click) {
+			out_box=out_box||(pt.x<list->box.lx);
+		}
+		else {
+			out_box=out_box||(pt.x<(((list->box.rx-list->box.lx)-list_palette_scroll_wid)-list_item_font_high));
+		}
+		
+		if (out_box) {
 			if (list->push_idx!=-1) {
 				list->push_idx=-1;
 				main_wind_draw();
