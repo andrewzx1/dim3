@@ -101,6 +101,9 @@ extern void item_palette_click(d3pnt *pnt,bool double_click);
 
 extern void property_palette_fill_texture(int texture_idx);
 extern void property_palette_fill_map(void);
+extern void property_palette_fill_cinema(int cinema_idx);
+extern void property_palette_fill_group(int group_idx);
+extern void property_palette_fill_movement(int movement_idx);
 extern void property_palette_fill_mesh(int mesh_idx,int poly_idx);
 extern void property_palette_fill_liquid(int liq_idx);
 extern void property_palette_fill_spot(int spot_idx);
@@ -112,6 +115,9 @@ extern void property_palette_fill_node(int node_idx);
 
 extern void property_palette_click_texture(int texture_idx,int id);
 extern void property_palette_click_map(int id);
+extern void property_palette_click_cinema(int cinema_idx,int id);
+extern void property_palette_click_group(int group_idx,int id);
+extern void property_palette_click_movement(int movement_idx,int id);
 extern void property_palette_click_mesh(int mesh_idx,int poly_idx,int id);
 extern void property_palette_click_liquid(int liq_idx,int id);
 extern void property_palette_click_spot(int spot_idx,int id);

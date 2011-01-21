@@ -66,24 +66,29 @@ and can be sold or given away.
 #define kAnimationPoseMovePropertyShakeSize					23
 #define kAnimationPoseMovePropertyShakeLife					24
 
+#define kAnimationPoseMovePropertyParticleAdd				30
+#define kAnimationPoseMovePropertyRingAdd					31
+
 #define kAnimationPoseMovePropertyParticleBase				1000
 #define kAnimationPoseMovePropertyParticleMult				100
 
-#define kAnimationPoseMovePropertyParticleName				0
-#define kAnimationPoseMovePropertyParticleBone				1
-#define kAnimationPoseMovePropertyParticleMotionFactor		2
-#define kAnimationPoseMovePropertyParticleMotion			3
-#define kAnimationPoseMovePropertyParticleRotate			4
-#define kAnimationPoseMovePropertyParticleStick				5
-#define kAnimationPoseMovePropertyParticleSlop				6
+#define kAnimationPoseMovePropertyParticleDelete			0
+#define kAnimationPoseMovePropertyParticleName				1
+#define kAnimationPoseMovePropertyParticleBone				2
+#define kAnimationPoseMovePropertyParticleMotionFactor		3
+#define kAnimationPoseMovePropertyParticleMotion			4
+#define kAnimationPoseMovePropertyParticleRotate			5
+#define kAnimationPoseMovePropertyParticleStick				6
+#define kAnimationPoseMovePropertyParticleSlop				7
 
 #define kAnimationPoseMovePropertyRingBase					2000
 #define kAnimationPoseMovePropertyRingMult					100
 
-#define kAnimationPoseMovePropertyRingName					0
-#define kAnimationPoseMovePropertyRingBone					1
-#define kAnimationPoseMovePropertyRingAngle					2
-#define kAnimationPoseMovePropertyRingSlop					3
+#define kAnimationPoseMovePropertyRingDelete				0
+#define kAnimationPoseMovePropertyRingName					1
+#define kAnimationPoseMovePropertyRingBone					2
+#define kAnimationPoseMovePropertyRingAngle					3
+#define kAnimationPoseMovePropertyRingSlop					4
 
 extern model_type				model;
 extern animator_state_type		state;
@@ -164,11 +169,13 @@ void alt_property_palette_fill_animate_pose_move(int animate_idx,int pose_move_i
 
 		// particles
 
+	list_palette_add_header_button(&alt_property_palette,kAnimationPoseMovePropertyParticleAdd,"Animate Pose Particles",list_button_plus);
+
 	for (n=0;n!=pose_move->particle.count;n++) {
 		id_base=kAnimationPoseMovePropertyParticleBase+(kAnimationPoseMovePropertyParticleMult*n);
 
 		sprintf(str,"Animate Pose Particle %d",n);
-		list_palette_add_header(&alt_property_palette,0,str);
+		list_palette_add_header_button(&alt_property_palette,(id_base+kAnimationPoseMovePropertyParticleDelete),str,list_button_minus);
 		list_palette_add_string(&alt_property_palette,(id_base+kAnimationPoseMovePropertyParticleName),"Name",pose_move->particle.particles[n].name,FALSE);
 		property_palette_add_string_bone(&alt_property_palette,(id_base+kAnimationPoseMovePropertyParticleBone),"Bone",pose_move->particle.particles[n].bone_idx,FALSE);
 		list_palette_add_string_float(&alt_property_palette,(id_base+kAnimationPoseMovePropertyParticleMotionFactor),"Motion Factor",pose_move->particle.particles[n].motion_factor,FALSE);
@@ -180,11 +187,13 @@ void alt_property_palette_fill_animate_pose_move(int animate_idx,int pose_move_i
 
 		// rings
 
+	list_palette_add_header_button(&alt_property_palette,kAnimationPoseMovePropertyRingAdd,"Animate Pose Rings",list_button_plus);
+
 	for (n=0;n!=pose_move->ring.count;n++) {
 		id_base=kAnimationPoseMovePropertyRingBase+(kAnimationPoseMovePropertyRingMult*n);
 
 		sprintf(str,"Animate Pose Ring %d",n);
-		list_palette_add_header(&alt_property_palette,0,str);
+		list_palette_add_header_button(&alt_property_palette,(id_base+kAnimationPoseMovePropertyRingDelete),str,list_button_minus);
 		list_palette_add_string(&alt_property_palette,(id_base+kAnimationPoseMovePropertyRingName),"Name",pose_move->ring.rings[n].name,FALSE);
 		property_palette_add_string_bone(&alt_property_palette,(id_base+kAnimationPoseMovePropertyRingBone),"Bone",pose_move->ring.rings[n].bone_idx,FALSE);
 		list_palette_add_checkbox(&alt_property_palette,(id_base+kAnimationPoseMovePropertyRingAngle),"Follow Model Angle",pose_move->ring.rings[n].angle,FALSE);
@@ -211,6 +220,12 @@ void alt_property_palette_click_animate_pose_move(int animate_idx,int pose_move_
 
 		// particles
 
+	if (id==kAnimationPoseMovePropertyParticleAdd) {
+		model_piece_add_animation_pose_move_particle(animate_idx,pose_move_idx);
+		main_wind_draw();
+		return;
+	}
+
 	if ((id>=kAnimationPoseMovePropertyParticleBase) && (id<kAnimationPoseMovePropertyRingBase)) {
 
 		id-=kAnimationPoseMovePropertyParticleBase;
@@ -218,6 +233,10 @@ void alt_property_palette_click_animate_pose_move(int animate_idx,int pose_move_
 		id=id%kAnimationPoseMovePropertyParticleMult;
 
 		switch (id) {
+
+			case kAnimationPoseMovePropertyParticleDelete:
+				model_piece_delete_animation_pose_move_particle(animate_idx,pose_move_idx,idx);
+				break;
 
 			case kAnimationPoseMovePropertyParticleName:
 				property_palette_pick_particle(pose_move->particle.particles[idx].name);
@@ -255,6 +274,12 @@ void alt_property_palette_click_animate_pose_move(int animate_idx,int pose_move_
 
 		// rings
 
+	if (id==kAnimationPoseMovePropertyRingAdd) {
+		model_piece_add_animation_pose_move_ring(animate_idx,pose_move_idx);
+		main_wind_draw();
+		return;
+	}
+
 	if (id>=kAnimationPoseMovePropertyRingBase) {
 
 		id-=kAnimationPoseMovePropertyRingBase;
@@ -262,6 +287,10 @@ void alt_property_palette_click_animate_pose_move(int animate_idx,int pose_move_
 		id=id%kAnimationPoseMovePropertyRingMult;
 
 		switch (id) {
+
+			case kAnimationPoseMovePropertyRingDelete:
+				model_piece_delete_animation_pose_move_ring(animate_idx,pose_move_idx,idx);
+				break;
 		
 			case kAnimationPoseMovePropertyRingName:
 				property_palette_pick_ring(pose_move->ring.rings[idx].name);

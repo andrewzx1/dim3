@@ -65,7 +65,8 @@ void property_palette_fill_animation(int animate_idx)
 	list_palette_add_header(&property_palette,0,"Animation Settings");
 	list_palette_add_checkbox(&property_palette,kAnimationPropertyLoop,"Looping",animate->loop,FALSE);
 	
-	list_palette_add_header_count(&property_palette,0,"Animation Poses",animate->npose_move);
+	list_palette_add_header_button(&property_palette,0,"Animation Poses",list_button_plus);
+
 	for (n=0;n!=animate->npose_move;n++) {
 		strcpy(str,model.poses[animate->pose_moves[n].pose_idx].name);
 		if (n==animate->loop_start) strcat(str," (loop start)");

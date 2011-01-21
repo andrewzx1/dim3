@@ -109,16 +109,10 @@ BEGIN
         MENUITEM "New Animation",				900
         MENUITEM "Duplicate Animation",			901
 		MENUITEM SEPARATOR
-        MENUITEM "Add Pose Move Particle",		902
-        MENUITEM "Delete Last Particle",		903
-		MENUITEM SEPARATOR
-        MENUITEM "Add Pose Move Ring",			904
-        MENUITEM "Delete Last Ring",			905
-		MENUITEM SEPARATOR
-        MENUITEM "Scale Animation Time...",		906
+        MENUITEM "Scale Animation Time...",		902
  		MENUITEM SEPARATOR
-        MENUITEM "Play Animation",				907
-        MENUITEM "Play Blended Animation...",	908
+        MENUITEM "Play Animation",				903
+        MENUITEM "Play Blended Animation...",	904
     END
 END
 
