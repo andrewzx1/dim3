@@ -30,6 +30,7 @@ and can be sold or given away.
 #endif
 
 #include "scripts.h"
+#include "xmls.h"
 
 extern map_type				map;
 extern server_type			server;

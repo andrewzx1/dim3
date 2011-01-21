@@ -302,15 +302,19 @@ void model_piece_add_animation_pose_move_particle(int animate_idx,int animate_po
 	particle->slop.x=particle->slop.y=particle->slop.z=0;
 }
 
-void model_piece_delete_animation_pose_move_particle(int animate_idx,int animate_pose_move_idx)
+void model_piece_delete_animation_pose_move_particle(int animate_idx,int animate_pose_move_idx,int idx)
 {
+	int						sz;
 	model_animate_type		*animate;
 	model_pose_move_type	*pose_move;
 
 	animate=&model.animates[animate_idx];
 	pose_move=&animate->pose_moves[animate_pose_move_idx];
 
-	if (pose_move->particle.count>0) pose_move->particle.count--;
+	sz=sizeof(model_pose_move_particle_type)*(pose_move->particle.count-(idx+1));
+	if (sz>0) memmove(&pose_move->particle.particles[idx],&pose_move->particle.particles[idx+1],sz);
+
+	pose_move->particle.count--;
 }
 
 void model_piece_add_animation_pose_move_ring(int animate_idx,int animate_pose_move_idx)
@@ -336,15 +340,19 @@ void model_piece_add_animation_pose_move_ring(int animate_idx,int animate_pose_m
 	ring->slop.x=ring->slop.y=ring->slop.z=0;
 }
 
-void model_piece_delete_animation_pose_move_ring(int animate_idx,int animate_pose_move_idx)
+void model_piece_delete_animation_pose_move_ring(int animate_idx,int animate_pose_move_idx,int idx)
 {
+	int						sz;
 	model_animate_type		*animate;
 	model_pose_move_type	*pose_move;
 
 	animate=&model.animates[animate_idx];
 	pose_move=&animate->pose_moves[animate_pose_move_idx];
 
-	if (pose_move->ring.count>0) pose_move->ring.count--;
+	sz=sizeof(model_pose_move_ring_type)*(pose_move->ring.count-(idx+1));
+	if (sz>0) memmove(&pose_move->ring.rings[idx],&pose_move->ring.rings[idx+1],sz);
+
+	pose_move->ring.count--;
 }
 
 /* =======================================================

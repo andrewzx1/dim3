@@ -383,6 +383,14 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\dim3Editor\Code\property_palette_cinema.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Editor\Code\property_palette_group.c"
+						>
+					</File>
+					<File
 						RelativePath="..\..\dim3Editor\Code\property_palette_light.c"
 						>
 					</File>
@@ -396,6 +404,10 @@
 					</File>
 					<File
 						RelativePath="..\..\dim3Editor\Code\property_palette_mesh.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Editor\Code\property_palette_movement.c"
 						>
 					</File>
 					<File

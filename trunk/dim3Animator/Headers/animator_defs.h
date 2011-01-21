@@ -138,10 +138,6 @@ and can be sold or given away.
 
 #define kCommandNewAnimate				FOUR_CHAR_CODE('nani')
 #define kCommandDupAnimate				FOUR_CHAR_CODE('dani')
-#define kCommandAddPoseMoveParticle		FOUR_CHAR_CODE('pmnp')
-#define kCommandDeletePoseMoveParticle	FOUR_CHAR_CODE('pmdp')
-#define kCommandAddPoseMoveRing			FOUR_CHAR_CODE('pmnr')
-#define kCommandDeletePoseMoveRing		FOUR_CHAR_CODE('pmdr')
 #define kCommandResetTimeAnimate		FOUR_CHAR_CODE('artm')
 #define kCommandPlayAnimate				FOUR_CHAR_CODE('plya')
 #define kCommandPlayBlendAnimate		FOUR_CHAR_CODE('plyb')
@@ -157,6 +153,9 @@ and can be sold or given away.
 #define item_neutral_pose				4
 #define item_bone						5
 #define item_hit_box					6
+
+#define item_pose_move_particle			10
+#define item_pose_move_ring				11
 
 //
 // Draw Types

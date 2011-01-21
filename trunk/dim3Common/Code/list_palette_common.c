@@ -164,6 +164,24 @@ void list_palette_add_header_count(list_palette_type *list,int piece_type,char *
 	strcpy(item->name,name);
 }
 
+void list_palette_add_header_button(list_palette_type *list,int id,char *name,int button_type)
+{
+	list_palette_item_type		*item;
+
+	item=list_palette_create_item(list,list_item_ctrl_header);
+
+	item->type=-1;
+	item->idx=-1;
+	item->id=-1;
+	item->button_id=id;
+	item->count=-1;
+	item->button_type=button_type;
+
+	item->selected=FALSE;
+
+	strcpy(item->name,name);
+}
+
 void list_palette_add_item(list_palette_type *list,int piece_type,int piece_idx,char *name,bool selected,bool disabled)
 {
 	list_palette_item_type		*item;
@@ -899,12 +917,11 @@ bool list_palette_click_item(list_palette_type *list,int item_idx)
 		out_box=out_box||(pt.y<(item->y-list_item_font_high));
 		out_box=out_box||(pt.y>=item->y);
 		
-	
 		if (!list->button_click) {
 			out_box=out_box||(pt.x<list->box.lx);
 		}
 		else {
-			out_box=out_box||(pt.x<(((list->box.rx-list->box.lx)-list_palette_scroll_wid)-list_item_font_high));
+			out_box=out_box||(pt.x<((list->box.rx-list_palette_scroll_wid)-list_item_font_high));
 		}
 		
 		if (out_box) {
@@ -1021,6 +1038,13 @@ bool list_palette_click(list_palette_type *list,d3pnt *pnt,bool double_click)
 		if (pnt->x>=(((list->box.rx-list->box.lx)-list_palette_scroll_wid)-list_item_font_high)) {
 			list->button_click=TRUE;
 		}
+	}
+
+		// if a header, only click if there's
+		// a button
+
+	if (list->items[item_idx].ctrl_type==list_item_ctrl_header) {
+		if (!list->button_click) return(FALSE);
 	}
 
 		// run the click

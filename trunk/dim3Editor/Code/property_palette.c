@@ -41,6 +41,7 @@ extern file_path_setup_type		file_path_setup;
 
 extern int						tool_palette_pixel_sz,txt_palette_pixel_sz;
 extern bool						list_palette_open;
+extern list_palette_type		item_palette;
 
 int								prop_last_sel_type;
 list_palette_type				property_palette;
@@ -113,6 +114,29 @@ void property_palette_fill(void)
 
 		// fill in the properties for
 		// the currently selected item
+
+		// special check for non-selection property lists
+
+	switch (item_palette.item_type) {
+
+		case cinema_piece:
+			list_palette_set_title(&property_palette,"Cinema Properties");
+			property_palette_fill_cinema(item_palette.item_idx);
+			return;
+
+		case group_piece:
+			list_palette_set_title(&property_palette,"Group Properties");
+			property_palette_fill_group(item_palette.item_idx);
+			return;
+
+		case movement_piece:
+			list_palette_set_title(&property_palette,"Movement Properties");
+			property_palette_fill_movement(item_palette.item_idx);
+			return;
+
+	}
+
+		// check selection
 
 	main_idx=-1;
 	
@@ -261,6 +285,24 @@ void property_palette_click(d3pnt *pnt,bool double_click)
 	if (state.texture_edit_idx!=-1) {
 		property_palette_click_texture(state.texture_edit_idx,property_palette.item_id);
 		return;
+	}
+
+		// special check for non-selection property lists
+
+	switch (item_palette.item_type) {
+
+		case cinema_piece:
+			property_palette_click_cinema(item_palette.item_idx,property_palette.item_id);
+			return;
+
+		case group_piece:
+			property_palette_click_group(item_palette.item_idx,property_palette.item_id);
+			return;
+
+		case movement_piece:
+			property_palette_click_movement(item_palette.item_idx,property_palette.item_id);
+			return;
+
 	}
 
 		// get the selection

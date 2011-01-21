@@ -172,9 +172,9 @@ extern void model_piece_add_animate(void);
 extern void model_piece_duplicate_animate(int animate_idx);
 extern void model_piece_delete_animate(int animate_idx);
 extern void model_piece_add_animation_pose_move_particle(int animate_idx,int animate_pose_move_idx);
-extern void model_piece_delete_animation_pose_move_particle(int animate_idx,int animate_pose_move_idx);
+extern void model_piece_delete_animation_pose_move_particle(int animate_idx,int animate_pose_move_idx,int idx);
 extern void model_piece_add_animation_pose_move_ring(int animate_idx,int animate_pose_move_idx);
-extern void model_piece_delete_animation_pose_move_ring(int animate_idx,int animate_pose_move_idx);
+extern void model_piece_delete_animation_pose_move_ring(int animate_idx,int animate_pose_move_idx,int idx);
 extern void model_piece_add_hit_box(void);
 extern void model_piece_delete_hit_box(int hit_box_idx);
 

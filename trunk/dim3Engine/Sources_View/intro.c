@@ -32,6 +32,7 @@ and can be sold or given away.
 #include "interfaces.h"
 #include "sounds.h"
 #include "inputs.h"
+#include "xmls.h"
 
 // intro elements
 
