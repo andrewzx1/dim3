@@ -259,6 +259,9 @@ extern void piece_create_sound(void);
 extern void piece_create_particle(void);
 extern void piece_create_node(void);
 extern void piece_create_liquid(void);
+extern void piece_create_cinema(void);
+extern void piece_create_group(void);
+extern void piece_create_movement(void);
 
 //
 // piece mesh routines

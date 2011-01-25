@@ -93,16 +93,6 @@ extern bool dialog_file_new_run(char *title,char *file_name);
 extern bool dialog_file_open_run(char *title,char *search_path,char *extension,char *required_file_name,char *file_name);
 
 //
-// map dialogs
-//
-
-extern int dialog_group_settings_run(int group_idx);
-extern int dialog_movement_settings_run(int movement_idx);
-extern bool dialog_movement_move_settings_run(movement_move_type *move);
-extern int dialog_cinema_settings_run(int cinema_idx);
-extern bool dialog_cinema_action_settings_run(map_cinema_action_type *action);
-
-//
 // piece dialogs
 //
 

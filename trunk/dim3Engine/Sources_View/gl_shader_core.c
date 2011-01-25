@@ -230,7 +230,7 @@ char* gl_core_map_shader_build_frag(int nlight,bool fog,bool light_map,bool bump
 		if (spec) {
 			sprintf(strchr(buf,0),"  specHalfVector=normalize(normalize(eyeVector)+normalize(lightVertexVector[%d]));\n",n);
 			strcat(buf,"  specFactor=max(dot(bumpMap,normalize(specHalfVector)),0.0);\n");
-			strcat(buf,"  spec+=(specMap*pow(specFactor,dim3ShineFactor));\n");
+			strcat(buf,"  spec+=((specMap*pow(specFactor,dim3ShineFactor))*att);\n");
 		}
 		
 		strcat(buf," }\n");
@@ -240,11 +240,6 @@ char* gl_core_map_shader_build_frag(int nlight,bool fog,bool light_map,bool bump
 		// finish the bump by clamping it
 		
 	if (bump) strcat(buf,"bump=clamp(bump,0.0,1.0);\n");
-	
-		// finish the spec by making sure
-		// it's dimmed in dark areas
-		
-	if (spec) strcat(buf,"spec=min(spec,1.0)*((ambient.r+ambient.g+ambient.b)*0.33);\n");
 
 		// output the fragment
 
@@ -467,7 +462,7 @@ char* gl_core_model_shader_build_frag(int nlight,bool fog,bool bump,bool spec)
 		if (spec) {
 			sprintf(strchr(buf,0)," specHalfVector=normalize(normalize(eyeVector)+normalize(lightVertexVector[%d]));\n",n);
 			strcat(buf," specFactor=max(dot(bumpMap,normalize(specHalfVector)),0.0);\n");
-			strcat(buf," spec+=(specMap*pow(specFactor,dim3ShineFactor));\n");
+			strcat(buf," spec+=((specMap*pow(specFactor,dim3ShineFactor))*att);\n");
 		}
 		
 		strcat(buf,"}\n");
@@ -476,11 +471,6 @@ char* gl_core_model_shader_build_frag(int nlight,bool fog,bool bump,bool spec)
 		// finish the bump by clamping it
 		
 	if (bump) strcat(buf,"bump=clamp(bump,0.0,1.0);\n");
-	
-		// finish the spec by making sure
-		// it's dimmed in dark areas
-		
-	if (spec) strcat(buf,"spec=min(spec,1.0)*((ambient.r+ambient.g+ambient.b)*0.33);\n");
 		
 		// the diffuse can't be more than the ambient
 		

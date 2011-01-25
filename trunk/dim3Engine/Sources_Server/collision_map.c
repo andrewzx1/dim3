@@ -324,6 +324,10 @@ bool collide_circle_check_mesh(d3pnt *circle_pnt,int radius,d3pnt *min,d3pnt *ma
 	if ((mesh->box.min.x>=max->x) || (mesh->box.max.x<=min->x)) return(FALSE);
 	if ((mesh->box.min.y>=max->y) || (mesh->box.max.y<=min->y)) return(FALSE);
 	if ((mesh->box.min.z>=max->z) || (mesh->box.max.z<=min->z)) return(FALSE);
+	
+		// check pass through
+		
+	if (mesh->flag.pass_through) return(FALSE);
 
 		// check wall polys
 					

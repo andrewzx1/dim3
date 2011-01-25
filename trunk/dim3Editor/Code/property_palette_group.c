@@ -36,6 +36,8 @@ and can be sold or given away.
 
 #define kGroupPropertyName					0
 
+#define kGroupPropertyClear					10
+
 extern map_type					map;
 extern editor_state_type		state;
 extern editor_setup_type		setup;
@@ -84,6 +86,9 @@ void property_palette_fill_group(int group_idx)
 	list_palette_add_header(&property_palette,0,"Group Info");
 	list_palette_add_string_int(&property_palette,-1,"Mesh Count",mesh_cnt,TRUE);
 	list_palette_add_string_int(&property_palette,-1,"Liquid Count",liq_cnt,TRUE);
+	
+	list_palette_add_header(&property_palette,0,"Group Clear");
+	list_palette_add_string_selectable_button(&property_palette,kGroupPropertyClear,list_button_set,kGroupPropertyClear,"Clear Group Mesh and Liquids",NULL,FALSE,FALSE);
 }
 
 /* =======================================================
@@ -97,11 +102,15 @@ void property_palette_click_group(int group_idx,int id)
 	group_type			*group;
 
 	group=&map.group.groups[group_idx];
-
+		
 	switch (id) {
 
 		case kGroupPropertyName:
 			dialog_property_string_run(list_string_value_string,(void*)group->name,name_str_len,0,0);
+			break;
+			
+		case kGroupPropertyClear:
+			group_clear(group_idx,FALSE);
 			break;
 
 	}

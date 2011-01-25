@@ -39,6 +39,7 @@
 		263AB1CF12D8345600954777 /* property_palette_model.c in Sources */ = {isa = PBXBuildFile; fileRef = 263AB1C812D8345600954777 /* property_palette_model.c */; };
 		263AB1D012D8345600954777 /* property_palette_pose.c in Sources */ = {isa = PBXBuildFile; fileRef = 263AB1C912D8345600954777 /* property_palette_pose.c */; };
 		263AB1D112D8345600954777 /* property_palette_texture.c in Sources */ = {isa = PBXBuildFile; fileRef = 263AB1CA12D8345600954777 /* property_palette_texture.c */; };
+		264286DF12EE88ED0078851E /* Set.png in Copy (List Icons) */ = {isa = PBXBuildFile; fileRef = 264286DD12EE88DD0078851E /* Set.png */; };
 		265552AE128B744E00662A94 /* dialog_normal.c in Sources */ = {isa = PBXBuildFile; fileRef = 265552AD128B744E00662A94 /* dialog_normal.c */; };
 		2677B8EB12DBB5280068C921 /* alt_property_palette.c in Sources */ = {isa = PBXBuildFile; fileRef = 2677B8EA12DBB5280068C921 /* alt_property_palette.c */; };
 		269AF83E12887DEF001344EC /* model_picker.c in Sources */ = {isa = PBXBuildFile; fileRef = 269AF83D12887DEF001344EC /* model_picker.c */; };
@@ -109,6 +110,7 @@
 				2625B77212E689B500F51669 /* Edit.png in Copy (List Icons) */,
 				2625B77312E689B500F51669 /* Minus.png in Copy (List Icons) */,
 				2625B77412E689B500F51669 /* Plus.png in Copy (List Icons) */,
+				264286DF12EE88ED0078851E /* Set.png in Copy (List Icons) */,
 			);
 			name = "Copy (List Icons)";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -202,6 +204,7 @@
 		263AB1C812D8345600954777 /* property_palette_model.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_model.c; path = Code/property_palette_model.c; sourceTree = "<group>"; };
 		263AB1C912D8345600954777 /* property_palette_pose.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_pose.c; path = Code/property_palette_pose.c; sourceTree = "<group>"; };
 		263AB1CA12D8345600954777 /* property_palette_texture.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_texture.c; path = Code/property_palette_texture.c; sourceTree = "<group>"; };
+		264286DD12EE88DD0078851E /* Set.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Set.png; sourceTree = "<group>"; };
 		265552AD128B744E00662A94 /* dialog_normal.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_normal.c; path = Code/dialog_normal.c; sourceTree = "<group>"; };
 		2677B8EA12DBB5280068C921 /* alt_property_palette.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = alt_property_palette.c; path = Code/alt_property_palette.c; sourceTree = "<group>"; };
 		269AF83D12887DEF001344EC /* model_picker.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = model_picker.c; path = Code/model_picker.c; sourceTree = "<group>"; };
@@ -304,24 +307,6 @@
 			isa = PBXGroup;
 			children = (
 				261CE8E212D02A9A00D1D8BF /* main_window.c */,
-				26C5F10C12613790000B0F9E /* tool_palette.c */,
-				26CF62EF126BF0F8002DCC2A /* tool_palette_common.c */,
-				F54B62DA0C4030A8005CB612 /* texture_palette.c */,
-				26EE498D126B87A4001D0025 /* texture_palette_common.c */,
-				262C397612D026A500A94FEE /* list_palette_common.c */,
-				262C395512D025F700A94FEE /* item_palette.c */,
-				262C395612D025F700A94FEE /* property_palette.c */,
-				26CAEC7812D675C500310691 /* property_utility_common.c */,
-				263AB1C812D8345600954777 /* property_palette_model.c */,
-				263AB1CA12D8345600954777 /* property_palette_texture.c */,
-				263AB1C712D8345600954777 /* property_palette_mesh.c */,
-				263AB1C412D8345600954777 /* property_palette_animation.c */,
-				263AB1C912D8345600954777 /* property_palette_pose.c */,
-				263AB1C512D8345600954777 /* property_palette_bone.c */,
-				263AB1C612D8345600954777 /* property_palette_hit_box.c */,
-				2677B8EA12DBB5280068C921 /* alt_property_palette.c */,
-				26C9371412DD1896005C0708 /* alt_property_palette_pose_move.c */,
-				26C9371312DD1896005C0708 /* alt_property_palette_bone_move.c */,
 				26CAEC7912D675C500310691 /* texture_edit_common.c */,
 				262C380112CFA5AE00A94FEE /* text_common.c */,
 				262C380012CFA5A100A94FEE /* progress_common.c */,
@@ -388,6 +373,7 @@
 			isa = PBXGroup;
 			children = (
 				0123D84A00C09EE17F000001 /* Windows */,
+				26E4678312EB4CBF00867C53 /* Palettes */,
 				0123D84900C09EE17F000001 /* Draw */,
 				261F12870ED3D01600A8A0D8 /* Model */,
 				0123D84B00C09EE17F000001 /* Import */,
@@ -436,6 +422,7 @@
 				2625B75E12E6897000F51669 /* Edit.png */,
 				2625B75F12E6897000F51669 /* Minus.png */,
 				2625B76012E6897000F51669 /* Plus.png */,
+				264286DD12EE88DD0078851E /* Set.png */,
 			);
 			path = Lists;
 			sourceTree = "<group>";
@@ -475,6 +462,31 @@
 				2625B75012E6896500F51669 /* Tool Textured.png */,
 			);
 			name = Tools;
+			sourceTree = "<group>";
+		};
+		26E4678312EB4CBF00867C53 /* Palettes */ = {
+			isa = PBXGroup;
+			children = (
+				26C5F10C12613790000B0F9E /* tool_palette.c */,
+				26CF62EF126BF0F8002DCC2A /* tool_palette_common.c */,
+				F54B62DA0C4030A8005CB612 /* texture_palette.c */,
+				26EE498D126B87A4001D0025 /* texture_palette_common.c */,
+				262C397612D026A500A94FEE /* list_palette_common.c */,
+				262C395512D025F700A94FEE /* item_palette.c */,
+				262C395612D025F700A94FEE /* property_palette.c */,
+				26CAEC7812D675C500310691 /* property_utility_common.c */,
+				263AB1C812D8345600954777 /* property_palette_model.c */,
+				263AB1CA12D8345600954777 /* property_palette_texture.c */,
+				263AB1C712D8345600954777 /* property_palette_mesh.c */,
+				263AB1C412D8345600954777 /* property_palette_animation.c */,
+				263AB1C912D8345600954777 /* property_palette_pose.c */,
+				263AB1C512D8345600954777 /* property_palette_bone.c */,
+				263AB1C612D8345600954777 /* property_palette_hit_box.c */,
+				2677B8EA12DBB5280068C921 /* alt_property_palette.c */,
+				26C9371412DD1896005C0708 /* alt_property_palette_pose_move.c */,
+				26C9371312DD1896005C0708 /* alt_property_palette_bone_move.c */,
+			);
+			name = Palettes;
 			sourceTree = "<group>";
 		};
 		F5D97E130857E203000BB6A3 /* Dialogs */ = {

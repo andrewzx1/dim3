@@ -175,7 +175,7 @@ void property_palette_fill_map(void)
 	list_palette_add_string_float(&property_palette,kMapPropertyGravityMaxPower,"Gravity Max Power",map.settings.gravity_max_power,FALSE);
 	list_palette_add_string_float(&property_palette,kMapPropertyGravityMaxSpeed,"Gravity Max Speed",map.settings.gravity_max_speed,FALSE);
 	list_palette_add_string_float(&property_palette,kMapPropertyResistance,"Resistance",map.settings.resistance,FALSE);
-	list_palette_add_checkbox(&property_palette,kMapPropertyNeverCull,"Never Cull",map.settings.never_cull,FALSE);
+	list_palette_add_checkbox(&property_palette,kMapPropertyNeverCull,"Never Cull By Normals",map.settings.never_cull,FALSE);
 	list_palette_add_checkbox(&property_palette,kMapPropertyDisableShaders,"Disable Shaders",map.settings.no_shaders,FALSE);
 	list_palette_add_string(&property_palette,kMapPropertyNetworkGameList,"Net Game List","...",FALSE);
 

@@ -37,7 +37,10 @@ and can be sold or given away.
 #define kAnimationPropertyName					0
 #define kAnimationPropertyLoop					1
 
+#define kAnimationPropertyPoseAdd				10
+
 #define kAnimationPropertyPoseMove				100
+#define kAnimationPropertyPoseMoveDelete		500
 
 extern model_type				model;
 extern animator_state_type		state;
@@ -65,13 +68,13 @@ void property_palette_fill_animation(int animate_idx)
 	list_palette_add_header(&property_palette,0,"Animation Settings");
 	list_palette_add_checkbox(&property_palette,kAnimationPropertyLoop,"Looping",animate->loop,FALSE);
 	
-	list_palette_add_header_button(&property_palette,0,"Animation Poses",list_button_plus);
+	list_palette_add_header_button(&property_palette,kAnimationPropertyPoseAdd,"Animation Poses",list_button_plus);
 
 	for (n=0;n!=animate->npose_move;n++) {
 		strcpy(str,model.poses[animate->pose_moves[n].pose_idx].name);
 		if (n==animate->loop_start) strcat(str," (loop start)");
 		if (n==animate->loop_end) strcat(str," (loop end)");
-		list_palette_add_string_selectable(&property_palette,(kAnimationPropertyPoseMove+n),str,NULL,((state.cur_animate_idx=animate_idx) && (state.cur_animate_pose_move_idx==n)),FALSE);
+		list_palette_add_string_selectable_button(&property_palette,(kAnimationPropertyPoseMove+n),list_button_minus,(kAnimationPropertyPoseMoveDelete+n),str,NULL,((state.cur_animate_idx=animate_idx) && (state.cur_animate_pose_move_idx==n)),FALSE);
 	}
 }
 
@@ -89,15 +92,32 @@ void property_palette_click_animation(int animate_idx,int id)
 	
 		// pose moves
 		
-	if (id>=kAnimationPropertyPoseMove) {
+	if ((id>=kAnimationPropertyPoseMove) && (id<kAnimationPropertyPoseMoveDelete)) {
 		state.cur_animate_pose_move_idx=id-kAnimationPropertyPoseMove;
 		main_wind_draw();
 		return;
 	}
+	
+		// pose move delete
+		
+	if (id>=kAnimationPropertyPoseMoveDelete) {
+		state.cur_animate_pose_move_idx=-1;
+		model_animate_pose_delete(&model,animate_idx,(id-kAnimationPropertyPoseMoveDelete));
+		main_wind_draw();
+		return;
+	}
+	
+		// pose move add
+		
+	if (id==kAnimationPropertyPoseAdd) {
+		state.cur_animate_pose_move_idx=model_animate_pose_insert(&model,animate_idx,state.cur_animate_pose_move_idx,0);
+		main_wind_draw();
+		return;
+	}
+	
+		// regular click
 
 	state.cur_animate_pose_move_idx=-1;
-	
-		// regular animation settings
 
 	switch (id) {
 

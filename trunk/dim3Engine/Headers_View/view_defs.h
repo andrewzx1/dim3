@@ -32,7 +32,7 @@ and can be sold or given away.
 #define max_view_render_item								5120
 
 #define max_light_spot										128				// maximum number of lights in a scene
-#define max_shader_light									3				// maximum number of lights passed to a shader
+#define max_shader_light									4				// maximum number of lights passed to a shader
 
 #define join_info_max_players								24				// needs to reflect host_max_remote_count in network_defs.h
 

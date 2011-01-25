@@ -41,7 +41,7 @@ and can be sold or given away.
 extern file_path_setup_type		file_path_setup;
 
 bool							list_palette_open;
-bitmap_type						list_bitmaps[3];
+bitmap_type						list_bitmaps[4];
 
 /* =======================================================
 
@@ -53,7 +53,7 @@ void list_palette_initialize(char *app_name)
 {
 	int				n;
 	char			sub_path[1024],path[1024];
-	char			btn_names[3][32]={"Edit","Plus","Minus"};
+	char			btn_names[4][32]={"Edit","Plus","Minus","Set"};
 
 		// start open
 
@@ -64,7 +64,7 @@ void list_palette_initialize(char *app_name)
 	os_get_support_file_path(sub_path,app_name);
 	strcat(sub_path,"/Lists");
 		
-	for (n=0;n!=3;n++) {
+	for (n=0;n!=4;n++) {
 		file_paths_app(&file_path_setup,path,sub_path,btn_names[n],"png");
 		bitmap_open(&list_bitmaps[n],path,anisotropic_mode_none,mipmap_mode_none,texture_quality_mode_high,FALSE,FALSE,FALSE,FALSE,FALSE);
 	}
@@ -74,7 +74,7 @@ void list_palette_shutdown(void)
 {
 	int				n;
 
-	for (n=0;n!=3;n++) {
+	for (n=0;n!=4;n++) {
 		bitmap_close(&list_bitmaps[n]);
 	}
 }
@@ -243,24 +243,24 @@ void list_palette_add_string_selectable(list_palette_type *list,int id,char *nam
 	}
 }
 
-void list_palette_add_string(list_palette_type *list,int id,char *name,char *value,bool disabled)
-{
-	list_palette_add_string_selectable(list,id,name,value,FALSE,disabled);
-}
-
-void list_palette_add_string_edit(list_palette_type *list,int id,int button_id,char *name,char *value,bool disabled)
+void list_palette_add_string_selectable_button(list_palette_type *list,int id,int button_type,int button_id,char *name,char *value,bool selected,bool disabled)
 {
 	list_palette_item_type		*item;
 
 		// add item
 
-	list_palette_add_string_selectable(list,id,name,value,FALSE,disabled);
+	list_palette_add_string_selectable(list,id,name,value,selected,disabled);
 
 		// put in the button
 
 	item=&list->items[list->item_count-1];
-	item->button_type=list_button_edit;
+	item->button_type=button_type;
 	item->button_id=button_id;
+}
+
+void list_palette_add_string(list_palette_type *list,int id,char *name,char *value,bool disabled)
+{
+	list_palette_add_string_selectable(list,id,name,value,FALSE,disabled);
 }
 
 void list_palette_add_string_int(list_palette_type *list,int id,char *name,int value,bool disabled)
@@ -1040,7 +1040,7 @@ bool list_palette_click(list_palette_type *list,d3pnt *pnt,bool double_click)
 		}
 	}
 
-		// if a header, only click if there's
+		// if a header or an id of -1, only click if there's
 		// a button
 
 	if (list->items[item_idx].ctrl_type==list_item_ctrl_header) {

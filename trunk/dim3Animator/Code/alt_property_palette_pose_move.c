@@ -130,8 +130,8 @@ void alt_property_palette_fill_animate_pose_move(int animate_idx,int pose_move_i
 		// loop
 
 	list_palette_add_header(&alt_property_palette,0,"Animate Pose Loop");
-	list_palette_add_string(&alt_property_palette,kAnimatePoseMovePropertyLoopStart,"Set Pose As Loop Start",NULL,FALSE);
-	list_palette_add_string(&alt_property_palette,kAnimatePoseMovePropertyLoopEnd,"Set Pose As Loop End",NULL,FALSE);
+	list_palette_add_string_selectable_button(&alt_property_palette,kAnimatePoseMovePropertyLoopStart,list_button_set,kAnimatePoseMovePropertyLoopStart,"Set Pose As Loop Start",NULL,FALSE,FALSE);
+	list_palette_add_string_selectable_button(&alt_property_palette,kAnimatePoseMovePropertyLoopEnd,list_button_set,kAnimatePoseMovePropertyLoopEnd,"Set Pose As Loop End",NULL,FALSE,FALSE);
 
 		// sound
 
