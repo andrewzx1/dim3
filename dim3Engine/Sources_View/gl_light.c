@@ -197,8 +197,8 @@ inline bool gl_lights_direction_ok(double x,double y,double z,view_light_spot_ty
 
 int gl_lights_setup_box(d3pnt *mid,d3pnt *min,d3pnt *max,int max_list_idx,int *list_idx)
 {
-	int							n,k,low_idx,count;
-	double						d,dx,dy,dz,low_dist,
+	int							n,k,far_idx,count;
+	double						d,dx,dy,dz,far_dist,
 								list_dist[max_map_light_cache_index];
 	view_light_spot_type		*lspot;
 
@@ -231,19 +231,19 @@ int gl_lights_setup_box(d3pnt *mid,d3pnt *min,d3pnt *max,int max_list_idx,int *l
 			count++;
 		}
 		else {
-			low_idx=0;
-			low_dist=list_dist[0];
+			far_idx=0;
+			far_dist=list_dist[0];
 
 			for (k=1;k<count;k++) {
-				if (list_dist[k]<low_dist) {
-					low_idx=k;
-					low_dist=list_dist[k];
+				if (list_dist[k]>far_dist) {
+					far_idx=k;
+					far_dist=list_dist[k];
 				}
 			}
 
-			if (d>low_dist) {
-				list_idx[low_idx]=n;
-				list_dist[low_idx]=d;
+			if (d<far_dist) {
+				list_idx[far_idx]=n;
+				list_dist[far_idx]=d;
 			}
 		}
 	}
@@ -750,8 +750,8 @@ void gl_lights_calc_color_light_cache(int count,int *indexes,bool skip_light_map
 
 void gl_lights_build_poly_light_list(int mesh_idx,map_mesh_poly_type *poly,view_light_list_type *light_list)
 {
-	int						n,k,count,low_idx;
-	double					d,dx,dy,dz,low_dist,
+	int						n,k,count,far_idx;
+	double					d,dx,dy,dz,far_dist,
 							list_dist[max_shader_light];
 	map_mesh_type			*mesh;
 	view_light_spot_type	*lspot;
@@ -770,7 +770,7 @@ void gl_lights_build_poly_light_list(int mesh_idx,map_mesh_poly_type *poly,view_
 		// if the mesh already has <= max_shader_light
 		// lights, just use them
 
-	if (mesh->light_cache.count<max_shader_light) {
+	if (mesh->light_cache.count<=max_shader_light) {
 		light_list->nlight=mesh->light_cache.count;
 		
 		for (n=0;n!=light_list->nlight;n++) {
@@ -810,19 +810,19 @@ void gl_lights_build_poly_light_list(int mesh_idx,map_mesh_poly_type *poly,view_
 			count++;
 		}
 		else {
-			low_idx=0;
-			low_dist=list_dist[0];
+			far_idx=0;
+			far_dist=list_dist[0];
 
 			for (k=1;k<count;k++) {
-				if (list_dist[k]<low_dist) {
-					low_idx=k;
-					low_dist=list_dist[k];
+				if (list_dist[k]>far_dist) {
+					far_idx=k;
+					far_dist=list_dist[k];
 				}
 			}
 
-			if (d>low_dist) {
-				light_list->light_idx[low_idx]=mesh->light_cache.indexes[n];
-				list_dist[low_idx]=d;
+			if (d<far_dist) {
+				light_list->light_idx[far_idx]=mesh->light_cache.indexes[n];
+				list_dist[far_idx]=d;
 			}
 		}
 	}

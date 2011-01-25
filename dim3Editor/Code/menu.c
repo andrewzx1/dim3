@@ -170,8 +170,6 @@ bool menu_save_changes_dialog(void)
 
 bool menu_event_run(int cmd)
 {
-	int				idx;
-	
 	switch (cmd) {
 		
 			// misc commands
@@ -361,18 +359,15 @@ bool menu_event_run(int cmd)
 			// map menu
 
 		case kCommandMapAddCinema:
-			idx=dialog_cinema_settings_run(-1);
-			item_palette_select(cinema_piece,idx);
+			piece_create_cinema();
 			return(TRUE);
 
 		case kCommandMapAddGroup:
-			idx=dialog_group_settings_run(-1);
-			item_palette_select(group_piece,idx);
+			piece_create_group();
 			return(TRUE);
 
 		case kCommandMapAddMovement:
-			idx=dialog_movement_settings_run(-1);
-			item_palette_select(movement_piece,idx);
+			piece_create_movement();
 			return(TRUE);
 			
 		case kCommandMapRaiseY:

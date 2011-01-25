@@ -453,3 +453,48 @@ void piece_create_liquid(void)
 	menu_update_view();
 }
 
+/* =======================================================
+
+      Create Cinema, Groups, and Movements
+	        
+======================================================= */
+
+void piece_create_cinema(void)
+{
+	int				cinema_idx;
+	
+	cinema_idx=map_cinema_add(&map);
+	if (cinema_idx==-1) {
+		os_dialog_alert("Create Cinema","Out of Memory -- could not create a new cinema");
+		return;
+	}
+
+	item_palette_select(cinema_piece,cinema_idx);
+}
+
+void piece_create_group(void)
+{
+	int				group_idx;
+	
+	group_idx=map_group_add(&map);
+	if (group_idx==-1) {
+		os_dialog_alert("Create Group","Out of Memory -- could not create a new group");
+		return;
+	}
+
+	item_palette_select(group_piece,group_idx);
+}
+
+void piece_create_movement(void)
+{
+	int				movement_idx;
+	
+	movement_idx=map_movement_add(&map);
+	if (movement_idx==-1) {
+		os_dialog_alert("Create Movement","Out of Memory -- could not create a new movement");
+		return;
+	}
+
+	item_palette_select(movement_piece,movement_idx);
+}
+

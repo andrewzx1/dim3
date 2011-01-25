@@ -66,6 +66,7 @@ and can be sold or given away.
 #define list_button_edit									0
 #define list_button_plus									1
 #define list_button_minus									2
+#define list_button_set										3
 
 typedef union		{
 						bool								checkbox;
@@ -138,8 +139,8 @@ extern void list_palette_add_header_button(list_palette_type *list,int id,char *
 extern void list_palette_add_item(list_palette_type *list,int piece_type,int piece_idx,char *name,bool selected,bool disabled);
 extern void list_palette_add_color(list_palette_type *list,int piece_type,int piece_idx,d3col *col,bool selected,bool disabled);
 extern void list_palette_add_string_selectable(list_palette_type *list,int id,char *name,char *value,bool selected,bool disabled);
+extern void list_palette_add_string_selectable_button(list_palette_type *list,int id,int button_type,int button_id,char *name,char *value,bool selected,bool disabled);
 extern void list_palette_add_string(list_palette_type *list,int id,char *name,char *value,bool disabled);
-extern void list_palette_add_string_edit(list_palette_type *list,int id,int button_id,char *name,char *value,bool disabled);
 extern void list_palette_add_string_int(list_palette_type *list,int id,char *name,int value,bool disabled);
 extern void list_palette_add_string_float(list_palette_type *list,int id,char *name,float value,bool disabled);
 extern void list_palette_add_checkbox(list_palette_type *list,int id,char *name,bool value,bool disabled);

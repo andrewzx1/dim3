@@ -220,7 +220,10 @@ void model_animate_pose_delete(model_type *model,int animate_idx,int animate_pos
 	animate=&model->animates[animate_idx];
 	
 	npose=animate->npose_move;
-    if (npose==1) return;
+    if (npose==1) {
+		animate->npose_move=0;
+		return;
+	}
     
     if (animate_pose_idx<(npose-1)) {
         sz=((npose-1)-animate_pose_idx)*sizeof(model_pose_move_type);

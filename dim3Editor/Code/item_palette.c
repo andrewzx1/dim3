@@ -360,26 +360,4 @@ void item_palette_click(d3pnt *pnt,bool double_click)
 	}
 
 	main_wind_draw();
-	
-		// any double click
-
-	if ((!double_click) || (item_palette.item_idx==-1)) return;
-	
-		// if double click, edit
-
-	switch (item_palette.item_type) {
-
-		case cinema_piece:
-			dialog_cinema_settings_run(item_palette.item_idx);
-			break;
-
-		case group_piece:
-			dialog_group_settings_run(item_palette.item_idx);
-			break;
-
-		case movement_piece:
-			dialog_movement_settings_run(item_palette.item_idx);
-			break;
-
-	}
 }
