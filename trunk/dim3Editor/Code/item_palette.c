@@ -324,10 +324,12 @@ void item_palette_click(d3pnt *pnt,bool double_click)
 			break;
 
 		case movement_piece:
+			state.cur_movement_move_idx=-1;
 			select_add_movement(item_palette.item_idx);
 			break;
 
 		case cinema_piece:
+			state.cur_cinema_action_idx=-1;
 			select_add_cinema(item_palette.item_idx);
 			break;
 

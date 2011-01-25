@@ -39,8 +39,6 @@ extern editor_state_type		state;
 
 extern file_path_setup_type		file_path_setup;
 
-extern bool import_obj(char *path,char *err_str);
-
 /* =======================================================
 
       Add OBJ Mesh
@@ -567,6 +565,28 @@ void piece_add_polygon_mesh(void)
 
 /* =======================================================
 
+      Add SVG Mesh
+      
+======================================================= */
+
+void piece_add_svg_mesh(void)
+{
+	char					path[1024],err_str[256];
+	
+	if (!piece_create_texture_ok()) return;
+	
+		// import the file
+		
+	if (!os_load_file(path,"svg")) return;
+	
+	if (!import_svg(path,err_str)) {
+		os_dialog_alert("Import Failed",err_str);
+		return;
+    }
+}
+
+/* =======================================================
+
       Combine Meshes
       
 ======================================================= */
@@ -741,3 +761,4 @@ void map_mesh_reset_uv_all(void)
 		if (!map.mesh.meshes[n].flag.lock_uv) map_mesh_reset_uv(&map,n);
 	}
 }
+

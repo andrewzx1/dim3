@@ -248,7 +248,15 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\dim3Editor\Code\groups.c"
+					>
+				</File>
+				<File
 					RelativePath="..\..\dim3Editor\Code\import_obj.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3Editor\Code\import_svg.c"
 					>
 				</File>
 				<File
@@ -284,15 +292,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\dim3Common\Code\progress_common.c"
-					>
-				</File>
-				<File
 					RelativePath="..\..\dim3Editor\Code\selection.c"
-					>
-				</File>
-				<File
-					RelativePath="..\..\dim3Common\Code\text_common.c"
 					>
 				</File>
 				<File
@@ -375,10 +375,6 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\dim3Editor\Code\main_window.c"
-						>
-					</File>
-					<File
 						RelativePath="..\..\dim3Editor\Code\property_palette.c"
 						>
 					</File>
@@ -439,10 +435,6 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\dim3Common\Code\texture_edit_common.c"
-						>
-					</File>
-					<File
 						RelativePath="..\..\dim3Editor\Code\texture_palette.c"
 						>
 					</File>
@@ -456,6 +448,26 @@
 					</File>
 					<File
 						RelativePath="..\..\dim3Common\Code\tool_palette_common.c"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Windows"
+					>
+					<File
+						RelativePath="..\..\dim3Editor\Code\main_window.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Common\Code\progress_common.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Common\Code\text_common.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Common\Code\texture_edit_common.c"
 						>
 					</File>
 				</Filter>

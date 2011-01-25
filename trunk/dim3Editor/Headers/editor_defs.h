@@ -441,7 +441,8 @@ typedef struct		{
 typedef struct		{
 						int						vertex_mode,drag_mode,grid_mode,node_mode,
 												handle_mode,view_select_idx,drag_handle_idx,
-												texture_edit_idx;
+												texture_edit_idx,
+												cur_cinema_action_idx,cur_movement_move_idx;
 						bool					map_opened,
 												free_look,select_add,auto_texture,select_box_on,
 												show_liquid,show_normals,show_node,show_object,

@@ -41,6 +41,9 @@ and can be sold or given away.
 
 #define kCinemaPropertyActionAdd			10
 
+#define kCinemaPropertyAction				1000
+#define kCinemaPropertyActionDelete			2000
+
 extern map_type					map;
 extern editor_state_type		state;
 extern editor_setup_type		setup;
@@ -75,7 +78,12 @@ typedef struct		{
 
 void property_palette_fill_cinema(int cinema_idx)
 {
-	map_cinema_type		*cinema;
+	int						n;
+	char					str[256];
+	char					actor_type_str[][32]={"Camera","Player","Object","Movement","Particle","HUD Text","HUD Bitmap"},
+							action_type_str[][32]={"None","Place","Move","Stop","Show","Hide"};
+	map_cinema_type			*cinema;
+	map_cinema_action_type	*action;
 
 	cinema=&map.cinema.cinemas[cinema_idx];
 
@@ -88,6 +96,25 @@ void property_palette_fill_cinema(int cinema_idx)
 	list_palette_add_checkbox(&property_palette,kCinemaPropertyShowHUD,"Show HUD",cinema->show_hud,FALSE);
 
 	list_palette_add_header_button(&property_palette,kCinemaPropertyActionAdd,"Cinema Actions",list_button_plus);
+
+	action=cinema->actions;
+
+	for (n=0;n!=cinema->naction;n++) {
+
+		if ((action->actor_type!=cinema_actor_camera) && (action->actor_type!=cinema_actor_player)) {
+			sprintf(str,"%s: %s",actor_type_str[action->actor_type],action->actor_name);
+		}
+		else {
+			strcpy(str,actor_type_str[action->actor_type]);
+		}
+
+		strcat(str," ");
+		strcat(str,action_type_str[action->action]);
+
+		list_palette_add_string_selectable_button(&property_palette,(kCinemaPropertyAction+n),list_button_minus,(kCinemaPropertyActionDelete+n),str,NULL,(state.cur_cinema_action_idx==n),FALSE);
+	
+		action++;
+	}
 }
 
 /* =======================================================
@@ -98,27 +125,57 @@ void property_palette_fill_cinema(int cinema_idx)
 
 void property_palette_click_cinema(int cinema_idx,int id)
 {
-	/*
 	map_cinema_type		*cinema;
 
 	cinema=&map.cinema.cinemas[cinema_idx];
 
+		// click action
+
+	if ((id>=kCinemaPropertyAction) && (id<kCinemaPropertyActionDelete)) {
+		state.cur_cinema_action_idx=id-kCinemaPropertyAction;
+		main_wind_draw();
+		return;
+	}
+
+		// add action
+
+	if (id==kCinemaPropertyActionAdd) {
+		state.cur_cinema_action_idx=map_cinema_add_action(&map,cinema_idx);
+		main_wind_draw();
+		return;
+	}
+
+		// delete action
+
+	if (id>=kCinemaPropertyActionDelete) {
+		state.cur_cinema_action_idx=-1;
+		map_cinema_delete_action(&map,cinema_idx,(id-kCinemaPropertyActionDelete));
+		main_wind_draw();
+		return;
+	}
+
+		// regular items
+
 	switch (id) {
 
-		case kSoundPropertyOn:
-			sound->on=!sound->on;
+		case kCinemaPropertyName:
+			dialog_property_string_run(list_string_value_string,(void*)cinema->name,name_str_len,0,0);
 			break;
 
-		case kSoundPropertyName:
-			property_palette_pick_sound(sound->name,FALSE);
+		case kCinemaPropertyLength:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&cinema->len_msec,0,0,0);
 			break;
 
-		case kSoundPropertyPitch:
-			dialog_property_string_run(list_string_value_positive_float,(void*)&sound->pitch,0,0,0);
+		case kCinemaPropertyFreezeInput:
+			cinema->freeze_input=!cinema->freeze_input;
+			break;
+
+		case kCinemaPropertyShowHUD:
+			cinema->show_hud=!cinema->show_hud;
 			break;
 
 	}
-*/
+
 	main_wind_draw();
 }
 
