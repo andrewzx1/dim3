@@ -44,9 +44,10 @@ and can be sold or given away.
 #define kMovementPropertyAutoOpenNeverClose	7
 #define kMovementPropertyLoop				8
 
-#define kMovementPropertyActionAdd			10
+#define kMovementPropertyMoveAdd			10
 
-#define kMovementPropertyMoveBase			100
+#define kMovementPropertyMove				1000
+#define kMovementPropertyMoveDelete			2000
 
 extern map_type					map;
 extern editor_state_type		state;
@@ -84,7 +85,10 @@ typedef struct		{
 
 void property_palette_fill_movement(int movement_idx)
 {
+	int					n;
+	char				str[256];
 	movement_type		*movement;
+	movement_move_type	*move;
 
 	movement=&map.movement.movements[movement_idx];
 
@@ -100,10 +104,10 @@ void property_palette_fill_movement(int movement_idx)
 		list_palette_add_string(&property_palette,kMovementPropertyGroup,"Group",map.group.groups[movement->group_idx].name,FALSE);
 	}
 	if (movement->reverse_group_idx==-1) {
-		list_palette_add_string(&property_palette,kMovementPropertyGroup,"Reverse Group","",FALSE);
+		list_palette_add_string(&property_palette,kMovementPropertyReverseGroup,"Reverse Group","",FALSE);
 	}
 	else {
-		list_palette_add_string(&property_palette,kMovementPropertyGroup,"Reverse Group",map.group.groups[movement->reverse_group_idx].name,FALSE);
+		list_palette_add_string(&property_palette,kMovementPropertyReverseGroup,"Reverse Group",map.group.groups[movement->reverse_group_idx].name,FALSE);
 	}
 
 	list_palette_add_header(&property_palette,0,"Movement Settings");
@@ -113,7 +117,15 @@ void property_palette_fill_movement(int movement_idx)
 	list_palette_add_checkbox(&property_palette,kMovementPropertyAutoOpenNeverClose,"Never Close After Auto-Open",movement->auto_open_never_close,FALSE);
 	list_palette_add_checkbox(&property_palette,kMovementPropertyLoop,"Looping",movement->loop,FALSE);
 
-	list_palette_add_header_button(&property_palette,kMovementPropertyActionAdd,"Movement Moves",list_button_plus);
+	list_palette_add_header_button(&property_palette,kMovementPropertyMoveAdd,"Movement Moves",list_button_plus);
+
+	move=movement->moves;
+
+	for (n=0;n!=movement->nmove;n++) {
+		sprintf(str,"(%d,%d,%d)(%d,%d,%d)@%d",move->mov.x,move->mov.y,move->mov.z,(int)move->rot.x,(int)move->rot.y,(int)move->rot.z,move->msec);
+		list_palette_add_string_selectable_button(&property_palette,(kMovementPropertyMove+n),list_button_minus,(kMovementPropertyMoveDelete+n),str,NULL,(state.cur_movement_move_idx==n),FALSE);
+		move++;
+	}
 }
 
 /* =======================================================
@@ -124,27 +136,76 @@ void property_palette_fill_movement(int movement_idx)
 
 void property_palette_click_movement(int movement_idx,int id)
 {
-	/*
-	map_sound_type		*sound;
+	movement_type		*movement;
 
-	sound=&map.sounds[sound_idx];
+	movement=&map.movement.movements[movement_idx];
+
+		// click action
+
+	if ((id>=kMovementPropertyMove) && (id<kMovementPropertyMoveDelete)) {
+		state.cur_movement_move_idx=id-kMovementPropertyMove;
+		main_wind_draw();
+		return;
+	}
+
+		// add action
+
+	if (id==kMovementPropertyMoveAdd) {
+		state.cur_movement_move_idx=map_movement_move_add(&map,movement_idx);
+		main_wind_draw();
+		return;
+	}
+
+		// delete action
+
+	if (id>=kMovementPropertyMoveDelete) {
+		state.cur_movement_move_idx=-1;
+		map_movement_move_delete(&map,movement_idx,(id-kMovementPropertyMoveDelete));
+		main_wind_draw();
+		return;
+	}
+
+		// regular items
 
 	switch (id) {
 
-		case kSoundPropertyOn:
-			sound->on=!sound->on;
+		case kMovementPropertyName:
+			dialog_property_string_run(list_string_value_string,(void*)movement->name,name_str_len,0,0);
 			break;
 
-		case kSoundPropertyName:
-			property_palette_pick_sound(sound->name,FALSE);
+		case kMovementPropertyAutoOpenDistance:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&movement->auto_open_distance,0,0,0);
 			break;
 
-		case kSoundPropertyPitch:
-			dialog_property_string_run(list_string_value_positive_float,(void*)&sound->pitch,0,0,0);
+		case kMovementPropertyGroup:
+			property_palette_pick_group(&movement->group_idx);
 			break;
 
+		case kMovementPropertyReverseGroup:
+			property_palette_pick_group(&movement->reverse_group_idx);
+			break;
+
+		case kMovementPropertyAutoStart:
+			movement->auto_start=!movement->auto_start;
+			break;
+
+		case kMovementPropertyAutoOpen:
+			movement->auto_open=!movement->auto_open;
+			break;
+
+		case kMovementPropertyAutoOpenStand:
+			movement->auto_open_stand=!movement->auto_open_stand;
+			break;
+
+		case kMovementPropertyAutoOpenNeverClose:
+			movement->auto_open_never_close=!movement->auto_open_never_close;
+			break;
+
+		case kMovementPropertyLoop:
+			movement->loop=!movement->loop;
+			break;
 	}
-*/
+
 	main_wind_draw();
 }
 

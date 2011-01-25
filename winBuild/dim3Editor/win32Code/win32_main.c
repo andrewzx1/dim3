@@ -102,19 +102,7 @@ bool dialog_height_import_run(int *div_cnt,int *size,int *high)
 }
 bool dialog_map_auto_generate_setting_run(bool first)
 {
-	ag_build_setup_type		build_setup;
-
-	build_setup.style_idx=0;
-	build_setup.seed=5;
-	build_setup.mirror=FALSE;
-	build_setup.room_count=20;
-	build_setup.room_sz=300;
-	build_setup.room_high=60;
-	build_setup.story_count=1;
-	build_setup.merge_count=2;
-
-	ag_generate_map(&build_setup);
-
+	piece_add_svg_mesh();
 	return(TRUE);
 }
 

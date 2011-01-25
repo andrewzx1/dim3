@@ -272,10 +272,18 @@ extern void piece_add_obj_mesh_uv(void);
 extern void piece_add_height_map_mesh(void);
 extern void piece_add_grid_mesh(void);
 extern void piece_add_polygon_mesh(void);
+extern void piece_add_svg_mesh(void);
 extern void piece_combine_mesh(void);
 extern void piece_split_mesh(void);
 extern void map_mesh_move_all(int x,int y,int z);
 extern void map_mesh_reset_uv_all(void);
+
+//
+// import routines
+//
+
+extern bool import_obj(char *path,char *err_str);
+extern bool import_svg(char *path,char *err_str);
 
 //
 // node routines
