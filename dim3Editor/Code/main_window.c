@@ -34,7 +34,7 @@ and can be sold or given away.
 #include "interface.h"
 
 extern d3rect					tool_palette_box,txt_palette_box;
-extern list_palette_type		item_palette,property_palette;
+extern list_palette_type		item_palette,property_palette,alt_property_palette;
 
 extern map_type					map;
 extern editor_setup_type		setup;
@@ -167,6 +167,7 @@ void main_wind_draw(void)
 		texture_palette_draw(map.textures);
 		item_palette_draw();
 		property_palette_draw();
+		alt_property_palette_draw();
 	}
 
 		// swap buffers
@@ -201,6 +202,7 @@ void main_wind_draw_no_swap(void)
 		texture_palette_draw(map.textures);
 		item_palette_draw();
 		property_palette_draw();
+		alt_property_palette_draw();
 	}
 }
 
@@ -226,15 +228,20 @@ void main_wind_click(d3pnt *pnt,bool double_click)
 		return;
 	}
 
-		// item and property palette
+		// item, property and alt property palettes
 
-	if (pnt->x>=item_palette.box.lx) {
-		if (pnt->y<=item_palette.box.by) {
-			item_palette_click(pnt,double_click);
-		}
-		else {
-			property_palette_click(pnt,double_click);
-		}
+	if ((pnt->x>=item_palette.box.lx) && (pnt->x<=item_palette.box.rx) && (pnt->y>=item_palette.box.ty) && (pnt->y<item_palette.box.by)) {
+		item_palette_click(pnt,double_click);
+		return;
+	}
+
+	if ((pnt->x>=property_palette.box.lx) && (pnt->x<=property_palette.box.rx) && (pnt->y>=property_palette.box.ty) && (pnt->y<property_palette.box.by)) {
+		property_palette_click(pnt,double_click);
+		return;
+	}
+
+	if ((pnt->x>=alt_property_palette.box.lx) && (pnt->x<=alt_property_palette.box.rx) && (pnt->y>=alt_property_palette.box.ty) && (pnt->y<alt_property_palette.box.by)) {
+		alt_property_palette_click(pnt,double_click);
 		return;
 	}
 
@@ -256,15 +263,20 @@ void main_wind_click(d3pnt *pnt,bool double_click)
 
 void main_wind_scroll_wheel(d3pnt *pnt,int delta)
 {
-		// scroll wheel in item or property palette
+		// scroll wheel in item, property, or alt property palette
 
-	if (pnt->x>=item_palette.box.lx) {
-		if ((pnt->y>=item_palette.box.ty) && (pnt->y<item_palette.box.by)) {
-			item_palette_scroll_wheel(pnt,delta);
-		}
-		if ((pnt->y>=property_palette.box.ty) && (pnt->y<property_palette.box.by)) {
-			property_palette_scroll_wheel(pnt,delta);
-		}
+	if ((pnt->x>=item_palette.box.lx) && (pnt->x<=item_palette.box.rx) && (pnt->y>=item_palette.box.ty) && (pnt->y<item_palette.box.by)) {
+		item_palette_scroll_wheel(pnt,delta);
+		return;
+	}
+
+	if ((pnt->x>=property_palette.box.lx) && (pnt->x<=property_palette.box.rx) && (pnt->y>=property_palette.box.ty) && (pnt->y<property_palette.box.by)) {
+		property_palette_scroll_wheel(pnt,delta);
+		return;
+	}
+
+	if ((pnt->x>=alt_property_palette.box.lx) && (pnt->x<=alt_property_palette.box.rx) && (pnt->y>=alt_property_palette.box.ty) && (pnt->y<alt_property_palette.box.by)) {
+		alt_property_palette_scroll_wheel(pnt,delta);
 		return;
 	}
 

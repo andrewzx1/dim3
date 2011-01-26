@@ -304,26 +304,6 @@
 					>
 				</File>
 				<Filter
-					Name="Auto Generator"
-					>
-					<File
-						RelativePath="..\..\dim3Editor\Code\auto_generate.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Editor\Code\auto_generate_setup.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Editor\Code\auto_generate_story.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Editor\Code\auto_generate_utility.c"
-						>
-					</File>
-				</Filter>
-				<Filter
 					Name="View"
 					>
 					<File
@@ -366,6 +346,18 @@
 				<Filter
 					Name="Palettes"
 					>
+					<File
+						RelativePath="..\..\dim3Editor\Code\alt_property_palette.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Editor\Code\alt_property_palette_action.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Editor\Code\alt_property_palette_move.c"
+						>
+					</File>
 					<File
 						RelativePath="..\..\dim3Editor\Code\item_palette.c"
 						>

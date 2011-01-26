@@ -50,26 +50,6 @@ extern editor_setup_type		setup;
 
 extern list_palette_type		property_palette;
 
-/*
-typedef struct		{
-						int									action,actor_type,
-															start_msec,end_msec;
-						bool								move_reverse;
-						char								actor_name[name_str_len],
-															animation_name[name_str_len],
-															next_animation_name[name_str_len],
-															node_name[name_str_len],
-															text_str[256];
-					} map_cinema_action_type;
-
-typedef struct		{
-						int									naction,len_msec;
-						bool								freeze_input,show_hud;
-						char								name[name_str_len];
-						map_cinema_action_type				*actions;
-					} map_cinema_type;
-*/
-
 /* =======================================================
 
       Property Palette Fill Cinema
@@ -155,6 +135,8 @@ void property_palette_click_cinema(int cinema_idx,int id)
 	}
 
 		// regular items
+
+	state.cur_cinema_action_idx=-1;
 
 	switch (id) {
 

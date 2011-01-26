@@ -112,7 +112,6 @@ extern int dialog_obj_import_run(int *scale_axis,int *scale_unit);
 //
 
 extern bool dialog_height_import_run(int *div_cnt,int *size,int *high);
-extern bool dialog_map_auto_generate_setting_run(void);
 
 //
 // property dialogs

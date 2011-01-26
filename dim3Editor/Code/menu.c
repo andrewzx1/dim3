@@ -213,10 +213,6 @@ bool menu_event_run(int cmd)
 			file_save_map();
 			return(TRUE);
 			
-		case kCommandFileAutoGenerateMap:
-			dialog_map_auto_generate_setting_run();
-			return(TRUE);
-			
 			// edit menu
 			
 		case kCommandEditUndo:

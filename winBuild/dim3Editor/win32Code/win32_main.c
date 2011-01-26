@@ -100,11 +100,6 @@ bool dialog_height_import_run(int *div_cnt,int *size,int *high)
 {
 	return(FALSE);
 }
-bool dialog_map_auto_generate_setting_run(bool first)
-{
-	piece_add_svg_mesh();
-	return(TRUE);
-}
 
 
 
