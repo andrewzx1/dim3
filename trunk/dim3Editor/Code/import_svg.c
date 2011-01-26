@@ -34,6 +34,8 @@ and can be sold or given away.
 #include "ui_common.h"
 #include "dialog.h"
 
+#define supergumba_temp_svg_high			(map_enlarge*20)
+
 extern map_type					map;
 extern editor_state_type		state;
 
@@ -509,6 +511,83 @@ bool import_create_mesh_from_obj_group(obj_import_state_type *import_state,char 
 
 bool import_svg(char *path,char *err_str)
 {
+	int					n,k,ty,by,g_offset,path_offset,
+						svg_tag,g_tag,path_tag;
+	char				path_str[1024];
+	d3pnt				pnt;
+	
+		// open the SVG file
+		
+	if (!xml_open_file(path)) {
+ 		strcpy(err_str,"Could not open SVG file.");
+		return(FALSE);
+    }
+	
+  	os_set_wait_cursor();
+ 
+		// decode the file
+       
+    svg_tag=xml_findflat("svg",0);
+    if (svg_tag==-1) {
+		xml_close_file();
+ 		strcpy(err_str,"SVG file is missing SVG tag.");
+		return(FALSE);
+    }
+	
+		// import location
+		
+	piece_create_get_spot(&pnt);
+	by=pnt.y+supergumba_temp_svg_high;
+	
+		// run through the layers
+		
+	g_offset=0;
+	
+	while (TRUE) {
+	
+			// get next group
+			
+		g_tag=xml_findflatinparent("g",svg_tag,g_offset);
+		if (g_tag==-1) break;
+		
+		by-=supergumba_temp_svg_high;
+		ty=by-supergumba_temp_svg_high;
+		
+			// get the paths
+			
+		path_offset=0;
+		
+		while (TRUE) {
+		
+				// get next path
+				
+			path_tag=xml_findflatinparent("path",g_tag,path_offset);
+			if (path_tag==-1) break;
+			
+				// path definition
+				
+			xml_get_attribute_text(path_tag,"d",path_str,1024);
+			fprintf(stdout,"%s\n",path_str);
+		
+		}
+
+
+
+
+
+
+	}
+	
+		// finish up
+		
+	xml_close_file();
+	
+	select_clear();
+	os_set_arrow_cursor();
+	
+	return(TRUE);
+
+
 	/*
 	int						n,k,nmesh,
 							import_mode,scale_axis,scale_unit;
