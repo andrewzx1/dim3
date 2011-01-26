@@ -1,6 +1,6 @@
 /****************************** File *********************************
 
-Module: dim3 Animator
+Module: dim3 Editor
 Author: Brian Barnes
  Usage: Alt Property Palette
 
@@ -26,7 +26,7 @@ and can be sold or given away.
 *********************************************************************/
 
 #ifdef D3_PCH
-	#include "dim3animator.h"
+	#include "dim3editor.h"
 #endif
 
 #include "glue.h"
@@ -34,9 +34,9 @@ and can be sold or given away.
 #include "interface.h"
 #include "dialog.h"
 
-extern model_type				model;
-extern model_draw_setup			draw_setup;
-extern animator_state_type		state;
+extern map_type					map;
+extern editor_state_type		state;
+extern editor_setup_type		setup;
 extern file_path_setup_type		file_path_setup;
 
 extern int						tool_palette_pixel_sz,txt_palette_pixel_sz;
@@ -99,12 +99,12 @@ void alt_property_fix_open_state(void)
 
 	old_alt_open=alt_property_open;
 
-	alt_property_open=((state.cur_item==item_animate) && (state.cur_animate_idx!=-1) && (state.cur_animate_pose_move_idx!=-1));
-	alt_property_open|=((state.cur_item==item_pose) && (state.cur_pose_idx!=-1) && (state.cur_pose_bone_move_idx!=-1));
+	alt_property_open=((state.cur_cinema_idx!=-1) && (state.cur_cinema_action_idx!=-1));
+	alt_property_open|=((state.cur_movement_idx!=-1) && (state.cur_movement_move_idx!=-1));
 	
 	if (!alt_property_open) {
-		state.cur_animate_pose_move_idx=-1;
-		state.cur_pose_bone_move_idx=-1;
+		state.cur_cinema_idx=-1;
+		state.cur_movement_idx=-1;
 	}
 
 		// if switched open state, fix and redraw
@@ -113,7 +113,7 @@ void alt_property_fix_open_state(void)
 		item_palette_setup();
 		property_palette_setup();
 		alt_property_palette_setup();
-		model_wind_setup();
+		main_wind_draw();
 	}
 }
 
@@ -131,22 +131,18 @@ void alt_property_palette_fill(void)
 
 		// selection properties
 
-	switch (state.cur_item) {
-
-		case item_animate:
-			list_palette_set_title(&alt_property_palette,"Animation Pose Properties");
-			alt_property_palette_fill_animate_pose_move(state.cur_animate_idx,state.cur_animate_pose_move_idx);
-			break;
-
-		case item_pose:
-			list_palette_set_title(&alt_property_palette,"Pose Bone Move Properties");
-			alt_property_palette_fill_pose_bone_move(state.cur_pose_idx,state.cur_pose_bone_move_idx);
-			break;
-
-		default:
+	if (state.cur_cinema_idx!=-1) {
+		list_palette_set_title(&alt_property_palette,"Cinema Action Properties");
+		alt_property_palette_fill_cinema_action(state.cur_cinema_idx,state.cur_cinema_action_idx);
+	}
+	else {
+		if (state.cur_movement_idx!=-1) {
+			list_palette_set_title(&alt_property_palette,"Movement Move Move Properties");
+			alt_property_palette_fill_movement_move(state.cur_movement_idx,state.cur_movement_move_idx);
+		}
+		else {
 			list_palette_set_title(&alt_property_palette,"No Properties");
-			break;
-
+		}
 	}
 }
 
@@ -191,16 +187,13 @@ void alt_property_palette_click(d3pnt *pnt,bool double_click)
 
 		// selection properties
 
-	switch (state.cur_item) {
-
-		case item_animate:
-			alt_property_palette_click_animate_pose_move(state.cur_animate_idx,state.cur_animate_pose_move_idx,alt_property_palette.item_id);
-			break;
-
-		case item_pose:
-			alt_property_palette_click_pose_bone_move(state.cur_pose_idx,state.cur_pose_bone_move_idx,alt_property_palette.item_id);
-			break;
-
+	if (state.cur_cinema_idx!=-1) {
+		alt_property_palette_click_cinema_action(state.cur_cinema_idx,state.cur_cinema_action_idx,alt_property_palette.item_id);
+	}
+	else {
+		if (state.cur_movement_idx!=-1) {
+			alt_property_palette_click_movement_move(state.cur_movement_idx,state.cur_movement_move_idx,alt_property_palette.item_id);
+		}
 	}
 }
 

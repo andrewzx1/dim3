@@ -170,7 +170,7 @@ bool xml_decode(void)
 		}
 
 		if (inname) {
-			if (c==' ') {
+			if ((c==' ') || (c==0x9) || (c==0xA) || (c==0xD)) {
 				inname=FALSE;
 				name[noff]=0x0;
 			}
@@ -474,7 +474,7 @@ bool xml_get_attribute_raw(int n,char *name,char *value,int valuesz)
 		}
 
 		if (!inquote) {
-			if ((c==' ') || (c=='/') || (c=='>')) {
+			if ((c==' ') || (c==0x9) || (c==0xA) || (c==0xD) || (c=='/') || (c=='>')) {
 				value[voff]=0x0;
 				if (strcmp(name,attribname)==0) return(TRUE);
 	

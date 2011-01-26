@@ -175,10 +175,6 @@ void item_palette_state_rebuild(void)
 		// for all the palettes
 
 	alt_property_fix_open_state();
-	item_palette_setup();
-	property_palette_setup();
-	alt_property_palette_setup();
-	model_wind_setup();
 
 		// redraw the window
 
@@ -320,10 +316,6 @@ void item_palette_click(d3pnt *pnt,bool double_click)
 		// the alt window has open/closed
 
 	alt_property_fix_open_state();
-	item_palette_setup();
-	property_palette_setup();
-	alt_property_palette_setup();
-	model_wind_setup();
 
 	main_wind_draw();
 }

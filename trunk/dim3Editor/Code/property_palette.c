@@ -40,7 +40,7 @@ extern editor_setup_type		setup;
 extern file_path_setup_type		file_path_setup;
 
 extern int						tool_palette_pixel_sz,txt_palette_pixel_sz;
-extern bool						list_palette_open;
+extern bool						list_palette_open,alt_property_open;
 extern list_palette_type		item_palette;
 
 int								prop_last_sel_type;
@@ -69,7 +69,7 @@ void property_palette_shutdown(void)
 
 void property_palette_setup(void)
 {
-	int				y;
+	int				x,y;
 	d3rect			wbox;
 	
 	os_get_window_box(&wbox);
@@ -81,10 +81,13 @@ void property_palette_setup(void)
 		property_palette.pixel_sz=list_palette_border_sz;
 	}
 
+	x=wbox.rx-item_palette.pixel_sz;
+	if ((list_palette_open) && (alt_property_open)) x-=item_palette.pixel_sz;
+
 	y=wbox.ty+((wbox.by-wbox.ty)>>1);
 
-	property_palette.box.lx=wbox.rx-property_palette.pixel_sz;
-	property_palette.box.rx=wbox.rx;
+	property_palette.box.lx=x;
+	property_palette.box.rx=x+item_palette.pixel_sz;
 	property_palette.box.ty=y-1;
 	property_palette.box.by=wbox.by-txt_palette_pixel_sz;
 }
@@ -288,22 +291,33 @@ void property_palette_click(d3pnt *pnt,bool double_click)
 	}
 
 		// special check for non-selection property lists
+		// and check state changes
 
 	switch (item_palette.item_type) {
 
 		case cinema_piece:
+			state.cur_cinema_idx=item_palette.item_idx;
 			property_palette_click_cinema(item_palette.item_idx,property_palette.item_id);
+			alt_property_fix_open_state();
 			return;
 
 		case group_piece:
 			property_palette_click_group(item_palette.item_idx,property_palette.item_id);
+			alt_property_fix_open_state();
 			return;
 
 		case movement_piece:
+			state.cur_movement_idx=item_palette.item_idx;
 			property_palette_click_movement(item_palette.item_idx,property_palette.item_id);
+			alt_property_fix_open_state();
 			return;
 
 	}
+
+		// need to do the setup again incase
+		// the alt window has open/closed
+
+	alt_property_fix_open_state();
 
 		// get the selection
 

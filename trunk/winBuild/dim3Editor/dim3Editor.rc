@@ -16,9 +16,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Save",						103
         MENUITEM SEPARATOR
-        MENUITEM "Auto Generate Map...",		104
-        MENUITEM SEPARATOR
-        MENUITEM "Exit",						105
+        MENUITEM "Exit",						104
     END
     POPUP "Edit"
     BEGIN

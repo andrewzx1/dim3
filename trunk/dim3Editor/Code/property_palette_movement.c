@@ -55,28 +55,6 @@ extern editor_setup_type		setup;
 
 extern list_palette_type		property_palette;
 
-/*
-
-
-typedef struct		{
-						int									msec,user_id,sound_buffer_idx;
-						char								sound_name[name_str_len];
-						float								sound_pitch;
-						d3pnt								mov;
-						d3ang								rot;
-					} movement_move_type;
-
-typedef struct		{
-						int									nmove,group_idx,reverse_group_idx,
-															auto_open_distance;
-						char								name[name_str_len];
-						bool								auto_start,auto_open,auto_open_stand,
-															auto_open_never_close,
-															loop,started,opened,reverse;
-						movement_move_type					*moves;
-					} movement_type;
-*/
-
 /* =======================================================
 
       Property Palette Fill Movement
@@ -166,6 +144,8 @@ void property_palette_click_movement(int movement_idx,int id)
 	}
 
 		// regular items
+
+	state.cur_movement_move_idx=-1;
 
 	switch (id) {
 

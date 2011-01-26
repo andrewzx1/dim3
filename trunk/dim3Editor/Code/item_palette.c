@@ -40,7 +40,7 @@ extern editor_setup_type		setup;
 extern file_path_setup_type		file_path_setup;
 
 extern int						tool_palette_pixel_sz,txt_palette_pixel_sz;
-extern bool						list_palette_open;
+extern bool						list_palette_open,alt_property_open;
 
 list_palette_type				item_palette;
 
@@ -65,7 +65,7 @@ void item_palette_shutdown(void)
 
 void item_palette_setup(void)
 {
-	int				y;
+	int				x,y;
 	d3rect			wbox;
 	
 	os_get_window_box(&wbox);
@@ -77,10 +77,13 @@ void item_palette_setup(void)
 		item_palette.pixel_sz=list_palette_border_sz;
 	}
 
+	x=wbox.rx-item_palette.pixel_sz;
+	if ((list_palette_open) && (alt_property_open)) x-=item_palette.pixel_sz;
+
 	y=wbox.ty+((wbox.by-wbox.ty)>>1);
 
-	item_palette.box.lx=wbox.rx-item_palette.pixel_sz;
-	item_palette.box.rx=wbox.rx;
+	item_palette.box.lx=x;
+	item_palette.box.rx=x+item_palette.pixel_sz;
 	item_palette.box.ty=wbox.ty+(tool_palette_pixel_sz+1);
 	item_palette.box.by=y;
 }
@@ -309,6 +312,13 @@ void item_palette_click(d3pnt *pnt,bool double_click)
 
 	if (item_palette.item_idx==-1) return;
 
+		// alt window items
+
+	state.cur_cinema_idx=-1;
+	state.cur_cinema_action_idx=-1;
+	state.cur_movement_idx=-1;
+	state.cur_movement_move_idx=-1;
+
 		// handle click
 
 	select_clear();
@@ -324,11 +334,13 @@ void item_palette_click(d3pnt *pnt,bool double_click)
 			break;
 
 		case movement_piece:
+			state.cur_movement_idx=item_palette.item_idx;
 			state.cur_movement_move_idx=-1;
 			select_add_movement(item_palette.item_idx);
 			break;
 
 		case cinema_piece:
+			state.cur_cinema_idx=item_palette.item_idx;
 			state.cur_cinema_action_idx=-1;
 			select_add_cinema(item_palette.item_idx);
 			break;
@@ -360,6 +372,11 @@ void item_palette_click(d3pnt *pnt,bool double_click)
 			state.show_node=TRUE;
 			break;
 	}
+
+		// need to do the setup again incase
+		// the alt window has open/closed
+
+	alt_property_fix_open_state();
 
 	main_wind_draw();
 }

@@ -34,8 +34,7 @@ int				win32_menu_remap[][2]={
 					{kCommandFileOpen,101},
 					{kCommandFileClose,102},
 					{kCommandFileSave,103},
-					{kCommandFileAutoGenerateMap,104},
-					{kCommandFileQuit,105},
+					{kCommandFileQuit,104},
 
 					{kCommandEditUndo,200},
 					{kCommandEditDelete,201},

@@ -511,9 +511,9 @@ bool import_create_mesh_from_obj_group(obj_import_state_type *import_state,char 
 
 bool import_svg(char *path,char *err_str)
 {
-	int					n,k,ty,by,g_offset,path_offset,
+	int					ty,by,g_offset,path_offset,
 						svg_tag,g_tag,path_tag;
-	char				path_str[1024];
+	char				path_str[1024],str[256];
 	d3pnt				pnt;
 	
 		// open the SVG file
@@ -566,16 +566,15 @@ bool import_svg(char *path,char *err_str)
 			
 				// path definition
 				
-			xml_get_attribute_text(path_tag,"d",path_str,1024);
-			fprintf(stdout,"%s\n",path_str);
-		
+			if (xml_get_attribute_text(path_tag,"d",path_str,1024)) {
+				sprintf(str,"g_tag=%d, path_tag=%d",g_tag,path_tag);
+				os_dialog_alert(str,path_str);
+			}
+
+			path_offset++;
 		}
 
-
-
-
-
-
+		g_offset++;
 	}
 	
 		// finish up

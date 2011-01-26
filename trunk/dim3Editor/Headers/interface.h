@@ -143,6 +143,24 @@ extern void property_palette_pick_texture(int *txt_idx);
 extern void property_palette_pick_shader(char *name);
 
 //
+// alt property list palette
+//
+
+extern void alt_property_palette_initialize(void);
+extern void alt_property_palette_shutdown(void);
+extern void alt_property_palette_setup(void);
+extern void alt_property_fix_open_state(void);
+extern void alt_property_palette_draw(void);
+extern void alt_property_palette_scroll_wheel(d3pnt *pnt,int move);
+extern void alt_property_palette_click(d3pnt *pnt,bool double_click);
+
+extern void alt_property_palette_fill_cinema_action(int cinema_idx,int action_idx);
+extern void alt_property_palette_fill_movement_move(int movement_idx,int move_idx);
+
+extern void alt_property_palette_click_cinema_action(int cinema_idx,int action_idx,int id);
+extern void alt_property_palette_click_movement_move(int movement_idx,int move_idx,int id);
+
+//
 // dos
 //
 
@@ -165,13 +183,6 @@ extern void launch_spot_script_editor(spot_type *spot);
 
 extern bool light_maps_create(void);
 extern void light_maps_clear(void);
-
-//
-// auto-generate maps
-//
-
-extern int ag_get_styles(char *style_list);
-extern bool ag_generate_map(ag_build_setup_type *build_setup);
 
 //
 // selection routines

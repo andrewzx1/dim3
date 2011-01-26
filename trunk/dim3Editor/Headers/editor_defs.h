@@ -222,7 +222,6 @@ and can be sold or given away.
 #define kCommandFileOpen						FOUR_CHAR_CODE('open')
 #define kCommandFileClose						FOUR_CHAR_CODE('clse')
 #define kCommandFileSave						FOUR_CHAR_CODE('save')
-#define kCommandFileAutoGenerateMap				FOUR_CHAR_CODE('auto')
 #define kCommandFileQuit						FOUR_CHAR_CODE('quit')
 
 #define kCommandEditUndo						FOUR_CHAR_CODE('undo')
@@ -360,82 +359,6 @@ typedef struct		{
 					} view_picker_type;
 
 //
-// auto generator
-//
-
-#define ag_max_style							32
-
-#define ag_max_shape							128
-#define ag_max_shape_point						64
-#define ag_max_shape_connector					32
-#define ag_max_shape_poly						64
-
-#define ag_max_room								256
-
-#define ag_connector_type_min_x					0
-#define ag_connector_type_max_x					1
-#define ag_connector_type_min_z					2
-#define ag_connector_type_max_z					3
-
-#define ag_floor_left							0
-#define ag_floor_right							1
-#define ag_floor_top							2
-#define ag_floor_bottom							3
-
-#define ag_texture_wall							0
-#define ag_texture_floor						1
-#define ag_texture_ceiling						2
-#define ag_texture_additional_floor				3
-#define ag_texture_wall_temp					4
-
-typedef struct		{
-						int						nshape,
-												shape_list[ag_max_shape];
-						char					name[name_str_len];
-					} ag_style_type;
-
-typedef struct		{
-						int						npt,v[4];
-						bool					floor_flags[4];
-					} ag_shape_poly_type;
-
-typedef struct		{
-						int						type,dist,v[2];
-						d3pnt					top_left;
-					} ag_shape_connector_type;
-
-typedef struct		{
-						int						nvertex,npoly,nconnector;
-						char					name[name_str_len];
-						bool					corridor;
-						d3pnt					vertexes[ag_max_shape_point];
-						ag_shape_poly_type		polys[ag_max_shape_poly];
-						ag_shape_connector_type	connectors[ag_max_shape_connector];
-					} ag_shape_type;
-
-typedef struct		{
-						int						shape_idx,mesh_idx;
-						bool					corridor,clip,multi_story,
-												connectors_used[ag_max_shape_connector];
-						d3pnt					min,max;
-						d3vct					size;
-					} ag_room_type;
-
-typedef struct		{
-						int						nstyle,nshape,nroom;
-						ag_style_type			*styles;
-						ag_shape_type			*shapes;
-						ag_room_type			*rooms;
-					} ag_state_type;
-
-typedef struct		{
-						int						style_idx,seed,
-												room_count,room_sz,room_high,
-												story_count,merge_count;
-						bool					mirror;
-					} ag_build_setup_type;
-
-//
 // editor state struct
 //
 
@@ -443,7 +366,8 @@ typedef struct		{
 						int						vertex_mode,drag_mode,grid_mode,node_mode,
 												handle_mode,view_select_idx,drag_handle_idx,
 												texture_edit_idx,
-												cur_cinema_action_idx,cur_movement_move_idx;
+												cur_cinema_idx,cur_cinema_action_idx,
+												cur_movement_idx,cur_movement_move_idx;
 						bool					map_opened,
 												free_look,select_add,auto_texture,select_box_on,
 												show_liquid,show_normals,show_node,show_object,
