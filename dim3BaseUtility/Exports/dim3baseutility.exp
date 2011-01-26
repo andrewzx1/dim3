@@ -135,6 +135,7 @@ _xml_findnextchild
 _xml_getparent
 _xml_countchildren
 _xml_findflat
+_xml_findflatinparent
 
 _xml_get_attribute_raw
 _xml_get_attribute_text

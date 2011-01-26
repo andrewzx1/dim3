@@ -293,6 +293,7 @@ extern int xml_findnextchild(int curtag);
 extern int xml_getparent(int n);
 extern int xml_countchildren(int n);
 extern int xml_findflat(char *name,int offset);
+extern int xml_findflatinparent(char *name,int parent,int offset);
 
 extern bool xml_get_attribute_raw(int n,char *name,char *value,int valuesz);
 extern bool xml_get_attribute_text(int n,char *name,char *value,int valuesz);

@@ -139,6 +139,7 @@ EXPORTS
 	xml_getparent								@293
 	xml_countchildren							@294
 	xml_findflat								@295
+	xml_findflatinparent						@296
 
 	xml_get_attribute_raw						@300
 	xml_get_attribute_text						@301

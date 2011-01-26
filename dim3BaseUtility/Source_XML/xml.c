@@ -398,6 +398,26 @@ int xml_findflat(char *name,int offset)
 	return(-1);
 }
 
+int xml_findflatinparent(char *name,int parent,int offset)
+{
+	int			n;
+	xmltagtype	*tag;
+
+	tag=(xmltagtype*)xml_taglistptr;
+
+	for (n=0;n<xml_ntag;n++) {
+		if (tag->parent==parent) {
+			if (strcmp(tag->name,name)==0) {
+				offset--;
+				if (offset<0) return(n);
+			}
+		}
+		tag++;
+	}
+	
+	return(-1);
+}
+
 /* =======================================================
 
       Hex Translations
