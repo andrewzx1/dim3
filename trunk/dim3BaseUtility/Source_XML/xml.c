@@ -402,7 +402,7 @@ int xml_findflatinparent(char *name,int parent,int offset)
 {
 	int			n;
 	xmltagtype	*tag;
-
+	
 	tag=(xmltagtype*)xml_taglistptr;
 
 	for (n=0;n<xml_ntag;n++) {
