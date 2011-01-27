@@ -274,6 +274,7 @@ void property_palette_click(d3pnt *pnt,bool double_click)
 		if (old_open!=list_palette_open) {
 			item_palette_setup();
 			property_palette_setup();
+			alt_property_palette_setup();
 			main_wind_draw();
 		}
 		return;

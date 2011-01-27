@@ -58,6 +58,7 @@ void main_wind_initialize(void)
 	list_palette_initialize("Editor");
 	item_palette_initialize();
 	property_palette_initialize();
+	alt_property_palette_initialize();
 
 		// size setups
 		
@@ -66,6 +67,7 @@ void main_wind_initialize(void)
 	
 	item_palette_setup();
 	property_palette_setup();
+	alt_property_palette_setup();
 
 	view_initialize();
    
@@ -90,6 +92,7 @@ void main_wind_shutdown(void)
 {
 	view_shutdown();
 	
+	alt_property_palette_shutdown();
 	property_palette_shutdown();
 	item_palette_shutdown();
 	list_palette_shutdown();
@@ -355,6 +358,7 @@ void main_wind_resize(void)
 	texture_palette_setup();
 	item_palette_setup();
 	property_palette_setup();
+	alt_property_palette_setup();
 }
 
 
