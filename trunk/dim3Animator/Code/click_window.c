@@ -230,12 +230,13 @@ bool select_model_wind_polygon(d3pnt *start_pnt)
 	model_draw_setup_shutdown(&model,&draw_setup);
 	
 	model_pick_list_end(start_pnt,&idx);
-	
-	state.sel_trig_idx=idx;
 
-	if (state.sel_trig_idx==-1) return(FALSE);
+	if (idx==-1) return(FALSE);
+
+	trig_set_sel_mask(state.cur_mesh_idx,idx,TRUE);
 	
 		// select all the vertexes attached to trig
+	// supergumba -- move this to trig_mask
 	
 	vertex_clear_sel_mask(state.cur_mesh_idx);
 	

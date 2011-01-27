@@ -567,7 +567,7 @@ bool import_svg(char *path,char *err_str)
 				// path definition
 				
 			if (xml_get_attribute_text(path_tag,"d",path_str,1024)) {
-				sprintf(str,"g_tag=%d, path_tag=%d",g_tag,path_tag);
+				sprintf(str,"g_tag=%d, path_tag=%d, len=%d",g_tag,path_tag,strlen(path_str));
 				os_dialog_alert(str,path_str);
 			}
 

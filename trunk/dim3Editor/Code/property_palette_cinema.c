@@ -39,7 +39,9 @@ and can be sold or given away.
 #define kCinemaPropertyFreezeInput			2
 #define kCinemaPropertyShowHUD				3
 
-#define kCinemaPropertyActionAdd			10
+#define kCinmeaPropertySort					10
+
+#define kCinemaPropertyActionAdd			20
 
 #define kCinemaPropertyAction				1000
 #define kCinemaPropertyActionDelete			2000
@@ -50,6 +52,9 @@ extern editor_setup_type		setup;
 
 extern list_palette_type		property_palette;
 
+char							action_actor_type_str[][32]={"Camera","Player","Object","Movement","Particle","Text","Bitmap"},
+								action_action_type_str[][32]={"None","Place","Move","Stop","Show","Hide"};
+
 /* =======================================================
 
       Property Palette Fill Cinema
@@ -59,9 +64,7 @@ extern list_palette_type		property_palette;
 void property_palette_fill_cinema(int cinema_idx)
 {
 	int						n;
-	char					str[256];
-	char					actor_type_str[][32]={"Camera","Player","Object","Movement","Particle","HUD Text","HUD Bitmap"},
-							action_type_str[][32]={"None","Place","Move","Stop","Show","Hide"};
+	char					str[256],str2[256];
 	map_cinema_type			*cinema;
 	map_cinema_action_type	*action;
 
@@ -75,26 +78,105 @@ void property_palette_fill_cinema(int cinema_idx)
 	list_palette_add_checkbox(&property_palette,kCinemaPropertyFreezeInput,"Freeze Input",cinema->freeze_input,FALSE);
 	list_palette_add_checkbox(&property_palette,kCinemaPropertyShowHUD,"Show HUD",cinema->show_hud,FALSE);
 
+	list_palette_add_header(&property_palette,0,"Cinema Sort");
+	list_palette_add_string_selectable_button(&property_palette,kCinmeaPropertySort,list_button_set,kCinmeaPropertySort,"Sort Actions",NULL,FALSE,FALSE);
+
 	list_palette_add_header_button(&property_palette,kCinemaPropertyActionAdd,"Cinema Actions",list_button_plus);
 
 	action=cinema->actions;
 
 	for (n=0;n!=cinema->naction;n++) {
 
-		if ((action->actor_type!=cinema_actor_camera) && (action->actor_type!=cinema_actor_player)) {
-			sprintf(str,"%s: %s",actor_type_str[action->actor_type],action->actor_name);
-		}
-		else {
-			strcpy(str,actor_type_str[action->actor_type]);
+		sprintf(str,"%d: ",action->start_msec);
+		if (action->action!=cinema_action_none) {
+			strcat(str,action_action_type_str[action->action]);
+			strcat(str," ");
 		}
 
-		strcat(str," ");
-		strcat(str,action_type_str[action->action]);
+		if ((action->actor_type!=cinema_actor_camera) && (action->actor_type!=cinema_actor_player)) {
+			sprintf(str2,"%s(%s)",action_actor_type_str[action->actor_type],action->actor_name);
+		}
+		else {
+			strcpy(str2,action_actor_type_str[action->actor_type]);
+		}
+
+		strcat(str,str2);
 
 		list_palette_add_string_selectable_button(&property_palette,(kCinemaPropertyAction+n),list_button_minus,(kCinemaPropertyActionDelete+n),str,NULL,(state.cur_cinema_action_idx==n),FALSE);
 	
 		action++;
 	}
+}
+
+/* =======================================================
+
+      Sort Cinemas
+      
+======================================================= */
+
+void cinemas_action_sort(int cinema_idx)
+{
+	int						n,k,idx,count,sz;
+	int						*sort_list;
+	map_cinema_type			*cinema;
+	map_cinema_action_type	*action,*a_ptr;
+	
+	cinema=&map.cinema.cinemas[cinema_idx];
+	if (cinema->naction<=1) return;
+	
+		// sort the items
+		
+	sort_list=(int*)malloc((cinema->naction+1)*sizeof(int));
+	if (sort_list==NULL) return;
+	
+	count=0;
+	action=cinema->actions;
+	
+	for (n=0;n!=cinema->naction;n++) {
+	
+		idx=count;
+		
+		for (k=0;k!=count;k++) {
+			if (cinema->actions[sort_list[k]].start_msec>action->start_msec) {
+				idx=k;
+				break;
+			}
+		}
+		
+		sz=(count-idx)*sizeof(int);
+		if (sz>0) memmove(&sort_list[idx+1],&sort_list[idx],sz);
+		
+		sort_list[idx]=n;
+		count++;
+
+		action++;
+	}
+	
+		// find the new index
+		
+	for (n=0;n!=cinema->naction;n++) {
+		if (sort_list[n]==state.cur_cinema_action_idx) {
+			state.cur_cinema_action_idx=n;
+			break;
+		}
+	}
+	
+		// sort the list
+		
+	a_ptr=(map_cinema_action_type*)malloc(cinema->naction*sizeof(map_cinema_action_type));
+	if (a_ptr==NULL) {
+		free(sort_list);
+		return;
+	}
+	
+	for (n=0;n!=cinema->naction;n++) {
+		memmove(&a_ptr[n],&cinema->actions[sort_list[n]],sizeof(map_cinema_action_type));
+	}
+	
+	memmove(cinema->actions,a_ptr,(cinema->naction*sizeof(map_cinema_action_type)));
+	free(a_ptr);
+		
+	free(sort_list);
 }
 
 /* =======================================================
@@ -130,6 +212,14 @@ void property_palette_click_cinema(int cinema_idx,int id)
 	if (id>=kCinemaPropertyActionDelete) {
 		state.cur_cinema_action_idx=-1;
 		map_cinema_delete_action(&map,cinema_idx,(id-kCinemaPropertyActionDelete));
+		main_wind_draw();
+		return;
+	}
+
+		// sort action
+
+	if (id==kCinmeaPropertySort) {
+		cinemas_action_sort(cinema_idx);
 		main_wind_draw();
 		return;
 	}

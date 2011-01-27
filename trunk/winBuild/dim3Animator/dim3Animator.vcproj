@@ -357,6 +357,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\dim3Animator\Code\trig_masks.c"
+					>
+				</File>
+				<File
 					RelativePath="..\..\dim3Animator\Code\undo.c"
 					>
 				</File>
