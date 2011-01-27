@@ -2,7 +2,7 @@
 
 Module: dim3 Animator
 Author: Brian Barnes
- Usage: Model Vertex Select/Hide Masks
+ Usage: Model Trig Select/Hide Masks
 
 ***************************** License ********************************
 
@@ -34,33 +34,33 @@ and can be sold or given away.
 
 extern model_type				model;
 
-unsigned char					*vertex_mask_ptr;
+unsigned char					*trig_mask_ptr;
 
 /* =======================================================
 
-      Initialize and Shutdown Vertex Masks
+      Initialize and Shutdown Trig Masks
       
 ======================================================= */
 
-bool vertex_mask_initialize(void)
+bool trig_mask_initialize(void)
 {
-	vertex_mask_ptr=(unsigned char*)malloc(animator_max_vertex*max_model_mesh);
-	return(vertex_mask_ptr!=NULL);
+	trig_mask_ptr=(unsigned char*)malloc(animator_max_trig*max_model_mesh);
+	return(trig_mask_ptr!=NULL);
 }
 
-void vertex_mask_shutdown(void)
+void trig_mask_shutdown(void)
 {
-	free(vertex_mask_ptr);
+	free(trig_mask_ptr);
 }
 
-unsigned char vertex_mask_get(int mesh_idx,int vertex_idx)
+unsigned char trig_mask_get(int mesh_idx,int trig_idx)
 {
-	return(*(vertex_mask_ptr+((animator_max_vertex*mesh_idx)+vertex_idx)));
+	return(*(trig_mask_ptr+((animator_max_trig*mesh_idx)+trig_idx)));
 }
 
-void vertex_mask_set(int mesh_idx,int vertex_idx,unsigned char mask)
+void trig_mask_set(int mesh_idx,int trig_idx,unsigned char mask)
 {
-	*(vertex_mask_ptr+((animator_max_vertex*mesh_idx)+vertex_idx))=mask;
+	*(trig_mask_ptr+((animator_max_trig*mesh_idx)+trig_idx))=mask;
 }
 
 /* =======================================================
@@ -69,7 +69,7 @@ void vertex_mask_set(int mesh_idx,int vertex_idx,unsigned char mask)
       
 ======================================================= */
 
-void vertex_clear_sel_mask(int mesh_idx)
+void trig_clear_sel_mask(int mesh_idx)
 {
 	int				n;
 	unsigned char	mask;
@@ -77,18 +77,18 @@ void vertex_clear_sel_mask(int mesh_idx)
 	
 	mesh=&model.meshes[mesh_idx];
 	
-	for (n=0;n!=mesh->nvertex;n++) {
-		mask=vertex_mask_get(mesh_idx,n);
+	for (n=0;n!=mesh->ntrig;n++) {
+		mask=trig_mask_get(mesh_idx,n);
 		mask&=(animator_mask_flag_sel^0xFF);
-		vertex_mask_set(mesh_idx,n,mask);
+		trig_mask_set(mesh_idx,n,mask);
 	}
 }
 
-void vertex_set_sel_mask(int mesh_idx,int vertex_idx,bool value)
+void trig_set_sel_mask(int mesh_idx,int trig_idx,bool value)
 {
 	unsigned char	mask;
 	
-	mask=vertex_mask_get(mesh_idx,vertex_idx);
+	mask=trig_mask_get(mesh_idx,trig_idx);
 	
 	if (value) {
 		mask|=animator_mask_flag_sel;
@@ -97,9 +97,10 @@ void vertex_set_sel_mask(int mesh_idx,int vertex_idx,bool value)
 		mask&=(animator_mask_flag_sel^0xFF);
 	}
 	
-	vertex_mask_set(mesh_idx,vertex_idx,mask);
+	trig_mask_set(mesh_idx,trig_idx,mask);
 }
 
+/*
 void vertex_set_sel_mask_all(int mesh_idx)
 {
 	int				n;
@@ -138,13 +139,13 @@ bool vertex_check_sel_mask(int mesh_idx,int vertex_idx)
 	mask=vertex_mask_get(mesh_idx,vertex_idx);
 	return((mask&animator_mask_flag_sel)!=0x0);
 }
-
+*/
 /* =======================================================
 
       Hide Masks
       
 ======================================================= */
-
+/*
 void vertex_clear_hide_mask(int mesh_idx)
 {
 	int				n;
@@ -183,13 +184,13 @@ bool vertex_check_hide_mask(int mesh_idx,int vertex_idx)
 	mask=vertex_mask_get(mesh_idx,vertex_idx);
 	return((mask&animator_mask_flag_hide)!=0x0);
 }
-
+*/
 /* =======================================================
 
-      Hide/Select Interactions
+      Hide/Sel Interactions
       
 ======================================================= */
-
+/*
 void vertex_hide_mask_set_sel_vertexes(int mesh_idx)
 {
 	int				n,nt;
@@ -218,13 +219,13 @@ void vertex_hide_mask_show_all_vertexes(int mesh_idx)
 {
 	vertex_clear_hide_mask(mesh_idx);
 }
-
+*/
 /* =======================================================
 
       Hide/Trig Interactions
       
 ======================================================= */
-
+/*
 bool vertex_check_hide_mask_trig(int mesh_idx,model_trig_type *trig)
 {
 	int				n;
@@ -235,139 +236,14 @@ bool vertex_check_hide_mask_trig(int mesh_idx,model_trig_type *trig)
 	
 	return(FALSE);
 }
-
-/* =======================================================
-
-      Sel/Bone Interactions
-      
-======================================================= */
-
-void vertex_set_sel_mask_bone(int mesh_idx,int bone_idx)
-{
-	int					i,nt;
-	model_vertex_type	*vertex;
-	
-		// clear selection
-		
-	vertex_clear_sel_mask(mesh_idx);
-	
-		// find vertexes attached to bone
-
-	nt=model.meshes[mesh_idx].nvertex;
-		
-	vertex=model.meshes[mesh_idx].vertexes;
-	
-	for (i=0;i!=nt;i++) {
-	
-		if ((vertex->major_bone_idx==bone_idx) || (vertex->minor_bone_idx==bone_idx)) {
-			if (!vertex_check_hide_mask(mesh_idx,i)) vertex_set_sel_mask(mesh_idx,i,TRUE);
-		}
-		
-		vertex++;
-	}
-}
-
-void vertex_set_sel_mask_no_bone(int mesh_idx)
-{
-	int					i,nt;
-	model_vertex_type	*vertex;
-	
-		// clear selection
-		
-	vertex_clear_sel_mask(mesh_idx);
-	
-		// find vertexes to no bone
-
-	nt=model.meshes[mesh_idx].nvertex;
-		
-	vertex=model.meshes[mesh_idx].vertexes;
-	
-	for (i=0;i!=nt;i++) {
-	
-		if ((vertex->major_bone_idx==-1) && (vertex->minor_bone_idx==-1)) {
-			if (!vertex_check_hide_mask(mesh_idx,i)) vertex_set_sel_mask(mesh_idx,i,TRUE);
-		}
-		
-		vertex++;
-	}
-}
-
-void vertex_set_sel_mask_near_bone(int mesh_idx,int bone_idx,float percentage)
-{
-	int					i,nt,x,y,z,v_dist,dist;
-	model_bone_type		*bone;
-	model_vertex_type	*vertex;
-	
-		// get bone to check
-		
-	bone=&model.bones[bone_idx];
-	
-		// clear selection
-		
-	vertex_clear_sel_mask(mesh_idx);
-
-		// get check distance
-		
-	x=model.view_box.size.x;
-	z=model.view_box.size.z;
-	y=model.view_box.size.y;
-	
-	v_dist=(int)(sqrt((x*x)+(z*z)+(y*y)));
-	v_dist=(int)((float)v_dist*percentage);
-	
-	nt=model.meshes[mesh_idx].nvertex;
-	vertex=model.meshes[mesh_idx].vertexes;
-	
-	for (i=0;i!=nt;i++) {
-	
-		x=labs(bone->pnt.x-vertex->pnt.x);
-		z=labs(bone->pnt.z-vertex->pnt.z);
-		y=labs(bone->pnt.y-vertex->pnt.y);
-		dist=(int)(sqrt((x*x)+(z*z)+(y*y)));
-	
-		if (dist<v_dist) vertex_set_sel_mask(mesh_idx,i,TRUE);
-	
-		vertex++;
-	}
-	
-}
-
-/* =======================================================
-
-      Set Vertexes To Bone
-      
-======================================================= */
-
-void vertex_set_sel_vertex_to_bone(int mesh_idx,int major_bone_idx,int minor_bone_idx,float factor)
-{
-	int					i,nt;
-	model_vertex_type	*vertex;
-	
-		// attach vertexes to bone
-		
-	nt=model.meshes[mesh_idx].nvertex;
-	vertex=model.meshes[mesh_idx].vertexes;
-	
-	for (i=0;i!=nt;i++) {
-	
-		if (vertex_check_sel_mask(mesh_idx,i)) {
-			vertex->major_bone_idx=major_bone_idx;
-			vertex->minor_bone_idx=minor_bone_idx;
-			vertex->bone_factor=factor;
-		}
-		
-		vertex++;
-	}
-	
-	model_calculate_parents(&model);
-}
+*/
 
 /* =======================================================
 
       Sel/Material Interactions
       
 ======================================================= */
-
+/*
 void vertex_set_sel_mask_material(int mesh_idx,int material_idx)
 {
 	int					i,k,nt;
@@ -394,4 +270,4 @@ void vertex_set_sel_mask_material(int mesh_idx,int material_idx)
 		trig++;
 	}
 }
-
+*/

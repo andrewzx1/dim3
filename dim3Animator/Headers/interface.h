@@ -259,6 +259,15 @@ extern void vertex_delete_sel_vertex(int mesh_idx);
 extern void vertex_delete_unused_vertexes(int mesh_idx);
 
 //
+// triangle masks
+//
+
+extern bool trig_mask_initialize(void);
+extern void trig_mask_shutdown(void);
+extern void trig_clear_sel_mask(int mesh_idx);
+extern void trig_set_sel_mask(int mesh_idx,int trig_idx,bool value);
+
+//
 // model picking
 //
 

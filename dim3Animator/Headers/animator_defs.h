@@ -50,7 +50,6 @@ and can be sold or given away.
 
 #define tool_separators					{"000010100101"}
 
-
 //
 // Menus
 //
@@ -141,6 +140,16 @@ and can be sold or given away.
 #define kCommandResetTimeAnimate		FOUR_CHAR_CODE('artm')
 #define kCommandPlayAnimate				FOUR_CHAR_CODE('plya')
 #define kCommandPlayBlendAnimate		FOUR_CHAR_CODE('plyb')
+
+//
+// vertex and trig masks
+//
+
+#define animator_max_vertex				10240
+#define animator_max_trig				10240
+
+#define animator_mask_flag_sel			0x1
+#define animator_mask_flag_hide			0x2
 
 //
 // Item types

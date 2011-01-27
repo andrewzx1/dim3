@@ -70,16 +70,18 @@ void main_wind_initialize(void)
 	
 	model_wind_setup();
 
-		// vertex masks
+		// vertex and trig masks
 		
 	vertex_mask_initialize();
+	trig_mask_initialize();
 }
 
 void main_wind_shutdown(void)
 {
-		// free vertex masks
+		// free vertex and trig masks
 		
 	vertex_mask_shutdown();
+	trig_mask_shutdown();
 	
 		// shutdown palettes
 		

@@ -462,6 +462,7 @@ bool xml_get_attribute_raw(int n,char *name,char *value,int valuesz)
 
 	inname=TRUE;
 	inquote=FALSE;
+	attribname[0]=0x0;
 	noff=voff=0;
 
 	for (i=0;i<sz;i++) {
@@ -479,6 +480,7 @@ bool xml_get_attribute_raw(int n,char *name,char *value,int valuesz)
 				if (strcmp(name,attribname)==0) return(TRUE);
 	
 				inname=TRUE;
+				attribname[0]=0x0;
 				noff=0;
 				continue;
 			}

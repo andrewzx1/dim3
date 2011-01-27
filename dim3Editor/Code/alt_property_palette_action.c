@@ -34,21 +34,14 @@ and can be sold or given away.
 #include "interface.h"
 #include "dialog.h"
 
-#define kPoseBoneMovePropertyRot					0
-#define kPoseBoneMovePropertyMove					1
-#define kPoseBoneMovePropertyAcceleration			2
-#define kPoseBoneMovePropertySkipBlended			3
-
-#define kPoseBoneMovePropertyConstraintBone			4
-#define kPoseBoneMovePropertyConstraintOffset		5
+#define kCinemaActionPropertyTimeStart				0
+#define kCinemaActionPropertyTimeEnd				1
 
 /*
 #define kCinemaActionActorType				FOUR_CHAR_CODE('actt')
 #define kCinemaActionActorName				FOUR_CHAR_CODE('actr')
 #define kCinemaActionAction					FOUR_CHAR_CODE('actn')
 #define kCinemaActionNode					FOUR_CHAR_CODE('node')
-#define kCinemaActionTimeStart				FOUR_CHAR_CODE('tsrt')
-#define kCinemaActionTimeEnd				FOUR_CHAR_CODE('tend')
 #define kCinemaActionAnimation				FOUR_CHAR_CODE('anim')
 #define kCinemaActionNextAnimation			FOUR_CHAR_CODE('nanm')
 #define kCinemaActionText					FOUR_CHAR_CODE('text')
@@ -83,13 +76,18 @@ typedef struct		{
 
 void alt_property_palette_fill_cinema_action(int cinema_idx,int action_idx)
 {
+	map_cinema_action_type	*action;
+
+	if (action_idx==-1) return;
+
+	action=&map.cinema.cinemas[cinema_idx].actions[action_idx];
+
+	list_palette_add_header(&alt_property_palette,0,"Cinema Action Timing");
+	list_palette_add_string_int(&alt_property_palette,kCinemaActionPropertyTimeStart,"Time Start",action->start_msec,FALSE);
+	list_palette_add_string_int(&alt_property_palette,kCinemaActionPropertyTimeEnd,"Time End",action->end_msec,FALSE);
+
+
 	/*
-	model_bone_move_type	*bone_move;
-
-	if (bone_move_idx==-1) return;
-
-	bone_move=&model.poses[pose_idx].bone_moves[bone_move_idx];
-
 	list_palette_add_header(&alt_property_palette,0,"Pose Bone Move Position");
 	list_palette_add_vector(&alt_property_palette,kPoseBoneMovePropertyRot,"Rot",&bone_move->rot,FALSE);
 	list_palette_add_vector(&alt_property_palette,kPoseBoneMovePropertyMove,"Move",&bone_move->mov,FALSE);
@@ -112,37 +110,20 @@ void alt_property_palette_fill_cinema_action(int cinema_idx,int action_idx)
 
 void alt_property_palette_click_cinema_action(int cinema_idx,int action_idx,int id)
 {
-	/*
-	model_bone_move_type	*bone_move;
+	map_cinema_action_type	*action;
 
-	if (bone_move_idx==-1) return;
+	if (action_idx==-1) return;
 
-	bone_move=&model.poses[pose_idx].bone_moves[bone_move_idx];
+	action=&map.cinema.cinemas[cinema_idx].actions[action_idx];
 
 	switch (id) {
-
-		case kPoseBoneMovePropertyRot:
-			dialog_property_string_run(list_string_value_vector,(void*)&bone_move->rot,0,0,0);
+	
+		case kCinemaActionPropertyTimeStart:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&action->start_msec,0,0,0);
 			break;
 
-		case kPoseBoneMovePropertyMove:
-			dialog_property_string_run(list_string_value_vector,(void*)&bone_move->mov,0,0,0);
-			break;
-
-		case kPoseBoneMovePropertyAcceleration:
-			dialog_property_string_run(list_string_value_positive_float,(void*)&bone_move->acceleration,0,0,0);
-			break;
-
-		case kPoseBoneMovePropertySkipBlended:
-			bone_move->skip_blended=!bone_move->skip_blended;
-			break;
-
-		case kPoseBoneMovePropertyConstraintBone:
-			property_palette_pick_bone(&bone_move->constraint.bone_idx);
-			break;
-
-		case kPoseBoneMovePropertyConstraintOffset:
-			dialog_property_string_run(list_string_value_point,(void*)&bone_move->constraint.offset,0,0,0);
+		case kCinemaActionPropertyTimeEnd:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&action->end_msec,0,0,0);
 			break;
 
 	}
@@ -150,5 +131,4 @@ void alt_property_palette_click_cinema_action(int cinema_idx,int action_idx,int 
 		// redraw
 
 	main_wind_draw();
-	*/
 }
