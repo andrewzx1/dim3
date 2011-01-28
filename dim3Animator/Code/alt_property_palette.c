@@ -101,6 +101,8 @@ void alt_property_fix_open_state(void)
 
 	alt_property_open=((state.cur_item==item_animate) && (state.cur_animate_idx!=-1) && (state.cur_animate_pose_move_idx!=-1));
 	alt_property_open|=((state.cur_item==item_pose) && (state.cur_pose_idx!=-1) && (state.cur_pose_bone_move_idx!=-1));
+
+	if (state.texture_edit_idx!=-1) alt_property_open=FALSE;
 	
 	if (!alt_property_open) {
 		state.cur_animate_pose_move_idx=-1;
@@ -113,7 +115,6 @@ void alt_property_fix_open_state(void)
 		item_palette_setup();
 		property_palette_setup();
 		alt_property_palette_setup();
-		model_wind_setup();
 	}
 }
 

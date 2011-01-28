@@ -72,13 +72,14 @@ and can be sold or given away.
 
 #define kCommandAbout					FOUR_CHAR_CODE('abot')
 
-#define kCommandNew						FOUR_CHAR_CODE('newB')
-#define kCommandOpen					FOUR_CHAR_CODE('opnB')
-#define kCommandClose					FOUR_CHAR_CODE('clse')
-#define kCommandSave					FOUR_CHAR_CODE('savB')
+#define kCommandFileNew					FOUR_CHAR_CODE('newB')
+#define kCommandFileOpen				FOUR_CHAR_CODE('opnB')
+#define kCommandFileClose				FOUR_CHAR_CODE('clse')
+#define kCommandFileSave				FOUR_CHAR_CODE('savB')
 #define kCommandFileQuit				FOUR_CHAR_CODE('quit')
 
-#define kCommandUndo					FOUR_CHAR_CODE('undo')
+#define kCommandEditUndo				FOUR_CHAR_CODE('undo')
+#define kCommandEditSelectMore			FOUR_CHAR_CODE('selm')
 
 #define kCommandPrepareModel			FOUR_CHAR_CODE('pmdl')
 #define kCommandCalcBoxes				FOUR_CHAR_CODE('cbox')
@@ -231,7 +232,7 @@ typedef struct		{
 											cur_pose_idx,cur_animate_idx,cur_hit_box_idx,
 											cur_animate_pose_move_idx,cur_pose_bone_move_idx,
 											texture_edit_idx,drag_bone_mode,select_mode,
-											sel_trig_idx,magnify_z;
+											magnify_z;
 						bool				model_open,
 											texture,mesh,bone,hit_box,
 											normal,view_box,first_mesh,

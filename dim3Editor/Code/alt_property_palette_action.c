@@ -36,17 +36,14 @@ and can be sold or given away.
 
 #define kCinemaActionPropertyTimeStart				0
 #define kCinemaActionPropertyTimeEnd				1
-
-/*
-#define kCinemaActionActorType				FOUR_CHAR_CODE('actt')
-#define kCinemaActionActorName				FOUR_CHAR_CODE('actr')
-#define kCinemaActionAction					FOUR_CHAR_CODE('actn')
-#define kCinemaActionNode					FOUR_CHAR_CODE('node')
-#define kCinemaActionAnimation				FOUR_CHAR_CODE('anim')
-#define kCinemaActionNextAnimation			FOUR_CHAR_CODE('nanm')
-#define kCinemaActionText					FOUR_CHAR_CODE('text')
-#define kCinemaActionReverseMove			FOUR_CHAR_CODE('rmov')
-*/
+#define kCinemaActionPropertyAction					2
+#define kCinemaActionPropertyActorType				3
+#define kCinemaActionPropertyActorName				4
+#define kCinemaActionPropertyAnimation				5
+#define kCinemaActionPropertyNextAnimation			6
+#define kCinemaActionPropertyNode					7
+#define kCinemaActionPropertyText					8
+#define kCinemaActionPropertyReverseMove			9
 
 extern map_type					map;
 extern editor_state_type		state;
@@ -55,18 +52,7 @@ extern file_path_setup_type		file_path_setup;
 
 extern list_palette_type		alt_property_palette;
 
-/*
-typedef struct		{
-						int									action,actor_type,
-															start_msec,end_msec;
-						bool								move_reverse;
-						char								actor_name[name_str_len],
-															animation_name[name_str_len],
-															next_animation_name[name_str_len],
-															node_name[name_str_len],
-															text_str[256];
-					} map_cinema_action_type;
-*/
+extern char						action_actor_type_str[][32],action_action_type_str[][32];
 
 /* =======================================================
 
@@ -76,30 +62,62 @@ typedef struct		{
 
 void alt_property_palette_fill_cinema_action(int cinema_idx,int action_idx)
 {
+	bool					has_actor,has_animation,has_node;
 	map_cinema_action_type	*action;
 
 	if (action_idx==-1) return;
 
 	action=&map.cinema.cinemas[cinema_idx].actions[action_idx];
 
+		// setup some editing enables
+	
+	has_actor=((action->actor_type!=cinema_actor_camera) && (action->actor_type!=cinema_actor_player));
+	has_animation=((action->actor_type==cinema_actor_player) || (action->actor_type==cinema_actor_object));
+	has_node=((action->actor_type==cinema_actor_camera) || (action->actor_type==cinema_actor_player) || (action->actor_type==cinema_actor_object) || (action->actor_type==cinema_actor_particle));
+
+		// the properties
+
 	list_palette_add_header(&alt_property_palette,0,"Cinema Action Timing");
 	list_palette_add_string_int(&alt_property_palette,kCinemaActionPropertyTimeStart,"Time Start",action->start_msec,FALSE);
 	list_palette_add_string_int(&alt_property_palette,kCinemaActionPropertyTimeEnd,"Time End",action->end_msec,FALSE);
 
+	list_palette_add_header(&alt_property_palette,0,"Cinema Action Actor");
+	list_palette_add_string(&alt_property_palette,kCinemaActionPropertyAction,"Action",action_action_type_str[action->action],FALSE);
+	list_palette_add_string(&alt_property_palette,kCinemaActionPropertyActorType,"Type",action_actor_type_str[action->actor_type],FALSE);
+	if (has_actor) {
+		list_palette_add_string(&alt_property_palette,kCinemaActionPropertyActorName,"Name",action->actor_name,FALSE);
+	}
+	else {
+		list_palette_add_string(&alt_property_palette,kCinemaActionPropertyActorName,"Name","n/a",TRUE);
+	}
+	if (has_animation) {
+		list_palette_add_string(&alt_property_palette,kCinemaActionPropertyAnimation,"Animation",action->animation_name,FALSE);
+		list_palette_add_string(&alt_property_palette,kCinemaActionPropertyNextAnimation,"Next Animation",action->next_animation_name,FALSE);
+	}
+	else {
+		list_palette_add_string(&alt_property_palette,kCinemaActionPropertyAnimation,"Animation","n/a",TRUE);
+		list_palette_add_string(&alt_property_palette,kCinemaActionPropertyNextAnimation,"Next Animation","n/a",TRUE);
+	}
+	if (has_node) {
+		list_palette_add_string(&alt_property_palette,kCinemaActionPropertyNode,"Node",action->node_name,FALSE);
+	}
+	else {
+		list_palette_add_string(&alt_property_palette,kCinemaActionPropertyNode,"Node","n/a",TRUE);
+	}
 
-	/*
-	list_palette_add_header(&alt_property_palette,0,"Pose Bone Move Position");
-	list_palette_add_vector(&alt_property_palette,kPoseBoneMovePropertyRot,"Rot",&bone_move->rot,FALSE);
-	list_palette_add_vector(&alt_property_palette,kPoseBoneMovePropertyMove,"Move",&bone_move->mov,FALSE);
-	
-	list_palette_add_header(&alt_property_palette,0,"Pose Bone Move Options");
-	list_palette_add_string_float(&alt_property_palette,kPoseBoneMovePropertyAcceleration,"Acceleration",bone_move->acceleration,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kPoseBoneMovePropertySkipBlended,"Skip Blending",bone_move->skip_blended,FALSE);
-
-	list_palette_add_header(&alt_property_palette,0,"Pose Bone Move Constraint");
-	property_palette_add_string_bone(&alt_property_palette,kPoseBoneMovePropertyConstraintBone,"Constraint Bone",bone_move->constraint.bone_idx,FALSE);
-	list_palette_add_point(&alt_property_palette,kPoseBoneMovePropertyConstraintOffset,"Constaint Offset",&bone_move->constraint.offset,FALSE);
-	*/
+	list_palette_add_header(&alt_property_palette,0,"Cinema Action Options");
+	if (action->actor_type==cinema_actor_movement) {
+		list_palette_add_checkbox(&alt_property_palette,kCinemaActionPropertyReverseMove,"Reverse Move",action->move_reverse,FALSE);
+	}
+	else {
+		list_palette_add_string(&alt_property_palette,kCinemaActionPropertyReverseMove,"Reverse Move","n/a",TRUE);
+	}
+	if (action->actor_type==cinema_actor_hud_text) {
+		list_palette_add_string(&alt_property_palette,kCinemaActionPropertyText,"Display Text",action->text_str,FALSE);
+	}
+	else {
+		list_palette_add_string(&alt_property_palette,kCinemaActionPropertyText,"Display Text","n/a",TRUE);
+	}
 }
 
 /* =======================================================
@@ -124,6 +142,61 @@ void alt_property_palette_click_cinema_action(int cinema_idx,int action_idx,int 
 
 		case kCinemaActionPropertyTimeEnd:
 			dialog_property_string_run(list_string_value_positive_int,(void*)&action->end_msec,0,0,0);
+			break;
+
+		case kCinemaActionPropertyAction:
+			property_pick_list((char*)action_action_type_str,&action->action);
+			break;
+
+		case kCinemaActionPropertyActorType:
+			property_pick_list((char*)action_actor_type_str,&action->actor_type);
+			break;
+
+		case kCinemaActionPropertyActorName:
+			switch (action->actor_type) {
+
+				case cinema_actor_object:
+					property_palette_pick_spot(action->actor_name);
+					break;
+
+				case cinema_actor_movement:
+					property_palette_pick_movement(action->actor_name);
+					break;
+
+				case cinema_actor_particle:
+					property_palette_pick_particle(action->actor_name);
+					break;
+
+				case cinema_actor_hud_text:
+					property_palette_pick_hud_text(action->actor_name);
+					break;
+
+				case cinema_actor_hud_bitmap:
+					property_palette_pick_hud_bitmap(action->actor_name);
+					break;
+
+			}
+
+			break;
+
+		case kCinemaActionPropertyAnimation:
+			dialog_property_string_run(list_string_value_string,(void*)action->animation_name,name_str_len,0,0);
+			break;
+
+		case kCinemaActionPropertyNextAnimation:
+			dialog_property_string_run(list_string_value_string,(void*)action->next_animation_name,name_str_len,0,0);
+			break;
+
+		case kCinemaActionPropertyNode:
+			property_palette_pick_node(action->node_name);
+			break;
+
+		case kCinemaActionPropertyReverseMove:
+			action->move_reverse=!action->move_reverse;
+			break;
+
+		case kCinemaActionPropertyText:
+			dialog_property_string_run(list_string_value_string,(void*)action->text_str,256,0,0);
 			break;
 
 	}

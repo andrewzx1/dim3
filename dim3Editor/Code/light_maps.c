@@ -1235,11 +1235,35 @@ bool light_map_ray_trace_map(int mesh_idx,int poly_idx,d3pnt *spt,d3pnt *ept,int
 	return(FALSE);
 }
 
+void light_map_ray_trace_diffuse(int mesh_idx,int poly_idx,d3pnt *rpt,d3pnt *lit_pnt,d3col *col)
+{
+	float				diffuse;
+	d3vct				diffuse_vct;
+	map_mesh_poly_type	*poly;
+
+	if ((mesh_idx==-1) || (poly_idx==-1)) return;
+
+	poly=&map.mesh.meshes[mesh_idx].polys[poly_idx];
+
+		// create the diffuse factor
+
+	vector_create(&diffuse_vct,lit_pnt->x,lit_pnt->y,lit_pnt->z,rpt->x,rpt->y,rpt->z);
+	diffuse=(diffuse_vct.x*poly->tangent_space.normal.x)+(diffuse_vct.y*poly->tangent_space.normal.y)+(diffuse_vct.z*poly->tangent_space.normal.z);
+	diffuse=((diffuse+1.0f)*0.5f)+map.light_map.diffuse_boost;
+
+	if (diffuse>=1.0f) return;
+	if (diffuse<0.0f) diffuse=0.0f;
+
+	col->r*=diffuse;
+	col->g*=diffuse;
+	col->b*=diffuse;
+}
+
 void light_map_ray_trace(int mesh_idx,int poly_idx,d3pnt *rpt,unsigned char *uc_col)
 {
 	int					n;
 	float				f;
-	d3col				col;
+	d3col				col,add_col;
 	double				d,d_intensity,dist,dx,dy,dz;
 	map_light_type		*lit;
 	
@@ -1270,10 +1294,20 @@ void light_map_ray_trace(int mesh_idx,int poly_idx,d3pnt *rpt,unsigned char *uc_
 		d=1.0-(dist/d_intensity);
 		d+=pow(d,(double)lit->exponent);
 		f=(float)d;
-		
-		col.r+=lit->col.r*f;
-		col.g+=lit->col.g*f;
-		col.b+=lit->col.b*f;
+
+		add_col.r=lit->col.r*f;
+		add_col.g=lit->col.g*f;
+		add_col.b=lit->col.b*f;
+
+			// handle normals
+
+		if (map.light_map.use_normals) light_map_ray_trace_diffuse(mesh_idx,poly_idx,rpt,&lit->pnt,&add_col);
+
+			// add in the color
+
+		col.r+=add_col.r;
+		col.g+=add_col.g;
+		col.b+=add_col.b;
 	}
 	
 	if (col.r>1.0f) col.r=1.0f;

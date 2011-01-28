@@ -104,7 +104,7 @@ bool map_movement_delete(map_type *map,int movement_idx)
 		memmove(nptr,map->movement.movements,sz);
 	}
 
-	sz=((map->movement.nmovement-movement_idx)+1)*sizeof(movement_type);
+	sz=((map->movement.nmovement-movement_idx)-1)*sizeof(movement_type);
 	if (sz>0) memmove(&nptr[movement_idx],&map->movement.movements[movement_idx+1],sz);
 
 	free(map->movement.movements);
@@ -179,11 +179,11 @@ bool map_movement_move_delete(map_type *map,int movement_idx,int move_idx)
 	if (nptr==NULL) return(FALSE);
 
 	if (move_idx>0) {
-		sz=(move_idx+1)*sizeof(movement_move_type);
+		sz=move_idx*sizeof(movement_move_type);
 		memmove(nptr,movement->moves,sz);
 	}
 
-	sz=(movement->nmove-move_idx)*sizeof(movement_move_type);
+	sz=((movement->nmove-move_idx)-1)*sizeof(movement_move_type);
 	if (sz>0) memmove(&nptr[move_idx],&movement->moves[move_idx+1],sz);
 
 	free(movement->moves);

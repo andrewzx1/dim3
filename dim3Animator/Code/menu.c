@@ -132,24 +132,24 @@ bool menu_event_run(int cmd)
 		
 			// file menu
 
-		case kCommandNew:
+		case kCommandFileNew:
 			main_wind_play(FALSE,FALSE);
 			file_new_model();
 			return(TRUE);
 
-		case kCommandOpen:
+		case kCommandFileOpen:
 			main_wind_play(FALSE,FALSE);
 			file_open_model();
 			return(TRUE);
 			
-		case kCommandClose:
+		case kCommandFileClose:
 			if (!menu_save_changes_dialog()) return(TRUE);
 			file_close_model();
 			main_wind_play(FALSE,FALSE);
 			menu_update();
 			return(TRUE);
 			
-		case kCommandSave:
+		case kCommandFileSave:
 			file_save_model();
 			return(TRUE);
 
@@ -163,8 +163,13 @@ bool menu_event_run(int cmd)
 			
 			// edit menu
 
-		case kCommandUndo:
+		case kCommandEditUndo:
 			undo_run();
+			main_wind_draw();
+			return(TRUE);
+
+		case kCommandEditSelectMore:
+			trig_mask_select_more(state.cur_mesh_idx);
 			main_wind_draw();
 			return(TRUE);
 			

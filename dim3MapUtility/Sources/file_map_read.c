@@ -86,6 +86,8 @@ void decode_map_settings_xml(map_type *map,int map_head)
         map->light_map.size=xml_get_attribute_int_default(tag,"light_map_size",1024);
         map->light_map.pixel_border_count=xml_get_attribute_int_default(tag,"light_map_pixel_border_count",6);
         map->light_map.blur_count=xml_get_attribute_int_default(tag,"light_map_blur_count",3);
+		map->light_map.use_normals=xml_get_attribute_boolean(tag,"light_map_use_normals");
+        map->light_map.diffuse_boost=xml_get_attribute_float_default(tag,"light_map_diffuse_boost",0.0f);
 	}
 	
     tag=xml_findfirstchild("Editor",map_head);

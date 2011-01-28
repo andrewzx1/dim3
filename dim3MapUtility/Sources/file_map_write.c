@@ -164,6 +164,8 @@ void write_map_settings_xml(map_type *map)
     xml_add_attribute_int("light_map_size",map->light_map.size);
     xml_add_attribute_int("light_map_pixel_border_count",map->light_map.pixel_border_count);
     xml_add_attribute_int("light_map_blur_count",map->light_map.blur_count);
+	xml_add_attribute_boolean("light_map_use_normals",map->light_map.use_normals);
+	xml_add_attribute_float("light_map_diffuse_boost",map->light_map.diffuse_boost);
 	xml_add_tagend(TRUE);
 
     xml_add_tagstart("Editor");

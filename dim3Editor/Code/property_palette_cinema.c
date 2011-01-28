@@ -52,8 +52,8 @@ extern editor_setup_type		setup;
 
 extern list_palette_type		property_palette;
 
-char							action_actor_type_str[][32]={"Camera","Player","Object","Movement","Particle","Text","Bitmap"},
-								action_action_type_str[][32]={"None","Place","Move","Stop","Show","Hide"};
+char							action_actor_type_str[][32]={"Camera","Player","Object","Movement","Particle","Text","Bitmap",""},
+								action_action_type_str[][32]={"None","Place","Move","Stop","Show","Hide",""};
 
 /* =======================================================
 
@@ -188,6 +188,7 @@ void cinemas_action_sort(int cinema_idx)
 void property_palette_click_cinema(int cinema_idx,int id)
 {
 	map_cinema_type		*cinema;
+	char	str[256];
 
 	cinema=&map.cinema.cinemas[cinema_idx];
 
@@ -195,6 +196,7 @@ void property_palette_click_cinema(int cinema_idx,int id)
 
 	if ((id>=kCinemaPropertyAction) && (id<kCinemaPropertyActionDelete)) {
 		state.cur_cinema_action_idx=id-kCinemaPropertyAction;
+		alt_property_fix_open_state();
 		main_wind_draw();
 		return;
 	}
@@ -203,6 +205,7 @@ void property_palette_click_cinema(int cinema_idx,int id)
 
 	if (id==kCinemaPropertyActionAdd) {
 		state.cur_cinema_action_idx=map_cinema_add_action(&map,cinema_idx);
+		alt_property_fix_open_state();
 		main_wind_draw();
 		return;
 	}
@@ -212,6 +215,7 @@ void property_palette_click_cinema(int cinema_idx,int id)
 	if (id>=kCinemaPropertyActionDelete) {
 		state.cur_cinema_action_idx=-1;
 		map_cinema_delete_action(&map,cinema_idx,(id-kCinemaPropertyActionDelete));
+		alt_property_fix_open_state();
 		main_wind_draw();
 		return;
 	}

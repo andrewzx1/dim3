@@ -102,6 +102,8 @@ void alt_property_fix_open_state(void)
 	alt_property_open=((state.cur_cinema_idx!=-1) && (state.cur_cinema_action_idx!=-1));
 	alt_property_open|=((state.cur_movement_idx!=-1) && (state.cur_movement_move_idx!=-1));
 	
+	if (state.texture_edit_idx!=-1) alt_property_open=FALSE;
+
 	if (!alt_property_open) {
 		state.cur_cinema_idx=-1;
 		state.cur_movement_idx=-1;

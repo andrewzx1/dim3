@@ -54,43 +54,45 @@ and can be sold or given away.
 #define kMapPropertyLightMapSize			14
 #define kMapPropertyLightMapBorderCount		15
 #define kMapPropertyLightMapBlurCount		16
+#define kMapPropertyLightMapUseNormals		17
+#define kMapPropertyLightMapDiffuseBoost	18
 
-#define kMapPropertyCameraMode				17
-#define kMapPropertyCameraAngle				18
+#define kMapPropertyCameraMode				20
+#define kMapPropertyCameraAngle				21
 
-#define kMapPropertyCameraFOV				19
-#define kMapPropertyCameraAspectRatio		20
-#define kMapPropertyCameraNearZ				21
-#define kMapPropertyCameraFarZ				22
-#define kMapPropertyCameraNearZOffset		23
+#define kMapPropertyCameraFOV				22
+#define kMapPropertyCameraAspectRatio		23
+#define kMapPropertyCameraNearZ				24
+#define kMapPropertyCameraFarZ				25
+#define kMapPropertyCameraNearZOffset		26
 
-#define kMapPropertyCameraChaseDistance		24
-#define kMapPropertyCameraChaseTrackSpeed	25
-#define kMapPropertyCameraChaseSlop			26
+#define kMapPropertyCameraChaseDistance		27
+#define kMapPropertyCameraChaseTrackSpeed	28
+#define kMapPropertyCameraChaseSlop			29
 
-#define kMapPropertyCameraStaticFollow		27
-#define kMapPropertyCameraStaticAttachNode	28
+#define kMapPropertyCameraStaticFollow		30
+#define kMapPropertyCameraStaticAttachNode	31
 
-#define kMapPropertyMediaType				29
-#define kMapPropertyMediaName				30
-#define kMapPropertyMediaTitleSound			31
+#define kMapPropertyMediaType				32
+#define kMapPropertyMediaName				33
+#define kMapPropertyMediaTitleSound			34
 
-#define kMapPropertyMusicName				32
-#define kMapPropertyMusicFadeTime			33
+#define kMapPropertyMusicName				35
+#define kMapPropertyMusicFadeTime			36
 
-#define kMapPropertySkyOn					34
-#define kMapPropertySkyType					35
-#define kMapPropertySkyRadius				36
-#define kMapPropertyDomeY					37
-#define kMapPropertyDomeMirror				38
-#define kMapPropertyTextureRepeat			39
-#define kMapPropertyTextureShift			40
-#define kMapPropertyTextureFill				41
-#define kMapPropertyTextureBottomFill		42
-#define kMapPropertyTextureNorthFill		43
-#define kMapPropertyTextureSouthFill		44
-#define kMapPropertyTextureEastFill			45
-#define kMapPropertyTextureWestFill			46
+#define kMapPropertySkyOn					37
+#define kMapPropertySkyType					38
+#define kMapPropertySkyRadius				39
+#define kMapPropertyDomeY					40
+#define kMapPropertyDomeMirror				41
+#define kMapPropertyTextureRepeat			42
+#define kMapPropertyTextureShift			43
+#define kMapPropertyTextureFill				44
+#define kMapPropertyTextureBottomFill		45
+#define kMapPropertyTextureNorthFill		46
+#define kMapPropertyTextureSouthFill		47
+#define kMapPropertyTextureEastFill			48
+#define kMapPropertyTextureWestFill			49
 
 #define kMapPropertyBackgroundOn			50
 #define kMapPropertyBackgroundFrontFill		51
@@ -197,6 +199,8 @@ void property_palette_fill_map(void)
 	list_palette_add_string(&property_palette,kMapPropertyLightMapSize,"Texture Size",map_property_light_map_size_list[size],FALSE);
 	list_palette_add_string_int(&property_palette,kMapPropertyLightMapBorderCount,"Pixel Border Count",map.light_map.pixel_border_count,FALSE);
 	list_palette_add_string_int(&property_palette,kMapPropertyLightMapBlurCount,"Blur Count",map.light_map.blur_count,FALSE);
+	list_palette_add_checkbox(&property_palette,kMapPropertyLightMapUseNormals,"Use Normals (Hard Edges)",map.light_map.use_normals,FALSE);
+	list_palette_add_string_float(&property_palette,kMapPropertyLightMapDiffuseBoost,"Diffuse Boost",map.light_map.diffuse_boost,FALSE);
 
 		// camera settings
 
@@ -465,6 +469,14 @@ void property_palette_click_map(int id)
 			
 		case kMapPropertyLightMapBlurCount:
 			dialog_property_string_run(list_string_value_range_int,(void*)&map.light_map.blur_count,0,0,6);
+			break;
+
+		case kMapPropertyLightMapUseNormals:
+			map.light_map.use_normals=!map.light_map.use_normals;
+			break;
+
+		case kMapPropertyLightMapDiffuseBoost:
+			dialog_property_string_run(list_string_value_positive_float,(void*)&map.light_map.diffuse_boost,0,0,0);
 			break;
 
 			// camera settings

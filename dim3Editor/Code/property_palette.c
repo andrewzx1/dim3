@@ -548,6 +548,107 @@ void property_palette_pick_node(char *name)
 	free(list_ptr);
 }
 
+void property_palette_pick_movement(char *name)
+{
+	int				n,idx;
+	
+	idx=-1;
+	
+	for (n=0;n!=map.movement.nmovement;n++) {
+		if (strcmp(map.movement.movements[n].name,name)==0) {
+			idx=n;
+			break;
+		}
+	}
+
+	dialog_property_list_run((char*)map.movement.movements,map.movement.nmovement,sizeof(movement_type),(int)offsetof(movement_type,name),TRUE,&idx);
+	
+	name[0]=0x0;
+	if (idx!=-1) strcpy(name,map.movement.movements[idx].name);
+}
+
+void property_palette_pick_hud_text(char *name)
+{
+	int				idx,hud_count,head_tag,tag;
+	char			path[1024],hud_names[256][name_str_len];
+	
+		// load in the sounds
+
+	idx=-1;
+	hud_count=0;
+		
+	file_paths_data(&file_path_setup,path,"Settings","Interface","xml");
+	if (xml_open_file(path)) {
+	
+		head_tag=xml_findrootchild("Interface");
+		if (head_tag!=-1) {
+			
+			head_tag=xml_findfirstchild("Texts",head_tag);
+			if (head_tag!=-1) {
+
+				tag=xml_findfirstchild("Text",head_tag);
+			
+				while (tag!=-1) {
+					xml_get_attribute_text(tag,"name",hud_names[hud_count],name_str_len);
+					if (strcmp(hud_names[hud_count],name)==0) idx=hud_count;
+					hud_count++;
+					tag=xml_findnextchild(tag);
+				}
+			}
+		}
+
+		xml_close_file();
+	}
+	
+		// run the dialog
+
+	dialog_property_list_run((char*)hud_names,hud_count,name_str_len,0,FALSE,&idx);
+	
+	name[0]=0x0;
+	if (idx!=-1) strcpy(name,hud_names[idx]);
+}
+
+void property_palette_pick_hud_bitmap(char *name)
+{
+	int				idx,hud_count,head_tag,tag;
+	char			path[1024],hud_names[256][name_str_len];
+	
+		// load in the sounds
+
+	idx=-1;
+	hud_count=0;
+		
+	file_paths_data(&file_path_setup,path,"Settings","Interface","xml");
+	if (xml_open_file(path)) {
+	
+		head_tag=xml_findrootchild("Interface");
+		if (head_tag!=-1) {
+
+			head_tag=xml_findfirstchild("Bitmaps",head_tag);
+			if (head_tag!=-1) {
+
+				tag=xml_findfirstchild("Bitmap",head_tag);
+			
+				while (tag!=-1) {
+					xml_get_attribute_text(tag,"name",hud_names[hud_count],name_str_len);
+					if (strcmp(hud_names[hud_count],name)==0) idx=hud_count;
+					hud_count++;
+					tag=xml_findnextchild(tag);
+				}
+			}
+		}
+		
+		xml_close_file();
+	}
+	
+		// run the dialog
+
+	dialog_property_list_run((char*)hud_names,hud_count,name_str_len,0,FALSE,&idx);
+	
+	name[0]=0x0;
+	if (idx!=-1) strcpy(name,hud_names[idx]);
+}
+
 void property_palette_pick_texture(int *txt_idx)
 {
 	int				n;

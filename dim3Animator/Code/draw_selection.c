@@ -59,22 +59,24 @@ void draw_model_selected_vertexes(int mesh_idx)
 	
 	for (n=0;n!=nvertex;n++) {
 	
-		if ((vertex_check_sel_mask(mesh_idx,n)) && (!vertex_check_hide_mask(mesh_idx,n))) {
+		if ((!vertex_check_sel_mask(mesh_idx,n)) || (vertex_check_hide_mask(mesh_idx,n))) {
+			pv+=3;
+			continue;
+		}
 		
-			if (mesh->vertexes[n].major_bone_idx!=-1) {
-				if ((mesh->vertexes[n].major_bone_idx==state.cur_bone_idx) && (state.cur_bone_idx!=-1)) {
-					glColor4f(1.0f,0.2f,1.0f,1.0f);
-				}
-				else {
-					glColor4f(0.0f,0.0f,0.0f,1.0f);
-				}
+		if (mesh->vertexes[n].major_bone_idx!=-1) {
+			if ((mesh->vertexes[n].major_bone_idx==state.cur_bone_idx) && (state.cur_bone_idx!=-1)) {
+				glColor4f(1.0f,0.2f,1.0f,1.0f);
 			}
 			else {
-				glColor4f(0.5f,0.5f,0.5f,1.0f);
+				glColor4f(0.0f,0.0f,0.0f,1.0f);
 			}
-			
-			glVertex3f(*pv,*(pv+1),*(pv+2));
 		}
+		else {
+			glColor4f(0.5f,0.5f,0.5f,1.0f);
+		}
+		
+		glVertex3f(*pv,*(pv+1),*(pv+2));
 		
 		pv+=3;
 	}
@@ -92,48 +94,66 @@ void draw_model_selected_vertexes(int mesh_idx)
 
 void draw_model_selected_trig(int mesh_idx)
 {
-	int					n,vertex_idx;
+	int					n,k,ntrig,vertex_idx;
 	float				*pv;
+	model_mesh_type		*mesh;
 	model_trig_type		*trig;
 
-	if (state.sel_trig_idx==-1) return;
+	mesh=&model.meshes[mesh_idx];
+	ntrig=mesh->ntrig;
+
+		// selection
 	
-		// draw the selected trig
-		
 	glColor4f(1.0f,1.0f,0.0f,1.0f);
 	glLineWidth(draw_trig_select_line_size);
-	
-	trig=&model.meshes[mesh_idx].trigs[state.sel_trig_idx];
 
-	glBegin(GL_LINE_LOOP);
+	for (n=0;n!=ntrig;n++) {
+
+		if ((!trig_check_sel_mask(mesh_idx,n)) || (trig_check_hide_mask(mesh_idx,n))) continue;
+		
+		trig=&model.meshes[mesh_idx].trigs[n];
+
+			// draw the selected trig
+			
+		glBegin(GL_LINE_LOOP);
+
+		for (k=0;k!=3;k++) {
+			pv=draw_setup.mesh_arrays[mesh_idx].gl_vertex_array+(3*trig->v[k]);
+			glVertex3f(*pv,*(pv+1),*(pv+2));
+		}
 	
-	for (n=0;n!=3;n++) {
-		pv=draw_setup.mesh_arrays[mesh_idx].gl_vertex_array+(3*trig->v[n]);
-		glVertex3f(*pv,*(pv+1),*(pv+2));
+		glEnd();
 	}
-	
-	glEnd();
-	
+		
 	glLineWidth(1.0f);
-	
-		// draw any selected vertexes
-		// on the trig
+
+		// points
 	
 	glColor4f(0.0f,0.0f,0.0f,1.0f);
 	glPointSize(draw_vertex_handle_size);
-	
+		
 	glBegin(GL_POINTS);
-	
-	for (n=0;n!=3;n++) {
-		vertex_idx=trig->v[n];
-		if ((vertex_check_sel_mask(mesh_idx,vertex_idx)) && (!vertex_check_hide_mask(mesh_idx,vertex_idx))) {
-			pv=draw_setup.mesh_arrays[mesh_idx].gl_vertex_array+(3*vertex_idx);
-			glVertex3f(*pv,*(pv+1),*(pv+2));
+
+	for (n=0;n!=ntrig;n++) {
+
+		if ((!trig_check_sel_mask(mesh_idx,n)) || (trig_check_hide_mask(mesh_idx,n))) continue;
+		
+		trig=&model.meshes[mesh_idx].trigs[n];
+		
+			// draw any selected vertexes
+			// on the trig
+		
+		for (k=0;k!=3;k++) {
+			vertex_idx=trig->v[k];
+			if ((vertex_check_sel_mask(mesh_idx,vertex_idx)) && (!vertex_check_hide_mask(mesh_idx,vertex_idx))) {
+				pv=draw_setup.mesh_arrays[mesh_idx].gl_vertex_array+(3*vertex_idx);
+				glVertex3f(*pv,*(pv+1),*(pv+2));
+			}
 		}
 	}
-	
+		
 	glEnd();
-	
+		
 	glPointSize(1.0f);
 }
 
@@ -158,7 +178,6 @@ void draw_model_normals_vertexes(int mesh_idx)
 		// draw normals
 	
 	glLineWidth(draw_model_normal_size);
-	
 	glColor4f(1.0f,0.0f,1.0f,1.0f);
 	
 	glBegin(GL_LINES);
@@ -209,47 +228,44 @@ void draw_model_normals_vertexes(int mesh_idx)
 
 void draw_model_normals_trig(int mesh_idx)
 {
-	int				n;
+	int				n,k,ntrig;
 	float			fx,fy,fz,fx2,fy2,fz2;
 	float			*pv,*pn;
 	model_trig_type	*trig;
 	
-		// is there a trig selection?
-		
-	if (state.sel_trig_idx==-1) return;
-	
-		// get trig
-		
-	trig=&model.meshes[mesh_idx].trigs[state.sel_trig_idx];
-	
-		// draw trig normals
-	
 	glLineWidth(draw_model_normal_size);
-	
 	glColor4f(1.0f,0.0f,1.0f,1.0f);
 	
 	glBegin(GL_LINES);
-	
-	pn=draw_setup.mesh_arrays[mesh_idx].gl_normal_array+(state.sel_trig_idx*9);
-		
-	for (n=0;n!=3;n++) {
-		
-		pv=draw_setup.mesh_arrays[mesh_idx].gl_vertex_array+(trig->v[n]*3);
-		fx=*pv++;
-		fy=*pv++;
-		fz=*pv;
-			
-		glVertex3f(fx,fy,fz);
-		
-		fx2=fx+((*pn++)*draw_model_normal_len);
-		fy2=fy+((*pn++)*draw_model_normal_len);
-		fz2=fz+((*pn++)*draw_model_normal_len);
 
-		glVertex3f(fx2,fy2,fz2);
+	ntrig=model.meshes[mesh_idx].ntrig;
+
+	for (n=0;n!=ntrig;n++) {
+	
+		trig=&model.meshes[mesh_idx].trigs[n];
+	
+			// draw trig normals
+		
+		pn=draw_setup.mesh_arrays[mesh_idx].gl_normal_array+(n*9);
+			
+		for (k=0;k!=3;k++) {
+			
+			pv=draw_setup.mesh_arrays[mesh_idx].gl_vertex_array+(trig->v[k]*3);
+			fx=*pv++;
+			fy=*pv++;
+			fz=*pv;
+				
+			glVertex3f(fx,fy,fz);
+			
+			fx2=fx+((*pn++)*draw_model_normal_len);
+			fy2=fy+((*pn++)*draw_model_normal_len);
+			fz2=fz+((*pn++)*draw_model_normal_len);
+
+			glVertex3f(fx2,fy2,fz2);
+		}
 	}
-	
+
 	glEnd();
-	
 	glLineWidth(1.0f);
 }
 

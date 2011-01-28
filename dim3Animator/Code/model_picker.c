@@ -37,7 +37,6 @@ typedef struct		{
 						short					idx;
 					} model_picker_type;
 
-extern d3rect				model_box;
 extern model_type			model;
 
 int							pick_count,pick_col[3];
@@ -93,7 +92,7 @@ void model_pick_list_end(d3pnt *pnt,int *idx)
 	int					n,col;
 	unsigned char		pixel[3];
 	d3pnt				click_pnt;
-	d3rect				wbox;
+	d3rect				wbox,mbox;
 	model_picker_type	*pick;
 
 		// flush the drawing
@@ -104,9 +103,10 @@ void model_pick_list_end(d3pnt *pnt,int *idx)
 		// and swap Y for OpenGL read
 
 	os_get_window_box(&wbox);
+	model_wind_get_box(&mbox);
 
-	click_pnt.x=pnt->x+model_box.lx;
-	click_pnt.y=wbox.by-(pnt->y+model_box.ty);
+	click_pnt.x=pnt->x+mbox.lx;
+	click_pnt.y=wbox.by-(pnt->y+mbox.ty);
 
 		// find the color at the clicked point
 

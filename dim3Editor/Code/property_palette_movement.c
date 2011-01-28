@@ -122,6 +122,7 @@ void property_palette_click_movement(int movement_idx,int id)
 
 	if ((id>=kMovementPropertyMove) && (id<kMovementPropertyMoveDelete)) {
 		state.cur_movement_move_idx=id-kMovementPropertyMove;
+		alt_property_fix_open_state();
 		main_wind_draw();
 		return;
 	}
@@ -130,6 +131,7 @@ void property_palette_click_movement(int movement_idx,int id)
 
 	if (id==kMovementPropertyMoveAdd) {
 		state.cur_movement_move_idx=map_movement_move_add(&map,movement_idx);
+		alt_property_fix_open_state();
 		main_wind_draw();
 		return;
 	}
@@ -139,6 +141,7 @@ void property_palette_click_movement(int movement_idx,int id)
 	if (id>=kMovementPropertyMoveDelete) {
 		state.cur_movement_move_idx=-1;
 		map_movement_move_delete(&map,movement_idx,(id-kMovementPropertyMoveDelete));
+		alt_property_fix_open_state();
 		main_wind_draw();
 		return;
 	}

@@ -32,8 +32,6 @@ and can be sold or given away.
 #include "glue.h"
 #include "interface.h"
 
-extern d3rect					model_box;
-
 extern model_type				model;
 extern model_draw_setup			draw_setup;
 extern animator_state_type		state;
@@ -117,6 +115,7 @@ void select_model_wind_vertex(d3pnt *start_pnt,float *pv)
 {
 	char					*org_vertex_sel;
 	bool					chg_sel;
+	d3rect					mbox;
 	d3pnt					pnt,last_pnt;
 	
 		// turn on or off?
@@ -146,8 +145,9 @@ void select_model_wind_vertex(d3pnt *start_pnt,float *pv)
 	last_pnt.x=last_pnt.y=-1;
 	
 	state.drag_sel_on=TRUE;
+	model_wind_get_box(&mbox);
 	
-	while (!os_track_mouse_location(&pnt,&model_box)) {
+	while (!os_track_mouse_location(&pnt,&mbox)) {
 		
 		if ((last_pnt.x==pnt.x) && (last_pnt.y==pnt.y)) continue;
 		memmove(&last_pnt,&pnt,sizeof(d3pnt));
@@ -233,18 +233,12 @@ bool select_model_wind_polygon(d3pnt *start_pnt)
 
 	if (idx==-1) return(FALSE);
 
+	if (!os_key_shift_down()) trig_clear_sel_mask(state.cur_mesh_idx);
 	trig_set_sel_mask(state.cur_mesh_idx,idx,TRUE);
 	
 		// select all the vertexes attached to trig
-	// supergumba -- move this to trig_mask
-	
-	vertex_clear_sel_mask(state.cur_mesh_idx);
-	
-	trig=&mesh->trigs[idx];
-	
-	for (k=0;k!=3;k++) {
-		vertex_set_sel_mask(state.cur_mesh_idx,trig->v[k],TRUE);
-	}
+
+	vertex_set_sel_mask_trig_mask(state.cur_mesh_idx);
 
 	return(TRUE);
 }
@@ -319,6 +313,7 @@ void select_model_wind(d3pnt *start_pnt)
 void change_model_wind(d3pnt *start_pnt,bool shift_on,bool rotate_on,bool size_on)
 {
 	int						old_magnify_z;
+	d3rect					mbox;
 	d3pnt					pnt,last_pnt,old_shift;
 	d3ang					old_ang;
 	
@@ -333,8 +328,10 @@ void change_model_wind(d3pnt *start_pnt,bool shift_on,bool rotate_on,bool size_o
 	old_ang.y=state.ang.y;
 	
 	old_magnify_z=state.magnify_z;
+
+	model_wind_get_box(&mbox);
 	
-	while (!os_track_mouse_location(&pnt,&model_box)) {
+	while (!os_track_mouse_location(&pnt,&mbox)) {
 		
 		if ((last_pnt.x==pnt.x) && (last_pnt.y==pnt.y)) continue;
 		memmove(&last_pnt,&pnt,sizeof(d3pnt));
@@ -378,6 +375,7 @@ bool drag_bone_model_wind(d3pnt *start_pnt)
 	float					org_ang,org_mov,
 							bone_drag_handle_offset;
 	float					*ang,*mov;
+	d3rect					mbox;
 	d3pnt					pnt,last_pnt;
 	d3fpnt					bone_pnt,hand_pnt;
 	d3vct					vct;
@@ -514,8 +512,9 @@ bool drag_bone_model_wind(d3pnt *start_pnt)
 	undo_set_bone_move(state.cur_pose_idx,state.cur_bone_idx);
 	
 	os_set_drag_cursor();
+	model_wind_get_box(&mbox);
 		
-	while (!os_track_mouse_location(&pnt,&model_box)) {
+	while (!os_track_mouse_location(&pnt,&mbox)) {
 		
 		if ((last_pnt.x==pnt.x) && (last_pnt.y==pnt.y)) continue;
 		memmove(&last_pnt,&pnt,sizeof(d3pnt));
@@ -556,6 +555,7 @@ bool drag_hit_box_handle_model_wind(d3pnt *start_pnt)
 	int						n,k,box_idx,pt_idx,xsz,zsz,ysz,offx,offz,offy,
 							kx,ky,kz,x[8],y[8],z[8];
 	bool					model_hit_box_drag_on;
+	d3rect					mbox;
 	d3pnt					org_pnt,org_cnt,last_pnt,pnt;
 	d3fpnt					hand_pnt;
 	model_box_type			*box;
@@ -622,8 +622,9 @@ bool drag_hit_box_handle_model_wind(d3pnt *start_pnt)
 	last_pnt.x=last_pnt.y=-1;
 	
 	os_set_drag_cursor();
+	model_wind_get_box(&mbox);
 		
-	while (!os_track_mouse_location(&pnt,&model_box)) {
+	while (!os_track_mouse_location(&pnt,&mbox)) {
 		
 		if ((last_pnt.x==pnt.x) && (last_pnt.y==pnt.y)) continue;
 		memmove(&last_pnt,&pnt,sizeof(d3pnt));
@@ -678,11 +679,14 @@ bool drag_hit_box_handle_model_wind(d3pnt *start_pnt)
 void model_wind_click(d3pnt *pnt)
 {
 	bool			shift_on,rotate_on,size_on;
-	
+	d3rect			mbox;
+
 		// get click within window
+
+	model_wind_get_box(&mbox);
 		
-	pnt->x-=model_box.lx;
-	pnt->y-=model_box.ty;
+	pnt->x-=mbox.lx;
+	pnt->y-=mbox.ty;
 	
 		// handle the clicks
 		
