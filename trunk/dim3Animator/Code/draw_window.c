@@ -41,30 +41,30 @@ extern model_draw_setup		draw_setup;
 extern animator_state_type	state;
 
 double						tran_mod_matrix[16],tran_proj_matrix[16],tran_vport[4];
-d3rect						model_box,tran_wbox;
+d3rect						tran_wbox;
 
 /* =======================================================
 
-      Model Window Setup
+      Model Window Box
       
 ======================================================= */
 
-void model_wind_setup(void)
+void model_wind_get_box(d3rect *box)
 {
 	d3rect			wbox;
 	
 	os_get_window_box(&wbox);
 	
-	model_box.lx=0;
+	box->lx=0;
 	if (list_palette_open) {
-		model_box.rx=wbox.rx-list_palette_tree_sz;
-		if (alt_property_open) model_box.rx-=list_palette_tree_sz;
+		box->rx=wbox.rx-list_palette_tree_sz;
+		if (alt_property_open) box->rx-=list_palette_tree_sz;
 	}
 	else {
-		model_box.rx=wbox.rx-list_palette_border_sz;
+		box->rx=wbox.rx-list_palette_border_sz;
 	}
-	model_box.ty=tool_palette_pixel_sz;
-	model_box.by=(wbox.by-wbox.ty)-txt_palette_pixel_sz;
+	box->ty=tool_palette_pixel_sz;
+	box->by=(wbox.by-wbox.ty)-txt_palette_pixel_sz;
 }
 
 /* =======================================================
@@ -77,23 +77,24 @@ void draw_model_gl_setup(int z_offset)
 {
 	int				yoff,sz;
 	float			ratio;
-	d3rect			wbox;
+	d3rect			wbox,mbox;
 	
 		// viewport setup
 		
 	os_get_window_box(&wbox);
+	model_wind_get_box(&mbox);
 
 	glEnable(GL_SCISSOR_TEST);
-	glScissor(model_box.lx,(wbox.by-model_box.by),(model_box.rx-model_box.lx),(model_box.by-model_box.ty));
+	glScissor(mbox.lx,(wbox.by-mbox.by),(mbox.rx-mbox.lx),(mbox.by-mbox.ty));
 
-	glViewport(model_box.lx,(wbox.by-model_box.by),(model_box.rx-model_box.lx),(model_box.by-model_box.ty));
+	glViewport(mbox.lx,(wbox.by-mbox.by),(mbox.rx-mbox.lx),(mbox.by-mbox.ty));
 
 		// projection
 		
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
-	ratio=(float)(model_box.rx-model_box.lx)/(float)(model_box.by-model_box.ty);
+	ratio=(float)(mbox.rx-mbox.lx)/(float)(mbox.by-mbox.ty);
 	gluPerspective(45.0,ratio,(float)(100+z_offset),(float)(25000-z_offset));
 	glScalef(-1.0f,-1.0f,-1.0f);
 
@@ -160,10 +161,13 @@ void draw_model_2D_transform_setup(void)
 void draw_model_2D_transform(d3fpnt *pnt,d3pnt *tran_pnt)
 {
 	double			dx,dy,dz;
+	d3rect			mbox;
+
+	model_wind_get_box(&mbox);
 	
 	gluProject(pnt->x,pnt->y,pnt->z,tran_mod_matrix,tran_proj_matrix,(GLint*)tran_vport,&dx,&dy,&dz);
 	tran_pnt->x=(int)dx;
-	tran_pnt->y=(tran_wbox.by-((int)dy))-model_box.ty;
+	tran_pnt->y=(tran_wbox.by-((int)dy))-mbox.ty;
 }
 
 /* =======================================================
@@ -201,9 +205,12 @@ void draw_model_info(void)
 {
 	int				x,y;
 	char			str[256];
+	d3rect			mbox;
 
-	x=model_box.lx+5;
-	y=model_box.ty+20;
+	model_wind_get_box(&mbox);
+
+	x=mbox.lx+5;
+	y=mbox.ty+20;
 
 	sprintf(str,"Mesh: %s",model.meshes[state.cur_mesh_idx].name);
 	text_draw(x,y,15,NULL,str);
@@ -236,6 +243,8 @@ void draw_model_info(void)
 
 void draw_model_wind(int mesh_idx)
 {
+	d3rect				mbox;
+
 	if (!state.model_open) return;
 
 		// setup transformation to fit model in middle of screen
@@ -308,10 +317,12 @@ void draw_model_wind(int mesh_idx)
 	model_draw_setup_shutdown(&model,&draw_setup);
 	
 		// 2D drawing
+
+	model_wind_get_box(&mbox);
 		
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho((GLdouble)model_box.lx,(GLdouble)model_box.rx,(GLdouble)model_box.by,(GLdouble)model_box.ty,-1.0,1.0);
+	glOrtho((GLdouble)mbox.lx,(GLdouble)mbox.rx,(GLdouble)mbox.by,(GLdouble)mbox.ty,-1.0,1.0);
 	
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -322,10 +333,10 @@ void draw_model_wind(int mesh_idx)
 		glColor4f(0.8f,0.8f,0.8f,0.4f);
 		
 		glBegin(GL_QUADS);
-		glVertex2i((state.drag_sel_box.lx+model_box.lx),(state.drag_sel_box.ty+model_box.ty));
-		glVertex2i((state.drag_sel_box.rx+model_box.lx),(state.drag_sel_box.ty+model_box.ty));
-		glVertex2i((state.drag_sel_box.rx+model_box.lx),(state.drag_sel_box.by+model_box.ty));
-		glVertex2i((state.drag_sel_box.lx+model_box.lx),(state.drag_sel_box.by+model_box.ty));
+		glVertex2i((state.drag_sel_box.lx+mbox.lx),(state.drag_sel_box.ty+mbox.ty));
+		glVertex2i((state.drag_sel_box.rx+mbox.lx),(state.drag_sel_box.ty+mbox.ty));
+		glVertex2i((state.drag_sel_box.rx+mbox.lx),(state.drag_sel_box.by+mbox.ty));
+		glVertex2i((state.drag_sel_box.lx+mbox.lx),(state.drag_sel_box.by+mbox.ty));
 
 		glEnd();
 	}

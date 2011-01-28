@@ -116,34 +116,39 @@ void vertex_invert_normals_vertexes(int mesh_idx)
 
 void vertex_invert_normals_trigs(int mesh_idx)
 {
-	int					n;
+	int					n,k,ntrig;
 	model_trig_type		*trig;
 	
-		// is there a trig selection?
+	ntrig=model.meshes[mesh_idx].ntrig;
+	trig=model.meshes[mesh_idx].trigs;
+	
+	for (n=0;n!=ntrig;n++) {
 		
-	if (state.sel_trig_idx==-1) return;
-	
-		// get trig
+		if (!trig_check_sel_mask(mesh_idx,n)) {
+			trig++;
+			continue;
+		}
+
+		for (k=0;k!=3;k++) {
 		
-	trig=&model.meshes[mesh_idx].trigs[state.sel_trig_idx];
-	
-	for (n=0;n!=3;n++) {
-	
-			// this triangle vertex in the select list?
+				// this triangle vertex in the select list?
+				
+			if (!vertex_check_sel_mask(mesh_idx,trig->v[k])) continue;
 			
-		if (!vertex_check_sel_mask(mesh_idx,trig->v[n])) continue;
-		
-		trig->tangent_space[n].tangent.x=-trig->tangent_space[n].tangent.x;
-		trig->tangent_space[n].tangent.y=-trig->tangent_space[n].tangent.y;
-		trig->tangent_space[n].tangent.z=-trig->tangent_space[n].tangent.z;
+			trig->tangent_space[k].tangent.x=-trig->tangent_space[k].tangent.x;
+			trig->tangent_space[k].tangent.y=-trig->tangent_space[k].tangent.y;
+			trig->tangent_space[k].tangent.z=-trig->tangent_space[k].tangent.z;
 
-		trig->tangent_space[n].binormal.x=-trig->tangent_space[n].binormal.x;
-		trig->tangent_space[n].binormal.y=-trig->tangent_space[n].binormal.y;
-		trig->tangent_space[n].binormal.z=-trig->tangent_space[n].binormal.z;
+			trig->tangent_space[k].binormal.x=-trig->tangent_space[k].binormal.x;
+			trig->tangent_space[k].binormal.y=-trig->tangent_space[k].binormal.y;
+			trig->tangent_space[k].binormal.z=-trig->tangent_space[k].binormal.z;
 
-		trig->tangent_space[n].normal.x=-trig->tangent_space[n].normal.x;
-		trig->tangent_space[n].normal.y=-trig->tangent_space[n].normal.y;
-		trig->tangent_space[n].normal.z=-trig->tangent_space[n].normal.z;
+			trig->tangent_space[k].normal.x=-trig->tangent_space[k].normal.x;
+			trig->tangent_space[k].normal.y=-trig->tangent_space[k].normal.y;
+			trig->tangent_space[k].normal.z=-trig->tangent_space[k].normal.z;
+		}
+
+		trig++;
 	}
 }
 
@@ -184,26 +189,31 @@ void vertex_set_normals_vertexes(int mesh_idx,d3vct *normal)
 
 void vertex_set_normals_trigs(int mesh_idx,d3vct *normal)
 {
-	int					n;
+	int					n,k,ntrig;
 	model_trig_type		*trig;
 	
-		// is there a trig selection?
+	ntrig=model.meshes[mesh_idx].ntrig;
+	trig=model.meshes[mesh_idx].trigs;
+	
+	for (n=0;n!=ntrig;n++) {
 		
-	if (state.sel_trig_idx==-1) return;
+		if (!trig_check_sel_mask(mesh_idx,n)) {
+			trig++;
+			continue;
+		}
 	
-		// get trig
+		for (k=0;k!=3;k++) {
 		
-	trig=&model.meshes[mesh_idx].trigs[state.sel_trig_idx];
-	
-	for (n=0;n!=3;n++) {
-	
-			// this triangle vertex in the select list?
+				// this triangle vertex in the select list?
+				
+			if (!vertex_check_sel_mask(mesh_idx,trig->v[k])) continue;
 			
-		if (!vertex_check_sel_mask(mesh_idx,trig->v[n])) continue;
-		
-		trig->tangent_space[n].normal.x=normal->x;
-		trig->tangent_space[n].normal.y=normal->y;
-		trig->tangent_space[n].normal.z=normal->z;
+			trig->tangent_space[k].normal.x=normal->x;
+			trig->tangent_space[k].normal.y=normal->y;
+			trig->tangent_space[k].normal.z=normal->z;
+		}
+
+		trig++;
 	}
 }
 

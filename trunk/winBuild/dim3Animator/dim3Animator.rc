@@ -21,6 +21,8 @@ BEGIN
     POPUP "Edit"
     BEGIN
         MENUITEM "Undo",						200
+        MENUITEM SEPARATOR
+        MENUITEM "Select More",					201
     END
     POPUP "Model"
     BEGIN

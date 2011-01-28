@@ -67,8 +67,6 @@ void main_wind_initialize(void)
 	item_palette_setup();
 	property_palette_setup();
 	alt_property_palette_setup();
-	
-	model_wind_setup();
 
 		// vertex and trig masks
 		
@@ -529,7 +527,5 @@ void main_wind_resize(void)
 	item_palette_setup();
 	property_palette_setup();
 	alt_property_palette_setup();
-	
-	model_wind_setup();
 }
 

@@ -334,6 +334,41 @@ void vertex_set_sel_mask_near_bone(int mesh_idx,int bone_idx,float percentage)
 
 /* =======================================================
 
+      Sel/Trig Interactions
+      
+======================================================= */
+
+void vertex_set_sel_mask_trig_mask(int mesh_idx)
+{
+	int					n,k,ntrig;
+	model_mesh_type		*mesh;
+	model_trig_type		*trig;
+
+		// clear vertexes
+
+	vertex_clear_sel_mask(mesh_idx);
+
+		// set for all trigs
+
+	mesh=&model.meshes[mesh_idx];
+	ntrig=mesh->ntrig;
+
+		// selection
+	
+	for (n=0;n!=ntrig;n++) {
+
+		if ((!trig_check_sel_mask(mesh_idx,n)) || (trig_check_hide_mask(mesh_idx,n))) continue;
+		
+		trig=&model.meshes[mesh_idx].trigs[n];
+	
+		for (k=0;k!=3;k++) {
+			vertex_set_sel_mask(mesh_idx,trig->v[k],TRUE);
+		}
+	}
+}
+
+/* =======================================================
+
       Set Vertexes To Bone
       
 ======================================================= */

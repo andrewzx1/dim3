@@ -195,7 +195,7 @@ extern bool texture_use_single(void);
 // models
 //
 
-extern void model_wind_setup(void);
+extern void model_wind_get_box(d3rect *box);
 extern void model_wind_click(d3pnt *pnt);
 
 extern void draw_model(int mesh_idx);
@@ -243,6 +243,7 @@ extern void vertex_set_sel_mask_bone(int mesh_idx,int bone_idx);
 extern void vertex_set_sel_mask_no_bone(int mesh_idx);
 extern void vertex_set_sel_mask_near_bone(int mesh_idx,int bone_idx,float percentage);
 extern void vertex_set_sel_vertex_to_bone(int mesh_idx,int major_bone_idx,int minor_bone_idx,float factor);
+extern void vertex_set_sel_mask_trig_mask(int mesh_idx);
 extern void vertex_set_sel_mask_material(int mesh_idx,int material_idx);
 
 //
@@ -266,6 +267,11 @@ extern bool trig_mask_initialize(void);
 extern void trig_mask_shutdown(void);
 extern void trig_clear_sel_mask(int mesh_idx);
 extern void trig_set_sel_mask(int mesh_idx,int trig_idx,bool value);
+extern bool trig_check_sel_mask(int mesh_idx,int trig_idx);
+extern void trig_clear_hide_mask(int mesh_idx);
+extern void trig_set_hide_mask(int mesh_idx,int trig_idx,bool value);
+extern bool trig_check_hide_mask(int mesh_idx,int trig_idx);
+extern void trig_mask_select_more(int mesh_idx);
 
 //
 // model picking

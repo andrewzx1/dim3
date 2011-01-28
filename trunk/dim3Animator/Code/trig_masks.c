@@ -100,53 +100,21 @@ void trig_set_sel_mask(int mesh_idx,int trig_idx,bool value)
 	trig_mask_set(mesh_idx,trig_idx,mask);
 }
 
-/*
-void vertex_set_sel_mask_all(int mesh_idx)
-{
-	int				n;
-	unsigned char	mask;
-	model_mesh_type	*mesh;
-	
-	mesh=&model.meshes[mesh_idx];
-	
-	for (n=0;n!=mesh->nvertex;n++) {
-		mask=vertex_mask_get(mesh_idx,n);
-		mask|=animator_mask_flag_sel;
-		vertex_mask_set(mesh_idx,n,mask);
-	}
-}
-
-bool vertex_check_any(int mesh_idx)
-{
-	int				n;
-	unsigned char	mask;
-	model_mesh_type	*mesh;
-	
-	mesh=&model.meshes[mesh_idx];
-	
-	for (n=0;n!=mesh->nvertex;n++) {
-		mask=vertex_mask_get(mesh_idx,n);
-		if (mask!=0x0) return(TRUE);
-	}
-	
-	return(FALSE);
-}
-
-bool vertex_check_sel_mask(int mesh_idx,int vertex_idx)
+bool trig_check_sel_mask(int mesh_idx,int trig_idx)
 {
 	unsigned char	mask;
 	
-	mask=vertex_mask_get(mesh_idx,vertex_idx);
+	mask=trig_mask_get(mesh_idx,trig_idx);
 	return((mask&animator_mask_flag_sel)!=0x0);
 }
-*/
+
 /* =======================================================
 
       Hide Masks
       
 ======================================================= */
-/*
-void vertex_clear_hide_mask(int mesh_idx)
+
+void trig_clear_hide_mask(int mesh_idx)
 {
 	int				n;
 	unsigned char	mask;
@@ -155,17 +123,17 @@ void vertex_clear_hide_mask(int mesh_idx)
 	mesh=&model.meshes[mesh_idx];
 	
 	for (n=0;n!=mesh->nvertex;n++) {
-		mask=vertex_mask_get(mesh_idx,n);
+		mask=trig_mask_get(mesh_idx,n);
 		mask&=(animator_mask_flag_hide^0xFF);
-		vertex_mask_set(mesh_idx,n,mask);
+		trig_mask_set(mesh_idx,n,mask);
 	}
 }
 
-void vertex_set_hide_mask(int mesh_idx,int vertex_idx,bool value)
+void trig_set_hide_mask(int mesh_idx,int trig_idx,bool value)
 {
 	unsigned char	mask;
 	
-	mask=vertex_mask_get(mesh_idx,vertex_idx);
+	mask=trig_mask_get(mesh_idx,trig_idx);
 
 	if (value) {
 		mask|=animator_mask_flag_hide;
@@ -174,100 +142,95 @@ void vertex_set_hide_mask(int mesh_idx,int vertex_idx,bool value)
 		mask&=(animator_mask_flag_hide^0xFF);
 	}
 	
-	vertex_mask_set(mesh_idx,vertex_idx,mask);
+	trig_mask_set(mesh_idx,trig_idx,mask);
 }
 
-bool vertex_check_hide_mask(int mesh_idx,int vertex_idx)
+bool trig_check_hide_mask(int mesh_idx,int trig_idx)
 {
 	unsigned char	mask;
 
-	mask=vertex_mask_get(mesh_idx,vertex_idx);
+	mask=trig_mask_get(mesh_idx,trig_idx);
 	return((mask&animator_mask_flag_hide)!=0x0);
 }
-*/
-/* =======================================================
-
-      Hide/Sel Interactions
-      
-======================================================= */
-/*
-void vertex_hide_mask_set_sel_vertexes(int mesh_idx)
-{
-	int				n,nt;
-	
-	nt=model.meshes[mesh_idx].nvertex;
-	
-	for (n=0;n!=nt;n++) {
-		if (vertex_check_sel_mask(mesh_idx,n)) vertex_set_hide_mask(mesh_idx,n,TRUE);
-	}
-	
-	vertex_clear_sel_mask(mesh_idx);
-}
-
-void vertex_hide_mask_set_non_sel_vertexes(int mesh_idx)
-{
-	int				n,nt;
-	
-	nt=model.meshes[mesh_idx].nvertex;
-	
-	for (n=0;n!=nt;n++) {
-		if (!vertex_check_sel_mask(mesh_idx,n)) vertex_set_hide_mask(mesh_idx,n,TRUE);
-	}
-}
-
-void vertex_hide_mask_show_all_vertexes(int mesh_idx)
-{
-	vertex_clear_hide_mask(mesh_idx);
-}
-*/
-/* =======================================================
-
-      Hide/Trig Interactions
-      
-======================================================= */
-/*
-bool vertex_check_hide_mask_trig(int mesh_idx,model_trig_type *trig)
-{
-	int				n;
-	
-	for (n=0;n!=3;n++) {
-		if (vertex_check_hide_mask(mesh_idx,trig->v[n])) return(TRUE);
-	}
-	
-	return(FALSE);
-}
-*/
 
 /* =======================================================
 
-      Sel/Material Interactions
+      Select More
       
 ======================================================= */
-/*
-void vertex_set_sel_mask_material(int mesh_idx,int material_idx)
-{
-	int					i,k,nt;
-	model_trig_type		*trig;
-	model_material_type	*material;
-	
-		// clear selection
-		
-	vertex_clear_sel_mask(mesh_idx);
-	
-		// select vertexes in trigs
 
-	material=&model.meshes[mesh_idx].materials[material_idx];
-	trig=&model.meshes[mesh_idx].trigs[material->trig_start];
+void trig_mask_select_more(int mesh_idx)
+{
+	int					n,k,i,i2,t,t2,ntrig;
+	bool				hit;
+	unsigned char		*sel_mask;
+	model_mesh_type		*mesh;
+	model_trig_type		*trig,*trig2;
+
+	mesh=&model.meshes[mesh_idx];
+	ntrig=mesh->ntrig;
+
+		// need sel mask outside of
+		// regular sel mask
+
+	sel_mask=(unsigned char*)malloc(ntrig);
+	if (sel_mask==NULL) return;
+
+	bzero(sel_mask,ntrig);
+
+		// find hit triangles
 	
-	nt=material->trig_count;
-	
-	for (i=0;i!=nt;i++) {
-	
-		for (k=0;k!=3;k++) {
-			if (!vertex_check_hide_mask(mesh_idx,trig->v[k])) vertex_set_sel_mask(mesh_idx,trig->v[k],TRUE);
+	for (n=0;n!=ntrig;n++) {
+
+		if ((!trig_check_sel_mask(mesh_idx,n)) || (trig_check_hide_mask(mesh_idx,n))) continue;
+		trig=&model.meshes[mesh_idx].trigs[n];
+
+		for (k=0;k!=ntrig;k++) {
+
+			if (k==n) continue;
+
+			if (trig_check_hide_mask(mesh_idx,k)) continue;
+			trig2=&model.meshes[mesh_idx].trigs[k];
+
+				// check for shared edges
+
+			hit=FALSE;
+
+			for (i=0;i!=3;i++) {
+				i2=i+1;
+				if (i2==3) i2=0;
+
+				for (t=0;t!=3;t++) {
+					t2=t+1;
+					if (t2==3) t2=0;
+
+					if ((trig2->v[t]==trig->v[i]) && (trig2->v[t2]==trig->v[i2])) {
+						hit=TRUE;
+						break;
+					}
+
+					if ((trig2->v[t]==trig->v[i2]) && (trig2->v[t2]==trig->v[i])) {
+						hit=TRUE;
+						break;
+					}
+				}
+
+				if (hit) break;
+			}
+
+			if (hit) sel_mask[k]=0x1;
 		}
-		
-		trig++;
 	}
+
+		// select triangles
+
+	for (n=0;n!=ntrig;n++) {
+		if (sel_mask[n]!=0x0) trig_set_sel_mask(mesh_idx,n,TRUE);
+	}
+
+	free(sel_mask);
+	
+		// get the new vertexes
+
+	vertex_set_sel_mask_trig_mask(mesh_idx);
 }
-*/

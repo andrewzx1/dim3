@@ -73,11 +73,17 @@ bool map_new(map_type *map,char *name)
 	
 	map->settings.network_game_list[0]=0x0;
 
+		// light maps
+
 	map->light_map.quality=70;
 	map->light_map.quality=512;
 	map->light_map.pixel_border_count=6;
 	map->light_map.blur_count=3;
+	map->light_map.use_normals=FALSE;
+	map->light_map.diffuse_boost=0.0f;
 	
+		// editor setup
+
 	map->editor_setup.txt_scale_x=0.04f;
 	map->editor_setup.txt_scale_y=0.04f;
 	map->editor_setup.view_near_dist=6*map_enlarge;

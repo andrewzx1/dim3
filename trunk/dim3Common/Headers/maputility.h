@@ -664,6 +664,8 @@ typedef struct		{
 typedef struct		{
 						int									quality,size,
 															pixel_border_count,blur_count;
+						float								diffuse_boost;
+						bool								use_normals;
 					} map_light_map_type;
 					
 typedef struct		{

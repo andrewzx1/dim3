@@ -80,6 +80,8 @@ void texture_edit_switch(int texture_idx)
 	texture_edit_scroll_pos=0;
 	texture_edit_frame_click_idx=-1;
 
+	alt_property_fix_open_state();
+
 	main_wind_draw();
 }
 

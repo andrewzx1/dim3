@@ -65,7 +65,6 @@ void file_reset_state(void)
 	state.select_mode=select_mode_vertex;
 	state.drag_bone_mode=drag_bone_mode_rotate;
 	
-	state.sel_trig_idx=-1;
 	state.drag_sel_on=FALSE;
 	state.magnify_z=3000;
 
@@ -90,6 +89,9 @@ void file_reset_state(void)
 	
 	vertex_clear_sel_mask(state.cur_mesh_idx);
 	vertex_clear_hide_mask(state.cur_mesh_idx);
+
+	trig_clear_sel_mask(state.cur_mesh_idx);
+	trig_clear_hide_mask(state.cur_mesh_idx);
 	
 	for (n=0;n!=max_model_blend_animation;n++) {
 		state.blend[n].animate_idx=-1;
