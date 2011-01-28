@@ -55,6 +55,8 @@ void file_reset_window(void)
 		// redraw
 	
  	state.texture_edit_idx=-1;
+	state.cur_cinema_idx=-1;
+	state.cur_movement_idx=-1;
 
 	tool_default();
 	menu_update_view();
