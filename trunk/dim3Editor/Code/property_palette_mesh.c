@@ -39,42 +39,43 @@ and can be sold or given away.
 #define kMeshPropertyMovable					2
 #define kMeshPropertyShiftable					3
 #define kMeshPropertyHilite						4
-#define kMeshPropertyLockUV						5
-#define kMeshPropertyLockMove					6
-#define kMeshPropertyShadow						7
-#define kMeshPropertyNeverObscure				8
-#define kMeshPropertyRotIndependent				9
-#define kMeshPropertyNoLightMap					10
-#define kMeshPropertySkipLightMapTrace			11
+#define kMeshPropertySimpleCollision			5
+#define kMeshPropertyLockUV						6
+#define kMeshPropertyLockMove					7
+#define kMeshPropertyShadow						8
+#define kMeshPropertyNeverObscure				9
+#define kMeshPropertyRotIndependent				10
+#define kMeshPropertyNoLightMap					11
+#define kMeshPropertySkipLightMapTrace			12
 
-#define kMeshPropertyGroup						12
+#define kMeshPropertyGroup						20
 
-#define kMeshPropertyHideMode					13
-#define kMeshPropertyNormalMode					14
-#define kMeshPropertyHarm						15
-#define kMeshPropertyRot						16
+#define kMeshPropertyHideMode					30
+#define kMeshPropertyNormalMode					31
+#define kMeshPropertyHarm						32
+#define kMeshPropertyRot						33
 
-#define kMeshPropertyImportOBJName				17
-#define kMeshPropertyImportGroupName			18
+#define kMeshPropertyImportOBJName				40
+#define kMeshPropertyImportGroupName			41
 
-#define kMeshPropertyMessageEnter				19
-#define kMeshPropertyMessageEnterId				20
-#define kMeshPropertyMessageExit				21
-#define kMeshPropertyMessageExitId				22
-#define kMeshPropertyMessageMapChange			23
-#define kMeshPropertyMessageMapChangeName		24
-#define kMeshPropertyMessageMapChangeSpotName	25
-#define kMeshPropertyMessageBase				26
-#define kMeshPropertyMessageBaseTeam			27
+#define kMeshPropertyMessageEnter				50
+#define kMeshPropertyMessageEnterId				51
+#define kMeshPropertyMessageExit				52
+#define kMeshPropertyMessageExitId				53
+#define kMeshPropertyMessageMapChange			54
+#define kMeshPropertyMessageMapChangeName		55
+#define kMeshPropertyMessageMapChangeSpotName	56
+#define kMeshPropertyMessageBase				57
+#define kMeshPropertyMessageBaseTeam			58
 
-#define kMeshPolyPropertyClimbable				28
-#define kMeshPolyPropertyNeverCull				29
+#define kMeshPolyPropertyClimbable				60
+#define kMeshPolyPropertyNeverCull				61
 
-#define kMeshPolyPropertyOff					30
-#define kMeshPolyPropertySize					31
-#define kMeshPolyPropertyShift					32
+#define kMeshPolyPropertyOff					70
+#define kMeshPolyPropertySize					71
+#define kMeshPolyPropertyShift					72
 
-#define kMeshPolyPropertyCamera					33
+#define kMeshPolyPropertyCamera					80
 
 extern map_type					map;
 extern editor_state_type		state;
@@ -109,6 +110,7 @@ void property_palette_fill_mesh(int mesh_idx,int poly_idx)
 	list_palette_add_checkbox(&property_palette,kMeshPropertyPassThrough,"Pass Through",mesh->flag.pass_through,FALSE);
 	list_palette_add_checkbox(&property_palette,kMeshPropertyMovable,"Movable",mesh->flag.moveable,FALSE);
 	list_palette_add_checkbox(&property_palette,kMeshPropertyHilite,"High Lighted",mesh->flag.hilite,FALSE);
+	list_palette_add_checkbox(&property_palette,kMeshPropertySimpleCollision,"Simple Box Collision",mesh->flag.simple_collision,FALSE);
 	list_palette_add_checkbox(&property_palette,kMeshPropertyLockUV,"Lock UVs",mesh->flag.lock_uv,FALSE);
 	list_palette_add_checkbox(&property_palette,kMeshPropertyLockMove,"Lock Position",mesh->flag.lock_move,FALSE);
 	list_palette_add_checkbox(&property_palette,kMeshPropertyShadow,"Shadow",mesh->flag.shadow,FALSE);
@@ -218,6 +220,10 @@ void property_palette_click_mesh(int mesh_idx,int poly_idx,int id)
 
 		case kMeshPropertyHilite:
 			mesh->flag.hilite=!mesh->flag.hilite;
+			break;
+			
+		case kMeshPropertySimpleCollision:
+			mesh->flag.simple_collision=!mesh->flag.simple_collision;
 			break;
 
 		case kMeshPropertyLockUV:

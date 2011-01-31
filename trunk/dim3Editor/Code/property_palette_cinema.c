@@ -188,7 +188,6 @@ void cinemas_action_sort(int cinema_idx)
 void property_palette_click_cinema(int cinema_idx,int id)
 {
 	map_cinema_type		*cinema;
-	char	str[256];
 
 	cinema=&map.cinema.cinemas[cinema_idx];
 

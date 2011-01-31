@@ -546,6 +546,7 @@ void write_single_mesh(map_mesh_type *mesh)
 	xml_add_attribute_boolean("pass",mesh->flag.pass_through);
 	xml_add_attribute_boolean("moveable",mesh->flag.moveable);
 	xml_add_attribute_boolean("hilite",mesh->flag.hilite);
+	xml_add_attribute_boolean("simple_collision",mesh->flag.simple_collision);
 	xml_add_attribute_boolean("lock_uv",mesh->flag.lock_uv);
 	xml_add_attribute_boolean("lock_move",mesh->flag.lock_move);
 	xml_add_attribute_boolean("never_obscure",mesh->flag.never_obscure);

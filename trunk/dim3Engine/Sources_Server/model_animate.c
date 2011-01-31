@@ -95,6 +95,7 @@ int model_find_animation_from_draw(model_draw *draw,char *name)
 bool model_start_animation(model_draw *draw,char *name,int tick)
 {
 	int							idx;
+	bool						no_smooth;
 	model_draw_animation		*draw_animation;
 	
 	idx=model_find_animation_from_draw(draw,name);
@@ -103,14 +104,22 @@ bool model_start_animation(model_draw *draw,char *name,int tick)
 	draw_animation=&draw->animations[draw->script_animation_idx];
 
 		// smooth out changes in animations
+		
+	draw_animation->smooth_animate_idx=-1;
+	draw_animation->smooth_pose_move_idx=0;
 
 	if (draw_animation->mode==am_playing) {
-		draw_animation->smooth_animate_idx=draw_animation->animate_idx;
-		draw_animation->smooth_pose_move_idx=draw_animation->pose_move_idx;
-	}
-	else {
-		draw_animation->smooth_animate_idx=-1;
-		draw_animation->smooth_pose_move_idx=0;
+	
+		no_smooth=FALSE;
+		
+		if (draw->model_idx!=-1) {
+			no_smooth=server.model_list.models[draw->model_idx]->animates[idx].no_smooth;
+		}
+		
+		if (!no_smooth) {
+			draw_animation->smooth_animate_idx=draw_animation->animate_idx;
+			draw_animation->smooth_pose_move_idx=draw_animation->pose_move_idx;
+		}
 	}
 
 		// set next animation

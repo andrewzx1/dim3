@@ -79,8 +79,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 317619141;
-			PBXWorkspaceStateSaveDate = 317619141;
+			PBXPerProjectTemplateStateSaveDate = 318101497;
+			PBXWorkspaceStateSaveDate = 318101497;
 		};
 		sourceControlManager = 260AFF610D40531F00F6C42F /* Source Control */;
 		userBookmarkGroup = 265B38440D84C1E5004AE124 /* PBXBookmarkGroup */;
@@ -1140,9 +1140,9 @@
 	};
 	F5A5818E090B433F00BE7C36 /* script_model_animation.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1419, 3510}}";
-			sepNavSelRange = "{4693, 0}";
-			sepNavVisRange = "{3680, 1710}";
+			sepNavIntBoundsRect = "{{0, 0}, {1146, 4225}}";
+			sepNavSelRange = "{9694, 0}";
+			sepNavVisRange = "{9334, 1651}";
 			sepNavWindowFrame = "{{262, 220}, {1041, 747}}";
 		};
 	};
@@ -2020,9 +2020,9 @@
 	};
 	F5CA4F01051012CF0055C8B8 /* modelutility.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 6279}}";
-			sepNavSelRange = "{0, 945}";
-			sepNavVisRange = "{0, 1971}";
+			sepNavIntBoundsRect = "{{0, 0}, {1125, 5291}}";
+			sepNavSelRange = "{7466, 0}";
+			sepNavVisRange = "{7832, 1743}";
 			sepNavWindowFrame = "{{639, 119}, {1041, 747}}";
 		};
 	};
@@ -2159,10 +2159,10 @@
 	};
 	F5DD19EA0908315E00721649 /* hand.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 1430}}";
-			sepNavSelRange = "{2682, 0}";
-			sepNavVisRange = "{1515, 1210}";
-			sepNavWindowFrame = "{{560, 151}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 1417}}";
+			sepNavSelRange = "{2317, 0}";
+			sepNavVisRange = "{1462, 1257}";
+			sepNavWindowFrame = "{{224, 155}, {1041, 747}}";
 		};
 	};
 	F5DD19EB0908315E00721649 /* sky.c */ = {
@@ -2663,9 +2663,9 @@
 	};
 	F5DD1AE80908620D00721649 /* model_animate.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 10959}}";
-			sepNavSelRange = "{15461, 22}";
-			sepNavVisRange = "{14813, 1270}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 11076}}";
+			sepNavSelRange = "{3116, 0}";
+			sepNavVisRange = "{2408, 1233}";
 			sepNavWindowFrame = "{{395, 204}, {1041, 747}}";
 		};
 	};

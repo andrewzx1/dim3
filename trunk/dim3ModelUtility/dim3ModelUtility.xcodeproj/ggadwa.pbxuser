@@ -88,9 +88,9 @@
 	};
 	F55ACF40097D805F00F4AE50 /* animation.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1034, 4615}}";
-			sepNavSelRange = "{6338, 0}";
-			sepNavVisRange = "{3363, 1577}";
+			sepNavIntBoundsRect = "{{0, 0}, {1034, 4641}}";
+			sepNavSelRange = "{1929, 0}";
+			sepNavVisRange = "{8570, 1385}";
 			sepNavWindowFrame = "{{176, 129}, {1041, 747}}";
 		};
 	};
@@ -155,8 +155,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 317861240;
-			PBXWorkspaceStateSaveDate = 317861240;
+			PBXPerProjectTemplateStateSaveDate = 317975025;
+			PBXWorkspaceStateSaveDate = 317975025;
 		};
 		sourceControlManager = 260AFEDB0D404F5000F6C42F /* Source Control */;
 		userBuildSettings = {
@@ -180,9 +180,9 @@
 	};
 	F56D96E60502F83C00143299 /* file_model_animate.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1461, 5057}}";
-			sepNavSelRange = "{9875, 0}";
-			sepNavVisRange = "{13264, 1190}";
+			sepNavIntBoundsRect = "{{0, 0}, {1461, 4979}}";
+			sepNavSelRange = "{10328, 0}";
+			sepNavVisRange = "{2252, 2577}";
 			sepNavWindowFrame = "{{375, 165}, {1041, 747}}";
 		};
 	};
@@ -196,9 +196,9 @@
 	};
 	F56D96E80502F83C00143299 /* file_model_mesh.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 1287}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 1482}}";
 			sepNavSelRange = "{1073, 0}";
-			sepNavVisRange = "{285, 1497}";
+			sepNavVisRange = "{1782, 806}";
 			sepNavWindowFrame = "{{84, 213}, {1041, 747}}";
 		};
 	};
@@ -252,10 +252,10 @@
 	};
 	F5941503097A003000223F2A /* file_model_mesh_v2.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1251, 8853}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1251, 8710}}";
 			sepNavSelRange = "{8989, 428}";
-			sepNavVisRange = "{8909, 1627}";
-			sepNavWindowFrame = "{{142, 164}, {1041, 747}}";
+			sepNavVisRange = "{16742, 1324}";
+			sepNavWindowFrame = "{{242, 135}, {1041, 747}}";
 		};
 	};
 	F5A31C2C0C5EDC52002470A9 /* model_transform.c */ = {
@@ -292,7 +292,7 @@
 	};
 	F5EBD379053A13C30076219C /* lookup.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 2080}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 2015}}";
 			sepNavSelRange = "{3260, 0}";
 			sepNavVisRange = "{2470, 876}";
 			sepNavWindowFrame = "{{518, 240}, {1041, 747}}";

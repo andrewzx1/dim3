@@ -85,6 +85,7 @@ bool read_animate_xml(model_type *model)
         
         tag=xml_findfirstchild("Loop",animation_tag);
         animate->loop=xml_get_attribute_boolean(tag,"repeat");
+        animate->no_smooth=xml_get_attribute_boolean(tag,"no_smooth");
         animate->loop_start=xml_get_attribute_int(tag,"start");
         animate->loop_end=xml_get_attribute_int(tag,"end");
         
@@ -266,6 +267,7 @@ bool write_animate_xml(model_type *model)
         
         xml_add_tagstart("Loop");
         xml_add_attribute_boolean("repeat",animate->loop);
+        xml_add_attribute_boolean("no_smooth",animate->no_smooth);
         xml_add_attribute_int("start",animate->loop_start);
         xml_add_attribute_int("end",animate->loop_end);
         xml_add_tagend(TRUE);

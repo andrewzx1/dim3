@@ -402,7 +402,7 @@ extern bool view_click_drag_texture_uv(editor_view_type *view,d3pnt *pt,bool ent
 extern bool view_click_drag_liquid_vertex(editor_view_type *view,d3pnt *pt);
 extern bool view_click_drag_liquid(editor_view_type *view,d3pnt *pt);
 extern bool view_click_drag_item(editor_view_type *view,d3pnt *pt);
-extern void view_click_box_select(editor_view_type *view,d3pnt *pt);
+extern bool view_click_box_select(editor_view_type *view,d3pnt *pt);
 
 //
 // view draw handle

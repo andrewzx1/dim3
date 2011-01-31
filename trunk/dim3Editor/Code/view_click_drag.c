@@ -1192,12 +1192,13 @@ bool view_click_drag_item(editor_view_type *view,d3pnt *pt)
       
 ======================================================= */
 
-void view_click_box_select(editor_view_type *view,d3pnt *pt)
+bool view_click_box_select(editor_view_type *view,d3pnt *pt)
 {
 	int						n,x,y,item_count,
 							type[view_max_box_select_item],
 							main_idx[view_max_box_select_item],
 							sub_idx[view_max_box_select_item];
+	bool					moved;
 	d3pnt					old_pt;
 	d3rect					box;
 		
@@ -1208,7 +1209,7 @@ void view_click_box_select(editor_view_type *view,d3pnt *pt)
 	view_click_piece_map_pick_start(view);
 	if (!view_pick_list_multiple_setup(view)) {	
 		view_pick_list_multiple_end();
-		return;
+		return(FALSE);
 	}
 
 		// setup the start point
@@ -1218,11 +1219,14 @@ void view_click_box_select(editor_view_type *view,d3pnt *pt)
 	
 		// run the select
 
+	moved=FALSE;
 	memmove(&old_pt,pt,sizeof(d3pnt));
 
 	while (!os_track_mouse_location(pt,&box)) {
 		
 		if ((pt->x==old_pt.x) && (pt->y==old_pt.y)) continue;
+		
+		moved=TRUE;
 		
 		x=old_pt.x-pt->x;
 		y=old_pt.y-pt->y;
@@ -1238,6 +1242,7 @@ void view_click_box_select(editor_view_type *view,d3pnt *pt)
 		item_count=view_pick_list_multiple_pick(view,&state.select_box_start_pnt,&state.select_box_end_pnt,type,main_idx,sub_idx,view_max_box_select_item);
 		
 		select_clear();
+		
 		for (n=0;n!=item_count;n++) {
 			select_add(type[n],main_idx[n],sub_idx[n]);
 		}
@@ -1256,4 +1261,6 @@ void view_click_box_select(editor_view_type *view,d3pnt *pt)
 	state.select_box_on=FALSE;
 	
 	main_wind_draw();
+	
+	return(moved);
 }

@@ -36,6 +36,7 @@ and can be sold or given away.
 
 #define kAnimationPropertyName					0
 #define kAnimationPropertyLoop					1
+#define kAnimationPropertyNoSmooth				2
 
 #define kAnimationPropertyPoseAdd				10
 
@@ -67,6 +68,7 @@ void property_palette_fill_animation(int animate_idx)
 
 	list_palette_add_header(&property_palette,0,"Animation Settings");
 	list_palette_add_checkbox(&property_palette,kAnimationPropertyLoop,"Looping",animate->loop,FALSE);
+	list_palette_add_checkbox(&property_palette,kAnimationPropertyNoSmooth,"No Smoothing",animate->no_smooth,FALSE);
 	
 	list_palette_add_header_button(&property_palette,kAnimationPropertyPoseAdd,"Animation Poses",list_button_plus);
 
@@ -127,6 +129,10 @@ void property_palette_click_animation(int animate_idx,int id)
 
 		case kAnimationPropertyLoop:
 			animate->loop=!animate->loop;
+			break;
+			
+		case kAnimationPropertyNoSmooth:
+			animate->no_smooth=!animate->no_smooth;
 			break;
 
 	}

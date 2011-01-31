@@ -202,7 +202,7 @@ bool os_key_command_down(void)
 
 bool os_key_shift_down(void)
 {
-	return((GetCurrentKeyModifiers()&shiftKey)!=0);
+	return(((GetCurrentKeyModifiers()&shiftKey)!=0)||((GetCurrentKeyModifiers()&alphaLock)!=0));
 }
 
 /* =======================================================

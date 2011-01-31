@@ -588,7 +588,6 @@ void view_click_piece_map_pick_start(editor_view_type *view)
 void view_click_piece(editor_view_type *view,d3pnt *pt,bool double_click)
 {
 	int				type,main_idx,sub_idx;
-	bool			toggle_select;
 	d3rect			box;
 
 		// convert point to view
@@ -597,13 +596,6 @@ void view_click_piece(editor_view_type *view,d3pnt *pt,bool double_click)
 
 	pt->x-=box.lx;
 	pt->y-=box.ty;
-
-		// box selection
-
-	if (os_key_shift_down()) {
-		view_click_box_select(view,pt);
-		return;
-	}
 
 		// rotation handles
 
@@ -642,17 +634,15 @@ void view_click_piece(editor_view_type *view,d3pnt *pt,bool double_click)
 		}
 	}
 	
-		// regular or toggle selection
-		
-	toggle_select=state.select_add;
-	
-		// clear or add to selection
+		// drag selects or toggle selection
 		
 	if (type==-1) {
-		if (!toggle_select) select_clear();
+		if (!view_click_box_select(view,pt)) {
+			if (!state.select_add) select_clear();
+		}
 	}
 	else {
-		if (!toggle_select) {
+		if ((!state.select_add) && (!os_key_shift_down())) {
 			if (!select_check(type,main_idx,sub_idx)) {			// keep selection if selecting an already selected piece
 				select_clear();	
 				select_add(type,main_idx,sub_idx);
