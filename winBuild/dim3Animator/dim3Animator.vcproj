@@ -469,6 +469,10 @@
 				Name="AnimatorWin32"
 				>
 				<File
+					RelativePath=".\dim3Animator.exe.manifest"
+					>
+				</File>
+				<File
 					RelativePath=".\dim3Animator.rc"
 					>
 				</File>

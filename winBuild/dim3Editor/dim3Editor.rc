@@ -10,123 +10,123 @@ IDR_MAIN_MENU MENU
 BEGIN
     POPUP "File"
     BEGIN
-        MENUITEM "New",							100
-        MENUITEM "Open...",						101
-        MENUITEM "Close",						102
+        MENUITEM "New",							ID_FILE_NEW
+        MENUITEM "Open...",						ID_FILE_OPEN
+        MENUITEM "Close",						ID_FILE_CLOSE
         MENUITEM SEPARATOR
-        MENUITEM "Save",						103
+        MENUITEM "Save",						ID_FILE_SAVE
         MENUITEM SEPARATOR
-        MENUITEM "Exit",						104
+        MENUITEM "Exit",						ID_FILE_EXIT
     END
     POPUP "Edit"
     BEGIN
-        MENUITEM "Undo",						200
+        MENUITEM "Undo",						ID_FILE_UNDO
 		MENUITEM SEPARATOR
-        MENUITEM "Delete",						201
-        MENUITEM "Duplicate",					202
+        MENUITEM "Delete",						ID_FILE_DELETE
+        MENUITEM "Duplicate",					ID_FILE_DUPLICATE
 		MENUITEM SEPARATOR
-        MENUITEM "Select More",					203
+        MENUITEM "Select More\tCtrl+M",			ID_EDIT_SELECT_MORE
     END
     POPUP "View"
     BEGIN
-        MENUITEM "Front",						300
-        MENUITEM "Left",						301
-        MENUITEM "Right",						302
-        MENUITEM "Back",						303
-        MENUITEM "Top",							304
-        MENUITEM "Bottom",						305
+        MENUITEM "Front",						ID_VIEW_FRONT
+        MENUITEM "Left",						ID_VIEW_LEFT
+        MENUITEM "Right",						ID_VIEW_RIGHT
+        MENUITEM "Back",						ID_VIEW_BACK
+        MENUITEM "Top",							ID_VIEW_TOP
+        MENUITEM "Bottom",						ID_VIEW_BOTTOM
 		MENUITEM SEPARATOR
-        MENUITEM "Perspecitve",					306
-        MENUITEM "Ortho",						307
+        MENUITEM "Perspecitve",					ID_VIEW_PERSPECTIVE
+        MENUITEM "Ortho",						ID_VIEW_ORTHO
  		MENUITEM SEPARATOR
-        MENUITEM "Normal UV Layer",				308
-        MENUITEM "Light Map UV Layer",			309
+        MENUITEM "Normal UV Layer",				ID_VIEW_NORMAL_LAYER
+        MENUITEM "Light Map UV Layer",			ID_VIEW_LIGHT_MAP_LAYER
 		MENUITEM SEPARATOR
-        MENUITEM "Goto Selection",				310
-        MENUITEM "Goto Map Center",				311
+        MENUITEM "Goto Selection",				ID_VIEW_GOTO_SELECTION
+        MENUITEM "Goto Map Center",				ID_VIEW_GOTO_MAP_CENTER
 		MENUITEM SEPARATOR
-        MENUITEM "Clipping",					312
+        MENUITEM "Clipping",					ID_VIEW_CLIPPING
 		MENUITEM SEPARATOR
-        MENUITEM "Liquids",						313
-        MENUITEM "Spots and Scenery",			314
-        MENUITEM "Lights, Sounds and Particles",315
-        MENUITEM "Nodes",						316
+        MENUITEM "Liquids",						ID_VIEW_LIQUIDS
+        MENUITEM "Spots and Scenery",			ID_VIEW_SPOT_SCENERY
+        MENUITEM "Lights, Sounds and Particles",ID_VIEW_LIGHT_SOUND_PARTICLE
+        MENUITEM "Nodes",						ID_VIEW_NODES
 		MENUITEM SEPARATOR
-        MENUITEM "Split Panel Horizontal",		317
-        MENUITEM "Split Panel Vertical",		318
-        MENUITEM "Remove Panel",				319
+        MENUITEM "Split Panel Horizontal",		ID_VIEW_SPLIT_HORIZONTAL
+        MENUITEM "Split Panel Vertical",		ID_VIEW_SPLIT_VERTICAL
+        MENUITEM "Remove Panel",				ID_VIEW_REMOVE_PANEL
     END
     POPUP "Map"
     BEGIN
-        MENUITEM "Add Cinema...",				400
-        MENUITEM "Add Group...",				401
-        MENUITEM "Add Movement...",				402
+        MENUITEM "Add Cinema...",				ID_MAP_CINEMA
+        MENUITEM "Add Group...",				ID_MAP_GROUP
+        MENUITEM "Add Movement...",				ID_MAP_MOVEMENT
 		MENUITEM SEPARATOR
-        MENUITEM "Raise Y",						403
-        MENUITEM "Lower Y",						404
-        MENUITEM "Center",						405
+        MENUITEM "Raise Y",						ID_MAP_RAISE_Y
+        MENUITEM "Lower Y",						ID_MAP_LOWER_Y
+        MENUITEM "Center",						ID_MAP_CENTER
 		MENUITEM SEPARATOR
-        MENUITEM "Reset UVs",					406
+        MENUITEM "Reset UVs",					ID_MAP_RESET_UV
 		MENUITEM SEPARATOR
-        MENUITEM "Recalc Normals",				407
+        MENUITEM "Recalc Normals",				ID_MAP_RECALC_NORMAL
 		MENUITEM SEPARATOR
-        MENUITEM "Clear Light Maps",			408
-        MENUITEM "Build Light Maps...",			409
+        MENUITEM "Clear Light Maps",			ID_MAP_CLEAR_LIGHT_MAP
+        MENUITEM "Build Light Maps...",			ID_MAP_BUILD_LIGHT_MAP
 		MENUITEM SEPARATOR
-        MENUITEM "Run...",						410
+        MENUITEM "Run...",						ID_MAP_RUN
     END
     POPUP "Mesh"
     BEGIN
-        MENUITEM "Combine",						500
-        MENUITEM "Split",						501
-        MENUITEM "Tesselate",					502
+        MENUITEM "Combine",						ID_MESH_COMBINE
+        MENUITEM "Split",						ID_MESH_SPLIT
+        MENUITEM "Tesselate",					ID_MESH_TESSELATE
 		MENUITEM SEPARATOR
-        MENUITEM "Resize...",					503
-        MENUITEM "Reposition...",				504
+        MENUITEM "Resize...",					ID_MESH_RESIZE
+        MENUITEM "Reposition...",				ID_MESH_REPOSITION
 		MENUITEM SEPARATOR
-        MENUITEM "Flip X",						506
-        MENUITEM "Flip Y",						507
-        MENUITEM "Flip Z",						508
+        MENUITEM "Flip X",						ID_MESH_FLIP_X
+        MENUITEM "Flip Y",						ID_MESH_FLIP_Y
+        MENUITEM "Flip Z",						ID_MESH_FLIP_Z
 		MENUITEM SEPARATOR
-        MENUITEM "Rotate X",					509
-        MENUITEM "Rotate Y",					510
-        MENUITEM "Rotate Z",					511
-        MENUITEM "Free Rotate...",				512
+        MENUITEM "Rotate X",					ID_MESH_ROTATE_X
+        MENUITEM "Rotate Y",					ID_MESH_ROTATE_Y
+        MENUITEM "Rotate Z",					ID_MESH_ROTATE_Z
+        MENUITEM "Free Rotate...",				ID_MESH_FREE_ROTATE
 		MENUITEM SEPARATOR
-        MENUITEM "Raise Y",						513
-        MENUITEM "Lower Y",						514
+        MENUITEM "Raise Y",						ID_MESH_RAISE_Y
+        MENUITEM "Lower Y",						ID_MESH_LOWER_Y
 		MENUITEM SEPARATOR
-        MENUITEM "Select All Polygons",			515
+        MENUITEM "Select All Polygons",			ID_MESH_SELECT_ALL_POLYGONS
  		MENUITEM SEPARATOR
-        MENUITEM "Snap Mesh To Grid",			516
-        MENUITEM "Snap Mesh To Closest Vertex",	517
+        MENUITEM "Snap Mesh To Grid",			ID_MESH_SNAP_TO_GRID
+        MENUITEM "Snap Mesh To Closest Vertex",	ID_MESH_SNAP_TO_CLOSEST_VERTEX
  		MENUITEM SEPARATOR
-        MENUITEM "Reset Mesh UVs",				518
-        MENUITEM "Whole Mesh UVs",				519
-        MENUITEM "Single Stamp Mesh UVs",		520
+        MENUITEM "Reset Mesh UVs",				ID_MESH_RESET_UV
+        MENUITEM "Whole Mesh UVs",				ID_MESH_WHOLE_UV
+        MENUITEM "Single Stamp Mesh UVs",		ID_MESH_SINGLE_STAMP_UV
 		MENUITEM SEPARATOR
-        MENUITEM "Recalc Normals",				521
-        MENUITEM "Invert Normals",				522
+        MENUITEM "Recalc Normals",				ID_MESH_RECALC_NORMAL
+        MENUITEM "Invert Normals",				ID_MESH_INVERT_NORMAL
    END
     POPUP "Polygon"
     BEGIN
-        MENUITEM "Punch Middle Hole",			600
+        MENUITEM "Punch Middle Hole",			ID_POLYGON_PUNCH_HOLE
 		MENUITEM SEPARATOR
-        MENUITEM "Snap Polygon To Grid",		601
+        MENUITEM "Snap Polygon To Grid",		ID_POLYGON_SNAP_TO_GRID
  		MENUITEM SEPARATOR
-        MENUITEM "Rotate Polygon UVs",			602
-        MENUITEM "Flip Us",						603
-        MENUITEM "Flip Vs",						604
+        MENUITEM "Rotate Polygon UVs",			ID_POLYGON_ROTATE_UV
+        MENUITEM "Flip Us",						ID_POLYGON_FLIP_U
+        MENUITEM "Flip Vs",						ID_POLYGON_FLIP_V
  		MENUITEM SEPARATOR
-        MENUITEM "Invert Normals",				605
+        MENUITEM "Invert Normals",				ID_POLYGON_INVERT_NORMAL
  		MENUITEM SEPARATOR
-        MENUITEM "Reset Polygon UVs",			606
-        MENUITEM "Whole Polygon UVs",			607
-        MENUITEM "Single Stamp Polygon UVs",	608
+        MENUITEM "Reset Polygon UVs",			ID_POLYGON_RESET_UV
+        MENUITEM "Whole Polygon UVs",			ID_POLYGON_WHILE_UV
+        MENUITEM "Single Stamp Polygon UVs",	ID_POLYGON_SINGLE_STAMP_UV
     END
     POPUP "Vertex"
     BEGIN
-        MENUITEM "Snap All Vertexes To Grid",	700
+        MENUITEM "Snap All Vertexes To Grid",	ID_VERTEX_SNAP_TO_GRID
     END
 END
 
@@ -135,8 +135,9 @@ END
 // Accelerator
 //
 
-IDR_MAINFRAME ACCELERATORS 
+IDR_ACCELERATOR ACCELERATORS 
 BEGIN
+	"M",			ID_EDIT_SELECT_MORE,		VIRTKEY, CONTROL, NOINVERT
 END
 
 /////////////////////////////////////////////////////////////////////////////
@@ -187,13 +188,29 @@ BEGIN
                     IDC_STATIC,7,40,223,9
 END
 
+IDD_SVG_IMPORT DIALOGEX 100, 100, 333, 134
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION
+CAPTION "SVG Import"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    EDITTEXT        IDC_SVG_IMPORT_SCALE,68,67,82,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_SVG_IMPORT_LAYER_HEIGHT,68,85,82,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "Cancel",ID_SVG_IMPORT_CANCEL,221,113,50,14
+    DEFPUSHBUTTON   "Import",ID_SVG_IMPORT_OK,276,113,50,14,WS_GROUP
+    LTEXT           "SVG import normally works with files created by Inkscape.",IDC_STATIC,7,7,204,9
+    LTEXT           "SVG files should only use polygons where each layer is a new level stacked on top of each other.",IDC_STATIC,7,20,319,10
+    LTEXT           "Polygons with no stroke create floors only, polygons with a 1 pixel stroke create floors and walls, and polygons with a large stroke create walls only.  The polygon fills are used to group polygons into meshes.",IDC_STATIC,7,30,319,25
+    RTEXT           "Scale:",IDC_STATIC,17,69,45,9
+    RTEXT           "Layer Height:",IDC_STATIC,18,87,45,9
+END
+
 IDD_PROPERTY_LIST DIALOGEX 100, 100, 292, 286
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION
 CAPTION "Pick a Value"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    PUSHBUTTON      "None",ID_PROPERTY_LIST_NONE,7,265,50,14
 	LISTBOX         IDC_PROPERTY_LIST_LIST,7,7,278,254,LBS_NOINTEGRALHEIGHT | LBS_HASSTRINGS | LBS_NOTIFY | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "None",ID_PROPERTY_LIST_NONE,7,265,50,14
     DEFPUSHBUTTON   "OK",ID_PROPERTY_LIST_OK,235,265,50,14,WS_GROUP
 END
 
@@ -202,7 +219,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTI
 CAPTION "Enter a Value"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    DEFPUSHBUTTON   "OK",ID_PROPERTY_STRING_OK,235,38,50,14,WS_GROUP
     EDITTEXT        IDC_PROPERTY_STRING_STRING,7,6,278,12,ES_AUTOHSCROLL
+    DEFPUSHBUTTON   "OK",ID_PROPERTY_STRING_OK,235,38,50,14,WS_GROUP
     LTEXT           "",IDC_PROPERTY_STRING_DESCRIPTION,7,25,278,10
 END

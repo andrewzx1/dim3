@@ -38,7 +38,7 @@ int								dialog_obj_import_type,dialog_obj_import_axis,dialog_obj_import_unit;
 
 /* =======================================================
 
-      Mesh Scale Event Handlers
+      OBJ Import Event Handlers
       
 ======================================================= */
 
@@ -96,7 +96,7 @@ LRESULT CALLBACK dialog_obj_import_proc(HWND diag,UINT msg,WPARAM wparam,LPARAM 
 
 /* =======================================================
 
-      Run Mesh Scale Dialog
+      Run OBJ Import Dialog
       
 ======================================================= */
 
