@@ -213,7 +213,7 @@ and can be sold or given away.
 // drawing sizes
 //
 
-#define draw_trig_select_line_size		4.0f
+#define draw_trig_select_line_size		2.0f
 #define draw_vertex_handle_size			8.0f
 
 #define draw_model_normal_size			3.0f

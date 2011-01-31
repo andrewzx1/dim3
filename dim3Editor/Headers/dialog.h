@@ -106,6 +106,7 @@ extern bool dialog_free_rotate_run(float *rot_x,float *rot_y,float *rot_z);
 
 extern bool dialog_create_grid_mesh_run(int *xdiv,int *ydiv,int *zdiv);
 extern int dialog_obj_import_run(int *scale_axis,int *scale_unit);
+extern bool dialog_svg_import_run(float *scale,int *high);
 
 //
 // import dialogs

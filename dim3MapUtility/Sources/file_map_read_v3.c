@@ -76,6 +76,7 @@ bool read_single_mesh_v3(map_type *map,int mesh_idx,int mesh_tag)
 	mesh->flag.pass_through=xml_get_attribute_boolean(mesh_tag,"pass");
 	mesh->flag.moveable=xml_get_attribute_boolean(mesh_tag,"moveable");
 	mesh->flag.hilite=xml_get_attribute_boolean(mesh_tag,"hilite");
+	mesh->flag.simple_collision=xml_get_attribute_boolean(mesh_tag,"simple_collision");
 	mesh->flag.lock_uv=xml_get_attribute_boolean(mesh_tag,"lock_uv");
 	mesh->flag.lock_move=xml_get_attribute_boolean(mesh_tag,"lock_move");
 	mesh->flag.never_obscure=xml_get_attribute_boolean(mesh_tag,"never_obscure");
