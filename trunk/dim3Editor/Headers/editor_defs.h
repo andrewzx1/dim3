@@ -297,9 +297,6 @@ and can be sold or given away.
 
 #define kCommandVertexSnapToGrid				FOUR_CHAR_CODE('vsnp')
 
-#define kCommandGroups							FOUR_CHAR_CODE('grrp')
-#define kCommandGroupMovements					FOUR_CHAR_CODE('mmov')
-
 //
 // undos
 //

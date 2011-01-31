@@ -10,111 +10,111 @@ IDR_MAIN_MENU MENU
 BEGIN
     POPUP "File"
     BEGIN
-        MENUITEM "New",							100
-        MENUITEM "Open...",						101
-        MENUITEM "Close",						102
+        MENUITEM "New",							ID_FILE_NEW
+        MENUITEM "Open...",						ID_FILE_OPEN
+        MENUITEM "Close",						ID_FILE_CLOSE
         MENUITEM SEPARATOR
-        MENUITEM "Save",						103
+        MENUITEM "Save",						ID_FILE_SAVE
         MENUITEM SEPARATOR
-        MENUITEM "Exit",						104
+        MENUITEM "Exit",						ID_FILE_EXIT
     END
     POPUP "Edit"
     BEGIN
-        MENUITEM "Undo",						200
+        MENUITEM "Undo",						ID_EDIT_UNDO
         MENUITEM SEPARATOR
-        MENUITEM "Select More",					201
+        MENUITEM "Select More\tCtrl-M",			ID_EDIT_SELECT_MORE
     END
     POPUP "Model"
     BEGIN
-        MENUITEM "Prepare Model",				300
-        MENUITEM "Calculate Boxes",				301
-        MENUITEM "Calculate Normals",			302
+        MENUITEM "Prepare Model",				ID_MODEL_PREPARE_MODEL
+        MENUITEM "Calculate Boxes",				ID_MODEL_CALC_BOXES
+        MENUITEM "Calculate Normals",			ID_MODEL_CALC_NORMAL
 		MENUITEM SEPARATOR
-        MENUITEM "Scale...",					303
+        MENUITEM "Scale...",					ID_MODEL_SCALE
 		MENUITEM SEPARATOR
-        MENUITEM "Flip X",						304
-        MENUITEM "Flip Y",						305
-        MENUITEM "Flip Z",						306
+        MENUITEM "Flip X",						ID_MODEL_FLIP_X
+        MENUITEM "Flip Y",						ID_MODEL_FLIP_Y
+        MENUITEM "Flip Z",						ID_MODEL_FLIP_Z
 		MENUITEM SEPARATOR
-        MENUITEM "Swap X/Z",					307
-        MENUITEM "Swap Y/Z",					308
-        MENUITEM "Center X/Z",					309
-        MENUITEM "Floor Y",						310
+        MENUITEM "Swap X/Z",					ID_MODEL_SWAP_XZ
+        MENUITEM "Swap Y/Z",					ID_MODEL_SWAP_YZ
+        MENUITEM "Center X/Z",					ID_MODEL_CENTER_XZ
+        MENUITEM "Floor Y",						ID_MODEL_FLOOR_Y
 		MENUITEM SEPARATOR
-        MENUITEM "Add Hit Box",					311
+        MENUITEM "Add Hit Box",					ID_MODEL_ADD_HIT_BOX
     END
     POPUP "View"
     BEGIN
-        MENUITEM "Front",						400
-        MENUITEM "Left",						401
-        MENUITEM "Right",						402
-        MENUITEM "Back",						403
-        MENUITEM "Top",							404
-        MENUITEM "Bottom",						405
+        MENUITEM "Front",						ID_VIEW_FRONT
+        MENUITEM "Left",						ID_VIEW_LEFT
+        MENUITEM "Right",						ID_VIEW_RIGHT
+        MENUITEM "Back",						ID_VIEW_BACK
+        MENUITEM "Top",							ID_VIEW_TOP
+        MENUITEM "Bottom",						ID_VIEW_BOTTOM
     END
     POPUP "Mesh"
     BEGIN
-        MENUITEM "Add Mesh",					500
-        MENUITEM "Duplicate Mesh",				501
+        MENUITEM "Add Mesh",					ID_MESH_ADD
+        MENUITEM "Duplicate Mesh",				ID_MESH_DUPLICATE
 		MENUITEM SEPARATOR
-        MENUITEM "Import OBJ...",				502
-        MENUITEM "Replace OBJ...",				503
-        MENUITEM "Add dim3 Mesh...",			504
+        MENUITEM "Import OBJ...",				ID_MESH_IMPORT_OBJ
+        MENUITEM "Replace OBJ...",				ID_MESH_REPLACE_OBJ
+        MENUITEM "Add dim3 Mesh...",			ID_MESH_ADD_MESH
 		MENUITEM SEPARATOR
-        MENUITEM "Scale...",					505
+        MENUITEM "Scale...",					ID_MESH_SCALE
 		MENUITEM SEPARATOR
-        MENUITEM "Flip X",						506
-        MENUITEM "Flip Y",						507
-        MENUITEM "Flip Z",						508
+        MENUITEM "Flip X",						ID_MESH_FLIP_X
+        MENUITEM "Flip Y",						ID_MESH_FLIP_Y
+        MENUITEM "Flip Z",						ID_MESH_FLIP_Z
 		MENUITEM SEPARATOR
-        MENUITEM "Flip Texture Us",				509
-        MENUITEM "Flip Texture Vs",				510
+        MENUITEM "Flip Texture Us",				ID_MESH_FLIP_U
+        MENUITEM "Flip Texture Vs",				ID_MESH_FLIP_V
  		MENUITEM SEPARATOR
-        MENUITEM "Swap X/Z",					511
-        MENUITEM "Swap Y/Z",					512
-        MENUITEM "Center X/Z",					513
-        MENUITEM "Floor Y",						514
+        MENUITEM "Swap X/Z",					ID_MESH_SWAP_XZ
+        MENUITEM "Swap Y/Z",					ID_MESH_SWAP_YZ
+        MENUITEM "Center X/Z",					ID_MESH_CENTER_XZ
+        MENUITEM "Floor Y",						ID_MESH_FLOOR_Y
    END
     POPUP "Vertexes"
     BEGIN
-        MENUITEM "Select All",					600
-        MENUITEM "Select Not Attached",			601
+        MENUITEM "Select All",					ID_VERTEX_SELECT_ALL
+        MENUITEM "Select Not Attached",			ID_VERTEX_SELECT_NOT_ATTACHED
  		MENUITEM SEPARATOR
-        MENUITEM "Invert Normals",				602
-        MENUITEM "Set Normals",					603
+        MENUITEM "Invert Normals",				ID_VERTEX_INVERT_NORMAL
+        MENUITEM "Set Normals",					ID_VERTEX_SET_NORMAL
  		MENUITEM SEPARATOR
-        MENUITEM "Clear Bone Attachments",		604
-        MENUITEM "Auto Set Bone Attachments",	605
+        MENUITEM "Clear Bone Attachments",		ID_VERTEX_CLEAR_BONE
+        MENUITEM "Auto Set Bone Attachments",	ID_VERTEX_AUTO_SET_BONE
  		MENUITEM SEPARATOR
-        MENUITEM "Hide Selected",				606
-        MENUITEM "Hide Non-Selected",			607
-        MENUITEM "Show All",					608
+        MENUITEM "Hide Selected",				ID_VERTEX_HIDE_SELECTED
+        MENUITEM "Hide Non-Selected",			ID_VERTEX_HIDE_NON_SELECTED
+        MENUITEM "Show All",					ID_VERTEX_SHOW_ALL
  		MENUITEM SEPARATOR
-        MENUITEM "Delete Vertexes",				609
+        MENUITEM "Delete Vertexes",				ID_VERTEX_DELETE
     END
     POPUP "Bones"
     BEGIN
-        MENUITEM "Add Bone",					700
-        MENUITEM "Set Bone...",					701
+        MENUITEM "Add Bone",					ID_BONE_ADD
+        MENUITEM "Set Bone...",					ID_BONE_SET
  		MENUITEM SEPARATOR
-        MENUITEM "Goto Parent Bone",			702
+        MENUITEM "Goto Parent Bone",			ID_BONE_GOTO_PARENT
     END
     POPUP "Poses"
     BEGIN
-        MENUITEM "New Pose",					800
-        MENUITEM "Duplicate Pose",				801
+        MENUITEM "New Pose",					ID_POSE_NEW
+        MENUITEM "Duplicate Pose",				ID_POSE_DUPLICATE
  		MENUITEM SEPARATOR
-        MENUITEM "Clear Pose",					802
+        MENUITEM "Clear Pose",					ID_POSE_CLEAR
     END
     POPUP "Animations"
     BEGIN
-        MENUITEM "New Animation",				900
-        MENUITEM "Duplicate Animation",			901
+        MENUITEM "New Animation",				ID_ANIMATION_NEW
+        MENUITEM "Duplicate Animation",			ID_ANIMATION_DUPLICATE
 		MENUITEM SEPARATOR
-        MENUITEM "Scale Animation Time...",		902
+        MENUITEM "Scale Animation Time...",		ID_ANIMATION_SCALE_TIME
  		MENUITEM SEPARATOR
-        MENUITEM "Play Animation",				903
-        MENUITEM "Play Blended Animation...",	904
+        MENUITEM "Play Animation",				ID_ANIMATION_PLAY
+        MENUITEM "Play Blended Animation...",	ID_ANIMATION_PLAY_BLENDED
     END
 END
 
@@ -123,8 +123,9 @@ END
 // Accelerator
 //
 
-IDR_MAINFRAME ACCELERATORS 
+IDR_ACCELERATOR ACCELERATORS 
 BEGIN
+	"M",			ID_EDIT_SELECT_MORE,		VIRTKEY, CONTROL, NOINVERT
 END
 
 /////////////////////////////////////////////////////////////////////////////

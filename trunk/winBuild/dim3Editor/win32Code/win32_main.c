@@ -36,6 +36,8 @@ and can be sold or given away.
 HINSTANCE					hinst;
 ATOM						wnd_rg_class;
 HWND						wnd;
+HMENU						wnd_menu;
+HACCEL						wnd_accel;
 HDC							wnd_gl_dc;
 HGLRC						wnd_gl_ctx;
 
@@ -64,22 +66,6 @@ void dialog_about_run(void)
 void dialog_preference_run(void)
 {
 }
-bool dialog_group_settings_run(group_type *group)
-{
-	return(FALSE);
-}
-bool dialog_movement_settings_run(int movement_idx)
-{
-	return(FALSE);
-}
-bool dialog_movement_move_settings_run(movement_move_type *move)
-{
-	return(FALSE);
-}
-bool dialog_cinema_settings_run(int cinema_idx)
-{
-	return(FALSE);
-}
 bool dialog_resize_run(float *fct_x,float *fct_y,float *fct_z)
 {
 	return(FALSE);
@@ -100,9 +86,6 @@ bool dialog_height_import_run(int *div_cnt,int *size,int *high)
 {
 	return(FALSE);
 }
-
-
-
 
 /* =======================================================
 
@@ -198,7 +181,6 @@ void win32_main_wind_open(void)
 	WNDCLASSEX				wcx;
 	PIXELFORMATDESCRIPTOR	pf;
 	HINSTANCE				hInst;
-	HMENU					menu;
 
 		// create window
 
@@ -223,9 +205,11 @@ void win32_main_wind_open(void)
 
 		// menu
 
-	menu=LoadMenu(hinst,MAKEINTRESOURCE(IDR_MAIN_MENU));
-	SetMenu(wnd,menu);
+	wnd_menu=LoadMenu(hinst,MAKEINTRESOURCE(IDR_MAIN_MENU));
+	SetMenu(wnd,wnd_menu);
 
+	wnd_accel=LoadAccelerators(hinst,MAKEINTRESOURCE(IDR_ACCELERATOR));
+	
 	undo_initialize();
 	menu_fix_enable();
 
@@ -279,6 +263,11 @@ void win32_main_wind_close(void)
 	wglDeleteContext(wnd_gl_ctx);
 	ReleaseDC(wnd,wnd_gl_dc);
 
+		// delete menu
+
+	DestroyAcceleratorTable(wnd_accel);
+	DestroyMenu(wnd_menu);
+
 		// delete window
 
 	DestroyWindow(wnd);
@@ -299,8 +288,10 @@ void editor_pump(void)
 
 	while (!quit) {
 		if (GetMessage(&msg,NULL,0,0)>0) {
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
+			if (!TranslateAccelerator(wnd,wnd_accel,&msg)) {
+				TranslateMessage(&msg);
+				DispatchMessage(&msg);
+			}
 		}
 	}
 }
