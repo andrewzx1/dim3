@@ -138,51 +138,47 @@ int circle_line_intersect(d3pnt *p1,d3pnt *p2,d3pnt *circle_pnt,int radius,d3pnt
 	return((int)sqrt(cur_dist));
 }
 
-
-// supergumba -- delete me
-int circle_line_intersect2(d3pnt *p1,d3pnt *p2,d3pnt *circle_pnt,int radius,d3pnt *hit_pnt)
+int circle_box_intersect(d3pnt *min,d3pnt *max,d3pnt *circle_pnt,int radius,d3pnt *hit_pnt)
 {
-	double			d,dx,dz;
-	float			fr,fx,fz;
-	d3pnt			cp2;
+	int				n,dist[4],cur_dist;
+	d3pnt			p1,p2,hit_pnts[4];
 	
-		// get the normalized line vector
+		// hit against the four sides
 		
-	dx=(double)(p2->x-p1->x);
-	dz=(double)(p2->z-p1->z);
+	p1.x=min->x;
+	p2.x=max->x;
+	p1.z=p2.z=min->z;
+	dist[0]=circle_line_intersect(&p1,&p2,circle_pnt,radius,&hit_pnts[0]);
 
-	d=sqrt((dx*dx)+(dz*dz));
-	if (d!=0.0) {
-		d=1.0/d;
-		fx=(float)(dx*d);
-		fz=(float)(dz*d);
-	}
-	else {
-		fx=fz=0;
+	p1.x=min->x;
+	p2.x=max->x;
+	p1.z=p2.z=max->z;
+	dist[1]=circle_line_intersect(&p1,&p2,circle_pnt,radius,&hit_pnts[1]);
+
+	p1.z=min->z;
+	p2.z=max->z;
+	p1.x=p2.x=min->x;
+	dist[2]=circle_line_intersect(&p1,&p2,circle_pnt,radius,&hit_pnts[2]);
+	
+	p1.z=min->z;
+	p2.z=max->z;
+	p1.x=p2.x=max->x;
+	dist[3]=circle_line_intersect(&p1,&p2,circle_pnt,radius,&hit_pnts[3]);
+
+		// find the best hit
+		
+	cur_dist=-1;
+	
+	for (n=0;n!=4;n++) {
+		if (dist[n]!=-1) {
+			if ((cur_dist==-1) || (dist[n]<cur_dist)) {
+				cur_dist=dist[n];
+				memmove(hit_pnt,&hit_pnts[n],sizeof(d3pnt));
+			}
+		}
 	}
 	
-		// reverse to get perpendicular
-		// line from circle center
-		// we need to test both directions
-		
-	fr=(float)radius;
-
-	cp2.x=circle_pnt->x-(int)(fr*fz);
-	cp2.z=circle_pnt->z+(int)(fr*fx);
-		
-	if (!line_2D_get_intersect(p1->x,p1->z,p2->x,p2->z,circle_pnt->x,circle_pnt->z,cp2.x,cp2.z,&hit_pnt->x,&hit_pnt->z)) {
-		cp2.x=circle_pnt->x+(int)(fr*fz);
-		cp2.z=circle_pnt->z-(int)(fr*fx);
-
-		if (!line_2D_get_intersect(p1->x,p1->z,p2->x,p2->z,circle_pnt->x,circle_pnt->z,cp2.x,cp2.z,&hit_pnt->x,&hit_pnt->z)) return(-1);
-	}
-
-		// return distance to hit point
-
-	dx=(hit_pnt->x-circle_pnt->x);
-	dz=(hit_pnt->z-circle_pnt->z);
-	
-	return((int)sqrt((dx*dx)+(dz*dz)));
+	return(cur_dist);
 }
 
 void circle_get_point_on_radius_through_hit_point(d3pnt *circle_pnt,int radius,d3pnt *hit_pnt,d3pnt *radius_pt)
@@ -328,7 +324,30 @@ bool collide_circle_check_mesh(d3pnt *circle_pnt,int radius,d3pnt *min,d3pnt *ma
 		// check pass through
 		
 	if (mesh->flag.pass_through) return(FALSE);
-
+	
+		// simplified box collisions
+		// if this is on, we are already inside because
+		// of the bounds check above
+		
+	if (mesh->flag.simple_collision) {
+	
+			// simplified doesn't bump
+			
+		if (bump_only) return(FALSE);
+		
+			// hit against box
+			
+		dist=circle_box_intersect(&mesh->box.min,&mesh->box.max,circle_pnt,radius,&hit_pnt);
+		if (dist==-1) return(FALSE);
+		
+		*idx=0;
+		*p_cur_dist=dist;
+		memmove(cur_hit_pnt,&hit_pnt,sizeof(d3pnt));
+		
+		return(TRUE);
+	}
+	
+		// complex check
 		// check wall polys
 					
 	poly_count=mesh->poly_list.wall_count;

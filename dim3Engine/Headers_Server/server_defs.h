@@ -1050,6 +1050,7 @@ typedef struct		{
 #define ray_trace_check_item_object						0
 #define ray_trace_check_item_projectile					1
 #define ray_trace_check_item_mesh_poly					2
+#define ray_trace_check_item_mesh_box					3
 
 
 typedef struct		{
