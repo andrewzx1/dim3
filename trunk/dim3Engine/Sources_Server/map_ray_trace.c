@@ -279,7 +279,7 @@ float ray_trace_rotated_box(d3pnt *spt,d3vct *vct,d3pnt *hpt,int x,int z,int lx,
 	py[0]=py[1]=ty;
 	py[2]=py[3]=by;
 	pz[0]=pz[1]=pz[2]=pz[3]=tz;
-	rotate_2D_polygon(4,px,pz,x,z,rang);
+	if (rang!=0.0f) rotate_2D_polygon(4,px,pz,x,z,rang);
 	t[0]=ray_trace_polygon(spt,vct,&pt[0],4,px,py,pz);
 
 	px[0]=px[3]=lx;
@@ -287,7 +287,7 @@ float ray_trace_rotated_box(d3pnt *spt,d3vct *vct,d3pnt *hpt,int x,int z,int lx,
 	py[0]=py[1]=ty;
 	py[2]=py[3]=by;
 	pz[0]=pz[1]=pz[2]=pz[3]=bz;
-	rotate_2D_polygon(4,px,pz,x,z,rang);
+	if (rang!=0.0f) rotate_2D_polygon(4,px,pz,x,z,rang);
 	t[1]=ray_trace_polygon(spt,vct,&pt[1],4,px,py,pz);
 	
 	px[0]=px[1]=px[2]=px[3]=lx;
@@ -295,7 +295,7 @@ float ray_trace_rotated_box(d3pnt *spt,d3vct *vct,d3pnt *hpt,int x,int z,int lx,
 	py[2]=py[3]=by;
 	pz[0]=pz[3]=tz;
 	pz[1]=pz[2]=bz;
-	rotate_2D_polygon(4,px,pz,x,z,rang);
+	if (rang!=0.0f) rotate_2D_polygon(4,px,pz,x,z,rang);
 	t[2]=ray_trace_polygon(spt,vct,&pt[2],4,px,py,pz);
 	
 	px[0]=px[1]=px[2]=px[3]=rx;
@@ -303,7 +303,7 @@ float ray_trace_rotated_box(d3pnt *spt,d3vct *vct,d3pnt *hpt,int x,int z,int lx,
 	py[2]=py[3]=by;
 	pz[0]=pz[3]=tz;
 	pz[1]=pz[2]=bz;
-	rotate_2D_polygon(4,px,pz,x,z,rang);
+	if (rang!=0.0f) rotate_2D_polygon(4,px,pz,x,z,rang);
 	t[3]=ray_trace_polygon(spt,vct,&pt[3],4,px,py,pz);
 	
 	px[0]=px[3]=lx;
@@ -311,15 +311,15 @@ float ray_trace_rotated_box(d3pnt *spt,d3vct *vct,d3pnt *hpt,int x,int z,int lx,
 	py[0]=py[1]=py[2]=py[3]=ty;
 	pz[0]=pz[1]=tz;
 	pz[2]=pz[3]=bz;
-	rotate_2D_polygon(4,px,pz,x,z,rang);
+	if (rang!=0.0f) rotate_2D_polygon(4,px,pz,x,z,rang);
 	t[4]=ray_trace_polygon(spt,vct,&pt[4],4,px,py,pz);
 	
 	px[0]=px[3]=lx;
 	px[1]=px[2]=rx;
-	py[0]=py[1]=py[2]=py[3]=ty;
+	py[0]=py[1]=py[2]=py[3]=by;
 	pz[0]=pz[1]=tz;
 	pz[2]=pz[3]=bz;
-	rotate_2D_polygon(4,px,pz,x,z,rang);
+	if (rang!=0.0f) rotate_2D_polygon(4,px,pz,x,z,rang);
 	t[5]=ray_trace_polygon(spt,vct,&pt[5],4,px,py,pz);
 	
 		// find closest hit
@@ -327,7 +327,7 @@ float ray_trace_rotated_box(d3pnt *spt,d3vct *vct,d3pnt *hpt,int x,int z,int lx,
 	idx=-1;
 	hit_t=-1.0f;
 	
-	for (n=0;n!=5;n++) {
+	for (n=0;n!=6;n++) {
 		if (t[n]==-1.0f) continue;
 		if ((t[n]<hit_t) || (hit_t==-1.0f)) {
 			idx=n;
@@ -343,6 +343,11 @@ float ray_trace_rotated_box(d3pnt *spt,d3vct *vct,d3pnt *hpt,int x,int z,int lx,
 	}
 	
 	return(-1.0f);
+}
+
+float ray_trace_mesh_box(d3pnt *spt,d3vct *vct,d3pnt *hpt,map_mesh_type *mesh)
+{
+	return(ray_trace_rotated_box(spt,vct,hpt,mesh->box.mid.x,mesh->box.mid.z,mesh->box.min.x,mesh->box.max.x,mesh->box.min.z,mesh->box.max.z,mesh->box.min.y,mesh->box.max.y,0.0f));
 }
 
 /* =======================================================
@@ -754,6 +759,31 @@ void ray_trace_map_items(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *hit_
 				contact->poly.poly_idx=item->index_2;
 
 				break;
+				
+			case ray_trace_check_item_mesh_box:
+
+				mesh=&map.mesh.meshes[item->index];
+				
+					// ray trace
+					
+				t=ray_trace_mesh_box(spt,vct,&pt,mesh);
+				if (t==-1.0f) break;
+					
+					// closer hit?
+				
+				if (t>=(*hit_t)) break;
+				
+				*hit_t=t;
+				hpt->x=pt.x;
+				hpt->y=pt.y;
+				hpt->z=pt.z;
+				
+				ray_trace_contact_clear(contact);
+				contact->poly.mesh_idx=item->index;
+				contact->poly.poly_idx=0;
+				break;
+				
+
 		}
 		
 		item++;
@@ -837,6 +867,28 @@ void ray_trace_map_all(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *hit_t,
 
 		mesh=&map.mesh.meshes[n];
 		if (!ray_trace_mesh_bound_check(mesh,&min,&max)) continue;
+		
+			// simple collisions
+			
+		if (mesh->flag.simple_collision) {
+			t=ray_trace_mesh_box(spt,vct,&pt,mesh);
+			if (t==-1.0f) continue;
+			if (t>=(*hit_t)) continue;
+		
+			*hit_t=t;
+			hpt->x=pt.x;
+			hpt->y=pt.y;
+			hpt->z=pt.z;
+			
+			ray_trace_contact_clear(contact);
+			
+			contact->poly.mesh_idx=n;
+			contact->poly.poly_idx=0;
+		
+			continue;
+		}
+		
+			// complex collisions
 		
 		poly_count=mesh->poly_list.all_count;
 		poly_idx=mesh->poly_list.all_idxs;
@@ -991,6 +1043,22 @@ void ray_trace_map_item_list_setup(int cnt,d3pnt *spts,d3pnt *epts,ray_trace_con
 		mesh=&map.mesh.meshes[n];
 		if (!ray_trace_mesh_bound_check(mesh,&min,&max)) continue;
 		
+			// simple collisions
+			
+		if (mesh->flag.simple_collision) {
+			item->type=ray_trace_check_item_mesh_box;
+			item->index=n;
+
+			item++;
+			ray_item_count++;
+
+			if (ray_item_count==ray_trace_max_check_item) return;
+			
+			continue;
+		}
+
+			// complex collisions
+			
 		poly_count=mesh->poly_list.all_count;
 		poly_idx=mesh->poly_list.all_idxs;
 			

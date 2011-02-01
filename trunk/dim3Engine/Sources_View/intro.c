@@ -197,6 +197,9 @@ void intro_open(void)
 		
 	x=hud.scale_x>>1;
 	y=hud.scale_y>>1;
+	
+//	element_button_text_add(char *name,int id,int x,int y,int wid,int high,int x_pos,int y_pos);
+
 		
 	element_text_add("Continue",intro_simple_save_continue,x,y,30,tx_center,TRUE,FALSE);
 	y+=35;
