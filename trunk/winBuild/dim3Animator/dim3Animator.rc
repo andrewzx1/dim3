@@ -10,111 +10,111 @@ IDR_MAIN_MENU MENU
 BEGIN
     POPUP "File"
     BEGIN
-        MENUITEM "New",							ID_FILE_NEW
-        MENUITEM "Open...",						ID_FILE_OPEN
-        MENUITEM "Close",						ID_FILE_CLOSE
+        MENUITEM "New\tCtrl+N",								ID_FILE_NEW
+        MENUITEM "Open...\tCtrl+O",							ID_FILE_OPEN
+        MENUITEM "Close\tCtrl+W",							ID_FILE_CLOSE
         MENUITEM SEPARATOR
-        MENUITEM "Save",						ID_FILE_SAVE
+        MENUITEM "Save\tCtrl+S",							ID_FILE_SAVE
         MENUITEM SEPARATOR
-        MENUITEM "Exit",						ID_FILE_EXIT
+        MENUITEM "Exit",									ID_FILE_EXIT
     END
     POPUP "Edit"
     BEGIN
-        MENUITEM "Undo",						ID_EDIT_UNDO
+        MENUITEM "Undo\tCtrl+Z",							ID_EDIT_UNDO
         MENUITEM SEPARATOR
-        MENUITEM "Select More\tCtrl-M",			ID_EDIT_SELECT_MORE
+        MENUITEM "Select More\tCtrl-M",						ID_EDIT_SELECT_MORE
     END
     POPUP "Model"
     BEGIN
-        MENUITEM "Prepare Model",				ID_MODEL_PREPARE_MODEL
-        MENUITEM "Calculate Boxes",				ID_MODEL_CALC_BOXES
-        MENUITEM "Calculate Normals",			ID_MODEL_CALC_NORMAL
+        MENUITEM "Prepare Model\tCtrl+R",					ID_MODEL_PREPARE_MODEL
+        MENUITEM "Calculate Boxes",							ID_MODEL_CALC_BOXES
+        MENUITEM "Calculate Normals",						ID_MODEL_CALC_NORMAL
 		MENUITEM SEPARATOR
-        MENUITEM "Scale...",					ID_MODEL_SCALE
+        MENUITEM "Scale...",								ID_MODEL_SCALE
 		MENUITEM SEPARATOR
-        MENUITEM "Flip X",						ID_MODEL_FLIP_X
-        MENUITEM "Flip Y",						ID_MODEL_FLIP_Y
-        MENUITEM "Flip Z",						ID_MODEL_FLIP_Z
+        MENUITEM "Flip X",									ID_MODEL_FLIP_X
+        MENUITEM "Flip Y",									ID_MODEL_FLIP_Y
+        MENUITEM "Flip Z",									ID_MODEL_FLIP_Z
 		MENUITEM SEPARATOR
-        MENUITEM "Swap X/Z",					ID_MODEL_SWAP_XZ
-        MENUITEM "Swap Y/Z",					ID_MODEL_SWAP_YZ
-        MENUITEM "Center X/Z",					ID_MODEL_CENTER_XZ
-        MENUITEM "Floor Y",						ID_MODEL_FLOOR_Y
+        MENUITEM "Swap X/Z",								ID_MODEL_SWAP_XZ
+        MENUITEM "Swap Y/Z",								ID_MODEL_SWAP_YZ
+        MENUITEM "Center X/Z",								ID_MODEL_CENTER_XZ
+        MENUITEM "Floor Y",									ID_MODEL_FLOOR_Y
 		MENUITEM SEPARATOR
-        MENUITEM "Add Hit Box",					ID_MODEL_ADD_HIT_BOX
+        MENUITEM "Add Hit Box",								ID_MODEL_ADD_HIT_BOX
     END
     POPUP "View"
     BEGIN
-        MENUITEM "Front",						ID_VIEW_FRONT
-        MENUITEM "Left",						ID_VIEW_LEFT
-        MENUITEM "Right",						ID_VIEW_RIGHT
-        MENUITEM "Back",						ID_VIEW_BACK
-        MENUITEM "Top",							ID_VIEW_TOP
-        MENUITEM "Bottom",						ID_VIEW_BOTTOM
+        MENUITEM "Front\tCtrl+1",							ID_VIEW_FRONT
+        MENUITEM "Left\tCtrl+2",							ID_VIEW_LEFT
+        MENUITEM "Right\tCtrl+3",							ID_VIEW_RIGHT
+        MENUITEM "Back\tCtrl+4",							ID_VIEW_BACK
+        MENUITEM "Top\tCtrl+5",								ID_VIEW_TOP
+        MENUITEM "Bottom\tCtrl+6",							ID_VIEW_BOTTOM
     END
     POPUP "Mesh"
     BEGIN
-        MENUITEM "Add Mesh",					ID_MESH_ADD
-        MENUITEM "Duplicate Mesh",				ID_MESH_DUPLICATE
+        MENUITEM "Add Mesh",								ID_MESH_ADD
+        MENUITEM "Duplicate Mesh",							ID_MESH_DUPLICATE
 		MENUITEM SEPARATOR
-        MENUITEM "Import OBJ...",				ID_MESH_IMPORT_OBJ
-        MENUITEM "Replace OBJ...",				ID_MESH_REPLACE_OBJ
-        MENUITEM "Add dim3 Mesh...",			ID_MESH_ADD_MESH
+        MENUITEM "Import OBJ...",							ID_MESH_IMPORT_OBJ
+        MENUITEM "Replace OBJ...",							ID_MESH_REPLACE_OBJ
+        MENUITEM "Add dim3 Mesh...",						ID_MESH_ADD_MESH
 		MENUITEM SEPARATOR
-        MENUITEM "Scale...",					ID_MESH_SCALE
+        MENUITEM "Scale...\tCtrl+T",						ID_MESH_SCALE
 		MENUITEM SEPARATOR
-        MENUITEM "Flip X",						ID_MESH_FLIP_X
-        MENUITEM "Flip Y",						ID_MESH_FLIP_Y
-        MENUITEM "Flip Z",						ID_MESH_FLIP_Z
+        MENUITEM "Flip X",									ID_MESH_FLIP_X
+        MENUITEM "Flip Y",									ID_MESH_FLIP_Y
+        MENUITEM "Flip Z",									ID_MESH_FLIP_Z
 		MENUITEM SEPARATOR
-        MENUITEM "Flip Texture Us",				ID_MESH_FLIP_U
-        MENUITEM "Flip Texture Vs",				ID_MESH_FLIP_V
+        MENUITEM "Flip Texture Us",							ID_MESH_FLIP_U
+        MENUITEM "Flip Texture Vs",							ID_MESH_FLIP_V
  		MENUITEM SEPARATOR
-        MENUITEM "Swap X/Z",					ID_MESH_SWAP_XZ
-        MENUITEM "Swap Y/Z",					ID_MESH_SWAP_YZ
-        MENUITEM "Center X/Z",					ID_MESH_CENTER_XZ
-        MENUITEM "Floor Y",						ID_MESH_FLOOR_Y
+        MENUITEM "Swap X/Z",								ID_MESH_SWAP_XZ
+        MENUITEM "Swap Y/Z",								ID_MESH_SWAP_YZ
+        MENUITEM "Center X/Z",								ID_MESH_CENTER_XZ
+        MENUITEM "Floor Y",									ID_MESH_FLOOR_Y
    END
     POPUP "Vertexes"
     BEGIN
-        MENUITEM "Select All",					ID_VERTEX_SELECT_ALL
-        MENUITEM "Select Not Attached",			ID_VERTEX_SELECT_NOT_ATTACHED
+        MENUITEM "Select All\tCtrl+A",						ID_VERTEX_SELECT_ALL
+        MENUITEM "Select Not Attached\tCtrl+Shift+A",		ID_VERTEX_SELECT_NOT_ATTACHED
  		MENUITEM SEPARATOR
-        MENUITEM "Invert Normals",				ID_VERTEX_INVERT_NORMAL
-        MENUITEM "Set Normals",					ID_VERTEX_SET_NORMAL
+        MENUITEM "Invert Normals\tCtrl+/",					ID_VERTEX_INVERT_NORMAL
+        MENUITEM "Set Normals\tCtrl+Alt+/",					ID_VERTEX_SET_NORMAL
  		MENUITEM SEPARATOR
-        MENUITEM "Clear Bone Attachments",		ID_VERTEX_CLEAR_BONE
-        MENUITEM "Auto Set Bone Attachments",	ID_VERTEX_AUTO_SET_BONE
+        MENUITEM "Clear Bone Attachments",					ID_VERTEX_CLEAR_BONE
+        MENUITEM "Auto Set Bone Attachments",				ID_VERTEX_AUTO_SET_BONE
  		MENUITEM SEPARATOR
-        MENUITEM "Hide Selected",				ID_VERTEX_HIDE_SELECTED
-        MENUITEM "Hide Non-Selected",			ID_VERTEX_HIDE_NON_SELECTED
-        MENUITEM "Show All",					ID_VERTEX_SHOW_ALL
+        MENUITEM "Hide Selected",							ID_VERTEX_HIDE_SELECTED
+        MENUITEM "Hide Non-Selected",						ID_VERTEX_HIDE_NON_SELECTED
+        MENUITEM "Show All",								ID_VERTEX_SHOW_ALL
  		MENUITEM SEPARATOR
-        MENUITEM "Delete Vertexes",				ID_VERTEX_DELETE
+        MENUITEM "Delete Vertexes",							ID_VERTEX_DELETE
     END
     POPUP "Bones"
     BEGIN
-        MENUITEM "Add Bone",					ID_BONE_ADD
-        MENUITEM "Set Bone...",					ID_BONE_SET
+        MENUITEM "Add Bone\tCtrl+B",						ID_BONE_ADD
+        MENUITEM "Set Bone...",								ID_BONE_SET
  		MENUITEM SEPARATOR
-        MENUITEM "Goto Parent Bone",			ID_BONE_GOTO_PARENT
+        MENUITEM "Goto Parent Bone\tCtrl+`",				ID_BONE_GOTO_PARENT
     END
     POPUP "Poses"
     BEGIN
-        MENUITEM "New Pose",					ID_POSE_NEW
-        MENUITEM "Duplicate Pose",				ID_POSE_DUPLICATE
+        MENUITEM "New Pose\tCtrl+E",						ID_POSE_NEW
+        MENUITEM "Duplicate Pose\tCtrl+D",					ID_POSE_DUPLICATE
  		MENUITEM SEPARATOR
-        MENUITEM "Clear Pose",					ID_POSE_CLEAR
+        MENUITEM "Clear Pose",								ID_POSE_CLEAR
     END
     POPUP "Animations"
     BEGIN
-        MENUITEM "New Animation",				ID_ANIMATION_NEW
-        MENUITEM "Duplicate Animation",			ID_ANIMATION_DUPLICATE
+        MENUITEM "New Animation\tCtrl+G",					ID_ANIMATION_NEW
+        MENUITEM "Duplicate Animation",						ID_ANIMATION_DUPLICATE
 		MENUITEM SEPARATOR
-        MENUITEM "Scale Animation Time...",		ID_ANIMATION_SCALE_TIME
+        MENUITEM "Scale Animation Time...",					ID_ANIMATION_SCALE_TIME
  		MENUITEM SEPARATOR
-        MENUITEM "Play Animation",				ID_ANIMATION_PLAY
-        MENUITEM "Play Blended Animation...",	ID_ANIMATION_PLAY_BLENDED
+        MENUITEM "Play Animation\tCtrl+P",					ID_ANIMATION_PLAY
+        MENUITEM "Play Blended Animation...\tCtrl+Shift+P",	ID_ANIMATION_PLAY_BLENDED
     END
 END
 
@@ -125,8 +125,49 @@ END
 
 IDR_ACCELERATOR ACCELERATORS 
 BEGIN
-	"M",			ID_EDIT_SELECT_MORE,		VIRTKEY, CONTROL, NOINVERT
+
+	"N",			ID_FILE_NEW,					VIRTKEY, CONTROL, NOINVERT
+    "O",			ID_FILE_OPEN,					VIRTKEY, CONTROL, NOINVERT
+    "W",			ID_FILE_CLOSE,					VIRTKEY, CONTROL, NOINVERT
+    "S",			ID_FILE_SAVE,					VIRTKEY, CONTROL, NOINVERT
+    
+	"Z",			ID_EDIT_UNDO,					VIRTKEY, CONTROL, NOINVERT
+	"M",			ID_EDIT_SELECT_MORE,			VIRTKEY, CONTROL, NOINVERT
+    
+	"R",			ID_MODEL_PREPARE_MODEL,			VIRTKEY, CONTROL, NOINVERT
+
+    "1",			ID_VIEW_FRONT,					VIRTKEY, CONTROL, NOINVERT
+    "2",			ID_VIEW_LEFT,					VIRTKEY, CONTROL, NOINVERT
+	"3",			ID_VIEW_RIGHT,					VIRTKEY, CONTROL, NOINVERT
+    "4",			ID_VIEW_BACK,					VIRTKEY, CONTROL, NOINVERT
+    "5",			ID_VIEW_TOP,					VIRTKEY, CONTROL, NOINVERT
+    "6",			ID_VIEW_BOTTOM,					VIRTKEY, CONTROL, NOINVERT
+    
+	"T",			ID_MESH_SCALE,					VIRTKEY, CONTROL, NOINVERT
+    
+	"A",			ID_VERTEX_SELECT_ALL,			VIRTKEY, CONTROL, NOINVERT
+	"A",			ID_VERTEX_SELECT_NOT_ATTACHED,	VIRTKEY, SHIFT, CONTROL, NOINVERT
+ 	"/",			ID_VERTEX_INVERT_NORMAL,		VIRTKEY, CONTROL, NOINVERT
+    "/",			ID_VERTEX_SET_NORMAL,			VIRTKEY, CONTROL, ALT, NOINVERT
+    
+	"B",			ID_BONE_ADD,					VIRTKEY, CONTROL, NOINVERT
+    "`",			ID_BONE_GOTO_PARENT,			VIRTKEY, CONTROL, NOINVERT
+
+	"E",			ID_POSE_NEW,					VIRTKEY, CONTROL, NOINVERT
+    "D",			ID_POSE_DUPLICATE,				VIRTKEY, CONTROL, NOINVERT
+
+	"G",			ID_ANIMATION_NEW,				VIRTKEY, CONTROL, NOINVERT
+    "P",			ID_ANIMATION_PLAY,				VIRTKEY, CONTROL, NOINVERT
+    "P",			ID_ANIMATION_PLAY_BLENDED,		VIRTKEY, SHIFT, CONTROL, NOINVERT
+
 END
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// IDR_MAINFRAME		ICON							"dim3Animator.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //

@@ -263,6 +263,10 @@
 				Name="Engine Headers"
 				>
 				<File
+					RelativePath=".\dim3Engine.exe.manifest"
+					>
+				</File>
+				<File
 					RelativePath="..\..\dim3Engine\Headers\dim3engine.h"
 					>
 				</File>

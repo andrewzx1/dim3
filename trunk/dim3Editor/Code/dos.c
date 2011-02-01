@@ -72,12 +72,6 @@ void file_close_window(void)
 {
 	state.map_opened=FALSE;
 	state.texture_edit_idx=-1;
-	
-		// win32 keeps window open so menu can be
-		// used so we need to reset here
-
-	os_set_title_window("dim3 Editor");
-	main_wind_draw();
 
 	main_wind_close();
 	menu_fix_enable();

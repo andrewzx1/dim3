@@ -252,10 +252,10 @@ void file_close_model(void)
 	}
 	
 	model.tags.name_bone_tag=FOUR_CHAR_CODE('\?\?\?\?');
-	
-	main_wind_close();
-	
+
 	state.model_open=FALSE;
+
+	main_wind_close();
 }
 
 /* =======================================================
