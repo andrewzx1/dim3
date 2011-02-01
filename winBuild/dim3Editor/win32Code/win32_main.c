@@ -173,6 +173,11 @@ void main_wind_open(void)
 
 void main_wind_close(void)
 {
+		// win32 keeps window open so menu can be
+		// used so we need to reset here
+
+	os_set_title_window("dim3 Editor");
+	main_wind_draw();
 }
 
 void win32_main_wind_open(void)

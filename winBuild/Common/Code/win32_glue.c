@@ -267,7 +267,7 @@ bool os_key_command_down(void)
 
 bool os_key_shift_down(void)
 {
-	return((GetAsyncKeyState(VK_SHIFT)&0x8000)!=0x0);
+	return(((GetAsyncKeyState(VK_SHIFT)&0x8000)!=0x0)||((GetAsyncKeyState(VK_CAPITAL)&0x8000)!=0x0));
 }
 
 /* =======================================================

@@ -468,6 +468,10 @@
 				Name="EditorWin32"
 				>
 				<File
+					RelativePath=".\dim3Editor.exe.manifest"
+					>
+				</File>
+				<File
 					RelativePath=".\dim3Editor.rc"
 					>
 				</File>

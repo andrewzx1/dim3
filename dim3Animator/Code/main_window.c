@@ -229,13 +229,11 @@ void main_wind_draw_play(void)
 
 void main_wind_draw(void)
 {
-	if (!state.model_open) return;
-
 		// clear gl buffer
 		
 	glDisable(GL_SCISSOR_TEST);
 	
-	glClearColor(1.0f,1.0f,1.0f,0.0f);
+	glClearColor(0.75f,0.75f,0.75f,0.0f);
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 	
 		// model
@@ -278,33 +276,33 @@ void main_wind_draw_no_swap(void)
 	
 	glClearColor(1.0f,1.0f,1.0f,0.0f);
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-
-		// nothing to draw
-
-	if (!state.model_open) return;
 	
 		// model
 		
-	if (state.texture_edit_idx==-1) {
-		if (!state.playing) {
-			draw_model_wind_pose(state.cur_mesh_idx,state.cur_pose_idx);
+	if (state.model_open) {
+		if (state.texture_edit_idx==-1) {
+			if (!state.playing) {
+				draw_model_wind_pose(state.cur_mesh_idx,state.cur_pose_idx);
+			}
+			else {
+				main_wind_draw_play();
+			}
 		}
 		else {
-			main_wind_draw_play();
+			texture_edit_draw();
 		}
-	}
-	else {
-		texture_edit_draw();
 	}
 
 		// palettes
 		
-	item_palette_draw();
-	property_palette_draw();
-	alt_property_palette_draw();
+	if (state.model_open) {
+		item_palette_draw();
+		property_palette_draw();
+		alt_property_palette_draw();
 		
-	tool_palette_draw();
-	texture_palette_draw(model.textures);
+		tool_palette_draw();
+		texture_palette_draw(model.textures);
+	}
 }
 
 /* =======================================================
