@@ -187,7 +187,11 @@ void default_settings_interface(void)
 	default_settings_interface_button(&hud.intro.button_quit,0,224,TRUE);
 	
 	for (n=0;n!=max_simple_save_spot;n++) {
-		default_settings_interface_button(&hud.intro.button_simple_save[n],0,(n*32),FALSE);
+		default_settings_interface_button(&hud.intro.simple_save[n].button_start,0,(n*32),FALSE);
+		default_settings_interface_button(&hud.intro.simple_save[n].button_erase,40,(n*32),FALSE);
+		hud.intro.simple_save[n].desc.x=80;
+		hud.intro.simple_save[n].desc.y=(n*32);
+		hud.intro.simple_save[n].desc.text_size=20;
 	}
 
 		// player models
@@ -716,7 +720,7 @@ void read_settings_interface_chooser(int chooser_tag)
       
 ======================================================= */
 
-void read_settings_interface_button(int tag,hud_intro_button_type *btn)
+void read_settings_interface_button(int tag,hud_intro_button_type *btn,hud_intro_simple_save_desc_type *desc)
 {
 	if (tag==-1) return;
 	
@@ -725,7 +729,12 @@ void read_settings_interface_button(int tag,hud_intro_button_type *btn)
 	btn->wid=xml_get_attribute_int_default(tag,"width",-1);
 	btn->high=xml_get_attribute_int_default(tag,"height",-1);
 	btn->on=xml_get_attribute_boolean(tag,"on");
-	btn->on=xml_get_attribute_boolean(tag,"on");
+
+	if (desc!=NULL) {
+		desc->x=xml_get_attribute_int(tag,"desc_x");
+		desc->y=xml_get_attribute_int(tag,"desc_y");
+		desc->text_size=xml_get_attribute_int_default(tag,"desc_text_size",20);
+	}
 }
 
 /* =======================================================
@@ -921,24 +930,25 @@ void read_settings_interface(void)
 		
 	button_tag=xml_findfirstchild("Buttons",interface_head_tag);
 	if (button_tag!=-1) {
-		read_settings_interface_button(xml_findfirstchild("Game_New",button_tag),&hud.intro.button_game_new);
-		read_settings_interface_button(xml_findfirstchild("Game_Load",button_tag),&hud.intro.button_game_load);
-		read_settings_interface_button(xml_findfirstchild("Game_Setup",button_tag),&hud.intro.button_game_setup);
-		read_settings_interface_button(xml_findfirstchild("Game_New_Easy",button_tag),&hud.intro.button_game_new_easy);
-		read_settings_interface_button(xml_findfirstchild("Game_New_Medium",button_tag),&hud.intro.button_game_new_medium);
-		read_settings_interface_button(xml_findfirstchild("Game_New_Hard",button_tag),&hud.intro.button_game_new_hard);
-		read_settings_interface_button(xml_findfirstchild("Game_New_Cancel",button_tag),&hud.intro.button_game_new_cancel);
-		read_settings_interface_button(xml_findfirstchild("Multiplayer_Host",button_tag),&hud.intro.button_multiplayer_host);
-		read_settings_interface_button(xml_findfirstchild("Multiplayer_Join",button_tag),&hud.intro.button_multiplayer_join);
-		read_settings_interface_button(xml_findfirstchild("Multiplayer_Setup",button_tag),&hud.intro.button_multiplayer_setup);
-		read_settings_interface_button(xml_findfirstchild("Credit",button_tag),&hud.intro.button_credit);
-		read_settings_interface_button(xml_findfirstchild("Quit",button_tag),&hud.intro.button_quit);
+		read_settings_interface_button(xml_findfirstchild("Game_New",button_tag),&hud.intro.button_game_new,NULL);
+		read_settings_interface_button(xml_findfirstchild("Game_Load",button_tag),&hud.intro.button_game_load,NULL);
+		read_settings_interface_button(xml_findfirstchild("Game_Setup",button_tag),&hud.intro.button_game_setup,NULL);
+		read_settings_interface_button(xml_findfirstchild("Game_New_Easy",button_tag),&hud.intro.button_game_new_easy,NULL);
+		read_settings_interface_button(xml_findfirstchild("Game_New_Medium",button_tag),&hud.intro.button_game_new_medium,NULL);
+		read_settings_interface_button(xml_findfirstchild("Game_New_Hard",button_tag),&hud.intro.button_game_new_hard,NULL);
+		read_settings_interface_button(xml_findfirstchild("Game_New_Cancel",button_tag),&hud.intro.button_game_new_cancel,NULL);
+		read_settings_interface_button(xml_findfirstchild("Multiplayer_Host",button_tag),&hud.intro.button_multiplayer_host,NULL);
+		read_settings_interface_button(xml_findfirstchild("Multiplayer_Join",button_tag),&hud.intro.button_multiplayer_join,NULL);
+		read_settings_interface_button(xml_findfirstchild("Multiplayer_Setup",button_tag),&hud.intro.button_multiplayer_setup,NULL);
+		read_settings_interface_button(xml_findfirstchild("Credit",button_tag),&hud.intro.button_credit,NULL);
+		read_settings_interface_button(xml_findfirstchild("Quit",button_tag),&hud.intro.button_quit,NULL);
 		
 		for (n=0;n!=max_simple_save_spot;n++) {
 			sprintf(name,"Simple_Save_%d",n);
-			read_settings_interface_button(xml_findfirstchild(name,button_tag),&hud.intro.button_simple_save[n]);
+			read_settings_interface_button(xml_findfirstchild(name,button_tag),&hud.intro.simple_save[n].button_start,&hud.intro.simple_save[n].desc);
+			sprintf(name,"Simple_Erase_%d",n);
+			read_settings_interface_button(xml_findfirstchild(name,button_tag),&hud.intro.simple_save[n].button_erase,NULL);
 		}
-		
 	}
 	
 		// sound
