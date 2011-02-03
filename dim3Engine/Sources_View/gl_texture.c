@@ -36,7 +36,7 @@ extern server_type			server;
 extern setup_type			setup;
 extern render_info_type		render_info;
 
-bitmap_type					null_bitmap,lmap_hilite_bitmap;
+bitmap_type					null_bitmap,lmap_black_bitmap;
 
 float						gl_texture_current_alpha,gl_texture_current_glow_color;
 GLuint						gl_texture_current_binds[4];
@@ -58,11 +58,11 @@ void gl_texture_initialize(void)
 	col.r=col.b=col.g=0.0f;
 	bitmap_color(&null_bitmap,&col);
 
-		// a all white bitmap for polygons
+		// a all black bitmap for polygons
 		// missing a lightmap
 
-	col.r=col.b=col.g=1.0f;
-	bitmap_color(&lmap_hilite_bitmap,&col);
+	col.r=col.b=col.g=0.0f;
+	bitmap_color(&lmap_black_bitmap,&col);
 
 		// we keep track of all bound textures
 		// to reduce the number of bindings
@@ -75,7 +75,7 @@ void gl_texture_initialize(void)
 void gl_texture_shutdown(void)
 {
 	bitmap_close(&null_bitmap);
-	bitmap_close(&lmap_hilite_bitmap);
+	bitmap_close(&lmap_black_bitmap);
 }
 
 /* =======================================================

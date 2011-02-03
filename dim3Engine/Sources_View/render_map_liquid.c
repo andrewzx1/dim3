@@ -39,7 +39,7 @@ extern server_type			server;
 extern view_type			view;
 extern setup_type			setup;
 
-extern bitmap_type		lmap_hilite_bitmap;
+extern bitmap_type		lmap_black_bitmap;
 
 extern bool boundbox_inview(int x,int z,int ex,int ez,int ty,int by);
 
@@ -439,8 +439,8 @@ void liquid_render_liquid(map_liquid_type *liq)
 
 			// light map
 
-		if ((liq->lmap_txt_idx==-1) || (view.debug.on)) {
-			lmap_gl_id=lmap_hilite_bitmap.gl_id;
+		if (liq->lmap_txt_idx==-1) {
+			lmap_gl_id=lmap_black_bitmap.gl_id;
 		}
 		else {
 			lmap_gl_id=map.textures[liq->lmap_txt_idx].frames[0].bitmap.gl_id;

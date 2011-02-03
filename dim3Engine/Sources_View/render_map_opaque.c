@@ -40,7 +40,7 @@ extern setup_type		setup;
 extern camera_type		camera;
 extern view_type		view;
 
-extern bitmap_type		lmap_hilite_bitmap;
+extern bitmap_type		lmap_black_bitmap;
 
 extern bool fog_solid_on(void);
 extern void view_compile_gl_list_attach(void);
@@ -65,7 +65,7 @@ void render_opaque_mesh_normal(void)
 	texture_type			*texture;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
-
+	
 	first_draw=TRUE;
 
 		// run through draw list
@@ -117,8 +117,8 @@ void render_opaque_mesh_normal(void)
 			texture=&map.textures[poly->txt_idx];
 			frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
 
-			if ((poly->lmap_txt_idx==-1) || (view.debug.on)) {
-				lmap_gl_id=lmap_hilite_bitmap.gl_id;
+			if (poly->lmap_txt_idx==-1) {
+				lmap_gl_id=lmap_black_bitmap.gl_id;
 			}
 			else {
 				lmap_gl_id=map.textures[poly->lmap_txt_idx].frames[0].bitmap.gl_id;

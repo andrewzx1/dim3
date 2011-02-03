@@ -76,7 +76,7 @@ void property_palette_fill_animation(int animate_idx)
 		strcpy(str,model.poses[animate->pose_moves[n].pose_idx].name);
 		if (n==animate->loop_start) strcat(str," (loop start)");
 		if (n==animate->loop_end) strcat(str," (loop end)");
-		list_palette_add_string_selectable_button(&property_palette,(kAnimationPropertyPoseMove+n),list_button_minus,(kAnimationPropertyPoseMoveDelete+n),str,NULL,((state.cur_animate_idx=animate_idx) && (state.cur_animate_pose_move_idx==n)),FALSE);
+		list_palette_add_string_selectable_button(&property_palette,(kAnimationPropertyPoseMove+n),list_button_minus,(kAnimationPropertyPoseMoveDelete+n),str,NULL,((state.cur_animate_idx==animate_idx) && (state.cur_animate_pose_move_idx==n)),FALSE);
 	}
 }
 

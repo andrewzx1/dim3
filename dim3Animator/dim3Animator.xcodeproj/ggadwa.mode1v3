@@ -348,12 +348,14 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>84</integer>
-									<integer>83</integer>
+									<integer>24</integer>
+									<integer>18</integer>
+									<integer>12</integer>
+									<integer>0</integer>
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-							<string>{{0, 754}, {290, 810}}</string>
+							<string>{{0, 90}, {290, 810}}</string>
 						</dict>
 						<key>PBXTopSmartGroupGIDs</key>
 						<array/>
@@ -400,10 +402,10 @@
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>266A446212F76ECD00D6D62B</string>
+										<string>268D43D812FA225000C73334</string>
 										<key>history</key>
 										<array>
-											<string>260755B012F5D7F600001313</string>
+											<string>2632E58912F8EF7400CFA4D0</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -461,9 +463,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>266A446312F76ECD00D6D62B</string>
+				<string>268D43BF12F9E07100C73334</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>266A446412F76ECD00D6D62B</string>
+				<string>268D43C012F9E07100C73334</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -584,7 +586,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>318205645.382182</real>
+	<real>318382672.91804999</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -599,6 +601,10 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
+		<string>268D43D912FA225000C73334</string>
+		<string>268D43DA12FA225000C73334</string>
+		<string>1C78EAAD065D492600B07095</string>
+		<string>1CD10A99069EF8BA00B06720</string>
 		<string>260AFEE90D40505C00F6C42F</string>
 		<string>/Users/ggadwa/dim3Code/dim3Animator/dim3Animator.xcodeproj</string>
 	</array>
@@ -680,7 +686,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>260AFEE90D40505C00F6C42F</string>
-				<string>266A445112F76E9C00D6D62B</string>
+				<string>268D43C112F9E07100C73334</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
@@ -800,13 +806,13 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1CD10A99069EF8BA00B06720</string>
-				<string>260755A612F5D7D900001313</string>
+				<string>268D43C712FA213400C73334</string>
 				<string>1C162984064C10D400B95A72</string>
-				<string>260755A712F5D7D900001313</string>
-				<string>260755A812F5D7D900001313</string>
-				<string>260755A912F5D7D900001313</string>
-				<string>260755AA12F5D7D900001313</string>
-				<string>260755AB12F5D7D900001313</string>
+				<string>268D43C812FA213400C73334</string>
+				<string>268D43C912FA213400C73334</string>
+				<string>268D43CA12FA213400C73334</string>
+				<string>268D43CB12FA213400C73334</string>
+				<string>268D43CC12FA213400C73334</string>
 			</array>
 			<key>ToolbarConfiguration</key>
 			<string>xcode.toolbar.config.debugV3</string>
@@ -925,6 +931,8 @@
 					<key>Dock</key>
 					<array>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -937,7 +945,7 @@
 								<key>Frame</key>
 								<string>{{0, 0}, {766, 414}}</string>
 								<key>RubberWindowFrame</key>
-								<string>1362 135 766 455 0 0 1680 1028 </string>
+								<string>1445 127 766 455 0 0 1680 1028 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXDebugCLIModule</string>
@@ -960,13 +968,13 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C78EAAD065D492600B07095</string>
-				<string>260755AC12F5D7D900001313</string>
+				<string>268D43D112FA21A300C73334</string>
 				<string>1C78EAAC065D492600B07095</string>
 			</array>
 			<key>ToolbarConfiguration</key>
 			<string>xcode.toolbar.config.consoleV3</string>
 			<key>WindowString</key>
-			<string>1362 135 766 455 0 0 1680 1028 </string>
+			<string>1445 127 766 455 0 0 1680 1028 </string>
 			<key>WindowToolGUID</key>
 			<string>1C78EAAD065D492600B07095</string>
 			<key>WindowToolIsVisible</key>
