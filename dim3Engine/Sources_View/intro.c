@@ -52,17 +52,18 @@ and can be sold or given away.
 #define intro_button_credit_id					30
 #define intro_button_quit_id					31
 
-#define intro_simple_save_continue				40
-#define intro_simple_save_restart				41
-#define intro_simple_save_cancel				42
+#define intro_simple_save_erase_ok				40
+#define intro_simple_save_erase_cancel			41
 
-#define intro_button_simple_save_start			50
+#define intro_simple_save_button_start			100
+#define intro_simple_save_button_erase			200
+#define intro_simple_save_text_desc				300
 
 // intro modes
 
 #define intro_mode_normal						0
 #define intro_mode_new_game						1
-#define intro_mode_simple_save					2
+#define intro_mode_simple_save_erase			2
 
 extern bool					game_loop_quit;
 
@@ -84,16 +85,15 @@ bitmap_type					intro_bitmap;
 void intro_show_hide_for_mode(void)
 {
 	int						n;
-	bool					in_new_game,in_simple_save,hide;
-	char					str[256];
+	bool					in_new_game,in_simple_save_erase,hide;
 	chooser_frame_type		frame;
 
 		// show hide elements
 		
 	in_new_game=(intro_mode==intro_mode_new_game);
-	in_simple_save=(intro_mode==intro_mode_simple_save);
+	in_simple_save_erase=(intro_mode==intro_mode_simple_save_erase);
 		
-	hide=(in_new_game)||(in_simple_save);
+	hide=(in_new_game)||(in_simple_save_erase);
 	element_hide(intro_button_game_new_id,hide);
 	element_hide(intro_button_game_load_id,hide);
 	element_hide(intro_button_game_setup_id,hide);
@@ -104,37 +104,44 @@ void intro_show_hide_for_mode(void)
 	element_hide(intro_button_quit_id,hide);
 	
 	for (n=0;n!=max_simple_save_spot;n++) {
-		element_hide((intro_button_simple_save_start+n),hide);
+		element_hide((intro_simple_save_button_start+n),hide);
+		element_hide((intro_simple_save_button_erase+n),hide);
+		element_hide((intro_simple_save_text_desc+n),hide);
 	}
 	
-	hide=(!in_new_game)||(in_simple_save);
+	hide=(!in_new_game)||(in_simple_save_erase);
 	element_hide(intro_button_game_new_easy_id,hide);
 	element_hide(intro_button_game_new_medium_id,hide);
 	element_hide(intro_button_game_new_hard_id,hide);
 	element_hide(intro_button_game_new_cancel_id,hide);
 	
-		// setup frame if in simple save mode
+		// setup frame if in simple save erase mode
 		
-	frame.x=50;
+	frame.x=hud.scale_x-100;
 	frame.y=(hud.scale_y>>1)-50;
-	frame.wid=hud.scale_x-100;
-	frame.high=130;
-	sprintf(frame.title,"Game %d",(intro_simple_save_idx+1));
-	frame.on=in_simple_save;
+	frame.wid=200;
+	frame.high=100;
+	sprintf(frame.title,"Erase Saved Game %d",(intro_simple_save_idx+1));
+	frame.on=in_simple_save_erase;
 	memmove(&frame.background_col,&hud.color.dialog_background,sizeof(d3col));
 
 	gui_set_frame(&frame);
-	
-		// simple save menu options
-	
-	if (in_simple_save) {
-		sprintf(str,"Continue from %s",hud.simple_save_list.saves[intro_simple_save_idx].desc);
-		element_text_change(intro_simple_save_continue,str);
+
+		// change desc of simple save buttons
+
+	for (n=0;n!=max_simple_save_spot;n++) {
+		if (hud.simple_save_list.saves[n].save_id!=-1) {
+			element_text_change((intro_simple_save_text_desc+n),hud.simple_save_list.saves[n].desc);
+		}
+		else {
+			element_text_change((intro_simple_save_text_desc+n),"New");
+		}
 	}
 	
-	element_hide(intro_simple_save_continue,(!in_simple_save));
-	element_hide(intro_simple_save_restart,(!in_simple_save));
-	element_hide(intro_simple_save_cancel,(!in_simple_save));
+		// simple save erase buttons
+	
+	element_hide(intro_simple_save_erase_ok,(!in_simple_save_erase));
+	element_hide(intro_simple_save_erase_cancel,(!in_simple_save_erase));
 }
 
 void intro_open_add_button(hud_intro_button_type *btn,char *name,int id)
@@ -190,23 +197,19 @@ void intro_open(void)
 	
 	for (n=0;n!=max_simple_save_spot;n++) {
 		sprintf(name,"button_simple_save_%d",n);
-		intro_open_add_button(&hud.intro.button_simple_save[n],name,(intro_button_simple_save_start+n));
+		intro_open_add_button(&hud.intro.simple_save[n].button_start,name,(intro_simple_save_button_start+n));
+		sprintf(name,"button_simple_erase_%d",n);
+		intro_open_add_button(&hud.intro.simple_save[n].button_erase,name,(intro_simple_save_button_erase+n));
+		element_text_add("",(intro_simple_save_text_desc+n),hud.intro.simple_save[n].desc.x,hud.intro.simple_save[n].desc.y,hud.intro.simple_save[n].desc.text_size,tx_center,FALSE,FALSE);
 	}
 	
 		// simple save options
 		
 	x=hud.scale_x>>1;
 	y=hud.scale_y>>1;
-	
-//	element_button_text_add(char *name,int id,int x,int y,int wid,int high,int x_pos,int y_pos);
-
 		
-	element_text_add("Continue",intro_simple_save_continue,x,y,30,tx_center,TRUE,FALSE);
-	y+=35;
-	element_text_add("Restart Game at First Level",intro_simple_save_restart,x,y,30,tx_center,TRUE,FALSE);
-	y+=35;
-	element_text_add("Cancel",intro_simple_save_cancel,x,y,30,tx_center,TRUE,FALSE);
-	y+=35;
+	element_text_add("Erase",intro_simple_save_erase_ok,(x-100),y,30,tx_center,TRUE,FALSE);
+	element_text_add("Cancel",intro_simple_save_erase_cancel,(x+100),y,30,tx_center,TRUE,FALSE);
 	
 		// read in simple saves
 		
@@ -297,12 +300,19 @@ void intro_click_load(void)
 	server.next_state=gs_file;
 }
 
-void intro_click_simple_save_continue(void)
+void intro_click_simple_save_start(int idx)
 {
-	intro_click_game(skill_medium,intro_simple_save_idx);
+	intro_click_game(skill_medium,idx);
 }
 
-void intro_click_simple_save_reset(void)
+void intro_click_simple_save_erase(int idx)
+{
+	intro_mode=intro_mode_simple_save_erase;
+	intro_simple_save_idx=idx;
+	intro_show_hide_for_mode();
+}
+
+void intro_click_simple_save_erase_ok(void)
 {
 	hud_simple_save_type	*save;
 	
@@ -314,27 +324,9 @@ void intro_click_simple_save_reset(void)
 	
 	simple_save_xml_write();
 	
-	intro_click_simple_save_continue();
-}
+		// back to intro
 
-void intro_click_simple_save_game(int idx)
-{
-	hud_simple_save_type	*save;
-	
-		// if this is an empty
-		// spot, then immediately start
-		// a new game
-		
-	save=&hud.simple_save_list.saves[idx];
-	if (save->save_id==-1) {
-		intro_click_game(skill_medium,idx);
-		return;
-	}
-
-		// otherwise go into simple save mode
-		
-	intro_mode=intro_mode_simple_save;
-	intro_simple_save_idx=idx;
+	intro_mode=intro_mode_normal;
 	intro_show_hide_for_mode();
 }
 
@@ -356,10 +348,17 @@ void intro_click(void)
 	
 	hud_click();
 	
-		// simple save list buttons
+		// simple save start
 		
-	if ((id>=intro_button_simple_save_start) && (id<(intro_button_simple_save_start+max_simple_save_spot))) {
-		intro_click_simple_save_game(id-intro_button_simple_save_start);
+	if ((id>=intro_simple_save_button_start) && (id<(intro_simple_save_button_start+max_simple_save_spot))) {
+		intro_click_simple_save_start(id-intro_simple_save_button_start);
+		return;
+	}
+
+		// simple save erase
+		
+	if ((id>=intro_simple_save_button_erase) && (id<(intro_simple_save_button_erase+max_simple_save_spot))) {
+		intro_click_simple_save_erase(id-intro_simple_save_button_erase);
 		return;
 	}
 	
@@ -406,15 +405,11 @@ void intro_click(void)
 			
 			// simple save buttons
 			
-		case intro_simple_save_continue:
-			intro_click_simple_save_continue();
+		case intro_simple_save_erase_ok:
+			intro_click_simple_save_erase_ok();
 			break;
 
-		case intro_simple_save_restart:
-			intro_click_simple_save_reset();
-			break;
-			
-		case intro_simple_save_cancel:
+		case intro_simple_save_erase_cancel:
 			intro_mode=intro_mode_normal;
 			intro_show_hide_for_mode();
 			break;
@@ -463,7 +458,7 @@ void intro_key(void)
 		// escape quits new game
 		// or simple save
 		
-	if ((intro_mode==intro_mode_new_game) || (intro_mode==intro_mode_simple_save)) {
+	if ((intro_mode==intro_mode_new_game) || (intro_mode==intro_mode_simple_save_erase)) {
 		intro_mode=intro_mode_normal;
 		intro_show_hide_for_mode();
 		return;
