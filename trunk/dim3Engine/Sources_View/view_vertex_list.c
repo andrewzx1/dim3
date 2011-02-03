@@ -409,7 +409,7 @@ bool view_compile_mesh_gl_lists(void)
 					pnt++;
 				}
 			}
-			
+
 				// create per poly colors
 
 			pc=vertex_ptr+((vertex_cnt*3)+((vertex_cnt*2)*2)+(mesh->draw.vertex_offset*3));
