@@ -95,6 +95,7 @@ extern bool melee_strike_position_object_model(obj_type *obj,weapon_type *weap,d
 extern bool melee_strike_position_projectile_model(obj_type *obj,weapon_type *weap,proj_setup_type *proj_setup,proj_type *proj,d3pnt *fire_pnt,char *err_str);
 extern bool melee_script_spawn_weapon_model(obj_type *obj,weapon_type *weap,char *err_str);
 extern bool melee_script_spawn_object_model(obj_type *obj,weapon_type *weap,char *err_str);
+extern bool melee_script_spawn_object_touch(obj_type *obj,char *err_str);
 extern bool melee_script_spawn_projectile_model(obj_type *obj,weapon_type *weap,proj_setup_type *proj_setup,proj_type *proj,char *err_str);
 
 

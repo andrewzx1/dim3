@@ -331,6 +331,12 @@ bool melee_script_spawn_object_model(obj_type *obj,weapon_type *weap,char *err_s
 	return(TRUE);
 }
 
+bool melee_script_spawn_object_touch(obj_type *obj,char *err_str)
+{
+	melee_add(obj,NULL,&obj->touch.pnt,&obj->ang,&obj->melee,obj->idx);
+	return(TRUE);
+}
+
 bool melee_script_spawn_projectile_model(obj_type *obj,weapon_type *weap,proj_setup_type *proj_setup,proj_type *proj,char *err_str)
 {
 	d3pnt				pt;
