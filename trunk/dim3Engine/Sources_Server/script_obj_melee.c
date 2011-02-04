@@ -48,6 +48,7 @@ bool js_obj_melee_set_distance(JSContextRef cx,JSObjectRef j_obj,JSStringRef nam
 bool js_obj_melee_set_damage(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 bool js_obj_melee_set_force(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 JSValueRef js_obj_melee_spawn_from_object_bone_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_obj_melee_spawn_from_touch_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 JSStaticValue 		obj_melee_props[]={
 							{"strikeBoneTag",			js_obj_melee_get_strikeBoneTag,					js_obj_melee_set_strikeBoneTag,		kJSPropertyAttributeDontDelete},
@@ -60,6 +61,7 @@ JSStaticValue 		obj_melee_props[]={
 
 JSStaticFunction	obj_melee_functions[]={
 							{"spawnFromObjectBone",		js_obj_melee_spawn_from_object_bone_func,		kJSPropertyAttributeDontDelete},
+							{"spawnFromTouch",			js_obj_melee_spawn_from_touch_func,				kJSPropertyAttributeDontDelete},
 							{0,0,0}};
 
 JSClassRef			obj_melee_class;
@@ -225,6 +227,22 @@ JSValueRef js_obj_melee_spawn_from_object_bone_func(JSContextRef cx,JSObjectRef 
 	obj=object_script_lookup();
 
 	if (!melee_script_spawn_object_model(obj,NULL,err_str)) {
+		*exception=script_create_exception(cx,err_str);
+	}
+
+	return(script_null_to_value(cx));
+}
+
+JSValueRef js_obj_melee_spawn_from_touch_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+{
+	char				err_str[256];
+    obj_type			*obj;
+
+	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
+	
+	obj=object_script_lookup();
+
+	if (!melee_script_spawn_object_touch(obj,err_str)) {
 		*exception=script_create_exception(cx,err_str);
 	}
 

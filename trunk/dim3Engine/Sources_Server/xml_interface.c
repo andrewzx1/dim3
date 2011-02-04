@@ -944,7 +944,7 @@ void read_settings_interface(void)
 		read_settings_interface_button(xml_findfirstchild("Quit",button_tag),&hud.intro.button_quit,NULL);
 		
 		for (n=0;n!=max_simple_save_spot;n++) {
-			sprintf(name,"Simple_Save_%d",n);
+			sprintf(name,"Simple_Start_%d",n);
 			read_settings_interface_button(xml_findfirstchild(name,button_tag),&hud.intro.simple_save[n].button_start,&hud.intro.simple_save[n].desc);
 			sprintf(name,"Simple_Erase_%d",n);
 			read_settings_interface_button(xml_findfirstchild(name,button_tag),&hud.intro.simple_save[n].button_erase,NULL);

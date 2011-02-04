@@ -117,11 +117,11 @@ void intro_show_hide_for_mode(void)
 	
 		// setup frame if in simple save erase mode
 		
-	frame.x=hud.scale_x-100;
-	frame.y=(hud.scale_y>>1)-50;
-	frame.wid=200;
+	frame.x=(hud.scale_x>>1)-160;
+	frame.y=(hud.scale_y>>1)-25;
+	frame.wid=320;
 	frame.high=100;
-	sprintf(frame.title,"Erase Saved Game %d",(intro_simple_save_idx+1));
+	sprintf(frame.title,"Erase Saved Game %d?",(intro_simple_save_idx+1));
 	frame.on=in_simple_save_erase;
 	memmove(&frame.background_col,&hud.color.dialog_background,sizeof(d3col));
 
@@ -196,7 +196,7 @@ void intro_open(void)
 	intro_open_add_button(&hud.intro.button_quit,"button_quit",intro_button_quit_id);
 	
 	for (n=0;n!=max_simple_save_spot;n++) {
-		sprintf(name,"button_simple_save_%d",n);
+		sprintf(name,"button_simple_start_%d",n);
 		intro_open_add_button(&hud.intro.simple_save[n].button_start,name,(intro_simple_save_button_start+n));
 		sprintf(name,"button_simple_erase_%d",n);
 		intro_open_add_button(&hud.intro.simple_save[n].button_erase,name,(intro_simple_save_button_erase+n));
@@ -208,8 +208,8 @@ void intro_open(void)
 	x=hud.scale_x>>1;
 	y=hud.scale_y>>1;
 		
-	element_text_add("Erase",intro_simple_save_erase_ok,(x-100),y,30,tx_center,TRUE,FALSE);
-	element_text_add("Cancel",intro_simple_save_erase_cancel,(x+100),y,30,tx_center,TRUE,FALSE);
+	element_button_text_add("Erase",intro_simple_save_erase_ok,(x-130),y,100,50,element_pos_left,element_pos_top);
+	element_button_text_add("Cancel",intro_simple_save_erase_cancel,(x+130),y,100,50,element_pos_right,element_pos_top);
 	
 		// read in simple saves
 		
