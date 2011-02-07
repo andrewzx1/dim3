@@ -222,6 +222,62 @@ void render_model_create_normal_vertexes(model_type *mdl,int mesh_mask,model_dra
       
 ======================================================= */
 
+
+void render_model_draw_normals(model_type *mdl,int mesh_idx,model_draw *draw)
+{
+	int				n,k;
+	float			fx,fy,fz;
+	float			*nl,*vp;
+	model_mesh_type	*mesh;
+	model_trig_type	*trig;
+
+	mesh=&mdl->meshes[mesh_idx];
+	
+	if (!mesh->diffuse) return;
+	if ((mesh->no_lighting) || (draw->no_lighting)) return;
+	
+	return;
+	
+	glColor4f(1.0f,0.0f,1.0f,1.0f);
+	glLineWidth(2.0f);
+		
+	trig=mesh->trigs;
+	nl=draw->setup.mesh_arrays[mesh_idx].gl_normal_array;
+	
+	glBegin(GL_LINES);
+	
+	for (n=0;n!=mesh->ntrig;n++) {
+	
+		for (k=0;k!=3;k++) {
+			vp=draw->setup.mesh_arrays[mesh_idx].gl_vertex_array+((trig->v[k]*3));
+			fx=*vp++;
+			fy=*vp++;
+			fz=*vp;
+			
+			glVertex3f(fx,fy,fz);
+			
+			fx+=((*nl++)*500.0f);
+			fy+=((*nl++)*500.0f);
+			fz+=((*nl++)*500.0f);
+			
+			
+		//	fx+=(trig->tangent_space[k].normal.x*500.0f);
+		//	fy+=(trig->tangent_space[k].normal.y*500.0f);
+		//	fz+=(trig->tangent_space[k].normal.z*500.0f);
+			
+			glVertex3f(fx,fy,fz);
+		}
+		
+		trig++;
+	}
+	
+	glEnd();
+	
+	glLineWidth(1.0f);
+}
+
+
+
 void render_model_diffuse_color_vertexes(model_type *mdl,int mesh_idx,model_draw *draw,float *vertex_ptr)
 {
 	int				n,k;
@@ -230,10 +286,15 @@ void render_model_diffuse_color_vertexes(model_type *mdl,int mesh_idx,model_draw
 	d3vct			diffuse_vct;
 	d3col			ambient_col;
 	model_mesh_type	*mesh;
-
+	
 	mesh=&mdl->meshes[mesh_idx];
 
 	gl_lights_calc_diffuse_vector(&draw->pnt,draw->light_cache.count,draw->light_cache.indexes,&diffuse_vct);
+	
+	
+	diffuse_vct.x=1.0f;
+	diffuse_vct.y=0.0f;
+	diffuse_vct.z=0.0f;
 
 	boost=mdl->diffuse_boost;
 	
@@ -255,10 +316,10 @@ void render_model_diffuse_color_vertexes(model_type *mdl,int mesh_idx,model_draw
 				// get the dot product
 
 			diffuse=(diffuse_vct.x*(*nl))+(diffuse_vct.y*(*(nl+1)))+(diffuse_vct.z*(*(nl+2)));
+			vector_normalize(&diffuse);
+			diffuse=((diffuse+1.0f)*0.5f)+boost;
 			
 			nl+=3;
-			
-			diffuse=((diffuse+1.0f)*0.5f)+boost;
 
 			if (diffuse>=1.0f) {
 				cl+=3;
@@ -1025,6 +1086,10 @@ void render_model_opaque(model_draw *draw)
 			// render glow segments
 
 		if (draw->meshes[n].has_glow) render_model_glow(mdl,n,draw);
+		
+		
+		render_model_draw_normals(mdl,n,draw);
+		
 
 		render_model_release_vertex_objects();
 	}
