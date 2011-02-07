@@ -90,8 +90,10 @@ void melee_add(obj_type *obj,weapon_type *weap,d3pnt *pt,d3ang *ang,melee_type *
         if ((hurt_obj->hidden) || (!hurt_obj->contact.projectile_on) || (hurt_obj->idx==ignore_obj_idx)) continue;
 		
 			// melee hit?
-
-		if (collide_object_to_sphere(&sphere_pnt,melee->radius,hurt_obj)) object_melee_hit(hurt_obj,obj,weap,melee,&sphere_pnt);
+			
+		if (collide_object_to_sphere(&sphere_pnt,melee->radius,hurt_obj)) {
+			object_melee_hit(hurt_obj,obj,weap,melee,&sphere_pnt);
+		}
 	}
   
 		// check projectiles

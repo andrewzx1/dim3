@@ -277,6 +277,7 @@ bool object_telefrag_players(obj_type *obj,bool check_only)
 
 void object_setup_touch(obj_type *obj,obj_type *source_obj,bool stand)
 {
+	int				x,y,z,wid;
 	obj_touch		*touch;
 	
 	touch=&obj->touch;
@@ -285,13 +286,42 @@ void object_setup_touch(obj_type *obj,obj_type *source_obj,bool stand)
 
 	touch->stand=stand;
 	
-	touch->pnt.x=(obj->pnt.x+source_obj->pnt.x)>>1;
-	touch->pnt.y=(obj->pnt.y+source_obj->pnt.y)>>1;
-	touch->pnt.z=(obj->pnt.z+source_obj->pnt.z)>>1;
+		// average the point for touch
+		
+	x=(obj->pnt.x+source_obj->pnt.x)>>1;
+	y=(obj->pnt.y+source_obj->pnt.y)>>1;
+	z=(obj->pnt.z+source_obj->pnt.z)>>1;
 	
-	touch->ang.x=angle_find(source_obj->pnt.y,source_obj->pnt.z,obj->pnt.y,obj->pnt.z);
-	touch->ang.y=angle_find(source_obj->pnt.x,source_obj->pnt.z,obj->pnt.x,obj->pnt.z);
-	touch->ang.z=angle_find(source_obj->pnt.x,source_obj->pnt.y,obj->pnt.x,obj->pnt.y);
+		// keep touch within bounds
+		
+	wid=source_obj->size.x>>1;
+	if (x<(source_obj->pnt.x-wid)) x=source_obj->pnt.x-wid;
+	if (x>(source_obj->pnt.x+wid)) x=source_obj->pnt.x+wid;
+	wid=obj->size.x>>1;
+	if (x<(obj->pnt.x-wid)) x=obj->pnt.x-wid;
+	if (x>(obj->pnt.x+wid)) x=obj->pnt.x+wid;
+		
+	if (y<(source_obj->pnt.y-source_obj->size.y)) y=source_obj->pnt.y-source_obj->size.y;
+	if (y>source_obj->pnt.y) y=source_obj->pnt.y;
+	if (y<(obj->pnt.y-obj->size.y)) y=obj->pnt.y-obj->size.y;
+	if (y>obj->pnt.y) y=obj->pnt.y;
+	
+	wid=source_obj->size.z>>1;
+	if (z<(source_obj->pnt.z-wid)) z=source_obj->pnt.z-wid;
+	if (z>(source_obj->pnt.z+wid)) z=source_obj->pnt.z+wid;
+	wid=obj->size.z>>1;
+	if (z<(obj->pnt.z-wid)) z=obj->pnt.z-wid;
+	if (z>(obj->pnt.z+wid)) z=obj->pnt.z+wid;
+
+	touch->pnt.x=x;
+	touch->pnt.y=y;
+	touch->pnt.z=z;
+	
+		// get the angle
+		
+	touch->ang.x=angle_find(y,z,obj->pnt.y,obj->pnt.z);
+	touch->ang.y=angle_find(x,z,obj->pnt.x,obj->pnt.z);
+	touch->ang.z=angle_find(x,y,obj->pnt.x,obj->pnt.y);
 }
 
 void object_touch(obj_type *obj)

@@ -190,7 +190,7 @@ void file_open_model(void)
 	model_open(&model,file_name,TRUE);
     	
 	os_set_arrow_cursor();
-	
+
 		// finish
 		
 	state.model_open=TRUE;

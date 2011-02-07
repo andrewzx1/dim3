@@ -24,10 +24,10 @@
 	};
 	F50BF8AA05717CFE000499EB /* normals.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1020, 4953}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1020, 4784}}";
 			sepNavSelRange = "{7340, 0}";
-			sepNavVisRange = "{6127, 1390}";
-			sepNavWindowFrame = "{{415, 165}, {950, 757}}";
+			sepNavVisRange = "{7974, 1269}";
+			sepNavWindowFrame = "{{608, 160}, {950, 757}}";
 		};
 	};
 	F5127DF10513A79A009F12F0 /* dim3modelutility.h */ = {
@@ -155,8 +155,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 317975025;
-			PBXWorkspaceStateSaveDate = 317975025;
+			PBXPerProjectTemplateStateSaveDate = 318578643;
+			PBXWorkspaceStateSaveDate = 318578643;
 		};
 		sourceControlManager = 260AFEDB0D404F5000F6C42F /* Source Control */;
 		userBuildSettings = {
@@ -236,10 +236,10 @@
 	};
 	F594147B0979776300223F2A /* draw_normals.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1048, 2626}}";
-			sepNavSelRange = "{3404, 15}";
-			sepNavVisRange = "{3163, 1519}";
-			sepNavWindowFrame = "{{475, 132}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1048, 2548}}";
+			sepNavSelRange = "{2895, 0}";
+			sepNavVisRange = "{1668, 1402}";
+			sepNavWindowFrame = "{{511, 133}, {1041, 747}}";
 		};
 	};
 	F5941501097A002C00223F2A /* file_model_mesh_v1.c */ = {
