@@ -223,6 +223,8 @@ void render_model_create_normal_vertexes(model_type *mdl,int mesh_mask,model_dra
 ======================================================= */
 
 
+// supergumba
+
 void render_model_draw_normals(model_type *mdl,int mesh_idx,model_draw *draw)
 {
 	int				n,k;
@@ -291,7 +293,7 @@ void render_model_diffuse_color_vertexes(model_type *mdl,int mesh_idx,model_draw
 
 	gl_lights_calc_diffuse_vector(&draw->pnt,draw->light_cache.count,draw->light_cache.indexes,&diffuse_vct);
 	
-	
+	//supergumba
 	diffuse_vct.x=1.0f;
 	diffuse_vct.y=0.0f;
 	diffuse_vct.z=0.0f;
@@ -314,14 +316,23 @@ void render_model_diffuse_color_vertexes(model_type *mdl,int mesh_idx,model_draw
 		for (k=0;k!=3;k++) {
 
 				// get the dot product
-
+				
 			diffuse=(diffuse_vct.x*(*nl))+(diffuse_vct.y*(*(nl+1)))+(diffuse_vct.z*(*(nl+2)));
-			vector_normalize(&diffuse);
-			diffuse=((diffuse+1.0f)*0.5f)+boost;
 			
-			nl+=3;
+		//	if ((n>1000) && (n<1200)) {
+		//	if (diffuse<0.0f) {		// supergumba
+		//		*cl++=1.0f;
+		//		*cl++=0.0f;
+		//		*cl++=0.0f;
+		//		nl+=3;
+		//		continue;
+		//	}
 
-			if (diffuse>=1.0f) {
+			diffuse=((diffuse+1.0f)*0.5f)+boost;
+
+			nl+=3;
+			
+			if (diffuse>=1.0f) {		// supergumba
 				cl+=3;
 				continue;
 			}
