@@ -115,7 +115,7 @@ void vertex_set_sel_mask_all(int mesh_idx)
 	}
 }
 
-bool vertex_check_any(int mesh_idx)
+bool vertex_check_sel_any(int mesh_idx)
 {
 	int				n;
 	unsigned char	mask;
@@ -125,7 +125,7 @@ bool vertex_check_any(int mesh_idx)
 	
 	for (n=0;n!=mesh->nvertex;n++) {
 		mask=vertex_mask_get(mesh_idx,n);
-		if (mask!=0x0) return(TRUE);
+		if ((mask&animator_mask_flag_sel)!=0x0) return(TRUE);
 	}
 	
 	return(FALSE);

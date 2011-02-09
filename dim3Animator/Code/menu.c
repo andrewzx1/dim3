@@ -395,6 +395,16 @@ bool menu_event_run(int cmd)
 			vertex_set_normals(state.cur_mesh_idx);
 			main_wind_draw();
 			return(TRUE);
+
+		case kCommandVertexSetNormalsOut:
+			vertex_set_normals_in_out(state.cur_mesh_idx,TRUE);
+			main_wind_draw();
+			return(TRUE);
+
+		case kCommandVertexSetNormalsIn:
+			vertex_set_normals_in_out(state.cur_mesh_idx,FALSE);
+			main_wind_draw();
+			return(TRUE);
 		
 		case kCommandVertexClearBones:
 			vertex_clear_bone_attachments_sel_vertexes(state.cur_mesh_idx);
