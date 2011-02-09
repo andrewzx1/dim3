@@ -292,11 +292,6 @@ void render_model_diffuse_color_vertexes(model_type *mdl,int mesh_idx,model_draw
 	mesh=&mdl->meshes[mesh_idx];
 
 	gl_lights_calc_diffuse_vector(&draw->pnt,draw->light_cache.count,draw->light_cache.indexes,&diffuse_vct);
-	
-	//supergumba
-	diffuse_vct.x=1.0f;
-	diffuse_vct.y=0.0f;
-	diffuse_vct.z=0.0f;
 
 	boost=mdl->diffuse_boost;
 	
@@ -318,24 +313,9 @@ void render_model_diffuse_color_vertexes(model_type *mdl,int mesh_idx,model_draw
 				// get the dot product
 				
 			diffuse=(diffuse_vct.x*(*nl))+(diffuse_vct.y*(*(nl+1)))+(diffuse_vct.z*(*(nl+2)));
-			
-		//	if ((n>1000) && (n<1200)) {
-		//	if (diffuse<0.0f) {		// supergumba
-		//		*cl++=1.0f;
-		//		*cl++=0.0f;
-		//		*cl++=0.0f;
-		//		nl+=3;
-		//		continue;
-		//	}
-
 			diffuse=((diffuse+1.0f)*0.5f)+boost;
 
 			nl+=3;
-			
-			if (diffuse>=1.0f) {		// supergumba
-				cl+=3;
-				continue;
-			}
 		
 				// clamp it to ambient
 				// this is kind of ugly, might find a better
