@@ -83,35 +83,14 @@ extern int dialog_get_texture_combo(WindowRef wind,unsigned long sig,int id,bool
 //
 
 extern void dialog_about_run(void);
-extern void dialog_preference_run(void);
-
-//
-// open/new/save dialogs
-//
-
 extern bool dialog_file_new_run(char *title,char *file_name);
 extern bool dialog_file_open_run(char *title,char *search_path,char *extension,char *required_file_name,char *file_name);
-
-//
-// piece dialogs
-//
-
 extern bool dialog_resize_run(float *fct_x,float *fct_y,float *fct_z);
 extern bool dialog_reposition_run(d3pnt *min,d3pnt *max);
 extern bool dialog_free_rotate_run(float *rot_x,float *rot_y,float *rot_z);
-
-//
-// mesh dialogs
-//
-
 extern bool dialog_create_grid_mesh_run(int *xdiv,int *ydiv,int *zdiv);
 extern int dialog_obj_import_run(int *scale_axis,int *scale_unit);
 extern bool dialog_svg_import_run(float *scale,int *high);
-
-//
-// import dialogs
-//
-
 extern bool dialog_height_import_run(int *div_cnt,int *size,int *high);
 
 //

@@ -40,6 +40,7 @@ animator_state_type				state;
 
 extern d3rect					tool_palette_box,txt_palette_box;
 extern list_palette_type		item_palette,property_palette,alt_property_palette;
+extern animator_setup_type		setup;
 
 /* =======================================================
 
@@ -233,7 +234,7 @@ void main_wind_draw(void)
 		
 	glDisable(GL_SCISSOR_TEST);
 	
-	glClearColor(0.75f,0.75f,0.75f,0.0f);
+	glClearColor(setup.col.background.r,setup.col.background.g,setup.col.background.b,0.0f);
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 	
 		// model

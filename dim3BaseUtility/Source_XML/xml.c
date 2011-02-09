@@ -469,7 +469,7 @@ bool xml_get_attribute_raw(int n,char *name,char *value,int valuesz)
 		c=*sptr++;
 		if (c==0x0) break;
 
-		if ((c=='"') || (c=='\'')) {
+		if (c=='"') {
 			inquote=!inquote;
 			continue;
 		}

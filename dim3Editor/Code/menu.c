@@ -172,25 +172,11 @@ bool menu_event_run(int cmd)
 {
 	switch (cmd) {
 		
-			// misc commands
+			// about
 
         case kCommandAbout:
             dialog_about_run();
             return(TRUE);
-			
-        case kCommandPreference:
-            dialog_preference_run();
-			texture_palette_setup();
-			main_wind_draw();
-            return(TRUE);
-
-		case kCommandFileQuit:
-			if (state.map_opened) {
-				if (!menu_save_changes_dialog()) return(TRUE);
-				file_close_map();
-			}
-			os_application_quit();
-			return(TRUE);
             
 			// file menu
 			
@@ -211,6 +197,20 @@ bool menu_event_run(int cmd)
 
 		case kCommandFileSave:
 			file_save_map();
+			return(TRUE);
+
+        case kCommandFilePreference:
+			state.in_preference=!state.in_preference;
+			property_palette_reset();
+			main_wind_draw();
+            return(TRUE);
+
+		case kCommandFileQuit:
+			if (state.map_opened) {
+				if (!menu_save_changes_dialog()) return(TRUE);
+				file_close_map();
+			}
+			os_application_quit();
 			return(TRUE);
 			
 			// edit menu

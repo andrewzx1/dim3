@@ -720,7 +720,7 @@ void list_palette_draw(list_palette_type *list,bool close_border)
 	glEnd();
 
 	page_count=list_palette_get_scroll_page_count(list);
-	
+
 	if ((list->item_count!=0) && (page_count!=0)) {
 		
 		thumb_ty=ty+(((by-ty)*list->scroll_page)/(page_count+1));

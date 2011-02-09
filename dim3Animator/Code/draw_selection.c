@@ -32,9 +32,10 @@ and can be sold or given away.
 #include "glue.h"
 #include "interface.h"
 
-extern model_type			model;
-extern model_draw_setup		draw_setup;
-extern animator_state_type	state;
+extern model_type				model;
+extern model_draw_setup			draw_setup;
+extern animator_setup_type		setup;
+extern animator_state_type		state;
 
 /* =======================================================
 
@@ -104,7 +105,7 @@ void draw_model_selected_trig(int mesh_idx)
 
 		// selection
 	
-	glColor4f(1.0f,1.0f,0.0f,1.0f);
+	glColor4f(setup.col.mesh_sel.r,setup.col.mesh_sel.g,setup.col.mesh_sel.b,1.0f);
 	glLineWidth(draw_trig_select_line_size);
 
 	for (n=0;n!=ntrig;n++) {

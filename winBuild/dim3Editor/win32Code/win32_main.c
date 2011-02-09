@@ -51,7 +51,6 @@ editor_state_type			state;
 extern d3rect				tool_palette_box,txt_palette_box;
 extern list_palette_type	item_palette;
 
-extern bool setup_xml_read(void);
 extern int os_win32_menu_lookup(int id);
 
 /* =======================================================
@@ -61,9 +60,6 @@ extern int os_win32_menu_lookup(int id);
 ======================================================= */
 
 void dialog_about_run(void)
-{
-}
-void dialog_preference_run(void)
 {
 }
 bool dialog_resize_run(float *fct_x,float *fct_y,float *fct_z)
@@ -167,8 +163,8 @@ LRESULT CALLBACK editor_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam)
 
 void main_wind_open(void)
 {
-	// win32 applications always leave the window open so "new" can be used
-	// from the menu
+		// win32 applications always leave the window open so "new" can be used
+		// from the menu
 }
 
 void main_wind_close(void)

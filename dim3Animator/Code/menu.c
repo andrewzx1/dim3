@@ -153,6 +153,12 @@ bool menu_event_run(int cmd)
 			file_save_model();
 			return(TRUE);
 
+		case kCommandFilePreference:
+			state.in_preference=!state.in_preference;
+			property_palette_reset();
+			main_wind_draw();
+			return(TRUE);
+
 		case kCommandFileQuit:
 			if (state.model_open) {
 				if (!menu_save_changes_dialog()) return(TRUE);
@@ -435,7 +441,7 @@ bool menu_event_run(int cmd)
 			return(TRUE);
 			
 		case kCommandGoToParentBone:
-			if (state.cur_bone_idx!=-1) return(TRUE);
+			if (state.cur_bone_idx==-1) return(TRUE);
 			
 			parent_idx=model.bones[state.cur_bone_idx].parent_idx;
 			if (parent_idx!=-1) state.cur_bone_idx=parent_idx;

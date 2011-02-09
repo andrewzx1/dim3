@@ -86,6 +86,7 @@ void file_reset_state(void)
 	state.play_animate_blend=FALSE;
 	
 	state.texture_edit_idx=-1;
+	state.in_preference=FALSE;
 	
 	vertex_clear_sel_mask(state.cur_mesh_idx);
 	vertex_clear_hide_mask(state.cur_mesh_idx);

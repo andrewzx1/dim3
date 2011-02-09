@@ -301,10 +301,6 @@
 				Name="AnimatorSources"
 				>
 				<File
-					RelativePath="..\..\dim3Animator\Code\click_window.c"
-					>
-				</File>
-				<File
 					RelativePath="..\..\dim3Animator\Code\dos.c"
 					>
 				</File>
@@ -322,10 +318,6 @@
 				</File>
 				<File
 					RelativePath="..\..\dim3Animator\Code\draw_selection.c"
-					>
-				</File>
-				<File
-					RelativePath="..\..\dim3Animator\Code\draw_window.c"
 					>
 				</File>
 				<File
@@ -372,6 +364,10 @@
 					RelativePath="..\..\dim3Animator\Code\vertex_transform.c"
 					>
 				</File>
+				<File
+					RelativePath="..\..\dim3Animator\Code\xml_setup.c"
+					>
+				</File>
 				<Filter
 					Name="Palettes"
 					>
@@ -396,10 +392,6 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\dim3Animator\Code\main_window.c"
-						>
-					</File>
-					<File
 						RelativePath="..\..\dim3Common\Code\progress_common.c"
 						>
 					</File>
@@ -409,6 +401,10 @@
 					</File>
 					<File
 						RelativePath="..\..\dim3Animator\Code\property_palette_animation.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Animator\Code\property_palette_animator_preference.c"
 						>
 					</File>
 					<File
@@ -461,6 +457,22 @@
 					</File>
 					<File
 						RelativePath="..\..\dim3Common\Code\tool_palette_common.c"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Windows"
+					>
+					<File
+						RelativePath="..\..\dim3Animator\Code\click_window.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Animator\Code\draw_window.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Animator\Code\main_window.c"
 						>
 					</File>
 				</Filter>

@@ -35,6 +35,7 @@ and can be sold or given away.
 
 extern model_type				model;
 extern model_draw_setup			draw_setup;
+extern animator_setup_type		setup;
 extern animator_state_type		state;
 
 /* =======================================================
@@ -56,7 +57,7 @@ void draw_model_mesh(int mesh_idx)
 	glVertexPointer(3,GL_FLOAT,0,draw_setup.mesh_arrays[mesh_idx].gl_vertex_array);
 	glLockArraysEXT(0,mesh->nvertex);
 	
-	glColor4f(0.5f,0.5f,1.0f,1.0f);
+	glColor4f(setup.col.mesh_line.r,setup.col.mesh_line.g,setup.col.mesh_line.b,1.0f);
     
 	ntrig=mesh->ntrig;
 	trig=mesh->trigs;

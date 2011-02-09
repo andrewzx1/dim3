@@ -269,6 +269,10 @@ void item_palette_click(d3pnt *pnt,bool double_click)
 	}
 
 	if (item_palette.item_idx==-1) return;
+	
+		// turn off preferences
+
+	state.in_preference=FALSE;
 
 		// handle click
 
@@ -315,6 +319,7 @@ void item_palette_click(d3pnt *pnt,bool double_click)
 		// need to do the setup again incase
 		// the alt window has open/closed
 
+	property_palette_reset();
 	alt_property_fix_open_state();
 
 	main_wind_draw();
