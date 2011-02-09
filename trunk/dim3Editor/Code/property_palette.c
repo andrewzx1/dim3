@@ -43,7 +43,6 @@ extern int						tool_palette_pixel_sz,txt_palette_pixel_sz;
 extern bool						list_palette_open,alt_property_open;
 extern list_palette_type		item_palette;
 
-int								prop_last_sel_type;
 list_palette_type				property_palette;
 
 /* =======================================================
@@ -58,8 +57,6 @@ void property_palette_initialize(void)
 
 	property_palette.item_type=0;
 	property_palette.item_idx=-1;
-
-	prop_last_sel_type=-1;
 }
 
 void property_palette_shutdown(void)
@@ -112,6 +109,15 @@ void property_palette_fill(void)
 	if (state.texture_edit_idx!=-1) {
 		list_palette_set_title(&property_palette,"Texture Properties");
 		property_palette_fill_texture(state.texture_edit_idx);
+		return;
+	}
+
+		// if preference window is up,
+		// put in preferences
+
+	if (state.in_preference) {
+		list_palette_set_title(&property_palette,"Editor Preferences");
+		property_palette_fill_editor_preference();
 		return;
 	}
 
@@ -221,25 +227,7 @@ void property_palette_draw(void)
 
 void property_palette_reset(void)
 {
-	int				sel_type,main_idx,sub_idx;
-
-	if (select_count()==0) {
-		prop_last_sel_type=-1;
-		property_palette.scroll_page=0;
-		return;
-	}
-
-	select_get(0,&sel_type,&main_idx,&sub_idx);
-	if (main_idx==-1) {
-		prop_last_sel_type=-1;
-		property_palette.scroll_page=0;
-		return;
-	}
-
-	if (prop_last_sel_type!=sel_type) {
-		prop_last_sel_type=sel_type;
-		property_palette.scroll_page=0;
-	}
+	property_palette.scroll_page=0;
 }
 
 /* =======================================================
@@ -288,6 +276,13 @@ void property_palette_click(d3pnt *pnt,bool double_click)
 
 	if (state.texture_edit_idx!=-1) {
 		property_palette_click_texture(state.texture_edit_idx,property_palette.item_id);
+		return;
+	}
+
+		// if preference window is up, preference properties
+
+	if (state.in_preference) {
+		property_palette_click_editor_preference(property_palette.item_id);
 		return;
 	}
 

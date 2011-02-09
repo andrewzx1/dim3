@@ -9,7 +9,8 @@
 #define ID_FILE_OPEN						101
 #define ID_FILE_CLOSE						102
 #define ID_FILE_SAVE						103
-#define ID_FILE_EXIT						104
+#define ID_FILE_PREFERENCE					104
+#define ID_FILE_EXIT						105
 
 #define ID_EDIT_UNDO						200
 #define ID_EDIT_SELECT_MORE					201

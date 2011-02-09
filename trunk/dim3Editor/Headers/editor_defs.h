@@ -216,12 +216,12 @@ and can be sold or given away.
 #define app_menu_vertex							135
 
 #define kCommandAbout							FOUR_CHAR_CODE('abot')
-#define kCommandPreference						FOUR_CHAR_CODE('pref')
 
 #define kCommandFileNew							FOUR_CHAR_CODE('new ')
 #define kCommandFileOpen						FOUR_CHAR_CODE('open')
 #define kCommandFileClose						FOUR_CHAR_CODE('clse')
 #define kCommandFileSave						FOUR_CHAR_CODE('save')
+#define kCommandFilePreference					FOUR_CHAR_CODE('pref')
 #define kCommandFileQuit						FOUR_CHAR_CODE('quit')
 
 #define kCommandEditUndo						FOUR_CHAR_CODE('undo')
@@ -321,7 +321,7 @@ typedef struct		{
 typedef struct		{
 						d3col					mesh_line,mesh_sel,poly_sel,poly_cull,
 												background;
-					} setup_col_type;
+					} editor_setup_col_type;
 
 typedef struct		{
 						int						anisotropic_mode,mipmap_mode,
@@ -332,7 +332,7 @@ typedef struct		{
 												flip_horz_turn,flip_vert_turn,
 												flip_forward_movement;
 						char					engine_name[256];
-						setup_col_type			col;
+						editor_setup_col_type	col;
 					} editor_setup_type;
 
 //
@@ -368,7 +368,7 @@ typedef struct		{
 						bool					map_opened,
 												free_look,select_add,auto_texture,select_box_on,
 												show_liquid,show_normals,show_node,show_object,
-												show_lightsoundparticle;
+												show_lightsoundparticle,in_preference;
 						d3pnt					select_box_start_pnt,select_box_end_pnt;
 					} editor_state_type;
 					

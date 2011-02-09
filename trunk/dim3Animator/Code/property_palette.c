@@ -109,6 +109,15 @@ void property_palette_fill(void)
 		return;
 	}
 
+		// if preference window is up,
+		// put in preference properties
+
+	if (state.in_preference) {
+		list_palette_set_title(&property_palette,"Animator Preferences");
+		property_palette_fill_animator_preference();
+		return;
+	}
+
 		// selection properties
 
 	switch (state.cur_item) {
@@ -164,6 +173,17 @@ void property_palette_draw(void)
 
 /* =======================================================
 
+      Property Palette Reset Scroll
+      
+======================================================= */
+
+void property_palette_reset(void)
+{
+	property_palette.scroll_page=0;
+}
+
+/* =======================================================
+
       Property Palette Scroll Wheel
       
 ======================================================= */
@@ -202,6 +222,13 @@ void property_palette_click(d3pnt *pnt,bool double_click)
 
 	if (state.texture_edit_idx!=-1) {
 		property_palette_click_texture(state.texture_edit_idx,property_palette.item_id);
+		return;
+	}
+
+		// if preference window is up, preference properties
+
+	if (state.in_preference) {
+		property_palette_click_animator_preference(property_palette.item_id);
 		return;
 	}
 

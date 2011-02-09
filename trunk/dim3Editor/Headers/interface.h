@@ -43,6 +43,13 @@ extern void main_wind_key(char ch);
 extern void main_wind_resize(void);
 
 //
+// setup
+//
+
+extern bool setup_xml_read(void);
+extern bool setup_xml_write(void);
+
+//
 // menu
 //
 
@@ -100,6 +107,7 @@ extern void item_palette_click(d3pnt *pnt,bool double_click);
 //
 
 extern void property_palette_fill_texture(int texture_idx);
+extern void property_palette_fill_editor_preference(void);
 extern void property_palette_fill_map(void);
 extern void property_palette_fill_cinema(int cinema_idx);
 extern void property_palette_fill_group(int group_idx);
@@ -114,6 +122,7 @@ extern void property_palette_fill_scenery(int scenery_idx);
 extern void property_palette_fill_node(int node_idx);
 
 extern void property_palette_click_texture(int texture_idx,int id);
+extern void property_palette_click_editor_preference(int id);
 extern void property_palette_click_map(int id);
 extern void property_palette_click_cinema(int cinema_idx,int id);
 extern void property_palette_click_group(int group_idx,int id);

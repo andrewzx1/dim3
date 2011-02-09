@@ -357,6 +357,10 @@ int APIENTRY WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmdLine
 		return(0);
 	}
 
+		// read preferences
+
+	setup_xml_read();
+
 		// open window
 
 	win32_main_wind_open();

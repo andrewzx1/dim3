@@ -76,6 +76,7 @@ and can be sold or given away.
 #define kCommandFileOpen				FOUR_CHAR_CODE('opnB')
 #define kCommandFileClose				FOUR_CHAR_CODE('clse')
 #define kCommandFileSave				FOUR_CHAR_CODE('savB')
+#define kCommandFilePreference			FOUR_CHAR_CODE('pref')
 #define kCommandFileQuit				FOUR_CHAR_CODE('quit')
 
 #define kCommandEditUndo				FOUR_CHAR_CODE('undo')
@@ -220,29 +221,41 @@ and can be sold or given away.
 #define draw_model_normal_len			50.0f
 
 //
+// setups
+//
+
+typedef struct		{
+						d3col						mesh_line,mesh_sel,
+													background;
+					} animator_setup_col_type;
+
+typedef struct		{
+						animator_setup_col_type		col;
+					} animator_setup_type;
+
+//
 // animator state
 //
 
 typedef struct		{
-						int					tick,animate_idx,pose_move_idx;
+						int							tick,animate_idx,pose_move_idx;
 					} play_blend_type;
 					
 typedef struct		{
-						int					cur_item,cur_mesh_idx,cur_bone_idx,
-											cur_pose_idx,cur_animate_idx,cur_hit_box_idx,
-											cur_animate_pose_move_idx,cur_pose_bone_move_idx,
-											texture_edit_idx,drag_bone_mode,select_mode,
-											magnify_z;
-						bool				model_open,
-											texture,mesh,bone,hit_box,
-											normal,view_box,first_mesh,
-											playing,play_animate_blend,
-											drag_sel_on;
-						char				file_name[256];
-						d3pnt				shift;
-						d3ang				ang;
-						d3rect				drag_sel_box;
-						play_blend_type		blend[max_model_blend_animation];
+						int							cur_item,cur_mesh_idx,cur_bone_idx,
+													cur_pose_idx,cur_animate_idx,cur_hit_box_idx,
+													cur_animate_pose_move_idx,cur_pose_bone_move_idx,
+													texture_edit_idx,drag_bone_mode,select_mode,
+													magnify_z;
+						bool						model_open,texture,mesh,bone,hit_box,
+													normal,view_box,first_mesh,
+													playing,play_animate_blend,
+													drag_sel_on,in_preference;
+						char						file_name[256];
+						d3pnt						shift;
+						d3ang						ang;
+						d3rect						drag_sel_box;
+						play_blend_type				blend[max_model_blend_animation];
 					} animator_state_type;
 
 

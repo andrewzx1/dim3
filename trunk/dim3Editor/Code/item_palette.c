@@ -320,6 +320,10 @@ void item_palette_click(d3pnt *pnt,bool double_click)
 	state.cur_movement_idx=-1;
 	state.cur_movement_move_idx=-1;
 
+		// turn off preferences
+
+	state.in_preference=FALSE;
+
 		// handle click
 
 	select_clear();
@@ -377,6 +381,7 @@ void item_palette_click(d3pnt *pnt,bool double_click)
 		// need to do the setup again incase
 		// the alt window has open/closed
 
+	property_palette_reset();
 	alt_property_fix_open_state();
 
 	main_wind_draw();

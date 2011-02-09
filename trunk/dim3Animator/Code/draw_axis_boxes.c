@@ -45,7 +45,7 @@ void draw_model_axis(void)
 {
 		// x axis
 		
-	glColor4f(1,0,0,1);
+	glColor4f(1.0f,0.0f,0.0f,1.0f);
 	
     glBegin(GL_LINES);
 	glVertex3i(-20000,model.center.y,model.center.z);
@@ -54,7 +54,7 @@ void draw_model_axis(void)
 	
 		// y axis
 		
-	glColor4f(0,1,0,1);
+	glColor4f(0.0f,1.0f,0.0f,1.0f);
 	
     glBegin(GL_LINES);
 	glVertex3i(model.center.x,-20000,model.center.z);
@@ -63,7 +63,7 @@ void draw_model_axis(void)
 
 		// z axis
 		
-	glColor4f(0,0,1,1);
+	glColor4f(0.0f,0.0f,1.0f,1.0f);
 	
     glBegin(GL_LINES);
 	glVertex3i(model.center.x,model.center.y,-20000);
@@ -126,7 +126,7 @@ void draw_model_box(model_box_type *box,bool draw_floor,bool draw_handles)
 	if (draw_handles) {
 		glDisable(GL_DEPTH_TEST);
 		
-		glColor4f(0,0,0,1);
+		glColor4f(0.0f,0.0f,0.0f,1.0f);
 		glPointSize(10);
 		
 		glBegin(GL_POINTS);
@@ -142,7 +142,7 @@ void draw_model_box(model_box_type *box,bool draw_floor,bool draw_handles)
 	}
     
     if (draw_floor) {
-		glColor4f(0.75,0.75,0.75,0.5);
+		glColor4f(0.75f,0.75f,0.75f,0.5f);
 		
 		glBegin(GL_POLYGON);
 		for (n=4;n!=8;n++) {
@@ -154,7 +154,7 @@ void draw_model_box(model_box_type *box,bool draw_floor,bool draw_handles)
 
 void draw_model_box_view(void)
 {
-	glColor4f(0,1,0,0.5);
+	glColor4f(0.0f,1.0f,0.0f,0.5f);
 	draw_model_box(&model.view_box,TRUE,FALSE);
 }
 
@@ -163,7 +163,7 @@ void draw_model_box_hit_boxes(void)
 	int				n;
 	
 	for (n=0;n<model.nhit_box;n++) {
-		glColor4f(1,1,0,0.5);
+		glColor4f(1.0f,1.0f,0.0f,0.5f);
 		draw_model_box(&model.hit_boxes[n].box,FALSE,TRUE);
 	}
 }

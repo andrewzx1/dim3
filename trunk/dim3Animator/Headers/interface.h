@@ -44,6 +44,13 @@ extern void main_wind_key(char ch);
 extern void main_wind_resize(void);
 
 //
+// setup
+//
+
+extern bool setup_xml_read(void);
+extern bool setup_xml_write(void);
+
+//
 // menus
 //
 
@@ -107,6 +114,7 @@ extern void property_palette_initialize(void);
 extern void property_palette_shutdown(void);
 extern void property_palette_setup(void);
 extern void property_palette_draw(void);
+extern void property_palette_reset(void);
 extern void property_palette_scroll_wheel(d3pnt *pnt,int move);
 extern void property_palette_click(d3pnt *pnt,bool double_click);
 
@@ -122,21 +130,23 @@ extern void property_palette_pick_bone_tag(unsigned long *bone_tag);
 extern void property_palette_pick_pose(int *pose_idx);
 extern void property_palette_pick_shader(char *name);
 
+extern void property_palette_fill_texture(int texture_idx);
+extern void property_palette_fill_animator_preference(void);
 extern void property_palette_fill_model(void);
 extern void property_palette_fill_mesh(int mesh_idx);
 extern void property_palette_fill_animation(int animate_idx);
 extern void property_palette_fill_pose(int pose_idx);
 extern void property_palette_fill_bone(int bone_idx);
 extern void property_palette_fill_hit_box(int hit_box_idx);
-extern void property_palette_fill_texture(int texture_idx);
 
+extern void property_palette_click_texture(int texture_idx,int id);
+extern void property_palette_click_animator_preference(int id);
 extern void property_palette_click_model(int id);
 extern void property_palette_click_mesh(int mesh_idx,int id);
 extern void property_palette_click_animation(int animation_idx,int id);
 extern void property_palette_click_pose(int pose_idx,int id);
 extern void property_palette_click_bone(int bone_idx,int id);
 extern void property_palette_click_hit_box(int hit_box_idx,int id);
-extern void property_palette_click_texture(int texture_idx,int id);
 
 //
 // alt property list palette

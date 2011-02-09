@@ -55,6 +55,7 @@ void file_reset_window(void)
 		// redraw
 	
  	state.texture_edit_idx=-1;
+	state.in_preference=FALSE;
 	state.cur_cinema_idx=-1;
 	state.cur_movement_idx=-1;
 
@@ -71,7 +72,9 @@ void file_reset_window(void)
 void file_close_window(void)
 {
 	state.map_opened=FALSE;
+
 	state.texture_edit_idx=-1;
+	state.in_preference=FALSE;
 
 	main_wind_close();
 	menu_fix_enable();

@@ -171,7 +171,7 @@ void draw_model(int mesh_idx)
 		model_setup_animated_textures(&model,time_get());
 	}
 	
-	glColor4f(1,1,1,1);
+	glColor4f(1.0f,1.0f,1.0f,1.0f);
     
         // run through the opaque textures
 
