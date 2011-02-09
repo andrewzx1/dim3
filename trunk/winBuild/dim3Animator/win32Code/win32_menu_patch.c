@@ -81,6 +81,8 @@ int				win32_menu_remap[][2]={
 					{kCommandVertexSelectNotAttached,ID_VERTEX_SELECT_NOT_ATTACHED},
 					{kCommandVertexInvertNormals,ID_VERTEX_INVERT_NORMAL},
 					{kCommandVertexSetNormals,ID_VERTEX_SET_NORMAL},
+					{kCommandVertexSetNormalsOut,ID_VERTEX_SET_NORMAL_OUT},
+					{kCommandVertexSetNormalsIn,ID_VERTEX_SET_NORMAL_IN},
 					{kCommandVertexClearBones,ID_VERTEX_CLEAR_BONE},
 					{kCommandVertexAutoBones,ID_VERTEX_AUTO_SET_BONE},
 					{kCommandVertexHideSelected,ID_VERTEX_HIDE_SELECTED},

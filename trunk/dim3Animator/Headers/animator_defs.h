@@ -122,6 +122,8 @@ and can be sold or given away.
 #define kCommandVertexSelectNotAttached	FOUR_CHAR_CODE('vsna')
 #define kCommandVertexInvertNormals		FOUR_CHAR_CODE('vinm')
 #define kCommandVertexSetNormals		FOUR_CHAR_CODE('vsnm')
+#define kCommandVertexSetNormalsOut		FOUR_CHAR_CODE('vsno')
+#define kCommandVertexSetNormalsIn		FOUR_CHAR_CODE('vsni')
 #define kCommandVertexClearBones		FOUR_CHAR_CODE('vcba')
 #define kCommandVertexAutoBones			FOUR_CHAR_CODE('vsba')
 #define kCommandVertexHideSelected		FOUR_CHAR_CODE('vhsl')

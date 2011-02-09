@@ -200,7 +200,8 @@ void intro_open(void)
 		intro_open_add_button(&hud.intro.simple_save[n].button_start,name,(intro_simple_save_button_start+n));
 		sprintf(name,"button_simple_erase_%d",n);
 		intro_open_add_button(&hud.intro.simple_save[n].button_erase,name,(intro_simple_save_button_erase+n));
-		element_text_add("",(intro_simple_save_text_desc+n),hud.intro.simple_save[n].desc.x,hud.intro.simple_save[n].desc.y,hud.intro.simple_save[n].desc.text_size,tx_center,FALSE,FALSE);
+
+		if (hud.intro.simple_save[n].button_start.on) element_text_add("",(intro_simple_save_text_desc+n),hud.intro.simple_save[n].desc.x,hud.intro.simple_save[n].desc.y,hud.intro.simple_save[n].desc.text_size,tx_center,FALSE,FALSE);
 	}
 	
 		// simple save options

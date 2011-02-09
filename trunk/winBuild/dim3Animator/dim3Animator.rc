@@ -83,7 +83,9 @@ BEGIN
         MENUITEM "Select Not Attached\tCtrl+Shift+A",		ID_VERTEX_SELECT_NOT_ATTACHED
  		MENUITEM SEPARATOR
         MENUITEM "Invert Normals\tCtrl+I",					ID_VERTEX_INVERT_NORMAL
-        MENUITEM "Set Normals\tCtrl+Alt+I",					ID_VERTEX_SET_NORMAL
+        MENUITEM "Set Normals...\tCtrl+Alt+I",				ID_VERTEX_SET_NORMAL
+        MENUITEM "Set Normals Out",							ID_VERTEX_SET_NORMAL_OUT
+        MENUITEM "Set Normals In",							ID_VERTEX_SET_NORMAL_IN
  		MENUITEM SEPARATOR
         MENUITEM "Clear Bone Attachments",					ID_VERTEX_CLEAR_BONE
         MENUITEM "Auto Set Bone Attachments",				ID_VERTEX_AUTO_SET_BONE

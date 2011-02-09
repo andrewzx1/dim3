@@ -174,7 +174,7 @@ void draw_model_normals_vertexes(int mesh_idx)
 	
 		// is there a vertex selection?
 		
-	has_sel=vertex_check_any(mesh_idx);
+	has_sel=vertex_check_sel_any(mesh_idx);
 	
 		// draw normals
 	
@@ -188,11 +188,6 @@ void draw_model_normals_vertexes(int mesh_idx)
 	for (n=0;n!=ntrig;n++) {
 	
 		trig=&model.meshes[mesh_idx].trigs[n];
-	
-			// only show normals for triangles
-			// with all vertexes showing
-			
-		if (vertex_check_hide_mask_trig(mesh_idx,trig)) continue;
 		
 		pn=draw_setup.mesh_arrays[mesh_idx].gl_normal_array+(n*9);
 		
@@ -242,15 +237,22 @@ void draw_model_normals_trig(int mesh_idx)
 	ntrig=model.meshes[mesh_idx].ntrig;
 
 	for (n=0;n!=ntrig;n++) {
-	
+		
+		if ((!trig_check_sel_mask(mesh_idx,n)) || (trig_check_hide_mask(mesh_idx,n))) continue;
+		
 		trig=&model.meshes[mesh_idx].trigs[n];
-	
+
 			// draw trig normals
 		
 		pn=draw_setup.mesh_arrays[mesh_idx].gl_normal_array+(n*9);
 			
 		for (k=0;k!=3;k++) {
-			
+
+			if (!vertex_check_sel_mask(mesh_idx,trig->v[k])) {
+				pn+=3;
+				continue;
+			}
+		
 			pv=draw_setup.mesh_arrays[mesh_idx].gl_vertex_array+(trig->v[k]*3);
 			fx=*pv++;
 			fy=*pv++;

@@ -240,7 +240,7 @@ extern void vertex_mask_shutdown(void);
 extern void vertex_clear_sel_mask(int mesh_idx);
 extern void vertex_set_sel_mask(int mesh_idx,int vertex_idx,bool value);
 extern void vertex_set_sel_mask_all(int mesh_idx);
-extern bool vertex_check_any(int mesh_idx);
+extern bool vertex_check_sel_any(int mesh_idx);
 extern bool vertex_check_sel_mask(int mesh_idx,int vertex_idx);
 extern void vertex_clear_hide_mask(int mesh_idx);
 extern void vertex_set_hide_mask(int mesh_idx,int vertex_idx,bool value);
@@ -262,8 +262,8 @@ extern void vertex_set_sel_mask_material(int mesh_idx,int material_idx);
 
 extern void vertex_find_center_sel_vertexes(int mesh_idx,int *p_cx,int *p_cy,int *p_cz);
 extern void vertex_invert_normals(int mesh_idx);
-extern void vertex_set_normals_vertexes(int mesh_idx,d3vct *normal);
 extern void vertex_set_normals(int mesh_idx);
+extern void vertex_set_normals_in_out(int mesh_idx,bool out);
 extern void vertex_clear_bone_attachments_sel_vertexes(int mesh_idx);
 extern void vertex_auto_bone_attachments(int mesh_idx);
 extern void vertex_delete_sel_vertex(int mesh_idx);
