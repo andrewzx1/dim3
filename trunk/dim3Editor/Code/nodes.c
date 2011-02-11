@@ -31,7 +31,6 @@ and can be sold or given away.
 
 #include "glue.h"
 #include "interface.h"
-#include "dialog.h"
 
 extern map_type					map;
 extern editor_state_type		state;

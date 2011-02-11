@@ -32,7 +32,6 @@ and can be sold or given away.
 #include "glue.h"
 #include "ui_common.h"
 #include "interface.h"
-#include "dialog.h"
 
 #define kLiquidPropertyWaveFlat				0
 #define kLiquidPropertyNeverObscure			1

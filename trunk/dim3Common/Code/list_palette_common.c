@@ -36,7 +36,6 @@ and can be sold or given away.
 #include "glue.h"
 #include "ui_common.h"
 #include "interface.h"
-#include "dialog.h"
 
 extern file_path_setup_type		file_path_setup;
 
@@ -393,6 +392,53 @@ void list_palette_delete_all_items(list_palette_type *list)
 {
 	list->item_count=0;
 	list->total_high=0;
+}
+
+/* =======================================================
+
+      List Sorting
+      
+======================================================= */
+
+void list_palette_sort_mark_start(list_palette_type *list)
+{
+	list->item_sort_start_idx=list->item_count;
+}
+
+void list_palette_sort(list_palette_type *list)
+{
+	int						n,k,x,y;
+	bool					shuffle;
+	list_palette_item_type	temp_item;
+
+	if (list->item_sort_start_idx>=(list->item_count-1)) return;
+
+	while (TRUE) {
+
+		shuffle=FALSE;
+
+		for (n=list->item_sort_start_idx;n<(list->item_count-1);n++) {
+			k=n+1;
+
+			if (strcasecmp(list->items[n].name,list->items[k].name)>0) {
+				shuffle=TRUE;
+
+				memmove(&temp_item,&list->items[n],sizeof(list_palette_item_type));
+				memmove(&list->items[n],&list->items[k],sizeof(list_palette_item_type));
+				memmove(&list->items[k],&temp_item,sizeof(list_palette_item_type));
+
+				x=list->items[n].x;
+				list->items[n].x=list->items[k].x;
+				list->items[k].x=x;
+
+				y=list->items[n].y;
+				list->items[n].y=list->items[k].y;
+				list->items[k].y=y;
+			}
+		}
+
+		if (!shuffle) break;
+	}
 }
 
 /* =======================================================

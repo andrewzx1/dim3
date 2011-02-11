@@ -295,5 +295,15 @@ extern void model_pick_list_add_trig(int idx,d3pnt *v_pnts);
 // dialogs
 //
 
+extern void dialog_about_run(void);
+extern bool dialog_file_new_run(char *title,char *file_name);
+extern bool dialog_file_open_run(char *dialog_name,char *search_path,char *extension,char *required_file_name,char *file_name);
+extern int dialog_import_finish_run(void);
+extern bool dialog_set_vertex_bone_run(int *major_bone_idx,int *minor_bone_idx,float *factor);
+extern bool dialog_animation_reset_time_run(int animate_idx);
+extern bool dialog_play_blend_animation_run(void);
+extern bool dialog_scale_run(model_type *mdl,float *x,float *z,float *y);
+extern bool dialog_set_normal_run(d3vct *normal);
+
 extern void dialog_property_list_run(char *list_ptr,int list_count,int list_item_sz,int list_name_offset,bool include_none,int *idx);
 extern void dialog_property_string_run(int value_type,void *value,int value_len,int i_min,int i_max);

@@ -36,7 +36,6 @@ and can be sold or given away.
 #include "glue.h"
 #include "ui_common.h"
 #include "interface.h"
-#include "dialog.h"
 
 #define texture_edit_item_high					140
 #define texture_edit_scroll_wheel_move			25

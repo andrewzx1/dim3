@@ -32,7 +32,6 @@ and can be sold or given away.
 #include "glue.h"
 #include "ui_common.h"
 #include "interface.h"
-#include "dialog.h"
 
 extern map_type					map;
 extern editor_state_type		state;
@@ -108,10 +107,13 @@ void item_palette_fill(void)
 		// spots
 
 	list_palette_add_header_count(&item_palette,spot_piece,"Spots",map.nspot);
+	list_palette_sort_mark_start(&item_palette);
 
 	for (n=0;n!=map.nspot;n++) {
 		list_palette_add_item(&item_palette,spot_piece,n,map.spots[n].name,((item_palette.item_type==spot_piece)&&(n==item_palette.item_idx)),FALSE);
 	}
+
+	list_palette_sort(&item_palette);
 
 		// lights
 
@@ -124,58 +126,79 @@ void item_palette_fill(void)
 		// sounds
 
 	list_palette_add_header_count(&item_palette,sound_piece,"Sounds",map.nsound);
+	list_palette_sort_mark_start(&item_palette);
 
 	for (n=0;n!=map.nsound;n++) {
 		list_palette_add_item(&item_palette,sound_piece,n,map.sounds[n].name,((item_palette.item_type==sound_piece)&&(n==item_palette.item_idx)),FALSE);
 	}
 
+	list_palette_sort(&item_palette);
+
 		// particles
 
 	list_palette_add_header_count(&item_palette,particle_piece,"Particles",map.nparticle);
+	list_palette_sort_mark_start(&item_palette);
 
 	for (n=0;n!=map.nparticle;n++) {
 		list_palette_add_item(&item_palette,particle_piece,n,map.particles[n].name,((item_palette.item_type==particle_piece)&&(n==item_palette.item_idx)),FALSE);
 	}
 
+	list_palette_sort(&item_palette);
+
 		// sceneries
 
 	list_palette_add_header_count(&item_palette,scenery_piece,"Scenery",map.nscenery);
+	list_palette_sort_mark_start(&item_palette);
 
 	for (n=0;n!=map.nscenery;n++) {
 		list_palette_add_item(&item_palette,scenery_piece,n,map.sceneries[n].model_name,((item_palette.item_type==scenery_piece)&&(n==item_palette.item_idx)),FALSE);
 	}
 
+	list_palette_sort(&item_palette);
+
 		// nodes
 
 	list_palette_add_header_count(&item_palette,node_piece,"Nodes",map.nnode);
+	list_palette_sort_mark_start(&item_palette);
 
 	for (n=0;n!=map.nnode;n++) {
 		if (map.nodes[n].name[0]!=0x0) list_palette_add_item(&item_palette,node_piece,n,map.nodes[n].name,((item_palette.item_type==node_piece)&&(n==item_palette.item_idx)),FALSE);
 	}
 
+	list_palette_sort(&item_palette);
+
 		// groups
 
 	list_palette_add_header_count(&item_palette,group_piece,"Groups",map.group.ngroup);
+	list_palette_sort_mark_start(&item_palette);
 
 	for (n=0;n!=map.group.ngroup;n++) {
 		list_palette_add_item(&item_palette,group_piece,n,map.group.groups[n].name,((item_palette.item_type==group_piece)&&(n==item_palette.item_idx)),FALSE);
 	}
 
+	list_palette_sort(&item_palette);
+
 		// movements
 
 	list_palette_add_header_count(&item_palette,movement_piece,"Movements",map.movement.nmovement);
+	list_palette_sort_mark_start(&item_palette);
 
 	for (n=0;n!=map.movement.nmovement;n++) {
 		list_palette_add_item(&item_palette,movement_piece,n,map.movement.movements[n].name,((item_palette.item_type==movement_piece)&&(n==item_palette.item_idx)),FALSE);
 	}
 
+	list_palette_sort(&item_palette);
+
 		// cinemas
 
 	list_palette_add_header_count(&item_palette,cinema_piece,"Cinemas",map.cinema.ncinema);
+	list_palette_sort_mark_start(&item_palette);
 
 	for (n=0;n!=map.cinema.ncinema;n++) {
 		list_palette_add_item(&item_palette,cinema_piece,n,map.cinema.cinemas[n].name,((item_palette.item_type==cinema_piece)&&(n==item_palette.item_idx)),FALSE);
 	}
+
+	list_palette_sort(&item_palette);
 }
 
 /* =======================================================

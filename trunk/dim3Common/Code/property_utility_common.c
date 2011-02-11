@@ -36,7 +36,6 @@ and can be sold or given away.
 #include "glue.h"
 #include "interface.h"
 #include "ui_common.h"
-#include "dialog.h"
 
 /* =======================================================
 

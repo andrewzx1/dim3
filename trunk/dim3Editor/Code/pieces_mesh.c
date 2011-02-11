@@ -32,7 +32,6 @@ and can be sold or given away.
 #include "glue.h"
 #include "interface.h"
 #include "ui_common.h"
-#include "dialog.h"
 
 extern map_type					map;
 extern editor_state_type		state;
@@ -318,6 +317,8 @@ void piece_add_height_map_mesh(void)
 	}
 	
 	os_set_wait_cursor();
+
+	progress_start("Height Map Import",(div_cnt*div_cnt));
 	
 	for (z=0;z!=div_cnt;z++) {
 		for (x=0;x!=div_cnt;x++) {
@@ -377,6 +378,8 @@ void piece_add_height_map_mesh(void)
 				
 				map_mesh_add_poly(&map,mesh_idx,3,kx,ky,kz,gx,gy,txt_idx);
 			}
+
+			progress_next();
 		}
 	}
 	
@@ -386,6 +389,7 @@ void piece_add_height_map_mesh(void)
 		
 	free(data);
 	
+	progress_end();
 	os_set_arrow_cursor();
 	
 		// finish up
@@ -439,6 +443,8 @@ void piece_add_grid_mesh(void)
 	gy[0]=gy[1]=gy[2]=gy[3]=0.0f;
 	
 	os_set_wait_cursor();
+
+	progress_start("Create Grid",((xdiv*zdiv)*3));
 	
 		// add top and bottom polys
 		
@@ -456,6 +462,8 @@ void piece_add_grid_mesh(void)
 				py[0]=py[1]=py[2]=py[3]=(ydiv*sz)+pnt.y;
 				map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
 			}
+
+			progress_next();
 		}
 	}
 	
@@ -475,6 +483,8 @@ void piece_add_grid_mesh(void)
 				pz[0]=pz[1]=pz[2]=pz[3]=(zdiv*sz)+pnt.z;
 				map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
 			}
+
+			progress_next();
 		}
 	}
 	
@@ -492,6 +502,8 @@ void piece_add_grid_mesh(void)
 				px[0]=px[1]=px[2]=px[3]=(xdiv*sz)+pnt.x;
 				map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
 			}
+
+			progress_next();
 		}
 	}
 	
@@ -499,6 +511,7 @@ void piece_add_grid_mesh(void)
 		
 	map_mesh_reset_uv(&map,mesh_idx);
 	
+	progress_end();
 	os_set_arrow_cursor();
 	
 		// finish up

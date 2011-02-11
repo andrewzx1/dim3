@@ -32,7 +32,6 @@ and can be sold or given away.
 #include "glue.h"
 #include "interface.h"
 #include "ui_common.h"
-#include "dialog.h"
 
 extern file_path_setup_type		file_path_setup;
 extern editor_setup_type		setup;

@@ -32,7 +32,6 @@ and can be sold or given away.
 #include "glue.h"
 #include "ui_common.h"
 #include "interface.h"
-#include "dialog.h"
 
 #define kNodePropertyName					0
 #define kNodePropertyEventID				1

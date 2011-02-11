@@ -32,7 +32,6 @@ and can be sold or given away.
 #include "glue.h"
 #include "ui_common.h"
 #include "interface.h"
-#include "dialog.h"
 
 #define kAnimationPropertyName					0
 #define kAnimationPropertyLoop					1

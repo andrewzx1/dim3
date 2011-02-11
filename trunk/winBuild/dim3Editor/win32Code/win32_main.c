@@ -62,23 +62,11 @@ extern int os_win32_menu_lookup(int id);
 void dialog_about_run(void)
 {
 }
-bool dialog_resize_run(float *fct_x,float *fct_y,float *fct_z)
-{
-	return(FALSE);
-}
 bool dialog_reposition_run(d3pnt *min,d3pnt *max)
 {
 	return(FALSE);
 }
 bool dialog_free_rotate_run(float *rot_x,float *rot_y,float *rot_z)
-{
-	return(FALSE);
-}
-bool dialog_create_grid_mesh_run(int *xdiv,int *ydiv,int *zdiv)
-{
-	return(FALSE);
-}
-bool dialog_height_import_run(int *div_cnt,int *size,int *high)
 {
 	return(FALSE);
 }

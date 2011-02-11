@@ -83,7 +83,7 @@ typedef struct		{
 					} list_palette_item_type;
 
 typedef struct		{
-						int									item_count,push_idx,
+						int									item_count,item_sort_start_idx,push_idx,
 															item_id,item_type,item_idx,
 															pixel_sz,scroll_page,
 															total_high;
@@ -153,6 +153,8 @@ extern void list_palette_add_texture(list_palette_type *list,texture_type *textu
 extern void list_palette_add_shader(list_palette_type *list,int id,char *name,char *shader_name,bool disabled);
 extern void list_palette_add_string_tag(list_palette_type *list,int id,char *name,unsigned long tag,bool disabled);
 extern void list_palette_delete_all_items(list_palette_type *list);
+extern void list_palette_sort_mark_start(list_palette_type *list);
+extern void list_palette_sort(list_palette_type *list);
 extern void list_palette_draw(list_palette_type *list,bool close_border);
 extern void list_palette_scroll_up(list_palette_type *list);
 extern void list_palette_scroll_down(list_palette_type *list);
