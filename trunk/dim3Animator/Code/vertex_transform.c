@@ -261,7 +261,7 @@ void vertex_set_normals_in_out(int mesh_idx,bool out)
 			vector_create(&face_vct,trig_center.x,trig_center.y,trig_center.z,center.x,center.y,center.z);
 			is_out=(vector_dot_product(&trig->tangent_space[k].normal,&face_vct)>0.0f);
 
-			if ((is_out) && (!out)) {
+			if (is_out!=out) {
 				trig->tangent_space[k].tangent.x=-trig->tangent_space[k].tangent.x;
 				trig->tangent_space[k].tangent.y=-trig->tangent_space[k].tangent.y;
 				trig->tangent_space[k].tangent.z=-trig->tangent_space[k].tangent.z;

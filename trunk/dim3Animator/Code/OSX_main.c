@@ -351,6 +351,8 @@ int main(int argc,char *argv[])
 	os_glue_start();
 	os_set_arrow_cursor();
 	
+	setup_xml_read();
+	
 	state.model_open=FALSE;
 	if (!file_paths_setup(&file_path_setup)) {
 		os_dialog_alert("Error","No data folder found");

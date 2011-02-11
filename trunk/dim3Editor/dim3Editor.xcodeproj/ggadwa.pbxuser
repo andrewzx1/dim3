@@ -129,8 +129,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 318304119;
-			PBXWorkspaceStateSaveDate = 318304119;
+			PBXPerProjectTemplateStateSaveDate = 318986604;
+			PBXWorkspaceStateSaveDate = 318986604;
 		};
 		sourceControlManager = 260AFF050D4050B200F6C42F /* Source Control */;
 		userBookmarkGroup = 268BC83C0F646E8B00E900C2 /* PBXBookmarkGroup */;
@@ -439,9 +439,9 @@
 	};
 	264D965D12921024005039CD /* OSX_main.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1734, 5005}}";
-			sepNavSelRange = "{6946, 0}";
-			sepNavVisRange = "{6631, 1505}";
+			sepNavIntBoundsRect = "{{0, 0}, {986, 5122}}";
+			sepNavSelRange = "{1190, 0}";
+			sepNavVisRange = "{806, 1189}";
 			sepNavWindowFrame = "{{412, 126}, {1001, 891}}";
 		};
 	};
@@ -512,19 +512,11 @@
 		isa = PBXBookmark;
 		fRef = F5AD54420BBE1FDB001C7C04 /* baseutility.h */;
 	};
-	268BC8A50F64C8E400E900C2 /* dialog_preference.c */ = {
-		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {984, 2405}}";
-			sepNavSelRange = "{941, 0}";
-			sepNavVisRange = "{212, 2059}";
-			sepNavWindowFrame = "{{252, 217}, {999, 779}}";
-		};
-	};
 	26937AE012D2D5C3001DEEB8 /* import_obj.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1433, 13455}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1132, 13364}}";
 			sepNavSelRange = "{12443, 15}";
-			sepNavVisRange = "{11557, 1983}";
+			sepNavVisRange = "{10153, 2529}";
 			sepNavWindowFrame = "{{509, 120}, {1001, 891}}";
 		};
 	};
@@ -801,10 +793,10 @@
 	};
 	F571C8760B34DA6300F979B7 /* xml_setup.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 2405}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 2509}}";
 			sepNavSelRange = "{2652, 16}";
-			sepNavVisRange = "{2170, 1883}";
-			sepNavWindowFrame = "{{61, 76}, {1041, 747}}";
+			sepNavVisRange = "{980, 1166}";
+			sepNavWindowFrame = "{{61, 79}, {1041, 747}}";
 		};
 	};
 	F57CACA60C38B76200B595F4 /* texture_palette.c */ = {
@@ -817,9 +809,9 @@
 	};
 	F595F3390A8BBEF0004AB8BA /* modelutility.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1125, 4719}}";
-			sepNavSelRange = "{12366, 112}";
-			sepNavVisRange = "{10656, 3704}";
+			sepNavIntBoundsRect = "{{0, 0}, {1125, 5616}}";
+			sepNavSelRange = "{2016, 16}";
+			sepNavVisRange = "{974, 1614}";
 			sepNavWindowFrame = "{{61, 234}, {1041, 747}}";
 		};
 	};
