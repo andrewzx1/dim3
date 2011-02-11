@@ -60,8 +60,9 @@ extern int os_win32_menu_lookup(int id);
       
 ======================================================= */
 
-void dialog_set_normal_run(d3vct *vct)
+bool dialog_set_normal_run(d3vct *vct)
 {
+	return(FALSE);
 }
 bool dialog_scale_run(model_type *mdl,float *x,float *z,float *y)
 {

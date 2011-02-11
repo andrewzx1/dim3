@@ -441,3 +441,22 @@ extern void view_models_reset(void);
 extern void view_get_model_size(char *model_name,d3pnt *size);
 extern bool view_model_draw(d3pnt *pnt,d3ang *ang,char *name,float resize,short *texture_frame,int frame_count);
 extern void view_model_cube_vertexes(char *name,d3pnt *pnt,d3ang *ang,float resize,d3pnt *v_pnts);
+
+//
+// dialogs
+//
+
+extern void dialog_about_run(void);
+extern bool dialog_file_new_run(char *title,char *file_name);
+extern bool dialog_file_open_run(char *title,char *search_path,char *extension,char *required_file_name,char *file_name);
+extern bool dialog_resize_run(float *fct_x,float *fct_y,float *fct_z);
+extern bool dialog_reposition_run(d3pnt *min,d3pnt *max);
+extern bool dialog_free_rotate_run(float *rot_x,float *rot_y,float *rot_z);
+extern bool dialog_create_grid_mesh_run(int *xdiv,int *ydiv,int *zdiv);
+extern int dialog_obj_import_run(int *scale_axis,int *scale_unit);
+extern bool dialog_svg_import_run(float *scale,int *high);
+extern bool dialog_height_import_run(int *div_cnt,int *size,int *high);
+
+extern void dialog_property_list_run(char *list_ptr,int list_count,int list_item_sz,int list_name_offset,bool include_none,int *idx);
+extern void dialog_property_string_run(int value_type,void *value,int value_len,int i_min,int i_max);
+

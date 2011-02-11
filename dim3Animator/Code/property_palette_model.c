@@ -32,7 +32,6 @@ and can be sold or given away.
 #include "glue.h"
 #include "ui_common.h"
 #include "interface.h"
-#include "dialog.h"
 
 #define kModelPropertyRotateMode				0
 #define kModelPropertyDiffuseBoost				1

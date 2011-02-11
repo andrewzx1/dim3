@@ -32,7 +32,6 @@ and can be sold or given away.
 #include "glue.h"
 #include "interface.h"
 #include "ui_common.h"
-#include "dialog.h"
 
 #define import_svg_wall_floor				0
 #define import_svg_wall_only				1

@@ -32,7 +32,6 @@ and can be sold or given away.
 #include "glue.h"
 #include "ui_common.h"
 #include "interface.h"
-#include "dialog.h"
 
 #define kPosePropertyName							0
 
@@ -62,6 +61,7 @@ void property_palette_fill_pose(int pose_idx)
 	list_palette_add_string(&property_palette,kPosePropertyName,"Name",pose->name,FALSE);
 
 	list_palette_add_header_count(&property_palette,0,"Pose Bone Moves",model.nbone);
+	list_palette_sort_mark_start(&property_palette);
 
 	for (n=0;n!=model.nbone;n++) {
 		memmove(str_tag,&model.bones[n].tag,4);
@@ -69,6 +69,8 @@ void property_palette_fill_pose(int pose_idx)
 		sprintf(str,"%s (%s)",model.bones[n].name,str_tag);
 		list_palette_add_string_selectable(&property_palette,(kPosePropertyBoneMove+n),str,NULL,((state.cur_pose_idx==pose_idx)&&(state.cur_pose_bone_move_idx==n)),FALSE);
 	}
+
+	list_palette_sort(&property_palette);
 }
 
 /* =======================================================

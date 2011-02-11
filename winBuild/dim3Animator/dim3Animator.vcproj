@@ -281,10 +281,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\dim3Animator\Headers\dialog.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\dim3Animator\Headers\dim3animator.h"
 					>
 				</File>

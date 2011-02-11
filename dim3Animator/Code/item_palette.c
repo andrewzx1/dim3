@@ -32,7 +32,6 @@ and can be sold or given away.
 #include "glue.h"
 #include "ui_common.h"
 #include "interface.h"
-#include "dialog.h"
 
 extern model_type				model;
 extern model_draw_setup			draw_setup;
@@ -109,31 +108,43 @@ void item_palette_fill(void)
 		// meshes
 
 	list_palette_add_header_count(&item_palette,item_mesh,"Meshes",model.nmesh);
+	list_palette_sort_mark_start(&item_palette);
 
 	for (n=0;n!=model.nmesh;n++) {
 		list_palette_add_item(&item_palette,item_mesh,n,model.meshes[n].name,((state.cur_item==item_mesh)&&(state.cur_mesh_idx==n)),FALSE);
 	}
 
+	list_palette_sort(&item_palette);
+
 		// animations
 
 	list_palette_add_header_count(&item_palette,item_animate,"Animations",model.nanimate);
+	list_palette_sort_mark_start(&item_palette);
 
 	for (n=0;n!=model.nanimate;n++) {
 		list_palette_add_item(&item_palette,item_animate,n,model.animates[n].name,((state.cur_item==item_animate)&&(state.cur_animate_idx==n)),FALSE);
 	}
 
+	list_palette_sort(&item_palette);
+
 		// poses
 
 	list_palette_add_header_count(&item_palette,item_pose,"Poses",model.npose);
-	list_palette_add_item(&item_palette,item_neutral_pose,0,"Neutral",((state.cur_item==item_neutral_pose)&&(state.cur_pose_idx==-1)),FALSE);
+	list_palette_add_item(&item_palette,item_neutral_pose,0,"[Neutral]",((state.cur_item==item_neutral_pose)&&(state.cur_pose_idx==-1)),FALSE);
+
+	list_palette_sort_mark_start(&item_palette);
 
 	for (n=0;n!=model.npose;n++) {
 		list_palette_add_item(&item_palette,item_pose,n,model.poses[n].name,((state.cur_item==item_pose)&&(state.cur_pose_idx==n)),FALSE);
 	}
 
+	list_palette_sort(&item_palette);
+
 		// bones
 
 	list_palette_add_header_count(&item_palette,item_bone,"Bones",model.nbone);
+
+	list_palette_sort_mark_start(&item_palette);
 
 	for (n=0;n!=model.nbone;n++) {
 		memmove(str_tag,&model.bones[n].tag,4);
@@ -142,13 +153,18 @@ void item_palette_fill(void)
 		list_palette_add_item(&item_palette,item_bone,n,str,((state.cur_item==item_bone)&&(state.cur_bone_idx==n)),FALSE);
 	}
 
+	list_palette_sort(&item_palette);
+
 		// hit boxes
 
 	list_palette_add_header_count(&item_palette,item_hit_box,"Hit Boxes",model.nhit_box);
+	list_palette_sort_mark_start(&item_palette);
 
 	for (n=0;n!=model.nhit_box;n++) {
 		list_palette_add_item(&item_palette,item_hit_box,n,model.hit_boxes[n].name,((state.cur_item==item_hit_box)&&(state.cur_hit_box_idx==n)),FALSE);
 	}
+
+	list_palette_sort(&item_palette);
 }
 
 /* =======================================================

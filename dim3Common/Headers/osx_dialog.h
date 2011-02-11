@@ -67,21 +67,3 @@ extern void dialog_special_combo_get_shader(WindowRef wind,unsigned long sig,int
 extern void dialog_special_combo_get_node(WindowRef wind,unsigned long sig,int id,char *sel_name,int str_len);
 extern void dialog_fill_texture_combo(WindowRef wind,unsigned long sig,int id,bool none,int idx);
 extern int dialog_get_texture_combo(WindowRef wind,unsigned long sig,int id,bool none);
-
-//
-// dialogs
-//
-
-extern void dialog_about_run(void);
-
-extern bool dialog_file_new_run(char *title,char *file_name);
-extern bool dialog_file_open_run(char *dialog_name,char *search_path,char *extension,char *required_file_name,char *file_name);
-extern int dialog_import_finish_run(void);
-extern bool dialog_vertex_settings_run(model_vertex_type *vertex);
-extern bool dialog_set_vertex_bone_run(int *major_bone_idx,int *minor_bone_idx,float *factor);
-extern bool dialog_animation_reset_time_run(int animate_idx);
-extern bool dialog_play_blend_animation_run(void);
-extern bool dialog_scale_run(model_type *mdl,float *x,float *z,float *y);
-extern bool dialog_set_normal_run(d3vct *normal);
-
-
