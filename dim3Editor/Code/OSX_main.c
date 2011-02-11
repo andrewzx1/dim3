@@ -38,8 +38,6 @@ EventHandlerUPP					main_wind_upp;
 
 AGLContext						ctx;
 
-extern bool setup_xml_read(void);
-
 /* =======================================================
 
       Resizing

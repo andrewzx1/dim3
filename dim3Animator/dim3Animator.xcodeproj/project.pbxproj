@@ -64,6 +64,8 @@
 		26EE498E126B87A4001D0025 /* texture_palette_common.c in Sources */ = {isa = PBXBuildFile; fileRef = 26EE498D126B87A4001D0025 /* texture_palette_common.c */; };
 		26EE49C7126B896F001D0025 /* interface.h in Headers */ = {isa = PBXBuildFile; fileRef = 26EE49C6126B896F001D0025 /* interface.h */; };
 		26EE4A32126B8DBF001D0025 /* import_text_decode_common.c in Sources */ = {isa = PBXBuildFile; fileRef = 26EE4A31126B8DBF001D0025 /* import_text_decode_common.c */; };
+		26F1D25F1303566500CDAE6B /* property_palette_animator_preference.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F1D25D1303566500CDAE6B /* property_palette_animator_preference.c */; };
+		26F1D2601303566500CDAE6B /* xml_setup.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F1D25E1303566500CDAE6B /* xml_setup.c */; };
 		F503D2570981A35B00DEDC74 /* draw_model.c in Sources */ = {isa = PBXBuildFile; fileRef = F503D2560981A35B00DEDC74 /* draw_model.c */; };
 		F503D25F0981A3DC00DEDC74 /* draw_mesh_bone.c in Sources */ = {isa = PBXBuildFile; fileRef = F503D25E0981A3DC00DEDC74 /* draw_mesh_bone.c */; };
 		F50AF97A0886010300F261B1 /* os_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = F50AF9790886010300F261B1 /* os_defs.h */; };
@@ -230,6 +232,8 @@
 		26EE498D126B87A4001D0025 /* texture_palette_common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = texture_palette_common.c; path = ../dim3Common/Code/texture_palette_common.c; sourceTree = SOURCE_ROOT; };
 		26EE49C6126B896F001D0025 /* interface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = interface.h; path = Headers/interface.h; sourceTree = "<group>"; };
 		26EE4A31126B8DBF001D0025 /* import_text_decode_common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = import_text_decode_common.c; path = ../dim3Common/Code/import_text_decode_common.c; sourceTree = SOURCE_ROOT; };
+		26F1D25D1303566500CDAE6B /* property_palette_animator_preference.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_animator_preference.c; path = Code/property_palette_animator_preference.c; sourceTree = "<group>"; };
+		26F1D25E1303566500CDAE6B /* xml_setup.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = xml_setup.c; path = Code/xml_setup.c; sourceTree = "<group>"; };
 		F503D2560981A35B00DEDC74 /* draw_model.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = draw_model.c; path = Code/draw_model.c; sourceTree = "<group>"; };
 		F503D25E0981A3DC00DEDC74 /* draw_mesh_bone.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = draw_mesh_bone.c; path = Code/draw_mesh_bone.c; sourceTree = "<group>"; };
 		F50AF9790886010300F261B1 /* os_defs.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = os_defs.h; path = ../dim3Common/Headers/os_defs.h; sourceTree = SOURCE_ROOT; };
@@ -334,6 +338,7 @@
 				263AB1C012D8343C00954777 /* dos.c */,
 				0111608D00BE2A8F7F000001 /* menu.c */,
 				F5239B8E0AFD9BEA00241092 /* undo.c */,
+				26F1D25E1303566500CDAE6B /* xml_setup.c */,
 				26C5EEFB1260F027000B0F9E /* OSX_glue.c */,
 			);
 			name = Main;
@@ -480,6 +485,7 @@
 				26CAEC7812D675C500310691 /* property_utility_common.c */,
 				263AB1C812D8345600954777 /* property_palette_model.c */,
 				263AB1CA12D8345600954777 /* property_palette_texture.c */,
+				26F1D25D1303566500CDAE6B /* property_palette_animator_preference.c */,
 				263AB1C712D8345600954777 /* property_palette_mesh.c */,
 				263AB1C412D8345600954777 /* property_palette_animation.c */,
 				263AB1C912D8345600954777 /* property_palette_pose.c */,
@@ -662,6 +668,8 @@
 				26C9371612DD1896005C0708 /* alt_property_palette_pose_move.c in Sources */,
 				26C9371812DD18B6005C0708 /* model_piece.c in Sources */,
 				26A2AB0912F3D21500E4E73B /* trig_masks.c in Sources */,
+				26F1D25F1303566500CDAE6B /* property_palette_animator_preference.c in Sources */,
+				26F1D2601303566500CDAE6B /* xml_setup.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
