@@ -475,7 +475,7 @@ JSValueRef js_obj_setting_get_inputMode(JSContextRef cx,JSObjectRef j_obj,JSStri
 	obj_type		*obj;
 
 	obj=object_script_lookup();
-	return(script_int_to_value(cx,obj->input_mode+sd_input_mode_fpp));
+	return(script_int_to_value(cx,obj->input.mode+sd_input_mode_fpp));
 }
 
 /* =======================================================
@@ -794,7 +794,7 @@ bool js_obj_setting_set_inputMode(JSContextRef cx,JSObjectRef j_obj,JSStringRef 
 	obj_type		*obj;
 	
 	obj=object_script_lookup();
-	obj->input_mode=script_value_to_int(cx,vp)-sd_input_mode_fpp;
+	obj->input.mode=script_value_to_int(cx,vp)-sd_input_mode_fpp;
 	
 	return(TRUE);
 }

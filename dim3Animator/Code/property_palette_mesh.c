@@ -65,6 +65,10 @@ void property_palette_fill_mesh(int mesh_idx)
 	list_palette_add_checkbox(&property_palette,kMeshPropertyNoLighting,"Highlighted",mesh->no_lighting,FALSE);
 	list_palette_add_checkbox(&property_palette,kMeshPropertyAdditive,"Alpha is Additive",mesh->blend_add,FALSE);
 	list_palette_add_checkbox(&property_palette,kMeshPropertyTintable,"Multiplayer Tintable",mesh->tintable,FALSE);
+	
+	list_palette_add_header(&property_palette,0,"Mesh Info");
+	list_palette_add_string_int(&property_palette,-1,"Vertexes",mesh->nvertex,FALSE);
+	list_palette_add_string_int(&property_palette,-1,"Triangles",mesh->ntrig,FALSE);
 }
 
 /* =======================================================

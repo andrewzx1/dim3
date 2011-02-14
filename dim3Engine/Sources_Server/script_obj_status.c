@@ -48,6 +48,7 @@ JSValueRef js_obj_status_get_liquid(JSContextRef cx,JSObjectRef j_obj,JSStringRe
 JSValueRef js_obj_status_get_standOnObjectId(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_status_get_standUnderObjectId(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_status_freeze_input_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_obj_status_freeze_respawn_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_status_tint_view_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 JSStaticValue 		obj_status_props[]={
@@ -65,6 +66,7 @@ JSStaticValue 		obj_status_props[]={
 							
 JSStaticFunction	obj_status_functions[]={
 							{"freezeInput",			js_obj_status_freeze_input_func,		kJSPropertyAttributeDontDelete},
+							{"freezeRespawn",		js_obj_status_freeze_respawn_func,		kJSPropertyAttributeDontDelete},
 							{"tintView",			js_obj_status_tint_view_func,			kJSPropertyAttributeDontDelete},
 							{0,0,0}};
 
@@ -193,6 +195,18 @@ JSValueRef js_obj_status_freeze_input_func(JSContextRef cx,JSObjectRef func,JSOb
 	
 	obj=object_script_lookup();
 	object_input_freeze(obj,script_value_to_bool(cx,argv[0]));
+
+	return(script_null_to_value(cx));
+}
+
+JSValueRef js_obj_status_freeze_respawn_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+{
+	obj_type		*obj;
+	
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
+	obj=object_script_lookup();
+	obj->input.respawn_freeze=script_value_to_bool(cx,argv[0]);
 
 	return(script_null_to_value(cx));
 }

@@ -116,7 +116,7 @@ void run_object_single(obj_type *obj)
 		// turning and looking
 		
 	if (obj->type==object_type_player) {
-		if (!obj->input_freeze) {
+		if (!obj->input.freeze) {
 			object_player_turn(obj);
 			object_player_look(obj);
 		}

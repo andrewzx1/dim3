@@ -349,6 +349,8 @@ void import_svg_build_path(int start_mesh_idx,float f_sz,char *path_str,int ty,i
 		// calc the uv and normals
 		
 	map_mesh_reset_uv(&map,mesh_idx);
+	
+	map.mesh.meshes[mesh_idx].normal_mode=mesh_normal_mode_auto;
 	map_recalc_normals_mesh(&map.mesh.meshes[mesh_idx],FALSE);
 }
 

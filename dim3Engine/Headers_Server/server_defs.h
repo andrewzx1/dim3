@@ -673,8 +673,13 @@ typedef struct		{
 					} obj_zoom_draw;
 
 //
-// object debug
+// object misc
 //
+
+typedef struct		{
+						int						mode;
+						bool					freeze,respawn_freeze;
+					} obj_input;
 
 typedef struct		{
 						char					str[256];
@@ -847,14 +852,13 @@ typedef struct		{
 typedef struct		{
 						int						idx,type,bind,next_spawn_sub_event,
 												team_idx,tint_color_idx,character_idx,
-												count,input_mode,air_mode,
-												damage_obj_idx,item_count,
+												count,air_mode,damage_obj_idx,item_count,
 												last_move_animation_event,last_turn_animation_event;
 						char					name[name_str_len],spawn_spot_name[name_str_len],
 												spot_script[file_str_len],spot_params[param_str_len];
 						bool					hidden,suspend,fly,slope_gravity,
 												side_step,crawl,single_speed,no_slide,
-												open_doors,input_freeze,hide_all_weapons,
+												open_doors,hide_all_weapons,
 												find_on,in_collide_event,in_construct_event,
 												quick_reverse,death_trigger,death_telefrag;
 						d3pnt					pnt,org_pnt,last_pnt;
@@ -891,6 +895,7 @@ typedef struct		{
 						obj_click				click;
 						obj_pickup				pickup;
 						obj_damage				damage;
+						obj_input				input;
 						obj_weapon_fire			weapon_fire;
 						obj_held_weapon			held_weapon;
 						obj_crosshair_draw		crosshair_draw;

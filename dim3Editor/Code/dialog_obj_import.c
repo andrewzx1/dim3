@@ -25,14 +25,8 @@ and can be sold or given away.
  
 *********************************************************************/
 
-#ifdef D3_PCH
-	#include "dim3editor.h"
-	#include "resource.h"
-#endif
-
 #include "glue.h"
 #include "interface.h"
-#include "dialog.h"
 
 extern map_type				map;
 

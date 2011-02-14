@@ -25,7 +25,8 @@ and can be sold or given away.
  
 *********************************************************************/
 
-#include "dialog.h"
+#include "glue.h"
+#include "interface.h"
 
 #ifdef D3_EDITOR
 	extern map_type					map;

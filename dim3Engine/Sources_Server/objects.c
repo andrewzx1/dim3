@@ -542,7 +542,6 @@ int object_create(char *name,int type,int bind)
 	obj->no_slide=FALSE;
 	obj->crawl=TRUE;
 	obj->open_doors=FALSE;
-	obj->input_freeze=FALSE;
 	obj->hide_all_weapons=FALSE;
 	obj->find_on=TRUE;
 	obj->contact.object_on=TRUE;
@@ -550,8 +549,10 @@ int object_create(char *name,int type,int bind)
 	obj->contact.force_on=TRUE;
 	obj->contact.pushable=FALSE;
 	obj->hit_box.on=FALSE;
+	
 	obj->pickup.on=FALSE;
 	obj->pickup.ignore=FALSE;
+	
 	obj->damage.on=FALSE;
 	obj->damage.crushable=FALSE;
 	obj->damage.invincible=FALSE;
@@ -560,7 +561,9 @@ int object_create(char *name,int type,int bind)
 	obj->tint_color_idx=0;
 	obj->character_idx=0;
 	
-	obj->input_mode=im_fpp;
+	obj->input.mode=im_fpp;
+	obj->input.freeze=FALSE;
+	obj->input.respawn_freeze=FALSE;
 	
 	obj->in_collide_event=FALSE;
 	obj->death_trigger=FALSE;

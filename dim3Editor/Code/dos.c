@@ -253,15 +253,13 @@ void file_save_map(void)
 
 	progress_start("Saving...",3);
 	
-	progress_next_title("Saving: Rebuilding Paths");
+	progress_next();
 	node_path_rebuild();
 	
-	progress_next_title("Saving: Recalculating Normals");
-	map_recalc_normals(&map,FALSE);
-	
-	progress_next_title("Saving: Writing XML");
+	progress_next();
 	save_ok=map_save(&map);
 	
+	progress_next();
 	progress_end();
 	
 	os_set_arrow_cursor();

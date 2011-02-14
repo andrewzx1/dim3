@@ -27,7 +27,6 @@ and can be sold or given away.
 
 #include "glue.h"
 #include "interface.h"
-#include "dialog.h"
 
 #define kPropertyString				FOUR_CHAR_CODE('vstr')
 #define kPropertyDescription		FOUR_CHAR_CODE('vdsc')

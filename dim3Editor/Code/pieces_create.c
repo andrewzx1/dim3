@@ -175,6 +175,8 @@ void piece_create_scenery(void)
 	
 	select_clear();
 	select_add(scenery_piece,index,-1);
+	
+	view_models_reset();
 
 	item_palette_reset();
 	property_palette_reset();

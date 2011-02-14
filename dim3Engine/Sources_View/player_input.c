@@ -987,6 +987,7 @@ void player_death_input(obj_type *obj)
 		// if in single player game
 		
 	if (net_setup.mode!=net_mode_none) return;
+	if (obj->input.respawn_freeze) return;
 
 		// restart key
 		
@@ -1042,11 +1043,11 @@ void player_get_input(void)
 	
         // check for non-input states
         
-	if ((obj->hidden) || (obj->input_freeze)) return;
+	if ((obj->hidden) || (obj->input.freeze)) return;
 	
 		// proper movement routines
 	
-	switch (obj->input_mode) {
+	switch (obj->input.mode) {
 	
 		case im_fpp:
 			player_fpp_input(obj);

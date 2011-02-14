@@ -84,7 +84,7 @@ void object_motion_setup(obj_type *obj,d3pnt *motion)
 	
 		// if thrust input type, then use thrust
 		
-	if (obj->input_mode==im_thrust) {
+	if (obj->input.mode==im_thrust) {
 		motion->x=(int)(obj->thrust.vct.x+obj->force.vct.x);
 		motion->y=(int)(obj->thrust.vct.y+obj->force.vct.y);
 		motion->z=(int)(obj->thrust.vct.z+obj->force.vct.z);
@@ -1201,7 +1201,7 @@ void object_thrust(obj_type *obj)
 	float			xmove,ymove,zmove,ztemp,
 					xmax,ymax,zmax,drag;
 	
-	if (obj->input_mode!=im_thrust) return;
+	if (obj->input.mode!=im_thrust) return;
 	
 		// contacts cancel thrust
 

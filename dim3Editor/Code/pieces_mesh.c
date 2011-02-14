@@ -383,9 +383,12 @@ void piece_add_height_map_mesh(void)
 		}
 	}
 	
-		// reset UVs
+		// reset UVs and normals
 				
 	map_mesh_reset_uv(&map,mesh_idx);
+	
+	map.mesh.meshes[mesh_idx].normal_mode=mesh_normal_mode_auto;
+	map_recalc_normals_mesh(&map.mesh.meshes[mesh_idx],FALSE);
 		
 	free(data);
 	
@@ -511,6 +514,9 @@ void piece_add_grid_mesh(void)
 		
 	map_mesh_reset_uv(&map,mesh_idx);
 	
+	map.mesh.meshes[mesh_idx].normal_mode=mesh_normal_mode_out;
+	map_recalc_normals_mesh(&map.mesh.meshes[mesh_idx],FALSE);
+	
 	progress_end();
 	os_set_arrow_cursor();
 	
@@ -567,6 +573,9 @@ void piece_add_polygon_mesh(void)
 		// reset UVs
 		
 	map_mesh_reset_uv(&map,mesh_idx);
+
+	map.mesh.meshes[mesh_idx].normal_mode=mesh_normal_mode_auto;
+	map_recalc_normals_mesh(&map.mesh.meshes[mesh_idx],FALSE);
 	
 		// finish up
 		

@@ -661,10 +661,10 @@ void gl_lights_calc_color(double x,double y,double z,float *cf)
 	int						n;
 	double					dx,dz,dy,r,g,b,d,mult;
 	view_light_spot_type	*lspot;
-
+	
 		// combine all light spots attenuated for distance
 		
-	r=g=b=0.0;
+	r=g=b=0.0f;
 
 	lspot=view.render->light.spots;
 	
@@ -707,7 +707,7 @@ void gl_lights_calc_color_light_cache(int count,int *indexes,bool skip_light_map
 
 		// combine all light spots attenuated for distance
 		
-	r=g=b=0.0;
+	r=g=b=0.0f;
 	
 	for (n=0;n!=count;n++) {
 	
@@ -718,7 +718,7 @@ void gl_lights_calc_color_light_cache(int count,int *indexes,bool skip_light_map
 		dy=lspot->d_y-y;
 		dz=lspot->d_z-z;
 		
-		d=(dx*dx)+(dz*dz)+(dy*dy);
+		d=((dx*dx)+(dy*dy)+(dz*dz));
 
 		if (d<=lspot->d_intensity) {
 
