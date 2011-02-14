@@ -55,20 +55,12 @@ extern int os_win32_menu_lookup(int id);
 
 /* =======================================================
 
-      Supergumba -- temporary patches
+      About Patch
       
 ======================================================= */
 
 void dialog_about_run(void)
 {
-}
-bool dialog_reposition_run(d3pnt *min,d3pnt *max)
-{
-	return(FALSE);
-}
-bool dialog_free_rotate_run(float *rot_x,float *rot_y,float *rot_z)
-{
-	return(FALSE);
 }
 
 /* =======================================================
