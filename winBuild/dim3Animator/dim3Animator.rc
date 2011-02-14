@@ -171,7 +171,7 @@ END
 // Icon
 //
 
-// IDR_MAINFRAME		ICON							"dim3Animator.ico"
+IDR_MAINFRAME		ICON							"dim3Animator.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //

@@ -263,10 +263,6 @@
 				Name="Engine Headers"
 				>
 				<File
-					RelativePath=".\dim3Engine.exe.manifest"
-					>
-				</File>
-				<File
 					RelativePath="..\..\dim3Engine\Headers\dim3engine.h"
 					>
 				</File>
@@ -4084,6 +4080,22 @@
 							PreprocessorDefinitions=""
 						/>
 					</FileConfiguration>
+				</File>
+			</Filter>
+			<Filter
+				Name="win32"
+				>
+				<File
+					RelativePath=".\dim3Engine.exe.manifest"
+					>
+				</File>
+				<File
+					RelativePath=".\dim3Engine.rc"
+					>
+				</File>
+				<File
+					RelativePath=".\resource.h"
+					>
 				</File>
 			</Filter>
 		</Filter>

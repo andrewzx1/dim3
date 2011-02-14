@@ -496,6 +496,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\win32Code\win32_dialog_free_rotate.c"
+					>
+				</File>
+				<File
 					RelativePath=".\win32Code\win32_dialog_height_map_import.c"
 					>
 				</File>
@@ -509,6 +513,10 @@
 				</File>
 				<File
 					RelativePath="..\Common\Code\win32_dialog_property_string.c"
+					>
+				</File>
+				<File
+					RelativePath=".\win32Code\win32_dialog_reposition.c"
 					>
 				</File>
 				<File

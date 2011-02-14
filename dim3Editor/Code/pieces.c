@@ -534,6 +534,8 @@ void piece_rotate(float rot_x,float rot_y,float rot_z)
 		
 		map_mesh_calculate_center(&map,mesh_idx,&center_pnt);
 		map_mesh_rotate(&map,mesh_idx,&center_pnt,&rot);
+		
+		if (map.mesh.meshes[mesh_idx].normal_mode!=mesh_normal_mode_lock) map_recalc_normals_mesh(&map.mesh.meshes[mesh_idx],FALSE);
 	}
 	
 	main_wind_draw();
