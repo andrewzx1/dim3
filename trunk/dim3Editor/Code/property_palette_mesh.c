@@ -259,6 +259,7 @@ void property_palette_click_mesh(int mesh_idx,int poly_idx,int id)
 
 		case kMeshPropertyNormalMode:
 			property_pick_list((char*)mesh_property_normal_list,&mesh->normal_mode);
+			if (mesh->normal_mode!=mesh_normal_mode_lock) map_recalc_normals_mesh(mesh,FALSE);
 			break;
 			
 		case kMeshPropertyHarm:

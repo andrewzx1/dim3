@@ -171,7 +171,8 @@ bool object_spawn(obj_type *obj,char *err_str)
 		// death flips
 
 	if (sub_event==sd_event_spawn_reborn) {
-		obj->input_freeze=FALSE;
+		obj->input.freeze=FALSE;
+		obj->input.respawn_freeze=FALSE;
 		obj->death_trigger=FALSE;
 	}
 

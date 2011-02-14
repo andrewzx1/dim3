@@ -25,7 +25,8 @@ and can be sold or given away.
  
 *********************************************************************/
 
-#include "dialog.h"
+#include "glue.h"
+#include "interface.h"
 
 #define kXValue						FOUR_CHAR_CODE('xxxx')
 #define kZValue						FOUR_CHAR_CODE('zzzz')

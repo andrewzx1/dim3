@@ -137,7 +137,7 @@ void object_fix_motion(obj_type *obj)
 	
 		// thrust movement ignores all turning motion
 		
-	if (obj->input_mode==im_thrust) {
+	if (obj->input.mode==im_thrust) {
 		obj->motion.ang.y=obj->ang.y;
 		return;
 	}
@@ -346,6 +346,6 @@ void object_player_look_fix_zoom(obj_type *obj,weapon_type *weap)
 
 void object_fly_reset_angle(obj_type *obj)
 {
-	if ((obj->type==object_type_player) && (obj->input_mode==im_fly)) obj->ang.x=-obj->view_ang.x;
+	if ((obj->type==object_type_player) && (obj->input.mode==im_fly)) obj->ang.x=-obj->view_ang.x;
 }
 

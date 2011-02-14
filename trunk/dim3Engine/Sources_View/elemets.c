@@ -2387,7 +2387,7 @@ int element_mouse_over_tab(element_type *element,int x,int y)
 	
 		// select value
 		
-	xadd=(hud.scale_x-(margin*2))/element->setup.tab.ntab;
+	xadd=(hud.scale_x-(margin*3))/element->setup.tab.ntab;
 	
 	max_sz=(int)(((float)hud.scale_x)*0.2f);
 	if (xadd>max_sz) xadd=max_sz;
@@ -2424,7 +2424,7 @@ void element_draw_tab(element_type *element,int sel_id,int x,int y)
 	
 	margin=element_get_tab_margin();
 	
-	xadd=(hud.scale_x-(margin*2))/element->setup.tab.ntab;
+	xadd=(hud.scale_x-(margin*3))/element->setup.tab.ntab;
 	
 	max_sz=(int)(((float)hud.scale_x)*0.2f);
 	if (xadd>max_sz) xadd=max_sz;

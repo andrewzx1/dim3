@@ -25,8 +25,8 @@ and can be sold or given away.
  
 *********************************************************************/
 
+#include "glue.h"
 #include "interface.h"
-#include "dialog.h"
 
 extern map_type				map;
 
@@ -87,6 +87,12 @@ bool dialog_height_import_run(int *div_cnt,int *size,int *high)
 		
 	dialog_open(&dialog_height_import_wind,"HeightImport");
 	
+	dialog_set_int(dialog_height_import_wind,kHeightDivision,0,25);
+	dialog_set_int(dialog_height_import_wind,kHeightSize,0,100000);
+	dialog_set_int(dialog_height_import_wind,kHeightHeight,0,8000);
+	
+	dialog_set_focus(dialog_height_import_wind,kHeightDivision,0);
+	
 		// show window
 	
 	ShowWindow(dialog_height_import_wind);
@@ -104,9 +110,9 @@ bool dialog_height_import_run(int *div_cnt,int *size,int *high)
 		// dialog to data
 		
 	if (!dialog_height_import_cancel) {
-		*div_cnt=dialog_get_value(dialog_height_import_wind,kHeightDivision,0);
-		*size=dialog_get_value(dialog_height_import_wind,kHeightSize,0);
-		*high=dialog_get_value(dialog_height_import_wind,kHeightHeight,0);
+		*div_cnt=dialog_get_int(dialog_height_import_wind,kHeightDivision,0);
+		*size=dialog_get_int(dialog_height_import_wind,kHeightSize,0);
+		*high=dialog_get_int(dialog_height_import_wind,kHeightHeight,0);
 	}
 
 		// close window

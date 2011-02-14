@@ -25,7 +25,8 @@ and can be sold or given away.
  
 *********************************************************************/
 
-#include "dialog.h"
+#include "glue.h"
+#include "interface.h"
 
 #define kGridMeshXDivision				FOUR_CHAR_CODE('xdiv')
 #define kGridMeshYDivision				FOUR_CHAR_CODE('ydiv')

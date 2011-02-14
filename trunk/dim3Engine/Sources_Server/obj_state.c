@@ -724,9 +724,9 @@ void object_hide(obj_type *obj,bool hide)
 
 void object_input_freeze(obj_type *obj,bool freeze)
 {
-	if (freeze==obj->input_freeze) return;
+	if (freeze==obj->input.freeze) return;
 	
-	obj->input_freeze=freeze;
+	obj->input.freeze=freeze;
 	
 	object_turn_stop(obj);
 	object_player_look_stop(obj);

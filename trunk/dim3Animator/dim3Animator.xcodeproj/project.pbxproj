@@ -11,6 +11,7 @@
 		261CE99012D034AB00D1D8BF /* OSX_main.c in Sources */ = {isa = PBXBuildFile; fileRef = 261CE98F12D034AB00D1D8BF /* OSX_main.c */; };
 		261F12440ED3CB3000A8A0D8 /* vertex_masks.c in Sources */ = {isa = PBXBuildFile; fileRef = 261F12430ED3CB2F00A8A0D8 /* vertex_masks.c */; };
 		261F128A0ED3D04A00A8A0D8 /* vertex_transform.c in Sources */ = {isa = PBXBuildFile; fileRef = 261F12890ED3D04A00A8A0D8 /* vertex_transform.c */; };
+		26232DC2130656F4008DC42B /* osx_dialog.h in Headers */ = {isa = PBXBuildFile; fileRef = 26232DC1130656F4008DC42B /* osx_dialog.h */; };
 		2625B76412E6899600F51669 /* Tool Bones.png in Copy (Tool Icons) */ = {isa = PBXBuildFile; fileRef = 2625B74512E6896500F51669 /* Tool Bones.png */; };
 		2625B76512E6899600F51669 /* Tool Boxes.png in Copy (Tool Icons) */ = {isa = PBXBuildFile; fileRef = 2625B74612E6896500F51669 /* Tool Boxes.png */; };
 		2625B76612E6899600F51669 /* Tool Edit Polygons.png in Copy (Tool Icons) */ = {isa = PBXBuildFile; fileRef = 2625B74712E6896500F51669 /* Tool Edit Polygons.png */; };
@@ -95,7 +96,6 @@
 		F5B4082807104E7700600D33 /* click_window.c in Sources */ = {isa = PBXBuildFile; fileRef = F5B4082707104E7700600D33 /* click_window.c */; };
 		F5BDB6C3055A0DEA00556316 /* dim3 Animator.nib in Resources */ = {isa = PBXBuildFile; fileRef = F5BDB6C2055A0DEA00556316 /* dim3 Animator.nib */; };
 		F5C48B860C88F5CE0011D6B1 /* dialog_scale.c in Sources */ = {isa = PBXBuildFile; fileRef = F5C48B850C88F5CE0011D6B1 /* dialog_scale.c */; };
-		F5C5354709267C6D00663E36 /* dialog.h in Headers */ = {isa = PBXBuildFile; fileRef = F5C5354609267C6D00663E36 /* dialog.h */; };
 		F5D1A7A40CF933E6001B5E1B /* dialog_play_blend_animation.c in Sources */ = {isa = PBXBuildFile; fileRef = F5D1A7A30CF933E6001B5E1B /* dialog_play_blend_animation.c */; };
 		F5DB0C310856A832005A7CB7 /* dim3 Animator.app in CopyFiles */ = {isa = PBXBuildFile; fileRef = F5A42DC40555EC87002DF965 /* dim3 Animator.app */; };
 		F5EA20E90CCB0B6D005A75F6 /* dialog_finish_import.c in Sources */ = {isa = PBXBuildFile; fileRef = F5EA20E80CCB0B6D005A75F6 /* dialog_finish_import.c */; };
@@ -177,6 +177,7 @@
 		261CE98F12D034AB00D1D8BF /* OSX_main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = OSX_main.c; path = Code/OSX_main.c; sourceTree = "<group>"; };
 		261F12430ED3CB2F00A8A0D8 /* vertex_masks.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = vertex_masks.c; path = Code/vertex_masks.c; sourceTree = "<group>"; };
 		261F12890ED3D04A00A8A0D8 /* vertex_transform.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = vertex_transform.c; path = Code/vertex_transform.c; sourceTree = "<group>"; };
+		26232DC1130656F4008DC42B /* osx_dialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = osx_dialog.h; path = ../dim3Common/Headers/osx_dialog.h; sourceTree = SOURCE_ROOT; };
 		2625B74512E6896500F51669 /* Tool Bones.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Bones.png"; path = "Tools/Tool Bones.png"; sourceTree = "<group>"; };
 		2625B74612E6896500F51669 /* Tool Boxes.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Boxes.png"; path = "Tools/Tool Boxes.png"; sourceTree = "<group>"; };
 		2625B74712E6896500F51669 /* Tool Edit Polygons.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Edit Polygons.png"; path = "Tools/Tool Edit Polygons.png"; sourceTree = "<group>"; };
@@ -255,7 +256,6 @@
 		F5BDB6C2055A0DEA00556316 /* dim3 Animator.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = "dim3 Animator.nib"; path = "Resources/dim3 Animator.nib"; sourceTree = "<group>"; };
 		F5C12EAB0143003C01000001 /* obj_import.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = obj_import.c; path = Code/obj_import.c; sourceTree = "<group>"; };
 		F5C48B850C88F5CE0011D6B1 /* dialog_scale.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = dialog_scale.c; path = Code/dialog_scale.c; sourceTree = "<group>"; };
-		F5C5354609267C6D00663E36 /* dialog.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = dialog.h; path = Headers/dialog.h; sourceTree = "<group>"; };
 		F5CA4EF7051010AD0055C8B8 /* modelutility.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = modelutility.h; path = ../dim3Common/Headers/modelutility.h; sourceTree = SOURCE_ROOT; };
 		F5D1A7A30CF933E6001B5E1B /* dialog_play_blend_animation.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = dialog_play_blend_animation.c; path = Code/dialog_play_blend_animation.c; sourceTree = "<group>"; };
 		F5EA20E80CCB0B6D005A75F6 /* dialog_finish_import.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = dialog_finish_import.c; path = Code/dialog_finish_import.c; sourceTree = "<group>"; };
@@ -291,7 +291,7 @@
 				F5CA4EF7051010AD0055C8B8 /* modelutility.h */,
 				262C390012D0237700A94FEE /* ui_common.h */,
 				26EE49C6126B896F001D0025 /* interface.h */,
-				F5C5354609267C6D00663E36 /* dialog.h */,
+				26232DC1130656F4008DC42B /* osx_dialog.h */,
 			);
 			name = Headers;
 			sourceTree = "<group>";
@@ -527,12 +527,12 @@
 				F5A42D940555EC87002DF965 /* dim3animator.h in Headers */,
 				F5A42D980555EC87002DF965 /* modelutility.h in Headers */,
 				F50AF97A0886010300F261B1 /* os_defs.h in Headers */,
-				F5C5354709267C6D00663E36 /* dialog.h in Headers */,
 				F5AD54300BBE1F56001C7C04 /* baseutility.h in Headers */,
 				F5537D8E0C87B7FE00ADA34F /* maputility.h in Headers */,
 				26C5F11212613805000B0F9E /* glue.h in Headers */,
 				26EE4951126B84F8001D0025 /* animator_defs.h in Headers */,
 				26EE49C7126B896F001D0025 /* interface.h in Headers */,
+				26232DC2130656F4008DC42B /* osx_dialog.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

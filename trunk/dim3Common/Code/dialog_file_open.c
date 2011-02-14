@@ -27,7 +27,6 @@ and can be sold or given away.
 
 #include "glue.h"
 #include "interface.h"
-#include "dialog.h"
 
 #define kFileOpenList				FOUR_CHAR_CODE('list')
 #define kFileOpenListNameColumn		FOUR_CHAR_CODE('name')
