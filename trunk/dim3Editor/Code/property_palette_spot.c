@@ -90,6 +90,7 @@ void property_palette_fill_spot(int spot_idx)
 	}
 	
 	list_palette_add_header(&property_palette,0,"Spot Info");
+	list_palette_add_string_int(&property_palette,-1,"Index",spot_idx,TRUE);
 	list_palette_add_point(&property_palette,-1,"Position",&spot->pnt,TRUE);
 	list_palette_add_angle(&property_palette,-1,"Angle",&spot->ang,TRUE);
 }

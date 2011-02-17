@@ -63,6 +63,9 @@ double						light_flicker_value[64]={
 														0.85,0.45,0.15,0.00,0.00,0.00,0.00,0.00,
 														0.00,0.15,0.45,0.15,0.00,0.00,0.00,0.00
 													};
+		
+extern bool view_obj_in_draw_list(int obj_idx);
+extern bool view_proj_in_draw_list(int proj_idx);
 
 /* =======================================================
 
@@ -396,9 +399,10 @@ void gl_lights_compile_add(int tick,d3pnt *pnt,int light_type,bool light_map,int
 	view.render->light.count++;
 }
 
-void gl_lights_compile_model_add(int tick,model_draw *draw)
+void gl_lights_compile_model_add(int tick,bool in_view,model_draw *draw)
 {
 	int					n;
+	bool				calced_animation;
 	d3pnt				pnt;
 	model_type			*mdl;
 	model_draw_light	*light;
@@ -411,12 +415,23 @@ void gl_lights_compile_model_add(int tick,model_draw *draw)
 	
 		// add lights
 		
+	calced_animation=in_view;
+		
 	light=draw->lights;
 	
 	for (n=0;n!=max_model_light;n++) {
 
 		if (light->on) {
 			memmove(&pnt,&draw->pnt,sizeof(d3pnt));
+			
+				// we need to calculate the bones
+				// if model wasn't in the view
+				
+			if (!calced_animation) {
+				calced_animation=TRUE;
+				model_calc_animation(draw,tick);
+				model_calc_draw_bones(draw);
+			}
 			
 			model_get_light_position(mdl,&draw->setup,n,&pnt.x,&pnt.y,&pnt.z);
 			if (draw->no_rot.on) gl_project_fix_rotation(&pnt.x,&pnt.y,&pnt.z);
@@ -462,6 +477,7 @@ void gl_lights_compile_effect_add(int tick,effect_type *effect)
 void gl_lights_compile(int tick)
 {
 	int					n;
+	bool				in_view;
 	map_light_type		*maplight;
 	obj_type			*obj;
 	weapon_type			*weap;
@@ -485,10 +501,11 @@ void gl_lights_compile(int tick)
 		obj=server.obj_list.objs[n];
 		if (obj==NULL) continue;
 
-		gl_lights_compile_model_add(tick,&obj->draw);
+		in_view=view_obj_in_draw_list(obj->idx);
+		gl_lights_compile_model_add(tick,in_view,&obj->draw);
 		if (obj->held_weapon.current_idx!=-1) {
 			weap=weapon_find_current(obj);
-			if (weap!=NULL) gl_lights_compile_model_add(tick,&weap->draw);
+			if (weap!=NULL) gl_lights_compile_model_add(tick,TRUE,&weap->draw);
 		}
 	}
 	
@@ -498,7 +515,8 @@ void gl_lights_compile(int tick)
 		proj=server.proj_list.projs[n];
 		if (!proj->on) continue;
 		
-		gl_lights_compile_model_add(tick,&proj->draw);
+		in_view=view_proj_in_draw_list(proj->idx);
+		gl_lights_compile_model_add(tick,in_view,&proj->draw);
 	}
 	
 		// lights from effects

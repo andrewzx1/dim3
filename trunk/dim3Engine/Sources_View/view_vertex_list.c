@@ -377,7 +377,10 @@ bool view_compile_mesh_gl_lists(void)
 				mesh->draw.cur_ambient_only=TRUE;
 				gl_lights_calc_ambient_color(&col);
 			}
-			
+			else {
+				mesh->draw.cur_ambient_only=FALSE;
+			}
+				
 				// set the colors
 				
 			if (!vbo_mapped) {
@@ -434,8 +437,6 @@ bool view_compile_mesh_gl_lists(void)
 			// we hit this function
 
 		mesh->draw.moved=FALSE;
-
-		mesh++;
 	}
 
 		// unmap VBO
