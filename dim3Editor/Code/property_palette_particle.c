@@ -65,6 +65,7 @@ void property_palette_fill_particle(int particle_idx)
 	list_palette_add_string_int(&property_palette,kParticlePropertySlopTick,"Slop Tick",particle->slop_tick,FALSE);
 	
 	list_palette_add_header(&property_palette,0,"Paticle Info");
+	list_palette_add_string_int(&property_palette,-1,"Index",particle_idx,TRUE);
 	list_palette_add_point(&property_palette,-1,"Position",&particle->pnt,TRUE);
 }
 

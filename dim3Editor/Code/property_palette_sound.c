@@ -63,6 +63,7 @@ void property_palette_fill_sound(int sound_idx)
 	list_palette_add_string_float(&property_palette,kSoundPropertyPitch,"Pitch",sound->pitch,FALSE);
 	
 	list_palette_add_header(&property_palette,0,"Sound Info");
+	list_palette_add_string_int(&property_palette,-1,"Index",sound_idx,TRUE);
 	list_palette_add_point(&property_palette,-1,"Position",&sound->pnt,TRUE);
 }
 

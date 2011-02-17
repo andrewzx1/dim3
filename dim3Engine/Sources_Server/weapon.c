@@ -219,6 +219,8 @@ bool weapon_add(obj_type *obj,char *name)
 	weap->crosshair.bone_tag=model_null_tag;
 	weap->crosshair.bone_idx=-1;
 	
+	weap->hand.fov_override=0.0f;
+	
 	weap->hand.shift.x=0;
 	weap->hand.shift.y=0;
 	weap->hand.shift.z=0;

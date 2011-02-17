@@ -39,11 +39,13 @@ JSValueRef js_weap_hand_get_lowerTick(JSContextRef cx,JSObjectRef j_obj,JSString
 JSValueRef js_weap_hand_get_selectShift(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_weap_hand_get_bobSpeed(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_weap_hand_get_bobAngle(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_weap_hand_get_fovOverride(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 bool js_weap_hand_set_raiseTick(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 bool js_weap_hand_set_lowerTick(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 bool js_weap_hand_set_selectShift(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 bool js_weap_hand_set_bobSpeed(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 bool js_weap_hand_set_bobAngle(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_weap_hand_set_fovOverride(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 
 JSStaticValue 		weap_hand_props[]={
 							{"raiseTick",			js_weap_hand_get_raiseTick,				js_weap_hand_set_raiseTick,		kJSPropertyAttributeDontDelete},
@@ -51,6 +53,7 @@ JSStaticValue 		weap_hand_props[]={
 							{"selectShift",			js_weap_hand_get_selectShift,			js_weap_hand_set_selectShift,	kJSPropertyAttributeDontDelete},
 							{"bobSpeed",			js_weap_hand_get_bobSpeed,				js_weap_hand_set_bobSpeed,		kJSPropertyAttributeDontDelete},
 							{"bobAngle",			js_weap_hand_get_bobAngle,				js_weap_hand_set_bobAngle,		kJSPropertyAttributeDontDelete},
+							{"fovOverride",			js_weap_hand_get_fovOverride,			js_weap_hand_set_fovOverride,	kJSPropertyAttributeDontDelete},
 							{0,0,0,0}};
 
 JSClassRef			weap_hand_class;
@@ -122,6 +125,14 @@ JSValueRef js_weap_hand_get_bobAngle(JSContextRef cx,JSObjectRef j_obj,JSStringR
 	return(script_float_to_value(cx,weap->hand.bounce_ang));
 }
 
+JSValueRef js_weap_hand_get_fovOverride(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
+{
+	weapon_type		*weap;
+
+	weap=weapon_script_lookup();
+	return(script_float_to_value(cx,weap->hand.fov_override));
+}
+
 /* =======================================================
 
       Setters
@@ -174,6 +185,16 @@ bool js_weap_hand_set_bobAngle(JSContextRef cx,JSObjectRef j_obj,JSStringRef nam
 	
 	weap=weapon_script_lookup();
 	weap->hand.bounce_ang=script_value_to_float(cx,vp);
+
+	return(TRUE);
+}
+
+bool js_weap_hand_set_fovOverride(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+{
+	weapon_type		*weap;
+	
+	weap=weapon_script_lookup();
+	weap->hand.fov_override=script_value_to_float(cx,vp);
 
 	return(TRUE);
 }

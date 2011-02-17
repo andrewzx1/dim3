@@ -84,6 +84,7 @@ void property_palette_fill_scenery(int scenery_idx)
 	}
 	
 	list_palette_add_header(&property_palette,0,"Scenery Info");
+	list_palette_add_string_int(&property_palette,-1,"Index",scenery_idx,TRUE);
 	list_palette_add_point(&property_palette,-1,"Position",&scenery->pnt,TRUE);
 	list_palette_add_angle(&property_palette,-1,"Angle",&scenery->ang,TRUE);
 }

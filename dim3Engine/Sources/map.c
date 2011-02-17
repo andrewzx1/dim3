@@ -263,17 +263,9 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 	
 	map_setup(&setup.file_path_setup,setup.anisotropic_mode,setup.mipmap_mode,setup.texture_quality_mode,TRUE);
 
-// supergumba -- auto generator testing
-/*
-	if (!map_auto_generate_test(&map)) {
-		progress_shutdown();
-		sprintf(err_str,"Could not open map: %s",map.info.name);
-		return(FALSE);
-	}
-*/
 	if (!map_open(&map,map.info.name)) {
 		progress_shutdown();
-		sprintf(err_str,"Could not open map: %s.  If this map is from an older version of dim3, use Editor to upgrade it.",map.info.name);
+		sprintf(err_str,"Could not open map: %s",map.info.name);
 		return(FALSE);
 	}
 
@@ -282,7 +274,7 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 	if ((map.mesh.nmesh==0) || (map.nspot==0)) {
 		map_close(&map);
 		progress_shutdown();
-		sprintf(err_str,"Could not open map: %s.  This map contains no meshes or spots.",map.info.name);
+		sprintf(err_str,"Map contains no meshes or spots: %s",map.info.name);
 		return(FALSE);
 	}
 	

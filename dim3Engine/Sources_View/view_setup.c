@@ -336,6 +336,32 @@ bool view_mesh_in_draw_list(int mesh_idx)
 	return(FALSE);
 }
 
+bool view_obj_in_draw_list(int obj_idx)
+{
+	int			n;
+
+	for (n=0;n!=view.render->draw_list.count;n++) {
+		if (view.render->draw_list.items[n].type==view_render_type_object) {
+			if (view.render->draw_list.items[n].idx==obj_idx) return(TRUE);
+		}
+	}
+
+	return(FALSE);
+}
+
+bool view_proj_in_draw_list(int proj_idx)
+{
+	int			n;
+
+	for (n=0;n!=view.render->draw_list.count;n++) {
+		if (view.render->draw_list.items[n].type==view_render_type_projectile) {
+			if (view.render->draw_list.items[n].idx==proj_idx) return(TRUE);
+		}
+	}
+
+	return(FALSE);
+}
+
 /* =======================================================
 
       Add Map Items to Draw Lists

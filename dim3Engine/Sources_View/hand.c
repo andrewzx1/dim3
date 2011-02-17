@@ -50,6 +50,7 @@ extern view_type			view;
 void draw_weapon_hand(obj_type *obj,weapon_type *weap)
 {
 	int				tick;
+	float			old_fov;
     model_draw		*draw;
 	model_type		*mdl;
 	
@@ -64,6 +65,13 @@ void draw_weapon_hand(obj_type *obj,weapon_type *weap)
 	if ((draw->model_idx==-1) || (!draw->on)) return;
 	
 	mdl=server.model_list.models[draw->model_idx];
+	
+		// handle any FOV overrides
+		
+	if (weap->hand.fov_override!=0.0f) {
+		old_fov=view.render->camera.fov;
+		view.render->camera.fov=weap->hand.fov_override;
+	}
 	
 		// always draw weapons over view
 		// without rotation
@@ -105,5 +113,12 @@ void draw_weapon_hand(obj_type *obj,weapon_type *weap)
 		render_model_opaque(draw);
 		render_model_transparent(draw);
 	}
+	
+		// restore FOV
+		
+	if (weap->hand.fov_override!=0.0f) {
+		view.render->camera.fov=old_fov;
+	}
+
 }
 

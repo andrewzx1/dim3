@@ -802,7 +802,7 @@ typedef struct		{
 					
 typedef struct		{
 						int						raise_tick,lower_tick,select_shift;
-						float					bounce_ang,bounce_speed;
+						float					fov_override,bounce_ang,bounce_speed;
 						d3pnt					shift;
 						d3ang					ang;
 					} weap_hand_type;
