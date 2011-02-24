@@ -179,7 +179,7 @@ void halo_draw_setup(void)
 			contact.obj.ignore_idx=-1;
 		}
 		
-			// push slighty towards player to clear
+			// push slighty towards camera to clear
 			// any ray trace errors from being too
 			// close to projecting object
 

@@ -43,7 +43,7 @@ void model_calculate_parents(model_type *model)
 	
 		// set vertex major/minor bone differences
     
-	for (i=0;i!=max_model_mesh;i++) {
+	for (i=0;i!=model->nmesh;i++) {
 	
 		nvertex=model->meshes[i].nvertex;
 		vertex=model->meshes[i].vertexes;
