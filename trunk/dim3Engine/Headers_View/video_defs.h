@@ -44,7 +44,7 @@ and can be sold or given away.
 #define max_shadow_render								24
 #define shadow_max_trigs								10240
 #define shadow_max_vertexes								10240
-#define shadow_max_polys								128
+#define shadow_max_polys								256
 #define shadow_max_ray_trace_vertexes					10240
 #define shadow_infinite_light_adjust					100
 

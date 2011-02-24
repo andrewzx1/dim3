@@ -574,8 +574,8 @@ bool view_setup_shadow_in_view(model_draw *draw,int mesh_idx)
 
 void view_setup_objects(int tick)
 {
-	int					n,flag;
-	bool				is_camera;
+	int					n,k,flag;
+	bool				is_camera,calc_animation;
 	obj_type			*obj;
 	weapon_type			*weap;
 	
@@ -611,19 +611,48 @@ void view_setup_objects(int tick)
 					if (view_setup_shadow_in_view(&obj->draw,obj->mesh.cur_mesh_idx)) flag|=view_list_item_flag_shadow_in_view;
 				}
 			}
-
-			if (flag==0x0) continue;
 		}
+		
+			// if in view or has a light
+			// or halo, we need to calc the
+			// animations
+			
+		calc_animation=(flag!=0x0);
+		
+		if (!calc_animation) {
+			for (k=0;k!=max_model_light;k++) {
+				if (obj->draw.lights[k].on) {
+					calc_animation=TRUE;
+					break;
+				}
+			}
+		}
+		
+		if (!calc_animation) {
+			for (k=0;k!=max_model_halo;k++) {
+				if (obj->draw.halos[k].on) {
+					calc_animation=TRUE;
+					break;
+				}
+			}
+		}
+		
+		if (calc_animation) {
+			model_calc_animation(&obj->draw,tick);
+			model_calc_draw_bones(&obj->draw);
+		}	
+			
+			// not in view, skip out
+	
+		if (flag==0x0) continue;
 		
 			// add to draw list
 
 		obj->draw.built_vertex_list=FALSE;
 		view_add_draw_list(view_render_type_object,n,obj->draw.draw_dist,flag);
 	
-			// setup model animations for models in view
+			// setup model in view
 		
-		model_calc_animation(&obj->draw,tick);
-		model_calc_draw_bones(&obj->draw);
 		render_model_setup(&obj->draw,tick);
 		
 			// setup held weapon model
@@ -641,7 +670,8 @@ void view_setup_objects(int tick)
 
 void view_setup_projectiles(int tick)
 {
-	int					n,mesh_idx,flag;
+	int					n,k,mesh_idx,flag;
+	bool				calc_animation;
 	proj_type			*proj;
 	
 	for (n=0;n!=max_proj_list;n++) {
@@ -668,7 +698,37 @@ void view_setup_projectiles(int tick)
 				if (model_shadow_inview(&proj->draw)) flag|=view_list_item_flag_shadow_in_view;
 			}
 		}
-
+			// if in view or has a light
+			// or halo, we need to calc the
+			// animations
+			
+		calc_animation=(flag!=0x0);
+		
+		if (!calc_animation) {
+			for (k=0;k!=max_model_light;k++) {
+				if (proj->draw.lights[k].on) {
+					calc_animation=TRUE;
+					break;
+				}
+			}
+		}
+		
+		if (!calc_animation) {
+			for (k=0;k!=max_model_halo;k++) {
+				if (proj->draw.halos[k].on) {
+					calc_animation=TRUE;
+					break;
+				}
+			}
+		}
+		
+		if (calc_animation) {
+			model_calc_animation(&proj->draw,tick);
+			model_calc_draw_bones(&proj->draw);
+		}	
+			
+			// not in view, skip out
+	
 		if (flag==0x0) continue;
 
 			// add to draw list
@@ -676,10 +736,8 @@ void view_setup_projectiles(int tick)
 
 		view_add_draw_list(view_render_type_projectile,n,proj->draw.draw_dist,flag);
 		
-			// setup model animations for models in view
+			// setup model in view
 			
-		model_calc_animation(&proj->draw,tick);
-		model_calc_draw_bones(&proj->draw);
 		render_model_setup(&proj->draw,tick);
 	}
 }
