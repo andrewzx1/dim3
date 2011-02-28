@@ -27,6 +27,7 @@ and can be sold or given away.
 
 #include "glue.h"
 #include "interface.h"
+#include "osx_dialog.h"
 
 WindowRef				dialog_about_wind;
 

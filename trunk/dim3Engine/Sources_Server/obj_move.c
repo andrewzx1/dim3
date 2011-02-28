@@ -909,7 +909,7 @@ void object_move_normal(obj_type *obj)
 		//
 		// we only use the y change in x/z movement
 		// if we are going up
-
+		
 	motion.y=(obj->pnt.y-start_y)+obj->motion.last_y_change;
 	if (motion.y>0) motion.y=0;
 

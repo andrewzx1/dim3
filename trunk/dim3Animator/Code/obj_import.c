@@ -377,16 +377,6 @@ bool import_obj(char *path,bool replace,bool *found_normals,char *err_str)
     }
 
 	*found_normals=(nnormal!=0);
-	
-		// single material import?
-	
-	if (!replace) {
-		model.import.single_texture=FALSE;
-	
-		if ((nmaterial>1) && (!all_material_exists)) {
-			model.import.single_texture=texture_use_single();
-		}
-	}
 
 		// get the triangles
 		// we run through the materials to

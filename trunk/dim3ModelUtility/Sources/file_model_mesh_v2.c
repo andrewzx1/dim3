@@ -174,11 +174,9 @@ void decode_mesh_v2_xml(model_type *model,int model_head)
     import_tag=xml_findfirstchild("Import",model_head);
 	if (import_tag!=-1) {
 		model->import.factor=xml_get_attribute_float_default(import_tag,"factor",1.0f);
-		model->import.single_texture=xml_get_attribute_boolean(import_tag,"single_texture");
 	}
 	else {
 		model->import.factor=1.0f;
-		model->import.single_texture=FALSE;
 	}
    
         // bones
@@ -513,7 +511,6 @@ void encode_mesh_v2_xml(model_type *model)
 		
     xml_add_tagstart("Import");
 	xml_add_attribute_float("factor",model->import.factor);
-	xml_add_attribute_boolean("single_texture",model->import.single_texture);
     xml_add_tagend(TRUE);
    
         // bones

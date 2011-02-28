@@ -61,7 +61,7 @@ int map_movement_add(map_type *map)
 	movement=&map->movement.movements[movement_idx];
 	
 	strcpy(movement->name,"New Movement");
-	movement->group_idx=0;
+	movement->group_idx=-1;
 	movement->reverse_group_idx=-1;
 	movement->auto_start=FALSE;
 	movement->auto_open=FALSE;

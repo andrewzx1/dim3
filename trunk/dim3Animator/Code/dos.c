@@ -270,7 +270,7 @@ void file_import_mesh_obj(bool replace)
 	bool			found_normals;
     
 	os_set_arrow_cursor();
-	if (!os_load_file(path,"obj")) return;
+	if (!os_load_file("Select an OBJ to Import",path,"obj")) return;
 	
 	if (state.cur_mesh_idx==-1) state.cur_mesh_idx=0;
 	

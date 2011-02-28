@@ -27,6 +27,7 @@ and can be sold or given away.
 
 #include "glue.h"
 #include "interface.h"
+#include "osx_dialog.h"
 
 #define kBlendAnimate1						FOUR_CHAR_CODE('ani1')
 #define kBlendAnimate2						FOUR_CHAR_CODE('ani2')

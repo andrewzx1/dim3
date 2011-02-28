@@ -199,7 +199,6 @@ extern void clear_materials(void);
 extern int texture_count(void);
 extern bool texture_exists(char *material_name);
 extern int texture_pick(char *material_name,char *err_str);
-extern bool texture_use_single(void);
 
 //
 // models
@@ -302,7 +301,7 @@ extern int dialog_import_finish_run(void);
 extern bool dialog_set_vertex_bone_run(int *major_bone_idx,int *minor_bone_idx,float *factor);
 extern bool dialog_animation_reset_time_run(int animate_idx);
 extern bool dialog_play_blend_animation_run(void);
-extern bool dialog_scale_run(model_type *mdl,float *x,float *z,float *y);
+extern bool dialog_scale_run(model_type *mdl,float *x,float *y,float *z);
 extern bool dialog_set_normal_run(d3vct *normal);
 
 extern void dialog_property_list_run(char *list_ptr,int list_count,int list_item_sz,int list_name_offset,bool include_none,int *idx);

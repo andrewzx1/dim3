@@ -268,24 +268,75 @@ void item_palette_select(int sel_type,int sel_idx)
 
 bool item_palette_delete(void)
 {
+	int					n,k;
+	bool				del_ok;
+	
 		// anything to delete?
 
 	if ((item_palette.item_type==-1) || (item_palette.item_idx==-1)) return(FALSE);
 
 	switch (item_palette.item_type) {
 
+			// delete group
+			
 		case group_piece:
+			
+				// check if this group is used within a movement
+				
+			del_ok=TRUE;
+			
+			for (n=0;n!=map.movement.nmovement;n++) {
+				if ((map.movement.movements[n].group_idx==item_palette.item_idx) || (map.movement.movements[n].reverse_group_idx==item_palette.item_idx)) {
+					del_ok=FALSE;
+					break;
+				}
+			}
+			
+			if (!del_ok) {
+				os_dialog_alert("Delete Group","This group is being used in a movement, it can not be deleted");
+				return(TRUE);
+			}
+				
+				// delete group
+				
 			if (os_dialog_confirm("Delete Group","Is it okay to delete this group?",FALSE)!=0) return(FALSE);
 			map_group_delete(&map,item_palette.item_idx);
 			item_palette_reset();
 			return(TRUE);
 
+			// delete movement
+			
 		case movement_piece:
+		
+				// check if movement is used within a cinema
+				
+			del_ok=TRUE;
+			
+			for (n=0;n!=map.cinema.ncinema;n++) {
+				for (k=0;k!=map.cinema.cinemas[n].naction;k++) {
+					if (map.cinema.cinemas[n].actions[k].actor_type==cinema_actor_movement) {
+						if (strcasecmp(map.cinema.cinemas[n].actions[k].actor_name,map.movement.movements[item_palette.item_idx].name)==0) {
+							del_ok=FALSE;
+							break;
+						}
+					}
+				}
+			}
+			
+			if (!del_ok) {
+				os_dialog_alert("Delete Movement","This movement is being used in a cinema, it can not be deleted");
+				return(TRUE);
+			}
+			
+				// delete movement
+				
 			if (os_dialog_confirm("Delete Movement","Is it okay to delete this movement?",FALSE)!=0) return(FALSE);
 			map_movement_delete(&map,item_palette.item_idx);
 			item_palette_reset();
 			return(TRUE);
 
+			// delete cinema
+			
 		case cinema_piece:
 			if (os_dialog_confirm("Delete Cinema","Is it okay to delete this cinema?",FALSE)!=0) return(FALSE);
 			map_cinema_delete(&map,item_palette.item_idx);

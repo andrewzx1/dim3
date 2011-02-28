@@ -27,6 +27,7 @@ and can be sold or given away.
 
 #include "glue.h"
 #include "interface.h"
+#include "osx_dialog.h"
 
 #define kXValue						FOUR_CHAR_CODE('xxxx')
 #define kZValue						FOUR_CHAR_CODE('zzzz')

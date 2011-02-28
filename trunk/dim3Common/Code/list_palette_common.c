@@ -216,7 +216,7 @@ void list_palette_add_color(list_palette_type *list,int piece_type,int piece_idx
 void list_palette_add_string_selectable(list_palette_type *list,int id,char *name,char *value,bool selected,bool disabled)
 {
 	list_palette_item_type		*item;
-
+	
 	item=list_palette_create_item(list,list_item_ctrl_string);
 
 	item->type=-1;

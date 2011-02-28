@@ -196,7 +196,7 @@ bool menu_event_run(int cmd)
 			return(TRUE);
            
 		case kCommandScaleAll:
-			if (!dialog_scale_run(&model,&fx,&fz,&fy)) return(TRUE);
+			if (!dialog_scale_run(&model,&fx,&fy,&fz)) return(TRUE);
 			model_scale_all(&model,fx,fy,fz);
             model_calculate_parents(&model);
             main_wind_draw();
@@ -316,7 +316,7 @@ bool menu_event_run(int cmd)
 			return(TRUE);
 			
 		case kCommandScale:
-			if (!dialog_scale_run(&model,&fx,&fz,&fy)) return(TRUE);
+			if (!dialog_scale_run(&model,&fx,&fy,&fz)) return(TRUE);
 			model_scale(&model,state.cur_mesh_idx,fx,fy,fz);
             main_wind_draw();
 			return(TRUE);

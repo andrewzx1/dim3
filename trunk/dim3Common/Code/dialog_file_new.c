@@ -27,6 +27,7 @@ and can be sold or given away.
 
 #include "glue.h"
 #include "interface.h"
+#include "osx_dialog.h"
 
 #define kFileNewText			FOUR_CHAR_CODE('name')
 
