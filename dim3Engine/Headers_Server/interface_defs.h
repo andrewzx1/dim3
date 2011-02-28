@@ -218,6 +218,8 @@ typedef struct		{
 
 #define max_chooser_sub_txt						16
 
+#define max_hud_intro_model						16
+
 #define max_tint_color							8
 
 #define max_character							32
@@ -451,13 +453,26 @@ typedef struct		{
 						hud_intro_button_type			button_start,button_erase;
 						hud_intro_simple_save_desc_type	desc;
 					} hud_intro_simple_save_type;
-					
+			
+typedef struct		{
+						int								x,y;
+						float							resize;
+						char							model_name[name_str_len],animate_name[name_str_len];
+						d3ang							rot;
+					} hud_intro_model_type;
+
+typedef struct		{
+						int								nmodel;
+						hud_intro_model_type			models[max_hud_intro_model];
+					} hud_intro_model_list;
+
 typedef struct		{
 						hud_intro_button_type			button_game_new,button_game_load,button_game_setup,
 														button_game_new_easy,button_game_new_medium,button_game_new_hard,button_game_new_cancel,
 														button_multiplayer_host,button_multiplayer_join,button_multiplayer_setup,
 														button_credit,button_quit;
 						hud_intro_simple_save_type		simple_save[max_simple_save_spot];
+						hud_intro_model_list			model;
 					} hud_intro_type;
 
 //

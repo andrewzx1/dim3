@@ -350,7 +350,7 @@ int os_dialog_confirm(char *title,char *msg,bool include_cancel)
       
 ======================================================= */
 
-bool os_load_file(char *path,char *ext)
+bool os_load_file(char *title,char *path,char *ext)
 {
 	char			filter[256],file_title[256],ext2[8],
 					initial_dir[1024],*c;
@@ -393,7 +393,7 @@ bool os_load_file(char *path,char *ext)
 	ofn.lpstrFileTitle=file_title;
 	ofn.nMaxFileTitle=256;
 	ofn.lpstrInitialDir=initial_dir;
-	ofn.lpstrTitle=NULL;
+	ofn.lpstrTitle=title;
 	ofn.Flags=OFN_HIDEREADONLY|OFN_LONGNAMES|OFN_OVERWRITEPROMPT|OFN_PATHMUSTEXIST;
 	ofn.nFileOffset=0;
 	ofn.nFileExtension=0;

@@ -86,6 +86,11 @@ float win32_dialog_get_float(HWND diag,int id)
 	return((float)atof(str));
 }
 
+void win32_dialog_combo_clear(HWND diag,int id)
+{
+	SendDlgItemMessage(diag,id,CB_RESETCONTENT,0,0);
+}
+
 void win32_dialog_combo_add(HWND diag,int id,char *str)
 {
 	SendDlgItemMessage(diag,id,CB_ADDSTRING,0,(LPARAM)str);

@@ -236,13 +236,23 @@ void intro_open_add_button(hud_intro_button_type *btn,char *name,int id)
 
 void intro_open(void)
 {
-	int			n,x,y;
-	bool		start_music;
-	char		name[256],err_str[256];
+	int						n,x,y;
+	bool					start_music;
+	char					name[256],err_str[256];
+	hud_intro_model_type	*intro_model;
 
 		// intro UI
 		
 	gui_initialize("Bitmaps/Backgrounds","main");
+
+		// models
+
+	intro_model=hud.intro.model.models;
+
+	for (n=0;n!=hud.intro.model.nmodel;n++) {
+		element_model_add(intro_model->model_name,intro_model->animate_name,intro_model->resize,NULL,&intro_model->rot,-1,intro_model->x,intro_model->y);
+		intro_model++;
+	}
 
 		// buttons
 		
