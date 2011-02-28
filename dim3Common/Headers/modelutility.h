@@ -296,7 +296,6 @@ typedef struct		{
 
 typedef struct		{
 						float							factor;
-						bool							single_texture;
 					} model_import_type;
 
 //

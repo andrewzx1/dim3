@@ -56,8 +56,7 @@ and can be sold or given away.
 #define kModelPropertyRigidBodyZResetFact		13
 #define kModelPropertyRigidBodyZSmoothFact		14
 
-#define kModelPropertyImportSingleTexture		15
-#define kModelPropertyImportScale				16
+#define kModelPropertyImportScale				15
 
 extern model_type				model;
 extern animator_state_type		state;
@@ -123,7 +122,6 @@ void property_palette_fill_model(void)
 	list_palette_add_string_float(&property_palette,kModelPropertyRigidBodyZSmoothFact,"Z Smooth Fact",model.rigid_body.z.smooth_factor,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Model Import");
-	list_palette_add_checkbox(&property_palette,kModelPropertyImportSingleTexture,"Single Texture",model.import.single_texture,FALSE);
 	list_palette_add_string_float(&property_palette,kModelPropertyImportScale,"Scale",model.import.factor,FALSE);
 }
 
@@ -221,10 +219,6 @@ void property_palette_click_model(int id)
 
 		case kModelPropertyRigidBodyZSmoothFact:
 			dialog_property_string_run(list_string_value_positive_float,(void*)&model.rigid_body.z.smooth_factor,0,0,0);
-			break;
-
-		case kModelPropertyImportSingleTexture:
-			model.import.single_texture=!model.import.single_texture;
 			break;
 
 		case kModelPropertyImportScale:

@@ -506,9 +506,9 @@
 				26E3F10612D6CE8300C8BE92 /* dialog_file_new.c */,
 				26E3F10712D6CE8300C8BE92 /* dialog_file_open.c */,
 				26E3F10812D6CE8300C8BE92 /* dialog_property_list.c */,
-				26E3F10912D6CE8300C8BE92 /* dialog_property_string.c */,
 				F5EA20E80CCB0B6D005A75F6 /* dialog_finish_import.c */,
 				F594B4E409A97EB000408388 /* dialog_set_vertex_bone.c */,
+				26E3F10912D6CE8300C8BE92 /* dialog_property_string.c */,
 				F5895D3E0C6570EC00AA2669 /* dialog_animation_time_reset.c */,
 				F5D1A7A30CF933E6001B5E1B /* dialog_play_blend_animation.c */,
 				F5C48B850C88F5CE0011D6B1 /* dialog_scale.c */,
@@ -690,7 +690,8 @@
 		F5DB0C230856A7FD005A7CB7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = i386;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1)";
+				ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1 = "ppc i386";
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
 				DEPLOYMENT_POSTPROCESSING = YES;

@@ -52,7 +52,7 @@ void piece_add_obj_mesh(void)
 	
 		// import the file
 		
-	if (!os_load_file(path,"obj")) return;
+	if (!os_load_file("Select an OBJ file",path,"obj")) return;
 	
 	if (!import_obj(path,err_str)) {
 		os_dialog_alert("Import Failed",err_str);
@@ -90,7 +90,7 @@ void piece_add_obj_mesh_uv(void)
 	
 		// import the file
 		
-	if (!os_load_file(path,"obj")) return;
+	if (!os_load_file("Select an OBJ file",path,"obj")) return;
 
 	if (!textdecode_open(path,0x20)) {
 		os_dialog_alert("Import Failed","Could not open OBJ file.");
@@ -287,7 +287,7 @@ void piece_add_height_map_mesh(void)
 	
 		// get the png
 		
-	if (!os_load_file(path,"png")) return;
+	if (!os_load_file("Select an PNG file",path,"png")) return;
 	data=bitmap_load_png_data(path,&bwid,&bhigh,&alpha_channel);
 	if (data==NULL) return;
 	
@@ -599,7 +599,7 @@ void piece_add_svg_mesh(void)
 	
 		// import the file
 		
-	if (!os_load_file(path,"svg")) return;
+	if (!os_load_file("Select an SVG file",path,"svg")) return;
 	
 	if (!import_svg(path,err_str)) {
 		os_dialog_alert("Import Failed",err_str);

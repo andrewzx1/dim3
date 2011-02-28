@@ -172,18 +172,16 @@ int texture_pick(char *material_name,char *err_str)
 	
 	if (idx==-1) return(0);
 	
-	texture=&model.textures[idx];
+		// load texture and remember name
 	
-		// remember material name
-		
+	texture=&model.textures[idx];
 	strcpy(texture->material_name,material_name);
 	
 		// pick a bitmap
 		
-	sprintf(title,"Material %s Found - Select a PNG Bitmap",material_name);
-	os_dialog_alert(title,"Please select a PNG file to be used for this material.\nThe PNG file must be 32-bit and have width and height that are\nsquares of 2 (2, 4, 8, 16, 32, 64, 128, 256, etc).");
+	sprintf(title,"Select a PNG for Material: %s",material_name);
 	
-	if (!os_load_file(path,"png")) {
+	if (!os_load_file(title,path,"png")) {
 		strcpy(err_str,"No texture was choosen.");
 		return(-1);
 	}
@@ -221,18 +219,5 @@ int texture_pick(char *material_name,char *err_str)
 
 	return(idx);
 }
-
-/* =======================================================
-
-      Multiple Material Alert
-      
-======================================================= */
-
-bool texture_use_single(void)
-{
-	return(os_dialog_confirm("Multiple Materials in Model","Click Yes to pick a new texture for each material, or No to use a single texture.",FALSE)!=0);
-}
-
-
 
 

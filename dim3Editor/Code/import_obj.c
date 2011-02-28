@@ -196,10 +196,9 @@ int import_texture_pick(char *material_name)
 	
 		// pick a bitmap
 		
-	sprintf(title,"Material \"%s\" Found",material_name);
-	if (os_dialog_confirm(title,"Do you want to select a PNG file to be used as the texture for this material?\nSelecting No will cause the import to ignore all further materials.",FALSE)!=0) return(-1);
+	sprintf(title,"Select a PNG for Material: %s",material_name);
 	
-	if (!os_load_file(path,"png")) return(0);
+	if (!os_load_file(title,path,"png")) return(0);
 	
 		// is it good?
 

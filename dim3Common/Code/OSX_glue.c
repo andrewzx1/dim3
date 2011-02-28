@@ -341,7 +341,7 @@ Boolean os_load_file_filter(AEDesc *theItem,void *info,void *callBackUD,NavFilte
     return(strcasecmp((c+1),os_load_file_ext)==0);
 }
 
-bool os_load_file(char *path,char *ext)
+bool os_load_file(char *title,char *path,char *ext)
 {
     NavDialogCreationOptions	navoption;
     NavReplyRecord				navreply;
@@ -350,6 +350,7 @@ bool os_load_file(char *path,char *ext)
 	AEKeyword					keyword;
 	DescType					typecode;
     Size						sz;
+	CFStringRef					cf_title_str;
     NavDialogRef				diagref;
 	FSRef						fsref;
 	
@@ -360,6 +361,9 @@ bool os_load_file(char *path,char *ext)
 	NavGetDefaultDialogCreationOptions(&navoption);
 	navoption.optionFlags-=kNavDontAddTranslateItems;
 	navoption.optionFlags-=kNavAllowPreviews;
+	
+	cf_title_str=CFStringCreateWithCString(kCFAllocatorDefault,title,kCFStringEncodingMacRoman);
+	navoption.windowTitle=cf_title_str;
 
 	navevent=NewNavEventUPP(os_load_file_event_proc);
 	navfilter=NewNavObjectFilterUPP(os_load_file_filter);
@@ -370,7 +374,9 @@ bool os_load_file(char *path,char *ext)
 	NavDialogDispose(diagref);
 	DisposeNavEventUPP(navevent);
     DisposeNavObjectFilterUPP(navfilter);
-    
+  
+	CFRelease(cf_title_str);
+
 	if (!navreply.validRecord) {
 		NavDisposeReply(&navreply);
         return(FALSE);

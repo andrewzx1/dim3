@@ -72,7 +72,6 @@ bool model_new(model_type *model,char *name)
 	model->diffuse_boost=0.0f;
 	
 	model->import.factor=1.0f;
-	model->import.single_texture=FALSE;
 	
 	for (n=0;n!=max_model_light;n++) {
 		model->tags.light_bone_tag[n]=model_null_tag;

@@ -337,6 +337,7 @@ void object_set_radius(obj_type *obj)
 void object_set_current_mesh(obj_type *obj)
 {
 	obj->mesh.cur_mesh_idx=map_mesh_find(&map,&obj->pnt);
+	obj->contact.stand_poly.mesh_idx=-1;
 }
 
 void object_set_position(obj_type *obj,int x,int y,int z,float ang_y,float ymove)
@@ -792,7 +793,12 @@ void object_reset(obj_type *obj)
 	
 	memmove(&obj->draw.pnt,&obj->pnt,sizeof(d3pnt));
 
+	obj->motion.ang.x=obj->motion.ang.z=0.0f;
 	obj->motion.ang.y=obj->turn.ang_to.y=obj->ang.y;
+	obj->motion.last_y_change=0;
+	obj->motion.vct.x=obj->motion.vct.y=obj->motion.vct.z=0.0f;
+	
+	obj->force.gravity=gravity_start_power;
 	
 	object_set_current_mesh(obj);
 }

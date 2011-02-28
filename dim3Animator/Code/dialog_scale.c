@@ -27,10 +27,11 @@ and can be sold or given away.
 
 #include "glue.h"
 #include "interface.h"
+#include "osx_dialog.h"
 
 #define kXValue						FOUR_CHAR_CODE('xxxx')
-#define kZValue						FOUR_CHAR_CODE('zzzz')
 #define kYValue						FOUR_CHAR_CODE('yyyy')
+#define kZValue						FOUR_CHAR_CODE('zzzz')
 #define kScaleBy					FOUR_CHAR_CODE('scby')
 
 float					dialog_scale_x,dialog_scale_y,dialog_scale_z;
@@ -58,13 +59,13 @@ static pascal OSStatus scale_event_proc(EventHandlerCallRef handler,EventRef eve
 					switch (dialog_get_combo(dialog_scale_wind,kScaleBy,0)) {
 						case 0:
 							dialog_set_float(dialog_scale_wind,kXValue,0,100.0f);
-							dialog_set_float(dialog_scale_wind,kZValue,0,100.0f);
 							dialog_set_float(dialog_scale_wind,kYValue,0,100.0f);
+							dialog_set_float(dialog_scale_wind,kZValue,0,100.0f);
 							break;
 						case 1:
 							dialog_set_float(dialog_scale_wind,kXValue,0,dialog_scale_x);
-							dialog_set_float(dialog_scale_wind,kZValue,0,dialog_scale_z);
 							dialog_set_float(dialog_scale_wind,kYValue,0,dialog_scale_y);
+							dialog_set_float(dialog_scale_wind,kZValue,0,dialog_scale_z);
 							break;
 					}
 					DrawControls(dialog_scale_wind);
@@ -93,7 +94,7 @@ static pascal OSStatus scale_event_proc(EventHandlerCallRef handler,EventRef eve
       
 ======================================================= */
 
-bool dialog_scale_run(model_type *mdl,float *x,float *z,float *y)
+bool dialog_scale_run(model_type *mdl,float *x,float *y,float *z)
 {
 	int								minx,maxx,minz,maxz,miny,maxy;
 	EventHandlerUPP					event_upp;
@@ -113,8 +114,8 @@ bool dialog_scale_run(model_type *mdl,float *x,float *z,float *y)
 		// setup the controls
 		
 	dialog_set_float(dialog_scale_wind,kXValue,0,100.0f);
-	dialog_set_float(dialog_scale_wind,kZValue,0,100.0f);
 	dialog_set_float(dialog_scale_wind,kYValue,0,100.0f);
+	dialog_set_float(dialog_scale_wind,kZValue,0,100.0f);
 	
 	dialog_set_combo(dialog_scale_wind,kScaleBy,0,0);
 	
@@ -138,13 +139,13 @@ bool dialog_scale_run(model_type *mdl,float *x,float *z,float *y)
 		switch (dialog_get_combo(dialog_scale_wind,kScaleBy,0)) {
 			case 0:
 				*x=dialog_get_float(dialog_scale_wind,kXValue,0)/100.0f;
-				*z=dialog_get_float(dialog_scale_wind,kZValue,0)/100.0f;
 				*y=dialog_get_float(dialog_scale_wind,kYValue,0)/100.0f;
+				*z=dialog_get_float(dialog_scale_wind,kZValue,0)/100.0f;
 				break;
 			case 1:
 				*x=dialog_get_float(dialog_scale_wind,kXValue,0)/dialog_scale_x;
-				*z=dialog_get_float(dialog_scale_wind,kZValue,0)/dialog_scale_z;
 				*y=dialog_get_float(dialog_scale_wind,kYValue,0)/dialog_scale_y;
+				*z=dialog_get_float(dialog_scale_wind,kZValue,0)/dialog_scale_z;
 				break;
 		}
 	}

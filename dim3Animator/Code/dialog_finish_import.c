@@ -27,6 +27,7 @@ and can be sold or given away.
 
 #include "glue.h"
 #include "interface.h"
+#include "osx_dialog.h"
 
 extern model_type		model;
 
@@ -102,7 +103,7 @@ int dialog_import_finish_run(void)
 	
 		// get scaling factor
 		
-	high=dialog_get_float(dialog_import_finish_wind,kImportHeight,0);
+	high=dialog_get_int(dialog_import_finish_wind,kImportHeight,0);
 
 		// close window
 		

@@ -66,7 +66,7 @@ void property_palette_fill_movement(int movement_idx)
 	char				str[256];
 	movement_type		*movement;
 	movement_move_type	*move;
-
+	
 	movement=&map.movement.movements[movement_idx];
 
 	list_palette_add_header(&property_palette,0,"Movement Options");
