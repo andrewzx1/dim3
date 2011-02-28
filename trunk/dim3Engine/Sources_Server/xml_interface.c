@@ -169,8 +169,8 @@ void default_settings_interface(void)
 	hud.fade.title_msec=1000;
 	hud.fade.map_msec=300;
 	
-		// buttons
-	
+		// intro
+
 	default_settings_interface_button(&hud.intro.button_game_new,0,0,TRUE);
 	default_settings_interface_button(&hud.intro.button_game_load,0,32,TRUE);
 	default_settings_interface_button(&hud.intro.button_game_setup,0,64,TRUE);
@@ -193,6 +193,8 @@ void default_settings_interface(void)
 		hud.intro.simple_save[n].desc.y=(n*32);
 		hud.intro.simple_save[n].desc.text_size=20;
 	}
+
+	hud.intro.model.nmodel=0;
 
 		// player models
 
@@ -716,11 +718,11 @@ void read_settings_interface_chooser(int chooser_tag)
 
 /* =======================================================
 
-      Read Button XML
+      Read Intro XML
       
 ======================================================= */
 
-void read_settings_interface_button(int tag,hud_intro_button_type *btn,hud_intro_simple_save_desc_type *desc)
+void read_settings_interface_intro_button(int tag,hud_intro_button_type *btn,hud_intro_simple_save_desc_type *desc)
 {
 	if (tag==-1) return;
 	
@@ -737,6 +739,23 @@ void read_settings_interface_button(int tag,hud_intro_button_type *btn,hud_intro
 	}
 }
 
+void read_settings_interface_intro_model(int tag)
+{
+	hud_intro_model_type		*intro_model;
+
+	if (hud.intro.model.nmodel==max_hud_intro_model) return;
+
+	intro_model=&hud.intro.model.models[hud.intro.model.nmodel];
+	hud.intro.model.nmodel++;
+
+	xml_get_attribute_text(tag,"model",intro_model->model_name,name_str_len);
+	xml_get_attribute_text(tag,"animate",intro_model->animate_name,name_str_len);
+	intro_model->x=xml_get_attribute_int(tag,"x");
+	intro_model->y=xml_get_attribute_int(tag,"y");
+	xml_get_attribute_3_coord_float(tag,"rot",&intro_model->rot.x,&intro_model->rot.y,&intro_model->rot.z);
+	intro_model->resize=xml_get_attribute_float_default(tag,"resize",1.0f);
+}
+
 /* =======================================================
 
       Read Interface XML
@@ -748,6 +767,7 @@ void read_settings_interface(void)
 	int						n,cnt,interface_head_tag,scale_tag,
 							bitmap_head_tag,bitmap_tag,text_head_tag,text_tag,bar_head_tag,bar_tag,
 							radar_head_tag,menu_head_tag,menu_tag,chooser_head_tag,chooser_tag,
+							intro_head_tag,intro_model_head_tag,intro_model_tag,
 							color_tag,font_tag,progress_tag,chat_tag,fade_tag,button_tag,sound_tag,music_tag,
 							proj_tag,debug_tag,games_head_tag,game_tag,options_head_tag,option_tag,
 							character_head_tag,character_item_tag,bot_head_tag,bot_tag,news_tag;
@@ -925,29 +945,47 @@ void read_settings_interface(void)
 		hud.fade.title_msec=xml_get_attribute_int(fade_tag,"title_msec");
 		hud.fade.map_msec=xml_get_attribute_int(fade_tag,"map_msec");
 	}
-	
+
+		// intro
+
+	intro_head_tag=xml_findfirstchild("Intro",interface_head_tag);
+	if (intro_head_tag!=-1) {
+
+			// models
+
+		intro_model_head_tag=xml_findfirstchild("Models",intro_head_tag);
+		if (intro_model_head_tag!=-1) {
+			intro_model_tag=xml_findfirstchild("Model",intro_model_head_tag);
+		
+			while (intro_model_tag!=-1) {
+				read_settings_interface_intro_model(intro_model_tag);
+				intro_model_tag=xml_findnextchild(intro_model_tag);
+			}
+		}
+	}
+
 		// buttons
 		
 	button_tag=xml_findfirstchild("Buttons",interface_head_tag);
 	if (button_tag!=-1) {
-		read_settings_interface_button(xml_findfirstchild("Game_New",button_tag),&hud.intro.button_game_new,NULL);
-		read_settings_interface_button(xml_findfirstchild("Game_Load",button_tag),&hud.intro.button_game_load,NULL);
-		read_settings_interface_button(xml_findfirstchild("Game_Setup",button_tag),&hud.intro.button_game_setup,NULL);
-		read_settings_interface_button(xml_findfirstchild("Game_New_Easy",button_tag),&hud.intro.button_game_new_easy,NULL);
-		read_settings_interface_button(xml_findfirstchild("Game_New_Medium",button_tag),&hud.intro.button_game_new_medium,NULL);
-		read_settings_interface_button(xml_findfirstchild("Game_New_Hard",button_tag),&hud.intro.button_game_new_hard,NULL);
-		read_settings_interface_button(xml_findfirstchild("Game_New_Cancel",button_tag),&hud.intro.button_game_new_cancel,NULL);
-		read_settings_interface_button(xml_findfirstchild("Multiplayer_Host",button_tag),&hud.intro.button_multiplayer_host,NULL);
-		read_settings_interface_button(xml_findfirstchild("Multiplayer_Join",button_tag),&hud.intro.button_multiplayer_join,NULL);
-		read_settings_interface_button(xml_findfirstchild("Multiplayer_Setup",button_tag),&hud.intro.button_multiplayer_setup,NULL);
-		read_settings_interface_button(xml_findfirstchild("Credit",button_tag),&hud.intro.button_credit,NULL);
-		read_settings_interface_button(xml_findfirstchild("Quit",button_tag),&hud.intro.button_quit,NULL);
+		read_settings_interface_intro_button(xml_findfirstchild("Game_New",button_tag),&hud.intro.button_game_new,NULL);
+		read_settings_interface_intro_button(xml_findfirstchild("Game_Load",button_tag),&hud.intro.button_game_load,NULL);
+		read_settings_interface_intro_button(xml_findfirstchild("Game_Setup",button_tag),&hud.intro.button_game_setup,NULL);
+		read_settings_interface_intro_button(xml_findfirstchild("Game_New_Easy",button_tag),&hud.intro.button_game_new_easy,NULL);
+		read_settings_interface_intro_button(xml_findfirstchild("Game_New_Medium",button_tag),&hud.intro.button_game_new_medium,NULL);
+		read_settings_interface_intro_button(xml_findfirstchild("Game_New_Hard",button_tag),&hud.intro.button_game_new_hard,NULL);
+		read_settings_interface_intro_button(xml_findfirstchild("Game_New_Cancel",button_tag),&hud.intro.button_game_new_cancel,NULL);
+		read_settings_interface_intro_button(xml_findfirstchild("Multiplayer_Host",button_tag),&hud.intro.button_multiplayer_host,NULL);
+		read_settings_interface_intro_button(xml_findfirstchild("Multiplayer_Join",button_tag),&hud.intro.button_multiplayer_join,NULL);
+		read_settings_interface_intro_button(xml_findfirstchild("Multiplayer_Setup",button_tag),&hud.intro.button_multiplayer_setup,NULL);
+		read_settings_interface_intro_button(xml_findfirstchild("Credit",button_tag),&hud.intro.button_credit,NULL);
+		read_settings_interface_intro_button(xml_findfirstchild("Quit",button_tag),&hud.intro.button_quit,NULL);
 		
 		for (n=0;n!=max_simple_save_spot;n++) {
 			sprintf(name,"Simple_Start_%d",n);
-			read_settings_interface_button(xml_findfirstchild(name,button_tag),&hud.intro.simple_save[n].button_start,&hud.intro.simple_save[n].desc);
+			read_settings_interface_intro_button(xml_findfirstchild(name,button_tag),&hud.intro.simple_save[n].button_start,&hud.intro.simple_save[n].desc);
 			sprintf(name,"Simple_Erase_%d",n);
-			read_settings_interface_button(xml_findfirstchild(name,button_tag),&hud.intro.simple_save[n].button_erase,NULL);
+			read_settings_interface_intro_button(xml_findfirstchild(name,button_tag),&hud.intro.simple_save[n].button_erase,NULL);
 		}
 	}
 	

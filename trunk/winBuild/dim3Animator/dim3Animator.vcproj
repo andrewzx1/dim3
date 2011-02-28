@@ -505,11 +505,19 @@
 					>
 				</File>
 				<File
+					RelativePath=".\win32Code\win32_dialog_pick_scale.c"
+					>
+				</File>
+				<File
 					RelativePath="..\Common\Code\win32_dialog_property_list.c"
 					>
 				</File>
 				<File
 					RelativePath="..\Common\Code\win32_dialog_property_string.c"
+					>
+				</File>
+				<File
+					RelativePath=".\win32Code\win32_dialog_set_vertex_bone.c"
 					>
 				</File>
 				<File

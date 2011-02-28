@@ -64,14 +64,6 @@ bool dialog_set_normal_run(d3vct *vct)
 {
 	return(FALSE);
 }
-bool dialog_scale_run(model_type *mdl,float *x,float *z,float *y)
-{
-	return(FALSE);
-}
-bool dialog_set_vertex_bone_run(int *major_bone_idx,int *minor_bone_idx,float *factor)
-{
-	return(FALSE);
-}
 bool dialog_play_blend_animation_run(void)
 {
 	return(FALSE);
