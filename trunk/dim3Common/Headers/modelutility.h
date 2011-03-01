@@ -299,6 +299,15 @@ typedef struct		{
 					} model_import_type;
 
 //
+// Model UI Settings
+//
+
+typedef struct		{
+						d3col							ambient;
+						d3vct							diffuse_vct;
+					} model_ui_type;
+
+//
 // Model Main Structures
 //
 
@@ -314,6 +323,7 @@ typedef struct		{
  						model_mesh_type					meshes[max_model_mesh];
 						model_rigid_body_type			rigid_body;
 						model_import_type				import;
+						model_ui_type					ui;
 						model_bone_type					*bones;
 						model_pose_type					*poses;
 						model_animate_type				*animates;
