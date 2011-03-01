@@ -40,7 +40,7 @@ extern char					deform_mode_str[][32],model_bump_mode_str[][32];
 void decode_mesh_v2_xml(model_type *model,int model_head)
 {
 	int						i,n,k,j,bone_idx,nbone,hit_box_idx,nhit_box,
-							import_tag,mesh_idx,nmesh,nfill,trig_idx,
+							import_tag,ui_tag,mesh_idx,nmesh,nfill,trig_idx,
 							tag,hit_box_tag,rigid_body_tag,meshes_tag,mesh_tag,
 							vertex_tag,bone_tag,vtag,trig_tag,
 							materials_tag,material_tag,fills_tag,fill_tag;
@@ -178,7 +178,24 @@ void decode_mesh_v2_xml(model_type *model,int model_head)
 	else {
 		model->import.factor=1.0f;
 	}
-   
+	
+  		// ui
+		
+    ui_tag=xml_findfirstchild("UI",model_head);
+	if (ui_tag!=-1) {
+		xml_get_attribute_color(ui_tag,"ambient",&model->ui.ambient);
+		xml_get_attribute_3_coord_float(ui_tag,"diffuse_vector",&model->ui.diffuse_vct.x,&model->ui.diffuse_vct.y,&model->ui.diffuse_vct.z);
+	}
+	else {
+		model->ui.ambient.r=0.75f;
+		model->ui.ambient.g=0.75f;
+		model->ui.ambient.b=0.75f;
+
+		model->ui.diffuse_vct.x=0.0f;
+		model->ui.diffuse_vct.y=-1.0f;
+		model->ui.diffuse_vct.z=0.0f;
+	}
+ 
         // bones
  
     bone_tag=xml_findfirstchild("Bones",model_head);
@@ -512,7 +529,14 @@ void encode_mesh_v2_xml(model_type *model)
     xml_add_tagstart("Import");
 	xml_add_attribute_float("factor",model->import.factor);
     xml_add_tagend(TRUE);
-   
+
+  		// ui
+		
+    xml_add_tagstart("UI");
+	xml_add_attribute_color("ambient",&model->ui.ambient);
+	xml_add_attribute_3_coord_float("diffuse_vector",model->ui.diffuse_vct.x,model->ui.diffuse_vct.y,model->ui.diffuse_vct.z);
+	xml_add_tagend(TRUE);
+ 
         // bones
         
     xml_add_tagstart("Bones");
