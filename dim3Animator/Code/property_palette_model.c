@@ -56,7 +56,10 @@ and can be sold or given away.
 #define kModelPropertyRigidBodyZResetFact		13
 #define kModelPropertyRigidBodyZSmoothFact		14
 
-#define kModelPropertyImportScale				15
+#define kModelPropertyUIAmbient					15
+#define kModelPropertyUIDiffuseVector			16
+
+#define kModelPropertyImportScale				17
 
 extern model_type				model;
 extern animator_state_type		state;
@@ -120,6 +123,10 @@ void property_palette_fill_model(void)
 	list_palette_add_string_float(&property_palette,kModelPropertyRigidBodyZMaxAngle,"Z Max Angle",model.rigid_body.z.max_ang,FALSE);
 	list_palette_add_string_float(&property_palette,kModelPropertyRigidBodyZResetFact,"Z Reset Fact",model.rigid_body.z.reset_factor,FALSE);
 	list_palette_add_string_float(&property_palette,kModelPropertyRigidBodyZSmoothFact,"Z Smooth Fact",model.rigid_body.z.smooth_factor,FALSE);
+
+	list_palette_add_header(&property_palette,0,"Model UI");
+	list_palette_add_pick_color(&property_palette,kModelPropertyUIAmbient,"Ambient",&model.ui.ambient,FALSE);
+	list_palette_add_vector(&property_palette,kModelPropertyUIDiffuseVector,"Diffuse Vector",&model.ui.diffuse_vct,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Model Import");
 	list_palette_add_string_float(&property_palette,kModelPropertyImportScale,"Scale",model.import.factor,FALSE);
@@ -219,6 +226,15 @@ void property_palette_click_model(int id)
 
 		case kModelPropertyRigidBodyZSmoothFact:
 			dialog_property_string_run(list_string_value_positive_float,(void*)&model.rigid_body.z.smooth_factor,0,0,0);
+			break;
+
+		case kModelPropertyUIAmbient:
+			os_pick_color(&model.ui.ambient);
+			break;
+
+		case kModelPropertyUIDiffuseVector:
+			dialog_property_string_run(list_string_value_vector,(void*)&model.ui.diffuse_vct,0,0,0);
+			vector_normalize(&model.ui.diffuse_vct);
 			break;
 
 		case kModelPropertyImportScale:

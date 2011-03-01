@@ -98,6 +98,14 @@ bool model_new(model_type *model,char *name)
 	model->rigid_body.z.reset_factor=0.8f;
 	model->rigid_body.z.smooth_factor=0.2f;
 
+	model->ui.ambient.r=0.75f;
+	model->ui.ambient.g=0.75f;
+	model->ui.ambient.b=0.75f;
+
+	model->ui.diffuse_vct.x=0.0f;
+	model->ui.diffuse_vct.y=-1.0f;
+	model->ui.diffuse_vct.z=0.0f;
+
 		// setup first mesh
 
 	model->nmesh=1;

@@ -242,9 +242,12 @@ void render_model_diffuse_color_vertexes(model_type *mdl,int mesh_idx,model_draw
 		ambient_col.b*=gl_diffuse_ambient_factor;
 	}
 	else {
-		diffuse_vct.x=diffuse_vct.z=0.0f;
-		diffuse_vct.y=-1.0f;
-		ambient_col.r=ambient_col.g=ambient_col.b=0.7f;
+		diffuse_vct.x=mdl->ui.diffuse_vct.x;
+		diffuse_vct.y=mdl->ui.diffuse_vct.y;
+		diffuse_vct.z=mdl->ui.diffuse_vct.z;
+		ambient_col.r=mdl->ui.ambient.r;
+		ambient_col.g=mdl->ui.ambient.g;
+		ambient_col.b=mdl->ui.ambient.b;
 	}
 	
 	boost=mdl->diffuse_boost;
