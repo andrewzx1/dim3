@@ -127,7 +127,7 @@ void model_draw_setup_object(obj_type *obj)
 
 		// regular lighting and shaders
 
-	draw->no_lighting=FALSE;
+	draw->ui_lighting=FALSE;
 	draw->no_shader=FALSE;
 
 		// regular drawing in 3D space
@@ -288,7 +288,7 @@ void model_draw_setup_weapon(obj_type *obj,weapon_type *weap,bool ignore_y_shift
 
 		// regular lighting and shaders
 
-	draw->no_lighting=FALSE;
+	draw->ui_lighting=FALSE;
 	draw->no_shader=FALSE;
 
 		// weapons need rotation fixes
@@ -394,7 +394,7 @@ void model_draw_setup_projectile(proj_type *proj)
 
 		// regular lighting and shaders
 
-	draw->no_lighting=FALSE;
+	draw->ui_lighting=FALSE;
 	draw->no_shader=FALSE;
 
 		// regular drawing in 3D space
@@ -479,7 +479,7 @@ void model_draw_setup_interface_models(model_type *mdl,model_draw *draw,int x,in
 		// always hilite these
 		// and never draw shaders
 
-	draw->no_lighting=TRUE;
+	draw->ui_lighting=TRUE;
 	draw->no_shader=TRUE;
 	
 	draw->light_cache.count=0;

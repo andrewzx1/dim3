@@ -84,7 +84,7 @@ void render_model_create_color_vertexes(model_type *mdl,int mesh_mask,model_draw
 	
 			// hilited meshes
 
-		if ((mesh->no_lighting) || (draw->no_lighting)) {
+		if ((mesh->no_lighting) || (draw->ui_lighting)) {
 
 				// set vertexes to white
 
@@ -222,64 +222,6 @@ void render_model_create_normal_vertexes(model_type *mdl,int mesh_mask,model_dra
       
 ======================================================= */
 
-
-// supergumba
-
-void render_model_draw_normals(model_type *mdl,int mesh_idx,model_draw *draw)
-{
-	int				n,k;
-	float			fx,fy,fz;
-	float			*nl,*vp;
-	model_mesh_type	*mesh;
-	model_trig_type	*trig;
-
-	mesh=&mdl->meshes[mesh_idx];
-	
-	if (!mesh->diffuse) return;
-	if ((mesh->no_lighting) || (draw->no_lighting)) return;
-	
-	return;
-	
-	glColor4f(1.0f,0.0f,1.0f,1.0f);
-	glLineWidth(2.0f);
-		
-	trig=mesh->trigs;
-	nl=draw->setup.mesh_arrays[mesh_idx].gl_normal_array;
-	
-	glBegin(GL_LINES);
-	
-	for (n=0;n!=mesh->ntrig;n++) {
-	
-		for (k=0;k!=3;k++) {
-			vp=draw->setup.mesh_arrays[mesh_idx].gl_vertex_array+((trig->v[k]*3));
-			fx=*vp++;
-			fy=*vp++;
-			fz=*vp;
-			
-			glVertex3f(fx,fy,fz);
-			
-			fx+=((*nl++)*500.0f);
-			fy+=((*nl++)*500.0f);
-			fz+=((*nl++)*500.0f);
-			
-			
-		//	fx+=(trig->tangent_space[k].normal.x*500.0f);
-		//	fy+=(trig->tangent_space[k].normal.y*500.0f);
-		//	fz+=(trig->tangent_space[k].normal.z*500.0f);
-			
-			glVertex3f(fx,fy,fz);
-		}
-		
-		trig++;
-	}
-	
-	glEnd();
-	
-	glLineWidth(1.0f);
-}
-
-
-
 void render_model_diffuse_color_vertexes(model_type *mdl,int mesh_idx,model_draw *draw,float *vertex_ptr)
 {
 	int				n,k;
@@ -291,14 +233,21 @@ void render_model_diffuse_color_vertexes(model_type *mdl,int mesh_idx,model_draw
 	
 	mesh=&mdl->meshes[mesh_idx];
 
-	gl_lights_calc_diffuse_vector(&draw->pnt,draw->light_cache.count,draw->light_cache.indexes,&diffuse_vct);
+	if (!draw->ui_lighting) {
+		gl_lights_calc_diffuse_vector(&draw->pnt,draw->light_cache.count,draw->light_cache.indexes,&diffuse_vct);
 
-	boost=mdl->diffuse_boost;
+		gl_lights_calc_ambient_color(&ambient_col);
+		ambient_col.r*=gl_diffuse_ambient_factor;
+		ambient_col.g*=gl_diffuse_ambient_factor;
+		ambient_col.b*=gl_diffuse_ambient_factor;
+	}
+	else {
+		diffuse_vct.x=diffuse_vct.z=0.0f;
+		diffuse_vct.y=-1.0f;
+		ambient_col.r=ambient_col.g=ambient_col.b=0.7f;
+	}
 	
-	gl_lights_calc_ambient_color(&ambient_col);
-	ambient_col.r*=gl_diffuse_ambient_factor;
-	ambient_col.g*=gl_diffuse_ambient_factor;
-	ambient_col.b*=gl_diffuse_ambient_factor;
+	boost=mdl->diffuse_boost;
 	
 		// run through the colors and add
 		// in the diffuse
@@ -357,7 +306,7 @@ bool render_model_initialize_vertex_objects(model_type *mdl,int mesh_idx,model_d
 		// shaders have vertex, uv, tangent space
 
 		// also remember some offsets for later pointer work
-
+		
 	mesh=&mdl->meshes[mesh_idx];
 
 	if ((!view.shader_on) || (draw->no_shader)) {
@@ -423,8 +372,8 @@ bool render_model_initialize_vertex_objects(model_type *mdl,int mesh_idx,model_d
 
 			trig++;
 		}
-		
-		if ((mesh->diffuse) && (!mesh->no_lighting) && (!draw->no_lighting)) render_model_diffuse_color_vertexes(mdl,mesh_idx,draw,vertex_ptr);
+	
+		if ((mesh->diffuse) && (!mesh->no_lighting)) render_model_diffuse_color_vertexes(mdl,mesh_idx,draw,vertex_ptr);
 	}
 
 		// shader drawing requires
@@ -631,7 +580,7 @@ void render_model_opaque_shader(model_type *mdl,int mesh_idx,model_draw *draw,vi
 			// set hilite and tint on per
 			// mesh basis
 					
-		light_list->hilite=((mesh->no_lighting)||(draw->no_lighting));
+		light_list->hilite=((mesh->no_lighting)||(draw->ui_lighting));
 		if (!mesh->diffuse) {
 			light_list->diffuse_boost=1.0f;
 		}
@@ -807,7 +756,7 @@ void render_model_transparent_shader(model_type *mdl,int mesh_idx,model_draw *dr
 			// set hilite and diffuse on a per
 			// mesh basis
 		
-		light_list->hilite=((mesh->no_lighting)||(draw->no_lighting));
+		light_list->hilite=((mesh->no_lighting)||(draw->ui_lighting));
 		if (!mesh->diffuse) {
 			light_list->diffuse_boost=1.0f;
 		}
@@ -1078,10 +1027,6 @@ void render_model_opaque(model_draw *draw)
 
 		if (draw->meshes[n].has_glow) render_model_glow(mdl,n,draw);
 		
-		
-		render_model_draw_normals(mdl,n,draw);
-		
-
 		render_model_release_vertex_objects();
 	}
 }
