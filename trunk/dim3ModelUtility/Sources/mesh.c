@@ -72,6 +72,10 @@ int model_mesh_add(model_type *model)
 	mesh->no_lighting=FALSE;
 	mesh->blend_add=FALSE;
 	mesh->tintable=FALSE;
+
+	mesh->import_move.x=0;
+	mesh->import_move.y=0;
+	mesh->import_move.z=0;
 	
 	model->nmesh++;
 	

@@ -121,6 +121,10 @@ bool model_new(model_type *model,char *name)
 	model->meshes[0].blend_add=FALSE;
 	model->meshes[0].tintable=FALSE;
 
+	model->meshes[0].import_move.x=0;
+	model->meshes[0].import_move.y=0;
+	model->meshes[0].import_move.z=0;
+
 	model->meshes[0].materials=malloc(max_model_texture*sizeof(model_material_type));
 	if (model->meshes[0].materials==NULL) return(FALSE);
 

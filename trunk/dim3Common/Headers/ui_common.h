@@ -111,6 +111,7 @@ extern void property_set_parameter(int idx,char *param_list,char *str);
 
 extern void text_initialize(void);
 extern void text_shutdown(void);
+extern int text_width(float txt_size,char *str);
 extern void text_draw(int x,int y,float txt_size,d3col *col,char *str);
 extern void text_draw_center(int x,int y,float txt_size,d3col *col,char *str);
 extern void text_draw_right(int x,int y,float txt_size,d3col *col,char *str);
@@ -166,10 +167,13 @@ extern bool list_palette_click(list_palette_type *list,d3pnt *pnt,bool double_cl
 // tool palette
 //
 
+#define tool_palette_tool_tip_font_size				15.0f
+
 extern void tool_palette_initialize(char *app_name);
 extern void tool_palette_shutdown(void);
 extern void tool_palette_draw(void);
 extern void tool_palette_click(d3pnt *pnt);
+extern void tool_palette_mouse_move(d3pnt *pnt);
 
 //
 // text palette

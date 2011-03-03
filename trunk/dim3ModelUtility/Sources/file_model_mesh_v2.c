@@ -278,6 +278,7 @@ void decode_mesh_v2_xml(model_type *model,int model_head)
 		mesh->diffuse=xml_get_attribute_boolean(mesh_tag,"diffuse");
 		mesh->blend_add=xml_get_attribute_boolean(mesh_tag,"additive");
 		mesh->tintable=xml_get_attribute_boolean(mesh_tag,"tintable");
+		xml_get_attribute_3_coord_int(mesh_tag,"import_move",&mesh->import_move.x,&mesh->import_move.y,&mesh->import_move.z);
 		
 			// don't allow blank mesh names
 			
@@ -577,6 +578,7 @@ void encode_mesh_v2_xml(model_type *model)
 		xml_add_attribute_boolean("diffuse",mesh->diffuse);
 		xml_add_attribute_boolean("additive",mesh->blend_add);
 		xml_add_attribute_boolean("tintable",mesh->tintable);
+		xml_add_attribute_3_coord_int("import_move",mesh->import_move.x,mesh->import_move.y,mesh->import_move.z);
 		xml_add_tagend(FALSE);
 	   
 			// vertexes

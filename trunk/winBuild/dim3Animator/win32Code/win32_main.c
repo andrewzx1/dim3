@@ -113,9 +113,14 @@ LRESULT CALLBACK animator_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lPara
 		case WM_MOUSEWHEEL:
 			pnt.x=LOWORD(lParam);
 			pnt.y=HIWORD(lParam);
-
 			main_wind_scroll_wheel(&pnt,(GET_WHEEL_DELTA_WPARAM(wParam)/60));
 			break;
+
+		case WM_MOUSEMOVE:
+			pnt.x=LOWORD(lParam);
+			pnt.y=HIWORD(lParam);
+			main_wind_mouse_move(&pnt);
+			return(DefWindowProc(hWnd,msg,wParam,lParam));
 
 		case WM_KEYDOWN:
 			main_wind_key((char)wParam);

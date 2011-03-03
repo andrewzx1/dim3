@@ -285,12 +285,16 @@ void draw_model_wind(int mesh_idx)
 	
 	if ((state.texture) || (state.mesh)) {
 		draw_model_gl_setup(2);
-		if (state.select_mode==select_mode_vertex) {
-			draw_model_selected_vertexes(mesh_idx);
+
+		switch(state.select_mode) {
+			case select_mode_polygon:
+				draw_model_selected_trig(mesh_idx);
+				break;
+			case select_mode_vertex:
+				draw_model_selected_vertexes(mesh_idx);
+				break;
 		}
-		else {
-			draw_model_selected_trig(mesh_idx);
-		}
+
 		draw_model_gl_setup(0);
 	}
 	
@@ -303,12 +307,18 @@ void draw_model_wind(int mesh_idx)
 		
 	if (state.normal) {
 		draw_model_gl_setup(3);
-		if (state.select_mode==select_mode_vertex) {
-			draw_model_normals_vertexes(mesh_idx);
+
+		switch (state.select_mode) {
+
+			case select_mode_polygon:
+				draw_model_normals_trig(mesh_idx);
+				break;
+
+			case select_mode_vertex:
+				draw_model_normals_vertexes(mesh_idx);
+				break;
 		}
-		else {
-			draw_model_normals_trig(mesh_idx);
-		}
+
 		draw_model_gl_setup(0);
 	}
 	

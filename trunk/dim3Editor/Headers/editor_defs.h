@@ -81,6 +81,47 @@ and can be sold or given away.
 											
 #define tool_separators						{"00010100100100110100101000000000000000"}
 
+#define tool_tip_names							{ \
+													"Move Vertexes and Meshes Freely", \
+													"Move Equal Vertexes Together", \
+													"Snap Vertexes and Meshes", \
+													"Free Look Mode", \
+													"Multi-Select Mode", \
+													"Select Meshes", \
+													"Select Polygons", \
+													"Select Vertexes", \
+													"Combine Meshes", \
+													"Split Mesh", \
+													"Tesselate Mesh", \
+													"No Grid", \
+													"Small Grid", \
+													"Large Grid", \
+													"Auto-Texture Mesh", \
+													"Rotate Mode", \
+													"Move Mode", \
+													"Click To Select Nodes", \
+													"Click To Add Node Link", \
+													"Click To Remove Node Link", \
+													"Show Normals", \
+													"Culling", \
+													"Edit Map Script", \
+													"Run Map In Engine", \
+													"", \
+													"Add Spot", \
+													"Add Light", \
+													"Add Sound", \
+													"Add Particle", \
+													"Add Scenery", \
+													"Add Node", \
+													"Add Imported Mesh", \
+													"Add Imported Mesh UV", \
+													"Add Imported Height Map", \
+													"Add Grid", \
+													"Add Polygon", \
+													"Add Imported SVG", \
+													"Add Liquid", \
+											}
+
 //
 // vertex modes
 //

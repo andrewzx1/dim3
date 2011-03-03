@@ -69,6 +69,7 @@ void property_palette_fill_mesh(int mesh_idx)
 	list_palette_add_header(&property_palette,0,"Mesh Info");
 	list_palette_add_string_int(&property_palette,-1,"Vertexes",mesh->nvertex,FALSE);
 	list_palette_add_string_int(&property_palette,-1,"Triangles",mesh->ntrig,FALSE);
+	list_palette_add_point(&property_palette,-1,"Movement",&mesh->import_move,FALSE);
 }
 
 /* =======================================================

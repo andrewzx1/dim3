@@ -83,27 +83,30 @@ bool tool_get_highlight_state(int tool_idx)
 			return(state.hit_box);
 
 		case 4:
-			return(state.select_mode==select_mode_polygon);
+			return(state.select_mode==select_mode_mesh);
 
 		case 5:
-			return(state.select_mode==select_mode_vertex);
+			return(state.select_mode==select_mode_polygon);
 
 		case 6:
-			return(state.view_box);
+			return(state.select_mode==select_mode_vertex);
 
 		case 7:
-			return(state.normal);
+			return(state.view_box);
 
 		case 8:
-			return(state.first_mesh);
+			return(state.normal);
 
 		case 9:
-			return(state.drag_bone_mode==drag_bone_mode_rotate);
+			return(state.first_mesh);
 
 		case 10:
-			return(state.drag_bone_mode==drag_bone_mode_stretch);
+			return(state.drag_bone_mode==drag_bone_mode_rotate);
 
 		case 11:
+			return(state.drag_bone_mode==drag_bone_mode_stretch);
+
+		case 12:
 			return(state.playing);
 			
 	}
@@ -139,35 +142,40 @@ void tool_click(int tool_idx)
 			
 		case 4:
 			vertex_clear_sel_mask(state.cur_mesh_idx);
+			state.select_mode=select_mode_mesh;
+			break;
+
+		case 5:
+			vertex_clear_sel_mask(state.cur_mesh_idx);
 			state.select_mode=select_mode_polygon;
 			break;
 			
-		case 5:
+		case 6:
 			vertex_clear_sel_mask(state.cur_mesh_idx);
 			state.select_mode=select_mode_vertex;
 			break;
 			
-		case 6:
+		case 7:
 			state.view_box=!state.view_box;
 			break;
 			
-		case 7:
+		case 8:
 			state.normal=!state.normal;
 			break;
 			
-		case 8:
+		case 9:
 			state.first_mesh=!state.first_mesh;
 			break;
 			
-		case 9:
+		case 10:
 			state.drag_bone_mode=drag_bone_mode_rotate;
 			break;
 			
-		case 10:
+		case 11:
 			state.drag_bone_mode=drag_bone_mode_stretch;
 			break;
 			
-		case 11:
+		case 12:
 			main_wind_play(!state.playing,FALSE);
 			break;
 	}

@@ -35,16 +35,19 @@ and can be sold or given away.
 
 #include "glue.h"
 #include "interface.h"
+#include "ui_common.h"
 
 extern file_path_setup_type		file_path_setup;
 
-int								tool_palette_pixel_sz,tool_palette_push_idx;
-d3rect							tool_palette_box;
+int								tool_palette_pixel_sz,tool_palette_push_idx,
+								tool_palette_tool_tip_idx;
+d3rect							tool_palette_box,tool_palette_tool_tip_box;
 
 bitmap_type						tool_bitmaps[tool_count];
 
 char							tool_bitmaps_file_name[tool_count][64]=tool_file_names;
 char							tool_bitmaps_separator[tool_count]=tool_separators;
+char							tool_bitmaps_tip[tool_count][64]=tool_tip_names;
 
 extern bool tool_get_highlight_state(int tool_idx);
 extern void tool_click(int tool_idx);
@@ -73,8 +76,10 @@ void tool_palette_initialize(char *app_name)
 	}
 
 		// currently no pressed icon
+		// or tooltip
 		
 	tool_palette_push_idx=-1;
+	tool_palette_tool_tip_idx=-1;
 }
 
 void tool_palette_shutdown(void)
@@ -156,7 +161,7 @@ void tool_palette_draw_icon(int x,int y,unsigned long gl_id,bool is_highlight,bo
 
 void tool_palette_draw(void)
 {
-	int				n,x;
+	int				n,x,y;
 	d3rect			wbox;
 
 		// viewport setup
@@ -215,6 +220,8 @@ void tool_palette_draw(void)
 		tool_palette_draw_icon(x,tool_palette_box.ty,tool_bitmaps[n].gl_id,tool_get_highlight_state(n),(tool_palette_push_idx==n));
 		x+=tool_palette_pixel_sz;
 	}
+
+	glDisable(GL_ALPHA_TEST);
 	
 		// border
 		
@@ -227,7 +234,33 @@ void tool_palette_draw(void)
 	glVertex2i(tool_palette_box.rx,tool_palette_box.by);
 	glEnd();
 
-	glDisable(GL_ALPHA_TEST);
+		// the tooltip
+
+	if (tool_palette_tool_tip_idx!=-1) {
+
+		glColor4f(1.0f,1.0f,0.5f,1.0f);
+
+		glBegin(GL_QUADS);
+		glVertex2i(tool_palette_tool_tip_box.lx,tool_palette_tool_tip_box.ty);
+		glVertex2i(tool_palette_tool_tip_box.rx,tool_palette_tool_tip_box.ty);
+		glVertex2i(tool_palette_tool_tip_box.rx,tool_palette_tool_tip_box.by);
+		glVertex2i(tool_palette_tool_tip_box.lx,tool_palette_tool_tip_box.by);
+		glEnd();
+
+		glColor4f(0.0f,0.0f,0.0f,1.0f);
+
+		glBegin(GL_LINE_LOOP);
+		glVertex2i(tool_palette_tool_tip_box.lx,tool_palette_tool_tip_box.ty);
+		glVertex2i(tool_palette_tool_tip_box.rx,tool_palette_tool_tip_box.ty);
+		glVertex2i(tool_palette_tool_tip_box.rx,tool_palette_tool_tip_box.by);
+		glVertex2i(tool_palette_tool_tip_box.lx,tool_palette_tool_tip_box.by);
+		glEnd();
+
+		x=tool_palette_tool_tip_box.lx+2;
+		y=tool_palette_tool_tip_box.by-2;
+
+		text_draw(x,y,tool_palette_tool_tip_font_size,NULL,tool_bitmaps_tip[tool_palette_tool_tip_idx]);
+	}
 }
 
 /* =======================================================
@@ -265,7 +298,7 @@ bool tool_palette_click_mouse_down(int push_idx,int lx,int ty)
 	return(TRUE);
 }
 
-void tool_palette_click(d3pnt *pnt)
+int tool_palette_click_find_index(d3pnt *pnt,int *px)
 {
 	int				n,x;
 
@@ -287,11 +320,71 @@ void tool_palette_click(d3pnt *pnt)
 			// check click
 			
 		if ((pnt->x>=x) && (pnt->x<(x+tool_palette_pixel_sz))) {
-			if (tool_palette_click_mouse_down(n,x,tool_palette_box.ty)) tool_click(n);
-			return;
+			*px=x;
+			return(n);
 		}
 		
 		x+=tool_palette_pixel_sz;
 	}
+
+	return(-1);
+}
+
+void tool_palette_click(d3pnt *pnt)
+{
+	int				idx,x;
+
+	idx=tool_palette_click_find_index(pnt,&x);
+	if (idx==-1) return;
+	
+	if (tool_palette_click_mouse_down(idx,x,tool_palette_box.ty)) tool_click(idx);
+}
+
+/* =======================================================
+
+      Tool Palette Mouse Over
+      
+======================================================= */
+
+void tool_palette_mouse_move(d3pnt *pnt)
+{
+	int				idx,wid,x,mx;
+	bool			redraw;
+
+	idx=-1;
+
+	if ((pnt->y>=tool_palette_box.ty) && (pnt->y<=tool_palette_box.by)) {
+		idx=tool_palette_click_find_index(pnt,&x);
+	}
+
+		// setup tool tip
+
+	redraw=(idx!=tool_palette_tool_tip_idx);
+
+	tool_palette_tool_tip_idx=idx;
+
+		// left or right?
+
+	if (idx!=-1) {
+
+		wid=text_width(tool_palette_tool_tip_font_size,tool_bitmaps_tip[idx]);
+		mx=(tool_palette_box.lx+tool_palette_box.rx)>>1;
+
+		if (x<mx) {
+			tool_palette_tool_tip_box.lx=x+(tool_palette_pixel_sz+10);
+			tool_palette_tool_tip_box.rx=tool_palette_tool_tip_box.lx+(6+wid);
+		}
+		else {
+			tool_palette_tool_tip_box.rx=x-(tool_palette_pixel_sz>>1);
+			tool_palette_tool_tip_box.lx=tool_palette_tool_tip_box.rx-(6+wid);
+		}
+
+		tool_palette_tool_tip_box.ty=tool_palette_box.ty+6;
+		tool_palette_tool_tip_box.by=tool_palette_box.by-6;
+	}
+
+		// need redraw
+
+	if (redraw) main_wind_draw();
 }
 
