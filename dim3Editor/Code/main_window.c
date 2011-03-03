@@ -295,6 +295,19 @@ void main_wind_scroll_wheel(d3pnt *pnt,int delta)
 
 /* =======================================================
 
+      Mouse Movement
+      
+======================================================= */
+
+void main_wind_mouse_move(d3pnt *pnt)
+{
+	if (!state.map_opened) return;
+
+	tool_palette_mouse_move(pnt);
+}
+
+/* =======================================================
+
       Cursors
       
 ======================================================= */

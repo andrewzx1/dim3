@@ -443,6 +443,19 @@ void main_wind_scroll_wheel(d3pnt *pnt,int delta)
 
 /* =======================================================
 
+      Mouse Movement
+      
+======================================================= */
+
+void main_wind_mouse_move(d3pnt *pnt)
+{
+	if (!state.model_open) return;
+
+	tool_palette_mouse_move(pnt);
+}
+
+/* =======================================================
+
       Cursors
       
 ======================================================= */

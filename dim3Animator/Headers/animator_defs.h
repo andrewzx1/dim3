@@ -30,7 +30,7 @@ and can be sold or given away.
 //
 
 #define tool_button_size				32
-#define tool_count						12
+#define tool_count						13
 
 
 #define tool_file_names					{ \
@@ -38,6 +38,7 @@ and can be sold or given away.
 											"Tool Mesh", \
 											"Tool Bones", \
 											"Tool Hit Boxes", \
+											"Tool Edit Mesh", \
 											"Tool Edit Polygons", \
 											"Tool Edit Vertexes", \
 											"Tool Boxes", \
@@ -48,7 +49,23 @@ and can be sold or given away.
 											"Tool Play" \
 										}
 
-#define tool_separators					{"000010100101"}
+#define tool_separators					{"0000100100101"}
+
+#define tool_tip_names					{ \
+											"Show Textured Model", \
+											"Show Model Mesh", \
+											"Show Model Bones", \
+											"Show Model Hit Boxes", \
+											"Select Whole Mesh", \
+											"Select Polygons", \
+											"Select Vertexes", \
+											"Show Boxes", \
+											"Show Normals", \
+											"Always Show First Mesh", \
+											"Bone Rotate Mode", \
+											"Bone Move Mode", \
+											"Play Animation" \
+										}
 
 //
 // Menus
@@ -200,8 +217,9 @@ and can be sold or given away.
 // Select Modes
 //
 
-#define select_mode_polygon				0
-#define select_mode_vertex				1
+#define select_mode_mesh				0
+#define select_mode_polygon				1
+#define select_mode_vertex				2
 
 //
 // Drag Handle Types

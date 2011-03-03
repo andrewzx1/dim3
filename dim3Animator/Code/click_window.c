@@ -186,7 +186,7 @@ void select_model_wind_vertex(d3pnt *start_pnt,float *pv)
       
 ======================================================= */
 
-bool select_model_wind_polygon(d3pnt *start_pnt)
+bool select_model_wind_polygon(d3pnt *start_pnt,bool check_only)
 {
 	int					n,k,idx,ntrig;
 	float				*pv;
@@ -233,6 +233,12 @@ bool select_model_wind_polygon(d3pnt *start_pnt)
 
 	if (idx==-1) return(FALSE);
 
+		// are we checking only?
+
+	if (check_only) return(TRUE);
+
+		// run the selection
+
 	if (!os_key_shift_down()) trig_clear_sel_mask(state.cur_mesh_idx);
 	trig_set_sel_mask(state.cur_mesh_idx,idx,TRUE);
 	
@@ -241,6 +247,74 @@ bool select_model_wind_polygon(d3pnt *start_pnt)
 	vertex_set_sel_mask_trig_mask(state.cur_mesh_idx);
 
 	return(TRUE);
+}
+
+/* =======================================================
+
+      Model Mesh Selection
+      
+======================================================= */
+
+void select_model_wind_mesh(d3pnt *start_pnt)
+{
+	int					n,sz;
+	d3pnt				pnt,last_pnt,shift;
+	d3rect				mbox;
+	model_vertex_type	*old_vertexes;
+	model_mesh_type		*mesh;
+
+		// determine if we clicked on
+		// anything
+
+	if (!select_model_wind_polygon(start_pnt,TRUE)) return;
+	
+		// backup vertexes
+		
+	mesh=&model.meshes[state.cur_mesh_idx];
+
+	sz=mesh->nvertex*sizeof(model_vertex_type);
+
+	old_vertexes=(model_vertex_type*)malloc(sz);
+	if (old_vertexes==NULL) return;
+
+	memmove(old_vertexes,mesh->vertexes,sz);
+
+		// run the drag
+
+	shift.x=shift.y=shift.z=0;
+	last_pnt.x=last_pnt.y=-1;
+
+	model_wind_get_box(&mbox);
+	
+	while (!os_track_mouse_location(&pnt,&mbox)) {
+		
+		if ((last_pnt.x==pnt.x) && (last_pnt.y==pnt.y)) continue;
+		memmove(&last_pnt,&pnt,sizeof(d3pnt));
+			
+		shift.x+=((last_pnt.x-start_pnt->x)*4);
+		shift.y+=((last_pnt.y-start_pnt->y)*4);
+
+			// move the vertexes
+
+		for (n=0;n!=mesh->nvertex;n++) {
+			mesh->vertexes[n].pnt.x=old_vertexes[n].pnt.x+shift.x;
+			mesh->vertexes[n].pnt.y=old_vertexes[n].pnt.x+shift.y;
+			mesh->vertexes[n].pnt.z=old_vertexes[n].pnt.x+shift.z;
+		}
+
+			// redraw
+		
+		if (!state.playing) main_wind_draw();
+	}
+	
+	if (!state.playing) main_wind_draw();
+
+		// save movement
+
+	mesh->import_move.x+=shift.x;
+	mesh->import_move.y+=shift.y;
+
+	free(old_vertexes);
 }
 
 /* =======================================================
@@ -284,13 +358,18 @@ void select_model_wind(d3pnt *start_pnt)
 
 		// run the correct click
 		
-	if (state.select_mode==select_mode_polygon) {
-		if (!select_model_wind_polygon(start_pnt)) {
+	switch (state.select_mode) {
+		case select_mode_mesh:
+			select_model_wind_mesh(start_pnt);
+			break;
+		case select_mode_polygon:
+			if (!select_model_wind_polygon(start_pnt,FALSE)) {
+				select_model_wind_vertex(start_pnt,pv);
+			}
+			break;
+		case select_mode_vertex:
 			select_model_wind_vertex(start_pnt,pv);
-		}
-	}
-	else {
-		select_model_wind_vertex(start_pnt,pv);
+			break;
 	}
 	
 		// free the saved vertexes
