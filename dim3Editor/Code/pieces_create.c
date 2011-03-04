@@ -31,6 +31,7 @@ and can be sold or given away.
 
 #include "glue.h"
 #include "interface.h"
+#include "ui_common.h"
 
 extern file_path_setup_type		file_path_setup;
 extern map_type					map;
@@ -85,6 +86,7 @@ void piece_create_get_spot(d3pnt *pnt)
 void piece_create_spot(void)
 {
 	int				index;
+	char			name[256];
 	spot_type		*spot;
 	
 	if (map.nspot==max_spot) {
@@ -119,6 +121,16 @@ void piece_create_spot(void)
 	menu_update_view();
 	
 	main_wind_draw();
+
+		// pick script and auto-create name
+
+	name[0]=0x0;
+	if (!dialog_file_open_run("Pick a Script","Scripts/Objects","js",NULL,name)) return;
+
+	strncpy(spot->script,name,file_str_len);
+	spot->script[file_str_len-1]=0x0;
+	
+	strcpy(spot->name,spot->script);
 }
 
 /* =======================================================
@@ -232,6 +244,10 @@ void piece_create_light(void)
 	menu_update_view();
 	
 	main_wind_draw();
+
+		// pick color
+
+	os_pick_color(&lit->col);
 }
 
 /* =======================================================
@@ -341,7 +357,7 @@ void piece_create_particle(void)
 
 void piece_create_node(void)
 {
-	int				i,index;
+	int				n,index;
 	node_type		*node;
 			
 	if (map.nnode==max_node) {
@@ -366,8 +382,8 @@ void piece_create_node(void)
 	node->follow_camera=FALSE;
 	node->alpha=1.0f;
 
-	for (i=0;i!=max_node_link;i++) {
-		node->link[i]=-1;
+	for (n=0;n!=max_node_link;n++) {
+		node->link[n]=-1;
 	}
 
 		// select sound
@@ -471,6 +487,8 @@ void piece_create_cinema(void)
 	}
 
 	item_palette_select(cinema_piece,cinema_idx);
+
+	dialog_property_string_run(list_string_value_string,(void*)map.cinema.cinemas[cinema_idx].name,name_str_len,0,0);
 }
 
 void piece_create_group(void)
@@ -484,6 +502,8 @@ void piece_create_group(void)
 	}
 
 	item_palette_select(group_piece,group_idx);
+
+	dialog_property_string_run(list_string_value_string,(void*)map.group.groups[group_idx].name,name_str_len,0,0);
 }
 
 void piece_create_movement(void)
@@ -497,5 +517,7 @@ void piece_create_movement(void)
 	}
 
 	item_palette_select(movement_piece,movement_idx);
+
+	dialog_property_string_run(list_string_value_string,(void*)map.movement.movements[movement_idx].name,name_str_len,0,0);
 }
 

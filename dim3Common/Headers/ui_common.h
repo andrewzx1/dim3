@@ -56,11 +56,12 @@ and can be sold or given away.
 #define list_string_value_float								4
 #define list_string_value_positive_float					5
 #define list_string_value_0_to_1_float						6
-#define list_string_value_point								7
-#define list_string_value_angle								8
-#define list_string_value_vector							9
-#define list_string_value_uv								10
-#define list_string_value_tag								11
+#define list_string_value_tag								7
+
+#define list_chord_value_point								0
+#define list_chord_value_angle								1
+#define list_chord_value_vector								2
+#define list_chord_value_uv									3
 
 #define list_button_none									-1
 #define list_button_edit									0
@@ -100,10 +101,17 @@ typedef struct		{
 extern void property_string_get_values(int value_type,void *value,int i_min,int i_max,char *str,char *desc);
 extern void property_string_set_values(int value_type,void *value,int value_len,int i_min,int i_max,char *str);
 
+extern bool property_chord_get_values(int value_type,void *value,char *str_x,char *str_y,char *str_z,char *desc);
+extern void property_chord_set_values(int value_type,void *value,char *str_x,char *str_y,char *str_z);
+
 extern void property_pick_list(char *list,int *idx);
 
 extern void property_get_parameter(int idx,char *param_list,char *str);
 extern void property_set_parameter(int idx,char *param_list,char *str);
+
+extern void dialog_property_list_run(char *list_ptr,int list_count,int list_item_sz,int list_name_offset,bool include_none,int *idx);
+extern void dialog_property_string_run(int value_type,void *value,int value_len,int i_min,int i_max);
+extern void dialog_property_chord_run(int value_type,void *value);
 
 //
 // text

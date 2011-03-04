@@ -255,23 +255,64 @@ bool select_model_wind_polygon(d3pnt *start_pnt,bool check_only)
       
 ======================================================= */
 
+void select_model_get_drag_direction(d3pnt *pnt)
+{
+	float			fx,fy,fz;
+	matrix_type		mat;
+	
+	fx=(float)pnt->x;
+	fy=(float)pnt->y;
+	fz=(float)pnt->z;
+
+	if (state.ang.x!=0) {
+		matrix_rotate_x(&mat,state.ang.x);
+		matrix_vertex_multiply(&mat,&fx,&fy,&fz);
+	}
+	
+	if (state.ang.y!=0) {
+		matrix_rotate_y(&mat,angle_add(state.ang.y,180.0f));
+		matrix_vertex_multiply(&mat,&fx,&fy,&fz);
+	}
+	
+	if (state.ang.z!=0) {
+		matrix_rotate_z(&mat,state.ang.z);
+		matrix_vertex_multiply(&mat,&fx,&fy,&fz);
+	}
+	
+	pnt->x=(int)fx;
+	pnt->y=(int)fy;
+	pnt->z=(int)fz;
+}
+
 void select_model_wind_mesh(d3pnt *start_pnt)
 {
 	int					n,sz;
-	d3pnt				pnt,last_pnt,shift;
+	d3pnt				pnt,last_pnt,shift,old_import_move;
 	d3rect				mbox;
-	model_vertex_type	*old_vertexes;
+	model_vertex_type	*vtx,*old_vtx,*old_vertexes;
 	model_mesh_type		*mesh;
 
 		// determine if we clicked on
 		// anything
 
 	if (!select_model_wind_polygon(start_pnt,TRUE)) return;
+
+		// fail if there are bone attachments
+
+	mesh=&model.meshes[state.cur_mesh_idx];
+
+	vtx=mesh->vertexes;
+
+	for (n=0;n!=mesh->nvertex;n++) {
+		if (vtx->major_bone_idx!=-1) {
+			os_dialog_alert("Drag Mesh","Can not drag mesh when there are bone attached to a vertex in the mesh.");
+			return;
+		}
+		vtx++;
+	}
 	
 		// backup vertexes
 		
-	mesh=&model.meshes[state.cur_mesh_idx];
-
 	sz=mesh->nvertex*sizeof(model_vertex_type);
 
 	old_vertexes=(model_vertex_type*)malloc(sz);
@@ -284,6 +325,8 @@ void select_model_wind_mesh(d3pnt *start_pnt)
 	shift.x=shift.y=shift.z=0;
 	last_pnt.x=last_pnt.y=-1;
 
+	memmove(&old_import_move,&mesh->import_move,sizeof(d3pnt));
+
 	model_wind_get_box(&mbox);
 	
 	while (!os_track_mouse_location(&pnt,&mbox)) {
@@ -291,18 +334,33 @@ void select_model_wind_mesh(d3pnt *start_pnt)
 		if ((last_pnt.x==pnt.x) && (last_pnt.y==pnt.y)) continue;
 		memmove(&last_pnt,&pnt,sizeof(d3pnt));
 			
-		shift.x=((last_pnt.x-start_pnt->x)*4);
+		shift.x=-((last_pnt.x-start_pnt->x)*4);
 		shift.y=((last_pnt.y-start_pnt->y)*4);
+		shift.z=0;
+
+		select_model_get_drag_direction(&shift);
 
 			// move the vertexes
 
+		vtx=mesh->vertexes;
+		old_vtx=old_vertexes;
+
 		for (n=0;n!=mesh->nvertex;n++) {
-			mesh->vertexes[n].pnt.x=old_vertexes[n].pnt.x+shift.x;
-			mesh->vertexes[n].pnt.y=old_vertexes[n].pnt.y+shift.y;
-			mesh->vertexes[n].pnt.z=old_vertexes[n].pnt.z+shift.z;
+			vtx->pnt.x=old_vtx->pnt.x+shift.x;
+			vtx->pnt.y=old_vtx->pnt.y+shift.y;
+			vtx->pnt.z=old_vtx->pnt.z+shift.z;
+
+			vtx++;
+			old_vtx++;
 		}
 		
 		model_calculate_parents(&model);
+
+			// save movement for future imports
+
+		mesh->import_move.x=old_import_move.x+shift.x;
+		mesh->import_move.y=old_import_move.y+shift.y;
+		mesh->import_move.z=old_import_move.z+shift.z;
 
 			// redraw
 		
@@ -310,11 +368,6 @@ void select_model_wind_mesh(d3pnt *start_pnt)
 	}
 	
 	if (!state.playing) main_wind_draw();
-
-		// save movement
-
-	mesh->import_move.x+=shift.x;
-	mesh->import_move.y+=shift.y;
 
 	free(old_vertexes);
 }

@@ -99,11 +99,11 @@ void alt_property_palette_click_movement_move(int movement_idx,int move_idx,int 
 			break;
 
 		case kMovePropertyMove:
-			dialog_property_string_run(list_string_value_point,(void*)&move->mov,0,0,0);
+			dialog_property_chord_run(list_chord_value_point,(void*)&move->mov);
 			break;
 
 		case kMovePropertyRot:
-			dialog_property_string_run(list_string_value_angle,(void*)&move->rot,0,0,0);
+			dialog_property_chord_run(list_chord_value_angle,(void*)&move->rot);
 			break;
 	
 		case kMovePropertySoundName:

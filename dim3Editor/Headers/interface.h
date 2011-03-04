@@ -458,6 +458,3 @@ extern int dialog_obj_import_run(int *scale_axis,int *scale_unit);
 extern bool dialog_svg_import_run(float *scale,int *high);
 extern bool dialog_height_import_run(int *div_cnt,int *size,int *high);
 
-extern void dialog_property_list_run(char *list_ptr,int list_count,int list_item_sz,int list_name_offset,bool include_none,int *idx);
-extern void dialog_property_string_run(int value_type,void *value,int value_len,int i_min,int i_max);
-

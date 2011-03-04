@@ -442,6 +442,10 @@
 						RelativePath="..\..\dim3Common\Code\tool_palette_common.c"
 						>
 					</File>
+					<File
+						RelativePath="..\..\dim3Common\Code\tool_tip_common.c"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="Windows"
@@ -505,6 +509,10 @@
 				</File>
 				<File
 					RelativePath=".\win32Code\win32_dialog_obj_import.c"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\Code\win32_dialog_property_chord.c"
 					>
 				</File>
 				<File

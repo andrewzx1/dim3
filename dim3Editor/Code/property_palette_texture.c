@@ -175,7 +175,7 @@ void property_palette_click_texture(int texture_idx,int id)
 		case kTexturePropertyScale:
 			uv.x=texture->scale.x;
 			uv.y=texture->scale.y;
-			dialog_property_string_run(list_string_value_uv,(void*)&uv,0,0,0);
+			dialog_property_chord_run(list_chord_value_uv,(void*)&uv);
 			texture->scale.x=uv.x;
 			texture->scale.y=uv.y;
 			break;

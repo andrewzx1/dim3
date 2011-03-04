@@ -485,7 +485,7 @@ void property_palette_click_map(int id)
 			break;
 			
 		case kMapPropertyCameraAngle:
-			dialog_property_string_run(list_string_value_angle,(void*)&map.camera.ang,0,0,0);
+			dialog_property_chord_run(list_chord_value_angle,(void*)&map.camera.ang);
 			break;
 
 			// camera plane
@@ -521,7 +521,7 @@ void property_palette_click_map(int id)
 			break;
 
 		case kMapPropertyCameraChaseSlop:
-			dialog_property_string_run(list_string_value_angle,(void*)&map.camera.chase.slop,0,0,0);
+			dialog_property_chord_run(list_chord_value_angle,(void*)&map.camera.chase.slop);
 			break;
 
 			// camera static settings
@@ -587,7 +587,7 @@ void property_palette_click_map(int id)
 		case kMapPropertyTextureShift:
 			uv.x=map.sky.txt_x_shift;
 			uv.y=map.sky.txt_y_shift;
-			dialog_property_string_run(list_string_value_uv,(void*)&uv,0,0,0);
+			dialog_property_chord_run(list_chord_value_uv,(void*)&uv);
 			map.sky.txt_x_shift=uv.x;
 			map.sky.txt_y_shift=uv.y;
 			break;
@@ -625,7 +625,7 @@ void property_palette_click_map(int id)
 		case kMapPropertyBackgroundFrontStamp:
 			uv.x=map.background.front.x_fact;
 			uv.y=map.background.front.y_fact;
-			dialog_property_string_run(list_string_value_uv,(void*)&uv,0,0,0);
+			dialog_property_chord_run(list_chord_value_uv,(void*)&uv);
 			map.background.front.x_fact=uv.x;
 			map.background.front.y_fact=uv.y;
 			break;
@@ -633,7 +633,7 @@ void property_palette_click_map(int id)
 		case kMapPropertyBackgroundFrontShift:
 			uv.x=map.background.front.x_scroll_fact;
 			uv.y=map.background.front.y_scroll_fact;
-			dialog_property_string_run(list_string_value_uv,(void*)&uv,0,0,0);
+			dialog_property_chord_run(list_chord_value_uv,(void*)&uv);
 			map.background.front.x_scroll_fact=uv.x;
 			map.background.front.y_scroll_fact=uv.y;
 			break;
@@ -645,7 +645,7 @@ void property_palette_click_map(int id)
 		case kMapPropertyBackgroundMiddleStamp:
 			uv.x=map.background.middle.x_fact;
 			uv.y=map.background.middle.y_fact;
-			dialog_property_string_run(list_string_value_uv,(void*)&uv,0,0,0);
+			dialog_property_chord_run(list_chord_value_uv,(void*)&uv);
 			map.background.middle.x_fact=uv.x;
 			map.background.middle.y_fact=uv.y;
 			break;
@@ -653,7 +653,7 @@ void property_palette_click_map(int id)
 		case kMapPropertyBackgroundMiddleShift:
 			uv.x=map.background.middle.x_scroll_fact;
 			uv.y=map.background.middle.y_scroll_fact;
-			dialog_property_string_run(list_string_value_uv,(void*)&uv,0,0,0);
+			dialog_property_chord_run(list_chord_value_uv,(void*)&uv);
 			map.background.middle.x_scroll_fact=uv.x;
 			map.background.middle.y_scroll_fact=uv.y;
 			break;
@@ -665,7 +665,7 @@ void property_palette_click_map(int id)
 		case kMapPropertyBackgroundBackStamp:
 			uv.x=map.background.back.x_fact;
 			uv.y=map.background.back.y_fact;
-			dialog_property_string_run(list_string_value_uv,(void*)&uv,0,0,0);
+			dialog_property_chord_run(list_chord_value_uv,(void*)&uv);
 			map.background.back.x_fact=uv.x;
 			map.background.back.y_fact=uv.y;
 			break;
@@ -673,7 +673,7 @@ void property_palette_click_map(int id)
 		case kMapPropertyBackgroundBackShift:
 			uv.x=map.background.back.x_scroll_fact;
 			uv.y=map.background.back.y_scroll_fact;
-			dialog_property_string_run(list_string_value_uv,(void*)&uv,0,0,0);
+			dialog_property_chord_run(list_chord_value_uv,(void*)&uv);
 			map.background.back.x_scroll_fact=uv.x;
 			map.background.back.y_scroll_fact=uv.y;
 			break;
@@ -735,7 +735,7 @@ void property_palette_click_map(int id)
 		case kMapPropertyFogTextureFact:
 			uv.x=map.fog.txt_x_fact;
 			uv.y=map.fog.txt_y_fact;
-			dialog_property_string_run(list_string_value_uv,(void*)&uv,0,0,0);
+			dialog_property_chord_run(list_chord_value_uv,(void*)&uv);
 			map.fog.txt_x_fact=uv.x;
 			map.fog.txt_y_fact=uv.y;
 			break;
@@ -801,7 +801,7 @@ void property_palette_click_map(int id)
 		case kMapPropertyEditorTextureFactor:
 			uv.x=map.editor_setup.txt_scale_x;
 			uv.y=map.editor_setup.txt_scale_y;
-			dialog_property_string_run(list_string_value_uv,(void*)&uv,0,0,0);
+			dialog_property_chord_run(list_chord_value_uv,(void*)&uv);
 			map.editor_setup.txt_scale_x=uv.x;
 			map.editor_setup.txt_scale_y=uv.y;
 			break;
