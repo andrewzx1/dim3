@@ -59,7 +59,7 @@ and can be sold or given away.
 											"Select Whole Mesh", \
 											"Select Polygons", \
 											"Select Vertexes", \
-											"Show Boxes", \
+											"Show View Box", \
 											"Show Normals", \
 											"Always Show First Mesh", \
 											"Bone Rotate Mode", \

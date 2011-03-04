@@ -68,6 +68,8 @@ void main_wind_initialize(void)
 	item_palette_setup();
 	property_palette_setup();
 	alt_property_palette_setup();
+	
+	tool_tip_initialize();
 
 		// vertex and trig masks
 		
@@ -262,6 +264,8 @@ void main_wind_draw(void)
 
 		tool_palette_draw();
 		texture_palette_draw(model.textures);
+		
+		tool_tip_draw();
 	}
 	
 		// swap GL buffer
@@ -303,6 +307,8 @@ void main_wind_draw_no_swap(void)
 		
 		tool_palette_draw();
 		texture_palette_draw(model.textures);
+		
+		tool_tip_draw();
 	}
 }
 

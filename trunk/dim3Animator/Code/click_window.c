@@ -291,16 +291,18 @@ void select_model_wind_mesh(d3pnt *start_pnt)
 		if ((last_pnt.x==pnt.x) && (last_pnt.y==pnt.y)) continue;
 		memmove(&last_pnt,&pnt,sizeof(d3pnt));
 			
-		shift.x+=((last_pnt.x-start_pnt->x)*4);
-		shift.y+=((last_pnt.y-start_pnt->y)*4);
+		shift.x=((last_pnt.x-start_pnt->x)*4);
+		shift.y=((last_pnt.y-start_pnt->y)*4);
 
 			// move the vertexes
 
 		for (n=0;n!=mesh->nvertex;n++) {
 			mesh->vertexes[n].pnt.x=old_vertexes[n].pnt.x+shift.x;
-			mesh->vertexes[n].pnt.y=old_vertexes[n].pnt.x+shift.y;
-			mesh->vertexes[n].pnt.z=old_vertexes[n].pnt.x+shift.z;
+			mesh->vertexes[n].pnt.y=old_vertexes[n].pnt.y+shift.y;
+			mesh->vertexes[n].pnt.z=old_vertexes[n].pnt.z+shift.z;
 		}
+		
+		model_calculate_parents(&model);
 
 			// redraw
 		
