@@ -343,7 +343,7 @@ bool import_obj(char *path,bool replace,bool *found_normals,char *err_str)
             
             vertex->major_bone_idx=vertex->minor_bone_idx=-1;
             vertex->bone_factor=1;
-        
+       
             vertex++;
         }
         else {
@@ -508,7 +508,27 @@ bool import_obj(char *path,bool replace,bool *found_normals,char *err_str)
 	model_floor(&model,state.cur_mesh_idx);
 	model_recalc_boxes(&model);
     model_recalc_normals(&model,(*found_normals));
-	
+
+		// if replace, fix by moving
+		// any user mesh moves
+
+	if (replace) {
+		vertex=mesh->vertexes;
+
+		for (n=0;n!=mesh->nvertex;n++) {
+			vertex->pnt.x+=mesh->import_move.x;
+ 			vertex->pnt.y+=mesh->import_move.y;
+			vertex->pnt.z+=mesh->import_move.z;
+       
+            vertex++;
+        }
+	}
+	else {
+		mesh->import_move.x=0;
+		mesh->import_move.y=0;
+		mesh->import_move.z=0;
+	}
+
 		// if replacement, fix all the
 		// bone attachments
 		

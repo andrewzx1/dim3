@@ -55,7 +55,6 @@ void tool_tip_initialize(void)
 void tool_tip_setup(d3pnt *pnt,char *str,bool right)
 {
 	int				wid,high;
-	bool			redraw;
 
 		// will we need a redraw?
 
@@ -82,7 +81,7 @@ void tool_tip_setup(d3pnt *pnt,char *str,bool right)
 
 		// need redraw
 
-	if (redraw) main_wind_draw();
+	main_wind_draw();
 }
 
 void tool_tip_clear(void)

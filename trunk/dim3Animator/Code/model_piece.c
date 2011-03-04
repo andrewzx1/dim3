@@ -31,6 +31,7 @@ and can be sold or given away.
 
 #include "glue.h"
 #include "interface.h"
+#include "ui_common.h"
 
 extern model_type				model;
 extern animator_state_type		state;
@@ -56,6 +57,8 @@ void model_piece_add_mesh(void)
 
 	item_palette_scroll_into_view(item_mesh,idx);
 	item_palette_state_rebuild();
+
+	dialog_property_string_run(list_string_value_string,(void*)model.meshes[idx].name,name_str_len,0,0);
 }
 
 void model_piece_duplicate_mesh(int mesh_idx)
@@ -73,6 +76,8 @@ void model_piece_duplicate_mesh(int mesh_idx)
 
 	item_palette_scroll_into_view(item_mesh,idx);
 	item_palette_state_rebuild();
+
+	dialog_property_string_run(list_string_value_string,(void*)model.meshes[idx].name,name_str_len,0,0);
 }
 
 void model_piece_delete_mesh(int mesh_idx)
@@ -116,6 +121,8 @@ void model_piece_add_bone(void)
 
 	item_palette_scroll_into_view(item_bone,idx);
 	item_palette_state_rebuild();
+	
+	dialog_property_string_run(list_string_value_string,(void*)model.bones[idx].name,name_str_len,0,0);
 }
 
 void model_piece_delete_bone(int bone_idx)
@@ -158,6 +165,8 @@ void model_piece_add_pose(void)
 
 	item_palette_scroll_into_view(item_pose,idx);
 	item_palette_state_rebuild();
+	
+	dialog_property_string_run(list_string_value_string,(void*)model.poses[idx].name,name_str_len,0,0);
 }
 
 void model_piece_duplicate_pose(int pose_idx)
@@ -176,6 +185,8 @@ void model_piece_duplicate_pose(int pose_idx)
 
 	item_palette_scroll_into_view(item_pose,idx);
 	item_palette_state_rebuild();
+
+	dialog_property_string_run(list_string_value_string,(void*)model.poses[idx].name,name_str_len,0,0);
 }
 
 void model_piece_delete_pose(int pose_idx)
@@ -230,6 +241,8 @@ void model_piece_add_animate(void)
 
 	item_palette_scroll_into_view(item_animate,idx);
 	item_palette_state_rebuild();
+	
+	dialog_property_string_run(list_string_value_string,(void*)model.animates[idx].name,name_str_len,0,0);
 }
 
 void model_piece_duplicate_animate(int animate_idx)
@@ -250,6 +263,8 @@ void model_piece_duplicate_animate(int animate_idx)
 
 	item_palette_scroll_into_view(item_animate,idx);
 	item_palette_state_rebuild();
+
+	dialog_property_string_run(list_string_value_string,(void*)model.animates[idx].name,name_str_len,0,0);
 }
 
 void model_piece_delete_animate(int animate_idx)
@@ -280,6 +295,7 @@ void model_piece_delete_animate(int animate_idx)
 
 void model_piece_add_animation_pose_move_particle(int animate_idx,int animate_pose_move_idx)
 {
+	int						idx;
 	model_animate_type		*animate;
 	model_pose_move_type	*pose_move;
 	model_particle_type		*particle;
@@ -292,7 +308,8 @@ void model_piece_add_animation_pose_move_particle(int animate_idx,int animate_po
 		return;
 	}
 
-	particle=&pose_move->particle.particles[pose_move->particle.count];
+	idx=pose_move->particle.count;
+	particle=&pose_move->particle.particles[idx];
 	pose_move->particle.count++;
 
 	particle->name[0]=0x0;
@@ -300,6 +317,8 @@ void model_piece_add_animation_pose_move_particle(int animate_idx,int animate_po
 	particle->motion_factor=1.0f;
 	particle->motion=particle->rotate=particle->stick=FALSE;
 	particle->slop.x=particle->slop.y=particle->slop.z=0;
+
+	property_palette_pick_particle(pose_move->particle.particles[idx].name);
 }
 
 void model_piece_delete_animation_pose_move_particle(int animate_idx,int animate_pose_move_idx,int idx)
@@ -319,6 +338,7 @@ void model_piece_delete_animation_pose_move_particle(int animate_idx,int animate
 
 void model_piece_add_animation_pose_move_ring(int animate_idx,int animate_pose_move_idx)
 {
+	int						idx;
 	model_animate_type		*animate;
 	model_pose_move_type	*pose_move;
 	model_ring_type			*ring;
@@ -331,13 +351,16 @@ void model_piece_add_animation_pose_move_ring(int animate_idx,int animate_pose_m
 		return;
 	}
 
-	ring=&pose_move->ring.rings[pose_move->ring.count];
+	idx=pose_move->ring.count;
+	ring=&pose_move->ring.rings[idx];
 	pose_move->ring.count++;
 
 	ring->name[0]=0x0;
 	ring->bone_idx=-1;
 	ring->angle=FALSE;
 	ring->slop.x=ring->slop.y=ring->slop.z=0;
+	
+	property_palette_pick_ring(pose_move->ring.rings[idx].name);
 }
 
 void model_piece_delete_animation_pose_move_ring(int animate_idx,int animate_pose_move_idx,int idx)
@@ -377,6 +400,8 @@ void model_piece_add_hit_box(void)
 
 	item_palette_scroll_into_view(item_hit_box,idx);
 	item_palette_state_rebuild();
+
+	dialog_property_string_run(list_string_value_string,(void*)model.hit_boxes[idx].name,name_str_len,0,0);
 }
 
 void model_piece_delete_hit_box(int hit_box_idx)

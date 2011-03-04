@@ -45,11 +45,6 @@ and can be sold or given away.
 
 void property_string_get_values(int value_type,void *value,int i_min,int i_max,char *str,char *desc)
 {
-	d3pnt			*pnt;
-	d3ang			*ang;
-	d3vct			*vct;
-	d3fpnt			*fpnt;
-
 	str[0]=0x0;
 	desc[0]=0x0;
 	
@@ -90,30 +85,6 @@ void property_string_get_values(int value_type,void *value,int i_min,int i_max,c
 			strcpy(desc,"Enter a float between 0.0 and 1.0.");
 			break;
 
-		case list_string_value_point:
-			pnt=(d3pnt*)value;
-			sprintf(str,"%d,%d,%d",pnt->x,pnt->y,pnt->z);
-			strcpy(desc,"Enter a three value (x,y,z) point.");
-			break;
-
-		case list_string_value_angle:
-			ang=(d3ang*)value;
-			sprintf(str,"%.2f,%.2f,%.2f",ang->x,ang->y,ang->z);
-			strcpy(desc,"Enter a three value (x,y,z) angle.");
-			break;
-
-		case list_string_value_vector:
-			vct=(d3vct*)value;
-			sprintf(str,"%.2f,%.2f,%.2f",vct->x,vct->y,vct->z);
-			strcpy(desc,"Enter a three value (x,y,z) vector.");
-			break;
-
-		case list_string_value_uv:
-			fpnt=(d3fpnt*)value;
-			sprintf(str,"%.2f,%.2f",fpnt->x,fpnt->y);
-			strcpy(desc,"Enter a two value (x(u)/y(v)) uv.");
-			break;
-
 		case list_string_value_tag:
 			memmove(str,((int*)value),4);
 			str[4]=0x0;
@@ -125,13 +96,8 @@ void property_string_get_values(int value_type,void *value,int i_min,int i_max,c
 
 void property_string_set_values(int value_type,void *value,int value_len,int i_min,int i_max,char *str)
 {
-	int				n,i[3],len;
-	float			f[3];
-	char			*v_str,*c,*c2;
-	d3pnt			*pnt;
-	d3ang			*ang;
-	d3vct			*vct;
-	d3fpnt			*fpnt;
+	int				len;
+	char			*v_str;
 	
 	switch (value_type) {
 	
@@ -169,77 +135,6 @@ void property_string_set_values(int value_type,void *value,int value_len,int i_m
 			if ((*((float*)value))>1.0f) *((float*)value)=1.0f;
 			break;
 
-		case list_string_value_point:
-			c=str;
-			i[0]=i[1]=i[2]=0;
-
-			for (n=0;n!=3;n++) {
-				c2=strchr(c,',');
-				if (c2!=NULL) *c2=0x0;
-				i[n]=atoi(c);
-				if (c2==NULL) break;
-				c=c2+1;
-			}
-
-			pnt=(d3pnt*)value;
-			pnt->x=i[0];
-			pnt->y=i[1];
-			pnt->z=i[2];
-			break;
-
-		case list_string_value_angle:
-			c=str;
-			f[0]=f[1]=f[2]=0.0f;
-
-			for (n=0;n!=3;n++) {
-				c2=strchr(c,',');
-				if (c2!=NULL) *c2=0x0;
-				f[n]=(float)atof(c);
-				if (c2==NULL) break;
-				c=c2+1;
-			}
-
-			ang=(d3ang*)value;
-			ang->x=f[0];
-			ang->y=f[1];
-			ang->z=f[2];
-			break;
-
-		case list_string_value_vector:
-			c=str;
-			f[0]=f[1]=f[2]=0.0f;
-
-			for (n=0;n!=3;n++) {
-				c2=strchr(c,',');
-				if (c2!=NULL) *c2=0x0;
-				f[n]=(float)atof(c);
-				if (c2==NULL) break;
-				c=c2+1;
-			}
-
-			vct=(d3vct*)value;
-			vct->x=f[0];
-			vct->y=f[1];
-			vct->z=f[2];
-			break;
-
-		case list_string_value_uv:
-			c=str;
-			f[0]=f[1]=0.0f;
-
-			for (n=0;n!=2;n++) {
-				c2=strchr(c,',');
-				if (c2!=NULL) *c2=0x0;
-				f[n]=(float)atof(c);
-				if (c2==NULL) break;
-				c=c2+1;
-			}
-
-			fpnt=(d3fpnt*)value;
-			fpnt->x=f[0];
-			fpnt->y=f[1];
-			break;
-
 		case list_string_value_tag:
 			len=strlen(str);
 	
@@ -248,6 +143,103 @@ void property_string_set_values(int value_type,void *value,int value_len,int i_m
 			}
 
 			memmove(((int*)value),str,4);
+			break;
+
+	}
+}
+
+/* =======================================================
+
+      Property Chord Utilities
+      
+======================================================= */
+
+bool property_chord_get_values(int value_type,void *value,char *str_x,char *str_y,char *str_z,char *desc)
+{
+	d3pnt			*pnt;
+	d3ang			*ang;
+	d3vct			*vct;
+	d3fpnt			*fpnt;
+
+	str_x[0]=0x0;
+	str_y[0]=0x0;
+	str_z[0]=0x0;
+	desc[0]=0x0;
+	
+	switch (value_type) {
+	
+		case list_chord_value_point:
+			pnt=(d3pnt*)value;
+			sprintf(str_x,"%d",pnt->x);
+			sprintf(str_y,"%d",pnt->y);
+			sprintf(str_z,"%d",pnt->z);
+			strcpy(desc,"Enter a three value (x,y,z) int point.");
+			return(TRUE);
+
+		case list_chord_value_angle:
+			ang=(d3ang*)value;
+			sprintf(str_x,"%.2f",ang->x);
+			sprintf(str_y,"%.2f",ang->y);
+			sprintf(str_z,"%.2f",ang->z);
+			strcpy(desc,"Enter a three value (x,y,z) float angle.");
+			return(TRUE);
+
+		case list_chord_value_vector:
+			vct=(d3vct*)value;
+			sprintf(str_x,"%.2f",vct->x);
+			sprintf(str_y,"%.2f",vct->y);
+			sprintf(str_z,"%.2f",vct->z);
+			strcpy(desc,"Enter a three value (x,y,z) float vector.");
+			return(TRUE);
+
+		case list_chord_value_uv:
+			fpnt=(d3fpnt*)value;
+			sprintf(str_x,"%.2f",fpnt->x);
+			sprintf(str_y,"%.2f",fpnt->y);
+			str_z[0]=0x0;
+			strcpy(desc,"Enter a two value (u,v) float uv.");
+			return(FALSE);
+			
+	}
+
+	return(TRUE);
+}
+
+void property_chord_set_values(int value_type,void *value,char *str_x,char *str_y,char *str_z)
+{
+	d3pnt			*pnt;
+	d3ang			*ang;
+	d3vct			*vct;
+	d3fpnt			*fpnt;
+	
+	switch (value_type) {
+	
+		case list_chord_value_point:
+			pnt=(d3pnt*)value;
+			pnt->x=atoi(str_x);
+			pnt->y=atoi(str_y);
+			pnt->z=atoi(str_z);
+			break;
+
+		case list_chord_value_angle:
+			ang=(d3ang*)value;
+			ang->x=(float)atof(str_x);
+			ang->y=(float)atof(str_y);
+			ang->z=(float)atof(str_z);
+			break;
+
+		case list_chord_value_vector:
+			vct=(d3vct*)value;
+			vct->x=(float)atof(str_x);
+			vct->y=(float)atof(str_y);
+			vct->z=(float)atof(str_z);
+			break;
+
+		case list_chord_value_uv:
+			fpnt=(d3fpnt*)value;
+			fpnt->x=(float)atof(str_x);
+			fpnt->y=(float)atof(str_y);
+			fpnt->z=0.0f;
 			break;
 
 	}

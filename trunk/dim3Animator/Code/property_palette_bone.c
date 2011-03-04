@@ -79,11 +79,11 @@ void property_palette_click_bone(int bone_idx,int id)
 	switch (id) {
 
 		case kBonePropertyName:
-			dialog_property_string_run(list_string_value_string,(void*)&bone->name,name_str_len,0,0);
+			dialog_property_string_run(list_string_value_string,(void*)bone->name,name_str_len,0,0);
 			break;
 
 		case kBonePropertyPosition:
-			dialog_property_string_run(list_string_value_point,(void*)&bone->pnt,0,0,0);
+			dialog_property_chord_run(list_chord_value_point,(void*)&bone->pnt);
 			model_calculate_parents(&model);
 			break;
 

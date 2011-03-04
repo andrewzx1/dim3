@@ -250,7 +250,7 @@ void property_palette_click_liquid(int liq_idx,int id)
 				uv.x=liq->lmap_uv.x_offset;
 				uv.y=liq->lmap_uv.y_offset;
 			}
-			dialog_property_string_run(list_string_value_uv,(void*)&uv,0,0,0);
+			dialog_property_chord_run(list_chord_value_uv,(void*)&uv);
 			if (view->uv_layer==uv_layer_normal) {
 				liq->main_uv.x_offset=uv.x;
 				liq->main_uv.y_offset=uv.y;
@@ -270,7 +270,7 @@ void property_palette_click_liquid(int liq_idx,int id)
 				uv.x=liq->lmap_uv.x_size;
 				uv.y=liq->lmap_uv.y_size;
 			}
-			dialog_property_string_run(list_string_value_uv,(void*)&uv,0,0,0);
+			dialog_property_chord_run(list_chord_value_uv,(void*)&uv);
 			if (view->uv_layer==uv_layer_normal) {
 				liq->main_uv.x_size=uv.x;
 				liq->main_uv.y_size=uv.y;
@@ -284,7 +284,7 @@ void property_palette_click_liquid(int liq_idx,int id)
 		case kLiquidPropertyShift:
 			uv.x=liq->x_shift;
 			uv.y=liq->y_shift;
-			dialog_property_string_run(list_string_value_uv,(void*)&uv,0,0,0);
+			dialog_property_chord_run(list_chord_value_uv,(void*)&uv);
 			liq->x_shift=uv.x;
 			liq->y_shift=uv.y;
 			break;

@@ -267,7 +267,7 @@ void property_palette_click_mesh(int mesh_idx,int poly_idx,int id)
 			break;
 			
 		case kMeshPropertyRot:
-			dialog_property_string_run(list_string_value_point,(void*)&mesh->rot_off,0,0,0);
+			dialog_property_chord_run(list_chord_value_point,(void*)&mesh->rot_off);
 			break;
 			
 		case kMeshPropertyGroup:
@@ -339,20 +339,20 @@ void property_palette_click_mesh(int mesh_idx,int poly_idx,int id)
 
 			case kMeshPolyPropertyOff:
 				map_mesh_get_poly_uv_as_box(&map,mesh_idx,poly_idx,(view->uv_layer==uv_layer_light_map),&uv.x,&uv.y,&x_txtfact,&y_txtfact);
-				dialog_property_string_run(list_string_value_uv,(void*)&uv,0,0,0);
+				dialog_property_chord_run(list_chord_value_uv,(void*)&uv);
 				map_mesh_set_poly_uv_as_box(&map,mesh_idx,poly_idx,(view->uv_layer==uv_layer_light_map),uv.x,uv.y,x_txtfact,y_txtfact);
 				break;
 
 			case kMeshPolyPropertySize:
 				map_mesh_get_poly_uv_as_box(&map,mesh_idx,poly_idx,(view->uv_layer==uv_layer_light_map),&x_txtoff,&y_txtoff,&uv.x,&uv.y);
-				dialog_property_string_run(list_string_value_uv,(void*)&uv,0,0,0);
+				dialog_property_chord_run(list_chord_value_uv,(void*)&uv);
 				map_mesh_set_poly_uv_as_box(&map,mesh_idx,poly_idx,(view->uv_layer==uv_layer_light_map),x_txtoff,y_txtoff,uv.x,uv.y);
 				break;
 
 			case kMeshPolyPropertyShift:
 				uv.x=poly->x_shift;
 				uv.y=poly->y_shift;
-				dialog_property_string_run(list_string_value_uv,(void*)&uv,0,0,0);
+				dialog_property_chord_run(list_chord_value_uv,(void*)&uv);
 				poly->x_shift=uv.x;
 				poly->y_shift=uv.y;
 				break;

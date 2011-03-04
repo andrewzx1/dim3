@@ -80,11 +80,11 @@ void property_palette_click_hit_box(int hit_box_idx,int id)
 			break;
 
 		case kHitBoxPropertyOffset:
-			dialog_property_string_run(list_string_value_point,(void*)&hit_box->box.offset,0,0,0);
+			dialog_property_chord_run(list_chord_value_point,(void*)&hit_box->box.offset);
 			break;
 
 		case kHitBoxPropertySize:
-			dialog_property_string_run(list_string_value_point,(void*)&hit_box->box.size,0,0,0);
+			dialog_property_chord_run(list_chord_value_point,(void*)&hit_box->box.size);
 			break;
 
 	}

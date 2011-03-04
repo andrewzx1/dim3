@@ -177,15 +177,15 @@ void property_palette_click_model(int id)
 			break;
 
 		case kModelPropertyCenterOffset:
-			dialog_property_string_run(list_string_value_point,(void*)&model.center,0,0,0);
+			dialog_property_chord_run(list_chord_value_point,(void*)&model.center);
 			break;
 
 		case kModelPropertyViewBoxOffset:
-			dialog_property_string_run(list_string_value_point,(void*)&model.view_box.offset,0,0,0);
+			dialog_property_chord_run(list_chord_value_point,(void*)&model.view_box.offset);
 			break;
 
 		case kModelPropertyViewBoxSize:
-			dialog_property_string_run(list_string_value_point,(void*)&model.view_box.size,0,0,0);
+			dialog_property_chord_run(list_chord_value_point,(void*)&model.view_box.size);
 			break;
 
 		case kModelPropertyNameBone:
@@ -233,7 +233,7 @@ void property_palette_click_model(int id)
 			break;
 
 		case kModelPropertyUIDiffuseVector:
-			dialog_property_string_run(list_string_value_vector,(void*)&model.ui.diffuse_vct,0,0,0);
+			dialog_property_chord_run(list_chord_value_vector,(void*)&model.ui.diffuse_vct);
 			vector_normalize(&model.ui.diffuse_vct);
 			break;
 

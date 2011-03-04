@@ -282,6 +282,10 @@ void file_import_mesh_obj(bool replace)
 		// finish setup
 		
 	vertex_clear_sel_mask(state.cur_mesh_idx);
+	vertex_clear_hide_mask(state.cur_mesh_idx);
+
+	trig_clear_sel_mask(state.cur_mesh_idx);
+	trig_clear_hide_mask(state.cur_mesh_idx);
 	
 	main_wind_draw();
 }

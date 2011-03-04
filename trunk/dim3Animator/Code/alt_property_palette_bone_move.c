@@ -91,11 +91,11 @@ void alt_property_palette_click_pose_bone_move(int pose_idx,int bone_move_idx,in
 	switch (id) {
 
 		case kPoseBoneMovePropertyRot:
-			dialog_property_string_run(list_string_value_vector,(void*)&bone_move->rot,0,0,0);
+			dialog_property_chord_run(list_chord_value_vector,(void*)&bone_move->rot);
 			break;
 
 		case kPoseBoneMovePropertyMove:
-			dialog_property_string_run(list_string_value_vector,(void*)&bone_move->mov,0,0,0);
+			dialog_property_chord_run(list_chord_value_vector,(void*)&bone_move->mov);
 			break;
 
 		case kPoseBoneMovePropertyAcceleration:
@@ -111,7 +111,7 @@ void alt_property_palette_click_pose_bone_move(int pose_idx,int bone_move_idx,in
 			break;
 
 		case kPoseBoneMovePropertyConstraintOffset:
-			dialog_property_string_run(list_string_value_point,(void*)&bone_move->constraint.offset,0,0,0);
+			dialog_property_chord_run(list_chord_value_point,(void*)&bone_move->constraint.offset);
 			break;
 
 	}

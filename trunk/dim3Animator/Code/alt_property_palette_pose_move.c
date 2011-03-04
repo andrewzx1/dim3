@@ -262,7 +262,7 @@ void alt_property_palette_click_animate_pose_move(int animate_idx,int pose_move_
 				break;
 
 			case kAnimationPoseMovePropertyParticleSlop:
-				dialog_property_string_run(list_string_value_point,(void*)&pose_move->particle.particles[idx].slop,0,0,0);
+				dialog_property_chord_run(list_chord_value_point,(void*)&pose_move->particle.particles[idx].slop);
 				break;
 
 		}
@@ -304,7 +304,7 @@ void alt_property_palette_click_animate_pose_move(int animate_idx,int pose_move_
 				break;
 
 			case kAnimationPoseMovePropertyRingSlop:
-				dialog_property_string_run(list_string_value_point,(void*)&pose_move->ring.rings[idx].slop,0,0,0);
+				dialog_property_chord_run(list_chord_value_point,(void*)&pose_move->ring.rings[idx].slop);
 				break;
 
 		}
@@ -334,11 +334,11 @@ void alt_property_palette_click_animate_pose_move(int animate_idx,int pose_move_
 			// position
 
 		case kAnimatePoseMovePropertyMove:
-			dialog_property_string_run(list_string_value_vector,(void*)&pose_move->mov,0,0,0);
+			dialog_property_chord_run(list_chord_value_vector,(void*)&pose_move->mov);
 			break;
 
 		case kAnimatePoseMovePropertySway:
-			dialog_property_string_run(list_string_value_vector,(void*)&pose_move->sway,0,0,0);
+			dialog_property_chord_run(list_chord_value_vector,(void*)&pose_move->sway);
 			break;
 
 			// loop
