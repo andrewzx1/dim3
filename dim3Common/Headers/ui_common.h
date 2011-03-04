@@ -164,10 +164,19 @@ extern void list_palette_scroll_item_into_view(list_palette_type *list,int item_
 extern bool list_palette_click(list_palette_type *list,d3pnt *pnt,bool double_click);
 
 //
-// tool palette
+// tool tips
 //
 
-#define tool_palette_tool_tip_font_size				15.0f
+#define tool_tip_font_size						15.0f
+
+extern void tool_tip_initialize(void);
+extern void tool_tip_setup(d3pnt *pnt,char *str,bool right);
+extern void tool_tip_clear(void);
+extern void tool_tip_draw(void);
+
+//
+// tool palette
+//
 
 extern void tool_palette_initialize(char *app_name);
 extern void tool_palette_shutdown(void);

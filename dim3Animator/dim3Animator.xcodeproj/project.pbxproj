@@ -57,6 +57,8 @@
 		26CAEC7B12D675C500310691 /* texture_edit_common.c in Sources */ = {isa = PBXBuildFile; fileRef = 26CAEC7912D675C500310691 /* texture_edit_common.c */; };
 		26CF62F0126BF0F8002DCC2A /* tool_palette_common.c in Sources */ = {isa = PBXBuildFile; fileRef = 26CF62EF126BF0F8002DCC2A /* tool_palette_common.c */; };
 		26CF633E126BF3ED002DCC2A /* dialog_utility_common.c in Sources */ = {isa = PBXBuildFile; fileRef = 26CF633D126BF3ED002DCC2A /* dialog_utility_common.c */; };
+		26CFA06A13206F7C00DB808F /* Tool Edit Mesh.png in Copy (Tool Icons) */ = {isa = PBXBuildFile; fileRef = 26CFA06813206F7100DB808F /* Tool Edit Mesh.png */; };
+		26CFA0851320714200DB808F /* tool_tip_common.c in Sources */ = {isa = PBXBuildFile; fileRef = 26CFA0841320714200DB808F /* tool_tip_common.c */; };
 		26E3F10A12D6CE8300C8BE92 /* dialog_file_new.c in Sources */ = {isa = PBXBuildFile; fileRef = 26E3F10612D6CE8300C8BE92 /* dialog_file_new.c */; };
 		26E3F10B12D6CE8300C8BE92 /* dialog_file_open.c in Sources */ = {isa = PBXBuildFile; fileRef = 26E3F10712D6CE8300C8BE92 /* dialog_file_open.c */; };
 		26E3F10C12D6CE8300C8BE92 /* dialog_property_list.c in Sources */ = {isa = PBXBuildFile; fileRef = 26E3F10812D6CE8300C8BE92 /* dialog_property_list.c */; };
@@ -126,6 +128,7 @@
 			files = (
 				2625B76412E6899600F51669 /* Tool Bones.png in Copy (Tool Icons) */,
 				2625B76512E6899600F51669 /* Tool Boxes.png in Copy (Tool Icons) */,
+				26CFA06A13206F7C00DB808F /* Tool Edit Mesh.png in Copy (Tool Icons) */,
 				2625B76612E6899600F51669 /* Tool Edit Polygons.png in Copy (Tool Icons) */,
 				2625B76712E6899600F51669 /* Tool Edit Vertexes.png in Copy (Tool Icons) */,
 				2625B76812E6899600F51669 /* Tool Hit Boxes.png in Copy (Tool Icons) */,
@@ -225,6 +228,8 @@
 		26CAEC7912D675C500310691 /* texture_edit_common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = texture_edit_common.c; path = ../dim3Common/Code/texture_edit_common.c; sourceTree = SOURCE_ROOT; };
 		26CF62EF126BF0F8002DCC2A /* tool_palette_common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tool_palette_common.c; path = ../dim3Common/Code/tool_palette_common.c; sourceTree = SOURCE_ROOT; };
 		26CF633D126BF3ED002DCC2A /* dialog_utility_common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_utility_common.c; path = ../dim3Common/Code/dialog_utility_common.c; sourceTree = SOURCE_ROOT; };
+		26CFA06813206F7100DB808F /* Tool Edit Mesh.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Edit Mesh.png"; path = "Tools/Tool Edit Mesh.png"; sourceTree = "<group>"; };
+		26CFA0841320714200DB808F /* tool_tip_common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tool_tip_common.c; path = ../dim3Common/Code/tool_tip_common.c; sourceTree = SOURCE_ROOT; };
 		26E3F10612D6CE8300C8BE92 /* dialog_file_new.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_file_new.c; path = ../dim3Common/Code/dialog_file_new.c; sourceTree = SOURCE_ROOT; };
 		26E3F10712D6CE8300C8BE92 /* dialog_file_open.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_file_open.c; path = ../dim3Common/Code/dialog_file_open.c; sourceTree = SOURCE_ROOT; };
 		26E3F10812D6CE8300C8BE92 /* dialog_property_list.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_property_list.c; path = ../dim3Common/Code/dialog_property_list.c; sourceTree = SOURCE_ROOT; };
@@ -458,6 +463,7 @@
 			children = (
 				2625B74512E6896500F51669 /* Tool Bones.png */,
 				2625B74612E6896500F51669 /* Tool Boxes.png */,
+				26CFA06813206F7100DB808F /* Tool Edit Mesh.png */,
 				2625B74712E6896500F51669 /* Tool Edit Polygons.png */,
 				2625B74812E6896500F51669 /* Tool Edit Vertexes.png */,
 				2625B74912E6896500F51669 /* Tool Hit Boxes.png */,
@@ -479,6 +485,7 @@
 				26CF62EF126BF0F8002DCC2A /* tool_palette_common.c */,
 				F54B62DA0C4030A8005CB612 /* texture_palette.c */,
 				26EE498D126B87A4001D0025 /* texture_palette_common.c */,
+				26CFA0841320714200DB808F /* tool_tip_common.c */,
 				262C397612D026A500A94FEE /* list_palette_common.c */,
 				262C395512D025F700A94FEE /* item_palette.c */,
 				262C395612D025F700A94FEE /* property_palette.c */,
@@ -670,6 +677,7 @@
 				26A2AB0912F3D21500E4E73B /* trig_masks.c in Sources */,
 				26F1D25F1303566500CDAE6B /* property_palette_animator_preference.c in Sources */,
 				26F1D2601303566500CDAE6B /* xml_setup.c in Sources */,
+				26CFA0851320714200DB808F /* tool_tip_common.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

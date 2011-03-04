@@ -93,8 +93,9 @@ OSStatus main_wind_event_callback(EventHandlerCallRef eventhandler,EventRef even
 	char				ch;
 	Point				pt;
 	Rect				wbox;
-	EventMouseWheelAxis	axis;
 	d3pnt				dpt;
+	EventMouseWheelAxis	axis;
+	WindowRef			wref;
 	
 	switch (GetEventClass(event)) {
 	
@@ -185,7 +186,26 @@ OSStatus main_wind_event_callback(EventHandlerCallRef eventhandler,EventRef even
 		
 			switch (GetEventKind(event)) {
 			
+				case kEventMouseMoved:
+					GetEventParameter(event,kEventParamWindowRef,typeWindowRef,NULL,sizeof(WindowRef),NULL,&wref);
+					if (wref!=wind) return(noErr);
+					
+					GetEventParameter(event,kEventParamMouseLocation,typeQDPoint,NULL,sizeof(Point),NULL,&pt);
+					
+					SetPort(GetWindowPort(wind));
+					GlobalToLocal(&pt);
+					
+					dpt.x=pt.h;
+					dpt.y=pt.v;
+
+					main_wind_mouse_move(&dpt);
+					
+					return(noErr);
+			
 				case kEventMouseWheelMoved:
+					GetEventParameter(event,kEventParamWindowRef,typeWindowRef,NULL,sizeof(WindowRef),NULL,&wref);
+					if (wref!=wind) return(noErr);
+
 					GetEventParameter(event,kEventParamMouseLocation,typeQDPoint,NULL,sizeof(Point),NULL,&pt);
 					SetPort(GetWindowPort(wind));
                     GlobalToLocal(&pt);
@@ -232,6 +252,7 @@ void main_wind_open(void)
 												{kEventClassKeyboard,kEventRawKeyUp},
 												{kEventClassKeyboard,kEventRawKeyRepeat},
 												{kEventClassKeyboard,kEventRawKeyModifiersChanged},
+												{kEventClassMouse,kEventMouseMoved},
 												{kEventClassMouse,kEventMouseWheelMoved}};
 	
         // open window

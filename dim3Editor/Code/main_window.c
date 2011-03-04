@@ -68,6 +68,8 @@ void main_wind_initialize(void)
 	item_palette_setup();
 	property_palette_setup();
 	alt_property_palette_setup();
+	
+	tool_tip_initialize();
 
 	view_initialize();
    
@@ -171,6 +173,8 @@ void main_wind_draw(void)
 		item_palette_draw();
 		property_palette_draw();
 		alt_property_palette_draw();
+		
+		tool_tip_draw();
 	}
 
 		// swap buffers
@@ -206,6 +210,8 @@ void main_wind_draw_no_swap(void)
 		item_palette_draw();
 		property_palette_draw();
 		alt_property_palette_draw();
+		
+		tool_tip_draw();
 	}
 }
 
