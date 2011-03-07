@@ -214,4 +214,5 @@ EXPORTS
 	bitmap_check								@402
 	bitmap_copy									@403
 	
-	bitmap_text									@410
+	bitmap_text_intialize						@410
+	bitmap_text_shutdown						@411

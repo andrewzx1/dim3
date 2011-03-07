@@ -35,6 +35,8 @@ and can be sold or given away.
  #include <fontconfig/fontconfig.h>
 #endif
 
+#define font_bitmap_pixel_sz					512
+
 /* =======================================================
 
       Create Font Texture OS X
@@ -43,7 +45,7 @@ and can be sold or given away.
 
 #ifdef D3_OS_MAC
 
-void bitmap_text(texture_font_type *d3_font,char *name)
+void bitmap_text_size_internal(texture_font_size_type *d3_size_font,char *name,int size)
 {
 	int					n,x,y,data_sz,row_add;
 	char				ch;
@@ -84,7 +86,7 @@ void bitmap_text(texture_font_type *d3_font,char *name)
 
 		// setup the correct font
 
-	CGContextSelectFont(bitmap_ctx,name,font_bitmap_point,kCGEncodingMacRoman);
+	CGContextSelectFont(bitmap_ctx,name,size,kCGEncodingMacRoman);
 	
 		// setup text drawing
 		
@@ -103,8 +105,8 @@ void bitmap_text(texture_font_type *d3_font,char *name)
 
 		ch=(n+'!');
 
-		x=(n%font_bitmap_char_per_line)*font_bitmap_char_wid;
-		y=((n/font_bitmap_char_per_line)*font_bitmap_char_high)+font_bitmap_char_baseline;
+		x=(n%d3_size_font->char_per_line)*d3_size_font->char_wid;
+		y=((n/d3_size_font->char_per_line)*d3_size_font->char_high)+d3_size_font->char_baseline;
 
 		CGContextShowTextAtPoint(bitmap_ctx,x,y,&ch,1);
 
@@ -112,7 +114,7 @@ void bitmap_text(texture_font_type *d3_font,char *name)
 			
 		txt_pt=CGContextGetTextPosition(bitmap_ctx);
 
-		d3_font->char_size[n]=(txt_pt.x-(float)x)/(float)font_bitmap_char_wid;
+		d3_size_font->char_size[n]=(txt_pt.x-(float)x)/(float)d3_size_font->char_wid;
 	}
 
 		// texture data
@@ -144,7 +146,7 @@ void bitmap_text(texture_font_type *d3_font,char *name)
 		}
 	}
 	
-	bitmap_data(&d3_font->bitmap,txt_data,font_bitmap_pixel_sz,font_bitmap_pixel_sz,TRUE,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE);
+	bitmap_data(&d3_size_font->bitmap,txt_data,font_bitmap_pixel_sz,font_bitmap_pixel_sz,TRUE,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE);
 
 	free(txt_data);
 	
@@ -164,9 +166,9 @@ void bitmap_text(texture_font_type *d3_font,char *name)
 
 #ifdef D3_OS_LINUX
 
-// code from cyst
+// code from cyst, additional edit by brian
 
-void bitmap_text(texture_font_type *d3_font,char *name)
+void bitmap_text_size_internal(texture_font_size_type *d3_size_font,char *name,int size)
 {
 	int				n, x, y, font_x, font_y, txt_x, txt_y, error;
 	unsigned char 	*data, *ptr;
@@ -195,15 +197,15 @@ void bitmap_text(texture_font_type *d3_font,char *name)
 		return;
 	}
 
-	error = FT_Set_Char_Size(face,0,font_bitmap_point<<6,0,0);
+	error = FT_Set_Char_Size(face,0,(size<<6),0,0);
 	
 	FcPatternDestroy(match);
 	FcPatternDestroy(pat);
 	
 	for (n=0;n!=90;n++) {
 		ch=(unsigned char)(n+'!');
-		x=(n%font_bitmap_char_per_line)*font_bitmap_char_wid;
-		y=((n/font_bitmap_char_per_line)*font_bitmap_char_high)+font_bitmap_char_baseline;
+		x=(n%d3_size_font->char_per_line)*d3_size_font->char_wid;
+		y=((n/d3_size_font->char_per_line)*d3_size_font->char_high)+d3_size_font->char_baseline;
 
 		// get the bitmap
 		FT_Select_Charmap(face, ft_encoding_unicode);
@@ -238,11 +240,11 @@ void bitmap_text(texture_font_type *d3_font,char *name)
 				*ptr++=0xFF;
 				*ptr++=0xFF;
 				*ptr++=(bitmap.buffer[font_y * bitmap.pitch + font_x]);
-				d3_font->char_size[n]=(float)(1+(face->glyph->advance.x>>6))/(float)font_bitmap_char_wid;
+				d3_size_font->char_size[n]=(float)(1+(face->glyph->advance.x>>6))/(float)d3_size_font->char_wid;
 			}
 		}
 	}
-	bitmap_data(&d3_font->bitmap,data,font_bitmap_pixel_sz,font_bitmap_pixel_sz,TRUE,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE);
+	bitmap_data(&d3_size_font->bitmap,data,font_bitmap_pixel_sz,font_bitmap_pixel_sz,TRUE,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE);
 	free(data);
 }
 
@@ -256,7 +258,7 @@ void bitmap_text(texture_font_type *d3_font,char *name)
 
 #ifdef D3_OS_WINDOWS
 
-void bitmap_text(texture_font_type *d3_font,char *name)
+void bitmap_text_size_internal(texture_font_size_type *d3_size_font,char *name,int size)
 {
 	int				n,x,y;
 	unsigned char	ch;
@@ -304,7 +306,7 @@ void bitmap_text(texture_font_type *d3_font,char *name)
 
 		// draw the characters
 
-	font=CreateFont(-font_bitmap_point,0,0,0,FW_MEDIUM,0,0,0,0,OUT_OUTLINE_PRECIS,0,ANTIALIASED_QUALITY,0,name);
+	font=CreateFont(-size,0,0,0,FW_MEDIUM,0,0,0,0,OUT_OUTLINE_PRECIS,0,ANTIALIASED_QUALITY,0,name);
 	if (font!=NULL) old_font=SelectObject(dc,font);
 	
 	SetTextColor(dc,RGB(0,0,0));
@@ -315,15 +317,15 @@ void bitmap_text(texture_font_type *d3_font,char *name)
 
 		ch=(unsigned char)(n+'!');
 
-		x=(n%font_bitmap_char_per_line)*font_bitmap_char_wid;
-		y=((n/font_bitmap_char_per_line)*font_bitmap_char_high)+font_bitmap_char_baseline;
+		x=(n%d3_size_font->char_per_line)*d3_size_font->char_wid;
+		y=((n/d3_size_font->char_per_line)*d3_size_font->char_high)+d3_size_font->char_baseline;
 
 		TextOut(dc,x,y,(char*)&ch,1);
 
 			// get the spacing information
 
 		GetCharABCWidths(dc,ch,ch,&ch_abc);
-		d3_font->char_size[n]=((float)(ch_abc.abcA+ch_abc.abcB+ch_abc.abcC))/((float)font_bitmap_char_wid);
+		d3_size_font->char_size[n]=((float)(ch_abc.abcA+ch_abc.abcB+ch_abc.abcC))/((float)d3_size_font->char_wid);
 	}
 
 	if (font!=NULL) {
@@ -350,7 +352,7 @@ void bitmap_text(texture_font_type *d3_font,char *name)
 		}
 	}
 
-	bitmap_data(&d3_font->bitmap,data,font_bitmap_pixel_sz,font_bitmap_pixel_sz,TRUE,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE);
+	bitmap_data(&d3_size_font->bitmap,data,font_bitmap_pixel_sz,font_bitmap_pixel_sz,TRUE,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE);
 
 	free(data);
 
@@ -363,3 +365,39 @@ void bitmap_text(texture_font_type *d3_font,char *name)
 
 #endif
 
+/* =======================================================
+
+      Create Font Main Line
+      
+======================================================= */
+
+void bitmap_text_size(texture_font_size_type *d3_size_font,char *name,int size)
+{
+	float			f_size;
+
+	f_size=(float)size;
+
+	d3_size_font->char_wid=(int)(f_size*1.05f);
+	d3_size_font->char_high=(int)(f_size*1.15);
+	d3_size_font->char_baseline=(int)(f_size*0.84);
+	d3_size_font->char_per_line=font_bitmap_pixel_sz/d3_size_font->char_wid;
+
+	d3_size_font->gl_xoff=((float)d3_size_font->char_wid/(float)font_bitmap_pixel_sz);
+	d3_size_font->gl_xadd=(d3_size_font->gl_xoff-0.005f);
+	d3_size_font->gl_yoff=((float)d3_size_font->char_high/(float)font_bitmap_pixel_sz);
+	d3_size_font->gl_yadd=(((float)d3_size_font->char_high/(float)font_bitmap_pixel_sz)-0.005f);
+
+	bitmap_text_size_internal(d3_size_font,name,size);
+}
+
+void bitmap_text_initialize(texture_font_type *d3_font)
+{
+	bitmap_text_size(&d3_font->size_24,d3_font->name,24);
+	bitmap_text_size(&d3_font->size_48,d3_font->name,48);
+}
+
+void bitmap_text_shutdown(texture_font_type *d3_font)
+{
+	bitmap_close(&d3_font->size_24.bitmap);
+	bitmap_close(&d3_font->size_48.bitmap);
+}

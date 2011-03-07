@@ -45,14 +45,17 @@ texture_font_type			fonts[2];
 
 void gl_text_initialize(void)
 {
-	bitmap_text(&fonts[font_interface_index],hud.font.interface_name);
-	bitmap_text(&fonts[font_hud_index],hud.font.hud_name);
+	strcpy(fonts[font_interface_index].name,hud.font.interface_name);
+	bitmap_text_initialize(&fonts[font_interface_index]);
+
+	strcpy(fonts[font_hud_index].name,hud.font.interface_name);
+	bitmap_text_initialize(&fonts[font_hud_index]);
 }
 
 void gl_text_shutdown(void)
 {
-	bitmap_close(&fonts[font_interface_index].bitmap);
-	bitmap_close(&fonts[font_hud_index].bitmap);
+	bitmap_text_shutdown(&fonts[font_interface_index]);
+	bitmap_text_shutdown(&fonts[font_hud_index]);
 }
 
 /* =======================================================
@@ -84,7 +87,7 @@ int gl_text_get_string_width(int text_font,int text_size,char *str)
 
 		if ((ch>='!') && (ch<='z')) {
 			ch-='!';
-			fx+=(f_wid*fonts[text_font].char_size[ch]);
+			fx+=(f_wid*fonts[text_font].size_12.char_size[ch]);
 		}
 		else {
 			fx+=(f_wid/3.0f);
@@ -114,7 +117,7 @@ void gl_text_start(int text_font,int text_size)
 	glActiveTexture(GL_TEXTURE0);
 	glEnable(GL_TEXTURE_2D);
 	
-	gl_texture_bind(0,fonts[font_index].bitmap.gl_id);
+	gl_texture_bind(0,fonts[font_index].size_12.bitmap.gl_id);
 	
 		// texture combines
 		
@@ -251,17 +254,17 @@ void gl_text_draw(int x,int y,char *txt,int just,bool vcenter,d3col *col,float a
 		*vertex_ptr++=f_rgt;
 		*vertex_ptr++=f_bot;
 
-		f_lft+=(f_wid*fonts[font_index].char_size[ch]);
+		f_lft+=(f_wid*fonts[font_index].size_12.char_size[ch]);
 
 			// the UVs
 
-		yoff=ch/font_bitmap_char_per_line;
-		xoff=ch-(yoff*font_bitmap_char_per_line);
+		yoff=ch/fonts[font_index].size_12.char_per_line;
+		xoff=ch-(yoff*fonts[font_index].size_12.char_per_line);
 
-		gx_lft=((float)xoff)*font_bitmap_gl_xoff;
-		gx_rgt=gx_lft+font_bitmap_gl_xadd;
-		gy_top=((float)yoff)*font_bitmap_gl_yoff;
-		gy_bot=gy_top+font_bitmap_gl_yadd;
+		gx_lft=((float)xoff)*fonts[font_index].size_12.gl_xoff;
+		gx_rgt=gx_lft+fonts[font_index].size_12.gl_xadd;
+		gy_top=((float)yoff)*fonts[font_index].size_12.gl_yoff;
+		gy_bot=gy_top+fonts[font_index].size_12.gl_yadd;
 
 		*uv_ptr++=gx_lft;
 		*uv_ptr++=gy_top;
