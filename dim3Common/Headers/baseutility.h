@@ -31,7 +31,7 @@ and can be sold or given away.
       
 ======================================================= */
 
-#define dim3_version					"3.0b17"
+#define dim3_version					"3.0b20"
 
 /* =======================================================
 
@@ -503,23 +503,16 @@ extern bool bitmap_copy(char *srce_path,char *dest_path);
       
 ======================================================= */
 
-#define font_bitmap_pixel_sz					512
-#define font_bitmap_point						48
-
-#define font_bitmap_char_wid					50
-#define font_bitmap_char_high					55
-#define font_bitmap_char_baseline				40
-
-#define font_bitmap_char_per_line				10
-
-#define font_bitmap_gl_xoff						((float)font_bitmap_char_wid/(float)font_bitmap_pixel_sz)
-#define font_bitmap_gl_xadd						(font_bitmap_gl_xoff-0.005f)
-#define font_bitmap_gl_yoff						((float)font_bitmap_char_high/(float)font_bitmap_pixel_sz)
-#define font_bitmap_gl_yadd						(((float)font_bitmap_char_high/(float)font_bitmap_pixel_sz)-0.005f)
+typedef struct			{
+							int							char_wid,char_high,char_baseline,char_per_line;
+							float						gl_xoff,gl_xadd,gl_yoff,gl_yadd,char_size[90];
+							bitmap_type					bitmap;
+						} texture_font_size_type;
 
 typedef struct			{
-							float						char_size[90];
-							bitmap_type					bitmap;
+							char						name[256];
+							texture_font_size_type		size_24,size_48;
 						} texture_font_type;
 
-extern void bitmap_text(texture_font_type *d3_font,char *name);
+extern void bitmap_text_initialize(texture_font_type *d3_font);
+extern void bitmap_text_shutdown(texture_font_type *d3_font);

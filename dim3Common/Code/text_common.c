@@ -46,12 +46,13 @@ texture_font_type					txt_font;
 
 void text_initialize(void)
 {
-	bitmap_text(&txt_font,"Arial");
+	strcpy(txt_font.name,"Arial");
+	bitmap_text_initialize(&txt_font);
 }
 
 void text_shutdown(void)
 {
-	bitmap_close(&txt_font.bitmap);
+	bitmap_text_shutdown(&txt_font);
 }
 
 /* =======================================================
@@ -84,7 +85,7 @@ int text_width(float txt_size,char *str)
 		}
 		else {
 			ch-='!';
-			f_wid+=txt_size*txt_font.char_size[ch];
+			f_wid+=txt_size*txt_font.size_24.char_size[ch];
 		}
 	}
 	
@@ -120,7 +121,7 @@ void text_draw(int x,int y,float txt_size,d3col *col,char *str)
 	glAlphaFunc(GL_NOTEQUAL,0);
       
 	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D,txt_font.bitmap.gl_id);
+	glBindTexture(GL_TEXTURE_2D,txt_font.size_24.bitmap.gl_id);
 
 		// no wrapping
 
@@ -156,13 +157,13 @@ void text_draw(int x,int y,float txt_size,d3col *col,char *str)
 
 			// the UVs
 			
-		yoff=ch/font_bitmap_char_per_line;
-		xoff=ch-(yoff*font_bitmap_char_per_line);
+		yoff=ch/txt_font.size_24.char_per_line;
+		xoff=ch-(yoff*txt_font.size_24.char_per_line);
 
-		gx_lft=((float)xoff)*font_bitmap_gl_xoff;
-		gx_rgt=gx_lft+font_bitmap_gl_xadd;
-		gy_top=((float)yoff)*font_bitmap_gl_yoff;
-		gy_bot=gy_top+font_bitmap_gl_yadd;
+		gx_lft=((float)xoff)*txt_font.size_24.gl_xoff;
+		gx_rgt=gx_lft+txt_font.size_24.gl_xadd;
+		gy_top=((float)yoff)*txt_font.size_24.gl_yoff;
+		gy_bot=gy_top+txt_font.size_24.gl_yadd;
 
 			// the vertexes
 
@@ -177,7 +178,7 @@ void text_draw(int x,int y,float txt_size,d3col *col,char *str)
 		glTexCoord2f(gx_lft,gy_bot);
 		glVertex2f(f_lx,f_by);
 
-		f_lx+=(txt_size*txt_font.char_size[ch]);
+		f_lx+=(txt_size*txt_font.size_24.char_size[ch]);
 	}
 
 	glEnd();

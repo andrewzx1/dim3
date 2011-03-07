@@ -212,4 +212,6 @@ _bitmap_write_png_data
 _bitmap_check
 _bitmap_copy
 
-_bitmap_text
+_bitmap_text_initialize
+_bitmap_text_shutdown
+
