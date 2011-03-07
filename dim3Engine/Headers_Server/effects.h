@@ -29,7 +29,7 @@ extern bool effect_initialize_list(void);
 extern void effect_free_list(void);
 extern int effect_count_list(void);
 
-extern effect_type* effect_spawn(int effecttype,d3pnt *pt,int life_tick);
+extern int effect_spawn(int effecttype,d3pnt *pt,int life_tick);
 extern void effect_dispose(void);
 extern bool effect_spawn_flash(d3pnt *pt,d3col *col,int intensity,float exponent,int flash_msec,int fade_msec);
 extern bool effect_spawn_lightning(d3pnt *start_pt,d3pnt *end_pt,int wid,float varient,d3col *col,int life_msec);

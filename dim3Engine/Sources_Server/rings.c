@@ -136,6 +136,7 @@ int ring_get_effect_size(ring_type *ring)
 
 bool ring_spawn(int ring_idx,int obj_idx,d3pnt *pt,d3ang *ang)
 {
+	int						effect_idx;
 	obj_type				*obj;
 	effect_type				*effect;
 	ring_effect_data		*eff_ring;
@@ -145,8 +146,10 @@ bool ring_spawn(int ring_idx,int obj_idx,d3pnt *pt,d3ang *ang)
 		
 		// create ring
 
-	effect=effect_spawn(ef_ring,pt,ring->life_msec);
-	if (effect==NULL) return(FALSE);
+	effect_idx=effect_spawn(ef_ring,pt,ring->life_msec);
+	if (effect_idx==-1) return(FALSE);
+	
+	effect=server.effect_list.effects[effect_idx];
 	
 	eff_ring=&effect->data.ring;
 	eff_ring->ring_idx=ring_idx;

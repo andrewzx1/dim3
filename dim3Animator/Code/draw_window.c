@@ -232,7 +232,6 @@ void draw_model_info(void)
 		strcpy(str,"Pose: (none)");
 	}
 	text_draw(x,y,15,NULL,str);
-	y+=15;
 }
 
 /* =======================================================

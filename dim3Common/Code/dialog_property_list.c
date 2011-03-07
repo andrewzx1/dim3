@@ -2,7 +2,7 @@
 
 Module: dim3 Common
 Author: Brian Barnes
- Usage: File Open Routines
+ Usage: List Properties
 
 ***************************** License ********************************
 
@@ -27,6 +27,7 @@ and can be sold or given away.
 
 #include "glue.h"
 #include "interface.h"
+#include "ui_common.h"
 #include "osx_dialog.h"
 
 #define kPropertyList				FOUR_CHAR_CODE('list')

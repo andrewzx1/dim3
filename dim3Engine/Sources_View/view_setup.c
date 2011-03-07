@@ -57,7 +57,7 @@ extern bool model_inview(model_draw *draw);
 extern bool model_shadow_inview(model_draw *draw);
 extern double distance_to_view_center(int x,int y,int z);
 extern bool boundbox_inview(int x,int z,int ex,int ez,int ty,int by);
-extern bool effect_inview(effect_type *effect,int count);
+extern bool effect_inview(effect_type *effect,int count,d3pnt *center_pnt);
 
 /* =======================================================
 
@@ -285,7 +285,7 @@ void view_add_draw_list(int item_type,int item_idx,double item_dist,int item_fla
 		// room for any more items?
 
 	if (view.render->draw_list.count==max_view_render_item) return;
-
+	
 		// find place in sorted list
 
 	idx=-1;
@@ -574,8 +574,8 @@ bool view_setup_shadow_in_view(model_draw *draw,int mesh_idx)
 
 void view_setup_objects(int tick)
 {
-	int					n,k,flag;
-	bool				is_camera,calc_animation;
+	int					n,flag;
+	bool				is_camera;
 	obj_type			*obj;
 	weapon_type			*weap;
 	
@@ -592,7 +592,10 @@ void view_setup_objects(int tick)
 		object_rigid_body_reset_angle(obj);
 		object_fly_reset_angle(obj);
 		model_draw_setup_object(obj);
-	
+		
+		model_calc_animation(&obj->draw,tick);
+		model_calc_draw_bones(&obj->draw);
+
 			// detect if model or shadow is in view
 			
 		flag=0x0;
@@ -613,35 +616,6 @@ void view_setup_objects(int tick)
 			}
 		}
 		
-			// if in view or has a light
-			// or halo, we need to calc the
-			// animations
-			
-		calc_animation=(flag!=0x0);
-		
-		if (!calc_animation) {
-			for (k=0;k!=max_model_light;k++) {
-				if (obj->draw.lights[k].on) {
-					calc_animation=TRUE;
-					break;
-				}
-			}
-		}
-		
-		if (!calc_animation) {
-			for (k=0;k!=max_model_halo;k++) {
-				if (obj->draw.halos[k].on) {
-					calc_animation=TRUE;
-					break;
-				}
-			}
-		}
-		
-		if (calc_animation) {
-			model_calc_animation(&obj->draw,tick);
-			model_calc_draw_bones(&obj->draw);
-		}	
-			
 			// not in view, skip out
 	
 		if (flag==0x0) continue;
@@ -670,8 +644,7 @@ void view_setup_objects(int tick)
 
 void view_setup_projectiles(int tick)
 {
-	int					n,k,mesh_idx,flag;
-	bool				calc_animation;
+	int					n,mesh_idx,flag;
 	proj_type			*proj;
 	
 	for (n=0;n!=max_proj_list;n++) {
@@ -682,6 +655,9 @@ void view_setup_projectiles(int tick)
 			
 		projectile_reset_angle_for_flight(proj);
 		model_draw_setup_projectile(proj);
+		
+		model_calc_animation(&proj->draw,tick);
+		model_calc_draw_bones(&proj->draw);
 		
 			// find model and shadows in view
 			
@@ -698,36 +674,6 @@ void view_setup_projectiles(int tick)
 				if (model_shadow_inview(&proj->draw)) flag|=view_list_item_flag_shadow_in_view;
 			}
 		}
-			// if in view or has a light
-			// or halo, we need to calc the
-			// animations
-			
-		calc_animation=(flag!=0x0);
-		
-		if (!calc_animation) {
-			for (k=0;k!=max_model_light;k++) {
-				if (proj->draw.lights[k].on) {
-					calc_animation=TRUE;
-					break;
-				}
-			}
-		}
-		
-		if (!calc_animation) {
-			for (k=0;k!=max_model_halo;k++) {
-				if (proj->draw.halos[k].on) {
-					calc_animation=TRUE;
-					break;
-				}
-			}
-		}
-		
-		if (calc_animation) {
-			model_calc_animation(&proj->draw,tick);
-			model_calc_draw_bones(&proj->draw);
-		}	
-			
-			// not in view, skip out
 	
 		if (flag==0x0) continue;
 
@@ -752,6 +698,7 @@ void view_add_effect_draw_list(int tick)
 {
 	int					n;
 	double				d,obscure_dist;
+	d3pnt				center_pnt;
 	effect_type			*effect;
 
 		// obscure distance -- normally is the opengl projection
@@ -775,18 +722,18 @@ void view_add_effect_draw_list(int tick)
 		if (effect->mesh_idx!=-1) {
 			if (!view_mesh_in_draw_list(effect->mesh_idx)) continue;
 		}
-
-			// auto-eliminate effects drawn outside the obscure distance
-				
-		d=distance_to_view_center(effect->pnt.x,effect->pnt.y,effect->pnt.z);
-		if (d>obscure_dist) continue;
 				
 			// check if effect within bound box
 
-		if (!effect_inview(effect,(tick-effect->start_tick))) continue;
-		
-			// sort effects into drawing list
+		if (!effect_inview(effect,(tick-effect->start_tick),&center_pnt)) continue;
 
+			// auto-eliminate effects drawn outside the obscure distance
+				
+		d=distance_to_view_center(center_pnt.x,center_pnt.y,center_pnt.z);
+		if (d>obscure_dist) continue;
+
+			// sort effects into drawing list
+			
 		view_add_draw_list(view_render_type_effect,n,d,0x0);
 	}
 }
