@@ -44,13 +44,16 @@ extern server_type			server;
 
 bool effect_spawn_flash(d3pnt *pt,d3col *col,int intensity,float exponent,int flash_msec,int fade_msec)
 {
+	int					effect_idx;
 	effect_type			*effect;
 	flash_effect_data	*flash;
 	
 		// spawn the flash
 		
-	effect=effect_spawn(ef_flash,pt,(flash_msec+fade_msec));
-	if (effect==NULL) return(FALSE);
+	effect_idx=effect_spawn(ef_flash,pt,(flash_msec+fade_msec));
+	if (effect_idx==-1) return(FALSE);
+	
+	effect=server.effect_list.effects[effect_idx];
 
 	flash=&effect->data.flash;
 	memmove(&flash->col,col,sizeof(d3col));
@@ -71,11 +74,14 @@ bool effect_spawn_flash(d3pnt *pt,d3col *col,int intensity,float exponent,int fl
 
 bool effect_spawn_lightning(d3pnt *start_pt,d3pnt *end_pt,int wid,float varient,d3col *col,int life_msec)
 {
+	int						effect_idx;
 	effect_type				*effect;
 	lightning_effect_data	*lightning;
 
-	effect=effect_spawn(ef_lightning,start_pt,life_msec);
-	if (effect==NULL) return(FALSE);
+	effect_idx=effect_spawn(ef_lightning,start_pt,life_msec);
+	if (effect_idx==-1) return(FALSE);
+	
+	effect=server.effect_list.effects[effect_idx];
 	
 	lightning=&effect->data.lightning;
 	
@@ -101,11 +107,14 @@ bool effect_spawn_lightning(d3pnt *start_pt,d3pnt *end_pt,int wid,float varient,
 
 bool effect_spawn_ray(d3pnt *start_pt,d3pnt *end_pt,int wid,d3col *col,int life_msec)
 {
+	int						effect_idx;
 	effect_type				*effect;
 	ray_effect_data			*ray;
 
-	effect=effect_spawn(ef_ray,start_pt,life_msec);
-	if (effect==NULL) return(FALSE);
+	effect_idx=effect_spawn(ef_ray,start_pt,life_msec);
+	if (effect_idx==-1) return(FALSE);
+	
+	effect=server.effect_list.effects[effect_idx];
 	
 	ray=&effect->data.ray;
 	
@@ -129,10 +138,13 @@ bool effect_spawn_ray(d3pnt *start_pt,d3pnt *end_pt,int wid,d3col *col,int life_
 
 bool effect_spawn_shake(d3pnt *pt,int distance,int size,int life_msec)
 {
+	int					effect_idx;
 	effect_type			*effect;
 
-	effect=effect_spawn(ef_shake,pt,life_msec);
-	if (effect==NULL) return(FALSE);
+	effect_idx=effect_spawn(ef_shake,pt,life_msec);
+	if (effect_idx==-1) return(FALSE);
+	
+	effect=server.effect_list.effects[effect_idx];
 	
 	effect->data.shake.distance=distance;
 	effect->size=size;

@@ -45,8 +45,8 @@ texture_font_type			fonts[2];
 
 void gl_text_initialize(void)
 {
-	bitmap_text(&fonts[font_interface_index],hud.font.interface_name,hud.font.alt_interface_name);
-	bitmap_text(&fonts[font_hud_index],hud.font.hud_name,hud.font.alt_hud_name);
+	bitmap_text(&fonts[font_interface_index],hud.font.interface_name);
+	bitmap_text(&fonts[font_hud_index],hud.font.hud_name);
 }
 
 void gl_text_shutdown(void)

@@ -296,6 +296,7 @@ int particle_get_effect_size(particle_type *particle)
 
 bool particle_spawn_single(int particle_idx,int obj_idx,d3pnt *pt,particle_rotate *rot,particle_motion *motion)
 {
+	int						effect_idx;
 	obj_type				*obj;
 	effect_type				*effect;
 	particle_effect_data	*eff_particle;
@@ -305,8 +306,10 @@ bool particle_spawn_single(int particle_idx,int obj_idx,d3pnt *pt,particle_rotat
 		
 		// create particle
 
-	effect=effect_spawn(ef_particle,pt,particle->life_msec);
-	if (effect==NULL) return(FALSE);
+	effect_idx=effect_spawn(ef_particle,pt,particle->life_msec);
+	if (effect_idx==-1) return(FALSE);
+	
+	effect=server.effect_list.effects[effect_idx];
 	
 	eff_particle=&effect->data.particle;
 	eff_particle->particle_idx=particle_idx;

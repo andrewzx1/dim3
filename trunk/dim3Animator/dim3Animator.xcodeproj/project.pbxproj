@@ -59,6 +59,7 @@
 		26CF633E126BF3ED002DCC2A /* dialog_utility_common.c in Sources */ = {isa = PBXBuildFile; fileRef = 26CF633D126BF3ED002DCC2A /* dialog_utility_common.c */; };
 		26CFA06A13206F7C00DB808F /* Tool Edit Mesh.png in Copy (Tool Icons) */ = {isa = PBXBuildFile; fileRef = 26CFA06813206F7100DB808F /* Tool Edit Mesh.png */; };
 		26CFA0851320714200DB808F /* tool_tip_common.c in Sources */ = {isa = PBXBuildFile; fileRef = 26CFA0841320714200DB808F /* tool_tip_common.c */; };
+		26D89E571322000A0081FE4B /* dialog_property_chord.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D89E561322000A0081FE4B /* dialog_property_chord.c */; };
 		26E3F10A12D6CE8300C8BE92 /* dialog_file_new.c in Sources */ = {isa = PBXBuildFile; fileRef = 26E3F10612D6CE8300C8BE92 /* dialog_file_new.c */; };
 		26E3F10B12D6CE8300C8BE92 /* dialog_file_open.c in Sources */ = {isa = PBXBuildFile; fileRef = 26E3F10712D6CE8300C8BE92 /* dialog_file_open.c */; };
 		26E3F10C12D6CE8300C8BE92 /* dialog_property_list.c in Sources */ = {isa = PBXBuildFile; fileRef = 26E3F10812D6CE8300C8BE92 /* dialog_property_list.c */; };
@@ -230,6 +231,7 @@
 		26CF633D126BF3ED002DCC2A /* dialog_utility_common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_utility_common.c; path = ../dim3Common/Code/dialog_utility_common.c; sourceTree = SOURCE_ROOT; };
 		26CFA06813206F7100DB808F /* Tool Edit Mesh.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Edit Mesh.png"; path = "Tools/Tool Edit Mesh.png"; sourceTree = "<group>"; };
 		26CFA0841320714200DB808F /* tool_tip_common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tool_tip_common.c; path = ../dim3Common/Code/tool_tip_common.c; sourceTree = SOURCE_ROOT; };
+		26D89E561322000A0081FE4B /* dialog_property_chord.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_property_chord.c; path = ../dim3Common/Code/dialog_property_chord.c; sourceTree = SOURCE_ROOT; };
 		26E3F10612D6CE8300C8BE92 /* dialog_file_new.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_file_new.c; path = ../dim3Common/Code/dialog_file_new.c; sourceTree = SOURCE_ROOT; };
 		26E3F10712D6CE8300C8BE92 /* dialog_file_open.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_file_open.c; path = ../dim3Common/Code/dialog_file_open.c; sourceTree = SOURCE_ROOT; };
 		26E3F10812D6CE8300C8BE92 /* dialog_property_list.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_property_list.c; path = ../dim3Common/Code/dialog_property_list.c; sourceTree = SOURCE_ROOT; };
@@ -512,14 +514,15 @@
 				F5B0662C0970936D0045DBE1 /* dialog_about.c */,
 				26E3F10612D6CE8300C8BE92 /* dialog_file_new.c */,
 				26E3F10712D6CE8300C8BE92 /* dialog_file_open.c */,
-				26E3F10812D6CE8300C8BE92 /* dialog_property_list.c */,
 				F5EA20E80CCB0B6D005A75F6 /* dialog_finish_import.c */,
 				F594B4E409A97EB000408388 /* dialog_set_vertex_bone.c */,
-				26E3F10912D6CE8300C8BE92 /* dialog_property_string.c */,
 				F5895D3E0C6570EC00AA2669 /* dialog_animation_time_reset.c */,
 				F5D1A7A30CF933E6001B5E1B /* dialog_play_blend_animation.c */,
 				F5C48B850C88F5CE0011D6B1 /* dialog_scale.c */,
 				265552AD128B744E00662A94 /* dialog_normal.c */,
+				26E3F10812D6CE8300C8BE92 /* dialog_property_list.c */,
+				26E3F10912D6CE8300C8BE92 /* dialog_property_string.c */,
+				26D89E561322000A0081FE4B /* dialog_property_chord.c */,
 			);
 			name = Dialogs;
 			sourceTree = "<group>";
@@ -678,6 +681,7 @@
 				26F1D25F1303566500CDAE6B /* property_palette_animator_preference.c in Sources */,
 				26F1D2601303566500CDAE6B /* xml_setup.c in Sources */,
 				26CFA0851320714200DB808F /* tool_tip_common.c in Sources */,
+				26D89E571322000A0081FE4B /* dialog_property_chord.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -698,8 +702,7 @@
 		F5DB0C230856A7FD005A7CB7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1)";
-				ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1 = "ppc i386";
+				ARCHS = i386;
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
 				DEPLOYMENT_POSTPROCESSING = YES;

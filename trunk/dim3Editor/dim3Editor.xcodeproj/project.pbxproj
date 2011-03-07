@@ -64,6 +64,7 @@
 		26CF62A5126BDE55002DCC2A /* tool_palette_common.c in Sources */ = {isa = PBXBuildFile; fileRef = 26CF62A4126BDE55002DCC2A /* tool_palette_common.c */; };
 		26CF632C126BF34A002DCC2A /* dialog_utility_common.c in Sources */ = {isa = PBXBuildFile; fileRef = 26CF632B126BF34A002DCC2A /* dialog_utility_common.c */; };
 		26CFA0E01320769700DB808F /* tool_tip_common.c in Sources */ = {isa = PBXBuildFile; fileRef = 26CFA0DF1320769700DB808F /* tool_tip_common.c */; };
+		26D89E551321FFFB0081FE4B /* dialog_property_chord.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D89E541321FFFB0081FE4B /* dialog_property_chord.c */; };
 		26DB6D970DDFCE4100BDD008 /* dialog_resize.c in Sources */ = {isa = PBXBuildFile; fileRef = 26DB6D960DDFCE4100BDD008 /* dialog_resize.c */; };
 		26E0C40112F0D7EE00977D36 /* alt_property_palette_action.c in Sources */ = {isa = PBXBuildFile; fileRef = 26E0C3FE12F0D7EE00977D36 /* alt_property_palette_action.c */; };
 		26E0C40212F0D7EE00977D36 /* alt_property_palette_move.c in Sources */ = {isa = PBXBuildFile; fileRef = 26E0C3FF12F0D7EE00977D36 /* alt_property_palette_move.c */; };
@@ -377,6 +378,7 @@
 		26CF62A4126BDE55002DCC2A /* tool_palette_common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tool_palette_common.c; path = ../dim3Common/Code/tool_palette_common.c; sourceTree = SOURCE_ROOT; };
 		26CF632B126BF34A002DCC2A /* dialog_utility_common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_utility_common.c; path = ../dim3Common/Code/dialog_utility_common.c; sourceTree = SOURCE_ROOT; };
 		26CFA0DF1320769700DB808F /* tool_tip_common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tool_tip_common.c; path = ../dim3Common/Code/tool_tip_common.c; sourceTree = SOURCE_ROOT; };
+		26D89E541321FFFB0081FE4B /* dialog_property_chord.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_property_chord.c; path = ../dim3Common/Code/dialog_property_chord.c; sourceTree = SOURCE_ROOT; };
 		26DB6D960DDFCE4100BDD008 /* dialog_resize.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_resize.c; path = Code/dialog_resize.c; sourceTree = "<group>"; };
 		26E0C3FE12F0D7EE00977D36 /* alt_property_palette_action.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = alt_property_palette_action.c; path = Code/alt_property_palette_action.c; sourceTree = "<group>"; };
 		26E0C3FF12F0D7EE00977D36 /* alt_property_palette_move.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = alt_property_palette_move.c; path = Code/alt_property_palette_move.c; sourceTree = "<group>"; };
@@ -693,8 +695,6 @@
 				F5C461450970A68600FBB643 /* dialog_about.c */,
 				26E3F12C12D6D20B00C8BE92 /* dialog_file_new.c */,
 				26E3F12D12D6D20B00C8BE92 /* dialog_file_open.c */,
-				26E3F12E12D6D20B00C8BE92 /* dialog_property_list.c */,
-				26E3F12F12D6D20B00C8BE92 /* dialog_property_string.c */,
 				261CEB8012D156D800D1D8BF /* dialog_obj_import.c */,
 				2607551A12F53A0200001313 /* dialog_svg_import.c */,
 				26DB6D960DDFCE4100BDD008 /* dialog_resize.c */,
@@ -702,6 +702,9 @@
 				F5AF023209CFB5A0008B576A /* dialog_free_rotate.c */,
 				26791D420E4D626700AAD058 /* dialog_grid_mesh.c */,
 				2647AD810E4F48D000BA3338 /* dialog_height_import.c */,
+				26E3F12E12D6D20B00C8BE92 /* dialog_property_list.c */,
+				26E3F12F12D6D20B00C8BE92 /* dialog_property_string.c */,
+				26D89E541321FFFB0081FE4B /* dialog_property_chord.c */,
 			);
 			name = Dialogs;
 			sourceTree = "<group>";
@@ -906,6 +909,7 @@
 				2607551B12F53A0200001313 /* dialog_svg_import.c in Sources */,
 				26F1D2C213035B0A00CDAE6B /* property_palette_editor_preference.c in Sources */,
 				26CFA0E01320769700DB808F /* tool_tip_common.c in Sources */,
+				26D89E551321FFFB0081FE4B /* dialog_property_chord.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

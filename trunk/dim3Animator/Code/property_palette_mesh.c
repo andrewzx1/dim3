@@ -38,6 +38,7 @@ and can be sold or given away.
 #define kMeshPropertyNoLighting				2
 #define kMeshPropertyAdditive				3
 #define kMeshPropertyTintable				4
+#define kMeshPropertyMovement				5
 
 extern model_type				model;
 extern animator_state_type		state;
@@ -65,11 +66,13 @@ void property_palette_fill_mesh(int mesh_idx)
 	list_palette_add_checkbox(&property_palette,kMeshPropertyNoLighting,"Highlighted",mesh->no_lighting,FALSE);
 	list_palette_add_checkbox(&property_palette,kMeshPropertyAdditive,"Alpha is Additive",mesh->blend_add,FALSE);
 	list_palette_add_checkbox(&property_palette,kMeshPropertyTintable,"Multiplayer Tintable",mesh->tintable,FALSE);
+
+	list_palette_add_header(&property_palette,0,"Replace OBJ");
+	list_palette_add_point(&property_palette,kMeshPropertyMovement,"Movement",&mesh->import_move,FALSE);
 	
 	list_palette_add_header(&property_palette,0,"Mesh Info");
 	list_palette_add_string_int(&property_palette,-1,"Vertexes",mesh->nvertex,TRUE);
 	list_palette_add_string_int(&property_palette,-1,"Triangles",mesh->ntrig,TRUE);
-	list_palette_add_point(&property_palette,-1,"Movement",&mesh->import_move,TRUE);
 }
 
 /* =======================================================
@@ -80,6 +83,9 @@ void property_palette_fill_mesh(int mesh_idx)
 
 void property_palette_click_mesh(int mesh_idx,int id)
 {
+	int						n;
+	d3pnt					import_move,move_pnt;
+	model_vertex_type		*vtx;
 	model_mesh_type			*mesh;
 	
 	mesh=&model.meshes[mesh_idx];
@@ -104,6 +110,34 @@ void property_palette_click_mesh(int mesh_idx,int id)
 
 		case kMeshPropertyTintable:
 			mesh->tintable=!mesh->tintable;
+			break;
+			
+		case kMeshPropertyMovement:
+		
+				// get change
+				
+			memmove(&import_move,&mesh->import_move,sizeof(d3pnt));
+			dialog_property_chord_run(list_chord_value_point,(void*)&import_move);
+			
+			move_pnt.x=import_move.x-mesh->import_move.x;
+			move_pnt.y=import_move.y-mesh->import_move.y;
+			move_pnt.z=import_move.z-mesh->import_move.z;
+			memmove(&mesh->import_move,&import_move,sizeof(d3pnt));
+			
+				// now set the vertexes
+				
+			vtx=mesh->vertexes;
+
+			for (n=0;n!=mesh->nvertex;n++) {
+				vtx->pnt.x+=move_pnt.x;
+				vtx->pnt.y+=move_pnt.y;
+				vtx->pnt.z+=move_pnt.z;
+
+				vtx++;
+			}
+			
+			model_calculate_parents(&model);
+				
 			break;
 			
 	}

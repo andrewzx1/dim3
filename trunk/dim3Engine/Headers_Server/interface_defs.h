@@ -281,8 +281,7 @@ typedef struct		{
 
 typedef struct		{
 						int						text_size_small,text_size_medium,text_size_large;
-						char					interface_name[name_str_len],alt_interface_name[name_str_len],
-												hud_name[name_str_len],alt_hud_name[name_str_len];
+						char					interface_name[name_str_len],hud_name[name_str_len];
 					} hud_font_type;
 
 //

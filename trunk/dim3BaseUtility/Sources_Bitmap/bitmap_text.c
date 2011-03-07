@@ -43,12 +43,11 @@ and can be sold or given away.
 
 #ifdef D3_OS_MAC
 
-void bitmap_text(texture_font_type *d3_font,char *name,char *alt_name)
+void bitmap_text(texture_font_type *d3_font,char *name)
 {
 	int					n,x,y,data_sz,row_add;
 	char				ch;
 	unsigned char		*bm_data,*txt_data,*sptr,*dptr;
-	unsigned char		p_str[name_str_len+1];
 	CGPoint				txt_pt;
 	CGContextRef		bitmap_ctx;
 	CGColorSpaceRef		color_space;
@@ -82,6 +81,10 @@ void bitmap_text(texture_font_type *d3_font,char *name,char *alt_name)
  
 	CGContextSetAlpha(bitmap_ctx,1.0f);
 	CGContextSetBlendMode(bitmap_ctx,kCGBlendModeNormal);
+
+		// setup the correct font
+
+	CGContextSelectFont(bitmap_ctx,name,font_bitmap_point,kCGEncodingMacRoman);
 	
 		// setup text drawing
 		
@@ -91,19 +94,6 @@ void bitmap_text(texture_font_type *d3_font,char *name,char *alt_name)
 
 	trans_flip=CGAffineTransformMake(1.0f,0.0f,0.0f,-1.0f,0.0f,0.0f);
 	CGContextSetTextMatrix(bitmap_ctx,trans_flip);
-
-		// setup the correct font
-		// this is depreciated code, but there's no replacement for 10.4
-
-	strcpy((char*)&p_str[1],name);
-	p_str[0]=(unsigned char)strlen(name);
-	
-	if (FMGetFontFamilyFromName(p_str)!=kInvalidFontFamily) {
-		CGContextSelectFont(bitmap_ctx,name,font_bitmap_point,kCGEncodingMacRoman);
-	}
-	else {
-		CGContextSelectFont(bitmap_ctx,alt_name,font_bitmap_point,kCGEncodingMacRoman);
-	}
 		
 		// draw the characters
 
@@ -176,7 +166,7 @@ void bitmap_text(texture_font_type *d3_font,char *name,char *alt_name)
 
 // code from cyst
 
-void bitmap_text(texture_font_type *d3_font,char *name,char *alt_name)
+void bitmap_text(texture_font_type *d3_font,char *name)
 {
 	int				n, x, y, font_x, font_y, txt_x, txt_y, error;
 	unsigned char 	*data, *ptr;
@@ -266,7 +256,7 @@ void bitmap_text(texture_font_type *d3_font,char *name,char *alt_name)
 
 #ifdef D3_OS_WINDOWS
 
-void bitmap_text(texture_font_type *d3_font,char *name,char *alt_name)
+void bitmap_text(texture_font_type *d3_font,char *name)
 {
 	int				n,x,y;
 	unsigned char	ch;
@@ -315,11 +305,8 @@ void bitmap_text(texture_font_type *d3_font,char *name,char *alt_name)
 		// draw the characters
 
 	font=CreateFont(-font_bitmap_point,0,0,0,FW_MEDIUM,0,0,0,0,OUT_OUTLINE_PRECIS,0,ANTIALIASED_QUALITY,0,name);
-	if (font==NULL) {
-		font=CreateFont(-font_bitmap_point,0,0,0,FW_MEDIUM,0,0,0,0,OUT_OUTLINE_PRECIS,0,ANTIALIASED_QUALITY,0,alt_name);
-	}
-
-	old_font=SelectObject(dc,font);
+	if (font!=NULL) old_font=SelectObject(dc,font);
+	
 	SetTextColor(dc,RGB(0,0,0));
 
 	for (n=0;n!=90;n++) {
@@ -339,9 +326,11 @@ void bitmap_text(texture_font_type *d3_font,char *name,char *alt_name)
 		d3_font->char_size[n]=((float)(ch_abc.abcA+ch_abc.abcB+ch_abc.abcC))/((float)font_bitmap_char_wid);
 	}
 
-	SelectObject(dc,old_font);
-	DeleteObject(font);
-
+	if (font!=NULL) {
+		SelectObject(dc,old_font);
+		DeleteObject(font);
+	}
+	
 		// get the bitmap
 
 	ptr=data;

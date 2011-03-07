@@ -46,7 +46,7 @@ texture_font_type					txt_font;
 
 void text_initialize(void)
 {
-	bitmap_text(&txt_font,"Arial","Arial");
+	bitmap_text(&txt_font,"Arial");
 }
 
 void text_shutdown(void)

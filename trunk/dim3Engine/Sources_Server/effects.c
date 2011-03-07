@@ -93,7 +93,7 @@ int effect_count_list(void)
       
 ======================================================= */
 
-effect_type* effect_spawn(int effecttype,d3pnt *pt,int life_tick)
+int effect_spawn(int effecttype,d3pnt *pt,int life_tick)
 {
 	int				n,idx;
 	effect_type		*effect;
@@ -102,7 +102,7 @@ effect_type* effect_spawn(int effecttype,d3pnt *pt,int life_tick)
 		
 	if (life_tick<=0) {
 		console_add_error("Can't spawn effects with no life time");
-		return(NULL);
+		return(-1);
 	}
 	
 		// any more effect spots?
@@ -119,7 +119,7 @@ effect_type* effect_spawn(int effecttype,d3pnt *pt,int life_tick)
 		}
 	}
 		
-	if (idx==-1) return(NULL);
+	if (idx==-1) return(-1);
 	
 		// create effect
 	
@@ -135,7 +135,7 @@ effect_type* effect_spawn(int effecttype,d3pnt *pt,int life_tick)
 	effect->start_tick=game_time_get();
 	effect->life_tick=life_tick;
 	
-	return(effect);
+	return(idx);
 }
 
 /* =======================================================

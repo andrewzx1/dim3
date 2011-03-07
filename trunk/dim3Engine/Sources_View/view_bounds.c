@@ -193,11 +193,13 @@ bool model_shadow_inview(model_draw *draw)
 	return(complex_boundbox_inview(px,py,pz));
 }
 
-bool effect_inview(effect_type *effect,int count)
+bool effect_inview(effect_type *effect,int count,d3pnt *center_pnt)
 {
 	int				x,y,z,lx,rx,tz,bz,ty,by,gravity_y,k,size;
 	particle_type	*particle;
 	
+		// get box
+		
 	switch (effect->effecttype) {
 
 		case ef_particle:
@@ -220,6 +222,7 @@ bool effect_inview(effect_type *effect,int count)
 			else {
 				by+=gravity_y;
 			}
+			
 			break;
 
 		case ef_ring:
@@ -278,6 +281,15 @@ bool effect_inview(effect_type *effect,int count)
 		by=k;
 	}
 	
+		// remember center position for
+		// distance calcs
+		
+	center_pnt->x=(lx+rx)>>1;
+	center_pnt->y=(ty+by)>>1;
+	center_pnt->z=(tz+bz)>>1;
+	
+		// check bounds
+		
 	return(boundbox_inview(lx,tz,rx,bz,ty,by));
 }
 
