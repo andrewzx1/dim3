@@ -60,6 +60,18 @@ void gl_text_shutdown(void)
 
 /* =======================================================
 
+      Get Proper Font
+      
+======================================================= */
+
+texture_font_size_type* gl_text_get_font(int text_font,int text_size)
+{
+	if (text_size<=24) return(&fonts[text_font].size_24);
+	return(&fonts[text_font].size_48);
+}
+
+/* =======================================================
+
       Character/String Sizes
       
 ======================================================= */
@@ -71,9 +83,12 @@ inline int gl_text_get_char_height(int text_size)
 
 int gl_text_get_string_width(int text_font,int text_size,char *str)
 {
-	int			i,ch,len;
-	float		fx,f_wid;
-	char		*c;
+	int						i,ch,len;
+	float					fx,f_wid;
+	char					*c;
+	texture_font_size_type	*font;
+	
+	font=gl_text_get_font(text_font,text_size);
 	
 	f_wid=(float)text_size;
 	
@@ -87,7 +102,7 @@ int gl_text_get_string_width(int text_font,int text_size,char *str)
 
 		if ((ch>='!') && (ch<='z')) {
 			ch-='!';
-			fx+=(f_wid*fonts[text_font].size_12.char_size[ch]);
+			fx+=(f_wid*font->char_size[ch]);
 		}
 		else {
 			fx+=(f_wid/3.0f);
@@ -105,7 +120,10 @@ int gl_text_get_string_width(int text_font,int text_size,char *str)
 
 void gl_text_start(int text_font,int text_size)
 {
-	GLfloat				fct[4];
+	GLfloat					fct[4];
+	texture_font_size_type	*font;
+	
+	font=gl_text_get_font(text_font,text_size);
 
 		// remember font size
 		
@@ -117,7 +135,7 @@ void gl_text_start(int text_font,int text_size)
 	glActiveTexture(GL_TEXTURE0);
 	glEnable(GL_TEXTURE_2D);
 	
-	gl_texture_bind(0,fonts[font_index].size_12.bitmap.gl_id);
+	gl_texture_bind(0,font->bitmap.gl_id);
 	
 		// texture combines
 		
@@ -176,17 +194,22 @@ void gl_text_end(void)
 
 void gl_text_draw(int x,int y,char *txt,int just,bool vcenter,d3col *col,float alpha)
 {
-	int			n,txtlen,ch,xoff,yoff,cnt;
-	float		f_lft,f_rgt,f_top,f_bot,f_wid,f_high,
-				gx_lft,gx_rgt,gy_top,gy_bot;
-	float		*vertex_ptr,*uv_ptr;
-	char		*c;
-	GLfloat		fct[4];
+	int						n,txtlen,ch,xoff,yoff,cnt;
+	float					f_lft,f_rgt,f_top,f_bot,f_wid,f_high,
+							gx_lft,gx_rgt,gy_top,gy_bot;
+	float					*vertex_ptr,*uv_ptr;
+	char					*c;
+	GLfloat					fct[4];
+	texture_font_size_type	*font;
 
 		// get text length
 
 	txtlen=strlen(txt);
 	if (txtlen==0) return;
+	
+		// get font
+		
+	font=gl_text_get_font(font_index,font_size);
 
         // font justification
         
@@ -254,17 +277,17 @@ void gl_text_draw(int x,int y,char *txt,int just,bool vcenter,d3col *col,float a
 		*vertex_ptr++=f_rgt;
 		*vertex_ptr++=f_bot;
 
-		f_lft+=(f_wid*fonts[font_index].size_12.char_size[ch]);
+		f_lft+=(f_wid*font->char_size[ch]);
 
 			// the UVs
 
-		yoff=ch/fonts[font_index].size_12.char_per_line;
-		xoff=ch-(yoff*fonts[font_index].size_12.char_per_line);
+		yoff=ch/font->char_per_line;
+		xoff=ch-(yoff*font->char_per_line);
 
-		gx_lft=((float)xoff)*fonts[font_index].size_12.gl_xoff;
-		gx_rgt=gx_lft+fonts[font_index].size_12.gl_xadd;
-		gy_top=((float)yoff)*fonts[font_index].size_12.gl_yoff;
-		gy_bot=gy_top+fonts[font_index].size_12.gl_yadd;
+		gx_lft=((float)xoff)*font->gl_xoff;
+		gx_rgt=gx_lft+font->gl_xadd;
+		gy_top=((float)yoff)*font->gl_yoff;
+		gy_bot=gy_top+font->gl_yadd;
 
 		*uv_ptr++=gx_lft;
 		*uv_ptr++=gy_top;
