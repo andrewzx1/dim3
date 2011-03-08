@@ -468,9 +468,9 @@ inline bool ray_trace_mesh_poly_bound_check(map_mesh_poly_type *poly,d3pnt *min,
 float ray_trace_object(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,int *hit_box_idx,obj_type *obj)
 {
 	int					n,nhit_box,wid,
-						x,y,z,lx,rx,tz,bz,ty,by,
-						x2,z2;
+						x,y,z,lx,rx,tz,bz,ty,by;
 	float				rang,hit_t;
+	d3pnt				pnt,pt;
 	model_draw			*draw;
 	model_type			*model;
 	model_hit_box_type	*hit_box;
@@ -510,25 +510,26 @@ float ray_trace_object(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,int *hit_box_
 	
 		// check hit boxes
 
-	x+=draw->offset.x;
-	z+=draw->offset.z;
+	pnt.x=x+draw->offset.x;
+	pnt.y=y+draw->offset.y;
+	pnt.z=z+draw->offset.z;
 		
 	hit_box=model->hit_boxes;
 	nhit_box=model->nhit_box;
 	
 	for (n=0;n!=nhit_box;n++) {
-		x2=x+hit_box->box.offset.x;
-		wid=hit_box->box.size.x>>1;
-		lx=x2-wid;
-		rx=x2+wid;
-		
-		by=y+hit_box->box.offset.y;
-		ty=by-hit_box->box.size.y;
+		model_hit_box_get_center(model,n,&pnt,&draw->setup,&pt);
 
-		z2=z+hit_box->box.offset.z;
+		wid=hit_box->box.size.x>>1;
+		lx=pt.x-wid;
+		rx=pt.x+wid;
+		
+		by=pt.y;
+		ty=pt.y-hit_box->box.size.y;
+
 		wid=hit_box->box.size.z>>1;
-		tz=z2-wid;
-		bz=z2+wid;
+		tz=pt.z-wid;
+		bz=pt.z+wid;
 		
 		hit_t=ray_trace_rotated_box(spt,vct,hpt,x,z,lx,rx,tz,bz,ty,by,rang);
 		if (hit_t!=-1.0f) {

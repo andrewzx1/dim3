@@ -497,6 +497,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\win32Code\win32_dialog_blended_animation.c"
+					>
+				</File>
+				<File
 					RelativePath="..\Common\Code\win32_dialog_file_new.c"
 					>
 				</File>
@@ -522,6 +526,14 @@
 				</File>
 				<File
 					RelativePath="..\Common\Code\win32_dialog_property_string.c"
+					>
+				</File>
+				<File
+					RelativePath=".\win32Code\win32_dialog_scale_animation.c"
+					>
+				</File>
+				<File
+					RelativePath=".\win32Code\win32_dialog_set_normal.c"
 					>
 				</File>
 				<File

@@ -37,6 +37,8 @@ EXPORTS
 
 	model_hit_box_add						@155
 	model_hit_box_delete					@156
+	model_hit_box_get_center				@157
+	model_hit_box_get_box					@158
 
 	model_find_mesh							@160
 	model_find_bone							@161
