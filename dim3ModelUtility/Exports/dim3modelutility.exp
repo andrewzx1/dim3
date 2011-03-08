@@ -34,6 +34,8 @@ _model_animate_delete_ring
 
 _model_hit_box_add
 _model_hit_box_delete
+_model_hit_box_get_center
+_model_hit_box_get_box
 
 _model_find_mesh
 _model_find_bone

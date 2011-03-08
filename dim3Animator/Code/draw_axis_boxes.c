@@ -73,21 +73,23 @@ void draw_model_axis(void)
 
 /* =======================================================
 
-      Draw Model Box
+      Draw View Box
       
 ======================================================= */
 
-void draw_model_box(model_box_type *box,bool draw_floor,bool draw_handles)
+void draw_model_box_view(void)
 {
 	int				n,xsz,zsz,ysz,offx,offz,offy,
 					x[8],y[8],z[8];
 	
-    xsz=box->size.x/2;
-    offx=box->offset.x;
-    zsz=box->size.z/2;
-    offz=box->offset.z;
-    ysz=box->size.y;
-    offy=box->offset.y;
+		// get box
+
+    xsz=model.view_box.size.x/2;
+    offx=model.view_box.offset.x;
+    zsz=model.view_box.size.z/2;
+    offz=model.view_box.offset.z;
+    ysz=model.view_box.size.y;
+    offy=model.view_box.offset.y;
 	
 	x[0]=x[1]=x[4]=x[5]=offx-xsz;
 	x[2]=x[3]=x[6]=x[7]=offx+xsz;
@@ -100,7 +102,10 @@ void draw_model_box(model_box_type *box,bool draw_floor,bool draw_handles)
 		model_get_point_position(&draw_setup,&x[n],&y[n],&z[n]);
 	}
     
-    glLineWidth(4);
+		// draw box
+
+ 	glColor4f(0.0f,1.0f,0.0f,0.5f);
+	glLineWidth(4.0f);
     
     glBegin(GL_LINE_LOOP);
 	for (n=0;n!=4;n++) {
@@ -121,50 +126,94 @@ void draw_model_box(model_box_type *box,bool draw_floor,bool draw_handles)
 	}
     glEnd();
 		
-    glLineWidth(1);
-	
-	if (draw_handles) {
-		glDisable(GL_DEPTH_TEST);
+    glLineWidth(1.0f);
+
+		// draw floor
+
+	glColor4f(0.5f,0.5f,0.5f,0.5f);
 		
-		glColor4f(0.0f,0.0f,0.0f,1.0f);
-		glPointSize(10);
-		
-		glBegin(GL_POINTS);
-		
-		for (n=0;n!=8;n++) {
-			glVertex3i(x[n],y[n],z[n]);
-		}
-		
-		glEnd();
-		glPointSize(1);
-		
-		glEnable(GL_DEPTH_TEST);
+	glBegin(GL_POLYGON);
+	for (n=4;n!=8;n++) {
+		glVertex3i(x[n],y[n],z[n]);
 	}
-    
-    if (draw_floor) {
-		glColor4f(0.75f,0.75f,0.75f,0.5f);
-		
-		glBegin(GL_POLYGON);
-		for (n=4;n!=8;n++) {
-			glVertex3i(x[n],y[n],z[n]);
-		}
-		glEnd();
-	}
+	glEnd();
 }
 
-void draw_model_box_view(void)
-{
-	glColor4f(0.0f,1.0f,0.0f,0.5f);
-	draw_model_box(&model.view_box,TRUE,FALSE);
-}
+
+
+/* =======================================================
+
+      Draw Model Box
+      
+======================================================= */
 
 void draw_model_box_hit_boxes(void)
 {
-	int				n;
+	int				n,k,x[8],y[8],z[8];
+	d3pnt			pnt,min,max;
+
+	pnt.x=pnt.y=pnt.z=0;
 	
 	for (n=0;n<model.nhit_box;n++) {
+
+			// get box
+
+		model_hit_box_get_box(&model,n,&pnt,&draw_setup,&min,&max);
+
+		x[0]=x[1]=x[4]=x[5]=min.x;
+		x[2]=x[3]=x[6]=x[7]=max.x;
+		y[0]=y[1]=y[2]=y[3]=min.y;
+		y[4]=y[5]=y[6]=y[7]=max.y;
+		z[0]=z[3]=z[4]=z[7]=min.z;
+		z[1]=z[2]=z[5]=z[6]=max.z;
+		
+		for (k=0;k!=8;k++) {
+			model_get_point_position(&draw_setup,&x[k],&y[k],&z[k]);
+		}
+	    
+			// draw box
+
 		glColor4f(1.0f,1.0f,0.0f,0.5f);
-		draw_model_box(&model.hit_boxes[n].box,FALSE,TRUE);
+		glLineWidth(4.0f);
+	    
+		glBegin(GL_LINE_LOOP);
+		for (k=0;k!=4;k++) {
+			glVertex3i(x[k],y[k],z[k]);
+		}
+		glEnd();
+	    
+		glBegin(GL_LINE_LOOP);
+		for (k=4;k!=8;k++) {
+			glVertex3i(x[k],y[k],z[k]);
+		}
+		glEnd();
+	    
+		glBegin(GL_LINES);
+		for (k=0;k!=4;k++) {
+			glVertex3i(x[k],y[k],z[k]);
+			glVertex3i(x[k+4],y[k+4],z[k+4]);
+		}
+		glEnd();
+		
+		glLineWidth(1.0f);
+	
+			// draw handles
+
+		glDisable(GL_DEPTH_TEST);
+		
+		glColor4f(0.0f,0.0f,0.0f,1.0f);
+		glPointSize(10.0f);
+		
+		glBegin(GL_POINTS);
+		
+		for (k=0;k!=8;k++) {
+			glVertex3i(x[k],y[k],z[k]);
+		}
+		
+		glEnd();
+		glPointSize(1.0f);
+		
+		glEnable(GL_DEPTH_TEST);
 	}
 }
 

@@ -56,22 +56,10 @@ extern int os_win32_menu_lookup(int id);
 
 /* =======================================================
 
-      Supergumba -- temporary patches
+      Unused About Dialog
       
 ======================================================= */
 
-bool dialog_set_normal_run(d3vct *vct)
-{
-	return(FALSE);
-}
-bool dialog_play_blend_animation_run(void)
-{
-	return(FALSE);
-}
-bool dialog_animation_reset_time_run(int animate_idx)
-{
-	return(FALSE);
-}
 void dialog_about_run(void)
 {
 }

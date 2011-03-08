@@ -129,6 +129,7 @@ typedef struct		{
 					} model_box_type;
 					
 typedef struct		{
+						int								bone_idx;
 						char							name[64];
 						model_box_type					box;
 					} model_hit_box_type;
@@ -372,6 +373,8 @@ extern void model_animate_delete_ring(model_type *model,int animate_idx,int anim
 
 extern int model_hit_box_add(model_type *model);
 extern void model_hit_box_delete(model_type *model,int hit_box_idx);
+extern void model_hit_box_get_center(model_type *model,int hit_box_idx,d3pnt *pnt,model_draw_setup *draw_setup,d3pnt *center_pnt);
+extern void model_hit_box_get_box(model_type *model,int hit_box_idx,d3pnt *pnt,model_draw_setup *draw_setup,d3pnt *min,d3pnt *max);
 
 extern int model_find_mesh(model_type *model,char *mesh_name);
 extern int model_find_bone(model_type *model,model_tag tag);

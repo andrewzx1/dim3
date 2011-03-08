@@ -46,8 +46,8 @@ void decode_mesh_v2_xml(model_type *model,int model_head)
 							materials_tag,material_tag,fills_tag,fill_tag;
 	bool					had_tangent;
 	char					tag_name[32];
-	model_tag				*major_bone_tags,*minor_bone_tags,
-							*bone_parent_tags;
+	model_tag				hit_box_tags[max_model_hit_box],
+							*major_bone_tags,*minor_bone_tags,*bone_parent_tags;
 	model_hit_box_type		*hit_box;
 	model_mesh_type			*mesh;
     model_vertex_type		*vertex;
@@ -127,6 +127,7 @@ void decode_mesh_v2_xml(model_type *model,int model_head)
 			hit_box=&model->hit_boxes[hit_box_idx];
 
 			xml_get_attribute_text(tag,"name",hit_box->name,64);
+			hit_box_tags[i]=xml_get_attribute_model_tag(tag,"bone");
 			xml_get_attribute_3_coord_int(tag,"size",&hit_box->box.size.x,&hit_box->box.size.y,&hit_box->box.size.z);
 			xml_get_attribute_3_coord_int(tag,"offset",&hit_box->box.offset.x,&hit_box->box.offset.y,&hit_box->box.offset.z);
 			
@@ -225,7 +226,7 @@ void decode_mesh_v2_xml(model_type *model,int model_head)
 		tag=xml_findnextchild(tag);
     }
 	
-		// find the light bone
+		// fix some bone indexes
 		
 	for (k=0;k!=max_model_light;k++) {
 		model->tags.light_bone_idx[k]=model_find_bone(model,model->tags.light_bone_tag[k]);
@@ -236,6 +237,10 @@ void decode_mesh_v2_xml(model_type *model,int model_head)
 	}
 
 	model->tags.name_bone_idx=model_find_bone(model,model->tags.name_bone_tag);
+
+	for (k=0;k!=model->nhit_box;k++) {
+		model->hit_boxes[k].bone_idx=model_find_bone(model,hit_box_tags[k]);
+	}
 		
 		// reset the bones from tags to indexes
 		
@@ -502,6 +507,7 @@ void encode_mesh_v2_xml(model_type *model)
     for (i=0;i!=model->nhit_box;i++) {
 		xml_add_tagstart("Hit_Box");
 		xml_add_attribute_text("name",hit_box->name);
+		if (hit_box->bone_idx!=-1) xml_add_attribute_model_tag("bone",model->bones[hit_box->bone_idx].tag);
 		xml_add_attribute_3_coord_int("size",hit_box->box.size.x,hit_box->box.size.y,hit_box->box.size.z);
 		xml_add_attribute_3_coord_int("offset",hit_box->box.offset.x,hit_box->box.offset.y,hit_box->box.offset.z);
 		xml_add_tagend(TRUE);
@@ -594,9 +600,7 @@ void encode_mesh_v2_xml(model_type *model)
 			
 			xml_add_attribute_3_coord_int("c3",vertex->pnt.x,vertex->pnt.y,vertex->pnt.z);
 
-			if (vertex->major_bone_idx!=-1) {
-				xml_add_attribute_model_tag("major",model->bones[vertex->major_bone_idx].tag);
-			}
+			if (vertex->major_bone_idx!=-1) xml_add_attribute_model_tag("major",model->bones[vertex->major_bone_idx].tag);
 			if (vertex->minor_bone_idx!=-1) {
 				xml_add_attribute_model_tag("minor",model->bones[vertex->minor_bone_idx].tag);
 				xml_add_attribute_float("factor",vertex->bone_factor);

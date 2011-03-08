@@ -645,9 +645,7 @@ bool collide_object_to_map(obj_type *obj,d3pnt *motion)
 		nhit_box=model->nhit_box;
 		
 		for (n=0;n!=nhit_box;n++) {
-			pt.x=obj->pnt.x+hit_box->box.offset.x;
-			pt.y=obj->pnt.y+hit_box->box.offset.y;
-			pt.z=obj->pnt.z+hit_box->box.offset.z;
+			model_hit_box_get_center(model,n,&obj->pnt,&draw->setup,&pt);
 
 			box_sz.x=hit_box->box.size.x;
 			box_sz.z=hit_box->box.size.z;
@@ -890,9 +888,7 @@ bool collide_object_to_sphere(d3pnt *sphere_pnt,int radius,obj_type *obj)
 		nhit_box=model->nhit_box;
 		
 		for (n=0;n!=nhit_box;n++) {
-			pt.x=obj->pnt.x+hit_box->box.offset.x;
-			pt.y=obj->pnt.y+hit_box->box.offset.y;
-			pt.z=obj->pnt.z+hit_box->box.offset.z;
+			model_hit_box_get_center(model,n,&obj->pnt,&draw->setup,&pt);
 
 			box_sz.x=hit_box->box.size.x;
 			box_sz.z=hit_box->box.size.z;
