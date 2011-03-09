@@ -2109,7 +2109,7 @@ void element_draw_table_line_data(element_type *element,int x,int y,int row,int 
 			// draw text
 			
 		gl_text_start(font_interface_index,hud.font.text_size_small);
-		gl_text_draw(tx,dy,txt,tx_left,TRUE,txt_col,1.0f);
+		gl_text_draw(tx,(dy+2),txt,tx_left,TRUE,txt_col,1.0f);
 		gl_text_end();
 		
 			// get next data
