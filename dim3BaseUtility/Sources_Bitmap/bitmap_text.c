@@ -379,7 +379,7 @@ void bitmap_text_size(texture_font_size_type *d3_size_font,char *name,int size)
 
 	d3_size_font->char_wid=(int)(f_size*1.05f);
 	d3_size_font->char_high=(int)(f_size*1.15);
-	d3_size_font->char_baseline=(int)(f_size*0.84);
+	d3_size_font->char_baseline=(int)(f_size*0.82);
 	d3_size_font->char_per_line=font_bitmap_pixel_sz/d3_size_font->char_wid;
 
 	d3_size_font->gl_xoff=((float)d3_size_font->char_wid/(float)font_bitmap_pixel_sz);
