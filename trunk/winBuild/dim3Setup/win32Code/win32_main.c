@@ -1,8 +1,8 @@
 /****************************** File *********************************
 
-Module: dim3 Animator
+Module: dim3 Setup
 Author: Brian Barnes
- Usage: win32 Animator Main
+ Usage: win32 Setup Main
 
 ***************************** License ********************************
 
@@ -25,7 +25,7 @@ and can be sold or given away.
  
 *********************************************************************/
 
-#include "dim3Animator.h"
+#include "dim3Setup.h"
 
 #include "glue.h"
 #include "interface.h"
@@ -40,17 +40,10 @@ HMENU							wnd_menu;
 HACCEL							wnd_accel;
 HDC								wnd_gl_dc;
 HGLRC							wnd_gl_ctx;
-UINT_PTR						wnd_timer;
 
 bool							quit;
 
-extern model_type				model;
-extern model_draw_setup			draw_setup;
-extern file_path_setup_type		file_path_setup;
-extern animator_state_type		state;
-
-extern d3rect					tool_palette_box,txt_palette_box;
-extern list_palette_type		item_palette;
+//extern list_palette_type		item_palette;
 
 extern int os_win32_menu_lookup(int id);
 
@@ -70,7 +63,7 @@ void dialog_about_run(void)
       
 ======================================================= */
 
-LRESULT CALLBACK animator_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam)
+LRESULT CALLBACK setup_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam)
 {
 	int					cmd;
 	d3pnt				pnt;
@@ -80,7 +73,7 @@ LRESULT CALLBACK animator_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lPara
 
 		case WM_PAINT:
 			BeginPaint(wnd,&ps);
-			main_wind_draw();
+		//	main_wind_draw();
 			EndPaint(wnd,&ps);
 			break;
 
@@ -94,28 +87,28 @@ LRESULT CALLBACK animator_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lPara
 			pnt.y=HIWORD(lParam);
 
 			SetCapture(wnd);
-			main_wind_click(&pnt,(msg==WM_LBUTTONDBLCLK));
+		//	main_wind_click(&pnt,(msg==WM_LBUTTONDBLCLK));
 			ReleaseCapture();
 			break;
 
 		case WM_MOUSEWHEEL:
 			pnt.x=LOWORD(lParam);
 			pnt.y=HIWORD(lParam);
-			main_wind_scroll_wheel(&pnt,(GET_WHEEL_DELTA_WPARAM(wParam)/60));
+		//	main_wind_scroll_wheel(&pnt,(GET_WHEEL_DELTA_WPARAM(wParam)/60));
 			break;
 
 		case WM_MOUSEMOVE:
 			pnt.x=LOWORD(lParam);
 			pnt.y=HIWORD(lParam);
-			main_wind_mouse_move(&pnt);
+		//	main_wind_mouse_move(&pnt);
 			return(DefWindowProc(hWnd,msg,wParam,lParam));
 
 		case WM_KEYDOWN:
-			main_wind_key((char)wParam);
+		//	main_wind_key((char)wParam);
 			break;
 
 		case WM_SETCURSOR:
-			if (!main_wind_cursor()) return(DefWindowProc(hWnd,msg,wParam,lParam));
+		//	if (!main_wind_cursor()) return(DefWindowProc(hWnd,msg,wParam,lParam));
 			break;
 
 		case WM_COMMAND:
@@ -126,10 +119,6 @@ LRESULT CALLBACK animator_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lPara
 			break;
 
 		case WM_CLOSE:
-			if (state.model_open) {
-				if (!menu_save_changes_dialog()) return(0);
-				file_close_model();
-			}
 			os_application_quit();
 			break;
 
@@ -139,17 +128,6 @@ LRESULT CALLBACK animator_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lPara
 	}
 
 	return(0);
-}
-
-/* =======================================================
-
-      Timer
-      
-======================================================= */
-
-void CALLBACK wnd_timer_proc(HWND hwnd,UINT msg,UINT_PTR id,DWORD tick)
-{
-	if ((state.model_open) && (state.playing)) main_wind_draw();
 }
 
 /* =======================================================
@@ -169,7 +147,7 @@ void main_wind_close(void)
 		// win32 keeps window open so menu can be
 		// used so we need to reset here
 
-	os_set_title_window("dim3 Animator");
+	os_set_title_window("dim3 Setup");
 	main_wind_draw();
 }
 
@@ -186,7 +164,7 @@ void win32_main_wind_open(void)
  
     wcx.cbSize=sizeof(wcx);
     wcx.style=CS_DBLCLKS;
-    wcx.lpfnWndProc=animator_wnd_proc;
+    wcx.lpfnWndProc=setup_wnd_proc;
     wcx.cbClsExtra=0;
     wcx.cbWndExtra=0;
     wcx.hInstance=hInst;
@@ -194,12 +172,12 @@ void win32_main_wind_open(void)
     wcx.hCursor=LoadCursor(NULL,IDC_ARROW);
     wcx.hbrBackground=(HBRUSH)GetStockObject(WHITE_BRUSH);
     wcx.lpszMenuName=NULL;
-    wcx.lpszClassName="dim3AnimatorWindowClass";
+    wcx.lpszClassName="dim3SetupWindowClass";
     wcx.hIconSm=NULL;
 
     RegisterClassEx(&wcx);
 
-    wnd=CreateWindow("dim3AnimatorWindowClass","dim3 Animator",WS_OVERLAPPEDWINDOW|WS_CLIPSIBLINGS|WS_CLIPCHILDREN|WS_MAXIMIZE,CW_USEDEFAULT,CW_USEDEFAULT,CW_USEDEFAULT,CW_USEDEFAULT,NULL,NULL,hInst,NULL);
+    wnd=CreateWindow("dim3SetupWindowClass","dim3 Setup",WS_OVERLAPPEDWINDOW|WS_CLIPSIBLINGS|WS_CLIPCHILDREN|WS_MAXIMIZE,CW_USEDEFAULT,CW_USEDEFAULT,CW_USEDEFAULT,CW_USEDEFAULT,NULL,NULL,hInst,NULL);
 
 		// menu
 
@@ -242,10 +220,6 @@ void win32_main_wind_open(void)
 
 	main_wind_gl_setup();
 
-		// start play timer
-
-	wnd_timer=SetTimer(wnd,1,10,wnd_timer_proc);
-
 		// initialize
 
 	main_wind_initialize();
@@ -255,10 +229,6 @@ void win32_main_wind_open(void)
 
 void win32_main_wind_close(void)
 {
-		// kill the timer
-
-	KillTimer(wnd,1);
-
 		// shutdown
 
 	main_wind_shutdown();
@@ -277,16 +247,16 @@ void win32_main_wind_close(void)
 		// delete window
 
 	DestroyWindow(wnd);
-	UnregisterClass("dim3AnimatorWindowClass",GetModuleHandle(NULL));
+	UnregisterClass("dim3SetupWindowClass",GetModuleHandle(NULL));
 }
 
 /* =======================================================
 
-      Animator Message Pump
+      Setup Message Pump
       
 ======================================================= */
 
-void animator_pump(void)
+void setup_pump(void)
 {
 	MSG			msg;
 
@@ -323,15 +293,13 @@ void test_debug(char *str)
 
 /* =======================================================
 
-      Animator Main
+      Setup Main
       
 ======================================================= */
 
 int APIENTRY WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmdLine,int nCmdShow)
 {
 	hinst=hInstance;
-
-	state.model_open=FALSE;
 	
 		// glue start
 
@@ -343,19 +311,13 @@ int APIENTRY WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmdLine
 		return(0);
 	}
 
-		// read preferences
-
-	setup_xml_read();
-
 		// open window
 
 	win32_main_wind_open();
 
-		// run animator
+		// run setup
 	
-	file_open_model();
-	animator_pump();
-	file_close_model();
+	setup_pump();
 
 		// close window
 

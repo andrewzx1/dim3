@@ -1,8 +1,8 @@
 /****************************** File *********************************
 
-Module: dim3 Animator
+Module: dim3 Setup
 Author: Brian Barnes
- Usage: win32 Animator Menu Patch
+ Usage: win32 Setup Menu Patch
 
 ***************************** License ********************************
 
@@ -25,12 +25,13 @@ and can be sold or given away.
  
 *********************************************************************/
 
-#include "dim3Animator.h"
+#include "dim3Setup.h"
 #include "resource.h"
 
 	// remapping for menu items
 
 int				win32_menu_remap[][2]={
+	/*
 					{kCommandFileNew,ID_FILE_NEW},
 					{kCommandFileOpen,ID_FILE_OPEN},
 					{kCommandFileClose,ID_FILE_CLOSE},
@@ -103,7 +104,7 @@ int				win32_menu_remap[][2]={
 					{kCommandResetTimeAnimate,ID_ANIMATION_SCALE_TIME},
 					{kCommandPlayAnimate,ID_ANIMATION_PLAY},
 					{kCommandPlayBlendAnimate,ID_ANIMATION_PLAY_BLENDED},
-
+*/
 					{-1,-1}
 				};
 
