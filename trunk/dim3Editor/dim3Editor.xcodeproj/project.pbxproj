@@ -147,7 +147,7 @@
 		F5AD544A0BBE201F001C7C04 /* libBaseUtility.dylib in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = F5AD54480BBE2010001C7C04 /* libBaseUtility.dylib */; };
 		F5AF023309CFB5A0008B576A /* dialog_free_rotate.c in Sources */ = {isa = PBXBuildFile; fileRef = F5AF023209CFB5A0008B576A /* dialog_free_rotate.c */; };
 		F5C461460970A68600FBB643 /* dialog_about.c in Sources */ = {isa = PBXBuildFile; fileRef = F5C461450970A68600FBB643 /* dialog_about.c */; };
-		F5DB0C520856A976005A7CB7 /* dim3 Editor.app in CopyFiles */ = {isa = PBXBuildFile; fileRef = F5A43266055602E0002DF965 /* dim3 Editor.app */; };
+		F5DB0C520856A976005A7CB7 /* dim3 Editor.app in Copy Application */ = {isa = PBXBuildFile; fileRef = F5A43266055602E0002DF965 /* dim3 Editor.app */; };
 		F5DD757B092CFD8700465E14 /* launch.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD757A092CFD8700465E14 /* launch.c */; };
 		F5F49577067C18B200E809E7 /* libMapUtility.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5F49573067C18B200E809E7 /* libMapUtility.dylib */; };
 		F5FEF6AF0BB4EB1000198897 /* libModelUtility.dylib in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = F595F33B0A8BBF06004AB8BA /* libModelUtility.dylib */; };
@@ -271,14 +271,15 @@
 			name = "Copy Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		F5DB0C4A0856A958005A7CB7 /* CopyFiles */ = {
+		F5DB0C4A0856A958005A7CB7 /* Copy Application */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "$(SRCROOT)/../../dim3/";
 			dstSubfolderSpec = 0;
 			files = (
-				F5DB0C520856A976005A7CB7 /* dim3 Editor.app in CopyFiles */,
+				F5DB0C520856A976005A7CB7 /* dim3 Editor.app in Copy Application */,
 			);
+			name = "Copy Application";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -771,7 +772,7 @@
 				F5A43259055602DF002DF965 /* Frameworks */,
 				F5A43262055602DF002DF965 /* Rez */,
 				F5934BF8099E7A610063E081 /* Copy Frameworks */,
-				F5DB0C4A0856A958005A7CB7 /* CopyFiles */,
+				F5DB0C4A0856A958005A7CB7 /* Copy Application */,
 				F522DC530BBC726B00DFF256 /* Copy (Defaults) */,
 				F522DC770BBC810E00DFF256 /* Copy (Items Icons) */,
 				26F95ECA125AD24D0016127D /* Copy (Tools Icons) */,
@@ -930,8 +931,7 @@
 		F5DB0C540856A994005A7CB7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1)";
-				ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1 = "ppc i386";
+				ARCHS = i386;
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
 				DEPLOYMENT_POSTPROCESSING = YES;
@@ -974,7 +974,6 @@
 					"$(SRCROOT)/../dim3Common/Libraries",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
 				);
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "";
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
 				PER_ARCH_CFLAGS_i386 = "-msse2 -fno-omit-frame-pointer";
 				PER_ARCH_CFLAGS_ppc = "-fast -faltivec -mcpu=G4";

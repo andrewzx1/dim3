@@ -100,7 +100,7 @@
 		F5BDB6C3055A0DEA00556316 /* dim3 Animator.nib in Resources */ = {isa = PBXBuildFile; fileRef = F5BDB6C2055A0DEA00556316 /* dim3 Animator.nib */; };
 		F5C48B860C88F5CE0011D6B1 /* dialog_scale.c in Sources */ = {isa = PBXBuildFile; fileRef = F5C48B850C88F5CE0011D6B1 /* dialog_scale.c */; };
 		F5D1A7A40CF933E6001B5E1B /* dialog_play_blend_animation.c in Sources */ = {isa = PBXBuildFile; fileRef = F5D1A7A30CF933E6001B5E1B /* dialog_play_blend_animation.c */; };
-		F5DB0C310856A832005A7CB7 /* dim3 Animator.app in CopyFiles */ = {isa = PBXBuildFile; fileRef = F5A42DC40555EC87002DF965 /* dim3 Animator.app */; };
+		F5DB0C310856A832005A7CB7 /* dim3 Animator.app in Copy Application */ = {isa = PBXBuildFile; fileRef = F5A42DC40555EC87002DF965 /* dim3 Animator.app */; };
 		F5EA20E90CCB0B6D005A75F6 /* dialog_finish_import.c in Sources */ = {isa = PBXBuildFile; fileRef = F5EA20E80CCB0B6D005A75F6 /* dialog_finish_import.c */; };
 		F5F4956B067C169C00E809E7 /* libModelUtility.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5F49567067C169C00E809E7 /* libModelUtility.dylib */; };
 		F5FEF6580BB4EA4500198897 /* libModelUtility.dylib in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = F5F49567067C169C00E809E7 /* libModelUtility.dylib */; };
@@ -157,14 +157,15 @@
 			name = "Copy Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		F5DB0C2B0856A81E005A7CB7 /* CopyFiles */ = {
+		F5DB0C2B0856A81E005A7CB7 /* Copy Application */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "$(SRCROOT)/../../dim3/";
 			dstSubfolderSpec = 0;
 			files = (
-				F5DB0C310856A832005A7CB7 /* dim3 Animator.app in CopyFiles */,
+				F5DB0C310856A832005A7CB7 /* dim3 Animator.app in Copy Application */,
 			);
+			name = "Copy Application";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -199,7 +200,6 @@
 		2625B76012E6897000F51669 /* Plus.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Plus.png; sourceTree = "<group>"; };
 		262C380012CFA5A100A94FEE /* progress_common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = progress_common.c; path = ../dim3Common/Code/progress_common.c; sourceTree = SOURCE_ROOT; };
 		262C380112CFA5AE00A94FEE /* text_common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = text_common.c; path = ../dim3Common/Code/text_common.c; sourceTree = SOURCE_ROOT; };
-		262C38FA12D0236700A94FEE /* dim3 Editor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = "dim3 Editor.app"; path = "build/Release/dim3 Editor.app"; sourceTree = "<group>"; };
 		262C390012D0237700A94FEE /* ui_common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ui_common.h; path = ../dim3Common/Headers/ui_common.h; sourceTree = SOURCE_ROOT; };
 		262C395512D025F700A94FEE /* item_palette.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = item_palette.c; path = Code/item_palette.c; sourceTree = "<group>"; };
 		262C395612D025F700A94FEE /* property_palette.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette.c; path = Code/property_palette.c; sourceTree = "<group>"; };
@@ -257,7 +257,7 @@
 		F5A42DC40555EC87002DF965 /* dim3 Animator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "dim3 Animator.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F5A431F0055601EC002DF965 /* Info-dim3_Animator.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.xml; name = "Info-dim3_Animator.plist"; path = "Resources/Info-dim3_Animator.plist"; sourceTree = "<group>"; };
 		F5AD542F0BBE1F56001C7C04 /* baseutility.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = baseutility.h; path = ../dim3Common/Headers/baseutility.h; sourceTree = SOURCE_ROOT; };
-		F5AD54310BBE1F6A001C7C04 /* libBaseUtility.dylib */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libBaseUtility.dylib; path = ../dim3Common/Libraries/libBaseUtility.dylib; sourceTree = SOURCE_ROOT; };
+		F5AD54310BBE1F6A001C7C04 /* libBaseUtility.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libBaseUtility.dylib; path = ../dim3Common/Libraries/libBaseUtility.dylib; sourceTree = SOURCE_ROOT; };
 		F5B0662C0970936D0045DBE1 /* dialog_about.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = dialog_about.c; path = Code/dialog_about.c; sourceTree = "<group>"; };
 		F5B4082707104E7700600D33 /* click_window.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = click_window.c; path = Code/click_window.c; sourceTree = "<group>"; };
 		F5BDB6C2055A0DEA00556316 /* dim3 Animator.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = "dim3 Animator.nib"; path = "Resources/dim3 Animator.nib"; sourceTree = "<group>"; };
@@ -277,9 +277,9 @@
 				F5A42DB90555EC87002DF965 /* AGL.framework in Frameworks */,
 				F5A42DBA0555EC87002DF965 /* OpenGL.framework in Frameworks */,
 				F5A42DBB0555EC87002DF965 /* Carbon.framework in Frameworks */,
-				F5F4956B067C169C00E809E7 /* libModelUtility.dylib in Frameworks */,
 				F5934BB7099E79150063E081 /* PNG.framework in Frameworks */,
 				F5AD54320BBE1F6A001C7C04 /* libBaseUtility.dylib in Frameworks */,
+				F5F4956B067C169C00E809E7 /* libModelUtility.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -364,7 +364,6 @@
 			isa = PBXGroup;
 			children = (
 				F5A42DC40555EC87002DF965 /* dim3 Animator.app */,
-				262C38FA12D0236700A94FEE /* dim3 Editor.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -559,7 +558,7 @@
 				F5A42DB70555EC87002DF965 /* Frameworks */,
 				F5A42DC00555EC87002DF965 /* Rez */,
 				F5934BC7099E798E0063E081 /* Copy Frameworks */,
-				F5DB0C2B0856A81E005A7CB7 /* CopyFiles */,
+				F5DB0C2B0856A81E005A7CB7 /* Copy Application */,
 				266FFE80125EBCDC00E40F28 /* Copy (Tool Icons) */,
 				2625B77912E689D900F51669 /* Copy (List Icons) */,
 			);
@@ -750,6 +749,7 @@
 					/usr/lib/gcc/darwin/3.3,
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
+				OTHER_LDFLAGS = "";
 				PER_ARCH_CFLAGS_i386 = "-msse2 -fno-omit-frame-pointer";
 				PER_ARCH_CFLAGS_ppc = "-fast -faltivec -mcpu=G4";
 				PREBINDING = NO;
