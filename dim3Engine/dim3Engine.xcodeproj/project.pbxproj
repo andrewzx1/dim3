@@ -247,7 +247,7 @@
 		F5C5EB160913264E00F94729 /* debug.c in Sources */ = {isa = PBXBuildFile; fileRef = F5C5EB0E0913264E00F94729 /* debug.c */; };
 		F5C5EB170913264E00F94729 /* game.c in Sources */ = {isa = PBXBuildFile; fileRef = F5C5EB0F0913264E00F94729 /* game.c */; };
 		F5C5EB180913264E00F94729 /* map.c in Sources */ = {isa = PBXBuildFile; fileRef = F5C5EB100913264E00F94729 /* map.c */; };
-		F5C5EB3C0913287800F94729 /* dim3 Engine.app in Copy Executable to dim3 */ = {isa = PBXBuildFile; fileRef = F5CD87F70557721D0023AD9B /* dim3 Engine.app */; };
+		F5C5EB3C0913287800F94729 /* dim3 Engine.app in Copy Application */ = {isa = PBXBuildFile; fileRef = F5CD87F70557721D0023AD9B /* dim3 Engine.app */; };
 		F5C8996A0A5376E100C6E50A /* script_camera_state.c in Sources */ = {isa = PBXBuildFile; fileRef = F5C899690A5376E100C6E50A /* script_camera_state.c */; };
 		F5CD872D055771B80023AD9B /* modelutility.h in Headers */ = {isa = PBXBuildFile; fileRef = F5CA4F01051012CF0055C8B8 /* modelutility.h */; };
 		F5CD872F055771B80023AD9B /* maputility.h in Headers */ = {isa = PBXBuildFile; fileRef = F57CAC770527D9E000A68578 /* maputility.h */; };
@@ -372,15 +372,15 @@
 			name = "Copy Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		F5C5EB340913286000F94729 /* Copy Executable to dim3 */ = {
+		F5C5EB340913286000F94729 /* Copy Application */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "$(SRCROOT)/../../dim3/";
 			dstSubfolderSpec = 0;
 			files = (
-				F5C5EB3C0913287800F94729 /* dim3 Engine.app in Copy Executable to dim3 */,
+				F5C5EB3C0913287800F94729 /* dim3 Engine.app in Copy Application */,
 			);
-			name = "Copy Executable to dim3";
+			name = "Copy Application";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -1570,7 +1570,7 @@
 				F5CD87DB055771B80023AD9B /* Frameworks */,
 				F5CD87E7055771B80023AD9B /* Rez */,
 				F5C5A768092AC98D0012DD78 /* Copy Frameworks */,
-				F5C5EB340913286000F94729 /* Copy Executable to dim3 */,
+				F5C5EB340913286000F94729 /* Copy Application */,
 			);
 			buildRules = (
 			);
@@ -1988,7 +1988,6 @@
 					"$(SRCROOT)/../dim3Common/Libraries",
 					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
 				);
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "";
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
 				OTHER_LDFLAGS = "-lSystemStubs";
 				PER_ARCH_CFLAGS_i386 = "-msse2 -fno-omit-frame-pointer";
