@@ -34,10 +34,7 @@ and can be sold or given away.
 #include "ui_common.h"
 
 file_path_setup_type			file_path_setup;
-
-//extern d3rect					tool_palette_box,txt_palette_box;
-//extern list_palette_type		item_palette,property_palette,alt_property_palette;
-//extern animator_setup_type		setup;
+setup_state_type				state;
 
 /* =======================================================
 
@@ -47,12 +44,10 @@ file_path_setup_type			file_path_setup;
 
 void main_wind_initialize(void)
 {
-/*
 		// initializations
 		
 	text_initialize();
 	
-	tool_palette_initialize("Setup");
 	list_palette_initialize("Setup");
 	item_palette_initialize();
 	property_palette_initialize();
@@ -60,30 +55,13 @@ void main_wind_initialize(void)
 
 		// size setups
 		
-	tool_palette_setup();
-	texture_palette_setup();
-	
 	item_palette_setup();
 	property_palette_setup();
 	alt_property_palette_setup();
-	
-	tool_tip_initialize();
-
-		// vertex and trig masks
-		
-	vertex_mask_initialize();
-	trig_mask_initialize();
-	*/
 }
 
 void main_wind_shutdown(void)
 {
-/*
-		// free vertex and trig masks
-		
-	vertex_mask_shutdown();
-	trig_mask_shutdown();
-	
 		// shutdown palettes
 		
 	alt_property_palette_shutdown();
@@ -91,10 +69,7 @@ void main_wind_shutdown(void)
 	item_palette_shutdown();
 	list_palette_shutdown();
 	
-	tool_palette_shutdown();
-	
 	text_shutdown();
-	*/
 }
 
 /* =======================================================
@@ -131,42 +106,34 @@ void main_wind_draw(void)
 		
 	glDisable(GL_SCISSOR_TEST);
 	
-	glClearColor(1.0f,0.0f,0.0f,0.0f);
+	glClearColor(1.0f,1.0f,1.0f,0.0f);
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 	
-	/*
-		// model
-		
-	if (state.model_open) {
-		if (state.texture_edit_idx==-1) {
-			if (!state.playing) {
-				draw_model_wind_pose(state.cur_mesh_idx,state.cur_pose_idx);
-			}
-			else {
-				main_wind_draw_play();
-			}
-		}
-		else {
-			texture_edit_draw();
-		}
-	}
+		// draw palettes
 
-		// palettes
-		
-	if (state.model_open) {
-		item_palette_draw();
-		property_palette_draw();
-		alt_property_palette_draw();
+	item_palette_draw();
+	property_palette_draw();
+	alt_property_palette_draw();
 
-		tool_palette_draw();
-		texture_palette_draw(model.textures);
-		
-		tool_tip_draw();
-	}
-	*/
 		// swap GL buffer
 		
 	os_swap_gl_buffer();
+}
+
+void main_wind_draw_no_swap(void)
+{
+		// clear gl buffer
+		
+	glDisable(GL_SCISSOR_TEST);
+	
+	glClearColor(1.0f,1.0f,1.0f,0.0f);
+	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+
+		// draw palettes
+
+	item_palette_draw();
+	property_palette_draw();
+	alt_property_palette_draw();
 }
 
 /* =======================================================
@@ -364,14 +331,8 @@ void main_wind_key(char ch)
 
 void main_wind_resize(void)
 {
-/*
-	if (!state.model_open) return;
-
-	tool_palette_setup();
-	texture_palette_setup();
 	item_palette_setup();
 	property_palette_setup();
 	alt_property_palette_setup();
-	*/
 }
 

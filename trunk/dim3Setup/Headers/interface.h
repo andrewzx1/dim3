@@ -1,6 +1,6 @@
 /****************************** File *********************************
 
-Module: dim3 Animator
+Module: dim3 Setup
 Author: Brian Barnes
  Usage: Interface Functions
 
@@ -45,53 +45,11 @@ extern void main_wind_key(char ch);
 extern void main_wind_resize(void);
 
 //
-// setup
-//
-
-extern bool setup_xml_read(void);
-extern bool setup_xml_write(void);
-
-//
 // menus
 //
 
 extern void menu_update(void);
-extern bool menu_save_changes_dialog(void);
 extern bool menu_event_run(int cmd);
-
-//
-// dos
-//
-
-extern void file_new_model(void);
-extern void file_open_model(void);
-extern bool file_save_model(void);
-extern void file_close_model(void);
-extern void file_import_mesh_obj(bool replace);
-extern void file_insert_mesh_dim3_model(void);
-
-//
-// undo
-//
-
-extern void undo_initialize(void);
-extern void undo_clear(void);
-extern void undo_set_bone_move(int pose_idx,int bone_idx);
-extern void undo_run(void);
-
-//
-// tool palette
-//
-
-extern void tool_palette_setup(void);
-
-//
-// texture palette
-//
-
-extern void texture_palette_setup(void);
-extern int texture_palette_get_selected_texture(void);
-extern void texture_palette_draw(texture_type *txt_list);
 
 //
 // item list palette
@@ -101,8 +59,6 @@ extern void item_palette_initialize(void);
 extern void item_palette_shutdown(void);
 extern void item_palette_setup(void);
 extern void item_palette_draw(void);
-extern void item_palette_state_rebuild(void);
-extern void item_palette_scroll_into_view(int item_type,int item_idx);
 extern bool item_palette_delete(void);
 extern void item_palette_scroll_wheel(d3pnt *pnt,int move);
 extern void item_palette_click(d3pnt *pnt,bool double_click);
@@ -168,66 +124,7 @@ extern void alt_property_palette_click_animate_pose_move(int animate_idx,int pos
 extern void alt_property_palette_click_pose_bone_move(int pose_idx,int bone_move_idx,int id);
 
 //
-// pieces
+// dialogs
 //
 
-extern void model_piece_add_mesh(void);
-extern void model_piece_duplicate_mesh(int mesh_idx);
-extern void model_piece_delete_mesh(int mesh_idx);
-extern void model_piece_add_bone(void);
-extern void model_piece_delete_bone(int bone_idx);
-extern void model_piece_add_pose(void);
-extern void model_piece_duplicate_pose(int pose_idx);
-extern void model_piece_delete_pose(int pose_idx);
-extern void model_piece_add_animate(void);
-extern void model_piece_duplicate_animate(int animate_idx);
-extern void model_piece_delete_animate(int animate_idx);
-extern void model_piece_add_animation_pose_move_particle(int animate_idx,int animate_pose_move_idx);
-extern void model_piece_delete_animation_pose_move_particle(int animate_idx,int animate_pose_move_idx,int idx);
-extern void model_piece_add_animation_pose_move_ring(int animate_idx,int animate_pose_move_idx);
-extern void model_piece_delete_animation_pose_move_ring(int animate_idx,int animate_pose_move_idx,int idx);
-extern void model_piece_add_hit_box(void);
-extern void model_piece_delete_hit_box(int hit_box_idx);
-
-//
-// importing
-//
-
-extern bool import_obj(char *path,bool replace,bool *found_normals,char *err_str);
-extern void insert_model(char *file_name);
-
-extern void clear_materials(void);
-extern int texture_count(void);
-extern bool texture_exists(char *material_name);
-extern int texture_pick(char *material_name,char *err_str);
-
-//
-// models
-//
-
-extern void model_wind_get_box(d3rect *box);
-extern void model_wind_click(d3pnt *pnt);
-
-extern void draw_model(int mesh_idx);
-extern void draw_model_mesh(int mesh_idx);
-extern void draw_model_bones(int sel_bone_idx);
-extern void draw_model_bone_names(int sel_bone_idx);
-
-extern void draw_model_selected_vertexes(int mesh_idx);
-extern void draw_model_selected_trig(int mesh_idx);
-extern void draw_model_box_view(void);
-extern void draw_model_box_hit_boxes(void);
-extern void draw_model_axis(void);
-extern void draw_model_normals_vertexes(int mesh_idx);
-extern void draw_model_normals_trig(int mesh_idx);
-
-extern void draw_model_gl_setup(int z_offset);
-extern void draw_model_gl_setup_2D(void);
-extern void draw_model_2D_transform_setup(void);
-extern void draw_model_2D_transform(d3fpnt *pnt,d3pnt *tran_pnt);
-
-extern void draw_model_setup_bones_vertexes(int mesh_idx);
-extern void draw_model_setup_pose(int pose_idx);
-extern void draw_model_wind_pose(int mesh_idx,int pose_idx);
-extern void draw_model_wind(int mesh_idx);
-
+extern void dialog_about_run(void);

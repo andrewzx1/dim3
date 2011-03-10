@@ -82,11 +82,6 @@ and can be sold or given away.
 #define app_menu_pose					136
 #define app_menu_animate				137
 
-#define modeltransformmenu				141
-#define meshimportmenu					140
-#define meshtransformmenu				141
-#define poseblendingmenu				142
-
 #define kCommandAbout					FOUR_CHAR_CODE('abot')
 
 #define kCommandFileNew					FOUR_CHAR_CODE('newB')

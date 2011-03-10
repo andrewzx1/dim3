@@ -278,10 +278,66 @@
 			<Filter
 				Name="SetupSources"
 				>
+				<Filter
+					Name="Palettes"
+					>
+					<File
+						RelativePath="..\..\dim3Setup\Code\alt_property_palette.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Setup\Code\item_palette.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Common\Code\list_palette_common.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Common\Code\progress_common.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Setup\Code\property_palette.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Common\Code\property_utility_common.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Common\Code\text_common.c"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Windows"
+					>
+					<File
+						RelativePath="..\..\dim3Setup\Code\main_window.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Setup\Code\menu.c"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="SetupHeaders"
 				>
+				<File
+					RelativePath="..\..\dim3Setup\Headers\dim3setup.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3Setup\Headers\interface.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3Setup\Headers\setup_defs.h"
+					>
+				</File>
 			</Filter>
 		</Filter>
 	</Files>
