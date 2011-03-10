@@ -43,6 +43,8 @@ HGLRC							wnd_gl_ctx;
 
 bool							quit;
 
+extern file_path_setup_type		file_path_setup;
+
 //extern list_palette_type		item_palette;
 
 extern int os_win32_menu_lookup(int id);
@@ -73,7 +75,7 @@ LRESULT CALLBACK setup_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam)
 
 		case WM_PAINT:
 			BeginPaint(wnd,&ps);
-		//	main_wind_draw();
+			main_wind_draw();
 			EndPaint(wnd,&ps);
 			break;
 
@@ -87,28 +89,28 @@ LRESULT CALLBACK setup_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam)
 			pnt.y=HIWORD(lParam);
 
 			SetCapture(wnd);
-		//	main_wind_click(&pnt,(msg==WM_LBUTTONDBLCLK));
+			main_wind_click(&pnt,(msg==WM_LBUTTONDBLCLK));
 			ReleaseCapture();
 			break;
 
 		case WM_MOUSEWHEEL:
 			pnt.x=LOWORD(lParam);
 			pnt.y=HIWORD(lParam);
-		//	main_wind_scroll_wheel(&pnt,(GET_WHEEL_DELTA_WPARAM(wParam)/60));
+			main_wind_scroll_wheel(&pnt,(GET_WHEEL_DELTA_WPARAM(wParam)/60));
 			break;
 
 		case WM_MOUSEMOVE:
 			pnt.x=LOWORD(lParam);
 			pnt.y=HIWORD(lParam);
-		//	main_wind_mouse_move(&pnt);
+			main_wind_mouse_move(&pnt);
 			return(DefWindowProc(hWnd,msg,wParam,lParam));
 
 		case WM_KEYDOWN:
-		//	main_wind_key((char)wParam);
+			main_wind_key((char)wParam);
 			break;
 
 		case WM_SETCURSOR:
-		//	if (!main_wind_cursor()) return(DefWindowProc(hWnd,msg,wParam,lParam));
+			if (!main_wind_cursor()) return(DefWindowProc(hWnd,msg,wParam,lParam));
 			break;
 
 		case WM_COMMAND:
@@ -153,7 +155,8 @@ void main_wind_close(void)
 
 void win32_main_wind_open(void)
 {
-	int						format;
+	int						x,y,wid,high,format;
+	RECT					wbox;
 	WNDCLASSEX				wcx;
 	PIXELFORMATDESCRIPTOR	pf;
 	HINSTANCE				hInst;
@@ -177,7 +180,17 @@ void win32_main_wind_open(void)
 
     RegisterClassEx(&wcx);
 
-    wnd=CreateWindow("dim3SetupWindowClass","dim3 Setup",WS_OVERLAPPEDWINDOW|WS_CLIPSIBLINGS|WS_CLIPCHILDREN|WS_MAXIMIZE,CW_USEDEFAULT,CW_USEDEFAULT,CW_USEDEFAULT,CW_USEDEFAULT,NULL,NULL,hInst,NULL);
+		// setup window isn't maximized
+
+	GetClientRect(GetDesktopWindow(),&wbox);
+
+	wid=(list_palette_tree_sz*3)+8;
+	high=(wbox.bottom-wbox.top)-150;
+
+	x=((wbox.right-wbox.left)-wid)/2;
+	y=50;
+
+    wnd=CreateWindow("dim3SetupWindowClass","dim3 Setup",WS_OVERLAPPEDWINDOW|WS_CLIPSIBLINGS|WS_CLIPCHILDREN|WS_MAXIMIZE,x,y,wid,high,NULL,NULL,hInst,NULL);
 
 		// menu
 
@@ -186,12 +199,11 @@ void win32_main_wind_open(void)
 
 	wnd_accel=LoadAccelerators(hinst,MAKEINTRESOURCE(IDR_ACCELERATOR));
 
-	undo_initialize();
 	menu_update();
 
 		// show window
 
-	ShowWindow(wnd,SW_MAXIMIZE);
+	ShowWindow(wnd,SW_SHOWNORMAL);
 
 		// start opengl
 
