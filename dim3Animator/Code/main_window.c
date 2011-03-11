@@ -230,49 +230,6 @@ void main_wind_draw_play(void)
 	draw_model_wind(state.cur_mesh_idx);
 }
 
-void main_wind_draw(void)
-{
-		// clear gl buffer
-		
-	glDisable(GL_SCISSOR_TEST);
-	
-	glClearColor(setup.col.background.r,setup.col.background.g,setup.col.background.b,0.0f);
-	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-	
-		// model
-		
-	if (state.model_open) {
-		if (state.texture_edit_idx==-1) {
-			if (!state.playing) {
-				draw_model_wind_pose(state.cur_mesh_idx,state.cur_pose_idx);
-			}
-			else {
-				main_wind_draw_play();
-			}
-		}
-		else {
-			texture_edit_draw();
-		}
-	}
-
-		// palettes
-		
-	if (state.model_open) {
-		item_palette_draw();
-		property_palette_draw();
-		alt_property_palette_draw();
-
-		tool_palette_draw();
-		texture_palette_draw(model.textures);
-		
-		tool_tip_draw();
-	}
-	
-		// swap GL buffer
-		
-	os_swap_gl_buffer();
-}
-
 void main_wind_draw_no_swap(void)
 {
 		// clear gl buffer
@@ -310,6 +267,12 @@ void main_wind_draw_no_swap(void)
 		
 		tool_tip_draw();
 	}
+}
+
+void main_wind_draw(void)
+{
+	main_wind_draw_no_swap();
+	os_swap_gl_buffer();
 }
 
 /* =======================================================

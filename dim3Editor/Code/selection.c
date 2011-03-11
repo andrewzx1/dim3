@@ -248,7 +248,7 @@ void select_sort(void)
 {
 	int						n;
 	bool					switch_item;
-	select_item_type		*temp_item;
+	select_item_type		temp_item;
 	
 	switch_item=TRUE;
 	

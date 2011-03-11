@@ -30,7 +30,8 @@ and can be sold or given away.
 
 #ifdef D3_EDITOR
 	extern map_type					map;
-#else
+#endif
+#ifdef D3_ANIMATOR
 	extern model_type				model;
 #endif
 
@@ -51,9 +52,14 @@ void dialog_open(WindowRef *wind,char *name)
 	
 #ifdef D3_EDITOR
 	cf_str=CFStringCreateWithCString(kCFAllocatorDefault,"dim3 Editor",kCFStringEncodingMacRoman);
-#else
+#endif
+#ifdef D3_ANIMATOR
 	cf_str=CFStringCreateWithCString(kCFAllocatorDefault,"dim3 Animator",kCFStringEncodingMacRoman);
 #endif
+#ifdef D3_SETUP
+	cf_str=CFStringCreateWithCString(kCFAllocatorDefault,"dim3 Setup",kCFStringEncodingMacRoman);
+#endif
+
 	CreateNibReference(cf_str,&nib);
 	CFRelease(cf_str);
 	
@@ -1047,6 +1053,8 @@ int dialog_get_group_combo(WindowRef wind,unsigned long sig,int id)
       
 ======================================================= */
 
+#ifndef D3_SETUP
+
 void dialog_fill_texture_combo(WindowRef wind,unsigned long sig,int id,bool none,int idx)
 {
 	int					n,ntexture;
@@ -1068,7 +1076,8 @@ void dialog_fill_texture_combo(WindowRef wind,unsigned long sig,int id,bool none
 #ifdef D3_EDITOR
 	texture=map.textures;
 	ntexture=max_map_texture;
-#else
+#endif
+#ifdef D3_ANIMATOR
 	texture=model.textures;
 	ntexture=max_model_texture;
 #endif
@@ -1109,4 +1118,6 @@ int dialog_get_texture_combo(WindowRef wind,unsigned long sig,int id,bool none)
 	if (idx==0) return(-1);
 	return(idx-2);
 }
+
+#endif
 
