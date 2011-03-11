@@ -100,26 +100,6 @@ void main_wind_gl_setup(void)
       
 ======================================================= */
 
-void main_wind_draw(void)
-{
-		// clear gl buffer
-		
-	glDisable(GL_SCISSOR_TEST);
-	
-	glClearColor(1.0f,1.0f,1.0f,0.0f);
-	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-	
-		// draw palettes
-
-	item_palette_draw();
-	property_palette_draw();
-	alt_property_palette_draw();
-
-		// swap GL buffer
-		
-	os_swap_gl_buffer();
-}
-
 void main_wind_draw_no_swap(void)
 {
 		// clear gl buffer
@@ -134,6 +114,12 @@ void main_wind_draw_no_swap(void)
 	item_palette_draw();
 	property_palette_draw();
 	alt_property_palette_draw();
+}
+
+void main_wind_draw(void)
+{
+	main_wind_draw_no_swap();
+	os_swap_gl_buffer();
 }
 
 /* =======================================================
