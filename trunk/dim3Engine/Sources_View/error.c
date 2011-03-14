@@ -40,8 +40,8 @@ and can be sold or given away.
 
 extern server_type			server;
 extern view_type			view;
+extern iface_type			iface;
 extern setup_type			setup;
-extern hud_type				hud;
 extern js_type				js;
 
 /* =======================================================
@@ -67,20 +67,20 @@ void error_open(void)
 		
 	control_y_add=element_get_control_high();
 
-	x=hud.scale_x/2;
-	y=(hud.scale_y/2)-control_y_add;
-	element_text_add("[Error]",-1,x,y,hud.font.text_size_large,tx_center,FALSE,TRUE);
+	x=iface.scale_x/2;
+	y=(iface.scale_y/2)-control_y_add;
+	element_text_add("[Error]",-1,x,y,iface.font.text_size_large,tx_center,FALSE,TRUE);
 
 	y+=control_y_add;
-	element_text_add(view.error.str,-1,x,y,hud.font.text_size_small,tx_center,FALSE,FALSE);
+	element_text_add(view.error.str,-1,x,y,iface.font.text_size_small,tx_center,FALSE,FALSE);
 	
 	y+=control_y_add;
-	element_text_add(view.error.str_2,-1,x,y,hud.font.text_size_small,tx_center,FALSE,FALSE);
+	element_text_add(view.error.str_2,-1,x,y,iface.font.text_size_small,tx_center,FALSE,FALSE);
 	
 		// buttons
 		
-	wid=(int)(((float)hud.scale_x)*0.1f);
-	high=(int)(((float)hud.scale_x)*0.04f);
+	wid=(int)(((float)iface.scale_x)*0.1f);
+	high=(int)(((float)iface.scale_x)*0.04f);
 	
 	element_get_button_bottom_right(&x,&y,wid,high);
 	

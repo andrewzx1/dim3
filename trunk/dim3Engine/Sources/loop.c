@@ -153,6 +153,8 @@ void loop_app_active(void)
 
 		input_clear();
 		input_mouse_pause();
+		
+		SDL_PauseAudio(1);
 
 			// don't pause if this game is a host
 
@@ -169,6 +171,8 @@ void loop_app_active(void)
 	
 	input_clear();
 	input_mouse_resume();
+	
+	SDL_PauseAudio(0);
 
 		// host games weren't paused
 

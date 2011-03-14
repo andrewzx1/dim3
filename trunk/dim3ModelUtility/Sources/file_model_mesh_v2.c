@@ -184,13 +184,11 @@ void decode_mesh_v2_xml(model_type *model,int model_head)
 		
     ui_tag=xml_findfirstchild("UI",model_head);
 	if (ui_tag!=-1) {
-		xml_get_attribute_color(ui_tag,"ambient",&model->ui.ambient);
+		model->ui.min_diffuse=xml_get_attribute_float(ui_tag,"min_diffuse");
 		xml_get_attribute_3_coord_float(ui_tag,"diffuse_vector",&model->ui.diffuse_vct.x,&model->ui.diffuse_vct.y,&model->ui.diffuse_vct.z);
 	}
 	else {
-		model->ui.ambient.r=0.75f;
-		model->ui.ambient.g=0.75f;
-		model->ui.ambient.b=0.75f;
+		model->ui.min_diffuse=0.75f;
 
 		model->ui.diffuse_vct.x=0.0f;
 		model->ui.diffuse_vct.y=-1.0f;
@@ -540,7 +538,7 @@ void encode_mesh_v2_xml(model_type *model)
   		// ui
 		
     xml_add_tagstart("UI");
-	xml_add_attribute_color("ambient",&model->ui.ambient);
+	xml_add_attribute_float("min_diffuse",model->ui.min_diffuse);
 	xml_add_attribute_3_coord_float("diffuse_vector",model->ui.diffuse_vct.x,model->ui.diffuse_vct.y,model->ui.diffuse_vct.z);
 	xml_add_tagend(TRUE);
  

@@ -38,7 +38,7 @@ and can be sold or given away.
 extern bool					game_app_active;
 
 extern server_type			server;
-extern hud_type				hud;
+extern iface_type			iface;
 extern setup_type			setup;
 extern render_info_type		render_info;
 
@@ -96,8 +96,8 @@ void gui_initialize(char *background_path,char *bitmap_name)
 	
 		// start mouse in middle of screen
 		
-	x=hud.scale_x>>1;
-	y=hud.scale_y>>1;
+	x=iface.scale_x>>1;
+	y=iface.scale_y>>1;
 	input_gui_set_mouse(x,y);
 
 		// no last keypress
@@ -144,7 +144,7 @@ void gui_draw_background(float alpha)
 		// background color
 
 	if (gui_background_image_idx==-1) {
-		view_draw_next_vertex_object_2D_color_quad(&hud.color.dialog_background,1.0f,0,hud.scale_x,0,hud.scale_y);
+		view_draw_next_vertex_object_2D_color_quad(&iface.color.dialog_background,1.0f,0,iface.scale_x,0,iface.scale_y);
 		return;
 	}
 
@@ -153,10 +153,10 @@ void gui_draw_background(float alpha)
 	bitmap=view_images_get_bitmap(gui_background_image_idx);
 
 	if (gl_check_texture_rectangle_ok()) {
-		view_draw_next_vertex_object_2D_texture_quad_rectangle(bitmap->gl_id,alpha,0,hud.scale_x,0,hud.scale_y,bitmap->wid,bitmap->high);
+		view_draw_next_vertex_object_2D_texture_quad_rectangle(bitmap->gl_id,alpha,0,iface.scale_x,0,iface.scale_y,bitmap->wid,bitmap->high);
 	}
 	else {
-		view_draw_next_vertex_object_2D_texture_quad(bitmap->gl_id,NULL,alpha,0,hud.scale_x,0,hud.scale_y,0.0f,1.0f,0.0f,1.0f);
+		view_draw_next_vertex_object_2D_texture_quad(bitmap->gl_id,NULL,alpha,0,iface.scale_x,0,iface.scale_y,0.0f,1.0f,0.0f,1.0f);
 	}
 }
 
@@ -199,7 +199,7 @@ void gui_draw_dialog(void)
 		// header
 		
 	if (is_header) {
-		high=gl_text_get_char_height(hud.font.text_size_small);
+		high=gl_text_get_char_height(iface.font.text_size_small);
 		head_top=top-(high+(high/2));
 		
 		y=(head_top+top)>>1;
@@ -212,7 +212,7 @@ void gui_draw_dialog(void)
 
 		col.r=col.g=col.b=1.0f;
 		
-		gl_text_start(font_interface_index,hud.font.text_size_medium);
+		gl_text_start(font_interface_index,iface.font.text_size_medium);
 		gl_text_draw(((lft+rgt)/2),(y-2),gui_frame.title,tx_center,TRUE,&col,1.0f);
 		gl_text_end();
 	}
@@ -287,27 +287,27 @@ void gui_draw_message(char *txt)
 	
 		// get band size
 		
-	high=(gl_text_get_char_height(hud.font.text_size_large)+10)>>1;
+	high=(gl_text_get_char_height(iface.font.text_size_large)+10)>>1;
 	
-	y=hud.scale_y>>1;
+	y=iface.scale_y>>1;
 	ty=y-high;
 	by=y+high;
 	
 	lx=0;
-	rx=hud.scale_x;
+	rx=iface.scale_x;
 	
 		// draw the band
 		
 	gl_2D_view_interface();
 
-	view_draw_next_vertex_object_2D_color_quad(&hud.color.control_header,1.0f,lx,rx,ty,by);
+	view_draw_next_vertex_object_2D_color_quad(&iface.color.control_header,1.0f,lx,rx,ty,by);
 		
-	x=hud.scale_x>>1;
-	y=hud.scale_y>>1;
+	x=iface.scale_x>>1;
+	y=iface.scale_y>>1;
 	
 	col.r=col.g=col.b=0.0f;
 	
-	gl_text_start(font_interface_index,hud.font.text_size_large);
+	gl_text_start(font_interface_index,iface.font.text_size_large);
 	gl_text_draw(x,y,txt,tx_center,TRUE,&col,1.0f);
 	gl_text_end();
 	

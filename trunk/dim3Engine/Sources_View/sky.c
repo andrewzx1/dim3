@@ -35,7 +35,6 @@ and can be sold or given away.
 
 extern map_type			map;
 extern setup_type		setup;
-extern hud_type			hud;
 extern view_type		view;
 
 /* =======================================================

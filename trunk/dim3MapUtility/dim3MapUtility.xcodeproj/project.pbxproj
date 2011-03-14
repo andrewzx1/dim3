@@ -313,8 +313,7 @@
 		F5DB0B6408566F8A005A7CB7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1)";
-				ARCHS_STANDARD_32_BIT_PRE_XCODE_3_1 = "ppc i386";
+				ARCHS = i386;
 				COPY_PHASE_STRIP = NO;
 				EXPORTED_SYMBOLS_FILE = Exports/dim3maputility.exp;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -333,7 +332,7 @@
 				GCC_PREFIX_HEADER = Headers/dim3maputility.h;
 				GCC_STRICT_ALIASING = YES;
 				GCC_UNROLL_LOOPS = YES;
-				GCC_VERSION = 4.0;
+				GCC_VERSION = 4.2;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_ALLOW_INCOMPLETE_PROTOCOL = NO;
 				GCC_WARN_CHECK_SWITCH_STATEMENTS = YES;
@@ -348,16 +347,13 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INSTALL_PATH = "@executable_path/../Frameworks";
 				LIBRARY_SEARCH_PATHS = "\"$(SRCROOT)/../dim3Common/Libraries\"";
-				LIBRARY_STYLE = DYNAMIC;
 				MACH_O_TYPE = mh_dylib;
-				MACOSX_DEPLOYMENT_TARGET = 10.4;
+				MACOSX_DEPLOYMENT_TARGET = 10.5;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
-				PER_ARCH_CFLAGS_i386 = "-msse2 -fPIC -fno-omit-frame-pointer";
-				PER_ARCH_CFLAGS_ppc = "-fast -faltivec -fPIC -mcpu=G4";
 				PREBINDING = NO;
 				PRODUCT_NAME = libMapUtility;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.6.sdk";
 				WARNING_CFLAGS = "";
 			};
 			name = Release;

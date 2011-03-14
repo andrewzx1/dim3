@@ -305,7 +305,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						d3col							ambient;
+						float							min_diffuse;
 						d3vct							diffuse_vct;
 					} model_ui_type;
 
@@ -400,7 +400,7 @@ extern void model_resize_draw_vertex(model_type *model,int mesh_idx,float resize
 extern void model_flip_draw_vertex(model_type *model,int mesh_idx,model_draw_setup *draw_setup);
 extern void model_translate_draw_vertex(model_type *model,int mesh_idx,int x,int y,int z,model_draw_setup *draw_setup);
 
-extern void model_create_draw_normals(model_type *model,int mesh_idx,model_draw_setup *draw_setup);
+extern void model_create_draw_normals(model_type *model,int mesh_idx,model_draw_setup *draw_setup,bool normal_only);
 
 extern void model_get_point_position(model_draw_setup *draw_setup,int *x,int *y,int *z);
 extern void model_get_draw_bone_position(model_draw_setup *draw_setup,int bone_idx,int *x,int *y,int *z);

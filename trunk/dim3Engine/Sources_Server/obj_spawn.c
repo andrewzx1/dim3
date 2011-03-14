@@ -41,9 +41,9 @@ and can be sold or given away.
 
 extern map_type				map;
 extern server_type			server;
-extern setup_type			setup;
+extern iface_type			iface;
 extern js_type				js;
-extern hud_type				hud;
+extern setup_type			setup;
 extern network_setup_type	net_setup;
 
 extern bool game_file_reload_ok(void);
@@ -286,7 +286,7 @@ void game_multiplayer_bots_create(void)
 
 		// are bots allowed in this game?
 
-	if (!hud.net_bot.on) return;
+	if (!iface.net_bot.on) return;
 
 		// spawn bots
 
@@ -294,8 +294,8 @@ void game_multiplayer_bots_create(void)
 	
 			// setup a fake spot for object spawning
 			
-		if (hud.net_bot.bots[n].name[0]!=0x0) {
-			strcpy(name,hud.net_bot.bots[n].name);
+		if (iface.net_bot.bots[n].name[0]!=0x0) {
+			strcpy(name,iface.net_bot.bots[n].name);
 		}
 		else {
 			sprintf(name,"Bot %d",(n+1));

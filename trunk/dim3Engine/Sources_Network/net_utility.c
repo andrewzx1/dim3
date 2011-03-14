@@ -35,8 +35,8 @@ and can be sold or given away.
 
 #include "network.h"
 
+extern iface_type			iface;
 extern setup_type			setup;
-extern hud_type				hud;
 
 int							net_proj_hash;
 char						*net_news;
@@ -104,7 +104,7 @@ void net_load_news(void)
 	
 		// any news to load?
 		
-	if (hud.net_news.host[0]==0x0) return;
+	if (iface.net_news.host[0]==0x0) return;
 	
 		// skip if already loaded
 		
@@ -116,7 +116,7 @@ void net_load_news(void)
 	
 		// get response
 		
-	data=net_get_http_file(hud.net_news.host,hud.net_news.port,hud.net_news.url,err_str);
+	data=net_get_http_file(iface.net_news.host,iface.net_news.port,iface.net_news.url,err_str);
 	if (data==NULL) {
 	
 			// build error message

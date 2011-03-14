@@ -36,6 +36,13 @@ extern bool map_start(bool in_file_load,bool skip_media,char *err_str);
 extern void map_end(void);
 
 //
+// interface xml
+//
+
+extern bool interface_initialize(void);
+extern void interface_shutdown(void);
+
+//
 // gui
 //
 
@@ -121,7 +128,7 @@ extern int element_key(char ch);
 // progress
 //
 
-extern void progress_initialize(char *action,char *map_name);
+extern void progress_initialize(char *map_name);
 extern void progress_shutdown(void);
 extern void progress_draw(float percentage);
 

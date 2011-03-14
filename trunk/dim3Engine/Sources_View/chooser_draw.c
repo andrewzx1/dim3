@@ -35,8 +35,8 @@ and can be sold or given away.
 #include "video.h"
 
 extern server_type			server;
+extern iface_type			iface;
 extern js_type				js;
-extern hud_type				hud;
 extern setup_type			setup;
 
 int							chooser_idx;
@@ -110,7 +110,7 @@ void chooser_create_elements(void)
 	chooser_piece_type	*piece;
 	chooser_frame_type	frame;
 	
-	chooser=&hud.choosers[chooser_idx];
+	chooser=&iface.choosers[chooser_idx];
 	
 		// setup frame
 		
@@ -214,8 +214,8 @@ void chooser_click(void)
 	
 		// check for ok/cancel keys
 
-	if (input_get_keyboard_escape()) id=hud.choosers[chooser_idx].key.cancel_id;
-	if (input_get_keyboard_return()) id=hud.choosers[chooser_idx].key.ok_id;
+	if (input_get_keyboard_escape()) id=iface.choosers[chooser_idx].key.cancel_id;
+	if (input_get_keyboard_return()) id=iface.choosers[chooser_idx].key.ok_id;
 
 		// if no key check clicking
 		
@@ -230,11 +230,11 @@ void chooser_click(void)
 	
 		// check for any goto clicks
 		
-	idx=chooser_find_piece(&hud.choosers[chooser_idx],id);
+	idx=chooser_find_piece(&iface.choosers[chooser_idx],id);
 	
 	if (idx!=-1) {
 	
-		piece=&hud.choosers[chooser_idx].pieces[idx];
+		piece=&iface.choosers[chooser_idx].pieces[idx];
 		next_idx=chooser_find(piece->goto_name);
 		
 		if (next_idx!=-1) {

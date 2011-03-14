@@ -481,9 +481,9 @@ void gl_shader_set_light_variables(shader_type *shader,bool map_shader,bool is_c
 		}
 
 		if (loc_light->exponent!=-1) {
-			if (cur_light->exponent!=lspot->exponent) {
-				cur_light->exponent=lspot->exponent;
-				glUniform1fARB(loc_light->exponent,lspot->exponent);
+			if (cur_light->exponent!=lspot->f_exponent) {
+				cur_light->exponent=lspot->f_exponent;
+				glUniform1fARB(loc_light->exponent,lspot->f_exponent);
 			}
 		}
 

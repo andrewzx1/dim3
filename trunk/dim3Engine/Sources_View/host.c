@@ -65,7 +65,7 @@ extern void net_host_game_end(void);
 
 extern map_type				map;
 extern server_type			server;
-extern hud_type				hud;
+extern iface_type			iface;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
 
@@ -215,12 +215,12 @@ void host_game_pane(void)
 	
 		// game type
 
-	for (n=0;n!=hud.net_game.ngame;n++) {
-		strcpy(net_game_types[n],hud.net_game.games[n].name);
+	for (n=0;n!=iface.net_game.ngame;n++) {
+		strcpy(net_game_types[n],iface.net_game.games[n].name);
 	}
-	net_game_types[hud.net_game.ngame][0]=0x0;
+	net_game_types[iface.net_game.ngame][0]=0x0;
 
-	x=(int)(((float)hud.scale_x)*0.20f);
+	x=(int)(((float)iface.scale_x)*0.20f);
 	y=((margin+element_get_tab_control_high())+padding)+control_y_add;
 	
 	element_combo_add("Game Type",(char*)net_game_types,setup.network.game_type,host_game_type_id,x,y,TRUE);
@@ -237,8 +237,8 @@ void host_game_pane(void)
 		
 	x=margin+padding;
 
-	wid=hud.scale_x-((margin+padding)*2);
-	high=(int)(((float)hud.scale_y)*0.85f)-y;
+	wid=iface.scale_x-((margin+padding)*2);
+	high=(int)(((float)iface.scale_y)*0.85f)-y;
 
 	strcpy(cols[0].name,"Map");
 	cols[0].percent_size=1.0f;
@@ -247,7 +247,7 @@ void host_game_pane(void)
 	
 		// fill table with maps
 
-	host_fill_map_table(hud.net_game.games[setup.network.game_type].name);
+	host_fill_map_table(iface.net_game.games[setup.network.game_type].name);
 	host_map_list_to_table();
 
 	element_set_value(host_table_id,host_first_map_idx);
@@ -263,15 +263,15 @@ void host_options_pane(void)
 		// panel sizes
 
 	control_y_add=element_get_control_high();
-	control_y_sz=((control_y_add*3)+(control_y_add*hud.net_option.noption));
-	if (hud.net_bot.on) control_y_sz+=(control_y_add*2);
+	control_y_sz=((control_y_add*3)+(control_y_add*iface.net_option.noption));
+	if (iface.net_bot.on) control_y_sz+=(control_y_add*2);
 	
-	x=(int)(((float)hud.scale_x)*0.4f);
-	y=(hud.scale_y>>1)-(control_y_sz>>1);
+	x=(int)(((float)iface.scale_x)*0.4f);
+	y=(iface.scale_y>>1)-(control_y_sz>>1);
 	
 		// bots
 
-	if (hud.net_bot.on) {
+	if (iface.net_bot.on) {
 
 		element_number_add("Bot Count",setup.network.bot.count,host_game_bot_count_id,x,y,0,15);
 		y+=control_y_add;
@@ -295,9 +295,9 @@ void host_options_pane(void)
 
 	y+=element_get_padding();
 
-	option=hud.net_option.options;
+	option=iface.net_option.options;
 
-	for (n=0;n!=hud.net_option.noption;n++) {
+	for (n=0;n!=iface.net_option.noption;n++) {
 
 		on=FALSE;
 
@@ -323,8 +323,8 @@ void host_info_pane(void)
 	control_y_add=element_get_control_high();
 	control_y_sz=5*control_y_add;
 	
-	x=(int)(((float)hud.scale_x)*0.4f);
-	y=(hud.scale_y>>1)-(control_y_sz>>1);
+	x=(int)(((float)iface.scale_x)*0.4f);
+	y=(iface.scale_y>>1)-(control_y_sz>>1);
 	
 		// type
 		
@@ -377,8 +377,8 @@ void host_create_pane(void)
 	
 		// buttons
 		
-	wid=(int)(((float)hud.scale_x)*0.1f);
-	high=(int)(((float)hud.scale_x)*0.04f);
+	wid=(int)(((float)iface.scale_x)*0.1f);
+	high=(int)(((float)iface.scale_x)*0.04f);
 
 	element_get_button_bottom_right(&x,&y,wid,high);
 	element_button_text_add("Host",host_button_host_id,x,y,wid,high,element_pos_right,element_pos_bottom);
@@ -461,8 +461,8 @@ void host_game_setup(void)
 	net_setup.option_flags=0x0;
 	
 	for (n=0;n!=setup.network.option.count;n++) {
-		for (k=0;k!=hud.net_option.noption;k++) {
-			if (strcasecmp(setup.network.option.options[n].name,hud.net_option.options[k].name)==0) {
+		for (k=0;k!=iface.net_option.noption;k++) {
+			if (strcasecmp(setup.network.option.options[n].name,iface.net_option.options[k].name)==0) {
 				net_setup.option_flags=net_setup.option_flags|(0x1<<k);
 				break;
 			}
@@ -557,9 +557,9 @@ void host_handle_click(int id)
 	if (id>=host_game_option_base) {
 	
 		setup.network.option.count=0;
-		option=hud.net_option.options;
+		option=iface.net_option.options;
 
-		for (n=0;n!=hud.net_option.noption;n++) {
+		for (n=0;n!=iface.net_option.noption;n++) {
 
 			if (element_get_value(host_game_option_base+n)!=0) {
 				strcpy(setup.network.option.options[setup.network.option.count].name,option->name);
@@ -589,7 +589,7 @@ void host_handle_click(int id)
 			idx=element_get_value(host_game_type_id);
 			if (idx!=setup.network.game_type) {
 				setup.network.game_type=idx;
-				host_fill_map_table(hud.net_game.games[idx].name);
+				host_fill_map_table(iface.net_game.games[idx].name);
 				host_map_list_to_table();
 				element_set_value(host_table_id,host_first_map_idx);
 				element_make_selection_visible(host_table_id);

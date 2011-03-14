@@ -32,8 +32,8 @@ and can be sold or given away.
 #include "scripts.h"
 #include "objects.h"
 
+extern iface_type		iface;
 extern js_type			js;
-extern hud_type			hud;
 
 JSValueRef js_obj_setting_get_id(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_setting_get_name(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
@@ -204,30 +204,30 @@ JSValueRef js_obj_setting_get_characterName(JSContextRef cx,JSObjectRef j_obj,JS
 {
 	obj_type		*obj;
 
-	if (hud.character.ncharacter==0) return(script_null_to_value(cx));
+	if (iface.character.ncharacter==0) return(script_null_to_value(cx));
 
 	obj=object_script_lookup();
-	return(script_string_to_value(cx,hud.character.characters[obj->character_idx].name));
+	return(script_string_to_value(cx,iface.character.characters[obj->character_idx].name));
 }
 
 JSValueRef js_obj_setting_get_characterModel(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
-	if (hud.character.ncharacter==0) return(script_null_to_value(cx));
+	if (iface.character.ncharacter==0) return(script_null_to_value(cx));
 
 	obj=object_script_lookup();
-	return(script_string_to_value(cx,hud.character.characters[obj->character_idx].model_name));
+	return(script_string_to_value(cx,iface.character.characters[obj->character_idx].model_name));
 }
 
 JSValueRef js_obj_setting_get_characterParameter(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	obj_type		*obj;
 
-	if (hud.character.ncharacter==0) return(script_null_to_value(cx));
+	if (iface.character.ncharacter==0) return(script_null_to_value(cx));
 
 	obj=object_script_lookup();
-	return(script_string_to_value(cx,hud.character.characters[obj->character_idx].param));
+	return(script_string_to_value(cx,iface.character.characters[obj->character_idx].param));
 }
 
 JSValueRef js_obj_setting_get_team(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)

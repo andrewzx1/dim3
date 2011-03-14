@@ -357,13 +357,11 @@ void gl_lights_compile_add(int tick,d3pnt *pnt,int light_type,bool light_map,int
 	
 		// create intensity for light type
 		
-	lspot->intensity=intensity;
-
-	lspot->i_intensity=(int)lspot->intensity;			// need alternate versions of data to speed up later calculations
-	lspot->f_intensity=(float)lspot->intensity;
+	lspot->i_intensity=intensity;			// need alternate versions of data to speed up later calculations
+	lspot->f_intensity=(float)intensity;
+	lspot->f_exponent=exponent;
 	
 	lspot->light_map=light_map;
-	lspot->exponent=exponent;
 	lspot->direction=direction;
 	
 		// create light position and color
@@ -373,8 +371,10 @@ void gl_lights_compile_add(int tick,d3pnt *pnt,int light_type,bool light_map,int
 
 		// non shader calculation speed ups
 
-	lspot->d_intensity=lspot->intensity*lspot->intensity;
+	lspot->d_intensity=(double)(intensity*intensity);
 	lspot->d_inv_intensity=1.0/lspot->d_intensity;
+	
+	lspot->d_exponent=(double)exponent;
 
 	lspot->f_x=(float)lspot->pnt.x;
 	lspot->f_y=(float)lspot->pnt.y;
@@ -684,7 +684,7 @@ void gl_lights_calc_color(double x,double y,double z,float *cf)
 
 				mult=(lspot->d_intensity-d)*lspot->d_inv_intensity;
 				
-				mult+=pow(mult,lspot->exponent);
+				mult+=pow(mult,lspot->d_exponent);
 
 				r+=(lspot->d_col_r*mult);
 				g+=(lspot->d_col_g*mult);
@@ -729,7 +729,7 @@ void gl_lights_calc_color_light_cache(int count,int *indexes,bool skip_light_map
 
 				mult=(lspot->d_intensity-d)*lspot->d_inv_intensity;
 				
-				mult+=pow(mult,lspot->exponent);
+				mult+=pow(mult,lspot->d_exponent);
 
 				r+=(lspot->d_col_r*mult);
 				g+=(lspot->d_col_g*mult);

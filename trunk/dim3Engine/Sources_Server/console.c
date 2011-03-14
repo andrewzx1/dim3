@@ -121,7 +121,7 @@ void console_add_line(char *txt,d3col *col)
 
 		if (setup.debug_console) {
 			if (!first_line) fprintf(stdout," ");
-			fprintf(stdout,c_str);
+			fprintf(stdout,"%s",c_str);
 			fprintf(stdout,"\n");
 		}
 

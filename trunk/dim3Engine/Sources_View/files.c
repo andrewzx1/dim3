@@ -48,7 +48,7 @@ extern bool game_file_load(char *file_name,char *err_str);
 extern void game_time_pause_end(void);
 
 extern server_type			server;
-extern hud_type				hud;
+extern iface_type			iface;
 extern setup_type			setup;
 
 int							file_last_state;
@@ -290,8 +290,8 @@ void file_open(void)
 	x=margin+padding;
 	y=(margin+element_get_tab_control_high())+padding;
 
-	wid=hud.scale_x-((margin+padding)*2);
-	high=(int)(((float)hud.scale_y)*0.85f)-y;
+	wid=iface.scale_x-((margin+padding)*2);
+	high=(int)(((float)iface.scale_y)*0.85f)-y;
 
 	strcpy(cols[0].name,"Map");
 	cols[0].percent_size=0.50f;
@@ -304,8 +304,8 @@ void file_open(void)
 	
 		// buttons
 		
-	wid=(int)(((float)hud.scale_x)*0.1f);
-	high=(int)(((float)hud.scale_x)*0.04f);
+	wid=(int)(((float)iface.scale_x)*0.1f);
+	high=(int)(((float)iface.scale_x)*0.04f);
 	
 	element_get_button_bottom_right(&x,&y,wid,high);
 	

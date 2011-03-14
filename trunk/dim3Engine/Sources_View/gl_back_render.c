@@ -289,6 +289,8 @@ void gl_back_render_frame_start(void)
 		
 			case view_render_type_mesh:
 				mesh=&map.mesh.meshes[view.render->draw_list.items[n].idx];
+				if (!mesh->flag.poly_has_camera) break;
+				
 				poly=mesh->polys;
 
 				for (k=0;k!=mesh->npoly;k++) {

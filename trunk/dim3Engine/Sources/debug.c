@@ -47,9 +47,9 @@ extern render_info_type		render_info;
 extern map_type				map;
 extern view_type			view;
 extern server_type			server;
+extern iface_type			iface;
 extern js_type				js;
 extern setup_type			setup;
-extern hud_type				hud;
 extern network_setup_type	net_setup;
 
 char						object_type_str[][32]={"Player","Remote","Bot Multiplayer","Bot Map","Object"},
@@ -184,7 +184,7 @@ void debug_dump(void)
 	debug_dump_header(file,"Engine");
 
 	debug_dump_info_str(file,"Engine",dim3_version);
-	debug_dump_info_str(file,"Project",hud.project_name);
+	debug_dump_info_str(file,"Project",iface.project_name);
 
 	debug_dump_info_str(file,"GPU",render_info.name);
 	sprintf(str,"%d,%d @ %d",render_info.monitor_x_sz,render_info.monitor_y_sz,render_info.monitor_refresh_rate);
@@ -591,7 +591,7 @@ void debug_input(void)
 	
 		// others require debug mode to be on
 		
-	if (!hud.debug) return;
+	if (!iface.debug) return;
 	
 	if (input_action_get_state_single(nc_debug_status)) {
 		debug_dump();

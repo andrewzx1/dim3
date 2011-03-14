@@ -36,7 +36,6 @@ extern char team_colors[][16];
 
 extern map_type				map;
 extern server_type			server;
-extern hud_type				hud;
 extern network_setup_type	net_setup;
 
 int							net_host_player_count;

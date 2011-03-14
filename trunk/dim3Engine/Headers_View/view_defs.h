@@ -152,10 +152,11 @@ typedef struct		{
 typedef struct		{
 						int									direction,i_intensity;
 						bool								light_map;
-						float								exponent,f_x,f_y,f_z,f_intensity;
+						float								f_x,f_y,f_z,
+															f_intensity,f_exponent;
 						double								d_x,d_y,d_z,
-															intensity,inv_intensity,
 															d_intensity,d_inv_intensity,
+															d_exponent,
 															d_col_r,d_col_g,d_col_b;
 						d3pnt								pnt;
 						d3vct								pnt_eye_space;

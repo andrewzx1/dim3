@@ -33,11 +33,10 @@ and can be sold or given away.
 
 extern map_type				map;
 extern server_type			server;
+extern iface_type			iface;
 extern setup_type			setup;
-extern hud_type				hud;
 
 float						progress_current;
-char						progress_str[256];
 bitmap_type					progress_bitmap;
 
 /* =======================================================
@@ -46,14 +45,10 @@ bitmap_type					progress_bitmap;
       
 ======================================================= */
 
-void progress_initialize(char *action,char *map_name)
+void progress_initialize(char *map_name)
 {
 	char			path[1024];
 	bool			bitmap_ok;
-	
-		// progress text
-		
-	strcpy(progress_str,action);
 	
 		// check for map progress background,
 		// otherwise use default
@@ -88,7 +83,7 @@ void progress_shutdown(void)
 
 void progress_draw(float percentage)
 {
-	int				lft,rgt,top,bot,mid,rgt2,x,y;
+	int				lft,rgt,top,bot,mid,rgt2;
 
 		// any change?
 		
@@ -107,43 +102,34 @@ void progress_draw(float percentage)
 		// draw background
 
 	if (gl_check_texture_rectangle_ok()) {
-		view_draw_next_vertex_object_2D_texture_quad_rectangle(progress_bitmap.gl_id,1.0f,0,hud.scale_x,0,hud.scale_y,progress_bitmap.wid,progress_bitmap.high);
+		view_draw_next_vertex_object_2D_texture_quad_rectangle(progress_bitmap.gl_id,1.0f,0,iface.scale_x,0,iface.scale_y,progress_bitmap.wid,progress_bitmap.high);
 	}
 	else {
-		view_draw_next_vertex_object_2D_texture_quad(progress_bitmap.gl_id,NULL,1.0f,0,hud.scale_x,0,hud.scale_y,0.0f,1.0f,0.0f,1.0f);
+		view_draw_next_vertex_object_2D_texture_quad(progress_bitmap.gl_id,NULL,1.0f,0,iface.scale_x,0,iface.scale_y,0.0f,1.0f,0.0f,1.0f);
 	}
 	
 		// draw the progress background
 		
-	lft=hud.progress.lx;
-	rgt=hud.progress.rx;
-	top=hud.progress.ty;
-	bot=hud.progress.by;
+	lft=iface.progress.lx;
+	rgt=iface.progress.rx;
+	top=iface.progress.ty;
+	bot=iface.progress.by;
 
 	mid=(top+bot)>>1;
 
-	view_draw_next_vertex_object_2D_color_poly(lft,top,&hud.progress.base_color_end,rgt,top,&hud.progress.base_color_end,rgt,mid,&hud.progress.base_color_start,lft,mid,&hud.progress.base_color_start,1.0f);
-	view_draw_next_vertex_object_2D_color_poly(lft,mid,&hud.progress.base_color_start,rgt,mid,&hud.progress.base_color_start,rgt,bot,&hud.progress.base_color_end,lft,bot,&hud.progress.base_color_end,1.0f);
+	view_draw_next_vertex_object_2D_color_poly(lft,top,&iface.progress.base_color_end,rgt,top,&iface.progress.base_color_end,rgt,mid,&iface.progress.base_color_start,lft,mid,&iface.progress.base_color_start,1.0f);
+	view_draw_next_vertex_object_2D_color_poly(lft,mid,&iface.progress.base_color_start,rgt,mid,&iface.progress.base_color_start,rgt,bot,&iface.progress.base_color_end,lft,bot,&iface.progress.base_color_end,1.0f);
 	
 		// draw the progress foreground
 	
 	rgt2=lft+(int)((float)(rgt-lft)*(percentage/100));
 	
-	view_draw_next_vertex_object_2D_color_poly(lft,top,&hud.progress.hilite_color_start,rgt2,top,&hud.progress.hilite_color_start,rgt2,mid,&hud.progress.hilite_color_end,lft,mid,&hud.progress.hilite_color_end,1.0f);
-	view_draw_next_vertex_object_2D_color_poly(lft,mid,&hud.progress.hilite_color_end,rgt2,mid,&hud.progress.hilite_color_end,rgt2,bot,&hud.progress.hilite_color_start,lft,bot,&hud.progress.hilite_color_start,1.0f);
+	view_draw_next_vertex_object_2D_color_poly(lft,top,&iface.progress.hilite_color_start,rgt2,top,&iface.progress.hilite_color_start,rgt2,mid,&iface.progress.hilite_color_end,lft,mid,&iface.progress.hilite_color_end,1.0f);
+	view_draw_next_vertex_object_2D_color_poly(lft,mid,&iface.progress.hilite_color_end,rgt2,mid,&iface.progress.hilite_color_end,rgt2,bot,&iface.progress.hilite_color_start,lft,bot,&iface.progress.hilite_color_start,1.0f);
 	
 		// progress outline
 
-	if (hud.progress.outline) view_draw_next_vertex_object_2D_line_quad(&hud.progress.outline_color,1.0f,lft,rgt,top,bot);
-
-		// progress text
-
-	x=(hud.progress.lx+hud.progress.rx)>>1;
-	y=(hud.progress.ty+hud.progress.by)>>1;
-	
-	gl_text_start(font_interface_index,hud.progress.text_size);
-	gl_text_draw(x,y,progress_str,tx_center,TRUE,&hud.progress.text_color,1.0f);
-	gl_text_end();
+	if (iface.progress.outline) view_draw_next_vertex_object_2D_line_quad(&iface.progress.outline_color,1.0f,lft,rgt,top,bot);
 
 	gl_frame_swap();
 }

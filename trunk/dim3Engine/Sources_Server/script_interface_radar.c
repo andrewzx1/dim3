@@ -32,9 +32,9 @@ and can be sold or given away.
 #include "scripts.h"
 #include "interfaces.h"
 
+extern iface_type		iface;
 extern js_type			js;
 extern setup_type		setup;
-extern hud_type			hud;
 
 JSValueRef js_interface_radar_get_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_interface_radar_get_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
@@ -86,27 +86,27 @@ JSObjectRef script_add_interface_radar_object(JSContextRef cx,JSObjectRef parent
 
 JSValueRef js_interface_radar_get_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_bool_to_value(cx,hud.radar.on));
+	return(script_bool_to_value(cx,iface.radar.on));
 }
 
 JSValueRef js_interface_radar_get_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_int_to_value(cx,hud.radar.x));
+	return(script_int_to_value(cx,iface.radar.x));
 }
 
 JSValueRef js_interface_radar_get_y(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_int_to_value(cx,hud.radar.y));
+	return(script_int_to_value(cx,iface.radar.y));
 }
 
 JSValueRef js_interface_radar_get_displayRadius(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_int_to_value(cx,hud.radar.display_radius));
+	return(script_int_to_value(cx,iface.radar.display_radius));
 }
 
 JSValueRef js_interface_radar_get_viewRadius(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_int_to_value(cx,hud.radar.view_radius));
+	return(script_int_to_value(cx,iface.radar.view_radius));
 }
 
 /* =======================================================
@@ -117,35 +117,35 @@ JSValueRef js_interface_radar_get_viewRadius(JSContextRef cx,JSObjectRef j_obj,J
 
 bool js_interface_radar_set_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	hud.radar.on=script_value_to_bool(cx,vp);
+	iface.radar.on=script_value_to_bool(cx,vp);
 	
 	return(TRUE);
 }
 
 bool js_interface_radar_set_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	hud.radar.x=script_value_to_int(cx,vp);
+	iface.radar.x=script_value_to_int(cx,vp);
 	
 	return(TRUE);
 }
 
 bool js_interface_radar_set_y(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	hud.radar.y=script_value_to_int(cx,vp);
+	iface.radar.y=script_value_to_int(cx,vp);
 	
 	return(TRUE);
 }
 
 bool js_interface_radar_set_displayRadius(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	hud.radar.display_radius=script_value_to_int(cx,vp);
+	iface.radar.display_radius=script_value_to_int(cx,vp);
 	
 	return(TRUE);
 }
 
 bool js_interface_radar_set_viewRadius(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	hud.radar.view_radius=script_value_to_int(cx,vp);
+	iface.radar.view_radius=script_value_to_int(cx,vp);
 	
 	return(TRUE);
 }

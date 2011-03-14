@@ -181,7 +181,7 @@ void render_model_create_color_vertexes(model_type *mdl,int mesh_mask,model_draw
 	}
 }
 
-void render_model_create_normal_vertexes(model_type *mdl,int mesh_mask,model_draw *draw)
+void render_model_create_normal_vertexes(model_type *mdl,int mesh_mask,model_draw *draw,bool shader_off)
 {
 	int				n,k,ts_count;
 	float			*tl,*nl;
@@ -192,7 +192,7 @@ void render_model_create_normal_vertexes(model_type *mdl,int mesh_mask,model_dra
 
 			// create the normals for the pose
 
-		model_create_draw_normals(mdl,n,&draw->setup);
+		model_create_draw_normals(mdl,n,&draw->setup,shader_off);
 
 			// no rotate models (hand weapons)
 			// need to fix tangent space
@@ -218,74 +218,183 @@ void render_model_create_normal_vertexes(model_type *mdl,int mesh_mask,model_dra
 
 /* =======================================================
 
-      Model Diffuse
+      Specific Model Drawing Arrays
       
 ======================================================= */
 
-void render_model_diffuse_color_vertexes(model_type *mdl,int mesh_idx,model_draw *draw,float *vertex_ptr)
+void render_model_vertex_object_no_shader(model_type *mdl,int mesh_idx,model_draw *draw,float *vertex_ptr)
 {
-	int				n,k;
-	float			diffuse,boost;
-	float			*cl,*nl;
-	d3vct			diffuse_vct;
-	d3col			ambient_col;
-	model_mesh_type	*mesh;
+	int					n,k,offset;
+	float				*gx,*gy,*vp,*cp,*vl,*ul,*cl,
+						*vp_start,*cp_start;
+	model_trig_type		*trig;
+	model_mesh_type		*mesh;
 	
 	mesh=&mdl->meshes[mesh_idx];
+	
+	vl=vertex_ptr;
+	ul=vertex_ptr+((mesh->ntrig*3)*3);
+	cl=vertex_ptr+((mesh->ntrig*3)*(3+2));
 
+	vp_start=draw->setup.mesh_arrays[mesh_idx].gl_vertex_array;
+	cp_start=draw->setup.mesh_arrays[mesh_idx].gl_color_array;
+
+	trig=mesh->trigs;
+	
+	for (n=0;n!=mesh->ntrig;n++) {
+	
+		gx=trig->gx;
+		gy=trig->gy;
+
+		for (k=0;k!=3;k++) {
+			offset=trig->v[k]*3;
+			
+			vp=vp_start+offset;
+			cp=cp_start+offset;
+
+			*vl++=*vp++;
+			*vl++=*vp++;
+			*vl++=*vp;
+
+			*ul++=*gx++;
+			*ul++=*gy++;
+
+			*cl++=*cp++;
+			*cl++=*cp++;
+			*cl++=*cp;
+		}
+
+		trig++;
+	}
+}
+
+void render_model_vertex_object_no_shader_diffuse(model_type *mdl,int mesh_idx,model_draw *draw,float *vertex_ptr)
+{
+	int					n,k,offset;
+	float				diffuse,min_diffuse,boost,
+						*gx,*gy,*vp,*cp,*vl,*ul,*cl,*nl,
+						*vp_start,*cp_start;
+	d3vct				diffuse_vct;
+	d3col				ambient_col;
+	model_trig_type		*trig;
+	model_mesh_type		*mesh;
+	
+	mesh=&mdl->meshes[mesh_idx];
+	
+		// setup diffuse
+		
 	if (!draw->ui_lighting) {
 		gl_lights_calc_diffuse_vector(&draw->pnt,draw->light_cache.count,draw->light_cache.indexes,&diffuse_vct);
 
 		gl_lights_calc_ambient_color(&ambient_col);
-		ambient_col.r*=gl_diffuse_ambient_factor;
-		ambient_col.g*=gl_diffuse_ambient_factor;
-		ambient_col.b*=gl_diffuse_ambient_factor;
+		min_diffuse=(ambient_col.r+ambient_col.g+ambient_col.b)*(0.33f*gl_diffuse_ambient_factor);
 	}
 	else {
 		diffuse_vct.x=mdl->ui.diffuse_vct.x;
 		diffuse_vct.y=mdl->ui.diffuse_vct.y;
 		diffuse_vct.z=mdl->ui.diffuse_vct.z;
-		ambient_col.r=mdl->ui.ambient.r;
-		ambient_col.g=mdl->ui.ambient.g;
-		ambient_col.b=mdl->ui.ambient.b;
+		min_diffuse=mdl->ui.min_diffuse;
 	}
 	
 	boost=mdl->diffuse_boost;
+
+		// create the vertex object
 	
-		// run through the colors and add
-		// in the diffuse
-		
-	nl=draw->setup.mesh_arrays[mesh_idx].gl_normal_array;
+	vl=vertex_ptr;
+	ul=vertex_ptr+((mesh->ntrig*3)*3);
 	cl=vertex_ptr+((mesh->ntrig*3)*(3+2));
 
+	vp_start=draw->setup.mesh_arrays[mesh_idx].gl_vertex_array;
+	cp_start=draw->setup.mesh_arrays[mesh_idx].gl_color_array;
+	nl=draw->setup.mesh_arrays[mesh_idx].gl_normal_array;
+
+	trig=mesh->trigs;
+	
 	for (n=0;n!=mesh->ntrig;n++) {
 	
-		for (k=0;k!=3;k++) {
+		gx=trig->gx;
+		gy=trig->gy;
 
-				// get the dot product
+		for (k=0;k!=3;k++) {
+			offset=trig->v[k]*3;
+			
+			vp=vp_start+offset;
+			cp=cp_start+offset;
+
+			*vl++=*vp++;
+			*vl++=*vp++;
+			*vl++=*vp;
+
+			*ul++=*gx++;
+			*ul++=*gy++;
+			
+				// get the diffuse from
+				// the dot product and clamp it
 				
 			diffuse=(diffuse_vct.x*(*nl))+(diffuse_vct.y*(*(nl+1)))+(diffuse_vct.z*(*(nl+2)));
 			diffuse=((diffuse+1.0f)*0.5f)+boost;
+			if (diffuse<min_diffuse) diffuse=min_diffuse;
 
 			nl+=3;
 		
-				// clamp it to ambient
-				// this is kind of ugly, might find a better
-				// way in the future
+				// apply diffuse
 			
-			*cl=(*cl)*diffuse;
-			if ((*cl)<ambient_col.r) *cl=ambient_col.r;
-			cl++;
-			
-			*cl=(*cl)*diffuse;
-			if ((*cl)<ambient_col.g) *cl=ambient_col.g;
-			cl++;
-			
-			*cl=(*cl)*diffuse;
-			if ((*cl)<ambient_col.b) *cl=ambient_col.b;
-			cl++;
+			*cl++=(*cp++)*diffuse;
+			*cl++=(*cp++)*diffuse;
+			*cl++=(*cp)*diffuse;
 		}
+
+		trig++;
 	}
+}
+
+void render_model_vertex_object_shader(model_type *mdl,int mesh_idx,model_draw *draw,float *vertex_ptr)
+{
+	int					n,k,offset,mem_sz;
+	float				*gx,*gy,*vp,*vl,*ul,*tl,*nl,
+						*vp_start;
+	model_trig_type		*trig;
+	model_mesh_type		*mesh;
+	
+	mesh=&mdl->meshes[mesh_idx];
+	
+	vl=vertex_ptr;
+	ul=vertex_ptr+((mesh->ntrig*3)*3);
+
+	vp_start=draw->setup.mesh_arrays[mesh_idx].gl_vertex_array;
+
+	trig=mesh->trigs;
+
+	for (n=0;n!=mesh->ntrig;n++) {
+	
+		gx=trig->gx;
+		gy=trig->gy;
+
+		for (k=0;k!=3;k++) {
+			offset=trig->v[k]*3;
+			
+			vp=vp_start+offset;
+
+			*vl++=*vp++;
+			*vl++=*vp++;
+			*vl++=*vp;
+
+			*ul++=*gx++;
+			*ul++=*gy++;
+		}
+
+		trig++;
+	}
+
+		// tangent space already in trig-vertex array
+
+	mem_sz=((mesh->ntrig*3)*3)*sizeof(float);
+
+	tl=vertex_ptr+((mesh->ntrig*3)*(3+2));
+	memmove(tl,draw->setup.mesh_arrays[mesh_idx].gl_tangent_array,mem_sz);
+
+	nl=vertex_ptr+((mesh->ntrig*3)*(3+2+3));
+	memmove(nl,draw->setup.mesh_arrays[mesh_idx].gl_normal_array,mem_sz);
 }
 
 /* =======================================================
@@ -296,13 +405,9 @@ void render_model_diffuse_color_vertexes(model_type *mdl,int mesh_idx,model_draw
 
 bool render_model_initialize_vertex_objects(model_type *mdl,int mesh_idx,model_draw *draw)
 {
-	int				n,k,offset,mem_sz;
-	float			*vl,*ul,*cl,*tl,*nl,
-					*vp,*cp,*gx,*gy,
-					*vp_start,*cp_start,
-					*vertex_ptr;
-    model_trig_type	*trig;
-	model_mesh_type	*mesh;
+	int					mem_sz;
+	float				*vertex_ptr;
+	model_mesh_type		*mesh;
 	
  		// construct VBO
 		// non-shaders have vertex, uv, color
@@ -330,90 +435,25 @@ bool render_model_initialize_vertex_objects(model_type *mdl,int mesh_idx,model_d
 	vertex_ptr=view_bind_map_next_vertex_object(mem_sz);
 	if (vertex_ptr==NULL) return(FALSE);
 	
-		// build the vertexes, indexes, and colors
-		// into the VBO, and the tangent space as
-		// pointers
-
-	vl=vertex_ptr;
-	ul=vertex_ptr+((mesh->ntrig*3)*3);
-
-	vp_start=draw->setup.mesh_arrays[mesh_idx].gl_vertex_array;
-	cp_start=draw->setup.mesh_arrays[mesh_idx].gl_color_array;
-
 		// non-shader drawing requires
 		// vertexes, UVs, and colors
 		// and dim3 generates the diffuse
 
-	trig=mesh->trigs;
-
 	if ((!view.shader_on) || (draw->no_shader)) {
-
-		cl=vertex_ptr+((mesh->ntrig*3)*(3+2));
-
-		for (n=0;n!=mesh->ntrig;n++) {
+		if ((mesh->diffuse) && (!mesh->no_lighting)) {
+			render_model_vertex_object_no_shader_diffuse(mdl,mesh_idx,draw,vertex_ptr);
 		
-			gx=trig->gx;
-			gy=trig->gy;
-
-			for (k=0;k!=3;k++) {
-				offset=trig->v[k]*3;
-				
-				vp=vp_start+offset;
-				cp=cp_start+offset;
-
-				*vl++=*vp++;
-				*vl++=*vp++;
-				*vl++=*vp;
-
-				*ul++=*gx++;
-				*ul++=*gy++;
-
-				*cl++=*cp++;
-				*cl++=*cp++;
-				*cl++=*cp;
-			}
-
-			trig++;
 		}
-	
-		if ((mesh->diffuse) && (!mesh->no_lighting)) render_model_diffuse_color_vertexes(mdl,mesh_idx,draw,vertex_ptr);
+		else {
+			render_model_vertex_object_no_shader(mdl,mesh_idx,draw,vertex_ptr);
+		}
 	}
 
 		// shader drawing requires
 		// vertexes, UVs, and tangent space
 
 	else {
-
-		for (n=0;n!=mesh->ntrig;n++) {
-		
-			gx=trig->gx;
-			gy=trig->gy;
-
-			for (k=0;k!=3;k++) {
-				offset=trig->v[k]*3;
-				
-				vp=vp_start+offset;
-
-				*vl++=*vp++;
-				*vl++=*vp++;
-				*vl++=*vp;
-
-				*ul++=*gx++;
-				*ul++=*gy++;
-			}
-
-			trig++;
-		}
-
-			// tangent space already in trig-vertex array
-
-		mem_sz=((mesh->ntrig*3)*3)*sizeof(float);
-
-		tl=vertex_ptr+((mesh->ntrig*3)*(3+2));
-		memmove(tl,draw->setup.mesh_arrays[mesh_idx].gl_tangent_array,mem_sz);
-
-		nl=vertex_ptr+((mesh->ntrig*3)*(3+2+3));
-		memmove(nl,draw->setup.mesh_arrays[mesh_idx].gl_normal_array,mem_sz);
+		render_model_vertex_object_shader(mdl,mesh_idx,draw,vertex_ptr);
 	}
 
 		// unmap VBO
@@ -947,6 +987,7 @@ void render_model_setup(model_draw *draw,int tick)
 void render_model_build_vertex_lists(model_draw *draw)
 {
 	int					n;
+	bool				shader_off;
 	model_type			*mdl;
 
 		// get model
@@ -974,8 +1015,9 @@ void render_model_build_vertex_lists(model_draw *draw)
 		// setup the colors and normals
 		// shaders don't need color list
 
-	render_model_create_normal_vertexes(mdl,draw->render_mesh_mask,draw);
-	if ((!view.shader_on) || (draw->no_shader)) render_model_create_color_vertexes(mdl,draw->render_mesh_mask,draw);
+	shader_off=((!view.shader_on) || (draw->no_shader));
+	render_model_create_normal_vertexes(mdl,draw->render_mesh_mask,draw,shader_off);
+	if (shader_off) render_model_create_color_vertexes(mdl,draw->render_mesh_mask,draw);
 }
 
 /* =======================================================

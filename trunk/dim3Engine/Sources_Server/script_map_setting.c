@@ -33,8 +33,8 @@ and can be sold or given away.
 
 extern map_type				map;
 extern server_type			server;
+extern iface_type			iface;
 extern js_type				js;
-extern hud_type				hud;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
 
@@ -121,7 +121,7 @@ JSValueRef js_map_setting_get_multiplayerType(JSContextRef cx,JSObjectRef j_obj,
 {
 	if (net_setup.mode==net_mode_none) return(script_null_to_value(cx));
 
-	return(script_string_to_value(cx,hud.net_game.games[net_setup.game_idx].name));
+	return(script_string_to_value(cx,iface.net_game.games[net_setup.game_idx].name));
 }
 
 JSValueRef js_map_setting_get_botSkill(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)

@@ -35,7 +35,6 @@ and can be sold or given away.
 #include "projectiles.h"
 
 extern js_type			js;
-extern hud_type			hud;
 extern setup_type		setup;
 
 JSValueRef js_model_get_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);

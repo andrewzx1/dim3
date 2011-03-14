@@ -30,7 +30,7 @@ and can be sold or given away.
 #endif
 
 extern server_type			server;
-extern hud_type				hud;
+extern iface_type			iface;
 extern setup_type			setup;
 
 /* =======================================================
@@ -43,10 +43,10 @@ int chooser_add(char *name)
 {
 	chooser_type	*chooser;
 	
-	if (hud.count.chooser>=max_chooser) return(-1);
+	if (iface.count.chooser>=max_chooser) return(-1);
 	
-	chooser=&hud.choosers[hud.count.chooser];
-	hud.count.chooser++;
+	chooser=&iface.choosers[iface.count.chooser];
+	iface.count.chooser++;
 	
 	strcpy(chooser->name,name);
 
@@ -55,16 +55,16 @@ int chooser_add(char *name)
 	chooser->key.ok_id=-1;
 	chooser->key.cancel_id=-1;
 	
-	return(hud.count.chooser-1);
+	return(iface.count.chooser-1);
 }
 
 void chooser_copy_template(int idx,int template_idx)
 {
 	char			name[name_str_len];
 	
-	strcpy(name,hud.choosers[idx].name);
-	memmove(&hud.choosers[idx],&hud.choosers[template_idx],sizeof(chooser_type));
-	strcpy(hud.choosers[idx].name,name);
+	strcpy(name,iface.choosers[idx].name);
+	memmove(&iface.choosers[idx],&iface.choosers[template_idx],sizeof(chooser_type));
+	strcpy(iface.choosers[idx].name,name);
 }
 
 /* =======================================================
@@ -78,9 +78,9 @@ int chooser_find(char *name)
 	int				n;
 	chooser_type	*chooser;
 	
-	chooser=hud.choosers;
+	chooser=iface.choosers;
 	
-	for (n=0;n!=hud.count.chooser;n++) {
+	for (n=0;n!=iface.count.chooser;n++) {
 		if (strcasecmp(chooser->name,name)==0) return(n);
 		chooser++;
 	}
@@ -115,7 +115,7 @@ void chooser_add_text(int chooser_idx,int template_idx,int id,char *str,int x,in
 	chooser_type		*chooser;
 	chooser_piece_type	*piece;
 	
-	chooser=&hud.choosers[chooser_idx];
+	chooser=&iface.choosers[chooser_idx];
 
 		// is this a template substitution?
 
@@ -153,7 +153,7 @@ void chooser_add_item(int chooser_idx,int template_idx,int id,char *file,int x,i
 	chooser_type		*chooser;
 	chooser_piece_type	*piece;
 	
-	chooser=&hud.choosers[chooser_idx];
+	chooser=&iface.choosers[chooser_idx];
 
 		// is this a template substitution?
 
@@ -191,7 +191,7 @@ void chooser_add_model(int chooser_idx,int template_idx,int id,char *model_name,
 	chooser_type		*chooser;
 	chooser_piece_type	*piece;
 	
-	chooser=&hud.choosers[chooser_idx];
+	chooser=&iface.choosers[chooser_idx];
 	
 		// is this a template substitution?
 
@@ -233,7 +233,7 @@ void chooser_add_button(int chooser_idx,int template_idx,int id,char *name,int x
 	chooser_type		*chooser;
 	chooser_piece_type	*piece;
 	
-	chooser=&hud.choosers[chooser_idx];
+	chooser=&iface.choosers[chooser_idx];
 	
 		// is this a template substitution?
 

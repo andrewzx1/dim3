@@ -37,9 +37,9 @@ and can be sold or given away.
 
 extern map_type				map;
 extern server_type			server;
+extern iface_type			iface;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
-extern hud_type				hud;
 
 d3socket					host_socket;
 bool						host_complete;
@@ -193,8 +193,8 @@ void net_host_info_request(unsigned long ip_addr,int port)
 	strcpy(info.host_name,net_setup.host.name);
 	strcpy(info.host_ip_resolve,net_setup.host.ip_resolve);
 
-	strcpy(info.proj_name,hud.project_name);
-	strcpy(info.game_name,hud.net_game.games[net_setup.game_idx].name);
+	strcpy(info.proj_name,iface.project_name);
+	strcpy(info.game_name,iface.net_game.games[net_setup.game_idx].name);
 	strcpy(info.map_name,map.info.name);
 
 	info.score_limit=htons((short)net_setup.score_limit);

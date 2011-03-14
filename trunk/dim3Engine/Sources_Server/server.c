@@ -43,8 +43,8 @@ and can be sold or given away.
 
 map_type					map;
 server_type					server;
+iface_type					iface;
 js_type						js;
-hud_type					hud;
 
 extern setup_type			setup;
 extern network_setup_type	net_setup;
@@ -57,61 +57,6 @@ extern void server_run(void);
       
 ======================================================= */
 
-bool server_memory_allocate(void)
-{
-		// initialize pointers
-		
-	hud.bitmaps=NULL;
-	hud.texts=NULL;
-	hud.bars=NULL;
-	hud.menus=NULL;
-	hud.choosers=NULL;
-	hud.chat.lines=NULL;
-
-		// hud pointers
-
-	hud.bitmaps=(hud_bitmap_type*)malloc(max_hud_bitmap*sizeof(hud_bitmap_type));
-	if (hud.bitmaps==NULL) return(FALSE);
-	
-	hud.texts=(hud_text_type*)malloc(max_hud_text*sizeof(hud_text_type));
-	if (hud.texts==NULL) return(FALSE);
-	
-	hud.bars=(hud_bar_type*)malloc(max_hud_bar*sizeof(hud_bar_type));
-	if (hud.bars==NULL) return(FALSE);
-
-	hud.menus=(menu_type*)malloc(max_menu*sizeof(menu_type));
-	if (hud.menus==NULL) return(FALSE);
-	
-	hud.choosers=(chooser_type*)malloc(max_chooser*sizeof(chooser_type));
-	if (hud.choosers==NULL) return(FALSE);
-	
-	hud.chat.lines=(hud_chat_line_type*)malloc(max_chat_lines*sizeof(hud_chat_line_type));
-	if (hud.chat.lines==NULL) return(FALSE);
-	
-		// zero memory
-		
-	bzero(hud.bitmaps,(max_hud_bitmap*sizeof(hud_bitmap_type)));
-	bzero(hud.texts,(max_hud_text*sizeof(hud_text_type)));
-	bzero(hud.bars,(max_hud_bar*sizeof(hud_bar_type)));
-	bzero(hud.menus,(max_menu*sizeof(menu_type)));
-	bzero(hud.choosers,(max_chooser*sizeof(chooser_type)));
-	bzero(hud.chat.lines,(max_chat_lines*sizeof(hud_chat_line_type)));
-
-	return(TRUE);
-}
-
-void server_memory_release(void)
-{
-		// hud pointers
-		
-	if (hud.bitmaps!=NULL) free(hud.bitmaps);
-	if (hud.texts!=NULL) free(hud.texts);
-	if (hud.bars!=NULL) free(hud.bars);
-	if (hud.menus!=NULL) free(hud.menus);
-	if (hud.choosers!=NULL) free(hud.choosers);
-	if (hud.chat.lines!=NULL) free(hud.chat.lines);
-}
-
 /* =======================================================
 
       Server Initialize and Shutdown
@@ -123,13 +68,13 @@ bool server_initialize(char *err_str)
 		// clear server, js, hud structures
 		
 	memset(&server,0x0,sizeof(server_type));
+	memset(&iface,0x0,sizeof(iface_type));
 	memset(&js,0x0,sizeof(js_type));
-	memset(&hud,0x0,sizeof(hud_type));
 	
 		// allocate memory
 		
-	if (!server_memory_allocate()) {
-		server_memory_release();
+	if (!interface_initialize()) {
+		interface_shutdown();
 		strcpy(err_str,"Out of Memory");
 		return(FALSE);
 	}
@@ -137,7 +82,7 @@ bool server_initialize(char *err_str)
 		// start script engine
 		
 	if (!scripts_engine_initialize(err_str)) {
-		server_memory_release();
+		interface_shutdown();
 		return(FALSE);
 	}
 	
@@ -184,7 +129,7 @@ void server_shutdown(void)
 	mark_free_list();
 	crosshair_free_list();
 
-	server_memory_release();
+	interface_shutdown();
 }
 
 /* =======================================================

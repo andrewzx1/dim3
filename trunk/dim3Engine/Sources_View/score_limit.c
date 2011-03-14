@@ -44,8 +44,8 @@ extern bool					game_loop_quit;
 
 extern server_type			server;
 extern map_type				map;
+extern iface_type			iface;
 extern js_type				js;
-extern hud_type				hud;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
 
@@ -114,7 +114,7 @@ void score_limit_check_scores(void)
 
 		// team checks?
 		
-	if (hud.net_game.games[net_setup.game_idx].use_teams) {
+	if (iface.net_game.games[net_setup.game_idx].use_teams) {
 		
 		red_score=blue_score=0;
 
@@ -183,7 +183,7 @@ int score_limit_get_resume_time(void)
 void score_limit_run(void)
 {
 	gl_frame_clear(FALSE);
-	view_draw_next_vertex_object_2D_color_quad(&hud.color.dialog_background,1.0f,0,hud.scale_x,0,hud.scale_y);
+	view_draw_next_vertex_object_2D_color_quad(&iface.color.dialog_background,1.0f,0,iface.scale_x,0,iface.scale_y);
 	network_score_draw();
 	gl_frame_swap();
 

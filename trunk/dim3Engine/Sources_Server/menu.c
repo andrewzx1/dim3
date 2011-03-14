@@ -30,7 +30,7 @@ and can be sold or given away.
 #endif
 
 extern server_type			server;
-extern hud_type				hud;
+extern iface_type			iface;
 extern setup_type			setup;
 
 /* =======================================================
@@ -43,15 +43,15 @@ int menu_add(char *name)
 {
 	menu_type		*menu;
 	
-	if (hud.count.menu>=max_menu) return(-1);
+	if (iface.count.menu>=max_menu) return(-1);
 	
-	menu=&hud.menus[hud.count.menu];
-	hud.count.menu++;
+	menu=&iface.menus[iface.count.menu];
+	iface.count.menu++;
 	
 	strcpy(menu->name,name);
 	menu->nitem=0;
 	
-	return(hud.count.menu-1);
+	return(iface.count.menu-1);
 }
 
 void menu_add_item(int menu_idx,int item_id,char *data,char *sub_menu,bool multiplayer_disable,bool quit)
@@ -59,7 +59,7 @@ void menu_add_item(int menu_idx,int item_id,char *data,char *sub_menu,bool multi
 	menu_type		*menu;
 	menu_item_type  *item;
 	
-	menu=&hud.menus[menu_idx];
+	menu=&iface.menus[menu_idx];
 	
 	if (menu->nitem>=max_menu_item) return;
 	
@@ -84,9 +84,9 @@ int menu_find(char *name)
 	int			n;
 	menu_type	*menu;
 	
-	menu=hud.menus;
+	menu=iface.menus;
 	
-	for (n=0;n!=hud.count.menu;n++) {
+	for (n=0;n!=iface.count.menu;n++) {
 		if (strcasecmp(menu->name,name)==0) return(n);
 		menu++;
 	}

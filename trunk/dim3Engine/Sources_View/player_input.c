@@ -42,8 +42,8 @@ and can be sold or given away.
 extern map_type				map;
 extern view_type			view;
 extern server_type			server;
+extern iface_type			iface;
 extern camera_type			camera;
-extern hud_type				hud;
 extern js_type				js;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
@@ -88,7 +88,7 @@ void player_clear_input(void)
 	
 	input_clear();
 
-	hud.chat.type_on=FALSE;
+	iface.chat.type_on=FALSE;
 }
 
 /* =======================================================
@@ -466,7 +466,7 @@ bool player_message_input(obj_type *obj)
 		
 	if (input_action_get_state(nc_score)) {
 		if (!network_score_key_down) {
-			hud.score.on=!hud.score.on;
+			iface.score.on=!iface.score.on;
 			network_score_key_down=TRUE;
 		}
 	}
@@ -476,7 +476,7 @@ bool player_message_input(obj_type *obj)
 		
 		// chatting
 
-	if (hud.chat.type_on) {
+	if (iface.chat.type_on) {
 	
 			// get last raw key as character
 			
@@ -485,20 +485,20 @@ bool player_message_input(obj_type *obj)
 		
 			// get current message len
 			
-		msg=hud.chat.type_str;
+		msg=iface.chat.type_str;
 		len=strlen(msg);
 		
 			// escape cancels
 			
 		if (ch==0x1B) {
-			hud.chat.type_on=FALSE;
+			iface.chat.type_on=FALSE;
 			return(FALSE);
 		}
 		
 			// return ends entry
 			
 		if (ch==0xD) {
-			hud.chat.type_on=FALSE;
+			iface.chat.type_on=FALSE;
 			if (len>1) {
 				msg[len-1]=0x0;
 				net_client_send_chat(obj,msg);
@@ -558,12 +558,12 @@ bool player_message_input(obj_type *obj)
 	}
 	
 	if (input_action_get_state(nc_message)) {
-		hud.chat.type_on=TRUE;
+		iface.chat.type_on=TRUE;
 		
 		input_clear_text_input();
 		
-		hud.chat.type_str[0]='_';
-		hud.chat.type_str[1]=0x0;
+		iface.chat.type_str[0]='_';
+		iface.chat.type_str[1]=0x0;
 		
 		return(FALSE);
 	}

@@ -91,8 +91,8 @@ extern bool					game_loop_quit;
 
 extern render_info_type		render_info;
 extern server_type			server;
+extern iface_type			iface;
 extern setup_type			setup;
-extern hud_type				hud;
 
 int							setup_tab_value,setup_action_scroll_pos,
 							setup_key_control_to_action_index_list[ncontrol];
@@ -125,8 +125,8 @@ void setup_game_video_pane(void)
 	control_y_add=element_get_control_high();
 	control_y_sz=control_y_add*9;
 	
-	x=(int)(((float)hud.scale_x)*0.4f);
-	y=(hud.scale_y>>1)-(control_y_sz>>1);
+	x=(int)(((float)iface.scale_x)*0.4f);
+	y=(iface.scale_y>>1)-(control_y_sz>>1);
 	
 		// setup screen size list
 		
@@ -174,8 +174,8 @@ void setup_game_audio_pane(void)
 	control_y_add=element_get_control_high();
 	control_y_sz=control_y_add*2;
 	
-	x=(int)(((float)hud.scale_x)*0.4f);
-	y=(hud.scale_y>>1)-(control_y_sz>>1);
+	x=(int)(((float)iface.scale_x)*0.4f);
+	y=(iface.scale_y>>1)-(control_y_sz>>1);
 	
 	element_slider_add("Sound Volume",setup.sound_volume,0.0f,1.0f,ctrl_sound_volume_id,x,y,TRUE);
 	y+=control_y_add;
@@ -192,8 +192,8 @@ void setup_game_mouse_pane(void)
 	control_y_add=element_get_control_high();
 	control_y_sz=8*control_y_add;
 	
-	x=(int)(((float)hud.scale_x)*0.4f);
-	y=(hud.scale_y>>1)-(control_y_sz>>1);
+	x=(int)(((float)iface.scale_x)*0.4f);
+	y=(iface.scale_y>>1)-(control_y_sz>>1);
 	
 	element_checkbox_add("Always Run",setup.always_run,ctrl_always_run_id,x,y,TRUE);
 	y+=control_y_add;
@@ -227,8 +227,8 @@ void setup_game_action_pane(void)
 	x=margin+padding;
 	y=(margin+element_get_tab_control_high())+padding;
 
-	wid=hud.scale_x-((margin+padding)*2);
-	high=(int)(((float)hud.scale_y)*0.8f)-y;
+	wid=iface.scale_x-((margin+padding)*2);
+	high=(int)(((float)iface.scale_y)*0.8f)-y;
 	
 		// setup action list
 		
@@ -277,11 +277,11 @@ void setup_game_action_pane(void)
 		
 	padding=element_get_padding();
 
-	x=hud.scale_x>>1;
+	x=iface.scale_x>>1;
 	y+=high;
 	
-	wid=(int)(((float)hud.scale_x)*0.2f);
-	high=(int)(((float)hud.scale_x)*0.04f);
+	wid=(int)(((float)iface.scale_x)*0.2f);
+	high=(int)(((float)iface.scale_x)*0.04f);
 	
 	y+=((padding/2)+(high/2));
 	
@@ -299,8 +299,8 @@ void setup_game_debug_pane(void)
 	control_y_add=element_get_control_high();
 	control_y_sz=control_y_add*5;
 	
-	x=(int)(((float)hud.scale_x)*0.5f);
-	y=(hud.scale_y>>1)-(control_y_sz>>1);
+	x=(int)(((float)iface.scale_x)*0.5f);
+	y=(iface.scale_y>>1)-(control_y_sz>>1);
 	
 	element_checkbox_add("Script Errors Shows Console",setup.debug_console,ctrl_debug_console_id,x,y,TRUE);
 	y+=control_y_add;
@@ -324,7 +324,7 @@ void setup_game_create_pane(void)
 		
 	if (!setup_in_game) {
 		stab=0;
-		if (hud.debug) {
+		if (iface.debug) {
 			ntab=5;
 		}
 		else {
@@ -340,13 +340,13 @@ void setup_game_create_pane(void)
 	
 		// buttons
 		
-	wid=(int)(((float)hud.scale_x)*0.2f);
-	high=(int)(((float)hud.scale_x)*0.04f);
+	wid=(int)(((float)iface.scale_x)*0.2f);
+	high=(int)(((float)iface.scale_x)*0.04f);
 	
 	element_get_button_bottom_left(&x,&y,wid,high);
 	element_button_text_add("Default",setup_game_default_button,x,y,wid,high,element_pos_left,element_pos_bottom);
 
-	wid=(int)(((float)hud.scale_x)*0.1f);
+	wid=(int)(((float)iface.scale_x)*0.1f);
 	
 	element_get_button_bottom_right(&x,&y,wid,high);
 	element_button_text_add("OK",setup_game_ok_button,x,y,wid,high,element_pos_right,element_pos_bottom);

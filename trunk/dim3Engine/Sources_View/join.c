@@ -52,7 +52,7 @@ and can be sold or given away.
 
 extern map_type				map;
 extern server_type			server;
-extern hud_type				hud;
+extern iface_type			iface;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
 
@@ -121,7 +121,7 @@ bool join_ping_thread_add_host_to_table(int start_tick,network_reply_info *reply
 
 		// only add if same project
 
-	if (strcasecmp(reply_info->proj_name,hud.project_name)!=0) return(FALSE);
+	if (strcasecmp(reply_info->proj_name,iface.project_name)!=0) return(FALSE);
 
 		// add to list
 
@@ -421,8 +421,8 @@ void join_news_pane(void)
 	x=margin+padding;
 	y=(margin+element_get_tab_control_high())+padding;
 
-	wid=hud.scale_x-((margin+padding)*2);
-	high=(int)(((float)hud.scale_y)*0.85f)-y;
+	wid=iface.scale_x-((margin+padding)*2);
+	high=(int)(((float)iface.scale_y)*0.85f)-y;
 
 	element_text_box_add(net_get_news(),join_news_id,x,y,wid,high);
 }
@@ -447,8 +447,8 @@ void join_lan_internet_pane(bool lan)
 	x=margin+padding;
 	y=(margin+element_get_tab_control_high())+padding;
 
-	wid=hud.scale_x-((margin+padding)*2);
-	high=(int)(((float)hud.scale_y)*0.85f)-y;
+	wid=iface.scale_x-((margin+padding)*2);
+	high=(int)(((float)iface.scale_y)*0.85f)-y;
 
 	strcpy(cols[0].name,"Name");
 	cols[0].percent_size=0.45f;
@@ -483,7 +483,7 @@ void join_create_pane(void)
 		// tabs
 		
 	tab_idx=0;
-	if (hud.net_news.host[0]==0x0) {
+	if (iface.net_news.host[0]==0x0) {
 		tab_idx=1;
 		if (join_tab_value==join_pane_news) join_tab_value=join_pane_lan;
 	}
@@ -492,13 +492,13 @@ void join_create_pane(void)
 	
 		// buttons
 		
-	wid=(int)(((float)hud.scale_x)*0.2f);
-	high=(int)(((float)hud.scale_x)*0.04f);
+	wid=(int)(((float)iface.scale_x)*0.2f);
+	high=(int)(((float)iface.scale_x)*0.04f);
 
 	element_get_button_bottom_left(&x,&y,wid,high);
 	element_button_text_add("Rescan Hosts",join_button_rescan_id,x,y,wid,high,element_pos_left,element_pos_bottom);
 	
-	wid=(int)(((float)hud.scale_x)*0.1f);
+	wid=(int)(((float)iface.scale_x)*0.1f);
 
 	element_get_button_bottom_right(&x,&y,wid,high);
 	element_button_text_add("Join",join_button_join_id,x,y,wid,high,element_pos_right,element_pos_bottom);
@@ -508,11 +508,11 @@ void join_create_pane(void)
 
 		// status
 
-	wid=(int)(((float)hud.scale_x)*0.2f);
+	wid=(int)(((float)iface.scale_x)*0.2f);
 	x=(element_get_x_position(join_button_rescan_id)+wid)+element_get_padding();
 	y-=element_get_padding();
 	
-	element_text_add("",join_status_id,x,y,hud.font.text_size_small,tx_left,FALSE,FALSE);
+	element_text_add("",join_status_id,x,y,iface.font.text_size_small,tx_left,FALSE,FALSE);
 
 		// specific pane controls
 		

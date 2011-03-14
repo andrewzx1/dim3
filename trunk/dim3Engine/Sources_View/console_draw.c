@@ -48,8 +48,8 @@ extern console_line_type		console_line[max_console_line];
 
 extern view_type				view;
 extern server_type				server;
+extern iface_type				iface;
 extern js_type					js;
-extern hud_type					hud;
 extern setup_type				setup;
 extern network_setup_type		net_setup;
 extern render_info_type			render_info;
@@ -76,9 +76,9 @@ void console_draw(void)
 		// and deal with height factor
 
 	y=(int)(((float)setup.screen.y_sz)*(1.0f-console_screen_percent));
-	ty=(y*hud.scale_y)/setup.screen.y_sz;
+	ty=(y*iface.scale_y)/setup.screen.y_sz;
 
-	txt_size=((int)((float)(hud.scale_y-ty)/text_height_factor)/max_console_line);
+	txt_size=((int)((float)(iface.scale_y-ty)/text_height_factor)/max_console_line);
 
 	y_add=gl_text_get_char_height(txt_size);
 
@@ -95,7 +95,7 @@ void console_draw(void)
 		// line
 
 	col.r=col.g=col.b=1.0f;
-	view_draw_next_vertex_object_2D_line(&col,1.0f,0,ty,hud.scale_x,ty);
+	view_draw_next_vertex_object_2D_line(&col,1.0f,0,ty,iface.scale_x,ty);
 
 		// setup text drawing
 
@@ -124,8 +124,8 @@ void console_draw(void)
 
 		// version
 
-	sprintf(str,"%s %s",hud.project_name,dim3_version);
-	gl_text_draw((hud.scale_x-5),(ty+y_add),str,tx_right,FALSE,&col,1.0f);
+	sprintf(str,"%s %s",iface.project_name,dim3_version);
+	gl_text_draw((iface.scale_x-5),(ty+y_add),str,tx_right,FALSE,&col,1.0f);
 
 	gl_text_end();
 }
@@ -147,7 +147,7 @@ bool console_builtin_commands(void)
 	
 		// console map
 		
-	if ((hud.debug) && (net_setup.mode==net_mode_none)) {
+	if ((iface.debug) && (net_setup.mode==net_mode_none)) {
 		if (strncasecmp(console_input_str,"map ",4)==0) {
 			if (debug_change_map((char*)&console_input_str[4])) view.console.on=FALSE;
 			return(TRUE);

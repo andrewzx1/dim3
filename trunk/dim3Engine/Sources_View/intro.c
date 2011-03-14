@@ -68,7 +68,7 @@ and can be sold or given away.
 extern bool					game_loop_quit;
 
 extern server_type			server;
-extern hud_type				hud;
+extern iface_type			iface;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
 
@@ -89,12 +89,12 @@ void intro_show_hide_for_mode(void)
 	
 		// possible frame
 		
-	frame.x=(hud.scale_x>>1)-160;
-	frame.y=(hud.scale_y>>1)-25;
+	frame.x=(iface.scale_x>>1)-160;
+	frame.y=(iface.scale_y>>1)-25;
 	frame.wid=320;
 	frame.high=100;
 	sprintf(frame.title,"Erase Saved Game %d?",(intro_simple_save_idx+1));
-	memmove(&frame.background_col,&hud.color.dialog_background,sizeof(d3col));
+	memmove(&frame.background_col,&iface.color.dialog_background,sizeof(d3col));
 
 		// new game
 		
@@ -194,8 +194,8 @@ void intro_show_hide_for_mode(void)
 		element_enable((intro_simple_save_button_erase+n),TRUE);
 		element_enable((intro_simple_save_text_desc+n),TRUE);
 		
-		if (hud.simple_save_list.saves[n].save_id!=-1) {
-			element_text_change((intro_simple_save_text_desc+n),hud.simple_save_list.saves[n].desc);
+		if (iface.simple_save_list.saves[n].save_id!=-1) {
+			element_text_change((intro_simple_save_text_desc+n),iface.simple_save_list.saves[n].desc);
 		}
 		else {
 			element_text_change((intro_simple_save_text_desc+n),"New");
@@ -247,44 +247,44 @@ void intro_open(void)
 
 		// models
 
-	intro_model=hud.intro.model.models;
+	intro_model=iface.intro.model.models;
 
-	for (n=0;n!=hud.intro.model.nmodel;n++) {
+	for (n=0;n!=iface.intro.model.nmodel;n++) {
 		element_model_add(intro_model->model_name,intro_model->animate_name,intro_model->resize,NULL,&intro_model->rot,-1,intro_model->x,intro_model->y);
 		intro_model++;
 	}
 
 		// buttons
 		
-	intro_open_add_button(&hud.intro.button_game_new,"button_game_new",intro_button_game_new_id);
-	intro_open_add_button(&hud.intro.button_game_load,"button_game_load",intro_button_game_load_id);
-	intro_open_add_button(&hud.intro.button_game_setup,"button_game_setup",intro_button_game_setup_id);
+	intro_open_add_button(&iface.intro.button_game_new,"button_game_new",intro_button_game_new_id);
+	intro_open_add_button(&iface.intro.button_game_load,"button_game_load",intro_button_game_load_id);
+	intro_open_add_button(&iface.intro.button_game_setup,"button_game_setup",intro_button_game_setup_id);
 
-	intro_open_add_button(&hud.intro.button_game_new_easy,"button_game_new_easy",intro_button_game_new_easy_id);
-	intro_open_add_button(&hud.intro.button_game_new_medium,"button_game_new_medium",intro_button_game_new_medium_id);
-	intro_open_add_button(&hud.intro.button_game_new_hard,"button_game_new_hard",intro_button_game_new_hard_id);
-	intro_open_add_button(&hud.intro.button_game_new_cancel,"button_game_new_cancel",intro_button_game_new_cancel_id);
+	intro_open_add_button(&iface.intro.button_game_new_easy,"button_game_new_easy",intro_button_game_new_easy_id);
+	intro_open_add_button(&iface.intro.button_game_new_medium,"button_game_new_medium",intro_button_game_new_medium_id);
+	intro_open_add_button(&iface.intro.button_game_new_hard,"button_game_new_hard",intro_button_game_new_hard_id);
+	intro_open_add_button(&iface.intro.button_game_new_cancel,"button_game_new_cancel",intro_button_game_new_cancel_id);
 	
-	intro_open_add_button(&hud.intro.button_multiplayer_host,"button_multiplayer_host",intro_button_multiplayer_host_id);
-	intro_open_add_button(&hud.intro.button_multiplayer_join,"button_multiplayer_join",intro_button_multiplayer_join_id);
-	intro_open_add_button(&hud.intro.button_multiplayer_setup,"button_multiplayer_setup",intro_button_multiplayer_setup_id);
+	intro_open_add_button(&iface.intro.button_multiplayer_host,"button_multiplayer_host",intro_button_multiplayer_host_id);
+	intro_open_add_button(&iface.intro.button_multiplayer_join,"button_multiplayer_join",intro_button_multiplayer_join_id);
+	intro_open_add_button(&iface.intro.button_multiplayer_setup,"button_multiplayer_setup",intro_button_multiplayer_setup_id);
 
-	intro_open_add_button(&hud.intro.button_credit,"button_credit",intro_button_credit_id);
-	intro_open_add_button(&hud.intro.button_quit,"button_quit",intro_button_quit_id);
+	intro_open_add_button(&iface.intro.button_credit,"button_credit",intro_button_credit_id);
+	intro_open_add_button(&iface.intro.button_quit,"button_quit",intro_button_quit_id);
 	
 	for (n=0;n!=max_simple_save_spot;n++) {
 		sprintf(name,"button_simple_start_%d",n);
-		intro_open_add_button(&hud.intro.simple_save[n].button_start,name,(intro_simple_save_button_start+n));
+		intro_open_add_button(&iface.intro.simple_save[n].button_start,name,(intro_simple_save_button_start+n));
 		sprintf(name,"button_simple_erase_%d",n);
-		intro_open_add_button(&hud.intro.simple_save[n].button_erase,name,(intro_simple_save_button_erase+n));
+		intro_open_add_button(&iface.intro.simple_save[n].button_erase,name,(intro_simple_save_button_erase+n));
 
-		if (hud.intro.simple_save[n].button_start.on) element_text_add("",(intro_simple_save_text_desc+n),hud.intro.simple_save[n].desc.x,hud.intro.simple_save[n].desc.y,hud.intro.simple_save[n].desc.text_size,tx_center,FALSE,FALSE);
+		if (iface.intro.simple_save[n].button_start.on) element_text_add("",(intro_simple_save_text_desc+n),iface.intro.simple_save[n].desc.x,iface.intro.simple_save[n].desc.y,iface.intro.simple_save[n].desc.text_size,tx_center,FALSE,FALSE);
 	}
 	
 		// simple save options
 		
-	x=hud.scale_x>>1;
-	y=hud.scale_y>>1;
+	x=iface.scale_x>>1;
+	y=iface.scale_y>>1;
 		
 	element_button_text_add("Erase",intro_simple_save_erase_ok,(x-130),y,100,50,element_pos_left,element_pos_top);
 	element_button_text_add("Cancel",intro_simple_save_erase_cancel,(x+130),y,100,50,element_pos_right,element_pos_top);
@@ -306,14 +306,14 @@ void intro_open(void)
 	
 		// intro music
 		
-	if ((hud.intro_music[0]!=0x0) && (setup.music_on)) {
+	if ((iface.intro_music[0]!=0x0) && (setup.music_on)) {
 	
 			// previously playing music?
 			
 		start_music=TRUE;
 		
 		if (al_music_playing()) {
-			if (al_music_playing_is_name(hud.intro_music)) {		// same music, keep playing
+			if (al_music_playing_is_name(iface.intro_music)) {		// same music, keep playing
 				start_music=FALSE;
 			}
 			else {
@@ -322,7 +322,7 @@ void intro_open(void)
 			}
 		}
 		
-		if (start_music) al_music_play(hud.intro_music,err_str);
+		if (start_music) al_music_play(iface.intro_music,err_str);
 	}
 }
 
@@ -396,7 +396,7 @@ void intro_click_simple_save_erase_ok(void)
 	
 		// reset save
 		
-	save=&hud.simple_save_list.saves[intro_simple_save_idx];
+	save=&iface.simple_save_list.saves[intro_simple_save_idx];
 	save->save_id=-1;
 	save->desc[0]=0x0;
 	
@@ -445,7 +445,7 @@ void intro_click(void)
 	switch (id) {
 	
 		case intro_button_game_new_id:
-			if (hud.skill) {
+			if (iface.skill) {
 				intro_mode=intro_mode_new_game;
 				intro_show_hide_for_mode();
 			}
