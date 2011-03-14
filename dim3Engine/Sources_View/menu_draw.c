@@ -41,8 +41,8 @@ extern bool					game_app_active,game_loop_quit;
 extern server_type			server;
 extern map_type				map;
 extern view_type			view;
+extern iface_type			iface;
 extern js_type				js;
-extern hud_type				hud;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
 
@@ -82,12 +82,12 @@ void menu_draw_start(void)
 		// always flip off scores
 		// if they are on
 		
-	hud.score.on=FALSE;
+	iface.score.on=FALSE;
 	
 		// setup cursor
 
 	cursor_initialize();
-	input_gui_set_mouse((hud.scale_x>>1),(hud.scale_y>>1));
+	input_gui_set_mouse((iface.scale_x>>1),(iface.scale_y>>1));
 }
 
 void menu_draw_end(bool fade)
@@ -126,7 +126,7 @@ bool menu_select(void)
 	
 	if (view.menu.click_item_idx==-1) return(FALSE);
 	
-	menu=&hud.menus[view.menu.menu_idx];
+	menu=&iface.menus[view.menu.menu_idx];
 	item=&menu->items[view.menu.click_item_idx];
 		
 		// going into sub-menu
@@ -220,7 +220,7 @@ void menu_draw(void)
 
 		// get current menu
 
-	menu=&hud.menus[view.menu.menu_idx];
+	menu=&iface.menus[view.menu.menu_idx];
 
 		// get the alpha
 
@@ -252,13 +252,13 @@ void menu_draw(void)
 
 		// get height
 
-	high=gl_text_get_char_height(hud.font.text_size_large);
+	high=gl_text_get_char_height(iface.font.text_size_large);
 	half_high=high>>1;
 
 		// find any selection
 
-	x=hud.scale_x>>1;
-	y=(hud.scale_y-((high+5)*menu->nitem))>>1;
+	x=iface.scale_x>>1;
+	y=(iface.scale_y-((high+5)*menu->nitem))>>1;
 
 	view.menu.click_item_idx=-1;
 
@@ -272,7 +272,7 @@ void menu_draw(void)
 			
 			if (!((net_setup.mode!=net_mode_none) && (item->multiplayer_disable))) {
 
-				wid=gl_text_get_string_width(font_interface_index,hud.font.text_size_large,item->data)>>1;
+				wid=gl_text_get_string_width(font_interface_index,iface.font.text_size_large,item->data)>>1;
 				
 				if ((kx>=(x-wid)) && (kx<=(x+wid)) && (ky>=(y-half_high)) && (ky<=(y+half_high))) {
 					view.menu.click_item_idx=n;
@@ -287,9 +287,9 @@ void menu_draw(void)
 	
 		// draw the menus
 		
-	y=(hud.scale_y-((high+5)*menu->nitem))>>1;
+	y=(iface.scale_y-((high+5)*menu->nitem))>>1;
 	
-	gl_text_start(font_interface_index,hud.font.text_size_large);
+	gl_text_start(font_interface_index,iface.font.text_size_large);
 	
 	item=menu->items;
 
@@ -298,14 +298,14 @@ void menu_draw(void)
 			// color
 
 		if ((net_setup.mode!=net_mode_none) && (item->multiplayer_disable)) {
-			col=&hud.color.control_disabled;
+			col=&iface.color.control_disabled;
 		}
 		else {
 			if (n==view.menu.click_item_idx) {
-				col=&hud.color.control_mouse_over;
+				col=&iface.color.control_mouse_over;
 			}
 			else {
-				col=&hud.color.control_label;
+				col=&iface.color.control_label;
 			}
 		}
 

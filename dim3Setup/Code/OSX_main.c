@@ -115,7 +115,7 @@ OSStatus main_wind_event_handler(EventHandlerCallRef eventhandler,EventRef event
 					return(noErr);
 					
 				case kEventWindowClose:
-					menu_update();
+					os_application_quit();
 					return(noErr);
 					
                 case kEventWindowCursorChange:
@@ -204,6 +204,7 @@ OSStatus main_wind_event_handler(EventHandlerCallRef eventhandler,EventRef event
 
 void main_wind_open(void)
 {
+	int							wid,high;
 	Rect						wbox,box;
 	GLint						attrib[]={AGL_RGBA,AGL_DOUBLEBUFFER,AGL_DEPTH_SIZE,24,AGL_ALL_RENDERERS,AGL_NONE};
 	AGLPixelFormat				pf;
@@ -220,8 +221,15 @@ void main_wind_open(void)
 									{kEventClassMouse,kEventMouseWheelMoved}};
 	
     GetAvailableWindowPositioningBounds(GetMainDevice(),&wbox);
+
+	wid=list_palette_tree_sz*3;
+	high=(wbox.bottom-wbox.top)-60;
+
+	box.left=((wbox.right-wbox.left)-wid)/2;
+	box.top=60;
+	box.right=box.left+wid;
+	box.bottom=box.top+high;
 	
-	SetRect(&box,wbox.left,(wbox.top+25),wbox.right,wbox.bottom);
 	CreateNewWindow(kDocumentWindowClass,kWindowStandardDocumentAttributes|kWindowLiveResizeAttribute|kWindowStandardHandlerAttribute|kWindowInWindowMenuAttribute,&box,&wind);
 	SetWTitle(wind,"\pSetup");
 
@@ -357,10 +365,15 @@ int main(int argc,char *argv[])
 	
 	main_wind_open();
 	menu_start();
+	main_wind_initialize();
+	
+	main_wind_draw();
 	
 	main_loop();
 	
+	main_wind_shutdown();
 	main_wind_close();
+	
 	os_glue_end();
     
     return(0);

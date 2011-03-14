@@ -51,7 +51,6 @@ render_info_type			render_info;
 extern map_type				map;
 extern server_type			server;
 extern setup_type			setup;
-extern hud_type				hud;
 extern network_setup_type	net_setup;
 
 extern void game_file_initialize(void);

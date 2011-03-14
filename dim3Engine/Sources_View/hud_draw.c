@@ -41,7 +41,7 @@ and can be sold or given away.
 extern map_type				map;
 extern server_type			server;
 extern view_type			view;
-extern hud_type				hud;
+extern iface_type			iface;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
 extern render_info_type		render_info;
@@ -131,8 +131,8 @@ void hud_bitmaps_draw(void)
 	
 		// draw bitmaps
 		
-	for (n=0;n!=hud.count.bitmap;n++) {
-		bitmap=&hud.bitmaps[n];
+	for (n=0;n!=iface.count.bitmap;n++) {
+		bitmap=&iface.bitmaps[n];
 		if (!bitmap->show) continue;
 
 			// flashing
@@ -459,9 +459,9 @@ void hud_texts_draw(void)
 
 	cur_size=-1;
 
-	text=hud.texts;
+	text=iface.texts;
 	
-	for (n=0;n!=hud.count.text;n++) {
+	for (n=0;n!=iface.count.text;n++) {
 
 		if (text->show) {
 
@@ -534,8 +534,8 @@ void hud_bars_draw(void)
 	
 		// draw bars
 		
-	for (n=0;n!=hud.count.bar;n++) {
-		bar=&hud.bars[n];
+	for (n=0;n!=iface.count.bar;n++) {
+		bar=&iface.bars[n];
 		if (!bar->show) continue;
 		
 			// find size
@@ -580,7 +580,7 @@ void hud_bars_draw(void)
 			ty=bar->y;
 			by=ty+bar->y_size;
 			
-			glLineWidth((float)setup.screen.x_sz/(float)hud.scale_x);
+			glLineWidth((float)setup.screen.x_sz/(float)iface.scale_x);
 			view_draw_next_vertex_object_2D_line_quad(&bar->outline_color,bar->outline_alpha,lx,rx,ty,by);
 			glLineWidth(1.0f);
 		}
@@ -600,7 +600,7 @@ void hud_metrics_draw_single(int y,char *title,char *data)
 
 	col.r=col.g=col.b=1.0f;
 	
-	x=(int)(((float)hud.scale_x)*0.1f);
+	x=(int)(((float)iface.scale_x)*0.1f);
 
 	gl_text_draw(x,y,title,tx_right,FALSE,&col,1.0f);
 	gl_text_draw((x+5),y,data,tx_left,FALSE,&col,1.0f);
@@ -615,12 +615,12 @@ void hud_metrics_draw(void)
 
 		// text sizes
 
-	txt_sz=(int)(((float)hud.scale_x)*0.02f);
+	txt_sz=(int)(((float)iface.scale_x)*0.02f);
 	high=gl_text_get_char_height(txt_sz);
 
 		// background
 
-	rgt=(((int)(((float)hud.scale_x)*0.1f))*2)+5;
+	rgt=(((int)(((float)iface.scale_x)*0.1f))*2)+5;
 	bot=12+(9*high);
 
 	col.r=col.g=col.b=0.0f;
@@ -761,9 +761,9 @@ void hud_click(void)
 {
 	int			buffer_idx;
 
-	if (hud.click_sound[0]==0x0) return;
+	if (iface.click_sound[0]==0x0) return;
 	
-	buffer_idx=al_find_buffer(hud.click_sound);
+	buffer_idx=al_find_buffer(iface.click_sound);
 	if (buffer_idx!=-1) al_play_source(buffer_idx,NULL,1,FALSE,FALSE,TRUE,FALSE);
 }
 

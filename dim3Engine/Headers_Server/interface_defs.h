@@ -601,6 +601,6 @@ typedef struct		{
 						hud_net_games_type		net_game;
 						hud_net_options_type	net_option;
 						hud_net_news_type		net_news;
-					} hud_type;
+					} iface_type;
 					
 

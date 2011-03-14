@@ -36,7 +36,7 @@ and can be sold or given away.
 
 int							fade_screen_tick;
 
-extern hud_type				hud;
+extern iface_type			iface;
 extern setup_type			setup;
 
 /* =======================================================
@@ -47,7 +47,7 @@ extern setup_type			setup;
 
 void view_draw_fade_start(void)
 {
-	if (hud.fade.map_msec<=0) {
+	if (iface.fade.map_msec<=0) {
 		fade_screen_tick=-1;
 		return;
 	}
@@ -69,14 +69,14 @@ void view_draw_fade_draw(void)
 	if (fade_screen_tick==-1) return;
 
 	tick=game_time_get()-fade_screen_tick;
-	if (tick>hud.fade.map_msec) {
+	if (tick>iface.fade.map_msec) {
 		fade_screen_tick=-1;
 		return;
 	}
 
 		// calculate fade
 
-	alpha=1.0f-(float)tick/(float)hud.fade.map_msec;
+	alpha=1.0f-(float)tick/(float)iface.fade.map_msec;
 	glColor4f(0.0f,0.0f,0.0f,alpha);
 	
 		// draw

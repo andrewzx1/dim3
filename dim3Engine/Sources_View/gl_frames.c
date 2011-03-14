@@ -33,12 +33,12 @@ and can be sold or given away.
 
 extern bool					game_app_active;
 
-extern hud_type				hud;
-extern setup_type			setup;
-extern render_info_type		render_info;
-extern server_type			server;
 extern map_type				map;
 extern view_type			view;
+extern server_type			server;
+extern iface_type			iface;
+extern setup_type			setup;
+extern render_info_type		render_info;
 extern camera_type			camera;
 
 #ifdef D3_SDL_1_3
@@ -154,7 +154,7 @@ void gl_2D_view_interface(void)
 {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho(0.0f,(GLfloat)hud.scale_x,(GLfloat)hud.scale_y,0.0f,-1.0f,1.0f);
+	glOrtho(0.0f,(GLfloat)iface.scale_x,(GLfloat)iface.scale_y,0.0f,-1.0f,1.0f);
 	
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -173,8 +173,8 @@ void gl_3D_view_interface_model()
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
-	x=(float)(hud.scale_x>>1);
-	y=(float)(hud.scale_y>>1);
+	x=(float)(iface.scale_x>>1);
+	y=(float)(iface.scale_y>>1);
 
 	glFrustum(-x,x,-y,y,1000.0f,21000.0f);
 	glScalef(1.0f,-1.0f,-1.0f);

@@ -251,7 +251,7 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 
 		// start progress
 		
-	progress_initialize("Opening",map.info.name);
+	progress_initialize(map.info.name);
 	progress_draw(10);
 	
 	strcpy(current_map_name,map.info.name);		// remember for close
@@ -483,7 +483,7 @@ void map_end(void)
 
 		// setup progress
 		
-	progress_initialize("Closing",current_map_name);
+	progress_initialize(current_map_name);
 	progress_draw(5);
 	
 	console_add_system("Closing Map");

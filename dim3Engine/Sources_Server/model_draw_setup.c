@@ -37,13 +37,13 @@ and can be sold or given away.
 #include "video.h"
 #include "timing.h"
 
-extern server_type			server;
-extern view_type			view;
-extern camera_type			camera;
 extern map_type				map;
+extern view_type			view;
+extern server_type			server;
+extern iface_type			iface;
+extern camera_type			camera;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
-extern hud_type				hud;
 
 /* =======================================================
 
@@ -202,7 +202,7 @@ void model_draw_setup_object(obj_type *obj)
 	draw->tint.r=draw->tint.g=draw->tint.b=1.0f;
 	if ((obj->type==object_type_player) || (obj->type==object_type_remote) || (obj->type==object_type_bot_multiplayer)) {
 		if (net_setup.mode!=net_mode_none) {
-			if (hud.net_game.games[net_setup.game_idx].use_teams) {
+			if (iface.net_game.games[net_setup.game_idx].use_teams) {
 				object_team_get_tint(obj->team_idx,&draw->tint);
 			}
 		}
@@ -490,10 +490,10 @@ void model_draw_setup_interface_models(model_type *mdl,model_draw *draw,int x,in
 		// need to change point for
 		// resizes and projection
 
-	x-=(hud.scale_x>>1);
+	x-=(iface.scale_x>>1);
 	x=(int)(((float)x)*5.8f);
 
-	y-=(hud.scale_y>>1);
+	y-=(iface.scale_y>>1);
 	y=(int)(((float)y)*6.0f);
 	y+=(int)((1.0f-draw->resize)*((float)(mdl->view_box.size.y>>1)));
 

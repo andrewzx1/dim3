@@ -504,7 +504,8 @@ extern bool bitmap_copy(char *srce_path,char *dest_path);
 ======================================================= */
 
 typedef struct			{
-							int							char_wid,char_high,char_baseline,char_per_line;
+							int							char_box_wid,char_box_high,char_real_high,
+														char_baseline,char_per_line;
 							float						gl_xoff,gl_xadd,gl_yoff,gl_yadd,char_size[90];
 							bitmap_type					bitmap;
 						} texture_font_size_type;

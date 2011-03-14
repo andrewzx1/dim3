@@ -46,10 +46,10 @@ typedef struct		{
 					} file_save_header;					
 
 extern map_type			map;
-extern hud_type			hud;
 extern camera_type		camera;
 extern view_type		view;
 extern server_type		server;
+extern iface_type		iface;
 extern js_type			js;
 extern setup_type		setup;
 
@@ -275,7 +275,7 @@ bool game_file_save(char *err_str)
 	timer_type			*timer;
 	global_type			*global;
 	
-	progress_initialize("Saving",NULL);
+	progress_initialize(NULL);
 	progress_draw(5);
 	
 		// get saved data file names
@@ -391,10 +391,10 @@ bool game_file_save(char *err_str)
 	
 	progress_draw(40);
 	
-	game_file_add_chunk(hud.bitmaps,hud.count.bitmap,sizeof(hud_bitmap_type));
-	game_file_add_chunk(hud.texts,hud.count.text,sizeof(hud_text_type));
-	game_file_add_chunk(hud.bars,hud.count.bar,sizeof(hud_bar_type));
-	game_file_add_chunk(&hud.radar,1,sizeof(hud_radar_type));
+	game_file_add_chunk(iface.bitmaps,iface.count.bitmap,sizeof(hud_bitmap_type));
+	game_file_add_chunk(iface.texts,iface.count.text,sizeof(hud_text_type));
+	game_file_add_chunk(iface.bars,iface.count.bar,sizeof(hud_bar_type));
+	game_file_add_chunk(&iface.radar,1,sizeof(hud_radar_type));
 	
 		// map changes
 		
@@ -552,7 +552,7 @@ bool game_file_load(char *file_name,char *err_str)
 
 		// start progress
 
-	progress_initialize("Loading",NULL);
+	progress_initialize(NULL);
 
 		// view & server state
 		
@@ -719,10 +719,10 @@ bool game_file_load(char *file_name,char *err_str)
 
 	progress_draw(40);
 
-	game_file_get_chunk(hud.bitmaps);
-	game_file_get_chunk(hud.texts);
-	game_file_get_chunk(hud.bars);
-	game_file_get_chunk(&hud.radar);
+	game_file_get_chunk(iface.bitmaps);
+	game_file_get_chunk(iface.texts);
+	game_file_get_chunk(iface.bars);
+	game_file_get_chunk(&iface.radar);
 	
 		// map changes
 		

@@ -66,8 +66,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 321340023;
-			PBXWorkspaceStateSaveDate = 321340023;
+			PBXPerProjectTemplateStateSaveDate = 321645531;
+			PBXWorkspaceStateSaveDate = 321645531;
 		};
 		sourceControlManager = 26A5EABE0D404BD000BB47DE /* Source Control */;
 		userBuildSettings = {
@@ -83,10 +83,10 @@
 	};
 	265111D3121C871000E2ED78 /* bitmap_text.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1006, 5343}}";
-			sepNavSelRange = "{9501, 0}";
-			sepNavVisRange = "{8576, 1688}";
-			sepNavWindowFrame = "{{517, -40}, {1013, 944}}";
+			sepNavIntBoundsRect = "{{0, 0}, {998, 5005}}";
+			sepNavSelRange = "{1449, 0}";
+			sepNavVisRange = "{997, 1760}";
+			sepNavWindowFrame = "{{483, 30}, {1013, 944}}";
 		};
 	};
 	26A5EABE0D404BD000BB47DE /* Source Control */ = {
@@ -180,9 +180,9 @@
 	};
 	F5AD52850BBE14FA001C7C04 /* matrix.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {984, 3757}}";
-			sepNavSelRange = "{856, 0}";
-			sepNavVisRange = "{0, 1619}";
+			sepNavIntBoundsRect = "{{0, 0}, {984, 3653}}";
+			sepNavSelRange = "{2927, 259}";
+			sepNavVisRange = "{1427, 1540}";
 			sepNavWindowFrame = "{{333, 234}, {999, 779}}";
 		};
 	};
@@ -244,9 +244,9 @@
 	};
 	F5AD52A00BBE16AC001C7C04 /* baseutility.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1475, 6747}}";
-			sepNavSelRange = "{0, 0}";
-			sepNavVisRange = "{0, 1373}";
+			sepNavIntBoundsRect = "{{0, 0}, {1475, 7436}}";
+			sepNavSelRange = "{19572, 0}";
+			sepNavVisRange = "{17646, 2353}";
 			sepNavWindowFrame = "{{395, 142}, {1041, 747}}";
 		};
 	};
@@ -284,9 +284,9 @@
 	};
 	F5AD52F90BBE1A66001C7C04 /* pngutility.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1048, 5889}}";
-			sepNavSelRange = "{4704, 91}";
-			sepNavVisRange = "{4452, 1068}";
+			sepNavIntBoundsRect = "{{0, 0}, {1048, 6097}}";
+			sepNavSelRange = "{4704, 90}";
+			sepNavVisRange = "{4452, 1026}";
 			sepNavWindowFrame = "{{375, 198}, {1041, 747}}";
 		};
 	};

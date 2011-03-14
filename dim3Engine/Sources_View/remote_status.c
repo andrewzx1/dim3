@@ -39,8 +39,8 @@ and can be sold or given away.
 extern map_type				map;
 extern view_type			view;
 extern camera_type			camera;
-extern hud_type				hud;
 extern server_type			server;
+extern iface_type			iface;
 extern js_type				js;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
@@ -239,7 +239,7 @@ void remote_draw_names_setup(void)
 			obj->draw.remote_name.fade=1.0f-((float)(dist-remote_name_min_distance)/(float)(remote_name_max_distance-remote_name_min_distance));
 		}
 		
-		obj->draw.remote_name.size=hud.font.text_size_medium-(int)((float)(hud.font.text_size_medium*dist)/(float)(remote_name_max_distance-remote_name_min_distance));
+		obj->draw.remote_name.size=iface.font.text_size_medium-(int)((float)(iface.font.text_size_medium*dist)/(float)(remote_name_max_distance-remote_name_min_distance));
 		if (obj->draw.remote_name.size<10) obj->draw.remote_name.size=10;
 		
 		obj->draw.remote_name.on=TRUE;
@@ -322,8 +322,8 @@ void remote_draw_names_render(void)
 
 				// covert to interface resolution
 
-			x=(x*hud.scale_x)/setup.screen.x_sz;
-			y=(y*hud.scale_y)/setup.screen.y_sz;
+			x=(x*iface.scale_x)/setup.screen.x_sz;
+			y=(y*iface.scale_y)/setup.screen.y_sz;
 
 				// draw text
 				

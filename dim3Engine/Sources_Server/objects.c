@@ -40,10 +40,10 @@ and can be sold or given away.
 
 extern map_type				map;
 extern server_type			server;
+extern iface_type			iface;
+extern js_type				js;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
-extern hud_type				hud;
-extern js_type				js;
 
 int							game_obj_rule_idx;
 
@@ -451,7 +451,7 @@ void object_get_tint(obj_type *obj,d3col *tint)
 		// then get team tint
 
 	if (net_setup.mode!=net_mode_none) {
-		if (hud.net_game.games[net_setup.game_idx].use_teams) {
+		if (iface.net_game.games[net_setup.game_idx].use_teams) {
 			object_team_get_tint(obj->team_idx,tint);
 			return;
 		}
@@ -459,7 +459,7 @@ void object_get_tint(obj_type *obj,d3col *tint)
 
 		// otherwise use set interface color
 
-	col=&hud.color.tints[obj->tint_color_idx];
+	col=&iface.color.tints[obj->tint_color_idx];
 
 	tint->r=col->r;
 	tint->g=col->g;

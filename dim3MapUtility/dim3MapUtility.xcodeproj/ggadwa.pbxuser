@@ -247,8 +247,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 321318059;
-			PBXWorkspaceStateSaveDate = 321318059;
+			PBXPerProjectTemplateStateSaveDate = 321601137;
+			PBXWorkspaceStateSaveDate = 321601137;
 		};
 		sourceControlManager = 260AFEBF0D404E9300F6C42F /* Source Control */;
 		userBuildSettings = {
@@ -264,9 +264,9 @@
 	};
 	F5C53548051C085800968AF1 /* maputility.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 11245}}";
-			sepNavSelRange = "{7214, 12}";
-			sepNavVisRange = "{7065, 1470}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 11193}}";
+			sepNavSelRange = "{7258, 0}";
+			sepNavVisRange = "{6759, 1472}";
 			sepNavWindowFrame = "{{304, 244}, {1041, 691}}";
 		};
 	};
@@ -280,9 +280,9 @@
 	};
 	F5DD16E00907328000721649 /* prepare.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 7904}}";
-			sepNavSelRange = "{4848, 0}";
-			sepNavVisRange = "{3537, 1429}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 8528}}";
+			sepNavSelRange = "{10585, 0}";
+			sepNavVisRange = "{9928, 1382}";
 			sepNavWindowFrame = "{{262, 193}, {1041, 747}}";
 		};
 	};

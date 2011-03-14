@@ -40,8 +40,8 @@ and can be sold or given away.
 
 extern map_type				map;
 extern server_type			server;
+extern iface_type			iface;
 extern view_type			view;
-extern hud_type				hud;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
 extern render_info_type		render_info;
@@ -60,13 +60,13 @@ int network_score_get_list_high(int nscore,int *fnt_sz)
 	
 		// default height or scale to fit
 		
-	high=gl_text_get_char_height(hud.font.text_size_large);
-	*fnt_sz=hud.font.text_size_large;
+	high=gl_text_get_char_height(iface.font.text_size_large);
+	*fnt_sz=iface.font.text_size_large;
 
 	if (nscore!=0) {
-		yadd=((hud.scale_y/10)*6)/nscore;
+		yadd=((iface.scale_y/10)*6)/nscore;
 		if (yadd<high) {
-			*fnt_sz=(hud.font.text_size_large*yadd)/high;
+			*fnt_sz=(iface.font.text_size_large*yadd)/high;
 			high=yadd;
 		}
 	}
@@ -160,13 +160,13 @@ int network_score_players_draw(bool use_teams)
 	
 		// sizes
 
-	lx=hud.scale_x>>2;
-	rx=lx+(hud.scale_x>>1);
+	lx=iface.scale_x>>2;
+	rx=lx+(iface.scale_x>>1);
 	
 	yadd=network_score_get_list_high(nscore,&fnt_sz);
 	high=(yadd+3)*nscore;
 	
-	y=(hud.scale_y-high)>>1;
+	y=(iface.scale_y-high)>>1;
 	
 		// player boxes
 	
@@ -256,11 +256,11 @@ int network_score_teams_draw(void)
 	
 		// box sizes
 		
-	xadd=hud.scale_x/10;
-	xsz=(hud.scale_x-(xadd*3))>>1;
+	xadd=iface.scale_x/10;
+	xsz=(iface.scale_x-(xadd*3))>>1;
 		
 	yadd=network_score_get_list_high((max_count+1),&fnt_sz);
-	y=(hud.scale_y-((yadd+3)*(max_count+1)))>>1;
+	y=(iface.scale_y-((yadd+3)*(max_count+1)))>>1;
 	
 		// red box
 		
@@ -310,7 +310,7 @@ void network_score_draw(void)
 		
 	if (net_setup.mode!=net_mode_host_dedicated) {
 		if (server.state!=gs_score_limit) {
-			if (!hud.score.on) {
+			if (!iface.score.on) {
 				player_obj=server.obj_list.objs[server.player_obj_idx];
 				if (player_obj->status.health!=0) return;
 			}
@@ -324,7 +324,7 @@ void network_score_draw(void)
 		// draw player and team scores
 		// if this game is team type
 
-	use_teams=hud.net_game.games[net_setup.game_idx].use_teams;
+	use_teams=iface.net_game.games[net_setup.game_idx].use_teams;
 
 	if (!use_teams) {
 		win_idx=network_score_players_draw(use_teams);
@@ -335,14 +335,14 @@ void network_score_draw(void)
 	
 		// map message
 		
-	y=gl_text_get_char_height(hud.font.text_size_large);
+	y=gl_text_get_char_height(iface.font.text_size_large);
 		
 	col.r=col.g=col.b=1.0f;
 
-	sprintf(str,"%s at %s",hud.net_game.games[net_setup.game_idx].name,map.info.name);
+	sprintf(str,"%s at %s",iface.net_game.games[net_setup.game_idx].name,map.info.name);
 		
-	gl_text_start(font_hud_index,hud.font.text_size_large);
-	gl_text_draw((hud.scale_x>>1),y,str,tx_center,TRUE,&col,1.0f);
+	gl_text_start(font_hud_index,iface.font.text_size_large);
+	gl_text_draw((iface.scale_x>>1),y,str,tx_center,TRUE,&col,1.0f);
 	gl_text_end();
 	
 		// resuming messages
@@ -361,8 +361,8 @@ void network_score_draw(void)
 	}
 	
 	if (str[0]!=0x0) {
-		gl_text_start(font_hud_index,hud.font.text_size_medium);
-		gl_text_draw((hud.scale_x>>1),(y+y),str,tx_center,TRUE,&col,1.0f);
+		gl_text_start(font_hud_index,iface.font.text_size_medium);
+		gl_text_draw((iface.scale_x>>1),(y+y),str,tx_center,TRUE,&col,1.0f);
 		gl_text_end();
 	}
 }
@@ -386,20 +386,20 @@ void network_chat_draw(void)
 
 		// draw position
 
-	yadd=gl_text_get_char_height(hud.font.text_size_small)+1;
+	yadd=gl_text_get_char_height(iface.font.text_size_small)+1;
 
-	x=hud.chat.x;
-	y=hud.chat.y;
+	x=iface.chat.x;
+	y=iface.chat.y;
 
 		// draw text
 
-	gl_text_start(font_hud_index,hud.font.text_size_small);
+	gl_text_start(font_hud_index,iface.font.text_size_small);
 
 		// currently typing?
 
-	if (hud.chat.type_on) {
+	if (iface.chat.type_on) {
 		col.r=col.g=col.b=1.0f;
-		gl_text_draw(x,y,hud.chat.type_str,tx_right,FALSE,&col,1.0f);
+		gl_text_draw(x,y,iface.chat.type_str,tx_right,FALSE,&col,1.0f);
 		y-=yadd;
 	}
 
@@ -410,10 +410,10 @@ void network_chat_draw(void)
 		// history lines
 
 	ntop=0;
-	if ((hud.chat.type_on) && (hud.chat.nline>=max_chat_lines)) ntop=1;		// push top line off when typing if over max
+	if ((iface.chat.type_on) && (iface.chat.nline>=max_chat_lines)) ntop=1;		// push top line off when typing if over max
 	
-	for (n=(hud.chat.nline-1);n>=ntop;n--) {
-		line=&hud.chat.lines[n];
+	for (n=(iface.chat.nline-1);n>=ntop;n--) {
+		line=&iface.chat.lines[n];
 		sprintf(txt,"%s [%s]",line->str,line->name);
 		gl_text_draw(x,y,txt,tx_right,FALSE,&line->col,1.0f);
 		y-=yadd;

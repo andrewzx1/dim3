@@ -120,7 +120,7 @@ void render_transparent_sort(void)
 		// create sort list
 
 	sort_cnt=0;
-		
+	
 	for (n=0;n!=view.render->draw_list.count;n++) {
 
 		if (view.render->draw_list.items[n].type!=view_render_type_mesh) continue;
@@ -146,12 +146,13 @@ void render_transparent_sort(void)
 			dist=render_transparent_poly_far_z(mesh,poly);
 
 				// find position in sort list
+				// always check from the end of the list up
 
 			sort_idx=sort_cnt;
 
 			for (i=0;i!=sort_cnt;i++) {
 				if (dist>sort_list[i].dist) {
-					sort_idx=i;
+					sort_idx=i+1;
 					break;
 				}
 			}

@@ -59,9 +59,8 @@ and can be sold or given away.
 
 extern render_info_type		render_info;
 extern server_type			server;
-extern hud_type				hud;
+extern iface_type			iface;
 extern setup_type			setup;
-extern hud_type				hud;
 
 extern setup_type			setup_backup;
 
@@ -82,8 +81,8 @@ void setup_network_fill_character_table(void)
 
 	c=(char*)setup_character_list;
 	
-	for (n=0;n!=hud.character.ncharacter;n++) {
-		sprintf(c,"%s",hud.character.characters[n].name);
+	for (n=0;n!=iface.character.ncharacter;n++) {
+		sprintf(c,"%s",iface.character.characters[n].name);
 		c+=128;
 	}
 
@@ -124,13 +123,13 @@ void setup_network_player_pane(void)
 	control_y_add=element_get_control_high();
 	control_y_sz=control_y_add*3;
 	
-	x=(int)(((float)hud.scale_x)*0.24f);
+	x=(int)(((float)iface.scale_x)*0.24f);
 	
-	if (hud.character.ncharacter!=0) {
+	if (iface.character.ncharacter!=0) {
 		y=((margin+element_get_tab_control_high())+padding)+control_y_add;
 	}
 	else {
-		y=(hud.scale_y>>1)-(control_y_sz>>1);
+		y=(iface.scale_y>>1)-(control_y_sz>>1);
 	}
 	
 		// names and colors
@@ -143,15 +142,15 @@ void setup_network_player_pane(void)
 	
 		// is there a character control?
 
-	if (hud.character.ncharacter==0) return;
+	if (iface.character.ncharacter==0) return;
 	
 		// character table
 		
 	x=margin+padding;
 	y+=padding;
 
-	wid=(int)(((float)hud.scale_x)*0.80f)-((margin+padding)*2);
-	high=(int)(((float)hud.scale_y)*0.85f)-y;
+	wid=(int)(((float)iface.scale_x)*0.80f)-((margin+padding)*2);
+	high=(int)(((float)iface.scale_y)*0.85f)-y;
 
 	strcpy(cols[0].name,"Characters");
 	cols[0].percent_size=1.0f;
@@ -167,10 +166,10 @@ void setup_network_player_pane(void)
 	
 		// character model
 
-	x=(int)(((float)hud.scale_x)*0.81f);
-	y=(int)(((float)hud.scale_y)*0.8f);
+	x=(int)(((float)iface.scale_x)*0.81f);
+	y=(int)(((float)iface.scale_y)*0.8f);
 	
-	hud_character=&hud.character.characters[setup.network.character_idx];
+	hud_character=&iface.character.characters[setup.network.character_idx];
 
 	element_model_add(hud_character->model_name,"Idle",hud_character->interface_resize,&hud_character->interface_offset,NULL,ctrl_character_model_id,x,y);
 }
@@ -186,8 +185,8 @@ void setup_network_host_pane(void)
 	x=margin+padding;
 	y=(margin+element_get_tab_control_high())+padding;
 
-	wid=hud.scale_x-((margin+padding)*2);
-	high=(int)(((float)hud.scale_y)*0.72f)-y;
+	wid=iface.scale_x-((margin+padding)*2);
+	high=(int)(((float)iface.scale_y)*0.72f)-y;
 
 	control_y_add=element_get_control_high();
 
@@ -205,7 +204,7 @@ void setup_network_host_pane(void)
 
 		// host editing
 
-	x=(int)(((float)hud.scale_x)*0.15f);
+	x=(int)(((float)iface.scale_x)*0.15f);
 	y+=(high+control_y_add+8);
 
 	element_text_field_add("Name","",name_str_len,ctrl_network_host_name_id,x,y,TRUE);
@@ -217,10 +216,10 @@ void setup_network_host_pane(void)
 
 	padding=element_get_padding();
 
-	x=hud.scale_x>>1;
+	x=iface.scale_x>>1;
 	
-	wid=(int)(((float)hud.scale_x)*0.2f);
-	high=(int)(((float)hud.scale_x)*0.04f);
+	wid=(int)(((float)iface.scale_x)*0.2f);
+	high=(int)(((float)iface.scale_x)*0.04f);
 	
 	y+=(padding+(high/2));
 
@@ -246,8 +245,8 @@ void setup_network_create_pane(void)
 	
 		// buttons
 		
-	wid=(int)(((float)hud.scale_x)*0.1f);
-	high=(int)(((float)hud.scale_x)*0.04f);
+	wid=(int)(((float)iface.scale_x)*0.1f);
+	high=(int)(((float)iface.scale_x)*0.04f);
 
 	element_get_button_bottom_right(&x,&y,wid,high);
 	element_button_text_add("OK",setup_network_ok_button,x,y,wid,high,element_pos_right,element_pos_bottom);
@@ -476,7 +475,7 @@ void setup_network_handle_click(int id)
 			
 		case ctrl_character_id:
 			setup.network.character_idx=element_get_value(ctrl_character_id);
-			hud_character=&hud.character.characters[setup.network.character_idx];
+			hud_character=&iface.character.characters[setup.network.character_idx];
 			element_replace_model(ctrl_character_model_id,hud_character->model_name,"Idle",hud_character->interface_resize,&hud_character->interface_offset,NULL);
 			break;
 

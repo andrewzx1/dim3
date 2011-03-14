@@ -34,10 +34,10 @@ and can be sold or given away.
 
 extern map_type				map;
 extern server_type			server;
+extern iface_type			iface;
+extern js_type				js;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
-extern js_type				js;
-extern hud_type				hud;
 
 extern bool game_file_reload_ok(void);
 extern bool game_file_reload(char *err_str);
@@ -197,7 +197,7 @@ JSValueRef js_map_action_set_simple_save_func(JSContextRef cx,JSObjectRef func,J
 		
 	simple_save_xml_read();
 		
-	save=&hud.simple_save_list.saves[server.simple_save_idx];
+	save=&iface.simple_save_list.saves[server.simple_save_idx];
 	
 	save->save_id=script_value_to_int(cx,argv[0]);
 	script_value_to_string(cx,argv[1],save->desc,64);

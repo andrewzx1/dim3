@@ -39,7 +39,7 @@ and can be sold or given away.
 
 extern server_type			server;
 extern view_type			view;
-extern hud_type				hud;
+extern iface_type			iface;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
 
@@ -283,9 +283,9 @@ void view_images_cached_load(void)
     
 		// hud bitmaps
 
-	hud_bitmap=hud.bitmaps;
+	hud_bitmap=iface.bitmaps;
 	
-	for (n=0;n!=hud.count.bitmap;n++) {
+	for (n=0;n!=iface.count.bitmap;n++) {
 		file_paths_data(&setup.file_path_setup,path,"Bitmaps/Interface",hud_bitmap->filename,"png");
 		hud_bitmap->image_idx=view_images_load_single(path,FALSE,TRUE);
 		hud_bitmap++;
@@ -293,14 +293,14 @@ void view_images_cached_load(void)
 
 		// radar background
 
-	file_paths_data(&setup.file_path_setup,path,"Bitmaps/Radar",hud.radar.background_bitmap_name,"png");
-	hud.radar.background_image_idx=view_images_load_single(path,FALSE,TRUE);
+	file_paths_data(&setup.file_path_setup,path,"Bitmaps/Radar",iface.radar.background_bitmap_name,"png");
+	iface.radar.background_image_idx=view_images_load_single(path,FALSE,TRUE);
 
 		// radar icons
 	
-	icon=hud.radar.icons;
+	icon=iface.radar.icons;
 	
-	for (n=0;n!=hud.radar.nicon;n++) {
+	for (n=0;n!=iface.radar.nicon;n++) {
 		file_paths_data(&setup.file_path_setup,path,"Bitmaps/Radar",icon->bitmap_name,"png");
 		icon->image_idx=view_images_load_single(path,FALSE,TRUE);
 		icon++;
@@ -380,25 +380,25 @@ void view_images_cached_free(void)
     
 		// hud bitmaps
 
-	hud_bitmap=hud.bitmaps;
+	hud_bitmap=iface.bitmaps;
 	
-	for (n=0;n!=hud.count.bitmap;n++) {
+	for (n=0;n!=iface.count.bitmap;n++) {
 		view_images_free_single(hud_bitmap->image_idx);
 	}
 
 		// radar
 
-	if (hud.radar.on) {
+	if (iface.radar.on) {
 	
 			// radar background
 
-		view_images_free_single(hud.radar.background_image_idx);
+		view_images_free_single(iface.radar.background_image_idx);
 
 			// radar icons
 		
-		icon=hud.radar.icons;
+		icon=iface.radar.icons;
 		
-		for (n=0;n!=hud.radar.nicon;n++) {
+		for (n=0;n!=iface.radar.nicon;n++) {
 			view_images_free_single(icon->image_idx);
 			icon++;
 		}

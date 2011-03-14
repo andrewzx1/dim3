@@ -40,8 +40,8 @@ and can be sold or given away.
 #define title_fade_mode_none	2
 
 extern server_type			server;
+extern iface_type			iface;
 extern setup_type			setup;
-extern hud_type				hud;
 extern js_type				js;
 
 int							title_fade_tick,title_fade_mode,title_event_id,title_last_state;
@@ -129,20 +129,20 @@ void title_run(void)
 
 		case title_fade_mode_in:
 			tick=game_time_get_raw()-title_fade_tick;
-			if (tick>hud.fade.title_msec) {
+			if (tick>iface.fade.title_msec) {
 				title_fade_mode=title_fade_mode_none;
 				break;
 			}
-			alpha=((float)tick)/(float)hud.fade.title_msec;
+			alpha=((float)tick)/(float)iface.fade.title_msec;
 			break;
 
 		case title_fade_mode_out:
 			tick=game_time_get_raw()-title_fade_tick;
-			if (tick>hud.fade.title_msec) {
+			if (tick>iface.fade.title_msec) {
 				server.next_state=title_last_state;
 				return;
 			}
-			alpha=1.0f-(((float)tick)/(float)hud.fade.title_msec);
+			alpha=1.0f-(((float)tick)/(float)iface.fade.title_msec);
 			break;
 	}
 

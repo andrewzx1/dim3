@@ -31,7 +31,7 @@ and can be sold or given away.
 
 #include "video.h"
 
-extern hud_type				hud;
+extern iface_type			iface;
 extern setup_type			setup;
 
 int							font_index,font_size;
@@ -45,10 +45,10 @@ texture_font_type			fonts[2];
 
 void gl_text_initialize(void)
 {
-	strcpy(fonts[font_interface_index].name,hud.font.interface_name);
+	strcpy(fonts[font_interface_index].name,iface.font.interface_name);
 	bitmap_text_initialize(&fonts[font_interface_index]);
 
-	strcpy(fonts[font_hud_index].name,hud.font.hud_name);
+	strcpy(fonts[font_hud_index].name,iface.font.hud_name);
 	bitmap_text_initialize(&fonts[font_hud_index]);
 }
 

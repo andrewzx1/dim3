@@ -47,7 +47,6 @@ extern camera_type			camera;
 extern view_type			view;
 extern server_type			server;
 extern setup_type			setup;
-extern hud_type				hud;
 extern render_info_type		render_info;
 
 extern view_render_type		view_camera_render,view_node_render;
@@ -85,7 +84,7 @@ extern void view_calculate_recoil(obj_type *obj);
 extern void view_calculate_shakes(obj_type *obj);
 extern void view_calculate_sways(obj_type *obj);
 extern void view_calculate_bump(obj_type *obj);
-extern void shadow_render_model(int item_type,int item_idx,model_draw *draw);
+extern void shadow_render_model(model_draw *draw);
 extern void shadow_render_mesh(int mesh_idx);
 extern void view_draw_debug_object(obj_type *obj);
 extern void view_draw_debug_projectile(proj_type *proj);
@@ -241,7 +240,7 @@ void view_draw_models_final(void)
 							obj->draw.built_vertex_list=TRUE;
 							render_model_build_vertex_lists(&obj->draw);
 						}
-						shadow_render_model(view_render_type_object,view.render->draw_list.items[n].idx,&obj->draw);
+						shadow_render_model(&obj->draw);
 					}
 				}
 
@@ -259,7 +258,7 @@ void view_draw_models_final(void)
 					if ((view.render->draw_list.items[n].flag&view_list_item_flag_shadow_in_view)!=0x0) {
 						render_model_setup(&proj->draw,game_time_get());
 						render_model_build_vertex_lists(&proj->draw);
-						shadow_render_model(view_render_type_projectile,view.render->draw_list.items[n].idx,&proj->draw);
+						shadow_render_model(&proj->draw);
 					}
 				}
 

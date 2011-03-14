@@ -42,9 +42,9 @@ extern int					game_obj_rule_idx;
 
 extern map_type				map;
 extern server_type			server;
-extern setup_type			setup;
+extern iface_type			iface;
 extern js_type				js;
-extern hud_type				hud;
+extern setup_type			setup;
 extern network_setup_type	net_setup;
 
 /* =======================================================
@@ -868,10 +868,10 @@ bool object_set_radar_icon(obj_type *obj,char *err_str)
 	
 		// find radar icon
 		
-	nicon=hud.radar.nicon;
+	nicon=iface.radar.nicon;
 	
 	for (n=0;n!=nicon;n++) {
-		if (strcasecmp(hud.radar.icons[n].name,obj->radar.icon)==0) {
+		if (strcasecmp(iface.radar.icons[n].name,obj->radar.icon)==0) {
 			obj->radar.icon_idx=n;
 			return(TRUE);
 		}

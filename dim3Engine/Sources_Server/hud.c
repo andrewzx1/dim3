@@ -31,7 +31,7 @@ and can be sold or given away.
 
 #include "timing.h"
 
-extern hud_type				hud;
+extern iface_type			iface;
 
 /* =======================================================
 
@@ -41,17 +41,17 @@ extern hud_type				hud;
 
 void hud_initialize(void)
 {
-	hud.count.bitmap=0;
-	hud.count.text=0;
-	hud.count.bar=0;
-	hud.count.menu=0;
-	hud.count.chooser=0;
+	iface.count.bitmap=0;
+	iface.count.text=0;
+	iface.count.bar=0;
+	iface.count.menu=0;
+	iface.count.chooser=0;
 
-	hud.chat.nline=0;
-	hud.chat.type_on=FALSE;
-	hud.chat.type_str[0]=0x0;
+	iface.chat.nline=0;
+	iface.chat.type_on=FALSE;
+	iface.chat.type_str[0]=0x0;
 	
-	hud.score.on=FALSE;
+	iface.score.on=FALSE;
 }
 
 /* =======================================================
@@ -65,9 +65,9 @@ hud_bitmap_type* hud_bitmaps_find(char *name)
 	int					n;
 	hud_bitmap_type		*bitmap;
 	
-	bitmap=hud.bitmaps;
+	bitmap=iface.bitmaps;
 	
-	for (n=0;n!=hud.count.bitmap;n++) {
+	for (n=0;n!=iface.count.bitmap;n++) {
 		if (strcasecmp(bitmap->name,name)==0) return(bitmap);
 		bitmap++;
 	}
@@ -80,9 +80,9 @@ hud_text_type* hud_texts_find(char *name)
 	int					n;
 	hud_text_type		*text;
 	
-	text=hud.texts;
+	text=iface.texts;
 	
-	for (n=0;n!=hud.count.text;n++) {
+	for (n=0;n!=iface.count.text;n++) {
 		if (strcasecmp(text->name,name)==0) return(text);
 		text++;
 	}
@@ -95,9 +95,9 @@ hud_bar_type* hud_bars_find(char *name)
 	int					n;
 	hud_bar_type		*bar;
 	
-	bar=hud.bars;
+	bar=iface.bars;
 	
-	for (n=0;n!=hud.count.bar;n++) {
+	for (n=0;n!=iface.count.bar;n++) {
 		if (strcasecmp(bar->name,name)==0) return(bar);
 		bar++;
 	}
@@ -128,9 +128,9 @@ void hud_bitmaps_hide_all(void)
 	int				n;
 	hud_bitmap_type	*bitmap;
 
-	bitmap=hud.bitmaps;
+	bitmap=iface.bitmaps;
 	
-	for (n=0;n!=hud.count.bitmap;n++) {
+	for (n=0;n!=iface.count.bitmap;n++) {
 		bitmap->show=FALSE;
 		bitmap++;
 	}
@@ -141,9 +141,9 @@ void hud_texts_hide_all(void)
 	int				n;
 	hud_text_type	*text;
 
-	text=hud.texts;
+	text=iface.texts;
 	
-	for (n=0;n!=hud.count.text;n++) {
+	for (n=0;n!=iface.count.text;n++) {
 		text->show=FALSE;
 		text++;
 	}
@@ -154,9 +154,9 @@ void hud_bars_hide_all(void)
 	int				n;
 	hud_bar_type	*bar;
 
-	bar=hud.bars;
+	bar=iface.bars;
 	
-	for (n=0;n!=hud.count.bar;n++) {
+	for (n=0;n!=iface.count.bar;n++) {
 		bar->show=FALSE;
 		bar++;
 	}
@@ -170,7 +170,7 @@ void hud_bars_hide_all(void)
 
 void chat_clear_messages(void)
 {
-	hud.chat.nline=0;
+	iface.chat.nline=0;
 }
 
 void chat_add_message(char *name,char *str,d3col *col)
@@ -180,18 +180,18 @@ void chat_add_message(char *name,char *str,d3col *col)
 	
 		// need to remove a line?
 		
-	if (hud.chat.nline>=max_chat_lines) {
-		memmove(&hud.chat.lines[0],&hud.chat.lines[1],(sizeof(hud_chat_line_type)*(max_chat_lines-1)));
-		idx=hud.chat.nline-1;
+	if (iface.chat.nline>=max_chat_lines) {
+		memmove(&iface.chat.lines[0],&iface.chat.lines[1],(sizeof(hud_chat_line_type)*(max_chat_lines-1)));
+		idx=iface.chat.nline-1;
 	}
 	else {
-		idx=hud.chat.nline;
-		hud.chat.nline++;
+		idx=iface.chat.nline;
+		iface.chat.nline++;
 	}
 	
 		// set line
 		
-	line=&hud.chat.lines[idx];
+	line=&iface.chat.lines[idx];
 	
 	strcpy(line->name,name);
 	strcpy(line->str,str);
@@ -199,7 +199,7 @@ void chat_add_message(char *name,char *str,d3col *col)
 	
 		// last addition tick
 		
-	hud.chat.remove_tick=game_time_get()+(hud.chat.last_add_life_sec*1000);
+	iface.chat.remove_tick=game_time_get()+(iface.chat.last_add_life_sec*1000);
 }
 
 void chat_time_out(void)
@@ -207,10 +207,10 @@ void chat_time_out(void)
 	int				tick;
 
 	tick=game_time_get();
-	if ((hud.chat.nline==0) || (hud.chat.remove_tick>tick)) return;
+	if ((iface.chat.nline==0) || (iface.chat.remove_tick>tick)) return;
 	
-	memmove(&hud.chat.lines[0],&hud.chat.lines[1],(sizeof(hud_chat_line_type)*(max_chat_lines-1)));
-	hud.chat.nline--;
+	memmove(&iface.chat.lines[0],&iface.chat.lines[1],(sizeof(hud_chat_line_type)*(max_chat_lines-1)));
+	iface.chat.nline--;
 	
-	hud.chat.remove_tick=tick+(hud.chat.next_life_sec*1000);
+	iface.chat.remove_tick=tick+(iface.chat.next_life_sec*1000);
 }

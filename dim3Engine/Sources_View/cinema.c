@@ -45,7 +45,7 @@ extern bool map_movements_cinema_start(int movement_idx,bool reverse,char *err_s
 extern server_type				server;
 extern view_type				view;
 extern map_type					map;
-extern hud_type					hud;
+extern iface_type				iface;
 extern js_type					js;
 extern network_setup_type		net_setup;
 
@@ -95,17 +95,17 @@ bool cinema_start(char *name,int event_id,char *err_str)
 		
 	if (!map.cinema.cinemas[view.cinema.idx].show_hud) {
 	
-		for (n=0;n!=hud.count.bitmap;n++) {
-			hud.bitmaps[n].old_show=hud.bitmaps[n].show;
-			hud.bitmaps[n].show=FALSE;
+		for (n=0;n!=iface.count.bitmap;n++) {
+			iface.bitmaps[n].old_show=iface.bitmaps[n].show;
+			iface.bitmaps[n].show=FALSE;
 		}
-		for (n=0;n!=hud.count.text;n++) {
-			hud.texts[n].old_show=hud.texts[n].show;
-			hud.texts[n].show=FALSE;
+		for (n=0;n!=iface.count.text;n++) {
+			iface.texts[n].old_show=iface.texts[n].show;
+			iface.texts[n].show=FALSE;
 		}
-		for (n=0;n!=hud.count.bar;n++) {
-			hud.bars[n].old_show=hud.bars[n].show;
-			hud.bars[n].show=FALSE;
+		for (n=0;n!=iface.count.bar;n++) {
+			iface.bars[n].old_show=iface.bars[n].show;
+			iface.bars[n].show=FALSE;
 		}
 	
 	}
@@ -129,14 +129,14 @@ void cinema_end(void)
 		
 	if (!map.cinema.cinemas[view.cinema.idx].show_hud) {
 	
-		for (n=0;n!=hud.count.bitmap;n++) {
-			hud.bitmaps[n].show=hud.bitmaps[n].old_show;
+		for (n=0;n!=iface.count.bitmap;n++) {
+			iface.bitmaps[n].show=iface.bitmaps[n].old_show;
 		}
-		for (n=0;n!=hud.count.text;n++) {
-			hud.texts[n].show=hud.texts[n].old_show;
+		for (n=0;n!=iface.count.text;n++) {
+			iface.texts[n].show=iface.texts[n].old_show;
 		}
-		for (n=0;n!=hud.count.bar;n++) {
-			hud.bars[n].show=hud.bars[n].old_show;
+		for (n=0;n!=iface.count.bar;n++) {
+			iface.bars[n].show=iface.bars[n].old_show;
 		}
 	
 	}

@@ -31,7 +31,6 @@ and can be sold or given away.
 
 #include "xmls.h"
 
-extern hud_type				hud;
 extern network_setup_type	net_setup;
 
 setup_type					setup;

@@ -31,7 +31,7 @@ and can be sold or given away.
 
 #include "xmls.h"
 
-extern hud_type				hud;
+extern iface_type			iface;
 extern setup_type			setup;
 
 /* =======================================================
@@ -49,7 +49,7 @@ void simple_save_xml_read(void)
 	
 		// clear saves
 		
-	save=hud.simple_save_list.saves;
+	save=iface.simple_save_list.saves;
 		
 	for (n=0;n!=max_simple_save_spot;n++) {
 		save->save_id=-1;
@@ -76,7 +76,7 @@ void simple_save_xml_read(void)
         for (n=0;n!=count;n++) {
 			idx=xml_get_attribute_int(tag,"idx");
 			
-			save=&hud.simple_save_list.saves[idx];
+			save=&iface.simple_save_list.saves[idx];
 			
 			save->save_id=xml_get_attribute_int(tag,"id");
 			xml_get_attribute_text(tag,"desc",save->desc,64);
@@ -110,7 +110,7 @@ void simple_save_xml_write(void)
     xml_add_tagstart("Simple_Saves");
     xml_add_tagend(FALSE);
 	
-	save=hud.simple_save_list.saves;
+	save=iface.simple_save_list.saves;
 	
 	for (n=0;n!=max_simple_save_spot;n++) {
 	

@@ -38,7 +38,7 @@ and can be sold or given away.
 
 extern server_type			server;
 extern view_type			view;
-extern hud_type				hud;
+extern iface_type			iface;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
 extern render_info_type		render_info;
@@ -62,7 +62,7 @@ void radar_draw(void)
 	
 		// radar on?
 		
-	if (!hud.radar.on) return;
+	if (!iface.radar.on) return;
 	
 		// get player object (center of radar)
 		
@@ -82,21 +82,21 @@ void radar_draw(void)
 
 		// get radar size
 
-	radar_sz=hud.radar.display_radius;
+	radar_sz=iface.radar.display_radius;
 
-	lx=hud.radar.x-radar_sz;
-	ty=hud.radar.y-radar_sz;
+	lx=iface.radar.x-radar_sz;
+	ty=iface.radar.y-radar_sz;
 	rx=lx+(radar_sz<<1);
 	by=ty+(radar_sz<<1);
 
 		// draw radar background
 
-	if (!hud.radar.team_tint) {
+	if (!iface.radar.team_tint) {
 		tint.r=tint.g=tint.b=1.0f;
 	}
 	else {
 		if (net_setup.mode==net_mode_none) {
-			memmove(&tint,&hud.color.default_tint,sizeof(d3col));
+			memmove(&tint,&iface.color.default_tint,sizeof(d3col));
 		}
 		else {
 			object_get_tint(player_obj,&tint);
@@ -146,7 +146,7 @@ void radar_draw(void)
 	glTexCoordPointer(2,GL_FLOAT,0,(void*)((4*2)*sizeof(float)));
 			
 	gl_texture_simple_start();
-	gl_texture_simple_set(view_images_get_gl_id(hud.radar.background_image_idx),TRUE,tint.r,tint.g,tint.b,1.0f);
+	gl_texture_simple_set(view_images_get_gl_id(iface.radar.background_image_idx),TRUE,tint.r,tint.g,tint.b,1.0f);
 
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 
@@ -161,7 +161,7 @@ void radar_draw(void)
 	cur_gl_id=-1;
 	cur_alpha=1.0f;
 	
-	max_dist=hud.radar.view_radius;
+	max_dist=iface.radar.view_radius;
 	fade_dist=max_dist>>1;
 	
 	for (n=0;n!=max_obj_list;n++) {
@@ -192,12 +192,12 @@ void radar_draw(void)
 				// if not moving, handle the fading
 
 			else {
-				if (hud.radar.no_motion_fade==0) continue;
+				if (iface.radar.no_motion_fade==0) continue;
 
 				fade_count=tick-obj->radar.fade_start_tick;
-				if (fade_count>hud.radar.no_motion_fade) continue;
+				if (fade_count>iface.radar.no_motion_fade) continue;
 
-				fade_mult=1.0f-(((float)fade_count)/((float)hud.radar.no_motion_fade));
+				fade_mult=1.0f-(((float)fade_count)/((float)iface.radar.no_motion_fade));
 			}
 		}
 
@@ -206,17 +206,17 @@ void radar_draw(void)
 		x=obj->pnt.x-player_obj->pnt.x;
 		y=-(obj->pnt.z-player_obj->pnt.z);
 			
-		if (hud.radar.rot) rotate_2D_point_center(&x,&y,player_obj->ang.y);
+		if (iface.radar.rot) rotate_2D_point_center(&x,&y,player_obj->ang.y);
 
 			// if outside max, stick to edge
 
 		if (dist>max_dist) {
-			x=hud.radar.x+((x*radar_sz)/dist);
-			y=hud.radar.y-((y*radar_sz)/dist);
+			x=iface.radar.x+((x*radar_sz)/dist);
+			y=iface.radar.y-((y*radar_sz)/dist);
 		}
 		else {
-			x=hud.radar.x+((x*radar_sz)/max_dist);
-			y=hud.radar.y-((y*radar_sz)/max_dist);
+			x=iface.radar.x+((x*radar_sz)/max_dist);
+			y=iface.radar.y-((y*radar_sz)/max_dist);
 		}
 
 			// get alpha
@@ -230,7 +230,7 @@ void radar_draw(void)
 			
 			// draw object
 		
-		icon=&hud.radar.icons[obj->radar.icon_idx];
+		icon=&iface.radar.icons[obj->radar.icon_idx];
 		
 		gl_id=view_images_get_gl_id(icon->image_idx);
 		if ((gl_id!=cur_gl_id) || (alpha!=cur_alpha)) {

@@ -47,8 +47,8 @@ extern map_type				map;
 extern camera_type			camera;
 extern view_type			view;
 extern server_type			server;
+extern iface_type			iface;
 extern setup_type			setup;
-extern hud_type				hud;
 extern render_info_type		render_info;
 
 /* =======================================================
@@ -127,7 +127,7 @@ void view_draw_debug_info(char *name,char *info,d3pnt *pnt,d3pnt *size)
 
 	dist=distance_get(x,y,z,view.render->camera.pnt.x,view.render->camera.pnt.y,view.render->camera.pnt.z);
 		
-	font_size=hud.font.text_size_medium-(int)((float)(hud.font.text_size_medium*dist)/(float)(remote_name_max_distance-remote_name_min_distance));
+	font_size=iface.font.text_size_medium-(int)((float)(iface.font.text_size_medium*dist)/(float)(remote_name_max_distance-remote_name_min_distance));
 	if (font_size<10) font_size=10;
 
 		// ray trace check
@@ -159,8 +159,8 @@ void view_draw_debug_info(char *name,char *info,d3pnt *pnt,d3pnt *size)
 	
 		// covert to interface resolution
 
-	x=(x*hud.scale_x)/setup.screen.x_sz;
-	y=((setup.screen.y_sz-y)*hud.scale_y)/setup.screen.y_sz;
+	x=(x*iface.scale_x)/setup.screen.x_sz;
+	y=((setup.screen.y_sz-y)*iface.scale_y)/setup.screen.y_sz;
 
 		// draw text
 

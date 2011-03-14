@@ -436,6 +436,7 @@ void map_prepare(map_type *map)
 
 		mesh->flag.touched=FALSE;
 		mesh->flag.shiftable=FALSE;
+		mesh->flag.poly_has_camera=FALSE;
 		
 			// run through the mesh polygons
 			
@@ -457,6 +458,12 @@ void map_prepare(map_type *map)
 			poly->draw.y_shift_offset=0.0f;
 			mesh->flag.shiftable|=poly->draw.shift_on;
 			
+				// setup camera flag
+				
+			if (poly->camera[0]!=0x0) mesh->flag.poly_has_camera=TRUE;
+			
+				// count wall like polys
+				
 			if (poly->box.wall_like) wall_like_count++;
 
 			poly++;

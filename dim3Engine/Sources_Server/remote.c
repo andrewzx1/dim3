@@ -45,7 +45,7 @@ and can be sold or given away.
 extern map_type				map;
 extern view_type			view;
 extern server_type			server;
-extern hud_type				hud;
+extern iface_type			iface;
 extern js_type				js;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
@@ -837,13 +837,13 @@ void remote_network_send_updates(void)
 		// update the player
 
 	obj=server.obj_list.objs[server.player_obj_idx];
-	net_client_send_remote_update(obj,hud.chat.type_on);
+	net_client_send_remote_update(obj,iface.chat.type_on);
 
 		// update any co-op bots if hosting
 
 	if ((net_setup.mode==net_mode_host) || (net_setup.mode==net_mode_host_dedicated)) {
 	
-		coop=hud.net_game.games[net_setup.game_idx].monsters;
+		coop=iface.net_game.games[net_setup.game_idx].monsters;
 
 		for (n=0;n!=max_obj_list;n++) {
 			obj=server.obj_list.objs[n];
@@ -907,7 +907,7 @@ void remote_setup_coop_bots(void)
 	
 		// is it co-op mode?
 		
-	coop=hud.net_game.games[net_setup.game_idx].monsters;
+	coop=iface.net_game.games[net_setup.game_idx].monsters;
 	
 		// create remote IDs
 		

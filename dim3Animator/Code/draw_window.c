@@ -186,13 +186,13 @@ void draw_model_setup_bones_vertexes(int mesh_idx)
 		
 	if ((state.first_mesh) && (mesh_idx!=0)) {
 		model_create_draw_vertexes(&model,0,&draw_setup);
-		model_create_draw_normals(&model,0,&draw_setup);
+		model_create_draw_normals(&model,0,&draw_setup,TRUE);
 	}
 
 		// calculate vertexes for drawing mesh
 		
 	model_create_draw_vertexes(&model,mesh_idx,&draw_setup);
-	model_create_draw_normals(&model,mesh_idx,&draw_setup);
+	model_create_draw_normals(&model,mesh_idx,&draw_setup,TRUE);
 }
 
 /* =======================================================

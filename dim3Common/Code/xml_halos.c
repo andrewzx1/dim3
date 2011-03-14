@@ -26,7 +26,12 @@ and can be sold or given away.
 *********************************************************************/
 
 #ifdef D3_PCH
-	#include "dim3engine.h"
+	#ifdef D3_ENGINE
+		#include "dim3engine.h"
+	#endif
+	#ifdef D3_SETUP
+		#include "dim3Setup.h"
+	#endif
 #endif
 
 #include "lights.h"

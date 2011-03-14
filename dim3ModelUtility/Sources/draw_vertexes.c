@@ -38,7 +38,7 @@ and can be sold or given away.
 void model_move_single_vertex(model_draw_setup *draw_setup,model_vertex_type *vertex,float *px,float *py,float *pz)
 {
 	int						n;
-	float					bone_factor,resize,
+	float					bone_factor,resize,fx,fy,fz,
 							majx,majz,majy,minx,minz,miny;
 	model_draw_bone_type	*major_bone,*minor_bone;
 
@@ -58,11 +58,13 @@ void model_move_single_vertex(model_draw_setup *draw_setup,model_vertex_type *ve
 
 	resize=draw_setup->alter_bones[n].resize;
 	
-	majx=vertex->major_dist.x*resize;
-	majy=vertex->major_dist.y*resize;
-	majz=vertex->major_dist.z*resize;
+	fx=vertex->major_dist.x*resize;
+	fy=vertex->major_dist.y*resize;
+	fz=vertex->major_dist.z*resize;
 	
-	matrix_vertex_multiply(&major_bone->rot_mat,&majx,&majy,&majz);
+	majx=(fx*major_bone->rot_mat.data[0][0])+(fy*major_bone->rot_mat.data[0][1])+(fz*major_bone->rot_mat.data[0][2]);
+	majy=(fx*major_bone->rot_mat.data[1][0])+(fy*major_bone->rot_mat.data[1][1])+(fz*major_bone->rot_mat.data[1][2]);
+	majz=(fx*major_bone->rot_mat.data[2][0])+(fy*major_bone->rot_mat.data[2][1])+(fz*major_bone->rot_mat.data[2][2]);
 	
 	majx+=major_bone->fpnt.x;
 	majy+=major_bone->fpnt.y;
@@ -86,11 +88,13 @@ void model_move_single_vertex(model_draw_setup *draw_setup,model_vertex_type *ve
 		
 	resize=draw_setup->alter_bones[n].resize;
 
-	minx=vertex->minor_dist.x*resize;
-	miny=vertex->minor_dist.y*resize;
-	minz=vertex->minor_dist.z*resize;
+	fx=vertex->minor_dist.x*resize;
+	fy=vertex->minor_dist.y*resize;
+	fz=vertex->minor_dist.z*resize;
 	
-	matrix_vertex_multiply(&minor_bone->rot_mat,&minx,&miny,&minz);
+	minx=(fx*minor_bone->rot_mat.data[0][0])+(fy*minor_bone->rot_mat.data[0][1])+(fz*minor_bone->rot_mat.data[0][2]);
+	miny=(fx*minor_bone->rot_mat.data[1][0])+(fy*minor_bone->rot_mat.data[1][1])+(fz*minor_bone->rot_mat.data[1][2]);
+	minz=(fx*minor_bone->rot_mat.data[2][0])+(fy*minor_bone->rot_mat.data[2][1])+(fz*minor_bone->rot_mat.data[2][2]);
 	
 	minx+=minor_bone->fpnt.x;
 	miny+=minor_bone->fpnt.y;
@@ -149,15 +153,15 @@ void model_create_draw_vertexes_normal(model_type *model,int mesh_idx,model_draw
 	for (n=0;n!=nvertex;n++) {
 
 		model_move_single_vertex(draw_setup,vertex,&x,&y,&z);
-		matrix_vertex_multiply(&sway_mat,&x,&y,&z);
+		matrix_vertex_multiply_ignore_transform(&sway_mat,&x,&y,&z);
 		
 		x-=cx;
 		y-=cy;
 		z-=cz;
 		
-		matrix_vertex_multiply(&rot_x_mat,&x,&y,&z);
-		matrix_vertex_multiply(&rot_z_mat,&x,&y,&z);
-		matrix_vertex_multiply(&rot_y_mat,&x,&y,&z);
+		matrix_vertex_multiply_ignore_transform(&rot_x_mat,&x,&y,&z);
+		matrix_vertex_multiply_ignore_transform(&rot_z_mat,&x,&y,&z);
+		matrix_vertex_multiply_ignore_transform(&rot_y_mat,&x,&y,&z);
 
 		*pv++=x+mov_x;
 		*pv++=y+mov_y;
@@ -205,13 +209,13 @@ void model_create_draw_vertexes_no_xzrot(model_type *model,int mesh_idx,model_dr
 	for (n=0;n!=nvertex;n++) {
 
 		model_move_single_vertex(draw_setup,vertex,&x,&y,&z);
-		matrix_vertex_multiply(&sway_mat,&x,&y,&z);
+		matrix_vertex_multiply_ignore_transform(&sway_mat,&x,&y,&z);
 		
 		x-=cx;
 		y-=cy;
 		z-=cz;
 		
-		matrix_vertex_multiply(&rot_y_mat,&x,&y,&z);
+		matrix_vertex_multiply_ignore_transform(&rot_y_mat,&x,&y,&z);
 
 		*pv++=x+mov_x;
 		*pv++=y+mov_y;
@@ -262,9 +266,9 @@ void model_create_draw_vertexes_no_sway(model_type *model,int mesh_idx,model_dra
 		y-=cy;
 		z-=cz;
 		
-		matrix_vertex_multiply(&rot_x_mat,&x,&y,&z);
-		matrix_vertex_multiply(&rot_z_mat,&x,&y,&z);
-		matrix_vertex_multiply(&rot_y_mat,&x,&y,&z);
+		matrix_vertex_multiply_ignore_transform(&rot_x_mat,&x,&y,&z);
+		matrix_vertex_multiply_ignore_transform(&rot_z_mat,&x,&y,&z);
+		matrix_vertex_multiply_ignore_transform(&rot_y_mat,&x,&y,&z);
 
 		*pv++=x+mov_x;
 		*pv++=y+mov_y;
@@ -313,7 +317,7 @@ void model_create_draw_vertexes_no_sway_xzrot(model_type *model,int mesh_idx,mod
 		y-=cy;
 		z-=cz;
 		
-		matrix_vertex_multiply(&rot_y_mat,&x,&y,&z);
+		matrix_vertex_multiply_ignore_transform(&rot_y_mat,&x,&y,&z);
 
 		*pv++=x+mov_x;
 		*pv++=y+mov_y;
@@ -350,9 +354,9 @@ void model_create_draw_vertexes_no_sway_center_move(model_type *model,int mesh_i
 
 		model_move_single_vertex(draw_setup,vertex,&x,&y,&z);
 		
-		matrix_vertex_multiply(&rot_x_mat,&x,&y,&z);
-		matrix_vertex_multiply(&rot_z_mat,&x,&y,&z);
-		matrix_vertex_multiply(&rot_y_mat,&x,&y,&z);
+		matrix_vertex_multiply_ignore_transform(&rot_x_mat,&x,&y,&z);
+		matrix_vertex_multiply_ignore_transform(&rot_z_mat,&x,&y,&z);
+		matrix_vertex_multiply_ignore_transform(&rot_y_mat,&x,&y,&z);
 
 		*pv++=x;
 		*pv++=y;
@@ -387,7 +391,7 @@ void model_create_draw_vertexes_no_sway_center_move_xzrot(model_type *model,int 
 
 		model_move_single_vertex(draw_setup,vertex,&x,&y,&z);
 		
-		matrix_vertex_multiply(&rot_y_mat,&x,&y,&z);
+		matrix_vertex_multiply_ignore_transform(&rot_y_mat,&x,&y,&z);
 
 		*pv++=x;
 		*pv++=y;
@@ -486,15 +490,15 @@ void model_create_draw_2D_vertexes(model_type *model,int mesh_idx,model_draw_set
 		for (n=0;n!=nvertex;n++) {
 
 			model_move_single_vertex(draw_setup,vertex,&x,&y,&z);
-			matrix_vertex_multiply(&sway_mat,&x,&y,&z);
+			matrix_vertex_multiply_ignore_transform(&sway_mat,&x,&y,&z);
 			
 			x-=cx;
 			y-=cy;
 			z-=cz;
 			
-			matrix_vertex_multiply(&rot_x_mat,&x,&y,&z);
-			matrix_vertex_multiply(&rot_z_mat,&x,&y,&z);
-			matrix_vertex_multiply(&rot_y_mat,&x,&y,&z);
+			matrix_vertex_multiply_ignore_transform(&rot_x_mat,&x,&y,&z);
+			matrix_vertex_multiply_ignore_transform(&rot_z_mat,&x,&y,&z);
+			matrix_vertex_multiply_ignore_transform(&rot_y_mat,&x,&y,&z);
 
 			*pv++=((x+mov_x)*x_resize);
 			*pv++=((y+mov_y)*y_resize);
@@ -519,9 +523,9 @@ void model_create_draw_2D_vertexes(model_type *model,int mesh_idx,model_draw_set
 			y-=cy;
 			z-=cz;
 			
-			matrix_vertex_multiply(&rot_x_mat,&x,&y,&z);
-			matrix_vertex_multiply(&rot_z_mat,&x,&y,&z);
-			matrix_vertex_multiply(&rot_y_mat,&x,&y,&z);
+			matrix_vertex_multiply_ignore_transform(&rot_x_mat,&x,&y,&z);
+			matrix_vertex_multiply_ignore_transform(&rot_z_mat,&x,&y,&z);
+			matrix_vertex_multiply_ignore_transform(&rot_y_mat,&x,&y,&z);
 
 			*pv++=((x+mov_x)*x_resize);
 			*pv++=((y+mov_y)*y_resize);
@@ -536,9 +540,9 @@ void model_create_draw_2D_vertexes(model_type *model,int mesh_idx,model_draw_set
 
 		model_move_single_vertex(draw_setup,vertex,&x,&y,&z);
 		
-		matrix_vertex_multiply(&rot_x_mat,&x,&y,&z);
-		matrix_vertex_multiply(&rot_z_mat,&x,&y,&z);
-		matrix_vertex_multiply(&rot_y_mat,&x,&y,&z);
+		matrix_vertex_multiply_ignore_transform(&rot_x_mat,&x,&y,&z);
+		matrix_vertex_multiply_ignore_transform(&rot_z_mat,&x,&y,&z);
+		matrix_vertex_multiply_ignore_transform(&rot_y_mat,&x,&y,&z);
 
 		*pv++=((x+mov_x)*x_resize);
 		*pv++=((y+mov_y)*y_resize);

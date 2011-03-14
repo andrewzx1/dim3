@@ -32,7 +32,7 @@ and can be sold or given away.
 #include "inputs.h"
 #include "timing.h"
 
-extern hud_type				hud;
+extern iface_type			iface;
 extern setup_type			setup;
 
 int							mouse_tick;
@@ -242,8 +242,8 @@ void input_gui_set_mouse(int x,int y)
 	
 		// center to window
 		
-	mouse_gui_pnt.x=hud.scale_x>>1;
-	mouse_gui_pnt.y=hud.scale_y>>1;
+	mouse_gui_pnt.x=iface.scale_x>>1;
+	mouse_gui_pnt.y=iface.scale_y>>1;
 }
 
 void input_gui_get_mouse_position(int *x,int *y)
@@ -252,13 +252,13 @@ void input_gui_get_mouse_position(int *x,int *y)
 	mouse_motion.x=0;
 
 	if (mouse_gui_pnt.x<0) mouse_gui_pnt.x=0;
-	if (mouse_gui_pnt.x>=hud.scale_x) mouse_gui_pnt.x=hud.scale_x-1;
+	if (mouse_gui_pnt.x>=iface.scale_x) mouse_gui_pnt.x=iface.scale_x-1;
 	
 	mouse_gui_pnt.y+=mouse_motion.y;
 	mouse_motion.y=0;
 
 	if (mouse_gui_pnt.y<0) mouse_gui_pnt.y=0;
-	if (mouse_gui_pnt.y>=hud.scale_y) mouse_gui_pnt.y=hud.scale_y-1;
+	if (mouse_gui_pnt.y>=iface.scale_y) mouse_gui_pnt.y=iface.scale_y-1;
 	
 	*x=mouse_gui_pnt.x;
 	*y=mouse_gui_pnt.y;

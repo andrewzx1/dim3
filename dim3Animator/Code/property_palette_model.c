@@ -56,7 +56,7 @@ and can be sold or given away.
 #define kModelPropertyRigidBodyZResetFact		13
 #define kModelPropertyRigidBodyZSmoothFact		14
 
-#define kModelPropertyUIAmbient					15
+#define kModelPropertyUIMinDiffuse				15
 #define kModelPropertyUIDiffuseVector			16
 
 #define kModelPropertyImportScale				17
@@ -125,7 +125,7 @@ void property_palette_fill_model(void)
 	list_palette_add_string_float(&property_palette,kModelPropertyRigidBodyZSmoothFact,"Z Smooth Fact",model.rigid_body.z.smooth_factor,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Model UI");
-	list_palette_add_pick_color(&property_palette,kModelPropertyUIAmbient,"Ambient",&model.ui.ambient,FALSE);
+	list_palette_add_string_float(&property_palette,kModelPropertyUIMinDiffuse,"Minimum Diffuse",model.ui.min_diffuse,FALSE);
 	list_palette_add_vector(&property_palette,kModelPropertyUIDiffuseVector,"Diffuse Vector",&model.ui.diffuse_vct,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Model Import");
@@ -228,8 +228,8 @@ void property_palette_click_model(int id)
 			dialog_property_string_run(list_string_value_positive_float,(void*)&model.rigid_body.z.smooth_factor,0,0,0);
 			break;
 
-		case kModelPropertyUIAmbient:
-			os_pick_color(&model.ui.ambient);
+		case kModelPropertyUIMinDiffuse:
+			dialog_property_string_run(list_string_value_positive_float,(void*)&model.ui.min_diffuse,0,0,0);
 			break;
 
 		case kModelPropertyUIDiffuseVector:
