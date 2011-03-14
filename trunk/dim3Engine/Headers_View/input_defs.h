@@ -336,14 +336,3 @@ typedef struct		{
 						input_action_item_type  items[input_max_action_item];
 						bool					still_down;
 					} input_action_type;
-
-//
-// UI display structures
-//
-
-typedef struct		{
-						char					display_name[name_str_len];
-						bool					show;
-					} action_display_type;
-
-

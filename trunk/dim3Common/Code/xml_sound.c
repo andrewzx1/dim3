@@ -37,6 +37,7 @@ and can be sold or given away.
 #include "sounds.h"
 #include "xmls.h"
 
+extern iface_type				iface;
 extern setup_type				setup;
 
 /* =======================================================
@@ -44,51 +45,4 @@ extern setup_type				setup;
       Read Sound XML
       
 ======================================================= */
-
-void read_settings_sound(void)
-{
-	int					sounds_head_tag,sound_tag,tag,
-						min_dist,max_dist;
-	char				name[name_str_len],filename[file_str_len],
-						path[1024],wave_path[1024];
-	
-		// read in sound from setting files
-		
-	file_paths_data(&setup.file_path_setup,path,"Settings","Sounds","xml");
-	if (!xml_open_file(path)) return;
-	
-		// decode the file
-      
-    sounds_head_tag=xml_findrootchild("Sounds");
-    if (sounds_head_tag!=-1) {
-	
-		sound_tag=xml_findfirstchild("Sound",sounds_head_tag);
-		
-		while (sound_tag!=-1) {
-			xml_get_attribute_text(sound_tag,"name",name,name_str_len);
-			
-			filename[0]=0x0;
-			min_dist=max_dist=0;
-			
-			tag=xml_findfirstchild("Wave",sound_tag);
-			if (tag!=-1) {
-				xml_get_attribute_text(tag,"file",filename,file_str_len);
-			}
-			
-			tag=xml_findfirstchild("Distance",sound_tag);
-			if (tag!=-1) {
-				min_dist=xml_get_attribute_int(tag,"min");
-				max_dist=xml_get_attribute_int(tag,"max");
-			}
-			
-			file_paths_data(&setup.file_path_setup,wave_path,"Sounds",filename,"wav");
-			
-			al_open_buffer(name,wave_path,min_dist,max_dist);
-
-			sound_tag=xml_findnextchild(sound_tag);
-		}
-	}
-	
-	xml_close_file();
-}
 

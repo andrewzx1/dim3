@@ -35,8 +35,7 @@ int							key_define_code[input_max_keyboard]=key_codes,
 							mouse_button_define_code[input_max_mouse_button]=mouse_button_codes;
 char						key_define_str[input_max_keyboard][32]=key_names,
 							mouse_button_define_str[input_max_mouse_button][32]=mouse_button_names,
-							joystick_button_define_str[input_max_joystick_button][32]=joystick_button_names,
-							control_names_str[][32]=control_names;
+							joystick_button_define_str[input_max_joystick_button][32]=joystick_button_names;
 bool						input_app_active_flag,input_key_set_skip_flag[input_max_keyboard];
 												
 input_action_type			input_actions[256];
@@ -44,6 +43,7 @@ input_action_type			input_actions[256];
 SDL_Joystick				*input_joy;
 
 extern bool					game_loop_quit;
+extern char					control_names_str[][32];
 extern setup_type			setup;
 
 #ifndef D3_SDL_1_3

@@ -334,6 +334,7 @@ bool view_initialize(char *err_str)
 		// read in the sounds
 		
 	read_settings_sound();
+	al_load_all_xml_sounds();
 	
 		// connect the input
 		
