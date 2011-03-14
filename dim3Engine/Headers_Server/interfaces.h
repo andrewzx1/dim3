@@ -158,6 +158,25 @@ extern void network_draw(void);
 extern void radar_draw(void);
 
 //
+// menus
+//
+
+extern int menu_add(char *name);
+extern void menu_add_item(int menu_idx,int item_id,char *data,char *sub_menu,bool multiplayer_disable,bool quit);
+
+//
+// choosers
+//
+
+extern int chooser_find(char *name);
+extern int chooser_add(char *name);
+extern void chooser_copy_template(int idx,int template_idx);
+extern void chooser_add_text(int chooser_idx,int template_idx,int id,char *str,int x,int y,int size,int just,bool clickable,char *goto_name);
+extern void chooser_add_item(int chooser_idx,int template_idx,int id,char *file,int x,int y,int wid,int high,bool clickable,char *goto_name);
+extern void chooser_add_model(int chooser_idx,int template_idx,int id,char *model_name,char *animate_name,int x,int y,d3ang *rot,float resize,bool clickable,char *goto_name);
+extern void chooser_add_button(int chooser_idx,int template_idx,int id,char *name,int x,int y,int wid,int high,char *goto_name);
+
+//
 // crosshairs
 //
 

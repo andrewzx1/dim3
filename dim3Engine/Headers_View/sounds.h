@@ -38,6 +38,8 @@ extern void al_set_volume(float sound_volume);
 extern int al_open_buffer(char *name,char *path,int min_dist,int max_dist);
 extern void al_close_buffer(int buffer_idx);
 extern void al_close_all_buffers(void);
+extern void al_load_all_xml_sounds(void);
+
 extern int al_find_buffer(char *name);
 extern int al_get_buffer_max_dist(int buffer_idx);
 

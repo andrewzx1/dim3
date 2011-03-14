@@ -228,6 +228,10 @@ typedef struct		{
 #define max_net_game							32
 #define max_net_option							32
 
+#define max_action								128
+#define max_sound								128
+#define max_user_shader							128
+
 //
 // text specials
 //
@@ -562,13 +566,55 @@ typedef struct		{
 						int						port;
 						char					host[64],url[256];
 					} hud_net_news_type;
-					
+
+//
+// actions
+//
+
+typedef struct		{
+						char							display_name[name_str_len];
+						bool							show;
+					} iface_action_display_type;
+
+typedef struct		{
+						iface_action_display_type		*action_displays;
+					} iface_action_display_list;
+
+//
+// sounds
+//
+
+typedef struct		{
+						int								min_dist,max_dist;
+						char							name[name_str_len],file_name[file_str_len];
+					} iface_sound_type;
+
+typedef struct		{
+						int								nsound;
+						iface_sound_type				*sounds;
+					} iface_sound_list;
+
+//
+// user shaders
+//
+
+typedef struct		{
+						char							name[name_str_len],
+														vert_file_name[file_str_len],
+														frag_file_name[file_str_len];
+					} iface_user_shader_type;
+
+typedef struct		{
+						int								nuser_shader;
+						iface_user_shader_type			*user_shaders;
+					} iface_user_shader_list;
+
 //
 // HUD counts
 //
 
 typedef struct		{
-						int						bitmap,text,bar,menu,chooser;
+						int								bitmap,text,bar,menu,chooser;
 					} hud_count_type;
 					
 //
@@ -576,31 +622,34 @@ typedef struct		{
 //
  
 typedef struct		{
-						int						scale_x,scale_y;
-						char					project_name[name_str_len],
-												click_sound[name_str_len],
-												intro_music[name_str_len];
-						bool					debug,skill;
-						hud_count_type			count;
-						hud_color_type			color;
-						hud_font_type			font;
-						hud_progress_type		progress;
-						hud_intro_type			intro;
-						hud_fade_type			fade;
-						hud_bitmap_type			*bitmaps;
-						hud_text_type			*texts;
-						hud_bar_type			*bars;
-						menu_type				*menus;
-						chooser_type			*choosers;
-						hud_radar_type			radar;
-						hud_chat_type			chat;
-						hud_score_type			score;
-						hud_character_type		character;
-						hud_simple_save_list	simple_save_list;
-						hud_net_bots_type		net_bot;
-						hud_net_games_type		net_game;
-						hud_net_options_type	net_option;
-						hud_net_news_type		net_news;
+						int								scale_x,scale_y;
+						char							project_name[name_str_len],
+														click_sound[name_str_len],
+														intro_music[name_str_len];
+						bool							debug,skill;
+						hud_count_type					count;
+						hud_color_type					color;
+						hud_font_type					font;
+						hud_progress_type				progress;
+						hud_intro_type					intro;
+						hud_fade_type					fade;
+						hud_bitmap_type					*bitmaps;
+						hud_text_type					*texts;
+						hud_bar_type					*bars;
+						menu_type						*menus;
+						chooser_type					*choosers;
+						hud_radar_type					radar;
+						hud_chat_type					chat;
+						hud_score_type					score;
+						hud_character_type				character;
+						hud_simple_save_list			simple_save_list;
+						iface_action_display_list		action_display_list;
+						iface_sound_list				sound_list;
+						iface_user_shader_list			user_shader_list;
+						hud_net_bots_type				net_bot;
+						hud_net_games_type				net_game;
+						hud_net_options_type			net_option;
+						hud_net_news_type				net_news;
 					} iface_type;
 					
 

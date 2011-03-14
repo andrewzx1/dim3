@@ -109,8 +109,6 @@ bool						setup_action_set_flag,
 							setup_in_game,setup_close_save_flag;
 setup_type					setup_backup;
 
-action_display_type			action_display[ncontrol];
-
 /* =======================================================
 
       Setup Panes
@@ -238,7 +236,7 @@ void setup_game_action_pane(void)
 	
 			// is item showing
 			
-		if (!action_display[n].show) continue;
+		if (!iface.action_display_list.action_displays[n].show) continue;
 		
 			// hook action index to control index
 			
@@ -246,7 +244,7 @@ void setup_game_action_pane(void)
 	
 			// action
 			
-		strcpy(setup_action_list[list_cnt],action_display[n].display_name);
+		strcpy(setup_action_list[list_cnt],iface.action_display_list.action_displays[n].display_name);
 		strcat(setup_action_list[list_cnt],"\t");
 		
 			// attachments
