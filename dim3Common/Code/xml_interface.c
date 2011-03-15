@@ -60,7 +60,7 @@ bool interface_initialize(void)
 		// initialize counts
 
 	iface.sound_list.nsound=0;
-	iface.user_shader_list.nuser_shader=0;
+	iface.shader_list.nshader=0;
 
 		// initialize pointers
 		
@@ -73,7 +73,7 @@ bool interface_initialize(void)
 
 	iface.action_display_list.action_displays=NULL;
 	iface.sound_list.sounds=NULL;
-	iface.user_shader_list.user_shaders=NULL;
+	iface.shader_list.shaders=NULL;
 
 		// hud pointers
 
@@ -101,8 +101,8 @@ bool interface_initialize(void)
 	iface.sound_list.sounds=(iface_sound_type*)malloc(max_sound*sizeof(iface_sound_type));
 	if (iface.sound_list.sounds==NULL) return(FALSE);
 
-	iface.user_shader_list.user_shaders=(iface_user_shader_type*)malloc(max_user_shader*sizeof(iface_user_shader_type));
-	if (iface.user_shader_list.user_shaders==NULL) return(FALSE);
+	iface.shader_list.shaders=(iface_shader_type*)malloc(max_user_shader*sizeof(iface_shader_type));
+	if (iface.shader_list.shaders==NULL) return(FALSE);
 	
 		// zero memory
 		
@@ -115,7 +115,7 @@ bool interface_initialize(void)
 
 	bzero(iface.action_display_list.action_displays,(max_action*sizeof(iface_action_display_type)));
 	bzero(iface.sound_list.sounds,(max_sound*sizeof(iface_sound_type)));
-	bzero(iface.user_shader_list.user_shaders,(max_user_shader*sizeof(iface_user_shader_type)));
+	bzero(iface.shader_list.shaders,(max_user_shader*sizeof(iface_shader_type)));
 
 	return(TRUE);
 }
@@ -133,7 +133,7 @@ void interface_shutdown(void)
 
 	if (iface.action_display_list.action_displays!=NULL) free(iface.action_display_list.action_displays);
 	if (iface.sound_list.sounds!=NULL) free(iface.sound_list.sounds);
-	if (iface.user_shader_list.user_shaders!=NULL) free(iface.user_shader_list.user_shaders);
+	if (iface.shader_list.shaders!=NULL) free(iface.shader_list.shaders);
 }
 
 /* =======================================================

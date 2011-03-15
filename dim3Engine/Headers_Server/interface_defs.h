@@ -595,19 +595,19 @@ typedef struct		{
 					} iface_sound_list;
 
 //
-// user shaders
+// shaders
 //
 
 typedef struct		{
 						char							name[name_str_len],
-														vert_file_name[file_str_len],
-														frag_file_name[file_str_len];
-					} iface_user_shader_type;
+														vert_name[file_str_len],
+														frag_name[file_str_len];
+					} iface_shader_type;
 
 typedef struct		{
-						int								nuser_shader;
-						iface_user_shader_type			*user_shaders;
-					} iface_user_shader_list;
+						int								nshader;
+						iface_shader_type				*shaders;
+					} iface_shader_list;
 
 //
 // HUD counts
@@ -645,7 +645,7 @@ typedef struct		{
 						hud_simple_save_list			simple_save_list;
 						iface_action_display_list		action_display_list;
 						iface_sound_list				sound_list;
-						iface_user_shader_list			user_shader_list;
+						iface_shader_list				shader_list;
 						hud_net_bots_type				net_bot;
 						hud_net_games_type				net_game;
 						hud_net_options_type			net_option;

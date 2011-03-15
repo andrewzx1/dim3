@@ -347,14 +347,14 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>37</integer>
+									<integer>30</integer>
 									<integer>28</integer>
 									<integer>11</integer>
 									<integer>0</integer>
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-							<string>{{0, 153}, {288, 816}}</string>
+							<string>{{0, 17}, {288, 816}}</string>
 						</dict>
 						<key>PBXTopSmartGroupGIDs</key>
 						<array/>
@@ -408,14 +408,14 @@
 							<key>GeometryConfiguration</key>
 							<dict>
 								<key>Frame</key>
-								<string>{{0, 0}, {0, 623}}</string>
+								<string>{{0, 0}, {0, 618}}</string>
 								<key>RubberWindowFrame</key>
 								<string>224 145 310 875 0 0 1680 1028 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
 							<key>Proportion</key>
-							<string>623pt</string>
+							<string>618pt</string>
 						</dict>
 						<dict>
 							<key>ContentConfiguration</key>
@@ -428,14 +428,14 @@
 							<key>GeometryConfiguration</key>
 							<dict>
 								<key>Frame</key>
-								<string>{{0, 628}, {0, 206}}</string>
+								<string>{{0, 623}, {0, 211}}</string>
 								<key>RubberWindowFrame</key>
 								<string>224 145 310 875 0 0 1680 1028 </string>
 							</dict>
 							<key>Module</key>
 							<string>XCDetailModule</string>
 							<key>Proportion</key>
-							<string>206pt</string>
+							<string>211pt</string>
 						</dict>
 					</array>
 					<key>Proportion</key>
@@ -454,9 +454,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>26F12E2B132D905B00A6E150</string>
+				<string>268C3729132F17920097F588</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>26F12E2C132D905B00A6E150</string>
+				<string>268C372A132F17920097F588</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -577,7 +577,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>321753287.18233198</real>
+	<real>321853330.02536601</real>
 	<key>ToolbarConfigUserDefaultsMinorVersion</key>
 	<string>2</string>
 	<key>ToolbarDisplayMode</key>
@@ -594,9 +594,6 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>26F12E3C132D90C700A6E150</string>
-		<string>26F12E3D132D90C700A6E150</string>
-		<string>26F12E3E132D90C700A6E150</string>
 		<string>269FEDEC132860330030B0B5</string>
 		<string>/Users/ggadwa/dim3Code/dim3Setup/dim3Setup.xcodeproj</string>
 	</array>
@@ -639,6 +636,8 @@
 							<string>0pt</string>
 						</dict>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -678,7 +677,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>269FEDEC132860330030B0B5</string>
-				<string>26F12E30132D905B00A6E150</string>
+				<string>268C3726132F177E0097F588</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>

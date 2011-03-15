@@ -59,8 +59,6 @@ and can be sold or given away.
 #define gl_core_model_shader_fog_light_bump					10
 #define gl_core_model_shader_fog_light_bump_spec			11
 
-#define max_user_shader										64
-
 #define gl_shader_core_index								1000
 
 //
