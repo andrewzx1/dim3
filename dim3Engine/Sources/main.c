@@ -33,6 +33,7 @@ and can be sold or given away.
 	#include <mach-o/arch.h>
 #endif
 
+#include "interface.h"
 #include "xmls.h"
 
 int							os_vers_major,os_vers_minor_1,os_vers_minor_2;
@@ -43,8 +44,6 @@ bool						game_app_active,game_loop_quit;
 
 extern setup_type			setup;
 
-extern bool app_start(char *err_str);
-extern void app_end(void);
 extern bool loop_main(char *err_str);
 
 /* =======================================================

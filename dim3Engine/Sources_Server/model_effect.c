@@ -29,12 +29,11 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
+#include "interface.h"
 #include "objects.h"
 #include "models.h"
-#include "effects.h"
 #include "sounds.h"
 #include "network.h"
-#include "consoles.h"
 #include "video.h"
 
 extern server_type				server;

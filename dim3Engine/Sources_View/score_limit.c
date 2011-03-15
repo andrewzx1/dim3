@@ -31,10 +31,10 @@ and can be sold or given away.
 
 #define SCORE_LIMIT_EXTRA_SECOND_FAIL	5
 
+#include "interface.h"
 #include "objects.h"
 #include "remotes.h"
 #include "scripts.h"
-#include "interfaces.h"
 #include "video.h"
 #include "inputs.h"
 #include "network.h"

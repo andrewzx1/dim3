@@ -29,6 +29,7 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
+#include "interface.h"
 #include "scripts.h"
 
 extern map_type				map;
@@ -37,9 +38,6 @@ extern iface_type			iface;
 extern js_type				js;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
-
-extern void map_set_ambient(char *name,float pitch);
-extern void map_clear_ambient(void);
 
 JSValueRef js_map_setting_get_scale(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_map_setting_get_gravity(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);

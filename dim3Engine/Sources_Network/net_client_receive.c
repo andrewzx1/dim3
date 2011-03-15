@@ -29,9 +29,9 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
+#include "interface.h"
 #include "objects.h"
 #include "remotes.h"
-#include "interfaces.h"
 #include "network.h"
 
 extern map_type				map;

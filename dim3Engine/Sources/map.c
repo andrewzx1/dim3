@@ -29,6 +29,7 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
+#include "interface.h"
 #include "scripts.h"
 #include "objects.h"
 #include "remotes.h"
@@ -36,10 +37,6 @@ and can be sold or given away.
 #include "projectiles.h"
 #include "scenery.h"
 #include "models.h"
-#include "cameras.h"
-#include "effects.h"
-#include "consoles.h"
-#include "interfaces.h"
 #include "sounds.h"
 #include "inputs.h"
 #include "video.h"
@@ -56,10 +53,6 @@ char						current_map_name[name_str_len];
 
 extern void game_time_pause_start(void);
 extern void game_time_pause_end(void);
-extern void map_clear_changes(void);
-extern void map_start_ambient(void);
-extern void map_set_ambient(char *name,float pitch);
-extern void map_end_ambient(void);
 extern bool gl_check_shader_ok(void);
 extern void map_movements_initialize(void);
 extern void view_draw_fade_start(void);
@@ -71,7 +64,6 @@ extern bool render_transparent_create_sort_list(void);
 extern void render_transparent_dispose_sort_list(void);
 extern void map_multiplayer_show_hide_meshes(void);
 extern void view_visibility_check_calculate(void);
-extern void view_clear_fps(void);
 
 /* =======================================================
 

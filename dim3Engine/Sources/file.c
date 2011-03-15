@@ -29,12 +29,11 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
+#include "interface.h"
 #include "objects.h"
 #include "weapons.h"
 #include "projectiles.h"
-#include "effects.h"
 #include "scripts.h"
-#include "interfaces.h"
 #include "models.h"
 #include "inputs.h"
 #include "video.h"
@@ -61,7 +60,6 @@ extern void view_capture_draw(char *path);
 extern void group_moves_synch_with_load(void);
 extern void view_draw_fade_cancel(void);
 extern void view_game_reset_timing(void);
-extern void view_clear_fps(void);
 extern void rain_reset(void);
 
 /* =======================================================

@@ -29,8 +29,8 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
+#include "interface.h"
 #include "scripts.h"
-#include "cameras.h"
 
 extern camera_type		camera;
 extern view_type		view;

@@ -34,7 +34,7 @@ and can be sold or given away.
 	#endif
 #endif
 
-#include "interfaces.h"
+#include "interface.h"
 #include "xmls.h"
 
 extern server_type			server;

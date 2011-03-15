@@ -29,10 +29,9 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
-#include "interfaces.h"
+#include "interface.h"
 #include "video.h"
 #include "inputs.h"
-#include "consoles.h"
 
 #define max_file_count					256
 

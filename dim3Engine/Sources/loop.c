@@ -29,12 +29,11 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
+#include "interface.h"
 #include "remotes.h"
 #include "network.h"
-#include "interfaces.h"
 #include "inputs.h"
 #include "video.h"
-#include "consoles.h"
 #include "timing.h"
 
 extern bool					game_app_active;
@@ -44,21 +43,6 @@ extern server_type			server;
 extern view_type			view;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
-
-extern bool server_initialize(char *err_str);
-extern void server_shutdown(void);
-extern void server_loop(void);
-extern bool view_initialize(char *err_str);
-extern void view_shutdown(void);
-extern void view_loop_input(void);
-extern void view_run(void);
-extern void view_loop_draw(void);
-extern void view_loop_draw_dedicated_host(void);
-extern void map_clear_changes(void);
-extern bool map_need_rebuild(void);
-extern bool map_rebuild_changes(char *err_str);
-extern void view_clear_fps(void);
-extern void view_calculate_fps(void);
 
 /* =======================================================
 

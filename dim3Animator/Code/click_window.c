@@ -36,10 +36,6 @@ extern model_type				model;
 extern model_draw_setup			draw_setup;
 extern animator_state_type		state;
 
-extern void draw_model_bones_get_handle_rot(int bone_idx,d3ang *rot);
-extern float draw_model_bones_drag_handle_offset(void);
-extern void draw_model_bones_drag_handle_calc(d3fpnt *bone_pnt,d3vct *vct,d3ang *ang,d3fpnt *hand_pnt);
-
 // supergumba -- this code repeats draw setups and only uses the
 //               view picker for trig hits, fix all this
 
