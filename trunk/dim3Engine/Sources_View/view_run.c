@@ -29,14 +29,11 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
+#include "interface.h"
 #include "objects.h"
 #include "remotes.h"
 #include "weapons.h"
 #include "projectiles.h"
-#include "effects.h"
-#include "cameras.h"
-#include "consoles.h"
-#include "interfaces.h"
 #include "sounds.h"
 #include "timing.h"
 
@@ -49,8 +46,6 @@ extern void run_objects_animations(void);
 extern void ambient_add_map_sounds(void);
 extern void ambient_add_objects(void);
 extern void ambient_add_liquids(void);
-extern void map_set_ambient(char *name,float pitch);
-extern void map_clear_ambient(void);
 
 /* =======================================================
 

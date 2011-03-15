@@ -29,6 +29,7 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
+#include "interface.h"
 #include "network.h"
 #include "scripts.h"
 #include "objects.h"
@@ -37,8 +38,6 @@ and can be sold or given away.
 #include "projectiles.h"
 #include "models.h"
 #include "physics.h"
-#include "interfaces.h"
-#include "consoles.h"
 #include "video.h"
 
 extern map_type				map;

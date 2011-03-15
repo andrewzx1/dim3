@@ -29,6 +29,7 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
+#include "interface.h"
 #include "scripts.h"
 #include "objects.h"
 #include "weapons.h"
@@ -36,8 +37,6 @@ and can be sold or given away.
 #include "models.h"
 #include "video.h"
 #include "inputs.h"
-#include "interfaces.h"
-#include "consoles.h"
 #include "timing.h"
 
 extern int					os_vers_major,os_vers_minor_1,os_vers_minor_2;

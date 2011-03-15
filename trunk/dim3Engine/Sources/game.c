@@ -29,12 +29,10 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
+#include "interface.h"
 #include "network.h"
 #include "objects.h"
 #include "projectiles.h"
-#include "effects.h"
-#include "consoles.h"
-#include "interfaces.h"
 #include "scripts.h"
 
 extern map_type				map;
@@ -49,7 +47,6 @@ extern void server_game_stop(void);
 extern void view_game_start(void);
 extern void view_game_stop(void);
 extern void net_host_game_end(void);
-extern bool map_rebuild_changes(char *err_str);
 
 /* =======================================================
 

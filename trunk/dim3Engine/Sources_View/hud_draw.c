@@ -29,11 +29,9 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
+#include "interface.h"
 #include "objects.h"
 #include "remotes.h"
-#include "consoles.h"
-#include "interfaces.h"
-#include "effects.h"
 #include "video.h"
 #include "sounds.h"
 #include "timing.h"

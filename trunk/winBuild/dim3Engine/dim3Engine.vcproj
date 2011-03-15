@@ -266,6 +266,10 @@
 					RelativePath="..\..\dim3Engine\Headers\dim3engine.h"
 					>
 				</File>
+				<File
+					RelativePath="..\..\dim3Engine\Headers\interface.h"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="Engine Sources"
@@ -366,23 +370,7 @@
 				Name="Server Headers"
 				>
 				<File
-					RelativePath="..\..\dim3Engine\Headers_Server\cameras.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\dim3Engine\Headers_Server\consoles.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\dim3Engine\Headers_Server\effects.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\dim3Engine\Headers_Server\interface_defs.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\dim3Engine\Headers_Server\interfaces.h"
 					>
 				</File>
 				<File
@@ -2957,6 +2945,10 @@
 				Name="View Headers"
 				>
 				<File
+					RelativePath="..\..\dim3Engine\Headers_View\gui_defs.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\dim3Engine\Headers_View\input_defs.h"
 					>
 				</File>
@@ -3286,10 +3278,6 @@
 							PreprocessorDefinitions=""
 						/>
 					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\..\dim3Common\Code\xml_shaders.c"
-					>
 				</File>
 				<File
 					RelativePath="..\..\dim3Engine\Sources_View\zoom_draw.c"

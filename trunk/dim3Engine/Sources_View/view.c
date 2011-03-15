@@ -29,15 +29,12 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
+#include "interface.h"
 #include "objects.h"
 #include "remotes.h"
 #include "weapons.h"
 #include "projectiles.h"
 #include "lights.h"
-#include "effects.h"
-#include "cameras.h"
-#include "consoles.h"
-#include "interfaces.h"
 #include "xmls.h"
 #include "video.h"
 #include "sounds.h"
@@ -553,7 +550,7 @@ void view_loop_draw(void)
       
 ======================================================= */
 
-void view_loop_draw_dedicated_host(int tick)
+void view_loop_draw_dedicated_host(void)
 {
 	int				raw_tick;
 

@@ -29,7 +29,7 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
-#include "interfaces.h"
+#include "interface.h"
 #include "sounds.h"
 #include "inputs.h"
 #include "xmls.h"

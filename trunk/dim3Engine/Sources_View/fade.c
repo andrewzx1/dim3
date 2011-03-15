@@ -29,9 +29,8 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
-#include "consoles.h"
+#include "interface.h"
 #include "video.h"
-#include "interfaces.h"
 #include "timing.h"
 
 int							fade_screen_tick;

@@ -29,11 +29,11 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
+#include "interface.h"
 #include "scripts.h"
 #include "objects.h"
 #include "weapons.h"
 #include "projectiles.h"
-#include "interfaces.h"
 
 extern int group_find_by_index(char *name);
 

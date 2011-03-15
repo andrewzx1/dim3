@@ -29,7 +29,7 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
-#include "consoles.h"
+#include "interface.h"
 #include "inputs.h"
 
 int								console_mode,console_count;

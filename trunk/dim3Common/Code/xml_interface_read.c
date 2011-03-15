@@ -40,8 +40,8 @@ and can be sold or given away.
 	#endif
 #endif
 
+#include "interface.h"
 #include "xmls.h"
-#include "interfaces.h"
 
 extern iface_type				iface;
 extern setup_type				setup;
