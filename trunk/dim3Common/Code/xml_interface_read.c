@@ -1080,3 +1080,67 @@ void read_settings_sound(void)
 	xml_close_file();
 }
 
+/* =======================================================
+
+      Read Shader XML
+      
+======================================================= */
+
+void read_settings_shader(void)
+{
+	int						nshader,shaders_head_tag,shader_tag,tag;
+	char					path[1024];
+	iface_shader_type		*iface_shader;
+
+		// no marks yet
+
+	iface.shader_list.nshader=0;
+	
+		// read in interface from setting files
+		
+	file_paths_data(&setup.file_path_setup,path,"Settings","Shaders","xml");
+	if (!xml_open_file(path)) return;
+	
+		// get counts
+		
+    shaders_head_tag=xml_findrootchild("Shaders");
+    if (shaders_head_tag==-1) {
+		xml_close_file();
+		return;
+	}
+
+	nshader=xml_countchildren(shaders_head_tag);
+
+	if (nshader==0) {
+		xml_close_file();
+		return;
+	}
+
+		// read the shaders
+	
+	shader_tag=xml_findfirstchild("Shader",shaders_head_tag);
+	
+	while (shader_tag!=-1) {
+	
+		iface_shader=&iface.shader_list.shaders[iface.shader_list.nshader];
+		
+		xml_get_attribute_text(shader_tag,"name",iface_shader->name,name_str_len);
+		
+			// shader files
+			
+		tag=xml_findfirstchild("Code",shader_tag);
+		if (tag!=-1) {
+			xml_get_attribute_text(tag,"vert",iface_shader->vert_name,file_str_len);
+			xml_get_attribute_text(tag,"frag",iface_shader->frag_name,file_str_len);
+		}
+		
+			// move on to next shader
+			
+		iface.shader_list.nshader++;
+		
+		shader_tag=xml_findnextchild(shader_tag);
+	}
+	
+	xml_close_file();
+}
+

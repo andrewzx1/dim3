@@ -36,6 +36,7 @@ and can be sold or given away.
 
 extern map_type				map;
 extern view_type			view;
+extern iface_type			iface;
 extern setup_type			setup;
 
 int							nuser_shader;
@@ -90,11 +91,28 @@ bool gl_user_shader_initialize(char *err_str)
 	char					path[1024];
 	char					*vertex_data,*fragment_data;
 	bool					ok;
+	iface_shader_type		*iface_shader;
 	shader_type				*shader;
 
 		// shaders on?
 
 	if (!gl_check_shader_ok()) return(TRUE);
+	
+		// start the shaders from the setup list
+	
+	nuser_shader=iface.shader_list.nshader;
+	
+	iface_shader=iface.shader_list.shaders;
+	shader=user_shaders;
+
+	for (n=0;n!=nuser_shader;n++) {
+		strcpy(shader->name,iface_shader->name);
+		strcpy(shader->vertex_name,iface_shader->vert_name);
+		strcpy(shader->fragment_name,iface_shader->frag_name);
+		
+		iface_shader++;
+		shader++;
+	}
 
 		// clear the shaders
 
