@@ -41,7 +41,7 @@ extern setup_type			setup;
 shader_type					*gl_shader_current;
 
 extern int					nuser_shader;
-extern shader_type			user_shaders[max_user_shader];
+extern shader_type			user_shaders[max_iface_user_shader];
 
 extern float				light_shader_direction[7][3];
 

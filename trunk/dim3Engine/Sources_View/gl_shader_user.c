@@ -39,7 +39,7 @@ extern iface_type			iface;
 extern setup_type			setup;
 
 int							nuser_shader;
-shader_type					user_shaders[max_user_shader];
+shader_type					user_shaders[max_iface_user_shader];
 
 /* =======================================================
 

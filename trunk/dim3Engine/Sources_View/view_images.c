@@ -276,8 +276,8 @@ void view_images_cached_load(void)
 	halo_type			*halo;
 	mark_type			*mark;
 	crosshair_type		*crosshair;
-	particle_type		*particle;
-	ring_type			*ring;
+	iface_particle_type	*particle;
+	iface_ring_type		*ring;
     
 		// hud bitmaps
 
@@ -336,22 +336,22 @@ void view_images_cached_load(void)
 
 		// particles
 
-	for (n=0;n!=max_particle_list;n++) {
-		particle=server.particle_list.particles[n];
-		if (particle!=NULL) {
-			file_paths_data(&setup.file_path_setup,path,"Bitmaps/Particles",particle->bitmap_name,"png");
-			particle->image_idx=view_images_load_single(path,FALSE,FALSE);
-		}
+	particle=iface.particle_list.particles;
+
+	for (n=0;n!=iface.particle_list.nparticle;n++) {
+		file_paths_data(&setup.file_path_setup,path,"Bitmaps/Particles",particle->bitmap_name,"png");
+		particle->image_idx=view_images_load_single(path,FALSE,FALSE);
+		particle++;
 	}
 	
 		// rings
 
-	for (n=0;n!=max_ring_list;n++) {
-		ring=server.ring_list.rings[n];
-		if (ring!=NULL) {
-			file_paths_data(&setup.file_path_setup,path,"Bitmaps/Rings",ring->bitmap_name,"png");
-			ring->image_idx=view_images_load_single(path,FALSE,FALSE);
-		}
+	ring=iface.ring_list.rings;
+
+	for (n=0;n!=iface.ring_list.nring;n++) {
+		file_paths_data(&setup.file_path_setup,path,"Bitmaps/Rings",ring->bitmap_name,"png");
+		ring->image_idx=view_images_load_single(path,FALSE,FALSE);
+		ring++;
 	}
 
 		// remote bitmaps
@@ -373,8 +373,8 @@ void view_images_cached_free(void)
 	halo_type			*halo;
 	mark_type			*mark;
 	crosshair_type		*crosshair;
-	particle_type		*particle;
-	ring_type			*ring;
+	iface_particle_type	*particle;
+	iface_ring_type		*ring;
     
 		// hud bitmaps
 
@@ -425,16 +425,20 @@ void view_images_cached_free(void)
 
 		// particles
 
-	for (n=0;n!=max_particle_list;n++) {
-		particle=server.particle_list.particles[n];
-		if (particle!=NULL) view_images_free_single(particle->image_idx);
+	particle=iface.particle_list.particles;
+
+	for (n=0;n!=iface.particle_list.nparticle;n++) {
+		view_images_free_single(particle->image_idx);
+		particle++;
 	}
 	
 		// rings
 
-	for (n=0;n!=max_ring_list;n++) {
-		ring=server.ring_list.rings[n];
-		if (ring!=NULL) view_images_free_single(ring->image_idx);
+	ring=iface.ring_list.rings;
+
+	for (n=0;n!=iface.ring_list.nring;n++) {
+		view_images_free_single(ring->image_idx);
+		ring++;
 	}
 
 		// remote bitmaps

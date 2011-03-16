@@ -42,6 +42,7 @@ extern map_type				map;
 extern camera_type			camera;
 extern view_type			view;
 extern server_type			server;
+extern iface_type			iface;
 extern setup_type			setup;
 
 extern void particle_draw_position(effect_type *effect,int count,int *x,int *y,int *z);
@@ -192,8 +193,8 @@ bool model_shadow_inview(model_draw *draw)
 
 bool effect_inview(effect_type *effect,int count,d3pnt *center_pnt)
 {
-	int				x,y,z,lx,rx,tz,bz,ty,by,gravity_y,k,size;
-	particle_type	*particle;
+	int					x,y,z,lx,rx,tz,bz,ty,by,gravity_y,k,size;
+	iface_particle_type	*particle;
 	
 		// get box
 		
@@ -210,7 +211,7 @@ bool effect_inview(effect_type *effect,int count,d3pnt *center_pnt)
 			by=y;
 			ty=by-size;
 
-			particle=server.particle_list.particles[effect->data.particle.particle_idx];
+			particle=&iface.particle_list.particles[effect->data.particle.particle_idx];
 			gravity_y=(int)particle_get_gravity(particle,count);
 
 			if (gravity_y<0) {

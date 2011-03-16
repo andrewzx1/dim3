@@ -61,9 +61,21 @@ and can be sold or given away.
 #define max_net_game							32
 #define max_net_option							32
 
-#define max_action								128
-#define max_sound								128
-#define max_user_shader							128
+#define max_iface_particle						128
+#define max_iface_ring							64
+
+#define max_iface_action						128
+#define max_iface_sound							128
+#define max_iface_user_shader					128
+
+//
+// particles
+//
+
+#define max_particle_count						256
+#define max_particle_trail						16
+#define max_particle_variation					4
+#define max_particle_group						16
 
 //
 // text specials
@@ -401,6 +413,81 @@ typedef struct		{
 					} hud_net_news_type;
 
 //
+// generic animated image
+//
+
+typedef struct		{
+						int								image_count,image_per_row,msec;
+						bool							loop,loop_back;
+					} iface_image_animation_type;
+
+//
+// particles
+//
+
+typedef struct		{
+						int								shift;
+						char							name[name_str_len];
+					} iface_particle_group_piece_type;
+
+typedef struct		{
+						int								count;
+						bool							on;
+						iface_particle_group_piece_type	particles[max_particle_group];
+					} iface_particle_group_type;
+
+typedef struct		{
+						d3pnt							pt;
+						d3vct							vct;
+					} iface_particle_piece_type;
+
+typedef struct		{
+						int								image_idx,count,trail_count,
+														spread_offset,life_msec,
+														start_pixel_size,end_pixel_size,
+														current_variation_idx;
+						float							start_gravity,gravity_add,
+														start_alpha,end_alpha,reduce_pixel_fact,
+														trail_step,ambient_factor;
+						char							name[name_str_len],bitmap_name[name_str_len];
+						bool							reverse,blend_add,globe,team_tint;
+						d3pnt							pt;
+						d3ang							rot;
+						d3vct							vct,rot_accel;
+						d3col							start_color,end_color;
+						iface_image_animation_type		animate;
+						iface_particle_piece_type		pieces[max_particle_variation][max_particle_count];
+						iface_particle_group_type		group;
+					} iface_particle_type;
+
+typedef struct		{
+						int								nparticle;
+						iface_particle_type				*particles;
+					} iface_particle_list;
+
+//
+// rings
+//
+
+typedef struct		{
+						int								image_idx,life_msec,
+														start_outer_size,end_outer_size,
+														start_inner_size,end_inner_size;
+						float							start_alpha,end_alpha;
+						char							name[name_str_len],bitmap_name[name_str_len];
+						bool							blend_add,team_tint;
+						d3ang							ang,rot;
+						d3vct							vct,rot_accel;
+						d3col							start_color,end_color;
+						image_animation_type			animate;
+					} iface_ring_type;
+
+typedef struct		{
+						int								nring;
+						iface_ring_type					*rings;
+					} iface_ring_list;
+
+//
 // actions
 //
 
@@ -476,13 +563,15 @@ typedef struct		{
 						hud_score_type					score;
 						hud_character_type				character;
 						hud_simple_save_list			simple_save_list;
-						iface_action_display_list		action_display_list;
-						iface_sound_list				sound_list;
-						iface_shader_list				shader_list;
 						hud_net_bots_type				net_bot;
 						hud_net_games_type				net_game;
 						hud_net_options_type			net_option;
 						hud_net_news_type				net_news;
+						iface_particle_list				particle_list;
+						iface_ring_list					ring_list;
+						iface_action_display_list		action_display_list;
+						iface_sound_list				sound_list;
+						iface_shader_list				shader_list;
 					} iface_type;
 					
 

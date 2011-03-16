@@ -43,6 +43,7 @@ and can be sold or given away.
 #include "interface.h"
 #include "xmls.h"
 
+extern server_type				server;		// supergumba -- delete later
 extern iface_type				iface;
 extern setup_type				setup;
 extern network_setup_type		net_setup;
@@ -59,6 +60,8 @@ bool interface_initialize(void)
 {
 		// initialize counts
 
+	iface.particle_list.nparticle=0;
+	iface.ring_list.nring=0;
 	iface.sound_list.nsound=0;
 	iface.shader_list.nshader=0;
 
@@ -70,6 +73,9 @@ bool interface_initialize(void)
 	iface.menus=NULL;
 	iface.choosers=NULL;
 	iface.chat.lines=NULL;
+
+	iface.particle_list.particles=NULL;
+	iface.ring_list.rings=NULL;
 
 	iface.action_display_list.action_displays=NULL;
 	iface.sound_list.sounds=NULL;
@@ -95,13 +101,19 @@ bool interface_initialize(void)
 	iface.chat.lines=(hud_chat_line_type*)malloc(max_chat_lines*sizeof(hud_chat_line_type));
 	if (iface.chat.lines==NULL) return(FALSE);
 
-	iface.action_display_list.action_displays=(iface_action_display_type*)malloc(max_action*sizeof(iface_action_display_type));
+	iface.particle_list.particles=(iface_particle_type*)malloc(max_iface_particle*sizeof(iface_particle_type));
+	if (iface.particle_list.particles==NULL) return(FALSE);
+
+	iface.ring_list.rings=(iface_ring_type*)malloc(max_iface_ring*sizeof(iface_ring_type));
+	if (iface.ring_list.rings==NULL) return(FALSE);
+
+	iface.action_display_list.action_displays=(iface_action_display_type*)malloc(max_iface_action*sizeof(iface_action_display_type));
 	if (iface.action_display_list.action_displays==NULL) return(FALSE);
 
-	iface.sound_list.sounds=(iface_sound_type*)malloc(max_sound*sizeof(iface_sound_type));
+	iface.sound_list.sounds=(iface_sound_type*)malloc(max_iface_sound*sizeof(iface_sound_type));
 	if (iface.sound_list.sounds==NULL) return(FALSE);
 
-	iface.shader_list.shaders=(iface_shader_type*)malloc(max_user_shader*sizeof(iface_shader_type));
+	iface.shader_list.shaders=(iface_shader_type*)malloc(max_iface_user_shader*sizeof(iface_shader_type));
 	if (iface.shader_list.shaders==NULL) return(FALSE);
 	
 		// zero memory
@@ -113,9 +125,12 @@ bool interface_initialize(void)
 	bzero(iface.choosers,(max_chooser*sizeof(chooser_type)));
 	bzero(iface.chat.lines,(max_chat_lines*sizeof(hud_chat_line_type)));
 
-	bzero(iface.action_display_list.action_displays,(max_action*sizeof(iface_action_display_type)));
-	bzero(iface.sound_list.sounds,(max_sound*sizeof(iface_sound_type)));
-	bzero(iface.shader_list.shaders,(max_user_shader*sizeof(iface_shader_type)));
+	bzero(iface.particle_list.particles,(max_iface_particle*sizeof(iface_particle_type)));
+	bzero(iface.ring_list.rings,(max_iface_ring*sizeof(iface_ring_type)));
+
+	bzero(iface.action_display_list.action_displays,(max_iface_action*sizeof(iface_action_display_type)));
+	bzero(iface.sound_list.sounds,(max_iface_sound*sizeof(iface_sound_type)));
+	bzero(iface.shader_list.shaders,(max_iface_user_shader*sizeof(iface_shader_type)));
 
 	return(TRUE);
 }
@@ -130,6 +145,9 @@ void interface_shutdown(void)
 	if (iface.menus!=NULL) free(iface.menus);
 	if (iface.choosers!=NULL) free(iface.choosers);
 	if (iface.chat.lines!=NULL) free(iface.chat.lines);
+
+	if (iface.particle_list.particles!=NULL) free(iface.particle_list.particles);
+	if (iface.ring_list.rings!=NULL) free(iface.ring_list.rings);
 
 	if (iface.action_display_list.action_displays!=NULL) free(iface.action_display_list.action_displays);
 	if (iface.sound_list.sounds!=NULL) free(iface.sound_list.sounds);
