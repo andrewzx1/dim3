@@ -43,7 +43,7 @@ GLuint						fs_shader_fbo_id,fs_shader_fbo_depth_stencil_id,fs_shader_txt_id;
 int							fs_shader_idx,fs_shader_life_msec,fs_shader_start_tick;
 bool						fs_shader_on,fs_shader_init,fs_shader_active;
 
-extern shader_type			user_shaders[max_user_shader];
+extern shader_type			user_shaders[max_iface_user_shader];
 
 /* =======================================================
 

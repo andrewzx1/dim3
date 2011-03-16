@@ -37,8 +37,9 @@ and can be sold or given away.
 #include "video.h"
 
 extern map_type				map;
-extern server_type			server;
 extern view_type			view;
+extern server_type			server;
+extern iface_type			iface;
 extern setup_type			setup;
 
 /* =======================================================
@@ -50,11 +51,11 @@ extern setup_type			setup;
 void ring_draw_position(effect_type *effect,int count,int *x,int *y,int *z)
 {
 	float				m_tick;
-	ring_type			*ring;
+	iface_ring_type		*ring;
 	ring_effect_data	*eff_ring;
 	
 	eff_ring=&effect->data.ring;
-	ring=server.ring_list.rings[eff_ring->ring_idx];
+	ring=&iface.ring_list.rings[eff_ring->ring_idx];
 
 	m_tick=((float)count)/10.0f;
 	
@@ -80,12 +81,12 @@ void ring_draw(effect_type *effect,int count)
 	float					*vl,*vt,*vertex_ptr,*vertex_array,*coord_array;
 	double					rd,rd2;
 	d3col					col;
-	ring_type				*ring;
+	iface_ring_type			*ring;
 	ring_effect_data		*eff_ring;
 	matrix_type				mat_x,mat_y,mat_z;
 	
 	eff_ring=&effect->data.ring;
-	ring=server.ring_list.rings[eff_ring->ring_idx];
+	ring=&iface.ring_list.rings[eff_ring->ring_idx];
 	
 		// get size
 		

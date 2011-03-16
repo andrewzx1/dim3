@@ -88,8 +88,6 @@ bool server_initialize(char *err_str)
 		// initialize project settings
 		
 	hud_initialize();
-	particle_initialize_list();
-	ring_initialize_list();
 	halo_initialize_list();
 	mark_initialize_list();
 	crosshair_initialize_list();
@@ -122,8 +120,6 @@ void server_shutdown(void)
 	
 		// release memory
 	
-	particle_free_list();
-	ring_free_list();
 	halo_free_list();
 	mark_free_list();
 	crosshair_free_list();

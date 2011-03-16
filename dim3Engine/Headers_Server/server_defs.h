@@ -56,9 +56,6 @@ and can be sold or given away.
 #define max_effect_list							512
 #define max_decal_list							128
 
-#define max_particle_list						128
-#define max_ring_list							64
-
 #define max_halo_list							32
 #define max_mark_list							128
 #define max_crosshair_list						32
@@ -67,15 +64,7 @@ and can be sold or given away.
 // maximums
 //
 
-#define max_particle_count						256
-#define max_particle_trail						16
-#define max_particle_variation					4
-#define max_particle_group						16
-
 #define max_rain_density						5120
-
-#define max_object_bit_mask						32
-
 #define max_model_light_cache_index				8
 
 //
@@ -1086,81 +1075,15 @@ typedef struct		{
 					} server_time_type;
 
 //
-// generic image animation structure
+// misc settings structures
 //
 
+// supergumba -- remove later
 typedef struct		{
 						int								image_count,image_per_row,msec;
 						bool							loop,loop_back;
 					} image_animation_type;
-					
-//
-// particle structures
-//
 
-typedef struct		{
-						int								shift;
-						char							name[name_str_len];
-					} particle_group_particle_type;
-
-typedef struct		{
-						int								count;
-						bool							on;
-						particle_group_particle_type	particles[max_particle_group];
-					} particle_group_type;
-
-typedef struct		{
-						d3pnt							pt;
-						d3vct							vct;
-					} particle_piece_type;
-
-typedef struct		{
-						int								image_idx,count,trail_count,
-														spread_offset,life_msec,
-														start_pixel_size,end_pixel_size,
-														current_variation_idx;
-						float							start_gravity,gravity_add,
-														start_alpha,end_alpha,reduce_pixel_fact,
-														trail_step,ambient_factor;
-						char							name[name_str_len],bitmap_name[name_str_len];
-						bool							reverse,blend_add,globe,team_tint;
-						d3pnt							pt;
-						d3ang							rot;
-						d3vct							vct,rot_accel;
-						d3col							start_color,end_color;
-						image_animation_type			animate;
-						particle_piece_type				pieces[max_particle_variation][max_particle_count];
-						particle_group_type				group;
-					} particle_type;
-
-typedef struct		{
-						particle_type*					particles[max_particle_list];
-					} particle_list_type;
-
-//
-// ring structures
-//
-
-typedef struct		{
-						int								image_idx,life_msec,
-														start_outer_size,end_outer_size,
-														start_inner_size,end_inner_size;
-						float							start_alpha,end_alpha;
-						char							name[name_str_len],bitmap_name[name_str_len];
-						bool							blend_add,team_tint;
-						d3ang							ang,rot;
-						d3vct							vct,rot_accel;
-						d3col							start_color,end_color;
-						image_animation_type			animate;
-					} ring_type;
-
-typedef struct		{
-						ring_type*						rings[max_ring_list];
-					} ring_list_type;
-
-//
-// misc settings structures
-//
 					
 typedef struct		{
 						int								image_idx;
@@ -1177,7 +1100,7 @@ typedef struct		{
 						char							name[name_str_len],bitmap_name[name_str_len];
 						bool							no_rotate,no_transparent,no_opaque,hilite,blend_add,team_tint;
 						d3col							color;
-						image_animation_type			animate;
+						image_animation_type			animate;		// supergumba -- make into iface_ version
 					} mark_type;
 
 typedef struct		{
@@ -1207,8 +1130,6 @@ typedef struct		{
 						model_list_type					model_list;
 						effect_list_type				effect_list;
 						decal_list_type					decal_list;
-						particle_list_type				particle_list;
-						ring_list_type					ring_list;
 						halo_list_type					halo_list;
 						mark_list_type					mark_list;
 						crosshair_list_type				crosshair_list;

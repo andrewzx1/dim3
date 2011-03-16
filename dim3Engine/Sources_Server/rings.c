@@ -34,45 +34,8 @@ and can be sold or given away.
 
 extern map_type				map;
 extern server_type			server;
+extern iface_type			iface;
 extern setup_type			setup;
-
-/* =======================================================
-
-      Initialize Rings
-      
-======================================================= */
-
-void ring_initialize_list(void)
-{
-	int				n;
-
-	for (n=0;n!=max_ring_list;n++) {
-		server.ring_list.rings[n]=NULL;
-	}
-}
-
-void ring_free_list(void)
-{
-	int				n;
-
-	for (n=0;n!=max_ring_list;n++) {
-		if (server.ring_list.rings[n]!=NULL) free(server.ring_list.rings[n]);
-	}
-}
-
-ring_type* ring_add_list(void)
-{
-	int				n;
-
-	for (n=0;n!=max_ring_list;n++) {
-		if (server.ring_list.rings[n]==NULL) {
-			server.ring_list.rings[n]=(ring_type*)malloc(sizeof(ring_type));
-			return(server.ring_list.rings[n]);
-		}
-	}
-
-	return(NULL);
-}
 
 /* =======================================================
 
@@ -80,16 +43,16 @@ ring_type* ring_add_list(void)
       
 ======================================================= */
 
-ring_type* ring_find(char *name)
+iface_ring_type* ring_find(char *name)
 {
-	int			n;
-	ring_type	*ring;
-	
-	for (n=0;n!=max_ring_list;n++) {
-		ring=server.ring_list.rings[n];
-		if (ring==NULL) continue;
+	int				n;
+	iface_ring_type	*ring;
 
+	ring=iface.ring_list.rings;
+	
+	for (n=0;n!=iface.ring_list.nring;n++) {
 		if (strcasecmp(ring->name,name)==0) return(ring);
+		ring++;
 	}
 	
 	return(NULL);
@@ -97,14 +60,14 @@ ring_type* ring_find(char *name)
 
 int ring_find_index(char *name)
 {
-	int			n;
-	ring_type	*ring;
-	
-	for (n=0;n!=max_ring_list;n++) {
-		ring=server.ring_list.rings[n];
-		if (ring==NULL) continue;
+	int				n;
+	iface_ring_type	*ring;
 
+	ring=iface.ring_list.rings;
+
+	for (n=0;n!=iface.ring_list.nring;n++) {
 		if (strcasecmp(ring->name,name)==0) return(n);
+		ring++;
 	}
 	
 	return(-1);
@@ -116,7 +79,7 @@ int ring_find_index(char *name)
       
 ======================================================= */
 
-int ring_get_effect_size(ring_type *ring)
+int ring_get_effect_size(iface_ring_type *ring)
 {
 	int			x,y,z;
 
@@ -139,9 +102,9 @@ bool ring_spawn(int ring_idx,int obj_idx,d3pnt *pt,d3ang *ang)
 	obj_type				*obj;
 	effect_type				*effect;
 	ring_effect_data		*eff_ring;
-	ring_type				*ring;
+	iface_ring_type			*ring;
 	
-	ring=server.ring_list.rings[ring_idx];
+	ring=&iface.ring_list.rings[ring_idx];
 		
 		// create ring
 

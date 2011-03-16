@@ -1071,7 +1071,7 @@ void read_settings_sound(void)
 			}
 
 			iface.sound_list.nsound++;
-			if (iface.sound_list.nsound==max_sound) break;
+			if (iface.sound_list.nsound==max_iface_sound) break;
 
 			sound_tag=xml_findnextchild(sound_tag);
 		}

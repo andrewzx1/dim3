@@ -38,6 +38,7 @@ and can be sold or given away.
 #include "xmls.h"
 
 extern server_type			server;
+extern iface_type			iface;
 extern setup_type			setup;
 
 /* =======================================================
@@ -55,7 +56,7 @@ void read_settings_particle(void)
 	float				ring_min_move,ring_max_move;
 	bool				ring_flip;
 	char				path[1024];
-	particle_type		*particle;
+	iface_particle_type	*particle;
 
 		// read in particles from setting files
 		
@@ -100,11 +101,13 @@ void read_settings_particle(void)
 	
 			// create a new particle
 			
-		particle=particle_add_list();
-		if (particle==NULL) {
+		if (iface.particle_list.nparticle>=max_iface_particle) {
 			xml_close_file();
 			return;
 		}
+			
+		particle=&iface.particle_list.particles[iface.particle_list.nparticle];
+		iface.particle_list.nparticle++;
 		
 			// read in particle
 
@@ -266,11 +269,13 @@ void read_settings_particle(void)
 	
 			// create a new particle group
 			
-		particle=particle_add_list();
-		if (particle==NULL) {
+		if (iface.particle_list.nparticle>=max_iface_particle) {
 			xml_close_file();
 			return;
 		}
+			
+		particle=&iface.particle_list.particles[iface.particle_list.nparticle];
+		iface.particle_list.nparticle++;
 		
 			// read in particle group
 		

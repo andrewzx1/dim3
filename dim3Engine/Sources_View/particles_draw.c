@@ -38,8 +38,9 @@ and can be sold or given away.
 #include "video.h"
 
 extern map_type				map;
-extern server_type			server;
 extern view_type			view;
+extern server_type			server;
+extern iface_type			iface;
 extern setup_type			setup;
 
 /* =======================================================
@@ -128,7 +129,7 @@ void particle_draw_position(effect_type *effect,int count,int *x,int *y,int *z)
       
 ======================================================= */
 
-int particle_fill_array_quad_single(float *vertex_ptr,int idx,int nvertex,int mx,int my,int mz,d3ang *rot_ang,float pixel_size,matrix_type *pixel_mat,float gravity,float f_count,int particle_count,particle_piece_type *pps,float gx,float gy,float g_size)
+int particle_fill_array_quad_single(float *vertex_ptr,int idx,int nvertex,int mx,int my,int mz,d3ang *rot_ang,float pixel_size,matrix_type *pixel_mat,float gravity,float f_count,int particle_count,iface_particle_piece_type *pps,float gx,float gy,float g_size)
 {
 	int					n,k;
 	float				fx,fy,fz,px[4],py[4],pz[4];
@@ -241,12 +242,12 @@ void particle_draw(effect_type *effect,int count)
 	float					*vertex_ptr;
 	d3ang					*rot_ang,rang;
 	d3col					col,ambient_col;
-	particle_type			*particle;
+	iface_particle_type		*particle;
 	particle_effect_data	*eff_particle;
 	matrix_type				pixel_mat;
 
 	eff_particle=&effect->data.particle;
-	particle=server.particle_list.particles[eff_particle->particle_idx];
+	particle=&iface.particle_list.particles[eff_particle->particle_idx];
 
 	f_count=(float)count;
 

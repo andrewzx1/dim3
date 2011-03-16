@@ -38,6 +38,7 @@ and can be sold or given away.
 #include "xmls.h"
 
 extern server_type			server;
+extern iface_type			iface;
 extern setup_type			setup;
 
 /* =======================================================
@@ -50,7 +51,7 @@ void read_settings_ring(void)
 {
 	int					nring,ring_head_tag,ring_tag,tag;
 	char				path[1024];
-	ring_type			*ring;
+	iface_ring_type		*ring;
 
 		// read in rings from setting files
 		
@@ -78,13 +79,15 @@ void read_settings_ring(void)
     
 	while (ring_tag!=-1) {
 	
-			// create a new particle
-			
-		ring=ring_add_list();
-		if (ring==NULL) {
+			// create a new ring
+
+		if (iface.ring_list.nring>=max_iface_ring) {
 			xml_close_file();
 			return;
 		}
+			
+		ring=&iface.ring_list.rings[iface.ring_list.nring];
+		iface.ring_list.nring++;
 		
 			// read in ring
 		

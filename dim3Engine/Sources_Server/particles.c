@@ -34,46 +34,9 @@ and can be sold or given away.
 
 extern map_type				map;
 extern server_type			server;
+extern iface_type			iface;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
-
-/* =======================================================
-
-      Particle List
-      
-======================================================= */
-
-void particle_initialize_list(void)
-{
-	int				n;
-
-	for (n=0;n!=max_particle_list;n++) {
-		server.particle_list.particles[n]=NULL;
-	}
-}
-
-void particle_free_list(void)
-{
-	int				n;
-
-	for (n=0;n!=max_particle_list;n++) {
-		if (server.particle_list.particles[n]!=NULL) free(server.particle_list.particles[n]);
-	}
-}
-
-particle_type* particle_add_list(void)
-{
-	int				n;
-
-	for (n=0;n!=max_particle_list;n++) {
-		if (server.particle_list.particles[n]==NULL) {
-			server.particle_list.particles[n]=(particle_type*)malloc(sizeof(particle_type));
-			return(server.particle_list.particles[n]);
-		}
-	}
-
-	return(NULL);
-}
 
 /* =======================================================
 
@@ -105,10 +68,10 @@ float particle_float(float fv)
 	return(f);
 }
 
-void particle_precalculate(particle_type *particle)
+void particle_precalculate(iface_particle_type *particle)
 {
-	int					n,k,count;
-	particle_piece_type	*pps;
+	int							n,k,count;
+	iface_particle_piece_type	*pps;
 
 	count=particle->count;
 
@@ -137,12 +100,12 @@ void particle_precalculate(particle_type *particle)
 	particle->current_variation_idx=0;
 }
 
-void particle_globe_precalculate(particle_type *particle)
+void particle_globe_precalculate(iface_particle_type *particle)
 {
-	int					n,k,y,count,row_count;
-	float				rxz,ry,vy,r_xz_add,r_y_add,xz_reduce;
-	double				d_x_radius,d_y_radius,d_z_radius,d_vx_radius,d_vz_radius;
-	particle_piece_type	*pps;
+	int							n,k,y,count,row_count;
+	float						rxz,ry,vy,r_xz_add,r_y_add,xz_reduce;
+	double						d_x_radius,d_y_radius,d_z_radius,d_vx_radius,d_vz_radius;
+	iface_particle_piece_type	*pps;
 
 		// get per-row count
 
@@ -212,12 +175,11 @@ void particle_globe_precalculate(particle_type *particle)
 
 void particle_precalculate_all(void)
 {
-	int					n;
-	particle_type		*particle;
+	int						n;
+	iface_particle_type		*particle;
 
-	for (n=0;n!=max_particle_list;n++) {
-		particle=server.particle_list.particles[n];
-		if (particle==NULL) continue;
+	for (n=0;n!=iface.particle_list.nparticle;n++) {
+		particle=&iface.particle_list.particles[n];
 
 			// groups have no particles
 
@@ -240,16 +202,16 @@ void particle_precalculate_all(void)
       
 ======================================================= */
 
-particle_type* particle_find(char *name)
+iface_particle_type* particle_find(char *name)
 {
-	int				n;
-	particle_type	*particle;
-	
-	for (n=0;n!=max_particle_list;n++) {
-		particle=server.particle_list.particles[n];
-		if (particle==NULL) continue;
+	int					n;
+	iface_particle_type	*particle;
 
+	particle=iface.particle_list.particles;
+	
+	for (n=0;n!=iface.particle_list.nparticle;n++) {
 		if (strcasecmp(particle->name,name)==0) return(particle);
+		particle++;
 	}
 	
 	return(NULL);
@@ -257,14 +219,14 @@ particle_type* particle_find(char *name)
 
 int particle_find_index(char *name)
 {
-	int				n;
-	particle_type	*particle;
-	
-	for (n=0;n!=max_particle_list;n++) {
-		particle=server.particle_list.particles[n];
-		if (particle==NULL) continue;
+	int					n;
+	iface_particle_type	*particle;
 
+	particle=iface.particle_list.particles;
+	
+	for (n=0;n!=iface.particle_list.nparticle;n++) {
 		if (strcasecmp(particle->name,name)==0) return(n);
+		particle++;
 	}
 	
 	return(-1);
@@ -276,7 +238,7 @@ int particle_find_index(char *name)
       
 ======================================================= */
 
-int particle_get_effect_size(particle_type *particle)
+int particle_get_effect_size(iface_particle_type *particle)
 {
 	int			x,y,z;
 
@@ -299,9 +261,9 @@ bool particle_spawn_single(int particle_idx,int obj_idx,d3pnt *pt,particle_rotat
 	obj_type				*obj;
 	effect_type				*effect;
 	particle_effect_data	*eff_particle;
-	particle_type			*particle;
+	iface_particle_type		*particle;
 	
-	particle=server.particle_list.particles[particle_idx];
+	particle=&iface.particle_list.particles[particle_idx];
 		
 		// create particle
 
@@ -365,9 +327,9 @@ bool particle_spawn(int particle_idx,int obj_idx,d3pnt *pt,particle_rotate *rot,
 	d3pnt					ppt;
 	d3ang					ang;
 	matrix_type				mat;
-	particle_type			*particle;
+	iface_particle_type		*particle;
 	
-	particle=server.particle_list.particles[particle_idx];
+	particle=&iface.particle_list.particles[particle_idx];
 
 		// single particles
 
@@ -388,13 +350,13 @@ bool particle_spawn(int particle_idx,int obj_idx,d3pnt *pt,particle_rotate *rot,
 		idx=particle_find_index(particle->group.particles[n].name);
 		if (idx==-1) continue;
 
-		if (server.particle_list.particles[idx]->group.on) continue;		// don't respawn other groups
+		if (iface.particle_list.particles[idx].group.on) continue;		// don't respawn other groups
 
 			// compute shifts
 
 		memmove(&ppt,pt,sizeof(d3pnt));
 
-		shift=server.particle_list.particles[idx]->group.particles[n].shift;
+		shift=iface.particle_list.particles[idx].group.particles[n].shift;
 
 		if (shift!=0) {
 			xoff=yoff=0.0f;
@@ -442,7 +404,7 @@ bool particle_line_spawn(int particle_idx,int obj_idx,d3pnt *start_pt,d3pnt *end
       
 ======================================================= */
 
-float particle_get_gravity(particle_type *particle,int count)
+float particle_get_gravity(iface_particle_type *particle,int count)
 {
 	float			gravity,f_count;
 	
