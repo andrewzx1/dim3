@@ -33,7 +33,6 @@ and can be sold or given away.
 #include "network.h"
 #include "objects.h"
 #include "remotes.h"
-#include "xmls.h"
 #include "video.h"
 #include "sounds.h"
 

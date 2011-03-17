@@ -276,7 +276,7 @@ extern bool effect_spawn_ray(d3pnt *start_pt,d3pnt *end_pt,int wid,d3col *col,in
 extern bool effect_spawn_shake(d3pnt *pt,int distance,int size,int life_msec);
 extern void effect_draw_lightning(effect_type *effect);
 extern void effect_draw_ray(effect_type *effect,int count);
-extern void effect_image_animate_get_uv(int tick,image_animation_type *animate,float *gx,float *gy,float *g_size);
+extern void effect_image_animate_get_uv(int tick,iface_image_animation_type *animate,float *gx,float *gy,float *g_size);
 extern void effect_draw(void);
 extern void particle_precalculate(iface_particle_type *particle);
 extern void particle_precalculate_all(void);
@@ -293,9 +293,6 @@ extern int ring_find_index(char *name);
 extern bool ring_spawn(int ring_idx,int obj_idx,d3pnt *pt,d3ang *ang);
 extern bool ring_line_spawn(int ring_idx,int obj_idx,d3pnt *start_pt,d3pnt *end_pt,int count);
 extern void ring_draw(effect_type *effect,int count);
-extern void mark_initialize_list(void);
-extern void mark_free_list(void);
-extern mark_type* mark_add_list(void);
 extern int mark_find(char *name);
 extern bool decal_initialize_list(void);
 extern void decal_free_list(void);
@@ -359,4 +356,42 @@ extern void score_limit_open(void);
 extern void score_limit_close(void);
 extern int score_limit_get_resume_time(void);
 extern void score_limit_run(void);
+
+//
+// xml
+//
+
+extern void setup_xml_default(void);
+extern int setup_find_control_for_name(char *name);
+extern int setup_find_action_in_setup(int action_idx);
+extern void setup_to_input(void);
+extern void setup_xml_read_key_int(int setup_tag,char *name,int *value);
+extern void setup_xml_read_key_float(int setup_tag,char *name,float *value);
+extern void setup_xml_read_key_boolean(int setup_tag,char *name,bool *value);
+extern bool setup_xml_read(void);
+extern void setup_xml_write_key_int(char *name,int value);
+extern void setup_xml_write_key_float(char *name,float value);
+extern void setup_xml_write_key_boolean(char *name,bool value);
+extern bool setup_xml_write(void);
+extern void setup_restore(void);
+
+extern void default_settings_interface(void);
+extern void read_settings_interface_bitmap(int bitmap_tag);
+extern void read_settings_interface_text(int text_tag);
+extern void read_settings_interface_menu(int menu_tag);
+extern void read_settings_interface_chooser(int chooser_tag);
+extern void read_settings_interface(void);
+extern void read_settings_interface_project_name(void);
+
+extern void read_settings_particle(void);
+extern void read_settings_ring(void);
+extern void read_settings_halo(void);
+extern void read_settings_mark(void);
+extern void read_settings_crosshair(void);
+extern void read_settings_sound(void);
+extern void read_settings_action(void);
+extern void read_settings_shader(void);
+
+extern void simple_save_xml_read(void);
+extern void simple_save_xml_write(void);
 

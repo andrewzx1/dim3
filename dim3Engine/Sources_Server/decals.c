@@ -29,50 +29,14 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
+#include "interface.h"
 #include "objects.h"
 #include "timing.h"
 
 extern map_type			map;
 extern server_type		server;
+extern iface_type		iface;
 extern setup_type		setup;
-
-/* =======================================================
-
-      Marks List
-      
-======================================================= */
-
-void mark_initialize_list(void)
-{
-	int				n;
-
-	for (n=0;n!=max_mark_list;n++) {
-		server.mark_list.marks[n]=NULL;
-	}
-}
-
-void mark_free_list(void)
-{
-	int				n;
-
-	for (n=0;n!=max_mark_list;n++) {
-		if (server.mark_list.marks[n]!=NULL) free(server.mark_list.marks[n]);
-	}
-}
-
-mark_type* mark_add_list(void)
-{
-	int				n;
-
-	for (n=0;n!=max_mark_list;n++) {
-		if (server.mark_list.marks[n]==NULL) {
-			server.mark_list.marks[n]=(mark_type*)malloc(sizeof(mark_type));
-			return(server.mark_list.marks[n]);
-		}
-	}
-
-	return(NULL);
-}
 
 /* =======================================================
 
@@ -82,14 +46,14 @@ mark_type* mark_add_list(void)
 
 int mark_find(char *name)
 {
-	int			n;
-	mark_type	*mark;
+	int				n;
+	iface_mark_type	*mark;
+	
+	mark=iface.mark_list.marks;
 
-	for (n=0;n!=max_mark_list;n++) {
-		mark=server.mark_list.marks[n];
-		if (mark==NULL) continue;
-
+	for (n=0;n!=iface.mark_list.nmark;n++) {
 		if (strcasecmp(mark->name,name)==0)  return(n);
+		mark++;
 	}
 	
 	return(-1);
@@ -154,8 +118,8 @@ int decal_count_list(void)
 
 bool decal_segment_ok(map_mesh_poly_type *poly,int mark_idx)
 {
-	if (map.textures[poly->txt_idx].frames[0].bitmap.alpha_mode!=alpha_mode_transparent) return(!server.mark_list.marks[mark_idx]->no_opaque);
-	return(!server.mark_list.marks[mark_idx]->no_transparent);
+	if (map.textures[poly->txt_idx].frames[0].bitmap.alpha_mode!=alpha_mode_transparent) return(!iface.mark_list.marks[mark_idx].no_opaque);
+	return(!iface.mark_list.marks[mark_idx].no_transparent);
 }
 
 /* =======================================================
@@ -224,7 +188,7 @@ void decal_add_wall_like(d3pnt *pnt,decal_type *decal,map_mesh_poly_type *poly,i
 		// decal rotation
 
 	idx=0;
-	if (!server.mark_list.marks[mark_idx]->no_rotate) idx=random_int(4);
+	if (!iface.mark_list.marks[mark_idx].no_rotate) idx=random_int(4);
 
         // setup decal
         
@@ -250,7 +214,7 @@ void decal_add_floor_like(d3pnt *pnt,decal_type *decal,map_mesh_type *mesh,map_m
 	decal->x[1]=decal->x[2]=decal->z[2]=decal->z[3]=sz;
 	decal->y[0]=decal->y[1]=decal->y[2]=decal->y[3]=0;
 
-	if (!server.mark_list.marks[mark_idx]->no_rotate) rotate_polygon_center(4,decal->x,decal->y,decal->z,0,random_float(359),0);
+	if (!iface.mark_list.marks[mark_idx].no_rotate) rotate_polygon_center(4,decal->x,decal->y,decal->z,0,random_float(359),0);
 	
 		// if poly not flat, need array of
 		// coordinates to calculate y position
@@ -340,7 +304,7 @@ void decal_add(int obj_idx,d3pnt *pnt,poly_pointer_type *poly_ptr,int mark_idx,i
 
 	decal->tint.r=decal->tint.g=decal->tint.b=1.0f;
 
-	if ((server.mark_list.marks[mark_idx]->team_tint) && (obj_idx!=-1)) {
+	if ((iface.mark_list.marks[mark_idx].team_tint) && (obj_idx!=-1)) {
 		obj=server.obj_list.objs[obj_idx];
 		if (obj!=NULL) object_get_tint(obj,&decal->tint);
 	}
@@ -364,7 +328,7 @@ void decal_dispose(void)
 {
 	int					n,tick;
 	decal_type			*decal;
-	mark_type			*mark;
+	iface_mark_type		*mark;
 	
 	tick=game_time_get();
 	
@@ -376,7 +340,7 @@ void decal_dispose(void)
 
 			// is it timed out?
 
-		mark=server.mark_list.marks[decal->mark_idx];
+		mark=&iface.mark_list.marks[decal->mark_idx];
 		if ((tick-decal->start_tick)<mark->total_msec) continue;
 
 			// turn off

@@ -37,7 +37,6 @@ and can be sold or given away.
 #include "models.h"
 #include "lights.h"
 #include "projectiles.h"
-#include "xmls.h"
 #include "video.h"
 
 map_type					map;
@@ -89,7 +88,6 @@ bool server_initialize(char *err_str)
 		
 	hud_initialize();
 	halo_initialize_list();
-	mark_initialize_list();
 	crosshair_initialize_list();
 	
 		// load project XML
@@ -121,7 +119,6 @@ void server_shutdown(void)
 		// release memory
 	
 	halo_free_list();
-	mark_free_list();
 	crosshair_free_list();
 
 	interface_shutdown();

@@ -34,7 +34,6 @@ and can be sold or given away.
 #endif
 
 #include "interface.h"
-#include "xmls.h"
 
 int							os_vers_major,os_vers_minor_1,os_vers_minor_2;
 long						os_vers_hex;

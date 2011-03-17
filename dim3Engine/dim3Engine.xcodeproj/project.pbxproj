@@ -28,6 +28,8 @@
 		265B377D0D7F8D3A004AE124 /* group_change.c in Sources */ = {isa = PBXBuildFile; fileRef = 265B377C0D7F8D3A004AE124 /* group_change.c */; };
 		265B377F0D7F8D58004AE124 /* script_map_group.c in Sources */ = {isa = PBXBuildFile; fileRef = 265B377E0D7F8D58004AE124 /* script_map_group.c */; };
 		267345E30ECB95E80048BD10 /* script_weap_target.c in Sources */ = {isa = PBXBuildFile; fileRef = 267345E20ECB95E80048BD10 /* script_weap_target.c */; };
+		267E82861330155B0087DCED /* interface.h in Headers */ = {isa = PBXBuildFile; fileRef = 267E82851330155B0087DCED /* interface.h */; };
+		267E8290133015E90087DCED /* gui_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 267E828F133015E90087DCED /* gui_defs.h */; };
 		268C36A7132ECAD70097F588 /* xml_interface_read.c in Sources */ = {isa = PBXBuildFile; fileRef = 268C36A6132ECAD70097F588 /* xml_interface_read.c */; };
 		268C3E5310E2E83500235824 /* mpg123.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 268C3E5210E2E83500235824 /* mpg123.framework */; };
 		268C404C10E2FA4F00235824 /* mpg123.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 268C3E5210E2E83500235824 /* mpg123.framework */; };
@@ -64,9 +66,6 @@
 		26F12E02132D8FB800A6E150 /* xml_crosshairs.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F12DFC132D8FB800A6E150 /* xml_crosshairs.c */; };
 		26F12E03132D8FB800A6E150 /* xml_halos.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F12DFD132D8FB800A6E150 /* xml_halos.c */; };
 		26F12E04132D8FB800A6E150 /* xml_interface.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F12DFE132D8FB800A6E150 /* xml_interface.c */; };
-		26F12E05132D8FB800A6E150 /* xml_marks.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F12DFF132D8FB800A6E150 /* xml_marks.c */; };
-		26F12E06132D8FB800A6E150 /* xml_particles.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F12E00132D8FB800A6E150 /* xml_particles.c */; };
-		26F12E07132D8FB800A6E150 /* xml_rings.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F12E01132D8FB800A6E150 /* xml_rings.c */; };
 		26F6FF6312E2B18900DF617F /* xml_simple_save.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F6FF6212E2B18900DF617F /* xml_simple_save.c */; };
 		26FDC442113A45A6002D987E /* timing.h in Headers */ = {isa = PBXBuildFile; fileRef = 26FDC441113A45A6002D987E /* timing.h */; };
 		26FE82370F4E1D5C00B659D8 /* gl_light.c in Sources */ = {isa = PBXBuildFile; fileRef = 26FE82350F4E1D5C00B659D8 /* gl_light.c */; };
@@ -198,19 +197,14 @@
 		F5A58238090B434000BE7C36 /* script_weap_projectile.c in Sources */ = {isa = PBXBuildFile; fileRef = F5A581D4090B433F00BE7C36 /* script_weap_projectile.c */; };
 		F5A58239090B434000BE7C36 /* script_weap_setting.c in Sources */ = {isa = PBXBuildFile; fileRef = F5A581D5090B433F00BE7C36 /* script_weap_setting.c */; };
 		F5A58249090B512000BE7C36 /* weapons.h in Headers */ = {isa = PBXBuildFile; fileRef = F5A5823F090B512000BE7C36 /* weapons.h */; };
-		F5A5824A090B512000BE7C36 /* xmls.h in Headers */ = {isa = PBXBuildFile; fileRef = F5A58240090B512000BE7C36 /* xmls.h */; };
-		F5A5824B090B512000BE7C36 /* effects.h in Headers */ = {isa = PBXBuildFile; fileRef = F5A58241090B512000BE7C36 /* effects.h */; };
-		F5A5824C090B512000BE7C36 /* consoles.h in Headers */ = {isa = PBXBuildFile; fileRef = F5A58242090B512000BE7C36 /* consoles.h */; };
 		F5A5824D090B512000BE7C36 /* projectiles.h in Headers */ = {isa = PBXBuildFile; fileRef = F5A58243090B512000BE7C36 /* projectiles.h */; };
 		F5A5824E090B512000BE7C36 /* scripts.h in Headers */ = {isa = PBXBuildFile; fileRef = F5A58244090B512000BE7C36 /* scripts.h */; };
 		F5A5824F090B512000BE7C36 /* remotes.h in Headers */ = {isa = PBXBuildFile; fileRef = F5A58245090B512000BE7C36 /* remotes.h */; };
-		F5A58250090B512000BE7C36 /* cameras.h in Headers */ = {isa = PBXBuildFile; fileRef = F5A58246090B512000BE7C36 /* cameras.h */; };
 		F5A58251090B512000BE7C36 /* objects.h in Headers */ = {isa = PBXBuildFile; fileRef = F5A58247090B512000BE7C36 /* objects.h */; };
 		F5A58252090B512000BE7C36 /* lights.h in Headers */ = {isa = PBXBuildFile; fileRef = F5A58248090B512000BE7C36 /* lights.h */; };
 		F5A58257090B51B000BE7C36 /* video.h in Headers */ = {isa = PBXBuildFile; fileRef = F5A58256090B51B000BE7C36 /* video.h */; };
 		F5A58259090B51B400BE7C36 /* sounds.h in Headers */ = {isa = PBXBuildFile; fileRef = F5A58258090B51B400BE7C36 /* sounds.h */; };
 		F5A5825B090B51B800BE7C36 /* inputs.h in Headers */ = {isa = PBXBuildFile; fileRef = F5A5825A090B51B800BE7C36 /* inputs.h */; };
-		F5A58286090B589C00BE7C36 /* interfaces.h in Headers */ = {isa = PBXBuildFile; fileRef = F5A58285090B589C00BE7C36 /* interfaces.h */; };
 		F5A582C1090C98D500BE7C36 /* interface_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = F5A582BB090C98D500BE7C36 /* interface_defs.h */; };
 		F5A582C2090C98D500BE7C36 /* script_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = F5A582BC090C98D500BE7C36 /* script_defs.h */; };
 		F5A582C3090C98D500BE7C36 /* server_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = F5A582BD090C98D500BE7C36 /* server_defs.h */; };
@@ -408,6 +402,8 @@
 		265B377C0D7F8D3A004AE124 /* group_change.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = group_change.c; path = Sources_Server/group_change.c; sourceTree = "<group>"; };
 		265B377E0D7F8D58004AE124 /* script_map_group.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = script_map_group.c; path = Sources_Server/script_map_group.c; sourceTree = "<group>"; };
 		267345E20ECB95E80048BD10 /* script_weap_target.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = script_weap_target.c; path = Sources_Server/script_weap_target.c; sourceTree = "<group>"; };
+		267E82851330155B0087DCED /* interface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = interface.h; path = Headers/interface.h; sourceTree = "<group>"; };
+		267E828F133015E90087DCED /* gui_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gui_defs.h; path = Headers_View/gui_defs.h; sourceTree = "<group>"; };
 		268C36A6132ECAD70097F588 /* xml_interface_read.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = xml_interface_read.c; path = ../dim3Common/Code/xml_interface_read.c; sourceTree = SOURCE_ROOT; };
 		268C3E5210E2E83500235824 /* mpg123.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = mpg123.framework; path = ../dim3Common/Frameworks/mpg123.framework; sourceTree = SOURCE_ROOT; };
 		268CBC8B0DD2AA6700CF0256 /* network.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = network.h; path = Headers_Network/network.h; sourceTree = "<group>"; };
@@ -442,9 +438,6 @@
 		26F12DFC132D8FB800A6E150 /* xml_crosshairs.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = xml_crosshairs.c; path = ../dim3Common/Code/xml_crosshairs.c; sourceTree = SOURCE_ROOT; };
 		26F12DFD132D8FB800A6E150 /* xml_halos.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = xml_halos.c; path = ../dim3Common/Code/xml_halos.c; sourceTree = SOURCE_ROOT; };
 		26F12DFE132D8FB800A6E150 /* xml_interface.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = xml_interface.c; path = ../dim3Common/Code/xml_interface.c; sourceTree = SOURCE_ROOT; };
-		26F12DFF132D8FB800A6E150 /* xml_marks.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = xml_marks.c; path = ../dim3Common/Code/xml_marks.c; sourceTree = SOURCE_ROOT; };
-		26F12E00132D8FB800A6E150 /* xml_particles.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = xml_particles.c; path = ../dim3Common/Code/xml_particles.c; sourceTree = SOURCE_ROOT; };
-		26F12E01132D8FB800A6E150 /* xml_rings.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = xml_rings.c; path = ../dim3Common/Code/xml_rings.c; sourceTree = SOURCE_ROOT; };
 		26F6FF6212E2B18900DF617F /* xml_simple_save.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = xml_simple_save.c; path = Sources_Server/xml_simple_save.c; sourceTree = "<group>"; };
 		26FDC441113A45A6002D987E /* timing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = timing.h; path = Headers_Server/timing.h; sourceTree = "<group>"; };
 		26FE82350F4E1D5C00B659D8 /* gl_light.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = gl_light.c; path = Sources_View/gl_light.c; sourceTree = "<group>"; };
@@ -577,19 +570,14 @@
 		F5A581D4090B433F00BE7C36 /* script_weap_projectile.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = script_weap_projectile.c; path = Sources_Server/script_weap_projectile.c; sourceTree = "<group>"; };
 		F5A581D5090B433F00BE7C36 /* script_weap_setting.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = script_weap_setting.c; path = Sources_Server/script_weap_setting.c; sourceTree = "<group>"; };
 		F5A5823F090B512000BE7C36 /* weapons.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = weapons.h; path = Headers_Server/weapons.h; sourceTree = "<group>"; };
-		F5A58240090B512000BE7C36 /* xmls.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = xmls.h; path = Headers_Server/xmls.h; sourceTree = "<group>"; };
-		F5A58241090B512000BE7C36 /* effects.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = effects.h; path = Headers_Server/effects.h; sourceTree = "<group>"; };
-		F5A58242090B512000BE7C36 /* consoles.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = consoles.h; path = Headers_Server/consoles.h; sourceTree = "<group>"; };
 		F5A58243090B512000BE7C36 /* projectiles.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = projectiles.h; path = Headers_Server/projectiles.h; sourceTree = "<group>"; };
 		F5A58244090B512000BE7C36 /* scripts.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = scripts.h; path = Headers_Server/scripts.h; sourceTree = "<group>"; };
 		F5A58245090B512000BE7C36 /* remotes.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = remotes.h; path = Headers_Server/remotes.h; sourceTree = "<group>"; };
-		F5A58246090B512000BE7C36 /* cameras.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = cameras.h; path = Headers_Server/cameras.h; sourceTree = "<group>"; };
 		F5A58247090B512000BE7C36 /* objects.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = objects.h; path = Headers_Server/objects.h; sourceTree = "<group>"; };
 		F5A58248090B512000BE7C36 /* lights.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = lights.h; path = Headers_Server/lights.h; sourceTree = "<group>"; };
 		F5A58256090B51B000BE7C36 /* video.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = video.h; path = Headers_View/video.h; sourceTree = "<group>"; };
 		F5A58258090B51B400BE7C36 /* sounds.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = sounds.h; path = Headers_View/sounds.h; sourceTree = "<group>"; };
 		F5A5825A090B51B800BE7C36 /* inputs.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = inputs.h; path = Headers_View/inputs.h; sourceTree = "<group>"; };
-		F5A58285090B589C00BE7C36 /* interfaces.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = interfaces.h; path = Headers_Server/interfaces.h; sourceTree = "<group>"; };
 		F5A582BB090C98D500BE7C36 /* interface_defs.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = interface_defs.h; path = Headers_Server/interface_defs.h; sourceTree = "<group>"; };
 		F5A582BC090C98D500BE7C36 /* script_defs.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = script_defs.h; path = Headers_Server/script_defs.h; sourceTree = "<group>"; };
 		F5A582BD090C98D500BE7C36 /* server_defs.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = server_defs.h; path = Headers_Server/server_defs.h; sourceTree = "<group>"; };
@@ -797,6 +785,7 @@
 				F5AD54760BBE2121001C7C04 /* baseutility.h */,
 				F5CA4F01051012CF0055C8B8 /* modelutility.h */,
 				F57CAC770527D9E000A68578 /* maputility.h */,
+				267E82851330155B0087DCED /* interface.h */,
 			);
 			name = Headers;
 			sourceTree = "<group>";
@@ -1186,10 +1175,7 @@
 			children = (
 				26F12DFE132D8FB800A6E150 /* xml_interface.c */,
 				268C36A6132ECAD70097F588 /* xml_interface_read.c */,
-				26F12E00132D8FB800A6E150 /* xml_particles.c */,
-				26F12E01132D8FB800A6E150 /* xml_rings.c */,
 				26F12DFD132D8FB800A6E150 /* xml_halos.c */,
-				26F12DFF132D8FB800A6E150 /* xml_marks.c */,
 				26F12DFC132D8FB800A6E150 /* xml_crosshairs.c */,
 				F5A57F37090AB24200BE7C36 /* xml_setup.c */,
 				26F6FF6212E2B18900DF617F /* xml_simple_save.c */,
@@ -1240,12 +1226,7 @@
 				F5F0AC550AD35EF300C50A21 /* scenery.h */,
 				F5075AD00A0C368D000196B7 /* models.h */,
 				F5A58248090B512000BE7C36 /* lights.h */,
-				F5A58241090B512000BE7C36 /* effects.h */,
-				F5A58246090B512000BE7C36 /* cameras.h */,
-				F5A58242090B512000BE7C36 /* consoles.h */,
 				26FDC441113A45A6002D987E /* timing.h */,
-				F5A58285090B589C00BE7C36 /* interfaces.h */,
-				F5A58240090B512000BE7C36 /* xmls.h */,
 			);
 			name = Headers;
 			sourceTree = "<group>";
@@ -1253,6 +1234,7 @@
 		F5A58253090B51A200BE7C36 /* Headers */ = {
 			isa = PBXGroup;
 			children = (
+				267E828F133015E90087DCED /* gui_defs.h */,
 				F5A582CD090C993400BE7C36 /* view_defs.h */,
 				F5A582C7090C992600BE7C36 /* video_defs.h */,
 				F5A582C9090C992C00BE7C36 /* sound_defs.h */,
@@ -1487,8 +1469,8 @@
 			isa = PBXGroup;
 			children = (
 				F5C5EB0B0913264E00F94729 /* app.c */,
-				F5C5EB0F0913264E00F94729 /* game.c */,
 				F5C5EB100913264E00F94729 /* map.c */,
+				F5C5EB0F0913264E00F94729 /* game.c */,
 				F5C5EB090913264E00F94729 /* loop.c */,
 				F5C5EB0D0913264E00F94729 /* file.c */,
 				F5C5EB0E0913264E00F94729 /* debug.c */,
@@ -1510,19 +1492,14 @@
 				F5CD872F055771B80023AD9B /* maputility.h in Headers */,
 				F50AF8A40885FBA200F261B1 /* os_defs.h in Headers */,
 				F5A58249090B512000BE7C36 /* weapons.h in Headers */,
-				F5A5824A090B512000BE7C36 /* xmls.h in Headers */,
-				F5A5824B090B512000BE7C36 /* effects.h in Headers */,
-				F5A5824C090B512000BE7C36 /* consoles.h in Headers */,
 				F5A5824D090B512000BE7C36 /* projectiles.h in Headers */,
 				F5A5824E090B512000BE7C36 /* scripts.h in Headers */,
 				F5A5824F090B512000BE7C36 /* remotes.h in Headers */,
-				F5A58250090B512000BE7C36 /* cameras.h in Headers */,
 				F5A58251090B512000BE7C36 /* objects.h in Headers */,
 				F5A58252090B512000BE7C36 /* lights.h in Headers */,
 				F5A58257090B51B000BE7C36 /* video.h in Headers */,
 				F5A58259090B51B400BE7C36 /* sounds.h in Headers */,
 				F5A5825B090B51B800BE7C36 /* inputs.h in Headers */,
-				F5A58286090B589C00BE7C36 /* interfaces.h in Headers */,
 				F5A582C1090C98D500BE7C36 /* interface_defs.h in Headers */,
 				F5A582C2090C98D500BE7C36 /* script_defs.h in Headers */,
 				F5A582C3090C98D500BE7C36 /* server_defs.h in Headers */,
@@ -1540,6 +1517,8 @@
 				26FDC442113A45A6002D987E /* timing.h in Headers */,
 				260C145C129C770800B6D5B5 /* SDLMain.h in Headers */,
 				269D27C312DEBB7E00AF5695 /* mac_os_defs.h in Headers */,
+				267E82861330155B0087DCED /* interface.h in Headers */,
+				267E8290133015E90087DCED /* gui_defs.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1902,9 +1881,6 @@
 				26F12E02132D8FB800A6E150 /* xml_crosshairs.c in Sources */,
 				26F12E03132D8FB800A6E150 /* xml_halos.c in Sources */,
 				26F12E04132D8FB800A6E150 /* xml_interface.c in Sources */,
-				26F12E05132D8FB800A6E150 /* xml_marks.c in Sources */,
-				26F12E06132D8FB800A6E150 /* xml_particles.c in Sources */,
-				26F12E07132D8FB800A6E150 /* xml_rings.c in Sources */,
 				268C36A7132ECAD70097F588 /* xml_interface_read.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

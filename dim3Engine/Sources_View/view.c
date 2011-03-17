@@ -35,7 +35,6 @@ and can be sold or given away.
 #include "weapons.h"
 #include "projectiles.h"
 #include "lights.h"
-#include "xmls.h"
 #include "video.h"
 #include "sounds.h"
 #include "inputs.h"

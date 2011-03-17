@@ -41,7 +41,6 @@ and can be sold or given away.
 #endif
 
 #include "interface.h"
-#include "xmls.h"
 
 extern iface_type				iface;
 extern setup_type				setup;
@@ -986,6 +985,408 @@ void read_settings_interface_project_name(void)
 
 /* =======================================================
 
+      Read Particle XML
+      
+======================================================= */
+
+void read_settings_particle(void)
+{
+	int					n,nparticle,
+						particle_data_head_tag,particle_head_tag,particle_tag,
+						particle_group_head_tag,particle_group_tag,tag,
+						ring_radius,ring_size;
+	float				ring_min_move,ring_max_move;
+	bool				ring_flip;
+	char				path[1024];
+	iface_particle_type	*particle;
+
+		// read in particles from setting files
+		
+	file_paths_data(&setup.file_path_setup,path,"Settings","Particles","xml");
+	if (!xml_open_file(path)) return;
+	
+		// can accept file with a particle_data tag or not
+		
+	particle_data_head_tag=xml_findrootchild("Particle_Data");
+	
+		// particle and group head tags
+       
+	if (particle_data_head_tag==-1) {
+		particle_head_tag=xml_findrootchild("Particles");
+		particle_group_head_tag=xml_findrootchild("Particle_Groups");
+	}
+	else {
+		particle_head_tag=xml_findfirstchild("Particles",particle_data_head_tag);
+		particle_group_head_tag=xml_findfirstchild("Particle_Groups",particle_data_head_tag);
+	}
+	
+    if (particle_head_tag==-1) {
+		xml_close_file();
+		return;
+	}
+
+		// get counts
+
+	nparticle=xml_countchildren(particle_head_tag);
+	if (particle_group_head_tag!=-1) nparticle+=xml_countchildren(particle_group_head_tag);
+
+	if (nparticle==0) {
+		xml_close_file();
+		return;
+	}
+
+		// load regular particles
+
+	particle_tag=xml_findfirstchild("Particle",particle_head_tag);
+
+	while (particle_tag!=-1) {
+	
+			// create a new particle
+			
+		if (iface.particle_list.nparticle>=max_iface_particle) {
+			xml_close_file();
+			return;
+		}
+			
+		particle=&iface.particle_list.particles[iface.particle_list.nparticle];
+		iface.particle_list.nparticle++;
+		
+			// read in particle
+
+		xml_get_attribute_text(particle_tag,"name",particle->name,name_str_len);
+		
+		particle->group.on=FALSE;
+
+		particle->count=1;
+		particle->life_msec=1000;
+		particle->reverse=FALSE;
+		particle->ambient_factor=1.0f;
+		particle->blend_add=FALSE;
+		particle->globe=FALSE;
+
+        tag=xml_findfirstchild("Settings",particle_tag);
+        if (tag!=-1) {
+            particle->count=xml_get_attribute_int(tag,"count");
+            particle->life_msec=xml_get_attribute_int(tag,"time");
+            particle->reverse=xml_get_attribute_boolean(tag,"reverse");
+            particle->ambient_factor=xml_get_attribute_float_default(tag,"ambient",1.0f);
+            particle->blend_add=xml_get_attribute_boolean(tag,"additive");
+            particle->globe=xml_get_attribute_boolean(tag,"globe");
+		}
+
+		if (particle->count>max_particle_count) particle->count=max_particle_count;
+		
+		particle->animate.image_count=1;
+		particle->animate.image_per_row=1;
+		particle->animate.msec=200;
+		particle->animate.loop=TRUE;
+		particle->animate.loop_back=FALSE;
+		
+        tag=xml_findfirstchild("Image",particle_tag);
+        if (tag!=-1) {
+            xml_get_attribute_text(tag,"file",particle->bitmap_name,file_str_len);
+            particle->animate.image_count=xml_get_attribute_int(tag,"count");
+			particle->animate.image_per_row=(int)sqrt((float)particle->animate.image_count);
+			particle->animate.msec=xml_get_attribute_int(tag,"time");
+            particle->animate.loop=xml_get_attribute_boolean(tag,"loop");
+            particle->animate.loop_back=xml_get_attribute_boolean(tag,"loop_back");
+		}
+		
+        tag=xml_findfirstchild("Trail",particle_tag);
+        if (tag!=-1) {
+            particle->trail_count=xml_get_attribute_int(tag,"count");
+            particle->trail_step=xml_get_attribute_float(tag,"step");
+            particle->reduce_pixel_fact=xml_get_attribute_float(tag,"reduce");
+        }
+		
+		if (particle->trail_step>max_particle_trail) particle->trail_step=max_particle_trail;
+		
+        tag=xml_findfirstchild("Gravity",particle_tag);
+        if (tag!=-1) {
+            particle->start_gravity=xml_get_attribute_float(tag,"start");
+            particle->gravity_add=xml_get_attribute_float(tag,"add");
+        }
+		
+        tag=xml_findfirstchild("Size",particle_tag);
+        if (tag!=-1) {
+            particle->start_pixel_size=xml_get_attribute_int(tag,"start");
+            particle->end_pixel_size=xml_get_attribute_int(tag,"end");
+        }
+
+			// old way of defining particles
+
+        tag=xml_findfirstchild("Ring",particle_tag);
+        if (tag!=-1) {
+            ring_radius=xml_get_attribute_int(tag,"radius");
+            ring_size=xml_get_attribute_int(tag,"size");
+            ring_min_move=xml_get_attribute_float(tag,"min_move");
+            ring_max_move=xml_get_attribute_float(tag,"max_move");
+			ring_flip=xml_get_attribute_boolean(tag,"flip");
+
+			particle->rot.x=particle->rot.y=particle->rot.z=0.0f;
+			particle->rot_accel.x=particle->rot_accel.y=particle->rot_accel.z=0.0f;
+		
+			if (ring_flip) {
+				particle->pt.x=ring_radius+ring_size;
+				particle->pt.z=ring_radius+ring_size;
+				particle->pt.y=0;
+		
+				particle->vct.x=ring_max_move;
+				particle->vct.z=ring_max_move;
+				particle->vct.y=0;
+			}
+			else {
+				particle->pt.x=ring_radius+ring_size;
+				particle->pt.y=ring_radius+ring_size;
+				particle->pt.z=ring_radius+ring_size;
+		
+				particle->vct.x=ring_max_move;
+				particle->vct.y=ring_max_move;
+				particle->vct.z=ring_max_move;
+			}
+		}
+
+			// new way of defining particles
+
+		else {
+
+			tag=xml_findfirstchild("X",particle_tag);
+			if (tag!=-1) {
+				particle->pt.x=xml_get_attribute_int(tag,"offset");
+				particle->vct.x=xml_get_attribute_float(tag,"move");
+				particle->rot.x=xml_get_attribute_float_default(tag,"rot",0.0f);
+				particle->rot_accel.x=xml_get_attribute_float_default(tag,"rot_accel",0.0f);
+			}
+
+			tag=xml_findfirstchild("Y",particle_tag);
+			if (tag!=-1) {
+				particle->pt.y=xml_get_attribute_int(tag,"offset");
+				particle->vct.y=xml_get_attribute_float(tag,"move");
+				particle->rot.y=xml_get_attribute_float_default(tag,"rot",0.0f);
+				particle->rot_accel.y=xml_get_attribute_float_default(tag,"rot_accel",0.0f);
+			}
+
+			tag=xml_findfirstchild("Z",particle_tag);
+			if (tag!=-1) {
+				particle->pt.z=xml_get_attribute_int(tag,"offset");
+				particle->vct.z=xml_get_attribute_float(tag,"move");
+				particle->rot.z=xml_get_attribute_float_default(tag,"rot",0.0f);
+				particle->rot_accel.z=xml_get_attribute_float_default(tag,"rot_accel",0.0f);
+			}
+
+		}
+
+		particle->start_color.r=particle->start_color.g=particle->start_color.b=1.0f;
+		particle->end_color.r=particle->end_color.g=particle->end_color.b=1.0f;
+		particle->team_tint=FALSE;
+
+        tag=xml_findfirstchild("Color",particle_tag);
+        if (tag!=-1) {
+			xml_get_attribute_color(tag,"start",&particle->start_color);
+			xml_get_attribute_color(tag,"end",&particle->end_color);
+            particle->team_tint=xml_get_attribute_boolean(tag,"team");
+        }
+		
+        tag=xml_findfirstchild("Alpha",particle_tag);
+        if (tag!=-1) {
+            particle->start_alpha=xml_get_attribute_float(tag,"start");
+            particle->end_alpha=xml_get_attribute_float(tag,"end");
+        }
+	
+			// move on to next particle
+		
+		particle_tag=xml_findnextchild(particle_tag);
+	}
+
+		// load group particles
+
+    if (particle_group_head_tag==-1) {
+		xml_close_file();
+		return;
+	}
+
+  	particle_group_tag=xml_findfirstchild("Particle_Group",particle_group_head_tag);
+   
+	while (particle_group_tag!=-1) {
+	
+			// create a new particle group
+			
+		if (iface.particle_list.nparticle>=max_iface_particle) {
+			xml_close_file();
+			return;
+		}
+			
+		particle=&iface.particle_list.particles[iface.particle_list.nparticle];
+		iface.particle_list.nparticle++;
+		
+			// read in particle group
+		
+		xml_get_attribute_text(particle_group_tag,"name",particle->name,name_str_len);
+		
+		particle->group.on=TRUE;
+		particle->group.count=0;
+
+		particle->count=0;
+
+        particle_head_tag=xml_findfirstchild("Particles",particle_group_tag);
+        if (particle_head_tag!=-1) {
+
+			particle->group.count=xml_countchildren(particle_head_tag);
+			if (particle->group.count>max_particle_group) particle->group.count=max_particle_group;
+
+			particle_tag=xml_findfirstchild("Particle",particle_head_tag);
+    
+			for (n=0;n!=particle->group.count;n++) {
+				xml_get_attribute_text(particle_tag,"name",particle->group.particles[n].name,name_str_len);
+				particle->group.particles[n].shift=xml_get_attribute_int_default(particle_tag,"offset",0);
+				particle_tag=xml_findnextchild(particle_tag);
+			}
+		}
+
+			// move on to next particle group
+		
+		particle_group_tag=xml_findnextchild(particle_group_tag);
+	}
+	
+	xml_close_file();
+}
+
+/* =======================================================
+
+      Read Ring XML
+      
+======================================================= */
+
+void read_settings_ring(void)
+{
+	int					nring,ring_head_tag,ring_tag,tag;
+	char				path[1024];
+	iface_ring_type		*ring;
+
+		// read in rings from setting files
+		
+	file_paths_data(&setup.file_path_setup,path,"Settings","Rings","xml");
+	if (!xml_open_file(path)) return;
+	
+		// get counts
+       
+    ring_head_tag=xml_findrootchild("Rings");
+    if (ring_head_tag==-1) {
+		xml_close_file();
+		return;
+	}
+
+	nring=xml_countchildren(ring_head_tag);
+
+	if (nring==0) {
+		xml_close_file();
+		return;
+	}
+
+		// read in the rings
+
+	ring_tag=xml_findfirstchild("Ring",ring_head_tag);
+    
+	while (ring_tag!=-1) {
+	
+			// create a new ring
+
+		if (iface.ring_list.nring>=max_iface_ring) {
+			xml_close_file();
+			return;
+		}
+			
+		ring=&iface.ring_list.rings[iface.ring_list.nring];
+		iface.ring_list.nring++;
+		
+			// read in ring
+		
+		xml_get_attribute_text(ring_tag,"name",ring->name,name_str_len);
+		
+		ring->life_msec=1000;
+		ring->blend_add=FALSE;
+
+        tag=xml_findfirstchild("Settings",ring_tag);
+        if (tag!=-1) {
+            ring->life_msec=xml_get_attribute_int(tag,"time");
+            ring->blend_add=xml_get_attribute_boolean(tag,"additive");
+        }
+		
+		ring->animate.image_count=1;
+		ring->animate.image_per_row=1;
+		ring->animate.msec=200;
+		ring->animate.loop=TRUE;
+		ring->animate.loop_back=FALSE;
+		
+        tag=xml_findfirstchild("Image",ring_tag);
+        if (tag!=-1) {
+            xml_get_attribute_text(tag,"file",ring->bitmap_name,file_str_len);
+            ring->animate.image_count=xml_get_attribute_int(tag,"count");
+			ring->animate.image_per_row=(int)sqrt((float)ring->animate.image_count);
+			ring->animate.msec=xml_get_attribute_int(tag,"time");
+            ring->animate.loop=xml_get_attribute_boolean(tag,"loop");
+            ring->animate.loop_back=xml_get_attribute_boolean(tag,"loop_back");
+		}
+		
+        tag=xml_findfirstchild("Outer",ring_tag);
+        if (tag!=-1) {
+            ring->start_outer_size=xml_get_attribute_int(tag,"start");
+            ring->end_outer_size=xml_get_attribute_int(tag,"end");
+        }
+
+        tag=xml_findfirstchild("Inner",ring_tag);
+        if (tag!=-1) {
+            ring->start_inner_size=xml_get_attribute_int(tag,"start");
+            ring->end_inner_size=xml_get_attribute_int(tag,"end");
+        }
+
+        tag=xml_findfirstchild("Rotate",ring_tag);
+        if (tag!=-1) {
+            ring->ang.x=xml_get_attribute_float(tag,"x");
+            ring->ang.y=xml_get_attribute_float(tag,"y");
+            ring->ang.z=xml_get_attribute_float(tag,"z");
+            ring->rot.x=xml_get_attribute_float_default(tag,"x_add",0.0f);
+            ring->rot.y=xml_get_attribute_float_default(tag,"y_add",0.0f);
+            ring->rot.z=xml_get_attribute_float_default(tag,"z_add",0.0f);
+            ring->rot_accel.x=xml_get_attribute_float_default(tag,"x_accel",0.0f);
+            ring->rot_accel.y=xml_get_attribute_float_default(tag,"y_accel",0.0f);
+            ring->rot_accel.z=xml_get_attribute_float_default(tag,"z_accel",0.0f);
+		}
+
+        tag=xml_findfirstchild("Move",ring_tag);
+        if (tag!=-1) {
+            ring->vct.x=xml_get_attribute_float(tag,"x");
+            ring->vct.y=xml_get_attribute_float(tag,"y");
+            ring->vct.z=xml_get_attribute_float(tag,"z");
+        }
+		
+		ring->start_color.r=ring->start_color.g=ring->start_color.b=1.0f;
+		ring->end_color.r=ring->end_color.g=ring->end_color.b=1.0f;
+		ring->team_tint=FALSE;
+
+        tag=xml_findfirstchild("Color",ring_tag);
+        if (tag!=-1) {
+			xml_get_attribute_color(tag,"start",&ring->start_color);
+			xml_get_attribute_color(tag,"end",&ring->end_color);
+			ring->team_tint=xml_get_attribute_boolean(tag,"team");
+       }
+		
+        tag=xml_findfirstchild("Alpha",ring_tag);
+        if (tag!=-1) {
+            ring->start_alpha=xml_get_attribute_float(tag,"start");
+            ring->end_alpha=xml_get_attribute_float(tag,"end");
+        }
+	
+			// move on to next ring
+			
+		ring_tag=xml_findnextchild(ring_tag);
+	}
+	
+	xml_close_file();
+}
+
+/* =======================================================
+
       Read Action XML
       
 ======================================================= */
@@ -1139,6 +1540,114 @@ void read_settings_shader(void)
 		iface.shader_list.nshader++;
 		
 		shader_tag=xml_findnextchild(shader_tag);
+	}
+	
+	xml_close_file();
+}
+
+/* =======================================================
+
+      Read Marks XML
+      
+======================================================= */
+
+void read_settings_mark(void)
+{
+	int					nmark,marks_head_tag,mark_tag,tag;
+	char				path[1024];
+	iface_mark_type		*mark;
+
+		// read in interface from setting files
+		
+	file_paths_data(&setup.file_path_setup,path,"Settings","Marks","xml");
+	if (!xml_open_file(path)) return;
+	
+		// get counts
+		
+    marks_head_tag=xml_findrootchild("Marks");
+    if (marks_head_tag==-1) {
+		xml_close_file();
+		return;
+	}
+
+	nmark=xml_countchildren(marks_head_tag);
+
+	if (nmark==0) {
+		xml_close_file();
+		return;
+	}
+
+		// read the marks
+	
+	mark_tag=xml_findfirstchild("Mark",marks_head_tag);
+	
+	while (mark_tag!=-1) {
+	
+			// create a new mark
+			
+		if (iface.mark_list.nmark>=max_iface_mark) {
+			xml_close_file();
+			return;
+		}
+		
+		mark=&iface.mark_list.marks[iface.mark_list.nmark];
+		iface.mark_list.nmark++;
+			
+			// read settings
+		
+		xml_get_attribute_text(mark_tag,"name",mark->name,name_str_len);
+		
+		tag=xml_findfirstchild("Setting",mark_tag);
+		if (tag!=-1) {
+			mark->life_msec=xml_get_attribute_int(tag,"time");
+			mark->fade_in_msec=xml_get_attribute_int(tag,"fade_in");
+			mark->fade_out_msec=xml_get_attribute_int(tag,"fade_out");
+			mark->no_rotate=xml_get_attribute_boolean(tag,"no_rotate");
+			mark->no_transparent=xml_get_attribute_boolean(tag,"no_transparent");
+			mark->no_opaque=xml_get_attribute_boolean(tag,"no_opaque");
+            mark->hilite=xml_get_attribute_boolean(tag,"highlight");
+            mark->blend_add=xml_get_attribute_boolean(tag,"additive");
+		}
+		else {
+			mark->life_msec=1000;
+			mark->fade_in_msec=mark->fade_out_msec=500;
+			mark->no_rotate=FALSE;
+			mark->no_transparent=FALSE;
+			mark->no_opaque=FALSE;
+			mark->hilite=FALSE;
+			mark->blend_add=FALSE;
+		}
+		
+		mark->total_msec=mark->life_msec+mark->fade_in_msec+mark->fade_out_msec;
+		
+		mark->animate.image_count=1;
+		mark->animate.image_per_row=1;
+		mark->animate.msec=200;
+		mark->animate.loop=TRUE;
+		mark->animate.loop_back=FALSE;
+	
+		tag=xml_findfirstchild("Image",mark_tag);
+		if (tag!=-1) {
+			xml_get_attribute_text(tag,"file",mark->bitmap_name,file_str_len);
+			mark->animate.image_count=xml_get_attribute_int(tag,"count");
+			mark->animate.image_per_row=(int)sqrt((float)mark->animate.image_count);
+			mark->animate.msec=xml_get_attribute_int(tag,"time");
+			mark->animate.loop=xml_get_attribute_boolean(tag,"loop");
+			mark->animate.loop_back=xml_get_attribute_boolean(tag,"loop_back");
+		}
+	
+		mark->color.r=mark->color.g=mark->color.b=1.0f;
+		mark->team_tint=FALSE;
+
+        tag=xml_findfirstchild("Color",mark_tag);
+        if (tag!=-1) {
+			xml_get_attribute_color(tag,"color",&mark->color);
+            mark->team_tint=xml_get_attribute_boolean(tag,"team");
+        }
+
+			// move on to next mark
+			
+		mark_tag=xml_findnextchild(mark_tag);
 	}
 	
 	xml_close_file();

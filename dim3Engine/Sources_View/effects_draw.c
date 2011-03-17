@@ -309,7 +309,7 @@ void effect_draw_ray(effect_type *effect,int count)
       
 ======================================================= */
 
-void effect_image_animate_get_uv(int tick,image_animation_type *animate,float *gx,float *gy,float *g_size)
+void effect_image_animate_get_uv(int tick,iface_image_animation_type *animate,float *gx,float *gy,float *g_size)
 {
 	int				k,nimage,image_per_row;
 	float			gsz;

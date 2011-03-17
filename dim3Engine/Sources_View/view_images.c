@@ -274,11 +274,11 @@ void view_images_cached_load(void)
 	hud_bitmap_type		*hud_bitmap;
 	hud_radar_icon_type	*icon;
 	halo_type			*halo;
-	mark_type			*mark;
 	crosshair_type		*crosshair;
 	iface_particle_type	*particle;
 	iface_ring_type		*ring;
-    
+ 	iface_mark_type		*mark;
+   
 		// hud bitmaps
 
 	hud_bitmap=iface.bitmaps;
@@ -314,16 +314,6 @@ void view_images_cached_load(void)
 		}
 	}
 
-		// marks
-
-	for (n=0;n!=max_mark_list;n++) {
-		mark=server.mark_list.marks[n];
-		if (mark!=NULL) {
-			file_paths_data(&setup.file_path_setup,path,"Bitmaps/Marks",mark->bitmap_name,"png");
-			mark->image_idx=view_images_load_single(path,FALSE,FALSE);
-		}
-	}
-
 		// crosshairs
 
 	for (n=0;n!=max_crosshair_list;n++) {
@@ -354,6 +344,16 @@ void view_images_cached_load(void)
 		ring++;
 	}
 
+		// marks
+		
+	mark=iface.mark_list.marks;
+
+	for (n=0;n!=iface.mark_list.nmark;n++) {
+		file_paths_data(&setup.file_path_setup,path,"Bitmaps/Marks",mark->bitmap_name,"png");
+		mark->image_idx=view_images_load_single(path,FALSE,FALSE);
+		mark++;
+	}
+
 		// remote bitmaps
 
 	if (net_setup.mode!=net_mode_none) {
@@ -371,11 +371,11 @@ void view_images_cached_free(void)
 	hud_bitmap_type		*hud_bitmap;
 	hud_radar_icon_type	*icon;
 	halo_type			*halo;
-	mark_type			*mark;
 	crosshair_type		*crosshair;
 	iface_particle_type	*particle;
 	iface_ring_type		*ring;
-    
+ 	iface_mark_type		*mark;
+   
 		// hud bitmaps
 
 	hud_bitmap=iface.bitmaps;
@@ -409,13 +409,6 @@ void view_images_cached_free(void)
 		if (halo!=NULL) view_images_free_single(halo->image_idx);
 	}
 
-		// marks
-
-	for (n=0;n!=max_mark_list;n++) {
-		mark=server.mark_list.marks[n];
-		if (mark!=NULL) view_images_free_single(mark->image_idx);
-	}
-
 		// crosshairs
 
 	for (n=0;n!=max_crosshair_list;n++) {
@@ -430,6 +423,15 @@ void view_images_cached_free(void)
 	for (n=0;n!=iface.particle_list.nparticle;n++) {
 		view_images_free_single(particle->image_idx);
 		particle++;
+	}
+
+		// marks
+		
+	mark=iface.mark_list.marks;
+
+	for (n=0;n!=iface.mark_list.nmark;n++) {
+		view_images_free_single(mark->image_idx);
+		mark++;
 	}
 	
 		// rings
