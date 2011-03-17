@@ -32,7 +32,6 @@ and can be sold or given away.
 #include "interface.h"
 #include "video.h"
 #include "inputs.h"
-#include "xmls.h"
 #include "network.h"
 #include "physics.h"
 #include "timing.h"

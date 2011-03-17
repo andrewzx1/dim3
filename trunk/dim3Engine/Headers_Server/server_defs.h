@@ -57,7 +57,6 @@ and can be sold or given away.
 #define max_decal_list							128
 
 #define max_halo_list							32
-#define max_mark_list							128
 #define max_crosshair_list						32
 
 //
@@ -1078,13 +1077,6 @@ typedef struct		{
 // misc settings structures
 //
 
-// supergumba -- remove later
-typedef struct		{
-						int								image_count,image_per_row,msec;
-						bool							loop,loop_back;
-					} image_animation_type;
-
-					
 typedef struct		{
 						int								image_idx;
 						char							name[name_str_len],bitmap_name[name_str_len];
@@ -1094,19 +1086,6 @@ typedef struct		{
 						halo_type*						halos[max_halo_list];
 					} halo_list_type;
 					
-typedef struct		{
-						int								image_idx,
-														fade_in_msec,life_msec,fade_out_msec,total_msec;
-						char							name[name_str_len],bitmap_name[name_str_len];
-						bool							no_rotate,no_transparent,no_opaque,hilite,blend_add,team_tint;
-						d3col							color;
-						image_animation_type			animate;		// supergumba -- make into iface_ version
-					} mark_type;
-
-typedef struct		{
-						mark_type*						marks[max_mark_list];
-					} mark_list_type;
-
 typedef struct		{
 						int								image_idx;
 						char							name[name_str_len],bitmap_name[name_str_len];
@@ -1131,7 +1110,6 @@ typedef struct		{
 						effect_list_type				effect_list;
 						decal_list_type					decal_list;
 						halo_list_type					halo_list;
-						mark_list_type					mark_list;
 						crosshair_list_type				crosshair_list;
 					} server_type;
 

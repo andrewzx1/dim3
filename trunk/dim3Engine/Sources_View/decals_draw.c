@@ -35,8 +35,9 @@ and can be sold or given away.
 #include "timing.h"
 
 extern map_type			map;
-extern server_type		server;
 extern view_type		view;
+extern server_type		server;
+extern iface_type		iface;
 extern setup_type		setup;
 
 extern bool view_mesh_in_draw_list(int mesh_idx);
@@ -93,14 +94,14 @@ void decal_render_stencil(map_mesh_type *mesh,map_mesh_poly_type *poly,int stenc
 
 void decal_render_mark(int stencil_idx,decal_type *decal)
 {
-	int				k,tick,fade_out_start_tick;
-	float			alpha,g_size,gx,gy,cf[3];
-	float			*vp,*uv,*vertex_ptr,*uv_ptr;
-	mark_type		*mark;
+	int					k,tick,fade_out_start_tick;
+	float				alpha,g_size,gx,gy,cf[3];
+	float				*vp,*uv,*vertex_ptr,*uv_ptr;
+	iface_mark_type		*mark;
 	
 		// get the alpha
 	
-	mark=server.mark_list.marks[decal->mark_idx];
+	mark=&iface.mark_list.marks[decal->mark_idx];
 		
 	alpha=decal->alpha;
 	tick=game_time_get()-decal->start_tick;

@@ -41,7 +41,6 @@ and can be sold or given away.
 #endif
 
 #include "interface.h"
-#include "xmls.h"
 
 extern server_type				server;		// supergumba -- delete later
 extern iface_type				iface;
@@ -62,6 +61,8 @@ bool interface_initialize(void)
 
 	iface.particle_list.nparticle=0;
 	iface.ring_list.nring=0;
+	iface.mark_list.nmark=0;
+	
 	iface.sound_list.nsound=0;
 	iface.shader_list.nshader=0;
 
@@ -76,12 +77,13 @@ bool interface_initialize(void)
 
 	iface.particle_list.particles=NULL;
 	iface.ring_list.rings=NULL;
+	iface.mark_list.marks=NULL;
 
 	iface.action_display_list.action_displays=NULL;
 	iface.sound_list.sounds=NULL;
 	iface.shader_list.shaders=NULL;
 
-		// hud pointers
+		// iface pointers
 
 	iface.bitmaps=(hud_bitmap_type*)malloc(max_hud_bitmap*sizeof(hud_bitmap_type));
 	if (iface.bitmaps==NULL) return(FALSE);
@@ -107,6 +109,9 @@ bool interface_initialize(void)
 	iface.ring_list.rings=(iface_ring_type*)malloc(max_iface_ring*sizeof(iface_ring_type));
 	if (iface.ring_list.rings==NULL) return(FALSE);
 
+	iface.mark_list.marks=(iface_mark_type*)malloc(max_iface_mark*sizeof(iface_mark_type));
+	if (iface.mark_list.marks==NULL) return(FALSE);
+
 	iface.action_display_list.action_displays=(iface_action_display_type*)malloc(max_iface_action*sizeof(iface_action_display_type));
 	if (iface.action_display_list.action_displays==NULL) return(FALSE);
 
@@ -127,6 +132,7 @@ bool interface_initialize(void)
 
 	bzero(iface.particle_list.particles,(max_iface_particle*sizeof(iface_particle_type)));
 	bzero(iface.ring_list.rings,(max_iface_ring*sizeof(iface_ring_type)));
+	bzero(iface.mark_list.marks,(max_iface_mark*sizeof(iface_mark_type)));
 
 	bzero(iface.action_display_list.action_displays,(max_iface_action*sizeof(iface_action_display_type)));
 	bzero(iface.sound_list.sounds,(max_iface_sound*sizeof(iface_sound_type)));
@@ -148,6 +154,7 @@ void interface_shutdown(void)
 
 	if (iface.particle_list.particles!=NULL) free(iface.particle_list.particles);
 	if (iface.ring_list.rings!=NULL) free(iface.ring_list.rings);
+	if (iface.mark_list.marks!=NULL) free(iface.mark_list.marks);
 
 	if (iface.action_display_list.action_displays!=NULL) free(iface.action_display_list.action_displays);
 	if (iface.sound_list.sounds!=NULL) free(iface.sound_list.sounds);

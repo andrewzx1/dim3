@@ -63,6 +63,7 @@ and can be sold or given away.
 
 #define max_iface_particle						128
 #define max_iface_ring							64
+#define max_iface_mark							128
 
 #define max_iface_action						128
 #define max_iface_sound							128
@@ -134,6 +135,16 @@ typedef struct		{
 					} hud_font_type;
 
 //
+// generic animated image
+//
+
+typedef struct		{
+						int								image_count,image_per_row,msec;
+						bool							loop,loop_back;
+					} iface_image_animation_type;
+
+
+//
 // bitmaps, text, bars
 //
 
@@ -149,14 +160,14 @@ typedef struct		{
 					} hud_bitmap_repeat_type;
 					
 typedef struct		{
-						int						x,y,x_size,y_size,image_idx,show_tick;
-						float					alpha,rot;
-						char					name[name_str_len],filename[file_str_len];
-						bool					show,old_show,
-												flash,flip_horz,flip_vert,team_tint;
-						hud_bitmap_repeat_type	repeat;
-						image_animation_type	animate;
-						hud_item_fade_type		fade;
+						int							x,y,x_size,y_size,image_idx,show_tick;
+						float						alpha,rot;
+						char						name[name_str_len],filename[file_str_len];
+						bool						show,old_show,
+													flash,flip_horz,flip_vert,team_tint;
+						hud_bitmap_repeat_type		repeat;
+						iface_image_animation_type	animate;
+						hud_item_fade_type			fade;
 					} hud_bitmap_type;
 
 typedef struct		{
@@ -328,8 +339,8 @@ typedef struct		{
 //
 
 typedef struct		{
-						int						title_msec,
-												map_msec;
+						int								title_msec,
+														map_msec;
 					} hud_fade_type;
 
 //
@@ -337,12 +348,12 @@ typedef struct		{
 //
 
 typedef struct		{
-						int						save_id;
-						char					desc[64];
+						int								save_id;
+						char							desc[64];
 					} hud_simple_save_type;
 
 typedef struct		{
-						hud_simple_save_type	saves[max_simple_save_spot];
+						hud_simple_save_type			saves[max_simple_save_spot];
 					} hud_simple_save_list;
 					
 //
@@ -350,76 +361,67 @@ typedef struct		{
 //
 
 typedef struct		{
-						char					name[name_str_len],str[chat_str_len];
-						d3col					col;
+						char							name[name_str_len],str[chat_str_len];
+						d3col							col;
 					} hud_chat_line_type;
 
 typedef struct		{
-						int						nline,x,y,
-												last_add_life_sec,next_life_sec,
-												remove_tick;
-						char					type_str[chat_str_len];
-						bool					type_on;
-						hud_chat_line_type		*lines;
+						int								nline,x,y,
+														last_add_life_sec,next_life_sec,
+														remove_tick;
+						char							type_str[chat_str_len];
+						bool							type_on;
+						hud_chat_line_type				*lines;
 					} hud_chat_type;
 
 typedef struct		{
-						bool					on;
+						bool							on;
 					} hud_score_type;
 
 typedef struct		{
-						char					name[name_str_len],model_name[name_str_len],
-												param[name_str_len];
-						float					interface_resize;
-						d3pnt					interface_offset;
+						char							name[name_str_len],model_name[name_str_len],
+														param[name_str_len];
+						float							interface_resize;
+						d3pnt							interface_offset;
 					} hud_character_item_type;
 
 typedef struct		{
-						int						ncharacter;
-						hud_character_item_type	characters[max_character];
+						int								ncharacter;
+						hud_character_item_type			characters[max_character];
 					} hud_character_type;
 	
 typedef struct		{
-						char					name[name_str_len];
+						char							name[name_str_len];
 					} hud_net_bot_type;
 
 typedef struct		{
-						bool					on;
-						hud_net_bot_type		bots[max_net_bot];
+						bool							on;
+						hud_net_bot_type				bots[max_net_bot];
 					} hud_net_bots_type;
 
 typedef struct		{
-						char					name[name_str_len];
-						bool					use_teams,monsters;
+						char							name[name_str_len];
+						bool							use_teams,monsters;
 					} hud_net_game_type;
 
 typedef struct		{
-						int						ngame;
-						hud_net_game_type		games[max_net_game];
+						int								ngame;
+						hud_net_game_type				games[max_net_game];
 					} hud_net_games_type;
 
 typedef struct		{
-						char					name[name_str_len],descript[64];
+						char							name[name_str_len],descript[64];
 					} hud_net_option_type;
 
 typedef struct		{
-						int						noption;
-						hud_net_option_type		options[max_net_option];
+						int								noption;
+						hud_net_option_type				options[max_net_option];
 					} hud_net_options_type;
 					
 typedef struct		{
-						int						port;
-						char					host[64],url[256];
+						int								port;
+						char							host[64],url[256];
 					} hud_net_news_type;
-
-//
-// generic animated image
-//
-
-typedef struct		{
-						int								image_count,image_per_row,msec;
-						bool							loop,loop_back;
-					} iface_image_animation_type;
 
 //
 // particles
@@ -479,13 +481,31 @@ typedef struct		{
 						d3ang							ang,rot;
 						d3vct							vct,rot_accel;
 						d3col							start_color,end_color;
-						image_animation_type			animate;
+						iface_image_animation_type		animate;
 					} iface_ring_type;
 
 typedef struct		{
 						int								nring;
 						iface_ring_type					*rings;
 					} iface_ring_list;
+
+//
+// marks
+//
+
+typedef struct		{
+						int								image_idx,
+														fade_in_msec,life_msec,fade_out_msec,total_msec;
+						char							name[name_str_len],bitmap_name[name_str_len];
+						bool							no_rotate,no_transparent,no_opaque,hilite,blend_add,team_tint;
+						d3col							color;
+						iface_image_animation_type		animate;
+					} iface_mark_type;
+
+typedef struct		{
+						int								nmark;
+						iface_mark_type					*marks;
+					} iface_mark_list;
 
 //
 // actions
@@ -569,6 +589,7 @@ typedef struct		{
 						hud_net_news_type				net_news;
 						iface_particle_list				particle_list;
 						iface_ring_list					ring_list;
+						iface_mark_list					mark_list;
 						iface_action_display_list		action_display_list;
 						iface_sound_list				sound_list;
 						iface_shader_list				shader_list;
