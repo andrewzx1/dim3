@@ -269,24 +269,24 @@ void view_images_free_single(int idx)
 
 void view_images_cached_load(void)
 {
-	int					n;
-	char				path[1024];
-	hud_bitmap_type		*hud_bitmap;
-	hud_radar_icon_type	*icon;
-	halo_type			*halo;
-	crosshair_type		*crosshair;
-	iface_particle_type	*particle;
-	iface_ring_type		*ring;
- 	iface_mark_type		*mark;
+	int						n;
+	char					path[1024];
+	iface_bitmap_type		*iface_bitmap;
+	hud_radar_icon_type		*icon;
+	iface_particle_type		*particle;
+	iface_ring_type			*ring;
+ 	iface_mark_type			*mark;
+	iface_halo_type			*halo;
+	iface_crosshair_type	*crosshair;
    
 		// hud bitmaps
 
-	hud_bitmap=iface.bitmaps;
+	iface_bitmap=iface.bitmap_list.bitmaps;
 	
-	for (n=0;n!=iface.count.bitmap;n++) {
-		file_paths_data(&setup.file_path_setup,path,"Bitmaps/Interface",hud_bitmap->filename,"png");
-		hud_bitmap->image_idx=view_images_load_single(path,FALSE,TRUE);
-		hud_bitmap++;
+	for (n=0;n!=iface.bitmap_list.nbitmap;n++) {
+		file_paths_data(&setup.file_path_setup,path,"Bitmaps/Interface",iface_bitmap->filename,"png");
+		iface_bitmap->image_idx=view_images_load_single(path,FALSE,TRUE);
+		iface_bitmap++;
 	}
 
 		// radar background
@@ -302,26 +302,6 @@ void view_images_cached_load(void)
 		file_paths_data(&setup.file_path_setup,path,"Bitmaps/Radar",icon->bitmap_name,"png");
 		icon->image_idx=view_images_load_single(path,FALSE,TRUE);
 		icon++;
-	}
-
-		// halos
-
-	for (n=0;n!=max_halo_list;n++) {
-		halo=server.halo_list.halos[n];
-		if (halo!=NULL) {
-			file_paths_data(&setup.file_path_setup,path,"Bitmaps/Halos",halo->bitmap_name,"png");
-			halo->image_idx=view_images_load_single(path,FALSE,FALSE);
-		}
-	}
-
-		// crosshairs
-
-	for (n=0;n!=max_crosshair_list;n++) {
-		crosshair=server.crosshair_list.crosshairs[n];
-		if (crosshair!=NULL) {
-			file_paths_data(&setup.file_path_setup,path,"Bitmaps/Crosshairs",crosshair->bitmap_name,"png");
-			crosshair->image_idx=view_images_load_single(path,FALSE,TRUE);
-		}
 	}
 
 		// particles
@@ -354,6 +334,26 @@ void view_images_cached_load(void)
 		mark++;
 	}
 
+		// halos
+
+	halo=iface.halo_list.halos;
+
+	for (n=0;n!=iface.halo_list.nhalo;n++) {
+		file_paths_data(&setup.file_path_setup,path,"Bitmaps/Halos",halo->bitmap_name,"png");
+		halo->image_idx=view_images_load_single(path,FALSE,FALSE);
+		halo++;
+	}
+
+		// crosshairs
+
+	crosshair=iface.crosshair_list.crosshairs;
+
+	for (n=0;n!=iface.crosshair_list.ncrosshair;n++) {
+		file_paths_data(&setup.file_path_setup,path,"Bitmaps/Crosshairs",crosshair->bitmap_name,"png");
+		crosshair->image_idx=view_images_load_single(path,FALSE,TRUE);
+		crosshair++;
+	}
+
 		// remote bitmaps
 
 	if (net_setup.mode!=net_mode_none) {
@@ -367,21 +367,22 @@ void view_images_cached_load(void)
 
 void view_images_cached_free(void)
 {
-	int					n;
-	hud_bitmap_type		*hud_bitmap;
-	hud_radar_icon_type	*icon;
-	halo_type			*halo;
-	crosshair_type		*crosshair;
-	iface_particle_type	*particle;
-	iface_ring_type		*ring;
- 	iface_mark_type		*mark;
-   
+	int						n;
+	iface_bitmap_type		*iface_bitmap;
+	hud_radar_icon_type		*icon;
+	iface_particle_type		*particle;
+	iface_ring_type			*ring;
+ 	iface_mark_type			*mark;
+  	iface_halo_type			*halo;
+	iface_crosshair_type	*crosshair;
+ 
 		// hud bitmaps
 
-	hud_bitmap=iface.bitmaps;
+	iface_bitmap=iface.bitmap_list.bitmaps;
 	
-	for (n=0;n!=iface.count.bitmap;n++) {
-		view_images_free_single(hud_bitmap->image_idx);
+	for (n=0;n!=iface.bitmap_list.nbitmap;n++) {
+		view_images_free_single(iface_bitmap->image_idx);
+		iface_bitmap++;
 	}
 
 		// radar
@@ -400,20 +401,6 @@ void view_images_cached_free(void)
 			view_images_free_single(icon->image_idx);
 			icon++;
 		}
-	}
-
-		// halos
-
-	for (n=0;n!=max_halo_list;n++) {
-		halo=server.halo_list.halos[n];
-		if (halo!=NULL) view_images_free_single(halo->image_idx);
-	}
-
-		// crosshairs
-
-	for (n=0;n!=max_crosshair_list;n++) {
-		crosshair=server.crosshair_list.crosshairs[n];
-		if (crosshair!=NULL) view_images_free_single(crosshair->image_idx);
 	}
 
 		// particles
@@ -441,6 +428,24 @@ void view_images_cached_free(void)
 	for (n=0;n!=iface.ring_list.nring;n++) {
 		view_images_free_single(ring->image_idx);
 		ring++;
+	}
+
+		// halos
+
+	halo=iface.halo_list.halos;
+
+	for (n=0;n!=iface.halo_list.nhalo;n++) {
+		view_images_free_single(halo->image_idx);
+		halo++;
+	}
+
+		// crosshairs
+
+	crosshair=iface.crosshair_list.crosshairs;
+
+	for (n=0;n!=iface.crosshair_list.ncrosshair;n++) {
+		view_images_free_single(crosshair->image_idx);
+		crosshair++;
 	}
 
 		// remote bitmaps

@@ -37,8 +37,29 @@ and can be sold or given away.
 #include "interface.h"
 #include "lights.h"
 
-extern server_type			server;
+extern iface_type			iface;
 extern setup_type			setup;
+
+/* =======================================================
+
+      Find Halos
+      
+======================================================= */
+
+int halo_find(char *name)
+{
+	int				n;
+	iface_halo_type	*halo;
+
+	halo=iface.halo_list.halos;
+
+	for (n=0;n!=iface.halo_list.nhalo;n++) {
+		if (strcasecmp(halo->name,name)==0)  return(n);
+		halo++;
+	}
+	
+	return(-1);
+}
 
 /* =======================================================
 
@@ -50,7 +71,7 @@ void read_settings_halo(void)
 {
 	int					nhalo,halos_head_tag,halo_tag,tag;
 	char				path[1024];
-	halo_type			*halo;
+	iface_halo_type		*halo;
 
 		// read in interface from setting files
 		
@@ -80,10 +101,13 @@ void read_settings_halo(void)
 	
 			// create a new halo
 
-		halo=halo_add_list();
-		if (halo==NULL) {
+		if (iface.halo_list.nhalo>=max_iface_halo) {
 			xml_close_file();
+			return;
 		}
+			
+		halo=&iface.halo_list.halos[iface.halo_list.nhalo];
+		iface.halo_list.nhalo++;
 			
 			// read settings
 			

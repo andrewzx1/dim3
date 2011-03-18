@@ -56,9 +56,6 @@ and can be sold or given away.
 #define max_effect_list							512
 #define max_decal_list							128
 
-#define max_halo_list							32
-#define max_crosshair_list						32
-
 //
 // maximums
 //
@@ -1074,28 +1071,6 @@ typedef struct		{
 					} server_time_type;
 
 //
-// misc settings structures
-//
-
-typedef struct		{
-						int								image_idx;
-						char							name[name_str_len],bitmap_name[name_str_len];
-					} halo_type;
-
-typedef struct		{
-						halo_type*						halos[max_halo_list];
-					} halo_list_type;
-					
-typedef struct		{
-						int								image_idx;
-						char							name[name_str_len],bitmap_name[name_str_len];
-					} crosshair_type;
-
-typedef struct		{
-						crosshair_type*					crosshairs[max_crosshair_list];
-					} crosshair_list_type;
-					
-//
 // Main Server Structure
 //
  
@@ -1109,8 +1084,6 @@ typedef struct		{
 						model_list_type					model_list;
 						effect_list_type				effect_list;
 						decal_list_type					decal_list;
-						halo_list_type					halo_list;
-						crosshair_list_type				crosshair_list;
 					} server_type;
 
 

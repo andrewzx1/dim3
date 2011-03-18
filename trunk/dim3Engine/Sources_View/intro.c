@@ -83,8 +83,8 @@ bitmap_type					intro_bitmap;
 
 void intro_show_hide_for_mode(void)
 {
-	int						n;
-	chooser_frame_type		frame;
+	int							n;
+	iface_chooser_frame_type	frame;
 	
 		// possible frame
 		

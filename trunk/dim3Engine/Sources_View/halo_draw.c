@@ -37,6 +37,7 @@ and can be sold or given away.
 extern camera_type			camera;
 extern view_type			view;
 extern server_type			server;
+extern iface_type			iface;
 extern setup_type			setup;
 
 /* =======================================================
@@ -324,7 +325,7 @@ void halo_draw_render(void)
 		glVertexPointer(2,GL_FLOAT,0,0);
 		glTexCoordPointer(2,GL_FLOAT,0,(void*)((4*2)*sizeof(float)));
 
-		gl_texture_simple_set(view_images_get_gl_id(server.halo_list.halos[halo_draw->idx]->image_idx),TRUE,1,1,1,halo_draw->alpha);
+		gl_texture_simple_set(view_images_get_gl_id(iface.halo_list.halos[halo_draw->idx].image_idx),TRUE,1,1,1,halo_draw->alpha);
 		glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 
 		view_unbind_current_vertex_object();

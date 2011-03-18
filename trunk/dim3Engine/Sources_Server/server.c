@@ -87,8 +87,6 @@ bool server_initialize(char *err_str)
 		// initialize project settings
 		
 	hud_initialize();
-	halo_initialize_list();
-	crosshair_initialize_list();
 	
 		// load project XML
 		
@@ -118,9 +116,6 @@ void server_shutdown(void)
 	
 		// release memory
 	
-	halo_free_list();
-	crosshair_free_list();
-
 	interface_shutdown();
 }
 

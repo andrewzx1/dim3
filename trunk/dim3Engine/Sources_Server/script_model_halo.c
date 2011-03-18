@@ -57,6 +57,7 @@ bool js_model_halo_set_noClipSelf(JSContextRef cx,JSObjectRef j_obj,JSStringRef 
 
 extern server_type		server;
 extern js_type			js;
+extern iface_type		iface;
 
 JSStaticValue 		model_halo_props[]={
 							{"index",				js_model_halo_get_index,				js_model_halo_set_index,			kJSPropertyAttributeDontDelete},
@@ -135,7 +136,7 @@ JSValueRef js_model_halo_get_name(JSContextRef cx,JSObjectRef j_obj,JSStringRef 
 		return(script_null_to_value(cx));
 	}
 
-	return(script_string_to_value(cx,server.halo_list.halos[halo->idx]->name));
+	return(script_string_to_value(cx,iface.halo_list.halos[halo->idx].name));
 }
 
 JSValueRef js_model_halo_get_minDistance(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)

@@ -41,12 +41,6 @@ extern iface_type			iface;
 
 void hud_initialize(void)
 {
-	iface.count.bitmap=0;
-	iface.count.text=0;
-	iface.count.bar=0;
-	iface.count.menu=0;
-	iface.count.chooser=0;
-
 	iface.chat.nline=0;
 	iface.chat.type_on=FALSE;
 	iface.chat.type_str[0]=0x0;
@@ -56,62 +50,11 @@ void hud_initialize(void)
 
 /* =======================================================
 
-      Finding
-      
-======================================================= */
-
-hud_bitmap_type* hud_bitmaps_find(char *name)
-{
-	int					n;
-	hud_bitmap_type		*bitmap;
-	
-	bitmap=iface.bitmaps;
-	
-	for (n=0;n!=iface.count.bitmap;n++) {
-		if (strcasecmp(bitmap->name,name)==0) return(bitmap);
-		bitmap++;
-	}
-	
-	return(NULL);
-}
-
-hud_text_type* hud_texts_find(char *name)
-{
-	int					n;
-	hud_text_type		*text;
-	
-	text=iface.texts;
-	
-	for (n=0;n!=iface.count.text;n++) {
-		if (strcasecmp(text->name,name)==0) return(text);
-		text++;
-	}
-	
-	return(NULL);
-}
-
-hud_bar_type* hud_bars_find(char *name)
-{
-	int					n;
-	hud_bar_type		*bar;
-	
-	bar=iface.bars;
-	
-	for (n=0;n!=iface.count.bar;n++) {
-		if (strcasecmp(bar->name,name)==0) return(bar);
-		bar++;
-	}
-	
-	return(NULL);
-}
-
-/* =======================================================
-
       HUD Set Text
       
 ======================================================= */
 
-void hud_text_set(hud_text_type *text,char *data)
+void hud_text_set(iface_text_type *text,char *data)
 {
 	strcpy(text->data,data);
 	text->has_return=(strstr(data,"{r}")!=NULL);
@@ -125,12 +68,12 @@ void hud_text_set(hud_text_type *text,char *data)
 
 void hud_bitmaps_hide_all(void)
 {
-	int				n;
-	hud_bitmap_type	*bitmap;
+	int					n;
+	iface_bitmap_type	*bitmap;
 
-	bitmap=iface.bitmaps;
+	bitmap=iface.bitmap_list.bitmaps;
 	
-	for (n=0;n!=iface.count.bitmap;n++) {
+	for (n=0;n!=iface.bitmap_list.nbitmap;n++) {
 		bitmap->show=FALSE;
 		bitmap++;
 	}
@@ -139,11 +82,11 @@ void hud_bitmaps_hide_all(void)
 void hud_texts_hide_all(void)
 {
 	int				n;
-	hud_text_type	*text;
+	iface_text_type	*text;
 
-	text=iface.texts;
+	text=iface.text_list.texts;
 	
-	for (n=0;n!=iface.count.text;n++) {
+	for (n=0;n!=iface.text_list.ntext;n++) {
 		text->show=FALSE;
 		text++;
 	}
@@ -152,11 +95,11 @@ void hud_texts_hide_all(void)
 void hud_bars_hide_all(void)
 {
 	int				n;
-	hud_bar_type	*bar;
+	iface_bar_type	*bar;
 
-	bar=iface.bars;
+	bar=iface.bar_list.bars;
 	
-	for (n=0;n!=iface.count.bar;n++) {
+	for (n=0;n!=iface.bar_list.nbar;n++) {
 		bar->show=FALSE;
 		bar++;
 	}

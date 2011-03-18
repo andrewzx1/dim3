@@ -61,6 +61,7 @@
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="0"
+				DisableSpecificWarnings="4603"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -486,33 +487,7 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\dim3Engine\Sources_Server\chooser.c"
-					>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-						/>
-					</FileConfiguration>
-				</File>
-				<File
 					RelativePath="..\..\dim3Engine\Sources_Server\console.c"
-					>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\..\dim3Engine\Sources_Server\crosshair.c"
 					>
 					<FileConfiguration
 						Name="Release|Win32"
@@ -603,19 +578,6 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\dim3Engine\Sources_Server\halos.c"
-					>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-						/>
-					</FileConfiguration>
-				</File>
-				<File
 					RelativePath="..\..\dim3Engine\Sources_Server\hud.c"
 					>
 					<FileConfiguration
@@ -630,19 +592,6 @@
 				</File>
 				<File
 					RelativePath="..\..\dim3Engine\Sources_Server\item.c"
-					>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\..\dim3Engine\Sources_Server\menu.c"
 					>
 					<FileConfiguration
 						Name="Release|Win32"
@@ -811,18 +760,6 @@
 				</File>
 				<File
 					RelativePath="..\..\dim3Common\Code\xml_interface_read.c"
-					>
-				</File>
-				<File
-					RelativePath="..\..\dim3Common\Code\xml_marks.c"
-					>
-				</File>
-				<File
-					RelativePath="..\..\dim3Common\Code\xml_particles.c"
-					>
-				</File>
-				<File
-					RelativePath="..\..\dim3Common\Code\xml_rings.c"
 					>
 				</File>
 				<File

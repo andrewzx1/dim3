@@ -83,7 +83,7 @@ JSObjectRef script_add_interface_bar_object(JSContextRef cx,JSObjectRef parent_o
 
 JSValueRef js_interface_bar_show_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	hud_bar_type			*bar;
+	iface_bar_type			*bar;
 	
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
@@ -95,7 +95,7 @@ JSValueRef js_interface_bar_show_func(JSContextRef cx,JSObjectRef func,JSObjectR
 
 JSValueRef js_interface_bar_hide_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	hud_bar_type			*bar;
+	iface_bar_type			*bar;
 	
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
@@ -115,7 +115,7 @@ JSValueRef js_interface_bar_hide_all_func(JSContextRef cx,JSObjectRef func,JSObj
 
 JSValueRef js_interface_bar_move_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	hud_bar_type			*bar;
+	iface_bar_type			*bar;
 	
 	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
 	
@@ -130,7 +130,7 @@ JSValueRef js_interface_bar_move_func(JSContextRef cx,JSObjectRef func,JSObjectR
 
 JSValueRef js_interface_bar_resize_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	hud_bar_type			*bar;
+	iface_bar_type			*bar;
 	
 	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
 	
@@ -145,7 +145,7 @@ JSValueRef js_interface_bar_resize_func(JSContextRef cx,JSObjectRef func,JSObjec
 
 JSValueRef js_interface_bar_set_value_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	hud_bar_type			*bar;
+	iface_bar_type			*bar;
 	
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 	
@@ -157,7 +157,7 @@ JSValueRef js_interface_bar_set_value_func(JSContextRef cx,JSObjectRef func,JSOb
 
 JSValueRef js_interface_bar_set_alpha_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	hud_bar_type			*bar;
+	iface_bar_type			*bar;
 	
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 	

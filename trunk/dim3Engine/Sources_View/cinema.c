@@ -92,17 +92,17 @@ bool cinema_start(char *name,int event_id,char *err_str)
 		
 	if (!map.cinema.cinemas[view.cinema.idx].show_hud) {
 	
-		for (n=0;n!=iface.count.bitmap;n++) {
-			iface.bitmaps[n].old_show=iface.bitmaps[n].show;
-			iface.bitmaps[n].show=FALSE;
+		for (n=0;n!=iface.bitmap_list.nbitmap;n++) {
+			iface.bitmap_list.bitmaps[n].old_show=iface.bitmap_list.bitmaps[n].show;
+			iface.bitmap_list.bitmaps[n].show=FALSE;
 		}
-		for (n=0;n!=iface.count.text;n++) {
-			iface.texts[n].old_show=iface.texts[n].show;
-			iface.texts[n].show=FALSE;
+		for (n=0;n!=iface.text_list.ntext;n++) {
+			iface.text_list.texts[n].old_show=iface.text_list.texts[n].show;
+			iface.text_list.texts[n].show=FALSE;
 		}
-		for (n=0;n!=iface.count.bar;n++) {
-			iface.bars[n].old_show=iface.bars[n].show;
-			iface.bars[n].show=FALSE;
+		for (n=0;n!=iface.bar_list.nbar;n++) {
+			iface.bar_list.bars[n].old_show=iface.bar_list.bars[n].show;
+			iface.bar_list.bars[n].show=FALSE;
 		}
 	
 	}
@@ -126,14 +126,14 @@ void cinema_end(void)
 		
 	if (!map.cinema.cinemas[view.cinema.idx].show_hud) {
 	
-		for (n=0;n!=iface.count.bitmap;n++) {
-			iface.bitmaps[n].show=iface.bitmaps[n].old_show;
+		for (n=0;n!=iface.bitmap_list.nbitmap;n++) {
+			iface.bitmap_list.bitmaps[n].show=iface.bitmap_list.bitmaps[n].old_show;
 		}
-		for (n=0;n!=iface.count.text;n++) {
-			iface.texts[n].show=iface.texts[n].old_show;
+		for (n=0;n!=iface.text_list.ntext;n++) {
+			iface.text_list.texts[n].show=iface.text_list.texts[n].old_show;
 		}
-		for (n=0;n!=iface.count.bar;n++) {
-			iface.bars[n].show=iface.bars[n].old_show;
+		for (n=0;n!=iface.bar_list.nbar;n++) {
+			iface.bar_list.bars[n].show=iface.bar_list.bars[n].old_show;
 		}
 	
 	}
@@ -352,9 +352,9 @@ void cinema_action_run_particle(map_cinema_action_type *action)
 
 void cinema_action_run_hud_bitmap(map_cinema_action_type *action)
 {
-	hud_bitmap_type			*bitmap;
+	iface_bitmap_type		*bitmap;
 	
-	bitmap=hud_bitmaps_find(action->actor_name);
+	bitmap=iface_bitmaps_find(action->actor_name);
 	if (bitmap==NULL) return;
 	
 	switch (action->action) {
@@ -369,9 +369,9 @@ void cinema_action_run_hud_bitmap(map_cinema_action_type *action)
 
 void cinema_action_run_hud_text(map_cinema_action_type *action)
 {
-	hud_text_type			*text;
+	iface_text_type			*text;
 
-	text=hud_texts_find(action->actor_name);
+	text=iface_texts_find(action->actor_name);
 	if (text==NULL) return;
 
 		// do hide show

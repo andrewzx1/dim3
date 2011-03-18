@@ -90,9 +90,9 @@ extern spot_type* script_find_spot_from_name_type(JSContextRef cx,JSValueRef arg
 extern spot_type* script_find_network_spot(JSContextRef cx,obj_type *obj,JSValueRef *exception);
 extern node_type* script_find_node_from_idx_arg(JSContextRef cx,JSValueRef arg,JSValueRef *exception);
 extern map_light_type* script_find_light_from_name(JSContextRef cx,JSValueRef arg,JSValueRef *exception);
-extern hud_text_type* script_find_text_from_name(JSContextRef cx,JSValueRef arg,JSValueRef *exception);
-extern hud_bitmap_type* script_find_bitmap_from_name(JSContextRef cx,JSValueRef arg,JSValueRef *exception);
-extern hud_bar_type* script_find_bar_from_name(JSContextRef cx,JSValueRef arg,JSValueRef *exception);
+extern iface_text_type* script_find_text_from_name(JSContextRef cx,JSValueRef arg,JSValueRef *exception);
+extern iface_bitmap_type* script_find_bitmap_from_name(JSContextRef cx,JSValueRef arg,JSValueRef *exception);
+extern iface_bar_type* script_find_bar_from_name(JSContextRef cx,JSValueRef arg,JSValueRef *exception);
 extern int script_find_group_from_name(JSContextRef cx,JSValueRef arg,JSValueRef *exception);
 extern int script_find_map_movement_from_name(JSContextRef cx,JSValueRef arg,JSValueRef *exception);
 extern int script_get_attached_object_uid(void);

@@ -176,13 +176,13 @@ map_light_type* script_find_light_from_name(JSContextRef cx,JSValueRef arg,JSVal
       
 ======================================================= */
 
-hud_text_type* script_find_text_from_name(JSContextRef cx,JSValueRef arg,JSValueRef *exception)
+iface_text_type* script_find_text_from_name(JSContextRef cx,JSValueRef arg,JSValueRef *exception)
 {
 	char			name[name_str_len],err_str[256];
-	hud_text_type	*text;
+	iface_text_type	*text;
 
 	script_value_to_string(cx,arg,name,name_str_len);
-	text=hud_texts_find(name);
+	text=iface_texts_find(name);
 	if (text==NULL) {
 		sprintf(err_str,"No interface text exists with the name: %s",name);
 		*exception=script_create_exception(cx,err_str);
@@ -192,13 +192,13 @@ hud_text_type* script_find_text_from_name(JSContextRef cx,JSValueRef arg,JSValue
 	return(text);
 }
 
-hud_bitmap_type* script_find_bitmap_from_name(JSContextRef cx,JSValueRef arg,JSValueRef *exception)
+iface_bitmap_type* script_find_bitmap_from_name(JSContextRef cx,JSValueRef arg,JSValueRef *exception)
 {
-	char			name[name_str_len],err_str[256];
-	hud_bitmap_type	*bitmap;
+	char				name[name_str_len],err_str[256];
+	iface_bitmap_type	*bitmap;
 
 	script_value_to_string(cx,arg,name,name_str_len);
-	bitmap=hud_bitmaps_find(name);
+	bitmap=iface_bitmaps_find(name);
 	if (bitmap==NULL) {
 		sprintf(err_str,"No interface bitmap exists with the name: %s",name);
 		*exception=script_create_exception(cx,err_str);
@@ -208,13 +208,13 @@ hud_bitmap_type* script_find_bitmap_from_name(JSContextRef cx,JSValueRef arg,JSV
 	return(bitmap);
 }
 
-hud_bar_type* script_find_bar_from_name(JSContextRef cx,JSValueRef arg,JSValueRef *exception)
+iface_bar_type* script_find_bar_from_name(JSContextRef cx,JSValueRef arg,JSValueRef *exception)
 {
 	char			name[name_str_len],err_str[256];
-	hud_bar_type	*bar;
+	iface_bar_type	*bar;
 
 	script_value_to_string(cx,arg,name,name_str_len);
-	bar=hud_bars_find(name);
+	bar=iface_bars_find(name);
 	if (bar==NULL) {
 		sprintf(err_str,"No interface bar exists with the name: %s",name);
 		*exception=script_create_exception(cx,err_str);

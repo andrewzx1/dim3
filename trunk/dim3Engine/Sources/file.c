@@ -389,9 +389,9 @@ bool game_file_save(char *err_str)
 	
 	progress_draw(40);
 	
-	game_file_add_chunk(iface.bitmaps,iface.count.bitmap,sizeof(hud_bitmap_type));
-	game_file_add_chunk(iface.texts,iface.count.text,sizeof(hud_text_type));
-	game_file_add_chunk(iface.bars,iface.count.bar,sizeof(hud_bar_type));
+	game_file_add_chunk(iface.bitmap_list.bitmaps,iface.bitmap_list.nbitmap,sizeof(iface_bitmap_type));
+	game_file_add_chunk(iface.text_list.texts,iface.text_list.ntext,sizeof(iface_text_type));
+	game_file_add_chunk(iface.bar_list.bars,iface.bar_list.nbar,sizeof(iface_bar_type));
 	game_file_add_chunk(&iface.radar,1,sizeof(hud_radar_type));
 	
 		// map changes
@@ -717,9 +717,9 @@ bool game_file_load(char *file_name,char *err_str)
 
 	progress_draw(40);
 
-	game_file_get_chunk(iface.bitmaps);
-	game_file_get_chunk(iface.texts);
-	game_file_get_chunk(iface.bars);
+	game_file_get_chunk(iface.bitmap_list.bitmaps);
+	game_file_get_chunk(iface.text_list.texts);
+	game_file_get_chunk(iface.bar_list.bars);
 	game_file_get_chunk(&iface.radar);
 	
 		// map changes

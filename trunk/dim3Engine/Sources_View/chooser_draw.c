@@ -42,9 +42,6 @@ extern setup_type			setup;
 int							chooser_idx;
 char						chooser_sub_txt[max_chooser_sub_txt][max_chooser_text_data_sz];
 
-extern int chooser_find(char *name);
-extern int chooser_find_piece(chooser_type *chooser,int id);
-
 /* =======================================================
 
       Text Substitutions
@@ -103,18 +100,18 @@ void chooser_text_substitute(char *init_str,char *sub_str,int max_len)
 
 void chooser_create_elements(void)
 {
-	int					n;
-	char				path[1024],path2[1024],fname[256],
-						title[max_chooser_frame_text_sz],str[max_chooser_text_data_sz];
-	chooser_type		*chooser;
-	chooser_piece_type	*piece;
-	chooser_frame_type	frame;
+	int							n;
+	char						path[1024],path2[1024],fname[256],
+								title[max_chooser_frame_text_sz],str[max_chooser_text_data_sz];
+	iface_chooser_type			*chooser;
+	iface_chooser_piece_type	*piece;
+	iface_chooser_frame_type	frame;
 	
-	chooser=&iface.choosers[chooser_idx];
+	chooser=&iface.chooser_list.choosers[chooser_idx];
 	
 		// setup frame
 		
-	memmove(&frame,&chooser->frame,sizeof(chooser_frame_type));
+	memmove(&frame,&chooser->frame,sizeof(iface_chooser_frame_type));
 
 	chooser_text_substitute(chooser->frame.title,title,max_chooser_frame_text_sz);
 	strcpy(frame.title,title);
@@ -178,7 +175,7 @@ bool chooser_setup(char *name,char *sub_txt,char *err_str)
 
 		// find chooser
 
-	chooser_idx=chooser_find(name);
+	chooser_idx=iface_chooser_find_idx(name);
 	if (chooser_idx==-1) {
 		sprintf(err_str,"Chooser does not exist: %s",name);
 		return(FALSE);
@@ -207,15 +204,15 @@ bool chooser_setup(char *name,char *sub_txt,char *err_str)
 
 void chooser_click(void)
 {
-	int					id,idx,next_idx;
-	chooser_piece_type	*piece;
+	int							id,idx,next_idx;
+	iface_chooser_piece_type	*piece;
 	
 	id=-1;
 	
 		// check for ok/cancel keys
 
-	if (input_get_keyboard_escape()) id=iface.choosers[chooser_idx].key.cancel_id;
-	if (input_get_keyboard_return()) id=iface.choosers[chooser_idx].key.ok_id;
+	if (input_get_keyboard_escape()) id=iface.chooser_list.choosers[chooser_idx].key.cancel_id;
+	if (input_get_keyboard_return()) id=iface.chooser_list.choosers[chooser_idx].key.ok_id;
 
 		// if no key check clicking
 		
@@ -230,12 +227,12 @@ void chooser_click(void)
 	
 		// check for any goto clicks
 		
-	idx=chooser_find_piece(&iface.choosers[chooser_idx],id);
+	idx=iface_chooser_find_piece_idx(&iface.chooser_list.choosers[chooser_idx],id);
 	
 	if (idx!=-1) {
 	
-		piece=&iface.choosers[chooser_idx].pieces[idx];
-		next_idx=chooser_find(piece->goto_name);
+		piece=&iface.chooser_list.choosers[chooser_idx].pieces[idx];
+		next_idx=iface_chooser_find_idx(piece->goto_name);
 		
 		if (next_idx!=-1) {
 			element_clear();

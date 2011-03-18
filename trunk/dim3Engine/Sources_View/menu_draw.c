@@ -46,7 +46,7 @@ extern js_type				js;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
 
-extern int menu_find(char *name);
+extern int iface_menu_find_idx(char *name);	// supergumba -- move to baseutility.h
 extern void debug_game(void);
 extern void map_restart_ambient(void);
 
@@ -120,19 +120,19 @@ void menu_draw_end(bool fade)
 
 bool menu_select(void)
 {
-	int				sub_idx;
-	menu_type		*menu;
-	menu_item_type  *item;
+	int						sub_idx;
+	iface_menu_type			*menu;
+	iface_menu_item_type	*item;
 	
 	if (view.menu.click_item_idx==-1) return(FALSE);
 	
-	menu=&iface.menus[view.menu.menu_idx];
+	menu=&iface.menu_list.menus[view.menu.menu_idx];
 	item=&menu->items[view.menu.click_item_idx];
 		
 		// going into sub-menu
 			
 	if (item->sub_menu[0]!=0x0) {
-		sub_idx=menu_find(item->sub_menu);
+		sub_idx=iface_menu_find_idx(item->sub_menu);
 		if (sub_idx==-1) return(FALSE);
 			
 		view.menu.menu_idx=sub_idx;
@@ -207,12 +207,12 @@ void menu_input(void)
 
 void menu_draw(void)
 {
-	int					n,raw_tick,x,y,kx,ky,
-						wid,high,half_high;
-	float				alpha;
-	d3col				*col;
-	menu_type			*menu;
-	menu_item_type		*item;
+	int						n,raw_tick,x,y,kx,ky,
+							wid,high,half_high;
+	float					alpha;
+	d3col					*col;
+	iface_menu_type			*menu;
+	iface_menu_item_type	*item;
 
 	if ((!view.menu.fade_in) && (!view.menu.fade_out) && (!view.menu.active)) return;
 	
@@ -220,7 +220,7 @@ void menu_draw(void)
 
 		// get current menu
 
-	menu=&iface.menus[view.menu.menu_idx];
+	menu=&iface.menu_list.menus[view.menu.menu_idx];
 
 		// get the alpha
 
