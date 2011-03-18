@@ -48,8 +48,6 @@ extern setup_type			setup;
 extern void particle_draw_position(effect_type *effect,int count,int *x,int *y,int *z);
 extern void ring_draw_position(effect_type *effect,int count,int *x,int *y,int *z);
 extern bool fog_solid_on(void);
-extern bool shadow_get_volume_mesh(map_mesh_type *mesh,int *px,int *py,int *pz);
-extern bool shadow_get_volume_model(model_type *mdl,model_draw *draw,int *px,int *py,int *pz);
 
 /* =======================================================
 
@@ -165,9 +163,28 @@ bool mesh_inview(map_mesh_type *mesh)
 
 bool mesh_shadow_inview(map_mesh_type *mesh)
 {
-	int				px[8],py[8],pz[8];
+	int				light_intensity,
+					px[8],py[8],pz[8];
+	d3pnt			light_pnt;
+	
+	// supergumba
+	
+	return(FALSE);
+	
+		// get shadow volume
+		
+	px[0]=px[3]=px[4]=px[7]=mesh->box.min.x;
+	px[1]=px[2]=px[5]=px[6]=mesh->box.max.x;
+	py[0]=py[1]=py[2]=py[3]=mesh->box.min.y;
+	py[4]=py[5]=py[6]=py[7]=mesh->box.max.y;
+	pz[0]=pz[1]=pz[4]=pz[5]=mesh->box.min.z;
+	pz[2]=pz[3]=pz[6]=pz[7]=mesh->box.max.z;
 
-	if (!shadow_get_volume_mesh(mesh,px,py,pz)) return(FALSE);
+	shadow_get_light_point(&mesh->box.mid,(mesh->box.max.y-mesh->box.min.y),&light_pnt,&light_intensity);
+	if (!shadow_get_volume(&mesh->box.mid,(mesh->box.max.y-mesh->box.min.y),light_pnt,light_intensity,px,py,pz)) return(FALSE);
+
+		// run bounds check
+		
 	return(complex_boundbox_inview(px,py,pz));
 }
 
@@ -183,11 +200,23 @@ bool model_inview(model_draw *draw)
 
 bool model_shadow_inview(model_draw *draw)
 {
-	int				px[8],py[8],pz[8];
+	int				light_intensity,
+					px[8],py[8],pz[8];
+	d3pnt			light_pnt;
 
 	if ((draw->model_idx==-1) || (!draw->on)) return(FALSE);
 	
-	if (!shadow_get_volume_model(server.model_list.models[draw->model_idx],draw,px,py,pz)) return(FALSE);
+	return(TRUE);		// supergumba
+	
+		// get shadow volume
+		
+	shadow_get_light_point(&draw->pnt,draw->size.y,&light_pnt,&light_intensity);
+
+	model_get_view_complex_bounding_box(server.model_list.models[draw->model_idx],&draw->pnt,&draw->setup.ang,px,py,pz);
+	if (!shadow_get_volume(&draw->pnt,draw->size.y,light_pnt,light_intensity,px,py,pz)) return(FALSE);
+	
+		// run bounds check
+
 	return(complex_boundbox_inview(px,py,pz));
 }
 
