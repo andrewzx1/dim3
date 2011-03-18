@@ -97,7 +97,7 @@ JSObjectRef script_add_interface_text_object(JSContextRef cx,JSObjectRef parent_
 
 JSValueRef js_interface_text_show_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	hud_text_type			*text;
+	iface_text_type			*text;
 	
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
@@ -109,7 +109,7 @@ JSValueRef js_interface_text_show_func(JSContextRef cx,JSObjectRef func,JSObject
 
 JSValueRef js_interface_text_hide_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	hud_text_type			*text;
+	iface_text_type			*text;
 	
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
@@ -129,7 +129,7 @@ JSValueRef js_interface_text_hide_all_func(JSContextRef cx,JSObjectRef func,JSOb
 
 JSValueRef js_interface_text_move_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	hud_text_type			*text;
+	iface_text_type			*text;
 	
 	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
 	
@@ -144,7 +144,7 @@ JSValueRef js_interface_text_move_func(JSContextRef cx,JSObjectRef func,JSObject
 
 JSValueRef js_interface_text_move_relative_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	hud_text_type			*text;
+	iface_text_type			*text;
 	
 	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
 	
@@ -160,7 +160,7 @@ JSValueRef js_interface_text_move_relative_func(JSContextRef cx,JSObjectRef func
 JSValueRef js_interface_text_set_text_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	char					data[max_hud_text_str_sz];
-	hud_text_type			*text;
+	iface_text_type			*text;
 	
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 	
@@ -175,7 +175,7 @@ JSValueRef js_interface_text_set_text_func(JSContextRef cx,JSObjectRef func,JSOb
 
 JSValueRef js_interface_text_set_size_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	hud_text_type			*text;
+	iface_text_type			*text;
 	
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 	
@@ -187,7 +187,7 @@ JSValueRef js_interface_text_set_size_func(JSContextRef cx,JSObjectRef func,JSOb
 
 JSValueRef js_interface_text_set_color_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	hud_text_type			*text;
+	iface_text_type			*text;
 	
 	if (!script_check_param_count(cx,func,argc,4,exception)) return(script_null_to_value(cx));
 	
@@ -204,7 +204,7 @@ JSValueRef js_interface_text_set_color_func(JSContextRef cx,JSObjectRef func,JSO
 JSValueRef js_interface_text_set_team_color_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int						team_idx;
-	hud_text_type			*text;
+	iface_text_type			*text;
 	
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 	
@@ -220,7 +220,7 @@ JSValueRef js_interface_text_set_team_color_func(JSContextRef cx,JSObjectRef fun
 JSValueRef js_interface_text_set_object_color_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type				*obj;
-	hud_text_type			*text;
+	iface_text_type			*text;
 	
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 	
@@ -237,7 +237,7 @@ JSValueRef js_interface_text_set_object_color_func(JSContextRef cx,JSObjectRef f
 
 JSValueRef js_interface_text_set_alpha_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	hud_text_type			*text;
+	iface_text_type			*text;
 	
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 	
@@ -249,7 +249,7 @@ JSValueRef js_interface_text_set_alpha_func(JSContextRef cx,JSObjectRef func,JSO
 
 JSValueRef js_interface_text_start_fade_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	hud_text_type			*text;
+	iface_text_type			*text;
 	
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
@@ -266,7 +266,7 @@ JSValueRef js_interface_text_start_fade_func(JSContextRef cx,JSObjectRef func,JS
 JSValueRef js_interface_text_set_text_and_fade_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	char					data[max_hud_text_str_sz];
-	hud_text_type			*text;
+	iface_text_type			*text;
 	
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 	

@@ -50,7 +50,7 @@ extern render_info_type		render_info;
       
 ======================================================= */
 
-bool hud_item_fade_run(hud_item_fade_type *fade,float *alpha)
+bool hud_item_fade_run(iface_item_fade_type *fade,float *alpha)
 {
 	int			fade_tick;
 	float		achg;
@@ -100,7 +100,7 @@ void hud_bitmaps_draw(void)
 	float						*vp,*uv,*vertex_ptr,*uv_ptr;
 	GLuint						cur_gl_id;
 	d3col						tint,cur_tint,team_tint;
-	hud_bitmap_type				*bitmap;
+	iface_bitmap_type			*bitmap;
 	obj_type					*obj;
 	bitmap_type					*bitmap_data;
 	
@@ -129,8 +129,8 @@ void hud_bitmaps_draw(void)
 	
 		// draw bitmaps
 		
-	for (n=0;n!=iface.count.bitmap;n++) {
-		bitmap=&iface.bitmaps[n];
+	for (n=0;n!=iface.bitmap_list.nbitmap;n++) {
+		bitmap=&iface.bitmap_list.bitmaps[n];
 		if (!bitmap->show) continue;
 
 			// flashing
@@ -453,66 +453,62 @@ void hud_texts_draw(void)
 {
 	int				n,high,cur_size;
 	float			alpha;
-	hud_text_type  *text;
+	iface_text_type	*text;
 
 	cur_size=-1;
 
-	text=iface.texts;
-	
-	for (n=0;n!=iface.count.text;n++) {
+	for (n=0;n!=iface.text_list.ntext;n++) {
 
-		if (text->show) {
+		text=&iface.text_list.texts[n];
+		if (!text->show) continue;
 
-				// time for a new text size?
+			// time for a new text size?
 
-			if (text->size!=cur_size) {
-				cur_size=text->size;
+		if (text->size!=cur_size) {
+			cur_size=text->size;
 
-				gl_text_start(font_hud_index,cur_size);
-				high=gl_text_get_char_height(cur_size);
-			}
-
-				// fading?
-		
-			alpha=text->alpha;
-			if (hud_item_fade_run(&text->fade,&alpha)) {
-				text->show=FALSE;			// a fade has turned off bitmap
-				continue;
-			}
-
-				// any special replacements
-
-			switch (text->special) {
-			
-				case text_special_fps:
-					hud_texts_fps(text->data);
-					break;
-					
-				case text_special_score:
-					hud_texts_score(text->data);
-					break;
-					
-				case text_special_place:
-					hud_texts_place(text->data);
-					break;
-					
-				case text_special_spread:
-					hud_texts_spread(text->data);
-					break;
-
-			}
-
-				// draw text
-				
-			if (text->has_return) {
-				hud_texts_draw_return(text->x,text->y,high,text->data,text->just,&text->color,alpha);
-			}
-			else {
-				gl_text_draw(text->x,text->y,text->data,text->just,FALSE,&text->color,alpha);
-			}
+			gl_text_start(font_hud_index,cur_size);
+			high=gl_text_get_char_height(cur_size);
 		}
 
-		text++;
+			// fading?
+	
+		alpha=text->alpha;
+		if (hud_item_fade_run(&text->fade,&alpha)) {
+			text->show=FALSE;			// a fade has turned off bitmap
+			continue;
+		}
+
+			// any special replacements
+
+		switch (text->special) {
+		
+			case text_special_fps:
+				hud_texts_fps(text->data);
+				break;
+				
+			case text_special_score:
+				hud_texts_score(text->data);
+				break;
+				
+			case text_special_place:
+				hud_texts_place(text->data);
+				break;
+				
+			case text_special_spread:
+				hud_texts_spread(text->data);
+				break;
+
+		}
+
+			// draw text
+			
+		if (text->has_return) {
+			hud_texts_draw_return(text->x,text->y,high,text->data,text->just,&text->color,alpha);
+		}
+		else {
+			gl_text_draw(text->x,text->y,text->data,text->just,FALSE,&text->color,alpha);
+		}
 	}
 	
 	gl_text_end();		// OK to call text_end without a text_start
@@ -528,12 +524,13 @@ void hud_bars_draw(void)
 {
 	int					n,lx,rx,ty,by,wid,high;
 	d3col				fill_end_color;
-	hud_bar_type		*bar;
+	iface_bar_type		*bar;
 	
 		// draw bars
 		
-	for (n=0;n!=iface.count.bar;n++) {
-		bar=&iface.bars[n];
+	for (n=0;n!=iface.bar_list.nbar;n++) {
+
+		bar=&iface.bar_list.bars[n];
 		if (!bar->show) continue;
 		
 			// find size

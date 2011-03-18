@@ -29,46 +29,8 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
-extern server_type			server;
+extern iface_type			iface;
 extern setup_type			setup;
-
-/* =======================================================
-
-      Halos List
-      
-======================================================= */
-
-void halo_initialize_list(void)
-{
-	int				n;
-
-	for (n=0;n!=max_halo_list;n++) {
-		server.halo_list.halos[n]=NULL;
-	}
-}
-
-void halo_free_list(void)
-{
-	int				n;
-
-	for (n=0;n!=max_halo_list;n++) {
-		if (server.halo_list.halos[n]!=NULL) free(server.halo_list.halos[n]);
-	}
-}
-
-halo_type* halo_add_list(void)
-{
-	int				n;
-
-	for (n=0;n!=max_halo_list;n++) {
-		if (server.halo_list.halos[n]==NULL) {
-			server.halo_list.halos[n]=(halo_type*)malloc(sizeof(halo_type));
-			return(server.halo_list.halos[n]);
-		}
-	}
-
-	return(NULL);
-}
 
 /* =======================================================
 
@@ -81,11 +43,11 @@ int halo_find(char *name)
 	int			n;
 	halo_type	*halo;
 
-	for (n=0;n!=max_halo_list;n++) {
-		halo=server.halo_list.halos[n];
-		if (halo==NULL) continue;
+	halo=iface.halo_list.halos;
 
+	for (n=0;n!=iface.halo_list.nhalo;n++) {
 		if (strcasecmp(halo->name,name)==0)  return(n);
+		halo++;
 	}
 	
 	return(-1);

@@ -59,11 +59,14 @@ char							just_mode_str[][32]={"left","center","right"},
 void read_settings_interface_bitmap(int bitmap_tag)
 {
 	int					tag;
-	hud_bitmap_type		*bitmap;
+	iface_bitmap_type	*bitmap;
     
 		// read next bitmap
+
+	if (iface.bitmap_list.nbitmap>max_iface_bitmap) return;
 		
-	bitmap=&iface.bitmaps[iface.count.bitmap];
+	bitmap=&iface.bitmap_list.bitmaps[iface.bitmap_list.nbitmap];
+	iface.bitmap_list.nbitmap++;
 	
 		// read attributes
 		
@@ -138,10 +141,6 @@ void read_settings_interface_bitmap(int bitmap_tag)
 		bitmap->fade.life_tick=xml_get_attribute_int(tag,"life_msec");
 		bitmap->fade.fade_out_tick=xml_get_attribute_int(tag,"fade_out_msec");
 	}
-	
-		// move on to next bitmap
-		
-	iface.count.bitmap++;
 }
 
 /* =======================================================
@@ -154,11 +153,14 @@ void read_settings_interface_text(int text_tag)
 {
 	int					tag;
 	char				data[max_hud_text_str_sz];
-	hud_text_type		*text;
+	iface_text_type		*text;
 	
 		// read next text
-		
-	text=&iface.texts[iface.count.text];
+	
+	if (iface.text_list.ntext>=max_iface_text) return;
+	
+	text=&iface.text_list.texts[iface.text_list.ntext];
+	iface.text_list.ntext++;
 	
 		// read attributes
 
@@ -204,10 +206,6 @@ void read_settings_interface_text(int text_tag)
 	}
 
 	hud_text_set(text,data);
-	
-		// move on to next text
-		
-	iface.count.text++;
 }
 
 /* =======================================================
@@ -219,11 +217,14 @@ void read_settings_interface_text(int text_tag)
 void read_settings_interface_bar(int bar_tag)
 {
 	int					tag;
-	hud_bar_type		*bar;
+	iface_bar_type		*bar;
     
 		// read next bar
+
+	if (iface.bar_list.nbar>=max_iface_bar) return;
 		
-	bar=&iface.bars[iface.count.bar];
+	bar=&iface.bar_list.bars[iface.bar_list.nbar];
+	iface.bar_list.nbar++;
 	
 		// read attributes
 		
@@ -279,10 +280,6 @@ void read_settings_interface_bar(int bar_tag)
 		// value starts at 1
 		
 	bar->value=1;
-	
-		// move on to next bar
-		
-	iface.count.bar++;
 }
 
 /* =======================================================
@@ -361,29 +358,37 @@ void read_settings_interface_radar(int radar_tag)
 
 void read_settings_interface_menu(int menu_tag)
 {
-	int					idx,items_head_tag,item_tag,item_id;
-	char				name[name_str_len],sub_menu[name_str_len],
-						data[max_menu_item_data_sz];
-	bool				multiplayer_disable,quit;
+	int						items_head_tag,item_tag;
+	iface_menu_type			*menu;
+	iface_menu_item_type	*item;
 
-	xml_get_attribute_text(menu_tag,"name",name,name_str_len);
-	
-	idx=menu_add(name);
-	if (idx==-1) return;
-	
+		// read next menu
+
+	menu=&iface.menu_list.menus[iface.menu_list.nmenu];
+	iface.menu_list.nmenu++;
+
+	xml_get_attribute_text(menu_tag,"name",menu->name,name_str_len);
+	menu->nitem=0;
+
+		// read menu
+
 	items_head_tag=xml_findfirstchild("Items",menu_tag);
 	if (items_head_tag==-1) return;
 	
 	item_tag=xml_findfirstchild("Item",items_head_tag);
 	
 	while (item_tag!=-1) {
-		item_id=xml_get_attribute_int(item_tag,"id");
-		xml_get_attribute_text(item_tag,"data",data,max_menu_item_data_sz);
-		xml_get_attribute_text(item_tag,"sub_menu",sub_menu,name_str_len);
-		multiplayer_disable=xml_get_attribute_boolean(item_tag,"multiplayer_disable");
-		quit=xml_get_attribute_boolean(item_tag,"quit");
-		
-		menu_add_item(idx,item_id,data,sub_menu,multiplayer_disable,quit);
+
+		if (menu->nitem>=max_menu_item) return;
+	
+		item=&menu->items[menu->nitem];
+		menu->nitem++;
+
+		item->item_id=xml_get_attribute_int(item_tag,"id");
+		xml_get_attribute_text(item_tag,"data",item->data,max_menu_item_data_sz);
+		xml_get_attribute_text(item_tag,"sub_menu",item->sub_menu,name_str_len);
+		item->multiplayer_disable=xml_get_attribute_boolean(item_tag,"multiplayer_disable");
+		item->quit=xml_get_attribute_boolean(item_tag,"quit");
 		
 		item_tag=xml_findnextchild(item_tag);
 	}
@@ -395,41 +400,191 @@ void read_settings_interface_menu(int menu_tag)
       
 ======================================================= */
 
+void read_settings_interface_chooser_copy_template(iface_chooser_type *chooser,iface_chooser_type *template_chooser)
+{
+	char			name[name_str_len];
+	
+	strcpy(name,chooser->name);
+	memmove(chooser,template_chooser,sizeof(iface_chooser_type));
+	strcpy(chooser->name,name);
+}
+
+void read_settings_interface_chooser_template_override(iface_chooser_type *chooser,int template_idx)
+{
+	int							idx,template_piece_idx;
+
+	if (template_idx==-1) return;
+
+		// is the last added piece
+		// actually an override?
+
+	idx=chooser->npiece-1;
+	
+	template_piece_idx=iface_chooser_find_piece_idx(chooser,chooser->pieces[idx].id);
+	if (template_piece_idx==-1) return;
+
+		// if so, copy it over to the template
+		// piece and then remove last piece
+
+	switch (chooser->pieces[idx].type) {
+
+		case chooser_piece_type_text:
+			strcpy(chooser->pieces[template_piece_idx].data.text.str,chooser->pieces[idx].data.text.str);
+			break;
+
+		case chooser_piece_type_item:
+			strcpy(chooser->pieces[template_piece_idx].data.item.file,chooser->pieces[idx].data.item.file);
+			break;
+
+		case chooser_piece_type_model:
+			strcpy(chooser->pieces[template_piece_idx].data.model.model_name,chooser->pieces[idx].data.model.model_name);
+			strcpy(chooser->pieces[template_piece_idx].data.model.animate_name,chooser->pieces[idx].data.model.animate_name);
+			break;
+
+		case chooser_piece_type_button:
+			strcpy(chooser->pieces[template_piece_idx].data.button.name,chooser->pieces[idx].data.button.name);
+			break;
+	}
+
+	chooser->npiece--;
+}
+
+// supergumba -- move all this and improve it
+void read_settings_interface_chooser_add_text(iface_chooser_type *chooser,int template_idx,int id,char *str,int x,int y,int size,int just,bool clickable,char *goto_name)
+{
+	iface_chooser_piece_type	*piece;
+
+	// add a new piece
+	
+	if (chooser->npiece>=max_chooser_piece) return;
+	
+	piece=&chooser->pieces[chooser->npiece];
+	chooser->npiece++;
+	
+	piece->type=chooser_piece_type_text;
+	piece->id=id;
+	strcpy(piece->data.text.str,str);
+	piece->x=x;
+	piece->y=y;
+	piece->data.text.size=size;
+	piece->data.text.just=just;
+
+	piece->clickable=clickable;
+	strcpy(piece->goto_name,goto_name);
+}
+
+void read_settings_interface_chooser_add_item(iface_chooser_type *chooser,int template_idx,int id,char *file,int x,int y,int wid,int high,bool clickable,char *goto_name)
+{
+	iface_chooser_piece_type	*piece;
+
+		// add a new piece
+
+	if (chooser->npiece>=max_chooser_piece) return;
+	
+	piece=&chooser->pieces[chooser->npiece];
+	chooser->npiece++;
+	
+	piece->type=chooser_piece_type_item;
+	piece->id=id;
+	strcpy(piece->data.item.file,file);
+	piece->x=x;
+	piece->y=y;
+	piece->wid=wid;
+	piece->high=high;
+
+	piece->clickable=clickable;
+	strcpy(piece->goto_name,goto_name);
+}
+
+void read_settings_interface_chooser_add_model(iface_chooser_type *chooser,int template_idx,int id,char *model_name,char *animate_name,int x,int y,d3ang *rot,float resize,bool clickable,char *goto_name)
+{
+	iface_chooser_piece_type	*piece;
+
+		// add a new piece
+
+	if (chooser->npiece>=max_chooser_piece) return;
+	
+	piece=&chooser->pieces[chooser->npiece];
+	chooser->npiece++;
+	
+	piece->type=chooser_piece_type_model;
+	piece->id=id;
+	strcpy(piece->data.model.model_name,model_name);
+	strcpy(piece->data.model.animate_name,animate_name);
+
+	memmove(&piece->data.model.rot,rot,sizeof(d3ang));
+	piece->data.model.resize=resize;
+
+	piece->x=x;
+	piece->y=y;
+
+	piece->clickable=clickable;
+	strcpy(piece->goto_name,goto_name);
+}
+
+void read_settings_interface_chooser_add_button(iface_chooser_type *chooser,int template_idx,int id,char *name,int x,int y,int wid,int high,char *goto_name)
+{
+	iface_chooser_piece_type	*piece;
+
+		// add a new piece
+
+	if (chooser->npiece>=max_chooser_piece) return;
+	
+	piece=&chooser->pieces[chooser->npiece];
+	chooser->npiece++;
+	
+	piece->type=chooser_piece_type_button;
+	piece->id=id;
+	strcpy(piece->data.button.name,name);
+	piece->x=x;
+	piece->y=y;
+	piece->wid=wid;
+	piece->high=high;
+
+	piece->clickable=TRUE;
+	strcpy(piece->goto_name,goto_name);
+}
+
 void read_settings_interface_chooser(int chooser_tag)
 {
-	int				idx,template_idx,just,tag,texts_head_tag,text_tag,
-					items_head_tag,item_tag,models_head_tag,model_item_tag,
-					buttons_head_tag,button_tag,
-					x,y,wid,high,id,text_size;
-	float			resize;
-	char			name[name_str_len],file[file_str_len],
-					model_name[name_str_len],animate_name[name_str_len],
-					template_name[name_str_len],goto_name[name_str_len],
-					btn_name[max_chooser_button_text_sz],
-					data[max_chooser_text_data_sz];
-	bool			clickable;
-	d3ang			rot;
-	chooser_type	*chooser;
+	int					template_idx,just,tag,texts_head_tag,text_tag,
+						items_head_tag,item_tag,models_head_tag,model_item_tag,
+						buttons_head_tag,button_tag,
+						x,y,wid,high,id,text_size;
+	float				resize;
+	char				file[file_str_len],
+						model_name[name_str_len],animate_name[name_str_len],
+						template_name[name_str_len],goto_name[name_str_len],
+						btn_name[max_chooser_button_text_sz],
+						data[max_chooser_text_data_sz];
+	bool				clickable;
+	d3ang				rot;
+	iface_chooser_type	*chooser;
 
-		// name and template
+		// find next chooser
 
-	xml_get_attribute_text(chooser_tag,"name",name,name_str_len);
-	xml_get_attribute_text(chooser_tag,"template",template_name,name_str_len);
+	if (iface.chooser_list.nchooser>=max_iface_chooser) return;
 	
-	idx=chooser_add(name);
-	if (idx==-1) return;
+	chooser=&iface.chooser_list.choosers[iface.chooser_list.nchooser];
+	iface.chooser_list.nchooser++;
 	
-	chooser=&iface.choosers[idx];
+	xml_get_attribute_text(chooser_tag,"name",chooser->name,name_str_len);
+
+	chooser->npiece=0;
+	chooser->frame.on=FALSE;
+	chooser->key.ok_id=-1;
+	chooser->key.cancel_id=-1;
 
 		// run any templates
 		// templates MUST be in order
 
+	xml_get_attribute_text(chooser_tag,"template",template_name,name_str_len);
+
 	template_idx=-1;
 
 	if (template_name[0]!=0x0) {
-		template_idx=chooser_find(template_name);
-
-		if (template_idx!=-1) chooser_copy_template(idx,template_idx);
+		template_idx=iface_chooser_find_idx(template_name);
+		if (template_idx!=-1) read_settings_interface_chooser_copy_template(chooser,&iface.chooser_list.choosers[template_idx]);
 	}
 	
 		// frames and keys
@@ -468,7 +623,8 @@ void read_settings_interface_chooser(int chooser_tag)
 			clickable=xml_get_attribute_boolean(item_tag,"clickable");
 			xml_get_attribute_text(item_tag,"goto",goto_name,name_str_len);
 			
-			chooser_add_item(idx,template_idx,id,file,x,y,wid,high,clickable,goto_name);
+			read_settings_interface_chooser_add_item(chooser,template_idx,id,file,x,y,wid,high,clickable,goto_name);
+			read_settings_interface_chooser_template_override(chooser,template_idx);
 			
 			item_tag=xml_findnextchild(item_tag);
 		}
@@ -493,7 +649,8 @@ void read_settings_interface_chooser(int chooser_tag)
 			clickable=xml_get_attribute_boolean(model_item_tag,"clickable");
 			xml_get_attribute_text(model_item_tag,"goto",goto_name,name_str_len);
 			
-			chooser_add_model(idx,template_idx,id,model_name,animate_name,x,y,&rot,resize,clickable,goto_name);
+			read_settings_interface_chooser_add_model(chooser,template_idx,id,model_name,animate_name,x,y,&rot,resize,clickable,goto_name);
+			read_settings_interface_chooser_template_override(chooser,template_idx);
 			
 			model_item_tag=xml_findnextchild(model_item_tag);
 		}
@@ -519,7 +676,8 @@ void read_settings_interface_chooser(int chooser_tag)
 			clickable=xml_get_attribute_boolean(text_tag,"clickable");
 			xml_get_attribute_text(text_tag,"goto",goto_name,name_str_len);
 
-			chooser_add_text(idx,template_idx,id,data,x,y,text_size,just,clickable,goto_name);
+			read_settings_interface_chooser_add_text(chooser,template_idx,id,data,x,y,text_size,just,clickable,goto_name);
+			read_settings_interface_chooser_template_override(chooser,template_idx);
 
 			text_tag=xml_findnextchild(text_tag);
 		}
@@ -541,7 +699,8 @@ void read_settings_interface_chooser(int chooser_tag)
 			high=xml_get_attribute_int_default(button_tag,"height",-1);
 			xml_get_attribute_text(button_tag,"goto",goto_name,name_str_len);
 			
-			chooser_add_button(idx,template_idx,id,btn_name,x,y,wid,high,goto_name);
+			read_settings_interface_chooser_add_button(chooser,template_idx,id,btn_name,x,y,wid,high,goto_name);
+			read_settings_interface_chooser_template_override(chooser,template_idx);
 			
 			button_tag=xml_findnextchild(button_tag);
 		}

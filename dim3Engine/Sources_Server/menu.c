@@ -35,62 +35,7 @@ extern setup_type			setup;
 
 /* =======================================================
 
-      Add Menus and Items
-      
-======================================================= */
-
-int menu_add(char *name)
-{
-	menu_type		*menu;
-	
-	if (iface.count.menu>=max_menu) return(-1);
-	
-	menu=&iface.menus[iface.count.menu];
-	iface.count.menu++;
-	
-	strcpy(menu->name,name);
-	menu->nitem=0;
-	
-	return(iface.count.menu-1);
-}
-
-void menu_add_item(int menu_idx,int item_id,char *data,char *sub_menu,bool multiplayer_disable,bool quit)
-{
-	menu_type		*menu;
-	menu_item_type  *item;
-	
-	menu=&iface.menus[menu_idx];
-	
-	if (menu->nitem>=max_menu_item) return;
-	
-	item=&menu->items[menu->nitem];
-	menu->nitem++;
-	
-	item->item_id=item_id;
-	strcpy(item->data,data);
-	strcpy(item->sub_menu,sub_menu);
-	item->multiplayer_disable=multiplayer_disable;
-	item->quit=quit;
-}
-
-/* =======================================================
-
       Find Menu
       
 ======================================================= */
-
-int menu_find(char *name)
-{
-	int			n;
-	menu_type	*menu;
-	
-	menu=iface.menus;
-	
-	for (n=0;n!=iface.count.menu;n++) {
-		if (strcasecmp(menu->name,name)==0) return(n);
-		menu++;
-	}
-	
-	return(-1);
-}
 

@@ -29,54 +29,29 @@ and can be sold or given away.
 // HUD defines
 //
 
-#define max_hud_image							300	
+#define max_iface_bitmap						256
+#define max_iface_text							256
+#define max_iface_bar							32
+#define max_iface_menu							16
+#define max_iface_chooser						128
 
-#define max_hud_bitmap							256
-#define max_hud_text							256
-#define max_hud_bar								32
-
-#define max_radar_icon							16
+#define max_iface_particle						128
+#define max_iface_ring							64
+#define max_iface_mark							128
+#define max_iface_halo							32
+#define max_iface_crosshair						32
+#define max_iface_action						128
+#define max_iface_sound							128
+#define max_iface_user_shader					128
 
 #define max_hud_text_str_sz						256
-
-#define max_menu								16
-#define max_menu_item							24
-#define max_menu_item_data_sz					64
-
-#define max_chooser								128
-#define max_chooser_piece						64
-#define max_chooser_frame_text_sz				64
-#define max_chooser_text_data_sz				256
-#define max_chooser_button_text_sz				64
-
-#define max_chooser_sub_txt						16
-
 #define max_hud_intro_model						16
-
 #define max_tint_color							8
-
 #define max_character							32
 
 #define max_net_bot								16
 #define max_net_game							32
 #define max_net_option							32
-
-#define max_iface_particle						128
-#define max_iface_ring							64
-#define max_iface_mark							128
-
-#define max_iface_action						128
-#define max_iface_sound							128
-#define max_iface_user_shader					128
-
-//
-// particles
-//
-
-#define max_particle_count						256
-#define max_particle_trail						16
-#define max_particle_variation					4
-#define max_particle_group						16
 
 //
 // text specials
@@ -89,19 +64,6 @@ and can be sold or given away.
 #define text_special_spread						4
 
 #define text_special_list_def					{"none","fps","score","place","spread",""}
-
-//
-// simple save spots
-//
-
-#define max_simple_save_spot					5
-
-//
-// chat
-//
-
-#define max_chat_lines							15
-#define chat_str_len							64
 
 //
 // console
@@ -149,15 +111,15 @@ typedef struct		{
 //
 
 typedef struct		{
-						int						start_tick,
-												fade_in_tick,life_tick,fade_out_tick;
-						bool					on;
-					} hud_item_fade_type;
+						int							start_tick,
+													fade_in_tick,life_tick,fade_out_tick;
+						bool						on;
+					} iface_item_fade_type;
 					
 typedef struct		{
-						int						x_add,y_add,col,row,count;
-						bool					on;
-					} hud_bitmap_repeat_type;
+						int							x_add,y_add,col,row,count;
+						bool						on;
+					} iface_bitmap_repeat_type;
 					
 typedef struct		{
 						int							x,y,x_size,y_size,image_idx,show_tick;
@@ -165,31 +127,48 @@ typedef struct		{
 						char						name[name_str_len],filename[file_str_len];
 						bool						show,old_show,
 													flash,flip_horz,flip_vert,team_tint;
-						hud_bitmap_repeat_type		repeat;
+						iface_bitmap_repeat_type	repeat;
 						iface_image_animation_type	animate;
-						hud_item_fade_type			fade;
-					} hud_bitmap_type;
+						iface_item_fade_type		fade;
+					} iface_bitmap_type;
 
 typedef struct		{
-						int						x,y,size,just,special;
-						float					alpha;
-						char					name[name_str_len],data[max_hud_text_str_sz];
-						bool					show,old_show,has_return;
-						d3col					color;
-						hud_item_fade_type		fade;
-					} hud_text_type;
+						int							nbitmap;
+						iface_bitmap_type			*bitmaps;
+					} iface_bitmap_list;
+
+typedef struct		{
+						int							x,y,size,just,special;
+						float						alpha;
+						char						name[name_str_len],data[max_hud_text_str_sz];
+						bool						show,old_show,has_return;
+						d3col						color;
+						iface_item_fade_type		fade;
+					} iface_text_type;
+
+typedef struct		{
+						int							ntext;
+						iface_text_type				*texts;
+					} iface_text_list;
 					
 typedef struct		{
-						int						x,y,x_size,y_size;
-						float					fill_alpha,outline_alpha,value;
-						char					name[name_str_len];
-						bool					show,old_show,outline,vert;
-						d3col					fill_start_color,fill_end_color,outline_color;
-					} hud_bar_type;
+						int							x,y,x_size,y_size;
+						float						fill_alpha,outline_alpha,value;
+						char						name[name_str_len];
+						bool						show,old_show,outline,vert;
+						d3col						fill_start_color,fill_end_color,outline_color;
+					} iface_bar_type;
+
+typedef struct		{
+						int							nbar;
+						iface_bar_type				*bars;
+					} iface_bar_list;
 
 //
 // radar
 //
+
+#define max_radar_icon							16
 
 typedef struct		{
 						int						size,image_idx;
@@ -209,21 +188,35 @@ typedef struct		{
 // menus
 //
 
+#define max_menu_item							24
+#define max_menu_item_data_sz					64
+
 typedef struct		{
 						int						item_id;
 						char					data[max_menu_item_data_sz],sub_menu[name_str_len];
 						bool					multiplayer_disable,quit;
-					} menu_item_type;
+					} iface_menu_item_type;
 					
 typedef struct		{
 						int						nitem;
 						char					name[name_str_len];
-						menu_item_type			items[max_menu_item];
-					} menu_type;
+						iface_menu_item_type	items[max_menu_item];
+					} iface_menu_type;
+
+typedef struct		{
+						int						nmenu;
+						iface_menu_type			*menus;
+					} iface_menu_list;
 					
 //
 // chooser
 //
+
+#define max_chooser_piece						64
+#define max_chooser_frame_text_sz				64
+#define max_chooser_text_data_sz				256
+#define max_chooser_button_text_sz				64
+#define max_chooser_sub_txt						16
 
 #define chooser_piece_type_text					0
 #define chooser_piece_type_item					1
@@ -231,73 +224,80 @@ typedef struct		{
 #define chooser_piece_type_button				3
 
 typedef struct		{
-						int						size,just;
-						char					str[max_chooser_text_data_sz];
-					} chooser_text_type;
+						int								size,just;
+						char							str[max_chooser_text_data_sz];
+					} iface_chooser_text_type;
 
 typedef struct		{
-						char					file[file_str_len];
-					} chooser_item_type;
+						char							file[file_str_len];
+					} iface_chooser_item_type;
 
 typedef struct		{
-						float					resize;
-						char					model_name[name_str_len],animate_name[name_str_len];
-						d3ang					rot;
-					} chooser_model_type;
+						float							resize;
+						char							model_name[name_str_len],animate_name[name_str_len];
+						d3ang							rot;
+					} iface_chooser_model_type;
 
 typedef struct		{
-						char					name[max_chooser_button_text_sz];
-					} chooser_button_type;
+						char							name[max_chooser_button_text_sz];
+					} iface_chooser_button_type;
 
 typedef union		{
-						chooser_text_type		text;
-						chooser_item_type		item;
-						chooser_model_type		model;
-						chooser_button_type		button;
-					} chooser_piece_data_type;
+						iface_chooser_text_type			text;
+						iface_chooser_item_type			item;
+						iface_chooser_model_type		model;
+						iface_chooser_button_type		button;
+					} iface_chooser_piece_data_type;
 
 typedef struct		{
-						int						type,id,
-												x,y,wid,high;
-						bool					clickable;
-						char					goto_name[name_str_len];
-						chooser_piece_data_type	data;
-					} chooser_piece_type;
+						int								type,id,
+														x,y,wid,high;
+						bool							clickable;
+						char							goto_name[name_str_len];
+						iface_chooser_piece_data_type	data;
+					} iface_chooser_piece_type;
 
 typedef struct		{
-						int						x,y,wid,high;
-						char					title[max_chooser_frame_text_sz];
-						bool					on;
-						d3col					background_col;
-					} chooser_frame_type;
+						int								x,y,wid,high;
+						char							title[max_chooser_frame_text_sz];
+						bool							on;
+						d3col							background_col;
+					} iface_chooser_frame_type;
 					
 typedef struct		{
-						int						ok_id,cancel_id;
-					} chooser_key_type;
+						int								ok_id,cancel_id;
+					} iface_chooser_key_type;
 					
 typedef struct		{
-						int						npiece;
-						char					name[name_str_len];
-						chooser_frame_type		frame;
-						chooser_key_type		key;
-						chooser_piece_type		pieces[max_chooser_piece];
-					} chooser_type;
-					
+						int								npiece;
+						char							name[name_str_len];
+						iface_chooser_frame_type		frame;
+						iface_chooser_key_type			key;
+						iface_chooser_piece_type		pieces[max_chooser_piece];
+					} iface_chooser_type;
+
+typedef struct		{
+						int								nchooser;
+						iface_chooser_type				*choosers;
+					} iface_chooser_list;
+
 //
 // progress
 //
 
 typedef struct		{
-						int						lx,rx,ty,by,text_size;
-						bool					outline;
-						d3col					base_color_start,base_color_end,
-												hilite_color_start,hilite_color_end,
-												text_color,outline_color;
+						int								lx,rx,ty,by,text_size;
+						bool							outline;
+						d3col							base_color_start,base_color_end,
+														hilite_color_start,hilite_color_end,
+														text_color,outline_color;
 					} hud_progress_type;
 					
 //
 // intro
 //
+
+#define max_simple_save_spot							5
 
 typedef struct		{
 						int								x,y,wid,high,element_id;
@@ -344,88 +344,13 @@ typedef struct		{
 					} hud_fade_type;
 
 //
-// simple save structures
-//
-
-typedef struct		{
-						int								save_id;
-						char							desc[64];
-					} hud_simple_save_type;
-
-typedef struct		{
-						hud_simple_save_type			saves[max_simple_save_spot];
-					} hud_simple_save_list;
-					
-//
-// network structures
-//
-
-typedef struct		{
-						char							name[name_str_len],str[chat_str_len];
-						d3col							col;
-					} hud_chat_line_type;
-
-typedef struct		{
-						int								nline,x,y,
-														last_add_life_sec,next_life_sec,
-														remove_tick;
-						char							type_str[chat_str_len];
-						bool							type_on;
-						hud_chat_line_type				*lines;
-					} hud_chat_type;
-
-typedef struct		{
-						bool							on;
-					} hud_score_type;
-
-typedef struct		{
-						char							name[name_str_len],model_name[name_str_len],
-														param[name_str_len];
-						float							interface_resize;
-						d3pnt							interface_offset;
-					} hud_character_item_type;
-
-typedef struct		{
-						int								ncharacter;
-						hud_character_item_type			characters[max_character];
-					} hud_character_type;
-	
-typedef struct		{
-						char							name[name_str_len];
-					} hud_net_bot_type;
-
-typedef struct		{
-						bool							on;
-						hud_net_bot_type				bots[max_net_bot];
-					} hud_net_bots_type;
-
-typedef struct		{
-						char							name[name_str_len];
-						bool							use_teams,monsters;
-					} hud_net_game_type;
-
-typedef struct		{
-						int								ngame;
-						hud_net_game_type				games[max_net_game];
-					} hud_net_games_type;
-
-typedef struct		{
-						char							name[name_str_len],descript[64];
-					} hud_net_option_type;
-
-typedef struct		{
-						int								noption;
-						hud_net_option_type				options[max_net_option];
-					} hud_net_options_type;
-					
-typedef struct		{
-						int								port;
-						char							host[64],url[256];
-					} hud_net_news_type;
-
-//
 // particles
 //
+
+#define max_particle_count								256
+#define max_particle_trail								16
+#define max_particle_variation							4
+#define max_particle_group								16
 
 typedef struct		{
 						int								shift;
@@ -508,6 +433,34 @@ typedef struct		{
 					} iface_mark_list;
 
 //
+// halos
+//
+
+typedef struct		{
+						int								image_idx;
+						char							name[name_str_len],bitmap_name[name_str_len];
+					} iface_halo_type;
+
+typedef struct		{
+						int								nhalo;
+						iface_halo_type					*halos;
+					} iface_halo_list;
+
+//
+// crosshair
+//
+
+typedef struct		{
+						int								image_idx;
+						char							name[name_str_len],bitmap_name[name_str_len];
+					} iface_crosshair_type;
+
+typedef struct		{
+						int								ncrosshair;
+						iface_crosshair_type			*crosshairs;
+					} iface_crosshair_list;
+					
+//
 // actions
 //
 
@@ -550,15 +503,90 @@ typedef struct		{
 					} iface_shader_list;
 
 //
-// HUD counts
+// simple save structures
 //
 
 typedef struct		{
-						int								bitmap,text,bar,menu,chooser;
-					} hud_count_type;
+						int								save_id;
+						char							desc[64];
+					} hud_simple_save_type;
+
+typedef struct		{
+						hud_simple_save_type			saves[max_simple_save_spot];
+					} hud_simple_save_list;
 					
 //
-// main HUD structure
+// network structures
+//
+
+#define max_chat_lines									15
+#define chat_str_len									64
+
+typedef struct		{
+						char							name[name_str_len],str[chat_str_len];
+						d3col							col;
+					} hud_chat_line_type;
+
+typedef struct		{
+						int								nline,x,y,
+														last_add_life_sec,next_life_sec,
+														remove_tick;
+						char							type_str[chat_str_len];
+						bool							type_on;
+						hud_chat_line_type				*lines;
+					} hud_chat_type;
+
+typedef struct		{
+						bool							on;
+					} hud_score_type;
+
+typedef struct		{
+						char							name[name_str_len],model_name[name_str_len],
+														param[name_str_len];
+						float							interface_resize;
+						d3pnt							interface_offset;
+					} hud_character_item_type;
+
+typedef struct		{
+						int								ncharacter;
+						hud_character_item_type			characters[max_character];
+					} hud_character_type;
+	
+typedef struct		{
+						char							name[name_str_len];
+					} hud_net_bot_type;
+
+typedef struct		{
+						bool							on;
+						hud_net_bot_type				bots[max_net_bot];
+					} hud_net_bots_type;
+
+typedef struct		{
+						char							name[name_str_len];
+						bool							use_teams,monsters;
+					} hud_net_game_type;
+
+typedef struct		{
+						int								ngame;
+						hud_net_game_type				games[max_net_game];
+					} hud_net_games_type;
+
+typedef struct		{
+						char							name[name_str_len],descript[64];
+					} hud_net_option_type;
+
+typedef struct		{
+						int								noption;
+						hud_net_option_type				options[max_net_option];
+					} hud_net_options_type;
+					
+typedef struct		{
+						int								port;
+						char							host[64],url[256];
+					} hud_net_news_type;
+
+//
+// main iface structure
 //
  
 typedef struct		{
@@ -567,17 +595,24 @@ typedef struct		{
 														click_sound[name_str_len],
 														intro_music[name_str_len];
 						bool							debug,skill;
-						hud_count_type					count;
 						hud_color_type					color;
 						hud_font_type					font;
 						hud_progress_type				progress;
 						hud_intro_type					intro;
 						hud_fade_type					fade;
-						hud_bitmap_type					*bitmaps;
-						hud_text_type					*texts;
-						hud_bar_type					*bars;
-						menu_type						*menus;
-						chooser_type					*choosers;
+						iface_bitmap_list				bitmap_list;
+						iface_text_list					text_list;
+						iface_bar_list					bar_list;
+						iface_menu_list					menu_list;
+						iface_chooser_list				chooser_list;
+						iface_particle_list				particle_list;
+						iface_ring_list					ring_list;
+						iface_mark_list					mark_list;
+						iface_halo_list					halo_list;
+						iface_crosshair_list			crosshair_list;
+						iface_action_display_list		action_display_list;
+						iface_sound_list				sound_list;
+						iface_shader_list				shader_list;
 						hud_radar_type					radar;
 						hud_chat_type					chat;
 						hud_score_type					score;
@@ -587,12 +622,6 @@ typedef struct		{
 						hud_net_games_type				net_game;
 						hud_net_options_type			net_option;
 						hud_net_news_type				net_news;
-						iface_particle_list				particle_list;
-						iface_ring_list					ring_list;
-						iface_mark_list					mark_list;
-						iface_action_display_list		action_display_list;
-						iface_sound_list				sound_list;
-						iface_shader_list				shader_list;
 					} iface_type;
 					
 

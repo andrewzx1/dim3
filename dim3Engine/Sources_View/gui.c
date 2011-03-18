@@ -43,7 +43,7 @@ extern render_info_type		render_info;
 
 int							gui_background_image_idx;
 char						gui_last_key;
-chooser_frame_type			gui_frame;
+iface_chooser_frame_type	gui_frame;
 
 extern void game_time_pause_start(void);
 extern void game_time_pause_end(void);
@@ -165,9 +165,9 @@ void gui_draw_background(float alpha)
       
 ======================================================= */
 
-void gui_set_frame(chooser_frame_type *frame)
+void gui_set_frame(iface_chooser_frame_type *frame)
 {
-	memmove(&gui_frame,frame,sizeof(chooser_frame_type));
+	memmove(&gui_frame,frame,sizeof(iface_chooser_frame_type));
 }
 
 void gui_draw_dialog(void)

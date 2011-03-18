@@ -25,10 +25,6 @@ and can be sold or given away.
  
 *********************************************************************/
 
-extern void halo_initialize_list(void);
-extern void halo_free_list(void);
-extern halo_type* halo_add_list(void);
-
 extern void halo_load_bitmaps(void);
 extern void halo_free_bitmaps(void);
 extern int halo_find(char *name);
