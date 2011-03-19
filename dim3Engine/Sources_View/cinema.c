@@ -387,7 +387,7 @@ void cinema_action_run_hud_text(map_cinema_action_type *action)
 
 		// do text replacement
 		
-	hud_text_set(text,action->text_str);
+	iface_text_set(text,action->text_str);
 }
 
 /* =======================================================

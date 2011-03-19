@@ -89,12 +89,12 @@ typedef struct		{
 												control_mouse_over,control_hilite,control_disabled,
 												button_fill,button_text,button_outline,
 												default_tint,tints[max_tint_color];
-					} hud_color_type;
+					} iface_color_type;
 
 typedef struct		{
 						int						text_size_small,text_size_medium,text_size_large;
 						char					interface_name[name_str_len],hud_name[name_str_len];
-					} hud_font_type;
+					} iface_font_type;
 
 //
 // generic animated image
@@ -174,15 +174,15 @@ typedef struct		{
 						int						size,image_idx;
 						char					name[name_str_len],bitmap_name[name_str_len];
 						bool					rot;
-					} hud_radar_icon_type;
+					} iface_radar_icon_type;
 
 typedef struct		{
 						int						x,y,display_radius,view_radius,
 												background_image_idx,nicon,no_motion_fade;
 						bool					on,rot,team_tint;
 						char					background_bitmap_name[name_str_len];
-						hud_radar_icon_type		icons[max_radar_icon];
-					} hud_radar_type;
+						iface_radar_icon_type	icons[max_radar_icon];
+					} iface_radar_type;
 			
 //
 // menus
@@ -291,7 +291,7 @@ typedef struct		{
 						d3col							base_color_start,base_color_end,
 														hilite_color_start,hilite_color_end,
 														text_color,outline_color;
-					} hud_progress_type;
+					} iface_progress_type;
 					
 //
 // intro
@@ -302,37 +302,38 @@ typedef struct		{
 typedef struct		{
 						int								x,y,wid,high,element_id;
 						bool							on;
-					} hud_intro_button_type;
+					} iface_intro_button_type;
 
 typedef struct		{
 						int								x,y,text_size;
-					} hud_intro_simple_save_desc_type;
+					} iface_intro_simple_save_desc_type;
 
 typedef struct		{
-						hud_intro_button_type			button_start,button_erase;
-						hud_intro_simple_save_desc_type	desc;
-					} hud_intro_simple_save_type;
+						iface_intro_button_type				button_start,button_erase;
+						iface_intro_simple_save_desc_type	desc;
+					} iface_intro_simple_save_type;
 			
 typedef struct		{
 						int								x,y;
 						float							resize;
 						char							model_name[name_str_len],animate_name[name_str_len];
 						d3ang							rot;
-					} hud_intro_model_type;
+					} iface_intro_model_type;
 
 typedef struct		{
 						int								nmodel;
-						hud_intro_model_type			models[max_hud_intro_model];
-					} hud_intro_model_list;
+						iface_intro_model_type			models[max_hud_intro_model];
+					} iface_intro_model_list;
 
 typedef struct		{
-						hud_intro_button_type			button_game_new,button_game_load,button_game_setup,
+						char							music[name_str_len];
+						iface_intro_button_type			button_game_new,button_game_load,button_game_setup,
 														button_game_new_easy,button_game_new_medium,button_game_new_hard,button_game_new_cancel,
 														button_multiplayer_host,button_multiplayer_join,button_multiplayer_setup,
 														button_credit,button_quit;
-						hud_intro_simple_save_type		simple_save[max_simple_save_spot];
-						hud_intro_model_list			model;
-					} hud_intro_type;
+						iface_intro_simple_save_type	simple_save[max_simple_save_spot];
+						iface_intro_model_list			model;
+					} iface_intro_type;
 
 //
 // hud fades
@@ -341,7 +342,7 @@ typedef struct		{
 typedef struct		{
 						int								title_msec,
 														map_msec;
-					} hud_fade_type;
+					} iface_fade_type;
 
 //
 // particles
@@ -514,31 +515,19 @@ typedef struct		{
 typedef struct		{
 						hud_simple_save_type			saves[max_simple_save_spot];
 					} hud_simple_save_list;
+
+//
+// chat structures
+//
+
+typedef struct		{
+						int								x,y,
+														last_add_life_sec,next_life_sec;
+					} iface_chat_type;
 					
 //
 // network structures
 //
-
-#define max_chat_lines									15
-#define chat_str_len									64
-
-typedef struct		{
-						char							name[name_str_len],str[chat_str_len];
-						d3col							col;
-					} hud_chat_line_type;
-
-typedef struct		{
-						int								nline,x,y,
-														last_add_life_sec,next_life_sec,
-														remove_tick;
-						char							type_str[chat_str_len];
-						bool							type_on;
-						hud_chat_line_type				*lines;
-					} hud_chat_type;
-
-typedef struct		{
-						bool							on;
-					} hud_score_type;
 
 typedef struct		{
 						char							name[name_str_len],model_name[name_str_len],
@@ -592,14 +581,13 @@ typedef struct		{
 typedef struct		{
 						int								scale_x,scale_y;
 						char							project_name[name_str_len],
-														click_sound[name_str_len],
-														intro_music[name_str_len];
+														click_sound[name_str_len];
 						bool							debug,skill;
-						hud_color_type					color;
-						hud_font_type					font;
-						hud_progress_type				progress;
-						hud_intro_type					intro;
-						hud_fade_type					fade;
+						iface_color_type				color;
+						iface_font_type					font;
+						iface_progress_type				progress;
+						iface_intro_type				intro;
+						iface_fade_type					fade;
 						iface_bitmap_list				bitmap_list;
 						iface_text_list					text_list;
 						iface_bar_list					bar_list;
@@ -613,9 +601,8 @@ typedef struct		{
 						iface_action_display_list		action_display_list;
 						iface_sound_list				sound_list;
 						iface_shader_list				shader_list;
-						hud_radar_type					radar;
-						hud_chat_type					chat;
-						hud_score_type					score;
+						iface_radar_type				radar;
+						iface_chat_type					chat;
 						hud_character_type				character;
 						hud_simple_save_list			simple_save_list;
 						hud_net_bots_type				net_bot;

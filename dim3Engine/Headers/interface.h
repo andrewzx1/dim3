@@ -210,14 +210,13 @@ extern void progress_draw(float percentage);
 // hud
 //
 
-extern void hud_initialize(void);
 extern iface_bitmap_type* iface_bitmaps_find(char *name);	// supergumba -- move
 extern iface_text_type* iface_texts_find(char *name);		// supergumba -- move
 extern iface_bar_type* iface_bars_find(char *name);			// supergumba -- move
-extern void hud_text_set(iface_text_type *text,char *data);
-extern void hud_bitmaps_hide_all(void);
-extern void hud_texts_hide_all(void);
-extern void hud_bars_hide_all(void);
+extern void iface_text_set(iface_text_type *text,char *data);	// supergumba
+extern void iface_bitmaps_hide_all(iface_type *iface);	// supergumba
+extern void iface_texts_hide_all(iface_type *iface);	// supergumba
+extern void iface_bars_hide_all(iface_type *iface);	// supergumba
 extern void hud_click(void);
 extern void hud_draw(void);
 extern void network_draw(void);

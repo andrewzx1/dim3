@@ -210,7 +210,7 @@ void intro_show_hide_for_mode(void)
 	element_hide(intro_simple_save_erase_cancel,TRUE);
 }
 
-void intro_open_add_button(hud_intro_button_type *btn,char *name,int id)
+void intro_open_add_button(iface_intro_button_type *btn,char *name,int id)
 {
 	char		sel_name[256],path[1024],path2[1024];
 
@@ -238,7 +238,7 @@ void intro_open(void)
 	int						n,x,y;
 	bool					start_music;
 	char					name[256],err_str[256];
-	hud_intro_model_type	*intro_model;
+	iface_intro_model_type	*intro_model;
 
 		// intro UI
 		
@@ -305,14 +305,14 @@ void intro_open(void)
 	
 		// intro music
 		
-	if ((iface.intro_music[0]!=0x0) && (setup.music_on)) {
+	if ((iface.intro.music[0]!=0x0) && (setup.music_on)) {
 	
 			// previously playing music?
 			
 		start_music=TRUE;
 		
 		if (al_music_playing()) {
-			if (al_music_playing_is_name(iface.intro_music)) {		// same music, keep playing
+			if (al_music_playing_is_name(iface.intro.music)) {		// same music, keep playing
 				start_music=FALSE;
 			}
 			else {
@@ -321,7 +321,7 @@ void intro_open(void)
 			}
 		}
 		
-		if (start_music) al_music_play(iface.intro_music,err_str);
+		if (start_music) al_music_play(iface.intro.music,err_str);
 	}
 }
 

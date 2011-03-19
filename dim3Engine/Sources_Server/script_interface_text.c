@@ -123,7 +123,7 @@ JSValueRef js_interface_text_hide_all_func(JSContextRef cx,JSObjectRef func,JSOb
 {
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
-	hud_texts_hide_all();
+	iface_texts_hide_all(&iface);
 	return(script_null_to_value(cx));
 }
 
@@ -167,7 +167,7 @@ JSValueRef js_interface_text_set_text_func(JSContextRef cx,JSObjectRef func,JSOb
 	text=script_find_text_from_name(cx,argv[0],exception);
 	if (text!=NULL) {
 		script_value_to_string(cx,argv[1],data,max_hud_text_str_sz);
-		hud_text_set(text,data);
+		iface_text_set(text,data);
 	}
 
 	return(script_null_to_value(cx));
@@ -273,7 +273,7 @@ JSValueRef js_interface_text_set_text_and_fade_func(JSContextRef cx,JSObjectRef 
 	text=script_find_text_from_name(cx,argv[0],exception);
 	if (text!=NULL) {
 		script_value_to_string(cx,argv[1],data,max_hud_text_str_sz);
-		hud_text_set(text,data);
+		iface_text_set(text,data);
 		
 		text->show=TRUE;
 		text->fade.on=TRUE;

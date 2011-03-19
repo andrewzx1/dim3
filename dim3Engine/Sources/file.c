@@ -392,7 +392,7 @@ bool game_file_save(char *err_str)
 	game_file_add_chunk(iface.bitmap_list.bitmaps,iface.bitmap_list.nbitmap,sizeof(iface_bitmap_type));
 	game_file_add_chunk(iface.text_list.texts,iface.text_list.ntext,sizeof(iface_text_type));
 	game_file_add_chunk(iface.bar_list.bars,iface.bar_list.nbar,sizeof(iface_bar_type));
-	game_file_add_chunk(&iface.radar,1,sizeof(hud_radar_type));
+	game_file_add_chunk(&iface.radar,1,sizeof(iface_radar_type));
 	
 		// map changes
 		

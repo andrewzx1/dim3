@@ -46,7 +46,7 @@ extern setup_type			setup;
       
 ======================================================= */
 
-int halo_find(char *name)
+int iface_halo_find(char *name)
 {
 	int				n;
 	iface_halo_type	*halo;

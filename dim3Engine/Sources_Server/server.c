@@ -84,10 +84,6 @@ bool server_initialize(char *err_str)
 		return(FALSE);
 	}
 	
-		// initialize project settings
-		
-	hud_initialize();
-	
 		// load project XML
 		
 	read_settings_interface();

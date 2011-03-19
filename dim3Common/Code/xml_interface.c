@@ -71,8 +71,6 @@ bool interface_initialize(void)
 
 		// initialize pointers
 		
-	iface.chat.lines=NULL;
-
 	iface.bitmap_list.bitmaps=NULL;
 	iface.text_list.texts=NULL;
 	iface.bar_list.bars=NULL;
@@ -103,9 +101,6 @@ bool interface_initialize(void)
 	
 	iface.chooser_list.choosers=(iface_chooser_type*)malloc(max_iface_chooser*sizeof(iface_chooser_type));
 	if (iface.chooser_list.choosers==NULL) return(FALSE);
-	
-	iface.chat.lines=(hud_chat_line_type*)malloc(max_chat_lines*sizeof(hud_chat_line_type));
-	if (iface.chat.lines==NULL) return(FALSE);
 
 	iface.particle_list.particles=(iface_particle_type*)malloc(max_iface_particle*sizeof(iface_particle_type));
 	if (iface.particle_list.particles==NULL) return(FALSE);
@@ -138,8 +133,6 @@ bool interface_initialize(void)
 	bzero(iface.bar_list.bars,(max_iface_bar*sizeof(iface_bar_type)));
 	bzero(iface.menu_list.menus,(max_iface_menu*sizeof(iface_menu_type)));
 	bzero(iface.chooser_list.choosers,(max_iface_chooser*sizeof(iface_chooser_type)));
-	bzero(iface.chat.lines,(max_chat_lines*sizeof(hud_chat_line_type)));
-
 	bzero(iface.particle_list.particles,(max_iface_particle*sizeof(iface_particle_type)));
 	bzero(iface.ring_list.rings,(max_iface_ring*sizeof(iface_ring_type)));
 	bzero(iface.mark_list.marks,(max_iface_mark*sizeof(iface_mark_type)));
@@ -161,8 +154,6 @@ void interface_shutdown(void)
 	if (iface.bar_list.bars!=NULL) free(iface.bar_list.bars);
 	if (iface.menu_list.menus!=NULL) free(iface.menu_list.menus);
 	if (iface.chooser_list.choosers!=NULL) free(iface.chooser_list.choosers);
-	if (iface.chat.lines!=NULL) free(iface.chat.lines);
-
 	if (iface.particle_list.particles!=NULL) free(iface.particle_list.particles);
 	if (iface.ring_list.rings!=NULL) free(iface.ring_list.rings);
 	if (iface.mark_list.marks!=NULL) free(iface.mark_list.marks);
@@ -179,7 +170,7 @@ void interface_shutdown(void)
       
 ======================================================= */
 
-void default_settings_interface_button(hud_intro_button_type *button,int x,int y,bool on)
+void default_settings_interface_button(iface_intro_button_type *button,int x,int y,bool on)
 {
 	button->x=x;
 	button->y=y;
@@ -220,10 +211,9 @@ void default_settings_interface(void)
 		
 	iface.skill=FALSE;
 	
-		// sounds and music
+		// sounds
 		
 	iface.click_sound[0]=0x0;
-	iface.intro_music[0]=0x0;
 
 		// debug mode
 
@@ -321,6 +311,8 @@ void default_settings_interface(void)
 	}
 
 	iface.intro.model.nmodel=0;
+	
+	iface.intro.music[0]=0x0;
 
 		// player models
 
@@ -438,5 +430,56 @@ int iface_chooser_find_piece_idx(iface_chooser_type *chooser,int id)
 	}
 
 	return(-1);
+}
+
+/* =======================================================
+
+      Misc Routines
+      
+======================================================= */
+
+void iface_text_set(iface_text_type *text,char *data)
+{
+	strcpy(text->data,data);
+	text->has_return=(strstr(data,"{r}")!=NULL);
+}
+
+void iface_bitmaps_hide_all(iface_type *iface)
+{
+	int					n;
+	iface_bitmap_type	*bitmap;
+
+	bitmap=iface->bitmap_list.bitmaps;
+	
+	for (n=0;n!=iface->bitmap_list.nbitmap;n++) {
+		bitmap->show=FALSE;
+		bitmap++;
+	}
+}
+
+void iface_texts_hide_all(iface_type *iface)
+{
+	int				n;
+	iface_text_type	*text;
+
+	text=iface->text_list.texts;
+	
+	for (n=0;n!=iface->text_list.ntext;n++) {
+		text->show=FALSE;
+		text++;
+	}
+}
+
+void iface_bars_hide_all(iface_type *iface)
+{
+	int				n;
+	iface_bar_type	*bar;
+
+	bar=iface->bar_list.bars;
+	
+	for (n=0;n!=iface->bar_list.nbar;n++) {
+		bar->show=FALSE;
+		bar++;
+	}
 }
 

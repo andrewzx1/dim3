@@ -205,7 +205,7 @@ void read_settings_interface_text(int text_tag)
 		text->fade.fade_out_tick=xml_get_attribute_int(tag,"fade_out_msec");
 	}
 
-	hud_text_set(text,data);
+	iface_text_set(text,data);
 }
 
 /* =======================================================
@@ -713,7 +713,7 @@ void read_settings_interface_chooser(int chooser_tag)
       
 ======================================================= */
 
-void read_settings_interface_intro_button(int tag,hud_intro_button_type *btn,hud_intro_simple_save_desc_type *desc)
+void read_settings_interface_intro_button(int tag,iface_intro_button_type *btn,iface_intro_simple_save_desc_type *desc)
 {
 	if (tag==-1) return;
 	
@@ -732,7 +732,7 @@ void read_settings_interface_intro_button(int tag,hud_intro_button_type *btn,hud
 
 void read_settings_interface_intro_model(int tag)
 {
-	hud_intro_model_type		*intro_model;
+	iface_intro_model_type		*intro_model;
 
 	if (iface.intro.model.nmodel==max_hud_intro_model) return;
 
@@ -988,7 +988,7 @@ void read_settings_interface(void)
 		
 	music_tag=xml_findfirstchild("Music",interface_head_tag);
 	if (music_tag!=-1) {
-		xml_get_attribute_text(music_tag,"intro",iface.intro_music,name_str_len);
+		xml_get_attribute_text(music_tag,"intro",iface.intro.music,name_str_len);
 	}
 
 		// project setup
