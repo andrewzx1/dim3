@@ -272,7 +272,7 @@ void view_images_cached_load(void)
 	int						n;
 	char					path[1024];
 	iface_bitmap_type		*iface_bitmap;
-	hud_radar_icon_type		*icon;
+	iface_radar_icon_type	*icon;
 	iface_particle_type		*particle;
 	iface_ring_type			*ring;
  	iface_mark_type			*mark;
@@ -369,7 +369,7 @@ void view_images_cached_free(void)
 {
 	int						n;
 	iface_bitmap_type		*iface_bitmap;
-	hud_radar_icon_type		*icon;
+	iface_radar_icon_type	*icon;
 	iface_particle_type		*particle;
 	iface_ring_type			*ring;
  	iface_mark_type			*mark;

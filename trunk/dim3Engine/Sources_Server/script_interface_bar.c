@@ -109,7 +109,7 @@ JSValueRef js_interface_bar_hide_all_func(JSContextRef cx,JSObjectRef func,JSObj
 {
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
-	hud_bars_hide_all();
+	iface_bars_hide_all(&iface);
 	return(script_null_to_value(cx));
 }
 

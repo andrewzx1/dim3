@@ -87,7 +87,7 @@ void player_clear_input(void)
 	
 	input_clear();
 
-	iface.chat.type_on=FALSE;
+	view.chat.type_on=FALSE;
 }
 
 /* =======================================================
@@ -455,7 +455,7 @@ void player_enter_exit_input(obj_type *obj)
 bool player_message_input(obj_type *obj)
 {
 	int				len;
-	char			ch,nstr[chat_str_len];
+	char			ch,nstr[max_view_chat_str_len];
 	char			*c,*msg;
 	d3col			col;
 	
@@ -465,7 +465,7 @@ bool player_message_input(obj_type *obj)
 		
 	if (input_action_get_state(nc_score)) {
 		if (!network_score_key_down) {
-			iface.score.on=!iface.score.on;
+			view.score.on=!view.score.on;
 			network_score_key_down=TRUE;
 		}
 	}
@@ -475,7 +475,7 @@ bool player_message_input(obj_type *obj)
 		
 		// chatting
 
-	if (iface.chat.type_on) {
+	if (view.chat.type_on) {
 	
 			// get last raw key as character
 			
@@ -484,20 +484,20 @@ bool player_message_input(obj_type *obj)
 		
 			// get current message len
 			
-		msg=iface.chat.type_str;
+		msg=view.chat.type_str;
 		len=strlen(msg);
 		
 			// escape cancels
 			
 		if (ch==0x1B) {
-			iface.chat.type_on=FALSE;
+			view.chat.type_on=FALSE;
 			return(FALSE);
 		}
 		
 			// return ends entry
 			
 		if (ch==0xD) {
-			iface.chat.type_on=FALSE;
+			view.chat.type_on=FALSE;
 			if (len>1) {
 				msg[len-1]=0x0;
 				net_client_send_chat(obj,msg);
@@ -525,7 +525,7 @@ bool player_message_input(obj_type *obj)
 		
 			// force start a new line if too many characters
 			
-		if (len>=(chat_str_len-1)) {
+		if (len>=(max_view_chat_str_len-1)) {
 			nstr[0]=0x0;
 			
 			c=strrchr(msg,' ');
@@ -557,12 +557,12 @@ bool player_message_input(obj_type *obj)
 	}
 	
 	if (input_action_get_state(nc_message)) {
-		iface.chat.type_on=TRUE;
+		view.chat.type_on=TRUE;
 		
 		input_clear_text_input();
 		
-		iface.chat.type_str[0]='_';
-		iface.chat.type_str[1]=0x0;
+		view.chat.type_str[0]='_';
+		view.chat.type_str[1]=0x0;
 		
 		return(FALSE);
 	}

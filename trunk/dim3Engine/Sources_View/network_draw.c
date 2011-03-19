@@ -308,7 +308,7 @@ void network_score_draw(void)
 		
 	if (net_setup.mode!=net_mode_host_dedicated) {
 		if (server.state!=gs_score_limit) {
-			if (!iface.score.on) {
+			if (!view.score.on) {
 				player_obj=server.obj_list.objs[server.player_obj_idx];
 				if (player_obj->status.health!=0) return;
 			}
@@ -373,10 +373,10 @@ void network_score_draw(void)
 
 void network_chat_draw(void)
 {
-	int					n,x,y,yadd,ntop;
-	char				txt[chat_str_len+name_str_len+4];
-	hud_chat_line_type	*line;
-	d3col				col;
+	int						n,x,y,yadd,ntop;
+	char					txt[max_view_chat_str_len+name_str_len+4];
+	view_chat_line_type		*line;
+	d3col					col;
 
 		// dedicated hosts don't chat
 
@@ -395,9 +395,9 @@ void network_chat_draw(void)
 
 		// currently typing?
 
-	if (iface.chat.type_on) {
+	if (view.chat.type_on) {
 		col.r=col.g=col.b=1.0f;
-		gl_text_draw(x,y,iface.chat.type_str,tx_right,FALSE,&col,1.0f);
+		gl_text_draw(x,y,view.chat.type_str,tx_right,FALSE,&col,1.0f);
 		y-=yadd;
 	}
 
@@ -408,10 +408,10 @@ void network_chat_draw(void)
 		// history lines
 
 	ntop=0;
-	if ((iface.chat.type_on) && (iface.chat.nline>=max_chat_lines)) ntop=1;		// push top line off when typing if over max
+	if ((view.chat.type_on) && (view.chat.nline>=max_view_chat_lines)) ntop=1;		// push top line off when typing if over max
 	
-	for (n=(iface.chat.nline-1);n>=ntop;n--) {
-		line=&iface.chat.lines[n];
+	for (n=(view.chat.nline-1);n>=ntop;n--) {
+		line=&view.chat.lines[n];
 		sprintf(txt,"%s [%s]",line->str,line->name);
 		gl_text_draw(x,y,txt,tx_right,FALSE,&line->col,1.0f);
 		y-=yadd;

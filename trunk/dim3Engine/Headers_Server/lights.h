@@ -25,9 +25,7 @@ and can be sold or given away.
  
 *********************************************************************/
 
-extern void halo_load_bitmaps(void);
-extern void halo_free_bitmaps(void);
-extern int halo_find(char *name);
+extern int iface_halo_find(char *name);		// supergumba -- move
 
 extern void halo_draw_clear(void);
 extern void halo_draw_add(int x,int y,int z,int obj_idx,model_draw_halo *mdl_halo);

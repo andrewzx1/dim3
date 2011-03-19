@@ -67,6 +67,8 @@
 		26F12E03132D8FB800A6E150 /* xml_halos.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F12DFD132D8FB800A6E150 /* xml_halos.c */; };
 		26F12E04132D8FB800A6E150 /* xml_interface.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F12DFE132D8FB800A6E150 /* xml_interface.c */; };
 		26F6FF6312E2B18900DF617F /* xml_simple_save.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F6FF6212E2B18900DF617F /* xml_simple_save.c */; };
+		26F8AA75133546FB0020367E /* chat.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F8AA74133546FB0020367E /* chat.c */; };
+		26F8AA7E133547770020367E /* console.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F8AA7D133547770020367E /* console.c */; };
 		26FDC442113A45A6002D987E /* timing.h in Headers */ = {isa = PBXBuildFile; fileRef = 26FDC441113A45A6002D987E /* timing.h */; };
 		26FE82370F4E1D5C00B659D8 /* gl_light.c in Sources */ = {isa = PBXBuildFile; fileRef = 26FE82350F4E1D5C00B659D8 /* gl_light.c */; };
 		F500CC680C27942200F7C8CC /* gl_check.c in Sources */ = {isa = PBXBuildFile; fileRef = F500CC670C27942200F7C8CC /* gl_check.c */; };
@@ -229,9 +231,6 @@
 		F5C1BF800A085110002D02AB /* model_draw_setup.c in Sources */ = {isa = PBXBuildFile; fileRef = F5C1BF7F0A085110002D02AB /* model_draw_setup.c */; };
 		F5C5A50B092AC9260012DD78 /* SDL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5C5A50A092AC9260012DD78 /* SDL.framework */; };
 		F5C5A76E092AC9AB0012DD78 /* SDL.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = F5C5A50A092AC9260012DD78 /* SDL.framework */; };
-		F5C5E69F090D910F00F94729 /* halos.c in Sources */ = {isa = PBXBuildFile; fileRef = F5C5E69E090D910F00F94729 /* halos.c */; };
-		F5C5E6A2090DDD4F00F94729 /* menu.c in Sources */ = {isa = PBXBuildFile; fileRef = F5C5E6A1090DDD4F00F94729 /* menu.c */; };
-		F5C5E6B4090DDD7B00F94729 /* chooser.c in Sources */ = {isa = PBXBuildFile; fileRef = F5C5E6B3090DDD7B00F94729 /* chooser.c */; };
 		F5C5EB110913264E00F94729 /* loop.c in Sources */ = {isa = PBXBuildFile; fileRef = F5C5EB090913264E00F94729 /* loop.c */; };
 		F5C5EB120913264E00F94729 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = F5C5EB0A0913264E00F94729 /* main.c */; };
 		F5C5EB130913264E00F94729 /* app.c in Sources */ = {isa = PBXBuildFile; fileRef = F5C5EB0B0913264E00F94729 /* app.c */; };
@@ -250,9 +249,6 @@
 		F5CF599F0BFD1640007DD44C /* radar_draw.c in Sources */ = {isa = PBXBuildFile; fileRef = F5CF599E0BFD1640007DD44C /* radar_draw.c */; };
 		F5D830A4099E5744005D1A6E /* PNG.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5D830A2099E5744005D1A6E /* PNG.framework */; };
 		F5D830B6099E575C005D1A6E /* PNG.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = F5D830A2099E5744005D1A6E /* PNG.framework */; };
-		F5DD198A09080E9600721649 /* crosshair.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD198709080E9600721649 /* crosshair.c */; };
-		F5DD198B09080E9600721649 /* hud.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD198809080E9600721649 /* hud.c */; };
-		F5DD198C09080E9600721649 /* console.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD198909080E9600721649 /* console.c */; };
 		F5DD199009080EA300721649 /* console_draw.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD198D09080EA300721649 /* console_draw.c */; };
 		F5DD199109080EA300721649 /* hud_draw.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD198E09080EA300721649 /* hud_draw.c */; };
 		F5DD199209080EA300721649 /* crosshair_draw.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD198F09080EA300721649 /* crosshair_draw.c */; };
@@ -439,6 +435,8 @@
 		26F12DFD132D8FB800A6E150 /* xml_halos.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = xml_halos.c; path = ../dim3Common/Code/xml_halos.c; sourceTree = SOURCE_ROOT; };
 		26F12DFE132D8FB800A6E150 /* xml_interface.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = xml_interface.c; path = ../dim3Common/Code/xml_interface.c; sourceTree = SOURCE_ROOT; };
 		26F6FF6212E2B18900DF617F /* xml_simple_save.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = xml_simple_save.c; path = Sources_Server/xml_simple_save.c; sourceTree = "<group>"; };
+		26F8AA74133546FB0020367E /* chat.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = chat.c; path = Sources_View/chat.c; sourceTree = "<group>"; };
+		26F8AA7D133547770020367E /* console.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = console.c; path = Sources_View/console.c; sourceTree = "<group>"; };
 		26FDC441113A45A6002D987E /* timing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = timing.h; path = Headers_Server/timing.h; sourceTree = "<group>"; };
 		26FE82350F4E1D5C00B659D8 /* gl_light.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = gl_light.c; path = Sources_View/gl_light.c; sourceTree = "<group>"; };
 		F500CC670C27942200F7C8CC /* gl_check.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = gl_check.c; path = Sources_View/gl_check.c; sourceTree = "<group>"; };
@@ -600,9 +598,6 @@
 		F5C1BE770A05A2E3002D02AB /* model_effect.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = model_effect.c; path = Sources_Server/model_effect.c; sourceTree = "<group>"; };
 		F5C1BF7F0A085110002D02AB /* model_draw_setup.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = model_draw_setup.c; path = Sources_Server/model_draw_setup.c; sourceTree = "<group>"; };
 		F5C5A50A092AC9260012DD78 /* SDL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL.framework; path = ../dim3Common/Frameworks/SDL.framework; sourceTree = SOURCE_ROOT; };
-		F5C5E69E090D910F00F94729 /* halos.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = halos.c; path = Sources_Server/halos.c; sourceTree = "<group>"; };
-		F5C5E6A1090DDD4F00F94729 /* menu.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = menu.c; path = Sources_Server/menu.c; sourceTree = "<group>"; };
-		F5C5E6B3090DDD7B00F94729 /* chooser.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = chooser.c; path = Sources_Server/chooser.c; sourceTree = "<group>"; };
 		F5C5EA7E091323C400F94729 /* dim3engine.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = dim3engine.h; path = Headers/dim3engine.h; sourceTree = "<group>"; };
 		F5C5EB090913264E00F94729 /* loop.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = loop.c; path = Sources/loop.c; sourceTree = "<group>"; };
 		F5C5EB0A0913264E00F94729 /* main.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = main.c; path = Sources/main.c; sourceTree = "<group>"; };
@@ -618,9 +613,6 @@
 		F5CF599C0BFD161D007DD44C /* script_obj_radar.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = script_obj_radar.c; path = Sources_Server/script_obj_radar.c; sourceTree = "<group>"; };
 		F5CF599E0BFD1640007DD44C /* radar_draw.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = radar_draw.c; path = Sources_View/radar_draw.c; sourceTree = "<group>"; };
 		F5D830A2099E5744005D1A6E /* PNG.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PNG.framework; path = ../dim3Common/Frameworks/PNG.framework; sourceTree = SOURCE_ROOT; };
-		F5DD198709080E9600721649 /* crosshair.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = crosshair.c; path = Sources_Server/crosshair.c; sourceTree = "<group>"; };
-		F5DD198809080E9600721649 /* hud.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = hud.c; path = Sources_Server/hud.c; sourceTree = "<group>"; };
-		F5DD198909080E9600721649 /* console.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = console.c; path = Sources_Server/console.c; sourceTree = "<group>"; };
 		F5DD198D09080EA300721649 /* console_draw.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = console_draw.c; path = Sources_View/console_draw.c; sourceTree = "<group>"; };
 		F5DD198E09080EA300721649 /* hud_draw.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = hud_draw.c; path = Sources_View/hud_draw.c; sourceTree = "<group>"; };
 		F5DD198F09080EA300721649 /* crosshair_draw.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = crosshair_draw.c; path = Sources_View/crosshair_draw.c; sourceTree = "<group>"; };
@@ -876,18 +868,6 @@
 				F557C58A0A4253FF008DB85C /* script_weap_zoom.c */,
 			);
 			name = Weapons;
-			sourceTree = "<group>";
-		};
-		08B25DFF00C07C3F7F000001 /* Display */ = {
-			isa = PBXGroup;
-			children = (
-				F5DD198809080E9600721649 /* hud.c */,
-				F5C5E6A1090DDD4F00F94729 /* menu.c */,
-				F5C5E6B3090DDD7B00F94729 /* chooser.c */,
-				F5DD198909080E9600721649 /* console.c */,
-				F5DD198709080E9600721649 /* crosshair.c */,
-			);
-			name = Display;
 			sourceTree = "<group>";
 		};
 		08B25E0300C087917F000001 /* Weapons */ = {
@@ -1321,14 +1301,6 @@
 			name = Interfaces;
 			sourceTree = "<group>";
 		};
-		F5C5E6A3090DDD6600F94729 /* Lighting */ = {
-			isa = PBXGroup;
-			children = (
-				F5C5E69E090D910F00F94729 /* halos.c */,
-			);
-			name = Lighting;
-			sourceTree = "<group>";
-		};
 		F5D6E1BC0930D78D0011F994 /* Private Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -1352,9 +1324,7 @@
 				F590BD0E0419BB06001652AE /* Projectiles */,
 				F53C68E10214E46B01FFB404 /* Camera */,
 				F52A334C012B8B0B01000001 /* Map */,
-				F5C5E6A3090DDD6600F94729 /* Lighting */,
 				08B25E0800C087917F000001 /* Effects */,
-				08B25DFF00C07C3F7F000001 /* Display */,
 				F5DD1AE5090861D500721649 /* Models */,
 				F5A57F30090AB21800BE7C36 /* XML */,
 			);
@@ -1395,6 +1365,8 @@
 			isa = PBXGroup;
 			children = (
 				F5DD198E09080EA300721649 /* hud_draw.c */,
+				26F8AA74133546FB0020367E /* chat.c */,
+				26F8AA7D133547770020367E /* console.c */,
 				F58B7C070CD2B7A700CEE31F /* network_draw.c */,
 				F5CF599E0BFD1640007DD44C /* radar_draw.c */,
 				F5DD1A7A09085BC600721649 /* menu_draw.c */,
@@ -1597,9 +1569,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F5DD198A09080E9600721649 /* crosshair.c in Sources */,
-				F5DD198B09080E9600721649 /* hud.c in Sources */,
-				F5DD198C09080E9600721649 /* console.c in Sources */,
 				F5DD199009080EA300721649 /* console_draw.c in Sources */,
 				F5DD199109080EA300721649 /* hud_draw.c in Sources */,
 				F5DD199209080EA300721649 /* crosshair_draw.c in Sources */,
@@ -1775,9 +1744,6 @@
 				F5A58235090B434000BE7C36 /* script_weap_melee.c in Sources */,
 				F5A58238090B434000BE7C36 /* script_weap_projectile.c in Sources */,
 				F5A58239090B434000BE7C36 /* script_weap_setting.c in Sources */,
-				F5C5E69F090D910F00F94729 /* halos.c in Sources */,
-				F5C5E6A2090DDD4F00F94729 /* menu.c in Sources */,
-				F5C5E6B4090DDD7B00F94729 /* chooser.c in Sources */,
 				F5C5EB110913264E00F94729 /* loop.c in Sources */,
 				F5C5EB120913264E00F94729 /* main.c in Sources */,
 				F5C5EB130913264E00F94729 /* app.c in Sources */,
@@ -1882,6 +1848,8 @@
 				26F12E03132D8FB800A6E150 /* xml_halos.c in Sources */,
 				26F12E04132D8FB800A6E150 /* xml_interface.c in Sources */,
 				268C36A7132ECAD70097F588 /* xml_interface_read.c in Sources */,
+				26F8AA75133546FB0020367E /* chat.c in Sources */,
+				26F8AA7E133547770020367E /* console.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -835,7 +835,7 @@ void remote_network_send_updates(void)
 		// update the player
 
 	obj=server.obj_list.objs[server.player_obj_idx];
-	net_client_send_remote_update(obj,iface.chat.type_on);
+	net_client_send_remote_update(obj,view.chat.type_on);
 
 		// update any co-op bots if hosting
 

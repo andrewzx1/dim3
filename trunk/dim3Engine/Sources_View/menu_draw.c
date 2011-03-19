@@ -82,7 +82,7 @@ void menu_draw_start(void)
 		// always flip off scores
 		// if they are on
 		
-	iface.score.on=FALSE;
+	view.score.on=FALSE;
 	
 		// setup cursor
 

@@ -35,9 +35,8 @@ and can be sold or given away.
 int								console_mode,console_count;
 console_line_type				console_line[max_console_line];
 
-extern setup_type				setup;
-extern server_type				server;
 extern view_type				view;
+extern setup_type				setup;
 
 /* =======================================================
 

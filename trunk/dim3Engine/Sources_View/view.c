@@ -73,6 +73,7 @@ bool view_memory_allocate(void)
 	view.images=NULL;
 	view.rain_draws=NULL;
 	view.obscure.grid=NULL;
+	view.chat.lines=NULL;
 	
 		// view pointers
 
@@ -85,10 +86,14 @@ bool view_memory_allocate(void)
 	view.obscure.grid=(unsigned char*)malloc(obscure_grid_byte_size);
 	if (view.obscure.grid==NULL) return(FALSE);
 	
+	view.chat.lines=(view_chat_line_type*)malloc(max_view_chat_lines*sizeof(view_chat_line_type));
+	if (view.chat.lines==NULL) return(FALSE);
+	
 		// clear pointers
 
 	bzero(view.images,(max_view_image*sizeof(view_image_type)));
 	bzero(view.rain_draws,(max_rain_density*sizeof(rain_draw_type)));
+	bzero(view.chat.lines,(max_view_chat_lines*sizeof(view_chat_line_type)));
 
 		// start with debug off
 
@@ -102,6 +107,7 @@ void view_memory_release(void)
 	if (view.images!=NULL) free(view.images);
 	if (view.rain_draws!=NULL) free(view.rain_draws);
 	if (view.obscure.grid!=NULL) free(view.obscure.grid);
+	if (view.chat.lines!=NULL) free(view.chat.lines);
 }
 
 /* =======================================================
@@ -348,6 +354,9 @@ bool view_initialize(char *err_str)
 		// states
 
 	view.menu.active=FALSE;
+	view.score.on=FALSE;
+	
+	chat_clear_messages();
 	
 		// draw and input timing
 		// we use raw timing so input and

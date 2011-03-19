@@ -216,6 +216,29 @@ typedef struct		{
 					} rain_draw_type;
 
 //
+// chat and score structures
+//
+
+#define max_view_chat_lines								15
+#define max_view_chat_str_len							64
+
+typedef struct		{
+						char							name[name_str_len],str[max_view_chat_str_len];
+						d3col							col;
+					} view_chat_line_type;
+
+typedef struct		{
+						int								nline,remove_tick;
+						char							type_str[max_view_chat_str_len];
+						bool							type_on;
+						view_chat_line_type				*lines;
+					} view_chat_type;
+
+typedef struct		{
+						bool							on;
+					} view_score_type;
+
+//
 // timing structures
 //
 
@@ -430,6 +453,8 @@ typedef struct		{
 						view_menu_type						menu;
 						view_cinema_type					cinema;
 						view_console_type					console;
+						view_chat_type						chat;
+						view_score_type						score;
 						view_error_type						error;
 						view_debug_type						debug;
 					} view_type;

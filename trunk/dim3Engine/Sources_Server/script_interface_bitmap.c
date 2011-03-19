@@ -121,7 +121,7 @@ JSValueRef js_interface_bitmap_hide_all_func(JSContextRef cx,JSObjectRef func,JS
 {
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
-	hud_bitmaps_hide_all();
+	iface_bitmaps_hide_all(&iface);
 	return(script_null_to_value(cx));
 }
 

@@ -57,7 +57,7 @@ void radar_draw(void)
 	float					*vp,*uv,*vertex_ptr,*uv_ptr;
 	d3col					tint;
 	obj_type				*obj,*player_obj;
-	hud_radar_icon_type		*icon;
+	iface_radar_icon_type	*icon;
 	
 		// radar on?
 		
