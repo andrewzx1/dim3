@@ -75,6 +75,19 @@ extern void view_clear_fps(void);
 extern void view_calculate_fps(void);
 
 //
+// timing
+//
+
+extern void game_time_initialize(void);
+extern void game_time_calculate(void);
+extern void game_time_reset(int tick);
+extern int game_time_get_raw(void);
+extern int game_time_get(void);
+extern float game_time_fequency_second_get(int start_tick);
+extern void game_time_pause_start(void);
+extern void game_time_pause_end(void);
+
+//
 // cameras
 //
 
@@ -102,12 +115,13 @@ extern bool camera_walk_to_node_setup(char *start_node,char *end_node,int msec,i
 extern void camera_static_run(void);
 
 //
-// interface xml
+// halos
 //
 
-extern bool interface_initialize(iface_type *iface);
-extern void interface_shutdown(iface_type *iface);
-extern int iface_chooser_find_piece_idx(iface_chooser_type *chooser,int id);	// supergumba -- move all this
+extern void halo_draw_clear(void);
+extern void halo_draw_add(int x,int y,int z,int obj_idx,model_draw_halo *mdl_halo);
+extern void halo_draw_setup(void);
+extern void halo_draw_render(void);
 
 //
 // gui
@@ -210,13 +224,6 @@ extern void progress_draw(float percentage);
 // hud
 //
 
-extern iface_bitmap_type* iface_bitmaps_find(iface_type *iface,char *name);	// supergumba -- move
-extern iface_text_type* iface_texts_find(iface_type *iface,char *name);		// supergumba -- move
-extern iface_bar_type* iface_bars_find(iface_type *iface,char *name);			// supergumba -- move
-extern void iface_text_set(iface_text_type *text,char *data);	// supergumba
-extern void iface_bitmaps_hide_all(iface_type *iface);	// supergumba
-extern void iface_texts_hide_all(iface_type *iface);	// supergumba
-extern void iface_bars_hide_all(iface_type *iface);	// supergumba
 extern void hud_click(void);
 extern void hud_draw(void);
 extern void network_draw(void);
@@ -228,19 +235,9 @@ extern void network_draw(void);
 extern void radar_draw(void);
 
 //
-// choosers
-//
-
-extern int iface_chooser_find_idx(iface_type *iface,char *name);		// supergumba -- move
-
-//
 // crosshairs
 //
 
-extern void crosshair_initialize_list(void);
-extern void crosshair_free_list(void);
-extern iface_crosshair_type* crosshair_add_list(void);
-extern int crosshair_find(iface_type *iface,char *name);
 extern void crosshair_show_alt(obj_type *obj);
 extern bool crosshair_get_location(obj_type *obj,weapon_type *weap,int *kx,int *ky,int *hit_obj_idx,int *dist);
 extern void crosshair_setup(obj_type *obj,weapon_type *weap);
@@ -345,7 +342,7 @@ extern int score_limit_get_resume_time(void);
 extern void score_limit_run(void);
 
 //
-// xml
+// setup xml
 //
 
 extern void setup_xml_default(void);
@@ -361,19 +358,4 @@ extern void setup_xml_write_key_float(char *name,float value);
 extern void setup_xml_write_key_boolean(char *name,bool value);
 extern bool setup_xml_write(void);
 extern void setup_restore(void);
-
-extern void default_settings_interface(iface_type *iface);		// supergumba -- move
-extern void read_settings_interface_project_name(iface_type *iface);
-
-extern void read_settings_particle(iface_type *iface);
-extern void read_settings_ring(iface_type *iface);
-extern void read_settings_halo(iface_type *iface);
-extern void read_settings_mark(iface_type *iface);
-extern void read_settings_crosshair(iface_type *iface);
-extern void read_settings_sound(iface_type *iface);
-extern void read_settings_action(iface_type *iface);
-extern void read_settings_shader(iface_type *iface);
-
-extern void simple_save_xml_read(void);
-extern void simple_save_xml_write(void);
 

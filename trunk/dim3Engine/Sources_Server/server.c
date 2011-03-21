@@ -32,10 +32,6 @@ and can be sold or given away.
 #include "interface.h"
 #include "scripts.h"
 #include "objects.h"
-#include "remotes.h"
-#include "weapons.h"
-#include "models.h"
-#include "lights.h"
 #include "projectiles.h"
 #include "video.h"
 
@@ -71,8 +67,8 @@ bool server_initialize(char *err_str)
 	
 		// allocate memory
 		
-	if (!interface_initialize(&iface)) {
-		interface_shutdown(&iface);
+	if (!iface_initialize(&iface,&setup.file_path_setup)) {
+		iface_shutdown(&iface);
 		strcpy(err_str,"Out of Memory");
 		return(FALSE);
 	}
@@ -80,13 +76,13 @@ bool server_initialize(char *err_str)
 		// start script engine
 		
 	if (!scripts_engine_initialize(err_str)) {
-		interface_shutdown(&iface);
+		iface_shutdown(&iface);
 		return(FALSE);
 	}
 	
 		// load project XML
 		
-	interface_read(&iface);
+	iface_read(&iface);
 	
 		// game states
 		
@@ -107,7 +103,7 @@ void server_shutdown(void)
 	
 		// release memory
 	
-	interface_shutdown(&iface);
+	iface_shutdown(&iface);
 }
 
 /* =======================================================

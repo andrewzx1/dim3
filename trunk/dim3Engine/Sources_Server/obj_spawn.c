@@ -33,11 +33,7 @@ and can be sold or given away.
 #include "network.h"
 #include "scripts.h"
 #include "objects.h"
-#include "weapons.h"
-#include "remotes.h"
-#include "models.h"
 #include "physics.h"
-#include "timing.h"
 
 extern map_type				map;
 extern server_type			server;

@@ -34,7 +34,6 @@ and can be sold or given away.
 #include "video.h"
 #include "inputs.h"
 #include "sounds.h"
-#include "timing.h"
 
 extern bool					game_app_active,game_loop_quit;
 
@@ -46,7 +45,6 @@ extern js_type				js;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
 
-extern int iface_menu_find_idx(iface_type *iface,char *name);	// supergumba -- move to baseutility.h
 extern void debug_game(void);
 extern void map_restart_ambient(void);
 

@@ -31,11 +31,7 @@ and can be sold or given away.
 
 #include "interface.h"
 #include "objects.h"
-#include "remotes.h"
-#include "weapons.h"
-#include "projectiles.h"
 #include "sounds.h"
-#include "timing.h"
 
 extern server_type			server;
 extern view_type			view;

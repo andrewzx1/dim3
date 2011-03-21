@@ -191,7 +191,7 @@ int main(int argc,char *argv[])
 	
 		// get the project name
 		
-	read_settings_interface_project_name(&iface);
+	iface_read_settings_project_name(&iface,setup.file_path_setup.proj_name);
 	
 		// check for required OS
 		

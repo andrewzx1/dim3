@@ -216,3 +216,27 @@ EXPORTS
 	
 	bitmap_text_intialize						@410
 	bitmap_text_shutdown						@411
+	
+	iface_initialize							@600
+	iface_shutdown								@601
+
+	iface_default_settings						@610
+
+	iface_bitmaps_find							@620
+	iface_texts_find							@621
+	iface_bars_find								@622
+	iface_menu_find_idx							@623
+	iface_chooser_find_idx						@624
+	iface_chooser_find_piece_idx				@625
+	iface_crosshair_find						@626
+	iface_halo_find								@627
+	iface_bitmaps_hide_all						@628
+	iface_texts_hide_all						@629
+	iface_bars_hide_all							@630
+
+	iface_read									@640
+
+	simple_save_xml_read						@650
+	simple_save_xml_write						@651
+
+

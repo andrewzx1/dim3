@@ -31,7 +31,6 @@ and can be sold or given away.
 
 #include "interface.h"
 #include "video.h"
-#include "timing.h"
 
 extern map_type			map;
 extern setup_type		setup;

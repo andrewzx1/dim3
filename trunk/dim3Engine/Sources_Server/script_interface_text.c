@@ -32,7 +32,6 @@ and can be sold or given away.
 #include "interface.h"
 #include "objects.h"
 #include "scripts.h"
-#include "timing.h"
 
 extern iface_type		iface;
 extern js_type			js;

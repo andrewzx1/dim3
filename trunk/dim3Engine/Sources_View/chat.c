@@ -29,7 +29,7 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
-#include "timing.h"
+#include "interface.h"
 
 extern view_type			view;
 extern iface_type			iface;

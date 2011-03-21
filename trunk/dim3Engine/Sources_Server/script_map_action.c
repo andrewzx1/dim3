@@ -195,14 +195,14 @@ JSValueRef js_map_action_set_simple_save_func(JSContextRef cx,JSObjectRef func,J
 	
 		// set the simple save
 		
-	simple_save_xml_read();
+	simple_save_xml_read(&iface);
 		
 	save=&iface.simple_save_list.saves[server.simple_save_idx];
 	
 	save->save_id=script_value_to_int(cx,argv[0]);
 	script_value_to_string(cx,argv[1],save->desc,64);
 	
-	simple_save_xml_write();
+	simple_save_xml_write(&iface);
 	
 	return(script_null_to_value(cx));
 }

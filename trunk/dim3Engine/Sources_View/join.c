@@ -32,7 +32,6 @@ and can be sold or given away.
 #include "interface.h"
 #include "network.h"
 #include "objects.h"
-#include "remotes.h"
 #include "video.h"
 #include "sounds.h"
 

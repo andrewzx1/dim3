@@ -31,7 +31,6 @@ and can be sold or given away.
 
 #include "objects.h"
 #include "physics.h"
-#include "models.h"
 
 extern map_type				map;
 extern server_type			server;

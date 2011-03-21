@@ -32,7 +32,6 @@ and can be sold or given away.
 #include "interface.h"
 #include "network.h"
 #include "objects.h"
-#include "projectiles.h"
 #include "scripts.h"
 
 extern map_type				map;

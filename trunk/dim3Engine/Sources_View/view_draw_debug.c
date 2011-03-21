@@ -31,14 +31,8 @@ and can be sold or given away.
 
 #include "interface.h"
 #include "objects.h"
-#include "remotes.h"
-#include "weapons.h"
-#include "projectiles.h"
-#include "models.h"
-#include "lights.h"
 #include "physics.h"
 #include "video.h"
-#include "timing.h"
 
 extern map_type				map;
 extern camera_type			camera;

@@ -32,12 +32,8 @@ and can be sold or given away.
 #include "interface.h"
 #include "scripts.h"
 #include "objects.h"
-#include "weapons.h"
-#include "projectiles.h"
-#include "models.h"
 #include "video.h"
 #include "inputs.h"
-#include "timing.h"
 
 extern int					os_vers_major,os_vers_minor_1,os_vers_minor_2;
 extern bool					game_app_active;

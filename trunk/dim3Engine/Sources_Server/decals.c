@@ -31,7 +31,6 @@ and can be sold or given away.
 
 #include "interface.h"
 #include "objects.h"
-#include "timing.h"
 
 extern map_type			map;
 extern server_type		server;

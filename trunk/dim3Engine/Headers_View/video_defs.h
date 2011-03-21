@@ -98,11 +98,3 @@ typedef struct		{
 						char							name[64],ext_string[8192];
 						screen_size_type				screen_sizes[max_screen_size];
 					} render_info_type;
-
-//
-// fonts
-//
-
-#define tx_left											0
-#define tx_center										1
-#define tx_right										2

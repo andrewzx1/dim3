@@ -31,9 +31,7 @@ and can be sold or given away.
 
 #include "interface.h"
 #include "objects.h"
-#include "remotes.h"
 #include "video.h"
-#include "timing.h"
 
 extern server_type			server;
 extern view_type			view;

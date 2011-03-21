@@ -88,10 +88,6 @@ and can be sold or given away.
 
 #define text_height_factor						1.2f
 
-#define text_small_wid_factor					0.02f
-#define text_medium_wid_factor					0.025f
-#define text_large_wid_factor					0.038f
-
 #define element_control_padding_factor			0.01f
 
 #define element_control_draw_height				0.025f

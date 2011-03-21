@@ -42,9 +42,7 @@ and can be sold or given away.
 
 #include "interface.h"
 
-extern iface_type				iface;
-extern setup_type				setup;
-extern network_setup_type		net_setup;
+extern file_path_setup_type		iface_file_path_setup;
 
 char							just_mode_str[][32]={"left","center","right"},
 								text_special_str[][32]=text_special_list_def,
@@ -56,7 +54,7 @@ char							just_mode_str[][32]={"left","center","right"},
       
 ======================================================= */
 
-void read_settings_interface_bitmap(iface_type *iface,int bitmap_tag)
+void iface_read_settings_bitmap(iface_type *iface,int bitmap_tag)
 {
 	int					tag;
 	iface_bitmap_type	*bitmap;
@@ -149,7 +147,7 @@ void read_settings_interface_bitmap(iface_type *iface,int bitmap_tag)
       
 ======================================================= */
 
-void read_settings_interface_text(iface_type *iface,int text_tag)
+void iface_read_settings_text(iface_type *iface,int text_tag)
 {
 	int					tag;
 	char				data[max_hud_text_str_sz];
@@ -214,7 +212,7 @@ void read_settings_interface_text(iface_type *iface,int text_tag)
       
 ======================================================= */
 
-void read_settings_interface_bar(iface_type *iface,int bar_tag)
+void iface_read_settings_bar(iface_type *iface,int bar_tag)
 {
 	int					tag;
 	iface_bar_type		*bar;
@@ -288,7 +286,7 @@ void read_settings_interface_bar(iface_type *iface,int bar_tag)
       
 ======================================================= */
 
-void read_settings_interface_radar(iface_type *iface,int radar_tag)
+void iface_read_settings_radar(iface_type *iface,int radar_tag)
 {
 	int					tag,icons_head_tag,icon_tag;
 
@@ -356,7 +354,7 @@ void read_settings_interface_radar(iface_type *iface,int radar_tag)
       
 ======================================================= */
 
-void read_settings_interface_menu(iface_type *iface,int menu_tag)
+void iface_read_settings_menu(iface_type *iface,int menu_tag)
 {
 	int						items_head_tag,item_tag;
 	iface_menu_type			*menu;
@@ -400,7 +398,7 @@ void read_settings_interface_menu(iface_type *iface,int menu_tag)
       
 ======================================================= */
 
-void read_settings_interface_chooser_copy_template(iface_chooser_type *chooser,iface_chooser_type *template_chooser)
+void iface_read_settings_chooser_copy_template(iface_chooser_type *chooser,iface_chooser_type *template_chooser)
 {
 	char			name[name_str_len];
 	
@@ -409,7 +407,7 @@ void read_settings_interface_chooser_copy_template(iface_chooser_type *chooser,i
 	strcpy(chooser->name,name);
 }
 
-void read_settings_interface_chooser_template_override(iface_chooser_type *chooser,int template_idx)
+void iface_read_settings_chooser_template_override(iface_chooser_type *chooser,int template_idx)
 {
 	int							idx,template_piece_idx;
 
@@ -475,7 +473,7 @@ iface_chooser_piece_type* read_setting_interface_chooser_common(iface_chooser_ty
 	return(piece);
 }
 
-void read_settings_interface_chooser_items(iface_chooser_type *chooser,int template_idx,int item_tag)
+void iface_read_settings_chooser_items(iface_chooser_type *chooser,int template_idx,int item_tag)
 {
 	iface_chooser_piece_type	*piece;
 	
@@ -484,13 +482,13 @@ void read_settings_interface_chooser_items(iface_chooser_type *chooser,int templ
 		if (piece==NULL) return;
 		
 		xml_get_attribute_text(item_tag,"file",piece->data.item.file,file_str_len);
-		read_settings_interface_chooser_template_override(chooser,template_idx);
+		iface_read_settings_chooser_template_override(chooser,template_idx);
 		
 		item_tag=xml_findnextchild(item_tag);
 	}
 }
 
-void read_settings_interface_chooser_models(iface_chooser_type *chooser,int template_idx,int item_tag)
+void iface_read_settings_chooser_models(iface_chooser_type *chooser,int template_idx,int item_tag)
 {
 	iface_chooser_piece_type	*piece;
 	
@@ -502,13 +500,13 @@ void read_settings_interface_chooser_models(iface_chooser_type *chooser,int temp
 		xml_get_attribute_text(item_tag,"animate",piece->data.model.animate_name,name_str_len);
 		xml_get_attribute_3_coord_float(item_tag,"rot",&piece->data.model.rot.x,&piece->data.model.rot.y,&piece->data.model.rot.z);
 		piece->data.model.resize=xml_get_attribute_float_default(item_tag,"resize",1.0f);
-		read_settings_interface_chooser_template_override(chooser,template_idx);
+		iface_read_settings_chooser_template_override(chooser,template_idx);
 		
 		item_tag=xml_findnextchild(item_tag);
 	}
 }
 
-void read_settings_interface_chooser_texts(iface_type *iface,iface_chooser_type *chooser,int template_idx,int item_tag)
+void iface_read_settings_chooser_texts(iface_type *iface,iface_chooser_type *chooser,int template_idx,int item_tag)
 {
 	iface_chooser_piece_type	*piece;
 
@@ -519,13 +517,13 @@ void read_settings_interface_chooser_texts(iface_type *iface,iface_chooser_type 
 		xml_get_attribute_text(item_tag,"data",piece->data.text.str,max_chooser_text_data_sz);
 		piece->data.text.size=xml_get_attribute_int_default(item_tag,"size",iface->font.text_size_small);
 		piece->data.text.just=xml_get_attribute_list(item_tag,"just",(char*)just_mode_str);
-		read_settings_interface_chooser_template_override(chooser,template_idx);
+		iface_read_settings_chooser_template_override(chooser,template_idx);
 
 		item_tag=xml_findnextchild(item_tag);
 	}
 }
 
-void read_settings_interface_chooser_buttons(iface_chooser_type *chooser,int template_idx,int item_tag)
+void iface_read_settings_chooser_buttons(iface_chooser_type *chooser,int template_idx,int item_tag)
 {
 	iface_chooser_piece_type	*piece;
 	
@@ -534,13 +532,13 @@ void read_settings_interface_chooser_buttons(iface_chooser_type *chooser,int tem
 		if (piece==NULL) return;
 
 		xml_get_attribute_text(item_tag,"name",piece->data.button.name,max_chooser_button_text_sz);
-		read_settings_interface_chooser_template_override(chooser,template_idx);
+		iface_read_settings_chooser_template_override(chooser,template_idx);
 		
 		item_tag=xml_findnextchild(item_tag);
 	}
 }
 
-void read_settings_interface_chooser(iface_type *iface,int chooser_tag)
+void iface_read_settings_chooser(iface_type *iface,int chooser_tag)
 {
 	int					template_idx,tag,texts_head_tag,buttons_head_tag,
 						items_head_tag,models_head_tag,item_tag;
@@ -570,7 +568,7 @@ void read_settings_interface_chooser(iface_type *iface,int chooser_tag)
 
 	if (template_name[0]!=0x0) {
 		template_idx=iface_chooser_find_idx(iface,template_name);
-		if (template_idx!=-1) read_settings_interface_chooser_copy_template(chooser,&iface->chooser_list.choosers[template_idx]);
+		if (template_idx!=-1) iface_read_settings_chooser_copy_template(chooser,&iface->chooser_list.choosers[template_idx]);
 	}
 	
 		// frames and keys
@@ -597,7 +595,7 @@ void read_settings_interface_chooser(iface_type *iface,int chooser_tag)
 	items_head_tag=xml_findfirstchild("Items",chooser_tag);
 	if (items_head_tag!=-1) {
 		item_tag=xml_findfirstchild("Item",items_head_tag);
-		read_settings_interface_chooser_items(chooser,template_idx,item_tag);
+		iface_read_settings_chooser_items(chooser,template_idx,item_tag);
 	}
 	
 		// models
@@ -605,7 +603,7 @@ void read_settings_interface_chooser(iface_type *iface,int chooser_tag)
 	models_head_tag=xml_findfirstchild("Models",chooser_tag);
 	if (models_head_tag!=-1) {
 		item_tag=xml_findfirstchild("Model",models_head_tag);
-		read_settings_interface_chooser_models(chooser,template_idx,item_tag);
+		iface_read_settings_chooser_models(chooser,template_idx,item_tag);
 	}
 
 		// text
@@ -613,7 +611,7 @@ void read_settings_interface_chooser(iface_type *iface,int chooser_tag)
 	texts_head_tag=xml_findfirstchild("Texts",chooser_tag);
 	if (texts_head_tag!=-1) {
 		item_tag=xml_findfirstchild("Text",texts_head_tag);
-		read_settings_interface_chooser_texts(iface,chooser,template_idx,item_tag);
+		iface_read_settings_chooser_texts(iface,chooser,template_idx,item_tag);
 	}
 	
 		// buttons
@@ -621,7 +619,7 @@ void read_settings_interface_chooser(iface_type *iface,int chooser_tag)
 	buttons_head_tag=xml_findfirstchild("Buttons",chooser_tag);
 	if (buttons_head_tag!=-1) {
 		item_tag=xml_findfirstchild("Button",buttons_head_tag);
-		read_settings_interface_chooser_buttons(chooser,template_idx,item_tag);
+		iface_read_settings_chooser_buttons(chooser,template_idx,item_tag);
 	}
 }
 
@@ -631,7 +629,7 @@ void read_settings_interface_chooser(iface_type *iface,int chooser_tag)
       
 ======================================================= */
 
-void read_settings_interface_intro_button(int tag,iface_intro_button_type *btn,iface_intro_simple_save_desc_type *desc)
+void iface_read_settings_intro_button(int tag,iface_intro_button_type *btn,iface_intro_simple_save_desc_type *desc)
 {
 	if (tag==-1) return;
 	
@@ -648,7 +646,7 @@ void read_settings_interface_intro_button(int tag,iface_intro_button_type *btn,i
 	}
 }
 
-void read_settings_interface_intro_model(iface_type *iface,int tag)
+void iface_read_settings_intro_model(iface_type *iface,int tag)
 {
 	iface_intro_model_type		*intro_model;
 
@@ -671,7 +669,7 @@ void read_settings_interface_intro_model(iface_type *iface,int tag)
       
 ======================================================= */
 
-void read_settings_interface(iface_type *iface)
+void iface_read_settings_interface(iface_type *iface)
 {
 	int							n,cnt,interface_head_tag,scale_tag,
 								bitmap_head_tag,bitmap_tag,text_head_tag,text_tag,bar_head_tag,bar_tag,
@@ -683,11 +681,11 @@ void read_settings_interface(iface_type *iface)
 	char						path[1024],name[256];
 	iface_character_item_type	*hud_character;
 
-	default_settings_interface(iface);
+	iface_default_settings(iface);
 	
 		// read in interface from setting files
 		
-	file_paths_data(&setup.file_path_setup,path,"Settings","Interface","xml");
+	file_paths_data(&iface_file_path_setup,path,"Settings","Interface","xml");
 	if (!xml_open_file(path)) return;
 	
 		// decode the file
@@ -720,7 +718,7 @@ void read_settings_interface(iface_type *iface)
 		bitmap_tag=xml_findfirstchild("Bitmap",bitmap_head_tag);
 		
 		while (bitmap_tag!=-1) {
-			read_settings_interface_bitmap(iface,bitmap_tag);
+			iface_read_settings_bitmap(iface,bitmap_tag);
 			bitmap_tag=xml_findnextchild(bitmap_tag);
 		}
 	}
@@ -733,7 +731,7 @@ void read_settings_interface(iface_type *iface)
 		text_tag=xml_findfirstchild("Text",text_head_tag);
 		
 		while (text_tag!=-1) {
-			read_settings_interface_text(iface,text_tag);
+			iface_read_settings_text(iface,text_tag);
 			text_tag=xml_findnextchild(text_tag);
 		}
 	}
@@ -746,7 +744,7 @@ void read_settings_interface(iface_type *iface)
 		bar_tag=xml_findfirstchild("Bar",bar_head_tag);
 		
 		while (bar_tag!=-1) {
-			read_settings_interface_bar(iface,bar_tag);
+			iface_read_settings_bar(iface,bar_tag);
 			bar_tag=xml_findnextchild(bar_tag);
 		}
 	}
@@ -754,7 +752,7 @@ void read_settings_interface(iface_type *iface)
 		// radar
 
 	radar_head_tag=xml_findfirstchild("Radar",interface_head_tag);
-	if (radar_head_tag!=-1) read_settings_interface_radar(iface,radar_head_tag);
+	if (radar_head_tag!=-1) iface_read_settings_radar(iface,radar_head_tag);
 	
 		// menus
 		
@@ -764,7 +762,7 @@ void read_settings_interface(iface_type *iface)
 		menu_tag=xml_findfirstchild("Menu",menu_head_tag);
 		
 		while (menu_tag!=-1) {
-			read_settings_interface_menu(iface,menu_tag);
+			iface_read_settings_menu(iface,menu_tag);
 			menu_tag=xml_findnextchild(menu_tag);
 		}
 	}
@@ -777,7 +775,7 @@ void read_settings_interface(iface_type *iface)
 		chooser_tag=xml_findfirstchild("Chooser",chooser_head_tag);
 		
 		while (chooser_tag!=-1) {
-			read_settings_interface_chooser(iface,chooser_tag);
+			iface_read_settings_chooser(iface,chooser_tag);
 			chooser_tag=xml_findnextchild(chooser_tag);
 		}
 	}
@@ -864,7 +862,7 @@ void read_settings_interface(iface_type *iface)
 			intro_model_tag=xml_findfirstchild("Model",intro_model_head_tag);
 		
 			while (intro_model_tag!=-1) {
-				read_settings_interface_intro_model(iface,intro_model_tag);
+				iface_read_settings_intro_model(iface,intro_model_tag);
 				intro_model_tag=xml_findnextchild(intro_model_tag);
 			}
 		}
@@ -873,24 +871,24 @@ void read_settings_interface(iface_type *iface)
 			
 		button_tag=xml_findfirstchild("Buttons",intro_head_tag);
 		if (button_tag!=-1) {
-			read_settings_interface_intro_button(xml_findfirstchild("Game_New",button_tag),&iface->intro.button_game_new,NULL);
-			read_settings_interface_intro_button(xml_findfirstchild("Game_Load",button_tag),&iface->intro.button_game_load,NULL);
-			read_settings_interface_intro_button(xml_findfirstchild("Game_Setup",button_tag),&iface->intro.button_game_setup,NULL);
-			read_settings_interface_intro_button(xml_findfirstchild("Game_New_Easy",button_tag),&iface->intro.button_game_new_easy,NULL);
-			read_settings_interface_intro_button(xml_findfirstchild("Game_New_Medium",button_tag),&iface->intro.button_game_new_medium,NULL);
-			read_settings_interface_intro_button(xml_findfirstchild("Game_New_Hard",button_tag),&iface->intro.button_game_new_hard,NULL);
-			read_settings_interface_intro_button(xml_findfirstchild("Game_New_Cancel",button_tag),&iface->intro.button_game_new_cancel,NULL);
-			read_settings_interface_intro_button(xml_findfirstchild("Multiplayer_Host",button_tag),&iface->intro.button_multiplayer_host,NULL);
-			read_settings_interface_intro_button(xml_findfirstchild("Multiplayer_Join",button_tag),&iface->intro.button_multiplayer_join,NULL);
-			read_settings_interface_intro_button(xml_findfirstchild("Multiplayer_Setup",button_tag),&iface->intro.button_multiplayer_setup,NULL);
-			read_settings_interface_intro_button(xml_findfirstchild("Credit",button_tag),&iface->intro.button_credit,NULL);
-			read_settings_interface_intro_button(xml_findfirstchild("Quit",button_tag),&iface->intro.button_quit,NULL);
+			iface_read_settings_intro_button(xml_findfirstchild("Game_New",button_tag),&iface->intro.button_game_new,NULL);
+			iface_read_settings_intro_button(xml_findfirstchild("Game_Load",button_tag),&iface->intro.button_game_load,NULL);
+			iface_read_settings_intro_button(xml_findfirstchild("Game_Setup",button_tag),&iface->intro.button_game_setup,NULL);
+			iface_read_settings_intro_button(xml_findfirstchild("Game_New_Easy",button_tag),&iface->intro.button_game_new_easy,NULL);
+			iface_read_settings_intro_button(xml_findfirstchild("Game_New_Medium",button_tag),&iface->intro.button_game_new_medium,NULL);
+			iface_read_settings_intro_button(xml_findfirstchild("Game_New_Hard",button_tag),&iface->intro.button_game_new_hard,NULL);
+			iface_read_settings_intro_button(xml_findfirstchild("Game_New_Cancel",button_tag),&iface->intro.button_game_new_cancel,NULL);
+			iface_read_settings_intro_button(xml_findfirstchild("Multiplayer_Host",button_tag),&iface->intro.button_multiplayer_host,NULL);
+			iface_read_settings_intro_button(xml_findfirstchild("Multiplayer_Join",button_tag),&iface->intro.button_multiplayer_join,NULL);
+			iface_read_settings_intro_button(xml_findfirstchild("Multiplayer_Setup",button_tag),&iface->intro.button_multiplayer_setup,NULL);
+			iface_read_settings_intro_button(xml_findfirstchild("Credit",button_tag),&iface->intro.button_credit,NULL);
+			iface_read_settings_intro_button(xml_findfirstchild("Quit",button_tag),&iface->intro.button_quit,NULL);
 			
 			for (n=0;n!=max_simple_save_spot;n++) {
 				sprintf(name,"Simple_Start_%d",n);
-				read_settings_interface_intro_button(xml_findfirstchild(name,button_tag),&iface->intro.simple_save[n].button_start,&iface->intro.simple_save[n].desc);
+				iface_read_settings_intro_button(xml_findfirstchild(name,button_tag),&iface->intro.simple_save[n].button_start,&iface->intro.simple_save[n].desc);
 				sprintf(name,"Simple_Erase_%d",n);
-				read_settings_interface_intro_button(xml_findfirstchild(name,button_tag),&iface->intro.simple_save[n].button_erase,NULL);
+				iface_read_settings_intro_button(xml_findfirstchild(name,button_tag),&iface->intro.simple_save[n].button_erase,NULL);
 			}
 		}
 	}
@@ -1026,7 +1024,7 @@ void read_settings_interface(iface_type *iface)
       
 ======================================================= */
 
-void read_settings_interface_project_name(iface_type *iface)
+void iface_read_settings_project_name(iface_type *iface,char *proj_name)
 {
 	int						interface_head_tag,proj_tag;
 	char					path[1024];
@@ -1034,11 +1032,11 @@ void read_settings_interface_project_name(iface_type *iface)
 		// default project name is blank
 		// (will use application name)
 		
-	iface->project_name[0]=0x0;
+	proj_name[0]=0x0;
 
 		// read in interface from setting files
 		
-	file_paths_data(&setup.file_path_setup,path,"Settings","Interface","xml");
+	file_paths_data(&iface_file_path_setup,path,"Settings","Interface","xml");
 	if (!xml_open_file(path)) return;
 	
 		// decode the file
@@ -1053,7 +1051,7 @@ void read_settings_interface_project_name(iface_type *iface)
 		
 	proj_tag=xml_findfirstchild("Project",interface_head_tag);
 	if (proj_tag!=-1) {
-		xml_get_attribute_text(proj_tag,"name",setup.file_path_setup.proj_name,256);
+		xml_get_attribute_text(proj_tag,"name",proj_name,256);
 	}
 	
 
@@ -1066,7 +1064,7 @@ void read_settings_interface_project_name(iface_type *iface)
       
 ======================================================= */
 
-void read_settings_particle(iface_type *iface)
+void iface_read_settings_particle(iface_type *iface)
 {
 	int					n,nparticle,
 						particle_data_head_tag,particle_head_tag,particle_tag,
@@ -1079,7 +1077,7 @@ void read_settings_particle(iface_type *iface)
 
 		// read in particles from setting files
 		
-	file_paths_data(&setup.file_path_setup,path,"Settings","Particles","xml");
+	file_paths_data(&iface_file_path_setup,path,"Settings","Particles","xml");
 	if (!xml_open_file(path)) return;
 	
 		// can accept file with a particle_data tag or not
@@ -1334,7 +1332,7 @@ void read_settings_particle(iface_type *iface)
       
 ======================================================= */
 
-void read_settings_ring(iface_type *iface)
+void iface_read_settings_ring(iface_type *iface)
 {
 	int					nring,ring_head_tag,ring_tag,tag;
 	char				path[1024];
@@ -1342,7 +1340,7 @@ void read_settings_ring(iface_type *iface)
 
 		// read in rings from setting files
 		
-	file_paths_data(&setup.file_path_setup,path,"Settings","Rings","xml");
+	file_paths_data(&iface_file_path_setup,path,"Settings","Rings","xml");
 	if (!xml_open_file(path)) return;
 	
 		// get counts
@@ -1468,7 +1466,7 @@ void read_settings_ring(iface_type *iface)
       
 ======================================================= */
 
-void read_settings_action(iface_type *iface)
+void iface_read_settings_action(iface_type *iface)
 {
 	int					n,actions_head_tag,action_tag,idx;
 	char				name[name_str_len],path[1024];
@@ -1482,7 +1480,7 @@ void read_settings_action(iface_type *iface)
 	
 		// read in actions from setting files
 		
-	file_paths_data(&setup.file_path_setup,path,"Settings","Actions","xml");
+	file_paths_data(&iface_file_path_setup,path,"Settings","Actions","xml");
 	if (!xml_open_file(path)) return;
 	
 		// decode the file
@@ -1514,7 +1512,7 @@ void read_settings_action(iface_type *iface)
       
 ======================================================= */
 
-void read_settings_sound(iface_type *iface)
+void iface_read_settings_sound(iface_type *iface)
 {
 	int					sounds_head_tag,sound_tag,tag;
 	char				path[1024];
@@ -1524,7 +1522,7 @@ void read_settings_sound(iface_type *iface)
 	
 		// read in sound from setting files
 		
-	file_paths_data(&setup.file_path_setup,path,"Settings","Sounds","xml");
+	file_paths_data(&iface_file_path_setup,path,"Settings","Sounds","xml");
 	if (!xml_open_file(path)) return;
 	
 		// decode the file
@@ -1564,7 +1562,7 @@ void read_settings_sound(iface_type *iface)
       
 ======================================================= */
 
-void read_settings_shader(iface_type *iface)
+void iface_read_settings_shader(iface_type *iface)
 {
 	int						nshader,shaders_head_tag,shader_tag,tag;
 	char					path[1024];
@@ -1576,7 +1574,7 @@ void read_settings_shader(iface_type *iface)
 	
 		// read in interface from setting files
 		
-	file_paths_data(&setup.file_path_setup,path,"Settings","Shaders","xml");
+	file_paths_data(&iface_file_path_setup,path,"Settings","Shaders","xml");
 	if (!xml_open_file(path)) return;
 	
 		// get counts
@@ -1628,7 +1626,7 @@ void read_settings_shader(iface_type *iface)
       
 ======================================================= */
 
-void read_settings_mark(iface_type *iface)
+void iface_read_settings_mark(iface_type *iface)
 {
 	int					nmark,marks_head_tag,mark_tag,tag;
 	char				path[1024];
@@ -1636,7 +1634,7 @@ void read_settings_mark(iface_type *iface)
 
 		// read in interface from setting files
 		
-	file_paths_data(&setup.file_path_setup,path,"Settings","Marks","xml");
+	file_paths_data(&iface_file_path_setup,path,"Settings","Marks","xml");
 	if (!xml_open_file(path)) return;
 	
 		// get counts

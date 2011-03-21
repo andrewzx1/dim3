@@ -29,8 +29,8 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
+#include "interface.h"
 #include "video.h"
-#include "timing.h"
 
 extern void gl_shader_set_scene_variables(shader_type *shader);
 

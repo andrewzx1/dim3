@@ -31,8 +31,6 @@ and can be sold or given away.
 
 #include "interface.h"
 #include "objects.h"
-#include "models.h"
-#include "remotes.h"
 #include "physics.h"
 #include "video.h"
 

@@ -25,6 +25,10 @@ and can be sold or given away.
  
 *********************************************************************/
 
+//
+// objects
+//
+
 extern void object_initialize_list(void);
 extern void object_free_list(void);
 extern int object_count_list(void);
@@ -213,6 +217,10 @@ extern void object_grow_direct(obj_type *obj,float end_resize);
 extern void object_grow_start(obj_type *obj,int grow_msec,float end_resize,d3pnt *end_size,d3pnt *end_offset);
 extern void object_grow_run(obj_type *obj);
 
+//
+// items
+//
+
 extern void item_pickup_check(obj_type *obj);
 extern bool item_add_weapon(obj_type *obj,weapon_type *weap);
 extern bool item_swap_weapon(obj_type *obj,weapon_type *weap);
@@ -222,6 +230,10 @@ extern bool item_add_alt_ammo(obj_type *obj,weapon_type *weap,int add_count);
 extern bool item_add_alt_clip(obj_type *obj,weapon_type *weap,int add_count);
 extern bool item_add_health(obj_type *obj,int add_count);
 extern void item_add_custom(obj_type *obj,int custom_id);
+
+//
+// players
+//
 
 extern void player_clear_input(void);
 extern void player_command_input(obj_type *obj);
@@ -237,3 +249,223 @@ extern void player_exit_vehicle(obj_type *obj);
 extern void player_enter_exit_input(obj_type *obj);
 extern bool player_message_input(obj_type *obj);
 extern void player_get_input(void);
+
+//
+// remotes
+//
+
+extern bool remote_add(network_reply_join_remote *remote,bool send_event);
+extern void remote_remove(int net_uid,bool send_event);
+extern bool remote_timed_out(obj_type *obj);
+extern void remote_predict_move(obj_type *obj);
+extern bool remote_route_message(net_queue_msg_type *msg);
+extern void remote_network_send_updates(void);
+extern void remote_network_send_group_synch(void);
+extern void remote_network_send_latency_ping(void);
+extern void remote_setup_coop_bots(void);
+extern void remote_draw_status(obj_type *obj);
+extern void remote_draw_names_setup(void);
+extern void remote_draw_names_render(void);
+
+//
+// weapons
+//
+
+extern int weapon_count_projectile_setups(weapon_type *weap);
+
+extern weapon_type* weapon_script_lookup(void);
+extern weapon_type* weapon_find_name(obj_type *obj,char *name);
+extern weapon_type* weapon_find_current(obj_type *obj);
+
+extern bool weapon_start_script(obj_type *obj,weapon_type *weap,char *err_str);
+extern bool weapon_add(obj_type *obj,char *name);
+extern void weapon_dispose(obj_type *obj,int idx);
+
+extern void weapon_attach_fire_crosshair(weapon_type *weap);
+extern void weapon_attach_zoom_mask(weapon_type *weap);
+
+extern void weapon_reset_ammo(weapon_type *weap);
+extern void weapon_reset_ammo_object(obj_type *obj);
+extern void weapon_set(obj_type *obj,weapon_type *weap);
+
+extern void weapon_clear_state(obj_type *obj);
+
+extern void weapon_lower(obj_type *obj);
+extern void weapon_raise(obj_type *obj);
+extern void weapon_held(obj_type *obj);
+extern void weapon_goto(obj_type *obj,weapon_type *weap);
+extern void weapon_switch(obj_type *obj,int dir);
+extern void weapon_pick(obj_type *obj,int index);
+
+extern void weapon_target_next_object(obj_type *obj,weapon_type *weap);
+extern void weapon_target_previous_object(obj_type *obj,weapon_type *weap);
+extern bool weapon_target_start(obj_type *obj,weapon_type *weap,bool opponent_only);
+extern bool weapon_target_end(obj_type *obj,weapon_type *weap);
+
+extern void weapon_zoom_enter(obj_type *obj,weapon_type *weap);
+extern void weapon_zoom_exit(obj_type *obj,weapon_type *weap);
+extern void weapon_zoom_off(obj_type *obj,weapon_type *weap);
+extern void weapon_zoom_key(obj_type *obj,weapon_type *weap);
+
+extern void weapon_run_hand(obj_type *obj);
+extern void weapon_hand_bounce(obj_type *obj);
+extern int weapon_get_bounce(obj_type *obj,weapon_type *weap);
+
+extern void weapon_setup_fire(weapon_type *weap,int method);
+extern bool weapon_add_projectile(obj_type *obj,weapon_type *weap,proj_setup_type *proj_setup,d3pnt *pt,d3ang *ang);
+extern bool weapon_get_projectile_position_angle_weapon_model(obj_type *obj,weapon_type *weap,d3pnt *fire_pnt,d3ang *fire_ang,char *err_str);
+extern bool weapon_get_projectile_position_angle_weapon_barrel(obj_type *obj,weapon_type *weap,d3pnt *fire_pnt,d3ang *fire_ang,char *err_str);
+extern bool weapon_get_projectile_position_angle_object_model(obj_type *obj,weapon_type *weap,d3pnt *fire_pnt,d3ang *fire_ang,char *err_str);
+extern void weapon_get_projectile_position_center(obj_type *obj,weapon_type *weap,d3pnt *fire_pnt,d3ang *fire_ang);
+extern void weapon_get_projectile_position_angle_add_offset(d3ang *ang,d3ang *off_ang);
+extern bool weapon_script_fire(obj_type *obj,weapon_type *weap,int method);
+extern bool weapon_script_projectile_spawn(obj_type *obj,weapon_type *weap,char *proj_name,d3pnt *pt,d3ang *ang,int count,float slop,char *err_str);
+extern bool weapon_script_projectile_spawn_weapon_model(obj_type *obj,weapon_type *weap,char *proj_name,int count,float slop,d3ang *off_ang,char *err_str);
+extern bool weapon_script_projectile_spawn_weapon_barrel(obj_type *obj,weapon_type *weap,char *proj_name,int count,float slop,d3ang *off_ang,char *err_str);
+extern bool weapon_script_projectile_spawn_object_model(obj_type *obj,weapon_type *weap,char *proj_name,int count,float slop,d3ang *off_ang,char *err_str);
+extern bool weapon_script_projectile_spawn_center(obj_type *obj,weapon_type *weap,char *proj_name,int count,float slop,d3ang *off_ang,char *err_str);
+extern void weapon_player_fire_down(obj_type *obj,weapon_type *weap,int method);
+extern void weapon_player_fire_repeat(obj_type *obj,weapon_type *weap);
+extern void weapon_player_fire_up(obj_type *obj,weapon_type *weap,int method);
+
+extern void weapon_kickback(obj_type *obj,weapon_type *weap);
+extern void weapon_recoil_clear(weapon_type *weap);
+extern void weapon_recoil_copy(weapon_type *to_weap,weapon_type *from_weap);
+extern void weapon_recoil_run(obj_type *obj,weapon_type *weap);
+extern void weapon_recoil_add(obj_type *obj,weapon_type *weap,d3ang *ang);
+extern void weapon_recoil(obj_type *obj,weapon_type *weap);
+
+//
+// melees
+//
+
+extern void melee_add(obj_type *obj,weapon_type *weap,d3pnt *pt,d3ang *ang,melee_type *melee,int ignore_obj_idx);
+extern bool melee_strike_position_weapon_model(obj_type *obj,weapon_type *weap,d3pnt *fire_pnt,char *err_str);
+extern bool melee_strike_position_object_model(obj_type *obj,weapon_type *weap,d3pnt *fire_pnt,char *err_str);
+extern bool melee_strike_position_projectile_model(obj_type *obj,weapon_type *weap,proj_setup_type *proj_setup,proj_type *proj,d3pnt *fire_pnt,char *err_str);
+extern bool melee_script_spawn_weapon_model(obj_type *obj,weapon_type *weap,char *err_str);
+extern bool melee_script_spawn_object_model(obj_type *obj,weapon_type *weap,char *err_str);
+extern bool melee_script_spawn_object_touch(obj_type *obj,char *err_str);
+extern bool melee_script_spawn_projectile_model(obj_type *obj,weapon_type *weap,proj_setup_type *proj_setup,proj_type *proj,char *err_str);
+
+//
+// projectiles
+//
+
+extern bool projectile_initialize_list(void);
+extern void projectile_free_list(void);
+extern int projectile_count_list(void);
+
+extern proj_type* projectile_script_lookup(void);
+
+extern proj_type* projectile_create(obj_type *obj,weapon_type *weap,proj_setup_type *proj_setup);
+
+extern void projectile_set_position(proj_type *proj,d3pnt *pt,d3ang *ang);
+extern void projectile_set_origin(proj_type *proj);
+extern void projectile_spawn_position(proj_type *proj,d3pnt *pt,d3ang *ang,obj_type *parentobj);
+
+extern void projectile_dispose(proj_type *proj);
+extern void projectile_dispose_object(obj_type *obj);
+extern void projectile_dispose_all(void);
+
+extern proj_setup_type* find_proj_setups(weapon_type *weap,char *name);
+
+extern bool proj_setup_start_script(obj_type *obj,weapon_type *weap,proj_setup_type *proj_setup,char *err_str);
+extern bool proj_setup_create(obj_type *obj,weapon_type *weap,char *name);
+extern void proj_setup_dispose(weapon_type *weap,int idx);
+
+extern void proj_setup_set_radius(proj_setup_type *proj_setup);
+extern void proj_setup_attach_mark(proj_setup_type *proj_setup);
+extern proj_setup_type* proj_setup_get_attach(void);
+extern proj_type* proj_get_attach(void);
+
+extern void projectile_slice_setup(proj_type *proj);
+extern void projectile_gravity(proj_type *proj);
+extern void projectile_speed(proj_type *proj);
+extern void projectile_move(proj_type *proj);
+extern void projectile_turn_xz_towards(proj_type *proj,obj_type *to_obj,float turn_add);
+extern void projectile_thrust_y_towards(proj_type *proj,obj_type *to_obj,float thrust_add);
+extern void projectile_seek(proj_type *proj,obj_type *to_obj,float turn_add,float thrust_add);
+extern bool projectile_bounce(proj_type *proj,float min_ymove,float reduce,bool send_event);
+extern float projectile_reflect_angle(proj_type *proj);
+extern void projectile_reflect(proj_type *proj,bool send_event);
+extern void projectile_reset_angle_for_flight(proj_type *proj);
+extern void projectile_eject_vector(proj_type *proj,d3vct *vct);
+extern void projectile_reflect_vector(proj_type *proj,d3vct *vct);
+
+extern void projectile_decals(proj_type *proj,proj_setup_type *proj_setup);
+extern void projectile_hit(proj_type *proj);
+extern bool projectile_hit_auto(proj_type *proj);
+
+extern void projectile_hitscan(obj_type *obj,weapon_type *weap,proj_setup_type *proj_setup,d3pnt *pt,d3ang *ang);
+
+//
+// scenery
+//
+
+extern void scenery_create(void);
+extern void scenery_start(void);
+
+//
+// models
+//
+
+extern void model_initialize_list(void);
+extern void model_free_list(void);
+extern int model_count_list(void);
+
+extern model_type* model_find(char *name);
+extern int model_find_index(char *name);
+extern bool model_draw_load(model_draw *draw,char *item_type,char *item_name,char *err_str);
+extern void model_draw_dispose(model_draw *draw);
+extern void models_reset(void);
+
+extern void model_draw_setup_object(obj_type *obj);
+extern void model_draw_setup_weapon(obj_type *obj,weapon_type *weap,bool ignore_y_shifts,bool dual_hand);
+extern void model_draw_setup_projectile(proj_type *proj);
+extern void model_draw_setup_interface_models(model_type *mdl,model_draw *draw,int x,int y);
+extern void model_get_view_min_max(model_draw *draw,d3pnt *pnt,d3pnt *min,d3pnt *max);
+
+extern void model_change_fill(model_draw *draw,int wfill,int txt);
+extern void model_get_current_animation_name(model_draw *draw,char *name);
+extern int model_find_animation_from_draw(model_draw *draw,char *name);
+extern bool model_start_animation(model_draw *draw,char *name,int tick);
+extern void model_stop_animation(model_draw *draw);
+extern void model_stop_all_animation(model_draw *draw);
+extern bool model_cancel_animation(model_draw *draw,char *name);
+extern bool model_change_animation(model_draw *draw,char *name,int tick);
+extern bool model_interrupt_animation(model_draw *draw,char *name,int tick);
+extern void model_run_animation(model_draw *draw,int tick);
+extern void model_calc_animation(model_draw *draw,int tick);
+extern void model_calc_draw_bones(model_draw *draw);
+extern int model_get_current_pose(model_draw *draw);
+extern bool model_find_bone_offset(model_draw *draw,char *pose_name,char *bone_name,int *x,int *y,int *z);
+extern bool model_find_bone_position(model_draw *draw,char *pose_name,char *bone_name,int *x,int *y,int *z);
+extern bool model_find_bone_position_for_current_animation(model_draw *draw,int bone_idx,int *x,int *y,int *z);
+extern bool model_get_bone_brightness(model_draw *draw,char *pose_name,char *bone_name,float *bright);
+
+extern void model_animation_effect_setup(model_type *mdl);
+extern void model_animation_effect_launch(model_draw *draw,int animate_idx,int pose_idx);
+
+extern void model_fade_clear(model_draw *draw);
+extern void model_fade_start(model_draw *draw,int fade_msec,float end_alpha);
+extern void model_fade_run(model_draw *draw);
+extern void model_mesh_fade_start(model_draw *draw,int mesh_idx,int fade_in_msec,int fade_life_msec,int fade_out_msec);
+extern void model_mesh_fade_run(model_draw *draw);
+
+extern int model_find_mesh_from_draw(model_draw *draw,char *name);
+extern bool model_show_mesh(model_draw *draw,char *name);
+extern bool model_show_all_mesh(model_draw *draw);
+extern bool model_show_only_mesh(model_draw *draw,char *name);
+extern bool model_hide_mesh(model_draw *draw,char *name);
+extern bool model_hide_all_mesh(model_draw *draw);
+
+extern bool model_dynamic_bone_set_rotate(model_draw *draw,char *bone_tag,d3ang *rot,char *err_str);
+extern bool model_dynamic_bone_set_move(model_draw *draw,char *bone_tag,d3pnt *mov,char *err_str);
+extern bool model_dynamic_bone_set_resize(model_draw *draw,char *bone_tag,float resize,char *err_str);
+
+extern void render_model_setup(model_draw *draw,int tick);
+extern void render_model_build_vertex_lists(model_draw *draw);
+extern void render_model_opaque(model_draw *draw);
+extern void render_model_transparent(model_draw *draw);
+extern void render_model_target(model_draw *draw,d3col *col);

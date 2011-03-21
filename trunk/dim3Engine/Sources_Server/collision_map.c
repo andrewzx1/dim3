@@ -31,9 +31,6 @@ and can be sold or given away.
 
 #include "scripts.h"
 #include "objects.h"
-#include "weapons.h"
-#include "projectiles.h"
-#include "models.h"
 #include "physics.h"
 
 extern map_type			map;

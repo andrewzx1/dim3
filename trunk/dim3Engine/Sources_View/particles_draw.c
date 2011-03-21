@@ -31,10 +31,6 @@ and can be sold or given away.
 
 #include "interface.h"
 #include "objects.h"
-#include "weapons.h"
-#include "projectiles.h"
-#include "models.h"
-#include "lights.h"
 #include "video.h"
 
 extern map_type				map;

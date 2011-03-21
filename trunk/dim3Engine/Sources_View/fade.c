@@ -31,7 +31,6 @@ and can be sold or given away.
 
 #include "interface.h"
 #include "video.h"
-#include "timing.h"
 
 int							fade_screen_tick;
 

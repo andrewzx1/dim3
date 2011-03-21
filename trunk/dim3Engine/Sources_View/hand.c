@@ -30,10 +30,8 @@ and can be sold or given away.
 #endif
 
 #include "interface.h"
-#include "weapons.h"
-#include "models.h"
+#include "objects.h"
 #include "video.h"
-#include "timing.h"
 
 extern map_type				map;
 extern camera_type			camera;

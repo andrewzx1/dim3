@@ -30,11 +30,10 @@ and can be sold or given away.
 #endif
 
 #include "interface.h"
-#include "remotes.h"
+#include "objects.h"
 #include "network.h"
 #include "inputs.h"
 #include "video.h"
-#include "timing.h"
 
 extern bool					game_app_active;
 
