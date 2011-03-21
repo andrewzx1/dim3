@@ -285,6 +285,8 @@ void piece_add_height_map_mesh(void)
 	bool				alpha_channel;
 	d3pnt				pnt;
 	
+	if (!piece_create_texture_ok()) return;
+	
 		// get the png
 		
 	if (!os_load_file("Select an PNG file",path,"png")) return;
@@ -318,7 +320,7 @@ void piece_add_height_map_mesh(void)
 	
 	os_set_wait_cursor();
 
-	progress_start("Height Map Import",(div_cnt*div_cnt));
+	progress_start("Height Map Import: Importing PNG",(div_cnt+3));
 	
 	for (z=0;z!=div_cnt;z++) {
 		for (x=0;x!=div_cnt;x++) {
@@ -378,18 +380,21 @@ void piece_add_height_map_mesh(void)
 				
 				map_mesh_add_poly(&map,mesh_idx,3,kx,ky,kz,gx,gy,txt_idx);
 			}
-
-			progress_next();
 		}
+
+		progress_next();
 	}
 	
 		// reset UVs and normals
-				
+	
+	progress_next_title("Height Map Import: Creating UVs");			
 	map_mesh_reset_uv(&map,mesh_idx);
 	
+	progress_next_title("Height Map Import: Building Normals");
 	map.mesh.meshes[mesh_idx].normal_mode=mesh_normal_mode_auto;
 	map_recalc_normals_mesh(&map.mesh.meshes[mesh_idx],FALSE);
 		
+	progress_next();
 	free(data);
 	
 	progress_end();

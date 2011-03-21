@@ -810,12 +810,12 @@ void object_reset(obj_type *obj)
 
 void object_attach_click_crosshair_up(obj_type *obj)
 {
-	obj->click.crosshair_up_idx=crosshair_find(obj->click.crosshair_up_name);
+	obj->click.crosshair_up_idx=crosshair_find(&iface,obj->click.crosshair_up_name);
 }
 
 void object_attach_click_crosshair_down(obj_type *obj)
 {
-	obj->click.crosshair_down_idx=crosshair_find(obj->click.crosshair_down_name);
+	obj->click.crosshair_down_idx=crosshair_find(&iface,obj->click.crosshair_down_name);
 }
 
 /* =======================================================

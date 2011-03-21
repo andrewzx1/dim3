@@ -270,7 +270,7 @@ bool js_model_halo_set_name(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,J
 	halo=&draw->halos[draw->script_halo_idx];
 
 	script_value_to_string(cx,vp,halo_name,name_str_len);
-	halo->idx=iface_halo_find(halo_name);
+	halo->idx=iface_halo_find(&iface,halo_name);
 
 	return(TRUE);
 }

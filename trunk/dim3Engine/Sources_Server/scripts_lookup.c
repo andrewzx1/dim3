@@ -39,8 +39,9 @@ extern int group_find_by_index(char *name);
 
 extern char				object_type_str[][32];
 
-extern server_type		server;
 extern map_type			map;
+extern server_type		server;
+extern iface_type		iface;
 extern js_type			js;
 
 /* =======================================================
@@ -182,7 +183,7 @@ iface_text_type* script_find_text_from_name(JSContextRef cx,JSValueRef arg,JSVal
 	iface_text_type	*text;
 
 	script_value_to_string(cx,arg,name,name_str_len);
-	text=iface_texts_find(name);
+	text=iface_texts_find(&iface,name);
 	if (text==NULL) {
 		sprintf(err_str,"No interface text exists with the name: %s",name);
 		*exception=script_create_exception(cx,err_str);
@@ -198,7 +199,7 @@ iface_bitmap_type* script_find_bitmap_from_name(JSContextRef cx,JSValueRef arg,J
 	iface_bitmap_type	*bitmap;
 
 	script_value_to_string(cx,arg,name,name_str_len);
-	bitmap=iface_bitmaps_find(name);
+	bitmap=iface_bitmaps_find(&iface,name);
 	if (bitmap==NULL) {
 		sprintf(err_str,"No interface bitmap exists with the name: %s",name);
 		*exception=script_create_exception(cx,err_str);
@@ -214,7 +215,7 @@ iface_bar_type* script_find_bar_from_name(JSContextRef cx,JSValueRef arg,JSValue
 	iface_bar_type	*bar;
 
 	script_value_to_string(cx,arg,name,name_str_len);
-	bar=iface_bars_find(name);
+	bar=iface_bars_find(&iface,name);
 	if (bar==NULL) {
 		sprintf(err_str,"No interface bar exists with the name: %s",name);
 		*exception=script_create_exception(cx,err_str);

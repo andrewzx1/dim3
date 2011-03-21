@@ -625,7 +625,7 @@ void hud_metrics_draw(void)
 		
 	gl_text_start(font_hud_index,txt_sz);
 
-	y=(high+2)+5;
+	y=(high+2)+8;
 
 		// fps
 		

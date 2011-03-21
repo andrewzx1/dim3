@@ -15,9 +15,9 @@
 	};
 	0123D86600C0AFD57F000001 /* menu.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 7475}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 7592}}";
 			sepNavSelRange = "{8448, 21}";
-			sepNavVisRange = "{8008, 1007}";
+			sepNavVisRange = "{6678, 1221}";
 			sepNavWindowFrame = "{{333, 182}, {1041, 747}}";
 		};
 	};
@@ -129,8 +129,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 321679354;
-			PBXWorkspaceStateSaveDate = 321679354;
+			PBXPerProjectTemplateStateSaveDate = 322336517;
+			PBXWorkspaceStateSaveDate = 322336517;
 		};
 		sourceControlManager = 260AFF050D4050B200F6C42F /* Source Control */;
 		userBookmarkGroup = 268BC83C0F646E8B00E900C2 /* PBXBookmarkGroup */;
@@ -538,10 +538,10 @@
 	};
 	26AFB4480D95E0E60004805A /* pieces_mesh.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 10322}}";
-			sepNavSelRange = "{12775, 0}";
-			sepNavVisRange = "{12199, 1211}";
-			sepNavWindowFrame = "{{385, 201}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {994, 10361}}";
+			sepNavSelRange = "{8735, 23}";
+			sepNavVisRange = "{8308, 999}";
+			sepNavWindowFrame = "{{106, 222}, {1041, 747}}";
 		};
 	};
 	26AFB4D10D9615C00004805A /* maputility.h */ = {
@@ -562,9 +562,9 @@
 	};
 	26C5F0EA126135DC000B0F9E /* tool_palette.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1011, 5707}}";
-			sepNavSelRange = "{5967, 18}";
-			sepNavVisRange = "{5434, 906}";
+			sepNavIntBoundsRect = "{{0, 0}, {1011, 5694}}";
+			sepNavSelRange = "{5785, 25}";
+			sepNavVisRange = "{5425, 920}";
 			sepNavWindowFrame = "{{277, 102}, {1026, 910}}";
 		};
 	};
@@ -689,9 +689,9 @@
 	};
 	26F4B4DA1294CFB600D754CC /* property_palette_mesh.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1027, 4810}}";
-			sepNavSelRange = "{10332, 0}";
-			sepNavVisRange = "{9523, 1712}";
+			sepNavIntBoundsRect = "{{0, 0}, {1027, 4238}}";
+			sepNavSelRange = "{8413, 0}";
+			sepNavVisRange = "{6118, 2826}";
 			sepNavWindowFrame = "{{408, 106}, {1001, 891}}";
 		};
 	};

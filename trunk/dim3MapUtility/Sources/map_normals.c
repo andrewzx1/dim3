@@ -44,7 +44,7 @@ and can be sold or given away.
       
 ======================================================= */
 
-void map_recalc_normals_find_mesh_center_for_poly_add_recursive_poly_vertex(map_mesh_type *mesh,int poly_idx,unsigned char *vertex_mask)
+void map_recalc_normals_find_mesh_center_for_poly_add_recursive_poly_vertex(map_mesh_type *mesh,int poly_idx,unsigned char *vertex_mask,unsigned char *poly_mask)
 {
 	int					n,k,t,vertex_idx;
 	map_mesh_poly_type	*poly,*chk_poly;
@@ -59,7 +59,7 @@ void map_recalc_normals_find_mesh_center_for_poly_add_recursive_poly_vertex(map_
 		vertex_idx=poly->v[n];
 		if (vertex_mask[vertex_idx]==0x1) continue;
 		
-		vertex_mask[poly->v[n]]=0x1;
+		vertex_mask[vertex_idx]=0x1;
 		
 			// find any other polys touching
 			// vertexes to build proper vertexes
@@ -68,22 +68,30 @@ void map_recalc_normals_find_mesh_center_for_poly_add_recursive_poly_vertex(map_
 		
 		for (k=0;k!=mesh->npoly;k++) {
 			if (k!=poly_idx) {
+				
+				if (poly_mask[k]==0x1) {
+					chk_poly++;
+					continue;
+				}
+				
 				for (t=0;t!=chk_poly->ptsz;t++) {
 					if (chk_poly->v[t]==vertex_idx) {
-						map_recalc_normals_find_mesh_center_for_poly_add_recursive_poly_vertex(mesh,k,vertex_mask);
+						poly_mask[k]=0x1;
+						map_recalc_normals_find_mesh_center_for_poly_add_recursive_poly_vertex(mesh,k,vertex_mask,poly_mask);
 						break;
 					}
 				}
 			}
+			
 			chk_poly++;
 		}
 	}
 }
 
-void map_recalc_normals_find_mesh_center_for_poly(map_mesh_type *mesh,int poly_idx,d3pnt *center)
+bool map_recalc_normals_find_mesh_center_for_poly(map_mesh_type *mesh,int poly_idx,d3pnt *center)
 {
 	int					n,cnt;
-	unsigned char		*vertex_mask;
+	unsigned char		*vertex_mask,*poly_mask;
 	d3pnt				*pt;
 	
 		// mesh centers for normals are all the points that are
@@ -98,11 +106,19 @@ void map_recalc_normals_find_mesh_center_for_poly(map_mesh_type *mesh,int poly_i
 		// for polys touching them
 		
 	vertex_mask=(unsigned char*)malloc(mesh->nvertex);
-	if (vertex_mask==NULL) return;
+	if (vertex_mask==NULL) return(TRUE);
 	
 	bzero(vertex_mask,mesh->nvertex);
 	
-	map_recalc_normals_find_mesh_center_for_poly_add_recursive_poly_vertex(mesh,poly_idx,vertex_mask);
+	poly_mask=(unsigned char*)malloc(mesh->npoly);
+	if (poly_mask==NULL) {
+		free(vertex_mask);
+		return(TRUE);
+	}
+	
+	bzero(poly_mask,mesh->npoly);
+	
+	map_recalc_normals_find_mesh_center_for_poly_add_recursive_poly_vertex(mesh,poly_idx,vertex_mask,poly_mask);
 	
 		// find center
 		
@@ -123,6 +139,10 @@ void map_recalc_normals_find_mesh_center_for_poly(map_mesh_type *mesh,int poly_i
 		center->y/=cnt;
 		center->z/=cnt;
 	}
+	
+		// special flag if all polys are connected
+		
+	return(cnt==mesh->nvertex);
 }
 
 /* =======================================================
@@ -308,7 +328,7 @@ void map_recalc_normals_mesh(map_mesh_type *mesh,bool only_tangent_binormal)
 {
 	int					n,mode;
 	float				u10,u20,v10,v20,f_denom;
-	bool				is_out,invert;
+	bool				is_out,invert,all_poly_mesh;
 	d3vct				p10,p20,vlft,vrgt,v_num,face_vct;
 	d3pnt				*pt,*pt_1,*pt_2,center;
 	map_mesh_poly_type	*poly;
@@ -393,6 +413,7 @@ void map_recalc_normals_mesh(map_mesh_type *mesh,bool only_tangent_binormal)
 	
 	if (mode==mesh_normal_mode_auto) mode=map_recalc_normals_get_auto_mode(mesh);
 	
+	all_poly_mesh=FALSE;
 	poly=mesh->polys;
 
 	for (n=0;n!=mesh->npoly;n++) {
@@ -401,7 +422,13 @@ void map_recalc_normals_mesh(map_mesh_type *mesh,bool only_tangent_binormal)
 			// this poly.  Happens in meshes where there
 			// are distinct primitives
 			
-		map_recalc_normals_find_mesh_center_for_poly(mesh,n,&center);
+			// we have a flag that tells us if the first time
+			// we checked this that all polys were connected, so
+			// we can skip.  This is a good speed up on enormous meshes
+			
+		if (!all_poly_mesh) {
+			all_poly_mesh=map_recalc_normals_find_mesh_center_for_poly(mesh,n,&center);
+		}
 		
 			// determine if poly is facing 'out'
 		
@@ -409,7 +436,7 @@ void map_recalc_normals_mesh(map_mesh_type *mesh,bool only_tangent_binormal)
 		is_out=(vector_dot_product(&poly->tangent_space.normal,&face_vct)>0.0f);
 		
 		switch (mode) {
-		
+
 			case mesh_normal_mode_in:
 				invert=is_out;
 				break;

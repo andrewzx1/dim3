@@ -34,6 +34,7 @@ and can be sold or given away.
 #include "scripts.h"
 #include "timing.h"
 
+extern iface_type		iface;
 extern js_type			js;
 
 JSValueRef js_interface_text_show_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);

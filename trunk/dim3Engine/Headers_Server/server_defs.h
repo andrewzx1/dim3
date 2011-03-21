@@ -1019,7 +1019,7 @@ typedef struct		{
 typedef struct		{
 						decal_type*				decals[max_decal_list];
 					} decal_list_type;
-
+					
 //
 // ray trace structures
 //

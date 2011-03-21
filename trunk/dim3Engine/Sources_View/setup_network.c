@@ -111,10 +111,10 @@ void setup_network_create_host_list(void)
 
 void setup_network_player_pane(void)
 {
-	int						x,y,wid,high,margin,padding,
-							control_y_add,control_y_sz;
-	element_column_type		cols[1];
-	hud_character_item_type	*hud_character;
+	int							x,y,wid,high,margin,padding,
+								control_y_add,control_y_sz;
+	element_column_type			cols[1];
+	iface_character_item_type	*hud_character;
 
 	margin=element_get_tab_margin();
 	padding=element_get_padding();
@@ -417,7 +417,7 @@ void setup_network_host_delete(void)
 
 void setup_network_handle_click(int id)
 {
-	hud_character_item_type	*hud_character;
+	iface_character_item_type	*hud_character;
 
 	switch (id) {
 

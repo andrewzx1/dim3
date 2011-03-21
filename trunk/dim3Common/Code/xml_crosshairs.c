@@ -46,14 +46,14 @@ extern setup_type			setup;
       
 ======================================================= */
 
-int crosshair_find(char *name)
+int crosshair_find(iface_type *iface,char *name)
 {
 	int						n;
 	iface_crosshair_type	*crosshair;
 
-	crosshair=iface.crosshair_list.crosshairs;
+	crosshair=iface->crosshair_list.crosshairs;
 
-	for (n=0;n!=iface.crosshair_list.ncrosshair;n++) {
+	for (n=0;n!=iface->crosshair_list.ncrosshair;n++) {
 		if (strcasecmp(crosshair->name,name)==0)  return(n);
 		crosshair++;
 	}
@@ -67,7 +67,7 @@ int crosshair_find(char *name)
       
 ======================================================= */
 
-void read_settings_crosshair(void)
+void read_settings_crosshair(iface_type *iface)
 {
 	int						ncrosshair,crosshairs_head_tag,crosshair_tag,tag;
 	char					path[1024];
@@ -101,13 +101,13 @@ void read_settings_crosshair(void)
 	
 			// create a new crosshair
 
-		if (iface.crosshair_list.ncrosshair>=max_iface_crosshair) {
+		if (iface->crosshair_list.ncrosshair>=max_iface_crosshair) {
 			xml_close_file();
 			return;
 		}
 			
-		crosshair=&iface.crosshair_list.crosshairs[iface.crosshair_list.ncrosshair];
-		iface.crosshair_list.ncrosshair++;
+		crosshair=&iface->crosshair_list.crosshairs[iface->crosshair_list.ncrosshair];
+		iface->crosshair_list.ncrosshair++;
 			
 			// read settings
 		

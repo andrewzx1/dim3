@@ -1068,6 +1068,8 @@ void shadow_render_model_mesh(model_type *mdl,int mesh_idx,model_draw *draw)
 				
 		glStencilFunc(GL_EQUAL,1,0xFF);
 		glDrawArrays(GL_TRIANGLES,0,(trig_count*3));
+		
+		view.count.poly+=trig_count;
 
 			// disable the color array
 

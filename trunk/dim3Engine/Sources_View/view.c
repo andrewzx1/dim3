@@ -46,6 +46,7 @@ render_info_type			render_info;
 
 extern map_type				map;
 extern server_type			server;
+extern iface_type			iface;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
 
@@ -74,6 +75,7 @@ bool view_memory_allocate(void)
 	view.rain_draws=NULL;
 	view.obscure.grid=NULL;
 	view.chat.lines=NULL;
+	view.console.lines=NULL;
 	
 		// view pointers
 
@@ -89,11 +91,16 @@ bool view_memory_allocate(void)
 	view.chat.lines=(view_chat_line_type*)malloc(max_view_chat_lines*sizeof(view_chat_line_type));
 	if (view.chat.lines==NULL) return(FALSE);
 	
+	view.console.lines=(view_console_line_type*)malloc(max_view_console_lines*sizeof(view_console_line_type));
+	if (view.console.lines==NULL) return(FALSE);
+
 		// clear pointers
 
 	bzero(view.images,(max_view_image*sizeof(view_image_type)));
 	bzero(view.rain_draws,(max_rain_density*sizeof(rain_draw_type)));
+	bzero(view.obscure.grid,obscure_grid_byte_size);
 	bzero(view.chat.lines,(max_view_chat_lines*sizeof(view_chat_line_type)));
+	bzero(view.console.lines,(max_view_console_lines*sizeof(view_console_line_type)));
 
 		// start with debug off
 
@@ -108,6 +115,7 @@ void view_memory_release(void)
 	if (view.rain_draws!=NULL) free(view.rain_draws);
 	if (view.obscure.grid!=NULL) free(view.obscure.grid);
 	if (view.chat.lines!=NULL) free(view.chat.lines);
+	if (view.console.lines!=NULL) free(view.console.lines);
 }
 
 /* =======================================================
@@ -239,7 +247,6 @@ bool view_initialize_display(char *err_str)
 		return(FALSE);
 	}
 		
-	read_settings_shader();
 	if (!gl_user_shader_initialize(err_str)) {
 		gl_shutdown();
 		SDL_Quit();
@@ -333,15 +340,12 @@ bool view_initialize(char *err_str)
 		
 	view_images_initialize();
 	
-		// read in the sounds
+		// load the sounds
 		
-	read_settings_sound();
 	al_load_all_xml_sounds();
 	
 		// connect the input
 		
-	read_settings_action();
-	
 	input_initialize(gl_in_window_mode());
 	setup_to_input();
 	

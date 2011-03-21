@@ -46,7 +46,7 @@ extern js_type				js;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
 
-extern int iface_menu_find_idx(char *name);	// supergumba -- move to baseutility.h
+extern int iface_menu_find_idx(iface_type *iface,char *name);	// supergumba -- move to baseutility.h
 extern void debug_game(void);
 extern void map_restart_ambient(void);
 
@@ -132,7 +132,7 @@ bool menu_select(void)
 		// going into sub-menu
 			
 	if (item->sub_menu[0]!=0x0) {
-		sub_idx=iface_menu_find_idx(item->sub_menu);
+		sub_idx=iface_menu_find_idx(&iface,item->sub_menu);
 		if (sub_idx==-1) return(FALSE);
 			
 		view.menu.menu_idx=sub_idx;

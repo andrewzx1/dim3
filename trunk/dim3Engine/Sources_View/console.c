@@ -32,9 +32,6 @@ and can be sold or given away.
 #include "interface.h"
 #include "inputs.h"
 
-int								console_mode,console_count;
-console_line_type				console_line[max_console_line];
-
 extern view_type				view;
 extern setup_type				setup;
 
@@ -46,7 +43,7 @@ extern setup_type				setup;
 
 void console_initialize(void)
 {
-	console_count=0;
+	view.console.nline=0;
 }
 
 /* =======================================================
@@ -57,20 +54,20 @@ void console_initialize(void)
 
 void console_remove_line(void)
 {
-	if (console_count==0) return;
+	if (view.console.nline==0) return;
 	
-	memmove(&console_line[0],&console_line[1],(sizeof(console_line_type)*(max_console_line-1)));
-	console_line[max_console_line-1].txt[0]=0x0;
+	memmove(&view.console.lines[0],&view.console.lines[1],(sizeof(view_console_line_type)*(max_view_console_lines-1)));
+	view.console.lines[max_view_console_lines-1].txt[0]=0x0;
 	
-	console_count--;
+	view.console.nline--;
 }
 
 void console_add_line(char *txt,d3col *col)
 {
-	char				c_str[256];
-	char				*c,*c2;
-	bool				first_line;
-	console_line_type	*cline;
+	char					c_str[256];
+	char					*c,*c2;
+	bool					first_line;
+	view_console_line_type	*cline;
 
 	c=txt;
 	first_line=TRUE;
@@ -95,25 +92,25 @@ void console_add_line(char *txt,d3col *col)
 	
 			// need to remove line?
 
-		if (console_count==max_console_line) console_remove_line();
+		if (view.console.nline>=max_view_console_lines) console_remove_line();
 		
 			// add to console
 
-		cline=&console_line[console_count];
+		cline=&view.console.lines[view.console.nline];
 		
 		memmove(&cline->color,col,sizeof(d3col));
 		
 		if (first_line) {
-			strncpy(cline->txt,c_str,max_console_txt_sz);
+			strncpy(cline->txt,c_str,max_view_console_txt_sz);
 		}
 		else {
 			cline->txt[0]=' ';
-			strncpy(&cline->txt[1],c_str,(max_console_txt_sz-1));
+			strncpy(&cline->txt[1],c_str,(max_view_console_txt_sz-1));
 		}
 		
-		if (strlen(c_str)>=max_console_txt_sz) {
-			cline->txt[max_console_txt_sz-3]=cline->txt[max_console_txt_sz-2]='.';
-			cline->txt[max_console_txt_sz-1]=0x0;
+		if (strlen(c_str)>=max_view_console_txt_sz) {
+			cline->txt[max_view_console_txt_sz-3]=cline->txt[max_view_console_txt_sz-2]='.';
+			cline->txt[max_view_console_txt_sz-1]=0x0;
 		}
 
 			// if debug on, output
@@ -126,7 +123,7 @@ void console_add_line(char *txt,d3col *col)
 
 			// next line
 		
-		console_count++;
+		view.console.nline++;
 		first_line=FALSE;
 
 		c=strchr(c,'\n');

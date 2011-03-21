@@ -69,11 +69,6 @@ bool app_start(char *err_str)
 		
 	net_initialize();
 	
-		// start console
-		
-	console_initialize();
-	console_add_system("Starting App");
-	
 		// read setup preferences
 		
 	setup_xml_read();
@@ -92,6 +87,8 @@ bool app_start(char *err_str)
 		server_shutdown();
 		return(FALSE);
 	}
+	
+	console_initialize();
 
 		// if no editor launch, start in intro
 		

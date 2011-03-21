@@ -189,7 +189,7 @@ JSValueRef js_map_action_restart_map_from_save_func(JSContextRef cx,JSObjectRef 
 
 JSValueRef js_map_action_set_simple_save_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	hud_simple_save_type		*save;
+	iface_simple_save_type		*save;
 	
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 	

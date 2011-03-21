@@ -45,7 +45,7 @@ void simple_save_xml_read(void)
 	int							n,idx,count,
 								head_tag,tag;
 	char						path[1024];
-	hud_simple_save_type		*save;
+	iface_simple_save_type		*save;
 	
 		// clear saves
 		
@@ -99,7 +99,7 @@ void simple_save_xml_write(void)
 	int							n;
 	char						path[1024];
 	bool						ok;
-	hud_simple_save_type		*save;
+	iface_simple_save_type		*save;
 	
 		// start the file
 		

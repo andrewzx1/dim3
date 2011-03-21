@@ -257,7 +257,7 @@ void host_options_pane(void)
 {
 	int							n,k,x,y,control_y_add,control_y_sz;
 	bool						on;
-	hud_net_option_type			*option;
+	iface_net_option_type		*option;
 
 		// panel sizes
 
@@ -548,7 +548,7 @@ void host_game(void)
 void host_handle_click(int id)
 {
 	int							n,idx;
-	hud_net_option_type			*option;
+	iface_net_option_type		*option;
 
 		// special option clicks
 		// rebuild the options list
