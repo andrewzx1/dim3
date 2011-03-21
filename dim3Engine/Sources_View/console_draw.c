@@ -41,9 +41,7 @@ extern void game_time_pause_end(void);
 extern void map_restart_ambient(void);
 extern bool debug_change_map(char *name);
 
-extern int						console_mode,console_count;
 extern bool						game_loop_quit;
-extern console_line_type		console_line[max_console_line];
 
 extern view_type				view;
 extern server_type				server;
@@ -53,7 +51,7 @@ extern setup_type				setup;
 extern network_setup_type		net_setup;
 extern render_info_type			render_info;
 
-char							console_input_str[max_console_txt_sz];
+char							console_input_str[max_view_console_txt_sz];
 
 /* =======================================================
 
@@ -63,13 +61,13 @@ char							console_input_str[max_console_txt_sz];
 
 void console_draw(void)
 {
-	int					n,y,ty,y_add,txt_size;
-	char				str[256];
-	d3col				col;
-	console_line_type	*cline;
+	int						n,y,ty,y_add,txt_size;
+	char					str[256];
+	d3col					col;
+	view_console_line_type	*cline;
 
 		// get text size so we can fit
-		// max_console_line in the console
+		// max_view_console_line in the console
 		
 		// need to convert to HUD scale
 		// and deal with height factor
@@ -77,7 +75,7 @@ void console_draw(void)
 	y=(int)(((float)setup.screen.y_sz)*(1.0f-console_screen_percent));
 	ty=(y*iface.scale_y)/setup.screen.y_sz;
 
-	txt_size=((int)((float)(iface.scale_y-ty)/text_height_factor)/max_console_line);
+	txt_size=((int)((float)(iface.scale_y-ty)/text_height_factor)/max_view_console_lines);
 
 	y_add=gl_text_get_char_height(txt_size);
 
@@ -104,9 +102,9 @@ void console_draw(void)
 
 	y=ty+y_add;
 	
-	cline=console_line;
+	cline=view.console.lines;
 	
-	for (n=0;n!=console_count;n++) {
+	for (n=0;n!=view.console.nline;n++) {
 		gl_text_draw(5,y,cline->txt,tx_left,FALSE,&cline->color,1.0f);
 		y+=y_add;
 		cline++;
@@ -215,7 +213,7 @@ void console_input(void)
 	if (ch<0x20) return;
 		
 	len=strlen(console_input_str);
-	if (len>=(max_console_txt_sz-1)) return;
+	if (len>=(max_view_console_txt_sz-1)) return;
 	
 	console_input_str[len]=ch;
 	console_input_str[len+1]=0x0;

@@ -2,7 +2,7 @@
 
 Module: dim3 Engine
 Author: Brian Barnes
- Usage: HUD Definitions Header
+ Usage: Interface Definitions Header
 
 ***************************** License ********************************
 
@@ -26,7 +26,7 @@ and can be sold or given away.
 *********************************************************************/
 
 //
-// HUD defines
+// iface main defines
 //
 
 #define max_iface_bitmap						256
@@ -64,19 +64,6 @@ and can be sold or given away.
 #define text_special_spread						4
 
 #define text_special_list_def					{"none","fps","score","place","spread",""}
-
-//
-// console
-//
-
-#define max_console_line						14
-#define max_console_txt_sz						128
-
-typedef struct		{
-						int						style;
-						char					txt[max_console_txt_sz];
-						d3col					color;
-					} console_line_type;
 
 //
 // color and font settings
@@ -336,7 +323,7 @@ typedef struct		{
 					} iface_intro_type;
 
 //
-// hud fades
+// fades
 //
 
 typedef struct		{
@@ -510,11 +497,11 @@ typedef struct		{
 typedef struct		{
 						int								save_id;
 						char							desc[64];
-					} hud_simple_save_type;
+					} iface_simple_save_type;
 
 typedef struct		{
-						hud_simple_save_type			saves[max_simple_save_spot];
-					} hud_simple_save_list;
+						iface_simple_save_type			saves[max_simple_save_spot];
+					} iface_simple_save_list;
 
 //
 // chat structures
@@ -534,21 +521,21 @@ typedef struct		{
 														param[name_str_len];
 						float							interface_resize;
 						d3pnt							interface_offset;
-					} hud_character_item_type;
+					} iface_character_item_type;
 
 typedef struct		{
 						int								ncharacter;
-						hud_character_item_type			characters[max_character];
-					} hud_character_type;
+						iface_character_item_type		characters[max_character];
+					} iface_character_type;
 	
 typedef struct		{
 						char							name[name_str_len];
-					} hud_net_bot_type;
+					} iface_net_bot_type;
 
 typedef struct		{
 						bool							on;
-						hud_net_bot_type				bots[max_net_bot];
-					} hud_net_bots_type;
+						iface_net_bot_type				bots[max_net_bot];
+					} iface_net_bots_type;
 
 typedef struct		{
 						char							name[name_str_len];
@@ -558,21 +545,21 @@ typedef struct		{
 typedef struct		{
 						int								ngame;
 						hud_net_game_type				games[max_net_game];
-					} hud_net_games_type;
+					} iface_net_games_type;
 
 typedef struct		{
 						char							name[name_str_len],descript[64];
-					} hud_net_option_type;
+					} iface_net_option_type;
 
 typedef struct		{
 						int								noption;
-						hud_net_option_type				options[max_net_option];
-					} hud_net_options_type;
+						iface_net_option_type			options[max_net_option];
+					} iface_net_options_type;
 					
 typedef struct		{
 						int								port;
 						char							host[64],url[256];
-					} hud_net_news_type;
+					} iface_net_news_type;
 
 //
 // main iface structure
@@ -603,12 +590,12 @@ typedef struct		{
 						iface_shader_list				shader_list;
 						iface_radar_type				radar;
 						iface_chat_type					chat;
-						hud_character_type				character;
-						hud_simple_save_list			simple_save_list;
-						hud_net_bots_type				net_bot;
-						hud_net_games_type				net_game;
-						hud_net_options_type			net_option;
-						hud_net_news_type				net_news;
+						iface_simple_save_list			simple_save_list;
+						iface_character_type			character;
+						iface_net_bots_type				net_bot;
+						iface_net_games_type			net_game;
+						iface_net_options_type			net_option;
+						iface_net_news_type				net_news;
 					} iface_type;
 					
 

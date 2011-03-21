@@ -391,7 +391,7 @@ void intro_click_simple_save_erase(int idx)
 
 void intro_click_simple_save_erase_ok(void)
 {
-	hud_simple_save_type	*save;
+	iface_simple_save_type	*save;
 	
 		// reset save
 		

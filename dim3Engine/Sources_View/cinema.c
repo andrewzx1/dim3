@@ -354,7 +354,7 @@ void cinema_action_run_hud_bitmap(map_cinema_action_type *action)
 {
 	iface_bitmap_type		*bitmap;
 	
-	bitmap=iface_bitmaps_find(action->actor_name);
+	bitmap=iface_bitmaps_find(&iface,action->actor_name);
 	if (bitmap==NULL) return;
 	
 	switch (action->action) {
@@ -371,7 +371,7 @@ void cinema_action_run_hud_text(map_cinema_action_type *action)
 {
 	iface_text_type			*text;
 
-	text=iface_texts_find(action->actor_name);
+	text=iface_texts_find(&iface,action->actor_name);
 	if (text==NULL) return;
 
 		// do hide show

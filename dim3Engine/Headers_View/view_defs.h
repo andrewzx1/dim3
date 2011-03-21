@@ -216,11 +216,14 @@ typedef struct		{
 					} rain_draw_type;
 
 //
-// chat and score structures
+// chat, console and score structures
 //
 
 #define max_view_chat_lines								15
 #define max_view_chat_str_len							64
+
+#define max_view_console_lines							14
+#define max_view_console_txt_sz							128
 
 typedef struct		{
 						char							name[name_str_len],str[max_view_chat_str_len];
@@ -233,6 +236,18 @@ typedef struct		{
 						bool							type_on;
 						view_chat_line_type				*lines;
 					} view_chat_type;
+
+typedef struct		{
+						int								style;
+						char							txt[max_view_console_txt_sz];
+						d3col							color;
+					} view_console_line_type;
+					
+typedef struct		{
+						int								nline;
+						bool							on;
+						view_console_line_type			*lines;
+					} view_console_type;
 
 typedef struct		{
 						bool							on;
@@ -426,10 +441,6 @@ typedef struct		{
 					} view_cinema_type;
 
 typedef struct		{
-						bool								on;
-					} view_console_type;
-
-typedef struct		{
 						char								str[256],str_2[256];
 					} view_error_type;
 
@@ -452,8 +463,8 @@ typedef struct		{
 						view_obscure_type					obscure;
 						view_menu_type						menu;
 						view_cinema_type					cinema;
-						view_console_type					console;
 						view_chat_type						chat;
+						view_console_type					console;
 						view_score_type						score;
 						view_error_type						error;
 						view_debug_type						debug;

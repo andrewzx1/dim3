@@ -41,6 +41,7 @@ bool						arch_is_ppc;
 
 bool						game_app_active,game_loop_quit;
 
+extern iface_type			iface;
 extern setup_type			setup;
 
 extern bool loop_main(char *err_str);
@@ -190,7 +191,7 @@ int main(int argc,char *argv[])
 	
 		// get the project name
 		
-	read_settings_interface_project_name();
+	read_settings_interface_project_name(&iface);
 	
 		// check for required OS
 		

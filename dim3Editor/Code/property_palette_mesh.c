@@ -181,6 +181,7 @@ void property_palette_fill_mesh(int mesh_idx,int poly_idx)
 	list_palette_add_header(&property_palette,0,"Mesh Info");
 	list_palette_add_string_int(&property_palette,-1,"Mesh Index",mesh_idx,FALSE);
 	if (poly_idx!=-1) list_palette_add_string_int(&property_palette,-1,"Poly Index",poly_idx,FALSE);
+	list_palette_add_string_int(&property_palette,-1,"Poly Count",mesh->npoly,FALSE);
 	list_palette_add_point(&property_palette,-1,"Position",&min,TRUE);
 	list_palette_add_point(&property_palette,-1,"Size",&max,TRUE);
 }

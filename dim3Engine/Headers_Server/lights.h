@@ -25,7 +25,7 @@ and can be sold or given away.
  
 *********************************************************************/
 
-extern int iface_halo_find(char *name);		// supergumba -- move
+extern int iface_halo_find(iface_type *iface,char *name);		// supergumba -- move
 
 extern void halo_draw_clear(void);
 extern void halo_draw_add(int x,int y,int z,int obj_idx,model_draw_halo *mdl_halo);

@@ -71,8 +71,8 @@ bool server_initialize(char *err_str)
 	
 		// allocate memory
 		
-	if (!interface_initialize()) {
-		interface_shutdown();
+	if (!interface_initialize(&iface)) {
+		interface_shutdown(&iface);
 		strcpy(err_str,"Out of Memory");
 		return(FALSE);
 	}
@@ -80,18 +80,13 @@ bool server_initialize(char *err_str)
 		// start script engine
 		
 	if (!scripts_engine_initialize(err_str)) {
-		interface_shutdown();
+		interface_shutdown(&iface);
 		return(FALSE);
 	}
 	
 		// load project XML
 		
-	read_settings_interface();
-	read_settings_particle();
-	read_settings_ring();
-	read_settings_halo();
-	read_settings_mark();
-	read_settings_crosshair();
+	interface_read(&iface);
 	
 		// game states
 		
@@ -112,7 +107,7 @@ void server_shutdown(void)
 	
 		// release memory
 	
-	interface_shutdown();
+	interface_shutdown(&iface);
 }
 
 /* =======================================================

@@ -175,7 +175,7 @@ bool chooser_setup(char *name,char *sub_txt,char *err_str)
 
 		// find chooser
 
-	chooser_idx=iface_chooser_find_idx(name);
+	chooser_idx=iface_chooser_find_idx(&iface,name);
 	if (chooser_idx==-1) {
 		sprintf(err_str,"Chooser does not exist: %s",name);
 		return(FALSE);
@@ -232,7 +232,7 @@ void chooser_click(void)
 	if (idx!=-1) {
 	
 		piece=&iface.chooser_list.choosers[chooser_idx].pieces[idx];
-		next_idx=iface_chooser_find_idx(piece->goto_name);
+		next_idx=iface_chooser_find_idx(&iface,piece->goto_name);
 		
 		if (next_idx!=-1) {
 			element_clear();

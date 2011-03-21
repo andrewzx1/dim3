@@ -37,6 +37,7 @@ and can be sold or given away.
 #include "models.h"
 
 extern server_type			server;
+extern iface_type			iface;
 extern js_type				js;
 
 /* =======================================================
@@ -352,10 +353,10 @@ void weapon_dispose(obj_type *obj,int idx)
 
 void weapon_attach_fire_crosshair(weapon_type *weap)
 {
-	weap->crosshair.fire_idx=crosshair_find(weap->crosshair.fire_name);
+	weap->crosshair.fire_idx=crosshair_find(&iface,weap->crosshair.fire_name);
 }
 
 void weapon_attach_zoom_mask(weapon_type *weap)
 {
-	weap->zoom.mask_idx=crosshair_find(weap->zoom.mask_name);
+	weap->zoom.mask_idx=crosshair_find(&iface,weap->zoom.mask_name);
 }

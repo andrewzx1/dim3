@@ -46,14 +46,14 @@ extern setup_type			setup;
       
 ======================================================= */
 
-int iface_halo_find(char *name)
+int iface_halo_find(iface_type *iface,char *name)
 {
 	int				n;
 	iface_halo_type	*halo;
 
-	halo=iface.halo_list.halos;
+	halo=iface->halo_list.halos;
 
-	for (n=0;n!=iface.halo_list.nhalo;n++) {
+	for (n=0;n!=iface->halo_list.nhalo;n++) {
 		if (strcasecmp(halo->name,name)==0)  return(n);
 		halo++;
 	}
@@ -67,7 +67,7 @@ int iface_halo_find(char *name)
       
 ======================================================= */
 
-void read_settings_halo(void)
+void read_settings_halo(iface_type *iface)
 {
 	int					nhalo,halos_head_tag,halo_tag,tag;
 	char				path[1024];
@@ -101,13 +101,13 @@ void read_settings_halo(void)
 	
 			// create a new halo
 
-		if (iface.halo_list.nhalo>=max_iface_halo) {
+		if (iface->halo_list.nhalo>=max_iface_halo) {
 			xml_close_file();
 			return;
 		}
 			
-		halo=&iface.halo_list.halos[iface.halo_list.nhalo];
-		iface.halo_list.nhalo++;
+		halo=&iface->halo_list.halos[iface->halo_list.nhalo];
+		iface->halo_list.nhalo++;
 			
 			// read settings
 			
