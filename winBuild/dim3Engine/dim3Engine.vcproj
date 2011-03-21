@@ -375,31 +375,11 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\dim3Engine\Headers_Server\lights.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\dim3Engine\Headers_Server\models.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\dim3Engine\Headers_Server\objects.h"
 					>
 				</File>
 				<File
 					RelativePath="..\..\dim3Engine\Headers_Server\physics.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\dim3Engine\Headers_Server\projectiles.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\dim3Engine\Headers_Server\remotes.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\dim3Engine\Headers_Server\scenery.h"
 					>
 				</File>
 				<File
@@ -416,18 +396,6 @@
 				</File>
 				<File
 					RelativePath="..\..\dim3Engine\Headers_Server\setup_defs.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\dim3Engine\Headers_Server\timing.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\dim3Engine\Headers_Server\weapons.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\dim3Engine\Headers_Server\xmls.h"
 					>
 				</File>
 			</Filter>
@@ -475,19 +443,6 @@
 				</File>
 				<File
 					RelativePath="..\..\dim3Engine\Sources_Server\camera_static.c"
-					>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\..\dim3Engine\Sources_Server\console.c"
 					>
 					<FileConfiguration
 						Name="Release|Win32"
@@ -566,19 +521,6 @@
 				</File>
 				<File
 					RelativePath="..\..\dim3Engine\Sources_Server\group_move.c"
-					>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\..\dim3Engine\Sources_Server\hud.c"
 					>
 					<FileConfiguration
 						Name="Release|Win32"
@@ -2917,6 +2859,14 @@
 			<Filter
 				Name="View Sources"
 				>
+				<File
+					RelativePath="..\..\dim3Engine\Sources_View\chat.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3Engine\Sources_View\console.c"
+					>
+				</File>
 				<File
 					RelativePath="..\..\dim3Engine\Sources_View\crosshair_draw.c"
 					>

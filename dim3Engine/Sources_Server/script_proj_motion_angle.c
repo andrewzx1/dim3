@@ -29,8 +29,9 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
+#include "interface.h"
+#include "objects.h"
 #include "scripts.h"
-#include "projectiles.h"
 
 extern js_type			js;
 

@@ -31,7 +31,6 @@ and can be sold or given away.
 
 #include "interface.h"
 #include "video.h"
-#include "timing.h"
 
 int							tint_start_tick,
 							tint_fade_in_tick,

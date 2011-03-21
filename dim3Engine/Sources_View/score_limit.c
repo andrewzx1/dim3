@@ -33,12 +33,10 @@ and can be sold or given away.
 
 #include "interface.h"
 #include "objects.h"
-#include "remotes.h"
 #include "scripts.h"
 #include "video.h"
 #include "inputs.h"
 #include "network.h"
-#include "timing.h"
 
 extern bool					game_loop_quit;
 

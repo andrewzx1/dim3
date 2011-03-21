@@ -471,6 +471,54 @@
 					</FileConfiguration>
 				</File>
 			</Filter>
+			<Filter
+				Name="Interface"
+				>
+				<File
+					RelativePath="..\..\dim3BaseUtility\Sources_Interface\iface_action.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3BaseUtility\Sources_Interface\iface_crosshairs.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3BaseUtility\Sources_Interface\iface_halos.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3BaseUtility\Sources_Interface\iface_interface.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3BaseUtility\Sources_Interface\iface_main.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3BaseUtility\Sources_Interface\iface_mark.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3BaseUtility\Sources_Interface\iface_particle.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3BaseUtility\Sources_Interface\iface_ring.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3BaseUtility\Sources_Interface\iface_shader.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3BaseUtility\Sources_Interface\iface_simple_save.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3BaseUtility\Sources_Interface\iface_sound.c"
+					>
+				</File>
+			</Filter>
 		</Filter>
 	</Files>
 	<Globals>

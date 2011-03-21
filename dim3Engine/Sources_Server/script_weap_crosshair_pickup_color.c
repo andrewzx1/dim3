@@ -29,8 +29,9 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
+#include "interface.h"
 #include "scripts.h"
-#include "weapons.h"
+#include "objects.h"
 
 JSValueRef js_weap_crosshair_pickup_color_get_red(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_weap_crosshair_pickup_color_get_green(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);

@@ -42,11 +42,8 @@ and can be sold or given away.
 
 #include "interface.h"
 
-extern iface_type				iface;
-extern setup_type				setup;
-extern network_setup_type		net_setup;
-
 d3col							default_tint_cols[8]={{1.0f,1.0f,1.0f},{1.0f,1.0f,0.0f},{1.0f,0.6f,0.0f},{1.0f,0.0f,0.0f},{0.0f,1.0f,0.0f},{0.0f,0.0f,1.0f},{1.0f,0.0f,1.0f},{0.6f,0.4f,0.0f}};
+file_path_setup_type			iface_file_path_setup;
 
 /* =======================================================
 
@@ -54,8 +51,12 @@ d3col							default_tint_cols[8]={{1.0f,1.0f,1.0f},{1.0f,1.0f,0.0f},{1.0f,0.6f,0
       
 ======================================================= */
 
-bool interface_initialize(iface_type *iface)
+bool iface_initialize(iface_type *iface,file_path_setup_type *path_setup)
 {
+		// remember path setup
+
+	memmove(&iface_file_path_setup,path_setup,sizeof(file_path_setup_type));
+
 		// initialize counts
 
 	iface->bitmap_list.nbitmap=0;
@@ -145,7 +146,7 @@ bool interface_initialize(iface_type *iface)
 	return(TRUE);
 }
 
-void interface_shutdown(iface_type *iface)
+void iface_shutdown(iface_type *iface)
 {
 		// hud pointers
 		
@@ -170,7 +171,7 @@ void interface_shutdown(iface_type *iface)
       
 ======================================================= */
 
-void default_settings_interface_button(iface_intro_button_type *button,int x,int y,bool on)
+void iface_default_settings_button(iface_intro_button_type *button,int x,int y,bool on)
 {
 	button->x=x;
 	button->y=y;
@@ -179,7 +180,7 @@ void default_settings_interface_button(iface_intro_button_type *button,int x,int
 	button->on=on;
 }
 
-void default_settings_interface(iface_type *iface)
+void iface_default_settings(iface_type *iface)
 {
 	int				n;
 	
@@ -287,24 +288,24 @@ void default_settings_interface(iface_type *iface)
 	
 		// intro
 
-	default_settings_interface_button(&iface->intro.button_game_new,0,0,TRUE);
-	default_settings_interface_button(&iface->intro.button_game_load,0,32,TRUE);
-	default_settings_interface_button(&iface->intro.button_game_setup,0,64,TRUE);
-	default_settings_interface_button(&iface->intro.button_game_new_easy,128,0,TRUE);
-	default_settings_interface_button(&iface->intro.button_game_new_medium,128,32,TRUE);
-	default_settings_interface_button(&iface->intro.button_game_new_hard,128,64,TRUE);
-	default_settings_interface_button(&iface->intro.button_game_new_cancel,128,96,TRUE);
+	iface_default_settings_button(&iface->intro.button_game_new,0,0,TRUE);
+	iface_default_settings_button(&iface->intro.button_game_load,0,32,TRUE);
+	iface_default_settings_button(&iface->intro.button_game_setup,0,64,TRUE);
+	iface_default_settings_button(&iface->intro.button_game_new_easy,128,0,TRUE);
+	iface_default_settings_button(&iface->intro.button_game_new_medium,128,32,TRUE);
+	iface_default_settings_button(&iface->intro.button_game_new_hard,128,64,TRUE);
+	iface_default_settings_button(&iface->intro.button_game_new_cancel,128,96,TRUE);
 
-	default_settings_interface_button(&iface->intro.button_multiplayer_host,0,96,TRUE);
-	default_settings_interface_button(&iface->intro.button_multiplayer_join,0,128,TRUE);
-	default_settings_interface_button(&iface->intro.button_multiplayer_setup,0,160,TRUE);
+	iface_default_settings_button(&iface->intro.button_multiplayer_host,0,96,TRUE);
+	iface_default_settings_button(&iface->intro.button_multiplayer_join,0,128,TRUE);
+	iface_default_settings_button(&iface->intro.button_multiplayer_setup,0,160,TRUE);
 
-	default_settings_interface_button(&iface->intro.button_credit,0,192,TRUE);
-	default_settings_interface_button(&iface->intro.button_quit,0,224,TRUE);
+	iface_default_settings_button(&iface->intro.button_credit,0,192,TRUE);
+	iface_default_settings_button(&iface->intro.button_quit,0,224,TRUE);
 	
 	for (n=0;n!=max_simple_save_spot;n++) {
-		default_settings_interface_button(&iface->intro.simple_save[n].button_start,0,(n*32),FALSE);
-		default_settings_interface_button(&iface->intro.simple_save[n].button_erase,40,(n*32),FALSE);
+		iface_default_settings_button(&iface->intro.simple_save[n].button_start,0,(n*32),FALSE);
+		iface_default_settings_button(&iface->intro.simple_save[n].button_erase,40,(n*32),FALSE);
 		iface->intro.simple_save[n].desc.x=80;
 		iface->intro.simple_save[n].desc.y=(n*32);
 		iface->intro.simple_save[n].desc.text_size=20;
@@ -432,6 +433,36 @@ int iface_chooser_find_piece_idx(iface_chooser_type *chooser,int id)
 	return(-1);
 }
 
+int iface_crosshair_find(iface_type *iface,char *name)
+{
+	int						n;
+	iface_crosshair_type	*crosshair;
+
+	crosshair=iface->crosshair_list.crosshairs;
+
+	for (n=0;n!=iface->crosshair_list.ncrosshair;n++) {
+		if (strcasecmp(crosshair->name,name)==0)  return(n);
+		crosshair++;
+	}
+	
+	return(-1);
+}
+
+int iface_halo_find(iface_type *iface,char *name)
+{
+	int				n;
+	iface_halo_type	*halo;
+
+	halo=iface->halo_list.halos;
+
+	for (n=0;n!=iface->halo_list.nhalo;n++) {
+		if (strcasecmp(halo->name,name)==0)  return(n);
+		halo++;
+	}
+	
+	return(-1);
+}
+
 /* =======================================================
 
       Misc Routines
@@ -489,16 +520,16 @@ void iface_bars_hide_all(iface_type *iface)
       
 ======================================================= */
 
-void interface_read(iface_type *iface)
+void iface_read(iface_type *iface)
 {
-	read_settings_interface(iface);
-	read_settings_particle(iface);
-	read_settings_ring(iface);
-	read_settings_halo(iface);
-	read_settings_mark(iface);
-	read_settings_crosshair(iface);
-	read_settings_sound(iface);
-	read_settings_action(iface);
-	read_settings_shader(iface);
+	iface_read_settings_interface(iface);
+	iface_read_settings_particle(iface);
+	iface_read_settings_ring(iface);
+	iface_read_settings_halo(iface);
+	iface_read_settings_mark(iface);
+	iface_read_settings_crosshair(iface);
+	iface_read_settings_sound(iface);
+	iface_read_settings_action(iface);
+	iface_read_settings_shader(iface);
 }
 

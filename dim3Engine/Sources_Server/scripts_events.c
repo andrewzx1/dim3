@@ -31,7 +31,6 @@ and can be sold or given away.
 
 #include "interface.h"
 #include "scripts.h"
-#include "timing.h"
 
 bool						scripts_event_lock;
 

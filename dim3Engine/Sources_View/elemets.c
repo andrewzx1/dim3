@@ -30,10 +30,9 @@ and can be sold or given away.
 #endif
 
 #include "interface.h"
+#include "objects.h"
 #include "video.h"
-#include "models.h"
 #include "inputs.h"
-#include "timing.h"
 
 extern bool					game_app_active;
 

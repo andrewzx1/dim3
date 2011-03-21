@@ -30,8 +30,6 @@ and can be sold or given away.
 #endif
 
 #include "interface.h"
-#include "models.h"
-#include "lights.h"
 #include "video.h"
 #include "physics.h"
 

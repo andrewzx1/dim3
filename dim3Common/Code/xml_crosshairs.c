@@ -36,30 +36,7 @@ and can be sold or given away.
 
 #include "interface.h"
 
-extern server_type			server;
-extern iface_type			iface;
-extern setup_type			setup;
-
-/* =======================================================
-
-      Find Crosshairs
-      
-======================================================= */
-
-int crosshair_find(iface_type *iface,char *name)
-{
-	int						n;
-	iface_crosshair_type	*crosshair;
-
-	crosshair=iface->crosshair_list.crosshairs;
-
-	for (n=0;n!=iface->crosshair_list.ncrosshair;n++) {
-		if (strcasecmp(crosshair->name,name)==0)  return(n);
-		crosshair++;
-	}
-	
-	return(-1);
-}
+extern file_path_setup_type		iface_file_path_setup;
 
 /* =======================================================
 
@@ -67,7 +44,7 @@ int crosshair_find(iface_type *iface,char *name)
       
 ======================================================= */
 
-void read_settings_crosshair(iface_type *iface)
+void iface_read_settings_crosshair(iface_type *iface)
 {
 	int						ncrosshair,crosshairs_head_tag,crosshair_tag,tag;
 	char					path[1024];
@@ -75,7 +52,7 @@ void read_settings_crosshair(iface_type *iface)
 
 		// read in crosshairs from setting files
 		
-	file_paths_data(&setup.file_path_setup,path,"Settings","Crosshairs","xml");
+	file_paths_data(&iface_file_path_setup,path,"Settings","Crosshairs","xml");
 	if (!xml_open_file(path)) return;
 	
 		// get counts

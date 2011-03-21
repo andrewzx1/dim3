@@ -29,8 +29,8 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
+#include "interface.h"
 #include "scripts.h"
-#include "timing.h"
 
 JSValueRef js_model_spin_get_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_model_spin_get_y(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);

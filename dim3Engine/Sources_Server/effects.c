@@ -30,7 +30,6 @@ and can be sold or given away.
 #endif
 
 #include "interface.h"
-#include "timing.h"
 
 extern map_type		map;
 extern server_type  server;

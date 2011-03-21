@@ -29,7 +29,6 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
-#include "lights.h"
 #include "video.h"
 
 extern map_type				map;

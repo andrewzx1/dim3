@@ -29,9 +29,9 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
+#include "interface.h"
+#include "objects.h"
 #include "scripts.h"
-#include "models.h"
-#include "timing.h"
 
 JSValueRef js_model_animation_get_index(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_model_animation_get_currentAnimationName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);

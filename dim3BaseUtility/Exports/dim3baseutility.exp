@@ -215,3 +215,27 @@ _bitmap_copy
 _bitmap_text_initialize
 _bitmap_text_shutdown
 
+
+
+_iface_initialize
+_iface_shutdown
+
+_iface_default_settings
+
+_iface_bitmaps_find
+_iface_texts_find
+_iface_bars_find
+_iface_menu_find_idx
+_iface_chooser_find_idx
+_iface_chooser_find_piece_idx
+_iface_crosshair_find
+_iface_halo_find
+_iface_bitmaps_hide_all
+_iface_texts_hide_all
+_iface_bars_hide_all
+
+_iface_read
+
+_simple_save_xml_read
+_simple_save_xml_write
+

@@ -290,7 +290,7 @@ void intro_open(void)
 	
 		// read in simple saves
 		
-	simple_save_xml_read();
+	simple_save_xml_read(&iface);
 	
 		// correct panel
 
@@ -399,7 +399,7 @@ void intro_click_simple_save_erase_ok(void)
 	save->save_id=-1;
 	save->desc[0]=0x0;
 	
-	simple_save_xml_write();
+	simple_save_xml_write(&iface);
 	
 		// back to intro
 

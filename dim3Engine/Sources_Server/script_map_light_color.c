@@ -30,7 +30,6 @@ and can be sold or given away.
 #endif
 
 #include "scripts.h"
-#include "lights.h"
 
 extern map_type			map;
 extern js_type			js;
