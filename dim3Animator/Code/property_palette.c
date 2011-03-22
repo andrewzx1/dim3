@@ -37,6 +37,7 @@ extern model_type				model;
 extern model_draw_setup			draw_setup;
 extern animator_state_type		state;
 extern file_path_setup_type		file_path_setup;
+extern iface_type				iface;
 
 extern int						tool_palette_pixel_sz,txt_palette_pixel_sz;
 extern bool						list_palette_open,alt_property_open;
@@ -309,140 +310,32 @@ void property_palette_add_string_bone(void *list,int id,char *name,int bone_idx,
 
 void property_palette_pick_sound(char *name,bool include_none)
 {
-	int				idx,sound_count,head_tag,tag;
-	char			path[1024],sound_names[256][name_str_len];
-	
-		// load in the sounds
+	int				idx;
 
-	idx=-1;
-	sound_count=0;
-		
-	file_paths_data(&file_path_setup,path,"Settings","Sounds","xml");
-	if (xml_open_file(path)) {
-	
-		head_tag=xml_findrootchild("Sounds");
-		if (head_tag!=-1) {
-	
-			tag=xml_findfirstchild("Sound",head_tag);
-		
-			while (tag!=-1) {
-				xml_get_attribute_text(tag,"name",sound_names[sound_count],name_str_len);
-				if (strcmp(sound_names[sound_count],name)==0) idx=sound_count;
-				sound_count++;
-				tag=xml_findnextchild(tag);
-			}
-		}
-		
-		xml_close_file();
-	}
-	
-		// run the dialog
+	dialog_property_list_run((char*)iface.sound_list.sounds,iface.sound_list.nsound,sizeof(iface_sound_type),(int)offsetof(iface_sound_type,name),include_none,&idx);
 
-	dialog_property_list_run((char*)sound_names,sound_count,name_str_len,0,include_none,&idx);
-	
 	name[0]=0x0;
-	if (idx!=-1) strcpy(name,sound_names[idx]);
+	if (idx!=-1) strcpy(name,iface.sound_list.sounds[idx].name);
 }
 
 void property_palette_pick_particle(char *name)
 {
-	int				idx,particle_count,head_tag,data_head_tag,tag;
-	char			path[1024],particle_names[256][name_str_len];
-	
-		// load in the particles
+	int				idx;
 
-	idx=-1;
-	particle_count=0;
-	
-	file_paths_data(&file_path_setup,path,"Settings","Particles","xml");
-	if (xml_open_file(path)) {
-	
-		data_head_tag=xml_findrootchild("Particle_Data");
-		
-		if (data_head_tag==-1) {
-			head_tag=xml_findrootchild("Particles");
-		}
-		else {
-			head_tag=xml_findfirstchild("Particles",data_head_tag);
-		}
-	
-		if (head_tag!=-1) {
+	dialog_property_list_run((char*)iface.particle_list.particles,iface.particle_list.nparticle,sizeof(iface_particle_type),(int)offsetof(iface_particle_type,name),FALSE,&idx);
 
-			tag=xml_findfirstchild("Particle",head_tag);
-			
-			while (tag!=-1) {
-				xml_get_attribute_text(tag,"name",particle_names[particle_count],name_str_len);
-				if (strcmp(particle_names[particle_count],name)==0) idx=particle_count;
-				particle_count++;
-				tag=xml_findnextchild(tag);
-			}
-		}
-		
-		if (data_head_tag==-1) {
-			head_tag=xml_findrootchild("Particle_Groups");
-		}
-		else {
-			head_tag=xml_findfirstchild("Particle_Groups",data_head_tag);
-		}
-
-		if (head_tag!=-1) {
-
-			tag=xml_findfirstchild("Particle_Group",head_tag);
-			
-			while (tag!=-1) {
-				xml_get_attribute_text(tag,"name",particle_names[particle_count],name_str_len);
-				if (strcmp(particle_names[particle_count],name)==0) idx=particle_count;
-				particle_count++;
-				tag=xml_findnextchild(tag);
-			}
-		}
-	
-		xml_close_file();
-	}
-	
-		// run the dialog
-
-	dialog_property_list_run((char*)particle_names,particle_count,name_str_len,0,FALSE,&idx);
-	
 	name[0]=0x0;
-	if (idx!=-1) strcpy(name,particle_names[idx]);
+	if (idx!=-1) strcpy(name,iface.particle_list.particles[idx].name);
 }
 
 void property_palette_pick_ring(char *name)
 {
-	int				idx,ring_count,head_tag,tag;
-	char			path[1024],ring_names[256][name_str_len];
-	
-		// load in the rings
+	int				idx;
 
-	idx=-1;
-	ring_count=0;
-		
-	file_paths_data(&file_path_setup,path,"Settings","Rings","xml");
-	if (xml_open_file(path)) {
-	
-		head_tag=xml_findrootchild("Rings");
-		if (head_tag!=-1) {
-	
-			tag=xml_findfirstchild("Ring",head_tag);
-		
-			while (tag!=-1) {
-				xml_get_attribute_text(tag,"name",ring_names[ring_count],name_str_len);
-				if (strcmp(ring_names[ring_count],name)==0) idx=ring_count;
-				ring_count++;
-				tag=xml_findnextchild(tag);
-			}
-		}
-		
-		xml_close_file();
-	}
-	
-		// run the dialog
+	dialog_property_list_run((char*)iface.ring_list.rings,iface.ring_list.nring,sizeof(iface_ring_type),(int)offsetof(iface_ring_type,name),FALSE,&idx);
 
-	dialog_property_list_run((char*)ring_names,ring_count,name_str_len,0,FALSE,&idx);
-	
 	name[0]=0x0;
-	if (idx!=-1) strcpy(name,ring_names[idx]);
+	if (idx!=-1) strcpy(name,iface.ring_list.rings[idx].name);
 }
 
 void property_palette_pick_mesh(int *mesh_idx)
@@ -476,34 +369,11 @@ void property_palette_pick_pose(int *pose_idx)
 
 void property_palette_pick_shader(char *name)
 {
-	int					idx,shader_count,head_tag,tag;
-	char				path[1024],shader_names[256][file_str_len];
+	int				idx;
 
-	idx=-1;
-	shader_count=0;
-	
-	file_paths_data(&file_path_setup,path,"Settings","Shaders","xml");
-	if (xml_open_file(path)) {
-	
-		head_tag=xml_findrootchild("Shaders");
-		if (head_tag!=-1) {
-
-			tag=xml_findfirstchild("Shader",head_tag);
-			
-			while (tag!=-1) {
-				xml_get_attribute_text(tag,"name",shader_names[shader_count],file_str_len);
-				if ((idx==-1) && (strcasecmp(shader_names[shader_count],name)==0)) idx=shader_count;
-				shader_count++;
-				tag=xml_findnextchild(tag);
-			}
-		}
-	
-		xml_close_file();
-	}
-
-	dialog_property_list_run((char*)shader_names,shader_count,file_str_len,0,TRUE,&idx);
+	dialog_property_list_run((char*)iface.shader_list.shaders,iface.shader_list.nshader,sizeof(iface_shader_type),(int)offsetof(iface_shader_type,name),TRUE,&idx);
 
 	name[0]=0x0;
-	if (idx!=-1) strcpy(name,shader_names[idx]);
+	if (idx!=-1) strcpy(name,iface.shader_list.shaders[idx].name);
 }
 

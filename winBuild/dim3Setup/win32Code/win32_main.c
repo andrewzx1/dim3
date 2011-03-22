@@ -43,9 +43,8 @@ HGLRC							wnd_gl_ctx;
 
 bool							quit;
 
+extern iface_type				iface;
 extern file_path_setup_type		file_path_setup;
-
-//extern list_palette_type		item_palette;
 
 extern int os_win32_menu_lookup(int id);
 
@@ -313,15 +312,23 @@ int APIENTRY WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmdLine
 {
 	hinst=hInstance;
 	
-		// glue start
+		// initialize
 
 	os_glue_start();
 	
 	if (!file_paths_setup(&file_path_setup)) {
-		os_glue_end();
 		os_dialog_alert("Error","No data folder");
+		os_glue_end();
 		return(0);
 	}
+
+	if (!iface_initialize(&iface,&file_path_setup)) {
+		os_dialog_alert("Error","Out of memory");
+		os_glue_end();
+		return(0);
+	}
+
+	iface_read(&iface);
 
 		// open window
 
@@ -337,6 +344,7 @@ int APIENTRY WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmdLine
 
 		// close glue
 
+	iface_shutdown(&iface);
 	os_glue_end();
 
 	return(0);

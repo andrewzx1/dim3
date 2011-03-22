@@ -33,14 +33,14 @@ and can be sold or given away.
 #include "ui_common.h"
 #include "interface.h"
 
+map_type						map;
+editor_setup_type				setup;
+file_path_setup_type			file_path_setup;
+iface_type						iface;
+editor_state_type				state;
+
 extern d3rect					tool_palette_box,txt_palette_box;
 extern list_palette_type		item_palette,property_palette,alt_property_palette;
-
-extern map_type					map;
-extern editor_setup_type		setup;
-
-file_path_setup_type			file_path_setup;
-editor_state_type				state;
 
 /* =======================================================
 
