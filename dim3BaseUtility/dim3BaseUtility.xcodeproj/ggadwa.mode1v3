@@ -334,19 +334,20 @@
 							<array>
 								<string>0867D691FE84028FC02AAC07</string>
 								<string>F5AD52750BBE146A001C7C04</string>
+								<string>F5AD52760BBE1470001C7C04</string>
 								<string>08FB77ACFE841707C02AAC07</string>
 								<string>F5AD527F0BBE14DC001C7C04</string>
 								<string>F53F251A0BBF683700EB3C0F</string>
 								<string>F5AD52F20BBE1A39001C7C04</string>
 								<string>F5AD52F30BBE1A41001C7C04</string>
+								<string>26E67A85133807CC00E63E68</string>
 								<string>1C37FBAC04509CD000000102</string>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>15</integer>
-									<integer>8</integer>
-									<integer>7</integer>
+									<integer>5</integer>
+									<integer>1</integer>
 									<integer>0</integer>
 								</array>
 							</array>
@@ -370,7 +371,7 @@
 							<real>249</real>
 						</array>
 						<key>RubberWindowFrame</key>
-						<string>1207 311 271 698 0 0 1680 1028 </string>
+						<string>1209 311 271 698 0 0 1680 1028 </string>
 					</dict>
 					<key>Module</key>
 					<string>PBXSmartGroupTreeModule</string>
@@ -407,7 +408,7 @@
 								<key>Frame</key>
 								<string>{{0, 0}, {0, 0}}</string>
 								<key>RubberWindowFrame</key>
-								<string>1207 311 271 698 0 0 1680 1028 </string>
+								<string>1209 311 271 698 0 0 1680 1028 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
@@ -427,7 +428,7 @@
 								<key>Frame</key>
 								<string>{{0, 5}, {0, 652}}</string>
 								<key>RubberWindowFrame</key>
-								<string>1207 311 271 698 0 0 1680 1028 </string>
+								<string>1209 311 271 698 0 0 1680 1028 </string>
 							</dict>
 							<key>Module</key>
 							<string>XCDetailModule</string>
@@ -451,9 +452,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>26F12C14132BEBF100A6E150</string>
+				<string>26E67AA21338080500E63E68</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>26F12C15132BEBF100A6E150</string>
+				<string>26E67AA31338080500E63E68</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -574,7 +575,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>321645761.229092</real>
+	<real>322442534.16395801</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -589,12 +590,12 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>26F12C16132BEBF100A6E150</string>
+		<string>1C530D57069F1CE1000CFCEE</string>
 		<string>26A5EAC70D404C5F00BB47DE</string>
 		<string>/Users/ggadwa/dim3Code/dim3BaseUtility/dim3BaseUtility.xcodeproj</string>
 	</array>
 	<key>WindowString</key>
-	<string>1207 311 271 698 0 0 1680 1028 </string>
+	<string>1209 311 271 698 0 0 1680 1028 </string>
 	<key>WindowToolsV3</key>
 	<array>
 		<dict>
@@ -632,6 +633,8 @@
 							<string>0pt</string>
 						</dict>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -671,7 +674,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>26A5EAC70D404C5F00BB47DE</string>
-				<string>26F12C19132BEBF100A6E150</string>
+				<string>26E67A9F1338080300E63E68</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
@@ -865,8 +868,8 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C530D57069F1CE1000CFCEE</string>
-				<string>26F12A22132AB38E00A6E150</string>
-				<string>26F12A23132AB38E00A6E150</string>
+				<string>26E67AD11338115400E63E68</string>
+				<string>26E67AD21338115400E63E68</string>
 				<string>1CDD528C0622207200134675</string>
 				<string>1CD0528E0623707200166675</string>
 			</array>
@@ -875,7 +878,7 @@
 			<key>WindowToolGUID</key>
 			<string>1C530D57069F1CE1000CFCEE</string>
 			<key>WindowToolIsVisible</key>
-			<true/>
+			<false/>
 		</dict>
 		<dict>
 			<key>Identifier</key>

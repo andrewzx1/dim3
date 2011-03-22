@@ -85,7 +85,6 @@ extern bool view_reset_display(char *err_str);
 extern int setup_find_action_in_setup(int action_idx);
 extern bool setup_xml_reset(void);
 
-extern char					control_names_str[][32];
 extern bool					game_loop_quit;
 
 extern render_info_type		render_info;
@@ -461,7 +460,7 @@ void setup_game_action_wait_for_input(void)
 	
 	if (action_idx==-1) {					// action doesn't exit, so create new one
 		action_idx=setup.action_list.naction;
-		strcpy(setup.action_list.actions[action_idx].name,control_names_str[setup_key_control_to_action_index_list[ctrl_idx]]);
+		strcpy(setup.action_list.actions[action_idx].name,setup_control_names[setup_key_control_to_action_index_list[ctrl_idx]]);
 		setup.action_list.naction++;
 	}
 	

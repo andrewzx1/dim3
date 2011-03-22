@@ -34,6 +34,7 @@ and can be sold or given away.
 #include "ui_common.h"
 
 file_path_setup_type			file_path_setup;
+iface_type						iface;
 setup_state_type				state;
 
 /* =======================================================

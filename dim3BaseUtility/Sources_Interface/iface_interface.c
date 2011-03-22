@@ -1010,7 +1010,7 @@ void iface_read_settings_interface(iface_type *iface)
       
 ======================================================= */
 
-void iface_read_settings_project_name(iface_type *iface,char *proj_name)
+void iface_read_settings_project_name(file_path_setup_type *path_setup)
 {
 	int						interface_head_tag,proj_tag;
 	char					path[1024];
@@ -1018,11 +1018,11 @@ void iface_read_settings_project_name(iface_type *iface,char *proj_name)
 		// default project name is blank
 		// (will use application name)
 		
-	proj_name[0]=0x0;
+	path_setup->proj_name[0]=0x0;
 
 		// read in interface from setting files
 		
-	file_paths_data(&iface_file_path_setup,path,"Settings","Interface","xml");
+	file_paths_data(path_setup,path,"Settings","Interface","xml");
 	if (!xml_open_file(path)) return;
 	
 		// decode the file
@@ -1037,7 +1037,7 @@ void iface_read_settings_project_name(iface_type *iface,char *proj_name)
 		
 	proj_tag=xml_findfirstchild("Project",interface_head_tag);
 	if (proj_tag!=-1) {
-		xml_get_attribute_text(proj_tag,"name",proj_name,256);
+		xml_get_attribute_text(proj_tag,"name",path_setup->proj_name,256);
 	}
 	
 

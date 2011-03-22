@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		268C3722132F17790097F588 /* xml_interface_read.c in Sources */ = {isa = PBXBuildFile; fileRef = 268C3721132F17790097F588 /* xml_interface_read.c */; };
 		269FECBD132845880030B0B5 /* dim3 Setup.icns in Resources */ = {isa = PBXBuildFile; fileRef = 269FECBB132845880030B0B5 /* dim3 Setup.icns */; };
 		269FECBE132845880030B0B5 /* dim3 Setup.nib in Resources */ = {isa = PBXBuildFile; fileRef = 269FECBC132845880030B0B5 /* dim3 Setup.nib */; };
 		269FECC11328488B0030B0B5 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 269FECC01328488B0030B0B5 /* Carbon.framework */; };
@@ -30,7 +29,6 @@
 		26D15DE41329EB6100F9EC7B /* OSX_dialog_property_list.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D15DDD1329EB6100F9EC7B /* OSX_dialog_property_list.c */; };
 		26D15DE51329EB6100F9EC7B /* OSX_dialog_property_string.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D15DDE1329EB6100F9EC7B /* OSX_dialog_property_string.c */; };
 		26D15DE61329EB6100F9EC7B /* OSX_dialog_utility_common.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D15DDF1329EB6100F9EC7B /* OSX_dialog_utility_common.c */; };
-		26F12E20132D900D00A6E150 /* xml_interface.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F12E17132D900D00A6E150 /* xml_interface.c */; };
 		26F773BC1328867F007C3EBD /* main_window.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F773BB1328867F007C3EBD /* main_window.c */; };
 		26F773C81328871E007C3EBD /* OSX_glue.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F773C71328871E007C3EBD /* OSX_glue.c */; };
 		26F773CB1328872A007C3EBD /* menu.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F773CA1328872A007C3EBD /* menu.c */; };
@@ -63,7 +61,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		268C3721132F17790097F588 /* xml_interface_read.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = xml_interface_read.c; path = ../dim3Common/Code/xml_interface_read.c; sourceTree = SOURCE_ROOT; };
 		269FECB0132844680030B0B5 /* dim3 Setup.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "dim3 Setup.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		269FECB91328457F0030B0B5 /* Info-dim3_Setup.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Info-dim3_Setup.plist"; path = "Resources/Info-dim3_Setup.plist"; sourceTree = "<group>"; };
 		269FECBB132845880030B0B5 /* dim3 Setup.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = "dim3 Setup.icns"; path = "Resources/dim3 Setup.icns"; sourceTree = "<group>"; };
@@ -94,7 +91,6 @@
 		26D15DDD1329EB6100F9EC7B /* OSX_dialog_property_list.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = OSX_dialog_property_list.c; path = ../dim3Common/Code/OSX_dialog_property_list.c; sourceTree = SOURCE_ROOT; };
 		26D15DDE1329EB6100F9EC7B /* OSX_dialog_property_string.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = OSX_dialog_property_string.c; path = ../dim3Common/Code/OSX_dialog_property_string.c; sourceTree = SOURCE_ROOT; };
 		26D15DDF1329EB6100F9EC7B /* OSX_dialog_utility_common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = OSX_dialog_utility_common.c; path = ../dim3Common/Code/OSX_dialog_utility_common.c; sourceTree = SOURCE_ROOT; };
-		26F12E17132D900D00A6E150 /* xml_interface.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = xml_interface.c; path = ../dim3Common/Code/xml_interface.c; sourceTree = SOURCE_ROOT; };
 		26F773BB1328867F007C3EBD /* main_window.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = main_window.c; path = Code/main_window.c; sourceTree = "<group>"; };
 		26F773C71328871E007C3EBD /* OSX_glue.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = OSX_glue.c; path = ../dim3Common/Code/OSX_glue.c; sourceTree = SOURCE_ROOT; };
 		26F773CA1328872A007C3EBD /* menu.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = menu.c; path = Code/menu.c; sourceTree = "<group>"; };
@@ -134,7 +130,6 @@
 				269FEC9B132840360030B0B5 /* Windows */,
 				269FEC9C1328403E0030B0B5 /* Palettes */,
 				26D15C811329E42F00F9EC7B /* Dialogs */,
-				26F12E13132D8FE000A6E150 /* XML */,
 				269FEC9D1328404B0030B0B5 /* Main */,
 			);
 			name = Sources;
@@ -236,15 +231,6 @@
 			name = Dialogs;
 			sourceTree = "<group>";
 		};
-		26F12E13132D8FE000A6E150 /* XML */ = {
-			isa = PBXGroup;
-			children = (
-				26F12E17132D900D00A6E150 /* xml_interface.c */,
-				268C3721132F17790097F588 /* xml_interface_read.c */,
-			);
-			name = XML;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -324,8 +310,6 @@
 				26D15DE41329EB6100F9EC7B /* OSX_dialog_property_list.c in Sources */,
 				26D15DE51329EB6100F9EC7B /* OSX_dialog_property_string.c in Sources */,
 				26D15DE61329EB6100F9EC7B /* OSX_dialog_utility_common.c in Sources */,
-				26F12E20132D900D00A6E150 /* xml_interface.c in Sources */,
-				268C3722132F17790097F588 /* xml_interface_read.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

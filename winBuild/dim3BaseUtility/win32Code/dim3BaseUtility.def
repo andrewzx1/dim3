@@ -230,11 +230,13 @@ EXPORTS
 	iface_chooser_find_piece_idx				@625
 	iface_crosshair_find						@626
 	iface_halo_find								@627
-	iface_bitmaps_hide_all						@628
-	iface_texts_hide_all						@629
-	iface_bars_hide_all							@630
+	iface_text_set								@628
+	iface_bitmaps_hide_all						@629
+	iface_texts_hide_all						@630
+	iface_bars_hide_all							@631
 
 	iface_read									@640
+	iface_read_settings_project_name			@641
 
 	simple_save_xml_read						@650
 	simple_save_xml_write						@651

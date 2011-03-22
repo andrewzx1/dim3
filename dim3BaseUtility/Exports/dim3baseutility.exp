@@ -230,11 +230,13 @@ _iface_chooser_find_idx
 _iface_chooser_find_piece_idx
 _iface_crosshair_find
 _iface_halo_find
+_iface_text_set
 _iface_bitmaps_hide_all
 _iface_texts_hide_all
 _iface_bars_hide_all
 
 _iface_read
+_iface_read_settings_project_name
 
 _simple_save_xml_read
 _simple_save_xml_write

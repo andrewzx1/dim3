@@ -66,8 +66,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 321645531;
-			PBXWorkspaceStateSaveDate = 321645531;
+			PBXPerProjectTemplateStateSaveDate = 322439092;
+			PBXWorkspaceStateSaveDate = 322439092;
 		};
 		sourceControlManager = 26A5EABE0D404BD000BB47DE /* Source Control */;
 		userBuildSettings = {
@@ -103,6 +103,22 @@
 		isa = PBXCodeSenseManager;
 		indexTemplatePath = "";
 	};
+	26E67A89133807E200E63E68 /* iface_interface.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1314, 13689}}";
+			sepNavSelRange = "{34237, 0}";
+			sepNavVisRange = "{32737, 1544}";
+			sepNavWindowFrame = "{{15, 134}, {997, 889}}";
+		};
+	};
+	26E67A8A133807E200E63E68 /* iface_main.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {982, 7475}}";
+			sepNavSelRange = "{14454, 53}";
+			sepNavVisRange = "{9140, 2511}";
+			sepNavWindowFrame = "{{38, 113}, {997, 889}}";
+		};
+	};
 	26ED705D0FF1A7DB00AD19BF /* zip.c */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {984, 1053}}";
@@ -132,10 +148,10 @@
 	};
 	F5AD52770BBE148C001C7C04 /* dim3baseutility.exp */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 2899}}";
-			sepNavSelRange = "{2354, 20}";
-			sepNavVisRange = "{1635, 826}";
-			sepNavWindowFrame = "{{38, 255}, {1041, 747}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 3133}}";
+			sepNavSelRange = "{4395, 34}";
+			sepNavVisRange = "{3677, 799}";
+			sepNavWindowFrame = "{{598, 160}, {1041, 747}}";
 		};
 	};
 	F5AD52800BBE14FA001C7C04 /* lines.c */ = {
@@ -244,24 +260,24 @@
 	};
 	F5AD52A00BBE16AC001C7C04 /* baseutility.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1475, 7436}}";
-			sepNavSelRange = "{19572, 0}";
-			sepNavVisRange = "{17646, 2353}";
+			sepNavIntBoundsRect = "{{0, 0}, {1026, 16991}}";
+			sepNavSelRange = "{40235, 0}";
+			sepNavVisRange = "{38182, 2243}";
 			sepNavWindowFrame = "{{395, 142}, {1041, 747}}";
 		};
 	};
 	F5AD52A90BBE1720001C7C04 /* baseprivate.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1026, 1222}}";
-			sepNavSelRange = "{831, 0}";
-			sepNavVisRange = "{0, 1466}";
+			sepNavIntBoundsRect = "{{0, 0}, {1041, 1196}}";
+			sepNavSelRange = "{2340, 0}";
+			sepNavVisRange = "{1189, 1621}";
 			sepNavWindowFrame = "{{495, 170}, {1041, 747}}";
 		};
 	};
 	F5AD52AB0BBE1727001C7C04 /* dim3baseutility.h */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1026, 675}}";
-			sepNavSelRange = "{851, 0}";
+			sepNavSelRange = "{1039, 26}";
 			sepNavVisRange = "{0, 1144}";
 			sepNavWindowFrame = "{{61, 234}, {1041, 747}}";
 		};

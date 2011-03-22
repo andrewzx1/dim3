@@ -33,6 +33,7 @@ and can be sold or given away.
 #include "ui_common.h"
 #include "interface.h"
 
+extern iface_type				iface;
 extern setup_state_type			state;
 
 list_palette_type				item_palette;
@@ -80,11 +81,13 @@ void item_palette_setup(void)
 
 void item_palette_fill(void)
 {
+	int				n;
+	
 	list_palette_delete_all_items(&item_palette);
 
 		// interface
 
-	list_palette_add_header(&item_palette,item_interface,"Interface XML");
+	list_palette_add_header(&item_palette,item_interface,"Interface");
 	list_palette_add_item(&item_palette,item_interface_settings,0,"Settings",(state.cur_item==item_interface_settings),FALSE);
 	list_palette_add_item(&item_palette,item_interface_hud,0,"HUD",(state.cur_item==item_interface_hud),FALSE);
 	list_palette_add_item(&item_palette,item_interface_intro,0,"Intro",(state.cur_item==item_interface_intro),FALSE);
@@ -95,31 +98,39 @@ void item_palette_fill(void)
 
 		// sounds
 
-	list_palette_add_header(&item_palette,item_sound,"Sounds XML");
+	list_palette_add_header(&item_palette,item_sound,"Sounds");
+	
+	for (n=0;n!=iface.sound_list.nsound;n++) {
+		list_palette_add_item(&item_palette,(item_sound+n),0,iface.sound_list.sounds[n].name,((state.cur_item==item_sound)&&(state.cur_idx==n)),FALSE);
+	}
 
 		// particles
 
-	list_palette_add_header(&item_palette,item_particle,"Particle XML");
+	list_palette_add_header(&item_palette,item_particle,"Particles");
+	
+	for (n=0;n!=iface.particle_list.nparticle;n++) {
+		list_palette_add_item(&item_palette,(item_particle+n),0,iface.particle_list.particles[n].name,((state.cur_item==item_particle)&&(state.cur_idx==n)),FALSE);
+	}
 
 		// rings
 
-	list_palette_add_header(&item_palette,item_ring,"Rings XML");
+	list_palette_add_header(&item_palette,item_ring,"Rings");
 
 		// halo
 
-	list_palette_add_header(&item_palette,item_halo,"Halos XML");
+	list_palette_add_header(&item_palette,item_halo,"Halos");
 
 		// marks
 
-	list_palette_add_header(&item_palette,item_mark,"Marks XML");
+	list_palette_add_header(&item_palette,item_mark,"Marks");
 
 		// crosshairs
 
-	list_palette_add_header(&item_palette,item_crosshair,"Crosshairs XML");
+	list_palette_add_header(&item_palette,item_crosshair,"Crosshairs");
 
 		// actions
 
-	list_palette_add_header(&item_palette,item_action,"Actions XML");
+	list_palette_add_header(&item_palette,item_action,"Actions");
 
 
 	/*
