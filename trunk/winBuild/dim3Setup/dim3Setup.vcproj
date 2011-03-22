@@ -302,6 +302,10 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\dim3Setup\Code\property_palette_sounds.c"
+						>
+					</File>
+					<File
 						RelativePath="..\..\dim3Common\Code\property_utility_common.c"
 						>
 					</File>

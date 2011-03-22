@@ -81,13 +81,12 @@ void item_palette_setup(void)
 
 void item_palette_fill(void)
 {
-	int				n;
-	
 	list_palette_delete_all_items(&item_palette);
 
-		// interface
+		// project
 
-	list_palette_add_header(&item_palette,item_interface,"Interface");
+	list_palette_add_header(&item_palette,item_interface,"Project");
+
 	list_palette_add_item(&item_palette,item_interface_settings,0,"Settings",(state.cur_item==item_interface_settings),FALSE);
 	list_palette_add_item(&item_palette,item_interface_hud,0,"HUD",(state.cur_item==item_interface_hud),FALSE);
 	list_palette_add_item(&item_palette,item_interface_intro,0,"Intro",(state.cur_item==item_interface_intro),FALSE);
@@ -96,107 +95,13 @@ void item_palette_fill(void)
 	list_palette_add_item(&item_palette,item_interface_radar,0,"Radar",(state.cur_item==item_interface_radar),FALSE);
 	list_palette_add_item(&item_palette,item_interface_multiplayer,0,"Multiplayer",(state.cur_item==item_interface_multiplayer),FALSE);
 
-		// sounds
-
-	list_palette_add_header(&item_palette,item_sound,"Sounds");
-	
-	for (n=0;n!=iface.sound_list.nsound;n++) {
-		list_palette_add_item(&item_palette,(item_sound+n),0,iface.sound_list.sounds[n].name,((state.cur_item==item_sound)&&(state.cur_idx==n)),FALSE);
-	}
-
-		// particles
-
-	list_palette_add_header(&item_palette,item_particle,"Particles");
-	
-	for (n=0;n!=iface.particle_list.nparticle;n++) {
-		list_palette_add_item(&item_palette,(item_particle+n),0,iface.particle_list.particles[n].name,((state.cur_item==item_particle)&&(state.cur_idx==n)),FALSE);
-	}
-
-		// rings
-
-	list_palette_add_header(&item_palette,item_ring,"Rings");
-
-		// halo
-
-	list_palette_add_header(&item_palette,item_halo,"Halos");
-
-		// marks
-
-	list_palette_add_header(&item_palette,item_mark,"Marks");
-
-		// crosshairs
-
-	list_palette_add_header(&item_palette,item_crosshair,"Crosshairs");
-
-		// actions
-
-	list_palette_add_header(&item_palette,item_action,"Actions");
-
-
-	/*
-
-	supergumba
-		// sounds
-
-	list_palette_add_header_count(&item_palette,item_mesh,"Meshes",model.nmesh);
-	list_palette_sort_mark_start(&item_palette);
-
-	for (n=0;n!=model.nmesh;n++) {
-		list_palette_add_item(&item_palette,item_mesh,n,model.meshes[n].name,((state.cur_item==item_mesh)&&(state.cur_mesh_idx==n)),FALSE);
-	}
-
-	list_palette_sort(&item_palette);
-
-		// animations
-
-	list_palette_add_header_count(&item_palette,item_animate,"Animations",model.nanimate);
-	list_palette_sort_mark_start(&item_palette);
-
-	for (n=0;n!=model.nanimate;n++) {
-		list_palette_add_item(&item_palette,item_animate,n,model.animates[n].name,((state.cur_item==item_animate)&&(state.cur_animate_idx==n)),FALSE);
-	}
-
-	list_palette_sort(&item_palette);
-
-		// poses
-
-	list_palette_add_header_count(&item_palette,item_pose,"Poses",model.npose);
-	list_palette_add_item(&item_palette,item_neutral_pose,0,"[Neutral]",((state.cur_item==item_neutral_pose)&&(state.cur_pose_idx==-1)),FALSE);
-
-	list_palette_sort_mark_start(&item_palette);
-
-	for (n=0;n!=model.npose;n++) {
-		list_palette_add_item(&item_palette,item_pose,n,model.poses[n].name,((state.cur_item==item_pose)&&(state.cur_pose_idx==n)),FALSE);
-	}
-
-	list_palette_sort(&item_palette);
-
-		// bones
-
-	list_palette_add_header_count(&item_palette,item_bone,"Bones",model.nbone);
-
-	list_palette_sort_mark_start(&item_palette);
-
-	for (n=0;n!=model.nbone;n++) {
-		memmove(str_tag,&model.bones[n].tag,4);
-		str_tag[4]=0x0;
-		sprintf(str,"%s (%s)",model.bones[n].name,str_tag);
-		list_palette_add_item(&item_palette,item_bone,n,str,((state.cur_item==item_bone)&&(state.cur_bone_idx==n)),FALSE);
-	}
-
-	list_palette_sort(&item_palette);
-
-		// hit boxes
-
-	list_palette_add_header_count(&item_palette,item_hit_box,"Hit Boxes",model.nhit_box);
-	list_palette_sort_mark_start(&item_palette);
-
-	for (n=0;n!=model.nhit_box;n++) {
-		list_palette_add_item(&item_palette,item_hit_box,n,model.hit_boxes[n].name,((state.cur_item==item_hit_box)&&(state.cur_hit_box_idx==n)),FALSE);
-	}
-
-	list_palette_sort(&item_palette);
-	*/
+	list_palette_add_item(&item_palette,item_interface_sound,0,"Sound",(state.cur_item==item_interface_sound),FALSE);
+	list_palette_add_item(&item_palette,item_interface_particle,0,"Particles",(state.cur_item==item_interface_particle),FALSE);
+	list_palette_add_item(&item_palette,item_interface_ring,0,"Rings",(state.cur_item==item_interface_ring),FALSE);
+	list_palette_add_item(&item_palette,item_interface_halo,0,"Halos",(state.cur_item==item_interface_halo),FALSE);
+	list_palette_add_item(&item_palette,item_interface_mark,0,"Marks",(state.cur_item==item_interface_mark),FALSE);
+	list_palette_add_item(&item_palette,item_interface_crosshair,0,"Crosshairs",(state.cur_item==item_interface_crosshair),FALSE);
+	list_palette_add_item(&item_palette,item_interface_action,0,"Actions",(state.cur_item==item_interface_action),FALSE);
 }
 
 /* =======================================================
@@ -219,7 +124,7 @@ void item_palette_draw(void)
 
 bool item_palette_delete(void)
 {
-	/*
+	/* supergumba -- do this
 		// anything to delete?
 
 	if ((item_palette.item_type==-1) || (item_palette.item_idx==-1)) return(FALSE);
@@ -282,47 +187,9 @@ void item_palette_click(d3pnt *pnt,bool double_click)
 	if (item_palette.item_idx==-1) return;
 	
 		// handle click
-/*
-	switch (item_palette.item_type) {
 
-		case item_model:
-			state.cur_item=item_model;
-			break;
-
-		case item_mesh:
-			state.cur_item=item_mesh;
-			state.cur_mesh_idx=item_palette.item_idx;
-			break;
-
-		case item_animate:
-			state.cur_item=item_animate;
-			state.cur_animate_idx=item_palette.item_idx;
-			state.cur_animate_pose_move_idx=-1;
-			break;
-
-		case item_pose:
-			state.cur_item=item_pose;
-			state.cur_pose_idx=item_palette.item_idx;
-			state.cur_pose_bone_move_idx=-1;
-			break;
-			
-		case item_neutral_pose:
-			state.cur_item=item_neutral_pose;
-			state.cur_pose_idx=-1;
-			state.cur_pose_bone_move_idx=-1;
-			break;
-
-		case item_bone:
-			state.cur_item=item_bone;
-			state.cur_bone_idx=item_palette.item_idx;
-			break;
-
-		case item_hit_box:
-			state.cur_item=item_hit_box;
-			state.cur_hit_box_idx=item_palette.item_idx;
-			break;
-	}
-*/
+	state.cur_item=item_palette.item_type;
+	state.cur_idx=-1;
 
 	main_wind_draw();
 }

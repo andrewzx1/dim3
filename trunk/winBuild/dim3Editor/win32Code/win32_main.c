@@ -33,23 +33,23 @@ and can be sold or given away.
 
 #include "resource.h"
 
-HINSTANCE					hinst;
-ATOM						wnd_rg_class;
-HWND						wnd;
-HMENU						wnd_menu;
-HACCEL						wnd_accel;
-HDC							wnd_gl_dc;
-HGLRC						wnd_gl_ctx;
+HINSTANCE						hinst;
+ATOM							wnd_rg_class;
+HWND							wnd;
+HMENU							wnd_menu;
+HACCEL							wnd_accel;
+HDC								wnd_gl_dc;
+HGLRC							wnd_gl_ctx;
 
-bool						quit;
+bool							quit;
 
-map_type					map;
-file_path_setup_type		file_path_setup;
-editor_setup_type			setup;
-editor_state_type			state;
+extern file_path_setup_type		file_path_setup;
+extern editor_setup_type		setup;
+extern iface_type				iface;
+extern editor_state_type		state;
 
-extern d3rect				tool_palette_box,txt_palette_box;
-extern list_palette_type	item_palette;
+extern d3rect					tool_palette_box,txt_palette_box;
+extern list_palette_type		item_palette;
 
 extern int os_win32_menu_lookup(int id);
 
@@ -313,15 +313,23 @@ int APIENTRY WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmdLine
 
 	state.map_opened=FALSE;
 	
-		// glue start
+		// initialize
 
 	os_glue_start();
 	
 	if (!file_paths_setup(&file_path_setup)) {
-		os_glue_end();
 		os_dialog_alert("Error","No data folder");
+		os_glue_end();
 		return(0);
 	}
+
+	if (!iface_initialize(&iface,&file_path_setup)) {
+		os_dialog_alert("Error","Out of memory");
+		os_glue_end();
+		return(0);
+	}
+
+	iface_read(&iface);
 	
 		// settings
 
@@ -341,8 +349,9 @@ int APIENTRY WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmdLine
 
 	win32_main_wind_close();
 
-		// close glue
+		// shutdown
 
+	iface_shutdown(&iface);
 	os_glue_end();
 
 	return(0);

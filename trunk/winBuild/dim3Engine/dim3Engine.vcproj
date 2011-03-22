@@ -371,10 +371,6 @@
 				Name="Server Headers"
 				>
 				<File
-					RelativePath="..\..\dim3Engine\Headers_Server\interface_defs.h"
-					>
-				</File>
-				<File
 					RelativePath="..\..\dim3Engine\Headers_Server\objects.h"
 					>
 				</File>
@@ -689,22 +685,6 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\dim3Common\Code\xml_crosshairs.c"
-					>
-				</File>
-				<File
-					RelativePath="..\..\dim3Common\Code\xml_halos.c"
-					>
-				</File>
-				<File
-					RelativePath="..\..\dim3Common\Code\xml_interface.c"
-					>
-				</File>
-				<File
-					RelativePath="..\..\dim3Common\Code\xml_interface_read.c"
-					>
-				</File>
-				<File
 					RelativePath="..\..\dim3Engine\Sources_Server\xml_setup.c"
 					>
 					<FileConfiguration
@@ -716,10 +696,6 @@
 							PreprocessorDefinitions=""
 						/>
 					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\..\dim3Engine\Sources_Server\xml_simple_save.c"
-					>
 				</File>
 				<Filter
 					Name="Script API"

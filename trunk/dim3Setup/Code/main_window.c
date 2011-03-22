@@ -37,6 +37,8 @@ file_path_setup_type			file_path_setup;
 iface_type						iface;
 setup_state_type				state;
 
+extern list_palette_type		item_palette,property_palette,alt_property_palette;
+
 /* =======================================================
 
       Initialize and Shutdown
@@ -131,23 +133,6 @@ void main_wind_draw(void)
 
 void main_wind_click(d3pnt *pnt,bool double_click)
 {
-/*
-	bool			old_playing;
-
-		// tool palette
-
-	if (pnt->y<tool_palette_box.by) {
-		tool_palette_click(pnt);
-		return;
-	}
-
-		// texture palette
-
-	if (pnt->y>=txt_palette_box.ty) {
-		texture_palette_click(model.textures,pnt,double_click);
-		return;
-	}
-
 		// item, property and alt property palettes
 
 	if ((pnt->x>=item_palette.box.lx) && (pnt->x<=item_palette.box.rx) && (pnt->y>=item_palette.box.ty) && (pnt->y<item_palette.box.by)) {
@@ -164,23 +149,6 @@ void main_wind_click(d3pnt *pnt,bool double_click)
 		alt_property_palette_click(pnt,double_click);
 		return;
 	}
-
-		// model clicks
-		// turn off animation as it glitches
-		// up the win32 timers
-
-	old_playing=state.playing;
-	state.playing=FALSE;
-
-	if (state.texture_edit_idx==-1) {
-		model_wind_click(pnt);
-	}
-	else {
-		texture_edit_click(pnt,double_click);
-	}
-
-	state.playing=old_playing;
-	*/
 }
 
 /* =======================================================
@@ -191,7 +159,6 @@ void main_wind_click(d3pnt *pnt,bool double_click)
 
 void main_wind_scroll_wheel(d3pnt *pnt,int delta)
 {
-/*
 		// scroll wheel in item, property, or alt property palette
 
 	if ((pnt->x>=item_palette.box.lx) && (pnt->x<=item_palette.box.rx) && (pnt->y>=item_palette.box.ty) && (pnt->y<item_palette.box.by)) {
@@ -208,17 +175,6 @@ void main_wind_scroll_wheel(d3pnt *pnt,int delta)
 		alt_property_palette_scroll_wheel(pnt,delta);
 		return;
 	}
-
-		// scroll wheel in model
-
-	if (state.texture_edit_idx==-1) {
-		state.magnify_z+=(delta*20);
-		main_wind_draw();
-	}
-	else {
-		texture_edit_scroll_wheel(delta);
-	}
-	*/
 }
 
 /* =======================================================
@@ -229,11 +185,6 @@ void main_wind_scroll_wheel(d3pnt *pnt,int delta)
 
 void main_wind_mouse_move(d3pnt *pnt)
 {
-/*
-	if (!state.model_open) return;
-
-	tool_palette_mouse_move(pnt);
-	*/
 }
 
 /* =======================================================
@@ -244,39 +195,7 @@ void main_wind_mouse_move(d3pnt *pnt)
 
 bool main_wind_cursor(void)
 {
-/*
-	if (!state.model_open) return(FALSE);
-
-		// texture editing
-
-	if (state.texture_edit_idx==-1) return(texture_edit_cursor());
-
-		// model cursors
-
-	if (os_key_space_down()) {
-		os_set_hand_cursor();
-		return(TRUE);
-	}
-	if (os_key_command_down()) {
-		os_set_hand_cursor();
-		return(TRUE);
-	}
-	if (os_key_option_down()) {
-		os_set_resize_cursor();
-		return(TRUE);
-	}
-	if (os_key_shift_down()) {
-		os_set_add_cursor();
-		return(TRUE);
-	}
-	if (os_key_control_down()) {
-		os_set_subtract_cursor();
-		return(TRUE);
-	}
-	
-	*/
-	os_set_arrow_cursor();
-	return(TRUE);
+	return(FALSE);
 }
 
 /* =======================================================
@@ -287,16 +206,6 @@ bool main_wind_cursor(void)
 
 void main_wind_key(char ch)
 {
-/*
-	if (!state.model_open) return;
-	
-		// esc key deselects
-		
-	if (ch==0x1B) {
-		vertex_clear_sel_mask(state.cur_mesh_idx);
-		main_wind_draw();
-		return;
-	}
 
 		// check for deletes
 		// on selected item tree
@@ -307,7 +216,6 @@ void main_wind_key(char ch)
 			return;
 		}
 	}
-	*/
 }
 
 /* =======================================================

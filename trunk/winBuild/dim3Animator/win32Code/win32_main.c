@@ -44,9 +44,8 @@ UINT_PTR						wnd_timer;
 
 bool							quit;
 
-extern model_type				model;
-extern model_draw_setup			draw_setup;
 extern file_path_setup_type		file_path_setup;
+extern iface_type				iface;
 extern animator_state_type		state;
 
 extern d3rect					tool_palette_box,txt_palette_box;
@@ -333,15 +332,23 @@ int APIENTRY WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmdLine
 
 	state.model_open=FALSE;
 	
-		// glue start
+		// initialize
 
 	os_glue_start();
 	
 	if (!file_paths_setup(&file_path_setup)) {
-		os_glue_end();
 		os_dialog_alert("Error","No data folder");
+		os_glue_end();
 		return(0);
 	}
+
+	if (!iface_initialize(&iface,&file_path_setup)) {
+		os_dialog_alert("Error","Out of memory");
+		os_glue_end();
+		return(0);
+	}
+
+	iface_read(&iface);
 
 		// read preferences
 
@@ -361,8 +368,9 @@ int APIENTRY WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmdLine
 
 	win32_main_wind_close();
 
-		// close glue
+		// shutdown
 
+	iface_shutdown(&iface);
 	os_glue_end();
 
 	return(0);

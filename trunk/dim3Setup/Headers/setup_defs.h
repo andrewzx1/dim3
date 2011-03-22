@@ -48,20 +48,13 @@ and can be sold or given away.
 #define item_interface_choosers			5
 #define item_interface_radar			6
 #define item_interface_multiplayer		7
-
-#define item_sound						1000
-
-#define item_particle					2000
-
-#define item_ring						3000
-
-#define item_halo						4000
-
-#define item_mark						5000
-
-#define item_crosshair					6000
-
-#define item_action						7000
+#define item_interface_sound			8
+#define item_interface_particle			9
+#define item_interface_ring				10
+#define item_interface_halo				11
+#define item_interface_mark				12
+#define item_interface_crosshair		13
+#define item_interface_action			14
 
 //
 // setup state

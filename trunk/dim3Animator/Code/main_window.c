@@ -36,6 +36,7 @@ and can be sold or given away.
 model_type						model;
 model_draw_setup				draw_setup;
 file_path_setup_type			file_path_setup;
+iface_type						iface;
 animator_state_type				state;
 
 extern d3rect					tool_palette_box,txt_palette_box;
