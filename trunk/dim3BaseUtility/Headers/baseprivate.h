@@ -81,7 +81,6 @@ void bitmap_texture_close(bitmap_type *bitmap);
 ======================================================= */
 
 extern void iface_read_settings_interface(iface_type *iface);
-extern void iface_read_settings_project_name(iface_type *iface,char *proj_name);
 extern void iface_read_settings_particle(iface_type *iface);
 extern void iface_read_settings_ring(iface_type *iface);
 extern void iface_read_settings_halo(iface_type *iface);

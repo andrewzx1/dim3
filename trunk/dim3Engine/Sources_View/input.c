@@ -43,7 +43,7 @@ input_action_type			input_actions[256];
 SDL_Joystick				*input_joy;
 
 extern bool					game_loop_quit;
-extern char					control_names_str[][32];
+extern char					setup_control_names[][32];
 extern setup_type			setup;
 
 #ifndef D3_SDL_1_3
@@ -141,7 +141,7 @@ int setup_find_control_for_name(char *name)
 	int			n;
 	
 	for (n=0;n!=ncontrol;n++) {
-		if (strcasecmp(control_names_str[n],name)==0) return(n);
+		if (strcasecmp(setup_control_names[n],name)==0) return(n);
 	}
 	
 	return(-1);
@@ -152,7 +152,7 @@ int setup_find_action_in_setup(int action_idx)
 	int			n;
 	
 	for (n=0;n!=setup.action_list.naction;n++) {
-		if (strcasecmp(control_names_str[action_idx],setup.action_list.actions[n].name)==0) return(n);
+		if (strcasecmp(setup_control_names[action_idx],setup.action_list.actions[n].name)==0) return(n);
 	}
 	
 	return(-1);

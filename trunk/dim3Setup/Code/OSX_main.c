@@ -35,6 +35,7 @@ EventHandlerUPP					model_wind_upp;
 
 AGLContext						ctx;
 
+extern iface_type				iface;
 extern file_path_setup_type		file_path_setup;
 
 /* =======================================================
@@ -357,12 +358,24 @@ int main(int argc,char *argv[])
 	os_glue_start();
 	os_set_arrow_cursor();
 	
+		// setup and read XML
+		
 	if (!file_paths_setup(&file_path_setup)) {
 		os_dialog_alert("Error","No data folder found");
 		os_glue_end();
 		return(0);
 	}
 	
+	if (!iface_initialize(&iface,&file_path_setup)) {
+		os_dialog_alert("Error","Out of Memory");
+		os_glue_end();
+		return(0);
+	}
+	
+	iface_read(&iface);
+	
+		// run setup
+		
 	main_wind_open();
 	menu_start();
 	main_wind_initialize();
@@ -373,7 +386,11 @@ int main(int argc,char *argv[])
 	
 	main_wind_shutdown();
 	main_wind_close();
-	
+		
+		// shutdown and save
+		
+	iface_shutdown(&iface);
+
 	os_glue_end();
     
     return(0);

@@ -1280,11 +1280,13 @@ extern int iface_chooser_find_idx(iface_type *iface,char *name);
 extern int iface_chooser_find_piece_idx(iface_chooser_type *chooser,int id);extern void iface_text_set(iface_text_type *text,char *data);
 extern int iface_crosshair_find(iface_type *iface,char *name);
 extern int iface_halo_find(iface_type *iface,char *name);
+extern void iface_text_set(iface_text_type *text,char *data);
 extern void iface_bitmaps_hide_all(iface_type *iface);
 extern void iface_texts_hide_all(iface_type *iface);
 extern void iface_bars_hide_all(iface_type *iface);
 
 extern void iface_read(iface_type *iface);
+extern void iface_read_settings_project_name(file_path_setup_type *path_setup);
 
 extern void simple_save_xml_read(iface_type *iface);
 extern void simple_save_xml_write(iface_type *iface);

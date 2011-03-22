@@ -49,26 +49,26 @@ and can be sold or given away.
 #define item_interface_radar			6
 #define item_interface_multiplayer		7
 
-#define item_sound						100
+#define item_sound						1000
 
-#define item_particle					200
+#define item_particle					2000
 
-#define item_ring						300
+#define item_ring						3000
 
-#define item_halo						400
+#define item_halo						4000
 
-#define item_mark						500
+#define item_mark						5000
 
-#define item_crosshair					600
+#define item_crosshair					6000
 
-#define item_action						700
+#define item_action						7000
 
 //
 // setup state
 //
 
 typedef struct		{
-						int							cur_item;
+						int							cur_item,cur_idx;
 					} setup_state_type;
 
 
