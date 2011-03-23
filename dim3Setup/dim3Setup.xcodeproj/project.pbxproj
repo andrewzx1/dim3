@@ -18,6 +18,11 @@
 		269FEDC313285FBB0030B0B5 /* libBaseUtility.dylib in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 269FED81132848C20030B0B5 /* libBaseUtility.dylib */; };
 		269FEDC413285FBD0030B0B5 /* PNG.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 269FED7F132848B30030B0B5 /* PNG.framework */; };
 		269FEDC913285FF80030B0B5 /* dim3 Setup.app in Copy Application */ = {isa = PBXBuildFile; fileRef = 269FECB0132844680030B0B5 /* dim3 Setup.app */; };
+		26C87D851339431D00DA562E /* Edit.png in Copy (List Icons) */ = {isa = PBXBuildFile; fileRef = 26C87D7A1339427A00DA562E /* Edit.png */; };
+		26C87D861339431D00DA562E /* Minus.png in Copy (List Icons) */ = {isa = PBXBuildFile; fileRef = 26C87D7B1339427A00DA562E /* Minus.png */; };
+		26C87D871339431D00DA562E /* Plus.png in Copy (List Icons) */ = {isa = PBXBuildFile; fileRef = 26C87D7C1339427A00DA562E /* Plus.png */; };
+		26C87D881339431D00DA562E /* Set.png in Copy (List Icons) */ = {isa = PBXBuildFile; fileRef = 26C87D7D1339427A00DA562E /* Set.png */; };
+		26C87D9B1339435500DA562E /* property_palette_sounds.c in Sources */ = {isa = PBXBuildFile; fileRef = 26C87D9A1339435500DA562E /* property_palette_sounds.c */; };
 		26D15C721329E3EF00F9EC7B /* alt_property_palette.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D15C6F1329E3EF00F9EC7B /* alt_property_palette.c */; };
 		26D15C731329E3EF00F9EC7B /* item_palette.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D15C701329E3EF00F9EC7B /* item_palette.c */; };
 		26D15C741329E3EF00F9EC7B /* property_palette.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D15C711329E3EF00F9EC7B /* property_palette.c */; };
@@ -58,6 +63,20 @@
 			name = "Copy Application";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		26C87D84133942E400DA562E /* Copy (List Icons) */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = Lists;
+			dstSubfolderSpec = 7;
+			files = (
+				26C87D851339431D00DA562E /* Edit.png in Copy (List Icons) */,
+				26C87D861339431D00DA562E /* Minus.png in Copy (List Icons) */,
+				26C87D871339431D00DA562E /* Plus.png in Copy (List Icons) */,
+				26C87D881339431D00DA562E /* Set.png in Copy (List Icons) */,
+			);
+			name = "Copy (List Icons)";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
@@ -78,6 +97,11 @@
 		269FED8A13285CE70030B0B5 /* ui_common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ui_common.h; path = ../dim3Common/Headers/ui_common.h; sourceTree = SOURCE_ROOT; };
 		269FED8B13285CFD0030B0B5 /* baseutility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = baseutility.h; path = ../dim3Common/Headers/baseutility.h; sourceTree = SOURCE_ROOT; };
 		269FED8C13285D300030B0B5 /* OSX_main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = OSX_main.c; path = Code/OSX_main.c; sourceTree = "<group>"; };
+		26C87D7A1339427A00DA562E /* Edit.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Edit.png; path = "Resources/Additional Data/Icons/Lists/Edit.png"; sourceTree = "<group>"; };
+		26C87D7B1339427A00DA562E /* Minus.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Minus.png; path = "Resources/Additional Data/Icons/Lists/Minus.png"; sourceTree = "<group>"; };
+		26C87D7C1339427A00DA562E /* Plus.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Plus.png; path = "Resources/Additional Data/Icons/Lists/Plus.png"; sourceTree = "<group>"; };
+		26C87D7D1339427A00DA562E /* Set.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Set.png; path = "Resources/Additional Data/Icons/Lists/Set.png"; sourceTree = "<group>"; };
+		26C87D9A1339435500DA562E /* property_palette_sounds.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_sounds.c; path = Code/property_palette_sounds.c; sourceTree = "<group>"; };
 		26D15C6F1329E3EF00F9EC7B /* alt_property_palette.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = alt_property_palette.c; path = Code/alt_property_palette.c; sourceTree = "<group>"; };
 		26D15C701329E3EF00F9EC7B /* item_palette.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = item_palette.c; path = Code/item_palette.c; sourceTree = "<group>"; };
 		26D15C711329E3EF00F9EC7B /* property_palette.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette.c; path = Code/property_palette.c; sourceTree = "<group>"; };
@@ -118,6 +142,7 @@
 				269FEC9A132840220030B0B5 /* Headers */,
 				269FEC8F1328401B0030B0B5 /* Sources */,
 				269FEC9E132840670030B0B5 /* Resources */,
+				26C87D761339423500DA562E /* Additional Data */,
 				269FEC9F132840930030B0B5 /* Libraries */,
 				269FECA0132840A10030B0B5 /* Frameworks */,
 				269FECB1132844680030B0B5 /* Products */,
@@ -165,6 +190,7 @@
 			children = (
 				26D15C791329E42400F9EC7B /* list_palette_common.c */,
 				26D15C701329E3EF00F9EC7B /* item_palette.c */,
+				26C87D9A1339435500DA562E /* property_palette_sounds.c */,
 				26D15C711329E3EF00F9EC7B /* property_palette.c */,
 				26D15C6F1329E3EF00F9EC7B /* alt_property_palette.c */,
 				26D15D4F1329E7CD00F9EC7B /* property_utility_common.c */,
@@ -219,6 +245,33 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		26C87D761339423500DA562E /* Additional Data */ = {
+			isa = PBXGroup;
+			children = (
+				26C87D781339425600DA562E /* Icons */,
+			);
+			name = "Additional Data";
+			sourceTree = "<group>";
+		};
+		26C87D781339425600DA562E /* Icons */ = {
+			isa = PBXGroup;
+			children = (
+				26C87D791339425E00DA562E /* Lists */,
+			);
+			name = Icons;
+			sourceTree = "<group>";
+		};
+		26C87D791339425E00DA562E /* Lists */ = {
+			isa = PBXGroup;
+			children = (
+				26C87D7A1339427A00DA562E /* Edit.png */,
+				26C87D7B1339427A00DA562E /* Minus.png */,
+				26C87D7C1339427A00DA562E /* Plus.png */,
+				26C87D7D1339427A00DA562E /* Set.png */,
+			);
+			name = Lists;
+			sourceTree = "<group>";
+		};
 		26D15C811329E42F00F9EC7B /* Dialogs */ = {
 			isa = PBXGroup;
 			children = (
@@ -243,6 +296,7 @@
 				269FECAE132844680030B0B5 /* Frameworks */,
 				269FEDC213285FB20030B0B5 /* Copy Frameworks */,
 				269FEDDB132860160030B0B5 /* Copy Application */,
+				26C87D84133942E400DA562E /* Copy (List Icons) */,
 			);
 			buildRules = (
 			);
@@ -310,6 +364,7 @@
 				26D15DE41329EB6100F9EC7B /* OSX_dialog_property_list.c in Sources */,
 				26D15DE51329EB6100F9EC7B /* OSX_dialog_property_string.c in Sources */,
 				26D15DE61329EB6100F9EC7B /* OSX_dialog_utility_common.c in Sources */,
+				26C87D9B1339435500DA562E /* property_palette_sounds.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

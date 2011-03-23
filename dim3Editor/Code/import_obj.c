@@ -51,6 +51,7 @@ typedef struct		{
 														nvertex,npoly,nuv,nnormal;
 						char							obj_name[name_str_len],
 														group_name[name_str_len];
+						bool							texture_cancel;
 						d3fpnt							obj_min,obj_max,mesh_min,mesh_max;
 						obj_import_state_material_type	materials[32];
 					} obj_import_state_type;
@@ -198,7 +199,7 @@ int import_texture_pick(char *material_name)
 		
 	sprintf(title,"Select a PNG for Material: %s",material_name);
 	
-	if (!os_load_file(title,path,"png")) return(0);
+	if (!os_load_file(title,path,"png")) return(-1);
 	
 		// is it good?
 
@@ -313,13 +314,28 @@ void import_find_group_name(obj_import_state_type *import_state)
 
 /* =======================================================
 
+      Face Offsets
+      
+======================================================= */
+
+int import_convert_face_index(char *str,int pos)
+{
+	int				idx;
+	
+	idx=atoi(str);
+	if (idx>0) return(idx-1);
+	return(pos+idx);
+}
+
+/* =======================================================
+
       Get OBJ Size
       
 ======================================================= */
 
 void import_calc_obj_vertex_size(obj_import_state_type *import_state,d3fpnt *min,d3fpnt *max,bool all_groups)
 {
-	int					n,k,v_idx,group_idx;
+	int					n,k,v_idx,vertex_pos,group_idx;
 	float				fx,fy,fz;
 	bool				in_group;
 	char				*c,txt[256],vstr[256];
@@ -334,10 +350,19 @@ void import_calc_obj_vertex_size(obj_import_state_type *import_state,d3fpnt *min
 	
 	group_idx=0;
 	in_group=FALSE;
+	
+	vertex_pos=0;
 		
     for (n=0;n!=import_state->nline;n++) {
 	
         textdecode_get_piece(n,0,txt);
+		
+			// need to count vertexes for offset type OBJs
+			
+		if (strcmp(txt,"v")==0) {
+			vertex_pos++;
+			continue;
+		}
 		
 			// if we are only looking at a group
 			
@@ -365,7 +390,7 @@ void import_calc_obj_vertex_size(obj_import_state_type *import_state,d3fpnt *min
 				c=strchr(vstr,'/');
 				if (c!=NULL) *c=0x0;
 
-				v_idx=atoi(vstr)-1;
+				v_idx=import_convert_face_index(vstr,vertex_pos);
 				vertex_mark[v_idx]=0x1;
 			}
 		}
@@ -469,8 +494,8 @@ void import_get_scale_from_axis_unit(obj_import_state_type *import_state,int sca
 bool import_create_mesh_from_obj_group(obj_import_state_type *import_state,char *err_str)
 {
 	int					n,k,npt,group_idx,start_line_idx,end_line_idx,
-						v_idx,uv_idx,normal_idx,normal_count,
-						mesh_idx,poly_idx,txt_idx,old_nmesh;
+						v_idx,vertex_pos,uv_idx,uv_pos,normal_idx,normal_pos,normal_count,
+						mesh_idx,poly_idx,txt_idx;
 	int					px[8],py[8],pz[8];
 	char				*c,txt[256],material_name[256],
 						vstr[256],uvstr[256],normalstr[256];
@@ -481,10 +506,6 @@ bool import_create_mesh_from_obj_group(obj_import_state_type *import_state,char 
 	d3vct				n_v;
 	map_mesh_type		*mesh;
 
-		// start progress
-		
-	progress_start("OBJ Import",7);
-	
 		// get the vertexes
 		
 	progress_next_title("OBJ Import: Loading Vertexes");
@@ -585,6 +606,10 @@ bool import_create_mesh_from_obj_group(obj_import_state_type *import_state,char 
 	txt_idx=0;
 	group_idx=0;
 	
+	vertex_pos=0;
+	uv_pos=0;
+	normal_pos=0;
+	
 	start_line_idx=end_line_idx=-1;
 		
     for (n=0;n!=import_state->nline;n++) {
@@ -624,17 +649,30 @@ bool import_create_mesh_from_obj_group(obj_import_state_type *import_state,char 
 			
 			group_idx++;
 		}
+		
+			// count vertexes, uvs, and normals
+			// for offset versions
+			
+		if (start_line_idx==-1) {
+			if (strcmp(txt,"v")==0) {
+				vertex_pos++;
+				continue;
+			}
+			if (strcmp(txt,"vt")==0) {
+				uv_pos++;
+				continue;
+			}
+			if (strcmp(txt,"vn")==0) {
+				normal_pos++;
+				continue;
+			}
+		}
 	}
 	
 		// do we have anything to use?
 		
 	if (start_line_idx==-1) return(TRUE);
 	if (end_line_idx==-1) end_line_idx=import_state->nline;
-	
-		// remember the number of meshes
-		// we add so we can fix some things later
-		
-	old_nmesh=map.mesh.nmesh;
 	
 		// add the mesh
 		
@@ -698,7 +736,8 @@ bool import_create_mesh_from_obj_group(obj_import_state_type *import_state,char 
             
 				// the vertex
 
-            v_idx=atoi(vstr)-1;
+            v_idx=import_convert_face_index(vstr,vertex_pos);
+
 			dpt=vertexes+v_idx;
 			
 			px[npt]=dpt->x;
@@ -711,7 +750,7 @@ bool import_create_mesh_from_obj_group(obj_import_state_type *import_state,char 
 				gx[npt]=gy[npt]=0.0f;
 			}
 			else {
-				uv_idx=atoi(uvstr)-1;
+				uv_idx=import_convert_face_index(uvstr,uv_pos);
 				
 				uv=uvs+(uv_idx*2);
                 gx[npt]=*uv++;
@@ -721,8 +760,8 @@ bool import_create_mesh_from_obj_group(obj_import_state_type *import_state,char 
 				// the normal
 
 			if ((normalstr[0]!=0x0) && (import_state->nnormal!=0)) {
-				normal_idx=atoi(normalstr)-1;
-
+				normal_idx=import_convert_face_index(normalstr,normal_pos);
+				
 				normal=normals+(normal_idx*3);
 				n_v.x+=*normal++;
 				n_v.y+=*normal++;
@@ -764,12 +803,6 @@ bool import_create_mesh_from_obj_group(obj_import_state_type *import_state,char 
 	progress_next();
 	map_recalc_normals_mesh(&map.mesh.meshes[mesh_idx],(mesh->normal_mode==mesh_normal_mode_lock));
 	
-		// finish up
-		
-	progress_end();
-	
-	select_add(mesh_piece,mesh_idx,0);
-	
 	return(TRUE);
 }
 
@@ -781,7 +814,7 @@ bool import_create_mesh_from_obj_group(obj_import_state_type *import_state,char 
 
 bool import_obj(char *path,char *err_str)
 {
-	int						n,k,nmesh,
+	int						n,k,nmesh,old_nmesh,
 							import_mode,scale_axis,scale_unit;
 	char					*c,txt[256],file_name[256];
 	unsigned char			*mesh_mark;
@@ -823,6 +856,7 @@ bool import_obj(char *path,char *err_str)
 	import_state.npoly=0;
 	import_state.nuv=0;
 	import_state.nnormal=0;
+	import_state.texture_cancel=FALSE;
 	
     for (n=0;n!=import_state.nline;n++) {
         textdecode_get_piece(n,0,txt);
@@ -906,6 +940,9 @@ bool import_obj(char *path,char *err_str)
 		import_get_scale_from_axis_unit(&import_state,scale_axis,scale_unit);
 		
 		select_clear();
+		old_nmesh=map.mesh.nmesh;
+		
+		progress_start("OBJ Import",(import_state.ngroup*7));
 		
 		for (n=0;n!=import_state.ngroup;n++) {
 		
@@ -918,6 +955,11 @@ bool import_obj(char *path,char *err_str)
 		
 		textdecode_close();
 		
+		for (n=old_nmesh;n<map.mesh.nmesh;n++) {
+			select_add(mesh_piece,n,-1);
+		}
+		
+		progress_end();
 		os_set_arrow_cursor();
 
 		return(ok);
@@ -932,6 +974,9 @@ bool import_obj(char *path,char *err_str)
 		piece_add_obj_replace_delete_existing();
 		
 		select_clear();
+		old_nmesh=map.mesh.nmesh;
+		
+		progress_start("OBJ Import",(import_state.ngroup*7));
 	
 		import_calc_obj_size(&import_state,&import_state.obj_min,&import_state.obj_max);
 		import_state.mesh_min.x=(float)replace_min.x;
@@ -952,6 +997,11 @@ bool import_obj(char *path,char *err_str)
 		
 		textdecode_close();
 		
+		for (n=old_nmesh;n<map.mesh.nmesh;n++) {
+			select_add(mesh_piece,n,-1);
+		}
+		
+		progress_end();
 		os_set_arrow_cursor();
 
 		return(ok);
@@ -974,6 +1024,8 @@ bool import_obj(char *path,char *err_str)
 	bzero(mesh_mark,nmesh);
 	
 	select_clear();
+	
+	progress_start("OBJ Import",(import_state.ngroup*7));
 
 	for (n=0;n!=import_state.ngroup;n++) {
 	
@@ -1025,6 +1077,7 @@ bool import_obj(char *path,char *err_str)
 	
 	select_clear();
 
+	progress_end();
 	os_set_arrow_cursor();
 	
 	return(ok);

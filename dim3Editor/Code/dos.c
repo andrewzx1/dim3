@@ -33,11 +33,10 @@ and can be sold or given away.
 #include "interface.h"
 #include "ui_common.h"
 
+extern map_type					map;
 extern file_path_setup_type		file_path_setup;
 extern editor_setup_type		setup;
 extern editor_state_type		state;
-
-map_type						map;
 
 /* =======================================================
 

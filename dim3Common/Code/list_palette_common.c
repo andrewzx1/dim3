@@ -268,7 +268,7 @@ void list_palette_add_string(list_palette_type *list,int id,char *name,char *val
 
 void list_palette_add_string_int(list_palette_type *list,int id,char *name,int value,bool disabled)
 {
-	char		str[32];
+	char		str[64];
 	
 	sprintf(str,"%d",value);
 	list_palette_add_string(list,id,name,str,disabled);
@@ -276,7 +276,7 @@ void list_palette_add_string_int(list_palette_type *list,int id,char *name,int v
 
 void list_palette_add_string_float(list_palette_type *list,int id,char *name,float value,bool disabled)
 {
-	char		str[32];
+	char		str[64];
 	
 	sprintf(str,"%.2f",value);
 	list_palette_add_string(list,id,name,str,disabled);
@@ -318,7 +318,7 @@ void list_palette_add_pick_color(list_palette_type *list,int id,char *name,d3col
 
 void list_palette_add_point(list_palette_type *list,int id,char *name,d3pnt *pnt,bool disabled)
 {
-	char		str[32];
+	char		str[64];
 	
 	sprintf(str,"%d,%d,%d",pnt->x,pnt->y,pnt->z);
 	list_palette_add_string(list,id,name,str,disabled);
@@ -326,7 +326,7 @@ void list_palette_add_point(list_palette_type *list,int id,char *name,d3pnt *pnt
 
 void list_palette_add_angle(list_palette_type *list,int id,char *name,d3ang *ang,bool disabled)
 {
-	char		str[32];
+	char		str[64];
 	
 	sprintf(str,"%.2f,%.2f,%.2f",ang->x,ang->y,ang->z);
 	list_palette_add_string(list,id,name,str,disabled);
@@ -334,7 +334,7 @@ void list_palette_add_angle(list_palette_type *list,int id,char *name,d3ang *ang
 
 void list_palette_add_vector(list_palette_type *list,int id,char *name,d3vct *vct,bool disabled)
 {
-	char		str[32];
+	char		str[64];
 	
 	sprintf(str,"%.2f,%.2f,%.2f",vct->x,vct->y,vct->z);
 	list_palette_add_string(list,id,name,str,disabled);
@@ -342,7 +342,7 @@ void list_palette_add_vector(list_palette_type *list,int id,char *name,d3vct *vc
 
 void list_palette_add_uv(list_palette_type *list,int id,char *name,d3fpnt *fpnt,bool disabled)
 {
-	char		str[32];
+	char		str[64];
 	
 	sprintf(str,"%.2f,%.2f",fpnt->x,fpnt->y);
 	list_palette_add_string(list,id,name,str,disabled);
