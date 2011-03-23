@@ -79,7 +79,7 @@ bool view_handle_create_rot_handle(editor_view_type *view,d3pnt *pnt,d3ang *ang,
 	
 		// create the handle points
 
-	len=((float)map_enlarge)+(((float)distance_get(view->pnt.x,view->pnt.y,view->pnt.z,center_pnt->x,center_pnt->y,center_pnt->z)*view_handle_length_factor));
+	len=view_handle_length_min+(((float)distance_get(view->pnt.x,view->pnt.y,view->pnt.z,center_pnt->x,center_pnt->y,center_pnt->z)*view_handle_length_factor));
 
 	vct.x=len;
 	vct.y=0.0f;

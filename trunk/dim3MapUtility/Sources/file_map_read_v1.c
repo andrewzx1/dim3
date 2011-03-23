@@ -151,11 +151,11 @@ void map_convert_liquid(map_type *map,portal_type *portal,segment_type *seg)
 
 	liquid=&map->liquid.liquids[liq_idx];
 
-	liquid->y=(seg->data.liquid.y+1)*map_enlarge;
-	liquid->lft=(seg->data.liquid.lft*map_enlarge)+portal->x;
-	liquid->rgt=(seg->data.liquid.rgt*map_enlarge)+portal->x;
-	liquid->top=(seg->data.liquid.top*map_enlarge)+portal->z;
-	liquid->bot=(seg->data.liquid.bot*map_enlarge)+portal->z;
+	liquid->y=(seg->data.liquid.y+1)*144;
+	liquid->lft=(seg->data.liquid.lft*144)+portal->x;
+	liquid->rgt=(seg->data.liquid.rgt*144)+portal->x;
+	liquid->top=(seg->data.liquid.top*144)+portal->z;
+	liquid->bot=(seg->data.liquid.bot*144)+portal->z;
 	
 	liquid->depth=5000;
 
@@ -204,10 +204,10 @@ void map_convert_enlarge(int nportal,portal_type *portals,int seg_cnt,segment_ty
 	portal=portals;
 
 	for (n=0;n!=nportal;n++) {
-		portal->x*=map_enlarge;
-		portal->z*=map_enlarge;
-		portal->ex*=map_enlarge;
-		portal->ez*=map_enlarge;
+		portal->x*=144;
+		portal->z*=144;
+		portal->ex*=144;
+		portal->ez*=144;
 
 		portal++;
 	}
@@ -223,37 +223,37 @@ void map_convert_enlarge(int nportal,portal_type *portals,int seg_cnt,segment_ty
 		switch (seg->type) {
 
 			case sg_wall:
-				seg->data.wall.lx=(seg->data.wall.lx*map_enlarge)+portal->x;
-				seg->data.wall.rx=(seg->data.wall.rx*map_enlarge)+portal->x;
-				seg->data.wall.lz=(seg->data.wall.lz*map_enlarge)+portal->z;
-				seg->data.wall.rz=(seg->data.wall.rz*map_enlarge)+portal->z;
-				seg->data.wall.ty*=map_enlarge;
-				seg->data.wall.by=(seg->data.wall.by+1)*map_enlarge;
+				seg->data.wall.lx=(seg->data.wall.lx*144)+portal->x;
+				seg->data.wall.rx=(seg->data.wall.rx*144)+portal->x;
+				seg->data.wall.lz=(seg->data.wall.lz*144)+portal->z;
+				seg->data.wall.rz=(seg->data.wall.rz*144)+portal->z;
+				seg->data.wall.ty*=144;
+				seg->data.wall.by=(seg->data.wall.by+1)*144;
  				break;
 				
 			case sg_floor:
             case sg_ceiling:
 				for (t=0;t!=seg->data.fc.ptsz;t++) {
-					seg->data.fc.x[t]=(seg->data.fc.x[t]*map_enlarge)+portal->x;
-                    seg->data.fc.y[t]*=map_enlarge;
-					seg->data.fc.z[t]=(seg->data.fc.z[t]*map_enlarge)+portal->z;
+					seg->data.fc.x[t]=(seg->data.fc.x[t]*144)+portal->x;
+                    seg->data.fc.y[t]*=144;
+					seg->data.fc.z[t]=(seg->data.fc.z[t]*144)+portal->z;
 				}
 				break;
 
 			case sg_ambient_wall:
-				seg->data.ambient_wall.lx=(seg->data.ambient_wall.lx*map_enlarge)+portal->x;
-				seg->data.ambient_wall.rx=(seg->data.ambient_wall.rx*map_enlarge)+portal->x;
-				seg->data.ambient_wall.lz=(seg->data.ambient_wall.lz*map_enlarge)+portal->z;
-				seg->data.ambient_wall.rz=(seg->data.ambient_wall.rz*map_enlarge)+portal->z;
-				seg->data.ambient_wall.ty*=map_enlarge;
-				seg->data.ambient_wall.by=(seg->data.ambient_wall.by+1)*map_enlarge;
+				seg->data.ambient_wall.lx=(seg->data.ambient_wall.lx*144)+portal->x;
+				seg->data.ambient_wall.rx=(seg->data.ambient_wall.rx*144)+portal->x;
+				seg->data.ambient_wall.lz=(seg->data.ambient_wall.lz*144)+portal->z;
+				seg->data.ambient_wall.rz=(seg->data.ambient_wall.rz*144)+portal->z;
+				seg->data.ambient_wall.ty*=144;
+				seg->data.ambient_wall.by=(seg->data.ambient_wall.by+1)*144;
 				break;
 				
 			case sg_ambient_fc:
 				for (t=0;t!=seg->data.ambient_fc.ptsz;t++) {
-					seg->data.ambient_fc.x[t]=(seg->data.ambient_fc.x[t]*map_enlarge)+portal->x;
-                    seg->data.ambient_fc.y[t]*=map_enlarge;
-					seg->data.ambient_fc.z[t]=(seg->data.ambient_fc.z[t]*map_enlarge)+portal->z;
+					seg->data.ambient_fc.x[t]=(seg->data.ambient_fc.x[t]*144)+portal->x;
+                    seg->data.ambient_fc.y[t]*=144;
+					seg->data.ambient_fc.z[t]=(seg->data.ambient_fc.z[t]*144)+portal->z;
 				}
 				break;
 
@@ -798,15 +798,15 @@ bool map_convert_v1(map_type *map,int nportal,portal_type *portals,int seg_cnt,s
 	
 		// convert map settings
 		
-    map->sky.radius*=map_enlarge;
-	map->sky.dome_y*=map_enlarge;
+    map->sky.radius*=144;
+	map->sky.dome_y*=144;
 
 	map->sky.dome_mirror=FALSE;
 	
-	map->fog.outer_radius*=map_enlarge;
-	map->fog.inner_radius*=map_enlarge;
-	map->fog.high*=map_enlarge;
-	map->fog.drop*=map_enlarge;
+	map->fog.outer_radius*=144;
+	map->fog.inner_radius*=144;
+	map->fog.high*=144;
+	map->fog.drop*=144;
 
 		// memory for vertex and primitive lists
 		// just use enough vertexes to cover most maps,
@@ -967,14 +967,14 @@ void read_single_segment(int tag,segment_type *seg,int rn,int seg_type)
 		seg->data.liquid.drown_harm=xml_get_attribute_int_default(tag,"drown_harm",10);
 		seg->data.liquid.drown_tick=xml_get_attribute_int_default(tag,"drown_tick",10000);
 		seg->data.liquid.speed_alter=xml_get_attribute_float_default(tag,"speed_alter",0.1f);
-		seg->data.liquid.wavesize=xml_get_attribute_int_default(tag,"wave_size",(map_enlarge<<2));
+		seg->data.liquid.wavesize=xml_get_attribute_int_default(tag,"wave_size",600);
 		seg->data.liquid.tiderate=xml_get_attribute_int(tag,"tide_rate");
 		seg->data.liquid.tidesize=xml_get_attribute_int(tag,"tide_size");
 		seg->data.liquid.tidedirection=xml_get_attribute_list(tag,"tide_direction",(char*)liquid_tide_direction_str);
 		xml_get_attribute_color(tag,"rgb",&seg->data.liquid.col);
 		seg->data.liquid.tint_alpha=xml_get_attribute_float_default(tag,"tint_alpha",0.5f);
 		
-		if (seg->data.liquid.wavesize<=(map_enlarge<<2)) seg->data.liquid.wavesize=map_enlarge<<2;
+		if (seg->data.liquid.wavesize<=600) seg->data.liquid.wavesize=600;
 		if (seg->data.liquid.tiderate<0) seg->data.liquid.tiderate=0;
 		if (seg->data.liquid.tidesize<0) seg->data.liquid.tidesize=0;
 	}
@@ -1242,9 +1242,9 @@ bool decode_map_v1_xml(map_type *map,int map_head)
 					scenery->face_forward=xml_get_attribute_boolean(obj_tag,"face_forward");
 					scenery->shadow=xml_get_attribute_boolean(obj_tag,"shadow");
 
-					scenery->pnt.x=(scenery->pnt.x*map_enlarge)+(portal->x*map_enlarge);
-					scenery->pnt.y=(scenery->pnt.y+1)*map_enlarge;
-					scenery->pnt.z=(scenery->pnt.z*map_enlarge)+(portal->z*map_enlarge);
+					scenery->pnt.x=(scenery->pnt.x*144)+(portal->x*144);
+					scenery->pnt.y=(scenery->pnt.y+1)*144;
+					scenery->pnt.z=(scenery->pnt.z*144)+(portal->z*144);
 					
 					scenery->resize=1.0f;
 					
@@ -1272,11 +1272,11 @@ bool decode_map_v1_xml(map_type *map,int map_head)
 					xml_get_attribute_color(light_tag,"rgb",&light->col);
 					light->on=!xml_get_attribute_boolean(light_tag,"off");
 					
-					light->pnt.x=(light->pnt.x*map_enlarge)+(portal->x*map_enlarge);
-					light->pnt.y=(light->pnt.y+1)*map_enlarge;
-					light->pnt.z=(light->pnt.z*map_enlarge)+(portal->z*map_enlarge);
+					light->pnt.x=(light->pnt.x*144)+(portal->x*144);
+					light->pnt.y=(light->pnt.y+1)*144;
+					light->pnt.z=(light->pnt.z*144)+(portal->z*144);
 
-					light->intensity*=map_enlarge;
+					light->intensity*=144;
 					
 					light->light_map=TRUE;
 					light->exponent=1.0f;
@@ -1307,9 +1307,9 @@ bool decode_map_v1_xml(map_type *map,int map_head)
 					sound->pitch=xml_get_attribute_float(sound_tag,"pitch");
 					sound->on=!xml_get_attribute_boolean(sound_tag,"off");
 					
-					sound->pnt.x=(sound->pnt.x*map_enlarge)+(portal->x*map_enlarge);
-					sound->pnt.y=(sound->pnt.y+1)*map_enlarge;
-					sound->pnt.z=(sound->pnt.z*map_enlarge)+(portal->z*map_enlarge);
+					sound->pnt.x=(sound->pnt.x*144)+(portal->x*144);
+					sound->pnt.y=(sound->pnt.y+1)*144;
+					sound->pnt.z=(sound->pnt.z*144)+(portal->z*144);
 					
 					sound_tag=xml_findnextchild(sound_tag);
 				}
@@ -1335,9 +1335,9 @@ bool decode_map_v1_xml(map_type *map,int map_head)
 					particle->slop_tick=xml_get_attribute_int(particle_tag,"slop_tick");
 					particle->on=!xml_get_attribute_boolean(particle_tag,"off");
 					
-					particle->pnt.x=(particle->pnt.x*map_enlarge)+(portal->x*map_enlarge);
-					particle->pnt.y=(particle->pnt.y+1)*map_enlarge;
-					particle->pnt.z=(particle->pnt.z*map_enlarge)+(portal->z*map_enlarge);
+					particle->pnt.x=(particle->pnt.x*144)+(portal->x*144);
+					particle->pnt.y=(particle->pnt.y+1)*144;
+					particle->pnt.z=(particle->pnt.z*144)+(portal->z*144);
 					
 					particle_tag=xml_findnextchild(particle_tag);
 				}
@@ -1379,9 +1379,9 @@ bool decode_map_v1_xml(map_type *map,int map_head)
 					tag=xml_findfirstchild("Hint",node_tag);
 					xml_get_attribute_short_array(tag,"node",node->path_hint,map->nnode);
 
-					node->pnt.x=(node->pnt.x*map_enlarge)+(portal->x*map_enlarge);
-					node->pnt.y=(node->pnt.y+1)*map_enlarge;
-					node->pnt.z=(node->pnt.z*map_enlarge)+(portal->z*map_enlarge);
+					node->pnt.x=(node->pnt.x*144)+(portal->x*144);
+					node->pnt.y=(node->pnt.y+1)*144;
+					node->pnt.z=(node->pnt.z*144)+(portal->z*144);
 
 					node->follow_camera=FALSE;
 					node->alpha=1.0f;
@@ -1418,9 +1418,9 @@ bool decode_map_v1_xml(map_type *map,int map_head)
 					spot->skill=skill_easy;
 					spot->spawn=spawn_always;
 
-					spot->pnt.x=(spot->pnt.x*map_enlarge)+(portal->x*map_enlarge);
-					spot->pnt.y=(spot->pnt.y+1)*map_enlarge;
-					spot->pnt.z=(spot->pnt.z*map_enlarge)+(portal->z*map_enlarge);
+					spot->pnt.x=(spot->pnt.x*144)+(portal->x*144);
+					spot->pnt.y=(spot->pnt.y+1)*144;
+					spot->pnt.z=(spot->pnt.z*144)+(portal->z*144);
 					
 					obj_tag=xml_findnextchild(obj_tag);
 				}

@@ -141,7 +141,7 @@ void write_map_settings_xml(map_type *map)
 {
     xml_add_tagstart("Creator");
     xml_add_attribute_text("name","dim3 Map Editor");
-    xml_add_attribute_text("version","3.0");
+    xml_add_attribute_int("version",map_current_version);
     xml_add_tagend(TRUE);
     
     xml_add_tagstart("Info");

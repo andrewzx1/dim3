@@ -49,7 +49,7 @@ void piece_duplicate_offset(d3pnt *pnt)
 	view=view_get_current_view();
 	
 	if (fabs(view->ang.x)<15.0f) {
-		pnt->x=setup.duplicate_offset*map_enlarge;
+		pnt->x=setup.duplicate_offset*view_snap_clip_size_factor;
 		pnt->z=0;
 		pnt->y=0;
 		rotate_2D_point_center(&pnt->x,&pnt->z,view->ang.y);
@@ -57,9 +57,9 @@ void piece_duplicate_offset(d3pnt *pnt)
 		return;
 	}
 	
-	pnt->x=setup.duplicate_offset*map_enlarge;
+	pnt->x=setup.duplicate_offset*view_snap_clip_size_factor;
 	pnt->y=0;
-	pnt->z=setup.duplicate_offset*map_enlarge;
+	pnt->z=setup.duplicate_offset*view_snap_clip_size_factor;
 }
 
 void piece_duplicate(void)

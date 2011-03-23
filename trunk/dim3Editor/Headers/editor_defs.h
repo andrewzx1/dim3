@@ -204,7 +204,7 @@ and can be sold or given away.
 // opengl settings
 //
 
-#define view_near_offset						(3*map_enlarge)
+#define view_near_offset						430
 #define view_look_snap							10.0f
 
 //
@@ -214,10 +214,13 @@ and can be sold or given away.
 #define view_handle_size						12.0f
 #define view_skew_handle_size					8.0f
 
+#define view_handle_length_min					150.0f
 #define view_handle_length_factor				0.05f
 #define view_handle_line_width					2.0f
 
-#define view_sprite_size						(map_enlarge*3)
+#define view_sprite_size						400
+
+#define view_snap_clip_size_factor				150
 
 //
 // light maps

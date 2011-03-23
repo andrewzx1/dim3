@@ -86,8 +86,8 @@ bool map_new(map_type *map,char *name)
 
 	map->editor_setup.txt_scale_x=0.04f;
 	map->editor_setup.txt_scale_y=0.04f;
-	map->editor_setup.view_near_dist=6*map_enlarge;
-	map->editor_setup.view_far_dist=2000*map_enlarge;
+	map->editor_setup.view_near_dist=860;
+	map->editor_setup.view_far_dist=288000;
 	map->editor_setup.link_always_start=FALSE;
 
 		// camera
@@ -102,7 +102,7 @@ bool map_new(map_type *map,char *name)
 	map->camera.ang.y=0.0f;
 	map->camera.ang.z=0.0f;
     
-    map->camera.chase.distance=map_enlarge*50;
+    map->camera.chase.distance=8000;
 	map->camera.chase.track_speed=1.0f;
     
 	map->camera.chase.slop.x=0.0f;
@@ -114,9 +114,9 @@ bool map_new(map_type *map,char *name)
 
 	map->camera.plane.fov=60.0f;
 	map->camera.plane.aspect_ratio=1.0f;
-	map->camera.plane.near_z=3*map_enlarge;
-	map->camera.plane.far_z=2000*map_enlarge;
-	map->camera.plane.near_z_offset=-(3*map_enlarge);
+	map->camera.plane.near_z=430;
+	map->camera.plane.far_z=288000;
+	map->camera.plane.near_z_offset=-430;
 	
 		// media
 		
@@ -182,7 +182,7 @@ bool map_new(map_type *map,char *name)
     map->sky.south_fill=-1;
     map->sky.east_fill=-1;
     map->sky.west_fill=-1;
-    map->sky.radius=300*map_enlarge;
+    map->sky.radius=43000;
 	map->sky.dome_y=0;
 	map->sky.dome_mirror=FALSE;
 	map->sky.txt_fact=1;
@@ -193,10 +193,10 @@ bool map_new(map_type *map,char *name)
 		
 	map->fog.on=FALSE;
 	map->fog.count=30;
-	map->fog.outer_radius=1000*map_enlarge;
-	map->fog.inner_radius=500*map_enlarge;
-	map->fog.high=150*map_enlarge;
-	map->fog.drop=50*map_enlarge;
+	map->fog.outer_radius=150000;
+	map->fog.inner_radius=75000;
+	map->fog.high=22000;
+	map->fog.drop=7500;
 	map->fog.texture_idx=0;
 	map->fog.speed=0.001f;
 	map->fog.txt_x_fact=8.0f;

@@ -366,12 +366,12 @@ bool menu_event_run(int cmd)
 			return(TRUE);
 			
 		case kCommandMapRaiseY:
-			map_mesh_move_all(0,-(map_enlarge*10),0);
+			map_mesh_move_all(0,-1440,0);
 			main_wind_draw();
 			return(TRUE);
 			
 		case kCommandMapLowerY:
-			map_mesh_move_all(0,(map_enlarge*10),0);
+			map_mesh_move_all(0,1440,0);
 			main_wind_draw();
 			return(TRUE);
 			

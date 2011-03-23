@@ -433,7 +433,7 @@ void piece_add_grid_mesh(void)
 	txt_idx=texture_palette_get_selected_texture();
 	if (txt_idx==-1) txt_idx=0;
 	
-	sz=map_enlarge*5;
+	sz=720;
 
 	piece_create_get_spot(&pnt);
 	pnt.x-=((xdiv*sz)/2);
@@ -562,7 +562,7 @@ void piece_add_polygon_mesh(void)
 		
 	piece_create_get_spot(&pnt);
 
-	sz=map_enlarge*5;
+	sz=720;
 
 	px[0]=px[3]=pnt.x-sz;
 	px[1]=px[2]=pnt.x+sz;
