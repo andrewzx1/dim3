@@ -370,7 +370,7 @@ void view_center_all(bool reset_ang)
 	for (n=0;n!=map.nspot;n++) {
 		if (map.spots[n].type==spot_type_player) {
 			memmove(&pnt,&map.spots[n].pnt,sizeof(d3pnt));
-			pnt.y-=(map_enlarge*20);
+			pnt.y-=3000;
 			break;
 		}
 	}
@@ -601,8 +601,8 @@ void view_set_3D_projection(editor_view_type *view,int near_z,int far_z,int near
 		gluPerspective(45.0f,ratio,(GLdouble)near_z,(GLdouble)far_z);
 	}
 	else {
-		x_sz=(box.rx-box.lx)*(map_enlarge>>2);
-		y_sz=(box.by-box.ty)*(map_enlarge>>2);
+		x_sz=(box.rx-box.lx)*36;
+		y_sz=(box.by-box.ty)*36;
 		glOrtho((GLdouble)-x_sz,(GLdouble)x_sz,(GLdouble)-y_sz,(GLdouble)y_sz,(GLdouble)near_z,(GLdouble)far_z);
 	}
 	
@@ -854,7 +854,7 @@ void view_goto_select(void)
 	matrix_rotate_zyx(&mat,ang.x,ang.y,0.0f);
 
 	fx=fy=0.0f;
-	fz=(map_enlarge*100);
+	fz=15000;
 	matrix_vertex_multiply(&mat,&fx,&fy,&fz);
 
 	pnt.x+=(int)fx;

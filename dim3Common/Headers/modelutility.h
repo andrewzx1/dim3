@@ -26,7 +26,13 @@ and can be sold or given away.
 *********************************************************************/
 
 //
-// Model Definitions
+// version
+//
+
+#define model_current_version							1
+
+//
+// definitions
 //
 
 #define max_model										64			// maximum models in a map

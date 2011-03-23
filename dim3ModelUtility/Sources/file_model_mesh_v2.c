@@ -444,7 +444,7 @@ void encode_mesh_v2_xml(model_type *model)
     
     xml_add_tagstart("Creator");
     xml_add_attribute_text("name","dim3 Animator");
-    xml_add_attribute_text("version","1.0");
+    xml_add_attribute_int("version",model_current_version);
     xml_add_tagend(TRUE);
 	
         // options

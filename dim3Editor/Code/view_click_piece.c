@@ -46,9 +46,9 @@ int view_get_grid(void)
 {
 	switch (state.grid_mode) {
 		case grid_mode_small:
-			return(map_enlarge<<2);
+			return(576);				// historical based on the old 144 number
 		case grid_mode_large:
-			return(map_enlarge<<4);
+			return(2304);
 	}
 
 	return(1);
@@ -92,7 +92,7 @@ bool view_click_snap(int mesh_idx,d3pnt *pt)
 		
 		for (t=0;t!=mesh->nvertex;t++) {
 		
-			if (distance_get(dpt->x,dpt->y,dpt->z,pt->x,pt->y,pt->z)<(setup.snap_size*map_enlarge)) {
+			if (distance_get(dpt->x,dpt->y,dpt->z,pt->x,pt->y,pt->z)<(setup.snap_size*view_snap_clip_size_factor)) {
 				memmove(pt,dpt,sizeof(d3pnt));
 				return(TRUE);
 			}
@@ -123,7 +123,7 @@ bool view_click_snap_poly(int mesh_idx,int poly_idx,d3pnt *pt)
 		
 		if (view_click_snap(mesh_idx,&hpt)) {
 			d=distance_get(pt->x,pt->y,pt->z,hpt.x,hpt.y,hpt.z);
-			if (d>(setup.snap_size*map_enlarge)) continue;
+			if (d>(setup.snap_size*view_snap_clip_size_factor)) continue;
 			
 			if ((d<cur_dist) || (cur_dist<0)) {
 				cur_dist=d;
@@ -150,7 +150,7 @@ bool view_click_snap_mesh(int mesh_idx,d3pnt *pt)
 		
 		if (view_click_snap(mesh_idx,&hpt)) {
 			d=distance_get(pt->x,pt->y,pt->z,hpt.x,hpt.y,hpt.z);
-			if (d>(setup.snap_size*map_enlarge)) continue;
+			if (d>(setup.snap_size*view_snap_clip_size_factor)) continue;
 			
 			if ((d<cur_dist) || (cur_dist<0)) {
 				cur_dist=d;

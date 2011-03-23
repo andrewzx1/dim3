@@ -54,7 +54,7 @@ void dialog_obj_import_set(HWND diag)
 	win32_dialog_combo_add(diag,IDC_OBJ_IMPORT_AXIS,"Z");
 	win32_dialog_combo_set_value(diag,IDC_OBJ_IMPORT_AXIS,0);
 
-	win32_dialog_set_int(diag,IDC_OBJ_IMPORT_UNITS,(20*map_enlarge));
+	win32_dialog_set_int(diag,IDC_OBJ_IMPORT_UNITS,5000);
 }
 
 void dialog_obj_import_get(HWND diag)

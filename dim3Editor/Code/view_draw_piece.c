@@ -226,7 +226,7 @@ bool view_clip_poly(editor_view_type *view,map_mesh_type *mesh,map_mesh_poly_typ
 	
 		// get distance
 		
-	return(dist<(map_enlarge*setup.clip_distance));
+	return(dist<(setup.clip_distance*view_snap_clip_size_factor));
 }
 
 bool view_hidden_poly(editor_view_type *view,map_mesh_type *mesh,map_mesh_poly_type *poly)
@@ -735,13 +735,13 @@ void view_draw_nodes(editor_view_type *view_setup)
 	
 		fx=0.0f;
 		fy=0.0f;
-		fz=-(float)(map_enlarge*8);
+		fz=-(float)1000.0f;
 	
 		matrix_rotate_xyz(&mat,node->ang.x,node->ang.y,node->ang.z);
 		matrix_vertex_multiply(&mat,&fx,&fy,&fz);
 			
-		glVertex3i(node->pnt.x,(node->pnt.y-(map_enlarge*2)),node->pnt.z);
-		glVertex3i((node->pnt.x+(int)fx),((node->pnt.y-(map_enlarge*2))+(int)fy),(node->pnt.z+(int)fz));
+		glVertex3i(node->pnt.x,(node->pnt.y-300),node->pnt.z);
+		glVertex3i((node->pnt.x+(int)fx),((node->pnt.y-300)+(int)fy),(node->pnt.z+(int)fz));
 	}
 	
 	glEnd();
@@ -758,9 +758,9 @@ void view_draw_nodes(editor_view_type *view_setup)
 		for (k=0;k!=max_node_link;k++) {
 		
 			if (node->link[k]!=-1) {
-				glVertex3i(node->pnt.x,(node->pnt.y-(map_enlarge*2)),node->pnt.z);
+				glVertex3i(node->pnt.x,(node->pnt.y-300),node->pnt.z);
 				lnode=&map.nodes[node->link[k]];
-				glVertex3i(lnode->pnt.x,(lnode->pnt.y-(map_enlarge*2)),lnode->pnt.z);
+				glVertex3i(lnode->pnt.x,(lnode->pnt.y-300),lnode->pnt.z);
 			}
 		}
 	}

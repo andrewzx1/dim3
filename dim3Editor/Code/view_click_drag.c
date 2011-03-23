@@ -956,7 +956,7 @@ bool view_click_drag_liquid_vertex(editor_view_type *view,d3pnt *pt)
 				break;
 		}
 		
-		if (liq->depth<map_enlarge) liq->depth=map_enlarge;
+		if (liq->depth<100) liq->depth=100;
 		
 		if (state.auto_texture) map_liquid_reset_uv(&map,liquid_idx);
 

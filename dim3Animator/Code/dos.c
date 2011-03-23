@@ -187,7 +187,13 @@ void file_open_model(void)
 	os_select_window();
    
 	model_setup(&file_path_setup,anisotropic_mode_none,mipmap_mode_none,texture_quality_mode_high,FALSE);
-	model_open(&model,file_name,TRUE);
+	if (!model_open(&model,file_name,TRUE)) {
+		os_dialog_alert("Animator","There was a problem loading the model file.");
+		state.model_open=FALSE;
+		main_wind_close();
+		os_set_arrow_cursor();
+		return;
+	}
     	
 	os_set_arrow_cursor();
 

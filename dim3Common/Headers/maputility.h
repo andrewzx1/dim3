@@ -41,8 +41,7 @@ extern char light_type_str[][32];
 // map sizes
 //
 
-#define map_enlarge											144				// each units of maze equals this many game units
-#define map_max_size										500000			// maximum size of map on x/z units
+#define map_max_size										1000000			// maximum size of map on x/z units
 
 //
 // map maximums

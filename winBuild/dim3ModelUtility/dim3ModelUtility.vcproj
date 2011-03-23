@@ -267,32 +267,6 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\dim3ModelUtility\Sources\file_model_mesh_v1.c"
-					>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\..\dim3ModelUtility\Sources\file_model_mesh_v2.c"
-					>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-						/>
-					</FileConfiguration>
-				</File>
-				<File
 					RelativePath="..\..\dim3ModelUtility\Sources\file_model_pose.c"
 					>
 					<FileConfiguration

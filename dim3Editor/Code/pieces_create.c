@@ -426,7 +426,7 @@ void piece_create_liquid(void)
 	
 	liq=&map.liquid.liquids[index];
 	
-	sz=map_enlarge*4;
+	sz=720;
 	liq->lft=pnt.x-sz;
 	liq->rgt=pnt.x+sz;
 	liq->top=pnt.z-sz;
