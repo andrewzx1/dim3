@@ -73,8 +73,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 322456290;
-			PBXWorkspaceStateSaveDate = 322456290;
+			PBXPerProjectTemplateStateSaveDate = 322519457;
+			PBXWorkspaceStateSaveDate = 322519457;
 		};
 		sourceControlManager = 269FEC8113283F970030B0B5 /* Source Control */;
 		userBuildSettings = {
@@ -229,6 +229,14 @@
 		path = "../../dim3/dim3 Setup.app";
 		sourceTree = SOURCE_ROOT;
 	};
+	26C87D9A1339435500DA562E /* property_palette_sounds.c */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1377, 1599}}";
+			sepNavSelRange = "{1640, 0}";
+			sepNavVisRange = "{819, 1572}";
+			sepNavWindowFrame = "{{317, 104}, {997, 889}}";
+		};
+	};
 	26D15C701329E3EF00F9EC7B /* item_palette.c */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1153, 4251}}";
@@ -259,6 +267,14 @@
 			sepNavSelRange = "{0, 0}";
 			sepNavVisRange = "{546, 1591}";
 			sepNavWindowFrame = "{{164, 111}, {997, 889}}";
+		};
+	};
+	26D15D5B1329E7F700F9EC7B /* ui_common.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1181, 2873}}";
+			sepNavSelRange = "{7159, 28}";
+			sepNavVisRange = "{5763, 3007}";
+			sepNavWindowFrame = "{{61, 92}, {997, 889}}";
 		};
 	};
 	26D15DDF1329EB6100F9EC7B /* OSX_dialog_utility_common.c */ = {

@@ -37,12 +37,9 @@ EventLoopTimerUPP				model_timer_upp;
 
 AGLContext						ctx;
 
-extern model_type				model;
-extern model_draw_setup			draw_setup;
+extern iface_type				iface;
 extern file_path_setup_type		file_path_setup;
 extern animator_state_type		state;
-
-extern d3rect					model_box;
 
 /* =======================================================
 
@@ -367,24 +364,40 @@ void menu_start(void)
 
 int main(int argc,char *argv[])
 {
+	state.model_open=FALSE;
+	
+		// initialize
+		
 	os_glue_start();
 	os_set_arrow_cursor();
 	
-	setup_xml_read();
-	
-	state.model_open=FALSE;
 	if (!file_paths_setup(&file_path_setup)) {
 		os_dialog_alert("Error","No data folder found");
 		os_glue_end();
 		return(0);
 	}
 	
+	if (!iface_initialize(&iface,&file_path_setup)) {
+		os_dialog_alert("Error","Out of memory");
+		os_glue_end();
+		return(0);
+	}
+
+	iface_read(&iface);
+		
+	setup_xml_read();
+
 	menu_start();
 	
+		// main loop
+		
     file_open_model();
 	main_loop();
 	file_close_model();
 	
+		// shutdown
+		
+	iface_shutdown(&iface);
 	os_glue_end();
     
     return(0);

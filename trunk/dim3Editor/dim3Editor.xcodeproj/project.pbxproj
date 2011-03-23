@@ -500,7 +500,7 @@
 			children = (
 				F5EC0BB200DDC1F701000001 /* Windows */,
 				26E4677412EB4C8400867C53 /* Palettes */,
-				F5E8EBA808A1C1EF00F06B82 /* Common */,
+				F5E8EBA808A1C1EF00F06B82 /* Pieces */,
 				F508860900E8413C01000001 /* View */,
 				F5A98817094BF740005E55AE /* Dialogs */,
 				F503BCC9011B901401000001 /* Main */,
@@ -710,7 +710,7 @@
 			name = Dialogs;
 			sourceTree = "<group>";
 		};
-		F5E8EBA808A1C1EF00F06B82 /* Common */ = {
+		F5E8EBA808A1C1EF00F06B82 /* Pieces */ = {
 			isa = PBXGroup;
 			children = (
 				F5DD757A092CFD8700465E14 /* launch.c */,
@@ -724,7 +724,7 @@
 				0123D86700C0AFD57F000001 /* nodes.c */,
 				2681880210A3A28A000B2CD8 /* light_maps.c */,
 			);
-			name = Common;
+			name = Pieces;
 			sourceTree = "<group>";
 		};
 		F5EC0BB200DDC1F701000001 /* Windows */ = {

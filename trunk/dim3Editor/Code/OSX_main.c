@@ -28,14 +28,15 @@ and can be sold or given away.
 #include "glue.h"
 #include "interface.h"
 
-extern file_path_setup_type		file_path_setup;
-extern editor_state_type		state;
-
 WindowRef						wind;
 EventHandlerRef					main_wind_event;
 EventHandlerUPP					main_wind_upp;
 
 AGLContext						ctx;
+
+extern iface_type				iface;
+extern file_path_setup_type		file_path_setup;
+extern editor_state_type		state;
 
 /* =======================================================
 
@@ -383,6 +384,8 @@ void menu_start(void)
 
 int main(int argc,char *argv[])
 {
+		// initialize
+		
 	os_glue_start();
 	os_set_arrow_cursor();
     
@@ -392,6 +395,14 @@ int main(int argc,char *argv[])
 		os_glue_end();
 		return(0);
 	}
+	
+	if (!iface_initialize(&iface,&file_path_setup)) {
+		os_dialog_alert("Error","Out of memory");
+		os_glue_end();
+		return(0);
+	}
+
+	iface_read(&iface);
 		
 	setup_xml_read();
 
@@ -400,10 +411,15 @@ int main(int argc,char *argv[])
 	undo_initialize();
 	menu_fix_enable();
 	
+		// main loop
+		
 	file_open_map();
 	main_loop();
 	file_close_map();
 	
+		// shutdown
+		
+	iface_shutdown(&iface);
 	os_glue_end();
 	
     return(0);
