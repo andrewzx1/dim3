@@ -126,7 +126,7 @@ void effect_draw_lightning(effect_type *effect)
     x=abs(ex-sx);
     z=abs(ez-sz);
     y=abs(ey-sy);
-	nline=distance_get(x,z,y,0,0,0)/(map_enlarge<<1);
+	nline=distance_get(x,z,y,0,0,0)/200;
     
     if (nline<5) nline=4;
 	if (nline>150) nline=150;

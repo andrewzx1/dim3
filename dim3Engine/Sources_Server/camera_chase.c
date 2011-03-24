@@ -111,7 +111,7 @@ int camera_chase_get_division(int x,int z,int y)
 	if (z>k) k=z;
 	if (y>k) k=y;
 	
-	return(k/map_enlarge);
+	return(k/chase_camera_division_factor);
 }
 
 /* =======================================================

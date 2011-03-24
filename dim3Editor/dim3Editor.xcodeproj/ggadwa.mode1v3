@@ -451,9 +451,9 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>26C87DD0133950EF00DA562E</string>
+				<string>26C229B9133AEB16000ED0E0</string>
 				<string>1CE0B1FE06471DED0097A5F4</string>
-				<string>26C87DD1133950EF00DA562E</string>
+				<string>26C229BA133AEB16000ED0E0</string>
 				<string>1CE0B20306471E060097A5F4</string>
 				<string>1CE0B20506471E060097A5F4</string>
 			</array>
@@ -574,7 +574,7 @@
 	<key>StatusbarIsVisible</key>
 	<true/>
 	<key>TimeStamp</key>
-	<real>322549043.00576299</real>
+	<real>322628374.46983898</real>
 	<key>ToolbarDisplayMode</key>
 	<integer>2</integer>
 	<key>ToolbarIsVisible</key>
@@ -589,11 +589,8 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>26C87DDD133950EF00DA562E</string>
-		<string>26C87DDE133950EF00DA562E</string>
-		<string>1C78EAAD065D492600B07095</string>
-		<string>1CD10A99069EF8BA00B06720</string>
 		<string>1C530D57069F1CE1000CFCEE</string>
+		<string>1CD10A99069EF8BA00B06720</string>
 		<string>260AFEFF0D4050AF00F6C42F</string>
 		<string>/Users/ggadwa/dim3Code/dim3Editor/dim3Editor.xcodeproj</string>
 	</array>
@@ -636,8 +633,6 @@
 							<string>0pt</string>
 						</dict>
 						<dict>
-							<key>BecomeActive</key>
-							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
@@ -677,7 +672,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>260AFEFF0D4050AF00F6C42F</string>
-				<string>26C87DC51339501700DA562E</string>
+				<string>26C229AF133AEB15000ED0E0</string>
 				<string>1CD0528F0623707200166675</string>
 				<string>XCMainBuildResultsModuleGUID</string>
 			</array>
@@ -719,8 +714,8 @@
 										<string>yes</string>
 										<key>sizes</key>
 										<array>
-											<string>{{0, 0}, {387, 209}}</string>
-											<string>{{387, 0}, {462, 209}}</string>
+											<string>{{0, 0}, {387, 210}}</string>
+											<string>{{387, 0}, {462, 210}}</string>
 										</array>
 									</dict>
 									<key>VerticalSplitView</key>
@@ -735,8 +730,8 @@
 										<string>yes</string>
 										<key>sizes</key>
 										<array>
-											<string>{{0, 0}, {849, 209}}</string>
-											<string>{{0, 209}, {849, 184}}</string>
+											<string>{{0, 0}, {849, 210}}</string>
+											<string>{{0, 210}, {849, 183}}</string>
 										</array>
 									</dict>
 								</dict>
@@ -769,7 +764,7 @@
 										<real>232</real>
 									</array>
 									<key>Frame</key>
-									<string>{{387, 0}, {462, 209}}</string>
+									<string>{{387, 0}, {462, 210}}</string>
 									<key>RubberWindowFrame</key>
 									<string>516 443 849 434 0 0 1680 1028 </string>
 								</dict>
@@ -797,13 +792,13 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1CD10A99069EF8BA00B06720</string>
-				<string>26C87DD5133950EF00DA562E</string>
+				<string>26C229B0133AEB15000ED0E0</string>
 				<string>1C162984064C10D400B95A72</string>
-				<string>26C87DD6133950EF00DA562E</string>
-				<string>26C87DD7133950EF00DA562E</string>
-				<string>26C87DD8133950EF00DA562E</string>
-				<string>26C87DD9133950EF00DA562E</string>
-				<string>26C87DDA133950EF00DA562E</string>
+				<string>26C229B1133AEB15000ED0E0</string>
+				<string>26C229B2133AEB15000ED0E0</string>
+				<string>26C229B3133AEB15000ED0E0</string>
+				<string>26C229B4133AEB15000ED0E0</string>
+				<string>26C229B5133AEB15000ED0E0</string>
 			</array>
 			<key>ToolbarConfiguration</key>
 			<string>xcode.toolbar.config.debugV3</string>
@@ -893,8 +888,8 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C530D57069F1CE1000CFCEE</string>
-				<string>26C87DC71339501700DA562E</string>
-				<string>26C87DC81339501700DA562E</string>
+				<string>26C229B7133AEB15000ED0E0</string>
+				<string>26C229B8133AEB15000ED0E0</string>
 				<string>1CDD528C0622207200134675</string>
 				<string>1CD0528E0623707200166675</string>
 			</array>

@@ -114,11 +114,11 @@ int pin_downward_movement_obj(obj_type *obj,int my)
 	
 		// get contact grid
 		
-	grid_x=obj->size.x/map_enlarge;
+	grid_x=obj->size.x/map_collide_y_slop;
 	if (grid_x>16) grid_x=16;
 	if (grid_x<5) grid_x=5;
 	
-	grid_z=obj->size.z/map_enlarge;
+	grid_z=obj->size.z/map_collide_y_slop;
 	if (grid_z>16) grid_z=16;
 	if (grid_z<5) grid_z=5;
 	
@@ -225,11 +225,11 @@ int pin_upward_movement_obj(obj_type *obj,int my)
 	
 		// get contact grid
 		
-	grid_x=obj->size.x/map_enlarge;
+	grid_x=obj->size.x/map_collide_y_slop;
 	if (grid_x>16) grid_x=16;
 	if (grid_x<5) grid_x=5;
 	
-	grid_z=obj->size.z/map_enlarge;
+	grid_z=obj->size.z/map_collide_y_slop;
 	if (grid_z>16) grid_z=16;
 	if (grid_z<5) grid_z=5;
 	

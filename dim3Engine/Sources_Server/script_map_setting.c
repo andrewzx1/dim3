@@ -39,7 +39,6 @@ extern js_type				js;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
 
-JSValueRef js_map_setting_get_scale(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_map_setting_get_gravity(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_map_setting_get_resistance(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_map_setting_get_multiplayer(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
@@ -52,7 +51,6 @@ JSValueRef js_map_set_ambient_func(JSContextRef cx,JSObjectRef func,JSObjectRef 
 JSValueRef js_map_clear_ambient_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 JSStaticValue 		map_setting_props[]={
-							{"scale",				js_map_setting_get_scale,				NULL,								kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
 							{"gravity",				js_map_setting_get_gravity,				js_map_setting_set_gravity,			kJSPropertyAttributeDontDelete},
 							{"resistance",			js_map_setting_get_resistance,			js_map_setting_set_resistance,		kJSPropertyAttributeDontDelete},
 							{"multiplayer",			js_map_setting_get_multiplayer,			NULL,								kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
@@ -94,11 +92,6 @@ JSObjectRef script_add_map_setting_object(JSContextRef cx,JSObjectRef parent_obj
       Getters
       
 ======================================================= */
-
-JSValueRef js_map_setting_get_scale(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
-{
-	return(script_int_to_value(cx,map_enlarge));
-}
 
 JSValueRef js_map_setting_get_gravity(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {

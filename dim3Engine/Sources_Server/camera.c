@@ -51,7 +51,7 @@ void camera_initialize(void)
 	camera.setup.ang.y=0;
 	camera.setup.ang.z=0;
     
-    camera.setup.chase.distance=map_enlarge*50;
+    camera.setup.chase.distance=7500;
 	camera.setup.chase.track_speed=1.0f;
     
 	camera.setup.chase.slop.x=0;
@@ -63,9 +63,9 @@ void camera_initialize(void)
 
 	camera.setup.plane.fov=60;
 	camera.setup.plane.aspect_ratio=1;
-	camera.setup.plane.near_z=3*map_enlarge;
-	camera.setup.plane.far_z=2000*map_enlarge;
-	camera.setup.plane.near_z_offset=-(3*map_enlarge);
+	camera.setup.plane.near_z=400;
+	camera.setup.plane.far_z=300000;
+	camera.setup.plane.near_z_offset=-400;
 
 	camera.auto_walk.on=FALSE;
 

@@ -205,7 +205,7 @@ bool weapon_add(obj_type *obj,char *name)
 	weap->crosshair.type=ct_center;
 	weap->crosshair.min_size=16;
 	weap->crosshair.max_size=64;
-	weap->crosshair.distance=map_enlarge*250;
+	weap->crosshair.distance=35000;
 	weap->crosshair.col.r=weap->crosshair.col.g=1;
 	weap->crosshair.col.b=0;
 	weap->crosshair.empty_col.r=weap->crosshair.empty_col.g=weap->crosshair.empty_col.b=0.5;
@@ -227,7 +227,7 @@ bool weapon_add(obj_type *obj,char *name)
 	
 	weap->hand.raise_tick=500;
 	weap->hand.lower_tick=500;
-	weap->hand.select_shift=map_enlarge<<1;
+	weap->hand.select_shift=300;
 	weap->hand.bounce_ang=30.0f;
 	weap->hand.bounce_speed=5.0f;
 	

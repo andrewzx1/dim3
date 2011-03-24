@@ -59,11 +59,11 @@ void remote_draw_icon(obj_type *obj,unsigned long gl_id)
 		// get the position and rotation
 		
 	x=obj->pnt.x;
-	y=(obj->pnt.y-obj->size.y)-map_enlarge;
+	y=(obj->pnt.y-obj->size.y)-(crosshair_max_ray_trace_distance>>1);
 	z=obj->pnt.z;
 	
-	x_sz=map_enlarge<<1;
-	y_sz=map_enlarge<<2;
+	x_sz=crosshair_max_ray_trace_distance;
+	y_sz=crosshair_max_ray_trace_distance<<1;
 	z_sz=0;
 	rotate_2D_point_center(&x_sz,&z_sz,view.render->camera.ang.y);
 
@@ -203,7 +203,7 @@ void remote_draw_names_setup(void)
 
 		if (!model_get_name_position(mdl,&obj->draw.setup,&x,&y,&z)) {
 			x=obj->pnt.x;
-			y=(obj->pnt.y-obj->size.y)-map_enlarge;
+			y=(obj->pnt.y-obj->size.y)-(crosshair_max_ray_trace_distance>>1);
 			z=obj->pnt.z;
 		}
 		

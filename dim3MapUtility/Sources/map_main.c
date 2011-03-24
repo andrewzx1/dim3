@@ -86,8 +86,8 @@ bool map_new(map_type *map,char *name)
 
 	map->editor_setup.txt_scale_x=0.04f;
 	map->editor_setup.txt_scale_y=0.04f;
-	map->editor_setup.view_near_dist=860;
-	map->editor_setup.view_far_dist=288000;
+	map->editor_setup.view_near_dist=400;
+	map->editor_setup.view_far_dist=300000;
 	map->editor_setup.link_always_start=FALSE;
 
 		// camera
@@ -114,9 +114,9 @@ bool map_new(map_type *map,char *name)
 
 	map->camera.plane.fov=60.0f;
 	map->camera.plane.aspect_ratio=1.0f;
-	map->camera.plane.near_z=430;
-	map->camera.plane.far_z=288000;
-	map->camera.plane.near_z_offset=-430;
+	map->camera.plane.near_z=400;
+	map->camera.plane.far_z=300000;
+	map->camera.plane.near_z_offset=-400;
 	
 		// media
 		

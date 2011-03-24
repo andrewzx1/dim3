@@ -190,6 +190,7 @@ void file_open_model(void)
 	if (!model_open(&model,file_name,TRUE)) {
 		os_dialog_alert("Animator","There was a problem loading the model file.");
 		state.model_open=FALSE;
+		file_reset_state();
 		main_wind_close();
 		os_set_arrow_cursor();
 		return;
