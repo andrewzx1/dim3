@@ -268,8 +268,8 @@ void shadow_get_light_point(d3pnt *pnt,int high,d3pnt *light_pnt,int *light_inte
 		// if no light, get light directly above
 
 	memmove(light_pnt,pnt,sizeof(d3pnt));
-	light_pnt->y-=(map_enlarge*100);
-	*light_intensity=(map_enlarge*100)+high;
+	light_pnt->y-=15000;
+	*light_intensity=15000+high;
 }
 
 /* =======================================================
@@ -432,12 +432,12 @@ int shadow_build_poly_cross_volume_set(d3pnt *light_pnt,int *px,int *py,int *pz,
 		// that directly collide with a polygon
 		// and don't pass through it
 
-	min.x-=map_enlarge;
-	max.x+=map_enlarge;
-	min.y-=map_enlarge;
-	max.y+=map_enlarge;
-	min.z-=map_enlarge;
-	max.z+=map_enlarge;
+	min.x-=150;
+	max.x+=150;
+	min.y-=150;
+	max.y+=150;
+	min.z-=150;
+	max.z+=150;
 	
 		// check meshes
 		
@@ -781,7 +781,7 @@ void shadow_render_prepare_bounds_check(poly_pointer_type *poly_ptr,d3pnt *min,d
 
 	poly=&map.mesh.meshes[poly_ptr->mesh_idx].polys[poly_ptr->poly_idx];
 
-	sz=map_enlarge>>1;
+	sz=100;		// supergumba -- better factors here
 
 	min->x=poly->box.min.x-sz;
 	max->x=poly->box.max.x+sz;

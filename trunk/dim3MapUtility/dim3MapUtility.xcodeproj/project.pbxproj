@@ -7,16 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2674501C0E513E1900812D9D /* file_map_read_v3.c in Sources */ = {isa = PBXBuildFile; fileRef = 2674501B0E513E1900812D9D /* file_map_read_v3.c */; };
 		2683177D0E4A8B1900BBCDCA /* map_liquid.c in Sources */ = {isa = PBXBuildFile; fileRef = 268317780E4A8B1900BBCDCA /* map_liquid.c */; };
 		2683177E0E4A8B1900BBCDCA /* map_liquid_update.c in Sources */ = {isa = PBXBuildFile; fileRef = 268317790E4A8B1900BBCDCA /* map_liquid_update.c */; };
 		2683177F0E4A8B1900BBCDCA /* map_mesh.c in Sources */ = {isa = PBXBuildFile; fileRef = 2683177A0E4A8B1900BBCDCA /* map_mesh.c */; };
 		268317800E4A8B1900BBCDCA /* map_mesh_update.c in Sources */ = {isa = PBXBuildFile; fileRef = 2683177B0E4A8B1900BBCDCA /* map_mesh_update.c */; };
 		269B2A6A11178C7000E3FDA8 /* map_normals.c in Sources */ = {isa = PBXBuildFile; fileRef = 269B2A6911178C7000E3FDA8 /* map_normals.c */; };
-		26BF8BBB0DBA5B900071D014 /* file_map_read_v1_curves.c in Sources */ = {isa = PBXBuildFile; fileRef = 26BF8BBA0DBA5B900071D014 /* file_map_read_v1_curves.c */; };
-		26E372E60DA5AB75009653F2 /* file_map_read_v2.c in Sources */ = {isa = PBXBuildFile; fileRef = 26E372E50DA5AB75009653F2 /* file_map_read_v2.c */; };
 		26E8DBA01270E84400ACA294 /* map_cinema.c in Sources */ = {isa = PBXBuildFile; fileRef = 26E8DB9F1270E84400ACA294 /* map_cinema.c */; };
-		26FC4AAD0DA2F87A00E6ECED /* file_map_read_v1.c in Sources */ = {isa = PBXBuildFile; fileRef = 26FC4AAC0DA2F87A00E6ECED /* file_map_read_v1.c */; };
 		F50AF9290885FF0E00F261B1 /* os_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = F50AF9280885FF0E00F261B1 /* os_defs.h */; };
 		F511664F093CDA2C00E766C3 /* groups.c in Sources */ = {isa = PBXBuildFile; fileRef = F511664E093CDA2C00E766C3 /* groups.c */; };
 		F53F263D0BC05D0A00EB3C0F /* libBaseUtility.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5AD541A0BBE1EE6001C7C04 /* libBaseUtility.dylib */; };
@@ -53,16 +49,12 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		2674501B0E513E1900812D9D /* file_map_read_v3.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = file_map_read_v3.c; path = Sources/file_map_read_v3.c; sourceTree = "<group>"; };
 		268317780E4A8B1900BBCDCA /* map_liquid.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = map_liquid.c; path = Sources/map_liquid.c; sourceTree = "<group>"; };
 		268317790E4A8B1900BBCDCA /* map_liquid_update.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = map_liquid_update.c; path = Sources/map_liquid_update.c; sourceTree = "<group>"; };
 		2683177A0E4A8B1900BBCDCA /* map_mesh.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = map_mesh.c; path = Sources/map_mesh.c; sourceTree = "<group>"; };
 		2683177B0E4A8B1900BBCDCA /* map_mesh_update.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = map_mesh_update.c; path = Sources/map_mesh_update.c; sourceTree = "<group>"; };
 		269B2A6911178C7000E3FDA8 /* map_normals.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = map_normals.c; path = Sources/map_normals.c; sourceTree = "<group>"; };
-		26BF8BBA0DBA5B900071D014 /* file_map_read_v1_curves.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = file_map_read_v1_curves.c; path = Sources/file_map_read_v1_curves.c; sourceTree = "<group>"; };
-		26E372E50DA5AB75009653F2 /* file_map_read_v2.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = file_map_read_v2.c; path = Sources/file_map_read_v2.c; sourceTree = "<group>"; };
 		26E8DB9F1270E84400ACA294 /* map_cinema.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = map_cinema.c; path = Sources/map_cinema.c; sourceTree = "<group>"; };
-		26FC4AAC0DA2F87A00E6ECED /* file_map_read_v1.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = file_map_read_v1.c; path = Sources/file_map_read_v1.c; sourceTree = "<group>"; };
 		F50AF9280885FF0E00F261B1 /* os_defs.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = os_defs.h; path = ../dim3Common/Headers/os_defs.h; sourceTree = SOURCE_ROOT; };
 		F511664E093CDA2C00E766C3 /* groups.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = groups.c; path = Sources/groups.c; sourceTree = "<group>"; };
 		F55A4CE5059A4A3E0006C01E /* dim3maputility.exp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.exports; name = dim3maputility.exp; path = Exports/dim3maputility.exp; sourceTree = "<group>"; };
@@ -156,10 +148,6 @@
 			isa = PBXGroup;
 			children = (
 				F5DD16E00907328000721649 /* prepare.c */,
-				26FC4AAC0DA2F87A00E6ECED /* file_map_read_v1.c */,
-				26BF8BBA0DBA5B900071D014 /* file_map_read_v1_curves.c */,
-				26E372E50DA5AB75009653F2 /* file_map_read_v2.c */,
-				2674501B0E513E1900812D9D /* file_map_read_v3.c */,
 				F5A8B1AF05229DA4008D4331 /* file_map_read.c */,
 				F5A8B1B005229DA4008D4331 /* file_map_write.c */,
 				F5A10B6C052D294C006A2E68 /* file_map_texture.c */,
@@ -294,14 +282,10 @@
 				F5DD18BB0907FD6E00721649 /* spots.c in Sources */,
 				F511664F093CDA2C00E766C3 /* groups.c in Sources */,
 				F58F951009B7E260004DD122 /* movements.c in Sources */,
-				26FC4AAD0DA2F87A00E6ECED /* file_map_read_v1.c in Sources */,
-				26E372E60DA5AB75009653F2 /* file_map_read_v2.c in Sources */,
-				26BF8BBB0DBA5B900071D014 /* file_map_read_v1_curves.c in Sources */,
 				2683177D0E4A8B1900BBCDCA /* map_liquid.c in Sources */,
 				2683177E0E4A8B1900BBCDCA /* map_liquid_update.c in Sources */,
 				2683177F0E4A8B1900BBCDCA /* map_mesh.c in Sources */,
 				268317800E4A8B1900BBCDCA /* map_mesh_update.c in Sources */,
-				2674501C0E513E1900812D9D /* file_map_read_v3.c in Sources */,
 				269B2A6A11178C7000E3FDA8 /* map_normals.c in Sources */,
 				26E8DBA01270E84400ACA294 /* map_cinema.c in Sources */,
 			);

@@ -29,7 +29,7 @@ and can be sold or given away.
 // version
 //
 
-#define model_current_version							1
+#define model_current_version							2
 
 //
 // definitions

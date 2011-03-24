@@ -116,12 +116,12 @@ bool proj_setup_create(obj_type *obj,weapon_type *weap,char *name)
 	strcpy(proj_setup->name,name);
 	
 	proj_setup->mark.on=FALSE;
-	proj_setup->mark.size=map_enlarge;
+	proj_setup->mark.size=150;
 	proj_setup->mark.alpha=1;
 	proj_setup->mark.idx=-1;
 	proj_setup->mark.name[0]=0x0;
 
-	proj_setup->speed=map_enlarge;
+	proj_setup->speed=150;
 	proj_setup->decel_speed=0;
 	proj_setup->decel_grace=0;
 	proj_setup->decel_min_speed=0;
@@ -140,7 +140,7 @@ bool proj_setup_create(obj_type *obj,weapon_type *weap,char *name)
 	object_clear_size(&proj_setup->size);
 	
 	proj_setup->hitscan.on=FALSE;
-	proj_setup->hitscan.max_dist=map_enlarge*100;
+	proj_setup->hitscan.max_dist=15000;
 	
 	proj_setup->push.on=FALSE;
 	proj_setup->push.force=0;

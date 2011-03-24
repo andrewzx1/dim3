@@ -206,6 +206,11 @@ and can be sold or given away.
 
 #define touch_retouch_msec_wait					250					// how long between touches counts as a single touch
 
+#define map_collide_y_slop						150
+#define chase_camera_division_factor			150
+
+#define crosshair_max_ray_trace_distance		60000
+
 //
 // dynamic bones
 //

@@ -991,7 +991,7 @@ void object_move_normal(obj_type *obj)
     if (obj->air_mode!=am_falling) {
     
         if (old_falling) {
-            if (obj->fall.dist>map_enlarge) {
+            if (obj->fall.dist>map_collide_y_slop) {
 			
 					// get damage
 					
@@ -1015,7 +1015,7 @@ void object_move_normal(obj_type *obj)
 	
 		// check for objects that have started falling
 	
-	if ((obj->fall.dist>map_enlarge) && (!obj->fall.change)) {
+	if ((obj->fall.dist>map_collide_y_slop) && (!obj->fall.change)) {
 		scripts_post_event_console(&obj->attach,sd_event_fall,0,0);
 		scripts_post_event_console(&obj->attach,sd_event_animation_object,sd_event_animation_object_fall,0);
 		obj->fall.change=TRUE;

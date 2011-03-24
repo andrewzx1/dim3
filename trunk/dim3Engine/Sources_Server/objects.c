@@ -107,15 +107,15 @@ int object_count_weapons(obj_type *obj)
 
 void object_clear_size(obj_size *size)
 {
-	size->x=size->z=10*map_enlarge;
-	size->y=20*map_enlarge;
+	size->x=size->z=1500;
+	size->y=3000;
 
-	size->eye_offset=18*map_enlarge;
+	size->eye_offset=2500;
 
-	size->radius=10*map_enlarge;
+	size->radius=1500;
 	size->weight=200;
 
-	size->node_touch_dist=3*map_enlarge;
+	size->node_touch_dist=500;
 }
 
 void object_clear_position(d3pnt *pnt)
@@ -211,7 +211,7 @@ void object_clear_watch(obj_watch *watch)
 {
 	watch->on=FALSE;
 	watch->obj_idx=-1;
-	watch->dist=map_enlarge*50;
+	watch->dist=8000;
 	watch->watch_restrict.on=FALSE;
 	watch->watch_restrict.ray_trace=FALSE;
 	watch->watch_restrict.ang=0.0f;
@@ -266,8 +266,8 @@ void object_clear_draw(model_draw *draw)
 
 	for (k=0;k!=max_model_halo;k++) {
 		draw->halos[k].on=FALSE;
-		draw->halos[k].min_dist=20*map_enlarge;
-		draw->halos[k].max_dist=350*map_enlarge;
+		draw->halos[k].min_dist=3000;
+		draw->halos[k].max_dist=50000;
 		draw->halos[k].min_size=500;
 		draw->halos[k].max_size=200;
 		draw->halos[k].min_alpha=0.8f;
@@ -573,7 +573,7 @@ int object_create(char *name,int type,int bind)
 	obj->spawn_spot_name[0]=0x0;
 	
 	obj->click.on=FALSE;
-	obj->click.distance=map_enlarge*10;
+	obj->click.distance=1500;
 	obj->click.crosshair_up_idx=-1;
 	obj->click.crosshair_down_idx=-1;
 	
@@ -591,7 +591,7 @@ int object_create(char *name,int type,int bind)
 	obj->sight.look_angle=0.0f;
 	obj->sight.side_division=3;
 	obj->sight.look_division=1;
-	obj->sight.distance=map_enlarge*150;
+	obj->sight.distance=22000;
 	
     obj->bump.on=TRUE;
     obj->bump.high=450;
@@ -692,7 +692,7 @@ int object_create(char *name,int type,int bind)
 	obj->liquid.bob_y_move=0;
 
 	obj->fall.dist=0;
-	obj->fall.damage_minimum_height=map_enlarge*20;
+	obj->fall.damage_minimum_height=3000;
 	obj->fall.damage_factor=0.0f;
     obj->fall.change=FALSE;
 	
