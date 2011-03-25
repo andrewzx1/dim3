@@ -17,8 +17,6 @@
 		F59413210978BC6600223F2A /* draw_setup.c in Sources */ = {isa = PBXBuildFile; fileRef = F59413200978BC6600223F2A /* draw_setup.c */; };
 		F594132B0978BCF500223F2A /* size.c in Sources */ = {isa = PBXBuildFile; fileRef = F594132A0978BCF500223F2A /* size.c */; };
 		F594147C0979776300223F2A /* draw_normals.c in Sources */ = {isa = PBXBuildFile; fileRef = F594147B0979776300223F2A /* draw_normals.c */; };
-		F5941502097A002C00223F2A /* file_model_mesh_v1.c in Sources */ = {isa = PBXBuildFile; fileRef = F5941501097A002C00223F2A /* file_model_mesh_v1.c */; };
-		F5941504097A003000223F2A /* file_model_mesh_v2.c in Sources */ = {isa = PBXBuildFile; fileRef = F5941503097A003000223F2A /* file_model_mesh_v2.c */; };
 		F5A31C2D0C5EDC52002470A9 /* model_transform.c in Sources */ = {isa = PBXBuildFile; fileRef = F5A31C2C0C5EDC52002470A9 /* model_transform.c */; };
 		F5AD54000BBE1E11001C7C04 /* libBaseUtility.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5AD53FF0BBE1E11001C7C04 /* libBaseUtility.dylib */; };
 		F5AD54040BBE1E46001C7C04 /* baseutility.h in Headers */ = {isa = PBXBuildFile; fileRef = F5AD54030BBE1E46001C7C04 /* baseutility.h */; };
@@ -78,8 +76,6 @@
 		F59413200978BC6600223F2A /* draw_setup.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = draw_setup.c; path = Sources/draw_setup.c; sourceTree = "<group>"; };
 		F594132A0978BCF500223F2A /* size.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = size.c; path = Sources/size.c; sourceTree = "<group>"; };
 		F594147B0979776300223F2A /* draw_normals.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = draw_normals.c; path = Sources/draw_normals.c; sourceTree = "<group>"; };
-		F5941501097A002C00223F2A /* file_model_mesh_v1.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = file_model_mesh_v1.c; path = Sources/file_model_mesh_v1.c; sourceTree = "<group>"; };
-		F5941503097A003000223F2A /* file_model_mesh_v2.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = file_model_mesh_v2.c; path = Sources/file_model_mesh_v2.c; sourceTree = "<group>"; };
 		F5A31C2C0C5EDC52002470A9 /* model_transform.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = model_transform.c; path = Sources/model_transform.c; sourceTree = "<group>"; };
 		F5AD53FF0BBE1E11001C7C04 /* libBaseUtility.dylib */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libBaseUtility.dylib; path = ../dim3Common/Libraries/libBaseUtility.dylib; sourceTree = SOURCE_ROOT; };
 		F5AD54030BBE1E46001C7C04 /* baseutility.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = baseutility.h; path = ../dim3Common/Headers/baseutility.h; sourceTree = SOURCE_ROOT; };
@@ -110,8 +106,6 @@
 		F51B260E055E0217000B696C /* Files */ = {
 			isa = PBXGroup;
 			children = (
-				F5941501097A002C00223F2A /* file_model_mesh_v1.c */,
-				F5941503097A003000223F2A /* file_model_mesh_v2.c */,
 				F56D96E80502F83C00143299 /* file_model_mesh.c */,
 				F56D96E90502F83C00143299 /* file_model_pose.c */,
 				F56D96E60502F83C00143299 /* file_model_animate.c */,
@@ -308,8 +302,6 @@
 				F59413210978BC6600223F2A /* draw_setup.c in Sources */,
 				F594132B0978BCF500223F2A /* size.c in Sources */,
 				F594147C0979776300223F2A /* draw_normals.c in Sources */,
-				F5941502097A002C00223F2A /* file_model_mesh_v1.c in Sources */,
-				F5941504097A003000223F2A /* file_model_mesh_v2.c in Sources */,
 				F55ACE5B097C830900F4AE50 /* mesh.c in Sources */,
 				F55ACEE4097D724C00F4AE50 /* bone.c in Sources */,
 				F55ACF3F097D805A00F4AE50 /* pose.c in Sources */,

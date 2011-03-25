@@ -388,6 +388,10 @@ void view_draw_select_rot_handles(editor_view_type *view,d3pnt *pnt,d3ang *ang)
 	col.b=1.0f;
 	
 	view_draw_select_2D_rot_handle(&center_pnt,&hand_pnt[2],&col);
+	
+		// put back projection
+		
+	view_set_3D_projection(view,(map.editor_setup.view_near_dist+10),(map.editor_setup.view_far_dist-10),view_near_offset);
 }
 
 /* =======================================================
