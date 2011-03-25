@@ -87,9 +87,44 @@ void property_palette_fill(void)
 
 	switch (state.cur_item) {
 
+		case item_interface_settings:
+			list_palette_set_title(&property_palette,"Settings");
+			property_palette_fill_settings();
+			break;
+
 		case item_interface_sound:
 			list_palette_set_title(&property_palette,"Sounds List");
 			property_palette_fill_sounds();
+			break;
+
+		case item_interface_particle:
+			list_palette_set_title(&property_palette,"Particles List");
+			property_palette_fill_particles();
+			break;
+
+		case item_interface_ring:
+			list_palette_set_title(&property_palette,"Rings List");
+			property_palette_fill_rings();
+			break;
+
+		case item_interface_halo:
+			list_palette_set_title(&property_palette,"Halos List");
+			property_palette_fill_halos();
+			break;
+
+		case item_interface_mark:
+			list_palette_set_title(&property_palette,"Marks List");
+			property_palette_fill_marks();
+			break;
+
+		case item_interface_crosshair:
+			list_palette_set_title(&property_palette,"Crosshairs List");
+			property_palette_fill_crosshairs();
+			break;
+
+		case item_interface_action:
+			list_palette_set_title(&property_palette,"Actions List");
+			property_palette_fill_actions();
 			break;
 
 	}
@@ -149,8 +184,36 @@ void property_palette_click(d3pnt *pnt,bool double_click)
 
 	switch (state.cur_item) {
 
+		case item_interface_settings:
+			property_palette_click_settings(property_palette.item_id);
+			break;
+
 		case item_interface_sound:
 			property_palette_click_sounds(property_palette.item_id);
+			break;
+
+		case item_interface_particle:
+			property_palette_click_particles(property_palette.item_id);
+			break;
+
+		case item_interface_ring:
+			property_palette_click_rings(property_palette.item_id);
+			break;
+
+		case item_interface_halo:
+			property_palette_click_halos(property_palette.item_id);
+			break;
+
+		case item_interface_mark:
+			property_palette_click_marks(property_palette.item_id);
+			break;
+
+		case item_interface_crosshair:
+			property_palette_click_crosshairs(property_palette.item_id);
+			break;
+
+		case item_interface_action:
+			property_palette_click_actions(property_palette.item_id);
 			break;
 
 	}

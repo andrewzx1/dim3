@@ -2,7 +2,7 @@
 
 Module: dim3 Setup
 Author: Brian Barnes
- Usage: Property Palette Sounds
+ Usage: Property Palette Actions
 
 ***************************** License ********************************
 
@@ -33,68 +33,43 @@ and can be sold or given away.
 #include "ui_common.h"
 #include "interface.h"
 
-#define kSoundPropertyAdd						0
-
-#define kSoundProperyName						1000
-#define kSoundProperyDelete						2000
+#define kActionPropertyAdd						0
+#define kActionProperyName						1000
 
 extern iface_type				iface;
 extern setup_state_type			state;
 extern list_palette_type		property_palette;
 
+char							control_name_str[][32]=control_names;
+
 /* =======================================================
 
-      Property Palette Fill Sounds
+      Property Palette Fill Actions
       
 ======================================================= */
 
-void property_palette_fill_sounds(void)
+void property_palette_fill_actions(void)
 {
 	int						n;
 
-	list_palette_add_header_button(&property_palette,kSoundPropertyAdd,"Sounds",list_button_plus);
-
-	list_palette_sort_mark_start(&property_palette);
+	list_palette_add_header(&property_palette,0,"Actions");
 	
-	for (n=0;n!=iface.sound_list.nsound;n++) {
-		list_palette_add_string_selectable_button(&property_palette,(kSoundProperyName+n),list_button_minus,(kSoundProperyDelete+n),iface.sound_list.sounds[n].name,NULL,(state.cur_idx==n),FALSE);
+	for (n=0;n!=ncontrol;n++) {
+		list_palette_add_string_selectable(&property_palette,(kActionProperyName+n),control_name_str[n],NULL,(state.cur_idx==n),FALSE);
 	}
-
-	list_palette_sort(&property_palette);
 }
 
 /* =======================================================
 
-      Property Palette Click Sounds
+      Property Palette Click Actions
       
 ======================================================= */
 
-void property_palette_click_sounds(int id)
+void property_palette_click_actions(int id)
 {
-		// sound edit
+		// edit action
 		
-	if ((id>=kSoundProperyName) && (id<kSoundProperyDelete)) {
-		state.cur_idx=id-kSoundProperyName;
-		main_wind_draw();
-		return;
-	}
-	
-		// sound delete
-		
-	if (id>=kSoundProperyDelete) {
-		state.cur_idx=-1;
-	//	supergumba
-		main_wind_draw();
-		return;
-	}
-	
-		// sound add
-
-	if (id==kSoundPropertyAdd) {
-	// supergumba
-	//	state.cur_idx=... new sound ...
-		main_wind_draw();
-		return;
-	}
+	state.cur_idx=id-kActionProperyName;
+	main_wind_draw();
 }
 
