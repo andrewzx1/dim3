@@ -97,6 +97,7 @@ inline void gl_texture_bind(int unit,GLuint txt_id)
 inline void gl_texture_clear(int unit)
 {
 	gl_texture_bind(unit,0);
+	gl_texture_current_binds[unit]=-1;
 }
 
 /* =======================================================
