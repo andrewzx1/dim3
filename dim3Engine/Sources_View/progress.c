@@ -101,6 +101,8 @@ void progress_draw(float percentage)
 	
 		// draw background
 
+	gl_texture_clear(0);			// progress can be called while baseutility loads bitmaps, need to reset the current bitmap so it doesn't get lost
+
 	if (gl_check_texture_rectangle_ok()) {
 		view_draw_next_vertex_object_2D_texture_quad_rectangle(progress_bitmap.gl_id,1.0f,0,iface.scale_x,0,iface.scale_y,progress_bitmap.wid,progress_bitmap.high);
 	}
