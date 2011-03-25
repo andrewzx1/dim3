@@ -724,7 +724,6 @@ bool read_mesh_xml(model_type *model)
 		// get the version
 	
 	version=xml_get_attribute_int_default(model_head,"version",model_current_version);
-	fprintf(stdout,"%s: %d=%d\n",path,version,model_current_version);
 	if (version!=model_current_version) return(FALSE);
 	
 		// decode

@@ -106,12 +106,12 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 322609435;
-			PBXWorkspaceStateSaveDate = 322609435;
+			PBXPerProjectTemplateStateSaveDate = 322720415;
+			PBXWorkspaceStateSaveDate = 322720415;
 		};
 		perUserProjectItems = {
 			26C2293D133AA1B8000ED0E0 /* PBXTextBookmark */ = 26C2293D133AA1B8000ED0E0 /* PBXTextBookmark */;
-			26C87D591339419500DA562E /* PBXTextBookmark */ = 26C87D591339419500DA562E /* PBXTextBookmark */;
+			26C22A3C133C5484000ED0E0 /* PBXTextBookmark */ = 26C22A3C133C5484000ED0E0 /* PBXTextBookmark */;
 		};
 		sourceControlManager = 260AFEEF0D40506700F6C42F /* Source Control */;
 		userBuildSettings = {
@@ -257,10 +257,10 @@
 	};
 	261CE98F12D034AB00D1D8BF /* OSX_main.c */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1237, 5460}}";
-			sepNavSelRange = "{9162, 0}";
-			sepNavVisRange = "{8963, 1130}";
-			sepNavWindowFrame = "{{155, 110}, {1001, 891}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1237, 5044}}";
+			sepNavSelRange = "{5661, 0}";
+			sepNavVisRange = "{5417, 1910}";
+			sepNavWindowFrame = "{{384, 110}, {1001, 891}}";
 		};
 	};
 	261F12430ED3CB2F00A8A0D8 /* vertex_masks.c */ = {
@@ -442,6 +442,16 @@
 		vrLen = 0;
 		vrLoc = 0;
 	};
+	26C22A3C133C5484000ED0E0 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 0867D6ABFE840B52C02AAC07 /* English */;
+		name = "InfoPlist.strings: 5";
+		rLen = 0;
+		rLoc = 206;
+		rType = 0;
+		vrLen = 0;
+		vrLoc = 0;
+	};
 	26C5EEFB1260F027000B0F9E /* OSX_glue.c */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1125, 5148}}";
@@ -465,16 +475,6 @@
 			sepNavVisRange = "{74, 2351}";
 			sepNavWindowFrame = "{{654, 81}, {1026, 910}}";
 		};
-	};
-	26C87D591339419500DA562E /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 0867D6ABFE840B52C02AAC07 /* English */;
-		name = "InfoPlist.strings: 5";
-		rLen = 0;
-		rLoc = 206;
-		rType = 0;
-		vrLen = 0;
-		vrLoc = 0;
 	};
 	26C9371412DD1896005C0708 /* alt_property_palette_pose_move.c */ = {
 		uiCtxt = {

@@ -207,7 +207,9 @@ void main_wind_open(void)
 {
 	int							wid,high;
 	Rect						wbox,box;
-	GLint						attrib[]={AGL_RGBA,AGL_DOUBLEBUFFER,AGL_DEPTH_SIZE,24,AGL_ALL_RENDERERS,AGL_NONE};
+	GLint						attrib[]={AGL_NO_RECOVERY,AGL_RGBA,AGL_DOUBLEBUFFER,AGL_WINDOW,AGL_ACCELERATED,AGL_PIXEL_SIZE,24,AGL_DEPTH_SIZE,24,AGL_NONE};
+	CGDirectDisplayID			cg_display_id;
+	CGOpenGLDisplayMask			cg_display_mask;
 	AGLPixelFormat				pf;
 	GLint						rect[4];
 	EventTypeSpec	wind_events[]={	{kEventClassWindow,kEventWindowDrawContent},
@@ -239,14 +241,20 @@ void main_wind_open(void)
 	ShowWindow(wind);
 	SetPort(GetWindowPort(wind));
 	
-		// OpenGL context
+		// opengl setup
 		
-	pf=aglChoosePixelFormat(NULL,0,attrib);
-	
+	cg_display_id=CGMainDisplayID();
+	cg_display_mask=CGDisplayIDToOpenGLDisplayMask(cg_display_id);
+	pf=aglCreatePixelFormat(attrib);
 	ctx=aglCreateContext(pf,NULL);
-	aglSetDrawable(ctx,(AGLDrawable)GetWindowPort(wind));
 	aglSetCurrentContext(ctx);
 	aglDestroyPixelFormat(pf);
+
+	main_wind_gl_setup();
+	
+	aglSetWindowRef(ctx,wind);
+	
+		// buffer rect clipping
 	
 	GetWindowPortBounds(wind,&box);
 		
@@ -257,8 +265,6 @@ void main_wind_open(void)
 
 	aglSetInteger(ctx,AGL_BUFFER_RECT,rect);
 	aglEnable(ctx,AGL_BUFFER_RECT);
-
-	main_wind_gl_setup();
 	
 		// init window
 		
@@ -284,8 +290,7 @@ void main_wind_close(void)
 		// close OpenGL contexts
 		
 	aglSetCurrentContext(NULL);
-	
-	aglSetDrawable(ctx,NULL);
+	aglSetWindowRef(ctx,NULL);
 	aglDestroyContext(ctx);
 	
 		// close window

@@ -239,9 +239,10 @@ OSStatus main_wind_event_callback(EventHandlerCallRef eventhandler,EventRef even
 void main_wind_open(void)
 {
 	Rect						wbox;
-	GLint						attrib[]={AGL_NO_RECOVERY,AGL_RGBA,AGL_DOUBLEBUFFER,AGL_ACCELERATED,AGL_PIXEL_SIZE,24,AGL_ALPHA_SIZE,8,AGL_DEPTH_SIZE,24,AGL_STENCIL_SIZE,8,AGL_NONE};
+	GLint						attrib[]={AGL_NO_RECOVERY,AGL_RGBA,AGL_DOUBLEBUFFER,AGL_WINDOW,AGL_ACCELERATED,AGL_PIXEL_SIZE,24,AGL_ALPHA_SIZE,8,AGL_DEPTH_SIZE,24,AGL_STENCIL_SIZE,8,AGL_NONE};
 	GLint						rect[4];
-	GDHandle					gdevice;
+	CGDirectDisplayID			cg_display_id;
+	CGOpenGLDisplayMask			cg_display_mask;
 	AGLPixelFormat				pf;
 	EventTypeSpec				wind_events[]={	{kEventClassWindow,kEventWindowDrawContent},
 												{kEventClassWindow,kEventWindowCursorChange},
@@ -270,16 +271,16 @@ void main_wind_open(void)
 	
 		// opengl setup
 		
-	gdevice=GetMainDevice();
-
-	pf=aglChoosePixelFormat(&gdevice,1,attrib);
+	cg_display_id=CGMainDisplayID();
+	cg_display_mask=CGDisplayIDToOpenGLDisplayMask(cg_display_id);
+	pf=aglCreatePixelFormat(attrib);
 	ctx=aglCreateContext(pf,NULL);
 	aglSetCurrentContext(ctx);
 	aglDestroyPixelFormat(pf);
 
 	main_wind_gl_setup();
 	
-	aglSetDrawable(ctx,(AGLDrawable)GetWindowPort(wind));
+	aglSetWindowRef(ctx,wind);
 	
 		// buffer rect clipping
 		
@@ -312,7 +313,7 @@ void main_wind_close(void)
 		// gl shutdown
 		
 	aglSetCurrentContext(NULL);
-	aglSetDrawable(ctx,NULL);
+	aglSetWindowRef(ctx,NULL);
 	aglDestroyContext(ctx);
 	
         // dispose of events and window
