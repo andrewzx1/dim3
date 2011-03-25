@@ -2,7 +2,7 @@
 
 Module: dim3 Setup
 Author: Brian Barnes
- Usage: Property Palette Sounds
+ Usage: Property Palette Halos
 
 ***************************** License ********************************
 
@@ -33,10 +33,10 @@ and can be sold or given away.
 #include "ui_common.h"
 #include "interface.h"
 
-#define kSoundPropertyAdd						0
+#define kHaloPropertyAdd						0
 
-#define kSoundProperyName						1000
-#define kSoundProperyDelete						2000
+#define kHaloProperyName						1000
+#define kHaloProperyDelete						2000
 
 extern iface_type				iface;
 extern setup_state_type			state;
@@ -44,20 +44,20 @@ extern list_palette_type		property_palette;
 
 /* =======================================================
 
-      Property Palette Fill Sounds
+      Property Palette Fill Halos
       
 ======================================================= */
 
-void property_palette_fill_sounds(void)
+void property_palette_fill_halos(void)
 {
 	int						n;
 
-	list_palette_add_header_button(&property_palette,kSoundPropertyAdd,"Sounds",list_button_plus);
+	list_palette_add_header_button(&property_palette,kHaloPropertyAdd,"Halos",list_button_plus);
 
 	list_palette_sort_mark_start(&property_palette);
 	
-	for (n=0;n!=iface.sound_list.nsound;n++) {
-		list_palette_add_string_selectable_button(&property_palette,(kSoundProperyName+n),list_button_minus,(kSoundProperyDelete+n),iface.sound_list.sounds[n].name,NULL,(state.cur_idx==n),FALSE);
+	for (n=0;n!=iface.halo_list.nhalo;n++) {
+		list_palette_add_string_selectable_button(&property_palette,(kHaloProperyName+n),list_button_minus,(kHaloProperyDelete+n),iface.halo_list.halos[n].name,NULL,(state.cur_idx==n),FALSE);
 	}
 
 	list_palette_sort(&property_palette);
@@ -65,32 +65,32 @@ void property_palette_fill_sounds(void)
 
 /* =======================================================
 
-      Property Palette Click Sounds
+      Property Palette Click Halos
       
 ======================================================= */
 
-void property_palette_click_sounds(int id)
+void property_palette_click_halos(int id)
 {
-		// sound edit
+		// halo edit
 		
-	if ((id>=kSoundProperyName) && (id<kSoundProperyDelete)) {
-		state.cur_idx=id-kSoundProperyName;
+	if ((id>=kHaloProperyName) && (id<kHaloProperyDelete)) {
+		state.cur_idx=id-kHaloProperyName;
 		main_wind_draw();
 		return;
 	}
 	
-		// sound delete
+		// halo delete
 		
-	if (id>=kSoundProperyDelete) {
+	if (id>=kHaloProperyDelete) {
 		state.cur_idx=-1;
 	//	supergumba
 		main_wind_draw();
 		return;
 	}
 	
-		// sound add
+		// halo add
 
-	if (id==kSoundPropertyAdd) {
+	if (id==kHaloPropertyAdd) {
 	// supergumba
 	//	state.cur_idx=... new sound ...
 		main_wind_draw();

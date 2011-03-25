@@ -238,7 +238,6 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 		// start progress
 		
 	progress_initialize(map.info.name);
-	progress_draw(10);
 	
 	strcpy(current_map_name,map.info.name);		// remember for close
 	
@@ -247,6 +246,8 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 	sprintf(txt,"Opening %s",map.info.name);
 	console_add_system(txt);
 	
+	progress_draw(10);
+
 	map_setup(&setup.file_path_setup,setup.anisotropic_mode,setup.mipmap_mode,setup.texture_quality_mode,TRUE);
 
 	if (!map_open(&map,map.info.name)) {
@@ -354,7 +355,7 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 		// create object and scenery
 		// and call spawn on all the objects
 
-	progress_draw(70);
+	progress_draw(60);
 	
 	map_find_random_spot_clear(&map,NULL,-1);
 
@@ -376,7 +377,7 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 	
 		// attach player to map
 
-	progress_draw(80);
+	progress_draw(70);
 
 	if (net_setup.mode!=net_mode_host_dedicated) {
 
@@ -392,7 +393,7 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 	
 		// initialize movements and lookups
 
-	progress_draw(90);
+	progress_draw(80);
 	
 	map_movements_initialize();
 	map_lookups_setup();
@@ -402,7 +403,7 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 	
 		// map start event
 		
-	progress_draw(95);
+	progress_draw(90);
 
 	scripts_post_event_console(&js.game_attach,sd_event_map,sd_event_map_open,0);
 	scripts_post_event_console(&js.course_attach,sd_event_map,sd_event_map_open,0);

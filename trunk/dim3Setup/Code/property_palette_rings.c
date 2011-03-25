@@ -2,7 +2,7 @@
 
 Module: dim3 Setup
 Author: Brian Barnes
- Usage: Property Palette Sounds
+ Usage: Property Palette Rings
 
 ***************************** License ********************************
 
@@ -33,10 +33,10 @@ and can be sold or given away.
 #include "ui_common.h"
 #include "interface.h"
 
-#define kSoundPropertyAdd						0
+#define kRingPropertyAdd						0
 
-#define kSoundProperyName						1000
-#define kSoundProperyDelete						2000
+#define kRingProperyName						1000
+#define kRingProperyDelete						2000
 
 extern iface_type				iface;
 extern setup_state_type			state;
@@ -44,20 +44,20 @@ extern list_palette_type		property_palette;
 
 /* =======================================================
 
-      Property Palette Fill Sounds
+      Property Palette Fill Rings
       
 ======================================================= */
 
-void property_palette_fill_sounds(void)
+void property_palette_fill_rings(void)
 {
 	int						n;
 
-	list_palette_add_header_button(&property_palette,kSoundPropertyAdd,"Sounds",list_button_plus);
+	list_palette_add_header_button(&property_palette,kRingPropertyAdd,"Rings",list_button_plus);
 
 	list_palette_sort_mark_start(&property_palette);
 	
-	for (n=0;n!=iface.sound_list.nsound;n++) {
-		list_palette_add_string_selectable_button(&property_palette,(kSoundProperyName+n),list_button_minus,(kSoundProperyDelete+n),iface.sound_list.sounds[n].name,NULL,(state.cur_idx==n),FALSE);
+	for (n=0;n!=iface.ring_list.nring;n++) {
+		list_palette_add_string_selectable_button(&property_palette,(kRingProperyName+n),list_button_minus,(kRingProperyDelete+n),iface.ring_list.rings[n].name,NULL,(state.cur_idx==n),FALSE);
 	}
 
 	list_palette_sort(&property_palette);
@@ -65,32 +65,32 @@ void property_palette_fill_sounds(void)
 
 /* =======================================================
 
-      Property Palette Click Sounds
+      Property Palette Click Rings
       
 ======================================================= */
 
-void property_palette_click_sounds(int id)
+void property_palette_click_rings(int id)
 {
-		// sound edit
+		// ring edit
 		
-	if ((id>=kSoundProperyName) && (id<kSoundProperyDelete)) {
-		state.cur_idx=id-kSoundProperyName;
+	if ((id>=kRingProperyName) && (id<kRingProperyDelete)) {
+		state.cur_idx=id-kRingProperyName;
 		main_wind_draw();
 		return;
 	}
 	
-		// sound delete
+		// ring delete
 		
-	if (id>=kSoundProperyDelete) {
+	if (id>=kRingProperyDelete) {
 		state.cur_idx=-1;
 	//	supergumba
 		main_wind_draw();
 		return;
 	}
 	
-		// sound add
+		// ring add
 
-	if (id==kSoundPropertyAdd) {
+	if (id==kRingPropertyAdd) {
 	// supergumba
 	//	state.cur_idx=... new sound ...
 		main_wind_draw();

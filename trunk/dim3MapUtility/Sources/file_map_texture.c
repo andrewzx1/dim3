@@ -71,7 +71,7 @@ bool map_textures_read(map_type *map)
 		// directly hooked up to elements
 		
 	if (maputility_settings.in_engine) {
-	
+
 		for (n=0;n!=max_map_texture;n++) {
 			txt_ok[n]=FALSE;
 		}
@@ -172,6 +172,7 @@ bool map_textures_read(map_type *map)
 
 				if ((maputility_settings.in_engine) && (frame->bumpmap.gl_id!=-1)) {
 					bitmap_combine(&frame->combinemap,&frame->bitmap,&frame->bumpmap,&frame->specularmap,maputility_settings.anisotropic_mode,maputility_settings.mipmap_mode,texture->compress);
+					bitmap_free_pixel_data(&frame->combinemap);
 				}
 
 					// get rid of saved pixel data
@@ -180,6 +181,7 @@ bool map_textures_read(map_type *map)
 				bitmap_free_pixel_data(&frame->bitmap);
 				bitmap_free_pixel_data(&frame->bumpmap);
 				bitmap_free_pixel_data(&frame->specularmap);
+				bitmap_free_pixel_data(&frame->glowmap);
 			}
 			
 			frame++;
@@ -212,6 +214,7 @@ void map_textures_close(map_type *map)
 			bitmap_close(&frame->bumpmap);
 			bitmap_close(&frame->specularmap);
 			bitmap_close(&frame->glowmap);
+			bitmap_close(&frame->combinemap);
 			
 			frame++;
 		}

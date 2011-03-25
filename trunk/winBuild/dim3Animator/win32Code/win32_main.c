@@ -73,6 +73,7 @@ LRESULT CALLBACK animator_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lPara
 {
 	int					cmd;
 	d3pnt				pnt;
+	POINT				wpt;
 	PAINTSTRUCT			ps;
 
 	switch (msg) {
@@ -98,8 +99,11 @@ LRESULT CALLBACK animator_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lPara
 			break;
 
 		case WM_MOUSEWHEEL:
-			pnt.x=LOWORD(lParam);
-			pnt.y=HIWORD(lParam);
+			wpt.x=LOWORD(lParam);
+			wpt.y=HIWORD(lParam);
+			ScreenToClient(wnd,&wpt);
+			pnt.x=wpt.x;
+			pnt.y=wpt.y;
 			main_wind_scroll_wheel(&pnt,(GET_WHEEL_DELTA_WPARAM(wParam)/60));
 			break;
 
