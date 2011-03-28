@@ -29,7 +29,7 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
-#include "video.h"
+#include "interface.h"
 
 extern setup_type			setup;
 extern render_info_type		render_info;

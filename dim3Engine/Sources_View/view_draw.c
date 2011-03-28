@@ -31,7 +31,6 @@ and can be sold or given away.
 
 #include "interface.h"
 #include "objects.h"
-#include "video.h"
 
 extern map_type				map;
 extern camera_type			camera;
@@ -44,24 +43,7 @@ extern view_render_type		view_camera_render,view_node_render;
 
 float						shake_ang_x[16]={-1,0,1,2,1,0,-1,-2,-4,-2,0,4,8,12,8,4};
 
-extern void draw_weapon_hand(obj_type *obj,weapon_type *weap);
-extern void draw_background(void);
-extern void draw_sky(void);
 extern void model_calc_pose_bones(model_draw *draw);
-extern void render_map_mesh_opaque(void);
-extern void render_map_mesh_transparent(void);
-extern void rain_draw(void);
-extern void fog_draw_textured(void);
-extern void fog_solid_start(void);
-extern void fog_solid_end(void);
-extern void polygon_segment_start(void);
-extern void polygon_segment_end(void);
-extern void view_draw_liquid_tint(int liquid_idx);
-extern void view_draw_effect_tint(void);
-extern void view_draw_fade_draw(void);
-extern void render_map_liquid_opaque(void);
-extern void render_map_liquid_transparent(void);
-extern void decal_render(void);
 extern void view_start_draw_list(void);
 extern void view_add_mesh_liquid_draw_list(void);
 extern void view_setup_objects(int tick);

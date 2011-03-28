@@ -30,7 +30,6 @@ and can be sold or given away.
 #endif
 
 #include "interface.h"
-#include "video.h"
 
 #define setup_pane_video					0
 #define setup_pane_audio					1

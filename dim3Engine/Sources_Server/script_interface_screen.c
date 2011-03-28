@@ -29,8 +29,8 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
+#include "interface.h"
 #include "scripts.h"
-#include "video.h"
 
 extern js_type			js;
 extern setup_type		setup;

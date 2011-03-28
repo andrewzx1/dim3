@@ -298,7 +298,7 @@ void iface_default_settings(iface_type *iface)
 		iface->intro.simple_save[n].desc.text_size=20;
 	}
 
-	iface->intro.model.nmodel=0;
+	iface->intro.model_list.nmodel=0;
 	
 	iface->intro.music[0]=0x0;
 

@@ -76,6 +76,7 @@ extern void property_palette_scroll_wheel(d3pnt *pnt,int move);
 extern void property_palette_click(d3pnt *pnt,bool double_click);
 
 extern void property_palette_fill_settings(void);
+extern void property_palette_fill_intro(void);
 extern void property_palette_fill_sounds(void);
 extern void property_palette_fill_particles(void);
 extern void property_palette_fill_rings(void);
@@ -85,6 +86,7 @@ extern void property_palette_fill_crosshairs(void);
 extern void property_palette_fill_actions(void);
 
 extern void property_palette_click_settings(int id);
+extern void property_palette_click_intro(int id);
 extern void property_palette_click_sounds(int id);
 extern void property_palette_click_particles(int id);
 extern void property_palette_click_rings(int id);

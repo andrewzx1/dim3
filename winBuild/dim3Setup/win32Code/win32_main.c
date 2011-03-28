@@ -346,9 +346,11 @@ int APIENTRY WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmdLine
 
 	win32_main_wind_close();
 
-		// close glue
+		// save and close
 
+	iface_write(&iface);
 	iface_shutdown(&iface);
+
 	os_glue_end();
 
 	return(0);

@@ -53,5 +53,6 @@ dim3BaseUtility
 dim3ModelUtility (needs Base)
 dim3MapUtility (needs Base)
 dim3Engine (needs Base, Model, and Map)
-dim3Editor (OS X Only) (needs Base, Model, and Map)
-dim3Animator (OS X Only) (needs Base, Model)
+dim3Editor (needs Base, Model, and Map)
+dim3Animator (needs Base, Model)
+dim3Setup (needs Base)

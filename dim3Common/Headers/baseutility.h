@@ -826,7 +826,7 @@ typedef struct		{
 														button_multiplayer_host,button_multiplayer_join,button_multiplayer_setup,
 														button_credit,button_quit;
 						iface_intro_simple_save_type	simple_save[max_simple_save_spot];
-						iface_intro_model_list			model;
+						iface_intro_model_list			model_list;
 					} iface_intro_type;
 
 //

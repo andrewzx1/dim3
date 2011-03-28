@@ -31,7 +31,6 @@ and can be sold or given away.
 
 #include "interface.h"
 #include "scripts.h"
-#include "video.h"
 
 extern server_type			server;
 extern iface_type			iface;

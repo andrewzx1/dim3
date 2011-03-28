@@ -29,7 +29,7 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
-#include "video.h"
+#include "interface.h"
 
 GLuint						back_render_fbo_id,back_render_fbo_depth_stencil_id;
 bool						back_render_on;

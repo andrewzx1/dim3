@@ -29,7 +29,7 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
-#include "video.h"
+#include "interface.h"
 
 extern map_type				map;
 extern view_type			view;

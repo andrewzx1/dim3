@@ -30,7 +30,6 @@ and can be sold or given away.
 #endif
 
 #include "interface.h"
-#include "video.h"
 
 float					line_zag[16]={1.0f,0.5f,0.8f,-0.2f,0.3f,-1.0f,-0.7f,0.1f,-0.4f,0.6f,-0.4f,0.5f,-0.6f,0.2f,-0.8f,-0.4f};
 

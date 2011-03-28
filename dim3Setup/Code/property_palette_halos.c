@@ -57,7 +57,7 @@ void property_palette_fill_halos(void)
 	list_palette_sort_mark_start(&property_palette);
 	
 	for (n=0;n!=iface.halo_list.nhalo;n++) {
-		list_palette_add_string_selectable_button(&property_palette,(kHaloProperyName+n),list_button_minus,(kHaloProperyDelete+n),iface.halo_list.halos[n].name,NULL,(state.cur_idx==n),FALSE);
+		list_palette_add_string_selectable_button(&property_palette,(kHaloProperyName+n),list_button_minus,(kHaloProperyDelete+n),iface.halo_list.halos[n].name,NULL,(state.cur_halo_idx==n),FALSE);
 	}
 
 	list_palette_sort(&property_palette);
@@ -74,7 +74,7 @@ void property_palette_click_halos(int id)
 		// halo edit
 		
 	if ((id>=kHaloProperyName) && (id<kHaloProperyDelete)) {
-		state.cur_idx=id-kHaloProperyName;
+		state.cur_halo_idx=id-kHaloProperyName;
 		main_wind_draw();
 		return;
 	}
@@ -82,7 +82,7 @@ void property_palette_click_halos(int id)
 		// halo delete
 		
 	if (id>=kHaloProperyDelete) {
-		state.cur_idx=-1;
+		state.cur_halo_idx=-1;
 	//	supergumba
 		main_wind_draw();
 		return;
@@ -92,7 +92,7 @@ void property_palette_click_halos(int id)
 
 	if (id==kHaloPropertyAdd) {
 	// supergumba
-	//	state.cur_idx=... new sound ...
+	//	state.cur_halo_idx=... new sound ...
 		main_wind_draw();
 		return;
 	}

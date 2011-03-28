@@ -244,9 +244,9 @@ void intro_open(void)
 
 		// models
 
-	intro_model=iface.intro.model.models;
+	intro_model=iface.intro.model_list.models;
 
-	for (n=0;n!=iface.intro.model.nmodel;n++) {
+	for (n=0;n!=iface.intro.model_list.nmodel;n++) {
 		element_model_add(intro_model->model_name,intro_model->animate_name,intro_model->resize,NULL,&intro_model->rot,-1,intro_model->x,intro_model->y);
 		intro_model++;
 	}

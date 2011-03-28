@@ -30,7 +30,6 @@ and can be sold or given away.
 #endif
 
 #include "interface.h"
-#include "video.h"
 
 extern void gl_shader_set_scene_variables(shader_type *shader);
 

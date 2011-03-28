@@ -30,9 +30,9 @@ and can be sold or given away.
 #endif
 
 #include "interface.h"
+#include "network.h"
 #include "scripts.h"
 #include "objects.h"
-#include "network.h"
 
 extern js_type				js;
 extern setup_type			setup;

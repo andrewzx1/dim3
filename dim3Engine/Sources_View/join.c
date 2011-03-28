@@ -32,7 +32,6 @@ and can be sold or given away.
 #include "interface.h"
 #include "network.h"
 #include "objects.h"
-#include "video.h"
 
 #define join_pane_news					0
 #define join_pane_lan					1

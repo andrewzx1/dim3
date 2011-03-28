@@ -31,7 +31,6 @@ and can be sold or given away.
 
 #include "interface.h"
 #include "objects.h"
-#include "video.h"
 
 view_type					view;
 view_render_type			view_camera_render,view_node_render;

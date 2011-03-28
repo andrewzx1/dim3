@@ -32,10 +32,9 @@ and can be sold or given away.
 #define SCORE_LIMIT_EXTRA_SECOND_FAIL	5
 
 #include "interface.h"
-#include "objects.h"
-#include "scripts.h"
-#include "video.h"
 #include "network.h"
+#include "scripts.h"
+#include "objects.h"
 
 extern bool					game_loop_quit;
 
