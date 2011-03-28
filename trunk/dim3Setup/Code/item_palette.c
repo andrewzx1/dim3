@@ -52,6 +52,18 @@ void item_palette_initialize(void)
 	item_palette.item_idx=-1;
 
 	state.cur_item=item_interface_settings;
+	state.cur_intro_button_idx=-1;
+	state.cur_intro_model_idx=-1;
+	state.cur_hud_button_idx=-1;
+	state.cur_hud_text_idx=-1;
+	state.cur_hud_bar_idx=-1;
+	state.cur_sound_idx=-1;
+	state.cur_particle_idx=-1;
+	state.cur_ring_idx=-1;
+	state.cur_halo_idx=-1;
+	state.cur_mark_idx=-1;
+	state.cur_crosshair_idx=-1;
+	state.cur_action_idx=-1;
 }
 
 void item_palette_shutdown(void)
@@ -189,7 +201,6 @@ void item_palette_click(d3pnt *pnt,bool double_click)
 		// handle click
 
 	state.cur_item=item_palette.item_type;
-	state.cur_idx=-1;
 
 	main_wind_draw();
 }

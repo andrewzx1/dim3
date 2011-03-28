@@ -30,9 +30,8 @@ and can be sold or given away.
 #endif
 
 #include "interface.h"
-#include "objects.h"
 #include "network.h"
-#include "video.h"
+#include "objects.h"
 
 extern server_type				server;
 extern view_type				view;

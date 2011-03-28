@@ -26,6 +26,26 @@ and can be sold or given away.
 *********************************************************************/
 
 //
+// vertex objects
+//
+
+#define view_vertex_object_count						32
+
+//
+// back renderers
+//
+
+#define back_render_texture_pixel_size					256
+
+//
+// shadows
+//
+
+#define shadow_max_polys								256
+#define shadow_max_ray_trace_vertexes					10240
+#define shadow_infinite_light_adjust					100
+
+//
 // view maximums
 //
 
@@ -125,6 +145,33 @@ and can be sold or given away.
 //
 
 #define console_screen_percent								0.4f
+
+
+//
+// screen sizes
+//
+
+#define max_screen_size									64
+
+typedef struct		{
+						int								wid,high;
+					} screen_size_type;
+					
+//
+// render info
+//
+ 
+#define max_fps											100
+
+typedef struct		{
+						int								view_x,view_y,
+														monitor_x_sz,monitor_y_sz,
+														monitor_refresh_rate,
+														texture_unit_count,texture_max_size,
+														nscreen_size;
+						char							name[64],ext_string[8192];
+						screen_size_type				screen_sizes[max_screen_size];
+					} render_info_type;
 
 //
 // image structures

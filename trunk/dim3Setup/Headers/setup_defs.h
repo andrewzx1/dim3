@@ -61,7 +61,12 @@ and can be sold or given away.
 //
 
 typedef struct		{
-						int							cur_item,cur_idx;
+						int							cur_item,
+													cur_intro_button_idx,cur_intro_model_idx,
+													cur_hud_button_idx,cur_hud_text_idx,cur_hud_bar_idx,
+													cur_sound_idx,cur_particle_idx,cur_ring_idx,
+													cur_halo_idx,cur_mark_idx,cur_crosshair_idx,
+													cur_action_idx;
 					} setup_state_type;
 
 

@@ -57,7 +57,7 @@ void property_palette_fill_sounds(void)
 	list_palette_sort_mark_start(&property_palette);
 	
 	for (n=0;n!=iface.sound_list.nsound;n++) {
-		list_palette_add_string_selectable_button(&property_palette,(kSoundProperyName+n),list_button_minus,(kSoundProperyDelete+n),iface.sound_list.sounds[n].name,NULL,(state.cur_idx==n),FALSE);
+		list_palette_add_string_selectable_button(&property_palette,(kSoundProperyName+n),list_button_minus,(kSoundProperyDelete+n),iface.sound_list.sounds[n].name,NULL,(state.cur_sound_idx==n),FALSE);
 	}
 
 	list_palette_sort(&property_palette);
@@ -74,7 +74,7 @@ void property_palette_click_sounds(int id)
 		// sound edit
 		
 	if ((id>=kSoundProperyName) && (id<kSoundProperyDelete)) {
-		state.cur_idx=id-kSoundProperyName;
+		state.cur_sound_idx=id-kSoundProperyName;
 		main_wind_draw();
 		return;
 	}
@@ -82,7 +82,7 @@ void property_palette_click_sounds(int id)
 		// sound delete
 		
 	if (id>=kSoundProperyDelete) {
-		state.cur_idx=-1;
+		state.cur_sound_idx=-1;
 	//	supergumba
 		main_wind_draw();
 		return;
@@ -92,7 +92,7 @@ void property_palette_click_sounds(int id)
 
 	if (id==kSoundPropertyAdd) {
 	// supergumba
-	//	state.cur_idx=... new sound ...
+	//	state.cur_sound_idx=... new sound ...
 		main_wind_draw();
 		return;
 	}

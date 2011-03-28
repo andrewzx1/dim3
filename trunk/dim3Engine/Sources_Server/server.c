@@ -32,7 +32,6 @@ and can be sold or given away.
 #include "interface.h"
 #include "scripts.h"
 #include "objects.h"
-#include "video.h"
 
 map_type					map;
 server_type					server;

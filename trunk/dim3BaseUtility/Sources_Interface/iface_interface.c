@@ -636,10 +636,10 @@ void iface_read_settings_intro_model(iface_type *iface,int tag)
 {
 	iface_intro_model_type		*intro_model;
 
-	if (iface->intro.model.nmodel==max_hud_intro_model) return;
+	if (iface->intro.model_list.nmodel==max_hud_intro_model) return;
 
-	intro_model=&iface->intro.model.models[iface->intro.model.nmodel];
-	iface->intro.model.nmodel++;
+	intro_model=&iface->intro.model_list.models[iface->intro.model_list.nmodel];
+	iface->intro.model_list.nmodel++;
 
 	xml_get_attribute_text(tag,"model",intro_model->model_name,name_str_len);
 	xml_get_attribute_text(tag,"animate",intro_model->animate_name,name_str_len);
@@ -648,7 +648,6 @@ void iface_read_settings_intro_model(iface_type *iface,int tag)
 	xml_get_attribute_3_coord_float(tag,"rot",&intro_model->rot.x,&intro_model->rot.y,&intro_model->rot.z);
 	intro_model->resize=xml_get_attribute_float_default(tag,"resize",1.0f);
 }
-
 
 /* =======================================================
 

@@ -31,7 +31,6 @@ and can be sold or given away.
 
 #include "interface.h"
 #include "scripts.h"
-#include "video.h"
 
 #define error_close_id				0
 

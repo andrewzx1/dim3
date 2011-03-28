@@ -268,7 +268,51 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\dim3Engine\Headers\gui_defs.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3Engine\Headers\input_defs.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\dim3Engine\Headers\interface.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3Engine\Headers\network.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3Engine\Headers\network_defs.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3Engine\Headers\objects.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3Engine\Headers\script_defs.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3Engine\Headers\scripts.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3Engine\Headers\server_defs.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3Engine\Headers\setup_defs.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3Engine\Headers\sound_defs.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3Engine\Headers\view_defs.h"
 					>
 				</File>
 			</Filter>
@@ -365,34 +409,6 @@
 							PreprocessorDefinitions=""
 						/>
 					</FileConfiguration>
-				</File>
-			</Filter>
-			<Filter
-				Name="Server Headers"
-				>
-				<File
-					RelativePath="..\..\dim3Engine\Headers_Server\objects.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\dim3Engine\Headers_Server\physics.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\dim3Engine\Headers_Server\script_defs.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\dim3Engine\Headers_Server\scripts.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\dim3Engine\Headers_Server\server_defs.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\dim3Engine\Headers_Server\setup_defs.h"
-					>
 				</File>
 			</Filter>
 			<Filter
@@ -2797,42 +2813,6 @@
 				</Filter>
 			</Filter>
 			<Filter
-				Name="View Headers"
-				>
-				<File
-					RelativePath="..\..\dim3Engine\Headers_View\gui_defs.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\dim3Engine\Headers_View\input_defs.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\dim3Engine\Headers_View\inputs.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\dim3Engine\Headers_View\sound_defs.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\dim3Engine\Headers_View\sounds.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\dim3Engine\Headers_View\video.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\dim3Engine\Headers_View\video_defs.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\dim3Engine\Headers_View\view_defs.h"
-					>
-				</File>
-			</Filter>
-			<Filter
 				Name="View Sources"
 				>
 				<File
@@ -3732,18 +3712,6 @@
 						</FileConfiguration>
 					</File>
 				</Filter>
-			</Filter>
-			<Filter
-				Name="Network Headers"
-				>
-				<File
-					RelativePath="..\..\dim3Engine\Headers_Network\network.h"
-					>
-				</File>
-				<File
-					RelativePath="..\..\dim3Engine\Headers_Network\network_defs.h"
-					>
-				</File>
 			</Filter>
 			<Filter
 				Name="Network Sources"

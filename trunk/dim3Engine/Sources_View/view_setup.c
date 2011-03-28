@@ -31,7 +31,6 @@ and can be sold or given away.
 
 #include "interface.h"
 #include "objects.h"
-#include "video.h"
 
 extern bool					shadow_on;
 

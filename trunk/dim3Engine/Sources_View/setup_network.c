@@ -30,7 +30,6 @@ and can be sold or given away.
 #endif
 
 #include "interface.h"
-#include "video.h"
 
 #define setup_network_pane_player			0
 #define setup_network_pane_host				1

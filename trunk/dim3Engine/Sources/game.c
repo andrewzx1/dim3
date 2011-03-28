@@ -31,8 +31,8 @@ and can be sold or given away.
 
 #include "interface.h"
 #include "network.h"
-#include "objects.h"
 #include "scripts.h"
+#include "objects.h"
 
 extern map_type				map;
 extern server_type			server;

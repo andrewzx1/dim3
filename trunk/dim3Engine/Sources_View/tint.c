@@ -30,7 +30,6 @@ and can be sold or given away.
 #endif
 
 #include "interface.h"
-#include "video.h"
 
 int							tint_start_tick,
 							tint_fade_in_tick,

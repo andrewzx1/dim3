@@ -32,7 +32,6 @@ and can be sold or given away.
 #include "interface.h"
 #include "network.h"
 #include "objects.h"
-#include "video.h"
 
 #define host_pane_game					0
 #define host_pane_options				1

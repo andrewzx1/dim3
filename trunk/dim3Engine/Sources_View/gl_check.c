@@ -29,7 +29,7 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
-#include "video.h"
+#include "interface.h"
 
 bool						gl_check_value_frame_buffer,
 							gl_check_value_fsaa,

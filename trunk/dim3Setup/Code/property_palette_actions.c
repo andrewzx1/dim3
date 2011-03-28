@@ -55,7 +55,7 @@ void property_palette_fill_actions(void)
 	list_palette_add_header(&property_palette,0,"Actions");
 	
 	for (n=0;n!=ncontrol;n++) {
-		list_palette_add_string_selectable(&property_palette,(kActionProperyName+n),control_name_str[n],NULL,(state.cur_idx==n),FALSE);
+		list_palette_add_string_selectable(&property_palette,(kActionProperyName+n),control_name_str[n],NULL,(state.cur_action_idx==n),FALSE);
 	}
 }
 
@@ -69,7 +69,7 @@ void property_palette_click_actions(int id)
 {
 		// edit action
 		
-	state.cur_idx=id-kActionProperyName;
+	state.cur_action_idx=id-kActionProperyName;
 	main_wind_draw();
 }
 

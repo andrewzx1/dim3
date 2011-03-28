@@ -57,7 +57,7 @@ void property_palette_fill_crosshairs(void)
 	list_palette_sort_mark_start(&property_palette);
 	
 	for (n=0;n!=iface.crosshair_list.ncrosshair;n++) {
-		list_palette_add_string_selectable_button(&property_palette,(kCrosshairProperyName+n),list_button_minus,(kCrosshairProperyDelete+n),iface.crosshair_list.crosshairs[n].name,NULL,(state.cur_idx==n),FALSE);
+		list_palette_add_string_selectable_button(&property_palette,(kCrosshairProperyName+n),list_button_minus,(kCrosshairProperyDelete+n),iface.crosshair_list.crosshairs[n].name,NULL,(state.cur_crosshair_idx==n),FALSE);
 	}
 
 	list_palette_sort(&property_palette);
@@ -74,7 +74,7 @@ void property_palette_click_crosshairs(int id)
 		// crosshair edit
 		
 	if ((id>=kCrosshairProperyName) && (id<kCrosshairProperyDelete)) {
-		state.cur_idx=id-kCrosshairProperyName;
+		state.cur_crosshair_idx=id-kCrosshairProperyName;
 		main_wind_draw();
 		return;
 	}
@@ -82,7 +82,7 @@ void property_palette_click_crosshairs(int id)
 		// crosshair delete
 		
 	if (id>=kCrosshairProperyDelete) {
-		state.cur_idx=-1;
+		state.cur_crosshair_idx=-1;
 	//	supergumba
 		main_wind_draw();
 		return;
@@ -92,7 +92,7 @@ void property_palette_click_crosshairs(int id)
 
 	if (id==kCrosshairPropertyAdd) {
 	// supergumba
-	//	state.cur_idx=... new sound ...
+	//	state.cur_crosshair_idx=... new sound ...
 		main_wind_draw();
 		return;
 	}

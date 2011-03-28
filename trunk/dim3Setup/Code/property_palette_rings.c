@@ -57,7 +57,7 @@ void property_palette_fill_rings(void)
 	list_palette_sort_mark_start(&property_palette);
 	
 	for (n=0;n!=iface.ring_list.nring;n++) {
-		list_palette_add_string_selectable_button(&property_palette,(kRingProperyName+n),list_button_minus,(kRingProperyDelete+n),iface.ring_list.rings[n].name,NULL,(state.cur_idx==n),FALSE);
+		list_palette_add_string_selectable_button(&property_palette,(kRingProperyName+n),list_button_minus,(kRingProperyDelete+n),iface.ring_list.rings[n].name,NULL,(state.cur_ring_idx==n),FALSE);
 	}
 
 	list_palette_sort(&property_palette);
@@ -74,7 +74,7 @@ void property_palette_click_rings(int id)
 		// ring edit
 		
 	if ((id>=kRingProperyName) && (id<kRingProperyDelete)) {
-		state.cur_idx=id-kRingProperyName;
+		state.cur_ring_idx=id-kRingProperyName;
 		main_wind_draw();
 		return;
 	}
@@ -82,7 +82,7 @@ void property_palette_click_rings(int id)
 		// ring delete
 		
 	if (id>=kRingProperyDelete) {
-		state.cur_idx=-1;
+		state.cur_ring_idx=-1;
 	//	supergumba
 		main_wind_draw();
 		return;
@@ -92,7 +92,7 @@ void property_palette_click_rings(int id)
 
 	if (id==kRingPropertyAdd) {
 	// supergumba
-	//	state.cur_idx=... new sound ...
+	//	state.cur_ring_idx=... new sound ...
 		main_wind_draw();
 		return;
 	}

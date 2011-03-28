@@ -92,6 +92,11 @@ void property_palette_fill(void)
 			property_palette_fill_settings();
 			break;
 
+		case item_interface_intro:
+			list_palette_set_title(&property_palette,"Intro");
+			property_palette_fill_intro();
+			break;
+
 		case item_interface_sound:
 			list_palette_set_title(&property_palette,"Sounds List");
 			property_palette_fill_sounds();
@@ -186,6 +191,10 @@ void property_palette_click(d3pnt *pnt,bool double_click)
 
 		case item_interface_settings:
 			property_palette_click_settings(property_palette.item_id);
+			break;
+
+		case item_interface_intro:
+			property_palette_click_intro(property_palette.item_id);
 			break;
 
 		case item_interface_sound:

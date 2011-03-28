@@ -31,7 +31,6 @@ and can be sold or given away.
 
 #include "interface.h"
 #include "scripts.h"
-#include "video.h"
 #include "objects.h"
 
 extern bool map_movements_cinema_start(int movement_idx,bool reverse,char *err_str);

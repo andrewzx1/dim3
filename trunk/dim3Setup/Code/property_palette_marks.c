@@ -57,7 +57,7 @@ void property_palette_fill_marks(void)
 	list_palette_sort_mark_start(&property_palette);
 	
 	for (n=0;n!=iface.mark_list.nmark;n++) {
-		list_palette_add_string_selectable_button(&property_palette,(kMarkProperyName+n),list_button_minus,(kMarkProperyDelete+n),iface.mark_list.marks[n].name,NULL,(state.cur_idx==n),FALSE);
+		list_palette_add_string_selectable_button(&property_palette,(kMarkProperyName+n),list_button_minus,(kMarkProperyDelete+n),iface.mark_list.marks[n].name,NULL,(state.cur_mark_idx==n),FALSE);
 	}
 
 	list_palette_sort(&property_palette);
@@ -74,7 +74,7 @@ void property_palette_click_marks(int id)
 		// mark edit
 		
 	if ((id>=kMarkProperyName) && (id<kMarkProperyDelete)) {
-		state.cur_idx=id-kMarkProperyName;
+		state.cur_mark_idx=id-kMarkProperyName;
 		main_wind_draw();
 		return;
 	}
@@ -82,7 +82,7 @@ void property_palette_click_marks(int id)
 		// mark delete
 		
 	if (id>=kMarkProperyDelete) {
-		state.cur_idx=-1;
+		state.cur_mark_idx=-1;
 	//	supergumba
 		main_wind_draw();
 		return;
@@ -92,7 +92,7 @@ void property_palette_click_marks(int id)
 
 	if (id==kMarkPropertyAdd) {
 	// supergumba
-	//	state.cur_idx=... new sound ...
+	//	state.cur_mark_idx=... new sound ...
 		main_wind_draw();
 		return;
 	}

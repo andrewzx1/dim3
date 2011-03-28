@@ -33,6 +33,7 @@ and can be sold or given away.
 	#include <ifaddrs.h>
 #endif
 
+#include "interface.h"
 #include "network.h"
 
 extern iface_type			iface;
