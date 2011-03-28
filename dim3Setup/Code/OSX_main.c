@@ -392,8 +392,9 @@ int main(int argc,char *argv[])
 	main_wind_shutdown();
 	main_wind_close();
 		
-		// shutdown and save
+		// shutdown
 		
+	iface_write(&iface);
 	iface_shutdown(&iface);
 
 	os_glue_end();

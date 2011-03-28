@@ -31,14 +31,11 @@ and can be sold or given away.
 
 #include "interface.h"
 #include "objects.h"
-#include "physics.h"
 
 extern server_type		server;
 extern map_type			map;
 extern camera_type		camera;
 extern setup_type		setup;
-
-extern float object_player_look_constrain(obj_type *obj,weapon_type *weap,float ang_x);
 
 /* =======================================================
 

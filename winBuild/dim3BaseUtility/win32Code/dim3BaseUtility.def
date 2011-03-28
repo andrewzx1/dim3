@@ -237,6 +237,7 @@ EXPORTS
 
 	iface_read									@640
 	iface_read_settings_project_name			@641
+	iface_write									@642
 
 	simple_save_xml_read						@650
 	simple_save_xml_write						@651

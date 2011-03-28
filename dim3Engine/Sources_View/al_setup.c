@@ -29,7 +29,7 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
-#include "sounds.h"
+#include "interface.h"
 
 int						audio_buffer_count,
 						audio_global_sound_volume,audio_global_music_volume;

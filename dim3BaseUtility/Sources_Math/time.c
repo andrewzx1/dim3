@@ -31,6 +31,9 @@ and can be sold or given away.
 #endif
 
 #ifdef D3_OS_MAC
+	#include <mach/mach.h>
+	#include <mach/clock.h>
+
 	int				start_time;
 	clock_serv_t	sys_clock;
 #endif

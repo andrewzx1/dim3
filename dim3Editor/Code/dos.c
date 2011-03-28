@@ -192,7 +192,11 @@ bool file_open_map(void)
 	
 		// open the map
 		
-	if (!dialog_file_open_run("Open a Map","Maps","xml",NULL,file_name)) return(FALSE);
+	if (!dialog_file_open_run("Open a Map","Maps","xml",NULL,file_name)) {
+		state.map_opened=FALSE;
+		menu_fix_enable();
+		return(FALSE);
+	}
 	
 		// open the map
 		

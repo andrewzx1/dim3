@@ -77,7 +77,7 @@ void bitmap_text_size_internal(texture_font_size_type *d3_size_font,char *name,i
 	CGContextTranslateCTM(bitmap_ctx,0,bitmap_high);
     CGContextScaleCTM(bitmap_ctx,1.0f,-1.0f);
 	
-	CGContextClear(bitmap_ctx,CGRectMake(0,0,bitmap_wid,bitmap_high));
+	CGContextClearRect(bitmap_ctx,CGRectMake(0,0,bitmap_wid,bitmap_high));
  
 	CGContextSetAlpha(bitmap_ctx,1.0f);
 	CGContextSetBlendMode(bitmap_ctx,kCGBlendModeNormal);

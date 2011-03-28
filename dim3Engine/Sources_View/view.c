@@ -32,8 +32,6 @@ and can be sold or given away.
 #include "interface.h"
 #include "objects.h"
 #include "video.h"
-#include "sounds.h"
-#include "inputs.h"
 
 view_type					view;
 view_render_type			view_camera_render,view_node_render;
@@ -51,7 +49,6 @@ extern void file_input(void);
 extern void debug_input(void);
 extern void view_draw(void);
 extern void chat_clear_messages(void);
-extern bool fog_solid_on(void);
 extern bool shadow_initialize(void);
 extern void shadow_shutdown(void);
 extern void menu_draw(void);

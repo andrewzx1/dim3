@@ -261,7 +261,7 @@ void main_wind_open(void)
         
     GetAvailableWindowPositioningBounds(GetMainDevice(),&wbox);
 
-	SetRect(&wbox,wbox.left,(wbox.top+25),wbox.right,wbox.bottom);
+	SetRect(&wbox,wbox.left,(wbox.top+22),wbox.right,wbox.bottom);
 	CreateNewWindow(kDocumentWindowClass,kWindowCloseBoxAttribute|kWindowCollapseBoxAttribute|kWindowFullZoomAttribute|kWindowResizableAttribute|kWindowLiveResizeAttribute|kWindowStandardHandlerAttribute|kWindowInWindowMenuAttribute,&wbox,&wind);
 
 		// show window

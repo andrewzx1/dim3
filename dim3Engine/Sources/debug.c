@@ -33,7 +33,6 @@ and can be sold or given away.
 #include "scripts.h"
 #include "objects.h"
 #include "video.h"
-#include "inputs.h"
 
 extern int					os_vers_major,os_vers_minor_1,os_vers_minor_2;
 extern bool					game_app_active;

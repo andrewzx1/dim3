@@ -181,7 +181,6 @@ bool map_textures_read(map_type *map)
 				bitmap_free_pixel_data(&frame->bitmap);
 				bitmap_free_pixel_data(&frame->bumpmap);
 				bitmap_free_pixel_data(&frame->specularmap);
-				bitmap_free_pixel_data(&frame->glowmap);
 			}
 			
 			frame++;

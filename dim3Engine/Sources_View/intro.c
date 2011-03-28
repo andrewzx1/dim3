@@ -30,8 +30,6 @@ and can be sold or given away.
 #endif
 
 #include "interface.h"
-#include "sounds.h"
-#include "inputs.h"
 
 // intro elements
 

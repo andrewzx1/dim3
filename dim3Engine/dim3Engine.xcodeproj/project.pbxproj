@@ -194,8 +194,6 @@
 		F5A5824E090B512000BE7C36 /* scripts.h in Headers */ = {isa = PBXBuildFile; fileRef = F5A58244090B512000BE7C36 /* scripts.h */; };
 		F5A58251090B512000BE7C36 /* objects.h in Headers */ = {isa = PBXBuildFile; fileRef = F5A58247090B512000BE7C36 /* objects.h */; };
 		F5A58257090B51B000BE7C36 /* video.h in Headers */ = {isa = PBXBuildFile; fileRef = F5A58256090B51B000BE7C36 /* video.h */; };
-		F5A58259090B51B400BE7C36 /* sounds.h in Headers */ = {isa = PBXBuildFile; fileRef = F5A58258090B51B400BE7C36 /* sounds.h */; };
-		F5A5825B090B51B800BE7C36 /* inputs.h in Headers */ = {isa = PBXBuildFile; fileRef = F5A5825A090B51B800BE7C36 /* inputs.h */; };
 		F5A582C2090C98D500BE7C36 /* script_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = F5A582BC090C98D500BE7C36 /* script_defs.h */; };
 		F5A582C3090C98D500BE7C36 /* server_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = F5A582BD090C98D500BE7C36 /* server_defs.h */; };
 		F5A582C4090C98D500BE7C36 /* setup_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = F5A582BE090C98D500BE7C36 /* setup_defs.h */; };
@@ -324,7 +322,6 @@
 		F5F49542067BFE4F00E809E7 /* libModelUtility.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5F4953D067BFE4F00E809E7 /* libModelUtility.dylib */; };
 		F5FAB74B0A5DEF09001FC86E /* script_obj_vehicle.c in Sources */ = {isa = PBXBuildFile; fileRef = F5FAB74A0A5DEF08001FC86E /* script_obj_vehicle.c */; };
 		F5FD1E480CDECD9500CB5AC7 /* error.c in Sources */ = {isa = PBXBuildFile; fileRef = F5FD1E470CDECD9500CB5AC7 /* error.c */; };
-		F5FD3CFA0C865C4E00087C1C /* physics.h in Headers */ = {isa = PBXBuildFile; fileRef = F5FD3CF90C865C4E00087C1C /* physics.h */; };
 		F5FEF6EC0BB4ECEC00198897 /* libMapUtility.dylib in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = F5F4953B067BFE4F00E809E7 /* libMapUtility.dylib */; };
 		F5FEF6ED0BB4ECEF00198897 /* libModelUtility.dylib in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = F5F4953D067BFE4F00E809E7 /* libModelUtility.dylib */; };
 /* End PBXBuildFile section */
@@ -550,8 +547,6 @@
 		F5A58244090B512000BE7C36 /* scripts.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = scripts.h; path = Headers_Server/scripts.h; sourceTree = "<group>"; };
 		F5A58247090B512000BE7C36 /* objects.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = objects.h; path = Headers_Server/objects.h; sourceTree = "<group>"; };
 		F5A58256090B51B000BE7C36 /* video.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = video.h; path = Headers_View/video.h; sourceTree = "<group>"; };
-		F5A58258090B51B400BE7C36 /* sounds.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = sounds.h; path = Headers_View/sounds.h; sourceTree = "<group>"; };
-		F5A5825A090B51B800BE7C36 /* inputs.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = inputs.h; path = Headers_View/inputs.h; sourceTree = "<group>"; };
 		F5A582BC090C98D500BE7C36 /* script_defs.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = script_defs.h; path = Headers_Server/script_defs.h; sourceTree = "<group>"; };
 		F5A582BD090C98D500BE7C36 /* server_defs.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = server_defs.h; path = Headers_Server/server_defs.h; sourceTree = "<group>"; };
 		F5A582BE090C98D500BE7C36 /* setup_defs.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = setup_defs.h; path = Headers_Server/setup_defs.h; sourceTree = "<group>"; };
@@ -675,7 +670,6 @@
 		F5F4953D067BFE4F00E809E7 /* libModelUtility.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libModelUtility.dylib; path = ../dim3Common/Libraries/libModelUtility.dylib; sourceTree = SOURCE_ROOT; };
 		F5FAB74A0A5DEF08001FC86E /* script_obj_vehicle.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = script_obj_vehicle.c; path = Sources_Server/script_obj_vehicle.c; sourceTree = "<group>"; };
 		F5FD1E470CDECD9500CB5AC7 /* error.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = error.c; path = Sources_View/error.c; sourceTree = "<group>"; };
-		F5FD3CF90C865C4E00087C1C /* physics.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = physics.h; path = Headers_Server/physics.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1160,7 +1154,6 @@
 				F5A582BE090C98D500BE7C36 /* setup_defs.h */,
 				F5A58244090B512000BE7C36 /* scripts.h */,
 				F5A58247090B512000BE7C36 /* objects.h */,
-				F5FD3CF90C865C4E00087C1C /* physics.h */,
 			);
 			name = Headers;
 			sourceTree = "<group>";
@@ -1174,8 +1167,6 @@
 				F5A582C9090C992C00BE7C36 /* sound_defs.h */,
 				F5A582CB090C993000BE7C36 /* input_defs.h */,
 				F5A58256090B51B000BE7C36 /* video.h */,
-				F5A58258090B51B400BE7C36 /* sounds.h */,
-				F5A5825A090B51B800BE7C36 /* inputs.h */,
 			);
 			name = Headers;
 			sourceTree = "<group>";
@@ -1419,8 +1410,6 @@
 				F5A5824E090B512000BE7C36 /* scripts.h in Headers */,
 				F5A58251090B512000BE7C36 /* objects.h in Headers */,
 				F5A58257090B51B000BE7C36 /* video.h in Headers */,
-				F5A58259090B51B400BE7C36 /* sounds.h in Headers */,
-				F5A5825B090B51B800BE7C36 /* inputs.h in Headers */,
 				F5A582C2090C98D500BE7C36 /* script_defs.h in Headers */,
 				F5A582C3090C98D500BE7C36 /* server_defs.h in Headers */,
 				F5A582C4090C98D500BE7C36 /* setup_defs.h in Headers */,
@@ -1429,7 +1418,6 @@
 				F5A582CC090C993000BE7C36 /* input_defs.h in Headers */,
 				F5A582CE090C993400BE7C36 /* view_defs.h in Headers */,
 				F5AD54770BBE2121001C7C04 /* baseutility.h in Headers */,
-				F5FD3CFA0C865C4E00087C1C /* physics.h in Headers */,
 				26F08CBA0DAC7E990097E249 /* network_defs.h in Headers */,
 				268CBC8C0DD2AA6700CF0256 /* network.h in Headers */,
 				260C145C129C770800B6D5B5 /* SDLMain.h in Headers */,
@@ -1816,20 +1804,19 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEPLOYMENT_POSTPROCESSING = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../dim3Common/Frameworks";
-				GCC_ALTIVEC_EXTENSIONS = NO;
-				GCC_AUTO_VECTORIZATION = YES;
 				GCC_CHAR_IS_UNSIGNED_CHAR = NO;
 				GCC_CW_ASM_SYNTAX = NO;
-				GCC_DEBUGGING_SYMBOLS = full;
 				GCC_DYNAMIC_NO_PIC = YES;
 				GCC_ENABLE_CPP_EXCEPTIONS = NO;
 				GCC_ENABLE_CPP_RTTI = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = NO;
-				GCC_ENABLE_SSE3_EXTENSIONS = NO;
+				GCC_ENABLE_SSE3_EXTENSIONS = YES;
+				GCC_ENABLE_SSE41_EXTENSIONS = NO;
+				GCC_ENABLE_SSE42_EXTENSIONS = NO;
 				GCC_ENABLE_SUPPLEMENTAL_SSE3_INSTRUCTIONS = NO;
 				GCC_FAST_MATH = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_MODEL_TUNING = G4;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
 				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Headers/dim3engine.h;
@@ -1837,7 +1824,7 @@
 				GCC_REUSE_STRINGS = YES;
 				GCC_STRICT_ALIASING = YES;
 				GCC_UNROLL_LOOPS = YES;
-				GCC_VERSION = 4.2;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_CHECK_SWITCH_STATEMENTS = YES;
@@ -1854,9 +1841,9 @@
 				INFOPLIST_FILE = "Resources/Info-dim3_Engine.plist";
 				INSTALL_PATH = "";
 				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/../dim3Common/Libraries";
+				LLVM_LTO = NO;
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
 				OTHER_LDFLAGS = "-lSystemStubs";
-				PREBINDING = NO;
 				PRODUCT_NAME = "dim3 Engine";
 				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.6.sdk";
 				SKIP_INSTALL = YES;

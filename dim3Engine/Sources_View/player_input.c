@@ -33,7 +33,6 @@ and can be sold or given away.
 #include "network.h"
 #include "scripts.h"
 #include "objects.h"
-#include "inputs.h"
 
 extern map_type				map;
 extern view_type			view;

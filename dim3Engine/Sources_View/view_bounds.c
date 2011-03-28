@@ -42,7 +42,6 @@ extern setup_type			setup;
 
 extern void particle_draw_position(effect_type *effect,int count,int *x,int *y,int *z);
 extern void ring_draw_position(effect_type *effect,int count,int *x,int *y,int *z);
-extern bool fog_solid_on(void);
 
 /* =======================================================
 

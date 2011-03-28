@@ -33,7 +33,6 @@ and can be sold or given away.
 #include "scripts.h"
 #include "video.h"
 #include "objects.h"
-#include "inputs.h"
 
 extern bool map_movements_cinema_start(int movement_idx,bool reverse,char *err_str);
 
@@ -394,7 +393,7 @@ void cinema_action_run_hud_text(map_cinema_action_type *action)
       
 ======================================================= */
 
-inline void cinema_action_run_generic(map_cinema_action_type *action)
+void cinema_action_run_generic(map_cinema_action_type *action)
 {
 		// route to proper action
 

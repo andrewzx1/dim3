@@ -32,8 +32,6 @@ and can be sold or given away.
 #include "interface.h"
 #include "scripts.h"
 #include "video.h"
-#include "inputs.h"
-#include "sounds.h"
 
 extern void game_time_pause_start(void);
 extern void game_time_pause_end(void);

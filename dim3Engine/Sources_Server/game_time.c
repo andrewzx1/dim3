@@ -90,12 +90,12 @@ void game_time_reset(int tick)
       
 ======================================================= */
 
-inline int game_time_get(void)
+int game_time_get(void)
 {
 	return(game_tick);
 }
 
-inline int game_time_get_raw(void)
+int game_time_get_raw(void)
 {
 	return(raw_tick);
 }

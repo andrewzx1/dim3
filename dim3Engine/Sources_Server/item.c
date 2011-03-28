@@ -32,13 +32,10 @@ and can be sold or given away.
 #include "interface.h"
 #include "scripts.h"
 #include "objects.h"
-#include "physics.h"
 #include "network.h"
 
 extern server_type			server;
 extern network_setup_type	net_setup;
-
-extern bool collide_object_to_item(obj_type *obj1,obj_type *obj2);
 
 /* =======================================================
 

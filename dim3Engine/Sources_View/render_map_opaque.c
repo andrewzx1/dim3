@@ -40,7 +40,6 @@ extern view_type		view;
 
 extern bitmap_type		lmap_black_bitmap;
 
-extern bool fog_solid_on(void);
 extern void view_compile_gl_list_attach(void);
 extern void view_compile_gl_list_attach_uv_light_map(void);
 extern void view_compile_gl_list_attach_uv_shader(void);

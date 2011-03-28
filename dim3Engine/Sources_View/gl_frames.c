@@ -29,6 +29,7 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
+#include "interface.h"
 #include "video.h"
 
 extern bool					game_app_active;
@@ -48,8 +49,6 @@ extern camera_type			camera;
 GLint						vport[4];
 double						mod_matrix[16],proj_matrix[16],
 							fix_rot_camera_x,fix_rot_camera_y,fix_rot_camera_z;
-
-extern bool fog_solid_on(void);
 
 /* =======================================================
 
@@ -303,7 +302,7 @@ inline void gl_unproject_point(float fx,float fy,float fz,int *x,int *y,int *z)
 	*z=(int)dz;
 }
 
-void gl_project_to_eye_coordinates(float *x,float *y,float *z)
+inline void gl_project_to_eye_coordinates(float *x,float *y,float *z)
 {
 	float		fx,fy,fz;
 	

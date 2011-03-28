@@ -51,7 +51,7 @@ void item_palette_initialize(void)
 	item_palette.item_type=0;
 	item_palette.item_idx=-1;
 
-	state.cur_item=-1;
+	state.cur_item=item_interface_settings;
 }
 
 void item_palette_shutdown(void)
@@ -88,8 +88,8 @@ void item_palette_fill(void)
 	list_palette_add_header(&item_palette,item_interface,"Project");
 
 	list_palette_add_item(&item_palette,item_interface_settings,0,"Settings",(state.cur_item==item_interface_settings),FALSE);
-	list_palette_add_item(&item_palette,item_interface_hud,0,"HUD",(state.cur_item==item_interface_hud),FALSE);
 	list_palette_add_item(&item_palette,item_interface_intro,0,"Intro",(state.cur_item==item_interface_intro),FALSE);
+	list_palette_add_item(&item_palette,item_interface_hud,0,"HUD",(state.cur_item==item_interface_hud),FALSE);
 	list_palette_add_item(&item_palette,item_interface_menu,0,"Menu",(state.cur_item==item_interface_menu),FALSE);
 	list_palette_add_item(&item_palette,item_interface_choosers,0,"Choosers",(state.cur_item==item_interface_choosers),FALSE);
 	list_palette_add_item(&item_palette,item_interface_radar,0,"Radar",(state.cur_item==item_interface_radar),FALSE);

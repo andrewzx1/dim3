@@ -210,7 +210,7 @@ void fog_draw_textured(void)
       
 ======================================================= */
 
-inline bool fog_solid_on(void)
+bool fog_solid_on(void)
 {
 	return((map.fog.on) && (map.fog.use_solid_color));
 }

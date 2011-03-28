@@ -41,37 +41,9 @@ and can be sold or given away.
 // shadows
 //
 
-#define max_shadow_render								24
-#define shadow_max_trigs								10240
-#define shadow_max_vertexes								10240
 #define shadow_max_polys								256
 #define shadow_max_ray_trace_vertexes					10240
 #define shadow_infinite_light_adjust					100
-
-typedef struct			{
-							int							type,idx;
-							d3pnt						pnt;
-							d3ang						ang;
-						} shadow_render_item_type;
-
-typedef struct			{
-							double						intensity;
-							d3pnt						pnt;
-						} shadow_render_light_type;
-
-typedef struct			{
-							int							start_idx,count_idx;
-							poly_pointer_type			ptr;
-						} shadow_render_poly_type;
-
-typedef struct			{
-							int							npoly,nindex,nvertex;
-							unsigned short				*indexes;
-							float						*vp,*cp;
-							shadow_render_item_type		cur_item;
-							shadow_render_light_type	cur_light;
-							shadow_render_poly_type		*polys;
-						} shadow_render_type;
 
 //
 // screen sizes

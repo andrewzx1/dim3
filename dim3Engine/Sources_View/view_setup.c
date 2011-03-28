@@ -41,7 +41,6 @@ extern view_type			view;
 extern server_type			server;
 extern setup_type			setup;
 
-extern bool fog_solid_on(void);
 extern bool mesh_inview(map_mesh_type *mesh);
 extern bool mesh_shadow_inview(map_mesh_type *mesh);
 extern bool model_inview(model_draw *draw);

@@ -35,12 +35,12 @@ and can be sold or given away.
       
 ======================================================= */
 
-inline d3socket net_open_udp_socket(void)
+d3socket net_open_udp_socket(void)
 {
 	return(socket(AF_INET,SOCK_DGRAM,0));
 }
 
-inline void net_close_socket(d3socket *sock)
+void net_close_socket(d3socket *sock)
 {
 		// shutdown any more sending or receiving
 
@@ -63,7 +63,7 @@ inline void net_close_socket(d3socket *sock)
       
 ======================================================= */
 
-inline void net_socket_blocking(d3socket sock,bool blocking)
+void net_socket_blocking(d3socket sock,bool blocking)
 {
 #ifndef D3_OS_WINDOWS
 
@@ -90,7 +90,7 @@ inline void net_socket_blocking(d3socket sock,bool blocking)
 #endif
 }
 
-inline void net_socket_enable_broadcast(d3socket sock)
+void net_socket_enable_broadcast(d3socket sock)
 {
 	int				val;
 

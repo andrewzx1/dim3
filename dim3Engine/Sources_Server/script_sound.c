@@ -32,7 +32,6 @@ and can be sold or given away.
 #include "interface.h"
 #include "scripts.h"
 #include "objects.h"
-#include "sounds.h"
 #include "network.h"
 
 extern js_type				js;

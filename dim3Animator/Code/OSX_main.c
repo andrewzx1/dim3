@@ -235,7 +235,7 @@ void main_wind_open(void)
 	
     GetAvailableWindowPositioningBounds(GetMainDevice(),&wbox);
 	
-	SetRect(&box,wbox.left,(wbox.top+25),wbox.right,wbox.bottom);
+	SetRect(&box,wbox.left,(wbox.top+22),wbox.right,wbox.bottom);
 	CreateNewWindow(kDocumentWindowClass,kWindowStandardDocumentAttributes|kWindowLiveResizeAttribute|kWindowStandardHandlerAttribute|kWindowInWindowMenuAttribute,&box,&wind);
 	SetWTitle(wind,"\pModel");
 

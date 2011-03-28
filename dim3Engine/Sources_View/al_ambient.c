@@ -29,7 +29,7 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
-#include "sounds.h"
+#include "interface.h"
 
 int								audio_ambient_count;					
 audio_ambient_type				audio_ambients[audio_max_ambient];

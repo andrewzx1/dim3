@@ -37,8 +37,6 @@ extern server_type		server;
 extern view_type		view;
 extern setup_type		setup;
 
-extern bool fog_solid_on(void);
-
 /* =======================================================
 
       Model Colors and Normals

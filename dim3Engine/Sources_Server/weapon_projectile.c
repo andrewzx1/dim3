@@ -32,7 +32,6 @@ and can be sold or given away.
 #include "interface.h"
 #include "network.h"
 #include "scripts.h"
-#include "physics.h"
 #include "objects.h"
 #include "video.h"
 
@@ -42,8 +41,6 @@ extern camera_type			camera;
 extern view_type			view;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
-
-extern float object_player_look_constrain(obj_type *obj,weapon_type *weap,float ang_x);
 
 /* =======================================================
 

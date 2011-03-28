@@ -81,8 +81,8 @@ extern void view_calculate_fps(void);
 extern void game_time_initialize(void);
 extern void game_time_calculate(void);
 extern void game_time_reset(int tick);
-extern int game_time_get_raw(void);
-extern int game_time_get(void);
+inline int game_time_get_raw(void);
+inline int game_time_get(void);
 extern float game_time_fequency_second_get(int start_tick);
 extern void game_time_pause_start(void);
 extern void game_time_pause_end(void);
@@ -246,6 +246,50 @@ extern void zoom_setup(obj_type *obj,weapon_type *weap);
 extern void zoom_draw(obj_type *obj,weapon_type *weap);
 
 //
+// collisions
+//
+
+extern bool collide_contact_is_wall_hit(poly_pointer_type *hit_poly);
+extern bool collide_object_to_map(obj_type *obj,d3pnt *motion);
+extern bool collide_object_to_map_bump(obj_type *obj,d3pnt *motion,int *bump_y_move);
+extern bool collide_object_to_mesh(obj_type *obj,int mesh_idx);
+extern bool collide_object_to_object(obj_type *obj,d3pnt *motion,obj_type *chk_obj,bool skip_pickup);
+extern int collide_object_for_object_stand(obj_type *obj);
+extern bool collide_object_to_sphere(d3pnt *sphere_pnt,int radius,obj_type *obj);
+
+extern bool collide_projectile_to_map(proj_type *proj,d3pnt *motion);
+extern bool collide_projectile_to_sphere(d3pnt *sphere_pnt,int radius,proj_type *proj);
+
+extern void collide_objects_push(d3pnt *push_pnt,int radius,int force);
+
+extern int collide_polygon_find_faced_by_object(obj_type *obj);
+extern int collide_polygon_distance_to_object(int poly_uid,obj_type *obj);
+extern void collide_polygon_hit_point_to_object(int poly_uid,obj_type *obj,d3pnt *pt);
+extern void collide_polygon_get_normal(int poly_uid,d3vct *normal);
+extern float collide_polygon_dot_product_to_object(int poly_uid,obj_type *obj);
+
+extern int find_poly_nearest_stand(int x,int y,int z,int ydist,bool ignore_higher);
+extern int pin_downward_movement_point(int x,int y,int z,int ydist,poly_pointer_type *stand_poly);
+extern int pin_downward_movement_obj(obj_type *obj,int my);
+extern int pin_upward_movement_point(int x,int y,int z,int ydist,poly_pointer_type *head_poly);
+extern int pin_upward_movement_obj(obj_type *obj,int my);
+extern bool map_stand_crush_object(obj_type *obj);
+extern bool map_stand_check_object(obj_type *obj);
+
+// ray tracing
+
+extern bool ray_trace_initialize(char *err_str);
+extern void ray_trace_shutdown(void);
+extern ray_trace_check_item_type* ray_trace_get_last_item_list(int *item_count);
+extern void ray_push(d3pnt *pt,d3ang *ang,int dist);
+extern void ray_push_to_end(d3pnt *pt,d3pnt *ept,int dist);
+extern bool ray_trace_map_by_angle(d3pnt *spt,d3ang *ang,int dist,d3pnt *hpt,ray_trace_contact_type *contact);
+extern bool ray_trace_map_by_point(d3pnt *spt,d3pnt *ept,d3pnt *hpt,ray_trace_contact_type *contact);
+extern void ray_trace_map_by_point_array(int cnt,d3pnt *spt,d3pnt *ept,d3pnt *hpt,bool *hits,ray_trace_contact_type *base_contact,ray_trace_contact_type *contacts);
+extern void ray_trace_map_by_point_array_no_contact(int cnt,d3pnt *spt,d3pnt *ept,d3pnt *hpt,bool *hits,ray_trace_contact_type *base_contact);
+extern bool ray_trace_mesh_poly_plane_by_vector(int cnt,d3pnt *spt,d3vct *vct,d3pnt *hpt,int mesh_idx,int poly_idx);
+
+//
 // effects
 //
 
@@ -285,6 +329,25 @@ extern void decal_move_with_mesh(int mesh_idx,d3pnt *motion);
 extern void decal_rotate_with_mesh(int mesh_idx,float y);
 extern void decal_add(int obj_idx,d3pnt *pnt,poly_pointer_type *poly_ptr,int mark_idx,int sz,float alpha);
 extern void decal_dispose(void);
+
+//
+// fog
+//
+
+inline bool fog_solid_on(void);
+
+//
+// liquids
+//
+
+inline int liquid_render_liquid_get_tide_split(map_liquid_type *liq);
+
+//
+// shadows
+//
+
+extern void shadow_render_model(model_draw *draw);
+extern void shadow_render_mesh(int shadow_mesh_idx);
 
 //
 // gui screens
@@ -358,4 +421,101 @@ extern void setup_xml_write_key_float(char *name,float value);
 extern void setup_xml_write_key_boolean(char *name,bool value);
 extern bool setup_xml_write(void);
 extern void setup_restore(void);
+
+//
+// sounds
+//
+
+extern bool al_initialize(char *err_str);
+extern void al_shutdown(void);
+extern void al_set_volume(float sound_volume);
+
+extern int al_open_buffer(char *name,char *path,int min_dist,int max_dist);
+extern void al_close_buffer(int buffer_idx);
+extern void al_close_all_buffers(void);
+extern void al_load_all_xml_sounds(void);
+
+extern int al_find_buffer(char *name);
+extern int al_get_buffer_max_dist(int buffer_idx);
+
+extern void al_set_listener(d3pnt *pnt,float ang_y);
+extern int al_distance_to_listener(d3pnt *pnt);
+
+extern int al_play_source(int buffer_idx,d3pnt *pnt,float pitch,bool loop,bool ambient,bool global,bool player);
+extern void al_stop_source(int source_idx);
+
+extern bool al_music_initialize(char *err_str);
+extern void al_music_shutdown(void);
+extern bool al_music_play(char *name,char *err_str);
+extern void al_music_stop(void);
+extern void al_music_set_loop(bool loop);
+extern bool al_music_playing(void);
+extern bool al_music_playing_is_name(char *name);
+extern void al_music_set_volume(float music_volume);
+extern void al_music_set_state(bool music_on);
+extern bool al_music_fade_in(char *name,int msec,char *err_str);
+extern void al_music_fade_out(int msec);
+extern bool al_music_fade_out_fade_in(char *name,int fade_out_msec,int fade_in_msec,char *err_str);
+extern void al_music_run(void);
+
+extern void al_stop_all_sources(void);
+extern void al_stop_all_looping_sources(void);
+
+extern void al_ambient_list_clear(void);
+extern void al_ambient_list_add(int buffer_idx,d3pnt *pnt,float pitch);
+extern void al_ambients_run(void);
+
+//
+// input
+//
+
+extern void input_initialize(bool in_window);
+extern void input_shutdown(void);
+extern void input_clear(void);
+extern void input_set_key_start(void);
+extern bool input_set_key_wait(char *name);
+extern bool input_app_active(void);
+extern bool input_event_pump(void);
+
+extern void input_action_clear(void);
+extern void input_action_attach(char *attach_name,int action_index);
+extern bool input_check_action_same_attachment(int action_1_index,int action_2_index);
+extern bool input_action_get_state(int action_index);
+extern bool input_action_get_state_range(int start_action_index,int end_action_index);
+extern bool input_action_get_state_single(int action_index);
+
+extern void input_mouse_initialize(void);
+extern void input_mouse_shutdown(void);
+extern void input_clear_mouse(void);
+extern void input_mouse_pause(void);
+extern void input_mouse_resume(void);
+extern void input_event_mouse_button(int button,bool down);
+extern void input_event_mouse_motion(int x,int y);
+extern void input_event_mouse_wheel(int y);
+extern void input_get_mouse_movement(float *x,float *y);
+extern bool input_get_mouse_button(int button);
+extern void input_mouse_wheel_reset(void);
+
+extern void input_gui_set_mouse(int x,int y);
+extern void input_gui_get_mouse_position(int *x,int *y);
+extern bool input_gui_get_mouse_left_button_down(void);
+extern void input_gui_wait_mouse_left_button_up(void);
+
+extern void input_clear_keyboard(void);
+extern void input_event_key(int key_idx,bool down);
+extern bool input_get_keyboard_escape(void);
+extern bool input_get_keyboard_return(void);
+extern bool input_get_keyboard_key(int key_idx);
+extern void input_clear_text_input(void);
+extern char input_get_text_input_key(void);
+
+extern bool input_joystick_initialize(void);
+extern void input_joystick_shutdown(void);
+extern bool input_check_joystick_ok(void);
+extern void input_clear_joystick(void);
+extern void input_event_joystick_button(int button,bool down);
+extern float input_get_joystick_axis(int axis);
+extern bool input_get_joystick_axis_as_button_min(int axis);
+extern bool input_get_joystick_axis_as_button_max(int axis);
+extern bool input_get_joystick_button(int button);
 

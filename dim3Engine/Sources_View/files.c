@@ -31,7 +31,6 @@ and can be sold or given away.
 
 #include "interface.h"
 #include "video.h"
-#include "inputs.h"
 
 #define max_file_count					256
 
