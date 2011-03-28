@@ -407,7 +407,7 @@ inline void gl_texture_glow_set(GLuint txt_id,GLuint glow_id,float glow_color)
       
 ======================================================= */
 
-void gl_texture_decal_start(void)
+inline void gl_texture_decal_start(void)
 {
 		// texture unit 0
 		// contains texture
@@ -430,7 +430,7 @@ void gl_texture_decal_start(void)
 	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND1_ALPHA,GL_SRC_ALPHA);
 }
 
-void gl_texture_decal_end(void)
+inline void gl_texture_decal_end(void)
 {
 	glDisable(GL_TEXTURE_2D);
 }
@@ -459,7 +459,7 @@ inline void gl_texture_decal_set(GLuint txt_id,float r,float g,float b,float alp
       
 ======================================================= */
 
-void gl_texture_simple_start(void)
+inline void gl_texture_simple_start(void)
 {
 		// preset texture unit 0
 		// it simply modultes the texture with the preset color/alpha
@@ -482,7 +482,7 @@ void gl_texture_simple_start(void)
 	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND1_ALPHA,GL_SRC_ALPHA);
 }
 
-void gl_texture_simple_end(void)
+inline void gl_texture_simple_end(void)
 {
 		// reset any possible clamping
 		
@@ -492,7 +492,7 @@ void gl_texture_simple_end(void)
 	glDisable(GL_TEXTURE_2D);
 }
 
-void gl_texture_simple_set(GLuint txt_id,bool clamp,float r,float g,float b,float alpha)
+inline void gl_texture_simple_set(GLuint txt_id,bool clamp,float r,float g,float b,float alpha)
 {
 	GLfloat			col4[4];
 	

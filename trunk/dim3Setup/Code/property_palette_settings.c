@@ -53,6 +53,24 @@ and can be sold or given away.
 #define kSettingsColorButtonText				17
 #define kSettingsColorButtonOutline				18
 #define kSettingsColorDefaultTint				19
+#define kSettingsProgressLeft					20
+#define kSettingsProgressRight					21
+#define kSettingsProgressTop					22
+#define kSettingsProgressBottom					23
+#define kSettingsProgressTextSize				24
+#define kSettingsProgressOutline				25
+#define kSettingsProgressBaseColorStart			26
+#define kSettingsProgressBaseColorEnd			27
+#define kSettingsProgressHiliteColorStart		28
+#define kSettingsProgressHiliteColorEnd			29
+#define kSettingsProgressTextColor				30
+#define kSettingsProgressOutlineColor			31
+#define kSettingsChatX							32
+#define kSettingsChatY							33
+#define kSettingsChatLastAddLifeSeconds			34
+#define kSettingsChatNextLifeSeconds			35
+#define kSettingsFaseTitleMilliseconds			36
+#define kSettingsFaseMapMilliseconds			37
 
 extern iface_type				iface;
 extern setup_state_type			state;
@@ -66,15 +84,21 @@ extern list_palette_type		property_palette;
 
 void property_palette_fill_settings(void)
 {
+		// scale
+		
 	list_palette_add_header(&property_palette,0,"Scale");
 	list_palette_add_string_int(&property_palette,kSettingsScaleX,"X",iface.scale_x,FALSE);
 	list_palette_add_string_int(&property_palette,kSettingsScaleY,"Y",iface.scale_y,FALSE);
 
+		// font
+		
 	list_palette_add_header(&property_palette,0,"Font");
 	list_palette_add_string(&property_palette,kSettingsInterfaceFont,"Interface Font",iface.font.interface_name,FALSE);
 	list_palette_add_string(&property_palette,kSettingsHUDFont,"HUD Font",iface.font.hud_name,FALSE);
 
-	list_palette_add_header(&property_palette,0,"Interface Colors");
+		// colors
+		
+	list_palette_add_header(&property_palette,0,"Colors");
 	list_palette_add_pick_color(&property_palette,kSettingsColorDialogBackground,"Dialog Background",&iface.color.dialog_background,FALSE);
 	list_palette_add_pick_color(&property_palette,kSettingsColorDialogBase,"Dialog Base",&iface.color.dialog_base,FALSE);
 	list_palette_add_pick_color(&property_palette,kSettingsColorDialogDimmed,"Dialog Dimmed",&iface.color.dialog_dimmed,FALSE);
@@ -92,42 +116,35 @@ void property_palette_fill_settings(void)
 	list_palette_add_pick_color(&property_palette,kSettingsColorButtonOutline,"Button Outline",&iface.color.button_outline,FALSE);
 	list_palette_add_pick_color(&property_palette,kSettingsColorDefaultTint,"Default Tint",&iface.color.default_tint,FALSE);
 
-	list_palette_add_header(&property_palette,0,"Interface Progress");
-	list_palette_add_header(&property_palette,0,"Interface Chat");
-	list_palette_add_header(&property_palette,0,"Interface Fade");
-
-	/*
-			iface->progress.lx=xml_get_attribute_int(progress_tag,"left_x");
-		iface->progress.rx=xml_get_attribute_int(progress_tag,"right_x");
-		iface->progress.ty=xml_get_attribute_int(progress_tag,"top_y");
-		iface->progress.by=xml_get_attribute_int(progress_tag,"bottom_y");
-		iface->progress.text_size=xml_get_attribute_int(progress_tag,"text_size");
-		iface->progress.outline=xml_get_attribute_boolean(progress_tag,"outline");
-		xml_get_attribute_color(progress_tag,"base_color_start",&iface->progress.base_color_start);
-		xml_get_attribute_color(progress_tag,"base_color_end",&iface->progress.base_color_end);
-		xml_get_attribute_color(progress_tag,"hilite_color_start",&iface->progress.hilite_color_start);
-		xml_get_attribute_color(progress_tag,"hilite_color_end",&iface->progress.hilite_color_end);
-		xml_get_attribute_color(progress_tag,"text_color",&iface->progress.text_color);
-		xml_get_attribute_color(progress_tag,"outline_color",&iface->progress.outline_color);
-	}
+		// progress
+		
+	list_palette_add_header(&property_palette,0,"Progress");
+	list_palette_add_string_int(&property_palette,kSettingsProgressLeft,"Left X",iface.progress.lx,FALSE);
+	list_palette_add_string_int(&property_palette,kSettingsProgressRight,"Right X",iface.progress.rx,FALSE);
+	list_palette_add_string_int(&property_palette,kSettingsProgressTop,"Top Y",iface.progress.ty,FALSE);
+	list_palette_add_string_int(&property_palette,kSettingsProgressBottom,"Bottom Y",iface.progress.by,FALSE);
+	list_palette_add_string_int(&property_palette,kSettingsProgressTextSize,"Text Size",iface.progress.text_size,FALSE);
+	list_palette_add_checkbox(&property_palette,kSettingsProgressOutline,"Outline",iface.progress.outline,FALSE);
+	list_palette_add_pick_color(&property_palette,kSettingsProgressBaseColorStart,"Base Color Start",&iface.progress.base_color_start,FALSE);
+	list_palette_add_pick_color(&property_palette,kSettingsProgressBaseColorEnd,"Base Color End",&iface.progress.base_color_end,FALSE);
+	list_palette_add_pick_color(&property_palette,kSettingsProgressHiliteColorStart,"Highlight Color Start",&iface.progress.hilite_color_start,FALSE);
+	list_palette_add_pick_color(&property_palette,kSettingsProgressHiliteColorEnd,"Highlight Color End",&iface.progress.hilite_color_end,FALSE);
+	list_palette_add_pick_color(&property_palette,kSettingsProgressTextColor,"Text Color",&iface.progress.text_color,FALSE);
+	list_palette_add_pick_color(&property_palette,kSettingsProgressOutlineColor,"Outline Color",&iface.progress.outline_color,FALSE);
 	
 		// chat
-
-	chat_tag=xml_findfirstchild("Chat",interface_head_tag);
-	if (chat_tag!=-1) {
-		iface->chat.x=xml_get_attribute_int(chat_tag,"x");
-		iface->chat.y=xml_get_attribute_int(chat_tag,"y");
-		iface->chat.last_add_life_sec=xml_get_attribute_int(chat_tag,"last_add_life_sec");
-		iface->chat.next_life_sec=xml_get_attribute_int(chat_tag,"next_life_sec");
-	}
+		
+	list_palette_add_header(&property_palette,0,"Chat");
+	list_palette_add_string_int(&property_palette,kSettingsChatX,"X",iface.chat.x,FALSE);
+	list_palette_add_string_int(&property_palette,kSettingsChatY,"Y",iface.chat.y,FALSE);
+	list_palette_add_string_int(&property_palette,kSettingsChatLastAddLifeSeconds,"Last Add Life Seconds",iface.chat.last_add_life_sec,FALSE);
+	list_palette_add_string_int(&property_palette,kSettingsChatNextLifeSeconds,"Next Life Seconds",iface.chat.next_life_sec,FALSE);
 	
 		// fade
-
-	fade_tag=xml_findfirstchild("Fade",interface_head_tag);
-	if (fade_tag!=-1) {
-		iface->fade.title_msec=xml_get_attribute_int(fade_tag,"title_msec");
-		iface->fade.map_msec=xml_get_attribute_int(fade_tag,"map_msec");
-*/
+		
+	list_palette_add_header(&property_palette,0,"Fade");
+	list_palette_add_string_int(&property_palette,kSettingsFaseTitleMilliseconds,"Title Milliseconds",iface.fade.title_msec,FALSE);
+	list_palette_add_string_int(&property_palette,kSettingsFaseMapMilliseconds,"Map Milliseconds",iface.fade.map_msec,FALSE);
 }
 
 /* =======================================================
@@ -140,6 +157,8 @@ void property_palette_click_settings(int id)
 {
 	switch (id) {
 
+			// setting
+			
 		case kSettingsScaleX:
 			dialog_property_string_run(list_string_value_positive_int,(void*)&iface.scale_x,0,0,0);
 			break;
@@ -147,6 +166,8 @@ void property_palette_click_settings(int id)
 		case kSettingsScaleY:
 			dialog_property_string_run(list_string_value_positive_int,(void*)&iface.scale_y,0,0,0);
 			break;
+			
+			// font
 
 		case kSettingsInterfaceFont:
 			dialog_property_string_run(list_string_value_string,(void*)iface.font.interface_name,name_str_len,0,0);
@@ -155,6 +176,8 @@ void property_palette_click_settings(int id)
 		case kSettingsHUDFont:
 			dialog_property_string_run(list_string_value_string,(void*)iface.font.hud_name,name_str_len,0,0);
 			break;
+			
+			// color
 
 		case kSettingsColorDialogBackground:
 			os_pick_color(&iface.color.dialog_background);
@@ -219,6 +242,86 @@ void property_palette_click_settings(int id)
 		case kSettingsColorDefaultTint:
 			os_pick_color(&iface.color.default_tint);
 			break;
+			
+			// progress
+			
+		case kSettingsProgressLeft:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&iface.progress.lx,0,0,0);
+			break;
+
+		case kSettingsProgressRight:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&iface.progress.rx,0,0,0);
+			break;
+
+		case kSettingsProgressTop:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&iface.progress.ty,0,0,0);
+			break;
+
+		case kSettingsProgressBottom:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&iface.progress.by,0,0,0);
+			break;
+
+		case kSettingsProgressTextSize:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&iface.progress.text_size,0,0,0);
+			break;
+
+		case kSettingsProgressOutline:
+			iface.progress.outline=!iface.progress.outline;
+			break;
+			
+		case kSettingsProgressBaseColorStart:
+			os_pick_color(&iface.progress.base_color_start);
+			break;
+			
+		case kSettingsProgressBaseColorEnd:
+			os_pick_color(&iface.progress.base_color_end);
+			break;
+			
+		case kSettingsProgressHiliteColorStart:
+			os_pick_color(&iface.progress.hilite_color_start);
+			break;
+			
+		case kSettingsProgressHiliteColorEnd:
+			os_pick_color(&iface.progress.hilite_color_end);
+			break;
+			
+		case kSettingsProgressTextColor:
+			os_pick_color(&iface.progress.text_color);
+			break;
+			
+		case kSettingsProgressOutlineColor:
+			os_pick_color(&iface.progress.outline_color);
+			break;
+
+			// chat
+			
+		case kSettingsChatX:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&iface.chat.x,0,0,0);
+			break;
+			
+		case kSettingsChatY:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&iface.chat.y,0,0,0);
+			break;
+			
+		case kSettingsChatLastAddLifeSeconds:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&iface.chat.last_add_life_sec,0,0,0);
+			break;
+			
+		case kSettingsChatNextLifeSeconds:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&iface.chat.next_life_sec,0,0,0);
+			break;
+			
+	
+			// fade
+		
+		case kSettingsFaseTitleMilliseconds:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&iface.fade.title_msec,0,0,0);
+			break;
+			
+		case kSettingsFaseMapMilliseconds:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&iface.fade.map_msec,0,0,0);
+			break;
+			
 
 	}
 

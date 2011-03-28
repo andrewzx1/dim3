@@ -263,7 +263,7 @@ inline void view_unbind_liquid_index_object(void)
       
 ======================================================= */
 
-inline float* view_bind_map_sky_vertex_object(int sz)
+float* view_bind_map_sky_vertex_object(int sz)
 {
 	float		*vertex_ptr;
 

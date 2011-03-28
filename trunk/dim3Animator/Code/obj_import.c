@@ -449,19 +449,39 @@ bool import_obj(char *path,bool replace,bool *found_normals,char *err_str)
 					*c=0x0;
 				}
 				
-				pvtx[npt]=atoi(vstr)-1;
+				pvtx[npt]=atoi(vstr);
+				if (pvtx[npt]>0) {
+					pvtx[npt]--;
+				}
+				else {
+					pvtx[npt]=nvertex+pvtx[npt];
+				}
 	            
 				if (vtstr[0]==0x0) {
 					pt_uv[npt].x=pt_uv[npt].y=0.0f;
 				}
 				else {
-					idx=atoi(vtstr)-1;
+					idx=atoi(vtstr);
+					if (idx>0) {
+						idx--;
+					}
+					else {
+						idx=nuv+idx;
+					}
+					
 					pt_uv[npt].x=uv_ptr[idx].x;
 					pt_uv[npt].y=1.0f-uv_ptr[idx].y;
 				}
 					
 				if (vnstr[0]!=0x0) {
-					idx=atoi(vnstr)-1;
+					idx=atoi(vnstr);
+					if (idx>0) {
+						idx--;
+					}
+					else {
+						idx=nnormal+idx;
+					}
+					
 					memmove(&pnormal[npt],&normal_ptr[idx],sizeof(d3vct));
 				}
 				

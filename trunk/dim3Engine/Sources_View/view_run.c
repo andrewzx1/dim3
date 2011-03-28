@@ -31,7 +31,6 @@ and can be sold or given away.
 
 #include "interface.h"
 #include "objects.h"
-#include "sounds.h"
 
 extern server_type			server;
 extern view_type			view;

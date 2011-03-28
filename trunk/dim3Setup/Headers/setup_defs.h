@@ -42,8 +42,8 @@ and can be sold or given away.
 
 #define item_interface					0
 #define item_interface_settings			1
-#define item_interface_hud				2
-#define item_interface_intro			3
+#define item_interface_intro			2
+#define item_interface_hud				3
 #define item_interface_menu				4
 #define item_interface_choosers			5
 #define item_interface_radar			6

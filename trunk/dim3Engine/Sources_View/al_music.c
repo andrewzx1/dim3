@@ -30,7 +30,6 @@ and can be sold or given away.
 #endif
 
 #include "interface.h"
-#include "sounds.h"
 
 int							audio_music_fade_mode,audio_music_fade_start_tick,audio_music_fade_msec,
 							audio_music_fade_next_msec,audio_music_original_volume;

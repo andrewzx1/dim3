@@ -35,7 +35,6 @@ and can be sold or given away.
 #include "objects.h"
 #include "scripts.h"
 #include "video.h"
-#include "inputs.h"
 #include "network.h"
 
 extern bool					game_loop_quit;

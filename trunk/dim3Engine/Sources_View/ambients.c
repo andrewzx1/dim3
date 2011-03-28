@@ -29,8 +29,8 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
+#include "interface.h"
 #include "objects.h"
-#include "sounds.h"
 
 int							map_ambient_idx,map_ambient_buffer_idx;
 float						map_ambient_pitch;

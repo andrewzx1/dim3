@@ -7,11 +7,11 @@
 	<key>IBLastKnownRelativeProjectPath</key>
 	<string>../dim3Setup.xcodeproj</string>
 	<key>IBOldestOS</key>
-	<integer>4</integer>
+	<integer>5</integer>
 	<key>IBOpenObjects</key>
 	<array/>
 	<key>IBSystem Version</key>
-	<string>10J567</string>
+	<string>10J869</string>
 	<key>targetFramework</key>
 	<string>IBCarbonFramework</string>
 </dict>

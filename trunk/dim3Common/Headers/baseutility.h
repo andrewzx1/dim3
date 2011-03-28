@@ -1287,6 +1287,7 @@ extern void iface_bars_hide_all(iface_type *iface);
 
 extern void iface_read(iface_type *iface);
 extern void iface_read_settings_project_name(file_path_setup_type *path_setup);
+extern bool iface_write(iface_type *iface);
 
 extern void simple_save_xml_read(iface_type *iface);
 extern void simple_save_xml_write(iface_type *iface);

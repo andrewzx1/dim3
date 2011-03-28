@@ -31,9 +31,7 @@ and can be sold or given away.
 
 #include "interface.h"
 #include "video.h"
-#include "inputs.h"
 #include "network.h"
-#include "physics.h"
 
 extern server_type			server;
 extern setup_type			setup;

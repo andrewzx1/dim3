@@ -31,8 +31,6 @@ and can be sold or given away.
 
 #include "interface.h"
 #include "video.h"
-#include "sounds.h"
-#include "inputs.h"
 
 extern bool					game_app_active;
 

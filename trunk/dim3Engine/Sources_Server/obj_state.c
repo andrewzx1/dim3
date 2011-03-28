@@ -33,7 +33,6 @@ and can be sold or given away.
 #include "network.h"
 #include "scripts.h"
 #include "objects.h"
-#include "physics.h"
 
 extern int					game_obj_rule_idx;
 

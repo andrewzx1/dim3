@@ -31,7 +31,6 @@ and can be sold or given away.
 
 #include "interface.h"
 #include "objects.h"
-#include "physics.h"
 #include "video.h"
 
 extern map_type				map;

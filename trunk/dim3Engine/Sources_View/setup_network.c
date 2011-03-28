@@ -31,8 +31,6 @@ and can be sold or given away.
 
 #include "interface.h"
 #include "video.h"
-#include "sounds.h"
-#include "inputs.h"
 
 #define setup_network_pane_player			0
 #define setup_network_pane_host				1

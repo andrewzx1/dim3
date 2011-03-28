@@ -32,12 +32,9 @@ and can be sold or given away.
 #include "interface.h"
 #include "scripts.h"
 #include "objects.h"
-#include "physics.h"
 
 extern map_type				map;
 extern server_type			server;
-
-extern int liquid_render_liquid_get_tide_split(map_liquid_type *liq);
 
 /* =======================================================
 

@@ -7,6 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		268382A1133D4F3D0035315B /* property_palette_actions.c in Sources */ = {isa = PBXBuildFile; fileRef = 2683829A133D4F3D0035315B /* property_palette_actions.c */; };
+		268382A2133D4F3D0035315B /* property_palette_crosshairs.c in Sources */ = {isa = PBXBuildFile; fileRef = 2683829B133D4F3D0035315B /* property_palette_crosshairs.c */; };
+		268382A3133D4F3D0035315B /* property_palette_halos.c in Sources */ = {isa = PBXBuildFile; fileRef = 2683829C133D4F3D0035315B /* property_palette_halos.c */; };
+		268382A4133D4F3D0035315B /* property_palette_marks.c in Sources */ = {isa = PBXBuildFile; fileRef = 2683829D133D4F3D0035315B /* property_palette_marks.c */; };
+		268382A5133D4F3D0035315B /* property_palette_particles.c in Sources */ = {isa = PBXBuildFile; fileRef = 2683829E133D4F3D0035315B /* property_palette_particles.c */; };
+		268382A6133D4F3D0035315B /* property_palette_rings.c in Sources */ = {isa = PBXBuildFile; fileRef = 2683829F133D4F3D0035315B /* property_palette_rings.c */; };
+		268382A7133D4F3D0035315B /* property_palette_settings.c in Sources */ = {isa = PBXBuildFile; fileRef = 268382A0133D4F3D0035315B /* property_palette_settings.c */; };
 		269FECBD132845880030B0B5 /* dim3 Setup.icns in Resources */ = {isa = PBXBuildFile; fileRef = 269FECBB132845880030B0B5 /* dim3 Setup.icns */; };
 		269FECBE132845880030B0B5 /* dim3 Setup.nib in Resources */ = {isa = PBXBuildFile; fileRef = 269FECBC132845880030B0B5 /* dim3 Setup.nib */; };
 		269FECC11328488B0030B0B5 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 269FECC01328488B0030B0B5 /* Carbon.framework */; };
@@ -80,6 +87,13 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		2683829A133D4F3D0035315B /* property_palette_actions.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_actions.c; path = Code/property_palette_actions.c; sourceTree = "<group>"; };
+		2683829B133D4F3D0035315B /* property_palette_crosshairs.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_crosshairs.c; path = Code/property_palette_crosshairs.c; sourceTree = "<group>"; };
+		2683829C133D4F3D0035315B /* property_palette_halos.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_halos.c; path = Code/property_palette_halos.c; sourceTree = "<group>"; };
+		2683829D133D4F3D0035315B /* property_palette_marks.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_marks.c; path = Code/property_palette_marks.c; sourceTree = "<group>"; };
+		2683829E133D4F3D0035315B /* property_palette_particles.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_particles.c; path = Code/property_palette_particles.c; sourceTree = "<group>"; };
+		2683829F133D4F3D0035315B /* property_palette_rings.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_rings.c; path = Code/property_palette_rings.c; sourceTree = "<group>"; };
+		268382A0133D4F3D0035315B /* property_palette_settings.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_settings.c; path = Code/property_palette_settings.c; sourceTree = "<group>"; };
 		269FECB0132844680030B0B5 /* dim3 Setup.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "dim3 Setup.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		269FECB91328457F0030B0B5 /* Info-dim3_Setup.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Info-dim3_Setup.plist"; path = "Resources/Info-dim3_Setup.plist"; sourceTree = "<group>"; };
 		269FECBB132845880030B0B5 /* dim3 Setup.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = "dim3 Setup.icns"; path = "Resources/dim3 Setup.icns"; sourceTree = "<group>"; };
@@ -190,7 +204,14 @@
 			children = (
 				26D15C791329E42400F9EC7B /* list_palette_common.c */,
 				26D15C701329E3EF00F9EC7B /* item_palette.c */,
+				268382A0133D4F3D0035315B /* property_palette_settings.c */,
 				26C87D9A1339435500DA562E /* property_palette_sounds.c */,
+				2683829E133D4F3D0035315B /* property_palette_particles.c */,
+				2683829F133D4F3D0035315B /* property_palette_rings.c */,
+				2683829C133D4F3D0035315B /* property_palette_halos.c */,
+				2683829D133D4F3D0035315B /* property_palette_marks.c */,
+				2683829B133D4F3D0035315B /* property_palette_crosshairs.c */,
+				2683829A133D4F3D0035315B /* property_palette_actions.c */,
 				26D15C711329E3EF00F9EC7B /* property_palette.c */,
 				26D15C6F1329E3EF00F9EC7B /* alt_property_palette.c */,
 				26D15D4F1329E7CD00F9EC7B /* property_utility_common.c */,
@@ -295,8 +316,8 @@
 				269FECAD132844680030B0B5 /* Sources */,
 				269FECAE132844680030B0B5 /* Frameworks */,
 				269FEDC213285FB20030B0B5 /* Copy Frameworks */,
-				269FEDDB132860160030B0B5 /* Copy Application */,
 				26C87D84133942E400DA562E /* Copy (List Icons) */,
+				269FEDDB132860160030B0B5 /* Copy Application */,
 			);
 			buildRules = (
 			);
@@ -365,6 +386,13 @@
 				26D15DE51329EB6100F9EC7B /* OSX_dialog_property_string.c in Sources */,
 				26D15DE61329EB6100F9EC7B /* OSX_dialog_utility_common.c in Sources */,
 				26C87D9B1339435500DA562E /* property_palette_sounds.c in Sources */,
+				268382A1133D4F3D0035315B /* property_palette_actions.c in Sources */,
+				268382A2133D4F3D0035315B /* property_palette_crosshairs.c in Sources */,
+				268382A3133D4F3D0035315B /* property_palette_halos.c in Sources */,
+				268382A4133D4F3D0035315B /* property_palette_marks.c in Sources */,
+				268382A5133D4F3D0035315B /* property_palette_particles.c in Sources */,
+				268382A6133D4F3D0035315B /* property_palette_rings.c in Sources */,
+				268382A7133D4F3D0035315B /* property_palette_settings.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -391,13 +419,15 @@
 				GCC_ENABLE_CPP_RTTI = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = NO;
+				GCC_ENABLE_SSE3_EXTENSIONS = YES;
 				GCC_FAST_MATH = YES;
 				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = headers/dim3setup.h;
 				GCC_PREPROCESSOR_DEFINITIONS = D3_SETUP;
+				GCC_STRICT_ALIASING = YES;
 				GCC_UNROLL_LOOPS = YES;
-				GCC_VERSION = 4.2;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_CHECK_SWITCH_STATEMENTS = YES;
@@ -411,6 +441,7 @@
 				INFOPLIST_FILE = "Resources/Info-dim3_Setup.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/../dim3Common/Libraries";
+				LLVM_LTO = NO;
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
 				OTHER_LDFLAGS = "";
 				PREBINDING = NO;

@@ -177,7 +177,11 @@ void file_open_model(void)
 	
 	os_set_arrow_cursor();
 
-    if (!dialog_file_open_run("Open a Model","Models",NULL,"Mesh.xml",file_name)) return;
+    if (!dialog_file_open_run("Open a Model","Models",NULL,"Mesh.xml",file_name)) {
+		state.model_open=FALSE;
+		file_reset_state();
+		return;
+	}
 	
 		// open model
 		

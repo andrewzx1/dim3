@@ -31,8 +31,6 @@ and can be sold or given away.
 
 #include "interface.h"
 #include "scripts.h"
-#include "sounds.h"
-#include "inputs.h"
 
 #define title_fade_mode_in		0
 #define title_fade_mode_out		1

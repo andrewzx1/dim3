@@ -30,7 +30,6 @@ and can be sold or given away.
 #endif
 
 #include "interface.h"
-#include "inputs.h"
 
 extern view_type				view;
 extern setup_type				setup;

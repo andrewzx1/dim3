@@ -33,7 +33,6 @@ and can be sold or given away.
 #include "network.h"
 #include "objects.h"
 #include "video.h"
-#include "sounds.h"
 
 #define host_pane_game					0
 #define host_pane_options				1

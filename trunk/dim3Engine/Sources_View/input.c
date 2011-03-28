@@ -29,7 +29,7 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
-#include "inputs.h"
+#include "interface.h"
 
 int							key_define_code[input_max_keyboard]=key_codes,
 							mouse_button_define_code[input_max_mouse_button]=mouse_button_codes;

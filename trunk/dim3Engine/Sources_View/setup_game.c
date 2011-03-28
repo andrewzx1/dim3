@@ -31,8 +31,6 @@ and can be sold or given away.
 
 #include "interface.h"
 #include "video.h"
-#include "sounds.h"
-#include "inputs.h"
 
 #define setup_pane_video					0
 #define setup_pane_audio					1

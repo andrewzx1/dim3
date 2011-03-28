@@ -51,7 +51,6 @@ extern void model_calc_pose_bones(model_draw *draw);
 extern void render_map_mesh_opaque(void);
 extern void render_map_mesh_transparent(void);
 extern void rain_draw(void);
-extern bool fog_solid_on(void);
 extern void fog_draw_textured(void);
 extern void fog_solid_start(void);
 extern void fog_solid_end(void);
@@ -75,8 +74,6 @@ extern void view_calculate_recoil(obj_type *obj);
 extern void view_calculate_shakes(obj_type *obj);
 extern void view_calculate_sways(obj_type *obj);
 extern void view_calculate_bump(obj_type *obj);
-extern void shadow_render_model(model_draw *draw);
-extern void shadow_render_mesh(int mesh_idx);
 extern void view_draw_debug_object(obj_type *obj);
 extern void view_draw_debug_projectile(proj_type *proj);
 

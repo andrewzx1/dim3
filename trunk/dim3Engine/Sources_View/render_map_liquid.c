@@ -47,7 +47,7 @@ extern bool boundbox_inview(int x,int z,int ex,int ez,int ty,int by);
       
 ======================================================= */
 
-inline int liquid_render_liquid_get_tide_split(map_liquid_type *liq)
+int liquid_render_liquid_get_tide_split(map_liquid_type *liq)
 {
 	int				tide_split;
 

@@ -42,7 +42,6 @@ extern bitmap_type		lmap_black_bitmap;
 
 map_poly_sort_type		trans_sort;
 
-extern bool fog_solid_on(void);
 extern void view_compile_gl_list_attach(void);
 extern void view_compile_gl_list_attach_uv_light_map(void);
 extern void view_compile_gl_list_attach_uv_shader(void);

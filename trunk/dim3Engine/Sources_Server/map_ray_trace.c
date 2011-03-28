@@ -29,8 +29,8 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
+#include "interface.h"
 #include "objects.h"
-#include "physics.h"
 
 extern map_type				map;
 extern server_type			server;
@@ -420,7 +420,7 @@ void ray_trace_get_ray_bounds(int cnt,d3pnt *spts,d3pnt *epts,d3pnt *min,d3pnt *
       
 ======================================================= */
 
-bool ray_trace_mesh_bound_check(map_mesh_type *mesh,d3pnt *min,d3pnt *max)
+inline bool ray_trace_mesh_bound_check(map_mesh_type *mesh,d3pnt *min,d3pnt *max)
 {
 		// compare x/z first as it's a better chance
 		// for an elimination
@@ -562,7 +562,7 @@ void ray_trace_object_set_hitbox(obj_type *obj,int hit_box_idx,ray_trace_contact
 	}
 }
 
-inline bool ray_trace_object_bound_check(obj_type *obj,d3pnt *min,d3pnt *max,ray_trace_contact_type *contact)
+bool ray_trace_object_bound_check(obj_type *obj,d3pnt *min,d3pnt *max,ray_trace_contact_type *contact)
 {
 	int			x,z,radius;
 	
@@ -628,7 +628,7 @@ float ray_trace_projectile(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,proj_type
 	return(ray_trace_rotated_box(spt,vct,hpt,x,z,lx,rx,tz,bz,ty,by,rang));
 }
 
-inline bool ray_trace_projectile_bound_check(proj_type *proj,d3pnt *min,d3pnt *max,ray_trace_contact_type *contact)
+bool ray_trace_projectile_bound_check(proj_type *proj,d3pnt *min,d3pnt *max,ray_trace_contact_type *contact)
 {
 	int			x,z,radius;
 	

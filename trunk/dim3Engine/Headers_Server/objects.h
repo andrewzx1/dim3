@@ -175,6 +175,7 @@ extern void object_player_turn_direct(obj_type *obj,float ang);
 extern void object_player_look(obj_type *obj);
 extern void object_player_look_stop(obj_type *obj);
 extern void object_player_look_fix_zoom(obj_type *obj,weapon_type *weap);
+extern float object_player_look_constrain(obj_type *obj,weapon_type *weap,float ang_x);
 
 extern void object_post_move_animation_event(obj_type *obj,int sub_event);
 extern bool object_post_move_animation_event_change(obj_type *obj,int sub_event);
