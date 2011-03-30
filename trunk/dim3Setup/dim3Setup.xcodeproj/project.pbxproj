@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2649D11E1341270B00573F6F /* property_palette_intro.c in Sources */ = {isa = PBXBuildFile; fileRef = 2649D11D1341270B00573F6F /* property_palette_intro.c */; };
 		268382A1133D4F3D0035315B /* property_palette_actions.c in Sources */ = {isa = PBXBuildFile; fileRef = 2683829A133D4F3D0035315B /* property_palette_actions.c */; };
 		268382A2133D4F3D0035315B /* property_palette_crosshairs.c in Sources */ = {isa = PBXBuildFile; fileRef = 2683829B133D4F3D0035315B /* property_palette_crosshairs.c */; };
 		268382A3133D4F3D0035315B /* property_palette_halos.c in Sources */ = {isa = PBXBuildFile; fileRef = 2683829C133D4F3D0035315B /* property_palette_halos.c */; };
@@ -87,6 +88,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		2649D11D1341270B00573F6F /* property_palette_intro.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_intro.c; path = Code/property_palette_intro.c; sourceTree = "<group>"; };
 		2683829A133D4F3D0035315B /* property_palette_actions.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_actions.c; path = Code/property_palette_actions.c; sourceTree = "<group>"; };
 		2683829B133D4F3D0035315B /* property_palette_crosshairs.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_crosshairs.c; path = Code/property_palette_crosshairs.c; sourceTree = "<group>"; };
 		2683829C133D4F3D0035315B /* property_palette_halos.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_halos.c; path = Code/property_palette_halos.c; sourceTree = "<group>"; };
@@ -205,6 +207,7 @@
 				26D15C791329E42400F9EC7B /* list_palette_common.c */,
 				26D15C701329E3EF00F9EC7B /* item_palette.c */,
 				268382A0133D4F3D0035315B /* property_palette_settings.c */,
+				2649D11D1341270B00573F6F /* property_palette_intro.c */,
 				26C87D9A1339435500DA562E /* property_palette_sounds.c */,
 				2683829E133D4F3D0035315B /* property_palette_particles.c */,
 				2683829F133D4F3D0035315B /* property_palette_rings.c */,
@@ -393,6 +396,7 @@
 				268382A5133D4F3D0035315B /* property_palette_particles.c in Sources */,
 				268382A6133D4F3D0035315B /* property_palette_rings.c in Sources */,
 				268382A7133D4F3D0035315B /* property_palette_settings.c in Sources */,
+				2649D11E1341270B00573F6F /* property_palette_intro.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

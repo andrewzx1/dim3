@@ -400,22 +400,20 @@ void group_moves_run(bool run_events)
 				attach=&js.course_attach;
 			}
 			else {
-				obj=server.obj_list.objs[attach->obj_idx];
+				obj=server.obj_list.objs[move->attach_obj_idx];
 				if (obj!=NULL) attach=&obj->attach;
 			}
 		}
-		
-		if (attach==NULL) run_events=FALSE;
 
 			// post the finished event
 	
 		user_id=move->user_id;
-		if (run_events) scripts_post_event_console(attach,sd_event_move,sd_event_move_done,user_id);
+		if (attach!=NULL) scripts_post_event_console(attach,sd_event_move,sd_event_move_done,user_id);
 
 			// signal back to the original map movement
 	
 		if (map_movement_next_move(move->movement_idx,move->movement_move_idx,move->attach_obj_idx)) {
-			if (run_events) scripts_post_event_console(attach,sd_event_move,sd_event_move_loop,user_id);
+			if (attach!=NULL) scripts_post_event_console(attach,sd_event_move,sd_event_move_loop,user_id);
 		}
 	}
 }
