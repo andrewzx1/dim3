@@ -47,7 +47,7 @@
 				InlineFunctionExpansion="1"
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
-				AdditionalIncludeDirectories="..\Libraries;..\Libraries\GLEW;..\Libraries\ZLib;..\Libraries\SDL;..\Libraries\MPG123;..\Libraries\JavaScriptCore;..\Libraries\PNG;..\..\dim3Engine\Headers_View;..\..\dim3Engine\Headers_Server;..\..\dim3Engine\Headers_Network;..\..\dim3Engine\Headers;..\..\dim3MapUtility\Headers;..\..\dim3ModelUtility\Headers;..\..\dim3BaseUtility\Headers;..\..\dim3Common\Headers"
+				AdditionalIncludeDirectories="..\Libraries;..\Libraries\GLEW;..\Libraries\ZLib;..\Libraries\SDL;..\Libraries\MPG123;..\Libraries\JavaScriptCore;..\Libraries\PNG;..\..\dim3Engine\Headers;..\..\dim3Common\Headers"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;D3_PCH;D3_ENGINE"
 				StringPooling="true"
 				RuntimeLibrary="2"

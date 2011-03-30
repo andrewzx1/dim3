@@ -675,7 +675,7 @@ void gl_lights_calc_color(double x,double y,double z,float *cf)
 
 				mult=(lspot->f_intensity-f)*lspot->f_inv_intensity;
 				
-				mult+=pow(mult,lspot->f_exponent);
+				mult+=powf(mult,lspot->f_exponent);
 
 				r+=(lspot->col.r*mult);
 				g+=(lspot->col.g*mult);
@@ -721,7 +721,7 @@ void gl_lights_calc_color_light_cache(int count,int *indexes,bool skip_light_map
 
 				mult=(lspot->f_intensity-f)*lspot->f_inv_intensity;
 				
-				mult+=pow(mult,lspot->f_exponent);
+				mult+=powf(mult,lspot->f_exponent);
 
 				r+=(lspot->col.r*mult);
 				g+=(lspot->col.g*mult);
