@@ -278,14 +278,18 @@ void shadow_render_prepare_bounds_check(poly_pointer_type *poly_ptr,d3pnt *min,d
 {
 	map_mesh_poly_type		*poly;
 
+		// we need to add slop to the bounds check because
+		// there's the problem of two 2D planes laying on top of
+		// each other
+		
 	poly=&map.mesh.meshes[poly_ptr->mesh_idx].polys[poly_ptr->poly_idx];
 
-	min->x=poly->box.min.x;
-	max->x=poly->box.max.x;
-	min->y=poly->box.min.y;
-	max->y=poly->box.max.y;
-	min->z=poly->box.min.z;
-	max->z=poly->box.max.z;
+	min->x=poly->box.min.x-shadow_bounds_check_slop;
+	max->x=poly->box.max.x+shadow_bounds_check_slop;
+	min->y=poly->box.min.y-shadow_bounds_check_slop;
+	max->y=poly->box.max.y+shadow_bounds_check_slop;
+	min->z=poly->box.min.z-shadow_bounds_check_slop;
+	max->z=poly->box.max.z+shadow_bounds_check_slop;
 }
 
 bool shadow_render_model_trig_bounds_check(d3pnt *min,d3pnt *max,int v_idx0,int v_idx1,int v_idx2)
@@ -504,7 +508,6 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 				dx=(hpt->x-light_pnt.x);
 				dy=(hpt->y-light_pnt.y);
 				dz=(hpt->z-light_pnt.z);
-				hpt++;
 
 				*cl++=0.0f;
 				*cl++=0.0f;
@@ -748,7 +751,6 @@ void shadow_render_mesh(int shadow_mesh_idx)
 				dx=(hpt->x-light_pnt.x);
 				dy=(hpt->y-light_pnt.y);
 				dz=(hpt->z-light_pnt.z);
-				hpt++;
 
 				*cl++=0.0f;
 				*cl++=0.0f;
@@ -766,7 +768,6 @@ void shadow_render_mesh(int shadow_mesh_idx)
 				dx=(hpt->x-light_pnt.x);
 				dy=(hpt->y-light_pnt.y);
 				dz=(hpt->z-light_pnt.z);
-				hpt++;
 
 				*cl++=0.0f;
 				*cl++=0.0f;
@@ -784,7 +785,6 @@ void shadow_render_mesh(int shadow_mesh_idx)
 				dx=(hpt->x-light_pnt.x);
 				dy=(hpt->y-light_pnt.y);
 				dz=(hpt->z-light_pnt.z);
-				hpt++;
 
 				*cl++=0.0f;
 				*cl++=0.0f;

@@ -332,7 +332,7 @@ void render_model_vertex_object_no_shader_diffuse(model_type *mdl,int mesh_idx,m
 			nl+=3;
 		
 				// apply diffuse
-			
+				
 			*cl++=(*cp++)*diffuse;
 			*cl++=(*cp++)*diffuse;
 			*cl++=(*cp)*diffuse;

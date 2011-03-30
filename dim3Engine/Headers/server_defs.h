@@ -169,6 +169,7 @@ and can be sold or given away.
 //
 
 #define max_shadow_poly							64
+#define shadow_bounds_check_slop				100
 
 //
 // node walking

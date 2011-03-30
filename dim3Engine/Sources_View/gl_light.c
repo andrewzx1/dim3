@@ -367,10 +367,7 @@ void gl_lights_compile_add(int tick,d3pnt *pnt,int light_type,bool light_map,int
 
 		// non shader calculation speed ups
 
-	lspot->d_intensity=(double)(intensity*intensity);
-	lspot->d_inv_intensity=1.0/lspot->d_intensity;
-	
-	lspot->d_exponent=(double)exponent;
+	lspot->f_inv_intensity=1.0f/lspot->f_intensity;
 
 	lspot->f_x=(float)lspot->pnt.x;
 	lspot->f_y=(float)lspot->pnt.y;
@@ -379,10 +376,6 @@ void gl_lights_compile_add(int tick,d3pnt *pnt,int light_type,bool light_map,int
 	lspot->d_x=(double)lspot->f_x;
 	lspot->d_y=(double)lspot->f_y;
 	lspot->d_z=(double)lspot->f_z;
-	
-	lspot->d_col_r=(double)lspot->col.r;
-	lspot->d_col_g=(double)lspot->col.g;
-	lspot->d_col_b=(double)lspot->col.b;
 
 		// eye space for shaders
 
@@ -523,7 +516,8 @@ void gl_lights_compile(int tick)
 view_light_spot_type* gl_light_find_closest_light(double x,double y,double z)
 {
 	int						n,k;
-	double					dx,dz,dy,d,dist;
+	float					f,dist;
+	double					dx,dz,dy;
 	view_light_spot_type	*lspot;
 
 		// no lights in scene
@@ -533,7 +527,7 @@ view_light_spot_type* gl_light_find_closest_light(double x,double y,double z)
 		// find closest light
 	
 	k=-1;
-	dist=-1;
+	dist=-1.0f;
 	
 	for (n=0;n!=view.render->light.count;n++) {
 
@@ -545,19 +539,19 @@ view_light_spot_type* gl_light_find_closest_light(double x,double y,double z)
 		dz=lspot->d_z-z;
 		dy=lspot->d_y-y;
 
-		d=(dx*dx)+(dz*dz)+(dy*dy);
+		f=(float)sqrt((dx*dx)+(dz*dz)+(dy*dy));
 		
 			// reject lights outside globe
 			// and in wrong direction
 
-		if (d<=lspot->d_intensity) {
+		if (f<=lspot->f_intensity) {
 
 			if (gl_lights_direction_ok(x,y,z,lspot)) {
 		
 					// compare distances
 			
-				if ((d<dist) || (dist==-1)) {
-					dist=d;
+				if ((f<dist) || (k==-1)) {
+					dist=f;
 					k=n;
 				}
 			}
@@ -658,7 +652,8 @@ void gl_lights_calc_diffuse_vector(d3pnt *pnt,int count,int *indexes,d3vct *vct)
 void gl_lights_calc_color(double x,double y,double z,float *cf)
 {
 	int						n;
-	double					dx,dz,dy,r,g,b,d,mult;
+	float					f,mult,r,g,b;
+	double					dx,dz,dy;
 	view_light_spot_type	*lspot;
 	
 		// combine all light spots attenuated for distance
@@ -673,18 +668,18 @@ void gl_lights_calc_color(double x,double y,double z,float *cf)
 		dy=lspot->d_y-y;
 		dz=lspot->d_z-z;
 		
-		d=(dx*dx)+(dz*dz)+(dy*dy);
+		f=(float)sqrt((dx*dx)+(dz*dz)+(dy*dy));
 
-		if (d<=lspot->d_intensity) {
+		if (f<=lspot->f_intensity) {
 			if (gl_lights_direction_ok(x,y,z,lspot)) {
 
-				mult=(lspot->d_intensity-d)*lspot->d_inv_intensity;
+				mult=(lspot->f_intensity-f)*lspot->f_inv_intensity;
 				
-				mult+=pow(mult,lspot->d_exponent);
+				mult+=pow(mult,lspot->f_exponent);
 
-				r+=(lspot->d_col_r*mult);
-				g+=(lspot->d_col_g*mult);
-				b+=(lspot->d_col_b*mult);
+				r+=(lspot->col.r*mult);
+				g+=(lspot->col.g*mult);
+				b+=(lspot->col.b*mult);
 			}
 		}
 
@@ -693,15 +688,16 @@ void gl_lights_calc_color(double x,double y,double z,float *cf)
 
 		// set light value
 
-	*cf++=(map.ambient.light_color.r+setup.gamma)+(float)r;
-	*cf++=(map.ambient.light_color.g+setup.gamma)+(float)g;
-	*cf=(map.ambient.light_color.b+setup.gamma)+(float)b;
+	*cf++=(map.ambient.light_color.r+setup.gamma)+r;
+	*cf++=(map.ambient.light_color.g+setup.gamma)+g;
+	*cf=(map.ambient.light_color.b+setup.gamma)+b;
 }
 
 void gl_lights_calc_color_light_cache(int count,int *indexes,bool skip_light_map,double x,double y,double z,float *cf)
 {
 	int						n;
-	double					dx,dz,dy,r,g,b,d,mult;
+	float					f,mult,r,g,b;
+	double					dx,dz,dy;
 	view_light_spot_type	*lspot;
 
 		// combine all light spots attenuated for distance
@@ -717,28 +713,28 @@ void gl_lights_calc_color_light_cache(int count,int *indexes,bool skip_light_map
 		dy=lspot->d_y-y;
 		dz=lspot->d_z-z;
 		
-		d=((dx*dx)+(dy*dy)+(dz*dz));
+		f=(float)sqrt((dx*dx)+(dy*dy)+(dz*dz));
 
-		if (d<=lspot->d_intensity) {
+		if (f<=lspot->f_intensity) {
 
 			if (gl_lights_direction_ok(x,y,z,lspot)) {
 
-				mult=(lspot->d_intensity-d)*lspot->d_inv_intensity;
+				mult=(lspot->f_intensity-f)*lspot->f_inv_intensity;
 				
-				mult+=pow(mult,lspot->d_exponent);
+				mult+=pow(mult,lspot->f_exponent);
 
-				r+=(lspot->d_col_r*mult);
-				g+=(lspot->d_col_g*mult);
-				b+=(lspot->d_col_b*mult);
+				r+=(lspot->col.r*mult);
+				g+=(lspot->col.g*mult);
+				b+=(lspot->col.b*mult);
 			}
 		}
 	}
 
 		// set light value
 
-	*cf++=(map.ambient.light_color.r+setup.gamma)+(float)r;
-	*cf++=(map.ambient.light_color.g+setup.gamma)+(float)g;
-	*cf=(map.ambient.light_color.b+setup.gamma)+(float)b;
+	*cf++=(map.ambient.light_color.r+setup.gamma)+r;
+	*cf++=(map.ambient.light_color.g+setup.gamma)+g;
+	*cf=(map.ambient.light_color.b+setup.gamma)+b;
 }
 
 /* =======================================================

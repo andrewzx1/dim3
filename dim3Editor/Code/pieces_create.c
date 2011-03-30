@@ -489,6 +489,8 @@ void piece_create_cinema(void)
 	item_palette_select(cinema_piece,cinema_idx);
 
 	dialog_property_string_run(list_string_value_string,(void*)map.cinema.cinemas[cinema_idx].name,name_str_len,0,0);
+	
+	main_wind_draw();
 }
 
 void piece_create_group(void)
@@ -504,6 +506,8 @@ void piece_create_group(void)
 	item_palette_select(group_piece,group_idx);
 
 	dialog_property_string_run(list_string_value_string,(void*)map.group.groups[group_idx].name,name_str_len,0,0);
+	
+	main_wind_draw();
 }
 
 void piece_create_movement(void)
@@ -519,5 +523,7 @@ void piece_create_movement(void)
 	item_palette_select(movement_piece,movement_idx);
 
 	dialog_property_string_run(list_string_value_string,(void*)map.movement.movements[movement_idx].name,name_str_len,0,0);
+	
+	main_wind_draw();
 }
 
