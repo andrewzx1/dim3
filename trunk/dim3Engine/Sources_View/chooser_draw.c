@@ -98,11 +98,11 @@ void chooser_text_substitute(char *init_str,char *sub_str,int max_len)
 
 void chooser_create_elements(void)
 {
-	int							n;
+	int							n,idx,template_idx;
 	char						path[1024],path2[1024],fname[256],
 								title[max_chooser_frame_text_sz],str[max_chooser_text_data_sz];
-	iface_chooser_type			*chooser;
-	iface_chooser_piece_type	*piece;
+	iface_chooser_type			*chooser,*template_chooser;
+	iface_chooser_piece_type	*piece,*template_piece;
 	iface_chooser_frame_type	frame;
 	
 	chooser=&iface.chooser_list.choosers[chooser_idx];
@@ -115,12 +115,80 @@ void chooser_create_elements(void)
 	strcpy(frame.title,title);
 	
 	gui_set_frame(&frame);
-		
-		// pieces
+
+		// mark regular pieces as not being
+		// used to override a template
 
 	piece=chooser->pieces;
 
 	for (n=0;n!=chooser->npiece;n++) {
+		piece->used_in_override=FALSE;
+		piece++;
+	}
+
+		// template pieces
+
+	template_idx=iface_chooser_find_idx(chooser->template_name);
+	if (template_idx!=-1) {
+
+		template_chooser=&iface->chooser_list.choosers[template_idx];
+		template_piece=template_chooser->pieces;
+
+		for (n=0;n!=template_chooser->npiece;n++) {
+
+				// get the override
+
+			piece=NULL;
+
+			idx=iface_chooser_find_piece_idx(chooser,template_piece->id);
+			if (idx!=-1) {
+				piece=&chooser->pieces[idx];
+				piece->used_in_override=TRUE;
+			}
+
+			if (piece==NULL) piece=template_piece;
+
+				// add template pieces
+
+			switch (template_piece->type) {
+
+				case chooser_piece_type_text:
+					chooser_text_substitute(piece->data.text.str,str,max_chooser_text_data_sz);
+					element_text_add(str,template_piece->id,template_piece->x,template_piece->y,template_piece->data.text.size,template_piece->data.text.just,template_piece->clickable,FALSE);
+					break;
+
+				case chooser_piece_type_item:
+					file_paths_data(&setup.file_path_setup,path,"Chooser",piece->data.item.file,"png");
+					if (template_piece->clickable) {
+						sprintf(fname,"%s_selected",template_piece->data.item.file);
+						file_paths_data(&setup.file_path_setup,path2,"Chooser",fname,"png");
+						element_button_bitmap_add(path,path2,template_piece->id,template_piece->x,template_piece->y,template_piece->wid,template_piece->high,element_pos_left,element_pos_top);
+					}
+					else {
+						element_bitmap_add(path,0,template_piece->x,template_piece->y,template_piece->wid,template_piece->high,FALSE);
+					}
+					break;
+					
+				case chooser_piece_type_model:
+					element_model_add(piece->data.model.model_name,piece->data.model.animate_name,template_piece->data.model.resize,NULL,&template_piece->data.model.rot,template_piece->id,template_piece->x,template_piece->y);
+					break;
+
+				case chooser_piece_type_button:
+					element_button_text_add(piece->data.button.name,template_piece->id,template_piece->x,template_piece->y,template_piece->wid,template_piece->high,element_pos_left,element_pos_top);
+					break;
+
+			}
+
+			template_piece++;
+		}
+	}
+
+		// normal pieces
+
+	for (n=0;n!=chooser->npiece;n++) {
+
+		piece=chooser->pieces[n];
+		if (piece->used_in_override) continue;
 
 		switch (piece->type) {
 
@@ -151,8 +219,6 @@ void chooser_create_elements(void)
 				break;
 
 		}
-
-		piece++;
 	}
 }
 
@@ -202,7 +268,8 @@ bool chooser_setup(char *name,char *sub_txt,char *err_str)
 
 void chooser_click(void)
 {
-	int							id,idx,next_idx;
+	int							id,idx,next_idx,template_idx;
+	iface_chooser_type			*chooser;
 	iface_chooser_piece_type	*piece;
 	
 	id=-1;
@@ -224,12 +291,24 @@ void chooser_click(void)
 	hud_click();
 	
 		// check for any goto clicks
+
+	chooser=&iface.chooser_list.choosers[chooser_idx];
 		
-	idx=iface_chooser_find_piece_idx(&iface.chooser_list.choosers[chooser_idx],id);
+	piece=NULL;
+
+	template_idx=iface_chooser_find_idx(chooser->template_name);
+	if (template_idx!=-1) {
+		idx=iface_chooser_find_piece_idx(&iface.chooser_list.choosers[template_idx],id);
+		piece=&iface.chooser_list.choosers[template_idx].pieces[idx];
+	}
+
+	if (piece==NULL) {
+		idx=iface_chooser_find_piece_idx(chooser,id);
+		piece=&chooser->pieces[idx];
+	}
 	
-	if (idx!=-1) {
+	if (piece!=NULL) {
 	
-		piece=&iface.chooser_list.choosers[chooser_idx].pieces[idx];
 		next_idx=iface_chooser_find_idx(&iface,piece->goto_name);
 		
 		if (next_idx!=-1) {
