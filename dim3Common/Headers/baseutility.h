@@ -746,7 +746,7 @@ typedef union		{
 typedef struct		{
 						int								type,id,
 														x,y,wid,high;
-						bool							clickable;
+						bool							clickable,used_in_override;
 						char							goto_name[name_str_len];
 						iface_chooser_piece_data_type	data;
 					} iface_chooser_piece_type;
@@ -764,7 +764,7 @@ typedef struct		{
 					
 typedef struct		{
 						int								npiece;
-						char							name[name_str_len];
+						char							name[name_str_len],template_name[name_str_len];
 						iface_chooser_frame_type		frame;
 						iface_chooser_key_type			key;
 						iface_chooser_piece_type		pieces[max_chooser_piece];
@@ -1277,7 +1277,8 @@ extern iface_text_type* iface_texts_find(iface_type *iface,char *name);
 extern iface_bar_type* iface_bars_find(iface_type *iface,char *name);
 extern int iface_menu_find_idx(iface_type *iface,char *name);
 extern int iface_chooser_find_idx(iface_type *iface,char *name);
-extern int iface_chooser_find_piece_idx(iface_chooser_type *chooser,int id);extern void iface_text_set(iface_text_type *text,char *data);
+extern int iface_chooser_find_piece_idx(iface_chooser_type *chooser,int id);
+extern void iface_text_set(iface_text_type *text,char *data);
 extern int iface_crosshair_find(iface_type *iface,char *name);
 extern int iface_halo_find(iface_type *iface,char *name);
 extern void iface_text_set(iface_text_type *text,char *data);
