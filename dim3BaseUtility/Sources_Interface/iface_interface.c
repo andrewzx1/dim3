@@ -380,172 +380,6 @@ void iface_read_settings_menu(iface_type *iface,int menu_tag)
 
 /* =======================================================
 
-      Read Chooser XML
-      
-======================================================= */
-
-iface_chooser_piece_type* read_setting_interface_chooser_common(iface_chooser_type *chooser,int piece_type,int item_tag)
-{
-	iface_chooser_piece_type	*piece;
-
-		// create new piece
-		
-	if (chooser->npiece>=max_chooser_piece) return(NULL);
-
-	piece=&chooser->pieces[chooser->npiece];
-	chooser->npiece++;
-
-		// common piece settings
-		
-	piece->type=piece_type;
-
-	piece->id=xml_get_attribute_int(item_tag,"id");
-	piece->x=xml_get_attribute_int(item_tag,"x");
-	piece->y=xml_get_attribute_int(item_tag,"y");
-	piece->wid=xml_get_attribute_int_default(item_tag,"width",-1);
-	piece->high=xml_get_attribute_int_default(item_tag,"height",-1);
-	piece->clickable=xml_get_attribute_boolean(item_tag,"clickable");
-	xml_get_attribute_text(item_tag,"goto",piece->goto_name,name_str_len);
-	
-	return(piece);
-}
-
-void iface_read_settings_chooser_items(iface_chooser_type *chooser,int item_tag)
-{
-	iface_chooser_piece_type	*piece;
-	
-	while (item_tag!=-1) {
-		piece=read_setting_interface_chooser_common(chooser,chooser_piece_type_item,item_tag);
-		if (piece==NULL) return;
-		
-		xml_get_attribute_text(item_tag,"file",piece->data.item.file,file_str_len);
-		
-		item_tag=xml_findnextchild(item_tag);
-	}
-}
-
-void iface_read_settings_chooser_models(iface_chooser_type *chooser,int item_tag)
-{
-	iface_chooser_piece_type	*piece;
-	
-	while (item_tag!=-1) {
-		piece=read_setting_interface_chooser_common(chooser,chooser_piece_type_model,item_tag);
-		if (piece==NULL) return;
-		
-		xml_get_attribute_text(item_tag,"model",piece->data.model.model_name,name_str_len);
-		xml_get_attribute_text(item_tag,"animate",piece->data.model.animate_name,name_str_len);
-		xml_get_attribute_3_coord_float(item_tag,"rot",&piece->data.model.rot.x,&piece->data.model.rot.y,&piece->data.model.rot.z);
-		piece->data.model.resize=xml_get_attribute_float_default(item_tag,"resize",1.0f);
-		
-		item_tag=xml_findnextchild(item_tag);
-	}
-}
-
-void iface_read_settings_chooser_texts(iface_type *iface,iface_chooser_type *chooser,int item_tag)
-{
-	iface_chooser_piece_type	*piece;
-
-	while (item_tag!=-1) {
-		piece=read_setting_interface_chooser_common(chooser,chooser_piece_type_text,item_tag);
-		if (piece==NULL) return;
-
-		xml_get_attribute_text(item_tag,"data",piece->data.text.str,max_chooser_text_data_sz);
-		piece->data.text.size=xml_get_attribute_int_default(item_tag,"size",iface->font.text_size_small);
-		piece->data.text.just=xml_get_attribute_list(item_tag,"just",(char*)just_mode_str);
-
-		item_tag=xml_findnextchild(item_tag);
-	}
-}
-
-void iface_read_settings_chooser_buttons(iface_chooser_type *chooser,int item_tag)
-{
-	iface_chooser_piece_type	*piece;
-	
-	while (item_tag!=-1) {
-		piece=read_setting_interface_chooser_common(chooser,chooser_piece_type_button,item_tag);
-		if (piece==NULL) return;
-
-		xml_get_attribute_text(item_tag,"name",piece->data.button.name,max_chooser_button_text_sz);
-		
-		item_tag=xml_findnextchild(item_tag);
-	}
-}
-
-void iface_read_settings_chooser(iface_type *iface,int chooser_tag)
-{
-	int					tag,texts_head_tag,buttons_head_tag,
-						items_head_tag,models_head_tag,item_tag;
-	iface_chooser_type	*chooser;
-
-		// find next chooser
-
-	if (iface->chooser_list.nchooser>=max_iface_chooser) return;
-	
-	chooser=&iface->chooser_list.choosers[iface->chooser_list.nchooser];
-	iface->chooser_list.nchooser++;
-	
-	xml_get_attribute_text(chooser_tag,"name",chooser->name,name_str_len);
-	xml_get_attribute_text(chooser_tag,"template",chooser->template_name,name_str_len);
-
-	chooser->npiece=0;
-	chooser->frame.on=FALSE;
-	chooser->key.ok_id=-1;
-	chooser->key.cancel_id=-1;
-	
-		// frames and keys
-		
-	tag=xml_findfirstchild("Frame",chooser_tag);
-	if (tag!=-1) {
-		chooser->frame.on=xml_get_attribute_boolean(tag,"on");
-		xml_get_attribute_text(tag,"title",chooser->frame.title,max_chooser_frame_text_sz);
-		chooser->frame.x=xml_get_attribute_int(tag,"x");
-		chooser->frame.y=xml_get_attribute_int(tag,"y");
-		chooser->frame.wid=xml_get_attribute_int(tag,"width");
-		chooser->frame.high=xml_get_attribute_int(tag,"height");
-		xml_get_attribute_color(tag,"background_color",&chooser->frame.background_col);
-	}
-	
-	tag=xml_findfirstchild("Key",chooser_tag);
-	if (tag!=-1) {
-		chooser->key.ok_id=xml_get_attribute_int(tag,"ok_id");
-		chooser->key.cancel_id=xml_get_attribute_int(tag,"cancel_id");
-	}
-	
-		// items
-	
-	items_head_tag=xml_findfirstchild("Items",chooser_tag);
-	if (items_head_tag!=-1) {
-		item_tag=xml_findfirstchild("Item",items_head_tag);
-		iface_read_settings_chooser_items(chooser,item_tag);
-	}
-	
-		// models
-	
-	models_head_tag=xml_findfirstchild("Models",chooser_tag);
-	if (models_head_tag!=-1) {
-		item_tag=xml_findfirstchild("Model",models_head_tag);
-		iface_read_settings_chooser_models(chooser,item_tag);
-	}
-
-		// text
-
-	texts_head_tag=xml_findfirstchild("Texts",chooser_tag);
-	if (texts_head_tag!=-1) {
-		item_tag=xml_findfirstchild("Text",texts_head_tag);
-		iface_read_settings_chooser_texts(iface,chooser,item_tag);
-	}
-	
-		// buttons
-	
-	buttons_head_tag=xml_findfirstchild("Buttons",chooser_tag);
-	if (buttons_head_tag!=-1) {
-		item_tag=xml_findfirstchild("Button",buttons_head_tag);
-		iface_read_settings_chooser_buttons(chooser,item_tag);
-	}
-}
-
-/* =======================================================
-
       Read Intro XML
       
 ======================================================= */
@@ -636,15 +470,13 @@ void iface_read_settings_project_name(file_path_setup_type *path_setup)
 
 void iface_read_settings_interface(iface_type *iface)
 {
-	int							n,cnt,interface_head_tag,scale_tag,
+	int							n,interface_head_tag,scale_tag,
 								bitmap_head_tag,bitmap_tag,text_head_tag,text_tag,bar_head_tag,bar_tag,
-								radar_head_tag,menu_head_tag,menu_tag,chooser_head_tag,chooser_tag,
+								radar_head_tag,menu_head_tag,menu_tag,
 								intro_head_tag,intro_model_head_tag,intro_model_tag,
 								color_tag,font_tag,progress_tag,chat_tag,fade_tag,button_tag,sound_tag,
-								proj_tag,debug_tag,games_head_tag,game_tag,options_head_tag,option_tag,
-								character_head_tag,character_item_tag,bot_head_tag,bot_tag,news_tag;
+								proj_tag,debug_tag;
 	char						path[1024],name[256];
-	iface_character_item_type	*iface_character;
 
 	iface_default_settings(iface);
 	
@@ -732,19 +564,6 @@ void iface_read_settings_interface(iface_type *iface)
 		}
 	}
 	
-		// choosers
-		
-	chooser_head_tag=xml_findfirstchild("Choosers",interface_head_tag);
-    if (chooser_head_tag!=-1) {
-	
-		chooser_tag=xml_findfirstchild("Chooser",chooser_head_tag);
-		
-		while (chooser_tag!=-1) {
-			iface_read_settings_chooser(iface,chooser_tag);
-			chooser_tag=xml_findnextchild(chooser_tag);
-		}
-	}
-	
 		// colors
 		
 	color_tag=xml_findfirstchild("Color",interface_head_tag);
@@ -822,7 +641,7 @@ void iface_read_settings_interface(iface_type *iface)
 	
 			// music
 			
-		xml_get_attribute_text(interface_head_tag,"music",iface->intro.music,name_str_len);
+		xml_get_attribute_text(intro_head_tag,"music",iface->intro.music,name_str_len);
 
 			// models
 
@@ -884,147 +703,32 @@ void iface_read_settings_interface(iface_type *iface)
 		iface->debug=xml_get_attribute_boolean(debug_tag,"on");
 	}
 
-		// network games
-
-	games_head_tag=xml_findfirstchild("Games",interface_head_tag);
-	if (games_head_tag!=-1) {
-		
-		iface->net_game.ngame=0;
-		
-		game_tag=xml_findfirstchild("Game",games_head_tag);
-		while (game_tag!=-1) {
-		
-			xml_get_attribute_text(game_tag,"type",iface->net_game.games[iface->net_game.ngame].name,name_str_len);
-			iface->net_game.games[iface->net_game.ngame].use_teams=xml_get_attribute_boolean(game_tag,"use_teams");
-			iface->net_game.games[iface->net_game.ngame].monsters=xml_get_attribute_boolean(game_tag,"monsters");
-			
-			iface->net_game.ngame++;
-			if (iface->net_game.ngame==max_net_game) break;
-
-			game_tag=xml_findnextchild(game_tag);
-		}
-	}
-
-		// network options
-
-	options_head_tag=xml_findfirstchild("Options",interface_head_tag);
-	if (options_head_tag!=-1) {
-		
-		iface->net_option.noption=0;
-		
-		option_tag=xml_findfirstchild("Option",options_head_tag);
-		while (option_tag!=-1) {
-		
-			xml_get_attribute_text(option_tag,"name",iface->net_option.options[iface->net_option.noption].name,name_str_len);
-			xml_get_attribute_text(option_tag,"description",iface->net_option.options[iface->net_option.noption].descript,64);
-			
-			iface->net_option.noption++;
-			if (iface->net_option.noption==max_net_option) break;
-
-			option_tag=xml_findnextchild(option_tag);
-		}
-	}
-
-		// characters
-
-    character_head_tag=xml_findfirstchild("Characters",interface_head_tag);
-    if (character_head_tag!=-1) {
-
-		iface->character.ncharacter=0;
-		character_item_tag=xml_findfirstchild("Character",character_head_tag);
-		
-		while (character_item_tag!=-1) {
-			iface_character=&iface->character.characters[iface->character.ncharacter];
-			
-			xml_get_attribute_text(character_item_tag,"name",iface_character->name,name_str_len);
-			xml_get_attribute_text(character_item_tag,"model",iface_character->model_name,name_str_len);
-			xml_get_attribute_text(character_item_tag,"parameter",iface_character->param,name_str_len);
-			iface_character->interface_resize=xml_get_attribute_float_default(character_item_tag,"interface_resize",1.0f);
-			xml_get_attribute_3_coord_int(character_item_tag,"interface_offset",&iface_character->interface_offset.x,&iface_character->interface_offset.y,&iface_character->interface_offset.z);
-			
-			iface->character.ncharacter++;
-			character_item_tag=xml_findnextchild(character_item_tag);
-		}
-	}
-	
-		// bot names
-	
-    bot_head_tag=xml_findfirstchild("Bots",interface_head_tag);
-    if (bot_head_tag!=-1) {
-
-		iface->net_bot.on=!xml_get_attribute_boolean(bot_head_tag,"hide");
-	
-		cnt=0;
-		bot_tag=xml_findfirstchild("Bot",bot_head_tag);
-		
-		while (bot_tag!=-1) {
-			xml_get_attribute_text(bot_tag,"name",iface->net_bot.bots[cnt].name,name_str_len);
-			cnt++;
-			bot_tag=xml_findnextchild(bot_tag);
-		}
-	}
-	
-		// news
-		
-    news_tag=xml_findfirstchild("News",interface_head_tag);
-    if (news_tag!=-1) {
-		xml_get_attribute_text(news_tag,"host",iface->net_news.host,64);
-		iface->net_news.port=xml_get_attribute_int_default(news_tag,"port",80);
-		xml_get_attribute_text(news_tag,"url",iface->net_news.url,256);
-	}
-
 	xml_close_file();
 }
 
-
-
-
-
-
-
-
-
-
-
 /* =======================================================
 
-      Write Interface Chooser Piece
+      Write Interface Write Utilities
       
 ======================================================= */
 
-void iface_write_settings_interface_chooser_piece_type(iface_chooser_type *chooser,int piece_type,char *major_tag,char *minor_tag)
+void iface_write_settings_interface_intro_button(char *name,iface_intro_button_type *btn,iface_intro_simple_save_desc_type *desc)
 {
-	int							n;
-	iface_chooser_piece_type	*chooser_piece;
-
-	xml_add_tagstart(major_tag);
-	xml_add_tagend(FALSE);
-
-	for (n=0;n!=chooser->npiece;n++) {
-		chooser_piece=&chooser->pieces[n];
-		if (chooser_piece->type!=piece_type) continue;
-
-		xml_add_tagstart(minor_tag);
-
-			// common settings
-			/*
-		piece->id=xml_get_attribute_int(item_tag,"id");
-		piece->x=xml_get_attribute_int(item_tag,"x");
-		piece->y=xml_get_attribute_int(item_tag,"y");
-		piece->wid=xml_get_attribute_int_default(item_tag,"width",-1);
-		piece->high=xml_get_attribute_int_default(item_tag,"height",-1);
-		piece->clickable=xml_get_attribute_boolean(item_tag,"clickable");
-		xml_get_attribute_text(item_tag,"goto",piece->goto_name,name_str_len);
-		*/
-
-			// specific settings
+	xml_add_tagstart(name);
 	
-		
-		
-		xml_add_tagend(TRUE);
+	xml_add_attribute_int("x",btn->x);
+	xml_add_attribute_int("y",btn->y);
+	if (btn->wid!=-1) xml_add_attribute_int("width",btn->wid);
+	if (btn->high!=-1) xml_add_attribute_int("height",btn->high);
+	xml_add_attribute_boolean("on",btn->on);
+
+	if (desc!=NULL) {
+		xml_add_attribute_int("desc_x",desc->x);
+		xml_add_attribute_int("desc_y",desc->y);
+		xml_add_attribute_int("desc_text_size",desc->text_size);
 	}
 
-	xml_add_tagclose(major_tag);
+	xml_add_tagend(TRUE);
 }
 
 /* =======================================================
@@ -1036,7 +740,7 @@ void iface_write_settings_interface_chooser_piece_type(iface_chooser_type *choos
 bool iface_write_settings_interface(iface_type *iface)
 {
 	int							n,k;
-	char						path[1024];
+	char						path[1024],name[256];
 	bool						ok;
 	iface_bitmap_type			*bitmap;
 	iface_text_type				*text;
@@ -1044,8 +748,7 @@ bool iface_write_settings_interface(iface_type *iface)
 	iface_radar_icon_type		*radar_icon;
 	iface_menu_type				*menu;
 	iface_menu_item_type		*menu_item;
-	iface_chooser_type			*chooser;
-	iface_character_item_type	*iface_character;
+	iface_intro_model_type		*model;
 	
 		// start new file
 		
@@ -1071,7 +774,7 @@ bool iface_write_settings_interface(iface_type *iface)
 		
 		xml_add_tagstart("Bitmap");
 		xml_add_attribute_text("name",bitmap->name);
-		xml_add_tagend(TRUE);
+		xml_add_tagend(FALSE);
 		
 		xml_add_tagstart("Image");
 		xml_add_attribute_text("file",bitmap->filename);
@@ -1132,7 +835,7 @@ bool iface_write_settings_interface(iface_type *iface)
 		
 		xml_add_tagstart("Text");
 		xml_add_attribute_text("name",text->name);
-		xml_add_tagend(TRUE);
+		xml_add_tagend(FALSE);
 	
 		xml_add_tagstart("Position");
 		xml_add_attribute_int("x",text->x);
@@ -1171,7 +874,7 @@ bool iface_write_settings_interface(iface_type *iface)
 		
 		xml_add_tagstart("Bar");
 		xml_add_attribute_text("name",bar->name);
-		xml_add_tagend(TRUE);
+		xml_add_tagend(FALSE);
 		
 		xml_add_tagstart("Position");
 		xml_add_attribute_int("x",bar->x);
@@ -1292,284 +995,144 @@ bool iface_write_settings_interface(iface_type *iface)
 	}
 
 	xml_add_tagclose("Menus");
-
-		// choosers
-
-	xml_add_tagstart("Choosers");
-	xml_add_tagend(FALSE);
-
-	chooser=iface->chooser_list.choosers;
-	
-	for (n=0;n!=iface->chooser_list.nchooser;n++) {
-
-		xml_add_tagstart("Chooser");
-		xml_add_attribute_text("name",chooser->name);
-		xml_add_attribute_text("template",chooser->template_name);
-		xml_add_tagend(FALSE);
-
-			// frame
-
-		xml_add_tagstart("Frame");
-		xml_add_attribute_boolean("on",chooser->frame.on);
-		xml_add_attribute_text("title",chooser->frame.title);
-		xml_add_attribute_int("x",chooser->frame.x);
-		xml_add_attribute_int("y",chooser->frame.y);
-		xml_add_attribute_int("width",chooser->frame.wid);
-		xml_add_attribute_int("height",chooser->frame.high);
-		xml_add_attribute_color("background_color",&chooser->frame.background_col);
-		xml_add_tagend(TRUE);
-	
-		xml_add_tagstart("Key");
-		xml_add_attribute_int("ok_id",chooser->key.ok_id);
-		xml_add_attribute_int("cancel_id",chooser->key.cancel_id);
-		xml_add_tagend(TRUE);
-
-			// chooser pieces
-
-		iface_write_settings_interface_chooser_piece_type(chooser,chooser_piece_type_item,"Items","Item");
-		iface_write_settings_interface_chooser_piece_type(chooser,chooser_piece_type_model,"Models","Model");
-		iface_write_settings_interface_chooser_piece_type(chooser,chooser_piece_type_text,"Texts","Text");
-		iface_write_settings_interface_chooser_piece_type(chooser,chooser_piece_type_button,"Buttons","Button");
-
-		xml_add_tagclose("Chooser");
-		
-		chooser++;
-	}
-
-	xml_add_tagclose("Choosers");
-
-	/*
-	
-	
 	
 		// colors
 		
-	color_tag=xml_findfirstchild("Color",interface_head_tag);
-	if (color_tag!=-1) {
-		xml_get_attribute_color(color_tag,"dialog_background",&iface->color.dialog_background);
-		xml_get_attribute_color(color_tag,"dialog_base",&iface->color.dialog_base);
-		xml_get_attribute_color(color_tag,"dialog_dimmed",&iface->color.dialog_dimmed);
-		xml_get_attribute_color(color_tag,"dialog_outline",&iface->color.dialog_outline);
-		xml_get_attribute_color(color_tag,"control_label",&iface->color.control_label);
-		xml_get_attribute_color(color_tag,"control_text",&iface->color.control_text);
-		xml_get_attribute_color(color_tag,"control_fill",&iface->color.control_fill);
-		xml_get_attribute_color(color_tag,"control_header",&iface->color.control_header);
-		xml_get_attribute_color(color_tag,"control_outline",&iface->color.control_outline);
-		xml_get_attribute_color(color_tag,"control_mouse_over",&iface->color.control_mouse_over);
-		xml_get_attribute_color(color_tag,"control_hilite",&iface->color.control_hilite);
-		xml_get_attribute_color(color_tag,"control_disabled",&iface->color.control_disabled);
-		xml_get_attribute_color(color_tag,"button_fill",&iface->color.button_fill);
-		xml_get_attribute_color(color_tag,"button_text",&iface->color.button_text);
-		xml_get_attribute_color(color_tag,"button_outline",&iface->color.button_outline);
-		xml_get_attribute_color(color_tag,"default_tint",&iface->color.default_tint);
-	}
-
-		// first tint is always the default tint
-
-	memmove(&iface->color.tints[0],&iface->color.default_tint,sizeof(d3col));
+	xml_add_tagstart("Color");
+	xml_add_attribute_color("dialog_background",&iface->color.dialog_background);
+	xml_add_attribute_color("dialog_base",&iface->color.dialog_base);
+	xml_add_attribute_color("dialog_dimmed",&iface->color.dialog_dimmed);
+	xml_add_attribute_color("dialog_outline",&iface->color.dialog_outline);
+	xml_add_attribute_color("control_label",&iface->color.control_label);
+	xml_add_attribute_color("control_text",&iface->color.control_text);
+	xml_add_attribute_color("control_fill",&iface->color.control_fill);
+	xml_add_attribute_color("control_header",&iface->color.control_header);
+	xml_add_attribute_color("control_outline",&iface->color.control_outline);
+	xml_add_attribute_color("control_mouse_over",&iface->color.control_mouse_over);
+	xml_add_attribute_color("control_hilite",&iface->color.control_hilite);
+	xml_add_attribute_color("control_disabled",&iface->color.control_disabled);
+	xml_add_attribute_color("button_fill",&iface->color.button_fill);
+	xml_add_attribute_color("button_text",&iface->color.button_text);
+	xml_add_attribute_color("button_outline",&iface->color.button_outline);
+	xml_add_attribute_color("default_tint",&iface->color.default_tint);
+	xml_add_tagend(TRUE);
 
 		// fonts
 
-	font_tag=xml_findfirstchild("Font",interface_head_tag);
-	if (font_tag!=-1) {
-		xml_get_attribute_text(font_tag,"name",iface->font.interface_name,name_str_len);
-		xml_get_attribute_text(font_tag,"hud_name",iface->font.hud_name,name_str_len);
-	}
+	xml_add_tagstart("Font");
+	xml_add_attribute_text("name",iface->font.interface_name);
+	xml_add_attribute_text("hud_name",iface->font.hud_name);
+	xml_add_tagend(TRUE);
 	
 		// progress
 
-	progress_tag=xml_findfirstchild("Progress",interface_head_tag);
-	if (progress_tag!=-1) {
-		iface->progress.lx=xml_get_attribute_int(progress_tag,"left_x");
-		iface->progress.rx=xml_get_attribute_int(progress_tag,"right_x");
-		iface->progress.ty=xml_get_attribute_int(progress_tag,"top_y");
-		iface->progress.by=xml_get_attribute_int(progress_tag,"bottom_y");
-		iface->progress.text_size=xml_get_attribute_int(progress_tag,"text_size");
-		iface->progress.outline=xml_get_attribute_boolean(progress_tag,"outline");
-		xml_get_attribute_color(progress_tag,"base_color_start",&iface->progress.base_color_start);
-		xml_get_attribute_color(progress_tag,"base_color_end",&iface->progress.base_color_end);
-		xml_get_attribute_color(progress_tag,"hilite_color_start",&iface->progress.hilite_color_start);
-		xml_get_attribute_color(progress_tag,"hilite_color_end",&iface->progress.hilite_color_end);
-		xml_get_attribute_color(progress_tag,"text_color",&iface->progress.text_color);
-		xml_get_attribute_color(progress_tag,"outline_color",&iface->progress.outline_color);
-	}
-	
+	xml_add_tagstart("Progress");
+	xml_add_attribute_int("left_x",iface->progress.lx);
+	xml_add_attribute_int("right_x",iface->progress.rx);
+	xml_add_attribute_int("top_y",iface->progress.ty);
+	xml_add_attribute_int("bottom_y",iface->progress.by);
+	xml_add_attribute_int("text_size",iface->progress.text_size);
+	xml_add_attribute_boolean("outline",iface->progress.outline);
+	xml_add_attribute_color("base_color_start",&iface->progress.base_color_start);
+	xml_add_attribute_color("base_color_end",&iface->progress.base_color_end);
+	xml_add_attribute_color("hilite_color_start",&iface->progress.hilite_color_start);
+	xml_add_attribute_color("hilite_color_end",&iface->progress.hilite_color_end);
+	xml_add_attribute_color("text_color",&iface->progress.text_color);
+	xml_add_attribute_color("outline_color",&iface->progress.outline_color);
+	xml_add_tagend(TRUE);
+
 		// chat
 
-	chat_tag=xml_findfirstchild("Chat",interface_head_tag);
-	if (chat_tag!=-1) {
-		iface->chat.x=xml_get_attribute_int(chat_tag,"x");
-		iface->chat.y=xml_get_attribute_int(chat_tag,"y");
-		iface->chat.last_add_life_sec=xml_get_attribute_int(chat_tag,"last_add_life_sec");
-		iface->chat.next_life_sec=xml_get_attribute_int(chat_tag,"next_life_sec");
-	}
+	xml_add_tagstart("Chat");
+	xml_add_attribute_int("x",iface->chat.x);
+	xml_add_attribute_int("y",iface->chat.y);
+	xml_add_attribute_int("last_add_life_sec",iface->chat.last_add_life_sec);
+	xml_add_attribute_int("next_life_sec",iface->chat.next_life_sec);
+	xml_add_tagend(TRUE);
 	
 		// fade
 
-	fade_tag=xml_findfirstchild("Fade",interface_head_tag);
-	if (fade_tag!=-1) {
-		iface->fade.title_msec=xml_get_attribute_int(fade_tag,"title_msec");
-		iface->fade.map_msec=xml_get_attribute_int(fade_tag,"map_msec");
-	}
+	xml_add_tagstart("Fade");
+	xml_add_attribute_int("title_msec",iface->fade.title_msec);
+	xml_add_attribute_int("map_msec",iface->fade.map_msec);
+	xml_add_tagend(TRUE);
 
 		// intro
 
-	intro_head_tag=xml_findfirstchild("Intro",interface_head_tag);
-	if (intro_head_tag!=-1) {
-		xml_get_attribute_text(interface_head_tag,"music",iface->intro.music,name_str_len);
+	xml_add_tagstart("Intro");
+	xml_add_attribute_text("music",iface->intro.music);
+	xml_add_tagend(FALSE);
 
-			// models
+		// intro models
 
-		intro_model_head_tag=xml_findfirstchild("Models",intro_head_tag);
-		if (intro_model_head_tag!=-1) {
-			intro_model_tag=xml_findfirstchild("Model",intro_model_head_tag);
-		
-			while (intro_model_tag!=-1) {
-				iface_read_settings_intro_model(iface,intro_model_tag);
-				intro_model_tag=xml_findnextchild(intro_model_tag);
-			}
-		}
+	xml_add_tagstart("Models");
+	xml_add_tagend(FALSE);
 
-			// buttons
-			
-		button_tag=xml_findfirstchild("Buttons",intro_head_tag);
-		if (button_tag!=-1) {
-			iface_read_settings_intro_button(xml_findfirstchild("Game_New",button_tag),&iface->intro.button_game_new,NULL);
-			iface_read_settings_intro_button(xml_findfirstchild("Game_Load",button_tag),&iface->intro.button_game_load,NULL);
-			iface_read_settings_intro_button(xml_findfirstchild("Game_Setup",button_tag),&iface->intro.button_game_setup,NULL);
-			iface_read_settings_intro_button(xml_findfirstchild("Game_New_Easy",button_tag),&iface->intro.button_game_new_easy,NULL);
-			iface_read_settings_intro_button(xml_findfirstchild("Game_New_Medium",button_tag),&iface->intro.button_game_new_medium,NULL);
-			iface_read_settings_intro_button(xml_findfirstchild("Game_New_Hard",button_tag),&iface->intro.button_game_new_hard,NULL);
-			iface_read_settings_intro_button(xml_findfirstchild("Game_New_Cancel",button_tag),&iface->intro.button_game_new_cancel,NULL);
-			iface_read_settings_intro_button(xml_findfirstchild("Multiplayer_Host",button_tag),&iface->intro.button_multiplayer_host,NULL);
-			iface_read_settings_intro_button(xml_findfirstchild("Multiplayer_Join",button_tag),&iface->intro.button_multiplayer_join,NULL);
-			iface_read_settings_intro_button(xml_findfirstchild("Multiplayer_Setup",button_tag),&iface->intro.button_multiplayer_setup,NULL);
-			iface_read_settings_intro_button(xml_findfirstchild("Credit",button_tag),&iface->intro.button_credit,NULL);
-			iface_read_settings_intro_button(xml_findfirstchild("Quit",button_tag),&iface->intro.button_quit,NULL);
-			
-			for (n=0;n!=max_simple_save_spot;n++) {
-				sprintf(name,"Simple_Start_%d",n);
-				iface_read_settings_intro_button(xml_findfirstchild(name,button_tag),&iface->intro.simple_save[n].button_start,&iface->intro.simple_save[n].desc);
-				sprintf(name,"Simple_Erase_%d",n);
-				iface_read_settings_intro_button(xml_findfirstchild(name,button_tag),&iface->intro.simple_save[n].button_erase,NULL);
-			}
-		}
-	}
+	model=iface->intro.model_list.models;
 	
+	for (n=0;n!=iface->intro.model_list.nmodel;n++) {
+		xml_add_tagstart("Model");
+		xml_add_attribute_text("model",model->model_name);
+		xml_add_attribute_text("animate",model->animate_name);
+		xml_add_attribute_int("x",model->x);
+		xml_add_attribute_int("y",model->y);
+		xml_add_attribute_3_coord_float("rot",model->rot.x,model->rot.y,model->rot.z);
+		xml_add_attribute_float("resize",model->resize);
+		xml_add_tagend(TRUE);
+
+		model++;
+	}
+
+	xml_add_tagclose("Models");
+
+		// intro buttons
+
+	xml_add_tagstart("Buttons");
+	xml_add_tagend(FALSE);
+
+	iface_write_settings_interface_intro_button("Game_New",&iface->intro.button_game_new,NULL);
+	iface_write_settings_interface_intro_button("Game_Load",&iface->intro.button_game_load,NULL);
+	iface_write_settings_interface_intro_button("Game_Setup",&iface->intro.button_game_setup,NULL);
+	iface_write_settings_interface_intro_button("Game_New_Easy",&iface->intro.button_game_new_easy,NULL);
+	iface_write_settings_interface_intro_button("Game_New_Medium",&iface->intro.button_game_new_medium,NULL);
+	iface_write_settings_interface_intro_button("Game_New_Hard",&iface->intro.button_game_new_hard,NULL);
+	iface_write_settings_interface_intro_button("Game_New_Cancel",&iface->intro.button_game_new_cancel,NULL);
+	iface_write_settings_interface_intro_button("Multiplayer_Host",&iface->intro.button_multiplayer_host,NULL);
+	iface_write_settings_interface_intro_button("Multiplayer_Join",&iface->intro.button_multiplayer_join,NULL);
+	iface_write_settings_interface_intro_button("Multiplayer_Setup",&iface->intro.button_multiplayer_setup,NULL);
+	iface_write_settings_interface_intro_button("Credit",&iface->intro.button_credit,NULL);
+	iface_write_settings_interface_intro_button("Quit",&iface->intro.button_quit,NULL);
+	
+	for (n=0;n!=max_simple_save_spot;n++) {
+		sprintf(name,"Simple_Start_%d",n);
+		iface_write_settings_interface_intro_button(name,&iface->intro.simple_save[n].button_start,&iface->intro.simple_save[n].desc);
+		sprintf(name,"Simple_Erase_%d",n);
+		iface_write_settings_interface_intro_button(name,&iface->intro.simple_save[n].button_erase,NULL);
+	}
+
+	xml_add_tagclose("Buttons");
+
+	xml_add_tagclose("Intro");
+
 		// sound
 		
-	sound_tag=xml_findfirstchild("Sound",interface_head_tag);
-	if (sound_tag!=-1) {
-		xml_get_attribute_text(sound_tag,"click",iface->click_sound,name_str_len);
-	}
+	xml_add_tagstart("Sound");
+	xml_add_attribute_text("click",iface->click_sound);
+	xml_add_tagend(TRUE);
 
 		// project setup
 		
-	proj_tag=xml_findfirstchild("Project",interface_head_tag);
-	if (proj_tag!=-1) {
-		xml_get_attribute_text(proj_tag,"name",iface->project_name,name_str_len);
-		iface->skill=xml_get_attribute_boolean(proj_tag,"skill");
-	}
+	xml_add_tagstart("Project");
+	xml_add_attribute_text("name",iface->project_name);
+	xml_add_attribute_boolean("skill",iface->skill);
+	xml_add_tagend(TRUE);
 	
 		// debug setup
 
-	debug_tag=xml_findfirstchild("Debug",interface_head_tag);
-	if (debug_tag!=-1) {
-		iface->debug=xml_get_attribute_boolean(debug_tag,"on");
-	}
+	xml_add_tagstart("Debug");
+	xml_add_attribute_boolean("on",iface->debug);
+	xml_add_tagend(TRUE);
 
-		// network games
-
-	games_head_tag=xml_findfirstchild("Games",interface_head_tag);
-	if (games_head_tag!=-1) {
-		
-		iface->net_game.ngame=0;
-		
-		game_tag=xml_findfirstchild("Game",games_head_tag);
-		while (game_tag!=-1) {
-		
-			xml_get_attribute_text(game_tag,"type",iface->net_game.games[iface->net_game.ngame].name,name_str_len);
-			iface->net_game.games[iface->net_game.ngame].use_teams=xml_get_attribute_boolean(game_tag,"use_teams");
-			iface->net_game.games[iface->net_game.ngame].monsters=xml_get_attribute_boolean(game_tag,"monsters");
-			
-			iface->net_game.ngame++;
-			if (iface->net_game.ngame==max_net_game) break;
-
-			game_tag=xml_findnextchild(game_tag);
-		}
-	}
-
-		// network options
-
-	options_head_tag=xml_findfirstchild("Options",interface_head_tag);
-	if (options_head_tag!=-1) {
-		
-		iface->net_option.noption=0;
-		
-		option_tag=xml_findfirstchild("Option",options_head_tag);
-		while (option_tag!=-1) {
-		
-			xml_get_attribute_text(option_tag,"name",iface->net_option.options[iface->net_option.noption].name,name_str_len);
-			xml_get_attribute_text(option_tag,"description",iface->net_option.options[iface->net_option.noption].descript,64);
-			
-			iface->net_option.noption++;
-			if (iface->net_option.noption==max_net_option) break;
-
-			option_tag=xml_findnextchild(option_tag);
-		}
-	}
-
-		// characters
-
-    character_head_tag=xml_findfirstchild("Characters",interface_head_tag);
-    if (character_head_tag!=-1) {
-
-		iface->character.ncharacter=0;
-		character_item_tag=xml_findfirstchild("Character",character_head_tag);
-		
-		while (character_item_tag!=-1) {
-			hud_character=&iface->character.characters[iface->character.ncharacter];
-			
-			xml_get_attribute_text(character_item_tag,"name",hud_character->name,name_str_len);
-			xml_get_attribute_text(character_item_tag,"model",hud_character->model_name,name_str_len);
-			xml_get_attribute_text(character_item_tag,"parameter",hud_character->param,name_str_len);
-			hud_character->interface_resize=xml_get_attribute_float_default(character_item_tag,"interface_resize",1.0f);
-			xml_get_attribute_3_coord_int(character_item_tag,"interface_offset",&hud_character->interface_offset.x,&hud_character->interface_offset.y,&hud_character->interface_offset.z);
-			
-			iface->character.ncharacter++;
-			character_item_tag=xml_findnextchild(character_item_tag);
-		}
-	}
-	
-		// bot names
-	
-    bot_head_tag=xml_findfirstchild("Bots",interface_head_tag);
-    if (bot_head_tag!=-1) {
-
-		iface->net_bot.on=!xml_get_attribute_boolean(bot_head_tag,"hide");
-	
-		cnt=0;
-		bot_tag=xml_findfirstchild("Bot",bot_head_tag);
-		
-		while (bot_tag!=-1) {
-			xml_get_attribute_text(bot_tag,"name",iface->net_bot.bots[cnt].name,name_str_len);
-			cnt++;
-			bot_tag=xml_findnextchild(bot_tag);
-		}
-	}
-	
-		// news
-		
-    news_tag=xml_findfirstchild("News",interface_head_tag);
-    if (news_tag!=-1) {
-		xml_get_attribute_text(news_tag,"host",iface->net_news.host,64);
-		iface->net_news.port=xml_get_attribute_int_default(news_tag,"port",80);
-		xml_get_attribute_text(news_tag,"url",iface->net_news.url,256);
-	}
-
-	xml_close_file();
-	*/
-	
 		// close interface
 
     xml_add_tagclose("Interface");

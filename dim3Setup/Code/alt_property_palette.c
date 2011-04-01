@@ -35,6 +35,8 @@ and can be sold or given away.
 
 list_palette_type				alt_property_palette;
 
+extern setup_state_type			state;
+
 /* =======================================================
 
       Alt Property Palette Setup
@@ -70,41 +72,6 @@ void alt_property_palette_setup(void)
 
 /* =======================================================
 
-      Alt Property Open and Close
-      
-======================================================= */
-
-void alt_property_fix_open_state(void)
-{
-	/*
-	bool			old_alt_open;
-
-		// determine state
-
-	old_alt_open=alt_property_open;
-
-	alt_property_open=((state.cur_item==item_animate) && (state.cur_animate_idx!=-1) && (state.cur_animate_pose_move_idx!=-1));
-	alt_property_open|=((state.cur_item==item_pose) && (state.cur_pose_idx!=-1) && (state.cur_pose_bone_move_idx!=-1));
-
-	if ((state.texture_edit_idx!=-1) || (state.in_preference)) alt_property_open=FALSE;
-	
-	if (!alt_property_open) {
-		state.cur_animate_pose_move_idx=-1;
-		state.cur_pose_bone_move_idx=-1;
-	}
-
-		// if switched open state, fix and redraw
-
-	if (old_alt_open!=alt_property_open) {
-		item_palette_setup();
-		property_palette_setup();
-		alt_property_palette_setup();
-	}
-	*/
-}
-
-/* =======================================================
-
       Alt Property Palette Fill
       
 ======================================================= */
@@ -114,27 +81,25 @@ void alt_property_palette_fill(void)
 		// delete the properties
 
 	list_palette_delete_all_items(&alt_property_palette);
-/*
+
 		// selection properties
 
 	switch (state.cur_item) {
 
-		case item_animate:
-			list_palette_set_title(&alt_property_palette,"Animation Pose Properties");
-			alt_property_palette_fill_animate_pose_move(state.cur_animate_idx,state.cur_animate_pose_move_idx);
-			break;
-
-		case item_pose:
-			list_palette_set_title(&alt_property_palette,"Pose Bone Move Properties");
-			alt_property_palette_fill_pose_bone_move(state.cur_pose_idx,state.cur_pose_bone_move_idx);
-			break;
-
-		default:
-			list_palette_set_title(&alt_property_palette,"No Properties");
+		case item_interface_intro:
+			if (state.cur_intro_button_idx!=-1) {
+				list_palette_set_title(&alt_property_palette,"Intro Button");
+				alt_property_palette_fill_intro_button(state.cur_intro_button_idx);
+				break;
+			}
+			if (state.cur_intro_model_idx!=-1) {
+				list_palette_set_title(&alt_property_palette,"Intro Button");
+			//	alt_property_palette_fill_intro_model(state.cur_intro_button_idx);
+				break;
+			}
 			break;
 
 	}
-	*/
 }
 
 /* =======================================================

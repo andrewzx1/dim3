@@ -106,12 +106,24 @@ void chooser_create_elements(void)
 	iface_chooser_frame_type	frame;
 	
 	chooser=&iface.chooser_list.choosers[chooser_idx];
+	template_chooser=NULL;
+
+		// check for template
+
+	template_idx=iface_chooser_find_idx(&iface,chooser->template_name);
+	if (template_idx!=-1) template_chooser=&iface.chooser_list.choosers[template_idx];
 	
 		// setup frame
 		
-	memmove(&frame,&chooser->frame,sizeof(iface_chooser_frame_type));
+	if (template_chooser==NULL) {
+		memmove(&frame,&chooser->frame,sizeof(iface_chooser_frame_type));
+		chooser_text_substitute(chooser->frame.title,title,max_chooser_frame_text_sz);
+	}
+	else {
+		memmove(&frame,&template_chooser->frame,sizeof(iface_chooser_frame_type));
+		chooser_text_substitute(template_chooser->frame.title,title,max_chooser_frame_text_sz);
+	}
 
-	chooser_text_substitute(chooser->frame.title,title,max_chooser_frame_text_sz);
 	strcpy(frame.title,title);
 	
 	gui_set_frame(&frame);
@@ -128,10 +140,8 @@ void chooser_create_elements(void)
 
 		// template pieces
 
-	template_idx=iface_chooser_find_idx(chooser->template_name);
-	if (template_idx!=-1) {
+	if (template_chooser!=NULL) {
 
-		template_chooser=&iface->chooser_list.choosers[template_idx];
 		template_piece=template_chooser->pieces;
 
 		for (n=0;n!=template_chooser->npiece;n++) {
@@ -187,7 +197,7 @@ void chooser_create_elements(void)
 
 	for (n=0;n!=chooser->npiece;n++) {
 
-		piece=chooser->pieces[n];
+		piece=&chooser->pieces[n];
 		if (piece->used_in_override) continue;
 
 		switch (piece->type) {
@@ -296,7 +306,7 @@ void chooser_click(void)
 		
 	piece=NULL;
 
-	template_idx=iface_chooser_find_idx(chooser->template_name);
+	template_idx=iface_chooser_find_idx(&iface,chooser->template_name);
 	if (template_idx!=-1) {
 		idx=iface_chooser_find_piece_idx(&iface.chooser_list.choosers[template_idx],id);
 		piece=&iface.chooser_list.choosers[template_idx].pieces[idx];

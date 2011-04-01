@@ -102,16 +102,13 @@ extern void property_palette_click_actions(int id);
 extern void alt_property_palette_initialize(void);
 extern void alt_property_palette_shutdown(void);
 extern void alt_property_palette_setup(void);
-extern void alt_property_fix_open_state(void);
 extern void alt_property_palette_draw(void);
 extern void alt_property_palette_scroll_wheel(d3pnt *pnt,int move);
 extern void alt_property_palette_click(d3pnt *pnt,bool double_click);
 
-//extern void alt_property_palette_fill_animate_pose_move(int animate_idx,int pose_move_idx);
-//extern void alt_property_palette_fill_pose_bone_move(int pose_idx,int bone_move_idx);
+extern void alt_property_palette_fill_intro_button(int intro_button_idx);
 
-//extern void alt_property_palette_click_animate_pose_move(int animate_idx,int pose_move_idx,int id);
-//extern void alt_property_palette_click_pose_bone_move(int pose_idx,int bone_move_idx,int id);
+extern void alt_property_palette_click_intro_button(int intro_button_idx,int id);
 
 //
 // dialogs
