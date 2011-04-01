@@ -286,6 +286,10 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\dim3Setup\Code\alt_property_palette_intro_button.c"
+						>
+					</File>
+					<File
 						RelativePath="..\..\dim3Setup\Code\item_palette.c"
 						>
 					</File>

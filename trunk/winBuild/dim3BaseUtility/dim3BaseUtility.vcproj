@@ -479,6 +479,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\dim3BaseUtility\Sources_Interface\iface_chooser.c"
+					>
+				</File>
+				<File
 					RelativePath="..\..\dim3BaseUtility\Sources_Interface\iface_crosshairs.c"
 					>
 				</File>
@@ -496,6 +500,10 @@
 				</File>
 				<File
 					RelativePath="..\..\dim3BaseUtility\Sources_Interface\iface_mark.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3BaseUtility\Sources_Interface\iface_multiplayer.c"
 					>
 				</File>
 				<File

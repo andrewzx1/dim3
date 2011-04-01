@@ -510,6 +510,8 @@ void iface_bars_hide_all(iface_type *iface)
 void iface_read(iface_type *iface)
 {
 	iface_read_settings_interface(iface);
+	iface_read_settings_chooser(iface);
+	iface_read_settings_multiplayer(iface);
 	iface_read_settings_particle(iface);
 	iface_read_settings_ring(iface);
 	iface_read_settings_halo(iface);
@@ -522,7 +524,9 @@ void iface_read(iface_type *iface)
 
 bool iface_write(iface_type *iface)
 {
-//	if (!iface_write_settings_interface(&iface)) return(FALSE);
+	if (!iface_write_settings_interface(iface)) return(FALSE);
+	if (!iface_write_settings_chooser(iface)) return(FALSE);
+	if (!iface_write_settings_multiplayer(iface)) return(FALSE);
 	
 	return(TRUE);
 }
