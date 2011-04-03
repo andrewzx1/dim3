@@ -99,17 +99,19 @@ void liquid_render_liquid_create_vertex(map_liquid_type *liq,int v_sz)
 					x_2_txtoff,y_2_txtoff,
 					f_break,f_time,f_tick,sn,
 					f_tide_split_half,f_tide_high;
-	bool			x_break,z_break;
-	float			*vertex_ptr,*vl,*uv,*uv2,*cl;
+	bool			shader_on,x_break,z_break;
+	float			*vertex_ptr,*vl,*uv,*uv2,*ct,*cn,*cl;
 	
 	y=liq->y;
 	fy=(float)y;
 
 		// setup vbo
 		// shaders don't need light lists
+		
+	shader_on=view_shader_on();
 
-	if (view.shader_on) {
-		vbo_cnt=v_sz*(3+2+2);
+	if (shader_on) {
+		vbo_cnt=v_sz*(3+2+2+3+3);
 	}
 	else {
 		vbo_cnt=v_sz*(3+2+2+3);
@@ -121,10 +123,15 @@ void liquid_render_liquid_create_vertex(map_liquid_type *liq,int v_sz)
 	vl=vertex_ptr;
 	uv=vertex_ptr+(v_sz*3);
 	uv2=vertex_ptr+(v_sz*(3+2));
-	if (!view.shader_on) {
+	
+	if (shader_on) {
+		ct=vertex_ptr+(v_sz*(3+2+2));
+		cn=vertex_ptr+(v_sz*(3+2+2+3));
+	}
+	else {
 		cl=vertex_ptr+(v_sz*(3+2+2));
 	}
-
+	
 		// setup tiding
 
 	tick=game_time_get();
@@ -185,7 +192,7 @@ void liquid_render_liquid_create_vertex(map_liquid_type *liq,int v_sz)
 
 				// color
 
-			if (!view.shader_on) {
+			if (!shader_on) {
 				gl_lights_calc_color_light_cache(liq->light_cache.count,liq->light_cache.indexes,FALSE,(double)x,(double)y,(double)z,cl);
 				cl+=3;
 			}
@@ -214,6 +221,17 @@ void liquid_render_liquid_create_vertex(map_liquid_type *liq,int v_sz)
 
 			*uv2++=x_2_txtoff+((liq->lmap_uv.x_size*(float)(x-liq->lft))/fgx);
 			*uv2++=y_2_txtoff+((liq->lmap_uv.y_size*(float)(z-liq->top))/fgy);
+			
+				// tangent space
+				
+			if (shader_on) {
+				*ct++=1.0f;
+				*ct++=0.0f;
+				*ct++=0.0f;
+				*cn++=0.0f;
+				*cn++=-1.0f;
+				*cn++=0.0f;
+			}
 
 			v_cnt++;
 			
@@ -327,12 +345,12 @@ int liquid_render_liquid_create_trigs(map_liquid_type *liq,int v_sz)
 
 void liquid_render_liquid(map_liquid_type *liq)
 {
-	int						v_sz,trig_cnt,frame;
+	int						v_sz,trig_cnt,frame,
+							tangent_offset,normal_offset;
 	float					alpha;
 	GLuint					gl_id,lmap_gl_id;
 	texture_type			*texture;
 	view_light_list_type	light_list;
-	tangent_space_type		tangent_space;
 
 		// setup texture
 
@@ -368,7 +386,7 @@ void liquid_render_liquid(map_liquid_type *liq)
 
 		// shader drawing
 
-	if (view.shader_on) {
+	if (view_shader_on()) {
 
 			// shader UVs
 
@@ -383,16 +401,12 @@ void liquid_render_liquid(map_liquid_type *liq)
 			// shader lights and tangents
 
 		gl_lights_build_liquid_light_list(liq,&light_list);
-
-		tangent_space.tangent.x=1.0f;
-		tangent_space.tangent.y=tangent_space.tangent.z=0.0f;
-		tangent_space.binormal.z=1.0f;
-		tangent_space.binormal.x=tangent_space.binormal.y=0.0f;
-		tangent_space.normal.y=-1.0f;
-		tangent_space.normal.x=tangent_space.normal.z=0.0f;
+		
+		tangent_offset=(v_sz*(3+2+2))*sizeof(float);
+		normal_offset=(v_sz*(3+2+2+3))*sizeof(float);
 
 		gl_shader_draw_start();
-		gl_shader_draw_execute(TRUE,texture,liq->txt_idx,frame,liq->lmap_txt_idx,1.0f,&light_list,&tangent_space,NULL);
+		gl_shader_draw_execute(TRUE,texture,liq->txt_idx,frame,liq->lmap_txt_idx,1.0f,&light_list,tangent_offset,normal_offset);
 				
 			// fix texture if any back rendering
 

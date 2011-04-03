@@ -587,6 +587,8 @@ void shadow_render_model(model_draw *draw)
 	int						n;
 	model_type				*mdl;
 	
+	return;
+	
 		// get model
 
 	if ((draw->model_idx==-1) || (!draw->on)) return;

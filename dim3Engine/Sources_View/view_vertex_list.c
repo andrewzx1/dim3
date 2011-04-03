@@ -46,7 +46,8 @@ bool view_compile_mesh_gl_list_init(void)
 	int					n,k,t,vertex_cnt,list_cnt,i_idx;
 	unsigned int		v_poly_start_idx;
 	unsigned int		*index_ptr;
-	float				*vertex_ptr,*pv,*pp,*pc;
+	float				*vertex_ptr,*pv,*pp,*pt,*pn,*pc;
+	bool				shader_on;
 	d3pnt				*pnt;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
@@ -92,21 +93,35 @@ bool view_compile_mesh_gl_list_init(void)
 		// we need a UV list for both main and lmap UVs
 		
 		// list has vertexes and two sets of UVs
-		// if in fixed function, then also add in a color list
+		// in shaders, a tangent and normal list is added
+		// in fixed function, a color list is added
 		
-	list_cnt=(vertex_cnt*3)+((vertex_cnt*2)*2);
-	if (!view.shader_on) list_cnt+=(vertex_cnt*3);
+	shader_on=view_shader_on();
 		
+	list_cnt=vertex_cnt*(3+2+2);
+	if (shader_on) {
+		list_cnt+=(vertex_cnt*(3+3));
+	}
+	else {
+		list_cnt+=(vertex_cnt*3);
+	}
+	
 	view_init_map_vertex_object(list_cnt);
 
 	vertex_ptr=view_bind_map_map_vertex_object();
 	if (vertex_ptr==NULL) return(FALSE);
 
 	pv=vertex_ptr;
-	pp=pv+(vertex_cnt*3);
-	if (!view.shader_on) pc=pv+((vertex_cnt*3)+((vertex_cnt*2)*2));
 	
-		// vertexes and color
+	if (shader_on) {
+		pt=vertex_ptr+(vertex_cnt*(3+2+2));
+		pn=vertex_ptr+(vertex_cnt*(3+3+2+2));
+	}
+	else {
+		pc=vertex_ptr+(vertex_cnt*(3+2+2));
+	}
+	
+		// vertexes, tangents, normals and color
 		// we run this separate from the UVs
 		// as they are grouped for layers
 
@@ -126,7 +141,15 @@ bool view_compile_mesh_gl_list_init(void)
 				*pv++=(float)pnt->y;
 				*pv++=(float)pnt->z;
 
-				if (!view.shader_on) {
+				if (shader_on) {
+					*pt++=poly->tangent_space.tangent.x;
+					*pt++=poly->tangent_space.tangent.y;
+					*pt++=poly->tangent_space.tangent.z;
+					*pn++=poly->tangent_space.normal.x;
+					*pn++=poly->tangent_space.normal.y;
+					*pn++=poly->tangent_space.normal.z;
+				}
+				else {
 					*pc++=1.0f;
 					*pc++=1.0f;
 					*pc++=1.0f;
@@ -140,6 +163,8 @@ bool view_compile_mesh_gl_list_init(void)
 	}
 	
 		// main UVs
+
+	pp=vertex_ptr+(vertex_cnt*3);
 
 	mesh=map.mesh.meshes;
 
@@ -263,8 +288,8 @@ bool view_compile_mesh_gl_lists(void)
 {
 	int							n,k,t,vertex_cnt;
 	float						x_shift_offset,y_shift_offset;
-	float						*vertex_ptr,*pv,*pp,*pc,*pc2;
-	bool						vbo_mapped,only_ambient;
+	float						*vertex_ptr,*pv,*pp,*pt,*pn,*pc,*pc2;
+	bool						vbo_mapped,only_ambient,shader_on;
 	d3col						col;
 	d3pnt						*pnt;
 	map_mesh_type				*mesh;
@@ -281,6 +306,8 @@ bool view_compile_mesh_gl_lists(void)
 		// run throught the meshes
 		// in this scene and update any
 		// relevant data
+		
+	shader_on=view_shader_on();
 
 	for (n=0;n!=view.render->draw_list.count;n++) {
 
@@ -288,8 +315,8 @@ bool view_compile_mesh_gl_lists(void)
 
 		mesh=&map.mesh.meshes[view.render->draw_list.items[n].idx];
 
-			// recalculate the vertexes if this
-			// mesh is moving
+			// recalculate the vertexes and tangent space
+			// if this mesh is moving
 
 		if ((mesh->flag.moveable) && (mesh->draw.moved)) {
 		
@@ -300,6 +327,11 @@ bool view_compile_mesh_gl_lists(void)
 			}
 
 			pv=vertex_ptr+(mesh->draw.vertex_offset*3);
+			
+			if (shader_on) {
+				pt=vertex_ptr+((vertex_cnt*(3+2+2))+(mesh->draw.vertex_offset*3));
+				pn=vertex_ptr+((vertex_cnt*(3+3+2+2))+(mesh->draw.vertex_offset*3));
+			}
 
 			poly=mesh->polys;
 			
@@ -314,6 +346,15 @@ bool view_compile_mesh_gl_lists(void)
 					*pv++=(float)pnt->x;
 					*pv++=(float)pnt->y;
 					*pv++=(float)pnt->z;
+					
+					if (shader_on) {
+						*pt++=poly->tangent_space.tangent.x;
+						*pt++=poly->tangent_space.tangent.y;
+						*pt++=poly->tangent_space.tangent.z;
+						*pn++=poly->tangent_space.normal.x;
+						*pn++=poly->tangent_space.normal.y;
+						*pn++=poly->tangent_space.normal.z;
+					}
 				}
 
 				poly++;
@@ -353,7 +394,7 @@ bool view_compile_mesh_gl_lists(void)
 			// shaders don't have light calculations
 			// otherwise only recalculate if lights have changed
 
-		if (!view.shader_on) {
+		if (!shader_on) {
 
 				// get the lights for this mesh
 				// we have a special check for ambient only
@@ -414,7 +455,7 @@ bool view_compile_mesh_gl_lists(void)
 
 				// create per poly colors
 
-			pc=vertex_ptr+((vertex_cnt*3)+((vertex_cnt*2)*2)+(mesh->draw.vertex_offset*3));
+			pc=vertex_ptr+((vertex_cnt*(3+2+2))+(mesh->draw.vertex_offset*3));
 
 			poly=mesh->polys;
 			
@@ -489,7 +530,7 @@ void view_compile_gl_list_attach_uv_light_map(void)
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2,GL_FLOAT,0,(void*)offset);
 	
-	offset=((map.mesh.vbo_vertex_count*3)+(map.mesh.vbo_vertex_count*2))*sizeof(float);
+	offset=(map.mesh.vbo_vertex_count*(3+2))*sizeof(float);
 
 	glClientActiveTexture(GL_TEXTURE0);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -500,7 +541,7 @@ void view_compile_gl_list_attach_uv_shader(void)
 {
 	int			offset;
 
-	offset=((map.mesh.vbo_vertex_count*3)+(map.mesh.vbo_vertex_count*2))*sizeof(float);
+	offset=(map.mesh.vbo_vertex_count*(3+2))*sizeof(float);
 
 	glClientActiveTexture(GL_TEXTURE1);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -532,7 +573,7 @@ void view_compile_gl_list_enable_color(void)
 {
 	int			offset;
 
-	offset=((map.mesh.vbo_vertex_count*3)+((map.mesh.vbo_vertex_count*2)*2))*sizeof(float);
+	offset=(map.mesh.vbo_vertex_count*(3+2+2))*sizeof(float);
 
 	glEnableClientState(GL_COLOR_ARRAY);
 	glColorPointer(3,GL_FLOAT,0,(void*)offset);
@@ -556,3 +597,4 @@ void view_compile_gl_list_dettach(void)
 	view_unbind_map_index_object();
 	view_unbind_map_vertex_object();
 }
+

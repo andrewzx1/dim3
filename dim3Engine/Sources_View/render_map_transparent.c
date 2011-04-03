@@ -247,7 +247,7 @@ void render_transparent_mesh_normal(void)
 
 void render_transparent_mesh_shader(void)
 {
-	int						n,mesh_idx,frame;
+	int						n,mesh_idx,frame,tangent_offset,normal_offset;
 	bool					first_draw,in_additive;
 	texture_type			*texture;
 	map_mesh_type			*mesh;
@@ -256,7 +256,14 @@ void render_transparent_mesh_shader(void)
 
 	first_draw=TRUE;
 	in_additive=FALSE;
+	
+		// get tangent and normal offset
+	
+	tangent_offset=(((map.mesh.vbo_vertex_count*3)+((map.mesh.vbo_vertex_count*2)*2)))*sizeof(float);
+	normal_offset=tangent_offset+((map.mesh.vbo_vertex_count*3)*sizeof(float));
 
+		// run through draw list
+		
 	for (n=0;n!=trans_sort.count;n++) {
 
 		mesh_idx=trans_sort.list[n].mesh_idx;
@@ -288,7 +295,7 @@ void render_transparent_mesh_shader(void)
 			// draw the polygon
 
 		gl_lights_build_poly_light_list(mesh_idx,poly,&light_list);
-		gl_shader_draw_execute(TRUE,texture,poly->txt_idx,frame,poly->lmap_txt_idx,1.0f,&light_list,&poly->tangent_space,NULL);
+		gl_shader_draw_execute(TRUE,texture,poly->txt_idx,frame,poly->lmap_txt_idx,1.0f,&light_list,tangent_offset,normal_offset);
 
 		glDrawRangeElements(GL_TRIANGLE_FAN,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
 	
@@ -380,7 +387,7 @@ void render_map_mesh_transparent(void)
 
 		// draw the polygons
 
-	if (view.shader_on) {
+	if (view_shader_on()) {
 		render_transparent_mesh_shader();
 	}
 	else {

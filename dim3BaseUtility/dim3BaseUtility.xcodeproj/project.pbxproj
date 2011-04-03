@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		260D11921346D07600C77CC7 /* iface_chooser.c in Sources */ = {isa = PBXBuildFile; fileRef = 260D11901346D07600C77CC7 /* iface_chooser.c */; };
+		260D11931346D07600C77CC7 /* iface_multiplayer.c in Sources */ = {isa = PBXBuildFile; fileRef = 260D11911346D07600C77CC7 /* iface_multiplayer.c */; };
 		2612D45F0E6CEEE200994B22 /* area.c in Sources */ = {isa = PBXBuildFile; fileRef = 2612D45E0E6CEEE200994B22 /* area.c */; };
 		265111D4121C871000E2ED78 /* bitmap_text.c in Sources */ = {isa = PBXBuildFile; fileRef = 265111D3121C871000E2ED78 /* bitmap_text.c */; };
 		26E67A91133807E200E63E68 /* iface_action.c in Sources */ = {isa = PBXBuildFile; fileRef = 26E67A86133807E200E63E68 /* iface_action.c */; };
@@ -67,6 +69,8 @@
 
 /* Begin PBXFileReference section */
 		08FB77AAFE841565C02AAC07 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
+		260D11901346D07600C77CC7 /* iface_chooser.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = iface_chooser.c; path = Sources_Interface/iface_chooser.c; sourceTree = "<group>"; };
+		260D11911346D07600C77CC7 /* iface_multiplayer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = iface_multiplayer.c; path = Sources_Interface/iface_multiplayer.c; sourceTree = "<group>"; };
 		2612D45E0E6CEEE200994B22 /* area.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = area.c; path = Sources_Math/area.c; sourceTree = "<group>"; };
 		265111D3121C871000E2ED78 /* bitmap_text.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = bitmap_text.c; path = Sources_Bitmap/bitmap_text.c; sourceTree = "<group>"; };
 		26E67A86133807E200E63E68 /* iface_action.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = iface_action.c; path = Sources_Interface/iface_action.c; sourceTree = "<group>"; };
@@ -177,6 +181,8 @@
 			children = (
 				26E67A8A133807E200E63E68 /* iface_main.c */,
 				26E67A89133807E200E63E68 /* iface_interface.c */,
+				260D11901346D07600C77CC7 /* iface_chooser.c */,
+				260D11911346D07600C77CC7 /* iface_multiplayer.c */,
 				26E67A8C133807E200E63E68 /* iface_particle.c */,
 				26E67A8D133807E200E63E68 /* iface_ring.c */,
 				26E67A88133807E200E63E68 /* iface_halos.c */,
@@ -365,6 +371,8 @@
 				26E67A99133807E200E63E68 /* iface_shader.c in Sources */,
 				26E67A9A133807E200E63E68 /* iface_simple_save.c in Sources */,
 				26E67A9B133807E200E63E68 /* iface_sound.c in Sources */,
+				260D11921346D07600C77CC7 /* iface_chooser.c in Sources */,
+				260D11931346D07600C77CC7 /* iface_multiplayer.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -377,7 +385,6 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACH_O_TYPE = mh_dylib;
-				PREBINDING = YES;
 			};
 			name = Release;
 		};
@@ -395,6 +402,7 @@
 				GCC_ENABLE_CPP_RTTI = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = NO;
+				GCC_ENABLE_SSE3_EXTENSIONS = YES;
 				GCC_FAST_MATH = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 3;
@@ -428,7 +436,6 @@
 				MACH_O_TYPE = mh_dylib;
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
 				OTHER_LDFLAGS = "";
-				PREBINDING = NO;
 				PRODUCT_NAME = libBaseUtility;
 				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.6.sdk";
 				WARNING_CFLAGS = "";

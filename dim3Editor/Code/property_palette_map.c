@@ -40,9 +40,10 @@ and can be sold or given away.
 #define kMapPropertyGravityMaxPower			3
 #define kMapPropertyGravityMaxSpeed			4
 #define kMapPropertyResistance				5
-#define kMapPropertyNeverCull				6
-#define kMapPropertyDisableShaders			7
-#define kMapPropertyNetworkGameList			8
+#define kMapPropertyNetworkGameList			6
+
+#define kMapPropertyNormalCull				7
+#define kMapPropertyDisableShaders			8
 
 #define kMapPropertyAmbientColor			9
 #define kMapPropertyAmbientLightMapBoost	10
@@ -176,9 +177,13 @@ void property_palette_fill_map(void)
 	list_palette_add_string_float(&property_palette,kMapPropertyGravityMaxPower,"Gravity Max Power",map.settings.gravity_max_power,FALSE);
 	list_palette_add_string_float(&property_palette,kMapPropertyGravityMaxSpeed,"Gravity Max Speed",map.settings.gravity_max_speed,FALSE);
 	list_palette_add_string_float(&property_palette,kMapPropertyResistance,"Resistance",map.settings.resistance,FALSE);
-	list_palette_add_checkbox(&property_palette,kMapPropertyNeverCull,"Never Cull By Normals",map.settings.never_cull,FALSE);
-	list_palette_add_checkbox(&property_palette,kMapPropertyDisableShaders,"Disable Shaders",map.settings.no_shaders,FALSE);
 	list_palette_add_string(&property_palette,kMapPropertyNetworkGameList,"Net Game List","...",FALSE);
+
+		// optimizations
+
+	list_palette_add_header(&property_palette,0,"Map Optimizations");
+	list_palette_add_checkbox(&property_palette,kMapPropertyNormalCull,"Cull By Normals",(!map.settings.never_cull),FALSE);
+	list_palette_add_checkbox(&property_palette,kMapPropertyDisableShaders,"Disable Shaders",map.settings.no_shaders,FALSE);
 
 		// ambient
 
@@ -419,16 +424,18 @@ void property_palette_click_map(int id)
 			dialog_property_string_run(list_string_value_positive_float,(void*)&map.settings.resistance,0,0,0);
 			break;
 
-		case kMapPropertyNeverCull:
+		case kMapPropertyNetworkGameList:
+			dialog_property_string_run(list_string_value_string,(void*)map.settings.network_game_list,256,0,0);
+			break;
+			
+			// optimizations
+			
+		case kMapPropertyNormalCull:
 			map.settings.never_cull=!map.settings.never_cull;
 			break;
 
 		case kMapPropertyDisableShaders:
 			map.settings.no_shaders=!map.settings.no_shaders;
-			break;
-
-		case kMapPropertyNetworkGameList:
-			dialog_property_string_run(list_string_value_string,(void*)map.settings.network_game_list,256,0,0);
 			break;
 
 			// ambients

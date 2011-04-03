@@ -447,6 +447,13 @@ void view_click_piece_map_pick_start(editor_view_type *view)
 	mesh=map.mesh.meshes;
 	
 	for (n=0;n!=map.mesh.nmesh;n++) {
+	
+			// hidden mesh
+		
+		if (view_hidden_mesh(view,n)) {
+			mesh++;
+			continue;
+		}
 
 		poly=mesh->polys;
 	
