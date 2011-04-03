@@ -370,8 +370,8 @@ void map_recalc_normals_mesh(map_mesh_type *mesh,bool only_tangent_binormal)
 		vector_subtract(&v_num,&vlft,&vrgt);
 
 		f_denom=(u10*v20)-(v10*u20);
-
-		vector_scalar_multiply(&poly->tangent_space.tangent,&v_num,(1.0f/f_denom));
+		if (f_denom!=0.0f) f_denom=1.0f/f_denom;
+		vector_scalar_multiply(&poly->tangent_space.tangent,&v_num,f_denom);
 		vector_normalize(&poly->tangent_space.tangent);
 
 			// calculate the binormal
@@ -382,8 +382,9 @@ void map_recalc_normals_mesh(map_mesh_type *mesh,bool only_tangent_binormal)
 		vector_subtract(&v_num,&vlft,&vrgt);
 
 		f_denom=(v10*u20)-(u10*v20);
-
-		vector_scalar_multiply(&poly->tangent_space.binormal,&v_num,(1.0f/f_denom));
+		if (f_denom!=0.0f) f_denom=1.0f/f_denom;
+		
+		vector_scalar_multiply(&poly->tangent_space.binormal,&v_num,f_denom);
 		vector_normalize(&poly->tangent_space.binormal);
 
 			// calculate the normal

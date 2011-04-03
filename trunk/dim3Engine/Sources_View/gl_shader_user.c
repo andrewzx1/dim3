@@ -181,25 +181,6 @@ void gl_user_shader_shutdown(void)
 
 /* =======================================================
 
-      Per-Scene User Shader Initialization
-      
-======================================================= */
-
-void gl_user_shader_draw_scene_initialize(void)
-{
-	int					n;
-	shader_type			*shader;
-
-	shader=user_shaders;
-
-	for (n=0;n!=nuser_shader;n++) {
-		gl_shader_draw_scene_initialize_code(shader);
-		shader++;
-	}
-}
-
-/* =======================================================
-
       User Shader Utilities
       
 ======================================================= */

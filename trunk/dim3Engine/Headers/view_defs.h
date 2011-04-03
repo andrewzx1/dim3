@@ -346,7 +346,6 @@ typedef struct		{
 															dim3LightMapBoost,dim3ShineFactor,
 															dim3TintColor,dim3Alpha,
 															dim3DiffuseVector,dim3DiffuseBoost,
-															dim3Tangent,dim3Normal,
 															dim3VertexTangent,dim3VertexNormal;
 						shader_cached_var_light_loc			dim3Lights[max_shader_light];
 					} shader_cached_var_loc;
@@ -359,10 +358,11 @@ typedef struct		{
 					} shader_current_var_light_value;
 
 typedef struct		{
-						int									nlight,light_idx[max_shader_light];
+						int									nlight,light_idx[max_shader_light],
+															tangent_offset,normal_offset;
 						float								alpha,shine_factor,diffuse_boost;
 						d3col								tint_col;
-						d3vct								diffuse_vct,tangent,normal;
+						d3vct								diffuse_vct;
 						shader_current_var_light_value		lights[max_shader_light];
 					} shader_current_var_value;
 
@@ -370,8 +370,7 @@ typedef struct		{
 						int									start_tick;
 						char								name[64],
 															vertex_name[64],fragment_name[64];
-						bool								per_scene_vars_set,in_hilite,
-															normal_vertex_attrib_active;
+						bool								per_scene_vars_set,in_hilite;
 						GLhandleARB							vertex_obj,fragment_obj,program_obj;
 						shader_cached_var_loc				var_locs;
 						shader_current_var_value			var_values;
@@ -498,7 +497,6 @@ typedef struct		{
 //
  
 typedef struct		{
-						bool								shader_on;
 						view_count_type						count;
 						view_render_type					*render;
 						view_time_type						time;

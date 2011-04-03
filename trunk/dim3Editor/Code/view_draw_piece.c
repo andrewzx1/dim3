@@ -158,7 +158,7 @@ void view_draw_circle(d3pnt *pnt,d3col *col,int dist)
 
 /* =======================================================
 
-      Poly Culling and Clipping
+      Mesh & Poly Culling and Clipping
       
 ======================================================= */
 
@@ -227,6 +227,65 @@ bool view_clip_poly(editor_view_type *view,map_mesh_type *mesh,map_mesh_poly_typ
 		// get distance
 		
 	return(dist<(setup.clip_distance*view_snap_clip_size_factor));
+}
+
+bool view_hidden_mesh(editor_view_type *view,int mesh_idx)
+{
+	int			n,wid,high;
+	bool		above_z,behind_z,lft,rgt,top,bot;
+	d3pnt		min,max,pnt[8];
+	d3rect		box;
+	
+	map_mesh_calculate_extent(&map,mesh_idx,&min,&max);
+	
+	pnt[0].x=pnt[1].x=pnt[4].x=pnt[5].x=min.x;
+	pnt[2].x=pnt[3].x=pnt[6].x=pnt[7].x=max.x;
+	
+	pnt[1].z=pnt[2].z=pnt[5].z=pnt[6].z=min.z;
+	pnt[0].z=pnt[3].z=pnt[4].z=pnt[7].z=max.z;
+	
+	pnt[0].y=pnt[1].y=pnt[2].y=pnt[3].y=min.y;
+	pnt[4].y=pnt[5].y=pnt[6].y=pnt[7].y=max.y;
+	
+		// check if points are behind z
+		
+	above_z=FALSE;
+	behind_z=FALSE;
+	
+	for (n=0;n!=8;n++) {
+		if (view_project_point_in_z(&pnt[n])) {
+			above_z=TRUE;
+		}
+		else {
+			behind_z=TRUE;
+		}
+	}
+	
+	if (!above_z) return(TRUE);
+	
+		// if it's split on the z, just keep
+		
+	if ((above_z) && (behind_z)) return(FALSE);
+	
+		// are points grouped completely
+		// off one side of the screen?
+
+	view_get_pixel_box(view,&box);
+	
+	wid=box.rx-box.lx;
+	high=box.by-box.ty;
+
+	lft=rgt=top=bot=TRUE;
+
+	for (n=0;n!=8;n++) {
+		view_project_point(view,&pnt[n]);
+		lft=lft&&(pnt[n].x<box.lx);
+		rgt=rgt&&(pnt[n].x>=box.rx);
+		top=top&&(pnt[n].y<box.ty);
+		bot=bot&&(pnt[n].y>=box.by);
+	}
+
+	return(lft||rgt||top||bot);
 }
 
 bool view_hidden_poly(editor_view_type *view,map_mesh_type *mesh,map_mesh_poly_type *poly)
@@ -335,6 +394,13 @@ void view_draw_meshes_texture(editor_view_type *view,bool opaque)
 			continue;
 		}
 		
+			// is mesh hidden?
+			
+		if (view_hidden_mesh(view,n)) {
+			mesh++;
+			continue;
+		}
+		
 			// draw polys
 	
 		for (k=0;k!=mesh->npoly;k++) {
@@ -344,10 +410,6 @@ void view_draw_meshes_texture(editor_view_type *view,bool opaque)
 				// clipping
 				
 			if (view_clip_poly(view,mesh,mesh_poly)) continue;
-			
-				// hidden
-				
-			if (view_hidden_poly(view,mesh,mesh_poly)) continue;
 			
 				// no light map?
 				
@@ -439,6 +501,13 @@ void view_draw_meshes_line(editor_view_type *view,bool opaque)
 	mesh=map.mesh.meshes;
 	
 	for (n=0;n!=map.mesh.nmesh;n++) {
+	
+			// is mesh hidden?
+			
+		if (view_hidden_mesh(view,n)) {
+			mesh++;
+			continue;
+		}
 		
 			// draw polys
 	
@@ -450,10 +519,6 @@ void view_draw_meshes_line(editor_view_type *view,bool opaque)
 				// clipping
 				
 			if (view_clip_poly(view,mesh,mesh_poly)) continue;
-			
-				// hidden
-				
-			if (view_hidden_poly(view,mesh,mesh_poly)) continue;
 			
 				// opaque or transparent flag
 		

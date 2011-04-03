@@ -74,6 +74,10 @@ and can be sold or given away.
 #define kMeshPolyPropertySize					71
 #define kMeshPolyPropertyShift					72
 
+#define kMeshPolyPropertyTangent				73
+#define kMeshPolyPropertyBinormal				74
+#define kMeshPolyPropertyNormal					75
+
 #define kMeshPolyPropertyCamera					80
 
 extern map_type					map;
@@ -166,7 +170,12 @@ void property_palette_fill_mesh(int mesh_idx,int poly_idx)
 		list_palette_add_uv(&property_palette,kMeshPolyPropertyOff,"Offset",&uv_offset,FALSE);
 		list_palette_add_uv(&property_palette,kMeshPolyPropertySize,"Size",&uv_size,FALSE);
 		list_palette_add_uv(&property_palette,kMeshPolyPropertyShift,"Shift",&uv_shift,FALSE);
-			
+		
+		list_palette_add_header(&property_palette,0,"Poly Tangent Space");
+		list_palette_add_vector(&property_palette,kMeshPolyPropertyTangent,"Tangent",&poly->tangent_space.tangent,FALSE);
+		list_palette_add_vector(&property_palette,kMeshPolyPropertyBinormal,"Binormal",&poly->tangent_space.binormal,FALSE);
+		list_palette_add_vector(&property_palette,kMeshPolyPropertyNormal,"Normal",&poly->tangent_space.normal,FALSE);
+		
 		list_palette_add_header(&property_palette,0,"Poly Camera");
 		list_palette_add_string(&property_palette,kMeshPolyPropertyCamera,"Node",poly->camera,FALSE);
 	}
@@ -356,6 +365,21 @@ void property_palette_click_mesh(int mesh_idx,int poly_idx,int id)
 				dialog_property_chord_run(list_chord_value_uv,(void*)&uv);
 				poly->x_shift=uv.x;
 				poly->y_shift=uv.y;
+				break;
+				
+			case kMeshPolyPropertyTangent:
+				dialog_property_chord_run(list_chord_value_vector,(void*)&poly->tangent_space.tangent);
+				vector_normalize(&poly->tangent_space.tangent);
+				break;
+				
+			case kMeshPolyPropertyBinormal:
+				dialog_property_chord_run(list_chord_value_vector,(void*)&poly->tangent_space.binormal);
+				vector_normalize(&poly->tangent_space.binormal);
+				break;
+				
+			case kMeshPolyPropertyNormal:
+				dialog_property_chord_run(list_chord_value_vector,(void*)&poly->tangent_space.normal);
+				vector_normalize(&poly->tangent_space.normal);
 				break;
 				
 			case kMeshPolyPropertyCamera:

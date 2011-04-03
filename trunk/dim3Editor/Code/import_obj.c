@@ -48,7 +48,7 @@ typedef struct		{
 typedef struct		{
 						int								start_line_idx,end_line_idx,
 														vertex_pos,uv_pos,normal_pos;
-						char							name[name_str_len];
+						char							name[name_str_len],cur_material_name[name_str_len];
 					} obj_import_state_group_type;
 					
 typedef struct		{
@@ -298,7 +298,7 @@ void import_obj_load_data(obj_import_state_type *import_state)
 {
 	int						n,group_idx,
 							vertex_pos,uv_pos,normal_pos;
-	char					txt[256];
+	char					txt[256],material_name[256];
 	float					*uv,*normal;
 	d3fpnt					*dpt;
 		
@@ -314,13 +314,26 @@ void import_obj_load_data(obj_import_state_type *import_state)
 	
 	normal=import_state->normals;
 	normal_pos=0;
+	
+	material_name[0]=0x0;
 		
     for (n=0;n!=import_state->nline;n++) {
+	
+        textdecode_get_piece(n,0,txt);
+		
+			// remember current material because
+			// it could be before group start
+		
+		if (strcmp(txt,"usemtl")==0) {
+		
+			textdecode_get_piece(n,1,material_name);
+			material_name[name_str_len-1]=0x0;
+			
+			continue;
+		}
 		
 			// counts
 			
-        textdecode_get_piece(n,0,txt);
-		
 		if (strcmp(txt,"v")==0) {
 			textdecode_get_piece(n,1,txt);
 			dpt->x=(float)strtod(txt,NULL);
@@ -369,6 +382,8 @@ void import_obj_load_data(obj_import_state_type *import_state)
 		import_state->groups[group_idx].uv_pos=uv_pos;
 		import_state->groups[group_idx].normal_pos=normal_pos;
 		
+		strcpy(import_state->groups[group_idx].cur_material_name,material_name);
+		
 			// setup the name
 		
 		textdecode_get_piece(n,1,txt);
@@ -378,7 +393,7 @@ void import_obj_load_data(obj_import_state_type *import_state)
 		group_idx++;
 	}
 	
-	import_state->groups[group_idx].end_line_idx=import_state->nline;
+	import_state->groups[group_idx-1].end_line_idx=import_state->nline;
 }
 
 /* =======================================================
@@ -612,10 +627,15 @@ bool import_create_mesh_from_obj_group(obj_import_state_type *import_state,char 
 	mesh->flag.lock_uv=(import_state->nuv!=0);
 	if (import_state->nnormal!=0) mesh->normal_mode=mesh_normal_mode_lock;
 	
-		// setup offsets for relative
-		// versions of face indexes
+		// get the current material before
+		// this group starts
 		
-	txt_idx=0;
+	if (group->cur_material_name[0]==0x0) {
+		txt_idx=0;
+	}
+	else {
+		txt_idx=import_texture_get_material_texture_idx(import_state,group->cur_material_name);
+	}
 	
 		// get the polys
 		
@@ -719,6 +739,13 @@ bool import_create_mesh_from_obj_group(obj_import_state_type *import_state,char 
 		memmove(&mesh->polys[poly_idx].tangent_space.normal,&n_v,sizeof(d3vct));
 	}
 	
+		// any polys?
+		
+	if (mesh->npoly==0) {
+		map_mesh_delete(&map,mesh_idx);
+		return(TRUE);
+	}
+	
 		// if no uvs, force auto-texture
 		
 	if (!mesh->flag.lock_uv) map_mesh_reset_uv(&map,mesh_idx);
@@ -792,7 +819,7 @@ void import_obj_state_shutdown(obj_import_state_type *import_state)
 
 bool import_obj(char *path,char *err_str)
 {
-	int						n,k,nmesh,old_nmesh,tick,
+	int						n,k,nmesh,old_nmesh,
 							import_mode,scale_axis,scale_unit;
 	char					*c,txt[256],file_name[256];
 	unsigned char			*mesh_mark;
@@ -808,8 +835,6 @@ bool import_obj(char *path,char *err_str)
     }
 	
 	os_set_wait_cursor();
-	
-	tick=TickCount();
 	
 		// get file name
 		
@@ -898,7 +923,6 @@ bool import_obj(char *path,char *err_str)
 	import_obj_load_data(&import_state);		
 	
 		// load up the materials
-			// supergumba -- move to load_data
 		
 	import_texture_fill_materials(&import_state);
 	
@@ -919,11 +943,6 @@ bool import_obj(char *path,char *err_str)
 		import_obj_state_shutdown(&import_state);
 		return(TRUE);
     }
-	
-		
-	
-//	import_state.ngroup=100;		// supergumba -- TESTING!
-
 	
 		// always switch to drag mode 
 		
@@ -952,18 +971,13 @@ bool import_obj(char *path,char *err_str)
 		textdecode_close();
 		
 		for (n=old_nmesh;n<map.mesh.nmesh;n++) {
-			select_add(mesh_piece,n,-1);
+			select_add(mesh_piece,n,0);
 		}
 		
 		import_obj_state_shutdown(&import_state);
 		
 		progress_end();
 		os_set_arrow_cursor();
-		
-			
-	tick=TickCount()-tick;
-	fprintf(stdout,"time %d\n",tick);
-
 
 		return(ok);
 	}
@@ -998,7 +1012,7 @@ bool import_obj(char *path,char *err_str)
 		textdecode_close();
 		
 		for (n=old_nmesh;n<map.mesh.nmesh;n++) {
-			select_add(mesh_piece,n,-1);
+			select_add(mesh_piece,n,0);
 		}
 		
 		import_obj_state_shutdown(&import_state);

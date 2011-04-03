@@ -91,9 +91,9 @@ char* gl_core_map_shader_build_vert(int nlight,bool fog,bool light_map,bool bump
 		
 	gl_core_shader_build_generic_light_struct(nlight,buf);
 
-	strcat(buf,"uniform vec3 dim3CameraPosition");
-	if ((bump) || (spec)) strcat(buf,",dim3Tangent,dim3Normal");
-	strcat(buf,";\n");
+	strcat(buf,"uniform vec3 dim3CameraPosition;\n");
+	
+	if ((bump) || (spec)) strcat(buf,"attribute vec3 dim3VertexNormal,dim3VertexTangent;\n");
 	
 	if (fog) strcat(buf,"varying float fogFactor;\n");
 
@@ -112,9 +112,9 @@ char* gl_core_map_shader_build_vert(int nlight,bool fog,bool light_map,bool bump
 	strcat(buf,"vec3 vtx=vec3(gl_ModelViewMatrix*gl_Vertex);\n");
 	
 	if ((bump) || (spec)) {
-		strcat(buf,"vec3 tangentSpaceTangent=normalize(gl_NormalMatrix*dim3Tangent);\n");
-		strcat(buf,"vec3 tangentSpaceBinormal=normalize(gl_NormalMatrix*cross(dim3Normal,dim3Tangent));\n");
-		strcat(buf,"vec3 tangentSpaceNormal=normalize(gl_NormalMatrix*dim3Normal);\n");
+		strcat(buf,"vec3 tangentSpaceTangent=normalize(gl_NormalMatrix*dim3VertexTangent);\n");
+		strcat(buf,"vec3 tangentSpaceBinormal=normalize(gl_NormalMatrix*cross(dim3VertexNormal,dim3VertexTangent));\n");
+		strcat(buf,"vec3 tangentSpaceNormal=normalize(gl_NormalMatrix*dim3VertexNormal);\n");
 	}
 	
 	if (spec) {
@@ -672,23 +672,6 @@ void gl_core_shader_shutdown(void)
 	for (k=0;k!=(max_shader_light+1);k++) {
 		for (n=0;n!=max_core_shader;n++) {
 			gl_shader_code_shutdown(&core_shaders[k][n]);
-		}
-	}
-}
-
-/* =======================================================
-
-      Per-Scene Core Shader Initialization
-      
-======================================================= */
-
-void gl_core_shader_draw_scene_initialize(void)
-{
-	int					n,k;
-	
-	for (k=0;k!=(max_shader_light+1);k++) {
-		for (n=0;n!=max_core_shader;n++) {
-			gl_shader_draw_scene_initialize_code(&core_shaders[k][n]);
 		}
 	}
 }

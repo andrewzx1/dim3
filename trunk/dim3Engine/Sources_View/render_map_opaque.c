@@ -148,7 +148,7 @@ void render_opaque_mesh_normal(void)
 
 void render_opaque_mesh_shader(void)
 {
-	int						n,k,mesh_idx,frame;
+	int						n,k,mesh_idx,frame,tangent_offset,normal_offset;
 	float					alpha;
 	bool					first_draw;
 	GLuint					gl_id;
@@ -158,6 +158,11 @@ void render_opaque_mesh_shader(void)
 	view_light_list_type	light_list;
 
 	first_draw=TRUE;
+	
+		// get tangent and normal offset
+	
+	tangent_offset=(map.mesh.vbo_vertex_count*(3+2+2))*sizeof(float);
+	normal_offset=(map.mesh.vbo_vertex_count*(3+3+2+2))*sizeof(float);
 
 		// run through draw list
 
@@ -210,7 +215,7 @@ void render_opaque_mesh_shader(void)
 			frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
 
 			gl_lights_build_poly_light_list(mesh_idx,poly,&light_list);
-			gl_shader_draw_execute(TRUE,texture,poly->txt_idx,frame,poly->lmap_txt_idx,1.0f,&light_list,&poly->tangent_space,NULL);
+			gl_shader_draw_execute(TRUE,texture,poly->txt_idx,frame,poly->lmap_txt_idx,1.0f,&light_list,tangent_offset,normal_offset);
 
 				// fix texture if any back rendering
 
@@ -340,7 +345,7 @@ void render_map_mesh_opaque(void)
 
 		// draw the polygons
 
-	if (view.shader_on) {
+	if (view_shader_on()) {
 		render_opaque_mesh_shader();
 	}
 	else {

@@ -35,10 +35,12 @@ extern map_type				map;
 extern view_type			view;
 extern setup_type			setup;
 
+int							gl_shader_cur_mesh_idx;
 shader_type					*gl_shader_current;
 
 extern int					nuser_shader;
-extern shader_type			user_shaders[max_iface_user_shader];
+extern shader_type			user_shaders[max_iface_user_shader],
+							core_shaders[max_shader_light+1][max_core_shader];
 
 extern float				light_shader_direction[7][3];
 
@@ -91,9 +93,6 @@ void gl_shader_cache_dynamic_variable_locations(shader_type *shader)
 	shader->var_locs.dim3Alpha=glGetUniformLocationARB(shader->program_obj,"dim3Alpha");
 	shader->var_locs.dim3DiffuseVector=glGetUniformLocationARB(shader->program_obj,"dim3DiffuseVector");
 	shader->var_locs.dim3DiffuseBoost=glGetUniformLocationARB(shader->program_obj,"dim3DiffuseBoost");
-
-	shader->var_locs.dim3Tangent=glGetUniformLocationARB(shader->program_obj,"dim3Tangent");
-	shader->var_locs.dim3Normal=glGetUniformLocationARB(shader->program_obj,"dim3Normal");
 
 	shader->var_locs.dim3VertexTangent=glGetAttribLocationARB(shader->program_obj,"dim3VertexTangent");
 	shader->var_locs.dim3VertexNormal=glGetAttribLocationARB(shader->program_obj,"dim3VertexNormal");
@@ -531,7 +530,7 @@ void gl_shader_set_diffuse_variables(shader_type *shader,view_light_list_type *l
 	}
 }
 
-void gl_shader_set_poly_variables(shader_type *shader,float alpha,tangent_space_type *tangent_space,model_draw_vbo_offset_type *vbo_offset)
+void gl_shader_set_poly_variables(shader_type *shader,float alpha)
 {
 		// alpha
 		
@@ -541,56 +540,50 @@ void gl_shader_set_poly_variables(shader_type *shader,float alpha,tangent_space_
 			glUniform1fARB(shader->var_locs.dim3Alpha,alpha);
 		}
 	}
+}
 
-		// tangent spaces
-
-	if (tangent_space!=NULL) {
-	
-		if (shader->var_locs.dim3Tangent!=-1) {
-			if ((shader->var_values.tangent.x!=tangent_space->tangent.x) || (shader->var_values.tangent.y!=tangent_space->tangent.y) || (shader->var_values.tangent.z!=tangent_space->tangent.z)) {
-				shader->var_values.tangent.x=tangent_space->tangent.x;
-				shader->var_values.tangent.y=tangent_space->tangent.y;
-				shader->var_values.tangent.z=tangent_space->tangent.z;
-				glUniform3fARB(shader->var_locs.dim3Tangent,tangent_space->tangent.x,tangent_space->tangent.y,tangent_space->tangent.z);
-			}
-		}
+void gl_shader_set_tangent_normal_array(shader_type *shader,int tangent_offset,int normal_offset)
+{
+		// tangent array
 		
-		if (shader->var_locs.dim3Normal!=-1) {
-			if ((shader->var_values.normal.x!=tangent_space->normal.x) || (shader->var_values.normal.y!=tangent_space->normal.y) || (shader->var_values.normal.z!=tangent_space->normal.z)) {
-				shader->var_values.normal.x=tangent_space->normal.x;
-				shader->var_values.normal.y=tangent_space->normal.y;
-				shader->var_values.normal.z=tangent_space->normal.z;
-				glUniform3fARB(shader->var_locs.dim3Normal,tangent_space->normal.x,tangent_space->normal.y,tangent_space->normal.z);
-			}
+	if (shader->var_locs.dim3VertexTangent!=-1) {
+	
+			// need to enable?
+		
+		if (shader->var_values.tangent_offset==-1) glEnableVertexAttribArrayARB(shader->var_locs.dim3VertexTangent);
+		
+			// setup array
+			
+		if (shader->var_values.tangent_offset!=tangent_offset) {
+			shader->var_values.tangent_offset=tangent_offset;
+			glVertexAttribPointerARB(shader->var_locs.dim3VertexTangent,3,GL_FLOAT,0,0,(void*)tangent_offset);
 		}
 	}
+	
+		// normal array
 
-	if (vbo_offset!=NULL) {
-		if (!shader->normal_vertex_attrib_active) {
-			shader->normal_vertex_attrib_active=TRUE;
-			if (shader->var_locs.dim3VertexTangent!=-1) glEnableVertexAttribArrayARB(shader->var_locs.dim3VertexTangent); 
-			if (shader->var_locs.dim3VertexNormal!=-1) glEnableVertexAttribArrayARB(shader->var_locs.dim3VertexNormal); 
-		}
-
-		if (shader->var_locs.dim3VertexTangent!=-1) glVertexAttribPointerARB(shader->var_locs.dim3VertexTangent,3,GL_FLOAT,0,0,(void*)vbo_offset->tangent);
-		if (shader->var_locs.dim3VertexNormal!=-1) glVertexAttribPointerARB(shader->var_locs.dim3VertexNormal,3,GL_FLOAT,0,0,(void*)vbo_offset->normal);
-	}
-	else {
-		if (shader->normal_vertex_attrib_active) {
-			shader->normal_vertex_attrib_active=FALSE;
-			if (shader->var_locs.dim3VertexTangent!=-1) glDisableVertexAttribArrayARB(shader->var_locs.dim3VertexTangent); 
-			if (shader->var_locs.dim3VertexNormal!=-1) glDisableVertexAttribArrayARB(shader->var_locs.dim3VertexNormal);
+	if (shader->var_locs.dim3VertexNormal!=-1) {
+	
+			// need to enable?
+			
+		if (shader->var_values.normal_offset==-1) glEnableVertexAttribArrayARB(shader->var_locs.dim3VertexNormal);
+		
+			// setup array
+			
+		if (shader->var_values.normal_offset!=normal_offset) {
+			shader->var_values.normal_offset=normal_offset;
+			glVertexAttribPointerARB(shader->var_locs.dim3VertexNormal,3,GL_FLOAT,0,0,(void*)normal_offset);
 		}
 	}
 }
 
 /* =======================================================
 
-      Shader Drawing Initialize/Start/Stop
+      Shader Per Scene Start/End
       
 ======================================================= */
 
-void gl_shader_draw_scene_initialize_code(shader_type *shader)
+void gl_shader_draw_scene_code_start(shader_type *shader)
 {
 	int					n;
 
@@ -605,6 +598,15 @@ void gl_shader_draw_scene_initialize_code(shader_type *shader)
 		// when we are in that mode
 		
 	shader->in_hilite=FALSE;
+	
+		// we want to remember the last offsets
+		// for tangent and normal arrays
+				
+	shader->var_values.tangent_offset=-1;
+	shader->var_values.normal_offset=-1;
+	
+	if (shader->var_locs.dim3VertexTangent!=-1) glEnableVertexAttribArrayARB(shader->var_locs.dim3VertexTangent);
+	if (shader->var_locs.dim3VertexNormal!=-1) glEnableVertexAttribArrayARB(shader->var_locs.dim3VertexNormal);
 		
 		// also setup some per poly current values
 		// so we can skip setting if the values haven't changed
@@ -618,9 +620,6 @@ void gl_shader_draw_scene_initialize_code(shader_type *shader)
 	shader->var_values.diffuse_vct.x=shader->var_values.diffuse_vct.y=shader->var_values.diffuse_vct.z=-1.0f;
 	shader->var_values.diffuse_boost=-1.0f;
 
-	shader->var_values.tangent.x=shader->var_values.tangent.y=shader->var_values.tangent.z=0.0f;
-	shader->var_values.normal.x=shader->var_values.normal.y=shader->var_values.normal.z=0.0f;
-
 	for (n=0;n!=max_shader_light;n++) {
 		shader->var_values.lights[n].light_map=-1;
 		shader->var_values.lights[n].intensity=-1.0f;
@@ -633,21 +632,37 @@ void gl_shader_draw_scene_initialize_code(shader_type *shader)
 		shader->var_values.lights[n].color.g=-1.0f;
 		shader->var_values.lights[n].color.b=-1.0f;
 	}
-	
-		// check if the model tangent space attributes
-		// have been attached
-		
-	shader->normal_vertex_attrib_active=FALSE;
 }
 
-void gl_shader_draw_scene_initialize(void)
+void gl_shader_draw_scene_start(void)
 {
-	gl_core_shader_draw_scene_initialize();
-	gl_user_shader_draw_scene_initialize();
+	int					n,k;
+	shader_type			*shader;
+
+	for (k=0;k!=(max_shader_light+1);k++) {
+		for (n=0;n!=max_core_shader;n++) {
+			gl_shader_draw_scene_code_start(&core_shaders[k][n]);
+		}
+	}
+
+	shader=user_shaders;
+
+	for (n=0;n!=nuser_shader;n++) {
+		gl_shader_draw_scene_code_start(shader);
+		shader++;
+	}
 }
+
+/* =======================================================
+
+      Shader Per Draw Start/End
+      
+======================================================= */
 
 void gl_shader_draw_start(void)
 {
+	int					n,k;
+
 		// remember current shader
 
 	gl_shader_current=NULL;
@@ -667,10 +682,46 @@ void gl_shader_draw_start(void)
 
 	glActiveTexture(GL_TEXTURE0);
 	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_REPLACE);
+	
+		// always reset vertexes attributes
+		// because VBO changes invalidate them
+	
+	for (k=0;k!=(max_shader_light+1);k++) {
+		for (n=0;n!=max_core_shader;n++) {
+			core_shaders[k][n].var_values.tangent_offset=-1;
+			core_shaders[k][n].var_values.normal_offset=-1;
+		}
+	}
+	
+	for (n=0;n!=nuser_shader;n++) {
+		user_shaders[n].var_values.tangent_offset=-1;
+		user_shaders[n].var_values.normal_offset=-1;
+	}
 }
 
 void gl_shader_draw_end(void)
 {
+	int				n,k;
+	shader_type		*shader;
+	
+		// turn off any vertexe attributes
+		
+	for (k=0;k!=(max_shader_light+1);k++) {
+		for (n=0;n!=max_core_shader;n++) {
+			shader=&core_shaders[k][n];
+			if (shader->var_values.tangent_offset!=-1) glDisableVertexAttribArrayARB(shader->var_locs.dim3VertexTangent);
+			if (shader->var_values.normal_offset!=-1) glDisableVertexAttribArrayARB(shader->var_locs.dim3VertexNormal);
+		}
+	}
+	
+	shader=user_shaders;
+	
+	for (n=0;n!=nuser_shader;n++) {
+		if (shader->var_values.tangent_offset!=-1) glDisableVertexAttribArrayARB(shader->var_locs.dim3VertexTangent);
+		if (shader->var_values.normal_offset!=-1) glDisableVertexAttribArrayARB(shader->var_locs.dim3VertexNormal);
+		shader++;
+	}
+		
 		// deactivate any current shader
 		
 	if (gl_shader_current!=NULL) glUseProgramObjectARB(0);
@@ -700,7 +751,7 @@ void gl_shader_draw_end(void)
       
 ======================================================= */
 
-void gl_shader_texture_set(shader_type *shader,bool map_shader,texture_type *texture,int txt_idx,int lmap_txt_idx,int frame)
+void gl_shader_set_texture(shader_type *shader,bool map_shader,texture_type *texture,int txt_idx,int lmap_txt_idx,int frame)
 {
 	GLuint			gl_id;
 
@@ -766,7 +817,7 @@ void gl_shader_texture_override(GLuint gl_id,float alpha)
       
 ======================================================= */
 
-void gl_shader_draw_execute(bool map_shader,texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,view_light_list_type *light_list,tangent_space_type *tangent_space,model_draw_vbo_offset_type *vbo_offset)
+void gl_shader_draw_execute(bool map_shader,texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,view_light_list_type *light_list,int tangent_offset,int normal_offset)
 {
 	bool						is_core;
 	shader_type					*shader;
@@ -814,13 +865,17 @@ void gl_shader_draw_execute(bool map_shader,texture_type *texture,int txt_idx,in
 		}
 	}
 	
+		// tangent and normal arrays
+		
+	gl_shader_set_tangent_normal_array(shader,tangent_offset,normal_offset);
+	
 		// textures and per-texture variables
 		
-	gl_shader_texture_set(shader,map_shader,texture,txt_idx,lmap_txt_idx,frame);
+	gl_shader_set_texture(shader,map_shader,texture,txt_idx,lmap_txt_idx,frame);
 	
 		// per polygon variables
 		
-	gl_shader_set_poly_variables(shader,alpha,tangent_space,vbo_offset);
+	gl_shader_set_poly_variables(shader,alpha);
 
 		// lighting variables
 			

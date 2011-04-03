@@ -446,6 +446,17 @@ void view_game_reset_timing(void)
 
 /* =======================================================
 
+      View Shader Check
+      
+======================================================= */
+
+bool view_shader_on(void)
+{
+	return((!setup.disable_shaders) && (gl_check_shader_ok()) && (!map.settings.no_shaders));
+}
+
+/* =======================================================
+
       View Loop Input
       
 ======================================================= */
@@ -495,10 +506,6 @@ void view_loop_draw(void)
 	if (raw_tick<view.time.draw_tick) return;
 
 	view.time.draw_tick=raw_tick+view.time.draw_time;
-
-		// shader flag
-
-	view.shader_on=(!setup.disable_shaders) && (gl_check_shader_ok()) && (!map.settings.no_shaders);
 
 		// texture setup
 	
@@ -565,10 +572,6 @@ void view_loop_draw_dedicated_host(void)
 
 	view.time.draw_tick=raw_tick+view.time.draw_time;
 
-		// shader flag
-
-	view.shader_on=(!setup.disable_shaders) && (gl_check_shader_ok()) && (!map.settings.no_shaders);
-
 		// draw dedicated host screen
 
 	gl_frame_clear(FALSE);
@@ -585,10 +588,6 @@ void view_loop_draw_dedicated_host(void)
 
 void view_capture_draw(char *path)
 {
-		// shader flag
-
-	view.shader_on=(!setup.disable_shaders) && (gl_check_shader_ok()) && (!map.settings.no_shaders);
-
 		// draw view
 
 	gl_frame_clear(FALSE);

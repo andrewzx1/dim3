@@ -747,6 +747,7 @@
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "dim3 Animator";
 				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.6.sdk";
+				STRIP_STYLE = debugging;
 				WARNING_CFLAGS = "";
 				WRAPPER_EXTENSION = app;
 			};
