@@ -77,7 +77,8 @@ EXPORTS
 	model_get_vertex_extent					@251
 	model_get_vertex_extent_all				@252
 	model_get_view_complex_bounding_box		@253
-	model_recalc_boxes						@254
+	model_get_view_complex_bounding_volume	@254
+	model_recalc_boxes						@255
 
 	model_recalc_normals					@260
 
