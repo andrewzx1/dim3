@@ -74,6 +74,7 @@ _model_get_size
 _model_get_vertex_extent
 _model_get_vertex_extent_all
 _model_get_view_complex_bounding_box
+_model_get_view_complex_bounding_volume
 _model_recalc_boxes
 
 _model_recalc_normals

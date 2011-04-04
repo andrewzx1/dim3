@@ -29,21 +29,13 @@ and can be sold or given away.
 // vertex objects
 //
 
-#define view_vertex_object_count						32
+#define view_vertex_object_count							32
 
 //
 // back renderers
 //
 
-#define back_render_texture_pixel_size					256
-
-//
-// shadows
-//
-
-#define shadow_max_polys								256
-#define shadow_max_ray_trace_vertexes					10240
-#define shadow_infinite_light_adjust					100
+#define back_render_texture_pixel_size						256
 
 //
 // view maximums
@@ -86,6 +78,16 @@ and can be sold or given away.
 //
 
 #define gl_diffuse_ambient_factor							0.75f
+
+//
+// shadows
+//
+
+#define view_shadows_poly_count								256
+#define view_shadows_vertex_count							10240
+#define view_shadows_infinite_light_shift					100
+#define view_shadows_bounds_check_slop						100
+#define view_shadows_clip_infinite_distance					100000
 
 //
 // input rate

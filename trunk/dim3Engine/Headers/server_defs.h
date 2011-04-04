@@ -165,18 +165,11 @@ and can be sold or given away.
 #define aw_position								4
 
 //
-// shadow settings
-//
-
-#define max_shadow_poly							64
-#define shadow_bounds_check_slop				100
-
-//
 // node walking
 //
 
-#define node_pause_max_angle					45.0f				// angle needed to get out of a pause to turn
-#define node_pause_min_angle					25.0f				// angle needed to get out of a pause when already paused
+#define node_pause_max_angle					45.0f
+#define node_pause_min_angle					25.0f
 
 //
 // zoom modes

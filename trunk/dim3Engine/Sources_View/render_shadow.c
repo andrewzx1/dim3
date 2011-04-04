@@ -50,18 +50,18 @@ bool shadow_initialize(void)
 {
 		// memory for ray tracing lists
 		
-	shadow_spt=(d3pnt*)malloc(sizeof(d3pnt)*shadow_max_ray_trace_vertexes);
+	shadow_spt=(d3pnt*)malloc(sizeof(d3pnt)*view_shadows_vertex_count);
 	if (shadow_spt==NULL) return(FALSE);
 
-	shadow_hpt=(d3pnt*)malloc(sizeof(d3pnt)*shadow_max_ray_trace_vertexes);
+	shadow_hpt=(d3pnt*)malloc(sizeof(d3pnt)*view_shadows_vertex_count);
 	if (shadow_hpt==NULL) return(FALSE);
 	
-	shadow_vct=(d3vct*)malloc(sizeof(d3vct)*shadow_max_ray_trace_vertexes);
+	shadow_vct=(d3vct*)malloc(sizeof(d3vct)*view_shadows_vertex_count);
 	if (shadow_vct==NULL) return(FALSE);
 	
 		// memory for poly ptrs
 	
-	shadow_poly_ptrs=(poly_pointer_type*)malloc(shadow_max_polys*sizeof(poly_pointer_type));
+	shadow_poly_ptrs=(poly_pointer_type*)malloc(view_shadows_poly_count*sizeof(poly_pointer_type));
 	if (shadow_poly_ptrs==NULL) return(FALSE);
 
 	return(TRUE);
@@ -108,71 +108,146 @@ void shadow_get_light_point(d3pnt *pnt,int high,d3pnt *light_pnt,int *light_inte
       
 ======================================================= */
 
-bool shadow_get_volume(d3pnt *pnt,int high,d3pnt *light_pnt,int light_intensity,int *px,int *py,int *pz)
+bool shadow_get_volume(d3pnt *pnt,int high,d3pnt *light_pnt,int light_intensity,d3pnt *min,d3pnt *max)
 {
 	int							n;
 	float						f_dist;
+	bool						hits[8];
+	d3pnt						spt[8],ept[8],hpt[8],*sp,*ep;
 	d3vct						ray_move;
+	ray_trace_contact_type		base_contact;
 
+	spt[0].x=spt[1].x=spt[4].x=spt[5].x=min->x;
+	spt[2].x=spt[3].x=spt[6].x=spt[7].x=max->x;
+	
+	spt[0].y=spt[1].y=spt[2].y=spt[3].y=min->y;
+	spt[4].y=spt[5].y=spt[6].y=spt[7].y=max->y;
+
+	spt[1].z=spt[2].z=spt[5].z=spt[6].z=min->z;
+	spt[0].z=spt[3].z=spt[4].z=spt[7].z=max->z;
+
+		// ray trace bounding box
+		
+	sp=spt;
+	ep=ept;
+	
 	f_dist=(float)light_intensity;
 
 	for (n=0;n!=8;n++) {
-		vector_create(&ray_move,light_pnt->x,light_pnt->y,light_pnt->z,px[n],py[n],pz[n]);
+		vector_create(&ray_move,light_pnt->x,light_pnt->y,light_pnt->z,sp->x,sp->y,sp->z);
 				
-		px[n]=light_pnt->x-(int)(ray_move.x*f_dist);
-		py[n]=light_pnt->y-(int)(ray_move.y*f_dist);
-		pz[n]=light_pnt->z-(int)(ray_move.z*f_dist);
+		ep->x=light_pnt->x-(int)(ray_move.x*f_dist);
+		ep->y=light_pnt->y-(int)(ray_move.y*f_dist);
+		ep->z=light_pnt->z-(int)(ray_move.z*f_dist);
+		
+		sp++;
+		ep++;
+	}
+
+	base_contact.obj.on=FALSE;
+	base_contact.obj.ignore_idx=-1;
+
+	base_contact.proj.on=FALSE;
+	base_contact.proj.ignore_idx=-1;
+
+	base_contact.origin=poly_ray_trace_origin_object;
+
+	ray_trace_map_by_point_array_no_contact(8,spt,ept,hpt,hits,&base_contact);
+	
+		// if the light intensity is high, then
+		// we need to clip no hits back to the original
+		// point to stop strong, low light sources
+		// from projecting infinitely
+		
+	if (light_intensity>=view_shadows_clip_infinite_distance) {
+	
+		for (n=0;n!=8;n++) {
+			if (!hits[n]) {
+				hpt[n].x=spt[n].x;
+				hpt[n].y=spt[n].y;
+				hpt[n].z=spt[n].z;
+			}
+		}
+	}
+	
+		// set the volume
+
+	min->x=max->x=hpt[0].x;
+	min->y=max->y=hpt[0].y;
+	min->z=max->z=hpt[0].z;
+	
+	for (n=1;n!=8;n++) {
+		if (hpt[n].x<min->x) min->x=hpt[n].x;
+		if (hpt[n].x>max->x) max->x=hpt[n].x;
+		if (hpt[n].y<min->y) min->y=hpt[n].y;
+		if (hpt[n].y>max->y) max->y=hpt[n].y;
+		if (hpt[n].z<min->z) min->z=hpt[n].z;
+		if (hpt[n].z>max->z) max->z=hpt[n].z;
 	}
 
 	return(TRUE);
 }
 
-int shadow_build_poly_cross_volume_set(d3pnt *light_pnt,d3pnt *volume_min,d3pnt *volume_max,int *px,int *py,int *pz,int skip_mesh_idx)
+int shadow_build_poly_cross_volume_set(d3pnt *light_pnt,d3pnt *volume_min,d3pnt *volume_max,d3pnt *min,d3pnt *max,int skip_mesh_idx)
 {
 	int					n,k,cnt;
-	d3pnt				min,max;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 	
-		// turn volume into a box
-		
-	min.x=max.x=px[0];
-	min.y=max.y=py[0];
-	min.z=max.z=pz[0];
-	
-	for (n=1;n!=8;n++) {
-		if (px[n]<min.x) min.x=px[n];
-		if (px[n]>max.x) max.x=px[n];
-		if (py[n]<min.y) min.y=py[n];
-		if (py[n]>max.y) max.y=py[n];
-		if (pz[n]<min.z) min.z=pz[n];
-		if (pz[n]>max.z) max.z=pz[n];
-	}
-	
 		// force box to be constrained
-		// against item
-	
+		// against item and make sure it's not
+		// too large
+
 	if (((volume_min->x+volume_max->x)>>1)<light_pnt->x) {
-		max.x=volume_max->x;
+		max->x=volume_max->x;
 	}
 	else {
-		min.x=volume_min->x;
+		min->x=volume_min->x;
 	}
 	
 	if (((volume_min->y+volume_max->y)>>1)<light_pnt->y) {
-		max.y=volume_max->y;
+		max->y=volume_max->y;
 	}
 	else {
-		min.y=volume_min->y;
+		min->y=volume_min->y;
 	}
 	
 	if (((volume_min->z+volume_max->z)>>1)<light_pnt->z) {
-		max.z=volume_max->z;
+		max->z=volume_max->z;
 	}
 	else {
-		min.z=volume_min->z;
+		min->z=volume_min->z;
 	}
 
+		// testing -- shadow box
+	/*
+	glColor4f(0.0f,1.0f,0.0f,1.0f);
+	glLineWidth(0.0f);
+	glBegin(GL_LINE_LOOP);
+	glVertex3i(min->x,min->y,min->z);
+	glVertex3i(max->x,min->y,min->z);
+	glVertex3i(max->x,min->y,max->z);
+	glVertex3i(min->x,min->y,max->z);
+	glEnd();
+	glBegin(GL_LINE_LOOP);
+	glVertex3i(min->x,max->y,min->z);
+	glVertex3i(max->x,max->y,min->z);
+	glVertex3i(max->x,max->y,max->z);
+	glVertex3i(min->x,max->y,max->z);
+	glEnd();
+	glBegin(GL_LINES);
+	glVertex3i(min->x,min->y,min->z);
+	glVertex3i(min->x,max->y,min->z);
+	glVertex3i(max->x,min->y,min->z);
+	glVertex3i(max->x,max->y,min->z);
+	glVertex3i(max->x,min->y,max->z);
+	glVertex3i(max->x,max->y,max->z);
+	glVertex3i(min->x,min->y,max->z);
+	glVertex3i(min->x,max->y,max->z);
+	glEnd();
+	glLineWidth(1.0f);
+	*/
+	
 		// check meshes
 		
 	cnt=0;
@@ -186,9 +261,9 @@ int shadow_build_poly_cross_volume_set(d3pnt *light_pnt,d3pnt *volume_min,d3pnt 
 
 		mesh=&map.mesh.meshes[view.render->draw_list.items[n].idx];
 
-		if ((mesh->box.max.x<min.x) || (mesh->box.min.x>max.x)) continue;
-		if ((mesh->box.max.z<min.z) || (mesh->box.min.z>max.z)) continue;
-		if ((mesh->box.max.y<min.y) || (mesh->box.min.y>max.y)) continue;		// check Y last as X/Z are usually better eliminations
+		if ((mesh->box.max.x<min->x) || (mesh->box.min.x>max->x)) continue;
+		if ((mesh->box.max.z<min->z) || (mesh->box.min.z>max->z)) continue;
+		if ((mesh->box.max.y<min->y) || (mesh->box.min.y>max->y)) continue;		// check Y last as X/Z are usually better eliminations
 		
 			// find polys colliding with shadow
 			
@@ -201,9 +276,9 @@ int shadow_build_poly_cross_volume_set(d3pnt *light_pnt,d3pnt *volume_min,d3pnt 
 
 				// check if within shadow volume
 				
-			if ((poly->box.max.x<min.x) || (poly->box.min.x>max.x)) continue;
-			if ((poly->box.max.z<min.z) || (poly->box.min.z>max.z)) continue;
-			if ((poly->box.max.y<min.y) || (poly->box.min.y>max.y)) continue;		// check Y last as X/Z are usually better eliminations
+			if ((poly->box.max.x<min->x) || (poly->box.min.x>max->x)) continue;
+			if ((poly->box.max.z<min->z) || (poly->box.min.z>max->z)) continue;
+			if ((poly->box.max.y<min->y) || (poly->box.min.y>max->y)) continue;		// check Y last as X/Z are usually better eliminations
 			
 				// use normals to cull
 				
@@ -217,7 +292,7 @@ int shadow_build_poly_cross_volume_set(d3pnt *light_pnt,d3pnt *volume_min,d3pnt 
 			
 				// can only shadow for max stencil count
 				
-			if (cnt==shadow_max_polys) return(cnt);
+			if (cnt==view_shadows_poly_count) return(cnt);
 		}
 	}
 	
@@ -226,46 +301,29 @@ int shadow_build_poly_cross_volume_set(d3pnt *light_pnt,d3pnt *volume_min,d3pnt 
 
 int shadow_build_poly_set_model(model_type *mdl,model_draw *draw,d3pnt *light_pnt,int light_intensity)
 {
-	int				px[8],py[8],pz[8],x,z;
-	d3pnt			min,max;
+	d3pnt			volume_min,volume_max,min,max;
 	
-	model_get_view_complex_bounding_box(mdl,&draw->pnt,&draw->setup.ang,px,py,pz);
-	if (!shadow_get_volume(&draw->pnt,draw->size.y,light_pnt,light_intensity,px,py,pz)) return(0);
-	
-	x=mdl->view_box.size.x>>1;
-	z=mdl->view_box.size.z>>1;
-	
-	min.x=(draw->pnt.x+mdl->view_box.offset.x)-(mdl->view_box.size.x>>1);
-	max.x=min.x+mdl->view_box.size.x;
+	model_get_view_complex_bounding_volume(mdl,&draw->pnt,&draw->setup.ang,&volume_min,&volume_max);
+	memmove(&min,&volume_min,sizeof(d3pnt));
+	memmove(&max,&volume_max,sizeof(d3pnt));
 
-	max.y=draw->pnt.y+mdl->view_box.offset.y;
-	min.y=max.y-mdl->view_box.size.y;
-	
-	min.z=(draw->pnt.z+mdl->view_box.offset.z)-(mdl->view_box.size.z>>1);
-	max.z=min.z+mdl->view_box.size.z;
-	
-	return(shadow_build_poly_cross_volume_set(light_pnt,&min,&max,px,py,pz,-1));	
+	if (!shadow_get_volume(&draw->pnt,draw->size.y,light_pnt,light_intensity,&min,&max)) return(0);
+	return(shadow_build_poly_cross_volume_set(light_pnt,&volume_min,&volume_max,&min,&max,-1));	
 }
 
 int shadow_build_poly_set_mesh(int mesh_idx,d3pnt *light_pnt,int light_intensity)
 {
-	int				px[8],py[8],pz[8];
+	d3pnt			min,max;
 	map_mesh_type	*mesh;
 	
 		// get the shadow volume
 		
 	mesh=&map.mesh.meshes[mesh_idx];
-		
-	px[0]=px[3]=px[4]=px[7]=mesh->box.min.x;
-	px[1]=px[2]=px[5]=px[6]=mesh->box.max.x;
-	py[0]=py[1]=py[2]=py[3]=mesh->box.min.y;
-	py[4]=py[5]=py[6]=py[7]=mesh->box.max.y;
-	pz[0]=pz[1]=pz[4]=pz[5]=mesh->box.min.z;
-	pz[2]=pz[3]=pz[6]=pz[7]=mesh->box.max.z;
+	memmove(&min,&mesh->box.min,sizeof(d3pnt));
+	memmove(&max,&mesh->box.max,sizeof(d3pnt));
 
-	if (!shadow_get_volume(&mesh->box.mid,(mesh->box.max.y-mesh->box.min.y),light_pnt,light_intensity,px,py,pz)) return(0);
-
-	return(shadow_build_poly_cross_volume_set(light_pnt,&mesh->box.min,&mesh->box.max,px,py,pz,mesh_idx));	
+	if (!shadow_get_volume(&mesh->box.mid,(mesh->box.max.y-mesh->box.min.y),light_pnt,light_intensity,&min,&max)) return(0);
+	return(shadow_build_poly_cross_volume_set(light_pnt,&mesh->box.min,&mesh->box.max,&min,&max,mesh_idx));	
 }
 
 /* =======================================================
@@ -284,12 +342,12 @@ void shadow_render_prepare_bounds_check(poly_pointer_type *poly_ptr,d3pnt *min,d
 		
 	poly=&map.mesh.meshes[poly_ptr->mesh_idx].polys[poly_ptr->poly_idx];
 
-	min->x=poly->box.min.x-shadow_bounds_check_slop;
-	max->x=poly->box.max.x+shadow_bounds_check_slop;
-	min->y=poly->box.min.y-shadow_bounds_check_slop;
-	max->y=poly->box.max.y+shadow_bounds_check_slop;
-	min->z=poly->box.min.z-shadow_bounds_check_slop;
-	max->z=poly->box.max.z+shadow_bounds_check_slop;
+	min->x=poly->box.min.x-view_shadows_bounds_check_slop;
+	max->x=poly->box.max.x+view_shadows_bounds_check_slop;
+	min->y=poly->box.min.y-view_shadows_bounds_check_slop;
+	max->y=poly->box.max.y+view_shadows_bounds_check_slop;
+	min->z=poly->box.min.z-view_shadows_bounds_check_slop;
+	max->z=poly->box.max.z+view_shadows_bounds_check_slop;
 }
 
 bool shadow_render_model_trig_bounds_check(d3pnt *min,d3pnt *max,int v_idx0,int v_idx1,int v_idx2)
@@ -388,8 +446,8 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 	
 		// adjust light if angle would be it infinite
 		
-	if ((light_pnt.y>=(draw->pnt.y-(draw->size.y+shadow_infinite_light_adjust))) && (light_pnt.y<=(draw->pnt.y+shadow_infinite_light_adjust))) {
-		light_pnt.y=(draw->pnt.y-draw->size.y)-shadow_infinite_light_adjust;
+	if ((light_pnt.y>=(draw->pnt.y-(draw->size.y+view_shadows_infinite_light_shift))) && (light_pnt.y<=(draw->pnt.y+view_shadows_infinite_light_shift))) {
+		light_pnt.y=(draw->pnt.y-draw->size.y)-view_shadows_infinite_light_shift;
 	}
 	
 		// find all polys the shadow ray hits
@@ -407,7 +465,7 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 	spt=shadow_spt;
 	vct=shadow_vct;
 
-	if (model_mesh->nvertex>=shadow_max_ray_trace_vertexes) return;
+	if (model_mesh->nvertex>=view_shadows_vertex_count) return;
 
 	vp=draw->setup.mesh_arrays[model_mesh_idx].gl_vertex_array;
 			
@@ -441,7 +499,7 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 
 		// build the vertexes, colors and indexes
 		// for each poly and store in one list
-
+		
 	for (n=0;n!=map_poly_count;n++) {
 	
 		map_mesh_idx=shadow_poly_ptrs[n].mesh_idx;
@@ -566,7 +624,7 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 				
 		view_unbind_current_vertex_object();
 	}
-	
+
 		// disable vertex array
 		
 	glDisableClientState(GL_VERTEX_ARRAY);
@@ -586,8 +644,6 @@ void shadow_render_model(model_draw *draw)
 {
 	int						n;
 	model_type				*mdl;
-	
-	return;
 	
 		// get model
 
@@ -620,7 +676,7 @@ void shadow_render_mesh(int shadow_mesh_idx)
 	map_mesh_poly_type			*map_poly,*shadow_poly;
 	
 	shadow_mesh=&map.mesh.meshes[shadow_mesh_idx];
-	if (shadow_mesh->nvertex>=shadow_max_ray_trace_vertexes) return;
+	if (shadow_mesh->nvertex>=view_shadows_vertex_count) return;
 	
 		// get light
 	
@@ -628,8 +684,8 @@ void shadow_render_mesh(int shadow_mesh_idx)
 	
 		// adjust light if angle would be it infinite
 	
-	if ((light_pnt.y>=(shadow_mesh->box.min.y+shadow_infinite_light_adjust)) && (light_pnt.y<=(shadow_mesh->box.max.y+shadow_infinite_light_adjust))) {
-		light_pnt.y=shadow_mesh->box.min.y-shadow_infinite_light_adjust;
+	if ((light_pnt.y>=(shadow_mesh->box.min.y+view_shadows_infinite_light_shift)) && (light_pnt.y<=(shadow_mesh->box.max.y+view_shadows_infinite_light_shift))) {
+		light_pnt.y=shadow_mesh->box.min.y-view_shadows_infinite_light_shift;
 	}
 
 		// find all polys the shadow ray hits

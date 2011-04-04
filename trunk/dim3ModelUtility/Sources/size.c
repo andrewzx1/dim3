@@ -150,6 +150,27 @@ void model_get_view_complex_bounding_box(model_type *model,d3pnt *pnt,d3ang *ang
 	}
 }
 
+void model_get_view_complex_bounding_volume(model_type *model,d3pnt *pnt,d3ang *ang,d3pnt *min,d3pnt *max)
+{
+	int				n,px[8],py[8],pz[8];
+	
+	model_get_view_complex_bounding_box(model,pnt,ang,px,py,pz);
+	
+	min->x=max->x=px[0];
+	min->y=max->y=py[0];
+	min->z=max->z=pz[0];
+	
+	for (n=1;n!=8;n++) {
+		if (px[n]<min->x) min->x=px[n];
+		if (px[n]>max->x) max->x=px[n];
+		if (py[n]<min->y) min->y=py[n];
+		if (py[n]>max->y) max->y=py[n];
+		if (pz[n]<min->z) min->z=pz[n];
+		if (pz[n]>max->z) max->z=pz[n];
+	}
+	
+}
+
 /* =======================================================
 
       Calculate Model Boxes
