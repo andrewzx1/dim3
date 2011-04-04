@@ -57,13 +57,33 @@ and can be sold or given away.
 #define item_interface_action			14
 
 //
+// intro button types
+//
+
+#define item_intro_button_game_new				0
+#define item_intro_button_game_load				1
+#define item_intro_button_game_setup			2
+#define item_intro_button_game_new_easy			3
+#define item_intro_button_game_new_medium		4
+#define item_intro_button_game_new_hard			5
+#define item_intro_button_game_new_cancel		6
+#define item_intro_button_multiplayer_host		7
+#define item_intro_button_multiplayer_join		8
+#define item_intro_button_multiplayer_setup		9
+#define item_intro_button_credit				10
+#define item_intro_button_quit					11
+
+#define item_intro_button_simple_save_start		20
+#define item_intro_button_simple_save_erase		30
+
+//
 // setup state
 //
 
 typedef struct		{
 						int							cur_item,
 													cur_intro_button_idx,cur_intro_model_idx,
-													cur_hud_button_idx,cur_hud_text_idx,cur_hud_bar_idx,
+													cur_hud_bitmap_idx,cur_hud_text_idx,cur_hud_bar_idx,
 													cur_sound_idx,cur_particle_idx,cur_ring_idx,
 													cur_halo_idx,cur_mark_idx,cur_crosshair_idx,
 													cur_action_idx;

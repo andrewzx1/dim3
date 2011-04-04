@@ -247,6 +247,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\Common\Code\win32_dialog_file_open.c"
+					>
+				</File>
+				<File
 					RelativePath="..\Common\Code\win32_dialog_property_chord.c"
 					>
 				</File>
@@ -290,6 +294,10 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\dim3Setup\Code\alt_property_palette_intro_model.c"
+						>
+					</File>
+					<File
 						RelativePath="..\..\dim3Setup\Code\item_palette.c"
 						>
 					</File>
@@ -315,6 +323,10 @@
 					</File>
 					<File
 						RelativePath="..\..\dim3Setup\Code\property_palette_halos.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Setup\Code\property_palette_hud.c"
 						>
 					</File>
 					<File
