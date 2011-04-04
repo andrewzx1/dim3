@@ -54,7 +54,7 @@ void item_palette_initialize(void)
 	state.cur_item=item_interface_settings;
 	state.cur_intro_button_idx=-1;
 	state.cur_intro_model_idx=-1;
-	state.cur_hud_button_idx=-1;
+	state.cur_hud_bitmap_idx=-1;
 	state.cur_hud_text_idx=-1;
 	state.cur_hud_bar_idx=-1;
 	state.cur_sound_idx=-1;

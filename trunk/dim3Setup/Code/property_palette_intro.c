@@ -78,25 +78,29 @@ void property_palette_fill_intro(void)
 		// buttons
 
 	list_palette_add_header(&property_palette,0,"Regular Buttons");
-	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonGameNew,"Game New",NULL,(state.cur_intro_button_idx==kIntroPropertyButtonGameNew),FALSE);
-	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonGameLoad,"Game Load",NULL,(state.cur_intro_button_idx==kIntroPropertyButtonGameLoad),FALSE);
-	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonGameSetup,"Game Setup",NULL,(state.cur_intro_button_idx==kIntroPropertyButtonGameSetup),FALSE);
-	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonGameNewEasy,"Game New Easy",NULL,(state.cur_intro_button_idx==kIntroPropertyButtonGameNewEasy),FALSE);
-	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonGameNewMedium,"Game New Medium",NULL,(state.cur_intro_button_idx==kIntroPropertyButtonGameNewMedium),FALSE);
-	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonGameNewHard,"Game New Hard",NULL,(state.cur_intro_button_idx==kIntroPropertyButtonGameNewHard),FALSE);
-	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonGameNewCancel,"Game New Cancel",NULL,(state.cur_intro_button_idx==kIntroPropertyButtonGameNewCancel),FALSE);
-	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonMultiplayerHost,"Multiplayer Host",NULL,(state.cur_intro_button_idx==kIntroPropertyButtonMultiplayerHost),FALSE);
-	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonMultiplayerJoin,"Multiplayer Join",NULL,(state.cur_intro_button_idx==kIntroPropertyButtonMultiplayerJoin),FALSE);
-	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonMultiplayerSetup,"Multiplayer Setup",NULL,(state.cur_intro_button_idx==kIntroPropertyButtonMultiplayerSetup),FALSE);
-	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonCredit,"Credit",NULL,(state.cur_intro_button_idx==kIntroPropertyButtonCredit),FALSE);
-	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonQuit,"Quit",NULL,(state.cur_intro_button_idx==kIntroPropertyButtonQuit),FALSE);
+	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonGameNew,"Game New",NULL,(state.cur_intro_button_idx==item_intro_button_game_new),FALSE);
+	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonGameLoad,"Game Load",NULL,(state.cur_intro_button_idx==item_intro_button_game_load),FALSE);
+	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonGameSetup,"Game Setup",NULL,(state.cur_intro_button_idx==item_intro_button_game_setup),FALSE);
+	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonGameNewEasy,"Game New Easy",NULL,(state.cur_intro_button_idx==item_intro_button_game_new_easy),FALSE);
+	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonGameNewMedium,"Game New Medium",NULL,(state.cur_intro_button_idx==item_intro_button_game_new_medium),FALSE);
+	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonGameNewHard,"Game New Hard",NULL,(state.cur_intro_button_idx==item_intro_button_game_new_hard),FALSE);
+	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonGameNewCancel,"Game New Cancel",NULL,(state.cur_intro_button_idx==item_intro_button_game_new_cancel),FALSE);
+	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonMultiplayerHost,"Multiplayer Host",NULL,(state.cur_intro_button_idx==item_intro_button_multiplayer_host),FALSE);
+	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonMultiplayerJoin,"Multiplayer Join",NULL,(state.cur_intro_button_idx==item_intro_button_multiplayer_join),FALSE);
+	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonMultiplayerSetup,"Multiplayer Setup",NULL,(state.cur_intro_button_idx==item_intro_button_multiplayer_setup),FALSE);
+	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonCredit,"Credit",NULL,(state.cur_intro_button_idx==item_intro_button_credit),FALSE);
+	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonQuit,"Quit",NULL,(state.cur_intro_button_idx==item_intro_button_quit),FALSE);
 
 	list_palette_add_header(&property_palette,0,"Simple Save Buttons");
 	for (n=0;n!=max_simple_save_spot;n++) {
 		sprintf(str,"Simple Save Start %d",n);
-		list_palette_add_string_selectable(&property_palette,(kIntroPropertyButtonSimpleSaveStart+n),str,NULL,(state.cur_intro_button_idx==(kIntroPropertyButtonSimpleSaveStart+n)),FALSE);
+		list_palette_add_string_selectable(&property_palette,(kIntroPropertyButtonSimpleSaveStart+n),str,NULL,(state.cur_intro_button_idx==(item_intro_button_simple_save_start+n)),FALSE);
+	}
+
+	list_palette_add_header(&property_palette,0,"Simple Save Erase Buttons");
+	for (n=0;n!=max_simple_save_spot;n++) {
 		sprintf(str,"Simple Save Erase %d",n);
-		list_palette_add_string_selectable(&property_palette,(kIntroPropertyButtonSimpleSaveErase+n),str,NULL,(state.cur_intro_button_idx==(kIntroPropertyButtonSimpleSaveErase+n)),FALSE);
+		list_palette_add_string_selectable(&property_palette,(kIntroPropertyButtonSimpleSaveErase+n),str,NULL,(state.cur_intro_button_idx==(item_intro_button_simple_save_erase+n)),FALSE);
 	}
 
 		// models
@@ -120,10 +124,13 @@ void property_palette_fill_intro(void)
 
 void property_palette_click_intro(int id)
 {
+	int					idx,sz;
+	char				model_name[name_str_len];
+
 		// select button
 
 	if ((id>=kIntroPropertyButtonGameNew) && (id<=kIntroPropertyButtonQuit)) {
-		state.cur_intro_button_idx=id;
+		state.cur_intro_button_idx=(id-kIntroPropertyButtonGameNew)+item_intro_button_game_new;
 		state.cur_intro_model_idx=-1;
 		main_wind_draw();
 		return;
@@ -132,14 +139,14 @@ void property_palette_click_intro(int id)
 		// select save state button
 
 	if ((id>=kIntroPropertyButtonSimpleSaveStart) && (id<(kIntroPropertyButtonSimpleSaveStart+max_simple_save_spot))) {
-		state.cur_intro_button_idx=id;
+		state.cur_intro_button_idx=(id-kIntroPropertyButtonSimpleSaveStart)+item_intro_button_simple_save_start;
 		state.cur_intro_model_idx=-1;
 		main_wind_draw();
 		return;
 	}
 
 	if ((id>=kIntroPropertyButtonSimpleSaveErase) && (id<(kIntroPropertyButtonSimpleSaveErase+max_simple_save_spot))) {
-		state.cur_intro_button_idx=id;
+		state.cur_intro_button_idx=(id-kIntroPropertyButtonSimpleSaveErase)+item_intro_button_simple_save_erase;
 		state.cur_intro_model_idx=-1;
 		main_wind_draw();
 		return;
@@ -150,6 +157,55 @@ void property_palette_click_intro(int id)
 	if ((id>=kIntroPropertyModelName) && (id<kIntroPropertyModelDelete)) {
 		state.cur_intro_button_idx=-1;
 		state.cur_intro_model_idx=id-kIntroPropertyModelName;
+		main_wind_draw();
+		return;
+	}
+
+		// delete model
+
+	if (id>=kIntroPropertyModelDelete) {
+		state.cur_intro_button_idx=-1;
+		state.cur_intro_model_idx=-1;
+
+		idx=id-kIntroPropertyModelDelete;
+
+		sz=(iface.intro.model_list.nmodel-idx)-1;
+		if (sz>0) memmove(&iface.intro.model_list.models[idx],&iface.intro.model_list.models[idx+1],(sz*sizeof(iface_intro_model_type)));
+
+		iface.intro.model_list.nmodel--;
+
+		main_wind_draw();
+		return;
+	}
+
+		// add model
+
+	if (id==kIntroPropertyModelAdd) {
+		state.cur_intro_button_idx=-1;
+		state.cur_intro_model_idx=-1;
+
+		if (iface.intro.model_list.nmodel>=max_hud_intro_model) {
+			os_dialog_alert("Reached the maximum number of models","Add Intro Model");
+			return;
+		}
+		
+		model_name[0]=0x0;
+		if (!dialog_file_open_run("Pick a Model","Models",NULL,"Mesh.xml",model_name)) return;
+
+		idx=iface.intro.model_list.nmodel;
+		iface.intro.model_list.nmodel++;
+
+		iface.intro.model_list.models[idx].x=0;
+		iface.intro.model_list.models[idx].y=0;
+		iface.intro.model_list.models[idx].resize=1.0f;
+		iface.intro.model_list.models[idx].rot.x=0.0f;
+		iface.intro.model_list.models[idx].rot.y=0.0f;
+		iface.intro.model_list.models[idx].rot.z=0.0f;
+		strcpy(iface.intro.model_list.models[idx].model_name,model_name);
+		iface.intro.model_list.models[idx].animate_name[0]=0x0;
+
+		state.cur_intro_model_idx=idx;
+
 		main_wind_draw();
 		return;
 	}

@@ -93,8 +93,8 @@ void alt_property_palette_fill(void)
 				break;
 			}
 			if (state.cur_intro_model_idx!=-1) {
-				list_palette_set_title(&alt_property_palette,"Intro Button");
-			//	alt_property_palette_fill_intro_model(state.cur_intro_button_idx);
+				list_palette_set_title(&alt_property_palette,"Intro Model");
+				alt_property_palette_fill_intro_model(state.cur_intro_model_idx);
 				break;
 			}
 			break;
@@ -133,7 +133,6 @@ void alt_property_palette_scroll_wheel(d3pnt *pnt,int move)
 
 void alt_property_palette_click(d3pnt *pnt,bool double_click)
 {
-	/*
 		// click
 
 	if (!list_palette_click(&alt_property_palette,pnt,double_click)) return;
@@ -146,15 +145,16 @@ void alt_property_palette_click(d3pnt *pnt,bool double_click)
 
 	switch (state.cur_item) {
 
-		case item_animate:
-			alt_property_palette_click_animate_pose_move(state.cur_animate_idx,state.cur_animate_pose_move_idx,alt_property_palette.item_id);
-			break;
-
-		case item_pose:
-			alt_property_palette_click_pose_bone_move(state.cur_pose_idx,state.cur_pose_bone_move_idx,alt_property_palette.item_id);
-			break;
+		case item_interface_intro:
+			if (state.cur_intro_button_idx!=-1) {
+				alt_property_palette_click_intro_button(state.cur_intro_button_idx,alt_property_palette.item_id);
+				break;
+			}
+			if (state.cur_intro_model_idx!=-1) {
+				alt_property_palette_click_intro_model(state.cur_intro_model_idx,alt_property_palette.item_id);
+				break;
+			}
 
 	}
-	*/
 }
 

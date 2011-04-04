@@ -9,6 +9,9 @@
 
 // dialogs
 
+#define IDD_FILE_OPEN						1000
+#define IDC_FILE_OPEN_TREE					1001
+
 #define IDD_PROPERTY_LIST					5000
 #define IDC_PROPERTY_LIST_LIST				5001
 #define ID_PROPERTY_LIST_NONE				5002

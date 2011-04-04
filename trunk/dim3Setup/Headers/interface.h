@@ -77,6 +77,7 @@ extern void property_palette_click(d3pnt *pnt,bool double_click);
 
 extern void property_palette_fill_settings(void);
 extern void property_palette_fill_intro(void);
+extern void property_palette_fill_hud(void);
 extern void property_palette_fill_sounds(void);
 extern void property_palette_fill_particles(void);
 extern void property_palette_fill_rings(void);
@@ -87,6 +88,7 @@ extern void property_palette_fill_actions(void);
 
 extern void property_palette_click_settings(int id);
 extern void property_palette_click_intro(int id);
+extern void property_palette_click_hud(int id);
 extern void property_palette_click_sounds(int id);
 extern void property_palette_click_particles(int id);
 extern void property_palette_click_rings(int id);
@@ -107,11 +109,14 @@ extern void alt_property_palette_scroll_wheel(d3pnt *pnt,int move);
 extern void alt_property_palette_click(d3pnt *pnt,bool double_click);
 
 extern void alt_property_palette_fill_intro_button(int intro_button_idx);
+extern void alt_property_palette_fill_intro_model(int intro_model_idx);
 
 extern void alt_property_palette_click_intro_button(int intro_button_idx,int id);
+extern void alt_property_palette_click_intro_model(int intro_model_idx,int id);
 
 //
 // dialogs
 //
 
 extern void dialog_about_run(void);
+extern bool dialog_file_open_run(char *title,char *search_path,char *extension,char *required_file_name,char *file_name);
