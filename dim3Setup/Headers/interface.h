@@ -49,6 +49,7 @@ extern void main_wind_resize(void);
 //
 
 extern void menu_update(void);
+extern bool menu_save(void);
 extern bool menu_event_run(int cmd);
 
 //

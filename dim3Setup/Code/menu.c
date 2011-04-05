@@ -32,6 +32,8 @@ and can be sold or given away.
 #include "glue.h"
 #include "interface.h"
 
+extern iface_type				iface;
+
 /* =======================================================
 
       Menu Enable/Disable
@@ -41,6 +43,24 @@ and can be sold or given away.
 void menu_update(void)
 {
 	os_menu_redraw();
+}
+
+/* =======================================================
+
+      Menu Save
+      
+======================================================= */
+
+bool menu_save(void)
+{
+	int			choice;
+
+	choice=os_dialog_confirm("Save Changes?","Do you want to save the changes to this project?",TRUE);
+	if (choice==1) return(FALSE);
+	
+	if (choice==0) iface_write(&iface);
+
+	return(TRUE);
 }
 
 /* =======================================================
@@ -62,7 +82,7 @@ bool menu_event_run(int cmd)
 			// file menu
 
 		case kCommandFileQuit:
-			os_application_quit();
+			if (menu_save()) os_application_quit();
 			return(TRUE);						
 	}
 

@@ -124,7 +124,7 @@ LRESULT CALLBACK setup_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam)
 			break;
 
 		case WM_CLOSE:
-			os_application_quit();
+			if (menu_save()) os_application_quit();
 			break;
 
 		default:
@@ -348,7 +348,6 @@ int APIENTRY WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmdLine
 
 		// save and close
 
-	iface_write(&iface);
 	iface_shutdown(&iface);
 
 	os_glue_end();

@@ -33,17 +33,17 @@ and can be sold or given away.
 #include "ui_common.h"
 #include "interface.h"
 
-#define kIntroPropertyBitmapAdd					1000
-#define kIntroPropertyBitmapName				2000
-#define kIntroPropertyBitmapDelete				3000
+#define kHUDPropertyBitmapAdd					1000
+#define kHUDPropertyBitmapName					2000
+#define kHUDPropertyBitmapDelete				3000
 
-#define kIntroPropertyTextAdd					4000
-#define kIntroPropertyTextName					5000
-#define kIntroPropertyTextDelete				6000
+#define kHUDPropertyTextAdd						4000
+#define kHUDPropertyTextName					5000
+#define kHUDPropertyTextDelete					6000
 
-#define kIntroPropertyBarAdd					7000
-#define kIntroPropertyBarName					8000
-#define kIntroPropertyBarDelete					9000
+#define kHUDPropertyBarAdd						7000
+#define kHUDPropertyBarName						8000
+#define kHUDPropertyBarDelete					9000
 
 extern iface_type				iface;
 extern setup_state_type			state;
@@ -61,12 +61,36 @@ void property_palette_fill_hud(void)
 
 		// bitmaps
 
-	list_palette_add_header_button(&property_palette,kIntroPropertyBitmapAdd,"Bitmaps",list_button_plus);
+	list_palette_add_header_button(&property_palette,kHUDPropertyBitmapAdd,"Bitmaps",list_button_plus);
 
 	list_palette_sort_mark_start(&property_palette);
 	
 	for (n=0;n!=iface.bitmap_list.nbitmap;n++) {
-		list_palette_add_string_selectable_button(&property_palette,(kIntroPropertyBitmapName+n),list_button_minus,(kIntroPropertyBitmapDelete+n),iface.bitmap_list.bitmaps[n].name,NULL,(state.cur_hud_bitmap_idx==n),FALSE);
+		list_palette_add_string_selectable_button(&property_palette,(kHUDPropertyBitmapName+n),list_button_minus,(kHUDPropertyBitmapDelete+n),iface.bitmap_list.bitmaps[n].name,NULL,(state.cur_hud_bitmap_idx==n),FALSE);
+	}
+
+	list_palette_sort(&property_palette);
+
+		// texts
+
+	list_palette_add_header_button(&property_palette,kHUDPropertyTextAdd,"Texts",list_button_plus);
+
+	list_palette_sort_mark_start(&property_palette);
+	
+	for (n=0;n!=iface.text_list.ntext;n++) {
+		list_palette_add_string_selectable_button(&property_palette,(kHUDPropertyTextName+n),list_button_minus,(kHUDPropertyTextDelete+n),iface.text_list.texts[n].name,NULL,(state.cur_hud_text_idx==n),FALSE);
+	}
+
+	list_palette_sort(&property_palette);
+
+		// bars
+
+	list_palette_add_header_button(&property_palette,kHUDPropertyBarAdd,"Bars",list_button_plus);
+
+	list_palette_sort_mark_start(&property_palette);
+	
+	for (n=0;n!=iface.bar_list.nbar;n++) {
+		list_palette_add_string_selectable_button(&property_palette,(kHUDPropertyBarName+n),list_button_minus,(kHUDPropertyBarDelete+n),iface.bar_list.bars[n].name,NULL,(state.cur_hud_bar_idx==n),FALSE);
 	}
 
 	list_palette_sort(&property_palette);
@@ -81,105 +105,238 @@ void property_palette_fill_hud(void)
 void property_palette_click_hud(int id)
 {
 	int					idx,sz;
-	char				model_name[name_str_len];
-/*
-		// select button
+	char				name[name_str_len];
 
-	if ((id>=kIntroPropertyButtonGameNew) && (id<=kIntroPropertyButtonQuit)) {
-		state.cur_intro_button_idx=(id-kIntroPropertyButtonGameNew)+item_intro_button_game_new;
-		state.cur_intro_model_idx=-1;
+		// select bitmap
+
+	if ((id>=kHUDPropertyBitmapName) && (id<(kHUDPropertyBitmapName+max_iface_bitmap))) {
+		state.cur_hud_bitmap_idx=id-kHUDPropertyBitmapName;
+		state.cur_hud_text_idx=-1;
+		state.cur_hud_bar_idx=-1;
 		main_wind_draw();
 		return;
 	}
 
-		// select save state button
+		// delete bitmap
 
-	if ((id>=kIntroPropertyButtonSimpleSaveStart) && (id<(kIntroPropertyButtonSimpleSaveStart+max_simple_save_spot))) {
-		state.cur_intro_button_idx=(id-kIntroPropertyButtonSimpleSaveStart)+item_intro_button_simple_save_start;
-		state.cur_intro_model_idx=-1;
-		main_wind_draw();
-		return;
-	}
+	if ((id>=kHUDPropertyBitmapDelete) && (id<(kHUDPropertyBitmapDelete+max_iface_bitmap))) {
+		state.cur_hud_bitmap_idx=-1;
+		state.cur_hud_text_idx=-1;
+		state.cur_hud_bar_idx=-1;
 
-	if ((id>=kIntroPropertyButtonSimpleSaveErase) && (id<(kIntroPropertyButtonSimpleSaveErase+max_simple_save_spot))) {
-		state.cur_intro_button_idx=(id-kIntroPropertyButtonSimpleSaveErase)+item_intro_button_simple_save_erase;
-		state.cur_intro_model_idx=-1;
-		main_wind_draw();
-		return;
-	}
+		idx=id-kHUDPropertyBitmapDelete;
 
-		// select model
+		sz=(iface.bitmap_list.nbitmap-idx)-1;
+		if (sz>0) memmove(&iface.bitmap_list.bitmaps[idx],&iface.bitmap_list.bitmaps[idx+1],(sz*sizeof(iface_bitmap_type)));
 
-	if ((id>=kIntroPropertyModelName) && (id<kIntroPropertyModelDelete)) {
-		state.cur_intro_button_idx=-1;
-		state.cur_intro_model_idx=id-kIntroPropertyModelName;
-		main_wind_draw();
-		return;
-	}
-
-		// delete model
-
-	if (id>=kIntroPropertyModelDelete) {
-		state.cur_intro_button_idx=-1;
-		state.cur_intro_model_idx=-1;
-
-		idx=id-kIntroPropertyModelDelete;
-
-		sz=(iface.intro.model_list.nmodel-idx)-1;
-		if (sz>0) memmove(&iface.intro.model_list.models[idx],&iface.intro.model_list.models[idx+1],(sz*sizeof(iface_intro_model_type)));
-
-		iface.intro.model_list.nmodel--;
+		iface.bitmap_list.nbitmap--;
 
 		main_wind_draw();
 		return;
 	}
 
-		// add model
+		// add bitmap
 
-	if (id==kIntroPropertyModelAdd) {
-		state.cur_intro_button_idx=-1;
-		state.cur_intro_model_idx=-1;
+	if (id==kHUDPropertyBitmapAdd) {
+		state.cur_hud_text_idx=-1;
+		state.cur_hud_bar_idx=-1;
 
-		if (iface.intro.model_list.nmodel>=max_hud_intro_model) {
-			os_dialog_alert("Reached the maximum number of models","Add Intro Model");
+		if (iface.bitmap_list.nbitmap>=max_iface_bitmap) {
+			os_dialog_alert("Reached the maximum number of bitmaps","Add HUD Bitmap");
 			return;
 		}
 		
-		model_name[0]=0x0;
-		if (!dialog_file_open_run("Pick a Model","Models",NULL,"Mesh.xml",model_name)) return;
+		name[0]=0x0;
+		dialog_property_string_run(list_string_value_string,(void*)name,name_str_len,0,0);
+		if (name[0]==0x0) return;
 
-		idx=iface.intro.model_list.nmodel;
-		iface.intro.model_list.nmodel++;
+		idx=iface.bitmap_list.nbitmap;
+		iface.bitmap_list.nbitmap++;
 
-		iface.intro.model_list.models[idx].x=0;
-		iface.intro.model_list.models[idx].y=0;
-		iface.intro.model_list.models[idx].resize=1.0f;
-		iface.intro.model_list.models[idx].rot.x=0.0f;
-		iface.intro.model_list.models[idx].rot.y=0.0f;
-		iface.intro.model_list.models[idx].rot.z=0.0f;
-		strcpy(iface.intro.model_list.models[idx].model_name,model_name);
-		iface.intro.model_list.models[idx].animate_name[0]=0x0;
+		iface.bitmap_list.bitmaps[idx].x=0;
+		iface.bitmap_list.bitmaps[idx].y=0;
+		iface.bitmap_list.bitmaps[idx].x_size=-1;
+		iface.bitmap_list.bitmaps[idx].y_size=-1;
+		iface.bitmap_list.bitmaps[idx].alpha=0.0f;
+		iface.bitmap_list.bitmaps[idx].rot=0.0f;
+		strcpy(iface.bitmap_list.bitmaps[idx].name,name);
+		iface.bitmap_list.bitmaps[idx].filename[0]=0x0;
+		iface.bitmap_list.bitmaps[idx].show=TRUE;
+		iface.bitmap_list.bitmaps[idx].flash=FALSE;
+		iface.bitmap_list.bitmaps[idx].flip_horz=FALSE;
+		iface.bitmap_list.bitmaps[idx].flip_vert=FALSE;
+		iface.bitmap_list.bitmaps[idx].team_tint=FALSE;
 
-		state.cur_intro_model_idx=idx;
+		iface.bitmap_list.bitmaps[idx].repeat.on=FALSE;
+		iface.bitmap_list.bitmaps[idx].repeat.count=0;
+		iface.bitmap_list.bitmaps[idx].repeat.x_add=0;
+		iface.bitmap_list.bitmaps[idx].repeat.y_add=0;
+		iface.bitmap_list.bitmaps[idx].repeat.col=0;
+		iface.bitmap_list.bitmaps[idx].repeat.row=0;
+		
+		iface.bitmap_list.bitmaps[idx].fade.on=FALSE;
+		iface.bitmap_list.bitmaps[idx].fade.fade_in_tick=0;
+		iface.bitmap_list.bitmaps[idx].fade.life_tick=0;
+		iface.bitmap_list.bitmaps[idx].fade.fade_out_tick=0;
+
+		iface.bitmap_list.bitmaps[idx].animate.image_count=0;
+		iface.bitmap_list.bitmaps[idx].animate.msec=0;
+		iface.bitmap_list.bitmaps[idx].animate.loop=FALSE;
+		iface.bitmap_list.bitmaps[idx].animate.loop_back=FALSE;
+
+		state.cur_hud_bitmap_idx=idx;
 
 		main_wind_draw();
 		return;
 	}
 
-		// regular picks, always
-		// disable selection
+		// select text
 
-	state.cur_intro_button_idx=-1;
-	state.cur_intro_model_idx=-1;
-
-	switch (id) {
-
-		case kIntroPropertyMusic:
-			dialog_property_string_run(list_string_value_string,(void*)iface.intro.music,name_str_len,0,0);
-			break;
-
+	if ((id>=kHUDPropertyTextName) && (id<(kHUDPropertyTextName+max_iface_text))) {
+		state.cur_hud_bitmap_idx=-1;
+		state.cur_hud_text_idx=id-kHUDPropertyTextName;
+		state.cur_hud_bar_idx=-1;
+		main_wind_draw();
+		return;
 	}
-*/
+
+		// delete text
+
+	if ((id>=kHUDPropertyTextDelete) && (id<(kHUDPropertyTextDelete+max_iface_text))) {
+		state.cur_hud_bitmap_idx=-1;
+		state.cur_hud_text_idx=-1;
+		state.cur_hud_bar_idx=-1;
+
+		idx=id-kHUDPropertyTextDelete;
+
+		sz=(iface.text_list.ntext-idx)-1;
+		if (sz>0) memmove(&iface.text_list.texts[idx],&iface.text_list.texts[idx+1],(sz*sizeof(iface_text_type)));
+
+		iface.text_list.ntext--;
+
+		main_wind_draw();
+		return;
+	}
+
+		// add text
+
+	if (id==kHUDPropertyTextAdd) {
+		state.cur_hud_bitmap_idx=-1;
+		state.cur_hud_bar_idx=-1;
+
+		if (iface.text_list.ntext>=max_iface_text) {
+			os_dialog_alert("Reached the maximum number of texts","Add HUD Text");
+			return;
+		}
+		
+		name[0]=0x0;
+		dialog_property_string_run(list_string_value_string,(void*)name,name_str_len,0,0);
+		if (name[0]==0x0) return;
+
+		idx=iface.text_list.ntext;
+		iface.text_list.ntext++;
+
+		iface.text_list.texts[idx].x=0;
+		iface.text_list.texts[idx].y=0;
+		iface.text_list.texts[idx].size=20;
+		iface.text_list.texts[idx].just=tx_left;
+		iface.text_list.texts[idx].special=text_special_none;
+		iface.text_list.texts[idx].alpha=0.0f;
+		strcpy(iface.text_list.texts[idx].name,name);
+		iface.text_list.texts[idx].data[0]=0x0;
+		iface.text_list.texts[idx].show=TRUE;
+		iface.text_list.texts[idx].has_return=FALSE;
+		iface.text_list.texts[idx].color.r=1.0f;
+		iface.text_list.texts[idx].color.g=1.0f;
+		iface.text_list.texts[idx].color.b=1.0f;
+
+		iface.text_list.texts[idx].fade.on=FALSE;
+		iface.text_list.texts[idx].fade.fade_in_tick=0;
+		iface.text_list.texts[idx].fade.life_tick=0;
+		iface.text_list.texts[idx].fade.fade_out_tick=0;
+
+		state.cur_hud_text_idx=idx;
+
+		main_wind_draw();
+		return;
+	}
+
+		// select bar
+
+	if ((id>=kHUDPropertyBarName) && (id<(kHUDPropertyBarName+max_iface_bar))) {
+		state.cur_hud_bitmap_idx=-1;
+		state.cur_hud_text_idx=-1;
+		state.cur_hud_bar_idx=id-kHUDPropertyBarName;
+		main_wind_draw();
+		return;
+	}
+
+		// delete bar
+
+	if ((id>=kHUDPropertyBarDelete) && (id<(kHUDPropertyBarDelete+max_iface_bar))) {
+		state.cur_hud_bitmap_idx=-1;
+		state.cur_hud_text_idx=-1;
+		state.cur_hud_bar_idx=-1;
+
+		idx=id-kHUDPropertyBarDelete;
+
+		sz=(iface.bar_list.nbar-idx)-1;
+		if (sz>0) memmove(&iface.bar_list.bars[idx],&iface.bar_list.bars[idx+1],(sz*sizeof(iface_bar_type)));
+
+		iface.bar_list.nbar--;
+
+		main_wind_draw();
+		return;
+	}
+
+		// add bar
+
+	if (id==kHUDPropertyBarAdd) {
+		state.cur_hud_bitmap_idx=-1;
+		state.cur_hud_text_idx=-1;
+
+		if (iface.bar_list.nbar>=max_iface_bar) {
+			os_dialog_alert("Reached the maximum number of bars","Add HUD Bar");
+			return;
+		}
+		
+		name[0]=0x0;
+		dialog_property_string_run(list_string_value_string,(void*)name,name_str_len,0,0);
+		if (name[0]==0x0) return;
+
+		idx=iface.bar_list.nbar;
+		iface.bar_list.nbar++;
+
+		iface.bar_list.bars[idx].x=0;
+		iface.bar_list.bars[idx].y=0;
+		iface.bar_list.bars[idx].x_size=20;
+		iface.bar_list.bars[idx].y_size=20;
+		iface.bar_list.bars[idx].fill_alpha=1.0f;
+		iface.bar_list.bars[idx].outline_alpha=1.0f;
+		iface.bar_list.bars[idx].value=0.0f;
+		strcpy(iface.bar_list.bars[idx].name,name);
+		iface.bar_list.bars[idx].show=TRUE;
+		iface.bar_list.bars[idx].outline=TRUE;
+		iface.bar_list.bars[idx].vert=FALSE;
+
+		iface.bar_list.bars[idx].fill_start_color.r=0.5f;
+		iface.bar_list.bars[idx].fill_start_color.g=0.5f;
+		iface.bar_list.bars[idx].fill_start_color.b=0.5f;
+
+		iface.bar_list.bars[idx].fill_end_color.r=0.8f;
+		iface.bar_list.bars[idx].fill_end_color.g=0.8f;
+		iface.bar_list.bars[idx].fill_end_color.b=0.8f;
+
+		iface.bar_list.bars[idx].outline_color.r=1.0f;
+		iface.bar_list.bars[idx].outline_color.g=1.0f;
+		iface.bar_list.bars[idx].outline_color.b=1.0f;
+
+		state.cur_hud_bar_idx=idx;
+
+		main_wind_draw();
+		return;
+	}
+
 		// redraw
 
 	main_wind_draw();

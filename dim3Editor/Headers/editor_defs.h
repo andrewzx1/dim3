@@ -227,7 +227,14 @@ and can be sold or given away.
 //
 
 #define light_map_texture_block_size			8
-#define light_map_quality_to_pixel_factor		10000.0f
+
+#define light_map_quality_very_low				0
+#define light_map_quality_low					1
+#define light_map_quality_medium				2
+#define light_map_quality_high					3
+#define light_map_quality_very_high				4
+
+#define light_map_quality_values				{(10.0f/10000.0f),(30.0f/10000.0f),(50.0f/10000.0f),(75.0f/10000.0f),(100.0f/10000.0f)}
 
 #define uv_layer_normal							0
 #define uv_layer_light_map						1

@@ -149,7 +149,8 @@ extern list_palette_type		property_palette;
 char							map_property_light_map_size_list[][name_str_len]={"256","512","1024",""},
 								map_property_camera_mode_list[][name_str_len]={"FPP","Chase","Static","Chase Static",""},
 								map_property_media_type_list[][name_str_len]={"None","Chooser","Title","Cinema",""},
-								map_property_sky_type_list[][name_str_len]={"Panoramic","Dome Hemisphere","Cube",""};
+								map_property_sky_type_list[][name_str_len]={"Panoramic","Dome Hemisphere","Cube",""},
+								map_property_light_map_quality_list[][name_str_len]={"Very Low","Low","Medium","High","Very High",""};
 
 /* =======================================================
 
@@ -199,7 +200,7 @@ void property_palette_fill_map(void)
 	if ((size<0) || (size>2)) size=0;
 
 	list_palette_add_header(&property_palette,0,"Map Light Map");
-	list_palette_add_string_int(&property_palette,kMapPropertyLightMapQuality,"Quality",map.light_map.quality,FALSE);
+	list_palette_add_string(&property_palette,kMapPropertyLightMapQuality,"Quality",map_property_light_map_quality_list[map.light_map.quality],FALSE);
 	list_palette_add_string(&property_palette,kMapPropertyLightMapSize,"Texture Size",map_property_light_map_size_list[size],FALSE);
 	list_palette_add_string_int(&property_palette,kMapPropertyLightMapBorderCount,"Pixel Border Count",map.light_map.pixel_border_count,FALSE);
 	list_palette_add_string_int(&property_palette,kMapPropertyLightMapBlurCount,"Blur Count",map.light_map.blur_count,FALSE);
@@ -459,7 +460,7 @@ void property_palette_click_map(int id)
 			// light maps
 	
 		case kMapPropertyLightMapQuality:
-			dialog_property_string_run(list_string_value_range_int,(void*)&map.light_map.quality,0,50,200);
+			property_pick_list("Pick Light Map Quality",(char*)map_property_light_map_quality_list,&map.light_map.quality);
 			break;
 			
 		case kMapPropertyLightMapSize:
