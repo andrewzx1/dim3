@@ -78,12 +78,14 @@ void decode_map_settings_xml(map_type *map,int map_head)
         xml_get_attribute_text(tag,"network_game_list",map->settings.network_game_list,256);
 		xml_get_attribute_text(tag,"params",map->settings.params,param_str_len);
 
-        map->light_map.quality=xml_get_attribute_int_default(tag,"light_map_quality",50);
+        map->light_map.quality=xml_get_attribute_int_default(tag,"light_map_quality",2);
         map->light_map.size=xml_get_attribute_int_default(tag,"light_map_size",1024);
         map->light_map.pixel_border_count=xml_get_attribute_int_default(tag,"light_map_pixel_border_count",6);
         map->light_map.blur_count=xml_get_attribute_int_default(tag,"light_map_blur_count",3);
 		map->light_map.use_normals=xml_get_attribute_boolean(tag,"light_map_use_normals");
         map->light_map.diffuse_boost=xml_get_attribute_float_default(tag,"light_map_diffuse_boost",0.0f);
+
+		if (map->light_map.quality>4) map->light_map.quality=2;		// reset from older map formats
 	}
 	
     tag=xml_findfirstchild("Editor",map_head);

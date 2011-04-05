@@ -154,7 +154,7 @@ void property_palette_click_intro(int id)
 
 		// select model
 
-	if ((id>=kIntroPropertyModelName) && (id<kIntroPropertyModelDelete)) {
+	if ((id>=kIntroPropertyModelName) && (id<(kIntroPropertyModelName+max_hud_intro_model))) {
 		state.cur_intro_button_idx=-1;
 		state.cur_intro_model_idx=id-kIntroPropertyModelName;
 		main_wind_draw();
@@ -163,7 +163,7 @@ void property_palette_click_intro(int id)
 
 		// delete model
 
-	if (id>=kIntroPropertyModelDelete) {
+	if ((id>=kIntroPropertyModelDelete) && (id<(kIntroPropertyModelDelete+max_hud_intro_model))) {
 		state.cur_intro_button_idx=-1;
 		state.cur_intro_model_idx=-1;
 

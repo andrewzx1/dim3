@@ -45,6 +45,7 @@ extern HWND						wnd;
 int								dialog_property_list_count,
 								dialog_property_list_item_sz,dialog_property_list_name_offset,
 								dialog_property_idx;
+char							dialog_property_list_title[256];
 char							*dialog_property_list_ptr;
 bool							dialog_property_include_none;
 
@@ -62,6 +63,7 @@ LRESULT CALLBACK dialog_property_list_proc(HWND diag,UINT msg,WPARAM wparam,LPAR
 	switch (msg) {
 
 		case WM_INITDIALOG:
+			SetWindowText(diag,dialog_property_list_title);
 			win32_dialog_enable(diag,ID_PROPERTY_LIST_NONE,dialog_property_include_none);
 			for (n=0;n!=dialog_property_list_count;n++) {
 				name=(dialog_property_list_ptr+(n*dialog_property_list_item_sz))+dialog_property_list_name_offset;
@@ -103,7 +105,7 @@ LRESULT CALLBACK dialog_property_list_proc(HWND diag,UINT msg,WPARAM wparam,LPAR
       
 ======================================================= */
 
-void dialog_property_list_run(char *list_ptr,int list_count,int list_item_sz,int list_name_offset,bool include_none,int *idx)
+void dialog_property_list_run(char *title,char *list_ptr,int list_count,int list_item_sz,int list_name_offset,bool include_none,int *idx)
 {
 		// remember the list
 		
@@ -112,6 +114,8 @@ void dialog_property_list_run(char *list_ptr,int list_count,int list_item_sz,int
 	dialog_property_list_item_sz=list_item_sz;
 	dialog_property_list_name_offset=list_name_offset;
 	dialog_property_include_none=include_none;
+
+	strcpy(dialog_property_list_title,title);
 	
 		// open the dialog
 

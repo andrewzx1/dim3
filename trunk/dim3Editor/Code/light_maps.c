@@ -69,6 +69,7 @@ typedef struct		{
 					} light_map_map_texture_alpha_type;
 
 int									light_map_poly_count,light_map_texture_count;
+float								light_map_quality_value_list[]=light_map_quality_values;
 light_map_texture_type				*light_map_textures;
 light_map_poly_type					*light_map_polys;
 light_map_map_texture_alpha_type	light_map_map_texture_alphas[max_map_texture];
@@ -177,7 +178,7 @@ void light_map_texture_map_folder_name(char *map_name)
 void light_map_textures_save(char *base_path)
 {
 	int				n,txt_idx;
-	char			map_name[256],bitmap_name[256],path[1024];
+	char			map_name[256],bitmap_name[256],path[1024],str[256];
 	
 		// delete any old textures
 		
@@ -192,7 +193,9 @@ void light_map_textures_save(char *base_path)
 	txt_idx=max_map_texture-max_light_map_textures;
 	
 	for (n=0;n!=light_map_texture_count;n++) {
-		progress_next();
+
+		sprintf(str,"Light Map: Saving Textures %d/%d",n,light_map_texture_count);
+		progress_next_title(str);
 		
 		if (light_map_textures[n].pixel_data==NULL) break;
 		
@@ -528,7 +531,7 @@ void light_map_create_mesh_poly_flatten(map_mesh_type *mesh,map_mesh_poly_type *
 	double				dx,dz;
 	d3pnt				*pt;
 	
-	factor=((float)map.light_map.quality)/light_map_quality_to_pixel_factor;
+	factor=light_map_quality_value_list[map.light_map.quality];
 			
 		// flatten the poly
 		// and get 3D points
@@ -563,7 +566,7 @@ void light_map_create_liquid_poly_flatten(map_liquid_type *liq,light_map_poly_ty
 {
 	float				factor;
 	
-	factor=((float)map.light_map.quality)/light_map_quality_to_pixel_factor;
+	factor=light_map_quality_value_list[map.light_map.quality];
 			
 		// flatten the poly
 		// and get 3D points
@@ -1649,7 +1652,7 @@ bool light_map_run_for_poly(int lm_poly_idx,char *err_str)
 	if (!light_map_texture_find_open_area(lm_poly->x_sz,lm_poly->y_sz,&x,&y,&box,lm_poly->solid_color,lmap)) {
 	
 		if (!light_map_textures_create()) {
-			sprintf(err_str,"Too many polys in map, would create more than %d light maps",max_light_map_textures);
+			sprintf(err_str,"Too many polys in map, would create more than %d light maps.  Turn down the quality or turn up the texture size.",max_light_map_textures);
 			return(FALSE);
 		}
 		
@@ -1788,7 +1791,7 @@ bool light_maps_create_process(char *err_str)
 {
 	int				n;
 	char			base_path[1024],dir_path[1024],
-					map_name[256];
+					map_name[256],str[256];
 	
 		// base path
 		
@@ -1822,7 +1825,11 @@ bool light_maps_create_process(char *err_str)
 		// for all the polys
 		
 	for (n=0;n!=light_map_poly_count;n++) {
-		if ((n%10)==0) progress_next();
+
+		if ((n%10)==0) {
+			sprintf(str,"Light Map: Rendering Poly %d/%d",n,light_map_poly_count);
+			progress_next_title(str);
+		}
 		
 		if (!light_map_run_for_poly(n,err_str)) {
 			light_map_bitmap_transparency_free();
@@ -1843,7 +1850,6 @@ bool light_maps_create_process(char *err_str)
 	
 		// write all the textures
 		
-	progress_next_title("Light Map: Saving Textures");
 	light_map_textures_save(base_path);
 	
 		// set light map textures
