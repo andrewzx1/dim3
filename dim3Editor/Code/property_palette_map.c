@@ -465,7 +465,7 @@ void property_palette_click_map(int id)
 		case kMapPropertyLightMapSize:
 			size=((int)log2(map.light_map.size))-8;
 			if ((size<0) || (size>2)) size=0;
-			property_pick_list((char*)map_property_light_map_size_list,&size);
+			property_pick_list("Pick a Light Map Size",(char*)map_property_light_map_size_list,&size);
 			map.light_map.size=(int)pow(2,(size+8));
 			break;
 			
@@ -488,7 +488,7 @@ void property_palette_click_map(int id)
 			// camera settings
 
 		case kMapPropertyCameraMode:
-			property_pick_list((char*)map_property_camera_mode_list,&map.camera.mode);
+			property_pick_list("Pick a Camera Mode",(char*)map_property_camera_mode_list,&map.camera.mode);
 			break;
 			
 		case kMapPropertyCameraAngle:
@@ -544,7 +544,7 @@ void property_palette_click_map(int id)
 			// map media
 
 		case kMapPropertyMediaType:
-			property_pick_list((char*)map_property_media_type_list,&map.media.type);
+			property_pick_list("Pick a Media Type",(char*)map_property_media_type_list,&map.media.type);
 			break;
 
 		case kMapPropertyMediaName:
@@ -572,7 +572,7 @@ void property_palette_click_map(int id)
 			break;
 
 		case kMapPropertySkyType:
-			property_pick_list((char*)map_property_sky_type_list,&map.sky.type);
+			property_pick_list("Pick a Sky Type",(char*)map_property_sky_type_list,&map.sky.type);
 			break;
 
 		case kMapPropertySkyRadius:
@@ -600,27 +600,27 @@ void property_palette_click_map(int id)
 			break;
 
 		case kMapPropertyTextureFill:
-			property_palette_pick_texture(&map.sky.fill);
+			property_palette_pick_texture(NULL,&map.sky.fill);
 			break;
 
 		case kMapPropertyTextureBottomFill:
-			property_palette_pick_texture(&map.sky.bottom_fill);
+			property_palette_pick_texture(NULL,&map.sky.bottom_fill);
 			break;
 
 		case kMapPropertyTextureNorthFill:
-			property_palette_pick_texture(&map.sky.north_fill);
+			property_palette_pick_texture(NULL,&map.sky.north_fill);
 			break;
 
 		case kMapPropertyTextureSouthFill:
-			property_palette_pick_texture(&map.sky.south_fill);
+			property_palette_pick_texture(NULL,&map.sky.south_fill);
 			break;
 
 		case kMapPropertyTextureEastFill:
-			property_palette_pick_texture(&map.sky.east_fill);
+			property_palette_pick_texture(NULL,&map.sky.east_fill);
 			break;
 
 		case kMapPropertyTextureWestFill:
-			property_palette_pick_texture(&map.sky.west_fill);
+			property_palette_pick_texture(NULL,&map.sky.west_fill);
 			break;
 
 			// map background
@@ -646,7 +646,7 @@ void property_palette_click_map(int id)
 			break;
 
 		case kMapPropertyBackgroundFrontFill:
-			property_palette_pick_texture(&map.background.front.fill);
+			property_palette_pick_texture(NULL,&map.background.front.fill);
 			break;
 
 		case kMapPropertyBackgroundMiddleStamp:
@@ -666,7 +666,7 @@ void property_palette_click_map(int id)
 			break;
 
 		case kMapPropertyBackgroundMiddleFill:
-			property_palette_pick_texture(&map.background.middle.fill);
+			property_palette_pick_texture(NULL,&map.background.middle.fill);
 			break;
 
 		case kMapPropertyBackgroundBackStamp:
@@ -686,7 +686,7 @@ void property_palette_click_map(int id)
 			break;
 
 		case kMapPropertyBackgroundBackFill:
-			property_palette_pick_texture(&map.background.back.fill);
+			property_palette_pick_texture(NULL,&map.background.back.fill);
 			break;
 
 			// fog general
@@ -716,7 +716,7 @@ void property_palette_click_map(int id)
 			// fog textured
 
 		case kMapPropertyFogTextureIndex:
-			property_palette_pick_texture(&map.fog.texture_idx);
+			property_palette_pick_texture(NULL,&map.fog.texture_idx);
 			break;
 
 		case kMapPropertyFogCount:

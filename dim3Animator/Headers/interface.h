@@ -304,5 +304,5 @@ extern bool dialog_play_blend_animation_run(void);
 extern bool dialog_scale_run(model_type *mdl,float *x,float *y,float *z);
 extern bool dialog_set_normal_run(d3vct *normal);
 
-extern void dialog_property_list_run(char *list_ptr,int list_count,int list_item_sz,int list_name_offset,bool include_none,int *idx);
+extern void dialog_property_list_run(char *title,char *list_ptr,int list_count,int list_item_sz,int list_name_offset,bool include_none,int *idx);
 extern void dialog_property_string_run(int value_type,void *value,int value_len,int i_min,int i_max);

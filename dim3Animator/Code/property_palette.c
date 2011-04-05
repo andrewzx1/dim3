@@ -312,7 +312,7 @@ void property_palette_pick_sound(char *name,bool include_none)
 {
 	int				idx;
 
-	dialog_property_list_run((char*)iface.sound_list.sounds,iface.sound_list.nsound,sizeof(iface_sound_type),(int)offsetof(iface_sound_type,name),include_none,&idx);
+	dialog_property_list_run("Pick a Sound",(char*)iface.sound_list.sounds,iface.sound_list.nsound,sizeof(iface_sound_type),(int)offsetof(iface_sound_type,name),include_none,&idx);
 
 	name[0]=0x0;
 	if (idx!=-1) strcpy(name,iface.sound_list.sounds[idx].name);
@@ -322,7 +322,7 @@ void property_palette_pick_particle(char *name)
 {
 	int				idx;
 
-	dialog_property_list_run((char*)iface.particle_list.particles,iface.particle_list.nparticle,sizeof(iface_particle_type),(int)offsetof(iface_particle_type,name),FALSE,&idx);
+	dialog_property_list_run("Pick a Particle",(char*)iface.particle_list.particles,iface.particle_list.nparticle,sizeof(iface_particle_type),(int)offsetof(iface_particle_type,name),FALSE,&idx);
 
 	name[0]=0x0;
 	if (idx!=-1) strcpy(name,iface.particle_list.particles[idx].name);
@@ -332,7 +332,7 @@ void property_palette_pick_ring(char *name)
 {
 	int				idx;
 
-	dialog_property_list_run((char*)iface.ring_list.rings,iface.ring_list.nring,sizeof(iface_ring_type),(int)offsetof(iface_ring_type,name),FALSE,&idx);
+	dialog_property_list_run("Pick a Ring",(char*)iface.ring_list.rings,iface.ring_list.nring,sizeof(iface_ring_type),(int)offsetof(iface_ring_type,name),FALSE,&idx);
 
 	name[0]=0x0;
 	if (idx!=-1) strcpy(name,iface.ring_list.rings[idx].name);
@@ -340,12 +340,12 @@ void property_palette_pick_ring(char *name)
 
 void property_palette_pick_mesh(int *mesh_idx)
 {
-	dialog_property_list_run((char*)model.meshes,model.nmesh,sizeof(model_mesh_type),(int)offsetof(model_mesh_type,name),TRUE,mesh_idx);
+	dialog_property_list_run("Pick a Mesh",(char*)model.meshes,model.nmesh,sizeof(model_mesh_type),(int)offsetof(model_mesh_type,name),TRUE,mesh_idx);
 }
 
 void property_palette_pick_bone(int *bone_idx)
 {
-	dialog_property_list_run((char*)model.bones,model.nbone,sizeof(model_bone_type),(int)offsetof(model_bone_type,name),TRUE,bone_idx);
+	dialog_property_list_run("Pick a Bone",(char*)model.bones,model.nbone,sizeof(model_bone_type),(int)offsetof(model_bone_type,name),TRUE,bone_idx);
 }
 
 void property_palette_pick_bone_tag(unsigned long *bone_tag)
@@ -364,14 +364,14 @@ void property_palette_pick_bone_tag(unsigned long *bone_tag)
 
 void property_palette_pick_pose(int *pose_idx)
 {
-	dialog_property_list_run((char*)model.poses,model.npose,sizeof(model_pose_type),(int)offsetof(model_pose_type,name),TRUE,pose_idx);
+	dialog_property_list_run("Pick a Pose",(char*)model.poses,model.npose,sizeof(model_pose_type),(int)offsetof(model_pose_type,name),TRUE,pose_idx);
 }
 
 void property_palette_pick_shader(char *name)
 {
 	int				idx;
 
-	dialog_property_list_run((char*)iface.shader_list.shaders,iface.shader_list.nshader,sizeof(iface_shader_type),(int)offsetof(iface_shader_type,name),TRUE,&idx);
+	dialog_property_list_run("Pick a Shader",(char*)iface.shader_list.shaders,iface.shader_list.nshader,sizeof(iface_shader_type),(int)offsetof(iface_shader_type,name),TRUE,&idx);
 
 	name[0]=0x0;
 	if (idx!=-1) strcpy(name,iface.shader_list.shaders[idx].name);

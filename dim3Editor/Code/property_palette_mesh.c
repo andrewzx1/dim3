@@ -264,11 +264,11 @@ void property_palette_click_mesh(int mesh_idx,int poly_idx,int id)
 			break;
 
 		case kMeshPropertyHideMode:
-			property_pick_list((char*)mesh_property_hide_list,&mesh->hide_mode);
+			property_pick_list("Pick a Hide Mode",(char*)mesh_property_hide_list,&mesh->hide_mode);
 			break;
 
 		case kMeshPropertyNormalMode:
-			property_pick_list((char*)mesh_property_normal_list,&mesh->normal_mode);
+			property_pick_list("Pick a Normal Mode",(char*)mesh_property_normal_list,&mesh->normal_mode);
 			if (mesh->normal_mode!=mesh_normal_mode_lock) map_recalc_normals_mesh(mesh,FALSE);
 			break;
 			
@@ -317,7 +317,7 @@ void property_palette_click_mesh(int mesh_idx,int poly_idx,int id)
 			break;
 
 		case kMeshPropertyMessageBaseTeam:
-			property_pick_list((char*)mesh_property_team_list,&mesh->msg.base_team);
+			property_pick_list("Pick a Team",(char*)mesh_property_team_list,&mesh->msg.base_team);
 			break;
 			
 		case kMeshPropertyImportOBJName:

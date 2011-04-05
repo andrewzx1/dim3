@@ -124,7 +124,7 @@ void property_palette_click_editor_preference(int id)
 			break;
 
 		case kPrefPropertyMipMapMode:
-			property_pick_list((char*)pref_mipmap_type_str,&setup.mipmap_mode);
+			property_pick_list("Pick a MipMap Mode",(char*)pref_mipmap_type_str,&setup.mipmap_mode);
 			break;
 
 		case kPrefPropertyDuplicateOffset:

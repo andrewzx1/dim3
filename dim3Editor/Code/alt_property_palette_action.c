@@ -144,11 +144,11 @@ void alt_property_palette_click_cinema_action(int cinema_idx,int action_idx,int 
 			break;
 
 		case kCinemaActionPropertyAction:
-			property_pick_list((char*)action_action_type_str,&action->action);
+			property_pick_list("Pick an Action",(char*)action_action_type_str,&action->action);
 			break;
 
 		case kCinemaActionPropertyActorType:
-			property_pick_list((char*)action_actor_type_str,&action->actor_type);
+			property_pick_list("Pick an Actor Type",(char*)action_actor_type_str,&action->actor_type);
 			break;
 
 		case kCinemaActionPropertyActorName:

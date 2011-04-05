@@ -376,7 +376,7 @@ void property_palette_click(d3pnt *pnt,bool double_click)
 
 void property_palette_pick_group(int *group_idx)
 {
-	dialog_property_list_run((char*)map.group.groups,map.group.ngroup,sizeof(group_type),(int)offsetof(group_type,name),TRUE,group_idx);
+	dialog_property_list_run("Pick a Group",(char*)map.group.groups,map.group.ngroup,sizeof(group_type),(int)offsetof(group_type,name),TRUE,group_idx);
 }
 
 void property_palette_pick_spot(char *name)
@@ -392,7 +392,7 @@ void property_palette_pick_spot(char *name)
 		}
 	}
 
-	dialog_property_list_run((char*)map.spots,map.nspot,sizeof(spot_type),(int)offsetof(spot_type,name),TRUE,&idx);
+	dialog_property_list_run("Pick a Spot",(char*)map.spots,map.nspot,sizeof(spot_type),(int)offsetof(spot_type,name),TRUE,&idx);
 	
 	name[0]=0x0;
 	if (idx!=-1) strcpy(name,map.spots[idx].name);
@@ -402,7 +402,7 @@ void property_palette_pick_sound(char *name,bool include_none)
 {
 	int				idx;
 
-	dialog_property_list_run((char*)iface.sound_list.sounds,iface.sound_list.nsound,sizeof(iface_sound_type),(int)offsetof(iface_sound_type,name),include_none,&idx);
+	dialog_property_list_run("Pick a Sound",(char*)iface.sound_list.sounds,iface.sound_list.nsound,sizeof(iface_sound_type),(int)offsetof(iface_sound_type,name),include_none,&idx);
 
 	name[0]=0x0;
 	if (idx!=-1) strcpy(name,iface.sound_list.sounds[idx].name);
@@ -412,7 +412,7 @@ void property_palette_pick_particle(char *name)
 {
 	int				idx;
 
-	dialog_property_list_run((char*)iface.particle_list.particles,iface.particle_list.nparticle,sizeof(iface_particle_type),(int)offsetof(iface_particle_type,name),FALSE,&idx);
+	dialog_property_list_run("Pick a Particle",(char*)iface.particle_list.particles,iface.particle_list.nparticle,sizeof(iface_particle_type),(int)offsetof(iface_particle_type,name),FALSE,&idx);
 
 	name[0]=0x0;
 	if (idx!=-1) strcpy(name,iface.particle_list.particles[idx].name);
@@ -454,7 +454,7 @@ void property_palette_pick_node(char *name)
 		list_pos++;
 	}
 	
-	dialog_property_list_run(list_ptr,count,name_str_len,0,TRUE,&idx);
+	dialog_property_list_run("Pick a Node",list_ptr,count,name_str_len,0,TRUE,&idx);
 	
 	name[0]=0x0;
 	if (idx!=-1) strcpy(name,(list_ptr+(idx*name_str_len)));
@@ -475,7 +475,7 @@ void property_palette_pick_movement(char *name)
 		}
 	}
 
-	dialog_property_list_run((char*)map.movement.movements,map.movement.nmovement,sizeof(movement_type),(int)offsetof(movement_type,name),TRUE,&idx);
+	dialog_property_list_run("Pick a Movement",(char*)map.movement.movements,map.movement.nmovement,sizeof(movement_type),(int)offsetof(movement_type,name),TRUE,&idx);
 	
 	name[0]=0x0;
 	if (idx!=-1) strcpy(name,map.movement.movements[idx].name);
@@ -485,7 +485,7 @@ void property_palette_pick_hud_text(char *name)
 {
 	int				idx;
 
-	dialog_property_list_run((char*)iface.text_list.texts,iface.text_list.ntext,sizeof(iface_text_type),(int)offsetof(iface_text_type,name),FALSE,&idx);
+	dialog_property_list_run("Pick a HUD Text",(char*)iface.text_list.texts,iface.text_list.ntext,sizeof(iface_text_type),(int)offsetof(iface_text_type,name),FALSE,&idx);
 
 	name[0]=0x0;
 	if (idx!=-1) strcpy(name,iface.text_list.texts[idx].name);
@@ -495,13 +495,13 @@ void property_palette_pick_hud_bitmap(char *name)
 {
 	int				idx;
 
-	dialog_property_list_run((char*)iface.bitmap_list.bitmaps,iface.bitmap_list.nbitmap,sizeof(iface_bitmap_type),(int)offsetof(iface_bitmap_type,name),FALSE,&idx);
+	dialog_property_list_run("Pick a HUD Bitmap",(char*)iface.bitmap_list.bitmaps,iface.bitmap_list.nbitmap,sizeof(iface_bitmap_type),(int)offsetof(iface_bitmap_type,name),FALSE,&idx);
 
 	name[0]=0x0;
 	if (idx!=-1) strcpy(name,iface.bitmap_list.bitmaps[idx].name);
 }
 
-void property_palette_pick_texture(int *txt_idx)
+void property_palette_pick_texture(char *title,int *txt_idx)
 {
 	int				n;
 	char			texture_names[max_map_texture][name_str_len];
@@ -514,15 +514,20 @@ void property_palette_pick_texture(int *txt_idx)
 			strcpy((char*)texture_names[n],map.textures[n].frames[0].name);
 		}
 	}
-
-	dialog_property_list_run((char*)texture_names,max_map_texture,name_str_len,0,TRUE,txt_idx);
+	
+	if (title==NULL) {
+		dialog_property_list_run("Pick a Texture",(char*)texture_names,max_map_texture,name_str_len,0,TRUE,txt_idx);
+	}
+	else {
+		dialog_property_list_run(title,(char*)texture_names,max_map_texture,name_str_len,0,TRUE,txt_idx);
+	}
 }
 
 void property_palette_pick_shader(char *name)
 {
 	int				idx;
 
-	dialog_property_list_run((char*)iface.shader_list.shaders,iface.shader_list.nshader,sizeof(iface_shader_type),(int)offsetof(iface_shader_type,name),TRUE,&idx);
+	dialog_property_list_run("Pick a Shader",(char*)iface.shader_list.shaders,iface.shader_list.nshader,sizeof(iface_shader_type),(int)offsetof(iface_shader_type,name),TRUE,&idx);
 
 	name[0]=0x0;
 	if (idx!=-1) strcpy(name,iface.shader_list.shaders[idx].name);
