@@ -152,7 +152,7 @@ extern void property_palette_pick_node(char *name);
 extern void property_palette_pick_movement(char *name);
 extern void property_palette_pick_hud_text(char *name);
 extern void property_palette_pick_hud_bitmap(char *name);
-extern void property_palette_pick_texture(int *txt_idx);
+extern void property_palette_pick_texture(char *title,int *txt_idx);
 extern void property_palette_pick_shader(char *name);
 
 //

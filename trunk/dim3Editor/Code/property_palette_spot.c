@@ -131,7 +131,7 @@ void property_palette_click_spot(int spot_idx,int id)
 			break;
 
 		case kSpotPropertyType:
-			property_pick_list((char*)spot_property_type_list,&spot->type);
+			property_pick_list("Pick a Spot Type",(char*)spot_property_type_list,&spot->type);
 			break;
 
 		case kSpotPropertyScript:
@@ -147,11 +147,11 @@ void property_palette_click_spot(int spot_idx,int id)
 			break;
 
 		case kSpotPropertySkill:
-			property_pick_list((char*)spot_property_skill_list,&spot->skill);
+			property_pick_list("Pick a Skill",(char*)spot_property_skill_list,&spot->skill);
 			break;
 
 		case kSpotPropertySpawn:
-			property_pick_list((char*)spot_property_spawn_list,&spot->spawn);
+			property_pick_list("Pick a Spawn Type",(char*)spot_property_spawn_list,&spot->spawn);
 			break;
 
 		case kSpotPropertyDisplayModel:

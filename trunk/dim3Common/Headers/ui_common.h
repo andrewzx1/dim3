@@ -104,12 +104,12 @@ extern void property_string_set_values(int value_type,void *value,int value_len,
 extern bool property_chord_get_values(int value_type,void *value,char *str_x,char *str_y,char *str_z,char *desc);
 extern void property_chord_set_values(int value_type,void *value,char *str_x,char *str_y,char *str_z);
 
-extern void property_pick_list(char *list,int *idx);
+extern void property_pick_list(char *title,char *list,int *idx);
 
 extern void property_get_parameter(int idx,char *param_list,char *str);
 extern void property_set_parameter(int idx,char *param_list,char *str);
 
-extern void dialog_property_list_run(char *list_ptr,int list_count,int list_item_sz,int list_name_offset,bool include_none,int *idx);
+extern void dialog_property_list_run(char *title,char *list_ptr,int list_count,int list_item_sz,int list_name_offset,bool include_none,int *idx);
 extern void dialog_property_string_run(int value_type,void *value,int value_len,int i_min,int i_max);
 extern void dialog_property_chord_run(int value_type,void *value);
 

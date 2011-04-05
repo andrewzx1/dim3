@@ -109,11 +109,11 @@ void property_palette_click_light(int light_idx,int id)
 			break;
 
 		case kLightPropertyType:
-			property_pick_list((char*)light_property_type_list,&light->type);
+			property_pick_list("Pick a Light Type",(char*)light_property_type_list,&light->type);
 			break;
 
 		case kLightPropertyDirection:
-			property_pick_list((char*)light_property_direction_list,&light->direction);
+			property_pick_list("Pick a Light Direction",(char*)light_property_direction_list,&light->direction);
 			break;
 
 		case kLightPropertyIntensity:

@@ -124,7 +124,7 @@ static pascal void property_list_list_notify_proc(ControlRef ctrl,DataBrowserIte
       
 ======================================================= */
 
-void dialog_property_list_run(char *list_ptr,int list_count,int list_item_sz,int list_name_offset,bool include_none,int *idx)
+void dialog_property_list_run(char *title,char *list_ptr,int list_count,int list_item_sz,int list_name_offset,bool include_none,int *idx)
 {
 	ControlRef						ctrl;
 	ControlID						ctrl_id;
@@ -144,6 +144,7 @@ void dialog_property_list_run(char *list_ptr,int list_count,int list_item_sz,int
 		// open the dialog
 		
 	dialog_open(&dialog_property_list_wind,"PropertyList");
+	dialog_set_title(dialog_property_list_wind,title);
 	
 		// setup the list
 		

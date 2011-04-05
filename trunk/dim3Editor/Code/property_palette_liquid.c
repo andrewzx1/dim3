@@ -222,7 +222,7 @@ void property_palette_click_liquid(int liq_idx,int id)
 			break;
 
 		case kLiquidPropertyTideDirection:
-			property_pick_list((char*)liquid_property_tide_direction_list,&liq->tide.direction);
+			property_pick_list("Pick a Tide Direction",(char*)liquid_property_tide_direction_list,&liq->tide.direction);
 			break;
 
 		case kLiquidPropertyHarm:

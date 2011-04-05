@@ -255,7 +255,7 @@ void property_chord_set_values(int value_type,void *value,char *str_x,char *str_
       
 ======================================================= */
 
-void property_pick_list(char *list,int *idx)
+void property_pick_list(char *title,char *list,int *idx)
 {
 	int			count;
 	char		*c;
@@ -273,7 +273,7 @@ void property_pick_list(char *list,int *idx)
 
 		// run dialog
 
-	dialog_property_list_run(list,count,name_str_len,0,FALSE,idx);
+	dialog_property_list_run(title,list,count,name_str_len,0,FALSE,idx);
 }
 
 /* =======================================================
