@@ -338,7 +338,7 @@ typedef struct		{
 
 typedef struct		{
 						GLint								position,color,
-															intensity,exponent,
+															intensity,inv_intensity,exponent,
 															direction,inLightMap;					
 					} shader_cached_var_light_loc;
 					
@@ -354,7 +354,7 @@ typedef struct		{
 
 typedef struct		{
 						int									light_map,direction;
-						float								intensity,exponent;
+						float								intensity,inv_intensity,exponent;
 						d3fpnt								position;
 						d3col								color;
 					} shader_current_var_light_value;

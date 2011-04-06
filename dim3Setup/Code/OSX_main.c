@@ -116,7 +116,7 @@ OSStatus main_wind_event_handler(EventHandlerCallRef eventhandler,EventRef event
 					return(noErr);
 					
 				case kEventWindowClose:
-					os_application_quit();
+					if (menu_save()) os_application_quit();
 					return(noErr);
 					
                 case kEventWindowCursorChange:
@@ -394,7 +394,6 @@ int main(int argc,char *argv[])
 		
 		// shutdown
 		
-	iface_write(&iface);
 	iface_shutdown(&iface);
 
 	os_glue_end();
