@@ -156,7 +156,7 @@ void render_opaque_mesh_shader(void)
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
 	view_light_list_type	light_list;
-
+	
 	first_draw=TRUE;
 	
 		// get tangent and normal offset

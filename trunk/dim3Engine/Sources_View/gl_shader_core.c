@@ -54,6 +54,7 @@ void gl_core_shader_build_generic_light_struct(int nlight,char *buf)
 	strcat(buf," vec3 position;\n");
 	strcat(buf," vec3 color;\n");
 	strcat(buf," float intensity;\n");
+	strcat(buf," float invertIntensity;\n");
 	strcat(buf," float exponent;\n");
 	strcat(buf," vec3 direction;\n");
 	strcat(buf," bool inLightMap;\n");
@@ -215,7 +216,7 @@ char* gl_core_map_shader_build_frag(int nlight,bool fog,bool light_map,bool bump
 		sprintf(strchr(buf,0),"dist=length(lightVector[%d]);\n",n);
 		sprintf(strchr(buf,0),"if (dist<dim3Light_%d.intensity) {\n",n);
 		sprintf(strchr(buf,0)," if (dot(lightVector[%d],dim3Light_%d.direction)>=0.0) {\n",n,n);
-		sprintf(strchr(buf,0),"  att=1.0-(dist/dim3Light_%d.intensity);\n",n);
+		sprintf(strchr(buf,0),"  att=1.0-(dist*dim3Light_%d.invertIntensity);\n",n);
 		sprintf(strchr(buf,0),"  att+=pow(att,dim3Light_%d.exponent);\n",n);
 		sprintf(strchr(buf,0),"  if (!dim3Light_%d.inLightMap) ambient+=(dim3Light_%d.color*att);\n",n,n);
 		
@@ -450,7 +451,7 @@ char* gl_core_model_shader_build_frag(int nlight,bool fog,bool bump,bool spec)
 	for (n=0;n!=nlight;n++) {
 		sprintf(strchr(buf,0),"dist=length(lightVector[%d]);\n",n);
 		sprintf(strchr(buf,0),"if (dist<dim3Light_%d.intensity) {\n",n);
-		sprintf(strchr(buf,0)," att=1.0-(dist/dim3Light_%d.intensity);\n",n);
+		sprintf(strchr(buf,0)," att=1.0-(dist*dim3Light_%d.invertIntensity);\n",n);
 		sprintf(strchr(buf,0)," att+=pow(att,dim3Light_%d.exponent);\n",n);
 		sprintf(strchr(buf,0)," if (dot(lightVector[%d],dim3Light_%d.direction)>=0.0) ambient+=(dim3Light_%d.color*att);\n",n,n,n);
 		
