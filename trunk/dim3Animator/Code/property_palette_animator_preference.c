@@ -33,9 +33,11 @@ and can be sold or given away.
 #include "ui_common.h"
 #include "interface.h"
 
-#define kPrefPropertyBackgroundColor		0
-#define kPrefPropertyMeshLineColor			1
-#define kPrefPropertyMeshSelectColor		2
+#define kPrefPropertyShowTangentBinormal	0
+
+#define kPrefPropertyBackgroundColor		1
+#define kPrefPropertyMeshLineColor			2
+#define kPrefPropertyMeshSelectColor		3
 
 extern model_type				model;
 extern animator_state_type		state;
@@ -52,6 +54,9 @@ extern list_palette_type		property_palette;
 
 void property_palette_fill_animator_preference(void)
 {
+	list_palette_add_header(&property_palette,0,"Animator Settings");
+	list_palette_add_checkbox(&property_palette,kPrefPropertyShowTangentBinormal,"Show Tangent-Binormal",setup.show_tangent_binormal,FALSE);
+
 	list_palette_add_header(&property_palette,0,"Animator Colors");
 	list_palette_add_pick_color(&property_palette,kPrefPropertyBackgroundColor,"Background",&setup.col.background,FALSE);
 	list_palette_add_pick_color(&property_palette,kPrefPropertyMeshLineColor,"Mesh Line",&setup.col.mesh_line,FALSE);
@@ -67,6 +72,10 @@ void property_palette_fill_animator_preference(void)
 void property_palette_click_animator_preference(int id)
 {
 	switch (id) {
+
+		case kPrefPropertyShowTangentBinormal:
+			setup.show_tangent_binormal=!setup.show_tangent_binormal;
+			break;
 
 		case kPrefPropertyBackgroundColor:
 			os_pick_color(&setup.col.background);

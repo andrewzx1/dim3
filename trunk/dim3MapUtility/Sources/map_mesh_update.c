@@ -345,7 +345,6 @@ void map_mesh_rotate(map_type *map,int mesh_idx,d3pnt *center_pnt,d3ang *rot_ang
 	
 	for (n=0;n!=npoly;n++) {
 		matrix_vertex_multiply(&mat,&poly->tangent_space.tangent.x,&poly->tangent_space.tangent.y,&poly->tangent_space.tangent.z);
-		matrix_vertex_multiply(&mat,&poly->tangent_space.binormal.x,&poly->tangent_space.binormal.y,&poly->tangent_space.binormal.z);
 		matrix_vertex_multiply(&mat,&poly->tangent_space.normal.x,&poly->tangent_space.normal.y,&poly->tangent_space.normal.z);
 		poly++;
 	}

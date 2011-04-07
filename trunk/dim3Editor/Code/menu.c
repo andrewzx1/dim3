@@ -384,6 +384,11 @@ bool menu_event_run(int cmd)
 			map_mesh_reset_uv_all();
 			main_wind_draw();
 			return(TRUE);
+
+		case kCommandMapCreateTangentBinormal:
+			map_recalc_normals(&map,TRUE);
+			main_wind_draw();
+			return(TRUE);
 			
 		case kCommandMapCreateNormals:
 			map_recalc_normals(&map,FALSE);

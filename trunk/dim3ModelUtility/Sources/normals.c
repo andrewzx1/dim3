@@ -64,13 +64,13 @@ bool model_recalc_normals_compare_sign(float f1,float f2)
 	return(FALSE);
 }
 
-void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent_binormal)
+void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent)
 {
 	int					n,k,t,j,cnt,trig_material_idx;
     float				u10,u20,v10,v20,f_denom,f;
 	bool				is_out;
-	d3vct				p10,p20,vlft,vrgt,v_num,face_vct;
-	d3vct				*normals,*nptr,*tangents,*tptr,*binormals,*bptr;
+	d3vct				p10,p20,vlft,vrgt,v_num,face_vct,binormal;
+	d3vct				*normals,*nptr,*tangents,*tptr;
 	d3pnt				*pt,*pt_1,*pt_2,v_center;
 	model_mesh_type		*mesh;
     model_vertex_type	*vertex;
@@ -90,13 +90,6 @@ void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent_
 		free(normals);
 		return;
 	}
-
-	binormals=(d3vct*)malloc(mesh->ntrig*sizeof(d3vct));
-	if (binormals==NULL) {
-		free(normals);
-		free(tangents);
-		return;
-	}
 	
         // find tangent and binormal for triangles
 		
@@ -104,7 +97,6 @@ void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent_
 
 	nptr=normals;
 	tptr=tangents;
-	bptr=binormals;
 	
 	for (n=0;n!=mesh->ntrig;n++) {
     
@@ -136,6 +128,8 @@ void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent_
 		vector_scalar_multiply(tptr,&v_num,f_denom);
 
 			// calculate the binormal
+			// this is not kept around so it's just
+			// a temp to get the normal
 			// (u20xp10)-(u10xp20) / (v10*u20)-(u10*v20)
 
 		vector_scalar_multiply(&vlft,&p10,u20);
@@ -144,18 +138,19 @@ void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent_
 
 		f_denom=(v10*u20)-(u10*v20);
 		if (f_denom!=0.0f) f_denom=1.0f/f_denom;
-		vector_scalar_multiply(bptr,&v_num,f_denom);
+		vector_scalar_multiply(&binormal,&v_num,f_denom);
+
+			// make the normal by cross-product
 
 		vector_normalize(tptr);
-		vector_normalize(bptr);
+		vector_normalize(&binormal);
 
-		vector_cross_product(nptr,tptr,bptr);
+		vector_cross_product(nptr,tptr,&binormal);
 			
 		trig++;
 
 		nptr++;
 		tptr++;
-		bptr++;
 	}
     
 		// average tangent space for each
@@ -175,10 +170,6 @@ void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent_
 
 			memmove(&avg_space.normal,(normals+n),sizeof(d3vct));
 			memmove(&avg_space.tangent,(tangents+n),sizeof(d3vct));
-			memmove(&avg_space.binormal,(binormals+n),sizeof(d3vct));
-			
-			tptr=tangents;
-			bptr=binormals;
 			
 			for (k=0;k!=mesh->ntrig;k++) {
 
@@ -192,7 +183,6 @@ void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent_
 
 				nptr=normals+k;
 				tptr=tangents+k;
-				bptr=binormals+k;
 
 					// check for shared vertexes
 					// and normals within 45 degrees
@@ -210,10 +200,6 @@ void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent_
 						avg_space.tangent.x+=tptr->x;
 						avg_space.tangent.y+=tptr->y;
 						avg_space.tangent.z+=tptr->z;
-					
-						avg_space.binormal.x+=bptr->x;
-						avg_space.binormal.y+=bptr->y;
-						avg_space.binormal.z+=bptr->z;
 
 						cnt++;
 						break;
@@ -235,16 +221,10 @@ void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent_
 				avg_space.tangent.y/=f;
 				avg_space.tangent.z/=f;
 				vector_normalize(&avg_space.tangent);
-
-				avg_space.binormal.x/=f;
-				avg_space.binormal.y/=f;
-				avg_space.binormal.z/=f;
-				vector_normalize(&avg_space.binormal);
 			}
 
-			if (!only_tangent_binormal) memmove(&trig->tangent_space[t].normal,&avg_space.normal,sizeof(d3vct));
+			if (!only_tangent) memmove(&trig->tangent_space[t].normal,&avg_space.normal,sizeof(d3vct));
 			memmove(&trig->tangent_space[t].tangent,&avg_space.tangent,sizeof(d3vct));
-			memmove(&trig->tangent_space[t].binormal,&avg_space.binormal,sizeof(d3vct));
 		}
 
 		trig++;
@@ -254,7 +234,6 @@ void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent_
 
 	free(normals);
 	free(tangents);
-	free(binormals);
 	
 		// fix any normals that are 0,0,0
 		// this usually happens when there are bad
@@ -295,7 +274,7 @@ void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent_
 		// determine in-out to map flips
 		// skip if not calculating normals
 		
-	if (only_tangent_binormal) return;
+	if (only_tangent) return;
 
 		// determine in/out and invert
 		
@@ -355,12 +334,12 @@ void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent_
 	}
 }
 
-void model_recalc_normals(model_type *model,bool only_tangent_binormal)
+void model_recalc_normals(model_type *model,bool only_tangent)
 {
 	int				n;
 
 	for (n=0;n!=model->nmesh;n++) {
-		model_recalc_normals_mesh(model,n,only_tangent_binormal);
+		model_recalc_normals_mesh(model,n,only_tangent);
 	}
 }
 

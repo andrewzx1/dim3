@@ -689,7 +689,6 @@ bool read_single_mesh_v3(map_type *map,int mesh_idx,int mesh_tag)
 			poly->lmap_txt_idx=xml_get_attribute_int_default(poly_tag,"lmap_txt_idx",old_mesh_lmap_txt_idx);
 
 			xml_get_attribute_3_coord_float(poly_tag,"t3",&poly->tangent_space.tangent.x,&poly->tangent_space.tangent.y,&poly->tangent_space.tangent.z);
-			xml_get_attribute_3_coord_float(poly_tag,"b3",&poly->tangent_space.binormal.x,&poly->tangent_space.binormal.y,&poly->tangent_space.binormal.z);
 			xml_get_attribute_3_coord_float(poly_tag,"n3",&poly->tangent_space.normal.x,&poly->tangent_space.normal.y,&poly->tangent_space.normal.z);
 
 			xml_get_attribute_float_array(poly_tag,"x",poly->main_uv.x,8);

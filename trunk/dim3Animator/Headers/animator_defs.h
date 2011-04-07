@@ -245,6 +245,7 @@ typedef struct		{
 					} animator_setup_col_type;
 
 typedef struct		{
+						bool						show_tangent_binormal;
 						animator_setup_col_type		col;
 					} animator_setup_type;
 

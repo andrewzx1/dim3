@@ -688,7 +688,7 @@ bool import_create_mesh_from_obj_group(obj_import_state_type *import_state,char 
 	if (!mesh->flag.lock_uv) map_mesh_reset_uv(&map,mesh_idx);
 
 		// calc the normals
-		// or only bi/tangent if normals come with OBJ
+		// or only tangent if normals come with OBJ
 		
 	map_recalc_normals_mesh(&map.mesh.meshes[mesh_idx],(mesh->normal_mode==mesh_normal_mode_lock));
 	

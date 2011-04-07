@@ -71,6 +71,7 @@ int				win32_menu_remap[][2]={
 					{kCommandMapLowerY,ID_MAP_LOWER_Y},
 					{kCommandMapCenter,ID_MAP_CENTER},
 					{kCommandMapResetUV,ID_MAP_RESET_UV},
+					{kCommandMapCreateTangentBinormal,ID_MAP_RECALC_TANGENT},
 					{kCommandMapCreateNormals,ID_MAP_RECALC_NORMAL},
 					{kCommandClearLightMaps,ID_MAP_CLEAR_LIGHT_MAP},
 					{kCommandBuildLightMaps,ID_MAP_BUILD_LIGHT_MAP},

@@ -845,8 +845,8 @@ extern bool map_delete_texture_frame(map_type *map,int txt);
 extern bool map_replace_texture(map_type *map,int txt,char *bitmap_name);
 extern bool map_delete_texture(map_type *map,int start_txt,int end_txt);
 
-extern void map_recalc_normals_mesh(map_mesh_type *mesh,bool only_tangent_binormal);
-extern void map_recalc_normals(map_type *map,bool only_tangent_binormal);
+extern void map_recalc_normals_mesh(map_mesh_type *mesh,bool only_tangent);
+extern void map_recalc_normals(map_type *map,bool only_tangent);
 
 extern int map_cinema_add(map_type *map);
 extern bool map_cinema_delete(map_type *map,int cinema_idx);

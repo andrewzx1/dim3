@@ -45,10 +45,11 @@
 #define ID_MAP_LOWER_Y						404
 #define ID_MAP_CENTER						405
 #define ID_MAP_RESET_UV						406
-#define ID_MAP_RECALC_NORMAL				407
-#define ID_MAP_CLEAR_LIGHT_MAP				408
-#define ID_MAP_BUILD_LIGHT_MAP				409
-#define ID_MAP_RUN							410
+#define ID_MAP_RECALC_TANGENT				407
+#define ID_MAP_RECALC_NORMAL				408
+#define ID_MAP_CLEAR_LIGHT_MAP				409
+#define ID_MAP_BUILD_LIGHT_MAP				410
+#define ID_MAP_RUN							411
 
 #define ID_MESH_COMBINE						500
 #define ID_MESH_SPLIT						501

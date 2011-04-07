@@ -405,7 +405,7 @@ extern void xml_key_write_color(char *name,d3col *value);
 //
 
 typedef struct		{
-						d3vct					tangent,binormal,normal;
+						d3vct					tangent,normal;
 					} tangent_space_type;
 
 //

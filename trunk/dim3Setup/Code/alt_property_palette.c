@@ -99,6 +99,24 @@ void alt_property_palette_fill(void)
 			}
 			break;
 
+		case item_interface_hud:
+			if (state.cur_hud_bitmap_idx!=-1) {
+				list_palette_set_title(&alt_property_palette,"HUD Bitmap");
+				alt_property_palette_fill_hud_bitmap(state.cur_hud_bitmap_idx);
+				break;
+			}
+			if (state.cur_hud_text_idx!=-1) {
+				list_palette_set_title(&alt_property_palette,"HUD Text");
+				alt_property_palette_fill_hud_text(state.cur_hud_text_idx);
+				break;
+			}
+			if (state.cur_hud_bar_idx!=-1) {
+				list_palette_set_title(&alt_property_palette,"HUD Bar");
+				alt_property_palette_fill_hud_bar(state.cur_hud_bar_idx);
+				break;
+			}
+			break;
+
 	}
 }
 
@@ -154,6 +172,22 @@ void alt_property_palette_click(d3pnt *pnt,bool double_click)
 				alt_property_palette_click_intro_model(state.cur_intro_model_idx,alt_property_palette.item_id);
 				break;
 			}
+			break;
+
+		case item_interface_hud:
+			if (state.cur_hud_bitmap_idx!=-1) {
+				alt_property_palette_click_hud_bitmap(state.cur_hud_bitmap_idx,alt_property_palette.item_id);
+				break;
+			}
+			if (state.cur_hud_text_idx!=-1) {
+				alt_property_palette_click_hud_text(state.cur_hud_text_idx,alt_property_palette.item_id);
+				break;
+			}
+			if (state.cur_hud_bar_idx!=-1) {
+				alt_property_palette_click_hud_bar(state.cur_hud_bar_idx,alt_property_palette.item_id);
+				break;
+			}
+			break;
 
 	}
 }
