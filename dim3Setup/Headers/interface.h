@@ -111,9 +111,15 @@ extern void alt_property_palette_click(d3pnt *pnt,bool double_click);
 
 extern void alt_property_palette_fill_intro_button(int intro_button_idx);
 extern void alt_property_palette_fill_intro_model(int intro_model_idx);
+extern void alt_property_palette_fill_hud_bitmap(int hud_bitmap_idx);
+extern void alt_property_palette_fill_hud_text(int hud_text_idx);
+extern void alt_property_palette_fill_hud_bar(int hud_bar_idx);
 
 extern void alt_property_palette_click_intro_button(int intro_button_idx,int id);
 extern void alt_property_palette_click_intro_model(int intro_model_idx,int id);
+extern void alt_property_palette_click_hud_bitmap(int hud_bitmap_idx,int id);
+extern void alt_property_palette_click_hud_text(int hud_text_idx,int id);
+extern void alt_property_palette_click_hud_bar(int hud_bar_idx,int id);
 
 //
 // dialogs

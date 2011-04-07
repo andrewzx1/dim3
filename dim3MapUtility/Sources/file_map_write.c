@@ -636,7 +636,6 @@ void write_single_mesh(map_mesh_type *mesh)
 		if (poly->lmap_txt_idx!=-1) xml_add_attribute_int("lmap_txt_idx",poly->lmap_txt_idx);
 
 		xml_add_attribute_3_coord_float("t3",poly->tangent_space.tangent.x,poly->tangent_space.tangent.y,poly->tangent_space.tangent.z);
-		xml_add_attribute_3_coord_float("b3",poly->tangent_space.binormal.x,poly->tangent_space.binormal.y,poly->tangent_space.binormal.z);
 		xml_add_attribute_3_coord_float("n3",poly->tangent_space.normal.x,poly->tangent_space.normal.y,poly->tangent_space.normal.z);
 
 		xml_add_attribute_float_array("x",poly->main_uv.x,poly->ptsz);

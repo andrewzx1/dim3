@@ -703,6 +703,7 @@ void view_draw_meshes_normals(editor_view_type *view_setup)
 {
 	int					n,k,t;
 	d3pnt				*pt,cnt;
+	d3vct				binormal;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 							
@@ -723,7 +724,6 @@ void view_draw_meshes_normals(editor_view_type *view_setup)
 			
 				// get center
 				
-			
 			cnt.x=cnt.y=cnt.z=0;
 			
 			for (t=0;t!=poly->ptsz;t++) {
@@ -736,25 +736,30 @@ void view_draw_meshes_normals(editor_view_type *view_setup)
 			cnt.x/=poly->ptsz;
 			cnt.y/=poly->ptsz;
 			cnt.z/=poly->ptsz;
+
+			if (setup.show_tangent_binormal) {
 			
-				// draw the tangent
-			/*	
-			glColor4f(1.0f,0.0f,0.0f,1.0f);
-			
-			glBegin(GL_LINES);
-			glVertex3i(cnt.x,cnt.y,cnt.z);
-			glVertex3i((cnt.x+(int)(poly->tangent_space.tangent.x*normal_vector_scale)),(cnt.y+(int)(poly->tangent_space.tangent.y*normal_vector_scale)),(cnt.z+(int)(poly->tangent_space.tangent.z*normal_vector_scale)));
-			glEnd();
-			
-				// draw the binormal
+					// draw the tangent
+
+				glColor4f(1.0f,0.0f,0.0f,1.0f);
 				
-			glColor4f(0.0f,0.0f,1.0f,1.0f);
-			
-			glBegin(GL_LINES);
-			glVertex3i(cnt.x,cnt.y,cnt.z);
-			glVertex3i((cnt.x+(int)(poly->tangent_space.binormal.x*normal_vector_scale)),(cnt.y+(int)(poly->tangent_space.binormal.y*normal_vector_scale)),(cnt.z+(int)(poly->tangent_space.binormal.z*normal_vector_scale)));
-			glEnd();
-			*/
+				glBegin(GL_LINES);
+				glVertex3i(cnt.x,cnt.y,cnt.z);
+				glVertex3i((cnt.x+(int)(poly->tangent_space.tangent.x*normal_vector_scale)),(cnt.y+(int)(poly->tangent_space.tangent.y*normal_vector_scale)),(cnt.z+(int)(poly->tangent_space.tangent.z*normal_vector_scale)));
+				glEnd();
+				
+					// draw the binormal
+
+				vector_cross_product(&binormal,&poly->tangent_space.tangent,&poly->tangent_space.normal);
+
+				glColor4f(0.0f,0.0f,1.0f,1.0f);
+				
+				glBegin(GL_LINES);
+				glVertex3i(cnt.x,cnt.y,cnt.z);
+				glVertex3i((cnt.x+(int)(binormal.x*normal_vector_scale)),(cnt.y+(int)(binormal.y*normal_vector_scale)),(cnt.z+(int)(binormal.z*normal_vector_scale)));
+				glEnd();
+			}
+
 				// draw normal
 				
 			glColor4f(1.0f,0.0f,1.0f,1.0f);

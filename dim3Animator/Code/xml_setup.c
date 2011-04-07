@@ -41,6 +41,8 @@ animator_setup_type				setup;
 
 void setup_xml_default(void)
 {
+	setup.show_tangent_binormal=FALSE;
+
 	setup.col.mesh_line.r=0.5f;
 	setup.col.mesh_line.g=0.5f;
 	setup.col.mesh_line.b=1.0f;
@@ -84,6 +86,7 @@ bool setup_xml_read(void)
 	
 		// keys
 
+ 	xml_key_read_boolean(setup_tag,"Show_Tangent_Binormal",&setup.show_tangent_binormal);
 	xml_key_read_color(setup_tag,"Color_Mesh_Line",&setup.col.mesh_line);
 	xml_key_read_color(setup_tag,"Color_Mesh_Sel",&setup.col.mesh_sel);
 	xml_key_read_color(setup_tag,"Color_Background",&setup.col.background);
@@ -113,6 +116,7 @@ bool setup_xml_write(void)
 	
 		// keys
 		
+ 	xml_key_write_boolean("Show_Tangent_Binormal",setup.show_tangent_binormal);
 	xml_key_write_color("Color_Mesh_Line",&setup.col.mesh_line);
 	xml_key_write_color("Color_Mesh_Sel",&setup.col.mesh_sel);
 	xml_key_write_color("Color_Background",&setup.col.background);

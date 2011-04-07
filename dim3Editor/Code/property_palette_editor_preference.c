@@ -38,19 +38,20 @@ and can be sold or given away.
 #define kPrefPropertyFreeLook				2
 #define kPrefPropertyAutoTexture			3
 #define kPrefPropertyBigTexture				4
-#define kPrefPropertyDuplicateOffset		5
-#define kPrefPropertySnapSize				6
-#define kPrefPropertyClipDistance			7
-#define kPrefPropertyFlipHorzMovement		8
-#define kPrefPropertyFlipVertMovement		9
-#define kPrefPropertyFlipHorzTurn			10
-#define kPrefPropertyFlipVertTurn			11
-#define kPrefPropertyFlipForwardMovement	12
-#define kPrefPropertyBackgroundColor		13
-#define kPrefPropertyLineColor				14
-#define kPrefPropertyMeshSelColor			15
-#define kPrefPropertyPolySelColor			16
-#define kPrefPropertyPolyCullColor			17
+#define kPrefPropertyShowTangentBinormal	5
+#define kPrefPropertyDuplicateOffset		6
+#define kPrefPropertySnapSize				7
+#define kPrefPropertyClipDistance			8
+#define kPrefPropertyFlipHorzMovement		9
+#define kPrefPropertyFlipVertMovement		10
+#define kPrefPropertyFlipHorzTurn			11
+#define kPrefPropertyFlipVertTurn			12
+#define kPrefPropertyFlipForwardMovement	13
+#define kPrefPropertyBackgroundColor		14
+#define kPrefPropertyLineColor				15
+#define kPrefPropertyMeshSelColor			16
+#define kPrefPropertyPolySelColor			17
+#define kPrefPropertyPolyCullColor			18
 
 extern map_type					map;
 extern editor_state_type		state;
@@ -75,6 +76,7 @@ void property_palette_fill_editor_preference(void)
 	list_palette_add_checkbox(&property_palette,kPrefPropertyFreeLook,"Free Look",setup.free_look,FALSE);
 	list_palette_add_checkbox(&property_palette,kPrefPropertyAutoTexture,"Auto Texture",setup.auto_texture,FALSE);
 	list_palette_add_checkbox(&property_palette,kPrefPropertyBigTexture,"Large Texture Palette",setup.big_texture,FALSE);
+	list_palette_add_checkbox(&property_palette,kPrefPropertyShowTangentBinormal,"Show Tangent-Binormal",setup.show_tangent_binormal,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Editor Options");
 	list_palette_add_string(&property_palette,kPrefPropertyMipMapMode,"Mipmap Mode",pref_mipmap_type_str[setup.mipmap_mode],FALSE);
@@ -121,6 +123,10 @@ void property_palette_click_editor_preference(int id)
 
 		case kPrefPropertyBigTexture:
 			setup.big_texture=!setup.big_texture;
+			break;
+
+		case kPrefPropertyShowTangentBinormal:
+			setup.show_tangent_binormal=!setup.show_tangent_binormal;
 			break;
 
 		case kPrefPropertyMipMapMode:

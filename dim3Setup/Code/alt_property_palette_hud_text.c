@@ -2,7 +2,7 @@
 
 Module: dim3 Setup
 Author: Brian Barnes
- Usage: Alt Property Palette Intro Model
+ Usage: Alt Property Palette HUD Text
 
 ***************************** License ********************************
 
@@ -48,12 +48,13 @@ extern list_palette_type		alt_property_palette;
 
 /* =======================================================
 
-      Property Palette Fill Intro Model
+      Property Palette Fill HUD Text
       
 ======================================================= */
 
-void alt_property_palette_fill_intro_model(int intro_model_idx)
+void alt_property_palette_fill_hud_text(int hud_text_idx)
 {
+	/*
 	iface_intro_model_type				*model;
 
 	model=&iface.intro.model_list.models[intro_model_idx];
@@ -74,17 +75,19 @@ void alt_property_palette_fill_intro_model(int intro_model_idx)
 
 	list_palette_add_header(&alt_property_palette,0,"Options");
 	list_palette_add_string_float(&alt_property_palette,kModelOptionResize,"Resize",model->resize,FALSE);
-	list_palette_add_angle(&alt_property_palette,kModelOptionRot,"Rotate",&model->rot,FALSE);
+	list_palette_add_angle(&alt_property_palette,kModelOptionRot,"Rot",&model->rot,FALSE);
+	*/
 }
 
 /* =======================================================
 
-      Property Palette Click Intro Model
+      Property Palette Click HUD Text
       
 ======================================================= */
 
-void alt_property_palette_click_intro_model(int intro_model_idx,int id)
+void alt_property_palette_click_hud_text(int hud_text_idx,int id)
 {
+	/*
 	char								model_name[name_str_len];
 	iface_intro_model_type				*model;
 
@@ -124,7 +127,7 @@ void alt_property_palette_click_intro_model(int intro_model_idx,int id)
 			break;
 
 	}
-
+*/
 		// redraw
 
 	main_wind_draw();

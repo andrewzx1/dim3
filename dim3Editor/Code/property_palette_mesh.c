@@ -100,6 +100,7 @@ void property_palette_fill_mesh(int mesh_idx,int poly_idx)
 {
 	d3pnt					min,max;
 	d3fpnt					uv_offset,uv_size,uv_shift;
+	d3vct					binormal;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
 	editor_view_type		*view;
@@ -173,7 +174,8 @@ void property_palette_fill_mesh(int mesh_idx,int poly_idx)
 		
 		list_palette_add_header(&property_palette,0,"Poly Tangent Space");
 		list_palette_add_vector(&property_palette,kMeshPolyPropertyTangent,"Tangent",&poly->tangent_space.tangent,FALSE);
-		list_palette_add_vector(&property_palette,kMeshPolyPropertyBinormal,"Binormal",&poly->tangent_space.binormal,FALSE);
+		vector_cross_product(&binormal,&poly->tangent_space.tangent,&poly->tangent_space.normal);
+		list_palette_add_vector(&property_palette,kMeshPolyPropertyBinormal,"Binormal",&binormal,TRUE);
 		list_palette_add_vector(&property_palette,kMeshPolyPropertyNormal,"Normal",&poly->tangent_space.normal,FALSE);
 		
 		list_palette_add_header(&property_palette,0,"Poly Camera");
@@ -370,11 +372,6 @@ void property_palette_click_mesh(int mesh_idx,int poly_idx,int id)
 			case kMeshPolyPropertyTangent:
 				dialog_property_chord_run(list_chord_value_vector,(void*)&poly->tangent_space.tangent);
 				vector_normalize(&poly->tangent_space.tangent);
-				break;
-				
-			case kMeshPolyPropertyBinormal:
-				dialog_property_chord_run(list_chord_value_vector,(void*)&poly->tangent_space.binormal);
-				vector_normalize(&poly->tangent_space.binormal);
 				break;
 				
 			case kMeshPolyPropertyNormal:

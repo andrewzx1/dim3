@@ -104,14 +104,6 @@ void vertex_invert_normals(int mesh_idx)
 				// this triangle vertex in the select list?
 				
 			if (!vertex_check_sel_mask(mesh_idx,trig->v[k])) continue;
-			
-			trig->tangent_space[k].tangent.x=-trig->tangent_space[k].tangent.x;
-			trig->tangent_space[k].tangent.y=-trig->tangent_space[k].tangent.y;
-			trig->tangent_space[k].tangent.z=-trig->tangent_space[k].tangent.z;
-
-			trig->tangent_space[k].binormal.x=-trig->tangent_space[k].binormal.x;
-			trig->tangent_space[k].binormal.y=-trig->tangent_space[k].binormal.y;
-			trig->tangent_space[k].binormal.z=-trig->tangent_space[k].binormal.z;
 
 			trig->tangent_space[k].normal.x=-trig->tangent_space[k].normal.x;
 			trig->tangent_space[k].normal.y=-trig->tangent_space[k].normal.y;
@@ -261,14 +253,6 @@ void vertex_set_normals_in_out(int mesh_idx,bool out)
 			is_out=(vector_dot_product(&trig->tangent_space[k].normal,&face_vct)>0.0f);
 
 			if (is_out!=out) {
-				trig->tangent_space[k].tangent.x=-trig->tangent_space[k].tangent.x;
-				trig->tangent_space[k].tangent.y=-trig->tangent_space[k].tangent.y;
-				trig->tangent_space[k].tangent.z=-trig->tangent_space[k].tangent.z;
-
-				trig->tangent_space[k].binormal.x=-trig->tangent_space[k].binormal.x;
-				trig->tangent_space[k].binormal.y=-trig->tangent_space[k].binormal.y;
-				trig->tangent_space[k].binormal.z=-trig->tangent_space[k].binormal.z;
-
 				trig->tangent_space[k].normal.x=-trig->tangent_space[k].normal.x;
 				trig->tangent_space[k].normal.y=-trig->tangent_space[k].normal.y;
 				trig->tangent_space[k].normal.z=-trig->tangent_space[k].normal.z;

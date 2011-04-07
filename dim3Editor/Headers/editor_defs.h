@@ -308,6 +308,7 @@ and can be sold or given away.
 #define kCommandMapLowerY						FOUR_CHAR_CODE('mlwy')
 #define kCommandMapCenter						FOUR_CHAR_CODE('mctr')
 #define kCommandMapResetUV						FOUR_CHAR_CODE('mpuv')
+#define kCommandMapCreateTangentBinormal		FOUR_CHAR_CODE('rmtb')
 #define kCommandMapCreateNormals				FOUR_CHAR_CODE('rmnm')
 #define kCommandClearLightMaps					FOUR_CHAR_CODE('clmp')
 #define kCommandBuildLightMaps					FOUR_CHAR_CODE('lmap')
@@ -379,6 +380,7 @@ typedef struct		{
 												duplicate_offset,snap_size,
 												clip_distance;
 						bool					free_look,auto_texture,big_texture,
+												show_tangent_binormal,
 												flip_horz_movement,flip_vert_movement,
 												flip_horz_turn,flip_vert_turn,
 												flip_forward_movement;

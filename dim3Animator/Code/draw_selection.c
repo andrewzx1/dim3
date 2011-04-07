@@ -168,8 +168,9 @@ void draw_model_normals_vertexes(int mesh_idx)
 {
 	int				n,k,ntrig;
 	float			fx,fy,fz,fx2,fy2,fz2;
-	float			*pv,*pn;
+	float			*pv,*pn,*pt;
 	bool			has_sel;
+	d3vct			tangent,normal,binormal;
 	model_trig_type	*trig;
 	
 		// is there a vertex selection?
@@ -179,7 +180,6 @@ void draw_model_normals_vertexes(int mesh_idx)
 		// draw normals
 	
 	glLineWidth(draw_model_normal_size);
-	glColor4f(1.0f,0.0f,1.0f,1.0f);
 	
 	glBegin(GL_LINES);
 	
@@ -190,6 +190,7 @@ void draw_model_normals_vertexes(int mesh_idx)
 		trig=&model.meshes[mesh_idx].trigs[n];
 		
 		pn=draw_setup.mesh_arrays[mesh_idx].gl_normal_array+(n*9);
+		pt=draw_setup.mesh_arrays[mesh_idx].gl_tangent_array+(n*9);
 		
 			// vertex normals
 			
@@ -198,20 +199,64 @@ void draw_model_normals_vertexes(int mesh_idx)
 			if (has_sel) {
 				if (!vertex_check_sel_mask(mesh_idx,trig->v[k])) {
 					pn+=3;
+					pt+=3;
 					continue;
 				}
 			}
-			
+
+				// vertex point
+
 			pv=draw_setup.mesh_arrays[mesh_idx].gl_vertex_array+(trig->v[k]*3);
 			fx=*pv++;
 			fy=*pv++;
 			fz=*pv;
+
+			normal.x=*pn++;
+			normal.y=*pn++;
+			normal.z=*pn++;
+
+			if (setup.show_tangent_binormal) {
+
+					// tangent
+
+				tangent.x=*pt++;
+				tangent.y=*pt++;
+				tangent.z=*pt++;
+
+				glColor4f(1.0f,0.0f,0.0f,1.0f);
+
+				glVertex3f(fx,fy,fz);
 				
+				fx2=fx+(tangent.x*draw_model_normal_len);
+				fy2=fy+(tangent.y*draw_model_normal_len);
+				fz2=fz+(tangent.z*draw_model_normal_len);
+
+				glVertex3f(fx2,fy2,fz2);
+
+					// binormal
+
+				vector_cross_product(&binormal,&tangent,&normal);
+
+				glColor4f(0.0f,0.0f,1.0f,1.0f);
+
+				glVertex3f(fx,fy,fz);
+				
+				fx2=fx+(binormal.x*draw_model_normal_len);
+				fy2=fy+(binormal.y*draw_model_normal_len);
+				fz2=fz+(binormal.z*draw_model_normal_len);
+
+				glVertex3f(fx2,fy2,fz2);
+			}
+
+				// normal
+
+			glColor4f(1.0f,0.0f,1.0f,1.0f);
+
 			glVertex3f(fx,fy,fz);
 			
-			fx2=fx+((*pn++)*draw_model_normal_len);
-			fy2=fy+((*pn++)*draw_model_normal_len);
-			fz2=fz+((*pn++)*draw_model_normal_len);
+			fx2=fx+(normal.x*draw_model_normal_len);
+			fy2=fy+(normal.y*draw_model_normal_len);
+			fz2=fz+(normal.z*draw_model_normal_len);
 
 			glVertex3f(fx2,fy2,fz2);
 		}
@@ -226,7 +271,8 @@ void draw_model_normals_trig(int mesh_idx)
 {
 	int				n,k,ntrig;
 	float			fx,fy,fz,fx2,fy2,fz2;
-	float			*pv,*pn;
+	float			*pv,*pn,*pt;
+	d3vct			tangent,normal,binormal;
 	model_trig_type	*trig;
 	
 	glLineWidth(draw_model_normal_size);
@@ -245,11 +291,13 @@ void draw_model_normals_trig(int mesh_idx)
 			// draw trig normals
 		
 		pn=draw_setup.mesh_arrays[mesh_idx].gl_normal_array+(n*9);
+		pt=draw_setup.mesh_arrays[mesh_idx].gl_tangent_array+(n*9);
 			
 		for (k=0;k!=3;k++) {
 
 			if (!vertex_check_sel_mask(mesh_idx,trig->v[k])) {
 				pn+=3;
+				pt+=3;
 				continue;
 			}
 		
@@ -257,12 +305,53 @@ void draw_model_normals_trig(int mesh_idx)
 			fx=*pv++;
 			fy=*pv++;
 			fz=*pv;
+
+			normal.x=*pn++;
+			normal.y=*pn++;
+			normal.z=*pn++;
+
+			if (setup.show_tangent_binormal) {
+
+					// tangent
+
+				tangent.x=*pt++;
+				tangent.y=*pt++;
+				tangent.z=*pt++;
+
+				glColor4f(1.0f,0.0f,0.0f,1.0f);
+
+				glVertex3f(fx,fy,fz);
 				
+				fx2=fx+(tangent.x*draw_model_normal_len);
+				fy2=fy+(tangent.y*draw_model_normal_len);
+				fz2=fz+(tangent.z*draw_model_normal_len);
+
+				glVertex3f(fx2,fy2,fz2);
+
+					// binormal
+
+				vector_cross_product(&binormal,&tangent,&normal);
+
+				glColor4f(0.0f,0.0f,1.0f,1.0f);
+
+				glVertex3f(fx,fy,fz);
+				
+				fx2=fx+(binormal.x*draw_model_normal_len);
+				fy2=fy+(binormal.y*draw_model_normal_len);
+				fz2=fz+(binormal.z*draw_model_normal_len);
+
+				glVertex3f(fx2,fy2,fz2);
+			}
+
+				// normal
+
+			glColor4f(1.0f,0.0f,1.0f,1.0f);
+
 			glVertex3f(fx,fy,fz);
 			
-			fx2=fx+((*pn++)*draw_model_normal_len);
-			fy2=fy+((*pn++)*draw_model_normal_len);
-			fz2=fz+((*pn++)*draw_model_normal_len);
+			fx2=fx+(normal.x*draw_model_normal_len);
+			fy2=fy+(normal.y*draw_model_normal_len);
+			fz2=fz+(normal.z*draw_model_normal_len);
 
 			glVertex3f(fx2,fy2,fz2);
 		}

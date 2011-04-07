@@ -364,7 +364,6 @@ void decode_mesh_xml(model_type *model,int model_head)
 					xml_get_attribute_2_coord_float(vtag,"uv",&trig->gx[k],&trig->gy[k]);
 
 					had_tangent=xml_get_attribute_3_coord_float(vtag,"t3",&trig->tangent_space[k].tangent.x,&trig->tangent_space[k].tangent.y,&trig->tangent_space[k].tangent.z);
-					xml_get_attribute_3_coord_float(vtag,"b3",&trig->tangent_space[k].binormal.x,&trig->tangent_space[k].binormal.y,&trig->tangent_space[k].binormal.z);
 					xml_get_attribute_3_coord_float(vtag,"n3",&trig->tangent_space[k].normal.x,&trig->tangent_space[k].normal.y,&trig->tangent_space[k].normal.z);
 
 					vtag=xml_findnextchild(vtag);
@@ -648,7 +647,6 @@ void encode_mesh_xml(model_type *model)
 					xml_add_attribute_2_coord_float("uv",trig->gx[k],trig->gy[k]);
 
 					xml_add_attribute_3_coord_float("t3",trig->tangent_space[k].tangent.x,trig->tangent_space[k].tangent.y,trig->tangent_space[k].tangent.z);
-					xml_add_attribute_3_coord_float("b3",trig->tangent_space[k].binormal.x,trig->tangent_space[k].binormal.y,trig->tangent_space[k].binormal.z);
 					xml_add_attribute_3_coord_float("n3",trig->tangent_space[k].normal.x,trig->tangent_space[k].normal.y,trig->tangent_space[k].normal.z);
 					
 					xml_add_tagend(TRUE);
