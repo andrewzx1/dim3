@@ -45,25 +45,25 @@ float						rain_slant_ang_y,rain_slant_next_ang_y;
       
 ======================================================= */
 
-void rain_setup_single(rain_draw_type *rain_draw,int cx,int cy,int cz)
+void rain_setup_single(rain_draw_type *rain_draw,d3pnt *pnt)
 {
 	rain_draw->x_off=random_int_spread(map.rain.radius);
 	rain_draw->z_off=random_int_spread(map.rain.radius);
 
-	rain_draw->x=cx+rain_draw->x_off;
-	rain_draw->z=cz+rain_draw->z_off;
+	rain_draw->x=pnt->x+rain_draw->x_off;
+	rain_draw->z=pnt->z+rain_draw->z_off;
 
-	rain_draw->y=cy+random_int_spread(map.rain.height);
-	rain_draw->by=cy+map.rain.height;
+	rain_draw->y=pnt->y+random_int_spread(map.rain.height);
+	rain_draw->by=pnt->y+map.rain.height;
 }
 
-void rain_setup_single_reset(rain_draw_type *rain_draw,int cx,int cy,int cz)
+void rain_setup_single_reset(rain_draw_type *rain_draw,d3pnt *pnt)
 {
-	rain_draw->x=cx+rain_draw->x_off;
-	rain_draw->z=cz+rain_draw->z_off;
-	rain_draw->y=(cy-map.rain.height)+((rain_draw->y-rain_draw->by)%(map.rain.height<<1));
+	rain_draw->x=pnt->x+rain_draw->x_off;
+	rain_draw->z=pnt->z+rain_draw->z_off;
+	rain_draw->y=(pnt->y-map.rain.height)+((rain_draw->y-rain_draw->by)%(map.rain.height<<1));
 
-	rain_draw->by=cy+map.rain.height;
+	rain_draw->by=pnt->y+map.rain.height;
 }
 
 void rain_setup_next_slant(void)
@@ -77,7 +77,7 @@ void rain_setup_next_slant(void)
 	rain_slant_next_end_tick=rain_slant_next_start_tick+map.rain.slant_change_msec;
 }
 
-void rain_setup(int cx,int cy,int cz)
+void rain_setup(d3pnt *pnt)
 {
 	int				n;
 	rain_draw_type	*rain_draw;
@@ -85,7 +85,7 @@ void rain_setup(int cx,int cy,int cz)
 	rain_draw=view.rain_draws;
 
 	for (n=0;n!=max_rain_density;n++) {
-		rain_setup_single(rain_draw,cx,cy,cz);
+		rain_setup_single(rain_draw,pnt);
 		rain_draw++;
 	}
 	
@@ -125,7 +125,7 @@ void rain_draw(void)
 		
 	if (map.rain.reset) {
 		map.rain.reset=FALSE;
-		rain_setup(view.render->camera.pnt.x,view.render->camera.pnt.y,view.render->camera.pnt.z);
+		rain_setup(&view.render->camera.pnt);
 	}
 	
 		// rain slant
@@ -193,7 +193,7 @@ void rain_draw(void)
 		rain_draw->y+=yadd;
 		rain_draw->z+=zadd;
 		
-		if (rain_draw->y>rain_draw->by) rain_setup_single_reset(rain_draw,view.render->camera.pnt.x,view.render->camera.pnt.y,view.render->camera.pnt.z);
+		if (rain_draw->y>rain_draw->by) rain_setup_single_reset(rain_draw,&view.render->camera.pnt);
 
 			// draw rain
 
