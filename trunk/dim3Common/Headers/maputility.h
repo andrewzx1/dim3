@@ -516,6 +516,7 @@ typedef struct		{
 						bool								auto_start,auto_open,auto_open_stand,
 															auto_open_never_close,
 															loop,started,opened,reverse;
+						d3pnt								auto_open_pnt;
 						movement_move_type					*moves;
 					} movement_type;
 

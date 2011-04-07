@@ -228,7 +228,7 @@ char* gl_core_map_shader_build_frag(int nlight,bool fog,bool light_map,bool bump
 		
 		if (spec) {
 			sprintf(strchr(buf,0),"  specHalfVector=normalize(normalize(eyeVector)+normalize(lightVertexVector[%d]));\n",n);
-			strcat(buf,"  specFactor=max(dot(bumpMap,normalize(specHalfVector)),0.0);\n");
+			strcat(buf,"  specFactor=max(dot(bumpMap,specHalfVector),0.0);\n");
 			strcat(buf,"  spec+=((specMap*pow(specFactor,dim3ShineFactor))*att);\n");
 		}
 		
@@ -248,14 +248,14 @@ char* gl_core_map_shader_build_frag(int nlight,bool fog,bool light_map,bool bump
 	else {
 		strcat(buf,"vec3 frag=");
 	}
-	
+
 	if (spec) strcat(buf,"(");
 	if (bump) strcat(buf,"(");
 	strcat(buf,"(tex.rgb*ambient)");
 	if (bump) strcat(buf,"*bump)");
 	if (spec) strcat(buf,"+spec)");
 	strcat(buf,";\n");
-	
+
 	if (fog) strcat(buf,"gl_FragColor.rgb=mix(gl_Fog.color.rgb,frag,fogFactor);\n");
 	
 	strcat(buf,"gl_FragColor.a=tex.a*dim3Alpha;\n");
@@ -460,7 +460,7 @@ char* gl_core_model_shader_build_frag(int nlight,bool fog,bool bump,bool spec)
 		if (bump) sprintf(strchr(buf,0)," bump+=(dot(normalize(lightVertexVector[%d]),bumpMap)*att);\n",n);
 		if (spec) {
 			sprintf(strchr(buf,0)," specHalfVector=normalize(normalize(eyeVector)+normalize(lightVertexVector[%d]));\n",n);
-			strcat(buf," specFactor=max(dot(bumpMap,normalize(specHalfVector)),0.0);\n");
+			strcat(buf," specFactor=max(dot(bumpMap,specHalfVector),0.0);\n");
 			strcat(buf," spec+=((specMap*pow(specFactor,dim3ShineFactor))*att);\n");
 		}
 		

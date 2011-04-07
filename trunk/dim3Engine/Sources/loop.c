@@ -353,10 +353,22 @@ bool loop_main(char *err_str)
 	}
 	
 		// map changes
+		// we need to check for state changes within
+		// the map change (like media launching)
 		
 	if (server.state==gs_running) {
 		if (map_need_rebuild()) {
+		
+			server.next_state=gs_running;
+			
 			if (!map_rebuild_changes(err_str)) return(FALSE);			// bad map changes is a fatal error
+			
+			if (server.next_state!=gs_running) {
+				server.last_state=server.state;
+				server.state=server.next_state;
+				loop_state_next_open();
+			}
+			
 		}
 	}
 	

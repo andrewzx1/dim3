@@ -47,7 +47,7 @@ void fog_draw_textured(void)
 	int					n,k,tick,count,outer_radius,inner_radius,
 						radius_add,radius,frame;
 	unsigned long		gl_id;
-	float				r_ang,r_ang_2,r_add,fx_1,fx_2,fz_1,fz_2,f_ty,f_by,
+	float				r_ang,r_ang_2,r_add,fx,fz,fx_1,fx_2,fz_1,fz_2,f_ty,f_by,
 						txt_x_off,txt_x_turn,txt_x_off_add,
 						gx,gx_add;
 	float				*vertex_ptr,*uv_ptr;
@@ -62,7 +62,7 @@ void fog_draw_textured(void)
 		// setup viewpoint
 		
 	memmove(&ang,&view.render->camera.ang,sizeof(d3ang));
-	ang.y=180.0f;
+	ang.y=0.0f;
 		
 	gl_3D_view();
 	gl_3D_rotate(&view.render->camera.pnt,&ang);
@@ -78,10 +78,10 @@ void fog_draw_textured(void)
 
 		// construct VBO
 
-	vertex_ptr=view_bind_map_next_vertex_object((((8*4)*count)*(3+2)));
+	vertex_ptr=view_bind_map_next_vertex_object((((8*6)*count)*(3+2)));
 	if (vertex_ptr==NULL) return;
 
-	uv_ptr=vertex_ptr+(((8*4)*count)*3);
+	uv_ptr=vertex_ptr+(((8*6)*count)*3);
 
 		// get drawing setup
 
@@ -94,13 +94,16 @@ void fog_draw_textured(void)
 	r_add=ANG_to_RAD*(float)(180/8);
 
 	radius=outer_radius;
+	
+	fx=(float)view.render->camera.pnt.x;
+	fz=(float)view.render->camera.pnt.z;
 
-	f_ty=-(float)map.fog.high;
-	f_by=(float)map.fog.drop;
+	f_ty=(float)(view.render->camera.pnt.y-map.fog.high);
+	f_by=(float)(view.render->camera.pnt.y+map.fog.drop);
 
 	gx_add=map.fog.txt_x_fact/8.0f;
 
-		// create the fog vertexes
+		// create the fog triangle vertexes
 
 	for (n=0;n!=count;n++) {
 
@@ -120,26 +123,37 @@ void fog_draw_textured(void)
 
 			r_ang_2=r_ang+r_add;
 
-			fx_1=(float)(-sin(r_ang)*d_radius);
-			fx_2=(float)(-sin(r_ang_2)*d_radius);
+			fx_1=(float)(-sin(r_ang)*d_radius)+fx;
+			fx_2=(float)(-sin(r_ang_2)*d_radius)+fx;
 
-			fz_1=-(float)(cos(r_ang)*d_radius);
-			fz_2=-(float)(cos(r_ang_2)*d_radius);
+			fz_1=-(float)(cos(r_ang)*d_radius)+fz;
+			fz_2=-(float)(cos(r_ang_2)*d_radius)+fz;
 
+				// triangle 1
+				
 			*vertex_ptr++=fx_1;
 			*vertex_ptr++=f_ty;
 			*vertex_ptr++=fz_1;
 
 			*uv_ptr++=gx;
 			*uv_ptr++=0.0f;
+			
+			*vertex_ptr++=fx_2;
+			*vertex_ptr++=f_ty;
+			*vertex_ptr++=fz_2;
 
+			*uv_ptr++=gx+gx_add;
+			*uv_ptr++=0.0f;
+			
 			*vertex_ptr++=fx_1;
 			*vertex_ptr++=f_by;
 			*vertex_ptr++=fz_1;
 
 			*uv_ptr++=gx;
 			*uv_ptr++=map.fog.txt_y_fact;
-
+			
+				// triangle 2
+			
 			*vertex_ptr++=fx_2;
 			*vertex_ptr++=f_ty;
 			*vertex_ptr++=fz_2;
@@ -152,6 +166,13 @@ void fog_draw_textured(void)
 			*vertex_ptr++=fz_2;
 
 			*uv_ptr++=gx+gx_add;
+			*uv_ptr++=map.fog.txt_y_fact;
+			
+			*vertex_ptr++=fx_1;
+			*vertex_ptr++=f_by;
+			*vertex_ptr++=fz_1;
+
+			*uv_ptr++=gx;
 			*uv_ptr++=map.fog.txt_y_fact;
 
 			r_ang=r_ang_2;
@@ -177,7 +198,7 @@ void fog_draw_textured(void)
 	texture=&map.textures[map.fog.texture_idx];
 	frame=texture->animate.current_frame&max_texture_frame_mask;
 	gl_id=texture->frames[frame].bitmap.gl_id;
-
+	
 	gl_texture_simple_start();
 	gl_texture_simple_set(gl_id,FALSE,1.0f,1.0f,1.0f,map.fog.alpha);
 
@@ -187,9 +208,9 @@ void fog_draw_textured(void)
 	glVertexPointer(3,GL_FLOAT,0,(void*)0);
 		
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,0,(void*)((((8*4)*count)*3)*sizeof(float)));
+	glTexCoordPointer(2,GL_FLOAT,0,(void*)((((8*6)*count)*3)*sizeof(float)));
 
-	glDrawArrays(GL_TRIANGLE_STRIP,0,((8*4)*count));
+	glDrawArrays(GL_TRIANGLES,0,((8*6)*count));
 
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);

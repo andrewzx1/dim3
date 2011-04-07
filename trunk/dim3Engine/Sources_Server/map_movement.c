@@ -149,6 +149,10 @@ void map_movements_initialize(void)
 			
 		movement->started=FALSE;
 		movement->opened=FALSE;
+		
+			// get center point
+		
+		map_movements_get_center(movement,&movement->auto_open_pnt);
 			
 			// run auto-starts
 		
@@ -324,7 +328,7 @@ void map_movements_auto_open(void)
 {
 	int				n,i,nmovement;
 	bool			obj_in_range;
-	d3pnt			pnt,center_pnt;
+	d3pnt			pnt;
 	movement_type	*movement;
 	obj_type		*obj;
 
@@ -348,14 +352,12 @@ void map_movements_auto_open(void)
 
 		if (movement->auto_open) {
 
-			map_movements_get_center(movement,&center_pnt);
-
 			for (i=0;i!=max_obj_list;i++) {
 				obj=server.obj_list.objs[i];
 				if (obj==NULL) continue;
 
 				if (((obj->type==object_type_player) || (obj->type==object_type_remote) || (obj->open_doors)) && (obj->status.health!=0)) {
-					if (distance_check(obj->pnt.x,(obj->pnt.y-(obj->size.y>>1)),obj->pnt.z,center_pnt.x,center_pnt.y,center_pnt.z,movement->auto_open_distance)) {
+					if (distance_check(obj->pnt.x,(obj->pnt.y-(obj->size.y>>1)),obj->pnt.z,movement->auto_open_pnt.x,movement->auto_open_pnt.y,movement->auto_open_pnt.z,movement->auto_open_distance)) {
 						obj_in_range=TRUE;
 						break;
 					}
@@ -366,7 +368,7 @@ void map_movements_auto_open(void)
 
 			if ((camera.setup.mode==cv_static) && (camera.auto_walk.on) && (camera.auto_walk.open_doors)) {
 				camera_static_get_position(&pnt,NULL);
-				obj_in_range=distance_check(pnt.x,pnt.y,pnt.z,center_pnt.x,center_pnt.y,center_pnt.z,movement->auto_open_distance);
+				obj_in_range=distance_check(pnt.x,pnt.y,pnt.z,movement->auto_open_pnt.x,movement->auto_open_pnt.y,movement->auto_open_pnt.z,movement->auto_open_distance);
 			}
 
 		}
