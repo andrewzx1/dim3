@@ -52,7 +52,6 @@ unsigned char			*game_file_data;
 
 extern void view_capture_draw(char *path);
 extern void group_moves_synch_with_load(void);
-extern void view_draw_fade_cancel(void);
 extern void view_game_reset_timing(void);
 extern void rain_reset(void);
 
@@ -814,7 +813,7 @@ bool game_file_load(char *file_name,char *err_str)
 		// fix some necessary functions
 
 	map.rain.reset=TRUE;
-	view_draw_fade_cancel();
+	view_fade_cancel();
 		
 		 // fix all the timing
 		 // and state informaton

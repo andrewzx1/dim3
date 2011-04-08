@@ -46,7 +46,6 @@ extern void game_time_pause_start(void);
 extern void game_time_pause_end(void);
 extern bool gl_check_shader_ok(void);
 extern void map_movements_initialize(void);
-extern void view_draw_fade_start(void);
 extern void group_move_clear_all(void);
 extern void draw_sky_init(void);
 extern bool view_compile_mesh_gl_list_init(void);
@@ -450,7 +449,7 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 
 		// start any map fades
 
-	if (!skip_media) view_draw_fade_start();
+	if (!skip_media) view_fade_start();
 	
 	return(TRUE);
 }

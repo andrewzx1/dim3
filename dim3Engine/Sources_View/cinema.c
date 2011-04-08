@@ -146,8 +146,10 @@ void cinema_end(void)
 	memmove(&camera,&view.cinema.camera_state,sizeof(camera_type));
 	
 		// clear any input
+		// and stop any long running fades
 		
 	input_clear();
+	view_fade_cancel();
 	
 		// turn off cinema
 		
@@ -402,6 +404,18 @@ void cinema_action_run_hud_text(map_cinema_action_type *action)
 
 void cinema_action_run_generic(map_cinema_action_type *action)
 {
+		// fade in/out have no actors
+
+	if (action->action==cinema_action_fade_in) {
+		view_fade_cinema_fade_in_start(action->end_msec-action->start_msec);
+		return;
+	}
+
+	if (action->action==cinema_action_fade_out) {
+		view_fade_cinema_fade_out_start(action->end_msec-action->start_msec);
+		return;
+	}
+
 		// route to proper action
 
 	switch (action->actor_type) {

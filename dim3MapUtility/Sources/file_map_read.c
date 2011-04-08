@@ -43,7 +43,7 @@ char					media_type_str[][32]={"none","chooser","title","movie",""},
 						spot_type_str[][32]={"Object","Bot","Player","Spawn",""},
 						skill_type_str[][32]={"easy","medium","hard",""},
 						spawn_type_str[][32]={"always","single_player","multiplayer",""},
-						cinema_action_type_str[][32]={"none","place","move","stop","show","hide",""},
+						cinema_action_type_str[][32]={"none","place","move","stop","show","hide","fade in","fade out",""},
 						cinema_actor_type_str[][32]={"camera","player","object","movement","particle","hud_text","hud_bitmap",""};
 
 /* =======================================================
