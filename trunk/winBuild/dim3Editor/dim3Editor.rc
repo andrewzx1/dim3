@@ -70,7 +70,7 @@ BEGIN
 		MENUITEM SEPARATOR
         MENUITEM "Reset UVs",							ID_MAP_RESET_UV
 		MENUITEM SEPARATOR
-        MENUITEM "Recalc Tangents, Binormals",			ID_MAP_RECALC_TANGENT
+        MENUITEM "Recalc Tangents",						ID_MAP_RECALC_TANGENT
         MENUITEM "Recalc Normals",						ID_MAP_RECALC_NORMAL
 		MENUITEM SEPARATOR
         MENUITEM "Clear Light Maps",					ID_MAP_CLEAR_LIGHT_MAP
