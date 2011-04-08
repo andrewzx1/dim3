@@ -121,13 +121,24 @@ int map_mesh_combine(map_type *map,int mesh_1_idx,int mesh_2_idx)
 		map_mesh_delete(map,mesh_idx);
 		return(-1);
 	}
-
-		// combined meshes
+	
+		// transfer over some settings from first mesh
 		
 	mesh=&map->mesh.meshes[mesh_idx];
 
 	mesh->npoly=0;
 	mesh->nvertex=0;
+		
+	mesh->group_idx=mesh_1->group_idx;
+	mesh->hide_mode=mesh_1->hide_mode;
+	mesh->normal_mode=mesh_1->normal_mode;
+	mesh->harm=mesh_1->harm;
+
+	memmove(&mesh->rot_off,&mesh_1->rot_off,sizeof(d3pnt));
+	memmove(&mesh->flag,&mesh_1->flag,sizeof(map_mesh_flag_type));
+	memmove(&mesh->msg,&mesh_1->msg,sizeof(map_mesh_message_type));
+
+		// combined meshes
 		
 	map_mesh_combine_single_mesh(mesh,mesh_1);
 	map_mesh_combine_single_mesh(mesh,mesh_2);

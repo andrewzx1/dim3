@@ -386,12 +386,16 @@ bool menu_event_run(int cmd)
 			return(TRUE);
 
 		case kCommandMapCreateTangentBinormal:
+			os_set_wait_cursor();
 			map_recalc_normals(&map,TRUE);
+			os_set_arrow_cursor();
 			main_wind_draw();
 			return(TRUE);
 			
 		case kCommandMapCreateNormals:
+			os_set_wait_cursor();
 			map_recalc_normals(&map,FALSE);
+			os_set_arrow_cursor();
 			main_wind_draw();
 			return(TRUE);
 			

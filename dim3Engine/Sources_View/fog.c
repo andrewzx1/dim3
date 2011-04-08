@@ -48,11 +48,9 @@ void fog_draw_textured(void)
 						radius_add,radius,frame;
 	unsigned long		gl_id;
 	float				r_ang,r_ang_2,r_add,fx,fz,fx_1,fx_2,fz_1,fz_2,f_ty,f_by,
-						txt_x_off,txt_x_turn,txt_x_off_add,
-						gx,gx_add;
+						gx,gx_add,gx_shift;
 	float				*vertex_ptr,*uv_ptr;
 	double				d_radius;
-	d3ang				ang;
 	texture_type		*texture;
 	
 		// textured fog on?
@@ -61,11 +59,8 @@ void fog_draw_textured(void)
 
 		// setup viewpoint
 		
-	memmove(&ang,&view.render->camera.ang,sizeof(d3ang));
-	ang.y=0.0f;
-		
 	gl_3D_view();
-	gl_3D_rotate(&view.render->camera.pnt,&ang);
+	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
 	gl_setup_project();
 
 		// drawing layers
@@ -78,20 +73,16 @@ void fog_draw_textured(void)
 
 		// construct VBO
 
-	vertex_ptr=view_bind_map_next_vertex_object((((8*6)*count)*(3+2)));
+	vertex_ptr=view_bind_map_next_vertex_object((((16*6)*count)*(3+2)));
 	if (vertex_ptr==NULL) return;
 
-	uv_ptr=vertex_ptr+(((8*6)*count)*3);
+	uv_ptr=vertex_ptr+(((16*6)*count)*3);
 
 		// get drawing setup
 
 	tick=game_time_get();
 
-	txt_x_off=((float)(tick>>7))*map.fog.speed;
-	txt_x_turn=(map.fog.txt_x_fact*(view.render->camera.ang.y/360.0f));			// change texture offset with camera rotation
-	txt_x_off_add=1.0f/(float)count;
-
-	r_add=ANG_to_RAD*(float)(180/8);
+	r_add=ANG_to_RAD*(360.0f/16.0f);
 
 	radius=outer_radius;
 	
@@ -101,23 +92,18 @@ void fog_draw_textured(void)
 	f_ty=(float)(view.render->camera.pnt.y-map.fog.high);
 	f_by=(float)(view.render->camera.pnt.y+map.fog.drop);
 
-	gx_add=map.fog.txt_x_fact/8.0f;
+	gx_add=map.fog.txt_x_fact/16.0f;
+	gx_shift=1.0f/((float)count);
 
 		// create the fog triangle vertexes
 
 	for (n=0;n!=count;n++) {
+	
+		gx=gx_shift*((float)n);
 
-		if ((n&0x1)==0x0) {
-			gx=txt_x_turn+txt_x_off;
-		}
-		else {
-			gx=txt_x_turn-txt_x_off;
-		}
-		txt_x_off+=txt_x_off_add;
+		r_ang=0.0f;
 
-		r_ang=ANG_to_RAD*(-90.0f);
-
-		for (k=0;k!=8;k++) {
+		for (k=0;k!=16;k++) {
 
 			d_radius=(double)radius;
 
@@ -208,9 +194,9 @@ void fog_draw_textured(void)
 	glVertexPointer(3,GL_FLOAT,0,(void*)0);
 		
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,0,(void*)((((8*6)*count)*3)*sizeof(float)));
+	glTexCoordPointer(2,GL_FLOAT,0,(void*)((((16*6)*count)*3)*sizeof(float)));
 
-	glDrawArrays(GL_TRIANGLES,0,((8*6)*count));
+	glDrawArrays(GL_TRIANGLES,0,((16*6)*count));
 
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);

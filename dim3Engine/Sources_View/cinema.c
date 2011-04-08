@@ -144,6 +144,14 @@ void cinema_end(void)
 		// restore camera
 
 	memmove(&camera,&view.cinema.camera_state,sizeof(camera_type));
+	
+		// clear any input
+		
+	input_clear();
+	
+		// turn off cinema
+		
+	view.cinema.on=FALSE;
 }
 
 /* =======================================================
