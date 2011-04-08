@@ -31,18 +31,19 @@ and can be sold or given away.
 
 #include "interface.h"
 
-int							fade_screen_tick;
+int							fade_screen_tick,fade_screen_msec;
+bool						fade_screen_in;
 
 extern iface_type			iface;
 extern setup_type			setup;
 
 /* =======================================================
 
-      Map Screen Fade
+      Start Screen Fade
       
 ======================================================= */
 
-void view_draw_fade_start(void)
+void view_fade_start(void)
 {
 	if (iface.fade.map_msec<=0) {
 		fade_screen_tick=-1;
@@ -50,12 +51,34 @@ void view_draw_fade_start(void)
 	}
 
 	fade_screen_tick=game_time_get();
+	fade_screen_msec=iface.fade.map_msec;
+	fade_screen_in=TRUE;
 }
 
-void view_draw_fade_cancel(void)
+void view_fade_cinema_fade_in_start(int msec)
+{
+	fade_screen_tick=game_time_get();
+	fade_screen_msec=msec;
+	fade_screen_in=TRUE;
+}
+
+void view_fade_cinema_fade_out_start(int msec)
+{
+	fade_screen_tick=game_time_get();
+	fade_screen_msec=msec;
+	fade_screen_in=FALSE;
+}
+
+void view_fade_cancel(void)
 {
 	fade_screen_tick=-1;
 }
+
+/* =======================================================
+
+      Run Screen Fade
+      
+======================================================= */
 
 void view_draw_fade_draw(void)
 {
@@ -66,14 +89,15 @@ void view_draw_fade_draw(void)
 	if (fade_screen_tick==-1) return;
 
 	tick=game_time_get()-fade_screen_tick;
-	if (tick>iface.fade.map_msec) {
+	if (tick>ifade_screen_msec) {
 		fade_screen_tick=-1;
 		return;
 	}
 
 		// calculate fade
 
-	alpha=1.0f-(float)tick/(float)iface.fade.map_msec;
+	alpha=((float)tick)/((float)fade_screen_msec);
+	if (fade_screen_in) alpha=1.0f-alpha;
 	glColor4f(0.0f,0.0f,0.0f,alpha);
 	
 		// draw

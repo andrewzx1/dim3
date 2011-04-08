@@ -61,7 +61,7 @@ extern char						action_actor_type_str[][32],action_action_type_str[][32];
 
 void alt_property_palette_fill_cinema_action(int cinema_idx,int action_idx)
 {
-	bool					has_actor,has_animation,has_node;
+	bool					has_actor,has_animation,has_node,is_fade;
 	map_cinema_action_type	*action;
 
 	if (action_idx==-1) return;
@@ -73,6 +73,7 @@ void alt_property_palette_fill_cinema_action(int cinema_idx,int action_idx)
 	has_actor=((action->actor_type!=cinema_actor_camera) && (action->actor_type!=cinema_actor_player));
 	has_animation=((action->actor_type==cinema_actor_player) || (action->actor_type==cinema_actor_object));
 	has_node=((action->actor_type==cinema_actor_camera) || (action->actor_type==cinema_actor_player) || (action->actor_type==cinema_actor_object) || (action->actor_type==cinema_actor_particle));
+	is_fade=((action->action==cinema_action_fade_in) || (action->action==cinema_action_fade_out));
 
 		// the properties
 
@@ -82,7 +83,12 @@ void alt_property_palette_fill_cinema_action(int cinema_idx,int action_idx)
 
 	list_palette_add_header(&alt_property_palette,0,"Cinema Action Actor");
 	list_palette_add_string(&alt_property_palette,kCinemaActionPropertyAction,"Action",action_action_type_str[action->action],FALSE);
-	list_palette_add_string(&alt_property_palette,kCinemaActionPropertyActorType,"Type",action_actor_type_str[action->actor_type],FALSE);
+	if (!is_fade) {
+		list_palette_add_string(&alt_property_palette,kCinemaActionPropertyActorType,"Type",action_actor_type_str[action->actor_type],FALSE);
+	}
+	else {
+		list_palette_add_string(&alt_property_palette,kCinemaActionPropertyActorName,"Type","n/a",TRUE);
+	}
 	if (has_actor) {
 		list_palette_add_string(&alt_property_palette,kCinemaActionPropertyActorName,"Name",action->actor_name,FALSE);
 	}
@@ -97,7 +103,7 @@ void alt_property_palette_fill_cinema_action(int cinema_idx,int action_idx)
 		list_palette_add_string(&alt_property_palette,kCinemaActionPropertyAnimation,"Animation","n/a",TRUE);
 		list_palette_add_string(&alt_property_palette,kCinemaActionPropertyNextAnimation,"Next Animation","n/a",TRUE);
 	}
-	if (has_node) {
+	if ((has_node) && (!is_fade)) {
 		list_palette_add_string(&alt_property_palette,kCinemaActionPropertyNode,"Node",action->node_name,FALSE);
 	}
 	else {

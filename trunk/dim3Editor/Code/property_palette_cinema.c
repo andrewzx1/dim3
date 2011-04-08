@@ -52,7 +52,7 @@ extern editor_setup_type		setup;
 extern list_palette_type		property_palette;
 
 char							action_actor_type_str[][32]={"Camera","Player","Object","Movement","Particle","Text","Bitmap",""},
-								action_action_type_str[][32]={"None","Place","Move","Stop","Show","Hide",""};
+								action_action_type_str[][32]={"None","Place","Move","Stop","Show","Hide","Fade In","Fade Out",""};
 
 /* =======================================================
 

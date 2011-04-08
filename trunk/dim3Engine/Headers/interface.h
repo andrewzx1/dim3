@@ -779,9 +779,18 @@ extern void rain_draw(void);
 extern void decal_render(void);
 
 //
-// fades and tints
+// tints
 //
 
 extern void view_draw_liquid_tint(int liquid_idx);
 extern void view_draw_effect_tint(void);
-extern void view_draw_fade_draw(void);
+
+//
+// fades
+//
+
+extern void view_fade_start(void);
+extern void view_fade_cinema_fade_in_start(int msec);
+extern void view_fade_cinema_fade_out_start(int msec);
+extern void view_fade_cancel(void);
+extern void view_fade_draw(void);
