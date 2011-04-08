@@ -333,10 +333,6 @@ void map_recalc_normals_mesh(map_mesh_type *mesh,bool only_tangent)
 	d3pnt				*pt,*pt_1,*pt_2,center;
 	map_mesh_poly_type	*poly;
 	
-		// skip locked normals
-		
-	if (mesh->normal_mode==mesh_normal_mode_lock) return;
-
 		// expect polys to be flat (not twisted)
 		// this would cause all sorts of rendering
 		// errors anyway, so we can just consider
@@ -384,19 +380,22 @@ void map_recalc_normals_mesh(map_mesh_type *mesh,bool only_tangent)
 
 		f_denom=(v10*u20)-(u10*v20);
 		if (f_denom!=0.0f) f_denom=1.0f/f_denom;
-		
 		vector_scalar_multiply(&binormal,&v_num,f_denom);
 
 			// calculate the normal
 			// T cross B (cross routine automatically normalizes)
-
+			
 		vector_normalize(&poly->tangent_space.tangent);
 		vector_normalize(&binormal);
 
-		if (!only_tangent) vector_cross_product(&poly->tangent_space.normal,&poly->tangent_space.tangent,&binormal);
+		if ((!only_tangent) && (mesh->normal_mode!=mesh_normal_mode_lock)) vector_cross_product(&poly->tangent_space.normal,&poly->tangent_space.tangent,&binormal);
 		
 		poly++;
 	}
+	
+		// skip out now if normals are locked
+		
+	if (mesh->normal_mode==mesh_normal_mode_lock) return;
 	
 		// setup mesh boxes
 		
