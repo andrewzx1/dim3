@@ -142,6 +142,7 @@ void alt_property_palette_fill_hud_bitmap(int hud_bitmap_idx)
 
 void alt_property_palette_click_hud_bitmap(int hud_bitmap_idx,int id)
 {
+	char						file_name[file_str_len];
 	iface_bitmap_type			*bitmap;
 
 	bitmap=&iface.bitmap_list.bitmaps[hud_bitmap_idx];
@@ -155,7 +156,8 @@ void alt_property_palette_click_hud_bitmap(int hud_bitmap_idx,int id)
 			break;
 
 		case kBitmapSettingsFileName:
-			dialog_property_string_run(list_string_value_string,(void*)bitmap->filename,file_str_len,0,0);
+			strcpy(file_name,bitmap->filename);
+			if (dialog_file_open_run("Pick a Interface Bitmap","Bitmaps/Interface","png",NULL,file_name)) strcpy(bitmap->filename,file_name);
 			break;
 
 		case kBitmapSettingsShow:

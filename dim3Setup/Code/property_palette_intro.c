@@ -125,7 +125,7 @@ void property_palette_fill_intro(void)
 void property_palette_click_intro(int id)
 {
 	int					idx,sz;
-	char				model_name[name_str_len];
+	char				model_name[name_str_len],music_name[name_str_len];
 
 		// select button
 
@@ -219,7 +219,13 @@ void property_palette_click_intro(int id)
 	switch (id) {
 
 		case kIntroPropertyMusic:
-			dialog_property_string_run(list_string_value_string,(void*)iface.intro.music,name_str_len,0,0);
+			strcpy(music_name,iface.intro.music);
+			if (dialog_file_open_run("Pick a MP3","Music","mp3",NULL,music_name)) {
+				strcpy(iface.intro.music,music_name);
+			}
+			else {
+				iface.intro.music[0]=0x0;
+			}
 			break;
 
 	}

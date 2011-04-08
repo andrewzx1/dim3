@@ -33,18 +33,30 @@ and can be sold or given away.
 #include "ui_common.h"
 #include "interface.h"
 
-#define kModelSettingsName						0
-#define kModelSettingsAnimate					1
+#define kTextSettingsName						0
+#define kTextSettingsData						1
+#define kTextSettingsShow						2
 
-#define kModelPositionX							2
-#define kModelPositionY							3
+#define kTextPositionX							3
+#define kTextPositionY							4
 
-#define kModelOptionResize						4
-#define kModelOptionRot							5
+#define kTextOptionSize							5
+#define kTextOptionJust							6
+#define kTextOptionSpecial						7
+#define kTextOptionAlpha						8
+#define kTextOptionColor						9
+
+#define kTextFadeOn								10
+#define kTextFadeInTick							11
+#define kTextFadeLifeTick						12
+#define kTextFadeOutTick						13
 
 extern iface_type				iface;
 extern setup_state_type			state;
 extern list_palette_type		alt_property_palette;
+
+char							hud_text_just_type_str[][32]={"Left","Center","Right",""},
+								hud_text_special_type_str[][32]=text_special_list_def;
 
 /* =======================================================
 
@@ -54,29 +66,39 @@ extern list_palette_type		alt_property_palette;
 
 void alt_property_palette_fill_hud_text(int hud_text_idx)
 {
-	/*
-	iface_intro_model_type				*model;
+	iface_text_type				*text;
 
-	model=&iface.intro.model_list.models[intro_model_idx];
+	text=&iface.text_list.texts[hud_text_idx];
 
 		// settings
 
 	list_palette_add_header(&alt_property_palette,0,"Settings");
-	list_palette_add_string(&alt_property_palette,kModelSettingsName,"Model",model->model_name,FALSE);
-	list_palette_add_string(&alt_property_palette,kModelSettingsAnimate,"Animation",model->animate_name,FALSE);
+	list_palette_add_string(&alt_property_palette,kTextSettingsName,"Name",text->name,FALSE);
+	list_palette_add_string(&alt_property_palette,kTextSettingsData,"Data",text->data,FALSE);
+	list_palette_add_checkbox(&alt_property_palette,kTextSettingsShow,"Show",text->show,FALSE);
 
 		// position
 
 	list_palette_add_header(&alt_property_palette,0,"Position");
-	list_palette_add_string_int(&alt_property_palette,kModelPositionX,"X",model->x,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kModelPositionY,"Y",model->y,FALSE);
+	list_palette_add_string_int(&alt_property_palette,kTextPositionX,"X",text->x,FALSE);
+	list_palette_add_string_int(&alt_property_palette,kTextPositionY,"Y",text->y,FALSE);
 
 		// options
 
 	list_palette_add_header(&alt_property_palette,0,"Options");
-	list_palette_add_string_float(&alt_property_palette,kModelOptionResize,"Resize",model->resize,FALSE);
-	list_palette_add_angle(&alt_property_palette,kModelOptionRot,"Rot",&model->rot,FALSE);
-	*/
+	list_palette_add_string_int(&alt_property_palette,kTextOptionSize,"Text Size",text->size,FALSE);
+	list_palette_add_string(&alt_property_palette,kTextOptionJust,"Justification",hud_text_just_type_str[text->just],FALSE);
+	list_palette_add_string(&alt_property_palette,kTextOptionSpecial,"Special",hud_text_special_type_str[text->special],FALSE);
+	list_palette_add_string_float(&alt_property_palette,kTextOptionAlpha,"Alpha",text->alpha,FALSE);
+	list_palette_add_pick_color(&alt_property_palette,kTextOptionColor,"Color",&text->color,FALSE);
+
+		// fade
+
+	list_palette_add_header(&alt_property_palette,0,"Fade");
+	list_palette_add_checkbox(&alt_property_palette,kTextFadeOn,"On",text->fade.on,FALSE);
+	list_palette_add_string_int(&alt_property_palette,kTextFadeInTick,"Fade In Milliseconds",text->fade.fade_in_tick,FALSE);
+	list_palette_add_string_int(&alt_property_palette,kTextFadeLifeTick,"Life Milliseconds",text->fade.life_tick,FALSE);
+	list_palette_add_string_int(&alt_property_palette,kTextFadeOutTick,"Fade In Milliseconds",text->fade.fade_out_tick,FALSE);
 }
 
 /* =======================================================
@@ -87,47 +109,78 @@ void alt_property_palette_fill_hud_text(int hud_text_idx)
 
 void alt_property_palette_click_hud_text(int hud_text_idx,int id)
 {
-	/*
-	char								model_name[name_str_len];
-	iface_intro_model_type				*model;
+	iface_text_type				*text;
 
-	model=&iface.intro.model_list.models[intro_model_idx];
+	text=&iface.text_list.texts[hud_text_idx];
 
 	switch (id) {
 
 			// settings
 
-		case kModelSettingsName:
-			strcpy(model_name,model->model_name);
-			if (dialog_file_open_run("Pick a Model","Models",NULL,"Mesh.xml",model_name)) strcpy(model->model_name,model_name);
+		case kTextSettingsName:
+			dialog_property_string_run(list_string_value_string,(void*)text->name,name_str_len,0,0);
 			break;
 
-		case kModelSettingsAnimate:
-			dialog_property_string_run(list_string_value_string,(void*)model->animate_name,name_str_len,0,0);
+		case kTextSettingsData:
+			dialog_property_string_run(list_string_value_string,(void*)text->data,max_hud_text_str_sz,0,0);
+			break;
+
+		case kTextSettingsShow:
+			text->show=!text->show;
 			break;
 
 			// position
 
-		case kModelPositionX:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&model->x,0,0,0);
+		case kTextPositionX:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&text->x,0,0,0);
 			break;
 
-		case kModelPositionY:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&model->y,0,0,0);
+		case kTextPositionY:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&text->y,0,0,0);
 			break;
 
 			// options
 
-		case kModelOptionResize:
-			dialog_property_string_run(list_string_value_positive_float,(void*)&model->resize,0,0,0);
+		case kTextOptionSize:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&text->size,0,0,0);
 			break;
 
-		case kModelOptionRot:
-			dialog_property_chord_run(list_chord_value_angle,(void*)&model->rot);
+		case kTextOptionJust:
+			property_pick_list("Pick a Justification",(char*)hud_text_just_type_str,&text->just);
+			break;
+
+		case kTextOptionSpecial:
+			property_pick_list("Pick a Special Display",(char*)hud_text_special_type_str,&text->special);
+			break;
+
+		case kTextOptionAlpha:
+			dialog_property_string_run(list_string_value_0_to_1_float,(void*)&text->alpha,0,0,0);
+			break;
+
+		case kTextOptionColor:
+			os_pick_color(&text->color);
+			break;
+
+			// fade
+
+		case kTextFadeOn:
+			text->fade.on=!text->fade.on;
+			break;
+
+		case kTextFadeInTick:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&text->fade.fade_in_tick,0,0,0);
+			break;
+
+		case kTextFadeLifeTick:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&text->fade.life_tick,0,0,0);
+			break;
+
+		case kTextFadeOutTick:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&text->fade.fade_out_tick,0,0,0);
 			break;
 
 	}
-*/
+
 		// redraw
 
 	main_wind_draw();
