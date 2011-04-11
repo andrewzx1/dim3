@@ -102,10 +102,12 @@ void item_palette_fill(void)
 	list_palette_add_item(&item_palette,item_interface_settings,0,"Settings",(state.cur_item==item_interface_settings),FALSE);
 	list_palette_add_item(&item_palette,item_interface_intro,0,"Intro",(state.cur_item==item_interface_intro),FALSE);
 	list_palette_add_item(&item_palette,item_interface_hud,0,"HUD",(state.cur_item==item_interface_hud),FALSE);
-	list_palette_add_item(&item_palette,item_interface_menu,0,"Menu",(state.cur_item==item_interface_menu),FALSE);
-	list_palette_add_item(&item_palette,item_interface_choosers,0,"Choosers",(state.cur_item==item_interface_choosers),FALSE);
+	/*
 	list_palette_add_item(&item_palette,item_interface_radar,0,"Radar",(state.cur_item==item_interface_radar),FALSE);
 	list_palette_add_item(&item_palette,item_interface_multiplayer,0,"Multiplayer",(state.cur_item==item_interface_multiplayer),FALSE);
+
+	list_palette_add_item(&item_palette,item_interface_menu,0,"Menu",(state.cur_item==item_interface_menu),FALSE);
+	list_palette_add_item(&item_palette,item_interface_choosers,0,"Choosers",(state.cur_item==item_interface_choosers),FALSE);
 
 	list_palette_add_item(&item_palette,item_interface_sound,0,"Sound",(state.cur_item==item_interface_sound),FALSE);
 	list_palette_add_item(&item_palette,item_interface_particle,0,"Particles",(state.cur_item==item_interface_particle),FALSE);
@@ -114,6 +116,7 @@ void item_palette_fill(void)
 	list_palette_add_item(&item_palette,item_interface_mark,0,"Marks",(state.cur_item==item_interface_mark),FALSE);
 	list_palette_add_item(&item_palette,item_interface_crosshair,0,"Crosshairs",(state.cur_item==item_interface_crosshair),FALSE);
 	list_palette_add_item(&item_palette,item_interface_action,0,"Actions",(state.cur_item==item_interface_action),FALSE);
+	*/
 }
 
 /* =======================================================
@@ -136,40 +139,6 @@ void item_palette_draw(void)
 
 bool item_palette_delete(void)
 {
-	/* supergumba -- do this
-		// anything to delete?
-
-	if ((item_palette.item_type==-1) || (item_palette.item_idx==-1)) return(FALSE);
-
-	switch (item_palette.item_type) {
-
-		case item_mesh:
-			if (os_dialog_confirm("Delete Mesh","Is it okay to delete this mesh?",FALSE)!=0) return(FALSE);
-			model_piece_delete_mesh(item_palette.item_idx);
-			return(TRUE);
-
-		case item_bone:
-			if (os_dialog_confirm("Delete Bone","Is it okay to delete this bone?",FALSE)!=0) return(FALSE);
-			model_piece_delete_bone(item_palette.item_idx);
-			return(TRUE);
-
-		case item_pose:
-			if (os_dialog_confirm("Delete Pose","Is it okay to delete this pose?",FALSE)!=0) return(FALSE);
-			model_piece_delete_pose(item_palette.item_idx);
-			return(TRUE);
-
-		case item_animate:
-			if (os_dialog_confirm("Delete Animation","Is it okay to delete this animation?",FALSE)!=0) return(FALSE);
-			model_piece_delete_animate(item_palette.item_idx);
-			return(TRUE);
-
-		case item_hit_box:
-			if (os_dialog_confirm("Delete Hit Box","Is it okay to delete this hit box?",FALSE)!=0) return(FALSE);
-			model_piece_delete_hit_box(item_palette.item_idx);
-			return(TRUE);
-
-	}
-*/
 	return(FALSE);
 }
 
