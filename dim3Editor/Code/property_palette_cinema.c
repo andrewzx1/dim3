@@ -91,14 +91,19 @@ void property_palette_fill_cinema(int cinema_idx)
 			strcat(str,action_action_type_str[action->action]);
 			strcat(str," ");
 		}
-
-		if ((action->actor_type!=cinema_actor_camera) && (action->actor_type!=cinema_actor_player)) {
-			sprintf(str2,"%s(%s)",action_actor_type_str[action->actor_type],action->actor_name);
+		
+		if ((action->action==cinema_action_fade_in) || (action->action==cinema_action_fade_out)) {
+			str2[0]=0x0;
 		}
 		else {
-			strcpy(str2,action_actor_type_str[action->actor_type]);
+			if ((action->actor_type!=cinema_actor_camera) && (action->actor_type!=cinema_actor_player)) {
+				sprintf(str2,"%s(%s)",action_actor_type_str[action->actor_type],action->actor_name);
+			}
+			else {
+				strcpy(str2,action_actor_type_str[action->actor_type]);
+			}
 		}
-
+		
 		strcat(str,str2);
 
 		list_palette_add_string_selectable_button(&property_palette,(kCinemaPropertyAction+n),list_button_minus,(kCinemaPropertyActionDelete+n),str,NULL,(state.cur_cinema_action_idx==n),FALSE);

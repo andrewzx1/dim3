@@ -448,11 +448,11 @@ void view_add_liquid_draw_list(int start_mesh_idx)
 				// liquid normal is always facing up (0,-1,0)
 				// so this calculation is realitively easy
 				
-			if ((!liq->never_cull) && (!map.settings.never_cull)) {
+			if ((!liq->never_cull) && (!map.optimize.never_cull)) {
 				mx=(liq->lft+liq->rgt)>>1;
 				mz=(liq->top+liq->bot)>>1;
 				
-				if ((-1.0f*(float)(liq->y-view.render->camera.pnt.y))>0.0f) continue;
+				if ((-1.0f*(float)(liq->y-view.render->camera.pnt.y))>map.optimize.cull_angle) continue;
 			}
 
 				// auto-eliminate liquids drawn outside the obscure distance

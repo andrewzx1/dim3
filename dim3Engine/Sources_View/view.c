@@ -452,7 +452,7 @@ void view_game_reset_timing(void)
 
 bool view_shader_on(void)
 {
-	return((!setup.disable_shaders) && (gl_check_shader_ok()) && (!map.settings.no_shaders));
+	return((!setup.disable_shaders) && (gl_check_shader_ok()) && (!map.optimize.no_shaders));
 }
 
 /* =======================================================

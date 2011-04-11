@@ -80,7 +80,7 @@ void view_fade_cancel(void)
       
 ======================================================= */
 
-void view_draw_fade_draw(void)
+void view_fade_draw(void)
 {
 	int				tick;
 	float			alpha;
@@ -89,7 +89,7 @@ void view_draw_fade_draw(void)
 	if (fade_screen_tick==-1) return;
 
 	tick=game_time_get()-fade_screen_tick;
-	if (tick>ifade_screen_msec) {
+	if (tick>fade_screen_msec) {
 		fade_screen_tick=-1;
 		return;
 	}

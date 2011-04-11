@@ -433,7 +433,7 @@ void view_draw(void)
 		
 	view_draw_liquid_tint(view.render->camera.under_liquid_idx);
 	view_draw_effect_tint();
-	view_draw_fade_draw();
+	view_fade_draw();
 }
 
 bool view_draw_node(node_type *node)
