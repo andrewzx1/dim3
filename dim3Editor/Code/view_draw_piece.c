@@ -697,9 +697,10 @@ void view_draw_liquids(editor_view_type *view,bool opaque)
       
 ======================================================= */
 
-void view_draw_meshes_normals(editor_view_type *view_setup)
+void view_draw_meshes_normals(editor_view_type *view)
 {
-	int					n,k,t;
+	int					n,k,t,dist;
+	float				p_sz;
 	d3pnt				*pt,cnt;
 	d3vct				binormal;
 	map_mesh_type		*mesh;
@@ -769,12 +770,28 @@ void view_draw_meshes_normals(editor_view_type *view_setup)
 			glVertex3i(cnt.x,cnt.y,cnt.z);
 			glVertex3i((cnt.x+(int)(poly->tangent_space.normal.x*normal_vector_scale)),(cnt.y+(int)(poly->tangent_space.normal.y*normal_vector_scale)),(cnt.z+(int)(poly->tangent_space.normal.z*normal_vector_scale)));
 			glEnd();
+
+				// draw the center
+
+			dist=distance_get(view->pnt.x,view->pnt.y,view->pnt.z,cnt.x,cnt.y,cnt.z);
+
+			p_sz=10.0f-(((float)dist)*0.0001f);
+			if (p_sz>2.0f) {
+
+				glColor4f(0.6f,0.0f,0.6f,1.0f);
+				glPointSize(p_sz);
+
+				glBegin(GL_POINTS);
+				glVertex3i(cnt.x,cnt.y,cnt.z);
+				glEnd();
+			}
 		}
 	
 		mesh++;
 	}
 	
 	glLineWidth(1.0f);
+	glPointSize(1.0f);
 }
 
 /* =======================================================

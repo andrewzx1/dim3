@@ -386,6 +386,9 @@ bool menu_event_run(int cmd)
 			return(TRUE);
 
 		case kCommandMapCreateTangentBinormal:
+			select_over_tesseled_quads();		// supergumba -- testing
+			return(TRUE);
+
 			os_set_wait_cursor();
 			map_recalc_normals(&map,TRUE);
 			os_set_arrow_cursor();

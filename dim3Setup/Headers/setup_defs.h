@@ -44,10 +44,10 @@ and can be sold or given away.
 #define item_interface_settings			1
 #define item_interface_intro			2
 #define item_interface_hud				3
-#define item_interface_menu				4
-#define item_interface_choosers			5
-#define item_interface_radar			6
-#define item_interface_multiplayer		7
+#define item_interface_radar			4
+#define item_interface_multiplayer		5
+#define item_interface_menu				6
+#define item_interface_choosers			7
 #define item_interface_sound			8
 #define item_interface_particle			9
 #define item_interface_ring				10
