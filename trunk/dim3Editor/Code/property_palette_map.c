@@ -43,19 +43,20 @@ and can be sold or given away.
 #define kMapPropertyNetworkGameList			6
 
 #define kMapPropertyNormalCull				7
-#define kMapPropertyDisableShaders			8
+#define kMapPropertyCullAngle				8
+#define kMapPropertyDisableShaders			9
 
-#define kMapPropertyAmbientColor			9
-#define kMapPropertyAmbientLightMapBoost	10
-#define kMapPropertyAmbientSound			11
-#define kMapPropertyAmbientSoundPitch		12
+#define kMapPropertyAmbientColor			10
+#define kMapPropertyAmbientLightMapBoost	11
+#define kMapPropertyAmbientSound			12
+#define kMapPropertyAmbientSoundPitch		13
 
-#define kMapPropertyLightMapQuality			13
-#define kMapPropertyLightMapSize			14
-#define kMapPropertyLightMapBorderCount		15
-#define kMapPropertyLightMapBlurCount		16
-#define kMapPropertyLightMapUseNormals		17
-#define kMapPropertyLightMapDiffuseBoost	18
+#define kMapPropertyLightMapQuality			14
+#define kMapPropertyLightMapSize			15
+#define kMapPropertyLightMapBorderCount		16
+#define kMapPropertyLightMapBlurCount		17
+#define kMapPropertyLightMapUseNormals		18
+#define kMapPropertyLightMapDiffuseBoost	19
 
 #define kMapPropertyCameraMode				20
 #define kMapPropertyCameraAngle				21
@@ -183,8 +184,9 @@ void property_palette_fill_map(void)
 		// optimizations
 
 	list_palette_add_header(&property_palette,0,"Map Optimizations");
-	list_palette_add_checkbox(&property_palette,kMapPropertyNormalCull,"Cull By Normals",(!map.settings.never_cull),FALSE);
-	list_palette_add_checkbox(&property_palette,kMapPropertyDisableShaders,"Disable Shaders",map.settings.no_shaders,FALSE);
+	list_palette_add_checkbox(&property_palette,kMapPropertyNormalCull,"Cull By Normals",(!map.optimize.never_cull),FALSE);
+	list_palette_add_string_float(&property_palette,kMapPropertyCullAngle,"Cull Angle",map.optimize.cull_angle,FALSE);
+	list_palette_add_checkbox(&property_palette,kMapPropertyDisableShaders,"Disable Shaders",map.optimize.no_shaders,FALSE);
 
 		// ambient
 
@@ -432,11 +434,15 @@ void property_palette_click_map(int id)
 			// optimizations
 			
 		case kMapPropertyNormalCull:
-			map.settings.never_cull=!map.settings.never_cull;
+			map.optimize.never_cull=!map.optimize.never_cull;
+			break;
+			
+		case kMapPropertyCullAngle:
+			dialog_property_string_run(list_string_value_float,(void*)&map.optimize.cull_angle,0,0,0);
 			break;
 
 		case kMapPropertyDisableShaders:
-			map.settings.no_shaders=!map.settings.no_shaders;
+			map.optimize.no_shaders=!map.optimize.no_shaders;
 			break;
 
 			// ambients

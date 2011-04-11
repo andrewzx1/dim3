@@ -631,6 +631,13 @@ void view_click_piece(editor_view_type *view,d3pnt *pt,bool double_click)
 	view_click_piece_map_pick_start(view);
 	view_pick_list_end(view,pt,&type,&main_idx,&sub_idx);
 	
+		// special normal flip if in normal hide 
+		// mode and polygon selection
+		
+	if ((type==mesh_piece) && (view->cull) && (state.show_normals) && (state.drag_mode==drag_mode_polygon)) {
+		piece_mesh_poly_invert_normals(&map.mesh.meshes[main_idx].polys[sub_idx]);
+	}
+	
 		// if a node, check link
 		// connections
 		

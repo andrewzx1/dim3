@@ -558,9 +558,13 @@ typedef struct		{
 						float								gravity,gravity_max_power,gravity_max_speed,
 															resistance;
 						char								network_game_list[256],params[param_str_len];
-						bool								never_cull,no_shaders;
 					} map_settings_type;
 					
+typedef struct		{
+						float								cull_angle;
+						bool								never_cull,no_shaders;
+					} map_optimize_type;					
+
 typedef struct		{
 						float								sound_pitch,light_map_boost;
 						char								sound_name[name_str_len];
@@ -716,6 +720,7 @@ typedef struct		{
 						map_rain_type						rain;
 						
 						map_settings_type					settings;
+						map_optimize_type					optimize;
 						map_camera_type						camera;
 						map_media_type						media;
 						map_music_type						music;

@@ -68,10 +68,14 @@ bool map_new(map_type *map,char *name)
 	map->settings.gravity_max_power=32;
 	map->settings.gravity_max_speed=400;
 	map->settings.resistance=1;
-	map->settings.never_cull=FALSE;
-	map->settings.no_shaders=FALSE;
 	
 	map->settings.network_game_list[0]=0x0;
+	
+		// optimization
+		
+	map->optimize.never_cull=FALSE;
+	map->optimize.cull_angle=0.0f;
+	map->optimize.no_shaders=FALSE;
 
 		// light maps
 

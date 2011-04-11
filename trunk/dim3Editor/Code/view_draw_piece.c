@@ -162,10 +162,10 @@ void view_draw_circle(d3pnt *pnt,d3col *col,int dist)
       
 ======================================================= */
 
-bool view_cull_poly(editor_view_type *view,map_mesh_type *mesh,map_mesh_poly_type *poly)
+bool view_cull_poly(editor_view_type *view,map_mesh_type *mesh,map_mesh_poly_type *poly,int mn,int mk)
 {
 	int			n;
-	d3pnt		center,camera_pnt;
+	d3pnt		center;
 	d3vct		face_vct;
 	
 	if (!view->cull) return(FALSE);
@@ -187,11 +187,9 @@ bool view_cull_poly(editor_view_type *view,map_mesh_type *mesh,map_mesh_poly_typ
 	center.z/=poly->ptsz;
 	
 		// is normal facing away?
-	
-	view_get_position(&camera_pnt);
-	
-	vector_create(&face_vct,center.x,center.y,center.z,camera_pnt.x,camera_pnt.y,camera_pnt.z);
-	return(vector_dot_product(&poly->tangent_space.normal,&face_vct)>0.0f);
+		
+	vector_create(&face_vct,center.x,center.y,center.z,view->pnt.x,view->pnt.y,view->pnt.z);
+	return(vector_dot_product(&poly->tangent_space.normal,&face_vct)>map.optimize.cull_angle);
 }
 
 bool view_clip_poly(editor_view_type *view,map_mesh_type *mesh,map_mesh_poly_type *poly)
@@ -438,7 +436,7 @@ void view_draw_meshes_texture(editor_view_type *view,bool opaque)
 			
 				// culling
 			
-			culled=view_cull_poly(view,mesh,mesh_poly);
+			culled=view_cull_poly(view,mesh,mesh_poly,n,k);
 		
 				// setup texture
 				
@@ -709,7 +707,10 @@ void view_draw_meshes_normals(editor_view_type *view_setup)
 							
 	glDisable(GL_TEXTURE_2D);
 	glDisable(GL_ALPHA_TEST);
-	
+
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LEQUAL);
+
 	glLineWidth(2.0f);
 	
 	mesh=map.mesh.meshes;
@@ -948,7 +949,7 @@ void view_draw_view(editor_view_type *view)
 		// push view forward to better z-buffer lines
       
 	if (state.show_normals) {
-		view_set_3D_projection(view,(map.editor_setup.view_near_dist+20),(map.editor_setup.view_far_dist-20),view_near_offset);
+		view_set_3D_projection(view,map.editor_setup.view_near_dist,map.editor_setup.view_far_dist,view_near_offset);
 		view_draw_meshes_normals(view);
 	}
 		

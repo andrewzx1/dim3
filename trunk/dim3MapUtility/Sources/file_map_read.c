@@ -72,8 +72,9 @@ void decode_map_settings_xml(map_type *map,int map_head)
         map->settings.gravity_max_power=xml_get_attribute_float_default(tag,"gravity_max_power",32);
 		map->settings.gravity_max_speed=xml_get_attribute_float_default(tag,"gravity_max_speed",400);
 		map->settings.resistance=xml_get_attribute_float_default(tag,"resistance",1);
-		map->settings.never_cull=xml_get_attribute_boolean(tag,"never_cull");
-		map->settings.no_shaders=xml_get_attribute_boolean(tag,"no_shaders");
+		map->optimize.never_cull=xml_get_attribute_boolean(tag,"never_cull");
+		map->optimize.cull_angle=xml_get_attribute_float_default(tag,"cull_angle",0.0f);
+		map->optimize.no_shaders=xml_get_attribute_boolean(tag,"no_shaders");
 		
         xml_get_attribute_text(tag,"network_game_list",map->settings.network_game_list,256);
 		xml_get_attribute_text(tag,"params",map->settings.params,param_str_len);

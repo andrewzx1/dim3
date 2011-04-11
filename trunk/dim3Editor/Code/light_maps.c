@@ -1826,7 +1826,7 @@ bool light_maps_create_process(char *err_str)
 		
 	for (n=0;n!=light_map_poly_count;n++) {
 
-		if ((n%10)==0) {
+		if ((n%100)==0) {
 			sprintf(str,"Light Map: Rendering Poly %d/%d",n,light_map_poly_count);
 			progress_next_title(str);
 		}
@@ -1902,7 +1902,7 @@ bool light_maps_create(void)
 		
 	npoly=light_map_get_poly_count();
 	
-	progress_start("Generating Light Maps...",(6+(max_light_map_textures*3)+(npoly/10)));
+	progress_start("Generating Light Maps...",(6+(max_light_map_textures*3)+(npoly/100)));
 	ok=light_maps_create_process(err_str);
 	progress_end();
 

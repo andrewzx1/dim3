@@ -44,7 +44,7 @@ void vector_normalize(d3vct *v)
 	dz=(double)v->z;
 
 	d=sqrt((dx*dx)+(dy*dy)+(dz*dz));
-	if (d==0) return;
+	if (d==0.0) return;
 	
 	d=1.0/d;
 	v->x=(float)(dx*d);
