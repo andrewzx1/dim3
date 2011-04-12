@@ -64,6 +64,7 @@ int map_cinema_add(map_type *map)
 	cinema->len_msec=0;
 	cinema->freeze_input=TRUE;
 	cinema->show_hud=FALSE;
+	cinema->no_cancel=FALSE;
 	
 	cinema->naction=0;
 	cinema->actions=NULL;

@@ -653,7 +653,7 @@ typedef struct		{
 
 typedef struct		{
 						int									naction,len_msec;
-						bool								freeze_input,show_hud;
+						bool								freeze_input,show_hud,no_cancel;
 						char								name[name_str_len];
 						map_cinema_action_type				*actions;
 					} map_cinema_type;
