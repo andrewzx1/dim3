@@ -406,6 +406,7 @@ void write_map_cinemas_xml(map_type *map)
 		xml_add_attribute_int("length",cinema->len_msec);
 		xml_add_attribute_boolean("freeze_input",cinema->freeze_input);
 		xml_add_attribute_boolean("show_hud",cinema->show_hud);
+		xml_add_attribute_boolean("no_cancel",cinema->no_cancel);
 		xml_add_tagend(FALSE);
 		
 		xml_add_tagstart("Actions");

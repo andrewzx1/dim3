@@ -503,7 +503,7 @@ void cinema_run(void)
 		// mouse buttons end cinema
 		// if we are in an input freeze
 		
-	if (map.cinema.cinemas[view.cinema.idx].freeze_input) {
+	if ((map.cinema.cinemas[view.cinema.idx].freeze_input) && (!map.cinema.cinemas[view.cinema.idx].no_cancel)) {
 		if (input_gui_get_mouse_left_button_down()) cinema_done=TRUE;
 	}
 	

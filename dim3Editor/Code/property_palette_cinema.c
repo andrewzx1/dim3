@@ -37,6 +37,7 @@ and can be sold or given away.
 #define kCinemaPropertyLength				1
 #define kCinemaPropertyFreezeInput			2
 #define kCinemaPropertyShowHUD				3
+#define kCinemaPropertyNoCancel				4
 
 #define kCinmeaPropertySort					10
 
@@ -76,6 +77,7 @@ void property_palette_fill_cinema(int cinema_idx)
 	list_palette_add_header(&property_palette,0,"Cinema Settings");
 	list_palette_add_checkbox(&property_palette,kCinemaPropertyFreezeInput,"Freeze Input",cinema->freeze_input,FALSE);
 	list_palette_add_checkbox(&property_palette,kCinemaPropertyShowHUD,"Show HUD",cinema->show_hud,FALSE);
+	list_palette_add_checkbox(&property_palette,kCinemaPropertyNoCancel,"No Cancel",cinema->no_cancel,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Cinema Sort");
 	list_palette_add_string_selectable_button(&property_palette,kCinmeaPropertySort,list_button_set,kCinmeaPropertySort,"Sort Actions",NULL,FALSE,FALSE);
@@ -251,6 +253,10 @@ void property_palette_click_cinema(int cinema_idx,int id)
 
 		case kCinemaPropertyShowHUD:
 			cinema->show_hud=!cinema->show_hud;
+			break;
+
+		case kCinemaPropertyNoCancel:
+			cinema->no_cancel=!cinema->no_cancel;
 			break;
 
 	}

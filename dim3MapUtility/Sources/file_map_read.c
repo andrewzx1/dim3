@@ -344,6 +344,7 @@ void decode_map_cinemas_xml(map_type *map,int map_head)
 		cinema->len_msec=xml_get_attribute_int(cinema_tag,"length");
 		cinema->freeze_input=xml_get_attribute_boolean(cinema_tag,"freeze_input");
 		cinema->show_hud=xml_get_attribute_boolean(cinema_tag,"show_hud");
+		cinema->no_cancel=xml_get_attribute_boolean(cinema_tag,"no_cancel");
 		
 		cinema->naction=0;
 		
