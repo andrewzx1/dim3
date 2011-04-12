@@ -175,6 +175,19 @@ void light_map_texture_map_folder_name(char *map_name)
 
 }
 
+int light_map_textures_count(void)
+{
+	int				n,count;
+	
+	count=0;
+	
+	for (n=0;n!=light_map_texture_count;n++) {
+		if (light_map_textures[n].pixel_data!=NULL) count++;
+	}
+	
+	return(count);
+}
+
 void light_map_textures_save(char *base_path)
 {
 	int				n,txt_idx;
@@ -207,7 +220,7 @@ void light_map_textures_save(char *base_path)
 			
 		map.textures[txt_idx].additive=FALSE;
 		map.textures[txt_idx].pixelated=FALSE;
-		map.textures[txt_idx].compress=FALSE;
+		map.textures[txt_idx].compress=TRUE;
 		
 			// save bitmap
 		
@@ -1827,7 +1840,7 @@ bool light_maps_create_process(char *err_str)
 	for (n=0;n!=light_map_poly_count;n++) {
 
 		if ((n%100)==0) {
-			sprintf(str,"Light Map: Rendering Poly %d/%d",n,light_map_poly_count);
+			sprintf(str,"Light Map: Rendering Poly %d/%d (Textures: %d)",n,light_map_poly_count,light_map_textures_count());
 			progress_next_title(str);
 		}
 		
