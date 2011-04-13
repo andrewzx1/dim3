@@ -102,6 +102,16 @@ void property_palette_fill(void)
 			property_palette_fill_hud();
 			break;
 
+		case item_interface_radar:
+			list_palette_set_title(&property_palette,"Radar");
+			property_palette_fill_radar();
+			break;
+
+		case item_interface_multiplayer:
+			list_palette_set_title(&property_palette,"Multiplayer");
+			property_palette_fill_multiplayer();
+			break;
+
 		case item_interface_sound:
 			list_palette_set_title(&property_palette,"Sounds List");
 			property_palette_fill_sounds();
@@ -204,6 +214,14 @@ void property_palette_click(d3pnt *pnt,bool double_click)
 
 		case item_interface_hud:
 			property_palette_click_hud(property_palette.item_id);
+			break;
+
+		case item_interface_radar:
+			property_palette_click_radar(property_palette.item_id);
+			break;
+
+		case item_interface_multiplayer:
+			property_palette_click_multiplayer(property_palette.item_id);
 			break;
 
 		case item_interface_sound:

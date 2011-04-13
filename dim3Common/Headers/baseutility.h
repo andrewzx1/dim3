@@ -1209,11 +1209,11 @@ typedef struct		{
 typedef struct		{
 						char							name[name_str_len];
 						bool							use_teams,monsters;
-					} hud_net_game_type;
+					} iface_net_game_type;
 
 typedef struct		{
 						int								ngame;
-						hud_net_game_type				games[max_net_game];
+						iface_net_game_type				games[max_net_game];
 					} iface_net_games_type;
 
 typedef struct		{

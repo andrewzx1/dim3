@@ -310,6 +310,22 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\dim3Setup\Code\alt_property_palette_multiplayer_character.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Setup\Code\alt_property_palette_multiplayer_game.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Setup\Code\alt_property_palette_multiplayer_option.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Setup\Code\alt_property_palette_radar_icon.c"
+						>
+					</File>
+					<File
 						RelativePath="..\..\dim3Setup\Code\item_palette.c"
 						>
 					</File>
@@ -350,7 +366,15 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\dim3Setup\Code\property_palette_multiplayer.c"
+						>
+					</File>
+					<File
 						RelativePath="..\..\dim3Setup\Code\property_palette_particles.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Setup\Code\property_palette_radar.c"
 						>
 					</File>
 					<File
