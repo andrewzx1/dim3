@@ -29,32 +29,32 @@ and can be sold or given away.
 // Menus
 //
 
-#define app_menu_apple					128
-#define app_menu_file					129
+#define app_menu_apple							128
+#define app_menu_file							129
 
-#define kCommandAbout					FOUR_CHAR_CODE('abot')
+#define kCommandAbout							FOUR_CHAR_CODE('abot')
 
-#define kCommandFileQuit				FOUR_CHAR_CODE('quit')
+#define kCommandFileQuit						FOUR_CHAR_CODE('quit')
 
 //
 // Item types
 //
 
-#define item_interface					0
-#define item_interface_settings			1
-#define item_interface_intro			2
-#define item_interface_hud				3
-#define item_interface_radar			4
-#define item_interface_multiplayer		5
-#define item_interface_menu				6
-#define item_interface_choosers			7
-#define item_interface_sound			8
-#define item_interface_particle			9
-#define item_interface_ring				10
-#define item_interface_halo				11
-#define item_interface_mark				12
-#define item_interface_crosshair		13
-#define item_interface_action			14
+#define item_interface							0
+#define item_interface_settings					1
+#define item_interface_intro					2
+#define item_interface_hud						3
+#define item_interface_radar					4
+#define item_interface_multiplayer				5
+#define item_interface_menu						6
+#define item_interface_choosers					7
+#define item_interface_sound					8
+#define item_interface_particle					9
+#define item_interface_ring						10
+#define item_interface_halo						11
+#define item_interface_mark						12
+#define item_interface_crosshair				13
+#define item_interface_action					14
 
 //
 // intro button types
@@ -81,12 +81,14 @@ and can be sold or given away.
 //
 
 typedef struct		{
-						int							cur_item,
-													cur_intro_button_idx,cur_intro_model_idx,
-													cur_hud_bitmap_idx,cur_hud_text_idx,cur_hud_bar_idx,
-													cur_sound_idx,cur_particle_idx,cur_ring_idx,
-													cur_halo_idx,cur_mark_idx,cur_crosshair_idx,
-													cur_action_idx;
+						int						cur_item,
+												cur_intro_button_idx,cur_intro_model_idx,
+												cur_hud_bitmap_idx,cur_hud_text_idx,cur_hud_bar_idx,
+												cur_radar_icon_idx,cur_multiplayer_character_idx,
+												cur_multiplayer_game_idx,cur_multiplayer_option_idx,
+												cur_sound_idx,cur_particle_idx,cur_ring_idx,
+												cur_halo_idx,cur_mark_idx,cur_crosshair_idx,
+												cur_action_idx;
 					} setup_state_type;
 
 

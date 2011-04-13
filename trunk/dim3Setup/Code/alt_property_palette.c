@@ -117,6 +117,32 @@ void alt_property_palette_fill(void)
 			}
 			break;
 
+		case item_interface_radar:
+			if (state.cur_radar_icon_idx!=-1) {
+				list_palette_set_title(&alt_property_palette,"Radar Icon");
+				alt_property_palette_fill_radar_icon(state.cur_radar_icon_idx);
+				break;
+			}
+			break;
+
+		case item_interface_multiplayer:
+			if (state.cur_multiplayer_character_idx!=-1) {
+				list_palette_set_title(&alt_property_palette,"Multiplayer Character");
+				alt_property_palette_fill_multiplayer_character(state.cur_multiplayer_character_idx);
+				break;
+			}
+			if (state.cur_multiplayer_game_idx!=-1) {
+				list_palette_set_title(&alt_property_palette,"Multiplayer Game");
+				alt_property_palette_fill_multiplayer_game(state.cur_multiplayer_game_idx);
+				break;
+			}
+			if (state.cur_multiplayer_option_idx!=-1) {
+				list_palette_set_title(&alt_property_palette,"Multiplayer Option");
+				alt_property_palette_fill_multiplayer_option(state.cur_multiplayer_option_idx);
+				break;
+			}
+			break;
+
 	}
 }
 
@@ -185,6 +211,28 @@ void alt_property_palette_click(d3pnt *pnt,bool double_click)
 			}
 			if (state.cur_hud_bar_idx!=-1) {
 				alt_property_palette_click_hud_bar(state.cur_hud_bar_idx,alt_property_palette.item_id);
+				break;
+			}
+			break;
+
+		case item_interface_radar:
+			if (state.cur_radar_icon_idx!=-1) {
+				alt_property_palette_click_radar_icon(state.cur_radar_icon_idx,alt_property_palette.item_id);
+				break;
+			}
+			break;
+
+		case item_interface_multiplayer:
+			if (state.cur_multiplayer_character_idx!=-1) {
+				alt_property_palette_click_multiplayer_character(state.cur_multiplayer_character_idx,alt_property_palette.item_id);
+				break;
+			}
+			if (state.cur_multiplayer_game_idx!=-1) {
+				alt_property_palette_click_multiplayer_game(state.cur_multiplayer_game_idx,alt_property_palette.item_id);
+				break;
+			}
+			if (state.cur_multiplayer_option_idx!=-1) {
+				alt_property_palette_click_multiplayer_option(state.cur_multiplayer_option_idx,alt_property_palette.item_id);
 				break;
 			}
 			break;
