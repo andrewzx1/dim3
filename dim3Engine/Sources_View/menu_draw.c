@@ -42,17 +42,16 @@ extern js_type				js;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
 
-extern void debug_game(void);
-extern void map_restart_ambient(void);
-
 /* =======================================================
 
       Start and Stop Menu
       
 ======================================================= */
 
-void menu_draw_start(void)
+void menu_draw_start(char *name)
 {
+	int				sub_idx;
+
 		// if not hosting, pause
 
 	if ((net_setup.mode!=net_mode_host) && (net_setup.mode!=net_mode_host_dedicated)) game_time_pause_start();
@@ -73,6 +72,13 @@ void menu_draw_start(void)
 	view.menu.menu_idx=0;
 	view.menu.click_item_idx=-1;
 	view.menu.mouse_down=FALSE;
+
+		// any sub menu?
+
+	if (name!=NULL) {
+		sub_idx=iface_menu_find_idx(&iface,name);
+		if (sub_idx!=-1) view.menu.menu_idx=sub_idx;
+	}
 	
 		// always flip off scores
 		// if they are on
@@ -168,7 +174,7 @@ void menu_input(void)
 		if ((view.menu.fade_in) || (view.menu.fade_out)) return;
 		
 		if (!view.menu.active) {
-			menu_draw_start();
+			menu_draw_start(NULL);
 		}
 		else {
 			menu_draw_end(TRUE);

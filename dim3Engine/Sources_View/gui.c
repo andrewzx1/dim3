@@ -42,10 +42,6 @@ int							gui_background_image_idx;
 char						gui_last_key;
 iface_chooser_frame_type	gui_frame;
 
-extern void game_time_pause_start(void);
-extern void game_time_pause_end(void);
-extern void map_restart_ambient(void);
-
 /* =======================================================
 
       GUI Background

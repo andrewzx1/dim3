@@ -32,11 +32,6 @@ and can be sold or given away.
 #include "interface.h"
 #include "scripts.h"
 
-extern void game_time_pause_start(void);
-extern void game_time_pause_end(void);
-extern void map_restart_ambient(void);
-extern bool debug_change_map(char *name);
-
 extern bool						game_loop_quit;
 
 extern view_type				view;

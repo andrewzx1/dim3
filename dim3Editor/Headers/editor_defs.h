@@ -308,7 +308,6 @@ and can be sold or given away.
 #define kCommandMapLowerY						FOUR_CHAR_CODE('mlwy')
 #define kCommandMapCenter						FOUR_CHAR_CODE('mctr')
 #define kCommandMapResetUV						FOUR_CHAR_CODE('mpuv')
-#define kCommandMapCreateTangentBinormal		FOUR_CHAR_CODE('rmtb')
 #define kCommandMapCreateNormals				FOUR_CHAR_CODE('rmnm')
 #define kCommandClearLightMaps					FOUR_CHAR_CODE('clmp')
 #define kCommandBuildLightMaps					FOUR_CHAR_CODE('lmap')
@@ -336,6 +335,8 @@ and can be sold or given away.
 #define kCommandMeshSingleUV					FOUR_CHAR_CODE('mrss')
 #define kCommandMeshCreateNormals				FOUR_CHAR_CODE('rsnm')
 #define kCommandMeshInvertNormals				FOUR_CHAR_CODE('isnm')
+#define kCommandMeshSetNormalsOut				FOUR_CHAR_CODE('nout')
+#define kCommandMeshSetNormalsIn				FOUR_CHAR_CODE('ninn')
 
 #define kCommandPolygonHole						FOUR_CHAR_CODE('fhl1')
 #define kCommandPolygonSnapToGrid				FOUR_CHAR_CODE('psnp')

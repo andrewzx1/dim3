@@ -275,7 +275,6 @@ bool view_click_drag_mesh_handle(editor_view_type *view,d3pnt *pt)
 		}
 		
 		if ((state.auto_texture) && (!mesh->flag.lock_uv)) map_mesh_reset_uv(&map,mesh_idx);
-		if (mesh->normal_mode!=mesh_normal_mode_lock) map_recalc_normals_mesh(mesh,FALSE);
 
         main_wind_draw();
 	}
@@ -458,7 +457,6 @@ bool view_click_drag_mesh(editor_view_type *view,d3pnt *pt)
 			}
 			
 			if ((state.auto_texture) && (!mesh->flag.lock_uv)) map_mesh_reset_uv(&map,mesh_idx);
-			if (mesh->normal_mode!=mesh_normal_mode_lock) map_recalc_normals_mesh(mesh,FALSE);
 		}
 		
         main_wind_draw();
@@ -712,7 +710,6 @@ bool view_click_drag_vertex(editor_view_type *view,d3pnt *pt)
 		view_click_snap(mesh_idx,dpt);
 	
 		if ((state.auto_texture) && (!mesh->flag.lock_uv)) map_mesh_reset_uv(&map,mesh_idx);
-		if (mesh->normal_mode!=mesh_normal_mode_lock) map_recalc_normals_mesh(mesh,FALSE);
 
         main_wind_draw();
 	}

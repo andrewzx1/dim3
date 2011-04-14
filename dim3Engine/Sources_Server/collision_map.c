@@ -254,9 +254,8 @@ bool collide_circle_check_object_cylinder(d3pnt *circle_pnt,int radius,d3pnt *mi
 
 bool collide_circle_check_object_box(d3pnt *circle_pnt,int radius,d3pnt *min,d3pnt *max,bool skip_pickup,int *p_cur_dist,obj_type *obj,d3pnt *cur_hit_pnt)
 {
-	int						x_sz,z_sz;
+	int						x_sz,z_sz,dist;
 	float					rang;
-	double					dist;
 	d3pnt					obj_min,obj_max,hit_pnt;
 	
 	rang=angle_add(obj->ang.y,obj->draw.rot.y);

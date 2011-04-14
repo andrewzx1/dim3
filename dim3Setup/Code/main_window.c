@@ -37,7 +37,8 @@ file_path_setup_type			file_path_setup;
 iface_type						iface;
 setup_state_type				state;
 
-extern list_palette_type		item_palette,property_palette,alt_property_palette;
+extern list_palette_type		item_palette,property_palette,
+								alt_property_palette,alt2_property_palette;
 
 /* =======================================================
 
@@ -55,18 +56,21 @@ void main_wind_initialize(void)
 	item_palette_initialize();
 	property_palette_initialize();
 	alt_property_palette_initialize();
+	alt2_property_palette_initialize();
 
 		// size setups
 		
 	item_palette_setup();
 	property_palette_setup();
 	alt_property_palette_setup();
+	alt2_property_palette_setup();
 }
 
 void main_wind_shutdown(void)
 {
 		// shutdown palettes
 		
+	alt2_property_palette_shutdown();
 	alt_property_palette_shutdown();
 	property_palette_shutdown();
 	item_palette_shutdown();
@@ -117,6 +121,7 @@ void main_wind_draw_no_swap(void)
 	item_palette_draw();
 	property_palette_draw();
 	alt_property_palette_draw();
+	alt2_property_palette_draw();
 }
 
 void main_wind_draw(void)
@@ -149,6 +154,11 @@ void main_wind_click(d3pnt *pnt,bool double_click)
 		alt_property_palette_click(pnt,double_click);
 		return;
 	}
+
+	if ((pnt->x>=alt2_property_palette.box.lx) && (pnt->x<=alt2_property_palette.box.rx) && (pnt->y>=alt2_property_palette.box.ty) && (pnt->y<alt2_property_palette.box.by)) {
+		alt2_property_palette_click(pnt,double_click);
+		return;
+	}
 }
 
 /* =======================================================
@@ -173,6 +183,11 @@ void main_wind_scroll_wheel(d3pnt *pnt,int delta)
 
 	if ((pnt->x>=alt_property_palette.box.lx) && (pnt->x<=alt_property_palette.box.rx) && (pnt->y>=alt_property_palette.box.ty) && (pnt->y<alt_property_palette.box.by)) {
 		alt_property_palette_scroll_wheel(pnt,delta);
+		return;
+	}
+
+	if ((pnt->x>=alt2_property_palette.box.lx) && (pnt->x<=alt2_property_palette.box.rx) && (pnt->y>=alt2_property_palette.box.ty) && (pnt->y<alt2_property_palette.box.by)) {
+		alt2_property_palette_scroll_wheel(pnt,delta);
 		return;
 	}
 }
@@ -229,5 +244,6 @@ void main_wind_resize(void)
 	item_palette_setup();
 	property_palette_setup();
 	alt_property_palette_setup();
+	alt2_property_palette_setup();
 }
 

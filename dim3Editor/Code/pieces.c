@@ -534,8 +534,6 @@ void piece_rotate(float rot_x,float rot_y,float rot_z)
 		
 		map_mesh_calculate_center(&map,mesh_idx,&center_pnt);
 		map_mesh_rotate(&map,mesh_idx,&center_pnt,&rot);
-		
-		if (map.mesh.meshes[mesh_idx].normal_mode!=mesh_normal_mode_lock) map_recalc_normals_mesh(&map.mesh.meshes[mesh_idx],FALSE);
 	}
 	
 	main_wind_draw();
@@ -963,13 +961,53 @@ void piece_mesh_invert_normals(bool poly_only)
 				piece_mesh_poly_invert_normals(&mesh->polys[k]);
 			}
 		}
-		
-			// always lock inverted polys
-			
-		mesh->normal_mode=mesh_normal_mode_lock;
 	}
 	
 	main_wind_draw();
+}
+
+void piece_mesh_set_normals_in_out(bool out)
+{
+	int					n,k,sel_count,
+						type,mesh_idx,poly_idx;
+	bool				is_out;
+	d3vct				face_vct;
+	map_mesh_type		*mesh;
+	map_mesh_poly_type	*poly;
+
+	sel_count=select_count();
+	
+	for (n=0;n!=sel_count;n++) {
+		select_get(n,&type,&mesh_idx,&poly_idx);
+		if (type!=mesh_piece) continue;
+		
+			// setup the mesh
+			
+		mesh=&map.mesh.meshes[mesh_idx];
+		map_prepare_mesh_box(mesh);
+
+			// flip the normals for in/out
+
+		poly=mesh->polys;
+
+		for (k=0;k!=mesh->npoly;k++) {
+
+			map_prepare_mesh_poly(mesh,poly);
+
+				// determine if poly is facing 'out'
+		
+			vector_create(&face_vct,poly->box.mid.x,poly->box.mid.y,poly->box.mid.z,mesh->box.mid.x,mesh->box.mid.y,mesh->box.mid.z);
+			is_out=(vector_dot_product(&poly->tangent_space.normal,&face_vct)>0.0f);
+
+			if (is_out!=out) {
+				poly->tangent_space.normal.x=-poly->tangent_space.normal.x;
+				poly->tangent_space.normal.y=-poly->tangent_space.normal.y;
+				poly->tangent_space.normal.z=-poly->tangent_space.normal.z;
+			}
+
+			poly++;
+		}
+	}
 }
 
 /* =======================================================

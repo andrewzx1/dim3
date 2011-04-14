@@ -59,6 +59,9 @@ extern void map_set_ambient(char *name,float pitch);
 
 extern bool server_initialize(char *err_str);
 extern void server_shutdown(void);
+extern bool server_game_start(bool in_file_load,int skill,int simple_save_idx,char *err_str);
+extern void server_game_stop(void);
+
 extern void server_loop(void);
 
 //
@@ -67,6 +70,9 @@ extern void server_loop(void);
 
 extern bool view_initialize(char *err_str);
 extern void view_shutdown(void);
+extern void view_game_start(void);
+extern void view_game_stop(void);
+
 extern bool view_shader_on(void);
 extern void view_loop_input(void);
 extern void view_run(void);
@@ -74,6 +80,14 @@ extern void view_loop_draw(void);
 extern void view_loop_draw_dedicated_host(void);
 extern void view_clear_fps(void);
 extern void view_calculate_fps(void);
+
+extern void view_game_reset_timing(void);
+
+extern bool view_compile_mesh_gl_list_init(void);
+extern void view_compile_mesh_gl_list_free(void);
+
+extern void view_visibility_check_calculate(void);
+
 
 //
 // timing
@@ -335,7 +349,7 @@ extern void decal_dispose(void);
 // gui screens
 //
 
-extern void menu_draw_start(void);
+extern void menu_draw_start(char *name);
 
 extern void intro_open(void);
 extern void intro_close(void);
@@ -446,6 +460,8 @@ extern void al_stop_all_looping_sources(void);
 extern void al_ambient_list_clear(void);
 extern void al_ambient_list_add(int buffer_idx,d3pnt *pnt,float pitch);
 extern void al_ambients_run(void);
+
+extern void map_restart_ambient(void);
 
 //
 // input
@@ -794,3 +810,12 @@ extern void view_fade_cinema_fade_in_start(int msec);
 extern void view_fade_cinema_fade_out_start(int msec);
 extern void view_fade_cancel(void);
 extern void view_fade_draw(void);
+
+//
+// debug
+//
+
+extern void debug_game(void);
+extern bool debug_change_map(char *name);
+
+

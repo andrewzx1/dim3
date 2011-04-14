@@ -286,6 +286,10 @@
 					Name="Palettes"
 					>
 					<File
+						RelativePath="..\..\dim3Setup\Code\alt2_property_palette.c"
+						>
+					</File>
+					<File
 						RelativePath="..\..\dim3Setup\Code\alt_property_palette.c"
 						>
 					</File>
@@ -346,6 +350,10 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\dim3Setup\Code\property_palette_chooser.c"
+						>
+					</File>
+					<File
 						RelativePath="..\..\dim3Setup\Code\property_palette_crosshairs.c"
 						>
 					</File>
@@ -363,6 +371,10 @@
 					</File>
 					<File
 						RelativePath="..\..\dim3Setup\Code\property_palette_marks.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Setup\Code\property_palette_menu.c"
 						>
 					</File>
 					<File

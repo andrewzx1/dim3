@@ -5,7 +5,8 @@
 #define IDR_MAIN_MENU						10
 #define IDR_ACCELERATOR						11
 
-#define ID_FILE_EXIT						100
+#define ID_FILE_SAVE						100
+#define ID_FILE_EXIT						101
 
 // dialogs
 

@@ -187,7 +187,7 @@ void win32_main_wind_open(void)
 
 	GetClientRect(GetDesktopWindow(),&wbox);
 
-	wid=(list_palette_tree_sz*3)+8;
+	wid=(list_palette_tree_sz*4)+8;
 	high=(wbox.bottom-wbox.top)-150;
 
 	x=((wbox.right-wbox.left)-wid)/2;

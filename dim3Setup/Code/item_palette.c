@@ -58,6 +58,10 @@ void item_palette_initialize(void)
 	state.cur_hud_text_idx=-1;
 	state.cur_hud_bar_idx=-1;
 	state.cur_radar_icon_idx=-1;
+	state.cur_menu_idx=-1;
+	state.cur_menu_item_idx=-1;
+	state.cur_chooser_idx=-1;
+	state.cur_chooser_item_idx=-1;
 	state.cur_multiplayer_character_idx=-1;
 	state.cur_multiplayer_game_idx=-1;
 	state.cur_multiplayer_option_idx=-1;
@@ -109,10 +113,10 @@ void item_palette_fill(void)
 	list_palette_add_item(&item_palette,item_interface_radar,0,"Radar",(state.cur_item==item_interface_radar),FALSE);
 	list_palette_add_item(&item_palette,item_interface_multiplayer,0,"Multiplayer",(state.cur_item==item_interface_multiplayer),FALSE);
 
-	/*
 	list_palette_add_item(&item_palette,item_interface_menu,0,"Menu",(state.cur_item==item_interface_menu),FALSE);
-	list_palette_add_item(&item_palette,item_interface_choosers,0,"Choosers",(state.cur_item==item_interface_choosers),FALSE);
+	list_palette_add_item(&item_palette,item_interface_chooser,0,"Choosers",(state.cur_item==item_interface_chooser),FALSE);
 
+	/*
 	list_palette_add_item(&item_palette,item_interface_sound,0,"Sound",(state.cur_item==item_interface_sound),FALSE);
 	list_palette_add_item(&item_palette,item_interface_particle,0,"Particles",(state.cur_item==item_interface_particle),FALSE);
 	list_palette_add_item(&item_palette,item_interface_ring,0,"Rings",(state.cur_item==item_interface_ring),FALSE);

@@ -39,12 +39,6 @@ extern server_type			server;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
 
-extern void game_time_pause_start(void);
-extern void game_time_pause_end(void);
-extern bool server_game_start(bool in_file_load,int skill,int simple_save_idx,char *err_str);
-extern void server_game_stop(void);
-extern void view_game_start(void);
-extern void view_game_stop(void);
 extern void net_host_game_end(void);
 
 /* =======================================================

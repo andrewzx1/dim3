@@ -71,7 +71,6 @@ int				win32_menu_remap[][2]={
 					{kCommandMapLowerY,ID_MAP_LOWER_Y},
 					{kCommandMapCenter,ID_MAP_CENTER},
 					{kCommandMapResetUV,ID_MAP_RESET_UV},
-					{kCommandMapCreateTangentBinormal,ID_MAP_RECALC_TANGENT},
 					{kCommandMapCreateNormals,ID_MAP_RECALC_NORMAL},
 					{kCommandClearLightMaps,ID_MAP_CLEAR_LIGHT_MAP},
 					{kCommandBuildLightMaps,ID_MAP_BUILD_LIGHT_MAP},
@@ -99,6 +98,8 @@ int				win32_menu_remap[][2]={
 					{kCommandMeshSingleUV,ID_MESH_SINGLE_STAMP_UV},
 					{kCommandMeshCreateNormals,ID_MESH_RECALC_NORMAL},
 					{kCommandMeshInvertNormals,ID_MESH_INVERT_NORMAL},
+					{kCommandMeshSetNormalsOut,ID_MESH_SET_NORMAL_OUT},
+					{kCommandMeshSetNormalsIn,ID_MESH_SET_NORMAL_IN},
 
 					{kCommandPolygonHole,ID_POLYGON_PUNCH_HOLE},
 					{kCommandPolygonSnapToGrid,ID_POLYGON_SNAP_TO_GRID},
