@@ -32,6 +32,7 @@ and can be sold or given away.
 
 int				win32_menu_remap[][2]={
 
+					{kCommandFileSave,ID_FILE_SAVE},
 					{kCommandFileQuit,ID_FILE_EXIT},
 
 					{-1,-1}

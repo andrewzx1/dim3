@@ -329,7 +329,7 @@ void map_recalc_normals_mesh(map_mesh_type *mesh,bool only_tangent)
 	int					n,mode;
 	float				u10,u20,v10,v20,f_denom;
 	bool				is_out,invert,all_poly_mesh;
-	d3vct				p10,p20,vlft,vrgt,v_num,face_vct,binormal;
+	d3vct				p10,p20,vlft,vrgt,v_num,face_vct;
 	d3pnt				*pt,*pt_1,*pt_2,center;
 	map_mesh_poly_type	*poly;
 	
@@ -351,6 +351,10 @@ void map_recalc_normals_mesh(map_mesh_type *mesh,bool only_tangent)
 		vector_create(&p10,pt_1->x,pt_1->y,pt_1->z,pt->x,pt->y,pt->z);
 		vector_create(&p20,pt_2->x,pt_2->y,pt_2->z,pt->x,pt->y,pt->z);
 
+			// calculate the normal by the cross
+
+		if (!only_tangent) vector_cross_product(&poly->tangent_space.normal,&p10,&p20);
+
 			// get the UV scalars (u1-u0), (u2-u0), (v1-v0), (v2-v0)
 
 		u10=poly->main_uv.x[1]-poly->main_uv.x[0];
@@ -369,33 +373,15 @@ void map_recalc_normals_mesh(map_mesh_type *mesh,bool only_tangent)
 		if (f_denom!=0.0f) f_denom=1.0f/f_denom;
 		vector_scalar_multiply(&poly->tangent_space.tangent,&v_num,f_denom);
 
-			// calculate the binormal
-			// this is not kept around and is only
-			// temporary so we can calc the normal
-			// (u20xp10)-(u10xp20) / (v10*u20)-(u10*v20)
-
-		vector_scalar_multiply(&vlft,&p10,u20);
-		vector_scalar_multiply(&vrgt,&p20,u10);
-		vector_subtract(&v_num,&vlft,&vrgt);
-
-		f_denom=(v10*u20)-(u10*v20);
-		if (f_denom!=0.0f) f_denom=1.0f/f_denom;
-		vector_scalar_multiply(&binormal,&v_num,f_denom);
-
-			// calculate the normal
-			// T cross B (cross routine automatically normalizes)
-			
 		vector_normalize(&poly->tangent_space.tangent);
-		vector_normalize(&binormal);
 
-		if ((!only_tangent) && (mesh->normal_mode!=mesh_normal_mode_lock)) vector_cross_product(&poly->tangent_space.normal,&poly->tangent_space.tangent,&binormal);
-		
 		poly++;
 	}
 	
-		// skip out now if normals are locked
-		
-	if (mesh->normal_mode==mesh_normal_mode_lock) return;
+		// skip out now if we are only calculating
+		// tangents.  This step checks for flipped normals
+
+	if (only_tangent) return;
 	
 		// setup mesh boxes
 		
@@ -411,7 +397,6 @@ void map_recalc_normals_mesh(map_mesh_type *mesh,bool only_tangent)
 		// check for inversions
 		
 	mode=mesh->normal_mode;
-	
 	if (mode==mesh_normal_mode_auto) mode=map_recalc_normals_get_auto_mode(mesh);
 	
 	all_poly_mesh=FALSE;

@@ -2,7 +2,7 @@
 
 Module: dim3 Setup
 Author: Brian Barnes
- Usage: Alt Property Palette
+ Usage: Alt2 Property Palette
 
 ***************************** License ********************************
 
@@ -33,55 +33,56 @@ and can be sold or given away.
 #include "ui_common.h"
 #include "interface.h"
 
-list_palette_type				alt_property_palette;
+list_palette_type				alt2_property_palette;
 
 extern setup_state_type			state;
 
 /* =======================================================
 
-      Alt Property Palette Setup
+      Alt2 Property Palette Setup
       
 ======================================================= */
 
-void alt_property_palette_initialize(void)
+void alt2_property_palette_initialize(void)
 {
-	list_palette_list_initialize(&alt_property_palette,"No Properties");
+	list_palette_list_initialize(&alt2_property_palette,"No Properties");
 
-	alt_property_palette.item_type=0;
-	alt_property_palette.item_idx=-1;
+	alt2_property_palette.item_type=0;
+	alt2_property_palette.item_idx=-1;
 }
 
-void alt_property_palette_shutdown(void)
+void alt2_property_palette_shutdown(void)
 {
-	list_palette_list_shutdown(&alt_property_palette);
+	list_palette_list_shutdown(&alt2_property_palette);
 }
 
-void alt_property_palette_setup(void)
+void alt2_property_palette_setup(void)
 {
 	d3rect			wbox;
 	
 	os_get_window_box(&wbox);
 
-	alt_property_palette.pixel_sz=list_palette_tree_sz;
+	alt2_property_palette.pixel_sz=list_palette_tree_sz;
 
-	alt_property_palette.box.lx=list_palette_tree_sz*2;
-	alt_property_palette.box.rx=alt_property_palette.box.lx+list_palette_tree_sz;
-	alt_property_palette.box.ty=wbox.ty;
-	alt_property_palette.box.by=wbox.by;
+	alt2_property_palette.box.lx=list_palette_tree_sz*3;
+	alt2_property_palette.box.rx=alt2_property_palette.box.lx+list_palette_tree_sz;
+	alt2_property_palette.box.ty=wbox.ty;
+	alt2_property_palette.box.by=wbox.by;
 }
 
 /* =======================================================
 
-      Alt Property Palette Fill
+      Alt2 Property Palette Fill
       
 ======================================================= */
 
-void alt_property_palette_fill(void)
+void alt2_property_palette_fill(void)
 {
 		// delete the properties
 
-	list_palette_delete_all_items(&alt_property_palette);
+	list_palette_delete_all_items(&alt2_property_palette);
 
+	/*
 		// selection properties
 
 	switch (state.cur_item) {
@@ -144,49 +145,51 @@ void alt_property_palette_fill(void)
 			break;
 
 	}
+	*/
 
-	list_palette_set_title(&alt_property_palette,"No Properties");
+	list_palette_set_title(&alt2_property_palette,"No Properties");
 }
 
 /* =======================================================
 
-      Alt Property Palette Draw
+      Alt2 Property Palette Draw
       
 ======================================================= */
 
-void alt_property_palette_draw(void)
+void alt2_property_palette_draw(void)
 {
-	alt_property_palette_fill();
-	list_palette_draw(&alt_property_palette,FALSE);
+	alt2_property_palette_fill();
+	list_palette_draw(&alt2_property_palette,FALSE);
 }
 
 /* =======================================================
 
-      Alt Property Palette Scroll Wheel
+      Alt2 Property Palette Scroll Wheel
       
 ======================================================= */
 
-void alt_property_palette_scroll_wheel(d3pnt *pnt,int move)
+void alt2_property_palette_scroll_wheel(d3pnt *pnt,int move)
 {
-	list_palette_scroll_wheel(&alt_property_palette,pnt,move);
+	list_palette_scroll_wheel(&alt2_property_palette,pnt,move);
 }
 
 /* =======================================================
 
-      Alt Property Palette Click
+      Alt2 Property Palette Click
       
 ======================================================= */
 
-void alt_property_palette_click(d3pnt *pnt,bool double_click)
+void alt2_property_palette_click(d3pnt *pnt,bool double_click)
 {
 		// click
 
-	if (!list_palette_click(&alt_property_palette,pnt,double_click)) return;
+	if (!list_palette_click(&alt2_property_palette,pnt,double_click)) return;
 
 		// click editing
 
-	if (alt_property_palette.item_id==-1) return;
+	if (alt2_property_palette.item_id==-1) return;
 
+	/*
 		// selection properties
 
 	switch (state.cur_item) {
@@ -240,5 +243,6 @@ void alt_property_palette_click(d3pnt *pnt,bool double_click)
 			break;
 
 	}
+	*/
 }
 

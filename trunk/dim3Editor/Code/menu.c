@@ -385,13 +385,6 @@ bool menu_event_run(int cmd)
 			main_wind_draw();
 			return(TRUE);
 
-		case kCommandMapCreateTangentBinormal:
-			os_set_wait_cursor();
-			map_recalc_normals(&map,TRUE);
-			os_set_arrow_cursor();
-			main_wind_draw();
-			return(TRUE);
-			
 		case kCommandMapCreateNormals:
 			os_set_wait_cursor();
 			map_recalc_normals(&map,FALSE);
@@ -517,6 +510,16 @@ bool menu_event_run(int cmd)
 			
 		case kCommandMeshInvertNormals:
 			piece_mesh_invert_normals(FALSE);
+			main_wind_draw();
+			return(TRUE);
+
+		case kCommandMeshSetNormalsOut:
+			piece_mesh_set_normals_in_out(TRUE);
+			main_wind_draw();
+			return(TRUE);
+
+		case kCommandMeshSetNormalsIn:
+			piece_mesh_set_normals_in_out(FALSE);
 			main_wind_draw();
 			return(TRUE);
 			

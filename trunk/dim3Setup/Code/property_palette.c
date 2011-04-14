@@ -90,64 +90,76 @@ void property_palette_fill(void)
 		case item_interface_settings:
 			list_palette_set_title(&property_palette,"Settings");
 			property_palette_fill_settings();
-			break;
+			return;
 
 		case item_interface_intro:
 			list_palette_set_title(&property_palette,"Intro");
 			property_palette_fill_intro();
-			break;
+			return;
 
 		case item_interface_hud:
 			list_palette_set_title(&property_palette,"HUD");
 			property_palette_fill_hud();
-			break;
+			return;
 
 		case item_interface_radar:
 			list_palette_set_title(&property_palette,"Radar");
 			property_palette_fill_radar();
-			break;
+			return;
 
 		case item_interface_multiplayer:
 			list_palette_set_title(&property_palette,"Multiplayer");
 			property_palette_fill_multiplayer();
-			break;
+			return;
+
+		case item_interface_menu:
+			list_palette_set_title(&property_palette,"Menu List");
+			property_palette_fill_menu();
+			return;
+
+		case item_interface_chooser:
+			list_palette_set_title(&property_palette,"Chooser List");
+			property_palette_fill_chooser();
+			return;
 
 		case item_interface_sound:
 			list_palette_set_title(&property_palette,"Sounds List");
 			property_palette_fill_sounds();
-			break;
+			return;
 
 		case item_interface_particle:
 			list_palette_set_title(&property_palette,"Particles List");
 			property_palette_fill_particles();
-			break;
+			return;
 
 		case item_interface_ring:
 			list_palette_set_title(&property_palette,"Rings List");
 			property_palette_fill_rings();
-			break;
+			return;
 
 		case item_interface_halo:
 			list_palette_set_title(&property_palette,"Halos List");
 			property_palette_fill_halos();
-			break;
+			return;
 
 		case item_interface_mark:
 			list_palette_set_title(&property_palette,"Marks List");
 			property_palette_fill_marks();
-			break;
+			return;
 
 		case item_interface_crosshair:
 			list_palette_set_title(&property_palette,"Crosshairs List");
 			property_palette_fill_crosshairs();
-			break;
+			return;
 
 		case item_interface_action:
 			list_palette_set_title(&property_palette,"Actions List");
 			property_palette_fill_actions();
-			break;
+			return;
 
 	}
+	
+	list_palette_set_title(&property_palette,"No Properties");
 }
 
 /* =======================================================
@@ -222,6 +234,14 @@ void property_palette_click(d3pnt *pnt,bool double_click)
 
 		case item_interface_multiplayer:
 			property_palette_click_multiplayer(property_palette.item_id);
+			break;
+
+		case item_interface_menu:
+			property_palette_click_menu(property_palette.item_id);
+			break;
+
+		case item_interface_chooser:
+			property_palette_click_chooser(property_palette.item_id);
 			break;
 
 		case item_interface_sound:

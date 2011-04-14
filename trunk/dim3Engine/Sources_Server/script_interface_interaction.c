@@ -42,6 +42,7 @@ JSValueRef js_interface_interaction_start_save_func(JSContextRef cx,JSObjectRef 
 JSValueRef js_interface_interaction_start_load_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_interface_interaction_start_setup_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_interface_interaction_start_menu_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_interface_interaction_start_sub_menu_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_interface_interaction_quit_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 JSStaticFunction	interface_interaction_functions[]={
@@ -52,6 +53,7 @@ JSStaticFunction	interface_interaction_functions[]={
 							{"startLoad",			js_interface_interaction_start_load_func,				kJSPropertyAttributeDontDelete},
 							{"startSetup",			js_interface_interaction_start_setup_func,				kJSPropertyAttributeDontDelete},
 							{"startMenu",			js_interface_interaction_start_menu_func,				kJSPropertyAttributeDontDelete},
+							{"startSubMenu",		js_interface_interaction_start_sub_menu_func,			kJSPropertyAttributeDontDelete},
 							{"quit",				js_interface_interaction_quit_func,						kJSPropertyAttributeDontDelete},
 							{0,0,0}};
 
@@ -183,7 +185,19 @@ JSValueRef js_interface_interaction_start_menu_func(JSContextRef cx,JSObjectRef 
 {
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 
-	menu_draw_start();
+	menu_draw_start(NULL);
+
+	return(script_null_to_value(cx));
+}
+
+JSValueRef js_interface_interaction_start_sub_menu_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+{
+	char				name[name_str_len];
+
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+
+	script_value_to_string(cx,argv[0],name,name_str_len);
+	menu_draw_start(name);
 
 	return(script_null_to_value(cx));
 }

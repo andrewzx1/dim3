@@ -267,6 +267,7 @@ extern void piece_single_uvs(bool poly_only);
 extern void piece_mesh_recalc_normals(void);
 extern void piece_mesh_poly_invert_normals(map_mesh_poly_type *poly);
 extern void piece_mesh_invert_normals(bool poly_only);
+extern void piece_mesh_set_normals_in_out(bool out);
 extern void piece_poly_hole(void);
 extern void piece_key(char ch);
 

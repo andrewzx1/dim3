@@ -10,6 +10,8 @@ IDR_MAIN_MENU MENU
 BEGIN
     POPUP "File"
     BEGIN
+        MENUITEM "Save\tCtrl+S",							ID_FILE_SAVE
+        MENUITEM SEPARATOR
         MENUITEM "Exit",									ID_FILE_EXIT
     END
 END
@@ -21,6 +23,7 @@ END
 
 IDR_ACCELERATOR ACCELERATORS 
 BEGIN
+    "S",			ID_FILE_SAVE,					VIRTKEY, CONTROL, NOINVERT
 END
 
 /////////////////////////////////////////////////////////////////////////////

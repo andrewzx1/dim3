@@ -70,7 +70,6 @@ BEGIN
 		MENUITEM SEPARATOR
         MENUITEM "Reset UVs",							ID_MAP_RESET_UV
 		MENUITEM SEPARATOR
-        MENUITEM "Recalc Tangents",						ID_MAP_RECALC_TANGENT
         MENUITEM "Recalc Normals",						ID_MAP_RECALC_NORMAL
 		MENUITEM SEPARATOR
         MENUITEM "Clear Light Maps",					ID_MAP_CLEAR_LIGHT_MAP
@@ -110,6 +109,8 @@ BEGIN
 		MENUITEM SEPARATOR
         MENUITEM "Recalc Normals",						ID_MESH_RECALC_NORMAL
         MENUITEM "Invert Normals\tCtrl+Alt+I",			ID_MESH_INVERT_NORMAL
+        MENUITEM "Set Normals Out",						ID_MESH_SET_NORMAL_OUT
+        MENUITEM "Set Normals In",						ID_MESH_SET_NORMAL_IN
    END
     POPUP "Polygon"
     BEGIN
