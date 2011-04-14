@@ -147,6 +147,13 @@ and can be sold or given away.
 #define lm_under								3
 
 //
+// collision types
+//
+
+#define collision_mode_cylinder					0
+#define collision_mode_box						1
+
+//
 // animation modes
 //
 
@@ -391,7 +398,8 @@ typedef struct		{
 					} obj_status;
 			
 typedef struct		{
-						int						obj_idx,proj_idx,stand_obj_idx,liquid_idx;
+						int						obj_idx,proj_idx,stand_obj_idx,liquid_idx,
+												collision_mode;
 						bool					object_on,projectile_on,force_on,
 												melee,pushable;
 						poly_pointer_type		hit_poly,stand_poly,head_poly;

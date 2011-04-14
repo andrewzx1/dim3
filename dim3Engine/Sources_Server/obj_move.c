@@ -454,11 +454,11 @@ void object_motion_slope_alter_movement(obj_type *obj,d3pnt *motion)
 
 	sy=pin_downward_movement_point(x,y,z,obj->size.y,&poly);
 	if (poly.mesh_idx==-1) return;
-
-		// ignore flat polygons
+	
+		// ignore wall or flat polygons
 
 	mesh_poly=&map.mesh.meshes[poly.mesh_idx].polys[poly.poly_idx];
-	if (mesh_poly->box.flat) return;
+	if ((mesh_poly->box.wall_like) || (mesh_poly->box.flat)) return;
 
 		// if less then min slope, no gravity effects
 

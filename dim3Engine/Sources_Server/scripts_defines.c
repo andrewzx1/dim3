@@ -122,6 +122,9 @@ script_define_type			script_dim3_defines[]={
 								{sd_object_type_bot_multiplayer,				"",		"DIM3_OBJECT_TYPE_BOT_MULTIPLAYER"},
 								{sd_object_type_bot_map,						"",		"DIM3_OBJECT_TYPE_BOT_MAP"},
 								{sd_object_type_object,							"",		"DIM3_OBJECT_TYPE_OBJECT"},
+								
+								{sd_collision_mode_cylinder,					"",		"DIM3_COLLISION_MODE_CYLINDER"},
+								{sd_collision_mode_box,							"",		"DIM3_COLLISION_MODE_BOX"},
 
 									// main events
 									

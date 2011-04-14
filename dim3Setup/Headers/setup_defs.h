@@ -34,6 +34,7 @@ and can be sold or given away.
 
 #define kCommandAbout							FOUR_CHAR_CODE('abot')
 
+#define kCommandFileSave						FOUR_CHAR_CODE('save')
 #define kCommandFileQuit						FOUR_CHAR_CODE('quit')
 
 //

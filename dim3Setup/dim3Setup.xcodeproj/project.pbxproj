@@ -15,6 +15,12 @@
 		268382A5133D4F3D0035315B /* property_palette_particles.c in Sources */ = {isa = PBXBuildFile; fileRef = 2683829E133D4F3D0035315B /* property_palette_particles.c */; };
 		268382A6133D4F3D0035315B /* property_palette_rings.c in Sources */ = {isa = PBXBuildFile; fileRef = 2683829F133D4F3D0035315B /* property_palette_rings.c */; };
 		268382A7133D4F3D0035315B /* property_palette_settings.c in Sources */ = {isa = PBXBuildFile; fileRef = 268382A0133D4F3D0035315B /* property_palette_settings.c */; };
+		269EC5101356501E00C3223C /* alt_property_palette_multiplayer_character.c in Sources */ = {isa = PBXBuildFile; fileRef = 269EC50A1356501E00C3223C /* alt_property_palette_multiplayer_character.c */; };
+		269EC5111356501E00C3223C /* alt_property_palette_multiplayer_game.c in Sources */ = {isa = PBXBuildFile; fileRef = 269EC50B1356501E00C3223C /* alt_property_palette_multiplayer_game.c */; };
+		269EC5121356501E00C3223C /* alt_property_palette_multiplayer_option.c in Sources */ = {isa = PBXBuildFile; fileRef = 269EC50C1356501E00C3223C /* alt_property_palette_multiplayer_option.c */; };
+		269EC5131356501E00C3223C /* alt_property_palette_radar_icon.c in Sources */ = {isa = PBXBuildFile; fileRef = 269EC50D1356501E00C3223C /* alt_property_palette_radar_icon.c */; };
+		269EC5141356501E00C3223C /* property_palette_multiplayer.c in Sources */ = {isa = PBXBuildFile; fileRef = 269EC50E1356501E00C3223C /* property_palette_multiplayer.c */; };
+		269EC5151356501E00C3223C /* property_palette_radar.c in Sources */ = {isa = PBXBuildFile; fileRef = 269EC50F1356501E00C3223C /* property_palette_radar.c */; };
 		269FECBD132845880030B0B5 /* dim3 Setup.icns in Resources */ = {isa = PBXBuildFile; fileRef = 269FECBB132845880030B0B5 /* dim3 Setup.icns */; };
 		269FECBE132845880030B0B5 /* dim3 Setup.nib in Resources */ = {isa = PBXBuildFile; fileRef = 269FECBC132845880030B0B5 /* dim3 Setup.nib */; };
 		269FECC11328488B0030B0B5 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 269FECC01328488B0030B0B5 /* Carbon.framework */; };
@@ -103,6 +109,12 @@
 		2683829E133D4F3D0035315B /* property_palette_particles.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_particles.c; path = Code/property_palette_particles.c; sourceTree = "<group>"; };
 		2683829F133D4F3D0035315B /* property_palette_rings.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_rings.c; path = Code/property_palette_rings.c; sourceTree = "<group>"; };
 		268382A0133D4F3D0035315B /* property_palette_settings.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_settings.c; path = Code/property_palette_settings.c; sourceTree = "<group>"; };
+		269EC50A1356501E00C3223C /* alt_property_palette_multiplayer_character.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = alt_property_palette_multiplayer_character.c; path = Code/alt_property_palette_multiplayer_character.c; sourceTree = "<group>"; };
+		269EC50B1356501E00C3223C /* alt_property_palette_multiplayer_game.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = alt_property_palette_multiplayer_game.c; path = Code/alt_property_palette_multiplayer_game.c; sourceTree = "<group>"; };
+		269EC50C1356501E00C3223C /* alt_property_palette_multiplayer_option.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = alt_property_palette_multiplayer_option.c; path = Code/alt_property_palette_multiplayer_option.c; sourceTree = "<group>"; };
+		269EC50D1356501E00C3223C /* alt_property_palette_radar_icon.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = alt_property_palette_radar_icon.c; path = Code/alt_property_palette_radar_icon.c; sourceTree = "<group>"; };
+		269EC50E1356501E00C3223C /* property_palette_multiplayer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_multiplayer.c; path = Code/property_palette_multiplayer.c; sourceTree = "<group>"; };
+		269EC50F1356501E00C3223C /* property_palette_radar.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_radar.c; path = Code/property_palette_radar.c; sourceTree = "<group>"; };
 		269FECB0132844680030B0B5 /* dim3 Setup.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "dim3 Setup.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		269FECB91328457F0030B0B5 /* Info-dim3_Setup.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Info-dim3_Setup.plist"; path = "Resources/Info-dim3_Setup.plist"; sourceTree = "<group>"; };
 		269FECBB132845880030B0B5 /* dim3 Setup.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = "dim3 Setup.icns"; path = "Resources/dim3 Setup.icns"; sourceTree = "<group>"; };
@@ -223,6 +235,8 @@
 				268382A0133D4F3D0035315B /* property_palette_settings.c */,
 				2649D11D1341270B00573F6F /* property_palette_intro.c */,
 				26BDD87B134AA97C002E6723 /* property_palette_hud.c */,
+				269EC50F1356501E00C3223C /* property_palette_radar.c */,
+				269EC50E1356501E00C3223C /* property_palette_multiplayer.c */,
 				26C87D9A1339435500DA562E /* property_palette_sounds.c */,
 				2683829E133D4F3D0035315B /* property_palette_particles.c */,
 				2683829F133D4F3D0035315B /* property_palette_rings.c */,
@@ -237,6 +251,10 @@
 				26D82FCB134FB5A800CC229F /* alt_property_palette_hud_bitmap.c */,
 				26D82FCC134FB5A800CC229F /* alt_property_palette_hud_text.c */,
 				26D82FCA134FB5A800CC229F /* alt_property_palette_hud_bar.c */,
+				269EC50D1356501E00C3223C /* alt_property_palette_radar_icon.c */,
+				269EC50A1356501E00C3223C /* alt_property_palette_multiplayer_character.c */,
+				269EC50B1356501E00C3223C /* alt_property_palette_multiplayer_game.c */,
+				269EC50C1356501E00C3223C /* alt_property_palette_multiplayer_option.c */,
 				26D15D4F1329E7CD00F9EC7B /* property_utility_common.c */,
 				26D15C7A1329E42400F9EC7B /* text_common.c */,
 			);
@@ -425,6 +443,12 @@
 				26D82FCD134FB5A800CC229F /* alt_property_palette_hud_bar.c in Sources */,
 				26D82FCE134FB5A800CC229F /* alt_property_palette_hud_bitmap.c in Sources */,
 				26D82FCF134FB5A800CC229F /* alt_property_palette_hud_text.c in Sources */,
+				269EC5101356501E00C3223C /* alt_property_palette_multiplayer_character.c in Sources */,
+				269EC5111356501E00C3223C /* alt_property_palette_multiplayer_game.c in Sources */,
+				269EC5121356501E00C3223C /* alt_property_palette_multiplayer_option.c in Sources */,
+				269EC5131356501E00C3223C /* alt_property_palette_radar_icon.c in Sources */,
+				269EC5141356501E00C3223C /* property_palette_multiplayer.c in Sources */,
+				269EC5151356501E00C3223C /* property_palette_radar.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

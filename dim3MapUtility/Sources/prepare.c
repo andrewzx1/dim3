@@ -304,33 +304,29 @@ void map_prepare_mesh_poly_bump(map_type *map,map_mesh_type *mesh)
 			// only walls can bump
 			
 		if (!poly->box.wall_like) continue;
-		
+	
 			// first, find the top line of
 			// the polygon.  Start by finding
-			// the highest point (must be less
-			// than mid point)
-
+			// the highest point
+			
 		p1_idx=-1;
 
 		for (k=0;k!=poly->ptsz;k++) {
 			pt=&mesh->vertexes[poly->v[k]];
-
-			if (pt->y>=poly->box.mid.y) continue;
 
 			if (p1_idx==-1) {
 				p1_idx=k;
 			}
 			else {
 				if (pt->y<mesh->vertexes[poly->v[p1_idx]].y) {
-					p1_idx=poly->v[k];
+					p1_idx=k;
 				}
 			}
 		}
 
 		if (p1_idx==-1) continue;
 
-			// find another point which is less
-			// than mid point and the highest of the
+			// find another point which is the highest of the
 			// two to find top line segment
 
 		p2_idx=p1_idx-1;
@@ -340,8 +336,6 @@ void map_prepare_mesh_poly_bump(map_type *map,map_mesh_type *mesh)
 		if (k==poly->ptsz) k=0;
 
 		if (mesh->vertexes[p2_idx].y>mesh->vertexes[k].y) p2_idx=k;
-
-		if (mesh->vertexes[p2_idx].y>=mesh->box.mid.y) continue;
 			
 			// now find if this line is connected to a floor
 			// segment or both points pass through a floor segment line

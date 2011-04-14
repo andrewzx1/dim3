@@ -215,6 +215,13 @@ and can be sold or given away.
 #define sd_object_type_object							1174
 
 //
+// collision type modes
+//
+
+#define sd_collision_mode_cylinder						1180
+#define sd_collision_mode_box							1181
+
+//
 // main events constants
 //
 
