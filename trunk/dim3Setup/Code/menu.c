@@ -80,10 +80,15 @@ bool menu_event_run(int cmd)
             return(TRUE);
 		
 			// file menu
+			
+		case kCommandFileSave:
+			iface_write(&iface);
+			return(TRUE);						
 
 		case kCommandFileQuit:
 			if (menu_save()) os_application_quit();
-			return(TRUE);						
+			return(TRUE);
+							
 	}
 
 	return(FALSE);

@@ -210,16 +210,10 @@ void circle_get_point_on_radius_through_hit_point(d3pnt *circle_pnt,int radius,d
       
 ======================================================= */
 
-bool collide_circle_check_object(d3pnt *circle_pnt,int radius,d3pnt *min,d3pnt *max,bool skip_pickup,int *p_cur_dist,obj_type *obj,d3pnt *cur_hit_pnt)
+bool collide_circle_check_object_cylinder(d3pnt *circle_pnt,int radius,d3pnt *min,d3pnt *max,bool skip_pickup,int *p_cur_dist,obj_type *obj,d3pnt *cur_hit_pnt)
 {
 	int			dist,chk_radius;
 	double		dx,dz;
-	
-		// object a hit candidate?
-
-	if (obj->hidden) return(FALSE);
-	if ((skip_pickup) && (obj->pickup.on)) return(FALSE);
-	if (!obj->contact.object_on) return(FALSE);
 	
 		// y check
 		
@@ -256,6 +250,73 @@ bool collide_circle_check_object(d3pnt *circle_pnt,int radius,d3pnt *min,d3pnt *
 	circle_get_point_on_radius_through_hit_point(&obj->pnt,chk_radius,circle_pnt,cur_hit_pnt);
 	
 	return(TRUE);
+}
+
+bool collide_circle_check_object_box(d3pnt *circle_pnt,int radius,d3pnt *min,d3pnt *max,bool skip_pickup,int *p_cur_dist,obj_type *obj,d3pnt *cur_hit_pnt)
+{
+	int						x_sz,z_sz;
+	float					rang;
+	double					dist;
+	d3pnt					obj_min,obj_max,hit_pnt;
+	
+	rang=angle_add(obj->ang.y,obj->draw.rot.y);
+	x_sz=obj->size.x>>1;
+	z_sz=obj->size.z>>1;
+	
+	rotate_2D_point_center(&x_sz,&z_sz,rang);
+	
+	obj_min.x=obj->pnt.x-x_sz;
+	obj_max.x=obj->pnt.x+x_sz;
+		
+	obj_min.z=obj->pnt.z-z_sz;
+	obj_max.z=obj->pnt.z+z_sz;
+
+	obj_min.y=obj->pnt.y-obj->size.y;
+	if (obj->duck.mode!=dm_stand) obj_min.y+=obj->duck.y_move;
+	obj_max.y=obj->pnt.y;
+		
+		// check for hit
+			
+	dist=circle_box_intersect(&obj_min,&obj_max,circle_pnt,radius,&hit_pnt);
+	if (dist==-1) return(FALSE);
+
+		// next nearest hit?
+
+	if ((dist>(*p_cur_dist)) && ((*p_cur_dist)!=-1)) return(FALSE);
+
+		// return hit point, at edge of
+		// object circle
+
+	*p_cur_dist=dist;
+		
+	cur_hit_pnt->x=hit_pnt.x;
+	cur_hit_pnt->y=hit_pnt.y;
+	cur_hit_pnt->z=hit_pnt.z;
+
+	return(TRUE);
+}
+
+bool collide_circle_check_object(d3pnt *circle_pnt,int radius,d3pnt *min,d3pnt *max,bool skip_pickup,int *p_cur_dist,obj_type *obj,d3pnt *cur_hit_pnt)
+{
+		// object a hit candidate?
+
+	if (obj->hidden) return(FALSE);
+	if ((skip_pickup) && (obj->pickup.on)) return(FALSE);
+	if (!obj->contact.object_on) return(FALSE);
+
+		// correct check type
+	
+	switch (obj->contact.collision_mode) {
+			
+		case collision_mode_cylinder:
+			return(collide_circle_check_object_cylinder(circle_pnt,radius,min,max,skip_pickup,p_cur_dist,obj,cur_hit_pnt));
+					
+		case collision_mode_box:
+			return(collide_circle_check_object_box(circle_pnt,radius,min,max,skip_pickup,p_cur_dist,obj,cur_hit_pnt));
+			
+	}
+
+	return(FALSE);
 }
 
 bool collide_circle_check_projectile(d3pnt *circle_pnt,int radius,d3pnt *min,d3pnt *max,int *p_cur_dist,proj_type *proj,d3pnt *cur_hit_pnt)
@@ -434,8 +495,7 @@ bool collide_circle_check_mesh(d3pnt *circle_pnt,int radius,d3pnt *min,d3pnt *ma
 bool collide_box_to_map(d3pnt *pt,d3pnt *box_sz,d3pnt *motion,bool check_objs,int skip_obj_idx,bool check_projs,int skip_proj_idx,obj_contact *contact)
 {
 	int						n,radius,cur_dist,idx;
-	d3pnt					circle_pnt,
-							cur_hit_pnt,radius_pnt,
+	d3pnt					circle_pnt,cur_hit_pnt,radius_pnt,
 							min,max;
 	obj_type				*chk_obj;
 	proj_type				*chk_proj;
@@ -481,7 +541,7 @@ bool collide_box_to_map(d3pnt *pt,d3pnt *box_sz,d3pnt *motion,bool check_objs,in
 
 			chk_obj=server.obj_list.objs[n];
 			if (chk_obj==NULL) continue;
-
+			
 			if (collide_circle_check_object(&circle_pnt,radius,&min,&max,TRUE,&cur_dist,chk_obj,&cur_hit_pnt)) {
 				contact->obj_idx=n;
 				contact->proj_idx=-1;
@@ -616,7 +676,7 @@ bool collide_object_to_map(obj_type *obj,d3pnt *motion)
 
 	if (obj->hit_box.on) {
 		draw=&obj->draw;
-		if ((draw->model_idx!=-1) && (!draw->on)) {
+		if ((draw->model_idx!=-1) && (draw->on)) {
 			model=server.model_list.models[draw->model_idx];
 			hit_box_hit=TRUE;
 		}
@@ -859,7 +919,7 @@ bool collide_object_to_sphere(d3pnt *sphere_pnt,int radius,obj_type *obj)
 
 	if (obj->hit_box.on) {
 		draw=&obj->draw;
-		if ((draw->model_idx!=-1) && (!draw->on)) {
+		if ((draw->model_idx!=-1) && (draw->on)) {
 			model=server.model_list.models[draw->model_idx];
 			hit_box_hit=TRUE;
 		}

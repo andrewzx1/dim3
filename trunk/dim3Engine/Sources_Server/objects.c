@@ -541,11 +541,13 @@ int object_create(char *name,int type,int bind)
 	obj->open_doors=FALSE;
 	obj->hide_all_weapons=FALSE;
 	obj->find_on=TRUE;
+	obj->hit_box.on=FALSE;
+
 	obj->contact.object_on=TRUE;
 	obj->contact.projectile_on=TRUE;
 	obj->contact.force_on=TRUE;
 	obj->contact.pushable=FALSE;
-	obj->hit_box.on=FALSE;
+	obj->contact.collision_mode=collision_mode_cylinder;
 	
 	obj->pickup.on=FALSE;
 	obj->pickup.ignore=FALSE;

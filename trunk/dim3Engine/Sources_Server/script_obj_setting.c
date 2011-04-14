@@ -71,6 +71,7 @@ JSValueRef js_obj_setting_get_pushable(JSContextRef cx,JSObjectRef j_obj,JSStrin
 JSValueRef js_obj_setting_get_openDoors(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_setting_get_useVehicles(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_setting_get_inputMode(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_obj_setting_get_collisionMode(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 bool js_obj_setting_set_team(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 bool js_obj_setting_set_hidden(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 bool js_obj_setting_set_suspend(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
@@ -102,6 +103,7 @@ bool js_obj_setting_set_pushable(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
 bool js_obj_setting_set_openDoors(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 bool js_obj_setting_set_useVehicles(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 bool js_obj_setting_set_inputMode(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_obj_setting_set_collisionMode(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 JSValueRef js_obj_get_parameter_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_set_ambient_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_change_ambient_pitch_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
@@ -145,6 +147,7 @@ JSStaticValue 		obj_setting_props[]={
 							{"openDoors",				js_obj_setting_get_openDoors,				js_obj_setting_set_openDoors,				kJSPropertyAttributeDontDelete},
 							{"useVehicles",				js_obj_setting_get_useVehicles,				js_obj_setting_set_useVehicles,				kJSPropertyAttributeDontDelete},
 							{"inputMode",				js_obj_setting_get_inputMode,				js_obj_setting_set_inputMode,				kJSPropertyAttributeDontDelete},
+							{"collisionMode",			js_obj_setting_get_collisionMode,			js_obj_setting_set_collisionMode,			kJSPropertyAttributeDontDelete},
 							{0,0,0,0}};
 
 JSStaticFunction	obj_setting_functions[]={
@@ -478,6 +481,14 @@ JSValueRef js_obj_setting_get_inputMode(JSContextRef cx,JSObjectRef j_obj,JSStri
 	return(script_int_to_value(cx,obj->input.mode+sd_input_mode_fpp));
 }
 
+JSValueRef js_obj_setting_get_collisionMode(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
+{
+	obj_type		*obj;
+
+	obj=object_script_lookup();
+	return(script_int_to_value(cx,obj->contact.collision_mode+sd_collision_mode_cylinder));
+}
+
 /* =======================================================
 
       Setters
@@ -795,6 +806,16 @@ bool js_obj_setting_set_inputMode(JSContextRef cx,JSObjectRef j_obj,JSStringRef 
 	
 	obj=object_script_lookup();
 	obj->input.mode=script_value_to_int(cx,vp)-sd_input_mode_fpp;
+	
+	return(TRUE);
+}
+
+bool js_obj_setting_set_collisionMode(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+{
+	obj_type		*obj;
+	
+	obj=object_script_lookup();
+	obj->contact.collision_mode=script_value_to_int(cx,vp)-sd_collision_mode_cylinder;
 	
 	return(TRUE);
 }
