@@ -225,7 +225,7 @@ void main_wind_open(void)
 	
     GetAvailableWindowPositioningBounds(GetMainDevice(),&wbox);
 
-	wid=list_palette_tree_sz*3;
+	wid=list_palette_tree_sz*4;
 	high=(wbox.bottom-wbox.top)-60;
 
 	box.left=((wbox.right-wbox.left)-wid)/2;

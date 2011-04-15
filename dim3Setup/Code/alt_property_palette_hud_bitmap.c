@@ -175,11 +175,11 @@ void alt_property_palette_click_hud_bitmap(int hud_bitmap_idx,int id)
 			break;
 
 		case kBitmapPositionWid:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&bitmap->x_size,0,0,0);
+			dialog_property_string_run(list_string_value_int,(void*)&bitmap->x_size,0,0,0);
 			break;
 
 		case kBitmapPositionHigh:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&bitmap->y_size,0,0,0);
+			dialog_property_string_run(list_string_value_int,(void*)&bitmap->y_size,0,0,0);
 			break;
 
 			// options

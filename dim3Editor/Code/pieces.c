@@ -997,7 +997,7 @@ void piece_mesh_set_normals_in_out(bool out)
 				// determine if poly is facing 'out'
 		
 			vector_create(&face_vct,poly->box.mid.x,poly->box.mid.y,poly->box.mid.z,mesh->box.mid.x,mesh->box.mid.y,mesh->box.mid.z);
-			is_out=(vector_dot_product(&poly->tangent_space.normal,&face_vct)>0.0f);
+			is_out=(vector_dot_product(&poly->tangent_space.normal,&face_vct)>map.optimize.cull_angle);
 
 			if (is_out!=out) {
 				poly->tangent_space.normal.x=-poly->tangent_space.normal.x;

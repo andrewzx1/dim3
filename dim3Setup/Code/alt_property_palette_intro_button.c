@@ -180,11 +180,11 @@ void alt_property_palette_click_intro_button(int intro_button_idx,int id)
 			break;
 
 		case kButtonPositionWid:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&btn->wid,0,0,0);
+			dialog_property_string_run(list_string_value_int,(void*)&btn->wid,0,0,0);
 			break;
 
 		case kButtonPositionHigh:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&btn->high,0,0,0);
+			dialog_property_string_run(list_string_value_int,(void*)&btn->high,0,0,0);
 			break;
 
 			// description

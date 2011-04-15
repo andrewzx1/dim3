@@ -36,6 +36,9 @@
 		26BDD87D134AA97C002E6723 /* alt_property_palette_intro_model.c in Sources */ = {isa = PBXBuildFile; fileRef = 26BDD87A134AA97C002E6723 /* alt_property_palette_intro_model.c */; };
 		26BDD87E134AA97C002E6723 /* property_palette_hud.c in Sources */ = {isa = PBXBuildFile; fileRef = 26BDD87B134AA97C002E6723 /* property_palette_hud.c */; };
 		26BDD880134AA9A3002E6723 /* OSX_dialog_file_open.c in Sources */ = {isa = PBXBuildFile; fileRef = 26BDD87F134AA9A3002E6723 /* OSX_dialog_file_open.c */; };
+		26C324721357B3F800313FBF /* alt2_property_palette.c in Sources */ = {isa = PBXBuildFile; fileRef = 26C3246F1357B3F800313FBF /* alt2_property_palette.c */; };
+		26C324731357B3F800313FBF /* property_palette_chooser.c in Sources */ = {isa = PBXBuildFile; fileRef = 26C324701357B3F800313FBF /* property_palette_chooser.c */; };
+		26C324741357B3F800313FBF /* property_palette_menu.c in Sources */ = {isa = PBXBuildFile; fileRef = 26C324711357B3F800313FBF /* property_palette_menu.c */; };
 		26C87D851339431D00DA562E /* Edit.png in Copy (List Icons) */ = {isa = PBXBuildFile; fileRef = 26C87D7A1339427A00DA562E /* Edit.png */; };
 		26C87D861339431D00DA562E /* Minus.png in Copy (List Icons) */ = {isa = PBXBuildFile; fileRef = 26C87D7B1339427A00DA562E /* Minus.png */; };
 		26C87D871339431D00DA562E /* Plus.png in Copy (List Icons) */ = {isa = PBXBuildFile; fileRef = 26C87D7C1339427A00DA562E /* Plus.png */; };
@@ -136,6 +139,9 @@
 		26BDD87A134AA97C002E6723 /* alt_property_palette_intro_model.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = alt_property_palette_intro_model.c; path = Code/alt_property_palette_intro_model.c; sourceTree = "<group>"; };
 		26BDD87B134AA97C002E6723 /* property_palette_hud.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_hud.c; path = Code/property_palette_hud.c; sourceTree = "<group>"; };
 		26BDD87F134AA9A3002E6723 /* OSX_dialog_file_open.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = OSX_dialog_file_open.c; path = ../dim3Common/Code/OSX_dialog_file_open.c; sourceTree = "<group>"; };
+		26C3246F1357B3F800313FBF /* alt2_property_palette.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = alt2_property_palette.c; path = Code/alt2_property_palette.c; sourceTree = "<group>"; };
+		26C324701357B3F800313FBF /* property_palette_chooser.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_chooser.c; path = Code/property_palette_chooser.c; sourceTree = "<group>"; };
+		26C324711357B3F800313FBF /* property_palette_menu.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_menu.c; path = Code/property_palette_menu.c; sourceTree = "<group>"; };
 		26C87D7A1339427A00DA562E /* Edit.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Edit.png; path = "Resources/Additional Data/Icons/Lists/Edit.png"; sourceTree = "<group>"; };
 		26C87D7B1339427A00DA562E /* Minus.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Minus.png; path = "Resources/Additional Data/Icons/Lists/Minus.png"; sourceTree = "<group>"; };
 		26C87D7C1339427A00DA562E /* Plus.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Plus.png; path = "Resources/Additional Data/Icons/Lists/Plus.png"; sourceTree = "<group>"; };
@@ -237,6 +243,8 @@
 				26BDD87B134AA97C002E6723 /* property_palette_hud.c */,
 				269EC50F1356501E00C3223C /* property_palette_radar.c */,
 				269EC50E1356501E00C3223C /* property_palette_multiplayer.c */,
+				26C324711357B3F800313FBF /* property_palette_menu.c */,
+				26C324701357B3F800313FBF /* property_palette_chooser.c */,
 				26C87D9A1339435500DA562E /* property_palette_sounds.c */,
 				2683829E133D4F3D0035315B /* property_palette_particles.c */,
 				2683829F133D4F3D0035315B /* property_palette_rings.c */,
@@ -255,6 +263,7 @@
 				269EC50A1356501E00C3223C /* alt_property_palette_multiplayer_character.c */,
 				269EC50B1356501E00C3223C /* alt_property_palette_multiplayer_game.c */,
 				269EC50C1356501E00C3223C /* alt_property_palette_multiplayer_option.c */,
+				26C3246F1357B3F800313FBF /* alt2_property_palette.c */,
 				26D15D4F1329E7CD00F9EC7B /* property_utility_common.c */,
 				26D15C7A1329E42400F9EC7B /* text_common.c */,
 			);
@@ -449,6 +458,9 @@
 				269EC5131356501E00C3223C /* alt_property_palette_radar_icon.c in Sources */,
 				269EC5141356501E00C3223C /* property_palette_multiplayer.c in Sources */,
 				269EC5151356501E00C3223C /* property_palette_radar.c in Sources */,
+				26C324721357B3F800313FBF /* alt2_property_palette.c in Sources */,
+				26C324731357B3F800313FBF /* property_palette_chooser.c in Sources */,
+				26C324741357B3F800313FBF /* property_palette_menu.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
