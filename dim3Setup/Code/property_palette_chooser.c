@@ -77,7 +77,7 @@ void property_palette_click_chooser(int id)
 
 	if ((id>=kChooserPropertyChooserName) && (id<(kChooserPropertyChooserName+max_iface_chooser))) {
 		state.cur_chooser_idx=id-kChooserPropertyChooserName;
-		state.cur_chooser_item_idx=-1;
+		state.cur_chooser_piece_idx=-1;
 
 		main_wind_draw();
 		return;
@@ -87,7 +87,7 @@ void property_palette_click_chooser(int id)
 
 	if ((id>=kChooserPropertyChooserDelete) && (id<(kChooserPropertyChooserDelete+max_iface_chooser))) {
 		state.cur_chooser_idx=-1;
-		state.cur_chooser_item_idx=-1;
+		state.cur_chooser_piece_idx=-1;
 
 		idx=id-kChooserPropertyChooserDelete;
 
@@ -104,10 +104,10 @@ void property_palette_click_chooser(int id)
 
 	if (id==kChooserPropertyChooserAdd) {
 		state.cur_chooser_idx=-1;
-		state.cur_chooser_item_idx=-1;
+		state.cur_chooser_piece_idx=-1;
 
 		if (iface.chooser_list.nchooser>=max_iface_chooser) {
-			os_dialog_alert("Reached the maximum number of choosers","Add Chooser");
+			os_dialog_alert("Add Chooser","Reached the maximum number of choosers");
 			return;
 		}
 

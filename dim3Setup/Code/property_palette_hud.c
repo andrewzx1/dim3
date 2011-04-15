@@ -142,7 +142,7 @@ void property_palette_click_hud(int id)
 		state.cur_hud_bar_idx=-1;
 
 		if (iface.bitmap_list.nbitmap>=max_iface_bitmap) {
-			os_dialog_alert("Reached the maximum number of bitmaps","Add HUD Bitmap");
+			os_dialog_alert("Add HUD Bitmap","Reached the maximum number of bitmaps");
 			return;
 		}
 		
@@ -225,7 +225,7 @@ void property_palette_click_hud(int id)
 		state.cur_hud_bar_idx=-1;
 
 		if (iface.text_list.ntext>=max_iface_text) {
-			os_dialog_alert("Reached the maximum number of texts","Add HUD Text");
+			os_dialog_alert("Add HUD Text","Reached the maximum number of texts");
 			return;
 		}
 		
@@ -296,7 +296,7 @@ void property_palette_click_hud(int id)
 		state.cur_hud_text_idx=-1;
 
 		if (iface.bar_list.nbar>=max_iface_bar) {
-			os_dialog_alert("Reached the maximum number of bars","Add HUD Bar");
+			os_dialog_alert("Add HUD Bar","Reached the maximum number of bars");
 			return;
 		}
 		

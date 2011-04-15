@@ -143,6 +143,22 @@ void alt_property_palette_fill(void)
 			}
 			break;
 
+		case item_interface_menu:
+			if (state.cur_menu_idx!=-1) {
+				list_palette_set_title(&alt_property_palette,"Menu");
+				alt_property_palette_fill_menu(state.cur_menu_idx);
+				return;
+			}
+			break;
+
+		case item_interface_chooser:
+			if (state.cur_chooser_idx!=-1) {
+				list_palette_set_title(&alt_property_palette,"Chooser");
+				alt_property_palette_fill_chooser(state.cur_chooser_idx);
+				return;
+			}
+			break;
+
 	}
 
 	list_palette_set_title(&alt_property_palette,"No Properties");
@@ -235,6 +251,20 @@ void alt_property_palette_click(d3pnt *pnt,bool double_click)
 			}
 			if (state.cur_multiplayer_option_idx!=-1) {
 				alt_property_palette_click_multiplayer_option(state.cur_multiplayer_option_idx,alt_property_palette.item_id);
+				break;
+			}
+			break;
+
+		case item_interface_menu:
+			if (state.cur_menu_idx!=-1) {
+				alt_property_palette_click_menu(state.cur_menu_idx,alt_property_palette.item_id);
+				break;
+			}
+			break;
+
+		case item_interface_chooser:
+			if (state.cur_chooser_idx!=-1) {
+				alt_property_palette_click_chooser(state.cur_chooser_idx,alt_property_palette.item_id);
 				break;
 			}
 			break;

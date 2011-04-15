@@ -290,7 +290,19 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\dim3Setup\Code\alt2_property_palette_chooser_piece.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Setup\Code\alt2_property_palette_menu_item.c"
+						>
+					</File>
+					<File
 						RelativePath="..\..\dim3Setup\Code\alt_property_palette.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Setup\Code\alt_property_palette_chooser.c"
 						>
 					</File>
 					<File
@@ -311,6 +323,10 @@
 					</File>
 					<File
 						RelativePath="..\..\dim3Setup\Code\alt_property_palette_intro_model.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Setup\Code\alt_property_palette_menu.c"
 						>
 					</File>
 					<File

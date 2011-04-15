@@ -215,7 +215,7 @@ void property_palette_click_multiplayer(int id)
 		state.cur_multiplayer_option_idx=-1;
 
 		if (iface.character.ncharacter>=max_character) {
-			os_dialog_alert("Reached the maximum number of characters","Add Multiplayer Character");
+			os_dialog_alert("Add Multiplayer Character","Reached the maximum number of characters");
 			return;
 		}
 
@@ -244,7 +244,7 @@ void property_palette_click_multiplayer(int id)
 		state.cur_multiplayer_option_idx=-1;
 
 		if (iface.net_game.ngame>=max_net_game) {
-			os_dialog_alert("Reached the maximum number of net games","Add Multiplayer Game");
+			os_dialog_alert("Add Multiplayer Game","Reached the maximum number of net games");
 			return;
 		}
 
@@ -269,7 +269,7 @@ void property_palette_click_multiplayer(int id)
 		state.cur_multiplayer_option_idx=-1;
 
 		if (iface.net_option.noption>=max_net_option) {
-			os_dialog_alert("Reached the maximum number of net options","Add Multiplayer Option");
+			os_dialog_alert("Add Multiplayer Option","Reached the maximum number of net options");
 			return;
 		}
 

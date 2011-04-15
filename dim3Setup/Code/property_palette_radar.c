@@ -133,7 +133,7 @@ void property_palette_click_radar(int id)
 		state.cur_radar_icon_idx=-1;
 
 		if (iface.radar.nicon>=max_radar_icon) {
-			os_dialog_alert("Reached the maximum number of radar icons","Add Radar Icon");
+			os_dialog_alert("Add Radar Icon","Reached the maximum number of radar icons");
 			return;
 		}
 

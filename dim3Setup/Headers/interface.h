@@ -126,6 +126,8 @@ extern void alt_property_palette_fill_radar_icon(int radar_icon_idx);
 extern void alt_property_palette_fill_multiplayer_character(int multiplayer_character_idx);
 extern void alt_property_palette_fill_multiplayer_game(int multiplayer_game_idx);
 extern void alt_property_palette_fill_multiplayer_option(int multiplayer_option_idx);
+extern void alt_property_palette_fill_menu(int menu_idx);
+extern void alt_property_palette_fill_chooser(int chooser_idx);
 
 extern void alt_property_palette_click_intro_button(int intro_button_idx,int id);
 extern void alt_property_palette_click_intro_model(int intro_model_idx,int id);
@@ -136,6 +138,8 @@ extern void alt_property_palette_click_radar_icon(int radar_icon_idx,int id);
 extern void alt_property_palette_click_multiplayer_character(int multiplayer_character_idx,int id);
 extern void alt_property_palette_click_multiplayer_game(int game_character_idx,int id);
 extern void alt_property_palette_click_multiplayer_option(int option_character_idx,int id);
+extern void alt_property_palette_click_menu(int menu_idx,int id);
+extern void alt_property_palette_click_chooser(int chooser_idx,int id);
 
 //
 // alt2 property list palette
@@ -147,6 +151,12 @@ extern void alt2_property_palette_setup(void);
 extern void alt2_property_palette_draw(void);
 extern void alt2_property_palette_scroll_wheel(d3pnt *pnt,int move);
 extern void alt2_property_palette_click(d3pnt *pnt,bool double_click);
+
+extern void alt2_property_palette_fill_menu_item(int menu_idx,int menu_item_idx);
+extern void alt2_property_palette_fill_chooser_piece(int chooser_idx,int chooser_item_idx);
+
+extern void alt2_property_palette_click_menu_item(int menu_idx,int menu_item_idx,int id);
+extern void alt2_property_palette_click_chooser_piece(int chooser_idx,int chooser_item_idx,int id);
 
 //
 // dialogs
