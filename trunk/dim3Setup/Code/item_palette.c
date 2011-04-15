@@ -61,7 +61,7 @@ void item_palette_initialize(void)
 	state.cur_menu_idx=-1;
 	state.cur_menu_item_idx=-1;
 	state.cur_chooser_idx=-1;
-	state.cur_chooser_item_idx=-1;
+	state.cur_chooser_piece_idx=-1;
 	state.cur_multiplayer_character_idx=-1;
 	state.cur_multiplayer_game_idx=-1;
 	state.cur_multiplayer_option_idx=-1;

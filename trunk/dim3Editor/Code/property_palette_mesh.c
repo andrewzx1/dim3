@@ -43,9 +43,10 @@ and can be sold or given away.
 #define kMeshPropertyLockMove					7
 #define kMeshPropertyShadow						8
 #define kMeshPropertyNeverObscure				9
-#define kMeshPropertyRotIndependent				10
-#define kMeshPropertyNoLightMap					11
-#define kMeshPropertySkipLightMapTrace			12
+#define kMeshPropertyNeverCull					10
+#define kMeshPropertyRotIndependent				11
+#define kMeshPropertyNoLightMap					12
+#define kMeshPropertySkipLightMapTrace			13
 
 #define kMeshPropertyGroup						20
 
@@ -119,6 +120,7 @@ void property_palette_fill_mesh(int mesh_idx,int poly_idx)
 	list_palette_add_checkbox(&property_palette,kMeshPropertyLockMove,"Lock Position",mesh->flag.lock_move,FALSE);
 	list_palette_add_checkbox(&property_palette,kMeshPropertyShadow,"Shadow",mesh->flag.shadow,FALSE);
 	list_palette_add_checkbox(&property_palette,kMeshPropertyNeverObscure,"Never Obscure",mesh->flag.never_obscure,FALSE);
+	list_palette_add_checkbox(&property_palette,kMeshPropertyNeverCull,"Never Cull",mesh->flag.never_cull,FALSE);
 	list_palette_add_checkbox(&property_palette,kMeshPropertyRotIndependent,"Rotate Independently",mesh->flag.rot_independent,FALSE);
 	list_palette_add_checkbox(&property_palette,kMeshPropertyNoLightMap,"No Light Map",mesh->flag.no_light_map,FALSE);
 	list_palette_add_checkbox(&property_palette,kMeshPropertySkipLightMapTrace,"Skip Light Map Trace",mesh->flag.skip_light_map_trace,FALSE);
@@ -254,6 +256,10 @@ void property_palette_click_mesh(int mesh_idx,int poly_idx,int id)
 
 		case kMeshPropertyNeverObscure:
 			mesh->flag.never_obscure=!mesh->flag.never_obscure;
+			break;
+
+		case kMeshPropertyNeverCull:
+			mesh->flag.never_cull=!mesh->flag.never_cull;
 			break;
 
 		case kMeshPropertyRotIndependent:

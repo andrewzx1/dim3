@@ -185,7 +185,7 @@ void property_palette_click_intro(int id)
 		state.cur_intro_model_idx=-1;
 
 		if (iface.intro.model_list.nmodel>=max_hud_intro_model) {
-			os_dialog_alert("Reached the maximum number of models","Add Intro Model");
+			os_dialog_alert("Add Intro Model","Reached the maximum number of models");
 			return;
 		}
 		

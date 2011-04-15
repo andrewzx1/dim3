@@ -86,7 +86,7 @@ typedef struct		{
 												cur_intro_button_idx,cur_intro_model_idx,
 												cur_hud_bitmap_idx,cur_hud_text_idx,cur_hud_bar_idx,
 												cur_radar_icon_idx,cur_multiplayer_character_idx,
-												cur_menu_idx,cur_menu_item_idx,cur_chooser_idx,cur_chooser_item_idx,
+												cur_menu_idx,cur_menu_item_idx,cur_chooser_idx,cur_chooser_piece_idx,
 												cur_multiplayer_game_idx,cur_multiplayer_option_idx,
 												cur_sound_idx,cur_particle_idx,cur_ring_idx,
 												cur_halo_idx,cur_mark_idx,cur_crosshair_idx,
