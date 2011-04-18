@@ -427,7 +427,7 @@ void piece_tesselate(bool mesh)
 
 /* =======================================================
 
-      Piece Resize, Reposition, and Skew
+      Piece Resize and Reposition
       
 ======================================================= */
 
@@ -497,6 +497,63 @@ void piece_reposition(void)
 	undo_push();
 	
 	map_mesh_resize(&map,mesh_idx,&mesh->box.min,&mesh->box.max);
+	
+	main_wind_draw();
+}
+
+/* =======================================================
+
+      Piece Resize Texture
+      
+======================================================= */
+
+void piece_resize_texture(void)
+{
+	int					n,k,t,sel_count,txt_idx,
+						type,mesh_idx,poly_idx;
+	float				fct_u,fct_v;
+	map_mesh_type		*mesh;
+	map_mesh_poly_type	*poly;
+	
+		// get the resize factor
+		
+    if (!dialog_resize_texture_run(&fct_u,&fct_v)) return;
+	
+	fct_u=fct_u/100.0f;
+	fct_v=fct_v/100.0f;
+	
+	if ((fct_u<=0.0f) || (fct_v<=0.0f)) return;
+
+		// get selected texture
+
+	txt_idx=texture_palette_get_selected_texture();
+	if (txt_idx==-1) return;
+	
+		// resize mesh textures
+		
+	undo_push();
+		
+	sel_count=select_count();
+	
+	for (n=0;n!=sel_count;n++) {
+		select_get(n,&type,&mesh_idx,&poly_idx);
+		if (type!=mesh_piece) continue;
+
+			// run through polys and alter
+			// polygons hooked up to current texture
+
+		mesh=&map.mesh.meshes[mesh_idx];
+
+		for (k=0;k!=mesh->npoly;k++) {
+			poly=&mesh->polys[k];
+			if (poly->txt_idx!=txt_idx) continue;
+
+			for (t=0;t!=poly->ptsz;t++) {
+				poly->main_uv.x[t]*=fct_u;
+				poly->main_uv.y[t]*=fct_v;
+			}
+		}
+	}
 	
 	main_wind_draw();
 }

@@ -318,8 +318,15 @@ void object_auto_walk_node(obj_type *obj)
 	object_auto_walk_set_vertical_move(obj,node->pnt.y,node->pnt.z);
 	
 		// near node?
+		// if we can't fly, only consider near X/Z
 		
-	dist=distance_get(node->pnt.x,node->pnt.y,node->pnt.z,obj->pnt.x,obj->pnt.y,obj->pnt.z);
+	if (!obj->fly) {
+		dist=distance_2D_get(node->pnt.x,node->pnt.z,obj->pnt.x,obj->pnt.z);
+	}
+	else {
+		dist=distance_get(node->pnt.x,node->pnt.y,node->pnt.z,obj->pnt.x,obj->pnt.y,obj->pnt.z);
+	}
+
 	if (dist>obj->size.node_touch_dist) return;
 	
 		// move on to next node

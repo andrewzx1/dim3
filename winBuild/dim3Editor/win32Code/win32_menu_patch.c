@@ -81,6 +81,7 @@ int				win32_menu_remap[][2]={
 					{kCommandMeshTesselate,ID_MESH_TESSELATE},
 					{kCommandMeshResize,ID_MESH_RESIZE},
 					{kCommandMeshReposition,ID_MESH_REPOSITION},
+					{kCommandMeshResizeTexture,ID_MESH_RESIZE_TEXTURE},
 					{kCommandMeshFlipX,ID_MESH_FLIP_X},
 					{kCommandMeshFlipY,ID_MESH_FLIP_Y},
 					{kCommandMeshFlipZ,ID_MESH_FLIP_Z},
@@ -102,6 +103,7 @@ int				win32_menu_remap[][2]={
 					{kCommandMeshSetNormalsIn,ID_MESH_SET_NORMAL_IN},
 
 					{kCommandPolygonHole,ID_POLYGON_PUNCH_HOLE},
+					{kCommandPolyTesselate,ID_POLYGON_TESSELATE},
 					{kCommandPolygonSnapToGrid,ID_POLYGON_SNAP_TO_GRID},
 					{kCommandPolygonRotateUV,ID_POLYGON_ROTATE_UV},
 					{kCommandPolygonFlipU,ID_POLYGON_FLIP_U},

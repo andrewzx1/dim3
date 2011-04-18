@@ -532,6 +532,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\win32Code\win32_dialog_resize_texture.c"
+					>
+				</File>
+				<File
 					RelativePath=".\win32Code\win32_dialog_svg_import.c"
 					>
 				</File>

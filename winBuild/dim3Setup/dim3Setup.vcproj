@@ -302,7 +302,19 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\dim3Setup\Code\alt_property_palette_action.c"
+						>
+					</File>
+					<File
 						RelativePath="..\..\dim3Setup\Code\alt_property_palette_chooser.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Setup\Code\alt_property_palette_crosshair.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Setup\Code\alt_property_palette_halo.c"
 						>
 					</File>
 					<File
@@ -326,6 +338,10 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\dim3Setup\Code\alt_property_palette_mark.c"
+						>
+					</File>
+					<File
 						RelativePath="..\..\dim3Setup\Code\alt_property_palette_menu.c"
 						>
 					</File>
@@ -343,6 +359,10 @@
 					</File>
 					<File
 						RelativePath="..\..\dim3Setup\Code\alt_property_palette_radar_icon.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Setup\Code\alt_property_palette_sound.c"
 						>
 					</File>
 					<File

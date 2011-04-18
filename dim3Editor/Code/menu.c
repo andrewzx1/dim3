@@ -434,6 +434,10 @@ bool menu_event_run(int cmd)
 		case kCommandMeshReposition:
 			piece_reposition();
 			return(TRUE);
+
+		case kCommandMeshResizeTexture:
+			piece_resize_texture();
+			return(TRUE);
 			
 		case kCommandMeshFlipX:
 			piece_flip(TRUE,FALSE,TRUE);
