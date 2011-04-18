@@ -424,7 +424,7 @@ bool menu_event_run(int cmd)
 			return(TRUE);
 			
 		case kCommandMeshTesselate:
-			piece_tesselate();
+			piece_tesselate(TRUE);
 			return(TRUE);
 			
 		case kCommandMeshResize:
@@ -527,6 +527,10 @@ bool menu_event_run(int cmd)
 			
 		case kCommandPolygonHole:
 			piece_poly_hole();
+			return(TRUE);
+			
+		case kCommandPolyTesselate:
+			piece_tesselate(FALSE);
 			return(TRUE);
 			
 		case kCommandPolygonSnapToGrid:

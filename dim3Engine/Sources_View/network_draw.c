@@ -91,14 +91,14 @@ void network_score_single_name_draw(char *name,int score,int lx,int rx,int ty,in
 		col2.r=col2.g=col2.b=1.0f;
 	}
 	else {
-		col2.r=col2.g=col2.b=0.0f;
+		col2.r=col2.g=col2.b=0.7f;
 	}
 	
 	sprintf(txt,"%d",score);
 		
 	gl_text_start(font_hud_index,fnt_sz);
-	gl_text_draw((lx+5),(by+1),name,tx_left,FALSE,&col2,1.0f);
-	gl_text_draw((rx-5),(by+1),txt,tx_right,FALSE,&col2,1.0f);
+	gl_text_draw((lx+5),(by+5),name,tx_left,FALSE,&col2,1.0f);
+	gl_text_draw((rx-5),(by+5),txt,tx_right,FALSE,&col2,1.0f);
 	gl_text_end();
 	
 		// winner status

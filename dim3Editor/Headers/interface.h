@@ -244,7 +244,7 @@ extern void piece_duplicate(void);
 extern void piece_delete_face(void);
 extern void piece_delete(void);
 extern void piece_select_more(void);
-extern void piece_tesselate(void);
+extern void piece_tesselate(bool mesh);
 extern void piece_resize(void);
 extern void piece_reposition(void);
 extern void piece_flip(bool flip_x,bool flip_y,bool flip_z);

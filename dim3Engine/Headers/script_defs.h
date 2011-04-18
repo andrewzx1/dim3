@@ -180,12 +180,12 @@ and can be sold or given away.
 
 //
 // team constants
-// (these must be equal to defines in networkutility.h)
 //
 
 #define sd_team_none									1140
 #define sd_team_red										1141
 #define sd_team_blue									1142
+#define sd_team_common									1143
 
 //
 // skill constants

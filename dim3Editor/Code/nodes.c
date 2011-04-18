@@ -170,8 +170,6 @@ void node_path_trace_all(int org_node_idx,int org_link_idx,int node_idx,int cur_
 		// and clear the hit list and win distance
 		// lists.
 		
-	if (level==40) return;
-	
 	if (level==0) {
 		node_idx=org_node_idx;
 		cur_dist=0;
@@ -279,8 +277,8 @@ void node_path_rebuild(void)
     
         // find the best path between all nodes
 	
-    for (i=0;i!=map.nnode;i++) {
-		node_path_trace_all(i,0,0,0,node_hit,0);
+    for (n=0;n!=map.nnode;n++) {
+		node_path_trace_all(n,0,0,0,node_hit,0);
     }
 }
 

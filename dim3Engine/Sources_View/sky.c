@@ -709,7 +709,7 @@ void draw_sky_dome_hemisphere(void)
 
 void draw_sky_cube_setup(void)
 {
-    float				g0,g1,f_radius;
+    float				f_radius;
 	float				*vertex_ptr,*uv_ptr;
 
 		// construct VBO
@@ -722,9 +722,6 @@ void draw_sky_cube_setup(void)
 		// setup cube quads
 		
 	f_radius=(float)map.sky.radius;
-	
-	g0=0.001f;
-	g1=0.999f;
 		
 		// top
 		
@@ -733,29 +730,29 @@ void draw_sky_cube_setup(void)
 		*vertex_ptr++=-f_radius;
 		*vertex_ptr++=-f_radius;
 
-		*uv_ptr++=g0;
-		*uv_ptr++=g1;
+		*uv_ptr++=0.0f;
+		*uv_ptr++=1.0f;
 
 		*vertex_ptr++=-f_radius;
 		*vertex_ptr++=-f_radius;
 		*vertex_ptr++=f_radius;
 
-		*uv_ptr++=g0;
-		*uv_ptr++=g0;
+		*uv_ptr++=0.0f;
+		*uv_ptr++=0.0f;
 
 		*vertex_ptr++=f_radius;
 		*vertex_ptr++=-f_radius;
 		*vertex_ptr++=-f_radius;
 
-		*uv_ptr++=g1;
-		*uv_ptr++=g1;
+		*uv_ptr++=1.0f;
+		*uv_ptr++=1.0f;
 
 		*vertex_ptr++=f_radius;
 		*vertex_ptr++=-f_radius;
 		*vertex_ptr++=f_radius;
 
-		*uv_ptr++=g1;
-		*uv_ptr++=g0;
+		*uv_ptr++=1.0f;
+		*uv_ptr++=0.0f;
 	}
 	
 		// bottom
@@ -765,29 +762,29 @@ void draw_sky_cube_setup(void)
 		*vertex_ptr++=f_radius;
 		*vertex_ptr++=-f_radius;
 
-		*uv_ptr++=g0;
-		*uv_ptr++=g1;
+		*uv_ptr++=0.0f;
+		*uv_ptr++=1.0f;
 
 		*vertex_ptr++=-f_radius;
 		*vertex_ptr++=f_radius;
 		*vertex_ptr++=f_radius;
 
-		*uv_ptr++=g0;
-		*uv_ptr++=g0;
+		*uv_ptr++=0.0f;
+		*uv_ptr++=0.0f;
 
 		*vertex_ptr++=f_radius;
 		*vertex_ptr++=f_radius;
 		*vertex_ptr++=-f_radius;
 
-		*uv_ptr++=g1;
-		*uv_ptr++=g1;
+		*uv_ptr++=1.0f;
+		*uv_ptr++=1.0f;
 
 		*vertex_ptr++=f_radius;
 		*vertex_ptr++=f_radius;
 		*vertex_ptr++=f_radius;
 
-		*uv_ptr++=g1;
-		*uv_ptr++=g0;
+		*uv_ptr++=1.0f;
+		*uv_ptr++=0.0f;
 	}
 	
 		// north
@@ -797,29 +794,29 @@ void draw_sky_cube_setup(void)
 		*vertex_ptr++=-f_radius;
 		*vertex_ptr++=f_radius;
 
-		*uv_ptr++=g0;
-		*uv_ptr++=g0;
+		*uv_ptr++=0.0f;
+		*uv_ptr++=0.0f;
 
 		*vertex_ptr++=-f_radius;
 		*vertex_ptr++=f_radius;
 		*vertex_ptr++=f_radius;
 
-		*uv_ptr++=g0;
-		*uv_ptr++=g1;
+		*uv_ptr++=0.0f;
+		*uv_ptr++=1.0f;
 
 		*vertex_ptr++=f_radius;
 		*vertex_ptr++=-f_radius;
 		*vertex_ptr++=f_radius;
 
-		*uv_ptr++=g1;
-		*uv_ptr++=g0;
+		*uv_ptr++=1.0f;
+		*uv_ptr++=0.0f;
 
 		*vertex_ptr++=f_radius;
 		*vertex_ptr++=f_radius;
 		*vertex_ptr++=f_radius;
 
-		*uv_ptr++=g1;
-		*uv_ptr++=g1;
+		*uv_ptr++=1.0f;
+		*uv_ptr++=1.0f;
 	}
 	
 		// east
@@ -829,29 +826,29 @@ void draw_sky_cube_setup(void)
 		*vertex_ptr++=-f_radius;
 		*vertex_ptr++=f_radius;
 
-		*uv_ptr++=g0;
-		*uv_ptr++=g0;
+		*uv_ptr++=0.0f;
+		*uv_ptr++=0.0f;
 
 		*vertex_ptr++=f_radius;
 		*vertex_ptr++=f_radius;
 		*vertex_ptr++=f_radius;
 
-		*uv_ptr++=g0;
-		*uv_ptr++=g1;
+		*uv_ptr++=0.0f;
+		*uv_ptr++=1.0f;
 
 		*vertex_ptr++=f_radius;
 		*vertex_ptr++=-f_radius;
 		*vertex_ptr++=-f_radius;
 
-		*uv_ptr++=g1;
-		*uv_ptr++=g0;
+		*uv_ptr++=1.0f;
+		*uv_ptr++=0.0f;
 
 		*vertex_ptr++=f_radius;
 		*vertex_ptr++=f_radius;
 		*vertex_ptr++=-f_radius;
 
-		*uv_ptr++=g1;
-		*uv_ptr++=g1;
+		*uv_ptr++=1.0f;
+		*uv_ptr++=1.0f;
 	}
 	
 		// south
@@ -861,29 +858,29 @@ void draw_sky_cube_setup(void)
 		*vertex_ptr++=-f_radius;
 		*vertex_ptr++=-f_radius;
 
-		*uv_ptr++=g0;
-		*uv_ptr++=g0;
+		*uv_ptr++=0.0f;
+		*uv_ptr++=0.0f;
 
 		*vertex_ptr++=f_radius;
 		*vertex_ptr++=f_radius;
 		*vertex_ptr++=-f_radius;
 
-		*uv_ptr++=g0;
-		*uv_ptr++=g1;
+		*uv_ptr++=0.0f;
+		*uv_ptr++=1.0f;
 
 		*vertex_ptr++=-f_radius;
 		*vertex_ptr++=-f_radius;
 		*vertex_ptr++=-f_radius;
 
-		*uv_ptr++=g1;
-		*uv_ptr++=g0;
+		*uv_ptr++=1.0f;
+		*uv_ptr++=0.0f;
 
 		*vertex_ptr++=-f_radius;
 		*vertex_ptr++=f_radius;
 		*vertex_ptr++=-f_radius;
 
-		*uv_ptr++=g1;
-		*uv_ptr++=g1;
+		*uv_ptr++=1.0f;
+		*uv_ptr++=1.0f;
 	}
 	
 		// west
@@ -893,29 +890,29 @@ void draw_sky_cube_setup(void)
 		*vertex_ptr++=-f_radius;
 		*vertex_ptr++=-f_radius;
 
-		*uv_ptr++=g0;
-		*uv_ptr++=g0;
+		*uv_ptr++=0.0f;
+		*uv_ptr++=0.0f;
 
 		*vertex_ptr++=-f_radius;
 		*vertex_ptr++=f_radius;
 		*vertex_ptr++=-f_radius;
 
-		*uv_ptr++=g0;
-		*uv_ptr++=g1;
+		*uv_ptr++=0.0f;
+		*uv_ptr++=1.0f;
 
 		*vertex_ptr++=-f_radius;
 		*vertex_ptr++=-f_radius;
 		*vertex_ptr++=f_radius;
 
-		*uv_ptr++=g1;
-		*uv_ptr++=g0;
+		*uv_ptr++=1.0f;
+		*uv_ptr++=0.0f;
 
 		*vertex_ptr++=-f_radius;
 		*vertex_ptr++=f_radius;
 		*vertex_ptr++=f_radius;
 
-		*uv_ptr++=g1;
-		*uv_ptr++=g1;
+		*uv_ptr++=1.0f;
+		*uv_ptr++=1.0f;
 	}
  
 		// unmap and unbind vbo
@@ -961,7 +958,7 @@ void draw_sky_cube(void)
 	glMatrixMode(GL_TEXTURE);
 	glTranslatef(txt_x_shift,txt_y_shift,0.0f);
 	glScalef(txt_fact,txt_fact,1.0f);
-
+	
 		// bind VBO
 
 	view_bind_sky_vertex_object();
@@ -980,7 +977,7 @@ void draw_sky_cube(void)
 		texture=&map.textures[map.sky.fill];
 		txt_id=texture->frames[texture->animate.current_frame].bitmap.gl_id;
 
-		gl_texture_simple_set(txt_id,FALSE,1,1,1,1);
+		gl_texture_simple_set(txt_id,TRUE,1.0f,1.0f,1.0f,1.0f);
 		glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 		
 		offset+=4;
@@ -992,7 +989,7 @@ void draw_sky_cube(void)
 		texture=&map.textures[map.sky.bottom_fill];
 		txt_id=texture->frames[texture->animate.current_frame].bitmap.gl_id;
 
-		gl_texture_simple_set(txt_id,FALSE,1,1,1,1);
+		gl_texture_simple_set(txt_id,TRUE,1.0f,1.0f,1.0f,1.0f);
 		glDrawArrays(GL_TRIANGLE_STRIP,offset,4);
 		
 		offset+=4;
@@ -1004,7 +1001,7 @@ void draw_sky_cube(void)
 		texture=&map.textures[map.sky.north_fill];
 		txt_id=texture->frames[texture->animate.current_frame].bitmap.gl_id;
 
-		gl_texture_simple_set(txt_id,FALSE,1,1,1,1);
+		gl_texture_simple_set(txt_id,TRUE,1.0f,1.0f,1.0f,1.0f);
 		glDrawArrays(GL_TRIANGLE_STRIP,offset,4);
 		
 		offset+=4;
@@ -1016,7 +1013,7 @@ void draw_sky_cube(void)
 		texture=&map.textures[map.sky.east_fill];
 		txt_id=texture->frames[texture->animate.current_frame].bitmap.gl_id;
 
-		gl_texture_simple_set(txt_id,FALSE,1,1,1,1);
+		gl_texture_simple_set(txt_id,TRUE,1.0f,1.0f,1.0f,1.0f);
 		glDrawArrays(GL_TRIANGLE_STRIP,offset,4);
 		
 		offset+=4;
@@ -1028,7 +1025,7 @@ void draw_sky_cube(void)
 		texture=&map.textures[map.sky.south_fill];
 		txt_id=texture->frames[texture->animate.current_frame].bitmap.gl_id;
 
-		gl_texture_simple_set(txt_id,FALSE,1,1,1,1);
+		gl_texture_simple_set(txt_id,TRUE,1.0f,1.0f,1.0f,1.0f);
 		glDrawArrays(GL_TRIANGLE_STRIP,offset,4);
 		
 		offset+=4;
@@ -1040,7 +1037,7 @@ void draw_sky_cube(void)
 		texture=&map.textures[map.sky.west_fill];
 		txt_id=texture->frames[texture->animate.current_frame].bitmap.gl_id;
 
-		gl_texture_simple_set(txt_id,FALSE,1,1,1,1);
+		gl_texture_simple_set(txt_id,TRUE,1.0f,1.0f,1.0f,1.0f);
 		glDrawArrays(GL_TRIANGLE_STRIP,offset,4);
 	}
 

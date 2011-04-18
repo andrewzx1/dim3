@@ -38,6 +38,7 @@ extern void app_end(void);
 
 extern bool game_start(bool in_file_load,int skill,int simple_save_idx,char *err_str);
 extern void game_end(void);
+extern void game_reset(void);
 
 //
 // maps
@@ -793,6 +794,12 @@ extern void draw_background(void);
 extern void draw_sky(void);
 extern void rain_draw(void);
 extern void decal_render(void);
+
+//
+// chats
+//
+
+extern void chat_add_message(char *name,char *str,d3col *col);
 
 //
 // tints

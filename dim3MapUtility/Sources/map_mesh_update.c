@@ -518,7 +518,7 @@ bool map_mesh_tesselate(map_type *map,int mesh_idx)
 
 /* =======================================================
 
-      Tesselate Mesh
+      Poly Punch Hole
       
 ======================================================= */
 
@@ -665,6 +665,76 @@ bool map_mesh_poly_punch_hole(map_type *map,int mesh_idx,int poly_idx,d3pnt *ext
 		// finish by deleting original polygon
 
 	return(map_mesh_delete_poly(map,mesh_idx,poly_idx));
+}
+
+/* =======================================================
+
+      Tesselate Poly
+      
+======================================================= */
+
+bool map_mesh_poly_tesselate(map_type *map,int mesh_idx,int poly_idx)
+{
+	int						n,cnt;
+	int						new_poly_idxs[8],px[3],py[3],pz[3];
+	float					gx[3],gy[3];
+	map_mesh_type			*mesh;
+	map_mesh_poly_type		*poly,*trig_poly;
+
+	mesh=&map->mesh.meshes[mesh_idx];
+	
+	poly=&mesh->polys[poly_idx];
+	if (poly->ptsz==3) return(TRUE);
+
+		// create trigs for poly
+		// we'll make fake trigs and move over
+		// data later
+
+	cnt=poly->ptsz-2;
+		
+	px[0]=px[1]=px[2]=0;
+	py[0]=py[1]=py[2]=0;
+	pz[0]=pz[1]=pz[2]=0;
+	gx[0]=gx[1]=gx[2]=0.0f;
+	gy[0]=gy[1]=gy[2]=0.0f;
+		
+	for (n=0;n!=cnt;n++) {
+		new_poly_idxs[n]=map_mesh_add_poly(map,mesh_idx,3,px,py,pz,gx,gy,0);
+	}
+		
+		// build the new polys
+		// need to get poly pointer again because
+		// memory might have changed
+		
+	poly=&mesh->polys[poly_idx];
+
+	for (n=0;n!=cnt;n++) {
+		trig_poly=&mesh->polys[new_poly_idxs[n]];
+		
+		memmove(trig_poly,poly,sizeof(map_mesh_poly_type));
+
+		trig_poly->ptsz=3;
+
+		trig_poly->v[0]=poly->v[0];
+		trig_poly->v[1]=poly->v[n+1];
+		trig_poly->v[2]=poly->v[n+2];
+		
+		trig_poly->main_uv.x[0]=poly->main_uv.x[0];
+		trig_poly->main_uv.x[1]=poly->main_uv.x[n+1];
+		trig_poly->main_uv.x[2]=poly->main_uv.x[n+2];
+		
+		trig_poly->main_uv.y[0]=poly->main_uv.y[0];
+		trig_poly->main_uv.y[1]=poly->main_uv.y[n+1];
+		trig_poly->main_uv.y[2]=poly->main_uv.y[n+2];
+		
+		trig_poly++;
+	}
+	
+		// delete the original
+		
+	map_mesh_delete_poly(map,mesh_idx,poly_idx);
+
+	return(TRUE);
 }
 
 /* =======================================================

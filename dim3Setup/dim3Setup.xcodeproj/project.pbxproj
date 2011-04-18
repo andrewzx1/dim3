@@ -8,6 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		2649D11E1341270B00573F6F /* property_palette_intro.c in Sources */ = {isa = PBXBuildFile; fileRef = 2649D11D1341270B00573F6F /* property_palette_intro.c */; };
+		26514F7213594F2500298860 /* alt_property_palette_chooser.c in Sources */ = {isa = PBXBuildFile; fileRef = 26514F6E13594F2500298860 /* alt_property_palette_chooser.c */; };
+		26514F7313594F2500298860 /* alt_property_palette_menu.c in Sources */ = {isa = PBXBuildFile; fileRef = 26514F6F13594F2500298860 /* alt_property_palette_menu.c */; };
+		26514F7413594F2500298860 /* alt2_property_palette_chooser_piece.c in Sources */ = {isa = PBXBuildFile; fileRef = 26514F7013594F2500298860 /* alt2_property_palette_chooser_piece.c */; };
+		26514F7513594F2500298860 /* alt2_property_palette_menu_item.c in Sources */ = {isa = PBXBuildFile; fileRef = 26514F7113594F2500298860 /* alt2_property_palette_menu_item.c */; };
 		268382A1133D4F3D0035315B /* property_palette_actions.c in Sources */ = {isa = PBXBuildFile; fileRef = 2683829A133D4F3D0035315B /* property_palette_actions.c */; };
 		268382A2133D4F3D0035315B /* property_palette_crosshairs.c in Sources */ = {isa = PBXBuildFile; fileRef = 2683829B133D4F3D0035315B /* property_palette_crosshairs.c */; };
 		268382A3133D4F3D0035315B /* property_palette_halos.c in Sources */ = {isa = PBXBuildFile; fileRef = 2683829C133D4F3D0035315B /* property_palette_halos.c */; };
@@ -105,6 +109,10 @@
 
 /* Begin PBXFileReference section */
 		2649D11D1341270B00573F6F /* property_palette_intro.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_intro.c; path = Code/property_palette_intro.c; sourceTree = "<group>"; };
+		26514F6E13594F2500298860 /* alt_property_palette_chooser.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = alt_property_palette_chooser.c; path = Code/alt_property_palette_chooser.c; sourceTree = "<group>"; };
+		26514F6F13594F2500298860 /* alt_property_palette_menu.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = alt_property_palette_menu.c; path = Code/alt_property_palette_menu.c; sourceTree = "<group>"; };
+		26514F7013594F2500298860 /* alt2_property_palette_chooser_piece.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = alt2_property_palette_chooser_piece.c; path = Code/alt2_property_palette_chooser_piece.c; sourceTree = "<group>"; };
+		26514F7113594F2500298860 /* alt2_property_palette_menu_item.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = alt2_property_palette_menu_item.c; path = Code/alt2_property_palette_menu_item.c; sourceTree = "<group>"; };
 		2683829A133D4F3D0035315B /* property_palette_actions.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_actions.c; path = Code/property_palette_actions.c; sourceTree = "<group>"; };
 		2683829B133D4F3D0035315B /* property_palette_crosshairs.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_crosshairs.c; path = Code/property_palette_crosshairs.c; sourceTree = "<group>"; };
 		2683829C133D4F3D0035315B /* property_palette_halos.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_halos.c; path = Code/property_palette_halos.c; sourceTree = "<group>"; };
@@ -263,7 +271,11 @@
 				269EC50A1356501E00C3223C /* alt_property_palette_multiplayer_character.c */,
 				269EC50B1356501E00C3223C /* alt_property_palette_multiplayer_game.c */,
 				269EC50C1356501E00C3223C /* alt_property_palette_multiplayer_option.c */,
+				26514F6F13594F2500298860 /* alt_property_palette_menu.c */,
+				26514F6E13594F2500298860 /* alt_property_palette_chooser.c */,
 				26C3246F1357B3F800313FBF /* alt2_property_palette.c */,
+				26514F7113594F2500298860 /* alt2_property_palette_menu_item.c */,
+				26514F7013594F2500298860 /* alt2_property_palette_chooser_piece.c */,
 				26D15D4F1329E7CD00F9EC7B /* property_utility_common.c */,
 				26D15C7A1329E42400F9EC7B /* text_common.c */,
 			);
@@ -461,6 +473,10 @@
 				26C324721357B3F800313FBF /* alt2_property_palette.c in Sources */,
 				26C324731357B3F800313FBF /* property_palette_chooser.c in Sources */,
 				26C324741357B3F800313FBF /* property_palette_menu.c in Sources */,
+				26514F7213594F2500298860 /* alt_property_palette_chooser.c in Sources */,
+				26514F7313594F2500298860 /* alt_property_palette_menu.c in Sources */,
+				26514F7413594F2500298860 /* alt2_property_palette_chooser_piece.c in Sources */,
+				26514F7513594F2500298860 /* alt2_property_palette_menu_item.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -509,7 +525,7 @@
 				INFOPLIST_FILE = "Resources/Info-dim3_Setup.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/../dim3Common/Libraries";
-				LLVM_LTO = NO;
+				LLVM_LTO = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
 				OTHER_LDFLAGS = "";
 				PREBINDING = NO;

@@ -208,7 +208,7 @@ void tool_click(int tool_idx)
 			break;
 
 		case 10:
-			piece_tesselate();
+			piece_tesselate(TRUE);
 			break;
 			
 			
