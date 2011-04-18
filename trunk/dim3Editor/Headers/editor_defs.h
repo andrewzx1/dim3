@@ -339,6 +339,7 @@ and can be sold or given away.
 #define kCommandMeshSetNormalsIn				FOUR_CHAR_CODE('ninn')
 
 #define kCommandPolygonHole						FOUR_CHAR_CODE('fhl1')
+#define kCommandPolyTesselate					FOUR_CHAR_CODE('pts2')
 #define kCommandPolygonSnapToGrid				FOUR_CHAR_CODE('psnp')
 #define kCommandPolygonRotateUV					FOUR_CHAR_CODE('pyru')
 #define kCommandPolygonFlipU					FOUR_CHAR_CODE('pyfu')

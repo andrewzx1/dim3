@@ -34,8 +34,9 @@ and can be sold or given away.
 #include "interface.h"
 
 #define kMPGamePropertySettingsName				0
-#define kMPGamePropertySettingsTeam				1
-#define kMPGamePropertySettingsMonster			2
+#define kMPGamePropertySettingsBotName			1
+#define kMPGamePropertySettingsTeam				2
+#define kMPGamePropertySettingsMonster			3
 
 extern iface_type				iface;
 extern setup_state_type			state;
@@ -57,6 +58,7 @@ void alt_property_palette_fill_multiplayer_game(int multiplayer_game_idx)
 
 	list_palette_add_header(&alt_property_palette,0,"Settings");
 	list_palette_add_string(&alt_property_palette,kMPGamePropertySettingsName,"Name",game->name,FALSE);
+	list_palette_add_string(&alt_property_palette,kMPGamePropertySettingsBotName,"Bot",game->bot_name,FALSE);
 	list_palette_add_checkbox(&alt_property_palette,kMPGamePropertySettingsTeam,"Requires Teams",game->use_teams,FALSE);
 	list_palette_add_checkbox(&alt_property_palette,kMPGamePropertySettingsMonster,"Include Monsters",game->monsters,FALSE);
 }
@@ -79,6 +81,10 @@ void alt_property_palette_click_multiplayer_game(int multiplayer_game_idx,int id
 
 		case kMPGamePropertySettingsName:
 			dialog_property_string_run(list_string_value_string,(void*)game->name,name_str_len,0,0);
+			break;
+			
+		case kMPGamePropertySettingsBotName:
+			dialog_property_string_run(list_string_value_string,(void*)game->bot_name,name_str_len,0,0);
 			break;
 
 		case kMPGamePropertySettingsTeam:

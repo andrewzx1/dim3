@@ -44,8 +44,6 @@ extern network_setup_type	net_setup;
 
 extern bool					game_loop_quit;
 
-extern void game_reset(void);
-extern void chat_add_message(char *name,char *str,d3col *col);
 extern void mesh_triggers(obj_type *obj,int old_mesh_idx,int mesh_idx);
 extern void group_moves_synch_with_host(network_reply_group_synch *synch);
 

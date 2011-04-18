@@ -73,7 +73,7 @@ void map_prepare_mesh_poly_determine_wall_like(map_mesh_type *mesh,map_mesh_poly
 
 void map_prepare_mesh_poly(map_mesh_type *mesh,map_mesh_poly_type *poly)
 {
-	int				n,ptsz,y,lx,rx,lz,rz,
+	int				n,ptsz,y,lx,rx,lz,rz,dist,
 					px[8],py[8],pz[8];
 	bool			flat;
 	d3pnt			min,max,mid;
@@ -178,18 +178,24 @@ void map_prepare_mesh_poly(map_mesh_type *mesh,map_mesh_poly_type *poly)
 		poly->line.rz=rz;
 		
 			// find ty,by for each point
+			// we need to catch polygons that have higher or lower
+			// points slightly offset from lx,lz or rx,rz, so we use
+			// a distance calculation here (within 20% of end point)
+			
+		dist=distance_2D_get(lx,lz,rx,rz);
+		dist=(dist*20)/100;
 			
 		poly->line.l_ty=poly->line.r_ty=poly->line.l_by=poly->line.r_by=-1;
 		
 		for (n=0;n!=poly->ptsz;n++) {
 			pt=&mesh->vertexes[poly->v[n]];
 			
-			if ((poly->line.lx==pt->x) && (poly->line.lz==pt->z)) {
+			if (distance_2D_get(pt->x,pt->z,lx,lz)<dist) {
 				if ((pt->y<poly->line.l_ty) || (poly->line.l_ty==-1)) poly->line.l_ty=pt->y;
 				if ((pt->y>poly->line.l_by) || (poly->line.l_by==-1)) poly->line.l_by=pt->y;
 			}
 			
-			if ((poly->line.rx==pt->x) && (poly->line.rz==pt->z)) {
+			if (distance_2D_get(pt->x,pt->z,rx,rz)<dist) {
 				if ((pt->y<poly->line.r_ty) || (poly->line.r_ty==-1)) poly->line.r_ty=pt->y;
 				if ((pt->y>poly->line.r_by) || (poly->line.r_by==-1)) poly->line.r_by=pt->y;
 			}

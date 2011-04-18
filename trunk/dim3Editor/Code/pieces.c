@@ -400,7 +400,7 @@ void piece_select_more(void)
       
 ======================================================= */
 
-void piece_tesselate(void)
+void piece_tesselate(bool mesh)
 {
 	int				n,sel_count,type,mesh_idx,poly_idx;
 	
@@ -410,8 +410,17 @@ void piece_tesselate(void)
 	
 	for (n=0;n!=sel_count;n++) {
 		select_get(n,&type,&mesh_idx,&poly_idx);
-		if (type==mesh_piece) map_mesh_tesselate(&map,mesh_idx);
+		if (type==mesh_piece) {
+			if (mesh) {
+				map_mesh_tesselate(&map,mesh_idx);
+			}
+			else {
+				map_mesh_poly_tesselate(&map,mesh_idx,poly_idx);
+			}
+		}
 	}
+
+	select_clear();
 	
 	main_wind_draw();
 }

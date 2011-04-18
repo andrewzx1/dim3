@@ -48,7 +48,6 @@ bool						weapon_change_key_down,weapon_target_key_down,weapon_zoom_key_down,
 							enter_exit_key_down,network_score_key_down,toggle_run_state,respawn_key_down,
 							fire_key_down[4],command_key_down[20],player_key_down[20];
 
-extern void chat_add_message(char *name,char *str,d3col *col);
 extern bool game_file_reload_ok(void);
 extern bool game_file_reload(char *err_str);
 

@@ -78,8 +78,11 @@ void iface_read_settings_multiplayer(iface_type *iface)
 		while (game_tag!=-1) {
 		
 			xml_get_attribute_text(game_tag,"type",iface->net_game.games[iface->net_game.ngame].name,name_str_len);
+			xml_get_attribute_text(game_tag,"bot",iface->net_game.games[iface->net_game.ngame].bot_name,name_str_len);
 			iface->net_game.games[iface->net_game.ngame].use_teams=xml_get_attribute_boolean(game_tag,"use_teams");
 			iface->net_game.games[iface->net_game.ngame].monsters=xml_get_attribute_boolean(game_tag,"monsters");
+			
+			if (iface->net_game.games[iface->net_game.ngame].bot_name[0]==0x0) strcpy(iface->net_game.games[iface->net_game.ngame].bot_name,"Bot");
 			
 			iface->net_game.ngame++;
 			if (iface->net_game.ngame==max_net_game) break;
@@ -189,6 +192,7 @@ bool iface_write_settings_multiplayer(iface_type *iface)
 	for (n=0;n!=iface->net_game.ngame;n++) {
 		xml_add_tagstart("Game");
 		xml_add_attribute_text("type",iface->net_game.games[n].name);
+		xml_add_attribute_text("bot",iface->net_game.games[n].bot_name);
 		xml_add_attribute_boolean("use_teams",iface->net_game.games[n].use_teams);
 		xml_add_attribute_boolean("monsters",iface->net_game.games[n].monsters);
 		xml_add_tagend(TRUE);

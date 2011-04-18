@@ -1207,7 +1207,8 @@ typedef struct		{
 					} iface_net_bots_type;
 
 typedef struct		{
-						char							name[name_str_len];
+						char							name[name_str_len],
+														bot_name[name_str_len];
 						bool							use_teams,monsters;
 					} iface_net_game_type;
 

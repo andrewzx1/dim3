@@ -813,6 +813,7 @@ extern void map_mesh_rotate(map_type *map,int mesh_idx,d3pnt *center_pnt,d3ang *
 extern void map_mesh_skew(map_type *map,int mesh_idx,int axis,int dir,int size);
 extern bool map_mesh_tesselate(map_type *map,int mesh_idx);
 extern bool map_mesh_poly_punch_hole(map_type *map,int mesh_idx,int poly_idx,d3pnt *extrude_pnt);
+extern bool map_mesh_poly_tesselate(map_type *map,int mesh_idx,int poly_idx);
 extern void map_mesh_poly_run_shifts(map_type *map,int tick);
 extern void map_mesh_get_poly_uv_as_box(map_type *map,int mesh_idx,int poly_idx,bool light_map_uv,float *x_txtoff,float *y_txtoff,float *x_txtfact,float *y_txtfact);
 extern void map_mesh_set_poly_uv_as_box(map_type *map,int mesh_idx,int poly_idx,bool light_map_uv,float x_txtoff,float y_txtoff,float x_txtfact,float y_txtfact);

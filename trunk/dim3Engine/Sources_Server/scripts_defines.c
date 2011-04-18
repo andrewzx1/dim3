@@ -107,6 +107,7 @@ script_define_type			script_dim3_defines[]={
 								{sd_team_none,									"",		"DIM3_TEAM_NONE"},
 								{sd_team_red,									"",		"DIM3_TEAM_RED"},
 								{sd_team_blue,									"",		"DIM3_TEAM_BLUE"},
+								{sd_team_common,								"",		"DIM3_TEAM_COMMON"},
 
 								{sd_skill_easy,									"",		"DIM3_SKILL_EASY"},
 								{sd_skill_medium,								"",		"DIM3_SKILL_MEDIUM"},

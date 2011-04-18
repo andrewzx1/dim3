@@ -29,11 +29,14 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
+#include "interface.h"
+#include "network.h"
 #include "scripts.h"
 #include "objects.h"
 
-extern iface_type		iface;
-extern js_type			js;
+extern iface_type			iface;
+extern js_type				js;
+extern network_setup_type	net_setup;
 
 JSValueRef js_obj_setting_get_id(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_setting_get_name(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
@@ -109,6 +112,7 @@ JSValueRef js_obj_set_ambient_func(JSContextRef cx,JSObjectRef func,JSObjectRef 
 JSValueRef js_obj_change_ambient_pitch_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_clear_ambient_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_set_debug_string_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_obj_chat_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 JSStaticValue 		obj_setting_props[]={
 							{"id",						js_obj_setting_get_id,						NULL,										kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
@@ -156,6 +160,7 @@ JSStaticFunction	obj_setting_functions[]={
 							{"changeAmbientPitch",		js_obj_change_ambient_pitch_func,			kJSPropertyAttributeDontDelete},
 							{"clearAmbient",			js_obj_clear_ambient_func,					kJSPropertyAttributeDontDelete},
 							{"setDebugString",			js_obj_set_debug_string_func,				kJSPropertyAttributeDontDelete},
+							{"chat",					js_obj_chat_func,							kJSPropertyAttributeDontDelete},
 							{0,0,0}};
 
 JSClassRef			obj_setting_class;
@@ -909,8 +914,21 @@ JSValueRef js_obj_set_debug_string_func(JSContextRef cx,JSObjectRef func,JSObjec
 	return(script_null_to_value(cx));
 }
 
+JSValueRef js_obj_chat_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+{
+	char			msg[max_view_chat_str_len];
+	d3col			col;
+	obj_type		*obj;
+	
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
+	obj=object_script_lookup();
+	script_value_to_string(cx,argv[0],msg,max_view_chat_str_len);
+	
+	if ((net_setup.mode!=net_mode_none) && (object_networkable(obj))) net_client_send_chat(obj,msg);
+	object_get_tint(obj,&col);
+	chat_add_message(obj->name,msg,&col);
 
-
-
-
+	return(script_null_to_value(cx));
+}
 
