@@ -159,6 +159,46 @@ void alt_property_palette_fill(void)
 			}
 			break;
 
+		case item_interface_sound:
+			if (state.cur_sound_idx!=-1) {
+				list_palette_set_title(&alt_property_palette,"Sound");
+				alt_property_palette_fill_sound(state.cur_sound_idx);
+				return;
+			}
+			break;
+
+		case item_interface_halo:
+			if (state.cur_halo_idx!=-1) {
+				list_palette_set_title(&alt_property_palette,"Halo");
+				alt_property_palette_fill_halo(state.cur_halo_idx);
+				return;
+			}
+			break;
+
+		case item_interface_mark:
+			if (state.cur_mark_idx!=-1) {
+				list_palette_set_title(&alt_property_palette,"Mark");
+				alt_property_palette_fill_mark(state.cur_mark_idx);
+				return;
+			}
+			break;
+
+		case item_interface_crosshair:
+			if (state.cur_crosshair_idx!=-1) {
+				list_palette_set_title(&alt_property_palette,"Crosshair");
+				alt_property_palette_fill_crosshair(state.cur_crosshair_idx);
+				return;
+			}
+			break;
+
+		case item_interface_action:
+			if (state.cur_action_idx!=-1) {
+				list_palette_set_title(&alt_property_palette,"Action");
+				alt_property_palette_fill_action(state.cur_action_idx);
+				return;
+			}
+			break;
+
 	}
 
 	list_palette_set_title(&alt_property_palette,"No Properties");
@@ -265,6 +305,41 @@ void alt_property_palette_click(d3pnt *pnt,bool double_click)
 		case item_interface_chooser:
 			if (state.cur_chooser_idx!=-1) {
 				alt_property_palette_click_chooser(state.cur_chooser_idx,alt_property_palette.item_id);
+				break;
+			}
+			break;
+
+		case item_interface_sound:
+			if (state.cur_sound_idx!=-1) {
+				alt_property_palette_click_sound(state.cur_sound_idx,alt_property_palette.item_id);
+				break;
+			}
+			break;
+
+		case item_interface_halo:
+			if (state.cur_halo_idx!=-1) {
+				alt_property_palette_click_halo(state.cur_halo_idx,alt_property_palette.item_id);
+				break;
+			}
+			break;
+
+		case item_interface_mark:
+			if (state.cur_mark_idx!=-1) {
+				alt_property_palette_click_mark(state.cur_mark_idx,alt_property_palette.item_id);
+				break;
+			}
+			break;
+
+		case item_interface_crosshair:
+			if (state.cur_crosshair_idx!=-1) {
+				alt_property_palette_click_crosshair(state.cur_crosshair_idx,alt_property_palette.item_id);
+				break;
+			}
+			break;
+
+		case item_interface_action:
+			if (state.cur_action_idx!=-1) {
+				alt_property_palette_click_action(state.cur_action_idx,alt_property_palette.item_id);
 				break;
 			}
 			break;

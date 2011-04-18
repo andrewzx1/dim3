@@ -33,26 +33,32 @@ and can be sold or given away.
 #include "ui_common.h"
 #include "interface.h"
 
-#define kBarSettingsName						0
-#define kBarSettingsShow						1
-#define kBarSettingsVertical					2
+#define kChooserPieceSettingsType				0
+#define kChooserPieceSettingsId					1
+#define kChooserPieceSettingsClickable			2
+#define kChooserPieceSettingsGoto				3
 
-#define kBarPositionX							3
-#define kBarPositionY							4
-#define kBarPositionWid							5
-#define kBarPositionHigh						6
+#define kChooserPiecePositionX					4
+#define kChooserPiecePositionY					5
+#define kChooserPiecePositionWid				6
+#define kChooserPiecePositionHigh				7
 
-#define kBarFillStartColor						7
-#define kBarFillEndColor						8
-#define kBarFillAlpha							9
-
-#define kBarSettingsOutline						10
-#define kBarOutlineColor						11
-#define kBarOutlineAlpha						12
+#define kChooserPieceTextStr					8
+#define kChooserPieceTextSize					9
+#define kChooserPieceTextJust					10
+#define kChooserPieceItemFile					11
+#define kChooserPieceModelModelName				12
+#define kChooserPieceModelAnimateName			13
+#define kChooserPieceModelResize				14
+#define kChooserPieceModelRot					15
+#define kChooserPieceButtonText					16
 
 extern iface_type				iface;
 extern setup_state_type			state;
 extern list_palette_type		alt2_property_palette;
+
+extern char						chooser_type_str[][32],
+								hud_text_just_type_str[][32];
 
 /* =======================================================
 
@@ -61,51 +67,80 @@ extern list_palette_type		alt2_property_palette;
 ======================================================= */
 
 /*
+
 typedef struct		{
-						int								type,id,
-														x,y,wid,high;
-						bool							clickable,used_in_override;
-						char							goto_name[name_str_len];
-						iface_chooser_piece_data_type	data;
-					} iface_chooser_piece_type;
+						int								size,just;
+						char							str[max_chooser_text_data_sz];
+					} iface_chooser_text_type;
+
+typedef struct		{
+						char							file[file_str_len];
+					} iface_chooser_item_type;
+
+typedef struct		{
+						float							resize;
+						char							model_name[name_str_len],animate_name[name_str_len];
+						d3ang							rot;
+					} iface_chooser_model_type;
+
+typedef struct		{
+						char							name[max_chooser_button_text_sz];
+					} iface_chooser_button_type;
+
 */
 
 void alt2_property_palette_fill_chooser_piece(int chooser_idx,int chooser_piece_idx)
 {
-	/*
-	iface_bar_type				*bar;
+	iface_chooser_piece_type		*piece;
 
-	bar=&iface.bar_list.bars[hud_bar_idx];
+	piece=&iface.chooser_list.choosers[chooser_idx].pieces[chooser_piece_idx];
 
 		// settings
 
-	list_palette_add_header(&alt_property_palette,0,"Settings");
-	list_palette_add_string(&alt_property_palette,kBarSettingsName,"Name",bar->name,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kBarSettingsShow,"Show",bar->show,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kBarSettingsVertical,"Vertical",bar->vert,FALSE);
+	list_palette_add_header(&alt2_property_palette,0,"Settings");
+	list_palette_add_string(&alt2_property_palette,kChooserPieceSettingsType,"Type",chooser_type_str[piece->type],FALSE);
+	list_palette_add_string_int(&alt2_property_palette,kChooserPieceSettingsId,"Id",piece->id,FALSE);
+	list_palette_add_checkbox(&alt2_property_palette,kChooserPieceSettingsClickable,"Clickable",piece->clickable,FALSE);
+	list_palette_add_string(&alt2_property_palette,kChooserPieceSettingsGoto,"Goto Chooser",piece->goto_name,FALSE);
 
 		// position
 
-	list_palette_add_header(&alt_property_palette,0,"Position");
-	list_palette_add_string_int(&alt_property_palette,kBarPositionX,"X",bar->x,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kBarPositionY,"Y",bar->y,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kBarPositionWid,"Width",bar->x_size,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kBarPositionHigh,"Height",bar->y_size,FALSE);
+	list_palette_add_header(&alt2_property_palette,0,"Position");
+	list_palette_add_string_int(&alt2_property_palette,kChooserPiecePositionX,"X",piece->x,FALSE);
+	list_palette_add_string_int(&alt2_property_palette,kChooserPiecePositionY,"Y",piece->y,FALSE);
+	list_palette_add_string_int(&alt2_property_palette,kChooserPiecePositionWid,"Width",piece->wid,FALSE);
+	list_palette_add_string_int(&alt2_property_palette,kChooserPiecePositionHigh,"Height",piece->high,FALSE);
 
-		// fill
+		// types
 
-	list_palette_add_header(&alt_property_palette,0,"Fill");
-	list_palette_add_pick_color(&alt_property_palette,kBarFillStartColor,"Start Color",&bar->fill_start_color,FALSE);
-	list_palette_add_pick_color(&alt_property_palette,kBarFillEndColor,"End Color",&bar->fill_end_color,FALSE);
-	list_palette_add_string_float(&alt_property_palette,kBarFillAlpha,"Alpha",bar->fill_alpha,FALSE);
+	switch (piece->type) {
 
-		// outline
+		case chooser_piece_type_text:
+			list_palette_add_header(&alt2_property_palette,0,"Text");
+			list_palette_add_string(&alt2_property_palette,kChooserPieceTextStr,"Text",piece->data.text.str,FALSE);
+			list_palette_add_string_int(&alt2_property_palette,kChooserPieceTextSize,"Size",piece->data.text.size,FALSE);
+			list_palette_add_string(&alt2_property_palette,kChooserPieceTextJust,"Justification",hud_text_just_type_str[piece->data.text.just],FALSE);
+			break;
 
-	list_palette_add_header(&alt_property_palette,0,"Outline");
-	list_palette_add_checkbox(&alt_property_palette,kBarSettingsOutline,"Outline",bar->outline,FALSE);
-	list_palette_add_pick_color(&alt_property_palette,kBarOutlineColor,"Color",&bar->outline_color,FALSE);
-	list_palette_add_string_float(&alt_property_palette,kBarOutlineAlpha,"Alpha",bar->outline_alpha,FALSE);
-	*/
+		case chooser_piece_type_item:
+			list_palette_add_header(&alt2_property_palette,0,"Item");
+			list_palette_add_string(&alt2_property_palette,kChooserPieceItemFile,"Bitmap",piece->data.item.file,FALSE);
+			break;
+
+		case chooser_piece_type_model:
+			list_palette_add_header(&alt2_property_palette,0,"Model");
+			list_palette_add_string(&alt2_property_palette,kChooserPieceModelModelName,"Model",piece->data.model.model_name,FALSE);
+			list_palette_add_string(&alt2_property_palette,kChooserPieceModelAnimateName,"Animation",piece->data.model.animate_name,FALSE);
+			list_palette_add_string_float(&alt2_property_palette,kChooserPieceModelResize,"Resize",piece->data.model.resize,FALSE);
+			list_palette_add_angle(&alt2_property_palette,kChooserPieceModelRot,"Rotate",&piece->data.model.rot,FALSE);
+			break;
+
+		case chooser_piece_type_button:
+			list_palette_add_header(&alt2_property_palette,0,"Button");
+			list_palette_add_string(&alt2_property_palette,kChooserPieceButtonText,"Text",piece->data.button.name,FALSE);
+			break;
+
+	}
 }
 
 /* =======================================================
@@ -116,75 +151,97 @@ void alt2_property_palette_fill_chooser_piece(int chooser_idx,int chooser_piece_
 
 void alt2_property_palette_click_chooser_piece(int chooser_idx,int chooser_piece_idx,int id)
 {
-	/*
-	iface_bar_type				*bar;
+	int								old_chooser_type;
+	char							file_name[file_str_len];
+	iface_chooser_piece_type		*piece;
 
-	bar=&iface.bar_list.bars[hud_bar_idx];
+	piece=&iface.chooser_list.choosers[chooser_idx].pieces[chooser_piece_idx];
 
 	switch (id) {
 
 			// settings
 
-		case kBarSettingsName:
-			dialog_property_string_run(list_string_value_string,(void*)bar->name,name_str_len,0,0);
+		case kChooserPieceSettingsType:
+			old_chooser_type=piece->type;
+			property_pick_list("Pick a Chooser Piece Type",(char*)chooser_type_str,&piece->type);
+
+				// if change of type, clear out the struct
+
+			if (old_chooser_type!=piece->type) bzero(&piece->data,sizeof(iface_chooser_piece_data_type));
 			break;
 
-		case kBarSettingsShow:
-			bar->show=!bar->show;
+		case kChooserPieceSettingsId:
+			dialog_property_string_run(list_string_value_int,(void*)&piece->id,0,0,0);
 			break;
 
-		case kBarSettingsVertical:
-			bar->vert=!bar->vert;
+		case kChooserPieceSettingsClickable:
+			piece->clickable=!piece->clickable;
+			break;
+
+		case kChooserPieceSettingsGoto:
+			dialog_property_string_run(list_string_value_string,(void*)piece->goto_name,name_str_len,0,0);
 			break;
 
 			// position
 
-		case kBarPositionX:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&bar->x,0,0,0);
+		case kChooserPiecePositionX:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&piece->x,0,0,0);
 			break;
 
-		case kBarPositionY:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&bar->y,0,0,0);
+		case kChooserPiecePositionY:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&piece->y,0,0,0);
 			break;
 
-		case kBarPositionWid:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&bar->x_size,0,0,0);
+		case kChooserPiecePositionWid:
+			dialog_property_string_run(list_string_value_int,(void*)&piece->wid,0,0,0);
 			break;
 
-		case kBarPositionHigh:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&bar->y_size,0,0,0);
+		case kChooserPiecePositionHigh:
+			dialog_property_string_run(list_string_value_int,(void*)&piece->high,0,0,0);
 			break;
 
-			// fill
+			// types
 
-		case kBarFillStartColor:
-			os_pick_color(&bar->fill_start_color);
+		case kChooserPieceTextStr:
+			dialog_property_string_run(list_string_value_string,(void*)piece->data.text.str,max_chooser_text_data_sz,0,0);
 			break;
 
-		case kBarFillEndColor:
-			os_pick_color(&bar->fill_end_color);
+		case kChooserPieceTextSize:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&piece->data.text.size,0,0,0);
 			break;
 
-		case kBarFillAlpha:
-			dialog_property_string_run(list_string_value_0_to_1_float,(void*)&bar->fill_alpha,0,0,0);
+		case kChooserPieceTextJust:
+			property_pick_list("Pick a Justification",(char*)hud_text_just_type_str,&piece->data.text.just);
 			break;
 
-			// outline
-
-		case kBarSettingsOutline:
-			bar->outline=!bar->outline;
+		case kChooserPieceItemFile:
+			strcpy(file_name,piece->data.item.file);
+			if (dialog_file_open_run("Pick a Chooser Bitmap","Chooser","png",NULL,file_name)) strcpy(piece->data.item.file,file_name);
 			break;
 
-		case kBarOutlineColor:
-			os_pick_color(&bar->outline_color);
+		case kChooserPieceModelModelName:
+			strcpy(file_name,piece->data.model.model_name);
+			if (dialog_file_open_run("Pick a Model","Models",NULL,"Mesh.xml",file_name)) strcpy(piece->data.model.model_name,file_name);
 			break;
 
-		case kBarOutlineAlpha:
-			dialog_property_string_run(list_string_value_0_to_1_float,(void*)&bar->outline_alpha,0,0,0);
+		case kChooserPieceModelAnimateName:
+			dialog_property_string_run(list_string_value_string,(void*)piece->data.model.animate_name,name_str_len,0,0);
+			break;
+
+		case kChooserPieceModelResize:
+			dialog_property_string_run(list_string_value_positive_float,(void*)&piece->data.model.resize,0,0,0);
+			break;
+
+		case kChooserPieceModelRot:
+			dialog_property_chord_run(list_chord_value_angle,(void*)&piece->data.model.rot);
+			break;
+
+		case kChooserPieceButtonText:
+			dialog_property_string_run(list_string_value_string,(void*)piece->data.button.name,max_chooser_button_text_sz,0,0);
 			break;
 
 	}
-*/
+
 		// redraw
 
 	main_wind_draw();

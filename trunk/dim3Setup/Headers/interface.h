@@ -128,6 +128,11 @@ extern void alt_property_palette_fill_multiplayer_game(int multiplayer_game_idx)
 extern void alt_property_palette_fill_multiplayer_option(int multiplayer_option_idx);
 extern void alt_property_palette_fill_menu(int menu_idx);
 extern void alt_property_palette_fill_chooser(int chooser_idx);
+extern void alt_property_palette_fill_sound(int sound_idx);
+extern void alt_property_palette_fill_halo(int halo_idx);
+extern void alt_property_palette_fill_mark(int mark_idx);
+extern void alt_property_palette_fill_crosshair(int crosshair_idx);
+extern void alt_property_palette_fill_action(int action_idx);
 
 extern void alt_property_palette_click_intro_button(int intro_button_idx,int id);
 extern void alt_property_palette_click_intro_model(int intro_model_idx,int id);
@@ -140,6 +145,11 @@ extern void alt_property_palette_click_multiplayer_game(int game_character_idx,i
 extern void alt_property_palette_click_multiplayer_option(int option_character_idx,int id);
 extern void alt_property_palette_click_menu(int menu_idx,int id);
 extern void alt_property_palette_click_chooser(int chooser_idx,int id);
+extern void alt_property_palette_click_sound(int sound_idx,int id);
+extern void alt_property_palette_click_halo(int halo_idx,int id);
+extern void alt_property_palette_click_mark(int mark_idx,int id);
+extern void alt_property_palette_click_crosshair(int crosshair_idx,int id);
+extern void alt_property_palette_click_action(int action_idx,int id);
 
 //
 // alt2 property list palette
