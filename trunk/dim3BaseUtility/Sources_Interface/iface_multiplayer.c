@@ -261,7 +261,7 @@ bool iface_write_settings_multiplayer(iface_type *iface)
 
 	xml_add_tagclose("Multiplayer");
 
-        // save the map
+        // write the xml
 		
 	file_paths_data(&iface_file_path_setup,path,"Settings","Multiplayer","xml");
 		

@@ -71,9 +71,11 @@ void property_palette_fill_sounds(void)
 
 void property_palette_click_sounds(int id)
 {
+	int					idx,sz;
+
 		// sound edit
 		
-	if ((id>=kSoundProperyName) && (id<kSoundProperyDelete)) {
+	if ((id>=kSoundProperyName) && (id<(kSoundProperyName+max_iface_sound))) {
 		state.cur_sound_idx=id-kSoundProperyName;
 		main_wind_draw();
 		return;
@@ -81,9 +83,16 @@ void property_palette_click_sounds(int id)
 	
 		// sound delete
 		
-	if (id>=kSoundProperyDelete) {
+	if ((id>=kSoundProperyDelete) && (id<(kSoundProperyDelete+max_iface_sound))) {
 		state.cur_sound_idx=-1;
-	//	supergumba
+
+		idx=id-kSoundProperyDelete;
+
+		sz=(iface.sound_list.nsound-idx)-1;
+		if (sz>0) memmove(&iface.sound_list.sounds[idx],&iface.sound_list.sounds[idx+1],(sz*sizeof(iface_sound_type)));
+
+		iface.sound_list.nsound--;
+
 		main_wind_draw();
 		return;
 	}
@@ -91,8 +100,26 @@ void property_palette_click_sounds(int id)
 		// sound add
 
 	if (id==kSoundPropertyAdd) {
-	// supergumba
-	//	state.cur_sound_idx=... new sound ...
+		state.cur_sound_idx=-1;
+
+		if (iface.sound_list.nsound>=max_iface_sound) {
+			os_dialog_alert("Add Sound","Reached the maximum number of sounds");
+			return;
+		}
+
+		idx=iface.sound_list.nsound;
+		iface.sound_list.nsound++;
+		
+		iface.sound_list.sounds[idx].name[0]=0x0;
+		dialog_property_string_run(list_string_value_string,(void*)iface.sound_list.sounds[idx].name,name_str_len,0,0);
+	
+		iface.sound_list.sounds[idx].file_name[0]=0x0;
+
+		iface.sound_list.sounds[idx].min_dist=1500;
+		iface.sound_list.sounds[idx].max_dist=30000;
+
+		state.cur_sound_idx=idx;
+
 		main_wind_draw();
 		return;
 	}

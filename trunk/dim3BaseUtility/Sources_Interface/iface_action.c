@@ -89,3 +89,47 @@ void iface_read_settings_action(iface_type *iface)
 	xml_close_file();
 }
 
+/* =======================================================
+
+      Write Action XML
+      
+======================================================= */
+
+bool iface_write_settings_action(iface_type *iface)
+{
+	int							n;
+	char						path[1024];
+	bool						ok;
+	iface_action_display_type	*action;
+	
+		// start new file
+		
+	xml_new_file();
+
+	xml_add_tagstart("Actions");
+	xml_add_tagend(FALSE);
+	
+	action=iface->action_display_list.action_displays;
+
+	for (n=0;n!=ncontrol;n++) {
+
+		xml_add_tagstart("Action");
+		xml_add_attribute_text("name",control_names_str[n]);
+		xml_add_attribute_text("display",action->display_name);
+		xml_add_attribute_boolean("show",action->show);
+		xml_add_tagend(TRUE);
+
+		action++;
+	}
+
+	xml_add_tagclose("Actions");
+
+        // write the xml
+		
+	file_paths_data(&iface_file_path_setup,path,"Settings","Actions","xml");
+		
+	ok=xml_save_file(path);
+    xml_close_file();
+	
+	return(ok);
+}

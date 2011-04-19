@@ -71,9 +71,11 @@ void property_palette_fill_halos(void)
 
 void property_palette_click_halos(int id)
 {
+	int				idx,sz;
+
 		// halo edit
 		
-	if ((id>=kHaloProperyName) && (id<kHaloProperyDelete)) {
+	if ((id>=kHaloProperyName) && (id<(kHaloProperyName+max_iface_halo))) {
 		state.cur_halo_idx=id-kHaloProperyName;
 		main_wind_draw();
 		return;
@@ -81,9 +83,16 @@ void property_palette_click_halos(int id)
 	
 		// halo delete
 		
-	if (id>=kHaloProperyDelete) {
+	if ((id>=kHaloProperyDelete) && (id<(kHaloProperyDelete+max_iface_halo))) {
 		state.cur_halo_idx=-1;
-	//	supergumba
+
+		idx=id-kHaloProperyDelete;
+
+		sz=(iface.halo_list.nhalo-idx)-1;
+		if (sz>0) memmove(&iface.halo_list.halos[idx],&iface.halo_list.halos[idx+1],(sz*sizeof(iface_halo_type)));
+
+		iface.halo_list.nhalo--;
+
 		main_wind_draw();
 		return;
 	}
@@ -91,8 +100,32 @@ void property_palette_click_halos(int id)
 		// halo add
 
 	if (id==kHaloPropertyAdd) {
-	// supergumba
-	//	state.cur_halo_idx=... new sound ...
+		state.cur_halo_idx=-1;
+
+		if (iface.halo_list.nhalo>=max_iface_halo) {
+			os_dialog_alert("Add Halo","Reached the maximum number of halos");
+			return;
+		}
+
+		idx=iface.halo_list.nhalo;
+		iface.halo_list.nhalo++;
+		
+		iface.halo_list.halos[idx].name[0]=0x0;
+		dialog_property_string_run(list_string_value_string,(void*)iface.halo_list.halos[idx].name,name_str_len,0,0);
+	
+		iface.halo_list.halos[idx].bitmap_name[0]=0x0;
+
+		iface.halo_list.halos[idx].min_dist=3000;
+		iface.halo_list.halos[idx].max_dist=50000;
+		iface.halo_list.halos[idx].min_size=500;
+		iface.halo_list.halos[idx].max_size=200;
+		iface.halo_list.halos[idx].min_alpha=0.8f;
+		iface.halo_list.halos[idx].max_alpha=0.05f;
+		iface.halo_list.halos[idx].no_clip_object=FALSE;
+		iface.halo_list.halos[idx].no_clip_self=TRUE;
+
+		state.cur_halo_idx=idx;
+
 		main_wind_draw();
 		return;
 	}

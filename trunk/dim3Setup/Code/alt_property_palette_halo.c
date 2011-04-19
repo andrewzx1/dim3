@@ -33,38 +33,17 @@ and can be sold or given away.
 #include "ui_common.h"
 #include "interface.h"
 
-#define kBitmapSettingsName						0
-#define kBitmapSettingsFileName					1
-#define kBitmapSettingsShow						2
+#define kHaloSettingsName						0
+#define kHaloSettingsFileName					1
 
-#define kBitmapPositionX						3
-#define kBitmapPositionY						4
-#define kBitmapPositionWid						5
-#define kBitmapPositionHigh						6
-
-#define kBitmapOptionAlpha						7
-#define kBitmapOptionRotate						8
-#define kBitmapOptionFlash						9
-#define kBitmapOptionFlipHorz					10
-#define kBitmapOptionFlipVert					11
-#define kBitmapOptionTeamTint					12
-
-#define kBitmapRepeatOn							13
-#define kBitmapRepeatXAdd						14
-#define kBitmapRepeatYAdd						15
-#define kBitmapRepeatColumn						16
-#define kBitmapRepeatRow						17
-#define kBitmapRepeatCount						18
-
-#define kBitmapFadeOn							19
-#define kBitmapFadeInTick						20
-#define kBitmapFadeLifeTick						21
-#define kBitmapFadeOutTick						22
-
-#define kBitmapImageCount						23
-#define kBitmapImageMillisecond					24
-#define kBitmapImageLoop						25
-#define kBitmapImageLoopBack					26
+#define kHaloDistanceMin						2
+#define kHaloDistanceMax						3
+#define kHaloSizeMin							4
+#define kHaloSizeMax							5
+#define kHaloAlphaMin							6
+#define kHaloAlphaMax							7
+#define kHaloOptionNoClipObject					8
+#define kHaloOptionNoClipSelf					9
 
 extern iface_type				iface;
 extern setup_state_type			state;
@@ -76,64 +55,52 @@ extern list_palette_type		alt_property_palette;
       
 ======================================================= */
 
+/*
+typedef struct		{
+						int								image_idx,
+														min_dist,max_dist,
+														min_size,max_size;
+						float							min_alpha,max_alpha;
+						bool							no_clip_object,no_clip_self;
+						char							name[name_str_len],bitmap_name[name_str_len];
+					} iface_halo_type;
+*/
+
 void alt_property_palette_fill_halo(int halo_idx)
 {
-	/*
-	iface_bitmap_type			*bitmap;
+	iface_halo_type			*halo;
 
-	bitmap=&iface.bitmap_list.bitmaps[hud_bitmap_idx];
+	halo=&iface.halo_list.halos[halo_idx];
 
 		// settings
 
 	list_palette_add_header(&alt_property_palette,0,"Settings");
-	list_palette_add_string(&alt_property_palette,kBitmapSettingsName,"Name",bitmap->name,FALSE);
-	list_palette_add_string(&alt_property_palette,kBitmapSettingsFileName,"File",bitmap->filename,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kBitmapSettingsShow,"Show",bitmap->show,FALSE);
+	list_palette_add_string(&alt_property_palette,kHaloSettingsName,"Name",halo->name,FALSE);
+	list_palette_add_string(&alt_property_palette,kHaloSettingsFileName,"Bitmap",halo->bitmap_name,FALSE);
 
-		// position
+		// distance
 
-	list_palette_add_header(&alt_property_palette,0,"Position");
-	list_palette_add_string_int(&alt_property_palette,kBitmapPositionX,"X",bitmap->x,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kBitmapPositionY,"Y",bitmap->y,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kBitmapPositionWid,"Width",bitmap->x_size,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kBitmapPositionHigh,"Height",bitmap->y_size,FALSE);
+	list_palette_add_header(&alt_property_palette,0,"Distance");
+	list_palette_add_string_int(&alt_property_palette,kHaloDistanceMin,"Minimum",halo->min_dist,FALSE);
+	list_palette_add_string_int(&alt_property_palette,kHaloDistanceMax,"Maximum",halo->max_dist,FALSE);
+
+		// size
+
+	list_palette_add_header(&alt_property_palette,0,"Size");
+	list_palette_add_string_int(&alt_property_palette,kHaloSizeMin,"Minimum",halo->min_size,FALSE);
+	list_palette_add_string_int(&alt_property_palette,kHaloSizeMax,"Maximum",halo->max_size,FALSE);
+
+		// alpha
+
+	list_palette_add_header(&alt_property_palette,0,"Alpha");
+	list_palette_add_string_float(&alt_property_palette,kHaloAlphaMin,"Minimum",halo->min_alpha,FALSE);
+	list_palette_add_string_float(&alt_property_palette,kHaloAlphaMax,"Maximum",halo->max_alpha,FALSE);
 
 		// options
 
 	list_palette_add_header(&alt_property_palette,0,"Options");
-	list_palette_add_string_float(&alt_property_palette,kBitmapOptionAlpha,"Alpha",bitmap->alpha,FALSE);
-	list_palette_add_string_float(&alt_property_palette,kBitmapOptionRotate,"Rotate",bitmap->rot,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kBitmapOptionFlash,"Flash",bitmap->flash,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kBitmapOptionFlipHorz,"Flip Horizontal",bitmap->flip_horz,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kBitmapOptionFlipVert,"Flip Vertical",bitmap->flip_vert,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kBitmapOptionTeamTint,"Team Tint",bitmap->team_tint,FALSE);
-
-		// repeat
-
-	list_palette_add_header(&alt_property_palette,0,"Repeat");
-	list_palette_add_checkbox(&alt_property_palette,kBitmapRepeatOn,"On",bitmap->repeat.on,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kBitmapRepeatXAdd,"X Add",bitmap->repeat.x_add,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kBitmapRepeatYAdd,"Y Add",bitmap->repeat.y_add,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kBitmapRepeatColumn,"Column Count",bitmap->repeat.col,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kBitmapRepeatRow,"Row Count",bitmap->repeat.row,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kBitmapRepeatCount,"Count",bitmap->repeat.count,FALSE);
-
-		// fade
-
-	list_palette_add_header(&alt_property_palette,0,"Fade");
-	list_palette_add_checkbox(&alt_property_palette,kBitmapFadeOn,"On",bitmap->fade.on,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kBitmapFadeInTick,"Fade In Milliseconds",bitmap->fade.fade_in_tick,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kBitmapFadeLifeTick,"Life Milliseconds",bitmap->fade.life_tick,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kBitmapFadeOutTick,"Fade In Milliseconds",bitmap->fade.fade_out_tick,FALSE);
-
-		// animation
-
-	list_palette_add_header(&alt_property_palette,0,"Animation");
-	list_palette_add_string_int(&alt_property_palette,kBitmapImageCount,"Count",bitmap->animate.image_count,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kBitmapImageMillisecond,"Display Milliseconds",bitmap->animate.msec,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kBitmapImageLoop,"Loop",bitmap->animate.loop,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kBitmapImageLoopBack,"Loop Back",bitmap->animate.loop_back,FALSE);
-	*/
+	list_palette_add_checkbox(&alt_property_palette,kHaloOptionNoClipObject,"No Clip Object",halo->no_clip_object,FALSE);
+	list_palette_add_checkbox(&alt_property_palette,kHaloOptionNoClipSelf,"No Clip Self",halo->no_clip_self,FALSE);
 }
 
 /* =======================================================
@@ -144,137 +111,66 @@ void alt_property_palette_fill_halo(int halo_idx)
 
 void alt_property_palette_click_halo(int halo_idx,int id)
 {
-	/*
-	char						file_name[file_str_len];
-	iface_bitmap_type			*bitmap;
+	char					file_name[file_str_len];
+	iface_halo_type			*halo;
 
-	bitmap=&iface.bitmap_list.bitmaps[hud_bitmap_idx];
+	halo=&iface.halo_list.halos[halo_idx];
 
 	switch (id) {
 
 			// settings
 
-		case kBitmapSettingsName:
-			dialog_property_string_run(list_string_value_string,(void*)bitmap->name,name_str_len,0,0);
+		case kHaloSettingsName:
+			dialog_property_string_run(list_string_value_string,(void*)halo->name,name_str_len,0,0);
 			break;
 
-		case kBitmapSettingsFileName:
-			strcpy(file_name,bitmap->filename);
-			if (dialog_file_open_run("Pick a Interface Bitmap","Bitmaps/Interface","png",NULL,file_name)) strcpy(bitmap->filename,file_name);
+		case kHaloSettingsFileName:
+			strcpy(file_name,halo->bitmap_name);
+			if (dialog_file_open_run("Pick a Halo Bitmap","Bitmaps/Halos","png",NULL,file_name)) strcpy(halo->bitmap_name,file_name);
 			break;
 
-		case kBitmapSettingsShow:
-			bitmap->show=!bitmap->show;
+			// distance
+
+		case kHaloDistanceMin:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&halo->min_dist,0,0,0);
 			break;
 
-			// position
-
-		case kBitmapPositionX:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&bitmap->x,0,0,0);
+		case kHaloDistanceMax:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&halo->max_dist,0,0,0);
 			break;
 
-		case kBitmapPositionY:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&bitmap->y,0,0,0);
+			// size
+
+		case kHaloSizeMin:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&halo->min_size,0,0,0);
 			break;
 
-		case kBitmapPositionWid:
-			dialog_property_string_run(list_string_value_int,(void*)&bitmap->x_size,0,0,0);
+		case kHaloSizeMax:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&halo->max_size,0,0,0);
 			break;
 
-		case kBitmapPositionHigh:
-			dialog_property_string_run(list_string_value_int,(void*)&bitmap->y_size,0,0,0);
+			// alpha
+
+		case kHaloAlphaMin:
+			dialog_property_string_run(list_string_value_0_to_1_float,(void*)&halo->min_alpha,0,0,0);
+			break;
+
+		case kHaloAlphaMax:
+			dialog_property_string_run(list_string_value_0_to_1_float,(void*)&halo->max_alpha,0,0,0);
 			break;
 
 			// options
 
-		case kBitmapOptionAlpha:
-			dialog_property_string_run(list_string_value_0_to_1_float,(void*)&bitmap->alpha,0,0,0);
+		case kHaloOptionNoClipObject:
+			halo->no_clip_object=!halo->no_clip_object;
 			break;
 
-		case kBitmapOptionRotate:
-			dialog_property_string_run(list_string_value_positive_float,(void*)&bitmap->rot,0,0,0);
-			break;
-
-		case kBitmapOptionFlash:
-			bitmap->flash=!bitmap->flash;
-			break;
-
-		case kBitmapOptionFlipHorz:
-			bitmap->flip_horz=!bitmap->flip_horz;
-			break;
-
-		case kBitmapOptionFlipVert:
-			bitmap->flip_vert=!bitmap->flip_vert;
-			break;
-
-		case kBitmapOptionTeamTint:
-			bitmap->team_tint=!bitmap->team_tint;
-			break;
-
-			// repeat
-
-		case kBitmapRepeatOn:
-			bitmap->repeat.on=!bitmap->repeat.on;
-			break;
-
-		case kBitmapRepeatXAdd:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&bitmap->repeat.x_add,0,0,0);
-			break;
-
-		case kBitmapRepeatYAdd:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&bitmap->repeat.y_add,0,0,0);
-			break;
-
-		case kBitmapRepeatColumn:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&bitmap->repeat.col,0,0,0);
-			break;
-
-		case kBitmapRepeatRow:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&bitmap->repeat.row,0,0,0);
-			break;
-
-		case kBitmapRepeatCount:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&bitmap->repeat.count,0,0,0);
-			break;
-
-			// fade
-
-		case kBitmapFadeOn:
-			bitmap->fade.on=!bitmap->fade.on;
-			break;
-
-		case kBitmapFadeInTick:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&bitmap->fade.fade_in_tick,0,0,0);
-			break;
-
-		case kBitmapFadeLifeTick:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&bitmap->fade.life_tick,0,0,0);
-			break;
-
-		case kBitmapFadeOutTick:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&bitmap->fade.fade_out_tick,0,0,0);
-			break;
-
-			// animation
-
-		case kBitmapImageCount:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&bitmap->animate.image_count,0,0,0);
-			break;
-
-		case kBitmapImageMillisecond:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&bitmap->animate.msec,0,0,0);
-			break;
-
-		case kBitmapImageLoop:
-			bitmap->animate.loop=!bitmap->animate.loop;
-			break;
-
-		case kBitmapImageLoopBack:
-			bitmap->animate.loop_back=!bitmap->animate.loop_back;
+		case kHaloOptionNoClipSelf:
+			halo->no_clip_self=!halo->no_clip_self;
 			break;
 
 	}
-*/
+
 		// redraw
 
 	main_wind_draw();

@@ -527,6 +527,11 @@ bool iface_write(iface_type *iface)
 	if (!iface_write_settings_interface(iface)) return(FALSE);
 	if (!iface_write_settings_chooser(iface)) return(FALSE);
 	if (!iface_write_settings_multiplayer(iface)) return(FALSE);
+
+	if (!iface_write_settings_halo(iface)) return(FALSE);
+	
+	if (!iface_write_settings_sound(iface)) return(FALSE);
+	if (!iface_write_settings_action(iface)) return(FALSE);
 	
 	return(TRUE);
 }

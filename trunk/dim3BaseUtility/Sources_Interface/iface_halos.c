@@ -88,10 +88,112 @@ void iface_read_settings_halo(iface_type *iface)
 			xml_get_attribute_text(tag,"file",halo->bitmap_name,file_str_len);
 		}
 		
+		halo->min_dist=3000;
+		halo->max_dist=50000;
+		halo->min_size=500;
+		halo->max_size=200;
+		halo->min_alpha=0.8f;
+		halo->max_alpha=0.05f;
+		halo->no_clip_object=FALSE;
+		halo->no_clip_self=TRUE;
+
+		tag=xml_findfirstchild("Distance",halo_tag);
+		if (tag!=-1) {
+			halo->min_dist=xml_get_attribute_int(tag,"min");
+			halo->max_dist=xml_get_attribute_int(tag,"max");
+		}
+
+		tag=xml_findfirstchild("Size",halo_tag);
+		if (tag!=-1) {
+			halo->min_size=xml_get_attribute_int(tag,"min");
+			halo->max_size=xml_get_attribute_int(tag,"max");
+		}
+
+		tag=xml_findfirstchild("Alpha",halo_tag);
+		if (tag!=-1) {
+			halo->min_alpha=xml_get_attribute_float(tag,"min");
+			halo->max_alpha=xml_get_attribute_float(tag,"max");
+		}
+
+		tag=xml_findfirstchild("Option",halo_tag);
+		if (tag!=-1) {
+			halo->no_clip_object=xml_get_attribute_boolean(tag,"no_clip_object");
+			halo->no_clip_self=xml_get_attribute_boolean(tag,"no_clip_self");
+		}
+		
 			// move on to next halo
 			
 		halo_tag=xml_findnextchild(halo_tag);
 	}
 	
 	xml_close_file();
+}
+
+/* =======================================================
+
+      Write Halos XML
+      
+======================================================= */
+
+bool iface_write_settings_halo(iface_type *iface)
+{
+	int					n;
+	char				path[1024];
+	bool				ok;
+	iface_halo_type		*halo;
+	
+		// start new file
+		
+	xml_new_file();
+
+	xml_add_tagstart("Halos");
+	xml_add_tagend(FALSE);
+
+	halo=iface->halo_list.halos;
+
+	for (n=0;n!=iface->halo_list.nhalo;n++) {
+
+		xml_add_tagstart("Halo");
+		xml_add_attribute_text("name",halo->name);
+		xml_add_tagend(FALSE);
+
+		xml_add_tagstart("Image");
+		xml_add_attribute_text("file",halo->bitmap_name);
+		xml_add_tagend(TRUE);
+
+		xml_add_tagstart("Distance");
+		xml_add_attribute_int("min",halo->min_dist);
+		xml_add_attribute_int("max",halo->max_dist);
+		xml_add_tagend(TRUE);
+
+		xml_add_tagstart("Size");
+		xml_add_attribute_int("min",halo->min_size);
+		xml_add_attribute_int("max",halo->max_size);
+		xml_add_tagend(TRUE);
+
+		xml_add_tagstart("Alpha");
+		xml_add_attribute_float("min",halo->min_alpha);
+		xml_add_attribute_float("max",halo->max_alpha);
+		xml_add_tagend(TRUE);
+
+		xml_add_tagstart("Option");
+		xml_add_attribute_boolean("no_clip_object",halo->no_clip_object);
+		xml_add_attribute_boolean("no_clip_self",halo->no_clip_self);
+		xml_add_tagend(TRUE);
+
+		xml_add_tagclose("Halo");
+
+		halo++;
+	}
+
+	xml_add_tagclose("Halos");
+
+        // write the xml
+		
+	file_paths_data(&iface_file_path_setup,path,"Settings","Halos","xml");
+		
+	ok=xml_save_file(path);
+    xml_close_file();
+	
+	return(ok);
 }
