@@ -932,7 +932,11 @@ typedef struct		{
 //
 
 typedef struct		{
-						int								image_idx;
+						int								image_idx,
+														min_dist,max_dist,
+														min_size,max_size;
+						float							min_alpha,max_alpha;
+						bool							no_clip_object,no_clip_self;
 						char							name[name_str_len],bitmap_name[name_str_len];
 					} iface_halo_type;
 
