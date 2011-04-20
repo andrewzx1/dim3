@@ -34,9 +34,15 @@ and can be sold or given away.
 #include "interface.h"
 
 #define kMPGamePropertySettingsName				0
-#define kMPGamePropertySettingsBotName			1
-#define kMPGamePropertySettingsTeam				2
-#define kMPGamePropertySettingsMonster			3
+#define kMPGamePropertySettingsTeam				1
+#define kMPGamePropertyBotScript				2
+#define kMPGamePropertyBotMonster				3
+#define kMPGamePropertySpawnBlank				4
+#define kMPGamePropertySpawnTeam				5
+#define kMPGamePropertyScoreKill				6
+#define kMPGamePropertyScoreDeath				7
+#define kMPGamePropertyScoreSuicide				8
+#define kMPGamePropertyScoreGoal				9
 
 extern iface_type				iface;
 extern setup_state_type			state;
@@ -58,9 +64,27 @@ void alt_property_palette_fill_multiplayer_game(int multiplayer_game_idx)
 
 	list_palette_add_header(&alt_property_palette,0,"Settings");
 	list_palette_add_string(&alt_property_palette,kMPGamePropertySettingsName,"Name",game->name,FALSE);
-	list_palette_add_string(&alt_property_palette,kMPGamePropertySettingsBotName,"Bot",game->bot_name,FALSE);
 	list_palette_add_checkbox(&alt_property_palette,kMPGamePropertySettingsTeam,"Requires Teams",game->use_teams,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kMPGamePropertySettingsMonster,"Include Monsters",game->monsters,FALSE);
+
+		// bots
+
+	list_palette_add_header(&alt_property_palette,0,"Bots");
+	list_palette_add_string(&alt_property_palette,kMPGamePropertyBotScript,"Bot",game->bot.script,FALSE);
+	list_palette_add_checkbox(&alt_property_palette,kMPGamePropertyBotMonster,"Include Monsters",game->bot.monsters,FALSE);
+	
+		// spawn
+
+	list_palette_add_header(&alt_property_palette,0,"Spawning");
+	list_palette_add_checkbox(&alt_property_palette,kMPGamePropertySpawnBlank,"Blank Spots",game->spawn.blank_spot,FALSE);
+	list_palette_add_checkbox(&alt_property_palette,kMPGamePropertySpawnTeam,"Team Spots",game->spawn.team_spot,FALSE);
+	
+		// score
+
+	list_palette_add_header(&alt_property_palette,0,"Scoring");
+	list_palette_add_string_int(&alt_property_palette,kMPGamePropertyScoreKill,"Kill",game->score.kill,FALSE);
+	list_palette_add_string_int(&alt_property_palette,kMPGamePropertyScoreDeath,"Death",game->score.death,FALSE);
+	list_palette_add_string_int(&alt_property_palette,kMPGamePropertyScoreSuicide,"Suicide",game->score.suicide,FALSE);
+	list_palette_add_string_int(&alt_property_palette,kMPGamePropertyScoreGoal,"Goal",game->score.goal,FALSE);
 }
 
 /* =======================================================
@@ -83,17 +107,49 @@ void alt_property_palette_click_multiplayer_game(int multiplayer_game_idx,int id
 			dialog_property_string_run(list_string_value_string,(void*)game->name,name_str_len,0,0);
 			break;
 			
-		case kMPGamePropertySettingsBotName:
-			dialog_property_string_run(list_string_value_string,(void*)game->bot_name,name_str_len,0,0);
-			break;
-
 		case kMPGamePropertySettingsTeam:
 			game->use_teams=!game->use_teams;
 			break;
-
-		case kMPGamePropertySettingsMonster:
-			game->monsters=!game->monsters;
+			
+			// bots
+			
+		case kMPGamePropertyBotScript:
+			dialog_property_string_run(list_string_value_string,(void*)game->bot.script,name_str_len,0,0);
 			break;
+
+
+		case kMPGamePropertyBotMonster:
+			game->bot.monsters=!game->bot.monsters;
+			break;
+			
+			// spawn
+
+		case kMPGamePropertySpawnBlank:
+			game->spawn.blank_spot=!game->spawn.blank_spot;
+			break;
+			
+		case kMPGamePropertySpawnTeam:
+			game->spawn.team_spot=!game->spawn.team_spot;
+			break;
+	
+			// score
+
+		case kMPGamePropertyScoreKill:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&game->score.kill,0,0,0);
+			break;
+			
+		case kMPGamePropertyScoreDeath:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&game->score.death,0,0,0);
+			break;
+			
+		case kMPGamePropertyScoreSuicide:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&game->score.suicide,0,0,0);
+			break;
+			
+		case kMPGamePropertyScoreGoal:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&game->score.goal,0,0,0);
+			break;
+
 
 	}
 
