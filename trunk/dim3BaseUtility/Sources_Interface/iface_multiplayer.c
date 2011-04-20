@@ -40,11 +40,12 @@ extern file_path_setup_type		iface_file_path_setup;
 void iface_read_settings_multiplayer(iface_type *iface)
 {
 	int							cnt,multiplayer_head_tag,
-								games_head_tag,game_tag,
+								games_head_tag,game_tag,tag,
 								options_head_tag,option_tag,
 								character_head_tag,character_item_tag,
 								bot_head_tag,bot_tag,news_tag;
 	char						path[1024];
+	iface_net_game_type			*game;
 	iface_character_item_type	*iface_character;
 
 		// check multiplayer file first, if it doesn't
@@ -77,12 +78,31 @@ void iface_read_settings_multiplayer(iface_type *iface)
 		game_tag=xml_findfirstchild("Game",games_head_tag);
 		while (game_tag!=-1) {
 		
-			xml_get_attribute_text(game_tag,"type",iface->net_game.games[iface->net_game.ngame].name,name_str_len);
-			xml_get_attribute_text(game_tag,"bot",iface->net_game.games[iface->net_game.ngame].bot_name,name_str_len);
-			iface->net_game.games[iface->net_game.ngame].use_teams=xml_get_attribute_boolean(game_tag,"use_teams");
-			iface->net_game.games[iface->net_game.ngame].monsters=xml_get_attribute_boolean(game_tag,"monsters");
+			game=&iface->net_game.games[iface->net_game.ngame];
+		
+			xml_get_attribute_text(game_tag,"type",game->name,name_str_len);
+			game->use_teams=xml_get_attribute_boolean(game_tag,"use_teams");
 			
-			if (iface->net_game.games[iface->net_game.ngame].bot_name[0]==0x0) strcpy(iface->net_game.games[iface->net_game.ngame].bot_name,"Bot");
+			tag=xml_findfirstchild("Bot",game_tag);
+			if (tag!=-1) {
+				xml_get_attribute_text(tag,"script",game->bot.script,name_str_len);
+				game->bot.monsters=xml_get_attribute_boolean(tag,"monsters");
+			}
+			
+			tag=xml_findfirstchild("Spawn",game_tag);
+			if (tag!=-1) {
+				game->spawn.start_spot=xml_get_attribute_boolean(tag,"start_spot");
+				game->spawn.blank_spot=xml_get_attribute_boolean(tag,"blank_spot");
+				game->spawn.team_spot=xml_get_attribute_boolean(tag,"team_spot");
+			}
+			
+			tag=xml_findfirstchild("Score",game_tag);
+			if (tag!=-1) {
+				game->score.kill=xml_get_attribute_int(tag,"kill");
+				game->score.death=xml_get_attribute_int(tag,"death");
+				game->score.suicide=xml_get_attribute_int(tag,"suicide");
+				game->score.goal=xml_get_attribute_int(tag,"goal");
+			}
 			
 			iface->net_game.ngame++;
 			if (iface->net_game.ngame==max_net_game) break;
@@ -173,6 +193,7 @@ bool iface_write_settings_multiplayer(iface_type *iface)
 	int							n;
 	char						path[1024];
 	bool						ok;
+	iface_net_game_type			*game;
 	iface_character_item_type	*iface_character;
 	
 		// start new file
@@ -188,14 +209,37 @@ bool iface_write_settings_multiplayer(iface_type *iface)
 
 	xml_add_tagstart("Games");
 	xml_add_tagend(FALSE);
+	
+	game=iface->net_game.games;
 
 	for (n=0;n!=iface->net_game.ngame;n++) {
+	
 		xml_add_tagstart("Game");
-		xml_add_attribute_text("type",iface->net_game.games[n].name);
-		xml_add_attribute_text("bot",iface->net_game.games[n].bot_name);
-		xml_add_attribute_boolean("use_teams",iface->net_game.games[n].use_teams);
-		xml_add_attribute_boolean("monsters",iface->net_game.games[n].monsters);
+		xml_add_attribute_text("type",game->name);
+		xml_add_attribute_boolean("use_teams",game->use_teams);
+		xml_add_tagend(FALSE);
+		
+		xml_add_tagstart("Bot");
+		xml_add_attribute_text("script",game->bot.script);
+		xml_add_attribute_boolean("monsters",game->bot.monsters);
 		xml_add_tagend(TRUE);
+			
+		xml_add_tagstart("Spawn");
+		xml_add_attribute_boolean("start_spot",game->spawn.start_spot);
+		xml_add_attribute_boolean("blank_spot",game->spawn.blank_spot);
+		xml_add_attribute_boolean("team_spot",game->spawn.team_spot);
+		xml_add_tagend(TRUE);
+			
+		xml_add_tagstart("Score");
+		xml_add_attribute_int("kill",game->score.kill);
+		xml_add_attribute_int("death",game->score.death);
+		xml_add_attribute_int("suicide",game->score.suicide);
+		xml_add_attribute_int("goal",game->score.goal);
+		xml_add_tagend(TRUE);
+
+		xml_add_tagclose("Game");
+		
+		game++;
 	}
 
 	xml_add_tagclose("Games");

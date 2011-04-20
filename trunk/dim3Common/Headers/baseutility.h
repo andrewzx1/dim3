@@ -1211,17 +1211,6 @@ typedef struct		{
 					} iface_net_bots_type;
 
 typedef struct		{
-						char							name[name_str_len],
-														bot_name[name_str_len];
-						bool							use_teams,monsters;
-					} iface_net_game_type;
-
-typedef struct		{
-						int								ngame;
-						iface_net_game_type				games[max_net_game];
-					} iface_net_games_type;
-
-typedef struct		{
 						char							name[name_str_len],descript[64];
 					} iface_net_option_type;
 
@@ -1234,6 +1223,37 @@ typedef struct		{
 						int								port;
 						char							host[64],url[256];
 					} iface_net_news_type;
+
+//
+// network game setup
+//
+
+typedef struct		{
+						char							script[name_str_len];
+						bool							monsters;
+					} iface_net_game_bot_type;
+
+typedef struct		{
+						bool							start_spot,blank_spot,team_spot;
+					} iface_net_game_spawn_type;
+
+typedef struct		{
+						int								kill,death,suicide,goal;
+					} iface_net_game_score_type;
+					
+typedef struct		{
+						char							name[name_str_len];
+						bool							use_teams;
+						iface_net_game_bot_type			bot;
+						iface_net_game_spawn_type		spawn;
+						iface_net_game_score_type		score;
+					} iface_net_game_type;
+
+typedef struct		{
+						int								ngame;
+						iface_net_game_type				games[max_net_game];
+					} iface_net_games_type;
+
 
 //
 // main iface structure
