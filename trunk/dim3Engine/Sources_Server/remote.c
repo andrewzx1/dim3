@@ -813,7 +813,7 @@ bool remote_route_message(net_queue_msg_type *msg)
 void remote_network_send_updates(void)
 {
 	int					n,tick;
-	bool				coop;
+	bool				monsters;
 	obj_type			*obj;
 
 		// time for an update
@@ -832,13 +832,13 @@ void remote_network_send_updates(void)
 
 	if ((net_setup.mode==net_mode_host) || (net_setup.mode==net_mode_host_dedicated)) {
 	
-		coop=iface.net_game.games[net_setup.game_idx].monsters;
+		monsters=iface.net_game.games[net_setup.game_idx].bot.monsters;
 
 		for (n=0;n!=max_obj_list;n++) {
 			obj=server.obj_list.objs[n];
 			if (obj==NULL) continue;
 
-			if ((obj->type==object_type_bot_multiplayer) || ((obj->type==object_type_bot_map) && (coop))) {
+			if ((obj->type==object_type_bot_multiplayer) || ((obj->type==object_type_bot_map) && (monsters))) {
 				net_client_send_remote_update(obj,FALSE);
 			}
 		}
@@ -880,14 +880,14 @@ void remote_network_send_latency_ping(void)
 
 /* =======================================================
 
-      Map Bots (in Co-Op) to Remotes
+      Map Bots (Monsters) to Remotes
       
 ======================================================= */
 
-void remote_setup_coop_bots(void)
+void remote_setup_multiplayer_monsters(void)
 {
 	int					n,net_uid;
-	bool				coop;
+	bool				monsters;
 	obj_type			*obj;
 
 		// nothing to do if not a network game
@@ -896,7 +896,7 @@ void remote_setup_coop_bots(void)
 	
 		// is it co-op mode?
 		
-	coop=iface.net_game.games[net_setup.game_idx].monsters;
+	monsters=iface.net_game.games[net_setup.game_idx].bot.monsters;
 	
 		// create remote IDs
 		
@@ -910,7 +910,7 @@ void remote_setup_coop_bots(void)
 		
 				// if not in coop, then no map bots
 
-			if (!coop) {
+			if (!monsters) {
 				obj->hidden=TRUE;
 			}
 

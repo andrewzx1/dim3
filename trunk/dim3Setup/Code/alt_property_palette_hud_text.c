@@ -98,7 +98,7 @@ void alt_property_palette_fill_hud_text(int hud_text_idx)
 	list_palette_add_checkbox(&alt_property_palette,kTextFadeOn,"On",text->fade.on,FALSE);
 	list_palette_add_string_int(&alt_property_palette,kTextFadeInTick,"Fade In Milliseconds",text->fade.fade_in_tick,FALSE);
 	list_palette_add_string_int(&alt_property_palette,kTextFadeLifeTick,"Life Milliseconds",text->fade.life_tick,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kTextFadeOutTick,"Fade In Milliseconds",text->fade.fade_out_tick,FALSE);
+	list_palette_add_string_int(&alt_property_palette,kTextFadeOutTick,"Fade Out Milliseconds",text->fade.fade_out_tick,FALSE);
 }
 
 /* =======================================================

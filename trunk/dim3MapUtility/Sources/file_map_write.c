@@ -841,6 +841,7 @@ bool write_map_xml(map_type *map)
 		xml_add_attribute_int("intensity",light->intensity);
 		xml_add_attribute_float("exponent",light->exponent);
 		xml_add_attribute_color("rgb",&light->col);
+		xml_add_attribute_text("halo",light->halo_name);
 		xml_add_attribute_boolean("off",!light->on);
 		xml_add_tagend(TRUE);
 	}

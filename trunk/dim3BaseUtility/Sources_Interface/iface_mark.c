@@ -139,3 +139,71 @@ void iface_read_settings_mark(iface_type *iface)
 	xml_close_file();
 }
 
+/* =======================================================
+
+      Write Mark XML
+      
+======================================================= */
+
+bool iface_write_settings_mark(iface_type *iface)
+{
+	int					n;
+	char				path[1024];
+	bool				ok;
+	iface_mark_type		*mark;
+	
+		// start new file
+		
+	xml_new_file();
+
+	xml_add_tagstart("Marks");
+	xml_add_tagend(FALSE);
+
+	mark=iface->mark_list.marks;
+
+	for (n=0;n!=iface->mark_list.nmark;n++) {
+
+		xml_add_tagstart("Mark");
+		xml_add_attribute_text("name",mark->name);
+		xml_add_tagend(FALSE);
+		
+		xml_add_tagstart("Setting");
+		xml_add_attribute_int("time",mark->life_msec);
+		xml_add_attribute_int("fade_in",mark->fade_in_msec);
+		xml_add_attribute_int("fade_out",mark->fade_out_msec);
+		xml_add_attribute_boolean("no_rotate",mark->no_rotate);
+		xml_add_attribute_boolean("no_transparent",mark->no_transparent);
+		xml_add_attribute_boolean("no_opaque",mark->no_opaque);
+		xml_add_attribute_boolean("highlight",mark->hilite);
+		xml_add_attribute_boolean("additive",mark->blend_add);
+		xml_add_tagend(TRUE);
+
+		xml_add_tagstart("Image");
+		xml_add_attribute_text("file",mark->bitmap_name);
+		xml_add_attribute_int("count",mark->animate.image_count);
+		xml_add_attribute_int("time",mark->animate.msec);
+		xml_add_attribute_boolean("loop",mark->animate.loop);
+		xml_add_attribute_boolean("loop_back",mark->animate.loop_back);
+		xml_add_tagend(TRUE);
+	
+		xml_add_tagstart("Color");
+		xml_add_attribute_color("color",&mark->color);
+		xml_add_attribute_boolean("team",mark->team_tint);
+        xml_add_tagend(TRUE);
+
+		xml_add_tagclose("Mark");
+
+		mark++;
+	}
+
+	xml_add_tagclose("Marks");
+
+        // write the xml
+		
+	file_paths_data(&iface_file_path_setup,path,"Settings","Marks","xml");
+		
+	ok=xml_save_file(path);
+    xml_close_file();
+	
+	return(ok);
+}

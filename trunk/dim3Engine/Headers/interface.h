@@ -135,7 +135,7 @@ extern void camera_static_run(void);
 //
 
 extern void halo_draw_clear(void);
-extern void halo_draw_add(int x,int y,int z,int obj_idx,model_draw_halo *mdl_halo);
+extern void halo_draw_add(d3pnt *pnt,int obj_idx,int halo_idx);
 extern void halo_draw_setup(void);
 extern void halo_draw_render(void);
 

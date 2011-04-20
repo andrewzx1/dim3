@@ -108,7 +108,7 @@ JSValueRef js_multiplayer_setting_get_monsters(JSContextRef cx,JSObjectRef j_obj
 {
  	if (net_setup.mode==net_mode_none) return(script_bool_to_value(cx,FALSE));
 	
-	return(script_bool_to_value(cx,iface.net_game.games[net_setup.game_idx].monsters));
+	return(script_bool_to_value(cx,iface.net_game.games[net_setup.game_idx].bot.monsters));
 }
 
 /* =======================================================

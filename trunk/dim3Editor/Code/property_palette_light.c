@@ -41,6 +41,7 @@ and can be sold or given away.
 #define kLightPropertyIntensity				5
 #define kLightPropertyExponent				6
 #define kLightPropertyColor					7
+#define kLightPropertyHalo					8
 
 extern map_type					map;
 extern editor_state_type		state;
@@ -76,6 +77,7 @@ void property_palette_fill_light(int light_idx)
 	list_palette_add_string_int(&property_palette,kLightPropertyIntensity,"Intensity",light->intensity,FALSE);
 	list_palette_add_string_float(&property_palette,kLightPropertyExponent,"Exponent",light->exponent,FALSE);
 	list_palette_add_pick_color(&property_palette,kLightPropertyColor,"Color",&light->col,FALSE);
+	list_palette_add_string(&property_palette,kLightPropertyHalo,"Halo",light->halo_name,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Light Info");
 	list_palette_add_string_int(&property_palette,-1,"Index",light_idx,TRUE);
@@ -126,6 +128,10 @@ void property_palette_click_light(int light_idx,int id)
 			
 		case kLightPropertyColor:
 			os_pick_color(&light->col);
+			break;
+
+		case kLightPropertyHalo:
+			property_palette_pick_halo(light->halo_name);
 			break;
 
 	}

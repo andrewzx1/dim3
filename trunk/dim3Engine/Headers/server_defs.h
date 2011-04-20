@@ -242,11 +242,8 @@ typedef struct		{
 					} model_draw_light;
 
 typedef struct		{
-						int								idx,
-														min_dist,max_dist,
-														min_size,max_size;
-						float							min_alpha,max_alpha;
-						bool							on,no_clip_object,no_clip_self;
+						int								idx;
+						bool							on;
 					} model_draw_halo;
 					
 typedef struct		{

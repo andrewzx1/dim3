@@ -123,7 +123,7 @@ void alt_property_palette_fill_hud_bitmap(int hud_bitmap_idx)
 	list_palette_add_checkbox(&alt_property_palette,kBitmapFadeOn,"On",bitmap->fade.on,FALSE);
 	list_palette_add_string_int(&alt_property_palette,kBitmapFadeInTick,"Fade In Milliseconds",bitmap->fade.fade_in_tick,FALSE);
 	list_palette_add_string_int(&alt_property_palette,kBitmapFadeLifeTick,"Life Milliseconds",bitmap->fade.life_tick,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kBitmapFadeOutTick,"Fade In Milliseconds",bitmap->fade.fade_out_tick,FALSE);
+	list_palette_add_string_int(&alt_property_palette,kBitmapFadeOutTick,"Fade Out Milliseconds",bitmap->fade.fade_out_tick,FALSE);
 
 		// animation
 

@@ -37,12 +37,13 @@ and can be sold or given away.
 #define kMPGamePropertySettingsTeam				1
 #define kMPGamePropertyBotScript				2
 #define kMPGamePropertyBotMonster				3
-#define kMPGamePropertySpawnBlank				4
-#define kMPGamePropertySpawnTeam				5
-#define kMPGamePropertyScoreKill				6
-#define kMPGamePropertyScoreDeath				7
-#define kMPGamePropertyScoreSuicide				8
-#define kMPGamePropertyScoreGoal				9
+#define kMPGamePropertySpawnStart				4
+#define kMPGamePropertySpawnBlank				5
+#define kMPGamePropertySpawnTeam				6
+#define kMPGamePropertyScoreKill				7
+#define kMPGamePropertyScoreDeath				8
+#define kMPGamePropertyScoreSuicide				9
+#define kMPGamePropertyScoreGoal				10
 
 extern iface_type				iface;
 extern setup_state_type			state;
@@ -75,6 +76,7 @@ void alt_property_palette_fill_multiplayer_game(int multiplayer_game_idx)
 		// spawn
 
 	list_palette_add_header(&alt_property_palette,0,"Spawning");
+	list_palette_add_checkbox(&alt_property_palette,kMPGamePropertySpawnStart,"Start Spots",game->spawn.start_spot,FALSE);
 	list_palette_add_checkbox(&alt_property_palette,kMPGamePropertySpawnBlank,"Blank Spots",game->spawn.blank_spot,FALSE);
 	list_palette_add_checkbox(&alt_property_palette,kMPGamePropertySpawnTeam,"Team Spots",game->spawn.team_spot,FALSE);
 	
@@ -124,6 +126,10 @@ void alt_property_palette_click_multiplayer_game(int multiplayer_game_idx,int id
 			
 			// spawn
 
+		case kMPGamePropertySpawnStart:
+			game->spawn.start_spot=!game->spawn.start_spot;
+			break;
+
 		case kMPGamePropertySpawnBlank:
 			game->spawn.blank_spot=!game->spawn.blank_spot;
 			break;
@@ -135,19 +141,19 @@ void alt_property_palette_click_multiplayer_game(int multiplayer_game_idx,int id
 			// score
 
 		case kMPGamePropertyScoreKill:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&game->score.kill,0,0,0);
+			dialog_property_string_run(list_string_value_int,(void*)&game->score.kill,0,0,0);
 			break;
 			
 		case kMPGamePropertyScoreDeath:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&game->score.death,0,0,0);
+			dialog_property_string_run(list_string_value_int,(void*)&game->score.death,0,0,0);
 			break;
 			
 		case kMPGamePropertyScoreSuicide:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&game->score.suicide,0,0,0);
+			dialog_property_string_run(list_string_value_int,(void*)&game->score.suicide,0,0,0);
 			break;
 			
 		case kMPGamePropertyScoreGoal:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&game->score.goal,0,0,0);
+			dialog_property_string_run(list_string_value_int,(void*)&game->score.goal,0,0,0);
 			break;
 
 

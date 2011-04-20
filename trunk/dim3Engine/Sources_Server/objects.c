@@ -266,14 +266,6 @@ void object_clear_draw(model_draw *draw)
 
 	for (k=0;k!=max_model_halo;k++) {
 		draw->halos[k].on=FALSE;
-		draw->halos[k].min_dist=3000;
-		draw->halos[k].max_dist=50000;
-		draw->halos[k].min_size=500;
-		draw->halos[k].max_size=200;
-		draw->halos[k].min_alpha=0.8f;
-		draw->halos[k].max_alpha=0.05f;
-		draw->halos[k].no_clip_object=FALSE;
-		draw->halos[k].no_clip_self=TRUE;
 	}
 
 		// shadow

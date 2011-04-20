@@ -71,9 +71,11 @@ void property_palette_fill_marks(void)
 
 void property_palette_click_marks(int id)
 {
+	int				idx,sz;
+
 		// mark edit
 		
-	if ((id>=kMarkProperyName) && (id<kMarkProperyDelete)) {
+	if ((id>=kMarkProperyName) && (id<(kMarkProperyName+max_iface_mark))) {
 		state.cur_mark_idx=id-kMarkProperyName;
 		main_wind_draw();
 		return;
@@ -81,9 +83,16 @@ void property_palette_click_marks(int id)
 	
 		// mark delete
 		
-	if (id>=kMarkProperyDelete) {
+	if ((id>=kMarkProperyDelete) && (id<(kMarkProperyDelete+max_iface_mark))) {
 		state.cur_mark_idx=-1;
-	//	supergumba
+
+		idx=id-kMarkProperyDelete;
+
+		sz=(iface.mark_list.nmark-idx)-1;
+		if (sz>0) memmove(&iface.mark_list.marks[idx],&iface.mark_list.marks[idx+1],(sz*sizeof(iface_mark_type)));
+
+		iface.mark_list.nmark--;
+
 		main_wind_draw();
 		return;
 	}
@@ -91,8 +100,43 @@ void property_palette_click_marks(int id)
 		// mark add
 
 	if (id==kMarkPropertyAdd) {
-	// supergumba
-	//	state.cur_mark_idx=... new sound ...
+		state.cur_mark_idx=-1;
+
+		if (iface.mark_list.nmark>=max_iface_mark) {
+			os_dialog_alert("Add Mark","Reached the maximum number of marks");
+			return;
+		}
+
+		idx=iface.mark_list.nmark;
+		iface.mark_list.nmark++;
+		
+		iface.mark_list.marks[idx].name[0]=0x0;
+		dialog_property_string_run(list_string_value_string,(void*)iface.mark_list.marks[idx].name,name_str_len,0,0);
+	
+		iface.mark_list.marks[idx].bitmap_name[0]=0x0;
+
+		iface.mark_list.marks[idx].fade_in_msec=1000;
+		iface.mark_list.marks[idx].life_msec=10000;
+		iface.mark_list.marks[idx].fade_out_msec=1000;
+
+		iface.mark_list.marks[idx].no_rotate=FALSE;
+		iface.mark_list.marks[idx].no_transparent=FALSE;
+		iface.mark_list.marks[idx].no_opaque=FALSE;
+		iface.mark_list.marks[idx].hilite=FALSE;
+		iface.mark_list.marks[idx].blend_add=FALSE;
+		iface.mark_list.marks[idx].team_tint=FALSE;
+
+		iface.mark_list.marks[idx].animate.image_count=1;
+		iface.mark_list.marks[idx].animate.msec=0;
+		iface.mark_list.marks[idx].animate.loop=FALSE;
+		iface.mark_list.marks[idx].animate.loop_back=FALSE;
+
+		iface.mark_list.marks[idx].color.r=1.0f;
+		iface.mark_list.marks[idx].color.g=1.0f;
+		iface.mark_list.marks[idx].color.b=1.0f;
+
+		state.cur_mark_idx=idx;
+
 		main_wind_draw();
 		return;
 	}
