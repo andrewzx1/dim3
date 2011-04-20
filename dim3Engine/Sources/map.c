@@ -131,6 +131,7 @@ void map_lookups_setup(void)
 {
 	int					n;
 	map_liquid_type		*liq;
+	map_light_type		*lit;
 	map_sound_type		*sound;
 	map_particle_type	*particle;
 	
@@ -139,6 +140,13 @@ void map_lookups_setup(void)
 	for (n=0;n!=map.liquid.nliquid;n++) {
 		liq->ambient.buffer_idx=al_find_buffer(liq->ambient.sound_name);
 		liq++;
+	}
+
+	lit=map.lights;
+
+	for (n=0;n!=map.nlight;n++) {
+		lit->halo_idx=iface_halo_find(&iface,lit->halo_name);
+		lit++;
 	}
 
 	sound=map.sounds;
@@ -350,7 +358,7 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 	map_find_random_spot_clear(&map,NULL,-1);
 
 	map_objects_create();
-	remote_setup_coop_bots();
+	remote_setup_multiplayer_monsters();
 
 	scenery_create();
 	scenery_start();

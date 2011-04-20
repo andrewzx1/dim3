@@ -71,9 +71,11 @@ void property_palette_fill_crosshairs(void)
 
 void property_palette_click_crosshairs(int id)
 {
+	int				idx,sz;
+
 		// crosshair edit
 		
-	if ((id>=kCrosshairProperyName) && (id<kCrosshairProperyDelete)) {
+	if ((id>=kCrosshairProperyName) && (id<(kCrosshairProperyName+max_iface_crosshair))) {
 		state.cur_crosshair_idx=id-kCrosshairProperyName;
 		main_wind_draw();
 		return;
@@ -81,9 +83,16 @@ void property_palette_click_crosshairs(int id)
 	
 		// crosshair delete
 		
-	if (id>=kCrosshairProperyDelete) {
+	if ((id>=kCrosshairProperyDelete) && (id<(kCrosshairProperyDelete+max_iface_crosshair))) {
 		state.cur_crosshair_idx=-1;
-	//	supergumba
+
+		idx=id-kCrosshairProperyDelete;
+
+		sz=(iface.crosshair_list.ncrosshair-idx)-1;
+		if (sz>0) memmove(&iface.crosshair_list.crosshairs[idx],&iface.crosshair_list.crosshairs[idx+1],(sz*sizeof(iface_crosshair_type)));
+
+		iface.crosshair_list.ncrosshair--;
+
 		main_wind_draw();
 		return;
 	}
@@ -91,8 +100,23 @@ void property_palette_click_crosshairs(int id)
 		// crosshair add
 
 	if (id==kCrosshairPropertyAdd) {
-	// supergumba
-	//	state.cur_crosshair_idx=... new sound ...
+		state.cur_crosshair_idx=-1;
+
+		if (iface.crosshair_list.ncrosshair>=max_iface_crosshair) {
+			os_dialog_alert("Add Crosshair","Reached the maximum number of crosshairs");
+			return;
+		}
+
+		idx=iface.crosshair_list.ncrosshair;
+		iface.crosshair_list.ncrosshair++;
+		
+		iface.crosshair_list.crosshairs[idx].name[0]=0x0;
+		dialog_property_string_run(list_string_value_string,(void*)iface.crosshair_list.crosshairs[idx].name,name_str_len,0,0);
+	
+		iface.crosshair_list.crosshairs[idx].bitmap_name[0]=0x0;
+
+		state.cur_crosshair_idx=idx;
+
 		main_wind_draw();
 		return;
 	}

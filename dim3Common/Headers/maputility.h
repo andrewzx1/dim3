@@ -409,10 +409,11 @@ typedef struct		{
 					} map_scenery_type;
 
 typedef struct		{
-						int									type,direction,intensity;
+						int									type,direction,intensity,
+															halo_idx;
 						float								exponent;
 						bool								on,light_map;
-						char								name[name_str_len];
+						char								name[name_str_len],halo_name[name_str_len];
 						d3pnt								pnt;
 						d3col								col;
 					} map_light_type;

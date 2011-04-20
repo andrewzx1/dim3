@@ -263,7 +263,7 @@ extern bool remote_route_message(net_queue_msg_type *msg);
 extern void remote_network_send_updates(void);
 extern void remote_network_send_group_synch(void);
 extern void remote_network_send_latency_ping(void);
-extern void remote_setup_coop_bots(void);
+extern void remote_setup_multiplayer_monsters(void);
 extern void remote_draw_status(obj_type *obj);
 extern void remote_draw_names_setup(void);
 extern void remote_draw_names_render(void);

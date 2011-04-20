@@ -245,11 +245,9 @@ typedef struct		{
 //
  
 typedef struct		{
-						int									idx,obj_idx,
-															min_dist,max_dist,
-															min_pixel_sz,max_pixel_sz,pixel_sz;
-						float								min_alpha,max_alpha,alpha;
-						bool								in_view,no_clip_object,no_clip_self;
+						int									idx,obj_idx,pixel_sz;
+						float								alpha;
+						bool								in_view;
 						d3pnt								pnt,proj_pnt;
 					} halo_draw_type;
 

@@ -179,7 +179,7 @@ void property_palette_click_hud(int id)
 		iface.bitmap_list.bitmaps[idx].fade.life_tick=0;
 		iface.bitmap_list.bitmaps[idx].fade.fade_out_tick=0;
 
-		iface.bitmap_list.bitmaps[idx].animate.image_count=0;
+		iface.bitmap_list.bitmaps[idx].animate.image_count=1;
 		iface.bitmap_list.bitmaps[idx].animate.msec=0;
 		iface.bitmap_list.bitmaps[idx].animate.loop=FALSE;
 		iface.bitmap_list.bitmaps[idx].animate.loop_back=FALSE;

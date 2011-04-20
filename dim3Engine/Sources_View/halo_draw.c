@@ -49,35 +49,23 @@ void halo_draw_clear(void)
 	view.render->halo_draw.count=0;
 }
 
-void halo_draw_add(int x,int y,int z,int obj_idx,model_draw_halo *mdl_halo)
+void halo_draw_add(d3pnt *pnt,int obj_idx,int halo_idx)
 {
 	halo_draw_type		*halo_draw;
 	
-	if (mdl_halo->idx==-1) return;
+	if (halo_idx==-1) return;
 	if (view.render->halo_draw.count>=max_light_spot) return;
 	
 	halo_draw=&view.render->halo_draw.halos[view.render->halo_draw.count];
 	view.render->halo_draw.count++;
 	
-	halo_draw->idx=mdl_halo->idx;
+	halo_draw->idx=halo_idx;
 
 	halo_draw->obj_idx=obj_idx;
 	
-	halo_draw->pnt.x=x;
-	halo_draw->pnt.y=y;
-	halo_draw->pnt.z=z;
-	
-	halo_draw->min_dist=mdl_halo->min_dist;
-	halo_draw->max_dist=mdl_halo->max_dist;
-	
-	halo_draw->min_pixel_sz=mdl_halo->min_size;
-	halo_draw->max_pixel_sz=mdl_halo->max_size;
-	
-	halo_draw->min_alpha=mdl_halo->min_alpha;
-	halo_draw->max_alpha=mdl_halo->max_alpha;
-	
-	halo_draw->no_clip_object=mdl_halo->no_clip_object;
-	halo_draw->no_clip_self=mdl_halo->no_clip_self;
+	halo_draw->pnt.x=pnt->x;
+	halo_draw->pnt.y=pnt->y;
+	halo_draw->pnt.z=pnt->z;
 }
 
 /* =======================================================
@@ -94,6 +82,7 @@ void halo_draw_setup(void)
 	d3pnt					spt,ept,hpt;
 	obj_type				*obj;
 	halo_draw_type			*halo_draw;
+	iface_halo_type			*halo;
 	ray_trace_contact_type	contact;
 	
 	view.render->halo_draw.in_view_count=0;
@@ -158,19 +147,21 @@ void halo_draw_setup(void)
 		spt.y=halo_draw->pnt.y;
 		spt.z=halo_draw->pnt.z;
 
+		halo=&iface.halo_list.halos[halo_draw->idx];
+
 			// is ray greater than max distance?
 
 		dist=distance_get(spt.x,spt.y,spt.z,ept.x,ept.y,ept.z);
-		if (dist>halo_draw->max_dist) {
+		if (dist>halo->max_dist) {
 			halo_draw->in_view=FALSE;
 			continue;
 		}
 
 			// ray trace for visibily
 
-		contact.obj.on=!halo_draw->no_clip_object;
+		contact.obj.on=!halo->no_clip_object;
 
-		if (halo_draw->no_clip_self) {
+		if ((halo->no_clip_self) && (halo_draw->obj_idx!=-1)) {
 			contact.obj.ignore_idx=halo_draw->obj_idx;
 		}
 		else {
@@ -188,41 +179,46 @@ void halo_draw_setup(void)
 
 		hit=ray_trace_map_by_point(&spt,&ept,&hpt,&contact);
 
-		if (camera.setup.mode==cv_fpp) {
-			if (hit) {
-				if (contact.obj.idx!=server.player_obj_idx) {
+			// check hit, if within min distance, then
+			// ignore this as a hit (it's probably something
+			// touching the halo) or ignore hitting the projecting
+			// player
+
+		if (hit) {
+			if (distance_get(ept.x,ept.y,ept.z,hpt.x,hpt.y,hpt.z)>halo->min_dist) {
+				if (camera.setup.mode==cv_fpp) {
+					if (contact.obj.idx!=server.player_obj_idx) {
+						halo_draw->in_view=FALSE;
+						continue;
+					}
+				}
+				else {
 					halo_draw->in_view=FALSE;
 					continue;
 				}
 			}
 		}
-		else {
-			if (hit) {
-				halo_draw->in_view=FALSE;
-				continue;
-			}
-		}
 
 			// get size
 
-		if (dist>=halo_draw->max_dist) {
-			halo_draw->pixel_sz=halo_draw->max_pixel_sz;
-			halo_draw->alpha=halo_draw->max_alpha;
+		if (dist>=halo->max_dist) {
+			halo_draw->pixel_sz=halo->max_size;
+			halo_draw->alpha=halo->max_alpha;
 		}
 		else {
-			if (dist<=halo_draw->min_dist) {
-				halo_draw->pixel_sz=halo_draw->min_pixel_sz;
-				halo_draw->alpha=halo_draw->min_alpha;
+			if (dist<=halo->min_dist) {
+				halo_draw->pixel_sz=halo->min_size;
+				halo_draw->alpha=halo->min_alpha;
 			}
 			else {
-				dist-=halo_draw->min_dist;
+				dist-=halo->min_dist;
 				
-				d=halo_draw->max_dist-halo_draw->min_dist;
-				pixel_sz=halo_draw->max_pixel_sz-halo_draw->min_pixel_sz;
-				alpha=halo_draw->max_alpha-halo_draw->min_alpha;
+				d=halo->max_dist-halo->min_dist;
+				pixel_sz=halo->max_size-halo->min_size;
+				alpha=halo->max_alpha-halo->min_alpha;
 				
-				halo_draw->pixel_sz=((pixel_sz*dist)/d)+halo_draw->min_pixel_sz;
-				halo_draw->alpha=((alpha*(float)dist)/(float)d)+halo_draw->min_alpha;
+				halo_draw->pixel_sz=((pixel_sz*dist)/d)+halo->min_size;
+				halo_draw->alpha=((alpha*(float)dist)/(float)d)+halo->min_alpha;
 			}
 		}
 		

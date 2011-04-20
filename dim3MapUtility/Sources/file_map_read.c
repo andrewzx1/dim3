@@ -924,6 +924,8 @@ bool decode_map_xml(map_type *map,int map_head)
 			light->exponent=xml_get_attribute_float_default(light_tag,"exponent",1.0f);
 			xml_get_attribute_color(light_tag,"rgb",&light->col);
 
+			xml_get_attribute_text(light_tag,"halo",light->halo_name,name_str_len);
+
 			light->on=!xml_get_attribute_boolean(light_tag,"off");
 			
 			if (light->intensity<0) light->intensity=1;

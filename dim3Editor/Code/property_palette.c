@@ -408,6 +408,16 @@ void property_palette_pick_sound(char *name,bool include_none)
 	if (idx!=-1) strcpy(name,iface.sound_list.sounds[idx].name);
 }
 
+void property_palette_pick_halo(char *name)
+{
+	int				idx;
+
+	dialog_property_list_run("Pick a Halo",(char*)iface.halo_list.halos,iface.halo_list.nhalo,sizeof(iface_halo_type),(int)offsetof(iface_halo_type,name),TRUE,&idx);
+
+	name[0]=0x0;
+	if (idx!=-1) strcpy(name,iface.halo_list.halos[idx].name);
+}
+
 void property_palette_pick_particle(char *name)
 {
 	int				idx;

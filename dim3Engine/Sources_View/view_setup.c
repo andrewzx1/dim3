@@ -735,7 +735,8 @@ void view_add_effect_draw_list(int tick)
 
 void view_add_model_halo(model_draw *draw,int obj_idx)
 {
-	int					n,x,z,y;
+	int					n;
+	d3pnt				pnt;
 	model_type			*mdl;
 	model_draw_halo		*halo;
 
@@ -752,14 +753,14 @@ void view_add_model_halo(model_draw *draw,int obj_idx)
 	for (n=0;n!=max_model_halo;n++) {
 
 		if (halo->on) {
-			x=draw->pnt.x;
-			y=draw->pnt.y;
-			z=draw->pnt.z;
+			pnt.x=draw->pnt.x;
+			pnt.y=draw->pnt.y;
+			pnt.z=draw->pnt.z;
 			
-			model_get_halo_position(mdl,&draw->setup,n,&x,&y,&z);
-			if (draw->no_rot.on) gl_project_fix_rotation(&x,&y,&z);
+			model_get_halo_position(mdl,&draw->setup,n,&pnt.x,&pnt.y,&pnt.z);
+			if (draw->no_rot.on) gl_project_fix_rotation(&pnt.x,&pnt.y,&pnt.z);
 			
-			halo_draw_add(x,y,z,obj_idx,halo);
+			halo_draw_add(&pnt,obj_idx,halo->idx);
 		}
 
 		halo++;
@@ -771,6 +772,7 @@ void view_add_halos(void)
 	int					n;
 	obj_type			*obj;
 	proj_type			*proj;
+	map_light_type		*lit;
 
 		// halos from objects and their weapons
 		
@@ -789,6 +791,15 @@ void view_add_halos(void)
 				break;
 
 		}
+	}
+
+		// halos from map lights
+
+	lit=map.lights;
+
+	for (n=0;n!=map.nlight;n++) {
+		halo_draw_add(&lit->pnt,-1,lit->halo_idx);
+		lit++;
 	}
 }
 
