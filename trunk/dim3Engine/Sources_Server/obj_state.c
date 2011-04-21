@@ -34,8 +34,6 @@ and can be sold or given away.
 #include "scripts.h"
 #include "objects.h"
 
-extern int					game_obj_rule_idx;
-
 extern map_type				map;
 extern server_type			server;
 extern iface_type			iface;
@@ -91,16 +89,17 @@ void object_score_recalc_place(void)
 
 void object_score_update(obj_type *obj)
 {
+	iface_net_game_type			*net_game;
+
 		// only run rules for players or multiplayer bots
 
 	if ((obj->type!=object_type_player) && (obj->type!=object_type_bot_multiplayer)) return;
 
-		// run rule to update score
+		// update score
 
-	game_obj_rule_idx=obj->idx;
-	scripts_post_event_console(&js.game_attach,sd_event_rule,sd_event_rule_score,0);
-	game_obj_rule_idx=-1;
-	
+	net_game=&iface.net_game.games[net_setup.game_idx];
+	obj->score.score=(obj->score.kill*net_game->score.kill)+(obj->score.death*net_game->score.death)+(obj->score.suicide*net_game->score.suicide)+(obj->score.goal*net_game->score.goal);
+
 		// update placing information
 		
 	object_score_recalc_place();

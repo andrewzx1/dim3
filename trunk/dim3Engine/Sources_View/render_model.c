@@ -82,19 +82,10 @@ void render_model_create_color_vertexes(model_type *mdl,int mesh_mask,model_draw
 
 				// set vertexes to white
 
-			if (!mesh->tintable) {
-				for (k=0;k!=mesh->nvertex;k++) {
-					*cp++=1.0f;
-					*cp++=1.0f;
-					*cp++=1.0f;
-				}
-			}
-			else {
-				for (k=0;k!=mesh->nvertex;k++) {
-					*cp++=draw->tint.r;
-					*cp++=draw->tint.g;
-					*cp++=draw->tint.b;
-				}
+			for (k=0;k!=mesh->nvertex;k++) {
+				*cp++=1.0f;
+				*cp++=1.0f;
+				*cp++=1.0f;
 			}
 
 			continue;
@@ -108,19 +99,10 @@ void render_model_create_color_vertexes(model_type *mdl,int mesh_mask,model_draw
 
 			gl_lights_calc_ambient_color(&col);
 		
-			if (!mesh->tintable) {
-				for (k=0;k!=mesh->nvertex;k++) {
-					*cp++=col.r;
-					*cp++=col.g;
-					*cp++=col.b;
-				}
-			}
-			else {
-				for (k=0;k!=mesh->nvertex;k++) {
-					*cp++=col.r*draw->tint.r;
-					*cp++=col.g*draw->tint.g;
-					*cp++=col.b*draw->tint.b;
-				}
+			for (k=0;k!=mesh->nvertex;k++) {
+				*cp++=col.r;
+				*cp++=col.g;
+				*cp++=col.b;
 			}
 			
 			continue;
@@ -158,18 +140,6 @@ void render_model_create_color_vertexes(model_type *mdl,int mesh_mask,model_draw
 				
 				gl_lights_calc_color_light_cache(draw->light_cache.count,draw->light_cache.indexes,FALSE,(double)(fx+cnt.x),(double)(fy+cnt.y),(double)(fz+cnt.z),cp);
 				cp+=3;
-			}
-		}
-		
-			// finish by tinting
-			
-		if (mesh->tintable) {
-			cp=draw->setup.mesh_arrays[n].gl_color_array;
-
-			for (k=0;k!=mesh->nvertex;k++) {
-				*cp++=(*cp)*draw->tint.r;
-				*cp++=(*cp)*draw->tint.g;
-				*cp++=(*cp)*draw->tint.b;
 			}
 		}
 	}
@@ -629,12 +599,6 @@ void render_model_opaque_shader(model_type *mdl,int mesh_idx,model_draw *draw,vi
 		else {
 			light_list->diffuse_boost=mdl->diffuse_boost;
 		}
-		if (mesh->tintable) {
-			memmove(&light_list->tint,&draw->tint,sizeof(d3col));
-		}
-		else {
-			light_list->tint.r=light_list->tint.g=light_list->tint.b=1.0f;
-		}
 
 			// run the shader
 
@@ -808,12 +772,6 @@ void render_model_transparent_shader(model_type *mdl,int mesh_idx,model_draw *dr
 		}
 		else {
 			light_list->diffuse_boost=mdl->diffuse_boost;
-		}
-		if (mesh->tintable) {
-			memmove(&light_list->tint,&draw->tint,sizeof(d3col));
-		}
-		else {
-			light_list->tint.r=light_list->tint.g=light_list->tint.b=1.0f;
 		}
 
 			// run the shader

@@ -93,8 +93,6 @@ void script_initialize_classes(void)
 	script_init_utility_random_object();
 
 	script_init_game_setting_object();
-	script_init_game_score_object();
-	script_init_game_join_object();
 
 	script_init_model_object();
 	script_init_model_animation_object();
@@ -233,8 +231,6 @@ void script_release_classes(void)
 	script_free_utility_random_object();
 
 	script_free_game_setting_object();
-	script_free_game_score_object();
-	script_free_game_join_object();
 
 	script_free_model_object();
 	script_free_model_animation_object();
@@ -597,8 +593,6 @@ JSObjectRef script_create_main_object(JSContextRef cx,attach_type *attach,int sc
 		case thing_type_game:
 			script_add_game_setting_object(cx,j_obj);
 			script_add_event_object(cx,j_obj);
-			script_add_game_score_object(cx,j_obj);
-			script_add_game_join_object(cx,j_obj);
 			break;
 
 		case thing_type_course:

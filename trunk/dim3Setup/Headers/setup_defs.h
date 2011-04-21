@@ -56,6 +56,7 @@ and can be sold or given away.
 #define item_interface_mark						12
 #define item_interface_crosshair				13
 #define item_interface_action					14
+#define item_interface_shader					15
 
 //
 // intro button types
@@ -90,7 +91,7 @@ typedef struct		{
 												cur_multiplayer_game_idx,cur_multiplayer_option_idx,
 												cur_sound_idx,cur_particle_idx,cur_ring_idx,
 												cur_halo_idx,cur_mark_idx,cur_crosshair_idx,
-												cur_action_idx;
+												cur_action_idx,cur_shader_idx;
 					} setup_state_type;
 
 

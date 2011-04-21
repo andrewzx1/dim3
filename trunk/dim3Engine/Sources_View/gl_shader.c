@@ -89,7 +89,6 @@ void gl_shader_cache_dynamic_variable_locations(shader_type *shader)
 	shader->var_locs.dim3AmbientColor=glGetUniformLocationARB(shader->program_obj,"dim3AmbientColor");
 	shader->var_locs.dim3LightMapBoost=glGetUniformLocationARB(shader->program_obj,"dim3LightMapBoost");
 	shader->var_locs.dim3ShineFactor=glGetUniformLocationARB(shader->program_obj,"dim3ShineFactor");
-	shader->var_locs.dim3TintColor=glGetUniformLocationARB(shader->program_obj,"dim3TintColor");
 	shader->var_locs.dim3Alpha=glGetUniformLocationARB(shader->program_obj,"dim3Alpha");
 	shader->var_locs.dim3DiffuseVector=glGetUniformLocationARB(shader->program_obj,"dim3DiffuseVector");
 	shader->var_locs.dim3DiffuseBoost=glGetUniformLocationARB(shader->program_obj,"dim3DiffuseBoost");
@@ -513,16 +512,6 @@ void gl_shader_set_light_variables(shader_type *shader,bool map_shader,bool is_c
 	}
 }
 
-void gl_shader_set_tint_variables(shader_type *shader,view_light_list_type *light_list)
-{
-	if (shader->var_locs.dim3TintColor!=-1) {
-		if ((shader->var_values.tint_col.r!=light_list->tint.r) || (shader->var_values.tint_col.g!=light_list->tint.g) || (shader->var_values.tint_col.b!=light_list->tint.b)) {
-			memmove(&shader->var_values.tint_col,&light_list->tint,sizeof(d3col));
-			glUniform3fARB(shader->var_locs.dim3TintColor,light_list->tint.r,light_list->tint.g,light_list->tint.b);
-		}
-	}
-}
-
 void gl_shader_set_diffuse_variables(shader_type *shader,view_light_list_type *light_list)
 {
 		// diffuse vector
@@ -630,7 +619,6 @@ void gl_shader_draw_scene_code_start(shader_type *shader)
 	shader->var_values.nlight=-1;
 	shader->var_values.alpha=-1.0f;
 	shader->var_values.shine_factor=-1.0f;
-	shader->var_values.tint_col.r=shader->var_values.tint_col.g=shader->var_values.tint_col.b=-1.0f;
 	shader->var_values.diffuse_vct.x=shader->var_values.diffuse_vct.y=shader->var_values.diffuse_vct.z=-1.0f;
 	shader->var_values.diffuse_boost=-1.0f;
 
@@ -894,10 +882,7 @@ void gl_shader_draw_execute(bool map_shader,texture_type *texture,int txt_idx,in
 
 		// lighting variables
 			
-	if (!map_shader) {
-		gl_shader_set_tint_variables(shader,light_list);
-		gl_shader_set_diffuse_variables(shader,light_list);
-	}
+	if (!map_shader) gl_shader_set_diffuse_variables(shader,light_list);
 
 	gl_shader_set_light_variables(shader,map_shader,is_core,light_list);
 }

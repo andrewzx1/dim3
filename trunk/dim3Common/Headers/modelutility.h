@@ -164,7 +164,7 @@ typedef struct		{
 typedef struct		{
 						int								nvertex,ntrig;
 						char							name[name_str_len];
-						bool							no_lighting,diffuse,blend_add,tintable;
+						bool							no_lighting,diffuse,blend_add;
 						d3pnt							import_move;
  						model_vertex_type				*vertexes;
                         model_trig_type					*trigs;

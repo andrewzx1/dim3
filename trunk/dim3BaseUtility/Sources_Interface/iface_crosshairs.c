@@ -95,3 +95,52 @@ void iface_read_settings_crosshair(iface_type *iface)
 	
 	xml_close_file();
 }
+
+/* =======================================================
+
+      Write Crosshair XML
+      
+======================================================= */
+
+bool iface_write_settings_crosshair(iface_type *iface)
+{
+	int						n;
+	char					path[1024];
+	bool					ok;
+	iface_crosshair_type	*crosshair;
+	
+		// start new file
+		
+	xml_new_file();
+
+	xml_add_tagstart("Crosshairs");
+	xml_add_tagend(FALSE);
+
+	crosshair=iface->crosshair_list.crosshairs;
+
+	for (n=0;n!=iface->crosshair_list.ncrosshair;n++) {
+
+		xml_add_tagstart("Crosshair");
+		xml_add_attribute_text("name",crosshair->name);
+		xml_add_tagend(FALSE);
+
+		xml_add_tagstart("Image");
+		xml_add_attribute_text("file",crosshair->bitmap_name);
+		xml_add_tagend(TRUE);
+
+		xml_add_tagclose("Crosshair");
+
+		crosshair++;
+	}
+
+	xml_add_tagclose("Crosshairs");
+
+        // write the xml
+		
+	file_paths_data(&iface_file_path_setup,path,"Settings","Crosshairs","xml");
+		
+	ok=xml_save_file(path);
+    xml_close_file();
+	
+	return(ok);
+}

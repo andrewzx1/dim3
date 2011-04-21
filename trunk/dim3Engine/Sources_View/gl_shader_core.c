@@ -405,7 +405,7 @@ char* gl_core_model_shader_build_frag(int nlight,bool fog,bool bump,bool spec)
 	if (spec) strcat(buf,",dim3ShineFactor");
 	strcat(buf,";\n");
 	
-	strcat(buf,"uniform vec3 dim3AmbientColor,dim3TintColor,dim3DiffuseVector;\n");
+	strcat(buf,"uniform vec3 dim3AmbientColor,dim3DiffuseVector;\n");
 	
 	if (fog) strcat(buf,"varying float fogFactor;\n");
 	
@@ -477,13 +477,13 @@ char* gl_core_model_shader_build_frag(int nlight,bool fog,bool bump,bool spec)
 
 		// output the fragment
 
-	strcat(buf,"vec3 frag=(");
+	strcat(buf,"vec3 frag=");
 	if (bump) strcat(buf,"(");
 	if (spec) strcat(buf,"(");
 	strcat(buf,"(tex.rgb*ambient)");
 	if (bump) strcat(buf,"*bump)");
 	if (spec) strcat(buf,"+spec)");
-	strcat(buf,"*diffuse)*dim3TintColor;\n");
+	strcat(buf,"*diffuse;\n");
 	
 	if (!fog) {
 		strcat(buf,"gl_FragColor.rgb=frag;\n");

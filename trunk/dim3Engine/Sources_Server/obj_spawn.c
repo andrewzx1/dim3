@@ -182,6 +182,10 @@ bool object_spawn(obj_type *obj,char *err_str)
 	obj->fall.dist=0;
     obj->fall.change=FALSE;
 
+		// update any team colors
+
+	object_multiplayer_setup_model_team_texture(obj);
+
 		// clear weapon states (like switches)
 
 	weapon_clear_state(obj);

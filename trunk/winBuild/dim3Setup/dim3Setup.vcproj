@@ -362,6 +362,10 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\dim3Setup\Code\alt_property_palette_shader.c"
+						>
+					</File>
+					<File
 						RelativePath="..\..\dim3Setup\Code\alt_property_palette_sound.c"
 						>
 					</File>
@@ -431,6 +435,10 @@
 					</File>
 					<File
 						RelativePath="..\..\dim3Setup\Code\property_palette_settings.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Setup\Code\property_palette_shaders.c"
 						>
 					</File>
 					<File

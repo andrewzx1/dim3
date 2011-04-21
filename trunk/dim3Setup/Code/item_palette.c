@@ -72,6 +72,7 @@ void item_palette_initialize(void)
 	state.cur_mark_idx=-1;
 	state.cur_crosshair_idx=-1;
 	state.cur_action_idx=-1;
+	state.cur_shader_idx=-1;
 }
 
 void item_palette_shutdown(void)
@@ -125,6 +126,7 @@ void item_palette_fill(void)
 	list_palette_add_item(&item_palette,item_interface_mark,0,"Marks",(state.cur_item==item_interface_mark),FALSE);
 	list_palette_add_item(&item_palette,item_interface_crosshair,0,"Crosshairs",(state.cur_item==item_interface_crosshair),FALSE);
 	list_palette_add_item(&item_palette,item_interface_action,0,"Actions",(state.cur_item==item_interface_action),FALSE);
+	list_palette_add_item(&item_palette,item_interface_shader,0,"Shaders",(state.cur_item==item_interface_shader),FALSE);
 }
 
 /* =======================================================

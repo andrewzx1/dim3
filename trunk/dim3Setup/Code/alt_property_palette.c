@@ -199,6 +199,14 @@ void alt_property_palette_fill(void)
 			}
 			break;
 
+		case item_interface_shader:
+			if (state.cur_shader_idx!=-1) {
+				list_palette_set_title(&alt_property_palette,"Shader");
+				alt_property_palette_fill_shader(state.cur_shader_idx);
+				return;
+			}
+			break;
+
 	}
 
 	list_palette_set_title(&alt_property_palette,"No Properties");
@@ -340,6 +348,13 @@ void alt_property_palette_click(d3pnt *pnt,bool double_click)
 		case item_interface_action:
 			if (state.cur_action_idx!=-1) {
 				alt_property_palette_click_action(state.cur_action_idx,alt_property_palette.item_id);
+				break;
+			}
+			break;
+
+		case item_interface_shader:
+			if (state.cur_shader_idx!=-1) {
+				alt_property_palette_click_shader(state.cur_shader_idx,alt_property_palette.item_id);
 				break;
 			}
 			break;

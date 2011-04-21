@@ -95,3 +95,52 @@ void iface_read_settings_shader(iface_type *iface)
 	xml_close_file();
 }
 
+/* =======================================================
+
+      Write Shader XML
+      
+======================================================= */
+
+bool iface_write_settings_shader(iface_type *iface)
+{
+	int						n;
+	char					path[1024];
+	bool					ok;
+	iface_shader_type		*iface_shader;
+	
+		// start new file
+		
+	xml_new_file();
+
+	xml_add_tagstart("Shaders");
+	xml_add_tagend(FALSE);
+
+	iface_shader=iface->shader_list.shaders;
+
+	for (n=0;n!=iface->shader_list.nshader;n++) {
+
+		xml_add_tagstart("Shader");
+		xml_add_attribute_text("name",iface_shader->name);
+		xml_add_tagend(FALSE);
+
+		xml_add_tagstart("Code");
+		xml_add_attribute_text("vert",iface_shader->vert_name);
+		xml_add_attribute_text("frag",iface_shader->frag_name);
+		xml_add_tagend(TRUE);
+
+		xml_add_tagclose("Shader");
+
+		iface_shader++;
+	}
+
+	xml_add_tagclose("Shaders");
+
+        // write the xml
+		
+	file_paths_data(&iface_file_path_setup,path,"Settings","Shaders","xml");
+		
+	ok=xml_save_file(path);
+    xml_close_file();
+	
+	return(ok);
+}

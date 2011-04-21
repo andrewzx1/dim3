@@ -90,6 +90,7 @@ extern void property_palette_fill_halos(void);
 extern void property_palette_fill_marks(void);
 extern void property_palette_fill_crosshairs(void);
 extern void property_palette_fill_actions(void);
+extern void property_palette_fill_shaders(void);
 
 extern void property_palette_click_settings(int id);
 extern void property_palette_click_intro(int id);
@@ -105,6 +106,7 @@ extern void property_palette_click_halos(int id);
 extern void property_palette_click_marks(int id);
 extern void property_palette_click_crosshairs(int id);
 extern void property_palette_click_actions(int id);
+extern void property_palette_click_shaders(int id);
 
 //
 // alt property list palette
@@ -133,6 +135,7 @@ extern void alt_property_palette_fill_halo(int halo_idx);
 extern void alt_property_palette_fill_mark(int mark_idx);
 extern void alt_property_palette_fill_crosshair(int crosshair_idx);
 extern void alt_property_palette_fill_action(int action_idx);
+extern void alt_property_palette_fill_shader(int shader_idx);
 
 extern void alt_property_palette_click_intro_button(int intro_button_idx,int id);
 extern void alt_property_palette_click_intro_model(int intro_model_idx,int id);
@@ -150,6 +153,7 @@ extern void alt_property_palette_click_halo(int halo_idx,int id);
 extern void alt_property_palette_click_mark(int mark_idx,int id);
 extern void alt_property_palette_click_crosshair(int crosshair_idx,int id);
 extern void alt_property_palette_click_action(int action_idx,int id);
+extern void alt_property_palette_click_shader(int shader_idx,int id);
 
 //
 // alt2 property list palette
