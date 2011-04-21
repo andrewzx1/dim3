@@ -191,17 +191,6 @@ void model_draw_setup_object(obj_type *obj)
 		// dynamic bones
 
 	model_draw_setup_dynamic_bones(mdl,draw,setup);
-
-		// team tint
-
-	draw->tint.r=draw->tint.g=draw->tint.b=1.0f;
-	if ((obj->type==object_type_player) || (obj->type==object_type_remote) || (obj->type==object_type_bot_multiplayer)) {
-		if (net_setup.mode!=net_mode_none) {
-			if (iface.net_game.games[net_setup.game_idx].use_teams) {
-				object_team_get_tint(obj->team_idx,&draw->tint);
-			}
-		}
-	}
 }
 
 /* =======================================================
@@ -347,10 +336,6 @@ void model_draw_setup_weapon(obj_type *obj,weapon_type *weap,bool ignore_y_shift
 		// dynamic bones
 
 	model_draw_setup_dynamic_bones(mdl,draw,setup);
-
-		// team tint
-
-	draw->tint.r=draw->tint.g=draw->tint.b=1.0f;
 }
 
 /* =======================================================
@@ -448,10 +433,6 @@ void model_draw_setup_projectile(proj_type *proj)
 		// dynamic bones
 
 	model_draw_setup_dynamic_bones(mdl,draw,setup);
-
-		// team tint
-
-	draw->tint.r=draw->tint.g=draw->tint.b=1.0f;
 }
 
 /* =======================================================
@@ -480,7 +461,6 @@ void model_draw_setup_interface_models(model_type *mdl,model_draw *draw,int x,in
 	draw->light_cache.count=0;
 
 	draw->alpha=1.0f;
-	draw->tint.r=draw->tint.g=draw->tint.b=1.0f;
 
 		// need to change point for
 		// resizes and projection

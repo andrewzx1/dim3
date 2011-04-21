@@ -2,7 +2,7 @@
 
 Module: dim3 Setup
 Author: Brian Barnes
- Usage: Alt Property Palette Crosshair
+ Usage: Alt Property Palette Shader
 
 ***************************** License ********************************
 
@@ -33,8 +33,9 @@ and can be sold or given away.
 #include "ui_common.h"
 #include "interface.h"
 
-#define kCrosshairSettingsName					0
-#define kCrosshairSettingsFileName				1
+#define kShaderSettingsName						0
+#define kShaderCodeVertName						1
+#define kShaderCodeFragName						2
 
 extern iface_type				iface;
 extern setup_state_type			state;
@@ -42,47 +43,59 @@ extern list_palette_type		alt_property_palette;
 
 /* =======================================================
 
-      Property Palette Fill Crosshair
+      Property Palette Fill Shader
       
 ======================================================= */
 
-void alt_property_palette_fill_crosshair(int crosshair_idx)
+void alt_property_palette_fill_shader(int shader_idx)
 {
-	iface_crosshair_type		*crosshair;
+	iface_shader_type			*shader;
 
-	crosshair=&iface.crosshair_list.crosshairs[crosshair_idx];
+	shader=&iface.shader_list.shaders[shader_idx];
 
 		// settings
 
 	list_palette_add_header(&alt_property_palette,0,"Settings");
-	list_palette_add_string(&alt_property_palette,kCrosshairSettingsName,"Name",crosshair->name,FALSE);
-	list_palette_add_string(&alt_property_palette,kCrosshairSettingsFileName,"Bitmap",crosshair->bitmap_name,FALSE);
+	list_palette_add_string(&alt_property_palette,kShaderSettingsName,"Name",shader->name,FALSE);
+
+		// code
+
+	list_palette_add_header(&alt_property_palette,0,"Code");
+	list_palette_add_string(&alt_property_palette,kShaderCodeVertName,"Vertex",shader->vert_name,FALSE);
+	list_palette_add_string(&alt_property_palette,kShaderCodeFragName,"Fragment",shader->frag_name,FALSE);
 }
 
 /* =======================================================
 
-      Property Palette Click Crosshair
+      Property Palette Click Shader
       
 ======================================================= */
 
-void alt_property_palette_click_crosshair(int crosshair_idx,int id)
+void alt_property_palette_click_shader(int shader_idx,int id)
 {
 	char						file_name[file_str_len];
-	iface_crosshair_type		*crosshair;
+	iface_shader_type			*shader;
 
-	crosshair=&iface.crosshair_list.crosshairs[crosshair_idx];
+	shader=&iface.shader_list.shaders[shader_idx];
 
 	switch (id) {
 
 			// settings
 
-		case kCrosshairSettingsName:
-			dialog_property_string_run(list_string_value_string,(void*)crosshair->name,name_str_len,0,0);
+		case kShaderSettingsName:
+			dialog_property_string_run(list_string_value_string,(void*)shader->name,name_str_len,0,0);
 			break;
 
-		case kCrosshairSettingsFileName:
-			strcpy(file_name,crosshair->bitmap_name);
-			if (dialog_file_open_run("Pick a Crosshair Bitmap","Bitmaps/Crosshairs","png",NULL,file_name)) strcpy(crosshair->bitmap_name,file_name);
+			// code
+
+		case kShaderCodeVertName:
+			strcpy(file_name,shader->vert_name);
+			if (dialog_file_open_run("Pick a Vertex Shader","Shaders","vert",NULL,file_name)) strcpy(shader->vert_name,file_name);
+			break;
+
+		case kShaderCodeFragName:
+			strcpy(file_name,shader->frag_name);
+			if (dialog_file_open_run("Pick a Fragment Shader","Shaders","frag",NULL,file_name)) strcpy(shader->frag_name,file_name);
 			break;
 
 	}

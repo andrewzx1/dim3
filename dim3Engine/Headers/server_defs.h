@@ -320,7 +320,6 @@ typedef struct		{
 						unsigned char					cur_texture_frame[max_model_mesh];
 						d3pnt							pnt,size,center,offset;
 						d3ang							rot,spin;
-						d3col							tint;
 						model_draw_connect				connect;
 						model_draw_light				lights[max_model_light];
 						model_draw_halo					halos[max_model_halo];

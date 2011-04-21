@@ -37,8 +37,7 @@ and can be sold or given away.
 #define kMeshPropertyDiffuse				1
 #define kMeshPropertyNoLighting				2
 #define kMeshPropertyAdditive				3
-#define kMeshPropertyTintable				4
-#define kMeshPropertyMovement				5
+#define kMeshPropertyMovement				4
 
 extern model_type				model;
 extern animator_state_type		state;
@@ -65,7 +64,6 @@ void property_palette_fill_mesh(int mesh_idx)
 	list_palette_add_checkbox(&property_palette,kMeshPropertyDiffuse,"Diffuse Lighting",mesh->diffuse,FALSE);
 	list_palette_add_checkbox(&property_palette,kMeshPropertyNoLighting,"Highlighted",mesh->no_lighting,FALSE);
 	list_palette_add_checkbox(&property_palette,kMeshPropertyAdditive,"Alpha is Additive",mesh->blend_add,FALSE);
-	list_palette_add_checkbox(&property_palette,kMeshPropertyTintable,"Multiplayer Tintable",mesh->tintable,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Replace OBJ");
 	list_palette_add_point(&property_palette,kMeshPropertyMovement,"Movement",&mesh->import_move,FALSE);
@@ -108,10 +106,6 @@ void property_palette_click_mesh(int mesh_idx,int id)
 			mesh->blend_add=!mesh->blend_add;
 			break;
 
-		case kMeshPropertyTintable:
-			mesh->tintable=!mesh->tintable;
-			break;
-			
 		case kMeshPropertyMovement:
 		
 				// get change

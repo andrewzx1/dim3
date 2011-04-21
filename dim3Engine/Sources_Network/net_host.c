@@ -294,7 +294,7 @@ int net_host_join_request(unsigned long ip_addr,int port,network_request_join *r
 
 	if (net_uid!=-1) {
 		obj=object_find_remote_net_uid(net_uid);
-		object_run_game_rules(obj);
+		object_multiplayer_setup(obj);
 
 			// reset team in reply and remote add
 

@@ -156,8 +156,6 @@ extern void script_init_utility_point_object(void);
 extern void script_init_utility_random_object(void);
 
 extern void script_init_game_setting_object(void);
-extern void script_init_game_score_object(void);
-extern void script_init_game_join_object(void);
 
 extern void script_init_model_object(void);
 extern void script_init_model_animation_object(void);
@@ -297,8 +295,6 @@ extern void script_free_utility_point_object(void);
 extern void script_free_utility_random_object(void);
 
 extern void script_free_game_setting_object(void);
-extern void script_free_game_score_object(void);
-extern void script_free_game_join_object(void);
 
 extern void script_free_model_object(void);
 extern void script_free_model_animation_object(void);
@@ -438,8 +434,6 @@ extern JSObjectRef script_add_utility_point_object(JSContextRef cx,JSObjectRef p
 extern JSObjectRef script_add_utility_random_object(JSContextRef cx,JSObjectRef parent_obj);
 
 extern JSObjectRef script_add_game_setting_object(JSContextRef cx,JSObjectRef parent_obj);
-extern JSObjectRef script_add_game_score_object(JSContextRef cx,JSObjectRef parent_obj);
-extern JSObjectRef script_add_game_join_object(JSContextRef cx,JSObjectRef parent_obj);
 
 extern JSObjectRef script_add_model_object(JSContextRef cx,JSObjectRef parent_obj);
 extern JSObjectRef script_add_model_animation_object(JSContextRef cx,JSObjectRef parent_obj);

@@ -157,6 +157,11 @@ void property_palette_fill(void)
 			property_palette_fill_actions();
 			return;
 
+		case item_interface_shader:
+			list_palette_set_title(&property_palette,"Shaders List");
+			property_palette_fill_shaders();
+			return;
+
 	}
 	
 	list_palette_set_title(&property_palette,"No Properties");
@@ -270,6 +275,10 @@ void property_palette_click(d3pnt *pnt,bool double_click)
 
 		case item_interface_action:
 			property_palette_click_actions(property_palette.item_id);
+			break;
+
+		case item_interface_shader:
+			property_palette_click_shaders(property_palette.item_id);
 			break;
 
 	}

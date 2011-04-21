@@ -860,32 +860,6 @@
 						</FileConfiguration>
 					</File>
 					<File
-						RelativePath="..\..\dim3Engine\Sources_Server\script_game_join.c"
-						>
-						<FileConfiguration
-							Name="Release|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								AdditionalIncludeDirectories=""
-								PreprocessorDefinitions=""
-							/>
-						</FileConfiguration>
-					</File>
-					<File
-						RelativePath="..\..\dim3Engine\Sources_Server\script_game_score.c"
-						>
-						<FileConfiguration
-							Name="Release|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								AdditionalIncludeDirectories=""
-								PreprocessorDefinitions=""
-							/>
-						</FileConfiguration>
-					</File>
-					<File
 						RelativePath="..\..\dim3Engine\Sources_Server\script_game_setting.c"
 						>
 						<FileConfiguration

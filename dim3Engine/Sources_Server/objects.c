@@ -41,8 +41,6 @@ extern js_type				js;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
 
-int							game_obj_rule_idx;
-
 /* =======================================================
 
       Initialize Object List
@@ -58,10 +56,6 @@ void object_initialize_list(void)
 	for (n=0;n!=max_obj_list;n++) {
 		server.obj_list.objs[n]=NULL;
 	}
-
-		// no game rule attachment
-
-	game_obj_rule_idx=-1;
 }
 
 void object_free_list(void)
@@ -811,15 +805,72 @@ void object_attach_click_crosshair_down(obj_type *obj)
 
 /* =======================================================
 
-      Run Game Rules for Objects
+      Multiplayer Teams, Spawns, and Textures
       
 ======================================================= */
 
-void object_run_game_rules(obj_type *obj)
+void object_multiplayer_setup(obj_type *obj)
 {
-	game_obj_rule_idx=obj->idx;
-	scripts_post_event_console(&js.game_attach,sd_event_rule,sd_event_rule_join,0);
-	game_obj_rule_idx=-1;
+	iface_net_game_type			*net_game;
+
+	if (net_setup.mode==net_mode_none) return;
+	if ((obj->type!=object_type_player) && (obj->type!=object_type_remote) && (obj->type!=object_type_bot_multiplayer)) return;
+
+		// team setup
+
+	net_game=&iface.net_game.games[net_setup.game_idx];
+
+	obj->team_idx=net_team_none;
+
+	if (net_game->use_teams) object_set_even_team(obj);
+
+		// spawn spot
+
+	strcpy(obj->spawn_spot_name,"Start");
+
+	if ((net_game->spawn.team_spot) && (obj->team_idx!=net_team_none)) {
+		if (obj->team_idx==net_team_red) {
+			strcpy(obj->spawn_spot_name,"Red");
+		}
+		else {
+			strcpy(obj->spawn_spot_name,"Blue");
+		}
+	}
+	else {
+		if (net_game->spawn.start_spot) {
+			strcpy(obj->spawn_spot_name,"Coop");
+		}
+		else {
+			strcpy(obj->spawn_spot_name,"Spawn");
+		}
+	}
+}
+
+void object_multiplayer_setup_model_team_texture(obj_type *obj)
+{
+	int					n,frame;
+	model_draw			*draw;
+	model_type			*mdl;
+	texture_type		*texture;
+
+	if (net_setup.mode==net_mode_none) return;
+	if ((obj->type!=object_type_player) && (obj->type!=object_type_remote) && (obj->type!=object_type_bot_multiplayer)) return;
+	if (obj->team_idx==net_team_none) return;
+
+		// get model
+
+	if (obj->draw.model_idx==-1) return;
+	mdl=server.model_list.models[obj->draw.model_idx];
+
+	draw=&obj->draw;
+	frame=obj->team_idx;
+
+	texture=mdl->textures;
+
+	for (n=0;n!=max_model_texture;n++) {
+		if (texture->frames[frame].bitmap.gl_id!=-1) draw->cur_texture_frame[n]=frame;
+		texture++;
+	}
 }
 
 /* =======================================================
@@ -889,7 +940,7 @@ int object_start(spot_type *spot,char *name,int type,int bind,char *err_str)
 		// to pick the team
 	
 	if (net_setup.mode!=net_mode_none) {
-		if ((obj->type==object_type_player) || (obj->type==object_type_bot_multiplayer)) object_run_game_rules(obj);
+		if ((obj->type==object_type_player) || (obj->type==object_type_bot_multiplayer)) object_multiplayer_setup(obj);
 	}
 		
 		// start script

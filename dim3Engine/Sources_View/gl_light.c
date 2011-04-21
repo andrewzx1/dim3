@@ -754,7 +754,6 @@ void gl_lights_build_poly_light_list(int mesh_idx,map_mesh_poly_type *poly,view_
 		// misc settings, mostly for models
 
 	light_list->hilite=FALSE;
-	light_list->tint.r=light_list->tint.g=light_list->tint.b=1.0f;
 	light_list->diffuse_vct.x=light_list->diffuse_vct.y=light_list->diffuse_vct.z=0.0f;
 	light_list->diffuse_boost=0.0f;
 	
@@ -832,7 +831,6 @@ void gl_lights_build_liquid_light_list(map_liquid_type *liq,view_light_list_type
 		// misc settings, mostly for models
 
 	light_list->hilite=FALSE;
-	light_list->tint.r=light_list->tint.g=light_list->tint.b=1.0f;
 	light_list->diffuse_vct.x=light_list->diffuse_vct.y=light_list->diffuse_vct.z=0.0f;
 	light_list->diffuse_boost=0.0f;
 
@@ -852,7 +850,6 @@ void gl_lights_build_model_light_list(model_type *mdl,model_draw *draw,view_ligh
 		// misc settings, mostly for models
 
 	light_list->hilite=FALSE;
-	memmove(&light_list->tint,&draw->tint,sizeof(d3col));
 	gl_lights_calc_diffuse_vector(&draw->pnt,draw->light_cache.count,draw->light_cache.indexes,&light_list->diffuse_vct);
 	light_list->diffuse_boost=0.0f;
 
