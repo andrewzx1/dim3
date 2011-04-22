@@ -430,7 +430,7 @@ typedef struct		{
                         int									spawn_tick,slop_tick,next_spawn_tick,
 															particle_idx;
 						char								name[name_str_len];
-						bool								on;
+						bool								on,single_spawn,first_spawn;
 						d3pnt								pnt;
 					} map_particle_type;
                     

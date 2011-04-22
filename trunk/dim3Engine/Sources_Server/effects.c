@@ -159,6 +159,12 @@ void effect_dispose(void)
 
 		if ((tick-effect->start_tick)<effect->life_tick) continue;
 
+			// is this a chained particle?
+
+		if (effect->type==ef_particle) {
+			if (particle_chain(effect)) continue;
+		}
+
 			// turn off effect
 
 		effect->on=FALSE;

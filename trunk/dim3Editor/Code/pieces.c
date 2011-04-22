@@ -1034,12 +1034,9 @@ void piece_mesh_invert_normals(bool poly_only)
 
 void piece_mesh_set_normals_in_out(bool out)
 {
-	int					n,k,sel_count,
+	int					n,sel_count,
 						type,mesh_idx,poly_idx;
-	bool				is_out;
-	d3vct				face_vct;
 	map_mesh_type		*mesh;
-	map_mesh_poly_type	*poly;
 
 	sel_count=select_count();
 	
@@ -1047,32 +1044,12 @@ void piece_mesh_set_normals_in_out(bool out)
 		select_get(n,&type,&mesh_idx,&poly_idx);
 		if (type!=mesh_piece) continue;
 		
-			// setup the mesh
+			// recalc the normals
 			
 		mesh=&map.mesh.meshes[mesh_idx];
-		map_prepare_mesh_box(mesh);
 
-			// flip the normals for in/out
-
-		poly=mesh->polys;
-
-		for (k=0;k!=mesh->npoly;k++) {
-
-			map_prepare_mesh_poly(mesh,poly);
-
-				// determine if poly is facing 'out'
-		
-			vector_create(&face_vct,poly->box.mid.x,poly->box.mid.y,poly->box.mid.z,mesh->box.mid.x,mesh->box.mid.y,mesh->box.mid.z);
-			is_out=(vector_dot_product(&poly->tangent_space.normal,&face_vct)>map.optimize.cull_angle);
-
-			if (is_out!=out) {
-				poly->tangent_space.normal.x=-poly->tangent_space.normal.x;
-				poly->tangent_space.normal.y=-poly->tangent_space.normal.y;
-				poly->tangent_space.normal.z=-poly->tangent_space.normal.z;
-			}
-
-			poly++;
-		}
+		mesh->normal_mode=out?mesh_normal_mode_out:mesh_normal_mode_in;
+		map_recalc_normals_mesh(&map.mesh.meshes[mesh_idx],FALSE);
 	}
 }
 

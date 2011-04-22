@@ -37,6 +37,7 @@ and can be sold or given away.
 #define kParticlePropertyName					1
 #define kParticlePropertySpawnTick				2
 #define kParticlePropertySlopTick				3
+#define kParticlePropertySingleSpawn			4
 
 extern map_type					map;
 extern editor_state_type		state;
@@ -63,6 +64,7 @@ void property_palette_fill_particle(int particle_idx)
 	list_palette_add_string(&property_palette,kParticlePropertyName,"Name",particle->name,FALSE);
 	list_palette_add_string_int(&property_palette,kParticlePropertySpawnTick,"Spawn Tick",particle->spawn_tick,FALSE);
 	list_palette_add_string_int(&property_palette,kParticlePropertySlopTick,"Slop Tick",particle->slop_tick,FALSE);
+	list_palette_add_checkbox(&property_palette,kParticlePropertySingleSpawn,"Single Spawn",particle->single_spawn,FALSE);
 	
 	list_palette_add_header(&property_palette,0,"Paticle Info");
 	list_palette_add_string_int(&property_palette,-1,"Index",particle_idx,TRUE);
@@ -97,6 +99,10 @@ void property_palette_click_particle(int particle_idx,int id)
 			
 		case kParticlePropertySlopTick:
 			dialog_property_string_run(list_string_value_positive_int,(void*)&particle->slop_tick,0,0,0);
+			break;
+
+		case kParticlePropertySingleSpawn:
+			particle->single_spawn=!particle->single_spawn;
 			break;
 
 	}
