@@ -879,6 +879,7 @@ bool write_map_xml(map_type *map)
 		xml_add_attribute_3_coord_int("c3",particle->pnt.x,particle->pnt.y,particle->pnt.z);
 		xml_add_attribute_int("spawn_tick",particle->spawn_tick);
 		xml_add_attribute_int("slop_tick",particle->slop_tick);
+		xml_add_attribute_boolean("single_spawn",particle->single_spawn);
 		xml_add_attribute_boolean("off",!particle->on);
 		xml_add_tagend(TRUE);
 	}

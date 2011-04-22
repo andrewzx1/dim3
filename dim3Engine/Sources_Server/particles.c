@@ -40,6 +40,42 @@ extern network_setup_type	net_setup;
 
 /* =======================================================
 
+      Find Particle by Name
+      
+======================================================= */
+
+iface_particle_type* particle_find(char *name)
+{
+	int					n;
+	iface_particle_type	*particle;
+
+	particle=iface.particle_list.particles;
+	
+	for (n=0;n!=iface.particle_list.nparticle;n++) {
+		if (strcasecmp(particle->name,name)==0) return(particle);
+		particle++;
+	}
+	
+	return(NULL);
+}
+
+int particle_find_index(char *name)
+{
+	int					n;
+	iface_particle_type	*particle;
+
+	particle=iface.particle_list.particles;
+	
+	for (n=0;n!=iface.particle_list.nparticle;n++) {
+		if (strcasecmp(particle->name,name)==0) return(n);
+		particle++;
+	}
+	
+	return(-1);
+}
+
+/* =======================================================
+
       Setup Particles
       
 ======================================================= */
@@ -193,43 +229,12 @@ void particle_precalculate_all(void)
 		else {
 			particle_globe_precalculate(particle);
 		}
+
+			// setup chains
+
+		particle->chain_idx=-1;
+		if (particle->chain_name[0]!=0x0) particle->chain_idx=particle_find_index(particle->chain_name);
 	}
-}
-
-/* =======================================================
-
-      Find Particle by Name
-      
-======================================================= */
-
-iface_particle_type* particle_find(char *name)
-{
-	int					n;
-	iface_particle_type	*particle;
-
-	particle=iface.particle_list.particles;
-	
-	for (n=0;n!=iface.particle_list.nparticle;n++) {
-		if (strcasecmp(particle->name,name)==0) return(particle);
-		particle++;
-	}
-	
-	return(NULL);
-}
-
-int particle_find_index(char *name)
-{
-	int					n;
-	iface_particle_type	*particle;
-
-	particle=iface.particle_list.particles;
-	
-	for (n=0;n!=iface.particle_list.nparticle;n++) {
-		if (strcasecmp(particle->name,name)==0) return(n);
-		particle++;
-	}
-	
-	return(-1);
 }
 
 /* =======================================================
@@ -400,6 +405,42 @@ bool particle_line_spawn(int particle_idx,int obj_idx,d3pnt *start_pt,d3pnt *end
 
 /* =======================================================
 
+      Chain Particles
+      
+======================================================= */
+
+bool particle_chain(effect_type *effect)
+{
+	int						effect_idx;
+	obj_type				*obj;
+	particle_effect_data	*eff_particle;
+	iface_particle_type		*particle;
+	
+	eff_particle=&effect->data.particle;
+	particle=&iface.particle_list.particles[eff_particle->particle_idx];
+
+		// is there a chain?
+
+	if (particle->chain_idx==-1) return(FALSE);
+
+		// switch to chained particle
+
+	eff_particle->particle_idx=particle->chain_idx;
+
+	particle=&iface.particle_list.particles[eff_particle->particle_idx];
+	
+	effect->start_tick=game_time_get();
+	effect->life_tick=particle->life_msec;
+
+		// setup size
+
+	effect->size=particle_get_effect_size(particle);
+
+	return(TRUE);
+}
+
+/* =======================================================
+
       Particle Gravity
       
 ======================================================= */
@@ -428,12 +469,6 @@ float particle_get_gravity(iface_particle_type *particle,int count)
       
 ======================================================= */
 
-void particle_map_set_next_tick(map_particle_type *particle)
-{
-	particle->next_spawn_tick=particle->spawn_tick;
-	if (particle->slop_tick!=0) particle->next_spawn_tick+=random_int(particle->slop_tick);
-}
-
 void particle_map_initialize(void)
 {
 	int					n;
@@ -442,32 +477,40 @@ void particle_map_initialize(void)
 	particle=map.particles;
 	
 	for (n=0;n!=map.nparticle;n++) {
-		particle_map_set_next_tick(particle);
+		particle->next_spawn_tick=0;		// first particle launch is always immediate
+		particle->first_spawn=FALSE;
 		particle++;
 	}
+}
+
+void particle_map_set_next_tick(map_particle_type *particle)
+{
+	particle->next_spawn_tick=particle->spawn_tick;
+	if (particle->slop_tick!=0) particle->next_spawn_tick+=random_int(particle->slop_tick);
 }
 
 void particle_map_run(void)
 {
 	int					n;
 	map_particle_type	*particle;
-
-	particle=map.particles;
 	
 	for (n=0;n!=map.nparticle;n++) {
 
-		if (particle->particle_idx==-1) {
-			particle++;
-			continue;
-		}
+			// is particle setup right or single spawn?
+
+		particle=&map.particles[n];
+		if (particle->particle_idx==-1) continue;
+		if ((particle->single_spawn) && (particle->first_spawn)) continue;
+
+			// check for next spawn
 
 		particle->next_spawn_tick-=10;
-		if (particle->next_spawn_tick<=0) {
-			particle_spawn(particle->particle_idx,-1,&particle->pnt,NULL,NULL);
-			particle_map_set_next_tick(particle);
-		}
+		if (particle->next_spawn_tick>0) continue;
 
-		particle++;
+		particle_spawn(particle->particle_idx,-1,&particle->pnt,NULL,NULL);
+		particle_map_set_next_tick(particle);
+
+		particle->first_spawn=TRUE;
 	}
 }
 

@@ -334,6 +334,7 @@ void piece_create_particle(void)
 	strcpy(prt->name,name);
 	prt->spawn_tick=5000;
 	prt->slop_tick=0;
+	prt->single_spawn=FALSE;
 	
 		// select particle
 		

@@ -975,6 +975,7 @@ bool decode_map_xml(map_type *map,int map_head)
 			xml_get_attribute_3_coord_int(particle_tag,"c3",&particle->pnt.x,&particle->pnt.y,&particle->pnt.z);
 			particle->spawn_tick=xml_get_attribute_int(particle_tag,"spawn_tick");
 			particle->slop_tick=xml_get_attribute_int(particle_tag,"slop_tick");
+			particle->single_spawn=xml_get_attribute_boolean(particle_tag,"single_spawn");
 			particle->on=!xml_get_attribute_boolean(particle_tag,"off");
 			
 			particle_tag=xml_findnextchild(particle_tag);

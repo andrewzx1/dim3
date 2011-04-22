@@ -91,8 +91,9 @@ void map_recalc_normals_find_mesh_center_for_poly_add_recursive_poly_vertex(map_
 bool map_recalc_normals_find_mesh_center_for_poly(map_mesh_type *mesh,int poly_idx,d3pnt *center)
 {
 	int					n,cnt;
+	bool				first_hit;
 	unsigned char		*vertex_mask,*poly_mask;
-	d3pnt				*pt;
+	d3pnt				*pt,min,max;
 	
 		// mesh centers for normals are all the points that are
 		// connected to this polygon by other polygons.  This
@@ -121,24 +122,35 @@ bool map_recalc_normals_find_mesh_center_for_poly(map_mesh_type *mesh,int poly_i
 	map_recalc_normals_find_mesh_center_for_poly_add_recursive_poly_vertex(mesh,poly_idx,vertex_mask,poly_mask);
 	
 		// find center
-		
+
 	cnt=0;
-	
+	first_hit=TRUE;
+		
 	for (n=0;n!=mesh->nvertex;n++) {
-		if (vertex_mask[n]!=0x0) {
-			pt=&mesh->vertexes[n];
-			center->x+=pt->x;
-			center->y+=pt->y;
-			center->z+=pt->z;
-			cnt++;
+		if (vertex_mask[n]==0x0) continue;
+
+		cnt++;
+
+		pt=&mesh->vertexes[n];
+		if (first_hit) {
+			min.x=max.x=pt->x;
+			min.y=max.y=pt->y;
+			min.z=max.z=pt->z;
+			first_hit=FALSE;
+		}
+		else {
+			if (pt->x<min.x) min.x=pt->x;
+			if (pt->x>max.x) max.x=pt->x;
+			if (pt->y<min.y) min.y=pt->y;
+			if (pt->y>max.y) max.y=pt->y;
+			if (pt->z<min.z) min.z=pt->z;
+			if (pt->z>max.z) max.z=pt->z;
 		}
 	}
-	
-	if (cnt!=0) {
-		center->x/=cnt;
-		center->y/=cnt;
-		center->z/=cnt;
-	}
+
+	center->x=(min.x+max.x)>>1;
+	center->y=(min.y+max.y)>>1;
+	center->z=(min.z+max.z)>>1;
 	
 		// special flag if all polys are connected
 		
@@ -326,22 +338,60 @@ bool map_recalc_normals_poly_is_outside_edge(map_mesh_type *mesh,int poly_idx)
 
 void map_recalc_normals_mesh(map_mesh_type *mesh,bool only_tangent)
 {
-	int					n,mode;
-	float				u10,u20,v10,v20,f_denom;
+	int					n,k,neg_idx,pos_idx,mode;
+	float				u10,u20,v10,v20,f_denom,f_ptsz;
 	bool				is_out,invert,all_poly_mesh;
-	d3vct				p10,p20,vlft,vrgt,v_num,face_vct;
+	d3vct				p10,p20,vlft,vrgt,v_num,face_vct,normals[8];
 	d3pnt				*pt,*pt_1,*pt_2,center;
 	map_mesh_poly_type	*poly;
 	
-		// expect polys to be flat (not twisted)
-		// this would cause all sorts of rendering
-		// errors anyway, so we can just consider
-		// it a triangle to get the plane
-
 	poly=mesh->polys;
 
 	for (n=0;n!=mesh->npoly;n++) {
 
+			// get normal for all vertexes
+
+		for (k=0;k!=poly->ptsz;k++) {
+
+				// get vertexes on each side
+
+			neg_idx=k-1;
+			if (neg_idx<0) neg_idx=poly->ptsz-1;
+
+			pos_idx=k+1;
+			if (pos_idx==poly->ptsz) pos_idx=0;
+
+			pt=&mesh->vertexes[poly->v[k]];
+			pt_1=&mesh->vertexes[poly->v[neg_idx]];
+			pt_2=&mesh->vertexes[poly->v[pos_idx]];
+
+			vector_create(&p10,pt_1->x,pt_1->y,pt_1->z,pt->x,pt->y,pt->z);
+			vector_create(&p20,pt_2->x,pt_2->y,pt_2->z,pt->x,pt->y,pt->z);
+
+				// calculate the normal by the cross
+
+			vector_cross_product(&normals[k],&p10,&p20);
+		}
+
+			// average for normal
+
+		if (!only_tangent) {
+
+			for (k=1;k!=poly->ptsz;k++) {
+				normals[0].x+=normals[k].x;
+				normals[0].y+=normals[k].y;
+				normals[0].z+=normals[k].z;
+			}
+
+			f_ptsz=(float)poly->ptsz;
+			poly->tangent_space.normal.x=normals[0].x/f_ptsz;
+			poly->tangent_space.normal.y=normals[0].y/f_ptsz;
+			poly->tangent_space.normal.z=normals[0].z/f_ptsz;
+
+			vector_normalize(&poly->tangent_space.normal);
+		}
+
+			// work on the tangent
 			// get the side vectors (p1-p0) and (p2-p0)
 
 		pt=&mesh->vertexes[poly->v[0]];
