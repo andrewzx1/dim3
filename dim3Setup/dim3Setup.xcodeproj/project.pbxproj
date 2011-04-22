@@ -19,6 +19,8 @@
 		268382A5133D4F3D0035315B /* property_palette_particles.c in Sources */ = {isa = PBXBuildFile; fileRef = 2683829E133D4F3D0035315B /* property_palette_particles.c */; };
 		268382A6133D4F3D0035315B /* property_palette_rings.c in Sources */ = {isa = PBXBuildFile; fileRef = 2683829F133D4F3D0035315B /* property_palette_rings.c */; };
 		268382A7133D4F3D0035315B /* property_palette_settings.c in Sources */ = {isa = PBXBuildFile; fileRef = 268382A0133D4F3D0035315B /* property_palette_settings.c */; };
+		269E97C01360EE980027B9BF /* alt_property_palette_shader.c in Sources */ = {isa = PBXBuildFile; fileRef = 269E97BE1360EE980027B9BF /* alt_property_palette_shader.c */; };
+		269E97C11360EE980027B9BF /* property_palette_shaders.c in Sources */ = {isa = PBXBuildFile; fileRef = 269E97BF1360EE980027B9BF /* property_palette_shaders.c */; };
 		269EC5101356501E00C3223C /* alt_property_palette_multiplayer_character.c in Sources */ = {isa = PBXBuildFile; fileRef = 269EC50A1356501E00C3223C /* alt_property_palette_multiplayer_character.c */; };
 		269EC5111356501E00C3223C /* alt_property_palette_multiplayer_game.c in Sources */ = {isa = PBXBuildFile; fileRef = 269EC50B1356501E00C3223C /* alt_property_palette_multiplayer_game.c */; };
 		269EC5121356501E00C3223C /* alt_property_palette_multiplayer_option.c in Sources */ = {isa = PBXBuildFile; fileRef = 269EC50C1356501E00C3223C /* alt_property_palette_multiplayer_option.c */; };
@@ -125,6 +127,8 @@
 		2683829E133D4F3D0035315B /* property_palette_particles.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_particles.c; path = Code/property_palette_particles.c; sourceTree = "<group>"; };
 		2683829F133D4F3D0035315B /* property_palette_rings.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_rings.c; path = Code/property_palette_rings.c; sourceTree = "<group>"; };
 		268382A0133D4F3D0035315B /* property_palette_settings.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_settings.c; path = Code/property_palette_settings.c; sourceTree = "<group>"; };
+		269E97BE1360EE980027B9BF /* alt_property_palette_shader.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = alt_property_palette_shader.c; path = Code/alt_property_palette_shader.c; sourceTree = "<group>"; };
+		269E97BF1360EE980027B9BF /* property_palette_shaders.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_shaders.c; path = Code/property_palette_shaders.c; sourceTree = "<group>"; };
 		269EC50A1356501E00C3223C /* alt_property_palette_multiplayer_character.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = alt_property_palette_multiplayer_character.c; path = Code/alt_property_palette_multiplayer_character.c; sourceTree = "<group>"; };
 		269EC50B1356501E00C3223C /* alt_property_palette_multiplayer_game.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = alt_property_palette_multiplayer_game.c; path = Code/alt_property_palette_multiplayer_game.c; sourceTree = "<group>"; };
 		269EC50C1356501E00C3223C /* alt_property_palette_multiplayer_option.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = alt_property_palette_multiplayer_option.c; path = Code/alt_property_palette_multiplayer_option.c; sourceTree = "<group>"; };
@@ -270,6 +274,7 @@
 				2683829D133D4F3D0035315B /* property_palette_marks.c */,
 				2683829B133D4F3D0035315B /* property_palette_crosshairs.c */,
 				2683829A133D4F3D0035315B /* property_palette_actions.c */,
+				269E97BF1360EE980027B9BF /* property_palette_shaders.c */,
 				26D15C711329E3EF00F9EC7B /* property_palette.c */,
 				26D15C6F1329E3EF00F9EC7B /* alt_property_palette.c */,
 				26BDD879134AA97C002E6723 /* alt_property_palette_intro_button.c */,
@@ -288,6 +293,7 @@
 				26EB2AB0135CE09700C85532 /* alt_property_palette_mark.c */,
 				26EB2AAE135CE09700C85532 /* alt_property_palette_crosshair.c */,
 				26EB2AAD135CE09700C85532 /* alt_property_palette_action.c */,
+				269E97BE1360EE980027B9BF /* alt_property_palette_shader.c */,
 				26C3246F1357B3F800313FBF /* alt2_property_palette.c */,
 				26514F7113594F2500298860 /* alt2_property_palette_menu_item.c */,
 				26514F7013594F2500298860 /* alt2_property_palette_chooser_piece.c */,
@@ -497,6 +503,8 @@
 				26EB2AB4135CE09700C85532 /* alt_property_palette_halo.c in Sources */,
 				26EB2AB5135CE09700C85532 /* alt_property_palette_mark.c in Sources */,
 				26EB2AB6135CE09700C85532 /* alt_property_palette_sound.c in Sources */,
+				269E97C01360EE980027B9BF /* alt_property_palette_shader.c in Sources */,
+				269E97C11360EE980027B9BF /* property_palette_shaders.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

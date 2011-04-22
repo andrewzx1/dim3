@@ -261,9 +261,8 @@ and can be sold or given away.
 #define sd_event_console								2033
 #define sd_event_interface								2034
 #define sd_event_state									2035
-#define sd_event_rule									2036
-#define sd_event_remote									2037
-#define sd_event_score									2038
+#define sd_event_remote									2036
+#define sd_event_score									2037
 
 #define event_main_id_start								sd_event_construct
 #define event_main_id_end								sd_event_score
@@ -374,15 +373,12 @@ and can be sold or given away.
 #define sd_event_state_load								3078
 #define sd_event_state_save								3079
 
-#define sd_event_rule_join								3080
-#define sd_event_rule_score								3081
-
-#define sd_event_remote_join							3082
-#define sd_event_remote_leave							3083
-#define sd_event_remote_team							3084
-#define sd_event_remote_death							3085
-#define sd_event_remote_suicide							3086
-#define sd_event_remote_telefrag						3087
+#define sd_event_remote_join							3080
+#define sd_event_remote_leave							3081
+#define sd_event_remote_team							3082
+#define sd_event_remote_death							3083
+#define sd_event_remote_suicide							3084
+#define sd_event_remote_telefrag						3085
 
 //
 // script event messages

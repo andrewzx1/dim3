@@ -76,8 +76,8 @@ void alt_property_palette_fill_multiplayer_game(int multiplayer_game_idx)
 		// spawn
 
 	list_palette_add_header(&alt_property_palette,0,"Spawning");
-	list_palette_add_checkbox(&alt_property_palette,kMPGamePropertySpawnStart,"Start Spots",game->spawn.start_spot,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kMPGamePropertySpawnBlank,"Blank Spots",game->spawn.blank_spot,FALSE);
+	list_palette_add_checkbox(&alt_property_palette,kMPGamePropertySpawnStart,"Co-Op Spots",game->spawn.coop_spot,FALSE);
+	list_palette_add_checkbox(&alt_property_palette,kMPGamePropertySpawnBlank,"Spawn Spots",game->spawn.spawn_spot,FALSE);
 	list_palette_add_checkbox(&alt_property_palette,kMPGamePropertySpawnTeam,"Team Spots",game->spawn.team_spot,FALSE);
 	
 		// score
@@ -127,11 +127,11 @@ void alt_property_palette_click_multiplayer_game(int multiplayer_game_idx,int id
 			// spawn
 
 		case kMPGamePropertySpawnStart:
-			game->spawn.start_spot=!game->spawn.start_spot;
+			game->spawn.coop_spot=!game->spawn.coop_spot;
 			break;
 
 		case kMPGamePropertySpawnBlank:
-			game->spawn.blank_spot=!game->spawn.blank_spot;
+			game->spawn.spawn_spot=!game->spawn.spawn_spot;
 			break;
 			
 		case kMPGamePropertySpawnTeam:

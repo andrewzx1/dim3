@@ -259,8 +259,8 @@ void property_palette_click_multiplayer(int id)
 		strcpy(iface.net_game.games[idx].bot.script,"Bot");
 		iface.net_game.games[idx].bot.monsters=FALSE;
 		
-		iface.net_game.games[idx].spawn.start_spot=FALSE;
-		iface.net_game.games[idx].spawn.blank_spot=TRUE;
+		iface.net_game.games[idx].spawn.coop_spot=FALSE;
+		iface.net_game.games[idx].spawn.spawn_spot=TRUE;
 		iface.net_game.games[idx].spawn.team_spot=FALSE;
 		
 		iface.net_game.games[idx].score.kill=1;

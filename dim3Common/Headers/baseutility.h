@@ -864,14 +864,16 @@ typedef struct		{
 					} iface_particle_piece_type;
 
 typedef struct		{
-						int								image_idx,count,trail_count,
+						int								image_idx,chain_idx,
+														count,trail_count,
 														spread_offset,life_msec,
 														start_pixel_size,end_pixel_size,
 														current_variation_idx;
 						float							start_gravity,gravity_add,
 														start_alpha,end_alpha,reduce_pixel_fact,
 														trail_step,ambient_factor;
-						char							name[name_str_len],bitmap_name[name_str_len];
+						char							name[name_str_len],bitmap_name[name_str_len],
+														chain_name[name_str_len];
 						bool							reverse,blend_add,globe,team_tint;
 						d3pnt							pt;
 						d3ang							rot;
@@ -1234,7 +1236,7 @@ typedef struct		{
 					} iface_net_game_bot_type;
 
 typedef struct		{
-						bool							start_spot,blank_spot,team_spot;
+						bool							coop_spot,spawn_spot,team_spot;
 					} iface_net_game_spawn_type;
 
 typedef struct		{
