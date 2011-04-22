@@ -207,7 +207,7 @@ void light_map_textures_save(char *base_path)
 	
 	for (n=0;n!=light_map_texture_count;n++) {
 
-		sprintf(str,"Light Map: Saving Textures %d/%d",n,light_map_texture_count);
+		sprintf(str,"Light Map: Saving Textures %d/%d",(n+1),light_map_texture_count);
 		progress_next_title(str);
 		
 		if (light_map_textures[n].pixel_data==NULL) break;

@@ -185,14 +185,12 @@ void halo_draw_setup(void)
 			// player
 
 		if (hit) {
-			if (distance_get(ept.x,ept.y,ept.z,hpt.x,hpt.y,hpt.z)>halo->min_dist) {
-				if (camera.setup.mode==cv_fpp) {
-					if (contact.obj.idx!=server.player_obj_idx) {
-						halo_draw->in_view=FALSE;
-						continue;
-					}
+			if (distance_get(spt.x,spt.y,spt.z,hpt.x,hpt.y,hpt.z)>halo->min_dist) {
+				if ((contact.poly.mesh_idx!=-1) || (camera.setup.mode!=cv_fpp)) {
+					halo_draw->in_view=FALSE;
+					continue;
 				}
-				else {
+				if (contact.obj.idx!=server.player_obj_idx) {
 					halo_draw->in_view=FALSE;
 					continue;
 				}

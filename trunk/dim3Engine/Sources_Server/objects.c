@@ -837,11 +837,13 @@ void object_multiplayer_setup(obj_type *obj)
 		}
 	}
 	else {
-		if (net_game->spawn.start_spot) {
+		if (net_game->spawn.coop_spot) {
 			strcpy(obj->spawn_spot_name,"Coop");
 		}
 		else {
-			strcpy(obj->spawn_spot_name,"Spawn");
+			if (net_game->spawn.spawn_spot) {
+				strcpy(obj->spawn_spot_name,"Spawn");
+			}
 		}
 	}
 }

@@ -165,7 +165,6 @@ script_define_type			script_dim3_defines[]={
 								{sd_event_console,								"",		"DIM3_EVENT_CONSOLE"},
 								{sd_event_interface,							"",		"DIM3_EVENT_INTERFACE"},
 								{sd_event_state,								"",		"DIM3_EVENT_STATE"},
-								{sd_event_rule,									"",		"DIM3_EVENT_RULE"},
 								{sd_event_remote,								"",		"DIM3_EVENT_REMOTE"},
 								{sd_event_score,								"",		"DIM3_EVENT_SCORE"},
 
@@ -269,9 +268,6 @@ script_define_type			script_dim3_defines[]={
 
 								{sd_event_state_load,							"",		"DIM3_EVENT_STATE_LOAD"},
 								{sd_event_state_save,							"",		"DIM3_EVENT_STATE_SAVE"},
-
-								{sd_event_rule_join,							"",		"DIM3_EVENT_RULE_JOIN"},
-								{sd_event_rule_score,							"",		"DIM3_EVENT_RULE_SCORE"},
 
 								{sd_event_remote_join,							"",		"DIM3_EVENT_REMOTE_JOIN"},
 								{sd_event_remote_leave,							"",		"DIM3_EVENT_REMOTE_LEAVE"},

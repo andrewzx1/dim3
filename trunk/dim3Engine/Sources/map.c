@@ -38,6 +38,7 @@ extern view_type			view;
 extern server_type			server;
 extern js_type				js;
 extern setup_type			setup;
+extern iface_type			iface;
 extern network_setup_type	net_setup;
 
 char						current_map_name[name_str_len];

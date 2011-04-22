@@ -80,7 +80,6 @@
 		F50F79CC09C4937D0096C059 /* fade.c in Sources */ = {isa = PBXBuildFile; fileRef = F50F79CB09C4937D0096C059 /* fade.c */; };
 		F51925CA0A4E3D50005B1F5E /* zoom_draw.c in Sources */ = {isa = PBXBuildFile; fileRef = F51925C90A4E3D50005B1F5E /* zoom_draw.c */; };
 		F51AB0DD0CFE3BDA0085DC72 /* input_joystick.c in Sources */ = {isa = PBXBuildFile; fileRef = F51AB0DC0CFE3BDA0085DC72 /* input_joystick.c */; };
-		F51EE0AB0AEED99E0013EC4A /* script_game_score.c in Sources */ = {isa = PBXBuildFile; fileRef = F51EE0A90AEED99E0013EC4A /* script_game_score.c */; };
 		F51EE0AC0AEED99E0013EC4A /* script_game_setting.c in Sources */ = {isa = PBXBuildFile; fileRef = F51EE0AA0AEED99E0013EC4A /* script_game_setting.c */; };
 		F52036090C0FA1B800B779EC /* obj_grow.c in Sources */ = {isa = PBXBuildFile; fileRef = F52036080C0FA1B800B779EC /* obj_grow.c */; };
 		F52397200AFC08CC00241092 /* obj_liquid.c in Sources */ = {isa = PBXBuildFile; fileRef = F523971F0AFC08CC00241092 /* obj_liquid.c */; };
@@ -207,7 +206,6 @@
 		F5AD547D0BBE216E001C7C04 /* libBaseUtility.dylib in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = F5AD547B0BBE2155001C7C04 /* libBaseUtility.dylib */; };
 		F5AEF0F60D1CD57B00C99FF6 /* view_images.c in Sources */ = {isa = PBXBuildFile; fileRef = F5AEF0F50D1CD57B00C99FF6 /* view_images.c */; };
 		F5B01DA908F867E600AE5F87 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5B01DA808F867E600AE5F87 /* Cocoa.framework */; };
-		F5B140530B44910300486A6C /* script_game_join.c in Sources */ = {isa = PBXBuildFile; fileRef = F5B140520B44910300486A6C /* script_game_join.c */; };
 		F5BE44EC09F5C18700292ECD /* script_weap_alt_ammo.c in Sources */ = {isa = PBXBuildFile; fileRef = F5BE44EB09F5C18700292ECD /* script_weap_alt_ammo.c */; };
 		F5C1BCDA0A03DDA4002D02AB /* scripts_defines.c in Sources */ = {isa = PBXBuildFile; fileRef = F5C1BCD90A03DDA4002D02AB /* scripts_defines.c */; };
 		F5C1BD520A047590002D02AB /* script_utility_pack.c in Sources */ = {isa = PBXBuildFile; fileRef = F5C1BD510A047590002D02AB /* script_utility_pack.c */; };
@@ -430,7 +428,6 @@
 		F50F79CB09C4937D0096C059 /* fade.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = fade.c; path = Sources_View/fade.c; sourceTree = "<group>"; };
 		F51925C90A4E3D50005B1F5E /* zoom_draw.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = zoom_draw.c; path = Sources_View/zoom_draw.c; sourceTree = "<group>"; };
 		F51AB0DC0CFE3BDA0085DC72 /* input_joystick.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = input_joystick.c; path = Sources_View/input_joystick.c; sourceTree = "<group>"; };
-		F51EE0A90AEED99E0013EC4A /* script_game_score.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = script_game_score.c; path = Sources_Server/script_game_score.c; sourceTree = "<group>"; };
 		F51EE0AA0AEED99E0013EC4A /* script_game_setting.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = script_game_setting.c; path = Sources_Server/script_game_setting.c; sourceTree = "<group>"; };
 		F52036080C0FA1B800B779EC /* obj_grow.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = obj_grow.c; path = Sources_Server/obj_grow.c; sourceTree = "<group>"; };
 		F523971F0AFC08CC00241092 /* obj_liquid.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = obj_liquid.c; path = Sources_Server/obj_liquid.c; sourceTree = "<group>"; };
@@ -557,7 +554,6 @@
 		F5AD547B0BBE2155001C7C04 /* libBaseUtility.dylib */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libBaseUtility.dylib; path = ../dim3Common/Libraries/libBaseUtility.dylib; sourceTree = SOURCE_ROOT; };
 		F5AEF0F50D1CD57B00C99FF6 /* view_images.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = view_images.c; path = Sources_View/view_images.c; sourceTree = "<group>"; };
 		F5B01DA808F867E600AE5F87 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
-		F5B140520B44910300486A6C /* script_game_join.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = script_game_join.c; path = Sources_Server/script_game_join.c; sourceTree = "<group>"; };
 		F5BE44EB09F5C18700292ECD /* script_weap_alt_ammo.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = script_weap_alt_ammo.c; path = Sources_Server/script_weap_alt_ammo.c; sourceTree = "<group>"; };
 		F5C1BCD90A03DDA4002D02AB /* scripts_defines.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = scripts_defines.c; path = Sources_Server/scripts_defines.c; sourceTree = "<group>"; };
 		F5C1BD510A047590002D02AB /* script_utility_pack.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = script_utility_pack.c; path = Sources_Server/script_utility_pack.c; sourceTree = "<group>"; };
@@ -991,8 +987,6 @@
 			isa = PBXGroup;
 			children = (
 				F51EE0AA0AEED99E0013EC4A /* script_game_setting.c */,
-				F51EE0A90AEED99E0013EC4A /* script_game_score.c */,
-				F5B140520B44910300486A6C /* script_game_join.c */,
 			);
 			name = Game;
 			sourceTree = "<group>";
@@ -1675,7 +1669,6 @@
 				F587FFDB0AB0F962006ED5CD /* obj_rigid_body.c in Sources */,
 				F52C9A970ABB5B9400C63C19 /* script_weap_recoil.c in Sources */,
 				F5F0AC580AD35F1800C50A21 /* scenery.c in Sources */,
-				F51EE0AB0AEED99E0013EC4A /* script_game_score.c in Sources */,
 				F51EE0AC0AEED99E0013EC4A /* script_game_setting.c in Sources */,
 				F52397200AFC08CC00241092 /* obj_liquid.c in Sources */,
 				F55E951D0B1A8024004195B1 /* rings.c in Sources */,
@@ -1683,7 +1676,6 @@
 				F5A5AED20B20EF6100B1901F /* model_fade.c in Sources */,
 				F5A60CED0B279D43003002D4 /* script_obj_held.c in Sources */,
 				F5A60CEF0B279D5A003002D4 /* obj_held.c in Sources */,
-				F5B140530B44910300486A6C /* script_game_join.c in Sources */,
 				F5CF599D0BFD161D007DD44C /* script_obj_radar.c in Sources */,
 				F5CF599F0BFD1640007DD44C /* radar_draw.c in Sources */,
 				F52036090C0FA1B800B779EC /* obj_grow.c in Sources */,

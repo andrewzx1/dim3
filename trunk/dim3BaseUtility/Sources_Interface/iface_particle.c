@@ -111,6 +111,7 @@ void iface_read_settings_particle(iface_type *iface)
 		particle->ambient_factor=1.0f;
 		particle->blend_add=FALSE;
 		particle->globe=FALSE;
+		particle->chain_name[0]=0x0;
 
         tag=xml_findfirstchild("Settings",particle_tag);
         if (tag!=-1) {
@@ -120,6 +121,7 @@ void iface_read_settings_particle(iface_type *iface)
             particle->ambient_factor=xml_get_attribute_float_default(tag,"ambient",1.0f);
             particle->blend_add=xml_get_attribute_boolean(tag,"additive");
             particle->globe=xml_get_attribute_boolean(tag,"globe");
+			xml_get_attribute_text(tag,"chain",particle->chain_name,name_str_len);
 		}
 
 		if (particle->count>max_particle_count) particle->count=max_particle_count;
@@ -162,6 +164,7 @@ void iface_read_settings_particle(iface_type *iface)
         }
 
 			// old way of defining particles
+			// supergumba -- delete me later
 
         tag=xml_findfirstchild("Ring",particle_tag);
         if (tag!=-1) {
