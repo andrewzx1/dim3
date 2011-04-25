@@ -120,7 +120,7 @@ void item_palette_fill(void)
 	list_palette_add_header_count(&item_palette,light_piece,"Lights",map.nlight);
 
 	for (n=0;n!=map.nlight;n++) {
-		list_palette_add_color(&item_palette,light_piece,n,&map.lights[n].col,((item_palette.item_type==light_piece)&&(n==item_palette.item_idx)),FALSE);
+		list_palette_add_color(&item_palette,light_piece,n,&map.lights[n].setting.col,((item_palette.item_type==light_piece)&&(n==item_palette.item_idx)),FALSE);
 	}
 
 		// sounds

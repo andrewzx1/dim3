@@ -65,19 +65,19 @@ void property_palette_fill_light(int light_idx)
 	light=&map.lights[light_idx];
 
 	list_palette_add_header(&property_palette,0,"Light Settings");
-	list_palette_add_checkbox(&property_palette,kLightPropertyOn,"On",light->on,FALSE);
-	list_palette_add_checkbox(&property_palette,kLightPropertyLightMap,"Used in Light Map",light->light_map,FALSE);
+	list_palette_add_checkbox(&property_palette,kLightPropertyOn,"On",light->setting.on,FALSE);
+	list_palette_add_checkbox(&property_palette,kLightPropertyLightMap,"Used in Light Map",light->setting.light_map,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Light Naming");
 	list_palette_add_string(&property_palette,kLightPropertyName,"Name",light->name,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Light Display");
-	list_palette_add_string(&property_palette,kLightPropertyType,"Type",light_property_type_list[light->type],FALSE);
-	list_palette_add_string(&property_palette,kLightPropertyDirection,"Direction",light_property_direction_list[light->direction],FALSE);
-	list_palette_add_string_int(&property_palette,kLightPropertyIntensity,"Intensity",light->intensity,FALSE);
-	list_palette_add_string_float(&property_palette,kLightPropertyExponent,"Exponent",light->exponent,FALSE);
-	list_palette_add_pick_color(&property_palette,kLightPropertyColor,"Color",&light->col,FALSE);
-	list_palette_add_string(&property_palette,kLightPropertyHalo,"Halo",light->halo_name,FALSE);
+	list_palette_add_string(&property_palette,kLightPropertyType,"Type",light_property_type_list[light->setting.type],FALSE);
+	list_palette_add_string(&property_palette,kLightPropertyDirection,"Direction",light_property_direction_list[light->setting.direction],FALSE);
+	list_palette_add_string_int(&property_palette,kLightPropertyIntensity,"Intensity",light->setting.intensity,FALSE);
+	list_palette_add_string_float(&property_palette,kLightPropertyExponent,"Exponent",light->setting.exponent,FALSE);
+	list_palette_add_pick_color(&property_palette,kLightPropertyColor,"Color",&light->setting.col,FALSE);
+	list_palette_add_string(&property_palette,kLightPropertyHalo,"Halo",light->setting.halo_name,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Light Info");
 	list_palette_add_string_int(&property_palette,-1,"Index",light_idx,TRUE);
@@ -99,11 +99,11 @@ void property_palette_click_light(int light_idx,int id)
 	switch (id) {
 
 		case kLightPropertyOn:
-			light->on=!light->on;
+			light->setting.on=!light->setting.on;
 			break;
 
 		case kLightPropertyLightMap:
-			light->light_map=!light->light_map;
+			light->setting.light_map=!light->setting.light_map;
 			break;
 
 		case kLightPropertyName:
@@ -111,27 +111,27 @@ void property_palette_click_light(int light_idx,int id)
 			break;
 
 		case kLightPropertyType:
-			property_pick_list("Pick a Light Type",(char*)light_property_type_list,&light->type);
+			property_pick_list("Pick a Light Type",(char*)light_property_type_list,&light->setting.type);
 			break;
 
 		case kLightPropertyDirection:
-			property_pick_list("Pick a Light Direction",(char*)light_property_direction_list,&light->direction);
+			property_pick_list("Pick a Light Direction",(char*)light_property_direction_list,&light->setting.direction);
 			break;
 
 		case kLightPropertyIntensity:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&light->intensity,0,0,0);
+			dialog_property_string_run(list_string_value_positive_int,(void*)&light->setting.intensity,0,0,0);
 			break;
 			
 		case kLightPropertyExponent:
-			dialog_property_string_run(list_string_value_positive_float,(void*)&light->exponent,0,0,0);
+			dialog_property_string_run(list_string_value_positive_float,(void*)&light->setting.exponent,0,0,0);
 			break;
 			
 		case kLightPropertyColor:
-			os_pick_color(&light->col);
+			os_pick_color(&light->setting.col);
 			break;
 
 		case kLightPropertyHalo:
-			property_palette_pick_halo(light->halo_name);
+			property_palette_pick_halo(light->setting.halo_name);
 			break;
 
 	}

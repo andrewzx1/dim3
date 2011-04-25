@@ -919,7 +919,7 @@ void object_move_normal(obj_type *obj)
 		// now and if no movement, then bump back down
 
 	bump_y_move=0;
-	
+
 	if ((obj->bump.on) && (obj->air_mode==am_ground)) {
 
 		if (collide_object_to_map_bump(obj,&motion,&bump_y_move)) {

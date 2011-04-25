@@ -159,7 +159,7 @@ bool map_recalc_normals_find_mesh_center_for_poly(map_mesh_type *mesh,int poly_i
 
 /* =======================================================
 
-      Normal In/Out
+      Determine Normal In/Out
       
 ======================================================= */
 
@@ -175,159 +175,9 @@ int map_recalc_normals_get_auto_mode(map_mesh_type *mesh)
 	
 		// compare square footage
 		
-	if ((dx*dy*dz)<normal_min_size_auto_out) return(mesh_normal_mode_out);
+	if ((dx*dy*dz)<normal_min_size_auto_out) return(normal_mode_out);
 
-	return(mesh_normal_mode_in);
-}
-
-bool map_recalc_normals_poly_is_outside(map_mesh_type *mesh,int poly_idx)
-{
-	int					n,dir;
-	d3pnt				*pt;
-	map_mesh_poly_type	*poly,*chk_poly;
-	
-	poly=&mesh->polys[poly_idx];
-	
-		// if any point is actually on a corner, it auto
-		// counts as outside
-		
-	for (n=0;n!=poly->ptsz;n++) {
-		pt=&mesh->vertexes[poly->v[n]];
-		if ((pt->x==mesh->box.min.x) && (pt->y==mesh->box.min.y) && (pt->z==mesh->box.min.z)) return(TRUE);
-		if ((pt->x==mesh->box.min.x) && (pt->y==mesh->box.min.y) && (pt->z==mesh->box.max.z)) return(TRUE);
-		if ((pt->x==mesh->box.min.x) && (pt->y==mesh->box.max.y) && (pt->z==mesh->box.min.z)) return(TRUE);
-		if ((pt->x==mesh->box.min.x) && (pt->y==mesh->box.max.y) && (pt->z==mesh->box.max.z)) return(TRUE);
-		if ((pt->x==mesh->box.max.x) && (pt->y==mesh->box.min.y) && (pt->z==mesh->box.min.z)) return(TRUE);
-		if ((pt->x==mesh->box.max.x) && (pt->y==mesh->box.min.y) && (pt->z==mesh->box.max.z)) return(TRUE);
-		if ((pt->x==mesh->box.max.x) && (pt->y==mesh->box.max.y) && (pt->z==mesh->box.min.z)) return(TRUE);
-		if ((pt->x==mesh->box.max.x) && (pt->y==mesh->box.max.y) && (pt->z==mesh->box.max.z)) return(TRUE);
-	}
-	
-		// sort everything from the middle point out,
-		// if there is anything further out, then it's outside
-		// and the original is inside
-		
-		// get direction
-		
-	if (poly->box.wall_like) {
-		if ((poly->box.min.x<mesh->box.mid.x) && (poly->box.max.x<mesh->box.mid.x)) {
-			dir=calc_normal_dir_neg_x;
-		}
-		else {
-			if ((poly->box.min.x>mesh->box.mid.x) && (poly->box.max.x>mesh->box.mid.x)) {
-				dir=calc_normal_dir_pos_x;
-			}
-			else {
-				if ((poly->box.min.z<mesh->box.mid.z) && (poly->box.max.z<mesh->box.mid.z)) {
-					dir=calc_normal_dir_neg_z;
-				}
-				else {
-					dir=calc_normal_dir_pos_z;
-				}
-			}
-		}
-	}
-	else {
-		if (poly->box.min.y<mesh->box.mid.y) {
-			dir=calc_normal_dir_neg_y;
-		}
-		else {
-			dir=calc_normal_dir_pos_y;
-		}
-	}
-		
-		// check against other polys
-		
-	for (n=0;n!=mesh->npoly;n++) {
-		if (n==poly_idx) continue;
-		
-			// only check polygons of same type
-			
-		chk_poly=&mesh->polys[n];
-		if (chk_poly->box.wall_like!=poly->box.wall_like) continue;
-		
-			// which direction?
-			
-		switch (dir) {
-		
-			case calc_normal_dir_neg_x:
-				if (chk_poly->box.max.y<=poly->box.min.y) break;
-				if (chk_poly->box.min.y>=poly->box.max.y) break;
-				if (chk_poly->box.max.z<=poly->box.min.z) break;
-				if (chk_poly->box.min.z>=poly->box.max.z) break;
-				if (chk_poly->box.mid.x<poly->box.mid.x) return(FALSE);
-				break;
-				
-			case calc_normal_dir_pos_x:
-				if (chk_poly->box.max.y<=poly->box.min.y) break;
-				if (chk_poly->box.min.y>=poly->box.max.y) break;
-				if (chk_poly->box.max.z<=poly->box.min.z) break;
-				if (chk_poly->box.min.z>=poly->box.max.z) break;
-				if (chk_poly->box.mid.x>poly->box.mid.x) return(FALSE);
-				break;
-
-			case calc_normal_dir_neg_y:
-				if (chk_poly->box.max.x<=poly->box.min.x) break;
-				if (chk_poly->box.min.x>=poly->box.max.x) break;
-				if (chk_poly->box.max.z<=poly->box.min.z) break;
-				if (chk_poly->box.min.z>=poly->box.max.z) break;
-				if (chk_poly->box.mid.y<poly->box.mid.y) return(FALSE);
-				break;
-
-			case calc_normal_dir_pos_y:
-				if (chk_poly->box.max.x<=poly->box.min.x) break;
-				if (chk_poly->box.min.x>=poly->box.max.x) break;
-				if (chk_poly->box.max.z<=poly->box.min.z) break;
-				if (chk_poly->box.min.z>=poly->box.max.z) break;
-				if (chk_poly->box.mid.y>poly->box.mid.y) return(FALSE);
-				break;
-				
-			case calc_normal_dir_neg_z:
-				if (chk_poly->box.max.x<=poly->box.min.x) break;
-				if (chk_poly->box.min.x>=poly->box.max.x) break;
-				if (chk_poly->box.max.y<=poly->box.min.y) break;
-				if (chk_poly->box.min.y>=poly->box.max.y) break;
-				if (chk_poly->box.mid.z<poly->box.mid.z) return(FALSE);
-				break;
-				
-			case calc_normal_dir_pos_z:
-				if (chk_poly->box.max.x<=poly->box.min.x) break;
-				if (chk_poly->box.min.x>=poly->box.max.x) break;
-				if (chk_poly->box.max.y<=poly->box.min.y) break;
-				if (chk_poly->box.min.y>=poly->box.max.y) break;
-				if (chk_poly->box.mid.z>poly->box.mid.z) return(FALSE);
-				break;
-			
-		}
-		
-	}
-	
-	return(TRUE);
-}
-
-bool map_recalc_normals_poly_is_outside_edge(map_mesh_type *mesh,int poly_idx)
-{
-	int					n,cnt;
-	d3pnt				*pt;
-	map_mesh_poly_type	*poly;
-	
-	poly=&mesh->polys[poly_idx];
-	
-		// if any point is on any 2 edges, it counts
-		// as outside
-		
-	for (n=0;n!=poly->ptsz;n++) {
-		cnt=0;
-		
-		pt=&mesh->vertexes[poly->v[n]];
-		if ((pt->x==mesh->box.min.x) || (pt->x==mesh->box.max.x)) cnt++;
-		if ((pt->y==mesh->box.min.y) || (pt->y==mesh->box.max.y)) cnt++;
-		if ((pt->z==mesh->box.min.z) || (pt->z==mesh->box.max.z)) cnt++;
-		
-		if (cnt>=2) return(TRUE);
-	}
-
-	return(FALSE);
+	return(normal_mode_in);
 }
 
 /* =======================================================
@@ -336,11 +186,11 @@ bool map_recalc_normals_poly_is_outside_edge(map_mesh_type *mesh,int poly_idx)
       
 ======================================================= */
 
-void map_recalc_normals_mesh(map_mesh_type *mesh,bool only_tangent)
+void map_recalc_normals_mesh(map_mesh_type *mesh,int normal_mode,bool only_tangent)
 {
-	int					n,k,neg_idx,pos_idx,mode;
+	int					n,k,neg_idx,pos_idx;
 	float				u10,u20,v10,v20,f_denom,f_ptsz;
-	bool				is_out,invert,all_poly_mesh;
+	bool				is_out,all_poly_mesh;
 	d3vct				p10,p20,vlft,vrgt,v_num,face_vct,normals[8];
 	d3pnt				*pt,*pt_1,*pt_2,center;
 	map_mesh_poly_type	*poly;
@@ -446,8 +296,7 @@ void map_recalc_normals_mesh(map_mesh_type *mesh,bool only_tangent)
 	
 		// check for inversions
 		
-	mode=mesh->normal_mode;
-	if (mode==mesh_normal_mode_auto) mode=map_recalc_normals_get_auto_mode(mesh);
+	if (normal_mode==normal_mode_none) normal_mode=map_recalc_normals_get_auto_mode(mesh);
 	
 	all_poly_mesh=FALSE;
 	poly=mesh->polys;
@@ -471,33 +320,9 @@ void map_recalc_normals_mesh(map_mesh_type *mesh,bool only_tangent)
 		vector_create(&face_vct,poly->box.mid.x,poly->box.mid.y,poly->box.mid.z,center.x,center.y,center.z);
 		is_out=(vector_dot_product(&poly->tangent_space.normal,&face_vct)>0.0f);
 		
-		switch (mode) {
-
-			case mesh_normal_mode_in:
-				invert=is_out;
-				break;
-			case mesh_normal_mode_out:
-				invert=!is_out;
-				break;
-			case mesh_normal_mode_in_out:
-				if (map_recalc_normals_poly_is_outside(mesh,n)) {
-					invert=!is_out;
-				}
-				else {
-					invert=is_out;
-				}
-				break;
-			case mesh_normal_mode_edge:
-				if (map_recalc_normals_poly_is_outside_edge(mesh,n)) {
-					invert=!is_out;
-				}
-				else {
-					invert=is_out;
-				}
-				break;
-		}
+		if (normal_mode==normal_mode_out) is_out=!is_out;
 		
-		if (invert) {
+		if (is_out) {
 			poly->tangent_space.normal.x=-poly->tangent_space.normal.x;
 			poly->tangent_space.normal.y=-poly->tangent_space.normal.y;
 			poly->tangent_space.normal.z=-poly->tangent_space.normal.z;
@@ -515,7 +340,7 @@ void map_recalc_normals(map_type *map,bool only_tangent)
 	mesh=map->mesh.meshes;
 
 	for (n=0;n!=map->mesh.nmesh;n++) {
-		map_recalc_normals_mesh(mesh,only_tangent);
+		map_recalc_normals_mesh(mesh,normal_mode_none,only_tangent);
 		mesh++;
 	}
 }

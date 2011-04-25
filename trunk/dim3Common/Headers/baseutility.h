@@ -520,6 +520,16 @@ extern void bitmap_text_shutdown(texture_font_type *d3_font);
 
 /* =======================================================
 
+      Global Normal Modes
+      
+======================================================= */
+
+#define normal_mode_none						0
+#define normal_mode_out							1
+#define normal_mode_in							2
+
+/* =======================================================
+
       Interface
       
 ======================================================= */

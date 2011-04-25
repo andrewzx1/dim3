@@ -454,7 +454,8 @@ void gl_lights_compile_effect_add(int tick,effect_type *effect)
 void gl_lights_compile(int tick)
 {
 	int					n;
-	map_light_type		*maplight;
+	map_light_type		*lit;
+	map_particle_type	*particle;
 	obj_type			*obj;
 	weapon_type			*weap;
 	proj_type			*proj;
@@ -464,11 +465,20 @@ void gl_lights_compile(int tick)
 
 		// map lights
 		
-	maplight=map.lights;
+	lit=map.lights;
 		
 	for (n=0;n!=map.nlight;n++) {
-		if (maplight->on) gl_lights_compile_add(tick,&maplight->pnt,maplight->type,maplight->light_map,maplight->intensity,maplight->exponent,maplight->direction,&maplight->col);
-		maplight++;
+		if (lit->setting.on) gl_lights_compile_add(tick,&lit->pnt,lit->setting.type,lit->setting.light_map,lit->setting.intensity,lit->setting.exponent,lit->setting.direction,&lit->setting.col);
+		lit++;
+	}
+	
+		// map particles
+		
+	particle=map.particles;
+		
+	for (n=0;n!=map.nparticle;n++) {
+		if (particle->light_setting.on) gl_lights_compile_add(tick,&particle->pnt,particle->light_setting.type,particle->light_setting.light_map,particle->light_setting.intensity,particle->light_setting.exponent,particle->light_setting.direction,&particle->light_setting.col);
+		particle++;
 	}	
 
 		// lights from objects and their weapons

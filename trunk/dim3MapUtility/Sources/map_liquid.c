@@ -60,9 +60,12 @@ int map_liquid_add(map_type *map)
 	
 	liq=&map->liquid.liquids[liquid_idx];
 	
-	liq->never_obscure=FALSE;
-	liq->never_cull=FALSE;
-	liq->no_draw=FALSE;
+	liq->flag.never_obscure=FALSE;
+	liq->flag.never_cull=FALSE;
+	liq->flag.no_draw=FALSE;
+	liq->flag.no_reflection_map=FALSE;
+	
+	liq->tide.twist_angle=0.0f;
 	
 	liq->camera[0]=0x0;
 	liq->ambient.sound_name[0]=0x0;

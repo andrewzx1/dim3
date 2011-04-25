@@ -36,10 +36,11 @@ and can be sold or given away.
 #define kLiquidPropertyWaveFlat				0
 #define kLiquidPropertyNeverObscure			1
 #define kLiquidPropertyNeverCull			2
-#define kLiquidPropertyNoDraw				3
+#define kLiquidPropertyNoReflectionMap		3
+#define kLiquidPropertyNoDraw				4
 
-#define kLiquidPropertyColor				4
-#define kLiquidPropertyTintAlpha			5
+#define kLiquidPropertyColor				5
+#define kLiquidPropertyTintAlpha			6
 #define kLiquidPropertySpeedAlter			7
 #define kLiquidPropertySoundName			8
 
@@ -47,12 +48,13 @@ and can be sold or given away.
 #define kLiquidPropertyTideSize				10
 #define kLiquidPropertyTideRate				11
 #define kLiquidPropertyTideDirection		12
+#define kLiquidPropertyTideTwistAngle		13
 
-#define kLiquidPropertyHarm					13
-#define kLiquidPropertyDrownTick			14
-#define kLiquidPropertyDrownHarm			15
+#define kLiquidPropertyHarm					14
+#define kLiquidPropertyDrownTick			15
+#define kLiquidPropertyDrownHarm			16
 
-#define kLiquidPropertyGroup				16
+#define kLiquidPropertyGroup				17
 
 #define kLiquidPropertyOff					20
 #define kLiquidPropertySize					21
@@ -86,9 +88,10 @@ void property_palette_fill_liquid(int liq_idx)
 
 	list_palette_add_header(&property_palette,0,"Liquid Settings");
 	list_palette_add_checkbox(&property_palette,kLiquidPropertyWaveFlat,"Draw as Flat Surface",liq->tide.flat,FALSE);
-	list_palette_add_checkbox(&property_palette,kLiquidPropertyNeverObscure,"Never Obscure",liq->never_obscure,FALSE);
-	list_palette_add_checkbox(&property_palette,kLiquidPropertyNeverCull,"Never Cull",liq->never_cull,FALSE);
-	list_palette_add_checkbox(&property_palette,kLiquidPropertyNoDraw,"No Draw (Volume Only)",liq->no_draw,FALSE);
+	list_palette_add_checkbox(&property_palette,kLiquidPropertyNeverObscure,"Never Obscure",liq->flag.never_obscure,FALSE);
+	list_palette_add_checkbox(&property_palette,kLiquidPropertyNeverCull,"Never Cull",liq->flag.never_cull,FALSE);
+	list_palette_add_checkbox(&property_palette,kLiquidPropertyNoReflectionMap,"No Reflection Map",liq->flag.no_reflection_map,FALSE);
+	list_palette_add_checkbox(&property_palette,kLiquidPropertyNoDraw,"No Draw (Volume Only)",liq->flag.no_draw,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Liquid Under");
 	list_palette_add_pick_color(&property_palette,kLiquidPropertyColor,"Color",&liq->col,FALSE);
@@ -101,6 +104,7 @@ void property_palette_fill_liquid(int liq_idx)
 	list_palette_add_string_int(&property_palette,kLiquidPropertyTideSize,"Tide Size",liq->tide.high,FALSE);
 	list_palette_add_string_int(&property_palette,kLiquidPropertyTideRate,"Tide Rate",liq->tide.rate,FALSE);
 	list_palette_add_string(&property_palette,kLiquidPropertyTideDirection,"Tide Direction",liquid_property_tide_direction_list[liq->tide.direction],FALSE);
+	list_palette_add_string_float(&property_palette,kLiquidPropertyTideTwistAngle,"Tide Twist Angle",liq->tide.twist_angle,FALSE);
 	
 	list_palette_add_header(&property_palette,0,"Liquid Harm");
 	list_palette_add_string_int(&property_palette,kLiquidPropertyHarm,"In Damage",liq->harm.in_harm,FALSE);
@@ -182,15 +186,19 @@ void property_palette_click_liquid(int liq_idx,int id)
 			break;
 
 		case kLiquidPropertyNeverObscure:
-			liq->never_obscure=!liq->never_obscure;
+			liq->flag.never_obscure=!liq->flag.never_obscure;
 			break;
 
 		case kLiquidPropertyNeverCull:
-			liq->never_cull=!liq->never_cull;
+			liq->flag.never_cull=!liq->flag.never_cull;
+			break;
+			
+		case kLiquidPropertyNoReflectionMap:
+			liq->flag.no_reflection_map=!liq->flag.no_reflection_map;
 			break;
 
 		case kLiquidPropertyNoDraw:
-			liq->no_draw=!liq->no_draw;
+			liq->flag.no_draw=!liq->flag.no_draw;
 			break;
 
 		case kLiquidPropertyColor:
@@ -223,6 +231,10 @@ void property_palette_click_liquid(int liq_idx,int id)
 
 		case kLiquidPropertyTideDirection:
 			property_pick_list("Pick a Tide Direction",(char*)liquid_property_tide_direction_list,&liq->tide.direction);
+			break;
+
+		case kLiquidPropertyTideTwistAngle:
+			dialog_property_string_run(list_string_value_positive_float,(void*)&liq->tide.twist_angle,0,0,0);
 			break;
 
 		case kLiquidPropertyHarm:

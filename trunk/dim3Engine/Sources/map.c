@@ -146,7 +146,7 @@ void map_lookups_setup(void)
 	lit=map.lights;
 
 	for (n=0;n!=map.nlight;n++) {
-		lit->halo_idx=iface_halo_find(&iface,lit->halo_name);
+		lit->setting.halo_idx=iface_halo_find(&iface,lit->setting.halo_name);
 		lit++;
 	}
 
@@ -161,6 +161,7 @@ void map_lookups_setup(void)
 	
 	for (n=0;n!=map.nparticle;n++) {
 		particle->particle_idx=particle_find_index(particle->name);
+		particle->light_setting.halo_idx=iface_halo_find(&iface,particle->light_setting.halo_name);
 		particle++;
 	}
 }

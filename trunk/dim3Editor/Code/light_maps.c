@@ -1281,18 +1281,19 @@ void light_map_ray_trace(int mesh_idx,int poly_idx,d3pnt *rpt,unsigned char *uc_
 	d3col				col,add_col;
 	double				d,d_intensity,dist,dx,dy,dz;
 	map_light_type		*lit;
+	map_particle_type	*prt;
 	
-		// check the lights
-		
 	col.r=col.g=col.b=0.0f;
+	
+		// map lights
 	
 	for (n=0;n!=map.nlight;n++) {
 		lit=&map.lights[n];
-		if (!lit->light_map) continue;
+		if (!lit->setting.light_map) continue;
 		
 			// light within radius?
 			
-		d_intensity=(double)lit->intensity;
+		d_intensity=(double)lit->setting.intensity;
 			
 		dx=(lit->pnt.x-rpt->x);
 		dy=(lit->pnt.y-rpt->y);
@@ -1302,17 +1303,17 @@ void light_map_ray_trace(int mesh_idx,int poly_idx,d3pnt *rpt,unsigned char *uc_
 
 			// is it visible?
 			
-		if (light_map_ray_trace_map(mesh_idx,poly_idx,rpt,&lit->pnt,lit->direction)) continue;
+		if (light_map_ray_trace_map(mesh_idx,poly_idx,rpt,&lit->pnt,lit->setting.direction)) continue;
 		
 			// get color
 			
 		d=1.0-(dist/d_intensity);
-		d+=pow(d,(double)lit->exponent);
+		d+=pow(d,(double)lit->setting.exponent);
 		f=(float)d;
 
-		add_col.r=lit->col.r*f;
-		add_col.g=lit->col.g*f;
-		add_col.b=lit->col.b*f;
+		add_col.r=lit->setting.col.r*f;
+		add_col.g=lit->setting.col.g*f;
+		add_col.b=lit->setting.col.b*f;
 
 			// handle normals
 
@@ -1324,6 +1325,49 @@ void light_map_ray_trace(int mesh_idx,int poly_idx,d3pnt *rpt,unsigned char *uc_
 		col.g+=add_col.g;
 		col.b+=add_col.b;
 	}
+	
+		// particle lights
+	
+	for (n=0;n!=map.nparticle;n++) {
+		prt=&map.particles[n];
+		if (!prt->light_setting.light_map) continue;
+		
+			// light within radius?
+			
+		d_intensity=(double)prt->light_setting.intensity;
+			
+		dx=(prt->pnt.x-rpt->x);
+		dy=(prt->pnt.y-rpt->y);
+		dz=(prt->pnt.z-rpt->z);
+		dist=sqrt((dx*dx)+(dy*dy)+(dz*dz));
+		if (dist>d_intensity) continue;
+
+			// is it visible?
+			
+		if (light_map_ray_trace_map(mesh_idx,poly_idx,rpt,&prt->pnt,prt->light_setting.direction)) continue;
+		
+			// get color
+			
+		d=1.0-(dist/d_intensity);
+		d+=pow(d,(double)prt->light_setting.exponent);
+		f=(float)d;
+
+		add_col.r=prt->light_setting.col.r*f;
+		add_col.g=prt->light_setting.col.g*f;
+		add_col.b=prt->light_setting.col.b*f;
+
+			// handle normals
+
+		if (map.light_map.use_normals) light_map_ray_trace_diffuse(mesh_idx,poly_idx,rpt,&prt->pnt,&add_col);
+
+			// add in the color
+
+		col.r+=add_col.r;
+		col.g+=add_col.g;
+		col.b+=add_col.b;
+	}
+	
+		// finish calculating the light
 	
 	if (col.r>1.0f) col.r=1.0f;
 	if (col.g>1.0f) col.g=1.0f;
@@ -1900,7 +1944,14 @@ bool light_maps_create(void)
 	ok=FALSE;
 	
 	for (n=0;n!=map.nlight;n++) {
-		if (map.lights[n].light_map) {
+		if (map.lights[n].setting.light_map) {
+			ok=TRUE;
+			break;
+		}
+	}
+	
+	for (n=0;n!=map.nparticle;n++) {
+		if (map.particles[n].light_setting.light_map) {
 			ok=TRUE;
 			break;
 		}

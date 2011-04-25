@@ -161,7 +161,7 @@ void effect_dispose(void)
 
 			// is this a chained particle?
 
-		if (effect->type==ef_particle) {
+		if (effect->effecttype==ef_particle) {
 			if (particle_chain(effect)) continue;
 		}
 

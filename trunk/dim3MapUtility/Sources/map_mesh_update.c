@@ -131,7 +131,6 @@ int map_mesh_combine(map_type *map,int mesh_1_idx,int mesh_2_idx)
 		
 	mesh->group_idx=mesh_1->group_idx;
 	mesh->hide_mode=mesh_1->hide_mode;
-	mesh->normal_mode=mesh_1->normal_mode;
 	mesh->harm=mesh_1->harm;
 
 	memmove(&mesh->rot_off,&mesh_1->rot_off,sizeof(d3pnt));

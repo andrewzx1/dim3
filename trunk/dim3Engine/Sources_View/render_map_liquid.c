@@ -95,12 +95,13 @@ void liquid_render_liquid_create_vertex(map_liquid_type *liq,int v_sz)
 	int				tick,x,y,z,k,x_add,z_add,x_sz,z_sz,
 					v_cnt,vbo_cnt,tide_split,tide_split_half,
 					tide_high,tide_rate;
-	float			fy,fgx,fgy,x_txtoff,y_txtoff,
-					x_2_txtoff,y_2_txtoff,
+	float			fy,fgx,fgy,gx,gy,x_txtoff,y_txtoff,
+					x_2_txtoff,y_2_txtoff,f_ang,f_ky,
 					f_break,f_time,f_tick,sn,
 					f_tide_split_half,f_tide_high;
 	bool			shader_on,x_break,z_break;
 	float			*vertex_ptr,*vl,*uv,*uv2,*ct,*cn,*cl;
+	matrix_type		mat_1,mat_2;
 	
 	y=liq->y;
 	fy=(float)y;
@@ -166,6 +167,15 @@ void liquid_render_liquid_create_vertex(map_liquid_type *liq,int v_sz)
 	
 	x_2_txtoff=liq->lmap_uv.x_offset;
 	y_2_txtoff=liq->lmap_uv.y_offset;
+	
+		// liquid texture UV rotates
+		
+	k=(tick>>2)%2000;
+	if (k>=1000) k=2000-k;
+
+	f_ang=5.0f*(((float)k)*0.001f);
+	matrix_rotate_y(&mat_1,f_ang);
+	matrix_rotate_y(&mat_2,-f_ang);
 
 		// create vertexes from tide splits
 
@@ -210,18 +220,53 @@ void liquid_render_liquid_create_vertex(map_liquid_type *liq,int v_sz)
 		   
 			sn=(float)sin((TRIG_PI*2.0f)*(f_break+f_time));
 
-				// vertex and uvs
+				// vertexes
 
 			*vl++=(float)x;
 			*vl++=fy-(f_tide_high*sn);
 			*vl++=(float)z;
+			
+				// uvs
+				// supergumba -- work on reflection first, then fix this up
+				
+			gx=x_txtoff+((liq->main_uv.x_size*(float)(x-liq->lft))/fgx);
+			gy=y_txtoff+((liq->main_uv.y_size*(float)(z-liq->top))/fgy);
+			
+			f_ky=0;
 
+			if (((x+z)&0x1)==0) {
+			//	matrix_vertex_multiply(&mat_1,&gx,&f_ky,&gy);
+			}
+			else {
+			//	matrix_vertex_multiply(&mat_2,&gx,&f_ky,&gy);
+			}
+
+			*uv++=gx;
+			*uv++=gy;
+
+			gx=x_2_txtoff+((liq->lmap_uv.x_size*(float)(x-liq->lft))/fgx);
+			gy=y_2_txtoff+((liq->lmap_uv.y_size*(float)(z-liq->top))/fgy);
+			
+			f_ky=0;
+			if (((x+z)&0x1)==0) {
+			//	matrix_vertex_multiply(&mat_1,&gx,&f_ky,&gy);
+			}
+			else {
+			//	matrix_vertex_multiply(&mat_2,&gx,&f_ky,&gy);
+			}
+			
+			*uv2++=gx;
+			*uv2++=gy;
+
+
+
+/* supergumba
 			*uv++=x_txtoff+((liq->main_uv.x_size*(float)(x-liq->lft))/fgx);
 			*uv++=y_txtoff+((liq->main_uv.y_size*(float)(z-liq->top))/fgy);
 
 			*uv2++=x_2_txtoff+((liq->lmap_uv.x_size*(float)(x-liq->lft))/fgx);
 			*uv2++=y_2_txtoff+((liq->lmap_uv.y_size*(float)(z-liq->top))/fgy);
-			
+	*/		
 				// tangent space
 				
 			if (shader_on) {

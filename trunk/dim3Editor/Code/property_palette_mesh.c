@@ -47,13 +47,13 @@ and can be sold or given away.
 #define kMeshPropertyRotIndependent				11
 #define kMeshPropertyNoLightMap					12
 #define kMeshPropertySkipLightMapTrace			13
+#define kMeshPropertyNoHaloObscure				14
 
 #define kMeshPropertyGroup						20
 
 #define kMeshPropertyHideMode					30
-#define kMeshPropertyNormalMode					31
-#define kMeshPropertyHarm						32
-#define kMeshPropertyRot						33
+#define kMeshPropertyHarm						31
+#define kMeshPropertyRot						32
 
 #define kMeshPropertyImportOBJName				40
 #define kMeshPropertyImportGroupName			41
@@ -88,7 +88,6 @@ extern editor_setup_type		setup;
 extern list_palette_type		property_palette;
 
 char							mesh_property_hide_list[][name_str_len]={"Never","Single Player","Multiplayer",""},
-								mesh_property_normal_list[][name_str_len]={"Auto","In","Out","In & Out","Edge","Locked",""},
 								mesh_property_team_list[][name_str_len]={"None","Red","Blue",""};
 
 /* =======================================================
@@ -124,10 +123,10 @@ void property_palette_fill_mesh(int mesh_idx,int poly_idx)
 	list_palette_add_checkbox(&property_palette,kMeshPropertyRotIndependent,"Rotate Independently",mesh->flag.rot_independent,FALSE);
 	list_palette_add_checkbox(&property_palette,kMeshPropertyNoLightMap,"No Light Map",mesh->flag.no_light_map,FALSE);
 	list_palette_add_checkbox(&property_palette,kMeshPropertySkipLightMapTrace,"Skip Light Map Trace",mesh->flag.skip_light_map_trace,FALSE);
+	list_palette_add_checkbox(&property_palette,kMeshPropertyNoHaloObscure,"No Halo Obscure",mesh->flag.no_halo_obscure,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Mesh Options");
 	list_palette_add_string(&property_palette,kMeshPropertyHideMode,"Hide",mesh_property_hide_list[mesh->hide_mode],FALSE);
-	list_palette_add_string(&property_palette,kMeshPropertyNormalMode,"Normals",mesh_property_normal_list[mesh->normal_mode],FALSE);
 	list_palette_add_string_int(&property_palette,kMeshPropertyHarm,"Harm",mesh->harm,FALSE);
 	list_palette_add_point(&property_palette,kMeshPropertyRot,"Rotational Center",&mesh->rot_off,FALSE);
 
@@ -274,14 +273,14 @@ void property_palette_click_mesh(int mesh_idx,int poly_idx,int id)
 			mesh->flag.skip_light_map_trace=!mesh->flag.skip_light_map_trace;
 			break;
 
+		case kMeshPropertyNoHaloObscure:
+			mesh->flag.no_halo_obscure=!mesh->flag.no_halo_obscure;
+			break;
+
 		case kMeshPropertyHideMode:
 			property_pick_list("Pick a Hide Mode",(char*)mesh_property_hide_list,&mesh->hide_mode);
 			break;
 
-		case kMeshPropertyNormalMode:
-			property_pick_list("Pick a Normal Mode",(char*)mesh_property_normal_list,&mesh->normal_mode);
-			break;
-			
 		case kMeshPropertyHarm:
 			dialog_property_string_run(list_string_value_int,(void*)&mesh->harm,0,0,0);
 			break;
