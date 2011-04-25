@@ -406,7 +406,11 @@ bool menu_event_run(int cmd)
 				main_wind_draw();
 			}
 			return(TRUE);
-			
+
+		case kCommandBuildLiquidReflectionMaps:
+			liquid_reflection_maps_create();
+			return(TRUE);
+
 		case kCommandRun:
 			launch_engine();
 			return(TRUE);

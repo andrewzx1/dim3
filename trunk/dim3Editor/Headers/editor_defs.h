@@ -311,6 +311,7 @@ and can be sold or given away.
 #define kCommandMapCreateNormals				FOUR_CHAR_CODE('rmnm')
 #define kCommandClearLightMaps					FOUR_CHAR_CODE('clmp')
 #define kCommandBuildLightMaps					FOUR_CHAR_CODE('lmap')
+#define kCommandBuildLiquidReflectionMaps		FOUR_CHAR_CODE('lrmp')
 #define kCommandRun								FOUR_CHAR_CODE('mrun')
 
 #define kCommandMeshCombine						FOUR_CHAR_CODE('pcmb')

@@ -48,7 +48,8 @@
 #define ID_MAP_RECALC_NORMAL				408
 #define ID_MAP_CLEAR_LIGHT_MAP				409
 #define ID_MAP_BUILD_LIGHT_MAP				410
-#define ID_MAP_RUN							411
+#define ID_MAP_BUILD_LIQUID_REFLECTION_MAP	411
+#define ID_MAP_RUN							412
 
 #define ID_MESH_COMBINE						500
 #define ID_MESH_SPLIT						501

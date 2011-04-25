@@ -899,7 +899,7 @@ void light_map_texture_fill_solid_color(unsigned char *col,int bx,int by,light_m
 
 /* =======================================================
 
-      Find Ray Trace Hit on 
+      Find Ray Trace Hit Pixel 
       
 ======================================================= */
 
@@ -1867,7 +1867,7 @@ bool light_maps_create_process(char *err_str)
 		// clear the textures and
 		// start mesh-poly and/or liquid setup
 		
-	progress_next_title("Light Map: Building Maps");
+	progress_next_title("Light Map: Setup");
 		
 	if (!light_map_textures_start(err_str)) return(FALSE);
 	

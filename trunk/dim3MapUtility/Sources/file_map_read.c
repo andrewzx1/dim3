@@ -730,6 +730,7 @@ void read_single_liquid_v3(map_type *map,int liquid_idx,int liquid_tag)
 	liq->flag.never_cull=xml_get_attribute_boolean(liquid_tag,"never_cull");
 	liq->flag.no_draw=xml_get_attribute_boolean(liquid_tag,"no_draw");
 	liq->flag.no_reflection_map=xml_get_attribute_boolean(liquid_tag,"no_reflection_map");
+	liq->flag.lock_uv=xml_get_attribute_boolean(liquid_tag,"lock_uv");
 
 		// polygon
 
@@ -780,7 +781,7 @@ void read_single_liquid_v3(map_type *map,int liquid_idx,int liquid_tag)
 		liq->tide.rate=xml_get_attribute_int(tag,"rate");
 		liq->tide.high=xml_get_attribute_int(tag,"high");
 		liq->tide.direction=xml_get_attribute_list(tag,"tide_direction",(char*)liquid_tide_direction_str);
-		liq->tide.twist_angle=xml_get_attribute_int(tag,"twist_angle");
+		liq->tide.twist_angle=xml_get_attribute_float(tag,"twist_angle");
         liq->tide.flat=xml_get_attribute_boolean(tag,"flat");
 	}
 }
@@ -816,7 +817,6 @@ bool decode_map_xml(map_type *map,int map_head)
 							main_light_tag,light_tag,main_sound_tag,sound_tag,
 							main_particle_tag,particle_tag,main_node_tag,node_tag,
 							main_obj_tag,obj_tag,tag,cnt;
-	char					str[32];
     map_light_type			*light;
     map_sound_type			*sound;
 	map_particle_type		*particle;

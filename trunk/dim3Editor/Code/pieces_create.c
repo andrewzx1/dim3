@@ -447,6 +447,7 @@ void piece_create_liquid(void)
 	liq->lmap_txt_idx=-1;
 	liq->group_idx=-1;
 
+	liq->flag.lock_uv=FALSE;
 	liq->flag.never_obscure=FALSE;
 	liq->flag.never_cull=FALSE;
 	liq->flag.no_draw=FALSE;
