@@ -179,21 +179,17 @@ void halo_draw_setup(void)
 
 		hit=ray_trace_map_by_point(&spt,&ept,&hpt,&contact);
 
-			// check hit, if within min distance, then
-			// ignore this as a hit (it's probably something
-			// touching the halo) or ignore hitting the projecting
+			// check hit and ignore hitting the projecting
 			// player
 
 		if (hit) {
-			if (distance_get(spt.x,spt.y,spt.z,hpt.x,hpt.y,hpt.z)>halo->min_dist) {
-				if ((contact.poly.mesh_idx!=-1) || (camera.setup.mode!=cv_fpp)) {
-					halo_draw->in_view=FALSE;
-					continue;
-				}
-				if (contact.obj.idx!=server.player_obj_idx) {
-					halo_draw->in_view=FALSE;
-					continue;
-				}
+			if ((contact.poly.mesh_idx!=-1) || (camera.setup.mode!=cv_fpp)) {
+				halo_draw->in_view=FALSE;
+				continue;
+			}
+			if (contact.obj.idx!=server.player_obj_idx) {
+				halo_draw->in_view=FALSE;
+				continue;
 			}
 		}
 

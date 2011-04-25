@@ -438,9 +438,9 @@ void view_add_liquid_draw_list(int start_mesh_idx)
 			// no draw liquids are volume only, so skip
 			// any drawing
 			
-		if (liq->no_draw) continue;
+		if (liq->flag.no_draw) continue;
 		
-		if (!liq->never_obscure) {
+		if (!liq->flag.never_obscure) {
 		
 				// skip liquids with away facing normals
 				// do dot product between normal and vector
@@ -448,7 +448,7 @@ void view_add_liquid_draw_list(int start_mesh_idx)
 				// liquid normal is always facing up (0,-1,0)
 				// so this calculation is realitively easy
 				
-			if ((!liq->never_cull) && (!map.optimize.never_cull)) {
+			if ((!liq->flag.never_cull) && (!map.optimize.never_cull)) {
 				mx=(liq->lft+liq->rgt)>>1;
 				mz=(liq->top+liq->bot)>>1;
 				
@@ -773,6 +773,7 @@ void view_add_halos(void)
 	obj_type			*obj;
 	proj_type			*proj;
 	map_light_type		*lit;
+	map_particle_type	*prt;
 
 		// halos from objects and their weapons
 		
@@ -798,8 +799,17 @@ void view_add_halos(void)
 	lit=map.lights;
 
 	for (n=0;n!=map.nlight;n++) {
-		halo_draw_add(&lit->pnt,-1,lit->halo_idx);
+		halo_draw_add(&lit->pnt,-1,lit->setting.halo_idx);
 		lit++;
+	}
+	
+		// halos from map particles
+
+	prt=map.particles;
+
+	for (n=0;n!=map.nparticle;n++) {
+		halo_draw_add(&prt->pnt,-1,prt->light_setting.halo_idx);
+		prt++;
 	}
 }
 

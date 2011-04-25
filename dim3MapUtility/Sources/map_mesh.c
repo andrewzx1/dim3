@@ -83,7 +83,6 @@ int map_mesh_add(map_type *map)
 	mesh->flag.skip_light_map_trace=FALSE;
 	
 	mesh->hide_mode=mesh_hide_mode_never;
-	mesh->normal_mode=mesh_normal_mode_auto;
 	mesh->harm=0;
 	
 	mesh->rot_off.x=mesh->rot_off.y=mesh->rot_off.z=0;
@@ -263,7 +262,6 @@ int map_mesh_duplicate(map_type *map,int mesh_idx)
 		
 	new_mesh->group_idx=mesh->group_idx;
 	new_mesh->hide_mode=mesh->hide_mode;
-	new_mesh->normal_mode=mesh->normal_mode;
 	new_mesh->harm=mesh->harm;
 
 	memmove(&new_mesh->rot_off,&mesh->rot_off,sizeof(d3pnt));

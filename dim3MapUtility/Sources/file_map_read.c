@@ -593,9 +593,9 @@ bool read_single_mesh_v3(map_type *map,int mesh_idx,int mesh_tag)
 	mesh->flag.shadow=xml_get_attribute_boolean(mesh_tag,"shadow");
 	mesh->flag.no_light_map=xml_get_attribute_boolean(mesh_tag,"no_light_map");
 	mesh->flag.skip_light_map_trace=xml_get_attribute_boolean(mesh_tag,"skip_light_map_trace");
+	mesh->flag.no_halo_obscure=xml_get_attribute_boolean(mesh_tag,"no_halo_obscure");
 	
 	mesh->hide_mode=xml_get_attribute_list(mesh_tag,"hide",(char*)mesh_hide_mode_str);
-	mesh->normal_mode=xml_get_attribute_list(mesh_tag,"normal",(char*)mesh_normal_mode_str);
 	
 	mesh->harm=xml_get_attribute_int_default(mesh_tag,"harm",0);
 
@@ -726,9 +726,10 @@ void read_single_liquid_v3(map_type *map,int liquid_idx,int liquid_tag)
 		// liquid settings
 
 	liq->group_idx=xml_get_attribute_int_default(liquid_tag,"group",-1);
-	liq->never_obscure=xml_get_attribute_boolean(liquid_tag,"never_obscure");
-	liq->never_cull=xml_get_attribute_boolean(liquid_tag,"never_cull");
-	liq->no_draw=xml_get_attribute_boolean(liquid_tag,"no_draw");
+	liq->flag.never_obscure=xml_get_attribute_boolean(liquid_tag,"never_obscure");
+	liq->flag.never_cull=xml_get_attribute_boolean(liquid_tag,"never_cull");
+	liq->flag.no_draw=xml_get_attribute_boolean(liquid_tag,"no_draw");
+	liq->flag.no_reflection_map=xml_get_attribute_boolean(liquid_tag,"no_reflection_map");
 
 		// polygon
 
@@ -779,8 +780,27 @@ void read_single_liquid_v3(map_type *map,int liquid_idx,int liquid_tag)
 		liq->tide.rate=xml_get_attribute_int(tag,"rate");
 		liq->tide.high=xml_get_attribute_int(tag,"high");
 		liq->tide.direction=xml_get_attribute_list(tag,"tide_direction",(char*)liquid_tide_direction_str);
+		liq->tide.twist_angle=xml_get_attribute_int(tag,"twist_angle");
         liq->tide.flat=xml_get_attribute_boolean(tag,"flat");
 	}
+}
+
+/* =======================================================
+
+      Read Map Light Settings
+      
+======================================================= */
+
+void read_single_light_setting(int light_tag,map_light_setting_type *lit_set)
+{
+	lit_set->type=xml_get_attribute_list(light_tag,"type",(char*)light_type_str);
+	lit_set->light_map=xml_get_attribute_boolean(light_tag,"light_map");
+	lit_set->direction=xml_get_attribute_list(light_tag,"direction",(char*)light_direction_str);
+	lit_set->intensity=xml_get_attribute_int(light_tag,"intensity");
+	lit_set->exponent=xml_get_attribute_float_default(light_tag,"exponent",1.0f);
+	xml_get_attribute_color(light_tag,"rgb",&lit_set->col);
+	xml_get_attribute_text(light_tag,"halo",lit_set->halo_name,name_str_len);
+	lit_set->on=!xml_get_attribute_boolean(light_tag,"off");
 }
 
 /* =======================================================
@@ -910,25 +930,9 @@ bool decode_map_xml(map_type *map,int map_head)
 			map->nlight++;
 
 			xml_get_attribute_text(light_tag,"name",light->name,name_str_len);
-
-			light->type=xml_get_attribute_list(light_tag,"type",(char*)light_type_str);
-			light->light_map=xml_get_attribute_boolean(light_tag,"light_map");
-
-			if (xml_get_attribute_text(light_tag,"filter",str,32)) {
-				if (strcasecmp(str,"not_mesh")==0) light->light_map=TRUE;		// supergumba -- temporary as we change over attributes here
-			}
-
-			light->direction=xml_get_attribute_list(light_tag,"direction",(char*)light_direction_str);
 			xml_get_attribute_3_coord_int(light_tag,"c3",&light->pnt.x,&light->pnt.y,&light->pnt.z);
-			light->intensity=xml_get_attribute_int(light_tag,"intensity");
-			light->exponent=xml_get_attribute_float_default(light_tag,"exponent",1.0f);
-			xml_get_attribute_color(light_tag,"rgb",&light->col);
-
-			xml_get_attribute_text(light_tag,"halo",light->halo_name,name_str_len);
-
-			light->on=!xml_get_attribute_boolean(light_tag,"off");
 			
-			if (light->intensity<0) light->intensity=1;
+			read_single_light_setting(light_tag,&light->setting);
 		
 			light_tag=xml_findnextchild(light_tag);
 		}
@@ -977,6 +981,11 @@ bool decode_map_xml(map_type *map,int map_head)
 			particle->slop_tick=xml_get_attribute_int(particle_tag,"slop_tick");
 			particle->single_spawn=xml_get_attribute_boolean(particle_tag,"single_spawn");
 			particle->on=!xml_get_attribute_boolean(particle_tag,"off");
+			
+			particle->light_setting.on=FALSE;
+			
+			light_tag=xml_findfirstchild("Light",particle_tag);
+			if (light_tag!=-1) read_single_light_setting(light_tag,&particle->light_setting);
 			
 			particle_tag=xml_findnextchild(particle_tag);
 		}

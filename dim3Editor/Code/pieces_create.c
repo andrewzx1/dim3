@@ -203,6 +203,18 @@ void piece_create_scenery(void)
       
 ======================================================= */
 
+void piece_create_light_setting(map_light_setting_type *lit_set,bool on)
+{
+	lit_set->type=lt_normal;
+	lit_set->direction=ld_all;
+	lit_set->intensity=10000;
+	lit_set->exponent=1.0f;
+	lit_set->on=on;
+	lit_set->light_map=TRUE;
+	lit_set->halo_name[0]=0x0;
+	lit_set->col.r=lit_set->col.g=lit_set->col.b=1;
+}
+
 void piece_create_light(void)
 {
 	int					index;
@@ -223,14 +235,7 @@ void piece_create_light(void)
 	piece_create_get_spot(&lit->pnt);
 	
 	lit->name[0]=0x0;
-
-	lit->type=lt_normal;
-	lit->col.r=lit->col.g=lit->col.b=1;
-	lit->direction=ld_all;
-	lit->intensity=10000;
-	lit->exponent=1.0f;
-	lit->on=TRUE;
-	lit->light_map=TRUE;
+	piece_create_light_setting(&lit->setting,TRUE);
 	
 		// select light
 		
@@ -247,7 +252,7 @@ void piece_create_light(void)
 
 		// pick color
 
-	os_pick_color(&lit->col);
+	os_pick_color(&lit->setting.col);
 }
 
 /* =======================================================
@@ -335,6 +340,8 @@ void piece_create_particle(void)
 	prt->spawn_tick=5000;
 	prt->slop_tick=0;
 	prt->single_spawn=FALSE;
+	
+	piece_create_light_setting(&prt->light_setting,FALSE);
 	
 		// select particle
 		
@@ -439,7 +446,11 @@ void piece_create_liquid(void)
 	liq->txt_idx=0;
 	liq->lmap_txt_idx=-1;
 	liq->group_idx=-1;
-	liq->never_obscure=FALSE;
+
+	liq->flag.never_obscure=FALSE;
+	liq->flag.never_cull=FALSE;
+	liq->flag.no_draw=FALSE;
+	liq->flag.no_reflection_map=FALSE;
 	
 	liq->tint_alpha=0.5f;
 	liq->speed_alter=1.0f;
@@ -454,6 +465,7 @@ void piece_create_liquid(void)
 	liq->tide.high=100;
 	liq->tide.division=liquid_min_division;
 	liq->tide.direction=liquid_direction_horizontal;
+	liq->tide.twist_angle=0.0f;
 	liq->tide.flat=FALSE;
 	
 	liq->harm.in_harm=0;

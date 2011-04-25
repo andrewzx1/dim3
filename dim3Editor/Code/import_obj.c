@@ -558,11 +558,9 @@ bool import_create_mesh_from_obj_group(obj_import_state_type *import_state,char 
 	strcpy(mesh->import.obj_name,import_state->obj_name);
 	strcpy(mesh->import.group_name,group->name);
 		
-		// set UV and Normal locks if uvs and normals
-		// exist in obj
+		// set UV lock if uvs exist in obj
 		
 	mesh->flag.lock_uv=(import_state->nuv!=0);
-	mesh->normal_mode=mesh_normal_mode_auto;
 	
 		// get the current material before
 		// this group starts
@@ -690,7 +688,7 @@ bool import_create_mesh_from_obj_group(obj_import_state_type *import_state,char 
 		// calc the normals
 		// or only tangent if normals come with OBJ
 		
-	map_recalc_normals_mesh(&map.mesh.meshes[mesh_idx],(import_state->nnormal!=0));
+	map_recalc_normals_mesh(&map.mesh.meshes[mesh_idx],normal_mode_none,(import_state->nnormal!=0));
 	
 	return(TRUE);
 }

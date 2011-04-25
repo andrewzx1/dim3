@@ -557,9 +557,9 @@ void write_single_mesh(map_mesh_type *mesh)
 	xml_add_attribute_boolean("shadow",mesh->flag.shadow);
 	xml_add_attribute_boolean("no_light_map",mesh->flag.no_light_map);
 	xml_add_attribute_boolean("skip_light_map_trace",mesh->flag.skip_light_map_trace);
+	xml_add_attribute_boolean("no_halo_obscure",mesh->flag.no_halo_obscure);
 
 	if (mesh->hide_mode!=mesh_hide_mode_never) xml_add_attribute_list("hide",(char*)mesh_hide_mode_str,mesh->hide_mode);
-	if (mesh->normal_mode!=mesh_normal_mode_auto) xml_add_attribute_list("normal",(char*)mesh_normal_mode_str,mesh->normal_mode);
 	
   	if (mesh->harm!=0) xml_add_attribute_int("harm",mesh->harm);
 	
@@ -670,9 +670,10 @@ void write_single_liquid(map_liquid_type *liq)
 
     xml_add_tagstart("Liquid");
   	if (liq->group_idx!=-1) xml_add_attribute_int("group",liq->group_idx);
-	xml_add_attribute_boolean("never_obscure",liq->never_obscure);
-	xml_add_attribute_boolean("never_cull",liq->never_cull);
-	xml_add_attribute_boolean("no_draw",liq->no_draw);
+	xml_add_attribute_boolean("never_obscure",liq->flag.never_obscure);
+	xml_add_attribute_boolean("never_cull",liq->flag.never_cull);
+	xml_add_attribute_boolean("no_draw",liq->flag.no_draw);
+	xml_add_attribute_boolean("no_reflection_map",liq->flag.no_reflection_map);
 	xml_add_tagend(FALSE);
 
 		// polygon
@@ -720,10 +721,29 @@ void write_single_liquid(map_liquid_type *liq)
 	xml_add_attribute_int("high",liq->tide.high);
 	xml_add_attribute_int("division",liq->tide.division);
 	xml_add_attribute_list("tide_direction",(char*)liquid_tide_direction_str,liq->tide.direction);
+	xml_add_attribute_int("twist_angle",liq->tide.twist_angle);
 	xml_add_attribute_boolean("flat",liq->tide.flat);
 	xml_add_tagend(TRUE);
 
 	xml_add_tagclose("Liquid");
+}
+
+/* =======================================================
+
+      Write Map Light Settings
+      
+======================================================= */
+
+void write_single_light_setting(map_light_setting_type *lit_set)
+{
+	xml_add_attribute_list("type",(char*)light_type_str,lit_set->type);
+	xml_add_attribute_boolean("light_map",lit_set->light_map);
+	xml_add_attribute_list("direction",(char*)light_direction_str,lit_set->direction);
+	xml_add_attribute_int("intensity",lit_set->intensity);
+	xml_add_attribute_float("exponent",lit_set->exponent);
+	xml_add_attribute_color("rgb",&lit_set->col);
+	xml_add_attribute_text("halo",lit_set->halo_name);
+	xml_add_attribute_boolean("off",!lit_set->on);
 }
 
 /* =======================================================
@@ -834,15 +854,9 @@ bool write_map_xml(map_type *map)
 
 		xml_add_tagstart("Light");
 		xml_add_attribute_text("name",light->name);
-		xml_add_attribute_list("type",(char*)light_type_str,light->type);
-		xml_add_attribute_boolean("light_map",light->light_map);
-		xml_add_attribute_list("direction",(char*)light_direction_str,light->direction);
 		xml_add_attribute_3_coord_int("c3",light->pnt.x,light->pnt.y,light->pnt.z);
-		xml_add_attribute_int("intensity",light->intensity);
-		xml_add_attribute_float("exponent",light->exponent);
-		xml_add_attribute_color("rgb",&light->col);
-		xml_add_attribute_text("halo",light->halo_name);
-		xml_add_attribute_boolean("off",!light->on);
+		
+		write_single_light_setting(&light->setting);
 		xml_add_tagend(TRUE);
 	}
 	
@@ -881,7 +895,13 @@ bool write_map_xml(map_type *map)
 		xml_add_attribute_int("slop_tick",particle->slop_tick);
 		xml_add_attribute_boolean("single_spawn",particle->single_spawn);
 		xml_add_attribute_boolean("off",!particle->on);
+		xml_add_tagend(FALSE);
+		
+		xml_add_tagstart("Light");
+		write_single_light_setting(&particle->light_setting);
 		xml_add_tagend(TRUE);
+		
+		xml_add_tagclose("Particle");
 	}
 	
 	xml_add_tagclose("Particles");

@@ -991,7 +991,7 @@ void piece_mesh_recalc_normals(void)
 	
 	for (n=0;n!=sel_count;n++) {
 		select_get(n,&type,&mesh_idx,&poly_idx);
-		if (type==mesh_piece) map_recalc_normals_mesh(&map.mesh.meshes[mesh_idx],FALSE);
+		if (type==mesh_piece) map_recalc_normals_mesh(&map.mesh.meshes[mesh_idx],normal_mode_none,FALSE);
 	}
 	
 	main_wind_draw();
@@ -1034,7 +1034,7 @@ void piece_mesh_invert_normals(bool poly_only)
 
 void piece_mesh_set_normals_in_out(bool out)
 {
-	int					n,sel_count,
+	int					n,sel_count,normal_mode,
 						type,mesh_idx,poly_idx;
 	map_mesh_type		*mesh;
 
@@ -1048,8 +1048,8 @@ void piece_mesh_set_normals_in_out(bool out)
 			
 		mesh=&map.mesh.meshes[mesh_idx];
 
-		mesh->normal_mode=out?mesh_normal_mode_out:mesh_normal_mode_in;
-		map_recalc_normals_mesh(&map.mesh.meshes[mesh_idx],FALSE);
+		normal_mode=out?normal_mode_out:normal_mode_in;
+		map_recalc_normals_mesh(&map.mesh.meshes[mesh_idx],normal_mode,FALSE);
 	}
 }
 

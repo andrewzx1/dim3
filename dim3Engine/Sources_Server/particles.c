@@ -411,8 +411,6 @@ bool particle_line_spawn(int particle_idx,int obj_idx,d3pnt *start_pt,d3pnt *end
 
 bool particle_chain(effect_type *effect)
 {
-	int						effect_idx;
-	obj_type				*obj;
 	particle_effect_data	*eff_particle;
 	iface_particle_type		*particle;
 	

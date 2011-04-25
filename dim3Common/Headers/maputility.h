@@ -93,16 +93,6 @@ extern char light_type_str[][32];
 #define proj_bounce_min_speed								10.0f			// minimum speed before bounces cancel
 
 //
-// per mesh normal creation
-//
-
-#define mesh_normal_mode_auto								0
-#define mesh_normal_mode_in									1
-#define mesh_normal_mode_out								2
-#define mesh_normal_mode_in_out								3
-#define mesh_normal_mode_edge								4
-
-//
 // lights
 //
 
@@ -285,6 +275,7 @@ typedef struct		{
 															lock_uv,lock_move,never_obscure,
 															never_cull,rot_independent,shadow,
 															no_light_map,skip_light_map_trace,
+															no_halo_obscure,
 															shiftable,touched,poly_has_camera;
 					} map_mesh_flag_type;
 
@@ -308,7 +299,7 @@ typedef struct		{
 
 typedef struct		{
 						int									nvertex,npoly,group_idx,
-															hide_mode,normal_mode,harm;
+															hide_mode,harm;
 						float								*colors_cache;
 						d3pnt								rot_off;
 						d3pnt								*vertexes;
@@ -337,8 +328,14 @@ typedef struct		{
 
 typedef struct		{
 						int									rate,high,direction,division;
+						float								twist_angle;
 						bool								flat;
 					} map_liquid_tide_type;
+					
+typedef struct		{
+						bool								never_obscure,never_cull,no_draw,
+															no_reflection_map;
+					} map_liquid_flag_type;
 
 typedef struct		{
 						int									v_cnt,x_sz,z_sz;
@@ -354,12 +351,12 @@ typedef struct		{
 															txt_idx,lmap_txt_idx;
 						float								speed_alter,tint_alpha,
 															x_shift,y_shift;
-						bool								never_obscure,never_cull,no_draw;
 						char								camera[name_str_len];
 						d3col								col;
 						map_liquid_uv_type					main_uv,lmap_uv;
 						map_liquid_harm_type				harm;
 						map_liquid_tide_type				tide;
+						map_liquid_flag_type				flag;
 						map_liquid_ambient_type				ambient;
 						map_liquid_draw_type				draw;
 						map_light_cache_type				light_cache;
@@ -413,9 +410,14 @@ typedef struct		{
 															halo_idx;
 						float								exponent;
 						bool								on,light_map;
-						char								name[name_str_len],halo_name[name_str_len];
-						d3pnt								pnt;
+						char								halo_name[name_str_len];
 						d3col								col;
+					} map_light_setting_type;
+
+typedef struct		{
+						char								name[name_str_len];
+						d3pnt								pnt;
+						map_light_setting_type				setting;
 					} map_light_type;
 					
 typedef struct		{
@@ -432,6 +434,7 @@ typedef struct		{
 						char								name[name_str_len];
 						bool								on,single_spawn,first_spawn;
 						d3pnt								pnt;
+						map_light_setting_type				light_setting;
 					} map_particle_type;
                     
 //
@@ -853,7 +856,7 @@ extern bool map_delete_texture_frame(map_type *map,int txt);
 extern bool map_replace_texture(map_type *map,int txt,char *bitmap_name);
 extern bool map_delete_texture(map_type *map,int start_txt,int end_txt);
 
-extern void map_recalc_normals_mesh(map_mesh_type *mesh,bool only_tangent);
+extern void map_recalc_normals_mesh(map_mesh_type *mesh,int normal_mode,bool only_tangent);
 extern void map_recalc_normals(map_type *map,bool only_tangent);
 
 extern int map_cinema_add(map_type *map);

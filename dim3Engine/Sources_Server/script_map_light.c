@@ -76,7 +76,7 @@ JSValueRef js_map_light_toggle_func(JSContextRef cx,JSObjectRef func,JSObjectRef
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 	
 	map_light=script_find_light_from_name(cx,argv[0],exception);
-	if (map_light!=NULL) map_light->on=script_value_to_bool(cx,argv[1]);
+	if (map_light!=NULL) map_light->setting.on=script_value_to_bool(cx,argv[1]);
 	
 	return(script_null_to_value(cx));
 }

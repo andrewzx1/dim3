@@ -906,7 +906,7 @@ void view_draw_lights_sounds_particles(editor_view_type *view_setup)
 	
 	for (n=0;n!=map.nlight;n++) {
 		view_draw_sprite(&map.lights[n].pnt,NULL,light_bitmap.gl_id);
-		if (select_check(light_piece,n,-1)) view_draw_circle(&map.lights[n].pnt,&map.lights[n].col,map.lights[n].intensity);
+		if (select_check(light_piece,n,-1)) view_draw_circle(&map.lights[n].pnt,&map.lights[n].setting.col,map.lights[n].setting.intensity);
 	}
 	
 	for (n=0;n!=map.nsound;n++) {
