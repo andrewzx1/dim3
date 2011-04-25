@@ -34,27 +34,28 @@ and can be sold or given away.
 #include "interface.h"
 
 #define kLiquidPropertyWaveFlat				0
-#define kLiquidPropertyNeverObscure			1
-#define kLiquidPropertyNeverCull			2
-#define kLiquidPropertyNoReflectionMap		3
-#define kLiquidPropertyNoDraw				4
+#define kLiquidPropertyLockUV				1
+#define kLiquidPropertyNeverObscure			2
+#define kLiquidPropertyNeverCull			3
+#define kLiquidPropertyNoReflectionMap		4
+#define kLiquidPropertyNoDraw				5
 
-#define kLiquidPropertyColor				5
-#define kLiquidPropertyTintAlpha			6
-#define kLiquidPropertySpeedAlter			7
-#define kLiquidPropertySoundName			8
+#define kLiquidPropertyColor				6
+#define kLiquidPropertyTintAlpha			7
+#define kLiquidPropertySpeedAlter			8
+#define kLiquidPropertySoundName			9
 
-#define kLiquidPropertyWaveSize				9
-#define kLiquidPropertyTideSize				10
-#define kLiquidPropertyTideRate				11
-#define kLiquidPropertyTideDirection		12
-#define kLiquidPropertyTideTwistAngle		13
+#define kLiquidPropertyWaveSize				10
+#define kLiquidPropertyTideSize				11
+#define kLiquidPropertyTideRate				12
+#define kLiquidPropertyTideDirection		13
+#define kLiquidPropertyTideTwistAngle		14
 
-#define kLiquidPropertyHarm					14
-#define kLiquidPropertyDrownTick			15
-#define kLiquidPropertyDrownHarm			16
+#define kLiquidPropertyHarm					15
+#define kLiquidPropertyDrownTick			16
+#define kLiquidPropertyDrownHarm			17
 
-#define kLiquidPropertyGroup				17
+#define kLiquidPropertyGroup				18
 
 #define kLiquidPropertyOff					20
 #define kLiquidPropertySize					21
@@ -88,6 +89,7 @@ void property_palette_fill_liquid(int liq_idx)
 
 	list_palette_add_header(&property_palette,0,"Liquid Settings");
 	list_palette_add_checkbox(&property_palette,kLiquidPropertyWaveFlat,"Draw as Flat Surface",liq->tide.flat,FALSE);
+	list_palette_add_checkbox(&property_palette,kLiquidPropertyLockUV,"Lock UV",liq->flag.lock_uv,FALSE);
 	list_palette_add_checkbox(&property_palette,kLiquidPropertyNeverObscure,"Never Obscure",liq->flag.never_obscure,FALSE);
 	list_palette_add_checkbox(&property_palette,kLiquidPropertyNeverCull,"Never Cull",liq->flag.never_cull,FALSE);
 	list_palette_add_checkbox(&property_palette,kLiquidPropertyNoReflectionMap,"No Reflection Map",liq->flag.no_reflection_map,FALSE);
@@ -183,6 +185,10 @@ void property_palette_click_liquid(int liq_idx,int id)
 
 		case kLiquidPropertyWaveFlat:
 			liq->tide.flat=!liq->tide.flat;
+			break;
+
+		case kLiquidPropertyLockUV:
+			liq->flag.lock_uv=!liq->flag.lock_uv;
 			break;
 
 		case kLiquidPropertyNeverObscure:

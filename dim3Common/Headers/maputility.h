@@ -333,8 +333,8 @@ typedef struct		{
 					} map_liquid_tide_type;
 					
 typedef struct		{
-						bool								never_obscure,never_cull,no_draw,
-															no_reflection_map;
+						bool								lock_uv,never_obscure,never_cull,
+															no_draw,no_reflection_map;
 					} map_liquid_flag_type;
 
 typedef struct		{

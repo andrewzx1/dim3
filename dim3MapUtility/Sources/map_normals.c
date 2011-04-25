@@ -44,7 +44,7 @@ and can be sold or given away.
       
 ======================================================= */
 
-void map_recalc_normals_find_mesh_center_for_poly_add_recursive_poly_vertex(map_mesh_type *mesh,int poly_idx,unsigned char *vertex_mask,unsigned char *poly_mask)
+void map_recalc_normals_find_box_for_connected_poly_add_recursive_poly_vertex(map_mesh_type *mesh,int poly_idx,unsigned char *vertex_mask,unsigned char *poly_mask)
 {
 	int					n,k,t,vertex_idx;
 	map_mesh_poly_type	*poly,*chk_poly;
@@ -77,7 +77,7 @@ void map_recalc_normals_find_mesh_center_for_poly_add_recursive_poly_vertex(map_
 				for (t=0;t!=chk_poly->ptsz;t++) {
 					if (chk_poly->v[t]==vertex_idx) {
 						poly_mask[k]=0x1;
-						map_recalc_normals_find_mesh_center_for_poly_add_recursive_poly_vertex(mesh,k,vertex_mask,poly_mask);
+						map_recalc_normals_find_box_for_connected_poly_add_recursive_poly_vertex(mesh,k,vertex_mask,poly_mask);
 						break;
 					}
 				}
@@ -88,7 +88,7 @@ void map_recalc_normals_find_mesh_center_for_poly_add_recursive_poly_vertex(map_
 	}
 }
 
-bool map_recalc_normals_find_mesh_center_for_poly(map_mesh_type *mesh,int poly_idx,d3pnt *center)
+bool map_recalc_normals_find_box_for_connected_poly(map_mesh_type *mesh,int poly_idx,d3pnt *p_min,d3pnt *p_max)
 {
 	int					n,cnt;
 	bool				first_hit;
@@ -99,8 +99,6 @@ bool map_recalc_normals_find_mesh_center_for_poly(map_mesh_type *mesh,int poly_i
 		// connected to this polygon by other polygons.  This
 		// helps separate meshes into smaller units when they are composed
 		// of distinct primitive like meshes
-		
-	center->x=center->y=center->z=0;
 	
 		// find all common vertexes
 		// by recursively adding vertexes
@@ -119,7 +117,7 @@ bool map_recalc_normals_find_mesh_center_for_poly(map_mesh_type *mesh,int poly_i
 	
 	bzero(poly_mask,mesh->npoly);
 	
-	map_recalc_normals_find_mesh_center_for_poly_add_recursive_poly_vertex(mesh,poly_idx,vertex_mask,poly_mask);
+	map_recalc_normals_find_box_for_connected_poly_add_recursive_poly_vertex(mesh,poly_idx,vertex_mask,poly_mask);
 	
 		// find center
 
@@ -148,9 +146,8 @@ bool map_recalc_normals_find_mesh_center_for_poly(map_mesh_type *mesh,int poly_i
 		}
 	}
 
-	center->x=(min.x+max.x)>>1;
-	center->y=(min.y+max.y)>>1;
-	center->z=(min.z+max.z)>>1;
+	memmove(p_min,&min,sizeof(d3pnt));
+	memmove(p_max,&max,sizeof(d3pnt));
 	
 		// special flag if all polys are connected
 		
@@ -180,6 +177,84 @@ int map_recalc_normals_get_auto_mode(map_mesh_type *mesh)
 	return(normal_mode_in);
 }
 
+bool map_recalc_normals_determine_vector_in_out(map_mesh_poly_type *poly,d3pnt *min,d3pnt *max)
+{
+	int				x,y,z,k,pos_dist,neg_dist;
+	float			f_dist;
+	bool			is_out;
+	d3pnt			center,pos_pt,neg_pt;
+	d3vct			face_vct;
+
+		// the dot product is the fall back position
+		// if these specialized checks fail
+
+	center.x=(min->x+max->x)>>1;
+	center.y=(min->y+max->y)>>1;
+	center.z=(min->z+max->z)>>1;
+
+	vector_create(&face_vct,poly->box.mid.x,poly->box.mid.y,poly->box.mid.z,center.x,center.y,center.z);
+	is_out=(vector_dot_product(&poly->tangent_space.normal,&face_vct)>0.0f);
+
+		// get a point from the current normal vector
+		// and inverse of the current normal vector, using 10%
+		// of the distance to center
+	
+	f_dist=(float)distance_get(poly->box.mid.x,poly->box.mid.y,poly->box.mid.z,center.x,center.y,center.z);
+	f_dist*=0.1f;
+
+	pos_pt.x=poly->box.mid.x+(int)(poly->tangent_space.normal.x*f_dist);
+	pos_pt.y=poly->box.mid.y+(int)(poly->tangent_space.normal.y*f_dist);
+	pos_pt.z=poly->box.mid.z+(int)(poly->tangent_space.normal.z*f_dist);
+
+	neg_pt.x=poly->box.mid.x-(int)(poly->tangent_space.normal.x*f_dist);
+	neg_pt.y=poly->box.mid.y-(int)(poly->tangent_space.normal.y*f_dist);
+	neg_pt.z=poly->box.mid.z-(int)(poly->tangent_space.normal.z*f_dist);
+
+		// first we determine if we can think of the
+		// poly's box (which is determined by all connected
+		// polys) as a closed object in one direction
+
+		// if one direction is at least 25% greater than the others
+		// then consider it a tube like structure
+
+		// if any distance calcs fail, fall back to dot product
+
+	x=max->x-min->x;
+	y=max->y-min->y;
+	z=max->z-min->z;
+
+	k=x-((x*25)/100);
+	if ((x>y) && (x>z)) {
+		pos_dist=distance_2D_get(pos_pt.y,pos_pt.z,center.y,center.z);
+		neg_dist=distance_2D_get(neg_pt.y,neg_pt.z,center.y,center.z);
+		if (pos_dist==neg_dist) return(is_out);
+
+		return(pos_dist>neg_dist);
+	}
+
+	k=y-((y*25)/100);
+	if ((y>x) && (y>z)) {
+		pos_dist=distance_2D_get(pos_pt.x,pos_pt.z,center.x,center.z);
+		neg_dist=distance_2D_get(neg_pt.x,neg_pt.z,center.x,center.z);
+		if (pos_dist==neg_dist) return(is_out);
+
+		return(pos_dist>neg_dist);
+	}
+
+	k=z-((z*25)/100);
+	if ((z>x) && (z>y)) {
+		pos_dist=distance_2D_get(pos_pt.x,pos_pt.y,center.x,center.y);
+		neg_dist=distance_2D_get(neg_pt.x,neg_pt.y,center.x,center.y);
+		if (pos_dist==neg_dist) return(is_out);
+
+		return(pos_dist>neg_dist);
+	}
+
+		// finally fall back to dot product
+
+	return(is_out);
+}
+
 /* =======================================================
 
       Calculate Normals
@@ -190,9 +265,9 @@ void map_recalc_normals_mesh(map_mesh_type *mesh,int normal_mode,bool only_tange
 {
 	int					n,k,neg_idx,pos_idx;
 	float				u10,u20,v10,v20,f_denom,f_ptsz;
-	bool				is_out,all_poly_mesh;
-	d3vct				p10,p20,vlft,vrgt,v_num,face_vct,normals[8];
-	d3pnt				*pt,*pt_1,*pt_2,center;
+	bool				flip,all_poly_mesh;
+	d3vct				p10,p20,vlft,vrgt,v_num,normals[8];
+	d3pnt				*pt,*pt_1,*pt_2,min,max;
 	map_mesh_poly_type	*poly;
 	
 	poly=mesh->polys;
@@ -294,7 +369,7 @@ void map_recalc_normals_mesh(map_mesh_type *mesh,int normal_mode,bool only_tange
 		poly++;
 	}
 	
-		// check for inversions
+		// check for in-out inversions
 		
 	if (normal_mode==normal_mode_none) normal_mode=map_recalc_normals_get_auto_mode(mesh);
 	
@@ -303,26 +378,29 @@ void map_recalc_normals_mesh(map_mesh_type *mesh,int normal_mode,bool only_tange
 
 	for (n=0;n!=mesh->npoly;n++) {
 	
-			// get center for polys connected to
+			// get box and center for all polys connected to
 			// this poly.  Happens in meshes where there
-			// are distinct primitives
+			// are distinct primitives and helps create better
+			// in-out calculations
 			
 			// we have a flag that tells us if the first time
 			// we checked this that all polys were connected, so
 			// we can skip.  This is a good speed up on enormous meshes
 			
 		if (!all_poly_mesh) {
-			all_poly_mesh=map_recalc_normals_find_mesh_center_for_poly(mesh,n,&center);
+			all_poly_mesh=map_recalc_normals_find_box_for_connected_poly(mesh,n,&min,&max);
 		}
 		
-			// determine if poly is facing 'out'
+			// check if we need to invert
 		
-		vector_create(&face_vct,poly->box.mid.x,poly->box.mid.y,poly->box.mid.z,center.x,center.y,center.z);
-		is_out=(vector_dot_product(&poly->tangent_space.normal,&face_vct)>0.0f);
+		if (normal_mode==normal_mode_out) {
+			flip=!map_recalc_normals_determine_vector_in_out(poly,&min,&max);
+		}
+		else {
+			flip=map_recalc_normals_determine_vector_in_out(poly,&min,&max);
+		}
 		
-		if (normal_mode==normal_mode_out) is_out=!is_out;
-		
-		if (is_out) {
+		if (flip) {
 			poly->tangent_space.normal.x=-poly->tangent_space.normal.x;
 			poly->tangent_space.normal.y=-poly->tangent_space.normal.y;
 			poly->tangent_space.normal.z=-poly->tangent_space.normal.z;

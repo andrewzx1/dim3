@@ -674,6 +674,7 @@ void write_single_liquid(map_liquid_type *liq)
 	xml_add_attribute_boolean("never_cull",liq->flag.never_cull);
 	xml_add_attribute_boolean("no_draw",liq->flag.no_draw);
 	xml_add_attribute_boolean("no_reflection_map",liq->flag.no_reflection_map);
+	xml_add_attribute_boolean("lock_uv",liq->flag.lock_uv);
 	xml_add_tagend(FALSE);
 
 		// polygon
@@ -721,7 +722,7 @@ void write_single_liquid(map_liquid_type *liq)
 	xml_add_attribute_int("high",liq->tide.high);
 	xml_add_attribute_int("division",liq->tide.division);
 	xml_add_attribute_list("tide_direction",(char*)liquid_tide_direction_str,liq->tide.direction);
-	xml_add_attribute_int("twist_angle",liq->tide.twist_angle);
+	xml_add_attribute_float("twist_angle",liq->tide.twist_angle);
 	xml_add_attribute_boolean("flat",liq->tide.flat);
 	xml_add_tagend(TRUE);
 

@@ -60,6 +60,7 @@ int map_liquid_add(map_type *map)
 	
 	liq=&map->liquid.liquids[liquid_idx];
 	
+	liq->flag.lock_uv=FALSE;
 	liq->flag.never_obscure=FALSE;
 	liq->flag.never_cull=FALSE;
 	liq->flag.no_draw=FALSE;

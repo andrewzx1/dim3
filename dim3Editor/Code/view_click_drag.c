@@ -955,7 +955,7 @@ bool view_click_drag_liquid_vertex(editor_view_type *view,d3pnt *pt)
 		
 		if (liq->depth<100) liq->depth=100;
 		
-		if (state.auto_texture) map_liquid_reset_uv(&map,liquid_idx);
+		if ((state.auto_texture) && (!liq->flag.lock_uv)) map_liquid_reset_uv(&map,liquid_idx);
 
         main_wind_draw();
 	}
@@ -1068,7 +1068,7 @@ bool view_click_drag_liquid(editor_view_type *view,d3pnt *pt)
 		liq->bot=old_bot+mpt.z;
 		liq->y=old_y+mpt.y;
 
-		if (state.auto_texture) map_liquid_reset_uv(&map,main_idx);
+		if ((state.auto_texture) && (!liq->flag.lock_uv)) map_liquid_reset_uv(&map,main_idx);
 
         main_wind_draw();
 	}

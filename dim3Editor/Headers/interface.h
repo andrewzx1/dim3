@@ -195,8 +195,16 @@ extern void launch_spot_script_editor(spot_type *spot);
 // light maps
 //
 
+extern void light_map_texture_map_folder_name(char *map_name);
+extern float light_map_ray_trace_triangle(d3pnt *spt,d3vct *vct,int *x,int *y,int *z);
 extern bool light_maps_create(void);
 extern void light_maps_clear(void);
+
+//
+// liquid reflection maps
+//
+
+extern bool liquid_reflection_maps_create(void);
 
 //
 // selection routines
