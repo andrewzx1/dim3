@@ -37,8 +37,7 @@ extern setup_type			setup;
 
 int							cur_vbo_cache_idx,cur_vbo_cache_index_idx;
 GLuint						vbo_map,vbo_map_index,
-							vbo_liquid,vbo_liquid_index,
-							vbo_sky,
+							vbo_liquid,vbo_sky,
 							vbo_cache[view_vertex_object_count],
 							vbo_cache_index[view_vertex_object_count];
 
@@ -56,7 +55,6 @@ void view_create_vertex_objects(void)
 	glGenBuffersARB(1,&vbo_map_index);
 
 	glGenBuffersARB(1,&vbo_liquid);
-	glGenBuffersARB(1,&vbo_liquid_index);
 
 	glGenBuffersARB(1,&vbo_sky);
 
@@ -77,7 +75,6 @@ void view_dispose_vertex_objects(void)
 	glDeleteBuffersARB(1,&vbo_map_index);
 
 	glDeleteBuffersARB(1,&vbo_liquid);
-	glDeleteBuffersARB(1,&vbo_liquid_index);
 
 	glDeleteBuffersARB(1,&vbo_sky);
 
@@ -221,40 +218,6 @@ inline void view_unmap_liquid_vertex_object(void)
 inline void view_unbind_liquid_vertex_object(void)
 {
 	glBindBufferARB(GL_ARRAY_BUFFER_ARB,0);
-}
-
-inline unsigned int* view_bind_map_liquid_index_object(int sz)
-{
-	unsigned int		*index_ptr;
-
-		// bind to liquid specific VBO
-
-	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB,vbo_liquid_index);
-
-		// resize VBO
-
-	sz*=sizeof(unsigned int);
-	glBufferDataARB(GL_ELEMENT_ARRAY_BUFFER_ARB,sz,NULL,GL_STREAM_DRAW_ARB);
-
-		// map pointer
-
-	index_ptr=(unsigned int*)glMapBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB,GL_WRITE_ONLY_ARB);
-	if (index_ptr==NULL) {
-		glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB,0);
-		return(NULL);
-	}
-
-	return(index_ptr);
-}
-
-inline void view_unmap_liquid_index_object(void)
-{
-	glUnmapBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB);
-}
-
-inline void view_unbind_liquid_index_object(void)
-{
-	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB,0);
 }
 
 /* =======================================================

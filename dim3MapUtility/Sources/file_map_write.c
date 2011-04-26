@@ -35,7 +35,6 @@ extern char					media_type_str[][32],
 							gl_fog_type_str[][32],
 							mesh_hide_mode_str[][32],
 							mesh_normal_mode_str[][32],
-							liquid_tide_direction_str[][32],
 							light_type_str[][32],
 							light_direction_str[][32],
 							spot_type_str[][32],
@@ -121,11 +120,6 @@ void write_map_fix_problems(map_type *map)
 			liq->bot=liq->top;
 			liq->top=k;
 		}
-		
-			// odd tide settings
-			
-		if (liq->tide.division<liquid_min_division) liq->tide.division=liquid_min_division;
-		if (liq->tide.division>liquid_max_division) liq->tide.division=liquid_max_division;
 		
 		liq++;
 	}
@@ -719,10 +713,7 @@ void write_single_liquid(map_liquid_type *liq)
 	xml_add_tagstart("Tide");
 	xml_add_attribute_int("rate",liq->tide.rate);
 	xml_add_attribute_int("high",liq->tide.high);
-	xml_add_attribute_int("division",liq->tide.division);
-	xml_add_attribute_list("tide_direction",(char*)liquid_tide_direction_str,liq->tide.direction);
 	xml_add_attribute_float("twist_angle",liq->tide.twist_angle);
-	xml_add_attribute_boolean("flat",liq->tide.flat);
 	xml_add_tagend(TRUE);
 	
 		// reflection
@@ -731,7 +722,7 @@ void write_single_liquid(map_liquid_type *liq)
 	xml_add_attribute_boolean("on",liq->reflect.on);
 	xml_add_attribute_int("texture_size",liq->reflect.texture_size);
 	xml_add_attribute_int("x_refract_factor",liq->reflect.x_refract_factor);
-	xml_add_attribute_int("z_refract_factor",liq->reflect.x_refract_factor);
+	xml_add_attribute_int("z_refract_factor",liq->reflect.z_refract_factor);
 	xml_add_attribute_float("color_factor",liq->reflect.color_factor);
 	xml_add_tagend(TRUE);
 

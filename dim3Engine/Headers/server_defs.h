@@ -1030,6 +1030,7 @@ typedef struct		{
 #define poly_ray_trace_origin_unknown					0
 #define poly_ray_trace_origin_object					1
 #define poly_ray_trace_origin_projectile				2
+#define poly_ray_trace_origin_halo						3
 
 #define ray_trace_face_hit_neg_z						0
 #define ray_trace_face_hit_pos_z						1

@@ -37,7 +37,6 @@ char					media_type_str[][32]={"none","chooser","title","movie",""},
 						gl_fog_type_str[][32]={"linear","exp","exp2",""},
 						mesh_hide_mode_str[][32]={"never","single_player","multiplayer",""},
 						mesh_normal_mode_str[][32]={"auto","in","out","in_out","edge","lock",""},
-						liquid_tide_direction_str[][32]={"horizontal","vertical",""},
                         light_type_str[][32]={"normal","blink","glow","pulse","flicker","failing",""},
                         light_direction_str[][32]={"all","neg_x","pos_x","neg_y","pos_y","neg_z","pos_z",""},
 						spot_type_str[][32]={"Object","Bot","Player","Spawn",""},
@@ -776,12 +775,9 @@ void read_single_liquid_v3(map_type *map,int liquid_idx,int liquid_tag)
 
     tag=xml_findfirstchild("Tide",liquid_tag);
     if (tag!=-1) {
-		liq->tide.division=xml_get_attribute_int_default(tag,"division",liquid_min_division);
 		liq->tide.rate=xml_get_attribute_int(tag,"rate");
 		liq->tide.high=xml_get_attribute_int(tag,"high");
-		liq->tide.direction=xml_get_attribute_list(tag,"tide_direction",(char*)liquid_tide_direction_str);
 		liq->tide.twist_angle=xml_get_attribute_float(tag,"twist_angle");
-        liq->tide.flat=xml_get_attribute_boolean(tag,"flat");
 	}
 	
 		// reflection
@@ -791,9 +787,17 @@ void read_single_liquid_v3(map_type *map,int liquid_idx,int liquid_tag)
 		liq->reflect.on=xml_get_attribute_boolean(tag,"on");
 		liq->reflect.texture_size=xml_get_attribute_int(tag,"texture_size");
 		liq->reflect.x_refract_factor=xml_get_attribute_int(tag,"x_refract_factor");
-		liq->reflect.x_refract_factor=xml_get_attribute_int(tag,"z_refract_factor");
+		liq->reflect.z_refract_factor=xml_get_attribute_int(tag,"z_refract_factor");
 		liq->reflect.color_factor=xml_get_attribute_float(tag,"color_factor");
 	}
+	else {
+		liq->reflect.on=TRUE;
+		liq->reflect.texture_size=512;
+		liq->reflect.x_refract_factor=20000;
+		liq->reflect.z_refract_factor=20000;
+		liq->reflect.color_factor=0.25f;
+	}
+
 }
 
 /* =======================================================

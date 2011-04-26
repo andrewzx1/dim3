@@ -33,23 +33,20 @@ and can be sold or given away.
 #include "ui_common.h"
 #include "interface.h"
 
-#define kLiquidPropertyWaveFlat				0
-#define kLiquidPropertyLockUV				1
-#define kLiquidPropertyNeverObscure			2
-#define kLiquidPropertyNeverCull			3
-#define kLiquidPropertyNoReflectionMap		4
-#define kLiquidPropertyNoDraw				5
+#define kLiquidPropertyLockUV				0
+#define kLiquidPropertyNeverObscure			1
+#define kLiquidPropertyNeverCull			2
+#define kLiquidPropertyNoReflectionMap		3
+#define kLiquidPropertyNoDraw				4
 
-#define kLiquidPropertyColor				6
-#define kLiquidPropertyTintAlpha			7
-#define kLiquidPropertySpeedAlter			8
-#define kLiquidPropertySoundName			9
+#define kLiquidPropertyColor				5
+#define kLiquidPropertyTintAlpha			6
+#define kLiquidPropertySpeedAlter			7
+#define kLiquidPropertySoundName			8
 
-#define kLiquidPropertyWaveSize				10
-#define kLiquidPropertyTideSize				11
-#define kLiquidPropertyTideRate				12
-#define kLiquidPropertyTideDirection		13
-#define kLiquidPropertyTideTwistAngle		14
+#define kLiquidPropertyTideSize				9
+#define kLiquidPropertyTideRate				10
+#define kLiquidPropertyTideTwistAngle		11
 
 #define kLiquidPropertyHarm					15
 #define kLiquidPropertyDrownTick			16
@@ -75,8 +72,6 @@ extern editor_setup_type		setup;
 extern list_palette_type		property_palette;
 extern char						map_property_light_map_size_list[][name_str_len];
 
-char							liquid_property_tide_direction_list[][name_str_len]={"Horizontal","Vertical",""};
-
 /* =======================================================
 
       Property Palette Fill Liquid
@@ -95,7 +90,6 @@ void property_palette_fill_liquid(int liq_idx)
 	liq=&map.liquid.liquids[liq_idx];
 
 	list_palette_add_header(&property_palette,0,"Liquid Settings");
-	list_palette_add_checkbox(&property_palette,kLiquidPropertyWaveFlat,"Draw as Flat Surface",liq->tide.flat,FALSE);
 	list_palette_add_checkbox(&property_palette,kLiquidPropertyLockUV,"Lock UV",liq->flag.lock_uv,FALSE);
 	list_palette_add_checkbox(&property_palette,kLiquidPropertyNeverObscure,"Never Obscure",liq->flag.never_obscure,FALSE);
 	list_palette_add_checkbox(&property_palette,kLiquidPropertyNeverCull,"Never Cull",liq->flag.never_cull,FALSE);
@@ -108,10 +102,8 @@ void property_palette_fill_liquid(int liq_idx)
 	list_palette_add_string(&property_palette,kLiquidPropertySoundName,"Sound",liq->ambient.sound_name,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Liquid Waves");
-	list_palette_add_string_int(&property_palette,kLiquidPropertyWaveSize,"Wave Size",liq->tide.division,FALSE);
 	list_palette_add_string_int(&property_palette,kLiquidPropertyTideSize,"Tide Size",liq->tide.high,FALSE);
 	list_palette_add_string_int(&property_palette,kLiquidPropertyTideRate,"Tide Rate",liq->tide.rate,FALSE);
-	list_palette_add_string(&property_palette,kLiquidPropertyTideDirection,"Tide Direction",liquid_property_tide_direction_list[liq->tide.direction],FALSE);
 	list_palette_add_string_float(&property_palette,kLiquidPropertyTideTwistAngle,"Tide Twist Angle",liq->tide.twist_angle,FALSE);
 	
 	list_palette_add_header(&property_palette,0,"Liquid Harm");
@@ -199,10 +191,6 @@ void property_palette_click_liquid(int liq_idx,int id)
 	
 			// flags
 
-		case kLiquidPropertyWaveFlat:
-			liq->tide.flat=!liq->tide.flat;
-			break;
-
 		case kLiquidPropertyLockUV:
 			liq->flag.lock_uv=!liq->flag.lock_uv;
 			break;
@@ -239,20 +227,12 @@ void property_palette_click_liquid(int liq_idx,int id)
 
 			// waves
 			
-		case kLiquidPropertyWaveSize:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&liq->tide.division,0,0,0);
-			break;
-			
 		case kLiquidPropertyTideSize:
 			dialog_property_string_run(list_string_value_positive_int,(void*)&liq->tide.high,0,0,0);
 			break;
 			
 		case kLiquidPropertyTideRate:
 			dialog_property_string_run(list_string_value_positive_int,(void*)&liq->tide.rate,0,0,0);
-			break;
-
-		case kLiquidPropertyTideDirection:
-			property_pick_list("Pick a Tide Direction",(char*)liquid_property_tide_direction_list,&liq->tide.direction);
 			break;
 
 		case kLiquidPropertyTideTwistAngle:

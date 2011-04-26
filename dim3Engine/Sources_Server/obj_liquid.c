@@ -123,9 +123,7 @@ float object_liquid_alter_speed(obj_type *obj)
 
 void object_liquid(obj_type *obj)
 {
-	int					tick,harm,old_liquid_mode,tide_split_half,
-						bob_y_move;
-	float				sn,f_time,f_break;
+	int					tick,harm,old_liquid_mode;
 	map_liquid_type		*liq;
 	
     old_liquid_mode=obj->liquid.mode;
@@ -149,30 +147,7 @@ void object_liquid(obj_type *obj)
 		obj->liquid.bob_y_move=0;
 	}
 	else {
-
-		bob_y_move=0;
-
-		if ((liq->tide.high>=1) && (liq->tide.rate>=1)) {
-			tide_split_half=liquid_render_liquid_get_tide_split(liq)<<2;
-		
-			f_time=(float)(tick%liq->tide.rate);		// get rate between 0..1
-			f_time=f_time/((float)liq->tide.rate);
-
-			if (liq->tide.direction==liquid_direction_vertical) {
-				f_break=(float)(obj->pnt.z%tide_split_half);
-			}
-			else {
-				f_break=(float)(obj->pnt.x%tide_split_half);
-			}
-					
-			f_break=f_break/((float)tide_split_half);
-			   
-			sn=(float)sin((TRIG_PI*2.0f)*(f_break+f_time));
-
-			bob_y_move=-(int)((((float)liq->tide.high)*sn)*0.75f);
-		}
-
-		obj->liquid.bob_y_move=bob_y_move;
+		obj->liquid.bob_y_move=-(int)(liquid_tide_get_high(liq)*0.75f);
 	}
 
         // entering or leaving liquids

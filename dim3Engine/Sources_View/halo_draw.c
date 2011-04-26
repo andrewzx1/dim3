@@ -137,7 +137,7 @@ void halo_draw_setup(void)
 
 	contact.proj.on=FALSE;
 
-	contact.origin=poly_ray_trace_origin_object;
+	contact.origin=poly_ray_trace_origin_halo;
 
 	for (n=0;n!=view.render->halo_draw.count;n++) {
 		halo_draw=&view.render->halo_draw.halos[n];

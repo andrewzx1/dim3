@@ -42,32 +42,42 @@ extern bool boundbox_inview(int x,int z,int ex,int ez,int ty,int by);
 
 /* =======================================================
 
-      Initialize Liquid GL Lists
+      Liquid Tides
       
 ======================================================= */
 
-int liquid_render_liquid_get_tide_split(map_liquid_type *liq)
+float liquid_tide_get_high(map_liquid_type *liq)
 {
-	int				tide_split;
+	int				tick;
+	float			f_time,sn;
 
-	tide_split=liq->rgt-liq->lft;
-	if ((liq->bot-liq->top)>tide_split) tide_split=liq->bot-liq->top;
+	tick=game_time_get();
+
+		// get rate between 0..1
+
+	f_time=(float)(tick%liq->tide.rate);
+	f_time=f_time/((float)liq->tide.rate);
 	
-	if (liq->tide.flat) return(tide_split);
-	
-	return(tide_split/liq->tide.division);
+		// waves are sin waves
+
+	sn=(float)sin((TRIG_PI*2.0f)*f_time);
+	return(((float)liq->tide.high)*sn);
 }
 
-inline int liquid_render_liquid_get_max_vertex(map_liquid_type *liq)
+float liquid_tide_get_twist(map_liquid_type *liq)
 {
-	int				tide_split,x_sz,z_sz;
-	
-	tide_split=liquid_render_liquid_get_tide_split(liq);
+	int				tick;
+	float			f_time,sn;
 
-	x_sz=((liq->rgt-liq->lft)/tide_split)+4;		// possible extra edges on side because of griding
-	z_sz=((liq->bot-liq->top)/tide_split)+4;
+	tick=game_time_get();
 
-	return(x_sz*z_sz);
+		// get rate between 0..1
+
+	f_time=(float)(tick%liq->tide.rate);
+	f_time=f_time/((float)liq->tide.rate);
+
+	sn=(float)sin((TRIG_PI*2.0f)*f_time);
+	return(liq->tide.twist_angle*sn);
 }
 
 /* =======================================================
@@ -90,296 +100,143 @@ bool liquid_is_transparent(map_liquid_type *liq)
       
 ======================================================= */
 
-void liquid_render_liquid_create_vertex(map_liquid_type *liq,int v_sz)
+void liquid_render_liquid_create_vertex(map_liquid_type *liq)
 {
-	int				tick,x,y,z,k,x_add,z_add,x_sz,z_sz,
-					v_cnt,vbo_cnt,tide_split,tide_split_half,
-					tide_high,tide_rate;
-	float			fy,fgx,fgy,gx,gy,x_txtoff,y_txtoff,
-					x_2_txtoff,y_2_txtoff,f_ang,f_ky,
-					f_break,f_time,f_tick,sn,
-					f_tide_split_half,f_tide_high;
-	bool			shader_on,x_break,z_break;
+	int				n,k,vbo_cnt;
+	float			fy,gx,gy,gx2,gy2,f_ang,f_tick;
+	bool			shader_on;
 	float			*vertex_ptr,*vl,*uv,*uv2,*ct,*cn,*cl;
-	matrix_type		mat_1,mat_2;
+	matrix_type		mat;
 	
-	y=liq->y;
-	fy=(float)y;
-
 		// setup vbo
 		// shaders don't need light lists
 		
 	shader_on=view_shader_on();
 
 	if (shader_on) {
-		vbo_cnt=v_sz*(3+2+2+3+3);
+		vbo_cnt=4*(3+2+2+3+3);
 	}
 	else {
-		vbo_cnt=v_sz*(3+2+2+3);
+		vbo_cnt=4*(3+2+2+3);
 	}
 
 	vertex_ptr=view_bind_map_liquid_vertex_object(vbo_cnt);
 	if (vertex_ptr==NULL) return;
-	
-	vl=vertex_ptr;
-	uv=vertex_ptr+(v_sz*3);
-	uv2=vertex_ptr+(v_sz*(3+2));
-	
-	if (shader_on) {
-		ct=vertex_ptr+(v_sz*(3+2+2));
-		cn=vertex_ptr+(v_sz*(3+2+2+3));
-	}
-	else {
-		cl=vertex_ptr+(v_sz*(3+2+2));
-	}
-	
-		// setup tiding
 
-	tick=game_time_get();
-
-	tide_split=liquid_render_liquid_get_tide_split(liq);
-	
-	tide_high=liq->tide.high;
-	if (tide_high<1) tide_high=1;
-	
-	tide_rate=liq->tide.rate;
-	if (tide_rate<1) tide_rate=1;
-
-	tide_split_half=tide_split<<2;
-	f_tide_split_half=(float)tide_split_half;
-	
-	f_tide_high=(float)tide_high;
-
-	f_time=(float)(tick%tide_rate);		// get rate between 0..1
-	f_time=f_time/(float)tide_rate;
-	
 		// liquid texture movement
 		
-	f_tick=(float)tick*0.001f;
+	f_tick=((float)game_time_get())*0.001f;
 	
-	x_txtoff=f_tick*liq->x_shift;
-	k=(int)x_txtoff;
-	x_txtoff=liq->main_uv.x_offset+(x_txtoff-(float)k);
+	gx=f_tick*liq->x_shift;
+	k=(int)gx;
+	gx=liq->main_uv.x_offset+(gx-(float)k);
+
+	gx2=gx+liq->main_uv.x_size;
 	
-	y_txtoff=f_tick*liq->y_shift;
-	k=(int)y_txtoff;
-	y_txtoff=liq->main_uv.y_offset+(y_txtoff-(float)k);
-	
-	x_2_txtoff=liq->lmap_uv.x_offset;
-	y_2_txtoff=liq->lmap_uv.y_offset;
+	gy=f_tick*liq->y_shift;
+	k=(int)gy;
+	gy=liq->main_uv.y_offset+(gy-(float)k);
+
+	gy2=gy+liq->main_uv.y_size;
 	
 		// liquid texture UV rotates
-		
-	k=(tick>>2)%2000;
-	if (k>=1000) k=2000-k;
 
-	f_ang=5.0f*(((float)k)*0.001f);
-	matrix_rotate_y(&mat_1,f_ang);
-	matrix_rotate_y(&mat_2,-f_ang);
+	if (liq->tide.twist_angle!=0.0f) {
+		f_ang=liquid_tide_get_twist(liq);
+		matrix_rotate_y(&mat,f_ang);
 
-		// create vertexes from tide splits
+		fy=0.0f;
+		matrix_vertex_multiply(&mat,&gx,&fy,&gy);
 
-	fgx=(float)(liq->rgt-liq->lft);
-	fgy=(float)(liq->bot-liq->top);
-		
-	z=liq->top;
-	z_add=tide_split-(z%tide_split);
-	z_break=FALSE;
+		fy=0.0f;
+		matrix_vertex_multiply(&mat,&gx2,&fy,&gy2);
+	}
 
-	v_cnt=0;
+		// liquid vertexes
 
-	z_sz=0;
-	
-	while (TRUE) {
+	vl=vertex_ptr;
+	uv=vertex_ptr+(4*3);
+	uv2=vertex_ptr+(4*(3+2));
 
-		x=liq->lft;
-		x_add=tide_split-(x%tide_split);
-		x_break=FALSE;
+	fy=((float)liq->y)-liquid_tide_get_high(liq);
 
-		x_sz=0;
-		
-		while (TRUE) {
+		// left-top
 
-				// color
+	*vl++=(float)liq->lft;
+	*vl++=fy;
+	*vl++=(float)liq->top;
 
-			if (!shader_on) {
-				gl_lights_calc_color_light_cache(liq->light_cache.count,liq->light_cache.indexes,FALSE,(double)x,(double)y,(double)z,cl);
-				cl+=3;
-			}
+	*uv++=gx;
+	*uv++=gy;
 
-				// setup tide Y
+	*uv2++=liq->lmap_uv.x_offset;
+	*uv2++=liq->lmap_uv.y_offset;
 
-			if (liq->tide.direction==liquid_direction_vertical) {
-				f_break=(float)(z%tide_split_half);
-			}
-			else {
-				f_break=(float)(x%tide_split_half);
-			}
-				
-			f_break=f_break/f_tide_split_half;
-		   
-			sn=(float)sin((TRIG_PI*2.0f)*(f_break+f_time));
+		// right-top
 
-				// vertexes
+	*vl++=(float)liq->rgt;
+	*vl++=fy;
+	*vl++=(float)liq->top;
 
-			*vl++=(float)x;
-			*vl++=fy-(f_tide_high*sn);
-			*vl++=(float)z;
-			
-				// uvs
-				// supergumba -- work on reflection first, then fix this up
-				
-			gx=x_txtoff+((liq->main_uv.x_size*(float)(x-liq->lft))/fgx);
-			gy=y_txtoff+((liq->main_uv.y_size*(float)(z-liq->top))/fgy);
-			
-			f_ky=0;
+	*uv++=gx2;
+	*uv++=gy;
 
-			if (((x+z)&0x1)==0) {
-			//	matrix_vertex_multiply(&mat_1,&gx,&f_ky,&gy);
-			}
-			else {
-			//	matrix_vertex_multiply(&mat_2,&gx,&f_ky,&gy);
-			}
+	*uv2++=liq->lmap_uv.x_offset+liq->lmap_uv.x_size;
+	*uv2++=liq->lmap_uv.y_offset;
 
-			*uv++=gx;
-			*uv++=gy;
+		// left-bottom
 
-			gx=x_2_txtoff+((liq->lmap_uv.x_size*(float)(x-liq->lft))/fgx);
-			gy=y_2_txtoff+((liq->lmap_uv.y_size*(float)(z-liq->top))/fgy);
-			
-			f_ky=0;
-			if (((x+z)&0x1)==0) {
-			//	matrix_vertex_multiply(&mat_1,&gx,&f_ky,&gy);
-			}
-			else {
-			//	matrix_vertex_multiply(&mat_2,&gx,&f_ky,&gy);
-			}
-			
-			*uv2++=gx;
-			*uv2++=gy;
+	*vl++=(float)liq->lft;
+	*vl++=fy;
+	*vl++=(float)liq->bot;
 
+	*uv++=gx;
+	*uv++=gy2;
 
+	*uv2++=liq->lmap_uv.x_offset;
+	*uv2++=liq->lmap_uv.y_offset+liq->lmap_uv.y_size;
 
-/* supergumba
-			*uv++=x_txtoff+((liq->main_uv.x_size*(float)(x-liq->lft))/fgx);
-			*uv++=y_txtoff+((liq->main_uv.y_size*(float)(z-liq->top))/fgy);
+		// right-bottom
 
-			*uv2++=x_2_txtoff+((liq->lmap_uv.x_size*(float)(x-liq->lft))/fgx);
-			*uv2++=y_2_txtoff+((liq->lmap_uv.y_size*(float)(z-liq->top))/fgy);
-	*/		
-				// tangent space
-				
-			if (shader_on) {
-				*ct++=1.0f;
-				*ct++=0.0f;
-				*ct++=0.0f;
-				*cn++=0.0f;
-				*cn++=-1.0f;
-				*cn++=0.0f;
-			}
+	*vl++=(float)liq->rgt;
+	*vl++=fy;
+	*vl++=(float)liq->bot;
 
-			v_cnt++;
-			
-			x_sz++;
+	*uv++=gx2;
+	*uv++=gy2;
 
-			if (x_break) break;
-			
-			x+=x_add;
-			x_add=tide_split;
-			
-			if (x>=liq->rgt) {
-				x=liq->rgt;
-				x_break=TRUE;
-			}
-		}
+	*uv2++=liq->lmap_uv.x_offset+liq->lmap_uv.x_size;
+	*uv2++=liq->lmap_uv.y_offset+liq->lmap_uv.y_size;
 
-		z_sz++;
-		
-		if (z_break) break;
-		
-		z+=z_add;
-		z_add=tide_split;
-		
-		if (z>=liq->bot) {
-			z=liq->bot;
-			z_break=TRUE;
+		// colors
+
+	if (!shader_on) {
+		cl=vertex_ptr+(4*(3+2+2));
+
+		gl_lights_calc_color_light_cache(liq->light_cache.count,liq->light_cache.indexes,FALSE,(double)liq->lft,fy,(double)liq->top,cl);
+		gl_lights_calc_color_light_cache(liq->light_cache.count,liq->light_cache.indexes,FALSE,(double)liq->rgt,fy,(double)liq->top,(cl+3));
+		gl_lights_calc_color_light_cache(liq->light_cache.count,liq->light_cache.indexes,FALSE,(double)liq->lft,fy,(double)liq->bot,(cl+6));
+		gl_lights_calc_color_light_cache(liq->light_cache.count,liq->light_cache.indexes,FALSE,(double)liq->rgt,fy,(double)liq->bot,(cl+9));
+	}
+
+		// normals and tangents
+
+	if (shader_on) {
+
+		ct=vertex_ptr+(4*(3+2+2));
+		cn=vertex_ptr+(4*(3+2+2+3));
+
+		for (n=0;n!=4;n++) {
+			*ct++=1.0f;
+			*ct++=0.0f;
+			*ct++=0.0f;
+			*cn++=0.0f;
+			*cn++=-1.0f;
+			*cn++=0.0f;
 		}
 	}
 
 	view_unmap_liquid_vertex_object();
-
-		// setup split sizes
-
-	liq->draw.v_cnt=v_cnt;
-
-	liq->draw.x_sz=x_sz;
-	liq->draw.z_sz=z_sz;
-}
-
-int liquid_render_liquid_create_trigs(map_liquid_type *liq,int v_sz)
-{
-	int				x,z,x_sz,z_sz,trig_cnt,
-					tz,bz,tz_add,top_row,bot_row,
-					lx,rx,lx_add,tide_split;
-	unsigned int	*index_ptr;
-
-		// drawing the triangles only draws to the edges
-
-	x_sz=liq->draw.x_sz-1;
-	if (x_sz<=0) return(0);
-
-	z_sz=liq->draw.z_sz-1;
-	if (z_sz<=0) return(0);
-
-	tide_split=liquid_render_liquid_get_tide_split(liq);
-
-		// setup index vbo
-
-	index_ptr=view_bind_map_liquid_index_object(v_sz*6);
-	if (index_ptr==NULL) return(0);
-
-		// create the draw indexes
-
-	trig_cnt=0;
-		
-	tz=liq->top;
-	tz_add=tide_split-(tz%tide_split);
-	top_row=0;
-	
-	for (z=0;z!=z_sz;z++) {
-		bz=tz+tz_add;
-		tz_add=tide_split;
-		if (bz>=liq->bot) bz=liq->bot;
-		
-		lx=liq->lft;
-		lx_add=tide_split-(lx%tide_split);
-		bot_row=top_row+(x_sz+1);
-		
-		for (x=0;x!=x_sz;x++) {
-			rx=lx+lx_add;
-			lx_add=tide_split;
-			if (rx>=liq->rgt) rx=liq->rgt;
-			
-			*index_ptr++=(unsigned int)(top_row+x);
-			*index_ptr++=(unsigned int)(top_row+(x+1));
-			*index_ptr++=(unsigned int)(bot_row+x);
-
-			*index_ptr++=(unsigned int)(top_row+(x+1));
-			*index_ptr++=(unsigned int)(bot_row+(x+1));
-			*index_ptr++=(unsigned int)(bot_row+x);
-
-			trig_cnt+=2;
-
-			lx=rx;
-		}
-	
-		tz=bz;
-		top_row=bot_row;
-	}
-
-	view_unmap_liquid_index_object();
-
-	return(trig_cnt);
 }
 
 /* =======================================================
@@ -390,8 +247,7 @@ int liquid_render_liquid_create_trigs(map_liquid_type *liq,int v_sz)
 
 void liquid_render_liquid(map_liquid_type *liq)
 {
-	int						v_sz,trig_cnt,frame,
-							tangent_offset,normal_offset;
+	int						frame,tangent_offset,normal_offset;
 	float					alpha;
 	GLuint					gl_id,lmap_gl_id;
 	texture_type			*texture;
@@ -411,17 +267,7 @@ void liquid_render_liquid(map_liquid_type *liq)
 
 		// create vertexes
 
-	v_sz=liquid_render_liquid_get_max_vertex(liq);
-
-	liquid_render_liquid_create_vertex(liq,v_sz);
-
-		// create trigs
-
-	trig_cnt=liquid_render_liquid_create_trigs(liq,v_sz);
-	if (trig_cnt==0) {
-		view_unbind_liquid_vertex_object();
-		return;
-	}
+	liquid_render_liquid_create_vertex(liq);
 	
 		// start vertex array
 
@@ -437,18 +283,18 @@ void liquid_render_liquid(map_liquid_type *liq)
 
 		glClientActiveTexture(GL_TEXTURE1);
 		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-		glTexCoordPointer(2,GL_FLOAT,0,(void*)((v_sz*(3+2))*sizeof(float)));
+		glTexCoordPointer(2,GL_FLOAT,0,(void*)((4*(3+2))*sizeof(float)));
 		
 		glClientActiveTexture(GL_TEXTURE0);
 		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-		glTexCoordPointer(2,GL_FLOAT,0,(void*)((v_sz*3)*sizeof(float)));
+		glTexCoordPointer(2,GL_FLOAT,0,(void*)((4*3)*sizeof(float)));
 
 			// shader lights and tangents
 
 		gl_lights_build_liquid_light_list(liq,&light_list);
 		
-		tangent_offset=(v_sz*(3+2+2))*sizeof(float);
-		normal_offset=(v_sz*(3+2+2+3))*sizeof(float);
+		tangent_offset=(4*(3+2+2))*sizeof(float);
+		normal_offset=(4*(3+2+2+3))*sizeof(float);
 
 		gl_shader_draw_start();
 		gl_shader_draw_execute(TRUE,texture,liq->txt_idx,frame,liq->lmap_txt_idx,1.0f,&light_list,tangent_offset,normal_offset);
@@ -461,10 +307,9 @@ void liquid_render_liquid(map_liquid_type *liq)
 		
 			// draw liquid
 		
-		glDrawElements(GL_TRIANGLES,(trig_cnt*3),GL_UNSIGNED_INT,(GLvoid*)0);
+		glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 		
 		gl_shader_draw_end();
-
 	}
 
 		// fixed function drawing
@@ -474,16 +319,16 @@ void liquid_render_liquid(map_liquid_type *liq)
 
 		glClientActiveTexture(GL_TEXTURE1);
 		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-		glTexCoordPointer(2,GL_FLOAT,0,(void*)((v_sz*3)*sizeof(float)));
+		glTexCoordPointer(2,GL_FLOAT,0,(void*)((4*3)*sizeof(float)));
 		
 		glClientActiveTexture(GL_TEXTURE0);
 		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-		glTexCoordPointer(2,GL_FLOAT,0,(void*)((v_sz*(3+2))*sizeof(float)));
+		glTexCoordPointer(2,GL_FLOAT,0,(void*)((4*(3+2))*sizeof(float)));
 
 			// need color pointers for fixed function
 
 		glEnableClientState(GL_COLOR_ARRAY);
-		glColorPointer(3,GL_FLOAT,0,(void*)((v_sz*(3+2+2))*sizeof(float)));
+		glColorPointer(3,GL_FLOAT,0,(void*)((4*(3+2+2))*sizeof(float)));
 	
 			// back rendering overrides
 			
@@ -504,7 +349,7 @@ void liquid_render_liquid(map_liquid_type *liq)
 
 		gl_texture_transparent_light_map_start();
 		gl_texture_transparent_light_map_set(gl_id,lmap_gl_id,alpha);
-		glDrawElements(GL_TRIANGLES,(trig_cnt*3),GL_UNSIGNED_INT,(GLvoid*)0);
+		glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 		gl_texture_transparent_light_map_end();
 
 			// disable color array
@@ -523,7 +368,6 @@ void liquid_render_liquid(map_liquid_type *liq)
 
 		// unmap VBOs
 
-	view_unbind_liquid_index_object();
 	view_unbind_liquid_vertex_object();
 	
 		// count the liquid
