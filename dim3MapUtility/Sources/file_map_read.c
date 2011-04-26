@@ -729,7 +729,6 @@ void read_single_liquid_v3(map_type *map,int liquid_idx,int liquid_tag)
 	liq->flag.never_obscure=xml_get_attribute_boolean(liquid_tag,"never_obscure");
 	liq->flag.never_cull=xml_get_attribute_boolean(liquid_tag,"never_cull");
 	liq->flag.no_draw=xml_get_attribute_boolean(liquid_tag,"no_draw");
-	liq->flag.no_reflection_map=xml_get_attribute_boolean(liquid_tag,"no_reflection_map");
 	liq->flag.lock_uv=xml_get_attribute_boolean(liquid_tag,"lock_uv");
 
 		// polygon
@@ -783,6 +782,17 @@ void read_single_liquid_v3(map_type *map,int liquid_idx,int liquid_tag)
 		liq->tide.direction=xml_get_attribute_list(tag,"tide_direction",(char*)liquid_tide_direction_str);
 		liq->tide.twist_angle=xml_get_attribute_float(tag,"twist_angle");
         liq->tide.flat=xml_get_attribute_boolean(tag,"flat");
+	}
+	
+		// reflection
+
+    tag=xml_findfirstchild("Reflect",liquid_tag);
+    if (tag!=-1) {
+		liq->reflect.on=xml_get_attribute_boolean(tag,"on");
+		liq->reflect.texture_size=xml_get_attribute_int(tag,"texture_size");
+		liq->reflect.x_refract_factor=xml_get_attribute_int(tag,"x_refract_factor");
+		liq->reflect.x_refract_factor=xml_get_attribute_int(tag,"z_refract_factor");
+		liq->reflect.color_factor=xml_get_attribute_float(tag,"color_factor");
 	}
 }
 

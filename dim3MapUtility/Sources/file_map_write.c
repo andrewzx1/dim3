@@ -673,7 +673,6 @@ void write_single_liquid(map_liquid_type *liq)
 	xml_add_attribute_boolean("never_obscure",liq->flag.never_obscure);
 	xml_add_attribute_boolean("never_cull",liq->flag.never_cull);
 	xml_add_attribute_boolean("no_draw",liq->flag.no_draw);
-	xml_add_attribute_boolean("no_reflection_map",liq->flag.no_reflection_map);
 	xml_add_attribute_boolean("lock_uv",liq->flag.lock_uv);
 	xml_add_tagend(FALSE);
 
@@ -724,6 +723,16 @@ void write_single_liquid(map_liquid_type *liq)
 	xml_add_attribute_list("tide_direction",(char*)liquid_tide_direction_str,liq->tide.direction);
 	xml_add_attribute_float("twist_angle",liq->tide.twist_angle);
 	xml_add_attribute_boolean("flat",liq->tide.flat);
+	xml_add_tagend(TRUE);
+	
+		// reflection
+
+	xml_add_tagstart("Reflect");
+	xml_add_attribute_boolean("on",liq->reflect.on);
+	xml_add_attribute_int("texture_size",liq->reflect.texture_size);
+	xml_add_attribute_int("x_refract_factor",liq->reflect.x_refract_factor);
+	xml_add_attribute_int("z_refract_factor",liq->reflect.x_refract_factor);
+	xml_add_attribute_float("color_factor",liq->reflect.color_factor);
 	xml_add_tagend(TRUE);
 
 	xml_add_tagclose("Liquid");

@@ -29,6 +29,7 @@
 		26452F1F127F9BA800043C34 /* view_draw_select.c in Sources */ = {isa = PBXBuildFile; fileRef = 26452F19127F9BA800043C34 /* view_draw_select.c */; };
 		26452F20127F9BA800043C34 /* view_models.c in Sources */ = {isa = PBXBuildFile; fileRef = 26452F1A127F9BA800043C34 /* view_models.c */; };
 		2647AD820E4F48D000BA3338 /* dialog_height_import.c in Sources */ = {isa = PBXBuildFile; fileRef = 2647AD810E4F48D000BA3338 /* dialog_height_import.c */; };
+		264BC91B13661D900004A4AB /* liquid_reflection_maps.c in Sources */ = {isa = PBXBuildFile; fileRef = 264BC91A13661D900004A4AB /* liquid_reflection_maps.c */; };
 		264D965E12921024005039CD /* OSX_main.c in Sources */ = {isa = PBXBuildFile; fileRef = 264D965D12921024005039CD /* OSX_main.c */; };
 		265AB84712835C9E00F3F965 /* item_palette.c in Sources */ = {isa = PBXBuildFile; fileRef = 265AB84612835C9E00F3F965 /* item_palette.c */; };
 		266DDE6D12E6714A004DA282 /* Edit.png in Copy (Lists Icons) */ = {isa = PBXBuildFile; fileRef = 266DDE5312E670B3004DA282 /* Edit.png */; };
@@ -314,6 +315,7 @@
 		26452F19127F9BA800043C34 /* view_draw_select.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = view_draw_select.c; path = Code/view_draw_select.c; sourceTree = "<group>"; };
 		26452F1A127F9BA800043C34 /* view_models.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = view_models.c; path = Code/view_models.c; sourceTree = "<group>"; };
 		2647AD810E4F48D000BA3338 /* dialog_height_import.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_height_import.c; path = Code/dialog_height_import.c; sourceTree = "<group>"; };
+		264BC91A13661D900004A4AB /* liquid_reflection_maps.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = liquid_reflection_maps.c; path = Code/liquid_reflection_maps.c; sourceTree = "<group>"; };
 		264D965D12921024005039CD /* OSX_main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = OSX_main.c; path = Code/OSX_main.c; sourceTree = "<group>"; };
 		265AB84612835C9E00F3F965 /* item_palette.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = item_palette.c; path = Code/item_palette.c; sourceTree = "<group>"; };
 		26636ADB125A8ED10090A321 /* light.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = light.png; sourceTree = "<group>"; };
@@ -726,6 +728,7 @@
 				F5595F7D0918717300B60FAD /* groups.c */,
 				0123D86700C0AFD57F000001 /* nodes.c */,
 				2681880210A3A28A000B2CD8 /* light_maps.c */,
+				264BC91A13661D900004A4AB /* liquid_reflection_maps.c */,
 			);
 			name = Pieces;
 			sourceTree = "<group>";
@@ -915,6 +918,7 @@
 				26D15DC21329EB0400F9EC7B /* OSX_dialog_property_string.c in Sources */,
 				26D15DC31329EB0400F9EC7B /* OSX_dialog_utility_common.c in Sources */,
 				26EB2AA6135CDF3700C85532 /* dialog_resize_texture.c in Sources */,
+				264BC91B13661D900004A4AB /* liquid_reflection_maps.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
