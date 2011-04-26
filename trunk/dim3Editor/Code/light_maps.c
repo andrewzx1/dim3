@@ -1010,8 +1010,8 @@ bool light_map_bitmap_transparency_check(d3pnt *spt,d3vct *vct,map_mesh_type *me
 		for (n=1;n<poly->ptsz;n++) {
 			if (poly->main_uv.x[n]<min_gx) min_gx=poly->main_uv.x[n];
 			if (poly->main_uv.x[n]>max_gx) max_gx=poly->main_uv.x[n];
-			if (poly->main_uv.y[n]<min_gx) min_gy=poly->main_uv.y[n];
-			if (poly->main_uv.y[n]>max_gx) max_gy=poly->main_uv.y[n];
+			if (poly->main_uv.y[n]<min_gy) min_gy=poly->main_uv.y[n];
+			if (poly->main_uv.y[n]>max_gy) max_gy=poly->main_uv.y[n];
 		}
 		
 			// find the hit points in the box

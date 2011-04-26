@@ -707,7 +707,7 @@ bool view_click_drag_vertex(editor_view_type *view,d3pnt *pt)
 			// grid and snap
 			
 		view_click_grid(dpt);
-		view_click_snap(mesh_idx,dpt);
+		view_click_snap(mesh_idx,-1,dpt);
 	
 		if ((state.auto_texture) && (!mesh->flag.lock_uv)) map_mesh_reset_uv(&map,mesh_idx);
 
@@ -817,7 +817,7 @@ bool view_click_drag_liquid_vertex(editor_view_type *view,d3pnt *pt)
 {
 	int						n,x,y,mx,my,mz,chk_x,chk_z,old_depth,
 							type,liquid_idx,sub_idx,handle_idx;
-	d3pnt					pts[8],old_pt,old_dpt,move_pnt,mpt;
+	d3pnt					pts[8],old_pt,old_dpt,move_pnt,mpt,dpt;
 	d3rect					box;
 	bool					first_drag;
 	map_liquid_type			*liq;
@@ -901,55 +901,87 @@ bool view_click_drag_liquid_vertex(editor_view_type *view,d3pnt *pt)
 		mpt.x=mx;
 		mpt.y=my;
 		mpt.z=mz;
+
+			// get vertex
+			
+		switch (handle_idx) {
+			case 0:
+			case 4:
+				dpt.x=old_dpt.x+mpt.x;
+				dpt.y=old_dpt.y+mpt.y;
+				dpt.z=old_dpt.z+mpt.z;
+				break;
+			case 1:
+			case 5:
+				dpt.x=old_dpt.x+mpt.x;
+				dpt.y=old_dpt.y+mpt.y;
+				dpt.z=old_dpt.z+mpt.z;
+				break;
+			case 2:
+			case 6:
+				dpt.x=old_dpt.x+mpt.x;
+				dpt.y=old_dpt.y+mpt.y;
+				dpt.z=old_dpt.z+mpt.z;
+				break;
+			case 3:
+			case 7:
+				dpt.x=old_dpt.x+mpt.x;
+				dpt.y=old_dpt.y+mpt.y;
+				dpt.z=old_dpt.z+mpt.z;
+				break;
+		}
+
+			// grid and snap
 		
-		view_click_grid(&mpt);
+		view_click_grid(&dpt);
+		view_click_snap(-1,liquid_idx,&dpt);
 		
 			// move vertex
 			
 		switch (handle_idx) {
 			case 0:
-				liq->lft=old_dpt.x+mpt.x;
-				liq->y=old_dpt.y+mpt.y;
-				liq->depth=old_depth-mpt.y;
-				liq->top=old_dpt.z+mpt.z;
+				liq->lft=dpt.x;
+				liq->y=dpt.y;
+				liq->depth=old_depth+(old_dpt.y-dpt.y);
+				liq->top=dpt.z;
 				break;
 			case 1:
-				liq->rgt=old_dpt.x+mpt.x;
-				liq->y=old_dpt.y+mpt.y;
-				liq->depth=old_depth-mpt.y;
-				liq->top=old_dpt.z+mpt.z;
+				liq->rgt=dpt.x;
+				liq->y=dpt.y;
+				liq->depth=old_depth+(old_dpt.y-dpt.y);
+				liq->top=dpt.z;
 				break;
 			case 2:
-				liq->rgt=old_dpt.x+mpt.x;
-				liq->y=old_dpt.y+mpt.y;
-				liq->depth=old_depth-mpt.y;
-				liq->bot=old_dpt.z+mpt.z;
+				liq->rgt=dpt.x;
+				liq->y=dpt.y;
+				liq->depth=old_depth+(old_dpt.y-dpt.y);
+				liq->bot=dpt.z;
 				break;
 			case 3:
-				liq->lft=old_dpt.x+mpt.x;
-				liq->y=old_dpt.y+mpt.y;
-				liq->depth=old_depth-mpt.y;
-				liq->bot=old_dpt.z+mpt.z;
+				liq->lft=dpt.x;
+				liq->y=dpt.y;
+				liq->depth=old_depth+(old_dpt.y-dpt.y);
+				liq->bot=dpt.z;
 				break;
 			case 4:
-				liq->lft=old_dpt.x+mpt.x;
-				liq->depth=old_depth+mpt.y;
-				liq->top=old_dpt.z+mpt.z;
+				liq->lft=dpt.x;
+				liq->depth=dpt.y-liq->y;
+				liq->top=dpt.z;
 				break;
 			case 5:
-				liq->rgt=old_dpt.x+mpt.x;
-				liq->depth=old_depth+mpt.y;
-				liq->top=old_dpt.z+mpt.z;
+				liq->rgt=dpt.x;
+				liq->depth=dpt.y-liq->y;
+				liq->top=dpt.z;
 				break;
 			case 6:
-				liq->rgt=old_dpt.x+mpt.x;
-				liq->depth=old_depth+mpt.y;
-				liq->bot=old_dpt.z+mpt.z;
+				liq->rgt=dpt.x;
+				liq->depth=dpt.y-liq->y;
+				liq->bot=dpt.z;
 				break;
 			case 7:
-				liq->lft=old_dpt.x+mpt.x;
-				liq->depth=old_depth+mpt.y;
-				liq->bot=old_dpt.z+mpt.z;
+				liq->lft=dpt.x;
+				liq->depth=dpt.y-liq->y;
+				liq->bot=dpt.z;
 				break;
 		}
 		

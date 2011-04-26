@@ -138,16 +138,6 @@ extern char light_type_str[][32];
 #define cv_chase_static										3
 
 //
-// liquids
-//
-
-#define liquid_min_division									5
-#define liquid_max_division									20
-
-#define liquid_direction_horizontal							0
-#define liquid_direction_vertical							1
-
-//
 // group types
 //
 
@@ -327,9 +317,8 @@ typedef struct		{
 					} map_liquid_harm_type;
 
 typedef struct		{
-						int									rate,high,direction,division;
+						int									rate,high;
 						float								twist_angle;
-						bool								flat;
 					} map_liquid_tide_type;
 					
 typedef struct		{
@@ -337,10 +326,6 @@ typedef struct		{
 															no_draw;
 					} map_liquid_flag_type;
 
-typedef struct		{
-						int									v_cnt,x_sz,z_sz;
-					} map_liquid_draw_type;
-					
 typedef struct		{
 						int									buffer_idx;
 						char								sound_name[name_str_len];
@@ -366,7 +351,6 @@ typedef struct		{
 						map_liquid_flag_type				flag;
 						map_liquid_ambient_type				ambient;
 						map_liquid_reflection_type			reflect;
-						map_liquid_draw_type				draw;
 						map_light_cache_type				light_cache;
 					} map_liquid_type;
 

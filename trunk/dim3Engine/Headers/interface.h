@@ -583,9 +583,6 @@ extern void view_unbind_map_index_object(void);
 extern float* view_bind_map_liquid_vertex_object(int sz);
 extern void view_unmap_liquid_vertex_object(void);
 extern void view_unbind_liquid_vertex_object(void);
-extern unsigned int* view_bind_map_liquid_index_object(int sz);
-extern void view_unmap_liquid_index_object(void);
-extern void view_unbind_liquid_index_object(void);
 
 extern float* view_bind_map_sky_vertex_object(int sz);
 extern void view_bind_sky_vertex_object(void);
@@ -775,7 +772,7 @@ extern void render_map_mesh_transparent(void);
 // liquids
 //
 
-inline int liquid_render_liquid_get_tide_split(map_liquid_type *liq);
+extern float liquid_tide_get_high(map_liquid_type *liq);
 extern void render_map_liquid_opaque(void);
 extern void render_map_liquid_transparent(void);
 

@@ -544,15 +544,18 @@ float ray_trace_object(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,int *hit_box_
 
 void ray_trace_object_set_hitbox(obj_type *obj,int hit_box_idx,ray_trace_contact_type *contact)
 {
-	if (contact->origin!=poly_ray_trace_origin_projectile) {
+	if (contact->origin==poly_ray_trace_origin_object) {
 		if (hit_box_idx!=-1) {
 			obj->hit_box.obj_hit_box_idx=hit_box_idx;
 		}
 		else {
 			obj->hit_box.obj_hit_box_idx=-1;
 		}
+
+		return;
 	}
-	else {
+
+	if (contact->origin==poly_ray_trace_origin_projectile) {
 		if (hit_box_idx!=-1) {
 			obj->hit_box.proj_hit_box_idx=hit_box_idx;
 		}
@@ -569,7 +572,6 @@ bool ray_trace_object_bound_check(obj_type *obj,d3pnt *min,d3pnt *max,ray_trace_
 		// object a hit candidate?
 
 	if ((obj->hidden) || (obj->pickup.on) || (obj->idx==contact->obj.ignore_idx)) return(FALSE);
-	if (((contact->origin==poly_ray_trace_origin_object) && (!obj->contact.object_on)) || ((contact->origin==poly_ray_trace_origin_projectile) && (!obj->contact.projectile_on))) return(FALSE);
 	
 		// rough y vector box check
 		
@@ -867,6 +869,12 @@ void ray_trace_map_all(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *hit_t,
 
 		mesh=&map.mesh.meshes[n];
 		if (!ray_trace_mesh_bound_check(mesh,&min,&max)) continue;
+
+			// halo checks
+
+		if (contact->origin==poly_ray_trace_origin_halo) {
+			if (mesh->flag.no_halo_obscure) continue;
+		}
 		
 			// simple collisions
 			
@@ -1042,6 +1050,12 @@ void ray_trace_map_item_list_setup(int cnt,d3pnt *spts,d3pnt *epts,ray_trace_con
 
 		mesh=&map.mesh.meshes[n];
 		if (!ray_trace_mesh_bound_check(mesh,&min,&max)) continue;
+
+			// halo checks
+
+		if (contact->origin==poly_ray_trace_origin_halo) {
+			if (mesh->flag.no_halo_obscure) continue;
+		}
 		
 			// simple collisions
 			
