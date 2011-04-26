@@ -451,7 +451,6 @@ void piece_create_liquid(void)
 	liq->flag.never_obscure=FALSE;
 	liq->flag.never_cull=FALSE;
 	liq->flag.no_draw=FALSE;
-	liq->flag.no_reflection_map=FALSE;
 	
 	liq->tint_alpha=0.5f;
 	liq->speed_alter=1.0f;
@@ -472,6 +471,12 @@ void piece_create_liquid(void)
 	liq->harm.in_harm=0;
 	liq->harm.drown_tick=10000;
 	liq->harm.drown_harm=10;
+	
+	liq->reflect.on=TRUE;
+	liq->reflect.texture_size=512;
+	liq->reflect.x_refract_factor=20000;
+	liq->reflect.z_refract_factor=20000;
+	liq->reflect.color_factor=0.25f;
 
 		// select the liquid
 		

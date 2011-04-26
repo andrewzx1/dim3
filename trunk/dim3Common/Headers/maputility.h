@@ -334,7 +334,7 @@ typedef struct		{
 					
 typedef struct		{
 						bool								lock_uv,never_obscure,never_cull,
-															no_draw,no_reflection_map;
+															no_draw;
 					} map_liquid_flag_type;
 
 typedef struct		{
@@ -345,6 +345,13 @@ typedef struct		{
 						int									buffer_idx;
 						char								sound_name[name_str_len];
 					} map_liquid_ambient_type;
+					
+typedef struct		{
+						int									texture_size,
+															x_refract_factor,z_refract_factor;
+						float								color_factor;
+						bool								on;
+					} map_liquid_reflection_type;
 
 typedef struct		{
 						int									y,depth,lft,rgt,top,bot,group_idx,
@@ -358,6 +365,7 @@ typedef struct		{
 						map_liquid_tide_type				tide;
 						map_liquid_flag_type				flag;
 						map_liquid_ambient_type				ambient;
+						map_liquid_reflection_type			reflect;
 						map_liquid_draw_type				draw;
 						map_light_cache_type				light_cache;
 					} map_liquid_type;

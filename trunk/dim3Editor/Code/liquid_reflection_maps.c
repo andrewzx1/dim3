@@ -39,9 +39,7 @@ extern file_path_setup_type		file_path_setup;
 
 #define liquid_reflection_texture_start_idx					160
 #define max_liquid_reflection_map_textures					32
-#define liq_ref_texture_size								1024		// supergumba -- settable!
-#define liq_ref_mirror_distance								50000		// supergumba -- settable!
-#define liq_ref_max_refraction								5000		// supergumba -- settable!
+#define liquid_reflection_mirror_distance					50000
 
 typedef struct		{
 						unsigned char						*data;
@@ -73,7 +71,7 @@ void liquid_reflection_map_bitmap_pixel_free(void)
 	}
 }
 
-void liquid_reflection_map_bitmap_pixel_get(d3pnt *spt,d3vct *vct,map_mesh_type *mesh,map_mesh_poly_type *poly,float hit_t,unsigned char *uc_col)
+void liquid_reflection_map_bitmap_pixel_get(d3pnt *spt,d3vct *vct,map_mesh_type *mesh,map_mesh_poly_type *poly,float hit_t,d3col *col)
 {
 	int				n,txt_idx,txt_sz,x,y,
 					lft_idx,rgt_idx,top_idx,bot_idx;
@@ -84,7 +82,7 @@ void liquid_reflection_map_bitmap_pixel_get(d3pnt *spt,d3vct *vct,map_mesh_type 
 	d3pnt			*pt;
 	bitmap_type		*bitmap;
 	
-	uc_col[0]=uc_col[1]=uc_col[2]=0;
+	col->r=col->g=col->b=0;
 
 		// get texture
 		
@@ -178,14 +176,14 @@ void liquid_reflection_map_bitmap_pixel_get(d3pnt *spt,d3vct *vct,map_mesh_type 
 	fx-=(float)floor(fx);
 	fy-=(float)floor(fy);
 
-	x=(int)(((float)(bitmap->wid*3))*fx);
+	x=(int)(((float)bitmap->wid)*fx);
 	y=(int)(((float)bitmap->high)*fy);
 	
-	ptr=liquid_reflection_map_map_texture[txt_idx].data+(x+(y*(bitmap->wid*3)));
+	ptr=liquid_reflection_map_map_texture[txt_idx].data+((x*3)+(y*(bitmap->wid*3)));
 	
-	uc_col[0]=*ptr++;
-	uc_col[1]=*ptr++;
-	uc_col[2]=*ptr;
+	col->r=((float)*ptr++)/255.0f;
+	col->g=((float)*ptr++)/255.0f;
+	col->b=((float)*ptr)/255.0f;
 }
 
 /* =======================================================
@@ -194,7 +192,7 @@ void liquid_reflection_map_bitmap_pixel_get(d3pnt *spt,d3vct *vct,map_mesh_type 
       
 ======================================================= */
 
-bool liquid_reflection_map_ray_trace_mesh_polygon(d3pnt *spt,d3vct *vct,map_mesh_type *mesh,map_mesh_poly_type *poly,unsigned char *uc_col)
+float liquid_reflection_map_ray_trace_mesh_polygon(d3pnt *spt,d3vct *vct,map_mesh_type *mesh,map_mesh_poly_type *poly,d3col *col)
 {
 	int			n,trig_count;
 	int			px[3],py[3],pz[3];
@@ -232,19 +230,21 @@ bool liquid_reflection_map_ray_trace_mesh_polygon(d3pnt *spt,d3vct *vct,map_mesh
 			// collisions
 		
 		if ((hit_t>0.0f) && (hit_t<=1.0f)) {
-			liquid_reflection_map_bitmap_pixel_get(spt,vct,mesh,poly,hit_t,uc_col);
-			return(TRUE);
+			liquid_reflection_map_bitmap_pixel_get(spt,vct,mesh,poly,hit_t,col);
+			return(hit_t);
 		}
 	}
 	
-	return(FALSE);
+	return(-1.0f);
 }
 
-void liquid_reflection_map_ray_trace_map(d3pnt *spt,d3pnt *ept,unsigned char *uc_col)
+void liquid_reflection_map_ray_trace_map(d3pnt *spt,d3pnt *ept,d3col *col)
 {
 	int							n,k;
+	float						hit_t,cur_hit_t;
 	d3pnt						min,max;
 	d3vct						vct;
+	d3col						hit_col;
 	map_mesh_type				*mesh;
 	map_mesh_poly_type			*poly;
 	
@@ -280,9 +280,14 @@ void liquid_reflection_map_ray_trace_map(d3pnt *spt,d3pnt *ept,unsigned char *uc
 		min.z=ept->z;
 		max.z=spt->z;
 	}
+
+		// default hit color
+
+	col->r=col->g=col->b=0.0f;
 	
 		// look for poly collisions
-		// ony check opaque, non-cut-outs
+	
+	cur_hit_t=-1.0f;
 	
 	for (n=0;n!=map.mesh.nmesh;n++) {
 		mesh=&map.mesh.meshes[n];
@@ -298,15 +303,15 @@ void liquid_reflection_map_ray_trace_map(d3pnt *spt,d3pnt *ept,unsigned char *uc
 			if ((poly->box.min.y>max.y) || (poly->box.max.y<min.y)) continue;
 			if ((poly->box.min.z>max.z) || (poly->box.max.z<min.z)) continue;
 			
-			if (liquid_reflection_map_ray_trace_mesh_polygon(spt,&vct,mesh,poly,uc_col)) return;
+			hit_t=liquid_reflection_map_ray_trace_mesh_polygon(spt,&vct,mesh,poly,&hit_col);
+			if (hit_t!=-1.0f) {
+				if ((cur_hit_t==-1.0f) || (hit_t<cur_hit_t)) {
+					cur_hit_t=hit_t;
+					memmove(col,&hit_col,sizeof(d3col));
+				}
+			}
 		}
 	}
-
-		// if no hit, set to black
-
-	uc_col[0]=0;
-	uc_col[1]=0;
-	uc_col[2]=0;
 }
 
 /* =======================================================
@@ -317,11 +322,11 @@ void liquid_reflection_map_ray_trace_map(d3pnt *spt,d3pnt *ept,unsigned char *uc
 
 bool liquid_reflection_map_run_for_liquid(int txt_idx,int liq_idx,char *base_path,char *map_name,char *err_str)
 {
-	int							x,z,k,x_add,z_add,sz;
+	int							x,z,x_add,z_add,sz;
 	unsigned char				*pixel,*pixel_data;
-	unsigned char				col[3];
 	char						path[1024],bitmap_name[256];
 	d3pnt						spt,ept,center;
+	d3col						col;
 	map_liquid_type				*liq;
 	
 		// get the liquid to render
@@ -330,14 +335,14 @@ bool liquid_reflection_map_run_for_liquid(int txt_idx,int liq_idx,char *base_pat
 
 		// get the pixel data for texture
 
-	sz=(liq_ref_texture_size*liq_ref_texture_size)*3;
+	sz=(liq->reflect.texture_size*liq->reflect.texture_size)*3;
 	pixel_data=(unsigned char*)malloc(sz);
 	bzero(pixel_data,sz);
 
 		// get scan ratio
 
-	x_add=(liq->rgt-liq->lft)/liq_ref_texture_size;
-	z_add=(liq->bot-liq->top)/liq_ref_texture_size;
+	x_add=(liq->rgt-liq->lft)/liq->reflect.texture_size;
+	z_add=(liq->bot-liq->top)/liq->reflect.texture_size;
 
 	center.x=(liq->lft+liq->rgt)>>1;
 	center.z=(liq->top+liq->bot)>>1;
@@ -349,39 +354,39 @@ bool liquid_reflection_map_run_for_liquid(int txt_idx,int liq_idx,char *base_pat
 	spt.y=liq->y;
 	spt.z=liq->top;
 	
-	for (z=0;z!=liq_ref_texture_size;z++) {
+	for (z=0;z!=liq->reflect.texture_size;z++) {
 
 		spt.x=liq->lft;
 
-		for (x=0;x!=liq_ref_texture_size;x++) {
+		for (x=0;x!=liq->reflect.texture_size;x++) {
 
 				// create the ray.  The further from
 				// the center, the more it slants out
 
-			ept.x=spt.x+(((spt.x-center.x)*liq_ref_max_refraction)/(center.x-liq->lft));
-			ept.y=spt.y-liq_ref_mirror_distance;
-			ept.z=spt.z+(((spt.z-center.z)*liq_ref_max_refraction)/(center.z-liq->top));
+			ept.x=spt.x+(((spt.x-center.x)*liq->reflect.x_refract_factor)/(center.x-liq->lft));
+			ept.y=spt.y-liquid_reflection_mirror_distance;
+			ept.z=spt.z+(((spt.z-center.z)*liq->reflect.z_refract_factor)/(center.z-liq->top));
 
 				// run the ray trace
 
-			liquid_reflection_map_ray_trace_map(&spt,&ept,col);
+			liquid_reflection_map_ray_trace_map(&spt,&ept,&col);
 
 				// add in the liquid color
+				
+			col.r=(liq->col.r*liq->reflect.color_factor)+(col.r*(1.0f-liq->reflect.color_factor));
+			if (col.r>1.0f) col.r=1.0f;
+			
+			col.g=(liq->col.g*liq->reflect.color_factor)+(col.g*(1.0f-liq->reflect.color_factor));
+			if (col.g>1.0f) col.g=1.0f;
+			
+			col.b=(liq->col.b*liq->reflect.color_factor)+(col.b*(1.0f-liq->reflect.color_factor));
+			if (col.b>1.0f) col.b=1.0f;
 
-			k=(int)col[0];
-			k+=(int)(liq->col.r*255.0f);
-			if (k>255) k=255;
-			*pixel++=(unsigned char)k;
-
-			k=(int)col[1];
-			k+=(int)(liq->col.g*255.0f);
-			if (k>255) k=255;
-			*pixel++=(unsigned char)k;
-
-			k=(int)col[2];
-			k+=(int)(liq->col.b*255.0f);
-			if (k>255) k=255;
-			*pixel++=(unsigned char)k;
+				// set color
+				
+			*pixel++=(unsigned char)((int)(col.r*255.0f));
+			*pixel++=(unsigned char)((int)(col.g*255.0f));
+			*pixel++=(unsigned char)((int)(col.b*255.0f));
 
 			spt.x+=x_add;
 		}
@@ -403,7 +408,7 @@ bool liquid_reflection_map_run_for_liquid(int txt_idx,int liq_idx,char *base_pat
 		
 	sprintf(bitmap_name,"ReflectionMaps/%s/rm%.3d",map_name,liq_idx);
 	sprintf(path,"%s/%s.png",base_path,bitmap_name);
-	bitmap_write_png_data(pixel_data,liq_ref_texture_size,liq_ref_texture_size,FALSE,path);
+	bitmap_write_png_data(pixel_data,liq->reflect.texture_size,liq->reflect.texture_size,FALSE,path);
 
 	liq->txt_idx=txt_idx;
 	liq->flag.lock_uv=TRUE;
@@ -486,7 +491,7 @@ bool liquid_reflection_maps_create_process(int nliq,char *err_str)
 	txt_idx=liquid_reflection_texture_start_idx;
 		
 	for (n=0;n!=map.liquid.nliquid;n++) {
-		if (map.liquid.liquids[n].flag.no_reflection_map) continue;
+		if (!map.liquid.liquids[n].reflect.on) continue;
 
 		sprintf(str,"Liquid Reflection Map: Rendering Liquid %d/%d",(n+1),nliq);
 		progress_next_title(str);
@@ -523,7 +528,7 @@ bool liquid_reflection_maps_create(void)
 	nliq=0;
 	
 	for (n=0;n!=map.liquid.nliquid;n++) {
-		if (!map.liquid.liquids[n].flag.no_reflection_map) nliq++;
+		if (map.liquid.liquids[n].reflect.on) nliq++;
 	}
 	
 	if (nliq==0) {
@@ -547,7 +552,7 @@ bool liquid_reflection_maps_create(void)
 		return(FALSE);
 	}
 
-//	file_save_map();	// supergumba -- temporary for testing
+	file_save_map();
 	
 	return(TRUE);
 }
