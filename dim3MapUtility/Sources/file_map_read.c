@@ -777,7 +777,7 @@ void read_single_liquid_v3(map_type *map,int liquid_idx,int liquid_tag)
     if (tag!=-1) {
 		liq->tide.rate=xml_get_attribute_int(tag,"rate");
 		liq->tide.high=xml_get_attribute_int(tag,"high");
-		liq->tide.twist_angle=xml_get_attribute_float(tag,"twist_angle");
+		liq->tide.circle_flow=xml_get_attribute_boolean(tag,"circle_flow");
 	}
 	
 		// reflection
@@ -788,7 +788,8 @@ void read_single_liquid_v3(map_type *map,int liquid_idx,int liquid_tag)
 		liq->reflect.texture_size=xml_get_attribute_int(tag,"texture_size");
 		liq->reflect.x_refract_factor=xml_get_attribute_int(tag,"x_refract_factor");
 		liq->reflect.z_refract_factor=xml_get_attribute_int(tag,"z_refract_factor");
-		liq->reflect.color_factor=xml_get_attribute_float(tag,"color_factor");
+		liq->reflect.merge_texture_idx=xml_get_attribute_int(tag,"merge_texture_idx");
+		liq->reflect.merge_factor=xml_get_attribute_float(tag,"merge_factor");
 		liq->reflect.alpha=xml_get_attribute_float(tag,"alpha");
 	}
 	else {
@@ -796,10 +797,10 @@ void read_single_liquid_v3(map_type *map,int liquid_idx,int liquid_tag)
 		liq->reflect.texture_size=512;
 		liq->reflect.x_refract_factor=20000;
 		liq->reflect.z_refract_factor=20000;
-		liq->reflect.color_factor=0.25f;
-		liq->reflect.alpha=0.5f;
+		liq->reflect.merge_texture_idx=-1;
+		liq->reflect.merge_factor=0.25f;
+		liq->reflect.alpha=0.9f;
 	}
-
 }
 
 /* =======================================================

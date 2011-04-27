@@ -463,7 +463,7 @@ void piece_create_liquid(void)
 	
 	liq->tide.rate=1000;
 	liq->tide.high=100;
-	liq->tide.twist_angle=0.0f;
+	liq->tide.circle_flow=FALSE;
 	
 	liq->harm.in_harm=0;
 	liq->harm.drown_tick=10000;
@@ -473,8 +473,9 @@ void piece_create_liquid(void)
 	liq->reflect.texture_size=512;
 	liq->reflect.x_refract_factor=20000;
 	liq->reflect.z_refract_factor=20000;
-	liq->reflect.color_factor=0.25f;
-	liq->reflect.alpha=0.5f;
+	liq->reflect.merge_texture_idx=-1;
+	liq->reflect.merge_factor=0.25f;
+	liq->reflect.alpha=0.9f;
 
 		// select the liquid
 		

@@ -186,6 +186,50 @@ void liquid_reflection_map_bitmap_pixel_get(d3pnt *spt,d3vct *vct,map_mesh_type 
 	col->b=((float)*ptr)/255.0f;
 }
 
+void liquid_reflection_map_merge_pixel_get(map_liquid_type *liq,int x,int y,d3col *col)
+{
+	int				txt_idx,txt_sz;
+	unsigned char	*ptr;
+	bitmap_type		*bitmap;
+	
+		// default is liquid color
+
+	col->r=liq->col.r;
+	col->g=liq->col.g;
+	col->b=liq->col.b;
+
+		// get texture
+		
+	txt_idx=liq->reflect.merge_texture_idx;
+	if ((txt_idx<0) || (txt_idx>=max_map_texture)) return;
+	
+	bitmap=&map.textures[txt_idx].frames[0].bitmap;
+	if (bitmap->gl_id==-1) return;
+
+		// need to load up this bitmap
+		
+	if (liquid_reflection_map_map_texture[txt_idx].data==NULL) {
+		txt_sz=(bitmap->wid*3)*bitmap->high;
+		liquid_reflection_map_map_texture[txt_idx].data=(unsigned char*)malloc(txt_sz);
+		bzero(liquid_reflection_map_map_texture[txt_idx].data,txt_sz);
+		
+		glBindTexture(GL_TEXTURE_2D,bitmap->gl_id);
+		glGetTexImage(GL_TEXTURE_2D,0,GL_RGB,GL_UNSIGNED_BYTE,(GLvoid*)liquid_reflection_map_map_texture[txt_idx].data);
+	}
+
+		// get pixel
+
+	x=(x*bitmap->wid)/liq->reflect.texture_size;
+	y=(y*bitmap->high)/liq->reflect.texture_size;
+
+	ptr=liquid_reflection_map_map_texture[txt_idx].data;
+	ptr+=((x*3)+(y*(bitmap->wid*3)));
+
+	col->r=((float)*ptr++)/255.0f;
+	col->g=((float)*ptr++)/255.0f;
+	col->b=((float)*ptr)/255.0f;
+}
+
 /* =======================================================
 
       Liquid Reflection Map Ray Trace
@@ -326,7 +370,7 @@ bool liquid_reflection_map_run_for_liquid(int txt_idx,int liq_idx,char *base_pat
 	unsigned char				*pixel,*pixel_data,uc_alpha;
 	char						path[1024],bitmap_name[256];
 	d3pnt						spt,ept,center;
-	d3col						col;
+	d3col						col,merge_col;
 	map_liquid_type				*liq;
 	
 		// get the liquid to render
@@ -343,8 +387,8 @@ bool liquid_reflection_map_run_for_liquid(int txt_idx,int liq_idx,char *base_pat
 
 		// get scan ratio
 
-	x_add=(liq->rgt-liq->lft)/liq->reflect.texture_size;
-	z_add=(liq->bot-liq->top)/liq->reflect.texture_size;
+	x_add=((liq->rgt-1)-liq->lft)/liq->reflect.texture_size;
+	z_add=((liq->bot-1)-liq->top)/liq->reflect.texture_size;
 
 	center.x=(liq->lft+liq->rgt)>>1;
 	center.z=(liq->top+liq->bot)>>1;
@@ -374,14 +418,16 @@ bool liquid_reflection_map_run_for_liquid(int txt_idx,int liq_idx,char *base_pat
 			liquid_reflection_map_ray_trace_map(&spt,&ept,&col);
 
 				// add in the liquid color
+
+			liquid_reflection_map_merge_pixel_get(liq,x,z,&merge_col);
 				
-			col.r=(liq->col.r*liq->reflect.color_factor)+(col.r*(1.0f-liq->reflect.color_factor));
+			col.r=(merge_col.r*liq->reflect.merge_factor)+(col.r*(1.0f-liq->reflect.merge_factor));
 			if (col.r>1.0f) col.r=1.0f;
 			
-			col.g=(liq->col.g*liq->reflect.color_factor)+(col.g*(1.0f-liq->reflect.color_factor));
+			col.g=(merge_col.g*liq->reflect.merge_factor)+(col.g*(1.0f-liq->reflect.merge_factor));
 			if (col.g>1.0f) col.g=1.0f;
 			
-			col.b=(liq->col.b*liq->reflect.color_factor)+(col.b*(1.0f-liq->reflect.color_factor));
+			col.b=(merge_col.b*liq->reflect.merge_factor)+(col.b*(1.0f-liq->reflect.merge_factor));
 			if (col.b>1.0f) col.b=1.0f;
 
 				// set color

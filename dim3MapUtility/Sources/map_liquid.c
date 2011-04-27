@@ -64,8 +64,8 @@ int map_liquid_add(map_type *map)
 	liq->flag.never_obscure=FALSE;
 	liq->flag.never_cull=FALSE;
 	liq->flag.no_draw=FALSE;
-	
-	liq->tide.twist_angle=0.0f;
+
+	liq->reflect.merge_texture_idx=-1;
 	
 	liq->camera[0]=0x0;
 	liq->ambient.sound_name[0]=0x0;
