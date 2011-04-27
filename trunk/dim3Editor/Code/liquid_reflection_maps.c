@@ -323,7 +323,7 @@ void liquid_reflection_map_ray_trace_map(d3pnt *spt,d3pnt *ept,d3col *col)
 bool liquid_reflection_map_run_for_liquid(int txt_idx,int liq_idx,char *base_path,char *map_name,char *err_str)
 {
 	int							x,z,x_add,z_add,sz;
-	unsigned char				*pixel,*pixel_data;
+	unsigned char				*pixel,*pixel_data,uc_alpha;
 	char						path[1024],bitmap_name[256];
 	d3pnt						spt,ept,center;
 	d3col						col;
@@ -335,9 +335,11 @@ bool liquid_reflection_map_run_for_liquid(int txt_idx,int liq_idx,char *base_pat
 
 		// get the pixel data for texture
 
-	sz=(liq->reflect.texture_size*liq->reflect.texture_size)*3;
+	sz=(liq->reflect.texture_size*liq->reflect.texture_size)*4;
 	pixel_data=(unsigned char*)malloc(sz);
 	bzero(pixel_data,sz);
+	
+	uc_alpha=(unsigned char)((int)(liq->reflect.alpha*255.0f));
 
 		// get scan ratio
 
@@ -387,6 +389,7 @@ bool liquid_reflection_map_run_for_liquid(int txt_idx,int liq_idx,char *base_pat
 			*pixel++=(unsigned char)((int)(col.r*255.0f));
 			*pixel++=(unsigned char)((int)(col.g*255.0f));
 			*pixel++=(unsigned char)((int)(col.b*255.0f));
+			*pixel++=uc_alpha;
 
 			spt.x+=x_add;
 		}
@@ -408,7 +411,7 @@ bool liquid_reflection_map_run_for_liquid(int txt_idx,int liq_idx,char *base_pat
 		
 	sprintf(bitmap_name,"ReflectionMaps/%s/rm%.3d",map_name,liq_idx);
 	sprintf(path,"%s/%s.png",base_path,bitmap_name);
-	bitmap_write_png_data(pixel_data,liq->reflect.texture_size,liq->reflect.texture_size,FALSE,path);
+	bitmap_write_png_data(pixel_data,liq->reflect.texture_size,liq->reflect.texture_size,TRUE,path);
 
 	liq->txt_idx=txt_idx;
 	liq->flag.lock_uv=TRUE;
