@@ -789,6 +789,7 @@ void read_single_liquid_v3(map_type *map,int liquid_idx,int liquid_tag)
 		liq->reflect.x_refract_factor=xml_get_attribute_int(tag,"x_refract_factor");
 		liq->reflect.z_refract_factor=xml_get_attribute_int(tag,"z_refract_factor");
 		liq->reflect.color_factor=xml_get_attribute_float(tag,"color_factor");
+		liq->reflect.alpha=xml_get_attribute_float(tag,"alpha");
 	}
 	else {
 		liq->reflect.on=TRUE;
@@ -796,6 +797,7 @@ void read_single_liquid_v3(map_type *map,int liquid_idx,int liquid_tag)
 		liq->reflect.x_refract_factor=20000;
 		liq->reflect.z_refract_factor=20000;
 		liq->reflect.color_factor=0.25f;
+		liq->reflect.alpha=0.5f;
 	}
 
 }

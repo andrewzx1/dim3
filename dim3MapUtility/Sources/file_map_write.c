@@ -724,6 +724,7 @@ void write_single_liquid(map_liquid_type *liq)
 	xml_add_attribute_int("x_refract_factor",liq->reflect.x_refract_factor);
 	xml_add_attribute_int("z_refract_factor",liq->reflect.z_refract_factor);
 	xml_add_attribute_float("color_factor",liq->reflect.color_factor);
+	xml_add_attribute_float("alpha",liq->reflect.alpha);
 	xml_add_tagend(TRUE);
 
 	xml_add_tagclose("Liquid");

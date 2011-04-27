@@ -57,13 +57,14 @@ and can be sold or given away.
 #define kLiquidPropertyReflectXRefract		20
 #define kLiquidPropertyReflectZRefract		21
 #define kLiquidPropertyReflectColorFactor	22
+#define kLiquidPropertyReflectAlpha			23
 
-#define kLiquidPropertyGroup				23
+#define kLiquidPropertyGroup				24
 
-#define kLiquidPropertyOff					24
-#define kLiquidPropertySize					25
-#define kLiquidPropertyShift				26
-#define kLiquidPropertyCamera				27
+#define kLiquidPropertyOff					25
+#define kLiquidPropertySize					26
+#define kLiquidPropertyShift				27
+#define kLiquidPropertyCamera				28
 
 extern map_type					map;
 extern editor_state_type		state;
@@ -117,6 +118,7 @@ void property_palette_fill_liquid(int liq_idx)
 	list_palette_add_string_int(&property_palette,kLiquidPropertyReflectXRefract,"X Refraction Factor",liq->reflect.x_refract_factor,FALSE);
 	list_palette_add_string_int(&property_palette,kLiquidPropertyReflectZRefract,"Z Refraction Factor",liq->reflect.z_refract_factor,FALSE);
 	list_palette_add_string_float(&property_palette,kLiquidPropertyReflectColorFactor,"Color Factor",liq->reflect.color_factor,FALSE);
+	list_palette_add_string_float(&property_palette,kLiquidPropertyReflectAlpha,"Alpha",liq->reflect.alpha,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Liquid Group");
 	if (liq->group_idx==-1) {
@@ -277,6 +279,10 @@ void property_palette_click_liquid(int liq_idx,int id)
 			
 		case kLiquidPropertyReflectColorFactor:
 			dialog_property_string_run(list_string_value_0_to_1_float,(void*)&liq->reflect.color_factor,0,0,0);
+			break;
+			
+		case kLiquidPropertyReflectAlpha:
+			dialog_property_string_run(list_string_value_0_to_1_float,(void*)&liq->reflect.alpha,0,0,0);
 			break;
 
 			// group

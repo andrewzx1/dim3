@@ -474,6 +474,7 @@ void piece_create_liquid(void)
 	liq->reflect.x_refract_factor=20000;
 	liq->reflect.z_refract_factor=20000;
 	liq->reflect.color_factor=0.25f;
+	liq->reflect.alpha=0.5f;
 
 		// select the liquid
 		

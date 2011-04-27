@@ -334,7 +334,7 @@ typedef struct		{
 typedef struct		{
 						int									texture_size,
 															x_refract_factor,z_refract_factor;
-						float								color_factor;
+						float								color_factor,alpha;
 						bool								on;
 					} map_liquid_reflection_type;
 
