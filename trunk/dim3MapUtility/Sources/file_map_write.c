@@ -713,7 +713,7 @@ void write_single_liquid(map_liquid_type *liq)
 	xml_add_tagstart("Tide");
 	xml_add_attribute_int("rate",liq->tide.rate);
 	xml_add_attribute_int("high",liq->tide.high);
-	xml_add_attribute_float("twist_angle",liq->tide.twist_angle);
+	xml_add_attribute_boolean("circle_flow",liq->tide.circle_flow);
 	xml_add_tagend(TRUE);
 	
 		// reflection
@@ -723,7 +723,8 @@ void write_single_liquid(map_liquid_type *liq)
 	xml_add_attribute_int("texture_size",liq->reflect.texture_size);
 	xml_add_attribute_int("x_refract_factor",liq->reflect.x_refract_factor);
 	xml_add_attribute_int("z_refract_factor",liq->reflect.z_refract_factor);
-	xml_add_attribute_float("color_factor",liq->reflect.color_factor);
+	xml_add_attribute_int("merge_texture_idx",liq->reflect.merge_texture_idx);
+	xml_add_attribute_float("merge_factor",liq->reflect.merge_factor);
 	xml_add_attribute_float("alpha",liq->reflect.alpha);
 	xml_add_tagend(TRUE);
 

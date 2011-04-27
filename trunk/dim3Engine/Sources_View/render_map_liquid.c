@@ -48,14 +48,11 @@ extern bool boundbox_inview(int x,int z,int ex,int ez,int ty,int by);
 
 float liquid_tide_get_high(map_liquid_type *liq)
 {
-	int				tick;
 	float			f_time,sn;
-
-	tick=game_time_get();
 
 		// get rate between 0..1
 
-	f_time=(float)(tick%liq->tide.rate);
+	f_time=(float)(game_time_get()%liq->tide.rate);
 	f_time=f_time/((float)liq->tide.rate);
 	
 		// waves are sin waves
@@ -64,20 +61,28 @@ float liquid_tide_get_high(map_liquid_type *liq)
 	return(((float)liq->tide.high)*sn);
 }
 
-float liquid_tide_get_twist(map_liquid_type *liq)
+void liquid_tide_get_circle_uv(map_liquid_type *liq,float *gx_add,float *gy_add)
 {
-	int				tick;
-	float			f_time,sn;
+	float			f_time,g_temp;
+	matrix_type		mat;
 
-	tick=game_time_get();
+	*gx_add=*gy_add=0.0f;
+
+	if (!liq->tide.circle_flow) return;
 
 		// get rate between 0..1
 
-	f_time=(float)(tick%liq->tide.rate);
+	f_time=(float)(game_time_get()%liq->tide.rate);
 	f_time=f_time/((float)liq->tide.rate);
 
-	sn=(float)sin((TRIG_PI*2.0f)*f_time);
-	return(liq->tide.twist_angle*sn);
+		// rotate gx,gy
+
+	matrix_rotate_y(&mat,(360.0f*f_time));
+
+	g_temp=0.0f;
+	*gx_add=0.5f;
+
+	matrix_vertex_multiply(&mat,gx_add,&g_temp,gy_add);
 }
 
 /* =======================================================
@@ -103,10 +108,9 @@ bool liquid_is_transparent(map_liquid_type *liq)
 void liquid_render_liquid_create_vertex(map_liquid_type *liq)
 {
 	int				n,k,vbo_cnt;
-	float			fy,gx,gy,gx2,gy2,f_ang,f_tick;
+	float			fy,gx,gy,gx2,gy2,gx_add,gy_add,f_tick;
 	bool			shader_on;
 	float			*vertex_ptr,*vl,*uv,*uv2,*ct,*cn,*cl;
-	matrix_type		mat;
 	
 		// setup vbo
 		// shaders don't need light lists
@@ -139,18 +143,9 @@ void liquid_render_liquid_create_vertex(map_liquid_type *liq)
 
 	gy2=gy+liq->main_uv.y_size;
 	
-		// liquid texture UV rotates
+		// liquid texture UV moves
 
-	if (liq->tide.twist_angle!=0.0f) {
-		f_ang=liquid_tide_get_twist(liq);
-		matrix_rotate_y(&mat,f_ang);
-
-		fy=0.0f;
-		matrix_vertex_multiply(&mat,&gx,&fy,&gy);
-
-		fy=0.0f;
-		matrix_vertex_multiply(&mat,&gx2,&fy,&gy2);
-	}
+	liquid_tide_get_circle_uv(liq,&gx_add,&gy_add);
 
 		// liquid vertexes
 
@@ -166,8 +161,8 @@ void liquid_render_liquid_create_vertex(map_liquid_type *liq)
 	*vl++=fy;
 	*vl++=(float)liq->top;
 
-	*uv++=gx;
-	*uv++=gy;
+	*uv++=gx+gx_add;
+	*uv++=gy+gy_add;
 
 	*uv2++=liq->lmap_uv.x_offset;
 	*uv2++=liq->lmap_uv.y_offset;
@@ -178,8 +173,8 @@ void liquid_render_liquid_create_vertex(map_liquid_type *liq)
 	*vl++=fy;
 	*vl++=(float)liq->top;
 
-	*uv++=gx2;
-	*uv++=gy;
+	*uv++=gx2+gx_add;
+	*uv++=gy+gy_add;
 
 	*uv2++=liq->lmap_uv.x_offset+liq->lmap_uv.x_size;
 	*uv2++=liq->lmap_uv.y_offset;
@@ -190,8 +185,8 @@ void liquid_render_liquid_create_vertex(map_liquid_type *liq)
 	*vl++=fy;
 	*vl++=(float)liq->bot;
 
-	*uv++=gx;
-	*uv++=gy2;
+	*uv++=gx+gx_add;
+	*uv++=gy2+gy_add;
 
 	*uv2++=liq->lmap_uv.x_offset;
 	*uv2++=liq->lmap_uv.y_offset+liq->lmap_uv.y_size;
@@ -202,8 +197,8 @@ void liquid_render_liquid_create_vertex(map_liquid_type *liq)
 	*vl++=fy;
 	*vl++=(float)liq->bot;
 
-	*uv++=gx2;
-	*uv++=gy2;
+	*uv++=gx2+gx_add;
+	*uv++=gy2+gy_add;
 
 	*uv2++=liq->lmap_uv.x_offset+liq->lmap_uv.x_size;
 	*uv2++=liq->lmap_uv.y_offset+liq->lmap_uv.y_size;

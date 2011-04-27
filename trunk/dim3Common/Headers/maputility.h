@@ -318,7 +318,7 @@ typedef struct		{
 
 typedef struct		{
 						int									rate,high;
-						float								twist_angle;
+						bool								circle_flow;
 					} map_liquid_tide_type;
 					
 typedef struct		{
@@ -332,9 +332,9 @@ typedef struct		{
 					} map_liquid_ambient_type;
 					
 typedef struct		{
-						int									texture_size,
+						int									texture_size,merge_texture_idx,
 															x_refract_factor,z_refract_factor;
-						float								color_factor,alpha;
+						float								merge_factor,alpha;
 						bool								on;
 					} map_liquid_reflection_type;
 
