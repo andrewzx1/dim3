@@ -35,7 +35,7 @@ and can be sold or given away.
 // tools
 //
 
-#define tool_count								38
+#define tool_count								37
 #define tool_button_size						32
 
 #define tool_file_names							{ \
@@ -75,11 +75,10 @@ and can be sold or given away.
 													"Tool Height Map", \
 													"Tool Grid", \
 													"Tool Polygon", \
-													"Tool SVG", \
 													"Tool Liquid", \
 											}
 											
-#define tool_separators						{"00010100100100110100101000000000000000"}
+#define tool_separators						{"0001010010010011010010100000000000000"}
 
 #define tool_tip_names							{ \
 													"Move Vertexes and Meshes Freely", \
@@ -118,7 +117,6 @@ and can be sold or given away.
 													"Add Imported Height Map", \
 													"Add Grid", \
 													"Add Polygon", \
-													"Add Imported SVG", \
 													"Add Liquid", \
 											}
 

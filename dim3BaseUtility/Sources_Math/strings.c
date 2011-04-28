@@ -31,6 +31,22 @@ and can be sold or given away.
 
 /* =======================================================
 
+      Safe StrCat
+      
+======================================================= */
+
+void string_safe_strcat(char *str,char *cat_str,int buf_len)
+{
+	int				len;
+
+	len=(buf_len-strlen(str))-1;
+	if (len>0) strncat(str,cat_str,len);
+
+	str[buf_len-1]=0x0;
+}
+
+/* =======================================================
+
       Float To String
       
 ======================================================= */

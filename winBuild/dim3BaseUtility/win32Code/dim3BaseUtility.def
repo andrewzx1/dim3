@@ -96,7 +96,8 @@ EXPORTS
 
 	acceleration_calculate						@230
 
-	string_convert_float						@240
+	string_safe_strcat							@240
+	string_convert_float						@241
 
 
 
@@ -143,25 +144,21 @@ EXPORTS
 
 	xml_get_attribute_raw						@300
 	xml_get_attribute_text						@301
-	xml_get_attribute_text_default_blank		@302
-	xml_get_attribute_int						@303
-	xml_get_attribute_int_default				@304
-	xml_get_attribute_int_array					@305
-	xml_get_attribute_short_array				@306
-	xml_get_attribute_float						@307
-	xml_get_attribute_float_default				@308
-	xml_get_attribute_float_array				@309
-	xml_get_attribute_boolean					@310
-	xml_get_attribute_boolean_default_true		@311
-	xml_get_attribute_list						@312
-	xml_get_attribute_2_coord_int				@313
-	xml_get_attribute_2_coord_float				@314
-	xml_get_attribute_2_coord_float_default		@315
-	xml_get_attribute_3_coord_int				@316
-	xml_get_attribute_3_coord_float				@317
-	xml_get_attribute_4_coord_float				@318
-	xml_get_attribute_color						@319
-	xml_get_attribute_bit_array					@320
+	xml_get_attribute_int						@302
+	xml_get_attribute_int_default				@303
+	xml_get_attribute_int_array					@304
+	xml_get_attribute_short_array				@305
+	xml_get_attribute_float						@306
+	xml_get_attribute_float_default				@307
+	xml_get_attribute_float_array				@308
+	xml_get_attribute_boolean					@309
+	xml_get_attribute_list						@310
+	xml_get_attribute_2_coord_int				@311
+	xml_get_attribute_2_coord_float				@312
+	xml_get_attribute_3_coord_int				@313
+	xml_get_attribute_3_coord_float				@314
+	xml_get_attribute_4_coord_float				@315
+	xml_get_attribute_color						@316
 
 	xml_add_tagstart							@321
 	xml_add_tagend								@322
@@ -181,7 +178,6 @@ EXPORTS
 	xml_add_attribute_3_coord_float				@341
 	xml_add_attribute_4_coord_float				@342
 	xml_add_attribute_color						@343
-	xml_add_attribute_bit_array					@344
 
 	xml_key_read_int							@500
 	xml_key_read_float							@501

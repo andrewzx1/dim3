@@ -43,7 +43,6 @@ bool read_animate_xml(model_type *model)
 							tag,model_head,poses_tag,animations_tag,animation_tag,
 							particles_head,particle_tag,rings_head,ring_tag;
     char					sub_path[1024],path[1024],posename[256],str[256];
-	bool					old_particle_def,old_ring_def;
     model_pose_move_type	*pose_move;
 	model_animate_type		*animate;
 
@@ -125,88 +124,53 @@ bool read_animate_xml(model_type *model)
 			pose_move->flash.fade_msec=xml_get_attribute_int(tag,"flash_fade_time");
 			pose_move->flash.exponent=xml_get_attribute_float_default(tag,"flash_exponent",1.0f);
 			xml_get_attribute_color(tag,"flash_color",&pose_move->flash.col);
-			
-			if (!xml_get_attribute_text(tag,"flash_bone",str,256)) {	// check for older flash defs and increase intensity
-				pose_move->flash.intensity*=144;		// old map enlarge value
-			}
+			xml_get_attribute_text(tag,"flash_bone",str,256);
 
 			pose_move->shake.distance=xml_get_attribute_int(tag,"shake_distance");
 			pose_move->shake.size=xml_get_attribute_int(tag,"shake_size");
 			pose_move->shake.life_msec=xml_get_attribute_int(tag,"shake_time");
 
-				// old particle defines
+				// particles
 
 			pose_move->particle.count=0;
-			
-			old_particle_def=xml_get_attribute_text(tag,"particle",pose_move->particle.particles[0].name,name_str_len);
-			if (old_particle_def) {
-				if (pose_move->particle.particles[0].name[0]!=0x0) {
-					pose_move->particle.count=1;
 
-					pose_move->particle.particles[0].bone_idx=model_find_bone(model,xml_get_attribute_model_tag(tag,"effect_bone"));
-					pose_move->particle.particles[0].rotate=xml_get_attribute_boolean(tag,"particle_rotate");
-					pose_move->particle.particles[0].motion=xml_get_attribute_boolean(tag,"particle_motion");
-					pose_move->particle.particles[0].motion_factor=xml_get_attribute_float_default(tag,"particle_motion_factor",1.0f);
-					pose_move->particle.particles[0].stick=xml_get_attribute_boolean(tag,"particle_stick");
-					xml_get_attribute_3_coord_int(tag,"particle_slop",&pose_move->particle.particles[0].slop.x,&pose_move->particle.particles[0].slop.y,&pose_move->particle.particles[0].slop.z);
+			particles_head=xml_findfirstchild("Particles",tag);
+    
+			if (particles_head!=-1) {
+				pose_move->particle.count=xml_countchildren(particles_head);
+				particle_tag=xml_findfirstchild("Particle",particles_head);
+    
+				for (t=0;t!=pose_move->particle.count;t++) {
+					pose_move->particle.particles[t].bone_idx=model_find_bone(model,xml_get_attribute_model_tag(particle_tag,"bone"));
+					xml_get_attribute_text(particle_tag,"particle",pose_move->particle.particles[t].name,name_str_len);
+					pose_move->particle.particles[t].rotate=xml_get_attribute_boolean(particle_tag,"particle_rotate");
+					pose_move->particle.particles[t].motion=xml_get_attribute_boolean(particle_tag,"particle_motion");
+					pose_move->particle.particles[t].motion_factor=xml_get_attribute_float_default(particle_tag,"particle_motion_factor",1.0f);
+					pose_move->particle.particles[t].stick=xml_get_attribute_boolean(particle_tag,"particle_stick");
+					xml_get_attribute_3_coord_int(particle_tag,"particle_slop",&pose_move->particle.particles[t].slop.x,&pose_move->particle.particles[t].slop.y,&pose_move->particle.particles[t].slop.z);
+
+					particle_tag=xml_findnextchild(particle_tag);
 				}
 			}
 
-				// new particle defines
-
-			else {
-				particles_head=xml_findfirstchild("Particles",tag);
-        
-				if (particles_head!=-1) {
-					pose_move->particle.count=xml_countchildren(particles_head);
-					particle_tag=xml_findfirstchild("Particle",particles_head);
-        
-					for (t=0;t!=pose_move->particle.count;t++) {
-						pose_move->particle.particles[t].bone_idx=model_find_bone(model,xml_get_attribute_model_tag(particle_tag,"bone"));
-						xml_get_attribute_text(particle_tag,"particle",pose_move->particle.particles[t].name,name_str_len);
-						pose_move->particle.particles[t].rotate=xml_get_attribute_boolean(particle_tag,"particle_rotate");
-						pose_move->particle.particles[t].motion=xml_get_attribute_boolean(particle_tag,"particle_motion");
-						pose_move->particle.particles[t].motion_factor=xml_get_attribute_float_default(particle_tag,"particle_motion_factor",1.0f);
-						pose_move->particle.particles[t].stick=xml_get_attribute_boolean(particle_tag,"particle_stick");
-						xml_get_attribute_3_coord_int(particle_tag,"particle_slop",&pose_move->particle.particles[t].slop.x,&pose_move->particle.particles[t].slop.y,&pose_move->particle.particles[t].slop.z);
-
-						particle_tag=xml_findnextchild(particle_tag);
-					}
-				}
-			}
-
-				// old ring defines
+				// rings
+				// supergumba -- delete later
 
 			pose_move->ring.count=0;
 
-			old_ring_def=xml_get_attribute_text(tag,"ring",pose_move->ring.rings[0].name,name_str_len);
-			if (old_ring_def) {
-				if (pose_move->ring.rings[0].name[0]!=0x0) {
-					pose_move->ring.count=1;
+			rings_head=xml_findfirstchild("Rings",tag);
+    
+			if (rings_head!=-1) {
+				pose_move->ring.count=xml_countchildren(rings_head);
+				ring_tag=xml_findfirstchild("Ring",rings_head);
+    
+				for (t=0;t!=pose_move->ring.count;t++) {
+					pose_move->ring.rings[t].bone_idx=model_find_bone(model,xml_get_attribute_model_tag(ring_tag,"bone"));
+					xml_get_attribute_text(ring_tag,"ring",pose_move->ring.rings[t].name,name_str_len);
+					pose_move->ring.rings[t].angle=xml_get_attribute_boolean(ring_tag,"ring_angle");
+					xml_get_attribute_3_coord_int(ring_tag,"ring_slop",&pose_move->ring.rings[t].slop.x,&pose_move->ring.rings[t].slop.y,&pose_move->ring.rings[t].slop.z);
 
-					pose_move->ring.rings[0].bone_idx=model_find_bone(model,xml_get_attribute_model_tag(tag,"effect_bone"));
-					pose_move->ring.rings[0].angle=xml_get_attribute_boolean(tag,"ring_angle");
-					xml_get_attribute_3_coord_int(tag,"ring_slop",&pose_move->ring.rings[0].slop.x,&pose_move->ring.rings[0].slop.y,&pose_move->ring.rings[0].slop.z);
-				}
-			}
-
-				// new ring defines
-
-			else {
-				rings_head=xml_findfirstchild("Rings",tag);
-        
-				if (rings_head!=-1) {
-					pose_move->ring.count=xml_countchildren(rings_head);
-					ring_tag=xml_findfirstchild("Ring",rings_head);
-        
-					for (t=0;t!=pose_move->ring.count;t++) {
-						pose_move->ring.rings[t].bone_idx=model_find_bone(model,xml_get_attribute_model_tag(ring_tag,"bone"));
-						xml_get_attribute_text(ring_tag,"ring",pose_move->ring.rings[t].name,name_str_len);
-						pose_move->ring.rings[t].angle=xml_get_attribute_boolean(ring_tag,"ring_angle");
-						xml_get_attribute_3_coord_int(ring_tag,"ring_slop",&pose_move->ring.rings[t].slop.x,&pose_move->ring.rings[t].slop.y,&pose_move->ring.rings[t].slop.z);
-
-						ring_tag=xml_findnextchild(ring_tag);
-					}
+					ring_tag=xml_findnextchild(ring_tag);
 				}
 			}
 

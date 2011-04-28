@@ -41,11 +41,11 @@ char				*xml_dataptr,*xml_taglistptr;
 
 bool xml_decode(void)
 {
-	int					i,k,
+	int					n,k,
 						q,noff,spot,tag_offset,listsz,
 						tagstack[max_tag_depth];
 	char				c,*sptr,
-						name[256],*oldptr,*newtaglistptr;
+						name[256],*newtaglistptr;
 	bool				intag,inname,inquote,backslash,endtag,goodread;
 	xmltagtype			*tags,*tag;
 	
@@ -53,8 +53,8 @@ bool xml_decode(void)
 
 		// create initial set of tags
 
-	xml_taglistsz=tag_atom_sz;
-	listsz=tag_atom_sz*sizeof(xmltagtype);
+	xml_taglistsz=xml_tag_chunk_count;
+	listsz=xml_tag_chunk_count*sizeof(xmltagtype);
 	xml_taglistptr=(char*)malloc(listsz);
 	if (xml_taglistptr==NULL) return(FALSE);
 
@@ -74,9 +74,9 @@ bool xml_decode(void)
 	noff=0;
 	goodread=TRUE;
 
-	sptr=oldptr=(char*)xml_dataptr;
+	sptr=(char*)xml_dataptr;
 
-	for (i=0;i<xml_filesz;i++) {
+	for (n=0;n!=xml_filesz;n++) {
 		c=*sptr++;
 		if (c==0x0) break;
 
@@ -85,9 +85,7 @@ bool xml_decode(void)
 
 		if (c=='/') {
 			if (intag) {
-				if ((inname) && (noff==0)) {
-					endtag=TRUE;
-				}
+				if ((inname) && (noff==0)) endtag=TRUE;
 			}
 			backslash=TRUE;
 		}
@@ -97,7 +95,7 @@ bool xml_decode(void)
 			inname=TRUE;
 			noff=0;
 			backslash=FALSE;
-			tag_offset=i;
+			tag_offset=n;
 			continue;
 		}
 
@@ -130,7 +128,7 @@ bool xml_decode(void)
 				}
 				tag->tag_offset=tag_offset;
 				tag->attrib_offset=tag_offset+((int)strlen(name)+2);
-				tag->start_offset=i+1;
+				tag->start_offset=n+1;
 
 					// move up stack if this tag a parent
 
@@ -139,13 +137,13 @@ bool xml_decode(void)
 					spot++;
 				}
 				else {
-					tag->end_offset=i+1;
+					tag->end_offset=n+1;
 				}
 
 				xml_ntag++;
 
 				if (xml_ntag>=xml_taglistsz) {		// need to add more tags?
-					listsz=(xml_taglistsz+tag_atom_sz)*sizeof(xmltagtype);
+					listsz=(xml_taglistsz+xml_tag_chunk_count)*sizeof(xmltagtype);
 					
 					newtaglistptr=(char*)malloc(listsz);
 					if (newtaglistptr!=NULL) {
@@ -153,7 +151,7 @@ bool xml_decode(void)
 						free(xml_taglistptr);
 						
 						xml_taglistptr=newtaglistptr;
-						xml_taglistsz=xml_taglistsz+tag_atom_sz;
+						xml_taglistsz=xml_taglistsz+xml_tag_chunk_count;
 					}
 					
 					tags=(xmltagtype*)xml_taglistptr;
@@ -186,7 +184,7 @@ bool xml_decode(void)
 
 	tag=tags;
 
-	for (k=0;k<xml_ntag;k++) {
+	for (k=0;k!=xml_ntag;k++) {
 		tag->nchild=0;
 		tag->first_child=-1;
 		tag->last_child=-1;
@@ -195,7 +193,7 @@ bool xml_decode(void)
 
 	tag=tags;
 
-	for (k=0;k<xml_ntag;k++) {
+	for (k=0;k!=xml_ntag;k++) {
 		q=tag->parent;
 		if (q!=-1) {
 			tags[q].nchild++;
@@ -217,7 +215,7 @@ bool xml_decode(void)
 bool xml_new_file(void)
 {
 	xml_filesz=0;
-	xml_buffersz=buff_atom_sz;
+	xml_buffersz=xml_buffer_chunk_sz;
 	xml_taglistptr=NULL;
 	xml_dataptr=(char*)malloc(xml_buffersz);
 	return(xml_dataptr!=NULL);
@@ -249,7 +247,7 @@ bool xml_open_file(char *path)
 	fclose(file);
     
 	xml_filesz=sz;
-	xml_buffersz=buff_atom_sz;
+	xml_buffersz=xml_buffer_chunk_sz;
 	xml_taglistptr=NULL;
     
 	return(xml_decode());
@@ -338,7 +336,7 @@ int xml_findnextchild(int curtag)
 	curtag++;
 	tag++;
 
-	for ((n=curtag);(n<xml_ntag);n++) {
+	for (n=curtag;n<xml_ntag;n++) {
 		if (tag->parent==parent) return(n);
 		tag++;
 	}
@@ -439,7 +437,7 @@ char xml_hex_int_to_character(int k)
 
 /* =======================================================
 
-      Read Attributes
+      Read Attributes Raw
             
 ======================================================= */
 
@@ -551,24 +549,20 @@ void xml_parse_attribute(char *value)
 	}
 }
 
-bool xml_get_attribute_text(int n,char *name,char *value,int valuesz)
-{
-	if (!xml_get_attribute_raw(n,name,value,valuesz)) return(FALSE);
-	xml_parse_attribute(value);
+/* =======================================================
 
-	return(TRUE);
-}
+      Read Attributes
+            
+======================================================= */
 
-bool xml_get_attribute_text_default_blank(int n,char *name,char *value,int valuesz)
+void xml_get_attribute_text(int n,char *name,char *value,int valuesz)
 {
 	if (!xml_get_attribute_raw(n,name,value,valuesz)) {
-		value[0]=0x0;
+		*value=0x0;
+		return;
 	}
-	else {
-		xml_parse_attribute(value);
-	}
-
-	return(TRUE);
+	
+	xml_parse_attribute(value);
 }
 
 int xml_get_attribute_int(int n,char *name)
@@ -643,7 +637,7 @@ float xml_get_attribute_float(int n,char *name)
 {
 	char			str[256];
 
-	if (!xml_get_attribute_raw(n,name,str,256)) return(0);
+	if (!xml_get_attribute_raw(n,name,str,256)) return(0.0f);
 	return(strtof(str,NULL));
 }
 
@@ -686,14 +680,6 @@ bool xml_get_attribute_boolean(int n,char *name)
 	char			str[256];
 
 	if (!xml_get_attribute_raw(n,name,str,256)) return(FALSE);
-	return(strcmp(str,"true")==0);
-}
-
-bool xml_get_attribute_boolean_default_true(int n,char *name)
-{
-	char			str[256];
-
-	if (!xml_get_attribute_raw(n,name,str,256)) return(TRUE);
 	return(strcmp(str,"true")==0);
 }
 
@@ -744,28 +730,6 @@ bool xml_get_attribute_2_coord_float(int n,char *name,float *x,float *y)
 
 	if (!xml_get_attribute_raw(n,name,str,256)) return(FALSE);
     
-	c2=strchr(str,',');
-	if (c2==NULL) return(FALSE);
-	
-	*c2=0x0;
-	*x=strtof(str,NULL);
-	*y=strtof(c2+1,NULL);
-    
-	return(TRUE);
-}
-
-bool xml_get_attribute_2_coord_float_default(int n,char *name,float *x,float *y,float def_x,float def_y)
-{
-	char		*c2,str[256];
-
-	if (!xml_get_attribute_raw(n,name,str,256)) {
-		*x=def_x;
-		*y=def_y;
-		return(TRUE);
-    }
-
-	*x=*y=0;
-
 	c2=strchr(str,',');
 	if (c2==NULL) return(FALSE);
 	
@@ -866,6 +830,8 @@ bool xml_get_attribute_color(int n,char *name,d3col *col)
 	int			k;
 	char		str[8];
 
+	col->r=col->g=col->b=0.0f;
+
 	if (!xml_get_attribute_raw(n,name,str,8)) return(FALSE);
 	
 	k=(xml_hex_character_to_int(str[0])*16)+xml_hex_character_to_int(str[1]);
@@ -876,24 +842,6 @@ bool xml_get_attribute_color(int n,char *name,d3col *col)
 
 	k=(xml_hex_character_to_int(str[4])*16)+xml_hex_character_to_int(str[5]);
 	col->b=((float)k)/(float)0xFF;
-	
-	return(TRUE);
-}
-
-bool xml_get_attribute_bit_array(int n,char *name,unsigned char *value,int count)
-{
-	int					k;
-    char				str[5120];
-	
-	bzero(value,count);
-    
-	if (!xml_get_attribute_raw(n,name,str,5120)) return(0);
-	
-	count=strlen(str);
-	
-	for (k=0;k<count;k+=2) {
-		value[k>>1]=(unsigned char)((xml_hex_character_to_int(str[k])*16)+xml_hex_character_to_int(str[k+1]));
-	}
 	
 	return(TRUE);
 }
@@ -910,14 +858,14 @@ bool xml_writebyte(byte b)
 
 	if ((xml_filesz+1)>=xml_buffersz) {					// need to increase the buffer size?
 	
-		newdataptr=(char*)malloc(xml_buffersz+buff_atom_sz);
+		newdataptr=(char*)malloc(xml_buffersz+xml_buffer_chunk_sz);
 		if (newdataptr==NULL) return(FALSE);
 		
 		memmove(newdataptr,xml_dataptr,xml_buffersz);
 		free(xml_dataptr);
 
 		xml_dataptr=newdataptr;
-		xml_buffersz=xml_buffersz+buff_atom_sz;
+		xml_buffersz=xml_buffersz+xml_buffer_chunk_sz;
 	}
 
 	*(xml_dataptr+xml_filesz)=b;
@@ -1065,159 +1013,164 @@ void xml_parsetagsinvalue(char *value)
             
 ======================================================= */
 
-bool xml_add_attribute_text(char *name,char *value)
+void xml_add_attribute_text(char *name,char *value)
 {
-	char		str[5120];
+	char		str[5120],s_value[5120];
 
-	if (!xml_writechar(' ')) return(FALSE);
-	if (!xml_writetext(name)) return(FALSE);
-	if (!xml_writetext("=\"")) return(FALSE);
+	if (*value==0x0) return;
 
-	strcpy(str,value);
-	xml_parsetagsinvalue(str);
-	if (!xml_writetext(str)) return(FALSE);
+	strcpy(s_value,value);
+	xml_parsetagsinvalue(s_value);
 
-	return(xml_writechar('\"'));
+	sprintf(str," %s=\"%s\"",name,s_value);
+	xml_writetext(str);
 }
 
-bool xml_add_attribute_int(char *name,int value)
+void xml_add_attribute_int(char *name,int value)
 {
 	char		txt[256];
+
+	if (value==0) return;
 
 	sprintf(txt,"%d",value);
-	return(xml_add_attribute_text(name,txt));
+	xml_add_attribute_text(name,txt);
 }
 
-bool xml_add_attribute_int_array(char *name,int *value,int count,bool removenegone)
+void xml_add_attribute_int_array(char *name,int *value,int count,bool removenegone)
 {
-    int			i;
+    int			n;
 	char		txt[5120],a[256];
 
     txt[0]=0x0;
     
-    for ((i=0);(i!=count);i++) {
-        if ((value[i]==-1) && (removenegone)) continue;
-        sprintf(a,"%d",value[i]);
+    for (n=0;n!=count;n++) {
+        if ((value[n]==-1) && (removenegone)) continue;
+        sprintf(a,"%d",value[n]);
         if (txt[0]!=0x0) strcat(txt,",");
         strcat(txt,a);
     }
     
-    if (txt[0]==0x0) return(TRUE);
-    
-	return(xml_add_attribute_text(name,txt));
+    if (txt[0]!=0x0) xml_add_attribute_text(name,txt);
 }
 
-bool xml_add_attribute_short_array(char *name,short *value,int count,bool removenegone)
+void xml_add_attribute_short_array(char *name,short *value,int count,bool removenegone)
 {
-    int			i;
+    int			n;
 	char		txt[5120],a[256];
 
     txt[0]=0x0;
     
-    for ((i=0);(i!=count);i++) {
-        if ((value[i]==-1) && (removenegone)) continue;
-        sprintf(a,"%d",value[i]);
+    for (n=0;n!=count;n++) {
+        if ((value[n]==-1) && (removenegone)) continue;
+        sprintf(a,"%d",value[n]);
         if (txt[0]!=0x0) strcat(txt,",");
         strcat(txt,a);
     }
     
-    if (txt[0]==0x0) return(TRUE);
-    
-	return(xml_add_attribute_text(name,txt));
+    if (txt[0]!=0x0) xml_add_attribute_text(name,txt);
 }
 
-bool xml_add_attribute_float(char *name,float value)
+void xml_add_attribute_float(char *name,float value)
 {
 	char		txt[256];
+
+	if (value==0.0f) return;
     
 	string_convert_float(txt,value);
-	return(xml_add_attribute_text(name,txt));
+	xml_add_attribute_text(name,txt);
 }
 
-bool xml_add_attribute_float_array(char *name,float *value,int count)
+void xml_add_attribute_float_array(char *name,float *value,int count)
 {
-    int			i;
+    int			n;
 	char		txt[5120],a[256];
 
     txt[0]=0x0;
     
-    for ((i=0);(i!=count);i++) {
-		string_convert_float(a,value[i]);
+    for (n=0;n!=count;n++) {
+		string_convert_float(a,value[n]);
         if (txt[0]!=0x0) strcat(txt,",");
         strcat(txt,a);
     }
     
-    if (txt[0]==0x0) return(TRUE);
-    
-	return(xml_add_attribute_text(name,txt));
+    if (txt[0]!=0x0) xml_add_attribute_text(name,txt);
 }
 
-bool xml_add_attribute_boolean(char *name,bool value)
+void xml_add_attribute_boolean(char *name,bool value)
 {
-	if (value) {
-		return(xml_add_attribute_text(name,"true"));
-	}
-    return(TRUE);
+	if (value) xml_add_attribute_text(name,"true");
 }
 
-bool xml_add_attribute_list(char *name,char *list,int value)
+void xml_add_attribute_list(char *name,char *list,int value)
 {
-    return(xml_add_attribute_text(name,(char*)&list[value*32]));
+    xml_add_attribute_text(name,(char*)&list[value*32]);
 }
 
-bool xml_add_attribute_2_coord_int(char *name,int x,int y)
+void xml_add_attribute_2_coord_int(char *name,int x,int y)
 {
 	char		txt[256];
 
+	if ((x==0) && (y==0)) return;
+
 	sprintf(txt,"%d,%d",x,y);
-	return(xml_add_attribute_text(name,txt));
+	xml_add_attribute_text(name,txt);
 }
 
-bool xml_add_attribute_2_coord_float(char *name,float x,float y)
+void xml_add_attribute_2_coord_float(char *name,float x,float y)
 {
 	char		txt[256],sx[32],sy[32];
+
+	if ((x==0.0f) && (y==0.0f)) return;
 	
 	string_convert_float(sx,x);
 	string_convert_float(sy,y);
 	sprintf(txt,"%s,%s",sx,sy);
-	return(xml_add_attribute_text(name,txt));
+	xml_add_attribute_text(name,txt);
 }
 
-bool xml_add_attribute_3_coord_int(char *name,int x,int y,int z)
+void xml_add_attribute_3_coord_int(char *name,int x,int y,int z)
 {
 	char		txt[256];
 
+	if ((x==0) && (y==0) && (z==0)) return;
+
 	sprintf(txt,"%d,%d,%d",x,y,z);
-	return(xml_add_attribute_text(name,txt));
+	xml_add_attribute_text(name,txt);
 }
 
-bool xml_add_attribute_3_coord_float(char *name,float x,float y,float z)
+void xml_add_attribute_3_coord_float(char *name,float x,float y,float z)
 {
 	char		txt[256],sx[32],sy[32],sz[32];
+
+	if ((x==0.0f) && (y==0.0f) && (z==0.0f)) return;
 
 	string_convert_float(sx,x);
 	string_convert_float(sy,y);
 	string_convert_float(sz,z);
 	sprintf(txt,"%s,%s,%s",sx,sy,sz);
-	return(xml_add_attribute_text(name,txt));
+	xml_add_attribute_text(name,txt);
 }
 
-bool xml_add_attribute_4_coord_float(char *name,float r,float g,float b,float a)
+void xml_add_attribute_4_coord_float(char *name,float r,float g,float b,float a)
 {
 	char		txt[256],sr[32],sg[32],sb[32],sa[32];
+
+	if ((r==0.0f) && (g==0.0f) && (b==0.0f) && (a==0.0f)) return;
 
 	string_convert_float(sr,r);
 	string_convert_float(sg,g);
 	string_convert_float(sb,b);
 	string_convert_float(sa,a);
 	sprintf(txt,"%s,%s,%s,%s",sr,sg,sb,sa);
-	return(xml_add_attribute_text(name,txt));
+	xml_add_attribute_text(name,txt);
 }
 
-bool xml_add_attribute_color(char *name,d3col *col)
+void xml_add_attribute_color(char *name,d3col *col)
 {
 	int			ir,ig,ib;
 	char		txt[256];
+
+	if ((col->r==0.0f) && (col->g==0.0f) && (col->b==0.0f)) return;
 	
 	ir=(int)(col->r*0xFF);
 	ig=(int)(col->g*0xFF);
@@ -1231,27 +1184,7 @@ bool xml_add_attribute_color(char *name,d3col *col)
 	txt[5]=xml_hex_int_to_character(ib);
 	txt[6]=0x0;
 
-	return(xml_add_attribute_text(name,txt));
-}
-
-bool xml_add_attribute_bit_array(char *name,unsigned char *value,int count)
-{
-	int				k,i;
-	unsigned char	*c;
-	char			txt[5120];
-
-	c=(unsigned char*)value;
-
-	for (k=0;k!=count;k++) {
-		i=(int)*c++;
-
-		txt[(k<<1)]=xml_hex_int_to_character(i>>4);
-		txt[(k<<1)+1]=xml_hex_int_to_character(i);
-	}
-
-	txt[count<<1]=0x0;
-
-	return(xml_add_attribute_text(name,txt));
+	xml_add_attribute_text(name,txt);
 }
 
 /* =======================================================

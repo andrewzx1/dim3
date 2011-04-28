@@ -126,13 +126,13 @@ void decode_map_settings_xml(map_type *map,int map_head)
     if (main_background_tag!=-1) {
 		map->background.on=xml_get_attribute_boolean(main_background_tag,"on");
 		map->background.front.fill=xml_get_attribute_int(main_background_tag,"front_fill");
-		xml_get_attribute_2_coord_float_default(main_background_tag,"front_stamp",&map->background.front.x_fact,&map->background.front.y_fact,1.0f,1.0f);
+		xml_get_attribute_2_coord_float(main_background_tag,"front_stamp",&map->background.front.x_fact,&map->background.front.y_fact);
 		xml_get_attribute_2_coord_float(main_background_tag,"front_scroll",&map->background.front.x_scroll_fact,&map->background.front.y_scroll_fact);
 		map->background.middle.fill=xml_get_attribute_int(main_background_tag,"middle_fill");
-		xml_get_attribute_2_coord_float_default(main_background_tag,"middle_stamp",&map->background.middle.x_fact,&map->background.middle.y_fact,1.0f,1.0f);
+		xml_get_attribute_2_coord_float(main_background_tag,"middle_stamp",&map->background.middle.x_fact,&map->background.middle.y_fact);
 		xml_get_attribute_2_coord_float(main_background_tag,"middle_scroll",&map->background.middle.x_scroll_fact,&map->background.middle.y_scroll_fact);
 		map->background.back.fill=xml_get_attribute_int(main_background_tag,"back_fill");
-		xml_get_attribute_2_coord_float_default(main_background_tag,"back_stamp",&map->background.back.x_fact,&map->background.back.y_fact,1.0f,1.0f);
+		xml_get_attribute_2_coord_float(main_background_tag,"back_stamp",&map->background.back.x_fact,&map->background.back.y_fact);
 		xml_get_attribute_2_coord_float(main_background_tag,"back_scroll",&map->background.back.x_scroll_fact,&map->background.back.y_scroll_fact);
     }
   
@@ -559,21 +559,13 @@ bool map_check_game_type(char *game_type,char *map_name,char *info_name)
 
 bool read_single_mesh_v3(map_type *map,int mesh_idx,int mesh_tag)
 {
-	int					n,nvertex,npoly,old_mesh_lmap_txt_idx,
+	int					n,nvertex,npoly,
 						msg_tag,main_vertex_tag,vertex_tag,main_poly_tag,poly_tag,tag;
-	float				import_factor;
-	bool				mesh_climbable;
 	d3pnt				*pt;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 
 	mesh=&map->mesh.meshes[mesh_idx];
-	
-		// older versions had light maps on a per mesh level
-		// check to see if that exists and if it does, override the
-		// polygons
-		
-	old_mesh_lmap_txt_idx=xml_get_attribute_int_default(mesh_tag,"lmap_txt_idx",-1);
 
 		// mesh settings
 
@@ -599,15 +591,6 @@ bool read_single_mesh_v3(map_type *map,int mesh_idx,int mesh_tag)
 	mesh->harm=xml_get_attribute_int_default(mesh_tag,"harm",0);
 
 	xml_get_attribute_3_coord_int(mesh_tag,"rot_off",&mesh->rot_off.x,&mesh->rot_off.y,&mesh->rot_off.z);
-	
-		// old version of import factor
-		
-	import_factor=xml_get_attribute_float_default(mesh_tag,"import_factor",0.0f);
-	
-		// old version of climbable at mesh level
-		// push it to polys if it's still there
-		
-	mesh_climbable=xml_get_attribute_boolean(mesh_tag,"climbable");
 
 		// messages
 
@@ -688,7 +671,7 @@ bool read_single_mesh_v3(map_type *map,int mesh_idx,int mesh_tag)
 			poly->ptsz=xml_get_attribute_int_array(poly_tag,"v",poly->v,8);
 			
 			poly->txt_idx=xml_get_attribute_int(poly_tag,"txt");
-			poly->lmap_txt_idx=xml_get_attribute_int_default(poly_tag,"lmap_txt_idx",old_mesh_lmap_txt_idx);
+			poly->lmap_txt_idx=xml_get_attribute_int_default(poly_tag,"lmp",-1);
 
 			xml_get_attribute_3_coord_float(poly_tag,"t3",&poly->tangent_space.tangent.x,&poly->tangent_space.tangent.y,&poly->tangent_space.tangent.z);
 			xml_get_attribute_3_coord_float(poly_tag,"n3",&poly->tangent_space.normal.x,&poly->tangent_space.normal.y,&poly->tangent_space.normal.z);
@@ -702,10 +685,10 @@ bool read_single_mesh_v3(map_type *map,int mesh_idx,int mesh_tag)
 				xml_get_attribute_float_array(poly_tag,"y_1",poly->lmap_uv.y,8);
 			}
 
-			poly->climbable=xml_get_attribute_boolean(poly_tag,"climbable") || (mesh_climbable);
+			poly->climbable=xml_get_attribute_boolean(poly_tag,"climbable");
 			poly->never_cull=xml_get_attribute_boolean(poly_tag,"never_cull");
 
-			xml_get_attribute_text_default_blank(poly_tag,"camera",poly->camera,name_str_len);
+			xml_get_attribute_text(poly_tag,"camera",poly->camera,name_str_len);
 
 			poly++;
 			poly_tag=xml_findnextchild(poly_tag);
@@ -735,7 +718,7 @@ void read_single_liquid_v3(map_type *map,int liquid_idx,int liquid_tag)
     tag=xml_findfirstchild("Poly",liquid_tag);
     if (tag!=-1) {
 		liq->txt_idx=xml_get_attribute_int(tag,"txt");
-		liq->lmap_txt_idx=xml_get_attribute_int_default(tag,"lmap_txt_idx",-1);
+		liq->lmap_txt_idx=xml_get_attribute_int_default(tag,"lmp",-1);
 		xml_get_attribute_3_coord_int(tag,"v1",&liq->lft,&liq->y,&liq->top);
 		xml_get_attribute_3_coord_int(tag,"v2",&liq->rgt,&liq->y,&liq->bot);
 		liq->depth=xml_get_attribute_int(tag,"depth");
@@ -751,8 +734,8 @@ void read_single_liquid_v3(map_type *map,int liquid_idx,int liquid_tag)
 		liq->tint_alpha=xml_get_attribute_float(tag,"tint_alpha");
 		xml_get_attribute_2_coord_float(tag,"shift",&liq->x_shift,&liq->y_shift);
 		
-		xml_get_attribute_text_default_blank(tag,"camera",liq->camera,name_str_len);
-		xml_get_attribute_text_default_blank(tag,"ambient_sound_name",liq->ambient.sound_name,name_str_len);
+		xml_get_attribute_text(tag,"camera",liq->camera,name_str_len);
+		xml_get_attribute_text(tag,"ambient_sound_name",liq->ambient.sound_name,name_str_len);
 	}
 
 		// physics
@@ -777,7 +760,6 @@ void read_single_liquid_v3(map_type *map,int liquid_idx,int liquid_tag)
     if (tag!=-1) {
 		liq->tide.rate=xml_get_attribute_int(tag,"rate");
 		liq->tide.high=xml_get_attribute_int(tag,"high");
-		liq->tide.circle_flow=xml_get_attribute_boolean(tag,"circle_flow");
 	}
 	
 		// reflection

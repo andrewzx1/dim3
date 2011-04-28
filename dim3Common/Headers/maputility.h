@@ -318,7 +318,6 @@ typedef struct		{
 
 typedef struct		{
 						int									rate,high;
-						bool								circle_flow;
 					} map_liquid_tide_type;
 					
 typedef struct		{

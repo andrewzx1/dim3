@@ -69,14 +69,14 @@ model_tag xml_get_attribute_model_tag(int xml_tag,char *name)
 	return(text_to_model_tag(str));
 }
 
-bool xml_add_attribute_model_tag(char *name,model_tag tag)
+void xml_add_attribute_model_tag(char *name,model_tag tag)
 {
 	char		str[16];
     
-    if (tag==model_null_tag) return(TRUE);
+    if (tag==model_null_tag) return;
     
 	model_tag_to_text(tag,str);
-	return(xml_add_attribute_text(name,str));
+	xml_add_attribute_text(name,str);
 }
 
 /* =======================================================

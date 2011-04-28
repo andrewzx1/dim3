@@ -94,7 +94,7 @@ _clip_extend_polygon_to_2D_rect
 _acceleration_calculate
 
 _string_convert_float
-
+_string_safe_strcat
 
 
 
@@ -139,7 +139,6 @@ _xml_findflatinparent
 
 _xml_get_attribute_raw
 _xml_get_attribute_text
-_xml_get_attribute_text_default_blank
 _xml_get_attribute_int
 _xml_get_attribute_int_default
 _xml_get_attribute_int_array
@@ -148,16 +147,13 @@ _xml_get_attribute_float
 _xml_get_attribute_float_default
 _xml_get_attribute_float_array
 _xml_get_attribute_boolean
-_xml_get_attribute_boolean_default_true
 _xml_get_attribute_list
 _xml_get_attribute_2_coord_int
 _xml_get_attribute_2_coord_float
-_xml_get_attribute_2_coord_float_default
 _xml_get_attribute_3_coord_int
 _xml_get_attribute_3_coord_float
 _xml_get_attribute_4_coord_float
 _xml_get_attribute_color
-_xml_get_attribute_bit_array
 
 _xml_add_tagstart
 _xml_add_tagend
@@ -177,7 +173,6 @@ _xml_add_attribute_3_coord_int
 _xml_add_attribute_3_coord_float
 _xml_add_attribute_4_coord_float
 _xml_add_attribute_color
-_xml_add_attribute_bit_array
 
 _xml_key_read_int
 _xml_key_read_float

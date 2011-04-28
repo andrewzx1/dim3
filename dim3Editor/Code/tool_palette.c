@@ -324,10 +324,6 @@ void tool_click(int tool_idx)
 			break;
 			
 		case 36:
-			piece_add_svg_mesh();
-			break;
-			
-		case 37:
 			piece_create_liquid();
 			break;
 			

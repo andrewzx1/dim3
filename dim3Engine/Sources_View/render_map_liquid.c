@@ -61,30 +61,6 @@ float liquid_tide_get_high(map_liquid_type *liq)
 	return(((float)liq->tide.high)*sn);
 }
 
-void liquid_tide_get_circle_uv(map_liquid_type *liq,float *gx_add,float *gy_add)
-{
-	float			f_time,g_temp;
-	matrix_type		mat;
-
-	*gx_add=*gy_add=0.0f;
-
-	if (!liq->tide.circle_flow) return;
-
-		// get rate between 0..1
-
-	f_time=(float)(game_time_get()%liq->tide.rate);
-	f_time=f_time/((float)liq->tide.rate);
-
-		// rotate gx,gy
-
-	matrix_rotate_y(&mat,(360.0f*f_time));
-
-	g_temp=0.0f;
-	*gx_add=0.5f;
-
-	matrix_vertex_multiply(&mat,gx_add,&g_temp,gy_add);
-}
-
 /* =======================================================
 
       Check if Liquid is Transparent
@@ -108,7 +84,7 @@ bool liquid_is_transparent(map_liquid_type *liq)
 void liquid_render_liquid_create_vertex(map_liquid_type *liq)
 {
 	int				n,k,vbo_cnt;
-	float			fy,gx,gy,gx2,gy2,gx_add,gy_add,f_tick;
+	float			fy,gx,gy,gx2,gy2,f_tick;
 	bool			shader_on;
 	float			*vertex_ptr,*vl,*uv,*uv2,*ct,*cn,*cl;
 	
@@ -142,10 +118,6 @@ void liquid_render_liquid_create_vertex(map_liquid_type *liq)
 	gy=liq->main_uv.y_offset+(gy-(float)k);
 
 	gy2=gy+liq->main_uv.y_size;
-	
-		// liquid texture UV moves
-
-	liquid_tide_get_circle_uv(liq,&gx_add,&gy_add);
 
 		// liquid vertexes
 
@@ -161,8 +133,8 @@ void liquid_render_liquid_create_vertex(map_liquid_type *liq)
 	*vl++=fy;
 	*vl++=(float)liq->top;
 
-	*uv++=gx+gx_add;
-	*uv++=gy+gy_add;
+	*uv++=gx;
+	*uv++=gy;
 
 	*uv2++=liq->lmap_uv.x_offset;
 	*uv2++=liq->lmap_uv.y_offset;
@@ -173,8 +145,8 @@ void liquid_render_liquid_create_vertex(map_liquid_type *liq)
 	*vl++=fy;
 	*vl++=(float)liq->top;
 
-	*uv++=gx2+gx_add;
-	*uv++=gy+gy_add;
+	*uv++=gx2;
+	*uv++=gy;
 
 	*uv2++=liq->lmap_uv.x_offset+liq->lmap_uv.x_size;
 	*uv2++=liq->lmap_uv.y_offset;
@@ -185,8 +157,8 @@ void liquid_render_liquid_create_vertex(map_liquid_type *liq)
 	*vl++=fy;
 	*vl++=(float)liq->bot;
 
-	*uv++=gx+gx_add;
-	*uv++=gy2+gy_add;
+	*uv++=gx;
+	*uv++=gy2;
 
 	*uv2++=liq->lmap_uv.x_offset;
 	*uv2++=liq->lmap_uv.y_offset+liq->lmap_uv.y_size;
@@ -197,8 +169,8 @@ void liquid_render_liquid_create_vertex(map_liquid_type *liq)
 	*vl++=fy;
 	*vl++=(float)liq->bot;
 
-	*uv++=gx2+gx_add;
-	*uv++=gy2+gy_add;
+	*uv++=gx2;
+	*uv++=gy2;
 
 	*uv2++=liq->lmap_uv.x_offset+liq->lmap_uv.x_size;
 	*uv2++=liq->lmap_uv.y_offset+liq->lmap_uv.y_size;

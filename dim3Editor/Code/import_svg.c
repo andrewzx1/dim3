@@ -480,14 +480,14 @@ bool import_svg(char *path,char *err_str)
 			if (path_tag==-1) break;
 			
 				// path definition
-				
+			/* supergumba -- remove all this	
 			if (xml_get_attribute_text(path_tag,"d",path_str,256)) {
 				xml_get_attribute_text(path_tag,"style",style_str,256);
 				import_svg_style_decode_fill(style_str,fill_str);
 				import_mode=import_svg_style_decode_stroke(style_str);
 				import_svg_build_path(start_mesh_idx,import_scale,path_str,ty,by,fill_str,import_mode);
 			}
-
+			*/
 			path_offset++;
 		}
 

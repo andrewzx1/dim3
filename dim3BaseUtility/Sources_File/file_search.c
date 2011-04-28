@@ -51,10 +51,10 @@ int file_paths_add_file(file_path_directory_type *fpd,int parent_idx,char *name,
 	file_name[file_str_len-1]=0x0;
 	
 	if (sub_path!=NULL) {
-		strncat(file_name,"/",file_str_len);
+		string_safe_strcat(file_name,"/",file_str_len);
 		file_name[file_str_len-1]=0x0;
 		
-		strncat(file_name,sub_path,file_str_len);
+		string_safe_strcat(file_name,sub_path,file_str_len);
 		file_name[file_str_len-1]=0x0;
 	}
 	else {	
@@ -575,11 +575,11 @@ void file_paths_get_complete_path_from_index_recurse(file_path_directory_type *f
 		// add this level
 		
 	if (file_name[0]!=0x0) {
-		strncat(file_name,"/",file_str_len);
+		string_safe_strcat(file_name,"/",file_str_len);
 		file_name[file_str_len-1]=0x0;
 	}
 	
-	strncat(file_name,fpd->files[idx].file_name,file_str_len);
+	string_safe_strcat(file_name,fpd->files[idx].file_name,file_str_len);
 	file_name[file_str_len-1]=0x0;
 }
 	

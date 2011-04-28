@@ -31,7 +31,7 @@ and can be sold or given away.
       
 ======================================================= */
 
-#define dim3_version					"3.0b20"
+#define dim3_version					"3.0b21"
 
 /* =======================================================
 
@@ -44,7 +44,7 @@ and can be sold or given away.
 //
 
 #define name_str_len					32
-#define file_str_len					128
+#define file_str_len					256
 
 //
 // dim3 base types
@@ -202,6 +202,7 @@ extern int clip_extend_polygon_to_2D_rect(int ptsz,int *x,int *y,int *z,int lx,i
 extern float acceleration_calculate(float factor,float acceleration);
 
 extern void string_convert_float(char *str,float f);
+extern void string_safe_strcat(char *str,char *cat_str,int buf_len);
 
 /* =======================================================
 
@@ -296,8 +297,7 @@ extern int xml_findflat(char *name,int offset);
 extern int xml_findflatinparent(char *name,int parent,int offset);
 
 extern bool xml_get_attribute_raw(int n,char *name,char *value,int valuesz);
-extern bool xml_get_attribute_text(int n,char *name,char *value,int valuesz);
-extern bool xml_get_attribute_text_default_blank(int n,char *name,char *value,int valuesz);
+extern void xml_get_attribute_text(int n,char *name,char *value,int valuesz);
 extern int xml_get_attribute_int(int n,char *name);
 extern int xml_get_attribute_int_default(int n,char *name,int def_int);
 extern int xml_get_attribute_int_array(int n,char *name,int *value,int count);
@@ -315,27 +315,25 @@ extern bool xml_get_attribute_3_coord_int(int n,char *name,int *x,int *y,int *z)
 extern bool xml_get_attribute_3_coord_float(int n,char *name,float *x,float *y,float *z);
 extern bool xml_get_attribute_4_coord_float(int n,char *name,float *r,float *g,float *b,float *a);
 extern bool xml_get_attribute_color(int n,char *name,d3col *col);
-extern bool xml_get_attribute_bit_array(int n,char *name,unsigned char *value,int count);
 
 extern bool xml_add_tagstart(char *name);
 extern bool xml_add_tagend(bool single);
 extern bool xml_add_tagclose(char *name);
 
-extern bool xml_add_attribute_text(char *name,char *value);
-extern bool xml_add_attribute_int(char *name,int value);
-extern bool xml_add_attribute_int_array(char *name,int *value,int count,bool removenegone);
-extern bool xml_add_attribute_short_array(char *name,short *value,int count,bool removenegone);
-extern bool xml_add_attribute_float(char *name,float value);
-extern bool xml_add_attribute_float_array(char *name,float *value,int count);
-extern bool xml_add_attribute_boolean(char *name,bool value);
-extern bool xml_add_attribute_list(char *name,char *list,int value);
-extern bool xml_add_attribute_2_coord_int(char *name,int x,int y);
-extern bool xml_add_attribute_2_coord_float(char *name,float x,float y);
-extern bool xml_add_attribute_3_coord_int(char *name,int x,int y,int z);
-extern bool xml_add_attribute_3_coord_float(char *name,float x,float y,float z);
-extern bool xml_add_attribute_4_coord_float(char *name,float r,float g,float b,float a);
-extern bool xml_add_attribute_color(char *name,d3col *col);
-extern bool xml_add_attribute_bit_array(char *name,unsigned char *value,int count);
+extern void xml_add_attribute_text(char *name,char *value);
+extern void xml_add_attribute_int(char *name,int value);
+extern void xml_add_attribute_int_array(char *name,int *value,int count,bool removenegone);
+extern void xml_add_attribute_short_array(char *name,short *value,int count,bool removenegone);
+extern void xml_add_attribute_float(char *name,float value);
+extern void xml_add_attribute_float_array(char *name,float *value,int count);
+extern void xml_add_attribute_boolean(char *name,bool value);
+extern void xml_add_attribute_list(char *name,char *list,int value);
+extern void xml_add_attribute_2_coord_int(char *name,int x,int y);
+extern void xml_add_attribute_2_coord_float(char *name,float x,float y);
+extern void xml_add_attribute_3_coord_int(char *name,int x,int y,int z);
+extern void xml_add_attribute_3_coord_float(char *name,float x,float y,float z);
+extern void xml_add_attribute_4_coord_float(char *name,float r,float g,float b,float a);
+extern void xml_add_attribute_color(char *name,d3col *col);
 
 extern void xml_key_read_int(int setup_tag,char *name,int *value);
 extern void xml_key_read_float(int setup_tag,char *name,float *value);

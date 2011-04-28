@@ -42,7 +42,7 @@ typedef struct		{
 
 extern int model_find_bone(model_type *mdl,model_tag tag);
 extern int model_find_pose(model_type *mdl,char *posename);
-extern bool xml_add_attribute_model_tag(char *name,model_tag tag);
+extern void xml_add_attribute_model_tag(char *name,model_tag tag);
 
 extern model_tag xml_get_attribute_model_tag(int xml_tag,char *name);
 extern void decode_mesh_v1_xml(model_type *model,int model_head);

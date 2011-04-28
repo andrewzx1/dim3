@@ -463,7 +463,6 @@ void piece_create_liquid(void)
 	
 	liq->tide.rate=1000;
 	liq->tide.high=100;
-	liq->tide.circle_flow=FALSE;
 	
 	liq->harm.in_harm=0;
 	liq->harm.drown_tick=10000;

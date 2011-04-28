@@ -248,6 +248,18 @@ void item_palette_reset(void)
 	item_palette.item_idx=main_idx;
 
 	item_palette_scroll_into_view(sel_type,main_idx);
+
+		// alt window items
+
+	state.cur_cinema_idx=-1;
+	state.cur_cinema_action_idx=-1;
+	state.cur_movement_idx=-1;
+	state.cur_movement_move_idx=-1;
+
+		// reset windows
+
+	property_palette_reset();
+	alt_property_fix_open_state();
 }
 
 void item_palette_select(int sel_type,int sel_idx)

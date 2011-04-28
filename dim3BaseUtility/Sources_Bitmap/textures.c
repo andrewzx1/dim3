@@ -345,7 +345,7 @@ void bitmap_texture_read_xml(texture_type *texture,int main_tag,bool read_scale)
 		for (k=0;k!=frame_count;k++) {
 			texture->animate.wait[k]=xml_get_attribute_int_default(image_tag,"wait",0);
 			texture->animate.end_tick[k]=texture->animate.total_wait=texture->animate.total_wait+texture->animate.wait[k];
-			xml_get_attribute_text_default_blank(image_tag,"bitmap",texture->frames[k].name,file_str_len);
+			xml_get_attribute_text(image_tag,"bitmap",texture->frames[k].name,file_str_len);
 
 			image_tag=xml_findnextchild(image_tag);
 		}
