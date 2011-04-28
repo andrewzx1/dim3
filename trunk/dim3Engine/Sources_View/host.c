@@ -82,6 +82,8 @@ void host_fill_map_table(char *game_type)
 	char						*c,info_name[name_str_len];
 	file_path_directory_type	*map_pick_fpd;
 
+	int tick=GetTickCount();
+
 		// need to make sure map paths are correct
 
 	map_setup(&setup.file_path_setup,setup.anisotropic_mode,setup.mipmap_mode,setup.texture_quality_mode,TRUE);
@@ -117,6 +119,8 @@ void host_fill_map_table(char *game_type)
 	}
 
 	file_paths_close_directory(map_pick_fpd);
+
+	fprintf(stdout,"%d\n",GetTickCount()-tick);
 }
 
 /* =======================================================

@@ -184,7 +184,7 @@ bool setup_xml_read_path(char *path)
 			
 			for (k=0;k!=max_setup_action_attach;k++) {
 				sprintf(tag_name,"attach_%d",k);
-				if (!xml_get_attribute_text(tag,tag_name,action->attach[k],32)) action->attach[k][0]=0x0;
+				xml_get_attribute_text(tag,tag_name,action->attach[k],32);
 			}
            
 			tag=xml_findnextchild(tag);

@@ -198,12 +198,12 @@ void script_exception_to_string(JSContextRef cx,JSValueRef ex_val,char *str,int 
 
 	vp=script_get_single_property(cx,ex_obj,"message");
 	if (vp==NULL) {
-		strncat(str,"Unknown Error",len);
+		string_safe_strcat(str,"Unknown Error",len);
 		str[len-1]=0x0;
 	}
 	else {
 		script_value_to_string(cx,vp,txt,len);
-		strncat(str,txt,len);
+		string_safe_strcat(str,txt,len);
 		str[len-1]=0x0;
 	}
 }

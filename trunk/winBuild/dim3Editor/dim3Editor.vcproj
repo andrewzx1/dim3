@@ -252,10 +252,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\dim3Editor\Code\import_svg.c"
-					>
-				</File>
-				<File
 					RelativePath="..\..\dim3Common\Code\import_text_decode_common.c"
 					>
 				</File>

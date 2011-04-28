@@ -46,7 +46,6 @@ and can be sold or given away.
 
 #define kLiquidPropertyTideSize				9
 #define kLiquidPropertyTideRate				10
-#define kLiquidPropertyTideCircleFlow		11
 
 #define kLiquidPropertyHarm					15
 #define kLiquidPropertyDrownTick			16
@@ -106,7 +105,6 @@ void property_palette_fill_liquid(int liq_idx)
 	list_palette_add_header(&property_palette,0,"Liquid Tides");
 	list_palette_add_string_int(&property_palette,kLiquidPropertyTideSize,"Tide Size",liq->tide.high,FALSE);
 	list_palette_add_string_int(&property_palette,kLiquidPropertyTideRate,"Tide Rate",liq->tide.rate,FALSE);
-	list_palette_add_checkbox(&property_palette,kLiquidPropertyTideCircleFlow,"Tide Circle Flow",liq->tide.circle_flow,FALSE);
 	
 	list_palette_add_header(&property_palette,0,"Liquid Harm");
 	list_palette_add_string_int(&property_palette,kLiquidPropertyHarm,"In Damage",liq->harm.in_harm,FALSE);
@@ -237,10 +235,6 @@ void property_palette_click_liquid(int liq_idx,int id)
 			
 		case kLiquidPropertyTideRate:
 			dialog_property_string_run(list_string_value_positive_int,(void*)&liq->tide.rate,0,0,0);
-			break;
-
-		case kLiquidPropertyTideCircleFlow:
-			liq->tide.circle_flow=!liq->tide.circle_flow;
 			break;
 
 			// harm

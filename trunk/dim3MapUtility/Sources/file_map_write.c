@@ -713,7 +713,6 @@ void write_single_liquid(map_liquid_type *liq)
 	xml_add_tagstart("Tide");
 	xml_add_attribute_int("rate",liq->tide.rate);
 	xml_add_attribute_int("high",liq->tide.high);
-	xml_add_attribute_boolean("circle_flow",liq->tide.circle_flow);
 	xml_add_tagend(TRUE);
 	
 		// reflection

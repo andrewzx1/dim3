@@ -36,8 +36,8 @@ and can be sold or given away.
 //
 
 #define xml_root_tag				-1
-#define tag_atom_sz					4096
-#define buff_atom_sz				32768
+#define xml_tag_chunk_count			(1024*20)
+#define xml_buffer_chunk_sz			(1024*100)
 #define max_tag_depth				256
 
 //

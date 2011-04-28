@@ -358,11 +358,11 @@ void property_set_parameter(int idx,char *param_list,char *str)
 	for (n=0;n!=count;n++) {
 
 		if (n!=0) {
-			strncat(param_list,"|",255);
+			string_safe_strcat(param_list,"|",255);
 			param_list[254]=0x0;
 		}
 		
-		strncat(param_list,tstr[n],255);
+		string_safe_strcat(param_list,tstr[n],255);
 		param_list[254]=0x0;
 	}
 
