@@ -356,7 +356,7 @@ void map_movements_auto_open(void)
 				obj=server.obj_list.objs[i];
 				if (obj==NULL) continue;
 
-				if (((obj->type==object_type_player) || (obj->type==object_type_remote) || (obj->open_doors)) && (obj->status.health!=0)) {
+				if (((obj->type==object_type_player) || (obj->type==object_type_remote) || (obj->open_doors)) && (obj->status.health.value!=0)) {
 					if (distance_check(obj->pnt.x,(obj->pnt.y-(obj->size.y>>1)),obj->pnt.z,movement->auto_open_pnt.x,movement->auto_open_pnt.y,movement->auto_open_pnt.z,movement->auto_open_distance)) {
 						obj_in_range=TRUE;
 						break;
@@ -381,7 +381,7 @@ void map_movements_auto_open(void)
 				obj=server.obj_list.objs[i];
 				if (obj==NULL) continue;
 
-				if (((obj->type==object_type_player) || (obj->type==object_type_remote) || (obj->open_doors)) && (obj->status.health!=0)) {
+				if (((obj->type==object_type_player) || (obj->type==object_type_remote) || (obj->open_doors)) && (obj->status.health.value!=0)) {
 
 					if (obj->contact.stand_poly.mesh_idx!=-1) {
 

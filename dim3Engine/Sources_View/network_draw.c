@@ -306,7 +306,7 @@ void network_score_draw(void)
 		if (server.state!=gs_score_limit) {
 			if (!view.score.on) {
 				player_obj=server.obj_list.objs[server.player_obj_idx];
-				if (player_obj->status.health!=0) return;
+				if (player_obj->status.health.value!=0) return;
 			}
 		}
 	}
@@ -348,7 +348,7 @@ void network_score_draw(void)
 	}
 	else {
 		player_obj=server.obj_list.objs[server.player_obj_idx];
-		if (player_obj->status.health<=0) {
+		if (player_obj->status.health.value<=0) {
 			sprintf(str,"Respawning in %d seconds...",object_get_respawn_time(player_obj));
 		
 		}
@@ -380,14 +380,14 @@ void network_chat_draw(void)
 
 		// draw position
 
-	yadd=gl_text_get_char_height(iface.font.text_size_small)+1;
+	yadd=gl_text_get_char_height(iface.font.text_size_mini)+1;
 
 	x=iface.chat.x;
 	y=iface.chat.y;
 
 		// draw text
 
-	gl_text_start(font_hud_index,iface.font.text_size_small);
+	gl_text_start(font_hud_index,iface.font.text_size_mini);
 
 		// currently typing?
 

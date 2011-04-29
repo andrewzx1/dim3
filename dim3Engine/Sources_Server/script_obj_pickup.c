@@ -47,6 +47,7 @@ JSValueRef js_obj_pickup_add_clip_func(JSContextRef cx,JSObjectRef func,JSObject
 JSValueRef js_obj_pickup_add_alt_ammo_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_pickup_add_alt_clip_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_pickup_add_health_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_obj_pickup_add_armor_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_pickup_add_custom_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_pickup_cancel_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
@@ -66,6 +67,7 @@ JSStaticFunction	obj_pickup_functions[]={
 							{"addAltAmmo",			js_obj_pickup_add_alt_ammo_func,	kJSPropertyAttributeDontDelete},
 							{"addAltClip",			js_obj_pickup_add_alt_clip_func,	kJSPropertyAttributeDontDelete},
 							{"addHealth",			js_obj_pickup_add_health_func,		kJSPropertyAttributeDontDelete},
+							{"addArmor",			js_obj_pickup_add_armor_func,		kJSPropertyAttributeDontDelete},
 							{"addCustom",			js_obj_pickup_add_custom_func,		kJSPropertyAttributeDontDelete},
 							{"cancel",				js_obj_pickup_cancel_func,			kJSPropertyAttributeDontDelete},
 							{0,0,0}};
@@ -261,6 +263,17 @@ JSValueRef js_obj_pickup_add_health_func(JSContextRef cx,JSObjectRef func,JSObje
 	return(script_bool_to_value(cx,item_add_health(obj,script_value_to_int(cx,argv[1]))));
 }
 
+JSValueRef js_obj_pickup_add_armor_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+{
+	obj_type	*obj;
+	
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+	
+	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
+	if (obj==NULL) return(script_bool_to_value(cx,FALSE));
+
+	return(script_bool_to_value(cx,item_add_armor(obj,script_value_to_int(cx,argv[1]))));
+}
 JSValueRef js_obj_pickup_add_custom_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type	*obj;

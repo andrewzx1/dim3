@@ -1020,7 +1020,7 @@ void player_get_input(void)
 	
 		// respawn
 		
-	if (obj->status.health<=0) {
+	if (obj->status.health.value<=0) {
 		player_death_input(obj);
 		return;
 	}

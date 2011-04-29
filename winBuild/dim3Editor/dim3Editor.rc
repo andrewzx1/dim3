@@ -247,22 +247,6 @@ BEGIN
                     IDC_STATIC,7,40,223,9
 END
 
-IDD_SVG_IMPORT DIALOGEX 100, 100, 333, 134
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION
-CAPTION "SVG Import"
-FONT 8, "MS Shell Dlg", 400, 0, 0x1
-BEGIN
-    EDITTEXT        IDC_SVG_IMPORT_SCALE,68,67,82,14,ES_AUTOHSCROLL
-    EDITTEXT        IDC_SVG_IMPORT_LAYER_HEIGHT,68,85,82,14,ES_AUTOHSCROLL
-    PUSHBUTTON      "Cancel",ID_SVG_IMPORT_CANCEL,221,113,50,14
-    DEFPUSHBUTTON   "Import",ID_SVG_IMPORT_OK,276,113,50,14,WS_GROUP
-    LTEXT           "SVG import normally works with files created by Inkscape.",IDC_STATIC,7,7,204,9
-    LTEXT           "SVG files should only use polygons where each layer is a new level stacked on top of each other.",IDC_STATIC,7,20,319,10
-    LTEXT           "Polygons with no stroke create floors only, polygons with a 1 pixel stroke create floors and walls, and polygons with a large stroke create walls only.  The polygon fills are used to group polygons into meshes.",IDC_STATIC,7,30,319,25
-    RTEXT           "Scale:",IDC_STATIC,17,69,45,9
-    RTEXT           "Layer Height:",IDC_STATIC,18,87,45,9
-END
-
 IDD_HEIGHT_MAP_IMPORT DIALOGEX 0, 0, 200, 84
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION
 CAPTION "Height Map Import"

@@ -697,7 +697,7 @@ JSValueRef js_map_object_get_health_func(JSContextRef cx,JSObjectRef func,JSObje
 	
 		// get size
 		
-	return(script_int_to_value(cx,obj->status.health));
+	return(script_int_to_value(cx,obj->status.health.value));
 }
 
 JSValueRef js_map_object_is_dead_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -709,7 +709,7 @@ JSValueRef js_map_object_is_dead_func(JSContextRef cx,JSObjectRef func,JSObjectR
 	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
 	if (obj==NULL) return(script_null_to_value(cx));
 		
-	return(script_bool_to_value(cx,obj->status.health<=0));
+	return(script_bool_to_value(cx,obj->status.health.value<=0));
 }
 
 JSValueRef js_map_object_is_hidden_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -745,7 +745,7 @@ JSValueRef js_map_object_is_max_health_func(JSContextRef cx,JSObjectRef func,JSO
 	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
 	if (obj==NULL) return(script_null_to_value(cx));
 		
-	return(script_bool_to_value(cx,obj->status.health>=obj->status.max_health));
+	return(script_bool_to_value(cx,obj->status.health.value>=obj->status.health.max_value));
 }
 
 JSValueRef js_map_object_get_last_damage_object_id_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)

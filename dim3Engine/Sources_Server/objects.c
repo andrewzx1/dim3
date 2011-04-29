@@ -634,10 +634,14 @@ int object_create(char *name,int type,int bind)
 	obj->radar.always_visible=FALSE;
 	obj->radar.fade_start_tick=0;
 	
-	obj->status.health=obj->status.start_health=obj->status.max_health=100;
-	obj->status.health_recover_tick=obj->status.health_recover_count=0;
-	obj->status.health_recover_amount=1;
-	obj->status.health_factor=1.0f;
+	obj->status.health.value=obj->status.health.start_value=obj->status.health.max_value=100;
+	obj->status.health.recover_tick=obj->status.health.recover_count=0;
+	obj->status.health.recover_amount=1;
+	obj->status.health.factor=1.0f;
+	obj->status.armor.value=obj->status.armor.start_value=obj->status.armor.max_value=0;
+	obj->status.armor.recover_tick=obj->status.armor.recover_count=0;
+	obj->status.armor.recover_amount=1;
+	obj->status.armor.factor=1.0f;
 	obj->status.mesh_harm_count=0;
 	
 	object_clear_draw(&obj->draw);
