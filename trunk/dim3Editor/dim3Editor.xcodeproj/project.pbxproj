@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2607551B12F53A0200001313 /* dialog_svg_import.c in Sources */ = {isa = PBXBuildFile; fileRef = 2607551A12F53A0200001313 /* dialog_svg_import.c */; };
 		260C1471129C777100B6D5B5 /* property_palette_node.c in Sources */ = {isa = PBXBuildFile; fileRef = 260C146E129C777100B6D5B5 /* property_palette_node.c */; };
 		260C1472129C777100B6D5B5 /* property_palette_particle.c in Sources */ = {isa = PBXBuildFile; fileRef = 260C146F129C777100B6D5B5 /* property_palette_particle.c */; };
 		260C1473129C777100B6D5B5 /* property_palette_scenery.c in Sources */ = {isa = PBXBuildFile; fileRef = 260C1470129C777100B6D5B5 /* property_palette_scenery.c */; };
@@ -19,7 +18,6 @@
 		262C397012D0268500A94FEE /* list_palette_common.c in Sources */ = {isa = PBXBuildFile; fileRef = 262C396F12D0268500A94FEE /* list_palette_common.c */; };
 		263C5EBE122045E3008935B9 /* view_handle.c in Sources */ = {isa = PBXBuildFile; fileRef = 263C5EBD122045E3008935B9 /* view_handle.c */; };
 		2642872B12EE8C740078851E /* Set.png in Copy (Lists Icons) */ = {isa = PBXBuildFile; fileRef = 2642872912EE8C640078851E /* Set.png */; };
-		2642A94F12EFA9F6004A8081 /* import_svg.c in Sources */ = {isa = PBXBuildFile; fileRef = 2642A94E12EFA9F6004A8081 /* import_svg.c */; };
 		2642A95C12EFAE59004A8081 /* Tool SVG.png in Copy (Tools Icons) */ = {isa = PBXBuildFile; fileRef = 2642A95A12EFAE3A004A8081 /* Tool SVG.png */; };
 		26452F11127F9B3100043C34 /* view_movement.c in Sources */ = {isa = PBXBuildFile; fileRef = 26452F0F127F9B3100043C34 /* view_movement.c */; };
 		26452F12127F9B3100043C34 /* view.c in Sources */ = {isa = PBXBuildFile; fileRef = 26452F10127F9B3100043C34 /* view.c */; };
@@ -293,7 +291,6 @@
 		0123D86700C0AFD57F000001 /* nodes.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = nodes.c; path = Code/nodes.c; sourceTree = "<group>"; };
 		0867D6ABFE840B52C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		20286C33FDCF999611CA2CEA /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
-		2607551A12F53A0200001313 /* dialog_svg_import.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_svg_import.c; path = Code/dialog_svg_import.c; sourceTree = "<group>"; };
 		260C146E129C777100B6D5B5 /* property_palette_node.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_node.c; path = Code/property_palette_node.c; sourceTree = "<group>"; };
 		260C146F129C777100B6D5B5 /* property_palette_particle.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_particle.c; path = Code/property_palette_particle.c; sourceTree = "<group>"; };
 		260C1470129C777100B6D5B5 /* property_palette_scenery.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_scenery.c; path = Code/property_palette_scenery.c; sourceTree = "<group>"; };
@@ -305,7 +302,6 @@
 		262C396F12D0268500A94FEE /* list_palette_common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = list_palette_common.c; path = ../dim3Common/Code/list_palette_common.c; sourceTree = SOURCE_ROOT; };
 		263C5EBD122045E3008935B9 /* view_handle.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = view_handle.c; path = Code/view_handle.c; sourceTree = "<group>"; };
 		2642872912EE8C640078851E /* Set.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Set.png; sourceTree = "<group>"; };
-		2642A94E12EFA9F6004A8081 /* import_svg.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = import_svg.c; path = Code/import_svg.c; sourceTree = "<group>"; };
 		2642A95A12EFAE3A004A8081 /* Tool SVG.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool SVG.png"; sourceTree = "<group>"; };
 		26452F0F127F9B3100043C34 /* view_movement.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = view_movement.c; path = Code/view_movement.c; sourceTree = "<group>"; };
 		26452F10127F9B3100043C34 /* view.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = view.c; path = Code/view.c; sourceTree = "<group>"; };
@@ -704,7 +700,6 @@
 				26D15DB91329EB0400F9EC7B /* OSX_dialog_property_chord.c */,
 				26D15DBA1329EB0400F9EC7B /* OSX_dialog_property_list.c */,
 				261CEB8012D156D800D1D8BF /* dialog_obj_import.c */,
-				2607551A12F53A0200001313 /* dialog_svg_import.c */,
 				26DB6D960DDFCE4100BDD008 /* dialog_resize.c */,
 				26772F800EBE8A6600F9E241 /* dialog_reposition.c */,
 				26EB2AA5135CDF3700C85532 /* dialog_resize_texture.c */,
@@ -724,7 +719,6 @@
 				F54583E3094F868300CBE89A /* pieces_create.c */,
 				26AFB4480D95E0E60004805A /* pieces_mesh.c */,
 				26937AE012D2D5C3001DEEB8 /* import_obj.c */,
-				2642A94E12EFA9F6004A8081 /* import_svg.c */,
 				F5595F7D0918717300B60FAD /* groups.c */,
 				0123D86700C0AFD57F000001 /* nodes.c */,
 				2681880210A3A28A000B2CD8 /* light_maps.c */,
@@ -903,11 +897,9 @@
 				26E4677812EB4CAD00867C53 /* property_palette_cinema.c in Sources */,
 				26E4677912EB4CAD00867C53 /* property_palette_group.c in Sources */,
 				26E4677A12EB4CAD00867C53 /* property_palette_movement.c in Sources */,
-				2642A94F12EFA9F6004A8081 /* import_svg.c in Sources */,
 				26E0C40112F0D7EE00977D36 /* alt_property_palette_action.c in Sources */,
 				26E0C40212F0D7EE00977D36 /* alt_property_palette_move.c in Sources */,
 				26E0C40312F0D7EE00977D36 /* alt_property_palette.c in Sources */,
-				2607551B12F53A0200001313 /* dialog_svg_import.c in Sources */,
 				26F1D2C213035B0A00CDAE6B /* property_palette_editor_preference.c in Sources */,
 				26CFA0E01320769700DB808F /* tool_tip_common.c in Sources */,
 				26D15DBD1329EB0400F9EC7B /* OSX_dialog_about.c in Sources */,

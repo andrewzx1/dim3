@@ -838,7 +838,7 @@ void object_multiplayer_setup(obj_type *obj)
 	}
 	else {
 		if (net_game->spawn.coop_spot) {
-			strcpy(obj->spawn_spot_name,"Coop");
+			strcpy(obj->spawn_spot_name,"Co-op");
 		}
 		else {
 			if (net_game->spawn.spawn_spot) {
