@@ -42,6 +42,9 @@ JSValueRef js_obj_health_get_recoverAmount(JSContextRef cx,JSObjectRef j_obj,JSS
 JSValueRef js_obj_health_get_fallDamageMinimumHeight(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_health_get_fallDamageFactor(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_health_get_factor(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_obj_health_get_armor_maximum(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_obj_health_get_armor_start(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_obj_health_get_armor_current(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 bool js_obj_health_set_maximum(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 bool js_obj_health_set_start(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 bool js_obj_health_set_recoverTick(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
@@ -49,6 +52,8 @@ bool js_obj_health_set_recoverAmount(JSContextRef cx,JSObjectRef j_obj,JSStringR
 bool js_obj_health_set_fallDamageMinimumHeight(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 bool js_obj_health_set_fallDamageFactor(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 bool js_obj_health_set_factor(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_obj_health_set_armor_maximum(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_obj_health_set_armor_start(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 JSValueRef js_obj_health_add_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_health_remove_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_health_reset_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
@@ -62,6 +67,9 @@ JSStaticValue 		obj_health_props[]={
 							{"fallDamageMinimumHeight",	js_obj_health_get_fallDamageMinimumHeight,	js_obj_health_set_fallDamageMinimumHeight,	kJSPropertyAttributeDontDelete},
 							{"fallDamageFactor",		js_obj_health_get_fallDamageFactor,			js_obj_health_set_fallDamageFactor,			kJSPropertyAttributeDontDelete},
 							{"factor",					js_obj_health_get_factor,					js_obj_health_set_factor,					kJSPropertyAttributeDontDelete},
+							{"armorMaximum",			js_obj_health_get_armor_maximum,			js_obj_health_set_armor_maximum,			kJSPropertyAttributeDontDelete},
+							{"armorStart",				js_obj_health_get_armor_start,				js_obj_health_set_armor_start,				kJSPropertyAttributeDontDelete},
+							{"armorCurrent",			js_obj_health_get_armor_current,			NULL,										kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
 							{0,0,0,0}};
 							
 JSStaticFunction	obj_health_functions[]={
@@ -104,7 +112,7 @@ JSValueRef js_obj_health_get_maximum(JSContextRef cx,JSObjectRef j_obj,JSStringR
 	obj_type		*obj;
 
 	obj=object_script_lookup();
-	return(script_int_to_value(cx,obj->status.max_health));
+	return(script_int_to_value(cx,obj->status.health.max_value));
 }
 
 JSValueRef js_obj_health_get_start(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
@@ -112,7 +120,7 @@ JSValueRef js_obj_health_get_start(JSContextRef cx,JSObjectRef j_obj,JSStringRef
 	obj_type		*obj;
 
 	obj=object_script_lookup();
-	return(script_int_to_value(cx,obj->status.start_health));
+	return(script_int_to_value(cx,obj->status.health.start_value));
 }
 
 JSValueRef js_obj_health_get_current(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
@@ -120,7 +128,7 @@ JSValueRef js_obj_health_get_current(JSContextRef cx,JSObjectRef j_obj,JSStringR
 	obj_type		*obj;
 
 	obj=object_script_lookup();
-	return(script_int_to_value(cx,obj->status.health));
+	return(script_int_to_value(cx,obj->status.health.value));
 }
 
 JSValueRef js_obj_health_get_recoverTick(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
@@ -128,7 +136,7 @@ JSValueRef js_obj_health_get_recoverTick(JSContextRef cx,JSObjectRef j_obj,JSStr
 	obj_type		*obj;
 
 	obj=object_script_lookup();
-	return(script_int_to_value(cx,obj->status.health_recover_tick));
+	return(script_int_to_value(cx,obj->status.health.recover_tick));
 }
 
 JSValueRef js_obj_health_get_recoverAmount(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
@@ -136,7 +144,7 @@ JSValueRef js_obj_health_get_recoverAmount(JSContextRef cx,JSObjectRef j_obj,JSS
 	obj_type		*obj;
 
 	obj=object_script_lookup();
-	return(script_int_to_value(cx,obj->status.health_recover_amount));
+	return(script_int_to_value(cx,obj->status.health.recover_amount));
 }
 
 JSValueRef js_obj_health_get_fallDamageMinimumHeight(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
@@ -160,7 +168,31 @@ JSValueRef js_obj_health_get_factor(JSContextRef cx,JSObjectRef j_obj,JSStringRe
 	obj_type		*obj;
 
 	obj=object_script_lookup();
-	return(script_float_to_value(cx,obj->status.health_factor));
+	return(script_float_to_value(cx,obj->status.health.factor));
+}
+
+JSValueRef js_obj_health_get_armor_maximum(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
+{
+	obj_type		*obj;
+
+	obj=object_script_lookup();
+	return(script_int_to_value(cx,obj->status.armor.max_value));
+}
+
+JSValueRef js_obj_health_get_armor_start(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
+{
+	obj_type		*obj;
+
+	obj=object_script_lookup();
+	return(script_int_to_value(cx,obj->status.armor.start_value));
+}
+
+JSValueRef js_obj_health_get_armor_current(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
+{
+	obj_type		*obj;
+
+	obj=object_script_lookup();
+	return(script_int_to_value(cx,obj->status.armor.value));
 }
 
 /* =======================================================
@@ -174,7 +206,7 @@ bool js_obj_health_set_maximum(JSContextRef cx,JSObjectRef j_obj,JSStringRef nam
 	obj_type		*obj;
 	
 	obj=object_script_lookup();
-	obj->status.max_health=script_value_to_int(cx,vp);
+	obj->status.health.max_value=script_value_to_int(cx,vp);
 	
 	return(TRUE);
 }
@@ -184,7 +216,7 @@ bool js_obj_health_set_start(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,
 	obj_type		*obj;
 	
 	obj=object_script_lookup();
-	obj->status.start_health=script_value_to_int(cx,vp);
+	obj->status.health.start_value=script_value_to_int(cx,vp);
 	
 	return(TRUE);
 }
@@ -194,8 +226,8 @@ bool js_obj_health_set_recoverTick(JSContextRef cx,JSObjectRef j_obj,JSStringRef
 	obj_type		*obj;
 	
 	obj=object_script_lookup();
-	obj->status.health_recover_tick=script_value_to_int(cx,vp);
-	obj->status.health_recover_count=0;			// restart recover count
+	obj->status.health.recover_tick=script_value_to_int(cx,vp);
+	obj->status.health.recover_count=0;			// restart recover count
 	
 	return(TRUE);
 }
@@ -205,7 +237,7 @@ bool js_obj_health_set_recoverAmount(JSContextRef cx,JSObjectRef j_obj,JSStringR
 	obj_type		*obj;
 	
 	obj=object_script_lookup();
-	obj->status.health_recover_amount=script_value_to_int(cx,vp);
+	obj->status.health.recover_amount=script_value_to_int(cx,vp);
 	
 	return(TRUE);
 }
@@ -235,7 +267,27 @@ bool js_obj_health_set_factor(JSContextRef cx,JSObjectRef j_obj,JSStringRef name
 	obj_type		*obj;
 	
 	obj=object_script_lookup();
-	obj->status.health_factor=script_value_to_float(cx,vp);
+	obj->status.health.factor=script_value_to_float(cx,vp);
+	
+	return(TRUE);
+}
+
+bool js_obj_health_set_armor_maximum(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+{
+	obj_type		*obj;
+	
+	obj=object_script_lookup();
+	obj->status.armor.max_value=script_value_to_int(cx,vp);
+	
+	return(TRUE);
+}
+
+bool js_obj_health_set_armor_start(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+{
+	obj_type		*obj;
+	
+	obj=object_script_lookup();
+	obj->status.armor.start_value=script_value_to_int(cx,vp);
 	
 	return(TRUE);
 }
@@ -249,15 +301,15 @@ bool js_obj_health_set_factor(JSContextRef cx,JSObjectRef j_obj,JSStringRef name
 JSValueRef js_obj_health_add_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type		*obj;
-	obj_status		*status;
+	obj_health		*health;
 	
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
 	obj=object_script_lookup();
-    status=&obj->status;
+    health=&obj->status.health;
 	
-    status->health+=script_value_to_int(cx,argv[0]);
-    if (status->health>status->max_health) status->health=status->max_health;
+    health->value+=script_value_to_int(cx,argv[0]);
+    if (health->value>health->max_value) health->value=health->max_value;
 
 	return(script_null_to_value(cx));
 }
@@ -265,18 +317,18 @@ JSValueRef js_obj_health_add_func(JSContextRef cx,JSObjectRef func,JSObjectRef j
 JSValueRef js_obj_health_remove_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type		*obj;
-	obj_status		*status;
+	obj_health		*health;
 	
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
 	obj=object_script_lookup();
-    status=&obj->status;
+    health=&obj->status.health;
 	
 	obj->damage_obj_idx=-1;			// self-inflicted damage
 	
-    status->health-=script_value_to_int(cx,argv[0]);
-    if (status->health<0) {
-		status->health=0;
+    health->value-=script_value_to_int(cx,argv[0]);
+    if (health->value<0) {
+		health->value=0;
 		obj->death_trigger=TRUE;
 	}
 
@@ -286,14 +338,14 @@ JSValueRef js_obj_health_remove_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 JSValueRef js_obj_health_reset_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type		*obj;
-	obj_status		*status;
+	obj_health		*health;
 	
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
 	obj=object_script_lookup();
-    status=&obj->status;
+    health=&obj->status.health;
 	
-	status->health=status->max_health;
+	health->value=health->max_value;
 
 	return(script_null_to_value(cx));
 }

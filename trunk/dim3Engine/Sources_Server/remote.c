@@ -272,7 +272,7 @@ void remote_death(int net_uid,network_request_remote_death *death)
 		// set health to obj
 		// this stops dead remotes from picking things up
 		
-	obj->status.health=0;
+	obj->status.health.value=0;
 
 		// normal death
 		
@@ -443,7 +443,8 @@ void remote_update(int net_uid,network_request_remote_update *update)
 	old_score=obj->score.score;
 	
 	obj->score.score=(signed short)ntohs(update->score);
-	obj->status.health=(signed short)ntohs(update->health);
+	obj->status.health.value=(signed short)ntohs(update->health);
+	obj->status.armor.value=(signed short)ntohs(update->armor);
 	
 		// last update tick
 		
@@ -663,7 +664,8 @@ void remote_pickup(int net_uid,network_request_remote_pickup *pickup)
 		// setup health, ammo as they
 		// could effect pickups
 
-	obj->status.health=(signed short)ntohs(pickup->health);
+	obj->status.health.value=(signed short)ntohs(pickup->health);
+	obj->status.armor.value=(signed short)ntohs(pickup->armor);
 
 	idx=0;
 		

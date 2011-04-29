@@ -503,6 +503,7 @@ void iface_read_settings_interface(iface_type *iface)
 
 		// some initial text sizes
 
+	iface->font.text_size_mini=(int)(((float)iface->scale_x)*iface_text_mini_wid_factor);
 	iface->font.text_size_small=(int)(((float)iface->scale_x)*iface_text_small_wid_factor);
 	iface->font.text_size_medium=(int)(((float)iface->scale_x)*iface_text_medium_wid_factor);
 	iface->font.text_size_large=(int)(((float)iface->scale_x)*iface_text_large_wid_factor);

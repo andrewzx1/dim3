@@ -151,7 +151,8 @@ bool object_spawn(obj_type *obj,char *err_str)
 		// if not map change
 
 	if (sub_event!=sd_event_spawn_map_change) {
-		obj->status.health=obj->status.start_health;
+		obj->status.health.value=obj->status.health.start_value;
+		obj->status.armor.value=obj->status.armor.start_value;
 		weapon_reset_ammo_object(obj);
 	}
 
@@ -248,7 +249,7 @@ void object_check_respawn(obj_type *obj)
 		
 	if ((obj->type!=object_type_player) && (obj->type!=object_type_bot_multiplayer)) return;
 	
-	if (obj->status.health>0) return;
+	if (obj->status.health.value>0) return;
 	if (obj->status.respawn_tick==-1) return;
 	
 		// time to respawn?

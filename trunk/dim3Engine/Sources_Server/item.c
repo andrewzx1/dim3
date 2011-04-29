@@ -61,7 +61,7 @@ void item_pickup_check(obj_type *obj)
 
 		// dead players can't pickup items
 
-	if ((obj->type==object_type_player) && (obj->status.health==0)) return;
+	if ((obj->type==object_type_player) && (obj->status.health.value==0)) return;
 
 		// detect if we need to send synch
 		// pickup network messages
@@ -215,9 +215,13 @@ bool item_add_alt_clip(obj_type *obj,weapon_type *weap,int add_count)
 
 bool item_add_health(obj_type *obj,int add_count)
 {
-	if (obj->status.health==obj->status.max_health) return(FALSE);
-	
 	object_heal(obj,add_count);
+	return(TRUE);
+}
+
+bool item_add_armor(obj_type *obj,int add_count)
+{
+	object_heal_armor(obj,add_count);
 	return(TRUE);
 }
 

@@ -173,7 +173,8 @@ void net_client_send_remote_update(obj_type *obj,bool chat_on)
 		// status
 
 	update.score=htons((short)obj->score.score);
-	update.health=htons((short)obj->status.health);
+	update.health=htons((short)obj->status.health.value);
+	update.armor=htons((short)obj->status.armor.value);
 	
 		// position
 		
@@ -375,7 +376,8 @@ void net_client_setup_pickup(obj_type *obj,network_request_remote_pickup *pickup
 	pickup->pt_y=htonl(obj->pnt.y);
 	pickup->pt_z=htonl(obj->pnt.z);
 
-	pickup->health=htons((short)obj->status.health);
+	pickup->health=htons((short)obj->status.health.value);
+	pickup->armor=htons((short)obj->status.armor.value);
 
 	idx=0;
 		

@@ -163,7 +163,7 @@ void object_death(obj_type *obj)
 	
 		// remove all health
 		
-    obj->status.health=0;
+    obj->status.health.value=0;
     
 		// send death message
 		
@@ -484,6 +484,8 @@ void object_click(obj_type *obj,obj_type *from_obj)
 
 void object_damage(obj_type *obj,obj_type *source_obj,weapon_type *source_weap,proj_type *source_proj,d3pnt *melee_hit_pt,int damage)
 {
+	int				org_damage;
+
 	if (obj->type==object_type_remote) return;
 	if (!obj->damage.on) return;
 	
@@ -491,15 +493,30 @@ void object_damage(obj_type *obj,obj_type *source_obj,weapon_type *source_weap,p
 		// don't re-enter damage calls
 		
 	if (obj->damage.in_damage) return;
+
+		// armor damage
+
+	org_damage=damage;
+
+	if (obj->status.armor.value>0) {
+		obj->status.armor.value-=damage;
+		if (obj->status.armor.value>0) {
+			damage=0;
+		}
+		else {
+			damage=-obj->status.armor.value;
+			obj->status.armor.value=0;
+		}
+	}
 	
 		// reduce any damage
 
-	damage=(int)(((float)damage)*obj->status.health_factor);
+	damage=(int)(((float)damage)*obj->status.health.factor);
 	
         // health
 		
 	if (!obj->damage.invincible) {
-		if (obj->status.health<=0) return;
+		if (obj->status.health.value<=0) return;
 	
 			// setup damage object
 			
@@ -509,14 +526,13 @@ void object_damage(obj_type *obj,obj_type *source_obj,weapon_type *source_weap,p
 			if ((source_obj->type!=object_type_object) && (source_obj->idx!=obj->idx)) {		// no damage from regular objects and same object
 				obj->damage_obj_idx=source_obj->idx;
 			}
-
 		}
 	
 			// remove the health
 			
-		obj->status.health-=damage;
-		if (obj->status.health<=0) {
-			obj->status.health=0;
+		obj->status.health.value-=damage;
+		if (obj->status.health.value<=0) {
+			obj->status.health.value=0;
 			obj->death_trigger=TRUE;
 			return;
 		}
@@ -524,7 +540,7 @@ void object_damage(obj_type *obj,obj_type *source_obj,weapon_type *source_weap,p
 	
 		// setup callback
 		
-	object_setup_hit(obj,source_obj,source_weap,source_proj,melee_hit_pt,damage);
+	object_setup_hit(obj,source_obj,source_weap,source_proj,melee_hit_pt,org_damage);
 
 		// run callback
 
@@ -594,8 +610,8 @@ void object_heal(obj_type *obj,int heal)
     
     status=&obj->status;
 	
-    status->health+=heal;
-    if (status->health>status->max_health) status->health=status->max_health;
+    status->health.value+=heal;
+    if (status->health.value>status->health.max_value) status->health.value=status->health.max_value;
 	
 		// alert object health has been added
 		
@@ -606,17 +622,31 @@ void object_health_recover(obj_type *obj)
 {
 	int			tick;
 
-	if (obj->status.health==0) return;
-	if ((obj->status.health_recover_tick==0) || (obj->status.health_recover_amount==0)) return;
+	if (obj->status.health.value==0) return;
+	if ((obj->status.health.recover_tick==0) || (obj->status.health.recover_amount==0)) return;
 
-	obj->status.health_recover_count+=10;
+	obj->status.health.recover_count+=10;
 
-	tick=obj->status.health_recover_tick*100;
-	if (obj->status.health_recover_count<tick) return;
+	tick=obj->status.health.recover_tick*100;
+	if (obj->status.health.recover_count<tick) return;
 
-	obj->status.health_recover_count-=tick;
+	obj->status.health.recover_count-=tick;
 
-	object_heal(obj,obj->status.health_recover_amount);
+	object_heal(obj,obj->status.health.recover_amount);
+}
+
+void object_heal_armor(obj_type *obj,int heal)
+{
+	obj_status		*status;
+    
+    status=&obj->status;
+	
+    status->armor.value+=heal;
+    if (status->armor.value>status->armor.max_value) status->armor.value=status->armor.max_value;
+	
+		// alert object health has been added
+		
+	scripts_post_event_console(&obj->attach,sd_event_health,0,0);
 }
 
 /* =======================================================
@@ -630,7 +660,7 @@ void object_crush(obj_type *obj,bool auto_crush)
 		// no damage, crush, or health
 		
 	if ((!obj->damage.on) || (!obj->damage.crushable)) return;
-	if (obj->status.health<=0) return;
+	if (obj->status.health.value<=0) return;
 	
 		// moving walls automatically crush you
 		// and call this routine.  The only crushing
@@ -649,7 +679,7 @@ void object_crush(obj_type *obj,bool auto_crush)
 	if (obj->damage.invincible) return;
 
 	obj->damage_obj_idx=-1;
-	obj->status.health=0;
+	obj->status.health.value=0;
 	obj->death_trigger=TRUE;
 }
 
@@ -667,7 +697,7 @@ void object_mesh_harm(obj_type *obj)
 		// no damage if no health
 		
 	if (!obj->damage.on) return;
-	if (obj->status.health<=0) return;
+	if (obj->status.health.value<=0) return;
 	
 		// check mesh harm
 		
