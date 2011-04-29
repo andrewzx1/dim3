@@ -437,8 +437,8 @@ void network_draw(void)
 	
 		// draw the score and chat
 		
-	network_score_draw();
 	network_chat_draw();
+	network_score_draw();
 	
 		// reset any color changes
 		
