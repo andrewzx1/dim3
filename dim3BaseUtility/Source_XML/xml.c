@@ -1030,8 +1030,6 @@ void xml_add_attribute_int(char *name,int value)
 {
 	char		txt[256];
 
-	if (value==0) return;
-
 	sprintf(txt,"%d",value);
 	xml_add_attribute_text(name,txt);
 }
@@ -1074,8 +1072,6 @@ void xml_add_attribute_float(char *name,float value)
 {
 	char		txt[256];
 
-	if (value==0.0f) return;
-    
 	string_convert_float(txt,value);
 	xml_add_attribute_text(name,txt);
 }
@@ -1110,8 +1106,6 @@ void xml_add_attribute_2_coord_int(char *name,int x,int y)
 {
 	char		txt[256];
 
-	if ((x==0) && (y==0)) return;
-
 	sprintf(txt,"%d,%d",x,y);
 	xml_add_attribute_text(name,txt);
 }
@@ -1120,8 +1114,6 @@ void xml_add_attribute_2_coord_float(char *name,float x,float y)
 {
 	char		txt[256],sx[32],sy[32];
 
-	if ((x==0.0f) && (y==0.0f)) return;
-	
 	string_convert_float(sx,x);
 	string_convert_float(sy,y);
 	sprintf(txt,"%s,%s",sx,sy);
@@ -1132,8 +1124,6 @@ void xml_add_attribute_3_coord_int(char *name,int x,int y,int z)
 {
 	char		txt[256];
 
-	if ((x==0) && (y==0) && (z==0)) return;
-
 	sprintf(txt,"%d,%d,%d",x,y,z);
 	xml_add_attribute_text(name,txt);
 }
@@ -1141,8 +1131,6 @@ void xml_add_attribute_3_coord_int(char *name,int x,int y,int z)
 void xml_add_attribute_3_coord_float(char *name,float x,float y,float z)
 {
 	char		txt[256],sx[32],sy[32],sz[32];
-
-	if ((x==0.0f) && (y==0.0f) && (z==0.0f)) return;
 
 	string_convert_float(sx,x);
 	string_convert_float(sy,y);
@@ -1154,8 +1142,6 @@ void xml_add_attribute_3_coord_float(char *name,float x,float y,float z)
 void xml_add_attribute_4_coord_float(char *name,float r,float g,float b,float a)
 {
 	char		txt[256],sr[32],sg[32],sb[32],sa[32];
-
-	if ((r==0.0f) && (g==0.0f) && (b==0.0f) && (a==0.0f)) return;
 
 	string_convert_float(sr,r);
 	string_convert_float(sg,g);
@@ -1170,8 +1156,6 @@ void xml_add_attribute_color(char *name,d3col *col)
 	int			ir,ig,ib;
 	char		txt[256];
 
-	if ((col->r==0.0f) && (col->g==0.0f) && (col->b==0.0f)) return;
-	
 	ir=(int)(col->r*0xFF);
 	ig=(int)(col->g*0xFF);
 	ib=(int)(col->b*0xFF);

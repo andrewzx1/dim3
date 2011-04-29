@@ -630,7 +630,7 @@ void write_single_mesh(map_mesh_type *mesh)
 		xml_add_attribute_int_array("v",poly->v,poly->ptsz,FALSE);
 		
 		xml_add_attribute_int("txt",poly->txt_idx);
-		if (poly->lmap_txt_idx!=-1) xml_add_attribute_int("lmap_txt_idx",poly->lmap_txt_idx);
+		if (poly->lmap_txt_idx!=-1) xml_add_attribute_int("lmp",poly->lmap_txt_idx);
 
 		xml_add_attribute_3_coord_float("t3",poly->tangent_space.tangent.x,poly->tangent_space.tangent.y,poly->tangent_space.tangent.z);
 		xml_add_attribute_3_coord_float("n3",poly->tangent_space.normal.x,poly->tangent_space.normal.y,poly->tangent_space.normal.z);
@@ -674,7 +674,7 @@ void write_single_liquid(map_liquid_type *liq)
 
 	xml_add_tagstart("Poly");
 	xml_add_attribute_int("txt",liq->txt_idx);
-	if (liq->lmap_txt_idx!=-1) xml_add_attribute_int("lmap_txt_idx",liq->lmap_txt_idx);
+	if (liq->lmap_txt_idx!=-1) xml_add_attribute_int("lmp",liq->lmap_txt_idx);
 	xml_add_attribute_3_coord_int("v1",liq->lft,liq->y,liq->top);
 	xml_add_attribute_3_coord_int("v2",liq->rgt,liq->y,liq->bot);
 	xml_add_attribute_int("depth",liq->depth);
