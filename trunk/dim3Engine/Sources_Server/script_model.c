@@ -76,9 +76,9 @@ void script_free_model_object(void)
 	script_free_class(model_class);
 }
 
-JSObjectRef script_add_model_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_model_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
 {
-    return(script_create_child_object(cx,parent_obj,model_class,"model"));
+    return(script_create_child_object(cx,parent_obj,model_class,"model",attach));
 }
 
 /* =======================================================
@@ -155,7 +155,7 @@ bool js_model_set_name(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValu
 {
 	model_draw		*draw;
 	
-	if (!script_in_construct()) {
+	if (!script_in_construct(j_obj)) {
 		*exception=script_create_exception(cx,"Can only set model name in the construct event");
 		return(TRUE);
 	}

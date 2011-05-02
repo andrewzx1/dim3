@@ -91,17 +91,6 @@ int projectile_count_list(void)
 
 /* =======================================================
 
-      Projectile Lookup
-      
-======================================================= */
-
-inline proj_type* projectile_script_lookup(void)
-{
-	return(server.proj_list.projs[js.attach.proj_idx]);
-}
-
-/* =======================================================
-
       Create Projectile
       
 ======================================================= */

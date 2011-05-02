@@ -29,16 +29,11 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
+#include "interface.h"
 #include "scripts.h"
 
 extern map_type			map;
 extern js_type			js;
-
-extern void map_movements_script_start(int movement_idx,bool reverse);
-extern void map_movements_script_start_or_thaw(int movement_idx);
-extern void map_movements_script_freeze(int movement_idx);
-extern void map_movements_script_thaw(int movement_idx);
-extern bool map_movements_script_is_looping(int movement_idx);
 
 JSValueRef js_map_movement_start_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_map_movement_start_reverse_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
@@ -74,9 +69,9 @@ void script_free_map_movement_object(void)
 	script_free_class(map_movement_class);
 }
 
-JSObjectRef script_add_map_movement_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_map_movement_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
 {
-	return(script_create_child_object(cx,parent_obj,map_movement_class,"movement"));
+	return(script_create_child_object(cx,parent_obj,map_movement_class,"movement",attach));
 }
 
 /* =======================================================
@@ -88,11 +83,14 @@ JSObjectRef script_add_map_movement_object(JSContextRef cx,JSObjectRef parent_ob
 JSValueRef js_map_movement_start_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				movement_idx;
+	attach_type		*attach;
 	
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
+	attach=(attach_type*)JSObjectGetPrivate(j_obj);
+	
 	movement_idx=script_find_map_movement_from_name(cx,argv[0],exception);
-	if (movement_idx!=-1) map_movements_script_start(movement_idx,FALSE);
+	if (movement_idx!=-1) map_movements_script_start(attach->obj_idx,movement_idx,FALSE);
 
 	return(script_null_to_value(cx));
 }
@@ -100,11 +98,14 @@ JSValueRef js_map_movement_start_func(JSContextRef cx,JSObjectRef func,JSObjectR
 JSValueRef js_map_movement_start_reverse_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				movement_idx;
+	attach_type		*attach;
 	
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+
+	attach=(attach_type*)JSObjectGetPrivate(j_obj);
 	
 	movement_idx=script_find_map_movement_from_name(cx,argv[0],exception);
-	if (movement_idx!=-1) map_movements_script_start(movement_idx,TRUE);
+	if (movement_idx!=-1) map_movements_script_start(attach->obj_idx,movement_idx,TRUE);
 
 	return(script_null_to_value(cx));
 }
@@ -112,11 +113,14 @@ JSValueRef js_map_movement_start_reverse_func(JSContextRef cx,JSObjectRef func,J
 JSValueRef js_map_movement_start_or_thaw_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				movement_idx;
+	attach_type		*attach;
 	
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+
+	attach=(attach_type*)JSObjectGetPrivate(j_obj);
 	
 	movement_idx=script_find_map_movement_from_name(cx,argv[0],exception);
-	if (movement_idx!=-1) map_movements_script_start_or_thaw(movement_idx);
+	if (movement_idx!=-1) map_movements_script_start_or_thaw(attach->obj_idx,movement_idx);
 
 	return(script_null_to_value(cx));
 }

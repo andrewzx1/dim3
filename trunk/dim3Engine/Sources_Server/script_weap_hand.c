@@ -75,9 +75,9 @@ void script_free_weap_hand_object(void)
 	script_free_class(weap_hand_class);
 }
 
-JSObjectRef script_add_weap_hand_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_weap_hand_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
 {
-	return(script_create_child_object(cx,parent_obj,weap_hand_class,"hand"));
+	return(script_create_child_object(cx,parent_obj,weap_hand_class,"hand",attach));
 }
 
 /* =======================================================
@@ -90,7 +90,7 @@ JSValueRef js_weap_hand_get_raiseTick(JSContextRef cx,JSObjectRef j_obj,JSString
 {
 	weapon_type		*weap;
 
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	return(script_int_to_value(cx,weap->hand.raise_tick));
 }
 
@@ -98,7 +98,7 @@ JSValueRef js_weap_hand_get_lowerTick(JSContextRef cx,JSObjectRef j_obj,JSString
 {
 	weapon_type		*weap;
 
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	return(script_int_to_value(cx,weap->hand.lower_tick));
 }
 
@@ -106,7 +106,7 @@ JSValueRef js_weap_hand_get_selectShift(JSContextRef cx,JSObjectRef j_obj,JSStri
 {
 	weapon_type		*weap;
 
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	return(script_int_to_value(cx,weap->hand.select_shift));
 }
 
@@ -114,7 +114,7 @@ JSValueRef js_weap_hand_get_bobSpeed(JSContextRef cx,JSObjectRef j_obj,JSStringR
 {
 	weapon_type		*weap;
 
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	return(script_float_to_value(cx,weap->hand.bounce_speed));
 }
 
@@ -122,7 +122,7 @@ JSValueRef js_weap_hand_get_bobAngle(JSContextRef cx,JSObjectRef j_obj,JSStringR
 {
 	weapon_type		*weap;
 
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	return(script_float_to_value(cx,weap->hand.bounce_ang));
 }
 
@@ -130,7 +130,7 @@ JSValueRef js_weap_hand_get_fovOverride(JSContextRef cx,JSObjectRef j_obj,JSStri
 {
 	weapon_type		*weap;
 
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	return(script_float_to_value(cx,weap->hand.fov_override));
 }
 
@@ -144,7 +144,7 @@ bool js_weap_hand_set_raiseTick(JSContextRef cx,JSObjectRef j_obj,JSStringRef na
 {
 	weapon_type		*weap;
 	
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	weap->hand.raise_tick=script_value_to_int(cx,vp);
 
 	return(TRUE);
@@ -154,7 +154,7 @@ bool js_weap_hand_set_lowerTick(JSContextRef cx,JSObjectRef j_obj,JSStringRef na
 {
 	weapon_type		*weap;
 	
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	weap->hand.lower_tick=script_value_to_int(cx,vp);
 
 	return(TRUE);
@@ -164,7 +164,7 @@ bool js_weap_hand_set_selectShift(JSContextRef cx,JSObjectRef j_obj,JSStringRef 
 {
 	weapon_type		*weap;
 	
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	weap->hand.select_shift=script_value_to_int(cx,vp);
 
 	return(TRUE);
@@ -174,7 +174,7 @@ bool js_weap_hand_set_bobSpeed(JSContextRef cx,JSObjectRef j_obj,JSStringRef nam
 {
 	weapon_type		*weap;
 	
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	weap->hand.bounce_speed=script_value_to_float(cx,vp);
 
 	return(TRUE);
@@ -184,7 +184,7 @@ bool js_weap_hand_set_bobAngle(JSContextRef cx,JSObjectRef j_obj,JSStringRef nam
 {
 	weapon_type		*weap;
 	
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	weap->hand.bounce_ang=script_value_to_float(cx,vp);
 
 	return(TRUE);
@@ -194,7 +194,7 @@ bool js_weap_hand_set_fovOverride(JSContextRef cx,JSObjectRef j_obj,JSStringRef 
 {
 	weapon_type		*weap;
 	
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	weap->hand.fov_override=script_value_to_float(cx,vp);
 
 	return(TRUE);

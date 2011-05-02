@@ -64,9 +64,9 @@ void script_free_proj_push_object(void)
 	script_free_class(proj_push_class);
 }
 
-JSObjectRef script_add_proj_push_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_proj_push_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
 {
-	return(script_create_child_object(cx,parent_obj,proj_push_class,"push"));
+	return(script_create_child_object(cx,parent_obj,proj_push_class,"push",attach));
 }
 
 /* =======================================================
@@ -79,7 +79,7 @@ JSValueRef js_proj_push_get_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef nam
 {
 	proj_setup_type		*proj_setup;
 
-	proj_setup=proj_setup_get_attach();
+	proj_setup=proj_setup_get_attach(j_obj);
 	if (proj_setup==NULL) return(script_null_to_value(cx));
 	
 	return(script_bool_to_value(cx,proj_setup->push.on));
@@ -89,7 +89,7 @@ JSValueRef js_proj_push_get_force(JSContextRef cx,JSObjectRef j_obj,JSStringRef 
 {
 	proj_setup_type		*proj_setup;
 
-	proj_setup=proj_setup_get_attach();
+	proj_setup=proj_setup_get_attach(j_obj);
 	if (proj_setup==NULL) return(script_null_to_value(cx));
 	
 	return(script_int_to_value(cx,proj_setup->push.force));
@@ -105,7 +105,7 @@ bool js_proj_push_set_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSVa
 {
 	proj_setup_type		*proj_setup;
 	
-	proj_setup=proj_setup_get_attach();
+	proj_setup=proj_setup_get_attach(j_obj);
 	if (proj_setup!=NULL) proj_setup->push.on=script_value_to_bool(cx,vp);
 
 	return(TRUE);
@@ -115,7 +115,7 @@ bool js_proj_push_set_force(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,J
 {
 	proj_setup_type		*proj_setup;
 	
-	proj_setup=proj_setup_get_attach();
+	proj_setup=proj_setup_get_attach(j_obj);
 	if (proj_setup!=NULL) proj_setup->push.force=script_value_to_int(cx,vp);
 
 	return(TRUE);

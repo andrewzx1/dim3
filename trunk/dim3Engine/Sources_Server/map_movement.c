@@ -36,7 +36,6 @@ and can be sold or given away.
 extern map_type			map;
 extern server_type		server;
 extern camera_type		camera;
-extern js_type			js;
 
 extern bool group_move_start(int group_idx,int movement_idx,int movement_move_idx,d3pnt *mov,d3ang *rot,int count,int user_id,int obj_idx,bool main_move);
 extern void group_move_freeze(int group_idx,bool freeze);
@@ -171,7 +170,7 @@ void map_movements_initialize(void)
       
 ======================================================= */
 
-void map_movements_script_start(int movement_idx,bool reverse)
+void map_movements_script_start(int obj_idx,int movement_idx,bool reverse)
 {
 	movement_type	*movement;
 	
@@ -181,11 +180,11 @@ void map_movements_script_start(int movement_idx,bool reverse)
 	
 	if (!reverse) {
 		movement->reverse=FALSE;
-		map_movements_start(movement_idx,0,js.attach.obj_idx);
+		map_movements_start(movement_idx,0,obj_idx);
 	}
 	else {
 		movement->reverse=TRUE;
-		map_movements_start(movement_idx,(movement->nmove-1),js.attach.obj_idx);
+		map_movements_start(movement_idx,(movement->nmove-1),obj_idx);
 	}
 }
 
@@ -209,7 +208,7 @@ void map_movements_script_thaw(int movement_idx)
 	if (movement->reverse_group_idx!=-1) group_move_freeze(movement->reverse_group_idx,FALSE);
 }
 
-void map_movements_script_start_or_thaw(int movement_idx)
+void map_movements_script_start_or_thaw(int obj_idx,int movement_idx)
 {
 	movement_type	*movement;
 	
@@ -224,7 +223,7 @@ void map_movements_script_start_or_thaw(int movement_idx)
 	}
 	else {
 		movement->reverse=FALSE;
-		map_movements_start(movement_idx,0,js.attach.obj_idx);
+		map_movements_start(movement_idx,0,obj_idx);
 	}
 }
 

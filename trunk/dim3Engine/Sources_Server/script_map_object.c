@@ -136,9 +136,9 @@ void script_free_map_object_object(void)
 	script_free_class(map_object_class);
 }
 
-JSObjectRef script_add_map_object_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_map_object_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
 {
-	return(script_create_child_object(cx,parent_obj,map_object_class,"object"));
+	return(script_create_child_object(cx,parent_obj,map_object_class,"object",attach));
 }
 
 /* =======================================================
@@ -403,7 +403,7 @@ JSValueRef js_map_object_nearest_player_skip_self_func(JSContextRef cx,JSObjectR
 	
 		// find object
 
-	obj=object_find_nearest(&pt,NULL,-1,-1,ang,ang_sweep,min_dist,max_dist,TRUE,script_get_attached_object_uid());
+	obj=object_find_nearest(&pt,NULL,-1,-1,ang,ang_sweep,min_dist,max_dist,TRUE,script_get_attached_object_uid(j_obj));
 	if (obj==NULL) return(script_int_to_value(cx,-1));
 	
 	return(script_int_to_value(cx,obj->idx));

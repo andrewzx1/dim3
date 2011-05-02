@@ -555,6 +555,7 @@ typedef struct		{
 					} map_settings_type;
 					
 typedef struct		{
+						int									shadow_obscure_distance;
 						float								cull_angle;
 						bool								never_cull,no_shaders;
 					} map_optimize_type;					

@@ -33,6 +33,7 @@ and can be sold or given away.
 #include "scripts.h"
 #include "objects.h"
 
+extern server_type		server;
 extern js_type			js;
 
 JSValueRef js_model_bone_find_offset_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
@@ -69,9 +70,9 @@ void script_free_model_bone_object(void)
 	script_free_class(model_bone_class);
 }
 
-JSObjectRef script_add_model_bone_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_model_bone_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
 {
-	return(script_create_child_object(cx,parent_obj,model_bone_class,"bone"));
+	return(script_create_child_object(cx,parent_obj,model_bone_class,"bone",attach));
 }
 
 /* =======================================================
@@ -80,27 +81,30 @@ JSObjectRef script_add_model_bone_object(JSContextRef cx,JSObjectRef parent_obj)
       
 ======================================================= */
 
-model_draw* script_bone_function_setup(JSContextRef cx,JSValueRef *exception)
+model_draw* script_bone_function_setup(JSContextRef cx,JSObjectRef j_obj,JSValueRef *exception)
 {
 	obj_type			*obj;
 	weapon_type			*weap;
 	proj_type			*proj;
+	attach_type			*attach;
 	
-	switch (js.attach.thing_type) {
+	attach=(attach_type*)JSObjectGetPrivate(j_obj);
+	
+	switch (attach->thing_type) {
 	
 		case thing_type_object:
-			obj=object_script_lookup();
+			obj=server.obj_list.objs[attach->obj_idx];
 			model_draw_setup_object(obj);
 			return(&obj->draw);
 			
 		case thing_type_weapon:
-			obj=object_script_lookup();
-			weap=weapon_script_lookup();
+			obj=server.obj_list.objs[attach->obj_idx];
+			weap=obj->weap_list.weaps[attach->weap_idx];
 			model_draw_setup_weapon(obj,weap,FALSE,FALSE);
 			return(&weap->draw);
 			
 		case thing_type_projectile:
-			proj=projectile_script_lookup();
+			proj=server.proj_list.projs[attach->proj_idx];
 			model_draw_setup_projectile(proj);
 			return(&proj->draw);
 			
@@ -143,7 +147,7 @@ JSValueRef js_model_bone_find_offset_func(JSContextRef cx,JSObjectRef func,JSObj
 	
 		// get proper draw setup
 		
-	draw=script_bone_function_setup(cx,exception);
+	draw=script_bone_function_setup(cx,j_obj,exception);
 	if (draw==NULL) return(script_null_to_value(cx));
 	
 		// get bone offset
@@ -169,7 +173,7 @@ JSValueRef js_model_bone_find_position_func(JSContextRef cx,JSObjectRef func,JSO
 	
 		// get proper draw setup
 		
-	draw=script_bone_function_setup(cx,exception);
+	draw=script_bone_function_setup(cx,j_obj,exception);
 	if (draw==NULL) return(script_null_to_value(cx));
 	
 		// get bone position
@@ -195,7 +199,7 @@ JSValueRef js_model_bone_get_brightness_func(JSContextRef cx,JSObjectRef func,JS
 	
 		// get proper draw setup
 		
-	draw=script_bone_function_setup(cx,exception);
+	draw=script_bone_function_setup(cx,j_obj,exception);
 	if (draw==NULL) return(script_null_to_value(cx));
 	
 		// get bone light
@@ -227,7 +231,7 @@ JSValueRef js_model_bone_set_dynamic_rotate_func(JSContextRef cx,JSObjectRef fun
 	
 		// get proper draw setup
 		
-	draw=script_bone_function_setup(cx,exception);
+	draw=script_bone_function_setup(cx,j_obj,exception);
 	if (draw==NULL) return(script_null_to_value(cx));
 
 		// create dynamic bone
@@ -254,7 +258,7 @@ JSValueRef js_model_bone_set_dynamic_move_func(JSContextRef cx,JSObjectRef func,
 	
 		// get proper draw setup
 		
-	draw=script_bone_function_setup(cx,exception);
+	draw=script_bone_function_setup(cx,j_obj,exception);
 	if (draw==NULL) return(script_null_to_value(cx));
 
 		// create dynamic bone
@@ -281,7 +285,7 @@ JSValueRef js_model_bone_set_dynamic_resize_func(JSContextRef cx,JSObjectRef fun
 	
 		// get proper draw setup
 		
-	draw=script_bone_function_setup(cx,exception);
+	draw=script_bone_function_setup(cx,j_obj,exception);
 	if (draw==NULL) return(script_null_to_value(cx));
 
 		// create dynamic bone

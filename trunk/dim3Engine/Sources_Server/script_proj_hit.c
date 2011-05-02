@@ -75,9 +75,9 @@ void script_free_proj_hit_object(void)
 	script_free_class(proj_hit_class);
 }
 
-JSObjectRef script_add_proj_hit_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_proj_hit_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
 {
-	return(script_create_child_object(cx,parent_obj,proj_hit_class,"hit"));
+	return(script_create_child_object(cx,parent_obj,proj_hit_class,"hit",attach));
 }
 
 /* =======================================================
@@ -178,7 +178,7 @@ JSValueRef js_proj_hit_get_type(JSContextRef cx,JSObjectRef j_obj,JSStringRef na
 {
 	proj_type			*proj;
 
-	proj=proj_get_attach();
+	proj=proj_get_attach(j_obj);
 	if (proj==NULL) return(script_null_to_value(cx));
 
 	return(script_int_to_value(cx,js_get_proj_hit_type(proj)));
@@ -190,7 +190,7 @@ JSValueRef js_proj_hit_get_name(JSContextRef cx,JSObjectRef j_obj,JSStringRef na
 	char				hit_name[name_str_len];
 	proj_type			*proj;
 
-	proj=proj_get_attach();
+	proj=proj_get_attach(j_obj);
 	if (proj==NULL) return(script_null_to_value(cx));
 
 	hit_type=js_get_proj_hit_type(proj);
@@ -203,7 +203,7 @@ JSValueRef js_proj_hit_get_id(JSContextRef cx,JSObjectRef j_obj,JSStringRef name
 {
 	proj_type			*proj;
 
-	proj=proj_get_attach();
+	proj=proj_get_attach(j_obj);
 	if (proj==NULL) return(script_null_to_value(cx));
 
 	return(script_int_to_value(cx,proj->contact.obj_idx));
@@ -213,7 +213,7 @@ JSValueRef js_proj_hit_get_isPlayer(JSContextRef cx,JSObjectRef j_obj,JSStringRe
 {
 	proj_type			*proj;
 
-	proj=proj_get_attach();
+	proj=proj_get_attach(j_obj);
 	if (proj==NULL) return(script_null_to_value(cx));
 
 	return(script_bool_to_value(cx,proj->contact.obj_idx==server.player_obj_idx));
@@ -223,7 +223,7 @@ JSValueRef js_proj_hit_get_startTick(JSContextRef cx,JSObjectRef j_obj,JSStringR
 {
 	proj_type			*proj;
 
-	proj=proj_get_attach();
+	proj=proj_get_attach(j_obj);
 	if (proj==NULL) return(script_null_to_value(cx));
 
 	return(script_int_to_value(cx,proj->start_tick));
@@ -235,7 +235,7 @@ JSValueRef js_proj_hit_get_materialName(JSContextRef cx,JSObjectRef j_obj,JSStri
 	char				hit_name[name_str_len];
 	proj_type			*proj;
 
-	proj=proj_get_attach();
+	proj=proj_get_attach(j_obj);
 	if (proj==NULL) return(script_null_to_value(cx));
 
 	hit_type=js_get_proj_hit_type(proj);
@@ -249,7 +249,7 @@ JSValueRef js_proj_hit_get_ejectVector(JSContextRef cx,JSObjectRef j_obj,JSStrin
 	d3vct				vct;
 	proj_type			*proj;
 
-	proj=proj_get_attach();
+	proj=proj_get_attach(j_obj);
 	if (proj==NULL) return(script_null_to_value(cx));
 
 	projectile_eject_vector(proj,&vct);
@@ -261,7 +261,7 @@ JSValueRef js_proj_hit_get_reflectVector(JSContextRef cx,JSObjectRef j_obj,JSStr
 	d3vct				vct;
 	proj_type			*proj;
 
-	proj=proj_get_attach();
+	proj=proj_get_attach(j_obj);
 	if (proj==NULL) return(script_null_to_value(cx));
 
 	projectile_reflect_vector(proj,&vct);

@@ -63,9 +63,9 @@ void script_free_obj_hit_angle_object(void)
 	script_free_class(obj_hit_angle_class);
 }
 
-JSObjectRef script_add_obj_hit_angle_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_obj_hit_angle_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
 {
-	return(script_create_child_object(cx,parent_obj,obj_hit_angle_class,"hitAngle"));
+	return(script_create_child_object(cx,parent_obj,obj_hit_angle_class,"hitAngle",attach));
 }
 
 /* =======================================================
@@ -78,7 +78,7 @@ JSValueRef js_obj_hit_angle_get_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef 
 {
 	obj_type			*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_float_to_value(cx,obj->hit.ang.x));
 }
 
@@ -86,7 +86,7 @@ JSValueRef js_obj_hit_angle_get_y(JSContextRef cx,JSObjectRef j_obj,JSStringRef 
 {
 	obj_type			*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_float_to_value(cx,obj->hit.ang.y));
 }
 
@@ -94,7 +94,7 @@ JSValueRef js_obj_hit_angle_get_z(JSContextRef cx,JSObjectRef j_obj,JSStringRef 
 {
 	obj_type			*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_float_to_value(cx,obj->hit.ang.z));
 }
 

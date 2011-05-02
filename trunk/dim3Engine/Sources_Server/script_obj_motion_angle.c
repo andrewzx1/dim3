@@ -76,9 +76,9 @@ void script_free_obj_motion_angle_object(void)
 	script_free_class(obj_motion_angle_class);
 }
 
-JSObjectRef script_add_obj_motion_angle_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_obj_motion_angle_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
 {
-	return(script_create_child_object(cx,parent_obj,obj_motion_angle_class,"motionAngle"));
+	return(script_create_child_object(cx,parent_obj,obj_motion_angle_class,"motionAngle",attach));
 }
 
 /* =======================================================
@@ -91,7 +91,7 @@ JSValueRef js_obj_motion_angle_get_x(JSContextRef cx,JSObjectRef j_obj,JSStringR
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_float_to_value(cx,obj->motion.ang.x));
 }
 
@@ -99,7 +99,7 @@ JSValueRef js_obj_motion_angle_get_y(JSContextRef cx,JSObjectRef j_obj,JSStringR
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_float_to_value(cx,obj->motion.ang.y));
 }
 
@@ -107,7 +107,7 @@ JSValueRef js_obj_motion_angle_get_z(JSContextRef cx,JSObjectRef j_obj,JSStringR
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_float_to_value(cx,obj->motion.ang.z));
 }
 
@@ -125,7 +125,7 @@ JSValueRef js_obj_motion_angle_turn_to_angle_func(JSContextRef cx,JSObjectRef fu
 	
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	
 	obj->turn.ang_to.y=script_value_to_float(cx,argv[0]);
 	if (obj->turn.ang_to.y<0.0f) obj->turn.ang_to.y=360.0f+obj->turn.ang_to.y;
@@ -162,7 +162,7 @@ JSValueRef js_obj_motion_angle_turn_stop_func(JSContextRef cx,JSObjectRef func,J
 	
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	object_turn_stop(obj);
 
 	return(script_null_to_value(cx));
@@ -174,7 +174,7 @@ JSValueRef js_obj_motion_angle_face_object_func(JSContextRef cx,JSObjectRef func
 	
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 
 	track_obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
 	if (track_obj==NULL) return(script_null_to_value(cx));
@@ -190,7 +190,7 @@ JSValueRef js_obj_motion_angle_face_player_func(JSContextRef cx,JSObjectRef func
 	
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	object_face_object_start(obj,server.obj_list.objs[server.player_obj_idx]);
 
 	return(script_null_to_value(cx));
@@ -202,7 +202,7 @@ JSValueRef js_obj_motion_angle_face_stop_func(JSContextRef cx,JSObjectRef func,J
 	
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	object_face_stop(obj);
 
 	return(script_null_to_value(cx));

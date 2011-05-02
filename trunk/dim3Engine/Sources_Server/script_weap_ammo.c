@@ -92,9 +92,9 @@ void script_free_weap_ammo_object(void)
 	script_free_class(weap_ammo_class);
 }
 
-JSObjectRef script_add_weap_ammo_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_weap_ammo_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
 {
-	return(script_create_child_object(cx,parent_obj,weap_ammo_class,"ammo"));
+	return(script_create_child_object(cx,parent_obj,weap_ammo_class,"ammo",attach));
 }
 
 /* =======================================================
@@ -108,7 +108,7 @@ JSValueRef js_weap_ammo_get_ammo(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
 	weapon_type		*weap;
 	weap_ammo_type	*ammo;
 
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	ammo=&weap->ammo;
 	
 	return(script_bool_to_value(cx,ammo->use_ammo));
@@ -119,7 +119,7 @@ JSValueRef js_weap_ammo_get_clip(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
 	weapon_type		*weap;
 	weap_ammo_type	*ammo;
 
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	ammo=&weap->ammo;
 
 	return(script_bool_to_value(cx,ammo->use_clips));
@@ -130,7 +130,7 @@ JSValueRef js_weap_ammo_get_count(JSContextRef cx,JSObjectRef j_obj,JSStringRef 
 	weapon_type		*weap;
 	weap_ammo_type	*ammo;
 
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	ammo=&weap->ammo;
 
 	if (ammo->use_ammo) {
@@ -150,7 +150,7 @@ JSValueRef js_weap_ammo_get_initCount(JSContextRef cx,JSObjectRef j_obj,JSString
 	weapon_type		*weap;
 	weap_ammo_type	*ammo;
 
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	ammo=&weap->ammo;
 
 	if (ammo->use_ammo) return(script_int_to_value(cx,ammo->init_count));
@@ -163,7 +163,7 @@ JSValueRef js_weap_ammo_get_maxCount(JSContextRef cx,JSObjectRef j_obj,JSStringR
 	weapon_type		*weap;
 	weap_ammo_type	*ammo;
 
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	ammo=&weap->ammo;
 
 	if (ammo->use_ammo) return(script_int_to_value(cx,ammo->max_count));
@@ -176,7 +176,7 @@ JSValueRef js_weap_ammo_get_clipCount(JSContextRef cx,JSObjectRef j_obj,JSString
 	weapon_type		*weap;
 	weap_ammo_type	*ammo;
 
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	ammo=&weap->ammo;
 
 	if ((ammo->use_ammo) && (ammo->use_clips)) return(script_int_to_value(cx,ammo->clip_count));
@@ -189,7 +189,7 @@ JSValueRef js_weap_ammo_get_initClipCount(JSContextRef cx,JSObjectRef j_obj,JSSt
 	weapon_type		*weap;
 	weap_ammo_type	*ammo;
 
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	ammo=&weap->ammo;
 	if ((ammo->use_ammo) && (ammo->use_clips)) return(script_int_to_value(cx,ammo->init_clip_count));
 
@@ -201,7 +201,7 @@ JSValueRef js_weap_ammo_get_maxClipCount(JSContextRef cx,JSObjectRef j_obj,JSStr
 	weapon_type		*weap;
 	weap_ammo_type	*ammo;
 
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	ammo=&weap->ammo;
 
 	if ((ammo->use_ammo) && (ammo->use_clips)) return(script_int_to_value(cx,ammo->max_clip_count));
@@ -214,7 +214,7 @@ JSValueRef js_weap_ammo_get_lastReloadTick(JSContextRef cx,JSObjectRef j_obj,JSS
 	weapon_type		*weap;
 	weap_ammo_type	*ammo;
 
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	ammo=&weap->ammo;
 	
 	if (weap->dual.in_dual) return(script_int_to_value(cx,ammo->last_reload_dual_tick));
@@ -233,7 +233,7 @@ bool js_weap_ammo_set_ammo(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JS
 	weapon_type		*weap;
 	weap_ammo_type	*ammo;
 
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	ammo=&weap->ammo;
 	
 	ammo->use_ammo=script_value_to_bool(cx,vp);
@@ -246,7 +246,7 @@ bool js_weap_ammo_set_clip(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JS
 	weapon_type		*weap;
 	weap_ammo_type	*ammo;
 
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	ammo=&weap->ammo;
 
 	ammo->use_clips=script_value_to_bool(cx,vp);
@@ -259,7 +259,7 @@ bool js_weap_ammo_set_count(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,J
 	weapon_type		*weap;
 	weap_ammo_type	*ammo;
 
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	ammo=&weap->ammo;
 
 	if (weap->dual.in_dual) {
@@ -277,7 +277,7 @@ bool js_weap_ammo_set_initCount(JSContextRef cx,JSObjectRef j_obj,JSStringRef na
 	weapon_type		*weap;
 	weap_ammo_type	*ammo;
 
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	ammo=&weap->ammo;
 
 	ammo->init_count=script_value_to_int(cx,vp);
@@ -290,7 +290,7 @@ bool js_weap_ammo_set_maxCount(JSContextRef cx,JSObjectRef j_obj,JSStringRef nam
 	weapon_type		*weap;
 	weap_ammo_type	*ammo;
 
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	ammo=&weap->ammo;
 
 	ammo->max_count=script_value_to_int(cx,vp);
@@ -303,7 +303,7 @@ bool js_weap_ammo_set_clipCount(JSContextRef cx,JSObjectRef j_obj,JSStringRef na
 	weapon_type		*weap;
 	weap_ammo_type	*ammo;
 
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	ammo=&weap->ammo;
 
 	ammo->clip_count=script_value_to_int(cx,vp);
@@ -316,7 +316,7 @@ bool js_weap_ammo_set_initClipCount(JSContextRef cx,JSObjectRef j_obj,JSStringRe
 	weapon_type		*weap;
 	weap_ammo_type	*ammo;
 
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	ammo=&weap->ammo;
 
 	ammo->init_clip_count=script_value_to_int(cx,vp);
@@ -329,7 +329,7 @@ bool js_weap_ammo_set_maxClipCount(JSContextRef cx,JSObjectRef j_obj,JSStringRef
 	weapon_type		*weap;
 	weap_ammo_type	*ammo;
 
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	ammo=&weap->ammo;
 	
 	ammo->max_clip_count=script_value_to_int(cx,vp);
@@ -352,7 +352,7 @@ JSValueRef js_weap_ammo_use_ammo_func(JSContextRef cx,JSObjectRef func,JSObjectR
 	
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	ammo=&weap->ammo;
 	
 	count=script_value_to_int(cx,argv[0]);
@@ -384,7 +384,7 @@ JSValueRef js_weap_ammo_add_ammo_func(JSContextRef cx,JSObjectRef func,JSObjectR
 	
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	ammo=&weap->ammo;
 	
 	add=script_value_to_int(cx,argv[0]);
@@ -421,8 +421,8 @@ JSValueRef js_weap_ammo_change_clip_func(JSContextRef cx,JSObjectRef func,JSObje
 	
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
-	obj=object_script_lookup();
-	weap=weapon_script_lookup();
+	obj=object_get_attach(j_obj);
+	weap=weapon_get_attach(j_obj);
 
 	ammo=&weap->ammo;
 	

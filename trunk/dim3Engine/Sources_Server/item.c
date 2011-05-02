@@ -215,14 +215,12 @@ bool item_add_alt_clip(obj_type *obj,weapon_type *weap,int add_count)
 
 bool item_add_health(obj_type *obj,int add_count)
 {
-	object_heal(obj,add_count);
-	return(TRUE);
+	return(object_heal(obj,add_count));
 }
 
 bool item_add_armor(obj_type *obj,int add_count)
 {
-	object_heal_armor(obj,add_count);
-	return(TRUE);
+	return(object_heal_armor(obj,add_count));
 }
 
 void item_add_custom(obj_type *obj,int custom_id)

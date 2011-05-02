@@ -63,9 +63,9 @@ void script_free_utility_random_object(void)
 	script_free_class(utility_random_class);
 }
 
-JSObjectRef script_add_utility_random_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_utility_random_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
 {
-	return(script_create_child_object(cx,parent_obj,utility_random_class,"random"));
+	return(script_create_child_object(cx,parent_obj,utility_random_class,"random",attach));
 }
 
 /* =======================================================

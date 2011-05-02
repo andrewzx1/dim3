@@ -61,9 +61,9 @@ void script_free_obj_held_object(void)
 	script_free_class(obj_held_class);
 }
 
-JSObjectRef script_add_obj_held_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_obj_held_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
 {
-	return(script_create_child_object(cx,parent_obj,obj_held_class,"held"));
+	return(script_create_child_object(cx,parent_obj,obj_held_class,"held",attach));
 }
 
 /* =======================================================
@@ -82,7 +82,7 @@ JSValueRef js_obj_held_add_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_o
 	
 	if (!script_check_param_count(cx,func,argc,4,exception)) return(script_null_to_value(cx));
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 
 	script_value_to_string(cx,argv[0],name,name_str_len);
 	script_value_to_string(cx,argv[1],type,name_str_len);
@@ -106,7 +106,7 @@ JSValueRef js_obj_held_drop_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_
 	
 	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 
 	uid=script_value_to_int(cx,argv[0]);
 	y_ang=script_value_to_float(cx,argv[1]);

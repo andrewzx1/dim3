@@ -228,30 +228,37 @@ void proj_setup_attach_mark(proj_setup_type *proj_setup)
       
 ======================================================= */
 
-proj_setup_type* proj_setup_get_attach(void)
+proj_setup_type* proj_setup_get_attach(JSObjectRef j_obj)
 {
+	obj_type			*obj;
 	weapon_type			*weap;
 	proj_type			*proj;
+	attach_type			*attach;
 	
-	if (js.attach.thing_type==thing_type_projectile_setup) {
-		weap=weapon_script_lookup();
-		return(weap->proj_setup_list.proj_setups[js.attach.proj_setup_idx]);
+	attach=(attach_type*)JSObjectGetPrivate(j_obj);
+	
+	if (attach->thing_type==thing_type_projectile_setup) {
+		obj=server.obj_list.objs[attach->obj_idx];
+		weap=obj->weap_list.weaps[attach->weap_idx];
+		return(weap->proj_setup_list.proj_setups[attach->proj_setup_idx]);
 	}
 	
-	if (js.attach.thing_type==thing_type_projectile) {
-		weap=weapon_script_lookup();
-		proj=projectile_script_lookup();
+	if (attach->thing_type==thing_type_projectile) {
+		obj=server.obj_list.objs[attach->obj_idx];
+		weap=obj->weap_list.weaps[attach->weap_idx];
+		proj=server.proj_list.projs[attach->proj_idx];
 		return(weap->proj_setup_list.proj_setups[proj->proj_setup_idx]);
 	}
 	
 	return(NULL);
 }
 
-proj_type* proj_get_attach(void)
+proj_type* proj_get_attach(JSObjectRef j_obj)
 {
-	if (js.attach.thing_type==thing_type_projectile) {
-		return(projectile_script_lookup());
-	}
+	attach_type			*attach;
+	
+	attach=(attach_type*)JSObjectGetPrivate(j_obj);
+	if (attach->thing_type==thing_type_projectile) return(server.proj_list.projs[attach->proj_idx]);
 	
 	return(NULL);
 }

@@ -604,18 +604,26 @@ void object_melee_hit(obj_type *obj,obj_type *melee_obj,weapon_type *melee_weap,
       
 ======================================================= */
 
-void object_heal(obj_type *obj,int heal)
+bool object_heal(obj_type *obj,int heal)
 {
-	obj_status		*status;
+	obj_health			*health;
     
-    status=&obj->status;
+    health=&obj->status.health;
 	
-    status->health.value+=heal;
-    if (status->health.value>status->health.max_value) status->health.value=status->health.max_value;
+		// can we add health?
+		
+	if (health->value>=health->max_value) return(FALSE);
+	
+		// add health
+	
+    health->value+=heal;
+    if (health->value>health->max_value) health->value=health->max_value;
 	
 		// alert object health has been added
 		
 	scripts_post_event_console(&obj->attach,sd_event_health,0,0);
+	
+	return(TRUE);
 }
 
 void object_health_recover(obj_type *obj)
@@ -635,18 +643,26 @@ void object_health_recover(obj_type *obj)
 	object_heal(obj,obj->status.health.recover_amount);
 }
 
-void object_heal_armor(obj_type *obj,int heal)
+bool object_heal_armor(obj_type *obj,int heal)
 {
-	obj_status		*status;
+	obj_health			*armor;
     
-    status=&obj->status;
+    armor=&obj->status.armor;
 	
-    status->armor.value+=heal;
-    if (status->armor.value>status->armor.max_value) status->armor.value=status->armor.max_value;
+		// can we add armor?
+		
+	if (armor->value>=armor->max_value) return(FALSE);
+	
+		// add health
+	
+    armor->value+=heal;
+    if (armor->value>armor->max_value) armor->value=armor->max_value;
 	
 		// alert object health has been added
 		
 	scripts_post_event_console(&obj->attach,sd_event_health,0,0);
+	
+	return(TRUE);
 }
 
 /* =======================================================

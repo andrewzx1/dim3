@@ -62,9 +62,9 @@ void script_free_obj_touch_position_object(void)
 	script_free_class(obj_touch_position_class);
 }
 
-JSObjectRef script_add_obj_touch_position_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_obj_touch_position_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
 {
-	return(script_create_child_object(cx,parent_obj,obj_touch_position_class,"touchPosition"));
+	return(script_create_child_object(cx,parent_obj,obj_touch_position_class,"touchPosition",attach));
 }
 
 /* =======================================================
@@ -77,7 +77,7 @@ JSValueRef js_obj_touch_position_get_x(JSContextRef cx,JSObjectRef j_obj,JSStrin
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_int_to_value(cx,obj->touch.pnt.x));
 }
 
@@ -85,7 +85,7 @@ JSValueRef js_obj_touch_position_get_y(JSContextRef cx,JSObjectRef j_obj,JSStrin
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_int_to_value(cx,obj->touch.pnt.y));
 }
 
@@ -93,6 +93,6 @@ JSValueRef js_obj_touch_position_get_z(JSContextRef cx,JSObjectRef j_obj,JSStrin
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_int_to_value(cx,obj->touch.pnt.z));
 }

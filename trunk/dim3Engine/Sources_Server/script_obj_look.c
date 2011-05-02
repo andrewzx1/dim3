@@ -72,9 +72,9 @@ void script_free_obj_look_object(void)
 	script_free_class(obj_look_class);
 }
 
-JSObjectRef script_add_obj_look_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_obj_look_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
 {
-	return(script_create_child_object(cx,parent_obj,obj_look_class,"look"));
+	return(script_create_child_object(cx,parent_obj,obj_look_class,"look",attach));
 }
 
 /* =======================================================
@@ -87,7 +87,7 @@ JSValueRef js_obj_look_get_upAngle(JSContextRef cx,JSObjectRef j_obj,JSStringRef
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_float_to_value(cx,obj->look.up_angle));
 }
 
@@ -95,7 +95,7 @@ JSValueRef js_obj_look_get_downAngle(JSContextRef cx,JSObjectRef j_obj,JSStringR
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_float_to_value(cx,obj->look.down_angle));
 }
 
@@ -103,7 +103,7 @@ JSValueRef js_obj_look_get_effectWeapons(JSContextRef cx,JSObjectRef j_obj,JSStr
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_bool_to_value(cx,obj->look.effect_weapons));
 }
 
@@ -117,7 +117,7 @@ bool js_obj_look_set_upAngle(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,
 {
 	obj_type		*obj;
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	obj->look.up_angle=fabsf(script_value_to_float(cx,vp));
 	
 	return(TRUE);
@@ -127,7 +127,7 @@ bool js_obj_look_set_downAngle(JSContextRef cx,JSObjectRef j_obj,JSStringRef nam
 {
 	obj_type		*obj;
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	obj->look.down_angle=fabsf(script_value_to_float(cx,vp));
 	
 	return(TRUE);
@@ -137,7 +137,7 @@ bool js_obj_look_set_effectWeapons(JSContextRef cx,JSObjectRef j_obj,JSStringRef
 {
 	obj_type		*obj;
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	obj->look.effect_weapons=script_value_to_bool(cx,vp);
 	
 	return(TRUE);
@@ -155,7 +155,7 @@ JSValueRef js_obj_look_set_look_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 	
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	obj->view_ang.x=script_value_to_float(cx,argv[0]);
 
 	return(script_null_to_value(cx));
@@ -169,7 +169,7 @@ JSValueRef js_obj_look_set_look_at_func(JSContextRef cx,JSObjectRef func,JSObjec
 	
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	
 	look_obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
 	if (look_obj==NULL) return(script_null_to_value(cx));

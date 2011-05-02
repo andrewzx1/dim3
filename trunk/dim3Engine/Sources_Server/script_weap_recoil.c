@@ -95,9 +95,9 @@ void script_free_weap_recoil_object(void)
 	script_free_class(weap_recoil_class);
 }
 
-JSObjectRef script_add_weap_recoil_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_weap_recoil_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
 {
-	return(script_create_child_object(cx,parent_obj,weap_recoil_class,"recoil"));
+	return(script_create_child_object(cx,parent_obj,weap_recoil_class,"recoil",attach));
 }
 
 /* =======================================================
@@ -110,7 +110,7 @@ JSValueRef js_weap_recoil_get_minX(JSContextRef cx,JSObjectRef j_obj,JSStringRef
 {
 	weapon_type		*weap;
 
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	return(script_float_to_value(cx,weap->recoil.min_ang.x));
 }
 
@@ -118,7 +118,7 @@ JSValueRef js_weap_recoil_get_maxX(JSContextRef cx,JSObjectRef j_obj,JSStringRef
 {
 	weapon_type		*weap;
 
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	return(script_float_to_value(cx,weap->recoil.max_ang.x));
 }
 
@@ -126,7 +126,7 @@ JSValueRef js_weap_recoil_get_resetX(JSContextRef cx,JSObjectRef j_obj,JSStringR
 {
 	weapon_type		*weap;
 
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	return(script_float_to_value(cx,weap->recoil.reset_ang.x));
 }
 
@@ -134,7 +134,7 @@ JSValueRef js_weap_recoil_get_minY(JSContextRef cx,JSObjectRef j_obj,JSStringRef
 {
 	weapon_type		*weap;
 
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	return(script_float_to_value(cx,weap->recoil.min_ang.y));
 }
 
@@ -142,7 +142,7 @@ JSValueRef js_weap_recoil_get_maxY(JSContextRef cx,JSObjectRef j_obj,JSStringRef
 {
 	weapon_type		*weap;
 
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	return(script_float_to_value(cx,weap->recoil.max_ang.y));
 }
 
@@ -150,7 +150,7 @@ JSValueRef js_weap_recoil_get_resetY(JSContextRef cx,JSObjectRef j_obj,JSStringR
 {
 	weapon_type		*weap;
 
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	return(script_float_to_value(cx,weap->recoil.reset_ang.y));
 }
 
@@ -158,7 +158,7 @@ JSValueRef js_weap_recoil_get_minZ(JSContextRef cx,JSObjectRef j_obj,JSStringRef
 {
 	weapon_type		*weap;
 
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	return(script_float_to_value(cx,weap->recoil.min_ang.z));
 }
 
@@ -166,7 +166,7 @@ JSValueRef js_weap_recoil_get_maxZ(JSContextRef cx,JSObjectRef j_obj,JSStringRef
 {
 	weapon_type		*weap;
 
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	return(script_float_to_value(cx,weap->recoil.max_ang.z));
 }
 
@@ -174,7 +174,7 @@ JSValueRef js_weap_recoil_get_resetZ(JSContextRef cx,JSObjectRef j_obj,JSStringR
 {
 	weapon_type		*weap;
 
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	return(script_float_to_value(cx,weap->recoil.reset_ang.z));
 }
 
@@ -182,7 +182,7 @@ JSValueRef js_weap_recoil_get_resetLook(JSContextRef cx,JSObjectRef j_obj,JSStri
 {
 	weapon_type		*weap;
 
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	return(script_float_to_value(cx,weap->recoil.look_reset));
 }
 
@@ -190,7 +190,7 @@ JSValueRef js_weap_recoil_get_resetTurn(JSContextRef cx,JSObjectRef j_obj,JSStri
 {
 	weapon_type		*weap;
 
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	return(script_float_to_value(cx,weap->recoil.turn_reset));
 }
 
@@ -204,7 +204,7 @@ bool js_weap_recoil_set_minX(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,
 {
 	weapon_type		*weap;
 	
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	weap->recoil.min_ang.x=script_value_to_float(cx,vp);
 
 	return(TRUE);
@@ -214,7 +214,7 @@ bool js_weap_recoil_set_maxX(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,
 {
 	weapon_type		*weap;
 	
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	weap->recoil.max_ang.x=script_value_to_float(cx,vp);
 
 	return(TRUE);
@@ -224,7 +224,7 @@ bool js_weap_recoil_set_resetX(JSContextRef cx,JSObjectRef j_obj,JSStringRef nam
 {
 	weapon_type		*weap;
 	
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	weap->recoil.reset_ang.x=fabsf(script_value_to_float(cx,vp));
 
 	return(TRUE);
@@ -234,7 +234,7 @@ bool js_weap_recoil_set_minY(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,
 {
 	weapon_type		*weap;
 	
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	weap->recoil.min_ang.y=script_value_to_float(cx,vp);
 
 	return(TRUE);
@@ -244,7 +244,7 @@ bool js_weap_recoil_set_maxY(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,
 {
 	weapon_type		*weap;
 	
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	weap->recoil.max_ang.y=script_value_to_float(cx,vp);
 
 	return(TRUE);
@@ -254,7 +254,7 @@ bool js_weap_recoil_set_resetY(JSContextRef cx,JSObjectRef j_obj,JSStringRef nam
 {
 	weapon_type		*weap;
 	
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	weap->recoil.reset_ang.y=fabsf(script_value_to_float(cx,vp));
 
 	return(TRUE);
@@ -264,7 +264,7 @@ bool js_weap_recoil_set_minZ(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,
 {
 	weapon_type		*weap;
 	
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	weap->recoil.min_ang.z=script_value_to_float(cx,vp);
 
 	return(TRUE);
@@ -274,7 +274,7 @@ bool js_weap_recoil_set_maxZ(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,
 {
 	weapon_type		*weap;
 	
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	weap->recoil.max_ang.z=script_value_to_float(cx,vp);
 
 	return(TRUE);
@@ -284,7 +284,7 @@ bool js_weap_recoil_set_resetZ(JSContextRef cx,JSObjectRef j_obj,JSStringRef nam
 {
 	weapon_type		*weap;
 	
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	weap->recoil.reset_ang.z=fabsf(script_value_to_float(cx,vp));
 
 	return(TRUE);
@@ -294,7 +294,7 @@ bool js_weap_recoil_set_resetLook(JSContextRef cx,JSObjectRef j_obj,JSStringRef 
 {
 	weapon_type		*weap;
 	
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	weap->recoil.look_reset=fabsf(script_value_to_float(cx,vp));
 
 	return(TRUE);
@@ -304,7 +304,7 @@ bool js_weap_recoil_set_resetTurn(JSContextRef cx,JSObjectRef j_obj,JSStringRef 
 {
 	weapon_type		*weap;
 	
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	weap->recoil.turn_reset=fabsf(script_value_to_float(cx,vp));
 
 	return(TRUE);
@@ -323,8 +323,8 @@ JSValueRef js_weap_recoil_go_func(JSContextRef cx,JSObjectRef func,JSObjectRef j
 	
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
-	obj=object_script_lookup();
-	weap=weapon_script_lookup();
+	obj=object_get_attach(j_obj);
+	weap=weapon_get_attach(j_obj);
 	
 	weapon_recoil(obj,weap);
 

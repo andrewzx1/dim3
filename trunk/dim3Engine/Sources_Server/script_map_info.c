@@ -62,9 +62,9 @@ void script_free_map_info_object(void)
 	script_free_class(map_info_class);
 }
 
-JSObjectRef script_add_map_info_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_map_info_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
 {
-	return(script_create_child_object(cx,parent_obj,map_info_class,"info"));
+	return(script_create_child_object(cx,parent_obj,map_info_class,"info",attach));
 }
 
 /* =======================================================

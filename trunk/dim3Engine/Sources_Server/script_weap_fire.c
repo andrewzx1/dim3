@@ -70,9 +70,9 @@ void script_free_weap_fire_object(void)
 	script_free_class(weap_fire_class);
 }
 
-JSObjectRef script_add_weap_fire_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_weap_fire_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
 {
-	return(script_create_child_object(cx,parent_obj,weap_fire_class,"fire"));
+	return(script_create_child_object(cx,parent_obj,weap_fire_class,"fire",attach));
 }
 
 /* =======================================================
@@ -85,7 +85,7 @@ JSValueRef js_weap_fire_get_method(JSContextRef cx,JSObjectRef j_obj,JSStringRef
 {
 	weapon_type		*weap;
 
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	return(script_int_to_value(cx,weap->fire.method));
 }
 
@@ -93,7 +93,7 @@ JSValueRef js_weap_fire_get_lastFireTick(JSContextRef cx,JSObjectRef j_obj,JSStr
 {
 	weapon_type		*weap;
 
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	if (!weap->dual.in_dual) return(script_int_to_value(cx,weap->fire.last_fire_tick));
 
 	return(script_int_to_value(cx,weap->fire.last_fire_dual_tick));
@@ -112,7 +112,7 @@ JSValueRef js_weap_fire_past_last_fire_func(JSContextRef cx,JSObjectRef func,JSO
 
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	
 	if (!weap->dual.in_dual) {
 		last_fire_tick=weap->fire.last_fire_tick;
@@ -130,7 +130,7 @@ JSValueRef js_weap_fire_reset_last_fire_func(JSContextRef cx,JSObjectRef func,JS
 
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	
 	if (!weap->dual.in_dual) {
 		weap->fire.last_fire_tick=game_time_get();
@@ -148,7 +148,7 @@ JSValueRef js_weap_fire_cancel_func(JSContextRef cx,JSObjectRef func,JSObjectRef
 
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	weap->fire.cancel=TRUE;
     
 	return(script_null_to_value(cx));

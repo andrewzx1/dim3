@@ -45,101 +45,102 @@ and can be sold or given away.
 #define kMapPropertyNormalCull				7
 #define kMapPropertyCullAngle				8
 #define kMapPropertyDisableShaders			9
+#define kMapPropertyShadowObscureDistance	10
 
-#define kMapPropertyAmbientColor			10
-#define kMapPropertyAmbientLightMapBoost	11
-#define kMapPropertyAmbientSound			12
-#define kMapPropertyAmbientSoundPitch		13
+#define kMapPropertyAmbientColor			20
+#define kMapPropertyAmbientLightMapBoost	21
+#define kMapPropertyAmbientSound			22
+#define kMapPropertyAmbientSoundPitch		23
 
-#define kMapPropertyLightMapQuality			14
-#define kMapPropertyLightMapSize			15
-#define kMapPropertyLightMapBorderCount		16
-#define kMapPropertyLightMapBlurCount		17
-#define kMapPropertyLightMapUseNormals		18
-#define kMapPropertyLightMapDiffuseBoost	19
+#define kMapPropertyLightMapQuality			24
+#define kMapPropertyLightMapSize			25
+#define kMapPropertyLightMapBorderCount		26
+#define kMapPropertyLightMapBlurCount		27
+#define kMapPropertyLightMapUseNormals		28
+#define kMapPropertyLightMapDiffuseBoost	29
 
-#define kMapPropertyCameraMode				20
-#define kMapPropertyCameraAngle				21
+#define kMapPropertyCameraMode				30
+#define kMapPropertyCameraAngle				31
 
-#define kMapPropertyCameraFOV				22
-#define kMapPropertyCameraAspectRatio		23
-#define kMapPropertyCameraNearZ				24
-#define kMapPropertyCameraFarZ				25
-#define kMapPropertyCameraNearZOffset		26
+#define kMapPropertyCameraFOV				32
+#define kMapPropertyCameraAspectRatio		33
+#define kMapPropertyCameraNearZ				34
+#define kMapPropertyCameraFarZ				35
+#define kMapPropertyCameraNearZOffset		36
 
-#define kMapPropertyCameraChaseDistance		27
-#define kMapPropertyCameraChaseTrackSpeed	28
-#define kMapPropertyCameraChaseSlop			29
+#define kMapPropertyCameraChaseDistance		37
+#define kMapPropertyCameraChaseTrackSpeed	38
+#define kMapPropertyCameraChaseSlop			39
 
-#define kMapPropertyCameraStaticFollow		30
-#define kMapPropertyCameraStaticAttachNode	31
+#define kMapPropertyCameraStaticFollow		50
+#define kMapPropertyCameraStaticAttachNode	51
 
-#define kMapPropertyMediaType				32
-#define kMapPropertyMediaName				33
-#define kMapPropertyMediaTitleSound			34
+#define kMapPropertyMediaType				52
+#define kMapPropertyMediaName				53
+#define kMapPropertyMediaTitleSound			54
 
-#define kMapPropertyMusicName				35
-#define kMapPropertyMusicFadeTime			36
+#define kMapPropertyMusicName				55
+#define kMapPropertyMusicFadeTime			56
 
-#define kMapPropertySkyOn					37
-#define kMapPropertySkyType					38
-#define kMapPropertySkyRadius				39
-#define kMapPropertyDomeY					40
-#define kMapPropertyDomeMirror				41
-#define kMapPropertyTextureRepeat			42
-#define kMapPropertyTextureShift			43
-#define kMapPropertyTextureFill				44
-#define kMapPropertyTextureBottomFill		45
-#define kMapPropertyTextureNorthFill		46
-#define kMapPropertyTextureSouthFill		47
-#define kMapPropertyTextureEastFill			48
-#define kMapPropertyTextureWestFill			49
+#define kMapPropertySkyOn					57
+#define kMapPropertySkyType					58
+#define kMapPropertySkyRadius				59
+#define kMapPropertyDomeY					60
+#define kMapPropertyDomeMirror				61
+#define kMapPropertyTextureRepeat			62
+#define kMapPropertyTextureShift			63
+#define kMapPropertyTextureFill				64
+#define kMapPropertyTextureBottomFill		65
+#define kMapPropertyTextureNorthFill		66
+#define kMapPropertyTextureSouthFill		67
+#define kMapPropertyTextureEastFill			68
+#define kMapPropertyTextureWestFill			69
 
-#define kMapPropertyBackgroundOn			50
-#define kMapPropertyBackgroundFrontFill		51
-#define kMapPropertyBackgroundFrontStamp	52
-#define kMapPropertyBackgroundFrontShift	53
-#define kMapPropertyBackgroundMiddleFill	54
-#define kMapPropertyBackgroundMiddleStamp	55
-#define kMapPropertyBackgroundMiddleShift	56
-#define kMapPropertyBackgroundBackFill		57
-#define kMapPropertyBackgroundBackStamp		58
-#define kMapPropertyBackgroundBackShift		59
+#define kMapPropertyBackgroundOn			70
+#define kMapPropertyBackgroundFrontFill		71
+#define kMapPropertyBackgroundFrontStamp	72
+#define kMapPropertyBackgroundFrontShift	73
+#define kMapPropertyBackgroundMiddleFill	74
+#define kMapPropertyBackgroundMiddleStamp	75
+#define kMapPropertyBackgroundMiddleShift	76
+#define kMapPropertyBackgroundBackFill		77
+#define kMapPropertyBackgroundBackStamp		78
+#define kMapPropertyBackgroundBackShift		79
 
-#define kMapPropertyFogOn					60
-#define kMapPropertyFogInnerRadius			61
-#define kMapPropertyFogOuterRadius			62
-#define kMapPropertyFogUseSolidColor		63
-#define kMapPropertyFogColor				64
-#define kMapPropertyFogTextureIndex			65
-#define kMapPropertyFogCount				66
-#define kMapPropertyFogHigh					67
-#define kMapPropertyFogDrop					68
-#define kMapPropertyFogAlpha				69
-#define kMapPropertyFogTextureSpeed			70
-#define kMapPropertyFogTextureFact			71
+#define kMapPropertyFogOn					80
+#define kMapPropertyFogInnerRadius			81
+#define kMapPropertyFogOuterRadius			82
+#define kMapPropertyFogUseSolidColor		83
+#define kMapPropertyFogColor				84
+#define kMapPropertyFogTextureIndex			85
+#define kMapPropertyFogCount				86
+#define kMapPropertyFogHigh					87
+#define kMapPropertyFogDrop					88
+#define kMapPropertyFogAlpha				89
+#define kMapPropertyFogTextureSpeed			90
+#define kMapPropertyFogTextureFact			91
 
-#define kMapPropertyRainOn					75
-#define kMapPropertyRainDensity				76
-#define kMapPropertyRainRadius				77
-#define kMapPropertyRainHeight				78
-#define kMapPropertyRainSpeed				79
-#define kMapPropertyRainWidth				80
-#define kMapPropertyRainLength				81
-#define kMapPropertyRainAlpha				82
-#define kMapPropertyRainStartColor			83
-#define kMapPropertyRainEndColor			84
-#define kMapPropertyRainSlantAdd			85
-#define kMapPropertyRainSlantMaxTime		86
-#define kMapPropertyRainSlantChangeTime		87
+#define kMapPropertyRainOn					100
+#define kMapPropertyRainDensity				101
+#define kMapPropertyRainRadius				102
+#define kMapPropertyRainHeight				103
+#define kMapPropertyRainSpeed				104
+#define kMapPropertyRainWidth				105
+#define kMapPropertyRainLength				106
+#define kMapPropertyRainAlpha				107
+#define kMapPropertyRainStartColor			108
+#define kMapPropertyRainEndColor			109
+#define kMapPropertyRainSlantAdd			110
+#define kMapPropertyRainSlantMaxTime		111
+#define kMapPropertyRainSlantChangeTime		112
 
-#define kMapPropertyEditorTextureFactor		90
-#define kMapPropertyEditorViewNearZ			91
-#define kMapPropertyEditorViewFarZ			92
-#define kMapPropertyEditorLinkStartAlways	93
+#define kMapPropertyEditorTextureFactor		120
+#define kMapPropertyEditorViewNearZ			121
+#define kMapPropertyEditorViewFarZ			122
+#define kMapPropertyEditorLinkStartAlways	123
 
-#define kMapPropertyParamsStart				100
-#define kMapPropertyParamsEnd				109
+#define kMapPropertyParamsStart				200
+#define kMapPropertyParamsEnd				209
 
 extern map_type					map;
 extern editor_state_type		state;
@@ -187,6 +188,7 @@ void property_palette_fill_map(void)
 	list_palette_add_checkbox(&property_palette,kMapPropertyNormalCull,"Cull By Normals",(!map.optimize.never_cull),FALSE);
 	list_palette_add_string_float(&property_palette,kMapPropertyCullAngle,"Cull Angle",map.optimize.cull_angle,FALSE);
 	list_palette_add_checkbox(&property_palette,kMapPropertyDisableShaders,"Disable Shaders",map.optimize.no_shaders,FALSE);
+	list_palette_add_string_int(&property_palette,kMapPropertyShadowObscureDistance,"Shadow Obscure Distance",map.optimize.shadow_obscure_distance,FALSE);
 
 		// ambient
 
@@ -443,6 +445,10 @@ void property_palette_click_map(int id)
 
 		case kMapPropertyDisableShaders:
 			map.optimize.no_shaders=!map.optimize.no_shaders;
+			break;
+			
+		case kMapPropertyShadowObscureDistance:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&map.optimize.shadow_obscure_distance,0,0,0);
 			break;
 
 			// ambients

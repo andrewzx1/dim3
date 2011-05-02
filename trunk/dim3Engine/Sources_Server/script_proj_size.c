@@ -69,9 +69,9 @@ void script_free_proj_size_object(void)
 	script_free_class(proj_size_class);
 }
 
-JSObjectRef script_add_proj_size_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_proj_size_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
 {
-	return(script_create_child_object(cx,parent_obj,proj_size_class,"size"));
+	return(script_create_child_object(cx,parent_obj,proj_size_class,"size",attach));
 }
 
 /* =======================================================
@@ -84,7 +84,7 @@ JSValueRef js_proj_size_get_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef name
 {
 	proj_setup_type		*proj_setup;
 
-	proj_setup=proj_setup_get_attach();
+	proj_setup=proj_setup_get_attach(j_obj);
 	if (proj_setup==NULL) return(script_null_to_value(cx));
 	
 	return(script_int_to_value(cx,proj_setup->size.x));
@@ -94,7 +94,7 @@ JSValueRef js_proj_size_get_y(JSContextRef cx,JSObjectRef j_obj,JSStringRef name
 {
 	proj_setup_type		*proj_setup;
 
-	proj_setup=proj_setup_get_attach();
+	proj_setup=proj_setup_get_attach(j_obj);
 	if (proj_setup==NULL) return(script_null_to_value(cx));
 	
 	return(script_int_to_value(cx,proj_setup->size.y));
@@ -104,7 +104,7 @@ JSValueRef js_proj_size_get_z(JSContextRef cx,JSObjectRef j_obj,JSStringRef name
 {
 	proj_setup_type		*proj_setup;
 
-	proj_setup=proj_setup_get_attach();
+	proj_setup=proj_setup_get_attach(j_obj);
 	if (proj_setup==NULL) return(script_null_to_value(cx));
 	
 	return(script_int_to_value(cx,proj_setup->size.z));
@@ -114,7 +114,7 @@ JSValueRef js_proj_size_get_weight(JSContextRef cx,JSObjectRef j_obj,JSStringRef
 {
 	proj_setup_type		*proj_setup;
 
-	proj_setup=proj_setup_get_attach();
+	proj_setup=proj_setup_get_attach(j_obj);
 	if (proj_setup==NULL) return(script_null_to_value(cx));
 	
 	return(script_int_to_value(cx,proj_setup->size.weight));
@@ -130,7 +130,7 @@ bool js_proj_size_set_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSVal
 {
 	proj_setup_type		*proj_setup;
 
-	proj_setup=proj_setup_get_attach();
+	proj_setup=proj_setup_get_attach(j_obj);
 	if (proj_setup!=NULL) {
 		proj_setup->size.x=script_value_to_int(cx,vp);
 		proj_setup_set_radius(proj_setup);
@@ -143,7 +143,7 @@ bool js_proj_size_set_y(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSVal
 {
 	proj_setup_type		*proj_setup;
 
-	proj_setup=proj_setup_get_attach();
+	proj_setup=proj_setup_get_attach(j_obj);
 	if (proj_setup!=NULL) proj_setup->size.y=script_value_to_int(cx,vp);
 
 	return(TRUE);
@@ -153,7 +153,7 @@ bool js_proj_size_set_z(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSVal
 {
 	proj_setup_type		*proj_setup;
 
-	proj_setup=proj_setup_get_attach();
+	proj_setup=proj_setup_get_attach(j_obj);
 	if (proj_setup!=NULL) {
 		proj_setup->size.z=script_value_to_int(cx,vp);
 		proj_setup_set_radius(proj_setup);
@@ -166,7 +166,7 @@ bool js_proj_size_set_weight(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,
 {
 	proj_setup_type		*proj_setup;
 
-	proj_setup=proj_setup_get_attach();
+	proj_setup=proj_setup_get_attach(j_obj);
 	if (proj_setup!=NULL) proj_setup->size.weight=script_value_to_int(cx,vp);
 
 	return(TRUE);

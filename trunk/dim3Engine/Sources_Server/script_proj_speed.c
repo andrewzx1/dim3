@@ -75,9 +75,9 @@ void script_free_proj_speed_object(void)
 	script_free_class(proj_speed_class);
 }
 
-JSObjectRef script_add_proj_speed_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_proj_speed_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
 {
-	return(script_create_child_object(cx,parent_obj,proj_speed_class,"speed"));
+	return(script_create_child_object(cx,parent_obj,proj_speed_class,"speed",attach));
 }
 
 /* =======================================================
@@ -90,7 +90,7 @@ JSValueRef js_proj_speed_get_speed(JSContextRef cx,JSObjectRef j_obj,JSStringRef
 {
 	proj_setup_type		*proj_setup;
 
-	proj_setup=proj_setup_get_attach();
+	proj_setup=proj_setup_get_attach(j_obj);
 	if (proj_setup==NULL) return(script_null_to_value(cx));
 	
     return(script_float_to_value(cx,proj_setup->speed));
@@ -100,7 +100,7 @@ JSValueRef js_proj_speed_get_deceleration(JSContextRef cx,JSObjectRef j_obj,JSSt
 {
 	proj_setup_type		*proj_setup;
 
-	proj_setup=proj_setup_get_attach();
+	proj_setup=proj_setup_get_attach(j_obj);
 	if (proj_setup==NULL) return(script_null_to_value(cx));
 	
     return(script_float_to_value(cx,proj_setup->decel_speed));
@@ -110,7 +110,7 @@ JSValueRef js_proj_speed_get_decelerationWait(JSContextRef cx,JSObjectRef j_obj,
 {
 	proj_setup_type		*proj_setup;
 
-	proj_setup=proj_setup_get_attach();
+	proj_setup=proj_setup_get_attach(j_obj);
 	if (proj_setup==NULL) return(script_null_to_value(cx));
 	
 	return(script_int_to_value(cx,proj_setup->decel_grace));
@@ -120,7 +120,7 @@ JSValueRef js_proj_speed_get_decelerationMinSpeed(JSContextRef cx,JSObjectRef j_
 {
 	proj_setup_type		*proj_setup;
 
-	proj_setup=proj_setup_get_attach();
+	proj_setup=proj_setup_get_attach(j_obj);
 	if (proj_setup==NULL) return(script_null_to_value(cx));
 	
     return(script_float_to_value(cx,proj_setup->decel_min_speed));
@@ -130,7 +130,7 @@ JSValueRef js_proj_speed_get_maxHitscanDistance(JSContextRef cx,JSObjectRef j_ob
 {
 	proj_setup_type		*proj_setup;
 
-	proj_setup=proj_setup_get_attach();
+	proj_setup=proj_setup_get_attach(j_obj);
 	if (proj_setup==NULL) return(script_null_to_value(cx));
 	
 	return(script_int_to_value(cx,proj_setup->hitscan.max_dist));
@@ -140,7 +140,7 @@ JSValueRef js_proj_speed_get_inheritMotionFactor(JSContextRef cx,JSObjectRef j_o
 {
 	proj_setup_type		*proj_setup;
 
-	proj_setup=proj_setup_get_attach();
+	proj_setup=proj_setup_get_attach(j_obj);
 	if (proj_setup==NULL) return(script_null_to_value(cx));
 	
 	return(script_float_to_value(cx,proj_setup->inherit_motion_factor));
@@ -156,7 +156,7 @@ bool js_proj_speed_set_speed(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,
 {
 	proj_setup_type		*proj_setup;
 	
-	proj_setup=proj_setup_get_attach();
+	proj_setup=proj_setup_get_attach(j_obj);
 	if (proj_setup!=NULL) proj_setup->speed=script_value_to_float(cx,vp);
 	
 	return(TRUE);
@@ -166,7 +166,7 @@ bool js_proj_speed_set_deceleration(JSContextRef cx,JSObjectRef j_obj,JSStringRe
 {
 	proj_setup_type		*proj_setup;
 	
-	proj_setup=proj_setup_get_attach();
+	proj_setup=proj_setup_get_attach(j_obj);
 	if (proj_setup!=NULL) proj_setup->decel_speed=script_value_to_float(cx,vp);
 	
 	return(TRUE);
@@ -176,7 +176,7 @@ bool js_proj_speed_set_decelerationWait(JSContextRef cx,JSObjectRef j_obj,JSStri
 {
 	proj_setup_type		*proj_setup;
 	
-	proj_setup=proj_setup_get_attach();
+	proj_setup=proj_setup_get_attach(j_obj);
 	if (proj_setup!=NULL) proj_setup->decel_grace=script_value_to_int(cx,vp);
 	
 	return(TRUE);
@@ -186,7 +186,7 @@ bool js_proj_speed_set_decelerationMinSpeed(JSContextRef cx,JSObjectRef j_obj,JS
 {
 	proj_setup_type		*proj_setup;
 	
-	proj_setup=proj_setup_get_attach();
+	proj_setup=proj_setup_get_attach(j_obj);
 	if (proj_setup!=NULL) proj_setup->decel_min_speed=script_value_to_float(cx,vp);
 	
 	return(TRUE);
@@ -196,7 +196,7 @@ bool js_proj_speed_set_maxHitscanDistance(JSContextRef cx,JSObjectRef j_obj,JSSt
 {
 	proj_setup_type		*proj_setup;
 	
-	proj_setup=proj_setup_get_attach();
+	proj_setup=proj_setup_get_attach(j_obj);
 	if (proj_setup!=NULL) proj_setup->hitscan.max_dist=script_value_to_int(cx,vp);
 	
 	return(TRUE);
@@ -206,7 +206,7 @@ bool js_proj_speed_set_inheritMotionFactor(JSContextRef cx,JSObjectRef j_obj,JSS
 {
 	proj_setup_type		*proj_setup;
 	
-	proj_setup=proj_setup_get_attach();
+	proj_setup=proj_setup_get_attach(j_obj);
 	if (proj_setup!=NULL) proj_setup->inherit_motion_factor=script_value_to_float(cx,vp);
 	
 	return(TRUE);

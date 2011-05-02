@@ -82,9 +82,9 @@ void script_free_obj_melee_object(void)
 	script_free_class(obj_melee_class);
 }
 
-JSObjectRef script_add_obj_melee_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_obj_melee_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
 {
-	return(script_create_child_object(cx,parent_obj,obj_melee_class,"melee"));
+	return(script_create_child_object(cx,parent_obj,obj_melee_class,"melee",attach));
 }
 
 /* =======================================================
@@ -98,7 +98,7 @@ JSValueRef js_obj_melee_get_strikeBoneTag(JSContextRef cx,JSObjectRef j_obj,JSSt
 	char				str[32];
     obj_type			*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	model_tag_to_text(obj->melee.object_strike_bone_tag,str);
 	return(script_string_to_value(cx,str));
 }
@@ -107,7 +107,7 @@ JSValueRef js_obj_melee_get_strikePoseName(JSContextRef cx,JSObjectRef j_obj,JSS
 {
     obj_type			*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_string_to_value(cx,obj->melee.object_strike_pose_name));
 }
 
@@ -115,7 +115,7 @@ JSValueRef js_obj_melee_get_radius(JSContextRef cx,JSObjectRef j_obj,JSStringRef
 {
     obj_type			*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_int_to_value(cx,obj->melee.radius));
 }
 
@@ -123,7 +123,7 @@ JSValueRef js_obj_melee_get_distance(JSContextRef cx,JSObjectRef j_obj,JSStringR
 {
     obj_type			*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_int_to_value(cx,obj->melee.distance));
 }
 
@@ -131,7 +131,7 @@ JSValueRef js_obj_melee_get_damage(JSContextRef cx,JSObjectRef j_obj,JSStringRef
 {
     obj_type			*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_int_to_value(cx,obj->melee.damage));
 }
 
@@ -139,7 +139,7 @@ JSValueRef js_obj_melee_get_force(JSContextRef cx,JSObjectRef j_obj,JSStringRef 
 {
     obj_type			*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_int_to_value(cx,obj->melee.force));
 }
 
@@ -154,7 +154,7 @@ bool js_obj_melee_set_strikeBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStringRe
 	char				str[32];
     obj_type			*obj;
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	script_value_to_string(cx,vp,str,32);
 	obj->melee.object_strike_bone_tag=text_to_model_tag(str);
 	
@@ -165,7 +165,7 @@ bool js_obj_melee_set_strikePoseName(JSContextRef cx,JSObjectRef j_obj,JSStringR
 {
     obj_type			*obj;
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	script_value_to_string(cx,vp,obj->melee.object_strike_pose_name,name_str_len);
 	
 	return(TRUE);
@@ -175,7 +175,7 @@ bool js_obj_melee_set_radius(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,
 {
     obj_type			*obj;
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	obj->melee.radius=script_value_to_int(cx,vp);
 	
 	return(TRUE);
@@ -185,7 +185,7 @@ bool js_obj_melee_set_distance(JSContextRef cx,JSObjectRef j_obj,JSStringRef nam
 {
     obj_type			*obj;
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	obj->melee.distance=script_value_to_int(cx,vp);
 	
 	return(TRUE);
@@ -195,7 +195,7 @@ bool js_obj_melee_set_damage(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,
 {
     obj_type			*obj;
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	obj->melee.damage=script_value_to_int(cx,vp);
 	
 	return(TRUE);
@@ -205,7 +205,7 @@ bool js_obj_melee_set_force(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,J
 {
     obj_type			*obj;
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	obj->melee.force=script_value_to_int(cx,vp);
 	
 	return(TRUE);
@@ -224,7 +224,7 @@ JSValueRef js_obj_melee_spawn_from_object_bone_func(JSContextRef cx,JSObjectRef 
 
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 
 	if (!melee_script_spawn_object_model(obj,NULL,err_str)) {
 		*exception=script_create_exception(cx,err_str);
@@ -240,7 +240,7 @@ JSValueRef js_obj_melee_spawn_from_touch_func(JSContextRef cx,JSObjectRef func,J
 
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 
 	if (!melee_script_spawn_object_touch(obj,err_str)) {
 		*exception=script_create_exception(cx,err_str);

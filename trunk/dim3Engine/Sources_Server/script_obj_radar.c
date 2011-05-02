@@ -69,9 +69,9 @@ void script_free_obj_radar_object(void)
 	script_free_class(obj_radar_class);
 }
 
-JSObjectRef script_add_obj_radar_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_obj_radar_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
 {
-	return(script_create_child_object(cx,parent_obj,obj_radar_class,"radar"));
+	return(script_create_child_object(cx,parent_obj,obj_radar_class,"radar",attach));
 }
 
 /* =======================================================
@@ -84,7 +84,7 @@ JSValueRef js_obj_radar_get_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef nam
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_bool_to_value(cx,obj->radar.on));
 }
 
@@ -92,7 +92,7 @@ JSValueRef js_obj_radar_get_icon(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_string_to_value(cx,obj->radar.icon));
 }
 
@@ -100,7 +100,7 @@ JSValueRef js_obj_radar_get_motionOnly(JSContextRef cx,JSObjectRef j_obj,JSStrin
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_bool_to_value(cx,obj->radar.motion_only));
 }
 
@@ -108,7 +108,7 @@ JSValueRef js_obj_radar_get_alwaysVisible(JSContextRef cx,JSObjectRef j_obj,JSSt
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_bool_to_value(cx,obj->radar.always_visible));
 }
 
@@ -122,7 +122,7 @@ bool js_obj_radar_set_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSVa
 {
 	obj_type		*obj;
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	obj->radar.on=script_value_to_bool(cx,vp);
 	
 	return(TRUE);
@@ -133,7 +133,7 @@ bool js_obj_radar_set_icon(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JS
 	char			err_str[256];
 	obj_type		*obj;
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	script_value_to_string(cx,vp,obj->radar.icon,name_str_len);
 	if (!object_set_radar_icon(obj,err_str)) {
 		*exception=script_create_exception(cx,err_str);
@@ -146,7 +146,7 @@ bool js_obj_radar_set_motionOnly(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
 {
 	obj_type		*obj;
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	obj->radar.motion_only=script_value_to_bool(cx,vp);
 	
 	return(TRUE);
@@ -156,7 +156,7 @@ bool js_obj_radar_set_alwaysVisible(JSContextRef cx,JSObjectRef j_obj,JSStringRe
 {
 	obj_type		*obj;
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	obj->radar.always_visible=script_value_to_bool(cx,vp);
 	
 	return(TRUE);

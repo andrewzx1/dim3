@@ -65,12 +65,8 @@ and can be sold or given away.
 #define kSettingsProgressHiliteColorEnd			29
 #define kSettingsProgressTextColor				30
 #define kSettingsProgressOutlineColor			31
-#define kSettingsChatX							32
-#define kSettingsChatY							33
-#define kSettingsChatLastAddLifeSeconds			34
-#define kSettingsChatNextLifeSeconds			35
-#define kSettingsFaseTitleMilliseconds			36
-#define kSettingsFaseMapMilliseconds			37
+#define kSettingsFaseTitleMilliseconds			32
+#define kSettingsFaseMapMilliseconds			33
 
 extern iface_type				iface;
 extern setup_state_type			state;
@@ -132,17 +128,9 @@ void property_palette_fill_settings(void)
 	list_palette_add_pick_color(&property_palette,kSettingsProgressTextColor,"Text Color",&iface.progress.text_color,FALSE);
 	list_palette_add_pick_color(&property_palette,kSettingsProgressOutlineColor,"Outline Color",&iface.progress.outline_color,FALSE);
 	
-		// chat
+		// fades
 		
-	list_palette_add_header(&property_palette,0,"Chat");
-	list_palette_add_string_int(&property_palette,kSettingsChatX,"X",iface.chat.x,FALSE);
-	list_palette_add_string_int(&property_palette,kSettingsChatY,"Y",iface.chat.y,FALSE);
-	list_palette_add_string_int(&property_palette,kSettingsChatLastAddLifeSeconds,"Last Add Life Seconds",iface.chat.last_add_life_sec,FALSE);
-	list_palette_add_string_int(&property_palette,kSettingsChatNextLifeSeconds,"Next Life Seconds",iface.chat.next_life_sec,FALSE);
-	
-		// fade
-		
-	list_palette_add_header(&property_palette,0,"Fade");
+	list_palette_add_header(&property_palette,0,"Fades");
 	list_palette_add_string_int(&property_palette,kSettingsFaseTitleMilliseconds,"Title Milliseconds",iface.fade.title_msec,FALSE);
 	list_palette_add_string_int(&property_palette,kSettingsFaseMapMilliseconds,"Map Milliseconds",iface.fade.map_msec,FALSE);
 }
@@ -292,27 +280,8 @@ void property_palette_click_settings(int id)
 		case kSettingsProgressOutlineColor:
 			os_pick_color(&iface.progress.outline_color);
 			break;
-
-			// chat
-			
-		case kSettingsChatX:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&iface.chat.x,0,0,0);
-			break;
-			
-		case kSettingsChatY:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&iface.chat.y,0,0,0);
-			break;
-			
-		case kSettingsChatLastAddLifeSeconds:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&iface.chat.last_add_life_sec,0,0,0);
-			break;
-			
-		case kSettingsChatNextLifeSeconds:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&iface.chat.next_life_sec,0,0,0);
-			break;
-			
 	
-			// fade
+			// fades
 		
 		case kSettingsFaseTitleMilliseconds:
 			dialog_property_string_run(list_string_value_positive_int,(void*)&iface.fade.title_msec,0,0,0);

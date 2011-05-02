@@ -40,7 +40,7 @@ extern setup_type			setup;
 extern network_setup_type	net_setup;
 
 d3socket					host_socket;
-bool						host_complete;
+bool						host_complete,host_start_shutdown;
 net_queue_type				host_queue;
 char						host_err_str[256];
 SDL_Thread					*host_thread;
@@ -65,6 +65,7 @@ bool net_host_initialize(char *err_str)
 		// begin listener thread
 		
 	host_complete=FALSE;
+	host_start_shutdown=FALSE;
 	host_socket=D3_NULL_SOCKET;
 	
 	host_thread=SDL_CreateThread(net_host_thread,NULL);
@@ -98,13 +99,14 @@ void net_host_shutdown(void)
 
 	if (host_socket==D3_NULL_SOCKET) return;
 	
-		// shutdown socket and then wait for termination
+		// trigger the shutdown and wait
+		
+	host_start_shutdown=TRUE;
+	SDL_WaitThread(host_thread,NULL);
+	
+		// shutdown socket and free queue
 		
 	net_close_socket(&host_socket);
-	SDL_WaitThread(host_thread,NULL);
-
-		// free queue
-
 	net_queue_shutdown(&host_queue);
 }
 
@@ -401,12 +403,20 @@ int net_host_thread(void *arg)
 	net_socket_blocking(host_socket,TRUE);
 	
 	while (TRUE) {
+	
+			// exiting?
+			
+		if (host_start_shutdown) break;
 
 			// feed the queues from the socket
 			// if there's an error, break out of loop
 			// and cancel network game
 			
 		if (!net_queue_feed(host_socket,&host_queue)) break;
+		
+			// always wait a little to not flood this thread
+			
+		usleep(100000);
 	}
 	
 	return(0);

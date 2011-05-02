@@ -498,11 +498,8 @@ typedef struct		{
 
 typedef struct		{
 						int								timer_tick;
-
-						attach_type						attach;
-						
+						JSClassRef						main_empty_class;
 						attach_type						game_attach,course_attach;
-						
 						script_list_type				script_list;
 						timer_list_type					timer_list;
 						global_list_type				global_list;

@@ -141,7 +141,6 @@ bool scripts_post_event(attach_type *attach,int main_event,int sub_event,int id,
 	int						event_idx,tick;
 	JSValueRef				rval,exception,argv[5];
 	script_type				*script;
-	attach_type				old_attach;
 	
 		// no error
 		
@@ -183,10 +182,6 @@ bool scripts_post_event(attach_type *attach,int main_event,int sub_event,int id,
 		
 	script->recursive.in_event[event_idx]=TRUE;
 	
-		// save current attach in case event called within another script
-		
-	memmove(&old_attach,&js.attach,sizeof(attach_type));
-	
 		// attach to proper script
 		
 	tick=game_time_get();
@@ -195,8 +190,6 @@ bool scripts_post_event(attach_type *attach,int main_event,int sub_event,int id,
 	attach->event_state.sub_event=sub_event;
 	attach->event_state.id=id;
 	attach->event_state.tick=tick;
-		
-	memmove(&js.attach,attach,sizeof(attach_type));
 
 		// run the event function
 		// supergumba -- for now we handle both methods, but
@@ -234,10 +227,6 @@ bool scripts_post_event(attach_type *attach,int main_event,int sub_event,int id,
 		// leave recursion
 
 	scripts_recursion_out(script);
-
-		// restore old attach
-		
-	memmove(&js.attach,&old_attach,sizeof(attach_type));
 	
 	return(err_str[0]==0x0);
 }
@@ -346,7 +335,6 @@ bool scripts_chain(attach_type *attach,char *func_name,char *err_str)
 	JSValueRef		rval,exception,argv[2];
 	JSObjectRef		func_obj;
 	script_type		*script;
-	attach_type		old_attach;
 	
 		// no error
 		
@@ -369,14 +357,6 @@ bool scripts_chain(attach_type *attach,char *func_name,char *err_str)
 		// enter recursion
 
 	if (!scripts_recursion_in(script,err_str)) return(FALSE);
-	
-		// save current attach in case event called within another script
-		
-	memmove(&old_attach,&js.attach,sizeof(attach_type));
-	
-		// attach to proper script
-		
-	memmove(&js.attach,attach,sizeof(attach_type));
 
 		// run the event function
 		
@@ -387,10 +367,6 @@ bool scripts_chain(attach_type *attach,char *func_name,char *err_str)
 	if (rval==NULL) {
 		script_exception_to_string(script->cx,exception,err_str,256);
 	}
-		
-		// restore old attach
-		
-	memmove(&js.attach,&old_attach,sizeof(attach_type));
 
 		// leave recursion
 
@@ -420,7 +396,6 @@ JSValueRef scripts_direct_call(attach_type *attach,char *func_name,int arg_count
 	JSValueRef		rval,exception,argv[5];
 	JSObjectRef		func_obj;
 	script_type		*script;
-	attach_type		old_attach;
 	
 		// find script
 		
@@ -437,14 +412,6 @@ JSValueRef scripts_direct_call(attach_type *attach,char *func_name,int arg_count
 		sprintf(err_str,"Call failed, unknown function: %s",func_name);
 		return(NULL);
 	}
-	
-		// save current attach in case event called within another script
-		
-	memmove(&old_attach,&js.attach,sizeof(attach_type));
-	
-		// attach to proper script
-		
-	memmove(&js.attach,attach,sizeof(attach_type));
 
 		// call the function
 		
@@ -459,10 +426,6 @@ JSValueRef scripts_direct_call(attach_type *attach,char *func_name,int arg_count
 		script_exception_to_string(script->cx,exception,err_str,256);
 		return(NULL);
 	}
-	
-		// restore old attach
-		
-	memmove(&js.attach,&old_attach,sizeof(attach_type));
 
 		// leave recursion
 

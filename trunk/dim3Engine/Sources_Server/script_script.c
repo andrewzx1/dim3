@@ -68,9 +68,9 @@ void script_free_global_script_object(void)
 	script_free_class(script_class);
 }
 
-JSObjectRef script_add_global_script_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_global_script_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
 {
-	return(script_create_child_object(cx,parent_obj,script_class,"script"));
+	return(script_create_child_object(cx,parent_obj,script_class,"script",attach));
 }
 
 /* =======================================================
@@ -82,17 +82,19 @@ JSObjectRef script_add_global_script_object(JSContextRef cx,JSObjectRef parent_o
 JSValueRef js_script_implements_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	char			name[file_str_len],err_str[256];
+	attach_type		*attach;
 	
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 
-	if (script_in_event()) {
+	if (script_in_event(j_obj)) {
 		*exception=script_create_exception(cx,"Can not set implemented script inside an event");
 		return(script_null_to_value(cx));
 	}
 	
+	attach=(attach_type*)JSObjectGetPrivate(j_obj);
 	script_value_to_string(cx,argv[0],name,file_str_len);
 
-	if (!scripts_add_parent(&js.attach,name,err_str)) {
+	if (!scripts_add_parent(attach,name,err_str)) {
 		*exception=script_create_exception(cx,err_str);
 	}
 
@@ -103,18 +105,20 @@ JSValueRef js_script_attach_event_func(JSContextRef cx,JSObjectRef func,JSObject
 {
 	int				main_event;
 	char			func_name[256],err_str[256];
+	attach_type		*attach;
 	
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 
-	if (script_in_event()) {
+	if (script_in_event(j_obj)) {
 		*exception=script_create_exception(cx,"Can not attach an event inside an event");
 		return(script_null_to_value(cx));
 	}
 	
+	attach=(attach_type*)JSObjectGetPrivate(j_obj);
 	main_event=script_value_to_int(cx,argv[0]);
 	script_value_to_string(cx,argv[1],func_name,256);
 
-	if (!scripts_setup_event_attach(&js.attach,main_event,func_name,err_str)) {
+	if (!scripts_setup_event_attach(attach,main_event,func_name,err_str)) {
 		*exception=script_create_exception(cx,err_str);
 	}
 
@@ -124,15 +128,18 @@ JSValueRef js_script_attach_event_func(JSContextRef cx,JSObjectRef func,JSObject
 JSValueRef js_script_call_parent_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	char			err_str[256];
+	attach_type		*attach;
 	
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 
-	if (!script_in_event()) {
+	if (!script_in_event(j_obj)) {
 		*exception=script_create_exception(cx,"Can not call parent outside an event");
 		return(script_null_to_value(cx));
 	}
+	
+	attach=(attach_type*)JSObjectGetPrivate(j_obj);
 
-	if (!scripts_post_event_call_parent(&js.attach,err_str)) {
+	if (!scripts_post_event_call_parent(attach,err_str)) {
 		*exception=script_create_exception(cx,err_str);
 	}
 
@@ -142,13 +149,15 @@ JSValueRef js_script_call_parent_func(JSContextRef cx,JSObjectRef func,JSObjectR
 JSValueRef js_script_get_parent_variable_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	char			prop_name[256],err_str[256];
+	attach_type		*attach;
 	JSValueRef		rval;
 	
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 
+	attach=(attach_type*)JSObjectGetPrivate(j_obj);
 	script_value_to_string(cx,argv[0],prop_name,256);
 
-	rval=scripts_get_parent_variable(&js.attach,prop_name,err_str);
+	rval=scripts_get_parent_variable(attach,prop_name,err_str);
 	if (rval==NULL) {
 		*exception=script_create_exception(cx,err_str);
 		return(script_null_to_value(cx));
@@ -161,10 +170,12 @@ JSValueRef js_script_call_parent_function_func(JSContextRef cx,JSObjectRef func,
 {
 	int				n,arg_count;
 	char			func_name[256],err_str[256];
+	attach_type		*attach;
 	JSValueRef		rval,args[20];
 	
 	if (!script_check_param_at_least_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 
+	attach=(attach_type*)JSObjectGetPrivate(j_obj);
 	script_value_to_string(cx,argv[0],func_name,256);
 
 	arg_count=argc-1;
@@ -175,7 +186,7 @@ JSValueRef js_script_call_parent_function_func(JSContextRef cx,JSObjectRef func,
 		args[n]=argv[n+1];
 	}
 
-	rval=scripts_call_parent_function(&js.attach,func_name,arg_count,args,err_str);
+	rval=scripts_call_parent_function(attach,func_name,arg_count,args,err_str);
 	if (rval==NULL) {
 		*exception=script_create_exception(cx,err_str);
 		return(script_null_to_value(cx));

@@ -60,9 +60,9 @@ void script_free_obj_weapon_fire_object(void)
 	script_free_class(obj_weapon_fire_class);
 }
 
-JSObjectRef script_add_obj_weapon_fire_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_obj_weapon_fire_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
 {
-	return(script_create_child_object(cx,parent_obj,obj_weapon_fire_class,"weaponFire"));
+	return(script_create_child_object(cx,parent_obj,obj_weapon_fire_class,"weaponFire",attach));
 }
 
 /* =======================================================
@@ -75,7 +75,7 @@ JSValueRef js_obj_weapon_fire_get_name(JSContextRef cx,JSObjectRef j_obj,JSStrin
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_string_to_value(cx,obj->weapon_fire.name));
 }
 
@@ -83,6 +83,6 @@ JSValueRef js_obj_weapon_fire_get_method(JSContextRef cx,JSObjectRef j_obj,JSStr
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_int_to_value(cx,obj->weapon_fire.method));
 }

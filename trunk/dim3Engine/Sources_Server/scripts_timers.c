@@ -33,6 +33,7 @@ and can be sold or given away.
 #include "scripts.h"
 #include "objects.h"
 
+extern server_type			server;
 extern js_type				js;
 
 /* =======================================================
@@ -250,23 +251,25 @@ void timers_fix_script_indexes(void)
 				break;
 
 			case thing_type_object:
-				obj=object_script_lookup();
+				obj=server.obj_list.objs[timer->attach.obj_idx];
 				timer->attach.script_idx=obj->attach.script_idx;
 				break;
 				
 			case thing_type_weapon:
-				weap=weapon_script_lookup();
+				obj=server.obj_list.objs[timer->attach.obj_idx];
+				weap=obj->weap_list.weaps[timer->attach.weap_idx];
 				timer->attach.script_idx=weap->attach.script_idx;
 				break;
 				
 			case thing_type_projectile_setup:
-				weap=weapon_script_lookup();
-				proj_setup=weap->proj_setup_list.proj_setups[js.attach.proj_setup_idx];
+				obj=server.obj_list.objs[timer->attach.obj_idx];
+				weap=obj->weap_list.weaps[timer->attach.weap_idx];
+				proj_setup=weap->proj_setup_list.proj_setups[timer->attach.proj_setup_idx];
 				timer->attach.script_idx=proj_setup->attach.script_idx;
 				break;
 				
 			case thing_type_projectile:
-				proj=projectile_script_lookup();
+				proj=server.proj_list.projs[timer->attach.proj_idx];
 				timer->attach.script_idx=proj->attach.script_idx;
 				break;
 

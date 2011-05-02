@@ -115,9 +115,9 @@ void script_free_weap_projectile_object(void)
 	script_free_class(weap_projectile_class);
 }
 
-JSObjectRef script_add_weap_projectile_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_weap_projectile_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
 {
-	return(script_create_child_object(cx,parent_obj,weap_projectile_class,"projectile"));
+	return(script_create_child_object(cx,parent_obj,weap_projectile_class,"projectile",attach));
 }
 
 /* =======================================================
@@ -131,7 +131,7 @@ JSValueRef js_weap_projectile_get_fireBoneTag(JSContextRef cx,JSObjectRef j_obj,
 	char			str[32];
 	weapon_type		*weap;
 
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	
 	model_tag_to_text(weap->proj.fire_bone_tag,str);
 	return(script_string_to_value(cx,str));
@@ -142,7 +142,7 @@ JSValueRef js_weap_projectile_get_barrelBoneTag(JSContextRef cx,JSObjectRef j_ob
 	char			str[32];
 	weapon_type		*weap;
 
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 
 	model_tag_to_text(weap->proj.barrel_bone_tag,str);
 	return(script_string_to_value(cx,str));
@@ -152,7 +152,7 @@ JSValueRef js_weap_projectile_get_firePoseName(JSContextRef cx,JSObjectRef j_obj
 {
 	weapon_type		*weap;
 
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	return(script_string_to_value(cx,weap->proj.fire_pose_name));
 }
 
@@ -161,7 +161,7 @@ JSValueRef js_weap_projectile_get_objectFireBoneTag(JSContextRef cx,JSObjectRef 
 	char			str[32];
 	weapon_type		*weap;
 
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 
 	model_tag_to_text(weap->proj.object_fire_bone_tag,str);
 	return(script_string_to_value(cx,str));
@@ -171,7 +171,7 @@ JSValueRef js_weap_projectile_get_objectFirePoseName(JSContextRef cx,JSObjectRef
 {
 	weapon_type		*weap;
 
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	return(script_string_to_value(cx,weap->proj.object_fire_pose_name));
 }
 
@@ -179,7 +179,7 @@ JSValueRef js_weap_projectile_get_repeat_on(JSContextRef cx,JSObjectRef j_obj,JS
 {
 	weapon_type		*weap;
 
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	return(script_bool_to_value(cx,weap->proj.repeat_on));
 }
 
@@ -187,7 +187,7 @@ JSValueRef js_weap_projectile_get_repeat_tick(JSContextRef cx,JSObjectRef j_obj,
 {
 	weapon_type		*weap;
 
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	return(script_int_to_value(cx,weap->proj.repeat_tick));
 }
 
@@ -202,7 +202,7 @@ bool js_weap_projectile_set_fireBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStri
 	char			str[32];
 	weapon_type		*weap;
 	
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 
 	script_value_to_string(cx,vp,str,32);
 	weap->proj.fire_bone_tag=text_to_model_tag(str);
@@ -215,7 +215,7 @@ bool js_weap_projectile_set_barrelBoneTag(JSContextRef cx,JSObjectRef j_obj,JSSt
 	char			str[32];
 	weapon_type		*weap;
 	
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 
 	script_value_to_string(cx,vp,str,32);
 	weap->proj.barrel_bone_tag=text_to_model_tag(str);
@@ -227,7 +227,7 @@ bool js_weap_projectile_set_firePoseName(JSContextRef cx,JSObjectRef j_obj,JSStr
 {
 	weapon_type		*weap;
 	
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	script_value_to_string(cx,vp,weap->proj.fire_pose_name,name_str_len);
 
 	return(TRUE);
@@ -238,7 +238,7 @@ bool js_weap_projectile_set_objectFireBoneTag(JSContextRef cx,JSObjectRef j_obj,
 	char			str[32];
 	weapon_type		*weap;
 	
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 
 	script_value_to_string(cx,vp,str,32);
 	weap->proj.object_fire_bone_tag=text_to_model_tag(str);
@@ -250,7 +250,7 @@ bool js_weap_projectile_set_objectFirePoseName(JSContextRef cx,JSObjectRef j_obj
 {
 	weapon_type		*weap;
 	
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	script_value_to_string(cx,vp,weap->proj.object_fire_pose_name,name_str_len);
 
 	return(TRUE);
@@ -260,7 +260,7 @@ bool js_weap_projectile_set_repeat_on(JSContextRef cx,JSObjectRef j_obj,JSString
 {
 	weapon_type		*weap;
 	
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	weap->proj.repeat_on=script_value_to_bool(cx,vp);
 
 	return(TRUE);
@@ -270,7 +270,7 @@ bool js_weap_projectile_set_repeat_tick(JSContextRef cx,JSObjectRef j_obj,JSStri
 {
 	weapon_type		*weap;
 	
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	weap->proj.repeat_tick=script_value_to_int(cx,vp);
 
 	return(TRUE);
@@ -290,13 +290,13 @@ JSValueRef js_weap_projectile_add_func(JSContextRef cx,JSObjectRef func,JSObject
 	
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
-	if (!script_in_construct()) {
+	if (!script_in_construct(j_obj)) {
 		*exception=script_create_exception(cx,"Can only add projectiles to a weapon in the construct event");
 		return(script_null_to_value(cx));
 	}
 	
-	obj=object_script_lookup();
-	weap=weapon_script_lookup();
+	obj=object_get_attach(j_obj);
+	weap=weapon_get_attach(j_obj);
 
 	script_value_to_string(cx,argv[0],str,name_str_len);
 
@@ -317,8 +317,8 @@ JSValueRef js_weap_projectile_spawn_from_weapon_bone_func(JSContextRef cx,JSObje
 
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
-	obj=object_script_lookup();
-	weap=weapon_script_lookup();
+	obj=object_get_attach(j_obj);
+	weap=weapon_get_attach(j_obj);
 
 	script_value_to_string(cx,argv[0],proj_name,name_str_len);
 
@@ -338,8 +338,8 @@ JSValueRef js_weap_projectile_spawn_from_weapon_bone_slop_func(JSContextRef cx,J
 
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 	
-	obj=object_script_lookup();
-	weap=weapon_script_lookup();
+	obj=object_get_attach(j_obj);
+	weap=weapon_get_attach(j_obj);
 
 	script_value_to_string(cx,argv[0],proj_name,name_str_len);
 
@@ -362,8 +362,8 @@ JSValueRef js_weap_projectile_spawn_from_weapon_bone_multi_slop_func(JSContextRe
 
 	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
 	
-	obj=object_script_lookup();
-	weap=weapon_script_lookup();
+	obj=object_get_attach(j_obj);
+	weap=weapon_get_attach(j_obj);
 
 	script_value_to_string(cx,argv[0],proj_name,name_str_len);
 
@@ -386,8 +386,8 @@ JSValueRef js_weap_projectile_spawn_from_weapon_bone_offset_angle_func(JSContext
 
 	if (!script_check_param_count(cx,func,argc,4,exception)) return(script_null_to_value(cx));
 	
-	obj=object_script_lookup();
-	weap=weapon_script_lookup();
+	obj=object_get_attach(j_obj);
+	weap=weapon_get_attach(j_obj);
 
 	script_value_to_string(cx,argv[0],proj_name,name_str_len);
 
@@ -416,8 +416,8 @@ JSValueRef js_weap_projectile_spawn_from_object_bone_func(JSContextRef cx,JSObje
 
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
-	obj=object_script_lookup();
-	weap=weapon_script_lookup();
+	obj=object_get_attach(j_obj);
+	weap=weapon_get_attach(j_obj);
 
 	script_value_to_string(cx,argv[0],proj_name,name_str_len);
 
@@ -437,8 +437,8 @@ JSValueRef js_weap_projectile_spawn_from_object_bone_slop_func(JSContextRef cx,J
 
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 	
-	obj=object_script_lookup();
-	weap=weapon_script_lookup();
+	obj=object_get_attach(j_obj);
+	weap=weapon_get_attach(j_obj);
 
 	script_value_to_string(cx,argv[0],proj_name,name_str_len);
 
@@ -461,8 +461,8 @@ JSValueRef js_weap_projectile_spawn_from_object_bone_multi_slop_func(JSContextRe
 
 	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
 	
-	obj=object_script_lookup();
-	weap=weapon_script_lookup();
+	obj=object_get_attach(j_obj);
+	weap=weapon_get_attach(j_obj);
 
 	script_value_to_string(cx,argv[0],proj_name,name_str_len);
 
@@ -485,8 +485,8 @@ JSValueRef js_weap_projectile_spawn_from_object_bone_offset_angle_func(JSContext
 	
 	if (!script_check_param_count(cx,func,argc,4,exception)) return(script_null_to_value(cx));
 	
-	obj=object_script_lookup();
-	weap=weapon_script_lookup();
+	obj=object_get_attach(j_obj);
+	weap=weapon_get_attach(j_obj);
 
 	script_value_to_string(cx,argv[0],proj_name,name_str_len);
 
@@ -515,8 +515,8 @@ JSValueRef js_weap_projectile_spawn_from_barrel_func(JSContextRef cx,JSObjectRef
 
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
-	obj=object_script_lookup();
-	weap=weapon_script_lookup();
+	obj=object_get_attach(j_obj);
+	weap=weapon_get_attach(j_obj);
 
 	script_value_to_string(cx,argv[0],proj_name,name_str_len);
 
@@ -536,8 +536,8 @@ JSValueRef js_weap_projectile_spawn_from_barrel_slop_func(JSContextRef cx,JSObje
 
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 	
-	obj=object_script_lookup();
-	weap=weapon_script_lookup();
+	obj=object_get_attach(j_obj);
+	weap=weapon_get_attach(j_obj);
 
 	script_value_to_string(cx,argv[0],proj_name,name_str_len);
 
@@ -560,8 +560,8 @@ JSValueRef js_weap_projectile_spawn_from_barrel_multi_slop_func(JSContextRef cx,
 
 	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
 	
-	obj=object_script_lookup();
-	weap=weapon_script_lookup();
+	obj=object_get_attach(j_obj);
+	weap=weapon_get_attach(j_obj);
 
 	script_value_to_string(cx,argv[0],proj_name,name_str_len);
 
@@ -584,8 +584,8 @@ JSValueRef js_weap_projectile_spawn_from_barrel_offset_angle_func(JSContextRef c
 
 	if (!script_check_param_count(cx,func,argc,4,exception)) return(script_null_to_value(cx));
 	
-	obj=object_script_lookup();
-	weap=weapon_script_lookup();
+	obj=object_get_attach(j_obj);
+	weap=weapon_get_attach(j_obj);
 
 	script_value_to_string(cx,argv[0],proj_name,name_str_len);
 
@@ -614,8 +614,8 @@ JSValueRef js_weap_projectile_spawn_from_center_func(JSContextRef cx,JSObjectRef
 
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
-	obj=object_script_lookup();
-	weap=weapon_script_lookup();
+	obj=object_get_attach(j_obj);
+	weap=weapon_get_attach(j_obj);
 
 	script_value_to_string(cx,argv[0],proj_name,name_str_len);
 
@@ -635,8 +635,8 @@ JSValueRef js_weap_projectile_spawn_from_center_slop_func(JSContextRef cx,JSObje
 
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 	
-	obj=object_script_lookup();
-	weap=weapon_script_lookup();
+	obj=object_get_attach(j_obj);
+	weap=weapon_get_attach(j_obj);
 
 	script_value_to_string(cx,argv[0],proj_name,name_str_len);
 
@@ -659,8 +659,8 @@ JSValueRef js_weap_projectile_spawn_from_center_multi_slop_func(JSContextRef cx,
 	
 	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
 	
-	obj=object_script_lookup();
-	weap=weapon_script_lookup();
+	obj=object_get_attach(j_obj);
+	weap=weapon_get_attach(j_obj);
 
 	script_value_to_string(cx,argv[0],proj_name,name_str_len);
 
@@ -683,8 +683,8 @@ JSValueRef js_weap_projectile_spawn_from_center_offset_angle_func(JSContextRef c
 
 	if (!script_check_param_count(cx,func,argc,4,exception)) return(script_null_to_value(cx));
 	
-	obj=object_script_lookup();
-	weap=weapon_script_lookup();
+	obj=object_get_attach(j_obj);
+	weap=weapon_get_attach(j_obj);
 
 	script_value_to_string(cx,argv[0],proj_name,name_str_len);
 

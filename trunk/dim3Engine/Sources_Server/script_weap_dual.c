@@ -71,9 +71,9 @@ void script_free_weap_dual_object(void)
 	script_free_class(weap_dual_class);
 }
 
-JSObjectRef script_add_weap_dual_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_weap_dual_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
 {
-	return(script_create_child_object(cx,parent_obj,weap_dual_class,"dual"));
+	return(script_create_child_object(cx,parent_obj,weap_dual_class,"dual",attach));
 }
 
 /* =======================================================
@@ -86,7 +86,7 @@ JSValueRef js_weap_dual_get_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef nam
 {
 	weapon_type		*weap;
 
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	return(script_bool_to_value(cx,weap->dual.on));
 }
 
@@ -94,7 +94,7 @@ JSValueRef js_weap_dual_get_active(JSContextRef cx,JSObjectRef j_obj,JSStringRef
 {
 	weapon_type		*weap;
 
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	return(script_bool_to_value(cx,weap->dual.active));
 }
 
@@ -102,7 +102,7 @@ JSValueRef js_weap_dual_get_handOffset(JSContextRef cx,JSObjectRef j_obj,JSStrin
 {
 	weapon_type		*weap;
 
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	return(script_int_to_value(cx,weap->dual.hand_offset));
 }
 
@@ -116,7 +116,7 @@ bool js_weap_dual_set_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSVa
 {
 	weapon_type		*weap;
 	
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	weap->dual.on=script_value_to_bool(cx,vp);
 
 	return(TRUE);
@@ -126,7 +126,7 @@ bool js_weap_dual_set_active(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,
 {
 	weapon_type		*weap;
 	
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	weap->dual.active=script_value_to_bool(cx,vp);
 
 	return(TRUE);
@@ -136,7 +136,7 @@ bool js_weap_dual_set_handOffset(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
 {
 	weapon_type		*weap;
 	
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	weap->dual.hand_offset=script_value_to_int(cx,vp);
 
 	return(TRUE);
@@ -154,7 +154,7 @@ JSValueRef js_weap_dual_switch_hand_func(JSContextRef cx,JSObjectRef func,JSObje
 	
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	
 	if ((!weap->dual.on) && (!weap->dual.active)) {
 		weap->dual.in_dual=FALSE;

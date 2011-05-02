@@ -81,9 +81,9 @@ void script_free_global_sound_object(void)
 	script_free_class(sound_class);
 }
 
-JSObjectRef script_add_global_sound_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_global_sound_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
 {
-	return(script_create_child_object(cx,parent_obj,sound_class,"sound"));
+	return(script_create_child_object(cx,parent_obj,sound_class,"sound",attach));
 }
 
 /* =======================================================
@@ -114,7 +114,7 @@ JSValueRef js_sound_music_name_exception(JSContextRef cx,char *name)
       
 ======================================================= */
 
-void script_sound_play(JSContextRef cx,char *name,d3pnt *pt,float pitch,bool global,bool atplayer,JSValueRef *exception)
+void script_sound_play(JSContextRef cx,JSObjectRef j_obj,char *name,d3pnt *pt,float pitch,bool global,bool atplayer,JSValueRef *exception)
 {
 	int				buffer_idx,sound_obj_idx;
 	bool			player;
@@ -127,7 +127,7 @@ void script_sound_play(JSContextRef cx,char *name,d3pnt *pt,float pitch,bool glo
 		sound_obj_idx=server.player_obj_idx;
 	}
 	else {
-		sound_obj_idx=script_get_attached_object_uid();
+		sound_obj_idx=script_get_attached_object_uid(j_obj);
 		if (sound_obj_idx==-1) {
 			player=FALSE;
 		}
@@ -186,7 +186,7 @@ JSValueRef js_sound_play_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj
 	pt.y=script_value_to_int(cx,argv[3]);
 	pitch=script_value_to_float(cx,argv[4]);
 
-	script_sound_play(cx,name,&pt,pitch,FALSE,FALSE,exception);
+	script_sound_play(cx,j_obj,name,&pt,pitch,FALSE,FALSE,exception);
 	
 	return(script_null_to_value(cx));
 }
@@ -205,7 +205,7 @@ JSValueRef js_sound_play_at_object_func(JSContextRef cx,JSObjectRef func,JSObjec
 	script_value_to_string(cx,argv[0],name,name_str_len);
 	pitch=script_value_to_float(cx,argv[2]);
 
-	script_sound_play(cx,name,&obj->pnt,pitch,FALSE,FALSE,exception);
+	script_sound_play(cx,j_obj,name,&obj->pnt,pitch,FALSE,FALSE,exception);
 	
 	return(script_null_to_value(cx));
 }
@@ -223,7 +223,7 @@ JSValueRef js_sound_play_global_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 	
 	pt.x=pt.y=pt.z=0;
 
-	script_sound_play(cx,name,&pt,pitch,TRUE,FALSE,exception);
+	script_sound_play(cx,j_obj,name,&pt,pitch,TRUE,FALSE,exception);
 	
 	return(script_null_to_value(cx));
 }
@@ -241,7 +241,7 @@ JSValueRef js_sound_play_global_player_func(JSContextRef cx,JSObjectRef func,JSO
 	
 	pt.x=pt.y=pt.z=0;
 
-	script_sound_play(cx,name,&pt,pitch,TRUE,TRUE,exception);
+	script_sound_play(cx,j_obj,name,&pt,pitch,TRUE,TRUE,exception);
 	
 	return(script_null_to_value(cx));
 }

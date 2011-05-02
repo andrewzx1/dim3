@@ -66,9 +66,9 @@ void script_free_weap_crosshair_color_object(void)
 	script_free_class(weap_crosshair_color_class);
 }
 
-JSObjectRef script_add_weap_crosshair_color_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_weap_crosshair_color_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
 {
-	return(script_create_child_object(cx,parent_obj,weap_crosshair_color_class,"color"));
+	return(script_create_child_object(cx,parent_obj,weap_crosshair_color_class,"color",attach));
 }
 
 /* =======================================================
@@ -81,7 +81,7 @@ JSValueRef js_weap_crosshair_color_get_red(JSContextRef cx,JSObjectRef j_obj,JSS
 {
 	weapon_type		*weap;
 
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	return(script_float_to_value(cx,weap->crosshair.col.r));
 }
 
@@ -89,7 +89,7 @@ JSValueRef js_weap_crosshair_color_get_green(JSContextRef cx,JSObjectRef j_obj,J
 {
 	weapon_type		*weap;
 
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	return(script_float_to_value(cx,weap->crosshair.col.g));
 }
 
@@ -97,7 +97,7 @@ JSValueRef js_weap_crosshair_color_get_blue(JSContextRef cx,JSObjectRef j_obj,JS
 {
 	weapon_type		*weap;
 
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	return(script_float_to_value(cx,weap->crosshair.col.b));
 }
 
@@ -111,7 +111,7 @@ bool js_weap_crosshair_color_set_red(JSContextRef cx,JSObjectRef j_obj,JSStringR
 {
 	weapon_type		*weap;
 
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	weap->crosshair.col.r=script_value_to_float(cx,vp);
 
 	return(TRUE);
@@ -121,7 +121,7 @@ bool js_weap_crosshair_color_set_green(JSContextRef cx,JSObjectRef j_obj,JSStrin
 {
 	weapon_type		*weap;
 
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	weap->crosshair.col.g=script_value_to_float(cx,vp);
 
 	return(TRUE);
@@ -131,7 +131,7 @@ bool js_weap_crosshair_color_set_blue(JSContextRef cx,JSObjectRef j_obj,JSString
 {
 	weapon_type		*weap;
 
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	weap->crosshair.col.b=script_value_to_float(cx,vp);
 
 	return(TRUE);

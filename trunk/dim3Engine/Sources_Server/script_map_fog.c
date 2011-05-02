@@ -92,9 +92,9 @@ void script_free_map_fog_object(void)
 	script_free_class(map_fog_class);
 }
 
-JSObjectRef script_add_map_fog_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_map_fog_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
 {
-	return(script_create_child_object(cx,parent_obj,map_fog_class,"fog"));
+	return(script_create_child_object(cx,parent_obj,map_fog_class,"fog",attach));
 }
 
 /* =======================================================

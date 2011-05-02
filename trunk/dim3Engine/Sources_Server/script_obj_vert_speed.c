@@ -68,9 +68,9 @@ void script_free_obj_vert_speed_object(void)
 	script_free_class(obj_vert_speed_class);
 }
 
-JSObjectRef script_add_obj_vert_speed_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_obj_vert_speed_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
 {
-	return(script_create_child_object(cx,parent_obj,obj_vert_speed_class,"verticalSpeed"));
+	return(script_create_child_object(cx,parent_obj,obj_vert_speed_class,"verticalSpeed",attach));
 }
 
 /* =======================================================
@@ -83,7 +83,7 @@ JSValueRef js_obj_vert_speed_get_normal(JSContextRef cx,JSObjectRef j_obj,JSStri
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_float_to_value(cx,obj->vert_move.max_walk_speed));
 }
 
@@ -91,7 +91,7 @@ JSValueRef js_obj_vert_speed_get_acceleration(JSContextRef cx,JSObjectRef j_obj,
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_float_to_value(cx,obj->vert_move.accelerate));
 }
 
@@ -99,7 +99,7 @@ JSValueRef js_obj_vert_speed_get_deceleration(JSContextRef cx,JSObjectRef j_obj,
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_float_to_value(cx,obj->vert_move.decelerate));
 }
 
@@ -107,7 +107,7 @@ JSValueRef js_obj_vert_speed_get_flySlop(JSContextRef cx,JSObjectRef j_obj,JSStr
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_float_to_value(cx,obj->vert_move.slop));
 }
 
@@ -121,7 +121,7 @@ bool js_obj_vert_speed_set_normal(JSContextRef cx,JSObjectRef j_obj,JSStringRef 
 {
 	obj_type		*obj;
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	obj->vert_move.max_walk_speed=fabsf(script_value_to_float(cx,vp));
 
 	return(TRUE);
@@ -131,7 +131,7 @@ bool js_obj_vert_speed_set_acceleration(JSContextRef cx,JSObjectRef j_obj,JSStri
 {
 	obj_type		*obj;
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	obj->vert_move.accelerate=fabsf(script_value_to_float(cx,vp));
 
 	return(TRUE);
@@ -141,7 +141,7 @@ bool js_obj_vert_speed_set_deceleration(JSContextRef cx,JSObjectRef j_obj,JSStri
 {
 	obj_type		*obj;
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	obj->vert_move.decelerate=fabsf(script_value_to_float(cx,vp));
 
 	return(TRUE);
@@ -151,7 +151,7 @@ bool js_obj_vert_speed_set_flySlop(JSContextRef cx,JSObjectRef j_obj,JSStringRef
 {
 	obj_type		*obj;
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	obj->vert_move.slop=fabsf(script_value_to_float(cx,vp));
 
 	return(TRUE);

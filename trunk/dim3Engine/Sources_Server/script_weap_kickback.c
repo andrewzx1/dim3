@@ -65,9 +65,9 @@ void script_free_weap_kickback_object(void)
 	script_free_class(weap_kickback_class);
 }
 
-JSObjectRef script_add_weap_kickback_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_weap_kickback_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
 {
-	return(script_create_child_object(cx,parent_obj,weap_kickback_class,"kickback"));
+	return(script_create_child_object(cx,parent_obj,weap_kickback_class,"kickback",attach));
 }
 
 /* =======================================================
@@ -80,7 +80,7 @@ JSValueRef js_weap_kickback_get_size(JSContextRef cx,JSObjectRef j_obj,JSStringR
 {
 	weapon_type		*weap;
 
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	return(script_int_to_value(cx,weap->kickback.size));
 }
 
@@ -94,7 +94,7 @@ bool js_weap_kickback_set_size(JSContextRef cx,JSObjectRef j_obj,JSStringRef nam
 {
 	weapon_type		*weap;
 	
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	weap->kickback.size=script_value_to_int(cx,vp);
 
 	return(TRUE);
@@ -113,8 +113,8 @@ JSValueRef js_weap_kickback_kick_func(JSContextRef cx,JSObjectRef func,JSObjectR
 	
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
-	obj=object_script_lookup();
-	weap=weapon_script_lookup();
+	obj=object_get_attach(j_obj);
+	weap=weapon_get_attach(j_obj);
 	
 	weapon_kickback(obj,weap);
 

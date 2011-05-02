@@ -72,9 +72,9 @@ void script_free_obj_score_object(void)
 	script_free_class(obj_score_class);
 }
 
-JSObjectRef script_add_obj_score_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_obj_score_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
 {
-	return(script_create_child_object(cx,parent_obj,obj_score_class,"score"));
+	return(script_create_child_object(cx,parent_obj,obj_score_class,"score",attach));
 }
 
 /* =======================================================
@@ -87,7 +87,7 @@ JSValueRef js_obj_score_get_kill(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_int_to_value(cx,obj->score.kill));
 }
 
@@ -95,7 +95,7 @@ JSValueRef js_obj_score_get_death(JSContextRef cx,JSObjectRef j_obj,JSStringRef 
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_int_to_value(cx,obj->score.death));
 }
 
@@ -103,7 +103,7 @@ JSValueRef js_obj_score_get_suicide(JSContextRef cx,JSObjectRef j_obj,JSStringRe
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_int_to_value(cx,obj->score.suicide));
 }
 
@@ -111,7 +111,7 @@ JSValueRef js_obj_score_get_goal(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_int_to_value(cx,obj->score.goal));
 }
 
@@ -119,7 +119,7 @@ JSValueRef js_obj_score_get_score(JSContextRef cx,JSObjectRef j_obj,JSStringRef 
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_int_to_value(cx,obj->score.score));
 }
 
@@ -135,7 +135,7 @@ JSValueRef js_obj_score_add_goal_func(JSContextRef cx,JSObjectRef func,JSObjectR
 	
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	object_score_goal(obj);
 
 	return(script_null_to_value(cx));

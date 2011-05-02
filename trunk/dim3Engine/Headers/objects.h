@@ -73,7 +73,7 @@ extern void object_clear_draw(model_draw *draw);
 extern void object_reset_prepare(obj_type *obj);
 extern void object_reset(obj_type *obj);
 
-extern obj_type* object_script_lookup(void);
+extern obj_type* object_get_attach(JSObjectRef j_obj);
 extern obj_type* object_find_remote_net_uid(int net_uid);
 extern obj_type* object_find_name(char *name);
 extern obj_type* object_find_nearest(d3pnt *pt,char *name,int type,int team_idx,float ang,float ang_sweep,int min_dist,int max_dist,bool player,int skip_obj_idx);
@@ -114,9 +114,9 @@ extern void object_setup_hit(obj_type *obj,obj_type *from_obj,weapon_type *from_
 extern void object_click(obj_type *obj,obj_type *from_obj);
 extern void object_damage(obj_type *obj,obj_type *source_obj,weapon_type *source_weap,proj_type *source_proj,d3pnt *melee_hit_pt,int damage);
 extern void object_melee_hit(obj_type *obj,obj_type *melee_obj,weapon_type *melee_weap,melee_type *melee,d3pnt *sphere_pnt);
-extern void object_heal(obj_type *obj,int heal);
+extern bool object_heal(obj_type *obj,int heal);
 extern void object_health_recover(obj_type *obj);
-extern void object_heal_armor(obj_type *obj,int heal);
+extern bool object_heal_armor(obj_type *obj,int heal);
 extern void object_crush(obj_type *obj,bool auto_crush);
 extern void object_mesh_harm(obj_type *obj);
 extern void object_hide(obj_type *obj,bool hide);
@@ -277,7 +277,7 @@ extern void remote_draw_names_render(void);
 
 extern int weapon_count_projectile_setups(weapon_type *weap);
 
-extern weapon_type* weapon_script_lookup(void);
+extern weapon_type* weapon_get_attach(JSObjectRef j_obj);
 extern weapon_type* weapon_find_name(obj_type *obj,char *name);
 extern weapon_type* weapon_find_current(obj_type *obj);
 
@@ -360,8 +360,6 @@ extern bool projectile_initialize_list(void);
 extern void projectile_free_list(void);
 extern int projectile_count_list(void);
 
-extern proj_type* projectile_script_lookup(void);
-
 extern proj_type* projectile_create(obj_type *obj,weapon_type *weap,proj_setup_type *proj_setup);
 
 extern void projectile_set_position(proj_type *proj,d3pnt *pt,d3ang *ang);
@@ -380,8 +378,8 @@ extern void proj_setup_dispose(weapon_type *weap,int idx);
 
 extern void proj_setup_set_radius(proj_setup_type *proj_setup);
 extern void proj_setup_attach_mark(proj_setup_type *proj_setup);
-extern proj_setup_type* proj_setup_get_attach(void);
-extern proj_type* proj_get_attach(void);
+extern proj_setup_type* proj_setup_get_attach(JSObjectRef j_obj);
+extern proj_type* proj_get_attach(JSObjectRef j_obj);
 
 extern void projectile_slice_setup(proj_type *proj);
 extern void projectile_gravity(proj_type *proj);

@@ -66,9 +66,9 @@ void script_free_weap_hand_position_object(void)
 	script_free_class(weap_hand_position_class);
 }
 
-JSObjectRef script_add_weap_hand_position_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_weap_hand_position_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
 {
-	return(script_create_child_object(cx,parent_obj,weap_hand_position_class,"handPosition"));
+	return(script_create_child_object(cx,parent_obj,weap_hand_position_class,"handPosition",attach));
 }
 
 /* =======================================================
@@ -81,7 +81,7 @@ JSValueRef js_weap_hand_position_get_x(JSContextRef cx,JSObjectRef j_obj,JSStrin
 {
 	weapon_type		*weap;
 
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	return(script_int_to_value(cx,weap->hand.shift.x));
 }
 
@@ -89,7 +89,7 @@ JSValueRef js_weap_hand_position_get_y(JSContextRef cx,JSObjectRef j_obj,JSStrin
 {
 	weapon_type		*weap;
 
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	return(script_int_to_value(cx,weap->hand.shift.y));
 }
 
@@ -97,7 +97,7 @@ JSValueRef js_weap_hand_position_get_z(JSContextRef cx,JSObjectRef j_obj,JSStrin
 {
 	weapon_type		*weap;
 
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	return(script_int_to_value(cx,weap->hand.shift.z));
 }
 
@@ -111,7 +111,7 @@ bool js_weap_hand_position_set_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
 {
 	weapon_type		*weap;
 	
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	weap->hand.shift.x=script_value_to_int(cx,vp);
 
 	return(TRUE);
@@ -121,7 +121,7 @@ bool js_weap_hand_position_set_y(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
 {
 	weapon_type		*weap;
 	
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	weap->hand.shift.y=script_value_to_int(cx,vp);
 
 	return(TRUE);
@@ -131,7 +131,7 @@ bool js_weap_hand_position_set_z(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
 {
 	weapon_type		*weap;
 	
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	weap->hand.shift.z=script_value_to_int(cx,vp);
 
 	return(TRUE);

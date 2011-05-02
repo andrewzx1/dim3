@@ -43,9 +43,12 @@ extern js_type				js;
       
 ======================================================= */
 
-inline obj_type* object_script_lookup(void)
+inline obj_type* object_get_attach(JSObjectRef j_obj)
 {
-	return(server.obj_list.objs[js.attach.obj_idx]);
+	attach_type			*attach;
+	
+	attach=(attach_type*)JSObjectGetPrivate(j_obj);
+	return(server.obj_list.objs[attach->obj_idx]);
 }
 
 obj_type* object_find_remote_net_uid(int net_uid)

@@ -98,9 +98,9 @@ void script_free_proj_action_object(void)
 	script_free_class(proj_action_class);
 }
 
-JSObjectRef script_add_proj_action_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_proj_action_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
 {
-	return(script_create_child_object(cx,parent_obj,proj_action_class,"action"));
+	return(script_create_child_object(cx,parent_obj,proj_action_class,"action",attach));
 }
 
 /* =======================================================
@@ -113,7 +113,7 @@ JSValueRef js_proj_action_get_damage(JSContextRef cx,JSObjectRef j_obj,JSStringR
 {
 	proj_setup_type		*proj_setup;
 
-	proj_setup=proj_setup_get_attach();
+	proj_setup=proj_setup_get_attach(j_obj);
 	if (proj_setup==NULL) return(script_null_to_value(cx));
 	
 	return(script_int_to_value(cx,proj_setup->damage));
@@ -123,7 +123,7 @@ JSValueRef js_proj_action_get_collision(JSContextRef cx,JSObjectRef j_obj,JSStri
 {
 	proj_setup_type		*proj_setup;
 
-	proj_setup=proj_setup_get_attach();
+	proj_setup=proj_setup_get_attach(j_obj);
 	if (proj_setup==NULL) return(script_null_to_value(cx));
 	
 	return(script_bool_to_value(cx,proj_setup->collision));
@@ -133,7 +133,7 @@ JSValueRef js_proj_action_get_auto_hitTick(JSContextRef cx,JSObjectRef j_obj,JSS
 {
 	proj_setup_type		*proj_setup;
 
-	proj_setup=proj_setup_get_attach();
+	proj_setup=proj_setup_get_attach(j_obj);
 	if (proj_setup==NULL) return(script_null_to_value(cx));
 	
 	return(script_int_to_value(cx,proj_setup->action.hit_tick));
@@ -143,7 +143,7 @@ JSValueRef js_proj_action_get_auto_bounce(JSContextRef cx,JSObjectRef j_obj,JSSt
 {
 	proj_setup_type		*proj_setup;
 
-	proj_setup=proj_setup_get_attach();
+	proj_setup=proj_setup_get_attach(j_obj);
 	if (proj_setup==NULL) return(script_null_to_value(cx));
 	
 	return(script_bool_to_value(cx,proj_setup->action.bounce));
@@ -153,7 +153,7 @@ JSValueRef js_proj_action_get_auto_bounceMinMove(JSContextRef cx,JSObjectRef j_o
 {
 	proj_setup_type		*proj_setup;
 
-	proj_setup=proj_setup_get_attach();
+	proj_setup=proj_setup_get_attach(j_obj);
 	if (proj_setup==NULL) return(script_null_to_value(cx));
 	
 	return(script_float_to_value(cx,proj_setup->action.bounce_min_move));
@@ -163,7 +163,7 @@ JSValueRef js_proj_action_get_auto_bounceReduce(JSContextRef cx,JSObjectRef j_ob
 {
 	proj_setup_type		*proj_setup;
 
-	proj_setup=proj_setup_get_attach();
+	proj_setup=proj_setup_get_attach(j_obj);
 	if (proj_setup==NULL) return(script_null_to_value(cx));
 	
 	return(script_float_to_value(cx,proj_setup->action.bounce_reduce));
@@ -173,7 +173,7 @@ JSValueRef js_proj_action_get_auto_reflect(JSContextRef cx,JSObjectRef j_obj,JSS
 {
 	proj_setup_type		*proj_setup;
 
-	proj_setup=proj_setup_get_attach();
+	proj_setup=proj_setup_get_attach(j_obj);
 	if (proj_setup==NULL) return(script_null_to_value(cx));
 	
 	return(script_bool_to_value(cx,proj_setup->action.reflect));
@@ -189,7 +189,7 @@ bool js_proj_action_set_damage(JSContextRef cx,JSObjectRef j_obj,JSStringRef nam
 {
 	proj_setup_type		*proj_setup;
 	
-	proj_setup=proj_setup_get_attach();
+	proj_setup=proj_setup_get_attach(j_obj);
 	if (proj_setup!=NULL) proj_setup->damage=script_value_to_int(cx,vp);
 
 	return(TRUE);
@@ -199,7 +199,7 @@ bool js_proj_action_set_collision(JSContextRef cx,JSObjectRef j_obj,JSStringRef 
 {
 	proj_setup_type		*proj_setup;
 	
-	proj_setup=proj_setup_get_attach();
+	proj_setup=proj_setup_get_attach(j_obj);
 	if (proj_setup!=NULL) proj_setup->collision=script_value_to_bool(cx,vp);
 
 	return(TRUE);
@@ -209,7 +209,7 @@ bool js_proj_action_set_auto_hitTick(JSContextRef cx,JSObjectRef j_obj,JSStringR
 {
 	proj_setup_type		*proj_setup;
 	
-	proj_setup=proj_setup_get_attach();
+	proj_setup=proj_setup_get_attach(j_obj);
 	if (proj_setup!=NULL) proj_setup->action.hit_tick=script_value_to_int(cx,vp);
 
 	return(TRUE);
@@ -219,7 +219,7 @@ bool js_proj_action_set_auto_bounce(JSContextRef cx,JSObjectRef j_obj,JSStringRe
 {
 	proj_setup_type		*proj_setup;
 	
-	proj_setup=proj_setup_get_attach();
+	proj_setup=proj_setup_get_attach(j_obj);
 	if (proj_setup!=NULL) proj_setup->action.bounce=script_value_to_bool(cx,vp);
 
 	return(TRUE);
@@ -229,7 +229,7 @@ bool js_proj_action_set_auto_bounceMinMove(JSContextRef cx,JSObjectRef j_obj,JSS
 {
 	proj_setup_type		*proj_setup;
 	
-	proj_setup=proj_setup_get_attach();
+	proj_setup=proj_setup_get_attach(j_obj);
 	if (proj_setup!=NULL) proj_setup->action.bounce_min_move=script_value_to_float(cx,vp);
 
 	return(TRUE);
@@ -239,7 +239,7 @@ bool js_proj_action_set_auto_bounceReduce(JSContextRef cx,JSObjectRef j_obj,JSSt
 {
 	proj_setup_type		*proj_setup;
 	
-	proj_setup=proj_setup_get_attach();
+	proj_setup=proj_setup_get_attach(j_obj);
 	if (proj_setup!=NULL) proj_setup->action.bounce_reduce=script_value_to_float(cx,vp);
 
 	return(TRUE);
@@ -249,7 +249,7 @@ bool js_proj_action_set_auto_reflect(JSContextRef cx,JSObjectRef j_obj,JSStringR
 {
 	proj_setup_type		*proj_setup;
 	
-	proj_setup=proj_setup_get_attach();
+	proj_setup=proj_setup_get_attach(j_obj);
 	if (proj_setup!=NULL) proj_setup->action.reflect=script_value_to_bool(cx,vp);
 
 	return(TRUE);
@@ -267,7 +267,7 @@ JSValueRef js_proj_action_rotate_func(JSContextRef cx,JSObjectRef func,JSObjectR
 
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
-	proj=proj_get_attach();
+	proj=proj_get_attach(j_obj);
 	if (proj==NULL) return(script_null_to_value(cx));
 		
 	proj->ang.y=proj->motion.ang.y=script_value_to_float(cx,argv[0]);
@@ -282,7 +282,7 @@ JSValueRef js_proj_action_turn_towards_func(JSContextRef cx,JSObjectRef func,JSO
 
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 	
-	proj=proj_get_attach();
+	proj=proj_get_attach(j_obj);
 	if (proj==NULL) return(script_null_to_value(cx));
 		
 	to_obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
@@ -300,7 +300,7 @@ JSValueRef js_proj_action_seek_func(JSContextRef cx,JSObjectRef func,JSObjectRef
 
 	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
 	
-	proj=proj_get_attach();
+	proj=proj_get_attach(j_obj);
 	if (proj==NULL) return(script_null_to_value(cx));
 		
 	to_obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
@@ -320,10 +320,10 @@ JSValueRef js_proj_action_seek_target_func(JSContextRef cx,JSObjectRef func,JSOb
 
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 	
-	proj=proj_get_attach();
+	proj=proj_get_attach(j_obj);
 	if (proj==NULL) return(script_null_to_value(cx));
 	
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 
 	proj_setup=weap->proj_setup_list.proj_setups[proj->proj_setup_idx];
 	if (proj_setup==NULL) return(script_null_to_value(cx));
@@ -343,7 +343,7 @@ JSValueRef js_proj_action_bounce_func(JSContextRef cx,JSObjectRef func,JSObjectR
 
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 	
-	proj=proj_get_attach();
+	proj=proj_get_attach(j_obj);
 	if (proj==NULL) return(script_null_to_value(cx));
     
     min_ymove=script_value_to_float(cx,argv[0]);
@@ -360,7 +360,7 @@ JSValueRef js_proj_action_reflect_func(JSContextRef cx,JSObjectRef func,JSObject
 
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
-	proj=proj_get_attach();
+	proj=proj_get_attach(j_obj);
 	if (proj==NULL) return(script_null_to_value(cx));
 	
 	projectile_reflect(proj,FALSE);
@@ -374,7 +374,7 @@ JSValueRef js_proj_action_stick_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
-	proj=proj_get_attach();
+	proj=proj_get_attach(j_obj);
 	if (proj==NULL) return(script_null_to_value(cx));
     
     proj->stick=TRUE;
@@ -389,7 +389,7 @@ JSValueRef js_proj_action_destroy_func(JSContextRef cx,JSObjectRef func,JSObject
 	
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
-	proj=proj_get_attach();
+	proj=proj_get_attach(j_obj);
 	if (proj==NULL) return(script_null_to_value(cx));
 	
 	proj->script_dispose=TRUE;
