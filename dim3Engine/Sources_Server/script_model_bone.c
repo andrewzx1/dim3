@@ -104,16 +104,14 @@ model_draw* script_bone_function_setup(JSContextRef cx,JSObjectRef j_obj,JSValue
 			return(&weap->draw);
 			
 		case thing_type_projectile:
+			if (attach->proj_idx==-1) break;			// this happens when we are on a projectile setup, not a projectile
 			proj=server.proj_list.projs[attach->proj_idx];
 			model_draw_setup_projectile(proj);
 			return(&proj->draw);
 			
-		case thing_type_projectile_setup:
-			*exception=script_create_exception(cx,"There is no model to get bone positions from");
-			return(NULL);
-			
 	}
 	
+	*exception=script_create_exception(cx,"There is no model to get bone positions from");
 	return(NULL);
 }
 

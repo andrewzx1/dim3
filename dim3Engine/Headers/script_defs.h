@@ -62,8 +62,7 @@ and can be sold or given away.
 #define thing_type_course								1
 #define thing_type_object								2
 #define thing_type_weapon								3
-#define thing_type_projectile_setup						4
-#define thing_type_projectile							5
+#define thing_type_projectile							4
 
 //
 // timer types

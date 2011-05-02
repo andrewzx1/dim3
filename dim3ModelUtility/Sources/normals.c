@@ -64,16 +64,151 @@ bool model_recalc_normals_compare_sign(float f1,float f2)
 	return(FALSE);
 }
 
+void map_recalc_normals_get_trig_box(model_type *model,int mesh_idx,int trig_idx,d3pnt *min,d3pnt *max)
+{
+	int					k,j,trig_material_idx;
+	bool				first_hit;
+	d3pnt				*pnt;
+	model_mesh_type		*mesh;
+	model_trig_type		*trig,*chk_trig;
+
+	mesh=&model->meshes[mesh_idx];
+	trig=&mesh->trigs[trig_idx];
+	
+	first_hit=FALSE;
+	min->x=min->y=min->z=0;
+	max->x=max->y=max->z=0;
+
+	chk_trig=mesh->trigs;
+
+	trig_material_idx=model_recalc_normals_find_material(model,mesh_idx,trig_idx);
+
+	for (k=0;k!=mesh->ntrig;k++) {
+
+		chk_trig=&mesh->trigs[k];
+		if (model_recalc_normals_find_material(model,mesh_idx,k)!=trig_material_idx) continue;
+
+		for (j=0;j!=3;j++) {
+
+			pnt=&mesh->vertexes[chk_trig->v[j]].pnt;
+
+			if (!first_hit) {
+				min->x=max->x=pnt->x;
+				min->y=max->y=pnt->y;
+				min->z=max->z=pnt->z;
+				first_hit=TRUE;
+			}
+			else {
+				if (pnt->x<min->x) min->x=pnt->x;
+				if (pnt->x>max->x) max->x=pnt->x;
+				if (pnt->y<min->y) min->y=pnt->y;
+				if (pnt->y>max->y) max->y=pnt->y;
+				if (pnt->z<min->z) min->z=pnt->z;
+				if (pnt->z>max->z) max->z=pnt->z;
+			}
+		}
+	}
+}
+
+bool map_recalc_normals_determine_vector_in_out(model_type *model,int mesh_idx,int trig_idx,int pt_idx)
+{
+	int					x,y,z,k,pos_dist,neg_dist;
+	float				f_dist;
+	bool				is_out;
+	d3pnt				*pnt,min,max,center,pos_pt,neg_pt;
+	d3vct				face_vct;
+	model_mesh_type		*mesh;
+	model_trig_type		*trig;
+
+		// get box for trig.  This will be the combination
+		// of vertexes with the same material
+
+	map_recalc_normals_get_trig_box(model,mesh_idx,trig_idx,&min,&max);
+
+		// get the box center
+
+	mesh=&model->meshes[mesh_idx];
+	trig=&mesh->trigs[trig_idx];
+	pnt=&mesh->vertexes[trig->v[pt_idx]].pnt;
+
+	center.x=(min.x+max.x)>>1;
+	center.y=(min.y+max.y)>>1;
+	center.z=(min.z+max.z)>>1;
+
+		// the dot product is the fall back position
+		// if these specialized checks fail
+
+	vector_create(&face_vct,pnt->x,pnt->y,pnt->z,center.x,center.y,center.z);
+	is_out=(vector_dot_product(&trig->tangent_space[pt_idx].normal,&face_vct)>0.0f);
+
+		// get a point from the current normal vector
+		// and inverse of the current normal vector, using 10%
+		// of the distance to center
+	
+	f_dist=(float)distance_get(pnt->x,pnt->y,pnt->z,center.x,center.y,center.z);
+	f_dist*=0.1f;
+
+	pos_pt.x=pnt->x+(int)(trig->tangent_space[pt_idx].normal.x*f_dist);
+	pos_pt.y=pnt->y+(int)(trig->tangent_space[pt_idx].normal.y*f_dist);
+	pos_pt.z=pnt->z+(int)(trig->tangent_space[pt_idx].normal.z*f_dist);
+
+	neg_pt.x=pnt->x-(int)(trig->tangent_space[pt_idx].normal.x*f_dist);
+	neg_pt.y=pnt->y-(int)(trig->tangent_space[pt_idx].normal.y*f_dist);
+	neg_pt.z=pnt->z-(int)(trig->tangent_space[pt_idx].normal.z*f_dist);
+
+		// first we determine if we can think of the
+		// poly's box (which is determined by all connected
+		// polys) as a closed object in one direction
+
+		// if one direction is at least 25% greater than the others
+		// then consider it a tube like structure
+
+		// if any distance calcs fail, fall back to dot product
+
+	x=max.x-min.x;
+	y=max.y-min.y;
+	z=max.z-min.z;
+
+	k=x-((x*25)/100);
+	if ((x>y) && (x>z)) {
+		pos_dist=distance_2D_get(pos_pt.y,pos_pt.z,center.y,center.z);
+		neg_dist=distance_2D_get(neg_pt.y,neg_pt.z,center.y,center.z);
+		if (pos_dist==neg_dist) return(is_out);
+
+		return(pos_dist>neg_dist);
+	}
+
+	k=y-((y*25)/100);
+	if ((y>x) && (y>z)) {
+		pos_dist=distance_2D_get(pos_pt.x,pos_pt.z,center.x,center.z);
+		neg_dist=distance_2D_get(neg_pt.x,neg_pt.z,center.x,center.z);
+		if (pos_dist==neg_dist) return(is_out);
+
+		return(pos_dist>neg_dist);
+	}
+
+	k=z-((z*25)/100);
+	if ((z>x) && (z>y)) {
+		pos_dist=distance_2D_get(pos_pt.x,pos_pt.y,center.x,center.y);
+		neg_dist=distance_2D_get(neg_pt.x,neg_pt.y,center.x,center.y);
+		if (pos_dist==neg_dist) return(is_out);
+
+		return(pos_dist>neg_dist);
+	}
+
+		// finally fall back to dot product
+
+	return(is_out);
+}
+
 void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent)
 {
-	int					n,k,t,j,cnt,trig_material_idx;
+	int					n,k,t,j,cnt;
     float				u10,u20,v10,v20,f_denom,f;
-	bool				is_out;
-	d3vct				p10,p20,vlft,vrgt,v_num,face_vct;
+	d3vct				p10,p20,vlft,vrgt,v_num;
 	d3vct				*normals,*nptr,*tangents,*tptr;
 	d3pnt				*pt,*pt_1,*pt_2,v_center;
 	model_mesh_type		*mesh;
-    model_vertex_type	*vertex;
 	model_trig_type		*trig,*chk_trig;
 	tangent_space_type	avg_space;
 	
@@ -266,49 +401,9 @@ void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent)
 	trig=mesh->trigs;
 
 	for (n=0;n!=mesh->ntrig;n++) {
-
-			// get the material for the trig
-
-		trig_material_idx=model_recalc_normals_find_material(model,mesh_idx,n);
-
-			// for each trig, we only want to consider
-			// the center being around vertexes connected
-			// to the same material
-
-		cnt=0;
-		v_center.x=v_center.y=v_center.z=0;
-
-		chk_trig=mesh->trigs;
-
-		for (k=0;k!=mesh->ntrig;k++) {
-			if (model_recalc_normals_find_material(model,mesh_idx,k)==trig_material_idx) {
-				for (j=0;j!=3;j++) {
-					v_center.x+=mesh->vertexes[chk_trig->v[j]].pnt.x;
-					v_center.y+=mesh->vertexes[chk_trig->v[j]].pnt.y;
-					v_center.z+=mesh->vertexes[chk_trig->v[j]].pnt.z;
-					cnt++;
-				}
-			}
-			chk_trig++;
-		}
-		
-		if (cnt>1) {
-			v_center.x/=cnt;
-			v_center.y/=cnt;
-			v_center.z/=cnt;
-		}
-
-			// determine if it's facing in or out
-			// from this center
 	
 		for (k=0;k!=3;k++) {
-		
-			vertex=&mesh->vertexes[trig->v[k]];
-			
-			vector_create(&face_vct,vertex->pnt.x,vertex->pnt.y,vertex->pnt.z,v_center.x,v_center.y,v_center.z);
-			is_out=(vector_dot_product(&trig->tangent_space[k].normal,&face_vct)>0.0f);
-
-			if (!is_out) {
+			if (!map_recalc_normals_determine_vector_in_out(model,mesh_idx,n,k)) {
 				trig->tangent_space[k].normal.x=-trig->tangent_space[k].normal.x;
 				trig->tangent_space[k].normal.y=-trig->tangent_space[k].normal.y;
 				trig->tangent_space[k].normal.z=-trig->tangent_space[k].normal.z;

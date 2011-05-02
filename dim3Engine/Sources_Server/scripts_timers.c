@@ -261,16 +261,11 @@ void timers_fix_script_indexes(void)
 				timer->attach.script_idx=weap->attach.script_idx;
 				break;
 				
-			case thing_type_projectile_setup:
+			case thing_type_projectile:
 				obj=server.obj_list.objs[timer->attach.obj_idx];
 				weap=obj->weap_list.weaps[timer->attach.weap_idx];
 				proj_setup=weap->proj_setup_list.proj_setups[timer->attach.proj_setup_idx];
 				timer->attach.script_idx=proj_setup->attach.script_idx;
-				break;
-				
-			case thing_type_projectile:
-				proj=server.proj_list.projs[timer->attach.proj_idx];
-				timer->attach.script_idx=proj->attach.script_idx;
 				break;
 
 		}

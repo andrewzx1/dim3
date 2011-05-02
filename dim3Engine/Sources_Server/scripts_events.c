@@ -132,13 +132,51 @@ void scripts_recursion_out(script_type *script)
 
 /* =======================================================
 
+      Scripts Projectile Attachs
+
+	  Projects share scripts with their projectile setup.
+	  Because of this, we have to switch the proj_idx in the
+	  projectile setup attach when calling into functions,
+	  and switch it back when leaving (in case we are calling
+	  from within another script.)
+      
+======================================================= */
+
+int scripts_projectile_start(JSObjectRef j_obj,attach_type *attach)
+{
+	int						old_proj_idx;
+	attach_type				*data_attach;
+
+	if (attach->thing_type!=thing_type_projectile) return(-1);
+
+	data_attach=(attach_type*)JSObjectGetPrivate(j_obj);
+	if (data_attach->thing_type!=thing_type_projectile) return(-1);
+
+	old_proj_idx=data_attach->proj_idx;
+	data_attach->proj_idx=attach->proj_idx;
+
+	return(old_proj_idx);
+}
+
+void script_projectile_finish(JSObjectRef j_obj,int old_proj_idx)
+{
+	attach_type				*data_attach;
+
+	if (old_proj_idx==-1) return;
+
+	data_attach=(attach_type*)JSObjectGetPrivate(j_obj);
+	data_attach->proj_idx=old_proj_idx;
+}
+
+/* =======================================================
+
       Script Events
       
 ======================================================= */
 
 bool scripts_post_event(attach_type *attach,int main_event,int sub_event,int id,char *err_str)
 {
-	int						event_idx,tick;
+	int						event_idx,tick,old_proj_idx;
 	JSValueRef				rval,exception,argv[5];
 	script_type				*script;
 	
@@ -191,6 +229,10 @@ bool scripts_post_event(attach_type *attach,int main_event,int sub_event,int id,
 	attach->event_state.id=id;
 	attach->event_state.tick=tick;
 
+		// handle any proj_setup/proj swaps
+
+	old_proj_idx=scripts_projectile_start(script->obj,attach);
+
 		// run the event function
 		// supergumba -- for now we handle both methods, but
 		// in the future we should replace with a single method
@@ -202,9 +244,7 @@ bool scripts_post_event(attach_type *attach,int main_event,int sub_event,int id,
 		argv[3]=script_int_to_value(script->cx,tick);
 
 		rval=JSObjectCallAsFunction(script->cx,script->event_attach_list.func[event_idx],NULL,4,argv,&exception);
-		if (rval==NULL) {
-			script_exception_to_string(script->cx,exception,err_str,256);
-		}
+		if (rval==NULL) script_exception_to_string(script->cx,exception,err_str,256);
 	}
 
 	else {
@@ -215,10 +255,12 @@ bool scripts_post_event(attach_type *attach,int main_event,int sub_event,int id,
 		argv[4]=script_int_to_value(script->cx,tick);
 
 		rval=JSObjectCallAsFunction(script->cx,script->event_func,NULL,5,argv,&exception);
-		if (rval==NULL) {
-			script_exception_to_string(script->cx,exception,err_str,256);
-		}
+		if (rval==NULL) script_exception_to_string(script->cx,exception,err_str,256);
 	}
+
+		// switch back any saved proj_idx
+
+	script_projectile_finish(script->obj,old_proj_idx);
 	
 		// leave event
 		
@@ -332,6 +374,7 @@ JSValueRef scripts_call_parent_function(attach_type *attach,char *func_name,int 
 
 bool scripts_chain(attach_type *attach,char *func_name,char *err_str)
 {
+	int				old_proj_idx;
 	JSValueRef		rval,exception,argv[2];
 	JSObjectRef		func_obj;
 	script_type		*script;
@@ -358,15 +401,21 @@ bool scripts_chain(attach_type *attach,char *func_name,char *err_str)
 
 	if (!scripts_recursion_in(script,err_str)) return(FALSE);
 
+		// handle any proj_setup/proj swaps
+
+	old_proj_idx=scripts_projectile_start(script->obj,attach);
+
 		// run the event function
 		
 	argv[0]=(JSValueRef)script->obj;
 	argv[1]=script_int_to_value(script->cx,game_time_get());
 
 	rval=JSObjectCallAsFunction(script->cx,func_obj,NULL,2,argv,&exception);
-	if (rval==NULL) {
-		script_exception_to_string(script->cx,exception,err_str,256);
-	}
+	if (rval==NULL) script_exception_to_string(script->cx,exception,err_str,256);
+
+		// switch back any saved proj_idx
+
+	script_projectile_finish(script->obj,old_proj_idx);
 
 		// leave recursion
 
@@ -379,9 +428,7 @@ void scripts_chain_console(attach_type *attach,char *func_name)
 {
 	char			err_str[256];
 	
-	if (!scripts_chain(attach,func_name,err_str)) {
-		console_add_error(err_str);
-	}
+	if (!scripts_chain(attach,func_name,err_str)) console_add_error(err_str);
 }
 
 /* =======================================================
@@ -392,7 +439,7 @@ void scripts_chain_console(attach_type *attach,char *func_name)
 
 JSValueRef scripts_direct_call(attach_type *attach,char *func_name,int arg_count,JSValueRef *args,char *err_str)
 {
-	int				n;
+	int				n,old_proj_idx;
 	JSValueRef		rval,exception,argv[5];
 	JSObjectRef		func_obj;
 	script_type		*script;
@@ -404,6 +451,10 @@ JSValueRef scripts_direct_call(attach_type *attach,char *func_name,int arg_count
 		// enter recursion
 
 	if (!scripts_recursion_in(script,err_str)) return(NULL);
+
+		// handle any proj_setup/proj swaps
+
+	old_proj_idx=scripts_projectile_start(script->obj,attach);
 
 		// find function
 
@@ -422,10 +473,11 @@ JSValueRef scripts_direct_call(attach_type *attach,char *func_name,int arg_count
 	}
 
 	rval=JSObjectCallAsFunction(script->cx,func_obj,NULL,(arg_count+1),argv,&exception);
-	if (rval==NULL) {
-		script_exception_to_string(script->cx,exception,err_str,256);
-		return(NULL);
-	}
+	if (rval==NULL) script_exception_to_string(script->cx,exception,err_str,256);
+
+		// switch back any saved proj_idx
+
+	script_projectile_finish(script->obj,old_proj_idx);
 
 		// leave recursion
 

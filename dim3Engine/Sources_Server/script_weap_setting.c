@@ -33,18 +33,24 @@ and can be sold or given away.
 #include "scripts.h"
 #include "objects.h"
 
+extern server_type		server;
 extern js_type			js;
 
 JSValueRef js_weap_setting_get_name(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_weap_setting_get_failInLiquid(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_weap_setting_get_parentObjectId(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 bool js_weap_setting_set_failInLiquid(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_weap_setting_get_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 JSStaticValue 		weap_setting_props[]={
 							{"name",				js_weap_setting_get_name,				NULL,									kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
 							{"failInLiquid",		js_weap_setting_get_failInLiquid,		js_weap_setting_set_failInLiquid,		kJSPropertyAttributeDontDelete},
 							{"parentObjectId",		js_weap_setting_get_parentObjectId,		NULL,									kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
 							{0,0,0,0}};
+
+JSStaticFunction	weap_setting_functions[]={
+							{"getObject",			js_weap_setting_get_object_func,		kJSPropertyAttributeDontDelete},
+							{0,0,0}};
 
 JSClassRef			weap_setting_class;
 
@@ -56,7 +62,7 @@ JSClassRef			weap_setting_class;
 
 void script_init_weap_setting_object(void)
 {
-	weap_setting_class=script_create_class("weap_setting_class",weap_setting_props,NULL);
+	weap_setting_class=script_create_class("weap_setting_class",weap_setting_props,weap_setting_functions);
 }
 
 void script_free_weap_setting_object(void)
@@ -113,6 +119,33 @@ bool js_weap_setting_set_failInLiquid(JSContextRef cx,JSObjectRef j_obj,JSString
 	weap->fail_in_liquid=script_value_to_bool(cx,vp);
 
 	return(TRUE);
+}
+
+/* =======================================================
+
+      Weapon Functions
+      
+======================================================= */
+
+JSValueRef js_weap_setting_get_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+{
+	int					obj_idx;
+	obj_type			*obj;
+	weapon_type			*weap;
+	script_type			*script;
+
+	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
+	
+	weap=weapon_get_attach(j_obj);
+	if (weap==NULL) return(script_null_to_value(cx));
+	
+	obj_idx=weap->obj_idx;
+	if (obj_idx==-1) return(script_null_to_value(cx));
+	
+	obj=server.obj_list.objs[obj_idx];
+	script=js.script_list.scripts[obj->attach.script_idx];
+		
+	return((JSValueRef)script->obj);
 }
 
 
