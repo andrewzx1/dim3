@@ -170,11 +170,10 @@ bool js_proj_setting_set_resetAngle(JSContextRef cx,JSObjectRef j_obj,JSStringRe
 
 /* =======================================================
 
-      Projectile Changes
+      Projectile Functions
       
 ======================================================= */
 
-// supergumba -- all these need to be fixed
 JSValueRef js_proj_setting_get_weapon_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int					obj_idx,weap_idx;
@@ -193,10 +192,6 @@ JSValueRef js_proj_setting_get_weapon_func(JSContextRef cx,JSObjectRef func,JSOb
 	
 	weap=server.obj_list.objs[obj_idx]->weap_list.weaps[weap_idx];
 	script=js.script_list.scripts[weap->attach.script_idx];
-	
-	script=(script_type*)JSObjectGetPrivate(j_obj);
-	if (script==NULL) fprintf(stdout,"SCRIPT = NULL\n");
-	if (script!=NULL) fprintf(stdout,"script_idx=%d\n",script->idx);
 		
 	return((JSValueRef)script->obj);
 }

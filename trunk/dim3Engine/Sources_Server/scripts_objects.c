@@ -692,23 +692,6 @@ JSObjectRef script_create_main_object(JSContextRef cx,attach_type *attach,int sc
 			script_add_proj_mark_object(cx,j_obj,attach);
 			script_add_proj_melee_object(cx,j_obj,attach);
 			script_create_main_object_add_model_object(cx,j_obj,attach);
-			
-		case thing_type_projectile_setup:
-			script_add_proj_setting_object(cx,j_obj,attach);
-			script_add_event_object(cx,j_obj,attach);
-			script_add_proj_position_object(cx,j_obj,attach);
-			script_add_proj_origin_object(cx,j_obj,attach);
-			script_add_proj_motion_vector_object(cx,j_obj,attach);
-			script_add_proj_motion_angle_object(cx,j_obj,attach);
-			script_add_proj_speed_object(cx,j_obj,attach);
-			script_add_proj_hit_object(cx,j_obj,attach);
-			script_add_proj_action_object(cx,j_obj,attach);
-			script_add_proj_push_object(cx,j_obj,attach);
-			script_add_proj_size_object(cx,j_obj,attach);
-			script_add_proj_mark_object(cx,j_obj,attach);
-			script_add_proj_melee_object(cx,j_obj,attach);
-			script_create_main_object_add_model_object(cx,j_obj,attach);
-			break;
 
 	}
 	
