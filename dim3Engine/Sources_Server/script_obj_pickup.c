@@ -90,9 +90,9 @@ void script_free_obj_pickup_object(void)
 	script_free_class(obj_pickup_class);
 }
 
-JSObjectRef script_add_obj_pickup_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_obj_pickup_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
 {
-	return(script_create_child_object(cx,parent_obj,obj_pickup_class,"pickup"));
+	return(script_create_child_object(cx,parent_obj,obj_pickup_class,"pickup",attach));
 }
 
 /* =======================================================
@@ -105,7 +105,7 @@ JSValueRef js_obj_pickup_get_objectId(JSContextRef cx,JSObjectRef j_obj,JSString
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_int_to_value(cx,obj->pickup.obj_idx));
 }
 
@@ -113,7 +113,7 @@ JSValueRef js_obj_pickup_get_objectName(JSContextRef cx,JSObjectRef j_obj,JSStri
 {
 	obj_type		*obj,*pickup_obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 
 	pickup_obj=server.obj_list.objs[obj->pickup.obj_idx];
 	if (pickup_obj==NULL) return(script_null_to_value(cx));
@@ -125,7 +125,7 @@ JSValueRef js_obj_pickup_get_objectIsPlayer(JSContextRef cx,JSObjectRef j_obj,JS
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_bool_to_value(cx,obj->pickup.obj_idx==server.player_obj_idx));
 }
 
@@ -133,7 +133,7 @@ JSValueRef js_obj_pickup_get_itemId(JSContextRef cx,JSObjectRef j_obj,JSStringRe
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_int_to_value(cx,obj->pickup.item_idx));
 }
 
@@ -141,7 +141,7 @@ JSValueRef js_obj_pickup_get_itemName(JSContextRef cx,JSObjectRef j_obj,JSString
 {
 	obj_type		*obj,*pickup_item;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 
 	pickup_item=server.obj_list.objs[obj->pickup.item_idx];
 	if (pickup_item==NULL) return(script_null_to_value(cx));
@@ -298,7 +298,7 @@ JSValueRef js_obj_pickup_cancel_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 	
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	obj->pickup.canceled=TRUE;
 	
 	return(script_null_to_value(cx));

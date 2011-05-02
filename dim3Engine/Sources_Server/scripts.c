@@ -157,7 +157,6 @@ bool scripts_execute(attach_type *attach,script_type *script,char *err_str)
 {
 	JSStringRef		j_script_data,j_script_name;
 	JSValueRef		rval,exception;
-	attach_type		old_attach;
 	
 		// make sure UTF8 conversion didn't go crazy
 		// on some hidden characters
@@ -168,12 +167,6 @@ bool scripts_execute(attach_type *attach,script_type *script,char *err_str)
 		sprintf(err_str,"[%s] contains extraneous control characters",script->name);
 		return(FALSE);
 	}
-
-		// attach proper attach
-		
-	memmove(&old_attach,&js.attach,sizeof(attach_type));
-
-	memmove(&js.attach,attach,sizeof(attach_type));
 	
 		// evaulate script
 		
@@ -183,10 +176,6 @@ bool scripts_execute(attach_type *attach,script_type *script,char *err_str)
 
 	JSStringRelease(j_script_name);
 	JSStringRelease(j_script_data);
-	
-		// restore attach
-		
-	memmove(&js.attach,&old_attach,sizeof(attach_type));
 
 		// check for errors
 		
@@ -279,7 +268,7 @@ bool scripts_add(attach_type *attach,char *sub_dir,char *name,char *err_str)
 	
 		// create the global object
 
-	if (!script_add_global_object(script,err_str)) {
+	if (!script_add_global_object(script,attach,err_str)) {
 		script_free_file(script);
 		free(js.script_list.scripts[idx]);
 		js.script_list.scripts[idx]=NULL;

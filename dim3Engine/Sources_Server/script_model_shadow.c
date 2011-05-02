@@ -58,9 +58,9 @@ void script_free_model_shadow_object(void)
 	script_free_class(model_shadow_class);
 }
 
-JSObjectRef script_add_model_shadow_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_model_shadow_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
 {
-	return(script_create_child_object(cx,parent_obj,model_shadow_class,"shadow"));
+	return(script_create_child_object(cx,parent_obj,model_shadow_class,"shadow",attach));
 }
 
 /* =======================================================

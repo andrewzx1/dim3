@@ -91,7 +91,6 @@ bool gl_initialize(int screen_wid,int screen_high,bool lock_fps_refresh,int fsaa
     GLint				ntxtunit,ntxtsize;
 #ifdef D3_OS_MAC
     long				swapint;
-	CGLContextObj		current_ctx;
 	CFDictionaryRef		mode_info;
 	CFNumberRef			cf_rate;
 #else
@@ -190,6 +189,12 @@ bool gl_initialize(int screen_wid,int screen_high,bool lock_fps_refresh,int fsaa
 	render_info.texture_max_size=(int)ntxtsize;
 	
 	gl_check_initialize();
+	
+		// on OS X use threaded OpenGL
+		
+#ifdef D3_OS_MAC
+	CGLEnable(CGLGetCurrentContext(),kCGLCEMPEngine);
+#endif
 
 		// in case screen is bigger than window
 		
@@ -244,7 +249,7 @@ bool gl_initialize(int screen_wid,int screen_high,bool lock_fps_refresh,int fsaa
 	#ifdef D3_OS_MAC
 		if (lock_fps_refresh) {
 			swapint=1;
-			CGLSetParameter(current_ctx,kCGLCPSwapInterval,(void*)&swapint);
+			CGLSetParameter(CGLGetCurrentContext(),kCGLCPSwapInterval,(void*)&swapint);
 		}
 	#endif
 #endif

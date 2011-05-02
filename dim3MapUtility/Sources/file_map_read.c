@@ -71,8 +71,9 @@ void decode_map_settings_xml(map_type *map,int map_head)
         map->settings.gravity_max_power=xml_get_attribute_float_default(tag,"gravity_max_power",32);
 		map->settings.gravity_max_speed=xml_get_attribute_float_default(tag,"gravity_max_speed",400);
 		map->settings.resistance=xml_get_attribute_float_default(tag,"resistance",1);
+		
+		// supergumba -- old location -- delete later
 		map->optimize.never_cull=xml_get_attribute_boolean(tag,"never_cull");
-		map->optimize.cull_angle=xml_get_attribute_float_default(tag,"cull_angle",0.0f);
 		map->optimize.no_shaders=xml_get_attribute_boolean(tag,"no_shaders");
 		
         xml_get_attribute_text(tag,"network_game_list",map->settings.network_game_list,256);
@@ -84,8 +85,32 @@ void decode_map_settings_xml(map_type *map,int map_head)
         map->light_map.blur_count=xml_get_attribute_int_default(tag,"light_map_blur_count",3);
 		map->light_map.use_normals=xml_get_attribute_boolean(tag,"light_map_use_normals");
         map->light_map.diffuse_boost=xml_get_attribute_float_default(tag,"light_map_diffuse_boost",0.0f);
-
 		if (map->light_map.quality>4) map->light_map.quality=2;		// reset from older map formats
+		// supergumba -- finished
+	}
+	
+    tag=xml_findfirstchild("Optimize",map_head);
+    if (tag!=-1) {
+		map->optimize.never_cull=xml_get_attribute_boolean(tag,"never_cull");
+		map->optimize.cull_angle=xml_get_attribute_float_default(tag,"cull_angle",0.0f);
+		map->optimize.no_shaders=xml_get_attribute_boolean(tag,"no_shaders");
+		map->optimize.shadow_obscure_distance=xml_get_attribute_int_default(tag,"shadow_obscure_distance",100000);
+	}
+	
+    tag=xml_findfirstchild("Network",map_head);
+    if (tag!=-1) {
+        xml_get_attribute_text(tag,"game_list",map->settings.network_game_list,256);
+		xml_get_attribute_text(tag,"params",map->settings.params,param_str_len);
+	}
+	
+    tag=xml_findfirstchild("LightMap",map_head);
+    if (tag!=-1) {
+        map->light_map.quality=xml_get_attribute_int_default(tag,"quality",2);
+        map->light_map.size=xml_get_attribute_int_default(tag,"size",1024);
+        map->light_map.pixel_border_count=xml_get_attribute_int_default(tag,"pixel_border_count",6);
+        map->light_map.blur_count=xml_get_attribute_int_default(tag,"blur_count",3);
+		map->light_map.use_normals=xml_get_attribute_boolean(tag,"use_normals");
+        map->light_map.diffuse_boost=xml_get_attribute_float_default(tag,"diffuse_boost",0.0f);
 	}
 	
     tag=xml_findfirstchild("Editor",map_head);
@@ -498,9 +523,9 @@ bool map_check_game_type(char *game_type,char *map_name,char *info_name)
 		
 	game_list[0]=0x0;
 
-    tag=xml_findfirstchild("Settings",map_head);
+    tag=xml_findfirstchild("Network",map_head);
     if (tag!=-1) {
-        xml_get_attribute_text(tag,"network_game_list",game_list,256);
+        xml_get_attribute_text(tag,"game_list",game_list,256);
 	}
 
 	xml_close_file();

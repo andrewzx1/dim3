@@ -65,9 +65,9 @@ void script_free_obj_touch_object(void)
 	script_free_class(obj_touch_class);
 }
 
-JSObjectRef script_add_obj_touch_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_obj_touch_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
 {
-	return(script_create_child_object(cx,parent_obj,obj_touch_class,"touch"));
+	return(script_create_child_object(cx,parent_obj,obj_touch_class,"touch",attach));
 }
 
 /* =======================================================
@@ -80,7 +80,7 @@ JSValueRef js_obj_touch_get_objectId(JSContextRef cx,JSObjectRef j_obj,JSStringR
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_int_to_value(cx,obj->touch.obj_idx));
 }
 
@@ -88,7 +88,7 @@ JSValueRef js_obj_touch_get_objectName(JSContextRef cx,JSObjectRef j_obj,JSStrin
 {
 	obj_type		*obj,*touch_obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	if (obj->touch.obj_idx==-1) return(script_null_to_value(cx));
 	
 	touch_obj=server.obj_list.objs[obj->touch.obj_idx];
@@ -99,7 +99,7 @@ JSValueRef js_obj_touch_get_objectIsPlayer(JSContextRef cx,JSObjectRef j_obj,JSS
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	if (obj->touch.obj_idx==-1) return(script_bool_to_value(cx,FALSE));
 
 	return(script_bool_to_value(cx,obj->touch.obj_idx==server.player_obj_idx));
@@ -109,7 +109,7 @@ JSValueRef js_obj_touch_get_stand(JSContextRef cx,JSObjectRef j_obj,JSStringRef 
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	if (obj->touch.obj_idx==-1) return(script_bool_to_value(cx,FALSE));
 
 	return(script_bool_to_value(cx,obj->touch.stand));

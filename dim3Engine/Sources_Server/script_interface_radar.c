@@ -73,9 +73,9 @@ void script_free_interface_radar_object(void)
 	script_free_class(interface_radar_class);
 }
 
-JSObjectRef script_add_interface_radar_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_interface_radar_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
 {
-	return(script_create_child_object(cx,parent_obj,interface_radar_class,"radar"));
+	return(script_create_child_object(cx,parent_obj,interface_radar_class,"radar",attach));
 }
 
 /* =======================================================

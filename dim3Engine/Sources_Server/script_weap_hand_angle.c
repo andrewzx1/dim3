@@ -66,9 +66,9 @@ void script_free_weap_hand_angle_object(void)
 	script_free_class(weap_hand_angle_class);
 }
 
-JSObjectRef script_add_weap_hand_angle_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_weap_hand_angle_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
 {
-	return(script_create_child_object(cx,parent_obj,weap_hand_angle_class,"handAngle"));
+	return(script_create_child_object(cx,parent_obj,weap_hand_angle_class,"handAngle",attach));
 }
 
 /* =======================================================
@@ -81,7 +81,7 @@ JSValueRef js_weap_hand_angle_get_x(JSContextRef cx,JSObjectRef j_obj,JSStringRe
 {
 	weapon_type		*weap;
 
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	return(script_float_to_value(cx,weap->hand.ang.x));
 }
 
@@ -89,7 +89,7 @@ JSValueRef js_weap_hand_angle_get_y(JSContextRef cx,JSObjectRef j_obj,JSStringRe
 {
 	weapon_type		*weap;
 
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	return(script_float_to_value(cx,weap->hand.ang.y));
 }
 
@@ -97,7 +97,7 @@ JSValueRef js_weap_hand_angle_get_z(JSContextRef cx,JSObjectRef j_obj,JSStringRe
 {
 	weapon_type		*weap;
 
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	return(script_float_to_value(cx,weap->hand.ang.z));
 }
 
@@ -111,7 +111,7 @@ bool js_weap_hand_angle_set_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef name
 {
 	weapon_type		*weap;
 	
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	weap->hand.ang.x=script_value_to_float(cx,vp);
 
 	return(TRUE);
@@ -121,7 +121,7 @@ bool js_weap_hand_angle_set_y(JSContextRef cx,JSObjectRef j_obj,JSStringRef name
 {
 	weapon_type		*weap;
 	
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	weap->hand.ang.y=script_value_to_float(cx,vp);
 
 	return(TRUE);
@@ -131,7 +131,7 @@ bool js_weap_hand_angle_set_z(JSContextRef cx,JSObjectRef j_obj,JSStringRef name
 {
 	weapon_type		*weap;
 	
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	weap->hand.ang.z=script_value_to_float(cx,vp);
 
 	return(TRUE);

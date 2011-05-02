@@ -74,9 +74,9 @@ void script_free_obj_vehicle_object(void)
 	script_free_class(obj_vehicle_class);
 }
 
-JSObjectRef script_add_obj_vehicle_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_obj_vehicle_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
 {
-	return(script_create_child_object(cx,parent_obj,obj_vehicle_class,"vehicle"));
+	return(script_create_child_object(cx,parent_obj,obj_vehicle_class,"vehicle",attach));
 }
 
 /* =======================================================
@@ -89,7 +89,7 @@ JSValueRef js_obj_vehicle_get_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_bool_to_value(cx,obj->vehicle.on));
 }
 
@@ -97,7 +97,7 @@ JSValueRef js_obj_vehicle_get_hasOccupant(JSContextRef cx,JSObjectRef j_obj,JSSt
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_bool_to_value(cx,obj->vehicle.attach_obj_idx!=-1));
 }
 
@@ -111,7 +111,7 @@ bool js_obj_vehicle_set_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JS
 {
 	obj_type		*obj;
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	obj->vehicle.on=script_value_to_bool(cx,vp);
 
 	return(TRUE);
@@ -130,7 +130,7 @@ JSValueRef js_obj_vehicle_enter_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 	
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 
 	if (!object_enter_vehicle(obj,-1,err_str)) {
 		*exception=script_create_exception(cx,err_str);
@@ -146,7 +146,7 @@ JSValueRef js_obj_vehicle_enter_by_id_func(JSContextRef cx,JSObjectRef func,JSOb
 	
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 
 	vehicle_obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
 	if (vehicle_obj==NULL) return(script_null_to_value(cx));
@@ -165,7 +165,7 @@ JSValueRef js_obj_vehicle_exit_func(JSContextRef cx,JSObjectRef func,JSObjectRef
 	
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 
 	if (!object_exit_vehicle(obj,FALSE,err_str)) {
 		*exception=script_create_exception(cx,err_str);

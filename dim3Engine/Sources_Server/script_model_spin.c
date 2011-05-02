@@ -65,9 +65,9 @@ void script_free_model_spin_object(void)
 	script_free_class(model_spin_class);
 }
 
-JSObjectRef script_add_model_spin_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_model_spin_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
 {
-	return(script_create_child_object(cx,parent_obj,model_spin_class,"spin"));
+	return(script_create_child_object(cx,parent_obj,model_spin_class,"spin",attach));
 }
 
 /* =======================================================

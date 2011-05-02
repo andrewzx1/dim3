@@ -67,9 +67,9 @@ void script_free_obj_lock_object(void)
 	script_free_class(obj_lock_class);
 }
 
-JSObjectRef script_add_obj_lock_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_obj_lock_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
 {
-	return(script_create_child_object(cx,parent_obj,obj_lock_class,"lock"));
+	return(script_create_child_object(cx,parent_obj,obj_lock_class,"lock",attach));
 }
 
 /* =======================================================
@@ -82,7 +82,7 @@ JSValueRef js_obj_lock_get_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_bool_to_value(cx,obj->lock.x));
 }
 
@@ -90,7 +90,7 @@ JSValueRef js_obj_lock_get_y(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_bool_to_value(cx,obj->lock.y));
 }
 
@@ -98,7 +98,7 @@ JSValueRef js_obj_lock_get_z(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_bool_to_value(cx,obj->lock.z));
 }
 
@@ -112,7 +112,7 @@ bool js_obj_lock_set_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValu
 {
 	obj_type		*obj;
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	obj->lock.x=script_value_to_bool(cx,vp);
 	
 	return(TRUE);
@@ -122,7 +122,7 @@ bool js_obj_lock_set_y(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValu
 {
 	obj_type		*obj;
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	obj->lock.y=script_value_to_bool(cx,vp);
 	
 	return(TRUE);
@@ -132,7 +132,7 @@ bool js_obj_lock_set_z(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValu
 {
 	obj_type		*obj;
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	obj->lock.z=script_value_to_bool(cx,vp);
 	
 	return(TRUE);

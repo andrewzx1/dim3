@@ -73,9 +73,9 @@ void script_free_weap_target_object(void)
 	script_free_class(weap_target_class);
 }
 
-JSObjectRef script_add_weap_target_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_weap_target_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
 {
-	return(script_create_child_object(cx,parent_obj,weap_target_class,"target"));
+	return(script_create_child_object(cx,parent_obj,weap_target_class,"target",attach));
 }
 
 /* =======================================================
@@ -88,7 +88,7 @@ JSValueRef js_weap_target_get_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
 {
 	weapon_type		*weap;
 
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	return(script_bool_to_value(cx,weap->target.on));
 }
 
@@ -96,7 +96,7 @@ JSValueRef js_weap_target_get_distance(JSContextRef cx,JSObjectRef j_obj,JSStrin
 {
 	weapon_type		*weap;
 
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	return(script_int_to_value(cx,weap->target.distance));
 }
 
@@ -104,7 +104,7 @@ JSValueRef js_weap_target_get_objectId(JSContextRef cx,JSObjectRef j_obj,JSStrin
 {
 	weapon_type		*weap;
 
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	return(script_int_to_value(cx,weap->target.obj_idx));
 }
 
@@ -118,7 +118,7 @@ bool js_weap_target_set_distance(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
 {
 	weapon_type		*weap;
 	
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	weap->target.distance=script_value_to_int(cx,vp);
 
 	return(TRUE);
@@ -137,8 +137,8 @@ JSValueRef js_weap_target_start_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 	
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
-	obj=object_script_lookup();
-	weap=weapon_script_lookup();
+	obj=object_get_attach(j_obj);
+	weap=weapon_get_attach(j_obj);
 
 	return(script_bool_to_value(cx,weapon_target_start(obj,weap,FALSE)));
 }
@@ -150,8 +150,8 @@ JSValueRef js_weap_target_start_opponent_func(JSContextRef cx,JSObjectRef func,J
 	
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
-	obj=object_script_lookup();
-	weap=weapon_script_lookup();
+	obj=object_get_attach(j_obj);
+	weap=weapon_get_attach(j_obj);
 	
 	return(script_bool_to_value(cx,weapon_target_start(obj,weap,TRUE)));
 }
@@ -163,8 +163,8 @@ JSValueRef js_weap_target_end_func(JSContextRef cx,JSObjectRef func,JSObjectRef 
 	
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
-	obj=object_script_lookup();
-	weap=weapon_script_lookup();
+	obj=object_get_attach(j_obj);
+	weap=weapon_get_attach(j_obj);
 	
 	return(script_bool_to_value(cx,weapon_target_end(obj,weap)));
 }

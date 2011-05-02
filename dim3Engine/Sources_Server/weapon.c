@@ -62,12 +62,15 @@ int weapon_count_projectile_setups(weapon_type *weap)
       
 ======================================================= */
 
-inline weapon_type* weapon_script_lookup(void)
+inline weapon_type* weapon_get_attach(JSObjectRef j_obj)
 {
 	obj_type		*obj;
+	attach_type		*attach;
+	
+	attach=(attach_type*)JSObjectGetPrivate(j_obj);
 
-	obj=server.obj_list.objs[js.attach.obj_idx];
-	return(obj->weap_list.weaps[js.attach.weap_idx]);
+	obj=server.obj_list.objs[attach->obj_idx];
+	return(obj->weap_list.weaps[attach->weap_idx]);
 }
 
 weapon_type* weapon_find_name(obj_type *obj,char *name)

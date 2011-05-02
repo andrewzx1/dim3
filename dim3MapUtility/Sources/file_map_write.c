@@ -148,19 +148,27 @@ void write_map_settings_xml(map_type *map)
 	xml_add_attribute_float("gravity_max_power",map->settings.gravity_max_power);
 	xml_add_attribute_float("gravity_max_speed",map->settings.gravity_max_speed);
     xml_add_attribute_float("resistance",map->settings.resistance);
+	xml_add_tagend(TRUE);
+
+    xml_add_tagstart("Optimize");
     xml_add_attribute_boolean("never_cull",map->optimize.never_cull);
     xml_add_attribute_float("cull_angle",map->optimize.cull_angle);
     xml_add_attribute_boolean("no_shaders",map->optimize.no_shaders);
-
-	xml_add_attribute_text("network_game_list",map->settings.network_game_list);
+    xml_add_attribute_int("shadow_obscure_distance",map->optimize.shadow_obscure_distance);
+	xml_add_tagend(TRUE);
+	
+    xml_add_tagstart("Network");
+	xml_add_attribute_text("game_list",map->settings.network_game_list);
 	xml_add_attribute_text("params",map->settings.params);
+	xml_add_tagend(TRUE);
 
-    xml_add_attribute_int("light_map_quality",map->light_map.quality);
-    xml_add_attribute_int("light_map_size",map->light_map.size);
-    xml_add_attribute_int("light_map_pixel_border_count",map->light_map.pixel_border_count);
-    xml_add_attribute_int("light_map_blur_count",map->light_map.blur_count);
-	xml_add_attribute_boolean("light_map_use_normals",map->light_map.use_normals);
-	xml_add_attribute_float("light_map_diffuse_boost",map->light_map.diffuse_boost);
+    xml_add_tagstart("LightMap");
+    xml_add_attribute_int("quality",map->light_map.quality);
+    xml_add_attribute_int("size",map->light_map.size);
+    xml_add_attribute_int("pixel_border_count",map->light_map.pixel_border_count);
+    xml_add_attribute_int("blur_count",map->light_map.blur_count);
+	xml_add_attribute_boolean("use_normals",map->light_map.use_normals);
+	xml_add_attribute_float("diffuse_boost",map->light_map.diffuse_boost);
 	xml_add_tagend(TRUE);
 
     xml_add_tagstart("Editor");

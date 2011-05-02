@@ -63,9 +63,9 @@ void script_free_proj_motion_vector_object(void)
 	script_free_class(proj_motion_vector_class);
 }
 
-JSObjectRef script_add_proj_motion_vector_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_proj_motion_vector_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
 {
-	return(script_create_child_object(cx,parent_obj,proj_motion_vector_class,"motionVector"));
+	return(script_create_child_object(cx,parent_obj,proj_motion_vector_class,"motionVector",attach));
 }
 
 /* =======================================================
@@ -78,7 +78,7 @@ JSValueRef js_proj_motion_vector_get_x(JSContextRef cx,JSObjectRef j_obj,JSStrin
 {
 	proj_type			*proj;
 
-	proj=proj_get_attach();
+	proj=proj_get_attach(j_obj);
 	if (proj==NULL) return(script_null_to_value(cx));
 
 	return(script_float_to_value(cx,proj->motion.vct.x));
@@ -88,7 +88,7 @@ JSValueRef js_proj_motion_vector_get_y(JSContextRef cx,JSObjectRef j_obj,JSStrin
 {
 	proj_type			*proj;
 
-	proj=proj_get_attach();
+	proj=proj_get_attach(j_obj);
 	if (proj==NULL) return(script_null_to_value(cx));
 
 	return(script_float_to_value(cx,proj->motion.vct.y));
@@ -98,7 +98,7 @@ JSValueRef js_proj_motion_vector_get_z(JSContextRef cx,JSObjectRef j_obj,JSStrin
 {
 	proj_type			*proj;
 
-	proj=proj_get_attach();
+	proj=proj_get_attach(j_obj);
 	if (proj==NULL) return(script_null_to_value(cx));
 
 	return(script_float_to_value(cx,proj->motion.vct.z));

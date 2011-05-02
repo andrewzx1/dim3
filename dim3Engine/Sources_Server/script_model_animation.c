@@ -83,9 +83,9 @@ void script_free_model_animation_object(void)
 	script_free_class(model_animation_class);
 }
 
-JSObjectRef script_add_model_animation_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_model_animation_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
 {
-	return(script_create_child_object(cx,parent_obj,model_animation_class,"animation"));
+	return(script_create_child_object(cx,parent_obj,model_animation_class,"animation",attach));
 }
 
 /* =======================================================

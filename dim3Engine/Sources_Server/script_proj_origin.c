@@ -63,9 +63,9 @@ void script_free_proj_origin_object(void)
 	script_free_class(proj_origin_class);
 }
 
-JSObjectRef script_add_proj_origin_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_proj_origin_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
 {
-	return(script_create_child_object(cx,parent_obj,proj_origin_class,"origin"));
+	return(script_create_child_object(cx,parent_obj,proj_origin_class,"origin",attach));
 }
 
 /* =======================================================
@@ -78,7 +78,7 @@ JSValueRef js_proj_origin_get_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef na
 {
 	proj_type			*proj;
 
-	proj=proj_get_attach();
+	proj=proj_get_attach(j_obj);
 	if (proj==NULL) return(script_null_to_value(cx));
 
 	return(script_int_to_value(cx,proj->org_pnt.x));
@@ -88,7 +88,7 @@ JSValueRef js_proj_origin_get_y(JSContextRef cx,JSObjectRef j_obj,JSStringRef na
 {
 	proj_type			*proj;
 
-	proj=proj_get_attach();
+	proj=proj_get_attach(j_obj);
 	if (proj==NULL) return(script_null_to_value(cx));
 
 	return(script_int_to_value(cx,proj->org_pnt.y));
@@ -98,7 +98,7 @@ JSValueRef js_proj_origin_get_z(JSContextRef cx,JSObjectRef j_obj,JSStringRef na
 {
 	proj_type			*proj;
 
-	proj=proj_get_attach();
+	proj=proj_get_attach(j_obj);
 	if (proj==NULL) return(script_null_to_value(cx));
 
 	return(script_int_to_value(cx,proj->org_pnt.z));

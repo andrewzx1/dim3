@@ -69,9 +69,9 @@ void script_free_proj_mark_object(void)
 	script_free_class(proj_mark_class);
 }
 
-JSObjectRef script_add_proj_mark_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_proj_mark_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
 {
-	return(script_create_child_object(cx,parent_obj,proj_mark_class,"mark"));
+	return(script_create_child_object(cx,parent_obj,proj_mark_class,"mark",attach));
 }
 
 /* =======================================================
@@ -84,7 +84,7 @@ JSValueRef js_proj_mark_get_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef nam
 {
 	proj_setup_type		*proj_setup;
 
-	proj_setup=proj_setup_get_attach();
+	proj_setup=proj_setup_get_attach(j_obj);
 	if (proj_setup==NULL) return(script_null_to_value(cx));
 	
 	return(script_bool_to_value(cx,proj_setup->mark.on));
@@ -94,7 +94,7 @@ JSValueRef js_proj_mark_get_name(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
 {
 	proj_setup_type		*proj_setup;
 
-	proj_setup=proj_setup_get_attach();
+	proj_setup=proj_setup_get_attach(j_obj);
 	if (proj_setup==NULL) return(script_null_to_value(cx));
 	
 	return(script_string_to_value(cx,proj_setup->mark.name));
@@ -104,7 +104,7 @@ JSValueRef js_proj_mark_get_size(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
 {
 	proj_setup_type		*proj_setup;
 
-	proj_setup=proj_setup_get_attach();
+	proj_setup=proj_setup_get_attach(j_obj);
 	if (proj_setup==NULL) return(script_null_to_value(cx));
 	
 	return(script_int_to_value(cx,proj_setup->mark.size));
@@ -114,7 +114,7 @@ JSValueRef js_proj_mark_get_alpha(JSContextRef cx,JSObjectRef j_obj,JSStringRef 
 {
 	proj_setup_type		*proj_setup;
 
-	proj_setup=proj_setup_get_attach();
+	proj_setup=proj_setup_get_attach(j_obj);
 	if (proj_setup==NULL) return(script_null_to_value(cx));
 	
     return(script_float_to_value(cx,proj_setup->mark.alpha));
@@ -130,7 +130,7 @@ bool js_proj_mark_set_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSVa
 {
 	proj_setup_type		*proj_setup;
 	
-	proj_setup=proj_setup_get_attach();
+	proj_setup=proj_setup_get_attach(j_obj);
 	if (proj_setup!=NULL) proj_setup->mark.on=script_value_to_bool(cx,vp);
 
 	return(TRUE);
@@ -140,7 +140,7 @@ bool js_proj_mark_set_name(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JS
 {
 	proj_setup_type		*proj_setup;
 
-	proj_setup=proj_setup_get_attach();
+	proj_setup=proj_setup_get_attach(j_obj);
 	if (proj_setup!=NULL) {
 		script_value_to_string(cx,vp,proj_setup->mark.name,name_str_len);
 		proj_setup_attach_mark(proj_setup);
@@ -153,7 +153,7 @@ bool js_proj_mark_set_size(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JS
 {
 	proj_setup_type		*proj_setup;
 	
-	proj_setup=proj_setup_get_attach();
+	proj_setup=proj_setup_get_attach(j_obj);
 	if (proj_setup!=NULL) proj_setup->mark.size=script_value_to_int(cx,vp);
 
 	return(TRUE);
@@ -163,7 +163,7 @@ bool js_proj_mark_set_alpha(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,J
 {
 	proj_setup_type		*proj_setup;
 	
-	proj_setup=proj_setup_get_attach();
+	proj_setup=proj_setup_get_attach(j_obj);
 	if (proj_setup!=NULL) proj_setup->mark.alpha=script_value_to_float(cx,vp);
 
 	return(TRUE);

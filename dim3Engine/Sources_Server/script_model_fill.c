@@ -59,9 +59,9 @@ void script_free_model_fill_object(void)
 	script_free_class(model_fill_class);
 }
 
-JSObjectRef script_add_model_fill_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_model_fill_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
 {
-	return(script_create_child_object(cx,parent_obj,model_fill_class,"fill"));
+	return(script_create_child_object(cx,parent_obj,model_fill_class,"fill",attach));
 }
 
 /* =======================================================

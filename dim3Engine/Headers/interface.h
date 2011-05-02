@@ -348,6 +348,16 @@ extern void decal_add(int obj_idx,d3pnt *pnt,poly_pointer_type *poly_ptr,int mar
 extern void decal_dispose(void);
 
 //
+// movements
+//
+
+extern void map_movements_script_start(int obj_idx,int movement_idx,bool reverse);
+extern void map_movements_script_start_or_thaw(int obj_idx,int movement_idx);
+extern void map_movements_script_freeze(int movement_idx);
+extern void map_movements_script_thaw(int movement_idx);
+extern bool map_movements_script_is_looping(int movement_idx);
+
+//
 // gui screens
 //
 

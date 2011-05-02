@@ -80,9 +80,9 @@ void script_free_global_spawn_object(void)
 	script_free_class(spawn_class);
 }
 
-JSObjectRef script_add_global_spawn_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_global_spawn_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
 {
-	return(script_create_child_object(cx,parent_obj,spawn_class,"spawn"));
+	return(script_create_child_object(cx,parent_obj,spawn_class,"spawn",attach));
 }
 
 /* =======================================================
@@ -132,7 +132,7 @@ JSValueRef js_spawn_particle_func(JSContextRef cx,JSObjectRef func,JSObjectRef j
 		*exception=js_particle_name_exception(cx,name);
 	}
 	else {
-		script_bool_to_value(cx,particle_spawn(idx,script_get_attached_object_uid(),&pt,NULL,NULL));
+		script_bool_to_value(cx,particle_spawn(idx,script_get_attached_object_uid(j_obj),&pt,NULL,NULL));
 	}
 
 	return(script_null_to_value(cx));
@@ -163,7 +163,7 @@ JSValueRef js_spawn_particle_moving_func(JSContextRef cx,JSObjectRef func,JSObje
 		*exception=js_particle_name_exception(cx,name);
 	}
 	else {
-		script_bool_to_value(cx,particle_spawn(idx,script_get_attached_object_uid(),&pt,NULL,&motion));
+		script_bool_to_value(cx,particle_spawn(idx,script_get_attached_object_uid(j_obj),&pt,NULL,&motion));
 	}
 
 	return(script_null_to_value(cx));
@@ -194,7 +194,7 @@ JSValueRef js_spawn_particle_line_func(JSContextRef cx,JSObjectRef func,JSObject
 		*exception=js_particle_name_exception(cx,name);
 	}
 	else {
-		script_bool_to_value(cx,particle_line_spawn(idx,script_get_attached_object_uid(),&start_pt,&end_pt,count));
+		script_bool_to_value(cx,particle_line_spawn(idx,script_get_attached_object_uid(j_obj),&start_pt,&end_pt,count));
 	}
 
 	return(script_null_to_value(cx));
@@ -225,7 +225,7 @@ JSValueRef js_spawn_ring_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj
 		*exception=js_ring_name_exception(cx,name);
 	}
 	else {
-		script_bool_to_value(cx,ring_spawn(idx,script_get_attached_object_uid(),&pt,NULL));
+		script_bool_to_value(cx,ring_spawn(idx,script_get_attached_object_uid(j_obj),&pt,NULL));
 	}
 
 	return(script_null_to_value(cx));
@@ -256,7 +256,7 @@ JSValueRef js_spawn_ring_line_func(JSContextRef cx,JSObjectRef func,JSObjectRef 
 		*exception=js_ring_name_exception(cx,name);
 	}
 	else {
-		script_bool_to_value(cx,ring_line_spawn(idx,script_get_attached_object_uid(),&start_pt,&end_pt,count));
+		script_bool_to_value(cx,ring_line_spawn(idx,script_get_attached_object_uid(j_obj),&start_pt,&end_pt,count));
 	}
 
 	return(script_null_to_value(cx));
@@ -390,7 +390,7 @@ JSValueRef js_spawn_ray_team_color_func(JSContextRef cx,JSObjectRef func,JSObjec
 
 	col.r=col.g=col.b=1.0f;
 
-	obj_idx=script_get_attached_object_uid();
+	obj_idx=script_get_attached_object_uid(j_obj);
 	if (obj_idx!=-1) {
 		obj=server.obj_list.objs[obj_idx];
 		if (obj!=NULL) object_get_tint(obj,&col);

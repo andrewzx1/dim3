@@ -228,6 +228,26 @@ bool view_clip_poly(editor_view_type *view,map_mesh_type *mesh,map_mesh_poly_typ
 	return(dist<(setup.clip_distance*view_snap_clip_size_factor));
 }
 
+bool view_clip_point(editor_view_type *view,d3pnt *pnt)
+{
+	int			dist;
+
+	if (!view->clip) return(FALSE);
+	
+		// if top or bottom, only clip Y
+		
+	if ((view->ang.x<=270.0f) && (view->ang.x>=45.0f)) {
+		dist=abs(view->pnt.y-pnt->y);
+	}
+	else {
+		dist=distance_2D_get(view->pnt.x,view->pnt.z,pnt->x,pnt->z);
+	}
+	
+		// get distance
+		
+	return(dist<(setup.clip_distance*view_snap_clip_size_factor));
+}
+
 bool view_hidden_mesh(editor_view_type *view,int mesh_idx)
 {
 	int			n,wid,high;
@@ -801,7 +821,7 @@ void view_draw_meshes_normals(editor_view_type *view)
       
 ======================================================= */
 
-void view_draw_nodes(editor_view_type *view_setup)
+void view_draw_nodes(editor_view_type *view)
 {
 	int			n,k;
 	float		fx,fy,fz;
@@ -821,6 +841,8 @@ void view_draw_nodes(editor_view_type *view_setup)
 		
 	for (n=0;n!=map.nnode;n++) {
 		node=&map.nodes[n];
+		
+		if (view_clip_point(view,&node->pnt)) continue;
 	
 		fx=0.0f;
 		fy=0.0f;
@@ -843,6 +865,8 @@ void view_draw_nodes(editor_view_type *view_setup)
 		
 	for (n=0;n!=map.nnode;n++) {
 		node=&map.nodes[n];
+		
+		if (view_clip_point(view,&node->pnt)) continue;
 			
 		for (k=0;k!=max_node_link;k++) {
 		
@@ -864,6 +888,8 @@ void view_draw_nodes(editor_view_type *view_setup)
 	for (n=0;n!=map.nnode;n++) {
 		node=&map.nodes[n];
 		
+		if (view_clip_point(view,&node->pnt)) continue;
+		
 		if (node->name[0]==0x0) {
 			view_draw_sprite(&node->pnt,NULL,node_bitmap.gl_id);
 		}
@@ -873,7 +899,7 @@ void view_draw_nodes(editor_view_type *view_setup)
 	}
 }
 
-void view_draw_spots_scenery(editor_view_type *view_setup)
+void view_draw_spots_scenery(editor_view_type *view)
 {
 	int					n;
 	spot_type			*spot;
@@ -883,6 +909,8 @@ void view_draw_spots_scenery(editor_view_type *view_setup)
     
 	for (n=0;n!=map.nspot;n++) {
 		spot=&map.spots[n];
+		
+		if (view_clip_point(view,&spot->pnt)) continue;
 	
 		if (!view_model_draw(&spot->pnt,&spot->ang,spot->display_model,1.0f,NULL,0)) {
 			view_draw_sprite(&spot->pnt,&spot->ang,spot_bitmap.gl_id);
@@ -891,6 +919,8 @@ void view_draw_spots_scenery(editor_view_type *view_setup)
     
 	for (n=0;n!=map.nscenery;n++) {
 		scenery=&map.sceneries[n];
+		
+		if (view_clip_point(view,&scenery->pnt)) continue;
 	
 		if (!view_model_draw(&scenery->pnt,&scenery->ang,scenery->model_name,scenery->resize,scenery->texture_frame,max_map_scenery_model_texture_frame)) {
 			view_draw_sprite(&scenery->pnt,&scenery->ang,scenery_bitmap.gl_id);
@@ -898,22 +928,25 @@ void view_draw_spots_scenery(editor_view_type *view_setup)
 	}		
 }
 
-void view_draw_lights_sounds_particles(editor_view_type *view_setup)
+void view_draw_lights_sounds_particles(editor_view_type *view)
 {
 	int				n;
 	
 	if (!state.show_lightsoundparticle) return;
 	
 	for (n=0;n!=map.nlight;n++) {
+		if (view_clip_point(view,&map.lights[n].pnt)) continue;
 		view_draw_sprite(&map.lights[n].pnt,NULL,light_bitmap.gl_id);
 		if (select_check(light_piece,n,-1)) view_draw_circle(&map.lights[n].pnt,&map.lights[n].setting.col,map.lights[n].setting.intensity);
 	}
 	
 	for (n=0;n!=map.nsound;n++) {
+		if (view_clip_point(view,&map.sounds[n].pnt)) continue;
 		view_draw_sprite(&map.sounds[n].pnt,NULL,sound_bitmap.gl_id);
 	}
 	
 	for (n=0;n!=map.nparticle;n++) {
+		if (view_clip_point(view,&map.particles[n].pnt)) continue;
 		view_draw_sprite(&map.particles[n].pnt,NULL,particle_bitmap.gl_id);
 	}
 }

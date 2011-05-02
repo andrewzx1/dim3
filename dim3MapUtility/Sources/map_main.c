@@ -76,6 +76,7 @@ bool map_new(map_type *map,char *name)
 	map->optimize.never_cull=FALSE;
 	map->optimize.cull_angle=0.0f;
 	map->optimize.no_shaders=FALSE;
+	map->optimize.shadow_obscure_distance=100000;
 
 		// light maps
 

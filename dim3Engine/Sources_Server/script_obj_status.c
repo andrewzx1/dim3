@@ -88,9 +88,9 @@ void script_free_obj_status_object(void)
 	script_free_class(obj_status_class);
 }
 
-JSObjectRef script_add_obj_status_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_obj_status_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
 {
-	return(script_create_child_object(cx,parent_obj,obj_status_class,"status"));
+	return(script_create_child_object(cx,parent_obj,obj_status_class,"status",attach));
 }
 
 /* =======================================================
@@ -103,7 +103,7 @@ JSValueRef js_obj_status_get_speed(JSContextRef cx,JSObjectRef j_obj,JSStringRef
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_float_to_value(cx,obj->forward_move.speed));
 }
 
@@ -111,7 +111,7 @@ JSValueRef js_obj_status_get_moving(JSContextRef cx,JSObjectRef j_obj,JSStringRe
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_bool_to_value(cx,obj->forward_move.moving));
 }
 
@@ -119,7 +119,7 @@ JSValueRef js_obj_status_get_running(JSContextRef cx,JSObjectRef j_obj,JSStringR
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_bool_to_value(cx,obj->forward_move.running));
 }
 
@@ -127,7 +127,7 @@ JSValueRef js_obj_status_get_backward(JSContextRef cx,JSObjectRef j_obj,JSString
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_bool_to_value(cx,obj->forward_move.reverse));
 }
 
@@ -135,7 +135,7 @@ JSValueRef js_obj_status_get_sliding(JSContextRef cx,JSObjectRef j_obj,JSStringR
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_bool_to_value(cx,obj->side_move.moving));
 }
 
@@ -143,7 +143,7 @@ JSValueRef js_obj_status_get_stand(JSContextRef cx,JSObjectRef j_obj,JSStringRef
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_int_to_value(cx,obj->duck.mode+sd_stand_standing));
 }
 
@@ -151,7 +151,7 @@ JSValueRef js_obj_status_get_air(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_int_to_value(cx,obj->air_mode+sd_air_up));
 }
 
@@ -159,7 +159,7 @@ JSValueRef js_obj_status_get_liquid(JSContextRef cx,JSObjectRef j_obj,JSStringRe
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_int_to_value(cx,obj->liquid.mode+sd_liquid_out));
 }
 
@@ -167,7 +167,7 @@ JSValueRef js_obj_status_get_standOnObjectId(JSContextRef cx,JSObjectRef j_obj,J
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	if (!obj->touch.stand) return(script_int_to_value(cx,-1));
 	
 	return(script_int_to_value(cx,obj->touch.obj_idx));
@@ -177,7 +177,7 @@ JSValueRef js_obj_status_get_standUnderObjectId(JSContextRef cx,JSObjectRef j_ob
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_int_to_value(cx,object_find_idx_by_stood_on_object_idx(obj->idx)));
 }
 
@@ -193,7 +193,7 @@ JSValueRef js_obj_status_freeze_input_func(JSContextRef cx,JSObjectRef func,JSOb
 	
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	object_input_freeze(obj,script_value_to_bool(cx,argv[0]));
 
 	return(script_null_to_value(cx));
@@ -205,7 +205,7 @@ JSValueRef js_obj_status_freeze_respawn_func(JSContextRef cx,JSObjectRef func,JS
 	
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	obj->input.respawn_freeze=script_value_to_bool(cx,argv[0]);
 
 	return(script_null_to_value(cx));

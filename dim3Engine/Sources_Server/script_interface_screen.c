@@ -70,9 +70,9 @@ void script_free_interface_screen_object(void)
 	script_free_class(interface_screen_class);
 }
 
-JSObjectRef script_add_interface_screen_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_interface_screen_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
 {
-	return(script_create_child_object(cx,parent_obj,interface_screen_class,"screen"));
+	return(script_create_child_object(cx,parent_obj,interface_screen_class,"screen",attach));
 }
 
 /* =======================================================

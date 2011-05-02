@@ -43,6 +43,8 @@ JSValueRef js_proj_setting_get_parentObjectId(JSContextRef cx,JSObjectRef j_obj,
 JSValueRef js_proj_setting_get_parentTeam(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 bool js_proj_setting_set_hitscan(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 bool js_proj_setting_set_resetAngle(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_proj_setting_get_weapon_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_proj_setting_get_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 JSStaticValue 		proj_setting_props[]={
 							{"name",				js_proj_setting_get_name,				NULL,								kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
@@ -51,6 +53,11 @@ JSStaticValue 		proj_setting_props[]={
 							{"parentObjectId",		js_proj_setting_get_parentObjectId,		NULL,								kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
 							{"parentTeam",			js_proj_setting_get_parentTeam,			NULL,								kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
 							{0,0,0,0}};
+
+JSStaticFunction	proj_setting_functions[]={
+							{"getWeapon",			js_proj_setting_get_weapon_func,		kJSPropertyAttributeDontDelete},
+							{"getObject",			js_proj_setting_get_object_func,		kJSPropertyAttributeDontDelete},
+							{0,0,0}};
 
 JSClassRef			proj_setting_class;
 
@@ -62,7 +69,7 @@ JSClassRef			proj_setting_class;
 
 void script_init_proj_setting_object(void)
 {
-	proj_setting_class=script_create_class("proj_setting_class",proj_setting_props,NULL);
+	proj_setting_class=script_create_class("proj_setting_class",proj_setting_props,proj_setting_functions);
 }
 
 void script_free_proj_setting_object(void)
@@ -70,9 +77,9 @@ void script_free_proj_setting_object(void)
 	script_free_class(proj_setting_class);
 }
 
-JSObjectRef script_add_proj_setting_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_proj_setting_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
 {
-	return(script_create_child_object(cx,parent_obj,proj_setting_class,"setting"));
+	return(script_create_child_object(cx,parent_obj,proj_setting_class,"setting",attach));
 }
 
 /* =======================================================
@@ -85,7 +92,7 @@ JSValueRef js_proj_setting_get_name(JSContextRef cx,JSObjectRef j_obj,JSStringRe
 {
 	proj_setup_type		*proj_setup;
 
-	proj_setup=proj_setup_get_attach();
+	proj_setup=proj_setup_get_attach(j_obj);
 	if (proj_setup==NULL) return(script_null_to_value(cx));
 	
 	return(script_string_to_value(cx,proj_setup->name));
@@ -95,7 +102,7 @@ JSValueRef js_proj_setting_get_hitscan(JSContextRef cx,JSObjectRef j_obj,JSStrin
 {
 	proj_setup_type		*proj_setup;
 
-	proj_setup=proj_setup_get_attach();
+	proj_setup=proj_setup_get_attach(j_obj);
 	if (proj_setup==NULL) return(script_bool_to_value(cx,FALSE));
 
 	return(script_bool_to_value(cx,proj_setup->hitscan.on));
@@ -105,7 +112,7 @@ JSValueRef js_proj_setting_get_resetAngle(JSContextRef cx,JSObjectRef j_obj,JSSt
 {
 	proj_setup_type		*proj_setup;
 
-	proj_setup=proj_setup_get_attach();
+	proj_setup=proj_setup_get_attach(j_obj);
 	if (proj_setup==NULL) return(script_bool_to_value(cx,FALSE));
 	
 	return(script_bool_to_value(cx,proj_setup->reset_angle));
@@ -115,7 +122,7 @@ JSValueRef js_proj_setting_get_parentObjectId(JSContextRef cx,JSObjectRef j_obj,
 {
 	proj_type			*proj;
 
-	proj=proj_get_attach();
+	proj=proj_get_attach(j_obj);
 	if (proj==NULL) return(script_int_to_value(cx,-1));
 	
 	return(script_int_to_value(cx,proj->obj_idx));
@@ -126,7 +133,7 @@ JSValueRef js_proj_setting_get_parentTeam(JSContextRef cx,JSObjectRef j_obj,JSSt
 	proj_type			*proj;
 	obj_type			*obj;
 
-	proj=proj_get_attach();
+	proj=proj_get_attach(j_obj);
 	if (proj==NULL) return(script_int_to_value(cx,-1));
 
 	obj=server.obj_list.objs[proj->obj_idx];
@@ -145,7 +152,7 @@ bool js_proj_setting_set_hitscan(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
 {
 	proj_setup_type		*proj_setup;
 	
-	proj_setup=proj_setup_get_attach();
+	proj_setup=proj_setup_get_attach(j_obj);
 	if (proj_setup!=NULL) proj_setup->hitscan.on=script_value_to_bool(cx,vp);
 
 	return(TRUE);
@@ -155,8 +162,64 @@ bool js_proj_setting_set_resetAngle(JSContextRef cx,JSObjectRef j_obj,JSStringRe
 {
 	proj_setup_type		*proj_setup;
 	
-	proj_setup=proj_setup_get_attach();
+	proj_setup=proj_setup_get_attach(j_obj);
 	if (proj_setup!=NULL) proj_setup->reset_angle=script_value_to_bool(cx,vp);
 
 	return(TRUE);
 }
+
+/* =======================================================
+
+      Projectile Changes
+      
+======================================================= */
+
+// supergumba -- all these need to be fixed
+JSValueRef js_proj_setting_get_weapon_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+{
+	int					obj_idx,weap_idx;
+	proj_type			*proj;
+	weapon_type			*weap;
+	script_type			*script;
+
+	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
+	
+	proj=proj_get_attach(j_obj);
+	if (proj==NULL) return(script_null_to_value(cx));
+	
+	obj_idx=proj->obj_idx;
+	weap_idx=proj->weap_idx;
+	if ((obj_idx==-1) || (weap_idx==-1)) return(script_null_to_value(cx));
+	
+	weap=server.obj_list.objs[obj_idx]->weap_list.weaps[weap_idx];
+	script=js.script_list.scripts[weap->attach.script_idx];
+	
+	script=(script_type*)JSObjectGetPrivate(j_obj);
+	if (script==NULL) fprintf(stdout,"SCRIPT = NULL\n");
+	if (script!=NULL) fprintf(stdout,"script_idx=%d\n",script->idx);
+		
+	return((JSValueRef)script->obj);
+}
+
+JSValueRef js_proj_setting_get_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+{
+	int					obj_idx;
+	proj_type			*proj;
+	obj_type			*obj;
+	script_type			*script;
+
+	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
+	
+	proj=proj_get_attach(j_obj);
+	if (proj==NULL) return(script_null_to_value(cx));
+	
+	obj_idx=proj->obj_idx;
+	if (obj_idx==-1) return(script_null_to_value(cx));
+	
+	obj=server.obj_list.objs[obj_idx];
+	script=js.script_list.scripts[obj->attach.script_idx];
+		
+	return((JSValueRef)script->obj);
+}
+
+

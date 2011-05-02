@@ -181,9 +181,9 @@ void script_free_obj_setting_object(void)
 	script_free_class(obj_setting_class);
 }
 
-JSObjectRef script_add_obj_setting_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_obj_setting_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
 {
-	return(script_create_child_object(cx,parent_obj,obj_setting_class,"setting"));
+	return(script_create_child_object(cx,parent_obj,obj_setting_class,"setting",attach));
 }
 
 /* =======================================================
@@ -196,7 +196,7 @@ JSValueRef js_obj_setting_get_id(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_int_to_value(cx,obj->idx));
 }
 
@@ -204,7 +204,7 @@ JSValueRef js_obj_setting_get_name(JSContextRef cx,JSObjectRef j_obj,JSStringRef
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_string_to_value(cx,obj->name));
 }
 
@@ -214,7 +214,7 @@ JSValueRef js_obj_setting_get_characterName(JSContextRef cx,JSObjectRef j_obj,JS
 
 	if (iface.character.ncharacter==0) return(script_null_to_value(cx));
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_string_to_value(cx,iface.character.characters[obj->character_idx].name));
 }
 
@@ -224,7 +224,7 @@ JSValueRef js_obj_setting_get_characterModel(JSContextRef cx,JSObjectRef j_obj,J
 	
 	if (iface.character.ncharacter==0) return(script_null_to_value(cx));
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_string_to_value(cx,iface.character.characters[obj->character_idx].model_name));
 }
 
@@ -234,7 +234,7 @@ JSValueRef js_obj_setting_get_characterParameter(JSContextRef cx,JSObjectRef j_o
 
 	if (iface.character.ncharacter==0) return(script_null_to_value(cx));
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_string_to_value(cx,iface.character.characters[obj->character_idx].param));
 }
 
@@ -242,7 +242,7 @@ JSValueRef js_obj_setting_get_team(JSContextRef cx,JSObjectRef j_obj,JSStringRef
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_int_to_value(cx,obj->team_idx+sd_team_none));
 }
 
@@ -250,7 +250,7 @@ JSValueRef js_obj_setting_get_hidden(JSContextRef cx,JSObjectRef j_obj,JSStringR
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_bool_to_value(cx,obj->hidden));
 }
 
@@ -258,7 +258,7 @@ JSValueRef js_obj_setting_get_suspend(JSContextRef cx,JSObjectRef j_obj,JSString
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_bool_to_value(cx,obj->suspend));
 }
 
@@ -266,7 +266,7 @@ JSValueRef js_obj_setting_get_fly(JSContextRef cx,JSObjectRef j_obj,JSStringRef 
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_bool_to_value(cx,obj->fly));
 }
 
@@ -274,7 +274,7 @@ JSValueRef js_obj_setting_get_find(JSContextRef cx,JSObjectRef j_obj,JSStringRef
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_bool_to_value(cx,obj->find_on));
 }
 
@@ -282,7 +282,7 @@ JSValueRef js_obj_setting_get_contact(JSContextRef cx,JSObjectRef j_obj,JSString
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_bool_to_value(cx,(obj->contact.object_on) || (obj->contact.projectile_on) || (obj->contact.force_on)));
 }
 
@@ -290,7 +290,7 @@ JSValueRef js_obj_setting_get_contactObject(JSContextRef cx,JSObjectRef j_obj,JS
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_bool_to_value(cx,obj->contact.object_on));
 }
 
@@ -298,7 +298,7 @@ JSValueRef js_obj_setting_get_contactProjectile(JSContextRef cx,JSObjectRef j_ob
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_bool_to_value(cx,obj->contact.projectile_on));
 }
 
@@ -306,7 +306,7 @@ JSValueRef js_obj_setting_get_contactForce(JSContextRef cx,JSObjectRef j_obj,JSS
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_bool_to_value(cx,obj->contact.force_on));
 }
 
@@ -314,7 +314,7 @@ JSValueRef js_obj_setting_get_hitBox(JSContextRef cx,JSObjectRef j_obj,JSStringR
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_bool_to_value(cx,obj->hit_box.on));
 }
 
@@ -322,7 +322,7 @@ JSValueRef js_obj_setting_get_damage(JSContextRef cx,JSObjectRef j_obj,JSStringR
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_bool_to_value(cx,obj->damage.on));
 }
 
@@ -330,7 +330,7 @@ JSValueRef js_obj_setting_get_crushable(JSContextRef cx,JSObjectRef j_obj,JSStri
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_bool_to_value(cx,obj->damage.crushable));
 }
 
@@ -338,7 +338,7 @@ JSValueRef js_obj_setting_get_invincible(JSContextRef cx,JSObjectRef j_obj,JSStr
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_bool_to_value(cx,obj->damage.invincible));
 }
 
@@ -346,7 +346,7 @@ JSValueRef js_obj_setting_get_clickable(JSContextRef cx,JSObjectRef j_obj,JSStri
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_bool_to_value(cx,obj->click.on));
 }
 
@@ -354,7 +354,7 @@ JSValueRef js_obj_setting_get_pickup(JSContextRef cx,JSObjectRef j_obj,JSStringR
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_bool_to_value(cx,obj->pickup.on));
 }
 
@@ -362,7 +362,7 @@ JSValueRef js_obj_setting_get_ignorePickUpItems(JSContextRef cx,JSObjectRef j_ob
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_bool_to_value(cx,obj->pickup.ignore));
 }
 
@@ -370,7 +370,7 @@ JSValueRef js_obj_setting_get_ignoreMouse(JSContextRef cx,JSObjectRef j_obj,JSSt
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_bool_to_value(cx,obj->turn.ignore_mouse));
 }
 
@@ -378,7 +378,7 @@ JSValueRef js_obj_setting_get_turnOnlyWhenMoving(JSContextRef cx,JSObjectRef j_o
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_bool_to_value(cx,obj->turn.only_when_moving));
 }
 
@@ -386,7 +386,7 @@ JSValueRef js_obj_setting_get_restrictPlayerTurning(JSContextRef cx,JSObjectRef 
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_bool_to_value(cx,obj->turn.restrict_player_turning));
 }
 
@@ -394,7 +394,7 @@ JSValueRef js_obj_setting_get_quickReverse(JSContextRef cx,JSObjectRef j_obj,JSS
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_bool_to_value(cx,obj->quick_reverse));
 }
 
@@ -402,7 +402,7 @@ JSValueRef js_obj_setting_get_sideStep(JSContextRef cx,JSObjectRef j_obj,JSStrin
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_bool_to_value(cx,obj->side_step));
 }
 
@@ -410,7 +410,7 @@ JSValueRef js_obj_setting_get_jump(JSContextRef cx,JSObjectRef j_obj,JSStringRef
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_bool_to_value(cx,obj->jump.on));
 }
 
@@ -418,7 +418,7 @@ JSValueRef js_obj_setting_get_duck(JSContextRef cx,JSObjectRef j_obj,JSStringRef
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_bool_to_value(cx,obj->duck.on));
 }
 
@@ -426,7 +426,7 @@ JSValueRef js_obj_setting_get_crawl(JSContextRef cx,JSObjectRef j_obj,JSStringRe
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_bool_to_value(cx,obj->crawl));
 }
 
@@ -434,7 +434,7 @@ JSValueRef js_obj_setting_get_singleSpeed(JSContextRef cx,JSObjectRef j_obj,JSSt
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_bool_to_value(cx,obj->single_speed));
 }
 
@@ -442,7 +442,7 @@ JSValueRef js_obj_setting_get_bumpUp(JSContextRef cx,JSObjectRef j_obj,JSStringR
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_bool_to_value(cx,obj->bump.on));
 }
 
@@ -450,7 +450,7 @@ JSValueRef js_obj_setting_get_slopeGravity(JSContextRef cx,JSObjectRef j_obj,JSS
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_bool_to_value(cx,obj->slope_gravity));
 }
 
@@ -458,7 +458,7 @@ JSValueRef js_obj_setting_get_pushable(JSContextRef cx,JSObjectRef j_obj,JSStrin
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_bool_to_value(cx,obj->contact.pushable));
 }
 
@@ -466,7 +466,7 @@ JSValueRef js_obj_setting_get_openDoors(JSContextRef cx,JSObjectRef j_obj,JSStri
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_bool_to_value(cx,obj->open_doors));
 }
 
@@ -474,7 +474,7 @@ JSValueRef js_obj_setting_get_useVehicles(JSContextRef cx,JSObjectRef j_obj,JSSt
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_bool_to_value(cx,obj->vehicle.use_vehicles));
 }
 
@@ -482,7 +482,7 @@ JSValueRef js_obj_setting_get_inputMode(JSContextRef cx,JSObjectRef j_obj,JSStri
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_int_to_value(cx,obj->input.mode+sd_input_mode_fpp));
 }
 
@@ -490,7 +490,7 @@ JSValueRef js_obj_setting_get_collisionMode(JSContextRef cx,JSObjectRef j_obj,JS
 {
 	obj_type		*obj;
 
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	return(script_int_to_value(cx,obj->contact.collision_mode+sd_collision_mode_cylinder));
 }
 
@@ -504,7 +504,7 @@ bool js_obj_setting_set_team(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,
 {
 	obj_type		*obj;
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	obj->team_idx=script_value_to_int(cx,vp)-sd_team_none;
 	
 	return(TRUE);
@@ -514,7 +514,7 @@ bool js_obj_setting_set_hidden(JSContextRef cx,JSObjectRef j_obj,JSStringRef nam
 {
 	obj_type		*obj;
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	object_hide(obj,script_value_to_bool(cx,vp));
 	
 	return(TRUE);
@@ -524,7 +524,7 @@ bool js_obj_setting_set_suspend(JSContextRef cx,JSObjectRef j_obj,JSStringRef na
 {
 	obj_type		*obj;
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	obj->suspend=script_value_to_bool(cx,vp);
 	
 	return(TRUE);
@@ -534,7 +534,7 @@ bool js_obj_setting_set_fly(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,J
 {
 	obj_type		*obj;
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	obj->fly=script_value_to_bool(cx,vp);
 	
 	return(TRUE);
@@ -544,7 +544,7 @@ bool js_obj_setting_set_find(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,
 {
 	obj_type		*obj;
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	obj->find_on=script_value_to_bool(cx,vp);
 	
 	return(TRUE);
@@ -555,7 +555,7 @@ bool js_obj_setting_set_contact(JSContextRef cx,JSObjectRef j_obj,JSStringRef na
 	bool			on;
 	obj_type		*obj;
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 
 	on=script_value_to_bool(cx,vp);
 	obj->contact.object_on=on;
@@ -569,7 +569,7 @@ bool js_obj_setting_set_contactObject(JSContextRef cx,JSObjectRef j_obj,JSString
 {
 	obj_type		*obj;
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	obj->contact.object_on=script_value_to_bool(cx,vp);
 	
 	return(TRUE);
@@ -579,7 +579,7 @@ bool js_obj_setting_set_contactProjectile(JSContextRef cx,JSObjectRef j_obj,JSSt
 {
 	obj_type		*obj;
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	obj->contact.projectile_on=script_value_to_bool(cx,vp);
 	
 	return(TRUE);
@@ -589,7 +589,7 @@ bool js_obj_setting_set_contactForce(JSContextRef cx,JSObjectRef j_obj,JSStringR
 {
 	obj_type		*obj;
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	obj->contact.force_on=script_value_to_bool(cx,vp);
 	
 	return(TRUE);
@@ -599,7 +599,7 @@ bool js_obj_setting_set_hitBox(JSContextRef cx,JSObjectRef j_obj,JSStringRef nam
 {
 	obj_type		*obj;
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	obj->hit_box.on=script_value_to_bool(cx,vp);
 	
 	return(TRUE);
@@ -609,7 +609,7 @@ bool js_obj_setting_set_damage(JSContextRef cx,JSObjectRef j_obj,JSStringRef nam
 {
 	obj_type		*obj;
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	obj->damage.on=script_value_to_bool(cx,vp);
 	
 	return(TRUE);
@@ -619,7 +619,7 @@ bool js_obj_setting_set_crushable(JSContextRef cx,JSObjectRef j_obj,JSStringRef 
 {
 	obj_type		*obj;
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	obj->damage.crushable=script_value_to_bool(cx,vp);
 	
 	return(TRUE);
@@ -629,7 +629,7 @@ bool js_obj_setting_set_invincible(JSContextRef cx,JSObjectRef j_obj,JSStringRef
 {
 	obj_type		*obj;
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	obj->damage.invincible=script_value_to_bool(cx,vp);
 	
 	return(TRUE);
@@ -639,7 +639,7 @@ bool js_obj_setting_set_clickable(JSContextRef cx,JSObjectRef j_obj,JSStringRef 
 {
 	obj_type		*obj;
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	obj->click.on=script_value_to_bool(cx,vp);
 	
 	return(TRUE);
@@ -649,7 +649,7 @@ bool js_obj_setting_set_pickup(JSContextRef cx,JSObjectRef j_obj,JSStringRef nam
 {
 	obj_type		*obj;
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	obj->pickup.on=script_value_to_bool(cx,vp);
 	
 	return(TRUE);
@@ -659,7 +659,7 @@ bool js_obj_setting_set_ignorePickUpItems(JSContextRef cx,JSObjectRef j_obj,JSSt
 {
 	obj_type		*obj;
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	obj->pickup.ignore=script_value_to_bool(cx,vp);
 	
 	return(TRUE);
@@ -669,7 +669,7 @@ bool js_obj_setting_set_ignoreMouse(JSContextRef cx,JSObjectRef j_obj,JSStringRe
 {
 	obj_type		*obj;
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	obj->turn.ignore_mouse=script_value_to_bool(cx,vp);
 	
 	return(TRUE);
@@ -679,7 +679,7 @@ bool js_obj_setting_set_turnOnlyWhenMoving(JSContextRef cx,JSObjectRef j_obj,JSS
 {
 	obj_type		*obj;
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	obj->turn.only_when_moving=script_value_to_bool(cx,vp);
 	
 	return(TRUE);
@@ -689,7 +689,7 @@ bool js_obj_setting_set_restrictPlayerTurning(JSContextRef cx,JSObjectRef j_obj,
 {
 	obj_type		*obj;
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	obj->turn.restrict_player_turning=script_value_to_bool(cx,vp);
 	
 	return(TRUE);
@@ -699,7 +699,7 @@ bool js_obj_setting_set_quickReverse(JSContextRef cx,JSObjectRef j_obj,JSStringR
 {
 	obj_type		*obj;
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	obj->quick_reverse=script_value_to_bool(cx,vp);
 	
 	return(TRUE);
@@ -709,7 +709,7 @@ bool js_obj_setting_set_sideStep(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
 {
 	obj_type		*obj;
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	obj->side_step=script_value_to_bool(cx,vp);
 	
 	return(TRUE);
@@ -719,7 +719,7 @@ bool js_obj_setting_set_jump(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,
 {
 	obj_type		*obj;
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	obj->jump.on=script_value_to_bool(cx,vp);
 	
 	return(TRUE);
@@ -729,7 +729,7 @@ bool js_obj_setting_set_duck(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,
 {
 	obj_type		*obj;
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	obj->duck.on=script_value_to_bool(cx,vp);
 	
 	return(TRUE);
@@ -739,7 +739,7 @@ bool js_obj_setting_set_crawl(JSContextRef cx,JSObjectRef j_obj,JSStringRef name
 {
 	obj_type		*obj;
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	obj->crawl=script_value_to_bool(cx,vp);
 	
 	return(TRUE);
@@ -749,7 +749,7 @@ bool js_obj_setting_set_singleSpeed(JSContextRef cx,JSObjectRef j_obj,JSStringRe
 {
 	obj_type		*obj;
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	obj->single_speed=script_value_to_bool(cx,vp);
 	
 	return(TRUE);
@@ -759,7 +759,7 @@ bool js_obj_setting_set_bumpUp(JSContextRef cx,JSObjectRef j_obj,JSStringRef nam
 {
 	obj_type		*obj;
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	obj->bump.on=script_value_to_bool(cx,vp);
 	
 	return(TRUE);
@@ -769,7 +769,7 @@ bool js_obj_setting_set_slopeGravity(JSContextRef cx,JSObjectRef j_obj,JSStringR
 {
 	obj_type		*obj;
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	obj->slope_gravity=script_value_to_bool(cx,vp);
 	
 	return(TRUE);
@@ -779,7 +779,7 @@ bool js_obj_setting_set_pushable(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
 {
 	obj_type		*obj;
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	obj->contact.pushable=script_value_to_bool(cx,vp);
 	
 	return(TRUE);
@@ -789,7 +789,7 @@ bool js_obj_setting_set_openDoors(JSContextRef cx,JSObjectRef j_obj,JSStringRef 
 {
 	obj_type		*obj;
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	obj->open_doors=script_value_to_bool(cx,vp);
 	
 	return(TRUE);
@@ -799,7 +799,7 @@ bool js_obj_setting_set_useVehicles(JSContextRef cx,JSObjectRef j_obj,JSStringRe
 {
 	obj_type		*obj;
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	obj->vehicle.use_vehicles=script_value_to_bool(cx,vp);
 	
 	return(TRUE);
@@ -809,7 +809,7 @@ bool js_obj_setting_set_inputMode(JSContextRef cx,JSObjectRef j_obj,JSStringRef 
 {
 	obj_type		*obj;
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	obj->input.mode=script_value_to_int(cx,vp)-sd_input_mode_fpp;
 	
 	return(TRUE);
@@ -819,7 +819,7 @@ bool js_obj_setting_set_collisionMode(JSContextRef cx,JSObjectRef j_obj,JSString
 {
 	obj_type		*obj;
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	obj->contact.collision_mode=script_value_to_int(cx,vp)-sd_collision_mode_cylinder;
 	
 	return(TRUE);
@@ -839,7 +839,7 @@ JSValueRef js_obj_get_parameter_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 	
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	
     idx=script_value_to_int(cx,argv[0]);
     if (idx<0) idx=0;
@@ -870,7 +870,7 @@ JSValueRef js_obj_set_ambient_func(JSContextRef cx,JSObjectRef func,JSObjectRef 
 	
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	
 	script_value_to_string(cx,argv[0],name,name_str_len);
 	object_set_ambient(obj,name,script_value_to_float(cx,argv[1]));
@@ -884,7 +884,7 @@ JSValueRef js_obj_change_ambient_pitch_func(JSContextRef cx,JSObjectRef func,JSO
 	
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	object_change_ambient_pitch(obj,script_value_to_float(cx,argv[0]));
 
 	return(script_null_to_value(cx));
@@ -896,7 +896,7 @@ JSValueRef js_obj_clear_ambient_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 	
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	object_clear_ambient(obj);
 
 	return(script_null_to_value(cx));
@@ -908,7 +908,7 @@ JSValueRef js_obj_set_debug_string_func(JSContextRef cx,JSObjectRef func,JSObjec
 	
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	script_value_to_string(cx,argv[0],obj->debug.str,256);
 
 	return(script_null_to_value(cx));
@@ -922,7 +922,7 @@ JSValueRef js_obj_chat_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,s
 	
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
-	obj=object_script_lookup();
+	obj=object_get_attach(j_obj);
 	script_value_to_string(cx,argv[0],msg,max_view_chat_str_len);
 	
 	if ((net_setup.mode!=net_mode_none) && (object_networkable(obj))) net_client_send_chat(obj,msg);

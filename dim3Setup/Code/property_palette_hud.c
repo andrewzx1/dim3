@@ -33,6 +33,11 @@ and can be sold or given away.
 #include "ui_common.h"
 #include "interface.h"
 
+#define kHUDPropertyChatX						0
+#define kHUDPropertyChatY						1
+#define kHUDPropertyChatLastAddLifeSeconds		2
+#define kHUDPropertyChatNextLifeSeconds			3
+
 #define kHUDPropertyBitmapAdd					1000
 #define kHUDPropertyBitmapName					2000
 #define kHUDPropertyBitmapDelete				3000
@@ -94,6 +99,14 @@ void property_palette_fill_hud(void)
 	}
 
 	list_palette_sort(&property_palette);
+	
+		// chat
+		
+	list_palette_add_header(&property_palette,0,"Chat");
+	list_palette_add_string_int(&property_palette,kHUDPropertyChatX,"X",iface.chat.x,FALSE);
+	list_palette_add_string_int(&property_palette,kHUDPropertyChatY,"Y",iface.chat.y,FALSE);
+	list_palette_add_string_int(&property_palette,kHUDPropertyChatLastAddLifeSeconds,"Last Add Life Seconds",iface.chat.last_add_life_sec,FALSE);
+	list_palette_add_string_int(&property_palette,kHUDPropertyChatNextLifeSeconds,"Next Life Seconds",iface.chat.next_life_sec,FALSE);
 }
 
 /* =======================================================
@@ -335,6 +348,30 @@ void property_palette_click_hud(int id)
 
 		main_wind_draw();
 		return;
+	}
+	
+		// regular settings
+
+	switch (id) {
+
+			// chat
+			
+		case kHUDPropertyChatX:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&iface.chat.x,0,0,0);
+			break;
+			
+		case kHUDPropertyChatY:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&iface.chat.y,0,0,0);
+			break;
+			
+		case kHUDPropertyChatLastAddLifeSeconds:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&iface.chat.last_add_life_sec,0,0,0);
+			break;
+			
+		case kHUDPropertyChatNextLifeSeconds:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&iface.chat.next_life_sec,0,0,0);
+			break;
+			
 	}
 
 		// redraw

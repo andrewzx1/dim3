@@ -63,9 +63,9 @@ void script_free_global_data_object(void)
 	script_free_class(data_class);
 }
 
-JSObjectRef script_add_global_data_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_global_data_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
 {
-	return(script_create_child_object(cx,parent_obj,data_class,"data"));
+	return(script_create_child_object(cx,parent_obj,data_class,"data",attach));
 }
 
 /* =======================================================

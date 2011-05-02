@@ -64,9 +64,9 @@ void script_free_weap_setting_object(void)
 	script_free_class(weap_setting_class);
 }
 
-JSObjectRef script_add_weap_setting_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_weap_setting_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
 {
-	return(script_create_child_object(cx,parent_obj,weap_setting_class,"setting"));
+	return(script_create_child_object(cx,parent_obj,weap_setting_class,"setting",attach));
 }
 
 /* =======================================================
@@ -79,7 +79,7 @@ JSValueRef js_weap_setting_get_name(JSContextRef cx,JSObjectRef j_obj,JSStringRe
 {
 	weapon_type		*weap;
 
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	return(script_string_to_value(cx,weap->name));
 }
 
@@ -87,7 +87,7 @@ JSValueRef js_weap_setting_get_failInLiquid(JSContextRef cx,JSObjectRef j_obj,JS
 {
 	weapon_type		*weap;
 
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	return(script_bool_to_value(cx,weap->fail_in_liquid));
 }
 
@@ -95,7 +95,7 @@ JSValueRef js_weap_setting_get_parentObjectId(JSContextRef cx,JSObjectRef j_obj,
 {
 	weapon_type		*weap;
 
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	return(script_int_to_value(cx,weap->obj_idx));
 }
 
@@ -109,7 +109,7 @@ bool js_weap_setting_set_failInLiquid(JSContextRef cx,JSObjectRef j_obj,JSString
 {
 	weapon_type		*weap;
 	
-	weap=weapon_script_lookup();
+	weap=weapon_get_attach(j_obj);
 	weap->fail_in_liquid=script_value_to_bool(cx,vp);
 
 	return(TRUE);

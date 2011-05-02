@@ -61,9 +61,9 @@ void script_free_utility_pack_object(void)
 	script_free_class(utility_pack_class);
 }
 
-JSObjectRef script_add_utility_pack_object(JSContextRef cx,JSObjectRef parent_obj)
+JSObjectRef script_add_utility_pack_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
 {
-	return(script_create_child_object(cx,parent_obj,utility_pack_class,"pack"));
+	return(script_create_child_object(cx,parent_obj,utility_pack_class,"pack",attach));
 }
 
 /* =======================================================
