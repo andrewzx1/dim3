@@ -44,18 +44,7 @@ and can be sold or given away.
 #define js_max_recursive_count							5
 
 //
-// attach types
-//
-
-#define script_type_game								0
-#define script_type_course								1
-#define script_type_object								2
-#define script_type_weapon								3
-#define script_type_projectile_setup					4
-#define script_type_projectile							5
-
-//
-// thing types
+// attach thing types
 //
 
 #define thing_type_game									0
