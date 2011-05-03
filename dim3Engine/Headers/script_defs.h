@@ -467,7 +467,7 @@ typedef struct		{
 					} script_event_attach_list_type;
 
 typedef struct		{
-						int								idx,data_len,parent_idx;
+						int								idx,data_len,parent_idx,child_idx;
 						char							name[file_str_len],sub_dir[file_str_len];
 						char							*data;
 						script_recursive_type			recursive;
@@ -486,6 +486,7 @@ typedef struct		{
 
 typedef struct		{
 						int								timer_tick;
+						JSContextGroupRef				cx_group;
 						JSClassRef						main_empty_class;
 						attach_type						game_attach,course_attach;
 						script_list_type				script_list;

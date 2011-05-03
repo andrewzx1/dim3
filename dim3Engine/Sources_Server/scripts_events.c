@@ -174,7 +174,7 @@ void script_projectile_finish(JSObjectRef j_obj,int old_proj_idx)
       
 ======================================================= */
 
-bool scripts_post_event(attach_type *attach,int main_event,int sub_event,int id,char *err_str)
+bool scripts_post_event_on_attach(attach_type *attach,int main_event,int sub_event,int id,char *err_str)
 {
 	int						event_idx,tick,old_proj_idx;
 	JSValueRef				rval,exception,argv[5];
@@ -273,6 +273,42 @@ bool scripts_post_event(attach_type *attach,int main_event,int sub_event,int id,
 	return(err_str[0]==0x0);
 }
 
+bool scripts_post_event(attach_type *attach,int main_event,int sub_event,int id,char *err_str)
+{
+	int						event_idx;
+	attach_type				parent_attach;
+	script_type				*script;
+
+		// ignore if no script
+
+	if (attach->script_idx==-1) return(TRUE);
+
+		// can't do this if not using event attachments
+	
+	script=js.script_list.scripts[attach->script_idx];
+	if (!script->event_attach_list.on) {
+		return(scripts_post_event_on_attach(attach,main_event,sub_event,id,err_str));
+	}
+
+	event_idx=main_event-event_main_id_start;
+
+		// determine if event is on child
+
+	if (script->event_attach_list.func[event_idx]!=NULL) return(scripts_post_event_on_attach(attach,main_event,sub_event,id,err_str));
+
+		// now try parent
+
+	if (script->parent_idx==-1) return(TRUE);
+
+	script=js.script_list.scripts[script->parent_idx];
+	if (script->event_attach_list.func[event_idx]==NULL) return(TRUE);
+
+	memmove(&parent_attach,attach,sizeof(attach_type));
+	parent_attach.script_idx=script->idx;
+
+	return(scripts_post_event_on_attach(&parent_attach,main_event,sub_event,id,err_str));
+}
+
 void scripts_post_event_console(attach_type *attach,int main_event,int sub_event,int id)
 {
 	char			err_str[256];
@@ -281,6 +317,12 @@ void scripts_post_event_console(attach_type *attach,int main_event,int sub_event
 		console_add_error(err_str);
 	}
 }
+
+/* =======================================================
+
+      Script Parent Calls
+      
+======================================================= */
 
 bool scripts_post_event_call_parent(attach_type *attach,char *err_str)
 {
@@ -352,7 +394,7 @@ JSValueRef scripts_call_parent_function(attach_type *attach,char *func_name,int 
 
 	script=js.script_list.scripts[attach->script_idx];
 	if (script->parent_idx==-1) {
-		strcpy(err_str,"Can not get parent variable; this script does not implement a parent script");
+		strcpy(err_str,"Can not call parent function; this script does not implement a parent script");
 		return(FALSE);
 	}
 	
@@ -364,6 +406,71 @@ JSValueRef scripts_call_parent_function(attach_type *attach,char *func_name,int 
 		// call the function
 
 	return(scripts_direct_call(&parent_attach,func_name,arg_count,args,err_str));
+}
+
+/* =======================================================
+
+      Script Child Calls
+      
+======================================================= */
+
+JSValueRef scripts_get_child_variable(attach_type *attach,char *prop_name,char *err_str)
+{
+	script_type		*script,*child_script;
+	JSValueRef		rval;
+
+	if (attach->script_idx==-1) {
+		strcpy(err_str,"Script in bad state");
+		return(NULL);
+	}
+	
+		// get the child script
+
+	script=js.script_list.scripts[attach->script_idx];
+	if (script->child_idx==-1) {
+		strcpy(err_str,"Can not get child variable; this script is not implemented from a parent script");
+		return(FALSE);
+	}
+	
+	child_script=js.script_list.scripts[script->child_idx];
+
+		// get variable
+
+	rval=script_get_single_property_with_has_check(child_script->cx,child_script->global_obj,prop_name);
+	if (rval==NULL) {
+		sprintf(err_str,"Child has no variable named: %s",prop_name);
+		return(NULL);
+	}
+
+	return(rval);
+}
+
+JSValueRef scripts_call_child_function(attach_type *attach,char *func_name,int arg_count,JSValueRef *args,char *err_str)
+{
+	attach_type		child_attach;
+	script_type		*script;
+
+	if (attach->script_idx==-1) {
+		strcpy(err_str,"Script in bad state");
+		return(NULL);
+	}
+	
+		// get the child script
+
+	script=js.script_list.scripts[attach->script_idx];
+	if (script->child_idx==-1) {
+		strcpy(err_str,"Can not get call child function; this script is not implemented from a parent script");
+		return(FALSE);
+	}
+	
+		// create attach
+
+	memmove(&child_attach,attach,sizeof(attach_type));
+	child_attach.script_idx=script->child_idx;
+
+		// call the function
+
+	return(scripts_direct_call(&child_attach,func_name,arg_count,args,err_str));
 }
 
 /* =======================================================

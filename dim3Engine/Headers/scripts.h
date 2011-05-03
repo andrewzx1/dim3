@@ -530,6 +530,8 @@ extern void scripts_post_event_console(attach_type *attach,int main_event,int su
 extern bool scripts_post_event_call_parent(attach_type *attach,char *err_str);
 extern JSValueRef scripts_get_parent_variable(attach_type *attach,char *prop_name,char *err_str);
 extern JSValueRef scripts_call_parent_function(attach_type *attach,char *func_name,int arg_count,JSValueRef *args,char *err_str);
+extern JSValueRef scripts_get_child_variable(attach_type *attach,char *prop_name,char *err_str);
+extern JSValueRef scripts_call_child_function(attach_type *attach,char *func_name,int arg_count,JSValueRef *args,char *err_str);
 extern bool scripts_chain(attach_type *attach,char *func_name,char *err_str);
 extern void scripts_chain_console(attach_type *attach,char *func_name);
 extern JSValueRef scripts_direct_call(attach_type *attach,char *func_name,int arg_count,JSValueRef *args,char *err_str);

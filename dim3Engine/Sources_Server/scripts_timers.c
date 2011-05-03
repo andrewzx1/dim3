@@ -232,7 +232,6 @@ void timers_fix_script_indexes(void)
 	int					n;
 	obj_type			*obj;
 	weapon_type			*weap;
-	proj_type			*proj;
 	proj_setup_type		*proj_setup;
 	timer_type			*timer;
 	
