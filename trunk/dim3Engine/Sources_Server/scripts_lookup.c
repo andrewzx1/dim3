@@ -318,23 +318,29 @@ model_draw* script_find_model_draw(JSObjectRef j_obj)
 		
 	switch (attach->thing_type) {
 	
-		case script_type_object:
+		case thing_type_object:
 			obj=server.obj_list.objs[attach->obj_idx];
 			return(&obj->draw);
 			
-		case script_type_weapon:
+		case thing_type_weapon:
 			obj=server.obj_list.objs[attach->obj_idx];
 			weap=obj->weap_list.weaps[attach->weap_idx];
 			if (weap->dual.in_dual) return(&weap->draw_dual);
 			return(&weap->draw);
 			
-		case script_type_projectile_setup:
-			obj=server.obj_list.objs[attach->obj_idx];
-			weap=obj->weap_list.weaps[attach->weap_idx];
-			proj_setup=weap->proj_setup_list.proj_setups[attach->proj_setup_idx];
-			return(&proj_setup->draw);
+		case thing_type_projectile:
+		
+				// if no projectile index, then it's a setup
+				
+			if (attach->proj_idx==-1) {
+				obj=server.obj_list.objs[attach->obj_idx];
+				weap=obj->weap_list.weaps[attach->weap_idx];
+				proj_setup=weap->proj_setup_list.proj_setups[attach->proj_setup_idx];
+				return(&proj_setup->draw);
+			}
 			
-		case script_type_projectile:
+				// otherwise it's a projectile
+			
 			proj=server.proj_list.projs[attach->proj_idx];
 			return(&proj->draw);
 			
