@@ -45,6 +45,7 @@ JSValueRef js_map_object_nearest_player_func(JSContextRef cx,JSObjectRef func,JS
 JSValueRef js_map_object_nearest_player_skip_object_id_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_map_object_nearest_player_skip_self_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_map_object_nearest_team_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_map_object_get_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_map_object_get_name_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_map_object_get_type_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_map_object_get_team_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
@@ -86,6 +87,7 @@ JSStaticFunction	map_object_functions[]={
 							{"nearestPlayerSkipObjectId",	js_map_object_nearest_player_skip_object_id_func,	kJSPropertyAttributeDontDelete},
 							{"nearestPlayerSkipSelf",		js_map_object_nearest_player_skip_self_func,		kJSPropertyAttributeDontDelete},
 							{"nearestTeam",					js_map_object_nearest_team_func,					kJSPropertyAttributeDontDelete},
+							{"getObject",					js_map_object_get_object_func,						kJSPropertyAttributeDontDelete},
 							{"getName",						js_map_object_get_name_func,						kJSPropertyAttributeDontDelete},
 							{"getType",						js_map_object_get_type_func,						kJSPropertyAttributeDontDelete},
 							{"getTeam",						js_map_object_get_team_func,						kJSPropertyAttributeDontDelete},
@@ -453,6 +455,22 @@ JSValueRef js_map_object_nearest_team_func(JSContextRef cx,JSObjectRef func,JSOb
       Get Object Information
       
 ======================================================= */
+
+JSValueRef js_map_object_get_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+{
+	obj_type		*obj;
+	script_type		*script;
+
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
+	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
+	if (obj==NULL) return(script_null_to_value(cx));
+
+	if (obj->attach.script_idx==-1) return(script_null_to_value(cx));
+
+	script=js.script_list.scripts[obj->attach.script_idx];
+	return((JSValueRef)script->obj);
+}
 
 JSValueRef js_map_object_get_name_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {

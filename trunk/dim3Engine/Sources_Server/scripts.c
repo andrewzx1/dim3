@@ -53,6 +53,11 @@ bool scripts_engine_initialize(char *err_str)
 		
 	script_load_user_defines();
 
+		// create a group for contexts
+		// so they can share objects
+
+	js.cx_group=JSContextGroupCreate();
+
 		// current events are not locked out
 
 	scripts_event_lock=FALSE;
@@ -62,6 +67,8 @@ bool scripts_engine_initialize(char *err_str)
 
 void scripts_engine_shutdown(void)
 {
+	JSContextGroupRelease(js.cx_group);
+
 	script_free_user_defines();
 	script_release_classes();
 }
@@ -240,6 +247,7 @@ bool scripts_add(attach_type *attach,char *sub_dir,char *name,char *err_str)
 
 	script->idx=idx;
 	script->parent_idx=-1;
+	script->child_idx=-1;
 	
 	strcpy(script->name,name);
 	strcpy(script->sub_dir,sub_dir);
@@ -255,7 +263,7 @@ bool scripts_add(attach_type *attach,char *sub_dir,char *name,char *err_str)
 		// create the context
 		// and remember the global object
 		
-	script->cx=JSGlobalContextCreate(NULL);
+	script->cx=JSGlobalContextCreateInGroup(js.cx_group,NULL);
 	script->global_obj=JSContextGetGlobalObject(script->cx);
 	
 		// load in script
@@ -311,7 +319,7 @@ bool scripts_add(attach_type *attach,char *sub_dir,char *name,char *err_str)
 bool scripts_add_parent(attach_type *attach,char *name,char *err_str)
 {
 	attach_type			parent_attach;
-	script_type			*script;
+	script_type			*script,*parent_script;
 
 		// already have a parent?
 
@@ -329,9 +337,12 @@ bool scripts_add_parent(attach_type *attach,char *name,char *err_str)
 
 	if (!scripts_add(&parent_attach,script->sub_dir,name,err_str)) return(FALSE);
 
-		// set the parent
+		// set the parent and the child
 
 	script->parent_idx=parent_attach.script_idx;
+
+	parent_script=js.script_list.scripts[parent_attach.script_idx];
+	parent_script->child_idx=attach->script_idx;
 
 	return(TRUE);
 }
