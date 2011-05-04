@@ -67,9 +67,9 @@ void script_free_obj_click_object(void)
 	script_free_class(obj_click_class);
 }
 
-JSObjectRef script_add_obj_click_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
+JSObjectRef script_add_obj_click_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
-	return(script_create_child_object(cx,parent_obj,obj_click_class,"click",attach));
+	return(script_create_child_object(cx,parent_obj,obj_click_class,"click",script_idx));
 }
 
 /* =======================================================

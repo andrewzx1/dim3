@@ -103,7 +103,7 @@ void scripts_free_list(void)
       
 ======================================================= */
 
-void scripts_setup_data(script_type *script)
+void scripts_setup_data(script_type *script,int thing_type,int obj_idx,int weap_idx,int proj_setup_idx)
 {
 	int				n;
 
@@ -122,35 +122,29 @@ void scripts_setup_data(script_type *script)
 	for (n=0;n!=event_main_id_count;n++) {
 		script->recursive.in_event[n]=FALSE;
 	}
-}
 
-void scripts_clear_attach(attach_type *attach,int thing_type)
-{
-	int				n;
-	
 		// attachment
-		
-	attach->script_idx=-1;
-	attach->thing_type=thing_type;
-	attach->obj_idx=-1;
-	attach->weap_idx=-1;
-	attach->proj_idx=-1;
-	attach->proj_setup_idx=-1;
+
+	script->attach.thing_type=thing_type;
+	script->attach.obj_idx=obj_idx;
+	script->attach.weap_idx=weap_idx;
+	script->attach.proj_setup_idx=proj_setup_idx;
+	script->attach.proj_idx=-1;
 
 		// event state
 		
-	attach->event_state.main_event=-1;
-	attach->event_state.sub_event=-1;
-	attach->event_state.id=0;
-	attach->event_state.tick=0;
+	script->event_state.main_event=-1;
+	script->event_state.sub_event=-1;
+	script->event_state.id=0;
+	script->event_state.tick=0;
 
 		// messages
 		
-	for (n=0;n!=max_attach_msg_data;n++) {
-		attach->msg_data.set[n].type=d3_jsval_type_number;
-		attach->msg_data.set[n].data.d3_number=0.0f;
-		attach->msg_data.get[n].type=d3_jsval_type_number;
-		attach->msg_data.get[n].data.d3_number=0.0f;
+	for (n=0;n!=max_script_msg_data;n++) {
+		script->msg_data.set[n].type=d3_jsval_type_number;
+		script->msg_data.set[n].data.d3_number=0.0f;
+		script->msg_data.get[n].type=d3_jsval_type_number;
+		script->msg_data.get[n].data.d3_number=0.0f;
 	}
 }
 
@@ -160,7 +154,7 @@ void scripts_clear_attach(attach_type *attach,int thing_type)
       
 ======================================================= */
 
-bool scripts_execute(attach_type *attach,script_type *script,char *err_str)
+bool scripts_execute(script_type *script,char *err_str)
 {
 	JSStringRef		j_script_data,j_script_name;
 	JSValueRef		rval,exception;
@@ -200,16 +194,12 @@ bool scripts_execute(attach_type *attach,script_type *script,char *err_str)
       
 ======================================================= */
 	
-bool scripts_add_single(attach_type *attach,char *sub_dir,char *name,char *err_str)
+int scripts_add_single(int thing_type,char *sub_dir,char *name,int obj_idx,int weap_idx,int proj_setup_idx,char *err_str)
 {
 	int						n,idx;
 	bool					ok;
 	script_type				*script;
 
-		// no script
-		
-	attach->script_idx=-1;
-	
 		// find a unused script
 		
 	idx=-1;
@@ -224,7 +214,7 @@ bool scripts_add_single(attach_type *attach,char *sub_dir,char *name,char *err_s
 	
 	if (idx==-1) {
 		strcpy(err_str,"JavaScript Engine: Reached the maximum number of scripts");
-		return(FALSE);
+		return(-1);
 	}
 	
 		// create it
@@ -232,7 +222,7 @@ bool scripts_add_single(attach_type *attach,char *sub_dir,char *name,char *err_s
 	js.script_list.scripts[idx]=(script_type*)malloc(sizeof(script_type));
 	if (js.script_list.scripts[idx]==NULL) {
 		strcpy(err_str,"JavaScript Engine: Out of memory");
-		return(FALSE);
+		return(-1);
 	}
 
 		// add it
@@ -249,11 +239,7 @@ bool scripts_add_single(attach_type *attach,char *sub_dir,char *name,char *err_s
 
 		// setup script data
 
-	scripts_setup_data(script);
-
-		// original object script attachments
-		
-	attach->script_idx=idx;
+	scripts_setup_data(script,thing_type,obj_idx,weap_idx,proj_setup_idx);
 	
 		// create the context
 		// and remember the global object
@@ -266,16 +252,16 @@ bool scripts_add_single(attach_type *attach,char *sub_dir,char *name,char *err_s
 	if (!script_load_file(script,sub_dir,name,err_str)) {
 		free(js.script_list.scripts[idx]);
 		js.script_list.scripts[idx]=NULL;
-		return(FALSE);
+		return(-1);
 	}
 	
 		// create the global object
 
-	if (!script_add_global_object(script,attach,err_str)) {
+	if (!script_add_global_object(script,err_str)) {
 		script_free_file(script);
 		free(js.script_list.scripts[idx]);
 		js.script_list.scripts[idx]=NULL;
-		return(FALSE);
+		return(-1);
 	}
 
 		// add in any constants
@@ -284,45 +270,46 @@ bool scripts_add_single(attach_type *attach,char *sub_dir,char *name,char *err_s
 	
 		// create the object
 		
-	script->obj=script_create_main_object(script->cx,attach,script->idx);
+	script->obj=script_create_main_object(script->cx,script->idx);
 	if (script->obj==NULL) {
 		strcpy(err_str,"JavaScript Engine: Not enough memory to create an object");
 		script_free_file(script);
 		free(js.script_list.scripts[idx]);
 		js.script_list.scripts[idx]=NULL;
-		return(FALSE);
+		return(-1);
 	}
 	
 		// compile and execute the construct function
 		
-	ok=scripts_execute(attach,script,err_str);
+	ok=scripts_execute(script,err_str);
 	script_free_file(script);
 	
 	if (!ok) {
 		free(js.script_list.scripts[idx]);
 		js.script_list.scripts[idx]=NULL;
-		return(FALSE);
+		return(-1);
 	}
 	
 		// root the object
 		
 	JSValueProtect(script->cx,(JSValueRef)script->obj);
 		
-	return(TRUE);
+	return(idx);
 }
 
-bool scripts_add(attach_type *attach,char *sub_dir,char *name,char *err_str)
+bool scripts_add(int thing_type,char *sub_dir,char *name,int obj_idx,int weap_idx,int proj_setup_idx,char *err_str)
 {
-	attach_type			parent_attach;
+	int					script_idx,parent_script_idx;
 	script_type			*script,*parent_script;
 
 		// add the script
 		
-	if (!scripts_add_single(attach,sub_dir,name,err_str)) return(FALSE);
+	script_idx=scripts_add_single(thing_type,sub_dir,name,obj_idx,weap_idx,proj_setup_idx,err_str);
+	if (script_idx==-1) return(-1);
 	
 		// setup the events
 		
-	script=js.script_list.scripts[attach->script_idx];
+	script=js.script_list.scripts[script_idx];
 	scripts_setup_events(script);
 	
 		// setup any implemented parent scripts
@@ -331,15 +318,15 @@ bool scripts_add(attach_type *attach,char *sub_dir,char *name,char *err_str)
 	
 			// start the parent script
 			
-		memmove(&parent_attach,attach,sizeof(attach_type));
-		if (!scripts_add(&parent_attach,script->sub_dir,script->implement_name,err_str)) return(FALSE);
+		parent_script_idx=scripts_add(thing_type,script->sub_dir,script->implement_name,obj_idx,weap_idx,proj_setup_idx,err_str);
+		if (parent_script_idx==-1) return(-1);
 
 			// set the parent and the child
 
-		script->parent_idx=parent_attach.script_idx;
+		script->parent_idx=parent_script_idx;
 
-		parent_script=js.script_list.scripts[parent_attach.script_idx];
-		parent_script->child_idx=attach->script_idx;
+		parent_script=js.script_list.scripts[parent_script_idx];
+		parent_script->child_idx=script_idx;
 		
 			// setup the events
 			
@@ -348,16 +335,18 @@ bool scripts_add(attach_type *attach,char *sub_dir,char *name,char *err_str)
 	
 		// send the construct event
 	
-	return(scripts_post_event(attach,sd_event_construct,0,0,err_str));
+	if (!scripts_post_event(script_idx,-1,sd_event_construct,0,0,err_str)) return(-1);
+
+	return(script_idx);
 }
 
-bool scripts_set_implement(attach_type *attach,char *name,char *err_str)
+bool scripts_set_implement(int script_idx,char *name,char *err_str)
 {
 	script_type			*script;
 	
 		// already have a parent?
 
-	script=js.script_list.scripts[attach->script_idx];
+	script=js.script_list.scripts[script_idx];
 	if (script->parent_idx!=-1) {
 		strcpy(err_str,"This script already has an implemented script");
 		return(FALSE);

@@ -69,9 +69,9 @@ void script_free_proj_mark_object(void)
 	script_free_class(proj_mark_class);
 }
 
-JSObjectRef script_add_proj_mark_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
+JSObjectRef script_add_proj_mark_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
-	return(script_create_child_object(cx,parent_obj,proj_mark_class,"mark",attach));
+	return(script_create_child_object(cx,parent_obj,proj_mark_class,"mark",script_idx));
 }
 
 /* =======================================================

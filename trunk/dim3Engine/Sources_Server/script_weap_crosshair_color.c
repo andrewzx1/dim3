@@ -66,9 +66,9 @@ void script_free_weap_crosshair_color_object(void)
 	script_free_class(weap_crosshair_color_class);
 }
 
-JSObjectRef script_add_weap_crosshair_color_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
+JSObjectRef script_add_weap_crosshair_color_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
-	return(script_create_child_object(cx,parent_obj,weap_crosshair_color_class,"color",attach));
+	return(script_create_child_object(cx,parent_obj,weap_crosshair_color_class,"color",script_idx));
 }
 
 /* =======================================================

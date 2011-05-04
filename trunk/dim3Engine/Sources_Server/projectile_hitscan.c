@@ -62,7 +62,7 @@ void projectile_hitscan(obj_type *obj,weapon_type *weap,proj_setup_type *proj_se
 	
 		// call spawn
 		
-	scripts_post_event_console(&proj->attach,sd_event_spawn,sd_event_spawn_init,0);
+	scripts_post_event_console(proj->script_idx,proj->idx,sd_event_spawn,sd_event_spawn_init,0);
 		
 		// if this object is the player or multiplayer\map bot,
 		// then spawn projectile in remotes

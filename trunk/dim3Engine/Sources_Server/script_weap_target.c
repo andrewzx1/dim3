@@ -73,9 +73,9 @@ void script_free_weap_target_object(void)
 	script_free_class(weap_target_class);
 }
 
-JSObjectRef script_add_weap_target_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
+JSObjectRef script_add_weap_target_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
-	return(script_create_child_object(cx,parent_obj,weap_target_class,"target",attach));
+	return(script_create_child_object(cx,parent_obj,weap_target_class,"target",script_idx));
 }
 
 /* =======================================================

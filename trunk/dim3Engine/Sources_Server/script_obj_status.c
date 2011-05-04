@@ -88,9 +88,9 @@ void script_free_obj_status_object(void)
 	script_free_class(obj_status_class);
 }
 
-JSObjectRef script_add_obj_status_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
+JSObjectRef script_add_obj_status_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
-	return(script_create_child_object(cx,parent_obj,obj_status_class,"status",attach));
+	return(script_create_child_object(cx,parent_obj,obj_status_class,"status",script_idx));
 }
 
 /* =======================================================

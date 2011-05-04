@@ -77,9 +77,9 @@ void script_free_proj_setting_object(void)
 	script_free_class(proj_setting_class);
 }
 
-JSObjectRef script_add_proj_setting_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
+JSObjectRef script_add_proj_setting_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
-	return(script_create_child_object(cx,parent_obj,proj_setting_class,"setting",attach));
+	return(script_create_child_object(cx,parent_obj,proj_setting_class,"setting",script_idx));
 }
 
 /* =======================================================
@@ -191,7 +191,7 @@ JSValueRef js_proj_setting_get_weapon_func(JSContextRef cx,JSObjectRef func,JSOb
 	if ((obj_idx==-1) || (weap_idx==-1)) return(script_null_to_value(cx));
 	
 	weap=server.obj_list.objs[obj_idx]->weap_list.weaps[weap_idx];
-	script=js.script_list.scripts[weap->attach.script_idx];
+	script=js.script_list.scripts[weap->script_idx];
 		
 	return((JSValueRef)script->obj);
 }
@@ -212,7 +212,7 @@ JSValueRef js_proj_setting_get_object_func(JSContextRef cx,JSObjectRef func,JSOb
 	if (obj_idx==-1) return(script_null_to_value(cx));
 	
 	obj=server.obj_list.objs[obj_idx];
-	script=js.script_list.scripts[obj->attach.script_idx];
+	script=js.script_list.scripts[obj->script_idx];
 		
 	return((JSValueRef)script->obj);
 }

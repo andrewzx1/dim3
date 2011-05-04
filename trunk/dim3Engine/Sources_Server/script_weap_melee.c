@@ -91,9 +91,9 @@ void script_free_weap_melee_object(void)
 	script_free_class(weap_melee_class);
 }
 
-JSObjectRef script_add_weap_melee_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
+JSObjectRef script_add_weap_melee_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
-	return(script_create_child_object(cx,parent_obj,weap_melee_class,"melee",attach));
+	return(script_create_child_object(cx,parent_obj,weap_melee_class,"melee",script_idx));
 }
 
 /* =======================================================

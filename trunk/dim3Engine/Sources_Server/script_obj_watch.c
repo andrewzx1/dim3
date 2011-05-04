@@ -90,9 +90,9 @@ void script_free_obj_watch_object(void)
 	script_free_class(obj_watch_class);
 }
 
-JSObjectRef script_add_obj_watch_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
+JSObjectRef script_add_obj_watch_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
-	return(script_create_child_object(cx,parent_obj,obj_watch_class,"watch",attach));
+	return(script_create_child_object(cx,parent_obj,obj_watch_class,"watch",script_idx));
 }
 
 /* =======================================================

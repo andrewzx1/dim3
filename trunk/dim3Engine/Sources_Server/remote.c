@@ -124,7 +124,7 @@ bool remote_add(network_reply_join_remote *remote,bool send_event)
 
 	if (send_event) {
 		player_obj=server.obj_list.objs[server.player_obj_idx];
-		scripts_post_event_console(&player_obj->attach,sd_event_remote,sd_event_remote_join,obj->idx);
+		scripts_post_event_console(player_obj->script_idx,-1,sd_event_remote,sd_event_remote_join,obj->idx);
 	}
 	
 	return(TRUE);
@@ -145,7 +145,7 @@ void remote_remove(int net_uid,bool send_event)
 
 	if (send_event) {
 		player_obj=server.obj_list.objs[server.player_obj_idx];
-		scripts_post_event_console(&player_obj->attach,sd_event_remote,sd_event_remote_leave,obj->idx);
+		scripts_post_event_console(player_obj->script_idx,-1,sd_event_remote,sd_event_remote_leave,obj->idx);
 	}
 	
 		// remove any projectiles
@@ -297,10 +297,10 @@ void remote_death(int net_uid,network_request_remote_death *death)
 
 		player_obj=server.obj_list.objs[server.player_obj_idx];
 		if ((obj->damage_obj_idx==-1) || (obj->damage_obj_idx==obj->idx)) {
-			scripts_post_event_console(&player_obj->attach,sd_event_remote,sd_event_remote_suicide,obj->idx);
+			scripts_post_event_console(player_obj->script_idx,-1,sd_event_remote,sd_event_remote_suicide,obj->idx);
 		}
 		else {
-			scripts_post_event_console(&player_obj->attach,sd_event_remote,sd_event_remote_death,obj->idx);
+			scripts_post_event_console(player_obj->script_idx,-1,sd_event_remote,sd_event_remote_death,obj->idx);
 		}
 	}
 
@@ -315,7 +315,7 @@ void remote_death(int net_uid,network_request_remote_death *death)
 			// send telefrag remote event
 				
 		player_obj=server.obj_list.objs[server.player_obj_idx];
-		scripts_post_event_console(&player_obj->attach,sd_event_remote,sd_event_remote_telefrag,telefrag_obj->idx);
+		scripts_post_event_console(player_obj->script_idx,-1,sd_event_remote,sd_event_remote_telefrag,telefrag_obj->idx);
 	}
 		
 		// change the score

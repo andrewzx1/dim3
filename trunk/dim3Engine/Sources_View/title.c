@@ -79,7 +79,7 @@ void title_close(void)
 {
 	gui_shutdown();
 
-	if (title_event_id!=-1) scripts_post_event_console(&js.game_attach,sd_event_interface,sd_event_interface_title_done,title_event_id);
+	if (title_event_id!=-1) scripts_post_event_console(js.game_script_idx,-1,sd_event_interface,sd_event_interface_title_done,title_event_id);
 }
 
 bool title_setup(char *dir,char *name,char *sound_name,int event_id,char *err_str)

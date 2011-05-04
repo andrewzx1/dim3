@@ -66,9 +66,9 @@ void script_free_weap_hand_position_object(void)
 	script_free_class(weap_hand_position_class);
 }
 
-JSObjectRef script_add_weap_hand_position_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
+JSObjectRef script_add_weap_hand_position_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
-	return(script_create_child_object(cx,parent_obj,weap_hand_position_class,"handPosition",attach));
+	return(script_create_child_object(cx,parent_obj,weap_hand_position_class,"handPosition",script_idx));
 }
 
 /* =======================================================

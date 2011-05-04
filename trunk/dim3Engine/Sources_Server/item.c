@@ -99,13 +99,13 @@ void item_pickup_check(obj_type *obj)
 
 				// send pickup event to item
 
-			scripts_post_event_console(&item_obj->attach,sd_event_pickup,0,0);
+			scripts_post_event_console(item_obj->script_idx,-1,sd_event_pickup,0,0);
 			
 			if (item_obj->pickup.canceled) continue;			// pickup was canceled by script
 		
 				// send pickup event to object
 				
-			scripts_post_event_console(&obj->attach,sd_event_pickup,0,0);
+			scripts_post_event_console(obj->script_idx,-1,sd_event_pickup,0,0);
 
 				// send network event
 
@@ -225,5 +225,5 @@ bool item_add_armor(obj_type *obj,int add_count)
 
 void item_add_custom(obj_type *obj,int custom_id)
 {
-	scripts_post_event_console(&obj->attach,sd_event_add_custom,0,custom_id);
+	scripts_post_event_console(obj->script_idx,-1,sd_event_add_custom,0,custom_id);
 }

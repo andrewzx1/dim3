@@ -79,9 +79,9 @@ void script_free_interface_bitmap_object(void)
 	script_free_class(interface_bitmap_class);
 }
 
-JSObjectRef script_add_interface_bitmap_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
+JSObjectRef script_add_interface_bitmap_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
-	return(script_create_child_object(cx,parent_obj,interface_bitmap_class,"bitmap",attach));
+	return(script_create_child_object(cx,parent_obj,interface_bitmap_class,"bitmap",script_idx));
 }
 
 /* =======================================================

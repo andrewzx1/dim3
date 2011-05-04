@@ -51,8 +51,8 @@ void script_free_global_utility_object(void)
 	script_free_class(utility_class);
 }
 
-JSObjectRef script_add_global_utility_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
+JSObjectRef script_add_global_utility_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
-	return(script_create_child_object(cx,parent_obj,utility_class,"utility",attach));
+	return(script_create_child_object(cx,parent_obj,utility_class,"utility",script_idx));
 }
 

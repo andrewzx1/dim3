@@ -266,7 +266,7 @@ void debug_dump(void)
 		}
 		
 		if (!obj->scenery.on) {
-			debug_info_table_str(file,js.script_list.scripts[obj->attach.script_idx]->name,30);
+			debug_info_table_str(file,js.script_list.scripts[obj->script_idx]->name,30);
 		}
 		else {
 			debug_info_table_str(file,"*",30);
@@ -312,7 +312,7 @@ void debug_dump(void)
 			else {
 				debug_info_table_str(file,server.model_list.models[weap->draw.model_idx]->name,25);
 			}
-			debug_info_table_str(file,js.script_list.scripts[weap->attach.script_idx]->name,30);
+			debug_info_table_str(file,js.script_list.scripts[weap->script_idx]->name,30);
 			debug_info_return(file);
 		}
 	}
@@ -362,7 +362,7 @@ void debug_dump(void)
 				else {
 					debug_info_table_str(file,server.model_list.models[proj_setup->draw.model_idx]->name,25);
 				}
-				debug_info_table_str(file,js.script_list.scripts[proj_setup->attach.script_idx]->name,30);
+				debug_info_table_str(file,js.script_list.scripts[proj_setup->script_idx]->name,30);
 				debug_info_return(file);
 			}
 		}
@@ -507,7 +507,7 @@ void debug_dump(void)
 		timer=js.timer_list.timers[n];
 		if (timer==NULL) continue;
 
-		script=js.script_list.scripts[timer->attach.script_idx];
+		script=js.script_list.scripts[timer->script_idx];
 		debug_info_table_str(file,script->name,35);
 		debug_info_table_int(file,timer->count,10);
 		debug_info_table_int(file,timer->freq,10);

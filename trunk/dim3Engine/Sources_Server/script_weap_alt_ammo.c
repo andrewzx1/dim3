@@ -89,9 +89,9 @@ void script_free_weap_alt_ammo_object(void)
 	script_free_class(weap_alt_ammo_class);
 }
 
-JSObjectRef script_add_weap_alt_ammo_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
+JSObjectRef script_add_weap_alt_ammo_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
-	return(script_create_child_object(cx,parent_obj,weap_alt_ammo_class,"altAmmo",attach));
+	return(script_create_child_object(cx,parent_obj,weap_alt_ammo_class,"altAmmo",script_idx));
 }
 
 /* =======================================================
@@ -404,7 +404,7 @@ JSValueRef js_weap_alt_ammo_change_clip_func(JSContextRef cx,JSObjectRef func,JS
 	
 		// alert object of clip change
 		
-	scripts_post_event_console(&obj->attach,sd_event_weapon_fire,sd_event_weapon_fire_clip_change,0);
+	scripts_post_event_console(obj->script_idx,-1,sd_event_weapon_fire,sd_event_weapon_fire_clip_change,0);
 	
 	return(script_bool_to_value(cx,TRUE));
 }

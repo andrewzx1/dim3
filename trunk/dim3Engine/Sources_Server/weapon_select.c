@@ -93,10 +93,10 @@ void weapon_set(obj_type *obj,weapon_type *weap)
     
 	weapon_clear_animation(weap);
 
-	scripts_post_event_console(&weap->attach,sd_event_animation_weapon,sd_event_animation_weapon_held,0);
+	scripts_post_event_console(weap->script_idx,-1,sd_event_animation_weapon,sd_event_animation_weapon_held,0);
 	
-	scripts_post_event_console(&weap->attach,sd_event_weapon_select,0,0);
-	scripts_post_event_console(&obj->attach,sd_event_weapon_select,0,0);
+	scripts_post_event_console(weap->script_idx,-1,sd_event_weapon_select,0,0);
+	scripts_post_event_console(obj->script_idx,-1,sd_event_weapon_select,0,0);
 }
 
 /* =======================================================
@@ -138,10 +138,10 @@ void weapon_clear_state(obj_type *obj)
 
 	weapon_clear_animation(weap);
 
-	scripts_post_event_console(&weap->attach,sd_event_animation_weapon,sd_event_animation_weapon_held,0);
+	scripts_post_event_console(weap->script_idx,-1,sd_event_animation_weapon,sd_event_animation_weapon_held,0);
 
-	scripts_post_event_console(&weap->attach,sd_event_weapon_select,0,0);
-	scripts_post_event_console(&obj->attach,sd_event_weapon_select,0,0);
+	scripts_post_event_console(weap->script_idx,-1,sd_event_weapon_select,0,0);
+	scripts_post_event_console(obj->script_idx,-1,sd_event_weapon_select,0,0);
 }
 
 /* =======================================================
@@ -160,7 +160,7 @@ void weapon_lower(obj_type *obj)
 	weap=weapon_find_current(obj);
 	if (weap==NULL) return;
 	
-	scripts_post_event_console(&weap->attach,sd_event_animation_weapon,sd_event_animation_weapon_lower,0);
+	scripts_post_event_console(weap->script_idx,-1,sd_event_animation_weapon,sd_event_animation_weapon_lower,0);
 }
 
 void weapon_raise(obj_type *obj)
@@ -173,7 +173,7 @@ void weapon_raise(obj_type *obj)
 	weap=weapon_find_current(obj);
 	if (weap==NULL) return;
 
-	scripts_post_event_console(&weap->attach,sd_event_animation_weapon,sd_event_animation_weapon_raise,0);
+	scripts_post_event_console(weap->script_idx,-1,sd_event_animation_weapon,sd_event_animation_weapon_raise,0);
 }
 
 void weapon_held(obj_type *obj)
@@ -185,7 +185,7 @@ void weapon_held(obj_type *obj)
 	weap=weapon_find_current(obj);
 	if (weap==NULL) return;
 
-	scripts_post_event_console(&weap->attach,sd_event_animation_weapon,sd_event_animation_weapon_held,0);
+	scripts_post_event_console(weap->script_idx,-1,sd_event_animation_weapon,sd_event_animation_weapon_held,0);
 }
 
 void weapon_cur_weapon_recoil_copy(obj_type *obj,int copy_weap_index)
@@ -226,8 +226,8 @@ void weapon_goto(obj_type *obj,weapon_type *weap)
 
         // tell player about new weapon
 		
-	scripts_post_event_console(&weap->attach,sd_event_weapon_select,0,0);
-	scripts_post_event_console(&obj->attach,sd_event_weapon_select,0,0);
+	scripts_post_event_console(weap->script_idx,-1,sd_event_weapon_select,0,0);
+	scripts_post_event_console(obj->script_idx,-1,sd_event_weapon_select,0,0);
         
         // start hand swap
 
@@ -491,7 +491,7 @@ void weapon_zoom_enter(obj_type *obj,weapon_type *weap)
 	
 	camera.setup.mode=cv_fpp;
 
- 	scripts_post_event_console(&weap->attach,sd_event_weapon_fire,sd_event_weapon_fire_zoom_enter,0);
+ 	scripts_post_event_console(weap->script_idx,-1,sd_event_weapon_fire,sd_event_weapon_fire_zoom_enter,0);
 }
 
 void weapon_zoom_exit(obj_type *obj,weapon_type *weap)
@@ -499,7 +499,7 @@ void weapon_zoom_exit(obj_type *obj,weapon_type *weap)
 	weap->zoom.mode=zoom_mode_out;
 	obj->zoom_draw.start_tick=game_time_get();
 
-	scripts_post_event_console(&weap->attach,sd_event_weapon_fire,sd_event_weapon_fire_zoom_exit,0);
+	scripts_post_event_console(weap->script_idx,-1,sd_event_weapon_fire,sd_event_weapon_fire_zoom_exit,0);
 }
 
 void weapon_zoom_off(obj_type *obj,weapon_type *weap)

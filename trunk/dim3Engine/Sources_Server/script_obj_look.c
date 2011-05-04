@@ -72,9 +72,9 @@ void script_free_obj_look_object(void)
 	script_free_class(obj_look_class);
 }
 
-JSObjectRef script_add_obj_look_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
+JSObjectRef script_add_obj_look_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
-	return(script_create_child_object(cx,parent_obj,obj_look_class,"look",attach));
+	return(script_create_child_object(cx,parent_obj,obj_look_class,"look",script_idx));
 }
 
 /* =======================================================

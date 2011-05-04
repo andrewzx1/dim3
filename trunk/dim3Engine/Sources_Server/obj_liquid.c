@@ -133,7 +133,7 @@ void object_liquid(obj_type *obj)
         // leaving liquid
      
     if (obj->contact.liquid_idx==-1) {
-        if (old_liquid_mode!=lm_out) scripts_post_event_console(&obj->attach,sd_event_liquid,sd_event_liquid_out,0);
+        if (old_liquid_mode!=lm_out) scripts_post_event_console(obj->script_idx,-1,sd_event_liquid,sd_event_liquid_out,0);
         return;
     }
 
@@ -157,11 +157,11 @@ void object_liquid(obj_type *obj)
 		case lm_in:
 			if (old_liquid_mode==lm_out) {
 				obj->status.liquid_harm_count=0;
-				scripts_post_event_console(&obj->attach,sd_event_liquid,sd_event_liquid_in,0);
+				scripts_post_event_console(obj->script_idx,-1,sd_event_liquid,sd_event_liquid_in,0);
 				break;
 			}
 			if (old_liquid_mode==lm_under) {
-				scripts_post_event_console(&obj->attach,sd_event_liquid,sd_event_liquid_surface,0);
+				scripts_post_event_console(obj->script_idx,-1,sd_event_liquid,sd_event_liquid_surface,0);
 				object_liquid_jump(obj);				// jump out of liquid when surfacing
 				break;
 			}
@@ -174,7 +174,7 @@ void object_liquid(obj_type *obj)
 			}
 
 			if (old_liquid_mode==lm_under) {
-				scripts_post_event_console(&obj->attach,sd_event_liquid,sd_event_liquid_surface,0);
+				scripts_post_event_console(obj->script_idx,-1,sd_event_liquid,sd_event_liquid_surface,0);
 				object_liquid_jump(obj);				// jump out of liquid when surfacing
 			}
 			break;
@@ -186,7 +186,7 @@ void object_liquid(obj_type *obj)
 			if (old_liquid_mode!=lm_under) {
 				obj->status.liquid_under_tick=tick;
 				obj->status.liquid_drown_count=0;
-				scripts_post_event_console(&obj->attach,sd_event_liquid,sd_event_liquid_submerge,0);
+				scripts_post_event_console(obj->script_idx,-1,sd_event_liquid,sd_event_liquid_submerge,0);
 			}
 			break;
 			

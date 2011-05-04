@@ -49,7 +49,7 @@ void scripts_setup_events(script_type *script)
 	script->event_func=script_get_single_function(script->cx,script->global_obj,"event");
 }
 
-bool scripts_setup_event_attach(attach_type *attach,int main_event,char *func_name,char *err_str)
+bool scripts_setup_event_attach(int script_idx,int main_event,char *func_name,char *err_str)
 {
 	int					idx;
 	script_type			*script;
@@ -57,8 +57,7 @@ bool scripts_setup_event_attach(attach_type *attach,int main_event,char *func_na
 
 		// get the script
 
-	if (attach->script_idx==-1) return(TRUE);
-	script=js.script_list.scripts[attach->script_idx];
+	script=js.script_list.scripts[script_idx];
 
 		// get the func and determine if
 		// it exists and is callable
@@ -132,49 +131,11 @@ void scripts_recursion_out(script_type *script)
 
 /* =======================================================
 
-      Scripts Projectile Attachs
-
-	  Projects share scripts with their projectile setup.
-	  Because of this, we have to switch the proj_idx in the
-	  projectile setup attach when calling into functions,
-	  and switch it back when leaving (in case we are calling
-	  from within another script.)
-      
-======================================================= */
-
-int scripts_projectile_start(JSObjectRef j_obj,attach_type *attach)
-{
-	int						old_proj_idx;
-	attach_type				*data_attach;
-
-	if (attach->thing_type!=thing_type_projectile) return(-1);
-
-	data_attach=(attach_type*)JSObjectGetPrivate(j_obj);
-	if (data_attach->thing_type!=thing_type_projectile) return(-1);
-
-	old_proj_idx=data_attach->proj_idx;
-	data_attach->proj_idx=attach->proj_idx;
-
-	return(old_proj_idx);
-}
-
-void script_projectile_finish(JSObjectRef j_obj,int old_proj_idx)
-{
-	attach_type				*data_attach;
-
-	if (old_proj_idx==-1) return;
-
-	data_attach=(attach_type*)JSObjectGetPrivate(j_obj);
-	data_attach->proj_idx=old_proj_idx;
-}
-
-/* =======================================================
-
       Script Events
       
 ======================================================= */
 
-bool scripts_post_event_on_attach(attach_type *attach,int main_event,int sub_event,int id,char *err_str)
+bool scripts_post_event_on_attach(int script_idx,int override_proj_idx,int main_event,int sub_event,int id,char *err_str)
 {
 	int						event_idx,tick,old_proj_idx;
 	JSValueRef				rval,exception,argv[5];
@@ -191,9 +152,7 @@ bool scripts_post_event_on_attach(attach_type *attach,int main_event,int sub_eve
 	
 		// find script
 		
-	if (attach->script_idx==-1) return(TRUE);
-	
-	script=js.script_list.scripts[attach->script_idx];
+	script=js.script_list.scripts[script_idx];
 
 		// is this an attached event?
 
@@ -224,14 +183,17 @@ bool scripts_post_event_on_attach(attach_type *attach,int main_event,int sub_eve
 		
 	tick=game_time_get();
 
-	attach->event_state.main_event=main_event;
-	attach->event_state.sub_event=sub_event;
-	attach->event_state.id=id;
-	attach->event_state.tick=tick;
+	script->event_state.main_event=main_event;
+	script->event_state.sub_event=sub_event;
+	script->event_state.id=id;
+	script->event_state.tick=tick;
 
 		// handle any proj_setup/proj swaps
 
-	old_proj_idx=scripts_projectile_start(script->obj,attach);
+	if (override_proj_idx!=-1) {
+		old_proj_idx=script->attach.proj_idx;
+		script->attach.proj_idx=override_proj_idx;
+	}
 
 		// run the event function
 		// supergumba -- for now we handle both methods, but
@@ -260,7 +222,7 @@ bool scripts_post_event_on_attach(attach_type *attach,int main_event,int sub_eve
 
 		// switch back any saved proj_idx
 
-	script_projectile_finish(script->obj,old_proj_idx);
+	if (override_proj_idx!=-1) script->attach.proj_idx=old_proj_idx;
 	
 		// leave event
 		
@@ -273,28 +235,25 @@ bool scripts_post_event_on_attach(attach_type *attach,int main_event,int sub_eve
 	return(err_str[0]==0x0);
 }
 
-bool scripts_post_event(attach_type *attach,int main_event,int sub_event,int id,char *err_str)
+bool scripts_post_event(int script_idx,int override_proj_idx,int main_event,int sub_event,int id,char *err_str)
 {
 	int						event_idx;
-	attach_type				parent_attach;
 	script_type				*script;
 	
 		// ignore if no script
 
-	if (attach->script_idx==-1) return(TRUE);
+	if (script_idx==-1) return(TRUE);
 
 		// can't do this if not using event attachments
 	
-	script=js.script_list.scripts[attach->script_idx];
-	if (!script->event_attach_list.on) {
-		return(scripts_post_event_on_attach(attach,main_event,sub_event,id,err_str));
-	}
+	script=js.script_list.scripts[script_idx];
+	if (!script->event_attach_list.on) return(scripts_post_event_on_attach(script_idx,override_proj_idx,main_event,sub_event,id,err_str));
 
 	event_idx=main_event-event_main_id_start;
 
-		// determine if event is on child
+		// try event is on child
 
-	if (script->event_attach_list.func[event_idx]!=NULL) return(scripts_post_event_on_attach(attach,main_event,sub_event,id,err_str));	
+	if (script->event_attach_list.func[event_idx]!=NULL) return(scripts_post_event_on_attach(script_idx,override_proj_idx,main_event,sub_event,id,err_str));	
 
 		// now try parent
 
@@ -303,17 +262,14 @@ bool scripts_post_event(attach_type *attach,int main_event,int sub_event,int id,
 	script=js.script_list.scripts[script->parent_idx];
 	if (script->event_attach_list.func[event_idx]==NULL) return(TRUE);
 
-	memmove(&parent_attach,attach,sizeof(attach_type));
-	parent_attach.script_idx=script->idx;
-
-	return(scripts_post_event_on_attach(&parent_attach,main_event,sub_event,id,err_str));
+	return(scripts_post_event_on_attach(script->parent_idx,override_proj_idx,main_event,sub_event,id,err_str));
 }
 
-void scripts_post_event_console(attach_type *attach,int main_event,int sub_event,int id)
+void scripts_post_event_console(int script_idx,int override_proj_idx,int main_event,int sub_event,int id)
 {
 	char			err_str[256];
 	
-	if (!scripts_post_event(attach,main_event,sub_event,id,err_str)) {
+	if (!scripts_post_event(script_idx,override_proj_idx,main_event,sub_event,id,err_str)) {
 		console_add_error(err_str);
 	}
 }
@@ -324,44 +280,36 @@ void scripts_post_event_console(attach_type *attach,int main_event,int sub_event
       
 ======================================================= */
 
-bool scripts_post_event_call_parent(attach_type *attach,char *err_str)
+bool scripts_post_event_call_parent(int script_idx,char *err_str)
 {
-	attach_type		parent_attach;
+	int				override_proj_idx;
 	script_type		*script;
-	
-	if (attach->script_idx==-1) return(TRUE);
 	
 		// get the parent script
 
-	script=js.script_list.scripts[attach->script_idx];
+	script=js.script_list.scripts[script_idx];
 	if (script->parent_idx==-1) {
 		strcpy(err_str,"Can not call parent; this script does not implement a parent script");
 		return(FALSE);
 	}
+		// get the override
 
-		// create attach
-
-	memmove(&parent_attach,attach,sizeof(attach_type));
-	parent_attach.script_idx=script->parent_idx;
+	override_proj_idx=-1;
+	if (script->attach.thing_type==thing_type_projectile) override_proj_idx=script->attach.proj_idx;
 
 		// call on parent script
 
-	return(scripts_post_event_on_attach(&parent_attach,attach->event_state.main_event,attach->event_state.sub_event,attach->event_state.id,err_str));
+	return(scripts_post_event_on_attach(script->parent_idx,override_proj_idx,script->event_state.main_event,script->event_state.sub_event,script->event_state.id,err_str));
 }
 
-JSValueRef scripts_get_parent_variable(attach_type *attach,char *prop_name,char *err_str)
+JSValueRef scripts_get_parent_variable(int script_idx,char *prop_name,char *err_str)
 {
 	script_type		*script,*parent_script;
 	JSValueRef		rval;
-
-	if (attach->script_idx==-1) {
-		strcpy(err_str,"Script in bad state");
-		return(NULL);
-	}
 	
 		// get the parent script
 
-	script=js.script_list.scripts[attach->script_idx];
+	script=js.script_list.scripts[script_idx];
 	if (script->parent_idx==-1) {
 		strcpy(err_str,"Can not get parent variable; this script does not implement a parent script");
 		return(FALSE);
@@ -380,32 +328,27 @@ JSValueRef scripts_get_parent_variable(attach_type *attach,char *prop_name,char 
 	return(rval);
 }
 
-JSValueRef scripts_call_parent_function(attach_type *attach,char *func_name,int arg_count,JSValueRef *args,char *err_str)
+JSValueRef scripts_call_parent_function(int script_idx,char *func_name,int arg_count,JSValueRef *args,char *err_str)
 {
-	attach_type		parent_attach;
+	int				override_proj_idx;
 	script_type		*script;
-
-	if (attach->script_idx==-1) {
-		strcpy(err_str,"Script in bad state");
-		return(NULL);
-	}
 	
 		// get the parent script
 
-	script=js.script_list.scripts[attach->script_idx];
+	script=js.script_list.scripts[script_idx];
 	if (script->parent_idx==-1) {
 		strcpy(err_str,"Can not call parent function; this script does not implement a parent script");
 		return(FALSE);
 	}
-	
-		// create attach
 
-	memmove(&parent_attach,attach,sizeof(attach_type));
-	parent_attach.script_idx=script->parent_idx;
+		// get the override
+
+	override_proj_idx=-1;
+	if (script->attach.thing_type==thing_type_projectile) override_proj_idx=script->attach.proj_idx;
 
 		// call the function
 
-	return(scripts_direct_call(&parent_attach,func_name,arg_count,args,err_str));
+	return(scripts_direct_call(script->parent_idx,override_proj_idx,func_name,arg_count,args,err_str));
 }
 
 /* =======================================================
@@ -414,19 +357,14 @@ JSValueRef scripts_call_parent_function(attach_type *attach,char *func_name,int 
       
 ======================================================= */
 
-JSValueRef scripts_get_child_variable(attach_type *attach,char *prop_name,char *err_str)
+JSValueRef scripts_get_child_variable(int script_idx,char *prop_name,char *err_str)
 {
 	script_type		*script,*child_script;
 	JSValueRef		rval;
-
-	if (attach->script_idx==-1) {
-		strcpy(err_str,"Script in bad state");
-		return(NULL);
-	}
 	
 		// get the child script
 
-	script=js.script_list.scripts[attach->script_idx];
+	script=js.script_list.scripts[script_idx];
 	if (script->child_idx==-1) {
 		strcpy(err_str,"Can not get child variable; this script is not implemented from a parent script");
 		return(FALSE);
@@ -445,32 +383,27 @@ JSValueRef scripts_get_child_variable(attach_type *attach,char *prop_name,char *
 	return(rval);
 }
 
-JSValueRef scripts_call_child_function(attach_type *attach,char *func_name,int arg_count,JSValueRef *args,char *err_str)
+JSValueRef scripts_call_child_function(int script_idx,char *func_name,int arg_count,JSValueRef *args,char *err_str)
 {
-	attach_type		child_attach;
+	int				override_proj_idx;
 	script_type		*script;
-
-	if (attach->script_idx==-1) {
-		strcpy(err_str,"Script in bad state");
-		return(NULL);
-	}
 	
 		// get the child script
 
-	script=js.script_list.scripts[attach->script_idx];
+	script=js.script_list.scripts[script_idx];
 	if (script->child_idx==-1) {
 		strcpy(err_str,"Can not get call child function; this script is not implemented from a parent script");
 		return(FALSE);
 	}
-	
-		// create attach
 
-	memmove(&child_attach,attach,sizeof(attach_type));
-	child_attach.script_idx=script->child_idx;
+		// get the override
+
+	override_proj_idx=-1;
+	if (script->attach.thing_type==thing_type_projectile) override_proj_idx=script->attach.proj_idx;
 
 		// call the function
 
-	return(scripts_direct_call(&child_attach,func_name,arg_count,args,err_str));
+	return(scripts_direct_call(script->child_idx,override_proj_idx,func_name,arg_count,args,err_str));
 }
 
 /* =======================================================
@@ -479,7 +412,7 @@ JSValueRef scripts_call_child_function(attach_type *attach,char *func_name,int a
       
 ======================================================= */
 
-bool scripts_chain(attach_type *attach,char *func_name,char *err_str)
+bool scripts_chain(int script_idx,int override_proj_idx,char *func_name,char *err_str)
 {
 	int				old_proj_idx;
 	JSValueRef		rval,exception,argv[2];
@@ -492,9 +425,7 @@ bool scripts_chain(attach_type *attach,char *func_name,char *err_str)
 	
 		// find script
 		
-	if (attach->script_idx==-1) return(TRUE);
-	
-	script=js.script_list.scripts[attach->script_idx];
+	script=js.script_list.scripts[script_idx];
 	
 		// is the chain a good function?
 		
@@ -510,7 +441,10 @@ bool scripts_chain(attach_type *attach,char *func_name,char *err_str)
 
 		// handle any proj_setup/proj swaps
 
-	old_proj_idx=scripts_projectile_start(script->obj,attach);
+	if (override_proj_idx!=-1) {
+		old_proj_idx=script->attach.proj_idx;
+		script->attach.proj_idx=override_proj_idx;
+	}
 
 		// run the event function
 		
@@ -522,7 +456,7 @@ bool scripts_chain(attach_type *attach,char *func_name,char *err_str)
 
 		// switch back any saved proj_idx
 
-	script_projectile_finish(script->obj,old_proj_idx);
+	if (override_proj_idx!=-1) script->attach.proj_idx=old_proj_idx;
 
 		// leave recursion
 
@@ -531,11 +465,11 @@ bool scripts_chain(attach_type *attach,char *func_name,char *err_str)
 	return(err_str[0]==0x0);
 }
 
-void scripts_chain_console(attach_type *attach,char *func_name)
+void scripts_chain_console(int script_idx,int override_proj_idx,char *func_name)
 {
 	char			err_str[256];
 	
-	if (!scripts_chain(attach,func_name,err_str)) console_add_error(err_str);
+	if (!scripts_chain(script_idx,override_proj_idx,func_name,err_str)) console_add_error(err_str);
 }
 
 /* =======================================================
@@ -544,7 +478,7 @@ void scripts_chain_console(attach_type *attach,char *func_name)
       
 ======================================================= */
 
-JSValueRef scripts_direct_call(attach_type *attach,char *func_name,int arg_count,JSValueRef *args,char *err_str)
+JSValueRef scripts_direct_call(int script_idx,int override_proj_idx,char *func_name,int arg_count,JSValueRef *args,char *err_str)
 {
 	int				n,old_proj_idx;
 	JSValueRef		rval,exception,argv[5];
@@ -553,7 +487,7 @@ JSValueRef scripts_direct_call(attach_type *attach,char *func_name,int arg_count
 	
 		// find script
 		
-	script=js.script_list.scripts[attach->script_idx];
+	script=js.script_list.scripts[script_idx];
 
 		// enter recursion
 
@@ -561,7 +495,10 @@ JSValueRef scripts_direct_call(attach_type *attach,char *func_name,int arg_count
 
 		// handle any proj_setup/proj swaps
 
-	old_proj_idx=scripts_projectile_start(script->obj,attach);
+	if (override_proj_idx!=-1) {
+		old_proj_idx=script->attach.proj_idx;
+		script->attach.proj_idx=override_proj_idx;
+	}
 
 		// find function
 
@@ -584,7 +521,7 @@ JSValueRef scripts_direct_call(attach_type *attach,char *func_name,int arg_count
 
 		// switch back any saved proj_idx
 
-	script_projectile_finish(script->obj,old_proj_idx);
+	if (override_proj_idx!=-1) script->attach.proj_idx=old_proj_idx;
 
 		// leave recursion
 

@@ -70,9 +70,9 @@ void script_free_model_bone_object(void)
 	script_free_class(model_bone_class);
 }
 
-JSObjectRef script_add_model_bone_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
+JSObjectRef script_add_model_bone_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
-	return(script_create_child_object(cx,parent_obj,model_bone_class,"bone",attach));
+	return(script_create_child_object(cx,parent_obj,model_bone_class,"bone",script_idx));
 }
 
 /* =======================================================
@@ -83,29 +83,31 @@ JSObjectRef script_add_model_bone_object(JSContextRef cx,JSObjectRef parent_obj,
 
 model_draw* script_bone_function_setup(JSContextRef cx,JSObjectRef j_obj,JSValueRef *exception)
 {
+	int					script_idx;
 	obj_type			*obj;
 	weapon_type			*weap;
 	proj_type			*proj;
-	attach_type			*attach;
+	script_type			*script;
 	
-	attach=(attach_type*)JSObjectGetPrivate(j_obj);
+	script_idx=(int)JSObjectGetPrivate(j_obj);
+	script=js.script_list.scripts[script_idx];
 	
-	switch (attach->thing_type) {
+	switch (script->attach.thing_type) {
 	
 		case thing_type_object:
-			obj=server.obj_list.objs[attach->obj_idx];
+			obj=server.obj_list.objs[script->attach.obj_idx];
 			model_draw_setup_object(obj);
 			return(&obj->draw);
 			
 		case thing_type_weapon:
-			obj=server.obj_list.objs[attach->obj_idx];
-			weap=obj->weap_list.weaps[attach->weap_idx];
+			obj=server.obj_list.objs[script->attach.obj_idx];
+			weap=obj->weap_list.weaps[script->attach.weap_idx];
 			model_draw_setup_weapon(obj,weap,FALSE,FALSE);
 			return(&weap->draw);
 			
 		case thing_type_projectile:
-			if (attach->proj_idx==-1) break;			// this happens when we are on a projectile setup, not a projectile
-			proj=server.proj_list.projs[attach->proj_idx];
+			if (script->attach.proj_idx==-1) break;			// this happens when we are on a projectile setup, not a projectile
+			proj=server.proj_list.projs[script->attach.proj_idx];
 			model_draw_setup_projectile(proj);
 			return(&proj->draw);
 			

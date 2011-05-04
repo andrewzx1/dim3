@@ -71,9 +71,9 @@ void script_free_map_group_object(void)
 	script_free_class(map_group_class);
 }
 
-JSObjectRef script_add_map_group_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
+JSObjectRef script_add_map_group_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
-	return(script_create_child_object(cx,parent_obj,map_group_class,"group",attach));
+	return(script_create_child_object(cx,parent_obj,map_group_class,"group",script_idx));
 }
 
 /* =======================================================

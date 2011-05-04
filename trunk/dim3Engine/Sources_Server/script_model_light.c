@@ -73,9 +73,9 @@ void script_free_model_light_object(void)
 	script_free_class(model_light_class);
 }
 
-JSObjectRef script_add_model_light_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
+JSObjectRef script_add_model_light_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
-	return(script_create_child_object(cx,parent_obj,model_light_class,"light",attach));
+	return(script_create_child_object(cx,parent_obj,model_light_class,"light",script_idx));
 }
 
 /* =======================================================

@@ -43,7 +43,7 @@ extern char* game_file_get_chunk(void *data);
       
 ======================================================= */
 
-bool script_state_save_single(attach_type *attach)
+bool script_state_save_single(int script_idx)
 {
 	int						n,count,prop_name_len,prop_value_len;
 	char					prop_name[256],err_str[256];
@@ -53,15 +53,15 @@ bool script_state_save_single(attach_type *attach)
 	JSStringRef				js_prop_name,js_prop_json;
 	JSValueRef				js_prop_value;
 
+	if (script_idx==-1) return(TRUE);
+
 		// send save state event
 
-	scripts_post_event(attach,sd_event_state,sd_event_state_save,0,err_str);
+	scripts_post_event(script_idx,-1,sd_event_state,sd_event_state_save,0,err_str);
 
 		// get the script
 
-	if (attach->script_idx==-1) return(TRUE);
-
-	script=js.script_list.scripts[attach->script_idx];
+	script=js.script_list.scripts[script_idx];
 
 		// run through the properities
 
@@ -139,26 +139,26 @@ bool script_state_save(void)
 	weapon_type		*weap;
 	proj_setup_type	*proj_setup;
 
-	if (!script_state_save_single(&js.game_attach)) return(FALSE);
-	if (!script_state_save_single(&js.course_attach)) return(FALSE);
+	if (!script_state_save_single(js.game_script_idx)) return(FALSE);
+	if (!script_state_save_single(js.course_script_idx)) return(FALSE);
 	
 	for (n=0;n!=max_obj_list;n++) {
 		obj=server.obj_list.objs[n];
 		if (obj==NULL) continue;
 
-		if (!script_state_save_single(&obj->attach)) return(FALSE);
+		if (!script_state_save_single(obj->script_idx)) return(FALSE);
 
 		for (k=0;k!=max_weap_list;k++) {
 			weap=obj->weap_list.weaps[k];
 			if (weap==NULL) continue;
 			
-			if (!script_state_save_single(&weap->attach)) return(FALSE);
+			if (!script_state_save_single(weap->script_idx)) return(FALSE);
 		
 			for (i=0;i!=max_proj_setup_list;i++) {
 				proj_setup=weap->proj_setup_list.proj_setups[i];
 				if (proj_setup==NULL) continue;
 				
-				if (!script_state_save_single(&proj_setup->attach)) return(FALSE);
+				if (script_state_save_single(proj_setup->script_idx)) return(FALSE);
 			}
 		}
 	}
@@ -172,7 +172,7 @@ bool script_state_save(void)
       
 ======================================================= */
 
-bool script_state_load_single(attach_type *attach)
+bool script_state_load_single(int script_idx)
 {
 	int				prop_name_len,prop_value_len;
 	char			prop_name[256],err_str[256];
@@ -181,11 +181,11 @@ bool script_state_load_single(attach_type *attach)
 	JSStringRef		js_prop_name,js_prop_json;
 	JSValueRef		js_prop_value;
 
+	if (script_idx==-1) return(TRUE);
+
 		// get the script
 
-	if (attach->script_idx==-1) return(TRUE);
-
-	script=js.script_list.scripts[attach->script_idx];
+	script=js.script_list.scripts[script_idx];
 
 		// run through the properties to replace
 		// a 0 property name length means the end
@@ -221,7 +221,7 @@ bool script_state_load_single(attach_type *attach)
 
 		// send load event to script
 
-	scripts_post_event(attach,sd_event_state,sd_event_state_load,0,err_str);
+	scripts_post_event(script_idx,-1,sd_event_state,sd_event_state_load,0,err_str);
 
 	return(TRUE);
 }
@@ -236,8 +236,8 @@ bool script_state_load(void)
 
 		// load the game and course
 
-	if (!script_state_load_single(&js.game_attach)) return(FALSE);
-	if (!script_state_load_single(&js.course_attach)) return(FALSE);
+	if (!script_state_load_single(js.game_script_idx)) return(FALSE);
+	if (!script_state_load_single(js.course_script_idx)) return(FALSE);
 
 		// load the objects
 
@@ -245,19 +245,19 @@ bool script_state_load(void)
 		obj=server.obj_list.objs[n];
 		if (obj==NULL) continue;
 
-		if (!script_state_load_single(&obj->attach)) return(FALSE);
+		if (!script_state_load_single(obj->script_idx)) return(FALSE);
 
 		for (k=0;k!=max_weap_list;k++) {
 			weap=obj->weap_list.weaps[k];
 			if (weap==NULL) continue;
 			
-			if (!script_state_load_single(&weap->attach)) return(FALSE);
+			if (!script_state_load_single(weap->script_idx)) return(FALSE);
 		
 			for (i=0;i!=max_proj_setup_list;i++) {
 				proj_setup=weap->proj_setup_list.proj_setups[i];
 				if (proj_setup==NULL) continue;
 				
-				if (!script_state_load_single(&proj_setup->attach)) return(FALSE);
+				if (!script_state_load_single(proj_setup->script_idx)) return(FALSE);
 			}
 		}
 	}
@@ -273,7 +273,7 @@ bool script_state_load(void)
 		weap=obj->weap_list.weaps[proj->weap_idx];
 		proj_setup=weap->proj_setup_list.proj_setups[proj->proj_setup_idx];
 
-		proj->attach.script_idx=proj_setup->attach.script_idx;
+		proj->script_idx=proj_setup->script_idx;
 	}
 
 	return(TRUE);

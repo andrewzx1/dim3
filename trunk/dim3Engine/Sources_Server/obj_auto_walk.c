@@ -334,7 +334,7 @@ void object_auto_walk_node(obj_type *obj)
 	if (seek_idx!=dest_idx) {
 		obj->auto_walk.node_last_seek_idx=obj->auto_walk.node_seek_idx;
 		obj->auto_walk.node_seek_idx=map_find_next_node_in_path(&map,seek_idx,dest_idx);
-		if (!obj->auto_walk.skip_event) scripts_post_event_console(&obj->attach,sd_event_path,sd_event_path_node,node->event_id);
+		if (!obj->auto_walk.skip_event) scripts_post_event_console(obj->script_idx,-1,sd_event_path,sd_event_path_node,node->event_id);
 		return;
 	}
 	
@@ -344,7 +344,7 @@ void object_auto_walk_node(obj_type *obj)
 	obj->auto_walk.node_seek_idx=-1;
 	obj->auto_walk.node_dest_idx=-1;
 	
-	if (!obj->auto_walk.skip_event) scripts_post_event_console(&obj->attach,sd_event_path,sd_event_path_done,obj->auto_walk.node_event_id);
+	if (!obj->auto_walk.skip_event) scripts_post_event_console(obj->script_idx,-1,sd_event_path,sd_event_path_done,obj->auto_walk.node_event_id);
 }
 
 void object_auto_walk_object(obj_type *obj)

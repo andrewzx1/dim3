@@ -69,9 +69,9 @@ void script_free_map_movement_object(void)
 	script_free_class(map_movement_class);
 }
 
-JSObjectRef script_add_map_movement_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
+JSObjectRef script_add_map_movement_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
-	return(script_create_child_object(cx,parent_obj,map_movement_class,"movement",attach));
+	return(script_create_child_object(cx,parent_obj,map_movement_class,"movement",script_idx));
 }
 
 /* =======================================================
@@ -82,45 +82,48 @@ JSObjectRef script_add_map_movement_object(JSContextRef cx,JSObjectRef parent_ob
 
 JSValueRef js_map_movement_start_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	int				movement_idx;
-	attach_type		*attach;
+	int				script_idx,movement_idx;
+	script_type		*script;
 	
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
-	attach=(attach_type*)JSObjectGetPrivate(j_obj);
-	
+	script_idx=(int)JSObjectGetPrivate(j_obj);
+	script=js.script_list.scripts[script_idx];
+
 	movement_idx=script_find_map_movement_from_name(cx,argv[0],exception);
-	if (movement_idx!=-1) map_movements_script_start(attach->obj_idx,movement_idx,FALSE);
+	if (movement_idx!=-1) map_movements_script_start(script->attach.obj_idx,movement_idx,FALSE);
 
 	return(script_null_to_value(cx));
 }
 
 JSValueRef js_map_movement_start_reverse_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	int				movement_idx;
-	attach_type		*attach;
+	int				script_idx,movement_idx;
+	script_type		*script;
 	
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 
-	attach=(attach_type*)JSObjectGetPrivate(j_obj);
+	script_idx=(int)JSObjectGetPrivate(j_obj);
+	script=js.script_list.scripts[script_idx];
 	
 	movement_idx=script_find_map_movement_from_name(cx,argv[0],exception);
-	if (movement_idx!=-1) map_movements_script_start(attach->obj_idx,movement_idx,TRUE);
+	if (movement_idx!=-1) map_movements_script_start(script->attach.obj_idx,movement_idx,TRUE);
 
 	return(script_null_to_value(cx));
 }
 
 JSValueRef js_map_movement_start_or_thaw_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	int				movement_idx;
-	attach_type		*attach;
+	int				script_idx,movement_idx;
+	script_type		*script;
 	
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 
-	attach=(attach_type*)JSObjectGetPrivate(j_obj);
+	script_idx=(int)JSObjectGetPrivate(j_obj);
+	script=js.script_list.scripts[script_idx];
 	
 	movement_idx=script_find_map_movement_from_name(cx,argv[0],exception);
-	if (movement_idx!=-1) map_movements_script_start_or_thaw(attach->obj_idx,movement_idx);
+	if (movement_idx!=-1) map_movements_script_start_or_thaw(script->attach.obj_idx,movement_idx);
 
 	return(script_null_to_value(cx));
 }

@@ -722,7 +722,8 @@ typedef struct		{
 					} proj_setup_mark_type;
 			
 typedef struct		{
-						int						idx,obj_idx,weap_idx,
+						int						idx,script_idx,
+												obj_idx,weap_idx,
 												damage,decel_grace;
 						char					name[name_str_len];
 						float					speed,decel_speed,decel_min_speed,
@@ -735,7 +736,6 @@ typedef struct		{
 						proj_setup_hitscan_type	hitscan;
 						proj_setup_push_type	push;
 						proj_setup_mark_type	mark;
-						attach_type				attach;
 					} proj_setup_type;
 
 typedef struct		{
@@ -814,7 +814,7 @@ typedef struct		{
 					} weap_dual_type;
 					
 typedef struct		{
-						int						idx,obj_idx;
+						int						idx,script_idx,obj_idx;
 						char					name[name_str_len];
 						bool					hidden,fail_in_liquid;
 						model_draw				draw,draw_dual;
@@ -830,7 +830,6 @@ typedef struct		{
 						weap_hand_type			hand;
 						weap_proj_type			proj;
 						proj_setup_list_type	proj_setup_list;
-						attach_type				attach;
 					} weapon_type;
 
 typedef struct		{
@@ -842,7 +841,8 @@ typedef struct		{
 //
 
 typedef struct		{
-						int						idx,type,bind,next_spawn_sub_event,
+						int						idx,script_idx,
+												type,bind,next_spawn_sub_event,
 												team_idx,tint_color_idx,character_idx,
 												count,air_mode,damage_obj_idx,item_count,
 												last_move_animation_event,last_turn_animation_event;
@@ -895,7 +895,6 @@ typedef struct		{
 						melee_type				melee;
 						model_draw				draw;
 						obj_snd_ambient			ambient;
-						attach_type				attach;
 						obj_remote				remote;
 						obj_score				score;
 						obj_scenery				scenery;
@@ -912,7 +911,8 @@ typedef struct		{
 //
 
 typedef struct		{
-						int						idx,obj_idx,weap_idx,proj_setup_idx,
+						int						idx,script_idx,
+												obj_idx,weap_idx,proj_setup_idx,
 												count,parent_grace,decel_grace,
 												start_tick;
 						float					speed,decel_speed,decel_min_speed,gravity_add;
@@ -925,7 +925,6 @@ typedef struct		{
 						obj_contact				contact;
 						model_draw				draw;
 						proj_action_type		action;
-						attach_type				attach;
 					} proj_type;
 
 typedef struct		{

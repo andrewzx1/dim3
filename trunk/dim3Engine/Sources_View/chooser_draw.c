@@ -334,7 +334,7 @@ void chooser_click(void)
 		
 	server.next_state=gs_running;
 	
-	scripts_post_event_console(&js.game_attach,sd_event_chooser,0,id);
+	scripts_post_event_console(js.game_script_idx,-1,sd_event_chooser,0,id);
 }
 
 /* =======================================================
