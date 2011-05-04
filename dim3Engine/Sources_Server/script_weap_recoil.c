@@ -95,9 +95,9 @@ void script_free_weap_recoil_object(void)
 	script_free_class(weap_recoil_class);
 }
 
-JSObjectRef script_add_weap_recoil_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
+JSObjectRef script_add_weap_recoil_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
-	return(script_create_child_object(cx,parent_obj,weap_recoil_class,"recoil",attach));
+	return(script_create_child_object(cx,parent_obj,weap_recoil_class,"recoil",script_idx));
 }
 
 /* =======================================================

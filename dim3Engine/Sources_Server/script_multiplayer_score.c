@@ -63,9 +63,9 @@ void script_free_multiplayer_score_object(void)
 	script_free_class(multiplayer_score_class);
 }
 
-JSObjectRef script_add_multiplayer_score_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
+JSObjectRef script_add_multiplayer_score_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
-	return(script_create_child_object(cx,parent_obj,multiplayer_score_class,"score",attach));
+	return(script_create_child_object(cx,parent_obj,multiplayer_score_class,"score",script_idx));
 }
 
 /* =======================================================

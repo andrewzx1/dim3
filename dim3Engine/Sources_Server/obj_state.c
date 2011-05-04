@@ -106,7 +106,7 @@ void object_score_update(obj_type *obj)
 
 		// alert object of score change
 
-	scripts_post_event_console(&obj->attach,sd_event_score,0,0);
+	scripts_post_event_console(obj->script_idx,-1,sd_event_score,0,0);
 }
 
 void object_score_death(obj_type *obj)
@@ -167,7 +167,7 @@ void object_death(obj_type *obj)
     
 		// send death message
 		
-	scripts_post_event_console(&obj->attach,sd_event_die,0,0);
+	scripts_post_event_console(obj->script_idx,-1,sd_event_die,0,0);
 	
 		// change score
 		
@@ -206,7 +206,7 @@ void object_death(obj_type *obj)
 
 void object_telefrag(obj_type *obj,obj_type *source_obj)
 {
-	scripts_post_event_console(&obj->attach,sd_event_telefrag,0,0);
+	scripts_post_event_console(obj->script_idx,-1,sd_event_telefrag,0,0);
 	
 	obj->death_trigger=TRUE;		// trigger death
 	obj->death_telefrag=TRUE;
@@ -368,10 +368,10 @@ void object_touch(obj_type *obj)
 		// send events
 
 	object_setup_touch(hit_obj,obj,stand);
-	scripts_post_event_console(&hit_obj->attach,sd_event_touch,0,0);
+	scripts_post_event_console(hit_obj->script_idx,-1,sd_event_touch,0,0);
 
 	object_setup_touch(obj,hit_obj,stand);
-	scripts_post_event_console(&obj->attach,sd_event_touch,0,0);
+	scripts_post_event_console(obj->script_idx,-1,sd_event_touch,0,0);
 }
 
 /* =======================================================
@@ -467,7 +467,7 @@ void object_click(obj_type *obj,obj_type *from_obj)
 	
 		// post the event
 		
-	scripts_post_event_console(&obj->attach,sd_event_click,0,0);
+	scripts_post_event_console(obj->script_idx,-1,sd_event_click,0,0);
 
 		// and any network events
 
@@ -546,7 +546,7 @@ void object_damage(obj_type *obj,obj_type *source_obj,weapon_type *source_weap,p
 
 	obj->damage.in_damage=TRUE;
 	
-	scripts_post_event_console(&obj->attach,sd_event_damage,0,0);
+	scripts_post_event_console(obj->script_idx,-1,sd_event_damage,0,0);
 	
 	obj->damage.in_damage=FALSE;
 
@@ -589,13 +589,13 @@ void object_melee_hit(obj_type *obj,obj_type *melee_obj,weapon_type *melee_weap,
 		// events
 
 	if (melee_weap==NULL) {
-		scripts_post_event_console(&melee_obj->attach,sd_event_melee,sd_event_melee_hit,0);
+		scripts_post_event_console(melee_obj->script_idx,-1,sd_event_melee,sd_event_melee_hit,0);
 	}
 	else {
-		scripts_post_event_console(&melee_weap->attach,sd_event_melee,sd_event_melee_hit,0);
+		scripts_post_event_console(melee_weap->script_idx,-1,sd_event_melee,sd_event_melee_hit,0);
 	}
 
-	scripts_post_event_console(&obj->attach,sd_event_melee,sd_event_melee_hit,0);
+	scripts_post_event_console(obj->script_idx,-1,sd_event_melee,sd_event_melee_hit,0);
 }
 
 /* =======================================================
@@ -621,7 +621,7 @@ bool object_heal(obj_type *obj,int heal)
 	
 		// alert object health has been added
 		
-	scripts_post_event_console(&obj->attach,sd_event_health,0,0);
+	scripts_post_event_console(obj->script_idx,-1,sd_event_health,0,0);
 	
 	return(TRUE);
 }
@@ -660,7 +660,7 @@ bool object_heal_armor(obj_type *obj,int heal)
 	
 		// alert object health has been added
 		
-	scripts_post_event_console(&obj->attach,sd_event_health,0,0);
+	scripts_post_event_console(obj->script_idx,-1,sd_event_health,0,0);
 	
 	return(TRUE);
 }
@@ -687,7 +687,7 @@ void object_crush(obj_type *obj,bool auto_crush)
 	
 		// send events
 		
-	scripts_post_event_console(&obj->attach,sd_event_crush,0,0);
+	scripts_post_event_console(obj->script_idx,-1,sd_event_crush,0,0);
 	
 		// kill if not a remote or invincible
 		

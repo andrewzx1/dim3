@@ -45,10 +45,13 @@ extern js_type				js;
 
 inline obj_type* object_get_attach(JSObjectRef j_obj)
 {
-	attach_type			*attach;
+	int					script_idx;
+	script_type			*script;
+
+	script_idx=(int)JSObjectGetPrivate(j_obj);
+	script=js.script_list.scripts[script_idx];
 	
-	attach=(attach_type*)JSObjectGetPrivate(j_obj);
-	return(server.obj_list.objs[attach->obj_idx]);
+	return(server.obj_list.objs[script->attach.obj_idx]);
 }
 
 obj_type* object_find_remote_net_uid(int net_uid)

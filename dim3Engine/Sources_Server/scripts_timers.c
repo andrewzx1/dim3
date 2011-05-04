@@ -79,7 +79,7 @@ int timers_count_list(void)
       
 ======================================================= */
 
-int timers_find(attach_type *attach,int mode)
+int timers_find(int script_idx,int mode)
 {
 	int				n;
 	timer_type		*timer;
@@ -88,20 +88,7 @@ int timers_find(attach_type *attach,int mode)
 		timer=js.timer_list.timers[n];
 		if (timer==NULL) continue;
 		
-			// correct mode?
-			
-		if (timer->mode!=mode) continue;
-		
-			// is this attached to same object?
-
-		if (timer->attach.thing_type!=attach->thing_type) continue;
-		if (timer->attach.script_idx!=attach->script_idx) continue;
-		if (timer->attach.obj_idx!=attach->obj_idx) continue;
-		if (timer->attach.weap_idx!=attach->weap_idx) continue;
-		if (timer->attach.proj_setup_idx!=attach->proj_setup_idx) continue;
-		if (timer->attach.proj_idx!=attach->proj_idx) continue;
-
-		return(n);
+		if ((timer->mode==mode) && (timer->script_idx==script_idx)) return(n);
 	}
 	
 	return(-1);
@@ -113,9 +100,10 @@ int timers_find(attach_type *attach,int mode)
       
 ======================================================= */
 
-bool timers_add(attach_type *attach,int freq,int user_id,char *chain_func_name,int mode,char *err_str)
+bool timers_add(int script_idx,int freq,int user_id,char *chain_func_name,int mode,char *err_str)
 {
 	int				n,idx;
+	script_type		*script;
 	timer_type		*timer;
 
 		// check for bad frequency
@@ -128,7 +116,7 @@ bool timers_add(attach_type *attach,int freq,int user_id,char *chain_func_name,i
 
 		// if already timer for this script, mark it as disposed
 		
-	idx=timers_find(attach,mode);
+	idx=timers_find(script_idx,mode);
 	if (idx!=-1) js.timer_list.timers[idx]->mode=timer_mode_dispose;
 
 		// find free timer
@@ -160,6 +148,7 @@ bool timers_add(attach_type *attach,int freq,int user_id,char *chain_func_name,i
 	
 	timer=js.timer_list.timers[idx];
 	
+	timer->script_idx=script_idx;
 	timer->mode=mode;
 	
     timer->freq=freq;
@@ -169,8 +158,18 @@ bool timers_add(attach_type *attach,int freq,int user_id,char *chain_func_name,i
     timer->user_id=user_id;
 	if (chain_func_name!=NULL) strcpy(timer->chain_func_name,chain_func_name);
 
-	memmove(&timer->attach,attach,sizeof(attach_type));
-	
+		// remember the attachments
+		// we use this to re-hook up scripts after a load
+
+	script=js.script_list.scripts[script_idx];
+	memmove(&timer->attach,&script->attach,sizeof(script_attach_type));
+
+		// remember the proj_setup/proj swap
+		// because chains will need to rebuild it
+
+	timer->override_proj_idx=-1;
+	if (script->attach.thing_type==thing_type_projectile) timer->override_proj_idx=script->attach.proj_idx;
+
 	return(TRUE);
 }
 
@@ -194,11 +193,11 @@ void timers_remove(int idx)
       
 ======================================================= */
 
-void timers_clear(attach_type *attach,int mode)
+void timers_clear(int script_idx,int mode)
 {
 	int				idx;
 	
-	idx=timers_find(attach,mode);
+	idx=timers_find(script_idx,mode);
 	if (idx!=-1) js.timer_list.timers[idx]->mode=timer_mode_dispose;
 }
 
@@ -217,7 +216,7 @@ void timers_script_dispose(int script_idx)
 		timer=js.timer_list.timers[n];
 		if (timer==NULL) continue;
 
-		if (timer->attach.script_idx==script_idx) timers_remove(n);
+		if (timer->script_idx==script_idx) timers_remove(n);
 	}
 }
 
@@ -242,29 +241,29 @@ void timers_fix_script_indexes(void)
 		switch (timer->attach.thing_type) {
 
 			case thing_type_game:
-				timer->attach.script_idx=js.game_attach.script_idx;
+				timer->script_idx=js.game_script_idx;
 				break;
 
 			case thing_type_course:
-				timer->attach.script_idx=js.course_attach.script_idx;
+				timer->script_idx=js.course_script_idx;
 				break;
 
 			case thing_type_object:
 				obj=server.obj_list.objs[timer->attach.obj_idx];
-				timer->attach.script_idx=obj->attach.script_idx;
+				timer->script_idx=obj->script_idx;
 				break;
 				
 			case thing_type_weapon:
 				obj=server.obj_list.objs[timer->attach.obj_idx];
 				weap=obj->weap_list.weaps[timer->attach.weap_idx];
-				timer->attach.script_idx=weap->attach.script_idx;
+				timer->script_idx=weap->script_idx;
 				break;
 				
 			case thing_type_projectile:
 				obj=server.obj_list.objs[timer->attach.obj_idx];
 				weap=obj->weap_list.weaps[timer->attach.weap_idx];
 				proj_setup=weap->proj_setup_list.proj_setups[timer->attach.proj_setup_idx];
-				timer->attach.script_idx=proj_setup->attach.script_idx;
+				timer->script_idx=proj_setup->script_idx;
 				break;
 
 		}
@@ -338,17 +337,17 @@ void timers_run(void)
 			switch (timer->mode) {
 			
 				case timer_mode_single:
-					scripts_post_event_console(&timer->attach,sd_event_wait,0,timer->user_id);
+					scripts_post_event_console(timer->script_idx,-1,sd_event_wait,0,timer->user_id);
 					timer->mode=timer_mode_dispose;		// auto-dispose waits
 					break;
 					
 				case timer_mode_chain:
-					scripts_chain_console(&timer->attach,timer->chain_func_name);
+					scripts_chain_console(timer->script_idx,timer->override_proj_idx,timer->chain_func_name);
 					timer->mode=timer_mode_dispose;		// auto-dispose chains
 					break;
 
 				case timer_mode_repeat:
-					scripts_post_event_console(&timer->attach,sd_event_timer,0,timer->user_id);
+					scripts_post_event_console(timer->script_idx,-1,sd_event_timer,0,timer->user_id);
 					break;
 			}
 			

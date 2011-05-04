@@ -301,7 +301,7 @@ void camera_static_run(void)
 		camera.auto_walk.node_seek_idx=map_find_next_node_in_path(&map,seek_idx,dest_idx);
 		camera_walk_to_node_setup_speed_turn();
 
-		scripts_post_event_console(&js.course_attach,sd_event_path,sd_event_path_node,node->event_id);
+		scripts_post_event_console(js.course_script_idx,-1,sd_event_path,sd_event_path_node,node->event_id);
 		return;
 	}
 	
@@ -318,5 +318,5 @@ void camera_static_run(void)
 	
 		// send event
 	
-	scripts_post_event_console(&js.course_attach,sd_event_path,sd_event_path_done,camera.auto_walk.event_id);
+	scripts_post_event_console(js.course_script_idx,-1,sd_event_path,sd_event_path_done,camera.auto_walk.event_id);
 }

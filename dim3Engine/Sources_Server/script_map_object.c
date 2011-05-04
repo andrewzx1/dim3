@@ -138,9 +138,9 @@ void script_free_map_object_object(void)
 	script_free_class(map_object_class);
 }
 
-JSObjectRef script_add_map_object_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
+JSObjectRef script_add_map_object_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
-	return(script_create_child_object(cx,parent_obj,map_object_class,"object",attach));
+	return(script_create_child_object(cx,parent_obj,map_object_class,"object",script_idx));
 }
 
 /* =======================================================
@@ -466,9 +466,9 @@ JSValueRef js_map_object_get_object_func(JSContextRef cx,JSObjectRef func,JSObje
 	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
 	if (obj==NULL) return(script_null_to_value(cx));
 
-	if (obj->attach.script_idx==-1) return(script_null_to_value(cx));
+	if (obj->script_idx==-1) return(script_null_to_value(cx));
 
-	script=js.script_list.scripts[obj->attach.script_idx];
+	script=js.script_list.scripts[obj->script_idx];
 	return((JSValueRef)script->obj);
 }
 

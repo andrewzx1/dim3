@@ -76,9 +76,9 @@ void script_free_obj_motion_angle_object(void)
 	script_free_class(obj_motion_angle_class);
 }
 
-JSObjectRef script_add_obj_motion_angle_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
+JSObjectRef script_add_obj_motion_angle_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
-	return(script_create_child_object(cx,parent_obj,obj_motion_angle_class,"motionAngle",attach));
+	return(script_create_child_object(cx,parent_obj,obj_motion_angle_class,"motionAngle",script_idx));
 }
 
 /* =======================================================

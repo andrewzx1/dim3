@@ -64,9 +64,9 @@ void script_free_model_light_color_object(void)
 	script_free_class(model_light_color_class);
 }
 
-JSObjectRef script_add_model_light_color_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
+JSObjectRef script_add_model_light_color_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
-	return(script_create_child_object(cx,parent_obj,model_light_color_class,"lightColor",attach));
+	return(script_create_child_object(cx,parent_obj,model_light_color_class,"lightColor",script_idx));
 }
 
 /* =======================================================

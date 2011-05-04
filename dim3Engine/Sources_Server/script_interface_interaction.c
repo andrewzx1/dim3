@@ -75,9 +75,9 @@ void script_free_interface_interaction_object(void)
 	script_free_class(interface_interaction_class);
 }
 
-JSObjectRef script_add_interface_interaction_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
+JSObjectRef script_add_interface_interaction_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
-	return(script_create_child_object(cx,parent_obj,interface_interaction_class,"interaction",attach));
+	return(script_create_child_object(cx,parent_obj,interface_interaction_class,"interaction",script_idx));
 }
 
 /* =======================================================

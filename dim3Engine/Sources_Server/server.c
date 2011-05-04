@@ -133,9 +133,8 @@ bool server_game_start(bool in_file_load,int skill,int simple_save_idx,char *err
 	
 	server.player_obj_idx=-1;
 	
-	scripts_clear_attach(&js.game_attach,thing_type_game);
-	
-	if (!scripts_add(&js.game_attach,"Game","Game",err_str)) return(FALSE);
+	js.game_script_idx=scripts_add(thing_type_game,"Game","Game",-1,-1,-1,err_str);
+	if (js.game_script_idx==-1) return(FALSE);
 
 		// if not reloading, then check that
 		// a map was set
@@ -161,7 +160,7 @@ bool server_game_start(bool in_file_load,int skill,int simple_save_idx,char *err
 	if (net_setup.mode!=net_mode_host_dedicated) {
 		server.player_obj_idx=game_player_create(err_str);
 		if (server.player_obj_idx==-1) {
-			scripts_dispose(js.game_attach.script_idx);
+			scripts_dispose(js.game_script_idx);
 			return(FALSE);
 		}
 	}
@@ -177,7 +176,7 @@ void server_game_stop(void)
 
 		// dispose game script
 
-	scripts_dispose(js.game_attach.script_idx);
+	scripts_dispose(js.game_script_idx);
 
 		// finish with list frees
 

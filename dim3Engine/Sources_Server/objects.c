@@ -735,26 +735,31 @@ int object_create(char *name,int type,int bind)
 
 bool object_start_script(obj_type *obj,char *err_str)
 {
-	scripts_clear_attach(&obj->attach,thing_type_object);
-	
-	obj->attach.obj_idx=obj->idx;
+	int				script_idx;
 
 		// was it a non-script scenery
 		// this is usually something set when re-loading
 		// state from a saved file
 
 	if (obj->scenery.on) {
-		obj->attach.script_idx=-1;
+		obj->script_idx=-1;
 		return(TRUE);
 	}
 
 		// if player or remote, use player script
-
-	if ((obj->type==object_type_player) || (obj->type==object_type_remote)) return(scripts_add(&obj->attach,"Objects","Player",err_str));
-
 		// otherwise use script setup by spot
 
-	return(scripts_add(&obj->attach,"Objects",obj->spot_script,err_str));
+	if ((obj->type==object_type_player) || (obj->type==object_type_remote)) {
+		script_idx=scripts_add(thing_type_object,"Objects","Player",obj->idx,-1,-1,err_str);
+	}
+	else {
+		script_idx=scripts_add(thing_type_object,"Objects",obj->spot_script,obj->idx,-1,-1,err_str);
+	}
+
+	if (script_idx==-1) return(FALSE);
+
+	obj->script_idx=script_idx;
+	return(TRUE);
 }
 
 /* =======================================================
@@ -996,7 +1001,7 @@ void object_dispose_single(int idx)
 
 		// clear scripts and models
 
-	scripts_dispose(obj->attach.script_idx);
+	scripts_dispose(obj->script_idx);
 	model_draw_dispose(&obj->draw);
 
 		// free and empty from list

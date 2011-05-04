@@ -1001,7 +1001,7 @@ void object_move_normal(obj_type *obj)
 				
 					// send the land events
 					
-                scripts_post_event_console(&obj->attach,sd_event_land,0,0);
+                scripts_post_event_console(obj->script_idx,-1,sd_event_land,0,0);
                 object_post_move_animation_event(obj,sd_event_animation_object_land);
             }
         }
@@ -1015,8 +1015,8 @@ void object_move_normal(obj_type *obj)
 		// check for objects that have started falling
 	
 	if ((obj->fall.dist>map_collide_y_slop) && (!obj->fall.change)) {
-		scripts_post_event_console(&obj->attach,sd_event_fall,0,0);
-		scripts_post_event_console(&obj->attach,sd_event_animation_object,sd_event_animation_object_fall,0);
+		scripts_post_event_console(obj->script_idx,-1,sd_event_fall,0,0);
+		scripts_post_event_console(obj->script_idx,-1,sd_event_animation_object,sd_event_animation_object_fall,0);
 		obj->fall.change=TRUE;
 	}
 }
@@ -1147,7 +1147,7 @@ void object_move(obj_type *obj)
 			
 		if (!obj->in_collide_event) {
 			obj->in_collide_event=TRUE;
-			scripts_post_event_console(&obj->attach,sd_event_collide,0,0);
+			scripts_post_event_console(obj->script_idx,-1,sd_event_collide,0,0);
 		}
 		
 	}

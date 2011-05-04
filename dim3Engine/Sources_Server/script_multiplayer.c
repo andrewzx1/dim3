@@ -51,8 +51,8 @@ void script_free_global_multiplayer_object(void)
 	script_free_class(multiplayer_class);
 }
 
-JSObjectRef script_add_global_multiplayer_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
+JSObjectRef script_add_global_multiplayer_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
-	return(script_create_child_object(cx,parent_obj,multiplayer_class,"multiplayer",attach));
+	return(script_create_child_object(cx,parent_obj,multiplayer_class,"multiplayer",script_idx));
 }
 

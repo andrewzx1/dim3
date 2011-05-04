@@ -138,14 +138,14 @@ void object_watch(obj_type *obj)
 			if (obj->watch.obj_flags[n]==0x0) {
 				obj->watch.obj_flags[n]=0x1;
 				obj->watch.obj_idx=watch_obj->idx;
-				scripts_post_event_console(&obj->attach,sd_event_watch,sd_event_watch_object_near,0);
+				scripts_post_event_console(obj->script_idx,-1,sd_event_watch,sd_event_watch_object_near,0);
 			}
 		}
 		else {
 			if (obj->watch.obj_flags[n]==0x1) {
 				obj->watch.obj_flags[n]=0x0;
 				obj->watch.obj_idx=watch_obj->idx;
-				scripts_post_event_console(&obj->attach,sd_event_watch,sd_event_watch_object_far,0);
+				scripts_post_event_console(obj->script_idx,-1,sd_event_watch,sd_event_watch_object_far,0);
 			}
 		}
 	}
@@ -170,7 +170,7 @@ void object_watch_death_alert(obj_type *dead_obj)
 
 		if (obj->watch.on) {
 			obj->watch.obj_idx=dead_obj->idx;
-			scripts_post_event_console(&obj->attach,sd_event_watch,sd_event_watch_object_death,0);
+			scripts_post_event_console(obj->script_idx,-1,sd_event_watch,sd_event_watch_object_death,0);
 		}
 	}
 }
@@ -190,10 +190,10 @@ void object_watch_base_alert(map_mesh_type *mesh,obj_type *enter_obj,bool entry)
 			obj->watch.obj_idx=enter_obj->idx;
 			obj->watch.base_team=mesh->msg.base_team;
 			if (entry) {
-				scripts_post_event_console(&obj->attach,sd_event_watch,sd_event_watch_object_enter_base,0);
+				scripts_post_event_console(obj->script_idx,-1,sd_event_watch,sd_event_watch_object_enter_base,0);
 			}
 			else {
-				scripts_post_event_console(&obj->attach,sd_event_watch,sd_event_watch_object_exit_base,0);
+				scripts_post_event_console(obj->script_idx,-1,sd_event_watch,sd_event_watch_object_exit_base,0);
 			}
 		}
 	}
@@ -221,7 +221,7 @@ void object_watch_sound_alert(d3pnt *pnt,int sound_obj_idx,char *sound_name)
 			if (distance_get(pnt->x,pnt->y,pnt->z,obj->pnt.x,obj->pnt.y,obj->pnt.z)<=obj->watch.dist) {
 				obj->watch.obj_idx=sound_obj_idx;
 				strcpy(obj->watch.sound_name,sound_name);
-				scripts_post_event_console(&obj->attach,sd_event_watch,sd_event_watch_object_sound,0);
+				scripts_post_event_console(obj->script_idx,-1,sd_event_watch,sd_event_watch_object_sound,0);
 			}
 		}
 	}
@@ -248,7 +248,7 @@ void object_watch_damage_alert(d3pnt *pnt,int damage_obj_idx)
 
 			if (distance_get(pnt->x,pnt->y,pnt->z,obj->pnt.x,obj->pnt.y,obj->pnt.z)<=obj->watch.dist) {
 				obj->watch.obj_idx=damage_obj_idx;
-				scripts_post_event_console(&obj->attach,sd_event_watch,sd_event_watch_object_damage,0);
+				scripts_post_event_console(obj->script_idx,-1,sd_event_watch,sd_event_watch_object_damage,0);
 			}
 		}
 	}

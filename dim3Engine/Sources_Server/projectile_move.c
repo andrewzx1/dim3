@@ -365,7 +365,7 @@ bool projectile_bounce(proj_type *proj,float min_ymove,float reduce,bool send_ev
 	proj->force.gravity*=reduce;
 	proj->gravity_add=0.0f;
 
-	if (send_event) scripts_post_event_console(&proj->attach,sd_event_projectile,sd_event_projectile_bounce,0);
+	if (send_event) scripts_post_event_console(proj->script_idx,proj->idx,sd_event_projectile,sd_event_projectile_bounce,0);
 	
 	return(FALSE);
 }
@@ -438,7 +438,7 @@ void projectile_reflect(proj_type *proj,bool send_event)
 	
 		// send event
 
-	if (send_event) scripts_post_event_console(&proj->attach,sd_event_projectile,sd_event_projectile_reflect,0);
+	if (send_event) scripts_post_event_console(proj->script_idx,proj->idx,sd_event_projectile,sd_event_projectile_reflect,0);
 }
 
 /* =======================================================

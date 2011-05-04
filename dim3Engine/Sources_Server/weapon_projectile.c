@@ -88,7 +88,7 @@ bool weapon_add_projectile(obj_type *obj,weapon_type *weap,proj_setup_type *proj
 	
 		// call spawn
 		
-	scripts_post_event_console(&proj->attach,sd_event_spawn,sd_event_spawn_init,0);
+	scripts_post_event_console(proj->script_idx,proj->idx,sd_event_spawn,sd_event_spawn_init,0);
 	
 		// if this object is the player or multiplayer\map bot,
 		// then spawn projectile in remotes
@@ -399,7 +399,7 @@ bool weapon_script_fire(obj_type *obj,weapon_type *weap,int method)
 		// send event
 
 	weapon_setup_fire(weap,method);
-	scripts_post_event_console(&weap->attach,sd_event_weapon_fire,sd_event_weapon_fire_single,0);
+	scripts_post_event_console(weap->script_idx,-1,sd_event_weapon_fire,sd_event_weapon_fire_single,0);
 
 	if (weap->fire.cancel) return(FALSE);
 
@@ -575,7 +575,7 @@ void weapon_player_fire_down(obj_type *obj,weapon_type *weap,int method)
 		// if no weapon, send message directly to object
 		
 	if (weap==NULL) {
-		scripts_post_event_console(&obj->attach,sd_event_weapon_fire,sd_event_weapon_fire_down,0);
+		scripts_post_event_console(obj->script_idx,-1,sd_event_weapon_fire,sd_event_weapon_fire_down,0);
 		return;
 	}
 	
@@ -608,7 +608,7 @@ void weapon_player_fire_down(obj_type *obj,weapon_type *weap,int method)
         // send fire message to weapon first
 		
 	weap->fire.cancel=FALSE;
-	scripts_post_event_console(&weap->attach,sd_event_weapon_fire,sd_event_weapon_fire_down,0);
+	scripts_post_event_console(weap->script_idx,-1,sd_event_weapon_fire,sd_event_weapon_fire_down,0);
 	if (weap->fire.cancel) return;
 	
 		// set last fire
@@ -624,7 +624,7 @@ void weapon_player_fire_down(obj_type *obj,weapon_type *weap,int method)
    
         // if weapon OKs message, send message to player
 	
-	scripts_post_event_console(&obj->attach,sd_event_weapon_fire,sd_event_weapon_fire_down,0);
+	scripts_post_event_console(obj->script_idx,-1,sd_event_weapon_fire,sd_event_weapon_fire_down,0);
 }
 
 void weapon_player_fire_repeat(obj_type *obj,weapon_type *weap)
@@ -661,7 +661,7 @@ void weapon_player_fire_repeat(obj_type *obj,weapon_type *weap)
         // send fire message to weapon first
 		
 	weap->fire.cancel=FALSE;
-	scripts_post_event_console(&weap->attach,sd_event_weapon_fire,sd_event_weapon_fire_repeat,0);
+	scripts_post_event_console(weap->script_idx,-1,sd_event_weapon_fire,sd_event_weapon_fire_repeat,0);
 	if (weap->fire.cancel) return;
 	
 		// set last fire
@@ -675,7 +675,7 @@ void weapon_player_fire_repeat(obj_type *obj,weapon_type *weap)
     
         // if weapon OKs message, send message to player
         
-	scripts_post_event_console(&obj->attach,sd_event_weapon_fire,sd_event_weapon_fire_repeat,0);
+	scripts_post_event_console(obj->script_idx,-1,sd_event_weapon_fire,sd_event_weapon_fire_repeat,0);
 }
 
 void weapon_player_fire_up(obj_type *obj,weapon_type *weap,int method)
@@ -683,7 +683,7 @@ void weapon_player_fire_up(obj_type *obj,weapon_type *weap,int method)
 		// if no weapon, send message directly to object
 		
 	if (weap==NULL) {
-		scripts_post_event_console(&obj->attach,sd_event_weapon_fire,sd_event_weapon_fire_up,0);
+		scripts_post_event_console(obj->script_idx,-1,sd_event_weapon_fire,sd_event_weapon_fire_up,0);
 		return;
 	}
 	
@@ -702,12 +702,12 @@ void weapon_player_fire_up(obj_type *obj,weapon_type *weap,int method)
         // send fire message to weapon first
 		
 	weap->fire.cancel=FALSE;
-	scripts_post_event_console(&weap->attach,sd_event_weapon_fire,sd_event_weapon_fire_up,0);
+	scripts_post_event_console(weap->script_idx,-1,sd_event_weapon_fire,sd_event_weapon_fire_up,0);
 	if (weap->fire.cancel) return;
     
         // if weapon OKs message, send message to player
         
-	scripts_post_event_console(&obj->attach,sd_event_weapon_fire,sd_event_weapon_fire_up,0);
+	scripts_post_event_console(obj->script_idx,-1,sd_event_weapon_fire,sd_event_weapon_fire_up,0);
 }
 
 /* =======================================================

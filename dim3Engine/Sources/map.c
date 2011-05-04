@@ -344,10 +344,9 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
         // run the course script
 
 	progress_draw(50);
-		
-	scripts_clear_attach(&js.course_attach,thing_type_course);
 	
-	if (!scripts_add(&js.course_attach,"Courses",map.info.name,err_str)) {
+	js.course_script_idx=scripts_add(thing_type_course,"Courses",map.info.name,-1,-1,-1,err_str);
+	if (js.course_script_idx==-1) {
 		progress_shutdown();
 		return(FALSE);
 	}
@@ -409,11 +408,11 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 		
 	progress_draw(90);
 
-	scripts_post_event_console(&js.game_attach,sd_event_map,sd_event_map_open,0);
-	scripts_post_event_console(&js.course_attach,sd_event_map,sd_event_map_open,0);
+	scripts_post_event_console(js.game_script_idx,-1,sd_event_map,sd_event_map_open,0);
+	scripts_post_event_console(js.course_script_idx,-1,sd_event_map,sd_event_map_open,0);
 
 	if (net_setup.mode!=net_mode_host_dedicated) {
-		scripts_post_event_console(&obj->attach,sd_event_map,sd_event_map_open,0);
+		scripts_post_event_console(obj->script_idx,-1,sd_event_map,sd_event_map_open,0);
 	}
 	
 		// finish up
@@ -481,12 +480,12 @@ void map_end(void)
 	
 		// map close event
 		
-	scripts_post_event_console(&js.game_attach,sd_event_map,sd_event_map_close,0);
-	scripts_post_event_console(&js.course_attach,sd_event_map,sd_event_map_close,0);
+	scripts_post_event_console(js.game_script_idx,-1,sd_event_map,sd_event_map_close,0);
+	scripts_post_event_console(js.course_script_idx,-1,sd_event_map,sd_event_map_close,0);
 
 	if (net_setup.mode!=net_mode_host_dedicated) {
 		obj=server.obj_list.objs[server.player_obj_idx];
-		scripts_post_event_console(&obj->attach,sd_event_map,sd_event_map_close,0);
+		scripts_post_event_console(obj->script_idx,-1,sd_event_map,sd_event_map_close,0);
 	}
 
 		// clear all back buffers
@@ -519,7 +518,7 @@ void map_end(void)
 		
 	progress_draw(35);
 
-	scripts_dispose(js.course_attach.script_idx);
+	scripts_dispose(js.course_script_idx);
 
 		// free map bound items
 		

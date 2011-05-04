@@ -275,27 +275,13 @@ int script_find_map_movement_from_name(JSContextRef cx,JSValueRef arg,JSValueRef
 
 int script_get_attached_object_uid(JSObjectRef j_obj)
 {
-	obj_type			*obj;
-	weapon_type			*weap;
-	proj_type			*proj;
-	attach_type			*attach;
+	int					script_idx;
+	script_type			*script;
 	
-	attach=(attach_type*)JSObjectGetPrivate(j_obj);
+	script_idx=(int)JSObjectGetPrivate(j_obj);
+	script=js.script_list.scripts[script_idx];
 
-	if (attach->thing_type==thing_type_object) return(attach->obj_idx);
-
-	if (attach->thing_type==thing_type_weapon) {
-		obj=server.obj_list.objs[attach->obj_idx];
-		weap=obj->weap_list.weaps[attach->weap_idx];
-		return(weap->obj_idx);
-	}
-
-	if (attach->thing_type==thing_type_projectile) {
-		proj=server.proj_list.projs[attach->proj_idx];
-		return(proj->obj_idx);
-	}
-
-	return(-1);
+	return(script->attach.obj_idx);
 }
 
 /* =======================================================
@@ -306,25 +292,27 @@ int script_get_attached_object_uid(JSObjectRef j_obj)
 
 model_draw* script_find_model_draw(JSObjectRef j_obj)
 {
+	int					script_idx;
 	obj_type			*obj;
 	weapon_type			*weap;
 	proj_type			*proj;
 	proj_setup_type		*proj_setup;
-	attach_type			*attach;
+	script_type			*script;
 	
-	attach=(attach_type*)JSObjectGetPrivate(j_obj);
+	script_idx=(int)JSObjectGetPrivate(j_obj);
+	script=js.script_list.scripts[script_idx];
 	
 		// get correct model from attachment
 		
-	switch (attach->thing_type) {
+	switch (script->attach.thing_type) {
 	
 		case thing_type_object:
-			obj=server.obj_list.objs[attach->obj_idx];
+			obj=server.obj_list.objs[script->attach.obj_idx];
 			return(&obj->draw);
 			
 		case thing_type_weapon:
-			obj=server.obj_list.objs[attach->obj_idx];
-			weap=obj->weap_list.weaps[attach->weap_idx];
+			obj=server.obj_list.objs[script->attach.obj_idx];
+			weap=obj->weap_list.weaps[script->attach.weap_idx];
 			if (weap->dual.in_dual) return(&weap->draw_dual);
 			return(&weap->draw);
 			
@@ -332,16 +320,16 @@ model_draw* script_find_model_draw(JSObjectRef j_obj)
 		
 				// if no projectile index, then it's a setup
 				
-			if (attach->proj_idx==-1) {
-				obj=server.obj_list.objs[attach->obj_idx];
-				weap=obj->weap_list.weaps[attach->weap_idx];
-				proj_setup=weap->proj_setup_list.proj_setups[attach->proj_setup_idx];
+			if (script->attach.proj_idx==-1) {
+				obj=server.obj_list.objs[script->attach.obj_idx];
+				weap=obj->weap_list.weaps[script->attach.weap_idx];
+				proj_setup=weap->proj_setup_list.proj_setups[script->attach.proj_setup_idx];
 				return(&proj_setup->draw);
 			}
 			
 				// otherwise it's a projectile
 			
-			proj=server.proj_list.projs[attach->proj_idx];
+			proj=server.proj_list.projs[script->attach.proj_idx];
 			return(&proj->draw);
 			
 	}
@@ -357,18 +345,24 @@ model_draw* script_find_model_draw(JSObjectRef j_obj)
 
 bool script_in_event(JSObjectRef j_obj)
 {
-	attach_type			*attach;
+	int					script_idx;
+	script_type			*script;
 	
-	attach=(attach_type*)JSObjectGetPrivate(j_obj);
-	return(attach->event_state.main_event!=-1);
+	script_idx=(int)JSObjectGetPrivate(j_obj);
+	script=js.script_list.scripts[script_idx];
+
+	return(script->event_state.main_event!=-1);
 }
 
 inline bool script_in_construct(JSObjectRef j_obj)
 {
-	attach_type			*attach;
+	int					script_idx;
+	script_type			*script;
 	
-	attach=(attach_type*)JSObjectGetPrivate(j_obj);
-	return(attach->event_state.main_event==sd_event_construct);
+	script_idx=(int)JSObjectGetPrivate(j_obj);
+	script=js.script_list.scripts[script_idx];
+
+	return(script->event_state.main_event==sd_event_construct);
 }
 
 

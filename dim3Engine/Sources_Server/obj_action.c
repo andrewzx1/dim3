@@ -48,7 +48,7 @@ extern network_setup_type	net_setup;
 void object_post_move_animation_event(obj_type *obj,int sub_event)
 {
 	obj->last_move_animation_event=sub_event;
-	scripts_post_event_console(&obj->attach,sd_event_animation_object,sub_event,0);
+	scripts_post_event_console(obj->script_idx,-1,sd_event_animation_object,sub_event,0);
 }
 
 bool object_post_move_animation_event_change(obj_type *obj,int sub_event)
@@ -56,7 +56,7 @@ bool object_post_move_animation_event_change(obj_type *obj,int sub_event)
 	if (obj->last_move_animation_event==sub_event) return(FALSE);
 	
 	obj->last_move_animation_event=sub_event;
-	scripts_post_event_console(&obj->attach,sd_event_animation_object,sub_event,0);
+	scripts_post_event_console(obj->script_idx,-1,sd_event_animation_object,sub_event,0);
 	
 	return(TRUE);
 }
@@ -64,7 +64,7 @@ bool object_post_move_animation_event_change(obj_type *obj,int sub_event)
 void object_post_turn_animation_event(obj_type *obj,int sub_event)
 {
 	obj->last_turn_animation_event=sub_event;
-	scripts_post_event_console(&obj->attach,sd_event_animation_object,sub_event,0);
+	scripts_post_event_console(obj->script_idx,-1,sd_event_animation_object,sub_event,0);
 }
 
 bool object_post_turn_animation_event_change(obj_type *obj,int sub_event)
@@ -72,7 +72,7 @@ bool object_post_turn_animation_event_change(obj_type *obj,int sub_event)
 	if (obj->last_turn_animation_event==sub_event) return(FALSE);
 	
 	obj->last_turn_animation_event=sub_event;
-	scripts_post_event_console(&obj->attach,sd_event_animation_object,sub_event,0);
+	scripts_post_event_console(obj->script_idx,-1,sd_event_animation_object,sub_event,0);
 	
 	return(TRUE);
 }
@@ -434,12 +434,12 @@ void object_start_jump(obj_type *obj)
 	
 		// start jump
     
-	scripts_post_event_console(&obj->attach,sd_event_jump,0,0);
+	scripts_post_event_console(obj->script_idx,-1,sd_event_jump,0,0);
     
 	obj->force.vct.y=-(float)obj->jump.y_add;
     obj->force.gravity=gravity_start_power;
     
-	scripts_post_event_console(&obj->attach,sd_event_animation_object,sd_event_animation_object_jump,0);
+	scripts_post_event_console(obj->script_idx,-1,sd_event_animation_object,sd_event_animation_object_jump,0);
 }
 
 void object_liquid_jump(obj_type *obj)
@@ -451,12 +451,12 @@ void object_liquid_jump(obj_type *obj)
 	
 		// jump out of water
 
-	scripts_post_event_console(&obj->attach,sd_event_jump,0,0);
+	scripts_post_event_console(obj->script_idx,-1,sd_event_jump,0,0);
     
 	obj->force.vct.y=-(float)obj->jump.y_add;
     obj->force.gravity=gravity_start_power;
     
-	scripts_post_event_console(&obj->attach,sd_event_animation_object,sd_event_animation_object_jump,0);
+	scripts_post_event_console(obj->script_idx,-1,sd_event_animation_object,sd_event_animation_object_jump,0);
 }
 
 /* =======================================================
@@ -487,7 +487,7 @@ void object_start_stand(obj_type *obj)
 		// stand up
     
     obj->duck.mode=dm_stand_up;
-	scripts_post_event_console(&obj->attach,sd_event_animation_object,sd_event_animation_object_stand_up,0);
+	scripts_post_event_console(obj->script_idx,-1,sd_event_animation_object,sd_event_animation_object_stand_up,0);
 }
 
 void object_start_duck(obj_type *obj)
@@ -497,7 +497,7 @@ void object_start_duck(obj_type *obj)
     if ((obj->duck.mode==dm_duck) || (obj->duck.mode==dm_duck_down)) return;
 
     obj->duck.mode=dm_duck_down;
-	scripts_post_event_console(&obj->attach,sd_event_animation_object,sd_event_animation_object_duck_down,0);
+	scripts_post_event_console(obj->script_idx,-1,sd_event_animation_object,sd_event_animation_object_duck_down,0);
 }
 
 void object_ducking(obj_type *obj)
@@ -645,8 +645,8 @@ bool object_enter_vehicle(obj_type *obj,int vehicle_idx,char *err_str)
 	obj->vehicle.in_enter=TRUE;
 	obj->vehicle.in_exit=FALSE;
 		
-	scripts_post_event_console(&obj->attach,sd_event_vehicle,sd_event_vehicle_enter,0);
-	scripts_post_event_console(&vehicle_obj->attach,sd_event_vehicle,sd_event_vehicle_enter,0);
+	scripts_post_event_console(obj->script_idx,-1,sd_event_vehicle,sd_event_vehicle_enter,0);
+	scripts_post_event_console(vehicle_obj->script_idx,-1,sd_event_vehicle,sd_event_vehicle_enter,0);
 
 	obj->vehicle.in_enter=FALSE;
 
@@ -762,8 +762,8 @@ bool object_exit_vehicle(obj_type *vehicle_obj,bool ignore_errors,char *err_str)
 
 		// send events
 		
-	scripts_post_event_console(&vehicle_obj->attach,sd_event_vehicle,sd_event_vehicle_exit,0);
-	scripts_post_event_console(&orig_obj->attach,sd_event_vehicle,sd_event_vehicle_exit,0);
+	scripts_post_event_console(vehicle_obj->script_idx,-1,sd_event_vehicle,sd_event_vehicle_exit,0);
+	scripts_post_event_console(orig_obj->script_idx,-1,sd_event_vehicle,sd_event_vehicle_exit,0);
 	
 		// exit
 	

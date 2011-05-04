@@ -104,13 +104,13 @@ void player_command_input(obj_type *obj)
         if (input_action_get_state(n)) {
             if (!command_key_down[k]) {
                 command_key_down[k]=TRUE;
-				scripts_post_event_console(&js.game_attach,sd_event_message,sd_event_message_from_key_down,k);
+				scripts_post_event_console(js.game_script_idx,-1,sd_event_message,sd_event_message_from_key_down,k);
             }
         }
         else {
             if (command_key_down[k]) {
                 command_key_down[k]=FALSE;
-				scripts_post_event_console(&js.game_attach,sd_event_message,sd_event_message_from_key_up,k);
+				scripts_post_event_console(js.game_script_idx,-1,sd_event_message,sd_event_message_from_key_up,k);
             }
         }
     }
@@ -124,13 +124,13 @@ void player_command_input(obj_type *obj)
         if (input_action_get_state(n)) {
             if (!player_key_down[k]) {
                 player_key_down[k]=TRUE;
-				scripts_post_event_console(&obj->attach,sd_event_message,sd_event_message_from_key_down,k);
+				scripts_post_event_console(obj->script_idx,-1,sd_event_message,sd_event_message_from_key_down,k);
             }
         }
         else {
             if (player_key_down[k]) {
                 player_key_down[k]=FALSE;
-				scripts_post_event_console(&obj->attach,sd_event_message,sd_event_message_from_key_up,k);
+				scripts_post_event_console(obj->script_idx,-1,sd_event_message,sd_event_message_from_key_up,k);
             }
         }
     }

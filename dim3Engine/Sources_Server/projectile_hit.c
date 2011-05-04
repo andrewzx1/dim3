@@ -79,7 +79,7 @@ void projectile_hit(proj_type *proj)
 	
 		// call projectile hit
 
-	scripts_post_event_console(&proj->attach,sd_event_hit,0,0);
+	scripts_post_event_console(proj->script_idx,proj->idx,sd_event_hit,0,0);
 	
 	if (!proj->script_dispose) return;
   

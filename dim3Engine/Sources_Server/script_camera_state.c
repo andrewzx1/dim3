@@ -60,9 +60,9 @@ void script_free_camera_state_object(void)
 	script_free_class(camera_state_class);
 }
 
-JSObjectRef script_add_camera_state_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
+JSObjectRef script_add_camera_state_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
-	return(script_create_child_object(cx,parent_obj,camera_state_class,"state",attach));
+	return(script_create_child_object(cx,parent_obj,camera_state_class,"state",script_idx));
 }
 
 /* =======================================================

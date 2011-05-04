@@ -375,74 +375,74 @@ void script_release_classes(void)
       
 ======================================================= */
 
-bool script_add_global_object(script_type *script,attach_type *attach,char *err_str)
+bool script_add_global_object(script_type *script,char *err_str)
 {
 	JSObjectRef			j_sub_obj,j_sub_obj_2;
 	
 		// script object
 		
-	script_add_global_script_object(script->cx,script->global_obj,attach);
+	script_add_global_script_object(script->cx,script->global_obj,script->idx);
 
 		// map object
 
-	j_sub_obj=script_add_global_map_object(script->cx,script->global_obj,attach);
-	script_add_map_info_object(script->cx,j_sub_obj,attach);
-	script_add_map_setting_object(script->cx,j_sub_obj,attach);
-	script_add_map_action_object(script->cx,j_sub_obj,attach);
-	script_add_map_light_color_object(script->cx,j_sub_obj,attach);
-	script_add_map_fog_object(script->cx,j_sub_obj,attach);
-	script_add_map_fog_color_object(script->cx,j_sub_obj,attach);
-	script_add_map_spot_object(script->cx,j_sub_obj,attach);
-	script_add_map_node_object(script->cx,j_sub_obj,attach);
-	script_add_map_object_object(script->cx,j_sub_obj,attach);
-	script_add_map_group_object(script->cx,j_sub_obj,attach);
-	script_add_map_movement_object(script->cx,j_sub_obj,attach);
-	script_add_map_light_object(script->cx,j_sub_obj,attach);
-	script_add_map_polygon_object(script->cx,j_sub_obj,attach);
+	j_sub_obj=script_add_global_map_object(script->cx,script->global_obj,script->idx);
+	script_add_map_info_object(script->cx,j_sub_obj,script->idx);
+	script_add_map_setting_object(script->cx,j_sub_obj,script->idx);
+	script_add_map_action_object(script->cx,j_sub_obj,script->idx);
+	script_add_map_light_color_object(script->cx,j_sub_obj,script->idx);
+	script_add_map_fog_object(script->cx,j_sub_obj,script->idx);
+	script_add_map_fog_color_object(script->cx,j_sub_obj,script->idx);
+	script_add_map_spot_object(script->cx,j_sub_obj,script->idx);
+	script_add_map_node_object(script->cx,j_sub_obj,script->idx);
+	script_add_map_object_object(script->cx,j_sub_obj,script->idx);
+	script_add_map_group_object(script->cx,j_sub_obj,script->idx);
+	script_add_map_movement_object(script->cx,j_sub_obj,script->idx);
+	script_add_map_light_object(script->cx,j_sub_obj,script->idx);
+	script_add_map_polygon_object(script->cx,j_sub_obj,script->idx);
 
 		// multiplayer object
 		
-	j_sub_obj=script_add_global_multiplayer_object(script->cx,script->global_obj,attach);
-	script_add_multiplayer_setting_object(script->cx,j_sub_obj,attach);
-	script_add_multiplayer_bot_object(script->cx,j_sub_obj,attach);
-	script_add_multiplayer_score_object(script->cx,j_sub_obj,attach);
+	j_sub_obj=script_add_global_multiplayer_object(script->cx,script->global_obj,script->idx);
+	script_add_multiplayer_setting_object(script->cx,j_sub_obj,script->idx);
+	script_add_multiplayer_bot_object(script->cx,j_sub_obj,script->idx);
+	script_add_multiplayer_score_object(script->cx,j_sub_obj,script->idx);
 
 		// camera object
 		
-	j_sub_obj=script_add_global_camera_object(script->cx,script->global_obj,attach);
-	script_add_camera_setting_object(script->cx,j_sub_obj,attach);
-	script_add_camera_position_object(script->cx,j_sub_obj,attach);
-	script_add_camera_angle_object(script->cx,j_sub_obj,attach);
-	j_sub_obj_2=script_add_camera_chase_object(script->cx,j_sub_obj,attach);
-	script_add_camera_chase_slop_object(script->cx,j_sub_obj_2,attach);
-	script_add_camera_static_position_object(script->cx,j_sub_obj,attach);
-	script_add_camera_plane_object(script->cx,j_sub_obj,attach);
-	script_add_camera_state_object(script->cx,j_sub_obj,attach);
+	j_sub_obj=script_add_global_camera_object(script->cx,script->global_obj,script->idx);
+	script_add_camera_setting_object(script->cx,j_sub_obj,script->idx);
+	script_add_camera_position_object(script->cx,j_sub_obj,script->idx);
+	script_add_camera_angle_object(script->cx,j_sub_obj,script->idx);
+	j_sub_obj_2=script_add_camera_chase_object(script->cx,j_sub_obj,script->idx);
+	script_add_camera_chase_slop_object(script->cx,j_sub_obj_2,script->idx);
+	script_add_camera_static_position_object(script->cx,j_sub_obj,script->idx);
+	script_add_camera_plane_object(script->cx,j_sub_obj,script->idx);
+	script_add_camera_state_object(script->cx,j_sub_obj,script->idx);
 
 		// interface object
 		
-	j_sub_obj=script_add_global_interface_object(script->cx,script->global_obj,attach);
-	script_add_interface_screen_object(script->cx,j_sub_obj,attach);
-	script_add_interface_console_object(script->cx,j_sub_obj,attach);
-	script_add_interface_text_object(script->cx,j_sub_obj,attach);
-	script_add_interface_bitmap_object(script->cx,j_sub_obj,attach);
-	script_add_interface_bar_object(script->cx,j_sub_obj,attach);
-	script_add_interface_radar_object(script->cx,j_sub_obj,attach);
-	script_add_interface_interaction_object(script->cx,j_sub_obj,attach);
+	j_sub_obj=script_add_global_interface_object(script->cx,script->global_obj,script->idx);
+	script_add_interface_screen_object(script->cx,j_sub_obj,script->idx);
+	script_add_interface_console_object(script->cx,j_sub_obj,script->idx);
+	script_add_interface_text_object(script->cx,j_sub_obj,script->idx);
+	script_add_interface_bitmap_object(script->cx,j_sub_obj,script->idx);
+	script_add_interface_bar_object(script->cx,j_sub_obj,script->idx);
+	script_add_interface_radar_object(script->cx,j_sub_obj,script->idx);
+	script_add_interface_interaction_object(script->cx,j_sub_obj,script->idx);
 
 		// data, sound, and spawn objects
 		
-	script_add_global_data_object(script->cx,script->global_obj,attach);
-	script_add_global_sound_object(script->cx,script->global_obj,attach);
-	script_add_global_spawn_object(script->cx,script->global_obj,attach);
+	script_add_global_data_object(script->cx,script->global_obj,script->idx);
+	script_add_global_sound_object(script->cx,script->global_obj,script->idx);
+	script_add_global_spawn_object(script->cx,script->global_obj,script->idx);
 
 		// utility object
 		
-	j_sub_obj=script_add_global_utility_object(script->cx,script->global_obj,attach);
-	script_add_utility_angle_object(script->cx,j_sub_obj,attach);
-	script_add_utility_point_object(script->cx,j_sub_obj,attach);
-	script_add_utility_random_object(script->cx,j_sub_obj,attach);
-	script_add_utility_pack_object(script->cx,j_sub_obj,attach);
+	j_sub_obj=script_add_global_utility_object(script->cx,script->global_obj,script->idx);
+	script_add_utility_angle_object(script->cx,j_sub_obj,script->idx);
+	script_add_utility_point_object(script->cx,j_sub_obj,script->idx);
+	script_add_utility_random_object(script->cx,j_sub_obj,script->idx);
+	script_add_utility_pack_object(script->cx,j_sub_obj,script->idx);
 
 	return(TRUE);
 }
@@ -576,134 +576,137 @@ bool script_check_param_at_least_count(JSContextRef cx,JSObjectRef func,int argc
       
 ======================================================= */
 
-void script_create_main_object_add_model_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
+void script_create_main_object_add_model_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
     JSObjectRef			j_obj;
 
-	j_obj=script_add_model_object(cx,parent_obj,attach);
+	j_obj=script_add_model_object(cx,parent_obj,script_idx);
 	
-	script_add_model_offset_object(cx,j_obj,attach);
-	script_add_model_rotate_object(cx,j_obj,attach);
-	script_add_model_spin_object(cx,j_obj,attach);
-	script_add_model_light_object(cx,j_obj,attach);
-	script_add_model_light_color_object(cx,j_obj,attach);
-	script_add_model_halo_object(cx,j_obj,attach);
-	script_add_model_shadow_object(cx,j_obj,attach);
-	script_add_model_animation_object(cx,j_obj,attach);
-	script_add_model_mesh_object(cx,j_obj,attach);
-	script_add_model_bone_object(cx,j_obj,attach);
-	script_add_model_fill_object(cx,j_obj,attach);
+	script_add_model_offset_object(cx,j_obj,script_idx);
+	script_add_model_rotate_object(cx,j_obj,script_idx);
+	script_add_model_spin_object(cx,j_obj,script_idx);
+	script_add_model_light_object(cx,j_obj,script_idx);
+	script_add_model_light_color_object(cx,j_obj,script_idx);
+	script_add_model_halo_object(cx,j_obj,script_idx);
+	script_add_model_shadow_object(cx,j_obj,script_idx);
+	script_add_model_animation_object(cx,j_obj,script_idx);
+	script_add_model_mesh_object(cx,j_obj,script_idx);
+	script_add_model_bone_object(cx,j_obj,script_idx);
+	script_add_model_fill_object(cx,j_obj,script_idx);
 }
 
-JSObjectRef script_create_main_object(JSContextRef cx,attach_type *attach,int script_idx)
+JSObjectRef script_create_main_object(JSContextRef cx,int script_idx)
 {
+	script_type			*script;
 	JSObjectRef			j_obj,j_sub_obj;
 
-	j_obj=JSObjectMake(cx,js.main_empty_class,(void*)attach);
+	j_obj=JSObjectMake(cx,js.main_empty_class,(void*)script_idx);
 	if (j_obj==NULL) return(NULL);
 		
 		// add sub-objects
 
-	switch (attach->thing_type) {
+	script=js.script_list.scripts[script_idx];
+
+	switch (script->attach.thing_type) {
 
 		case thing_type_game:
-			script_add_game_setting_object(cx,j_obj,attach);
-			script_add_event_object(cx,j_obj,attach);
+			script_add_game_setting_object(cx,j_obj,script_idx);
+			script_add_event_object(cx,j_obj,script_idx);
 			break;
 
 		case thing_type_course:
-			script_add_event_object(cx,j_obj,attach);
+			script_add_event_object(cx,j_obj,script_idx);
 			break;
 
 		case thing_type_object:
-			script_add_obj_setting_object(cx,j_obj,attach);
-			script_add_event_object(cx,j_obj,attach);
-			script_add_obj_position_object(cx,j_obj,attach);
-			script_add_obj_angle_object(cx,j_obj,attach);
-			script_add_obj_lock_object(cx,j_obj,attach);
-			script_add_obj_status_object(cx,j_obj,attach);
-			script_add_obj_motion_vector_object(cx,j_obj,attach);
-			script_add_obj_motion_angle_object(cx,j_obj,attach);
-			script_add_obj_forward_speed_object(cx,j_obj,attach);
-			script_add_obj_side_speed_object(cx,j_obj,attach);
-			script_add_obj_vert_speed_object(cx,j_obj,attach);
-			script_add_obj_turn_speed_object(cx,j_obj,attach);
-			script_add_obj_object_speed_object(cx,j_obj,attach);
-			script_add_obj_thrust_object(cx,j_obj,attach);
-			script_add_obj_look_object(cx,j_obj,attach);
-			script_add_obj_sight_object(cx,j_obj,attach);
-			script_add_obj_health_object(cx,j_obj,attach);
-			script_add_obj_size_object(cx,j_obj,attach);
-			script_add_obj_vehicle_object(cx,j_obj,attach);
-			script_add_obj_radar_object(cx,j_obj,attach);
-			script_add_obj_score_object(cx,j_obj,attach);
-			script_add_obj_touch_object(cx,j_obj,attach);
-			script_add_obj_touch_position_object(cx,j_obj,attach);
-			script_add_obj_touch_angle_object(cx,j_obj,attach);
-			script_add_obj_hit_object(cx,j_obj,attach);
-			script_add_obj_hit_position_object(cx,j_obj,attach);
-			script_add_obj_hit_angle_object(cx,j_obj,attach);
-			script_add_obj_click_object(cx,j_obj,attach);
-			script_add_obj_held_object(cx,j_obj,attach);
-			script_add_obj_pickup_object(cx,j_obj,attach);
-			script_add_obj_watch_object(cx,j_obj,attach);
-			script_add_obj_weapon_object(cx,j_obj,attach);
-			script_add_obj_weapon_fire_object(cx,j_obj,attach);
-			script_add_obj_melee_object(cx,j_obj,attach);
-			script_create_main_object_add_model_object(cx,j_obj,attach);
+			script_add_obj_setting_object(cx,j_obj,script_idx);
+			script_add_event_object(cx,j_obj,script_idx);
+			script_add_obj_position_object(cx,j_obj,script_idx);
+			script_add_obj_angle_object(cx,j_obj,script_idx);
+			script_add_obj_lock_object(cx,j_obj,script_idx);
+			script_add_obj_status_object(cx,j_obj,script_idx);
+			script_add_obj_motion_vector_object(cx,j_obj,script_idx);
+			script_add_obj_motion_angle_object(cx,j_obj,script_idx);
+			script_add_obj_forward_speed_object(cx,j_obj,script_idx);
+			script_add_obj_side_speed_object(cx,j_obj,script_idx);
+			script_add_obj_vert_speed_object(cx,j_obj,script_idx);
+			script_add_obj_turn_speed_object(cx,j_obj,script_idx);
+			script_add_obj_object_speed_object(cx,j_obj,script_idx);
+			script_add_obj_thrust_object(cx,j_obj,script_idx);
+			script_add_obj_look_object(cx,j_obj,script_idx);
+			script_add_obj_sight_object(cx,j_obj,script_idx);
+			script_add_obj_health_object(cx,j_obj,script_idx);
+			script_add_obj_size_object(cx,j_obj,script_idx);
+			script_add_obj_vehicle_object(cx,j_obj,script_idx);
+			script_add_obj_radar_object(cx,j_obj,script_idx);
+			script_add_obj_score_object(cx,j_obj,script_idx);
+			script_add_obj_touch_object(cx,j_obj,script_idx);
+			script_add_obj_touch_position_object(cx,j_obj,script_idx);
+			script_add_obj_touch_angle_object(cx,j_obj,script_idx);
+			script_add_obj_hit_object(cx,j_obj,script_idx);
+			script_add_obj_hit_position_object(cx,j_obj,script_idx);
+			script_add_obj_hit_angle_object(cx,j_obj,script_idx);
+			script_add_obj_click_object(cx,j_obj,script_idx);
+			script_add_obj_held_object(cx,j_obj,script_idx);
+			script_add_obj_pickup_object(cx,j_obj,script_idx);
+			script_add_obj_watch_object(cx,j_obj,script_idx);
+			script_add_obj_weapon_object(cx,j_obj,script_idx);
+			script_add_obj_weapon_fire_object(cx,j_obj,script_idx);
+			script_add_obj_melee_object(cx,j_obj,script_idx);
+			script_create_main_object_add_model_object(cx,j_obj,script_idx);
 			break;
 
 		case thing_type_weapon:
-			script_add_weap_setting_object(cx,j_obj,attach);
-			script_add_event_object(cx,j_obj,attach);
-			script_add_weap_hand_object(cx,j_obj,attach);
-			script_add_weap_hand_position_object(cx,j_obj,attach);
-			script_add_weap_hand_angle_object(cx,j_obj,attach);
-			script_add_weap_projectile_object(cx,j_obj,attach);
-			j_sub_obj=script_add_weap_crosshair_object(cx,j_obj,attach);
-			script_add_weap_crosshair_color_object(cx,j_sub_obj,attach);
-			script_add_weap_crosshair_empty_color_object(cx,j_sub_obj,attach);
-			script_add_weap_crosshair_pickup_color_object(cx,j_sub_obj,attach);
-			script_add_weap_kickback_object(cx,j_obj,attach);
-			script_add_weap_recoil_object(cx,j_obj,attach);
-			script_add_weap_ammo_object(cx,j_obj,attach);
-			script_add_weap_alt_ammo_object(cx,j_obj,attach);
-			script_add_weap_melee_object(cx,j_obj,attach);
-			script_add_weap_fire_object(cx,j_obj,attach);
-			script_add_weap_dual_object(cx,j_obj,attach);
-			j_sub_obj=script_add_weap_target_object(cx,j_obj,attach);
-			script_add_weap_target_color_object(cx,j_sub_obj,attach);
-			script_add_weap_zoom_object(cx,j_obj,attach);
-			script_create_main_object_add_model_object(cx,j_obj,attach);
+			script_add_weap_setting_object(cx,j_obj,script_idx);
+			script_add_event_object(cx,j_obj,script_idx);
+			script_add_weap_hand_object(cx,j_obj,script_idx);
+			script_add_weap_hand_position_object(cx,j_obj,script_idx);
+			script_add_weap_hand_angle_object(cx,j_obj,script_idx);
+			script_add_weap_projectile_object(cx,j_obj,script_idx);
+			j_sub_obj=script_add_weap_crosshair_object(cx,j_obj,script_idx);
+			script_add_weap_crosshair_color_object(cx,j_sub_obj,script_idx);
+			script_add_weap_crosshair_empty_color_object(cx,j_sub_obj,script_idx);
+			script_add_weap_crosshair_pickup_color_object(cx,j_sub_obj,script_idx);
+			script_add_weap_kickback_object(cx,j_obj,script_idx);
+			script_add_weap_recoil_object(cx,j_obj,script_idx);
+			script_add_weap_ammo_object(cx,j_obj,script_idx);
+			script_add_weap_alt_ammo_object(cx,j_obj,script_idx);
+			script_add_weap_melee_object(cx,j_obj,script_idx);
+			script_add_weap_fire_object(cx,j_obj,script_idx);
+			script_add_weap_dual_object(cx,j_obj,script_idx);
+			j_sub_obj=script_add_weap_target_object(cx,j_obj,script_idx);
+			script_add_weap_target_color_object(cx,j_sub_obj,script_idx);
+			script_add_weap_zoom_object(cx,j_obj,script_idx);
+			script_create_main_object_add_model_object(cx,j_obj,script_idx);
 			break;
 
 		case thing_type_projectile:
-			script_add_proj_setting_object(cx,j_obj,attach);
-			script_add_event_object(cx,j_obj,attach);
-			script_add_proj_position_object(cx,j_obj,attach);
-			script_add_proj_origin_object(cx,j_obj,attach);
-			script_add_proj_motion_vector_object(cx,j_obj,attach);
-			script_add_proj_motion_angle_object(cx,j_obj,attach);
-			script_add_proj_speed_object(cx,j_obj,attach);
-			script_add_proj_hit_object(cx,j_obj,attach);
-			script_add_proj_action_object(cx,j_obj,attach);
-			script_add_proj_push_object(cx,j_obj,attach);
-			script_add_proj_size_object(cx,j_obj,attach);
-			script_add_proj_mark_object(cx,j_obj,attach);
-			script_add_proj_melee_object(cx,j_obj,attach);
-			script_create_main_object_add_model_object(cx,j_obj,attach);
+			script_add_proj_setting_object(cx,j_obj,script_idx);
+			script_add_event_object(cx,j_obj,script_idx);
+			script_add_proj_position_object(cx,j_obj,script_idx);
+			script_add_proj_origin_object(cx,j_obj,script_idx);
+			script_add_proj_motion_vector_object(cx,j_obj,script_idx);
+			script_add_proj_motion_angle_object(cx,j_obj,script_idx);
+			script_add_proj_speed_object(cx,j_obj,script_idx);
+			script_add_proj_hit_object(cx,j_obj,script_idx);
+			script_add_proj_action_object(cx,j_obj,script_idx);
+			script_add_proj_push_object(cx,j_obj,script_idx);
+			script_add_proj_size_object(cx,j_obj,script_idx);
+			script_add_proj_mark_object(cx,j_obj,script_idx);
+			script_add_proj_melee_object(cx,j_obj,script_idx);
+			script_create_main_object_add_model_object(cx,j_obj,script_idx);
 
 	}
 	
 	return(j_obj);
 }
 
-JSObjectRef script_create_child_object(JSContextRef cx,JSObjectRef parent_obj,JSClassRef cls,const char *name,attach_type *attach)
+JSObjectRef script_create_child_object(JSContextRef cx,JSObjectRef parent_obj,JSClassRef cls,const char *name,int script_idx)
 {
 	JSObjectRef			j_obj;
 	JSValueRef			j_obj_vp;
 	
-	j_obj=JSObjectMake(cx,cls,(void*)attach);
+	j_obj=JSObjectMake(cx,cls,(void*)script_idx);
 	j_obj_vp=JSValueToObject(cx,j_obj,NULL);
 
 	script_set_single_property(cx,parent_obj,name,j_obj_vp,(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));

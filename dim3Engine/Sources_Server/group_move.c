@@ -353,11 +353,10 @@ void group_rotate(group_type *group,d3ang *fpnt)
 
 void group_moves_run(bool run_events)
 {
-	int				n,user_id;
+	int				n,script_idx,user_id;
 	group_type		*group;
 	group_move_type	*move;
 	obj_type		*obj;
-	attach_type		*attach;
 
 		// run all moves
 		
@@ -393,27 +392,27 @@ void group_moves_run(bool run_events)
 		
 			// get proper attachment
 			
-		attach=NULL;
+		script_idx=-1;
 		
 		if (run_events) {
 			if (move->attach_obj_idx==-1) {
-				attach=&js.course_attach;
+				script_idx=js.course_script_idx;
 			}
 			else {
 				obj=server.obj_list.objs[move->attach_obj_idx];
-				if (obj!=NULL) attach=&obj->attach;
+				if (obj!=NULL) script_idx=obj->script_idx;
 			}
 		}
 
 			// post the finished event
 	
 		user_id=move->user_id;
-		if (attach!=NULL) scripts_post_event_console(attach,sd_event_move,sd_event_move_done,user_id);
+		if (script_idx!=-1) scripts_post_event_console(script_idx,-1,sd_event_move,sd_event_move_done,user_id);
 
 			// signal back to the original map movement
 	
 		if (map_movement_next_move(move->movement_idx,move->movement_move_idx,move->attach_obj_idx)) {
-			if (attach!=NULL) scripts_post_event_console(attach,sd_event_move,sd_event_move_loop,user_id);
+			if (script_idx!=-1) scripts_post_event_console(script_idx,-1,sd_event_move,sd_event_move_loop,user_id);
 		}
 	}
 }

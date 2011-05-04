@@ -64,13 +64,15 @@ int weapon_count_projectile_setups(weapon_type *weap)
 
 inline weapon_type* weapon_get_attach(JSObjectRef j_obj)
 {
+	int				script_idx;
 	obj_type		*obj;
-	attach_type		*attach;
+	script_type		*script;
 	
-	attach=(attach_type*)JSObjectGetPrivate(j_obj);
+	script_idx=(int)JSObjectGetPrivate(j_obj);
+	script=js.script_list.scripts[script_idx];
 
-	obj=server.obj_list.objs[attach->obj_idx];
-	return(obj->weap_list.weaps[attach->weap_idx]);
+	obj=server.obj_list.objs[script->attach.obj_idx];
+	return(obj->weap_list.weaps[script->attach.weap_idx]);
 }
 
 weapon_type* weapon_find_name(obj_type *obj,char *name)
@@ -113,18 +115,14 @@ void weapon_clear_ammo(weap_ammo_type *ammo,bool use)
 
 /* =======================================================
 
-      Scripts for Weapons
+      Start Weapon Script
       
 ======================================================= */
 
 bool weapon_start_script(obj_type *obj,weapon_type *weap,char *err_str)
 {
-	scripts_clear_attach(&weap->attach,thing_type_weapon);
-
-	weap->attach.obj_idx=obj->idx;
-	weap->attach.weap_idx=weap->idx;
-
-	return(scripts_add(&weap->attach,"Weapons",weap->name,err_str));
+	weap->script_idx=scripts_add(thing_type_weapon,"Weapons",weap->name,obj->idx,weap->idx,-1,err_str);
+	return(weap->script_idx!=-1);
 }
 
 /* =======================================================
@@ -289,7 +287,6 @@ bool weapon_add(obj_type *obj,char *name)
 		// the scripts
 		
 	ok=FALSE;
-	
 	if (weapon_start_script(obj,weap,err_str)) {
 		ok=model_draw_load(&weap->draw,"Weapon",weap->name,err_str);
 	}
@@ -336,7 +333,7 @@ void weapon_dispose(obj_type *obj,int idx)
 
 		// clear scripts and models
 
-	scripts_dispose(weap->attach.script_idx);
+	scripts_dispose(weap->script_idx);
 	model_draw_dispose(&weap->draw);
 	
 		// free and empty from list

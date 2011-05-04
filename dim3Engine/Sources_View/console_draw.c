@@ -192,7 +192,7 @@ void console_input(void)
 		console_add(console_input_str);
 
 		if (!console_builtin_commands()) {
-			scripts_post_event_console(&js.game_attach,sd_event_console,0,0);
+			scripts_post_event_console(js.game_script_idx,-1,sd_event_console,0,0);
 		}
 
 		console_input_str[0]=0x0;

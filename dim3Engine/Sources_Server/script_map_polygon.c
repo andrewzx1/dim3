@@ -70,9 +70,9 @@ void script_free_map_polygon_object(void)
 	script_free_class(map_polygon_class);
 }
 
-JSObjectRef script_add_map_polygon_object(JSContextRef cx,JSObjectRef parent_obj,attach_type *attach)
+JSObjectRef script_add_map_polygon_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
-	return(script_create_child_object(cx,parent_obj,map_polygon_class,"polygon",attach));
+	return(script_create_child_object(cx,parent_obj,map_polygon_class,"polygon",script_idx));
 }
 
 /* =======================================================

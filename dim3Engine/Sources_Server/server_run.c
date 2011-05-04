@@ -60,8 +60,8 @@ void mesh_triggers(obj_type *obj,int old_mesh_idx,int mesh_idx)
 			// entry messages
 			
 		if (mesh->msg.entry_on) {
-			scripts_post_event_console(&js.course_attach,sd_event_message,sd_event_message_from_course,mesh->msg.entry_id);
-			scripts_post_event_console(&obj->attach,sd_event_message,sd_event_message_from_course,mesh->msg.entry_id);
+			scripts_post_event_console(js.course_script_idx,-1,sd_event_message,sd_event_message_from_course,mesh->msg.entry_id);
+			scripts_post_event_console(obj->script_idx,-1,sd_event_message,sd_event_message_from_course,mesh->msg.entry_id);
 		}
 		
 			// map change messages
@@ -84,8 +84,8 @@ void mesh_triggers(obj_type *obj,int old_mesh_idx,int mesh_idx)
 			// exit messages
 			
 		if (mesh->msg.exit_on) {
-			scripts_post_event_console(&js.course_attach,sd_event_message,sd_event_message_from_course,mesh->msg.exit_id);
-			scripts_post_event_console(&obj->attach,sd_event_message,sd_event_message_from_course,mesh->msg.exit_id);
+			scripts_post_event_console(js.course_script_idx,-1,sd_event_message,sd_event_message_from_course,mesh->msg.exit_id);
+			scripts_post_event_console(obj->script_idx,-1,sd_event_message,sd_event_message_from_course,mesh->msg.exit_id);
 		}
 		
 			// base watch messages

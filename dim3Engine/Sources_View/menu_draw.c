@@ -160,7 +160,7 @@ bool menu_select(void)
 	
 		// event items
 		
-	scripts_post_event_console(&js.game_attach,sd_event_menu,0,item->item_id);
+	scripts_post_event_console(js.game_script_idx,-1,sd_event_menu,0,item->item_id);
 	
 	return(TRUE);
 }
