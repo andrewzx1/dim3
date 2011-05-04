@@ -278,7 +278,7 @@ bool scripts_post_event(attach_type *attach,int main_event,int sub_event,int id,
 	int						event_idx;
 	attach_type				parent_attach;
 	script_type				*script;
-
+	
 		// ignore if no script
 
 	if (attach->script_idx==-1) return(TRUE);
@@ -294,7 +294,7 @@ bool scripts_post_event(attach_type *attach,int main_event,int sub_event,int id,
 
 		// determine if event is on child
 
-	if (script->event_attach_list.func[event_idx]!=NULL) return(scripts_post_event_on_attach(attach,main_event,sub_event,id,err_str));
+	if (script->event_attach_list.func[event_idx]!=NULL) return(scripts_post_event_on_attach(attach,main_event,sub_event,id,err_str));	
 
 		// now try parent
 
@@ -328,7 +328,7 @@ bool scripts_post_event_call_parent(attach_type *attach,char *err_str)
 {
 	attach_type		parent_attach;
 	script_type		*script;
-
+	
 	if (attach->script_idx==-1) return(TRUE);
 	
 		// get the parent script
@@ -346,7 +346,7 @@ bool scripts_post_event_call_parent(attach_type *attach,char *err_str)
 
 		// call on parent script
 
-	return(scripts_post_event(&parent_attach,attach->event_state.main_event,attach->event_state.sub_event,attach->event_state.id,err_str));
+	return(scripts_post_event_on_attach(&parent_attach,attach->event_state.main_event,attach->event_state.sub_event,attach->event_state.id,err_str));
 }
 
 JSValueRef scripts_get_parent_variable(attach_type *attach,char *prop_name,char *err_str)

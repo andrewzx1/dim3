@@ -952,7 +952,6 @@ int object_start(spot_type *spot,char *name,int type,int bind,char *err_str)
 		// start script
 
 	if (!object_start_script(obj,err_str)) {
-		console_add_error(err_str);
 		server.obj_list.objs[idx]=NULL;
 		free(obj);
 		return(-1);
@@ -1038,18 +1037,12 @@ void object_dispose_all(void)
       
 ======================================================= */
 
-int object_script_spawn(char *name,char *type,char *script,char *params,d3pnt *pnt,d3ang *ang,bool hide,char *err_str)
+int object_script_spawn(char *name,char *script,char *params,d3pnt *pnt,d3ang *ang,bool hide,char *err_str)
 {
-	int					idx,spawn_type;
+	int					idx;
 	char				obj_err_str[256];
 	spot_type			spot;
 	obj_type			*obj;
-	
-		// get type, only allowed to
-		// spawn objects and bots
-		
-	spawn_type=object_type_object;
-	if (strcasecmp(type,"bot")==0) spawn_type=object_type_bot_map;
 	
 		// create fake spot
 
@@ -1064,7 +1057,7 @@ int object_script_spawn(char *name,char *type,char *script,char *params,d3pnt *p
 
 		// start object
 
-	idx=object_start(&spot,name,spawn_type,bt_map,obj_err_str);
+	idx=object_start(&spot,name,object_type_object,bt_map,obj_err_str);
 	if (idx==-1) {
 		sprintf(err_str,"Object Spawn Failed: %s",obj_err_str);
 		console_add_error(err_str);

@@ -184,27 +184,25 @@ void script_exception_to_string(JSContextRef cx,JSValueRef ex_val,char *str,int 
 
 	vp=script_get_single_property(cx,ex_obj,"sourceURL");
 	script_value_to_string(cx,vp,txt,256);
-	strcat(str,txt);
+	string_safe_strcat(str,txt,len);
 
-	strcat(str,":");
+	string_safe_strcat(str,":",len);
 
 	vp=script_get_single_property(cx,ex_obj,"line");
 	script_value_to_string(cx,vp,txt,256);
-	strcat(str,txt);
+	string_safe_strcat(str,txt,len);
 
-	strcat(str,"] ");
+	string_safe_strcat(str,"] ",len);
 
 		// get message
 
 	vp=script_get_single_property(cx,ex_obj,"message");
 	if (vp==NULL) {
 		string_safe_strcat(str,"Unknown Error",len);
-		str[len-1]=0x0;
 	}
 	else {
-		script_value_to_string(cx,vp,txt,len);
+		script_value_to_string(cx,vp,txt,256);
 		string_safe_strcat(str,txt,len);
-		str[len-1]=0x0;
 	}
 }
 

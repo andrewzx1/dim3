@@ -351,7 +351,7 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 		progress_shutdown();
 		return(FALSE);
 	}
-	
+
 		// create object and scenery
 		// and call spawn on all the objects
 
@@ -359,9 +359,13 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 	
 	map_find_random_spot_clear(&map,NULL,-1);
 
-	map_objects_create();
+	if (!map_objects_create(err_str)) {
+		progress_shutdown();
+		return(FALSE);
+	}
+	
 	remote_setup_multiplayer_monsters();
-
+	
 	scenery_create();
 	scenery_start();
 	

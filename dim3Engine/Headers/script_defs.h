@@ -468,7 +468,8 @@ typedef struct		{
 
 typedef struct		{
 						int								idx,data_len,parent_idx,child_idx;
-						char							name[file_str_len],sub_dir[file_str_len];
+						char							name[file_str_len],sub_dir[file_str_len],
+														implement_name[file_str_len];
 						char							*data;
 						script_recursive_type			recursive;
 						script_event_attach_list_type	event_attach_list;

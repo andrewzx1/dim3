@@ -987,31 +987,30 @@ JSValueRef js_map_object_set_model_mesh_func(JSContextRef cx,JSObjectRef func,JS
 JSValueRef js_map_object_spawn_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				uid;
-	char			name[name_str_len],type[name_str_len],err_str[256],
+	char			name[name_str_len],err_str[256],
 					script[name_str_len],params[256];
 	d3pnt			pnt;
 	d3ang			ang;
 
-	if (!script_check_param_count(cx,func,argc,10,exception)) return(script_null_to_value(cx));
+	if (!script_check_param_count(cx,func,argc,9,exception)) return(script_null_to_value(cx));
 	
 		// spawn values
 
 	script_value_to_string(cx,argv[0],name,name_str_len);
-	script_value_to_string(cx,argv[1],type,name_str_len);
-	script_value_to_string(cx,argv[2],script,name_str_len);
-	script_value_to_string(cx,argv[3],params,256);
+	script_value_to_string(cx,argv[1],script,name_str_len);
+	script_value_to_string(cx,argv[2],params,256);
 
-	pnt.x=script_value_to_int(cx,argv[4]);
-	pnt.z=script_value_to_int(cx,argv[5]);
-	pnt.y=script_value_to_int(cx,argv[6]);
+	pnt.x=script_value_to_int(cx,argv[3]);
+	pnt.z=script_value_to_int(cx,argv[4]);
+	pnt.y=script_value_to_int(cx,argv[5]);
 
-	ang.x=script_value_to_float(cx,argv[7]);
-	ang.z=script_value_to_float(cx,argv[8]);
-	ang.y=script_value_to_float(cx,argv[9]);
+	ang.x=script_value_to_float(cx,argv[6]);
+	ang.z=script_value_to_float(cx,argv[7]);
+	ang.y=script_value_to_float(cx,argv[8]);
 
 		// spawn
 
-	uid=object_script_spawn(name,type,script,params,&pnt,&ang,FALSE,err_str);
+	uid=object_script_spawn(name,script,params,&pnt,&ang,FALSE,err_str);
 	if (uid==-1) {
 		*exception=script_create_exception(cx,err_str);
 		return(script_null_to_value(cx));

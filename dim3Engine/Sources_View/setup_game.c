@@ -39,7 +39,6 @@ and can be sold or given away.
 
 #define ctrl_screen_size_id					0
 #define ctrl_fsaa_id						1
-#define ctrl_lock_fps_refresh_id			2
 #define ctrl_decal_on_id					4
 #define ctrl_shadow_on_id					5
 #define ctrl_anisotropic_id					6
@@ -116,7 +115,7 @@ void setup_game_video_pane(void)
 				x,y,control_y_add,control_y_sz;
 	
 	control_y_add=element_get_control_high();
-	control_y_sz=control_y_add*9;
+	control_y_sz=control_y_add*8;
 	
 	x=(int)(((float)iface.scale_x)*0.4f);
 	y=(iface.scale_y>>1)-(control_y_sz>>1);
@@ -140,8 +139,6 @@ void setup_game_video_pane(void)
 	y+=control_y_add;
 	element_combo_add("Full-Screen Anti-Aliasing",(char*)setup_fsaa_mode_list,setup.fsaa_mode,ctrl_fsaa_id,x,y,TRUE);
 	element_enable(ctrl_fsaa_id,gl_check_fsaa_ok());
-	y+=control_y_add;
-	element_checkbox_add("Lock FPS to Refresh Rate",setup.lock_fps_refresh,ctrl_lock_fps_refresh_id,x,y,TRUE);
 	y+=control_y_add;
 
 	element_checkbox_add("Decals",setup.decal_on,ctrl_decal_on_id,x,y,TRUE);
@@ -649,10 +646,6 @@ void setup_game_handle_click(int id)
 			idx=element_get_value(ctrl_screen_size_id);
 			setup.screen_wid=render_info.screen_sizes[idx].wid;
 			setup.screen_high=render_info.screen_sizes[idx].high;
-			break;
-			
-		case ctrl_lock_fps_refresh_id:
-			setup.lock_fps_refresh=element_get_value(ctrl_lock_fps_refresh_id);
 			break;
 			
 		case ctrl_decal_on_id:

@@ -210,7 +210,7 @@ bool view_initialize_display(char *err_str)
 	
 		// start openGL
 		
-	if (!gl_initialize(setup.screen_wid,setup.screen_high,setup.lock_fps_refresh,setup.fsaa_mode,FALSE,err_str)) {
+	if (!gl_initialize(setup.screen_wid,setup.screen_high,setup.fsaa_mode,FALSE,err_str)) {
 		view_memory_release();
 		SDL_Quit();
 		return(FALSE);
@@ -284,7 +284,7 @@ bool view_reset_display(char *err_str)
 
 bool view_initialize(char *err_str)
 {
-	int				tick,rate;
+	int				tick;
 	
 		// clear view structure
 		
@@ -362,11 +362,7 @@ bool view_initialize(char *err_str)
 	view.time.input_tick=tick;
 	view.time.draw_tick=tick;
 	
-	rate=render_info.monitor_refresh_rate;
-	if (!setup.lock_fps_refresh) rate=max_fps;
-	
-	if (rate>max_fps) rate=max_fps;
-	view.time.draw_time=1000/rate;
+	view.time.draw_time=1000/render_info.monitor_refresh_rate;
 	
 	return(TRUE);
 }

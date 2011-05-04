@@ -163,8 +163,6 @@ typedef struct		{
 // render info
 //
  
-#define max_fps											100
-
 typedef struct		{
 						int								view_x,view_y,
 														monitor_x_sz,monitor_y_sz,
