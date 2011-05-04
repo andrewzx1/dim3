@@ -45,7 +45,6 @@ void setup_xml_default(void)
 {
 	setup.screen_wid=640;
 	setup.screen_high=480;
-	setup.lock_fps_refresh=FALSE;
 	
 	setup.anisotropic_mode=anisotropic_mode_none;
 	setup.mipmap_mode=mipmap_mode_trilinear;
@@ -132,7 +131,6 @@ bool setup_xml_read_path(char *path)
 
     xml_key_read_int(setup_tag,"Screen_Width",&setup.screen_wid);
     xml_key_read_int(setup_tag,"Screen_Height",&setup.screen_high);
-	xml_key_read_boolean(setup_tag,"Lock_FPS_Refresh",&setup.lock_fps_refresh);
 	xml_key_read_float(setup_tag,"Gamma",&setup.gamma);
     xml_key_read_int(setup_tag,"Anisotropic_Mode",&setup.anisotropic_mode);
     xml_key_read_int(setup_tag,"Texture_Quality_Mode",&setup.texture_quality_mode);
@@ -296,7 +294,6 @@ bool setup_xml_write(void)
 
     xml_key_write_int("Screen_Width",setup.screen_wid);
     xml_key_write_int("Screen_Height",setup.screen_high);
-    xml_key_write_boolean("Lock_FPS_Refresh",setup.lock_fps_refresh);
 	xml_key_write_float("Gamma",setup.gamma);
 	xml_key_write_int("Anisotropic_Mode",setup.anisotropic_mode);
     xml_key_write_int("Texture_Quality_Mode",setup.texture_quality_mode);
@@ -427,7 +424,6 @@ void setup_restore(void)
 		
 	setup.screen_wid=640;
 	setup.screen_high=480;
-	setup.lock_fps_refresh=FALSE;
 	
 	setup.decal_on=FALSE;
 	setup.shadow_on=FALSE;

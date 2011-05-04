@@ -98,7 +98,7 @@ JSValueRef js_script_implements_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 	attach=(attach_type*)JSObjectGetPrivate(j_obj);
 	script_value_to_string(cx,argv[0],name,file_str_len);
 
-	if (!scripts_add_parent(attach,name,err_str)) {
+	if (!scripts_set_implement(attach,name,err_str)) {
 		*exception=script_create_exception(cx,err_str);
 	}
 
@@ -118,6 +118,15 @@ JSValueRef js_script_attach_event_func(JSContextRef cx,JSObjectRef func,JSObject
 		return(script_null_to_value(cx));
 	}
 	
+		// special check for actually functions instead of names
+		
+	if (!JSValueIsString(cx,argv[1])) {
+		*exception=script_create_exception(cx,"Function parameter is not a string");
+		return(script_null_to_value(cx));
+	}
+
+		// attach event
+		
 	attach=(attach_type*)JSObjectGetPrivate(j_obj);
 	main_event=script_value_to_int(cx,argv[0]);
 	script_value_to_string(cx,argv[1],func_name,256);

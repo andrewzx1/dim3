@@ -353,7 +353,7 @@ void hud_texts_fps(char *data)
 		strcpy(data,"--.--");
 	}
 	else {
-		if ((setup.lock_fps_refresh) && (view.fps.total>render_info.monitor_refresh_rate)) {
+		if (view.fps.total>render_info.monitor_refresh_rate) {
 			sprintf(data,"%d.00",render_info.monitor_refresh_rate);
 		}
 		else {

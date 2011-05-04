@@ -83,7 +83,7 @@ void gl_setup_context(void)
       
 ======================================================= */
 
-bool gl_initialize(int screen_wid,int screen_high,bool lock_fps_refresh,int fsaa_mode,bool reset,char *err_str)
+bool gl_initialize(int screen_wid,int screen_high,int fsaa_mode,bool reset,char *err_str)
 {
 #ifdef D3_SDL_1_3
 	int					sdl_flags;
@@ -191,9 +191,11 @@ bool gl_initialize(int screen_wid,int screen_high,bool lock_fps_refresh,int fsaa
 	gl_check_initialize();
 	
 		// on OS X use threaded OpenGL
+		// supergumba -- this acts weird when it's on, not sure why
+		// investigate further later
 		
 #ifdef D3_OS_MAC
-	CGLEnable(CGLGetCurrentContext(),kCGLCEMPEngine);
+//	CGLEnable(CGLGetCurrentContext(),kCGLCEMPEngine);
 #endif
 
 		// in case screen is bigger than window
@@ -244,13 +246,11 @@ bool gl_initialize(int screen_wid,int screen_high,bool lock_fps_refresh,int fsaa
         // setup renderer
 
 #ifdef D3_SDL_1_3
-	if (lock_fps_refresh) SDL_GL_SetSwapInterval(1);
+	SDL_GL_SetSwapInterval(1);
 #else
 	#ifdef D3_OS_MAC
-		if (lock_fps_refresh) {
-			swapint=1;
-			CGLSetParameter(CGLGetCurrentContext(),kCGLCPSwapInterval,(void*)&swapint);
-		}
+		swapint=1;
+		CGLSetParameter(CGLGetCurrentContext(),kCGLCPSwapInterval,(void*)&swapint);
 	#endif
 #endif
 

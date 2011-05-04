@@ -119,7 +119,7 @@ void script_sound_play(JSContextRef cx,JSObjectRef j_obj,char *name,d3pnt *pt,fl
 	int				buffer_idx,sound_obj_idx;
 	bool			player;
 	obj_type		*obj;
-
+	
 		// check if this is player
 
 	if (atplayer) {

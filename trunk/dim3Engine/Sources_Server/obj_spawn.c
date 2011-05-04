@@ -274,21 +274,24 @@ int game_player_create(char *err_str)
 	return(object_start(NULL,setup.network.name,object_type_player,bt_game,err_str));
 }
 
-void game_multiplayer_bots_create(void)
+bool game_multiplayer_bots_create(char *err_str)
 {
-	int				n,uid;
-	char			name[name_str_len],err_str[256];
-	spot_type		spot;
+	int						n,uid;
+	char					name[name_str_len];
+	spot_type				spot;
+	iface_net_game_type		*net_game;
 	
 		// only hosts have multiplayer bots
 		
-	if ((net_setup.mode!=net_mode_host) && (net_setup.mode!=net_mode_host_dedicated)) return;
+	if ((net_setup.mode!=net_mode_host) && (net_setup.mode!=net_mode_host_dedicated)) return(TRUE);
 
 		// are bots allowed in this game?
 
-	if (!iface.net_bot.on) return;
+	if (!iface.net_bot.on) return(TRUE);
 
 		// spawn bots
+		
+	net_game=&iface.net_game.games[net_setup.game_idx];
 
 	for (n=0;n!=setup.network.bot.count;n++) {
 	
@@ -303,11 +306,14 @@ void game_multiplayer_bots_create(void)
 		
 		strcpy(spot.name,name);
 		spot.type=spot_type_bot;
-		strcpy(spot.script,"Bot");
+		strcpy(spot.script,net_game->bot.script);
 		spot.params[0]=0x0;
 		
 		uid=object_start(&spot,name,object_type_bot_multiplayer,bt_game,err_str);
+		if (uid==-1) return(FALSE);
 	}
+	
+	return(TRUE);
 }
 
 void game_remotes_create(network_reply_join_remote_list *remote_list)
@@ -336,10 +342,9 @@ void game_remotes_create(network_reply_join_remote_list *remote_list)
       
 ======================================================= */
 
-void map_objects_create(void)
+bool map_objects_create(char *err_str)
 {
 	int					n,spawn_type;
-	char				err_str[256];
 	spot_type			*spot;
 	
 	for (n=0;n!=map.nspot;n++) {
@@ -364,9 +369,11 @@ void map_objects_create(void)
 		if (spot->type==spot_type_bot) spawn_type=object_type_bot_map;
 
 			// create the object
-
-		object_start(spot,spot->name,spawn_type,bt_map,err_str);
+		
+		if (object_start(spot,spot->name,spawn_type,bt_map,err_str)==-1) return(FALSE);
 	}
+	
+	return(TRUE);
 }
 
 /* =======================================================

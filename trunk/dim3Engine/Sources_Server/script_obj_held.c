@@ -75,21 +75,20 @@ JSObjectRef script_add_obj_held_object(JSContextRef cx,JSObjectRef parent_obj,at
 JSValueRef js_obj_held_add_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int			uid;
-	char		name[name_str_len],type[name_str_len],
+	char		name[name_str_len],
 				script[file_str_len],params[param_str_len],
 				err_str[256];
 	obj_type	*obj;
 	
-	if (!script_check_param_count(cx,func,argc,4,exception)) return(script_null_to_value(cx));
+	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
 	
 	obj=object_get_attach(j_obj);
 
 	script_value_to_string(cx,argv[0],name,name_str_len);
-	script_value_to_string(cx,argv[1],type,name_str_len);
-	script_value_to_string(cx,argv[2],script,file_str_len);
-	script_value_to_string(cx,argv[3],params,param_str_len);
+	script_value_to_string(cx,argv[1],script,file_str_len);
+	script_value_to_string(cx,argv[2],params,param_str_len);
 
-	uid=object_held_add(obj,name,type,script,params,err_str);
+	uid=object_held_add(obj,name,script,params,err_str);
 	if (uid==-1) {
 		*exception=script_create_exception(cx,err_str);
 	}

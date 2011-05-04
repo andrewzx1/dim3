@@ -174,7 +174,7 @@ bool scripts_execute(attach_type *attach,script_type *script,char *err_str)
 		sprintf(err_str,"[%s] contains extraneous control characters",script->name);
 		return(FALSE);
 	}
-	
+
 		// evaulate script
 		
 	j_script_name=JSStringCreateWithUTF8CString(script->name);
@@ -190,14 +190,8 @@ bool scripts_execute(attach_type *attach,script_type *script,char *err_str)
 		script_exception_to_string(script->cx,exception,err_str,256);
 		return(FALSE);
 	}
-
-		// get a pointer to the event object
-		
-	scripts_setup_events(script);
 	
-		// send the construct event
-	
-	return(scripts_post_event(attach,sd_event_construct,0,0,err_str));
+	return(TRUE);
 }
 
 /* =======================================================
@@ -206,7 +200,7 @@ bool scripts_execute(attach_type *attach,script_type *script,char *err_str)
       
 ======================================================= */
 	
-bool scripts_add(attach_type *attach,char *sub_dir,char *name,char *err_str)
+bool scripts_add_single(attach_type *attach,char *sub_dir,char *name,char *err_str)
 {
 	int						n,idx;
 	bool					ok;
@@ -251,6 +245,7 @@ bool scripts_add(attach_type *attach,char *sub_dir,char *name,char *err_str)
 	
 	strcpy(script->name,name);
 	strcpy(script->sub_dir,sub_dir);
+	script->implement_name[0]=0x0;
 
 		// setup script data
 
@@ -288,7 +283,7 @@ bool scripts_add(attach_type *attach,char *sub_dir,char *name,char *err_str)
 	script_defines_create_constants(script);
 	
 		// create the object
-
+		
 	script->obj=script_create_main_object(script->cx,attach,script->idx);
 	if (script->obj==NULL) {
 		strcpy(err_str,"JavaScript Engine: Not enough memory to create an object");
@@ -299,7 +294,7 @@ bool scripts_add(attach_type *attach,char *sub_dir,char *name,char *err_str)
 	}
 	
 		// compile and execute the construct function
-	
+		
 	ok=scripts_execute(attach,script,err_str);
 	script_free_file(script);
 	
@@ -316,11 +311,50 @@ bool scripts_add(attach_type *attach,char *sub_dir,char *name,char *err_str)
 	return(TRUE);
 }
 
-bool scripts_add_parent(attach_type *attach,char *name,char *err_str)
+bool scripts_add(attach_type *attach,char *sub_dir,char *name,char *err_str)
 {
 	attach_type			parent_attach;
 	script_type			*script,*parent_script;
 
+		// add the script
+		
+	if (!scripts_add_single(attach,sub_dir,name,err_str)) return(FALSE);
+	
+		// setup the events
+		
+	script=js.script_list.scripts[attach->script_idx];
+	scripts_setup_events(script);
+	
+		// setup any implemented parent scripts
+		
+	if (script->implement_name[0]!=0x0) {
+	
+			// start the parent script
+			
+		memmove(&parent_attach,attach,sizeof(attach_type));
+		if (!scripts_add(&parent_attach,script->sub_dir,script->implement_name,err_str)) return(FALSE);
+
+			// set the parent and the child
+
+		script->parent_idx=parent_attach.script_idx;
+
+		parent_script=js.script_list.scripts[parent_attach.script_idx];
+		parent_script->child_idx=attach->script_idx;
+		
+			// setup the events
+			
+		scripts_setup_events(parent_script);
+	}
+	
+		// send the construct event
+	
+	return(scripts_post_event(attach,sd_event_construct,0,0,err_str));
+}
+
+bool scripts_set_implement(attach_type *attach,char *name,char *err_str)
+{
+	script_type			*script;
+	
 		// already have a parent?
 
 	script=js.script_list.scripts[attach->script_idx];
@@ -329,20 +363,10 @@ bool scripts_add_parent(attach_type *attach,char *name,char *err_str)
 		return(FALSE);
 	}
 
-		// need to duplicate the attach
-
-	memmove(&parent_attach,attach,sizeof(attach_type));
-
-		// add in the new parent script
-
-	if (!scripts_add(&parent_attach,script->sub_dir,name,err_str)) return(FALSE);
-
-		// set the parent and the child
-
-	script->parent_idx=parent_attach.script_idx;
-
-	parent_script=js.script_list.scripts[parent_attach.script_idx];
-	parent_script->child_idx=attach->script_idx;
+		// parent scripts get constructed when child scripts
+		// finished executing
+		
+	strcpy(script->implement_name,name);
 
 	return(TRUE);
 }

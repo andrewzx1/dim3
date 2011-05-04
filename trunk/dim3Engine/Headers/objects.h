@@ -46,7 +46,7 @@ extern void object_dispose_single(int idx);
 extern void object_dispose_2(int bind);
 extern void object_dispose_all(void);
 
-extern int object_script_spawn(char *name,char *type,char *script,char *params,d3pnt *pnt,d3ang *ang,bool hide,char *err_str);
+extern int object_script_spawn(char *name,char *script,char *params,d3pnt *pnt,d3ang *ang,bool hide,char *err_str);
 extern bool object_script_remove(int idx,char *err_str);
 
 extern void object_set_radius(obj_type *obj);
@@ -94,9 +94,9 @@ extern bool object_spawn(obj_type *obj,char *err_str);
 extern int object_get_respawn_time(obj_type *obj);
 extern void object_check_respawn(obj_type *obj);
 extern int game_player_create(char *err_str);
-extern void game_multiplayer_bots_create(void);
+extern bool game_multiplayer_bots_create(char *err_str);
 extern void game_remotes_create(network_reply_join_remote_list *remote_list);
-extern void map_objects_create(void);
+extern bool map_objects_create(char *err_str);
 extern bool map_object_attach_all(char *err_str);
 extern void map_object_detach_all(void);
 
@@ -212,7 +212,7 @@ extern void object_watch_base_alert(map_mesh_type *mesh,obj_type *enter_obj,bool
 extern void object_watch_sound_alert(d3pnt *pnt,int sound_obj_idx,char *sound_name);
 extern void object_watch_damage_alert(d3pnt *pnt,int damage_obj_idx);
 
-extern int object_held_add(obj_type *obj,char *name,char *type,char *script,char *params,char *err_str);
+extern int object_held_add(obj_type *obj,char *name,char *script,char *params,char *err_str);
 extern bool object_held_drop(obj_type *obj,int uid,float y_ang,int y_change,char *err_str);
 
 extern void object_grow_clear(obj_type *obj);

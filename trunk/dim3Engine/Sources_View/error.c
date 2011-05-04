@@ -68,10 +68,10 @@ void error_open(void)
 	element_text_add("[Error]",-1,x,y,iface.font.text_size_large,tx_center,FALSE,TRUE);
 
 	y+=control_y_add;
-	element_text_add(view.error.str,-1,x,y,iface.font.text_size_small,tx_center,FALSE,FALSE);
+	element_text_add(view.error.str,-1,x,y,iface.font.text_size_mini,tx_center,FALSE,FALSE);
 	
 	y+=control_y_add;
-	element_text_add(view.error.str_2,-1,x,y,iface.font.text_size_small,tx_center,FALSE,FALSE);
+	element_text_add(view.error.str_2,-1,x,y,iface.font.text_size_mini,tx_center,FALSE,FALSE);
 	
 		// buttons
 		

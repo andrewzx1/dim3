@@ -498,7 +498,12 @@ void host_game(void)
 	
 		// add any multiplayer bots
 		
-	game_multiplayer_bots_create();
+	if (!game_multiplayer_bots_create(err_str)) {
+		net_host_game_end();
+		error_setup(err_str,"Hosting Game Canceled");
+		server.next_state=gs_error;
+		return;
+	}
 	
 		// start the map
 		

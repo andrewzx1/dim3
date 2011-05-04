@@ -43,9 +43,9 @@ extern js_type				js;
       
 ======================================================= */
 
-int object_held_add(obj_type *obj,char *name,char *type,char *script,char *params,char *err_str)
+int object_held_add(obj_type *obj,char *name,char *script,char *params,char *err_str)
 {
-	return(object_script_spawn(name,type,script,params,&obj->pnt,&obj->ang,TRUE,err_str));
+	return(object_script_spawn(name,script,params,&obj->pnt,&obj->ang,TRUE,err_str));
 }
 
 /* =======================================================
