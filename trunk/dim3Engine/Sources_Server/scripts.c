@@ -297,7 +297,7 @@ int scripts_add_single(int thing_type,char *sub_dir,char *name,int obj_idx,int w
 	return(idx);
 }
 
-bool scripts_add(int thing_type,char *sub_dir,char *name,int obj_idx,int weap_idx,int proj_setup_idx,char *err_str)
+int scripts_add(int thing_type,char *sub_dir,char *name,int obj_idx,int weap_idx,int proj_setup_idx,char *err_str)
 {
 	int					script_idx,parent_script_idx;
 	script_type			*script,*parent_script;
@@ -394,16 +394,16 @@ void scripts_dispose_single(int idx)
 
 void scripts_dispose(int idx)
 {
-	int			parent_idx;
+	script_type		*script;
 
 		// no attached script
 
 	if (idx==-1) return;
 
-		// recurse through the parents
-
-	parent_idx=js.script_list.scripts[idx]->parent_idx;
-	if (parent_idx!=-1) scripts_dispose(parent_idx);
+		// dispose any parent
+		
+	script=js.script_list.scripts[idx];
+	if (script->parent_idx!=-1) scripts_dispose_single(script->parent_idx);
 
 		// dispose the script itself
 
