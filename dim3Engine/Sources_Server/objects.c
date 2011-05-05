@@ -895,7 +895,7 @@ int object_start(spot_type *spot,char *name,int type,int bind,char *err_str)
 	int					idx;
 	obj_type			*obj;
 	weapon_type			*weap;
-
+	
 		// create object
 		
 	idx=object_create(name,type,bind);
@@ -953,7 +953,7 @@ int object_start(spot_type *spot,char *name,int type,int bind,char *err_str)
 	if (net_setup.mode!=net_mode_none) {
 		if ((obj->type==object_type_player) || (obj->type==object_type_bot_multiplayer)) object_multiplayer_setup(obj);
 	}
-		
+
 		// start script
 
 	if (!object_start_script(obj,err_str)) {

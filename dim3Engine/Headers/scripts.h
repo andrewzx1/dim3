@@ -35,7 +35,7 @@ extern void scripts_engine_shutdown(void);
 extern void scripts_initialize_list(void);
 extern void scripts_free_list(void);
 
-extern bool scripts_add(int thing_type,char *sub_dir,char *name,int obj_idx,int weap_idx,int proj_setup_idx,char *err_str);
+extern int scripts_add(int thing_type,char *sub_dir,char *name,int obj_idx,int weap_idx,int proj_setup_idx,char *err_str);
 extern bool scripts_set_implement(int script_idx,char *name,char *err_str);
 extern void scripts_dispose(int idx);
 

@@ -113,7 +113,7 @@ void server_shutdown(void)
 bool server_game_start(bool in_file_load,int skill,int simple_save_idx,char *err_str)
 {
 		// initialize lists
-
+		
 	model_initialize_list();
 	object_initialize_list();
 	
@@ -138,7 +138,7 @@ bool server_game_start(bool in_file_load,int skill,int simple_save_idx,char *err
 
 		// if not reloading, then check that
 		// a map was set
-
+		
 	if (!in_file_load) {
 
 			// editor map override?

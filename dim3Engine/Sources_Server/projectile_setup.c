@@ -67,7 +67,7 @@ proj_setup_type* find_proj_setups(weapon_type *weap,char *name)
 
 bool proj_setup_start_script(obj_type *obj,weapon_type *weap,proj_setup_type *proj_setup,char *err_str)
 {
-	proj_setup->script_idx=scripts_add(thing_type_projectile,"Projectiles",proj_setup->name,obj->idx,weap->idx,-1,err_str);
+	proj_setup->script_idx=scripts_add(thing_type_projectile,"Projectiles",proj_setup->name,obj->idx,weap->idx,proj_setup->idx,err_str);
 	return(proj_setup->script_idx!=-1);
 }
 
@@ -229,7 +229,7 @@ proj_setup_type* proj_setup_get_attach(JSObjectRef j_obj)
 	obj_type			*obj;
 	weapon_type			*weap;
 	script_type			*script;
-
+	
 	script_idx=(int)JSObjectGetPrivate(j_obj);
 	script=js.script_list.scripts[script_idx];
 
@@ -242,7 +242,7 @@ proj_type* proj_get_attach(JSObjectRef j_obj)
 {
 	int					script_idx;
 	script_type			*script;
-
+	
 	script_idx=(int)JSObjectGetPrivate(j_obj);
 	script=js.script_list.scripts[script_idx];
 	
