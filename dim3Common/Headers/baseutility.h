@@ -577,17 +577,17 @@ extern void bitmap_text_shutdown(texture_font_type *d3_font);
 //
 
 typedef struct		{
-						d3col					dialog_background,dialog_base,dialog_dimmed,dialog_outline,
-												control_label,control_text,control_fill,
-												control_header,control_outline,
-												control_mouse_over,control_hilite,control_disabled,
-												button_fill,button_text,button_outline,
-												default_tint,tints[max_tint_color];
+						d3col							dialog_background,dialog_base,dialog_dimmed,dialog_outline,
+														control_label,control_text,control_fill,
+														control_header,control_outline,
+														control_mouse_over,control_hilite,control_disabled,
+														button_fill,button_text,button_outline,
+														default_tint,tints[max_tint_color];
 					} iface_color_type;
 
 typedef struct		{
-						int						text_size_mini,text_size_small,text_size_medium,text_size_large;
-						char					interface_name[name_str_len],hud_name[name_str_len];
+						int								text_size_mini,text_size_small,text_size_medium,text_size_large;
+						char							interface_name[name_str_len],hud_name[name_str_len];
 					} iface_font_type;
 
 //
@@ -1240,9 +1240,9 @@ typedef struct		{
 //
 
 typedef struct		{
-						char							script[name_str_len];
-						bool							monsters;
-					} iface_net_game_bot_type;
+						char							player_script[file_str_len],
+														bot_script[file_str_len];
+					} iface_net_game_script_type;
 
 typedef struct		{
 						bool							coop_spot,spawn_spot,team_spot;
@@ -1254,8 +1254,8 @@ typedef struct		{
 					
 typedef struct		{
 						char							name[name_str_len];
-						bool							use_teams;
-						iface_net_game_bot_type			bot;
+						bool							use_teams,monsters;
+						iface_net_game_script_type		script;
 						iface_net_game_spawn_type		spawn;
 						iface_net_game_score_type		score;
 					} iface_net_game_type;

@@ -262,7 +262,7 @@ bool scripts_post_event(int script_idx,int override_proj_idx,int main_event,int 
 	script=js.script_list.scripts[script->parent_idx];
 	if (script->event_attach_list.func[event_idx]==NULL) return(TRUE);
 
-	return(scripts_post_event_on_attach(script->parent_idx,override_proj_idx,main_event,sub_event,id,err_str));
+	return(scripts_post_event_on_attach(script->idx,override_proj_idx,main_event,sub_event,id,err_str));
 }
 
 void scripts_post_event_console(int script_idx,int override_proj_idx,int main_event,int sub_event,int id)

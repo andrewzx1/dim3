@@ -82,11 +82,12 @@ void iface_read_settings_multiplayer(iface_type *iface)
 		
 			xml_get_attribute_text(game_tag,"type",game->name,name_str_len);
 			game->use_teams=xml_get_attribute_boolean(game_tag,"use_teams");
+			game->monsters=xml_get_attribute_boolean(game_tag,"monsters");
 			
-			tag=xml_findfirstchild("Bot",game_tag);
+			tag=xml_findfirstchild("Script",game_tag);
 			if (tag!=-1) {
-				xml_get_attribute_text(tag,"script",game->bot.script,name_str_len);
-				game->bot.monsters=xml_get_attribute_boolean(tag,"monsters");
+				xml_get_attribute_text(tag,"player",game->script.player_script,file_str_len);
+				xml_get_attribute_text(tag,"bot",game->script.bot_script,file_str_len);
 			}
 			
 			tag=xml_findfirstchild("Spawn",game_tag);
@@ -217,11 +218,12 @@ bool iface_write_settings_multiplayer(iface_type *iface)
 		xml_add_tagstart("Game");
 		xml_add_attribute_text("type",game->name);
 		xml_add_attribute_boolean("use_teams",game->use_teams);
+		xml_add_attribute_boolean("monsters",game->monsters);
 		xml_add_tagend(FALSE);
 		
-		xml_add_tagstart("Bot");
-		xml_add_attribute_text("script",game->bot.script);
-		xml_add_attribute_boolean("monsters",game->bot.monsters);
+		xml_add_tagstart("Script");
+		xml_add_attribute_text("player",game->script.player_script);
+		xml_add_attribute_text("bot",game->script.bot_script);
 		xml_add_tagend(TRUE);
 			
 		xml_add_tagstart("Spawn");
