@@ -255,9 +255,10 @@ void property_palette_click_multiplayer(int id)
 		dialog_property_string_run(list_string_value_string,(void*)iface.net_game.games[idx].name,name_str_len,0,0);
 
 		iface.net_game.games[idx].use_teams=FALSE;
+		iface.net_game.games[idx].monsters=FALSE;
 		
-		strcpy(iface.net_game.games[idx].bot.script,"Bot");
-		iface.net_game.games[idx].bot.monsters=FALSE;
+		strcpy(iface.net_game.games[idx].script.player_script,"Player");
+		strcpy(iface.net_game.games[idx].script.bot_script,"Bot DM");
 		
 		iface.net_game.games[idx].spawn.coop_spot=FALSE;
 		iface.net_game.games[idx].spawn.spawn_spot=TRUE;

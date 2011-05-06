@@ -834,7 +834,7 @@ void remote_network_send_updates(void)
 
 	if ((net_setup.mode==net_mode_host) || (net_setup.mode==net_mode_host_dedicated)) {
 	
-		monsters=iface.net_game.games[net_setup.game_idx].bot.monsters;
+		monsters=iface.net_game.games[net_setup.game_idx].monsters;
 
 		for (n=0;n!=max_obj_list;n++) {
 			obj=server.obj_list.objs[n];
@@ -898,7 +898,7 @@ void remote_setup_multiplayer_monsters(void)
 	
 		// is it co-op mode?
 		
-	monsters=iface.net_game.games[net_setup.game_idx].bot.monsters;
+	monsters=iface.net_game.games[net_setup.game_idx].monsters;
 	
 		// create remote IDs
 		

@@ -306,7 +306,7 @@ bool game_multiplayer_bots_create(char *err_str)
 		
 		strcpy(spot.name,name);
 		spot.type=spot_type_bot;
-		strcpy(spot.script,net_game->bot.script);
+		strcpy(spot.script,net_game->script.bot_script);
 		spot.params[0]=0x0;
 		
 		uid=object_start(&spot,name,object_type_bot_multiplayer,bt_game,err_str);
