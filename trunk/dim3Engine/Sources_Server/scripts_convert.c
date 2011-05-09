@@ -170,7 +170,7 @@ JSValueRef script_create_exception(JSContextRef cx,char *str)
 	return((JSValueRef)JSObjectMakeError(cx,1,argv,NULL));
 }
 
-void script_exception_to_string(JSContextRef cx,JSValueRef ex_val,char *str,int len)
+void script_exception_to_string(JSContextRef cx,int main_event,JSValueRef ex_val,char *str,int len)
 {
 	char				txt[256];
 	JSObjectRef			ex_obj;
@@ -178,7 +178,7 @@ void script_exception_to_string(JSContextRef cx,JSValueRef ex_val,char *str,int 
 
 	ex_obj=JSValueToObject(cx,ex_val,NULL);
 
-		// get the source and line number
+		// source
 
 	strcpy(str,"[");
 
@@ -186,14 +186,28 @@ void script_exception_to_string(JSContextRef cx,JSValueRef ex_val,char *str,int 
 	script_value_to_string(cx,vp,txt,256);
 	string_safe_strcat(str,txt,len);
 
+		// event
+		
+	string_safe_strcat(str,":",len);
+	
+	if (main_event!=-1) {
+		script_get_define_for_event(main_event,txt);
+		string_safe_strcat(str,(char*)&txt[11],len);
+	}
+	else {
+		string_safe_strcat(str,"Compile",len);
+	}
+	
+		// line number
+		
 	string_safe_strcat(str,":",len);
 
 	vp=script_get_single_property(cx,ex_obj,"line");
 	script_value_to_string(cx,vp,txt,256);
 	string_safe_strcat(str,txt,len);
-
-	string_safe_strcat(str,"] ",len);
-
+	
+	string_safe_strcat(str,"]",len);
+	
 		// get message
 
 	vp=script_get_single_property(cx,ex_obj,"message");

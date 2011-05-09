@@ -723,6 +723,7 @@ bool light_map_polys_start(char *err_str)
 			
 			lm_poly->mesh_idx=idx;
 			lm_poly->poly_idx=k;
+			lm_poly->liquid_idx=-1;
 			
 				// flatten the poly
 				

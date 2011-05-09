@@ -152,6 +152,21 @@ node_type* script_find_node_from_idx_arg(JSContextRef cx,JSValueRef arg,JSValueR
 	return(&map.nodes[idx]);
 }
 
+int script_find_node_idx_from_idx_arg(JSContextRef cx,JSValueRef arg,JSValueRef *exception)
+{
+	int				idx;
+	char			err_str[256];
+	
+	idx=script_value_to_int(cx,arg);
+	if ((idx<0) || (idx>=map.nnode)) {
+		sprintf(err_str,"Illegal node id: %d",idx);
+		*exception=script_create_exception(cx,err_str);
+		return(-1);
+	}
+	
+	return(-1);
+}
+
 map_light_type* script_find_light_from_name(JSContextRef cx,JSValueRef arg,JSValueRef *exception)
 {
 	int				idx;

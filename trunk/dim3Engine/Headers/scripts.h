@@ -70,7 +70,7 @@ extern void script_value_to_string(JSContextRef cx,JSValueRef val,char *str,int 
 extern JSValueRef script_string_to_value(JSContextRef cx,char *str);
 extern JSValueRef script_int_array_to_value(JSContextRef cx,int cnt,int *values);
 extern JSValueRef script_create_exception(JSContextRef cx,char *str);
-extern void script_exception_to_string(JSContextRef cx,JSValueRef ex_val,char *str,int len);
+extern void script_exception_to_string(JSContextRef cx,int main_event,JSValueRef ex_val,char *str,int len);
 extern JSValueRef script_angle_to_value(JSContextRef cx,float x,float y,float z);
 extern JSValueRef script_point_to_value(JSContextRef cx,int x,int y,int z);
 extern JSValueRef script_color_to_value(JSContextRef cx,d3col *col);
@@ -85,6 +85,7 @@ extern spot_type* script_find_spot_from_idx_arg(JSContextRef cx,JSValueRef arg,J
 extern spot_type* script_find_spot_from_name_type(JSContextRef cx,JSValueRef arg_0,JSValueRef arg_1,JSValueRef *exception);
 extern spot_type* script_find_network_spot(JSContextRef cx,obj_type *obj,JSValueRef *exception);
 extern node_type* script_find_node_from_idx_arg(JSContextRef cx,JSValueRef arg,JSValueRef *exception);
+extern int script_find_node_idx_from_idx_arg(JSContextRef cx,JSValueRef arg,JSValueRef *exception);
 extern map_light_type* script_find_light_from_name(JSContextRef cx,JSValueRef arg,JSValueRef *exception);
 extern iface_text_type* script_find_text_from_name(JSContextRef cx,JSValueRef arg,JSValueRef *exception);
 extern iface_bitmap_type* script_find_bitmap_from_name(JSContextRef cx,JSValueRef arg,JSValueRef *exception);

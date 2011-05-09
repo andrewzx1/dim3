@@ -181,7 +181,7 @@ bool scripts_execute(script_type *script,char *err_str)
 		// check for errors
 		
 	if (rval==NULL) {
-		script_exception_to_string(script->cx,exception,err_str,256);
+		script_exception_to_string(script->cx,-1,exception,err_str,256);
 		return(FALSE);
 	}
 	
@@ -327,6 +327,11 @@ int scripts_add(int thing_type,char *sub_dir,char *name,int obj_idx,int weap_idx
 
 		parent_script=js.script_list.scripts[parent_script_idx];
 		parent_script->child_idx=script_idx;
+		
+			// scripts with implements automatically
+			// turn into attached scripts.  Supergumba -- remove in the future
+			
+		script->event_attach_list.on=TRUE;
 		
 			// setup the events
 			
