@@ -490,11 +490,10 @@ void read_map_editor_views_xml(map_type *map,int map_head)
       
 ======================================================= */
     
-bool map_check_game_type(char *game_type,char *map_name,char *info_name)
+bool map_host_load_info(char *map_name,char *info_name,char *game_list)
 {
-	int				map_head,tag,idx;
-	char			*c,*c2,game_token[256],
-					game_list[256],path[1024];
+	int				map_head,tag;
+	char			path[1024];
 
 	file_paths_data(&maputility_settings.file_path_setup,path,"Maps",map_name,"xml");
 
@@ -508,7 +507,7 @@ bool map_check_game_type(char *game_type,char *map_name,char *info_name)
 		return(FALSE);
     }
 	
-		// get infor name
+		// get info name
 		
 	info_name[0]=0x0;
 	
@@ -530,50 +529,7 @@ bool map_check_game_type(char *game_type,char *map_name,char *info_name)
 
 	xml_close_file();
 
-	if (game_list[0]==0x0) return(FALSE);
-
-		// search game list
-
-	c=game_list;
-
-	while (TRUE) {
-
-		if (*c==0x0) break;
-
-			// check next token
-
-		strcpy(game_token,c);
-		c2=strchr(game_token,',');
-		if (c2!=NULL) *c2=0x0;
-
-			// remove white space
-
-		if (game_token[0]!=0x0) {
-			while (game_token[0]==' ') {
-				strcpy((char*)&game_token[0],(char*)&game_token[1]);
-			}
-			while (TRUE) {
-				idx=strlen(game_token);
-				if (idx==0) break;
-				if (game_token[idx-1]!=' ') break;
-				
-				game_token[idx-1]=0x0;
-			}
-		}
-
-			// compare
-
-		if (strcasecmp(game_type,game_token)==0) return(TRUE);
-
-			// get next token
-
-		c2=strchr(c,',');
-		if (c2==NULL) break;
-
-		c=c2+1;
-	}
-
-	return(FALSE);
+	return(TRUE);
 }
 
 /* =======================================================

@@ -6,7 +6,7 @@ EXPORTS
 	map_count_texture_frames						@110
 	map_setup_animated_textures						@111
 
-	map_check_game_type								@115
+	map_host_load_info								@115
 
 	map_count_spot									@200
 	map_find_spot									@201

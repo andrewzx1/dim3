@@ -110,7 +110,7 @@ void map_recalc_normals_get_trig_box(model_type *model,int mesh_idx,int trig_idx
 	}
 }
 
-bool map_recalc_normals_determine_vector_in_out(model_type *model,int mesh_idx,int trig_idx,int pt_idx)
+bool model_recalc_normals_determine_vector_in_out(model_type *model,int mesh_idx,int trig_idx,int pt_idx)
 {
 	int					x,y,z,k,pos_dist,neg_dist;
 	float				f_dist;
@@ -403,7 +403,7 @@ void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent)
 	for (n=0;n!=mesh->ntrig;n++) {
 	
 		for (k=0;k!=3;k++) {
-			if (!map_recalc_normals_determine_vector_in_out(model,mesh_idx,n,k)) {
+			if (!model_recalc_normals_determine_vector_in_out(model,mesh_idx,n,k)) {
 				trig->tangent_space[k].normal.x=-trig->tangent_space[k].normal.x;
 				trig->tangent_space[k].normal.y=-trig->tangent_space[k].normal.y;
 				trig->tangent_space[k].normal.z=-trig->tangent_space[k].normal.z;

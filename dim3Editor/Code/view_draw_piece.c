@@ -228,6 +228,28 @@ bool view_clip_poly(editor_view_type *view,map_mesh_type *mesh,map_mesh_poly_typ
 	return(dist<(setup.clip_distance*view_snap_clip_size_factor));
 }
 
+bool view_clip_liquid(editor_view_type *view,map_liquid_type *liq)
+{
+	int			x,z,dist;
+
+	if (!view->clip) return(FALSE);
+	
+		// if top or bottom, only clip Y
+		
+	if ((view->ang.x<=270.0f) && (view->ang.x>=45.0f)) {
+		dist=abs(view->pnt.y-liq->y);
+	}
+	else {
+		x=(liq->lft+liq->rgt)>>1;
+		z=(liq->top+liq->bot)>>1;
+		dist=distance_2D_get(view->pnt.x,view->pnt.z,x,z);
+	}
+	
+		// get distance
+		
+	return(dist<(setup.clip_distance*view_snap_clip_size_factor));
+}
+
 bool view_clip_point(editor_view_type *view,d3pnt *pnt)
 {
 	int			dist;
@@ -612,6 +634,10 @@ void view_draw_liquids(editor_view_type *view,bool opaque)
 	for (n=0;n!=nliquid;n++) {
 		liquid=&map.liquid.liquids[n];
 		
+				// clipping
+				
+		if (view_clip_liquid(view,liquid)) continue;
+
 			// no light map?
 				
 		if ((view->uv_layer==uv_layer_light_map) && (liquid->lmap_txt_idx==-1)) continue;
@@ -649,6 +675,8 @@ void view_draw_liquids(editor_view_type *view,bool opaque)
 		rx=liquid->rgt;
 		tz=liquid->top;
 		bz=liquid->bot;
+
+		glColor4f(1.0f,1.0f,1.0f,1.0f);
 		
 		glBegin(GL_QUADS);
 		

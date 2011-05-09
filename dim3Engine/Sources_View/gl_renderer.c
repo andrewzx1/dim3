@@ -90,7 +90,7 @@ bool gl_initialize(int screen_wid,int screen_high,int fsaa_mode,bool reset,char 
 #endif
     GLint				ntxtunit,ntxtsize;
 #ifdef D3_OS_MAC
-    long				swapint;
+    GLInt				swapint;
 	CFDictionaryRef		mode_info;
 	CFNumberRef			cf_rate;
 #else
@@ -191,11 +191,9 @@ bool gl_initialize(int screen_wid,int screen_high,int fsaa_mode,bool reset,char 
 	gl_check_initialize();
 	
 		// on OS X use threaded OpenGL
-		// supergumba -- this acts weird when it's on, not sure why
-		// investigate further later
 		
 #ifdef D3_OS_MAC
-//	CGLEnable(CGLGetCurrentContext(),kCGLCEMPEngine);
+	CGLEnable(CGLGetCurrentContext(),kCGLCEMPEngine);
 #endif
 
 		// in case screen is bigger than window
@@ -250,7 +248,7 @@ bool gl_initialize(int screen_wid,int screen_high,int fsaa_mode,bool reset,char 
 #else
 	#ifdef D3_OS_MAC
 		swapint=1;
-		CGLSetParameter(CGLGetCurrentContext(),kCGLCPSwapInterval,(void*)&swapint);
+		CGLSetParameter(CGLGetCurrentContext(),kCGLCPSwapInterval,&swapint);
 	#endif
 #endif
 

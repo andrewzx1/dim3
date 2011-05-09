@@ -65,22 +65,108 @@ extern iface_type			iface;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
 
-int							host_tab_value,host_map_count,host_first_map_idx;
-char						*host_file_list;
+int							host_tab_value,host_first_map_idx,
+							host_file_map_count,host_table_map_count;
+char						*host_file_map_list,*host_table_map_list;
 char						net_game_types[max_net_game+1][name_str_len],
 							bot_skill_list[6][32]={"Very Easy","Easy","Normal","Hard","Very Hard",""};
 
 /* =======================================================
 
-      Host Map Table
+      Host Map Table Data
       
 ======================================================= */
 
+bool host_check_game_type(char *game_type,char *game_list)
+{
+	int				idx;
+	char			*c,*c2;
+	char			game_token[256];
+
+	c=game_list;
+
+	while (TRUE) {
+
+		if (*c==0x0) break;
+
+			// check next token
+
+		strcpy(game_token,c);
+		c2=strchr(game_token,',');
+		if (c2!=NULL) *c2=0x0;
+
+			// remove white space
+
+		if (game_token[0]!=0x0) {
+			while (game_token[0]==' ') {
+				strcpy((char*)&game_token[0],(char*)&game_token[1]);
+			}
+			while (TRUE) {
+				idx=strlen(game_token);
+				if (idx==0) break;
+				if (game_token[idx-1]!=' ') break;
+				
+				game_token[idx-1]=0x0;
+			}
+		}
+
+			// compare
+
+		if (strcasecmp(game_type,game_token)==0) return(TRUE);
+
+			// get next token
+
+		c2=strchr(c,',');
+		if (c2==NULL) break;
+
+		c=c2+1;
+	}
+
+	return(FALSE);
+}
+
 void host_fill_map_table(char *game_type)
 {
+	int							n;
+	char						*c,*c2;
+
+	host_table_map_count=0;
+
+	c=host_file_map_list;
+	c2=host_table_map_list;
+
+	for (n=0;n!=host_file_map_count;n++) {
+		
+		if (host_check_game_type(game_type,(c+(file_str_len+name_str_len)))) {
+			sprintf(c2,"Bitmaps/Icons_Map;%s;%s",c,(c+file_str_len));
+			c2+=128;
+			
+			host_table_map_count++;
+		}
+
+		c+=(file_str_len+name_str_len+256);
+	}
+
+	*c2=0x0;
+	element_set_table_data(host_table_id,host_table_map_list);
+}
+
+void host_map_list_initialize(void)
+{
 	int							n,nfile,sz;
-	char						*c,info_name[name_str_len];
+	char						*c;
+	char						info_name[name_str_len],game_list[256],
+								path[1024];
 	file_path_directory_type	*map_pick_fpd;
+	FILE						*file;
+
+		// initial setup
+
+	host_file_map_count=0;
+	host_file_map_list=NULL;
+
+	host_table_map_count=0;
+	host_table_map_list=NULL;
 
 		// need to make sure map paths are correct
 
@@ -91,32 +177,63 @@ void host_fill_map_table(char *game_type)
 	map_pick_fpd=file_paths_read_directory_data(&setup.file_path_setup,"Maps","xml");
 
 	nfile=map_pick_fpd->nfile;
-
-	if (nfile>0) {
-		sz=(nfile+1)*128;
-		
-		host_file_list=malloc(sz);
-		bzero(host_file_list,sz);
-
-		c=host_file_list;
-		
-		for (n=0;n!=nfile;n++) {
-			if (map_check_game_type(game_type,map_pick_fpd->files[n].file_name,info_name)) {
-				sprintf(c,"Bitmaps/Icons_Map;%s;%s",map_pick_fpd->files[n].file_name,info_name);
-				c+=128;
-			}
-		}
-
-		host_map_count=nfile;
-		
-		element_set_table_data(host_table_id,host_file_list);
+	if (nfile<=0) {
+		file_paths_close_directory(map_pick_fpd);
+		return;
 	}
-	else {
-		host_map_count=0;
-		host_file_list=NULL;
+
+		// data for maps
+
+	sz=nfile*(file_str_len+name_str_len+256);
+	host_file_map_list=malloc(sz);
+	bzero(host_file_map_list,sz);
+
+	sz=(nfile+1)*128;
+	host_table_map_list=malloc(sz);
+	bzero(host_table_map_list,sz);
+
+	progress_initialize(NULL);
+
+		// load the maps
+
+	c=host_file_map_list;
+	
+	for (n=0;n!=nfile;n++) {
+
+		progress_draw(((n+1)*100)/nfile);
+
+			// if no JS file, don't put in list
+			// this is probably a backup file
+
+		file_paths_data(&setup.file_path_setup,path,"Scripts/Courses",map_pick_fpd->files[n].file_name,"js");
+		
+		file=fopen(path,"rb");
+		if (file==NULL) continue;
+		fclose(file);
+
+			// get the map info
+
+		if (!map_host_load_info(map_pick_fpd->files[n].file_name,info_name,game_list)) continue;
+
+		strcpy(c,map_pick_fpd->files[n].file_name);
+		c+=file_str_len;
+		strcpy(c,info_name);
+		c+=name_str_len;
+		strcpy(c,game_list);
+		c+=256;
+		
+		host_file_map_count++;
 	}
 
 	file_paths_close_directory(map_pick_fpd);
+
+	progress_shutdown();
+}
+
+void host_map_list_shutdown(void)
+{
+	if (host_file_map_list!=NULL) free(host_file_map_list);
+	if (host_table_map_list!=NULL) free(host_table_map_list);
 }
 
 /* =======================================================
@@ -134,11 +251,11 @@ void host_map_list_to_table(void)
 
 	host_first_map_idx=-1;
 
-	for (n=0;n!=host_map_count;n++) {
+	for (n=0;n!=host_table_map_count;n++) {
 
 			// get map name
 
-		c=host_file_list+(n*128);
+		c=host_table_map_list+(n*128);
 		
 		c=strchr(c,';');
 		if (c!=NULL) {
@@ -176,10 +293,10 @@ void host_map_table_to_list(void)
 	
 	count=0;
 
-	for (n=0;n!=host_map_count;n++) {
+	for (n=0;n!=host_table_map_count;n++) {
 		if (!element_get_table_checkbox(host_table_id,n)) continue;
 	
-		c=host_file_list+(n*128);
+		c=host_table_map_list+(n*128);
 		
 		c=strchr(c,';');
 		if (c!=NULL) {
@@ -411,6 +528,10 @@ void host_create_pane(void)
 
 void host_open(void)
 {
+		// load the maps
+
+	host_map_list_initialize();
+
 		// get the project hash
 
 	net_create_project_hash();
@@ -422,7 +543,6 @@ void host_open(void)
 		// start with first tab
 		
 	host_tab_value=0;
-	host_map_count=0;
 	host_first_map_idx=-1;
 
 	host_create_pane();
@@ -430,7 +550,7 @@ void host_open(void)
 
 void host_close(void)
 {
-	if (host_file_list!=NULL) free(host_file_list);
+	host_map_list_shutdown();
 	gui_shutdown();
 }
 

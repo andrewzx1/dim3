@@ -570,7 +570,16 @@ void view_click_piece_map_pick_start(editor_view_type *view)
 		liq=map.liquid.liquids;
 		
 		for (n=0;n!=map.liquid.nliquid;n++) {
-		
+
+					// clipping
+				
+			if (view_clip_liquid(view,liq)) {
+				liq++;
+				continue;
+			}
+
+				// add to pick list
+
 			view_pick_list_add(liquid_piece,n,-1);
 
 			glBegin(GL_POLYGON);
