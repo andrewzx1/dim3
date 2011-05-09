@@ -41,7 +41,7 @@ int map_node_to_node_distance(map_type *map,int from_idx,int to_idx)
 	char		node_hit[max_node];
 	node_type	*node;
 
-	if ((from_idx==-1) || (to_idx==-1)) return(-1);
+	if ((from_idx<0) || (to_idx<0)) return(-1);
 	if (from_idx==to_idx) return(0);
 	
 		// detect circular references

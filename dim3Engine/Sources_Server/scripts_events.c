@@ -198,7 +198,7 @@ bool scripts_post_event_on_attach(int script_idx,int override_proj_idx,int main_
 		// run the event function
 		// supergumba -- for now we handle both methods, but
 		// in the future we should replace with a single method
-
+		
 	if (script->event_attach_list.on) {
 		argv[0]=(JSValueRef)script->obj;
 		argv[1]=script_int_to_value(script->cx,sub_event);
@@ -206,7 +206,7 @@ bool scripts_post_event_on_attach(int script_idx,int override_proj_idx,int main_
 		argv[3]=script_int_to_value(script->cx,tick);
 
 		rval=JSObjectCallAsFunction(script->cx,script->event_attach_list.func[event_idx],NULL,4,argv,&exception);
-		if (rval==NULL) script_exception_to_string(script->cx,exception,err_str,256);
+		if (rval==NULL) script_exception_to_string(script->cx,main_event,exception,err_str,256);
 	}
 
 	else {
@@ -217,7 +217,7 @@ bool scripts_post_event_on_attach(int script_idx,int override_proj_idx,int main_
 		argv[4]=script_int_to_value(script->cx,tick);
 
 		rval=JSObjectCallAsFunction(script->cx,script->event_func,NULL,5,argv,&exception);
-		if (rval==NULL) script_exception_to_string(script->cx,exception,err_str,256);
+		if (rval==NULL) script_exception_to_string(script->cx,main_event,exception,err_str,256);
 	}
 
 		// switch back any saved proj_idx
@@ -331,7 +331,7 @@ JSValueRef scripts_get_parent_variable(int script_idx,char *prop_name,char *err_
 JSValueRef scripts_call_parent_function(int script_idx,char *func_name,int arg_count,JSValueRef *args,char *err_str)
 {
 	int				override_proj_idx;
-	script_type		*script;
+	script_type		*script,*parent_script;
 	
 		// get the parent script
 
@@ -340,6 +340,11 @@ JSValueRef scripts_call_parent_function(int script_idx,char *func_name,int arg_c
 		strcpy(err_str,"Can not call parent function; this script does not implement a parent script");
 		return(FALSE);
 	}
+	
+		// save the event state
+		
+	parent_script=js.script_list.scripts[script->parent_idx];
+	memmove(&parent_script->event_state,&script->event_state,sizeof(script_event_state_type));
 
 		// get the override
 
@@ -386,7 +391,7 @@ JSValueRef scripts_get_child_variable(int script_idx,char *prop_name,char *err_s
 JSValueRef scripts_call_child_function(int script_idx,char *func_name,int arg_count,JSValueRef *args,char *err_str)
 {
 	int				override_proj_idx;
-	script_type		*script;
+	script_type		*script,*child_script;
 	
 		// get the child script
 
@@ -395,6 +400,11 @@ JSValueRef scripts_call_child_function(int script_idx,char *func_name,int arg_co
 		strcpy(err_str,"Can not get call child function; this script is not implemented from a parent script");
 		return(FALSE);
 	}
+	
+		// save the event state
+		
+	child_script=js.script_list.scripts[script->child_idx];
+	memmove(&child_script->event_state,&script->event_state,sizeof(script_event_state_type));
 
 		// get the override
 
@@ -452,7 +462,7 @@ bool scripts_chain(int script_idx,int override_proj_idx,char *func_name,char *er
 	argv[1]=script_int_to_value(script->cx,game_time_get());
 
 	rval=JSObjectCallAsFunction(script->cx,func_obj,NULL,2,argv,&exception);
-	if (rval==NULL) script_exception_to_string(script->cx,exception,err_str,256);
+	if (rval==NULL) script_exception_to_string(script->cx,script->event_state.main_event,exception,err_str,256);
 
 		// switch back any saved proj_idx
 
@@ -517,7 +527,7 @@ JSValueRef scripts_direct_call(int script_idx,int override_proj_idx,char *func_n
 	}
 
 	rval=JSObjectCallAsFunction(script->cx,func_obj,NULL,(arg_count+1),argv,&exception);
-	if (rval==NULL) script_exception_to_string(script->cx,exception,err_str,256);
+	if (rval==NULL) script_exception_to_string(script->cx,script->event_state.main_event,exception,err_str,256);
 
 		// switch back any saved proj_idx
 

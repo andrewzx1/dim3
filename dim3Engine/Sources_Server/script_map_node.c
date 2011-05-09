@@ -137,9 +137,10 @@ JSValueRef js_map_node_find_nearest_names_in_path_func(JSContextRef cx,JSObjectR
 	
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 	
-		// from node and name
+		// from node
 		
-	from_idx=script_value_to_int(cx,argv[0]);
+	from_idx=script_find_node_idx_from_idx_arg(cx,argv[0],exception);
+	if (from_idx==-1) return(script_null_to_value(cx));
 	
 		// check if array is OK
 		
@@ -187,7 +188,8 @@ JSValueRef js_map_node_find_nearest_unheld_weapon_in_path_func(JSContextRef cx,J
 	
 		// from node and object
 		
-	from_idx=script_value_to_int(cx,argv[0]);
+	from_idx=script_find_node_idx_from_idx_arg(cx,argv[0],exception);
+	if (from_idx==-1) return(script_null_to_value(cx));
 
 	obj=script_find_obj_from_uid_arg(cx,argv[1],exception);
 	if (obj==NULL) return(script_null_to_value(cx));
@@ -223,11 +225,17 @@ JSValueRef js_map_node_find_nearest_unheld_weapon_in_path_func(JSContextRef cx,J
 
 JSValueRef js_map_node_next_in_path_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	int				idx;
+	int				idx,from_idx,to_idx;
 	
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 	
-	idx=map_find_next_node_in_path(&map,script_value_to_int(cx,argv[0]),script_value_to_int(cx,argv[1]));
+	from_idx=script_find_node_idx_from_idx_arg(cx,argv[0],exception);
+	if (from_idx==-1) return(script_null_to_value(cx));
+
+	to_idx=script_find_node_idx_from_idx_arg(cx,argv[1],exception);
+	if (to_idx==-1) return(script_null_to_value(cx));
+	
+	idx=map_find_next_node_in_path(&map,from_idx,to_idx);
 	return(script_int_to_value(cx,idx));
 }
 

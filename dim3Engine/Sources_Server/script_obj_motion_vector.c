@@ -232,13 +232,20 @@ JSValueRef js_obj_motion_vector_walk_to_node_func(JSContextRef cx,JSObjectRef fu
 
 JSValueRef js_obj_motion_vector_walk_to_node_by_id_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
+	int				from_idx,to_idx;
 	char			err_str[256];
 	obj_type		*obj;
 	
 	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
 	
+	from_idx=script_find_node_idx_from_idx_arg(cx,argv[0],exception);
+	if (from_idx==-1) return(script_null_to_value(cx));
+	
+	to_idx=script_find_node_idx_from_idx_arg(cx,argv[1],exception);
+	if (to_idx==-1) return(script_null_to_value(cx));
+	
 	obj=object_get_attach(j_obj);
-	if (!object_auto_walk_node_setup(obj,script_value_to_int(cx,argv[0]),script_value_to_int(cx,argv[1]),FALSE,script_value_to_int(cx,argv[2]),err_str)) {
+	if (!object_auto_walk_node_setup(obj,from_idx,to_idx,FALSE,script_value_to_int(cx,argv[2]),err_str)) {
 		*exception=script_create_exception(cx,err_str);
 	}
 	
