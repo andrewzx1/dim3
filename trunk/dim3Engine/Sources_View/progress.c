@@ -36,7 +36,7 @@ extern server_type			server;
 extern iface_type			iface;
 extern setup_type			setup;
 
-float						progress_current;
+int							progress_current;
 bitmap_type					progress_bitmap;
 
 /* =======================================================
@@ -81,7 +81,7 @@ void progress_shutdown(void)
       
 ======================================================= */
 
-void progress_draw(float percentage)
+void progress_draw(int percentage)
 {
 	int				lft,rgt,top,bot,mid,rgt2;
 
@@ -124,7 +124,7 @@ void progress_draw(float percentage)
 	
 		// draw the progress foreground
 	
-	rgt2=lft+(int)((float)(rgt-lft)*(percentage/100));
+	rgt2=lft+(((rgt-lft)*percentage)/100);
 	
 	view_draw_next_vertex_object_2D_color_poly(lft,top,&iface.progress.hilite_color_start,rgt2,top,&iface.progress.hilite_color_start,rgt2,mid,&iface.progress.hilite_color_end,lft,mid,&iface.progress.hilite_color_end,1.0f);
 	view_draw_next_vertex_object_2D_color_poly(lft,mid,&iface.progress.hilite_color_end,rgt2,mid,&iface.progress.hilite_color_end,rgt2,bot,&iface.progress.hilite_color_start,lft,bot,&iface.progress.hilite_color_start,1.0f);

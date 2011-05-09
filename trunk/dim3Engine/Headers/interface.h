@@ -234,7 +234,7 @@ extern int element_key(char ch);
 
 extern void progress_initialize(char *map_name);
 extern void progress_shutdown(void);
-extern void progress_draw(float percentage);
+extern void progress_draw(int percentage);
 
 //
 // hud

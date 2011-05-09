@@ -382,6 +382,7 @@ extern void view_draw(void);
 //
 
 extern bool view_clip_poly(editor_view_type *view,map_mesh_type *mesh,map_mesh_poly_type *poly);
+extern bool view_clip_liquid(editor_view_type *view,map_liquid_type *liq);
 extern bool view_hidden_mesh(editor_view_type *view,int mesh_idx);
 extern bool view_hidden_poly(editor_view_type *view,map_mesh_type *mesh,map_mesh_poly_type *poly);
 extern void view_draw_select_mesh_get_grow_handles(int mesh_idx,d3pnt *pts);
