@@ -90,7 +90,7 @@ bool gl_initialize(int screen_wid,int screen_high,int fsaa_mode,bool reset,char 
 #endif
     GLint				ntxtunit,ntxtsize;
 #ifdef D3_OS_MAC
-    GLInt				swapint;
+//    GLint				swapint;		// supergumba -- probably not necessary, erase later
 	CFDictionaryRef		mode_info;
 	CFNumberRef			cf_rate;
 #else
@@ -191,9 +191,10 @@ bool gl_initialize(int screen_wid,int screen_high,int fsaa_mode,bool reset,char 
 	gl_check_initialize();
 	
 		// on OS X use threaded OpenGL
+		// supergumba -- turning this on seems to slow things down
 		
 #ifdef D3_OS_MAC
-	CGLEnable(CGLGetCurrentContext(),kCGLCEMPEngine);
+//	CGLEnable(CGLGetCurrentContext(),kCGLCEMPEngine);
 #endif
 
 		// in case screen is bigger than window
@@ -242,13 +243,14 @@ bool gl_initialize(int screen_wid,int screen_high,int fsaa_mode,bool reset,char 
 #endif
 
         // setup renderer
+		// supergumba -- at the expense of tearing, turn off the swap interval
 
 #ifdef D3_SDL_1_3
-	SDL_GL_SetSwapInterval(1);
+	// SDL_GL_SetSwapInterval(1);
 #else
 	#ifdef D3_OS_MAC
-		swapint=1;
-		CGLSetParameter(CGLGetCurrentContext(),kCGLCPSwapInterval,&swapint);
+	//	swapint=1;
+	//	CGLSetParameter(CGLGetCurrentContext(),kCGLCPSwapInterval,&swapint);
 	#endif
 #endif
 

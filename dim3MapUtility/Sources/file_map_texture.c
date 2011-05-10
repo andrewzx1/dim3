@@ -95,6 +95,7 @@ bool map_textures_read(map_type *map)
 		
 		for (n=0;n!=map->liquid.nliquid;n++) {
 			txt_ok[liq->txt_idx]=TRUE;
+			if (liq->lmap_txt_idx!=-1) txt_ok[liq->lmap_txt_idx]=TRUE;
 			liq++;
 		}
 		

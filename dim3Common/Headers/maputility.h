@@ -333,7 +333,8 @@ typedef struct		{
 typedef struct		{
 						int									texture_size,merge_texture_idx,
 															x_refract_factor,z_refract_factor;
-						float								merge_factor,alpha;
+						float								merge_factor,alpha,
+															merge_x_size,merge_y_size;
 						bool								on;
 					} map_liquid_reflection_type;
 

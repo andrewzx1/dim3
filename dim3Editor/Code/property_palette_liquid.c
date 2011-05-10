@@ -33,38 +33,40 @@ and can be sold or given away.
 #include "ui_common.h"
 #include "interface.h"
 
-#define kLiquidPropertyLockUV				0
-#define kLiquidPropertyNeverObscure			1
-#define kLiquidPropertyNeverCull			2
-#define kLiquidPropertyNoReflectionMap		3
-#define kLiquidPropertyNoDraw				4
+#define kLiquidPropertyLockUV					0
+#define kLiquidPropertyNeverObscure				1
+#define kLiquidPropertyNeverCull				2
+#define kLiquidPropertyNoReflectionMap			3
+#define kLiquidPropertyNoDraw					4
 
-#define kLiquidPropertyColor				5
-#define kLiquidPropertyTintAlpha			6
-#define kLiquidPropertySpeedAlter			7
-#define kLiquidPropertySoundName			8
+#define kLiquidPropertyColor					5
+#define kLiquidPropertyTintAlpha				6
+#define kLiquidPropertySpeedAlter				7
+#define kLiquidPropertySoundName				8
 
-#define kLiquidPropertyTideSize				9
-#define kLiquidPropertyTideRate				10
+#define kLiquidPropertyTideSize					9
+#define kLiquidPropertyTideRate					10
 
-#define kLiquidPropertyHarm					15
-#define kLiquidPropertyDrownTick			16
-#define kLiquidPropertyDrownHarm			17
+#define kLiquidPropertyHarm						15
+#define kLiquidPropertyDrownTick				16
+#define kLiquidPropertyDrownHarm				17
 
-#define kLiquidPropertyReflectOn			18
-#define kLiquidPropertyReflectTextureSize	19
-#define kLiquidPropertyReflectXRefract		20
-#define kLiquidPropertyReflectZRefract		21
-#define kLiquidPropertyReflectMergeTexture	22
-#define kLiquidPropertyReflectMergeFactor	23
-#define kLiquidPropertyReflectAlpha			24
+#define kLiquidPropertyReflectOn				18
+#define kLiquidPropertyReflectTextureSize		19
+#define kLiquidPropertyReflectXRefract			20
+#define kLiquidPropertyReflectZRefract			21
+#define kLiquidPropertyReflectMergeTexture		22
+#define kLiquidPropertyReflectMergeFactor		23
+#define kLiquidPropertyReflectMergeXSizeFactor	24
+#define kLiquidPropertyReflectMergeYSizeFactor	25
+#define kLiquidPropertyReflectAlpha				26
 
-#define kLiquidPropertyGroup				25
+#define kLiquidPropertyGroup					27
 
-#define kLiquidPropertyOff					26
-#define kLiquidPropertySize					27
-#define kLiquidPropertyShift				28
-#define kLiquidPropertyCamera				29
+#define kLiquidPropertyOff						28
+#define kLiquidPropertySize						29
+#define kLiquidPropertyShift					30
+#define kLiquidPropertyCamera					31
 
 extern map_type					map;
 extern editor_state_type		state;
@@ -117,7 +119,9 @@ void property_palette_fill_liquid(int liq_idx)
 	list_palette_add_string_int(&property_palette,kLiquidPropertyReflectXRefract,"X Refraction Factor",liq->reflect.x_refract_factor,FALSE);
 	list_palette_add_string_int(&property_palette,kLiquidPropertyReflectZRefract,"Z Refraction Factor",liq->reflect.z_refract_factor,FALSE);
 	list_palette_add_texture(&property_palette,map.textures,kLiquidPropertyReflectMergeTexture,"Merge Texture",liq->reflect.merge_texture_idx,FALSE);
-	list_palette_add_string_float(&property_palette,kLiquidPropertyReflectMergeFactor,"Merge Factor",liq->reflect.merge_factor,FALSE);
+	list_palette_add_string_float(&property_palette,kLiquidPropertyReflectMergeFactor,"Merge Texture Factor",liq->reflect.merge_factor,FALSE);
+	list_palette_add_string_float(&property_palette,kLiquidPropertyReflectMergeXSizeFactor,"Merge Texture X Size",liq->reflect.merge_x_size,FALSE);
+	list_palette_add_string_float(&property_palette,kLiquidPropertyReflectMergeYSizeFactor,"Merge Texture Y Size",liq->reflect.merge_y_size,FALSE);
 	list_palette_add_string_float(&property_palette,kLiquidPropertyReflectAlpha,"Alpha",liq->reflect.alpha,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Liquid Group");
@@ -279,6 +283,14 @@ void property_palette_click_liquid(int liq_idx,int id)
 			
 		case kLiquidPropertyReflectMergeFactor:
 			dialog_property_string_run(list_string_value_0_to_1_float,(void*)&liq->reflect.merge_factor,0,0,0);
+			break;
+			
+		case kLiquidPropertyReflectMergeXSizeFactor:
+			dialog_property_string_run(list_string_value_positive_float,(void*)&liq->reflect.merge_x_size,0,0,0);
+			break;
+			
+		case kLiquidPropertyReflectMergeYSizeFactor:
+			dialog_property_string_run(list_string_value_positive_float,(void*)&liq->reflect.merge_y_size,0,0,0);
 			break;
 			
 		case kLiquidPropertyReflectAlpha:

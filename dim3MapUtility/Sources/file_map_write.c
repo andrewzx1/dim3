@@ -732,6 +732,8 @@ void write_single_liquid(map_liquid_type *liq)
 	xml_add_attribute_int("z_refract_factor",liq->reflect.z_refract_factor);
 	xml_add_attribute_int("merge_texture_idx",liq->reflect.merge_texture_idx);
 	xml_add_attribute_float("merge_factor",liq->reflect.merge_factor);
+	xml_add_attribute_float("merge_x_size",liq->reflect.merge_x_size);
+	xml_add_attribute_float("merge_y_size",liq->reflect.merge_y_size);
 	xml_add_attribute_float("alpha",liq->reflect.alpha);
 	xml_add_tagend(TRUE);
 
