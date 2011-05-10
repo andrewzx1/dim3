@@ -474,6 +474,8 @@ void piece_create_liquid(void)
 	liq->reflect.z_refract_factor=20000;
 	liq->reflect.merge_texture_idx=-1;
 	liq->reflect.merge_factor=0.25f;
+	liq->reflect.merge_x_size=1.0f;
+	liq->reflect.merge_y_size=1.0f;
 	liq->reflect.alpha=0.9f;
 
 		// select the liquid

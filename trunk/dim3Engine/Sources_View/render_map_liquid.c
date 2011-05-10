@@ -282,6 +282,7 @@ void liquid_render_liquid(map_liquid_type *liq)
 		// fixed function drawing
 
 	else {
+
 			// FF UVs
 
 		glClientActiveTexture(GL_TEXTURE1);

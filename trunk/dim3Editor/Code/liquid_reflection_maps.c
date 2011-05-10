@@ -221,6 +221,9 @@ void liquid_reflection_map_merge_pixel_get(map_liquid_type *liq,int x,int y,d3co
 
 	x=(x*bitmap->wid)/liq->reflect.texture_size;
 	y=(y*bitmap->high)/liq->reflect.texture_size;
+	
+	x=((int)(((float)x)*liq->reflect.merge_x_size))%bitmap->wid;
+	y=((int)(((float)y)*liq->reflect.merge_y_size))%bitmap->high;
 
 	ptr=liquid_reflection_map_map_texture[txt_idx].data;
 	ptr+=((x*3)+(y*(bitmap->wid*3)));
