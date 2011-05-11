@@ -462,7 +462,8 @@ typedef struct		{
 typedef struct		{
 						int						shader_idx;
 						float					shine_factor;
-						bool					additive,pixelated,compress;
+						bool					additive,pixelated,compress,
+												keep_quality;
 						char					material_name[name_str_len],
 												shader_name[name_str_len];
 						texture_animate_type	animate;

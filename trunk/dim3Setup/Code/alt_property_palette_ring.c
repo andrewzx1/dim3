@@ -2,7 +2,7 @@
 
 Module: dim3 Setup
 Author: Brian Barnes
- Usage: Alt Property Palette Multiplayer Option
+ Usage: Alt Property Palette Ring
 
 ***************************** License ********************************
 
@@ -33,8 +33,10 @@ and can be sold or given away.
 #include "ui_common.h"
 #include "interface.h"
 
-#define kMPOptionPropertySettingsName			0
-#define kMPOptionPropertySettingsDescript		1
+#define kSoundSettingsName						0
+#define kSoundSettingsFileName					1
+#define kSoundSettingsMinDist					2
+#define kSoundSettingsMaxDist					3
 
 extern iface_type				iface;
 extern setup_state_type			state;
@@ -42,49 +44,62 @@ extern list_palette_type		alt_property_palette;
 
 /* =======================================================
 
-      Property Palette Fill Multiplayer Option
+      Property Palette Fill Ring
       
 ======================================================= */
 
-void alt_property_palette_fill_multiplayer_option(int multiplayer_option_idx)
+void alt_property_palette_fill_ring(int ring_idx)
 {
-	iface_net_option_type		*option;
+	iface_ring_type			*ring;
 
-	option=&iface.net_option.options[multiplayer_option_idx];
+	ring=&iface.ring_list.rings[ring_idx];
 
 		// settings
-
+/*
 	list_palette_add_header(&alt_property_palette,0,"Settings");
-	list_palette_add_string(&alt_property_palette,kMPOptionPropertySettingsName,"Name",option->name,FALSE);
-	list_palette_add_string(&alt_property_palette,kMPOptionPropertySettingsDescript,"Description",option->descript,FALSE);
+	list_palette_add_string(&alt_property_palette,kSoundSettingsName,"Name",sound->name,FALSE);
+	list_palette_add_string(&alt_property_palette,kSoundSettingsFileName,"File",sound->file_name,FALSE);
+	list_palette_add_string_int(&alt_property_palette,kSoundSettingsMinDist,"Min Distance",sound->min_dist,FALSE);
+	list_palette_add_string_int(&alt_property_palette,kSoundSettingsMaxDist,"Max Distance",sound->max_dist,FALSE);
+*/
 }
 
 /* =======================================================
 
-      Property Palette Click Multiplayer Option
+      Property Palette Click Ring
       
 ======================================================= */
 
-void alt_property_palette_click_multiplayer_option(int multiplayer_option_idx,int id)
+void alt_property_palette_click_ring(int ring_idx,int id)
 {
-	iface_net_option_type		*option;
+	char					file_name[file_str_len];
+	iface_ring_type			*ring;
 
-	option=&iface.net_option.options[multiplayer_option_idx];
-
+	ring=&iface.ring_list.rings[ring_idx];
+/*
 	switch (id) {
-			
+
 			// settings
 
-		case kMPOptionPropertySettingsName:
-			dialog_property_string_run(list_string_value_string,(void*)option->name,name_str_len,0,0);
+		case kSoundSettingsName:
+			dialog_property_string_run(list_string_value_string,(void*)sound->name,name_str_len,0,0);
 			break;
 
-		case kMPOptionPropertySettingsDescript:
-			dialog_property_string_run(list_string_value_string,(void*)option->descript,name_str_len,0,0);
+		case kSoundSettingsFileName:
+			strcpy(file_name,sound->file_name);
+			if (dialog_file_open_run("Pick a Sound","Sounds","wav",NULL,file_name)) strcpy(sound->file_name,file_name);
+			break;
+
+		case kSoundSettingsMinDist:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&sound->min_dist,0,0,0);
+			break;
+
+		case kSoundSettingsMaxDist:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&sound->max_dist,0,0,0);
 			break;
 
 	}
-
+*/
 		// redraw
 
 	main_wind_draw();

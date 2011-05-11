@@ -58,7 +58,7 @@ void map_textures_new(map_type *map)
 
 bool map_textures_read(map_type *map)
 {
-	int					i,k,n;
+	int					i,k,n,texture_quality_mode;
 	char				path[1024],name[256];
 	bool				txt_ok[max_map_texture];
 	texture_type		*texture;
@@ -138,7 +138,14 @@ bool map_textures_read(map_type *map)
 			// skip if texture isn't used
 	
 		if ((maputility_settings.in_engine) && (!txt_ok[i])) continue;
+
+			// get texture quality
+
+		texture_quality_mode=maputility_settings.texture_quality_mode;
+		if (texture->keep_quality) texture_quality_mode=texture_quality_mode_high;
 			
+			// load texture
+
 		frame=texture->frames;
 		
 		for (k=0;k!=max_texture_frame;k++) {
@@ -148,25 +155,25 @@ bool map_textures_read(map_type *map)
 					// bitmap
 					
 				file_paths_data(&maputility_settings.file_path_setup,path,"Bitmaps/Textures",frame->name,"png");
-				bitmap_open(&frame->bitmap,path,maputility_settings.anisotropic_mode,maputility_settings.mipmap_mode,maputility_settings.texture_quality_mode,texture->compress,FALSE,texture->pixelated,FALSE,TRUE);
+				bitmap_open(&frame->bitmap,path,maputility_settings.anisotropic_mode,maputility_settings.mipmap_mode,texture_quality_mode,texture->compress,FALSE,texture->pixelated,FALSE,TRUE);
 				
 					// bumpmap
 					
 				sprintf(name,"%s_n",frame->name);
 				file_paths_data(&maputility_settings.file_path_setup,path,"Bitmaps/Textures",name,"png");		// compresses messes up normals
-				bitmap_open(&frame->bumpmap,path,anisotropic_mode_none,maputility_settings.mipmap_mode,maputility_settings.texture_quality_mode,FALSE,FALSE,texture->pixelated,FALSE,TRUE);
+				bitmap_open(&frame->bumpmap,path,anisotropic_mode_none,maputility_settings.mipmap_mode,texture_quality_mode,FALSE,FALSE,texture->pixelated,FALSE,TRUE);
 								
 					// specular map
 					
 				sprintf(name,"%s_s",frame->name);
 				file_paths_data(&maputility_settings.file_path_setup,path,"Bitmaps/Textures",name,"png");
-				bitmap_open(&frame->specularmap,path,maputility_settings.anisotropic_mode,maputility_settings.mipmap_mode,maputility_settings.texture_quality_mode,texture->compress,FALSE,texture->pixelated,FALSE,TRUE);
+				bitmap_open(&frame->specularmap,path,maputility_settings.anisotropic_mode,maputility_settings.mipmap_mode,texture_quality_mode,texture->compress,FALSE,texture->pixelated,FALSE,TRUE);
 				
 					// glow map
 					
 				sprintf(name,"%s_g",frame->name);
 				file_paths_data(&maputility_settings.file_path_setup,path,"Bitmaps/Textures",name,"png");
-				bitmap_open(&frame->glowmap,path,maputility_settings.anisotropic_mode,maputility_settings.mipmap_mode,maputility_settings.texture_quality_mode,texture->compress,FALSE,texture->pixelated,TRUE,FALSE);
+				bitmap_open(&frame->glowmap,path,maputility_settings.anisotropic_mode,maputility_settings.mipmap_mode,texture_quality_mode,texture->compress,FALSE,texture->pixelated,TRUE,FALSE);
 
 					// combined version
 					// this is a special version for simplified/non-shader drawing

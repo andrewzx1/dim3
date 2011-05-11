@@ -118,10 +118,8 @@ void item_palette_fill(void)
 	list_palette_add_item(&item_palette,item_interface_chooser,0,"Choosers",(state.cur_item==item_interface_chooser),FALSE);
 
 	list_palette_add_item(&item_palette,item_interface_sound,0,"Sound",(state.cur_item==item_interface_sound),FALSE);
-	/*
 	list_palette_add_item(&item_palette,item_interface_particle,0,"Particles",(state.cur_item==item_interface_particle),FALSE);
 	list_palette_add_item(&item_palette,item_interface_ring,0,"Rings",(state.cur_item==item_interface_ring),FALSE);
-	*/
 	list_palette_add_item(&item_palette,item_interface_halo,0,"Halos",(state.cur_item==item_interface_halo),FALSE);
 	list_palette_add_item(&item_palette,item_interface_mark,0,"Marks",(state.cur_item==item_interface_mark),FALSE);
 	list_palette_add_item(&item_palette,item_interface_crosshair,0,"Crosshairs",(state.cur_item==item_interface_crosshair),FALSE);

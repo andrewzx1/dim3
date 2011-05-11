@@ -149,8 +149,8 @@ unsigned char* bitmap_fix_power_2_and_quality(bitmap_type *bitmap,bool has_alpha
 			// get quality
 
 	if (texture_quality_mode!=texture_quality_mode_high) {
-		max_sz=256;
-		if (texture_quality_mode==texture_quality_mode_low) max_sz=128;
+		max_sz=512;
+		if (texture_quality_mode==texture_quality_mode_low) max_sz=256;
 
 		if (wid>max_sz) wid=max_sz;
 		if (high>max_sz) high=max_sz;
