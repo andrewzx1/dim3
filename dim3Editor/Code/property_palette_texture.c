@@ -37,15 +37,16 @@ and can be sold or given away.
 #define kTexturePropertyAlphaAdditive		1
 #define kTexturePropertyPixelated			2
 #define kTexturePropertyCompress			3
-#define kTexturePropertyShader				4
-#define kTexturePropertyGlowRate			5
-#define kTexturePropertyGlowMin				6
-#define kTexturePropertyGlowMax				7
-#define kTexturePropertyShineFactor			8
-#define kTexturePropertyMaterialName		9
-#define kTexturePropertyScaleOn				10
-#define kTexturePropertyScaleLockOffset		11
-#define kTexturePropertyScale				12
+#define kTexturePropertyKeepQuality			4
+#define kTexturePropertyShader				5
+#define kTexturePropertyGlowRate			6
+#define kTexturePropertyGlowMin				7
+#define kTexturePropertyGlowMax				8
+#define kTexturePropertyShineFactor			9
+#define kTexturePropertyMaterialName		10
+#define kTexturePropertyScaleOn				11
+#define kTexturePropertyScaleLockOffset		12
+#define kTexturePropertyScale				13
 
 #define kTexturePropertyFrameWaitStart		20
 #define kTexturePropertyFrameWaitEnd		(20+(max_texture_frame-1))
@@ -76,6 +77,7 @@ void property_palette_fill_texture(int texture_idx)
 	list_palette_add_checkbox(&property_palette,kTexturePropertyAlphaAdditive,"Alpha Additive",texture->additive,FALSE);
 	list_palette_add_checkbox(&property_palette,kTexturePropertyPixelated,"Pixelated",texture->pixelated,FALSE);
 	list_palette_add_checkbox(&property_palette,kTexturePropertyCompress,"Compressed",texture->compress,FALSE);
+	list_palette_add_checkbox(&property_palette,kTexturePropertyKeepQuality,"Keep Quality",texture->keep_quality,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Texture Options");
 	list_palette_add_shader(&property_palette,kTexturePropertyShader,"Shader",texture->shader_name,FALSE);
@@ -138,6 +140,10 @@ void property_palette_click_texture(int texture_idx,int id)
 
 		case kTexturePropertyCompress:
 			texture->compress=!texture->compress;
+			break;
+
+		case kTexturePropertyKeepQuality:
+			texture->keep_quality=!texture->keep_quality;
 			break;
 
 		case kTexturePropertyShader:

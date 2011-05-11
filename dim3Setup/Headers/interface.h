@@ -131,6 +131,8 @@ extern void alt_property_palette_fill_multiplayer_option(int multiplayer_option_
 extern void alt_property_palette_fill_menu(int menu_idx);
 extern void alt_property_palette_fill_chooser(int chooser_idx);
 extern void alt_property_palette_fill_sound(int sound_idx);
+extern void alt_property_palette_fill_particle(int particle_idx);
+extern void alt_property_palette_fill_ring(int ring_idx);
 extern void alt_property_palette_fill_halo(int halo_idx);
 extern void alt_property_palette_fill_mark(int mark_idx);
 extern void alt_property_palette_fill_crosshair(int crosshair_idx);
@@ -149,6 +151,8 @@ extern void alt_property_palette_click_multiplayer_option(int option_character_i
 extern void alt_property_palette_click_menu(int menu_idx,int id);
 extern void alt_property_palette_click_chooser(int chooser_idx,int id);
 extern void alt_property_palette_click_sound(int sound_idx,int id);
+extern void alt_property_palette_click_particle(int particle_idx,int id);
+extern void alt_property_palette_click_ring(int ring_idx,int id);
 extern void alt_property_palette_click_halo(int halo_idx,int id);
 extern void alt_property_palette_click_mark(int mark_idx,int id);
 extern void alt_property_palette_click_crosshair(int crosshair_idx,int id);

@@ -167,6 +167,22 @@ void alt_property_palette_fill(void)
 			}
 			break;
 
+		case item_interface_particle:
+			if (state.cur_particle_idx!=-1) {
+				list_palette_set_title(&alt_property_palette,"Particle");
+				alt_property_palette_fill_particle(state.cur_particle_idx);
+				return;
+			}
+			break;
+
+		case item_interface_ring:
+			if (state.cur_ring_idx!=-1) {
+				list_palette_set_title(&alt_property_palette,"Ring");
+				alt_property_palette_fill_ring(state.cur_ring_idx);
+				return;
+			}
+			break;
+
 		case item_interface_halo:
 			if (state.cur_halo_idx!=-1) {
 				list_palette_set_title(&alt_property_palette,"Halo");
@@ -320,6 +336,20 @@ void alt_property_palette_click(d3pnt *pnt,bool double_click)
 		case item_interface_sound:
 			if (state.cur_sound_idx!=-1) {
 				alt_property_palette_click_sound(state.cur_sound_idx,alt_property_palette.item_id);
+				break;
+			}
+			break;
+
+		case item_interface_particle:
+			if (state.cur_particle_idx!=-1) {
+				alt_property_palette_click_particle(state.cur_particle_idx,alt_property_palette.item_id);
+				break;
+			}
+			break;
+
+		case item_interface_ring:
+			if (state.cur_ring_idx!=-1) {
+				alt_property_palette_click_ring(state.cur_ring_idx,alt_property_palette.item_id);
 				break;
 			}
 			break;

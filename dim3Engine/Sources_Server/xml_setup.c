@@ -48,7 +48,7 @@ void setup_xml_default(void)
 	
 	setup.anisotropic_mode=anisotropic_mode_none;
 	setup.mipmap_mode=mipmap_mode_trilinear;
-	setup.texture_quality_mode=texture_quality_mode_normal;
+	setup.texture_quality_mode=texture_quality_mode_high;
 	setup.fsaa_mode=fsaa_mode_none;
 	
 	setup.decal_on=TRUE;

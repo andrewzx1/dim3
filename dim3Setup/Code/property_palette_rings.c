@@ -71,9 +71,11 @@ void property_palette_fill_rings(void)
 
 void property_palette_click_rings(int id)
 {
+	int					idx,sz;
+
 		// ring edit
 		
-	if ((id>=kRingProperyName) && (id<kRingProperyDelete)) {
+	if ((id>=kRingProperyName) && (id<(kRingProperyName+max_iface_ring))) {
 		state.cur_ring_idx=id-kRingProperyName;
 		main_wind_draw();
 		return;
@@ -81,9 +83,16 @@ void property_palette_click_rings(int id)
 	
 		// ring delete
 		
-	if (id>=kRingProperyDelete) {
+	if ((id>=kRingProperyDelete) && (id<(kRingProperyDelete+max_iface_ring))) {
 		state.cur_ring_idx=-1;
-	//	supergumba
+
+		idx=id-kRingProperyDelete;
+
+		sz=(iface.ring_list.nring-idx)-1;
+		if (sz>0) memmove(&iface.ring_list.rings[idx],&iface.ring_list.rings[idx+1],(sz*sizeof(iface_ring_type)));
+
+		iface.ring_list.nring--;
+
 		main_wind_draw();
 		return;
 	}
@@ -91,10 +100,66 @@ void property_palette_click_rings(int id)
 		// ring add
 
 	if (id==kRingPropertyAdd) {
-	// supergumba
-	//	state.cur_ring_idx=... new sound ...
+		state.cur_ring_idx=-1;
+
+		if (iface.ring_list.nring>=max_iface_ring) {
+			os_dialog_alert("Add Ring","Reached the maximum number of rings");
+			return;
+		}
+
+		idx=iface.ring_list.nring;
+		iface.ring_list.nring++;
+		
+		iface.ring_list.rings[idx].name[0]=0x0;
+		dialog_property_string_run(list_string_value_string,(void*)iface.ring_list.rings[idx].name,name_str_len,0,0);
+	
+		iface.ring_list.rings[idx].life_msec=1000;
+		iface.ring_list.rings[idx].start_outer_size=2000;
+		iface.ring_list.rings[idx].end_outer_size=2000;
+		iface.ring_list.rings[idx].start_inner_size=1000;
+		iface.ring_list.rings[idx].end_inner_size=1000;
+
+		iface.ring_list.rings[idx].start_alpha=1.0f;
+		iface.ring_list.rings[idx].end_alpha=1.0f;
+
+		iface.ring_list.rings[idx].bitmap_name[0]=0x0;
+
+		iface.ring_list.rings[idx].blend_add=TRUE;
+		iface.ring_list.rings[idx].team_tint=FALSE;
+
+		iface.ring_list.rings[idx].start_color.r=1.0f;
+		iface.ring_list.rings[idx].start_color.g=1.0f;
+		iface.ring_list.rings[idx].start_color.b=1.0f;
+		iface.ring_list.rings[idx].end_color.r=1.0f;
+		iface.ring_list.rings[idx].end_color.g=1.0f;
+		iface.ring_list.rings[idx].end_color.b=1.0f;
+
+		iface.ring_list.rings[idx].ang.x=0.0f;
+		iface.ring_list.rings[idx].ang.y=0.0f;
+		iface.ring_list.rings[idx].ang.z=0.0f;
+
+		iface.ring_list.rings[idx].vct.x=100.0f;
+		iface.ring_list.rings[idx].vct.y=100.0f;
+		iface.ring_list.rings[idx].vct.z=100.0f;
+
+		iface.ring_list.rings[idx].rot.x=0.0f;
+		iface.ring_list.rings[idx].rot.y=0.0f;
+		iface.ring_list.rings[idx].rot.z=0.0f;
+
+		iface.ring_list.rings[idx].rot_accel.x=0.0f;
+		iface.ring_list.rings[idx].rot_accel.y=0.0f;
+		iface.ring_list.rings[idx].rot_accel.z=0.0f;
+
+		iface.ring_list.rings[idx].animate.image_count=1;
+		iface.ring_list.rings[idx].animate.msec=0;
+		iface.ring_list.rings[idx].animate.loop=FALSE;
+		iface.ring_list.rings[idx].animate.loop_back=FALSE;
+
+		state.cur_ring_idx=idx;
+
 		main_wind_draw();
 		return;
 	}
+
 }
 
