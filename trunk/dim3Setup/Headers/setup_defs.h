@@ -89,7 +89,7 @@ typedef struct		{
 												cur_radar_icon_idx,cur_multiplayer_character_idx,
 												cur_menu_idx,cur_menu_item_idx,cur_chooser_idx,cur_chooser_piece_idx,
 												cur_multiplayer_game_idx,cur_multiplayer_option_idx,
-												cur_sound_idx,cur_particle_idx,cur_ring_idx,
+												cur_sound_idx,cur_particle_idx,cur_group_particle_idx,cur_ring_idx,
 												cur_halo_idx,cur_mark_idx,cur_crosshair_idx,
 												cur_action_idx,cur_shader_idx;
 					} setup_state_type;

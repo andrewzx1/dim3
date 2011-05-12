@@ -67,6 +67,7 @@ void item_palette_initialize(void)
 	state.cur_multiplayer_option_idx=-1;
 	state.cur_sound_idx=-1;
 	state.cur_particle_idx=-1;
+	state.cur_group_particle_idx=-1;
 	state.cur_ring_idx=-1;
 	state.cur_halo_idx=-1;
 	state.cur_mark_idx=-1;

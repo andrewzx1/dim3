@@ -35,6 +35,7 @@ and can be sold or given away.
 
 list_palette_type				alt_property_palette;
 
+extern iface_type				iface;
 extern setup_state_type			state;
 
 /* =======================================================
@@ -169,8 +170,14 @@ void alt_property_palette_fill(void)
 
 		case item_interface_particle:
 			if (state.cur_particle_idx!=-1) {
-				list_palette_set_title(&alt_property_palette,"Particle");
-				alt_property_palette_fill_particle(state.cur_particle_idx);
+				if (!iface.particle_list.particles[state.cur_particle_idx].group.on) {
+					list_palette_set_title(&alt_property_palette,"Particle");
+					alt_property_palette_fill_particle(state.cur_particle_idx);
+				}
+				else {
+					list_palette_set_title(&alt_property_palette,"Particle Group");
+					alt_property_palette_fill_particle_group(state.cur_particle_idx);
+				}
 				return;
 			}
 			break;
@@ -342,7 +349,12 @@ void alt_property_palette_click(d3pnt *pnt,bool double_click)
 
 		case item_interface_particle:
 			if (state.cur_particle_idx!=-1) {
-				alt_property_palette_click_particle(state.cur_particle_idx,alt_property_palette.item_id);
+				if (!iface.particle_list.particles[state.cur_particle_idx].group.on) {
+					alt_property_palette_click_particle(state.cur_particle_idx,alt_property_palette.item_id);
+				}
+				else {
+					alt_property_palette_click_particle_group(state.cur_particle_idx,alt_property_palette.item_id);
+				}
 				break;
 			}
 			break;

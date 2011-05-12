@@ -92,6 +92,7 @@ void property_palette_click_particles(int id)
 		
 	if ((id>=kParticleProperyName) && (id<(kParticleProperyName+max_iface_particle))) {
 		state.cur_particle_idx=id-kParticleProperyName;
+		state.cur_group_particle_idx=-1;
 		main_wind_draw();
 		return;
 	}
@@ -100,6 +101,7 @@ void property_palette_click_particles(int id)
 		
 	if ((id>=kParticleProperyDelete) && (id<(kParticleProperyDelete+max_iface_particle))) {
 		state.cur_particle_idx=-1;
+		state.cur_group_particle_idx=-1;
 
 		idx=id-kParticleProperyDelete;
 
@@ -116,6 +118,7 @@ void property_palette_click_particles(int id)
 
 	if ((id==kParticlePropertyAdd) || (id==kParticlePropertyGroupAdd)) {
 		state.cur_particle_idx=-1;
+		state.cur_group_particle_idx=-1;
 
 		if (iface.particle_list.nparticle>=max_iface_particle) {
 			os_dialog_alert("Add Particle","Reached the maximum number of particles");
@@ -124,16 +127,15 @@ void property_palette_click_particles(int id)
 
 		idx=iface.particle_list.nparticle;
 		iface.particle_list.nparticle++;
-		
-		iface.particle_list.particles[idx].name[0]=0x0;
-		dialog_property_string_run(list_string_value_string,(void*)iface.particle_list.particles[idx].name,name_str_len,0,0);
-	
+
 		iface.particle_list.particles[idx].group.on=(id==kParticlePropertyGroupAdd);
 		iface.particle_list.particles[idx].group.count=0;
 
+		iface.particle_list.particles[idx].name[0]=0x0;
+		dialog_property_string_run(list_string_value_string,(void*)iface.particle_list.particles[idx].name,name_str_len,0,0);
+	
 		iface.particle_list.particles[idx].count=20;
 		iface.particle_list.particles[idx].trail_count=0;
-		iface.particle_list.particles[idx].spread_offset=0;
 		iface.particle_list.particles[idx].life_msec=1000;
 		iface.particle_list.particles[idx].start_pixel_size=100;
 		iface.particle_list.particles[idx].end_pixel_size=100;

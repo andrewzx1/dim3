@@ -33,10 +33,31 @@ and can be sold or given away.
 #include "ui_common.h"
 #include "interface.h"
 
-#define kSoundSettingsName						0
-#define kSoundSettingsFileName					1
-#define kSoundSettingsMinDist					2
-#define kSoundSettingsMaxDist					3
+#define kRingSettingsName						0
+#define kRingSettingsBitmapName					1
+#define kRingSettingsLife						2
+
+#define kRingRingStartOuterSize					3
+#define kRingRingEndOuterSize					4
+#define kRingRingStartInnerSize					5
+#define kRingRingEndInnerSize					6
+#define kRingRingStartAlpha						7
+#define kRingRingEndAlpha						8
+#define kRingRingStartColor						9
+#define kRingRingEndColor						10
+
+#define kRingMotionMove							11
+#define kRingMotionRot							12
+#define kRingMotionRotAdd						13
+#define kRingMotionRotAccel						14
+
+#define kRingOptionBlendAdd						15
+#define kRingOptionTeamTint						16
+
+#define kRingImageCount							17
+#define kRingImageMillisecond					18
+#define kRingImageLoop							19
+#define kRingmageLoopBack						20
 
 extern iface_type				iface;
 extern setup_state_type			state;
@@ -55,13 +76,45 @@ void alt_property_palette_fill_ring(int ring_idx)
 	ring=&iface.ring_list.rings[ring_idx];
 
 		// settings
-/*
+
 	list_palette_add_header(&alt_property_palette,0,"Settings");
-	list_palette_add_string(&alt_property_palette,kSoundSettingsName,"Name",sound->name,FALSE);
-	list_palette_add_string(&alt_property_palette,kSoundSettingsFileName,"File",sound->file_name,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kSoundSettingsMinDist,"Min Distance",sound->min_dist,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kSoundSettingsMaxDist,"Max Distance",sound->max_dist,FALSE);
-*/
+	list_palette_add_string(&alt_property_palette,kRingSettingsName,"Name",ring->name,FALSE);
+	list_palette_add_string(&alt_property_palette,kRingSettingsBitmapName,"Bitmap",ring->bitmap_name,FALSE);
+	list_palette_add_string_int(&alt_property_palette,kRingSettingsLife,"Life Milliseconds",ring->life_msec,FALSE);
+
+		// ring
+
+	list_palette_add_header(&alt_property_palette,0,"Ring");
+	list_palette_add_string_int(&alt_property_palette,kRingRingStartOuterSize,"Start Outer Size",ring->start_outer_size,FALSE);
+	list_palette_add_string_int(&alt_property_palette,kRingRingEndOuterSize,"End Outer Size",ring->end_outer_size,FALSE);
+	list_palette_add_string_int(&alt_property_palette,kRingRingStartInnerSize,"Start Inner Size",ring->start_inner_size,FALSE);
+	list_palette_add_string_int(&alt_property_palette,kRingRingEndInnerSize,"End Inner Size",ring->end_inner_size,FALSE);
+	list_palette_add_string_float(&alt_property_palette,kRingRingStartAlpha,"Start Alpha",ring->start_alpha,FALSE);
+	list_palette_add_string_float(&alt_property_palette,kRingRingEndAlpha,"End Alpha",ring->end_alpha,FALSE);
+	list_palette_add_pick_color(&alt_property_palette,kRingRingStartColor,"Start Color",&ring->start_color,FALSE);
+	list_palette_add_pick_color(&alt_property_palette,kRingRingEndColor,"End Color",&ring->end_color,FALSE);
+
+		// motion
+
+	list_palette_add_header(&alt_property_palette,0,"Motion");
+	list_palette_add_vector(&alt_property_palette,kRingMotionMove,"Move",&ring->vct,FALSE);
+	list_palette_add_angle(&alt_property_palette,kRingMotionRot,"Rotation",&ring->ang,FALSE);
+	list_palette_add_angle(&alt_property_palette,kRingMotionRotAdd,"Rotation Add",&ring->rot,FALSE);
+	list_palette_add_vector(&alt_property_palette,kRingMotionRotAccel,"Rotation Accel",&ring->rot_accel,FALSE);
+
+		// options
+
+	list_palette_add_header(&alt_property_palette,0,"Options");
+	list_palette_add_checkbox(&alt_property_palette,kRingOptionBlendAdd,"Additive Blend",ring->blend_add,FALSE);
+	list_palette_add_checkbox(&alt_property_palette,kRingOptionTeamTint,"Team Tint",ring->team_tint,FALSE);
+
+		// animation
+
+	list_palette_add_header(&alt_property_palette,0,"Animation");
+	list_palette_add_string_int(&alt_property_palette,kRingImageCount,"Count",ring->animate.image_count,FALSE);
+	list_palette_add_string_int(&alt_property_palette,kRingImageMillisecond,"Display Milliseconds",ring->animate.msec,FALSE);
+	list_palette_add_checkbox(&alt_property_palette,kRingImageLoop,"Loop",ring->animate.loop,FALSE);
+	list_palette_add_checkbox(&alt_property_palette,kRingmageLoopBack,"Loop Back",ring->animate.loop_back,FALSE);
 }
 
 /* =======================================================

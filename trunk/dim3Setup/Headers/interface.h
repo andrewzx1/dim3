@@ -132,6 +132,7 @@ extern void alt_property_palette_fill_menu(int menu_idx);
 extern void alt_property_palette_fill_chooser(int chooser_idx);
 extern void alt_property_palette_fill_sound(int sound_idx);
 extern void alt_property_palette_fill_particle(int particle_idx);
+extern void alt_property_palette_fill_particle_group(int particle_idx);
 extern void alt_property_palette_fill_ring(int ring_idx);
 extern void alt_property_palette_fill_halo(int halo_idx);
 extern void alt_property_palette_fill_mark(int mark_idx);
@@ -152,6 +153,7 @@ extern void alt_property_palette_click_menu(int menu_idx,int id);
 extern void alt_property_palette_click_chooser(int chooser_idx,int id);
 extern void alt_property_palette_click_sound(int sound_idx,int id);
 extern void alt_property_palette_click_particle(int particle_idx,int id);
+extern void alt_property_palette_click_particle_group(int particle_idx,int id);
 extern void alt_property_palette_click_ring(int ring_idx,int id);
 extern void alt_property_palette_click_halo(int halo_idx,int id);
 extern void alt_property_palette_click_mark(int mark_idx,int id);
@@ -172,9 +174,13 @@ extern void alt2_property_palette_click(d3pnt *pnt,bool double_click);
 
 extern void alt2_property_palette_fill_menu_item(int menu_idx,int menu_item_idx);
 extern void alt2_property_palette_fill_chooser_piece(int chooser_idx,int chooser_item_idx);
+extern void alt2_property_palette_fill_group_particle(int particle_idx,int group_particle_idx);
 
 extern void alt2_property_palette_click_menu_item(int menu_idx,int menu_item_idx,int id);
 extern void alt2_property_palette_click_chooser_piece(int chooser_idx,int chooser_item_idx,int id);
+extern void alt2_property_palette_click_group_particle(int particle_idx,int group_particle_idx,int id);
+
+extern void property_palette_pick_particle(char *name);
 
 //
 // dialogs
