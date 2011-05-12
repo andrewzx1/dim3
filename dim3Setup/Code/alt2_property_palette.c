@@ -35,6 +35,7 @@ and can be sold or given away.
 
 list_palette_type				alt2_property_palette;
 
+extern iface_type				iface;
 extern setup_state_type			state;
 
 /* =======================================================
@@ -102,6 +103,18 @@ void alt2_property_palette_fill(void)
 			}
 			break;
 
+		case item_interface_particle:
+			if (state.cur_particle_idx!=-1) {
+				if (iface.particle_list.particles[state.cur_particle_idx].group.on) {
+					if (state.cur_group_particle_idx!=-1) {
+						list_palette_set_title(&alt2_property_palette,"Group Particle");
+						alt2_property_palette_fill_group_particle(state.cur_particle_idx,state.cur_group_particle_idx);
+						return;
+					}
+				}
+			}
+			break;
+
 	}
 
 	list_palette_set_title(&alt2_property_palette,"No Properties");
@@ -161,6 +174,17 @@ void alt2_property_palette_click(d3pnt *pnt,bool double_click)
 			if ((state.cur_chooser_idx!=-1) && (state.cur_chooser_piece_idx!=-1)) {
 				alt2_property_palette_click_chooser_piece(state.cur_chooser_idx,state.cur_chooser_piece_idx,alt2_property_palette.item_id);
 				break;
+			}
+			break;
+
+		case item_interface_particle:
+			if (state.cur_particle_idx!=-1) {
+				if (iface.particle_list.particles[state.cur_particle_idx].group.on) {
+					if (state.cur_group_particle_idx!=-1) {
+						alt2_property_palette_click_group_particle(state.cur_particle_idx,state.cur_group_particle_idx,alt2_property_palette.item_id);
+						break;
+					}
+				}
 			}
 			break;
 
