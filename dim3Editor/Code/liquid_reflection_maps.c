@@ -186,53 +186,6 @@ void liquid_reflection_map_bitmap_pixel_get(d3pnt *spt,d3vct *vct,map_mesh_type 
 	col->b=((float)*ptr)/255.0f;
 }
 
-void liquid_reflection_map_merge_pixel_get(map_liquid_type *liq,int x,int y,d3col *col)
-{
-	int				txt_idx,txt_sz;
-	unsigned char	*ptr;
-	bitmap_type		*bitmap;
-	
-		// default is liquid color
-
-	col->r=liq->col.r;
-	col->g=liq->col.g;
-	col->b=liq->col.b;
-
-		// get texture
-		
-	txt_idx=liq->reflect.merge_texture_idx;
-	if ((txt_idx<0) || (txt_idx>=max_map_texture)) return;
-	
-	bitmap=&map.textures[txt_idx].frames[0].bitmap;
-	if (bitmap->gl_id==-1) return;
-
-		// need to load up this bitmap
-		
-	if (liquid_reflection_map_map_texture[txt_idx].data==NULL) {
-		txt_sz=(bitmap->wid*3)*bitmap->high;
-		liquid_reflection_map_map_texture[txt_idx].data=(unsigned char*)malloc(txt_sz);
-		bzero(liquid_reflection_map_map_texture[txt_idx].data,txt_sz);
-		
-		glBindTexture(GL_TEXTURE_2D,bitmap->gl_id);
-		glGetTexImage(GL_TEXTURE_2D,0,GL_RGB,GL_UNSIGNED_BYTE,(GLvoid*)liquid_reflection_map_map_texture[txt_idx].data);
-	}
-
-		// get pixel
-
-	x=(x*bitmap->wid)/liq->reflect.texture_size;
-	y=(y*bitmap->high)/liq->reflect.texture_size;
-	
-	x=((int)(((float)x)*liq->reflect.merge_x_size))%bitmap->wid;
-	y=((int)(((float)y)*liq->reflect.merge_y_size))%bitmap->high;
-
-	ptr=liquid_reflection_map_map_texture[txt_idx].data;
-	ptr+=((x*3)+(y*(bitmap->wid*3)));
-
-	col->r=((float)*ptr++)/255.0f;
-	col->g=((float)*ptr++)/255.0f;
-	col->b=((float)*ptr)/255.0f;
-}
-
 /* =======================================================
 
       Liquid Reflection Map Ray Trace
@@ -373,7 +326,7 @@ bool liquid_reflection_map_run_for_liquid(int txt_idx,int liq_idx,char *base_pat
 	unsigned char				*pixel,*pixel_data,uc_alpha;
 	char						path[1024],bitmap_name[256];
 	d3pnt						spt,ept,center;
-	d3col						col,merge_col;
+	d3col						col;
 	map_liquid_type				*liq;
 	
 		// get the liquid to render
@@ -419,19 +372,6 @@ bool liquid_reflection_map_run_for_liquid(int txt_idx,int liq_idx,char *base_pat
 				// run the ray trace
 
 			liquid_reflection_map_ray_trace_map(&spt,&ept,&col);
-
-				// add in the liquid color
-
-			liquid_reflection_map_merge_pixel_get(liq,x,z,&merge_col);
-				
-			col.r=(merge_col.r*liq->reflect.merge_factor)+(col.r*(1.0f-liq->reflect.merge_factor));
-			if (col.r>1.0f) col.r=1.0f;
-			
-			col.g=(merge_col.g*liq->reflect.merge_factor)+(col.g*(1.0f-liq->reflect.merge_factor));
-			if (col.g>1.0f) col.g=1.0f;
-			
-			col.b=(merge_col.b*liq->reflect.merge_factor)+(col.b*(1.0f-liq->reflect.merge_factor));
-			if (col.b>1.0f) col.b=1.0f;
 
 				// set color
 				
@@ -544,7 +484,6 @@ bool liquid_reflection_maps_create_process(int nliq,char *err_str)
 	txt_idx=liquid_reflection_texture_start_idx;
 		
 	for (n=0;n!=map.liquid.nliquid;n++) {
-		if (!map.liquid.liquids[n].reflect.on) continue;
 
 		sprintf(str,"Liquid Reflection Map: Rendering Liquid %d/%d",(n+1),nliq);
 		progress_next_title(str);
@@ -570,7 +509,6 @@ bool liquid_reflection_maps_create_process(int nliq,char *err_str)
 
 bool liquid_reflection_maps_create(void)
 {
-	int				n,nliq;
 	bool			ok;
 	char			err_str[256];
 
@@ -578,26 +516,20 @@ bool liquid_reflection_maps_create(void)
 	
 		// see if there are any liquids
 		
-	nliq=0;
-	
-	for (n=0;n!=map.liquid.nliquid;n++) {
-		if (map.liquid.liquids[n].reflect.on) nliq++;
-	}
-	
-	if (nliq==0) {
+	if (map.liquid.nliquid==0) {
 		os_dialog_alert("Can not build liquid reflection maps","There are no liquids set to build reflection maps in this map.");
 		return(FALSE);
 	}
 
-	if (nliq>max_liquid_reflection_map_textures) {
+	if (map.liquid.nliquid>max_liquid_reflection_map_textures) {
 		os_dialog_alert("Can not build liquid reflection maps","There are too many liquids set to build reflection maps in this map.");
 		return(FALSE);
 	}
 	
 		// generate the reflection maps
 		
-	progress_start("Generating Liquid Reflection Maps...",(2+nliq));
-	ok=liquid_reflection_maps_create_process(nliq,err_str);
+	progress_start("Generating Liquid Reflection Maps...",(2+map.liquid.nliquid));
+	ok=liquid_reflection_maps_create_process(map.liquid.nliquid,err_str);
 	progress_end();
 
 	if (!ok) {

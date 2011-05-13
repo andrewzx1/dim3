@@ -318,6 +318,7 @@ typedef struct		{
 
 typedef struct		{
 						int									rate,high;
+						float								uv_shift;
 					} map_liquid_tide_type;
 					
 typedef struct		{
@@ -331,12 +332,16 @@ typedef struct		{
 					} map_liquid_ambient_type;
 					
 typedef struct		{
-						int									texture_size,merge_texture_idx,
+						int									texture_size,
 															x_refract_factor,z_refract_factor;
-						float								merge_factor,alpha,
-															merge_x_size,merge_y_size;
-						bool								on;
+						float								alpha;
 					} map_liquid_reflection_type;
+
+typedef struct		{
+						int									txt_idx;
+						float								x_size,y_size,alpha;
+						bool								on;
+					} map_liquid_overlay_type;
 
 typedef struct		{
 						int									y,depth,lft,rgt,top,bot,group_idx,
@@ -351,6 +356,7 @@ typedef struct		{
 						map_liquid_flag_type				flag;
 						map_liquid_ambient_type				ambient;
 						map_liquid_reflection_type			reflect;
+						map_liquid_overlay_type				overlay;
 						map_light_cache_type				light_cache;
 					} map_liquid_type;
 
@@ -779,7 +785,7 @@ extern int map_node_to_node_distance(map_type *map,int from_idx,int to_idx);
 extern int map_find_node(map_type *map,char *name);
 extern int map_find_nearest_node_by_point(map_type *map,d3pnt *pnt);
 extern int map_find_nearest_node_in_path(map_type *map,int from_idx,char *name,int *dist);
-extern int map_find_random_node(map_type *map,char *name);
+extern int map_find_random_node(map_type *map,char *name,int skip_idx);
 extern int map_find_next_node_in_path(map_type *map,int from_idx,int to_idx);
 
 extern int map_mesh_add(map_type *map);

@@ -721,20 +721,26 @@ void write_single_liquid(map_liquid_type *liq)
 	xml_add_tagstart("Tide");
 	xml_add_attribute_int("rate",liq->tide.rate);
 	xml_add_attribute_int("high",liq->tide.high);
+	xml_add_attribute_float("uv_shift",liq->tide.uv_shift);
 	xml_add_tagend(TRUE);
 	
 		// reflection
 
 	xml_add_tagstart("Reflect");
-	xml_add_attribute_boolean("on",liq->reflect.on);
 	xml_add_attribute_int("texture_size",liq->reflect.texture_size);
 	xml_add_attribute_int("x_refract_factor",liq->reflect.x_refract_factor);
 	xml_add_attribute_int("z_refract_factor",liq->reflect.z_refract_factor);
-	xml_add_attribute_int("merge_texture_idx",liq->reflect.merge_texture_idx);
-	xml_add_attribute_float("merge_factor",liq->reflect.merge_factor);
-	xml_add_attribute_float("merge_x_size",liq->reflect.merge_x_size);
-	xml_add_attribute_float("merge_y_size",liq->reflect.merge_y_size);
 	xml_add_attribute_float("alpha",liq->reflect.alpha);
+	xml_add_tagend(TRUE);
+
+		// overlay
+
+	xml_add_tagstart("Overlay");
+	xml_add_attribute_boolean("on",liq->overlay.on);
+	xml_add_attribute_int("txt_idx",liq->overlay.txt_idx);
+	xml_add_attribute_float("x_size",liq->overlay.x_size);
+	xml_add_attribute_float("y_size",liq->overlay.y_size);
+	xml_add_attribute_float("alpha",liq->overlay.alpha);
 	xml_add_tagend(TRUE);
 
 	xml_add_tagclose("Liquid");
