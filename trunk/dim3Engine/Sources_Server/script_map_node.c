@@ -37,6 +37,7 @@ extern js_type			js;
 
 JSValueRef js_map_node_find_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_map_node_find_random_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_map_node_find_random_skip_id_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_map_node_find_nearest_to_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_map_node_find_nearest_names_in_path_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_map_node_find_nearest_unheld_weapon_in_path_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
@@ -50,6 +51,7 @@ JSValueRef js_map_node_get_position_func(JSContextRef cx,JSObjectRef func,JSObje
 JSStaticFunction	map_node_functions[]={
 							{"find",							js_map_node_find_func,									kJSPropertyAttributeDontDelete},
 							{"findRandom",						js_map_node_find_random_func,							kJSPropertyAttributeDontDelete},
+							{"findRandomSkipId",				js_map_node_find_random_skip_id_func,					kJSPropertyAttributeDontDelete},
 							{"findNearestToObject",				js_map_node_find_nearest_to_object_func,				kJSPropertyAttributeDontDelete},
 							{"findNearestNamesInPath",			js_map_node_find_nearest_names_in_path_func,			kJSPropertyAttributeDontDelete},
 							{"findNearestUnheldWeaponInPath",	js_map_node_find_nearest_unheld_weapon_in_path_func,	kJSPropertyAttributeDontDelete},
@@ -110,7 +112,21 @@ JSValueRef js_map_node_find_random_func(JSContextRef cx,JSObjectRef func,JSObjec
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
 	script_value_to_string(cx,argv[0],name,name_str_len);
-	idx=map_find_random_node(&map,name);
+	idx=map_find_random_node(&map,name,-1);
+	return(script_int_to_value(cx,idx));
+}
+
+JSValueRef js_map_node_find_random_skip_id_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+{
+	int				idx,skip_idx;
+	char			name[name_str_len];
+	
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+	
+	script_value_to_string(cx,argv[0],name,name_str_len);
+	skip_idx=script_value_to_int(cx,argv[1]);
+
+	idx=map_find_random_node(&map,name,skip_idx);
 	return(script_int_to_value(cx,idx));
 }
 

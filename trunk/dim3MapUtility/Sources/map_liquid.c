@@ -65,12 +65,10 @@ int map_liquid_add(map_type *map)
 	liq->flag.never_cull=FALSE;
 	liq->flag.no_draw=FALSE;
 
-	liq->reflect.merge_texture_idx=-1;
+	liq->overlay.on=FALSE;
 	
 	liq->camera[0]=0x0;
 	liq->ambient.sound_name[0]=0x0;
-	
-	liq->reflect.on=FALSE;
 	
 	map->liquid.nliquid++;
 

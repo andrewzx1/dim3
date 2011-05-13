@@ -57,7 +57,7 @@ and can be sold or given away.
 #define kRingImageCount							17
 #define kRingImageMillisecond					18
 #define kRingImageLoop							19
-#define kRingmageLoopBack						20
+#define kRingImageLoopBack						20
 
 extern iface_type				iface;
 extern setup_state_type			state;
@@ -114,7 +114,7 @@ void alt_property_palette_fill_ring(int ring_idx)
 	list_palette_add_string_int(&alt_property_palette,kRingImageCount,"Count",ring->animate.image_count,FALSE);
 	list_palette_add_string_int(&alt_property_palette,kRingImageMillisecond,"Display Milliseconds",ring->animate.msec,FALSE);
 	list_palette_add_checkbox(&alt_property_palette,kRingImageLoop,"Loop",ring->animate.loop,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kRingmageLoopBack,"Loop Back",ring->animate.loop_back,FALSE);
+	list_palette_add_checkbox(&alt_property_palette,kRingImageLoopBack,"Loop Back",ring->animate.loop_back,FALSE);
 }
 
 /* =======================================================
@@ -129,30 +129,106 @@ void alt_property_palette_click_ring(int ring_idx,int id)
 	iface_ring_type			*ring;
 
 	ring=&iface.ring_list.rings[ring_idx];
-/*
+
 	switch (id) {
 
 			// settings
 
-		case kSoundSettingsName:
-			dialog_property_string_run(list_string_value_string,(void*)sound->name,name_str_len,0,0);
+		case kRingSettingsName:
+			dialog_property_string_run(list_string_value_string,(void*)ring->name,name_str_len,0,0);
 			break;
 
-		case kSoundSettingsFileName:
-			strcpy(file_name,sound->file_name);
-			if (dialog_file_open_run("Pick a Sound","Sounds","wav",NULL,file_name)) strcpy(sound->file_name,file_name);
+		case kRingSettingsBitmapName:
+			strcpy(file_name,ring->bitmap_name);
+			if (dialog_file_open_run("Pick a Ring Bitmap","Bitmaps/Rings","png",NULL,file_name)) strcpy(ring->bitmap_name,file_name);
 			break;
 
-		case kSoundSettingsMinDist:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&sound->min_dist,0,0,0);
+		case kRingSettingsLife:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&ring->life_msec,0,0,0);
 			break;
 
-		case kSoundSettingsMaxDist:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&sound->max_dist,0,0,0);
+			// ring
+
+		case kRingRingStartOuterSize:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&ring->start_outer_size,0,0,0);
+			break;
+
+		case kRingRingEndOuterSize:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&ring->end_outer_size,0,0,0);
+			break;
+
+		case kRingRingStartInnerSize:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&ring->start_inner_size,0,0,0);
+			break;
+
+		case kRingRingEndInnerSize:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&ring->end_inner_size,0,0,0);
+			break;
+
+		case kRingRingStartAlpha:
+			dialog_property_string_run(list_string_value_0_to_1_float,(void*)&ring->start_alpha,0,0,0);
+			break;
+
+		case kRingRingEndAlpha:
+			dialog_property_string_run(list_string_value_0_to_1_float,(void*)&ring->end_alpha,0,0,0);
+			break;
+
+		case kRingRingStartColor:
+			os_pick_color(&ring->start_color);
+			break;
+
+		case kRingRingEndColor:
+			os_pick_color(&ring->end_color);
+			break;
+
+			// motion
+
+		case kRingMotionMove:
+			dialog_property_chord_run(list_chord_value_vector,(void*)&ring->vct);
+			break;
+
+		case kRingMotionRot:
+			dialog_property_chord_run(list_chord_value_angle,(void*)&ring->ang);
+			break;
+
+		case kRingMotionRotAdd:
+			dialog_property_chord_run(list_chord_value_angle,(void*)&ring->rot);
+			break;
+
+		case kRingMotionRotAccel:
+			dialog_property_chord_run(list_chord_value_vector,(void*)&ring->rot_accel);
+			break;
+
+			// options
+
+		case kRingOptionBlendAdd:
+			ring->blend_add=!ring->blend_add;
+			break;
+
+		case kRingOptionTeamTint:
+			ring->team_tint=!ring->team_tint;
+			break;
+
+			// animation
+
+		case kRingImageCount:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&ring->animate.image_count,0,0,0);
+			break;
+
+		case kRingImageMillisecond:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&ring->animate.msec,0,0,0);
+			break;
+
+		case kRingImageLoop:
+			ring->animate.loop=!ring->animate.loop;
+			break;
+
+		case kRingImageLoopBack:
+			ring->animate.loop_back=!ring->animate.loop_back;
 			break;
 
 	}
-*/
+
 		// redraw
 
 	main_wind_draw();

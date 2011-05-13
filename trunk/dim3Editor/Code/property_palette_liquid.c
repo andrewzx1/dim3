@@ -46,27 +46,29 @@ and can be sold or given away.
 
 #define kLiquidPropertyTideSize					9
 #define kLiquidPropertyTideRate					10
+#define kLiquidPropertyTideUVShift				11
 
 #define kLiquidPropertyHarm						15
 #define kLiquidPropertyDrownTick				16
 #define kLiquidPropertyDrownHarm				17
 
-#define kLiquidPropertyReflectOn				18
 #define kLiquidPropertyReflectTextureSize		19
 #define kLiquidPropertyReflectXRefract			20
 #define kLiquidPropertyReflectZRefract			21
-#define kLiquidPropertyReflectMergeTexture		22
-#define kLiquidPropertyReflectMergeFactor		23
-#define kLiquidPropertyReflectMergeXSizeFactor	24
-#define kLiquidPropertyReflectMergeYSizeFactor	25
-#define kLiquidPropertyReflectAlpha				26
+#define kLiquidPropertyReflectAlpha				22
 
-#define kLiquidPropertyGroup					27
+#define kLiquidPropertyOverlayOn				23
+#define kLiquidPropertyOverlayTexture			24
+#define kLiquidPropertyOverlayXSizeFactor		25
+#define kLiquidPropertyOverlayYSizeFactor		26
+#define kLiquidPropertyOverlayAlpha				27
 
-#define kLiquidPropertyOff						28
-#define kLiquidPropertySize						29
-#define kLiquidPropertyShift					30
-#define kLiquidPropertyCamera					31
+#define kLiquidPropertyGroup					28
+
+#define kLiquidPropertyOff						29
+#define kLiquidPropertySize						30
+#define kLiquidPropertyShift					31
+#define kLiquidPropertyCamera					32
 
 extern map_type					map;
 extern editor_state_type		state;
@@ -105,8 +107,9 @@ void property_palette_fill_liquid(int liq_idx)
 	list_palette_add_string(&property_palette,kLiquidPropertySoundName,"Sound",liq->ambient.sound_name,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Liquid Tides");
-	list_palette_add_string_int(&property_palette,kLiquidPropertyTideSize,"Tide Size",liq->tide.high,FALSE);
-	list_palette_add_string_int(&property_palette,kLiquidPropertyTideRate,"Tide Rate",liq->tide.rate,FALSE);
+	list_palette_add_string_int(&property_palette,kLiquidPropertyTideSize,"Size",liq->tide.high,FALSE);
+	list_palette_add_string_int(&property_palette,kLiquidPropertyTideRate,"Rate",liq->tide.rate,FALSE);
+	list_palette_add_string_float(&property_palette,kLiquidPropertyTideUVShift,"UV Shift",liq->tide.uv_shift,FALSE);
 	
 	list_palette_add_header(&property_palette,0,"Liquid Harm");
 	list_palette_add_string_int(&property_palette,kLiquidPropertyHarm,"In Damage",liq->harm.in_harm,FALSE);
@@ -114,15 +117,17 @@ void property_palette_fill_liquid(int liq_idx)
 	list_palette_add_string_int(&property_palette,kLiquidPropertyDrownHarm,"Drowning Damage",liq->harm.drown_harm,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Liquid Reflection");
-	list_palette_add_checkbox(&property_palette,kLiquidPropertyReflectOn,"On",liq->reflect.on,FALSE);
 	list_palette_add_string_int(&property_palette,kLiquidPropertyReflectTextureSize,"Texture Size",liq->reflect.texture_size,FALSE);
 	list_palette_add_string_int(&property_palette,kLiquidPropertyReflectXRefract,"X Refraction Factor",liq->reflect.x_refract_factor,FALSE);
 	list_palette_add_string_int(&property_palette,kLiquidPropertyReflectZRefract,"Z Refraction Factor",liq->reflect.z_refract_factor,FALSE);
-	list_palette_add_texture(&property_palette,map.textures,kLiquidPropertyReflectMergeTexture,"Merge Texture",liq->reflect.merge_texture_idx,FALSE);
-	list_palette_add_string_float(&property_palette,kLiquidPropertyReflectMergeFactor,"Merge Texture Factor",liq->reflect.merge_factor,FALSE);
-	list_palette_add_string_float(&property_palette,kLiquidPropertyReflectMergeXSizeFactor,"Merge Texture X Size",liq->reflect.merge_x_size,FALSE);
-	list_palette_add_string_float(&property_palette,kLiquidPropertyReflectMergeYSizeFactor,"Merge Texture Y Size",liq->reflect.merge_y_size,FALSE);
 	list_palette_add_string_float(&property_palette,kLiquidPropertyReflectAlpha,"Alpha",liq->reflect.alpha,FALSE);
+
+	list_palette_add_header(&property_palette,0,"Liquid Overlay");
+	list_palette_add_checkbox(&property_palette,kLiquidPropertyOverlayOn,"On",liq->overlay.on,FALSE);
+	list_palette_add_texture(&property_palette,map.textures,kLiquidPropertyOverlayTexture,"Texture",liq->overlay.txt_idx,FALSE);
+	list_palette_add_string_float(&property_palette,kLiquidPropertyOverlayXSizeFactor,"X Size",liq->overlay.x_size,FALSE);
+	list_palette_add_string_float(&property_palette,kLiquidPropertyOverlayYSizeFactor,"Y Size",liq->overlay.y_size,FALSE);
+	list_palette_add_string_float(&property_palette,kLiquidPropertyOverlayAlpha,"Alpha",liq->overlay.alpha,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Liquid Group");
 	if (liq->group_idx==-1) {
@@ -241,6 +246,10 @@ void property_palette_click_liquid(int liq_idx,int id)
 			dialog_property_string_run(list_string_value_positive_int,(void*)&liq->tide.rate,0,0,0);
 			break;
 
+		case kLiquidPropertyTideUVShift:
+			dialog_property_string_run(list_string_value_positive_float,(void*)&liq->tide.uv_shift,0,0,0);
+			break;
+
 			// harm
 			
 		case kLiquidPropertyHarm:
@@ -256,10 +265,6 @@ void property_palette_click_liquid(int liq_idx,int id)
 			break;
 			
 			// reflect
-			
-		case kLiquidPropertyReflectOn:
-			liq->reflect.on=!liq->reflect.on;
-			break;
 			
 		case kLiquidPropertyReflectTextureSize:
 			size=((int)log2(liq->reflect.texture_size))-8;
@@ -277,24 +282,30 @@ void property_palette_click_liquid(int liq_idx,int id)
 			dialog_property_string_run(list_string_value_positive_int,(void*)&liq->reflect.z_refract_factor,0,0,0);
 			break;
 
-		case kLiquidPropertyReflectMergeTexture:
-			property_palette_pick_texture(NULL,&liq->reflect.merge_texture_idx);
-			break;
-			
-		case kLiquidPropertyReflectMergeFactor:
-			dialog_property_string_run(list_string_value_0_to_1_float,(void*)&liq->reflect.merge_factor,0,0,0);
-			break;
-			
-		case kLiquidPropertyReflectMergeXSizeFactor:
-			dialog_property_string_run(list_string_value_positive_float,(void*)&liq->reflect.merge_x_size,0,0,0);
-			break;
-			
-		case kLiquidPropertyReflectMergeYSizeFactor:
-			dialog_property_string_run(list_string_value_positive_float,(void*)&liq->reflect.merge_y_size,0,0,0);
-			break;
-			
 		case kLiquidPropertyReflectAlpha:
 			dialog_property_string_run(list_string_value_0_to_1_float,(void*)&liq->reflect.alpha,0,0,0);
+			break;
+
+			// overlay
+			
+		case kLiquidPropertyOverlayOn:
+			liq->overlay.on=!liq->overlay.on;
+			break;
+			
+		case kLiquidPropertyOverlayTexture:
+			property_palette_pick_texture(NULL,&liq->overlay.txt_idx);
+			break;
+			
+		case kLiquidPropertyOverlayXSizeFactor:
+			dialog_property_string_run(list_string_value_positive_float,(void*)&liq->overlay.x_size,0,0,0);
+			break;
+			
+		case kLiquidPropertyOverlayYSizeFactor:
+			dialog_property_string_run(list_string_value_positive_float,(void*)&liq->overlay.y_size,0,0,0);
+			break;
+			
+		case kLiquidPropertyOverlayAlpha:
+			dialog_property_string_run(list_string_value_0_to_1_float,(void*)&liq->overlay.alpha,0,0,0);
 			break;
 
 			// group
