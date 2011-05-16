@@ -164,7 +164,7 @@ int script_find_node_idx_from_idx_arg(JSContextRef cx,JSValueRef arg,JSValueRef 
 		return(-1);
 	}
 	
-	return(-1);
+	return(idx);
 }
 
 map_light_type* script_find_light_from_name(JSContextRef cx,JSValueRef arg,JSValueRef *exception)

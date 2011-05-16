@@ -19,6 +19,8 @@
 		268382A5133D4F3D0035315B /* property_palette_particles.c in Sources */ = {isa = PBXBuildFile; fileRef = 2683829E133D4F3D0035315B /* property_palette_particles.c */; };
 		268382A6133D4F3D0035315B /* property_palette_rings.c in Sources */ = {isa = PBXBuildFile; fileRef = 2683829F133D4F3D0035315B /* property_palette_rings.c */; };
 		268382A7133D4F3D0035315B /* property_palette_settings.c in Sources */ = {isa = PBXBuildFile; fileRef = 268382A0133D4F3D0035315B /* property_palette_settings.c */; };
+		269A94F5137C8E080072F87F /* alt_property_palette_particle_group.c in Sources */ = {isa = PBXBuildFile; fileRef = 269A94F3137C8E080072F87F /* alt_property_palette_particle_group.c */; };
+		269A94F6137C8E080072F87F /* alt2_property_palette_group_particle.c in Sources */ = {isa = PBXBuildFile; fileRef = 269A94F4137C8E080072F87F /* alt2_property_palette_group_particle.c */; };
 		269E97C01360EE980027B9BF /* alt_property_palette_shader.c in Sources */ = {isa = PBXBuildFile; fileRef = 269E97BE1360EE980027B9BF /* alt_property_palette_shader.c */; };
 		269E97C11360EE980027B9BF /* property_palette_shaders.c in Sources */ = {isa = PBXBuildFile; fileRef = 269E97BF1360EE980027B9BF /* property_palette_shaders.c */; };
 		269EC5101356501E00C3223C /* alt_property_palette_multiplayer_character.c in Sources */ = {isa = PBXBuildFile; fileRef = 269EC50A1356501E00C3223C /* alt_property_palette_multiplayer_character.c */; };
@@ -42,6 +44,8 @@
 		26BDD87D134AA97C002E6723 /* alt_property_palette_intro_model.c in Sources */ = {isa = PBXBuildFile; fileRef = 26BDD87A134AA97C002E6723 /* alt_property_palette_intro_model.c */; };
 		26BDD87E134AA97C002E6723 /* property_palette_hud.c in Sources */ = {isa = PBXBuildFile; fileRef = 26BDD87B134AA97C002E6723 /* property_palette_hud.c */; };
 		26BDD880134AA9A3002E6723 /* OSX_dialog_file_open.c in Sources */ = {isa = PBXBuildFile; fileRef = 26BDD87F134AA9A3002E6723 /* OSX_dialog_file_open.c */; };
+		26C19FD0137B418F00B8A4D3 /* alt_property_palette_particle.c in Sources */ = {isa = PBXBuildFile; fileRef = 26C19FCE137B418F00B8A4D3 /* alt_property_palette_particle.c */; };
+		26C19FD1137B418F00B8A4D3 /* alt_property_palette_ring.c in Sources */ = {isa = PBXBuildFile; fileRef = 26C19FCF137B418F00B8A4D3 /* alt_property_palette_ring.c */; };
 		26C324721357B3F800313FBF /* alt2_property_palette.c in Sources */ = {isa = PBXBuildFile; fileRef = 26C3246F1357B3F800313FBF /* alt2_property_palette.c */; };
 		26C324731357B3F800313FBF /* property_palette_chooser.c in Sources */ = {isa = PBXBuildFile; fileRef = 26C324701357B3F800313FBF /* property_palette_chooser.c */; };
 		26C324741357B3F800313FBF /* property_palette_menu.c in Sources */ = {isa = PBXBuildFile; fileRef = 26C324711357B3F800313FBF /* property_palette_menu.c */; };
@@ -127,6 +131,8 @@
 		2683829E133D4F3D0035315B /* property_palette_particles.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_particles.c; path = Code/property_palette_particles.c; sourceTree = "<group>"; };
 		2683829F133D4F3D0035315B /* property_palette_rings.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_rings.c; path = Code/property_palette_rings.c; sourceTree = "<group>"; };
 		268382A0133D4F3D0035315B /* property_palette_settings.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_settings.c; path = Code/property_palette_settings.c; sourceTree = "<group>"; };
+		269A94F3137C8E080072F87F /* alt_property_palette_particle_group.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = alt_property_palette_particle_group.c; path = Code/alt_property_palette_particle_group.c; sourceTree = "<group>"; };
+		269A94F4137C8E080072F87F /* alt2_property_palette_group_particle.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = alt2_property_palette_group_particle.c; path = Code/alt2_property_palette_group_particle.c; sourceTree = "<group>"; };
 		269E97BE1360EE980027B9BF /* alt_property_palette_shader.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = alt_property_palette_shader.c; path = Code/alt_property_palette_shader.c; sourceTree = "<group>"; };
 		269E97BF1360EE980027B9BF /* property_palette_shaders.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_shaders.c; path = Code/property_palette_shaders.c; sourceTree = "<group>"; };
 		269EC50A1356501E00C3223C /* alt_property_palette_multiplayer_character.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = alt_property_palette_multiplayer_character.c; path = Code/alt_property_palette_multiplayer_character.c; sourceTree = "<group>"; };
@@ -156,6 +162,8 @@
 		26BDD87A134AA97C002E6723 /* alt_property_palette_intro_model.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = alt_property_palette_intro_model.c; path = Code/alt_property_palette_intro_model.c; sourceTree = "<group>"; };
 		26BDD87B134AA97C002E6723 /* property_palette_hud.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_hud.c; path = Code/property_palette_hud.c; sourceTree = "<group>"; };
 		26BDD87F134AA9A3002E6723 /* OSX_dialog_file_open.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = OSX_dialog_file_open.c; path = ../dim3Common/Code/OSX_dialog_file_open.c; sourceTree = "<group>"; };
+		26C19FCE137B418F00B8A4D3 /* alt_property_palette_particle.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = alt_property_palette_particle.c; path = Code/alt_property_palette_particle.c; sourceTree = "<group>"; };
+		26C19FCF137B418F00B8A4D3 /* alt_property_palette_ring.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = alt_property_palette_ring.c; path = Code/alt_property_palette_ring.c; sourceTree = "<group>"; };
 		26C3246F1357B3F800313FBF /* alt2_property_palette.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = alt2_property_palette.c; path = Code/alt2_property_palette.c; sourceTree = "<group>"; };
 		26C324701357B3F800313FBF /* property_palette_chooser.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_chooser.c; path = Code/property_palette_chooser.c; sourceTree = "<group>"; };
 		26C324711357B3F800313FBF /* property_palette_menu.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_menu.c; path = Code/property_palette_menu.c; sourceTree = "<group>"; };
@@ -289,6 +297,9 @@
 				26514F6F13594F2500298860 /* alt_property_palette_menu.c */,
 				26514F6E13594F2500298860 /* alt_property_palette_chooser.c */,
 				26EB2AB1135CE09700C85532 /* alt_property_palette_sound.c */,
+				26C19FCE137B418F00B8A4D3 /* alt_property_palette_particle.c */,
+				269A94F3137C8E080072F87F /* alt_property_palette_particle_group.c */,
+				26C19FCF137B418F00B8A4D3 /* alt_property_palette_ring.c */,
 				26EB2AAF135CE09700C85532 /* alt_property_palette_halo.c */,
 				26EB2AB0135CE09700C85532 /* alt_property_palette_mark.c */,
 				26EB2AAE135CE09700C85532 /* alt_property_palette_crosshair.c */,
@@ -297,6 +308,7 @@
 				26C3246F1357B3F800313FBF /* alt2_property_palette.c */,
 				26514F7113594F2500298860 /* alt2_property_palette_menu_item.c */,
 				26514F7013594F2500298860 /* alt2_property_palette_chooser_piece.c */,
+				269A94F4137C8E080072F87F /* alt2_property_palette_group_particle.c */,
 				26D15D4F1329E7CD00F9EC7B /* property_utility_common.c */,
 				26D15C7A1329E42400F9EC7B /* text_common.c */,
 			);
@@ -505,6 +517,10 @@
 				26EB2AB6135CE09700C85532 /* alt_property_palette_sound.c in Sources */,
 				269E97C01360EE980027B9BF /* alt_property_palette_shader.c in Sources */,
 				269E97C11360EE980027B9BF /* property_palette_shaders.c in Sources */,
+				26C19FD0137B418F00B8A4D3 /* alt_property_palette_particle.c in Sources */,
+				26C19FD1137B418F00B8A4D3 /* alt_property_palette_ring.c in Sources */,
+				269A94F5137C8E080072F87F /* alt_property_palette_particle_group.c in Sources */,
+				269A94F6137C8E080072F87F /* alt2_property_palette_group_particle.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
