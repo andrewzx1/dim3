@@ -474,6 +474,8 @@ bool liquid_reflection_maps_create_process(int nliq,char *err_str)
 		// start mesh-poly and/or liquid setup
 		
 	progress_next_title("Liquid Reflection Map: Setup");
+		
+	map_delete_texture(&map,liquid_reflection_texture_start_idx,(liquid_reflection_texture_start_idx+max_liquid_reflection_map_textures));
 	
 	liquid_reflection_map_setup();
 	liquid_reflection_map_bitmap_pixel_start();

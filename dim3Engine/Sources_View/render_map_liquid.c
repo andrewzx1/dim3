@@ -63,7 +63,7 @@ float liquid_tide_get_high(map_liquid_type *liq)
 
 float liquid_tide_get_uv_factor(map_liquid_type *liq)
 {
-	float			f_time,sn;
+	float			f_time,sn,shift;
 
 		// get rate between 0..1
 
@@ -73,7 +73,9 @@ float liquid_tide_get_uv_factor(map_liquid_type *liq)
 		// waves are sin waves
 
 	sn=(float)sin((TRIG_PI*2.0f)*f_time);
-	return((liq->tide.uv_shift*0.5f)*sn);
+	
+	shift=liq->tide.uv_shift*0.5f;
+	return(shift+(shift*sn));
 }
 
 /* =======================================================
@@ -96,10 +98,10 @@ bool liquid_is_transparent(map_liquid_type *liq)
       
 ======================================================= */
 
-void liquid_render_liquid_create_vertex(map_liquid_type *liq,float uv_factor,bool do_shift)
+void liquid_render_liquid_create_vertex(map_liquid_type *liq,float uv_shift,float u_factor,float v_factor,bool is_overaly)
 {
 	int				n,k,vbo_cnt;
-	float			fy,gx,gy,gx2,gy2,f_tick;
+	float			fy,gx,gy,gx2,gy2,gx_add,gy_add,f_tick;
 	bool			shader_on;
 	float			*vertex_ptr,*vl,*uv,*uv2,*ct,*cn,*cl;
 	
@@ -118,33 +120,53 @@ void liquid_render_liquid_create_vertex(map_liquid_type *liq,float uv_factor,boo
 	vertex_ptr=view_bind_map_liquid_vertex_object(vbo_cnt);
 	if (vertex_ptr==NULL) return;
 
-		// liquid texture movement
+		// liquid texture uvs
 		
-	if (!do_shift) {
-		gx=liq->main_uv.x_offset;
-		gy=liq->main_uv.y_offset;
+	if (is_overaly) {
+		f_tick=((float)game_time_get())*0.001f;
+
+		gx_add=f_tick*liq->x_shift;
+		k=(int)gx_add;
+		gx_add=gx_add-(float)k;
+		
+		gy_add=f_tick*liq->y_shift;
+		k=(int)gy_add;
+		gy_add=gy_add-(float)k;
+		
+		gx=((float)liq->lft)*0.0001f;
+		gx2=((float)liq->rgt)*0.0001f;
+		
+		k=(int)gx;
+		gx-=((float)k);
+		gx2-=((float)k);
+		
+		gy=((float)liq->top)*0.0001f;
+		gy2=((float)liq->bot)*0.0001f;
+		
+		k=(int)gx;
+		gy-=((float)k);
+		gy2-=((float)k);
+
+		gx+=gx_add;
+		gy+=gy_add;
+		
+		gx2+=gx_add;
+		gy2+=gy_add;
 	}
 	else {
-		f_tick=((float)game_time_get())*0.001f;
-		
-		gx=f_tick*liq->x_shift;
-		k=(int)gx;
-		gx=liq->main_uv.x_offset+(gx-(float)k);
-		
-		gy=f_tick*liq->y_shift;
-		k=(int)gy;
-		gy=liq->main_uv.y_offset+(gy-(float)k);
+		gx=liq->main_uv.x_offset;
+		gy=liq->main_uv.y_offset;
+
+		gx2=gx+liq->main_uv.x_size;
+		gy2=gy+liq->main_uv.y_size;
 	}
-
-	gx2=gx+liq->main_uv.x_size;
-	gy2=gy+liq->main_uv.y_size;
-
+	
 		// uv factors
 
-	gx+=uv_factor;
-	gy+=uv_factor;
-	gx2-=uv_factor;
-	gy2-=uv_factor;
+	gx+=uv_shift;
+	gy+=uv_shift;
+	gx2-=uv_shift;
+	gy2-=uv_shift;
 
 		// liquid vertexes
 
@@ -286,14 +308,14 @@ void liquid_render_liquid_shader(map_liquid_type *liq,int txt_idx,int lmap_txt_i
 	gl_shader_draw_execute(TRUE,texture,txt_idx,frame,lmap_txt_idx,1.0f,&light_list,tangent_offset,normal_offset);
 			
 		// fix texture if any back rendering
+		
+	gl_id=texture->frames[frame].bitmap.gl_id;
+	alpha=1.0f;
 
 	if (back_rendering) {
 		if (gl_back_render_get_texture(liq->camera,&gl_id,&alpha)) {
 			gl_shader_texture_override(gl_id,alpha);
 		}
-	}
-	else {
-		gl_id=texture->frames[frame].bitmap.gl_id;
 	}
 	
 		// draw liquid
@@ -354,15 +376,13 @@ void liquid_render_liquid_fixed(map_liquid_type *liq,int txt_idx,int lmap_txt_id
 
 		// back rendering overrides
 		
+	gl_id=texture->frames[frame].bitmap.gl_id;
 	alpha=1.0f;
 		
 	if (back_rendering) {
 		if (!gl_back_render_get_texture(liq->camera,&gl_id,&alpha)) {
 			gl_id=texture->frames[frame].bitmap.gl_id;
 		}
-	}
-	else {
-		gl_id=texture->frames[frame].bitmap.gl_id;
 	}
 
 		// light map
@@ -395,18 +415,18 @@ void liquid_render_liquid_fixed(map_liquid_type *liq,int txt_idx,int lmap_txt_id
 
 void liquid_render_liquid(map_liquid_type *liq)
 {
-	float				uv_factor;
+	float				uv_shift;
 	bool				shader_on,is_transparent;
 
 	shader_on=view_shader_on();
 
 		// uv factor
 
-	uv_factor=liquid_tide_get_uv_factor(liq);
+	uv_shift=liquid_tide_get_uv_factor(liq);
 
 		// draw the reflection liquid
 
-	liquid_render_liquid_create_vertex(liq,uv_factor,FALSE);
+	liquid_render_liquid_create_vertex(liq,uv_shift,1.0f,1.0f,FALSE);
 
 	if (shader_on) {
 		liquid_render_liquid_shader(liq,liq->txt_idx,liq->lmap_txt_idx,TRUE);
@@ -434,13 +454,13 @@ void liquid_render_liquid(map_liquid_type *liq)
 
 		// draw the overlay
 
-	liquid_render_liquid_create_vertex(liq,(uv_factor*0.5f),TRUE);
+	liquid_render_liquid_create_vertex(liq,(uv_shift*0.5f),liq->overlay.x_size,liq->overlay.y_size,TRUE);
 
 	if (shader_on) {
-		liquid_render_liquid_shader(liq,liq->overlay.txt_idx,-1,FALSE);
+		liquid_render_liquid_shader(liq,liq->overlay.txt_idx,liq->lmap_txt_idx,FALSE);
 	}
 	else {
-		liquid_render_liquid_fixed(liq,liq->overlay.txt_idx,-1,FALSE);
+		liquid_render_liquid_fixed(liq,liq->overlay.txt_idx,liq->lmap_txt_idx,FALSE);
 	}
 
 	view_unbind_liquid_vertex_object();
