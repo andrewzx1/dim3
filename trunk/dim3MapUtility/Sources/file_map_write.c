@@ -730,6 +730,7 @@ void write_single_liquid(map_liquid_type *liq)
 	xml_add_attribute_int("texture_size",liq->reflect.texture_size);
 	xml_add_attribute_int("x_refract_factor",liq->reflect.x_refract_factor);
 	xml_add_attribute_int("z_refract_factor",liq->reflect.z_refract_factor);
+	xml_add_attribute_color("no_hit_col",&liq->reflect.no_hit_col);
 	xml_add_attribute_float("alpha",liq->reflect.alpha);
 	xml_add_tagend(TRUE);
 
@@ -738,9 +739,7 @@ void write_single_liquid(map_liquid_type *liq)
 	xml_add_tagstart("Overlay");
 	xml_add_attribute_boolean("on",liq->overlay.on);
 	xml_add_attribute_int("txt_idx",liq->overlay.txt_idx);
-	xml_add_attribute_float("x_size",liq->overlay.x_size);
-	xml_add_attribute_float("y_size",liq->overlay.y_size);
-	xml_add_attribute_float("alpha",liq->overlay.alpha);
+	xml_add_attribute_int("stamp_size",liq->overlay.stamp_size);
 	xml_add_tagend(TRUE);
 
 	xml_add_tagclose("Liquid");
@@ -950,6 +949,10 @@ bool write_map_xml(map_type *map)
 		xml_add_attribute_short_array("node",node->path_hint,map->nnode,FALSE);
 		xml_add_tagend(TRUE);
 
+		xml_add_tagstart("Watch");
+		xml_add_attribute_boolean("on",node->watch.on);
+		xml_add_attribute_int("distance",node->watch.dist);
+		xml_add_tagend(TRUE);
 	
 		xml_add_tagclose("Node");
 	}

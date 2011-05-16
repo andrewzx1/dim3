@@ -394,7 +394,10 @@ void piece_create_node(void)
 		node->link[n]=-1;
 	}
 
-		// select sound
+	node->watch.on=FALSE;
+	node->watch.dist=0;
+
+		// select node
 		
 	state.show_node=TRUE;
 	
@@ -472,13 +475,12 @@ void piece_create_liquid(void)
 	liq->reflect.texture_size=512;
 	liq->reflect.x_refract_factor=20000;
 	liq->reflect.z_refract_factor=20000;
+	liq->reflect.no_hit_col.r=liq->reflect.no_hit_col.g=liq->reflect.no_hit_col.b=0.5f;
 	liq->reflect.alpha=0.7f;
 
 	liq->overlay.on=TRUE;
 	liq->overlay.txt_idx=-1;
-	liq->overlay.x_size=1.0f;
-	liq->overlay.y_size=1.0f;
-	liq->overlay.alpha=0.5f;
+	liq->overlay.stamp_size=10000;
 
 		// select the liquid
 		

@@ -751,12 +751,14 @@ void read_single_liquid_v3(map_type *map,int liquid_idx,int liquid_tag)
 		liq->reflect.texture_size=xml_get_attribute_int(tag,"texture_size");
 		liq->reflect.x_refract_factor=xml_get_attribute_int(tag,"x_refract_factor");
 		liq->reflect.z_refract_factor=xml_get_attribute_int(tag,"z_refract_factor");
+		xml_get_attribute_color(tag,"no_hit_col",&liq->reflect.no_hit_col);
 		liq->reflect.alpha=xml_get_attribute_float(tag,"alpha");
 	}
 	else {
 		liq->reflect.texture_size=512;
 		liq->reflect.x_refract_factor=20000;
 		liq->reflect.z_refract_factor=20000;
+		liq->reflect.no_hit_col.r=liq->reflect.no_hit_col.g=liq->reflect.no_hit_col.b=0.5f;
 		liq->reflect.alpha=0.9f;
 	}
 
@@ -766,16 +768,12 @@ void read_single_liquid_v3(map_type *map,int liquid_idx,int liquid_tag)
     if (tag!=-1) {
 		liq->overlay.on=xml_get_attribute_boolean(tag,"on");
 		liq->overlay.txt_idx=xml_get_attribute_int(tag,"txt_idx");
-		liq->overlay.x_size=xml_get_attribute_float(tag,"x_size");
-		liq->overlay.y_size=xml_get_attribute_float(tag,"y_size");
-		liq->overlay.alpha=xml_get_attribute_float(tag,"alpha");
+		liq->overlay.stamp_size=xml_get_attribute_int(tag,"stamp_size");
 	}
 	else {
 		liq->overlay.on=FALSE;
 		liq->overlay.txt_idx=-1;
-		liq->overlay.x_size=1.0f;
-		liq->overlay.y_size=1.0f;
-		liq->overlay.alpha=0.5f;
+		liq->overlay.stamp_size=10000;
 	}
 }
 
@@ -1021,6 +1019,16 @@ bool decode_map_xml(map_type *map,int map_head)
 			
 			tag=xml_findfirstchild("Hint",node_tag);
 			xml_get_attribute_short_array(tag,"node",node->path_hint,max_node);
+
+			tag=xml_findfirstchild("Watch",node_tag);
+			if (tag!=-1) {
+				node->watch.on=xml_get_attribute_boolean(tag,"on");
+				node->watch.dist=xml_get_attribute_int(tag,"distance");
+			}
+			else {
+				node->watch.on=FALSE;
+				node->watch.dist=0;
+			}
 
 			node_tag=xml_findnextchild(node_tag);
 		}

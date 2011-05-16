@@ -280,10 +280,6 @@ void liquid_reflection_map_ray_trace_map(d3pnt *spt,d3pnt *ept,d3col *col)
 		min.z=ept->z;
 		max.z=spt->z;
 	}
-
-		// default hit color
-
-	col->r=col->g=col->b=0.0f;
 	
 		// look for poly collisions
 	
@@ -371,6 +367,7 @@ bool liquid_reflection_map_run_for_liquid(int txt_idx,int liq_idx,char *base_pat
 
 				// run the ray trace
 
+			memmove(&col,&liq->reflect.no_hit_col,sizeof(d3col));
 			liquid_reflection_map_ray_trace_map(&spt,&ept,&col);
 
 				// set color

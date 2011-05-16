@@ -570,10 +570,12 @@ typedef struct		{
 					} obj_watch_restrict;
 					
 typedef struct		{
-						int						dist,obj_idx,base_team;
+						int						dist,obj_idx,node_idx,base_team;
 						float					restrict_ang;
-						char					obj_flags[max_obj_list],sound_name[name_str_len];
-						bool					on;
+						char					obj_flags[max_obj_list],
+												node_flags[max_node],
+												sound_name[name_str_len];
+						bool					on,check_objects_near_far,check_nodes_near_far;
 						obj_watch_restrict		watch_restrict;
 					} obj_watch;
 		

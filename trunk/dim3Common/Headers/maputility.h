@@ -335,11 +335,11 @@ typedef struct		{
 						int									texture_size,
 															x_refract_factor,z_refract_factor;
 						float								alpha;
+						d3col								no_hit_col;
 					} map_liquid_reflection_type;
 
 typedef struct		{
-						int									txt_idx;
-						float								x_size,y_size,alpha;
+						int									txt_idx,stamp_size;
 						bool								on;
 					} map_liquid_overlay_type;
 
@@ -460,6 +460,11 @@ typedef struct		{
 					} node_back_render_type;
 
 typedef struct		{
+						int									dist;
+						bool								on;
+					} node_watch_type;
+
+typedef struct		{
 						int									idx,event_id;
 						short								link[max_node_link],
 															path_hint[max_node];
@@ -469,6 +474,7 @@ typedef struct		{
 						d3pnt								pnt;
 						d3ang								ang;
 						node_back_render_type				back_render;
+						node_watch_type						watch;
 					} node_type;
 
 //

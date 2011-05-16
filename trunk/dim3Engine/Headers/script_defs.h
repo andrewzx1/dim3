@@ -334,39 +334,41 @@ and can be sold or given away.
 #define sd_event_watch_object_exit_base					3058
 #define sd_event_watch_object_sound						3059
 #define sd_event_watch_object_damage					3060
+#define sd_event_watch_node_near						3061
+#define sd_event_watch_node_far							3062
 
-#define sd_event_weapon_fire_single						3061
-#define sd_event_weapon_fire_up							3062
-#define sd_event_weapon_fire_down						3063
-#define sd_event_weapon_fire_repeat						3064
-#define sd_event_weapon_fire_clip_change				3065
-#define sd_event_weapon_fire_zoom_enter					3066
-#define sd_event_weapon_fire_zoom_exit					3067
+#define sd_event_weapon_fire_single						3063
+#define sd_event_weapon_fire_up							3064
+#define sd_event_weapon_fire_down						3065
+#define sd_event_weapon_fire_repeat						3066
+#define sd_event_weapon_fire_clip_change				3067
+#define sd_event_weapon_fire_zoom_enter					3068
+#define sd_event_weapon_fire_zoom_exit					3069
 
-#define sd_event_projectile_bounce						3068
-#define sd_event_projectile_reflect						3069
+#define sd_event_projectile_bounce						3070
+#define sd_event_projectile_reflect						3071
 
-#define sd_event_melee_hit								3070
+#define sd_event_melee_hit								3072
 
-#define sd_event_vehicle_enter							3071
-#define sd_event_vehicle_exit							3072
+#define sd_event_vehicle_enter							3073
+#define sd_event_vehicle_exit							3074
 
-#define sd_event_move_done								3073
-#define sd_event_move_loop								3074
+#define sd_event_move_done								3075
+#define sd_event_move_loop								3076
 
-#define sd_event_interface_title_done					3075
-#define sd_event_interface_story_done					3076
-#define sd_event_interface_cinema_done					3077
+#define sd_event_interface_title_done					3077
+#define sd_event_interface_story_done					3078
+#define sd_event_interface_cinema_done					3079
 
-#define sd_event_state_load								3078
-#define sd_event_state_save								3079
+#define sd_event_state_load								3080
+#define sd_event_state_save								3081
 
-#define sd_event_remote_join							3080
-#define sd_event_remote_leave							3081
-#define sd_event_remote_team							3082
-#define sd_event_remote_death							3083
-#define sd_event_remote_suicide							3084
-#define sd_event_remote_telefrag						3085
+#define sd_event_remote_join							3082
+#define sd_event_remote_leave							3083
+#define sd_event_remote_team							3084
+#define sd_event_remote_death							3085
+#define sd_event_remote_suicide							3086
+#define sd_event_remote_telefrag						3087
 
 //
 // script event messages

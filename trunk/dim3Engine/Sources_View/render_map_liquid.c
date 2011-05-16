@@ -98,10 +98,11 @@ bool liquid_is_transparent(map_liquid_type *liq)
       
 ======================================================= */
 
-void liquid_render_liquid_create_vertex(map_liquid_type *liq,float uv_shift,float u_factor,float v_factor,bool is_overaly)
+void liquid_render_liquid_create_vertex(map_liquid_type *liq,float uv_shift,bool is_overaly)
 {
 	int				n,k,vbo_cnt;
-	float			fy,gx,gy,gx2,gy2,gx_add,gy_add,f_tick;
+	float			fy,gx,gy,gx2,gy2,gx_add,gy_add,
+					f_tick,f_stamp_size;
 	bool			shader_on;
 	float			*vertex_ptr,*vl,*uv,*uv2,*ct,*cn,*cl;
 	
@@ -132,16 +133,18 @@ void liquid_render_liquid_create_vertex(map_liquid_type *liq,float uv_shift,floa
 		gy_add=f_tick*liq->y_shift;
 		k=(int)gy_add;
 		gy_add=gy_add-(float)k;
+
+		f_stamp_size=1.0f/((float)liq->overlay.stamp_size);
 		
-		gx=((float)liq->lft)*0.0001f;
-		gx2=((float)liq->rgt)*0.0001f;
+		gx=((float)liq->lft)*f_stamp_size;
+		gx2=((float)liq->rgt)*f_stamp_size;
 		
 		k=(int)gx;
 		gx-=((float)k);
 		gx2-=((float)k);
 		
-		gy=((float)liq->top)*0.0001f;
-		gy2=((float)liq->bot)*0.0001f;
+		gy=((float)liq->top)*f_stamp_size;
+		gy2=((float)liq->bot)*f_stamp_size;
 		
 		k=(int)gx;
 		gy-=((float)k);
@@ -426,7 +429,7 @@ void liquid_render_liquid(map_liquid_type *liq)
 
 		// draw the reflection liquid
 
-	liquid_render_liquid_create_vertex(liq,uv_shift,1.0f,1.0f,FALSE);
+	liquid_render_liquid_create_vertex(liq,uv_shift,FALSE);
 
 	if (shader_on) {
 		liquid_render_liquid_shader(liq,liq->txt_idx,liq->lmap_txt_idx,TRUE);
@@ -454,7 +457,7 @@ void liquid_render_liquid(map_liquid_type *liq)
 
 		// draw the overlay
 
-	liquid_render_liquid_create_vertex(liq,(uv_shift*0.5f),liq->overlay.x_size,liq->overlay.y_size,TRUE);
+	liquid_render_liquid_create_vertex(liq,(uv_shift*0.5f),TRUE);
 
 	if (shader_on) {
 		liquid_render_liquid_shader(liq,liq->overlay.txt_idx,liq->lmap_txt_idx,FALSE);

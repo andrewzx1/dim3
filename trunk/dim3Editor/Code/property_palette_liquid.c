@@ -55,13 +55,12 @@ and can be sold or given away.
 #define kLiquidPropertyReflectTextureSize		19
 #define kLiquidPropertyReflectXRefract			20
 #define kLiquidPropertyReflectZRefract			21
-#define kLiquidPropertyReflectAlpha				22
+#define kLiquidPropertyReflectNoHitColor		22
+#define kLiquidPropertyReflectAlpha				23
 
-#define kLiquidPropertyOverlayOn				23
-#define kLiquidPropertyOverlayTexture			24
-#define kLiquidPropertyOverlayXSizeFactor		25
-#define kLiquidPropertyOverlayYSizeFactor		26
-#define kLiquidPropertyOverlayAlpha				27
+#define kLiquidPropertyOverlayOn				24
+#define kLiquidPropertyOverlayTexture			25
+#define kLiquidPropertyOverlayStampSize			26
 
 #define kLiquidPropertyGroup					28
 
@@ -120,14 +119,13 @@ void property_palette_fill_liquid(int liq_idx)
 	list_palette_add_string_int(&property_palette,kLiquidPropertyReflectTextureSize,"Texture Size",liq->reflect.texture_size,FALSE);
 	list_palette_add_string_int(&property_palette,kLiquidPropertyReflectXRefract,"X Refraction Factor",liq->reflect.x_refract_factor,FALSE);
 	list_palette_add_string_int(&property_palette,kLiquidPropertyReflectZRefract,"Z Refraction Factor",liq->reflect.z_refract_factor,FALSE);
+	list_palette_add_pick_color(&property_palette,kLiquidPropertyReflectNoHitColor,"No Hit Color",&liq->reflect.no_hit_col,FALSE);
 	list_palette_add_string_float(&property_palette,kLiquidPropertyReflectAlpha,"Alpha",liq->reflect.alpha,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Liquid Overlay");
 	list_palette_add_checkbox(&property_palette,kLiquidPropertyOverlayOn,"On",liq->overlay.on,FALSE);
 	list_palette_add_texture(&property_palette,map.textures,kLiquidPropertyOverlayTexture,"Texture",liq->overlay.txt_idx,FALSE);
-	list_palette_add_string_float(&property_palette,kLiquidPropertyOverlayXSizeFactor,"X Size",liq->overlay.x_size,FALSE);
-	list_palette_add_string_float(&property_palette,kLiquidPropertyOverlayYSizeFactor,"Y Size",liq->overlay.y_size,FALSE);
-	list_palette_add_string_float(&property_palette,kLiquidPropertyOverlayAlpha,"Alpha",liq->overlay.alpha,FALSE);
+	list_palette_add_string_int(&property_palette,kLiquidPropertyOverlayStampSize,"Stamp Size",liq->overlay.stamp_size,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Liquid Group");
 	if (liq->group_idx==-1) {
@@ -282,6 +280,10 @@ void property_palette_click_liquid(int liq_idx,int id)
 			dialog_property_string_run(list_string_value_positive_int,(void*)&liq->reflect.z_refract_factor,0,0,0);
 			break;
 
+		case kLiquidPropertyReflectNoHitColor:
+			os_pick_color(&liq->reflect.no_hit_col);
+			break;
+
 		case kLiquidPropertyReflectAlpha:
 			dialog_property_string_run(list_string_value_0_to_1_float,(void*)&liq->reflect.alpha,0,0,0);
 			break;
@@ -296,16 +298,8 @@ void property_palette_click_liquid(int liq_idx,int id)
 			property_palette_pick_texture(NULL,&liq->overlay.txt_idx);
 			break;
 			
-		case kLiquidPropertyOverlayXSizeFactor:
-			dialog_property_string_run(list_string_value_positive_float,(void*)&liq->overlay.x_size,0,0,0);
-			break;
-			
-		case kLiquidPropertyOverlayYSizeFactor:
-			dialog_property_string_run(list_string_value_positive_float,(void*)&liq->overlay.y_size,0,0,0);
-			break;
-			
-		case kLiquidPropertyOverlayAlpha:
-			dialog_property_string_run(list_string_value_0_to_1_float,(void*)&liq->overlay.alpha,0,0,0);
+		case kLiquidPropertyOverlayStampSize:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&liq->overlay.stamp_size,0,0,0);
 			break;
 
 			// group
