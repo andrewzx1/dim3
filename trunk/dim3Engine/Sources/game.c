@@ -125,17 +125,19 @@ void game_reset(void)
 	
 		// switch to next map
 
-	net_setup.host.current_map_idx++;
-	if (net_setup.host.current_map_idx>=setup.network.map.count) net_setup.host.current_map_idx=0;
+	if (setup.network.map.count>1) {
+		net_setup.host.current_map_idx++;
+		if (net_setup.host.current_map_idx>=setup.network.map.count) net_setup.host.current_map_idx=0;
 
-	strcpy(map.info.name,setup.network.map.maps[net_setup.host.current_map_idx].name);
-	map.info.player_start_name[0]=0x0;
+		strcpy(map.info.name,setup.network.map.maps[net_setup.host.current_map_idx].name);
+		map.info.player_start_name[0]=0x0;
 
-	if (!map_rebuild_changes(err_str)) {
-		game_end();
-		error_setup(err_str,"Hosting Game Canceled");
-		server.next_state=gs_error;
-		return;
+		if (!map_rebuild_changes(err_str)) {
+			game_end();
+			error_setup(err_str,"Hosting Game Canceled");
+			server.next_state=gs_error;
+			return;
+		}
 	}
 
 		// all objects will be re-spawned when the new map

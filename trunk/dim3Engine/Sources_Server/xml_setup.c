@@ -78,6 +78,7 @@ void setup_xml_default(void)
 	setup.network.tint_color_idx=0;
 	setup.network.show_names=TRUE;
 	setup.network.dedicated=FALSE;
+	setup.network.map_rotation=FALSE;
 	
 	setup.network.host.count=0;
 	

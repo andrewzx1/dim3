@@ -127,7 +127,7 @@ typedef struct		{
 													respawn_secs,game_reset_secs,
 													character_idx,tint_color_idx;
 						char						name[name_str_len];
-						bool						show_names,dedicated;
+						bool						show_names,dedicated,map_rotation;
 						setup_network_hosts_type	host;
 						setup_network_maps_type		map;
 						setup_network_bot_type		bot;

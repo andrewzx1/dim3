@@ -44,7 +44,8 @@ and can be sold or given away.
 #define host_game_type_id				12
 #define host_table_id					13
 #define host_dedicated_id				14
-#define host_status_id					15
+#define host_map_rotation_id			15
+#define host_status_id					16
 
 #define host_game_bot_count_id			20
 #define host_game_bot_skill_id			21
@@ -242,12 +243,47 @@ void host_map_list_shutdown(void)
       
 ======================================================= */
 
+void host_map_list_get_name(int idx,char *name)
+{
+	char			*c;
+
+	name[0]=0x0;
+
+	c=host_table_map_list+(idx*128);
+		
+	c=strchr(c,';');
+	if (c!=NULL) {
+		strcpy(name,(c+1));
+		c=strchr(name,';');
+		if (c!=NULL) *c=0x0;
+	}
+}
+
 void host_map_list_to_table(void)
 {
 	int				n,k;
-	char			*c;
-	char			str[256];
+	char			name[256];
 	bool			checked;
+
+		// single map?
+
+	if (!setup.network.map_rotation) {
+
+		host_first_map_idx=-1;
+		if (setup.network.map.count==0) return;
+
+		for (n=0;n!=host_table_map_count;n++) {
+			host_map_list_get_name(n,name);
+			if (strcmp(setup.network.map.maps[0].name,name)==0) {
+				host_first_map_idx=n;
+				return;
+			}
+		}
+
+		return;
+	}
+
+		// rotating maps
 
 	host_first_map_idx=-1;
 
@@ -255,21 +291,14 @@ void host_map_list_to_table(void)
 
 			// get map name
 
-		c=host_table_map_list+(n*128);
-		
-		c=strchr(c,';');
-		if (c!=NULL) {
-			strcpy(str,(c+1));
-			c=strchr(str,';');
-			if (c!=NULL) *c=0x0;
-		}
+		host_map_list_get_name(n,name);
 
 			// find if map is in list
 
 		checked=FALSE;
 
 		for (k=0;k!=setup.network.map.count;k++) {
-			if (strcasecmp(setup.network.map.maps[k].name,str)==0) {
+			if (strcasecmp(setup.network.map.maps[k].name,name)==0) {
 				checked=TRUE;
 				break;
 			}
@@ -287,25 +316,34 @@ void host_map_list_to_table(void)
 
 void host_map_table_to_list(void)
 {
-	int				n,count;
-	char			*c;
-	char			str[256];
+	int				n,idx,count;
+	char			name[256];
+
+	setup.network.map.count=0;
+
+		// single map?
+
+	if (!setup.network.map_rotation) {
+		idx=element_get_value(host_table_id);
+		if (idx==-1) return;
+
+		host_map_list_get_name(idx,name);
+
+		setup.network.map.count=1;
+		strcpy(setup.network.map.maps[0].name,name);
+
+		return;
+	}
 	
+		// rotating maps
+
 	count=0;
 
 	for (n=0;n!=host_table_map_count;n++) {
 		if (!element_get_table_checkbox(host_table_id,n)) continue;
 	
-		c=host_table_map_list+(n*128);
-		
-		c=strchr(c,';');
-		if (c!=NULL) {
-			strcpy(str,(c+1));
-			c=strchr(str,';');
-			if (c!=NULL) *c=0x0;
-		}
-		
-		strcpy(setup.network.map.maps[count++].name,str);
+		host_map_list_get_name(n,name);
+		strcpy(setup.network.map.maps[count++].name,name);
 	}
 
 	setup.network.map.count=count;
@@ -339,6 +377,11 @@ void host_game_pane(void)
 	element_combo_add("Game Type",(char*)net_game_types,setup.network.game_type,host_game_type_id,x,y,TRUE);
 	y+=control_y_add;
 
+		// rotating maps button
+
+	element_checkbox_add("Map Rotation",setup.network.map_rotation,host_map_rotation_id,x,y,TRUE);
+	y+=padding;
+
 		// dedicated checkbox
 
 // supergumba -- not fully implemented yet
@@ -356,7 +399,8 @@ void host_game_pane(void)
 	strcpy(cols[0].name,"Map");
 	cols[0].percent_size=1.0f;
 
-	element_table_add(cols,NULL,host_table_id,1,x,y,wid,high,TRUE,element_table_bitmap_data);
+	element_table_add(cols,NULL,host_table_id,1,x,y,wid,high,setup.network.map_rotation,element_table_bitmap_data);
+	y+=(high+padding);
 	
 		// fill table with maps
 
@@ -727,6 +771,11 @@ void host_handle_click(int id)
 //		case host_dedicated_id:
 //			setup.network.dedicated=(element_get_value(host_dedicated_id)!=0);
 //			break;
+
+		case host_map_rotation_id:
+			setup.network.map_rotation=(element_get_value(host_map_rotation_id)!=0);
+			host_create_pane();
+			break;
 
 		case host_game_bot_count_id:
 			setup.network.bot.count=element_get_value(host_game_bot_count_id);

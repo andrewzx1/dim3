@@ -3372,6 +3372,18 @@ void element_set_bitmap(int id,char *path)
 	SDL_mutexV(element_thread_lock);
 }
 
+void element_enable_table_checkboxes(int id,bool enable)
+{
+	element_type	*element;
+
+	SDL_mutexP(element_thread_lock);
+
+	element=element_find(id);
+	if (element!=NULL) element->setup.table.checkbox=enable;
+
+	SDL_mutexV(element_thread_lock);
+}
+
 void element_set_table_checkbox(int id,int idx,bool on)
 {
 	element_type	*element;
