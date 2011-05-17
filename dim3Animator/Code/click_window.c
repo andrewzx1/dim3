@@ -286,35 +286,36 @@ void select_model_wind_mesh(d3pnt *start_pnt)
 	d3pnt				pnt,last_pnt,shift,old_import_move;
 	d3rect				mbox;
 	model_vertex_type	*vtx,*old_vtx,*old_vertexes;
+	model_bone_type		*bone,*old_bone,*old_bones;
 	model_mesh_type		*mesh;
 
 		// determine if we clicked on
 		// anything
 
 	if (!select_model_wind_polygon(start_pnt,TRUE)) return;
-
-		// fail if there are bone attachments
-
+	
+		// backup vertexes and bones
+		
 	mesh=&model.meshes[state.cur_mesh_idx];
 
-	vtx=mesh->vertexes;
-
-	for (n=0;n!=mesh->nvertex;n++) {
-		if (vtx->major_bone_idx!=-1) {
-			os_dialog_alert("Drag Mesh","Can not drag mesh when there are bone attached to a vertex in the mesh.");
-			return;
-		}
-		vtx++;
-	}
-	
-		// backup vertexes
-		
 	sz=mesh->nvertex*sizeof(model_vertex_type);
 
 	old_vertexes=(model_vertex_type*)malloc(sz);
 	if (old_vertexes==NULL) return;
 
 	memmove(old_vertexes,mesh->vertexes,sz);
+
+	if (state.cur_mesh_idx==0) {
+		sz=model.nbone*sizeof(model_bone_type);
+
+		old_bones=(model_bone_type*)malloc(sz);
+		if (old_bones==NULL) {
+			free(old_vertexes);
+			return;
+		}
+
+		memmove(old_bones,model.bones,sz);
+	}
 
 		// run the drag
 
@@ -349,6 +350,26 @@ void select_model_wind_mesh(d3pnt *start_pnt)
 			vtx++;
 			old_vtx++;
 		}
+
+			// if this is mesh 0, then move the
+			// bones
+
+		if (state.cur_mesh_idx==0) {
+
+			bone=model.bones;
+			old_bone=old_bones;
+
+			for (n=0;n!=model.nbone;n++) {
+				bone->pnt.x=old_bone->pnt.x+shift.x;
+				bone->pnt.y=old_bone->pnt.y+shift.y;
+				bone->pnt.z=old_bone->pnt.z+shift.z;
+
+				bone++;
+				old_bone++;
+			}
+		}
+
+			// recalc the vertexes
 		
 		model_calculate_parents(&model);
 
@@ -366,6 +387,7 @@ void select_model_wind_mesh(d3pnt *start_pnt)
 	if (!state.playing) main_wind_draw();
 
 	free(old_vertexes);
+	if (state.cur_mesh_idx==0) free(old_bones);
 }
 
 /* =======================================================

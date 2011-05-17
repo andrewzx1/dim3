@@ -215,6 +215,7 @@ extern void element_table_busy(int id,char *str,int count,int total_count);
 extern void element_text_change(int id,char *str);
 extern void element_set_table_data(int id,char *row_data);
 extern void element_set_bitmap(int id,char *path);
+extern void element_enable_table_checkboxes(int id,bool enable);
 extern void element_set_table_checkbox(int id,int idx,bool on);
 extern bool element_get_table_checkbox(int id,int idx);
 extern bool element_has_table_check(int id);
