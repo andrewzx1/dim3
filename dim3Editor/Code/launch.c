@@ -60,7 +60,7 @@ void launch_engine(void)
 	
 		// the link file
 		
-	file_paths_preferences(path,"dim3 Editor Link","tmp");
+	file_paths_preferences(path,"dim3EditorLink","tmp");
 
 	file=fopen(path,"w");
 	if (file==NULL) return;

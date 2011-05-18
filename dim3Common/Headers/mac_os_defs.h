@@ -70,6 +70,10 @@ and can be sold or given away.
 #define D3_KEY_ESC				0x1B
 #define D3_KEY_BACKSPACE		0x8
 #define D3_KEY_DELETE			0x7F
+#define D3_KEY_LEFT				0x1C
+#define D3_KEY_RIGHT			0x1D
+#define D3_KEY_UP				0x1E
+#define D3_KEY_DOWN				0x1F
 
 //
 // os specific types
