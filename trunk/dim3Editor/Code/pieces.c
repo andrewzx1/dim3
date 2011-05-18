@@ -1112,19 +1112,19 @@ void piece_key(char ch)
 		
 	switch (ch) {
 	
-		case 0x1C:
+		case D3_KEY_LEFT:
 			view_mouse_get_scroll_horizontal_axis(view,&move_pnt,-mv);
 			break;
 			
-		case 0x1D:
+		case D3_KEY_RIGHT:
 			view_mouse_get_scroll_horizontal_axis(view,&move_pnt,+mv);
 			break;
 			
-		case 0x1E:
+		case D3_KEY_UP:
 			view_mouse_get_scroll_vertical_axis(view,&move_pnt,-mv);
 			break;
 			
-		case 0x1F:
+		case D3_KEY_DOWN:
 			view_mouse_get_scroll_vertical_axis(view,&move_pnt,mv);
 			break;
 			

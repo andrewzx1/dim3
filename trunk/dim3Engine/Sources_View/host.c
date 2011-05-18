@@ -519,6 +519,7 @@ void host_info_pane(void)
 void host_create_pane(void)
 {
 	int			x,y,wid,high,pane;
+	bool		enable;
 	char		tab_list[][32]={"Host Game","Options","Info"};
 							
 	element_clear();
@@ -561,7 +562,16 @@ void host_create_pane(void)
 	
 		// enable host button
 		
-	if (pane==host_pane_game) element_enable(host_button_host_id,element_has_table_check(host_table_id));
+	if (pane==host_pane_game) {
+		if (!setup.network.map_rotation) {
+			enable=(element_get_value(host_table_id)!=-1);
+		}
+		else {
+			enable=element_has_table_check(host_table_id);
+		}
+		
+		element_enable(host_button_host_id,enable);
+	}
 }
 
 /* =======================================================

@@ -94,8 +94,6 @@ bool app_check_os_support(char *err_str)
       
 ======================================================= */
 
-#ifdef D3_OS_MAC	
-
 void app_check_editor_link(void)
 {
 	int				len;
@@ -107,7 +105,7 @@ void app_check_editor_link(void)
 
 		// attempt to open editor link file
 		
-	file_paths_preferences(path,"dim3 Editor Link","tmp");
+	file_paths_preferences(path,"dim3EditorLink","tmp");
 	
 	file=fopen(path,"rb");
 	if (file==NULL) return;
@@ -133,15 +131,6 @@ void app_check_editor_link(void)
 
 	setup.editor_override.on=TRUE;
 }
-
-#else
-
-void app_check_editor_link(void)
-{
-	setup.editor_override.on=FALSE;
-}
-
-#endif
 
 /* =======================================================
 
