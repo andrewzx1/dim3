@@ -178,27 +178,13 @@ void script_exception_to_string(JSContextRef cx,int main_event,JSValueRef ex_val
 
 	ex_obj=JSValueToObject(cx,ex_val,NULL);
 
-		// source
+		// source and line numbers
 
 	strcpy(str,"[");
 
 	vp=script_get_single_property(cx,ex_obj,"sourceURL");
 	script_value_to_string(cx,vp,txt,256);
 	string_safe_strcat(str,txt,len);
-
-		// event
-		
-	string_safe_strcat(str,":",len);
-	
-	if (main_event!=-1) {
-		script_get_define_for_event(main_event,txt);
-		string_safe_strcat(str,(char*)&txt[11],len);
-	}
-	else {
-		string_safe_strcat(str,"Compile",len);
-	}
-	
-		// line number
 		
 	string_safe_strcat(str,":",len);
 
