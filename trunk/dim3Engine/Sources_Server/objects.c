@@ -206,7 +206,6 @@ void object_clear_watch(obj_watch *watch)
 	watch->on=FALSE;
 
 	watch->obj_idx=-1;
-	watch->node_idx=-1;
 	watch->dist=8000;
 
 	watch->watch_restrict.on=FALSE;
@@ -214,7 +213,6 @@ void object_clear_watch(obj_watch *watch)
 	watch->watch_restrict.ang=0.0f;
 
 	memset(watch->obj_flags,0x0,max_obj_list);
-	memset(watch->node_flags,0x0,max_node);
 }
 
 void object_clear_draw(model_draw *draw)
