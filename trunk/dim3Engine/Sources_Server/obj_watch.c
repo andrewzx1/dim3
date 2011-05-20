@@ -87,7 +87,6 @@ void object_watch(obj_type *obj)
 	double					dx,dz,dy;
 	bool					is_near;
 	obj_type				*watch_obj;
-	node_type				*node;
 	
 		// watching on?
 		
@@ -99,104 +98,54 @@ void object_watch(obj_type *obj)
 	z=obj->pnt.z;
 	y=obj->pnt.y;
 
-		// check nodes
+		// check object
+	
+	dist=obj->watch.dist;
 
-	if (obj->watch.check_nodes_near_far) {
+	for (n=0;n!=max_obj_list;n++) {
+		watch_obj=server.obj_list.objs[n];
+		if (watch_obj==NULL) continue;
 
-		for (n=0;n!=map.nnode;n++) {
-			node=&map.nodes[n];
-			if (!node->watch.on) continue;
+		if ((watch_obj->hidden) || (watch_obj==obj)) continue;
 
-			dist=node->watch.dist;
-
-				// check dist
-				
-			is_near=FALSE;
-				
-			kx=abs(x-node->pnt.x);
-			if (kx<=dist) {
-				kz=abs(z-node->pnt.z);
-				if (kz<=dist) {
-					ky=abs(y-node->pnt.y);
-					if (ky<=dist) {
-						dx=(double)(kx*kx);
-						dz=(double)(kz*kz);
-						dy=(double)(ky*ky);
-						is_near=(((int)sqrt(dx+dz+dy))<=dist);
-					}
-				}
-			}
+			// check dist
 			
-				// has there been a change
+		is_near=FALSE;
 			
-			if (is_near) {
-				if (obj->watch.node_flags[n]==0x0) {
-					obj->watch.node_flags[n]=0x1;
-					obj->watch.node_idx=node->idx;
-					scripts_post_event_console(obj->script_idx,-1,sd_event_watch,sd_event_watch_node_near,0);
-				}
-			}
-			else {
-				if (obj->watch.node_flags[n]==0x1) {
-					obj->watch.node_flags[n]=0x0;
-					obj->watch.node_idx=node->idx;
-					scripts_post_event_console(obj->script_idx,-1,sd_event_watch,sd_event_watch_node_far,0);
+		kx=abs(x-watch_obj->pnt.x);
+		if (kx<=dist) {
+			kz=abs(z-watch_obj->pnt.z);
+			if (kz<=dist) {
+				ky=abs(y-watch_obj->pnt.y);
+				if (ky<=dist) {
+					dx=(double)(kx*kx);
+					dz=(double)(kz*kz);
+					dy=(double)(ky*ky);
+					is_near=(((int)sqrt(dx+dz+dy))<=dist);
 				}
 			}
 		}
-	}
-
-		// check object
-	
-	if (obj->watch.check_objects_near_far) {
 		
-		dist=obj->watch.dist;
-
-		for (n=0;n!=max_obj_list;n++) {
-			watch_obj=server.obj_list.objs[n];
-			if (watch_obj==NULL) continue;
-
-			if ((watch_obj->hidden) || (watch_obj==obj)) continue;
-
-				// check dist
-				
-			is_near=FALSE;
-				
-			kx=abs(x-watch_obj->pnt.x);
-			if (kx<=dist) {
-				kz=abs(z-watch_obj->pnt.z);
-				if (kz<=dist) {
-					ky=abs(y-watch_obj->pnt.y);
-					if (ky<=dist) {
-						dx=(double)(kx*kx);
-						dz=(double)(kz*kz);
-						dy=(double)(ky*ky);
-						is_near=(((int)sqrt(dx+dz+dy))<=dist);
-					}
-				}
-			}
+			// check angle and ray trace
 			
-				// check angle and ray trace
-				
-			if ((is_near) && (obj->watch.watch_restrict.on)) {
-				if (!object_watch_restrict(obj,watch_obj)) is_near=FALSE;
+		if ((is_near) && (obj->watch.watch_restrict.on)) {
+			if (!object_watch_restrict(obj,watch_obj)) is_near=FALSE;
+		}
+		
+			// has there been a change
+		
+		if (is_near) {
+			if (obj->watch.obj_flags[n]==0x0) {
+				obj->watch.obj_flags[n]=0x1;
+				obj->watch.obj_idx=watch_obj->idx;
+				scripts_post_event_console(obj->script_idx,-1,sd_event_watch,sd_event_watch_object_near,0);
 			}
-			
-				// has there been a change
-			
-			if (is_near) {
-				if (obj->watch.obj_flags[n]==0x0) {
-					obj->watch.obj_flags[n]=0x1;
-					obj->watch.obj_idx=watch_obj->idx;
-					scripts_post_event_console(obj->script_idx,-1,sd_event_watch,sd_event_watch_object_near,0);
-				}
-			}
-			else {
-				if (obj->watch.obj_flags[n]==0x1) {
-					obj->watch.obj_flags[n]=0x0;
-					obj->watch.obj_idx=watch_obj->idx;
-					scripts_post_event_console(obj->script_idx,-1,sd_event_watch,sd_event_watch_object_far,0);
-				}
+		}
+		else {
+			if (obj->watch.obj_flags[n]==0x1) {
+				obj->watch.obj_flags[n]=0x0;
+				obj->watch.obj_idx=watch_obj->idx;
+				scripts_post_event_console(obj->script_idx,-1,sd_event_watch,sd_event_watch_object_far,0);
 			}
 		}
 	}

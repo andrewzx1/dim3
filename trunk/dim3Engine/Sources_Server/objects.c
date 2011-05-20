@@ -204,8 +204,6 @@ void object_clear_remote(obj_remote *remote)
 void object_clear_watch(obj_watch *watch)
 {
 	watch->on=FALSE;
-	watch->check_objects_near_far=TRUE;
-	watch->check_nodes_near_far=FALSE;
 
 	watch->obj_idx=-1;
 	watch->node_idx=-1;

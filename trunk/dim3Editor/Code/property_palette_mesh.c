@@ -88,7 +88,7 @@ extern editor_setup_type		setup;
 extern list_palette_type		property_palette;
 
 char							mesh_property_hide_list[][name_str_len]={"Never","Single Player","Multiplayer",""},
-								mesh_property_team_list[][name_str_len]={"None","Red","Blue",""};
+								mesh_property_team_list[][name_str_len]={"None","Red","Blue","Common",""};
 
 /* =======================================================
 

@@ -93,7 +93,7 @@ void map_find_random_spot_clear(map_type *map,char *name,int type)
 		if (name!=NULL) if (strcmp(spot->name,name)!=0) continue;
 		if (type!=-1) if (spot->type!=type) continue;
 
-		spot->random_hit=FALSE;
+		spot->lookup.random_hit=FALSE;
 	}
 }
 
@@ -116,7 +116,7 @@ int map_find_random_spot(map_type *map,char *name,int type)
 		if (type!=-1) if (spot->type!=type) continue;
 		
 		spot_count++;
-		if (!spot->random_hit) free_spot_count++;
+		if (!spot->lookup.random_hit) free_spot_count++;
 	}
 	
 	if (spot_count==0) return(-1);
@@ -134,13 +134,13 @@ int map_find_random_spot(map_type *map,char *name,int type)
 	
 	for (n=0;n!=nspot;n++) {
 		spot=&map->spots[n];
-		if (spot->random_hit) continue;
+		if (spot->lookup.random_hit) continue;
 		
 		if (name!=NULL) if (strcmp(spot->name,name)!=0) continue;
 		if (type!=-1) if (spot->type!=type) continue;
 		
 		if (count==0) {
-			spot->random_hit=TRUE;
+			spot->lookup.random_hit=TRUE;
 			return(n);
 		}
 		

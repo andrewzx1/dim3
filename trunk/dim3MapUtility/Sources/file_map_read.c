@@ -1020,16 +1020,6 @@ bool decode_map_xml(map_type *map,int map_head)
 			tag=xml_findfirstchild("Hint",node_tag);
 			xml_get_attribute_short_array(tag,"node",node->path_hint,max_node);
 
-			tag=xml_findfirstchild("Watch",node_tag);
-			if (tag!=-1) {
-				node->watch.on=xml_get_attribute_boolean(tag,"on");
-				node->watch.dist=xml_get_attribute_int(tag,"distance");
-			}
-			else {
-				node->watch.on=FALSE;
-				node->watch.dist=0;
-			}
-
 			node_tag=xml_findnextchild(node_tag);
 		}
 	}

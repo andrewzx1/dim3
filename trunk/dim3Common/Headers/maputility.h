@@ -440,14 +440,19 @@ typedef struct		{
 //
 
 typedef struct		{
+						int									nearest_node_idx;
+						bool								random_hit;
+					} spot_lookup_type;
+
+typedef struct		{
 						int									type,skill,spawn;
 						char								name[name_str_len],
 															script[name_str_len],
 															display_model[name_str_len],
 															params[param_str_len];
-						bool								random_hit;
 						d3pnt								pnt;
 						d3ang								ang;
+						spot_lookup_type					lookup;
 					} spot_type;
 
 //
@@ -460,11 +465,6 @@ typedef struct		{
 					} node_back_render_type;
 
 typedef struct		{
-						int									dist;
-						bool								on;
-					} node_watch_type;
-
-typedef struct		{
 						int									idx,event_id;
 						short								link[max_node_link],
 															path_hint[max_node];
@@ -474,7 +474,6 @@ typedef struct		{
 						d3pnt								pnt;
 						d3ang								ang;
 						node_back_render_type				back_render;
-						node_watch_type						watch;
 					} node_type;
 
 //

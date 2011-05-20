@@ -575,7 +575,7 @@ typedef struct		{
 						char					obj_flags[max_obj_list],
 												node_flags[max_node],
 												sound_name[name_str_len];
-						bool					on,check_objects_near_far,check_nodes_near_far;
+						bool					on;
 						obj_watch_restrict		watch_restrict;
 					} obj_watch;
 		

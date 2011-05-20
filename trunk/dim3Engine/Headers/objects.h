@@ -82,6 +82,9 @@ extern void object_set_even_team(obj_type *obj);
 extern int object_find_idx_click_object(obj_type *obj);
 extern int object_find_idx_by_stood_on_object_idx(int stand_obj_idx);
 extern bool object_sight_test_object(obj_type *obj,int test_obj_idx);
+extern int object_find_neareset_unheld_weapon_node(obj_type *obj,int from_node_idx);
+extern int object_find_neareset_held_weapon_ammo_node(obj_type *obj,int from_node_idx,bool empty_only);
+extern int object_find_neareset_armor_node(obj_type *obj,int from_node_idx);
 
 extern void object_attach_click_crosshair_up(obj_type *obj);
 extern void object_attach_click_crosshair_down(obj_type *obj);

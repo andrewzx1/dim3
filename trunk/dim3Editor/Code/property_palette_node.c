@@ -39,9 +39,6 @@ and can be sold or given away.
 
 #define kNodePropertyFollowCamera			3
 
-#define kNodePropertyWatchOn				4
-#define kNodePropertyWatchDistance			5
-
 extern map_type					map;
 extern editor_state_type		state;
 extern editor_setup_type		setup;
@@ -67,10 +64,6 @@ void property_palette_fill_node(int node_idx)
 
 	list_palette_add_header(&property_palette,0,"Node Settings");
 	list_palette_add_checkbox(&property_palette,kNodePropertyFollowCamera,"Follow Camera",node->follow_camera,FALSE);
-
-	list_palette_add_header(&property_palette,0,"Node Watch");
-	list_palette_add_checkbox(&property_palette,kNodePropertyWatchOn,"On",node->watch.on,FALSE);
-	list_palette_add_string_int(&property_palette,kNodePropertyWatchDistance,"Distance",node->watch.dist,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Node Info");
 	list_palette_add_string_int(&property_palette,-1,"Index",node_idx,TRUE);
@@ -106,14 +99,6 @@ void property_palette_click_node(int node_idx,int id)
 
 		case kNodePropertyFollowCamera:
 			node->follow_camera=!node->follow_camera;
-			break;
-
-		case kNodePropertyWatchOn:
-			node->watch.on=!node->watch.on;
-			break;
-
-		case kNodePropertyWatchDistance:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&node->watch.dist,0,0,0);
 			break;
 
 	}

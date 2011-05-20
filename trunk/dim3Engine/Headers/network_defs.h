@@ -214,6 +214,7 @@ typedef struct		{
 #define net_team_none									0
 #define net_team_red									1
 #define net_team_blue									2
+#define net_team_common									3
 
 //
 // flags
