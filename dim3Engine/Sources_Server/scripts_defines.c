@@ -242,8 +242,6 @@ script_define_type			script_dim3_defines[]={
 								{sd_event_watch_object_exit_base,				"",		"DIM3_EVENT_WATCH_OBJECT_EXIT_BASE"},
 								{sd_event_watch_object_sound,					"",		"DIM3_EVENT_WATCH_OBJECT_SOUND"},
 								{sd_event_watch_object_damage,					"",		"DIM3_EVENT_WATCH_OBJECT_DAMAGE"},
-								{sd_event_watch_node_near,						"",		"DIM3_EVENT_WATCH_NODE_NEAR"},
-								{sd_event_watch_node_far,						"",		"DIM3_EVENT_WATCH_NODE_FAR"},
 								
 								{sd_event_weapon_fire_single,					"",		"DIM3_EVENT_WEAPON_FIRE_SINGLE"},
 								{sd_event_weapon_fire_up,						"",		"DIM3_EVENT_WEAPON_FIRE_UP"},

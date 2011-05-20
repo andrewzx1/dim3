@@ -30,6 +30,7 @@ and can be sold or given away.
 #endif
 
 #include "scripts.h"
+#include "objects.h"
 
 extern map_type			map;
 extern server_type		server;
@@ -41,6 +42,8 @@ JSValueRef js_map_node_find_random_skip_id_func(JSContextRef cx,JSObjectRef func
 JSValueRef js_map_node_find_nearest_to_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_map_node_find_nearest_names_in_path_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_map_node_find_nearest_unheld_weapon_in_path_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_map_node_find_nearest_held_weapon_ammo_in_path_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_map_node_find_nearest_armor_in_path_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_map_node_next_in_path_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_map_node_get_adjacent_nodes_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_map_node_get_name_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
@@ -55,6 +58,8 @@ JSStaticFunction	map_node_functions[]={
 							{"findNearestToObject",				js_map_node_find_nearest_to_object_func,				kJSPropertyAttributeDontDelete},
 							{"findNearestNamesInPath",			js_map_node_find_nearest_names_in_path_func,			kJSPropertyAttributeDontDelete},
 							{"findNearestUnheldWeaponInPath",	js_map_node_find_nearest_unheld_weapon_in_path_func,	kJSPropertyAttributeDontDelete},
+							{"findNearestHeldWeaponAmmoInPath",	js_map_node_find_nearest_held_weapon_ammo_in_path_func,	kJSPropertyAttributeDontDelete},
+							{"findNearestArmorInPath",			js_map_node_find_nearest_armor_in_path_func,			kJSPropertyAttributeDontDelete},
 							{"nextInPath",						js_map_node_next_in_path_func,							kJSPropertyAttributeDontDelete},
 							{"getAdjacentNodes",				js_map_node_get_adjacent_nodes_func,					kJSPropertyAttributeDontDelete},
 							{"getName",							js_map_node_get_name_func,								kJSPropertyAttributeDontDelete},
@@ -88,7 +93,7 @@ JSObjectRef script_add_map_node_object(JSContextRef cx,JSObjectRef parent_obj,in
 
 /* =======================================================
 
-      Find Node Find Functions
+      Find Node Functions
       
 ======================================================= */
 
@@ -129,6 +134,12 @@ JSValueRef js_map_node_find_random_skip_id_func(JSContextRef cx,JSObjectRef func
 	idx=map_find_random_node(&map,name,skip_idx);
 	return(script_int_to_value(cx,idx));
 }
+
+/* =======================================================
+
+      Find Nearest Node Functions
+      
+======================================================= */
 
 JSValueRef js_map_node_find_nearest_to_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
@@ -196,9 +207,8 @@ JSValueRef js_map_node_find_nearest_names_in_path_func(JSContextRef cx,JSObjectR
 
 JSValueRef js_map_node_find_nearest_unheld_weapon_in_path_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	int				n,idx,from_idx,k,d,dist;
+	int				idx,from_idx;
 	obj_type		*obj;
-	weapon_type		*weap;
 	
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 	
@@ -209,27 +219,49 @@ JSValueRef js_map_node_find_nearest_unheld_weapon_in_path_func(JSContextRef cx,J
 
 	obj=script_find_obj_from_uid_arg(cx,argv[1],exception);
 	if (obj==NULL) return(script_null_to_value(cx));
-	
-		// check all unheld weapons
-		
-	idx=-1;
-	dist=-1;
-	
-	for (n=0;n!=max_weap_list;n++) {
-		weap=obj->weap_list.weaps[n];
-		if (weap==NULL) continue;
 
-		if (!weap->hidden) continue;
-		
-		k=map_find_nearest_node_in_path(&map,from_idx,weap->name,&d);
-		if (k==-1) continue;
-		
-		if ((dist==-1) || (d<dist)) {
-			dist=d;
-			idx=k;
-		}
-	}
+	idx=object_find_neareset_unheld_weapon_node(obj,from_idx);
+	return(script_int_to_value(cx,idx));
+}
+
+JSValueRef js_map_node_find_nearest_held_weapon_ammo_in_path_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+{
+	int				idx,from_idx;
+	bool			empty_only;
+	obj_type		*obj;
 	
+	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
+	
+		// from node and object
+		
+	from_idx=script_find_node_idx_from_idx_arg(cx,argv[0],exception);
+	if (from_idx==-1) return(script_null_to_value(cx));
+
+	obj=script_find_obj_from_uid_arg(cx,argv[1],exception);
+	if (obj==NULL) return(script_null_to_value(cx));
+
+	empty_only=script_value_to_bool(cx,argv[2]);
+
+	idx=object_find_neareset_held_weapon_ammo_node(obj,from_idx,empty_only);
+	return(script_int_to_value(cx,idx));
+}
+
+JSValueRef js_map_node_find_nearest_armor_in_path_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+{
+	int				idx,from_idx;
+	obj_type		*obj;
+	
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+	
+		// from node and object
+		
+	from_idx=script_find_node_idx_from_idx_arg(cx,argv[0],exception);
+	if (from_idx==-1) return(script_null_to_value(cx));
+
+	obj=script_find_obj_from_uid_arg(cx,argv[1],exception);
+	if (obj==NULL) return(script_null_to_value(cx));
+
+	idx=object_find_neareset_armor_node(obj,from_idx);
 	return(script_int_to_value(cx,idx));
 }
 

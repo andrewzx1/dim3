@@ -49,7 +49,6 @@ JSValueRef js_obj_watch_get_baseTeam(JSContextRef cx,JSObjectRef j_obj,JSStringR
 JSValueRef js_obj_watch_get_soundName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_watch_start_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_watch_stop_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_obj_watch_set_filter_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_watch_set_restrict_sight_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_watch_clear_restrict_sight_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
@@ -71,7 +70,6 @@ JSStaticValue 		obj_watch_props[]={
 JSStaticFunction	obj_watch_functions[]={
 							{"start",							js_obj_watch_start_func,					kJSPropertyAttributeDontDelete},
 							{"stop",							js_obj_watch_stop_func,						kJSPropertyAttributeDontDelete},
-							{"setFilter",						js_obj_watch_set_filter_func,				kJSPropertyAttributeDontDelete},
 							{"setRestrictSight",				js_obj_watch_set_restrict_sight_func,		kJSPropertyAttributeDontDelete},
 							{"clearRestrictSight",				js_obj_watch_clear_restrict_sight_func,		kJSPropertyAttributeDontDelete},
 							{0,0,0}};
@@ -262,20 +260,6 @@ JSValueRef js_obj_watch_stop_func(JSContextRef cx,JSObjectRef func,JSObjectRef j
 	obj=object_get_attach(j_obj);
 	object_clear_watch(&obj->watch);
 
-	return(script_null_to_value(cx));
-}
-
-JSValueRef js_obj_watch_set_filter_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
-{
-	obj_type	*obj;
-	
-	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
-	
-	obj=object_get_attach(j_obj);
-	
-	obj->watch.check_objects_near_far=script_value_to_bool(cx,argv[0]);
-	obj->watch.check_nodes_near_far=script_value_to_bool(cx,argv[1]);
-	
 	return(script_null_to_value(cx));
 }
 

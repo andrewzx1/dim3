@@ -343,3 +343,130 @@ bool object_sight_test_object(obj_type *obj,int test_obj_idx)
 	return(FALSE);
 }
 
+/* =======================================================
+
+      Nearest Object Searches
+      
+======================================================= */
+
+int object_find_neareset_unheld_weapon_node(obj_type *obj,int from_node_idx)
+{
+	int				n,k,idx,d,dist;
+	weapon_type		*weap;
+	spot_type		*spot;
+
+		// check all unheld weapons
+		
+	idx=-1;
+	dist=-1;
+	
+	for (n=0;n!=max_weap_list;n++) {
+
+			// get the weapon
+
+		weap=obj->weap_list.weaps[n];
+		if (weap==NULL) continue;
+		if (!weap->hidden) continue;
+
+			// find all spots with the name of the weapon
+
+		for (k=0;k!=map.nspot;k++) {
+			spot=&map.spots[k];
+			if (strcmp(spot->name,weap->name)!=0) continue;
+			if (spot->lookup.nearest_node_idx==-1) continue;
+
+				// get distance
+
+			d=map_node_to_node_distance(&map,from_node_idx,spot->lookup.nearest_node_idx==-1);
+			if (d==-1) continue;
+
+			if ((dist==-1) || (d<dist)) {
+				dist=d;
+				idx=spot->lookup.nearest_node_idx;
+			}
+		}
+	}
+	
+	return(idx);
+}
+
+int object_find_neareset_held_weapon_ammo_node(obj_type *obj,int from_node_idx,bool empty_only)
+{
+	int				n,k,idx,d,dist;
+	char			name[name_str_len];
+	weapon_type		*weap;
+	spot_type		*spot;
+
+		// check all unheld weapons
+		
+	idx=-1;
+	dist=-1;
+	
+	for (n=0;n!=max_weap_list;n++) {
+
+			// get the weapon
+
+		weap=obj->weap_list.weaps[n];
+		if (weap==NULL) continue;
+		if (!weap->hidden) continue;
+
+			// empty only flag
+
+		if (empty_only) {
+			if (weap->ammo.count!=0) continue;
+		}
+
+			// find all spots with the name of the weapon+ammo
+
+		strcpy(name,weap->name);
+		string_safe_strcat(name," Ammo",name_str_len);
+
+		for (k=0;k!=map.nspot;k++) {
+			spot=&map.spots[k];
+			if (strcmp(spot->name,name)!=0) continue;
+			if (spot->lookup.nearest_node_idx==-1) continue;
+
+				// get distance
+
+			d=map_node_to_node_distance(&map,from_node_idx,spot->lookup.nearest_node_idx==-1);
+			if (d==-1) continue;
+
+			if ((dist==-1) || (d<dist)) {
+				dist=d;
+				idx=spot->lookup.nearest_node_idx;
+			}
+		}
+	}
+	
+	return(idx);
+}
+
+int object_find_neareset_armor_node(obj_type *obj,int from_node_idx)
+{
+	int				n,idx,d,dist;
+	spot_type		*spot;
+
+		// check all unheld weapons
+		
+	idx=-1;
+	dist=-1;
+
+	for (n=0;n!=map.nspot;n++) {
+		spot=&map.spots[n];
+		if (strcmp(spot->name,"Armor")!=0) continue;
+		if (spot->lookup.nearest_node_idx==-1) continue;
+
+			// get distance
+
+		d=map_node_to_node_distance(&map,from_node_idx,spot->lookup.nearest_node_idx==-1);
+		if (d==-1) continue;
+
+		if ((dist==-1) || (d<dist)) {
+			dist=d;
+			idx=spot->lookup.nearest_node_idx;
+		}
+	}
+	
+	return(idx);
+}
+

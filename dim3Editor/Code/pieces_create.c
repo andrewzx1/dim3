@@ -394,9 +394,6 @@ void piece_create_node(void)
 		node->link[n]=-1;
 	}
 
-	node->watch.on=FALSE;
-	node->watch.dist=0;
-
 		// select node
 		
 	state.show_node=TRUE;

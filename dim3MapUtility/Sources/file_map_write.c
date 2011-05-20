@@ -948,11 +948,6 @@ bool write_map_xml(map_type *map)
 		xml_add_tagstart("Hint");
 		xml_add_attribute_short_array("node",node->path_hint,map->nnode,FALSE);
 		xml_add_tagend(TRUE);
-
-		xml_add_tagstart("Watch");
-		xml_add_attribute_boolean("on",node->watch.on);
-		xml_add_attribute_int("distance",node->watch.dist);
-		xml_add_tagend(TRUE);
 	
 		xml_add_tagclose("Node");
 	}

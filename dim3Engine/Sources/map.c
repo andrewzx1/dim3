@@ -135,13 +135,18 @@ void map_lookups_setup(void)
 	map_light_type		*lit;
 	map_sound_type		*sound;
 	map_particle_type	*particle;
+	spot_type			*spot;
 	
+		// liquids sound buffer
+
 	liq=map.liquid.liquids;
 	
 	for (n=0;n!=map.liquid.nliquid;n++) {
 		liq->ambient.buffer_idx=al_find_buffer(liq->ambient.sound_name);
 		liq++;
 	}
+
+		// map light halos
 
 	lit=map.lights;
 
@@ -150,6 +155,8 @@ void map_lookups_setup(void)
 		lit++;
 	}
 
+		// map sounds sound buffer
+
 	sound=map.sounds;
 	
 	for (n=0;n!=map.nsound;n++) {
@@ -157,12 +164,23 @@ void map_lookups_setup(void)
 		sound++;
 	}
 	
+		// particle halos
+
 	particle=map.particles;
 	
 	for (n=0;n!=map.nparticle;n++) {
 		particle->particle_idx=particle_find_index(particle->name);
 		particle->light_setting.halo_idx=iface_halo_find(&iface,particle->light_setting.halo_name);
 		particle++;
+	}
+
+		// spot closes node
+
+	spot=map.spots;
+
+	for (n=0;n!=map.nspot;n++) {
+		spot->lookup.nearest_node_idx=map_find_nearest_node_by_point(&map,&spot->pnt);
+		spot++;
 	}
 }
 
