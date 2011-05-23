@@ -101,7 +101,8 @@ void property_palette_click_bone(int bone_idx,int id)
 			if (model_check_bone_circular(&model,bone)) {
 				os_dialog_alert("Parent Bone","This parent bone will make a circular bone reference.");
 				bone->parent_idx=old_parent_bone_idx;
-			}			
+			}
+			model_calculate_parents(&model);
 			break;
 
 	}

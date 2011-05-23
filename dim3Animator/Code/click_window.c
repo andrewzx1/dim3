@@ -41,27 +41,22 @@ extern animator_state_type		state;
 
 /* =======================================================
 
-      Model Vertex Selection
+      Model Drag Selection
       
 ======================================================= */
 
-void model_sel_vertex(float *pv,d3rect *box,bool chg_sel)
+void model_drag_sel_vertex(float *pv,d3rect *box,bool chg_sel)
 {
 	int					n,nt;
 	d3fpnt				pnt;
 	d3pnt				tran_pnt;
-	d3rect				wbox;
-	model_vertex_type	*vertex;
 	model_mesh_type		*mesh;
-	
-	os_get_window_box(&wbox);
 
 		// find selection
 		
 	mesh=&model.meshes[state.cur_mesh_idx];
 		
 	nt=mesh->nvertex;
-	vertex=mesh->vertexes;
 
 	for (n=0;n!=nt;n++) {
 	
@@ -74,12 +69,10 @@ void model_sel_vertex(float *pv,d3rect *box,bool chg_sel)
 		if ((tran_pnt.x>=box->lx) && (tran_pnt.x<=box->rx) && (tran_pnt.y>=box->ty) && (tran_pnt.y<=box->by)) {
 			if (!vertex_check_hide_mask(state.cur_mesh_idx,n)) vertex_set_sel_mask(state.cur_mesh_idx,n,chg_sel);
 		}
-		
-		vertex++;
 	}
 }
 
-void select_model_wind_save_sel_state(char *vertex_sel)
+void select_model_wind_save_drag_sel_state(char *vertex_sel)
 {
 	int					n,nt;
 	model_vertex_type	*vertex;
@@ -93,7 +86,7 @@ void select_model_wind_save_sel_state(char *vertex_sel)
 	}
 }
 
-void select_model_wind_restore_sel_state(char *vertex_sel)
+void select_model_wind_restore_drag_sel_state(char *vertex_sel)
 {
 	int					n,nt;
 	model_vertex_type	*vertex;
@@ -107,7 +100,7 @@ void select_model_wind_restore_sel_state(char *vertex_sel)
 	}
 }
 
-void select_model_wind_vertex(d3pnt *start_pnt,float *pv)
+void select_model_wind_vertex_drag_sel(d3pnt *start_pnt,float *pv)
 {
 	char					*org_vertex_sel;
 	bool					chg_sel;
@@ -119,13 +112,13 @@ void select_model_wind_vertex(d3pnt *start_pnt,float *pv)
 	org_vertex_sel=(char*)malloc(model.meshes[state.cur_mesh_idx].nvertex);
 		
 	if (os_key_shift_down()) {
-		select_model_wind_save_sel_state(org_vertex_sel);
+		select_model_wind_save_drag_sel_state(org_vertex_sel);
 		os_set_add_cursor();
 		chg_sel=TRUE;
 	}
 	else {
 		if (os_key_control_down()) {
-			select_model_wind_save_sel_state(org_vertex_sel);
+			select_model_wind_save_drag_sel_state(org_vertex_sel);
 			os_set_subtract_cursor();
 			chg_sel=FALSE;
 		}
@@ -165,8 +158,8 @@ void select_model_wind_vertex(d3pnt *start_pnt,float *pv)
 			state.drag_sel_box.ty=last_pnt.y;
 		}
 		
-		select_model_wind_restore_sel_state(org_vertex_sel);
-		model_sel_vertex(pv,&state.drag_sel_box,chg_sel);
+		select_model_wind_restore_drag_sel_state(org_vertex_sel);
+		model_drag_sel_vertex(pv,&state.drag_sel_box,chg_sel);
 		
 		main_wind_draw();
 	}
@@ -174,6 +167,48 @@ void select_model_wind_vertex(d3pnt *start_pnt,float *pv)
 	state.drag_sel_on=FALSE;
 	
 	free(org_vertex_sel);
+}
+
+/* =======================================================
+
+      Model Vertex Selection
+      
+======================================================= */
+
+bool select_model_wind_vertex(d3pnt *start_pnt,float *pv)
+{
+	int					n,nt,idx;
+	d3fpnt				pnt;
+	d3pnt				tran_pnt;
+	model_mesh_type		*mesh;
+
+		// clicked on a vertex?
+		
+	mesh=&model.meshes[state.cur_mesh_idx];
+		
+	idx=-1;
+	nt=mesh->nvertex;
+
+	for (n=0;n!=nt;n++) {
+	
+		pnt.x=*pv++;
+		pnt.y=*pv++;
+		pnt.z=*pv++;
+		
+		draw_model_2D_transform(&pnt,&tran_pnt);
+		
+		if ((start_pnt->x>=(tran_pnt.x-5)) && (start_pnt->x<=(tran_pnt.x+5)) && (start_pnt->y>=(tran_pnt.y-5)) && (start_pnt->y<=(tran_pnt.y+5))) {
+			idx=n;
+			break;
+		}
+	}
+
+	if (idx==-1) return(FALSE);
+
+	if (!os_key_shift_down()) vertex_clear_sel_mask(state.cur_mesh_idx);
+	vertex_set_sel_mask(state.cur_mesh_idx,idx,TRUE);
+
+	return(TRUE);
 }
 
 /* =======================================================
@@ -436,12 +471,16 @@ void select_model_wind(d3pnt *start_pnt)
 			select_model_wind_mesh(start_pnt);
 			break;
 		case select_mode_polygon:
-			if (!select_model_wind_polygon(start_pnt,FALSE)) {
-				select_model_wind_vertex(start_pnt,pv);
+			if (!select_model_wind_vertex(start_pnt,pv)) {
+				if (!select_model_wind_polygon(start_pnt,FALSE)) {
+					select_model_wind_vertex_drag_sel(start_pnt,pv);
+				}
 			}
 			break;
 		case select_mode_vertex:
-			select_model_wind_vertex(start_pnt,pv);
+			if (!select_model_wind_vertex(start_pnt,pv)) {
+				select_model_wind_vertex_drag_sel(start_pnt,pv);
+			}
 			break;
 	}
 	
