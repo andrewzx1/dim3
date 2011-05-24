@@ -167,7 +167,6 @@ extern bool line_2D_get_intersect(int x0,int y0,int x1,int y1,int x2,int y2,int 
 extern bool line_2D_test_intersect(int x0,int y0,int x1,int y1,int x2,int y2,int x3,int y3);
 extern void line_2D_find_angle_hit(int x,int z,float ang,int lx,int lz,int rx,int rz,int *kx,int *kz);
 extern void line_2D_find_inside_infinite(int x,int z,int wid,int lx,int lz,int rx,int rz,int *klx,int *klz,int *krx,int *krz);
-extern bool line_2D_all_points_in_line(int ptsz,int *px,int *pz,float slop);
 
 extern void polygon_get_box(int ptsz,int *px,int *py,int *pz,int *p_min_x,int *p_max_x,int *p_min_y,int *p_max_y,int *p_min_z,int *p_max_z);
 extern void polygon_find_center(int ptsz,int *px,int *py,int *pz,int *mx,int *my,int *mz);
@@ -1246,7 +1245,8 @@ typedef struct		{
 					} iface_net_game_script_type;
 
 typedef struct		{
-						bool							coop_spot,spawn_spot,team_spot;
+						char							spot_name[name_str_len];
+						bool							force_team_spot;
 					} iface_net_game_spawn_type;
 
 typedef struct		{
@@ -1265,7 +1265,6 @@ typedef struct		{
 						int								ngame;
 						iface_net_game_type				games[max_net_game];
 					} iface_net_games_type;
-
 
 //
 // main iface structure

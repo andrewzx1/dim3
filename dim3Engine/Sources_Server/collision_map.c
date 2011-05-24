@@ -385,7 +385,7 @@ bool collide_circle_check_mesh(d3pnt *circle_pnt,int radius,d3pnt *min,d3pnt *ma
 		// simplified box collisions
 		// if this is on, we are already inside because
 		// of the bounds check above
-		
+
 	if (mesh->flag.simple_collision) {
 	
 			// simplified doesn't bump
@@ -403,7 +403,7 @@ bool collide_circle_check_mesh(d3pnt *circle_pnt,int radius,d3pnt *min,d3pnt *ma
 		
 		return(TRUE);
 	}
-	
+
 		// complex check
 		// check wall polys
 					
@@ -412,7 +412,7 @@ bool collide_circle_check_mesh(d3pnt *circle_pnt,int radius,d3pnt *min,d3pnt *ma
 	
 	hit=FALSE;
 	cur_dist=*p_cur_dist;
-	
+
 	for (n=0;n!=poly_count;n++) {
 
 		poly=&mesh->polys[poly_idx[n]];
@@ -443,7 +443,7 @@ bool collide_circle_check_mesh(d3pnt *circle_pnt,int radius,d3pnt *min,d3pnt *ma
 				
 			// deal with the slants
 			// against y collisions
-			
+
 		if (poly->line.l_ty!=poly->line.r_ty) {
 			dx=(double)(hit_pnt.x-poly->line.lx);
 			dz=(double)(hit_pnt.z-poly->line.lz);

@@ -29,17 +29,100 @@ and can be sold or given away.
 	#include "dim3maputility.h"
 #endif
 
+#define map_mesh_poly_line_like_equal_slop			20
+#define map_mesh_poly_line_like_slope_slop			0.15f
+
 /* =======================================================
 
       Prepare Single Polygon for Rendering
       
 ======================================================= */
 
+bool map_prepare_mesh_poly_line_like(map_mesh_type *mesh,map_mesh_poly_type *poly)
+{
+	int				n,x,z,ptsz,px[8],pz[8],slope_cnt;
+	float			slopes[8];
+	bool			same_x,same_z,horz,vert;
+	d3pnt			*pt;
+
+		// only two points, must be in line
+
+	ptsz=poly->ptsz;
+	if (ptsz<=2) return(TRUE);
+
+		// get points
+
+	for (n=0;n!=ptsz;n++) {
+		pt=&mesh->vertexes[poly->v[n]];
+		px[n]=pt->x;
+		pz[n]=pt->z;
+	}
+
+		// quick check for same x or z coordinates
+
+	same_x=same_z=TRUE;
+
+	for (n=1;n<ptsz;n++) {
+		same_x=same_x&&(px[0]==px[n]);
+		same_z=same_z&&(pz[0]==pz[n]);
+	}
+
+	if ((same_x) || (same_z)) return(TRUE);
+
+		// get the average slopes
+
+	horz=vert=FALSE;
+	slope_cnt=0;
+
+	for (n=0;n<(ptsz-1);n++) {
+
+		x=px[0]-px[n+1];
+		z=pz[0]-pz[n+1];
+		
+			// if point is equal or close, then we ignore
+			// the slope and the point
+			
+		if ((abs(x)<=map_mesh_poly_line_like_equal_slop) && (abs(z)<=map_mesh_poly_line_like_equal_slop)) continue;
+
+			// special check for horz or vertical lines
+			// note vertical lines have undefined slope, so
+			// we are setting it to zero and checking for
+			// the special case where there are both horz
+			// and vertical slopes (now both equal to 0)
+
+		if (x==0) {
+			horz=TRUE;
+			slopes[slope_cnt]=0.0f;
+		}
+		else {
+			if (z==0) {
+				vert=TRUE;
+				slopes[slope_cnt]=0.0f;
+			}
+			else {
+				slopes[slope_cnt]=((float)x)/((float)z);
+			}
+		}
+		
+		slope_cnt++;
+	}
+
+		// if both horz and vertical, then not in line
+
+	if ((horz) && (vert)) return(FALSE);
+
+		// compare all the slopes to each other, if they
+		// are within the slope, it's all within a line
+		
+	for (n=1;n<slope_cnt;n++) {
+		if (fabs(slopes[0]-slopes[n])>map_mesh_poly_line_like_slope_slop) return(FALSE);
+	}
+	
+	return(TRUE);
+}
+
 void map_prepare_mesh_poly_determine_wall_like(map_mesh_type *mesh,map_mesh_poly_type *poly)
 {
-	int				n,ptsz,px[8],py[8];
-	d3pnt			*pt;
-	
 	poly->box.wall_like=FALSE;
 	
 		// flat polygons are automatically not wall-like
@@ -49,15 +132,7 @@ void map_prepare_mesh_poly_determine_wall_like(map_mesh_type *mesh,map_mesh_poly
 		// if all x/z points in a line, then polygon
 		// is automatically wall-like
 
-	ptsz=poly->ptsz;
-
-	for (n=0;n!=ptsz;n++) {
-		pt=&mesh->vertexes[poly->v[n]];
-		px[n]=pt->x;
-		py[n]=pt->z;
-	}
-
-	if (line_2D_all_points_in_line(ptsz,px,py,0.1f)) {
+	if (map_prepare_mesh_poly_line_like(mesh,poly)) {
 		poly->box.wall_like=TRUE;
 		return;
 	}
@@ -489,13 +564,13 @@ void map_prepare(map_type *map)
 			// setup poly lists
 			
 		mesh->poly_list.wall_count=wall_like_count;
-		mesh->poly_list.wall_idxs=(short*)malloc(sizeof(short)*(mesh->poly_list.wall_count+1));
+		mesh->poly_list.wall_idxs=(short*)malloc(sizeof(short)*mesh->poly_list.wall_count);
 		
 		mesh->poly_list.floor_count=mesh->npoly-wall_like_count;
-		mesh->poly_list.floor_idxs=(short*)malloc(sizeof(short)*(mesh->poly_list.floor_count+1));
+		mesh->poly_list.floor_idxs=(short*)malloc(sizeof(short)*mesh->poly_list.floor_count);
 		
 		mesh->poly_list.all_count=mesh->npoly;
-		mesh->poly_list.all_idxs=(short*)malloc(sizeof(short)*(mesh->poly_list.all_count+1));
+		mesh->poly_list.all_idxs=(short*)malloc(sizeof(short)*mesh->poly_list.all_count);
 		
 		wall_sptr=mesh->poly_list.wall_idxs;
 		floor_sptr=mesh->poly_list.floor_idxs;

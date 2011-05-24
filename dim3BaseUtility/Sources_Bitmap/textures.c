@@ -272,7 +272,7 @@ void bitmap_texture_clear(texture_type *texture)
 	texture->shine_factor=10.0f;
 	texture->additive=FALSE;
 	texture->pixelated=FALSE;
-	texture->compress=TRUE;
+	texture->compress=FALSE;
 	texture->keep_quality=FALSE;
 
 	texture->material_name[0]=0x0;
