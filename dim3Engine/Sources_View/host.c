@@ -516,10 +516,27 @@ void host_info_pane(void)
 	y+=control_y_add;
 }
 
+void host_enable_host_button(void)
+{
+	int			pane;
+	bool		enable;
+	
+	pane=element_get_value(host_tab_id);
+	if (pane!=host_pane_game) return;
+	
+	if (!setup.network.map_rotation) {
+		enable=(element_get_value(host_table_id)!=-1);
+	}
+	else {
+		enable=element_has_table_check(host_table_id);
+	}
+		
+	element_enable(host_button_host_id,enable);
+}
+
 void host_create_pane(void)
 {
 	int			x,y,wid,high,pane;
-	bool		enable;
 	char		tab_list[][32]={"Host Game","Options","Info"};
 							
 	element_clear();
@@ -562,16 +579,7 @@ void host_create_pane(void)
 	
 		// enable host button
 		
-	if (pane==host_pane_game) {
-		if (!setup.network.map_rotation) {
-			enable=(element_get_value(host_table_id)!=-1);
-		}
-		else {
-			enable=element_has_table_check(host_table_id);
-		}
-		
-		element_enable(host_button_host_id,enable);
-	}
+	host_enable_host_button();
 }
 
 /* =======================================================
@@ -768,7 +776,7 @@ void host_handle_click(int id)
 				host_map_list_to_table();
 				element_set_value(host_table_id,host_first_map_idx);
 				element_make_selection_visible(host_table_id);
-				element_enable(host_button_host_id,element_has_table_check(host_table_id));
+				host_enable_host_button();
 			}
 			break;
 
