@@ -92,9 +92,8 @@ void iface_read_settings_multiplayer(iface_type *iface)
 			
 			tag=xml_findfirstchild("Spawn",game_tag);
 			if (tag!=-1) {
-				game->spawn.coop_spot=xml_get_attribute_boolean(tag,"coop_spot");
-				game->spawn.spawn_spot=xml_get_attribute_boolean(tag,"spawn_spot");
-				game->spawn.team_spot=xml_get_attribute_boolean(tag,"team_spot");
+				xml_get_attribute_text(tag,"spot_name",game->spawn.spot_name,name_str_len);
+				game->spawn.force_team_spot=xml_get_attribute_boolean(tag,"force_team_spot");
 			}
 			
 			tag=xml_findfirstchild("Score",game_tag);
@@ -227,9 +226,8 @@ bool iface_write_settings_multiplayer(iface_type *iface)
 		xml_add_tagend(TRUE);
 			
 		xml_add_tagstart("Spawn");
-		xml_add_attribute_boolean("coop_spot",game->spawn.coop_spot);
-		xml_add_attribute_boolean("spawn_spot",game->spawn.spawn_spot);
-		xml_add_attribute_boolean("team_spot",game->spawn.team_spot);
+		xml_add_attribute_text("spot_name",game->spawn.spot_name);
+		xml_add_attribute_boolean("force_team_spot",game->spawn.force_team_spot);
 		xml_add_tagend(TRUE);
 			
 		xml_add_tagstart("Score");

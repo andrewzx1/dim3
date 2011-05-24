@@ -100,6 +100,27 @@ void select_model_wind_restore_drag_sel_state(char *vertex_sel)
 	}
 }
 
+void select_model_wind_select_trig_for_vertex_drag_sel(void)
+{
+	int					n,k,nt;
+	model_trig_type		*trig;
+
+	trig_clear_sel_mask(state.cur_mesh_idx);
+
+	nt=model.meshes[state.cur_mesh_idx].ntrig;
+	trig=model.meshes[state.cur_mesh_idx].trigs;
+
+	for (n=0;n!=nt;n++) {
+		for (k=0;k!=3;k++) {
+			if (vertex_check_sel_mask(state.cur_mesh_idx,trig->v[k])) {
+				trig_set_sel_mask(state.cur_mesh_idx,n,TRUE);
+				break;
+			}
+		}
+		trig++;
+	}
+}
+
 void select_model_wind_vertex_drag_sel(d3pnt *start_pnt,float *pv)
 {
 	char					*org_vertex_sel;
@@ -160,6 +181,8 @@ void select_model_wind_vertex_drag_sel(d3pnt *start_pnt,float *pv)
 		
 		select_model_wind_restore_drag_sel_state(org_vertex_sel);
 		model_drag_sel_vertex(pv,&state.drag_sel_box,chg_sel);
+
+		if (state.select_mode==select_mode_polygon) select_model_wind_select_trig_for_vertex_drag_sel();
 		
 		main_wind_draw();
 	}
@@ -467,9 +490,11 @@ void select_model_wind(d3pnt *start_pnt)
 		// run the correct click
 		
 	switch (state.select_mode) {
+
 		case select_mode_mesh:
 			select_model_wind_mesh(start_pnt);
 			break;
+
 		case select_mode_polygon:
 			if (!select_model_wind_vertex(start_pnt,pv)) {
 				if (!select_model_wind_polygon(start_pnt,FALSE)) {
@@ -477,6 +502,7 @@ void select_model_wind(d3pnt *start_pnt)
 				}
 			}
 			break;
+
 		case select_mode_vertex:
 			if (!select_model_wind_vertex(start_pnt,pv)) {
 				select_model_wind_vertex_drag_sel(start_pnt,pv);

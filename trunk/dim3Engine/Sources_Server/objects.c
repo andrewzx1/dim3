@@ -738,9 +738,10 @@ int object_create(char *name,int type,int bind)
 
 bool object_start_script(obj_type *obj,char *err_str)
 {
-	int				script_idx;
+	int						script_idx;
+	char					script_name[file_str_len];
 
-		// was it a non-script scenery
+		// is it a non-script scenery?
 		// this is usually something set when re-loading
 		// state from a saved file
 
@@ -750,15 +751,20 @@ bool object_start_script(obj_type *obj,char *err_str)
 	}
 
 		// if player or remote, use player script
+		// or overridden multiplayer script,
 		// otherwise use script setup by spot
+	
+	script_name[0]=0x0;
 
 	if ((obj->type==object_type_player) || (obj->type==object_type_remote)) {
-		script_idx=scripts_add(thing_type_object,"Objects","Player",obj->idx,-1,-1,err_str);
+		if (net_setup.mode!=net_mode_none) strcpy(script_name,iface.net_game.games[net_setup.game_idx].script.player_script);
+		if (script_name[0]==0x0) strcpy(script_name,"Player");
 	}
 	else {
-		script_idx=scripts_add(thing_type_object,"Objects",obj->spot_script,obj->idx,-1,-1,err_str);
+		strcpy(script_name,obj->spot_script);
 	}
 
+	script_idx=scripts_add(thing_type_object,"Objects",script_name,obj->idx,-1,-1,err_str);
 	if (script_idx==-1) return(FALSE);
 
 	obj->script_idx=script_idx;
@@ -838,9 +844,9 @@ void object_multiplayer_setup(obj_type *obj)
 
 		// spawn spot
 
-	strcpy(obj->spawn_spot_name,"Start");
+	obj->spawn_spot_name[0]=0x0;
 
-	if ((net_game->spawn.team_spot) && (obj->team_idx!=net_team_none)) {
+	if ((net_game->spawn.force_team_spot) && (obj->team_idx!=net_team_none)) {
 		if (obj->team_idx==net_team_red) {
 			strcpy(obj->spawn_spot_name,"Red");
 		}
@@ -849,15 +855,10 @@ void object_multiplayer_setup(obj_type *obj)
 		}
 	}
 	else {
-		if (net_game->spawn.coop_spot) {
-			strcpy(obj->spawn_spot_name,"Co-op");
-		}
-		else {
-			if (net_game->spawn.spawn_spot) {
-				strcpy(obj->spawn_spot_name,"Spawn");
-			}
-		}
+		strcpy(obj->spawn_spot_name,net_game->spawn.spot_name);
 	}
+	
+	if (obj->spawn_spot_name[0]==0x0) strcpy(obj->spawn_spot_name,"Start");
 }
 
 void object_multiplayer_setup_model_team_texture(obj_type *obj)

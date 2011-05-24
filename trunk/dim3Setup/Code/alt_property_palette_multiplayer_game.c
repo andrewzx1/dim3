@@ -38,13 +38,12 @@ and can be sold or given away.
 #define kMPGamePropertySettingsMonster			2
 #define kMPGamePropertyScriptPlayerScript		3
 #define kMPGamePropertyScriptBotScript			4
-#define kMPGamePropertySpawnStart				5
-#define kMPGamePropertySpawnBlank				6
-#define kMPGamePropertySpawnTeam				7
-#define kMPGamePropertyScoreKill				8
-#define kMPGamePropertyScoreDeath				9
-#define kMPGamePropertyScoreSuicide				10
-#define kMPGamePropertyScoreGoal				11
+#define kMPGamePropertySpawnSpotName			5
+#define kMPGamePropertySpawnForceTeam			6
+#define kMPGamePropertyScoreKill				7
+#define kMPGamePropertyScoreDeath				8
+#define kMPGamePropertyScoreSuicide				9
+#define kMPGamePropertyScoreGoal				10
 
 extern iface_type				iface;
 extern setup_state_type			state;
@@ -71,16 +70,15 @@ void alt_property_palette_fill_multiplayer_game(int multiplayer_game_idx)
 
 		// bots
 
-	list_palette_add_header(&alt_property_palette,0,"Bots");
+	list_palette_add_header(&alt_property_palette,0,"Scripts");
 	list_palette_add_string(&alt_property_palette,kMPGamePropertyScriptPlayerScript,"Player",game->script.player_script,FALSE);
 	list_palette_add_string(&alt_property_palette,kMPGamePropertyScriptBotScript,"Bot",game->script.bot_script,FALSE);
 	
 		// spawn
 
 	list_palette_add_header(&alt_property_palette,0,"Spawning");
-	list_palette_add_checkbox(&alt_property_palette,kMPGamePropertySpawnStart,"Co-Op Spots",game->spawn.coop_spot,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kMPGamePropertySpawnBlank,"Spawn Spots",game->spawn.spawn_spot,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kMPGamePropertySpawnTeam,"Team Spots",game->spawn.team_spot,FALSE);
+	list_palette_add_string(&alt_property_palette,kMPGamePropertySpawnSpotName,"Spot Name",game->spawn.spot_name,FALSE);
+	list_palette_add_checkbox(&alt_property_palette,kMPGamePropertySpawnForceTeam,"Force Team Spots",game->spawn.force_team_spot,FALSE);
 	
 		// score
 
@@ -131,16 +129,12 @@ void alt_property_palette_click_multiplayer_game(int multiplayer_game_idx,int id
 			
 			// spawn
 
-		case kMPGamePropertySpawnStart:
-			game->spawn.coop_spot=!game->spawn.coop_spot;
+		case kMPGamePropertySpawnSpotName:
+			dialog_property_string_run(list_string_value_string,(void*)game->spawn.spot_name,name_str_len,0,0);
 			break;
 
-		case kMPGamePropertySpawnBlank:
-			game->spawn.spawn_spot=!game->spawn.spawn_spot;
-			break;
-			
-		case kMPGamePropertySpawnTeam:
-			game->spawn.team_spot=!game->spawn.team_spot;
+		case kMPGamePropertySpawnForceTeam:
+			game->spawn.force_team_spot=!game->spawn.force_team_spot;
 			break;
 	
 			// score

@@ -260,9 +260,8 @@ void property_palette_click_multiplayer(int id)
 		strcpy(iface.net_game.games[idx].script.player_script,"Player");
 		strcpy(iface.net_game.games[idx].script.bot_script,"Bot DM");
 		
-		iface.net_game.games[idx].spawn.coop_spot=FALSE;
-		iface.net_game.games[idx].spawn.spawn_spot=TRUE;
-		iface.net_game.games[idx].spawn.team_spot=FALSE;
+		strcpy(iface.net_game.games[idx].spawn.spot_name,"Spawn");
+		iface.net_game.games[idx].spawn.force_team_spot=FALSE;
 		
 		iface.net_game.games[idx].score.kill=1;
 		iface.net_game.games[idx].score.death=0;
