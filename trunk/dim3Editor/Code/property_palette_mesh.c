@@ -65,8 +65,9 @@ and can be sold or given away.
 #define kMeshPropertyMessageMapChange			54
 #define kMeshPropertyMessageMapChangeName		55
 #define kMeshPropertyMessageMapChangeSpotName	56
-#define kMeshPropertyMessageBase				57
-#define kMeshPropertyMessageBaseTeam			58
+
+#define kMeshPropertyBaseOn						57
+#define kMeshPropertyBaseTeam					58
 
 #define kMeshPolyPropertyClimbable				60
 #define kMeshPolyPropertyNeverCull				61
@@ -109,6 +110,8 @@ void property_palette_fill_mesh(int mesh_idx,int poly_idx)
 
 	mesh=&map.mesh.meshes[mesh_idx];
 
+		// settings
+		
 	list_palette_add_header(&property_palette,0,"Mesh Settings");
 	list_palette_add_checkbox(&property_palette,kMeshPropertyOn,"On",mesh->flag.on,FALSE);
 	list_palette_add_checkbox(&property_palette,kMeshPropertyPassThrough,"Pass Through",mesh->flag.pass_through,FALSE);
@@ -125,6 +128,8 @@ void property_palette_fill_mesh(int mesh_idx,int poly_idx)
 	list_palette_add_checkbox(&property_palette,kMeshPropertySkipLightMapTrace,"Skip Light Map Trace",mesh->flag.skip_light_map_trace,FALSE);
 	list_palette_add_checkbox(&property_palette,kMeshPropertyNoHaloObscure,"No Halo Obscure",mesh->flag.no_halo_obscure,FALSE);
 
+		// options
+		
 	list_palette_add_header(&property_palette,0,"Mesh Options");
 	list_palette_add_string(&property_palette,kMeshPropertyHideMode,"Hide",mesh_property_hide_list[mesh->hide_mode],FALSE);
 	list_palette_add_string_int(&property_palette,kMeshPropertyHarm,"Harm",mesh->harm,FALSE);
@@ -138,6 +143,8 @@ void property_palette_fill_mesh(int mesh_idx,int poly_idx)
 		list_palette_add_string(&property_palette,kMeshPropertyGroup,"Group",map.group.groups[mesh->group_idx].name,FALSE);
 	}
 
+		// messages
+		
 	list_palette_add_header(&property_palette,0,"Mesh Messages");
 	list_palette_add_checkbox(&property_palette,kMeshPropertyMessageEnter,"Entry On",mesh->msg.entry_on,FALSE);
 	list_palette_add_string_int(&property_palette,kMeshPropertyMessageEnterId,"Entry ID",mesh->msg.entry_id,FALSE);
@@ -146,9 +153,15 @@ void property_palette_fill_mesh(int mesh_idx,int poly_idx)
 	list_palette_add_checkbox(&property_palette,kMeshPropertyMessageMapChange,"Map Change On",mesh->msg.map_change_on,FALSE);
 	list_palette_add_string(&property_palette,kMeshPropertyMessageMapChangeName,"Map Name",mesh->msg.map_name,FALSE);
 	list_palette_add_string(&property_palette,kMeshPropertyMessageMapChangeSpotName,"Map Spot Name",mesh->msg.map_spot_name,FALSE);
-	list_palette_add_checkbox(&property_palette,kMeshPropertyMessageBase,"Base On",mesh->msg.base_on,FALSE);
-	list_palette_add_string(&property_palette,kMeshPropertyMessageBaseTeam,"Base Team",mesh_property_team_list[mesh->msg.base_team],FALSE);
+	
+		// bases
+		
+	list_palette_add_header(&property_palette,0,"Mesh Base");
+	list_palette_add_checkbox(&property_palette,kMeshPropertyBaseOn,"On",mesh->msg.base_on,FALSE);
+	list_palette_add_string(&property_palette,kMeshPropertyBaseTeam,"Team",mesh_property_team_list[mesh->msg.base_team],FALSE);
 
+		// import
+		
 	list_palette_add_header(&property_palette,0,"Mesh Import");
 	list_palette_add_string(&property_palette,kMeshPropertyImportOBJName,"OBJ Name",mesh->import.obj_name,FALSE);
 	list_palette_add_string(&property_palette,kMeshPropertyImportGroupName,"Group Name",mesh->import.group_name,FALSE);
@@ -221,6 +234,8 @@ void property_palette_click_mesh(int mesh_idx,int poly_idx,int id)
 
 	switch (id) {
 
+			// settings
+			
 		case kMeshPropertyOn:
 			mesh->flag.on=!mesh->flag.on;
 			break;
@@ -277,6 +292,8 @@ void property_palette_click_mesh(int mesh_idx,int poly_idx,int id)
 			mesh->flag.no_halo_obscure=!mesh->flag.no_halo_obscure;
 			break;
 
+			// options
+			
 		case kMeshPropertyHideMode:
 			property_pick_list("Pick a Hide Mode",(char*)mesh_property_hide_list,&mesh->hide_mode);
 			break;
@@ -292,6 +309,8 @@ void property_palette_click_mesh(int mesh_idx,int poly_idx,int id)
 		case kMeshPropertyGroup:
 			property_palette_pick_group(&mesh->group_idx);
 			break;
+			
+			// messages
 
 		case kMeshPropertyMessageEnter:
 			mesh->msg.entry_on=!mesh->msg.entry_on;
@@ -321,13 +340,17 @@ void property_palette_click_mesh(int mesh_idx,int poly_idx,int id)
 			dialog_property_string_run(list_string_value_string,(void*)mesh->msg.map_spot_name,name_str_len,0,0);
 			break;
 
-		case kMeshPropertyMessageBase:
+			// base
+			
+		case kMeshPropertyBaseOn:
 			mesh->msg.base_on=!mesh->msg.base_on;
 			break;
 
-		case kMeshPropertyMessageBaseTeam:
+		case kMeshPropertyBaseTeam:
 			property_pick_list("Pick a Team",(char*)mesh_property_team_list,&mesh->msg.base_team);
 			break;
+			
+			// import
 			
 		case kMeshPropertyImportOBJName:
 			dialog_property_string_run(list_string_value_string,(void*)mesh->import.obj_name,name_str_len,0,0);

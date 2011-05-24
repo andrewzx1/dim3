@@ -1709,7 +1709,6 @@ bool light_map_run_for_poly(int lm_poly_idx,char *err_str)
 		// can this polygon fit in the current light map?
 		
 	if (!light_map_texture_find_open_area(lm_poly->x_sz,lm_poly->y_sz,&x,&y,&box,lm_poly->solid_color,lmap)) {
-	
 		if (!light_map_textures_create()) {
 			sprintf(err_str,"Too many polys in map, would create more than %d light maps.  Turn down the quality or turn up the texture size.",max_light_map_textures);
 			return(FALSE);

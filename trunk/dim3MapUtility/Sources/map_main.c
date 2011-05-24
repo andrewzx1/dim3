@@ -81,7 +81,7 @@ bool map_new(map_type *map,char *name)
 		// light maps
 
 	map->light_map.quality=2;
-	map->light_map.quality=512;
+	map->light_map.size=512;
 	map->light_map.pixel_border_count=6;
 	map->light_map.blur_count=3;
 	map->light_map.use_normals=FALSE;
