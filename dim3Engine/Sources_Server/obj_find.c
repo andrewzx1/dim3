@@ -377,7 +377,7 @@ int object_find_neareset_unheld_weapon_node(obj_type *obj,int from_node_idx)
 
 				// get distance
 
-			d=map_node_to_node_distance(&map,from_node_idx,spot->lookup.nearest_node_idx==-1);
+			d=map_node_to_node_distance(&map,from_node_idx,spot->lookup.nearest_node_idx);
 			if (d==-1) continue;
 
 			if ((dist==-1) || (d<dist)) {
