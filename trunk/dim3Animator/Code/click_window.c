@@ -234,6 +234,54 @@ bool select_model_wind_vertex(d3pnt *start_pnt,float *pv)
 	return(TRUE);
 }
 
+bool select_model_wind_vertex_sel_trig(d3pnt *start_pnt,float *pv)
+{
+	int					n,k,nt,idx;
+	float				*pv2;
+	d3fpnt				pnt;
+	d3pnt				tran_pnt;
+	model_mesh_type		*mesh;
+	model_trig_type		*trig;
+
+		// clicked on a vertex?
+		
+	mesh=&model.meshes[state.cur_mesh_idx];
+		
+	idx=-1;
+	nt=mesh->ntrig;
+
+	for (n=0;n!=nt;n++) {
+
+		trig=&mesh->trigs[n];
+		if (vertex_check_hide_mask_trig(state.cur_mesh_idx,trig)) continue;
+		if (!trig_check_sel_mask(state.cur_mesh_idx,n)) continue;
+
+		for (k=0;k!=3;k++) {
+			pv2=pv+(trig->v[k]*3);
+	
+			pnt.x=*pv2++;
+			pnt.y=*pv2++;
+			pnt.z=*pv2;
+		
+			draw_model_2D_transform(&pnt,&tran_pnt);
+		
+			if ((start_pnt->x>=(tran_pnt.x-5)) && (start_pnt->x<=(tran_pnt.x+5)) && (start_pnt->y>=(tran_pnt.y-5)) && (start_pnt->y<=(tran_pnt.y+5))) {
+				idx=trig->v[k];
+				break;
+			}
+		}
+
+		trig++;
+	}
+
+	if (idx==-1) return(FALSE);
+
+	if (!os_key_shift_down()) vertex_clear_sel_mask(state.cur_mesh_idx);
+	vertex_set_sel_mask(state.cur_mesh_idx,idx,TRUE);
+
+	return(TRUE);
+}
+
 /* =======================================================
 
       Model Trig Selection
@@ -249,7 +297,7 @@ bool select_model_wind_polygon(d3pnt *start_pnt,bool check_only)
 	model_mesh_type		*mesh;
 	
 		// clicking mesh
-		
+	
 	mesh=&model.meshes[state.cur_mesh_idx];
 	
 		// draw and pick the triangles
@@ -496,7 +544,7 @@ void select_model_wind(d3pnt *start_pnt)
 			break;
 
 		case select_mode_polygon:
-			if (!select_model_wind_vertex(start_pnt,pv)) {
+			if (!select_model_wind_vertex_sel_trig(start_pnt,pv)) {
 				if (!select_model_wind_polygon(start_pnt,FALSE)) {
 					select_model_wind_vertex_drag_sel(start_pnt,pv);
 				}

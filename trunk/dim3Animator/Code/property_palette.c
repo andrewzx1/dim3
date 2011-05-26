@@ -148,7 +148,7 @@ void property_palette_fill(void)
 
 		case item_bone:
 			list_palette_set_title(&property_palette,"Bone Properties");
-			property_palette_fill_bone(state.cur_bone_idx);
+			property_palette_fill_bone(state.cur_bone_idx,state.cur_pose_idx);
 			break;
 
 		case item_hit_box:
@@ -253,7 +253,7 @@ void property_palette_click(d3pnt *pnt,bool double_click)
 			break;
 
 		case item_bone:
-			property_palette_click_bone(state.cur_bone_idx,property_palette.item_id);
+			property_palette_click_bone(state.cur_bone_idx,state.cur_pose_idx,property_palette.item_id);
 			break;
 
 		case item_hit_box:
