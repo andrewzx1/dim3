@@ -137,7 +137,7 @@ extern void property_palette_fill_model(void);
 extern void property_palette_fill_mesh(int mesh_idx);
 extern void property_palette_fill_animation(int animate_idx);
 extern void property_palette_fill_pose(int pose_idx);
-extern void property_palette_fill_bone(int bone_idx);
+extern void property_palette_fill_bone(int bone_idx,int pose_idx);
 extern void property_palette_fill_hit_box(int hit_box_idx);
 
 extern void property_palette_click_texture(int texture_idx,int id);
@@ -146,7 +146,7 @@ extern void property_palette_click_model(int id);
 extern void property_palette_click_mesh(int mesh_idx,int id);
 extern void property_palette_click_animation(int animation_idx,int id);
 extern void property_palette_click_pose(int pose_idx,int id);
-extern void property_palette_click_bone(int bone_idx,int id);
+extern void property_palette_click_bone(int bone_idx,int pose_idx,int id);
 extern void property_palette_click_hit_box(int hit_box_idx,int id);
 
 //
