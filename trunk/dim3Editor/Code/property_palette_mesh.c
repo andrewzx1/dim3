@@ -165,6 +165,19 @@ void property_palette_fill_mesh(int mesh_idx,int poly_idx)
 	list_palette_add_header(&property_palette,0,"Mesh Import");
 	list_palette_add_string(&property_palette,kMeshPropertyImportOBJName,"OBJ Name",mesh->import.obj_name,FALSE);
 	list_palette_add_string(&property_palette,kMeshPropertyImportGroupName,"Group Name",mesh->import.group_name,FALSE);
+	
+		// info
+		
+	map_mesh_calculate_extent(&map,mesh_idx,&min,&max);
+	max.x-=min.x;
+	max.y-=min.y;
+	max.z-=min.z;
+		
+	list_palette_add_header(&property_palette,0,"Mesh Info");
+	list_palette_add_string_int(&property_palette,-1,"Mesh Index",mesh_idx,TRUE);
+	list_palette_add_string_int(&property_palette,-1,"Poly Count",mesh->npoly,TRUE);
+	list_palette_add_point(&property_palette,-1,"Position",&min,TRUE);
+	list_palette_add_point(&property_palette,-1,"Size",&max,TRUE);
 
 		// polygon settings
 
@@ -196,22 +209,9 @@ void property_palette_fill_mesh(int mesh_idx,int poly_idx)
 		list_palette_add_string(&property_palette,kMeshPolyPropertyCamera,"Node",poly->camera,FALSE);
 		
 		list_palette_add_header(&property_palette,0,"Poly Info");
-		list_palette_add_string_int(&property_palette,-1,"Poly Index",poly_idx,FALSE);
-		list_palette_add_string_int(&property_palette,-1,"Poly Vertexes",poly->ptsz,FALSE);
+		list_palette_add_string_int(&property_palette,-1,"Index",poly_idx,TRUE);
+		list_palette_add_string_int(&property_palette,-1,"Vertexes",poly->ptsz,TRUE);
 	}
-	
-		// info
-		
-	map_mesh_calculate_extent(&map,mesh_idx,&min,&max);
-	max.x-=min.x;
-	max.y-=min.y;
-	max.z-=min.z;
-		
-	list_palette_add_header(&property_palette,0,"Mesh Info");
-	list_palette_add_string_int(&property_palette,-1,"Mesh Index",mesh_idx,FALSE);
-	list_palette_add_string_int(&property_palette,-1,"Poly Count",mesh->npoly,FALSE);
-	list_palette_add_point(&property_palette,-1,"Position",&min,TRUE);
-	list_palette_add_point(&property_palette,-1,"Size",&max,TRUE);
 }
 
 /* =======================================================

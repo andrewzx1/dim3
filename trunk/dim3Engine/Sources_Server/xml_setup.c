@@ -96,6 +96,8 @@ void setup_xml_default(void)
 	setup.debug_console=FALSE;
 	setup.window=FALSE;
 	setup.window_editor=TRUE;
+	setup.no_hud=FALSE;
+	setup.no_draw_weapon=FALSE;
 	setup.metrics_on=FALSE;
 	setup.disable_shaders=FALSE;
 }
@@ -164,6 +166,8 @@ bool setup_xml_read_path(char *path)
 	xml_key_read_boolean(setup_tag,"Debug_Console",&setup.debug_console);
 	xml_key_read_boolean(setup_tag,"Window",&setup.window);
 	xml_key_read_boolean(setup_tag,"Window_Editor",&setup.window_editor);
+	xml_key_read_boolean(setup_tag,"No_HUD",&setup.no_hud);
+	xml_key_read_boolean(setup_tag,"No_Draw_Weapon",&setup.no_draw_weapon);
 	xml_key_read_boolean(setup_tag,"Metrics_On",&setup.metrics_on);
 	xml_key_read_boolean(setup_tag,"Disable_Shaders",&setup.disable_shaders);
 
@@ -327,6 +331,8 @@ bool setup_xml_write(void)
 	xml_key_write_boolean("Debug_Console",setup.debug_console);
 	xml_key_write_boolean("Window",setup.window);
 	xml_key_write_boolean("Window_Editor",setup.window_editor);
+	xml_key_write_boolean("No_HUD",setup.no_hud);
+	xml_key_write_boolean("No_Draw_Weapon",setup.no_draw_weapon);
 	xml_key_write_boolean("Metrics_On",setup.metrics_on);
 	xml_key_write_boolean("Disable_Shaders",setup.disable_shaders);
 	
@@ -439,6 +445,8 @@ void setup_restore(void)
 	setup.debug_console=TRUE;
 	setup.window=FALSE;
 	setup.window_editor=TRUE;
+	setup.no_hud=FALSE;
+	setup.no_draw_weapon=FALSE;
 	setup.metrics_on=FALSE;
 	setup.disable_shaders=FALSE;
 	

@@ -355,7 +355,7 @@ void view_draw_scene_render(obj_type *obj,weapon_type *weap)
 	
 			// draw the weapons in hand
 
-		if (camera.setup.mode==cv_fpp) draw_weapon_hand(obj,weap);
+		if ((camera.setup.mode==cv_fpp) && (!setup.no_draw_weapon)) draw_weapon_hand(obj,weap);
 	}
 
 		// draw the remote names, halos, crosshairs, and zoom masks

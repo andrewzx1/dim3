@@ -180,7 +180,6 @@ extern bool polygon_2D_collision_line(int lx,int lz,int rx,int rz);
 extern bool polygon_2D_collision_bound_box(int lft,int rgt,int top,int bot);
 extern bool polygon_2D_collision_bound_polygon(int ptsz,int *x,int *y,int lft,int rgt,int top,int bot);
 extern bool polygon_2D_collision_polygon(int ptsz,int *x,int *y);
-extern float polygon_get_slope_y(int ptsz,int *px,int *py,int *pz,float *ang_y);
 extern int polygon_find_y(int ptsz,int *px,int *py,int *pz,int kx,int kz);
 extern int polygon_find_y_outside_point(int ptsz,int *px,int *py,int *pz,int kx,int kz);
 
