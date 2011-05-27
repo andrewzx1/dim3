@@ -84,9 +84,9 @@ extern char light_type_str[][32];
 #define gravity_start_power									0				// starting gravity
 #define gravity_factor										5000			// factor to divide gravity out by when combing with weight
 
-#define gravity_slope_min_y									0.4f			// minimum slope needed to activate gravity
-#define gravity_slope_max_y									1.5f			// maximum climbable slope
-#define gravity_slope_factor								150.0f			// slope gravity factor
+#define gravity_slope_min_y									0.1f			// minimum slope needed to activate gravity
+#define gravity_slope_max_y									0.6f			// maximum climbable slope
+#define gravity_slope_factor								250.0f			// slope gravity factor
 #define gravity_slope_down_cut								0.2f			// amount to count gravity when running with it
 
 #define proj_reflect_slope_max_y							0.5f			// how big a slope before bounces become reflects

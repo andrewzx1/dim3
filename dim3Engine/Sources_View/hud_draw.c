@@ -766,6 +766,8 @@ void hud_click(void)
 
 void hud_draw(void)
 {
+	if (setup.no_hud) return;
+
 		// set up view
 		
 	gl_2D_view_interface();

@@ -38,121 +38,84 @@ and can be sold or given away.
       
 ======================================================= */
 
-bool map_prepare_mesh_poly_line_like(map_mesh_type *mesh,map_mesh_poly_type *poly)
+
+/* =======================================================
+
+      Find Polygon Y Slope
+      
+======================================================= */
+
+void map_prepare_mesh_poly_slope_ang(map_mesh_type *mesh,map_mesh_poly_type *poly)
 {
-	int				n,x,z,ptsz,px[8],pz[8],slope_cnt;
-	float			slopes[8];
-	bool			same_x,same_z,horz,vert;
-	d3pnt			*pt;
+	int			n,tx,bx,tz,bz,t_add,b_add;
+	float		dist;
+	double		dx,dz;
+	d3pnt		*pt;
 
-		// only two points, must be in line
+		// separate polygon vertexes by Ys
 
-	ptsz=poly->ptsz;
-	if (ptsz<=2) return(TRUE);
+	tx=bx=tz=bz=0;
+	t_add=b_add=0;
 
-		// get points
-
-	for (n=0;n!=ptsz;n++) {
+	for (n=0;n!=poly->ptsz;n++) {
 		pt=&mesh->vertexes[poly->v[n]];
-		px[n]=pt->x;
-		pz[n]=pt->z;
-	}
 
-		// quick check for same x or z coordinates
-
-	same_x=same_z=TRUE;
-
-	for (n=1;n<ptsz;n++) {
-		same_x=same_x&&(px[0]==px[n]);
-		same_z=same_z&&(pz[0]==pz[n]);
-	}
-
-	if ((same_x) || (same_z)) return(TRUE);
-
-		// get the average slopes
-
-	horz=vert=FALSE;
-	slope_cnt=0;
-
-	for (n=0;n<(ptsz-1);n++) {
-
-		x=px[0]-px[n+1];
-		z=pz[0]-pz[n+1];
-		
-			// if point is equal or close, then we ignore
-			// the slope and the point
-			
-		if ((abs(x)<=map_mesh_poly_line_like_equal_slop) && (abs(z)<=map_mesh_poly_line_like_equal_slop)) continue;
-
-			// special check for horz or vertical lines
-			// note vertical lines have undefined slope, so
-			// we are setting it to zero and checking for
-			// the special case where there are both horz
-			// and vertical slopes (now both equal to 0)
-
-		if (x==0) {
-			horz=TRUE;
-			slopes[slope_cnt]=0.0f;
+		if (pt->y<poly->box.mid.y) {
+			tx+=pt->x;
+			tz+=pt->z;
+			t_add++;
 		}
 		else {
-			if (z==0) {
-				vert=TRUE;
-				slopes[slope_cnt]=0.0f;
-			}
-			else {
-				slopes[slope_cnt]=((float)x)/((float)z);
-			}
+			bx+=pt->x;
+			bz+=pt->z;
+			b_add++;
 		}
-		
-		slope_cnt++;
 	}
 
-		// if both horz and vertical, then not in line
+		// find points between Y extremes
 
-	if ((horz) && (vert)) return(FALSE);
-
-		// compare all the slopes to each other, if they
-		// are within the slope, it's all within a line
-		
-	for (n=1;n<slope_cnt;n++) {
-		if (fabs(slopes[0]-slopes[n])>map_mesh_poly_line_like_slope_slop) return(FALSE);
+	if (t_add!=0) {
+		tx/=t_add;
+		tz/=t_add;
 	}
-	
-	return(TRUE);
-}
+	else {
+		tx=poly->box.mid.x;
+		tz=poly->box.mid.z;
+	}
 
-void map_prepare_mesh_poly_determine_wall_like(map_mesh_type *mesh,map_mesh_poly_type *poly)
-{
-	poly->box.wall_like=FALSE;
-	
-		// flat polygons are automatically not wall-like
-		
-	if (poly->box.flat) return;
+	if (b_add!=0) {
+		bx/=b_add;
+		bz/=b_add;
+	}
+	else {
+		bx=poly->box.mid.x;
+		bz=poly->box.mid.z;
+	}
 
-		// if all x/z points in a line, then polygon
-		// is automatically wall-like
+		// xz distance
 
-	if (map_prepare_mesh_poly_line_like(mesh,poly)) {
-		poly->box.wall_like=TRUE;
+	dx=(double)(bx-tx);
+	dz=(double)(bz-tz);
+	dist=(float)sqrt((dx*dx)+(dz*dz));
+
+	if (dist==0.0f) {
+		poly->slope.ang_y=0.0f;
 		return;
 	}
-	
-		// if the slope is greater than 0.6, then consider it a wall
 
-	if (poly->slope.y<0.6f) return;
+		// find the angle between points
 
-		// otherwise it's a wall
-	
-	poly->box.wall_like=TRUE;
+	poly->slope.ang_y=angle_find(bx,bz,tx,tz);
 }
 
 void map_prepare_mesh_poly(map_mesh_type *mesh,map_mesh_poly_type *poly)
 {
-	int				n,ptsz,y,lx,rx,lz,rz,dist,
-					px[8],py[8],pz[8];
+	int				n,ptsz,y,lx,rx,lz,rz,dist;
+	float			ang;
 	bool			flat;
 	d3pnt			min,max,mid;
 	d3pnt			*pt;
+	d3vct			map_up;
 
 		// find enclosing square
 		// and middle and if polygon is flat
@@ -199,29 +162,36 @@ void map_prepare_mesh_poly(map_mesh_type *mesh,map_mesh_poly_type *poly)
 	
 	poly->box.flat=flat;
 
-		// setup slopes
-		
-	for (n=0;n!=poly->ptsz;n++) {
-		pt=&mesh->vertexes[poly->v[n]];
-		px[n]=pt->x;
-		py[n]=pt->y;
-		pz[n]=pt->z;
-	}
+		// get dot product of normal and up
+		// vector to determine the slope of surface
+		// and if it's wall like
 
-	if (poly->box.flat) {
+	if (flat) {
 		poly->slope.y=0.0f;
 		poly->slope.ang_y=0.0f;
 		poly->slope.move_x=0.0f;
 		poly->slope.move_z=0.0f;
+
+		poly->box.wall_like=FALSE;
 	}
 	else {
-		poly->slope.y=polygon_get_slope_y(poly->ptsz,px,py,pz,&poly->slope.ang_y);
+		map_up.x=0.0f;
+		map_up.y=-1.0f;
+		map_up.z=0.0f;
+
+		ang=(float)fabs(vector_dot_product(&map_up,&poly->tangent_space.normal));
+
+			// use dot product to tell if wall like
+			// and the y slope
+
+		poly->box.wall_like=(ang<=0.4f);
+		poly->slope.y=1.0f-ang;
+
+			// find the slope angle
+
+		map_prepare_mesh_poly_slope_ang(mesh,poly);
 		angle_get_movement_float(poly->slope.ang_y,(gravity_slope_factor*poly->slope.y),&poly->slope.move_x,&poly->slope.move_z);
 	}
-
-		// determine if wall like
-		
-	map_prepare_mesh_poly_determine_wall_like(mesh,poly);
 
 		// create wall "line" for wall like polygons
 
