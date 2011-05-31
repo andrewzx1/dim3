@@ -440,7 +440,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						int									nearest_node_idx;
+						int									nearest_node_idx,spawned_obj_idx;
 						bool								random_hit;
 					} spot_lookup_type;
 

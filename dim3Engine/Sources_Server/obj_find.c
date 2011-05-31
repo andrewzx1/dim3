@@ -352,6 +352,7 @@ bool object_sight_test_object(obj_type *obj,int test_obj_idx)
 int object_find_neareset_unheld_weapon_node(obj_type *obj,int from_node_idx)
 {
 	int				n,k,idx,d,dist;
+	obj_type		*weap_obj;
 	weapon_type		*weap;
 	spot_type		*spot;
 
@@ -374,6 +375,12 @@ int object_find_neareset_unheld_weapon_node(obj_type *obj,int from_node_idx)
 			spot=&map.spots[k];
 			if (strcmp(spot->name,weap->name)!=0) continue;
 			if (spot->lookup.nearest_node_idx==-1) continue;
+			if (spot->lookup.spawned_obj_idx==-1) continue;
+			
+				// is weapon hidden?
+			
+			weap_obj=server.obj_list.objs[spot->lookup.spawned_obj_idx];
+			if (weap_obj->hidden) continue;
 
 				// get distance
 
@@ -394,6 +401,7 @@ int object_find_neareset_held_weapon_ammo_node(obj_type *obj,int from_node_idx,b
 {
 	int				n,k,idx,d,dist;
 	char			name[name_str_len];
+	obj_type		*ammo_obj;
 	weapon_type		*weap;
 	spot_type		*spot;
 
@@ -425,6 +433,12 @@ int object_find_neareset_held_weapon_ammo_node(obj_type *obj,int from_node_idx,b
 			spot=&map.spots[k];
 			if (strcmp(spot->name,name)!=0) continue;
 			if (spot->lookup.nearest_node_idx==-1) continue;
+			if (spot->lookup.spawned_obj_idx==-1) continue;
+			
+				// is ammo hidden?
+			
+			ammo_obj=server.obj_list.objs[spot->lookup.spawned_obj_idx];
+			if (ammo_obj->hidden) continue;
 
 				// get distance
 

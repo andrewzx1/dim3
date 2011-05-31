@@ -391,6 +391,7 @@ void object_stop(obj_type *obj)
 	
 	obj->auto_walk.mode=aw_none;
 	obj->auto_walk.node_seek_idx=obj->auto_walk.node_dest_idx=-1;
+	obj->auto_walk.dodge.on=FALSE;
 	
 	obj->last_move_animation_event=-1;
 	obj->last_turn_animation_event=-1;
@@ -695,6 +696,7 @@ int object_create(char *name,int type,int bind)
 	obj->last_turn_animation_event=-1;
 
 	obj->auto_walk.mode=aw_none;
+	obj->auto_walk.dodge.on=FALSE;
 
 	obj->debug.str[0]=0x0;
 	

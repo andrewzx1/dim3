@@ -49,6 +49,7 @@ JSValueRef js_obj_motion_vector_walk_to_node_reverse_func(JSContextRef cx,JSObje
 JSValueRef js_obj_motion_vector_walk_to_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_motion_vector_walk_to_player_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_motion_vector_walk_to_position_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_obj_motion_vector_walk_to_dodge_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_motion_vector_walk_to_position_slop_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_motion_vector_turn_to_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_motion_vector_turn_to_player_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
@@ -72,6 +73,7 @@ JSStaticFunction	obj_motion_vector_functions[]={
 							{"walkToObject",		js_obj_motion_vector_walk_to_object_func,			kJSPropertyAttributeDontDelete},
 							{"walkToPlayer",		js_obj_motion_vector_walk_to_player_func,			kJSPropertyAttributeDontDelete},
 							{"walkToPosition",		js_obj_motion_vector_walk_to_position_func,			kJSPropertyAttributeDontDelete},
+							{"walkToDodge",			js_obj_motion_vector_walk_to_dodge_func,			kJSPropertyAttributeDontDelete},
 							{"turnToObject",		js_obj_motion_vector_turn_to_object_func,			kJSPropertyAttributeDontDelete},
 							{"turnToPlayer",		js_obj_motion_vector_turn_to_player_func,			kJSPropertyAttributeDontDelete},
 							{0,0,0}};
@@ -326,6 +328,18 @@ JSValueRef js_obj_motion_vector_walk_to_position_func(JSContextRef cx,JSObjectRe
 	obj=object_get_attach(j_obj);
 	object_auto_walk_position_setup(obj,&pnt);
 	
+	return(script_null_to_value(cx));
+}
+
+JSValueRef js_obj_motion_vector_walk_to_dodge_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+{
+	obj_type		*obj;
+	
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+	
+	obj=object_get_attach(j_obj);
+	object_auto_walk_dodge_setup(obj,script_value_to_float(cx,argv[0]),script_value_to_int(cx,argv[1]));
+		
 	return(script_null_to_value(cx));
 }
 

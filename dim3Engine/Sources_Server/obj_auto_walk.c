@@ -29,6 +29,7 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
+#include "interface.h"
 #include "scripts.h"
 #include "objects.h"
 
@@ -71,6 +72,8 @@ bool object_auto_walk_node_setup(obj_type *obj,int from_idx,int to_idx,bool skip
 	obj->auto_walk.mode=aw_node;
 	obj->auto_walk.node_from_idx=obj->auto_walk.node_seek_idx=obj->auto_walk.node_last_seek_idx=from_idx;
 	obj->auto_walk.node_dest_idx=to_idx;
+	
+	obj->auto_walk.dodge.on=FALSE;
 	
 		// setup event and start walking
 		
@@ -117,6 +120,8 @@ bool object_auto_walk_object_setup(obj_type *obj,int uid,bool turn_only,char *er
 		
 	obj->auto_walk.mode=turn_only?aw_object_turn_only:aw_object;
 	obj->auto_walk.obj_idx=uid;
+	
+	obj->auto_walk.dodge.on=FALSE;
 
 		// start walking
 		
@@ -136,6 +141,8 @@ void object_auto_walk_position_setup(obj_type *obj,d3pnt *pnt)
 		
 	obj->auto_walk.mode=aw_position;
 	memmove(&obj->auto_walk.pnt,pnt,sizeof(d3pnt));
+	
+	obj->auto_walk.dodge.on=FALSE;
 
 		// start walking
 		
@@ -155,6 +162,7 @@ bool object_auto_walk_node_resume(obj_type *obj,char *err_str)
 		// resume seeking
 		
 	obj->auto_walk.mode=aw_node;
+	obj->auto_walk.dodge.on=FALSE;
 
 		// start walking
 		
@@ -177,6 +185,7 @@ bool object_auto_walk_node_reverse(obj_type *obj,char *err_str)
 	obj->auto_walk.mode=aw_node;
 	obj->auto_walk.node_dest_idx=obj->auto_walk.node_from_idx;
 	obj->auto_walk.node_seek_idx=obj->auto_walk.node_last_seek_idx;
+	obj->auto_walk.dodge.on=FALSE;
 	
 		// start walking if not already
 		
@@ -188,6 +197,31 @@ bool object_auto_walk_node_reverse(obj_type *obj,char *err_str)
 void object_auto_walk_stop(obj_type *obj)
 {
 	obj->auto_walk.mode=aw_none;
+	obj->auto_walk.dodge.on=FALSE;
+}
+
+void object_auto_walk_dodge_setup(obj_type *obj,float dodge_angle,int dodge_msec)
+{
+	float			org_ang;
+	
+		// if already in a dodge, make sure
+		// we dodge against the original angle not
+		// the dodging angle
+		
+	if (obj->auto_walk.dodge.on) {
+		org_ang=obj->auto_walk.dodge.org_ang;
+	}
+	else {
+		org_ang=obj->ang.y;
+	}
+	
+		// turn on dodge
+		
+	obj->auto_walk.dodge.on=TRUE;
+	obj->auto_walk.dodge.end_tick=game_time_get()+dodge_msec;
+	obj->auto_walk.dodge.org_ang=org_ang;
+	
+	obj->motion.ang.y=angle_add(org_ang,dodge_angle);
 }
 
 /* =======================================================
@@ -404,8 +438,40 @@ void object_auto_walk_position(obj_type *obj)
 	object_auto_walk_set_vertical_move(obj,obj->auto_walk.pnt.y,obj->auto_walk.pnt.z);
 }
 
+/* =======================================================
+
+      Auto Walk Dodging
+      
+======================================================= */
+
+void object_auto_walk_dodge(obj_type *obj)
+{
+		// is dodge over?
+		
+	if (obj->auto_walk.dodge.end_tick<game_time_get()) return;
+	
+		// resume auto-walk
+		
+	obj->auto_walk.dodge.on=FALSE;
+}
+
+/* =======================================================
+
+      Run Auto Walk
+      
+======================================================= */
+
 void object_auto_walk(obj_type *obj)
 {
+		// are we dodging?
+		
+	if (obj->auto_walk.dodge.on) {
+		object_auto_walk_dodge(obj);
+		return;
+	}
+	
+		// regular auto walking
+		
 	switch (obj->auto_walk.mode) {
 
 		case aw_node:

@@ -555,6 +555,12 @@ typedef struct		{
 //
 // auto-walk and watch
 //
+	
+typedef struct		{
+						int						end_tick;
+						float					org_ang;
+						bool					on;
+					} obj_auto_walk_dodge;
 					
 typedef struct		{
 						int						mode,obj_idx,node_event_id,
@@ -562,6 +568,7 @@ typedef struct		{
 												node_seek_idx,node_last_seek_idx;
 						bool					pause_for_turn,skip_event;
 						d3pnt					pnt;
+						obj_auto_walk_dodge		dodge;
 					} obj_auto_walk;
 
 typedef struct		{
