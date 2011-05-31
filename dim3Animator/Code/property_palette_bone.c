@@ -38,13 +38,15 @@ and can be sold or given away.
 #define kBonePropertyTag						2
 #define kBonePropertyParent						3
 
-#define kPoseBoneMovePropertyRot				4
-#define kPoseBoneMovePropertyMove				5
-#define kPoseBoneMovePropertyAcceleration		6
-#define kPoseBoneMovePropertySkipBlended		7
+#define kBonePropertyHandleRot					4
 
-#define kPoseBoneMovePropertyConstraintBone		8
-#define kPoseBoneMovePropertyConstraintOffset	9
+#define kPoseBoneMovePropertyRot				5
+#define kPoseBoneMovePropertyMove				6
+#define kPoseBoneMovePropertyAcceleration		7
+#define kPoseBoneMovePropertySkipBlended		8
+
+#define kPoseBoneMovePropertyConstraintBone		9
+#define kPoseBoneMovePropertyConstraintOffset	10
 
 extern model_type				model;
 extern animator_state_type		state;
@@ -72,6 +74,10 @@ void property_palette_fill_bone(int bone_idx,int pose_idx)
 	list_palette_add_point(&property_palette,kBonePropertyPosition,"Position",&bone->pnt,FALSE);
 	list_palette_add_string_tag(&property_palette,kBonePropertyTag,"Tag",bone->tag,FALSE);
 	property_palette_add_string_bone(&property_palette,kBonePropertyParent,"Parent Bone",bone->parent_idx,FALSE);
+
+		// handles
+	
+	list_palette_add_angle(&property_palette,kBonePropertyHandleRot,"Handle Rot Add",&bone->handle_add,FALSE);
 
 		// current pose
 
@@ -135,6 +141,12 @@ void property_palette_click_bone(int bone_idx,int pose_idx,int id)
 				bone->parent_idx=old_parent_bone_idx;
 			}
 			model_calculate_parents(&model);
+			break;
+
+			// handles
+
+		case kBonePropertyHandleRot:
+			dialog_property_chord_run(list_chord_value_angle,(void*)&bone->handle_add);
 			break;
 
 			// current pose

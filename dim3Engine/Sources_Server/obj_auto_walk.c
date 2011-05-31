@@ -220,8 +220,14 @@ void object_auto_walk_dodge_setup(obj_type *obj,float dodge_angle,int dodge_msec
 	obj->auto_walk.dodge.on=TRUE;
 	obj->auto_walk.dodge.end_tick=game_time_get()+dodge_msec;
 	obj->auto_walk.dodge.org_ang=org_ang;
-	
-	obj->motion.ang.y=angle_add(org_ang,dodge_angle);
+	obj->auto_walk.dodge.dodge_ang=angle_add(org_ang,dodge_angle);
+
+		// setup angles and make sure object is walking
+
+	obj->turn.ang_add.y=0.0f;
+	obj->motion.ang.y=obj->auto_walk.dodge.dodge_ang;
+
+	obj->forward_move.moving=TRUE;
 }
 
 /* =======================================================
@@ -446,6 +452,11 @@ void object_auto_walk_position(obj_type *obj)
 
 void object_auto_walk_dodge(obj_type *obj)
 {
+		// force dodge to keep dodge angle
+
+	obj->turn.ang_add.y=0.0f;
+	obj->motion.ang.y=obj->auto_walk.dodge.dodge_ang;
+
 		// is dodge over?
 		
 	if (obj->auto_walk.dodge.end_tick<game_time_get()) return;
