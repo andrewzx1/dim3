@@ -205,6 +205,7 @@ void draw_model_bones(int sel_bone_idx)
 	d3vct					vct;
 	d3ang					ang,rot;
 	d3col					col;
+	model_bone_type			*bone;
 	model_draw_bone_type	*draw_bone,*parent_bone;
 	
 	glDisable(GL_DEPTH_TEST);
@@ -253,6 +254,7 @@ void draw_model_bones(int sel_bone_idx)
         
         // bones
 		
+	bone=model.bones;
 	draw_bone=draw_setup.bones;
 	
 	bone_drag_handle_offset=draw_model_bones_drag_handle_offset();
@@ -287,9 +289,9 @@ void draw_model_bones(int sel_bone_idx)
 				vct.x=bone_drag_handle_offset;
 				vct.y=0.0f;
 				vct.z=0.0f;
-				ang.x=0.0f;
-				ang.y=rot.y;
-				ang.z=rot.z;
+				ang.x=bone->handle_add.x;
+				ang.y=rot.y+bone->handle_add.y;
+				ang.z=rot.z+bone->handle_add.z;
 				col.r=1.0f;
 				col.g=0.0f;
 				col.b=0.0f;
@@ -298,9 +300,9 @@ void draw_model_bones(int sel_bone_idx)
 				vct.x=0.0f;
 				vct.y=bone_drag_handle_offset;
 				vct.z=0.0f;
-				ang.x=rot.x;
-				ang.y=0.0f;
-				ang.z=rot.z;
+				ang.x=rot.x+bone->handle_add.x;
+				ang.y=bone->handle_add.y;
+				ang.z=rot.z+bone->handle_add.z;
 				col.r=0.0f;
 				col.g=1.0f;
 				col.b=0.0f;
@@ -309,9 +311,9 @@ void draw_model_bones(int sel_bone_idx)
 				vct.x=0.0f;
 				vct.y=0.0f;
 				vct.z=bone_drag_handle_offset;
-				ang.x=rot.x;
-				ang.y=rot.y;
-				ang.z=0.0f;
+				ang.x=rot.x+bone->handle_add.x;
+				ang.y=rot.y+bone->handle_add.y;
+				ang.z=bone->handle_add.z;
 				col.r=0.0f;
 				col.g=0.0f;
 				col.b=1.0f;
@@ -330,6 +332,7 @@ void draw_model_bones(int sel_bone_idx)
 			glEnd();
 		}
 		
+		bone++;
 		draw_bone++;
 	}
 	

@@ -558,7 +558,7 @@ typedef struct		{
 	
 typedef struct		{
 						int						end_tick;
-						float					org_ang;
+						float					org_ang,dodge_ang;
 						bool					on;
 					} obj_auto_walk_dodge;
 					

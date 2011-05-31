@@ -645,6 +645,7 @@ bool drag_bone_model_wind(d3pnt *start_pnt)
 	d3fpnt					bone_pnt,hand_pnt;
 	d3vct					vct;
 	d3ang					hang,rot;
+	model_bone_type			*bone;
 	model_draw_bone_type	*draw_bone;
 	
 	if (model.nbone==0) return(FALSE);
@@ -667,6 +668,7 @@ bool drag_bone_model_wind(d3pnt *start_pnt)
 	
 	if ((state.cur_pose_idx==-1) || (state.cur_bone_idx!=-1)) {
 	
+		bone=&model.bones[state.cur_bone_idx];
 		draw_bone=&draw_setup.bones[state.cur_bone_idx];
 		
 		bone_pnt.x=draw_bone->fpnt.x+draw_setup.move.x;
@@ -682,9 +684,9 @@ bool drag_bone_model_wind(d3pnt *start_pnt)
 		vct.x=bone_drag_handle_offset;
 		vct.y=0;
 		vct.z=0;
-		hang.x=0;
-		hang.y=rot.y;
-		hang.z=rot.z;
+		hang.x=bone->handle_add.x;
+		hang.y=rot.y+bone->handle_add.y;
+		hang.z=rot.z+bone->handle_add.z;
 		draw_model_bones_drag_handle_calc(&bone_pnt,&vct,&hang,&hand_pnt);
 		if (draw_bone_model_wind_click_box(start_pnt,&hand_pnt)) drag_handle=drag_handle_x;
 		
@@ -693,9 +695,9 @@ bool drag_bone_model_wind(d3pnt *start_pnt)
 		vct.x=0;
 		vct.y=bone_drag_handle_offset;
 		vct.z=0;
-		hang.x=rot.x;
-		hang.y=0;
-		hang.z=rot.z;
+		hang.x=rot.x+bone->handle_add.x;
+		hang.y=bone->handle_add.y;
+		hang.z=rot.z+bone->handle_add.z;
 		draw_model_bones_drag_handle_calc(&bone_pnt,&vct,&hang,&hand_pnt);
 		if (draw_bone_model_wind_click_box(start_pnt,&hand_pnt)) drag_handle=drag_handle_y;
 		
@@ -704,9 +706,9 @@ bool drag_bone_model_wind(d3pnt *start_pnt)
 		vct.x=0;
 		vct.y=0;
 		vct.z=bone_drag_handle_offset;
-		hang.x=rot.x;
-		hang.y=rot.y;
-		hang.z=0;
+		hang.x=rot.x+bone->handle_add.x;
+		hang.y=rot.y+bone->handle_add.y;
+		hang.z=+bone->handle_add.z;
 		draw_model_bones_drag_handle_calc(&bone_pnt,&vct,&hang,&hand_pnt);
 		if (draw_bone_model_wind_click_box(start_pnt,&hand_pnt)) drag_handle=drag_handle_z;
 	}
