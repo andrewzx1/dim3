@@ -350,6 +350,7 @@ bool map_objects_create(char *err_str)
 	for (n=0;n!=map.nspot;n++) {
 	
 		spot=&map.spots[n];
+		spot->lookup.spawned_obj_idx=-1;
 		
 			// can only spawn objects and
 			// map bots
@@ -370,7 +371,8 @@ bool map_objects_create(char *err_str)
 
 			// create the object
 		
-		if (object_start(spot,spot->name,spawn_type,bt_map,err_str)==-1) return(FALSE);
+		spot->lookup.spawned_obj_idx=object_start(spot,spot->name,spawn_type,bt_map,err_str);
+		if (spot->lookup.spawned_obj_idx==-1) return(FALSE);
 	}
 	
 	return(TRUE);

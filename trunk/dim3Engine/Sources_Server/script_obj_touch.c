@@ -38,13 +38,19 @@ extern js_type			js;
 JSValueRef js_obj_touch_get_objectId(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_touch_get_objectName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_touch_get_objectIsPlayer(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_obj_touch_get_objectIsRemote(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_obj_touch_get_objectIsBot(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_obj_touch_get_objectIsPlayerRemoteBot(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_touch_get_stand(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 
 JSStaticValue 		obj_touch_props[]={
-							{"objectId",			js_obj_touch_get_objectId,			NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
-							{"objectName",			js_obj_touch_get_objectName,		NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
-							{"objectIsPlayer",		js_obj_touch_get_objectIsPlayer,	NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
-							{"stand",				js_obj_touch_get_stand,				NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"objectId",					js_obj_touch_get_objectId,					NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"objectName",					js_obj_touch_get_objectName,				NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"objectIsPlayer",				js_obj_touch_get_objectIsPlayer,			NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"objectIsRemote",				js_obj_touch_get_objectIsRemote,			NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"objectIsBot",					js_obj_touch_get_objectIsBot,				NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"objectIsPlayerRemoteBot",		js_obj_touch_get_objectIsPlayerRemoteBot,	NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"stand",						js_obj_touch_get_stand,						NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
 							{0,0,0,0}};
 
 JSClassRef			obj_touch_class;
@@ -105,6 +111,47 @@ JSValueRef js_obj_touch_get_objectIsPlayer(JSContextRef cx,JSObjectRef j_obj,JSS
 	return(script_bool_to_value(cx,obj->touch.obj_idx==server.player_obj_idx));
 }
 
+JSValueRef js_obj_touch_get_objectIsRemote(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
+{
+	obj_type		*obj,*touch_obj;
+
+	obj=object_get_attach(j_obj);
+	if (obj->touch.obj_idx==-1) return(script_bool_to_value(cx,FALSE));
+	
+	touch_obj=server.obj_list.objs[obj->touch.obj_idx];
+	if (touch_obj==NULL) return(script_bool_to_value(cx,FALSE));
+
+	return(script_bool_to_value(cx,touch_obj->type==object_type_remote));
+}
+
+JSValueRef js_obj_touch_get_objectIsBot(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
+{
+	obj_type		*obj,*touch_obj;
+
+	obj=object_get_attach(j_obj);
+	if (obj->touch.obj_idx==-1) return(script_bool_to_value(cx,FALSE));
+	
+	touch_obj=server.obj_list.objs[obj->touch.obj_idx];
+	if (touch_obj==NULL) return(script_bool_to_value(cx,FALSE));
+	
+	return(script_bool_to_value(cx,(touch_obj->type==object_type_bot_multiplayer)));
+}
+
+JSValueRef js_obj_touch_get_objectIsPlayerRemoteBot(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
+{
+	obj_type		*obj,*touch_obj;
+
+	obj=object_get_attach(j_obj);
+	if (obj->touch.obj_idx==-1) return(script_bool_to_value(cx,FALSE));
+	
+	if (obj->touch.obj_idx==server.player_obj_idx) return(script_bool_to_value(cx,TRUE));
+	
+	touch_obj=server.obj_list.objs[obj->touch.obj_idx];
+	if (touch_obj==NULL) return(script_bool_to_value(cx,FALSE));
+	
+	return(script_bool_to_value(cx,(touch_obj->type==object_type_remote) || (touch_obj->type==object_type_bot_multiplayer)));
+}
+
 JSValueRef js_obj_touch_get_stand(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	obj_type		*obj;
@@ -114,5 +161,10 @@ JSValueRef js_obj_touch_get_stand(JSContextRef cx,JSObjectRef j_obj,JSStringRef 
 
 	return(script_bool_to_value(cx,obj->touch.stand));
 }
+
+
+
+
+
 
 
