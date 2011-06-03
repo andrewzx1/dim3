@@ -123,6 +123,7 @@ list_palette_item_type* list_palette_create_item(list_palette_type *list,int ctr
 
 	item->ctrl_type=ctrl_type;
 	item->button_type=list_button_none;
+	item->disabled=FALSE;
 
 	item->x=list->box.lx+(list_palette_border_sz+4);
 	if (ctrl_type!=list_item_ctrl_header) item->x+=10;

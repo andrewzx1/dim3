@@ -170,7 +170,7 @@ void property_palette_click_hud(int id)
 		iface.bitmap_list.bitmaps[idx].y=0;
 		iface.bitmap_list.bitmaps[idx].x_size=-1;
 		iface.bitmap_list.bitmaps[idx].y_size=-1;
-		iface.bitmap_list.bitmaps[idx].alpha=0.0f;
+		iface.bitmap_list.bitmaps[idx].alpha=1.0f;
 		iface.bitmap_list.bitmaps[idx].rot=0.0f;
 		strcpy(iface.bitmap_list.bitmaps[idx].name,name);
 		iface.bitmap_list.bitmaps[idx].filename[0]=0x0;
@@ -254,7 +254,7 @@ void property_palette_click_hud(int id)
 		iface.text_list.texts[idx].size=20;
 		iface.text_list.texts[idx].just=tx_left;
 		iface.text_list.texts[idx].special=text_special_none;
-		iface.text_list.texts[idx].alpha=0.0f;
+		iface.text_list.texts[idx].alpha=1.0f;
 		strcpy(iface.text_list.texts[idx].name,name);
 		iface.text_list.texts[idx].data[0]=0x0;
 		iface.text_list.texts[idx].show=TRUE;

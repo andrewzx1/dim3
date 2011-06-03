@@ -212,7 +212,7 @@ void object_auto_walk_dodge_setup(obj_type *obj,float dodge_angle,int dodge_msec
 		org_ang=obj->auto_walk.dodge.org_ang;
 	}
 	else {
-		org_ang=obj->ang.y;
+		org_ang=obj->motion.ang.y;
 	}
 	
 		// turn on dodge

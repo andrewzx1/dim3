@@ -112,6 +112,10 @@ void server_shutdown(void)
 
 bool server_game_start(bool in_file_load,int skill,int simple_save_idx,char *err_str)
 {
+		// get HUD items back to original state
+		
+	iface_refresh_hud_only(&iface);
+	
 		// initialize lists
 		
 	model_initialize_list();

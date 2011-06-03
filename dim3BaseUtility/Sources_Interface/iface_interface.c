@@ -707,6 +707,76 @@ void iface_read_settings_interface(iface_type *iface)
 	xml_close_file();
 }
 
+void iface_refresh_settings_interface_hud_only(iface_type *iface)
+{
+	int							n,interface_head_tag,scale_tag,
+								bitmap_head_tag,bitmap_tag,text_head_tag,text_tag,bar_head_tag,bar_tag,
+								radar_head_tag,menu_head_tag,menu_tag,
+								intro_head_tag,intro_model_head_tag,intro_model_tag,
+								color_tag,font_tag,progress_tag,chat_tag,fade_tag,button_tag,sound_tag,
+								proj_tag,debug_tag;
+	char						path[1024],name[256];
+
+		// read in interface from setting files
+		
+	file_paths_data(&iface_file_path_setup,path,"Settings","Interface","xml");
+	if (!xml_open_file(path)) return;
+	
+		// decode the file
+      
+    interface_head_tag=xml_findrootchild("Interface");
+    if (interface_head_tag==-1) {
+		xml_close_file();
+		return;
+	}
+
+		// reload bitmaps, text, and bars
+		
+	iface->bitmap_list.nbitmap=0;
+	iface->text_list.ntext=0;
+	iface->bar_list.nbar=0;
+	
+		// bitmaps
+	
+    bitmap_head_tag=xml_findfirstchild("Bitmaps",interface_head_tag);
+    if (bitmap_head_tag!=-1) {
+	
+		bitmap_tag=xml_findfirstchild("Bitmap",bitmap_head_tag);
+		
+		while (bitmap_tag!=-1) {
+			iface_read_settings_bitmap(iface,bitmap_tag);
+			bitmap_tag=xml_findnextchild(bitmap_tag);
+		}
+	}
+	
+		// text
+	
+	text_head_tag=xml_findfirstchild("Texts",interface_head_tag);
+    if (text_head_tag!=-1) {
+	
+		text_tag=xml_findfirstchild("Text",text_head_tag);
+		
+		while (text_tag!=-1) {
+			iface_read_settings_text(iface,text_tag);
+			text_tag=xml_findnextchild(text_tag);
+		}
+	}
+	
+		// bars
+	
+    bar_head_tag=xml_findfirstchild("Bars",interface_head_tag);
+    if (bar_head_tag!=-1) {
+	
+		bar_tag=xml_findfirstchild("Bar",bar_head_tag);
+		
+		while (bar_tag!=-1) {
+			iface_read_settings_bar(iface,bar_tag);
+			bar_tag=xml_findnextchild(bar_tag);
+		}
+	}
+	xml_close_file();
+}
+
 /* =======================================================
 
       Write Interface Write Utilities

@@ -229,8 +229,10 @@ _iface_texts_hide_all
 _iface_bars_hide_all
 
 _iface_read
-_iface_read_settings_project_name
+_iface_refresh_hud_only
 _iface_write
+
+_iface_read_settings_project_name
 
 _simple_save_xml_read
 _simple_save_xml_write

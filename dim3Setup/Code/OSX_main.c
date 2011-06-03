@@ -383,13 +383,11 @@ int main(int argc,char *argv[])
 		
 	main_wind_open();
 	menu_start();
-	main_wind_initialize();
 	
 	main_wind_draw();
 	
 	main_loop();
 	
-	main_wind_shutdown();
 	main_wind_close();
 		
 		// shutdown
