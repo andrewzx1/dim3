@@ -522,6 +522,11 @@ void iface_read(iface_type *iface)
 	iface_read_settings_shader(iface);
 }
 
+void iface_refresh_hud_only(iface_type *iface)
+{
+	iface_refresh_settings_interface_hud_only(iface);
+}
+
 bool iface_write(iface_type *iface)
 {
 	if (!iface_write_settings_interface(iface)) return(FALSE);
