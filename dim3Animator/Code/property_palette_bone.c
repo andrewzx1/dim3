@@ -77,7 +77,7 @@ void property_palette_fill_bone(int bone_idx,int pose_idx)
 
 		// handles
 	
-	list_palette_add_angle(&property_palette,kBonePropertyHandleRot,"Handle Rot Add",&bone->handle_add,FALSE);
+	list_palette_add_angle(&property_palette,kBonePropertyHandleRot,"Natural Rotation",&bone->natural_rot,FALSE);
 
 		// current pose
 
@@ -146,7 +146,7 @@ void property_palette_click_bone(int bone_idx,int pose_idx,int id)
 			// handles
 
 		case kBonePropertyHandleRot:
-			dialog_property_chord_run(list_chord_value_angle,(void*)&bone->handle_add);
+			dialog_property_chord_run(list_chord_value_angle,(void*)&bone->natural_rot);
 			break;
 
 			// current pose

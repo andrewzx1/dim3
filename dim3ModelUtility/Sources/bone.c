@@ -96,7 +96,7 @@ int model_bone_add(model_type *model,int x,int y,int z)
 	bone->pnt.y=y;
 	bone->pnt.z=z;
 
-	bone->handle_add.x=bone->handle_add.y=bone->handle_add.z=0.0f;
+	bone->natural_rot.x=bone->natural_rot.y=bone->natural_rot.z=0.0f;
 	
 		// fix any poses
 		

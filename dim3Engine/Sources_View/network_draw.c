@@ -91,7 +91,7 @@ void network_score_single_name_draw(char *name,int score,int lx,int rx,int ty,in
 		col2.r=col2.g=col2.b=1.0f;
 	}
 	else {
-		col2.r=col2.g=col2.b=0.7f;
+		col2.r=col2.g=col2.b=0.9f;
 	}
 	
 	sprintf(txt,"%d",score);

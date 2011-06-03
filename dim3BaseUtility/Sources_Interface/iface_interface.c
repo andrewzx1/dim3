@@ -709,13 +709,9 @@ void iface_read_settings_interface(iface_type *iface)
 
 void iface_refresh_settings_interface_hud_only(iface_type *iface)
 {
-	int							n,interface_head_tag,scale_tag,
-								bitmap_head_tag,bitmap_tag,text_head_tag,text_tag,bar_head_tag,bar_tag,
-								radar_head_tag,menu_head_tag,menu_tag,
-								intro_head_tag,intro_model_head_tag,intro_model_tag,
-								color_tag,font_tag,progress_tag,chat_tag,fade_tag,button_tag,sound_tag,
-								proj_tag,debug_tag;
-	char						path[1024],name[256];
+	int							interface_head_tag,
+								bitmap_head_tag,bitmap_tag,text_head_tag,text_tag,bar_head_tag,bar_tag;
+	char						path[1024];
 
 		// read in interface from setting files
 		

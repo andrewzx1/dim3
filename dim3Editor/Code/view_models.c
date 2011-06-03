@@ -272,7 +272,7 @@ bool view_model_draw(d3pnt *pnt,d3ang *ang,char *name,float resize,short *textur
 	model_draw_setup_initialize(model,&draw_setup,FALSE);
 	model_draw_setup_clear(model,&draw_setup);
 	
-    draw_setup.poses[0].idx_1=draw_setup.poses[0].idx_2=-1;
+	draw_setup.poses[0].idx_1=draw_setup.poses[0].idx_2=-1;
     draw_setup.poses[0].factor=0;
 	draw_setup.poses[0].acceleration=0;
 	
