@@ -2,7 +2,7 @@
 
 Module: dim3 Model Utility
 Author: Brian Barnes
-        Rocco Bowling for Comulative Deform Mode
+        Rocco Bowling for Original Comulative Deform Mode
  Usage: Bone Routines
 
 ***************************** License ********************************
@@ -52,18 +52,14 @@ void model_create_draw_bone_from_neutral(model_type *model,model_draw_setup *dra
 	for (n=0;n!=nbone;n++) {
 		draw_bone->parent_idx=bone->parent_idx;
 		
-		draw_bone->fpnt.x=(float)bone->pnt.x;
-		draw_bone->fpnt.z=(float)bone->pnt.z;
-		draw_bone->fpnt.y=(float)bone->pnt.y;
+		draw_bone->rot.x=angle_add(alter_bone->rot_add.x,bone->natural_rot.x);
+		draw_bone->rot.z=angle_add(alter_bone->rot_add.y,bone->natural_rot.y);
+		draw_bone->rot.y=angle_add(alter_bone->rot_add.z,bone->natural_rot.z);
 		
-		draw_bone->rot.x=alter_bone->rot_add.x;
-		draw_bone->rot.z=alter_bone->rot_add.y;
-		draw_bone->rot.y=alter_bone->rot_add.z;
+		draw_bone->parent_dist.x=bone->parent_dist.x+alter_bone->parent_dist_add.x;
+		draw_bone->parent_dist.y=bone->parent_dist.y+alter_bone->parent_dist_add.y;
+		draw_bone->parent_dist.z=bone->parent_dist.z+alter_bone->parent_dist_add.z;
 
-		matrix_identity(&draw_bone->rot_mat);
-		
-		draw_bone->touch=TRUE;				// auto-touch all bones, no changes necessary
-	
 		bone++;
 		draw_bone++;
 		alter_bone++;
@@ -72,13 +68,14 @@ void model_create_draw_bone_from_neutral(model_type *model,model_draw_setup *dra
 
 /* =======================================================
 
-      Create Draw Bones (Non-Comulative)
+      Create Draw Bones
       
 ======================================================= */
 
 void model_create_draw_bone_from_pose(model_type *model,model_draw_setup *draw_setup,model_draw_bone_type *draw_bones,int pose_1)
 {
 	int							n,nbone;
+	float						ang;
 	model_bone_type				*bone;
 	model_draw_bone_type		*draw_bone;
 	model_bone_move_type		*bone_move;
@@ -96,26 +93,18 @@ void model_create_draw_bone_from_pose(model_type *model,model_draw_setup *draw_s
 	for (n=0;n!=nbone;n++) {
 		draw_bone->parent_idx=bone->parent_idx;
 		
-		draw_bone->rot.x=angle_add(bone_move->rot.x,alter_bone->rot_add.x);
-        draw_bone->rot.y=angle_add(bone_move->rot.y,alter_bone->rot_add.y);
-        draw_bone->rot.z=angle_add(bone_move->rot.z,alter_bone->rot_add.z);
+		ang=angle_add(bone_move->rot.x,alter_bone->rot_add.x);
+		draw_bone->rot.x=angle_add(ang,bone->natural_rot.x);
+
+		ang=angle_add(bone_move->rot.y,alter_bone->rot_add.y);
+        draw_bone->rot.y=angle_add(ang,bone->natural_rot.y);
+
+		ang=angle_add(bone_move->rot.z,alter_bone->rot_add.z);
+        draw_bone->rot.z=angle_add(ang,bone->natural_rot.z);
 
 		draw_bone->parent_dist.x=(bone->parent_dist.x*bone_move->mov.x)+alter_bone->parent_dist_add.x;
 		draw_bone->parent_dist.y=(bone->parent_dist.y*bone_move->mov.y)+alter_bone->parent_dist_add.y;
 		draw_bone->parent_dist.z=(bone->parent_dist.z*bone_move->mov.z)+alter_bone->parent_dist_add.z;
-		
-			// auto touch bone with no parent
-
-		if (bone->parent_idx==-1) {
-			draw_bone->touch=TRUE;
-			
-			draw_bone->fpnt.x=(float)bone->pnt.x;
-			draw_bone->fpnt.y=(float)bone->pnt.y;
-			draw_bone->fpnt.z=(float)bone->pnt.z;
-		}
-		else {
-			draw_bone->touch=FALSE;
-		}
 		
 		bone++;
 		draw_bone++;
@@ -179,12 +168,15 @@ void model_create_draw_bone_from_pose_factor(model_type *model,model_draw_setup 
 			
 		draw_bone->rot.x=rot_x_end+((rot_x_start-rot_x_end)*accel_pose_factor);
 		draw_bone->rot.x=angle_add(draw_bone->rot.x,alter_bone->rot_add.x);
+		draw_bone->rot.x=angle_add(draw_bone->rot.x,bone->natural_rot.x);
 
 		draw_bone->rot.y=rot_y_end+((rot_y_start-rot_y_end)*accel_pose_factor);
 		draw_bone->rot.y=angle_add(draw_bone->rot.y,alter_bone->rot_add.y);
+		draw_bone->rot.y=angle_add(draw_bone->rot.y,bone->natural_rot.y);
 
 		draw_bone->rot.z=rot_z_end+((rot_z_start-rot_z_end)*accel_pose_factor);
 		draw_bone->rot.z=angle_add(draw_bone->rot.z,alter_bone->rot_add.z);
+		draw_bone->rot.z=angle_add(draw_bone->rot.z,bone->natural_rot.z);
 		
 		mov_x_start=mov_x_end+((mov_x_start-mov_x_end)*accel_pose_factor);
 		draw_bone->parent_dist.x=(bone->parent_dist.x*mov_x_start)+alter_bone->parent_dist_add.x;
@@ -194,19 +186,6 @@ void model_create_draw_bone_from_pose_factor(model_type *model,model_draw_setup 
 
 		mov_z_start=mov_z_end+((mov_z_start-mov_z_end)*accel_pose_factor);
 		draw_bone->parent_dist.z=(bone->parent_dist.z*mov_z_start)+alter_bone->parent_dist_add.z;
-			
-			// auto touch bone with no parent
-
-		if (draw_bone->parent_idx==-1) {
-			draw_bone->touch=TRUE;
-			
-			draw_bone->fpnt.x=(float)bone->pnt.x;
-			draw_bone->fpnt.y=(float)bone->pnt.y;
-			draw_bone->fpnt.z=(float)bone->pnt.z;
-		}
-		else {
-			draw_bone->touch=FALSE;
-		}
 
 		bone++;
 		draw_bone++;
@@ -230,9 +209,9 @@ void model_combine_draw_bone_add_rotate(model_draw_bone_type *draw_bones,int par
 	
 	draw_bone=&draw_bones[parent_idx];
 	
-	*rot_x=(*rot_x)+draw_bone->rot.x;
-	*rot_y=(*rot_y)+draw_bone->rot.y;
-	*rot_z=(*rot_z)+draw_bone->rot.z;
+	*rot_x+=draw_bone->rot.x;
+	*rot_y+=draw_bone->rot.y;
+	*rot_z+=draw_bone->rot.z;
 	
 	model_combine_draw_bone_add_rotate(draw_bones,draw_bone->parent_idx,rot_x,rot_y,rot_z);
 }
@@ -252,8 +231,7 @@ void model_combine_draw_bone_rotations(model_type *model,model_draw_bone_type *d
 		rot_y=draw_bone->rot.y;
 		rot_z=draw_bone->rot.z;
 
-		if (!draw_bone->touch) model_combine_draw_bone_add_rotate(draw_bones,draw_bone->parent_idx,&rot_x,&rot_y,&rot_z);
-
+		model_combine_draw_bone_add_rotate(draw_bones,draw_bone->parent_idx,&rot_x,&rot_y,&rot_z);
 		matrix_rotate_xyz(&draw_bone->rot_mat,rot_x,rot_y,rot_z);
 
 		draw_bone++;
@@ -266,61 +244,54 @@ void model_combine_draw_bone_rotations(model_type *model,model_draw_bone_type *d
       
 ======================================================= */
 
-void model_comulative_combine_draw_bone_combine_rotate_by_matrix(bool * touched, model_draw_bone_type *draw_bones,int my_idx)
+void model_comulative_combine_draw_bone_combine_rotate_by_matrix(model_draw_bone_type *draw_bones,int idx)
 {
-	model_draw_bone_type		*my_draw_bone,*parent_draw_bone;
+	model_draw_bone_type		*draw_bone,*parent_draw_bone;
 	matrix_type					local_matrix;
 	
-	my_draw_bone=&draw_bones[my_idx];
+	draw_bone=&draw_bones[idx];
 	
-	if (my_draw_bone->parent_idx!=-1) {
+	if (draw_bone->parent_idx!=-1) {
 
-		parent_draw_bone=&draw_bones[my_draw_bone->parent_idx];
+		parent_draw_bone=&draw_bones[draw_bone->parent_idx];
+		if (!parent_draw_bone->touch) model_comulative_combine_draw_bone_combine_rotate_by_matrix(draw_bones,draw_bone->parent_idx);
 		
-		if (touched[my_draw_bone->parent_idx]==0) {
-			model_comulative_combine_draw_bone_combine_rotate_by_matrix(touched,draw_bones,my_draw_bone->parent_idx);
-		}
+		memcpy(&draw_bone->rot_mat,&parent_draw_bone->rot_mat,sizeof(matrix_type));
 		
-		memcpy(&my_draw_bone->rot_mat,&parent_draw_bone->rot_mat,sizeof(matrix_type));
-		
-		my_draw_bone->rot_mat.data[0][3]=0.0f;
-		my_draw_bone->rot_mat.data[1][3]=0.0f;
-		my_draw_bone->rot_mat.data[2][3]=0.0f;
+		draw_bone->rot_mat.data[0][3]=0.0f;
+		draw_bone->rot_mat.data[1][3]=0.0f;
+		draw_bone->rot_mat.data[2][3]=0.0f;
 	}
 	
-	matrix_rotate_z(&local_matrix, my_draw_bone->rot.z);
-	matrix_multiply(&my_draw_bone->rot_mat, &local_matrix);
+	matrix_rotate_z(&local_matrix,draw_bone->rot.z);
+	matrix_multiply(&draw_bone->rot_mat,&local_matrix);
 	
-	matrix_rotate_y(&local_matrix, my_draw_bone->rot.y);
-	matrix_multiply(&my_draw_bone->rot_mat, &local_matrix);
+	matrix_rotate_y(&local_matrix,draw_bone->rot.y);
+	matrix_multiply(&draw_bone->rot_mat,&local_matrix);
 	
-	matrix_rotate_x(&local_matrix, my_draw_bone->rot.x);
-	matrix_multiply(&my_draw_bone->rot_mat, &local_matrix);
+	matrix_rotate_x(&local_matrix,draw_bone->rot.x);
+	matrix_multiply(&draw_bone->rot_mat,&local_matrix);
 	
-	touched[my_idx]=1;
+	draw_bone->touch=TRUE;
 }
 
 void model_comulative_combine_draw_bone_rotations(model_type *model,model_draw_bone_type *draw_bones)
 {
 	int						n,nbone;
-	bool					touched[max_model_bone];
 	model_draw_bone_type	*draw_bone;
 	
 	draw_bone=draw_bones;
 	nbone=model->nbone;
 	
 	for (n=0;n!=nbone;n++) {
-		matrix_identity(&draw_bone->rot_mat);
-		touched[n]=0;
+		draw_bone->touch=FALSE;
 		draw_bone++;
 	}
 	
 	draw_bone=draw_bones;
 
-	for (n=0;n!=nbone;n++) {	
-		if (touched[n]==0) {
-			model_comulative_combine_draw_bone_combine_rotate_by_matrix(touched,draw_bones,n);
-		}
+	for (n=0;n!=nbone;n++) {
+		if (!draw_bone->touch) model_comulative_combine_draw_bone_combine_rotate_by_matrix(draw_bones,n);
 		draw_bone++;
 	}
 }
@@ -331,23 +302,38 @@ void model_comulative_combine_draw_bone_rotations(model_type *model,model_draw_b
       
 ======================================================= */
 
-void model_move_single_draw_bone(model_type *model,model_draw_bone_type *draw_bones,model_draw_bone_type *draw_bone)
+void model_move_single_draw_bone(model_type *model,model_draw_bone_type *draw_bones,int bone_idx)
 {
-	int						n;
+	int						parent_idx;
 	float					fx,fz,fy;
-	model_draw_bone_type	*parent_bone;
+	model_bone_type			*bone;
+	model_draw_bone_type	*draw_bone,*parent_draw_bone;
 	
 		// already moved?
 		
+	draw_bone=&draw_bones[bone_idx];
 	if (draw_bone->touch) return;
 	
 	draw_bone->touch=TRUE;
 
+		// if no parent, just no movement
+
+	parent_idx=draw_bone->parent_idx;
+
+	if (parent_idx==-1) {
+		
+		bone=&model->bones[bone_idx];
+		draw_bone->fpnt.x=(float)bone->pnt.x;
+		draw_bone->fpnt.y=(float)bone->pnt.y;
+		draw_bone->fpnt.z=(float)bone->pnt.z;
+
+		return;
+	}
+
 		// move parents first
 	
-	n=draw_bone->parent_idx;
-	parent_bone=&draw_bones[n];
-	model_move_single_draw_bone(model,draw_bones,parent_bone);
+	parent_draw_bone=&draw_bones[parent_idx];
+	model_move_single_draw_bone(model,draw_bones,parent_idx);
 
 		// rotate the bone
 	
@@ -355,11 +341,11 @@ void model_move_single_draw_bone(model_type *model,model_draw_bone_type *draw_bo
 	fy=draw_bone->parent_dist.y;
 	fz=draw_bone->parent_dist.z;
 	
-	matrix_vertex_multiply(&parent_bone->rot_mat,&fx,&fy,&fz);
+	matrix_vertex_multiply(&parent_draw_bone->rot_mat,&fx,&fy,&fz);
 	
-	draw_bone->fpnt.x=parent_bone->fpnt.x+fx;
-	draw_bone->fpnt.y=parent_bone->fpnt.y+fy;
-	draw_bone->fpnt.z=parent_bone->fpnt.z+fz;
+	draw_bone->fpnt.x=parent_draw_bone->fpnt.x+fx;
+	draw_bone->fpnt.y=parent_draw_bone->fpnt.y+fy;
+	draw_bone->fpnt.z=parent_draw_bone->fpnt.z+fz;
 }
 
 void model_move_draw_bones(model_type *model,model_draw_bone_type *draw_bones)
@@ -367,12 +353,20 @@ void model_move_draw_bones(model_type *model,model_draw_bone_type *draw_bones)
 	int						n,nbone;
 	model_draw_bone_type	*draw_bone;
 	
+		// no bones moved
+
 	nbone=model->nbone;
 	draw_bone=draw_bones;
 	
 	for (n=0;n!=nbone;n++) {
-		model_move_single_draw_bone(model,draw_bones,draw_bone);
+		draw_bone->touch=FALSE;
 		draw_bone++;
+	}
+
+		// move bones
+
+	for (n=0;n!=nbone;n++) {
+		model_move_single_draw_bone(model,draw_bones,n);
 	}
 }
 
@@ -433,22 +427,18 @@ void model_create_draw_bones_single(model_type *model,model_draw_setup *draw_set
 
 	if (pose_1==-1) {
 		model_create_draw_bone_from_neutral(model,draw_setup,bones);
-		return;
-	}
-
-		// change pose factor for animation based acceleration
-
-	if (pose_2!=-1) {
-		pose_factor=acceleration_calculate(pose_factor,draw_setup->poses[blend_idx].acceleration);
 	}
 
 		// get single pose or tween pose bones
 
-	if (pose_2==-1) {
-		model_create_draw_bone_from_pose(model,draw_setup,bones,pose_1);
-	}
 	else {
-		model_create_draw_bone_from_pose_factor(model,draw_setup,bones,pose_1,pose_2,pose_factor);
+		if (pose_2==-1) {
+			model_create_draw_bone_from_pose(model,draw_setup,bones,pose_1);
+		}
+		else {
+			pose_factor=acceleration_calculate(pose_factor,draw_setup->poses[blend_idx].acceleration);
+			model_create_draw_bone_from_pose_factor(model,draw_setup,bones,pose_1,pose_2,pose_factor);
+		}
 	}
 
 		// combine rotations and create matrixes
@@ -469,12 +459,8 @@ void model_create_draw_bones_single(model_type *model,model_draw_setup *draw_set
 	
 		// fix any constrained bones
 		
-	if (pose_2==-1) {
-		model_fix_constrained_bones(model,pose_1,bones);
-	}
-	else {
-		model_fix_constrained_bones(model,pose_2,bones);
-	}
+	if (pose_1!=-1) model_fix_constrained_bones(model,pose_1,bones);
+	if (pose_2!=-1) model_fix_constrained_bones(model,pose_2,bones);
 }
 
 void model_create_draw_bones(model_type *model,model_draw_setup *draw_setup)

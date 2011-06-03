@@ -257,7 +257,14 @@ bool collide_circle_check_object_box(d3pnt *circle_pnt,int radius,d3pnt *min,d3p
 	int						x_sz,z_sz,dist;
 	float					rang;
 	d3pnt					obj_min,obj_max,hit_pnt;
+
+		// y check
+		
+	if (max->y<=(obj->pnt.y-obj->size.y)) return(FALSE);
+	if (min->y>=obj->pnt.y) return(FALSE);
 	
+		// run the XZ check
+
 	rang=angle_add(obj->ang.y,obj->draw.rot.y);
 	x_sz=obj->size.x>>1;
 	z_sz=obj->size.z>>1;
@@ -269,10 +276,6 @@ bool collide_circle_check_object_box(d3pnt *circle_pnt,int radius,d3pnt *min,d3p
 		
 	obj_min.z=obj->pnt.z-z_sz;
 	obj_max.z=obj->pnt.z+z_sz;
-
-	obj_min.y=obj->pnt.y-obj->size.y;
-	if (obj->duck.mode!=dm_stand) obj_min.y+=obj->duck.y_move;
-	obj_max.y=obj->pnt.y;
 		
 		// check for hit
 			

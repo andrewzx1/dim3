@@ -684,9 +684,9 @@ bool drag_bone_model_wind(d3pnt *start_pnt)
 		vct.x=bone_drag_handle_offset;
 		vct.y=0;
 		vct.z=0;
-		hang.x=bone->handle_add.x;
-		hang.y=rot.y+bone->handle_add.y;
-		hang.z=rot.z+bone->handle_add.z;
+		hang.x=bone->natural_rot.x;
+		hang.y=rot.y+bone->natural_rot.y;
+		hang.z=rot.z+bone->natural_rot.z;
 		draw_model_bones_drag_handle_calc(&bone_pnt,&vct,&hang,&hand_pnt);
 		if (draw_bone_model_wind_click_box(start_pnt,&hand_pnt)) drag_handle=drag_handle_x;
 		
@@ -695,9 +695,9 @@ bool drag_bone_model_wind(d3pnt *start_pnt)
 		vct.x=0;
 		vct.y=bone_drag_handle_offset;
 		vct.z=0;
-		hang.x=rot.x+bone->handle_add.x;
-		hang.y=bone->handle_add.y;
-		hang.z=rot.z+bone->handle_add.z;
+		hang.x=rot.x+bone->natural_rot.x;
+		hang.y=bone->natural_rot.y;
+		hang.z=rot.z+bone->natural_rot.z;
 		draw_model_bones_drag_handle_calc(&bone_pnt,&vct,&hang,&hand_pnt);
 		if (draw_bone_model_wind_click_box(start_pnt,&hand_pnt)) drag_handle=drag_handle_y;
 		
@@ -706,9 +706,9 @@ bool drag_bone_model_wind(d3pnt *start_pnt)
 		vct.x=0;
 		vct.y=0;
 		vct.z=bone_drag_handle_offset;
-		hang.x=rot.x+bone->handle_add.x;
-		hang.y=rot.y+bone->handle_add.y;
-		hang.z=+bone->handle_add.z;
+		hang.x=rot.x+bone->natural_rot.x;
+		hang.y=rot.y+bone->natural_rot.y;
+		hang.z=+bone->natural_rot.z;
 		draw_model_bones_drag_handle_calc(&bone_pnt,&vct,&hang,&hand_pnt);
 		if (draw_bone_model_wind_click_box(start_pnt,&hand_pnt)) drag_handle=drag_handle_z;
 	}
@@ -745,6 +745,10 @@ bool drag_bone_model_wind(d3pnt *start_pnt)
 
 		return(TRUE);
 	}
+
+		// no drag if no pose
+
+	if (state.cur_pose_idx==-1) return(TRUE);
 	
 		// get drag angle
 		
