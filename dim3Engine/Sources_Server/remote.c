@@ -44,7 +44,6 @@ extern network_setup_type	net_setup;
 
 extern bool					game_loop_quit;
 
-extern void mesh_triggers(obj_type *obj,int old_mesh_idx,int mesh_idx);
 extern void group_moves_synch_with_host(network_reply_group_synch *synch);
 
 /* =======================================================
@@ -85,7 +84,7 @@ bool remote_add(network_reply_join_remote *remote,bool send_event)
 	
 	obj->remote.predict.turn_y=0.0f;
 	
-	obj->mesh.cur_mesh_idx=-1;
+	obj->mesh.last_stand_mesh_idx=-1;
 	
 		// remotes have no script
 		// special remote type always reroutes to
@@ -174,20 +173,6 @@ bool remote_timed_out(obj_type *obj)
       
 ======================================================= */
 
-void remote_update_current_mesh(obj_type *obj)
-{
-	int				old_mesh_idx;
-	
-		// reset current mesh
-		
-	old_mesh_idx=obj->mesh.cur_mesh_idx;
-	obj->mesh.cur_mesh_idx=map_mesh_find(&map,&obj->pnt);
-	
-		// handle any triggers
-		
-	if (old_mesh_idx!=obj->mesh.cur_mesh_idx) mesh_triggers(obj,old_mesh_idx,obj->mesh.cur_mesh_idx);
-}
-
 void remote_predict_move(obj_type *obj)
 {
 		// stop predicting after slow timeout
@@ -201,7 +186,6 @@ void remote_predict_move(obj_type *obj)
 		// predict movements
 		
 	object_move_remote(obj);
-	remote_update_current_mesh(obj);
 }
 
 /* =======================================================
@@ -446,14 +430,15 @@ void remote_update(int net_uid,network_request_remote_update *update)
 	obj->status.health.value=(signed short)ntohs(update->health);
 	obj->status.armor.value=(signed short)ntohs(update->armor);
 	
+	obj->mesh.last_stand_mesh_idx=(signed short)ntohs(update->last_stand_mesh_idx);
+	
 		// last update tick
 		
 	obj->remote.last_update=game_time_get();
 	
-		// update current mesh and handle
-		// triggers
+		// handle triggers
 		
-	remote_update_current_mesh(obj);
+	mesh_triggers(obj);
 }
 
 /* =======================================================

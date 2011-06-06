@@ -89,7 +89,6 @@ extern void view_compile_mesh_gl_list_free(void);
 
 extern void view_visibility_check_calculate(void);
 
-
 //
 // timing
 //
@@ -102,6 +101,12 @@ inline int game_time_get(void);
 extern float game_time_fequency_second_get(int start_tick);
 extern void game_time_pause_start(void);
 extern void game_time_pause_end(void);
+
+//
+// meshes
+//
+
+extern void mesh_triggers(obj_type *obj);
 
 //
 // cameras
@@ -293,7 +298,9 @@ extern int pin_upward_movement_obj(obj_type *obj,int my);
 extern bool map_stand_crush_object(obj_type *obj);
 extern bool map_stand_check_object(obj_type *obj);
 
+//
 // ray tracing
+//
 
 extern bool ray_trace_initialize(char *err_str);
 extern void ray_trace_shutdown(void);

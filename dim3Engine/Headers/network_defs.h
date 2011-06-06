@@ -335,7 +335,8 @@ typedef struct		{
 														fp_predict_move_x,fp_predict_move_y,fp_predict_move_z,
 														fp_predict_turn_y,model_mesh_mask;
 						short							offset_x,offset_y,offset_z,
-														score,health,armor;
+														score,health,armor,
+														last_stand_mesh_idx;
 						unsigned char					model_cur_texture_frame[max_model_texture];
 						network_request_animation		animation[max_model_blend_animation];
 						network_request_dynamic_bone	dynamic_bones[max_model_dynamic_bone];

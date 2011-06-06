@@ -280,11 +280,12 @@ void model_comulative_combine_draw_bone_rotations(model_type *model,model_draw_b
 	int						n,nbone;
 	model_draw_bone_type	*draw_bone;
 	
-	draw_bone=draw_bones;
 	nbone=model->nbone;
+	draw_bone=draw_bones;
 	
 	for (n=0;n!=nbone;n++) {
 		draw_bone->touch=FALSE;
+		matrix_identity(&draw_bone->rot_mat);
 		draw_bone++;
 	}
 	

@@ -59,22 +59,17 @@ bool piece_create_texture_ok(void)
 
 void piece_create_get_spot(d3pnt *pnt)
 {
-	d3pnt			min,max;
-	
 		// center in view if no selection
 		
 	if (select_count()==0) {
 		view_get_position(pnt);
+		return;
 	}
 	
 		// find place in selection
 		
-	else {
-		select_get_extent(&min,&max);
-		pnt->x=(min.x+max.x)>>1;
-		pnt->z=(min.z+max.z)>>1;
-		pnt->y=((min.y+max.y)>>1)-1;
-	}
+	select_get_center(pnt);
+	pnt->y--;
 }
 
 /* =======================================================
@@ -86,7 +81,7 @@ void piece_create_get_spot(d3pnt *pnt)
 void piece_create_spot(void)
 {
 	int				index;
-	char			name[256];
+	char			name[file_str_len];
 	spot_type		*spot;
 	
 	if (map.nspot==max_spot) {
@@ -130,7 +125,8 @@ void piece_create_spot(void)
 	strncpy(spot->script,name,file_str_len);
 	spot->script[file_str_len-1]=0x0;
 	
-	strcpy(spot->name,spot->script);
+	strncpy(spot->name,name,name_str_len);
+	spot->name[name_str_len-1]=0x0;
 }
 
 /* =======================================================
@@ -142,7 +138,7 @@ void piece_create_spot(void)
 void piece_create_scenery(void)
 {
 	int					n,index;
-	char				file_name[name_str_len];
+	char				file_name[file_str_len];
 	map_scenery_type	*scenery;
 	
 	if (map.nscenery==max_map_scenery) {
@@ -155,21 +151,23 @@ void piece_create_scenery(void)
 	if (file_name[0]==0x0) return;
 
 		// create scenery
-		
+
 	index=map.nscenery;
 	
 	scenery=&map.sceneries[index];
- 	map.nscenery++;
-	
+	map.nscenery++;
+
 	piece_create_get_spot(&scenery->pnt);
-    
+	
 	scenery->ang.x=0.0f;
 	scenery->ang.y=0.0f;
 	scenery->ang.z=0.0f;
 	
 	scenery->resize=1.0f;
 	
-	strcpy(scenery->model_name,file_name);
+	strncpy(scenery->model_name,file_name,name_str_len);
+	scenery->model_name[name_str_len-1]=0x0;
+
 	scenery->animation_name[0]=0x0;
 	scenery->contact_object_on=TRUE;
 	scenery->contact_projectile_on=TRUE;
@@ -180,7 +178,7 @@ void piece_create_scenery(void)
 	for (n=0;n!=max_map_scenery_model_texture_frame;n++) {
 		scenery->texture_frame[n]=0;
 	}
-    
+
 		// select spot
 		
     state.show_object=TRUE;

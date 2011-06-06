@@ -50,9 +50,25 @@ extern void map_movements_auto_open(void);
   
 ======================================================= */
 
-void mesh_triggers(obj_type *obj,int old_mesh_idx,int mesh_idx)
+void mesh_triggers(obj_type *obj)
 {
+	int						mesh_idx,old_mesh_idx;
 	map_mesh_type			*mesh;
+	
+		// no triggers if in air
+		
+	if (obj->air_mode!=am_ground) return;
+	
+		// any change on stand on?
+		
+	mesh_idx=obj->contact.stand_poly.mesh_idx;
+	old_mesh_idx=obj->mesh.last_stand_mesh_idx;
+		
+	if (mesh_idx==old_mesh_idx) return;
+	
+	obj->mesh.last_stand_mesh_idx=mesh_idx;
+	
+		// run change messages
 
 	if (mesh_idx!=-1) {	
 		mesh=&map.mesh.meshes[mesh_idx];
@@ -207,8 +223,7 @@ inline void run_objects_slice_single(obj_type *obj)
 
 void run_objects_slice(void)
 {
-	int				n,mesh_idx;
-	d3pnt			old_pnt;
+	int				n;
 	obj_type		*obj;
 
 	for (n=0;n!=max_obj_list;n++) {
@@ -216,35 +231,8 @@ void run_objects_slice(void)
 		if (obj==NULL) continue;
 
 		if ((!obj->scenery.on) && (!obj->hidden)) {
-		
-				// remember current position if not suspended
-				// so we can check for mesh changes
-				
-			if (!obj->suspend) {
-				old_pnt.x=obj->pnt.x;
-				old_pnt.y=obj->pnt.y;
-				old_pnt.z=obj->pnt.z;
-			}
-
-				// run objects
-				
 			run_objects_slice_single(obj);
-
-				// trigger any mesh changes if not suspended
-				// remotes handle triggers on their own
-			
-			if ((!obj->suspend) && (obj->type!=object_type_remote)) {
-			
-				if ((old_pnt.x!=obj->pnt.x) || (old_pnt.y!=obj->pnt.y) || (old_pnt.z!=obj->pnt.z)) {
-				
-					mesh_idx=map_mesh_find(&map,&obj->pnt);
-					if (obj->mesh.cur_mesh_idx!=mesh_idx) {
-						mesh_triggers(obj,obj->mesh.cur_mesh_idx,mesh_idx);
-						obj->mesh.cur_mesh_idx=mesh_idx;
-					}
-					
-				}
-			}
+			if ((!obj->suspend) && (obj->type!=object_type_remote)) mesh_triggers(obj);
 		}
 	}
 }

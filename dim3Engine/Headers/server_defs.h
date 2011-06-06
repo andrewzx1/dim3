@@ -519,7 +519,8 @@ typedef struct		{
 					} obj_bounce;
 
 typedef struct		{
-						int						spawn_mesh_idx,cur_mesh_idx;
+						int						spawn_mesh_idx,
+												last_stand_mesh_idx;
 					} obj_mesh;
 
 //
