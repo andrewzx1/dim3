@@ -176,6 +176,8 @@ void net_client_send_remote_update(obj_type *obj,bool chat_on)
 	update.health=htons((short)obj->status.health.value);
 	update.armor=htons((short)obj->status.armor.value);
 	
+	update.last_stand_mesh_idx=htons((short)obj->mesh.last_stand_mesh_idx);
+	
 		// position
 		
 	update.pnt_x=htonl(obj->pnt.x);

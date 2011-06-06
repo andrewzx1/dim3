@@ -321,7 +321,7 @@ void object_set_radius(obj_type *obj)
 
 void object_set_current_mesh(obj_type *obj)
 {
-	obj->mesh.cur_mesh_idx=map_mesh_find(&map,&obj->pnt);
+	obj->mesh.last_stand_mesh_idx=-1;
 	obj->contact.stand_poly.mesh_idx=-1;
 }
 

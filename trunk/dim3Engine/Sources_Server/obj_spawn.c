@@ -43,7 +43,6 @@ extern network_setup_type	net_setup;
 
 extern bool game_file_reload_ok(void);
 extern bool game_file_reload(char *err_str);
-extern void mesh_triggers(obj_type *obj,int old_mesh_idx,int mesh_idx);
 
 /* =======================================================
 
@@ -143,7 +142,7 @@ bool object_spawn_position(obj_type *obj,int sub_event,char *err_str)
 
 bool object_spawn(obj_type *obj,char *err_str)
 {
-	int				mesh_idx,sub_event;
+	int				sub_event;
 	
 	sub_event=obj->next_spawn_sub_event;
 
@@ -203,10 +202,9 @@ bool object_spawn(obj_type *obj,char *err_str)
 	
 	object_reset_prepare(obj);
 		
-		// any mesh messages
-
-	mesh_idx=map_mesh_find(&map,&obj->pnt);
-	if (mesh_idx!=-1) mesh_triggers(obj,-1,mesh_idx);
+		// reset mesh message trigger
+		
+	obj->mesh.last_stand_mesh_idx=-1;
     
 		// call the spawn event
 		

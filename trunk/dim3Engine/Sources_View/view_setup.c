@@ -503,17 +503,11 @@ void view_add_mesh_liquid_draw_list(void)
       
 ======================================================= */
 
-bool view_setup_model_in_view(model_draw *draw,int mesh_idx)
+bool view_setup_model_in_view(model_draw *draw)
 {
 	double					obscure_dist;
 	
 	if ((draw->model_idx==-1) || (!draw->on)) return(FALSE);
-
-		// is model in a mesh that's in the mesh draw list?
-
-	if (mesh_idx!=-1) {
-		if (!view_mesh_in_draw_list(mesh_idx)) return(FALSE);
-	}
 	
 		// is model within obscure distance
 
@@ -532,17 +526,11 @@ bool view_setup_model_in_view(model_draw *draw,int mesh_idx)
 	return(model_inview(draw));
 }
 
-bool view_setup_shadow_in_view(model_draw *draw,int mesh_idx)
+bool view_setup_shadow_in_view(model_draw *draw)
 {
 	double					obscure_dist;
 
 	if ((draw->model_idx==-1) || (!draw->on)) return(FALSE);
-
-		// is model in a mesh that's in the mesh draw list?
-
-	if (mesh_idx!=-1) {
-		if (!view_mesh_in_draw_list(mesh_idx)) return(FALSE);
-	}
 	
 		// is model within obscure distance
 
@@ -593,14 +581,14 @@ void view_setup_objects(int tick)
 			flag|=view_list_item_flag_shadow_in_view;
 		}
 		else {
-			if (view_setup_model_in_view(&obj->draw,obj->mesh.cur_mesh_idx)) flag|=view_list_item_flag_model_in_view;
+			if (view_setup_model_in_view(&obj->draw)) flag|=view_list_item_flag_model_in_view;
 
 			if (obj->draw.shadow.on) {
 				if ((flag&view_list_item_flag_model_in_view)!=0x0) {		// model in view means shadow is automatically in view
 					flag|=view_list_item_flag_shadow_in_view;
 				}
 				else {
-					if (view_setup_shadow_in_view(&obj->draw,obj->mesh.cur_mesh_idx)) flag|=view_list_item_flag_shadow_in_view;
+					if (view_setup_shadow_in_view(&obj->draw)) flag|=view_list_item_flag_shadow_in_view;
 				}
 			}
 		}
@@ -625,7 +613,7 @@ void view_setup_objects(int tick)
 			weap=weapon_find_current(obj);
 			if (weap!=NULL) {
 				model_draw_setup_weapon(obj,weap,FALSE,FALSE);
-				view_setup_model_in_view(&weap->draw,obj->mesh.cur_mesh_idx);
+				view_setup_model_in_view(&weap->draw);
 			}
 		}
 	}
@@ -633,7 +621,7 @@ void view_setup_objects(int tick)
 
 void view_setup_projectiles(int tick)
 {
-	int					n,mesh_idx,flag;
+	int					n,flag;
 	proj_type			*proj;
 	
 	for (n=0;n!=max_proj_list;n++) {
@@ -652,8 +640,7 @@ void view_setup_projectiles(int tick)
 			
 		flag=0x0;
 		
-		mesh_idx=map_mesh_find(&map,&proj->draw.pnt);
-		if (view_setup_model_in_view(&proj->draw,mesh_idx)) flag|=view_list_item_flag_model_in_view;
+		if (view_setup_model_in_view(&proj->draw)) flag|=view_list_item_flag_model_in_view;
 
 		if (proj->draw.shadow.on) {
 			if ((flag&view_list_item_flag_model_in_view)!=0x0) {		// model in view means shadow is automatically in view
