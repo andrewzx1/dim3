@@ -209,27 +209,9 @@ bool gl_initialize(int screen_wid,int screen_high,int fsaa_mode,bool reset,char 
 	render_info.view_x=(render_info.monitor_x_sz-setup.screen.x_sz)>>1;
 	render_info.view_y=(render_info.monitor_y_sz-setup.screen.y_sz)>>1;
 	
-		// determine the referesh rate
+		// stick refresh rate to 60
 
-#ifdef D3_SDL_1_3
-	SDL_GetWindowDisplayMode(sdl_wind,&dsp_mode);
-
-	render_info.monitor_refresh_rate=dsp_mode.refresh_rate;
-	if (render_info.monitor_refresh_rate==0) render_info.monitor_refresh_rate=60;
-#else
-	render_info.monitor_refresh_rate=60;				// windows XP has a stuck refresh rate of 60
-		
-	#ifdef D3_OS_MAC
-		mode_info=CGDisplayCurrentMode(CGMainDisplayID());
-		if (mode_info!=NULL) {
-			cf_rate=(CFNumberRef)CFDictionaryGetValue(mode_info,kCGDisplayRefreshRate);
-			if (cf_rate) {
-				CFNumberGetValue(cf_rate,kCFNumberIntType,&render_info.monitor_refresh_rate);
-				if (render_info.monitor_refresh_rate==0) render_info.monitor_refresh_rate=60;
-			}
-		}
-	#endif
-#endif
+	render_info.monitor_refresh_rate=60;
 
         // clear the entire window so it doesn't flash
         
@@ -240,18 +222,6 @@ bool gl_initialize(int screen_wid,int screen_high,int fsaa_mode,bool reset,char 
 	SDL_GL_SwapWindow(sdl_wind);
 #else
 	SDL_GL_SwapBuffers();
-#endif
-
-        // setup renderer
-		// supergumba -- at the expense of tearing, turn off the swap interval
-
-#ifdef D3_SDL_1_3
-	// SDL_GL_SetSwapInterval(1);
-#else
-	#ifdef D3_OS_MAC
-	//	swapint=1;
-	//	CGLSetParameter(CGLGetCurrentContext(),kCGLCPSwapInterval,&swapint);
-	#endif
 #endif
 
 	glViewport(render_info.view_x,render_info.view_y,setup.screen.x_sz,setup.screen.y_sz);

@@ -361,12 +361,10 @@ void map_mesh_rotate(map_type *map,int mesh_idx,d3pnt *center_pnt,d3ang *rot_ang
 
 		// fix boxes
 
-	npoly=mesh->npoly;
 	poly=mesh->polys;
 	
 	for (n=0;n!=npoly;n++) {
 		map_prepare_mesh_poly(mesh,poly);
-
 		poly++;
 	}
 
