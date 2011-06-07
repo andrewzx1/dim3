@@ -279,7 +279,7 @@ int scripts_add_single(int thing_type,char *sub_dir,char *name,int obj_idx,int w
 		return(-1);
 	}
 	
-		// compile and execute the construct function
+		// compile and execute
 		
 	ok=scripts_execute(script,err_str);
 	script_free_file(script);
@@ -318,7 +318,7 @@ int scripts_add(int thing_type,char *sub_dir,char *name,int obj_idx,int weap_idx
 	
 			// start the parent script
 			
-		parent_script_idx=scripts_add(thing_type,script->sub_dir,script->implement_name,obj_idx,weap_idx,proj_setup_idx,err_str);
+		parent_script_idx=scripts_add_single(thing_type,script->sub_dir,script->implement_name,obj_idx,weap_idx,proj_setup_idx,err_str);
 		if (parent_script_idx==-1) return(-1);
 
 			// set the parent and the child
@@ -329,7 +329,7 @@ int scripts_add(int thing_type,char *sub_dir,char *name,int obj_idx,int weap_idx
 		parent_script->child_idx=script_idx;
 		
 			// scripts with implements automatically
-			// turn into attached scripts.  Supergumba -- remove in the future
+			// turn into attached scripts.  supergumba -- remove in the future
 			
 		script->event_attach_list.on=TRUE;
 		
@@ -337,10 +337,6 @@ int scripts_add(int thing_type,char *sub_dir,char *name,int obj_idx,int weap_idx
 			
 		scripts_setup_events(parent_script);
 	}
-	
-		// send the construct event
-	
-	if (!scripts_post_event(script_idx,-1,sd_event_construct,0,0,err_str)) return(-1);
 
 	return(script_idx);
 }

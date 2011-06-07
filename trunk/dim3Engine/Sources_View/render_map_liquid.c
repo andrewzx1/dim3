@@ -308,7 +308,7 @@ void liquid_render_liquid_shader(map_liquid_type *liq,int txt_idx,int lmap_txt_i
 	normal_offset=(4*(3+2+2+3))*sizeof(float);
 
 	gl_shader_draw_start();
-	gl_shader_draw_execute(TRUE,texture,txt_idx,frame,lmap_txt_idx,1.0f,&light_list,tangent_offset,normal_offset);
+	gl_shader_draw_execute(core_shader_group_liquid,texture,txt_idx,frame,lmap_txt_idx,1.0f,&light_list,tangent_offset,normal_offset);
 			
 		// fix texture if any back rendering
 		

@@ -56,7 +56,7 @@ and can be sold or given away.
 
 #define max_core_shader_data_sz								10240
 
-#define max_core_shader										12
+#define max_core_shader										13
 
 #define gl_core_map_shader_light_map						0
 #define gl_core_map_shader_light_map_bump					1
@@ -70,8 +70,13 @@ and can be sold or given away.
 #define gl_core_model_shader_fog_light						9
 #define gl_core_model_shader_fog_light_bump					10
 #define gl_core_model_shader_fog_light_bump_spec			11
+#define gl_core_map_shader_liquid							12
 
 #define gl_shader_core_index								1000
+
+#define core_shader_group_map								0
+#define core_shader_group_liquid							1
+#define core_shader_group_model								2
 
 //
 // diffuse

@@ -377,7 +377,7 @@ void gl_shader_ambient_hilite_override(shader_type *shader,bool hilite)
 	glUniform3fARB(shader->var_locs.dim3AmbientColor,col.r,col.g,col.b);
 }
 
-void gl_shader_set_light_variables(shader_type *shader,bool map_shader,bool is_core,view_light_list_type *light_list)
+void gl_shader_set_light_variables(shader_type *shader,int core_shader_group,bool is_core,view_light_list_type *light_list)
 {
 	int								n,k,count,in_light_map,max_light;
 	view_light_spot_type			*lspot;
@@ -754,13 +754,13 @@ void gl_shader_draw_end(void)
       
 ======================================================= */
 
-void gl_shader_set_texture(shader_type *shader,bool map_shader,texture_type *texture,int txt_idx,int lmap_txt_idx,int frame)
+void gl_shader_set_texture(shader_type *shader,int core_shader_group,texture_type *texture,int txt_idx,int lmap_txt_idx,int frame)
 {
 	GLuint			gl_id;
 
 		// light map
 
-	if (map_shader) {
+	if (core_shader_group==core_shader_group_map) {
 		if (lmap_txt_idx==-1) {
 			gl_id=lmap_black_bitmap.gl_id;
 		}
@@ -820,7 +820,7 @@ void gl_shader_texture_override(GLuint gl_id,float alpha)
       
 ======================================================= */
 
-void gl_shader_draw_execute(bool map_shader,texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,view_light_list_type *light_list,int tangent_offset,int normal_offset)
+void gl_shader_draw_execute(int core_shader_group,texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,view_light_list_type *light_list,int tangent_offset,int normal_offset)
 {
 	bool						is_core;
 	shader_type					*shader;
@@ -828,7 +828,7 @@ void gl_shader_draw_execute(bool map_shader,texture_type *texture,int txt_idx,in
 		// get shader based on number of lights
 		
 	if (texture->shader_idx==gl_shader_core_index) {
-		shader=gl_core_shader_find_ptr(light_list->nlight,map_shader,texture);
+		shader=gl_core_shader_find_ptr(light_list->nlight,core_shader_group,texture);
 		is_core=TRUE;
 	}
 	else {
@@ -857,7 +857,7 @@ void gl_shader_draw_execute(bool map_shader,texture_type *texture,int txt_idx,in
 	
 		// hiliting
 		
-	if ((!map_shader) && (light_list->hilite)) {
+	if ((core_shader_group==core_shader_group_model) && (light_list->hilite)) {
 		shader->in_hilite=TRUE;
 		gl_shader_ambient_hilite_override(shader,TRUE);
 	}
@@ -874,7 +874,7 @@ void gl_shader_draw_execute(bool map_shader,texture_type *texture,int txt_idx,in
 	
 		// textures and per-texture variables
 		
-	gl_shader_set_texture(shader,map_shader,texture,txt_idx,lmap_txt_idx,frame);
+	gl_shader_set_texture(shader,core_shader_group,texture,txt_idx,lmap_txt_idx,frame);
 	
 		// per polygon variables
 		
@@ -882,7 +882,7 @@ void gl_shader_draw_execute(bool map_shader,texture_type *texture,int txt_idx,in
 
 		// lighting variables
 			
-	if (!map_shader) gl_shader_set_diffuse_variables(shader,light_list);
+	if (core_shader_group==core_shader_group_model) gl_shader_set_diffuse_variables(shader,light_list);
 
-	gl_shader_set_light_variables(shader,map_shader,is_core,light_list);
+	gl_shader_set_light_variables(shader,core_shader_group,is_core,light_list);
 }

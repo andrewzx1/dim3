@@ -121,8 +121,14 @@ void weapon_clear_ammo(weap_ammo_type *ammo,bool use)
 
 bool weapon_start_script(obj_type *obj,weapon_type *weap,char *err_str)
 {
+		// create script
+
 	weap->script_idx=scripts_add(thing_type_weapon,"Weapons",weap->name,obj->idx,weap->idx,-1,err_str);
-	return(weap->script_idx!=-1);
+	if (weap->script_idx==-1) return(FALSE);
+		
+		// send the construct event
+	
+	return(scripts_post_event(weap->script_idx,-1,sd_event_construct,0,0,err_str));
 }
 
 /* =======================================================

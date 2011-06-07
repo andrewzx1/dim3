@@ -368,6 +368,13 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 		progress_shutdown();
 		return(FALSE);
 	}
+			
+		// send the construct event
+	
+	if (!scripts_post_event(js.course_script_idx,-1,sd_event_construct,0,0,err_str)) {
+		progress_shutdown();
+		return(FALSE);
+	}
 
 		// create object and scenery
 		// and call spawn on all the objects

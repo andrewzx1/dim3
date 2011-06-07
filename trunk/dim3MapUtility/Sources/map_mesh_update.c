@@ -339,7 +339,7 @@ void map_mesh_rotate(map_type *map,int mesh_idx,d3pnt *center_pnt,d3ang *rot_ang
 		fy=((float)pt->y)-f_mpt.y;
 		fz=((float)pt->z)-f_mpt.z;
 
-		matrix_vertex_multiply(&mat,&fx,&fy,&fz);
+		matrix_vertex_multiply_ignore_transform(&mat,&fx,&fy,&fz);
 
 		pt->x=(int)(fx+f_mpt.x);
 		pt->y=(int)(fy+f_mpt.y);
@@ -354,8 +354,8 @@ void map_mesh_rotate(map_type *map,int mesh_idx,d3pnt *center_pnt,d3ang *rot_ang
 	poly=mesh->polys;
 	
 	for (n=0;n!=npoly;n++) {
-		matrix_vertex_multiply(&mat,&poly->tangent_space.tangent.x,&poly->tangent_space.tangent.y,&poly->tangent_space.tangent.z);
-		matrix_vertex_multiply(&mat,&poly->tangent_space.normal.x,&poly->tangent_space.normal.y,&poly->tangent_space.normal.z);
+		matrix_vertex_multiply_ignore_transform(&mat,&poly->tangent_space.tangent.x,&poly->tangent_space.tangent.y,&poly->tangent_space.tangent.z);
+		matrix_vertex_multiply_ignore_transform(&mat,&poly->tangent_space.normal.x,&poly->tangent_space.normal.y,&poly->tangent_space.normal.z);
 		poly++;
 	}
 

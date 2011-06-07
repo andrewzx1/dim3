@@ -90,7 +90,7 @@ void map_movements_start(int movement_idx,int move_idx,int obj_idx)
 	move=&movement->moves[move_idx];
 	
 		// get reverse movement
-		
+
 	rev_mov.x=-move->mov.x;
 	rev_mov.y=-move->mov.y;
 	rev_mov.z=-move->mov.z;
