@@ -740,8 +740,8 @@ int object_create(char *name,int type,int bind)
 
 bool object_start_script(obj_type *obj,char *err_str)
 {
-	int						script_idx;
-	char					script_name[file_str_len];
+	int					script_idx;
+	char				script_name[file_str_len];
 
 		// is it a non-script scenery?
 		// this is usually something set when re-loading
@@ -765,10 +765,10 @@ bool object_start_script(obj_type *obj,char *err_str)
 	else {
 		strcpy(script_name,obj->spot_script);
 	}
-
+	
 	script_idx=scripts_add(thing_type_object,"Objects",script_name,obj->idx,-1,-1,err_str);
 	if (script_idx==-1) return(FALSE);
-
+	
 	obj->script_idx=script_idx;
 	return(TRUE);
 }
@@ -909,7 +909,7 @@ int object_start(spot_type *spot,char *name,int type,int bind,char *err_str)
 		strcpy(err_str,"Out of memory");
 		return(-1);
 	}
-
+	
 	obj=server.obj_list.objs[idx];
 
 		// player default setup

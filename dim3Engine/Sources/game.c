@@ -62,7 +62,7 @@ bool game_start(bool in_file_load,int skill,int simple_save_idx,char *err_str)
 	console_add_system("Starting Game");
 
 		// start server
-
+		
 	if (!server_game_start(in_file_load,skill,simple_save_idx,err_str)) return(FALSE);
 
 		// start view
