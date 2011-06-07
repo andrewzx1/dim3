@@ -76,7 +76,7 @@ void gl_core_shader_build_generic_light_struct(int nlight,char *buf)
       
 ======================================================= */
 
-char* gl_core_map_shader_build_vert(int nlight,bool fog,bool light_map,bool bump,bool spec)
+char* gl_core_map_shader_build_vert(int nlight,bool fog,bool bump,bool spec)
 {
 	int				n;
 	char			*buf;
@@ -110,7 +110,7 @@ char* gl_core_map_shader_build_vert(int nlight,bool fog,bool light_map,bool bump
 
 	strcat(buf,"gl_Position=ftransform();\n");
 	strcat(buf,"gl_TexCoord[0]=gl_MultiTexCoord0;\n");
-	if (light_map) strcat(buf,"gl_TexCoord[1]=gl_MultiTexCoord1;\n");
+	strcat(buf,"gl_TexCoord[1]=gl_MultiTexCoord1;\n");
 	
 	strcat(buf,"dirNormal=normalize(dim3VertexNormal);\n");
 
@@ -145,7 +145,7 @@ char* gl_core_map_shader_build_vert(int nlight,bool fog,bool light_map,bool bump
 	return(buf);
 }
 
-char* gl_core_map_shader_build_frag(int nlight,bool fog,bool light_map,bool bump,bool spec)
+char* gl_core_map_shader_build_frag(int nlight,bool fog,bool bump,bool spec)
 {
 	int				n;
 	char			*buf;
@@ -164,11 +164,9 @@ char* gl_core_map_shader_build_frag(int nlight,bool fog,bool light_map,bool bump
 	strcat(buf,"uniform sampler2D dim3Tex");
 	if (bump) strcat(buf,",dim3TexBump");
 	if (spec) strcat(buf,",dim3TexSpecular");
-	if (light_map) strcat(buf,",dim3TexLightMap");
-	strcat(buf,";\n");
+	strcat(buf,",dim3TexLightMap;\n");
 
-	strcat(buf,"uniform float dim3Alpha");
-	if (light_map) strcat(buf,",dim3LightMapBoost");
+	strcat(buf,"uniform float dim3Alpha,dim3LightMapBoost");
 	if (spec) strcat(buf,",dim3ShineFactor");
 	strcat(buf,";\n");
 	
@@ -190,10 +188,8 @@ char* gl_core_map_shader_build_frag(int nlight,bool fog,bool light_map,bool bump
 
 		// the light map
 
-	if (light_map) {
-		strcat(buf,"vec3 lmap=texture2D(dim3TexLightMap,gl_TexCoord[1].st).rgb;\n");
-		strcat(buf,"ambient+=(lmap+(lmap*dim3LightMapBoost));\n");
-	}
+	strcat(buf,"vec3 lmap=texture2D(dim3TexLightMap,gl_TexCoord[1].st).rgb;\n");
+	strcat(buf,"ambient+=(lmap+(lmap*dim3LightMapBoost));\n");
 	
 		// the texture map
 		
@@ -269,20 +265,20 @@ char* gl_core_map_shader_build_frag(int nlight,bool fog,bool light_map,bool bump
 	return(buf);
 }
 
-bool gl_core_map_shader_create(shader_type *shader,int nlight,bool fog,bool light_map,bool bump,bool spec,char *err_str)
+bool gl_core_map_shader_create(shader_type *shader,int nlight,bool fog,bool bump,bool spec,char *err_str)
 {
 	char				*vertex_data,*fragment_data;
 	bool				ok;
 	
 		// create the shader code
 
-	vertex_data=gl_core_map_shader_build_vert(nlight,fog,light_map,bump,spec);
+	vertex_data=gl_core_map_shader_build_vert(nlight,fog,bump,spec);
 	if (vertex_data==NULL) {
 		strcpy(err_str,"Out of Memory");
 		return(FALSE);
 	}
 
-	fragment_data=gl_core_map_shader_build_frag(nlight,fog,light_map,bump,spec);
+	fragment_data=gl_core_map_shader_build_frag(nlight,fog,bump,spec);
 	if (fragment_data==NULL) {
 		free(vertex_data);
 		strcpy(err_str,"Out of Memory");
@@ -293,7 +289,6 @@ bool gl_core_map_shader_create(shader_type *shader,int nlight,bool fog,bool ligh
 		
 	sprintf(shader->name,"core_map_light:%d",nlight);
 	if (fog) strcat(shader->name,"_fog");
-	if (light_map) strcat(shader->name,"_lightmap");
 	if (bump) strcat(shader->name,"_bump");
 	if (spec) strcat(shader->name,"_spec");
 	
@@ -314,7 +309,155 @@ bool gl_core_map_shader_create(shader_type *shader,int nlight,bool fog,bool ligh
 
 /* =======================================================
 
-      Build Single Core Map Shaders
+      Build Single Core Liquid Shaders
+      
+======================================================= */
+
+char* gl_core_liquid_shader_build_vert(int nlight)
+{
+	int				n;
+	char			*buf;
+
+		// memory for shader
+
+	buf=(char*)malloc(max_core_shader_data_sz);
+	if (buf==NULL) return(NULL);
+
+	bzero(buf,max_core_shader_data_sz);
+
+		// build vert shader
+		
+	gl_core_shader_build_generic_light_struct(nlight,buf);
+
+	strcat(buf,"uniform vec3 dim3CameraPosition;\n");
+	strcat(buf,"attribute vec3 dim3VertexNormal;\n");
+	
+	strcat(buf,"varying vec3 dirNormal;\n");
+
+	sprintf(strchr(buf,0),"varying vec3 lightVector[%d];\n",max_shader_light);
+	
+	strcat(buf,"void main(void)\n");
+	strcat(buf,"{\n");
+
+	strcat(buf,"gl_Position=ftransform();\n");
+	strcat(buf,"gl_TexCoord[0]=gl_MultiTexCoord0;\n");
+	strcat(buf,"gl_TexCoord[1]=gl_MultiTexCoord1;\n");
+	
+	strcat(buf,"dirNormal=normalize(dim3VertexNormal);\n");
+
+	strcat(buf,"vec3 vtx=vec3(gl_ModelViewMatrix*gl_Vertex);\n");
+	
+	for (n=0;n!=nlight;n++) {
+		sprintf(strchr(buf,0),"lightVector[%d]=dim3Light_%d.position-vtx;\n",n,n);
+	}
+
+	strcat(buf,"}\n");
+
+	return(buf);
+}
+
+char* gl_core_liquid_shader_build_frag(int nlight)
+{
+	int				n;
+	char			*buf;
+
+		// memory for shader
+
+	buf=(char*)malloc(max_core_shader_data_sz);
+	if (buf==NULL) return(NULL);
+
+	bzero(buf,max_core_shader_data_sz);
+
+		// build frag shader
+		
+	gl_core_shader_build_generic_light_struct(nlight,buf);
+	
+	strcat(buf,"uniform sampler2D dim3Tex,dim3TexLightMap;\n");
+	strcat(buf,"uniform float dim3Alpha,dim3LightMapBoost;\n");
+	strcat(buf,"uniform vec3 dim3AmbientColor;\n");
+	
+	strcat(buf,"varying vec3 dirNormal;\n");
+	
+	sprintf(strchr(buf,0),"varying vec3 lightVector[%d];\n",max_shader_light);
+	
+	strcat(buf,"void main(void)\n");
+	strcat(buf,"{\n");
+	
+	strcat(buf,"float att,dist;\n");
+	strcat(buf,"vec3 ambient=dim3AmbientColor;\n");
+
+		// the light map
+
+	strcat(buf,"vec3 lmap=texture2D(dim3TexLightMap,gl_TexCoord[1].st).rgb;\n");
+	strcat(buf,"ambient+=(lmap+(lmap*dim3LightMapBoost));\n");
+	
+		// the texture map
+		
+	strcat(buf,"vec4 tex=texture2D(dim3Tex,gl_TexCoord[0].st);\n");
+	
+		// the texture lighting
+		
+	for (n=0;n!=nlight;n++) {
+		sprintf(strchr(buf,0),"dist=length(lightVector[%d]);\n",n);
+		sprintf(strchr(buf,0),"if (dist<dim3Light_%d.intensity) {\n",n);
+		sprintf(strchr(buf,0)," if (dot(dirNormal,dim3Light_%d.direction)>=0.0) {\n",n);
+		sprintf(strchr(buf,0),"  att=1.0-(dist*dim3Light_%d.invertIntensity);\n",n);
+		sprintf(strchr(buf,0),"  att+=pow(att,dim3Light_%d.exponent);\n",n);
+		sprintf(strchr(buf,0),"  if (!dim3Light_%d.inLightMap) ambient+=(dim3Light_%d.color*att);\n",n,n);
+		strcat(buf," }\n");
+		strcat(buf,"}\n");
+	}
+
+		// output the fragment
+
+	strcat(buf,"gl_FragColor.rgb=(tex.rgb*ambient);\n");
+	strcat(buf,"gl_FragColor.a=tex.a*dim3Alpha;\n");
+	strcat(buf,"}\n");
+
+	return(buf);
+}
+
+bool gl_core_liquid_shader_create(shader_type *shader,int nlight,char *err_str)
+{
+	char				*vertex_data,*fragment_data;
+	bool				ok;
+	
+		// create the shader code
+
+	vertex_data=gl_core_liquid_shader_build_vert(nlight);
+	if (vertex_data==NULL) {
+		strcpy(err_str,"Out of Memory");
+		return(FALSE);
+	}
+
+	fragment_data=gl_core_liquid_shader_build_frag(nlight);
+	if (fragment_data==NULL) {
+		free(vertex_data);
+		strcpy(err_str,"Out of Memory");
+		return(FALSE);
+	}
+	
+		// create the name
+		
+	sprintf(shader->name,"core_liquid_light:%d",nlight);
+	sprintf(shader->vertex_name,"%s_vert",shader->name);
+	sprintf(shader->fragment_name,"%s_frag",shader->name);
+	
+		// compile the code
+
+	ok=gl_shader_code_compile(shader,vertex_data,fragment_data,err_str);
+
+		// free the code
+
+	free(vertex_data);
+	free(fragment_data);
+
+	return(ok);
+}
+
+/* =======================================================
+
+      Build Single Core Model Shaders
       
 ======================================================= */
 
@@ -561,21 +704,21 @@ bool gl_core_shader_initialize_per_light(int nlight,char *err_str)
 {
 		// gl_core_map_shader_light_map
 
-	if (!gl_core_map_shader_create(&core_shaders[nlight][gl_core_map_shader_light_map],nlight,FALSE,TRUE,FALSE,FALSE,err_str)) {
+	if (!gl_core_map_shader_create(&core_shaders[nlight][gl_core_map_shader_light_map],nlight,FALSE,FALSE,FALSE,err_str)) {
 		gl_core_shader_shutdown();
 		return(FALSE);
 	}
 	
 		// gl_core_map_shader_light_map_bump
 
-	if (!gl_core_map_shader_create(&core_shaders[nlight][gl_core_map_shader_light_map_bump],nlight,FALSE,TRUE,TRUE,FALSE,err_str)) {
+	if (!gl_core_map_shader_create(&core_shaders[nlight][gl_core_map_shader_light_map_bump],nlight,FALSE,TRUE,FALSE,err_str)) {
 		gl_core_shader_shutdown();
 		return(FALSE);
 	}
 
 		// gl_core_map_shader_light_map_bump_spec
 
-	if (!gl_core_map_shader_create(&core_shaders[nlight][gl_core_map_shader_light_map_bump_spec],nlight,FALSE,TRUE,TRUE,TRUE,err_str)) {
+	if (!gl_core_map_shader_create(&core_shaders[nlight][gl_core_map_shader_light_map_bump_spec],nlight,FALSE,TRUE,TRUE,err_str)) {
 		gl_core_shader_shutdown();
 		return(FALSE);
 	}
@@ -603,21 +746,21 @@ bool gl_core_shader_initialize_per_light(int nlight,char *err_str)
 
 		// gl_core_map_shader_fog_light_map
 
-	if (!gl_core_map_shader_create(&core_shaders[nlight][gl_core_map_shader_fog_light_map],nlight,TRUE,TRUE,FALSE,FALSE,err_str)) {
+	if (!gl_core_map_shader_create(&core_shaders[nlight][gl_core_map_shader_fog_light_map],nlight,TRUE,FALSE,FALSE,err_str)) {
 		gl_core_shader_shutdown();
 		return(FALSE);
 	}
 	
 		// gl_core_map_shader_fog_light_map_bump
 
-	if (!gl_core_map_shader_create(&core_shaders[nlight][gl_core_map_shader_fog_light_map_bump],nlight,TRUE,TRUE,TRUE,FALSE,err_str)) {
+	if (!gl_core_map_shader_create(&core_shaders[nlight][gl_core_map_shader_fog_light_map_bump],nlight,TRUE,TRUE,FALSE,err_str)) {
 		gl_core_shader_shutdown();
 		return(FALSE);
 	}
 
 		// gl_core_map_shader_fog_light_map_bump_spec
 
-	if (!gl_core_map_shader_create(&core_shaders[nlight][gl_core_map_shader_fog_light_map_bump_spec],nlight,TRUE,TRUE,TRUE,TRUE,err_str)) {
+	if (!gl_core_map_shader_create(&core_shaders[nlight][gl_core_map_shader_fog_light_map_bump_spec],nlight,TRUE,TRUE,TRUE,err_str)) {
 		gl_core_shader_shutdown();
 		return(FALSE);
 	}
@@ -639,6 +782,13 @@ bool gl_core_shader_initialize_per_light(int nlight,char *err_str)
 		// gl_core_model_shader_fog_light_bump_spec
 
 	if (!gl_core_model_shader_create(&core_shaders[nlight][gl_core_model_shader_fog_light_bump_spec],nlight,TRUE,TRUE,TRUE,err_str)) {
+		gl_core_shader_shutdown();
+		return(FALSE);
+	}
+
+		// gl_core_map_shader_liquid
+
+	if (!gl_core_liquid_shader_create(&core_shaders[nlight][gl_core_map_shader_liquid],nlight,err_str)) {
 		gl_core_shader_shutdown();
 		return(FALSE);
 	}
@@ -694,9 +844,13 @@ void gl_core_shader_shutdown(void)
       
 ======================================================= */
 
-inline int gl_core_shader_find_for_mode(bool map_shader,texture_type *texture)
+inline int gl_core_shader_find_for_mode(int core_shader_group,texture_type *texture)
 {
 	bool				bump,spec;
+
+		// liquid shaders
+
+	if (core_shader_group==core_shader_group_liquid) return(gl_core_map_shader_liquid);
 	
 		// are bump and spec on?
 		
@@ -710,7 +864,7 @@ inline int gl_core_shader_find_for_mode(bool map_shader,texture_type *texture)
 		// non-fog shaders
 		
 	if (!fog_solid_on()) {
-		if (!map_shader) {
+		if (core_shader_group==core_shader_group_model) {
 			if ((bump) && (spec)) return(gl_core_model_shader_light_bump_spec);
 			if ((bump) && (!spec)) return(gl_core_model_shader_light_bump);
 			return(gl_core_model_shader_light);
@@ -723,7 +877,7 @@ inline int gl_core_shader_find_for_mode(bool map_shader,texture_type *texture)
 	
 		// fog shaders
 	
-	if (!map_shader) {
+	if (core_shader_group==core_shader_group_model) {
 		if ((bump) && (spec)) return(gl_core_model_shader_fog_light_bump_spec);
 		if ((bump) && (!spec)) return(gl_core_model_shader_fog_light_bump);
 		return(gl_core_model_shader_fog_light);
@@ -734,11 +888,11 @@ inline int gl_core_shader_find_for_mode(bool map_shader,texture_type *texture)
 	return(gl_core_map_shader_fog_light_map);
 }
 
-shader_type* gl_core_shader_find_ptr(int nlight,bool map_shader,texture_type *texture)
+shader_type* gl_core_shader_find_ptr(int nlight,int core_shader_group,texture_type *texture)
 {
 	int				which_varient;
 	
-	which_varient=gl_core_shader_find_for_mode(map_shader,texture);
+	which_varient=gl_core_shader_find_for_mode(core_shader_group,texture);
 	return(&core_shaders[nlight][which_varient]);
 }
 

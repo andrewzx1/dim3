@@ -519,32 +519,6 @@
 					</FileConfiguration>
 				</File>
 				<File
-					RelativePath="..\..\dim3Engine\Sources_Server\group_change.c"
-					>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-						/>
-					</FileConfiguration>
-				</File>
-				<File
-					RelativePath="..\..\dim3Engine\Sources_Server\group_move.c"
-					>
-					<FileConfiguration
-						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							AdditionalIncludeDirectories=""
-							PreprocessorDefinitions=""
-						/>
-					</FileConfiguration>
-				</File>
-				<File
 					RelativePath="..\..\dim3Engine\Sources_Server\item.c"
 					>
 					<FileConfiguration
@@ -2605,6 +2579,32 @@
 					>
 					<File
 						RelativePath="..\..\dim3Engine\Sources_Server\collision_map.c"
+						>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								AdditionalIncludeDirectories=""
+								PreprocessorDefinitions=""
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\..\dim3Engine\Sources_Server\group_change.c"
+						>
+						<FileConfiguration
+							Name="Release|Win32"
+							>
+							<Tool
+								Name="VCCLCompilerTool"
+								AdditionalIncludeDirectories=""
+								PreprocessorDefinitions=""
+							/>
+						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\..\dim3Engine\Sources_Server\group_move.c"
 						>
 						<FileConfiguration
 							Name="Release|Win32"

@@ -67,8 +67,14 @@ proj_setup_type* find_proj_setups(weapon_type *weap,char *name)
 
 bool proj_setup_start_script(obj_type *obj,weapon_type *weap,proj_setup_type *proj_setup,char *err_str)
 {
+		// create the script
+
 	proj_setup->script_idx=scripts_add(thing_type_projectile,"Projectiles",proj_setup->name,obj->idx,weap->idx,proj_setup->idx,err_str);
-	return(proj_setup->script_idx!=-1);
+	if (proj_setup->script_idx==-1) return(FALSE);
+		
+		// send the construct event
+	
+	return(scripts_post_event(proj_setup->script_idx,-1,sd_event_construct,0,0,err_str));
 }
 
 /* =======================================================

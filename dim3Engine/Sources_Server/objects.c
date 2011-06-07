@@ -740,7 +740,6 @@ int object_create(char *name,int type,int bind)
 
 bool object_start_script(obj_type *obj,char *err_str)
 {
-	int					script_idx;
 	char				script_name[file_str_len];
 
 		// is it a non-script scenery?
@@ -766,11 +765,14 @@ bool object_start_script(obj_type *obj,char *err_str)
 		strcpy(script_name,obj->spot_script);
 	}
 	
-	script_idx=scripts_add(thing_type_object,"Objects",script_name,obj->idx,-1,-1,err_str);
-	if (script_idx==-1) return(FALSE);
+		// create the script
+
+	obj->script_idx=scripts_add(thing_type_object,"Objects",script_name,obj->idx,-1,-1,err_str);
+	if (obj->script_idx==-1) return(FALSE);
+			
+		// send the construct event
 	
-	obj->script_idx=script_idx;
-	return(TRUE);
+	return(scripts_post_event(obj->script_idx,-1,sd_event_construct,0,0,err_str));
 }
 
 /* =======================================================

@@ -137,8 +137,17 @@ bool server_game_start(bool in_file_load,int skill,int simple_save_idx,char *err
 	
 	server.player_obj_idx=-1;
 	
+		// create the script
+
 	js.game_script_idx=scripts_add(thing_type_game,"Game","Game",-1,-1,-1,err_str);
 	if (js.game_script_idx==-1) return(FALSE);
+		
+		// send the construct event
+	
+	if (!scripts_post_event(js.game_script_idx,-1,sd_event_construct,0,0,err_str)) {
+		scripts_dispose(js.game_script_idx);
+		return(FALSE);
+	}
 
 		// if not reloading, then check that
 		// a map was set
