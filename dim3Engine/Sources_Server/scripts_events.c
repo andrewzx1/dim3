@@ -204,7 +204,7 @@ bool scripts_post_event_on_attach(int script_idx,int override_proj_idx,int main_
 		argv[1]=script_int_to_value(script->cx,sub_event);
 		argv[2]=script_int_to_value(script->cx,id);
 		argv[3]=script_int_to_value(script->cx,tick);
-
+		
 		rval=JSObjectCallAsFunction(script->cx,script->event_attach_list.func[event_idx],NULL,4,argv,&exception);
 		if (rval==NULL) script_exception_to_string(script->cx,main_event,exception,err_str,256);
 	}
@@ -238,7 +238,7 @@ bool scripts_post_event_on_attach(int script_idx,int override_proj_idx,int main_
 bool scripts_post_event(int script_idx,int override_proj_idx,int main_event,int sub_event,int id,char *err_str)
 {
 	int						event_idx;
-	script_type				*script;
+	script_type				*script,*parent_script;
 	
 		// ignore if no script
 
@@ -259,10 +259,10 @@ bool scripts_post_event(int script_idx,int override_proj_idx,int main_event,int 
 
 	if (script->parent_idx==-1) return(TRUE);
 
-	script=js.script_list.scripts[script->parent_idx];
-	if (script->event_attach_list.func[event_idx]==NULL) return(TRUE);
+	parent_script=js.script_list.scripts[script->parent_idx];
+	if (parent_script->event_attach_list.func[event_idx]==NULL) return(TRUE);
 
-	return(scripts_post_event_on_attach(script->idx,override_proj_idx,main_event,sub_event,id,err_str));
+	return(scripts_post_event_on_attach(parent_script->idx,override_proj_idx,main_event,sub_event,id,err_str));
 }
 
 void scripts_post_event_console(int script_idx,int override_proj_idx,int main_event,int sub_event,int id)
