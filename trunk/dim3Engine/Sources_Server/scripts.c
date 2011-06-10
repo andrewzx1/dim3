@@ -279,6 +279,10 @@ int scripts_add_single(int thing_type,char *sub_dir,char *name,int obj_idx,int w
 		return(-1);
 	}
 	
+		// root the object
+	
+	JSValueProtect(script->cx,(JSValueRef)script->obj);
+	
 		// compile and execute
 		
 	ok=scripts_execute(script,err_str);
@@ -290,9 +294,7 @@ int scripts_add_single(int thing_type,char *sub_dir,char *name,int obj_idx,int w
 		return(-1);
 	}
 	
-		// root the object
-		
-	JSValueProtect(script->cx,(JSValueRef)script->obj);
+	
 		
 	return(idx);
 }
@@ -306,7 +308,7 @@ int scripts_add(int thing_type,char *sub_dir,char *name,int obj_idx,int weap_idx
 		
 	script_idx=scripts_add_single(thing_type,sub_dir,name,obj_idx,weap_idx,proj_setup_idx,err_str);
 	if (script_idx==-1) return(-1);
-	
+
 		// setup the events
 		
 	script=js.script_list.scripts[script_idx];

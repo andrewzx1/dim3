@@ -120,9 +120,7 @@ JSValueRef js_obj_weapon_add_func(JSContextRef cx,JSObjectRef func,JSObjectRef j
 	
 		// add weapon
 		
-	script_bool_to_value(cx,weapon_add(obj,name));
-
-	return(script_null_to_value(cx));
+	return(script_bool_to_value(cx,weapon_add(obj,name)));
 }
 
 /* =======================================================
@@ -230,6 +228,7 @@ JSValueRef js_obj_weapon_hide_single_func(JSContextRef cx,JSObjectRef func,JSObj
 	
 	obj=object_get_attach(j_obj);
 	weap=script_find_weapon_from_name_arg(cx,obj,argv[0],exception);
+	
 	if (weap!=NULL) weap->hidden=script_value_to_bool(cx,argv[1]);
 
 	return(script_null_to_value(cx));
