@@ -222,12 +222,21 @@ void piece_delete(void)
 {
 	int				n,i,k,nsel_count,
 					type,main_idx,sub_idx;
+	unsigned char	*mesh_mask;
 	
 	undo_push();
 	
 		// sort segment so higher indexes are deleted first
 		
 	select_sort();
+	
+		// selections have multiple polygons in them
+		// so keep a mesh list
+	
+	mesh_mask=(unsigned char*)malloc(map.mesh.nmesh);
+	if (mesh_mask==NULL) return;
+	
+	bzero(mesh_mask,map.mesh.nmesh);
 	
 		// delete selection
 	
@@ -245,7 +254,8 @@ void piece_delete(void)
 					break;
 				}
 				if (state.drag_mode==drag_mode_mesh) {
-					map_mesh_delete(&map,main_idx);
+					if (mesh_mask[main_idx]==0x0) map_mesh_delete(&map,main_idx);
+					mesh_mask[main_idx]=0x1;
 					break;
 				}
 				break;
@@ -308,6 +318,8 @@ void piece_delete(void)
 				
 		}
 	}
+	
+	free(mesh_mask);
 	
 	select_clear();
 	
