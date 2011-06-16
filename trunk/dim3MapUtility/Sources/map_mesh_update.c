@@ -311,8 +311,7 @@ void map_mesh_rotate(map_type *map,int mesh_idx,d3pnt *center_pnt,d3ang *rot_ang
 {
 	int									n,nvertex,npoly;
 	float								fx,fy,fz;
-	d3vct								f_mpt;
-	d3pnt								*pt;
+	d3pnt								*pt,mpt;
 	matrix_type							mat;
 	map_mesh_type						*mesh;
 	map_mesh_poly_type					*poly;
@@ -321,9 +320,9 @@ void map_mesh_rotate(map_type *map,int mesh_idx,d3pnt *center_pnt,d3ang *rot_ang
 
 		// get mesh rotation center
 
-	f_mpt.x=(float)(center_pnt->x+mesh->rot_off.x);
-	f_mpt.y=(float)(center_pnt->y+mesh->rot_off.y);
-	f_mpt.z=(float)(center_pnt->z+mesh->rot_off.z);
+	mpt.x=center_pnt->x+mesh->rot_off.x;
+	mpt.y=center_pnt->y+mesh->rot_off.y;
+	mpt.z=center_pnt->z+mesh->rot_off.z;
 
 		// matrixes
 
@@ -335,15 +334,15 @@ void map_mesh_rotate(map_type *map,int mesh_idx,d3pnt *center_pnt,d3ang *rot_ang
 	pt=mesh->vertexes;
 
 	for (n=0;n!=nvertex;n++) {
-		fx=((float)pt->x)-f_mpt.x;
-		fy=((float)pt->y)-f_mpt.y;
-		fz=((float)pt->z)-f_mpt.z;
+		fx=(float)(pt->x-mpt.x);
+		fy=(float)(pt->y-mpt.y);
+		fz=(float)(pt->z-mpt.z);
 
 		matrix_vertex_multiply_ignore_transform(&mat,&fx,&fy,&fz);
 
-		pt->x=(int)(fx+f_mpt.x);
-		pt->y=(int)(fy+f_mpt.y);
-		pt->z=(int)(fz+f_mpt.z);
+		pt->x=((int)fx)+mpt.x;
+		pt->y=((int)fy)+mpt.y;
+		pt->z=((int)fz)+mpt.z;
 
 		pt++;
 	}

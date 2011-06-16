@@ -90,11 +90,11 @@ bool group_move_start(int group_idx,int movement_idx,int movement_move_idx,d3pnt
 	}
 	
 		// setup move over time
-		
+
 	move=&group->move;
 
 	move->count=count;
-	
+
 	move->mov_add.x=mov->x/count;
 	move->mov_add.y=mov->y/count;
 	move->mov_add.z=mov->z/count;
