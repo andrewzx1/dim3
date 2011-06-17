@@ -144,10 +144,12 @@ void write_map_settings_xml(map_type *map)
     xml_add_tagend(TRUE);
     
     xml_add_tagstart("Settings");
-    xml_add_attribute_float("gravity",map->settings.gravity);
-	xml_add_attribute_float("gravity_max_power",map->settings.gravity_max_power);
-	xml_add_attribute_float("gravity_max_speed",map->settings.gravity_max_speed);
-    xml_add_attribute_float("resistance",map->settings.resistance);
+    xml_add_attribute_float("gravity",map->physics.gravity);
+	xml_add_attribute_float("gravity_max_power",map->physics.gravity_max_power);
+	xml_add_attribute_float("gravity_max_speed",map->physics.gravity_max_speed);
+    xml_add_attribute_float("resistance",map->physics.resistance);
+    xml_add_attribute_float("slope_gravity_min",map->physics.slope_gravity_min);
+    xml_add_attribute_float("slope_gravity_max",map->physics.slope_gravity_max);
 	xml_add_tagend(TRUE);
 
     xml_add_tagstart("Optimize");

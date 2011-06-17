@@ -29,9 +29,6 @@ and can be sold or given away.
 	#include "dim3maputility.h"
 #endif
 
-extern void map_prepare_mesh_poly(map_mesh_type *mesh,map_mesh_poly_type *mesh_poly);
-extern void map_prepare_mesh_box(map_mesh_type *mesh);
-
 /* =======================================================
 
       Combine Meshes
@@ -164,16 +161,122 @@ int map_mesh_combine(map_type *map,int mesh_1_idx,int mesh_2_idx)
 
 /* =======================================================
 
+      In Game Mesh Move and Rotate With Copy Vertexes
+      
+======================================================= */
+
+void map_mesh_move_rotate_copy(map_type *map,int mesh_idx,d3pnt *center_pnt,d3pnt *move_pnt,d3ang *rot_ang)
+{
+	int							n,nvertex,npoly;
+	float						fx,fy,fz;
+	bool						is_rot;
+	d3pnt						*srce_pt,*dest_pt;
+	d3pnt						mpt;
+	matrix_type					mat;
+	map_mesh_type				*mesh;
+	map_mesh_poly_type			*poly;
+
+	mesh=&map->mesh.meshes[mesh_idx];
+
+		// get the copy
+
+	if (!map_mesh_create_copy_data(map,mesh_idx)) return;
+
+		// get mesh rotation center
+
+	mpt.x=center_pnt->x+mesh->rot_off.x;
+	mpt.y=center_pnt->y+mesh->rot_off.y;
+	mpt.z=center_pnt->z+mesh->rot_off.z;
+
+		// matrixes
+
+	is_rot=(rot_ang->x!=0.0f) || (rot_ang->y!=0.0f) || (rot_ang->z!=0.0f);
+	if (is_rot) matrix_rotate_xyz(&mat,rot_ang->x,rot_ang->y,rot_ang->z);
+
+		// rotate and move vertexes
+
+	nvertex=mesh->nvertex;
+	npoly=mesh->npoly;
+
+	srce_pt=mesh->copy.vertexes;
+	dest_pt=mesh->vertexes;
+
+		// version with no rotation
+
+	if (!is_rot) {
+		for (n=0;n!=nvertex;n++) {
+			dest_pt->x=srce_pt->x+move_pnt->x;
+			dest_pt->y=srce_pt->y+move_pnt->y;
+			dest_pt->z=srce_pt->z+move_pnt->z;
+
+			srce_pt++;
+			dest_pt++;
+		}
+	}
+
+		// version with rotation
+
+	else {
+		for (n=0;n!=nvertex;n++) {
+			fx=(float)(srce_pt->x-mpt.x);
+			fy=(float)(srce_pt->y-mpt.y);
+			fz=(float)(srce_pt->z-mpt.z);
+
+			matrix_vertex_multiply_ignore_transform(&mat,&fx,&fy,&fz);
+
+			dest_pt->x=(((int)fx)+mpt.x)+move_pnt->x;
+			dest_pt->y=(((int)fy)+mpt.y)+move_pnt->y;
+			dest_pt->z=(((int)fz)+mpt.z)+move_pnt->z;
+
+			srce_pt++;
+			dest_pt++;
+		}
+	
+			// rotate normals
+			
+		poly=mesh->polys;
+		
+		for (n=0;n!=npoly;n++) {
+			poly->tangent_space.tangent.x=mesh->copy.tangent_spaces[n].tangent.x;
+			poly->tangent_space.tangent.y=mesh->copy.tangent_spaces[n].tangent.y;
+			poly->tangent_space.tangent.z=mesh->copy.tangent_spaces[n].tangent.z;
+			matrix_vertex_multiply_ignore_transform(&mat,&poly->tangent_space.tangent.x,&poly->tangent_space.tangent.y,&poly->tangent_space.tangent.z);
+
+			poly->tangent_space.normal.x=mesh->copy.tangent_spaces[n].normal.x;
+			poly->tangent_space.normal.y=mesh->copy.tangent_spaces[n].normal.y;
+			poly->tangent_space.normal.z=mesh->copy.tangent_spaces[n].normal.z;
+			matrix_vertex_multiply_ignore_transform(&mat,&poly->tangent_space.normal.x,&poly->tangent_space.normal.y,&poly->tangent_space.normal.z);
+
+			poly++;
+		}
+	}
+
+		// fix boxes
+
+	poly=mesh->polys;
+	
+	for (n=0;n!=npoly;n++) {
+		map_prepare_mesh_poly(map,mesh,poly);
+		poly++;
+	}
+
+		// fix mesh box
+
+	map_prepare_mesh_box(mesh);
+}
+
+/* =======================================================
+
       Move Mesh
       
 ======================================================= */
 
 void map_mesh_move(map_type *map,int mesh_idx,d3pnt *mov_pnt)
 {
-	int									n,nvertex,npoly;
-	d3pnt								*pt;
-	map_mesh_type						*mesh;
-	map_mesh_poly_type					*poly;
+	int							n,nvertex,npoly;
+	d3pnt						*pt;
+	map_mesh_type				*mesh;
+	map_mesh_poly_type			*poly;
 
 	mesh=&map->mesh.meshes[mesh_idx];
 
@@ -195,7 +298,7 @@ void map_mesh_move(map_type *map,int mesh_idx,d3pnt *mov_pnt)
 	poly=mesh->polys;
 	
 	for (n=0;n!=npoly;n++) {
-		map_prepare_mesh_poly(mesh,poly);
+		map_prepare_mesh_poly(map,mesh,poly);
 		poly++;
 	}
 
@@ -212,10 +315,10 @@ void map_mesh_move(map_type *map,int mesh_idx,d3pnt *mov_pnt)
 
 void map_mesh_resize(map_type *map,int mesh_idx,d3pnt *min,d3pnt *max)
 {
-	int						n,nvertex;
-	d3pnt					*pt,org_min,org_max,dif,org_dif;
-	d3vct					fct;
-	map_mesh_type			*mesh;
+	int					n,nvertex;
+	d3pnt				*pt,org_min,org_max,dif,org_dif;
+	d3vct				fct;
+	map_mesh_type		*mesh;
 
 		// get original size and uv center
 		
@@ -309,12 +412,12 @@ void map_mesh_flip(map_type *map,int mesh_idx,bool flip_x,bool flip_y,bool flip_
 
 void map_mesh_rotate(map_type *map,int mesh_idx,d3pnt *center_pnt,d3ang *rot_ang)
 {
-	int									n,nvertex,npoly;
-	float								fx,fy,fz;
-	d3pnt								*pt,mpt;
-	matrix_type							mat;
-	map_mesh_type						*mesh;
-	map_mesh_poly_type					*poly;
+	int							n,nvertex,npoly;
+	float						fx,fy,fz;
+	d3pnt						*pt,mpt;
+	matrix_type					mat;
+	map_mesh_type				*mesh;
+	map_mesh_poly_type			*poly;
 
 	mesh=&map->mesh.meshes[mesh_idx];
 
@@ -340,9 +443,9 @@ void map_mesh_rotate(map_type *map,int mesh_idx,d3pnt *center_pnt,d3ang *rot_ang
 
 		matrix_vertex_multiply_ignore_transform(&mat,&fx,&fy,&fz);
 
-		pt->x=((int)fx)+mpt.x;
-		pt->y=((int)fy)+mpt.y;
-		pt->z=((int)fz)+mpt.z;
+		pt->x=((int)floor(fx))+mpt.x;
+		pt->y=((int)floor(fy))+mpt.y;
+		pt->z=((int)floor(fz))+mpt.z;
 
 		pt++;
 	}
@@ -363,7 +466,7 @@ void map_mesh_rotate(map_type *map,int mesh_idx,d3pnt *center_pnt,d3ang *rot_ang
 	poly=mesh->polys;
 	
 	for (n=0;n!=npoly;n++) {
-		map_prepare_mesh_poly(mesh,poly);
+		map_prepare_mesh_poly(map,mesh,poly);
 		poly++;
 	}
 
@@ -1037,7 +1140,7 @@ void map_mesh_reset_poly_uv(map_type *map,int mesh_idx,int poly_idx)
 		// setup box and slope
 		// needed for texture calculations
 
-	map_prepare_mesh_poly(mesh,poly);
+	map_prepare_mesh_poly(map,mesh,poly);
 
 		// walls-like polygons
 		

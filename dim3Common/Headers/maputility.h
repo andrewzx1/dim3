@@ -84,11 +84,6 @@ extern char light_type_str[][32];
 #define gravity_start_power									0				// starting gravity
 #define gravity_factor										5000			// factor to divide gravity out by when combing with weight
 
-#define gravity_slope_min_y									0.1f			// minimum slope needed to activate gravity
-#define gravity_slope_max_y									0.6f			// maximum climbable slope
-#define gravity_slope_factor								250.0f			// slope gravity factor
-#define gravity_slope_down_cut								0.2f			// amount to count gravity when running with it
-
 #define proj_reflect_slope_max_y							0.5f			// how big a slope before bounces become reflects
 #define proj_bounce_min_speed								10.0f			// minimum speed before bounces cancel
 
@@ -283,6 +278,11 @@ typedef struct		{
 					} map_mesh_draw_type;
 
 typedef struct		{
+						d3pnt								*vertexes;
+						tangent_space_type					*tangent_spaces;
+					} map_mesh_copy_type;
+
+typedef struct		{
 						char								obj_name[name_str_len],
 															group_name[name_str_len];
 					} map_mesh_import_type;
@@ -299,6 +299,7 @@ typedef struct		{
 						map_mesh_flag_type					flag;
 						map_mesh_message_type				msg;
 						map_mesh_draw_type					draw;
+						map_mesh_copy_type					copy;
 						map_light_cache_type				light_cache;
 						map_mesh_import_type				import;
 					} map_mesh_type;
@@ -561,10 +562,13 @@ typedef struct		{
 					} map_info_type;
 
 typedef struct		{
-						float								gravity,gravity_max_power,gravity_max_speed,
-															resistance;
 						char								network_game_list[256],params[param_str_len];
 					} map_settings_type;
+
+typedef struct		{
+						float								gravity,gravity_max_power,gravity_max_speed,
+															resistance,slope_gravity_min,slope_gravity_max;
+					} map_physics_type;
 					
 typedef struct		{
 						int									shadow_obscure_distance;
@@ -725,6 +729,8 @@ typedef struct		{
 						map_sky_type						sky;
 						map_fog_type						fog;
 						map_rain_type						rain;
+
+						map_physics_type					physics;
 						
 						map_settings_type					settings;
 						map_optimize_type					optimize;
@@ -766,7 +772,7 @@ extern bool map_save(map_type *map);
 extern void map_close(map_type *map);
 extern void map_refresh_textures(map_type *map);
 
-extern void map_prepare_mesh_poly(map_mesh_type *mesh,map_mesh_poly_type *poly);
+extern void map_prepare_mesh_poly(map_type *map,map_mesh_type *mesh,map_mesh_poly_type *poly);
 extern void map_prepare_mesh_box(map_mesh_type *mesh);
 extern void map_prepare(map_type *map);
 extern void map_center(map_type *map);
@@ -814,6 +820,7 @@ extern double map_mesh_calculate_distance(map_mesh_type *mesh,d3pnt *pnt);
 extern bool map_mesh_create_colors_cache(map_mesh_type *mesh);
 
 extern int map_mesh_combine(map_type *map,int mesh_1_idx,int mesh_2_idx);
+extern void map_mesh_move_rotate_copy(map_type *map,int mesh_idx,d3pnt *center_pnt,d3pnt *move_pnt,d3ang *rot_ang);
 extern void map_mesh_move(map_type *map,int mesh_idx,d3pnt *mov_pnt);
 extern void map_mesh_resize(map_type *map,int mesh_idx,d3pnt *min,d3pnt *max);
 extern void map_mesh_flip(map_type *map,int mesh_idx,bool flip_x,bool flip_y,bool flip_z);
@@ -860,7 +867,7 @@ extern bool map_delete_texture_frame(map_type *map,int txt);
 extern bool map_replace_texture(map_type *map,int txt,char *bitmap_name);
 extern bool map_delete_texture(map_type *map,int start_txt,int end_txt);
 
-extern void map_recalc_normals_mesh(map_mesh_type *mesh,int normal_mode,bool only_tangent);
+extern void map_recalc_normals_mesh(map_type *map,map_mesh_type *mesh,int normal_mode,bool only_tangent);
 extern void map_recalc_normals(map_type *map,bool only_tangent);
 
 extern int map_cinema_add(map_type *map);

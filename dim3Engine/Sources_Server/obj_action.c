@@ -426,7 +426,7 @@ void object_start_jump(obj_type *obj)
 		if (poly_ptr->mesh_idx!=-1) {
 			mesh_poly=&map.mesh.meshes[poly_ptr->mesh_idx].polys[poly_ptr->poly_idx];
 			if (!mesh_poly->box.flat) {
-				if (mesh_poly->slope.y>gravity_slope_max_y) return;
+				if (mesh_poly->slope.y>map.physics.slope_gravity_max) return;
 			}
 		}
 

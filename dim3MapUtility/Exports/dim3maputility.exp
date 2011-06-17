@@ -40,6 +40,7 @@ _map_mesh_calculate_distance
 _map_mesh_create_colors_cache
 
 _map_mesh_combine
+_map_mesh_move_rotate_copy
 _map_mesh_move
 _map_mesh_resize
 _map_mesh_flip

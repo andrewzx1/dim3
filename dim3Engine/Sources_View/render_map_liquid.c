@@ -428,6 +428,7 @@ void liquid_render_liquid(map_liquid_type *liq)
 	uv_shift=liquid_tide_get_uv_factor(liq);
 
 		// draw the reflection liquid
+		// or just the regular texture
 
 	liquid_render_liquid_create_vertex(liq,uv_shift,FALSE);
 

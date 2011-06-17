@@ -261,7 +261,7 @@ bool map_recalc_normals_determine_vector_in_out(map_mesh_poly_type *poly,d3pnt *
       
 ======================================================= */
 
-void map_recalc_normals_mesh(map_mesh_type *mesh,int normal_mode,bool only_tangent)
+void map_recalc_normals_mesh(map_type *map,map_mesh_type *mesh,int normal_mode,bool only_tangent)
 {
 	int					n,k,neg_idx,pos_idx;
 	float				u10,u20,v10,v20,f_denom,f_ptsz;
@@ -365,7 +365,7 @@ void map_recalc_normals_mesh(map_mesh_type *mesh,int normal_mode,bool only_tange
 	poly=mesh->polys;
 
 	for (n=0;n!=mesh->npoly;n++) {
-		map_prepare_mesh_poly(mesh,poly);
+		map_prepare_mesh_poly(map,mesh,poly);
 		poly++;
 	}
 	
@@ -418,7 +418,7 @@ void map_recalc_normals(map_type *map,bool only_tangent)
 	mesh=map->mesh.meshes;
 
 	for (n=0;n!=map->mesh.nmesh;n++) {
-		map_recalc_normals_mesh(mesh,normal_mode_none,only_tangent);
+		map_recalc_normals_mesh(map,mesh,normal_mode_none,only_tangent);
 		mesh++;
 	}
 }

@@ -728,7 +728,7 @@ bool light_map_polys_start(char *err_str)
 			
 				// flatten the poly
 				
-			map_prepare_mesh_poly(mesh,poly);
+			map_prepare_mesh_poly(&map,mesh,poly);
 			light_map_create_mesh_poly_flatten(mesh,poly,lm_poly);
 			light_map_create_poly_flatten(lm_poly);
 

@@ -108,19 +108,18 @@ int pin_downward_movement_point(int x,int y,int z,int ydist,poly_pointer_type *s
 
 int pin_downward_movement_obj(obj_type *obj,int my)
 {
-	int						n,cy,x,z,x_sz,z_sz,
-							grid_x,grid_z,lx,tz,idx,ty,by;
+	int						n,cy,x,z,diameter,radius,sz,
+							grid_sz,lx,tz,idx,ty,by;
 	ray_trace_contact_type	base_contact;
 	
 		// get contact grid
+
+	diameter=obj->size.x;
+	if (obj->size.z>diameter) diameter=obj->size.z;
 		
-	grid_x=obj->size.x/map_collide_y_slop;
-	if (grid_x>16) grid_x=16;
-	if (grid_x<5) grid_x=5;
-	
-	grid_z=obj->size.z/map_collide_y_slop;
-	if (grid_z>16) grid_z=16;
-	if (grid_z<5) grid_z=5;
+	grid_sz=diameter/map_collide_y_slop;
+	if (grid_sz>16) grid_sz=16;
+	if (grid_sz<5) grid_sz=5;
 	
 		// setup contact
 		
@@ -133,20 +132,21 @@ int pin_downward_movement_obj(obj_type *obj,int my)
 		// create ray arrays
 	
 	idx=0;
+
+	radius=diameter>>1;
 	
-	lx=obj->pnt.x-(obj->size.x>>1);
-	tz=obj->pnt.z-(obj->size.z>>1);
+	lx=obj->pnt.x-radius;
+	tz=obj->pnt.z-radius;
 	
 	ty=obj->pnt.y-my;
 	by=obj->pnt.y+my;
 	
-	x_sz=obj->size.x/grid_x;
-	z_sz=obj->size.z/grid_z;
+	sz=diameter/grid_sz;
 	
-	for (z=0;z!=grid_z;z++) {
-		for (x=0;x!=grid_x;x++) {
-			pin_movement_spt[idx].x=pin_movement_ept[idx].x=lx+(x_sz*x);
-			pin_movement_spt[idx].z=pin_movement_ept[idx].z=tz+(z_sz*z);
+	for (z=0;z!=grid_sz;z++) {
+		for (x=0;x!=grid_sz;x++) {
+			pin_movement_spt[idx].x=pin_movement_ept[idx].x=lx+(sz*x);
+			pin_movement_spt[idx].z=pin_movement_ept[idx].z=tz+(sz*z);
 			pin_movement_spt[idx].y=ty;
 			pin_movement_ept[idx].y=by;
 			idx++;
@@ -219,19 +219,18 @@ int pin_upward_movement_point(int x,int y,int z,int ydist,poly_pointer_type *hea
 
 int pin_upward_movement_obj(obj_type *obj,int my)
 {
-	int						n,cy,x,z,x_sz,z_sz,sz,
-							grid_x,grid_z,lx,tz,idx,ty,by;
+	int						n,cy,x,z,diameter,radius,sz,
+							grid_sz,lx,tz,idx,ty,by;
 	ray_trace_contact_type	base_contact;
-	
+
 		// get contact grid
 		
-	grid_x=obj->size.x/map_collide_y_slop;
-	if (grid_x>16) grid_x=16;
-	if (grid_x<5) grid_x=5;
-	
-	grid_z=obj->size.z/map_collide_y_slop;
-	if (grid_z>16) grid_z=16;
-	if (grid_z<5) grid_z=5;
+	diameter=obj->size.x;
+	if (obj->size.z>diameter) diameter=obj->size.z;
+		
+	grid_sz=diameter/map_collide_y_slop;
+	if (grid_sz>16) grid_sz=16;
+	if (grid_sz<5) grid_sz=5;
 	
 		// setup contact
 		
@@ -243,23 +242,23 @@ int pin_upward_movement_obj(obj_type *obj,int my)
 		// create ray arrays
 	
 	idx=0;
+
+	radius=diameter>>1;
 	
-	lx=obj->pnt.x-(obj->size.x>>1);
-	tz=obj->pnt.z-(obj->size.z>>1);
-	
-	x_sz=obj->size.x/grid_x;
-	z_sz=obj->size.z/grid_z;
+	lx=obj->pnt.x-radius;
+	tz=obj->pnt.z-radius;
 	
 	sz=obj->size.y;
 	if (obj->duck.mode!=dm_stand) sz-=obj->duck.y_move;
 	by=(obj->pnt.y-sz)+my;
 	ty=(obj->pnt.y-sz)-my;
 
-	
-	for (z=0;z!=grid_z;z++) {
-		for (x=0;x!=grid_x;x++) {
-			pin_movement_spt[idx].x=pin_movement_ept[idx].x=lx+(x_sz*x);
-			pin_movement_spt[idx].z=pin_movement_ept[idx].z=tz+(z_sz*z);
+	sz=diameter/grid_sz;
+
+	for (z=0;z!=grid_sz;z++) {
+		for (x=0;x!=grid_sz;x++) {
+			pin_movement_spt[idx].x=pin_movement_ept[idx].x=lx+(sz*x);
+			pin_movement_spt[idx].z=pin_movement_ept[idx].z=tz+(sz*z);
 			pin_movement_spt[idx].y=by;
 			pin_movement_ept[idx].y=ty;
 			idx++;

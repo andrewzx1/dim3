@@ -123,9 +123,9 @@ void projectile_gravity(proj_type *proj)
 		// increase the gravity
 	
 	gravity=proj->force.gravity;
-	if (gravity<map.settings.gravity_max_power) {
-		gravity=gravity+((float)proj->size.weight*(map.settings.gravity/gravity_factor));
-		if (gravity>map.settings.gravity_max_power) gravity=map.settings.gravity_max_power;
+	if (gravity<map.physics.gravity_max_power) {
+		gravity=gravity+((float)proj->size.weight*(map.physics.gravity/gravity_factor));
+		if (gravity>map.physics.gravity_max_power) gravity=map.physics.gravity_max_power;
 		proj->force.gravity=gravity;
 	}
 	

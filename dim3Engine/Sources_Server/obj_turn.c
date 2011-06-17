@@ -160,7 +160,7 @@ void object_fix_motion(obj_type *obj)
 
 		// fix motion angle to facing angle
 		
-	turn_max=object_get_turn_motion(obj)*map.settings.resistance;
+	turn_max=object_get_turn_motion(obj)*map.physics.resistance;
     obj->motion.ang.y=angle_turn_toward(obj->motion.ang.y,ang->y,turn_max);
 }
 

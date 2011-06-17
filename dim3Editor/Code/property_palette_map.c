@@ -40,37 +40,40 @@ and can be sold or given away.
 #define kMapPropertyGravityMaxPower			3
 #define kMapPropertyGravityMaxSpeed			4
 #define kMapPropertyResistance				5
-#define kMapPropertyNetworkGameList			6
+#define kMapPropertySlopeGravityMin			6
+#define kMapPropertySlopeGravityMax			7
 
-#define kMapPropertyNormalCull				7
-#define kMapPropertyCullAngle				8
-#define kMapPropertyDisableShaders			9
-#define kMapPropertyShadowObscureDistance	10
+#define kMapPropertyNetworkGameList			20
 
-#define kMapPropertyAmbientColor			20
-#define kMapPropertyAmbientLightMapBoost	21
-#define kMapPropertyAmbientSound			22
-#define kMapPropertyAmbientSoundPitch		23
+#define kMapPropertyNormalCull				21
+#define kMapPropertyCullAngle				22
+#define kMapPropertyDisableShaders			23
+#define kMapPropertyShadowObscureDistance	24
 
-#define kMapPropertyLightMapQuality			24
-#define kMapPropertyLightMapSize			25
-#define kMapPropertyLightMapBorderCount		26
-#define kMapPropertyLightMapBlurCount		27
-#define kMapPropertyLightMapUseNormals		28
-#define kMapPropertyLightMapDiffuseBoost	29
+#define kMapPropertyAmbientColor			30
+#define kMapPropertyAmbientLightMapBoost	31
+#define kMapPropertyAmbientSound			32
+#define kMapPropertyAmbientSoundPitch		33
 
-#define kMapPropertyCameraMode				30
-#define kMapPropertyCameraAngle				31
+#define kMapPropertyLightMapQuality			34
+#define kMapPropertyLightMapSize			35
+#define kMapPropertyLightMapBorderCount		36
+#define kMapPropertyLightMapBlurCount		37
+#define kMapPropertyLightMapUseNormals		38
+#define kMapPropertyLightMapDiffuseBoost	39
 
-#define kMapPropertyCameraFOV				32
-#define kMapPropertyCameraAspectRatio		33
-#define kMapPropertyCameraNearZ				34
-#define kMapPropertyCameraFarZ				35
-#define kMapPropertyCameraNearZOffset		36
+#define kMapPropertyCameraMode				40
+#define kMapPropertyCameraAngle				41
 
-#define kMapPropertyCameraChaseDistance		37
-#define kMapPropertyCameraChaseTrackSpeed	38
-#define kMapPropertyCameraChaseSlop			39
+#define kMapPropertyCameraFOV				42
+#define kMapPropertyCameraAspectRatio		43
+#define kMapPropertyCameraNearZ				44
+#define kMapPropertyCameraFarZ				45
+#define kMapPropertyCameraNearZOffset		46
+
+#define kMapPropertyCameraChaseDistance		47
+#define kMapPropertyCameraChaseTrackSpeed	48
+#define kMapPropertyCameraChaseSlop			49
 
 #define kMapPropertyCameraStaticFollow		50
 #define kMapPropertyCameraStaticAttachNode	51
@@ -175,11 +178,17 @@ void property_palette_fill_map(void)
 
 		// settings
 
-	list_palette_add_header(&property_palette,0,"Map Settings");
-	list_palette_add_string_float(&property_palette,kMapPropertyGravity,"Gravity",map.settings.gravity,FALSE);
-	list_palette_add_string_float(&property_palette,kMapPropertyGravityMaxPower,"Gravity Max Power",map.settings.gravity_max_power,FALSE);
-	list_palette_add_string_float(&property_palette,kMapPropertyGravityMaxSpeed,"Gravity Max Speed",map.settings.gravity_max_speed,FALSE);
-	list_palette_add_string_float(&property_palette,kMapPropertyResistance,"Resistance",map.settings.resistance,FALSE);
+	list_palette_add_header(&property_palette,0,"Map Physics");
+	list_palette_add_string_float(&property_palette,kMapPropertyGravity,"Gravity",map.physics.gravity,FALSE);
+	list_palette_add_string_float(&property_palette,kMapPropertyGravityMaxPower,"Gravity Max Power",map.physics.gravity_max_power,FALSE);
+	list_palette_add_string_float(&property_palette,kMapPropertyGravityMaxSpeed,"Gravity Max Speed",map.physics.gravity_max_speed,FALSE);
+	list_palette_add_string_float(&property_palette,kMapPropertyResistance,"Resistance",map.physics.resistance,FALSE);
+	list_palette_add_string_float(&property_palette,kMapPropertySlopeGravityMin,"Slope Gravity Min",map.physics.slope_gravity_min,FALSE);
+	list_palette_add_string_float(&property_palette,kMapPropertySlopeGravityMax,"Slope Gravity Max",map.physics.slope_gravity_max,FALSE);
+
+		// network
+
+	list_palette_add_header(&property_palette,0,"Map Networking");
 	list_palette_add_string(&property_palette,kMapPropertyNetworkGameList,"Net Game List","...",FALSE);
 
 		// optimizations
@@ -411,23 +420,33 @@ void property_palette_click_map(int id)
 			dialog_property_string_run(list_string_value_string,(void*)map.info.author,name_str_len,0,0);
 			break;
 
-			// settings
+			// physics
 
 		case kMapPropertyGravity:
-			dialog_property_string_run(list_string_value_positive_float,(void*)&map.settings.gravity,0,0,0);
+			dialog_property_string_run(list_string_value_positive_float,(void*)&map.physics.gravity,0,0,0);
 			break;
 
 		case kMapPropertyGravityMaxPower:
-			dialog_property_string_run(list_string_value_positive_float,(void*)&map.settings.gravity_max_power,0,0,0);
+			dialog_property_string_run(list_string_value_positive_float,(void*)&map.physics.gravity_max_power,0,0,0);
 			break;
 
 		case kMapPropertyGravityMaxSpeed:
-			dialog_property_string_run(list_string_value_positive_float,(void*)&map.settings.gravity_max_speed,0,0,0);
+			dialog_property_string_run(list_string_value_positive_float,(void*)&map.physics.gravity_max_speed,0,0,0);
 			break;
 
 		case kMapPropertyResistance:
-			dialog_property_string_run(list_string_value_positive_float,(void*)&map.settings.resistance,0,0,0);
+			dialog_property_string_run(list_string_value_positive_float,(void*)&map.physics.resistance,0,0,0);
 			break;
+
+		case kMapPropertySlopeGravityMin:
+			dialog_property_string_run(list_string_value_0_to_1_float,(void*)&map.physics.slope_gravity_min,0,0,0);
+			break;
+
+		case kMapPropertySlopeGravityMax:
+			dialog_property_string_run(list_string_value_0_to_1_float,(void*)&map.physics.slope_gravity_max,0,0,0);
+			break;
+
+			// networking
 
 		case kMapPropertyNetworkGameList:
 			dialog_property_string_run(list_string_value_string,(void*)map.settings.network_game_list,256,0,0);

@@ -103,6 +103,9 @@ int map_mesh_add(map_type *map)
 	mesh->nvertex=0;
 	mesh->vertexes=NULL;
 	mesh->colors_cache=NULL;
+
+	mesh->copy.vertexes=NULL;
+	mesh->copy.tangent_spaces=NULL;
 	
 	mesh->poly_list.wall_count=0;
 	mesh->poly_list.wall_idxs=NULL;
@@ -128,6 +131,10 @@ bool map_mesh_delete(map_type *map,int mesh_idx)
 
 	if (mesh->vertexes!=NULL) free(mesh->vertexes);
 	if (mesh->colors_cache!=NULL) free(mesh->colors_cache);
+
+	if (mesh->copy.vertexes!=NULL) free(mesh->copy.vertexes);
+	if (mesh->copy.tangent_spaces!=NULL) free(mesh->copy.tangent_spaces);
+
 	if (mesh->poly_list.wall_idxs!=NULL) free(mesh->poly_list.wall_idxs);
 	if (mesh->poly_list.floor_idxs!=NULL) free(mesh->poly_list.floor_idxs);
 	if (mesh->poly_list.all_idxs!=NULL) free(mesh->poly_list.all_idxs);
@@ -157,6 +164,58 @@ bool map_mesh_delete(map_type *map,int mesh_idx)
 
 	map->mesh.meshes=nptr;
 	map->mesh.nmesh--;
+
+	return(TRUE);
+}
+
+/* =======================================================
+
+      Create Copy Vertexes
+      
+======================================================= */
+
+bool map_mesh_create_copy_data(map_type *map,int mesh_idx)
+{
+	int					n,mem_sz;
+	map_mesh_type		*mesh;
+	tangent_space_type	*space;
+
+		// these copies are used to work around errors
+		// in int->float conversions when rotation meshes
+		// and to deal with cumlative changes when loading
+		// saves or network synchs
+
+		// already created?
+
+	mesh=&map->mesh.meshes[mesh_idx];
+	if (mesh->copy.vertexes!=NULL) return(TRUE);
+
+		// create vertexes
+
+	mem_sz=mesh->nvertex*sizeof(d3pnt);
+
+	mesh->copy.vertexes=(d3pnt*)malloc(mem_sz);
+	if (mesh->copy.vertexes==NULL) return(FALSE);
+
+	memmove(mesh->copy.vertexes,mesh->vertexes,mem_sz);
+
+		// create tangent spaces
+
+	mem_sz=mesh->npoly*sizeof(tangent_space_type);
+
+	mesh->copy.tangent_spaces=(tangent_space_type*)malloc(mem_sz);
+	if (mesh->copy.tangent_spaces==NULL) {
+		free(mesh->copy.vertexes);
+		mesh->copy.vertexes=NULL;
+		return(FALSE);
+	}
+
+	space=mesh->copy.tangent_spaces;
+
+	for (n=0;n!=mesh->npoly;n++) {
+		memmove(space,&mesh->polys[n].tangent_space,sizeof(tangent_space_type));
+		space++;
+	}
 
 	return(TRUE);
 }

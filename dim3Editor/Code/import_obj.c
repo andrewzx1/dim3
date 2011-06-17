@@ -688,7 +688,7 @@ bool import_create_mesh_from_obj_group(obj_import_state_type *import_state,char 
 		// calc the normals
 		// or only tangent if normals come with OBJ
 		
-	map_recalc_normals_mesh(&map.mesh.meshes[mesh_idx],normal_mode_none,(import_state->nnormal!=0));
+	map_recalc_normals_mesh(&map,&map.mesh.meshes[mesh_idx],normal_mode_none,(import_state->nnormal!=0));
 	
 	return(TRUE);
 }

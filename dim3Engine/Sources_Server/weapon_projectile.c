@@ -453,6 +453,13 @@ bool weapon_script_projectile_spawn(obj_type *obj,weapon_type *weap,char *proj_n
 			proj_ang.z+=(slop-random_float(r_slop));
 		}
 
+			// zoom sways
+
+		if (weap->zoom.mode==zoom_mode_on) {
+			proj_ang.x+=obj->zoom_draw.sway_ang.x;
+			proj_ang.y+=obj->zoom_draw.sway_ang.y;
+		}
+
 			// hit-scan fires
 			
 		if (proj_setup->hitscan.on) {

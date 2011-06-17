@@ -29,16 +29,6 @@ and can be sold or given away.
 	#include "dim3maputility.h"
 #endif
 
-#define map_mesh_poly_line_like_equal_slop			20
-#define map_mesh_poly_line_like_slope_slop			0.15f
-
-/* =======================================================
-
-      Prepare Single Polygon for Rendering
-      
-======================================================= */
-
-
 /* =======================================================
 
       Find Polygon Y Slope
@@ -108,7 +98,7 @@ void map_prepare_mesh_poly_slope_ang(map_mesh_type *mesh,map_mesh_poly_type *pol
 	poly->slope.ang_y=angle_find(bx,bz,tx,tz);
 }
 
-void map_prepare_mesh_poly(map_mesh_type *mesh,map_mesh_poly_type *poly)
+void map_prepare_mesh_poly(map_type *map,map_mesh_type *mesh,map_mesh_poly_type *poly)
 {
 	int				n,ptsz,y,lx,rx,lz,rz,dist;
 	float			ang;
@@ -190,7 +180,7 @@ void map_prepare_mesh_poly(map_mesh_type *mesh,map_mesh_poly_type *poly)
 			// find the slope angle
 
 		map_prepare_mesh_poly_slope_ang(mesh,poly);
-		angle_get_movement_float(poly->slope.ang_y,(gravity_slope_factor*poly->slope.y),&poly->slope.move_x,&poly->slope.move_z);
+		angle_get_movement_float(poly->slope.ang_y,(map->physics.gravity_max_speed*poly->slope.y),&poly->slope.move_x,&poly->slope.move_z);
 	}
 
 		// create wall "line" for wall like polygons
@@ -510,7 +500,7 @@ void map_prepare(map_type *map)
 			
 				// setup box and slope
 
-			map_prepare_mesh_poly(mesh,poly);
+			map_prepare_mesh_poly(map,mesh,poly);
 			
 				// setup texture and shifting flags
 

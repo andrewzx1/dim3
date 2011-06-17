@@ -95,12 +95,12 @@ JSObjectRef script_add_map_setting_object(JSContextRef cx,JSObjectRef parent_obj
 
 JSValueRef js_map_setting_get_gravity(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_float_to_value(cx,map.settings.gravity));
+	return(script_float_to_value(cx,map.physics.gravity));
 }
 
 JSValueRef js_map_setting_get_resistance(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_float_to_value(cx,map.settings.resistance));
+	return(script_float_to_value(cx,map.physics.resistance));
 }
 
 JSValueRef js_map_setting_get_multiplayer(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
@@ -128,14 +128,14 @@ JSValueRef js_map_setting_get_botSkill(JSContextRef cx,JSObjectRef j_obj,JSStrin
 
 bool js_map_setting_set_gravity(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	map.settings.gravity=script_value_to_float(cx,vp);
+	map.physics.gravity=script_value_to_float(cx,vp);
 	
 	return(TRUE);
 }
 
 bool js_map_setting_set_resistance(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	map.settings.resistance=script_value_to_float(cx,vp);
+	map.physics.resistance=script_value_to_float(cx,vp);
 	
 	return(TRUE);
 }
