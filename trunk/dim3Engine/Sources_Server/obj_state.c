@@ -801,7 +801,7 @@ void object_push(obj_type *obj,d3ang *ang,int force,bool external_force)
 	if (weight<100) weight=100;
 	if (weight>1000) weight=1000;
 	
-	speed=(float)((force*500)/weight)*(2-map.settings.resistance);
+	speed=(float)((force*500)/weight)*(2-map.physics.resistance);
 	
 		// push vector
 		

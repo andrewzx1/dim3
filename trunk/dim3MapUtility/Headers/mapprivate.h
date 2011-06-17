@@ -164,6 +164,8 @@ typedef struct		{
 // functions
 //
 
+extern bool map_mesh_create_copy_data(map_type *map,int mesh_idx);
+
 extern int map_count_texture_frames(map_type *map,int txt);
 extern bool map_textures_read(map_type *map);
 extern void map_textures_close(map_type *map);

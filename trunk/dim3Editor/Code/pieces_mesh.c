@@ -391,7 +391,7 @@ void piece_add_height_map_mesh(void)
 	map_mesh_reset_uv(&map,mesh_idx);
 	
 	progress_next_title("Height Map Import: Building Normals");
-	map_recalc_normals_mesh(&map.mesh.meshes[mesh_idx],normal_mode_none,FALSE);
+	map_recalc_normals_mesh(&map,&map.mesh.meshes[mesh_idx],normal_mode_none,FALSE);
 		
 	progress_next();
 	free(data);
@@ -518,7 +518,7 @@ void piece_add_grid_mesh(void)
 		
 	map_mesh_reset_uv(&map,mesh_idx);
 	
-	map_recalc_normals_mesh(&map.mesh.meshes[mesh_idx],normal_mode_none,FALSE);
+	map_recalc_normals_mesh(&map,&map.mesh.meshes[mesh_idx],normal_mode_none,FALSE);
 	
 	progress_end();
 	os_set_arrow_cursor();
@@ -577,7 +577,7 @@ void piece_add_polygon_mesh(void)
 		
 	map_mesh_reset_uv(&map,mesh_idx);
 
-	map_recalc_normals_mesh(&map.mesh.meshes[mesh_idx],normal_mode_none,FALSE);
+	map_recalc_normals_mesh(&map,&map.mesh.meshes[mesh_idx],normal_mode_none,FALSE);
 	
 		// finish up
 		

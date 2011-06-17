@@ -67,10 +67,12 @@ void decode_map_settings_xml(map_type *map,int map_head)
     
     tag=xml_findfirstchild("Settings",map_head);
     if (tag!=-1) {
-		map->settings.gravity=xml_get_attribute_float_default(tag,"gravity",1);
-        map->settings.gravity_max_power=xml_get_attribute_float_default(tag,"gravity_max_power",32);
-		map->settings.gravity_max_speed=xml_get_attribute_float_default(tag,"gravity_max_speed",400);
-		map->settings.resistance=xml_get_attribute_float_default(tag,"resistance",1);
+		map->physics.gravity=xml_get_attribute_float_default(tag,"gravity",1.0f);
+        map->physics.gravity_max_power=xml_get_attribute_float_default(tag,"gravity_max_power",32.0f);
+		map->physics.gravity_max_speed=xml_get_attribute_float_default(tag,"gravity_max_speed",400.0f);
+		map->physics.resistance=xml_get_attribute_float_default(tag,"resistance",1.0f);
+		map->physics.slope_gravity_min=xml_get_attribute_float_default(tag,"slope_gravity_min",0.3f);
+		map->physics.slope_gravity_max=xml_get_attribute_float_default(tag,"slope_gravity_max",0.6f);
 		
 		// supergumba -- old location -- delete later
 		map->optimize.never_cull=xml_get_attribute_boolean(tag,"never_cull");

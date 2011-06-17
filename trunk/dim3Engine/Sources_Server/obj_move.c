@@ -192,7 +192,7 @@ void object_movement(obj_type *obj,obj_movement *move)
         if (speed==max_speed) return;
         
         if (speed<max_speed) {							// if max speed has changed to be less, auto-decelerate
-            speed+=(accelerate*map.settings.resistance);
+            speed+=(accelerate*map.physics.resistance);
             if (speed>max_speed) speed=max_speed;
 		
             move->speed=speed;
@@ -202,7 +202,7 @@ void object_movement(obj_type *obj,obj_movement *move)
 	
 		// Decelerating
 
-	speed-=(decelerate*map.settings.resistance);
+	speed-=(decelerate*map.physics.resistance);
 	if (speed<0) speed=0;
     
 	move->speed=speed;
@@ -225,7 +225,7 @@ void object_simple_movement(obj_type *obj,obj_movement *move)
         if (speed==max_speed) return;
         
         if (speed<max_speed) {							// if max speed has changed to be less, auto-decelerate
-            speed+=(accelerate*map.settings.resistance);
+            speed+=(accelerate*map.physics.resistance);
             if (speed>max_speed) speed=max_speed;
 		
             move->speed=speed;
@@ -235,7 +235,7 @@ void object_simple_movement(obj_type *obj,obj_movement *move)
 	
 		// Decelerating
 
-	speed-=(decelerate*map.settings.resistance);
+	speed-=(decelerate*map.physics.resistance);
 	if (speed<0) speed=0;
     
 	move->speed=speed;
@@ -262,7 +262,7 @@ void object_gravity(obj_type *obj)
 		// under liquids changes gravity
 
 	weight=(float)obj->size.weight;
-	gravity_max_power=map.settings.gravity_max_power;
+	gravity_max_power=map.physics.gravity_max_power;
 
 	if ((obj->liquid.mode==lm_under) || (obj->liquid.mode==lm_float)) {
 		liq_speed_alter=object_liquid_alter_speed(obj);
@@ -278,8 +278,8 @@ void object_gravity(obj_type *obj)
 		// increase the gravity
 		
 	if (gravity<gravity_max_power) {
-		gravity+=(weight*(map.settings.gravity/gravity_factor));
-		if (gravity>gravity_max_power) gravity=map.settings.gravity_max_power;
+		gravity+=(weight*(map.physics.gravity/gravity_factor));
+		if (gravity>gravity_max_power) gravity=map.physics.gravity_max_power;
         
         obj->force.gravity=gravity;
 	}
@@ -292,7 +292,7 @@ void object_fix_force(obj_type *obj)
 	
 		// get the deceleration
 		
-	decelerate=map.settings.resistance;
+	decelerate=map.physics.resistance;
 	
 		// reduce the x/z by resistance
 		
@@ -326,7 +326,7 @@ void object_fix_force(obj_type *obj)
 
 	if (obj->liquid.mode==lm_float) return;
 
-	gravity_max_speed=map.settings.gravity_max_speed;
+	gravity_max_speed=map.physics.gravity_max_speed;
 	if (obj->liquid.mode==lm_under) gravity_max_speed*=(object_liquid_alter_speed(obj)*0.5f);
 	
 		// reduce the y by gravity
@@ -415,7 +415,7 @@ void object_motion_slope_alter_movement_single(int *mv,float slope_y,float slope
 		// if slope is greater than max gravity,
 		// then if going against slope, stop all movement, otherwise always go down
 
-	if (slope_y>=gravity_slope_max_y) {
+	if (slope_y>=map.physics.slope_gravity_max) {
 		if (same_dir) {
 			*mv=-(int)slope_mv;
 		}
@@ -425,9 +425,10 @@ void object_motion_slope_alter_movement_single(int *mv,float slope_y,float slope
 		return;
 	}
 
-		// if going in same direction, then cut gravity effect
+		// if going in same direction,
+		// then cut gravity effect in half
 
-	if (same_dir) slope_mv*=gravity_slope_down_cut;
+	if (same_dir) slope_mv*=0.5f;
 	
 		// subtract slope push from movement
 
@@ -462,7 +463,7 @@ void object_motion_slope_alter_movement(obj_type *obj,d3pnt *motion)
 
 		// if less then min slope, no gravity effects
 
-	if (mesh_poly->slope.y<gravity_slope_min_y) return;
+	if (mesh_poly->slope.y<map.physics.slope_gravity_min) return;
 
 		// apply gravity
 

@@ -62,14 +62,19 @@ bool map_new(map_type *map,char *name)
 	
 	file_paths_data_default(&maputility_settings.file_path_setup,map->info.load_path,"Maps",map->info.name,"xml");
 	
-		// settings
+		// physics
 		
-	map->settings.gravity=1;
-	map->settings.gravity_max_power=32;
-	map->settings.gravity_max_speed=400;
-	map->settings.resistance=1;
+	map->physics.gravity=1;
+	map->physics.gravity_max_power=32;
+	map->physics.gravity_max_speed=400;
+	map->physics.resistance=1;
+	map->physics.slope_gravity_min=0.3f;
+	map->physics.slope_gravity_max=0.6f;
 	
+		// settings
+
 	map->settings.network_game_list[0]=0x0;
+	map->settings.params[0]=0x0;
 	
 		// optimization
 		

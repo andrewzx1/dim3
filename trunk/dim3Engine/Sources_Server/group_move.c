@@ -196,25 +196,40 @@ bool group_move_object_stand(int group_idx,int stand_mesh_idx)
 
 /* =======================================================
 
-      Move Groups
+      Move and Rotate Groups
       
 ======================================================= */
 
-void group_move(group_type *group,d3pnt *mpnt)
+void group_move_and_rotate(group_type *group,d3pnt *move_pnt,d3ang *rot_ang)
 {
 	int					n,unit_cnt;
-	bool				move_objs;
+	bool				move_objs,rot_objs;
 	group_unit_type		*unit_list;
 	map_mesh_type		*mesh;
 	map_liquid_type		*liq;
 
-		// any movement?
+		// add up the cumlative moves
+		// varaibles are NULL when we are reseting
+		// movement from a previous cumlative move
+		// (loading from saved game)
 
-	if ((mpnt->x==0) && (mpnt->y==0) && (mpnt->z==0)) return;
+	if (move_pnt!=NULL) {
+		group->move.cuml_mov_add.x+=move_pnt->x;
+		group->move.cuml_mov_add.y+=move_pnt->y;
+		group->move.cuml_mov_add.z+=move_pnt->z;
+	}
 
-		// can this group move objects?
+	if (rot_ang!=NULL) {
+		group->move.cuml_rot_add.x+=rot_ang->x;
+		group->move.cuml_rot_add.y+=rot_ang->y;
+		group->move.cuml_rot_add.z+=rot_ang->z;
+	}
 
-	move_objs=(mpnt->x!=0) || (mpnt->z!=0);
+		// can this group move or
+		// rotate objects?
+
+	move_objs=(group->move.cuml_mov_add.x!=0) || (group->move.cuml_mov_add.z!=0);
+	rot_objs=(group->move.cuml_rot_add.y!=0.0f);
 	
 		// move the meshes
 
@@ -232,10 +247,16 @@ void group_move(group_type *group,d3pnt *mpnt)
 				mesh=&map.mesh.meshes[unit_list->idx];
 				if (!mesh->flag.moveable) break;
 
-					// move mesh and mark as
+					// move/rotate mesh and mark as
 					// touched so it can be saved with games
 
-				map_mesh_move(&map,unit_list->idx,mpnt);
+				if (mesh->flag.rot_independent) {
+					map_mesh_move_rotate_copy(&map,unit_list->idx,&mesh->box.mid,&group->move.cuml_mov_add,&group->move.cuml_rot_add);
+				}
+				else {
+					map_mesh_move_rotate_copy(&map,unit_list->idx,&group->center_pnt,&group->move.cuml_mov_add,&group->move.cuml_rot_add);
+				}
+
 				mesh->flag.touched=TRUE;
 
 					// will need to update vertex/lights in vbo
@@ -244,19 +265,29 @@ void group_move(group_type *group,d3pnt *mpnt)
 
 					// move objects and decals with mesh
 
-				if (move_objs) object_move_with_mesh(unit_list->idx,mpnt);
-				decal_move_with_mesh(unit_list->idx,mpnt);
+				if (move_objs) {
+					object_move_with_mesh(unit_list->idx,move_pnt);
+					decal_move_with_mesh(unit_list->idx,move_pnt);
+				}
+
+					// rotate objects and decals with mesh
+				
+				if (rot_objs) {
+					object_rotate_with_mesh(unit_list->idx,rot_ang->y);
+					decal_rotate_with_mesh(unit_list->idx,rot_ang->y);
+				}
+
 				break;
 
 			case group_type_liquid:
 
 				liq=&map.liquid.liquids[unit_list->idx];
 
-				liq->lft+=mpnt->x;
-				liq->rgt+=mpnt->x;
-				liq->top+=mpnt->z;
-				liq->bot+=mpnt->z;
-				liq->y+=mpnt->y;
+				liq->lft+=move_pnt->x;
+				liq->rgt+=move_pnt->x;
+				liq->top+=move_pnt->z;
+				liq->bot+=move_pnt->z;
+				liq->y+=move_pnt->y;
 
 				break;
 
@@ -265,84 +296,11 @@ void group_move(group_type *group,d3pnt *mpnt)
 		unit_list++;
 	}
 
-		// keep the cumlative moves
-
-	group->move.cuml_mov_add.x+=mpnt->x;
-	group->move.cuml_mov_add.y+=mpnt->y;
-	group->move.cuml_mov_add.z+=mpnt->z;
-
 		// group center changes
 
-	group->center_pnt.x+=mpnt->x;
-	group->center_pnt.y+=mpnt->y;
-	group->center_pnt.z+=mpnt->z;
-}
-
-/* =======================================================
-
-      Rotate Groups
-      
-======================================================= */
-
-void group_rotate(group_type *group,d3ang *fpnt)
-{
-	int					n,unit_cnt;
-	bool				move_objs;
-	group_unit_type		*unit_list;
-	map_mesh_type		*mesh;
-
-		// any rotation?
-
-	if ((fpnt->x==0.0f) && (fpnt->y==0.0f) && (fpnt->z==0.0f)) return;
-
-		// can this group move objects?
-
-	move_objs=(fpnt->y!=0.0f);
-	
-		// move the meshes
-
-	unit_cnt=group->unit_count;
-	unit_list=group->unit_list;
-	
-	for (n=0;n!=unit_cnt;n++) {
-
-		if (unit_list->type==group_type_mesh) {
-
-				// is mesh moveable?
-
-			mesh=&map.mesh.meshes[unit_list->idx];
-			if (!mesh->flag.moveable) break;
-
-				// move mesh and mark as
-				// touched so it can be saved with games
-
-			if (mesh->flag.rot_independent) {
-				map_mesh_rotate(&map,unit_list->idx,&mesh->box.mid,fpnt);
-			}
-			else {
-				map_mesh_rotate(&map,unit_list->idx,&group->center_pnt,fpnt);
-			}
-			
-			mesh->flag.touched=TRUE;
-
-				// will need to update vertex/lights in vbo
-
-			mesh->draw.moved=TRUE;
-
-				// rotate objects and decals with mesh
-			
-			if (move_objs) object_rotate_with_mesh(unit_list->idx,fpnt->y);
-			decal_rotate_with_mesh(unit_list->idx,fpnt->y);
-		}
-		
-		unit_list++;
-	}
-
-		// keep the cumlative rotations
-
-	group->move.cuml_rot_add.x+=fpnt->x;
-	group->move.cuml_rot_add.y+=fpnt->y;
-	group->move.cuml_rot_add.z+=fpnt->z;
+	group->center_pnt.x+=move_pnt->x;
+	group->center_pnt.y+=move_pnt->y;
+	group->center_pnt.z+=move_pnt->z;
 }
 
 /* =======================================================
@@ -366,8 +324,7 @@ void group_moves_run(bool run_events)
 		move=&group->move;
 		if ((!move->on) || (move->freeze)) continue;
 		
-		group_move(group,&move->mov_add);
-		group_rotate(group,&move->rot_add);
+		group_move_and_rotate(group,&move->mov_add,&move->rot_add);
 
 		move->was_moved=TRUE;
 		
@@ -431,12 +388,7 @@ void group_moves_synch_with_load(void)
 	group=map.group.groups;
 
 	for (n=0;n!=map.group.ngroup;n++) {
-
-		if (group->move.was_moved) {
-			group_move(group,&group->move.cuml_mov_add);
-			group_rotate(group,&group->move.cuml_rot_add);
-		}
-		
+		if (group->move.was_moved) group_move_and_rotate(group,NULL,NULL);
 		group++;
 	}
 }
@@ -530,12 +482,10 @@ void group_moves_synch_with_host(network_reply_group_synch *synch)
 	cuml_mov_add.y=ntohl(synch->cuml_mov_add_y)-group->move.cuml_mov_add.y;
 	cuml_mov_add.z=ntohl(synch->cuml_mov_add_z)-group->move.cuml_mov_add.z;
 
-	group_move(group,&cuml_mov_add);
-
 	cuml_rot_add.x=ntohf(synch->fp_cuml_rot_add_x)-group->move.cuml_rot_add.x;
 	cuml_rot_add.y=ntohf(synch->fp_cuml_rot_add_y)-group->move.cuml_rot_add.y;
 	cuml_rot_add.z=ntohf(synch->fp_cuml_rot_add_z)-group->move.cuml_rot_add.z;
 
-	group_rotate(group,&cuml_rot_add);
+	group_move_and_rotate(group,&cuml_mov_add,&cuml_rot_add);
 }
 

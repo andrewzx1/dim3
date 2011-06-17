@@ -433,7 +433,7 @@ void liquid_reflection_map_setup(void)
 		poly=mesh->polys;
 	
 		for (k=0;k!=mesh->npoly;k++) {
-			map_prepare_mesh_poly(mesh,poly);
+			map_prepare_mesh_poly(&map,mesh,poly);
 			poly++;
 		}
 

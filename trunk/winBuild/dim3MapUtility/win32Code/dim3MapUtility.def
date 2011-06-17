@@ -43,25 +43,26 @@ EXPORTS
 	map_mesh_create_colors_cache					@236
 	
 	map_mesh_combine								@237
-	map_mesh_move									@238
-	map_mesh_resize									@239
-	map_mesh_flip									@240
-	map_mesh_rotate									@241
-	map_mesh_skew									@242
-	map_mesh_tesselate								@243
-	map_mesh_poly_punch_hole						@244
-	map_mesh_poly_tesselate							@245
-	map_mesh_poly_run_shifts						@246
-	map_mesh_get_poly_uv_as_box						@247
-	map_mesh_set_poly_uv_as_box						@248
-	map_mesh_rotate_poly_uv							@249
-	map_mesh_flip_poly_uv							@250
-	map_mesh_reset_poly_uv							@251
-	map_mesh_reset_uv								@252
-	map_mesh_whole_poly_uv							@253
-	map_mesh_whole_uv								@254
-	map_mesh_single_poly_uv							@255
-	map_mesh_single_uv								@256
+	map_mesh_move_rotate_copy						@238
+	map_mesh_move									@239
+	map_mesh_resize									@240
+	map_mesh_flip									@241
+	map_mesh_rotate									@242
+	map_mesh_skew									@243
+	map_mesh_tesselate								@244
+	map_mesh_poly_punch_hole						@245
+	map_mesh_poly_tesselate							@246
+	map_mesh_poly_run_shifts						@247
+	map_mesh_get_poly_uv_as_box						@248
+	map_mesh_set_poly_uv_as_box						@249
+	map_mesh_rotate_poly_uv							@250
+	map_mesh_flip_poly_uv							@251
+	map_mesh_reset_poly_uv							@252
+	map_mesh_reset_uv								@253
+	map_mesh_whole_poly_uv							@254
+	map_mesh_whole_uv								@255
+	map_mesh_single_poly_uv							@256
+	map_mesh_single_uv								@257
 
 	map_liquid_add									@260
 	map_liquid_delete								@261
