@@ -245,6 +245,8 @@ int object_find_idx_by_stood_on_object_idx(int stand_obj_idx)
 	obj_type		*obj;
 	
 	for (n=0;n!=max_obj_list;n++) {
+		if (stand_obj_idx==n) continue;
+		
 		obj=server.obj_list.objs[n];
 		if (obj==NULL) continue;
 

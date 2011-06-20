@@ -683,6 +683,8 @@ bool collide_object_to_map(obj_type *obj,d3pnt *motion)
 			hit_box_hit=TRUE;
 		}
 	}
+		
+	obj->hit_box.obj_hit_box_idx=-1;
 
 		// regular collisions
 
@@ -926,6 +928,8 @@ bool collide_object_to_sphere(d3pnt *sphere_pnt,int radius,obj_type *obj)
 			hit_box_hit=TRUE;
 		}
 	}
+		
+	obj->hit_box.obj_hit_box_idx=-1;
 
 		// regular collisions
 

@@ -59,7 +59,7 @@ bool menu_save(void)
 	if (choice==1) return(FALSE);
 	
 	if (choice==0) iface_write(&iface);
-
+	
 	return(TRUE);
 }
 

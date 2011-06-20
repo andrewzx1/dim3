@@ -447,7 +447,7 @@ void liquid_render_liquid(map_liquid_type *liq)
 
 		// draw the overlay?
 
-	if (!liq->overlay.on) return;
+	if ((!liq->overlay.on) || (liq->overlay.txt_idx==-1)) return;
 
 	is_transparent=liquid_is_transparent(liq);
 

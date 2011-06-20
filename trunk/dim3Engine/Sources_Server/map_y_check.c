@@ -219,7 +219,7 @@ int pin_upward_movement_point(int x,int y,int z,int ydist,poly_pointer_type *hea
 
 int pin_upward_movement_obj(obj_type *obj,int my)
 {
-	int						n,cy,x,z,diameter,radius,sz,
+	int						n,cy,x,z,diameter,radius,sz,y_sz,
 							grid_sz,lx,tz,idx,ty,by;
 	ray_trace_contact_type	base_contact;
 
@@ -248,10 +248,10 @@ int pin_upward_movement_obj(obj_type *obj,int my)
 	lx=obj->pnt.x-radius;
 	tz=obj->pnt.z-radius;
 	
-	sz=obj->size.y;
-	if (obj->duck.mode!=dm_stand) sz-=obj->duck.y_move;
-	by=(obj->pnt.y-sz)+my;
-	ty=(obj->pnt.y-sz)-my;
+	y_sz=obj->size.y;
+	if (obj->duck.mode!=dm_stand) y_sz-=obj->duck.y_move;
+	by=(obj->pnt.y-y_sz)+my;
+	ty=(obj->pnt.y-y_sz)-my;
 
 	sz=diameter/grid_sz;
 
@@ -289,8 +289,8 @@ int pin_upward_movement_obj(obj_type *obj,int my)
 	}
 	
 	if (cy==-1) return(my);
-	
-	return(cy-(obj->pnt.y-sz));
+		
+	return(cy-(obj->pnt.y-y_sz));
 }
 
 /* =======================================================
