@@ -34,6 +34,8 @@ and can be sold or given away.
 #include "scripts.h"
 #include "objects.h"
 
+#define map_collide_pin_radius_len			100
+
 extern map_type			map;
 extern server_type		server;
 
@@ -73,6 +75,78 @@ int find_poly_nearest_stand(int x,int y,int z,int ydist,bool ignore_higher)
 
 /* =======================================================
 
+      Built Pin X/Z rays
+      
+======================================================= */
+
+int pin_build_ray_set_obj(obj_type *obj,int ty,int by)
+{
+	int				n,k,x,z,radius,radius_sub,
+					circle_count,ray_count;
+	double			rad,rad_add,d_radius;
+
+		// get radius
+
+	radius=obj->size.x;
+	if (obj->size.z>radius) radius=obj->size.z;
+
+	radius=radius>>1;
+
+		// get center
+
+	x=obj->pnt.x;
+	z=obj->pnt.z;
+
+		// how many concentric circles
+		// always leave one more spot
+		// for center ray (only do at most 15 circles
+		// of 16 points each)
+
+	circle_count=radius/map_collide_pin_radius_len;
+	if (circle_count<4) circle_count=4;
+	if (circle_count>15) circle_count=15;
+
+	radius_sub=radius/circle_count;
+
+		// loop in radians
+
+	rad_add=(D_TRIG_PI*2.0)/16.0;
+
+		// create circles
+
+	ray_count=0;
+
+	for (n=0;n!=circle_count;n++) {
+
+		rad=0.0;
+		d_radius=(double)radius;
+
+		for (k=0;k!=16;k++) {
+			pin_movement_spt[ray_count].x=pin_movement_ept[ray_count].x=x+(int)(d_radius*sin(rad));
+			pin_movement_spt[ray_count].z=pin_movement_ept[ray_count].z=z-(int)(d_radius*cos(rad));
+			pin_movement_spt[ray_count].y=ty;
+			pin_movement_ept[ray_count].y=by;
+			ray_count++;
+
+			rad+=rad_add;
+		}
+
+		radius-=radius_sub;
+	}
+
+		// always add one for center
+	
+	pin_movement_spt[ray_count].x=pin_movement_ept[ray_count].x=x;
+	pin_movement_spt[ray_count].z=pin_movement_ept[ray_count].z=z;
+	pin_movement_spt[ray_count].y=ty;
+	pin_movement_ept[ray_count].y=by;
+	ray_count++;
+
+	return(ray_count);
+}
+
+/* =======================================================
+
       Pin Downward Movements
       
 ======================================================= */
@@ -108,18 +182,8 @@ int pin_downward_movement_point(int x,int y,int z,int ydist,poly_pointer_type *s
 
 int pin_downward_movement_obj(obj_type *obj,int my)
 {
-	int						n,cy,x,z,diameter,radius,sz,
-							grid_sz,lx,tz,idx,ty,by;
+	int						n,cy,ray_count,ty,by;
 	ray_trace_contact_type	base_contact;
-	
-		// get contact grid
-
-	diameter=obj->size.x;
-	if (obj->size.z>diameter) diameter=obj->size.z;
-		
-	grid_sz=diameter/map_collide_y_slop;
-	if (grid_sz>16) grid_sz=16;
-	if (grid_sz<5) grid_sz=5;
 	
 		// setup contact
 		
@@ -130,39 +194,21 @@ int pin_downward_movement_obj(obj_type *obj,int my)
 	base_contact.origin=poly_ray_trace_origin_unknown;
 
 		// create ray arrays
-	
-	idx=0;
 
-	radius=diameter>>1;
-	
-	lx=obj->pnt.x-radius;
-	tz=obj->pnt.z-radius;
-	
 	ty=obj->pnt.y-my;
 	by=obj->pnt.y+my;
-	
-	sz=diameter/grid_sz;
-	
-	for (z=0;z!=grid_sz;z++) {
-		for (x=0;x!=grid_sz;x++) {
-			pin_movement_spt[idx].x=pin_movement_ept[idx].x=lx+(sz*x);
-			pin_movement_spt[idx].z=pin_movement_ept[idx].z=tz+(sz*z);
-			pin_movement_spt[idx].y=ty;
-			pin_movement_ept[idx].y=by;
-			idx++;
-		}
-	}
-		
+	ray_count=pin_build_ray_set_obj(obj,ty,by);
+
 		// run the rays
 		
-	ray_trace_map_by_point_array(idx,pin_movement_spt,pin_movement_ept,pin_movement_hpt,pin_movement_hits,&base_contact,pin_movement_contacts);
+	ray_trace_map_by_point_array(ray_count,pin_movement_spt,pin_movement_ept,pin_movement_hpt,pin_movement_hits,&base_contact,pin_movement_contacts);
 	
 		// find the highest point
 		
 	obj->contact.stand_poly.mesh_idx=-1;
 	cy=-1;
 	
-	for (n=0;n!=idx;n++) {
+	for (n=0;n!=ray_count;n++) {
 		
 			// check poly collisions
 			
@@ -219,19 +265,9 @@ int pin_upward_movement_point(int x,int y,int z,int ydist,poly_pointer_type *hea
 
 int pin_upward_movement_obj(obj_type *obj,int my)
 {
-	int						n,cy,x,z,diameter,radius,sz,y_sz,
-							grid_sz,lx,tz,idx,ty,by;
+	int						n,cy,y_sz,ray_count,ty,by;
 	ray_trace_contact_type	base_contact;
 
-		// get contact grid
-		
-	diameter=obj->size.x;
-	if (obj->size.z>diameter) diameter=obj->size.z;
-		
-	grid_sz=diameter/map_collide_y_slop;
-	if (grid_sz>16) grid_sz=16;
-	if (grid_sz<5) grid_sz=5;
-	
 		// setup contact
 		
 	base_contact.obj.on=FALSE;
@@ -240,41 +276,24 @@ int pin_upward_movement_obj(obj_type *obj,int my)
 	base_contact.origin=poly_ray_trace_origin_unknown;
 
 		// create ray arrays
-	
-	idx=0;
 
-	radius=diameter>>1;
-	
-	lx=obj->pnt.x-radius;
-	tz=obj->pnt.z-radius;
-	
 	y_sz=obj->size.y;
 	if (obj->duck.mode!=dm_stand) y_sz-=obj->duck.y_move;
 	by=(obj->pnt.y-y_sz)+my;
 	ty=(obj->pnt.y-y_sz)-my;
 
-	sz=diameter/grid_sz;
+	ray_count=pin_build_ray_set_obj(obj,ty,by);
 
-	for (z=0;z!=grid_sz;z++) {
-		for (x=0;x!=grid_sz;x++) {
-			pin_movement_spt[idx].x=pin_movement_ept[idx].x=lx+(sz*x);
-			pin_movement_spt[idx].z=pin_movement_ept[idx].z=tz+(sz*z);
-			pin_movement_spt[idx].y=by;
-			pin_movement_ept[idx].y=ty;
-			idx++;
-		}
-	}
-		
 		// run the rays
 		
-	ray_trace_map_by_point_array(idx,pin_movement_spt,pin_movement_ept,pin_movement_hpt,pin_movement_hits,&base_contact,pin_movement_contacts);
+	ray_trace_map_by_point_array(ray_count,pin_movement_spt,pin_movement_ept,pin_movement_hpt,pin_movement_hits,&base_contact,pin_movement_contacts);
 	
 		// find the lowest point
 		
 	obj->contact.head_poly.mesh_idx=-1;
 	cy=-1;
 	
-	for (n=0;n!=idx;n++) {
+	for (n=0;n!=ray_count;n++) {
 		
 			// check poly collisions
 			

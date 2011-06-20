@@ -302,3 +302,98 @@ void iface_read_settings_particle(iface_type *iface)
 	xml_close_file();
 }
 
+/* =======================================================
+
+      Write Particles XML
+      
+======================================================= */
+
+bool iface_write_settings_particle(iface_type *iface)
+{
+	int						n;
+	char					path[1024];
+	bool					ok;
+	iface_particle_type		*particle;
+	
+		// start new file
+		
+	xml_new_file();
+
+	xml_add_tagstart("Particle_Data");
+	xml_add_tagend(FALSE);
+
+		// particles
+
+	xml_add_tagstart("Particles");
+	xml_add_tagend(FALSE);
+
+	for (n=0;n!=iface->particle_list.nparticle;n++) {
+
+		particle=&iface->particle_list.particles[n];
+		if (particle->group.on) continue;
+
+		/*
+		xml_add_tagstart("Sound");
+		xml_add_attribute_text("name",snd->name);
+		xml_add_tagend(FALSE);
+
+		xml_add_tagstart("Wave");
+		xml_add_attribute_text("file",snd->file_name);
+		xml_add_tagend(TRUE);
+
+		xml_add_tagstart("Distance");
+		xml_add_attribute_int("min",snd->min_dist);
+		xml_add_attribute_int("max",snd->max_dist);
+		xml_add_tagend(TRUE);
+
+		xml_add_tagclose("Sound");
+*/
+
+	}
+
+	xml_add_tagclose("Particles");
+
+		// particle groups
+
+	xml_add_tagstart("Particle_Groups");
+	xml_add_tagend(FALSE);
+
+	for (n=0;n!=iface->particle_list.nparticle;n++) {
+
+		particle=&iface->particle_list.particles[n];
+		if (!particle->group.on) continue;
+
+		/*
+		xml_add_tagstart("Sound");
+		xml_add_attribute_text("name",snd->name);
+		xml_add_tagend(FALSE);
+
+		xml_add_tagstart("Wave");
+		xml_add_attribute_text("file",snd->file_name);
+		xml_add_tagend(TRUE);
+
+		xml_add_tagstart("Distance");
+		xml_add_attribute_int("min",snd->min_dist);
+		xml_add_attribute_int("max",snd->max_dist);
+		xml_add_tagend(TRUE);
+
+		xml_add_tagclose("Sound");
+*/
+
+	}
+
+	xml_add_tagclose("Particle_Groups");
+
+		// close particle data
+
+	xml_add_tagclose("Particle_Data");
+
+        // write the xml
+		
+	file_paths_data(&iface_file_path_setup,path,"Settings","Particles","xml");
+		
+	ok=xml_save_file(path);
+    xml_close_file();
+	
+	return(ok);
+}

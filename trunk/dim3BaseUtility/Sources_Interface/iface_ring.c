@@ -165,3 +165,99 @@ void iface_read_settings_ring(iface_type *iface)
 	xml_close_file();
 }
 
+/* =======================================================
+
+      Write Rings XML
+      
+======================================================= */
+
+bool iface_write_settings_ring(iface_type *iface)
+{
+	int					n;
+	char				path[1024];
+	bool				ok;
+	iface_ring_type		*ring;
+	
+		// start new file
+		
+	xml_new_file();
+
+	xml_add_tagstart("Rings");
+	xml_add_tagend(FALSE);
+
+	ring=iface->ring_list.rings;
+
+	for (n=0;n!=iface->ring_list.nring;n++) {
+
+		xml_add_tagstart("Ring");
+		xml_add_attribute_text("name",ring->name);
+		xml_add_tagend(FALSE);
+		
+  		xml_add_tagstart("Settings");
+		xml_add_attribute_int("time",ring->life_msec);
+		xml_add_attribute_boolean("additive",ring->blend_add);
+		xml_add_tagend(TRUE);
+		
+        xml_add_tagstart("Image");
+		xml_add_attribute_text("file",ring->bitmap_name);
+		xml_add_attribute_int("count",ring->animate.image_count);
+		xml_add_attribute_int("time",ring->animate.msec);
+		xml_add_attribute_boolean("loop",ring->animate.loop);
+		xml_add_attribute_boolean("loop_back",ring->animate.loop_back);
+		xml_add_tagend(TRUE);
+		
+        xml_add_tagstart("Outer");
+		xml_add_attribute_int("start",ring->start_outer_size);
+		xml_add_attribute_int("end",ring->end_outer_size);
+		xml_add_tagend(TRUE);
+
+        xml_add_tagstart("Inner");
+		xml_add_attribute_int("start",ring->start_inner_size);
+		xml_add_attribute_int("end",ring->end_inner_size);
+		xml_add_tagend(TRUE);
+
+        xml_add_tagstart("Rotate");
+		xml_add_attribute_float("x",ring->ang.x);
+		xml_add_attribute_float("y",ring->ang.y);
+		xml_add_attribute_float("z",ring->ang.z);
+		xml_add_attribute_float("x_add",ring->rot.x);
+		xml_add_attribute_float("y_add",ring->rot.y);
+		xml_add_attribute_float("z_add",ring->rot.z);
+		xml_add_attribute_float("x_accel",ring->rot_accel.x);
+		xml_add_attribute_float("y_accel",ring->rot_accel.y);
+		xml_add_attribute_float("z_accel",ring->rot_accel.z);
+		xml_add_tagend(TRUE);
+
+        xml_add_tagstart("Move");
+		xml_add_attribute_float("x",ring->vct.x);
+		xml_add_attribute_float("y",ring->vct.y);
+		xml_add_attribute_float("z",ring->vct.z);
+		xml_add_tagend(TRUE);
+
+        xml_add_tagstart("Color");
+		xml_add_attribute_color("start",&ring->start_color);
+		xml_add_attribute_color("end",&ring->end_color);
+		xml_add_attribute_boolean("team",ring->team_tint);
+		xml_add_tagend(TRUE);
+
+        xml_add_tagstart("Alpha");
+        xml_add_attribute_float("start",ring->start_alpha);
+        xml_add_attribute_float("end",ring->end_alpha);
+		xml_add_tagend(TRUE);
+	
+		xml_add_tagclose("Ring");
+
+		ring++;
+	}
+
+	xml_add_tagclose("Rings");
+
+        // write the xml
+		
+	file_paths_data(&iface_file_path_setup,path,"Settings","Rings","xml");
+		
+	ok=xml_save_file(path);
+    xml_close_file();
+	
+	return(ok);
+}
