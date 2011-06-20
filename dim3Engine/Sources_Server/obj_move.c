@@ -513,7 +513,7 @@ void object_move_y_up(obj_type *obj,int ymove)
 	}
 
 		// go upwards
-
+		
 	up_move=pin_upward_movement_obj(obj,ymove);
 	obj->pnt.y+=up_move;
 	
@@ -590,6 +590,10 @@ void object_move_y_fall(obj_type *obj)
 		obj->contact.stand_obj_idx=hit_obj->idx;
 		return;
 	}
+	
+		// no touch
+		
+	obj->touch.stand=FALSE;
 	
 		// find air mode
 		

@@ -56,6 +56,7 @@ bool js_obj_health_set_armor_maximum(JSContextRef cx,JSObjectRef j_obj,JSStringR
 bool js_obj_health_set_armor_start(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 JSValueRef js_obj_health_add_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_health_remove_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_obj_health_damage_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_health_reset_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 JSStaticValue 		obj_health_props[]={
@@ -75,6 +76,7 @@ JSStaticValue 		obj_health_props[]={
 JSStaticFunction	obj_health_functions[]={
 							{"add",						js_obj_health_add_func,						kJSPropertyAttributeDontDelete},
 							{"remove",					js_obj_health_remove_func,					kJSPropertyAttributeDontDelete},
+							{"damage",					js_obj_health_damage_func,					kJSPropertyAttributeDontDelete},
 							{"reset",					js_obj_health_reset_func,					kJSPropertyAttributeDontDelete},
 							{0,0,0}};
 
@@ -331,6 +333,19 @@ JSValueRef js_obj_health_remove_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 		health->value=0;
 		obj->death_trigger=TRUE;
 	}
+
+	return(script_null_to_value(cx));
+}
+
+JSValueRef js_obj_health_damage_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+{
+	obj_type		*obj;
+	obj_health		*health;
+	
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
+	obj=object_get_attach(j_obj);
+	object_damage(obj,NULL,NULL,NULL,NULL,script_value_to_int(cx,argv[0]));
 
 	return(script_null_to_value(cx));
 }

@@ -50,6 +50,7 @@ extern int object_script_spawn(char *name,char *script,char *params,d3pnt *pnt,d
 extern bool object_script_remove(int idx,char *err_str);
 
 extern void object_set_radius(obj_type *obj);
+extern int object_get_radius(obj_type *obj);
 extern void object_set_current_mesh(obj_type *obj);
 extern void object_set_position(obj_type *obj,int x,int y,int z,float ang_y,float ymove);
 extern void object_stop(obj_type *obj);

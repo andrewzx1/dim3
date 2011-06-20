@@ -40,6 +40,7 @@ JSValueRef js_obj_motion_vector_get_z(JSContextRef cx,JSObjectRef j_obj,JSString
 JSValueRef js_obj_motion_vector_go_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_motion_vector_stop_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_motion_vector_jump_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_obj_motion_vector_shove_direct_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_motion_vector_alter_speed_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_motion_vector_alter_gravity_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_motion_vector_walk_to_node_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
@@ -64,6 +65,7 @@ JSStaticFunction	obj_motion_vector_functions[]={
 							{"go",					js_obj_motion_vector_go_func,						kJSPropertyAttributeDontDelete},
 							{"stop",				js_obj_motion_vector_stop_func,						kJSPropertyAttributeDontDelete},
 							{"jump",				js_obj_motion_vector_jump_func,						kJSPropertyAttributeDontDelete},
+							{"shoveDirect",			js_obj_motion_vector_shove_direct_func,				kJSPropertyAttributeDontDelete},
 							{"alterSpeed",			js_obj_motion_vector_alter_speed_func,				kJSPropertyAttributeDontDelete},
 							{"alterGravity",		js_obj_motion_vector_alter_gravity_func,			kJSPropertyAttributeDontDelete},
 							{"walkToNode",			js_obj_motion_vector_walk_to_node_func,				kJSPropertyAttributeDontDelete},
@@ -170,6 +172,27 @@ JSValueRef js_obj_motion_vector_jump_func(JSContextRef cx,JSObjectRef func,JSObj
 	obj=object_get_attach(j_obj);
 	object_start_jump(obj);
 	
+	return(script_null_to_value(cx));
+}
+
+JSValueRef js_obj_motion_vector_shove_direct_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+{
+	d3vct			vct;
+	obj_type		*obj;
+	
+	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
+	
+	obj=object_get_attach(j_obj);
+	
+		// get direction
+		
+	vct.x=script_value_to_float(cx,argv[0]);
+	vct.z=script_value_to_float(cx,argv[1]);
+	vct.y=script_value_to_float(cx,argv[2]);
+	
+		// shove object
+		
+	object_shove_direct(obj,&vct);
 	return(script_null_to_value(cx));
 }
 

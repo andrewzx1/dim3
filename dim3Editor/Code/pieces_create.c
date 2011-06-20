@@ -473,7 +473,7 @@ void piece_create_liquid(void)
 	liq->reflect.no_hit_col.r=liq->reflect.no_hit_col.g=liq->reflect.no_hit_col.b=0.5f;
 	liq->reflect.alpha=0.7f;
 
-	liq->overlay.on=TRUE;
+	liq->overlay.on=FALSE;
 	liq->overlay.txt_idx=-1;
 	liq->overlay.stamp_size=10000;
 

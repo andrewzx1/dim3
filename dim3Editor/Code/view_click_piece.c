@@ -71,12 +71,16 @@ void view_click_grid(d3pnt *pt)
 
 bool view_click_snap(int mesh_idx,int liquid_idx,d3pnt *pt)
 {
-	int				n,t,y;
+	int				n,t,y,snap_sz;
 	d3pnt			*dpt;
 	map_mesh_type	*mesh;
 	map_liquid_type	*liq;
 	
 	if (state.vertex_mode!=vertex_mode_snap) return(FALSE);
+	
+		// snap size
+		
+	snap_sz=(setup.snap_size*view_snap_clip_size_factor);
 	
 		// any mesh vertexes to snap to?
 		
@@ -93,7 +97,22 @@ bool view_click_snap(int mesh_idx,int liquid_idx,d3pnt *pt)
 		
 		for (t=0;t!=mesh->nvertex;t++) {
 		
-			if (distance_get(dpt->x,dpt->y,dpt->z,pt->x,pt->y,pt->z)<(setup.snap_size*view_snap_clip_size_factor)) {
+			if (abs(dpt->x-pt->x)>snap_sz) {
+				dpt++;
+				continue;
+			}
+			
+			if (abs(dpt->z-pt->z)>snap_sz) {
+				dpt++;
+				continue;
+			}
+			
+			if (abs(dpt->y-pt->y)>snap_sz) {
+				dpt++;
+				continue;
+			}
+		
+			if (distance_get(dpt->x,dpt->y,dpt->z,pt->x,pt->y,pt->z)<snap_sz) {
 				memmove(pt,dpt,sizeof(d3pnt));
 				return(TRUE);
 			}
@@ -115,28 +134,28 @@ bool view_click_snap(int mesh_idx,int liquid_idx,d3pnt *pt)
 			continue;
 		}
 
-		if (distance_get(liq->lft,liq->y,liq->top,pt->x,pt->y,pt->z)<(setup.snap_size*view_snap_clip_size_factor)) {
+		if (distance_get(liq->lft,liq->y,liq->top,pt->x,pt->y,pt->z)<snap_sz) {
 			pt->x=liq->lft;
 			pt->y=liq->y;
 			pt->z=liq->top;
 			return(TRUE);
 		}
 
-		if (distance_get(liq->rgt,liq->y,liq->top,pt->x,pt->y,pt->z)<(setup.snap_size*view_snap_clip_size_factor)) {
+		if (distance_get(liq->rgt,liq->y,liq->top,pt->x,pt->y,pt->z)<snap_sz) {
 			pt->x=liq->rgt;
 			pt->y=liq->y;
 			pt->z=liq->top;
 			return(TRUE);
 		}
 
-		if (distance_get(liq->lft,liq->y,liq->bot,pt->x,pt->y,pt->z)<(setup.snap_size*view_snap_clip_size_factor)) {
+		if (distance_get(liq->lft,liq->y,liq->bot,pt->x,pt->y,pt->z)<snap_sz) {
 			pt->x=liq->lft;
 			pt->y=liq->y;
 			pt->z=liq->bot;
 			return(TRUE);
 		}
 
-		if (distance_get(liq->rgt,liq->y,liq->bot,pt->x,pt->y,pt->z)<(setup.snap_size*view_snap_clip_size_factor)) {
+		if (distance_get(liq->rgt,liq->y,liq->bot,pt->x,pt->y,pt->z)<snap_sz) {
 			pt->x=liq->rgt;
 			pt->y=liq->y;
 			pt->z=liq->bot;
@@ -145,33 +164,35 @@ bool view_click_snap(int mesh_idx,int liquid_idx,d3pnt *pt)
 
 		y=liq->y+liq->depth;
 
-		if (distance_get(liq->lft,y,liq->top,pt->x,pt->y,pt->z)<(setup.snap_size*view_snap_clip_size_factor)) {
+		if (distance_get(liq->lft,y,liq->top,pt->x,pt->y,pt->z)<snap_sz) {
 			pt->x=liq->lft;
 			pt->y=y;
 			pt->z=liq->top;
 			return(TRUE);
 		}
 
-		if (distance_get(liq->rgt,y,liq->top,pt->x,pt->y,pt->z)<(setup.snap_size*view_snap_clip_size_factor)) {
+		if (distance_get(liq->rgt,y,liq->top,pt->x,pt->y,pt->z)<snap_sz) {
 			pt->x=liq->rgt;
 			pt->y=y;
 			pt->z=liq->top;
 			return(TRUE);
 		}
 
-		if (distance_get(liq->lft,y,liq->bot,pt->x,pt->y,pt->z)<(setup.snap_size*view_snap_clip_size_factor)) {
+		if (distance_get(liq->lft,y,liq->bot,pt->x,pt->y,pt->z)<snap_sz) {
 			pt->x=liq->lft;
 			pt->y=y;
 			pt->z=liq->bot;
 			return(TRUE);
 		}
 
-		if (distance_get(liq->rgt,y,liq->bot,pt->x,pt->y,pt->z)<(setup.snap_size*view_snap_clip_size_factor)) {
+		if (distance_get(liq->rgt,y,liq->bot,pt->x,pt->y,pt->z)<snap_sz) {
 			pt->x=liq->rgt;
 			pt->y=y;
 			pt->z=liq->bot;
 			return(TRUE);
 		}
+		
+		liq++;
 	}
 	
 	return(FALSE);
