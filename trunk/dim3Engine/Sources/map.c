@@ -597,6 +597,24 @@ bool map_need_rebuild(void)
 
 bool map_rebuild_changes(char *err_str)
 {
+	int				n;
+	obj_type		*obj;
+	
+		// end old map
+		
 	if (server.map_open) map_end();
+	
+		// reset all game bound
+		// objects spawn type
+		// note, if this is being called from a network reset,
+		// these will get over-ridden later down the line
+		
+	for (n=0;n!=max_obj_list;n++) {
+		obj=server.obj_list.objs[n];
+		if (obj!=NULL) obj->next_spawn_sub_event=sd_event_spawn_map_change;
+	}
+		
+		// start new map
+	
 	return(map_start(FALSE,FALSE,err_str));
 }
