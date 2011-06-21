@@ -54,6 +54,7 @@ void file_reset_state(void)
 	state.normal=FALSE;
 	state.view_box=FALSE;
 	state.first_mesh=FALSE;
+	state.bone_names=TRUE;
 
 	state.ang.x=0;
     state.ang.y=180;

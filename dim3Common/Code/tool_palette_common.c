@@ -146,7 +146,7 @@ void tool_palette_draw_icon(int x,int y,unsigned long gl_id,bool is_highlight,bo
 
 		// outline
 
-	glColor4f(0.0f,0.0f,0.0f,1.0f);
+	glColor4f(0.4f,0.4f,0.4f,1.0f);
 		
 	glBegin(GL_LINE_LOOP);
 	glVertex2i(x,y);
@@ -186,7 +186,7 @@ void tool_palette_draw(void)
 
 		// background
 
-	glColor4f(0.75f,0.75f,0.75f,1.0f);
+	glColor4f(0.9f,0.9f,0.9f,1.0f);
 		
 	glBegin(GL_QUADS);
 	glVertex2i(tool_palette_box.lx,tool_palette_box.ty);
@@ -210,7 +210,7 @@ void tool_palette_draw(void)
 		
 			// separator
 			
-		if (tool_bitmaps_separator[n]=='1') x+=2;
+		if (tool_bitmaps_separator[n]=='1') x+=4;
 		
 			// draw tool
 			
@@ -225,8 +225,8 @@ void tool_palette_draw(void)
 	glColor4f(0.0f,0.0f,0.0f,1.0f);
 
 	glBegin(GL_LINES);
-	glVertex2i(tool_palette_box.lx,tool_palette_box.ty);
-	glVertex2i(tool_palette_box.rx,tool_palette_box.ty);
+	glVertex2i(tool_palette_box.lx,tool_palette_box.ty+1);
+	glVertex2i(tool_palette_box.rx,tool_palette_box.ty+1);
 	glVertex2i(tool_palette_box.lx,tool_palette_box.by);
 	glVertex2i(tool_palette_box.rx,tool_palette_box.by);
 	glEnd();

@@ -190,8 +190,9 @@ extern char light_type_str[][32];
 #define cinema_actor_object									2
 #define cinema_actor_movement								3
 #define cinema_actor_particle								4
-#define cinema_actor_hud_text								5
-#define cinema_actor_hud_bitmap								6
+#define cinema_actor_sound									5
+#define cinema_actor_hud_text								6
+#define cinema_actor_hud_bitmap								7
 
 //
 // shared light cache

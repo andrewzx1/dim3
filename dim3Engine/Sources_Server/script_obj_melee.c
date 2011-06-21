@@ -41,12 +41,14 @@ JSValueRef js_obj_melee_get_radius(JSContextRef cx,JSObjectRef j_obj,JSStringRef
 JSValueRef js_obj_melee_get_distance(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_melee_get_damage(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_melee_get_force(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_obj_melee_get_fallOff(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 bool js_obj_melee_set_strikeBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 bool js_obj_melee_set_strikePoseName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 bool js_obj_melee_set_radius(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 bool js_obj_melee_set_distance(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 bool js_obj_melee_set_damage(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 bool js_obj_melee_set_force(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_obj_melee_set_fallOff(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 JSValueRef js_obj_melee_spawn_from_object_bone_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_melee_spawn_from_touch_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
@@ -57,6 +59,7 @@ JSStaticValue 		obj_melee_props[]={
 							{"distance",				js_obj_melee_get_distance,						js_obj_melee_set_distance,			kJSPropertyAttributeDontDelete},
 							{"damage",					js_obj_melee_get_damage,						js_obj_melee_set_damage,			kJSPropertyAttributeDontDelete},
 							{"force",					js_obj_melee_get_force,							js_obj_melee_set_force,				kJSPropertyAttributeDontDelete},
+							{"fallOff",					js_obj_melee_get_fallOff,						js_obj_melee_set_fallOff,			kJSPropertyAttributeDontDelete},
 							{0,0,0,0}};
 
 JSStaticFunction	obj_melee_functions[]={
@@ -143,6 +146,14 @@ JSValueRef js_obj_melee_get_force(JSContextRef cx,JSObjectRef j_obj,JSStringRef 
 	return(script_int_to_value(cx,obj->melee.force));
 }
 
+JSValueRef js_obj_melee_get_fallOff(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
+{
+    obj_type			*obj;
+
+	obj=object_get_attach(j_obj);
+	return(script_bool_to_value(cx,obj->melee.fall_off));
+}
+
 /* =======================================================
 
       Setters
@@ -208,6 +219,16 @@ bool js_obj_melee_set_force(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,J
 	obj=object_get_attach(j_obj);
 	obj->melee.force=script_value_to_int(cx,vp);
 	
+	return(TRUE);
+}
+
+bool js_obj_melee_set_fallOff(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+{
+    obj_type			*obj;
+
+	obj=object_get_attach(j_obj);
+	obj->melee.fall_off=script_value_to_bool(cx,vp);
+
 	return(TRUE);
 }
 
