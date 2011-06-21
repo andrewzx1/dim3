@@ -310,7 +310,7 @@ void iface_read_settings_particle(iface_type *iface)
 
 bool iface_write_settings_particle(iface_type *iface)
 {
-	int						n;
+	int						n,k;
 	char					path[1024];
 	bool					ok;
 	iface_particle_type		*particle;
@@ -332,23 +332,77 @@ bool iface_write_settings_particle(iface_type *iface)
 		particle=&iface->particle_list.particles[n];
 		if (particle->group.on) continue;
 
-		/*
-		xml_add_tagstart("Sound");
-		xml_add_attribute_text("name",snd->name);
+		xml_add_tagstart("Particle");
+		xml_add_attribute_text("name",particle->name);
 		xml_add_tagend(FALSE);
 
-		xml_add_tagstart("Wave");
-		xml_add_attribute_text("file",snd->file_name);
+		xml_add_tagstart("Settings");
+		xml_add_attribute_int("count",particle->count);
+		xml_add_attribute_int("time",particle->life_msec);
+		xml_add_attribute_boolean("reverse",particle->reverse);
+		xml_add_attribute_float("ambient",particle->ambient_factor);
+		xml_add_attribute_boolean("additive",particle->blend_add);
+		xml_add_attribute_boolean("globe",particle->globe);
+		xml_add_attribute_text("chain",particle->chain_name);
 		xml_add_tagend(TRUE);
 
-		xml_add_tagstart("Distance");
-		xml_add_attribute_int("min",snd->min_dist);
-		xml_add_attribute_int("max",snd->max_dist);
+		xml_add_tagstart("Image");
+		xml_add_attribute_text("file",particle->bitmap_name);
+		xml_add_attribute_int("count",particle->animate.image_count);
+		xml_add_attribute_int("time",particle->animate.msec);
+		xml_add_attribute_boolean("loop",particle->animate.loop);
+		xml_add_attribute_boolean("loop_back",particle->animate.loop_back);
+		xml_add_tagend(TRUE);
+		
+		xml_add_tagstart("Trail");
+		xml_add_attribute_int("count",particle->trail_count);
+		xml_add_attribute_float("step",particle->trail_step);
+		xml_add_attribute_float("reduce",particle->reduce_pixel_fact);
 		xml_add_tagend(TRUE);
 
-		xml_add_tagclose("Sound");
-*/
+		xml_add_tagstart("Gravity");
+		xml_add_attribute_float("start",particle->start_gravity);
+		xml_add_attribute_float("add",particle->gravity_add);
+		xml_add_tagend(TRUE);
 
+		xml_add_tagstart("Size");
+		xml_add_attribute_int("start",particle->start_pixel_size);
+		xml_add_attribute_int("end",particle->end_pixel_size);
+		xml_add_tagend(TRUE);
+
+		xml_add_tagstart("X");
+		xml_add_attribute_int("offset",particle->pt.x);
+		xml_add_attribute_float("move",particle->vct.x);
+		xml_add_attribute_float("rot",particle->rot.x);
+		xml_add_attribute_float("rot_accel",particle->rot_accel.x);
+		xml_add_tagend(TRUE);
+
+		xml_add_tagstart("Y");
+		xml_add_attribute_int("offset",particle->pt.y);
+		xml_add_attribute_float("move",particle->vct.y);
+		xml_add_attribute_float("rot",particle->rot.y);
+		xml_add_attribute_float("rot_accel",particle->rot_accel.y);
+		xml_add_tagend(TRUE);
+
+		xml_add_tagstart("Z");
+		xml_add_attribute_int("offset",particle->pt.z);
+		xml_add_attribute_float("move",particle->vct.z);
+		xml_add_attribute_float("rot",particle->rot.z);
+		xml_add_attribute_float("rot_accel",particle->rot_accel.z);
+		xml_add_tagend(TRUE);
+
+		xml_add_tagstart("Color");
+		xml_add_attribute_color("start",&particle->start_color);
+		xml_add_attribute_color("end",&particle->end_color);
+		xml_add_attribute_boolean("team",particle->team_tint);
+		xml_add_tagend(TRUE);
+
+		xml_add_tagstart("Alpha");
+		xml_add_attribute_float("start",particle->start_alpha);
+		xml_add_attribute_float("end",particle->end_alpha);
+		xml_add_tagend(TRUE);
+
+		xml_add_tagclose("Particle");
 	}
 
 	xml_add_tagclose("Particles");
@@ -363,23 +417,23 @@ bool iface_write_settings_particle(iface_type *iface)
 		particle=&iface->particle_list.particles[n];
 		if (!particle->group.on) continue;
 
-		/*
-		xml_add_tagstart("Sound");
-		xml_add_attribute_text("name",snd->name);
+		xml_add_tagstart("Particle_Group");
+		xml_add_attribute_text("name",particle->name);
 		xml_add_tagend(FALSE);
 
-		xml_add_tagstart("Wave");
-		xml_add_attribute_text("file",snd->file_name);
-		xml_add_tagend(TRUE);
+		xml_add_tagstart("Particles");
+		xml_add_tagend(FALSE);
 
-		xml_add_tagstart("Distance");
-		xml_add_attribute_int("min",snd->min_dist);
-		xml_add_attribute_int("max",snd->max_dist);
-		xml_add_tagend(TRUE);
+		for (k=0;k!=particle->group.count;k++) {
+			xml_add_tagstart("Particle");
+			xml_add_attribute_text("name",particle->group.particles[k].name);
+			xml_add_attribute_int("offset",particle->group.particles[k].shift);
+			xml_add_tagend(TRUE);
+		}
 
-		xml_add_tagclose("Sound");
-*/
+		xml_add_tagclose("Particles");
 
+		xml_add_tagclose("Particle_Group");
 	}
 
 	xml_add_tagclose("Particle_Groups");

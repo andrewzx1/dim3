@@ -72,7 +72,7 @@ void alt_property_palette_fill_cinema_action(int cinema_idx,int action_idx)
 	
 	has_actor=((action->actor_type!=cinema_actor_camera) && (action->actor_type!=cinema_actor_player));
 	has_animation=((action->actor_type==cinema_actor_player) || (action->actor_type==cinema_actor_object));
-	has_node=((action->actor_type==cinema_actor_camera) || (action->actor_type==cinema_actor_player) || (action->actor_type==cinema_actor_object) || (action->actor_type==cinema_actor_particle));
+	has_node=((action->actor_type==cinema_actor_camera) || (action->actor_type==cinema_actor_player) || (action->actor_type==cinema_actor_object) || (action->actor_type==cinema_actor_particle) || (action->actor_type==cinema_actor_sound));
 	is_fade=((action->action==cinema_action_fade_in) || (action->action==cinema_action_fade_out));
 
 		// the properties
@@ -170,6 +170,10 @@ void alt_property_palette_click_cinema_action(int cinema_idx,int action_idx,int 
 
 				case cinema_actor_particle:
 					property_palette_pick_particle(action->actor_name);
+					break;
+
+				case cinema_actor_sound:
+					property_palette_pick_sound(action->actor_name,FALSE);
 					break;
 
 				case cinema_actor_hud_text:

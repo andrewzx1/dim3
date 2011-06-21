@@ -101,12 +101,15 @@ bool tool_get_highlight_state(int tool_idx)
 			return(state.first_mesh);
 
 		case 10:
-			return(state.drag_bone_mode==drag_bone_mode_rotate);
+			return(state.bone_names);
 
 		case 11:
-			return(state.drag_bone_mode==drag_bone_mode_stretch);
+			return(state.drag_bone_mode==drag_bone_mode_rotate);
 
 		case 12:
+			return(state.drag_bone_mode==drag_bone_mode_stretch);
+
+		case 13:
 			return(state.playing);
 			
 	}
@@ -166,16 +169,20 @@ void tool_click(int tool_idx)
 		case 9:
 			state.first_mesh=!state.first_mesh;
 			break;
-			
+
 		case 10:
-			state.drag_bone_mode=drag_bone_mode_rotate;
+			state.bone_names=!state.bone_names;
 			break;
 			
 		case 11:
-			state.drag_bone_mode=drag_bone_mode_stretch;
+			state.drag_bone_mode=drag_bone_mode_rotate;
 			break;
 			
 		case 12:
+			state.drag_bone_mode=drag_bone_mode_stretch;
+			break;
+			
+		case 13:
 			main_wind_play(!state.playing,FALSE);
 			break;
 	}

@@ -30,7 +30,7 @@ and can be sold or given away.
 //
 
 #define tool_button_size				32
-#define tool_count						13
+#define tool_count						14
 
 
 #define tool_file_names					{ \
@@ -44,12 +44,13 @@ and can be sold or given away.
 											"Tool Boxes", \
 											"Tool Normals", \
 											"Tool Show First Mesh", \
+											"Tool Show Bone Names", \
 											"Tool Rotate Mode", \
 											"Tool Move Mode", \
 											"Tool Play" \
 										}
 
-#define tool_separators					{"0000100100101"}
+#define tool_separators					{"00001001000101"}
 
 #define tool_tip_names					{ \
 											"Show Textured Model", \
@@ -62,6 +63,7 @@ and can be sold or given away.
 											"Show View Box", \
 											"Show Normals", \
 											"Always Show First Mesh", \
+											"Show Bone Names", \
 											"Bone Rotate Mode", \
 											"Bone Move Mode", \
 											"Play Animation" \
@@ -264,7 +266,7 @@ typedef struct		{
 													texture_edit_idx,drag_bone_mode,select_mode,
 													magnify_z;
 						bool						model_open,texture,mesh,bone,hit_box,
-													normal,view_box,first_mesh,
+													normal,view_box,first_mesh,bone_names,
 													playing,play_animate_blend,
 													drag_sel_on,in_preference;
 						char						file_name[256];

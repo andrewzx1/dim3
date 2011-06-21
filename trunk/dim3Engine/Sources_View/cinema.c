@@ -356,6 +356,29 @@ void cinema_action_run_particle(map_cinema_action_type *action)
 	particle_spawn(particle_idx,-1,&map.nodes[node_idx].pnt,NULL,NULL);
 }
 
+void cinema_action_run_sound(map_cinema_action_type *action)
+{
+	int				buffer_idx,node_idx;
+	char			err_str[256];
+
+
+	buffer_idx=al_find_buffer(action->actor_name);
+	if (buffer_idx==-1) {
+		sprintf(err_str,"Unknown sound in cinema: %s",action->actor_name);
+		console_add_error(err_str);
+		return;
+	}
+
+	node_idx=map_find_node(&map,action->node_name);
+	if (node_idx==-1) {
+		sprintf(err_str,"Need node to launch cinema sound: %s",action->actor_name);
+		console_add_error(err_str);
+		return;
+	}
+
+	al_play_source(buffer_idx,&map.nodes[node_idx].pnt,1.0f,FALSE,FALSE,FALSE,FALSE);
+}
+
 void cinema_action_run_hud_bitmap(map_cinema_action_type *action)
 {
 	iface_bitmap_type		*bitmap;
@@ -435,6 +458,10 @@ void cinema_action_run_generic(map_cinema_action_type *action)
 
 		case cinema_actor_particle:
 			cinema_action_run_particle(action);
+			return;
+
+		case cinema_actor_sound:
+			cinema_action_run_sound(action);
 			return;
 
 		case cinema_actor_hud_text:

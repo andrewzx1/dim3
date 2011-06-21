@@ -278,8 +278,10 @@ void draw_model_wind(int mesh_idx)
 	
 	if (state.bone) {
 		draw_model_bones(state.cur_bone_idx);
-		draw_model_bone_names(state.cur_bone_idx);
-		draw_model_gl_setup(0);			// names goes into 2D
+		if (state.bone_names) {
+			draw_model_bone_names(state.cur_bone_idx);
+			draw_model_gl_setup(0);			// names goes into 2D
+		}
 	}
 	
 	if ((state.texture) || (state.mesh)) {
