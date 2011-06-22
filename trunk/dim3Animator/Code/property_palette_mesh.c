@@ -37,7 +37,8 @@ and can be sold or given away.
 #define kMeshPropertyDiffuse				1
 #define kMeshPropertyNoLighting				2
 #define kMeshPropertyAdditive				3
-#define kMeshPropertyMovement				4
+#define kMeshPropertyLocked					4
+#define kMeshPropertyMovement				5
 
 extern model_type				model;
 extern animator_state_type		state;
@@ -64,6 +65,7 @@ void property_palette_fill_mesh(int mesh_idx)
 	list_palette_add_checkbox(&property_palette,kMeshPropertyDiffuse,"Diffuse Lighting",mesh->diffuse,FALSE);
 	list_palette_add_checkbox(&property_palette,kMeshPropertyNoLighting,"Highlighted",mesh->no_lighting,FALSE);
 	list_palette_add_checkbox(&property_palette,kMeshPropertyAdditive,"Alpha is Additive",mesh->blend_add,FALSE);
+	list_palette_add_checkbox(&property_palette,kMeshPropertyLocked,"Locked",mesh->locked,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Replace OBJ");
 	list_palette_add_point(&property_palette,kMeshPropertyMovement,"Movement",&mesh->import_move,FALSE);
@@ -84,6 +86,7 @@ void property_palette_click_mesh(int mesh_idx,int id)
 	int						n;
 	d3pnt					import_move,move_pnt;
 	model_vertex_type		*vtx;
+	model_bone_type			*bone;
 	model_mesh_type			*mesh;
 	
 	mesh=&model.meshes[mesh_idx];
@@ -104,6 +107,10 @@ void property_palette_click_mesh(int mesh_idx,int id)
 
 		case kMeshPropertyAdditive:
 			mesh->blend_add=!mesh->blend_add;
+			break;
+
+		case kMeshPropertyLocked:
+			mesh->locked=!mesh->locked;
 			break;
 
 		case kMeshPropertyMovement:
@@ -129,6 +136,24 @@ void property_palette_click_mesh(int mesh_idx,int id)
 
 				vtx++;
 			}
+
+				// if this is mesh 0, then move the
+				// bones
+
+			if (mesh_idx==0) {
+
+				bone=model.bones;
+
+				for (n=0;n!=model.nbone;n++) {
+					bone->pnt.x+=move_pnt.x;
+					bone->pnt.y+=move_pnt.y;
+					bone->pnt.z+=move_pnt.z;
+
+					bone++;
+				}
+			}
+
+				// recalc the vertexes
 			
 			model_calculate_parents(&model);
 				

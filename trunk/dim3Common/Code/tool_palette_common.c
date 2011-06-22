@@ -225,7 +225,7 @@ void tool_palette_draw(void)
 	glColor4f(0.0f,0.0f,0.0f,1.0f);
 
 	glBegin(GL_LINES);
-#ifdef D3_OS_WIN32
+#ifdef D3_OS_WINDOWS
 	glVertex2i(tool_palette_box.lx,(tool_palette_box.ty+1));		// win32 has white line under menu
 	glVertex2i(tool_palette_box.rx,(tool_palette_box.ty+1));
 #else

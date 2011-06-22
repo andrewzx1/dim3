@@ -448,7 +448,7 @@ bool menu_event_run(int cmd)
 			vertex_set_sel_vertex_to_bone(state.cur_mesh_idx,major_bone_idx,minor_bone_idx,bone_factor);
 			main_wind_draw();
 			return(TRUE);
-			
+
 		case kCommandGoToParentBone:
 			if (state.cur_bone_idx==-1) return(TRUE);
 			

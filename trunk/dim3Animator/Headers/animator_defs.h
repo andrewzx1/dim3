@@ -30,7 +30,7 @@ and can be sold or given away.
 //
 
 #define tool_button_size				32
-#define tool_count						14
+#define tool_count						15
 
 
 #define tool_file_names					{ \
@@ -45,12 +45,13 @@ and can be sold or given away.
 											"Tool Normals", \
 											"Tool Show First Mesh", \
 											"Tool Show Bone Names", \
+											"Tool Select Vertex With Bone", \
 											"Tool Rotate Mode", \
 											"Tool Move Mode", \
 											"Tool Play" \
 										}
 
-#define tool_separators					{"00001001000101"}
+#define tool_separators					{"000010010000101"}
 
 #define tool_tip_names					{ \
 											"Show Textured Model", \
@@ -64,6 +65,7 @@ and can be sold or given away.
 											"Show Normals", \
 											"Always Show First Mesh", \
 											"Show Bone Names", \
+											"Select Attached Vertexes When Selecting Bones", \
 											"Bone Rotate Mode", \
 											"Bone Move Mode", \
 											"Play Animation" \
@@ -147,6 +149,7 @@ and can be sold or given away.
 
 #define kCommandNewBone					FOUR_CHAR_CODE('nbne')
 #define kCommandSetBone					FOUR_CHAR_CODE('sbn2')
+#define kCommandSelectVertexWithBone	FOUR_CHAR_CODE('svwb')
 #define kCommandGoToParentBone			FOUR_CHAR_CODE('gpbn')
 
 #define kCommandNewPose					FOUR_CHAR_CODE('npse')
@@ -267,7 +270,7 @@ typedef struct		{
 													magnify_z;
 						bool						model_open,texture,mesh,bone,hit_box,
 													normal,view_box,first_mesh,bone_names,
-													playing,play_animate_blend,
+													playing,play_animate_blend,sel_vertex_with_bone,
 													drag_sel_on,in_preference;
 						char						file_name[256];
 						d3pnt						shift;

@@ -58,7 +58,7 @@ void tool_palette_setup(void)
 	
 	tool_palette_box.lx=wbox.lx;
 	tool_palette_box.rx=wbox.rx;
-	tool_palette_box.ty=wbox.ty+1;
+	tool_palette_box.ty=wbox.ty;
 	tool_palette_box.by=tool_palette_box.ty+(tool_palette_pixel_sz+1);
 }
 

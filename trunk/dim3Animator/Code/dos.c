@@ -55,6 +55,7 @@ void file_reset_state(void)
 	state.view_box=FALSE;
 	state.first_mesh=FALSE;
 	state.bone_names=TRUE;
+	state.sel_vertex_with_bone=FALSE;
 
 	state.ang.x=0;
     state.ang.y=180;

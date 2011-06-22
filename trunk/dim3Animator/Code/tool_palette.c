@@ -104,12 +104,15 @@ bool tool_get_highlight_state(int tool_idx)
 			return(state.bone_names);
 
 		case 11:
-			return(state.drag_bone_mode==drag_bone_mode_rotate);
+			return(state.sel_vertex_with_bone);
 
 		case 12:
-			return(state.drag_bone_mode==drag_bone_mode_stretch);
+			return(state.drag_bone_mode==drag_bone_mode_rotate);
 
 		case 13:
+			return(state.drag_bone_mode==drag_bone_mode_stretch);
+
+		case 14:
 			return(state.playing);
 			
 	}
@@ -175,14 +178,18 @@ void tool_click(int tool_idx)
 			break;
 			
 		case 11:
+			state.sel_vertex_with_bone=!state.sel_vertex_with_bone;
+			break;
+		
+		case 12:
 			state.drag_bone_mode=drag_bone_mode_rotate;
 			break;
 			
-		case 12:
+		case 13:
 			state.drag_bone_mode=drag_bone_mode_stretch;
 			break;
 			
-		case 13:
+		case 14:
 			main_wind_play(!state.playing,FALSE);
 			break;
 	}
