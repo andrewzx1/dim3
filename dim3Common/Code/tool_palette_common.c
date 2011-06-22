@@ -210,7 +210,7 @@ void tool_palette_draw(void)
 		
 			// separator
 			
-		if (tool_bitmaps_separator[n]=='1') x+=4;
+		if (tool_bitmaps_separator[n]=='1') x+=tool_palette_seperator_size;
 		
 			// draw tool
 			
@@ -225,8 +225,13 @@ void tool_palette_draw(void)
 	glColor4f(0.0f,0.0f,0.0f,1.0f);
 
 	glBegin(GL_LINES);
-	glVertex2i(tool_palette_box.lx,tool_palette_box.ty+1);
-	glVertex2i(tool_palette_box.rx,tool_palette_box.ty+1);
+#ifdef D3_OS_WIN32
+	glVertex2i(tool_palette_box.lx,(tool_palette_box.ty+1));		// win32 has white line under menu
+	glVertex2i(tool_palette_box.rx,(tool_palette_box.ty+1));
+#else
+	glVertex2i(tool_palette_box.lx,tool_palette_box.ty);
+	glVertex2i(tool_palette_box.rx,tool_palette_box.ty);
+#endif
 	glVertex2i(tool_palette_box.lx,tool_palette_box.by);
 	glVertex2i(tool_palette_box.rx,tool_palette_box.by);
 	glEnd();
@@ -284,7 +289,7 @@ int tool_palette_click_find_index(d3pnt *pnt,int *px)
 		
 			// separator
 			
-		if (tool_bitmaps_separator[n]=='1') x+=2;
+		if (tool_bitmaps_separator[n]=='1') x+=tool_palette_seperator_size;
 		
 			// check click
 			

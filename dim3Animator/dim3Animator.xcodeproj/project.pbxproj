@@ -46,6 +46,8 @@
 		269AF83E12887DEF001344EC /* model_picker.c in Sources */ = {isa = PBXBuildFile; fileRef = 269AF83D12887DEF001344EC /* model_picker.c */; };
 		269AF91C1288D007001344EC /* draw_axis_boxes.c in Sources */ = {isa = PBXBuildFile; fileRef = 269AF91B1288D007001344EC /* draw_axis_boxes.c */; };
 		269AF91E1288D016001344EC /* draw_selection.c in Sources */ = {isa = PBXBuildFile; fileRef = 269AF91D1288D016001344EC /* draw_selection.c */; };
+		26A2A57713B15A56003FE092 /* Tool Show Bone Names.png in Resources */ = {isa = PBXBuildFile; fileRef = 26A2A57613B15A56003FE092 /* Tool Show Bone Names.png */; };
+		26A2A57813B15AAB003FE092 /* Tool Show Bone Names.png in Copy (Tool Icons) */ = {isa = PBXBuildFile; fileRef = 26A2A57613B15A56003FE092 /* Tool Show Bone Names.png */; };
 		26A2AB0912F3D21500E4E73B /* trig_masks.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A2AB0812F3D21500E4E73B /* trig_masks.c */; };
 		26C5EEFC1260F027000B0F9E /* OSX_glue.c in Sources */ = {isa = PBXBuildFile; fileRef = 26C5EEFB1260F027000B0F9E /* OSX_glue.c */; };
 		26C5F10D12613790000B0F9E /* tool_palette.c in Sources */ = {isa = PBXBuildFile; fileRef = 26C5F10C12613790000B0F9E /* tool_palette.c */; };
@@ -136,6 +138,7 @@
 				2625B76912E6899600F51669 /* Tool Mesh.png in Copy (Tool Icons) */,
 				2625B76A12E6899600F51669 /* Tool Move Mode.png in Copy (Tool Icons) */,
 				2625B76B12E6899600F51669 /* Tool Normals.png in Copy (Tool Icons) */,
+				26A2A57813B15AAB003FE092 /* Tool Show Bone Names.png in Copy (Tool Icons) */,
 				2625B76C12E6899600F51669 /* Tool Play.png in Copy (Tool Icons) */,
 				2625B76D12E6899600F51669 /* Tool Rotate Mode.png in Copy (Tool Icons) */,
 				2625B76E12E6899600F51669 /* Tool Show First Mesh.png in Copy (Tool Icons) */,
@@ -218,6 +221,7 @@
 		269AF83D12887DEF001344EC /* model_picker.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = model_picker.c; path = Code/model_picker.c; sourceTree = "<group>"; };
 		269AF91B1288D007001344EC /* draw_axis_boxes.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = draw_axis_boxes.c; path = Code/draw_axis_boxes.c; sourceTree = "<group>"; };
 		269AF91D1288D016001344EC /* draw_selection.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = draw_selection.c; path = Code/draw_selection.c; sourceTree = "<group>"; };
+		26A2A57613B15A56003FE092 /* Tool Show Bone Names.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Show Bone Names.png"; path = "Tools/Tool Show Bone Names.png"; sourceTree = "<group>"; };
 		26A2AB0812F3D21500E4E73B /* trig_masks.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = trig_masks.c; path = Code/trig_masks.c; sourceTree = "<group>"; };
 		26C5EEFB1260F027000B0F9E /* OSX_glue.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = OSX_glue.c; path = ../dim3Common/Code/OSX_glue.c; sourceTree = SOURCE_ROOT; };
 		26C5F10C12613790000B0F9E /* tool_palette.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tool_palette.c; path = Code/tool_palette.c; sourceTree = "<group>"; };
@@ -473,6 +477,7 @@
 				2625B74C12E6896500F51669 /* Tool Normals.png */,
 				2625B74D12E6896500F51669 /* Tool Play.png */,
 				2625B74E12E6896500F51669 /* Tool Rotate Mode.png */,
+				26A2A57613B15A56003FE092 /* Tool Show Bone Names.png */,
 				2625B74F12E6896500F51669 /* Tool Show First Mesh.png */,
 				2625B75012E6896500F51669 /* Tool Textured.png */,
 			);
@@ -603,6 +608,7 @@
 				F5A42D9C0555EC87002DF965 /* InfoPlist.strings in Resources */,
 				F5A42D9D0555EC87002DF965 /* dim3 Animator.icns in Resources */,
 				F5BDB6C3055A0DEA00556316 /* dim3 Animator.nib in Resources */,
+				26A2A57713B15A56003FE092 /* Tool Show Bone Names.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

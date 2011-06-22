@@ -186,6 +186,8 @@ extern void tool_tip_draw(void);
 // tool palette
 //
 
+#define tool_palette_seperator_size				4
+
 extern void tool_palette_initialize(char *app_name);
 extern void tool_palette_shutdown(void);
 extern void tool_palette_draw(void);

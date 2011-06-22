@@ -571,7 +571,7 @@ bool ray_trace_object_bound_check(obj_type *obj,d3pnt *min,d3pnt *max,ray_trace_
 	
 		// object a hit candidate?
 
-	if ((obj->hidden) || (obj->pickup.on) || (obj->idx==contact->obj.ignore_idx)) return(FALSE);
+	if ((obj->hidden) || (obj->pickup.on) || (!obj->contact.object_on) || (obj->idx==contact->obj.ignore_idx)) return(FALSE);
 	
 	if ((contact->origin==poly_ray_trace_origin_object) && (!obj->contact.object_on)) return(FALSE);
 	if ((contact->origin==poly_ray_trace_origin_projectile) && (!obj->contact.projectile_on)) return(FALSE);
