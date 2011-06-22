@@ -494,7 +494,7 @@ bool collide_circle_check_mesh(d3pnt *circle_pnt,int radius,d3pnt *min,d3pnt *ma
       
 ======================================================= */
 
-bool collide_box_to_map(d3pnt *pt,d3pnt *box_sz,d3pnt *motion,bool check_objs,int skip_obj_idx,bool check_projs,int skip_proj_idx,obj_contact *contact)
+bool collide_box_to_map(d3pnt *pt,d3pnt *box_sz,d3pnt *motion,bool check_objs,int skip_obj_idx,bool check_projs,int skip_proj_idx,bool is_proj,obj_contact *contact)
 {
 	int						n,radius,cur_dist,idx;
 	d3pnt					circle_pnt,cur_hit_pnt,radius_pnt,
@@ -543,6 +543,13 @@ bool collide_box_to_map(d3pnt *pt,d3pnt *box_sz,d3pnt *motion,bool check_objs,in
 
 			chk_obj=server.obj_list.objs[n];
 			if (chk_obj==NULL) continue;
+			
+			if (!is_proj) {
+				if (!chk_obj->contact.object_on) continue;
+			}
+			else {
+				if (!chk_obj->contact.projectile_on) continue;
+			}
 			
 			if (collide_circle_check_object(&circle_pnt,radius,&min,&max,TRUE,&cur_dist,chk_obj,&cur_hit_pnt)) {
 				contact->obj_idx=n;
@@ -604,7 +611,7 @@ bool collide_box_slide_to_map(d3pnt *pt,d3pnt *box_sz,d3pnt *motion,bool check_o
 
 		// try to move
 
-	if (!collide_box_to_map(pt,box_sz,motion,check_objs,skip_obj_idx,check_projs,skip_proj_idx,contact)) return(FALSE);
+	if (!collide_box_to_map(pt,box_sz,motion,check_objs,skip_obj_idx,check_projs,skip_proj_idx,FALSE,contact)) return(FALSE);
 
 		// we had a hit ... see if new motion
 		// is free or hits some other object
@@ -613,7 +620,7 @@ bool collide_box_slide_to_map(d3pnt *pt,d3pnt *box_sz,d3pnt *motion,bool check_o
 	motion2.y=motion->y;
 	motion2.z=motion->z;
 
-	if (!collide_box_to_map(pt,box_sz,&motion2,check_objs,skip_obj_idx,check_projs,skip_proj_idx,&contact2)) return(FALSE);
+	if (!collide_box_to_map(pt,box_sz,&motion2,check_objs,skip_obj_idx,check_projs,skip_proj_idx,FALSE,&contact2)) return(FALSE);
 
 		// hit same object?
 
@@ -1009,7 +1016,7 @@ bool collide_projectile_to_map(proj_type *proj,d3pnt *motion)
 	box_sz.y=proj->size.y;
 	box_sz.z=proj->size.z;
 
-	return(collide_box_to_map(&proj->pnt,&box_sz,motion,TRUE,skip_obj_idx,check_projs,skip_proj_idx,&proj->contact));
+	return(collide_box_to_map(&proj->pnt,&box_sz,motion,TRUE,skip_obj_idx,check_projs,skip_proj_idx,TRUE,&proj->contact));
 }
 
 bool collide_projectile_to_sphere(d3pnt *sphere_pnt,int radius,proj_type *proj)

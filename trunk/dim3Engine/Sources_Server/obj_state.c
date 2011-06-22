@@ -485,7 +485,7 @@ void object_click(obj_type *obj,obj_type *from_obj)
 void object_damage(obj_type *obj,obj_type *source_obj,weapon_type *source_weap,proj_type *source_proj,d3pnt *melee_hit_pt,int damage)
 {
 	int				org_damage;
-
+	
 	if (obj->type==object_type_remote) return;
 	if (!obj->damage.on) return;
 	
