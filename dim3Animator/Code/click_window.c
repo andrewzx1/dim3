@@ -395,6 +395,9 @@ void select_model_wind_mesh(d3pnt *start_pnt)
 	model_bone_type		*bone,*old_bone,*old_bones;
 	model_mesh_type		*mesh;
 
+	mesh=&model.meshes[state.cur_mesh_idx];
+	if (mesh->locked) return;
+
 		// determine if we clicked on
 		// anything
 
@@ -402,8 +405,6 @@ void select_model_wind_mesh(d3pnt *start_pnt)
 	
 		// backup vertexes and bones
 		
-	mesh=&model.meshes[state.cur_mesh_idx];
-
 	sz=mesh->nvertex*sizeof(model_vertex_type);
 
 	old_vertexes=(model_vertex_type*)malloc(sz);
@@ -740,6 +741,8 @@ bool drag_bone_model_wind(d3pnt *start_pnt)
 		state.cur_item=item_bone;
 		state.cur_bone_idx=k;
 		item_palette_scroll_into_view(item_bone,state.cur_bone_idx);
+
+		if (state.sel_vertex_with_bone) vertex_set_sel_mask_bone(state.cur_mesh_idx,state.cur_bone_idx);
 
 		main_wind_draw();
 
