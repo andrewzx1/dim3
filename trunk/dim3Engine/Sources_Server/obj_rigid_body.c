@@ -42,11 +42,14 @@ extern server_type			server;
       
 ======================================================= */
 
-int object_rigid_body_get_point_y(obj_type *obj,int x_off,int z_off,int y)
+int object_rigid_body_get_point_y(obj_type *obj,d3pnt *offset,int x_off,int z_off,int y)
 {
 	int			x,z;
 	
-	rotate_2D_point_center(&x_off,&z_off,obj->ang.y);
+	x_off+=offset->x;
+	z_off+=offset->z;
+	
+	rotate_2D_point_center(&x_off,&z_off,angle_add(obj->ang.y,obj->draw.rot.y));
 
 	x=obj->pnt.x+x_off;
 	z=obj->pnt.z+z_off;
@@ -106,7 +109,7 @@ void object_rigid_body_reset_angle(obj_type *obj)
 		object_rigid_body_angle_reset_z(obj,mdl);
 		return;
 	}
-
+	
 		// move middle of object to closest ground
 
 	y=obj->pnt.y;
@@ -135,15 +138,16 @@ void object_rigid_body_reset_angle(obj_type *obj)
 		}
 	}
 
-		// get rigid y points around size
+		// get rigid y points around
+		// around view box
 
-	xsz=obj->size.x>>1;
-	zsz=obj->size.z>>1;
+	xsz=mdl->view_box.size.x>>1;
+	zsz=mdl->view_box.size.z>>1;
 
-	fy[0]=object_rigid_body_get_point_y(obj,-xsz,-zsz,y);
-	fy[1]=object_rigid_body_get_point_y(obj,xsz,-zsz,y);
-	fy[2]=object_rigid_body_get_point_y(obj,xsz,zsz,y);
-	fy[3]=object_rigid_body_get_point_y(obj,-xsz,zsz,y);
+	fy[0]=object_rigid_body_get_point_y(obj,&mdl->view_box.offset,-xsz,-zsz,y);
+	fy[1]=object_rigid_body_get_point_y(obj,&mdl->view_box.offset,xsz,-zsz,y);
+	fy[2]=object_rigid_body_get_point_y(obj,&mdl->view_box.offset,xsz,zsz,y);
+	fy[3]=object_rigid_body_get_point_y(obj,&mdl->view_box.offset,-xsz,zsz,y);
 	
 		// if all the same, skip out
 		
