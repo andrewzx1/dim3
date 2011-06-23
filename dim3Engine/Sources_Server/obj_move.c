@@ -415,7 +415,7 @@ void object_motion_slope_alter_movement_single(int *mv,float slope_y,float slope
 		// if slope is greater than max gravity,
 		// then if going against slope, stop all movement, otherwise always go down
 
-	if (slope_y>=map.physics.slope_gravity_max) {
+	if (slope_y>=(map.physics.slope_max_ang*slope_angle_to_slope)) {
 		if (same_dir) {
 			*mv=-(int)slope_mv;
 		}
@@ -463,7 +463,7 @@ void object_motion_slope_alter_movement(obj_type *obj,d3pnt *motion)
 
 		// if less then min slope, no gravity effects
 
-	if (mesh_poly->slope.y<map.physics.slope_gravity_min) return;
+	if (mesh_poly->slope.y<(map.physics.slope_min_ang*slope_angle_to_slope)) return;
 
 		// apply gravity
 

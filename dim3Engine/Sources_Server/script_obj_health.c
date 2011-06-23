@@ -340,7 +340,6 @@ JSValueRef js_obj_health_remove_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 JSValueRef js_obj_health_damage_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type		*obj;
-	obj_health		*health;
 	
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	

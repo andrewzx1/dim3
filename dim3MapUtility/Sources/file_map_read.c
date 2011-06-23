@@ -71,8 +71,8 @@ void decode_map_settings_xml(map_type *map,int map_head)
         map->physics.gravity_max_power=xml_get_attribute_float_default(tag,"gravity_max_power",32.0f);
 		map->physics.gravity_max_speed=xml_get_attribute_float_default(tag,"gravity_max_speed",400.0f);
 		map->physics.resistance=xml_get_attribute_float_default(tag,"resistance",1.0f);
-		map->physics.slope_gravity_min=xml_get_attribute_float_default(tag,"slope_gravity_min",0.3f);
-		map->physics.slope_gravity_max=xml_get_attribute_float_default(tag,"slope_gravity_max",0.6f);
+		map->physics.slope_min_ang=xml_get_attribute_float_default(tag,"slope_min_ang",25.0f);
+		map->physics.slope_max_ang=xml_get_attribute_float_default(tag,"slope_max_ang",45.0f);
 		
 		// supergumba -- old location -- delete later
 		map->optimize.never_cull=xml_get_attribute_boolean(tag,"never_cull");
