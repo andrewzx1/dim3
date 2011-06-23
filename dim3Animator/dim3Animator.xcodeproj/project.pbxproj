@@ -73,6 +73,8 @@
 		26EE4A32126B8DBF001D0025 /* import_text_decode_common.c in Sources */ = {isa = PBXBuildFile; fileRef = 26EE4A31126B8DBF001D0025 /* import_text_decode_common.c */; };
 		26F1D25F1303566500CDAE6B /* property_palette_animator_preference.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F1D25D1303566500CDAE6B /* property_palette_animator_preference.c */; };
 		26F1D2601303566500CDAE6B /* xml_setup.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F1D25E1303566500CDAE6B /* xml_setup.c */; };
+		26FF98FE13B2A99D00CCB836 /* Tool Select Vertex With Bone.png in Resources */ = {isa = PBXBuildFile; fileRef = 26FF98FD13B2A99D00CCB836 /* Tool Select Vertex With Bone.png */; };
+		26FF98FF13B2A9A200CCB836 /* Tool Select Vertex With Bone.png in Copy (Tool Icons) */ = {isa = PBXBuildFile; fileRef = 26FF98FD13B2A99D00CCB836 /* Tool Select Vertex With Bone.png */; };
 		F503D2570981A35B00DEDC74 /* draw_model.c in Sources */ = {isa = PBXBuildFile; fileRef = F503D2560981A35B00DEDC74 /* draw_model.c */; };
 		F503D25F0981A3DC00DEDC74 /* draw_mesh_bone.c in Sources */ = {isa = PBXBuildFile; fileRef = F503D25E0981A3DC00DEDC74 /* draw_mesh_bone.c */; };
 		F50AF97A0886010300F261B1 /* os_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = F50AF9790886010300F261B1 /* os_defs.h */; };
@@ -142,6 +144,7 @@
 				2625B76C12E6899600F51669 /* Tool Play.png in Copy (Tool Icons) */,
 				2625B76D12E6899600F51669 /* Tool Rotate Mode.png in Copy (Tool Icons) */,
 				2625B76E12E6899600F51669 /* Tool Show First Mesh.png in Copy (Tool Icons) */,
+				26FF98FF13B2A9A200CCB836 /* Tool Select Vertex With Bone.png in Copy (Tool Icons) */,
 				2625B76F12E6899600F51669 /* Tool Textured.png in Copy (Tool Icons) */,
 			);
 			name = "Copy (Tool Icons)";
@@ -247,6 +250,7 @@
 		26EE4A31126B8DBF001D0025 /* import_text_decode_common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = import_text_decode_common.c; path = ../dim3Common/Code/import_text_decode_common.c; sourceTree = SOURCE_ROOT; };
 		26F1D25D1303566500CDAE6B /* property_palette_animator_preference.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_animator_preference.c; path = Code/property_palette_animator_preference.c; sourceTree = "<group>"; };
 		26F1D25E1303566500CDAE6B /* xml_setup.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = xml_setup.c; path = Code/xml_setup.c; sourceTree = "<group>"; };
+		26FF98FD13B2A99D00CCB836 /* Tool Select Vertex With Bone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Select Vertex With Bone.png"; path = "Tools/Tool Select Vertex With Bone.png"; sourceTree = "<group>"; };
 		F503D2560981A35B00DEDC74 /* draw_model.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = draw_model.c; path = Code/draw_model.c; sourceTree = "<group>"; };
 		F503D25E0981A3DC00DEDC74 /* draw_mesh_bone.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = draw_mesh_bone.c; path = Code/draw_mesh_bone.c; sourceTree = "<group>"; };
 		F50AF9790886010300F261B1 /* os_defs.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = os_defs.h; path = ../dim3Common/Headers/os_defs.h; sourceTree = SOURCE_ROOT; };
@@ -479,6 +483,7 @@
 				2625B74E12E6896500F51669 /* Tool Rotate Mode.png */,
 				26A2A57613B15A56003FE092 /* Tool Show Bone Names.png */,
 				2625B74F12E6896500F51669 /* Tool Show First Mesh.png */,
+				26FF98FD13B2A99D00CCB836 /* Tool Select Vertex With Bone.png */,
 				2625B75012E6896500F51669 /* Tool Textured.png */,
 			);
 			name = Tools;
@@ -609,6 +614,7 @@
 				F5A42D9D0555EC87002DF965 /* dim3 Animator.icns in Resources */,
 				F5BDB6C3055A0DEA00556316 /* dim3 Animator.nib in Resources */,
 				26A2A57713B15A56003FE092 /* Tool Show Bone Names.png in Resources */,
+				26FF98FE13B2A99D00CCB836 /* Tool Select Vertex With Bone.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
