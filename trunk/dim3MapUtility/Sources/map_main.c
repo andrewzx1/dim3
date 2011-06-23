@@ -68,8 +68,8 @@ bool map_new(map_type *map,char *name)
 	map->physics.gravity_max_power=32;
 	map->physics.gravity_max_speed=400;
 	map->physics.resistance=1;
-	map->physics.slope_gravity_min=0.3f;
-	map->physics.slope_gravity_max=0.6f;
+	map->physics.slope_min_ang=25.0f;
+	map->physics.slope_max_ang=45.0f;
 	
 		// settings
 

@@ -26,12 +26,6 @@ and can be sold or given away.
 *********************************************************************/
 
 //
-// constants
-//
-
-extern char light_type_str[][32];
-
-//
 // version
 //
 
@@ -86,6 +80,8 @@ extern char light_type_str[][32];
 
 #define proj_reflect_slope_max_y							0.5f			// how big a slope before bounces become reflects
 #define proj_bounce_min_speed								10.0f			// minimum speed before bounces cancel
+
+#define slope_angle_to_slope								0.0065f			// multiply by this to get the slope from an angle
 
 //
 // lights
@@ -568,7 +564,7 @@ typedef struct		{
 
 typedef struct		{
 						float								gravity,gravity_max_power,gravity_max_speed,
-															resistance,slope_gravity_min,slope_gravity_max;
+															resistance,slope_min_ang,slope_max_ang;
 					} map_physics_type;
 					
 typedef struct		{

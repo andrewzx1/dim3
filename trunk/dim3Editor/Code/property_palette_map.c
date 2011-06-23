@@ -40,8 +40,8 @@ and can be sold or given away.
 #define kMapPropertyGravityMaxPower			3
 #define kMapPropertyGravityMaxSpeed			4
 #define kMapPropertyResistance				5
-#define kMapPropertySlopeGravityMin			6
-#define kMapPropertySlopeGravityMax			7
+#define kMapPropertySlopeMinAngle			6
+#define kMapPropertySlopeMaxAngle			7
 
 #define kMapPropertyNetworkGameList			20
 
@@ -183,8 +183,8 @@ void property_palette_fill_map(void)
 	list_palette_add_string_float(&property_palette,kMapPropertyGravityMaxPower,"Gravity Max Power",map.physics.gravity_max_power,FALSE);
 	list_palette_add_string_float(&property_palette,kMapPropertyGravityMaxSpeed,"Gravity Max Speed",map.physics.gravity_max_speed,FALSE);
 	list_palette_add_string_float(&property_palette,kMapPropertyResistance,"Resistance",map.physics.resistance,FALSE);
-	list_palette_add_string_float(&property_palette,kMapPropertySlopeGravityMin,"Slope Gravity Min",map.physics.slope_gravity_min,FALSE);
-	list_palette_add_string_float(&property_palette,kMapPropertySlopeGravityMax,"Slope Gravity Max",map.physics.slope_gravity_max,FALSE);
+	list_palette_add_string_float(&property_palette,kMapPropertySlopeMinAngle,"Slope Min Angle",map.physics.slope_min_ang,FALSE);
+	list_palette_add_string_float(&property_palette,kMapPropertySlopeMaxAngle,"Slope Max Angle",map.physics.slope_max_ang,FALSE);
 
 		// network
 
@@ -438,12 +438,12 @@ void property_palette_click_map(int id)
 			dialog_property_string_run(list_string_value_positive_float,(void*)&map.physics.resistance,0,0,0);
 			break;
 
-		case kMapPropertySlopeGravityMin:
-			dialog_property_string_run(list_string_value_0_to_1_float,(void*)&map.physics.slope_gravity_min,0,0,0);
+		case kMapPropertySlopeMinAngle:
+			dialog_property_string_run(list_string_value_positive_float,(void*)&map.physics.slope_min_ang,0,0,0);
 			break;
 
-		case kMapPropertySlopeGravityMax:
-			dialog_property_string_run(list_string_value_0_to_1_float,(void*)&map.physics.slope_gravity_max,0,0,0);
+		case kMapPropertySlopeMaxAngle:
+			dialog_property_string_run(list_string_value_positive_float,(void*)&map.physics.slope_max_ang,0,0,0);
 			break;
 
 			// networking
