@@ -42,6 +42,8 @@ and can be sold or given away.
 #define kMapPropertyResistance				5
 #define kMapPropertySlopeMinAngle			6
 #define kMapPropertySlopeMaxAngle			7
+#define kMapPropertySlopeMaxSpeed			8
+#define kMapPropertySlopeMinGravity			9
 
 #define kMapPropertyNetworkGameList			20
 
@@ -185,6 +187,8 @@ void property_palette_fill_map(void)
 	list_palette_add_string_float(&property_palette,kMapPropertyResistance,"Resistance",map.physics.resistance,FALSE);
 	list_palette_add_string_float(&property_palette,kMapPropertySlopeMinAngle,"Slope Min Angle",map.physics.slope_min_ang,FALSE);
 	list_palette_add_string_float(&property_palette,kMapPropertySlopeMaxAngle,"Slope Max Angle",map.physics.slope_max_ang,FALSE);
+	list_palette_add_string_float(&property_palette,kMapPropertySlopeMaxSpeed,"Slope Max Speed",map.physics.slope_max_speed,FALSE);
+	list_palette_add_string_float(&property_palette,kMapPropertySlopeMinGravity,"Slope Min Gravity",map.physics.slope_min_gravity,FALSE);
 
 		// network
 
@@ -444,6 +448,14 @@ void property_palette_click_map(int id)
 
 		case kMapPropertySlopeMaxAngle:
 			dialog_property_string_run(list_string_value_positive_float,(void*)&map.physics.slope_max_ang,0,0,0);
+			break;
+
+		case kMapPropertySlopeMaxSpeed:
+			dialog_property_string_run(list_string_value_positive_float,(void*)&map.physics.slope_max_speed,0,0,0);
+			break;
+
+		case kMapPropertySlopeMinGravity:
+			dialog_property_string_run(list_string_value_positive_float,(void*)&map.physics.slope_min_gravity,0,0,0);
 			break;
 
 			// networking

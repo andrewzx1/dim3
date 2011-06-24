@@ -150,6 +150,8 @@ void write_map_settings_xml(map_type *map)
     xml_add_attribute_float("resistance",map->physics.resistance);
     xml_add_attribute_float("slope_min_ang",map->physics.slope_min_ang);
     xml_add_attribute_float("slope_max_ang",map->physics.slope_max_ang);
+    xml_add_attribute_float("slope_max_speed",map->physics.slope_max_speed);
+    xml_add_attribute_float("slope_min_gravity",map->physics.slope_min_gravity);
 	xml_add_tagend(TRUE);
 
     xml_add_tagstart("Optimize");

@@ -105,7 +105,6 @@ void property_palette_fill_mesh(int mesh_idx,int poly_idx)
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
 	editor_view_type		*view;
-	d3vct	map_up;	// supergumba
 	
 		// mesh settings
 
@@ -206,17 +205,6 @@ void property_palette_fill_mesh(int mesh_idx,int poly_idx)
 		list_palette_add_vector(&property_palette,kMeshPolyPropertyBinormal,"Binormal",&binormal,TRUE);
 		list_palette_add_vector(&property_palette,kMeshPolyPropertyNormal,"Normal",&poly->tangent_space.normal,FALSE);
 
-
-		map_up.x=0.0f;		// supergumba
-		map_up.y=-1.0f;
-		map_up.z=0.0f;
-
-		list_palette_add_string_float(&property_palette,-1,"TEST",(float)fabs(vector_dot_product(&map_up,&poly->tangent_space.normal)),FALSE);
-		list_palette_add_string_float(&property_palette,-1,"TEST 1",1.0f-(float)fabs(vector_dot_product(&map_up,&poly->tangent_space.normal)),FALSE);
-		list_palette_add_string_float(&property_palette,-1,"TEST 2",(1.0f-(float)fabs(vector_dot_product(&map_up,&poly->tangent_space.normal)))/0.0065f,FALSE);
-
-
-		
 		list_palette_add_header(&property_palette,0,"Poly Camera");
 		list_palette_add_string(&property_palette,kMeshPolyPropertyCamera,"Node",poly->camera,FALSE);
 		
