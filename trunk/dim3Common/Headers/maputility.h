@@ -564,7 +564,8 @@ typedef struct		{
 
 typedef struct		{
 						float								gravity,gravity_max_power,gravity_max_speed,
-															resistance,slope_min_ang,slope_max_ang;
+															resistance,slope_min_ang,slope_max_ang,
+															slope_max_speed,slope_min_gravity;
 					} map_physics_type;
 					
 typedef struct		{

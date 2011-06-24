@@ -180,7 +180,7 @@ void map_prepare_mesh_poly(map_type *map,map_mesh_type *mesh,map_mesh_poly_type 
 			// find the slope angle
 
 		map_prepare_mesh_poly_slope_ang(mesh,poly);
-		angle_get_movement_float(poly->slope.ang_y,(map->physics.gravity_max_speed*poly->slope.y),&poly->slope.move_x,&poly->slope.move_z);
+		angle_get_movement_float(poly->slope.ang_y,(map->physics.slope_max_speed*poly->slope.y),&poly->slope.move_x,&poly->slope.move_z);
 	}
 
 		// create wall "line" for wall like polygons

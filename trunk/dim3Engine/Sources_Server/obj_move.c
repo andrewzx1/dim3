@@ -432,23 +432,41 @@ void object_motion_slope_alter_movement_single(int *mv,float slope_y,float slope
 
 void object_motion_slope_alter_movement(obj_type *obj,d3pnt *motion)
 {
+	poly_pointer_type	poly_ptr;
 	map_mesh_poly_type	*mesh_poly;
 
-		// if not on ground or ignoring slope gravity, then no speed reduction
+		// if standing on an object or
+		// no slope gravity, ignore
 		
 	if (!obj->slope_gravity) return;
-	if (obj->air_mode!=am_ground) return;
 	if (obj->contact.stand_obj_idx!=-1) return;
-	if (obj->contact.stand_poly.mesh_idx==-1) return;
+
+		// because we can bounce down
+		// large slopes, we remember the last
+		// slope and keep it if we've been juggled
+		// into the air
+
+	poly_ptr.mesh_idx=obj->contact.stand_poly.mesh_idx;
+	poly_ptr.poly_idx=obj->contact.stand_poly.poly_idx;
 
 		// ignore wall or flat polygons
 
-	mesh_poly=&map.mesh.meshes[obj->contact.stand_poly.mesh_idx].polys[obj->contact.stand_poly.poly_idx];
+	mesh_poly=&map.mesh.meshes[poly_ptr.mesh_idx].polys[poly_ptr.poly_idx];
 	if ((mesh_poly->box.wall_like) || (mesh_poly->box.flat)) return;
 
 		// if less then min slope, no gravity effects
 
 	if (mesh_poly->slope.y<(map.physics.slope_min_ang*slope_angle_to_slope)) return;
+
+		// remember this slope!
+
+	obj->contact.slope_poly.mesh_idx=poly_ptr.mesh_idx;
+	obj->contact.slope_poly.poly_idx=poly_ptr.poly_idx;
+
+		// make sure at min slope gravity as some objects
+		// can bounce down slopes
+
+	if (obj->force.gravity<map->physics.slope_min_gravity) obj->force.gravity=map->physics.slope_min_gravity;
 
 		// apply gravity
 
