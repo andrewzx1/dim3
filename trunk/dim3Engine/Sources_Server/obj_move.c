@@ -413,15 +413,10 @@ void object_motion_slope_alter_movement_single(int *mv,float slope_y,float slope
 	}
 	
 		// if slope is greater than max gravity,
-		// then if going against slope, stop all movement, otherwise always go down
+		// then movement equal max movement
 
 	if (slope_y>=(map.physics.slope_max_ang*slope_angle_to_slope)) {
-		if (same_dir) {
-			*mv=-(int)slope_mv;
-		}
-		else {
-			*mv=0;
-		}
+		*mv=-(int)slope_mv;
 		return;
 	}
 
@@ -437,8 +432,6 @@ void object_motion_slope_alter_movement_single(int *mv,float slope_y,float slope
 
 void object_motion_slope_alter_movement(obj_type *obj,d3pnt *motion)
 {
-	int					x,y,z,sy;
-	poly_pointer_type	poly;
 	map_mesh_poly_type	*mesh_poly;
 
 		// if not on ground or ignoring slope gravity, then no speed reduction
@@ -446,19 +439,11 @@ void object_motion_slope_alter_movement(obj_type *obj,d3pnt *motion)
 	if (!obj->slope_gravity) return;
 	if (obj->air_mode!=am_ground) return;
 	if (obj->contact.stand_obj_idx!=-1) return;
-	
-		// get floor going to
-		
-	x=obj->pnt.x+motion->x;
-	y=obj->pnt.y;
-	z=obj->pnt.z+motion->z;
+	if (obj->contact.stand_poly.mesh_idx==-1) return;
 
-	sy=pin_downward_movement_point(x,y,z,obj->size.y,&poly);
-	if (poly.mesh_idx==-1) return;
-	
 		// ignore wall or flat polygons
 
-	mesh_poly=&map.mesh.meshes[poly.mesh_idx].polys[poly.poly_idx];
+	mesh_poly=&map.mesh.meshes[obj->contact.stand_poly.mesh_idx].polys[obj->contact.stand_poly.poly_idx];
 	if ((mesh_poly->box.wall_like) || (mesh_poly->box.flat)) return;
 
 		// if less then min slope, no gravity effects

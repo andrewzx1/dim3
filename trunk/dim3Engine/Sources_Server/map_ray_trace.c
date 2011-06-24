@@ -393,7 +393,6 @@ void ray_trace_get_ray_bounds(int cnt,d3pnt *spts,d3pnt *epts,d3pnt *min,d3pnt *
 	}
 
 	for (n=1;n<cnt;n++) {
-
 		spt++;
 		ept++;
 
@@ -424,7 +423,7 @@ inline bool ray_trace_mesh_bound_check(map_mesh_type *mesh,d3pnt *min,d3pnt *max
 {
 		// compare x/z first as it's a better chance
 		// for an elimination
-
+		
 	if (max->x<mesh->box.min.x) return(FALSE);
 	if (min->x>mesh->box.max.x) return(FALSE);
 	if (max->z<mesh->box.min.z) return(FALSE);
