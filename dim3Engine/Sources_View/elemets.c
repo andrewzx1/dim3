@@ -2488,18 +2488,18 @@ void element_draw_tab(element_type *element,int sel_id,int x,int y)
 		
 		if (element->value!=tab_idx) {
 			ty=margin;
-			memmove(&col,&iface.color.dialog_dimmed,sizeof(d3col));
+			memmove(&col,&iface.color.tab_dimmed,sizeof(d3col));
 		}
 		else {
 			ty=margin-y_push;
-			memmove(&col,&iface.color.dialog_base,sizeof(d3col));
+			memmove(&col,&iface.color.tab_background,sizeof(d3col));
 		}
 		
 		view_draw_next_vertex_object_2D_color_poly((lx+x_slant),ty,&col,((rx-x_slant)+x_overlap),ty,&col,(rx+x_overlap),by,&col,lx,by,&col,1.0f);
 
-		view_draw_next_vertex_object_2D_line(&iface.color.dialog_outline,1.0f,lx,by,(lx+x_slant),ty);
-		view_draw_next_vertex_object_2D_line(&iface.color.dialog_outline,1.0f,(lx+x_slant),ty,((rx-x_slant)+x_overlap),ty);
-		view_draw_next_vertex_object_2D_line(&iface.color.dialog_outline,1.0f,((rx-x_slant)+x_overlap),ty,(rx+x_overlap),by);
+		view_draw_next_vertex_object_2D_line(&iface.color.tab_outline,1.0f,lx,by,(lx+x_slant),ty);
+		view_draw_next_vertex_object_2D_line(&iface.color.tab_outline,1.0f,(lx+x_slant),ty,((rx-x_slant)+x_overlap),ty);
+		view_draw_next_vertex_object_2D_line(&iface.color.tab_outline,1.0f,((rx-x_slant)+x_overlap),ty,(rx+x_overlap),by);
 
 		memmove(&col,&iface.color.control_label,sizeof(d3col));
 		
@@ -2523,22 +2523,22 @@ void element_draw_tab(element_type *element,int sel_id,int x,int y)
 	ty=high+margin;
 	by=iface.scale_y-margin;
 	
-	view_draw_next_vertex_object_2D_color_quad(&iface.color.dialog_base,1.0f,lx,rx,by,ty);
+	view_draw_next_vertex_object_2D_color_quad(&iface.color.dialog_background,1.0f,lx,rx,by,ty);
 	
 		// outside line
 		
-	view_draw_next_vertex_object_2D_line(&iface.color.dialog_outline,1.0f,lx,ty,lx,by);
-	view_draw_next_vertex_object_2D_line(&iface.color.dialog_outline,1.0f,lx,by,rx,by);
-	view_draw_next_vertex_object_2D_line(&iface.color.dialog_outline,1.0f,rx,by,rx,ty);
+	view_draw_next_vertex_object_2D_line(&iface.color.tab_outline,1.0f,lx,ty,lx,by);
+	view_draw_next_vertex_object_2D_line(&iface.color.tab_outline,1.0f,lx,by,rx,by);
+	view_draw_next_vertex_object_2D_line(&iface.color.tab_outline,1.0f,rx,by,rx,ty);
 	
 		// top line
 		
 	kx=margin+(element->value*xadd);
 	if (element->value!=0) {
-		view_draw_next_vertex_object_2D_line(&iface.color.dialog_outline,1.0f,lx,ty,kx,ty);
+		view_draw_next_vertex_object_2D_line(&iface.color.tab_outline,1.0f,lx,ty,kx,ty);
 	}
 	if (element->value!=(element->setup.tab.ntab-1)) {
-		view_draw_next_vertex_object_2D_line(&iface.color.dialog_outline,1.0f,(kx+xadd+x_overlap),ty,rx,ty);
+		view_draw_next_vertex_object_2D_line(&iface.color.tab_outline,1.0f,(kx+xadd+x_overlap),ty,rx,ty);
 	}
 
 	glDisable(GL_BLEND);
@@ -2925,16 +2925,16 @@ void element_draw_frame(element_type *element)
 		
 		y=(head_top+top)>>1;
 
-		col.r=col.g=col.b=0.75f;
-		col2.r=col2.g=col2.b=0.3f;
+		memmove(&col,&iface.color.dialog_header,sizeof(d3col));
+		col2.r=col.r*0.5f;
+		col2.g=col.g*0.5f;
+		col2.b=col.b*0.5f;
 
 		view_draw_next_vertex_object_2D_color_poly(lft,head_top,&col,rgt,head_top,&col,rgt,y,&col2,lft,y,&col2,1.0f);
 		view_draw_next_vertex_object_2D_color_poly(lft,y,&col2,rgt,y,&col2,rgt,top,&col,lft,top,&col,1.0f);
 
-		col.r=col.g=col.b=1.0f;
-		
 		gl_text_start(font_interface_index,iface.font.text_size_medium);
-		gl_text_draw(((lft+rgt)/2),(y-2),element->str,tx_center,TRUE,&col,1.0f);
+		gl_text_draw(((lft+rgt)/2),(y-2),element->str,tx_center,TRUE,&iface.color.dialog_outline,1.0f);
 		gl_text_end();
 	}
 	

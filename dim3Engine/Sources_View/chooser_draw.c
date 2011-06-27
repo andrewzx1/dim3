@@ -100,10 +100,10 @@ void chooser_create_elements(void)
 {
 	int							n,idx,template_idx;
 	char						path[1024],path2[1024],fname[256],
-								title[max_chooser_frame_text_sz],str[max_chooser_text_data_sz];
+								str[max_chooser_text_data_sz],title[max_chooser_frame_text_sz];
 	iface_chooser_type			*chooser,*template_chooser;
 	iface_chooser_piece_type	*piece,*template_piece;
-	iface_chooser_frame_type	frame;
+	iface_chooser_frame_type	*frame;
 	
 	chooser=&iface.chooser_list.choosers[chooser_idx];
 	template_chooser=NULL;
@@ -115,18 +115,19 @@ void chooser_create_elements(void)
 	
 		// setup frame
 		
+	frame=NULL;
+
 	if (template_chooser==NULL) {
-		memmove(&frame,&chooser->frame,sizeof(iface_chooser_frame_type));
-		chooser_text_substitute(chooser->frame.title,title,max_chooser_frame_text_sz);
+		if (chooser->frame.on) frame=&chooser->frame;
 	}
 	else {
-		memmove(&frame,&template_chooser->frame,sizeof(iface_chooser_frame_type));
-		chooser_text_substitute(template_chooser->frame.title,title,max_chooser_frame_text_sz);
+		if (template_chooser->frame.on) frame=&template_chooser->frame;
 	}
 
-	strcpy(frame.title,title);
-	
-	gui_set_frame(&frame);
+	if (frame!=NULL) {
+		chooser_text_substitute(frame->title,title,max_chooser_frame_text_sz);
+		element_frame_add(title,-1,frame->x,frame->y,frame->wid,frame->high);
+	}
 
 		// mark regular pieces as not being
 		// used to override a template

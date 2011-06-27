@@ -60,6 +60,9 @@ extern setup_type			setup;
 
 extern setup_type			setup_backup;
 
+extern int					setup_tab_index[5];
+extern char					setup_tab_list[5][name_str_len];
+
 int							setup_network_tab_value,setup_network_host_scroll_pos;
 char						setup_host_list[max_setup_network_host+1][128],
 							setup_character_list[max_character+1][128];
@@ -230,14 +233,26 @@ void setup_network_host_pane(void)
 
 void setup_network_create_pane(void)
 {
-	int			x,y,wid,high,pane;
-	char		tab_list[][32]={"Player","Hosts"};
+	int			x,y,wid,high,ntab,pane;
 							
 	element_clear();
 	
 		// tabs
+
+	ntab=0;
+
+	if (iface.setup.net_player) {
+		strcpy(setup_tab_list[ntab],"Player");
+		setup_tab_index[ntab]=setup_network_pane_player;
+		ntab++;
+	}
+	if (iface.setup.net_host) {
+		strcpy(setup_tab_list[ntab],"Hosts");
+		setup_tab_index[ntab]=setup_network_pane_host;
+		ntab++;
+	}
 		
-	element_tab_add((char*)tab_list,setup_network_tab_value,ctrl_network_tab_id,2);
+	element_tab_add((char*)setup_tab_list,setup_network_tab_value,ctrl_network_tab_id,ntab);
 	
 		// buttons
 		
@@ -252,7 +267,7 @@ void setup_network_create_pane(void)
 	
 		// specific pane controls
 		
-	pane=element_get_value(ctrl_network_tab_id);
+	pane=setup_tab_index[element_get_value(ctrl_network_tab_id)];
 		
 	switch (pane) {
 		case setup_network_pane_player:

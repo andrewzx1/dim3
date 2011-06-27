@@ -135,7 +135,7 @@ bool console_builtin_commands(void)
 	
 		// console map
 		
-	if ((iface.debug) && (net_setup.mode==net_mode_none)) {
+	if ((iface.setup.game_debug) && (net_setup.mode==net_mode_none)) {
 		if (strncasecmp(console_input_str,"map ",4)==0) {
 			if (debug_change_map((char*)&console_input_str[4])) view.console.on=FALSE;
 			return(TRUE);
@@ -155,6 +155,10 @@ void console_input(void)
 {
 	int				len;
 	char			ch;
+
+		// no console if no debug tab
+
+	if (!iface.setup.game_debug) return;
 	
 		// if console is off, check for on key
 		

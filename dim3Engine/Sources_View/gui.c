@@ -40,7 +40,6 @@ extern render_info_type		render_info;
 
 int							gui_background_image_idx;
 char						gui_last_key;
-iface_chooser_frame_type	gui_frame;
 
 /* =======================================================
 
@@ -83,8 +82,6 @@ void gui_initialize(char *background_path,char *bitmap_name)
 		
 	gui_background_image_idx=-1;
 	if (bitmap_name!=NULL) gui_background_load(background_path,bitmap_name);
-	
-	gui_frame.on=FALSE;
 	
 		// start mouse in middle of screen
 		
@@ -154,80 +151,6 @@ void gui_draw_background(float alpha)
 
 /* =======================================================
 
-      GUI Frames
-      
-======================================================= */
-
-void gui_set_frame(iface_chooser_frame_type *frame)
-{
-	memmove(&gui_frame,frame,sizeof(iface_chooser_frame_type));
-}
-
-void gui_draw_dialog(void)
-{
-	int			lft,rgt,top,bot,high,head_top,y;
-	bool		is_header;
-	d3col		col,col2;
-	
-	if (!gui_frame.on) return;
-	
-		// header?
-		
-	is_header=gui_frame.title[0]!=0x0;
-	
-		// setup draw
-
-	gl_2D_view_interface();
-
-	lft=gui_frame.x;
-	rgt=lft+gui_frame.wid;
-	top=gui_frame.y;
-	bot=top+gui_frame.high;
-
-		// inside frame
-
-	view_draw_next_vertex_object_2D_color_quad(&gui_frame.background_col,1.0f,lft,rgt,top,bot);
-	
-		// header
-		
-	if (is_header) {
-		high=gl_text_get_char_height(iface.font.text_size_small);
-		head_top=top-(high+(high/2));
-		
-		y=(head_top+top)>>1;
-
-		col.r=col.g=col.b=0.75f;
-		col2.r=col2.g=col2.b=0.3f;
-
-		view_draw_next_vertex_object_2D_color_poly(lft,head_top,&col,rgt,head_top,&col,rgt,y,&col2,lft,y,&col2,1.0f);
-		view_draw_next_vertex_object_2D_color_poly(lft,y,&col2,rgt,y,&col2,rgt,top,&col,lft,top,&col,1.0f);
-
-		col.r=col.g=col.b=1.0f;
-		
-		gl_text_start(font_interface_index,iface.font.text_size_medium);
-		gl_text_draw(((lft+rgt)/2),(y-2),gui_frame.title,tx_center,TRUE,&col,1.0f);
-		gl_text_end();
-	}
-	
-		// outline
-
-	glLineWidth(4.0f);
-	col.r=col.g=col.b=0.0f;
-	view_draw_next_vertex_object_2D_line_quad(&col,1.0f,lft,rgt,top,bot);
-	
-	if (is_header) view_draw_next_vertex_object_2D_line_quad(&col,1.0f,lft,rgt,head_top,top);
-	
-	glLineWidth(2.0f);
-	col.r=col.g=col.b=1.0f;
-	view_draw_next_vertex_object_2D_line_quad(&col,1.0f,lft,rgt,top,bot);
-	
-	if (is_header) view_draw_next_vertex_object_2D_line_quad(&col,1.0f,lft,rgt,head_top,top);
-	
-	glLineWidth(1.0f);
-}
-
-/* =======================================================
-
       GUI Draw
       
 ======================================================= */
@@ -239,7 +162,6 @@ void gui_draw(float background_alpha,bool cursor)
 		// background
 
 	gui_draw_background(background_alpha);
-	gui_draw_dialog();
 
 		// elements
 

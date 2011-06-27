@@ -475,7 +475,7 @@ void iface_read_settings_interface(iface_type *iface)
 								radar_head_tag,menu_head_tag,menu_tag,
 								intro_head_tag,intro_model_head_tag,intro_model_tag,intro_confirm_tag,
 								color_tag,font_tag,progress_tag,chat_tag,fade_tag,button_tag,sound_tag,
-								proj_tag,debug_tag;
+								proj_tag,setup_tag;
 	char						path[1024],name[256];
 
 	iface_default_settings(iface);
@@ -570,9 +570,12 @@ void iface_read_settings_interface(iface_type *iface)
 	color_tag=xml_findfirstchild("Color",interface_head_tag);
 	if (color_tag!=-1) {
 		xml_get_attribute_color(color_tag,"dialog_background",&iface->color.dialog_background);
-		xml_get_attribute_color(color_tag,"dialog_base",&iface->color.dialog_base);
-		xml_get_attribute_color(color_tag,"dialog_dimmed",&iface->color.dialog_dimmed);
+		xml_get_attribute_color(color_tag,"dialog_header",&iface->color.dialog_header);
 		xml_get_attribute_color(color_tag,"dialog_outline",&iface->color.dialog_outline);
+		xml_get_attribute_color(color_tag,"dialog_title",&iface->color.dialog_title);
+		xml_get_attribute_color(color_tag,"tab_background",&iface->color.tab_background);
+		xml_get_attribute_color(color_tag,"tab_dimmed",&iface->color.tab_dimmed);
+		xml_get_attribute_color(color_tag,"tab_outline",&iface->color.tab_outline);
 		xml_get_attribute_color(color_tag,"control_label",&iface->color.control_label);
 		xml_get_attribute_color(color_tag,"control_text",&iface->color.control_text);
 		xml_get_attribute_color(color_tag,"control_fill",&iface->color.control_fill);
@@ -691,6 +694,19 @@ void iface_read_settings_interface(iface_type *iface)
 		
 	}
 	
+		// setup
+
+	setup_tag=xml_findfirstchild("Setup",interface_head_tag);
+	if (setup_tag!=-1) {
+		iface->setup.game_video=xml_get_attribute_boolean(setup_tag,"game_video");
+		iface->setup.game_audio=xml_get_attribute_boolean(setup_tag,"game_audio");
+		iface->setup.game_mouse=xml_get_attribute_boolean(setup_tag,"game_mouse");
+		iface->setup.game_action=xml_get_attribute_boolean(setup_tag,"game_action");
+		iface->setup.game_debug=xml_get_attribute_boolean(setup_tag,"game_debug");
+		iface->setup.net_player=xml_get_attribute_boolean(setup_tag,"net_player");
+		iface->setup.net_host=xml_get_attribute_boolean(setup_tag,"net_host");
+	}
+	
 		// sound
 		
 	sound_tag=xml_findfirstchild("Sound",interface_head_tag);
@@ -704,13 +720,6 @@ void iface_read_settings_interface(iface_type *iface)
 	if (proj_tag!=-1) {
 		xml_get_attribute_text(proj_tag,"name",iface->project_name,name_str_len);
 		iface->skill=xml_get_attribute_boolean(proj_tag,"skill");
-	}
-	
-		// debug setup
-
-	debug_tag=xml_findfirstchild("Debug",interface_head_tag);
-	if (debug_tag!=-1) {
-		iface->debug=xml_get_attribute_boolean(debug_tag,"on");
 	}
 
 	xml_close_file();
@@ -1076,9 +1085,12 @@ bool iface_write_settings_interface(iface_type *iface)
 		
 	xml_add_tagstart("Color");
 	xml_add_attribute_color("dialog_background",&iface->color.dialog_background);
-	xml_add_attribute_color("dialog_base",&iface->color.dialog_base);
-	xml_add_attribute_color("dialog_dimmed",&iface->color.dialog_dimmed);
+	xml_add_attribute_color("dialog_header",&iface->color.dialog_header);
 	xml_add_attribute_color("dialog_outline",&iface->color.dialog_outline);
+	xml_add_attribute_color("dialog_title",&iface->color.dialog_title);
+	xml_add_attribute_color("tab_background",&iface->color.tab_background);
+	xml_add_attribute_color("tab_dimmed",&iface->color.tab_dimmed);
+	xml_add_attribute_color("tab_outline",&iface->color.tab_outline);
 	xml_add_attribute_color("control_label",&iface->color.control_label);
 	xml_add_attribute_color("control_text",&iface->color.control_text);
 	xml_add_attribute_color("control_fill",&iface->color.control_fill);
@@ -1195,6 +1207,18 @@ bool iface_write_settings_interface(iface_type *iface)
 
 	xml_add_tagclose("Intro");
 
+		// setup
+
+	xml_add_tagstart("Setup");
+	xml_add_attribute_boolean("game_video",iface->setup.game_video);
+	xml_add_attribute_boolean("game_audio",iface->setup.game_audio);
+	xml_add_attribute_boolean("game_mouse",iface->setup.game_mouse);
+	xml_add_attribute_boolean("game_action",iface->setup.game_action);
+	xml_add_attribute_boolean("game_debug",iface->setup.game_debug);
+	xml_add_attribute_boolean("net_player",iface->setup.net_player);
+	xml_add_attribute_boolean("net_host",iface->setup.net_host);
+	xml_add_tagend(TRUE);
+
 		// sound
 		
 	xml_add_tagstart("Sound");
@@ -1206,12 +1230,6 @@ bool iface_write_settings_interface(iface_type *iface)
 	xml_add_tagstart("Project");
 	xml_add_attribute_text("name",iface->project_name);
 	xml_add_attribute_boolean("skill",iface->skill);
-	xml_add_tagend(TRUE);
-	
-		// debug setup
-
-	xml_add_tagstart("Debug");
-	xml_add_attribute_boolean("on",iface->debug);
 	xml_add_tagend(TRUE);
 
 		// close interface

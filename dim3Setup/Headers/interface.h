@@ -78,6 +78,7 @@ extern void property_palette_click(d3pnt *pnt,bool double_click);
 
 extern void property_palette_fill_settings(void);
 extern void property_palette_fill_intro(void);
+extern void property_palette_fill_setup(void);
 extern void property_palette_fill_hud(void);
 extern void property_palette_fill_radar(void);
 extern void property_palette_fill_multiplayer(void);
@@ -94,6 +95,7 @@ extern void property_palette_fill_shaders(void);
 
 extern void property_palette_click_settings(int id);
 extern void property_palette_click_intro(int id);
+extern void property_palette_click_setup(int id);
 extern void property_palette_click_hud(int id);
 extern void property_palette_click_radar(int id);
 extern void property_palette_click_multiplayer(int id);

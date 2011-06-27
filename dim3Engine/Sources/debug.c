@@ -584,7 +584,7 @@ void debug_input(void)
 	
 		// others require debug mode to be on
 		
-	if (!iface.debug) return;
+	if (!iface.setup.game_debug) return;
 	
 	if (input_action_get_state_single(nc_debug_status)) {
 		debug_dump();

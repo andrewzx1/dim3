@@ -31,7 +31,7 @@ and can be sold or given away.
       
 ======================================================= */
 
-#define dim3_version					"3.0b21"
+#define dim3_version					"3.0b22"
 
 /* =======================================================
 
@@ -576,7 +576,8 @@ extern void bitmap_text_shutdown(texture_font_type *d3_font);
 //
 
 typedef struct		{
-						d3col							dialog_background,dialog_base,dialog_dimmed,dialog_outline,
+						d3col							dialog_background,dialog_header,dialog_outline,dialog_title,
+														tab_background,tab_dimmed,tab_outline,
 														control_label,control_text,control_fill,
 														control_header,control_outline,
 														control_mouse_over,control_hilite,control_disabled,
@@ -763,7 +764,6 @@ typedef struct		{
 						int								x,y,wid,high;
 						char							title[max_chooser_frame_text_sz];
 						bool							on;
-						d3col							background_col;
 					} iface_chooser_frame_type;
 					
 typedef struct		{
@@ -841,6 +841,16 @@ typedef struct		{
 						iface_intro_confirm_type		confirm;
 						iface_intro_model_list			model_list;
 					} iface_intro_type;
+
+//
+// setup
+//
+
+typedef struct		{
+						bool							game_video,game_audio,game_mouse,
+														game_action,game_debug,
+														net_player,net_host;							
+					} iface_setup_type;
 
 //
 // fades
@@ -1278,11 +1288,12 @@ typedef struct		{
 						int								scale_x,scale_y;
 						char							project_name[name_str_len],
 														click_sound[name_str_len];
-						bool							debug,skill;
+						bool							skill;
 						iface_color_type				color;
 						iface_font_type					font;
 						iface_progress_type				progress;
 						iface_intro_type				intro;
+						iface_setup_type				setup;
 						iface_fade_type					fade;
 						iface_bitmap_list				bitmap_list;
 						iface_text_list					text_list;
