@@ -38,35 +38,38 @@ and can be sold or given away.
 #define kSettingsInterfaceFont					2
 #define kSettingsHUDFont						3
 #define kSettingsColorDialogBackground			4
-#define kSettingsColorDialogBase				5
-#define kSettingsColorDialogDimmed				6
-#define kSettingsColorDialogOutline				7
-#define kSettingsColorControlLabel				8
-#define kSettingsColorControlText				9
-#define kSettingsColorControlFill				10
-#define kSettingsColorControlHeader				11
-#define kSettingsColorControlOutline			12
-#define kSettingsColorControlMouseOver			13
-#define kSettingsColorControlHilite				14
-#define kSettingsColorControlDisabled			15
-#define kSettingsColorButtonFill				16
-#define kSettingsColorButtonText				17
-#define kSettingsColorButtonOutline				18
-#define kSettingsColorDefaultTint				19
-#define kSettingsProgressLeft					20
-#define kSettingsProgressRight					21
-#define kSettingsProgressTop					22
-#define kSettingsProgressBottom					23
-#define kSettingsProgressTextSize				24
-#define kSettingsProgressOutline				25
-#define kSettingsProgressBaseColorStart			26
-#define kSettingsProgressBaseColorEnd			27
-#define kSettingsProgressHiliteColorStart		28
-#define kSettingsProgressHiliteColorEnd			29
-#define kSettingsProgressTextColor				30
-#define kSettingsProgressOutlineColor			31
-#define kSettingsFaseTitleMilliseconds			32
-#define kSettingsFaseMapMilliseconds			33
+#define kSettingsColorDialogHeader				5
+#define kSettingsColorDialogOutline				6
+#define kSettingsColorDialogTitle				7
+#define kSettingsColorTabBackground				8
+#define kSettingsColorTabDimmed					9
+#define kSettingsColorTabOutline				10
+#define kSettingsColorControlLabel				11
+#define kSettingsColorControlText				12
+#define kSettingsColorControlFill				13
+#define kSettingsColorControlHeader				14
+#define kSettingsColorControlOutline			15
+#define kSettingsColorControlMouseOver			16
+#define kSettingsColorControlHilite				17
+#define kSettingsColorControlDisabled			18
+#define kSettingsColorButtonFill				19
+#define kSettingsColorButtonText				20
+#define kSettingsColorButtonOutline				21
+#define kSettingsColorDefaultTint				22
+#define kSettingsProgressLeft					23
+#define kSettingsProgressRight					24
+#define kSettingsProgressTop					25
+#define kSettingsProgressBottom					26
+#define kSettingsProgressTextSize				27
+#define kSettingsProgressOutline				28
+#define kSettingsProgressBaseColorStart			29
+#define kSettingsProgressBaseColorEnd			30
+#define kSettingsProgressHiliteColorStart		31
+#define kSettingsProgressHiliteColorEnd			32
+#define kSettingsProgressTextColor				33
+#define kSettingsProgressOutlineColor			34
+#define kSettingsFaseTitleMilliseconds			35
+#define kSettingsFaseMapMilliseconds			36
 
 extern iface_type				iface;
 extern setup_state_type			state;
@@ -96,9 +99,12 @@ void property_palette_fill_settings(void)
 		
 	list_palette_add_header(&property_palette,0,"Colors");
 	list_palette_add_pick_color(&property_palette,kSettingsColorDialogBackground,"Dialog Background",&iface.color.dialog_background,FALSE);
-	list_palette_add_pick_color(&property_palette,kSettingsColorDialogBase,"Dialog Base",&iface.color.dialog_base,FALSE);
-	list_palette_add_pick_color(&property_palette,kSettingsColorDialogDimmed,"Dialog Dimmed",&iface.color.dialog_dimmed,FALSE);
+	list_palette_add_pick_color(&property_palette,kSettingsColorDialogHeader,"Dialog Header",&iface.color.dialog_header,FALSE);
 	list_palette_add_pick_color(&property_palette,kSettingsColorDialogOutline,"Dialog Outline",&iface.color.dialog_outline,FALSE);
+	list_palette_add_pick_color(&property_palette,kSettingsColorDialogTitle,"Dialog Title",&iface.color.dialog_title,FALSE);
+	list_palette_add_pick_color(&property_palette,kSettingsColorTabBackground,"Tab Background",&iface.color.tab_background,FALSE);
+	list_palette_add_pick_color(&property_palette,kSettingsColorTabDimmed,"Tab Dimmed",&iface.color.tab_dimmed,FALSE);
+	list_palette_add_pick_color(&property_palette,kSettingsColorTabOutline,"Tab Outline",&iface.color.tab_outline,FALSE);
 	list_palette_add_pick_color(&property_palette,kSettingsColorControlLabel,"Control Label",&iface.color.control_label,FALSE);
 	list_palette_add_pick_color(&property_palette,kSettingsColorControlText,"Control Text",&iface.color.control_text,FALSE);
 	list_palette_add_pick_color(&property_palette,kSettingsColorControlFill,"Control Fill",&iface.color.control_fill,FALSE);
@@ -171,16 +177,28 @@ void property_palette_click_settings(int id)
 			os_pick_color(&iface.color.dialog_background);
 			break;
 
-		case kSettingsColorDialogBase:
-			os_pick_color(&iface.color.dialog_base);
-			break;
-
-		case kSettingsColorDialogDimmed:
-			os_pick_color(&iface.color.dialog_dimmed);
+		case kSettingsColorDialogHeader:
+			os_pick_color(&iface.color.dialog_header);
 			break;
 
 		case kSettingsColorDialogOutline:
 			os_pick_color(&iface.color.dialog_outline);
+			break;
+
+		case kSettingsColorDialogTitle:
+			os_pick_color(&iface.color.dialog_title);
+			break;
+
+		case kSettingsColorTabBackground:
+			os_pick_color(&iface.color.tab_background);
+			break;
+
+		case kSettingsColorTabDimmed:
+			os_pick_color(&iface.color.tab_dimmed);
+			break;
+
+		case kSettingsColorTabOutline:
+			os_pick_color(&iface.color.tab_outline);
 			break;
 
 		case kSettingsColorControlLabel:

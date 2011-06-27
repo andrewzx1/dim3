@@ -93,7 +93,6 @@ void setup_xml_default(void)
 	setup.network.game_reset_secs=15;
 	setup.network.respawn_secs=5;
 	
-	setup.debug_console=FALSE;
 	setup.window=FALSE;
 	setup.window_editor=TRUE;
 	setup.no_hud=FALSE;
@@ -163,7 +162,6 @@ bool setup_xml_read_path(char *path)
 	xml_key_read_int(setup_tag,"Host_Respawn_Secs",&setup.network.respawn_secs);
 	xml_key_read_boolean(setup_tag,"Network_Show_Names",&setup.network.show_names);
 	xml_key_read_boolean(setup_tag,"Network_Dedicated",&setup.network.dedicated);
-	xml_key_read_boolean(setup_tag,"Debug_Console",&setup.debug_console);
 	xml_key_read_boolean(setup_tag,"Window",&setup.window);
 	xml_key_read_boolean(setup_tag,"Window_Editor",&setup.window_editor);
 	xml_key_read_boolean(setup_tag,"No_HUD",&setup.no_hud);
@@ -328,7 +326,6 @@ bool setup_xml_write(void)
 	xml_key_write_int("Host_Respawn_Secs",setup.network.respawn_secs);
 	xml_key_write_boolean("Network_Show_Names",setup.network.show_names);
 	xml_key_write_boolean("Network_Dedicated",setup.network.dedicated);
-	xml_key_write_boolean("Debug_Console",setup.debug_console);
 	xml_key_write_boolean("Window",setup.window);
 	xml_key_write_boolean("Window_Editor",setup.window_editor);
 	xml_key_write_boolean("No_HUD",setup.no_hud);
@@ -442,7 +439,6 @@ void setup_restore(void)
 	
 	setup.music_on=FALSE;
 
-	setup.debug_console=TRUE;
 	setup.window=FALSE;
 	setup.window_editor=TRUE;
 	setup.no_hud=FALSE;

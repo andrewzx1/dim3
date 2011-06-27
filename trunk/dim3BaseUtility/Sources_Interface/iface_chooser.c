@@ -157,7 +157,6 @@ void iface_read_settings_chooser_single(iface_type *iface,int chooser_tag)
 		chooser->frame.y=xml_get_attribute_int(tag,"y");
 		chooser->frame.wid=xml_get_attribute_int(tag,"width");
 		chooser->frame.high=xml_get_attribute_int(tag,"height");
-		xml_get_attribute_color(tag,"background_color",&chooser->frame.background_col);
 	}
 	
 	tag=xml_findfirstchild("Key",chooser_tag);
@@ -342,7 +341,6 @@ bool iface_write_settings_chooser(iface_type *iface)
 		xml_add_attribute_int("y",chooser->frame.y);
 		xml_add_attribute_int("width",chooser->frame.wid);
 		xml_add_attribute_int("height",chooser->frame.high);
-		xml_add_attribute_color("background_color",&chooser->frame.background_col);
 		xml_add_tagend(TRUE);
 	
 		xml_add_tagstart("Key");

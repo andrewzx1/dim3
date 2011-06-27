@@ -150,7 +150,6 @@ extern void halo_draw_render(void);
 
 extern void gui_initialize(char *background_path,char *bitmap_name);
 extern void gui_shutdown(void);
-extern void gui_set_frame(iface_chooser_frame_type *frame);
 extern void gui_draw_background(float alpha);
 extern void gui_draw(float background_alpha,bool cursor);
 extern void gui_draw_message(char *txt);

@@ -125,9 +125,6 @@ void property_palette_click_chooser(int id)
 		iface.chooser_list.choosers[idx].frame.high=600;
 		strcpy(iface.chooser_list.choosers[idx].frame.title,"Chooser");
 		iface.chooser_list.choosers[idx].frame.on=TRUE;
-		iface.chooser_list.choosers[idx].frame.background_col.r=0.8f;
-		iface.chooser_list.choosers[idx].frame.background_col.g=0.8f;
-		iface.chooser_list.choosers[idx].frame.background_col.b=0.8f;
 
 		iface.chooser_list.choosers[idx].key.ok_id=-1;
 		iface.chooser_list.choosers[idx].key.cancel_id=-1;

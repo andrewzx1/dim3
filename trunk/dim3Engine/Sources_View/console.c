@@ -31,8 +31,9 @@ and can be sold or given away.
 
 #include "interface.h"
 
-extern view_type				view;
-extern setup_type				setup;
+extern iface_type			iface;
+extern view_type			view;
+extern setup_type			setup;
 
 /* =======================================================
 
@@ -114,7 +115,7 @@ void console_add_line(char *txt,d3col *col)
 
 			// if debug on, output
 
-		if (setup.debug_console) {
+		if (iface.setup.game_debug) {
 			if (!first_line) fprintf(stdout," ");
 			fprintf(stdout,"%s",c_str);
 			fprintf(stdout,"\n");
@@ -161,7 +162,7 @@ void console_add_error(char *txt)
 		// if in debug mode, all errors
 		// pop open the console
 		
-	if (setup.debug_console) {
+	if (iface.setup.game_debug) {
 		view.console.on=TRUE;
 		input_clear_text_input();
 	}

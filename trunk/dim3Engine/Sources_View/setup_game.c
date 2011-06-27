@@ -33,7 +33,7 @@ and can be sold or given away.
 
 #define setup_pane_video					0
 #define setup_pane_audio					1
-#define setup_pane_mouse					2
+#define setup_pane_control					2
 #define setup_pane_action					3
 #define setup_pane_debug					4
 
@@ -61,13 +61,12 @@ and can be sold or given away.
 
 #define ctrl_action_id						60
 
-#define ctrl_debug_console_id				70
-#define ctrl_debug_engine_windowed_id		71
-#define ctrl_debug_editor_windowed_id		72
-#define ctrl_debug_no_hud_id				73
-#define ctrl_debug_no_draw_weapon_id		74
-#define ctrl_debug_metrics_on_id			75
-#define ctrl_debug_disable_shaders_id		76
+#define ctrl_debug_engine_windowed_id		70
+#define ctrl_debug_editor_windowed_id		71
+#define ctrl_debug_no_hud_id				72
+#define ctrl_debug_no_draw_weapon_id		73
+#define ctrl_debug_metrics_on_id			74
+#define ctrl_debug_disable_shaders_id		75
 
 #define ctrl_tab_id							80
 
@@ -91,9 +90,11 @@ extern iface_type			iface;
 extern setup_type			setup;
 
 int							setup_tab_value,setup_action_scroll_pos,
+							setup_tab_index[5],
 							setup_key_control_to_action_index_list[ncontrol];
 
-char						setup_screen_size_list[max_screen_size][32],
+char						setup_tab_list[5][name_str_len],
+							setup_screen_size_list[max_screen_size][32],
 							setup_anisotropic_mode_list[][32]=anisotropic_mode_setup_list_def,
 							setup_mipmap_mode_list[][32]=mipmap_mode_setup_list_def,
 							setup_texture_quality_mode_list[][32]=texture_quality_mode_setup_list_def,
@@ -289,13 +290,11 @@ void setup_game_debug_pane(void)
 	int			x,y,control_y_add,control_y_sz;
 	
 	control_y_add=element_get_control_high();
-	control_y_sz=control_y_add*7;
+	control_y_sz=control_y_add*6;
 	
 	x=(int)(((float)iface.scale_x)*0.5f);
 	y=(iface.scale_y>>1)-(control_y_sz>>1);
 	
-	element_checkbox_add("Script Errors Shows Console",setup.debug_console,ctrl_debug_console_id,x,y,TRUE);
-	y+=control_y_add;
 	element_checkbox_add("Engine Windowed Mode (requires restart)",setup.window,ctrl_debug_engine_windowed_id,x,y,TRUE);
 	y+=control_y_add;
 	element_checkbox_add("Editor Windowed Run Mode",setup.window_editor,ctrl_debug_editor_windowed_id,x,y,TRUE);
@@ -311,28 +310,41 @@ void setup_game_debug_pane(void)
 
 void setup_game_create_pane(void)
 {
-	int			x,y,wid,high,ntab,stab,pane;
-	char		tab_list[][name_str_len]={"Video","Audio","Control","Actions","Debug"};
+	int			x,y,wid,high,ntab,pane;
 							
 	element_clear();
 	
 		// tabs
-		
-	if (!setup_in_game) {
-		stab=0;
-		if (iface.debug) {
-			ntab=5;
-		}
-		else {
-			ntab=4;
-		}
+
+	ntab=0;
+
+	if ((!setup_in_game) && (iface.setup.game_video)) {
+		strcpy(setup_tab_list[ntab],"Video");
+		setup_tab_index[ntab]=setup_pane_video;
+		ntab++;
 	}
-	else {
-		stab=1;
-		ntab=3;
+	if (iface.setup.game_audio) {
+		strcpy(setup_tab_list[ntab],"Audio");
+		setup_tab_index[ntab]=setup_pane_audio;
+		ntab++;
+	}
+	if (iface.setup.game_mouse) {
+		strcpy(setup_tab_list[ntab],"Control");
+		setup_tab_index[ntab]=setup_pane_control;
+		ntab++;
+	}
+	if (iface.setup.game_action) {
+		strcpy(setup_tab_list[ntab],"Actions");
+		setup_tab_index[ntab]=setup_pane_action;
+		ntab++;
+	}
+	if (iface.setup.game_debug) {
+		strcpy(setup_tab_list[ntab],"Debug");
+		setup_tab_index[ntab]=setup_pane_debug;
+		ntab++;
 	}
 	
-	element_tab_add((char*)&tab_list[stab][0],setup_tab_value,ctrl_tab_id,ntab);
+	element_tab_add((char*)setup_tab_list,setup_tab_value,ctrl_tab_id,ntab);
 	
 		// buttons
 		
@@ -352,8 +364,7 @@ void setup_game_create_pane(void)
 	
 		// specific pane controls
 		
-	pane=element_get_value(ctrl_tab_id);
-	if (setup_in_game) pane++;
+	pane=setup_tab_index[element_get_value(ctrl_tab_id)];
 		
 	switch (pane) {
 		case setup_pane_video:
@@ -362,7 +373,7 @@ void setup_game_create_pane(void)
 		case setup_pane_audio:
 			setup_game_audio_pane();
 			break;
-		case setup_pane_mouse:
+		case setup_pane_control:
 			setup_game_mouse_pane();
 			break;
 		case setup_pane_action:
@@ -737,10 +748,6 @@ void setup_game_handle_click(int id)
 			break;
 
 			// debug pane
-
-		case ctrl_debug_console_id:
-			setup.debug_console=element_get_value(ctrl_debug_console_id);
-			break;
 
 		case ctrl_debug_engine_windowed_id:
 			setup.window=element_get_value(ctrl_debug_engine_windowed_id);

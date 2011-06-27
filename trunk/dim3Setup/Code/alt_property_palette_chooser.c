@@ -42,7 +42,6 @@ and can be sold or given away.
 #define kChooserPropertyFrameWid				13
 #define kChooserPropertyFrameHigh				14
 #define kChooserPropertyFrameTitle				15
-#define kChooserPropertyFrameBackColor			16
 
 #define kChooserPropertyOKID					20
 #define kChooserPropertyCancelID				21
@@ -63,16 +62,6 @@ char							chooser_type_str[][32]={"Text","Item","Model","Button",""};
       Alt Property Palette Fill Chooser
       
 ======================================================= */
-
-/*
-typedef struct		{
-						int								x,y,wid,high;
-						char							title[max_chooser_frame_text_sz];
-						bool							on;
-						d3col							background_col;
-					} iface_chooser_frame_type;
-					
-*/
 
 void alt_property_palette_fill_chooser(int chooser_idx)
 {
@@ -97,7 +86,6 @@ void alt_property_palette_fill_chooser(int chooser_idx)
 	list_palette_add_string_int(&alt_property_palette,kChooserPropertyFrameWid,"Wid",chooser->frame.wid,FALSE);
 	list_palette_add_string_int(&alt_property_palette,kChooserPropertyFrameHigh,"High",chooser->frame.high,FALSE);
 	list_palette_add_string(&alt_property_palette,kChooserPropertyFrameTitle,"Title",chooser->frame.title,FALSE);
-	list_palette_add_pick_color(&alt_property_palette,kChooserPropertyFrameBackColor,"Background Color",&chooser->frame.background_col,FALSE);
 
 		// keys
 
@@ -280,10 +268,6 @@ void alt_property_palette_click_chooser(int chooser_idx,int id)
 
 		case kChooserPropertyFrameTitle:
 			dialog_property_string_run(list_string_value_string,(void*)chooser->frame.title,max_chooser_frame_text_sz,0,0);
-			break;
-
-		case kChooserPropertyFrameBackColor:
-			os_pick_color(&chooser->frame.background_col);
 			break;
 
 			// keys

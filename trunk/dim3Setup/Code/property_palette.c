@@ -97,6 +97,11 @@ void property_palette_fill(void)
 			property_palette_fill_intro();
 			return;
 
+		case item_interface_setup:
+			list_palette_set_title(&property_palette,"Setup");
+			property_palette_fill_setup();
+			return;
+
 		case item_interface_hud:
 			list_palette_set_title(&property_palette,"HUD");
 			property_palette_fill_hud();
@@ -227,6 +232,10 @@ void property_palette_click(d3pnt *pnt,bool double_click)
 
 		case item_interface_intro:
 			property_palette_click_intro(property_palette.item_id);
+			break;
+
+		case item_interface_setup:
+			property_palette_click_setup(property_palette.item_id);
 			break;
 
 		case item_interface_hud:

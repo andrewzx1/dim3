@@ -203,16 +203,26 @@ void iface_default_settings(iface_type *iface)
 		
 	iface->click_sound[0]=0x0;
 
-		// debug mode
+		// setup
 
-	iface->debug=FALSE;
+	iface->setup.game_video=TRUE;
+	iface->setup.game_audio=TRUE;
+	iface->setup.game_mouse=TRUE;
+	iface->setup.game_action=TRUE;
+	iface->setup.game_debug=FALSE;
+	iface->setup.net_player=TRUE;
+	iface->setup.net_host=TRUE;							
 	
 		// colors
 		
 	iface->color.dialog_background.r=iface->color.dialog_background.g=iface->color.dialog_background.b=0.0f;
-	iface->color.dialog_base.r=iface->color.dialog_base.g=iface->color.dialog_base.b=0.6f;
-	iface->color.dialog_dimmed.r=iface->color.dialog_dimmed.g=iface->color.dialog_dimmed.b=0.4f;
+	iface->color.dialog_header.r=iface->color.dialog_header.g=iface->color.dialog_header.b=0.7f;
 	iface->color.dialog_outline.r=iface->color.dialog_outline.g=iface->color.dialog_outline.b=0.8f;
+	iface->color.dialog_title.r=iface->color.dialog_title.g=iface->color.dialog_title.b=1.0f;
+
+	iface->color.tab_background.r=iface->color.tab_background.g=iface->color.tab_background.b=0.6f;
+	iface->color.tab_dimmed.r=iface->color.tab_dimmed.g=iface->color.tab_dimmed.b=0.4f;
+	iface->color.tab_outline.r=iface->color.tab_outline.g=iface->color.tab_outline.b=1.0f;
 	
 	iface->color.control_label.r=iface->color.control_label.g=iface->color.control_label.b=0.8f;
 	iface->color.control_text.r=iface->color.control_text.g=iface->color.control_text.b=0.0f;
