@@ -79,6 +79,10 @@ void setup_xml_default(void)
 	setup.col.background.r=0.75f;
 	setup.col.background.g=0.75f;
 	setup.col.background.b=0.75f;
+	
+	setup.import_normal_factor.x=1.0f;
+	setup.import_normal_factor.y=1.0f;
+	setup.import_normal_factor.z=1.0f;
 }
 
 /* =======================================================
@@ -130,7 +134,10 @@ bool setup_xml_read(void)
 	xml_key_read_color(setup_tag,"Color_Poly_Sel",&setup.col.poly_sel);
 	xml_key_read_color(setup_tag,"Color_Poly_Cull",&setup.col.poly_cull);
 	xml_key_read_color(setup_tag,"Color_Background",&setup.col.background);
-  
+    xml_key_read_float(setup_tag,"Import_Normal_Factor_X",&setup.import_normal_factor.x);
+	xml_key_read_float(setup_tag,"Import_Normal_Factor_Y",&setup.import_normal_factor.y);
+    xml_key_read_float(setup_tag,"Import_Normal_Factor_Z",&setup.import_normal_factor.z);
+ 
 	xml_close_file();
 	
 	return(TRUE);
@@ -175,6 +182,9 @@ bool setup_xml_write(void)
 	xml_key_write_color("Color_Poly_Sel",&setup.col.poly_sel);
 	xml_key_write_color("Color_Poly_Cull",&setup.col.poly_cull);
 	xml_key_write_color("Color_Background",&setup.col.background);
+    xml_key_write_float("Import_Normal_Factor_X",setup.import_normal_factor.x);
+    xml_key_write_float("Import_Normal_Factor_Y",setup.import_normal_factor.y);
+    xml_key_write_float("Import_Normal_Factor_Z",setup.import_normal_factor.z);
 
         // save the setup
 		// always save to user specific data

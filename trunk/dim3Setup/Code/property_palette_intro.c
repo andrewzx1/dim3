@@ -48,6 +48,9 @@ and can be sold or given away.
 #define kIntroPropertyButtonCredit				20
 #define kIntroPropertyButtonQuit				21
 
+#define kIntroPropertyConfirmX					30
+#define kIntroPropertyConfirmY					31
+
 #define kIntroPropertyButtonSimpleSaveStart		50
 #define kIntroPropertyButtonSimpleSaveErase		60
 
@@ -102,6 +105,12 @@ void property_palette_fill_intro(void)
 		sprintf(str,"Simple Save Erase %d",n);
 		list_palette_add_string_selectable(&property_palette,(kIntroPropertyButtonSimpleSaveErase+n),str,NULL,(state.cur_intro_button_idx==(item_intro_button_simple_save_erase+n)),FALSE);
 	}
+	
+		// confirm
+		
+	list_palette_add_header(&property_palette,0,"Confirm");
+	list_palette_add_string_int(&property_palette,kIntroPropertyConfirmX,"X",iface.intro.confirm.x,FALSE);
+	list_palette_add_string_int(&property_palette,kIntroPropertyConfirmY,"Y",iface.intro.confirm.y,FALSE);
 
 		// models
 
@@ -226,6 +235,14 @@ void property_palette_click_intro(int id)
 			else {
 				iface.intro.music[0]=0x0;
 			}
+			break;
+			
+		case kIntroPropertyConfirmX:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&iface.intro.confirm.x,0,0,0);
+			break;
+
+		case kIntroPropertyConfirmY:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&iface.intro.confirm.y,0,0,0);
 			break;
 
 	}

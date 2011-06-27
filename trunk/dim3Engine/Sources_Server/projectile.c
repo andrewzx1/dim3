@@ -168,6 +168,22 @@ proj_type* projectile_create(obj_type *obj,weapon_type *weap,proj_setup_type *pr
 
 /* =======================================================
 
+      Projectile Radius
+      
+======================================================= */
+
+inline int projectile_get_radius(proj_type *proj)
+{
+	int			radius;
+	
+	radius=proj->size.x;
+	if (proj->size.z>radius) radius=proj->size.z;
+	
+	return(radius>>1);
+}
+
+/* =======================================================
+
       Set Projectile Positions
       
 ======================================================= */

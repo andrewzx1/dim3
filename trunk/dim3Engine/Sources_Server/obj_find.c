@@ -264,7 +264,7 @@ int object_find_idx_by_stood_on_object_idx(int stand_obj_idx)
 
 bool object_sight_test_object(obj_type *obj,int test_obj_idx)
 {
-	int						x,y,side_div,look_div;
+	int						x,y,radius,side_div,look_div;
 	float					side_start,look_start,side_add,look_add;
 	d3pnt					spt,hpt;
 	d3ang					ang;
@@ -327,7 +327,8 @@ bool object_sight_test_object(obj_type *obj,int test_obj_idx)
 			spt.y=obj->pnt.y+obj->size.eye_offset;
 			spt.z=obj->pnt.z;
 
-			ray_push(&spt,&ang,obj->size.radius);
+			radius=object_get_radius(obj);
+			ray_push(&spt,&ang,radius);
 
 				// ray trace
 

@@ -1089,7 +1089,7 @@ int collide_polygon_find_faced_by_object(obj_type *obj)
 	spt.y=obj->pnt.y-(obj->size.y>>1);
 	spt.z=obj->pnt.z;
 
-	sz=obj->size.radius*10;
+	sz=object_get_radius(obj)*10;
 	angle_get_movement(obj->ang.y,sz,&xadd,&zadd);
 
 	ept.x=spt.x+xadd;

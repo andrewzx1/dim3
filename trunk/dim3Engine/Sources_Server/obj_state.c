@@ -571,7 +571,7 @@ void object_melee_hit(obj_type *obj,obj_type *melee_obj,weapon_type *melee_weap,
 
 	if (melee->fall_off) {
 		dist=distance_get(sphere_pnt->x,sphere_pnt->y,sphere_pnt->z,obj->pnt.x,obj->pnt.y,obj->pnt.z);
-		dist-=obj->size.radius;
+		dist-=object_get_radius(obj);
 
 		if (dist>0) damage=damage-((damage*dist)/melee->radius);
 		if (damage<1) damage=1;

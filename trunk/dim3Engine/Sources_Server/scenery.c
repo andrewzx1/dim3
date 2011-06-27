@@ -144,8 +144,6 @@ void scenery_start(void)
 		obj->size.x=obj->draw.size.x;
 		obj->size.y=obj->draw.size.y;
 		obj->size.z=obj->draw.size.z;
-	
-		object_set_radius(obj);
 		
 			// change texture frames
 			

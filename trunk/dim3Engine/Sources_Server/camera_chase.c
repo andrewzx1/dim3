@@ -156,7 +156,7 @@ void camera_chase_get_position(d3pnt *pnt,d3ang *ang)
 	
 		// get camera starting position
 	
-	radius=obj->size.radius;
+	radius=object_get_radius(obj);
 	
 	fx=0;
 	fy=0;

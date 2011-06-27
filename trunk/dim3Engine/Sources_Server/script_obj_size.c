@@ -167,7 +167,6 @@ bool js_obj_size_set_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValu
 	
 	obj=object_get_attach(j_obj);
 	obj->size.x=script_value_to_int(cx,vp);
-	object_set_radius(obj);
 
 	return(TRUE);
 }
@@ -188,7 +187,6 @@ bool js_obj_size_set_z(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValu
 	
 	obj=object_get_attach(j_obj);
 	obj->size.z=script_value_to_int(cx,vp);
-	object_set_radius(obj);
 
 	return(TRUE);
 }

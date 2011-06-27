@@ -297,6 +297,9 @@ void iface_default_settings(iface_type *iface)
 		iface->intro.simple_save[n].desc.y=(n*32);
 		iface->intro.simple_save[n].desc.text_size=20;
 	}
+	
+	iface->intro.confirm.x=0;
+	iface->intro.confirm.y=0;
 
 	iface->intro.model_list.nmodel=0;
 	

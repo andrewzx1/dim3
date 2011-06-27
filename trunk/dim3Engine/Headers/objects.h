@@ -49,7 +49,6 @@ extern void object_dispose_all(void);
 extern int object_script_spawn(char *name,char *script,char *params,d3pnt *pnt,d3ang *ang,bool hide,char *err_str);
 extern bool object_script_remove(int idx,char *err_str);
 
-extern void object_set_radius(obj_type *obj);
 extern int object_get_radius(obj_type *obj);
 extern void object_set_current_mesh(obj_type *obj);
 extern void object_set_position(obj_type *obj,int x,int y,int z,float ang_y,float ymove);
@@ -367,6 +366,7 @@ extern int projectile_count_list(void);
 
 extern proj_type* projectile_create(obj_type *obj,weapon_type *weap,proj_setup_type *proj_setup);
 
+extern int projectile_get_radius(proj_type *proj);
 extern void projectile_set_position(proj_type *proj,d3pnt *pt,d3ang *ang);
 extern void projectile_set_origin(proj_type *proj);
 extern void projectile_spawn_position(proj_type *proj,d3pnt *pt,d3ang *ang,obj_type *parentobj);
@@ -381,7 +381,6 @@ extern bool proj_setup_start_script(obj_type *obj,weapon_type *weap,proj_setup_t
 extern bool proj_setup_create(obj_type *obj,weapon_type *weap,char *name);
 extern void proj_setup_dispose(weapon_type *weap,int idx);
 
-extern void proj_setup_set_radius(proj_setup_type *proj_setup);
 extern void proj_setup_attach_mark(proj_setup_type *proj_setup);
 extern proj_setup_type* proj_setup_get_attach(JSObjectRef j_obj);
 extern proj_type* proj_get_attach(JSObjectRef j_obj);

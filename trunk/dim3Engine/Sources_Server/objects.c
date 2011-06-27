@@ -103,10 +103,7 @@ void object_clear_size(obj_size *size)
 {
 	size->x=size->z=1500;
 	size->y=3000;
-
 	size->eye_offset=-2500;
-
-	size->radius=1500;
 	size->weight=200;
 
 	size->node_touch_dist=500;
@@ -302,16 +299,6 @@ void object_clear_draw(model_draw *draw)
       Object Radius
       
 ======================================================= */
-
-void object_set_radius(obj_type *obj)
-{
-	int			radius;
-	
-	radius=obj->size.x;
-	if (obj->size.z>radius) radius=obj->size.z;
-	
-	obj->size.radius=radius>>1;
-}
 
 inline int object_get_radius(obj_type *obj)
 {

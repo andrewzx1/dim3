@@ -432,7 +432,6 @@ void object_motion_slope_alter_movement_single(int *mv,float slope_y,float slope
 
 void object_motion_slope_alter_movement(obj_type *obj,d3pnt *motion)
 {
-	poly_pointer_type	poly_ptr;
 	map_mesh_poly_type	*mesh_poly;
 
 		// if standing on an object or
@@ -441,32 +440,39 @@ void object_motion_slope_alter_movement(obj_type *obj,d3pnt *motion)
 	if (!obj->slope_gravity) return;
 	if (obj->contact.stand_obj_idx!=-1) return;
 
-		// because we can bounce down
-		// large slopes, we remember the last
-		// slope and keep it if we've been juggled
-		// into the air
-
-	poly_ptr.mesh_idx=obj->contact.stand_poly.mesh_idx;
-	poly_ptr.poly_idx=obj->contact.stand_poly.poly_idx;
+		// if we have a current contact, use that
+		// sometimes, because the physics can bounce
+		// off surfaces, we need to recheck it
+		// we restore stand poly if we re-checked it
+		
+	if (obj->contact.stand_poly.mesh_idx!=-1) {
+		mesh_poly=&map.mesh.meshes[obj->contact.stand_poly.mesh_idx].polys[obj->contact.stand_poly.poly_idx];
+	}
+	else {
+		pin_downward_movement_obj(obj,(floor_slop>>1));
+		if (obj->contact.stand_poly.mesh_idx==-1) return;
+		
+		mesh_poly=&map.mesh.meshes[obj->contact.stand_poly.mesh_idx].polys[obj->contact.stand_poly.poly_idx];
+		obj->contact.stand_poly.mesh_idx=-1;
+	}
 
 		// ignore wall or flat polygons
-
-	mesh_poly=&map.mesh.meshes[poly_ptr.mesh_idx].polys[poly_ptr.poly_idx];
+		// or polygons that could bump
+		
 	if ((mesh_poly->box.wall_like) || (mesh_poly->box.flat)) return;
+	
+	if (obj->bump.on) {
+		if ((mesh_poly->box.max.y-mesh_poly->box.min.y)<obj->bump.high) return;
+	}
 
 		// if less then min slope, no gravity effects
 
 	if (mesh_poly->slope.y<(map.physics.slope_min_ang*slope_angle_to_slope)) return;
 
-		// remember this slope!
-
-	obj->contact.slope_poly.mesh_idx=poly_ptr.mesh_idx;
-	obj->contact.slope_poly.poly_idx=poly_ptr.poly_idx;
-
 		// make sure at min slope gravity as some objects
 		// can bounce down slopes
 
-	if (obj->force.gravity<map->physics.slope_min_gravity) obj->force.gravity=map->physics.slope_min_gravity;
+	if (obj->force.gravity<map.physics.slope_min_gravity) obj->force.gravity=map.physics.slope_min_gravity;
 
 		// apply gravity
 
@@ -600,11 +606,22 @@ void object_move_y_fall(obj_type *obj)
 	
 		// find air mode
 		
-	if (obj->force.vct.y<0) {
+	if (obj->force.vct.y<0.0f) {
 		obj->air_mode=am_up;
 	}
 	else {
 		obj->air_mode=am_falling;
+	}
+	
+		// we need to check for ceilings
+		// coming up, this usually happens
+		// when jumping or flying into a slanted
+		// ceiling
+		
+	fy=pin_upward_movement_obj(obj,-floor_slop);
+	if (fy>0) {
+		obj->pnt.y+=fy;
+		obj->force.vct.y+=fy;
 	}
 }
 

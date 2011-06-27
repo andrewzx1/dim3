@@ -35,6 +35,7 @@ and can be sold or given away.
 
 extern map_type					map;
 extern editor_state_type		state;
+extern editor_setup_type		setup;
 
 extern file_path_setup_type		file_path_setup;
 
@@ -296,11 +297,11 @@ void import_obj_load_data(obj_import_state_type *import_state)
 		
 		if (strcmp(txt,"vn")==0) {
 			textdecode_get_piece(n,1,txt);
-			*normal++=(float)strtod(txt,NULL);
+			*normal++=(((float)strtod(txt,NULL))*setup.import_normal_factor.x);
 			textdecode_get_piece(n,2,txt);
-			*normal++=(float)strtod(txt,NULL);
+			*normal++=(((float)strtod(txt,NULL))*setup.import_normal_factor.y);
 			textdecode_get_piece(n,3,txt);
-			*normal++=(float)strtod(txt,NULL);
+			*normal++=(((float)strtod(txt,NULL))*setup.import_normal_factor.z);
 
 			normal_pos++;
 			continue;

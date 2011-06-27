@@ -76,7 +76,7 @@ void halo_draw_add(d3pnt *pnt,int obj_idx,int halo_idx)
 
 void halo_draw_setup(void)
 {
-	int						n,x,y,z,pixel_sz,dist,d;
+	int						n,x,y,z,radius,pixel_sz,dist,d;
 	float					alpha;
 	bool					hit;
 	d3pnt					spt,ept,hpt;
@@ -174,7 +174,8 @@ void halo_draw_setup(void)
 
 		if (halo_draw->obj_idx!=-1) {
 			obj=server.obj_list.objs[halo_draw->obj_idx];
-			ray_push_to_end(&spt,&ept,obj->size.radius);
+			radius=object_get_radius(obj);
+			ray_push_to_end(&spt,&ept,radius);
 		}
 
 		hit=ray_trace_map_by_point(&spt,&ept,&hpt,&contact);

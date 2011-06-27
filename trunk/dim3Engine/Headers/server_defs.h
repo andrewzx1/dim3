@@ -366,7 +366,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						int						x,z,y,radius,
+						int						x,z,y,
 												eye_offset,weight,
 												node_touch_dist;
 					} obj_size;

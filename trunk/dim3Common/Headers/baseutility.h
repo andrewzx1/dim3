@@ -814,6 +814,10 @@ typedef struct		{
 						iface_intro_button_type				button_start,button_erase;
 						iface_intro_simple_save_desc_type	desc;
 					} iface_intro_simple_save_type;
+
+typedef struct		{
+						int								x,y;
+					} iface_intro_confirm_type;
 			
 typedef struct		{
 						int								x,y;
@@ -821,7 +825,7 @@ typedef struct		{
 						char							model_name[name_str_len],animate_name[name_str_len];
 						d3ang							rot;
 					} iface_intro_model_type;
-
+					
 typedef struct		{
 						int								nmodel;
 						iface_intro_model_type			models[max_hud_intro_model];
@@ -834,6 +838,7 @@ typedef struct		{
 														button_multiplayer_host,button_multiplayer_join,button_multiplayer_setup,
 														button_credit,button_quit;
 						iface_intro_simple_save_type	simple_save[max_simple_save_spot];
+						iface_intro_confirm_type		confirm;
 						iface_intro_model_list			model_list;
 					} iface_intro_type;
 
