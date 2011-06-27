@@ -49,8 +49,9 @@ and can be sold or given away.
 #define intro_button_credit_id					30
 #define intro_button_quit_id					31
 
-#define intro_simple_save_erase_ok				40
-#define intro_simple_save_erase_cancel			41
+#define intro_simple_save_erase_frame			40
+#define intro_simple_save_erase_ok				41
+#define intro_simple_save_erase_cancel			42
 
 #define intro_simple_save_button_start			100
 #define intro_simple_save_button_erase			200
@@ -81,25 +82,13 @@ bitmap_type					intro_bitmap;
 
 void intro_show_hide_for_mode(void)
 {
-	int							n;
-	iface_chooser_frame_type	frame;
-	
-		// possible frame
-		
-	frame.x=(iface.scale_x>>1)-160;
-	frame.y=(iface.scale_y>>1)-25;
-	frame.wid=320;
-	frame.high=100;
-	sprintf(frame.title,"Erase Saved Game %d?",(intro_simple_save_idx+1));
-	memmove(&frame.background_col,&iface.color.dialog_background,sizeof(d3col));
+	int					n;
+	char				str[256];
 
 		// new game
 		
 	if (intro_mode==intro_mode_new_game) {
 	
-		frame.on=FALSE;
-		gui_set_frame(&frame);
-
 		element_hide(intro_button_game_new_id,TRUE);
 		element_hide(intro_button_game_load_id,TRUE);
 		element_hide(intro_button_game_setup_id,TRUE);
@@ -115,6 +104,7 @@ void intro_show_hide_for_mode(void)
 			element_hide((intro_simple_save_text_desc+n),TRUE);
 		}
 		
+		element_hide(intro_simple_save_erase_frame,TRUE);
 		element_hide(intro_simple_save_erase_ok,TRUE);
 		element_hide(intro_simple_save_erase_cancel,TRUE);
 		
@@ -130,9 +120,6 @@ void intro_show_hide_for_mode(void)
 		
 	if (intro_mode==intro_mode_simple_save_erase) {
 	
-		frame.on=TRUE;
-		gui_set_frame(&frame);
-
 		element_enable(intro_button_game_new_id,FALSE);
 		element_enable(intro_button_game_load_id,FALSE);
 		element_enable(intro_button_game_setup_id,FALSE);
@@ -147,7 +134,11 @@ void intro_show_hide_for_mode(void)
 			element_enable((intro_simple_save_button_erase+n),FALSE);
 			element_enable((intro_simple_save_text_desc+n),FALSE);
 		}
+
+		sprintf(str,"Erase Saved Game %d?",(intro_simple_save_idx+1));
+		element_text_change(intro_simple_save_erase_frame,str);
 		
+		element_hide(intro_simple_save_erase_frame,FALSE);
 		element_hide(intro_simple_save_erase_ok,FALSE);
 		element_hide(intro_simple_save_erase_cancel,FALSE);
 		
@@ -161,9 +152,6 @@ void intro_show_hide_for_mode(void)
 	
 		// regular
 		
-	frame.on=FALSE;
-	gui_set_frame(&frame);
-
 	element_hide(intro_button_game_new_id,FALSE);
 	element_hide(intro_button_game_load_id,FALSE);
 	element_hide(intro_button_game_setup_id,FALSE);
@@ -204,6 +192,7 @@ void intro_show_hide_for_mode(void)
 	element_hide(intro_button_game_new_hard_id,TRUE);
 	element_hide(intro_button_game_new_cancel_id,TRUE);
 	
+	element_hide(intro_simple_save_erase_frame,TRUE);
 	element_hide(intro_simple_save_erase_ok,TRUE);
 	element_hide(intro_simple_save_erase_cancel,TRUE);
 }
@@ -280,11 +269,12 @@ void intro_open(void)
 	
 		// simple save options
 		
-	x=iface.scale_x>>1;
-	y=iface.scale_y>>1;
-		
-	element_button_text_add("Erase",intro_simple_save_erase_ok,(x-130),y,100,50,element_pos_left,element_pos_top);
-	element_button_text_add("Cancel",intro_simple_save_erase_cancel,(x+130),y,100,50,element_pos_right,element_pos_top);
+	x=iface.intro.confirm.x;
+	y=iface.intro.confirm.y;
+	
+	element_frame_add("",intro_simple_save_erase_frame,x,y,320,100);
+	element_button_text_add("Erase",intro_simple_save_erase_ok,(x+20),(y+25),100,50,element_pos_left,element_pos_top);
+	element_button_text_add("Cancel",intro_simple_save_erase_cancel,(x+290),(y+25),100,50,element_pos_right,element_pos_top);
 	
 		// read in simple saves
 		

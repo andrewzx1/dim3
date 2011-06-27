@@ -52,6 +52,7 @@ and can be sold or given away.
 #define kPrefPropertyMeshSelColor			16
 #define kPrefPropertyPolySelColor			17
 #define kPrefPropertyPolyCullColor			18
+#define kPrefPropertyImportNormalFactor		19
 
 extern map_type					map;
 extern editor_state_type		state;
@@ -97,6 +98,9 @@ void property_palette_fill_editor_preference(void)
 	list_palette_add_pick_color(&property_palette,kPrefPropertyMeshSelColor,"Mesh Select",&setup.col.mesh_sel,FALSE);
 	list_palette_add_pick_color(&property_palette,kPrefPropertyPolySelColor,"Polygon Select",&setup.col.poly_sel,FALSE);
 	list_palette_add_pick_color(&property_palette,kPrefPropertyPolyCullColor,"Culled Polygons",&setup.col.poly_cull,FALSE);
+	
+	list_palette_add_header(&property_palette,0,"Editor OBJ Import");
+	list_palette_add_vector(&property_palette,kPrefPropertyImportNormalFactor,"Normal Factor",&setup.import_normal_factor,FALSE);
 }
 
 /* =======================================================
@@ -183,6 +187,10 @@ void property_palette_click_editor_preference(int id)
 
 		case kPrefPropertyPolyCullColor:
 			os_pick_color(&setup.col.poly_cull);
+			break;
+		
+		case kPrefPropertyImportNormalFactor:
+			dialog_property_chord_run(list_chord_value_vector,(void*)&setup.import_normal_factor);
 			break;
 
 	}

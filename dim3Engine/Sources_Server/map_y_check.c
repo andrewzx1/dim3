@@ -308,7 +308,7 @@ int pin_upward_movement_obj(obj_type *obj,int my)
 	}
 	
 	if (cy==-1) return(my);
-		
+
 	return(cy-(obj->pnt.y-y_sz));
 }
 

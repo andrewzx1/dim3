@@ -75,29 +75,32 @@ void model_move_single_tangent_space_vector(model_draw_bone_type *draw_bones,mod
 	v->z=minz+((majz-minz)*bone_factor);
 }
 
-void model_move_single_tangent_space(model_mesh_type *mesh,model_draw_bone_type *draw_bones,model_trig_type *trig,int idx,tangent_space_type *space,bool normal_only)
+inline void model_move_single_tangent_space(model_mesh_type *mesh,model_draw_bone_type *draw_bones,model_trig_type *trig,int idx,tangent_space_type *space,bool normal_only)
 {
 	model_vertex_type		*vertex;
 
 		// get vertex
 
 	vertex=&mesh->vertexes[trig->v[idx]];
-
-		// move the space
-
+	
+		// default space
+		
 	if (!normal_only) {
 		space->tangent.x=trig->tangent_space[idx].tangent.x;
 		space->tangent.y=trig->tangent_space[idx].tangent.y;
 		space->tangent.z=trig->tangent_space[idx].tangent.z;
-		
-		if (vertex->major_bone_idx!=-1) model_move_single_tangent_space_vector(draw_bones,vertex,&space->tangent);
 	}
-
+	
 	space->normal.x=trig->tangent_space[idx].normal.x;
 	space->normal.y=trig->tangent_space[idx].normal.y;
 	space->normal.z=trig->tangent_space[idx].normal.z;
+
+		// bone rotations
 		
-	if (vertex->major_bone_idx!=-1) model_move_single_tangent_space_vector(draw_bones,vertex,&space->normal);
+	if (vertex->major_bone_idx!=-1) {
+		if (!normal_only) model_move_single_tangent_space_vector(draw_bones,vertex,&space->tangent);
+		model_move_single_tangent_space_vector(draw_bones,vertex,&space->normal);
+	}
 }
 
 /* =======================================================

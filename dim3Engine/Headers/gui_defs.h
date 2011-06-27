@@ -53,6 +53,7 @@ and can be sold or given away.
 #define element_type_text_box					11
 #define element_type_info_field					12
 #define element_type_model						13
+#define element_type_frame						14
 
 //
 // GUI position mode

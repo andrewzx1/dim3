@@ -202,7 +202,7 @@ void audio_callback(void *userdata,Uint8 *stream,int len)
 			data=(int)(*(audio_music_data+(pos+1)));
 			right_channel+=((data*audio_global_music_volume)>>10);
 
-			audio_music_stream_pos+=audio_music_freq_factor;		// in sterio
+			audio_music_stream_pos+=audio_music_freq_factor;		// in stereo
 
 				// time to loop?
 

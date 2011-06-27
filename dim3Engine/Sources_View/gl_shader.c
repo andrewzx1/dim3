@@ -760,7 +760,7 @@ void gl_shader_set_texture(shader_type *shader,int core_shader_group,texture_typ
 
 		// light map
 
-	if (core_shader_group==core_shader_group_map) {
+	if ((core_shader_group==core_shader_group_map) || (core_shader_group==core_shader_group_liquid)) {
 		if (lmap_txt_idx==-1) {
 			gl_id=lmap_black_bitmap.gl_id;
 		}

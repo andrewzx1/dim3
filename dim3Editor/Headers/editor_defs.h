@@ -387,6 +387,7 @@ typedef struct		{
 												flip_horz_turn,flip_vert_turn,
 												flip_forward_movement;
 						char					engine_name[256];
+						d3vct					import_normal_factor;
 						editor_setup_col_type	col;
 					} editor_setup_type;
 

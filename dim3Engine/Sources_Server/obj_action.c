@@ -684,7 +684,7 @@ bool object_enter_vehicle(obj_type *obj,int vehicle_idx,char *err_str)
 
 bool object_exit_vehicle(obj_type *vehicle_obj,bool ignore_errors,char *err_str)
 {
-	int						x,z,y;
+	int						x,z,y,radius;
 	bool					empty;
 	d3pnt					spt,ept,hpt;
 	obj_type				*orig_obj;
@@ -744,7 +744,8 @@ bool object_exit_vehicle(obj_type *vehicle_obj,bool ignore_errors,char *err_str)
 		ept.y=orig_obj->pnt.y;
 		ept.z=orig_obj->pnt.z;
 
-		ray_push_to_end(&ept,&spt,-orig_obj->size.radius);
+		radius=object_get_radius(orig_obj);
+		ray_push_to_end(&ept,&spt,-radius);
 		
 		contact.obj.on=TRUE;
 		contact.proj.on=FALSE;

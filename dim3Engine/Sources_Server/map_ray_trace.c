@@ -650,7 +650,7 @@ bool ray_trace_projectile_bound_check(proj_type *proj,d3pnt *min,d3pnt *max,ray_
 	x=proj->pnt.x;
 	z=proj->pnt.z;
 
-	radius=proj->size.radius>>1;
+	radius=projectile_get_radius(proj);
 	
 	if (max->x<(x-radius)) return(FALSE);
 	if (min->x>(x+radius)) return(FALSE);

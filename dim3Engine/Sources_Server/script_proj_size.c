@@ -131,10 +131,7 @@ bool js_proj_size_set_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSVal
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach(j_obj);
-	if (proj_setup!=NULL) {
-		proj_setup->size.x=script_value_to_int(cx,vp);
-		proj_setup_set_radius(proj_setup);
-	}
+	if (proj_setup!=NULL) proj_setup->size.x=script_value_to_int(cx,vp);
 
 	return(TRUE);
 }
@@ -154,10 +151,7 @@ bool js_proj_size_set_z(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSVal
 	proj_setup_type		*proj_setup;
 
 	proj_setup=proj_setup_get_attach(j_obj);
-	if (proj_setup!=NULL) {
-		proj_setup->size.z=script_value_to_int(cx,vp);
-		proj_setup_set_radius(proj_setup);
-	}
+	if (proj_setup!=NULL) proj_setup->size.z=script_value_to_int(cx,vp);
 
 	return(TRUE);
 }

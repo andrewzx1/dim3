@@ -831,6 +831,32 @@ void element_model_add(char *name,char *animate,float resize,d3pnt *offset,d3ang
 	SDL_mutexV(element_thread_lock);
 }
 
+void element_frame_add(char *title,int id,int x,int y,int wid,int high)
+{
+	element_type	*element;
+
+	SDL_mutexP(element_thread_lock);
+
+	element=&elements[nelement];
+	nelement++;
+	
+	element->id=id;
+	element->type=element_type_frame;
+	
+	element->x=x;
+	element->y=y;
+	element->wid=wid;
+	element->high=high;
+	
+	strcpy(element->str,title);
+	
+	element->selectable=FALSE;
+	element->enabled=FALSE;
+	element->hidden=FALSE;
+
+	SDL_mutexV(element_thread_lock);
+}
+
 /* =======================================================
 
       Change Elements
@@ -904,16 +930,11 @@ void element_get_box(element_type *element,int *lft,int *rgt,int *top,int *bot)
 	switch (element->type) {
 	
 		case element_type_button:
-			*lft=element->x;
-			*rgt=(*lft)+element->wid;
-			*top=element->y;
-			*bot=(*top)+element->high;
-			return;
-			
 		case element_type_bitmap:
 		case element_type_table:
 		case element_type_tab:
 		case element_type_text_box:
+		case element_type_frame:
 			*lft=element->x;
 			*rgt=(*lft)+element->wid;
 			*top=element->y;
@@ -2871,6 +2892,64 @@ void element_draw_model(element_type *element)
 
 /* =======================================================
 
+      Frame Elements
+      
+======================================================= */
+
+void element_draw_frame(element_type *element)
+{
+	int			lft,rgt,top,bot,high,head_top,y;
+	bool		is_header;
+	d3col		col,col2;
+	
+		// header?
+		
+	is_header=element->str[0]!=0x0;
+	
+		// setup draw
+
+	lft=element->x;
+	rgt=lft+element->wid;
+	top=element->y;
+	bot=top+element->high;
+	
+		// inside frame
+
+	view_draw_next_vertex_object_2D_color_quad(&iface.color.dialog_background,1.0f,lft,rgt,top,bot);
+	
+		// header
+		
+	if (is_header) {
+		high=gl_text_get_char_height(iface.font.text_size_small);
+		head_top=top-(high+(high/2));
+		
+		y=(head_top+top)>>1;
+
+		col.r=col.g=col.b=0.75f;
+		col2.r=col2.g=col2.b=0.3f;
+
+		view_draw_next_vertex_object_2D_color_poly(lft,head_top,&col,rgt,head_top,&col,rgt,y,&col2,lft,y,&col2,1.0f);
+		view_draw_next_vertex_object_2D_color_poly(lft,y,&col2,rgt,y,&col2,rgt,top,&col,lft,top,&col,1.0f);
+
+		col.r=col.g=col.b=1.0f;
+		
+		gl_text_start(font_interface_index,iface.font.text_size_medium);
+		gl_text_draw(((lft+rgt)/2),(y-2),element->str,tx_center,TRUE,&col,1.0f);
+		gl_text_end();
+	}
+	
+		// outline
+
+	glLineWidth(2.0f);
+	view_draw_next_vertex_object_2D_line_quad(&iface.color.dialog_outline,1.0f,lft,rgt,top,bot);
+	
+	if (is_header) view_draw_next_vertex_object_2D_line_quad(&iface.color.dialog_outline,1.0f,lft,rgt,head_top,top);
+	
+	glLineWidth(1.0f);
+}
+
+/* =======================================================
+
       Draw Elements
       
 ======================================================= */
@@ -2980,6 +3059,9 @@ void element_draw_lock(bool cursor_hilite)
 				break;
 			case element_type_model:
 				element_draw_model(element);
+				break;
+			case element_type_frame:
+				element_draw_frame(element);
 				break;
 				
 		}

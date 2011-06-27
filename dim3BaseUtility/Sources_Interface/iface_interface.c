@@ -473,7 +473,7 @@ void iface_read_settings_interface(iface_type *iface)
 	int							n,interface_head_tag,scale_tag,
 								bitmap_head_tag,bitmap_tag,text_head_tag,text_tag,bar_head_tag,bar_tag,
 								radar_head_tag,menu_head_tag,menu_tag,
-								intro_head_tag,intro_model_head_tag,intro_model_tag,
+								intro_head_tag,intro_model_head_tag,intro_model_tag,intro_confirm_tag,
 								color_tag,font_tag,progress_tag,chat_tag,fade_tag,button_tag,sound_tag,
 								proj_tag,debug_tag;
 	char						path[1024],name[256];
@@ -680,6 +680,15 @@ void iface_read_settings_interface(iface_type *iface)
 				iface_read_settings_intro_button(xml_findfirstchild(name,button_tag),&iface->intro.simple_save[n].button_erase,NULL);
 			}
 		}
+		
+			// confirm
+			
+		intro_confirm_tag=xml_findfirstchild("Confirm",intro_head_tag);
+		if (intro_confirm_tag!=-1) {
+			iface->intro.confirm.x=xml_get_attribute_int(intro_confirm_tag,"x");
+			iface->intro.confirm.y=xml_get_attribute_int(intro_confirm_tag,"y");
+		}
+		
 	}
 	
 		// sound
@@ -1178,6 +1187,11 @@ bool iface_write_settings_interface(iface_type *iface)
 	}
 
 	xml_add_tagclose("Buttons");
+	
+	xml_add_tagstart("Confirm");
+	xml_add_attribute_int("x",iface->intro.confirm.x);
+	xml_add_attribute_int("y",iface->intro.confirm.y);
+	xml_add_tagend(TRUE);
 
 	xml_add_tagclose("Intro");
 

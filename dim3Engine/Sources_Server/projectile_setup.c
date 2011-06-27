@@ -198,22 +198,6 @@ void proj_setup_dispose(weapon_type *weap,int idx)
 
 /* =======================================================
 
-      Projectile Radius
-      
-======================================================= */
-
-void proj_setup_set_radius(proj_setup_type *proj_setup)
-{
-	int			radius;
-	
-	radius=proj_setup->size.x;
-	if (proj_setup->size.z>radius) radius=proj_setup->size.z;
-	
-	proj_setup->size.radius=radius>>1;
-}
-
-/* =======================================================
-
       Attaching Mark
       
 ======================================================= */
