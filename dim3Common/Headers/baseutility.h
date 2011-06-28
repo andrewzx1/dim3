@@ -847,7 +847,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						bool							game_video,game_audio,game_mouse,
+						bool							game_video,game_audio,game_control,
 														game_action,game_debug,
 														net_player,net_host;							
 					} iface_setup_type;

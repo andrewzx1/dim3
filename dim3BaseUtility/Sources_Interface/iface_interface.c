@@ -700,7 +700,7 @@ void iface_read_settings_interface(iface_type *iface)
 	if (setup_tag!=-1) {
 		iface->setup.game_video=xml_get_attribute_boolean(setup_tag,"game_video");
 		iface->setup.game_audio=xml_get_attribute_boolean(setup_tag,"game_audio");
-		iface->setup.game_mouse=xml_get_attribute_boolean(setup_tag,"game_mouse");
+		iface->setup.game_control=xml_get_attribute_boolean(setup_tag,"game_control");
 		iface->setup.game_action=xml_get_attribute_boolean(setup_tag,"game_action");
 		iface->setup.game_debug=xml_get_attribute_boolean(setup_tag,"game_debug");
 		iface->setup.net_player=xml_get_attribute_boolean(setup_tag,"net_player");
@@ -1212,7 +1212,7 @@ bool iface_write_settings_interface(iface_type *iface)
 	xml_add_tagstart("Setup");
 	xml_add_attribute_boolean("game_video",iface->setup.game_video);
 	xml_add_attribute_boolean("game_audio",iface->setup.game_audio);
-	xml_add_attribute_boolean("game_mouse",iface->setup.game_mouse);
+	xml_add_attribute_boolean("game_control",iface->setup.game_control);
 	xml_add_attribute_boolean("game_action",iface->setup.game_action);
 	xml_add_attribute_boolean("game_debug",iface->setup.game_debug);
 	xml_add_attribute_boolean("net_player",iface->setup.net_player);

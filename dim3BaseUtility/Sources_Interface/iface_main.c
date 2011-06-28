@@ -207,7 +207,7 @@ void iface_default_settings(iface_type *iface)
 
 	iface->setup.game_video=TRUE;
 	iface->setup.game_audio=TRUE;
-	iface->setup.game_mouse=TRUE;
+	iface->setup.game_control=TRUE;
 	iface->setup.game_action=TRUE;
 	iface->setup.game_debug=FALSE;
 	iface->setup.net_player=TRUE;

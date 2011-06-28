@@ -35,7 +35,7 @@ and can be sold or given away.
 
 #define kSetupPropertyGameVideo				0
 #define kSetupPropertyGameAudio				1
-#define kSetupPropertyGameMouse				2
+#define kSetupPropertyGameControl			2
 #define kSetupPropertyGameAction			3
 #define kSetupPropertyGameDebug				4
 
@@ -59,7 +59,7 @@ void property_palette_fill_setup(void)
 	list_palette_add_header(&property_palette,0,"Game Setup");
 	list_palette_add_checkbox(&property_palette,kSetupPropertyGameVideo,"Video Tab",iface.setup.game_video,FALSE);
 	list_palette_add_checkbox(&property_palette,kSetupPropertyGameAudio,"Audio Tab",iface.setup.game_audio,FALSE);
-	list_palette_add_checkbox(&property_palette,kSetupPropertyGameMouse,"Mouse Tab",iface.setup.game_mouse,FALSE);
+	list_palette_add_checkbox(&property_palette,kSetupPropertyGameControl,"Control Tab",iface.setup.game_control,FALSE);
 	list_palette_add_checkbox(&property_palette,kSetupPropertyGameAction,"Action Tab",iface.setup.game_action,FALSE);
 	list_palette_add_checkbox(&property_palette,kSetupPropertyGameDebug,"Debug Tab",iface.setup.game_debug,FALSE);
 
@@ -90,8 +90,8 @@ void property_palette_click_setup(int id)
 			iface.setup.game_audio=!iface.setup.game_audio;
 			break;
 
-		case kSetupPropertyGameMouse:
-			iface.setup.game_mouse=!iface.setup.game_mouse;
+		case kSetupPropertyGameControl:
+			iface.setup.game_control=!iface.setup.game_control;
 			break;
 
 		case kSetupPropertyGameAction:
