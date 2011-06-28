@@ -2523,7 +2523,7 @@ void element_draw_tab(element_type *element,int sel_id,int x,int y)
 	ty=high+margin;
 	by=iface.scale_y-margin;
 	
-	view_draw_next_vertex_object_2D_color_quad(&iface.color.dialog_background,1.0f,lx,rx,by,ty);
+	view_draw_next_vertex_object_2D_color_quad(&iface.color.tab_background,1.0f,lx,rx,by,ty);
 	
 		// outside line
 		
@@ -2537,7 +2537,7 @@ void element_draw_tab(element_type *element,int sel_id,int x,int y)
 	if (element->value!=0) {
 		view_draw_next_vertex_object_2D_line(&iface.color.tab_outline,1.0f,lx,ty,kx,ty);
 	}
-	if (element->value!=(element->setup.tab.ntab-1)) {
+	if ((kx+xadd+x_overlap)<rx) {
 		view_draw_next_vertex_object_2D_line(&iface.color.tab_outline,1.0f,(kx+xadd+x_overlap),ty,rx,ty);
 	}
 

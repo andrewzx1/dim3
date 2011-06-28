@@ -328,7 +328,7 @@ void setup_game_create_pane(void)
 		setup_tab_index[ntab]=setup_pane_audio;
 		ntab++;
 	}
-	if (iface.setup.game_mouse) {
+	if (iface.setup.game_control) {
 		strcpy(setup_tab_list[ntab],"Control");
 		setup_tab_index[ntab]=setup_pane_control;
 		ntab++;

@@ -715,7 +715,7 @@ void object_move_xz(obj_type *obj,d3pnt *motion)
 		obj->pnt.z+=motion->z;
 		return;
 	}
-
+	
 		// save hit contact and move
 		// original object after moving
 		// pushed object

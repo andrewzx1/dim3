@@ -62,6 +62,7 @@ bool collide_contact_is_wall_hit(poly_pointer_type *hit_poly)
 inline bool line_line_intersect(d3pnt *p0,d3pnt *p1,d3pnt *p2,d3pnt *p3,d3pnt *hit_pnt)
 {
 	float			fx0,fy0,fx1,fy1,fx2,fy2,fx3,fy3,
+					denom,
 					ax,bx,dx,ay,by,dy,r,s;
 
 	fx0=(float)p0->x;
@@ -81,11 +82,16 @@ inline bool line_line_intersect(d3pnt *p0,d3pnt *p1,d3pnt *p2,d3pnt *p3,d3pnt *h
 	by=fy1-fy0;
 	dy=fy3-fy2;
 	
-	r=((ay*dx)-(ax*dy))/((bx*dy)-(by*dx));
-	if ((r<0) || (r>1)) return(FALSE);
+	denom=(bx*dy)-(by*dx);
+	if (denom==0.0f) return(FALSE);
 	
-	s=((ay*bx)-(ax*by))/((bx*dy)-(by*dx));
-	if ((s<0) || (s>1)) return(FALSE);
+	r=((ay*dx)-(ax*dy))/denom;
+	if ((r<0.0f) || (r>1.0f)) return(FALSE);
+	
+	s=((ay*bx)-(ax*by))/denom;
+	if ((s<0.0f) || (s>1.0f)) return(FALSE);
+	
+	if ((r==0.0f) && (s==0.0f)) return(FALSE);
 	
 	hit_pnt->x=(int)(fx0+(r*bx));
 	hit_pnt->z=(int)(fy0+(r*by));
@@ -98,7 +104,7 @@ int circle_line_intersect(d3pnt *p1,d3pnt *p2,d3pnt *circle_pnt,int radius,d3pnt
 	int				n,xadd,zadd;
 	double			rad,d_radius,dist,cur_dist,dx,dz;
 	d3pnt			cp2,temp_hit_pnt;
-
+	
 		// ray cast like spokes from the circle
 		// normal math says check the perpendicular,
 		// but that allows parts of the circle to
