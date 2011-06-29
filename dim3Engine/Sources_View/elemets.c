@@ -1012,30 +1012,27 @@ void element_draw_button_text(element_type *element,int sel_id)
 {
 	int				x,y,lft,rgt,top,bot;
 	float			alpha;
-	d3col			txt_col,outline_col;
+	d3col			outline_col;
 	
 	if (element->enabled) {
 		alpha=1.0f;
 		if (element->id==sel_id) {
-			memmove(&outline_col,&iface.color.control_mouse_over,sizeof(d3col));
-			memmove(&txt_col,&iface.color.control_mouse_over,sizeof(d3col));
+			memmove(&outline_col,&iface.color.control.mouse_over,sizeof(d3col));
 		}
 		else {
-			memmove(&outline_col,&iface.color.button_outline,sizeof(d3col));
-			memmove(&txt_col,&iface.color.button_text,sizeof(d3col));
+			memmove(&outline_col,&iface.color.button.outline,sizeof(d3col));
 		}
 	}
 	else {
 		alpha=0.3f;
-		memmove(&outline_col,&iface.color.button_outline,sizeof(d3col));
-		memmove(&txt_col,&iface.color.button_text,sizeof(d3col));
+		memmove(&outline_col,&iface.color.button.outline,sizeof(d3col));
 	}
 	
 	element_get_box(element,&lft,&rgt,&top,&bot);
 	
 		// button background and outline
 
-	view_draw_next_vertex_object_2D_color_quad(&iface.color.button_fill,alpha,lft,rgt,top,bot);
+	view_draw_next_vertex_object_2D_color_quad(&iface.color.button.fill,alpha,lft,rgt,top,bot);
 	view_draw_next_vertex_object_2D_line_quad(&outline_col,alpha,lft,rgt,top,bot);
 	
 		// button text
@@ -1044,7 +1041,7 @@ void element_draw_button_text(element_type *element,int sel_id)
 	y=((top+bot)>>1)-(iface.font.text_size_small/10);
 
 	gl_text_start(font_interface_index,iface.font.text_size_small);
-	gl_text_draw(x,y,element->setup.button.name,tx_center,TRUE,&txt_col,alpha);
+	gl_text_draw(x,y,element->setup.button.name,tx_center,TRUE,&iface.color.button.text,alpha);
 	gl_text_end();
 }
 
@@ -1105,7 +1102,7 @@ void element_draw_bitmap(element_type *element)
 		// the frame
 		
 	if (element->framed) {
-		view_draw_next_vertex_object_2D_line_quad(&iface.color.control_outline,1.0f,lft,rgt,top,bot);
+		view_draw_next_vertex_object_2D_line_quad(&iface.color.control.outline,1.0f,lft,rgt,top,bot);
 	}
 }
 
@@ -1129,14 +1126,14 @@ void element_draw_text(element_type *element,int sel_id)
 	}
 	else {
 		if (!element->enabled) {
-			memmove(&col,&iface.color.control_disabled,sizeof(d3col));
+			memmove(&col,&iface.color.control.disabled,sizeof(d3col));
 		}
 		else {
 			if ((element->id!=-1) && (element->id==sel_id)) {
-				memmove(&col,&iface.color.control_mouse_over,sizeof(d3col));
+				memmove(&col,&iface.color.control.mouse_over,sizeof(d3col));
 			}
 			else {
-				memmove(&col,&iface.color.control_label,sizeof(d3col));
+				memmove(&col,&iface.color.control.label,sizeof(d3col));
 			}
 		}
 	}
@@ -1215,8 +1212,8 @@ void element_draw_text_field(element_type *element,int sel_id)
 	ky=y-(element->high>>1);
 		
 	gl_text_start(font_interface_index,iface.font.text_size_small);
-	gl_text_draw((x-5),ky,element->str,tx_right,TRUE,&iface.color.control_label,1.0f);
-	gl_text_draw(x,(ky-1),":",tx_center,TRUE,&iface.color.control_label,1.0f);
+	gl_text_draw((x-5),ky,element->str,tx_right,TRUE,&iface.color.control.label,1.0f);
+	gl_text_draw(x,(ky-1),":",tx_center,TRUE,&iface.color.control.label,1.0f);
 	gl_text_end();
 		
 		// control box
@@ -1236,10 +1233,10 @@ void element_draw_text_field(element_type *element,int sel_id)
 		// outline
 
 	if ((element->id==sel_id) && (element->enabled)) {
-		view_draw_next_vertex_object_2D_line_quad(&iface.color.control_mouse_over,alpha,lft,rgt,top,bot);
+		view_draw_next_vertex_object_2D_line_quad(&iface.color.control.mouse_over,alpha,lft,rgt,top,bot);
 	}
 	else {
-		view_draw_next_vertex_object_2D_line_quad(&iface.color.control_outline,alpha,lft,rgt,top,bot);
+		view_draw_next_vertex_object_2D_line_quad(&iface.color.control.outline,alpha,lft,rgt,top,bot);
 	}
 
 		// control text
@@ -1248,14 +1245,14 @@ void element_draw_text_field(element_type *element,int sel_id)
 		
 	if (element->enabled) {
 		if (element->id==element_open_text_field_id) {
-			gl_text_draw((x+15),(ky-2),element->value_str,tx_left,TRUE,&iface.color.control_mouse_over,1.0f);
+			gl_text_draw((x+15),(ky-2),element->value_str,tx_left,TRUE,&iface.color.control.mouse_over,1.0f);
 		}
 		else {
-			gl_text_draw((x+15),(ky-2),element->value_str,tx_left,TRUE,&iface.color.control_text,1.0f);
+			gl_text_draw((x+15),(ky-2),element->value_str,tx_left,TRUE,&iface.color.control.text,1.0f);
 		}
 	}
 	else {
-		gl_text_draw((x+15),(ky-2),element->value_str,tx_left,TRUE,&iface.color.control_disabled,1.0f);
+		gl_text_draw((x+15),(ky-2),element->value_str,tx_left,TRUE,&iface.color.control.disabled,1.0f);
 	}
 	
 	gl_text_end();
@@ -1272,7 +1269,7 @@ void element_draw_text_field(element_type *element,int sel_id)
 	lft+=(wid+8);
 	rgt=lft+((bot-top)>>1);
 
-	view_draw_next_vertex_object_2D_color_quad(&iface.color.control_mouse_over,1.0f,lft,rgt,top,bot);
+	view_draw_next_vertex_object_2D_color_quad(&iface.color.control.mouse_over,1.0f,lft,rgt,top,bot);
 }
 
 /* =======================================================
@@ -1319,8 +1316,8 @@ void element_draw_number(element_type *element,int sel_id)
 	ky=y-(element->high>>1);
 		
 	gl_text_start(font_interface_index,iface.font.text_size_small);
-	gl_text_draw((x-5),ky,element->str,tx_right,TRUE,&iface.color.control_label,1.0f);
-	gl_text_draw(x,(ky-1),":",tx_center,TRUE,&iface.color.control_label,1.0f);
+	gl_text_draw((x-5),ky,element->str,tx_right,TRUE,&iface.color.control.label,1.0f);
+	gl_text_draw(x,(ky-1),":",tx_center,TRUE,&iface.color.control.label,1.0f);
 	gl_text_end();
 		
 		// control box
@@ -1337,7 +1334,7 @@ void element_draw_number(element_type *element,int sel_id)
 
 		// background
 
-	memmove(&gradient_start,&iface.color.control_fill,sizeof(d3col));
+	memmove(&gradient_start,&iface.color.control.fill,sizeof(d3col));
 	gradient_end.r=gradient_start.r*element_gradient_factor;
 	gradient_end.g=gradient_start.g*element_gradient_factor;
 	gradient_end.b=gradient_start.b*element_gradient_factor;
@@ -1349,14 +1346,14 @@ void element_draw_number(element_type *element,int sel_id)
 		// outline
 
 	if ((element->id==sel_id) && (element->enabled)) {
-		view_draw_next_vertex_object_2D_line_quad(&iface.color.control_mouse_over,alpha,lft,lft_mid,top,bot);
-		view_draw_next_vertex_object_2D_line_quad(&iface.color.control_mouse_over,alpha,lft_mid,rgt_mid,top,bot);
-		view_draw_next_vertex_object_2D_line_quad(&iface.color.control_mouse_over,alpha,rgt_mid,rgt,top,bot);
+		view_draw_next_vertex_object_2D_line_quad(&iface.color.control.mouse_over,alpha,lft,lft_mid,top,bot);
+		view_draw_next_vertex_object_2D_line_quad(&iface.color.control.mouse_over,alpha,lft_mid,rgt_mid,top,bot);
+		view_draw_next_vertex_object_2D_line_quad(&iface.color.control.mouse_over,alpha,rgt_mid,rgt,top,bot);
 	}
 	else {
-		view_draw_next_vertex_object_2D_line_quad(&iface.color.control_outline,alpha,lft,lft_mid,top,bot);
-		view_draw_next_vertex_object_2D_line_quad(&iface.color.control_outline,alpha,lft_mid,rgt_mid,top,bot);
-		view_draw_next_vertex_object_2D_line_quad(&iface.color.control_outline,alpha,rgt_mid,rgt,top,bot);
+		view_draw_next_vertex_object_2D_line_quad(&iface.color.control.outline,alpha,lft,lft_mid,top,bot);
+		view_draw_next_vertex_object_2D_line_quad(&iface.color.control.outline,alpha,lft_mid,rgt_mid,top,bot);
+		view_draw_next_vertex_object_2D_line_quad(&iface.color.control.outline,alpha,rgt_mid,rgt,top,bot);
 	}
 
 		// control text
@@ -1369,14 +1366,14 @@ void element_draw_number(element_type *element,int sel_id)
 		
 	if (element->enabled) {
 		if (element->id==element_open_text_field_id) {
-			gl_text_draw(x,(ky-1),txt,tx_center,TRUE,&iface.color.control_mouse_over,1.0f);
+			gl_text_draw(x,(ky-1),txt,tx_center,TRUE,&iface.color.control.mouse_over,1.0f);
 		}
 		else {
-			gl_text_draw(x,(ky-1),txt,tx_center,TRUE,&iface.color.control_text,1.0f);
+			gl_text_draw(x,(ky-1),txt,tx_center,TRUE,&iface.color.control.text,1.0f);
 		}
 	}
 	else {
-		gl_text_draw(x,(ky-1),txt,tx_center,TRUE,&iface.color.control_disabled,1.0f);
+		gl_text_draw(x,(ky-1),txt,tx_center,TRUE,&iface.color.control.disabled,1.0f);
 	}
 	
 	gl_text_end();
@@ -1391,14 +1388,14 @@ void element_draw_number(element_type *element,int sel_id)
 	col.r=col.g=col.b=0.0f;
 
 	alpha=(element->value>element->setup.number.min)?1.0f:0.1f;
-	view_draw_next_vertex_object_2D_color_trig(&iface.color.control_hilite,alpha,lft,lft_mid,top,bot,3);
+	view_draw_next_vertex_object_2D_color_trig(&iface.color.control.hilite,alpha,lft,lft_mid,top,bot,3);
 	view_draw_next_vertex_object_2D_line_trig(&col,alpha,lft,lft_mid,top,bot,3);
 
 	rgt_mid+=4;
 	rgt-=4;
 
 	alpha=(element->value<element->setup.number.max)?1.0f:0.1f;
-	view_draw_next_vertex_object_2D_color_trig(&iface.color.control_hilite,alpha,rgt_mid,rgt,top,bot,1);
+	view_draw_next_vertex_object_2D_color_trig(&iface.color.control.hilite,alpha,rgt_mid,rgt,top,bot,1);
 	view_draw_next_vertex_object_2D_line_trig(&col,alpha,rgt_mid,rgt,top,bot,1);
 }
 
@@ -1430,7 +1427,7 @@ void element_draw_checkbox_control(int x,int y,int draw_sz,bool checked,bool ena
 
 		// background
 		
-	memmove(&gradient_start,&iface.color.control_fill,sizeof(d3col));
+	memmove(&gradient_start,&iface.color.control.fill,sizeof(d3col));
 	gradient_end.r=gradient_start.r*element_gradient_factor;
 	gradient_end.g=gradient_start.g*element_gradient_factor;
 	gradient_end.b=gradient_start.b*element_gradient_factor;
@@ -1440,15 +1437,15 @@ void element_draw_checkbox_control(int x,int y,int draw_sz,bool checked,bool ena
 		// check
 
 	if (checked) {
-		col.r=iface.color.control_hilite.r*element_gradient_factor;
-		col.g=iface.color.control_hilite.g*element_gradient_factor;
-		col.b=iface.color.control_hilite.b*element_gradient_factor;
+		col.r=iface.color.control.hilite.r*element_gradient_factor;
+		col.g=iface.color.control.hilite.g*element_gradient_factor;
+		col.b=iface.color.control.hilite.b*element_gradient_factor;
 
 		f=element_gradient_factor*1.5f;
 
-		col2.r=iface.color.control_hilite.r*f;
-		col2.g=iface.color.control_hilite.g*f;
-		col2.b=iface.color.control_hilite.b*f;
+		col2.r=iface.color.control.hilite.r*f;
+		col2.g=iface.color.control.hilite.g*f;
+		col2.b=iface.color.control.hilite.b*f;
 
 		px[0]=lft;
 		py[0]=bot-((bot-top)/3);
@@ -1459,7 +1456,7 @@ void element_draw_checkbox_control(int x,int y,int draw_sz,bool checked,bool ena
 		px[3]=lft+((rgt-lft)/3);
 		py[3]=bot;
 
-		view_draw_next_vertex_object_2D_color_poly(px[0],py[0],&col,px[1],py[1],&col,px[2],py[2],&col2,px[3],py[3],&iface.color.control_hilite,alpha);
+		view_draw_next_vertex_object_2D_color_poly(px[0],py[0],&col,px[1],py[1],&col,px[2],py[2],&col2,px[3],py[3],&iface.color.control.hilite,alpha);
 
 		px[0]=lft+((rgt-lft)/3);
 		py[0]=bot-((bot-top)/3);
@@ -1470,16 +1467,16 @@ void element_draw_checkbox_control(int x,int y,int draw_sz,bool checked,bool ena
 		px[3]=lft+((rgt-lft)/3);
 		py[3]=bot;
 
-		view_draw_next_vertex_object_2D_color_poly(px[0],py[0],&col2,px[1],py[1],&col,px[2],py[2],&iface.color.control_hilite,px[3],py[3],&iface.color.control_hilite,alpha);
+		view_draw_next_vertex_object_2D_color_poly(px[0],py[0],&col2,px[1],py[1],&col,px[2],py[2],&iface.color.control.hilite,px[3],py[3],&iface.color.control.hilite,alpha);
 	}
 
 		// outline
 
 	if ((hilite) && (enabled)) {
-		view_draw_next_vertex_object_2D_line_quad(&iface.color.control_mouse_over,alpha,lft,rgt,top,bot);
+		view_draw_next_vertex_object_2D_line_quad(&iface.color.control.mouse_over,alpha,lft,rgt,top,bot);
 	}
 	else {
-		view_draw_next_vertex_object_2D_line_quad(&iface.color.control_outline,alpha,lft,rgt,top,bot);
+		view_draw_next_vertex_object_2D_line_quad(&iface.color.control.outline,alpha,lft,rgt,top,bot);
 	}
 }
 
@@ -1495,8 +1492,8 @@ void element_draw_checkbox(element_type *element,int sel_id)
 	ky=y-(element->high>>1);
 
 	gl_text_start(font_interface_index,iface.font.text_size_small);
-	gl_text_draw((x-5),ky,element->str,tx_right,TRUE,&iface.color.control_label,1.0f);
-	gl_text_draw(x,(ky-1),":",tx_center,TRUE,&iface.color.control_label,1.0f);
+	gl_text_draw((x-5),ky,element->str,tx_right,TRUE,&iface.color.control.label,1.0f);
+	gl_text_draw(x,(ky-1),":",tx_center,TRUE,&iface.color.control.label,1.0f);
 	gl_text_end();
 	
 		// checkbox
@@ -1589,8 +1586,8 @@ void element_draw_combo(element_type *element,int sel_id)
 	ky=y-(element->high>>1);
 
 	gl_text_start(font_interface_index,iface.font.text_size_small);
-	gl_text_draw((x-5),ky,element->str,tx_right,TRUE,&iface.color.control_label,1.0f);
-	gl_text_draw(x,(ky-1),":",tx_center,TRUE,&iface.color.control_label,1.0f);
+	gl_text_draw((x-5),ky,element->str,tx_right,TRUE,&iface.color.control.label,1.0f);
+	gl_text_draw(x,(ky-1),":",tx_center,TRUE,&iface.color.control.label,1.0f);
 	gl_text_end();
 		
 		// combo box
@@ -1604,7 +1601,7 @@ void element_draw_combo(element_type *element,int sel_id)
 
 		// background
 		
-	memmove(&gradient_start,&iface.color.control_fill,sizeof(d3col));
+	memmove(&gradient_start,&iface.color.control.fill,sizeof(d3col));
 	gradient_end.r=gradient_start.r*element_gradient_factor;
 	gradient_end.g=gradient_start.g*element_gradient_factor;
 	gradient_end.b=gradient_start.b*element_gradient_factor;
@@ -1617,12 +1614,12 @@ void element_draw_combo(element_type *element,int sel_id)
 	kx=(rgt-8)-sz;
 
 	if ((element->id==sel_id) && (element->enabled)) {
-		view_draw_next_vertex_object_2D_line_quad(&iface.color.control_mouse_over,alpha,lft,kx,top,bot);
-		view_draw_next_vertex_object_2D_line_quad(&iface.color.control_mouse_over,alpha,kx,rgt,top,bot);
+		view_draw_next_vertex_object_2D_line_quad(&iface.color.control.mouse_over,alpha,lft,kx,top,bot);
+		view_draw_next_vertex_object_2D_line_quad(&iface.color.control.mouse_over,alpha,kx,rgt,top,bot);
 	}
 	else {
-		view_draw_next_vertex_object_2D_line_quad(&iface.color.control_outline,alpha,lft,kx,top,bot);
-		view_draw_next_vertex_object_2D_line_quad(&iface.color.control_outline,alpha,kx,rgt,top,bot);
+		view_draw_next_vertex_object_2D_line_quad(&iface.color.control.outline,alpha,lft,kx,top,bot);
+		view_draw_next_vertex_object_2D_line_quad(&iface.color.control.outline,alpha,kx,rgt,top,bot);
 	}
 
 		// arrow
@@ -1632,14 +1629,15 @@ void element_draw_combo(element_type *element,int sel_id)
 	top+=4;
 	bot-=4;
 
+	view_draw_next_vertex_object_2D_color_trig(&iface.color.control.hilite,alpha,lft,rgt,top,bot,2);
+
 	if ((element->id==element_open_combo_id) || ((element->id==sel_id) && (element->enabled))) {
-		view_draw_next_vertex_object_2D_color_trig(&iface.color.control_mouse_over,alpha,lft,rgt,top,bot,2);
+		memmove(&col,&iface.color.control.mouse_over,sizeof(d3col));
 	}
 	else {
-		view_draw_next_vertex_object_2D_color_trig(&iface.color.control_hilite,alpha,lft,rgt,top,bot,2);
+		col.r=col.g=col.b=0.0f;
 	}
-
-	col.r=col.g=col.b=0.0f;
+	
 	view_draw_next_vertex_object_2D_line_trig(&col,alpha,lft,rgt,top,bot,2);
 
 		// control text
@@ -1647,7 +1645,7 @@ void element_draw_combo(element_type *element,int sel_id)
 	strcpy(str,(element->data+(element->value*32)));
 
 	gl_text_start(font_interface_index,iface.font.text_size_small);
-	gl_text_draw((x+15),(ky-1),str,tx_left,TRUE,&iface.color.control_text,alpha);
+	gl_text_draw((x+15),(ky-1),str,tx_left,TRUE,&iface.color.control.text,alpha);
 	gl_text_end();
 }
 
@@ -1683,7 +1681,7 @@ void element_draw_combo_open(element_type *element)
 
 		// background
 		
-	memmove(&gradient_start,&iface.color.control_fill,sizeof(d3col));
+	memmove(&gradient_start,&iface.color.control.fill,sizeof(d3col));
 	gradient_end.r=gradient_start.r*element_gradient_factor;
 	gradient_end.g=gradient_start.g*element_gradient_factor;
 	gradient_end.b=gradient_start.b*element_gradient_factor;
@@ -1700,7 +1698,7 @@ void element_draw_combo_open(element_type *element)
 
 			// selection
 
-		if (element->value==n) view_draw_next_vertex_object_2D_color_quad(&iface.color.control_hilite,1.0f,lft,rgt,top,bot);
+		if (element->value==n) view_draw_next_vertex_object_2D_color_quad(&iface.color.control.hilite,1.0f,lft,rgt,top,bot);
 
 			// text
 
@@ -1708,10 +1706,10 @@ void element_draw_combo_open(element_type *element)
 		strcpy(str,(element->data+(n*32)));
 
 		if (sel_item_idx==n) {
-			gl_text_draw((x+10),((top+bot)>>1),str,tx_left,TRUE,&iface.color.control_mouse_over,1.0f);
+			gl_text_draw((x+10),((top+bot)>>1),str,tx_left,TRUE,&iface.color.control.mouse_over,1.0f);
 		}
 		else {
-			gl_text_draw((x+10),((top+bot)>>1),str,tx_left,TRUE,&iface.color.control_text,1.0f);
+			gl_text_draw((x+10),((top+bot)>>1),str,tx_left,TRUE,&iface.color.control.text,1.0f);
 		}
 
 		gl_text_end();
@@ -1724,7 +1722,7 @@ void element_draw_combo_open(element_type *element)
 	top=y-element->high;
 	bot=top+(cnt*element->high);
 
-	view_draw_next_vertex_object_2D_line_quad(&iface.color.control_outline,1.0f,lft,rgt,top,bot);
+	view_draw_next_vertex_object_2D_line_quad(&iface.color.control.outline,1.0f,lft,rgt,top,bot);
 }
 
 /* =======================================================
@@ -1764,8 +1762,8 @@ void element_draw_slider(element_type *element,int sel_id)
 	ky=y-(element->high>>1);
 
 	gl_text_start(font_interface_index,iface.font.text_size_small);
-	gl_text_draw((x-5),ky,element->str,tx_right,TRUE,&iface.color.control_label,1.0f);
-	gl_text_draw(x,(ky-1),":",tx_center,TRUE,&iface.color.control_label,1.0f);
+	gl_text_draw((x-5),ky,element->str,tx_right,TRUE,&iface.color.control.label,1.0f);
+	gl_text_draw(x,(ky-1),":",tx_center,TRUE,&iface.color.control.label,1.0f);
 	gl_text_end();
 	
 		// slider size
@@ -1781,7 +1779,7 @@ void element_draw_slider(element_type *element,int sel_id)
 	
 		// background
 		
-	memmove(&gradient_start,&iface.color.control_fill,sizeof(d3col));
+	memmove(&gradient_start,&iface.color.control.fill,sizeof(d3col));
 	gradient_end.r=gradient_start.r*element_gradient_factor;
 	gradient_end.g=gradient_start.g*element_gradient_factor;
 	gradient_end.b=gradient_start.b*element_gradient_factor;
@@ -1791,34 +1789,39 @@ void element_draw_slider(element_type *element,int sel_id)
 		// slider value
 		
 	if (element->enabled) {
-		col2.r=iface.color.control_hilite.r*0.5f;
-		col2.g=iface.color.control_hilite.g*0.5f;
-		col2.b=iface.color.control_hilite.b*0.5f;
+		col2.r=iface.color.control.hilite.r*0.5f;
+		col2.g=iface.color.control.hilite.g*0.5f;
+		col2.b=iface.color.control.hilite.b*0.5f;
 
-		view_draw_next_vertex_object_2D_color_poly(lft,top,&iface.color.control_hilite,mid,top,&iface.color.control_hilite,mid,bot,&col2,lft,bot,&col2,alpha);
+		view_draw_next_vertex_object_2D_color_poly(lft,top,&iface.color.control.hilite,mid,top,&iface.color.control.hilite,mid,bot,&col2,lft,bot,&col2,alpha);
 	}
 
 		// outline
 
 	if ((element->id==sel_id) && (element->enabled)) {
-		view_draw_next_vertex_object_2D_line_quad(&iface.color.control_mouse_over,alpha,lft,rgt,top,bot);
+		view_draw_next_vertex_object_2D_line_quad(&iface.color.control.mouse_over,alpha,lft,rgt,top,bot);
 	}
 	else {
-		view_draw_next_vertex_object_2D_line_quad(&iface.color.control_outline,alpha,lft,rgt,top,bot);
+		view_draw_next_vertex_object_2D_line_quad(&iface.color.control.outline,alpha,lft,rgt,top,bot);
 	}
 
 		// slider drag
 
 	if ((mid+16)>rgt) mid=rgt-16;
 
-	col2.r=iface.color.control_hilite.r*0.5f;
-	col2.g=iface.color.control_hilite.g*0.5f;
-	col2.b=iface.color.control_hilite.b*0.5f;
+	col2.r=iface.color.control.hilite.r*0.5f;
+	col2.g=iface.color.control.hilite.g*0.5f;
+	col2.b=iface.color.control.hilite.b*0.5f;
 
-	view_draw_next_vertex_object_2D_color_poly(mid,top,&iface.color.control_hilite,(mid+8),top,&col2,(mid+8),bot,&col2,mid,bot,&iface.color.control_hilite,alpha);
-	view_draw_next_vertex_object_2D_color_poly((mid+8),top,&col2,(mid+16),top,&iface.color.control_hilite,(mid+16),bot,&iface.color.control_hilite,(mid+8),bot,&col2,alpha);
+	view_draw_next_vertex_object_2D_color_poly(mid,top,&iface.color.control.hilite,(mid+8),top,&col2,(mid+8),bot,&col2,mid,bot,&iface.color.control.hilite,alpha);
+	view_draw_next_vertex_object_2D_color_poly((mid+8),top,&col2,(mid+16),top,&iface.color.control.hilite,(mid+16),bot,&iface.color.control.hilite,(mid+8),bot,&col2,alpha);
 
-	view_draw_next_vertex_object_2D_line_quad(&iface.color.control_outline,alpha,mid,(mid+16),top,bot);
+	if ((element->id==sel_id) && (element->enabled)) {
+		view_draw_next_vertex_object_2D_line_quad(&iface.color.control.mouse_over,alpha,mid,(mid+16),top,bot);
+	}
+	else {
+		view_draw_next_vertex_object_2D_line_quad(&iface.color.control.outline,alpha,mid,(mid+16),top,bot);
+	}
 }
 
 /* =======================================================
@@ -1922,9 +1925,9 @@ void element_draw_table_row_column_lines(element_type *element,int ty,int by,flo
 	x=element->x;
 	f_wid=(float)(element->wid-30);
 	
-	col.r=iface.color.control_outline.r*col_factor;
-	col.g=iface.color.control_outline.g*col_factor;
-	col.b=iface.color.control_outline.b*col_factor;
+	col.r=iface.color.control.outline.r*col_factor;
+	col.g=iface.color.control.outline.g*col_factor;
+	col.b=iface.color.control.outline.b*col_factor;
 
 	for (n=1;n<element->setup.table.ncolumn;n++) {
 		x+=(int)(element->setup.table.cols[n-1].percent_size*f_wid);
@@ -1944,12 +1947,12 @@ void element_draw_table_header_fill(element_type *element,int high)
 	bot=(top+high)+4;
 	y=(top+bot)>>1;
 	
-	col2.r=iface.color.control_header.r*0.5f;
-	col2.g=iface.color.control_header.g*0.5f;
-	col2.b=iface.color.control_header.b*0.5f;
+	col2.r=iface.color.control.header.r*0.5f;
+	col2.g=iface.color.control.header.g*0.5f;
+	col2.b=iface.color.control.header.b*0.5f;
 	
-	view_draw_next_vertex_object_2D_color_poly(lft,top,&iface.color.control_header,rgt,top,&iface.color.control_header,rgt,y,&col2,lft,y,&col2,1.0f);
-	view_draw_next_vertex_object_2D_color_poly(lft,y,&col2,rgt,y,&col2,rgt,bot,&iface.color.control_header,lft,bot,&iface.color.control_header,1.0f);
+	view_draw_next_vertex_object_2D_color_poly(lft,top,&iface.color.control.header,rgt,top,&iface.color.control.header,rgt,y,&col2,lft,y,&col2,1.0f);
+	view_draw_next_vertex_object_2D_color_poly(lft,y,&col2,rgt,y,&col2,rgt,bot,&iface.color.control.header,lft,bot,&iface.color.control.header,1.0f);
 	
 	element_draw_table_row_column_lines(element,top,bot,1.0f);
 }
@@ -2089,7 +2092,7 @@ void element_draw_table_line_data(element_type *element,int x,int y,int row,int 
 
 			if (gl_id!=-1) {
 				view_draw_next_vertex_object_2D_texture_quad(gl_id,NULL,1.0f,dx,(dx+element_table_bitmap_size),(y+1),((y+1)+element_table_bitmap_size),0.0f,1.0f,0.0f,1.0f);
-				view_draw_next_vertex_object_2D_line_quad(&iface.color.control_outline,1.0f,dx,(dx+element_table_bitmap_size),(y+1),((y+1)+element_table_bitmap_size));
+				view_draw_next_vertex_object_2D_line_quad(&iface.color.control.outline,1.0f,dx,(dx+element_table_bitmap_size),(y+1),((y+1)+element_table_bitmap_size));
 			}
 
 				// missing graphic
@@ -2100,7 +2103,7 @@ void element_draw_table_line_data(element_type *element,int x,int y,int row,int 
 				col2.r=col2.g=col2.b=0.4f;
 
 				view_draw_next_vertex_object_2D_color_poly(dx,(y+1),&col,(dx+element_table_bitmap_size),(y+1),&col,(dx+element_table_bitmap_size),((y+1)+element_table_bitmap_size),&col2,dx,((y+1)+element_table_bitmap_size),&col2,1.0f);
-				view_draw_next_vertex_object_2D_line_quad(&iface.color.control_outline,1.0f,dx,(dx+element_table_bitmap_size),(y+1),((y+1)+element_table_bitmap_size));
+				view_draw_next_vertex_object_2D_line_quad(&iface.color.control.outline,1.0f,dx,(dx+element_table_bitmap_size),(y+1),((y+1)+element_table_bitmap_size));
 
 				col.r=col.g=col.b=1.0f;
 
@@ -2189,7 +2192,7 @@ int element_draw_table_scrollbar(element_type *element,int high,int row_high,int
 	
 	view_draw_next_vertex_object_2D_color_poly(lft,bot,&col,lft,top,&col,x,top,&col2,x,bot,&col2,1.0f);
 	view_draw_next_vertex_object_2D_color_poly(x,bot,&col2,x,top,&col2,rgt,top,&col,rgt,bot,&col,1.0f);
-	view_draw_next_vertex_object_2D_line_quad(&iface.color.control_outline,1.0f,lft,rgt,top,bot);
+	view_draw_next_vertex_object_2D_line_quad(&iface.color.control.outline,1.0f,lft,rgt,top,bot);
 	
 	pos_my=(top+bot)/2;
 	
@@ -2198,19 +2201,19 @@ int element_draw_table_scrollbar(element_type *element,int high,int row_high,int
 	element_get_box(element,&lft,&rgt,&top,&bot);
 	lft=rgt-24;
 
-	view_draw_next_vertex_object_2D_line(&iface.color.control_outline,1.0f,lft,top,lft,bot);
+	view_draw_next_vertex_object_2D_line(&iface.color.control.outline,1.0f,lft,top,lft,bot);
 	
 	element_get_box(element,&lft,&rgt,&top,&bot);
 	lft=rgt-24;
 	top+=(high+24);
 	
-	view_draw_next_vertex_object_2D_line(&iface.color.control_outline,1.0f,lft,top,rgt,top);
+	view_draw_next_vertex_object_2D_line(&iface.color.control.outline,1.0f,lft,top,rgt,top);
 	
 	element_get_box(element,&lft,&rgt,&top,&bot);
 	lft=rgt-24;
 	bot-=24;
 
-	view_draw_next_vertex_object_2D_line(&iface.color.control_outline,1.0f,lft,bot,rgt,bot);
+	view_draw_next_vertex_object_2D_line(&iface.color.control.outline,1.0f,lft,bot,rgt,bot);
 	
 		// scroll up
 
@@ -2221,7 +2224,7 @@ int element_draw_table_scrollbar(element_type *element,int high,int row_high,int
 	bot=top+16;
 
 	alpha=up_ok?1.0f:0.1f;
-	view_draw_next_vertex_object_2D_color_trig(&iface.color.control_hilite,alpha,lft,rgt,top,bot,0);
+	view_draw_next_vertex_object_2D_color_trig(&iface.color.control.hilite,alpha,lft,rgt,top,bot,0);
 
 	col.r=col.g=col.b=0.0f;
 	view_draw_next_vertex_object_2D_line_trig(&col,alpha,lft,rgt,top,bot,0);
@@ -2235,7 +2238,7 @@ int element_draw_table_scrollbar(element_type *element,int high,int row_high,int
 	top=bot-16;
 
 	alpha=down_ok?1.0f:0.1f;
-	view_draw_next_vertex_object_2D_color_trig(&iface.color.control_hilite,alpha,lft,rgt,top,bot,2);
+	view_draw_next_vertex_object_2D_color_trig(&iface.color.control.hilite,alpha,lft,rgt,top,bot,2);
 
 	col.r=col.g=col.b=0.0f;
 	view_draw_next_vertex_object_2D_line_trig(&col,alpha,lft,rgt,top,bot,2);
@@ -2274,12 +2277,12 @@ void element_draw_table(element_type *element,int sel_id)
 		// outline
 		
 	element_get_box(element,&lft,&rgt,&top,&bot);
-	view_draw_next_vertex_object_2D_line_quad(&iface.color.control_outline,1.0f,lft,rgt,top,bot);
+	view_draw_next_vertex_object_2D_line_quad(&iface.color.control.outline,1.0f,lft,rgt,top,bot);
 	
 	element_get_box(element,&lft,&rgt,&top,&bot);
 	top+=(high+4);
 
-	view_draw_next_vertex_object_2D_line(&iface.color.control_outline,1.0f,lft,top,rgt,top);
+	view_draw_next_vertex_object_2D_line(&iface.color.control.outline,1.0f,lft,top,rgt,top);
 
 		// text positions
 		
@@ -2304,7 +2307,7 @@ void element_draw_table(element_type *element,int sel_id)
 				// selection or background
 				
 			if (((n+element->offset)==element->value) && (!element->setup.table.checkbox)) {
-				memmove(&col,&iface.color.control_hilite,sizeof(d3col));
+				memmove(&col,&iface.color.control.hilite,sizeof(d3col));
 				col2.r=col.r*0.5f;
 				col2.g=col.g*0.5f;
 				col2.b=col.b*0.5f;
@@ -2335,7 +2338,7 @@ void element_draw_table(element_type *element,int sel_id)
 			
 				// table line data
 				
-			element_draw_table_line_data(element,x,y,(element->offset+n),wid,row_high,&iface.color.control_text,c);
+			element_draw_table_line_data(element,x,y,(element->offset+n),wid,row_high,&iface.color.control.text,c);
 			
 			c+=128;
 			y+=row_high;
@@ -2357,9 +2360,9 @@ void element_draw_table(element_type *element,int sel_id)
 	
 	view_draw_next_vertex_object_2D_color_quad(&col,0.25f,lft,rgt,top,bot);
 	
-	col.r=iface.color.control_hilite.r*0.5f;
-	col.g=iface.color.control_hilite.g*0.5f;
-	col.b=iface.color.control_hilite.b*0.5f;
+	col.r=iface.color.control.hilite.r*0.5f;
+	col.g=iface.color.control.hilite.g*0.5f;
+	col.b=iface.color.control.hilite.b*0.5f;
 	
 	if (element->setup.table.busy_count!=0) {
 	
@@ -2382,7 +2385,7 @@ void element_draw_table(element_type *element,int sel_id)
 		gl_text_end();
 	}
 	
-	view_draw_next_vertex_object_2D_line_quad(&iface.color.control_outline,1.0f,lft,rgt,top,bot);
+	view_draw_next_vertex_object_2D_line_quad(&iface.color.control.outline,1.0f,lft,rgt,top,bot);
 }
 
 /* =======================================================
@@ -2488,27 +2491,27 @@ void element_draw_tab(element_type *element,int sel_id,int x,int y)
 		
 		if (element->value!=tab_idx) {
 			ty=margin;
-			memmove(&col,&iface.color.tab_dimmed,sizeof(d3col));
+			memmove(&col,&iface.color.tab.dimmed,sizeof(d3col));
 		}
 		else {
 			ty=margin-y_push;
-			memmove(&col,&iface.color.tab_background,sizeof(d3col));
+			memmove(&col,&iface.color.tab.background,sizeof(d3col));
 		}
 		
 		view_draw_next_vertex_object_2D_color_poly((lx+x_slant),ty,&col,((rx-x_slant)+x_overlap),ty,&col,(rx+x_overlap),by,&col,lx,by,&col,1.0f);
 
-		view_draw_next_vertex_object_2D_line(&iface.color.tab_outline,1.0f,lx,by,(lx+x_slant),ty);
-		view_draw_next_vertex_object_2D_line(&iface.color.tab_outline,1.0f,(lx+x_slant),ty,((rx-x_slant)+x_overlap),ty);
-		view_draw_next_vertex_object_2D_line(&iface.color.tab_outline,1.0f,((rx-x_slant)+x_overlap),ty,(rx+x_overlap),by);
+		view_draw_next_vertex_object_2D_line(&iface.color.tab.outline,1.0f,lx,by,(lx+x_slant),ty);
+		view_draw_next_vertex_object_2D_line(&iface.color.tab.outline,1.0f,(lx+x_slant),ty,((rx-x_slant)+x_overlap),ty);
+		view_draw_next_vertex_object_2D_line(&iface.color.tab.outline,1.0f,((rx-x_slant)+x_overlap),ty,(rx+x_overlap),by);
 
-		memmove(&col,&iface.color.control_label,sizeof(d3col));
+		memmove(&col,&iface.color.tab.text_dimmed,sizeof(d3col));
 		
 		if (element->value==tab_idx) {
-			memmove(&col,&iface.color.control_hilite,sizeof(d3col));
+			memmove(&col,&iface.color.tab.text,sizeof(d3col));
 		}
 		
 		if (mouse_idx==tab_idx) {
-			memmove(&col,&iface.color.control_mouse_over,sizeof(d3col));
+			memmove(&col,&iface.color.tab.text_mouse_over,sizeof(d3col));
 		}
 
 		gl_text_start(font_interface_index,iface.font.text_size_small);
@@ -2523,22 +2526,22 @@ void element_draw_tab(element_type *element,int sel_id,int x,int y)
 	ty=high+margin;
 	by=iface.scale_y-margin;
 	
-	view_draw_next_vertex_object_2D_color_quad(&iface.color.tab_background,1.0f,lx,rx,by,ty);
+	view_draw_next_vertex_object_2D_color_quad(&iface.color.tab.background,1.0f,lx,rx,by,ty);
 	
 		// outside line
 		
-	view_draw_next_vertex_object_2D_line(&iface.color.tab_outline,1.0f,lx,ty,lx,by);
-	view_draw_next_vertex_object_2D_line(&iface.color.tab_outline,1.0f,lx,by,rx,by);
-	view_draw_next_vertex_object_2D_line(&iface.color.tab_outline,1.0f,rx,by,rx,ty);
+	view_draw_next_vertex_object_2D_line(&iface.color.tab.outline,1.0f,lx,ty,lx,by);
+	view_draw_next_vertex_object_2D_line(&iface.color.tab.outline,1.0f,lx,by,rx,by);
+	view_draw_next_vertex_object_2D_line(&iface.color.tab.outline,1.0f,rx,by,rx,ty);
 	
 		// top line
 		
 	kx=margin+(element->value*xadd);
 	if (element->value!=0) {
-		view_draw_next_vertex_object_2D_line(&iface.color.tab_outline,1.0f,lx,ty,kx,ty);
+		view_draw_next_vertex_object_2D_line(&iface.color.tab.outline,1.0f,lx,ty,kx,ty);
 	}
 	if ((kx+xadd+x_overlap)<rx) {
-		view_draw_next_vertex_object_2D_line(&iface.color.tab_outline,1.0f,(kx+xadd+x_overlap),ty,rx,ty);
+		view_draw_next_vertex_object_2D_line(&iface.color.tab.outline,1.0f,(kx+xadd+x_overlap),ty,rx,ty);
 	}
 
 	glDisable(GL_BLEND);
@@ -2576,8 +2579,8 @@ void element_draw_color(element_type *element,int sel_id)
 	ky=y-(element->high>>1);
 
 	gl_text_start(font_interface_index,iface.font.text_size_small);
-	gl_text_draw((x-5),ky,element->str,tx_right,TRUE,&iface.color.control_label,1.0f);
-	gl_text_draw(x,(ky-1),":",tx_center,TRUE,&iface.color.control_label,1.0f);
+	gl_text_draw((x-5),ky,element->str,tx_right,TRUE,&iface.color.control.label,1.0f);
+	gl_text_draw(x,(ky-1),":",tx_center,TRUE,&iface.color.control.label,1.0f);
 	gl_text_end();
 
 		// color size
@@ -2619,10 +2622,10 @@ void element_draw_color(element_type *element,int sel_id)
 		// outline and selection
 
 	if ((element->id==sel_id) && (element->enabled)) {
-		view_draw_next_vertex_object_2D_line_quad(&iface.color.control_mouse_over,alpha,lft,rgt,top,bot);
+		view_draw_next_vertex_object_2D_line_quad(&iface.color.control.mouse_over,alpha,lft,rgt,top,bot);
 	}
 	else {
-		view_draw_next_vertex_object_2D_line_quad(&iface.color.control_outline,alpha,lft,rgt,top,bot);
+		view_draw_next_vertex_object_2D_line_quad(&iface.color.control.outline,alpha,lft,rgt,top,bot);
 	}
 
 	col.r=col.g=col.b=0.0f;
@@ -2724,7 +2727,7 @@ void element_draw_text_box(element_type *element)
 		if (*c==0x0) {
 			if ((y<bot) && (line_offset==0)) {
 				str[idx]=0x0;
-				gl_text_draw(lft,y,str,tx_left,FALSE,&iface.color.control_text,1.0f);
+				gl_text_draw(lft,y,str,tx_left,FALSE,&iface.color.control.text,1.0f);
 			}
 			line_count++;
 			break;
@@ -2768,7 +2771,7 @@ void element_draw_text_box(element_type *element)
 		
 		if (line_break) {
 		
-			if ((y<bot) && (line_offset==0)) gl_text_draw(x,y,str,tx_left,FALSE,&iface.color.control_text,1.0f);
+			if ((y<bot) && (line_offset==0)) gl_text_draw(x,y,str,tx_left,FALSE,&iface.color.control.text,1.0f);
 		
 			idx=0;
 			last_space_idx=-1;
@@ -2810,7 +2813,7 @@ void element_draw_text_box(element_type *element)
 	
 		// outline
 
-	view_draw_next_vertex_object_2D_line_quad(&iface.color.control_outline,1.0f,lft,rgt,top,bot);
+	view_draw_next_vertex_object_2D_line_quad(&iface.color.control.outline,1.0f,lft,rgt,top,bot);
 }
 
 /* =======================================================
@@ -2829,9 +2832,9 @@ void element_draw_info_field(element_type *element)
 	ky=y-(element->high>>1);
 		
 	gl_text_start(font_interface_index,iface.font.text_size_small);
-	gl_text_draw((x-5),ky,element->str,tx_right,TRUE,&iface.color.control_label,1.0f);
-	gl_text_draw(x,(ky-1),":",tx_center,TRUE,&iface.color.control_label,1.0f);
-	gl_text_draw((x+5),ky,element->value_str,tx_left,TRUE,&iface.color.control_label,1.0f);
+	gl_text_draw((x-5),ky,element->str,tx_right,TRUE,&iface.color.control.label,1.0f);
+	gl_text_draw(x,(ky-1),":",tx_center,TRUE,&iface.color.control.label,1.0f);
+	gl_text_draw((x+5),ky,element->value_str,tx_left,TRUE,&iface.color.control.label,1.0f);
 	gl_text_end();
 }
 
@@ -2915,7 +2918,7 @@ void element_draw_frame(element_type *element)
 	
 		// inside frame
 
-	view_draw_next_vertex_object_2D_color_quad(&iface.color.dialog_background,1.0f,lft,rgt,top,bot);
+	view_draw_next_vertex_object_2D_color_quad(&iface.color.dialog.background,1.0f,lft,rgt,top,bot);
 	
 		// header
 		
@@ -2925,7 +2928,7 @@ void element_draw_frame(element_type *element)
 		
 		y=(head_top+top)>>1;
 
-		memmove(&col,&iface.color.dialog_header,sizeof(d3col));
+		memmove(&col,&iface.color.dialog.header,sizeof(d3col));
 		col2.r=col.r*0.5f;
 		col2.g=col.g*0.5f;
 		col2.b=col.b*0.5f;
@@ -2934,16 +2937,16 @@ void element_draw_frame(element_type *element)
 		view_draw_next_vertex_object_2D_color_poly(lft,y,&col2,rgt,y,&col2,rgt,top,&col,lft,top,&col,1.0f);
 
 		gl_text_start(font_interface_index,iface.font.text_size_medium);
-		gl_text_draw(((lft+rgt)/2),(y-2),element->str,tx_center,TRUE,&iface.color.dialog_outline,1.0f);
+		gl_text_draw(((lft+rgt)/2),(y-2),element->str,tx_center,TRUE,&iface.color.dialog.title,1.0f);
 		gl_text_end();
 	}
 	
 		// outline
 
 	glLineWidth(2.0f);
-	view_draw_next_vertex_object_2D_line_quad(&iface.color.dialog_outline,1.0f,lft,rgt,top,bot);
+	view_draw_next_vertex_object_2D_line_quad(&iface.color.dialog.outline,1.0f,lft,rgt,top,bot);
 	
-	if (is_header) view_draw_next_vertex_object_2D_line_quad(&iface.color.dialog_outline,1.0f,lft,rgt,head_top,top);
+	if (is_header) view_draw_next_vertex_object_2D_line_quad(&iface.color.dialog.outline,1.0f,lft,rgt,head_top,top);
 	
 	glLineWidth(1.0f);
 }

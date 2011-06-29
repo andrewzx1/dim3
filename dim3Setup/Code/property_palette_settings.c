@@ -37,39 +37,50 @@ and can be sold or given away.
 #define kSettingsScaleY							1
 #define kSettingsInterfaceFont					2
 #define kSettingsHUDFont						3
-#define kSettingsColorDialogBackground			4
-#define kSettingsColorDialogHeader				5
-#define kSettingsColorDialogOutline				6
-#define kSettingsColorDialogTitle				7
-#define kSettingsColorTabBackground				8
-#define kSettingsColorTabDimmed					9
-#define kSettingsColorTabOutline				10
-#define kSettingsColorControlLabel				11
-#define kSettingsColorControlText				12
-#define kSettingsColorControlFill				13
-#define kSettingsColorControlHeader				14
-#define kSettingsColorControlOutline			15
-#define kSettingsColorControlMouseOver			16
-#define kSettingsColorControlHilite				17
-#define kSettingsColorControlDisabled			18
-#define kSettingsColorButtonFill				19
-#define kSettingsColorButtonText				20
-#define kSettingsColorButtonOutline				21
-#define kSettingsColorDefaultTint				22
-#define kSettingsProgressLeft					23
-#define kSettingsProgressRight					24
-#define kSettingsProgressTop					25
-#define kSettingsProgressBottom					26
-#define kSettingsProgressTextSize				27
-#define kSettingsProgressOutline				28
-#define kSettingsProgressBaseColorStart			29
-#define kSettingsProgressBaseColorEnd			30
-#define kSettingsProgressHiliteColorStart		31
-#define kSettingsProgressHiliteColorEnd			32
-#define kSettingsProgressTextColor				33
-#define kSettingsProgressOutlineColor			34
-#define kSettingsFaseTitleMilliseconds			35
-#define kSettingsFaseMapMilliseconds			36
+
+#define kSettingsColorBackground				10
+#define kSettingsColorDefaultTint				11
+
+#define kSettingsColorDialogBackground			20
+#define kSettingsColorDialogHeader				21
+#define kSettingsColorDialogOutline				22
+#define kSettingsColorDialogTitle				23
+
+#define kSettingsColorTabBackground				30
+#define kSettingsColorTabDimmed					31
+#define kSettingsColorTabOutline				32
+#define kSettingsColorTabText					33
+#define kSettingsColorTabTextMouseOver			34
+#define kSettingsColorTabTextDimmed				35
+
+#define kSettingsColorControlLabel				40
+#define kSettingsColorControlText				41
+#define kSettingsColorControlFill				42
+#define kSettingsColorControlHeader				43
+#define kSettingsColorControlOutline			44
+#define kSettingsColorControlMouseOver			45
+#define kSettingsColorControlHilite				46
+#define kSettingsColorControlDisabled			47
+
+#define kSettingsColorButtonFill				50
+#define kSettingsColorButtonText				51
+#define kSettingsColorButtonOutline				52
+
+#define kSettingsProgressLeft					60
+#define kSettingsProgressRight					61
+#define kSettingsProgressTop					62
+#define kSettingsProgressBottom					63
+#define kSettingsProgressTextSize				64
+#define kSettingsProgressOutline				65
+#define kSettingsProgressBaseColorStart			66
+#define kSettingsProgressBaseColorEnd			67
+#define kSettingsProgressHiliteColorStart		68
+#define kSettingsProgressHiliteColorEnd			69
+#define kSettingsProgressTextColor				70
+#define kSettingsProgressOutlineColor			71
+
+#define kSettingsFaseTitleMilliseconds			80
+#define kSettingsFaseMapMilliseconds			81
 
 extern iface_type				iface;
 extern setup_state_type			state;
@@ -95,28 +106,48 @@ void property_palette_fill_settings(void)
 	list_palette_add_string(&property_palette,kSettingsInterfaceFont,"Interface Font",iface.font.interface_name,FALSE);
 	list_palette_add_string(&property_palette,kSettingsHUDFont,"HUD Font",iface.font.hud_name,FALSE);
 
-		// colors
+		// color
 		
-	list_palette_add_header(&property_palette,0,"Colors");
-	list_palette_add_pick_color(&property_palette,kSettingsColorDialogBackground,"Dialog Background",&iface.color.dialog_background,FALSE);
-	list_palette_add_pick_color(&property_palette,kSettingsColorDialogHeader,"Dialog Header",&iface.color.dialog_header,FALSE);
-	list_palette_add_pick_color(&property_palette,kSettingsColorDialogOutline,"Dialog Outline",&iface.color.dialog_outline,FALSE);
-	list_palette_add_pick_color(&property_palette,kSettingsColorDialogTitle,"Dialog Title",&iface.color.dialog_title,FALSE);
-	list_palette_add_pick_color(&property_palette,kSettingsColorTabBackground,"Tab Background",&iface.color.tab_background,FALSE);
-	list_palette_add_pick_color(&property_palette,kSettingsColorTabDimmed,"Tab Dimmed",&iface.color.tab_dimmed,FALSE);
-	list_palette_add_pick_color(&property_palette,kSettingsColorTabOutline,"Tab Outline",&iface.color.tab_outline,FALSE);
-	list_palette_add_pick_color(&property_palette,kSettingsColorControlLabel,"Control Label",&iface.color.control_label,FALSE);
-	list_palette_add_pick_color(&property_palette,kSettingsColorControlText,"Control Text",&iface.color.control_text,FALSE);
-	list_palette_add_pick_color(&property_palette,kSettingsColorControlFill,"Control Fill",&iface.color.control_fill,FALSE);
-	list_palette_add_pick_color(&property_palette,kSettingsColorControlHeader,"Control Header",&iface.color.control_header,FALSE);
-	list_palette_add_pick_color(&property_palette,kSettingsColorControlOutline,"Control Outline",&iface.color.control_outline,FALSE);
-	list_palette_add_pick_color(&property_palette,kSettingsColorControlMouseOver,"Control Mouse Over",&iface.color.control_mouse_over,FALSE);
-	list_palette_add_pick_color(&property_palette,kSettingsColorControlHilite,"Control Highlight",&iface.color.control_hilite,FALSE);
-	list_palette_add_pick_color(&property_palette,kSettingsColorControlDisabled,"Control Disabled",&iface.color.control_disabled,FALSE);
-	list_palette_add_pick_color(&property_palette,kSettingsColorButtonFill,"Button Fill",&iface.color.button_fill,FALSE);
-	list_palette_add_pick_color(&property_palette,kSettingsColorButtonText,"Button Text",&iface.color.button_text,FALSE);
-	list_palette_add_pick_color(&property_palette,kSettingsColorButtonOutline,"Button Outline",&iface.color.button_outline,FALSE);
+	list_palette_add_header(&property_palette,0,"Main Colors");
+	list_palette_add_pick_color(&property_palette,kSettingsColorBackground,"Background",&iface.color.background,FALSE);
 	list_palette_add_pick_color(&property_palette,kSettingsColorDefaultTint,"Default Tint",&iface.color.default_tint,FALSE);
+
+		// dialog color
+		
+	list_palette_add_header(&property_palette,0,"Dialog Colors");
+	list_palette_add_pick_color(&property_palette,kSettingsColorDialogBackground,"Dialog Background",&iface.color.dialog.background,FALSE);
+	list_palette_add_pick_color(&property_palette,kSettingsColorDialogHeader,"Dialog Header",&iface.color.dialog.header,FALSE);
+	list_palette_add_pick_color(&property_palette,kSettingsColorDialogOutline,"Dialog Outline",&iface.color.dialog.outline,FALSE);
+	list_palette_add_pick_color(&property_palette,kSettingsColorDialogTitle,"Dialog Title",&iface.color.dialog.title,FALSE);
+	
+			// tab color
+		
+	list_palette_add_header(&property_palette,0,"Tab Colors");
+	list_palette_add_pick_color(&property_palette,kSettingsColorTabBackground,"Tab Background",&iface.color.tab.background,FALSE);
+	list_palette_add_pick_color(&property_palette,kSettingsColorTabDimmed,"Tab Dimmed",&iface.color.tab.dimmed,FALSE);
+	list_palette_add_pick_color(&property_palette,kSettingsColorTabOutline,"Tab Outline",&iface.color.tab.outline,FALSE);
+	list_palette_add_pick_color(&property_palette,kSettingsColorTabText,"Tab Text",&iface.color.tab.text,FALSE);
+	list_palette_add_pick_color(&property_palette,kSettingsColorTabTextMouseOver,"Tab Text Mouse Over",&iface.color.tab.text_mouse_over,FALSE);
+	list_palette_add_pick_color(&property_palette,kSettingsColorTabTextDimmed,"Tab Text Dimmed",&iface.color.tab.text_dimmed,FALSE);
+	
+		// control color
+		
+	list_palette_add_header(&property_palette,0,"Control Colors");
+	list_palette_add_pick_color(&property_palette,kSettingsColorControlLabel,"Control Label",&iface.color.control.label,FALSE);
+	list_palette_add_pick_color(&property_palette,kSettingsColorControlText,"Control Text",&iface.color.control.text,FALSE);
+	list_palette_add_pick_color(&property_palette,kSettingsColorControlFill,"Control Fill",&iface.color.control.fill,FALSE);
+	list_palette_add_pick_color(&property_palette,kSettingsColorControlHeader,"Control Header",&iface.color.control.header,FALSE);
+	list_palette_add_pick_color(&property_palette,kSettingsColorControlOutline,"Control Outline",&iface.color.control.outline,FALSE);
+	list_palette_add_pick_color(&property_palette,kSettingsColorControlMouseOver,"Control Mouse Over",&iface.color.control.mouse_over,FALSE);
+	list_palette_add_pick_color(&property_palette,kSettingsColorControlHilite,"Control Highlight",&iface.color.control.hilite,FALSE);
+	list_palette_add_pick_color(&property_palette,kSettingsColorControlDisabled,"Control Disabled",&iface.color.control.disabled,FALSE);
+	
+		// button color
+		
+	list_palette_add_header(&property_palette,0,"Button Colors");
+	list_palette_add_pick_color(&property_palette,kSettingsColorButtonFill,"Button Fill",&iface.color.button.fill,FALSE);
+	list_palette_add_pick_color(&property_palette,kSettingsColorButtonText,"Button Text",&iface.color.button.text,FALSE);
+	list_palette_add_pick_color(&property_palette,kSettingsColorButtonOutline,"Button Outline",&iface.color.button.outline,FALSE);
 
 		// progress
 		
@@ -171,82 +202,106 @@ void property_palette_click_settings(int id)
 			dialog_property_string_run(list_string_value_string,(void*)iface.font.hud_name,name_str_len,0,0);
 			break;
 			
-			// color
+			// main color
+			
+		case kSettingsColorBackground:
+			os_pick_color(&iface.color.background);
+			break;
+			
+		case kSettingsColorDefaultTint:
+			os_pick_color(&iface.color.default_tint);
+			break;
 
+			// dialog color
+			
 		case kSettingsColorDialogBackground:
-			os_pick_color(&iface.color.dialog_background);
+			os_pick_color(&iface.color.dialog.background);
 			break;
 
 		case kSettingsColorDialogHeader:
-			os_pick_color(&iface.color.dialog_header);
+			os_pick_color(&iface.color.dialog.header);
 			break;
 
 		case kSettingsColorDialogOutline:
-			os_pick_color(&iface.color.dialog_outline);
+			os_pick_color(&iface.color.dialog.outline);
 			break;
 
 		case kSettingsColorDialogTitle:
-			os_pick_color(&iface.color.dialog_title);
+			os_pick_color(&iface.color.dialog.title);
 			break;
 
+			// tab color
+			
 		case kSettingsColorTabBackground:
-			os_pick_color(&iface.color.tab_background);
+			os_pick_color(&iface.color.tab.background);
 			break;
 
 		case kSettingsColorTabDimmed:
-			os_pick_color(&iface.color.tab_dimmed);
+			os_pick_color(&iface.color.tab.dimmed);
 			break;
 
 		case kSettingsColorTabOutline:
-			os_pick_color(&iface.color.tab_outline);
+			os_pick_color(&iface.color.tab.outline);
+			break;
+			
+		case kSettingsColorTabText:
+			os_pick_color(&iface.color.tab.text);
+			break;
+			
+		case kSettingsColorTabTextMouseOver:
+			os_pick_color(&iface.color.tab.text_mouse_over);
+			break;
+			
+		case kSettingsColorTabTextDimmed:
+			os_pick_color(&iface.color.tab.text_dimmed);
 			break;
 
+			// control color
+			
 		case kSettingsColorControlLabel:
-			os_pick_color(&iface.color.control_label);
+			os_pick_color(&iface.color.control.label);
 			break;
 
 		case kSettingsColorControlText:
-			os_pick_color(&iface.color.control_text);
+			os_pick_color(&iface.color.control.text);
 			break;
 
 		case kSettingsColorControlFill:
-			os_pick_color(&iface.color.control_fill);
+			os_pick_color(&iface.color.control.fill);
 			break;
 
 		case kSettingsColorControlHeader:
-			os_pick_color(&iface.color.control_header);
+			os_pick_color(&iface.color.control.header);
 			break;
 
 		case kSettingsColorControlOutline:
-			os_pick_color(&iface.color.control_outline);
+			os_pick_color(&iface.color.control.outline);
 			break;
 
 		case kSettingsColorControlMouseOver:
-			os_pick_color(&iface.color.control_mouse_over);
+			os_pick_color(&iface.color.control.mouse_over);
 			break;
 
 		case kSettingsColorControlHilite:
-			os_pick_color(&iface.color.control_hilite);
+			os_pick_color(&iface.color.control.hilite);
 			break;
 
 		case kSettingsColorControlDisabled:
-			os_pick_color(&iface.color.control_disabled);
+			os_pick_color(&iface.color.control.disabled);
 			break;
 
+			// button color
+			
 		case kSettingsColorButtonFill:
-			os_pick_color(&iface.color.button_fill);
+			os_pick_color(&iface.color.button.fill);
 			break;
 
 		case kSettingsColorButtonText:
-			os_pick_color(&iface.color.button_text);
+			os_pick_color(&iface.color.button.text);
 			break;
 
 		case kSettingsColorButtonOutline:
-			os_pick_color(&iface.color.button_outline);
-			break;
-
-		case kSettingsColorDefaultTint:
-			os_pick_color(&iface.color.default_tint);
+			os_pick_color(&iface.color.button.outline);
 			break;
 			
 			// progress

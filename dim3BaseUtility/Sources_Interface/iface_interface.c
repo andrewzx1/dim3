@@ -569,24 +569,28 @@ void iface_read_settings_interface(iface_type *iface)
 		
 	color_tag=xml_findfirstchild("Color",interface_head_tag);
 	if (color_tag!=-1) {
-		xml_get_attribute_color(color_tag,"dialog_background",&iface->color.dialog_background);
-		xml_get_attribute_color(color_tag,"dialog_header",&iface->color.dialog_header);
-		xml_get_attribute_color(color_tag,"dialog_outline",&iface->color.dialog_outline);
-		xml_get_attribute_color(color_tag,"dialog_title",&iface->color.dialog_title);
-		xml_get_attribute_color(color_tag,"tab_background",&iface->color.tab_background);
-		xml_get_attribute_color(color_tag,"tab_dimmed",&iface->color.tab_dimmed);
-		xml_get_attribute_color(color_tag,"tab_outline",&iface->color.tab_outline);
-		xml_get_attribute_color(color_tag,"control_label",&iface->color.control_label);
-		xml_get_attribute_color(color_tag,"control_text",&iface->color.control_text);
-		xml_get_attribute_color(color_tag,"control_fill",&iface->color.control_fill);
-		xml_get_attribute_color(color_tag,"control_header",&iface->color.control_header);
-		xml_get_attribute_color(color_tag,"control_outline",&iface->color.control_outline);
-		xml_get_attribute_color(color_tag,"control_mouse_over",&iface->color.control_mouse_over);
-		xml_get_attribute_color(color_tag,"control_hilite",&iface->color.control_hilite);
-		xml_get_attribute_color(color_tag,"control_disabled",&iface->color.control_disabled);
-		xml_get_attribute_color(color_tag,"button_fill",&iface->color.button_fill);
-		xml_get_attribute_color(color_tag,"button_text",&iface->color.button_text);
-		xml_get_attribute_color(color_tag,"button_outline",&iface->color.button_outline);
+		xml_get_attribute_color(color_tag,"background",&iface->color.background);
+		xml_get_attribute_color(color_tag,"dialog_background",&iface->color.dialog.background);
+		xml_get_attribute_color(color_tag,"dialog_header",&iface->color.dialog.header);
+		xml_get_attribute_color(color_tag,"dialog_outline",&iface->color.dialog.outline);
+		xml_get_attribute_color(color_tag,"dialog_title",&iface->color.dialog.title);
+		xml_get_attribute_color(color_tag,"tab_background",&iface->color.tab.background);
+		xml_get_attribute_color(color_tag,"tab_dimmed",&iface->color.tab.dimmed);
+		xml_get_attribute_color(color_tag,"tab_outline",&iface->color.tab.outline);
+		xml_get_attribute_color(color_tag,"tab_text",&iface->color.tab.text);
+		xml_get_attribute_color(color_tag,"tab_text_mouse_over",&iface->color.tab.text_mouse_over);
+		xml_get_attribute_color(color_tag,"tab_text_dimmed",&iface->color.tab.text_dimmed);
+		xml_get_attribute_color(color_tag,"control_label",&iface->color.control.label);
+		xml_get_attribute_color(color_tag,"control_text",&iface->color.control.text);
+		xml_get_attribute_color(color_tag,"control_fill",&iface->color.control.fill);
+		xml_get_attribute_color(color_tag,"control_header",&iface->color.control.header);
+		xml_get_attribute_color(color_tag,"control_outline",&iface->color.control.outline);
+		xml_get_attribute_color(color_tag,"control_mouse_over",&iface->color.control.mouse_over);
+		xml_get_attribute_color(color_tag,"control_hilite",&iface->color.control.hilite);
+		xml_get_attribute_color(color_tag,"control_disabled",&iface->color.control.disabled);
+		xml_get_attribute_color(color_tag,"button_fill",&iface->color.button.fill);
+		xml_get_attribute_color(color_tag,"button_text",&iface->color.button.text);
+		xml_get_attribute_color(color_tag,"button_outline",&iface->color.button.outline);
 		xml_get_attribute_color(color_tag,"default_tint",&iface->color.default_tint);
 	}
 
@@ -1084,24 +1088,28 @@ bool iface_write_settings_interface(iface_type *iface)
 		// colors
 		
 	xml_add_tagstart("Color");
-	xml_add_attribute_color("dialog_background",&iface->color.dialog_background);
-	xml_add_attribute_color("dialog_header",&iface->color.dialog_header);
-	xml_add_attribute_color("dialog_outline",&iface->color.dialog_outline);
-	xml_add_attribute_color("dialog_title",&iface->color.dialog_title);
-	xml_add_attribute_color("tab_background",&iface->color.tab_background);
-	xml_add_attribute_color("tab_dimmed",&iface->color.tab_dimmed);
-	xml_add_attribute_color("tab_outline",&iface->color.tab_outline);
-	xml_add_attribute_color("control_label",&iface->color.control_label);
-	xml_add_attribute_color("control_text",&iface->color.control_text);
-	xml_add_attribute_color("control_fill",&iface->color.control_fill);
-	xml_add_attribute_color("control_header",&iface->color.control_header);
-	xml_add_attribute_color("control_outline",&iface->color.control_outline);
-	xml_add_attribute_color("control_mouse_over",&iface->color.control_mouse_over);
-	xml_add_attribute_color("control_hilite",&iface->color.control_hilite);
-	xml_add_attribute_color("control_disabled",&iface->color.control_disabled);
-	xml_add_attribute_color("button_fill",&iface->color.button_fill);
-	xml_add_attribute_color("button_text",&iface->color.button_text);
-	xml_add_attribute_color("button_outline",&iface->color.button_outline);
+	xml_add_attribute_color("background",&iface->color.background);
+	xml_add_attribute_color("dialog_background",&iface->color.dialog.background);
+	xml_add_attribute_color("dialog_header",&iface->color.dialog.header);
+	xml_add_attribute_color("dialog_outline",&iface->color.dialog.outline);
+	xml_add_attribute_color("dialog_title",&iface->color.dialog.title);
+	xml_add_attribute_color("tab_background",&iface->color.tab.background);
+	xml_add_attribute_color("tab_dimmed",&iface->color.tab.dimmed);
+	xml_add_attribute_color("tab_outline",&iface->color.tab.outline);
+	xml_add_attribute_color("tab_text",&iface->color.tab.text);
+	xml_add_attribute_color("tab_text_mouse_over",&iface->color.tab.text_mouse_over);
+	xml_add_attribute_color("tab_text_dimmed",&iface->color.tab.text_dimmed);
+	xml_add_attribute_color("control_label",&iface->color.control.label);
+	xml_add_attribute_color("control_text",&iface->color.control.text);
+	xml_add_attribute_color("control_fill",&iface->color.control.fill);
+	xml_add_attribute_color("control_header",&iface->color.control.header);
+	xml_add_attribute_color("control_outline",&iface->color.control.outline);
+	xml_add_attribute_color("control_mouse_over",&iface->color.control.mouse_over);
+	xml_add_attribute_color("control_hilite",&iface->color.control.hilite);
+	xml_add_attribute_color("control_disabled",&iface->color.control.disabled);
+	xml_add_attribute_color("button_fill",&iface->color.button.fill);
+	xml_add_attribute_color("button_text",&iface->color.button.text);
+	xml_add_attribute_color("button_outline",&iface->color.button.outline);
 	xml_add_attribute_color("default_tint",&iface->color.default_tint);
 	xml_add_tagend(TRUE);
 

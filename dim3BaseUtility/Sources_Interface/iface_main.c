@@ -215,31 +215,36 @@ void iface_default_settings(iface_type *iface)
 	
 		// colors
 		
-	iface->color.dialog_background.r=iface->color.dialog_background.g=iface->color.dialog_background.b=0.0f;
-	iface->color.dialog_header.r=iface->color.dialog_header.g=iface->color.dialog_header.b=0.7f;
-	iface->color.dialog_outline.r=iface->color.dialog_outline.g=iface->color.dialog_outline.b=0.8f;
-	iface->color.dialog_title.r=iface->color.dialog_title.g=iface->color.dialog_title.b=1.0f;
+	iface->color.background.r=iface->color.background.g=iface->color.background.b=0.0f;
+		
+	iface->color.dialog.background.r=iface->color.dialog.background.g=iface->color.dialog.background.b=0.0f;
+	iface->color.dialog.header.r=iface->color.dialog.header.g=iface->color.dialog.header.b=0.7f;
+	iface->color.dialog.outline.r=iface->color.dialog.outline.g=iface->color.dialog.outline.b=0.8f;
+	iface->color.dialog.title.r=iface->color.dialog.title.g=iface->color.dialog.title.b=1.0f;
 
-	iface->color.tab_background.r=iface->color.tab_background.g=iface->color.tab_background.b=0.6f;
-	iface->color.tab_dimmed.r=iface->color.tab_dimmed.g=iface->color.tab_dimmed.b=0.4f;
-	iface->color.tab_outline.r=iface->color.tab_outline.g=iface->color.tab_outline.b=1.0f;
+	iface->color.tab.background.r=iface->color.tab.background.g=iface->color.tab.background.b=0.6f;
+	iface->color.tab.dimmed.r=iface->color.tab.dimmed.g=iface->color.tab.dimmed.b=0.4f;
+	iface->color.tab.outline.r=iface->color.tab.outline.g=iface->color.tab.outline.b=1.0f;
+	iface->color.tab.text.r=iface->color.tab.text.g=iface->color.tab.text.b=1.0f;
+	iface->color.tab.text_mouse_over.r=iface->color.tab.text_mouse_over.g=iface->color.tab.text_mouse_over.b=0.3f;
+	iface->color.tab.text_dimmed.r=iface->color.tab.text_dimmed.g=iface->color.tab.text_dimmed.b=0.1f;
 	
-	iface->color.control_label.r=iface->color.control_label.g=iface->color.control_label.b=0.8f;
-	iface->color.control_text.r=iface->color.control_text.g=iface->color.control_text.b=0.0f;
-	iface->color.control_fill.r=iface->color.control_fill.g=iface->color.control_fill.b=0.6f;
-	iface->color.control_header.r=iface->color.control_header.b=1.0f;
-	iface->color.control_header.g=0.3f;
-	iface->color.control_outline.r=iface->color.control_outline.g=iface->color.control_outline.b=0.0f;
+	iface->color.control.label.r=iface->color.control.label.g=iface->color.control.label.b=0.8f;
+	iface->color.control.text.r=iface->color.control.text.g=iface->color.control.text.b=0.0f;
+	iface->color.control.fill.r=iface->color.control.fill.g=iface->color.control.fill.b=0.6f;
+	iface->color.control.header.r=iface->color.control.header.b=1.0f;
+	iface->color.control.header.g=0.3f;
+	iface->color.control.outline.r=iface->color.control.outline.g=iface->color.control.outline.b=0.0f;
 	
-	iface->color.control_mouse_over.b=1.0f;
-	iface->color.control_mouse_over.r=iface->color.control_mouse_over.g=0.3f;
-	iface->color.control_hilite.r=iface->color.control_hilite.b=1.0f;
-	iface->color.control_hilite.g=0.3f;
-	iface->color.control_disabled.r=iface->color.control_disabled.g=iface->color.control_disabled.b=0.3f;
+	iface->color.control.mouse_over.b=1.0f;
+	iface->color.control.mouse_over.r=iface->color.control.mouse_over.g=0.3f;
+	iface->color.control.hilite.r=iface->color.control.hilite.b=1.0f;
+	iface->color.control.hilite.g=0.3f;
+	iface->color.control.disabled.r=iface->color.control.disabled.g=iface->color.control.disabled.b=0.3f;
 
-	iface->color.button_fill.r=iface->color.button_fill.g=iface->color.button_fill.b=0.6f;
-	iface->color.button_text.r=iface->color.button_text.g=iface->color.button_text.b=0.0f;
-	iface->color.button_outline.r=iface->color.button_outline.g=iface->color.button_outline.b=0.0f;
+	iface->color.button.fill.r=iface->color.button.fill.g=iface->color.button.fill.b=0.6f;
+	iface->color.button.text.r=iface->color.button.text.g=iface->color.button.text.b=0.0f;
+	iface->color.button.outline.r=iface->color.button.outline.g=iface->color.button.outline.b=0.0f;
 	
 	iface->color.default_tint.r=iface->color.default_tint.g=iface->color.default_tint.b=1.0f;
 
