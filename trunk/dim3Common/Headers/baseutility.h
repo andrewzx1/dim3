@@ -576,13 +576,30 @@ extern void bitmap_text_shutdown(texture_font_type *d3_font);
 //
 
 typedef struct		{
-						d3col							dialog_background,dialog_header,dialog_outline,dialog_title,
-														tab_background,tab_dimmed,tab_outline,
-														control_label,control_text,control_fill,
-														control_header,control_outline,
-														control_mouse_over,control_hilite,control_disabled,
-														button_fill,button_text,button_outline,
+						d3col							background,header,outline,title;
+					} iface_color_dialog_type;
+					
+typedef struct		{
+						d3col							background,dimmed,outline,
+														text,text_mouse_over,text_dimmed;
+					} iface_color_tab_type;
+
+typedef struct		{
+						d3col							label,text,fill,header,outline,
+														mouse_over,hilite,disabled;
+					} iface_color_control_type;
+
+typedef struct		{
+						d3col							fill,text,outline;
+					} iface_color_button_type;
+
+typedef struct		{
+						d3col							background,
 														default_tint,tints[max_tint_color];
+						iface_color_dialog_type			dialog;
+						iface_color_tab_type			tab;
+						iface_color_control_type		control;
+						iface_color_button_type			button;
 					} iface_color_type;
 
 typedef struct		{

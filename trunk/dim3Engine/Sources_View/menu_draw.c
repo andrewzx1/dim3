@@ -299,14 +299,14 @@ void menu_draw(void)
 			// color
 
 		if ((net_setup.mode!=net_mode_none) && (item->multiplayer_disable)) {
-			col=&iface.color.control_disabled;
+			col=&iface.color.control.disabled;
 		}
 		else {
 			if (n==view.menu.click_item_idx) {
-				col=&iface.color.control_mouse_over;
+				col=&iface.color.control.mouse_over;
 			}
 			else {
-				col=&iface.color.control_label;
+				col=&iface.color.control.label;
 			}
 		}
 
