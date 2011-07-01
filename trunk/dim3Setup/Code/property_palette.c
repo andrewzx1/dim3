@@ -33,6 +33,7 @@ and can be sold or given away.
 #include "ui_common.h"
 #include "interface.h"
 
+extern iface_type				iface;
 extern file_path_setup_type		file_path_setup;
 extern setup_state_type			state;
 
@@ -292,3 +293,30 @@ void property_palette_click(d3pnt *pnt,bool double_click)
 
 	}
 }
+
+/* =======================================================
+
+      Property Palette Utilities
+      
+======================================================= */
+
+void property_palette_pick_sound(char *name,bool include_none)
+{
+	int				idx;
+
+	dialog_property_list_run("Pick a Sound",(char*)iface.sound_list.sounds,iface.sound_list.nsound,sizeof(iface_sound_type),(int)offsetof(iface_sound_type,name),include_none,&idx);
+
+	name[0]=0x0;
+	if (idx!=-1) strcpy(name,iface.sound_list.sounds[idx].name);
+}
+
+void property_palette_pick_particle(char *name)
+{
+	int				idx;
+
+	dialog_property_list_run("Pick a Particle",(char*)iface.particle_list.particles,iface.particle_list.nparticle,sizeof(iface_particle_type),(int)offsetof(iface_particle_type,name),FALSE,&idx);
+
+	name[0]=0x0;
+	if (idx!=-1) strcpy(name,iface.particle_list.particles[idx].name);
+}
+

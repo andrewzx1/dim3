@@ -104,11 +104,11 @@ void map_movements_start(int movement_idx,int move_idx,int obj_idx)
 	msec=move->msec/10;
 	
 	if (!movement->reverse) {
-		group_move_start(movement->group_idx,movement_idx,move_idx,&move->mov,&move->rot,msec,move->user_id,obj_idx,TRUE);
+		if (movement->group_idx!=-1) group_move_start(movement->group_idx,movement_idx,move_idx,&move->mov,&move->rot,msec,move->user_id,obj_idx,TRUE);
 		if (movement->reverse_group_idx!=-1) group_move_start(movement->reverse_group_idx,movement_idx,move_idx,&rev_mov,&rev_rot,msec,move->user_id,obj_idx,FALSE);
 	}
 	else {
-		group_move_start(movement->group_idx,movement_idx,move_idx,&rev_mov,&rev_rot,msec,move->user_id,obj_idx,TRUE);
+		if (movement->group_idx!=-1) group_move_start(movement->group_idx,movement_idx,move_idx,&rev_mov,&rev_rot,msec,move->user_id,obj_idx,TRUE);
 		if (movement->reverse_group_idx!=-1) group_move_start(movement->reverse_group_idx,movement_idx,move_idx,&move->mov,&move->rot,msec,move->user_id,obj_idx,FALSE);
 	}
 	

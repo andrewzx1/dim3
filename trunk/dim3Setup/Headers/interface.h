@@ -76,6 +76,9 @@ extern void property_palette_reset(void);
 extern void property_palette_scroll_wheel(d3pnt *pnt,int move);
 extern void property_palette_click(d3pnt *pnt,bool double_click);
 
+extern void property_palette_pick_sound(char *name,bool include_none);
+extern void property_palette_pick_particle(char *name);
+
 extern void property_palette_fill_settings(void);
 extern void property_palette_fill_intro(void);
 extern void property_palette_fill_setup(void);
@@ -181,8 +184,6 @@ extern void alt2_property_palette_fill_group_particle(int particle_idx,int group
 extern void alt2_property_palette_click_menu_item(int menu_idx,int menu_item_idx,int id);
 extern void alt2_property_palette_click_chooser_piece(int chooser_idx,int chooser_item_idx,int id);
 extern void alt2_property_palette_click_group_particle(int particle_idx,int group_particle_idx,int id);
-
-extern void property_palette_pick_particle(char *name);
 
 //
 // dialogs

@@ -273,6 +273,8 @@ float ray_trace_rotated_box(d3pnt *spt,d3vct *vct,d3pnt *hpt,int x,int z,int lx,
 	float		t[6],hit_t;
 	d3pnt		pt[6];
 
+		// min z side
+		
 	px[0]=px[3]=lx;
 	px[1]=px[2]=rx;
 	py[0]=py[1]=ty;
@@ -281,6 +283,8 @@ float ray_trace_rotated_box(d3pnt *spt,d3vct *vct,d3pnt *hpt,int x,int z,int lx,
 	if (rang!=0.0f) rotate_2D_polygon(4,px,pz,x,z,rang);
 	t[0]=ray_trace_polygon(spt,vct,&pt[0],4,px,py,pz);
 
+		// max z side
+		
 	px[0]=px[3]=lx;
 	px[1]=px[2]=rx;
 	py[0]=py[1]=ty;
@@ -288,6 +292,8 @@ float ray_trace_rotated_box(d3pnt *spt,d3vct *vct,d3pnt *hpt,int x,int z,int lx,
 	pz[0]=pz[1]=pz[2]=pz[3]=bz;
 	if (rang!=0.0f) rotate_2D_polygon(4,px,pz,x,z,rang);
 	t[1]=ray_trace_polygon(spt,vct,&pt[1],4,px,py,pz);
+	
+		// min x side
 	
 	px[0]=px[1]=px[2]=px[3]=lx;
 	py[0]=py[1]=ty;
@@ -297,6 +303,8 @@ float ray_trace_rotated_box(d3pnt *spt,d3vct *vct,d3pnt *hpt,int x,int z,int lx,
 	if (rang!=0.0f) rotate_2D_polygon(4,px,pz,x,z,rang);
 	t[2]=ray_trace_polygon(spt,vct,&pt[2],4,px,py,pz);
 	
+		// max x side
+		
 	px[0]=px[1]=px[2]=px[3]=rx;
 	py[0]=py[1]=ty;
 	py[2]=py[3]=by;
@@ -305,6 +313,8 @@ float ray_trace_rotated_box(d3pnt *spt,d3vct *vct,d3pnt *hpt,int x,int z,int lx,
 	if (rang!=0.0f) rotate_2D_polygon(4,px,pz,x,z,rang);
 	t[3]=ray_trace_polygon(spt,vct,&pt[3],4,px,py,pz);
 	
+		// min y side
+		
 	px[0]=px[3]=lx;
 	px[1]=px[2]=rx;
 	py[0]=py[1]=py[2]=py[3]=ty;
@@ -313,11 +323,13 @@ float ray_trace_rotated_box(d3pnt *spt,d3vct *vct,d3pnt *hpt,int x,int z,int lx,
 	if (rang!=0.0f) rotate_2D_polygon(4,px,pz,x,z,rang);
 	t[4]=ray_trace_polygon(spt,vct,&pt[4],4,px,py,pz);
 	
-	px[0]=px[3]=lx;
-	px[1]=px[2]=rx;
+		// max y side
+		
+	px[0]=px[3]=lx+5;
+	px[1]=px[2]=rx-5;
 	py[0]=py[1]=py[2]=py[3]=by;
-	pz[0]=pz[1]=tz;
-	pz[2]=pz[3]=bz;
+	pz[0]=pz[1]=tz+5;
+	pz[2]=pz[3]=bz-5;
 	if (rang!=0.0f) rotate_2D_polygon(4,px,pz,x,z,rang);
 	t[5]=ray_trace_polygon(spt,vct,&pt[5],4,px,py,pz);
 	

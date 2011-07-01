@@ -35,6 +35,9 @@ and can be sold or given away.
 
 #define kIntroPropertyMusic						0
 
+#define kIntroPropertyTitleName					1
+#define kIntroPropertyTitleSound				2
+
 #define kIntroPropertyButtonGameNew				10
 #define kIntroPropertyButtonGameLoad			11
 #define kIntroPropertyButtonGameSetup			12
@@ -77,6 +80,12 @@ void property_palette_fill_intro(void)
 
 	list_palette_add_header(&property_palette,0,"Options");
 	list_palette_add_string(&property_palette,kIntroPropertyMusic,"Music",iface.intro.music,FALSE);
+	
+		// title
+
+	list_palette_add_header(&property_palette,0,"Title");
+	list_palette_add_string(&property_palette,kIntroPropertyTitleName,"Name",iface.intro.title.name,FALSE);
+	list_palette_add_string(&property_palette,kIntroPropertyTitleSound,"Sound",iface.intro.title.sound,FALSE);
 
 		// buttons
 
@@ -134,7 +143,8 @@ void property_palette_fill_intro(void)
 void property_palette_click_intro(int id)
 {
 	int					idx,sz;
-	char				model_name[name_str_len],music_name[name_str_len];
+	char				model_name[name_str_len],music_name[name_str_len],
+						title_name[name_str_len];
 
 		// select button
 
@@ -235,6 +245,20 @@ void property_palette_click_intro(int id)
 			else {
 				iface.intro.music[0]=0x0;
 			}
+			break;
+
+		case kIntroPropertyTitleName:
+			strcpy(title_name,iface.intro.title.name);
+			if (dialog_file_open_run("Pick a Title","Titles","png",NULL,title_name)) {
+				strcpy(iface.intro.title.name,title_name);
+			}
+			else {
+				iface.intro.title.name[0]=0x0;
+			}
+			break;
+			
+		case kIntroPropertyTitleSound:
+			property_palette_pick_sound(iface.intro.title.sound,TRUE);
 			break;
 			
 		case kIntroPropertyConfirmX:

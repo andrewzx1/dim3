@@ -65,16 +65,6 @@ void alt2_property_palette_fill_group_particle(int particle_idx,int group_partic
       
 ======================================================= */
 
-void property_palette_pick_particle(char *name)
-{
-	int				idx;
-
-	dialog_property_list_run("Pick a Particle",(char*)iface.particle_list.particles,iface.particle_list.nparticle,sizeof(iface_particle_type),(int)offsetof(iface_particle_type,name),FALSE,&idx);
-
-	name[0]=0x0;
-	if (idx!=-1) strcpy(name,iface.particle_list.particles[idx].name);
-}
-
 void alt2_property_palette_click_group_particle(int particle_idx,int group_particle_idx,int id)
 {
 	iface_particle_group_piece_type			*group_particle;

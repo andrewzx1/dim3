@@ -472,7 +472,7 @@ void iface_read_settings_interface(iface_type *iface)
 {
 	int							n,interface_head_tag,scale_tag,
 								bitmap_head_tag,bitmap_tag,text_head_tag,text_tag,bar_head_tag,bar_tag,
-								radar_head_tag,menu_head_tag,menu_tag,
+								radar_head_tag,menu_head_tag,menu_tag,title_tag,
 								intro_head_tag,intro_model_head_tag,intro_model_tag,intro_confirm_tag,
 								color_tag,font_tag,progress_tag,chat_tag,fade_tag,button_tag,sound_tag,
 								proj_tag,setup_tag;
@@ -650,6 +650,14 @@ void iface_read_settings_interface(iface_type *iface)
 			// music
 			
 		xml_get_attribute_text(intro_head_tag,"music",iface->intro.music,name_str_len);
+		
+			// titles
+			
+		title_tag=xml_findfirstchild("Title",intro_head_tag);
+		if (title_tag!=-1) {
+			xml_get_attribute_text(title_tag,"name",iface->intro.title.name,name_str_len);
+			xml_get_attribute_text(title_tag,"sound",iface->intro.title.sound,name_str_len);
+		}
 
 			// models
 
@@ -1158,6 +1166,13 @@ bool iface_write_settings_interface(iface_type *iface)
 	xml_add_tagstart("Intro");
 	xml_add_attribute_text("music",iface->intro.music);
 	xml_add_tagend(FALSE);
+	
+		// titles
+
+	xml_add_tagstart("Title");
+	xml_add_attribute_text("name",iface->intro.title.name);
+	xml_add_attribute_text("sound",iface->intro.title.sound);
+	xml_add_tagend(TRUE);
 
 		// intro models
 

@@ -86,11 +86,8 @@ int pin_build_ray_set_obj(obj_type *obj,int ty,int by)
 	double			rad,rad_add,d_radius;
 
 		// get radius
-
-	radius=obj->size.x;
-	if (obj->size.z>radius) radius=obj->size.z;
-
-	radius=radius>>1;
+		
+	radius=object_get_radius(obj);
 
 		// get center
 

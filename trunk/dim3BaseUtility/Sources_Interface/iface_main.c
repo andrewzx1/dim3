@@ -319,6 +319,8 @@ void iface_default_settings(iface_type *iface)
 	iface->intro.model_list.nmodel=0;
 	
 	iface->intro.music[0]=0x0;
+	iface->intro.title.name[0]=0x0;
+	iface->intro.title.sound[0]=0x0;
 
 		// player models
 
