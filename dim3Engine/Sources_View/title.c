@@ -41,7 +41,8 @@ extern iface_type			iface;
 extern setup_type			setup;
 extern js_type				js;
 
-int							title_fade_tick,title_fade_mode,title_event_id,title_last_state;
+int							title_fade_tick,title_fade_mode,title_event_id,title_last_state,
+							title_start_tick,title_life_tick;
 char						title_dir[name_str_len],title_name[name_str_len],title_sound_name[name_str_len];
 
 /* =======================================================
@@ -82,15 +83,23 @@ void title_close(void)
 	if (title_event_id!=-1) scripts_post_event_console(js.game_script_idx,-1,sd_event_interface,sd_event_interface_title_done,title_event_id);
 }
 
-bool title_setup(char *dir,char *name,char *sound_name,int event_id,char *err_str)
+bool title_setup(char *dir,char *name,char *sound_name,int life_tick,int event_id,char *err_str)
 {
 	char			path[1024];
 	struct stat		sb;
 
 	strcpy(title_dir,dir);
 	strcpy(title_name,name);
-	strcpy(title_sound_name,sound_name);
+	if (sound_name!=NULL) {
+		strcpy(title_sound_name,sound_name);
+	}
+	else {
+		title_sound_name[0]=0x0;
+	}
 	title_event_id=event_id;
+
+	title_start_tick=game_time_get_raw();
+	title_life_tick=life_tick;
 	
 		// does title exist?
 		
@@ -115,8 +124,19 @@ bool title_setup(char *dir,char *name,char *sound_name,int event_id,char *err_st
 
 void title_run(void)
 {
-	int				tick;
+	int				tick,raw_tick;
 	float			alpha;
+
+		// is the automatic close on?
+
+	raw_tick=game_time_get_raw();
+
+	if ((title_life_tick!=-1) && (title_fade_mode==title_fade_mode_none)) {
+		if ((title_start_tick+title_life_tick)<raw_tick) {
+			title_fade_tick=game_time_get_raw();
+			title_fade_mode=title_fade_mode_out;
+		}
+	}
 	
 		// get the fade
 
@@ -125,16 +145,17 @@ void title_run(void)
 	switch (title_fade_mode) {
 
 		case title_fade_mode_in:
-			tick=game_time_get_raw()-title_fade_tick;
+			tick=raw_tick-title_fade_tick;
 			if (tick>iface.fade.title_msec) {
 				title_fade_mode=title_fade_mode_none;
+				title_start_tick=raw_tick;
 				break;
 			}
 			alpha=((float)tick)/(float)iface.fade.title_msec;
 			break;
 
 		case title_fade_mode_out:
-			tick=game_time_get_raw()-title_fade_tick;
+			tick=raw_tick-title_fade_tick;
 			if (tick>iface.fade.title_msec) {
 				server.next_state=title_last_state;
 				return;

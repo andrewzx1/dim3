@@ -144,15 +144,15 @@
 				Name="OS Libraries"
 				>
 				<File
-					RelativePath="..\..\..\..\Program Files\Microsoft Visual Studio\VC98\Lib\GLU32.LIB"
+					RelativePath="..\..\..\..\Program Files\Microsoft SDKs\Windows\v6.0A\Lib\GlU32.Lib"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\Program Files\Microsoft Visual Studio\VC98\Lib\OPENGL32.LIB"
+					RelativePath="..\..\..\..\Program Files\Microsoft SDKs\Windows\v6.0A\Lib\OpenGL32.Lib"
 					>
 				</File>
 				<File
-					RelativePath="..\..\..\..\Program Files\Microsoft Visual Studio\VC98\Lib\WSOCK32.LIB"
+					RelativePath="..\..\..\..\Program Files\Microsoft SDKs\Windows\v6.0A\Lib\WSock32.Lib"
 					>
 				</File>
 			</Filter>

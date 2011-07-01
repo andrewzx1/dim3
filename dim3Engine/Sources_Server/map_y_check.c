@@ -49,19 +49,19 @@ ray_trace_contact_type	pin_movement_contacts[256];
       
 ======================================================= */
 
-int find_poly_nearest_stand(int x,int y,int z,int ydist,bool ignore_higher)
+int find_poly_nearest_stand(d3pnt *pnt,int my,bool ignore_higher)
 {
 	d3pnt					spt,ept,hpt;
 	ray_trace_contact_type	contact;
 
-	spt.x=x;
-	spt.y=y;
-	if (!ignore_higher) spt.y-=ydist;
-	spt.z=z;
+	spt.x=pnt->x;
+	spt.y=pnt->y;
+	if (!ignore_higher) spt.y-=my;
+	spt.z=pnt->z;
 
-	ept.x=x;
-	ept.y=y+ydist;
-	ept.z=z;
+	ept.x=pnt->x;
+	ept.y=pnt->y+my;
+	ept.z=pnt->z;
 
 	contact.obj.on=FALSE;
 	contact.proj.on=FALSE;
@@ -148,18 +148,18 @@ int pin_build_ray_set_obj(obj_type *obj,int ty,int by)
       
 ======================================================= */
 
-int pin_downward_movement_point(int x,int y,int z,int ydist,poly_pointer_type *stand_poly)
+int pin_downward_movement_point(d3pnt *pnt,int my,poly_pointer_type *stand_poly)
 {
 	d3pnt					spt,ept,hpt;
 	ray_trace_contact_type	contact;
 
-	spt.x=x;
-	spt.y=y-ydist;
-	spt.z=z;
+	spt.x=pnt->x;
+	spt.y=pnt->y-my;
+	spt.z=pnt->z;
 
-	ept.x=x;
-	ept.y=y+ydist;
-	ept.z=z;
+	ept.x=pnt->x;
+	ept.y=pnt->y+my;
+	ept.z=pnt->z;
 	
 	contact.obj.on=FALSE;
 	contact.proj.on=FALSE;
@@ -174,7 +174,7 @@ int pin_downward_movement_point(int x,int y,int z,int ydist,poly_pointer_type *s
 
 	stand_poly->mesh_idx=-1;
 
-	return(y+ydist);
+	return(pnt->y+my);
 }
 
 int pin_downward_movement_obj(obj_type *obj,int my)
@@ -225,24 +225,51 @@ int pin_downward_movement_obj(obj_type *obj,int my)
 	return(cy-obj->pnt.y);
 }
 
+int pin_downward_movement_proj(proj_type *proj,int my)
+{
+	d3pnt					spt,ept,hpt;
+	ray_trace_contact_type	contact;
+
+	spt.x=proj->pnt.x;
+	spt.y=(proj->pnt.y-proj->size.y)-my;
+	spt.z=proj->pnt.z;
+
+	ept.x=proj->pnt.x;
+	ept.y=proj->pnt.y+my;
+	ept.z=proj->pnt.z;
+	
+	contact.obj.on=FALSE;
+	contact.proj.on=FALSE;
+
+	contact.origin=poly_ray_trace_origin_projectile;
+
+	if (ray_trace_map_by_point(&spt,&ept,&hpt,&contact)) {
+		proj->contact.hit_poly.mesh_idx=contact.poly.mesh_idx;
+		proj->contact.hit_poly.poly_idx=contact.poly.poly_idx;
+		return(hpt.y);
+	}
+
+	return(proj->pnt.y+my);
+}
+
 /* =======================================================
 
       Pin Upward Movements
       
 ======================================================= */
 
-int pin_upward_movement_point(int x,int y,int z,int ydist,poly_pointer_type *head_poly)
+int pin_upward_movement_point(d3pnt *pnt,int my,poly_pointer_type *head_poly)
 {
 	d3pnt					spt,ept,hpt;
 	ray_trace_contact_type	contact;
 
-	spt.x=x;
-	spt.y=y;
-	spt.z=z;
+	spt.x=pnt->x;
+	spt.y=pnt->y-my;
+	spt.z=pnt->z;
 
-	ept.x=x;
-	ept.y=y-ydist;
-	ept.z=z;
+	ept.x=pnt->x;
+	ept.y=pnt->y+my;
+	ept.z=pnt->z;
 
 	contact.obj.on=FALSE;
 	contact.proj.on=FALSE;
@@ -257,7 +284,7 @@ int pin_upward_movement_point(int x,int y,int z,int ydist,poly_pointer_type *hea
 
 	head_poly->mesh_idx=-1;
 
-	return(y-ydist);
+	return(pnt->y-my);
 }
 
 int pin_upward_movement_obj(obj_type *obj,int my)
@@ -307,6 +334,33 @@ int pin_upward_movement_obj(obj_type *obj,int my)
 	if (cy==-1) return(my);
 
 	return(cy-(obj->pnt.y-y_sz));
+}
+
+int pin_upward_movement_proj(proj_type *proj,int my)
+{
+	d3pnt					spt,ept,hpt;
+	ray_trace_contact_type	contact;
+
+	spt.x=proj->pnt.x;
+	spt.y=(proj->pnt.y-proj->size.y)-my;
+	spt.z=proj->pnt.z;
+
+	ept.x=proj->pnt.x;
+	ept.y=proj->pnt.y+my;
+	ept.z=proj->pnt.z;
+	
+	contact.obj.on=FALSE;
+	contact.proj.on=FALSE;
+
+	contact.origin=poly_ray_trace_origin_projectile;
+
+	if (ray_trace_map_by_point(&spt,&ept,&hpt,&contact)) {
+		proj->contact.hit_poly.mesh_idx=contact.poly.mesh_idx;
+		proj->contact.hit_poly.poly_idx=contact.poly.poly_idx;
+		return(hpt.y);
+	}
+
+	return(proj->pnt.y-my);
 }
 
 /* =======================================================
