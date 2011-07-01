@@ -44,17 +44,18 @@ extern server_type			server;
 
 int object_rigid_body_get_point_y(obj_type *obj,d3pnt *offset,int x_off,int z_off,int y)
 {
-	int			x,z;
+	d3pnt		pnt;
 	
 	x_off+=offset->x;
 	z_off+=offset->z;
 	
 	rotate_2D_point_center(&x_off,&z_off,angle_add(obj->ang.y,obj->draw.rot.y));
 
-	x=obj->pnt.x+x_off;
-	z=obj->pnt.z+z_off;
+	pnt.x=obj->pnt.x+x_off;
+	pnt.y=y;
+	pnt.z=obj->pnt.z+z_off;
 	
-	return(find_poly_nearest_stand(x,y,z,obj->size.y,FALSE));
+	return(find_poly_nearest_stand(&pnt,obj->size.y,FALSE));
 }
 
 void object_rigid_body_offset_reset_y(obj_type *obj,model_type *mdl)
@@ -119,7 +120,7 @@ void object_rigid_body_reset_angle(obj_type *obj)
 	}
 	else {
 
-		ky=pin_downward_movement_point(obj->pnt.x,y,obj->pnt.z,obj->size.y,&stand_poly);
+		ky=pin_downward_movement_point(&obj->pnt,obj->size.y,&stand_poly);
 		if (stand_poly.mesh_idx!=-1) {
 
 			if (ky>y) {

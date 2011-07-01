@@ -290,11 +290,13 @@ extern void collide_polygon_hit_point_to_object(int poly_uid,obj_type *obj,d3pnt
 extern void collide_polygon_get_normal(int poly_uid,d3vct *normal);
 extern float collide_polygon_dot_product_to_object(int poly_uid,obj_type *obj);
 
-extern int find_poly_nearest_stand(int x,int y,int z,int ydist,bool ignore_higher);
-extern int pin_downward_movement_point(int x,int y,int z,int ydist,poly_pointer_type *stand_poly);
+extern int find_poly_nearest_stand(d3pnt *pnt,int my,bool ignore_higher);
+extern int pin_downward_movement_point(d3pnt *pnt,int my,poly_pointer_type *stand_poly);
 extern int pin_downward_movement_obj(obj_type *obj,int my);
-extern int pin_upward_movement_point(int x,int y,int z,int ydist,poly_pointer_type *head_poly);
+extern int pin_downward_movement_proj(proj_type *proj,int my);
+extern int pin_upward_movement_point(d3pnt *pnt,int my,poly_pointer_type *head_poly);
 extern int pin_upward_movement_obj(obj_type *obj,int my);
+extern int pin_upward_movement_proj(proj_type *proj,int my);
 extern bool map_stand_crush_object(obj_type *obj);
 extern bool map_stand_check_object(obj_type *obj);
 
@@ -403,7 +405,7 @@ extern void chooser_run(void);
 
 extern void title_open(void);
 extern void title_close(void);
-extern bool title_setup(char *dir,char *name,char *sound_name,int event_id,char *err_str);
+extern bool title_setup(char *dir,char *name,char *sound_name,int life_tick,int event_id,char *err_str);
 extern void title_run(void);
 
 extern bool cinema_start(char *name,int event_id,char *err_str);

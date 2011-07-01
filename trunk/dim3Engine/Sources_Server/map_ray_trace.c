@@ -328,8 +328,8 @@ float ray_trace_rotated_box(d3pnt *spt,d3vct *vct,d3pnt *hpt,int x,int z,int lx,
 	px[0]=px[3]=lx+5;
 	px[1]=px[2]=rx-5;
 	py[0]=py[1]=py[2]=py[3]=by;
-	pz[0]=pz[1]=tz+5;
-	pz[2]=pz[3]=bz-5;
+	pz[0]=pz[1]=tz;
+	pz[2]=pz[3]=bz;
 	if (rang!=0.0f) rotate_2D_polygon(4,px,pz,x,z,rang);
 	t[5]=ray_trace_polygon(spt,vct,&pt[5],4,px,py,pz);
 	
@@ -597,10 +597,7 @@ bool ray_trace_object_bound_check(obj_type *obj,d3pnt *min,d3pnt *max,ray_trace_
 	x=obj->pnt.x;
 	z=obj->pnt.z;
 
-	radius=obj->size.x;
-	if (obj->size.z>radius) radius=obj->size.z;
-	
-	radius=radius>>1;
+	radius=object_get_radius(obj);
 	
 	if (max->x<(x-radius)) return(FALSE);
 	if (min->x>(x+radius)) return(FALSE);

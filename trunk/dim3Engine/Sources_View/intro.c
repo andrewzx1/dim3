@@ -496,7 +496,7 @@ void intro_click(void)
 			// credit and quit
 			
 		case intro_button_credit_id:
-			title_setup("Bitmaps/Backgrounds","credit","",-1,err_str);
+			title_setup("Bitmaps/Backgrounds","credit",NULL,-1,-1,err_str);
 			break;
 
 		case intro_button_quit_id:

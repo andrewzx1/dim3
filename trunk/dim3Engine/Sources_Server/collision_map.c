@@ -101,8 +101,8 @@ inline bool line_line_intersect(d3pnt *p0,d3pnt *p1,d3pnt *p2,d3pnt *p3,d3pnt *h
 
 int circle_line_intersect(d3pnt *p1,d3pnt *p2,d3pnt *circle_pnt,int radius,d3pnt *hit_pnt)
 {
-	int				n,xadd,zadd;
-	double			rad,d_radius,dist,cur_dist,dx,dz;
+	int				n,dist,cur_dist;
+	double			rad,rad_add,d_radius,dx,dz;
 	d3pnt			cp2,temp_hit_pnt;
 	
 		// ray cast like spokes from the circle
@@ -114,19 +114,17 @@ int circle_line_intersect(d3pnt *p1,d3pnt *p2,d3pnt *circle_pnt,int radius,d3pnt
 
 	d_radius=(double)radius;
 
+	rad=0.0;
+	rad_add=(D_TRIG_PI*2.0)/24.0;
+
 	for (n=0;n!=24;n++) {
-		rad=(double)(((float)(n*15))*ANG_to_RAD);
-
-		xadd=(int)(d_radius*sin(rad));
-		zadd=-(int)(d_radius*cos(rad));
-
-		cp2.x=circle_pnt->x+xadd;
-		cp2.z=circle_pnt->z+zadd;
+		cp2.x=circle_pnt->x+(int)(d_radius*sin(rad));
+		cp2.z=circle_pnt->z-(int)(d_radius*cos(rad));
 		
 		if (line_line_intersect(p1,p2,circle_pnt,&cp2,&temp_hit_pnt)) {
 			dx=(hit_pnt->x-circle_pnt->x);
 			dz=(hit_pnt->z-circle_pnt->z);
-			dist=(dx*dx)+(dz*dz);
+			dist=(int)sqrt((dx*dx)+(dz*dz));
 
 			if ((dist<cur_dist) || (cur_dist==-1)) {
 				cur_dist=dist;
@@ -134,11 +132,11 @@ int circle_line_intersect(d3pnt *p1,d3pnt *p2,d3pnt *circle_pnt,int radius,d3pnt
 				hit_pnt->z=temp_hit_pnt.z;
 			}
 		}
-	}
 
-	if (cur_dist==-1) return(-1);
+		rad+=rad_add;
+	}
 	
-	return((int)sqrt(cur_dist));
+	return(cur_dist);
 }
 
 int circle_box_intersect(d3pnt *min,d3pnt *max,d3pnt *circle_pnt,int radius,d3pnt *hit_pnt)
@@ -228,10 +226,7 @@ bool collide_circle_check_object_cylinder(d3pnt *circle_pnt,int radius,d3pnt *mi
 
 		// radius check
 
-	chk_radius=obj->size.x;
-	if (obj->size.z>chk_radius) chk_radius=obj->size.z;
-
-	chk_radius=chk_radius>>1;
+	chk_radius=object_get_radius(obj);
 
 		// if distance between center points
 		// is greater than radius+chk_radius,
@@ -339,10 +334,7 @@ bool collide_circle_check_projectile(d3pnt *circle_pnt,int radius,d3pnt *min,d3p
 
 		// radius check
 
-	chk_radius=proj->size.x;
-	if (proj->size.z>chk_radius) chk_radius=proj->size.z;
-
-	chk_radius=chk_radius>>1;
+	chk_radius=projectile_get_radius(proj);
 
 		// if distance between center points
 		// is greater than radius+chk_radius,
@@ -851,10 +843,7 @@ bool collide_object_to_object(obj_type *obj,d3pnt *motion,obj_type *chk_obj,bool
 							
 		// get the circle radius
 
-	radius=obj->size.x;
-	if (obj->size.z>radius) radius=obj->size.z;
-
-	radius=radius>>1;
+	radius=object_get_radius(obj);
 
 		// get the circle
 

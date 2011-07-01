@@ -206,7 +206,6 @@ void projectile_move(proj_type *proj)
 {
 	bool				wall_hit;
 	d3pnt				org_pnt,motion;
-	poly_pointer_type	hit_poly;
 	
 	object_clear_contact(&proj->contact);
 	
@@ -229,17 +228,11 @@ void projectile_move(proj_type *proj)
 		// y move
 
 	if (motion.y!=0) {
-
 		if (motion.y<0) {
-			proj->pnt.y=pin_upward_movement_point(proj->pnt.x,proj->pnt.y,proj->pnt.z,abs(motion.y),&hit_poly);
+			proj->pnt.y=pin_upward_movement_proj(proj,abs(motion.y));
 		}
 		else {
-			proj->pnt.y=pin_downward_movement_point(proj->pnt.x,proj->pnt.y,proj->pnt.z,motion.y,&hit_poly);
-		}
-
-		if (hit_poly.mesh_idx!=-1) {
-			proj->contact.hit_poly.mesh_idx=hit_poly.mesh_idx;
-			proj->contact.hit_poly.poly_idx=hit_poly.poly_idx;
+			proj->pnt.y=pin_downward_movement_proj(proj,motion.y);
 		}
 	}
 	

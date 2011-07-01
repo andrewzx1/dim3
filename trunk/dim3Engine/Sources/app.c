@@ -32,6 +32,7 @@ and can be sold or given away.
 #include "interface.h"
 #include "network.h"
 
+extern iface_type			iface;
 extern server_type			server;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
@@ -86,11 +87,32 @@ bool app_start(char *err_str)
 	
 	console_initialize();
 
-		// if no editor launch, start in intro
+		// if no editor launch,
+		// start in intro or title media
+		// we hard-set the state here as there
+		// is no previous state
 		
 	if (!setup.editor_override.on) {
+
+			// is there a title?
+
+		if (iface.intro.title.name[0]!=0x0) {
+
+			if (!title_setup("Titles",iface.intro.title.name,iface.intro.title.sound,iface.intro.title.life_msec,-1,err_str)) return(FALSE);
+
+			server.state=gs_title;
+			server.last_state=gs_intro;
+
+			title_open();
+			return(TRUE);
+		}
+
+			// if not go right to intro
+
 		server.state=gs_intro;
+
 		intro_open();
+
 		return(TRUE);
 	}
 	

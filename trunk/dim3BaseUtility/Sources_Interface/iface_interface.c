@@ -657,6 +657,7 @@ void iface_read_settings_interface(iface_type *iface)
 		if (title_tag!=-1) {
 			xml_get_attribute_text(title_tag,"name",iface->intro.title.name,name_str_len);
 			xml_get_attribute_text(title_tag,"sound",iface->intro.title.sound,name_str_len);
+			iface->intro.title.life_msec=xml_get_attribute_int(title_tag,"life_msec");
 		}
 
 			// models
@@ -1172,6 +1173,7 @@ bool iface_write_settings_interface(iface_type *iface)
 	xml_add_tagstart("Title");
 	xml_add_attribute_text("name",iface->intro.title.name);
 	xml_add_attribute_text("sound",iface->intro.title.sound);
+	xml_add_attribute_int("life_msec",iface->intro.title.life_msec);
 	xml_add_tagend(TRUE);
 
 		// intro models

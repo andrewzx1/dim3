@@ -849,6 +849,7 @@ typedef struct		{
 					} iface_intro_model_list;
 
 typedef struct		{
+						int								life_msec;
 						char							name[name_str_len],sound[name_str_len];
 					} iface_intro_title_type;
 					
