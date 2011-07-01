@@ -849,7 +849,12 @@ typedef struct		{
 					} iface_intro_model_list;
 
 typedef struct		{
+						char							name[name_str_len],sound[name_str_len];
+					} iface_intro_title_type;
+					
+typedef struct		{
 						char							music[name_str_len];
+						iface_intro_title_type			title;
 						iface_intro_button_type			button_game_new,button_game_load,button_game_setup,
 														button_game_new_easy,button_game_new_medium,button_game_new_hard,button_game_new_cancel,
 														button_multiplayer_host,button_multiplayer_join,button_multiplayer_setup,
