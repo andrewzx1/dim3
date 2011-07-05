@@ -177,9 +177,10 @@ and can be sold or given away.
 #define cinema_action_move									2
 #define cinema_action_stop									3
 #define cinema_action_show									4
-#define cinema_action_hide									5
-#define cinema_action_fade_in								6
-#define cinema_action_fade_out								7
+#define cinema_action_show_fade								5
+#define cinema_action_hide									6
+#define cinema_action_fade_in								7
+#define cinema_action_fade_out								8
 
 #define cinema_actor_camera									0
 #define cinema_actor_player									1

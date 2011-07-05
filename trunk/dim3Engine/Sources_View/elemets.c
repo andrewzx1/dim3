@@ -991,8 +991,8 @@ int element_find_for_xy(int x,int y)
 	
 	element=elements;
 	
-	for (n=0;n<nelement;n++) {
-		if ((element->selectable) && (!element->hidden)) {
+	for (n=0;n!=nelement;n++) {
+		if ((element->selectable) && (!element->hidden) && (element->enabled)) {
 			element_get_box(element,&lft,&rgt,&top,&bot);
 			if ((x>=lft) && (x<=rgt) && (y>=top) && (y<=bot)) return(element->id);
 		}

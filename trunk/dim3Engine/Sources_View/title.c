@@ -72,7 +72,7 @@ void title_open(void)
 
 		// fades
 		
-	title_fade_tick=game_time_get_raw();
+	title_fade_tick=-1;
 	title_fade_mode=title_fade_mode_in;
 }
 
@@ -133,7 +133,7 @@ void title_run(void)
 
 	if ((title_life_tick!=-1) && (title_fade_mode==title_fade_mode_none)) {
 		if ((title_start_tick+title_life_tick)<raw_tick) {
-			title_fade_tick=game_time_get_raw();
+			title_fade_tick=-1;
 			title_fade_mode=title_fade_mode_out;
 		}
 	}
@@ -145,21 +145,27 @@ void title_run(void)
 	switch (title_fade_mode) {
 
 		case title_fade_mode_in:
+			if (title_fade_tick==-1) title_fade_tick=raw_tick;
+			
 			tick=raw_tick-title_fade_tick;
 			if (tick>iface.fade.title_msec) {
 				title_fade_mode=title_fade_mode_none;
 				title_start_tick=raw_tick;
 				break;
 			}
+			
 			alpha=((float)tick)/(float)iface.fade.title_msec;
 			break;
 
 		case title_fade_mode_out:
+			if (title_fade_tick==-1) title_fade_tick=raw_tick;
+			
 			tick=raw_tick-title_fade_tick;
 			if (tick>iface.fade.title_msec) {
 				server.next_state=title_last_state;
 				return;
 			}
+			
 			alpha=1.0f-(((float)tick)/(float)iface.fade.title_msec);
 			break;
 	}
@@ -171,7 +177,7 @@ void title_run(void)
 		// the input
 		
 	if ((title_fade_mode==title_fade_mode_none) && (input_gui_get_mouse_left_button_down())) {
-		title_fade_tick=game_time_get_raw();
+		title_fade_tick=-1;
 		title_fade_mode=title_fade_mode_out;
 	}
 }
