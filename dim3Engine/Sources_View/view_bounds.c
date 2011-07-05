@@ -143,6 +143,22 @@ bool boundbox_inview(int x,int z,int ex,int ez,int ty,int by)
 	return(complex_boundbox_inview(px,py,pz));
 }
 
+bool boundbox_2_inview(d3pnt *min,d3pnt *max)
+{
+	int				px[8],py[8],pz[8];
+	
+	px[0]=px[3]=px[4]=px[7]=min->x;
+	px[1]=px[2]=px[5]=px[6]=max->x;
+
+	pz[0]=pz[1]=pz[4]=pz[5]=min->z;
+	pz[2]=pz[3]=pz[6]=pz[7]=max->z;
+
+	py[0]=py[1]=py[2]=py[3]=min->y;
+	py[4]=py[5]=py[6]=py[7]=max->y;
+	
+	return(complex_boundbox_inview(px,py,pz));
+}
+
 /* =======================================================
 
       Pieces in View
@@ -156,31 +172,19 @@ bool mesh_inview(map_mesh_type *mesh)
 
 bool mesh_shadow_inview(map_mesh_type *mesh)
 {
-	/*
-	int				light_intensity,
-					px[8],py[8],pz[8];
-	d3pnt			light_pnt;
-	*/
-	// supergumba
-	
-	return(FALSE);
+	int				high,light_intensity;
+	d3pnt			min,max,light_pnt;
 	
 		// get shadow volume
-/*		
-	px[0]=px[3]=px[4]=px[7]=mesh->box.min.x;
-	px[1]=px[2]=px[5]=px[6]=mesh->box.max.x;
-	py[0]=py[1]=py[2]=py[3]=mesh->box.min.y;
-	py[4]=py[5]=py[6]=py[7]=mesh->box.max.y;
-	pz[0]=pz[1]=pz[4]=pz[5]=mesh->box.min.z;
-	pz[2]=pz[3]=pz[6]=pz[7]=mesh->box.max.z;
 
-	shadow_get_light_point(&mesh->box.mid,(mesh->box.max.y-mesh->box.min.y),&light_pnt,&light_intensity);
-	if (!shadow_get_volume(&mesh->box.mid,(mesh->box.max.y-mesh->box.min.y),light_pnt,light_intensity,px,py,pz)) return(FALSE);
+	high=mesh->box.max.y-mesh->box.min.y;
 
-		// run bounds check
+	shadow_get_light_point(&mesh->box.mid,high,&light_pnt,&light_intensity);
+	memmove(&min,&mesh->box.min,sizeof(d3pnt));
+	memmove(&max,&mesh->box.max,sizeof(d3pnt));
+	shadow_get_bound_box(&mesh->box.mid,high,&light_pnt,light_intensity,&min,&max);
 		
-	return(complex_boundbox_inview(px,py,pz));
-	*/
+	return(boundbox_2_inview(&min,&max));
 }
 
 bool model_inview(model_draw *draw)
@@ -195,26 +199,18 @@ bool model_inview(model_draw *draw)
 
 bool model_shadow_inview(model_draw *draw)
 {
-	/*
-	int				light_intensity,
-					px[8],py[8],pz[8];
-	d3pnt			light_pnt;
-*/
+	int				light_intensity;
+	d3pnt			min,max,light_pnt;
+
 	if ((draw->model_idx==-1) || (!draw->on)) return(FALSE);
 	
-	return(TRUE);		// supergumba
-	
 		// get shadow volume
-/*		
+
+	model_get_view_complex_bounding_volume(server.model_list.models[draw->model_idx],&draw->pnt,&draw->setup.ang,&min,&max);
 	shadow_get_light_point(&draw->pnt,draw->size.y,&light_pnt,&light_intensity);
+	shadow_get_bound_box(&draw->pnt,draw->size.y,&light_pnt,light_intensity,&min,&max);
 
-	model_get_view_complex_bounding_box(server.model_list.models[draw->model_idx],&draw->pnt,&draw->setup.ang,px,py,pz);
-	if (!shadow_get_volume(&draw->pnt,draw->size.y,light_pnt,light_intensity,px,py,pz)) return(FALSE);
-	
-		// run bounds check
-
-	return(complex_boundbox_inview(px,py,pz));
-	*/
+	return(boundbox_2_inview(&min,&max));
 }
 
 bool effect_inview(effect_type *effect,int count,d3pnt *center_pnt)

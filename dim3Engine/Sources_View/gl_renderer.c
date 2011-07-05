@@ -92,9 +92,6 @@ bool gl_initialize(int screen_wid,int screen_high,int fsaa_mode,bool reset,char 
 #ifndef D3_OS_MAC
 	GLenum				glew_error;
 #endif
-#ifdef D3_SDL_1_3
-	SDL_DisplayMode		dsp_mode;
-#endif
 
 		// setup rendering sizes
         

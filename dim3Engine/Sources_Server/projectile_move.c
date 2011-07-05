@@ -349,7 +349,7 @@ bool projectile_bounce(proj_type *proj,float min_ymove,float reduce,bool send_ev
 	proj->force.gravity*=reduce;
 	proj->gravity_add=0.0f;
 	
-	proj->pnt.y-=fy;
+	proj->pnt.y-=(int)fy;
 
 	if (send_event) scripts_post_event_console(proj->script_idx,proj->idx,sd_event_projectile,sd_event_projectile_bounce,0);
 	

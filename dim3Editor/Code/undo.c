@@ -429,6 +429,8 @@ void undo_pull(void)
 	if (undo_level==0) os_menu_enable_item(app_menu_edit,1,FALSE);
 	
 		// redraw windows
+
+	select_clear();
 		
 	item_palette_reset();
 	property_palette_reset();

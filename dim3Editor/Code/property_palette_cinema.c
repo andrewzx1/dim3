@@ -39,7 +39,8 @@ and can be sold or given away.
 #define kCinemaPropertyShowHUD				3
 #define kCinemaPropertyNoCancel				4
 
-#define kCinmeaPropertySort					10
+#define kCinemaPropertySort					10
+#define kCinemaPropertyShift				11
 
 #define kCinemaPropertyActionAdd			20
 
@@ -79,8 +80,9 @@ void property_palette_fill_cinema(int cinema_idx)
 	list_palette_add_checkbox(&property_palette,kCinemaPropertyShowHUD,"Show HUD",cinema->show_hud,FALSE);
 	list_palette_add_checkbox(&property_palette,kCinemaPropertyNoCancel,"No Cancel",cinema->no_cancel,FALSE);
 
-	list_palette_add_header(&property_palette,0,"Cinema Sort");
-	list_palette_add_string_selectable_button(&property_palette,kCinmeaPropertySort,list_button_set,kCinmeaPropertySort,"Sort Actions",NULL,FALSE,FALSE);
+	list_palette_add_header(&property_palette,0,"Cinema Operations");
+	list_palette_add_string_selectable_button(&property_palette,kCinemaPropertySort,list_button_set,kCinemaPropertySort,"Sort Actions",NULL,FALSE,FALSE);
+	list_palette_add_string_selectable_button(&property_palette,kCinemaPropertyShift,list_button_set,kCinemaPropertyShift,"Shift Actions After Selection",NULL,FALSE,FALSE);
 
 	list_palette_add_header_button(&property_palette,kCinemaPropertyActionAdd,"Cinema Actions",list_button_plus);
 
@@ -116,7 +118,7 @@ void property_palette_fill_cinema(int cinema_idx)
 
 /* =======================================================
 
-      Sort Cinemas
+      Sort and Shift Cinemas
       
 ======================================================= */
 
@@ -185,6 +187,20 @@ void cinemas_action_sort(int cinema_idx)
 	free(sort_list);
 }
 
+void cinemas_action_shift(int cinema_idx,int action_idx,int shift)
+{
+	int						n;
+	map_cinema_type			*cinema;
+	
+	cinema=&map.cinema.cinemas[cinema_idx];
+	if (cinema->naction==0) return;
+
+	for (n=action_idx;n<cinema->naction;n++) {
+		cinema->actions[n].start_msec+=shift;
+		if (cinema->actions[n].end_msec!=0) cinema->actions[n].end_msec+=shift;
+	}
+}
+
 /* =======================================================
 
       Property Palette Click Cinema
@@ -193,6 +209,7 @@ void cinemas_action_sort(int cinema_idx)
 
 void property_palette_click_cinema(int cinema_idx,int id)
 {
+	int					action_idx,shift;
 	map_cinema_type		*cinema;
 
 	cinema=&map.cinema.cinemas[cinema_idx];
@@ -228,8 +245,25 @@ void property_palette_click_cinema(int cinema_idx,int id)
 
 		// sort action
 
-	if (id==kCinmeaPropertySort) {
+	if (id==kCinemaPropertySort) {
 		cinemas_action_sort(cinema_idx);
+		main_wind_draw();
+		return;
+	}
+
+		// shift actions
+
+	if (id==kCinemaPropertyShift) {
+		
+		if (state.cur_cinema_action_idx==-1) {
+			action_idx=0;
+		}
+		else {
+			action_idx=state.cur_cinema_action_idx;
+		}
+
+		dialog_property_string_run(list_string_value_int,(void*)&shift,0,0,0);
+		cinemas_action_shift(cinema_idx,action_idx,shift);
 		main_wind_draw();
 		return;
 	}

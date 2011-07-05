@@ -227,6 +227,7 @@ extern void select_delete_move_index(int type,int main_idx,int sub_idx);
 extern void select_sort(void);
 extern void select_duplicate_clear(void);
 extern void select_duplicate_add(int type,int main_idx,int sub_idx);
+extern void select_duplicate_backup(void);
 extern void select_duplicate_copy(void);
 
 //

@@ -288,6 +288,12 @@ void select_duplicate_add(int type,int main_idx,int sub_idx)
 	nselect_duplicate_item++;
 }
 
+void select_duplicate_backup(void)
+{
+	memmove(select_duplicate_items,select_items,(sizeof(select_item_type)*nselect_item));
+	nselect_duplicate_item=nselect_item;
+}
+
 void select_duplicate_copy(void)
 {
 	memmove(select_items,select_duplicate_items,(sizeof(select_item_type)*nselect_duplicate_item));

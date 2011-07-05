@@ -800,6 +800,9 @@ extern void render_map_liquid_transparent(void);
 // shadows
 //
 
+extern void shadow_get_light_point(d3pnt *pnt,int high,d3pnt *light_pnt,int *light_intensity);
+extern void shadow_get_bound_box(d3pnt *pnt,int high,d3pnt *light_pnt,int light_intensity,d3pnt *min,d3pnt *max);
+
 extern void shadow_render_model(model_draw *draw);
 extern void shadow_render_mesh(int shadow_mesh_idx);
 
