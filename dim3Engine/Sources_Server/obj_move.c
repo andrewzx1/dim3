@@ -860,7 +860,7 @@ void object_move_normal(obj_type *obj)
 {
 	int					bump_y_move,start_y,fall_damage;
 	bool				old_falling;
-	d3pnt				motion,old_pnt;
+	d3pnt				motion,temp_motion,old_pnt;
 
 		// get object motion
 		
@@ -895,6 +895,18 @@ void object_move_normal(obj_type *obj)
 		// clear all contacts
 
 	object_clear_contact(&obj->contact);
+	
+		// get a temporary movement
+		// this is an x/z change unrestricted by Y
+		// variations.  We use this to move the Y
+		// around in the space that it could
+		// be at
+		
+	temp_motion.x=motion.x;
+	temp_motion.y=motion.y;
+	temp_motion.z=motion.z;
+	
+	collide_object_to_map(obj,&temp_motion);
 
 		// move the object in y space at the projected
 		// x/z position
@@ -908,12 +920,13 @@ void object_move_normal(obj_type *obj)
 		// to avoid land features that might block foward
 		// movement
 
-	memmove(&old_pnt,&obj->pnt,sizeof(d3pnt));
+	old_pnt.x=obj->pnt.x;
+	old_pnt.z=obj->pnt.z;
 
 	start_y=obj->pnt.y;
 
-	obj->pnt.x=obj->pnt.x+motion.x;
-	obj->pnt.z=obj->pnt.z+motion.z;
+	obj->pnt.x+=temp_motion.x;
+	obj->pnt.z+=temp_motion.z;
 
 	if (motion.y<0) {
 		object_move_y_up(obj,motion.y);

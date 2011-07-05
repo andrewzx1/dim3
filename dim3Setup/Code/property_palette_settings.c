@@ -33,10 +33,12 @@ and can be sold or given away.
 #include "ui_common.h"
 #include "interface.h"
 
-#define kSettingsScaleX							0
-#define kSettingsScaleY							1
-#define kSettingsInterfaceFont					2
-#define kSettingsHUDFont						3
+#define kSettingsProjectName					0
+#define kSettingsScaleX							1
+#define kSettingsScaleY							2
+#define kSettingsInterfaceFont					3
+#define kSettingsHUDFont						4
+#define kSettingsClickSound						5
 
 #define kSettingsColorBackground				10
 #define kSettingsColorDefaultTint				11
@@ -94,6 +96,11 @@ extern list_palette_type		property_palette;
 
 void property_palette_fill_settings(void)
 {
+		// project
+		
+	list_palette_add_header(&property_palette,0,"Project");
+	list_palette_add_string(&property_palette,kSettingsProjectName,"Name",iface.project_name,FALSE);
+
 		// scale
 		
 	list_palette_add_header(&property_palette,0,"Scale");
@@ -105,6 +112,11 @@ void property_palette_fill_settings(void)
 	list_palette_add_header(&property_palette,0,"Font");
 	list_palette_add_string(&property_palette,kSettingsInterfaceFont,"Interface Font",iface.font.interface_name,FALSE);
 	list_palette_add_string(&property_palette,kSettingsHUDFont,"HUD Font",iface.font.hud_name,FALSE);
+
+		// sound
+		
+	list_palette_add_header(&property_palette,0,"Sound");
+	list_palette_add_string(&property_palette,kSettingsClickSound,"Click",iface.click_sound,FALSE);
 
 		// color
 		
@@ -181,6 +193,12 @@ void property_palette_fill_settings(void)
 void property_palette_click_settings(int id)
 {
 	switch (id) {
+	
+			// project name
+
+		case kSettingsProjectName:
+			dialog_property_string_run(list_string_value_string,(void*)iface.project_name,name_str_len,0,0);
+			break;
 
 			// setting
 			
@@ -200,6 +218,12 @@ void property_palette_click_settings(int id)
 
 		case kSettingsHUDFont:
 			dialog_property_string_run(list_string_value_string,(void*)iface.font.hud_name,name_str_len,0,0);
+			break;
+			
+			// sounnd
+			
+		case kSettingsClickSound:
+			property_palette_pick_sound(iface.click_sound,FALSE);
 			break;
 			
 			// main color

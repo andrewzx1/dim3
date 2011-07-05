@@ -302,7 +302,7 @@ void cinema_action_run_object(map_cinema_action_type *action)
 
 		// show and hide
 
-	if (action->action==cinema_action_show) {
+	if ((action->action==cinema_action_show) || (action->action==cinema_action_show_fade)) {
 		obj->hidden=FALSE;
 		return;
 	}
@@ -390,6 +390,11 @@ void cinema_action_run_hud_bitmap(map_cinema_action_type *action)
 		case cinema_action_show:
 			bitmap->show=TRUE;
 			break;
+		case cinema_action_show_fade:
+			bitmap->show=TRUE;
+			bitmap->fade.on=TRUE;
+			bitmap->fade.start_tick=game_time_get();
+			break;
 		case cinema_action_hide:
 			bitmap->show=FALSE;
 			break;
@@ -408,6 +413,11 @@ void cinema_action_run_hud_text(map_cinema_action_type *action)
 	switch (action->action) {
 		case cinema_action_show:
 			text->show=TRUE;
+			break;
+		case cinema_action_show_fade:
+			text->show=TRUE;
+			text->fade.on=TRUE;
+			text->fade.start_tick=game_time_get();
 			break;
 		case cinema_action_hide:
 			text->show=FALSE;

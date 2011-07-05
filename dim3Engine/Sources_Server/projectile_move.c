@@ -205,15 +205,10 @@ void projectile_speed(proj_type *proj)
 void projectile_move(proj_type *proj)
 {
 	bool				wall_hit;
-	d3pnt				org_pnt,motion;
+	d3pnt				motion;
 	
 	object_clear_contact(&proj->contact);
 	
-		// save original points for bounces
-		// and reflects
-		
-	memmove(&org_pnt,&proj->pnt,sizeof(d3pnt));
-
 		// project movement
 		
 	projectile_set_motion(proj,proj->speed,proj->motion.ang.y,proj->motion.ang.x,&motion);
@@ -251,15 +246,11 @@ void projectile_move(proj_type *proj)
 
 		if ((proj->action.reflect) && (wall_hit)) {
 			projectile_reflect(proj,TRUE);
-			memmove(&proj->pnt,&org_pnt,sizeof(d3pnt));
 			return;
 		}
 		
 		if ((proj->action.bounce) && (!wall_hit)) {
-			if (!projectile_bounce(proj,proj->action.bounce_min_move,proj->action.bounce_reduce,TRUE)) {
-				memmove(&proj->pnt,&org_pnt,sizeof(d3pnt));
-				return;
-			}
+			if (!projectile_bounce(proj,proj->action.bounce_min_move,proj->action.bounce_reduce,TRUE)) return;
 		}
 	}
 	
@@ -357,6 +348,8 @@ bool projectile_bounce(proj_type *proj,float min_ymove,float reduce,bool send_ev
 
 	proj->force.gravity*=reduce;
 	proj->gravity_add=0.0f;
+	
+	proj->pnt.y-=fy;
 
 	if (send_event) scripts_post_event_console(proj->script_idx,proj->idx,sd_event_projectile,sd_event_projectile_bounce,0);
 	

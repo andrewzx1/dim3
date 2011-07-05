@@ -53,7 +53,7 @@ extern editor_setup_type		setup;
 extern list_palette_type		property_palette;
 
 char							action_actor_type_str[][32]={"Camera","Player","Object","Movement","Particle","Sound","Text","Bitmap",""},
-								action_action_type_str[][32]={"None","Place","Move","Stop","Show","Hide","Fade In","Fade Out",""};
+								action_action_type_str[][32]={"None","Place","Move","Stop","Show","Show/Fade","Hide","Fade In","Fade Out",""};
 
 /* =======================================================
 
@@ -88,7 +88,7 @@ void property_palette_fill_cinema(int cinema_idx)
 
 	for (n=0;n!=cinema->naction;n++) {
 
-		sprintf(str,"%d: ",action->start_msec);
+		sprintf(str,"%06d ",action->start_msec);
 		if (action->action!=cinema_action_none) {
 			strcat(str,action_action_type_str[action->action]);
 			strcat(str," ");
@@ -99,7 +99,7 @@ void property_palette_fill_cinema(int cinema_idx)
 		}
 		else {
 			if ((action->actor_type!=cinema_actor_camera) && (action->actor_type!=cinema_actor_player)) {
-				sprintf(str2,"%s(%s)",action_actor_type_str[action->actor_type],action->actor_name);
+				sprintf(str2,"%s (%s)",action_actor_type_str[action->actor_type],action->actor_name);
 			}
 			else {
 				strcpy(str2,action_actor_type_str[action->actor_type]);
@@ -210,6 +210,7 @@ void property_palette_click_cinema(int cinema_idx,int id)
 
 	if (id==kCinemaPropertyActionAdd) {
 		state.cur_cinema_action_idx=map_cinema_add_action(&map,cinema_idx);
+		dialog_property_string_run(list_string_value_positive_int,(void*)&cinema->actions[state.cur_cinema_action_idx].start_msec,0,0,0);
 		alt_property_fix_open_state();
 		main_wind_draw();
 		return;

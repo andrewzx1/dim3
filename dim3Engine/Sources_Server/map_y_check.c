@@ -303,8 +303,8 @@ int pin_upward_movement_obj(obj_type *obj,int my)
 
 	y_sz=obj->size.y;
 	if (obj->duck.mode!=dm_stand) y_sz-=obj->duck.y_move;
-	by=(obj->pnt.y-y_sz)+my;
 	ty=(obj->pnt.y-y_sz)-my;
+	by=(obj->pnt.y-y_sz)+my;
 
 	ray_count=pin_build_ray_set_obj(obj,ty,by);
 

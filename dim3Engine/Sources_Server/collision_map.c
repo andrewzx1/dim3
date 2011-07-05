@@ -122,8 +122,8 @@ int circle_line_intersect(d3pnt *p1,d3pnt *p2,d3pnt *circle_pnt,int radius,d3pnt
 		cp2.z=circle_pnt->z-(int)(d_radius*cos(rad));
 		
 		if (line_line_intersect(p1,p2,circle_pnt,&cp2,&temp_hit_pnt)) {
-			dx=(hit_pnt->x-circle_pnt->x);
-			dz=(hit_pnt->z-circle_pnt->z);
+			dx=(double)(temp_hit_pnt.x-circle_pnt->x);
+			dz=(double)(temp_hit_pnt.z-circle_pnt->z);
 			dist=(int)sqrt((dx*dx)+(dz*dz));
 
 			if ((dist<cur_dist) || (cur_dist==-1)) {
