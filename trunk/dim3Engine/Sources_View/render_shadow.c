@@ -104,6 +104,65 @@ void shadow_get_light_point(d3pnt *pnt,int high,d3pnt *light_pnt,int *light_inte
 
 /* =======================================================
 
+      Build Shadow Bound Box For Obscuring
+      
+======================================================= */
+
+void shadow_get_bound_box(d3pnt *pnt,int high,d3pnt *light_pnt,int light_intensity,d3pnt *min,d3pnt *max)
+{
+	int							n;
+	float						f_dist;
+	d3pnt						*sp;
+	d3pnt						spt[8],ept;
+	d3vct						ray_move;
+
+	spt[0].x=spt[1].x=spt[4].x=spt[5].x=min->x;
+	spt[2].x=spt[3].x=spt[6].x=spt[7].x=max->x;
+	
+	spt[0].y=spt[1].y=spt[2].y=spt[3].y=min->y;
+	spt[4].y=spt[5].y=spt[6].y=spt[7].y=max->y;
+
+	spt[1].z=spt[2].z=spt[5].z=spt[6].z=min->z;
+	spt[0].z=spt[3].z=spt[4].z=spt[7].z=max->z;
+
+		// ray trace bounding box
+		
+	sp=spt;
+
+	min->x=max->x=spt[0].x;
+	min->y=max->y=spt[0].y;
+	min->z=max->z=spt[0].z;
+	
+	f_dist=(float)light_intensity;
+
+	for (n=0;n!=8;n++) {
+		vector_create(&ray_move,light_pnt->x,light_pnt->y,light_pnt->z,sp->x,sp->y,sp->z);
+				
+		ept.x=light_pnt->x-(int)(ray_move.x*f_dist);
+		ept.y=light_pnt->y-(int)(ray_move.y*f_dist);
+		ept.z=light_pnt->z-(int)(ray_move.z*f_dist);
+
+		if (sp->x<min->x) min->x=sp->x;
+		if (ept.x<min->x) min->x=ept.x;
+		if (sp->x>max->x) max->x=sp->x;
+		if (ept.x>max->x) max->x=ept.x;
+
+		if (sp->z<min->z) min->z=sp->z;
+		if (ept.z<min->z) min->z=ept.z;
+		if (sp->z>max->z) max->z=sp->z;
+		if (ept.z>max->z) max->z=ept.z;
+
+		if (sp->y<min->y) min->y=sp->y;
+		if (ept.y<min->y) min->y=ept.y;
+		if (sp->y>max->y) max->y=sp->y;
+		if (ept.y>max->y) max->y=ept.y;
+		
+		sp++;
+	}
+}
+
+/* =======================================================
+
       Build Shadow Draw Volume
       
 ======================================================= */
