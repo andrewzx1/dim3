@@ -262,7 +262,9 @@ void property_palette_click_cinema(int cinema_idx,int id)
 			action_idx=state.cur_cinema_action_idx;
 		}
 
+		shift=0;
 		dialog_property_string_run(list_string_value_int,(void*)&shift,0,0,0);
+		
 		cinemas_action_shift(cinema_idx,action_idx,shift);
 		main_wind_draw();
 		return;

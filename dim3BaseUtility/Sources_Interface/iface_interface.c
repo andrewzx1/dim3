@@ -570,6 +570,9 @@ void iface_read_settings_interface(iface_type *iface)
 	color_tag=xml_findfirstchild("Color",interface_head_tag);
 	if (color_tag!=-1) {
 		xml_get_attribute_color(color_tag,"background",&iface->color.background);
+		xml_get_attribute_color(color_tag,"menu_text",&iface->color.menu.text);
+		xml_get_attribute_color(color_tag,"menu_mouse_over",&iface->color.menu.mouse_over);
+		xml_get_attribute_color(color_tag,"menu_dimmed",&iface->color.menu.dimmed);
 		xml_get_attribute_color(color_tag,"dialog_background",&iface->color.dialog.background);
 		xml_get_attribute_color(color_tag,"dialog_header",&iface->color.dialog.header);
 		xml_get_attribute_color(color_tag,"dialog_outline",&iface->color.dialog.outline);
@@ -1098,6 +1101,9 @@ bool iface_write_settings_interface(iface_type *iface)
 		
 	xml_add_tagstart("Color");
 	xml_add_attribute_color("background",&iface->color.background);
+	xml_add_attribute_color("menu_text",&iface->color.menu.text);
+	xml_add_attribute_color("menu_mouse_over",&iface->color.menu.mouse_over);
+	xml_add_attribute_color("menu_dimmed",&iface->color.menu.dimmed);
 	xml_add_attribute_color("dialog_background",&iface->color.dialog.background);
 	xml_add_attribute_color("dialog_header",&iface->color.dialog.header);
 	xml_add_attribute_color("dialog_outline",&iface->color.dialog.outline);

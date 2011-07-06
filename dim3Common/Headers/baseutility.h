@@ -576,6 +576,10 @@ extern void bitmap_text_shutdown(texture_font_type *d3_font);
 //
 
 typedef struct		{
+						d3col							text,mouse_over,dimmed;
+					} iface_color_menu_type;
+
+typedef struct		{
 						d3col							background,header,outline,title;
 					} iface_color_dialog_type;
 					
@@ -596,6 +600,7 @@ typedef struct		{
 typedef struct		{
 						d3col							background,
 														default_tint,tints[max_tint_color];
+						iface_color_menu_type			menu;
 						iface_color_dialog_type			dialog;
 						iface_color_tab_type			tab;
 						iface_color_control_type		control;

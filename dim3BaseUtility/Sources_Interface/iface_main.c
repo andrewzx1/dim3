@@ -216,6 +216,10 @@ void iface_default_settings(iface_type *iface)
 		// colors
 		
 	iface->color.background.r=iface->color.background.g=iface->color.background.b=0.0f;
+	
+	iface->color.menu.text.r=iface->color.menu.text.g=iface->color.menu.text.b=0.9f;
+	iface->color.menu.mouse_over.r=iface->color.menu.mouse_over.g=iface->color.menu.mouse_over.b=1.0f;
+	iface->color.menu.dimmed.r=iface->color.menu.dimmed.g=iface->color.menu.dimmed.b=0.06f;
 		
 	iface->color.dialog.background.r=iface->color.dialog.background.g=iface->color.dialog.background.b=0.0f;
 	iface->color.dialog.header.r=iface->color.dialog.header.g=iface->color.dialog.header.b=0.7f;
