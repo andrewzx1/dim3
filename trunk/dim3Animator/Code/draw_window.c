@@ -234,6 +234,43 @@ void draw_model_info(void)
 	text_draw(x,y,15,NULL,str);
 }
 
+void draw_model_mesh_list(void)
+{
+	int				n,x,y,wid;
+	d3col			col;
+	d3rect			mbox;
+
+	model_wind_get_box(&mbox);
+
+	x=mbox.lx+5;
+	y=mbox.by-((15*(model.nmesh-1))+2);
+
+	col.r=col.g=0.0f;
+
+	for (n=0;n!=model.nmesh;n++) {
+
+			// hilite showing meshes
+
+		if (n==state.cur_mesh_idx) {
+			wid=text_width(15,model.meshes[n].name);
+
+			glColor4f(0.5f,0.5f,1.0f,1.0f);
+			
+			glBegin(GL_QUADS);
+			glVertex2i((x-2),(y-16));
+			glVertex2i(((x+wid)+4),(y-16));
+			glVertex2i(((x+wid)+4),(y-1));
+			glVertex2i((x-2),(y-1));
+			glEnd();
+		}
+
+			// mesh name
+
+		text_draw(x,y,15,NULL,model.meshes[n].name);
+		y+=15;
+	}
+}
+
 /* =======================================================
 
       Draw Model Window
@@ -355,6 +392,7 @@ void draw_model_wind(int mesh_idx)
 		// info
 
 	draw_model_info();
+	draw_model_mesh_list();
 }
 
 void draw_model_setup_pose(int pose_idx)
