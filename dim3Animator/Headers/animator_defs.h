@@ -51,7 +51,7 @@ and can be sold or given away.
 											"Tool Play" \
 										}
 
-#define tool_separators					{"000010010000101"}
+#define tool_separators					{"000010010001101"}
 
 #define tool_tip_names					{ \
 											"Show Textured Model", \

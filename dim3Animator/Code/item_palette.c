@@ -108,13 +108,10 @@ void item_palette_fill(void)
 		// meshes
 
 	list_palette_add_header_count(&item_palette,item_mesh,"Meshes",model.nmesh);
-	list_palette_sort_mark_start(&item_palette);
 
 	for (n=0;n!=model.nmesh;n++) {
 		list_palette_add_item(&item_palette,item_mesh,n,model.meshes[n].name,((state.cur_item==item_mesh)&&(state.cur_mesh_idx==n)),FALSE);
 	}
-
-	list_palette_sort(&item_palette);
 
 		// animations
 
