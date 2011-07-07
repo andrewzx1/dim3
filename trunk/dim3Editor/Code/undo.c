@@ -32,6 +32,9 @@ and can be sold or given away.
 #include "glue.h"
 #include "interface.h"
 
+extern int							nselect_item;
+extern select_item_type				select_items[select_max_item];
+
 extern map_type						map;
 
 int					undo_level=0;
@@ -59,6 +62,7 @@ void undo_initialize_single(undo_type *undo)
 	undo_initialize_chunk(&undo->light);
 	undo_initialize_chunk(&undo->sound);
 	undo_initialize_chunk(&undo->particle);
+	undo_initialize_chunk(&undo->selection);
 }
 
 void undo_initialize(void)
@@ -118,6 +122,7 @@ void undo_clear_single(undo_type *undo)
 	undo_clear_chunck(&undo->light);
 	undo_clear_chunck(&undo->sound);
 	undo_clear_chunck(&undo->particle);
+	undo_clear_chunck(&undo->selection);
 }
 
 void undo_clear(void)
@@ -157,6 +162,7 @@ void undo_copy(undo_type *dest_undo,undo_type *srce_undo)
 	undo_copy_chunk(&dest_undo->light,&srce_undo->light);
 	undo_copy_chunk(&dest_undo->sound,&srce_undo->sound);
 	undo_copy_chunk(&dest_undo->particle,&srce_undo->particle);
+	undo_copy_chunk(&dest_undo->selection,&srce_undo->selection);
 }
 
 /* =======================================================
@@ -260,6 +266,7 @@ bool undo_push_internal(void)
 	if (!undo_push_internal_chunk(map.nlight,sizeof(map_light_type),(unsigned char*)map.lights,&undo->light)) return(FALSE);
 	if (!undo_push_internal_chunk(map.nsound,sizeof(map_sound_type),(unsigned char*)map.sounds,&undo->sound)) return(FALSE);
 	if (!undo_push_internal_chunk(map.nparticle,sizeof(map_particle_type),(unsigned char*)map.particles,&undo->particle)) return(FALSE);
+	if (!undo_push_internal_chunk(nselect_item,sizeof(select_item_type),(unsigned char*)select_items,&undo->selection)) return(FALSE);
 	
 		// move up undo level
 		
@@ -411,6 +418,7 @@ void undo_pull(void)
 	map.nlight=undo_pull_chunk(sizeof(map_light_type),(unsigned char*)map.lights,&undo->light);
 	map.nsound=undo_pull_chunk(sizeof(map_sound_type),(unsigned char*)map.sounds,&undo->sound);
 	map.nparticle=undo_pull_chunk(sizeof(map_particle_type),(unsigned char*)map.particles,&undo->particle);
+	nselect_item=undo_pull_chunk(sizeof(select_item_type),(unsigned char*)select_items,&undo->selection);
 	
 		// clear level
 		// and move stack up
@@ -429,8 +437,6 @@ void undo_pull(void)
 	if (undo_level==0) os_menu_enable_item(app_menu_edit,1,FALSE);
 	
 		// redraw windows
-
-	select_clear();
 		
 	item_palette_reset();
 	property_palette_reset();

@@ -365,7 +365,8 @@ typedef struct		{
 typedef struct		{
 						undo_chunk_type			mesh,liquid,
 												spot,scenery,node,
-												light,sound,particle;
+												light,sound,particle,
+												selection;
 					} undo_type;
 
 //

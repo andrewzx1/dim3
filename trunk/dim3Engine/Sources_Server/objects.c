@@ -1063,8 +1063,8 @@ int object_script_spawn(char *name,char *script,char *params,d3pnt *pnt,d3ang *a
 	strcpy(spot.script,script);
 	strcpy(spot.params,params);
 
-	memmove(&spot.pnt,&pnt,sizeof(d3pnt));
-	memmove(&spot.ang,&ang,sizeof(d3ang));
+	memmove(&spot.pnt,pnt,sizeof(d3pnt));
+	memmove(&spot.ang,ang,sizeof(d3ang));
 
 		// start object
 
