@@ -487,7 +487,8 @@ typedef struct		{
 						int									count,user_id,attach_obj_idx,
 															movement_idx,movement_move_idx;
 						bool								on,was_moved,freeze,main_move;
-						d3pnt								mov_add,cuml_mov_add;
+						d3fpnt								f_mov_add,f_mov_accum_add;
+						d3pnt								cuml_mov_add;
 						d3ang								rot_add,cuml_rot_add;
 					} group_move_type;
 

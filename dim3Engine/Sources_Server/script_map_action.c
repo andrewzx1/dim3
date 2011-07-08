@@ -102,7 +102,9 @@ JSValueRef js_map_action_set_map_func(JSContextRef cx,JSObjectRef func,JSObjectR
 	script_value_to_string(cx,argv[0],map.info.name,name_str_len);
 	script_value_to_string(cx,argv[1],map.info.player_start_name,name_str_len);
 
-	server.map_change=TRUE;
+	server.map_change.on=TRUE;
+	server.map_change.skip_media=FALSE;
+	server.map_change.player_restart=FALSE;
 	
 	return(script_null_to_value(cx));
 }
@@ -123,7 +125,9 @@ JSValueRef js_map_action_set_host_map_func(JSContextRef cx,JSObjectRef func,JSOb
 	strcpy(map.info.name,map.info.host_name);
 	map.info.player_start_name[0]=0x0;
 
-	server.map_change=TRUE;
+	server.map_change.on=TRUE;
+	server.map_change.skip_media=FALSE;
+	server.map_change.player_restart=FALSE;
 	
 	return(script_null_to_value(cx));
 }
@@ -141,8 +145,9 @@ JSValueRef js_map_action_restart_map_func(JSContextRef cx,JSObjectRef func,JSObj
 	
 		// use the last values to restart
 		
-	server.map_change=TRUE;
-	server.skip_media=TRUE;
+	server.map_change.on=TRUE;
+	server.map_change.skip_media=TRUE;
+	server.map_change.player_restart=TRUE;
 	
 	return(script_null_to_value(cx));
 }
@@ -163,8 +168,9 @@ JSValueRef js_map_action_restart_map_from_save_func(JSContextRef cx,JSObjectRef 
 		// if no save game file, restart from map
 		
 	if (!game_file_reload_ok()) {
-		server.map_change=TRUE;
-		server.skip_media=TRUE;
+		server.map_change.on=TRUE;
+		server.map_change.skip_media=TRUE;
+		server.map_change.player_restart=TRUE;
 		return(script_null_to_value(cx));
 	}
 	

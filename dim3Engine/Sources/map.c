@@ -66,8 +66,8 @@ void map_media_start(map_media_type *media)
 
 		// no media if last change was a skip change
 
-	if (server.skip_media) {
-		server.skip_media=FALSE;
+	if (server.map_change.skip_media) {
+		server.map_change.skip_media=FALSE;
 		return;
 	}
 
@@ -586,13 +586,14 @@ void map_end(void)
 
 void map_clear_changes(void)
 {
-	server.map_change=FALSE;
-	server.skip_media=FALSE;
+	server.map_change.on=FALSE;
+	server.map_change.skip_media=FALSE;
+	server.map_change.player_restart=FALSE;
 }
 
 bool map_need_rebuild(void)
 {
-	return(server.map_change);
+	return(server.map_change.on);
 }
 
 bool map_rebuild_changes(char *err_str)
@@ -604,14 +605,22 @@ bool map_rebuild_changes(char *err_str)
 		
 	if (server.map_open) map_end();
 	
-		// reset all game bound
-		// objects spawn type
+		// reset all game bound objects spawn type
+		// use map change if this is not a player restart
+		
 		// note, if this is being called from a network reset,
 		// these will get over-ridden later down the line
 		
 	for (n=0;n!=max_obj_list;n++) {
 		obj=server.obj_list.objs[n];
-		if (obj!=NULL) obj->next_spawn_sub_event=sd_event_spawn_map_change;
+		if (obj==NULL) continue;
+		
+		if (n!=server.player_obj_idx) {
+			obj->next_spawn_sub_event=(server.map_change.player_restart?sd_event_spawn_init:sd_event_spawn_map_change);
+		}
+		else {
+			obj->next_spawn_sub_event=(server.map_change.player_restart?sd_event_spawn_reborn:sd_event_spawn_map_change);
+		}
 	}
 		
 		// start new map

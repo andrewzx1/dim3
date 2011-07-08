@@ -637,8 +637,10 @@ bool debug_change_map(char *name)
 		
 	strncpy(map.info.name,name,name_str_len);
 	strcpy(map.info.player_start_name,"Start");
-	server.map_change=TRUE;
-	server.skip_media=TRUE;
+	
+	server.map_change.on=TRUE;
+	server.map_change.skip_media=TRUE;
+	server.map_change.player_restart=FALSE;
 	
 	return(TRUE);
 }
