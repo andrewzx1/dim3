@@ -85,7 +85,10 @@ void mesh_triggers(obj_type *obj)
 		if (mesh->msg.map_change_on) {
 			strcpy(map.info.name,mesh->msg.map_name);
 			strcpy(map.info.player_start_name,mesh->msg.map_spot_name);
-			server.map_change=TRUE;
+			
+			server.map_change.on=TRUE;
+			server.map_change.skip_media=FALSE;
+			server.map_change.player_restart=FALSE;
 		}
 		
 			// base watch messages

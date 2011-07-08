@@ -1075,6 +1075,14 @@ typedef struct		{
 					} ray_trace_check_item_type;
 
 //
+// map change structure
+//
+
+typedef struct		{
+						bool							on,skip_media,player_restart;
+					} server_map_change_type;
+					
+//
 // timing structures
 //
 
@@ -1093,7 +1101,8 @@ typedef struct		{
  typedef struct		{
 						int								state,next_state,last_state,
 														skill,simple_save_idx,player_obj_idx;
-						bool							game_open,map_open,map_change,skip_media;
+						bool							game_open,map_open;
+						server_map_change_type			map_change;
 						server_time_type				time;
 						obj_list_type					obj_list;
 						proj_list_type					proj_list;

@@ -94,12 +94,16 @@ bool group_move_start(int group_idx,int movement_idx,int movement_move_idx,d3pnt
 	move=&group->move;
 
 	move->count=count;
-
-	move->mov_add.x=mov->x/count;
-	move->mov_add.y=mov->y/count;
-	move->mov_add.z=mov->z/count;
-
 	f_count=(float)move->count;
+
+	move->f_mov_add.x=((float)mov->x)/f_count;
+	move->f_mov_add.y=((float)mov->y)/f_count;
+	move->f_mov_add.z=((float)mov->z)/f_count;
+	
+	move->f_mov_accum_add.x=0.0f;
+	move->f_mov_accum_add.y=0.0f;
+	move->f_mov_accum_add.z=0.0f;
+
 	move->rot_add.x=rot->x/f_count;
 	move->rot_add.y=rot->y/f_count;
 	move->rot_add.z=rot->z/f_count;
@@ -312,6 +316,7 @@ void group_move_and_rotate(group_type *group,d3pnt *move_pnt,d3ang *rot_ang)
 void group_moves_run(bool run_events)
 {
 	int				n,script_idx,user_id;
+	d3pnt			mov_pnt;
 	group_type		*group;
 	group_move_type	*move;
 	obj_type		*obj;
@@ -324,7 +329,25 @@ void group_moves_run(bool run_events)
 		move=&group->move;
 		if ((!move->on) || (move->freeze)) continue;
 		
-		group_move_and_rotate(group,&move->mov_add,&move->rot_add);
+			// calculate the move
+			// we have to use floats so we don't
+			// lose numbers in the divide
+			
+		move->f_mov_accum_add.x+=move->f_mov_add.x;
+		move->f_mov_accum_add.y+=move->f_mov_add.y;
+		move->f_mov_accum_add.z+=move->f_mov_add.z;
+		
+		mov_pnt.x=(int)move->f_mov_accum_add.x;
+		mov_pnt.y=(int)move->f_mov_accum_add.y;
+		mov_pnt.z=(int)move->f_mov_accum_add.z;
+		
+		move->f_mov_accum_add.x-=(float)mov_pnt.x;
+		move->f_mov_accum_add.y-=(float)mov_pnt.y;
+		move->f_mov_accum_add.z-=(float)mov_pnt.z;
+		
+			// move it
+		
+		group_move_and_rotate(group,&mov_pnt,&move->rot_add);
 
 		move->was_moved=TRUE;
 		
@@ -422,9 +445,13 @@ void group_moves_synch_with_client(int group_idx,network_reply_group_synch *sync
 	synch->movement_idx=htons((short)group->move.movement_idx);
 	synch->movement_move_idx=htons((short)group->move.movement_move_idx);
 
-	synch->mov_add_x=htonl(group->move.mov_add.x);
-	synch->mov_add_y=htonl(group->move.mov_add.y);
-	synch->mov_add_z=htonl(group->move.mov_add.z);
+	synch->fp_mov_add_x=htonf(group->move.f_mov_add.x);
+	synch->fp_mov_add_y=htonf(group->move.f_mov_add.y);
+	synch->fp_mov_add_z=htonf(group->move.f_mov_add.z);
+	
+	synch->fp_mov_accum_add_x=htonf(group->move.f_mov_accum_add.x);
+	synch->fp_mov_accum_add_y=htonf(group->move.f_mov_accum_add.y);
+	synch->fp_mov_accum_add_z=htonf(group->move.f_mov_accum_add.z);
 
 	synch->fp_rot_add_x=htonf(group->move.rot_add.x);
 	synch->fp_rot_add_y=htonf(group->move.rot_add.y);
@@ -464,9 +491,13 @@ void group_moves_synch_with_host(network_reply_group_synch *synch)
 	group->move.movement_idx=(int)ntohs(synch->movement_idx);
 	group->move.movement_move_idx=(int)ntohs(synch->movement_move_idx);
 
-	group->move.mov_add.x=ntohl(synch->mov_add_x);
-	group->move.mov_add.y=ntohl(synch->mov_add_y);
-	group->move.mov_add.z=ntohl(synch->mov_add_z);
+	group->move.f_mov_add.x=ntohl(synch->fp_mov_add_x);
+	group->move.f_mov_add.y=ntohl(synch->fp_mov_add_y);
+	group->move.f_mov_add.z=ntohl(synch->fp_mov_add_z);
+	
+	group->move.f_mov_accum_add.x=ntohl(synch->fp_mov_accum_add_x);
+	group->move.f_mov_accum_add.y=ntohl(synch->fp_mov_accum_add_y);
+	group->move.f_mov_accum_add.z=ntohl(synch->fp_mov_accum_add_z);
 
 	group->move.rot_add.x=ntohf(synch->fp_rot_add_x);
 	group->move.rot_add.y=ntohf(synch->fp_rot_add_y);

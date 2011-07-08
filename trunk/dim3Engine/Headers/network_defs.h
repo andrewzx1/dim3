@@ -380,7 +380,8 @@ typedef struct		{
 
 typedef struct		{
 						int								flags,
-														mov_add_x,mov_add_y,mov_add_z,
+														fp_mov_add_x,fp_mov_add_y,fp_mov_add_z,
+														fp_mov_accum_add_x,fp_mov_accum_add_y,fp_mov_accum_add_z,
 														cuml_mov_add_x,cuml_mov_add_y,cuml_mov_add_z,
 														fp_rot_add_x,fp_rot_add_y,fp_rot_add_z,
 														fp_cuml_rot_add_x,fp_cuml_rot_add_y,fp_cuml_rot_add_z;

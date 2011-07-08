@@ -971,8 +971,9 @@ void player_restart(obj_type *obj)
 		// if no reload, then just
 		// restart at map start
 				
-	server.map_change=TRUE;
-	server.skip_media=TRUE;
+	server.map_change.on=TRUE;
+	server.map_change.skip_media=TRUE;
+	server.map_change.player_restart=TRUE;
 }
 
 void player_death_input(obj_type *obj)

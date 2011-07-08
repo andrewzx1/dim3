@@ -87,8 +87,9 @@ bool server_initialize(char *err_str)
 	server.game_open=FALSE;
 	server.map_open=FALSE;
 
-	server.map_change=FALSE;
-	server.skip_media=FALSE;
+	server.map_change.on=FALSE;
+	server.map_change.skip_media=FALSE;
+	server.map_change.player_restart=FALSE;
 	
 	return(TRUE);
 }
