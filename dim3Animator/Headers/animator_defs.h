@@ -30,7 +30,7 @@ and can be sold or given away.
 //
 
 #define tool_button_size				32
-#define tool_count						15
+#define tool_count						14
 
 
 #define tool_file_names					{ \
@@ -43,7 +43,6 @@ and can be sold or given away.
 											"Tool Edit Vertexes", \
 											"Tool Boxes", \
 											"Tool Normals", \
-											"Tool Show First Mesh", \
 											"Tool Show Bone Names", \
 											"Tool Select Vertex With Bone", \
 											"Tool Rotate Mode", \
@@ -51,7 +50,7 @@ and can be sold or given away.
 											"Tool Play" \
 										}
 
-#define tool_separators					{"000010010001101"}
+#define tool_separators					{"00001001001101"}
 
 #define tool_tip_names					{ \
 											"Show Textured Model", \
@@ -63,7 +62,6 @@ and can be sold or given away.
 											"Select Vertexes", \
 											"Show View Box", \
 											"Show Normals", \
-											"Always Show First Mesh", \
 											"Show Bone Names", \
 											"Select Attached Vertexes When Selecting Bones", \
 											"Bone Rotate Mode", \
@@ -269,9 +267,10 @@ typedef struct		{
 													texture_edit_idx,drag_bone_mode,select_mode,
 													magnify_z;
 						bool						model_open,texture,mesh,bone,hit_box,
-													normal,view_box,first_mesh,bone_names,
+													normal,view_box,bone_names,
 													playing,play_animate_blend,sel_vertex_with_bone,
-													drag_sel_on,in_preference;
+													drag_sel_on,in_preference,
+													show_mesh[max_model_mesh];
 						char						file_name[256];
 						d3pnt						shift;
 						d3ang						ang;

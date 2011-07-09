@@ -43,10 +43,10 @@ extern char* game_file_get_chunk(void *data);
       
 ======================================================= */
 
-bool script_state_save_single(int script_idx)
+bool script_state_save_single(int script_idx,char *err_str)
 {
 	int						n,count,prop_name_len,prop_value_len;
-	char					prop_name[256],err_str[256];
+	char					prop_name[256];
 	char					*prop_value;
 	script_type				*script;
 	JSPropertyNameArrayRef	js_names;
@@ -99,6 +99,7 @@ bool script_state_save_single(int script_idx)
 		prop_value_len=JSStringGetMaximumUTF8CStringSize(js_prop_json);
 		prop_value=(char*)malloc(prop_value_len);
 		if (prop_value==NULL) {
+			strcpy(err_str,"Out of Memory");
 			JSStringRelease(js_prop_json);
 			return(FALSE);
 		}
@@ -132,33 +133,33 @@ bool script_state_save_single(int script_idx)
 	return(TRUE);
 }
 
-bool script_state_save(void)
+bool script_state_save(char *err_str)
 {
 	int				n,k,i;
 	obj_type		*obj;
 	weapon_type		*weap;
 	proj_setup_type	*proj_setup;
 
-	if (!script_state_save_single(js.game_script_idx)) return(FALSE);
-	if (!script_state_save_single(js.course_script_idx)) return(FALSE);
+	if (!script_state_save_single(js.game_script_idx,err_str)) return(FALSE);
+	if (!script_state_save_single(js.course_script_idx,err_str)) return(FALSE);
 	
 	for (n=0;n!=max_obj_list;n++) {
 		obj=server.obj_list.objs[n];
 		if (obj==NULL) continue;
 
-		if (!script_state_save_single(obj->script_idx)) return(FALSE);
+		if (!script_state_save_single(obj->script_idx,err_str)) return(FALSE);
 
 		for (k=0;k!=max_weap_list;k++) {
 			weap=obj->weap_list.weaps[k];
 			if (weap==NULL) continue;
 			
-			if (!script_state_save_single(weap->script_idx)) return(FALSE);
+			if (!script_state_save_single(weap->script_idx,err_str)) return(FALSE);
 		
 			for (i=0;i!=max_proj_setup_list;i++) {
 				proj_setup=weap->proj_setup_list.proj_setups[i];
 				if (proj_setup==NULL) continue;
 				
-				if (script_state_save_single(proj_setup->script_idx)) return(FALSE);
+				if (!script_state_save_single(proj_setup->script_idx,err_str)) return(FALSE);
 			}
 		}
 	}
@@ -172,10 +173,10 @@ bool script_state_save(void)
       
 ======================================================= */
 
-bool script_state_load_single(int script_idx)
+bool script_state_load_single(int script_idx,char *err_str)
 {
 	int				prop_name_len,prop_value_len;
-	char			prop_name[256],err_str[256];
+	char			prop_name[256];
 	char			*prop_value;
 	script_type		*script;
 	JSStringRef		js_prop_name,js_prop_json;
@@ -202,7 +203,10 @@ bool script_state_load_single(int script_idx)
 
 		game_file_get_chunk(&prop_value_len);
 		prop_value=(char*)malloc(prop_value_len);
-		if (prop_value==NULL) return(FALSE);
+		if (prop_value==NULL) {
+			strcpy(err_str,"Out of Memory");
+			return(FALSE);
+		}
 
 		game_file_get_chunk(prop_value);
 
@@ -226,7 +230,7 @@ bool script_state_load_single(int script_idx)
 	return(TRUE);
 }
 
-bool script_state_load(void)
+bool script_state_load(char *err_str)
 {
 	int				n,k,i;
 	obj_type		*obj;
@@ -236,8 +240,8 @@ bool script_state_load(void)
 
 		// load the game and course
 
-	if (!script_state_load_single(js.game_script_idx)) return(FALSE);
-	if (!script_state_load_single(js.course_script_idx)) return(FALSE);
+	if (!script_state_load_single(js.game_script_idx,err_str)) return(FALSE);
+	if (!script_state_load_single(js.course_script_idx,err_str)) return(FALSE);
 
 		// load the objects
 
@@ -245,19 +249,19 @@ bool script_state_load(void)
 		obj=server.obj_list.objs[n];
 		if (obj==NULL) continue;
 
-		if (!script_state_load_single(obj->script_idx)) return(FALSE);
+		if (!script_state_load_single(obj->script_idx,err_str)) return(FALSE);
 
 		for (k=0;k!=max_weap_list;k++) {
 			weap=obj->weap_list.weaps[k];
 			if (weap==NULL) continue;
 			
-			if (!script_state_load_single(weap->script_idx)) return(FALSE);
+			if (!script_state_load_single(weap->script_idx,err_str)) return(FALSE);
 		
 			for (i=0;i!=max_proj_setup_list;i++) {
 				proj_setup=weap->proj_setup_list.proj_setups[i];
 				if (proj_setup==NULL) continue;
 				
-				if (!script_state_load_single(proj_setup->script_idx)) return(FALSE);
+				if (!script_state_load_single(proj_setup->script_idx,err_str)) return(FALSE);
 			}
 		}
 	}

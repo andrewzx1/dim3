@@ -402,7 +402,7 @@ bool game_file_save(char *err_str)
 		
 	progress_draw(70);
 
-	if (!script_state_save()) {
+	if (!script_state_save(err_str)) {
 		free(game_file_data);
 		progress_shutdown();
 		return(FALSE);
@@ -437,7 +437,7 @@ bool game_file_save(char *err_str)
 		// compress and save
 		
 	progress_draw(90);
-		
+
 	file_paths_documents(&setup.file_path_setup,path,"Saved Games",file_name,"sav");
 	ok=game_file_compress_save(path,err_str);
 	
@@ -735,7 +735,7 @@ bool game_file_load(char *file_name,char *err_str)
 		
 	progress_draw(70);
 
-	if (!script_state_load()) {
+	if (!script_state_load(err_str)) {
 		free(game_file_data);
 		progress_shutdown();
 		return(FALSE);

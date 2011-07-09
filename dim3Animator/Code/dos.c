@@ -53,7 +53,6 @@ void file_reset_state(void)
     state.hit_box=FALSE;
 	state.normal=FALSE;
 	state.view_box=FALSE;
-	state.first_mesh=FALSE;
 	state.bone_names=TRUE;
 	state.sel_vertex_with_bone=FALSE;
 
@@ -97,6 +96,10 @@ void file_reset_state(void)
 	
 	for (n=0;n!=max_model_blend_animation;n++) {
 		state.blend[n].animate_idx=-1;
+	}
+
+	for (n=0;n!=max_model_mesh;n++) {
+		state.show_mesh[n]=FALSE;
 	}
 	
 	main_wind_play(FALSE,FALSE);

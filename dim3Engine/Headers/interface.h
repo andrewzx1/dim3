@@ -39,6 +39,8 @@ extern void app_end(void);
 extern bool game_start(bool in_file_load,int skill,int simple_save_idx,char *err_str);
 extern void game_end(void);
 extern void game_reset(void);
+extern bool game_file_reload_ok(void);
+extern bool game_file_reload(char *err_str);
 
 //
 // maps

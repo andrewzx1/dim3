@@ -491,13 +491,13 @@ void group_moves_synch_with_host(network_reply_group_synch *synch)
 	group->move.movement_idx=(int)ntohs(synch->movement_idx);
 	group->move.movement_move_idx=(int)ntohs(synch->movement_move_idx);
 
-	group->move.f_mov_add.x=ntohl(synch->fp_mov_add_x);
-	group->move.f_mov_add.y=ntohl(synch->fp_mov_add_y);
-	group->move.f_mov_add.z=ntohl(synch->fp_mov_add_z);
+	group->move.f_mov_add.x=ntohf(synch->fp_mov_add_x);
+	group->move.f_mov_add.y=ntohf(synch->fp_mov_add_y);
+	group->move.f_mov_add.z=ntohf(synch->fp_mov_add_z);
 	
-	group->move.f_mov_accum_add.x=ntohl(synch->fp_mov_accum_add_x);
-	group->move.f_mov_accum_add.y=ntohl(synch->fp_mov_accum_add_y);
-	group->move.f_mov_accum_add.z=ntohl(synch->fp_mov_accum_add_z);
+	group->move.f_mov_accum_add.x=ntohf(synch->fp_mov_accum_add_x);
+	group->move.f_mov_accum_add.y=ntohf(synch->fp_mov_accum_add_y);
+	group->move.f_mov_accum_add.z=ntohf(synch->fp_mov_accum_add_z);
 
 	group->move.rot_add.x=ntohf(synch->fp_rot_add_x);
 	group->move.rot_add.y=ntohf(synch->fp_rot_add_y);

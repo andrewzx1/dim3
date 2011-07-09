@@ -31,6 +31,7 @@ and can be sold or given away.
 
 #include "glue.h"
 #include "interface.h"
+#include "ui_common.h"
 
 extern model_type				model;
 extern model_draw_setup			draw_setup;
@@ -946,6 +947,37 @@ bool drag_hit_box_handle_model_wind(d3pnt *start_pnt)
 
 /* =======================================================
 
+      Mesh Show Clicks
+      
+======================================================= */
+
+bool model_wind_click_mesh_show(d3pnt *pnt)
+{
+	int				n,x,y,wid;
+	d3rect			mbox;
+
+	model_wind_get_box(&mbox);
+
+	x=mbox.lx+5;
+	y=mbox.by-((15*(model.nmesh-1))+2);
+
+	for (n=0;n!=model.nmesh;n++) {
+
+		wid=text_width(15,model.meshes[n].name);
+		if ((pnt->x>=x) && (pnt->x<=(x+wid)) && (pnt->y>=(y-15)) && (pnt->y<=y)) {
+			state.show_mesh[n]=!state.show_mesh[n];
+			main_wind_draw();
+			return(TRUE);
+		}
+
+		y+=15;
+	}
+
+	return(FALSE);
+}
+
+/* =======================================================
+
       Model Window Clicks
       
 ======================================================= */
@@ -954,6 +986,10 @@ void model_wind_click(d3pnt *pnt)
 {
 	bool			shift_on,rotate_on,size_on;
 	d3rect			mbox;
+
+		// check mesh show
+
+	if (model_wind_click_mesh_show(pnt)) return;
 
 		// get click within window
 
