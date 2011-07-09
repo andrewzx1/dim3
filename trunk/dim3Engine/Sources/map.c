@@ -598,8 +598,25 @@ bool map_need_rebuild(void)
 
 bool map_rebuild_changes(char *err_str)
 {
-	int				n;
+	int				n,sub_event;
 	obj_type		*obj;
+
+		// if this is a restart, then check for
+		// saved game
+
+	if (server.map_change.player_restart) {
+		if (game_file_reload_ok()) {
+
+				// reload game (in paused mode, so we need to turn off if error)
+
+			if (!game_file_reload(err_str)) {
+				game_time_pause_end();
+				return(FALSE);
+			}
+
+			return(TRUE);
+		}
+	}
 	
 		// end old map
 		
@@ -610,16 +627,13 @@ bool map_rebuild_changes(char *err_str)
 		
 		// note, if this is being called from a network reset,
 		// these will get over-ridden later down the line
+
+	sub_event=server.map_change.player_restart?sd_event_spawn_init:sd_event_spawn_map_change;
 		
 	for (n=0;n!=max_obj_list;n++) {
 		obj=server.obj_list.objs[n];
-		if (obj==NULL) continue;
-		
-		if (n!=server.player_obj_idx) {
-			obj->next_spawn_sub_event=(server.map_change.player_restart?sd_event_spawn_init:sd_event_spawn_map_change);
-		}
-		else {
-			obj->next_spawn_sub_event=(server.map_change.player_restart?sd_event_spawn_reborn:sd_event_spawn_map_change);
+		if (obj!=NULL) {
+			if (obj->bind==bt_game) obj->next_spawn_sub_event=sub_event;
 		}
 	}
 		

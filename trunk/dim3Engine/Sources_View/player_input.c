@@ -48,9 +48,6 @@ bool						weapon_change_key_down,weapon_target_key_down,weapon_zoom_key_down,
 							enter_exit_key_down,network_score_key_down,toggle_run_state,respawn_key_down,
 							fire_key_down[4],command_key_down[20],player_key_down[20];
 
-extern bool game_file_reload_ok(void);
-extern bool game_file_reload(char *err_str);
-
 /* =======================================================
 
       Clear Input
@@ -950,32 +947,6 @@ void player_thrust_input(obj_type *obj)
       
 ======================================================= */
 
-void player_restart(obj_type *obj)
-{
-	char			err_str[256];
-
-		// spawn event will be reborn
-
-	obj->next_spawn_sub_event=sd_event_spawn_reborn;
-
-		// if there was a saved game,
-		// restart from there
-
-	if (game_file_reload_ok()) {
-		if (!game_file_reload(err_str)) {
-			game_time_pause_end();			// loaded files are in paused mode
-			return;
-		}
-	}
-			
-		// if no reload, then just
-		// restart at map start
-				
-	server.map_change.on=TRUE;
-	server.map_change.skip_media=TRUE;
-	server.map_change.player_restart=TRUE;
-}
-
 void player_death_input(obj_type *obj)
 {
 		// can only respawn by key press
@@ -987,7 +958,11 @@ void player_death_input(obj_type *obj)
 		// restart key
 		
 	if (input_action_get_state_range(nc_respawn_start,nc_respawn_end)) {
-		if (!respawn_key_down) player_restart(obj);
+		if (!respawn_key_down) {
+			server.map_change.on=TRUE;
+			server.map_change.skip_media=TRUE;
+			server.map_change.player_restart=TRUE;
+		}
 		return;
 	}
 

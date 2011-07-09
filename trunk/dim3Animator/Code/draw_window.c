@@ -178,21 +178,21 @@ void draw_model_2D_transform(d3fpnt *pnt,d3pnt *tran_pnt)
 
 void draw_model_setup_bones_vertexes(int mesh_idx)
 {
+	int				n;
+
 		// create the drawing bones
 	
 	model_create_draw_bones(&model,&draw_setup);
 	
-		// calculate vertexes for first mesh if "show first mesh" is on
-		
-	if ((state.first_mesh) && (mesh_idx!=0)) {
-		model_create_draw_vertexes(&model,0,&draw_setup);
-		model_create_draw_normals(&model,0,&draw_setup,TRUE);
-	}
+		// calculate vertexes for all shown
+		// meshes
 
-		// calculate vertexes for drawing mesh
-		
-	model_create_draw_vertexes(&model,mesh_idx,&draw_setup);
-	model_create_draw_normals(&model,mesh_idx,&draw_setup,FALSE);
+	for (n=0;n!=model.nmesh;n++) {
+		if ((n==mesh_idx) || (state.show_mesh[n])) {
+			model_create_draw_vertexes(&model,n,&draw_setup);
+			model_create_draw_normals(&model,n,&draw_setup,(n!=mesh_idx));
+		}
+	}
 }
 
 /* =======================================================
@@ -251,11 +251,16 @@ void draw_model_mesh_list(void)
 
 			// hilite showing meshes
 
-		if (n==state.cur_mesh_idx) {
+		if ((n==state.cur_mesh_idx) || (state.show_mesh[n])) {
 			wid=text_width(15,model.meshes[n].name);
 
-			glColor4f(0.5f,0.5f,1.0f,1.0f);
-			
+			if (n==state.cur_mesh_idx) {
+				glColor4f(1.0f,1.0f,0.0f,1.0f);
+			}
+			else {
+				glColor4f(0.5f,0.5f,1.0f,1.0f);
+			}
+
 			glBegin(GL_QUADS);
 			glVertex2i((x-2),(y-16));
 			glVertex2i(((x+wid)+4),(y-16));
@@ -279,6 +284,7 @@ void draw_model_mesh_list(void)
 
 void draw_model_wind(int mesh_idx)
 {
+	int					n;
 	d3rect				mbox;
 
 	if (!state.model_open) return;
@@ -302,14 +308,16 @@ void draw_model_wind(int mesh_idx)
 		// draw the mesh(es) in the current view
 	
 	if (state.texture) {
-		if ((state.first_mesh) && (mesh_idx!=0)) draw_model(0);
-		draw_model(mesh_idx);
+		for (n=0;n!=model.nmesh;n++) {
+			if ((n==mesh_idx) || (state.show_mesh[n])) draw_model(n);
+		}
 	}
 	
 	if (state.mesh) {
 		draw_model_gl_setup(1);
-		if ((state.first_mesh) && (mesh_idx!=0)) draw_model_mesh(0);
-		draw_model_mesh(mesh_idx);
+		for (n=0;n!=model.nmesh;n++) {
+			if ((n==mesh_idx) || (state.show_mesh[n])) draw_model_mesh(n);
+		}
 		draw_model_gl_setup(0);
 	}
 	
