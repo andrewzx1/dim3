@@ -69,7 +69,8 @@ EXPORTS
 	map_liquid_calculate_distance					@264
 	
 	map_liquid_move									@265
-	map_liquid_reset_uv								@266
+	map_liquid_move_copy							@266
+	map_liquid_reset_uv								@267
 
 	map_group_add									@270
 	map_group_delete								@271

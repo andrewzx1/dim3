@@ -66,6 +66,8 @@ int map_liquid_add(map_type *map)
 	liq->flag.no_draw=FALSE;
 
 	liq->overlay.on=FALSE;
+
+	liq->copy.copied=FALSE;
 	
 	liq->camera[0]=0x0;
 	liq->ambient.sound_name[0]=0x0;
@@ -103,6 +105,27 @@ bool map_liquid_delete(map_type *map,int liquid_idx)
 	map->liquid.nliquid--;
 
 	return(TRUE);
+}
+
+/* =======================================================
+
+      Duplicate Liquid
+      
+======================================================= */
+
+void map_liquid_create_copy_data(map_type *map,int liquid_idx)
+{
+	map_liquid_type		*liq;
+	
+	liq=&map->liquid.liquids[liquid_idx];
+	if (liq->copy.copied) return;
+
+	liq->copy.copied=TRUE;
+	liq->copy.y=liq->y;
+	liq->copy.lft=liq->lft;
+	liq->copy.rgt=liq->rgt;
+	liq->copy.top=liq->top;
+	liq->copy.bot=liq->bot;
 }
 
 /* =======================================================

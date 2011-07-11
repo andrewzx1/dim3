@@ -54,6 +54,23 @@ void map_liquid_move(map_type *map,int liquid_idx,d3pnt *mov_pt)
 	liq->y+=mov_pt->y;
 }
 
+void map_liquid_move_copy(map_type *map,int liquid_idx,d3pnt *mov_pt)
+{
+	map_liquid_type			*liq;
+
+	map_liquid_create_copy_data(map,liquid_idx);
+	
+	liq=&map->liquid.liquids[liquid_idx];
+	
+	liq->lft=liq->copy.lft+mov_pt->x;
+	liq->rgt=liq->copy.rgt+mov_pt->x;
+	
+	liq->top=liq->copy.top+mov_pt->z;
+	liq->bot=liq->copy.bot+mov_pt->z;
+	
+	liq->y=liq->copy.y+mov_pt->y;
+}
+
 /* =======================================================
 
       Reset Liquid UV

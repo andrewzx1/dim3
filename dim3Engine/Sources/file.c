@@ -51,7 +51,6 @@ char					game_file_last_save_name[256];
 unsigned char			*game_file_data;
 
 extern void view_capture_draw(char *path);
-extern void group_moves_synch_with_load(void);
 extern void rain_reset(void);
 
 /* =======================================================
@@ -728,8 +727,6 @@ bool game_file_load(char *file_name,char *err_str)
 	map_group_create_unit_list(&map);
 
 	game_file_get_chunk(map.movement.movements);
-
-	group_moves_synch_with_load();
 	
 		// script objects
 		
