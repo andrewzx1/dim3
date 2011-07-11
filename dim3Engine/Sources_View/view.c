@@ -182,17 +182,6 @@ void view_create_screen_size_list(void)
 	render_info.nscreen_size=k;
 }
 
-int view_search_screen_size_list(int wid,int high)
-{
-	int				n;
-	
-	for (n=0;n!=render_info.nscreen_size;n++) {
-		if ((render_info.screen_sizes[n].wid==wid) && (render_info.screen_sizes[n].high==high)) return(n);
-	}
-	
-	return(-1);
-}
-
 /* =======================================================
 
       View Initialize and Shutdown Display
@@ -201,11 +190,24 @@ int view_search_screen_size_list(int wid,int high)
 
 bool view_initialize_display(char *err_str)
 {
+	int				n;
+	bool			ok;
+	
 		// is screen size legal?
+		// if not, go back to default
 		
-	if (view_search_screen_size_list(setup.screen_wid,setup.screen_high)==-1) {
-		setup.screen_wid=640;
-		setup.screen_high=480;
+	if (setup.screen_wid!=-1) {
+		
+		ok=FALSE;
+			
+		for (n=0;n!=render_info.nscreen_size;n++) {
+			if ((render_info.screen_sizes[n].wid==setup.screen_wid) && (render_info.screen_sizes[n].high==setup.screen_high)) {
+				ok=TRUE;
+				break;
+			}
+		}
+		
+		if (!ok) setup.screen_wid=setup.screen_high=-1;
 	}
 	
 		// start openGL
@@ -284,7 +286,12 @@ bool view_reset_display(char *err_str)
 
 bool view_initialize(char *err_str)
 {
-	int				tick;
+	int						tick;
+#ifdef D3_SDL_1_3
+	SDL_DisplayMode			sdl_mode;
+#else
+	const SDL_VideoInfo		*sdl_v_info;
+#endif
 	
 		// clear view structure
 		
@@ -306,6 +313,18 @@ bool view_initialize(char *err_str)
 		return(FALSE);
 	}
 	
+		// get desktop screen size
+		
+#ifdef D3_SDL_1_3
+	SDL_GetDesktopDisplayMode(0,&sdl_mode);
+	view.desktop.wid=sdl_mode->w;
+	view.desktop.high=sdl_mode->h;
+#else
+	sdl_v_info=SDL_GetVideoInfo();
+	view.desktop.wid=sdl_v_info->current_w;
+	view.desktop.high=sdl_v_info->current_h;
+#endif
+
 		// create screen sizes
 		
 	view_create_screen_size_list();
