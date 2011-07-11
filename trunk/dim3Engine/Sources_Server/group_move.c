@@ -210,24 +210,16 @@ void group_move_and_rotate(group_type *group,d3pnt *move_pnt,d3ang *rot_ang)
 	bool				move_objs,rot_objs;
 	group_unit_type		*unit_list;
 	map_mesh_type		*mesh;
-	map_liquid_type		*liq;
 
 		// add up the cumlative moves
-		// varaibles are NULL when we are reseting
-		// movement from a previous cumlative move
-		// (loading from saved game)
 
-	if (move_pnt!=NULL) {
-		group->move.cuml_mov_add.x+=move_pnt->x;
-		group->move.cuml_mov_add.y+=move_pnt->y;
-		group->move.cuml_mov_add.z+=move_pnt->z;
-	}
+	group->move.cuml_mov_add.x+=move_pnt->x;
+	group->move.cuml_mov_add.y+=move_pnt->y;
+	group->move.cuml_mov_add.z+=move_pnt->z;
 
-	if (rot_ang!=NULL) {
-		group->move.cuml_rot_add.x+=rot_ang->x;
-		group->move.cuml_rot_add.y+=rot_ang->y;
-		group->move.cuml_rot_add.z+=rot_ang->z;
-	}
+	group->move.cuml_rot_add.x+=rot_ang->x;
+	group->move.cuml_rot_add.y+=rot_ang->y;
+	group->move.cuml_rot_add.z+=rot_ang->z;
 
 		// can this group move or
 		// rotate objects?
@@ -284,15 +276,7 @@ void group_move_and_rotate(group_type *group,d3pnt *move_pnt,d3ang *rot_ang)
 				break;
 
 			case group_type_liquid:
-
-				liq=&map.liquid.liquids[unit_list->idx];
-
-				liq->lft+=move_pnt->x;
-				liq->rgt+=move_pnt->x;
-				liq->top+=move_pnt->z;
-				liq->bot+=move_pnt->z;
-				liq->y+=move_pnt->y;
-
+				map_liquid_move_copy(&map,unit_list->idx,&group->move.cuml_mov_add);
 				break;
 
 		}
@@ -394,25 +378,6 @@ void group_moves_run(bool run_events)
 		if (map_movement_next_move(move->movement_idx,move->movement_move_idx,move->attach_obj_idx)) {
 			if (script_idx!=-1) scripts_post_event_console(script_idx,-1,sd_event_move,sd_event_move_loop,user_id);
 		}
-	}
-}
-
-/* =======================================================
-
-      Synch Group Movements with Loaded File
-      
-======================================================= */
-
-void group_moves_synch_with_load(void)
-{
-	int				n;
-	group_type		*group;
-
-	group=map.group.groups;
-
-	for (n=0;n!=map.group.ngroup;n++) {
-		if (group->move.was_moved) group_move_and_rotate(group,NULL,NULL);
-		group++;
 	}
 }
 

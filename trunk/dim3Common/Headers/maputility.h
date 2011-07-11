@@ -343,6 +343,11 @@ typedef struct		{
 					} map_liquid_overlay_type;
 
 typedef struct		{
+						int									y,lft,rgt,top,bot;
+						bool								copied;
+					} map_liquid_copy_type;
+
+typedef struct		{
 						int									y,depth,lft,rgt,top,bot,group_idx,
 															txt_idx,lmap_txt_idx;
 						float								speed_alter,tint_alpha,
@@ -356,6 +361,7 @@ typedef struct		{
 						map_liquid_ambient_type				ambient;
 						map_liquid_reflection_type			reflect;
 						map_liquid_overlay_type				overlay;
+						map_liquid_copy_type				copy;
 						map_light_cache_type				light_cache;
 					} map_liquid_type;
 
@@ -848,6 +854,7 @@ extern void map_liquid_calculate_center(map_type *map,int liquid_idx,d3pnt *pt);
 extern double map_liquid_calculate_distance(map_liquid_type *liq,d3pnt *pnt);
 
 extern void map_liquid_move(map_type *map,int liquid_idx,d3pnt *mov_pnt);
+extern void map_liquid_move_copy(map_type *map,int liquid_idx,d3pnt *mov_pt);
 extern void map_liquid_reset_uv(map_type *map,int liquid_idx);
 
 extern int map_group_add(map_type *map);
