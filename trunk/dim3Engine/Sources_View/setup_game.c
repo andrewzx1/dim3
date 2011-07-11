@@ -77,7 +77,6 @@ and can be sold or given away.
 #define setup_game_cancel_button			101
 #define setup_game_default_button			102
 
-extern int view_search_screen_size_list(int wid,int high);
 extern bool view_reset_display(char *err_str);
 extern int setup_find_action_in_setup(int action_idx);
 extern bool setup_xml_reset(void);
@@ -94,7 +93,7 @@ int							setup_tab_value,setup_action_scroll_pos,
 							setup_key_control_to_action_index_list[ncontrol];
 
 char						setup_tab_list[5][name_str_len],
-							setup_screen_size_list[max_screen_size][32],
+							setup_screen_size_list[max_screen_size+1][32],
 							setup_anisotropic_mode_list[][32]=anisotropic_mode_setup_list_def,
 							setup_mipmap_mode_list[][32]=mipmap_mode_setup_list_def,
 							setup_texture_quality_mode_list[][32]=texture_quality_mode_setup_list_def,
@@ -125,19 +124,26 @@ void setup_game_video_pane(void)
 	
 		// setup screen size list
 		
+	idx=0;
+	strcpy(setup_screen_size_list[0],"Default");
+		
 	for (n=0;n!=render_info.nscreen_size;n++) {
+	
 		wid=render_info.screen_sizes[n].wid;
 		high=render_info.screen_sizes[n].high;
+		
+		if ((wid==setup.screen_wid) && (high==setup.screen_high)) idx=n+1;
+		
 		if (gl_is_size_widescreen(wid,high)) {
-			sprintf(setup_screen_size_list[n],"%dx%d Widescreen",wid,high);
+			sprintf(setup_screen_size_list[n+1],"%dx%d Widescreen",wid,high);
 		}
 		else {
-			sprintf(setup_screen_size_list[n],"%dx%d",wid,high);
+			sprintf(setup_screen_size_list[n+1],"%dx%d",wid,high);
 		}
 	}
-	idx=view_search_screen_size_list(setup.screen_wid,setup.screen_high);
-	if (idx==-1) idx=0;
 	
+		// build the controls
+		
 	element_combo_add("Screen Size",(char*)setup_screen_size_list,idx,ctrl_screen_size_id,x,y,TRUE);
 	y+=control_y_add;
 	element_combo_add("Full-Screen Anti-Aliasing",(char*)setup_fsaa_mode_list,setup.fsaa_mode,ctrl_fsaa_id,x,y,TRUE);
@@ -661,8 +667,13 @@ void setup_game_handle_click(int id)
 			
 		case ctrl_screen_size_id:
 			idx=element_get_value(ctrl_screen_size_id);
-			setup.screen_wid=render_info.screen_sizes[idx].wid;
-			setup.screen_high=render_info.screen_sizes[idx].high;
+			if (idx==0) {
+				setup.screen_wid=setup.screen_high=-1;
+			}
+			else {
+				setup.screen_wid=render_info.screen_sizes[idx-1].wid;
+				setup.screen_high=render_info.screen_sizes[idx-1].high;
+			}
 			break;
 			
 		case ctrl_decal_on_id:

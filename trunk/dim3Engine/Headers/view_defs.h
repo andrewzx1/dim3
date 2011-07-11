@@ -497,6 +497,7 @@ typedef struct		{
 //
  
 typedef struct		{
+						screen_size_type					desktop;
 						view_count_type						count;
 						view_render_type					*render;
 						view_time_type						time;

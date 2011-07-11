@@ -31,6 +31,7 @@ and can be sold or given away.
 
 #include "interface.h"
 
+extern view_type			view;
 extern setup_type			setup;
 extern render_info_type		render_info;
 
@@ -86,12 +87,20 @@ void gl_setup_context(void)
 bool gl_initialize(int screen_wid,int screen_high,int fsaa_mode,bool reset,char *err_str)
 {
 #ifdef D3_SDL_1_3
-	int					sdl_flags;
+	int						sdl_flags;
 #endif
-    GLint				ntxtunit,ntxtsize;
+    GLint					ntxtunit,ntxtsize;
 #ifndef D3_OS_MAC
-	GLenum				glew_error;
+	GLenum					glew_error;
 #endif
+
+		// reset sizes to the desktop
+		// if they are at default
+		
+	if ((screen_wid==-1) || (screen_high==-1)) {
+		screen_wid=view.desktop.wid;
+		screen_high=view.desktop.high;
+	}
 
 		// setup rendering sizes
         

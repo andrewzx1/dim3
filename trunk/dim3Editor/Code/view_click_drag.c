@@ -1286,7 +1286,12 @@ bool view_click_box_select(editor_view_type *view,d3pnt *pt)
 		}
 		
 		for (n=0;n!=item_count;n++) {
-			select_add(type[n],main_idx[n],sub_idx[n]);
+			if (state.drag_mode==drag_mode_mesh) {
+				select_add(type[n],main_idx[n],-1);
+			}
+			else {
+				select_add(type[n],main_idx[n],sub_idx[n]);
+			}
 		}
 
 			// redraw the selection

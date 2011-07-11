@@ -13,7 +13,6 @@
 		F55ACF3F097D805A00F4AE50 /* pose.c in Sources */ = {isa = PBXBuildFile; fileRef = F55ACF3E097D805A00F4AE50 /* pose.c */; };
 		F55ACF41097D805F00F4AE50 /* animation.c in Sources */ = {isa = PBXBuildFile; fileRef = F55ACF40097D805F00F4AE50 /* animation.c */; };
 		F56B61E0080B6F4300E9D08B /* modelprivate.h in Headers */ = {isa = PBXBuildFile; fileRef = F56B61DF080B6F4300E9D08B /* modelprivate.h */; };
-		F5934A48099E642F0063E081 /* PNG.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5934A47099E642F0063E081 /* PNG.framework */; };
 		F59413210978BC6600223F2A /* draw_setup.c in Sources */ = {isa = PBXBuildFile; fileRef = F59413200978BC6600223F2A /* draw_setup.c */; };
 		F594132B0978BCF500223F2A /* size.c in Sources */ = {isa = PBXBuildFile; fileRef = F594132A0978BCF500223F2A /* size.c */; };
 		F594147C0979776300223F2A /* draw_normals.c in Sources */ = {isa = PBXBuildFile; fileRef = F594147B0979776300223F2A /* draw_normals.c */; };
@@ -72,7 +71,6 @@
 		F56D96E80502F83C00143299 /* file_model_mesh.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = file_model_mesh.c; path = Sources/file_model_mesh.c; sourceTree = "<group>"; };
 		F56D96E90502F83C00143299 /* file_model_pose.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = file_model_pose.c; path = Sources/file_model_pose.c; sourceTree = "<group>"; };
 		F56D96EA0502F83C00143299 /* model_main.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = model_main.c; path = Sources/model_main.c; sourceTree = "<group>"; };
-		F5934A47099E642F0063E081 /* PNG.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PNG.framework; path = ../dim3Common/Frameworks/PNG.framework; sourceTree = SOURCE_ROOT; };
 		F59413200978BC6600223F2A /* draw_setup.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = draw_setup.c; path = Sources/draw_setup.c; sourceTree = "<group>"; };
 		F594132A0978BCF500223F2A /* size.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = size.c; path = Sources/size.c; sourceTree = "<group>"; };
 		F594147B0979776300223F2A /* draw_normals.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = draw_normals.c; path = Sources/draw_normals.c; sourceTree = "<group>"; };
@@ -94,7 +92,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				F5F49515067BF9E700E809E7 /* Carbon.framework in Frameworks */,
-				F5934A48099E642F0063E081 /* PNG.framework in Frameworks */,
 				F5AD54000BBE1E11001C7C04 /* libBaseUtility.dylib in Frameworks */,
 				F5AD540A0BBE1E94001C7C04 /* OpenGL.framework in Frameworks */,
 			);
@@ -216,7 +213,6 @@
 			children = (
 				F5F49514067BF9E700E809E7 /* Carbon.framework */,
 				F5AD54090BBE1E94001C7C04 /* OpenGL.framework */,
-				F5934A47099E642F0063E081 /* PNG.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -319,6 +315,7 @@
 			buildSettings = {
 				ARCHS = i386;
 				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				EXPORTED_SYMBOLS_FILE = Exports/dim3modelutility.exp;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(FRAMEWORK_SEARCH_PATHS)",
@@ -357,6 +354,7 @@
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = libModelUtility;
 				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.6.sdk";
+				VALID_ARCHS = i386;
 				WARNING_CFLAGS = "";
 			};
 			name = Release;

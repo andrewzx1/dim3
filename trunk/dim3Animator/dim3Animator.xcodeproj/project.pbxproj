@@ -67,6 +67,8 @@
 		26D15D9D1329EA9200F9EC7B /* OSX_dialog_property_list.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D15D961329EA9200F9EC7B /* OSX_dialog_property_list.c */; };
 		26D15D9E1329EA9200F9EC7B /* OSX_dialog_property_string.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D15D971329EA9200F9EC7B /* OSX_dialog_property_string.c */; };
 		26D15D9F1329EA9200F9EC7B /* OSX_dialog_utility_common.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D15D981329EA9200F9EC7B /* OSX_dialog_utility_common.c */; };
+		26D27DA913CA620F00A8A6F7 /* libPNG.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 26D27DA813CA620F00A8A6F7 /* libPNG.dylib */; };
+		26D27DAA13CA621E00A8A6F7 /* libPNG.dylib in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 26D27DA813CA620F00A8A6F7 /* libPNG.dylib */; };
 		26EE4951126B84F8001D0025 /* animator_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 26EE4950126B84F8001D0025 /* animator_defs.h */; };
 		26EE498E126B87A4001D0025 /* texture_palette_common.c in Sources */ = {isa = PBXBuildFile; fileRef = 26EE498D126B87A4001D0025 /* texture_palette_common.c */; };
 		26EE49C7126B896F001D0025 /* interface.h in Headers */ = {isa = PBXBuildFile; fileRef = 26EE49C6126B896F001D0025 /* interface.h */; };
@@ -83,8 +85,6 @@
 		F5537D8E0C87B7FE00ADA34F /* maputility.h in Headers */ = {isa = PBXBuildFile; fileRef = F5537D8D0C87B7FE00ADA34F /* maputility.h */; };
 		F579A01E07DFDF8400DB4213 /* insert.c in Sources */ = {isa = PBXBuildFile; fileRef = F579A01D07DFDF8400DB4213 /* insert.c */; };
 		F5895D3F0C6570EC00AA2669 /* dialog_animation_time_reset.c in Sources */ = {isa = PBXBuildFile; fileRef = F5895D3E0C6570EC00AA2669 /* dialog_animation_time_reset.c */; };
-		F5934BB7099E79150063E081 /* PNG.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5934BB6099E79150063E081 /* PNG.framework */; };
-		F5934BE3099E79E70063E081 /* PNG.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = F5934BB6099E79150063E081 /* PNG.framework */; };
 		F594B4E509A97EB000408388 /* dialog_set_vertex_bone.c in Sources */ = {isa = PBXBuildFile; fileRef = F594B4E409A97EB000408388 /* dialog_set_vertex_bone.c */; };
 		F5A42D940555EC87002DF965 /* dim3animator.h in Headers */ = {isa = PBXBuildFile; fileRef = F52F2B3A04D9D8C700145290 /* dim3animator.h */; };
 		F5A42D980555EC87002DF965 /* modelutility.h in Headers */ = {isa = PBXBuildFile; fileRef = F5CA4EF7051010AD0055C8B8 /* modelutility.h */; };
@@ -158,7 +158,7 @@
 			files = (
 				F5AD54330BBE1F7E001C7C04 /* libBaseUtility.dylib in Copy Frameworks */,
 				F5FEF6580BB4EA4500198897 /* libModelUtility.dylib in Copy Frameworks */,
-				F5934BE3099E79E70063E081 /* PNG.framework in Copy Frameworks */,
+				26D27DAA13CA621E00A8A6F7 /* libPNG.dylib in Copy Frameworks */,
 			);
 			name = "Copy Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -244,6 +244,7 @@
 		26D15D961329EA9200F9EC7B /* OSX_dialog_property_list.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = OSX_dialog_property_list.c; path = ../dim3Common/Code/OSX_dialog_property_list.c; sourceTree = SOURCE_ROOT; };
 		26D15D971329EA9200F9EC7B /* OSX_dialog_property_string.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = OSX_dialog_property_string.c; path = ../dim3Common/Code/OSX_dialog_property_string.c; sourceTree = SOURCE_ROOT; };
 		26D15D981329EA9200F9EC7B /* OSX_dialog_utility_common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = OSX_dialog_utility_common.c; path = ../dim3Common/Code/OSX_dialog_utility_common.c; sourceTree = SOURCE_ROOT; };
+		26D27DA813CA620F00A8A6F7 /* libPNG.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libPNG.dylib; path = ../dim3Common/Libraries/PNG/libPNG.dylib; sourceTree = "<group>"; };
 		26EE4950126B84F8001D0025 /* animator_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = animator_defs.h; path = Headers/animator_defs.h; sourceTree = "<group>"; };
 		26EE498D126B87A4001D0025 /* texture_palette_common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = texture_palette_common.c; path = ../dim3Common/Code/texture_palette_common.c; sourceTree = SOURCE_ROOT; };
 		26EE49C6126B896F001D0025 /* interface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = interface.h; path = Headers/interface.h; sourceTree = "<group>"; };
@@ -261,7 +262,6 @@
 		F5537D8D0C87B7FE00ADA34F /* maputility.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = maputility.h; path = ../dim3Common/Headers/maputility.h; sourceTree = SOURCE_ROOT; };
 		F579A01D07DFDF8400DB4213 /* insert.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = insert.c; path = Code/insert.c; sourceTree = "<group>"; };
 		F5895D3E0C6570EC00AA2669 /* dialog_animation_time_reset.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = dialog_animation_time_reset.c; path = Code/dialog_animation_time_reset.c; sourceTree = "<group>"; };
-		F5934BB6099E79150063E081 /* PNG.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PNG.framework; path = ../dim3Common/Frameworks/PNG.framework; sourceTree = SOURCE_ROOT; };
 		F594B4E409A97EB000408388 /* dialog_set_vertex_bone.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = dialog_set_vertex_bone.c; path = Code/dialog_set_vertex_bone.c; sourceTree = "<group>"; };
 		F5A42DC40555EC87002DF965 /* dim3 Animator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "dim3 Animator.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F5A431F0055601EC002DF965 /* Info-dim3_Animator.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.xml; name = "Info-dim3_Animator.plist"; path = "Resources/Info-dim3_Animator.plist"; sourceTree = "<group>"; };
@@ -285,9 +285,9 @@
 				F5A42DB90555EC87002DF965 /* AGL.framework in Frameworks */,
 				F5A42DBA0555EC87002DF965 /* OpenGL.framework in Frameworks */,
 				F5A42DBB0555EC87002DF965 /* Carbon.framework in Frameworks */,
-				F5934BB7099E79150063E081 /* PNG.framework in Frameworks */,
 				F5AD54320BBE1F6A001C7C04 /* libBaseUtility.dylib in Frameworks */,
 				F5F4956B067C169C00E809E7 /* libModelUtility.dylib in Frameworks */,
+				26D27DA913CA620F00A8A6F7 /* libPNG.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -364,6 +364,7 @@
 			children = (
 				F5AD54310BBE1F6A001C7C04 /* libBaseUtility.dylib */,
 				F5F49567067C169C00E809E7 /* libModelUtility.dylib */,
+				26D27DA813CA620F00A8A6F7 /* libPNG.dylib */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -421,7 +422,6 @@
 				20286C33FDCF999611CA2CEA /* Carbon.framework */,
 				0111608500BE29E27F000001 /* AGL.framework */,
 				F5197CF8014F1AFA0140F45C /* OpenGL.framework */,
-				F5934BB6099E79150063E081 /* PNG.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -716,6 +716,7 @@
 				ARCHS = i386;
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEPLOYMENT_POSTPROCESSING = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(FRAMEWORK_SEARCH_PATHS)",
@@ -752,14 +753,20 @@
 				GCC_WARN_UNUSED_PARAMETER = NO;
 				GCC_WARN_UNUSED_VALUE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/../dim3Common/Libraries/PNG";
 				INFOPLIST_FILE = "Resources/Info-dim3_Animator.plist";
-				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/../dim3Common/Libraries";
+				LIBRARY_SEARCH_PATHS = (
+					"$(SRCROOT)/../dim3Common/Libraries",
+					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+				);
+				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../dim3Common/Libraries/PNG\"";
 				LLVM_LTO = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
-				OTHER_LDFLAGS = "";
+				OTHER_LDFLAGS = "-lz";
 				PRODUCT_NAME = "dim3 Animator";
 				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.6.sdk";
 				STRIP_STYLE = debugging;
+				VALID_ARCHS = i386;
 				WARNING_CFLAGS = "";
 				WRAPPER_EXTENSION = app;
 			};

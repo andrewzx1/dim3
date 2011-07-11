@@ -303,11 +303,6 @@ void file_paths_documents(file_path_setup_type *file_path_setup,char *path,char 
 	SHGetSpecialFolderPath(NULL,path,CSIDL_PERSONAL,FALSE);
 #endif
 
-		// get the dim3 path and create if necessary
-		
-	strcat(path,"/dim3");
-	file_paths_create_directory(path);
-		
 		// get game's document directory based
 		// on application name and create if necessary
 		

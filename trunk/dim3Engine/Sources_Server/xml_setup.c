@@ -43,8 +43,8 @@ setup_type					setup;
 
 void setup_xml_default(void)
 {
-	setup.screen_wid=640;
-	setup.screen_high=480;
+	setup.screen_wid=-1;
+	setup.screen_high=-1;
 	
 	setup.anisotropic_mode=anisotropic_mode_none;
 	setup.mipmap_mode=mipmap_mode_trilinear;
@@ -426,8 +426,8 @@ void setup_restore(void)
 		// reset important defaults
 		// to their simpliest form
 		
-	setup.screen_wid=640;
-	setup.screen_high=480;
+	setup.screen_wid=-1;
+	setup.screen_high=-1;
 	
 	setup.decal_on=FALSE;
 	setup.shadow_on=FALSE;
