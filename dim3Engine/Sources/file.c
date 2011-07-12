@@ -523,9 +523,9 @@ bool game_file_load(char *file_name,char *err_str)
 		// reload map
 
 	if (map_change) {
-	
+
 		if (server.map_open) map_end();
-		
+
 		strcpy(map.info.name,head.map_name);
 		map.info.player_start_name[0]=0x0;
 

@@ -290,8 +290,8 @@ bool gl_is_screen_widescreen(void)
 
 bool gl_screen_shot(int lft_x,int top_y,int wid,int high,bool thumbnail,char *path)
 {
-	int					x,y,x_skip,y_skip,
-						ss_wid,ss_high,dsz;
+	int					x,y,x_skip,y_skip,y_add,
+						ss_wid,ss_high,sav_high,dsz;
 	unsigned char		*pixel_buffer,*data,*sptr,*dptr,*s2ptr,*d2ptr;
 	bool				ok;
 	
@@ -300,22 +300,31 @@ bool gl_screen_shot(int lft_x,int top_y,int wid,int high,bool thumbnail,char *pa
 	
 	glReadPixels(lft_x,top_y,wid,high,GL_RGB,GL_UNSIGNED_BYTE,pixel_buffer);
 	
-		// is there a limiting?
+		// is this is a thumbnail,
+		// then reduce the picture (but keep
+		// the dimensions)
 		
 	x_skip=y_skip=1;
+	y_add=0;
 	ss_wid=wid;
-	ss_high=high;
+	ss_high=sav_high=high;
+
+	dsz=(wid*3)*high;
 	
 	if (thumbnail) {
 		x_skip=wid/128;
-		y_skip=high/128;
-		ss_wid=ss_high=128;
+		ss_wid=128;
+
+		ss_high=(high*128)/wid;
+		y_skip=high/ss_high;
+		y_add=(128-ss_high)/2;
+		sav_high=128;
+
+		dsz=(128*3)*128;
 	}
 	
 		// flip the data
 		
-	dsz=((ss_wid*3)*ss_high);
-	
 	data=(unsigned char*)malloc(dsz);
 	if (data==NULL) {
 		free(pixel_buffer);
@@ -325,7 +334,7 @@ bool gl_screen_shot(int lft_x,int top_y,int wid,int high,bool thumbnail,char *pa
 	bzero(data,dsz);
 	
 	sptr=pixel_buffer;
-	dptr=data+((ss_high-1)*(ss_wid*3));
+	dptr=data+(((ss_high-1)+y_add)*(ss_wid*3));
 
 	for (y=0;y!=ss_high;y++) {
 	
@@ -348,7 +357,7 @@ bool gl_screen_shot(int lft_x,int top_y,int wid,int high,bool thumbnail,char *pa
 
 		// save screenshot
 
-	ok=bitmap_write_png_data(data,ss_wid,ss_high,FALSE,path);
+	ok=bitmap_write_png_data(data,ss_wid,sav_high,FALSE,path);
 		
 	free(data);
 	
