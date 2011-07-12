@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2609CAA813CBC2A400B87F9D /* osx_appstore.c in Sources */ = {isa = PBXBuildFile; fileRef = 2609CAA713CBC2A400B87F9D /* osx_appstore.c */; };
 		260AE9350F832A5B00451942 /* gl_back_render.c in Sources */ = {isa = PBXBuildFile; fileRef = 260AE9340F832A5B00451942 /* gl_back_render.c */; };
 		260C145C129C770800B6D5B5 /* SDLMain.h in Headers */ = {isa = PBXBuildFile; fileRef = 260C145A129C770800B6D5B5 /* SDLMain.h */; };
 		260C145D129C770800B6D5B5 /* SDLMain.m in Sources */ = {isa = PBXBuildFile; fileRef = 260C145B129C770800B6D5B5 /* SDLMain.m */; };
@@ -358,6 +359,7 @@
 		00CA825D00BF848B7F000001 /* dim3 Engine.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = "dim3 Engine.icns"; path = "Resources/dim3 Engine.icns"; sourceTree = "<group>"; };
 		0867D6ABFE840B52C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		20286C33FDCF999611CA2CEA /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
+		2609CAA713CBC2A400B87F9D /* osx_appstore.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = osx_appstore.c; path = Sources_OSX_AppStore/osx_appstore.c; sourceTree = "<group>"; };
 		260AE9340F832A5B00451942 /* gl_back_render.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = gl_back_render.c; path = Sources_View/gl_back_render.c; sourceTree = "<group>"; };
 		260C145A129C770800B6D5B5 /* SDLMain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDLMain.h; path = SDL/SDLMain.h; sourceTree = "<group>"; };
 		260C145B129C770800B6D5B5 /* SDLMain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SDLMain.m; path = SDL/SDLMain.m; sourceTree = "<group>"; };
@@ -923,6 +925,14 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		2609CAA613CBC23500B87F9D /* OSX_AppStore */ = {
+			isa = PBXGroup;
+			children = (
+				2609CAA713CBC2A400B87F9D /* osx_appstore.c */,
+			);
+			name = OSX_AppStore;
+			sourceTree = "<group>";
+		};
 		2694E5960F91A328004B672A /* Multiplayer */ = {
 			isa = PBXGroup;
 			children = (
@@ -1185,6 +1195,7 @@
 			isa = PBXGroup;
 			children = (
 				F5F654FA0B549D0E00633A54 /* Sources */,
+				2609CAA613CBC23500B87F9D /* OSX_AppStore */,
 			);
 			name = Main;
 			sourceTree = "<group>";
@@ -1740,6 +1751,7 @@
 				260C145D129C770800B6D5B5 /* SDLMain.m in Sources */,
 				26F8AA75133546FB0020367E /* chat.c in Sources */,
 				26F8AA7E133547770020367E /* console.c in Sources */,
+				2609CAA813CBC2A400B87F9D /* osx_appstore.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1765,7 +1777,7 @@
 				DEAD_CODE_STRIPPING = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEPLOYMENT_POSTPROCESSING = YES;
-				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)/../dim3Common/Frameworks";
+				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_CHAR_IS_UNSIGNED_CHAR = NO;
 				GCC_CW_ASM_SYNTAX = NO;
 				GCC_DYNAMIC_NO_PIC = YES;
@@ -1803,37 +1815,22 @@
 					"$(SRCROOT)/../dim3Common/Libraries/SDL",
 					"$(SRCROOT)/../dim3Common/Libraries/MPG123",
 					"$(SRCROOT)/../dim3Common/Libraries/PNG",
+					"$(SRCROOT)/../dim3Common/Libraries",
 				);
 				INFOPLIST_FILE = "Resources/Info-dim3_Engine.plist";
 				INSTALL_PATH = "";
 				LIBRARY_SEARCH_PATHS = (
+					"$(SRCROOT)/../dim3Common/Libraries/SDL",
+					"$(SRCROOT)/../dim3Common/Libraries/MPG123",
+					"$(SRCROOT)/../dim3Common/Libraries/PNG",
 					"$(SRCROOT)/../dim3Common/Libraries",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_5)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_6)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_7)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_8)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_9)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_10)",
-					"$(LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_11)",
 				);
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../dim3Common/Libraries/SDL\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_10 = "\"$(SRCROOT)/../dim3ModelUtility/build/Release\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_11 = "\"$(SRCROOT)/../dim3Common/Libraries/PNG\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_2 = "\"$(SRCROOT)/../dim3BaseUtility/build/Release\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_3 = "\"$(SRCROOT)/../dim3Common/Libraries/MPG123\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_4 = "\"$(SRCROOT)/../dim3Common/Libraries/SDL\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_5 = "\"$(SRCROOT)/../dim3MapUtility/build/Default\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_6 = "\"$(SRCROOT)/../dim3MapUtility/build/dim3MapUtility.build/Default/MapUtility.build/Objects-normal/i386\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_7 = "\"$(SRCROOT)/../dim3MapUtility/build/Release\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_8 = "\"$(SRCROOT)/../dim3ModelUtility/build/Deployment\"";
-				LIBRARY_SEARCH_PATHS_QUOTED_FOR_TARGET_9 = "\"$(SRCROOT)/../dim3ModelUtility/build/dim3ModelUtility.build/Deployment/ModelUtility.build/Objects-normal/i386\"";
 				LLVM_LTO = NO;
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
-				OTHER_LDFLAGS = "-lSystemStubs";
+				OTHER_LDFLAGS = (
+					"-lSystemStubs",
+					"-lz",
+				);
 				PRODUCT_NAME = "dim3 Engine";
 				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.6.sdk";
 				SKIP_INSTALL = YES;
