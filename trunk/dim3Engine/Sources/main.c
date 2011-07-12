@@ -171,6 +171,12 @@ int main(int argc,char *argv[])
 	bool			app_start_ok;
 	char			err_str[256];
 	
+		// OSX AppStore
+		
+#ifdef D3_OS_X_APPSTORE
+	dim3_osx_appstore_main();
+#endif
+	
 		// setup paths
 
 	if (!file_paths_setup(&setup.file_path_setup)) {

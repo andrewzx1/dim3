@@ -5,12 +5,11 @@ They are listed below:
 For OS X Compile:
 -----------------
 
-/dim3Common/Frameworks/JS.framework (Webkit JS framework)
-/dim3Common/Frameworks/PNG.framework (PNG library)
-/dim3Common/Frameworks/mpg123.framework (MP3 library)
-/dim3Common/Frameworks/SDL.framework (SDL library)
+/dim3Common/Libraries/PNG.framework (PNG lib and headers)
+/dim3Common/Libraries/MPG123 (mpg123 lib and headers)
+/dim3Common/Libraries/SDL (SDL lib and headers)
 
-A pre-compiled archive of these can be found at: http://www.klinksoftware.net/download/OSX_Frameworks.zip
+A pre-compiled archive of these can be found at: http://www.klinksoftware.net/download/OSX_Libraries.zip
 
 The OS X compile requires no additional external libraries.
 

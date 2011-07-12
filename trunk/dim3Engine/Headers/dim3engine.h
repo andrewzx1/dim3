@@ -33,8 +33,8 @@ and can be sold or given away.
 
 #ifdef D3_OS_MAC
 	#include "SDL.h"
-	#include <PNG/png.h>
-	#include <mpg123/mpg123.h>
+	#include "png.h"
+	#include "mpg123.h"
 #endif
 
 #ifdef D3_OS_LINUX

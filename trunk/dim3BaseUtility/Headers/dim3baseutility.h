@@ -33,8 +33,4 @@ and can be sold or given away.
 #include "baseutility.h"
 #include "baseprivate.h"
 
-#ifdef D3_OS_MAC
-  #include <PNG/png.h>
-#else
-  #include "png.h"
-#endif
+#include "png.h"
