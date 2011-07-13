@@ -412,6 +412,8 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 		player_clear_input();
 		
 			// connect camera to player
+			// skip if we are reloading this map
+			// to restore a saved game
 			
 		if (!in_file_load) {
 			obj=server.obj_list.objs[server.player_obj_idx];
@@ -430,14 +432,16 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 	gl_back_render_map_start();
 	
 		// map start event
+		// skip if we are reloading this map
+		// to restore a saved game
 		
 	progress_draw(90);
 
-	scripts_post_event_console(js.game_script_idx,-1,sd_event_map,sd_event_map_open,0);
-	scripts_post_event_console(js.course_script_idx,-1,sd_event_map,sd_event_map_open,0);
+	if (!in_file_load) {
+		scripts_post_event_console(js.game_script_idx,-1,sd_event_map,sd_event_map_open,0);
+		scripts_post_event_console(js.course_script_idx,-1,sd_event_map,sd_event_map_open,0);
 
-	if (net_setup.mode!=net_mode_host_dedicated) {
-		scripts_post_event_console(obj->script_idx,-1,sd_event_map,sd_event_map_open,0);
+		if (net_setup.mode!=net_mode_host_dedicated) scripts_post_event_console(obj->script_idx,-1,sd_event_map,sd_event_map_open,0);
 	}
 	
 		// finish up

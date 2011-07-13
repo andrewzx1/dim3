@@ -2145,104 +2145,56 @@ void element_draw_table_line_data(element_type *element,int x,int y,int row,int 
 
 int element_draw_table_scrollbar(element_type *element,int high,int row_high,int row_count,bool up_ok,bool down_ok)
 {
-	int				lft,rgt,top,bot,x,top2,bot2,cnt,pos_my,
-					scroll_high;
-	float			alpha;
+	int				lft,rgt,top,bot,x,y,pos_my,
+					page_count,row_per_page,scroll_high;
+	bool			has_scroll;
 	d3col			col,col2;
 	
-		// scroll bar arrow fills
+		// scroll bar background and border
 		
 	element_get_box(element,&lft,&rgt,&top,&bot);
 	
 	lft=rgt-24;
-	top+=high;
-	bot2=top+24;
-	
-	col.r=0.5f;
-	col.g=0.5f;
-	col.b=0.5f;
-	
-	col2.r=0.3f;
-	col2.g=0.3f;
-	col2.b=0.3f;
 
-	view_draw_next_vertex_object_2D_color_poly(lft,top,&col,rgt,top,&col,rgt,bot2,&col2,lft,bot2,&col2,1.0f);
-	
-	top2=bot-24;
-	
-	view_draw_next_vertex_object_2D_color_poly(lft,top2,&col2,rgt,top2,&col2,rgt,bot,&col,lft,bot,&col,1.0f);
-	
-		// scroll position
-		
-	top+=24;
-	bot-=24;
-		
-	if (row_count!=0) {
-	
-		scroll_high=(bot-top)/row_count;
-		cnt=((element->high-high)/row_high)-1;
-
-		if (element->offset!=0) top+=(scroll_high*element->offset);
-		if ((element->offset+(cnt+1))<row_count) {
-			bot=top+(scroll_high*(cnt+1));
-		}
-	}
-	
-	x=(lft+rgt)>>1;
-	
-	view_draw_next_vertex_object_2D_color_poly(lft,bot,&col,lft,top,&col,x,top,&col2,x,bot,&col2,1.0f);
-	view_draw_next_vertex_object_2D_color_poly(x,bot,&col2,x,top,&col2,rgt,top,&col,rgt,bot,&col,1.0f);
-	view_draw_next_vertex_object_2D_line_quad(&iface.color.control.outline,1.0f,lft,rgt,top,bot);
-	
-	pos_my=(top+bot)/2;
-	
-		// scrolling lines
-		
-	element_get_box(element,&lft,&rgt,&top,&bot);
-	lft=rgt-24;
-
+	view_draw_next_vertex_object_2D_color_quad(&iface.color.scrollbar.background,1.0f,lft,rgt,(top+high),bot);
 	view_draw_next_vertex_object_2D_line(&iface.color.control.outline,1.0f,lft,top,lft,bot);
 	
-	element_get_box(element,&lft,&rgt,&top,&bot);
-	lft=rgt-24;
-	top+=(high+24);
+		// scroll position
+
+	top+=high;
+
+	has_scroll=FALSE;
+
+	page_count=((row_count*row_high)/(bot-top))+1;
+
+	if (page_count>1) {
+		row_per_page=(bot-top)/row_high;
+
+		scroll_high=(bot-top)/page_count;
+		if (element->offset!=0) top+=((element->offset/row_per_page)*scroll_high);
+
+		y=top+scroll_high;
+		if (y>bot) y=bot;
+
+		bot=y;
+
+		has_scroll=TRUE;
+	}
+
+	x=(lft+rgt)>>1;
+	pos_my=(top+bot)/2;
 	
-	view_draw_next_vertex_object_2D_line(&iface.color.control.outline,1.0f,lft,top,rgt,top);
-	
-	element_get_box(element,&lft,&rgt,&top,&bot);
-	lft=rgt-24;
-	bot-=24;
+	if (has_scroll) {
+		memmove(&col,&iface.color.scrollbar.thumb,sizeof(d3col));
+		col2.r=col.r*0.5f;
+		col2.g=col.g*0.5f;
+		col2.b=col.b*0.5f;
 
-	view_draw_next_vertex_object_2D_line(&iface.color.control.outline,1.0f,lft,bot,rgt,bot);
-	
-		// scroll up
-
-	element_get_box(element,&lft,&rgt,&top,&bot);
-	lft=rgt-20;
-	rgt=lft+16;
-	top+=(high+4);
-	bot=top+16;
-
-	alpha=up_ok?1.0f:0.1f;
-	view_draw_next_vertex_object_2D_color_trig(&iface.color.control.hilite,alpha,lft,rgt,top,bot,0);
-
-	col.r=col.g=col.b=0.0f;
-	view_draw_next_vertex_object_2D_line_trig(&col,alpha,lft,rgt,top,bot,0);
-
-		// scroll down
+		view_draw_next_vertex_object_2D_color_poly(lft,bot,&col,lft,top,&col,x,top,&col2,x,bot,&col2,1.0f);
+		view_draw_next_vertex_object_2D_color_poly(x,bot,&col2,x,top,&col2,rgt,top,&col,rgt,bot,&col,1.0f);
+		view_draw_next_vertex_object_2D_line_quad(&iface.color.control.outline,1.0f,lft,rgt,top,bot);
+	}
 		
-	element_get_box(element,&lft,&rgt,&top,&bot);
-	lft=rgt-20;
-	rgt=lft+16;
-	bot-=4;
-	top=bot-16;
-
-	alpha=down_ok?1.0f:0.1f;
-	view_draw_next_vertex_object_2D_color_trig(&iface.color.control.hilite,alpha,lft,rgt,top,bot,2);
-
-	col.r=col.g=col.b=0.0f;
-	view_draw_next_vertex_object_2D_line_trig(&col,alpha,lft,rgt,top,bot,2);
-	
 	return(pos_my);
 }
 
@@ -2297,7 +2249,7 @@ void element_draw_table(element_type *element,int sel_id)
 		
 	if (element->data!=NULL) {
 	
-		y=(element->y+4)+(high+2);
+		y=(element->y+4)+(high+1);
 		
 		c=element->data+(element->offset*128);
 		

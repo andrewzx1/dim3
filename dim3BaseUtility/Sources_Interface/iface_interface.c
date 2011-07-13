@@ -591,6 +591,8 @@ void iface_read_settings_interface(iface_type *iface)
 		xml_get_attribute_color(color_tag,"control_mouse_over",&iface->color.control.mouse_over);
 		xml_get_attribute_color(color_tag,"control_hilite",&iface->color.control.hilite);
 		xml_get_attribute_color(color_tag,"control_disabled",&iface->color.control.disabled);
+		xml_get_attribute_color(color_tag,"scrollbar_background",&iface->color.scrollbar.background);
+		xml_get_attribute_color(color_tag,"scrollbar_thumb",&iface->color.scrollbar.thumb);
 		xml_get_attribute_color(color_tag,"button_fill",&iface->color.button.fill);
 		xml_get_attribute_color(color_tag,"button_text",&iface->color.button.text);
 		xml_get_attribute_color(color_tag,"button_outline",&iface->color.button.outline);
@@ -1122,6 +1124,8 @@ bool iface_write_settings_interface(iface_type *iface)
 	xml_add_attribute_color("control_mouse_over",&iface->color.control.mouse_over);
 	xml_add_attribute_color("control_hilite",&iface->color.control.hilite);
 	xml_add_attribute_color("control_disabled",&iface->color.control.disabled);
+	xml_add_attribute_color("scrollbar_background",&iface->color.scrollbar.background);
+	xml_add_attribute_color("scrollbar_thumb",&iface->color.scrollbar.thumb);
 	xml_add_attribute_color("button_fill",&iface->color.button.fill);
 	xml_add_attribute_color("button_text",&iface->color.button.text);
 	xml_add_attribute_color("button_outline",&iface->color.button.outline);
