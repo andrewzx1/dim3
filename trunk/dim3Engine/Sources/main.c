@@ -44,6 +44,7 @@ bool						game_app_active,game_loop_quit;
 extern iface_type			iface;
 extern setup_type			setup;
 
+extern bool dim3_osx_appstore_main(void);
 extern bool loop_main(char *err_str);
 
 /* =======================================================
@@ -174,7 +175,7 @@ int main(int argc,char *argv[])
 		// OSX AppStore
 		
 #ifdef D3_OS_X_APPSTORE
-	dim3_osx_appstore_main();
+	if (!dim3_osx_appstore_main()) return(173);
 #endif
 	
 		// setup paths
