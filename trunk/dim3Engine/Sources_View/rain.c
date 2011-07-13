@@ -36,7 +36,8 @@ extern view_type			view;
 extern setup_type			setup;
 
 int							rain_last_tick,rain_slant_add,rain_slant_next_add,
-							rain_slant_next_start_tick,rain_slant_next_end_tick;
+							rain_slant_next_start_tick,rain_slant_next_end_tick,
+							rain_last_camera_y;
 float						rain_slant_ang_y,rain_slant_next_ang_y;
 
 /* =======================================================
@@ -95,6 +96,8 @@ void rain_setup(d3pnt *pnt)
 	rain_slant_ang_y=random_float(360);
 	
 	rain_setup_next_slant();
+
+	rain_last_camera_y=view.render->camera.pnt.y;
 }
 
 void rain_reset(void)
@@ -110,7 +113,7 @@ void rain_reset(void)
 
 void rain_draw(void)
 {
-	int				n,tick,xadd,yadd,zadd,density,
+	int				n,tick,xadd,yadd,zadd,ypush,density,
 					slant_add,slant_mult,slant_div;
 	float			slant_ang_y;
 	float			*vertex_ptr,*col_ptr;
@@ -127,6 +130,13 @@ void rain_draw(void)
 		map.rain.reset=FALSE;
 		rain_setup(&view.render->camera.pnt);
 	}
+
+		// rain y
+		// rain will be pushed by the Y because it looks
+		// wrong if you are falling too fast
+
+	ypush=(view.render->camera.pnt.y-rain_last_camera_y)/10;
+	rain_last_camera_y=view.render->camera.pnt.y;
 	
 		// rain slant
 
@@ -164,7 +174,7 @@ void rain_draw(void)
 		// rain change
 
 	xadd=(tick-rain_last_tick)*xadd;
-	yadd=(tick-rain_last_tick)*map.rain.speed;
+	yadd=((tick-rain_last_tick)*map.rain.speed)+ypush;
 	zadd=(tick-rain_last_tick)*zadd;
 	
 	rain_last_tick=tick;

@@ -246,6 +246,9 @@ void iface_default_settings(iface_type *iface)
 	iface->color.control.hilite.g=0.3f;
 	iface->color.control.disabled.r=iface->color.control.disabled.g=iface->color.control.disabled.b=0.3f;
 
+	iface->color.scrollbar.background.r=iface->color.scrollbar.background.g=iface->color.scrollbar.background.b=0.7f;
+	iface->color.scrollbar.thumb.r=iface->color.scrollbar.thumb.g=iface->color.scrollbar.thumb.b=0.5f;
+
 	iface->color.button.fill.r=iface->color.button.fill.g=iface->color.button.fill.b=0.6f;
 	iface->color.button.text.r=iface->color.button.text.g=iface->color.button.text.b=0.0f;
 	iface->color.button.outline.r=iface->color.button.outline.g=iface->color.button.outline.b=0.0f;

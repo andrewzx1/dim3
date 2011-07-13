@@ -656,10 +656,10 @@ int object_create(char *name,int type,int bind)
 	obj->crosshair_draw.on=FALSE;
 	obj->crosshair_draw.alt_tick=0;
 
-	obj->melee.strike_bone_tag=model_null_tag;
-	obj->melee.strike_pose_name[0]=0x0;
-	obj->melee.object_strike_bone_tag=model_null_tag;
-	obj->melee.object_strike_pose_name[0]=0x0;
+	obj->melee.strike_bone_idx=-1;
+	obj->melee.strike_pose_idx=-1;
+	obj->melee.object_strike_bone_idx=-1;
+	obj->melee.object_strike_pose_idx=-1;
 	obj->melee.radius=0;
 	obj->melee.distance=0;
 	obj->melee.damage=0;

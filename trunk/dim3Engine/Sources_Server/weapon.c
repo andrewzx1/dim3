@@ -220,7 +220,6 @@ bool weapon_add(obj_type *obj,char *name)
 	weap->crosshair.pickup_col.g=weap->crosshair.pickup_col.b=0;
 	weap->crosshair.fire_name[0]=0x0;
 	weap->crosshair.fire_idx=-1;
-	weap->crosshair.bone_tag=model_null_tag;
 	weap->crosshair.bone_idx=-1;
 	
 	weap->hand.fov_override=0.0f;
@@ -249,10 +248,10 @@ bool weapon_add(obj_type *obj,char *name)
 
 	weapon_recoil_clear(weap);
 	
-	weap->melee.strike_bone_tag=model_null_tag;
-	weap->melee.strike_pose_name[0]=0x0;
-	weap->melee.object_strike_bone_tag=model_null_tag;
-	weap->melee.object_strike_pose_name[0]=0x0;
+	weap->melee.strike_bone_idx=-1;
+	weap->melee.strike_pose_idx=-1;
+	weap->melee.object_strike_bone_idx=-1;
+	weap->melee.object_strike_pose_idx=-1;
 	weap->melee.radius=0;
 	weap->melee.distance=0;
 	weap->melee.damage=0;

@@ -34,7 +34,7 @@ and can be sold or given away.
 #include "scripts.h"
 
 typedef struct		{
-						int					tick;
+						int					tick,skill;
 						char				version[16],map_name[name_str_len];
 					} file_save_header;					
 
@@ -286,6 +286,7 @@ bool game_file_save(char *err_str)
 		// header
 
 	head.tick=tick;
+	head.skill=server.skill;
 	strcpy(head.version,dim3_version);
 	strcpy(head.map_name,map.info.name);
 		
@@ -498,26 +499,26 @@ bool game_file_load(char *file_name,char *err_str)
 	strcpy(map.info.name,head.map_name);
 	map.info.player_start_name[0]=0x0;
 
-		// if game isn't running, then start
-		
-	if (!server.game_open) {
-
-		scripts_lock_events();
-		ok=game_start(TRUE,skill_medium,0,err_str);
-		scripts_unlock_events();
-		
-		if (!ok) {
-			free(game_file_data);
-			return(FALSE);
-		}
-	}
-
 		// check version
 		
 	if (strcmp(head.version,dim3_version)!=0) {
 		sprintf(err_str,"This saved game file is from a different version of dim3");
 		free(game_file_data);
 		return(FALSE);
+	}
+
+		// if game isn't running, then start
+		
+	if (!server.game_open) {
+
+		scripts_lock_events();
+		ok=game_start(TRUE,head.skill,0,err_str);
+		scripts_unlock_events();
+		
+		if (!ok) {
+			free(game_file_data);
+			return(FALSE);
+		}
 	}
 		
 		// reload map

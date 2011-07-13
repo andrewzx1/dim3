@@ -124,7 +124,6 @@ void melee_add(obj_type *obj,weapon_type *weap,d3pnt *pt,d3ang *ang,melee_type *
 
 bool melee_strike_position_weapon_model(obj_type *obj,weapon_type *weap,d3pnt *fire_pnt,char *err_str)
 {
-	int						pose_idx,bone_idx;
 	model_type				*mdl;
 	model_draw_setup		*setup;
 
@@ -137,21 +136,19 @@ bool melee_strike_position_weapon_model(obj_type *obj,weapon_type *weap,d3pnt *f
 
 	mdl=server.model_list.models[weap->draw.model_idx];
 
-		// get current pose
+		// check pose and bone
 
-	pose_idx=model_find_pose(mdl,weap->melee.strike_pose_name);
-	if (pose_idx==-1) {
+	if (weap->melee.strike_pose_idx==-1) {
 		if (err_str!=NULL) strcpy(err_str,"Weapon has missing or no strike pose");
 		return(FALSE);
 	}
-	
-		// get 'fire' bone offset
 
-	bone_idx=model_find_bone(mdl,weap->melee.strike_bone_tag);
-	if (bone_idx==-1) {
+	if (weap->melee.strike_bone_idx==-1) {
 		if (err_str!=NULL) strcpy(err_str,"Weapon has missing or no strike bone");
 		return(FALSE);
 	}
+
+		// create melee position
 
 	model_draw_setup_weapon(obj,weap,TRUE,FALSE);
 
@@ -160,7 +157,7 @@ bool melee_strike_position_weapon_model(obj_type *obj,weapon_type *weap,d3pnt *f
 	setup->move.x=setup->move.y=setup->move.z=0;
 	setup->sway.x=setup->sway.y=setup->sway.z=0.0f;
 
-	model_calc_draw_bone_position(mdl,setup,pose_idx,bone_idx,&fire_pnt->x,&fire_pnt->y,&fire_pnt->z);
+	model_calc_draw_bone_position(mdl,setup,weap->melee.strike_pose_idx,weap->melee.strike_bone_idx,&fire_pnt->x,&fire_pnt->y,&fire_pnt->z);
 	
 		// move fire point to weapon
 
@@ -175,7 +172,6 @@ bool melee_strike_position_weapon_model(obj_type *obj,weapon_type *weap,d3pnt *f
 
 bool melee_strike_position_object_model(obj_type *obj,weapon_type *weap,d3pnt *fire_pnt,char *err_str)
 {
-	int						pose_idx,bone_idx;
 	melee_type				*melee;
 	model_type				*mdl;
 	model_draw_setup		*setup;
@@ -198,21 +194,19 @@ bool melee_strike_position_object_model(obj_type *obj,weapon_type *weap,d3pnt *f
 
 	mdl=server.model_list.models[obj->draw.model_idx];
 
-		// get current pose
+		// check current pose and bone
 
-	pose_idx=model_find_pose(mdl,melee->object_strike_pose_name);
-	if (pose_idx==-1) {
+	if (melee->object_strike_pose_idx==-1) {
 		if (err_str!=NULL) strcpy(err_str,"Object has missing or no strike pose");
 		return(FALSE);
 	}
-	
-		// get 'fire' bone offset
 
-	bone_idx=model_find_bone(mdl,melee->object_strike_bone_tag);
-	if (bone_idx==-1) {
+	if (melee->object_strike_bone_idx==-1) {
 		if (err_str!=NULL) strcpy(err_str,"Object has missing or no strike bone");
 		return(FALSE);
 	}
+
+		// create melee position
 	
 	model_draw_setup_object(obj);
 
@@ -221,7 +215,7 @@ bool melee_strike_position_object_model(obj_type *obj,weapon_type *weap,d3pnt *f
 	setup->move.x=setup->move.y=setup->move.z=0;
 	setup->sway.x=setup->sway.y=setup->sway.z=0.0f;
 
-	model_calc_draw_bone_position(mdl,setup,pose_idx,bone_idx,&fire_pnt->x,&fire_pnt->y,&fire_pnt->z);
+	model_calc_draw_bone_position(mdl,setup,melee->object_strike_pose_idx,melee->object_strike_bone_idx,&fire_pnt->x,&fire_pnt->y,&fire_pnt->z);
 	
 		// move fire point to obj
 
@@ -236,7 +230,6 @@ bool melee_strike_position_object_model(obj_type *obj,weapon_type *weap,d3pnt *f
 
 bool melee_strike_position_projectile_model(obj_type *obj,weapon_type *weap,proj_setup_type *proj_setup,proj_type *proj,d3pnt *fire_pnt,char *err_str)
 {
-	int						pose_idx,bone_idx;
 	model_type				*mdl;
 	model_draw_setup		*setup;
 
@@ -249,21 +242,19 @@ bool melee_strike_position_projectile_model(obj_type *obj,weapon_type *weap,proj
 
 	mdl=server.model_list.models[proj->draw.model_idx];
 
-		// get current pose
+		// check pose and bone
 
-	pose_idx=model_find_pose(mdl,proj_setup->melee.strike_pose_name);
-	if (pose_idx==-1) {
+	if (proj_setup->melee.strike_pose_idx==-1) {
 		if (err_str!=NULL) strcpy(err_str,"Projectile has missing or no strike pose");
 		return(FALSE);
 	}
-	
-		// get 'fire' bone offset
 
-	bone_idx=model_find_bone(mdl,proj_setup->melee.strike_bone_tag);
-	if (bone_idx==-1) {
+	if (proj_setup->melee.strike_bone_idx==-1) {
 		if (err_str!=NULL) strcpy(err_str,"Projectile has missing or no strike bone");
 		return(FALSE);
 	}
+
+		// create melee position
 
 	model_draw_setup_projectile(proj);
 
@@ -272,7 +263,7 @@ bool melee_strike_position_projectile_model(obj_type *obj,weapon_type *weap,proj
 	setup->move.x=setup->move.y=setup->move.z=0;
 	setup->sway.x=setup->sway.y=setup->sway.z=0.0f;
 
-	model_calc_draw_bone_position(mdl,setup,pose_idx,bone_idx,&fire_pnt->x,&fire_pnt->y,&fire_pnt->z);
+	model_calc_draw_bone_position(mdl,setup,proj_setup->melee.strike_pose_idx,proj_setup->melee.strike_bone_idx,&fire_pnt->x,&fire_pnt->y,&fire_pnt->z);
 	
 		// move fire point to projectile
 

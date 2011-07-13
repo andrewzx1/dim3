@@ -691,12 +691,10 @@ typedef struct		{
 //
  
 typedef struct		{
-						int						radius,distance,damage,
-												force;
-						char					strike_pose_name[name_str_len],
-												object_strike_pose_name[name_str_len];
+						int						radius,distance,damage,force,
+												strike_bone_idx,object_strike_bone_idx,
+												strike_pose_idx,object_strike_pose_idx;
 						bool					fall_off;
-						model_tag				strike_bone_tag,object_strike_bone_tag;
 					} melee_type;
 
 //
@@ -779,7 +777,6 @@ typedef struct		{
 						char					fire_name[name_str_len];
 						bool					on;
 						d3col					col,empty_col,pickup_col;
-						model_tag				bone_tag;
 					} weap_crosshair_type;
 					
 typedef struct		{

@@ -594,6 +594,10 @@ typedef struct		{
 					} iface_color_control_type;
 
 typedef struct		{
+						d3col							background,thumb;
+					} iface_color_scrollbar_type;
+
+typedef struct		{
 						d3col							fill,text,outline;
 					} iface_color_button_type;
 
@@ -604,6 +608,7 @@ typedef struct		{
 						iface_color_dialog_type			dialog;
 						iface_color_tab_type			tab;
 						iface_color_control_type		control;
+						iface_color_scrollbar_type		scrollbar;
 						iface_color_button_type			button;
 					} iface_color_type;
 
