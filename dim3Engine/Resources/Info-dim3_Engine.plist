@@ -4,10 +4,12 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
+	<key>CFBundleDocumentTypes</key>
+	<array/>
 	<key>CFBundleExecutable</key>
 	<string>dim3 Engine</string>
 	<key>CFBundleGetInfoString</key>
-	<string>dim3 Engine version 3.0, ©2001-2011 Klink! Software</string>
+	<string>©2001-2011 Klink! Software</string>
 	<key>CFBundleIconFile</key>
 	<string>dim3 Engine.icns</string>
 	<key>CFBundleIdentifier</key>
@@ -19,12 +21,20 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>v3.0</string>
+	<string>3.0.0</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array/>
 	<key>CFBundleVersion</key>
 	<string>3.0</string>
 	<key>CSResourcesFileMapped</key>
 	<true/>
+	<key>NSServices</key>
+	<array/>
+	<key>UTExportedTypeDeclarations</key>
+	<array/>
+	<key>UTImportedTypeDeclarations</key>
+	<array/>
 </dict>
 </plist>
