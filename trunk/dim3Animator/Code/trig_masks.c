@@ -155,6 +155,36 @@ bool trig_check_hide_mask(int mesh_idx,int trig_idx)
 
 /* =======================================================
 
+      Single Trig Selection
+      
+======================================================= */
+
+model_trig_type* trig_mask_get_single_select(int mesh_idx)
+{
+	int					n,ntrig,idx;
+	model_mesh_type		*mesh;
+
+	mesh=&model.meshes[mesh_idx];
+	ntrig=mesh->ntrig;
+
+		// find first and only selection
+
+	idx=-1;
+
+	for (n=0;n!=ntrig;n++) {
+		if ((trig_check_sel_mask(mesh_idx,n)) && (!trig_check_hide_mask(mesh_idx,n))) {
+			if (idx!=-1) return(NULL);		// more than one!
+			idx=n;
+		}
+	}
+
+	if (idx==-1) return(NULL);
+
+	return(&mesh->trigs[idx]);
+}
+
+/* =======================================================
+
       Select More
       
 ======================================================= */

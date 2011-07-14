@@ -174,9 +174,9 @@ int main(int argc,char *argv[])
 	
 		// OSX AppStore
 		
-//#ifdef D3_OS_X_APPSTORE
+#ifdef D3_OS_X_APPSTORE
 	if (!dim3_osx_appstore_main()) return(173);
-//#endif
+#endif
 	
 		// setup paths
 

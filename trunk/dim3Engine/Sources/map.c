@@ -606,19 +606,17 @@ bool map_rebuild_changes(char *err_str)
 	obj_type		*obj;
 
 		// if this is a restart, then check for
-		// saved game
+		// saved game to reload.  Reload games
+		// are in paused mode so we need to flip it off
+
+		// if it errors, just reload the map
 
 	if (server.map_change.player_restart) {
 		if (game_file_reload_ok()) {
-
-				// reload game (in paused mode, so we need to turn off if error)
-
-			if (!game_file_reload(err_str)) {
+			if (game_file_reload(err_str)) {
 				game_time_pause_end();
-				return(FALSE);
+				return(TRUE);
 			}
-
-			return(TRUE);
 		}
 	}
 	

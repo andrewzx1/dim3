@@ -280,6 +280,7 @@ extern bool trig_check_sel_mask(int mesh_idx,int trig_idx);
 extern void trig_clear_hide_mask(int mesh_idx);
 extern void trig_set_hide_mask(int mesh_idx,int trig_idx,bool value);
 extern bool trig_check_hide_mask(int mesh_idx,int trig_idx);
+extern model_trig_type* trig_mask_get_single_select(int mesh_idx);
 extern void trig_mask_select_more(int mesh_idx);
 
 //
