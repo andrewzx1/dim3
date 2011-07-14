@@ -75,6 +75,7 @@
 		26D27D6113CA5E8900A8A6F7 /* libPNG.dylib in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 26D27D5F13CA5E6F00A8A6F7 /* libPNG.dylib */; };
 		26DAED300DD55C28000EBB48 /* group_move.c in Sources */ = {isa = PBXBuildFile; fileRef = 26DAED2F0DD55C28000EBB48 /* group_move.c */; };
 		26DB6E030DE07A9700BDD008 /* obj_ext_move.c in Sources */ = {isa = PBXBuildFile; fileRef = 26DB6E020DE07A9700BDD008 /* obj_ext_move.c */; };
+		26E1844513CEA27800812348 /* dim3 Engine.app in Copy Application */ = {isa = PBXBuildFile; fileRef = F5CD87F70557721D0023AD9B /* dim3 Engine.app */; };
 		26E2008B1134C6E100E9055A /* net_http.c in Sources */ = {isa = PBXBuildFile; fileRef = 26E200891134C6E100E9055A /* net_http.c */; };
 		26E2008C1134C6E100E9055A /* net_queue.c in Sources */ = {isa = PBXBuildFile; fileRef = 26E2008A1134C6E100E9055A /* net_queue.c */; };
 		26E8DBB31270E88C00ACA294 /* cinema.c in Sources */ = {isa = PBXBuildFile; fileRef = 26E8DBB21270E88C00ACA294 /* cinema.c */; };
@@ -227,7 +228,6 @@
 		F5C5EB160913264E00F94729 /* debug.c in Sources */ = {isa = PBXBuildFile; fileRef = F5C5EB0E0913264E00F94729 /* debug.c */; };
 		F5C5EB170913264E00F94729 /* game.c in Sources */ = {isa = PBXBuildFile; fileRef = F5C5EB0F0913264E00F94729 /* game.c */; };
 		F5C5EB180913264E00F94729 /* map.c in Sources */ = {isa = PBXBuildFile; fileRef = F5C5EB100913264E00F94729 /* map.c */; };
-		F5C5EB3C0913287800F94729 /* dim3 Engine.app in Copy Application */ = {isa = PBXBuildFile; fileRef = F5CD87F70557721D0023AD9B /* dim3 Engine.app */; };
 		F5C8996A0A5376E100C6E50A /* script_camera_state.c in Sources */ = {isa = PBXBuildFile; fileRef = F5C899690A5376E100C6E50A /* script_camera_state.c */; };
 		F5CD872D055771B80023AD9B /* modelutility.h in Headers */ = {isa = PBXBuildFile; fileRef = F5CA4F01051012CF0055C8B8 /* modelutility.h */; };
 		F5CD872F055771B80023AD9B /* maputility.h in Headers */ = {isa = PBXBuildFile; fileRef = F57CAC770527D9E000A68578 /* maputility.h */; };
@@ -344,11 +344,11 @@
 		};
 		F5C5EB340913286000F94729 /* Copy Application */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 12;
 			dstPath = "$(SRCROOT)/../../dim3/";
 			dstSubfolderSpec = 0;
 			files = (
-				F5C5EB3C0913287800F94729 /* dim3 Engine.app in Copy Application */,
+				26E1844513CEA27800812348 /* dim3 Engine.app in Copy Application */,
 			);
 			name = "Copy Application";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1774,6 +1774,7 @@
 			buildSettings = {
 				ARCHS = i386;
 				CODE_SIGN_IDENTITY = "3rd Party Mac Developer Application: Brian Barnes";
+				CONFIGURATION_BUILD_DIR = build/Release;
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -1828,6 +1829,7 @@
 				);
 				LLVM_LTO = NO;
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
+				OBJROOT = build;
 				OTHER_LDFLAGS = (
 					"-lSystemStubs",
 					"-lz",
@@ -1835,6 +1837,7 @@
 				PRODUCT_NAME = "dim3 Engine";
 				SDKROOT = macosx10.6;
 				SKIP_INSTALL = YES;
+				SYMROOT = build;
 				VALID_ARCHS = i386;
 				WARNING_CFLAGS = "";
 				WRAPPER_EXTENSION = app;

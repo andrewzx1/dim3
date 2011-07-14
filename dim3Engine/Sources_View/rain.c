@@ -135,7 +135,7 @@ void rain_draw(void)
 		// rain will be pushed by the Y because it looks
 		// wrong if you are falling too fast
 
-	ypush=(view.render->camera.pnt.y-rain_last_camera_y)/10;
+	ypush=view.render->camera.pnt.y-rain_last_camera_y;
 	rain_last_camera_y=view.render->camera.pnt.y;
 	
 		// rain slant

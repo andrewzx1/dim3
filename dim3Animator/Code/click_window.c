@@ -303,14 +303,14 @@ bool select_model_wind_polygon(d3pnt *start_pnt,bool check_only)
 	
 		// draw and pick the triangles
 		
-	if (!model_pick_list_start(mesh->ntrig)) return(FALSE);
+	ntrig=mesh->ntrig;
+	if (!model_pick_list_start(ntrig)) return(FALSE);
 	
 		// draw the mesh
 		
 	model_draw_setup_initialize(&model,&draw_setup,TRUE);
 	draw_model_setup_bones_vertexes(state.cur_mesh_idx);
 
-	ntrig=mesh->ntrig;
 	trig=mesh->trigs;
     
     for (n=0;n!=ntrig;n++) {

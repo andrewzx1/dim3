@@ -691,9 +691,11 @@ typedef struct		{
 //
  
 typedef struct		{
-						int						radius,distance,damage,force,
-												strike_bone_idx,object_strike_bone_idx,
-												strike_pose_idx,object_strike_pose_idx;
+						int						radius,distance,damage,force;
+						char					strike_bone_name[name_str_len],
+												object_strike_bone_name[name_str_len],
+												strike_pose_name[name_str_len],
+												object_strike_pose_name[name_str_len];
 						bool					fall_off;
 					} melee_type;
 
@@ -772,9 +774,9 @@ typedef struct		{
 					} weap_recoil_type;
 
 typedef struct		{
-						int						type,min_size,max_size,distance,
-												bone_idx,fire_idx;
-						char					fire_name[name_str_len];
+						int						type,min_size,max_size,distance,fire_idx;
+						char					fire_name[name_str_len],
+												bone_name[name_str_len];
 						bool					on;
 						d3col					col,empty_col,pickup_col;
 					} weap_crosshair_type;

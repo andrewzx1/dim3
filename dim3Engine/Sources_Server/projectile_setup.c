@@ -146,10 +146,10 @@ bool proj_setup_create(obj_type *obj,weapon_type *weap,char *name)
 	proj_setup->push.on=FALSE;
 	proj_setup->push.force=0;
 	
-	proj_setup->melee.strike_bone_idx=-1;
-	proj_setup->melee.strike_pose_idx=-1;
-	proj_setup->melee.object_strike_bone_idx=-1;
-	proj_setup->melee.object_strike_pose_idx=-1;
+	proj_setup->melee.strike_bone_name[0]=0x0;
+	proj_setup->melee.strike_pose_name[0]=0x0;
+	proj_setup->melee.object_strike_bone_name[0]=0x0;
+	proj_setup->melee.object_strike_pose_name[0]=0x0;
 	proj_setup->melee.radius=0;
 	proj_setup->melee.distance=0;
 	proj_setup->melee.damage=0;

@@ -100,35 +100,22 @@ JSObjectRef script_add_proj_melee_object(JSContextRef cx,JSObjectRef parent_obj,
 
 JSValueRef js_proj_melee_get_strikeBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	char			str[32];
 	proj_setup_type	*proj_setup;
-	model_type		*mdl;
 
 	proj_setup=proj_setup_get_attach(j_obj);
 	if (proj_setup==NULL) return(script_null_to_value(cx));
 	
-	if (proj_setup->melee.strike_bone_idx==-1) return(script_null_to_value(cx));
-	if (proj_setup->draw.model_idx==-1) return(script_null_to_value(cx));
-
-	mdl=server.model_list.models[proj_setup->draw.model_idx];
-	model_tag_to_text(mdl->bones[proj_setup->melee.strike_bone_idx].tag,str);
-
-	return(script_string_to_value(cx,str));
+	return(script_string_to_value(cx,proj_setup->melee.strike_bone_name));
 }
 
 JSValueRef js_proj_melee_get_strikePoseName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	proj_setup_type		*proj_setup;
-	model_type			*mdl;
 
 	proj_setup=proj_setup_get_attach(j_obj);
 	if (proj_setup==NULL) return(script_null_to_value(cx));
 	
-	if (proj_setup->melee.strike_pose_idx==-1) return(script_null_to_value(cx));
-	if (proj_setup->draw.model_idx==-1) return(script_null_to_value(cx));
-
-	mdl=server.model_list.models[proj_setup->draw.model_idx];
-	return(script_string_to_value(cx,mdl->bones[proj_setup->melee.strike_pose_idx].name));
+	return(script_string_to_value(cx,proj_setup->melee.strike_pose_name));
 }
 
 JSValueRef js_proj_melee_get_radius(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
@@ -189,41 +176,24 @@ JSValueRef js_proj_melee_get_fallOff(JSContextRef cx,JSObjectRef j_obj,JSStringR
 
 bool js_proj_melee_set_strikeBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	char				str[32];
-	model_tag			tag;
 	proj_setup_type		*proj_setup;
-	model_type			*mdl;
 	
 	proj_setup=proj_setup_get_attach(j_obj);
 	if (proj_setup==NULL) return(TRUE);
 
-	script_value_to_string(cx,vp,str,32);
-
-	if (proj_setup->draw.model_idx==-1) return(TRUE);
-
-	mdl=server.model_list.models[proj_setup->draw.model_idx];
-
-	tag=text_to_model_tag(str);
-	proj_setup->melee.strike_bone_idx=model_find_bone(mdl,tag);
+	script_value_to_string(cx,vp,proj_setup->melee.strike_bone_name,name_str_len);
 	
 	return(TRUE);
 }
 
 bool js_proj_melee_set_strikePoseName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	char				pose_name[name_str_len];
 	proj_setup_type		*proj_setup;
-	model_type			*mdl;
 	
 	proj_setup=proj_setup_get_attach(j_obj);
 	if (proj_setup==NULL) return(TRUE);
-
-	if (proj_setup->draw.model_idx==-1) return(TRUE);
-
-	script_value_to_string(cx,vp,pose_name,name_str_len);
-
-	mdl=server.model_list.models[proj_setup->draw.model_idx];
-	proj_setup->melee.strike_pose_idx=model_find_pose(mdl,pose_name);
+	
+	script_value_to_string(cx,vp,proj_setup->melee.strike_pose_name,name_str_len);
 
 	return(TRUE);
 }
