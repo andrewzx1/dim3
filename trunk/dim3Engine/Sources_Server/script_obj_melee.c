@@ -99,33 +99,18 @@ JSObjectRef script_add_obj_melee_object(JSContextRef cx,JSObjectRef parent_obj,i
 
 JSValueRef js_obj_melee_get_strikeBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	char			str[32];
     obj_type		*obj;
-	model_type		*mdl;
 
 	obj=object_get_attach(j_obj);
-	
-	if (obj->melee.strike_bone_idx==-1) return(script_null_to_value(cx));
-	if (obj->draw.model_idx==-1) return(script_null_to_value(cx));
-
-	mdl=server.model_list.models[obj->draw.model_idx];
-	model_tag_to_text(mdl->bones[obj->melee.strike_bone_idx].tag,str);
-
-	return(script_string_to_value(cx,str));
+	return(script_string_to_value(cx,obj->melee.strike_bone_name));
 }
 
 JSValueRef js_obj_melee_get_strikePoseName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
     obj_type		*obj;
-	model_type		*mdl;
 
 	obj=object_get_attach(j_obj);
-	
-	if (obj->melee.strike_pose_idx==-1) return(script_null_to_value(cx));
-	if (obj->draw.model_idx==-1) return(script_null_to_value(cx));
-
-	mdl=server.model_list.models[obj->draw.model_idx];
-	return(script_string_to_value(cx,mdl->bones[obj->melee.strike_pose_idx].name));
+	return(script_string_to_value(cx,obj->melee.strike_pose_name));
 }
 
 JSValueRef js_obj_melee_get_radius(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
@@ -176,37 +161,20 @@ JSValueRef js_obj_melee_get_fallOff(JSContextRef cx,JSObjectRef j_obj,JSStringRe
 
 bool js_obj_melee_set_strikeBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	char				str[32];
-	model_tag			tag;
     obj_type			*obj;
-	model_type			*mdl;
 	
 	obj=object_get_attach(j_obj);
-	script_value_to_string(cx,vp,str,32);
-
-	if (obj->draw.model_idx==-1) return(TRUE);
-
-	mdl=server.model_list.models[obj->draw.model_idx];
-
-	tag=text_to_model_tag(str);
-	obj->melee.strike_bone_idx=model_find_bone(mdl,tag);
+	script_value_to_string(cx,vp,obj->melee.strike_bone_name,name_str_len);
 	
 	return(TRUE);
 }
 
 bool js_obj_melee_set_strikePoseName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	char				pose_name[name_str_len];
     obj_type			*obj;
-	model_type			*mdl;
 	
 	obj=object_get_attach(j_obj);
-	if (obj->draw.model_idx==-1) return(TRUE);
-
-	script_value_to_string(cx,vp,pose_name,name_str_len);
-
-	mdl=server.model_list.models[obj->draw.model_idx];
-	obj->melee.strike_pose_idx=model_find_pose(mdl,pose_name);
+	script_value_to_string(cx,vp,obj->melee.strike_pose_name,name_str_len);
 
 	return(TRUE);
 }

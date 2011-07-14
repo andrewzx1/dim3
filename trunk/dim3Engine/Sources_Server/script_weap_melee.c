@@ -105,64 +105,34 @@ JSObjectRef script_add_weap_melee_object(JSContextRef cx,JSObjectRef parent_obj,
 
 JSValueRef js_weap_melee_get_strikeBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	char			str[32];
 	weapon_type		*weap;
-	model_type		*mdl;
 
 	weap=weapon_get_attach(j_obj);
-	
-	if (weap->melee.strike_bone_idx==-1) return(script_null_to_value(cx));
-	if (weap->draw.model_idx==-1) return(script_null_to_value(cx));
-
-	mdl=server.model_list.models[weap->draw.model_idx];
-	model_tag_to_text(mdl->bones[weap->melee.strike_bone_idx].tag,str);
-
-	return(script_string_to_value(cx,str));
+	return(script_string_to_value(cx,weap->melee.strike_bone_name));
 }
 
 JSValueRef js_weap_melee_get_strikePoseName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	weapon_type		*weap;
-	model_type		*mdl;
 
 	weap=weapon_get_attach(j_obj);
-	
-	if (weap->melee.strike_pose_idx==-1) return(script_null_to_value(cx));
-	if (weap->draw.model_idx==-1) return(script_null_to_value(cx));
-
-	mdl=server.model_list.models[weap->draw.model_idx];
-	return(script_string_to_value(cx,mdl->bones[weap->melee.strike_pose_idx].name));
+	return(script_string_to_value(cx,weap->melee.strike_pose_name));
 }
 
 JSValueRef js_weap_melee_get_objectStrikeBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	char			str[32];
 	weapon_type		*weap;
-	model_type		*mdl;
 
 	weap=weapon_get_attach(j_obj);
-	
-	if (weap->melee.object_strike_bone_idx==-1) return(script_null_to_value(cx));
-	if (weap->draw.model_idx==-1) return(script_null_to_value(cx));
-
-	mdl=server.model_list.models[weap->draw.model_idx];
-	model_tag_to_text(mdl->bones[weap->melee.object_strike_bone_idx].tag,str);
-
-	return(script_string_to_value(cx,str));
+	return(script_string_to_value(cx,weap->melee.object_strike_bone_name));
 }
 
 JSValueRef js_weap_melee_get_objectStrikePoseName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	weapon_type		*weap;
-	model_type		*mdl;
 
 	weap=weapon_get_attach(j_obj);
-	
-	if (weap->melee.object_strike_pose_idx==-1) return(script_null_to_value(cx));
-	if (weap->draw.model_idx==-1) return(script_null_to_value(cx));
-
-	mdl=server.model_list.models[weap->draw.model_idx];
-	return(script_string_to_value(cx,mdl->bones[weap->melee.object_strike_pose_idx].name));
+	return(script_string_to_value(cx,weap->melee.object_strike_pose_name));
 }
 
 JSValueRef js_weap_melee_get_radius(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
@@ -213,74 +183,40 @@ JSValueRef js_weap_melee_get_fallOff(JSContextRef cx,JSObjectRef j_obj,JSStringR
 
 bool js_weap_melee_set_strikeBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	char			str[32];
-	model_tag		tag;
 	weapon_type		*weap;
-	model_type		*mdl;
 	
 	weap=weapon_get_attach(j_obj);
-	script_value_to_string(cx,vp,str,32);
-
-	if (weap->draw.model_idx==-1) return(TRUE);
-
-	mdl=server.model_list.models[weap->draw.model_idx];
-
-	tag=text_to_model_tag(str);
-	weap->melee.strike_bone_idx=model_find_bone(mdl,tag);
+	script_value_to_string(cx,vp,weap->melee.strike_bone_name,name_str_len);
 	
 	return(TRUE);
 }
 
 bool js_weap_melee_set_strikePoseName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	char			pose_name[name_str_len];
     weapon_type		*weap;
-	model_type		*mdl;
 	
 	weap=weapon_get_attach(j_obj);
-	if (weap->draw.model_idx==-1) return(TRUE);
-
-	script_value_to_string(cx,vp,pose_name,name_str_len);
-
-	mdl=server.model_list.models[weap->draw.model_idx];
-	weap->melee.strike_pose_idx=model_find_pose(mdl,pose_name);
+	script_value_to_string(cx,vp,weap->melee.strike_pose_name,name_str_len);
 
 	return(TRUE);
 }
 
 bool js_weap_melee_set_objectStrikeBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	char			str[32];
-	model_tag		tag;
 	weapon_type		*weap;
-	model_type		*mdl;
 	
 	weap=weapon_get_attach(j_obj);
-	script_value_to_string(cx,vp,str,32);
-
-	if (weap->draw.model_idx==-1) return(TRUE);
-
-	mdl=server.model_list.models[weap->draw.model_idx];
-
-	tag=text_to_model_tag(str);
-	weap->melee.object_strike_bone_idx=model_find_bone(mdl,tag);
+	script_value_to_string(cx,vp,weap->melee.object_strike_bone_name,name_str_len);
 	
 	return(TRUE);
 }
 
 bool js_weap_melee_set_objectStrikePoseName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	char			pose_name[name_str_len];
     weapon_type		*weap;
-	model_type		*mdl;
 	
 	weap=weapon_get_attach(j_obj);
-	if (weap->draw.model_idx==-1) return(TRUE);
-
-	script_value_to_string(cx,vp,pose_name,name_str_len);
-
-	mdl=server.model_list.models[weap->draw.model_idx];
-	weap->melee.object_strike_pose_idx=model_find_pose(mdl,pose_name);
+	script_value_to_string(cx,vp,weap->melee.object_strike_pose_name,name_str_len);
 
 	return(TRUE);
 }

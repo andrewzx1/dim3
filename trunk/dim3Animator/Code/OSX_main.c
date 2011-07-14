@@ -217,7 +217,7 @@ void main_wind_event_timer(EventLoopTimerRef inTimer,void *inUserData)
 void main_wind_open(void)
 {
 	Rect						wbox,box;
-	GLint						attrib[]={AGL_NO_RECOVERY,AGL_RGBA,AGL_DOUBLEBUFFER,AGL_WINDOW,AGL_ACCELERATED,AGL_PIXEL_SIZE,24,AGL_DEPTH_SIZE,24,AGL_NONE};
+	GLint						attrib[]={AGL_NO_RECOVERY,AGL_RGBA,AGL_DOUBLEBUFFER,AGL_WINDOW,AGL_ACCELERATED,AGL_PIXEL_SIZE,24,AGL_ALPHA_SIZE,8,AGL_DEPTH_SIZE,24,AGL_NONE};
 	CGDirectDisplayID			cg_display_id;
 	CGOpenGLDisplayMask			cg_display_mask;
 	AGLPixelFormat				pf;
