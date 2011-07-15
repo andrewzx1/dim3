@@ -29,6 +29,14 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
+// **********************************************************
+// WARNING **************************************************
+// **********************************************************
+
+// As this code is in open source, it's pretty easy to find and
+// defeat, so you'll want to obfuscate this in some manner if you
+// put a project up on the appstore
+
 // Alter these defines to reflect the bundle identifier
 // and bundle version.  This is a check to make sure
 // the info plist hasn't been spoofed
@@ -40,7 +48,7 @@ and can be sold or given away.
  
 /* =======================================================
 
-      OS AppStore checks
+      OS AppStore Utilities
       
 ======================================================= */
 
@@ -81,15 +89,35 @@ bool copy_mac_address(unsigned char *mac_address)
 	return(TRUE);
 }
 
+bool load_mac_receipt_path(char *receipt_path)
+{
+ 	char			*c;
+	struct stat		sb;
+	CFURLRef		cfurl;
+	
+		// get bundle path
+		
+	cfurl=CFBundleCopyBundleURL(CFBundleGetMainBundle());
+	CFURLGetFileSystemRepresentation(cfurl,TRUE,(unsigned char*)receipt_path,1024);
+	
+		// path to receipt
+		
+	strcat(receipt_path,"/Contents/_MASReceipt/receipt");
+	
+		// verify
+		
+	return(stat(receipt_path,&sb)==0);
+}
+
 /* =======================================================
 
       OS AppStore checks
       
 ======================================================= */
 
-bool dim3_osx_appstore_check(unsigned char *mac_address)
+bool dim3_osx_appstore_check(unsigned char *mac_address,char *receipt_path)
 {
-	return(FALSE);
+	return(TRUE);		// supergumba, testing!
 }
 
 
@@ -101,7 +129,8 @@ bool dim3_osx_appstore_check(unsigned char *mac_address)
 
 bool dim3_osx_appstore_main(void)
 {
-	char				str_identifier[256],str_version[256];
+	char				str_identifier[256],str_version[256],
+						receipt_path[1024];
 	unsigned char		mac_address[6];
 	CFStringRef			cf_str_identifier,cf_str_version;
 
@@ -120,8 +149,12 @@ bool dim3_osx_appstore_main(void)
 		// get mac address
 	
 	if (!copy_mac_address(mac_address)) return(FALSE);
+	
+		// get and verify the receipt path
+		
+	if (!load_mac_receipt_path(receipt_path)) return(FALSE);
 
 		// start running through the checks
 		
-	return(dim3_osx_appstore_check(mac_address));
+	return(dim3_osx_appstore_check(mac_address,receipt_path));
 }
