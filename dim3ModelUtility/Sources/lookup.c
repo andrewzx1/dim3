@@ -119,6 +119,22 @@ int model_find_bone(model_type *model,model_tag tag)
 	return(-1);
 }
 
+int model_find_bone2(model_type *model,char *bone_name)
+{
+	int					n,nbone;
+	model_bone_type		*bone;
+	
+	nbone=model->nbone;
+	bone=model->bones;
+	
+	for (n=0;n!=nbone;n++) {
+		if (strcasecmp(bone->name,bone_name)==0) return(n);
+		bone++;
+	}
+	
+	return(-1);
+}
+
 int model_find_pose(model_type *model,char *pose_name)
 {
 	int					n,npose;

@@ -2165,7 +2165,8 @@ int element_draw_table_scrollbar(element_type *element,int high,int row_high,int
 
 	has_scroll=FALSE;
 
-	page_count=((row_count*row_high)/(bot-top))+1;
+	page_count=((row_count*row_high)/(bot-top));
+	if (((row_count*row_high)%(bot-top))!=0) page_count++;
 
 	if (page_count>1) {
 		row_per_page=(bot-top)/row_high;

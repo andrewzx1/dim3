@@ -810,10 +810,11 @@ typedef struct		{
 typedef struct		{
 						int						repeat_tick,next_repeat_tick;
 						char					fire_pose_name[name_str_len],
-												object_fire_pose_name[name_str_len];
+												object_fire_pose_name[name_str_len],
+												fire_bone_name[name_str_len],
+												barrel_bone_name[name_str_len],
+												object_fire_bone_name[name_str_len];
 						bool					repeat_on,repeat_ok;
-						model_tag				fire_bone_tag,barrel_bone_tag,
-												object_fire_bone_tag;
 					} weap_proj_type;
 					
 typedef struct		{

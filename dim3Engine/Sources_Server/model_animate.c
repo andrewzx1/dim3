@@ -36,6 +36,8 @@ extern server_type				server;
 extern view_type				view;
 extern map_type					map;
 
+extern int engine_model_find_bone(model_type *mdl,char *bone_name);	// supergumba -- temporary
+
 /* =======================================================
 
       Model Fills
@@ -613,7 +615,6 @@ int model_get_current_pose(model_draw *draw)
 bool model_find_bone_offset(model_draw *draw,char *pose_name,char *bone_name,int *x,int *y,int *z)
 {
 	int					pose_idx,bone_idx;
-	model_tag			tag;
 	model_type			*mdl;
 		
 	if (draw->model_idx==-1) return(FALSE);
@@ -630,8 +631,7 @@ bool model_find_bone_offset(model_draw *draw,char *pose_name,char *bone_name,int
 	
 		// get bone index
 		
-	tag=text_to_model_tag(bone_name);
-	bone_idx=model_find_bone(mdl,tag);
+	bone_idx=engine_model_find_bone(mdl,bone_name);
 	if (bone_idx==-1) return(FALSE);
 	
 		// get bone
@@ -726,16 +726,14 @@ model_type* model_dynamic_bone_get_model(model_draw *draw,char *err_str)
 	return(server.model_list.models[draw->model_idx]);
 }
 
-int model_dynamic_bone_get_bone_idx(model_type *mdl,char *bone_tag,char *err_str)
+int model_dynamic_bone_get_bone_idx(model_type *mdl,char *bone_name,char *err_str)
 {
 	int					bone_idx;
-	model_tag			tag;
 
-	tag=text_to_model_tag(bone_tag);
-	bone_idx=model_find_bone(mdl,tag);
+	bone_idx=engine_model_find_bone(mdl,bone_name);
 	if (bone_idx!=-1) return(bone_idx);
 
-	sprintf(err_str,"Bone tag '%s' does not exist in model '%s'",bone_tag,mdl->name);
+	sprintf(err_str,"Bone name '%s' does not exist in model '%s'",bone_name,mdl->name);
 	return(-1);
 }
 
@@ -782,7 +780,7 @@ int model_dynamic_bone_find_bone_spot(model_draw *draw,int bone_idx,char *err_st
 	return(-1);
 }
 
-bool model_dynamic_bone_set_rotate(model_draw *draw,char *bone_tag,d3ang *rot,char *err_str)
+bool model_dynamic_bone_set_rotate(model_draw *draw,char *bone_name,d3ang *rot,char *err_str)
 {
 	int					bone_idx,dyn_bone_idx;
 	model_type			*mdl;
@@ -792,7 +790,7 @@ bool model_dynamic_bone_set_rotate(model_draw *draw,char *bone_tag,d3ang *rot,ch
 	mdl=model_dynamic_bone_get_model(draw,err_str);
 	if (mdl==NULL) return(FALSE);
 
-	bone_idx=model_dynamic_bone_get_bone_idx(mdl,bone_tag,err_str);
+	bone_idx=model_dynamic_bone_get_bone_idx(mdl,bone_name,err_str);
 	if (bone_idx==-1) return(FALSE);
 
 	dyn_bone_idx=model_dynamic_bone_find_bone_spot(draw,bone_idx,err_str);
@@ -807,7 +805,7 @@ bool model_dynamic_bone_set_rotate(model_draw *draw,char *bone_tag,d3ang *rot,ch
 	return(TRUE);
 }
 
-bool model_dynamic_bone_set_move(model_draw *draw,char *bone_tag,d3pnt *mov,char *err_str)
+bool model_dynamic_bone_set_move(model_draw *draw,char *bone_name,d3pnt *mov,char *err_str)
 {
 	int					bone_idx,dyn_bone_idx;
 	model_type			*mdl;
@@ -817,7 +815,7 @@ bool model_dynamic_bone_set_move(model_draw *draw,char *bone_tag,d3pnt *mov,char
 	mdl=model_dynamic_bone_get_model(draw,err_str);
 	if (mdl==NULL) return(FALSE);
 
-	bone_idx=model_dynamic_bone_get_bone_idx(mdl,bone_tag,err_str);
+	bone_idx=model_dynamic_bone_get_bone_idx(mdl,bone_name,err_str);
 	if (bone_idx==-1) return(FALSE);
 
 	dyn_bone_idx=model_dynamic_bone_find_bone_spot(draw,bone_idx,err_str);
@@ -832,7 +830,7 @@ bool model_dynamic_bone_set_move(model_draw *draw,char *bone_tag,d3pnt *mov,char
 	return(TRUE);
 }
 
-bool model_dynamic_bone_set_resize(model_draw *draw,char *bone_tag,float resize,char *err_str)
+bool model_dynamic_bone_set_resize(model_draw *draw,char *bone_name,float resize,char *err_str)
 {
 	int					bone_idx,dyn_bone_idx;
 	model_type			*mdl;
@@ -842,7 +840,7 @@ bool model_dynamic_bone_set_resize(model_draw *draw,char *bone_tag,float resize,
 	mdl=model_dynamic_bone_get_model(draw,err_str);
 	if (mdl==NULL) return(FALSE);
 
-	bone_idx=model_dynamic_bone_get_bone_idx(mdl,bone_tag,err_str);
+	bone_idx=model_dynamic_bone_get_bone_idx(mdl,bone_name,err_str);
 	if (bone_idx==-1) return(FALSE);
 
 	dyn_bone_idx=model_dynamic_bone_find_bone_spot(draw,bone_idx,err_str);

@@ -39,6 +39,7 @@ _model_hit_box_get_box
 
 _model_find_mesh
 _model_find_bone
+_model_find_bone2
 _model_find_pose
 _model_find_animate
 
