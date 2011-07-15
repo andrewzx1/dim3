@@ -127,13 +127,13 @@ void file_dir_name_to_elapsed(char *dir_name,char *elapse_str)
 
 void file_build_list(void)
 {
-	int							n,cnt,sz;
+	int							n,k,idx,cnt,sz,sort_idx[max_file_count+1];
 	char						*c,name_str[64],time_str[64],elapse_str[64];
 	file_path_directory_type	*fpd;
 	
 		// data for maximum number of files
 		
-	sz=max_file_count*128;
+	sz=(max_file_count+1)*128;
 	
 	file_table_data=malloc(sz);
 	bzero(file_table_data,sz);
@@ -145,28 +145,57 @@ void file_build_list(void)
 		
 	fpd=file_paths_read_directory_document(&setup.file_path_setup,"Saved Games","sav");
 	if (fpd==NULL) return;
-	
+
+		// sort the times
+
 	cnt=0;
 	
 	for (n=0;n!=fpd->nfile;n++) {
 	
 		if (fpd->files[n].is_dir) continue;
+
+			// find position in sort
+
+		idx=cnt;
+
+		for (k=0;k!=cnt;k++) {
+			if (strcmp(fpd->files[n].file_name,fpd->files[sort_idx[k]].file_name)>0) {
+				idx=k;
+				break;
+			}
+		}
+
+		if (idx==cnt) {
+			sort_idx[cnt]=n;
+		}
+		else {
+			sz=cnt-idx;
+			if (sz!=0) memmove(&sort_idx[idx+1],&sort_idx[idx],(sizeof(int)*sz));
+			sort_idx[idx]=n;
+		}
+
+		cnt++;
+	}
+
+		// fill in the list
+
+	for (n=0;n!=cnt;n++) {
+
+		idx=sort_idx[n];
 	
 			// save name
 			
-		c=file_name_data+(128*cnt);
-		strcpy(c,fpd->files[n].file_name);
+		c=file_name_data+(128*n);
+		strcpy(c,fpd->files[idx].file_name);
 		
 			// table data
 			
-		file_dir_name_to_name(fpd->files[n].file_name,name_str);
-		file_dir_name_to_time(fpd->files[n].file_name,time_str);
-		file_dir_name_to_elapsed(fpd->files[n].file_name,elapse_str);
+		file_dir_name_to_name(fpd->files[idx].file_name,name_str);
+		file_dir_name_to_time(fpd->files[idx].file_name,time_str);
+		file_dir_name_to_elapsed(fpd->files[idx].file_name,elapse_str);
 		
-		c=file_table_data+(128*cnt);
-		sprintf(c,"Saved Games;%s;%s\t%s\t%s",fpd->files[n].file_name,name_str,time_str,elapse_str);
-		
-		cnt++;
+		c=file_table_data+(128*n);
+		sprintf(c,"Saved Games;%s;%s\t%s\t%s",fpd->files[idx].file_name,name_str,time_str,elapse_str);
 	}
 
 	file_paths_close_directory(fpd);

@@ -128,24 +128,18 @@ JSObjectRef script_add_weap_projectile_object(JSContextRef cx,JSObjectRef parent
 
 JSValueRef js_weap_projectile_get_fireBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	char			str[32];
 	weapon_type		*weap;
 
 	weap=weapon_get_attach(j_obj);
-	
-	model_tag_to_text(weap->proj.fire_bone_tag,str);
-	return(script_string_to_value(cx,str));
+	return(script_string_to_value(cx,weap->proj.fire_bone_name));
 }
 
 JSValueRef js_weap_projectile_get_barrelBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	char			str[32];
 	weapon_type		*weap;
 
 	weap=weapon_get_attach(j_obj);
-
-	model_tag_to_text(weap->proj.barrel_bone_tag,str);
-	return(script_string_to_value(cx,str));
+	return(script_string_to_value(cx,weap->proj.barrel_bone_name));
 }
 
 JSValueRef js_weap_projectile_get_firePoseName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
@@ -158,13 +152,10 @@ JSValueRef js_weap_projectile_get_firePoseName(JSContextRef cx,JSObjectRef j_obj
 
 JSValueRef js_weap_projectile_get_objectFireBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	char			str[32];
 	weapon_type		*weap;
 
 	weap=weapon_get_attach(j_obj);
-
-	model_tag_to_text(weap->proj.object_fire_bone_tag,str);
-	return(script_string_to_value(cx,str));
+	return(script_string_to_value(cx,weap->proj.object_fire_bone_name));
 }
 
 JSValueRef js_weap_projectile_get_objectFirePoseName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
@@ -199,26 +190,20 @@ JSValueRef js_weap_projectile_get_repeat_tick(JSContextRef cx,JSObjectRef j_obj,
 
 bool js_weap_projectile_set_fireBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	char			str[32];
 	weapon_type		*weap;
 	
 	weap=weapon_get_attach(j_obj);
-
-	script_value_to_string(cx,vp,str,32);
-	weap->proj.fire_bone_tag=text_to_model_tag(str);
+	script_value_to_string(cx,vp,weap->proj.fire_bone_name,name_str_len);
 
 	return(TRUE);
 }
 
 bool js_weap_projectile_set_barrelBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	char			str[32];
 	weapon_type		*weap;
 	
 	weap=weapon_get_attach(j_obj);
-
-	script_value_to_string(cx,vp,str,32);
-	weap->proj.barrel_bone_tag=text_to_model_tag(str);
+	script_value_to_string(cx,vp,weap->proj.barrel_bone_name,name_str_len);
 
 	return(TRUE);
 }
@@ -235,13 +220,10 @@ bool js_weap_projectile_set_firePoseName(JSContextRef cx,JSObjectRef j_obj,JSStr
 
 bool js_weap_projectile_set_objectFireBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	char			str[32];
 	weapon_type		*weap;
 	
 	weap=weapon_get_attach(j_obj);
-
-	script_value_to_string(cx,vp,str,32);
-	weap->proj.object_fire_bone_tag=text_to_model_tag(str);
+	script_value_to_string(cx,vp,weap->proj.object_fire_bone_name,name_str_len);
 
 	return(TRUE);
 }

@@ -42,8 +42,9 @@ EXPORTS
 
 	model_find_mesh							@160
 	model_find_bone							@161
-	model_find_pose							@162
-	model_find_animate						@163
+	model_find_bone2						@162
+	model_find_pose							@163
+	model_find_animate						@164
 
 	model_count_texture_frames				@170
 	model_setup_animated_textures			@171

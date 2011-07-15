@@ -40,6 +40,8 @@ extern view_type			view;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
 
+extern int engine_model_find_bone(model_type *mdl,char *bone_name);	// supergumba -- temporary
+
 /* =======================================================
 
       Add Melee
@@ -125,7 +127,6 @@ void melee_add(obj_type *obj,weapon_type *weap,d3pnt *pt,d3ang *ang,melee_type *
 bool melee_strike_position_weapon_model(obj_type *obj,weapon_type *weap,d3pnt *fire_pnt,char *err_str)
 {
 	int						pose_idx,bone_idx;
-	model_tag				tag;
 	model_type				*mdl;
 	model_draw_setup		*setup;
 
@@ -145,9 +146,8 @@ bool melee_strike_position_weapon_model(obj_type *obj,weapon_type *weap,d3pnt *f
 		if (err_str!=NULL) strcpy(err_str,"Weapon has missing or no strike pose");
 		return(FALSE);
 	}
-
-	tag=text_to_model_tag(weap->melee.strike_bone_name);
-	bone_idx=model_find_bone(mdl,tag);
+	
+	bone_idx=engine_model_find_bone(mdl,weap->melee.strike_bone_name);
 	if (bone_idx==-1) {
 		if (err_str!=NULL) strcpy(err_str,"Weapon has missing or no strike bone");
 		return(FALSE);
@@ -178,7 +178,6 @@ bool melee_strike_position_weapon_model(obj_type *obj,weapon_type *weap,d3pnt *f
 bool melee_strike_position_object_model(obj_type *obj,weapon_type *weap,d3pnt *fire_pnt,char *err_str)
 {
 	int						pose_idx,bone_idx;
-	model_tag				tag;
 	model_type				*mdl;
 	model_draw_setup		*setup;
 
@@ -195,11 +194,11 @@ bool melee_strike_position_object_model(obj_type *obj,weapon_type *weap,d3pnt *f
 
 	if (weap==NULL) {
 		pose_idx=model_find_pose(mdl,obj->melee.strike_pose_name);
-		tag=text_to_model_tag(obj->melee.strike_bone_name);
+		bone_idx=engine_model_find_bone(mdl,obj->melee.strike_bone_name);
 	}
 	else {
 		pose_idx=model_find_pose(mdl,weap->melee.object_strike_pose_name);
-		tag=text_to_model_tag(weap->melee.object_strike_bone_name);
+		bone_idx=engine_model_find_bone(mdl,weap->melee.object_strike_bone_name);
 	}
 	
 	if (pose_idx==-1) {
@@ -207,7 +206,6 @@ bool melee_strike_position_object_model(obj_type *obj,weapon_type *weap,d3pnt *f
 		return(FALSE);
 	}
 
-	bone_idx=model_find_bone(mdl,tag);
 	if (bone_idx==-1) {
 		if (err_str!=NULL) strcpy(err_str,"Object has missing or no strike bone");
 		return(FALSE);
@@ -238,7 +236,6 @@ bool melee_strike_position_object_model(obj_type *obj,weapon_type *weap,d3pnt *f
 bool melee_strike_position_projectile_model(obj_type *obj,weapon_type *weap,proj_setup_type *proj_setup,proj_type *proj,d3pnt *fire_pnt,char *err_str)
 {
 	int						pose_idx,bone_idx;
-	model_tag				tag;
 	model_type				*mdl;
 	model_draw_setup		*setup;
 
@@ -259,8 +256,7 @@ bool melee_strike_position_projectile_model(obj_type *obj,weapon_type *weap,proj
 		return(FALSE);
 	}
 
-	tag=text_to_model_tag(proj_setup->melee.strike_bone_name);
-	bone_idx=model_find_bone(mdl,tag);
+	bone_idx=engine_model_find_bone(mdl,proj_setup->melee.strike_bone_name);
 	if (bone_idx==-1) {
 		if (err_str!=NULL) strcpy(err_str,"Projectile has missing or no strike bone");
 		return(FALSE);

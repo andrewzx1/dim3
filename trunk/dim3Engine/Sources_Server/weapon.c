@@ -177,10 +177,10 @@ bool weapon_add(obj_type *obj,char *name)
 	weapon_clear_ammo(&weap->ammo,TRUE);
 	weapon_clear_ammo(&weap->alt_ammo,FALSE);
 	
-	weap->proj.fire_bone_tag=model_null_tag;
-	weap->proj.barrel_bone_tag=model_null_tag;
+	weap->proj.fire_bone_name[0]=0x0;
+	weap->proj.barrel_bone_name[0]=0x0;
 	weap->proj.fire_pose_name[0]=0x0;
-	weap->proj.object_fire_bone_tag=model_null_tag;
+	weap->proj.object_fire_bone_name[0]=0x0;
 	weap->proj.object_fire_pose_name[0]=0x0;
 	weap->proj.repeat_on=FALSE;
 	weap->proj.repeat_ok=TRUE;

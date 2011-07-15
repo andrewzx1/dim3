@@ -386,6 +386,7 @@ extern void model_hit_box_get_box(model_type *model,int hit_box_idx,d3pnt *pnt,m
 
 extern int model_find_mesh(model_type *model,char *mesh_name);
 extern int model_find_bone(model_type *model,model_tag tag);
+extern int model_find_bone2(model_type *model,char *bone_name);		// supergumba -- temporary until 
 extern int model_find_pose(model_type *model,char *pose_name);
 extern int model_find_animate(model_type *model,char *animate_name);
 

@@ -227,7 +227,7 @@ void setup_game_action_pane(void)
 	y=(margin+element_get_tab_control_high())+padding;
 
 	wid=iface.scale_x-((margin+padding)*2);
-	high=(int)(((float)iface.scale_y)*0.8f)-y;
+	high=(int)(((float)iface.scale_y)*0.82f)-y;
 	
 		// setup action list
 		
@@ -282,7 +282,7 @@ void setup_game_action_pane(void)
 	wid=(int)(((float)iface.scale_x)*0.2f);
 	high=(int)(((float)iface.scale_x)*0.04f);
 	
-	y+=((padding/2)+(high/2));
+	y+=(((padding/2)+(high/2))+5);
 	
 	element_button_text_add("Set Action",setup_action_set_button,(x-(padding/2)),y,wid,high,element_pos_right,element_pos_center);
 	element_enable(setup_action_set_button,FALSE);

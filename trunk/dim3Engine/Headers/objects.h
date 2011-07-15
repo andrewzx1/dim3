@@ -466,9 +466,9 @@ extern bool model_show_only_mesh(model_draw *draw,char *name);
 extern bool model_hide_mesh(model_draw *draw,char *name);
 extern bool model_hide_all_mesh(model_draw *draw);
 
-extern bool model_dynamic_bone_set_rotate(model_draw *draw,char *bone_tag,d3ang *rot,char *err_str);
-extern bool model_dynamic_bone_set_move(model_draw *draw,char *bone_tag,d3pnt *mov,char *err_str);
-extern bool model_dynamic_bone_set_resize(model_draw *draw,char *bone_tag,float resize,char *err_str);
+extern bool model_dynamic_bone_set_rotate(model_draw *draw,char *bone_name,d3ang *rot,char *err_str);
+extern bool model_dynamic_bone_set_move(model_draw *draw,char *bone_name,d3pnt *mov,char *err_str);
+extern bool model_dynamic_bone_set_resize(model_draw *draw,char *bone_name,float resize,char *err_str);
 
 extern void render_model_setup(model_draw *draw,int tick);
 extern void render_model_build_vertex_lists(model_draw *draw);

@@ -110,6 +110,30 @@ int model_find_index(char *name)
 
 /* =======================================================
 
+      Temporary Bone Name or Tag Lookup
+      
+======================================================= */
+
+// supergumba -- temporary until all bone tags are gone
+
+int engine_model_find_bone(model_type *mdl,char *bone_name)
+{
+	int					bone_idx;
+	model_tag			tag;
+
+		// check bone first
+
+	bone_idx=model_find_bone2(mdl,bone_name);
+	if (bone_idx!=-1) return(bone_idx);
+
+		// now check tag
+
+	tag=text_to_model_tag(bone_name);
+	return(model_find_bone(mdl,tag));
+}
+
+/* =======================================================
+
       Open Models
       
 ======================================================= */
