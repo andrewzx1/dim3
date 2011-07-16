@@ -1777,7 +1777,7 @@
 				CONFIGURATION_BUILD_DIR = build/Release;
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEPLOYMENT_POSTPROCESSING = YES;
 				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_CHAR_IS_UNSIGNED_CHAR = NO;
@@ -1827,7 +1827,7 @@
 					"$(SRCROOT)/../dim3Common/Libraries/PNG",
 					"$(SRCROOT)/../dim3Common/Libraries",
 				);
-				LLVM_LTO = NO;
+				LLVM_LTO = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
 				OBJROOT = build;
 				OTHER_LDFLAGS = (

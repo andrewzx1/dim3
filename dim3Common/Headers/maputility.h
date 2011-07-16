@@ -544,7 +544,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						int									type;
+						int									type,event_id;
 						char								name[name_str_len],title_sound_name[name_str_len];
 					} map_media_type;
 					

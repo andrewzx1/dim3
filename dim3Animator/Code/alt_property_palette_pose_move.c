@@ -143,7 +143,6 @@ void alt_property_palette_fill_animate_pose_move(int animate_idx,int pose_move_i
 		// mesh fades
 
 	list_palette_add_header(&alt_property_palette,0,"Animate Pose Mesh Fade");
-	list_palette_add_string(&alt_property_palette,kAnimationPoseMovePropertyFadeName,"Name",pose_move->mesh_fade.name,FALSE);
 	property_palette_add_string_mesh(&alt_property_palette,kAnimationPoseMovePropertyFadeMesh,"Mesh",pose_move->mesh_fade.mesh_idx,FALSE);
 	list_palette_add_string_int(&alt_property_palette,kAnimationPoseMovePropertyFadeIn,"Fade In Milliseconds",pose_move->mesh_fade.fade_in_msec,FALSE);
 	list_palette_add_string_int(&alt_property_palette,kAnimationPoseMovePropertyFadeLife,"Fade Life Milliseconds",pose_move->mesh_fade.fade_life_msec,FALSE);
@@ -370,10 +369,6 @@ void alt_property_palette_click_animate_pose_move(int animate_idx,int pose_move_
 			break;
 
 			// mesh fade
-
-		case kAnimationPoseMovePropertyFadeName:
-			dialog_property_string_run(list_string_value_string,(void*)pose_move->mesh_fade.name,name_str_len,0,0);
-			break;
 
 		case kAnimationPoseMovePropertyFadeMesh:
 			property_palette_pick_mesh(&pose_move->mesh_fade.mesh_idx);

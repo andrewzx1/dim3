@@ -552,11 +552,11 @@ void cinema_run(void)
 
 		if (view.cinema.event_id!=-1) {
 			scripts_post_event_console(js.game_script_idx,-1,sd_event_interface,sd_event_interface_cinema_done,view.cinema.event_id);
-			scripts_post_event_console(js.course_script_idx,-1,sd_event_map,sd_event_interface_cinema_done,view.cinema.event_id);
+			scripts_post_event_console(js.course_script_idx,-1,sd_event_interface,sd_event_interface_cinema_done,view.cinema.event_id);
 
 			if (net_setup.mode!=net_mode_host_dedicated) {
 				obj=server.obj_list.objs[server.player_obj_idx];
-				scripts_post_event_console(obj->script_idx,-1,sd_event_map,sd_event_interface_cinema_done,view.cinema.event_id);
+				scripts_post_event_console(obj->script_idx,-1,sd_event_interface,sd_event_interface_cinema_done,view.cinema.event_id);
 			}
 		}
 

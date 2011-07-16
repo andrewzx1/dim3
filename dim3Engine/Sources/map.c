@@ -82,13 +82,13 @@ void map_media_start(map_media_type *media)
 			break;
 			
 		case mi_title:
-			if (!title_setup("Titles",media->name,media->title_sound_name,-1,-1,err_str)) {
+			if (!title_setup("Titles",media->name,media->title_sound_name,-1,media->event_id,err_str)) {
 				console_add_error(err_str);
 			}
 			break;
 			
 		case mi_cinema:
-			if (!cinema_start(media->name,-1,err_str)) {
+			if (!cinema_start(media->name,media->event_id,err_str)) {
 				console_add_error(err_str);
 			}
 			break;

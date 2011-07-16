@@ -185,6 +185,7 @@ void write_map_settings_xml(map_type *map)
 	
     xml_add_tagstart("Media");
 	xml_add_attribute_list("type",(char*)media_type_str,map->media.type);
+	xml_add_attribute_int("event_id",map->media.event_id);
 	xml_add_attribute_text("name",map->media.name);
 	xml_add_attribute_text("title_sound_name",map->media.title_sound_name);
 	xml_add_tagend(TRUE);

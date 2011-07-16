@@ -81,49 +81,50 @@ and can be sold or given away.
 #define kMapPropertyCameraStaticAttachNode	51
 
 #define kMapPropertyMediaType				52
-#define kMapPropertyMediaName				53
-#define kMapPropertyMediaTitleSound			54
+#define kMapPropertyMediaEventId			53
+#define kMapPropertyMediaName				54
+#define kMapPropertyMediaTitleSound			55
 
-#define kMapPropertyMusicName				55
-#define kMapPropertyMusicFadeTime			56
+#define kMapPropertyMusicName				56
+#define kMapPropertyMusicFadeTime			57
 
-#define kMapPropertySkyOn					57
-#define kMapPropertySkyType					58
-#define kMapPropertySkyRadius				59
-#define kMapPropertyDomeY					60
-#define kMapPropertyDomeMirror				61
-#define kMapPropertyTextureRepeat			62
-#define kMapPropertyTextureShift			63
-#define kMapPropertyTextureFill				64
-#define kMapPropertyTextureBottomFill		65
-#define kMapPropertyTextureNorthFill		66
-#define kMapPropertyTextureSouthFill		67
-#define kMapPropertyTextureEastFill			68
-#define kMapPropertyTextureWestFill			69
+#define kMapPropertySkyOn					58
+#define kMapPropertySkyType					59
+#define kMapPropertySkyRadius				60
+#define kMapPropertyDomeY					61
+#define kMapPropertyDomeMirror				62
+#define kMapPropertyTextureRepeat			63
+#define kMapPropertyTextureShift			64
+#define kMapPropertyTextureFill				65
+#define kMapPropertyTextureBottomFill		66
+#define kMapPropertyTextureNorthFill		67
+#define kMapPropertyTextureSouthFill		68
+#define kMapPropertyTextureEastFill			69
+#define kMapPropertyTextureWestFill			70
 
-#define kMapPropertyBackgroundOn			70
-#define kMapPropertyBackgroundFrontFill		71
-#define kMapPropertyBackgroundFrontStamp	72
-#define kMapPropertyBackgroundFrontShift	73
-#define kMapPropertyBackgroundMiddleFill	74
-#define kMapPropertyBackgroundMiddleStamp	75
-#define kMapPropertyBackgroundMiddleShift	76
-#define kMapPropertyBackgroundBackFill		77
-#define kMapPropertyBackgroundBackStamp		78
-#define kMapPropertyBackgroundBackShift		79
+#define kMapPropertyBackgroundOn			71
+#define kMapPropertyBackgroundFrontFill		72
+#define kMapPropertyBackgroundFrontStamp	73
+#define kMapPropertyBackgroundFrontShift	74
+#define kMapPropertyBackgroundMiddleFill	75
+#define kMapPropertyBackgroundMiddleStamp	76
+#define kMapPropertyBackgroundMiddleShift	77
+#define kMapPropertyBackgroundBackFill		78
+#define kMapPropertyBackgroundBackStamp		79
+#define kMapPropertyBackgroundBackShift		80
 
-#define kMapPropertyFogOn					80
-#define kMapPropertyFogInnerRadius			81
-#define kMapPropertyFogOuterRadius			82
-#define kMapPropertyFogUseSolidColor		83
-#define kMapPropertyFogColor				84
-#define kMapPropertyFogTextureIndex			85
-#define kMapPropertyFogCount				86
-#define kMapPropertyFogHigh					87
-#define kMapPropertyFogDrop					88
-#define kMapPropertyFogAlpha				89
-#define kMapPropertyFogTextureSpeed			90
-#define kMapPropertyFogTextureFact			91
+#define kMapPropertyFogOn					81
+#define kMapPropertyFogInnerRadius			82
+#define kMapPropertyFogOuterRadius			83
+#define kMapPropertyFogUseSolidColor		84
+#define kMapPropertyFogColor				85
+#define kMapPropertyFogTextureIndex			86
+#define kMapPropertyFogCount				87
+#define kMapPropertyFogHigh					88
+#define kMapPropertyFogDrop					89
+#define kMapPropertyFogAlpha				90
+#define kMapPropertyFogTextureSpeed			91
+#define kMapPropertyFogTextureFact			92
 
 #define kMapPropertyRainOn					100
 #define kMapPropertyRainDensity				101
@@ -256,6 +257,7 @@ void property_palette_fill_map(void)
 
 	list_palette_add_header(&property_palette,0,"Map Media");
 	list_palette_add_string(&property_palette,kMapPropertyMediaType,"Startup Type",map_property_media_type_list[map.media.type],FALSE);
+	list_palette_add_string_int(&property_palette,kMapPropertyMediaEventId,"Event Id",map.media.event_id,FALSE);
 	list_palette_add_string(&property_palette,kMapPropertyMediaName,"Startup Name",map.media.name,FALSE);
 	list_palette_add_string(&property_palette,kMapPropertyMediaTitleSound,"Startup Title Sound",map.media.title_sound_name,FALSE);
 
@@ -589,6 +591,10 @@ void property_palette_click_map(int id)
 
 		case kMapPropertyMediaType:
 			property_pick_list("Pick a Media Type",(char*)map_property_media_type_list,&map.media.type);
+			break;
+		
+		case kMapPropertyMediaEventId:
+			dialog_property_string_run(list_string_value_int,(void*)&map.media.event_id,0,0,0);
 			break;
 
 		case kMapPropertyMediaName:

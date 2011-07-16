@@ -254,7 +254,6 @@ typedef struct		{
 
 typedef struct		{
 						int								mesh_idx,fade_in_msec,fade_life_msec,fade_out_msec;
-						char							name[name_str_len];
 					} model_pose_move_mesh_fade_type;
 					
 typedef struct		{

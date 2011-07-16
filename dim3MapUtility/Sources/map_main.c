@@ -133,6 +133,7 @@ bool map_new(map_type *map,char *name)
 		// media
 		
 	map->media.type=mi_none;
+	map->media.event_id=-1;
 	map->media.name[0]=0x0;
 	map->media.title_sound_name[0]=0x0;
 	

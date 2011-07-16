@@ -973,6 +973,22 @@ bool collide_object_to_sphere(d3pnt *sphere_pnt,int radius,obj_type *obj)
 	return(FALSE);
 }
 
+bool collide_object_check_obscured(obj_type *obj)
+{
+	d3pnt				box_sz,motion;
+	obj_contact			temp_contact;
+
+	box_sz.x=obj->size.x;
+	box_sz.z=obj->size.z;
+
+	box_sz.y=obj->size.y;
+	if (obj->duck.mode!=dm_stand) box_sz.y-=obj->duck.y_move;
+	
+	motion.x=motion.y=motion.z=0;
+	return(collide_box_to_map(&obj->pnt,&box_sz,&motion,TRUE,obj->idx,FALSE,-1,FALSE,&temp_contact));
+}
+
+
 /* =======================================================
 
       Project-Map Collisions
