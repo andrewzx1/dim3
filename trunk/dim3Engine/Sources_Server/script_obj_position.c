@@ -29,6 +29,7 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
+#include "interface.h"
 #include "scripts.h"
 #include "objects.h"
 
@@ -51,6 +52,7 @@ JSValueRef js_obj_position_move_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 JSValueRef js_obj_position_reset_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_position_distance_to_player_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_position_distance_to_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_obj_position_is_obscured_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 JSStaticValue 		obj_position_props[]={
 							{"x",								js_obj_position_get_x,				NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
@@ -66,6 +68,7 @@ JSStaticFunction	obj_position_functions[]={
 							{"reset",							js_obj_position_reset_func,								kJSPropertyAttributeDontDelete},
 							{"distanceToPlayer",				js_obj_position_distance_to_player_func,				kJSPropertyAttributeDontDelete},
 							{"distanceToObject",				js_obj_position_distance_to_object_func,				kJSPropertyAttributeDontDelete},
+							{"isObscured",						js_obj_position_is_obscured_func,						kJSPropertyAttributeDontDelete},
 							{0,0,0}};
 
 JSClassRef			obj_position_class;
@@ -247,5 +250,21 @@ JSValueRef js_obj_position_distance_to_object_func(JSContextRef cx,JSObjectRef f
 	if (dist_obj==NULL) return(script_null_to_value(cx));
 
 	return(script_int_to_value(cx,distance_get(obj->pnt.x,obj->pnt.y,obj->pnt.z,dist_obj->pnt.x,dist_obj->pnt.y,dist_obj->pnt.z)));
+}
+
+/* =======================================================
+
+      Object Obscure Functions
+      
+======================================================= */
+
+JSValueRef js_obj_position_is_obscured_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+{
+	obj_type		*obj;
+	
+	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
+	
+	obj=object_get_attach(j_obj);
+	return(script_bool_to_value(cx,collide_object_check_obscured(obj)));
 }
 

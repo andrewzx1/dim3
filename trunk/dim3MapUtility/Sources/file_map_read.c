@@ -129,6 +129,7 @@ void decode_map_settings_xml(map_type *map,int map_head)
     tag=xml_findfirstchild("Media",map_head);
     if (tag!=-1) {
 		map->media.type=xml_get_attribute_list(tag,"type",(char*)media_type_str);
+		map->media.event_id=xml_get_attribute_int_default(tag,"event_id",-1);
 		xml_get_attribute_text(tag,"name",map->media.name,name_str_len);
 		xml_get_attribute_text(tag,"title_sound_name",map->media.title_sound_name,name_str_len);
 	}

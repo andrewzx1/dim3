@@ -42,7 +42,8 @@ bool read_animate_xml(model_type *model)
 	int						n,k,t,nanimate,animate_idx,
 							tag,model_head,poses_tag,animations_tag,animation_tag,
 							particles_head,particle_tag,rings_head,ring_tag;
-    char					sub_path[1024],path[1024],posename[256],str[256];
+    char					sub_path[1024],path[1024],pose_name[name_str_len],
+							mesh_name[name_str_len],str[256];
     model_pose_move_type	*pose_move;
 	model_animate_type		*animate;
 
@@ -98,8 +99,8 @@ bool read_animate_xml(model_type *model)
         pose_move=animate->pose_moves;
         
         for (k=0;k!=animate->npose_move;k++) {
-            xml_get_attribute_text(tag,"name",posename,64);
-            pose_move->pose_idx=model_find_pose(model,posename);
+            xml_get_attribute_text(tag,"name",pose_name,name_str_len);
+            pose_move->pose_idx=model_find_pose(model,pose_name);
 			
             pose_move->msec=xml_get_attribute_int(tag,"time");
             xml_get_attribute_3_coord_float(tag,"sway",&pose_move->sway.x,&pose_move->sway.y,&pose_move->sway.z);
@@ -112,11 +113,11 @@ bool read_animate_xml(model_type *model)
 			pose_move->sound.pitch=xml_get_attribute_float_default(tag,"sound_pitch",1.0f);
 			pose_move->sound.no_position=xml_get_attribute_boolean(tag,"sound_global");
          
-			xml_get_attribute_text(tag,"mesh_fade",pose_move->mesh_fade.name,name_str_len);
+			xml_get_attribute_text(tag,"mesh_fade",mesh_name,name_str_len);
 			pose_move->mesh_fade.fade_in_msec=xml_get_attribute_int(tag,"mesh_fade_in_time");
 			pose_move->mesh_fade.fade_life_msec=xml_get_attribute_int_default(tag,"mesh_fade_life_time",0);
 			pose_move->mesh_fade.fade_out_msec=xml_get_attribute_int(tag,"mesh_fade_out_time");
-			pose_move->mesh_fade.mesh_idx=model_find_mesh(model,pose_move->mesh_fade.name);
+			pose_move->mesh_fade.mesh_idx=model_find_mesh(model,mesh_name);
 
 			pose_move->flash.bone_idx=model_find_bone(model,xml_get_attribute_model_tag(tag,"flash_bone"));
 			pose_move->flash.intensity=xml_get_attribute_int(tag,"flash_intensity");
@@ -260,7 +261,12 @@ bool write_animate_xml(model_type *model)
 			xml_add_attribute_float("sound_pitch",pose_move->sound.pitch);
 			xml_add_attribute_boolean("sound_global",pose_move->sound.no_position);
 			
-			xml_add_attribute_text("mesh_fade",pose_move->mesh_fade.name);
+			if (pose_move->mesh_fade.mesh_idx!=-1) {
+				xml_add_attribute_text("mesh_fade",model->meshes[pose_move->mesh_fade.mesh_idx].name);
+			}
+			else {
+				xml_add_attribute_text("mesh_fade","");
+			}
 			xml_add_attribute_int("mesh_fade_in_time",pose_move->mesh_fade.fade_in_msec);
 			xml_add_attribute_int("mesh_fade_life_time",pose_move->mesh_fade.fade_life_msec);
 			xml_add_attribute_int("mesh_fade_out_time",pose_move->mesh_fade.fade_out_msec);
