@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2609CAA813CBC2A400B87F9D /* osx_appstore.c in Sources */ = {isa = PBXBuildFile; fileRef = 2609CAA713CBC2A400B87F9D /* osx_appstore.c */; };
 		260AE9350F832A5B00451942 /* gl_back_render.c in Sources */ = {isa = PBXBuildFile; fileRef = 260AE9340F832A5B00451942 /* gl_back_render.c */; };
 		260C145C129C770800B6D5B5 /* SDLMain.h in Headers */ = {isa = PBXBuildFile; fileRef = 260C145A129C770800B6D5B5 /* SDLMain.h */; };
 		260C145D129C770800B6D5B5 /* SDLMain.m in Sources */ = {isa = PBXBuildFile; fileRef = 260C145B129C770800B6D5B5 /* SDLMain.m */; };
@@ -359,7 +358,6 @@
 		00CA825D00BF848B7F000001 /* dim3 Engine.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = "dim3 Engine.icns"; path = "Resources/dim3 Engine.icns"; sourceTree = "<group>"; };
 		0867D6ABFE840B52C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		20286C33FDCF999611CA2CEA /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
-		2609CAA713CBC2A400B87F9D /* osx_appstore.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = osx_appstore.c; path = Sources_OSX_AppStore/osx_appstore.c; sourceTree = "<group>"; };
 		260AE9340F832A5B00451942 /* gl_back_render.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = gl_back_render.c; path = Sources_View/gl_back_render.c; sourceTree = "<group>"; };
 		260C145A129C770800B6D5B5 /* SDLMain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDLMain.h; path = SDL/SDLMain.h; sourceTree = "<group>"; };
 		260C145B129C770800B6D5B5 /* SDLMain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SDLMain.m; path = SDL/SDLMain.m; sourceTree = "<group>"; };
@@ -925,14 +923,6 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		2609CAA613CBC23500B87F9D /* OSX_AppStore */ = {
-			isa = PBXGroup;
-			children = (
-				2609CAA713CBC2A400B87F9D /* osx_appstore.c */,
-			);
-			name = OSX_AppStore;
-			sourceTree = "<group>";
-		};
 		2694E5960F91A328004B672A /* Multiplayer */ = {
 			isa = PBXGroup;
 			children = (
@@ -1195,7 +1185,6 @@
 			isa = PBXGroup;
 			children = (
 				F5F654FA0B549D0E00633A54 /* Sources */,
-				2609CAA613CBC23500B87F9D /* OSX_AppStore */,
 			);
 			name = Main;
 			sourceTree = "<group>";
@@ -1751,7 +1740,6 @@
 				260C145D129C770800B6D5B5 /* SDLMain.m in Sources */,
 				26F8AA75133546FB0020367E /* chat.c in Sources */,
 				26F8AA7E133547770020367E /* console.c in Sources */,
-				2609CAA813CBC2A400B87F9D /* osx_appstore.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1827,7 +1815,7 @@
 					"$(SRCROOT)/../dim3Common/Libraries/PNG",
 					"$(SRCROOT)/../dim3Common/Libraries",
 				);
-				LLVM_LTO = YES;
+				LLVM_LTO = NO;
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
 				OBJROOT = build;
 				OTHER_LDFLAGS = (

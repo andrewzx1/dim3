@@ -172,12 +172,6 @@ int main(int argc,char *argv[])
 	bool			app_start_ok;
 	char			err_str[256];
 	
-		// OSX AppStore
-		
-#ifdef D3_OS_X_APPSTORE
-	if (!dim3_osx_appstore_main()) fprintf(stdout,"FAILED\n"); //return(173);
-#endif
-	
 		// setup paths
 
 	if (!file_paths_setup(&setup.file_path_setup)) {
