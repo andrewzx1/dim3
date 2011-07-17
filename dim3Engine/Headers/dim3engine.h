@@ -56,13 +56,6 @@ and can be sold or given away.
 // #define D3_SDL_1_3				1
 
 //
-// OS X AppStore
-// Note: You MUST change the Bundle Identifier in project settings/info
-//
-
-// #define D3_OS_X_APPSTORE			1
-
-//
 // Application Headers
 //
 
