@@ -11,7 +11,6 @@
 		260D11931346D07600C77CC7 /* iface_multiplayer.c in Sources */ = {isa = PBXBuildFile; fileRef = 260D11911346D07600C77CC7 /* iface_multiplayer.c */; };
 		2612D45F0E6CEEE200994B22 /* area.c in Sources */ = {isa = PBXBuildFile; fileRef = 2612D45E0E6CEEE200994B22 /* area.c */; };
 		265111D4121C871000E2ED78 /* bitmap_text.c in Sources */ = {isa = PBXBuildFile; fileRef = 265111D3121C871000E2ED78 /* bitmap_text.c */; };
-		26D27D6913CA5EC000A8A6F7 /* libPNG.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 26D27D6813CA5EC000A8A6F7 /* libPNG.dylib */; };
 		26E67A91133807E200E63E68 /* iface_action.c in Sources */ = {isa = PBXBuildFile; fileRef = 26E67A86133807E200E63E68 /* iface_action.c */; };
 		26E67A92133807E200E63E68 /* iface_crosshairs.c in Sources */ = {isa = PBXBuildFile; fileRef = 26E67A87133807E200E63E68 /* iface_crosshairs.c */; };
 		26E67A93133807E200E63E68 /* iface_halos.c in Sources */ = {isa = PBXBuildFile; fileRef = 26E67A88133807E200E63E68 /* iface_halos.c */; };
@@ -49,7 +48,7 @@
 		F53F282D0BC1C7F600EB3C0F /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 08FB77AAFE841565C02AAC07 /* Carbon.framework */; };
 		F53F28C30BC1C7F700EB3C0F /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5AD53110BBE1A83001C7C04 /* QuickTime.framework */; };
 		F53F28E50BC1C7F800EB3C0F /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5AD53120BBE1A83001C7C04 /* OpenGL.framework */; };
-		F53F2A330BC2055800EB3C0F /* libBaseUtility.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = F53F280B0BC1C74800EB3C0F /* libBaseUtility.dylib */; };
+		F53F2A330BC2055800EB3C0F /* libBaseUtility.a in CopyFiles */ = {isa = PBXBuildFile; fileRef = F53F280B0BC1C74800EB3C0F /* libBaseUtility.a */; };
 		F556BC750C7BA9E90059E7FC /* file_search.c in Sources */ = {isa = PBXBuildFile; fileRef = F556BC740C7BA9E90059E7FC /* file_search.c */; };
 /* End PBXBuildFile section */
 
@@ -60,7 +59,7 @@
 			dstPath = "$(SRCROOT)/../dim3Common/Libraries/";
 			dstSubfolderSpec = 0;
 			files = (
-				F53F2A330BC2055800EB3C0F /* libBaseUtility.dylib in CopyFiles */,
+				F53F2A330BC2055800EB3C0F /* libBaseUtility.a in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -72,7 +71,6 @@
 		260D11911346D07600C77CC7 /* iface_multiplayer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = iface_multiplayer.c; path = Sources_Interface/iface_multiplayer.c; sourceTree = "<group>"; };
 		2612D45E0E6CEEE200994B22 /* area.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = area.c; path = Sources_Math/area.c; sourceTree = "<group>"; };
 		265111D3121C871000E2ED78 /* bitmap_text.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = bitmap_text.c; path = Sources_Bitmap/bitmap_text.c; sourceTree = "<group>"; };
-		26D27D6813CA5EC000A8A6F7 /* libPNG.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libPNG.dylib; path = ../dim3Common/Libraries/PNG/libPNG.dylib; sourceTree = "<group>"; };
 		26E67A86133807E200E63E68 /* iface_action.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = iface_action.c; path = Sources_Interface/iface_action.c; sourceTree = "<group>"; };
 		26E67A87133807E200E63E68 /* iface_crosshairs.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = iface_crosshairs.c; path = Sources_Interface/iface_crosshairs.c; sourceTree = "<group>"; };
 		26E67A88133807E200E63E68 /* iface_halos.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = iface_halos.c; path = Sources_Interface/iface_halos.c; sourceTree = "<group>"; };
@@ -86,7 +84,7 @@
 		26E67A90133807E200E63E68 /* iface_sound.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = iface_sound.c; path = Sources_Interface/iface_sound.c; sourceTree = "<group>"; };
 		26ED705D0FF1A7DB00AD19BF /* zip.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = zip.c; path = Sources_File/zip.c; sourceTree = "<group>"; };
 		F53F25260BBF770900EB3C0F /* file_paths.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = file_paths.c; path = Sources_File/file_paths.c; sourceTree = "<group>"; };
-		F53F280B0BC1C74800EB3C0F /* libBaseUtility.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libBaseUtility.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		F53F280B0BC1C74800EB3C0F /* libBaseUtility.a */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libBaseUtility.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		F556BC740C7BA9E90059E7FC /* file_search.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = file_search.c; path = Sources_File/file_search.c; sourceTree = "<group>"; };
 		F5AD52770BBE148C001C7C04 /* dim3baseutility.exp */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.exports; name = dim3baseutility.exp; path = Exports/dim3baseutility.exp; sourceTree = "<group>"; };
 		F5AD52800BBE14FA001C7C04 /* lines.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = lines.c; path = Sources_Math/lines.c; sourceTree = "<group>"; };
@@ -122,7 +120,6 @@
 				F53F282D0BC1C7F600EB3C0F /* Carbon.framework in Frameworks */,
 				F53F28C30BC1C7F700EB3C0F /* QuickTime.framework in Frameworks */,
 				F53F28E50BC1C7F800EB3C0F /* OpenGL.framework in Frameworks */,
-				26D27D6913CA5EC000A8A6F7 /* libPNG.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -132,7 +129,7 @@
 		034768DDFF38A45A11DB9C8B /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				F53F280B0BC1C74800EB3C0F /* libBaseUtility.dylib */,
+				F53F280B0BC1C74800EB3C0F /* libBaseUtility.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -195,7 +192,6 @@
 		26ED70780FF1A87500AD19BF /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
-				26D27D6813CA5EC000A8A6F7 /* libPNG.dylib */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -301,7 +297,7 @@
 			);
 			name = dim3BaseUtility;
 			productName = dim3BaseUtility;
-			productReference = F53F280B0BC1C74800EB3C0F /* libBaseUtility.dylib */;
+			productReference = F53F280B0BC1C74800EB3C0F /* libBaseUtility.a */;
 			productType = "com.apple.product-type.library.dynamic";
 		};
 /* End PBXNativeTarget section */
@@ -378,9 +374,13 @@
 		1DEB920708733DBB0010E9CD /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = i386;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACH_O_TYPE = mh_dylib;
+				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.6.sdk";
+				SKIP_INSTALL = YES;
+				VALID_ARCHS = i386;
 			};
 			name = Release;
 		};
@@ -392,7 +392,8 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
-				EXPORTED_SYMBOLS_FILE = Exports/dim3baseutility.exp;
+				EXECUTABLE_EXTENSION = a;
+				EXPORTED_SYMBOLS_FILE = "";
 				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_CW_ASM_SYNTAX = NO;
 				GCC_ENABLE_CPP_EXCEPTIONS = NO;
@@ -427,15 +428,19 @@
 				GCC_WARN_UNUSED_VALUE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "$(SRCROOT)/../dim3Common/Libraries/PNG";
-				INSTALL_PATH = "@executable_path/../Frameworks";
-				LD_DYLIB_INSTALL_NAME = "@executable_path/../Frameworks/libBaseUtility.dylib";
+				INSTALL_PATH = "";
+				LD_DYLIB_INSTALL_NAME = "";
 				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/../dim3Common/Libraries/PNG";
 				LLVM_LTO = YES;
-				MACH_O_TYPE = mh_dylib;
+				MACH_O_TYPE = staticlib;
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
-				OTHER_LDFLAGS = "-lz";
+				OTHER_LDFLAGS = "";
+				PRIVATE_HEADERS_FOLDER_PATH = "";
 				PRODUCT_NAME = libBaseUtility;
+				PUBLIC_HEADERS_FOLDER_PATH = "";
 				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.6.sdk";
+				SKIP_INSTALL = YES;
+				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = dynamic;
 				VALID_ARCHS = i386;
 				WARNING_CFLAGS = "";
 			};
