@@ -17,11 +17,10 @@
 		F594132B0978BCF500223F2A /* size.c in Sources */ = {isa = PBXBuildFile; fileRef = F594132A0978BCF500223F2A /* size.c */; };
 		F594147C0979776300223F2A /* draw_normals.c in Sources */ = {isa = PBXBuildFile; fileRef = F594147B0979776300223F2A /* draw_normals.c */; };
 		F5A31C2D0C5EDC52002470A9 /* model_transform.c in Sources */ = {isa = PBXBuildFile; fileRef = F5A31C2C0C5EDC52002470A9 /* model_transform.c */; };
-		F5AD54000BBE1E11001C7C04 /* libBaseUtility.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5AD53FF0BBE1E11001C7C04 /* libBaseUtility.dylib */; };
 		F5AD54040BBE1E46001C7C04 /* baseutility.h in Headers */ = {isa = PBXBuildFile; fileRef = F5AD54030BBE1E46001C7C04 /* baseutility.h */; };
 		F5AD540A0BBE1E94001C7C04 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5AD54090BBE1E94001C7C04 /* OpenGL.framework */; };
 		F5CEE227097DF7EA00B5F1C2 /* hit_box.c in Sources */ = {isa = PBXBuildFile; fileRef = F5CEE226097DF7EA00B5F1C2 /* hit_box.c */; };
-		F5DB0B900856705A005A7CB7 /* libModelUtility.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = F5F494F8067BF85000E809E7 /* libModelUtility.dylib */; };
+		F5DB0B900856705A005A7CB7 /* libModelUtility.a in CopyFiles */ = {isa = PBXBuildFile; fileRef = F5F494F8067BF85000E809E7 /* libModelUtility.a */; };
 		F5F494F9067BF90600E809E7 /* dim3modelutility.h in Headers */ = {isa = PBXBuildFile; fileRef = F5127DF10513A79A009F12F0 /* dim3modelutility.h */; };
 		F5F494FE067BF90800E809E7 /* modelutility.h in Headers */ = {isa = PBXBuildFile; fileRef = F5CA4EF305100FB60055C8B8 /* modelutility.h */; };
 		F5F494FF067BF90900E809E7 /* file_model_mesh.c in Sources */ = {isa = PBXBuildFile; fileRef = F56D96E80502F83C00143299 /* file_model_mesh.c */; };
@@ -46,7 +45,7 @@
 			dstPath = "$(SRCROOT)/../dim3Common/Libraries/";
 			dstSubfolderSpec = 0;
 			files = (
-				F5DB0B900856705A005A7CB7 /* libModelUtility.dylib in CopyFiles */,
+				F5DB0B900856705A005A7CB7 /* libModelUtility.a in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -75,14 +74,13 @@
 		F594132A0978BCF500223F2A /* size.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = size.c; path = Sources/size.c; sourceTree = "<group>"; };
 		F594147B0979776300223F2A /* draw_normals.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = draw_normals.c; path = Sources/draw_normals.c; sourceTree = "<group>"; };
 		F5A31C2C0C5EDC52002470A9 /* model_transform.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = model_transform.c; path = Sources/model_transform.c; sourceTree = "<group>"; };
-		F5AD53FF0BBE1E11001C7C04 /* libBaseUtility.dylib */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libBaseUtility.dylib; path = ../dim3Common/Libraries/libBaseUtility.dylib; sourceTree = SOURCE_ROOT; };
 		F5AD54030BBE1E46001C7C04 /* baseutility.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = baseutility.h; path = ../dim3Common/Headers/baseutility.h; sourceTree = SOURCE_ROOT; };
 		F5AD54090BBE1E94001C7C04 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
 		F5CA4EF305100FB60055C8B8 /* modelutility.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = modelutility.h; path = ../dim3Common/Headers/modelutility.h; sourceTree = SOURCE_ROOT; };
 		F5CEE226097DF7EA00B5F1C2 /* hit_box.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = hit_box.c; path = Sources/hit_box.c; sourceTree = "<group>"; };
 		F5E514E00542395B006E0418 /* model_frames.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = model_frames.c; path = Sources/model_frames.c; sourceTree = "<group>"; };
 		F5EBD379053A13C30076219C /* lookup.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = lookup.c; path = Sources/lookup.c; sourceTree = "<group>"; };
-		F5F494F8067BF85000E809E7 /* libModelUtility.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libModelUtility.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		F5F494F8067BF85000E809E7 /* libModelUtility.a */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libModelUtility.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		F5F49514067BF9E700E809E7 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
@@ -92,7 +90,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				F5F49515067BF9E700E809E7 /* Carbon.framework in Frameworks */,
-				F5AD54000BBE1E11001C7C04 /* libBaseUtility.dylib in Frameworks */,
 				F5AD540A0BBE1E94001C7C04 /* OpenGL.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -179,7 +176,7 @@
 		F562692B04FEBC6000EDBBA9 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				F5F494F8067BF85000E809E7 /* libModelUtility.dylib */,
+				F5F494F8067BF85000E809E7 /* libModelUtility.a */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -203,7 +200,6 @@
 		F5F4950B067BF92900E809E7 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
-				F5AD53FF0BBE1E11001C7C04 /* libBaseUtility.dylib */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -250,7 +246,7 @@
 			);
 			name = ModelUtility;
 			productName = ModelUtility;
-			productReference = F5F494F8067BF85000E809E7 /* libModelUtility.dylib */;
+			productReference = F5F494F8067BF85000E809E7 /* libModelUtility.a */;
 			productType = "com.apple.product-type.library.dynamic";
 		};
 /* End PBXNativeTarget section */
@@ -316,7 +312,8 @@
 				ARCHS = i386;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				EXPORTED_SYMBOLS_FILE = Exports/dim3modelutility.exp;
+				EXECUTABLE_EXTENSION = a;
+				EXPORTED_SYMBOLS_FILE = "";
 				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_CW_ASM_SYNTAX = NO;
 				GCC_ENABLE_CPP_EXCEPTIONS = NO;
@@ -346,12 +343,16 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "$(SRCROOT)/../dim3Common/Libraries";
 				INSTALL_PATH = "@executable_path/../Frameworks";
+				LD_DYLIB_INSTALL_NAME = "";
 				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/../dim3Common/Libraries";
-				MACH_O_TYPE = mh_dylib;
+				MACH_O_TYPE = staticlib;
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
 				OTHER_LDFLAGS = "";
+				PRIVATE_HEADERS_FOLDER_PATH = "";
 				PRODUCT_NAME = libModelUtility;
+				PUBLIC_HEADERS_FOLDER_PATH = "";
 				SDKROOT = "$(DEVELOPER_SDK_DIR)/MacOSX10.6.sdk";
+				STANDARD_C_PLUS_PLUS_LIBRARY_TYPE = dynamic;
 				VALID_ARCHS = i386;
 				WARNING_CFLAGS = "";
 			};
@@ -360,6 +361,7 @@
 		F5DB0A85085660A9005A7CB7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				SKIP_INSTALL = YES;
 			};
 			name = Release;
 		};

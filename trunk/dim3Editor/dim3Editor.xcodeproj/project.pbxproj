@@ -12,6 +12,10 @@
 		260C1473129C777100B6D5B5 /* property_palette_scenery.c in Sources */ = {isa = PBXBuildFile; fileRef = 260C1470129C777100B6D5B5 /* property_palette_scenery.c */; };
 		260D584C1295E85E00D0D14F /* property_palette_liquid.c in Sources */ = {isa = PBXBuildFile; fileRef = 260D584A1295E85E00D0D14F /* property_palette_liquid.c */; };
 		260D584D1295E85E00D0D14F /* property_palette_spot.c in Sources */ = {isa = PBXBuildFile; fileRef = 260D584B1295E85E00D0D14F /* property_palette_spot.c */; };
+		261C7C1C13D3DAF500D63EC9 /* libBaseUtility.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 261C7C1913D3DAF500D63EC9 /* libBaseUtility.a */; };
+		261C7C1D13D3DAF500D63EC9 /* libMapUtility.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 261C7C1A13D3DAF500D63EC9 /* libMapUtility.a */; };
+		261C7C1E13D3DAF500D63EC9 /* libModelUtility.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 261C7C1B13D3DAF500D63EC9 /* libModelUtility.a */; };
+		261C7C2013D3DAFF00D63EC9 /* libPNG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 261C7C1F13D3DAFF00D63EC9 /* libPNG.a */; };
 		261CEB8112D156D800D1D8BF /* dialog_obj_import.c in Sources */ = {isa = PBXBuildFile; fileRef = 261CEB8012D156D800D1D8BF /* dialog_obj_import.c */; };
 		26232DD313065713008DC42B /* osx_dialog.h in Headers */ = {isa = PBXBuildFile; fileRef = 26232DD213065713008DC42B /* osx_dialog.h */; };
 		262C38D212D0211200A94FEE /* ui_common.h in Headers */ = {isa = PBXBuildFile; fileRef = 262C38D112D0211200A94FEE /* ui_common.h */; };
@@ -59,8 +63,6 @@
 		26C5F0EB126135DC000B0F9E /* tool_palette.c in Sources */ = {isa = PBXBuildFile; fileRef = 26C5F0EA126135DC000B0F9E /* tool_palette.c */; };
 		26CAEC6B12D675A900310691 /* property_utility_common.c in Sources */ = {isa = PBXBuildFile; fileRef = 26CAEC6912D675A900310691 /* property_utility_common.c */; };
 		26CAEC6C12D675A900310691 /* texture_edit_common.c in Sources */ = {isa = PBXBuildFile; fileRef = 26CAEC6A12D675A900310691 /* texture_edit_common.c */; };
-		26CB52D013CA6A1A005EA250 /* libPNG.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 26CB52CF13CA6A1A005EA250 /* libPNG.dylib */; };
-		26CB52D113CA6A2C005EA250 /* libPNG.dylib in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 26CB52CF13CA6A1A005EA250 /* libPNG.dylib */; };
 		26CF62A5126BDE55002DCC2A /* tool_palette_common.c in Sources */ = {isa = PBXBuildFile; fileRef = 26CF62A4126BDE55002DCC2A /* tool_palette_common.c */; };
 		26CFA0E01320769700DB808F /* tool_tip_common.c in Sources */ = {isa = PBXBuildFile; fileRef = 26CFA0DF1320769700DB808F /* tool_tip_common.c */; };
 		26D15DBD1329EB0400F9EC7B /* OSX_dialog_about.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D15DB61329EB0400F9EC7B /* OSX_dialog_about.c */; };
@@ -130,7 +132,6 @@
 		F57537BA055B5F4900D42FAF /* dim3 Editor.nib in Resources */ = {isa = PBXBuildFile; fileRef = F57537B9055B5F4900D42FAF /* dim3 Editor.nib */; };
 		F57CACA70C38B76200B595F4 /* texture_palette.c in Sources */ = {isa = PBXBuildFile; fileRef = F57CACA60C38B76200B595F4 /* texture_palette.c */; };
 		F595F33A0A8BBEF0004AB8BA /* modelutility.h in Headers */ = {isa = PBXBuildFile; fileRef = F595F3390A8BBEF0004AB8BA /* modelutility.h */; };
-		F595F33C0A8BBF06004AB8BA /* libModelUtility.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F595F33B0A8BBF06004AB8BA /* libModelUtility.dylib */; };
 		F5A4321F055602DF002DF965 /* dim3editor.h in Headers */ = {isa = PBXBuildFile; fileRef = F51ABAD3048DAB0200B78D6A /* dim3editor.h */; };
 		F5A4322B055602DF002DF965 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0867D6AAFE840B52C02AAC07 /* InfoPlist.strings */; };
 		F5A4322C055602DF002DF965 /* dim3 Editor.icns in Resources */ = {isa = PBXBuildFile; fileRef = 0123D85400C0AF0B7F000001 /* dim3 Editor.icns */; };
@@ -143,14 +144,9 @@
 		F5A4325C055602DF002DF965 /* AGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F59E531D014DBA5801382915 /* AGL.framework */; };
 		F5A4325D055602DF002DF965 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5FE22D0014DC000015DC241 /* OpenGL.framework */; };
 		F5AD54430BBE1FDB001C7C04 /* baseutility.h in Headers */ = {isa = PBXBuildFile; fileRef = F5AD54420BBE1FDB001C7C04 /* baseutility.h */; };
-		F5AD54490BBE2010001C7C04 /* libBaseUtility.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5AD54480BBE2010001C7C04 /* libBaseUtility.dylib */; };
-		F5AD544A0BBE201F001C7C04 /* libBaseUtility.dylib in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = F5AD54480BBE2010001C7C04 /* libBaseUtility.dylib */; };
 		F5AF023309CFB5A0008B576A /* dialog_free_rotate.c in Sources */ = {isa = PBXBuildFile; fileRef = F5AF023209CFB5A0008B576A /* dialog_free_rotate.c */; };
 		F5DB0C520856A976005A7CB7 /* dim3 Editor.app in Copy Application */ = {isa = PBXBuildFile; fileRef = F5A43266055602E0002DF965 /* dim3 Editor.app */; };
 		F5DD757B092CFD8700465E14 /* launch.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD757A092CFD8700465E14 /* launch.c */; };
-		F5F49577067C18B200E809E7 /* libMapUtility.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F5F49573067C18B200E809E7 /* libMapUtility.dylib */; };
-		F5FEF6AF0BB4EB1000198897 /* libModelUtility.dylib in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = F595F33B0A8BBF06004AB8BA /* libModelUtility.dylib */; };
-		F5FEF6B00BB4EB1200198897 /* libMapUtility.dylib in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = F5F49573067C18B200E809E7 /* libMapUtility.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -261,10 +257,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				F5AD544A0BBE201F001C7C04 /* libBaseUtility.dylib in Copy Frameworks */,
-				F5FEF6AF0BB4EB1000198897 /* libModelUtility.dylib in Copy Frameworks */,
-				F5FEF6B00BB4EB1200198897 /* libMapUtility.dylib in Copy Frameworks */,
-				26CB52D113CA6A2C005EA250 /* libPNG.dylib in Copy Frameworks */,
 			);
 			name = "Copy Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -294,6 +286,10 @@
 		260C1470129C777100B6D5B5 /* property_palette_scenery.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_scenery.c; path = Code/property_palette_scenery.c; sourceTree = "<group>"; };
 		260D584A1295E85E00D0D14F /* property_palette_liquid.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_liquid.c; path = Code/property_palette_liquid.c; sourceTree = "<group>"; };
 		260D584B1295E85E00D0D14F /* property_palette_spot.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_spot.c; path = Code/property_palette_spot.c; sourceTree = "<group>"; };
+		261C7C1913D3DAF500D63EC9 /* libBaseUtility.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libBaseUtility.a; path = ../dim3Common/Libraries/libBaseUtility.a; sourceTree = "<group>"; };
+		261C7C1A13D3DAF500D63EC9 /* libMapUtility.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libMapUtility.a; path = ../dim3Common/Libraries/libMapUtility.a; sourceTree = "<group>"; };
+		261C7C1B13D3DAF500D63EC9 /* libModelUtility.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libModelUtility.a; path = ../dim3Common/Libraries/libModelUtility.a; sourceTree = "<group>"; };
+		261C7C1F13D3DAFF00D63EC9 /* libPNG.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPNG.a; path = ../dim3Common/Libraries/PNG/libPNG.a; sourceTree = "<group>"; };
 		261CEB8012D156D800D1D8BF /* dialog_obj_import.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_obj_import.c; path = Code/dialog_obj_import.c; sourceTree = "<group>"; };
 		26232DD213065713008DC42B /* osx_dialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = osx_dialog.h; path = ../dim3Common/Headers/osx_dialog.h; sourceTree = SOURCE_ROOT; };
 		262C38D112D0211200A94FEE /* ui_common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ui_common.h; path = ../dim3Common/Headers/ui_common.h; sourceTree = SOURCE_ROOT; };
@@ -372,7 +368,6 @@
 		26C5F0EA126135DC000B0F9E /* tool_palette.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tool_palette.c; path = Code/tool_palette.c; sourceTree = "<group>"; };
 		26CAEC6912D675A900310691 /* property_utility_common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_utility_common.c; path = ../dim3Common/Code/property_utility_common.c; sourceTree = SOURCE_ROOT; };
 		26CAEC6A12D675A900310691 /* texture_edit_common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = texture_edit_common.c; path = ../dim3Common/Code/texture_edit_common.c; sourceTree = SOURCE_ROOT; };
-		26CB52CF13CA6A1A005EA250 /* libPNG.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libPNG.dylib; path = ../dim3Common/Libraries/PNG/libPNG.dylib; sourceTree = "<group>"; };
 		26CF62A4126BDE55002DCC2A /* tool_palette_common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tool_palette_common.c; path = ../dim3Common/Code/tool_palette_common.c; sourceTree = SOURCE_ROOT; };
 		26CFA0DF1320769700DB808F /* tool_tip_common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tool_tip_common.c; path = ../dim3Common/Code/tool_tip_common.c; sourceTree = SOURCE_ROOT; };
 		26D15DB61329EB0400F9EC7B /* OSX_dialog_about.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = OSX_dialog_about.c; path = ../dim3Common/Code/OSX_dialog_about.c; sourceTree = SOURCE_ROOT; };
@@ -413,15 +408,12 @@
 		F57537B9055B5F4900D42FAF /* dim3 Editor.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = "dim3 Editor.nib"; path = "Resources/dim3 Editor.nib"; sourceTree = "<group>"; };
 		F57CACA60C38B76200B595F4 /* texture_palette.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = texture_palette.c; path = Code/texture_palette.c; sourceTree = "<group>"; };
 		F595F3390A8BBEF0004AB8BA /* modelutility.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = modelutility.h; path = ../dim3Common/Headers/modelutility.h; sourceTree = SOURCE_ROOT; };
-		F595F33B0A8BBF06004AB8BA /* libModelUtility.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libModelUtility.dylib; path = ../dim3Common/Libraries/libModelUtility.dylib; sourceTree = SOURCE_ROOT; };
 		F59E531D014DBA5801382915 /* AGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AGL.framework; path = /System/Library/Frameworks/AGL.framework; sourceTree = "<absolute>"; };
 		F5A43266055602E0002DF965 /* dim3 Editor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "dim3 Editor.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F5A43278055607CC002DF965 /* Info-dim3_Editor.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist; name = "Info-dim3_Editor.plist"; path = "Resources/Info-dim3_Editor.plist"; sourceTree = "<group>"; };
 		F5AD54420BBE1FDB001C7C04 /* baseutility.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = baseutility.h; path = ../dim3Common/Headers/baseutility.h; sourceTree = SOURCE_ROOT; };
-		F5AD54480BBE2010001C7C04 /* libBaseUtility.dylib */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libBaseUtility.dylib; path = ../dim3Common/Libraries/libBaseUtility.dylib; sourceTree = SOURCE_ROOT; };
 		F5AF023209CFB5A0008B576A /* dialog_free_rotate.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = dialog_free_rotate.c; path = Code/dialog_free_rotate.c; sourceTree = "<group>"; };
 		F5DD757A092CFD8700465E14 /* launch.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = launch.c; path = Code/launch.c; sourceTree = "<group>"; };
-		F5F49573067C18B200E809E7 /* libMapUtility.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libMapUtility.dylib; path = ../dim3Common/Libraries/libMapUtility.dylib; sourceTree = SOURCE_ROOT; };
 		F5FE22D0014DC000015DC241 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
@@ -433,10 +425,10 @@
 				F5A4325A055602DF002DF965 /* Carbon.framework in Frameworks */,
 				F5A4325C055602DF002DF965 /* AGL.framework in Frameworks */,
 				F5A4325D055602DF002DF965 /* OpenGL.framework in Frameworks */,
-				F5F49577067C18B200E809E7 /* libMapUtility.dylib in Frameworks */,
-				F595F33C0A8BBF06004AB8BA /* libModelUtility.dylib in Frameworks */,
-				F5AD54490BBE2010001C7C04 /* libBaseUtility.dylib in Frameworks */,
-				26CB52D013CA6A1A005EA250 /* libPNG.dylib in Frameworks */,
+				261C7C1C13D3DAF500D63EC9 /* libBaseUtility.a in Frameworks */,
+				261C7C1D13D3DAF500D63EC9 /* libMapUtility.a in Frameworks */,
+				261C7C1E13D3DAF500D63EC9 /* libModelUtility.a in Frameworks */,
+				261C7C2013D3DAFF00D63EC9 /* libPNG.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -463,10 +455,10 @@
 		0123D85000C0AE397F000001 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
-				F5AD54480BBE2010001C7C04 /* libBaseUtility.dylib */,
-				F595F33B0A8BBF06004AB8BA /* libModelUtility.dylib */,
-				F5F49573067C18B200E809E7 /* libMapUtility.dylib */,
-				26CB52CF13CA6A1A005EA250 /* libPNG.dylib */,
+				261C7C1913D3DAF500D63EC9 /* libBaseUtility.a */,
+				261C7C1B13D3DAF500D63EC9 /* libModelUtility.a */,
+				261C7C1A13D3DAF500D63EC9 /* libMapUtility.a */,
+				261C7C1F13D3DAFF00D63EC9 /* libPNG.a */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -930,7 +922,7 @@
 				ARCHS = i386;
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEPLOYMENT_POSTPROCESSING = YES;
 				GCC_CW_ASM_SYNTAX = NO;
 				GCC_DYNAMIC_NO_PIC = YES;
@@ -969,7 +961,7 @@
 					"$(SRCROOT)/../dim3Common/Libraries/PNG",
 					"$(SRCROOT)/../dim3Common/Libraries",
 				);
-				LLVM_LTO = YES;
+				LLVM_LTO = NO;
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
 				OTHER_LDFLAGS = "-lz";
 				PRODUCT_NAME = "dim3 Editor";
