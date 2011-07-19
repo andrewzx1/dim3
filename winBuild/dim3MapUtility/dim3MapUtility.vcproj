@@ -54,6 +54,7 @@
 				ProgramDataBaseFileName=".\Release/"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
+				CompileAs="1"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -123,10 +124,6 @@
 			<Filter
 				Name="dim3 Libraries"
 				>
-				<File
-					RelativePath="..\Libraries\dim3\dim3BaseUtility.lib"
-					>
-				</File>
 			</Filter>
 		</Filter>
 		<Filter
