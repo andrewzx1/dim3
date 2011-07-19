@@ -119,6 +119,7 @@
 				EnableFunctionLevelLinking="false"
 				WarningLevel="3"
 				DebugInformationFormat="0"
+				CompileAs="1"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -131,6 +132,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalOptions="/LTCG /NODEFAULTLIB:libcmt"
 				OutputFile="..\..\..\dim3\dim3 Setup.exe"
 				LinkIncremental="1"
 				GenerateDebugInformation="false"

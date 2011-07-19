@@ -31,29 +31,13 @@ and can be sold or given away.
 
 #include "os_defs.h"
 
-#ifdef D3_OS_MAC
-	#include "SDL.h"
-	#include "png.h"
-	#include "mpg123.h"
-#endif
-
-#ifdef D3_OS_LINUX
-	#include <SDL/SDL.h>
-	#include "png.h"
-	#include "mpg123.h"
-#endif
-
-#ifdef D3_OS_WINDOWS
-	#include "SDL.h"
-	#include "png.h"
-	#include "mpg123.h"
-#endif
-
 //
-// SDL switch
+// Open Source Libraries
 //
 
-// #define D3_SDL_1_3				1
+#include "SDL.h"
+#include "png.h"
+#include "mpg123.h"
 
 //
 // Application Headers

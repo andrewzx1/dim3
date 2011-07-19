@@ -136,6 +136,7 @@
 				ProgramDataBaseFileName=".\Release\"
 				WarningLevel="3"
 				DebugInformationFormat="0"
+				CompileAs="1"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -148,6 +149,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalOptions="/NODEFAULTLIB:libcmt"
 				OutputFile="..\..\..\dim3\dim3 Animator.exe"
 				LinkIncremental="1"
 				GenerateDebugInformation="false"
@@ -209,7 +211,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\Libraries\GLEW\glew32.lib"
+					RelativePath="..\Libraries\GLEW\glew32s.lib"
 					>
 				</File>
 				<File
@@ -261,11 +263,11 @@
 					>
 				</File>
 				<File
-					RelativePath="..\Libraries\ZLib\zdll.lib"
+					RelativePath="..\Libraries\ZLib\zlib.h"
 					>
 				</File>
 				<File
-					RelativePath="..\Libraries\ZLib\zlib.h"
+					RelativePath="..\Libraries\ZLib\zlib.lib"
 					>
 				</File>
 			</Filter>

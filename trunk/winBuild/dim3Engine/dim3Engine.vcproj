@@ -61,6 +61,7 @@
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="0"
+				CompileAs="1"
 				DisableSpecificWarnings="4603"
 			/>
 			<Tool
@@ -76,6 +77,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalOptions="/LTCG /NODEFAULTLIB:libcmt"
 				OutputFile="..\..\..\dim3\dim3 Engine.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
@@ -161,6 +163,10 @@
 				>
 				<File
 					RelativePath="..\Libraries\GLEW\glew.h"
+					>
+				</File>
+				<File
+					RelativePath="..\Libraries\GLEW\glew32s.lib"
 					>
 				</File>
 				<File
@@ -253,6 +259,26 @@
 				</File>
 				<File
 					RelativePath="..\Libraries\MPG123\mpg123.h.in"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="PNG"
+				>
+				<File
+					RelativePath="..\Libraries\PNG\libpng.lib"
+					>
+				</File>
+				<File
+					RelativePath="..\Libraries\PNG\png.h"
+					>
+				</File>
+				<File
+					RelativePath="..\Libraries\ZLib\zlib.h"
+					>
+				</File>
+				<File
+					RelativePath="..\Libraries\ZLib\zlib.lib"
 					>
 				</File>
 			</Filter>
