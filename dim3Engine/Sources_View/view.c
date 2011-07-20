@@ -317,8 +317,8 @@ bool view_initialize(char *err_str)
 		
 #ifdef D3_SDL_1_3
 	SDL_GetDesktopDisplayMode(0,&sdl_mode);
-	view.desktop.wid=sdl_mode->w;
-	view.desktop.high=sdl_mode->h;
+	view.desktop.wid=sdl_mode.w;
+	view.desktop.high=sdl_mode.h;
 #else
 	sdl_v_info=SDL_GetVideoInfo();
 	view.desktop.wid=sdl_v_info->current_w;

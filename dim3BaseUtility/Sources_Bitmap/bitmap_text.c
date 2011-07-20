@@ -65,7 +65,7 @@ void bitmap_text_size_internal(texture_font_size_type *d3_size_font,char *name,i
 	
 		// create bitmap context
 		
-	color_space=CGColorSpaceCreateWithName(kCGColorSpaceGenericRGB);
+	color_space=CGColorSpaceCreateDeviceRGB();
 	bitmap_ctx=CGBitmapContextCreate(bm_data,bitmap_wid,bitmap_high,8,row_add,color_space,kCGImageAlphaPremultipliedLast);
 	CGColorSpaceRelease(color_space);
 	

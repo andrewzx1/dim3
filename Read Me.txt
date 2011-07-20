@@ -55,3 +55,12 @@ dim3Engine (needs Base, Model, and Map)
 dim3Editor (needs Base, Model, and Map)
 dim3Animator (needs Base, Model)
 dim3Setup (needs Base)
+
+============================================================================================
+
+Pre-processor Macros:
+
+D3_ENGINE, D3_EDITOR, D3_ANIMATOR, D3_SETUP = which program we are compiling
+TARGET_IPHONE = for the iphone compile
+INCLUDE_UTILITY_LIBRARIES = for compiles where all the files are compiled together instead of in libraries (like the iphone port)
+
