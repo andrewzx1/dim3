@@ -1,15 +1,15 @@
 /****************************** File *********************************
 
-Module: dim3 Engine
+Module: dim3 Base Utility
 Author: Brian Barnes
- Usage: Main Header
+ Usage: Special Obj-C file for OS X/iPad
 
 ***************************** License ********************************
 
 This code can be freely used as long as these conditions are met:
 
 1. This header, in its entirety, is kept with the code
-2. This credit “Created with dim3 Technology” is given on a single
+2. This credit ‚ÄúCreated with dim3 Technology‚Äù is given on a single
 application screen and in a single piece of the documentation
 3. It is not resold, in it's current form or modified, as an
 engine-only product
@@ -25,38 +25,14 @@ and can be sold or given away.
  
 *********************************************************************/
 
-//
-// System Includes
-//
+#import <Foundation/Foundation.h>
 
-#include "os_defs.h"
-
-//
-// Open Source Libraries
-//
-
-#include "SDL.h"
-#include "png.h"
-#include "mpg123.h"
-
-//
-// Application Headers
-//
-
-#include "baseutility.h"
-#include "modelutility.h"
-#include "maputility.h"
-
-#ifdef INCLUDE_UTILITY_LIBRARIES
-	#include "baseprivate.h"
-#endif
-
-#include "setup_defs.h"
-#include "script_defs.h"
-#include "server_defs.h"
-#include "view_defs.h"
-#include "network_defs.h"
-#include "gui_defs.h"
-#include "sound_defs.h"
-#include "input_defs.h"
-
+void cocoa_file_get_application_support_path(char *path)
+{
+	NSArray			*paths;
+	CFStringRef		path_str;
+	
+	paths=NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory,NSUserDomainMask,TRUE);
+	path_str=(CFStringRef)[paths objectAtIndex:0];
+	CFStringGetCString(path_str,path,1024,kCFStringEncodingMacRoman);
+}

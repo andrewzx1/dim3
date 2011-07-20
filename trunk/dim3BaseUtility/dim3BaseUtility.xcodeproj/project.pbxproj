@@ -11,6 +11,7 @@
 		260D11931346D07600C77CC7 /* iface_multiplayer.c in Sources */ = {isa = PBXBuildFile; fileRef = 260D11911346D07600C77CC7 /* iface_multiplayer.c */; };
 		2612D45F0E6CEEE200994B22 /* area.c in Sources */ = {isa = PBXBuildFile; fileRef = 2612D45E0E6CEEE200994B22 /* area.c */; };
 		265111D4121C871000E2ED78 /* bitmap_text.c in Sources */ = {isa = PBXBuildFile; fileRef = 265111D3121C871000E2ED78 /* bitmap_text.c */; };
+		26A5C57313D68FF500CDABD9 /* file_cocoa.m in Sources */ = {isa = PBXBuildFile; fileRef = 26A5C57213D68FF500CDABD9 /* file_cocoa.m */; };
 		26E67A91133807E200E63E68 /* iface_action.c in Sources */ = {isa = PBXBuildFile; fileRef = 26E67A86133807E200E63E68 /* iface_action.c */; };
 		26E67A92133807E200E63E68 /* iface_crosshairs.c in Sources */ = {isa = PBXBuildFile; fileRef = 26E67A87133807E200E63E68 /* iface_crosshairs.c */; };
 		26E67A93133807E200E63E68 /* iface_halos.c in Sources */ = {isa = PBXBuildFile; fileRef = 26E67A88133807E200E63E68 /* iface_halos.c */; };
@@ -71,6 +72,7 @@
 		260D11911346D07600C77CC7 /* iface_multiplayer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = iface_multiplayer.c; path = Sources_Interface/iface_multiplayer.c; sourceTree = "<group>"; };
 		2612D45E0E6CEEE200994B22 /* area.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = area.c; path = Sources_Math/area.c; sourceTree = "<group>"; };
 		265111D3121C871000E2ED78 /* bitmap_text.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = bitmap_text.c; path = Sources_Bitmap/bitmap_text.c; sourceTree = "<group>"; };
+		26A5C57213D68FF500CDABD9 /* file_cocoa.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = file_cocoa.m; path = Cocoa_Stubs/file_cocoa.m; sourceTree = "<group>"; };
 		26E67A86133807E200E63E68 /* iface_action.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = iface_action.c; path = Sources_Interface/iface_action.c; sourceTree = "<group>"; };
 		26E67A87133807E200E63E68 /* iface_crosshairs.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = iface_crosshairs.c; path = Sources_Interface/iface_crosshairs.c; sourceTree = "<group>"; };
 		26E67A88133807E200E63E68 /* iface_halos.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = iface_halos.c; path = Sources_Interface/iface_halos.c; sourceTree = "<group>"; };
@@ -200,6 +202,7 @@
 			isa = PBXGroup;
 			children = (
 				F53F25260BBF770900EB3C0F /* file_paths.c */,
+				26A5C57213D68FF500CDABD9 /* file_cocoa.m */,
 				F556BC740C7BA9E90059E7FC /* file_search.c */,
 				26ED705D0FF1A7DB00AD19BF /* zip.c */,
 			);
@@ -365,6 +368,7 @@
 				26E67A9B133807E200E63E68 /* iface_sound.c in Sources */,
 				260D11921346D07600C77CC7 /* iface_chooser.c in Sources */,
 				260D11931346D07600C77CC7 /* iface_multiplayer.c in Sources */,
+				26A5C57313D68FF500CDABD9 /* file_cocoa.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

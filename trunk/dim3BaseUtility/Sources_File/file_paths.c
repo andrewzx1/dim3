@@ -29,6 +29,10 @@ and can be sold or given away.
 	#include "dim3baseutility.h"
 #endif
 
+#ifdef D3_OS_MAC
+	extern void cocoa_file_get_application_support_path(char *path);
+#endif
+
 /* =======================================================
 
       Set File Paths
@@ -284,13 +288,10 @@ void file_paths_create_directory(char *path)
 
 void file_paths_documents(file_path_setup_type *file_path_setup,char *path,char *sub_path,char *file_name,char *ext_name)
 {
-		// get the documents path
+		// get the application support or documents path
 		
 #ifdef D3_OS_MAC
-	FSRef		fsref;
-	
-	FSFindFolder(kUserDomain,kApplicationSupportFolderType,kDontCreateFolder,&fsref);
-	FSRefMakePath(&fsref,(unsigned char*)path,1024);
+	cocoa_file_get_application_support_path(path);
 #endif
 
 #ifdef D3_OS_LINUX
@@ -357,6 +358,8 @@ void file_paths_preferences(char *path,char *file_name,char *ext_name)
 	
 	FSFindFolder(kUserDomain,kPreferencesFolderType,kDontCreateFolder,&fsref);
 	FSRefMakePath(&fsref,(unsigned char*)path,1024);
+	
+	fprintf(stdout,"pref=%s\n",path);
 #endif
 
 #ifdef D3_OS_LINUX

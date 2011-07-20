@@ -54,6 +54,7 @@
 		269D27C312DEBB7E00AF5695 /* mac_os_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 269D27C212DEBB7E00AF5695 /* mac_os_defs.h */; };
 		26A562590EF6D0AB00D38FC0 /* net_socket.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A562580EF6D0AB00D38FC0 /* net_socket.c */; };
 		26A562B90EF6D50D00D38FC0 /* net_utility.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A562B80EF6D50D00D38FC0 /* net_utility.c */; };
+		26A5C56313D68F2D00CDABD9 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26A5C56213D68F2D00CDABD9 /* Foundation.framework */; };
 		26A60BD511CC1DCF00E9AB33 /* view_draw_debug.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A60BD411CC1DCF00E9AB33 /* view_draw_debug.c */; };
 		26A6D507122A203E00EE3149 /* script_script.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A6D506122A203E00EE3149 /* script_script.c */; };
 		26ABEE820E72F0700029469D /* script_obj_object_thrust.c in Sources */ = {isa = PBXBuildFile; fileRef = 26ABEE810E72F0700029469D /* script_obj_object_thrust.c */; };
@@ -393,6 +394,7 @@
 		269D27C212DEBB7E00AF5695 /* mac_os_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mac_os_defs.h; path = ../dim3Common/Headers/mac_os_defs.h; sourceTree = SOURCE_ROOT; };
 		26A562580EF6D0AB00D38FC0 /* net_socket.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = net_socket.c; path = Sources_Network/net_socket.c; sourceTree = "<group>"; };
 		26A562B80EF6D50D00D38FC0 /* net_utility.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = net_utility.c; path = Sources_Network/net_utility.c; sourceTree = "<group>"; };
+		26A5C56213D68F2D00CDABD9 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = ../../../../System/Library/Frameworks/Foundation.framework; sourceTree = "<group>"; };
 		26A60BD411CC1DCF00E9AB33 /* view_draw_debug.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = view_draw_debug.c; path = Sources_View/view_draw_debug.c; sourceTree = "<group>"; };
 		26A6D506122A203E00EE3149 /* script_script.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = script_script.c; path = Sources_Server/script_script.c; sourceTree = "<group>"; };
 		26ABEE810E72F0700029469D /* script_obj_object_thrust.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = script_obj_object_thrust.c; path = Sources_Server/script_obj_object_thrust.c; sourceTree = "<group>"; };
@@ -675,6 +677,7 @@
 				26DC404D13D3A64F002F9827 /* libSDL.a in Frameworks */,
 				26DC404F13D3A656002F9827 /* libPNG.a in Frameworks */,
 				26DC405113D3A65E002F9827 /* libmpg123.a in Frameworks */,
+				26A5C56313D68F2D00CDABD9 /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -899,6 +902,7 @@
 		20286C32FDCF999611CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				26A5C56213D68F2D00CDABD9 /* Foundation.framework */,
 				26184E7713CA1022003A9A79 /* JavaScriptCore.framework */,
 				26184E7513CA0D2E003A9A79 /* IOKit.framework */,
 				26184E7313CA0D0A003A9A79 /* AudioUnit.framework */,

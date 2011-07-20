@@ -26,7 +26,11 @@ and can be sold or given away.
 *********************************************************************/
 
 #ifdef __APPLE__
-	#include "mac_os_defs.h"
+	#ifndef TARGET_IPHONE
+		#include "mac_os_defs.h"
+	#else
+		#include "iphone_os_defs.h"
+	#endif
 #endif
 
 #ifdef WIN32
@@ -35,10 +39,6 @@ and can be sold or given away.
 
 #ifdef __linux__
 	#include "linux_os_defs.h"
-#endif
-
-#ifdef TARGET_IPHONE
-	#include "iphone_os_defs.h"
 #endif
 
 #ifdef ANDRIOD
