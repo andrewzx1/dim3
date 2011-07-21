@@ -115,8 +115,6 @@ bool bitmap_texture_open(bitmap_type *bitmap,unsigned char *data,int anisotropic
 	glBindTexture(gl_bindtype,gl_id);
 
 		// storage and settings
-		
-	glPixelStorei(GL_UNPACK_ROW_LENGTH,0);
 	
 	bitmap_texture_set_mipmap_filter(gl_bindtype,mipmap_mode,pixelated);
 	bitmap_texture_set_anisotropic_mode(gl_bindtype,anisotropic_mode);
