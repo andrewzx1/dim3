@@ -286,9 +286,9 @@ void file_paths_create_directory(char *path)
 #endif
 }
 
-void file_paths_documents(file_path_setup_type *file_path_setup,char *path,char *sub_path,char *file_name,char *ext_name)
+void file_paths_app_data(file_path_setup_type *file_path_setup,char *path,char *sub_path,char *file_name,char *ext_name)
 {
-		// get the application support or documents path
+		// get the application support directory
 		
 #ifdef D3_OS_MAC
 	cocoa_file_get_application_support_path(path);
@@ -301,7 +301,7 @@ void file_paths_documents(file_path_setup_type *file_path_setup,char *path,char 
 #endif
 
 #ifdef D3_OS_WINDOWS
-	SHGetSpecialFolderPath(NULL,path,CSIDL_PERSONAL,FALSE);
+	SHGetSpecialFolderPath(NULL,path,CSIDL_APPDATA,FALSE);
 #endif
 
 		// get game's document directory based
@@ -320,11 +320,13 @@ void file_paths_documents(file_path_setup_type *file_path_setup,char *path,char 
 	
 		// sub-path in game documents
 		
-	strcat(path,"/");
-	strcat(path,sub_path);
+	if (sub_path!=NULL) {
+		strcat(path,"/");
+		strcat(path,sub_path);
 	
-	file_paths_create_directory(path);
-	
+		file_paths_create_directory(path);
+	}
+
 		// file name
 	
 	if (file_name!=NULL) {
@@ -335,49 +337,22 @@ void file_paths_documents(file_path_setup_type *file_path_setup,char *path,char 
 	}
 }
 
-bool file_paths_documents_exist(file_path_setup_type *file_path_setup,char *path,char *sub_path,char *file_name,char *ext_name)
+bool file_paths_app_data_exist(file_path_setup_type *file_path_setup,char *path,char *sub_path,char *file_name,char *ext_name)
 {
 	struct stat			sb;
 	
-	file_paths_documents(file_path_setup,path,sub_path,file_name,ext_name);
+	file_paths_app_data(file_path_setup,path,sub_path,file_name,ext_name);
 	return(stat(path,&sb)==0);
 }
 
-/* =======================================================
-
-      Preference Directories
-            
-======================================================= */
-
-void file_paths_preferences(char *path,char *file_name,char *ext_name)
+void file_paths_dim3_app_data(file_path_setup_type *file_path_setup,char *path,char *file_name,char *ext_name)
 {
-		// get the preferences path
-		
-#ifdef D3_OS_MAC
-	FSRef		fsref;
-	
-	FSFindFolder(kUserDomain,kPreferencesFolderType,kDontCreateFolder,&fsref);
-	FSRefMakePath(&fsref,(unsigned char*)path,1024);
-	
-	fprintf(stdout,"pref=%s\n",path);
-#endif
+	file_path_setup_type		temp_path;
 
-#ifdef D3_OS_LINUX
-	strcpy(path,getenv("HOME"));
-	strcat(path,"/.dim3");
-	file_paths_create_directory(path);
-#endif
+	memmove(&temp_path,file_path_setup,sizeof(file_path_setup_type));
+	strcpy(temp_path.proj_name,"dim3");
 
-#ifdef D3_OS_WINDOWS
-	SHGetSpecialFolderPath(NULL,path,CSIDL_APPDATA,FALSE);
-#endif
-
-		// file name
-	
-	if (file_name!=NULL) {
-		strcat(path,"/");
-		strcat(path,file_name);
-		strcat(path,".");
-		strcat(path,ext_name);
-	}
+	file_paths_app_data(&temp_path,path,NULL,file_name,ext_name);
 }
+
+

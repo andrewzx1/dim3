@@ -1142,7 +1142,7 @@ void render_model_target(model_draw *draw,d3col *col)
 
 		// build vertexes
 
-	vertex_ptr=view_bind_map_next_vertex_object(4*3);
+	vertex_ptr=view_bind_map_next_vertex_object(8*3);
 	if (vertex_ptr==NULL) return;
 
 		// get the vertexes
@@ -1156,11 +1156,27 @@ void render_model_target(model_draw *draw,d3col *col)
 	*vertex_ptr++=(float)rz;
 
 	*vertex_ptr++=(float)rx;
+	*vertex_ptr++=(float)ty;
+	*vertex_ptr++=(float)rz;
+
+	*vertex_ptr++=(float)rx;
+	*vertex_ptr++=(float)by;
+	*vertex_ptr++=(float)rz;
+
+	*vertex_ptr++=(float)rx;
 	*vertex_ptr++=(float)by;
 	*vertex_ptr++=(float)rz;
 
 	*vertex_ptr++=(float)lx;
 	*vertex_ptr++=(float)by;
+	*vertex_ptr++=(float)lz;
+
+	*vertex_ptr++=(float)lx;
+	*vertex_ptr++=(float)by;
+	*vertex_ptr++=(float)lz;
+
+	*vertex_ptr++=(float)lx;
+	*vertex_ptr++=(float)ty;
 	*vertex_ptr++=(float)lz;
 
   	view_unmap_current_vertex_object();
@@ -1180,7 +1196,7 @@ void render_model_target(model_draw *draw,d3col *col)
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(3,GL_FLOAT,0,(void*)0);
 
-	glDrawArrays(GL_LINE_LOOP,0,4);
+	glDrawArrays(GL_LINES,0,8);
 
 	glDisableClientState(GL_VERTEX_ARRAY);
 

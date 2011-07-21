@@ -275,7 +275,7 @@ bool game_file_save(char *err_str)
 	
 		// save screen
 		
-	file_paths_documents(&setup.file_path_setup,path,"Saved Games",file_name,"png");
+	file_paths_app_data(&setup.file_path_setup,path,"Saved Games",file_name,"png");
 	view_capture_draw(path);
 	
 		// start chunks
@@ -438,7 +438,7 @@ bool game_file_save(char *err_str)
 		
 	progress_draw(90);
 
-	file_paths_documents(&setup.file_path_setup,path,"Saved Games",file_name,"sav");
+	file_paths_app_data(&setup.file_path_setup,path,"Saved Games",file_name,"sav");
 	ok=game_file_compress_save(path,err_str);
 	
 	progress_draw(100);
@@ -483,7 +483,7 @@ bool game_file_load(char *file_name,char *err_str)
 	c=strrchr(fname,'.');
 	if (c!=NULL) *c=0x0;			// remove any extensions
 	
-	file_paths_documents(&setup.file_path_setup,path,"Saved Games",fname,"sav");
+	file_paths_app_data(&setup.file_path_setup,path,"Saved Games",fname,"sav");
 	if (!game_file_expand_load(path,err_str)) return(FALSE);
 	
 	game_file_pos=0;

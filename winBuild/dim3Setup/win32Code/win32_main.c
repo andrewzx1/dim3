@@ -158,8 +158,8 @@ void main_wind_close(void)
 
 void win32_main_wind_open(void)
 {
-	int						x,y,wid,high,format;
-	RECT					wbox;
+	int						x,y,wid,high,wstyle,format;
+	RECT					wbox,cbox;
 	WNDCLASSEX				wcx;
 	PIXELFORMATDESCRIPTOR	pf;
 	HINSTANCE				hInst;
@@ -187,13 +187,22 @@ void win32_main_wind_open(void)
 
 	GetClientRect(GetDesktopWindow(),&wbox);
 
-	wid=(list_palette_tree_sz*4)+8;
-	high=(wbox.bottom-wbox.top)-150;
+	cbox.left=0;
+	cbox.top=0;
+	cbox.right=list_palette_tree_sz*4;
+	cbox.bottom=(wbox.bottom-wbox.top)-150;
+	
+	wstyle=WS_OVERLAPPEDWINDOW|WS_CLIPSIBLINGS|WS_CLIPCHILDREN|WS_MAXIMIZE;
+
+	AdjustWindowRect(&cbox,wstyle,TRUE);
+
+	wid=cbox.right-cbox.left;
+	high=cbox.bottom-cbox.top;
 
 	x=((wbox.right-wbox.left)-wid)/2;
 	y=50;
 
-    wnd=CreateWindow("dim3SetupWindowClass","dim3 Setup",WS_OVERLAPPEDWINDOW|WS_CLIPSIBLINGS|WS_CLIPCHILDREN|WS_MAXIMIZE,x,y,wid,high,NULL,NULL,hInst,NULL);
+    wnd=CreateWindow("dim3SetupWindowClass","dim3 Setup",wstyle,x,y,wid,high,NULL,NULL,hInst,NULL);
 
 		// menu
 

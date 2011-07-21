@@ -254,7 +254,7 @@ bool setup_xml_read(void)
 		// check user specific setup XML file.  If it exists, use that,
 		// otherwise use default XML file
 		
-	if (!file_paths_documents_exist(&setup.file_path_setup,path,"Settings","Setup","xml")) {
+	if (!file_paths_app_data_exist(&setup.file_path_setup,path,"Settings","Setup","xml")) {
 		file_paths_data(&setup.file_path_setup,path,"Settings","Setup","xml");
 	}
 
@@ -407,7 +407,7 @@ bool setup_xml_write(void)
         // save the setup
 		// always save to user specific data
 		
-	file_paths_documents(&setup.file_path_setup,path,"Settings","Setup","xml");
+	file_paths_app_data(&setup.file_path_setup,path,"Settings","Setup","xml");
 		
 	ok=xml_save_file(path);
     xml_close_file();

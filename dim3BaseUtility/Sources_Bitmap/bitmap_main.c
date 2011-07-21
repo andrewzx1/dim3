@@ -226,9 +226,15 @@ bool bitmap_open(bitmap_type *bitmap,char *path,int anisotropic_mode,int mipmap_
 		// if not a power of two and do any
 		// texture quality changes
 
+		// opengl es doesn't support non-square textures
+
+#ifndef D3_OPENGL_ES
 	if (!rectangle) png_data=bitmap_fix_power_2_and_quality(bitmap,alpha_channel,texture_quality_mode,png_data);
-	
-		// set alphas and scrubbing
+#else
+	png_data=bitmap_fix_power_2_and_quality(bitmap,alpha_channel,texture_quality_mode,png_data);
+#endif
+
+	// set alphas and scrubbing
 		
 	bitmap->alpha_mode=alpha_mode_none;
 

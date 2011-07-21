@@ -531,7 +531,7 @@ file_path_directory_type* file_paths_read_directory_document(file_path_setup_typ
 
 		// read the files
 		
-	file_paths_documents(file_path_setup,path,sub_path,NULL,NULL);
+	file_paths_app_data(file_path_setup,path,sub_path,NULL,NULL);
 	parent_idx=file_paths_add_file(fpd,-1,"Documents",NULL,TRUE,FALSE);
 	file_paths_read_directory_files(fpd,parent_idx,path,NULL,ext_name);
 

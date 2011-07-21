@@ -106,7 +106,7 @@ void app_check_editor_link(void)
 
 		// attempt to open editor link file
 		
-	file_paths_preferences(path,"dim3EditorLink","tmp");
+	file_paths_dim3_app_data(&setup.file_path_setup,path,"dim3EditorLink","tmp");
 	
 	file=fopen(path,"rb");
 	if (file==NULL) return;

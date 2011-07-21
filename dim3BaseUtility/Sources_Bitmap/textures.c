@@ -99,6 +99,7 @@ void bitmap_texture_set_mipmap_filter(int gl_bindtype,int mipmap_mode,bool pixel
 bool bitmap_texture_open(bitmap_type *bitmap,unsigned char *data,int anisotropic_mode,int mipmap_mode,bool compress,bool rectangle,bool pixelated)
 {
 	int					gl_txtformat,gl_txttype,gl_bindtype;
+	bool				mipmap;
 	GLuint				gl_id;
 	
 		// if no bitmap data then no texture
@@ -106,11 +107,16 @@ bool bitmap_texture_open(bitmap_type *bitmap,unsigned char *data,int anisotropic
 	if (data==NULL) return(FALSE);
 
 		// bind the texture
+		// opengl es doesn't support rectangular textures
 		
 	glActiveTexture(GL_TEXTURE0);
 	glGenTextures(1,&gl_id);
 		
+#ifndef D3_OPENGL_ES
 	gl_bindtype=rectangle?GL_TEXTURE_RECTANGLE_ARB:GL_TEXTURE_2D;
+#else
+	gl_bindtype=GL_TEXTURE_2D;
+#endif
 
 	glBindTexture(gl_bindtype,gl_id);
 
@@ -120,7 +126,9 @@ bool bitmap_texture_open(bitmap_type *bitmap,unsigned char *data,int anisotropic
 	bitmap_texture_set_anisotropic_mode(gl_bindtype,anisotropic_mode);
 	
 		// texture type
-		
+		// opengl es doesn't support compression
+
+#ifndef D3_OPENGL_ES
 	if (bitmap->alpha_mode==alpha_mode_none) {
 		gl_txttype=GL_RGB;
 		gl_txtformat=compress?GL_COMPRESSED_RGB:GL_RGB;
@@ -129,17 +137,24 @@ bool bitmap_texture_open(bitmap_type *bitmap,unsigned char *data,int anisotropic
 		gl_txttype=GL_RGBA;
 		gl_txtformat=compress?GL_COMPRESSED_RGBA:GL_RGBA;
 	}
+#else
+	if (bitmap->alpha_mode==alpha_mode_none) {
+		gl_txttype=gl_txtformat=GL_RGB;
+	}
+	else {
+		gl_txttype=gl_txtformat=GL_RGBA;
+	}
+#endif
+
+		// mipmapping
+
+	mipmap=!((mipmap_mode==mipmap_mode_none) || (rectangle) || (pixelated));
 	
 		// load texture
 
-	if ((mipmap_mode==mipmap_mode_none) || (rectangle) || (pixelated)) {
-		glTexImage2D(gl_bindtype,0,gl_txtformat,bitmap->wid,bitmap->high,0,gl_txttype,GL_UNSIGNED_BYTE,data);
-	}
-	else {
-		glTexParameterf(GL_TEXTURE_2D,GL_GENERATE_MIPMAP,GL_TRUE);
-		glTexImage2D(gl_bindtype,0,gl_txtformat,bitmap->wid,bitmap->high,0,gl_txttype,GL_UNSIGNED_BYTE,data);
-		glTexParameterf(GL_TEXTURE_2D,GL_GENERATE_MIPMAP,GL_FALSE);
-	}
+	if (mipmap) glTexParameterf(GL_TEXTURE_2D,GL_GENERATE_MIPMAP,GL_TRUE);
+	glTexImage2D(gl_bindtype,0,gl_txtformat,bitmap->wid,bitmap->high,0,gl_txttype,GL_UNSIGNED_BYTE,data);
+	if (mipmap) glTexParameterf(GL_TEXTURE_2D,GL_GENERATE_MIPMAP,GL_FALSE);
 
 		// set to bitmap
 		

@@ -2000,7 +2000,7 @@ unsigned long element_draw_table_get_image_gl_id(element_type *element,int row_i
 		file_paths_data(&setup.file_path_setup,path,subdir,filename,"png");
 	}
 	else {
-		file_paths_documents(&setup.file_path_setup,path,subdir,filename,"png");
+		file_paths_app_data(&setup.file_path_setup,path,subdir,filename,"png");
 	}
 	
 		// is it already loaded?
