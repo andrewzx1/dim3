@@ -107,10 +107,6 @@
 					>
 				</File>
 				<File
-					RelativePath="win32Code\dim3ModelUtility.def"
-					>
-				</File>
-				<File
 					RelativePath="..\..\dim3Common\Headers\modelutility.h"
 					>
 				</File>

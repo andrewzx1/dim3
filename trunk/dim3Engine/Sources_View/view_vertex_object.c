@@ -634,7 +634,7 @@ void view_draw_next_vertex_object_2D_line_poly(d3col *col,float alpha,int x0,int
 {
 	float			*vertex_ptr;
 
-	vertex_ptr=view_bind_map_next_vertex_object(4*2);
+	vertex_ptr=view_bind_map_next_vertex_object(8*2);
 	if (vertex_ptr==NULL) return;
 
 		// get the vertexes
@@ -645,11 +645,23 @@ void view_draw_next_vertex_object_2D_line_poly(d3col *col,float alpha,int x0,int
 	*vertex_ptr++=(float)x1;
 	*vertex_ptr++=(float)y1;
 
+	*vertex_ptr++=(float)x1;
+	*vertex_ptr++=(float)y1;
+
+	*vertex_ptr++=(float)x2;
+	*vertex_ptr++=(float)y2;
+
 	*vertex_ptr++=(float)x2;
 	*vertex_ptr++=(float)y2;
 
 	*vertex_ptr++=(float)x3;
 	*vertex_ptr++=(float)y3;
+
+	*vertex_ptr++=(float)x3;
+	*vertex_ptr++=(float)y3;
+
+	*vertex_ptr++=(float)x0;
+	*vertex_ptr++=(float)y0;
 
   	view_unmap_current_vertex_object();
 
@@ -670,7 +682,7 @@ void view_draw_next_vertex_object_2D_line_poly(d3col *col,float alpha,int x0,int
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(2,GL_FLOAT,0,(void*)0);
 
-	glDrawArrays(GL_LINE_LOOP,0,4);
+	glDrawArrays(GL_LINES,0,8);
 
 	glDisableClientState(GL_VERTEX_ARRAY);
 
@@ -691,51 +703,70 @@ void view_draw_next_vertex_object_2D_line_quad(d3col *col,float alpha,int lft,in
 
 void view_draw_next_vertex_object_2D_line_trig(d3col *col,float alpha,int lft,int rgt,int top,int bot,int dir)
 {
+	float			x0,x1,x2,y0,y1,y2;
 	float			*vertex_ptr;
-
-	vertex_ptr=view_bind_map_next_vertex_object(4*2);
-	if (vertex_ptr==NULL) return;
 
 		// get the vertexes
 
 	switch (dir) {
 
 		case 0:
-			*vertex_ptr++=(float)lft;
-			*vertex_ptr++=(float)bot;
-			*vertex_ptr++=(float)rgt;
-			*vertex_ptr++=(float)bot;
-			*vertex_ptr++=((float)(lft+rgt))*0.5f;
-			*vertex_ptr++=(float)top;
+			x0=(float)lft;
+			y0=(float)bot;
+			x1=(float)rgt;
+			y1=(float)bot;
+			x2=((float)(lft+rgt))*0.5f;
+			y2=(float)top;
 			break;
 
 		case 1:
-			*vertex_ptr++=(float)lft;
-			*vertex_ptr++=(float)top;
-			*vertex_ptr++=(float)rgt;
-			*vertex_ptr++=((float)(top+bot))*0.5f;
-			*vertex_ptr++=(float)lft;
-			*vertex_ptr++=(float)bot;
+			x0=(float)lft;
+			y0=(float)top;
+			x1=(float)rgt;
+			y1=((float)(top+bot))*0.5f;
+			x2=(float)lft;
+			y2=(float)bot;
 			break;
 
 		case 2:
-			*vertex_ptr++=(float)lft;
-			*vertex_ptr++=(float)top;
-			*vertex_ptr++=(float)rgt;
-			*vertex_ptr++=(float)top;
-			*vertex_ptr++=((float)(lft+rgt))*0.5f;
-			*vertex_ptr++=(float)bot;
+			x0=(float)lft;
+			y0=(float)top;
+			x1=(float)rgt;
+			y1=(float)top;
+			x2=((float)(lft+rgt))*0.5f;
+			y2=(float)bot;
 			break;
 
 		case 3:
-			*vertex_ptr++=(float)rgt;
-			*vertex_ptr++=(float)top;
-			*vertex_ptr++=(float)lft;
-			*vertex_ptr++=((float)(top+bot))*0.5f;
-			*vertex_ptr++=(float)rgt;
-			*vertex_ptr++=(float)bot;
+			x0=(float)rgt;
+			y0=(float)top;
+			x1=(float)lft;
+			y1=((float)(top+bot))*0.5f;
+			x2=(float)rgt;
+			y2=(float)bot;
 			break;
 	}
+
+	vertex_ptr=view_bind_map_next_vertex_object(6*2);
+	if (vertex_ptr==NULL) return;
+
+	*vertex_ptr++=(float)x0;
+	*vertex_ptr++=(float)y0;
+
+	*vertex_ptr++=(float)x1;
+	*vertex_ptr++=(float)y1;
+
+	*vertex_ptr++=(float)x1;
+	*vertex_ptr++=(float)y1;
+
+	*vertex_ptr++=(float)x2;
+	*vertex_ptr++=(float)y2;
+
+	*vertex_ptr++=(float)x2;
+	*vertex_ptr++=(float)y2;
+
+	*vertex_ptr++=(float)x0;
+	*vertex_ptr++=(float)y0;
 
   	view_unmap_current_vertex_object();
 
@@ -756,7 +787,7 @@ void view_draw_next_vertex_object_2D_line_trig(d3col *col,float alpha,int lft,in
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(2,GL_FLOAT,0,(void*)0);
 
-	glDrawArrays(GL_LINE_LOOP,0,3);
+	glDrawArrays(GL_LINES,0,6);
 
 	glDisableClientState(GL_VERTEX_ARRAY);
 

@@ -107,9 +107,8 @@ EXPORTS
 	file_paths_app								@262
 	file_paths_base								@263
 
-	file_paths_documents						@270
-	file_paths_documents_exist					@271
-	file_paths_preferences						@272
+	file_paths_app_data							@270
+	file_paths_app_data_exist					@271
 
 	file_paths_read_directory_data				@273
 	file_paths_read_directory_data_dir			@274

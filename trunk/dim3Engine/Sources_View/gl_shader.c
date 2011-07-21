@@ -136,7 +136,7 @@ bool gl_shader_report_error(char *err_str,char *vertex_name,char *fragment_name,
 	
 		// start or append log file
 		
-	file_paths_documents(&setup.file_path_setup,path,"Debug","glsl_error_log","txt");
+	file_paths_app_data(&setup.file_path_setup,path,"Debug","glsl_error_log","txt");
 
 	file=fopen(path,"w");
 	if (file==NULL) {

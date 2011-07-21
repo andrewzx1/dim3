@@ -67,7 +67,7 @@ void png_utility_fflush(png_structp png_ptr)
 
 unsigned char* png_utility_read(char *path,int *p_wid,int *p_high,bool *alpha_channel)
 {
-	int						x,y,
+	int						x,y,bit_depth,
 							psz,rowbytes,channels,wid,high;
 	unsigned char			header[8];
 	unsigned char			*data,*ptr;
@@ -114,15 +114,23 @@ unsigned char* png_utility_read(char *path,int *p_wid,int *p_high,bool *alpha_ch
 	
 	png_read_info(png_ptr,info_ptr);
 	
-	wid=info_ptr->width;
-	high=info_ptr->height;
-	rowbytes=info_ptr->rowbytes;
-	
+	wid=png_get_image_width(png_ptr,info_ptr);
+	high=png_get_image_height(png_ptr,info_ptr);
+	rowbytes=png_get_rowbytes(png_ptr,info_ptr);
 	channels=png_get_channels(png_ptr,info_ptr);
+	bit_depth=png_get_bit_depth(png_ptr,info_ptr)*channels;
+
+// supergumba
+//	wid=info_ptr->width;
+//	high=info_ptr->height;
+//	rowbytes=info_ptr->rowbytes;
+	
 
 		// create the bitmap
 		
-	if (info_ptr->pixel_depth==32) {
+	if (bit_depth==32) {
+		// supergumba
+//	if (info_ptr->pixel_depth==32) {
 		psz=(wid<<2)*high;
 		*alpha_channel=TRUE;
 	}
@@ -146,7 +154,7 @@ unsigned char* png_utility_read(char *path,int *p_wid,int *p_high,bool *alpha_ch
 		// special check for non-24/32 bit
 		// textures
 
-	if ((info_ptr->pixel_depth!=24) && (info_ptr->pixel_depth!=32)) {
+	if ((bit_depth!=24) && (bit_depth!=32)) {
 
 			// just make a white texture
 
@@ -368,13 +376,19 @@ bool png_utility_check(char *path,char *err_str)
 	png_set_sig_bytes(png_ptr,8);
 	
 	png_read_info(png_ptr,info_ptr);
-	
-	x=info_ptr->width;
-	y=info_ptr->height;
-	bit_depth=info_ptr->bit_depth;
-	color_type=info_ptr->color_type;
-	
+
+	x=png_get_image_width(png_ptr,info_ptr);
+	y=png_get_image_height(png_ptr,info_ptr);
 	channels=png_get_channels(png_ptr,info_ptr);
+	bit_depth=png_get_bit_depth(png_ptr,info_ptr)*channels;
+	color_type=png_get_color_type(png_ptr,info_ptr);
+	
+	// supergumba
+//	x=info_ptr->width;
+//	y=info_ptr->height;
+//	bit_depth=info_ptr->bit_depth;
+//	color_type=info_ptr->color_type;
+	
 	
 	png_set_interlace_handling(png_ptr);
 	png_read_update_info(png_ptr,info_ptr);

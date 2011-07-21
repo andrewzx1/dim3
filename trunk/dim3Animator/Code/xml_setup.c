@@ -73,7 +73,7 @@ bool setup_xml_read(void)
     
         // find the setup.xml file
 		
-	file_paths_preferences(path,"dim3 Animator Setup","xml");
+	file_paths_dim3_app_data(&file_path_setup,path,"dim3Animator","xml");
 	if (!xml_open_file(path)) return(FALSE);
     
 		// decode the file
@@ -124,7 +124,7 @@ bool setup_xml_write(void)
         // save the setup
 		// always save to user specific data
 		
-	file_paths_preferences(path,"dim3 Animator Setup","xml");
+	file_paths_dim3_app_data(&file_path_setup,path,"dim3Animator","xml");
 	ok=xml_save_file(path);
     xml_close_file();
 	

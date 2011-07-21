@@ -270,14 +270,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\Libraries\PNG\png.h"
-					>
-				</File>
-				<File
-					RelativePath="..\Libraries\ZLib\zlib.h"
-					>
-				</File>
-				<File
 					RelativePath="..\Libraries\ZLib\zlib.lib"
 					>
 				</File>

@@ -259,10 +259,10 @@ void file_save_delete(void)
 	c=strrchr(file_name,'.');		// get rid of .sav
 	if (c!=NULL) *c=0x0;
 	
-	file_paths_documents(&setup.file_path_setup,path,"Saved Games",file_name,"png");
+	file_paths_app_data(&setup.file_path_setup,path,"Saved Games",file_name,"png");
 	remove(path);
 	
-	file_paths_documents(&setup.file_path_setup,path,"Saved Games",file_name,"sav");
+	file_paths_app_data(&setup.file_path_setup,path,"Saved Games",file_name,"sav");
 	remove(path);
 	
 		// reset table

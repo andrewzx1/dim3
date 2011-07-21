@@ -117,6 +117,9 @@
 				StringPooling="true"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="false"
+				UsePrecompiledHeader="0"
+				PrecompiledHeaderThrough="dim3setup.h"
+				PrecompiledHeaderFile=".\Release\dim3Setup.pch"
 				WarningLevel="3"
 				DebugInformationFormat="0"
 				CompileAs="1"
@@ -132,7 +135,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalOptions="/LTCG /NODEFAULTLIB:libcmt"
+				AdditionalOptions="/NODEFAULTLIB:libcmt"
 				OutputFile="..\..\..\dim3\dim3 Setup.exe"
 				LinkIncremental="1"
 				GenerateDebugInformation="false"
@@ -191,7 +194,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\Libraries\GLEW\glew32.lib"
+					RelativePath="..\Libraries\GLEW\glew32s.lib"
 					>
 				</File>
 				<File
@@ -224,6 +227,18 @@
 				</File>
 				<File
 					RelativePath="..\..\..\..\Program Files\Microsoft SDKs\Windows\v6.0A\Lib\OpenGL32.Lib"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="png"
+				>
+				<File
+					RelativePath="..\Libraries\PNG\libpng.lib"
+					>
+				</File>
+				<File
+					RelativePath="..\Libraries\ZLib\zlib.lib"
 					>
 				</File>
 			</Filter>

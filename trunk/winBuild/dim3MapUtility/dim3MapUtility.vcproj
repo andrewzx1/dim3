@@ -105,10 +105,6 @@
 					>
 				</File>
 				<File
-					RelativePath="win32Code\dim3MapUtility.def"
-					>
-				</File>
-				<File
 					RelativePath="..\..\dim3Common\Headers\maputility.h"
 					>
 				</File>

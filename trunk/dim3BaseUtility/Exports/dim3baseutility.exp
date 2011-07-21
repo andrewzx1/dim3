@@ -103,8 +103,8 @@ _file_paths_data_default
 _file_paths_app
 _file_paths_base
 
-_file_paths_documents
-_file_paths_documents_exist
+_file_paths_app_data
+_file_paths_app_data_exist
 _file_paths_preferences
 
 _file_paths_read_directory_data

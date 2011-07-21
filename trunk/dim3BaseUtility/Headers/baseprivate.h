@@ -56,17 +56,6 @@ typedef struct	{
       
 ======================================================= */
 
-//
-// Defines
-//
-
-#define movie_wid				512
-#define movie_high				512
-
-//
-// References
-//
-
 unsigned char* png_utility_read(char *path,int *p_wid,int *p_high,bool *alpha_channel);
 bool png_utility_write(unsigned char *data,int wid,int high,bool alpha_channel,char *path);
 bool png_utility_check(char *path,char *err_str);

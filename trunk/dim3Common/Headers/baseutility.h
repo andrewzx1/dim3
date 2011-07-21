@@ -253,9 +253,9 @@ extern void file_paths_data_default(file_path_setup_type *file_path_setup,char *
 extern void file_paths_app(file_path_setup_type *file_path_setup,char *path,char *sub_path,char *file_name,char *ext_name);
 extern void file_paths_base(file_path_setup_type *file_path_setup,char *path,char *file_name,char *ext_name);
 
-extern void file_paths_documents(file_path_setup_type *file_path_setup,char *path,char *sub_path,char *file_name,char *ext_name);
-extern bool file_paths_documents_exist(file_path_setup_type *file_path_setup,char *path,char *sub_path,char *file_name,char *ext_name);
-extern void file_paths_preferences(char *path,char *file_name,char *ext_name);
+extern void file_paths_app_data(file_path_setup_type *file_path_setup,char *path,char *sub_path,char *file_name,char *ext_name);
+extern bool file_paths_app_data_exist(file_path_setup_type *file_path_setup,char *path,char *sub_path,char *file_name,char *ext_name);
+extern void file_paths_dim3_app_data(file_path_setup_type *file_path_setup,char *path,char *file_name,char *ext_name);
 
 extern file_path_directory_type* file_paths_read_directory_data(file_path_setup_type *file_path_setup,char *sub_path,char *ext_name);
 extern file_path_directory_type* file_paths_read_directory_data_dir(file_path_setup_type *file_path_setup,char *sub_path,char *required_file_name);

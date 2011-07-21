@@ -161,7 +161,7 @@ void debug_dump(void)
 
 		// start output file
 
-	file_paths_documents(&setup.file_path_setup,path,"Debug","info","txt");
+	file_paths_app_data(&setup.file_path_setup,path,"Debug","info","txt");
 	
 	file=fopen(path,"w");
 	if (file==NULL) return;
@@ -554,7 +554,7 @@ void debug_screenshot(void)
 	tm=localtime(&curtime);
 
 	sprintf(file_name,"%.4d%.2d%.2d_%.2d%.2d%.2d",(tm->tm_year+1900),(tm->tm_mon+1),tm->tm_mday,tm->tm_hour,tm->tm_min,tm->tm_sec);
-	file_paths_documents(&setup.file_path_setup,path,"Screenshots",file_name,"png");
+	file_paths_app_data(&setup.file_path_setup,path,"Screenshots",file_name,"png");
 		
 	if (!gl_screen_shot(render_info.view_x,render_info.view_y,setup.screen.x_sz,setup.screen.y_sz,FALSE,path)) {
 		console_add_system("Unable to save screenshot");

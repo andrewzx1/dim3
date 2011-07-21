@@ -780,15 +780,6 @@ void list_palette_draw(list_palette_type *list,bool close_border)
 		thumb_by=ty+(((by-ty)*(list->scroll_page+1))/(page_count+1));
 		if (thumb_by>by) thumb_by=by;
 
-		glColor4f(0.0f,0.0f,0.0f,1.0f);
-			
-		glBegin(GL_QUADS);
-		glVertex2i(lx,thumb_ty);
-		glVertex2i(list->box.rx,thumb_ty);
-		glVertex2i(list->box.rx,thumb_by);
-		glVertex2i(lx,thumb_by);
-		glEnd();
-
 		glColor4f(0.9f,0.9f,0.9f,1.0f);
 			
 		glBegin(GL_QUADS);
@@ -796,6 +787,15 @@ void list_palette_draw(list_palette_type *list,bool close_border)
 		glVertex2i((list->box.rx-1),(thumb_ty+1));
 		glVertex2i((list->box.rx-1),(thumb_by-1));
 		glVertex2i((lx+1),(thumb_by-1));
+		glEnd();
+
+		glColor4f(0.0f,0.0f,0.0f,1.0f);
+			
+		glBegin(GL_LINE_LOOP);
+		glVertex2i((lx+1),thumb_ty);
+		glVertex2i(list->box.rx,(thumb_ty-1));
+		glVertex2i(list->box.rx,(thumb_by-1));
+		glVertex2i((lx+1),thumb_by);
 		glEnd();
 	}
 	
@@ -838,8 +838,8 @@ void list_palette_draw(list_palette_type *list,bool close_border)
 		glColor4f(0.0f,0.0f,0.0f,1.0f);
 	
 		glBegin(GL_LINES);
-		glVertex2i((list->box.lx+1),list->box.ty);
-		glVertex2i((list->box.lx+1),list->box.by);
+		glVertex2i(list->box.lx,list->box.ty);
+		glVertex2i(list->box.lx,list->box.by);
 		glEnd();
 
 		return;

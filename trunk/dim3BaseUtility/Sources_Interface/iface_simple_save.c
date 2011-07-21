@@ -56,7 +56,7 @@ void simple_save_xml_read(iface_type *iface)
 	
 		// any file to load
 		
-	if (!file_paths_documents_exist(&iface_file_path_setup,path,"Settings","SimpleSave","xml")) return;
+	if (!file_paths_app_data_exist(&iface_file_path_setup,path,"Settings","SimpleSave","xml")) return;
 	
 		// read file
 		
@@ -126,7 +126,7 @@ void simple_save_xml_write(iface_type *iface)
 
         // save the file
 		
-	file_paths_documents(&iface_file_path_setup,path,"Settings","SimpleSave","xml");
+	file_paths_app_data(&iface_file_path_setup,path,"Settings","SimpleSave","xml");
 		
 	ok=xml_save_file(path);
     xml_close_file();
