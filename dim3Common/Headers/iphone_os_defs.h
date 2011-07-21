@@ -50,8 +50,8 @@ and can be sold or given away.
 
 #include <pthread.h>
 
-#include <OpenGLES/es1/gl.h>
-#include <OpenGLES/es1/glext.h>
+#include <OpenGLES/es2/gl.h>
+#include <OpenGLES/es2/glext.h>
 
 #include <zlib.h>
 
