@@ -99,7 +99,6 @@ void bitmap_texture_set_mipmap_filter(int gl_bindtype,int mipmap_mode,bool pixel
 bool bitmap_texture_open(bitmap_type *bitmap,unsigned char *data,int anisotropic_mode,int mipmap_mode,bool compress,bool rectangle,bool pixelated)
 {
 	int					gl_txtformat,gl_txttype,gl_bindtype;
-	bool				mipmap;
 	GLuint				gl_id;
 	
 		// if no bitmap data then no texture
@@ -146,15 +145,18 @@ bool bitmap_texture_open(bitmap_type *bitmap,unsigned char *data,int anisotropic
 	}
 #endif
 
-		// mipmapping
-
-	mipmap=!((mipmap_mode==mipmap_mode_none) || (rectangle) || (pixelated));
-	
 		// load texture
 
-	if (mipmap) glTexParameterf(GL_TEXTURE_2D,GL_GENERATE_MIPMAP,GL_TRUE);
+#ifndef D3_OPENGL_ES
+	if ((mipmap_mode==mipmap_mode_none) || (rectangle) || (pixelated)) {
+		glTexImage2D(gl_bindtype,0,gl_txtformat,bitmap->wid,bitmap->high,0,gl_txttype,GL_UNSIGNED_BYTE,data);
+	}
+	else {
+		gluBuild2DMipmaps(gl_bindtype,gl_txtformat,bitmap->wid,bitmap->high,gl_txttype,GL_UNSIGNED_BYTE,data);
+	}
+#else
 	glTexImage2D(gl_bindtype,0,gl_txtformat,bitmap->wid,bitmap->high,0,gl_txttype,GL_UNSIGNED_BYTE,data);
-	if (mipmap) glTexParameterf(GL_TEXTURE_2D,GL_GENERATE_MIPMAP,GL_FALSE);
+#endif
 
 		// set to bitmap
 		
