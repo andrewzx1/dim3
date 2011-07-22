@@ -3,10 +3,11 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 45;
+	objectVersion = 46;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2605E9AD13D8F94700A3178B /* libBaseUtility.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2605E9AC13D8F94700A3178B /* libBaseUtility.a */; };
 		260AE9350F832A5B00451942 /* gl_back_render.c in Sources */ = {isa = PBXBuildFile; fileRef = 260AE9340F832A5B00451942 /* gl_back_render.c */; };
 		260C145C129C770800B6D5B5 /* SDLMain.h in Headers */ = {isa = PBXBuildFile; fileRef = 260C145A129C770800B6D5B5 /* SDLMain.h */; };
 		260C145D129C770800B6D5B5 /* SDLMain.m in Sources */ = {isa = PBXBuildFile; fileRef = 260C145B129C770800B6D5B5 /* SDLMain.m */; };
@@ -66,7 +67,6 @@
 		26D109610DAC797D006666F2 /* host.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D109600DAC797D006666F2 /* host.c */; };
 		26DAED300DD55C28000EBB48 /* group_move.c in Sources */ = {isa = PBXBuildFile; fileRef = 26DAED2F0DD55C28000EBB48 /* group_move.c */; };
 		26DB6E030DE07A9700BDD008 /* obj_ext_move.c in Sources */ = {isa = PBXBuildFile; fileRef = 26DB6E020DE07A9700BDD008 /* obj_ext_move.c */; };
-		26DC401213D3A3A7002F9827 /* libBaseUtility.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 26DC400913D3A26A002F9827 /* libBaseUtility.a */; };
 		26DC401313D3A3A7002F9827 /* libMapUtility.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 26DC400A13D3A26A002F9827 /* libMapUtility.a */; };
 		26DC401413D3A3A7002F9827 /* libModelUtility.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 26DC400B13D3A26A002F9827 /* libModelUtility.a */; };
 		26DC404D13D3A64F002F9827 /* libSDL.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 26DC404C13D3A64F002F9827 /* libSDL.a */; };
@@ -347,6 +347,7 @@
 		00CA825D00BF848B7F000001 /* dim3 Engine.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = "dim3 Engine.icns"; path = "Resources/dim3 Engine.icns"; sourceTree = "<group>"; };
 		0867D6ABFE840B52C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		20286C33FDCF999611CA2CEA /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
+		2605E9AC13D8F94700A3178B /* libBaseUtility.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libBaseUtility.a; path = ../dim3Common/Libraries/libBaseUtility.a; sourceTree = "<group>"; };
 		260AE9340F832A5B00451942 /* gl_back_render.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = gl_back_render.c; path = Sources_View/gl_back_render.c; sourceTree = "<group>"; };
 		260C145A129C770800B6D5B5 /* SDLMain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDLMain.h; path = SDL/SDLMain.h; sourceTree = "<group>"; };
 		260C145B129C770800B6D5B5 /* SDLMain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SDLMain.m; path = SDL/SDLMain.m; sourceTree = "<group>"; };
@@ -406,7 +407,6 @@
 		26D109600DAC797D006666F2 /* host.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = host.c; path = Sources_View/host.c; sourceTree = "<group>"; };
 		26DAED2F0DD55C28000EBB48 /* group_move.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = group_move.c; path = Sources_Server/group_move.c; sourceTree = "<group>"; };
 		26DB6E020DE07A9700BDD008 /* obj_ext_move.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = obj_ext_move.c; path = Sources_Server/obj_ext_move.c; sourceTree = "<group>"; };
-		26DC400913D3A26A002F9827 /* libBaseUtility.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libBaseUtility.a; path = ../dim3Common/Libraries/libBaseUtility.a; sourceTree = "<group>"; };
 		26DC400A13D3A26A002F9827 /* libMapUtility.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libMapUtility.a; path = ../dim3Common/Libraries/libMapUtility.a; sourceTree = "<group>"; };
 		26DC400B13D3A26A002F9827 /* libModelUtility.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libModelUtility.a; path = ../dim3Common/Libraries/libModelUtility.a; sourceTree = "<group>"; };
 		26DC404C13D3A64F002F9827 /* libSDL.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libSDL.a; path = ../dim3Common/Libraries/SDL/libSDL.a; sourceTree = "<group>"; };
@@ -671,13 +671,13 @@
 				26184E7413CA0D0A003A9A79 /* AudioUnit.framework in Frameworks */,
 				26184E7613CA0D2E003A9A79 /* IOKit.framework in Frameworks */,
 				26184E7813CA1022003A9A79 /* JavaScriptCore.framework in Frameworks */,
-				26DC401213D3A3A7002F9827 /* libBaseUtility.a in Frameworks */,
 				26DC401313D3A3A7002F9827 /* libMapUtility.a in Frameworks */,
 				26DC401413D3A3A7002F9827 /* libModelUtility.a in Frameworks */,
 				26DC404D13D3A64F002F9827 /* libSDL.a in Frameworks */,
 				26DC404F13D3A656002F9827 /* libPNG.a in Frameworks */,
 				26DC405113D3A65E002F9827 /* libmpg123.a in Frameworks */,
 				26A5C56313D68F2D00CDABD9 /* Foundation.framework in Frameworks */,
+				2605E9AD13D8F94700A3178B /* libBaseUtility.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -754,7 +754,7 @@
 		02DF67D400BE08477F000001 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
-				26DC400913D3A26A002F9827 /* libBaseUtility.a */,
+				2605E9AC13D8F94700A3178B /* libBaseUtility.a */,
 				26DC400B13D3A26A002F9827 /* libModelUtility.a */,
 				26DC400A13D3A26A002F9827 /* libMapUtility.a */,
 				26DC405013D3A65E002F9827 /* libmpg123.a */,
@@ -1412,8 +1412,11 @@
 /* Begin PBXProject section */
 		20286C28FDCF999611CA2CEA /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0410;
+			};
 			buildConfigurationList = F5DB0BF3085671A9005A7CB7 /* Build configuration list for PBXProject "dim3Engine" */;
-			compatibilityVersion = "Xcode 2.4";
+			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 1;
 			knownRegions = (
@@ -1812,7 +1815,7 @@
 				OBJROOT = build;
 				OTHER_LDFLAGS = "-lz";
 				PRODUCT_NAME = "dim3 Engine";
-				SDKROOT = macosx10.6;
+				SDKROOT = macosx10.7;
 				SKIP_INSTALL = YES;
 				SYMROOT = build;
 				VALID_ARCHS = i386;

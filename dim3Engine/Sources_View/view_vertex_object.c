@@ -279,12 +279,11 @@ float* view_bind_map_next_vertex_object(int sz)
 
 	glBindBufferARB(GL_ARRAY_BUFFER_ARB,vbo_cache[cur_vbo_cache_idx]);
 
-		// supergumba -- this checks to see if the buffer is in
-		// use and stalls.  The OpenGL drivers should be smart
-		// enough to not require this but it's here just in case
+		// this checks to see if the buffer is in
+		// use and stalls
 
-	// vertex_ptr=(float*)glMapBufferARB(GL_ARRAY_BUFFER_ARB,GL_WRITE_ONLY_ARB);
-	// glUnmapBufferARB(GL_ARRAY_BUFFER_ARB);
+	vertex_ptr=(float*)glMapBufferARB(GL_ARRAY_BUFFER_ARB,GL_WRITE_ONLY_ARB);
+	glUnmapBufferARB(GL_ARRAY_BUFFER_ARB);
 
 		// change size of buffer
 
@@ -325,12 +324,11 @@ unsigned short* view_bind_map_next_index_object(int sz)
 
 	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB,vbo_cache_index[cur_vbo_cache_index_idx]);
 
-		// supergumba -- this checks to see if the buffer is in
-		// use and stalls.  The OpenGL drivers should be smart
-		// enough to not require this but it's here just in case
+		// this checks to see if the buffer is in
+		// use and stalls
 
-	// index_ptr=(unsigned short*)glMapBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB,GL_WRITE_ONLY_ARB);
-	// glUnmapBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB);
+	index_ptr=(unsigned short*)glMapBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB,GL_WRITE_ONLY_ARB);
+	glUnmapBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB);
 
 		// change size of buffer
 
