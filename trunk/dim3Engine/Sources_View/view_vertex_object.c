@@ -282,13 +282,14 @@ float* view_bind_map_next_vertex_object(int sz)
 		// this checks to see if the buffer is in
 		// use and stalls
 
-	vertex_ptr=(float*)glMapBufferARB(GL_ARRAY_BUFFER_ARB,GL_WRITE_ONLY_ARB);
-	glUnmapBufferARB(GL_ARRAY_BUFFER_ARB);
+//	vertex_ptr=(float*)glMapBufferARB(GL_ARRAY_BUFFER_ARB,GL_WRITE_ONLY_ARB);
+//	glUnmapBufferARB(GL_ARRAY_BUFFER_ARB);
 
 		// change size of buffer
+		// we pass null to stop stalls
 
 	sz*=sizeof(float);
-	glBufferDataARB(GL_ARRAY_BUFFER_ARB,sz,NULL,GL_STREAM_DRAW_ARB);
+	glBufferDataARB(GL_ARRAY_BUFFER_ARB,sz,NULL,GL_DYNAMIC_DRAW_ARB);
 
 		// map pointer
 
@@ -327,13 +328,14 @@ unsigned short* view_bind_map_next_index_object(int sz)
 		// this checks to see if the buffer is in
 		// use and stalls
 
-	index_ptr=(unsigned short*)glMapBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB,GL_WRITE_ONLY_ARB);
-	glUnmapBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB);
+//	index_ptr=(unsigned short*)glMapBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB,GL_WRITE_ONLY_ARB);
+//	glUnmapBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB);
 
 		// change size of buffer
+		// we pass null to stop stalls
 
 	sz*=sizeof(unsigned short);
-	glBufferDataARB(GL_ELEMENT_ARRAY_BUFFER_ARB,sz,NULL,GL_STREAM_DRAW_ARB);
+	glBufferDataARB(GL_ELEMENT_ARRAY_BUFFER_ARB,sz,NULL,GL_DYNAMIC_DRAW_ARB);
 
 		// map pointer
 

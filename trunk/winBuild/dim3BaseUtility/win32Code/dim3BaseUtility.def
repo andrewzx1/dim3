@@ -109,6 +109,7 @@ EXPORTS
 
 	file_paths_app_data							@270
 	file_paths_app_data_exist					@271
+	file_paths_dim3_app_data					@272
 
 	file_paths_read_directory_data				@273
 	file_paths_read_directory_data_dir			@274
@@ -207,7 +208,7 @@ EXPORTS
 	bitmap_check								@402
 	bitmap_copy									@403
 	
-	bitmap_text_intialize						@410
+	bitmap_text_initialize						@410
 	bitmap_text_shutdown						@411
 	
 	iface_initialize							@600

@@ -194,7 +194,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\Libraries\GLEW\glew32s.lib"
+					RelativePath="..\Libraries\GLEW\glew32.lib"
 					>
 				</File>
 				<File
@@ -234,11 +234,11 @@
 				Name="png"
 				>
 				<File
-					RelativePath="..\Libraries\PNG\libpng.lib"
+					RelativePath="..\Libraries\PNG\libpng15.lib"
 					>
 				</File>
 				<File
-					RelativePath="..\Libraries\ZLib\zlib.lib"
+					RelativePath="..\Libraries\ZLib\zlib1.lib"
 					>
 				</File>
 			</Filter>
