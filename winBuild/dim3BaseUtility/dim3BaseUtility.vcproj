@@ -19,7 +19,7 @@
 			Name="Release|Win32"
 			OutputDirectory=".\Release"
 			IntermediateDirectory=".\Release"
-			ConfigurationType="4"
+			ConfigurationType="2"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC60.vsprops"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -71,12 +71,16 @@
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
-				Name="VCLibrarianTool"
-				OutputFile="..\Libraries\dim3\dim3BaseUtility.lib"
-				SuppressStartupBanner="true"
+				Name="VCLinkerTool"
+				OutputFile="..\..\..\dim3\dim3BaseUtility.dll"
+				ModuleDefinitionFile="win32Code\dim3BaseUtility.def"
+				ImportLibrary="..\Libraries\dim3\dim3BaseUtility.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
 			/>
 			<Tool
 				Name="VCXDCMakeTool"
@@ -88,6 +92,9 @@
 			/>
 			<Tool
 				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -108,6 +115,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\win32Code\dim3BaseUtility.def"
+					>
+				</File>
+				<File
 					RelativePath="..\..\dim3Common\Headers\os_defs.h"
 					>
 				</File>
@@ -124,6 +135,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\Libraries\GLEW\glew32.lib"
+					>
+				</File>
+				<File
 					RelativePath="..\Libraries\GLEW\wglew.h"
 					>
 				</File>
@@ -131,6 +146,10 @@
 			<Filter
 				Name="png"
 				>
+				<File
+					RelativePath="..\Libraries\PNG\libpng15.lib"
+					>
+				</File>
 				<File
 					RelativePath="..\Libraries\PNG\png.h"
 					>
@@ -141,6 +160,22 @@
 				</File>
 				<File
 					RelativePath="..\Libraries\PNG\pnglibconf.h"
+					>
+				</File>
+				<File
+					RelativePath="..\Libraries\ZLib\zlib1.lib"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="OS Libraries"
+				>
+				<File
+					RelativePath="..\..\..\..\Program Files\Microsoft SDKs\Windows\v6.0A\Lib\GlU32.Lib"
+					>
+				</File>
+				<File
+					RelativePath="..\..\..\..\Program Files\Microsoft SDKs\Windows\v6.0A\Lib\OpenGL32.Lib"
 					>
 				</File>
 			</Filter>

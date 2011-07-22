@@ -44,8 +44,6 @@ and can be sold or given away.
 
 #include <shlobj.h>
 
-#define GLEW_STATIC
-
 #include "glew.h"
 #include "wglew.h"
 
