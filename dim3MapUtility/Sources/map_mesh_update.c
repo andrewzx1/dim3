@@ -842,7 +842,7 @@ bool map_mesh_poly_tesselate(map_type *map,int mesh_idx,int poly_idx)
       
 ======================================================= */
 
-inline float map_mesh_poly_run_shifts_single_choord(float f_tick,float shift)
+static inline float map_mesh_poly_run_shifts_single_choord(float f_tick,float shift)
 {
 	int				i_add;
 	float			f_add;

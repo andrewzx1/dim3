@@ -5,8 +5,8 @@ int main(int argc,char *argv[])
 {
 	int						wid,high,sdl_flags;
 	SDL_DisplayMode			sdl_mode;
-	SDL_Window					*sdl_wind;
-	SDL_GLContext				*sdl_gl_ctx;
+	SDL_Window				*sdl_wind;
+	SDL_GLContext			*sdl_gl_ctx;
 	
 	if (SDL_Init(SDL_INIT_VIDEO|SDL_INIT_AUDIO|SDL_INIT_JOYSTICK|SDL_INIT_NOPARACHUTE)==-1) return(0);
 	

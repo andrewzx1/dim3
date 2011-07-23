@@ -40,7 +40,7 @@ void random_reset(void)
 	srandom((long)clock());
 }
 
-inline float random_base(void)
+static inline float random_base(void)
 {
 	return((float)random()/(float)RAND_MAX);
 }
