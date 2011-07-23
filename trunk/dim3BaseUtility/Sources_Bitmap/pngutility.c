@@ -120,17 +120,9 @@ unsigned char* png_utility_read(char *path,int *p_wid,int *p_high,bool *alpha_ch
 	channels=png_get_channels(png_ptr,info_ptr);
 	bit_depth=png_get_bit_depth(png_ptr,info_ptr)*channels;
 
-// supergumba
-//	wid=info_ptr->width;
-//	high=info_ptr->height;
-//	rowbytes=info_ptr->rowbytes;
-	
-
 		// create the bitmap
 		
 	if (bit_depth==32) {
-		// supergumba
-//	if (info_ptr->pixel_depth==32) {
 		psz=(wid<<2)*high;
 		*alpha_channel=TRUE;
 	}
@@ -382,13 +374,6 @@ bool png_utility_check(char *path,char *err_str)
 	channels=png_get_channels(png_ptr,info_ptr);
 	bit_depth=png_get_bit_depth(png_ptr,info_ptr)*channels;
 	color_type=png_get_color_type(png_ptr,info_ptr);
-	
-	// supergumba
-//	x=info_ptr->width;
-//	y=info_ptr->height;
-//	bit_depth=info_ptr->bit_depth;
-//	color_type=info_ptr->color_type;
-	
 	
 	png_set_interlace_handling(png_ptr);
 	png_read_update_info(png_ptr,info_ptr);

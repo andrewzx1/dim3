@@ -13,13 +13,13 @@
 		268317800E4A8B1900BBCDCA /* map_mesh_update.c in Sources */ = {isa = PBXBuildFile; fileRef = 2683177B0E4A8B1900BBCDCA /* map_mesh_update.c */; };
 		269B2A6A11178C7000E3FDA8 /* map_normals.c in Sources */ = {isa = PBXBuildFile; fileRef = 269B2A6911178C7000E3FDA8 /* map_normals.c */; };
 		26E8DBA01270E84400ACA294 /* map_cinema.c in Sources */ = {isa = PBXBuildFile; fileRef = 26E8DB9F1270E84400ACA294 /* map_cinema.c */; };
+		26EE3DFE13DA3869000ABAF1 /* libBaseUtility.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 26EE3DFD13DA3869000ABAF1 /* libBaseUtility.dylib */; };
 		F50AF9290885FF0E00F261B1 /* os_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = F50AF9280885FF0E00F261B1 /* os_defs.h */; };
 		F511664F093CDA2C00E766C3 /* groups.c in Sources */ = {isa = PBXBuildFile; fileRef = F511664E093CDA2C00E766C3 /* groups.c */; };
 		F56B6201080C885A00E9D08B /* mapprivate.h in Headers */ = {isa = PBXBuildFile; fileRef = F56B6200080C885A00E9D08B /* mapprivate.h */; };
 		F58F951009B7E260004DD122 /* movements.c in Sources */ = {isa = PBXBuildFile; fileRef = F58F950F09B7E260004DD122 /* movements.c */; };
 		F5AD54160BBE1EBD001C7C04 /* baseutility.h in Headers */ = {isa = PBXBuildFile; fileRef = F5AD54150BBE1EBD001C7C04 /* baseutility.h */; };
-		F5AD541F0BBE1F16001C7C04 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5AD541E0BBE1F16001C7C04 /* OpenGL.framework */; };
-		F5DB0B780856700C005A7CB7 /* libMapUtility.a in CopyFiles */ = {isa = PBXBuildFile; fileRef = F5F4951F067BFCCA00E809E7 /* libMapUtility.a */; };
+		F5DB0B780856700C005A7CB7 /* libMapUtility.dylib in CopyFiles */ = {isa = PBXBuildFile; fileRef = F5F4951F067BFCCA00E809E7 /* libMapUtility.dylib */; };
 		F5DD16E40907328000721649 /* prepare.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD16E00907328000721649 /* prepare.c */; };
 		F5DD18BB0907FD6E00721649 /* spots.c in Sources */ = {isa = PBXBuildFile; fileRef = F5DD18BA0907FD6E00721649 /* spots.c */; };
 		F5F49529067BFDB900E809E7 /* map_main.c in Sources */ = {isa = PBXBuildFile; fileRef = F5A8B1B105229DA4008D4331 /* map_main.c */; };
@@ -30,7 +30,6 @@
 		F5F4952E067BFDBC00E809E7 /* file_map_read.c in Sources */ = {isa = PBXBuildFile; fileRef = F5A8B1AF05229DA4008D4331 /* file_map_read.c */; };
 		F5F4952F067BFDC000E809E7 /* maputility.h in Headers */ = {isa = PBXBuildFile; fileRef = F5C53548051C085800968AF1 /* maputility.h */; };
 		F5F49534067BFDC300E809E7 /* dim3maputility.h in Headers */ = {isa = PBXBuildFile; fileRef = F5C5353D051C074F00968AF1 /* dim3maputility.h */; };
-		F5F49536067BFDD100E809E7 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5F49535067BFDD100E809E7 /* Carbon.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -40,7 +39,7 @@
 			dstPath = "$(SRCROOT)/../dim3Common/Libraries/";
 			dstSubfolderSpec = 0;
 			files = (
-				F5DB0B780856700C005A7CB7 /* libMapUtility.a in CopyFiles */,
+				F5DB0B780856700C005A7CB7 /* libMapUtility.dylib in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -53,6 +52,8 @@
 		2683177B0E4A8B1900BBCDCA /* map_mesh_update.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = map_mesh_update.c; path = Sources/map_mesh_update.c; sourceTree = "<group>"; };
 		269B2A6911178C7000E3FDA8 /* map_normals.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = map_normals.c; path = Sources/map_normals.c; sourceTree = "<group>"; };
 		26E8DB9F1270E84400ACA294 /* map_cinema.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = map_cinema.c; path = Sources/map_cinema.c; sourceTree = "<group>"; };
+		26EE3DFD13DA3869000ABAF1 /* libBaseUtility.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libBaseUtility.dylib; path = ../dim3Common/Libraries/libBaseUtility.dylib; sourceTree = "<group>"; };
+		26EE3EA513DA890B000ABAF1 /* dim3maputility.exp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.exports; name = dim3maputility.exp; path = Exports/dim3maputility.exp; sourceTree = "<group>"; };
 		F50AF9280885FF0E00F261B1 /* os_defs.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = os_defs.h; path = ../dim3Common/Headers/os_defs.h; sourceTree = SOURCE_ROOT; };
 		F511664E093CDA2C00E766C3 /* groups.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = groups.c; path = Sources/groups.c; sourceTree = "<group>"; };
 		F56B6200080C885A00E9D08B /* mapprivate.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = mapprivate.h; path = Headers/mapprivate.h; sourceTree = "<group>"; };
@@ -62,15 +63,13 @@
 		F5A8B1B005229DA4008D4331 /* file_map_write.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = file_map_write.c; path = Sources/file_map_write.c; sourceTree = "<group>"; };
 		F5A8B1B105229DA4008D4331 /* map_main.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = map_main.c; path = Sources/map_main.c; sourceTree = "<group>"; };
 		F5AD54150BBE1EBD001C7C04 /* baseutility.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = baseutility.h; path = ../dim3Common/Headers/baseutility.h; sourceTree = SOURCE_ROOT; };
-		F5AD541E0BBE1F16001C7C04 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
 		F5C40DAB05439C17002FA7E9 /* map_frames.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = map_frames.c; path = Sources/map_frames.c; sourceTree = "<group>"; };
 		F5C5353D051C074F00968AF1 /* dim3maputility.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = dim3maputility.h; path = Headers/dim3maputility.h; sourceTree = "<group>"; };
 		F5C53548051C085800968AF1 /* maputility.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = maputility.h; path = ../dim3Common/Headers/maputility.h; sourceTree = SOURCE_ROOT; };
 		F5DA8623059148C40043E685 /* nodes.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = nodes.c; path = Sources/nodes.c; sourceTree = "<group>"; };
 		F5DD16E00907328000721649 /* prepare.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = prepare.c; path = Sources/prepare.c; sourceTree = "<group>"; };
 		F5DD18BA0907FD6E00721649 /* spots.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = spots.c; path = Sources/spots.c; sourceTree = "<group>"; };
-		F5F4951F067BFCCA00E809E7 /* libMapUtility.a */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libMapUtility.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		F5F49535067BFDD100E809E7 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
+		F5F4951F067BFCCA00E809E7 /* libMapUtility.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libMapUtility.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -78,18 +77,26 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F5F49536067BFDD100E809E7 /* Carbon.framework in Frameworks */,
-				F5AD541F0BBE1F16001C7C04 /* OpenGL.framework in Frameworks */,
+				26EE3DFE13DA3869000ABAF1 /* libBaseUtility.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		26EE3EA413DA88FC000ABAF1 /* Exports */ = {
+			isa = PBXGroup;
+			children = (
+				26EE3EA513DA890B000ABAF1 /* dim3maputility.exp */,
+			);
+			name = Exports;
+			sourceTree = "<group>";
+		};
 		F5C5352C051C058600968AF1 = {
 			isa = PBXGroup;
 			children = (
 				F5C53538051C06F100968AF1 /* Headers */,
+				26EE3EA413DA88FC000ABAF1 /* Exports */,
 				F5C5353A051C06FF00968AF1 /* Sources */,
 				F5F49520067BFD8200E809E7 /* Libraries */,
 				F5F49521067BFD8800E809E7 /* Frameworks */,
@@ -100,7 +107,7 @@
 		F5C53537051C059F00968AF1 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				F5F4951F067BFCCA00E809E7 /* libMapUtility.a */,
+				F5F4951F067BFCCA00E809E7 /* libMapUtility.dylib */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -175,6 +182,7 @@
 		F5F49520067BFD8200E809E7 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				26EE3DFD13DA3869000ABAF1 /* libBaseUtility.dylib */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -182,8 +190,6 @@
 		F5F49521067BFD8800E809E7 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				F5F49535067BFDD100E809E7 /* Carbon.framework */,
-				F5AD541E0BBE1F16001C7C04 /* OpenGL.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -221,7 +227,7 @@
 			);
 			name = MapUtility;
 			productName = MapUtility;
-			productReference = F5F4951F067BFCCA00E809E7 /* libMapUtility.a */;
+			productReference = F5F4951F067BFCCA00E809E7 /* libMapUtility.dylib */;
 			productType = "com.apple.product-type.library.dynamic";
 		};
 /* End PBXNativeTarget section */
@@ -285,9 +291,9 @@
 				ARCHS = i386;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				EXECUTABLE_EXTENSION = a;
+				EXECUTABLE_EXTENSION = dylib;
 				EXECUTABLE_PREFIX = lib;
-				EXPORTED_SYMBOLS_FILE = "";
+				EXPORTED_SYMBOLS_FILE = Exports/dim3maputility.exp;
 				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_CW_ASM_SYNTAX = NO;
 				GCC_ENABLE_CPP_EXCEPTIONS = NO;
@@ -316,9 +322,9 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "$(SRCROOT)/../dim3Common/Libraries";
 				INSTALL_PATH = "";
-				LD_DYLIB_INSTALL_NAME = "";
+				LD_DYLIB_INSTALL_NAME = "@executable_path/../Frameworks/libMapUtility.dylib";
 				LIBRARY_SEARCH_PATHS = "$(SRCROOT)/../dim3Common/Libraries";
-				MACH_O_TYPE = staticlib;
+				MACH_O_TYPE = mh_dylib;
 				MACOSX_DEPLOYMENT_TARGET = 10.5;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";

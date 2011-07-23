@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		2605E9AD13D8F94700A3178B /* libBaseUtility.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2605E9AC13D8F94700A3178B /* libBaseUtility.a */; };
 		260AE9350F832A5B00451942 /* gl_back_render.c in Sources */ = {isa = PBXBuildFile; fileRef = 260AE9340F832A5B00451942 /* gl_back_render.c */; };
 		260C145C129C770800B6D5B5 /* SDLMain.h in Headers */ = {isa = PBXBuildFile; fileRef = 260C145A129C770800B6D5B5 /* SDLMain.h */; };
 		260C145D129C770800B6D5B5 /* SDLMain.m in Sources */ = {isa = PBXBuildFile; fileRef = 260C145B129C770800B6D5B5 /* SDLMain.m */; };
@@ -16,7 +15,6 @@
 		26100DEF10BB5156002B3FA1 /* gl_shader_user.c in Sources */ = {isa = PBXBuildFile; fileRef = 26100DEC10BB5156002B3FA1 /* gl_shader_user.c */; };
 		26101DCE0E5D075100D2919B /* view_vertex_object.c in Sources */ = {isa = PBXBuildFile; fileRef = 26101DCD0E5D075100D2919B /* view_vertex_object.c */; };
 		26184E7213CA0CE6003A9A79 /* CoreAudioKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26184E7113CA0CE6003A9A79 /* CoreAudioKit.framework */; };
-		26184E7413CA0D0A003A9A79 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26184E7313CA0D0A003A9A79 /* AudioUnit.framework */; };
 		26184E7613CA0D2E003A9A79 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26184E7513CA0D2E003A9A79 /* IOKit.framework */; };
 		26184E7813CA1022003A9A79 /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26184E7713CA1022003A9A79 /* JavaScriptCore.framework */; };
 		261B52AF0FA551CE0070CAB0 /* render_model.c in Sources */ = {isa = PBXBuildFile; fileRef = 261B52AE0FA551CE0070CAB0 /* render_model.c */; };
@@ -55,7 +53,6 @@
 		269D27C312DEBB7E00AF5695 /* mac_os_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 269D27C212DEBB7E00AF5695 /* mac_os_defs.h */; };
 		26A562590EF6D0AB00D38FC0 /* net_socket.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A562580EF6D0AB00D38FC0 /* net_socket.c */; };
 		26A562B90EF6D50D00D38FC0 /* net_utility.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A562B80EF6D50D00D38FC0 /* net_utility.c */; };
-		26A5C56313D68F2D00CDABD9 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26A5C56213D68F2D00CDABD9 /* Foundation.framework */; };
 		26A60BD511CC1DCF00E9AB33 /* view_draw_debug.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A60BD411CC1DCF00E9AB33 /* view_draw_debug.c */; };
 		26A6D507122A203E00EE3149 /* script_script.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A6D506122A203E00EE3149 /* script_script.c */; };
 		26ABEE820E72F0700029469D /* script_obj_object_thrust.c in Sources */ = {isa = PBXBuildFile; fileRef = 26ABEE810E72F0700029469D /* script_obj_object_thrust.c */; };
@@ -67,15 +64,23 @@
 		26D109610DAC797D006666F2 /* host.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D109600DAC797D006666F2 /* host.c */; };
 		26DAED300DD55C28000EBB48 /* group_move.c in Sources */ = {isa = PBXBuildFile; fileRef = 26DAED2F0DD55C28000EBB48 /* group_move.c */; };
 		26DB6E030DE07A9700BDD008 /* obj_ext_move.c in Sources */ = {isa = PBXBuildFile; fileRef = 26DB6E020DE07A9700BDD008 /* obj_ext_move.c */; };
-		26DC401313D3A3A7002F9827 /* libMapUtility.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 26DC400A13D3A26A002F9827 /* libMapUtility.a */; };
-		26DC401413D3A3A7002F9827 /* libModelUtility.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 26DC400B13D3A26A002F9827 /* libModelUtility.a */; };
-		26DC404D13D3A64F002F9827 /* libSDL.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 26DC404C13D3A64F002F9827 /* libSDL.a */; };
-		26DC404F13D3A656002F9827 /* libPNG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 26DC404E13D3A656002F9827 /* libPNG.a */; };
-		26DC405113D3A65E002F9827 /* libmpg123.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 26DC405013D3A65E002F9827 /* libmpg123.a */; };
 		26E1844513CEA27800812348 /* dim3 Engine.app in Copy Application */ = {isa = PBXBuildFile; fileRef = F5CD87F70557721D0023AD9B /* dim3 Engine.app */; };
 		26E2008B1134C6E100E9055A /* net_http.c in Sources */ = {isa = PBXBuildFile; fileRef = 26E200891134C6E100E9055A /* net_http.c */; };
 		26E2008C1134C6E100E9055A /* net_queue.c in Sources */ = {isa = PBXBuildFile; fileRef = 26E2008A1134C6E100E9055A /* net_queue.c */; };
 		26E8DBB31270E88C00ACA294 /* cinema.c in Sources */ = {isa = PBXBuildFile; fileRef = 26E8DBB21270E88C00ACA294 /* cinema.c */; };
+		26EE3E0713DA38BE000ABAF1 /* libBaseUtility.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 26EE3E0413DA38BE000ABAF1 /* libBaseUtility.dylib */; };
+		26EE3E0813DA38BE000ABAF1 /* libMapUtility.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 26EE3E0513DA38BE000ABAF1 /* libMapUtility.dylib */; };
+		26EE3E0913DA38BE000ABAF1 /* libModelUtility.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 26EE3E0613DA38BE000ABAF1 /* libModelUtility.dylib */; };
+		26EE3E0B13DA38C6000ABAF1 /* libmpg123.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 26EE3E0A13DA38C6000ABAF1 /* libmpg123.dylib */; };
+		26EE3E0D13DA38CC000ABAF1 /* libPNG.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 26EE3E0C13DA38CC000ABAF1 /* libPNG.dylib */; };
+		26EE3E0F13DA38D3000ABAF1 /* libSDL.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 26EE3E0E13DA38D3000ABAF1 /* libSDL.dylib */; };
+		26EE3E1013DA390E000ABAF1 /* libBaseUtility.dylib in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 26EE3E0413DA38BE000ABAF1 /* libBaseUtility.dylib */; };
+		26EE3E1113DA3910000ABAF1 /* libModelUtility.dylib in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 26EE3E0613DA38BE000ABAF1 /* libModelUtility.dylib */; };
+		26EE3E1213DA3912000ABAF1 /* libMapUtility.dylib in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 26EE3E0513DA38BE000ABAF1 /* libMapUtility.dylib */; };
+		26EE3E1313DA3915000ABAF1 /* libSDL.dylib in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 26EE3E0E13DA38D3000ABAF1 /* libSDL.dylib */; };
+		26EE3E1413DA3918000ABAF1 /* libPNG.dylib in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 26EE3E0C13DA38CC000ABAF1 /* libPNG.dylib */; };
+		26EE3E1513DA391B000ABAF1 /* libmpg123.dylib in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 26EE3E0A13DA38C6000ABAF1 /* libmpg123.dylib */; };
+		26EE3E1713DA7F78000ABAF1 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26EE3E1613DA7F78000ABAF1 /* AudioUnit.framework */; };
 		26F08CA20DAC7DB50097E249 /* net_host.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F08C9E0DAC7DB50097E249 /* net_host.c */; };
 		26F08CA40DAC7DB50097E249 /* net_host_players.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F08CA00DAC7DB50097E249 /* net_host_players.c */; };
 		26F8AA75133546FB0020367E /* chat.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F8AA74133546FB0020367E /* chat.c */; };
@@ -105,7 +110,6 @@
 		F587FFDB0AB0F962006ED5CD /* obj_rigid_body.c in Sources */ = {isa = PBXBuildFile; fileRef = F587FFDA0AB0F962006ED5CD /* obj_rigid_body.c */; };
 		F58B7C080CD2B7A700CEE31F /* network_draw.c in Sources */ = {isa = PBXBuildFile; fileRef = F58B7C070CD2B7A700CEE31F /* network_draw.c */; };
 		F59447210CEF4F1E0027E360 /* script_model_mesh.c in Sources */ = {isa = PBXBuildFile; fileRef = F59447200CEF4F1E0027E360 /* script_model_mesh.c */; };
-		F5A57E18090AA99700BE7C36 /* QuickTime.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5A57E17090AA99700BE7C36 /* QuickTime.framework */; };
 		F5A57F0D090AB08A00BE7C36 /* game_time.c in Sources */ = {isa = PBXBuildFile; fileRef = F5A57F0C090AB08A00BE7C36 /* game_time.c */; };
 		F5A57F3E090AB24200BE7C36 /* xml_setup.c in Sources */ = {isa = PBXBuildFile; fileRef = F5A57F37090AB24200BE7C36 /* xml_setup.c */; };
 		F5A57F76090ABEDF00BE7C36 /* remote_status.c in Sources */ = {isa = PBXBuildFile; fileRef = F5A57F75090ABEDF00BE7C36 /* remote_status.c */; };
@@ -326,6 +330,12 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				26EE3E1013DA390E000ABAF1 /* libBaseUtility.dylib in Copy Frameworks */,
+				26EE3E1113DA3910000ABAF1 /* libModelUtility.dylib in Copy Frameworks */,
+				26EE3E1313DA3915000ABAF1 /* libSDL.dylib in Copy Frameworks */,
+				26EE3E1213DA3912000ABAF1 /* libMapUtility.dylib in Copy Frameworks */,
+				26EE3E1413DA3918000ABAF1 /* libPNG.dylib in Copy Frameworks */,
+				26EE3E1513DA391B000ABAF1 /* libmpg123.dylib in Copy Frameworks */,
 			);
 			name = "Copy Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -347,7 +357,6 @@
 		00CA825D00BF848B7F000001 /* dim3 Engine.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = "dim3 Engine.icns"; path = "Resources/dim3 Engine.icns"; sourceTree = "<group>"; };
 		0867D6ABFE840B52C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		20286C33FDCF999611CA2CEA /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
-		2605E9AC13D8F94700A3178B /* libBaseUtility.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libBaseUtility.a; path = ../dim3Common/Libraries/libBaseUtility.a; sourceTree = "<group>"; };
 		260AE9340F832A5B00451942 /* gl_back_render.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = gl_back_render.c; path = Sources_View/gl_back_render.c; sourceTree = "<group>"; };
 		260C145A129C770800B6D5B5 /* SDLMain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDLMain.h; path = SDL/SDLMain.h; sourceTree = "<group>"; };
 		260C145B129C770800B6D5B5 /* SDLMain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SDLMain.m; path = SDL/SDLMain.m; sourceTree = "<group>"; };
@@ -356,7 +365,6 @@
 		26100DEC10BB5156002B3FA1 /* gl_shader_user.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = gl_shader_user.c; path = Sources_View/gl_shader_user.c; sourceTree = "<group>"; };
 		26101DCD0E5D075100D2919B /* view_vertex_object.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = view_vertex_object.c; path = Sources_View/view_vertex_object.c; sourceTree = "<group>"; };
 		26184E7113CA0CE6003A9A79 /* CoreAudioKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudioKit.framework; path = ../../../../System/Library/Frameworks/CoreAudioKit.framework; sourceTree = "<group>"; };
-		26184E7313CA0D0A003A9A79 /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = ../../../../System/Library/Frameworks/AudioUnit.framework; sourceTree = "<group>"; };
 		26184E7513CA0D2E003A9A79 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = ../../../../System/Library/Frameworks/IOKit.framework; sourceTree = "<group>"; };
 		26184E7713CA1022003A9A79 /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = ../../../../System/Library/Frameworks/JavaScriptCore.framework; sourceTree = "<group>"; };
 		261B52AE0FA551CE0070CAB0 /* render_model.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = render_model.c; path = Sources_View/render_model.c; sourceTree = "<group>"; };
@@ -395,7 +403,6 @@
 		269D27C212DEBB7E00AF5695 /* mac_os_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mac_os_defs.h; path = ../dim3Common/Headers/mac_os_defs.h; sourceTree = SOURCE_ROOT; };
 		26A562580EF6D0AB00D38FC0 /* net_socket.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = net_socket.c; path = Sources_Network/net_socket.c; sourceTree = "<group>"; };
 		26A562B80EF6D50D00D38FC0 /* net_utility.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = net_utility.c; path = Sources_Network/net_utility.c; sourceTree = "<group>"; };
-		26A5C56213D68F2D00CDABD9 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = ../../../../System/Library/Frameworks/Foundation.framework; sourceTree = "<group>"; };
 		26A60BD411CC1DCF00E9AB33 /* view_draw_debug.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = view_draw_debug.c; path = Sources_View/view_draw_debug.c; sourceTree = "<group>"; };
 		26A6D506122A203E00EE3149 /* script_script.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = script_script.c; path = Sources_Server/script_script.c; sourceTree = "<group>"; };
 		26ABEE810E72F0700029469D /* script_obj_object_thrust.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = script_obj_object_thrust.c; path = Sources_Server/script_obj_object_thrust.c; sourceTree = "<group>"; };
@@ -407,14 +414,16 @@
 		26D109600DAC797D006666F2 /* host.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = host.c; path = Sources_View/host.c; sourceTree = "<group>"; };
 		26DAED2F0DD55C28000EBB48 /* group_move.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = group_move.c; path = Sources_Server/group_move.c; sourceTree = "<group>"; };
 		26DB6E020DE07A9700BDD008 /* obj_ext_move.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = obj_ext_move.c; path = Sources_Server/obj_ext_move.c; sourceTree = "<group>"; };
-		26DC400A13D3A26A002F9827 /* libMapUtility.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libMapUtility.a; path = ../dim3Common/Libraries/libMapUtility.a; sourceTree = "<group>"; };
-		26DC400B13D3A26A002F9827 /* libModelUtility.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libModelUtility.a; path = ../dim3Common/Libraries/libModelUtility.a; sourceTree = "<group>"; };
-		26DC404C13D3A64F002F9827 /* libSDL.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libSDL.a; path = ../dim3Common/Libraries/SDL/libSDL.a; sourceTree = "<group>"; };
-		26DC404E13D3A656002F9827 /* libPNG.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPNG.a; path = ../dim3Common/Libraries/PNG/libPNG.a; sourceTree = "<group>"; };
-		26DC405013D3A65E002F9827 /* libmpg123.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libmpg123.a; path = ../dim3Common/Libraries/MPG123/libmpg123.a; sourceTree = "<group>"; };
 		26E200891134C6E100E9055A /* net_http.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = net_http.c; path = Sources_Network/net_http.c; sourceTree = "<group>"; };
 		26E2008A1134C6E100E9055A /* net_queue.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = net_queue.c; path = Sources_Network/net_queue.c; sourceTree = "<group>"; };
 		26E8DBB21270E88C00ACA294 /* cinema.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = cinema.c; path = Sources_View/cinema.c; sourceTree = "<group>"; };
+		26EE3E0413DA38BE000ABAF1 /* libBaseUtility.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libBaseUtility.dylib; path = ../dim3Common/Libraries/libBaseUtility.dylib; sourceTree = "<group>"; };
+		26EE3E0513DA38BE000ABAF1 /* libMapUtility.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libMapUtility.dylib; path = ../dim3Common/Libraries/libMapUtility.dylib; sourceTree = "<group>"; };
+		26EE3E0613DA38BE000ABAF1 /* libModelUtility.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libModelUtility.dylib; path = ../dim3Common/Libraries/libModelUtility.dylib; sourceTree = "<group>"; };
+		26EE3E0A13DA38C6000ABAF1 /* libmpg123.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libmpg123.dylib; path = ../dim3Common/Libraries/MPG123/libmpg123.dylib; sourceTree = "<group>"; };
+		26EE3E0C13DA38CC000ABAF1 /* libPNG.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libPNG.dylib; path = ../dim3Common/Libraries/PNG/libPNG.dylib; sourceTree = "<group>"; };
+		26EE3E0E13DA38D3000ABAF1 /* libSDL.dylib */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libSDL.dylib; path = ../dim3Common/Libraries/SDL/libSDL.dylib; sourceTree = "<group>"; };
+		26EE3E1613DA7F78000ABAF1 /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = ../../../../System/Library/Frameworks/AudioUnit.framework; sourceTree = "<group>"; };
 		26F08C9E0DAC7DB50097E249 /* net_host.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = net_host.c; path = Sources_Network/net_host.c; sourceTree = "<group>"; };
 		26F08CA00DAC7DB50097E249 /* net_host_players.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = net_host_players.c; path = Sources_Network/net_host_players.c; sourceTree = "<group>"; };
 		26F8AA74133546FB0020367E /* chat.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = chat.c; path = Sources_View/chat.c; sourceTree = "<group>"; };
@@ -445,7 +454,6 @@
 		F587FFDA0AB0F962006ED5CD /* obj_rigid_body.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = obj_rigid_body.c; path = Sources_Server/obj_rigid_body.c; sourceTree = "<group>"; };
 		F58B7C070CD2B7A700CEE31F /* network_draw.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = network_draw.c; path = Sources_View/network_draw.c; sourceTree = "<group>"; };
 		F59447200CEF4F1E0027E360 /* script_model_mesh.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = script_model_mesh.c; path = Sources_Server/script_model_mesh.c; sourceTree = "<group>"; };
-		F5A57E17090AA99700BE7C36 /* QuickTime.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuickTime.framework; path = /System/Library/Frameworks/QuickTime.framework; sourceTree = "<absolute>"; };
 		F5A57F0C090AB08A00BE7C36 /* game_time.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = game_time.c; path = Sources_Server/game_time.c; sourceTree = "<group>"; };
 		F5A57F37090AB24200BE7C36 /* xml_setup.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = xml_setup.c; path = Sources_Server/xml_setup.c; sourceTree = "<group>"; };
 		F5A57F75090ABEDF00BE7C36 /* remote_status.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = remote_status.c; path = Sources_View/remote_status.c; sourceTree = "<group>"; };
@@ -665,19 +673,17 @@
 			files = (
 				F5CD87DC055771B80023AD9B /* Carbon.framework in Frameworks */,
 				F5B01DA908F867E600AE5F87 /* Cocoa.framework in Frameworks */,
-				F5A57E18090AA99700BE7C36 /* QuickTime.framework in Frameworks */,
 				F52E82410C1632E6003D4818 /* OpenGL.framework in Frameworks */,
 				26184E7213CA0CE6003A9A79 /* CoreAudioKit.framework in Frameworks */,
-				26184E7413CA0D0A003A9A79 /* AudioUnit.framework in Frameworks */,
 				26184E7613CA0D2E003A9A79 /* IOKit.framework in Frameworks */,
 				26184E7813CA1022003A9A79 /* JavaScriptCore.framework in Frameworks */,
-				26DC401313D3A3A7002F9827 /* libMapUtility.a in Frameworks */,
-				26DC401413D3A3A7002F9827 /* libModelUtility.a in Frameworks */,
-				26DC404D13D3A64F002F9827 /* libSDL.a in Frameworks */,
-				26DC404F13D3A656002F9827 /* libPNG.a in Frameworks */,
-				26DC405113D3A65E002F9827 /* libmpg123.a in Frameworks */,
-				26A5C56313D68F2D00CDABD9 /* Foundation.framework in Frameworks */,
-				2605E9AD13D8F94700A3178B /* libBaseUtility.a in Frameworks */,
+				26EE3E0713DA38BE000ABAF1 /* libBaseUtility.dylib in Frameworks */,
+				26EE3E0813DA38BE000ABAF1 /* libMapUtility.dylib in Frameworks */,
+				26EE3E0913DA38BE000ABAF1 /* libModelUtility.dylib in Frameworks */,
+				26EE3E0B13DA38C6000ABAF1 /* libmpg123.dylib in Frameworks */,
+				26EE3E0D13DA38CC000ABAF1 /* libPNG.dylib in Frameworks */,
+				26EE3E0F13DA38D3000ABAF1 /* libSDL.dylib in Frameworks */,
+				26EE3E1713DA7F78000ABAF1 /* AudioUnit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -754,12 +760,12 @@
 		02DF67D400BE08477F000001 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
-				2605E9AC13D8F94700A3178B /* libBaseUtility.a */,
-				26DC400B13D3A26A002F9827 /* libModelUtility.a */,
-				26DC400A13D3A26A002F9827 /* libMapUtility.a */,
-				26DC405013D3A65E002F9827 /* libmpg123.a */,
-				26DC404E13D3A656002F9827 /* libPNG.a */,
-				26DC404C13D3A64F002F9827 /* libSDL.a */,
+				26EE3E0413DA38BE000ABAF1 /* libBaseUtility.dylib */,
+				26EE3E0613DA38BE000ABAF1 /* libModelUtility.dylib */,
+				26EE3E0513DA38BE000ABAF1 /* libMapUtility.dylib */,
+				26EE3E0E13DA38D3000ABAF1 /* libSDL.dylib */,
+				26EE3E0C13DA38CC000ABAF1 /* libPNG.dylib */,
+				26EE3E0A13DA38C6000ABAF1 /* libmpg123.dylib */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -902,14 +908,12 @@
 		20286C32FDCF999611CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				26A5C56213D68F2D00CDABD9 /* Foundation.framework */,
+				26EE3E1613DA7F78000ABAF1 /* AudioUnit.framework */,
 				26184E7713CA1022003A9A79 /* JavaScriptCore.framework */,
 				26184E7513CA0D2E003A9A79 /* IOKit.framework */,
-				26184E7313CA0D0A003A9A79 /* AudioUnit.framework */,
 				26184E7113CA0CE6003A9A79 /* CoreAudioKit.framework */,
 				F5B01DA808F867E600AE5F87 /* Cocoa.framework */,
 				20286C33FDCF999611CA2CEA /* Carbon.framework */,
-				F5A57E17090AA99700BE7C36 /* QuickTime.framework */,
 				F52E82400C1632E6003D4818 /* OpenGL.framework */,
 			);
 			name = Frameworks;
@@ -1815,7 +1819,7 @@
 				OBJROOT = build;
 				OTHER_LDFLAGS = "-lz";
 				PRODUCT_NAME = "dim3 Engine";
-				SDKROOT = macosx10.7;
+				SDKROOT = macosx10.6;
 				SKIP_INSTALL = YES;
 				SYMROOT = build;
 				VALID_ARCHS = i386;

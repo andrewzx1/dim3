@@ -137,8 +137,8 @@ void property_palette_click_spot(int spot_idx,int id)
 		case kSpotPropertyScript:
 			strcpy(file_name,spot->script);
 			if (dialog_file_open_run("Pick a Script","Scripts/Objects","js",NULL,file_name)) {
-				strncpy(spot->script,file_name,file_str_len);
-				spot->script[file_str_len-1]=0x0;
+				strncpy(spot->script,file_name,name_str_len);
+				spot->script[name_str_len-1]=0x0;
 			}
 			break;
 

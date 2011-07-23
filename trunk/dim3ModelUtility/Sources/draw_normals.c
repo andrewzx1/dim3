@@ -75,7 +75,7 @@ void model_move_single_tangent_space_vector(model_draw_bone_type *draw_bones,mod
 	v->z=minz+((majz-minz)*bone_factor);
 }
 
-inline void model_move_single_tangent_space(model_mesh_type *mesh,model_draw_bone_type *draw_bones,model_trig_type *trig,int idx,tangent_space_type *space,bool normal_only)
+static inline void model_move_single_tangent_space(model_mesh_type *mesh,model_draw_bone_type *draw_bones,model_trig_type *trig,int idx,tangent_space_type *space,bool normal_only)
 {
 	model_vertex_type		*vertex;
 

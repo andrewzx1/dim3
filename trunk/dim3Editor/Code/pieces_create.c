@@ -122,8 +122,8 @@ void piece_create_spot(void)
 	name[0]=0x0;
 	if (!dialog_file_open_run("Pick a Script","Scripts/Objects","js",NULL,name)) return;
 
-	strncpy(spot->script,name,file_str_len);
-	spot->script[file_str_len-1]=0x0;
+	strncpy(spot->script,name,name_str_len);
+	spot->script[name_str_len-1]=0x0;
 	
 	strncpy(spot->name,name,name_str_len);
 	spot->name[name_str_len-1]=0x0;

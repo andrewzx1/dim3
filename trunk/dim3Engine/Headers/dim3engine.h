@@ -49,6 +49,8 @@ and can be sold or given away.
 
 #ifdef INCLUDE_UTILITY_LIBRARIES
 	#include "baseprivate.h"
+	#include "modelprivate.h"
+	#include "mapprivate.h"
 #endif
 
 #include "setup_defs.h"
