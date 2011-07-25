@@ -844,7 +844,7 @@ void gl_core_shader_shutdown(void)
       
 ======================================================= */
 
-inline int gl_core_shader_find_for_mode(int core_shader_group,texture_type *texture)
+static inline int gl_core_shader_find_for_mode(int core_shader_group,texture_type *texture)
 {
 	bool				bump,spec;
 

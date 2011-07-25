@@ -84,7 +84,7 @@ void gl_texture_shutdown(void)
       
 ======================================================= */
 
-inline void gl_texture_bind(int unit,GLuint txt_id)
+void gl_texture_bind(int unit,GLuint txt_id)
 {
 	if (gl_texture_current_binds[unit]==txt_id) return;
 
@@ -94,7 +94,7 @@ inline void gl_texture_bind(int unit,GLuint txt_id)
 	glBindTexture(GL_TEXTURE_2D,txt_id);
 }
 
-inline void gl_texture_clear(int unit)
+void gl_texture_clear(int unit)
 {
 	gl_texture_bind(unit,0);
 	gl_texture_current_binds[unit]=-1;
@@ -106,7 +106,7 @@ inline void gl_texture_clear(int unit)
       
 ======================================================= */
 
-inline void gl_texture_opaque_start(void)
+void gl_texture_opaque_start(void)
 {
 		// texture unit 0
 		// contains texture modulated with color
@@ -116,14 +116,14 @@ inline void gl_texture_opaque_start(void)
 	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
 }
 
-inline void gl_texture_opaque_end(void)
+void gl_texture_opaque_end(void)
 {
 	glDisable(GL_TEXTURE_2D);
 	
 	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
 }
 
-inline void gl_texture_opaque_set(GLuint txt_id)
+void gl_texture_opaque_set(GLuint txt_id)
 {
 	gl_texture_bind(0,txt_id);
 }
@@ -134,7 +134,7 @@ inline void gl_texture_opaque_set(GLuint txt_id)
       
 ======================================================= */
 
-inline void gl_texture_opaque_light_map_start(void)
+void gl_texture_opaque_light_map_start(void)
 {
 		// texture unit 0
 		// the light map plus the ambient light
@@ -173,7 +173,7 @@ inline void gl_texture_opaque_light_map_start(void)
 	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_ALPHA,GL_SRC_ALPHA);
 }
 
-inline void gl_texture_opaque_light_map_end(void)
+void gl_texture_opaque_light_map_end(void)
 {
 	glActiveTexture(GL_TEXTURE1);
 	glDisable(GL_TEXTURE_2D);
@@ -184,7 +184,7 @@ inline void gl_texture_opaque_light_map_end(void)
 	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
 }
 
-inline void gl_texture_opaque_light_map_set(GLuint txt_id,GLuint lmap_txt_id)
+void gl_texture_opaque_light_map_set(GLuint txt_id,GLuint lmap_txt_id)
 {
 	gl_texture_bind(0,lmap_txt_id);
 	gl_texture_bind(1,txt_id);
@@ -196,7 +196,7 @@ inline void gl_texture_opaque_light_map_set(GLuint txt_id,GLuint lmap_txt_id)
       
 ======================================================= */
 
-inline void gl_texture_transparent_start(void)
+void gl_texture_transparent_start(void)
 {
 		// texture unit 0
 		// contains texture
@@ -221,13 +221,13 @@ inline void gl_texture_transparent_start(void)
 	gl_texture_current_alpha=-1.0f;
 }
 
-inline void gl_texture_transparent_end(void)
+void gl_texture_transparent_end(void)
 {
 	glDisable(GL_TEXTURE_2D);
 	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
 }
 
-inline void gl_texture_transparent_set(GLuint txt_id,float alpha)
+void gl_texture_transparent_set(GLuint txt_id,float alpha)
 {
 	GLfloat			col4[4];
 	
@@ -249,7 +249,7 @@ inline void gl_texture_transparent_set(GLuint txt_id,float alpha)
       
 ======================================================= */
 
-inline void gl_texture_transparent_light_map_start(void)
+void gl_texture_transparent_light_map_start(void)
 {
 		// texture unit 0
 		// the light map plus the ambient light
@@ -292,7 +292,7 @@ inline void gl_texture_transparent_light_map_start(void)
 	gl_texture_current_alpha=-1.0f;
 }
 
-inline void gl_texture_transparent_light_map_end(void)
+void gl_texture_transparent_light_map_end(void)
 {
 	glActiveTexture(GL_TEXTURE1);
 	glDisable(GL_TEXTURE_2D);
@@ -303,7 +303,7 @@ inline void gl_texture_transparent_light_map_end(void)
 	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
 }
 
-inline void gl_texture_transparent_light_map_set(GLuint txt_id,GLuint lmap_txt_id,float alpha)
+void gl_texture_transparent_light_map_set(GLuint txt_id,GLuint lmap_txt_id,float alpha)
 {
 	GLfloat			col4[4];
 
@@ -327,7 +327,7 @@ inline void gl_texture_transparent_light_map_set(GLuint txt_id,GLuint lmap_txt_i
       
 ======================================================= */
 
-inline void gl_texture_glow_start(void)
+void gl_texture_glow_start(void)
 {
 		// texture unit 0
 		// the glow map modulated with the glow constant
@@ -370,7 +370,7 @@ inline void gl_texture_glow_start(void)
 	gl_texture_current_glow_color=-1.0f;
 }
 
-inline void gl_texture_glow_end(void)
+void gl_texture_glow_end(void)
 {
 	glActiveTexture(GL_TEXTURE1);
 	glDisable(GL_TEXTURE_2D);
@@ -383,7 +383,7 @@ inline void gl_texture_glow_end(void)
 	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
 }
 
-inline void gl_texture_glow_set(GLuint txt_id,GLuint glow_id,float glow_color)
+void gl_texture_glow_set(GLuint txt_id,GLuint glow_id,float glow_color)
 {
 	GLfloat			col4[4];
 
@@ -407,7 +407,7 @@ inline void gl_texture_glow_set(GLuint txt_id,GLuint glow_id,float glow_color)
       
 ======================================================= */
 
-inline void gl_texture_decal_start(void)
+void gl_texture_decal_start(void)
 {
 		// texture unit 0
 		// contains texture
@@ -430,12 +430,12 @@ inline void gl_texture_decal_start(void)
 	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND1_ALPHA,GL_SRC_ALPHA);
 }
 
-inline void gl_texture_decal_end(void)
+void gl_texture_decal_end(void)
 {
 	glDisable(GL_TEXTURE_2D);
 }
 
-inline void gl_texture_decal_set(GLuint txt_id,float r,float g,float b,float alpha)
+void gl_texture_decal_set(GLuint txt_id,float r,float g,float b,float alpha)
 {
 	GLfloat			fct[4];
 
@@ -459,7 +459,7 @@ inline void gl_texture_decal_set(GLuint txt_id,float r,float g,float b,float alp
       
 ======================================================= */
 
-inline void gl_texture_simple_start(void)
+void gl_texture_simple_start(void)
 {
 		// preset texture unit 0
 		// it simply modultes the texture with the preset color/alpha
@@ -482,7 +482,7 @@ inline void gl_texture_simple_start(void)
 	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND1_ALPHA,GL_SRC_ALPHA);
 }
 
-inline void gl_texture_simple_end(void)
+void gl_texture_simple_end(void)
 {
 		// reset any possible clamping
 		
@@ -492,7 +492,7 @@ inline void gl_texture_simple_end(void)
 	glDisable(GL_TEXTURE_2D);
 }
 
-inline void gl_texture_simple_set(GLuint txt_id,bool clamp,float r,float g,float b,float alpha)
+void gl_texture_simple_set(GLuint txt_id,bool clamp,float r,float g,float b,float alpha)
 {
 	GLfloat			col4[4];
 	

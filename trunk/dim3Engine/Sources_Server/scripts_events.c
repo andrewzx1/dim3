@@ -92,7 +92,7 @@ bool scripts_setup_event_attach(int script_idx,int main_event,char *func_name,ch
       
 ======================================================= */
 
-inline void scripts_lock_events(void)
+void scripts_lock_events(void)
 {
 		// force the core to never call events
 		// this is mostly used when restoring a saved
@@ -101,7 +101,7 @@ inline void scripts_lock_events(void)
 	scripts_event_lock=TRUE;
 }
 
-inline void scripts_unlock_events(void)
+void scripts_unlock_events(void)
 {
 	scripts_event_lock=FALSE;
 }

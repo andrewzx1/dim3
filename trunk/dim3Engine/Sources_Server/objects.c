@@ -300,7 +300,7 @@ void object_clear_draw(model_draw *draw)
       
 ======================================================= */
 
-inline int object_get_radius(obj_type *obj)
+int object_get_radius(obj_type *obj)
 {
 	int			radius;
 	

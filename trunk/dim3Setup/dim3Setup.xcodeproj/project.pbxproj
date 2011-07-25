@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		26459B6E13DC9D5600D7DD73 /* Back.png in Resources */ = {isa = PBXBuildFile; fileRef = 26459B6D13DC9D5600D7DD73 /* Back.png */; };
+		26459B6F13DC9D6400D7DD73 /* Back.png in Copy (List Icons) */ = {isa = PBXBuildFile; fileRef = 26459B6D13DC9D5600D7DD73 /* Back.png */; };
 		2649D11E1341270B00573F6F /* property_palette_intro.c in Sources */ = {isa = PBXBuildFile; fileRef = 2649D11D1341270B00573F6F /* property_palette_intro.c */; };
 		26514F7213594F2500298860 /* alt_property_palette_chooser.c in Sources */ = {isa = PBXBuildFile; fileRef = 26514F6E13594F2500298860 /* alt_property_palette_chooser.c */; };
 		26514F7313594F2500298860 /* alt_property_palette_menu.c in Sources */ = {isa = PBXBuildFile; fileRef = 26514F6F13594F2500298860 /* alt_property_palette_menu.c */; };
@@ -109,6 +111,7 @@
 			dstPath = Lists;
 			dstSubfolderSpec = 7;
 			files = (
+				26459B6F13DC9D6400D7DD73 /* Back.png in Copy (List Icons) */,
 				26C87D851339431D00DA562E /* Edit.png in Copy (List Icons) */,
 				26C87D861339431D00DA562E /* Minus.png in Copy (List Icons) */,
 				26C87D871339431D00DA562E /* Plus.png in Copy (List Icons) */,
@@ -120,6 +123,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		26459B6D13DC9D5600D7DD73 /* Back.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Back.png; path = "Resources/Additional Data/Icons/Lists/Back.png"; sourceTree = "<group>"; };
 		2649D11D1341270B00573F6F /* property_palette_intro.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_intro.c; path = Code/property_palette_intro.c; sourceTree = "<group>"; };
 		26514F6E13594F2500298860 /* alt_property_palette_chooser.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = alt_property_palette_chooser.c; path = Code/alt_property_palette_chooser.c; sourceTree = "<group>"; };
 		26514F6F13594F2500298860 /* alt_property_palette_menu.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = alt_property_palette_menu.c; path = Code/alt_property_palette_menu.c; sourceTree = "<group>"; };
@@ -270,6 +274,7 @@
 			children = (
 				26D15C791329E42400F9EC7B /* list_palette_common.c */,
 				26D15C701329E3EF00F9EC7B /* item_palette.c */,
+				26D15C711329E3EF00F9EC7B /* property_palette.c */,
 				268382A0133D4F3D0035315B /* property_palette_settings.c */,
 				2649D11D1341270B00573F6F /* property_palette_intro.c */,
 				26784D2F13B940F400B5D8C3 /* property_palette_setup.c */,
@@ -286,7 +291,6 @@
 				2683829B133D4F3D0035315B /* property_palette_crosshairs.c */,
 				2683829A133D4F3D0035315B /* property_palette_actions.c */,
 				269E97BF1360EE980027B9BF /* property_palette_shaders.c */,
-				26D15C711329E3EF00F9EC7B /* property_palette.c */,
 				26D15C6F1329E3EF00F9EC7B /* alt_property_palette.c */,
 				26BDD879134AA97C002E6723 /* alt_property_palette_intro_button.c */,
 				26BDD87A134AA97C002E6723 /* alt_property_palette_intro_model.c */,
@@ -383,6 +387,7 @@
 		26C87D791339425E00DA562E /* Lists */ = {
 			isa = PBXGroup;
 			children = (
+				26459B6D13DC9D5600D7DD73 /* Back.png */,
 				26C87D7A1339427A00DA562E /* Edit.png */,
 				26C87D7B1339427A00DA562E /* Minus.png */,
 				26C87D7C1339427A00DA562E /* Plus.png */,
@@ -462,6 +467,7 @@
 			files = (
 				269FECBD132845880030B0B5 /* dim3 Setup.icns in Resources */,
 				269FECBE132845880030B0B5 /* dim3 Setup.nib in Resources */,
+				26459B6E13DC9D5600D7DD73 /* Back.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

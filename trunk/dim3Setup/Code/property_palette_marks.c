@@ -77,6 +77,7 @@ void property_palette_click_marks(int id)
 		
 	if ((id>=kMarkProperyName) && (id<(kMarkProperyName+max_iface_mark))) {
 		state.cur_mark_idx=id-kMarkProperyName;
+		list_palette_set_level(2);
 		main_wind_draw();
 		return;
 	}

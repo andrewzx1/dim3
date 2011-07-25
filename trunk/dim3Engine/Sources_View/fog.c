@@ -232,12 +232,18 @@ void fog_solid_start(void)
 	col[2]=map.fog.col.b;
 	col[3]=1.0f;
 
+#ifndef D3_OPENGL_ES
 	glFogfv(GL_FOG_COLOR,col);
 	glFogi(GL_FOG_MODE,GL_LINEAR);
 	glFogi(GL_FOG_START,map.fog.inner_radius);
 	glFogi(GL_FOG_END,map.fog.outer_radius);
-	
 	glFogi(GL_FOG_COORD_SRC,GL_FRAGMENT_DEPTH);
+#else
+	glFogfv(GL_FOG_COLOR,col);
+	glFogx(GL_FOG_MODE,GL_LINEAR);
+	glFogf(GL_FOG_START,(GLfloat)map.fog.inner_radius);
+	glFogf(GL_FOG_END,(GLfloat)map.fog.outer_radius);
+#endif
 }
 
 void fog_solid_end(void)

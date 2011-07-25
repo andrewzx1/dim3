@@ -202,7 +202,7 @@ void run_object_single(obj_type *obj)
   
 ======================================================= */
 
-inline void run_objects_slice_single(obj_type *obj)
+static inline void run_objects_slice_single(obj_type *obj)
 {
 		// remotes get predicted
 		

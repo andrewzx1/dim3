@@ -126,6 +126,7 @@ void property_palette_click_hud(int id)
 		state.cur_hud_bitmap_idx=id-kHUDPropertyBitmapName;
 		state.cur_hud_text_idx=-1;
 		state.cur_hud_bar_idx=-1;
+		list_palette_set_level(2);
 		main_wind_draw();
 		return;
 	}
@@ -209,6 +210,7 @@ void property_palette_click_hud(int id)
 		state.cur_hud_bitmap_idx=-1;
 		state.cur_hud_text_idx=id-kHUDPropertyTextName;
 		state.cur_hud_bar_idx=-1;
+		list_palette_set_level(2);
 		main_wind_draw();
 		return;
 	}
@@ -280,6 +282,7 @@ void property_palette_click_hud(int id)
 		state.cur_hud_bitmap_idx=-1;
 		state.cur_hud_text_idx=-1;
 		state.cur_hud_bar_idx=id-kHUDPropertyBarName;
+		list_palette_set_level(2);
 		main_wind_draw();
 		return;
 	}

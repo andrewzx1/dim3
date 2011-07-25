@@ -46,7 +46,6 @@ and can be sold or given away.
 int								texture_edit_scroll_pos,
 								texture_edit_frame_click_idx;
 
-extern int						tool_palette_pixel_sz,txt_palette_pixel_sz;
 extern list_palette_type		item_palette,property_palette;
 
 #ifdef D3_EDITOR
@@ -79,8 +78,6 @@ void texture_edit_switch(int texture_idx)
 	texture_edit_scroll_pos=0;
 	texture_edit_frame_click_idx=-1;
 
-	alt_property_fix_open_state();
-
 	main_wind_draw();
 }
 
@@ -94,8 +91,8 @@ void texture_edit_get_box(d3rect *box)
 {
 	os_get_window_box(box);
 	
-	box->ty+=tool_palette_pixel_sz;
-	box->by-=txt_palette_pixel_sz;
+	box->ty+=tool_palette_pixel_size();
+	box->by-=texture_palette_pixel_size();
 	box->rx-=item_palette.pixel_sz;
 }
 

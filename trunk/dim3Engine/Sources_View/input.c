@@ -252,7 +252,7 @@ bool input_set_key_wait(char *name)
       
 ======================================================= */
 
-inline bool input_app_active(void)
+bool input_app_active(void)
 {
 	return(input_app_active_flag);
 }

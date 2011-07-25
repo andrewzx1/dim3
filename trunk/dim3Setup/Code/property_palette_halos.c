@@ -77,6 +77,7 @@ void property_palette_click_halos(int id)
 		
 	if ((id>=kHaloProperyName) && (id<(kHaloProperyName+max_iface_halo))) {
 		state.cur_halo_idx=id-kHaloProperyName;
+		list_palette_set_level(2);
 		main_wind_draw();
 		return;
 	}

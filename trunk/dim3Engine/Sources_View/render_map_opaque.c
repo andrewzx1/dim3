@@ -133,8 +133,12 @@ void render_opaque_mesh_normal(void)
 
 				// draw polygon
 
-			glDrawRangeElements(GL_TRIANGLE_FAN,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
-		
+			#ifndef D3_OPENGL_ES
+				glDrawRangeElements(GL_TRIANGLE_FAN,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
+			#else
+				glDrawElements(GL_TRIANGLE_FAN,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
+			#endif
+			
 			poly++;
 			view.count.poly++;
 		}
@@ -225,8 +229,12 @@ void render_opaque_mesh_shader(void)
 
 				// draw polygon
 
-			glDrawRangeElements(GL_TRIANGLE_FAN,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
-		
+			#ifndef D3_OPENGL_ES
+				glDrawRangeElements(GL_TRIANGLE_FAN,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
+			#else
+				glDrawElements(GL_TRIANGLE_FAN,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
+			#endif
+			
 			poly++;
 			view.count.poly++;
 		}
@@ -302,8 +310,13 @@ void render_opaque_mesh_glow(void)
 				// draw glow
 
 			gl_texture_glow_set(texture->frames[frame].bitmap.gl_id,texture->frames[frame].glowmap.gl_id,texture->glow.current_color);
-			glDrawRangeElements(GL_TRIANGLE_FAN,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
-		
+			
+			#ifndef D3_OPENGL_ES
+				glDrawRangeElements(GL_TRIANGLE_FAN,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
+			#else
+				glDrawElements(GL_TRIANGLE_FAN,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
+			#endif
+			
 			poly++;
 		}
 	}

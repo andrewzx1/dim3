@@ -50,8 +50,8 @@ and can be sold or given away.
 
 #include <pthread.h>
 
-#include <OpenGLES/es2/gl.h>
-#include <OpenGLES/es2/glext.h>
+#include <OpenGLES/es1/gl.h>
+#include <OpenGLES/es1/glext.h>
 
 #include <zlib.h>
 
@@ -62,8 +62,7 @@ and can be sold or given away.
 // os flags
 //
 
-#define D3_OS_MAC				1
-#define D3_OS_TOUCH				1
+#define D3_OS_IPHONE			1
 #define D3_OPENGL_ES			1
 
 //

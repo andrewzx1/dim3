@@ -43,6 +43,23 @@ extern bool view_draw_node(node_type *node);
 
 /* =======================================================
 
+      OpenGL ES Stubs
+      
+======================================================= */
+
+#ifdef D3_OPENGL_ES
+
+void gl_back_render_initialize(void) {}
+void gl_back_render_shutdown(void) {}
+void gl_back_render_map_start(void) {}
+void gl_back_render_map_end(void) {}
+void gl_back_render_frame_start(void) {}
+bool gl_back_render_get_texture(char *node_name,GLuint *txt_id,float *alpha) { return(FALSE); }
+
+#else
+
+/* =======================================================
+
       Initialize Back Renderer
       
 ======================================================= */
@@ -337,4 +354,4 @@ bool gl_back_render_get_texture(char *node_name,GLuint *txt_id,float *alpha)
 	return(TRUE);
 }
 
-
+#endif

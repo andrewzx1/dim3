@@ -199,14 +199,6 @@ void property_palette_click_editor_preference(int id)
 
 	setup_xml_write();
 
-		// need to reset palettes
-		// as prefs can change the sizes
-
-	texture_palette_setup();
-	item_palette_setup();
-	property_palette_setup();
-	alt_property_palette_setup();
-
 	main_wind_draw();
 }
 

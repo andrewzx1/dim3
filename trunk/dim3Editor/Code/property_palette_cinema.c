@@ -218,7 +218,7 @@ void property_palette_click_cinema(int cinema_idx,int id)
 
 	if ((id>=kCinemaPropertyAction) && (id<kCinemaPropertyActionDelete)) {
 		state.cur_cinema_action_idx=id-kCinemaPropertyAction;
-		alt_property_fix_open_state();
+		list_palette_set_level(2);
 		main_wind_draw();
 		return;
 	}
@@ -228,7 +228,6 @@ void property_palette_click_cinema(int cinema_idx,int id)
 	if (id==kCinemaPropertyActionAdd) {
 		state.cur_cinema_action_idx=map_cinema_add_action(&map,cinema_idx);
 		dialog_property_string_run(list_string_value_positive_int,(void*)&cinema->actions[state.cur_cinema_action_idx].start_msec,0,0,0);
-		alt_property_fix_open_state();
 		main_wind_draw();
 		return;
 	}
@@ -238,7 +237,6 @@ void property_palette_click_cinema(int cinema_idx,int id)
 	if (id>=kCinemaPropertyActionDelete) {
 		state.cur_cinema_action_idx=-1;
 		map_cinema_delete_action(&map,cinema_idx,(id-kCinemaPropertyActionDelete));
-		alt_property_fix_open_state();
 		main_wind_draw();
 		return;
 	}

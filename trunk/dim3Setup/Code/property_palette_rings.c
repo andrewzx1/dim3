@@ -77,6 +77,7 @@ void property_palette_click_rings(int id)
 		
 	if ((id>=kRingProperyName) && (id<(kRingProperyName+max_iface_ring))) {
 		state.cur_ring_idx=id-kRingProperyName;
+		list_palette_set_level(2);
 		main_wind_draw();
 		return;
 	}

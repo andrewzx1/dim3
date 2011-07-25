@@ -54,12 +54,12 @@ extern bool effect_inview(effect_type *effect,int count,d3pnt *center_pnt);
       
 ======================================================= */
 
-inline void view_visibility_check_clear(void)
+static inline void view_visibility_check_clear(void)
 {
 	bzero(view.obscure.grid,obscure_grid_byte_size);
 }
 
-inline bool view_visibility_check_get(int x,int z)
+static inline bool view_visibility_check_get(int x,int z)
 {
 	int				idx,offset;
 	unsigned char	*byte;
@@ -71,7 +71,7 @@ inline bool view_visibility_check_get(int x,int z)
 	return(((*byte)&(0x1<<offset))==0x0);
 }
 
-inline void view_visibility_check_set(int x,int z)
+static inline void view_visibility_check_set(int x,int z)
 {
 	int				idx,offset;
 	unsigned char	*byte;
@@ -232,7 +232,7 @@ bool view_visibility_check_box(d3pnt *mid,d3pnt *min,d3pnt *max)
 	return(FALSE);
 }
 
-inline bool view_visibility_check_mesh(int eye_mesh_idx,map_mesh_type *mesh)
+static inline bool view_visibility_check_mesh(int eye_mesh_idx,map_mesh_type *mesh)
 {
 	return(view_visibility_check_box(&mesh->box.mid,&mesh->box.min,&mesh->box.max));
 }

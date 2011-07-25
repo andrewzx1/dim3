@@ -32,7 +32,7 @@ and can be sold or given away.
 #include "interface.h"
 
 typedef struct		{
-						double			x,y,z;
+						float			x,y,z;
 					} d3_d_vct;
 
 /* =======================================================
@@ -42,16 +42,20 @@ typedef struct		{
       
 ======================================================= */
 
-void es_patch_gluPerspective(double fovy,double aspect,double zNear,double zFar)
+void glu_patch_gluPerspective(float fovy,float aspect,float zNear,float zFar)
 {
-	double		x_min,x_max,y_min,y_max;
+	float		x_min,x_max,y_min,y_max;
 
 	y_max=zNear*tan((fovy*D_TRIG_PI)/360.0);
 	y_min=-y_max;
 	x_min=y_min*aspect;
 	x_max=y_max*aspect;
 
+#ifndef D3_OPENGL_ES
 	glFrustum(x_min,x_max,y_min,y_max,zNear,zFar);
+#else
+	glFrustumf(x_min,x_max,y_min,y_max,zNear,zFar);
+#endif
 }
 
 /* =======================================================
@@ -61,9 +65,9 @@ void es_patch_gluPerspective(double fovy,double aspect,double zNear,double zFar)
       
 ======================================================= */
 
-void es_patch_vector_normalize(d3_d_vct *v)
+void glu_patch_vector_normalize(d3_d_vct *v)
 {
-	double			d;
+	float			d;
 	
 	d=sqrt((v->x*v->x)+(v->y*v->y)+(v->z*v->z));
 	if (d==0.0) return;
@@ -74,24 +78,24 @@ void es_patch_vector_normalize(d3_d_vct *v)
 	v->z*=d;
 }
 
-void es_patch_vector_cross_product(d3_d_vct *v,d3_d_vct *v1,d3_d_vct *v2)
+void glu_patch_vector_cross_product(d3_d_vct *v,d3_d_vct *v1,d3_d_vct *v2)
 {
 	v->x=(v1->y*v2->z)-(v2->y*v1->z);
     v->y=(v1->z*v2->x)-(v2->z*v1->x);
     v->z=(v1->x*v2->y)-(v2->x*v1->y);
 }
 
- void es_patch_gluLookAt(double eyex,double eyey,double eyez,double centerx,double centery,double centerz,double upx,double upy,double upz)
+ void glu_patch_gluLookAt(float eyex,float eyey,float eyez,float centerx,float centery,float centerz,float upx,float upy,float upz)
  {
-	 double			mat[16];
-	 d3_d_vct		x,y,z;
+	float			mat[16];
+	d3_d_vct		x,y,z;
 
 		// create the z vector
 
 	z.x=eyex-centerx;
 	z.y=eyey-centery;
 	z.z=eyez-centerz;
-	es_patch_vector_normalize(&z);
+	glu_patch_vector_normalize(&z);
 
 		// create the y vector
 
@@ -101,16 +105,16 @@ void es_patch_vector_cross_product(d3_d_vct *v,d3_d_vct *v1,d3_d_vct *v2)
 		
 		// create x vector, y cross z
 
-	es_patch_vector_cross_product(&x,&y,&z);
+	glu_patch_vector_cross_product(&x,&y,&z);
 
 		// recreate the y from z cross x
 
-	es_patch_vector_cross_product(&y,&z,&x);
+	glu_patch_vector_cross_product(&y,&z,&x);
 
 		// normalize x and y
 
-	es_patch_vector_normalize(&x);
-	es_patch_vector_normalize(&y);
+	glu_patch_vector_normalize(&x);
+	glu_patch_vector_normalize(&y);
 
 		// create the rotate matrix
 	
@@ -134,11 +138,11 @@ void es_patch_vector_cross_product(d3_d_vct *v,d3_d_vct *v1,d3_d_vct *v2)
 	mat[3+8]=0.0;
 	mat[3+12]=1.0;
 
-	glMultMatrixd(mat);
+	glMultMatrixf(mat);
 
 		// translate eye to origin
 
-    glTranslated(-eyex,-eyey,-eyez);
+    glTranslatef(-eyex,-eyey,-eyez);
 }
 
 /* =======================================================
@@ -148,7 +152,7 @@ void es_patch_vector_cross_product(d3_d_vct *v,d3_d_vct *v1,d3_d_vct *v2)
       
 ======================================================= */
 
-void es_patch_matrix_mult_vector(double mat[16],double v_in[4],double v_out[4])
+void glu_patch_matrix_mult_vector(float mat[16],float v_in[4],float v_out[4])
 {
 	v_out[0]=(v_in[0]*mat[0])+(v_in[1]*mat[4])+(v_in[2]*mat[8])+(v_in[3]*mat[12]);
 	v_out[1]=(v_in[0]*mat[1])+(v_in[1]*mat[5])+(v_in[2]*mat[9])+(v_in[3]*mat[13]);
@@ -156,7 +160,7 @@ void es_patch_matrix_mult_vector(double mat[16],double v_in[4],double v_out[4])
 	v_out[3]=(v_in[0]*mat[3])+(v_in[1]*mat[7])+(v_in[2]*mat[11])+(v_in[3]*mat[15]);
 }
 
-void es_patch_matrix_mult_matrix(double mat_1[16],double mat_2[16],double mat_out[16])
+void glu_patch_matrix_mult_matrix(float mat_1[16],float mat_2[16],float mat_out[16])
 {
 	int			n;
 
@@ -184,10 +188,10 @@ void es_patch_matrix_mult_matrix(double mat_1[16],double mat_2[16],double mat_ou
 	}
 }
 
-bool es_patch_matrix_invert(double mat_in[16],double mat_out[16])
+bool glu_patch_matrix_invert(float mat_in[16],float mat_out[16])
 {
 	int					n;
-	double				mat_inv[16],det;
+	float				mat_inv[16],det;
 
     mat_inv[0]=
 		(mat_in[5]*mat_in[10]*mat_in[15])-
@@ -314,17 +318,17 @@ bool es_patch_matrix_invert(double mat_in[16],double mat_out[16])
     return(TRUE);
 }
 
-bool es_patch_gluProject(double objx,double objy,double objz,double modelMatrix[16],double projMatrix[16],int viewport[4],double *winx,double *winy,double *winz)
+bool glu_patch_gluProject(float objx,float objy,float objz,float modelMatrix[16],float projMatrix[16],int viewport[4],float *winx,float *winy,float *winz)
 {
-    double		in[4],out[4];
+    float		in[4],out[4];
 
     in[0]=objx;
     in[1]=objy;
     in[2]=objz;
     in[3]=1.0;
 
-    es_patch_matrix_mult_vector(modelMatrix,in,out);
-    es_patch_matrix_mult_vector(projMatrix,out,in);
+    glu_patch_matrix_mult_vector(modelMatrix,in,out);
+    glu_patch_matrix_mult_vector(projMatrix,out,in);
     if (in[3]==0.0f) return(FALSE);
 
 	in[0]=((in[0]/in[3])*0.5)+0.5;
@@ -341,12 +345,12 @@ bool es_patch_gluProject(double objx,double objy,double objz,double modelMatrix[
     return(TRUE);
 }
 
-bool es_patch_gluUnProject(double winx,double winy,double winz,double modelMatrix[16],double projMatrix[16],int viewport[4],double *objx, double *objy, double *objz)
+bool glu_patch_gluUnProject(float winx,float winy,float winz,float modelMatrix[16],float projMatrix[16],int viewport[4],float *objx, float *objy, float *objz)
 {
-    double		mat[16],in[4],out[4];
+    float		mat[16],in[4],out[4];
 
-    es_patch_matrix_mult_matrix(modelMatrix,projMatrix,mat);
-    if (!es_patch_matrix_invert(mat,mat)) return(FALSE);
+    glu_patch_matrix_mult_matrix(modelMatrix,projMatrix,mat);
+    if (!glu_patch_matrix_invert(mat,mat)) return(FALSE);
 
     in[0]=winx;
     in[1]=winy;
@@ -360,7 +364,7 @@ bool es_patch_gluUnProject(double winx,double winy,double winz,double modelMatri
     in[1]=(in[1]*2)-1;
     in[2]=(in[2]*2)-1;
 
-    es_patch_matrix_mult_vector(mat,in,out);
+    glu_patch_matrix_mult_vector(mat,in,out);
     if (out[3]==0.0) return(FALSE);
 
     *objx=out[0]/out[3];

@@ -444,13 +444,13 @@ bool render_model_initialize_vertex_objects(model_type *mdl,int mesh_idx,model_d
 	return(TRUE);
 }
 
-inline void render_model_enable_color_array(model_draw *draw)
+static inline void render_model_enable_color_array(model_draw *draw)
 {
 	glEnableClientState(GL_COLOR_ARRAY);
 	glColorPointer(3,GL_FLOAT,0,(void*)draw->setup.vbo_offset.color);
 }
 
-inline void render_model_disable_color_array(void)
+static inline void render_model_disable_color_array(void)
 {
 	glDisableClientState(GL_COLOR_ARRAY);
 }

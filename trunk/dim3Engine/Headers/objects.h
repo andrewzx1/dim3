@@ -49,7 +49,7 @@ extern void object_dispose_all(void);
 extern int object_script_spawn(char *name,char *script,char *params,d3pnt *pnt,d3ang *ang,bool hide,char *err_str);
 extern bool object_script_remove(int idx,char *err_str);
 
-extern int object_get_radius(obj_type *obj);
+extern inline int object_get_radius(obj_type *obj);
 extern void object_set_current_mesh(obj_type *obj);
 extern void object_set_position(obj_type *obj,int x,int y,int z,float ang_y,float ymove);
 extern void object_stop(obj_type *obj);
@@ -73,7 +73,7 @@ extern void object_clear_draw(model_draw *draw);
 extern void object_reset_prepare(obj_type *obj);
 extern void object_reset(obj_type *obj);
 
-extern obj_type* object_get_attach(JSObjectRef j_obj);
+extern inline obj_type* object_get_attach(JSObjectRef j_obj);
 extern obj_type* object_find_remote_net_uid(int net_uid);
 extern obj_type* object_find_name(char *name);
 extern obj_type* object_find_nearest(d3pnt *pt,char *name,int type,int team_idx,float ang,float ang_sweep,int min_dist,int max_dist,bool player,int skip_obj_idx);
@@ -281,9 +281,9 @@ extern void remote_draw_names_render(void);
 
 extern int weapon_count_projectile_setups(weapon_type *weap);
 
-extern weapon_type* weapon_get_attach(JSObjectRef j_obj);
+extern inline weapon_type* weapon_get_attach(JSObjectRef j_obj);
 extern weapon_type* weapon_find_name(obj_type *obj,char *name);
-extern weapon_type* weapon_find_current(obj_type *obj);
+extern inline weapon_type* weapon_find_current(obj_type *obj);
 
 extern bool weapon_start_script(obj_type *obj,weapon_type *weap,char *err_str);
 extern bool weapon_add(obj_type *obj,char *name);
@@ -366,7 +366,7 @@ extern int projectile_count_list(void);
 
 extern proj_type* projectile_create(obj_type *obj,weapon_type *weap,proj_setup_type *proj_setup);
 
-extern int projectile_get_radius(proj_type *proj);
+extern inline int projectile_get_radius(proj_type *proj);
 extern void projectile_set_position(proj_type *proj,d3pnt *pt,d3ang *ang);
 extern void projectile_set_origin(proj_type *proj);
 extern void projectile_spawn_position(proj_type *proj,d3pnt *pt,d3ang *ang,obj_type *parentobj);

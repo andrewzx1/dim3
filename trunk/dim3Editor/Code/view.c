@@ -33,8 +33,7 @@ and can be sold or given away.
 #include "ui_common.h"
 #include "interface.h"
 
-extern int						top_view_x,top_view_z,
-								tool_palette_pixel_sz,txt_palette_pixel_sz;
+extern int						top_view_x,top_view_z;
 extern list_palette_type		item_palette;
 
 extern file_path_setup_type		file_path_setup;
@@ -158,8 +157,8 @@ void view_get_pixel_box(editor_view_type *view,d3rect *box)
 		
 	os_get_window_box(&wbox);
 	
-	wbox.ty+=tool_palette_pixel_sz;
-	wbox.by-=txt_palette_pixel_sz;
+	wbox.ty+=tool_palette_pixel_size();
+	wbox.by-=texture_palette_pixel_size();
 	wbox.rx-=item_palette.pixel_sz;
 	
 	wid=(float)(wbox.rx-wbox.lx);

@@ -33,8 +33,7 @@ and can be sold or given away.
 #include "interface.h"
 #include "ui_common.h"
 
-extern int					tool_palette_pixel_sz,txt_palette_pixel_sz;
-extern bool					list_palette_open,alt_property_open;
+extern bool					list_palette_open;
 
 extern model_type			model;
 extern model_draw_setup		draw_setup;
@@ -58,13 +57,12 @@ void model_wind_get_box(d3rect *box)
 	box->lx=0;
 	if (list_palette_open) {
 		box->rx=wbox.rx-list_palette_tree_sz;
-		if (alt_property_open) box->rx-=list_palette_tree_sz;
 	}
 	else {
 		box->rx=wbox.rx-list_palette_border_sz;
 	}
-	box->ty=tool_palette_pixel_sz;
-	box->by=(wbox.by-wbox.ty)-txt_palette_pixel_sz;
+	box->ty=tool_palette_pixel_size();
+	box->by=(wbox.by-wbox.ty)-texture_palette_pixel_size();
 }
 
 /* =======================================================

@@ -216,7 +216,7 @@ void input_get_mouse_movement(float *x,float *y)
 	*y=fy+(fy*setup.mouse.acceleration);
 }
 
-inline bool input_get_mouse_button(int button)
+bool input_get_mouse_button(int button)
 {
 	return(mouse_button_state[button]);
 }
@@ -263,12 +263,12 @@ void input_gui_get_mouse_position(int *x,int *y)
 	*y=mouse_gui_pnt.y;
 }
 
-inline bool input_gui_get_mouse_left_button_down(void)
+bool input_gui_get_mouse_left_button_down(void)
 {
 	return(input_get_mouse_button(input_mouse_button_left));
 }
 
-inline void input_gui_wait_mouse_left_button_up(void)
+void input_gui_wait_mouse_left_button_up(void)
 {
 	while (input_gui_get_mouse_left_button_down()) {
 		usleep(1000);

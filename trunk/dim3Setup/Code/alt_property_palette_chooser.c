@@ -149,6 +149,7 @@ void alt_property_palette_click_chooser(int chooser_idx,int id)
 
 	if ((id>=kChooserPropertyChooserItemName) && (id<(kChooserPropertyChooserItemName+max_chooser_piece))) {
 		state.cur_chooser_piece_idx=id-kChooserPropertyChooserItemName;
+		list_palette_set_level(3);
 		main_wind_draw();
 		return;
 	}

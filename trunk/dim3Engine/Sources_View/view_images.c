@@ -459,7 +459,7 @@ void view_images_cached_free(void)
       
 ======================================================= */
 
-inline bool view_images_is_empty(int idx)
+bool view_images_is_empty(int idx)
 {
 	return(idx==0);
 }
@@ -501,7 +501,7 @@ bitmap_type* view_images_get_bitmap(int idx)
 	return(&image->bitmaps[0].bitmap);
 }
 
-inline unsigned long view_images_get_gl_id(int idx)
+unsigned long view_images_get_gl_id(int idx)
 {
 	bitmap_type			*bitmap;
 	

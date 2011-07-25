@@ -39,8 +39,7 @@ extern editor_setup_type		setup;
 extern iface_type				iface;
 extern file_path_setup_type		file_path_setup;
 
-extern int						tool_palette_pixel_sz,txt_palette_pixel_sz;
-extern bool						list_palette_open,alt_property_open;
+extern bool						list_palette_open;
 extern list_palette_type		item_palette;
 
 list_palette_type				property_palette;
@@ -53,7 +52,7 @@ list_palette_type				property_palette;
 
 void property_palette_initialize(void)
 {
-	list_palette_list_initialize(&property_palette,"Item Properties");
+	list_palette_list_initialize(&property_palette,"Item Properties",TRUE);
 
 	property_palette.item_type=0;
 	property_palette.item_idx=-1;
@@ -62,31 +61,6 @@ void property_palette_initialize(void)
 void property_palette_shutdown(void)
 {
 	list_palette_list_shutdown(&property_palette);
-}
-
-void property_palette_setup(void)
-{
-	int				x,y;
-	d3rect			wbox;
-	
-	os_get_window_box(&wbox);
-
-	if (list_palette_open) {
-		property_palette.pixel_sz=list_palette_tree_sz;
-	}
-	else {
-		property_palette.pixel_sz=list_palette_border_sz;
-	}
-
-	x=wbox.rx-item_palette.pixel_sz;
-	if ((list_palette_open) && (alt_property_open)) x-=item_palette.pixel_sz;
-
-	y=wbox.ty+((wbox.by-wbox.ty)>>1);
-
-	property_palette.box.lx=x;
-	property_palette.box.rx=x+item_palette.pixel_sz;
-	property_palette.box.ty=y-1;
-	property_palette.box.by=wbox.by-txt_palette_pixel_sz;
 }
 
 /* =======================================================
@@ -215,8 +189,10 @@ void property_palette_fill(void)
 
 void property_palette_draw(void)
 {
+	if (list_palette_get_level()!=1) return;
+	
 	property_palette_fill();
-	list_palette_draw(&property_palette,TRUE);
+	list_palette_draw(&property_palette);
 }
 
 /* =======================================================
@@ -238,7 +214,7 @@ void property_palette_reset(void)
 
 void property_palette_scroll_wheel(d3pnt *pnt,int move)
 {
-	list_palette_scroll_wheel(&property_palette,pnt,move);
+	if (list_palette_get_level()==1) list_palette_scroll_wheel(&property_palette,pnt,move);
 }
 
 /* =======================================================
@@ -247,10 +223,12 @@ void property_palette_scroll_wheel(d3pnt *pnt,int move)
       
 ======================================================= */
 
-void property_palette_click(d3pnt *pnt,bool double_click)
+bool property_palette_click(d3pnt *pnt,bool double_click)
 {
 	int					sel_type,main_idx,sub_idx;
 	bool				old_open;
+	
+	if (list_palette_get_level()!=1) return(FALSE);
 
 		// check if open changes
 	
@@ -259,31 +237,26 @@ void property_palette_click(d3pnt *pnt,bool double_click)
 		// click
 
 	if (!list_palette_click(&property_palette,pnt,double_click)) {
-		if (old_open!=list_palette_open) {
-			item_palette_setup();
-			property_palette_setup();
-			alt_property_palette_setup();
-			main_wind_draw();
-		}
-		return;
+		if (old_open!=list_palette_open) main_wind_draw();
+		return(TRUE);
 	}
 
 		// click editing
 
-	if (property_palette.item_id==-1) return;
+	if (property_palette.item_id==-1) return(TRUE);
 
 		// if texture window is up, texture properties
 
 	if (state.texture_edit_idx!=-1) {
 		property_palette_click_texture(state.texture_edit_idx,property_palette.item_id);
-		return;
+		return(TRUE);
 	}
 
 		// if preference window is up, preference properties
 
 	if (state.in_preference) {
 		property_palette_click_editor_preference(property_palette.item_id);
-		return;
+		return(TRUE);
 	}
 
 		// special check for non-selection property lists
@@ -294,26 +267,18 @@ void property_palette_click(d3pnt *pnt,bool double_click)
 		case cinema_piece:
 			state.cur_cinema_idx=item_palette.item_idx;
 			property_palette_click_cinema(item_palette.item_idx,property_palette.item_id);
-			alt_property_fix_open_state();
-			return;
+			return(TRUE);
 
 		case group_piece:
 			property_palette_click_group(item_palette.item_idx,property_palette.item_id);
-			alt_property_fix_open_state();
-			return;
+			return(TRUE);
 
 		case movement_piece:
 			state.cur_movement_idx=item_palette.item_idx;
 			property_palette_click_movement(item_palette.item_idx,property_palette.item_id);
-			alt_property_fix_open_state();
-			return;
+			return(TRUE);
 
 	}
-
-		// need to do the setup again incase
-		// the alt window has open/closed
-
-	alt_property_fix_open_state();
 
 		// get the selection
 
@@ -325,7 +290,7 @@ void property_palette_click(d3pnt *pnt,bool double_click)
 
 	if (main_idx==-1) {
 		property_palette_click_map(property_palette.item_id);
-		return;
+		return(TRUE);
 	}
 
 		// selection properties
@@ -366,6 +331,8 @@ void property_palette_click(d3pnt *pnt,bool double_click)
 			break;
 
 	}
+	
+	return(TRUE);
 }
 
 /* =======================================================

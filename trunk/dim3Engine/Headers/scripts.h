@@ -58,14 +58,14 @@ extern bool JSValueIsArray(JSContextRef ctx,JSValueRef value);
 // conversions
 //
 
-extern JSValueRef script_null_to_value(JSContextRef cx);
-extern bool script_is_value_null(JSContextRef cx,JSValueRef val);
-extern int script_value_to_int(JSContextRef cx,JSValueRef val);
-extern JSValueRef script_int_to_value(JSContextRef cx,int i);
-extern float script_value_to_float(JSContextRef cx,JSValueRef val);
-extern JSValueRef script_float_to_value(JSContextRef cx,float f);
-extern bool script_value_to_bool(JSContextRef cx,JSValueRef val);
-extern JSValueRef script_bool_to_value(JSContextRef cx,bool b);
+extern inline JSValueRef script_null_to_value(JSContextRef cx);
+extern inline bool script_is_value_null(JSContextRef cx,JSValueRef val);
+extern inline int script_value_to_int(JSContextRef cx,JSValueRef val);
+extern inline JSValueRef script_int_to_value(JSContextRef cx,int i);
+extern inline float script_value_to_float(JSContextRef cx,JSValueRef val);
+extern inline JSValueRef script_float_to_value(JSContextRef cx,float f);
+extern inline bool script_value_to_bool(JSContextRef cx,JSValueRef val);
+extern inline JSValueRef script_bool_to_value(JSContextRef cx,bool b);
 extern void script_value_to_string(JSContextRef cx,JSValueRef val,char *str,int len);
 extern JSValueRef script_string_to_value(JSContextRef cx,char *str);
 extern JSValueRef script_int_array_to_value(JSContextRef cx,int cnt,int *values);
@@ -94,8 +94,8 @@ extern int script_find_group_from_name(JSContextRef cx,JSValueRef arg,JSValueRef
 extern int script_find_map_movement_from_name(JSContextRef cx,JSValueRef arg,JSValueRef *exception);
 extern int script_get_attached_object_uid(JSObjectRef j_obj);
 extern model_draw* script_find_model_draw(JSObjectRef j_obj);
-extern bool script_in_event(JSObjectRef j_obj);
-extern bool script_in_construct(JSObjectRef j_obj);
+extern inline bool script_in_event(JSObjectRef j_obj);
+extern inline bool script_in_construct(JSObjectRef j_obj);
 
 //
 // initialize script objects
@@ -520,8 +520,8 @@ extern JSObjectRef script_add_proj_melee_object(JSContextRef cx,JSObjectRef pare
 
 extern void scripts_setup_events(script_type *script);
 extern bool scripts_setup_event_attach(int script_idx,int main_event,char *func_name,char *err_str);
-extern void scripts_lock_events(void);
-extern void scripts_unlock_events(void);
+extern inline void scripts_lock_events(void);
+extern inline void scripts_unlock_events(void);
 extern bool scripts_post_event(int script_idx,int override_proj_idx,int main_event,int sub_event,int id,char *err_str);
 extern void scripts_post_event_console(int script_idx,int override_proj_idx,int main_event,int sub_event,int id);
 extern bool scripts_post_event_call_parent(int script_idx,char *err_str);

@@ -48,6 +48,29 @@ extern bitmap_type			lmap_black_bitmap;
 
 /* =======================================================
 
+      OpenGL ES Shader Stubs
+      
+======================================================= */
+
+#ifdef D3_OPENGL_ES
+
+void gl_shader_code_clear(shader_type *shader) {}
+bool gl_shader_code_compile(shader_type *shader,char *vertex_data,char *fragment_data,char *err_str) { return(FALSE); }
+void gl_shader_code_shutdown(shader_type *shader) {}
+void gl_shader_attach_map(void) {}
+void gl_shader_attach_model(model_type *mdl) {}
+void gl_shader_draw_scene_code_start(shader_type *shader) {}
+void gl_shader_draw_scene_code_end(shader_type *shader) {}
+void gl_shader_draw_scene_start(void) {}
+void gl_shader_draw_start(void) {}
+void gl_shader_draw_end(void) {}
+void gl_shader_texture_override(GLuint gl_id,float alpha) {}
+void gl_shader_draw_execute(int core_shader_group,texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,view_light_list_type *light_list,int tangent_offset,int normal_offset) {}
+
+#else
+
+/* =======================================================
+
       Setup Shader Variables
       
 ======================================================= */
@@ -886,3 +909,5 @@ void gl_shader_draw_execute(int core_shader_group,texture_type *texture,int txt_
 
 	gl_shader_set_light_variables(shader,core_shader_group,is_core,light_list);
 }
+
+#endif

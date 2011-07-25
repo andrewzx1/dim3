@@ -39,8 +39,7 @@ and can be sold or given away.
 
 extern file_path_setup_type		file_path_setup;
 
-int								tool_palette_pixel_sz,tool_palette_push_idx;
-d3rect							tool_palette_box;
+int								tool_palette_push_idx;
 
 bitmap_type						tool_bitmaps[tool_count];
 
@@ -96,7 +95,10 @@ void tool_palette_shutdown(void)
 
 void tool_palette_draw_icon(int x,int y,unsigned long gl_id,bool is_highlight,bool is_pushed)
 {
+	int				pixel_sz;
 	float			top_col,bot_col;
+	
+	pixel_sz=tool_palette_pixel_size();
 
 		// background
 
@@ -118,10 +120,10 @@ void tool_palette_draw_icon(int x,int y,unsigned long gl_id,bool is_highlight,bo
 	glBegin(GL_QUADS);
 	glColor4f(top_col,top_col,top_col,1.0f);
 	glVertex2i(x,y);
-	glVertex2i((x+tool_palette_pixel_sz),y);
+	glVertex2i((x+pixel_sz),y);
 	glColor4f(bot_col,bot_col,bot_col,1.0f);
-	glVertex2i((x+tool_palette_pixel_sz),(y+tool_palette_pixel_sz));
-	glVertex2i(x,(y+tool_palette_pixel_sz));
+	glVertex2i((x+pixel_sz),(y+pixel_sz));
+	glVertex2i(x,(y+pixel_sz));
 	glEnd();
 
 		// bitmap
@@ -135,11 +137,11 @@ void tool_palette_draw_icon(int x,int y,unsigned long gl_id,bool is_highlight,bo
 	glTexCoord2f(0.0f,0.0f);
 	glVertex2i(x,y);
 	glTexCoord2f(1.0f,0.0f);
-	glVertex2i((x+tool_palette_pixel_sz),y);
+	glVertex2i((x+pixel_sz),y);
 	glTexCoord2f(1.0f,1.0f);
-	glVertex2i((x+tool_palette_pixel_sz),(y+tool_palette_pixel_sz));
+	glVertex2i((x+pixel_sz),(y+pixel_sz));
 	glTexCoord2f(0.0f,1.0f);
-	glVertex2i(x,(y+tool_palette_pixel_sz));
+	glVertex2i(x,(y+pixel_sz));
 	glEnd();
 
 	glDisable(GL_TEXTURE_2D);
@@ -150,29 +152,31 @@ void tool_palette_draw_icon(int x,int y,unsigned long gl_id,bool is_highlight,bo
 		
 	glBegin(GL_LINE_LOOP);
 	glVertex2i(x,y);
-	glVertex2i((x+tool_palette_pixel_sz),y);
-	glVertex2i((x+tool_palette_pixel_sz),(y+(tool_palette_pixel_sz+1)));
-	glVertex2i(x,(y+(tool_palette_pixel_sz+1)));
+	glVertex2i((x+pixel_sz),y);
+	glVertex2i((x+pixel_sz),(y+(pixel_sz+1)));
+	glVertex2i(x,(y+(pixel_sz+1)));
 	glEnd();
 }
 
 void tool_palette_draw(void)
 {
-	int				n,x;
-	d3rect			wbox;
+	int				n,x,pixel_sz;
+	d3rect			wbox,tbox;
+	
+	tool_palette_box(&tbox);
 
 		// viewport setup
 		
 	os_get_window_box(&wbox);
 
 	glEnable(GL_SCISSOR_TEST);
-	glScissor(tool_palette_box.lx,(wbox.by-tool_palette_box.by),(tool_palette_box.rx-tool_palette_box.lx),(tool_palette_box.by-tool_palette_box.ty));
+	glScissor(tbox.lx,(wbox.by-tbox.by),(tbox.rx-tbox.lx),(tbox.by-tbox.ty));
 
-	glViewport(tool_palette_box.lx,(wbox.by-tool_palette_box.by),(tool_palette_box.rx-tool_palette_box.lx),(tool_palette_box.by-tool_palette_box.ty));
+	glViewport(tbox.lx,(wbox.by-tbox.by),(tbox.rx-tbox.lx),(tbox.by-tbox.ty));
 		
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho((GLdouble)tool_palette_box.lx,(GLdouble)tool_palette_box.rx,(GLdouble)tool_palette_box.by,(GLdouble)tool_palette_box.ty,-1.0,1.0);
+	glOrtho((GLdouble)tbox.lx,(GLdouble)tbox.rx,(GLdouble)tbox.by,(GLdouble)tbox.ty,-1.0,1.0);
 	
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -189,22 +193,23 @@ void tool_palette_draw(void)
 	glColor4f(0.9f,0.9f,0.9f,1.0f);
 		
 	glBegin(GL_QUADS);
-	glVertex2i(tool_palette_box.lx,tool_palette_box.ty);
-	glVertex2i(tool_palette_box.rx,tool_palette_box.ty);
-	glVertex2i(tool_palette_box.rx,tool_palette_box.by);
-	glVertex2i(tool_palette_box.lx,tool_palette_box.by);
+	glVertex2i(tbox.lx,tbox.ty);
+	glVertex2i(tbox.rx,tbox.ty);
+	glVertex2i(tbox.rx,tbox.by);
+	glVertex2i(tbox.lx,tbox.by);
 	glEnd();
 
 		// tools
 
-	x=tool_palette_box.lx;
+	x=tbox.lx;
+	pixel_sz=tool_palette_pixel_size();
 
 	for (n=0;n!=tool_count;n++) {
 	
 			// splitter?
 			
 		if (tool_bitmaps_file_name[n][0]==0x0) {
-			x=tool_palette_box.rx-(((tool_count-1)-n)*tool_palette_pixel_sz);
+			x=tbox.rx-(((tool_count-1)-n)*pixel_sz);
 			continue;
 		}
 		
@@ -214,8 +219,8 @@ void tool_palette_draw(void)
 		
 			// draw tool
 			
-		tool_palette_draw_icon(x,tool_palette_box.ty,tool_bitmaps[n].gl_id,tool_get_highlight_state(n),(tool_palette_push_idx==n));
-		x+=tool_palette_pixel_sz;
+		tool_palette_draw_icon(x,tbox.ty,tool_bitmaps[n].gl_id,tool_get_highlight_state(n),(tool_palette_push_idx==n));
+		x+=pixel_sz;
 	}
 
 	glDisable(GL_ALPHA_TEST);
@@ -226,14 +231,14 @@ void tool_palette_draw(void)
 
 	glBegin(GL_LINES);
 #ifdef D3_OS_WINDOWS
-	glVertex2i(tool_palette_box.lx,(tool_palette_box.ty+1));		// win32 has white line under menu
-	glVertex2i(tool_palette_box.rx,(tool_palette_box.ty+1));
+	glVertex2i(tbox.lx,(tbox.ty+1));		// win32 has white line under menu
+	glVertex2i(tbox.rx,(tbox.ty+1));
 #else
-	glVertex2i(tool_palette_box.lx,tool_palette_box.ty);
-	glVertex2i(tool_palette_box.rx,tool_palette_box.ty);
+	glVertex2i(tbox.lx,tbox.ty);
+	glVertex2i(tbox.rx,tbox.ty);
 #endif
-	glVertex2i(tool_palette_box.lx,tool_palette_box.by);
-	glVertex2i(tool_palette_box.rx,tool_palette_box.by);
+	glVertex2i(tbox.lx,tbox.by);
+	glVertex2i(tbox.rx,tbox.by);
 	glEnd();
 }
 
@@ -245,14 +250,16 @@ void tool_palette_draw(void)
 
 bool tool_palette_click_mouse_down(int push_idx,int lx,int ty)
 {
+	int					pixel_sz;
 	d3pnt				pt;
 	
 	tool_palette_push_idx=push_idx;
+	pixel_sz=tool_palette_pixel_size();
 	
 	main_wind_draw();
 
 	while (!os_track_mouse_location(&pt,NULL)) {
-		if ((pt.x<lx) || (pt.x>=(lx+tool_palette_pixel_sz)) || (pt.y<ty) || (pt.y>=(ty+tool_palette_pixel_sz))) {
+		if ((pt.x<lx) || (pt.x>=(lx+pixel_sz)) || (pt.y<ty) || (pt.y>=(ty+pixel_sz))) {
 			tool_palette_push_idx=-1;
 		}
 		else {
@@ -274,16 +281,20 @@ bool tool_palette_click_mouse_down(int push_idx,int lx,int ty)
 
 int tool_palette_click_find_index(d3pnt *pnt,int *px)
 {
-	int				n,x;
+	int				n,x,pixel_sz;
+	d3rect			tbox;
+	
+	tool_palette_box(&tbox);
 
-	x=tool_palette_box.lx;
+	x=tbox.lx;
+	pixel_sz=tool_palette_pixel_size();
 
 	for (n=0;n!=tool_count;n++) {
 	
 			// splitter?
 			
 		if (tool_bitmaps_file_name[n][0]==0x0) {
-			x=tool_palette_box.rx-(((tool_count-1)-n)*tool_palette_pixel_sz);
+			x=tbox.rx-(((tool_count-1)-n)*pixel_sz);
 			continue;
 		}
 		
@@ -293,12 +304,12 @@ int tool_palette_click_find_index(d3pnt *pnt,int *px)
 		
 			// check click
 			
-		if ((pnt->x>=x) && (pnt->x<(x+tool_palette_pixel_sz))) {
+		if ((pnt->x>=x) && (pnt->x<(x+pixel_sz))) {
 			*px=x;
 			return(n);
 		}
 		
-		x+=tool_palette_pixel_sz;
+		x+=pixel_sz;
 	}
 
 	return(-1);
@@ -307,11 +318,14 @@ int tool_palette_click_find_index(d3pnt *pnt,int *px)
 void tool_palette_click(d3pnt *pnt)
 {
 	int				idx,x;
+	d3rect			tbox;
 
 	idx=tool_palette_click_find_index(pnt,&x);
 	if (idx==-1) return;
 	
-	if (tool_palette_click_mouse_down(idx,x,tool_palette_box.ty)) tool_click(idx);
+	tool_palette_box(&tbox);
+	
+	if (tool_palette_click_mouse_down(idx,x,tbox.ty)) tool_click(idx);
 }
 
 /* =======================================================
@@ -324,10 +338,13 @@ void tool_palette_mouse_move(d3pnt *pnt)
 {
 	int				idx,x,mx;
 	d3pnt			tpnt;
+	d3rect			tbox;
+	
+	tool_palette_box(&tbox);
 
 	idx=-1;
 
-	if ((pnt->y>=tool_palette_box.ty) && (pnt->y<=tool_palette_box.by)) {
+	if ((pnt->y>=tbox.ty) && (pnt->y<=tbox.by)) {
 		idx=tool_palette_click_find_index(pnt,&x);
 	}
 
@@ -338,9 +355,9 @@ void tool_palette_mouse_move(d3pnt *pnt)
 	}
 	else {
 		tpnt.x=pnt->x;
-		tpnt.y=tool_palette_box.by+15;
+		tpnt.y=tbox.by+15;
 		
-		mx=(tool_palette_box.lx+tool_palette_box.rx)>>1;
+		mx=(tbox.lx+tbox.rx)>>1;
 		tool_tip_setup(&tpnt,tool_bitmaps_tip[idx],(x>mx));
 	}
 }
