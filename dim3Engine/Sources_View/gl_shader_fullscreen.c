@@ -46,6 +46,23 @@ extern shader_type			user_shaders[max_iface_user_shader];
 
 /* =======================================================
 
+      OpenGL ES Stubs
+      
+======================================================= */
+
+#ifdef D3_OPENGL_ES
+
+void gl_fs_shader_map_start(void) {}
+void gl_fs_shader_map_end(void) {}
+bool gl_fs_shader_start(char *shader_name,int life_msec,char *err_str) { return(FALSE); }
+void gl_fs_shader_end(void) {}
+void gl_fs_shader_render_begin(void) {}
+void gl_fs_shader_render_finish(void) {}
+
+#else
+
+/* =======================================================
+
       Initialize Full Screen Shader
       
 ======================================================= */
@@ -323,3 +340,4 @@ void gl_fs_shader_render_finish(void)
 	view_unbind_current_vertex_object();
 }
 
+#endif

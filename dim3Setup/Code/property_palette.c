@@ -47,7 +47,7 @@ list_palette_type				property_palette;
 
 void property_palette_initialize(void)
 {
-	list_palette_list_initialize(&property_palette,"No Properties");
+	list_palette_list_initialize(&property_palette,"No Properties",TRUE);
 
 	property_palette.item_type=0;
 	property_palette.item_idx=-1;
@@ -56,20 +56,6 @@ void property_palette_initialize(void)
 void property_palette_shutdown(void)
 {
 	list_palette_list_shutdown(&property_palette);
-}
-
-void property_palette_setup(void)
-{
-	d3rect			wbox;
-	
-	os_get_window_box(&wbox);
-
-	property_palette.pixel_sz=list_palette_tree_sz;
-
-	property_palette.box.lx=list_palette_tree_sz;
-	property_palette.box.rx=property_palette.box.lx+list_palette_tree_sz;
-	property_palette.box.ty=wbox.ty;
-	property_palette.box.by=wbox.by;
 }
 
 /* =======================================================
@@ -181,8 +167,10 @@ void property_palette_fill(void)
 
 void property_palette_draw(void)
 {
+	if (list_palette_get_level()!=1) return;
+	
 	property_palette_fill();
-	list_palette_draw(&property_palette,FALSE);
+	list_palette_draw(&property_palette);
 }
 
 /* =======================================================
@@ -204,7 +192,7 @@ void property_palette_reset(void)
 
 void property_palette_scroll_wheel(d3pnt *pnt,int move)
 {
-	list_palette_scroll_wheel(&property_palette,pnt,move);
+	if (list_palette_get_level()==1) list_palette_scroll_wheel(&property_palette,pnt,move);
 }
 
 /* =======================================================
@@ -213,15 +201,17 @@ void property_palette_scroll_wheel(d3pnt *pnt,int move)
       
 ======================================================= */
 
-void property_palette_click(d3pnt *pnt,bool double_click)
+bool property_palette_click(d3pnt *pnt,bool double_click)
 {
+	if (list_palette_get_level()!=1) return(FALSE);
+
 		// click
 
-	if (!list_palette_click(&property_palette,pnt,double_click)) return;
+	if (!list_palette_click(&property_palette,pnt,double_click)) return(TRUE);
 
 		// click editing
 
-	if (property_palette.item_id==-1) return;
+	if (property_palette.item_id==-1) return(TRUE);
 
 		// selection properties
 
@@ -292,6 +282,8 @@ void property_palette_click(d3pnt *pnt,bool double_click)
 			break;
 
 	}
+	
+	return(TRUE);
 }
 
 /* =======================================================

@@ -88,9 +88,8 @@ typedef struct		{
 															item_id,item_type,item_idx,
 															pixel_sz,scroll_page,
 															total_high;
-						bool								push_on,button_click;
+						bool								push_on,back_on,button_click;
 						char								title[name_str_len];
-						d3rect								box;
 						list_palette_item_type				*items;
 					} list_palette_type;
 
@@ -139,9 +138,12 @@ extern void progress_next_title(char *title);
 
 extern void list_palette_initialize(char *app_name);
 extern void list_palette_shutdown(void);
-extern void list_palette_list_initialize(list_palette_type *list,char *title);
+extern void list_palette_list_initialize(list_palette_type *list,char *title,bool back_on);
 extern void list_palette_list_shutdown(list_palette_type *list);
+extern void list_palette_box(d3rect *box);
 extern void list_palette_set_title(list_palette_type *list,char *title);
+extern int list_palette_get_level(void);
+extern void list_palette_set_level(int level);
 extern void list_palette_add_header(list_palette_type *list,int piece_type,char *name);
 extern void list_palette_add_header_count(list_palette_type *list,int piece_type,char *name,int count);
 extern void list_palette_add_header_button(list_palette_type *list,int id,char *name,int button_type);
@@ -164,7 +166,7 @@ extern void list_palette_add_string_tag(list_palette_type *list,int id,char *nam
 extern void list_palette_delete_all_items(list_palette_type *list);
 extern void list_palette_sort_mark_start(list_palette_type *list);
 extern void list_palette_sort(list_palette_type *list);
-extern void list_palette_draw(list_palette_type *list,bool close_border);
+extern void list_palette_draw(list_palette_type *list);
 extern void list_palette_scroll_up(list_palette_type *list);
 extern void list_palette_scroll_down(list_palette_type *list);
 extern void list_palette_scroll_wheel(list_palette_type *list,d3pnt *pnt,int move);

@@ -38,10 +38,8 @@ extern model_draw_setup			draw_setup;
 extern animator_state_type		state;
 extern file_path_setup_type		file_path_setup;
 
-extern int						tool_palette_pixel_sz,txt_palette_pixel_sz;
 extern bool						list_palette_open;
 
-bool							alt_property_open;
 list_palette_type				alt_property_palette;
 
 /* =======================================================
@@ -52,69 +50,15 @@ list_palette_type				alt_property_palette;
 
 void alt_property_palette_initialize(void)
 {
-	list_palette_list_initialize(&alt_property_palette,"No Properties");
+	list_palette_list_initialize(&alt_property_palette,"No Properties",TRUE);
 
 	alt_property_palette.item_type=0;
 	alt_property_palette.item_idx=-1;
-
-	alt_property_open=FALSE;
 }
 
 void alt_property_palette_shutdown(void)
 {
 	list_palette_list_shutdown(&alt_property_palette);
-}
-
-void alt_property_palette_setup(void)
-{
-	d3rect			wbox;
-	
-	os_get_window_box(&wbox);
-
-	if ((alt_property_open) && (list_palette_open)) {
-		alt_property_palette.pixel_sz=list_palette_tree_sz;
-	}
-	else {
-		alt_property_palette.pixel_sz=0;
-	}
-
-	alt_property_palette.box.lx=wbox.rx-alt_property_palette.pixel_sz;
-	alt_property_palette.box.rx=wbox.rx;
-	alt_property_palette.box.ty=wbox.ty+(tool_palette_pixel_sz+1);
-	alt_property_palette.box.by=wbox.by-txt_palette_pixel_sz;
-}
-
-/* =======================================================
-
-      Alt Property Open and Close
-      
-======================================================= */
-
-void alt_property_fix_open_state(void)
-{
-	bool			old_alt_open;
-
-		// determine state
-
-	old_alt_open=alt_property_open;
-
-	alt_property_open=((state.cur_item==item_animate) && (state.cur_animate_idx!=-1) && (state.cur_animate_pose_move_idx!=-1));
-	alt_property_open|=((state.cur_item==item_pose) && (state.cur_pose_idx!=-1) && (state.cur_pose_bone_move_idx!=-1));
-
-	if ((state.texture_edit_idx!=-1) || (state.in_preference)) alt_property_open=FALSE;
-	
-	if (!alt_property_open) {
-		state.cur_animate_pose_move_idx=-1;
-		state.cur_pose_bone_move_idx=-1;
-	}
-
-		// if switched open state, fix and redraw
-
-	if (old_alt_open!=alt_property_open) {
-		item_palette_setup();
-		property_palette_setup();
-		alt_property_palette_setup();
-	}
 }
 
 /* =======================================================
@@ -158,8 +102,10 @@ void alt_property_palette_fill(void)
 
 void alt_property_palette_draw(void)
 {
+	if (list_palette_get_level()!=2) return;
+	
 	alt_property_palette_fill();
-	list_palette_draw(&alt_property_palette,FALSE);
+	list_palette_draw(&alt_property_palette);
 }
 
 /* =======================================================
@@ -170,7 +116,7 @@ void alt_property_palette_draw(void)
 
 void alt_property_palette_scroll_wheel(d3pnt *pnt,int move)
 {
-	list_palette_scroll_wheel(&alt_property_palette,pnt,move);
+	if (list_palette_get_level()==2) list_palette_scroll_wheel(&alt_property_palette,pnt,move);
 }
 
 /* =======================================================
@@ -179,15 +125,17 @@ void alt_property_palette_scroll_wheel(d3pnt *pnt,int move)
       
 ======================================================= */
 
-void alt_property_palette_click(d3pnt *pnt,bool double_click)
+bool alt_property_palette_click(d3pnt *pnt,bool double_click)
 {
+	if (list_palette_get_level()!=2) return(FALSE);
+
 		// click
 
-	if (!list_palette_click(&alt_property_palette,pnt,double_click)) return;
+	if (!list_palette_click(&alt_property_palette,pnt,double_click)) return(TRUE);
 
 		// click editing
 
-	if (alt_property_palette.item_id==-1) return;
+	if (alt_property_palette.item_id==-1) return(TRUE);
 
 		// selection properties
 
@@ -202,5 +150,7 @@ void alt_property_palette_click(d3pnt *pnt,bool double_click)
 			break;
 
 	}
+	
+	return(TRUE);
 }
 

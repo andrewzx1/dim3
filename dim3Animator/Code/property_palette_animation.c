@@ -95,6 +95,7 @@ void property_palette_click_animation(int animate_idx,int id)
 		
 	if ((id>=kAnimationPropertyPoseMove) && (id<kAnimationPropertyPoseMoveDelete)) {
 		state.cur_animate_pose_move_idx=id-kAnimationPropertyPoseMove;
+		list_palette_set_level(2);
 		main_wind_draw();
 		return;
 	}

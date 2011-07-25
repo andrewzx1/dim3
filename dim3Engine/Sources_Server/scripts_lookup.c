@@ -369,7 +369,7 @@ bool script_in_event(JSObjectRef j_obj)
 	return(script->event_state.main_event!=-1);
 }
 
-inline bool script_in_construct(JSObjectRef j_obj)
+bool script_in_construct(JSObjectRef j_obj)
 {
 	int					script_idx;
 	script_type			*script;

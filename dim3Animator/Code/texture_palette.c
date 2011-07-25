@@ -33,38 +33,74 @@ and can be sold or given away.
 #include "interface.h"
 #include "ui_common.h"
 
-extern int						txt_palette_max_page_count,txt_palette_per_page_count,
-								txt_palette_cur_page,txt_palette_pixel_sz,
-								txt_palette_page_list_count,txt_palette_page_list_width;
-extern d3rect					txt_palette_box;
+extern int						txt_palette_cur_page;
+extern bool						list_palette_open;
 
 extern model_type				model;
 extern animator_state_type		state;
 
 /* =======================================================
 
-      Texture Palette Setup
+      Texture Palette Settings
       
 ======================================================= */
 
-void texture_palette_setup(void)
+int texture_palette_per_page_count(void)
 {
+	return(32);
+}
+
+int texture_palette_page_list_count(void)
+{
+	return(max_model_texture/texture_palette_per_page_count());
+}
+
+int texture_palette_page_list_width(void)
+{
+	return((texture_palette_page_list_count()>>1)*16);
+}
+
+int texture_palette_pixel_size(void)
+{
+	int				rx;
 	d3rect			wbox;
 	
 	os_get_window_box(&wbox);
 	
-	txt_palette_max_page_count=max_model_texture;
-	txt_palette_per_page_count=32;
+	rx=wbox.rx;
+	
+	if (list_palette_open) {
+		rx-=list_palette_tree_sz;
+	}
+	else {
+		rx-=list_palette_border_sz;
+	}
 
-	txt_palette_page_list_count=txt_palette_max_page_count/txt_palette_per_page_count;
-	txt_palette_page_list_width=(txt_palette_page_list_count>>1)*16;
+	return((rx-(wbox.lx+texture_palette_page_list_width()))/texture_palette_per_page_count());
+}
+
+void texture_palette_box(d3rect *box)
+{
+	int				rx,pixel_sz;
+	d3rect			wbox;
 	
-	txt_palette_pixel_sz=((wbox.rx-16)-(wbox.lx+txt_palette_page_list_width))/txt_palette_per_page_count;
+	pixel_sz=texture_palette_pixel_size();
 	
-	txt_palette_box.lx=wbox.lx;
-	txt_palette_box.rx=wbox.rx;
-	txt_palette_box.ty=wbox.by-txt_palette_pixel_sz;
-	txt_palette_box.by=(txt_palette_box.ty+txt_palette_pixel_sz)+1;
+	os_get_window_box(&wbox);
+	
+	rx=wbox.rx;
+	
+	if (list_palette_open) {
+		rx-=list_palette_tree_sz;
+	}
+	else {
+		rx-=list_palette_border_sz;
+	}
+	
+	box->lx=wbox.lx;
+	box->rx=rx;
+	box->ty=wbox.by-pixel_sz;
+	box->by=(box->ty+pixel_sz)+1;
 }
 
 /* =======================================================

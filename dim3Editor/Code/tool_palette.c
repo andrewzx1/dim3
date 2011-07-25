@@ -38,28 +38,38 @@ extern editor_state_type		state;
 extern editor_setup_type		setup;
 extern file_path_setup_type		file_path_setup;
 
-extern int						tool_palette_pixel_sz;
-extern d3rect					tool_palette_box;
-
 /* =======================================================
 
-      Tool Palette Setup
+      Tool Palette Settings
       
 ======================================================= */
 
-void tool_palette_setup(void)
+int tool_palette_pixel_size(void)
 {
+	int				pixel_sz;
 	d3rect			wbox;
 	
 	os_get_window_box(&wbox);
 
-	tool_palette_pixel_sz=(wbox.rx-wbox.lx)/tool_count;
-	if (tool_palette_pixel_sz>tool_button_size) tool_palette_pixel_sz=tool_button_size;
+	pixel_sz=(wbox.rx-wbox.lx)/tool_count;
+	if (pixel_sz>tool_button_size) pixel_sz=tool_button_size;
 	
-	tool_palette_box.lx=wbox.lx;
-	tool_palette_box.rx=wbox.rx;
-	tool_palette_box.ty=wbox.ty;
-	tool_palette_box.by=tool_palette_box.ty+(tool_palette_pixel_sz+1);
+	return(pixel_sz);
+}
+
+void tool_palette_box(d3rect *box)
+{
+	int				pixel_sz;
+	d3rect			wbox;
+	
+	pixel_sz=tool_palette_pixel_size();
+	
+	os_get_window_box(&wbox);
+	
+	box->lx=wbox.lx;
+	box->rx=wbox.rx;
+	box->ty=wbox.ty;
+	box->by=box->ty+(pixel_sz+1);
 }
 
 /* =======================================================

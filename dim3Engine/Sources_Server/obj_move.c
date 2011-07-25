@@ -66,7 +66,7 @@ void object_slice_setup(obj_type *obj)
       
 ======================================================= */
 
-inline void get_motion_movement(float ang,obj_movement *move,d3pnt *motion)
+static inline void get_motion_movement(float ang,obj_movement *move,d3pnt *motion)
 {
     angle_get_movement(ang,(int)move->speed,&motion->x,&motion->z);
     if (move->reverse) {

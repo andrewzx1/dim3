@@ -43,7 +43,7 @@ extern js_type				js;
       
 ======================================================= */
 
-inline obj_type* object_get_attach(JSObjectRef j_obj)
+obj_type* object_get_attach(JSObjectRef j_obj)
 {
 	int					script_idx;
 	script_type			*script;

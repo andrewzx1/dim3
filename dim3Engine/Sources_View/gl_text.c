@@ -76,7 +76,7 @@ texture_font_size_type* gl_text_get_font(int text_font,int text_size)
       
 ======================================================= */
 
-inline int gl_text_get_char_height(int text_size)
+int gl_text_get_char_height(int text_size)
 {
 	return((int)(((float)text_size)*text_height_factor));
 }
@@ -224,7 +224,7 @@ void gl_text_draw(int x,int y,char *txt,int just,bool vcenter,d3col *col,float a
 	
         // font color and alpha
         
-	glColor3f(col->r,col->g,col->b);
+	glColor4f(col->r,col->g,col->b,1.0f);
 
 	fct[0]=fct[1]=fct[2]=1.0f;
 	fct[3]=alpha;

@@ -46,7 +46,7 @@ extern setup_state_type			state;
 
 void alt2_property_palette_initialize(void)
 {
-	list_palette_list_initialize(&alt2_property_palette,"No Properties");
+	list_palette_list_initialize(&alt2_property_palette,"No Properties",TRUE);
 
 	alt2_property_palette.item_type=0;
 	alt2_property_palette.item_idx=-1;
@@ -55,20 +55,6 @@ void alt2_property_palette_initialize(void)
 void alt2_property_palette_shutdown(void)
 {
 	list_palette_list_shutdown(&alt2_property_palette);
-}
-
-void alt2_property_palette_setup(void)
-{
-	d3rect			wbox;
-	
-	os_get_window_box(&wbox);
-
-	alt2_property_palette.pixel_sz=list_palette_tree_sz;
-
-	alt2_property_palette.box.lx=list_palette_tree_sz*3;
-	alt2_property_palette.box.rx=alt2_property_palette.box.lx+list_palette_tree_sz;
-	alt2_property_palette.box.ty=wbox.ty;
-	alt2_property_palette.box.by=wbox.by;
 }
 
 /* =======================================================
@@ -128,8 +114,10 @@ void alt2_property_palette_fill(void)
 
 void alt2_property_palette_draw(void)
 {
+	if (list_palette_get_level()!=3) return;
+
 	alt2_property_palette_fill();
-	list_palette_draw(&alt2_property_palette,FALSE);
+	list_palette_draw(&alt2_property_palette);
 }
 
 /* =======================================================
@@ -140,7 +128,7 @@ void alt2_property_palette_draw(void)
 
 void alt2_property_palette_scroll_wheel(d3pnt *pnt,int move)
 {
-	list_palette_scroll_wheel(&alt2_property_palette,pnt,move);
+	if (list_palette_get_level()==3) list_palette_scroll_wheel(&alt2_property_palette,pnt,move);
 }
 
 /* =======================================================
@@ -149,15 +137,17 @@ void alt2_property_palette_scroll_wheel(d3pnt *pnt,int move)
       
 ======================================================= */
 
-void alt2_property_palette_click(d3pnt *pnt,bool double_click)
+bool alt2_property_palette_click(d3pnt *pnt,bool double_click)
 {
+	if (list_palette_get_level()!=3) return(FALSE);
+	
 		// click
 
-	if (!list_palette_click(&alt2_property_palette,pnt,double_click)) return;
+	if (!list_palette_click(&alt2_property_palette,pnt,double_click)) return(TRUE);
 
 		// click editing
 
-	if (alt2_property_palette.item_id==-1) return;
+	if (alt2_property_palette.item_id==-1) return(TRUE);
 
 		// selection properties
 
@@ -190,5 +180,7 @@ void alt2_property_palette_click(d3pnt *pnt,bool double_click)
 
 
 	}
+	
+	return(TRUE);
 }
 

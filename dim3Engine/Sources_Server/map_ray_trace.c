@@ -68,21 +68,21 @@ void ray_trace_shutdown(void)
       
 ======================================================= */
 
-inline void ray_trace_create_vector_from_points(d3vct *v,int x1,int y1,int z1,int x2,int y2,int z2)
+static inline void ray_trace_create_vector_from_points(d3vct *v,int x1,int y1,int z1,int x2,int y2,int z2)
 {
 	v->x=(float)(x1-x2);
 	v->y=(float)(y1-y2);
 	v->z=(float)(z1-z2);
 }
 
-inline void ray_trace_vector_cross_product(d3vct *cp,d3vct *v1,d3vct *v2)
+static inline void ray_trace_vector_cross_product(d3vct *cp,d3vct *v1,d3vct *v2)
 {
 	cp->x=(v1->y*v2->z)-(v2->y*v1->z);
 	cp->y=(v1->z*v2->x)-(v2->z*v1->x);
 	cp->z=(v1->x*v2->y)-(v2->x*v1->y);
 }
 
-inline float ray_trace_vector_inner_product(d3vct *v1,d3vct *v2)
+static inline float ray_trace_vector_inner_product(d3vct *v1,d3vct *v2)
 {
 	return((v1->x*v2->x)+(v1->y*v2->y)+(v1->z*v2->z));
 }
@@ -431,7 +431,7 @@ void ray_trace_get_ray_bounds(int cnt,d3pnt *spts,d3pnt *epts,d3pnt *min,d3pnt *
       
 ======================================================= */
 
-inline bool ray_trace_mesh_bound_check(map_mesh_type *mesh,d3pnt *min,d3pnt *max)
+static inline bool ray_trace_mesh_bound_check(map_mesh_type *mesh,d3pnt *min,d3pnt *max)
 {
 		// compare x/z first as it's a better chance
 		// for an elimination
@@ -454,7 +454,7 @@ inline bool ray_trace_mesh_bound_check(map_mesh_type *mesh,d3pnt *min,d3pnt *max
 	return(TRUE);
 }
 
-inline bool ray_trace_mesh_poly_bound_check(map_mesh_poly_type *poly,d3pnt *min,d3pnt *max)
+static inline bool ray_trace_mesh_poly_bound_check(map_mesh_poly_type *poly,d3pnt *min,d3pnt *max)
 {
 		// compare x/z first as it's a better chance
 		// for an elimination

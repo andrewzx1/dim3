@@ -70,6 +70,7 @@ void property_palette_click_actions(int id)
 		// edit action
 		
 	state.cur_action_idx=id-kActionProperyName;
+	list_palette_set_level(2);
 	main_wind_draw();
 }
 

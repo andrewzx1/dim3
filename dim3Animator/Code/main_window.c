@@ -39,7 +39,6 @@ file_path_setup_type			file_path_setup;
 iface_type						iface;
 animator_state_type				state;
 
-extern d3rect					tool_palette_box,txt_palette_box;
 extern list_palette_type		item_palette,property_palette,alt_property_palette;
 extern animator_setup_type		setup;
 
@@ -60,15 +59,6 @@ void main_wind_initialize(void)
 	item_palette_initialize();
 	property_palette_initialize();
 	alt_property_palette_initialize();
-
-		// size setups
-		
-	tool_palette_setup();
-	texture_palette_setup();
-	
-	item_palette_setup();
-	property_palette_setup();
-	alt_property_palette_setup();
 	
 	tool_tip_initialize();
 
@@ -326,35 +316,36 @@ void main_wind_play(bool play,bool blend)
 void main_wind_click(d3pnt *pnt,bool double_click)
 {
 	bool			old_playing;
+	d3rect			tbox;
 
 		// tool palette
 
-	if (pnt->y<tool_palette_box.by) {
+	tool_palette_box(&tbox);
+
+	if ((pnt->x>=tbox.lx) && (pnt->x<=tbox.rx) && (pnt->y>=tbox.ty) && (pnt->y<tbox.by)) {
 		tool_palette_click(pnt);
 		return;
 	}
 
 		// texture palette
+		
+	texture_palette_box(&tbox);
 
-	if (pnt->y>=txt_palette_box.ty) {
+	if ((pnt->x>=tbox.lx) && (pnt->x<=tbox.rx) && (pnt->y>=tbox.ty) && (pnt->y<tbox.by)) {
 		texture_palette_click(model.textures,pnt,double_click);
 		return;
 	}
 
 		// item, property and alt property palettes
 
-	if ((pnt->x>=item_palette.box.lx) && (pnt->x<=item_palette.box.rx) && (pnt->y>=item_palette.box.ty) && (pnt->y<item_palette.box.by)) {
-		item_palette_click(pnt,double_click);
-		return;
-	}
+	list_palette_box(&tbox);
 
-	if ((pnt->x>=property_palette.box.lx) && (pnt->x<=property_palette.box.rx) && (pnt->y>=property_palette.box.ty) && (pnt->y<property_palette.box.by)) {
-		property_palette_click(pnt,double_click);
-		return;
-	}
-
-	if ((pnt->x>=alt_property_palette.box.lx) && (pnt->x<=alt_property_palette.box.rx) && (pnt->y>=alt_property_palette.box.ty) && (pnt->y<alt_property_palette.box.by)) {
-		alt_property_palette_click(pnt,double_click);
+	if ((pnt->x>=tbox.lx) && (pnt->x<=tbox.rx) && (pnt->y>=tbox.ty) && (pnt->y<tbox.by)) {
+		if (!item_palette_click(pnt,double_click)) {
+			if (!property_palette_click(pnt,double_click)) {
+				alt_property_palette_click(pnt,double_click);
+			}
+		}
 		return;
 	}
 
@@ -383,19 +374,15 @@ void main_wind_click(d3pnt *pnt,bool double_click)
 
 void main_wind_scroll_wheel(d3pnt *pnt,int delta)
 {
+	d3rect				tbox;
+	
 		// scroll wheel in item, property, or alt property palette
 
-	if ((pnt->x>=item_palette.box.lx) && (pnt->x<=item_palette.box.rx) && (pnt->y>=item_palette.box.ty) && (pnt->y<item_palette.box.by)) {
+	list_palette_box(&tbox);
+
+	if ((pnt->x>=tbox.lx) && (pnt->x<=tbox.rx) && (pnt->y>=tbox.ty) && (pnt->y<tbox.by)) {
 		item_palette_scroll_wheel(pnt,delta);
-		return;
-	}
-
-	if ((pnt->x>=property_palette.box.lx) && (pnt->x<=property_palette.box.rx) && (pnt->y>=property_palette.box.ty) && (pnt->y<property_palette.box.by)) {
 		property_palette_scroll_wheel(pnt,delta);
-		return;
-	}
-
-	if ((pnt->x>=alt_property_palette.box.lx) && (pnt->x<=alt_property_palette.box.rx) && (pnt->y>=alt_property_palette.box.ty) && (pnt->y<alt_property_palette.box.by)) {
 		alt_property_palette_scroll_wheel(pnt,delta);
 		return;
 	}
@@ -502,12 +489,5 @@ void main_wind_key(char ch)
 
 void main_wind_resize(void)
 {
-	if (!state.model_open) return;
-
-	tool_palette_setup();
-	texture_palette_setup();
-	item_palette_setup();
-	property_palette_setup();
-	alt_property_palette_setup();
 }
 

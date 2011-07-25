@@ -172,7 +172,7 @@ proj_type* projectile_create(obj_type *obj,weapon_type *weap,proj_setup_type *pr
       
 ======================================================= */
 
-inline int projectile_get_radius(proj_type *proj)
+int projectile_get_radius(proj_type *proj)
 {
 	int			radius;
 	

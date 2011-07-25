@@ -107,6 +107,7 @@ void property_palette_click_radar(int id)
 
 	if ((id>=kRadarPropertyIconName) && (id<(kRadarPropertyIconName+max_radar_icon))) {
 		state.cur_radar_icon_idx=id-kRadarPropertyIconName;
+		list_palette_set_level(2);
 		main_wind_draw();
 		return;
 	}

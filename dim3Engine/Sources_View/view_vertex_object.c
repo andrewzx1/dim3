@@ -100,7 +100,7 @@ void view_init_map_vertex_object(int sz)
 	glBindBufferARB(GL_ARRAY_BUFFER_ARB,0);
 }
 
-inline float* view_bind_map_map_vertex_object(void)
+float* view_bind_map_map_vertex_object(void)
 {
 	float		*vertex_ptr;
 
@@ -119,17 +119,17 @@ inline float* view_bind_map_map_vertex_object(void)
 	return(vertex_ptr);
 }
 
-inline void view_bind_map_vertex_object(void)
+void view_bind_map_vertex_object(void)
 {
 	glBindBufferARB(GL_ARRAY_BUFFER_ARB,vbo_map);
 }
 
-inline void view_unmap_map_vertex_object(void)
+void view_unmap_map_vertex_object(void)
 {
 	glUnmapBufferARB(GL_ARRAY_BUFFER_ARB);
 }
 
-inline void view_unbind_map_vertex_object(void)
+void view_unbind_map_vertex_object(void)
 {
 	glBindBufferARB(GL_ARRAY_BUFFER_ARB,0);
 }
@@ -146,7 +146,7 @@ void view_init_map_index_object(int sz)
 	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB,0);
 }
 
-inline unsigned int* view_bind_map_map_index_object(void)
+unsigned int* view_bind_map_map_index_object(void)
 {
 	unsigned int		*index_ptr;
 
@@ -165,17 +165,17 @@ inline unsigned int* view_bind_map_map_index_object(void)
 	return(index_ptr);
 }
 
-inline void view_bind_map_index_object(void)
+void view_bind_map_index_object(void)
 {
 	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB,vbo_map_index);
 }
 
-inline void view_unmap_map_index_object(void)
+void view_unmap_map_index_object(void)
 {
 	glUnmapBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB);
 }
 
-inline void view_unbind_map_index_object(void)
+void view_unbind_map_index_object(void)
 {
 	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB,0);
 }
@@ -186,7 +186,7 @@ inline void view_unbind_map_index_object(void)
       
 ======================================================= */
 
-inline float* view_bind_map_liquid_vertex_object(int sz)
+float* view_bind_map_liquid_vertex_object(int sz)
 {
 	float		*vertex_ptr;
 
@@ -210,12 +210,12 @@ inline float* view_bind_map_liquid_vertex_object(int sz)
 	return(vertex_ptr);
 }
 
-inline void view_unmap_liquid_vertex_object(void)
+void view_unmap_liquid_vertex_object(void)
 {
 	glUnmapBufferARB(GL_ARRAY_BUFFER_ARB);
 }
 
-inline void view_unbind_liquid_vertex_object(void)
+void view_unbind_liquid_vertex_object(void)
 {
 	glBindBufferARB(GL_ARRAY_BUFFER_ARB,0);
 }
@@ -250,17 +250,17 @@ float* view_bind_map_sky_vertex_object(int sz)
 	return(vertex_ptr);
 }
 
-inline void view_bind_sky_vertex_object(void)
+void view_bind_sky_vertex_object(void)
 {
 	glBindBufferARB(GL_ARRAY_BUFFER_ARB,vbo_sky);
 }
 
-inline void view_unmap_sky_vertex_object(void)
+void view_unmap_sky_vertex_object(void)
 {
 	glUnmapBufferARB(GL_ARRAY_BUFFER_ARB);
 }
 
-inline void view_unbind_sky_vertex_object(void)
+void view_unbind_sky_vertex_object(void)
 {
 	glBindBufferARB(GL_ARRAY_BUFFER_ARB,0);
 }
@@ -278,12 +278,6 @@ float* view_bind_map_next_vertex_object(int sz)
 		// bind it
 
 	glBindBufferARB(GL_ARRAY_BUFFER_ARB,vbo_cache[cur_vbo_cache_idx]);
-
-		// this checks to see if the buffer is in
-		// use and stalls
-
-//	vertex_ptr=(float*)glMapBufferARB(GL_ARRAY_BUFFER_ARB,GL_WRITE_ONLY_ARB);
-//	glUnmapBufferARB(GL_ARRAY_BUFFER_ARB);
 
 		// change size of buffer
 		// we pass null to stop stalls
@@ -307,12 +301,12 @@ float* view_bind_map_next_vertex_object(int sz)
 	return(vertex_ptr);
 }
 
-inline void view_unmap_current_vertex_object(void)
+void view_unmap_current_vertex_object(void)
 {
 	glUnmapBufferARB(GL_ARRAY_BUFFER_ARB);
 }
 
-inline void view_unbind_current_vertex_object(void)
+void view_unbind_current_vertex_object(void)
 {
 	glBindBufferARB(GL_ARRAY_BUFFER_ARB,0);
 }
@@ -324,12 +318,6 @@ unsigned short* view_bind_map_next_index_object(int sz)
 		// bind it
 
 	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB,vbo_cache_index[cur_vbo_cache_index_idx]);
-
-		// this checks to see if the buffer is in
-		// use and stalls
-
-//	index_ptr=(unsigned short*)glMapBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB,GL_WRITE_ONLY_ARB);
-//	glUnmapBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB);
 
 		// change size of buffer
 		// we pass null to stop stalls
@@ -353,12 +341,12 @@ unsigned short* view_bind_map_next_index_object(int sz)
 	return(index_ptr);
 }
 
-inline void view_unmap_current_index_object(void)
+void view_unmap_current_index_object(void)
 {
 	glUnmapBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB);
 }
 
-inline void view_unbind_current_index_object(void)
+void view_unbind_current_index_object(void)
 {
 	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB,0);
 }
@@ -371,6 +359,7 @@ inline void view_unbind_current_index_object(void)
 
 void view_draw_next_vertex_object_2D_tint_screen(void)
 {
+	unsigned short	indexes[4]={0,1,2,3};
 	float			*vertex_ptr;
 
 	vertex_ptr=view_bind_map_next_vertex_object(4*2);
@@ -397,7 +386,7 @@ void view_draw_next_vertex_object_2D_tint_screen(void)
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(2,GL_FLOAT,0,(void*)0);
 
-	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
+	glDrawElements(GL_TRIANGLE_STRIP,4,GL_UNSIGNED_SHORT,(GLvoid*)indexes);
 
 	glDisableClientState(GL_VERTEX_ARRAY);
 
@@ -414,6 +403,7 @@ void view_draw_next_vertex_object_2D_tint_screen(void)
 
 void view_draw_next_vertex_object_2D_color_poly(int x0,int y0,d3col *col0,int x1,int y1,d3col *col1,int x2,int y2,d3col *col2,int x3,int y3,d3col *col3,float alpha)
 {
+	unsigned short	indexes[4]={0,1,2,3};
 	float			*vertex_ptr,*col_ptr;
 
 	vertex_ptr=view_bind_map_next_vertex_object(4*(2+4));
@@ -475,7 +465,7 @@ void view_draw_next_vertex_object_2D_color_poly(int x0,int y0,d3col *col0,int x1
 	glEnableClientState(GL_COLOR_ARRAY);
 	glColorPointer(4,GL_FLOAT,0,(void*)((4*2)*sizeof(float)));
 
-	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
+	glDrawElements(GL_TRIANGLE_STRIP,4,GL_UNSIGNED_SHORT,(GLvoid*)indexes);
 
  	glDisableClientState(GL_COLOR_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
@@ -497,6 +487,7 @@ void view_draw_next_vertex_object_2D_color_quad(d3col *col,float alpha,int lft,i
 
 void view_draw_next_vertex_object_2D_color_trig(d3col *col,float alpha,int lft,int rgt,int top,int bot,int dir)
 {
+	unsigned short	indexes[3]={0,1,2};
 	float			*vertex_ptr;
 
 	vertex_ptr=view_bind_map_next_vertex_object(4*2);
@@ -562,7 +553,7 @@ void view_draw_next_vertex_object_2D_color_trig(d3col *col,float alpha,int lft,i
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(2,GL_FLOAT,0,(void*)0);
 
-	glDrawArrays(GL_TRIANGLES,0,3);
+	glDrawElements(GL_TRIANGLES,3,GL_UNSIGNED_SHORT,(GLvoid*)indexes);
 
 	glDisableClientState(GL_VERTEX_ARRAY);
 	
@@ -584,6 +575,7 @@ void view_draw_next_vertex_object_2D_color_trig(d3col *col,float alpha,int lft,i
 
 void view_draw_next_vertex_object_2D_line(d3col *col,float alpha,int x0,int y0,int x1,int y1)
 {
+	unsigned short	indexes[2]={0,1};
 	float			*vertex_ptr;
 
 	vertex_ptr=view_bind_map_next_vertex_object(2*2);
@@ -616,7 +608,7 @@ void view_draw_next_vertex_object_2D_line(d3col *col,float alpha,int x0,int y0,i
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(2,GL_FLOAT,0,(void*)0);
 
-	glDrawArrays(GL_LINES,0,2);
+	glDrawElements(GL_LINES,2,GL_UNSIGNED_SHORT,(GLvoid*)indexes);
 
 	glDisableClientState(GL_VERTEX_ARRAY);
 
@@ -632,9 +624,10 @@ void view_draw_next_vertex_object_2D_line(d3col *col,float alpha,int x0,int y0,i
 
 void view_draw_next_vertex_object_2D_line_poly(d3col *col,float alpha,int x0,int y0,int x1,int y1,int x2,int y2,int x3,int y3)
 {
+	unsigned short	indexes[8]={0,1,1,2,2,3,3,0};
 	float			*vertex_ptr;
 
-	vertex_ptr=view_bind_map_next_vertex_object(8*2);
+	vertex_ptr=view_bind_map_next_vertex_object(4*2);
 	if (vertex_ptr==NULL) return;
 
 		// get the vertexes
@@ -645,23 +638,11 @@ void view_draw_next_vertex_object_2D_line_poly(d3col *col,float alpha,int x0,int
 	*vertex_ptr++=(float)x1;
 	*vertex_ptr++=(float)y1;
 
-	*vertex_ptr++=(float)x1;
-	*vertex_ptr++=(float)y1;
-
-	*vertex_ptr++=(float)x2;
-	*vertex_ptr++=(float)y2;
-
 	*vertex_ptr++=(float)x2;
 	*vertex_ptr++=(float)y2;
 
 	*vertex_ptr++=(float)x3;
 	*vertex_ptr++=(float)y3;
-
-	*vertex_ptr++=(float)x3;
-	*vertex_ptr++=(float)y3;
-
-	*vertex_ptr++=(float)x0;
-	*vertex_ptr++=(float)y0;
 
   	view_unmap_current_vertex_object();
 
@@ -681,8 +662,8 @@ void view_draw_next_vertex_object_2D_line_poly(d3col *col,float alpha,int x0,int
 
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(2,GL_FLOAT,0,(void*)0);
-
-	glDrawArrays(GL_LINES,0,8);
+	
+	glDrawElements(GL_LINES,8,GL_UNSIGNED_SHORT,(GLvoid*)indexes);
 
 	glDisableClientState(GL_VERTEX_ARRAY);
 
@@ -703,6 +684,7 @@ void view_draw_next_vertex_object_2D_line_quad(d3col *col,float alpha,int lft,in
 
 void view_draw_next_vertex_object_2D_line_trig(d3col *col,float alpha,int lft,int rgt,int top,int bot,int dir)
 {
+	unsigned short	indexes[6]={0,1,1,2,2,0};
 	float			x0,x1,x2,y0,y1,y2;
 	float			*vertex_ptr;
 
@@ -747,7 +729,7 @@ void view_draw_next_vertex_object_2D_line_trig(d3col *col,float alpha,int lft,in
 			break;
 	}
 
-	vertex_ptr=view_bind_map_next_vertex_object(6*2);
+	vertex_ptr=view_bind_map_next_vertex_object(3*2);
 	if (vertex_ptr==NULL) return;
 
 	*vertex_ptr++=(float)x0;
@@ -756,17 +738,8 @@ void view_draw_next_vertex_object_2D_line_trig(d3col *col,float alpha,int lft,in
 	*vertex_ptr++=(float)x1;
 	*vertex_ptr++=(float)y1;
 
-	*vertex_ptr++=(float)x1;
-	*vertex_ptr++=(float)y1;
-
 	*vertex_ptr++=(float)x2;
 	*vertex_ptr++=(float)y2;
-
-	*vertex_ptr++=(float)x2;
-	*vertex_ptr++=(float)y2;
-
-	*vertex_ptr++=(float)x0;
-	*vertex_ptr++=(float)y0;
 
   	view_unmap_current_vertex_object();
 
@@ -787,7 +760,7 @@ void view_draw_next_vertex_object_2D_line_trig(d3col *col,float alpha,int lft,in
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(2,GL_FLOAT,0,(void*)0);
 
-	glDrawArrays(GL_LINES,0,6);
+	glDrawElements(GL_LINES,6,GL_UNSIGNED_SHORT,(GLvoid*)indexes);
 
 	glDisableClientState(GL_VERTEX_ARRAY);
 
@@ -809,6 +782,7 @@ void view_draw_next_vertex_object_2D_line_trig(d3col *col,float alpha,int lft,in
 
 void view_draw_next_vertex_object_3D_line(d3col *col,float alpha,int x0,int y0,int z0,int x1,int y1,int z1)
 {
+	unsigned short	indexes[2]={0,1};
 	float			*vertex_ptr;
 
 	vertex_ptr=view_bind_map_next_vertex_object(2*3);
@@ -841,7 +815,7 @@ void view_draw_next_vertex_object_3D_line(d3col *col,float alpha,int x0,int y0,i
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(3,GL_FLOAT,0,(void*)0);
 
-	glDrawArrays(GL_LINES,0,2);
+	glDrawElements(GL_LINES,2,GL_UNSIGNED_SHORT,(GLvoid*)indexes);
 
 	glDisableClientState(GL_VERTEX_ARRAY);
 
@@ -857,20 +831,17 @@ void view_draw_next_vertex_object_3D_line(d3col *col,float alpha,int x0,int y0,i
 
 void view_draw_next_vertex_object_3D_line_cube(d3col *col,float alpha,int *px,int *py,int *pz)
 {
+	unsigned short	indexes[24]={0,1,1,2,2,3,3,0,4,5,5,6,6,7,7,4,0,4,1,5,2,6,3,7};
 	float			*vertex_ptr;
 
-	vertex_ptr=view_bind_map_next_vertex_object(24*3);
+	vertex_ptr=view_bind_map_next_vertex_object(8*3);
 	if (vertex_ptr==NULL) return;
 
 		// get the vertexes
-
+		
 	*vertex_ptr++=(float)px[0];
 	*vertex_ptr++=(float)py[0];
 	*vertex_ptr++=(float)pz[0];
-
-	*vertex_ptr++=(float)px[1];
-	*vertex_ptr++=(float)py[1];
-	*vertex_ptr++=(float)pz[1];
 
 	*vertex_ptr++=(float)px[1];
 	*vertex_ptr++=(float)py[1];
@@ -880,21 +851,9 @@ void view_draw_next_vertex_object_3D_line_cube(d3col *col,float alpha,int *px,in
 	*vertex_ptr++=(float)py[2];
 	*vertex_ptr++=(float)pz[2];
 
-	*vertex_ptr++=(float)px[2];
-	*vertex_ptr++=(float)py[2];
-	*vertex_ptr++=(float)pz[2];
-
 	*vertex_ptr++=(float)px[3];
 	*vertex_ptr++=(float)py[3];
 	*vertex_ptr++=(float)pz[3];
-
-	*vertex_ptr++=(float)px[3];
-	*vertex_ptr++=(float)py[3];
-	*vertex_ptr++=(float)pz[3];
-
-	*vertex_ptr++=(float)px[0];
-	*vertex_ptr++=(float)py[0];
-	*vertex_ptr++=(float)pz[0];
 
 	*vertex_ptr++=(float)px[4];
 	*vertex_ptr++=(float)py[4];
@@ -904,57 +863,9 @@ void view_draw_next_vertex_object_3D_line_cube(d3col *col,float alpha,int *px,in
 	*vertex_ptr++=(float)py[5];
 	*vertex_ptr++=(float)pz[5];
 
-	*vertex_ptr++=(float)px[5];
-	*vertex_ptr++=(float)py[5];
-	*vertex_ptr++=(float)pz[5];
-
 	*vertex_ptr++=(float)px[6];
 	*vertex_ptr++=(float)py[6];
 	*vertex_ptr++=(float)pz[6];
-
-	*vertex_ptr++=(float)px[6];
-	*vertex_ptr++=(float)py[6];
-	*vertex_ptr++=(float)pz[6];
-
-	*vertex_ptr++=(float)px[7];
-	*vertex_ptr++=(float)py[7];
-	*vertex_ptr++=(float)pz[7];
-
-	*vertex_ptr++=(float)px[7];
-	*vertex_ptr++=(float)py[7];
-	*vertex_ptr++=(float)pz[7];
-
-	*vertex_ptr++=(float)px[4];
-	*vertex_ptr++=(float)py[4];
-	*vertex_ptr++=(float)pz[4];
-
-	*vertex_ptr++=(float)px[0];
-	*vertex_ptr++=(float)py[0];
-	*vertex_ptr++=(float)pz[0];
-
-	*vertex_ptr++=(float)px[4];
-	*vertex_ptr++=(float)py[4];
-	*vertex_ptr++=(float)pz[4];
-
-	*vertex_ptr++=(float)px[1];
-	*vertex_ptr++=(float)py[1];
-	*vertex_ptr++=(float)pz[1];
-
-	*vertex_ptr++=(float)px[5];
-	*vertex_ptr++=(float)py[5];
-	*vertex_ptr++=(float)pz[5];
-
-	*vertex_ptr++=(float)px[2];
-	*vertex_ptr++=(float)py[2];
-	*vertex_ptr++=(float)pz[2];
-
-	*vertex_ptr++=(float)px[6];
-	*vertex_ptr++=(float)py[6];
-	*vertex_ptr++=(float)pz[6];
-
-	*vertex_ptr++=(float)px[3];
-	*vertex_ptr++=(float)py[3];
-	*vertex_ptr++=(float)pz[3];
 
 	*vertex_ptr++=(float)px[7];
 	*vertex_ptr++=(float)py[7];
@@ -977,7 +888,7 @@ void view_draw_next_vertex_object_3D_line_cube(d3col *col,float alpha,int *px,in
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(3,GL_FLOAT,0,(void*)0);
 
-	glDrawArrays(GL_LINES,0,24);
+	glDrawElements(GL_LINES,24,GL_UNSIGNED_SHORT,(GLvoid*)indexes);
 
 	glDisableClientState(GL_VERTEX_ARRAY);
 
@@ -999,7 +910,8 @@ void view_draw_next_vertex_object_3D_line_cube(d3col *col,float alpha,int *px,in
 
 void view_draw_next_vertex_object_2D_texture_quad(GLuint gl_id,d3col *col,float alpha,int lft,int rgt,int top,int bot,float gx,float gx2,float gy,float gy2)
 {
-	float			*vertex_ptr,*uv_ptr;
+	unsigned short		indexes[4]={0,1,2,3};
+	float				*vertex_ptr,*uv_ptr;
 
 	vertex_ptr=view_bind_map_next_vertex_object(4*(2+2));
 	if (vertex_ptr==NULL) return;
@@ -1064,7 +976,7 @@ void view_draw_next_vertex_object_2D_texture_quad(GLuint gl_id,d3col *col,float 
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2,GL_FLOAT,0,(void*)((4*2)*sizeof(float)));
 
-	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
+	glDrawElements(GL_TRIANGLE_STRIP,4,GL_UNSIGNED_SHORT,(GLvoid*)indexes);
 
  	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
@@ -1083,6 +995,7 @@ void view_draw_next_vertex_object_2D_texture_quad(GLuint gl_id,d3col *col,float 
 
 void view_draw_next_vertex_object_2D_texture_quad_rectangle(GLuint gl_id,float alpha,int lft,int rgt,int top,int bot,int pixel_wid,int pixel_high)
 {
+	unsigned short		indexes[4]={0,1,2,3};
 	float				*vertex_ptr,*uv_ptr;
 	
 		// create the vertexes and uv
@@ -1145,7 +1058,7 @@ void view_draw_next_vertex_object_2D_texture_quad_rectangle(GLuint gl_id,float a
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2,GL_FLOAT,0,(void*)((4*2)*sizeof(float)));
 
-	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
+	glDrawElements(GL_TRIANGLE_STRIP,4,GL_UNSIGNED_SHORT,(GLvoid*)indexes);
 
  	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);

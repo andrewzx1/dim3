@@ -197,33 +197,33 @@ void element_clear(void)
       
 ======================================================= */
 
-inline int element_get_control_high(void)
+int element_get_control_high(void)
 {
 	return((int)(((float)iface.scale_x)*element_control_draw_height)+5);
 }
 
-inline int element_get_padding(void)
+int element_get_padding(void)
 {
 	return((int)(((float)iface.scale_x)*element_control_padding_factor));
 }
 
-inline int element_get_tab_margin(void)
+int element_get_tab_margin(void)
 {
 	return((int)(((float)iface.scale_x)*0.05f));
 }
 
-inline int element_get_tab_control_high(void)
+int element_get_tab_control_high(void)
 {
 	return(gl_text_get_char_height(iface.font.text_size_small));
 }
 
-inline void element_get_button_bottom_left(int *x,int *y,int wid,int high)
+void element_get_button_bottom_left(int *x,int *y,int wid,int high)
 {
 	*x=element_get_tab_margin()+element_get_padding();
 	*y=iface.scale_y-(element_get_tab_margin()+element_get_padding());
 }
 
-inline void element_get_button_bottom_right(int *x,int *y,int wid,int high)
+void element_get_button_bottom_right(int *x,int *y,int wid,int high)
 {
 	*x=iface.scale_x-(element_get_tab_margin()+element_get_padding());
 	*y=iface.scale_y-(element_get_tab_margin()+element_get_padding());
@@ -1849,7 +1849,7 @@ int element_get_table_row_count(element_type *element)
 	return(0);
 }
 
-inline int element_get_table_row_high(element_type *element)
+static inline int element_get_table_row_high(element_type *element)
 {
 	if (element->setup.table.bitmap_mode==element_table_bitmap_none) return(gl_text_get_char_height(iface.font.text_size_small)+2);
 

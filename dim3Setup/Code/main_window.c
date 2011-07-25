@@ -57,13 +57,6 @@ void main_wind_initialize(void)
 	property_palette_initialize();
 	alt_property_palette_initialize();
 	alt2_property_palette_initialize();
-
-		// size setups
-		
-	item_palette_setup();
-	property_palette_setup();
-	alt_property_palette_setup();
-	alt2_property_palette_setup();
 }
 
 void main_wind_shutdown(void)
@@ -138,25 +131,20 @@ void main_wind_draw(void)
 
 void main_wind_click(d3pnt *pnt,bool double_click)
 {
+	d3rect			tbox;
+	
 		// item, property and alt property palettes
+		
+	list_palette_box(&tbox);
 
-	if ((pnt->x>=item_palette.box.lx) && (pnt->x<=item_palette.box.rx) && (pnt->y>=item_palette.box.ty) && (pnt->y<item_palette.box.by)) {
-		item_palette_click(pnt,double_click);
-		return;
-	}
-
-	if ((pnt->x>=property_palette.box.lx) && (pnt->x<=property_palette.box.rx) && (pnt->y>=property_palette.box.ty) && (pnt->y<property_palette.box.by)) {
-		property_palette_click(pnt,double_click);
-		return;
-	}
-
-	if ((pnt->x>=alt_property_palette.box.lx) && (pnt->x<=alt_property_palette.box.rx) && (pnt->y>=alt_property_palette.box.ty) && (pnt->y<alt_property_palette.box.by)) {
-		alt_property_palette_click(pnt,double_click);
-		return;
-	}
-
-	if ((pnt->x>=alt2_property_palette.box.lx) && (pnt->x<=alt2_property_palette.box.rx) && (pnt->y>=alt2_property_palette.box.ty) && (pnt->y<alt2_property_palette.box.by)) {
-		alt2_property_palette_click(pnt,double_click);
+	if ((pnt->x>=tbox.lx) && (pnt->x<=tbox.rx) && (pnt->y>=tbox.ty) && (pnt->y<tbox.by)) {
+		if (!item_palette_click(pnt,double_click)) {
+			if (!property_palette_click(pnt,double_click)) {
+				if (!alt_property_palette_click(pnt,double_click)) {
+					alt2_property_palette_click(pnt,double_click);
+				}
+			}
+		}
 		return;
 	}
 }
@@ -169,24 +157,16 @@ void main_wind_click(d3pnt *pnt,bool double_click)
 
 void main_wind_scroll_wheel(d3pnt *pnt,int delta)
 {
+	d3rect			tbox;
+
 		// scroll wheel in item, property, or alt property palette
 
-	if ((pnt->x>=item_palette.box.lx) && (pnt->x<=item_palette.box.rx) && (pnt->y>=item_palette.box.ty) && (pnt->y<item_palette.box.by)) {
+	list_palette_box(&tbox);
+
+	if ((pnt->x>=tbox.lx) && (pnt->x<=tbox.rx) && (pnt->y>=tbox.ty) && (pnt->y<tbox.by)) {
 		item_palette_scroll_wheel(pnt,delta);
-		return;
-	}
-
-	if ((pnt->x>=property_palette.box.lx) && (pnt->x<=property_palette.box.rx) && (pnt->y>=property_palette.box.ty) && (pnt->y<property_palette.box.by)) {
 		property_palette_scroll_wheel(pnt,delta);
-		return;
-	}
-
-	if ((pnt->x>=alt_property_palette.box.lx) && (pnt->x<=alt_property_palette.box.rx) && (pnt->y>=alt_property_palette.box.ty) && (pnt->y<alt_property_palette.box.by)) {
 		alt_property_palette_scroll_wheel(pnt,delta);
-		return;
-	}
-
-	if ((pnt->x>=alt2_property_palette.box.lx) && (pnt->x<=alt2_property_palette.box.rx) && (pnt->y>=alt2_property_palette.box.ty) && (pnt->y<alt2_property_palette.box.by)) {
 		alt2_property_palette_scroll_wheel(pnt,delta);
 		return;
 	}
@@ -241,9 +221,5 @@ void main_wind_key(char ch)
 
 void main_wind_resize(void)
 {
-	item_palette_setup();
-	property_palette_setup();
-	alt_property_palette_setup();
-	alt2_property_palette_setup();
 }
 

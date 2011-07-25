@@ -89,6 +89,7 @@ void alt_property_palette_click_menu(int menu_idx,int id)
 
 	if ((id>=kMenuPropertyMenuItemName) && (id<(kMenuPropertyMenuItemName+max_menu_item))) {
 		state.cur_menu_item_idx=id-kMenuPropertyMenuItemName;
+		list_palette_set_level(3);
 		main_wind_draw();
 		return;
 	}

@@ -58,11 +58,10 @@ extern bool menu_event_run(int cmd);
 
 extern void item_palette_initialize(void);
 extern void item_palette_shutdown(void);
-extern void item_palette_setup(void);
 extern void item_palette_draw(void);
 extern bool item_palette_delete(void);
 extern void item_palette_scroll_wheel(d3pnt *pnt,int move);
-extern void item_palette_click(d3pnt *pnt,bool double_click);
+extern bool item_palette_click(d3pnt *pnt,bool double_click);
 
 //
 // property list palette
@@ -70,11 +69,10 @@ extern void item_palette_click(d3pnt *pnt,bool double_click);
 
 extern void property_palette_initialize(void);
 extern void property_palette_shutdown(void);
-extern void property_palette_setup(void);
 extern void property_palette_draw(void);
 extern void property_palette_reset(void);
 extern void property_palette_scroll_wheel(d3pnt *pnt,int move);
-extern void property_palette_click(d3pnt *pnt,bool double_click);
+extern bool property_palette_click(d3pnt *pnt,bool double_click);
 
 extern void property_palette_pick_sound(char *name,bool include_none);
 extern void property_palette_pick_particle(char *name);
@@ -119,10 +117,9 @@ extern void property_palette_click_shaders(int id);
 
 extern void alt_property_palette_initialize(void);
 extern void alt_property_palette_shutdown(void);
-extern void alt_property_palette_setup(void);
 extern void alt_property_palette_draw(void);
 extern void alt_property_palette_scroll_wheel(d3pnt *pnt,int move);
-extern void alt_property_palette_click(d3pnt *pnt,bool double_click);
+extern bool alt_property_palette_click(d3pnt *pnt,bool double_click);
 
 extern void alt_property_palette_fill_intro_button(int intro_button_idx);
 extern void alt_property_palette_fill_intro_model(int intro_model_idx);
@@ -172,10 +169,9 @@ extern void alt_property_palette_click_shader(int shader_idx,int id);
 
 extern void alt2_property_palette_initialize(void);
 extern void alt2_property_palette_shutdown(void);
-extern void alt2_property_palette_setup(void);
 extern void alt2_property_palette_draw(void);
 extern void alt2_property_palette_scroll_wheel(d3pnt *pnt,int move);
-extern void alt2_property_palette_click(d3pnt *pnt,bool double_click);
+extern bool alt2_property_palette_click(d3pnt *pnt,bool double_click);
 
 extern void alt2_property_palette_fill_menu_item(int menu_idx,int menu_item_idx);
 extern void alt2_property_palette_fill_chooser_piece(int chooser_idx,int chooser_item_idx);

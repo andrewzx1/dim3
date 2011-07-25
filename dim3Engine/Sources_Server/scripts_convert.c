@@ -39,12 +39,12 @@ extern js_type			js;
       
 ======================================================= */
 
-inline JSValueRef script_null_to_value(JSContextRef cx)
+JSValueRef script_null_to_value(JSContextRef cx)
 {
 	return(JSValueMakeNull(cx));
 }
 
-inline bool script_is_value_null(JSContextRef cx,JSValueRef val)
+bool script_is_value_null(JSContextRef cx,JSValueRef val)
 {
 	return(JSValueIsNull(cx,val));
 }
@@ -55,12 +55,12 @@ inline bool script_is_value_null(JSContextRef cx,JSValueRef val)
       
 ======================================================= */
 
-inline int script_value_to_int(JSContextRef cx,JSValueRef val)
+int script_value_to_int(JSContextRef cx,JSValueRef val)
 {
 	return((int)JSValueToNumber(cx,val,NULL));
 }
 
-inline JSValueRef script_int_to_value(JSContextRef cx,int i)
+JSValueRef script_int_to_value(JSContextRef cx,int i)
 {
 	return(JSValueMakeNumber(cx,(float)i));
 }
@@ -71,12 +71,12 @@ inline JSValueRef script_int_to_value(JSContextRef cx,int i)
       
 ======================================================= */
 
-inline float script_value_to_float(JSContextRef cx,JSValueRef val)
+float script_value_to_float(JSContextRef cx,JSValueRef val)
 {
 	return((float)JSValueToNumber(cx,val,NULL));
 }
 
-inline JSValueRef script_float_to_value(JSContextRef cx,float f)
+JSValueRef script_float_to_value(JSContextRef cx,float f)
 {
 	return(JSValueMakeNumber(cx,(double)f));
 }
@@ -87,12 +87,12 @@ inline JSValueRef script_float_to_value(JSContextRef cx,float f)
       
 ======================================================= */
 
-inline bool script_value_to_bool(JSContextRef cx,JSValueRef val)
+bool script_value_to_bool(JSContextRef cx,JSValueRef val)
 {
 	return(JSValueToBoolean(cx,val));
 }
 
-inline JSValueRef script_bool_to_value(JSContextRef cx,bool b)
+JSValueRef script_bool_to_value(JSContextRef cx,bool b)
 {
 	return(JSValueMakeBoolean(cx,b));
 }

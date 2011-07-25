@@ -29,7 +29,7 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
-#ifdef D3_OS_MAC
+#if defined(D3_OS_MAC) || defined(D3_OS_IPHONE)
 	#include <ifaddrs.h>
 #endif
 
@@ -229,7 +229,7 @@ void net_get_host_ip(char *ip_name,char *ip_resolve)
 	bool				resolved;
 	struct hostent		*hent;
 
-#ifdef D3_OS_MAC
+#if defined(D3_OS_MAC) || defined(D3_OS_IPHONE)
 	struct ifaddrs		*ifap_get,*ifap;
 	struct sockaddr_in	sockin;
 #endif
@@ -259,7 +259,7 @@ void net_get_host_ip(char *ip_name,char *ip_resolve)
 
 	if (!resolved) {
 
-#ifdef D3_OS_MAC
+#if defined(D3_OS_MAC) || defined(D3_OS_IPHONE)
 	
 		if (getifaddrs(&ifap_get)==0) {
 		

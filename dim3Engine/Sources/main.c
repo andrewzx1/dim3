@@ -29,15 +29,7 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
-#ifdef D3_OS_MAC
-	#include <mach-o/arch.h>
-#endif
-
 #include "interface.h"
-
-int							os_vers_major,os_vers_minor_1,os_vers_minor_2;
-long						os_vers_hex;
-bool						arch_is_ppc;
 
 bool						game_app_active,game_loop_quit;
 
@@ -49,54 +41,15 @@ extern bool loop_main(char *err_str);
 
 /* =======================================================
 
-      OS Support and Setup
-      
-======================================================= */
-
-bool app_check_os_support(char *err_str)
-{
-#ifdef D3_OS_MAC
-	
-	NXArchInfo		*info;
-
-		// system version
-
-	Gestalt(gestaltSystemVersion,&os_vers_hex);
-	
-	os_vers_major=(((os_vers_hex&0xF000)>>12)*10)+((os_vers_hex&0x0F00)>>8);
-	os_vers_minor_1=(os_vers_hex&0x00F0)>>4;
-	os_vers_minor_2=os_vers_hex&0x000F;
-
-	if (os_vers_hex<0x1039) {
-		strcpy(err_str,"Unsupported System Version: You need at least MacOS X 10.3.9 to run dim3.");
-		return(FALSE);
-	}
-
-		// check for ppc
-
-	info=(NXArchInfo*)NXGetLocalArchInfo();
-	arch_is_ppc=(info->cputype==CPU_TYPE_POWERPC);
-
-#else
-	os_vers_hex=0;
-	os_vers_major=0;
-	os_vers_minor_1=0;
-	os_vers_minor_2=0;
-
-	arch_is_ppc=FALSE;
-#endif
-
-	return(TRUE);
-}
-
-/* =======================================================
-
       Check for Editor Link Files
+	  If self contained, then there's no editor launch
       
 ======================================================= */
 
 void app_check_editor_link(void)
 {
+#ifndef D3_OS_SELF_CONTAINED
+
 	int				len;
 	char			path[1024];
 	unsigned char	uc_len;
@@ -131,11 +84,14 @@ void app_check_editor_link(void)
 		// mark editor override
 
 	setup.editor_override.on=TRUE;
+	
+#endif
 }
 
 /* =======================================================
 
-      Attempt to fix XML on Startup Error
+      Report Errors
+	  If self-contained, just send report to stdout
       
 ======================================================= */
 
@@ -152,12 +108,16 @@ void app_report_error(char *err_str)
 	CFRelease(cf_str);
 #endif
 
-#ifdef D3_OS_LINUX
-    fprintf(stderr,"dim3 Error: %s\n", err_str);
+#ifdef D3_OS_IPHONE
+	fprintf(stderr,"dim3 Error: %s\n", err_str);
 #endif
 
 #ifdef D3_OS_WINDOWS
 	MessageBox(NULL,err_str,"dim3 Error",MB_OK);
+#endif
+
+#ifdef D3_OS_LINUX
+	fprintf(stderr,"dim3 Error: %s\n", err_str);
 #endif
 }
 
@@ -182,13 +142,6 @@ int main(int argc,char *argv[])
 		// get the project name
 		
 	iface_read_settings_project_name(&setup.file_path_setup);
-	
-		// check for required OS
-		
-	if (!app_check_os_support(err_str)) {
-		app_report_error(err_str);
-		return(0);
-	}
 
 		// check if editor is launching engine and
 		// if a map needs to be auto-loaded

@@ -48,7 +48,7 @@ extern render_info_type		render_info;
       
 ======================================================= */
 
-inline bool gl_in_window_mode(void)
+bool gl_in_window_mode(void)
 {
 	return((setup.window) || ((setup.editor_override.on) && (setup.window_editor)));
 }
@@ -73,8 +73,10 @@ void gl_setup_context(void)
 	glHint(GL_LINE_SMOOTH_HINT,GL_NICEST);
 	
 		// texture compression
-		
+
+#ifndef D3_OPENGL_ES		
 	glHint(GL_TEXTURE_COMPRESSION_HINT,GL_NICEST);
+#endif
 	glHint(GL_GENERATE_MIPMAP_HINT,GL_NICEST);
 }
 
@@ -90,7 +92,7 @@ bool gl_initialize(int screen_wid,int screen_high,int fsaa_mode,bool reset,char 
 	int						sdl_flags;
 #endif
     GLint					ntxtunit,ntxtsize;
-#ifndef D3_OS_MAC
+#if defined(D3_OS_LINUX) || defined(D3_OS_WINDOWS)
 	GLenum					glew_error;
 #endif
 
@@ -168,7 +170,7 @@ bool gl_initialize(int screen_wid,int screen_high,int fsaa_mode,bool reset,char 
 
 		// use glew on linux and windows
 		
-#ifndef D3_OS_MAC
+#if defined(D3_OS_LINUX) || defined(D3_OS_WINDOWS)
 	glew_error=glewInit();
 	if (glew_error!=GL_NO_ERROR) {
 		strcpy(err_str,glewGetErrorString(glew_error));
@@ -191,13 +193,6 @@ bool gl_initialize(int screen_wid,int screen_high,int fsaa_mode,bool reset,char 
 	render_info.texture_max_size=(int)ntxtsize;
 	
 	gl_check_initialize();
-	
-		// on OS X use threaded OpenGL
-		// supergumba -- turning this on seems to slow things down
-		
-#ifdef D3_OS_MAC
-//	CGLEnable(CGLGetCurrentContext(),kCGLCEMPEngine);
-#endif
 
 		// in case screen is bigger than window
 		

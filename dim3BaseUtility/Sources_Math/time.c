@@ -30,7 +30,7 @@ and can be sold or given away.
 	#include "dim3baseutility.h"
 #endif
 
-#ifdef D3_OS_MAC
+#if defined(D3_OS_MAC) || defined(D3_OS_IPHONE)
 	#include <mach/mach.h>
 	#include <mach/clock.h>
 
@@ -52,7 +52,7 @@ and can be sold or given away.
       
 ======================================================= */
 
-#ifdef D3_OS_MAC
+#if defined(D3_OS_MAC) || defined(D3_OS_IPHONE)
 
 int time_now(void)
 {

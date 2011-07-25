@@ -108,7 +108,7 @@ int gl_light_get_intensity(int tick,int light_type,int intensity)
       
 ======================================================= */
 
-inline bool gl_lights_collide_with_box(view_light_spot_type *lspot,d3pnt *min,d3pnt *max)
+static inline bool gl_lights_collide_with_box(view_light_spot_type *lspot,d3pnt *min,d3pnt *max)
 {
 	int				i_add;
 	
@@ -156,7 +156,7 @@ inline bool gl_lights_collide_with_box(view_light_spot_type *lspot,d3pnt *min,d3
 	return(TRUE);
 }
 
-inline bool gl_lights_direction_ok(double x,double y,double z,view_light_spot_type *lspot)
+static inline bool gl_lights_direction_ok(double x,double y,double z,view_light_spot_type *lspot)
 {
 	switch (lspot->direction) {
 

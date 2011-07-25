@@ -25,6 +25,9 @@
 		26452F1E127F9BA800043C34 /* view_draw_piece.c in Sources */ = {isa = PBXBuildFile; fileRef = 26452F18127F9BA800043C34 /* view_draw_piece.c */; };
 		26452F1F127F9BA800043C34 /* view_draw_select.c in Sources */ = {isa = PBXBuildFile; fileRef = 26452F19127F9BA800043C34 /* view_draw_select.c */; };
 		26452F20127F9BA800043C34 /* view_models.c in Sources */ = {isa = PBXBuildFile; fileRef = 26452F1A127F9BA800043C34 /* view_models.c */; };
+		26459B5C13DBC5A200D7DD73 /* mac_os_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 26459B5B13DBC5A200D7DD73 /* mac_os_defs.h */; };
+		26459B6513DBDA8800D7DD73 /* Back.png in Resources */ = {isa = PBXBuildFile; fileRef = 26459B6413DBDA8800D7DD73 /* Back.png */; };
+		26459B6613DBDA9D00D7DD73 /* Back.png in Copy (Lists Icons) */ = {isa = PBXBuildFile; fileRef = 26459B6413DBDA8800D7DD73 /* Back.png */; };
 		2647AD820E4F48D000BA3338 /* dialog_height_import.c in Sources */ = {isa = PBXBuildFile; fileRef = 2647AD810E4F48D000BA3338 /* dialog_height_import.c */; };
 		264BC91B13661D900004A4AB /* liquid_reflection_maps.c in Sources */ = {isa = PBXBuildFile; fileRef = 264BC91A13661D900004A4AB /* liquid_reflection_maps.c */; };
 		264D965E12921024005039CD /* OSX_main.c in Sources */ = {isa = PBXBuildFile; fileRef = 264D965D12921024005039CD /* OSX_main.c */; };
@@ -173,6 +176,7 @@
 			dstPath = Lists;
 			dstSubfolderSpec = 7;
 			files = (
+				26459B6613DBDA9D00D7DD73 /* Back.png in Copy (Lists Icons) */,
 				266DDE6D12E6714A004DA282 /* Edit.png in Copy (Lists Icons) */,
 				266DDE6E12E6714A004DA282 /* Minus.png in Copy (Lists Icons) */,
 				266DDE6F12E6714A004DA282 /* Plus.png in Copy (Lists Icons) */,
@@ -307,6 +311,8 @@
 		26452F18127F9BA800043C34 /* view_draw_piece.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = view_draw_piece.c; path = Code/view_draw_piece.c; sourceTree = "<group>"; };
 		26452F19127F9BA800043C34 /* view_draw_select.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = view_draw_select.c; path = Code/view_draw_select.c; sourceTree = "<group>"; };
 		26452F1A127F9BA800043C34 /* view_models.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = view_models.c; path = Code/view_models.c; sourceTree = "<group>"; };
+		26459B5B13DBC5A200D7DD73 /* mac_os_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mac_os_defs.h; path = ../dim3Common/Headers/mac_os_defs.h; sourceTree = "<group>"; };
+		26459B6413DBDA8800D7DD73 /* Back.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Back.png; sourceTree = "<group>"; };
 		2647AD810E4F48D000BA3338 /* dialog_height_import.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_height_import.c; path = Code/dialog_height_import.c; sourceTree = "<group>"; };
 		264BC91A13661D900004A4AB /* liquid_reflection_maps.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = liquid_reflection_maps.c; path = Code/liquid_reflection_maps.c; sourceTree = "<group>"; };
 		264D965D12921024005039CD /* OSX_main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = OSX_main.c; path = Code/OSX_main.c; sourceTree = "<group>"; };
@@ -449,6 +455,7 @@
 				F51ABAD3048DAB0200B78D6A /* dim3editor.h */,
 				26899FA80F1EBF25007860EB /* editor_defs.h */,
 				F50AF9AD088601C600F261B1 /* os_defs.h */,
+				26459B5B13DBC5A200D7DD73 /* mac_os_defs.h */,
 				26C5F0AF126130D0000B0F9E /* glue.h */,
 				F5AD54420BBE1FDB001C7C04 /* baseutility.h */,
 				26AFB4D10D9615C00004805A /* maputility.h */,
@@ -587,6 +594,7 @@
 		266DDE5212E670B3004DA282 /* Lists */ = {
 			isa = PBXGroup;
 			children = (
+				26459B6413DBDA8800D7DD73 /* Back.png */,
 				266DDE5312E670B3004DA282 /* Edit.png */,
 				266DDE5412E670B3004DA282 /* Minus.png */,
 				266DDE5512E670B3004DA282 /* Plus.png */,
@@ -752,6 +760,7 @@
 				26C5F0B0126130D0000B0F9E /* glue.h in Headers */,
 				262C38D212D0211200A94FEE /* ui_common.h in Headers */,
 				26232DD313065713008DC42B /* osx_dialog.h in Headers */,
+				26459B5C13DBC5A200D7DD73 /* mac_os_defs.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -819,6 +828,7 @@
 				F5A4322B055602DF002DF965 /* InfoPlist.strings in Resources */,
 				F5A4322C055602DF002DF965 /* dim3 Editor.icns in Resources */,
 				F57537BA055B5F4900D42FAF /* dim3 Editor.nib in Resources */,
+				26459B6513DBDA8800D7DD73 /* Back.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

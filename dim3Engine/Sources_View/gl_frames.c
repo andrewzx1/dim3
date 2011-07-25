@@ -42,12 +42,11 @@ extern render_info_type		render_info;
 extern camera_type			camera;
 
 #ifdef D3_SDL_1_3
-	extern SDL_Window			*sdl_wind;
+	extern SDL_Window		*sdl_wind;
 #endif
 
 GLint						vport[4];
-double						mod_matrix[16],proj_matrix[16],
-							fix_rot_camera_x,fix_rot_camera_y,fix_rot_camera_z;
+float						mod_matrix[16],proj_matrix[16];
 
 /* =======================================================
 
@@ -66,11 +65,7 @@ void gl_3D_view(void)
 
 	ratio=(((float)setup.screen.x_sz)/((float)setup.screen.y_sz))*camera.setup.plane.aspect_ratio;
 	
-	#ifndef D3_OPENGL_ES
-		gluPerspective(view.render->camera.fov,ratio,(float)camera.setup.plane.near_z,(float)camera.setup.plane.far_z);
-	#else
-		es_patch_gluPerspective(view.render->camera.fov,ratio,(float)camera.setup.plane.near_z,(float)camera.setup.plane.far_z);
-	#endif
+	glu_patch_gluPerspective(view.render->camera.fov,ratio,(float)camera.setup.plane.near_z,(float)camera.setup.plane.far_z);
 	
 		// projection flips
 		
@@ -88,11 +83,7 @@ void gl_3D_view(void)
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	
-	#ifndef D3_OPENGL_ES
-		gluLookAt((float)view.render->camera.pnt.x,(float)view.render->camera.pnt.y,(float)(view.render->camera.pnt.z+camera.setup.plane.near_z),(float)view.render->camera.pnt.x,(float)view.render->camera.pnt.y,(float)view.render->camera.pnt.z,0.0f,1.0f,0.0f);
-	#else
-		es_patch_gluLookAt((float)view.render->camera.pnt.x,(float)view.render->camera.pnt.y,(float)(view.render->camera.pnt.z+camera.setup.plane.near_z),(float)view.render->camera.pnt.x,(float)view.render->camera.pnt.y,(float)view.render->camera.pnt.z,0.0f,1.0f,0.0f);
-	#endif
+	glu_patch_gluLookAt((float)view.render->camera.pnt.x,(float)view.render->camera.pnt.y,(float)(view.render->camera.pnt.z+camera.setup.plane.near_z),(float)view.render->camera.pnt.x,(float)view.render->camera.pnt.y,(float)view.render->camera.pnt.z,0.0f,1.0f,0.0f);
 }
 
 void gl_3D_rotate(d3pnt *pnt,d3ang *ang)
@@ -117,18 +108,10 @@ void gl_3D_rotate(d3pnt *pnt,d3ang *ang)
 	matrix_vertex_multiply(&mat,&fx,&fy,&fz);
 
 	if (pnt==NULL) {
-		#ifndef D3_OPENGL_ES
-			gluLookAt(fx,fy,fz,0.0f,0.0f,0.0f,0.0f,1.0f,0.0f);
-		#else
-			es_patch_gluLookAt(fx,fy,fz,0.0f,0.0f,0.0f,0.0f,1.0f,0.0f);
-		#endif
+		glu_patch_gluLookAt(fx,fy,fz,0.0f,0.0f,0.0f,0.0f,1.0f,0.0f);
 	}
 	else {
-		#ifndef D3_OPENGL_ES
-			gluLookAt((((float)pnt->x)+fx),(((float)pnt->y)+fy),(((float)pnt->z)+fz),(float)pnt->x,(float)pnt->y,(float)pnt->z,0.0f,1.0f,0.0f);
-		#else
-			es_patch_gluLookAt((((float)pnt->x)+fx),(((float)pnt->y)+fy),(((float)pnt->z)+fz),(float)pnt->x,(float)pnt->y,(float)pnt->z,0.0f,1.0f,0.0f);
-		#endif
+		glu_patch_gluLookAt((((float)pnt->x)+fx),(((float)pnt->y)+fy),(((float)pnt->z)+fz),(float)pnt->x,(float)pnt->y,(float)pnt->z,0.0f,1.0f,0.0f);
 	}
 }
 
@@ -142,8 +125,13 @@ void gl_2D_view_screen(void)
 {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho(0.0f,(GLfloat)setup.screen.x_sz,(GLfloat)setup.screen.y_sz,0.0f,-1.0f,1.0f);
 	
+#ifndef D3_OPENGL_ES
+	glOrtho(0.0f,(GLfloat)setup.screen.x_sz,(GLfloat)setup.screen.y_sz,0.0f,-1.0f,1.0f);
+#else
+	glOrthof(0.0f,(GLfloat)setup.screen.x_sz,(GLfloat)setup.screen.y_sz,0.0f,-1.0f,1.0f);
+#endif
+
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 }
@@ -152,8 +140,13 @@ void gl_2D_view_interface(void)
 {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho(0.0f,(GLfloat)iface.scale_x,(GLfloat)iface.scale_y,0.0f,-1.0f,1.0f);
 	
+#ifndef D3_OPENGL_ES
+	glOrtho(0.0f,(GLfloat)iface.scale_x,(GLfloat)iface.scale_y,0.0f,-1.0f,1.0f);
+#else
+	glOrthof(0.0f,(GLfloat)iface.scale_x,(GLfloat)iface.scale_y,0.0f,-1.0f,1.0f);
+#endif
+
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 }
@@ -174,7 +167,12 @@ void gl_3D_view_interface_model()
 	x=(float)(iface.scale_x>>1);
 	y=(float)(iface.scale_y>>1);
 
+#ifndef D3_OPENGL_ES
 	glFrustum(-x,x,-y,y,1000.0f,21000.0f);
+#else
+	glFrustumf(-x,x,-y,y,1000.0f,21000.0f);
+#endif
+
 	glScalef(1.0f,-1.0f,-1.0f);
 	glTranslatef(0.0f,0.0f,5000.0f);
 
@@ -237,34 +235,30 @@ void gl_frame_swap(void)
       
 ======================================================= */
 
-inline void gl_setup_project(void)
+void gl_setup_project(void)
 {
-	glGetDoublev(GL_MODELVIEW_MATRIX,mod_matrix);
-	glGetDoublev(GL_PROJECTION_MATRIX,proj_matrix);
+	glGetFloatv(GL_MODELVIEW_MATRIX,mod_matrix);
+	glGetFloatv(GL_PROJECTION_MATRIX,proj_matrix);
 	glGetIntegerv(GL_VIEWPORT,vport);
 }
 
-inline bool gl_project_in_view_z(int x,int y,int z)
+bool gl_project_in_view_z(int x,int y,int z)
 {
-	return(((((double)x)*mod_matrix[2])+(((double)y)*mod_matrix[6])+(((double)z)*mod_matrix[10])+mod_matrix[14])>0.0);
+	return(((((float)x)*mod_matrix[2])+(((float)y)*mod_matrix[6])+(((float)z)*mod_matrix[10])+mod_matrix[14])>0.0);
 }
 
-inline void gl_project_point(int *x,int *y,int *z)
+void gl_project_point(int *x,int *y,int *z)
 {
-	double		dx,dy,dz;
+	float		dx,dy,dz;
 
-	#ifndef D3_OPENGL_ES
-		gluProject(*x,*y,*z,mod_matrix,proj_matrix,vport,&dx,&dy,&dz);
-	#else
-		es_patch_gluProject(*x,*y,*z,mod_matrix,proj_matrix,vport,&dx,&dy,&dz);
-	#endif
+	glu_patch_gluProject(*x,*y,*z,mod_matrix,proj_matrix,vport,&dx,&dy,&dz);
 	
 	*x=((int)dx)-render_info.view_x;
 	*y=((int)dy)-render_info.view_y;
 	*z=(int)dz;
 }
 
-inline void gl_project_poly(int ptsz,int *x,int *y,int *z)
+void gl_project_poly(int ptsz,int *x,int *y,int *z)
 {
 	int			i;
 
@@ -273,35 +267,26 @@ inline void gl_project_poly(int ptsz,int *x,int *y,int *z)
 	}
 }
 
-inline float gl_project_get_depth(int x,int y,int z)
+float gl_project_get_depth(int x,int y,int z)
 {
-	double		dx,dy,dz;
+	float		dx,dy,dz;
 
-	#ifndef D3_OPENGL_ES
-		gluProject(x,y,z,mod_matrix,proj_matrix,vport,&dx,&dy,&dz);
-	#else
-		es_patch_gluProject(x,y,z,mod_matrix,proj_matrix,vport,&dx,&dy,&dz);
-	#endif
-	
+	glu_patch_gluProject(x,y,z,mod_matrix,proj_matrix,vport,&dx,&dy,&dz);	
 	return((float)dz);
 }
 
-inline void gl_unproject_point(float fx,float fy,float fz,int *x,int *y,int *z)
+void gl_unproject_point(float fx,float fy,float fz,int *x,int *y,int *z)
 {
-	double		dx,dy,dz;
+	float		dx,dy,dz;
 	
-	#ifndef D3_OPENGL_ES
-		gluUnProject(fx,fy,fz,mod_matrix,proj_matrix,vport,&dx,&dy,&dz);
-	#else
-		es_patch_gluUnProject(fx,fy,fz,mod_matrix,proj_matrix,vport,&dx,&dy,&dz);
-	#endif
+	glu_patch_gluUnProject(fx,fy,fz,mod_matrix,proj_matrix,vport,&dx,&dy,&dz);
 	
 	*x=((int)dx)+render_info.view_x;
 	*y=((int)dy)+render_info.view_y;
 	*z=(int)dz;
 }
 
-inline void gl_project_to_eye_coordinates(float *x,float *y,float *z)
+void gl_project_to_eye_coordinates(float *x,float *y,float *z)
 {
 	float		fx,fy,fz;
 	
@@ -316,7 +301,7 @@ inline void gl_project_to_eye_coordinates(float *x,float *y,float *z)
 
 void gl_project_fix_rotation(int *x,int *y,int *z)
 {
-	double			dx,dy,dz,dx2,dy2,dz2;
+	float			dx,dy,dz,dx2,dy2,dz2;
 
 		// remember current settings
 
@@ -329,27 +314,17 @@ void gl_project_fix_rotation(int *x,int *y,int *z)
 		// translate from non-rotated 3D space
 		// to rotated 3D space
 		
-	dx=(double)(*x);
-	dy=(double)(*y);
-	dz=(double)(*z);
+	dx=(float)(*x);
+	dy=(float)(*y);
+	dz=(float)(*z);
 
 	gl_3D_view();
 	gl_setup_project();
-	
-	#ifndef D3_OPENGL_ES
-		gluProject(dx,dy,dz,mod_matrix,proj_matrix,vport,&dx2,&dy2,&dz2);
-	#else
-		es_patch_gluProject(dx,dy,dz,mod_matrix,proj_matrix,vport,&dx2,&dy2,&dz2);
-	#endif
+	glu_patch_gluProject(dx,dy,dz,mod_matrix,proj_matrix,vport,&dx2,&dy2,&dz2);
 
 	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
 	gl_setup_project();
-	
-	#ifndef D3_OPENGL_ES
-		gluUnProject(dx2,dy2,dz2,mod_matrix,proj_matrix,vport,&dx,&dy,&dz);
-	#else
-		es_patch_gluUnProject(dx2,dy2,dz2,mod_matrix,proj_matrix,vport,&dx,&dy,&dz);
-	#endif
+	glu_patch_gluUnProject(dx2,dy2,dz2,mod_matrix,proj_matrix,vport,&dx,&dy,&dz);
 
 	*x=((int)dx);
 	*y=((int)dy);

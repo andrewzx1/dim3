@@ -153,6 +153,7 @@ void property_palette_click_intro(int id)
 	if ((id>=kIntroPropertyButtonGameNew) && (id<=kIntroPropertyButtonQuit)) {
 		state.cur_intro_button_idx=(id-kIntroPropertyButtonGameNew)+item_intro_button_game_new;
 		state.cur_intro_model_idx=-1;
+		list_palette_set_level(2);
 		main_wind_draw();
 		return;
 	}
@@ -162,6 +163,7 @@ void property_palette_click_intro(int id)
 	if ((id>=kIntroPropertyButtonSimpleSaveStart) && (id<(kIntroPropertyButtonSimpleSaveStart+max_simple_save_spot))) {
 		state.cur_intro_button_idx=(id-kIntroPropertyButtonSimpleSaveStart)+item_intro_button_simple_save_start;
 		state.cur_intro_model_idx=-1;
+		list_palette_set_level(2);
 		main_wind_draw();
 		return;
 	}
@@ -169,6 +171,7 @@ void property_palette_click_intro(int id)
 	if ((id>=kIntroPropertyButtonSimpleSaveErase) && (id<(kIntroPropertyButtonSimpleSaveErase+max_simple_save_spot))) {
 		state.cur_intro_button_idx=(id-kIntroPropertyButtonSimpleSaveErase)+item_intro_button_simple_save_erase;
 		state.cur_intro_model_idx=-1;
+		list_palette_set_level(2);
 		main_wind_draw();
 		return;
 	}
@@ -178,6 +181,7 @@ void property_palette_click_intro(int id)
 	if ((id>=kIntroPropertyModelName) && (id<(kIntroPropertyModelName+max_hud_intro_model))) {
 		state.cur_intro_button_idx=-1;
 		state.cur_intro_model_idx=id-kIntroPropertyModelName;
+		list_palette_set_level(2);
 		main_wind_draw();
 		return;
 	}

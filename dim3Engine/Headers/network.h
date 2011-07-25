@@ -48,10 +48,10 @@ extern void net_ip_local_broadcast(char *ip,char *broad_ip);
 // sockets
 //
 
-inline d3socket net_open_udp_socket(void);
-inline void net_close_socket(d3socket *sock);
-inline void net_socket_blocking(d3socket sock,bool blocking);
-inline void net_socket_enable_broadcast(d3socket sock);
+extern inline d3socket net_open_udp_socket(void);
+extern inline void net_close_socket(d3socket *sock);
+extern inline void net_socket_blocking(d3socket sock,bool blocking);
+extern inline void net_socket_enable_broadcast(d3socket sock);
 extern bool net_ip_to_address(char *ip,unsigned long *ip_addr,char *err_str);
 extern bool net_bind_any(d3socket sock,int port,char *err_str);
 extern bool net_receive_ready(d3socket sock);

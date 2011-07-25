@@ -78,7 +78,7 @@ void property_palette_click_chooser(int id)
 	if ((id>=kChooserPropertyChooserName) && (id<(kChooserPropertyChooserName+max_iface_chooser))) {
 		state.cur_chooser_idx=id-kChooserPropertyChooserName;
 		state.cur_chooser_piece_idx=-1;
-
+		list_palette_set_level(2);
 		main_wind_draw();
 		return;
 	}

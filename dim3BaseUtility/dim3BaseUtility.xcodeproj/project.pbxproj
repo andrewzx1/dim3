@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		260D11921346D07600C77CC7 /* iface_chooser.c in Sources */ = {isa = PBXBuildFile; fileRef = 260D11901346D07600C77CC7 /* iface_chooser.c */; };
 		260D11931346D07600C77CC7 /* iface_multiplayer.c in Sources */ = {isa = PBXBuildFile; fileRef = 260D11911346D07600C77CC7 /* iface_multiplayer.c */; };
+		2611E66113DA908700B11DDB /* mac_os_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 2611E65D13DA908700B11DDB /* mac_os_defs.h */; };
 		2612D45F0E6CEEE200994B22 /* area.c in Sources */ = {isa = PBXBuildFile; fileRef = 2612D45E0E6CEEE200994B22 /* area.c */; };
 		265111D4121C871000E2ED78 /* bitmap_text.c in Sources */ = {isa = PBXBuildFile; fileRef = 265111D3121C871000E2ED78 /* bitmap_text.c */; };
 		26A5C57313D68FF500CDABD9 /* file_cocoa.m in Sources */ = {isa = PBXBuildFile; fileRef = 26A5C57213D68FF500CDABD9 /* file_cocoa.m */; };
@@ -67,6 +68,7 @@
 		08FB77AAFE841565C02AAC07 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
 		260D11901346D07600C77CC7 /* iface_chooser.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = iface_chooser.c; path = Sources_Interface/iface_chooser.c; sourceTree = "<group>"; };
 		260D11911346D07600C77CC7 /* iface_multiplayer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = iface_multiplayer.c; path = Sources_Interface/iface_multiplayer.c; sourceTree = "<group>"; };
+		2611E65D13DA908700B11DDB /* mac_os_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mac_os_defs.h; path = ../dim3Common/Headers/mac_os_defs.h; sourceTree = "<group>"; };
 		2612D45E0E6CEEE200994B22 /* area.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = area.c; path = Sources_Math/area.c; sourceTree = "<group>"; };
 		265111D3121C871000E2ED78 /* bitmap_text.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = bitmap_text.c; path = Sources_Bitmap/bitmap_text.c; sourceTree = "<group>"; };
 		26A5C57213D68FF500CDABD9 /* file_cocoa.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = file_cocoa.m; path = Cocoa_Stubs/file_cocoa.m; sourceTree = "<group>"; };
@@ -226,6 +228,7 @@
 			children = (
 				F5AD52AB0BBE1727001C7C04 /* dim3baseutility.h */,
 				F5AD52AE0BBE1746001C7C04 /* os_defs.h */,
+				2611E65D13DA908700B11DDB /* mac_os_defs.h */,
 				F5AD52A00BBE16AC001C7C04 /* baseutility.h */,
 				F5AD52A90BBE1720001C7C04 /* baseprivate.h */,
 			);
@@ -289,6 +292,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2611E66113DA908700B11DDB /* mac_os_defs.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

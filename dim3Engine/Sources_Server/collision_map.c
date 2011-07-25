@@ -59,7 +59,7 @@ bool collide_contact_is_wall_hit(poly_pointer_type *hit_poly)
       
 ======================================================= */
 
-inline bool line_line_intersect(d3pnt *p0,d3pnt *p1,d3pnt *p2,d3pnt *p3,d3pnt *hit_pnt)
+static inline bool line_line_intersect(d3pnt *p0,d3pnt *p1,d3pnt *p2,d3pnt *p3,d3pnt *hit_pnt)
 {
 	float			fx0,fy0,fx1,fy1,fx2,fy2,fx3,fy3,
 					denom,

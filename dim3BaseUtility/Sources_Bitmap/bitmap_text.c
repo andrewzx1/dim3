@@ -41,7 +41,7 @@ and can be sold or given away.
       
 ======================================================= */
 
-#ifdef D3_OS_MAC
+#if defined(D3_OS_MAC) || defined(D3_OS_IPHONE)
 
 void bitmap_text_size_internal(texture_font_size_type *d3_size_font,char *name,int size,int bitmap_wid,int bitmap_high)
 {

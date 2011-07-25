@@ -42,7 +42,7 @@ extern server_type			server;
       
 ======================================================= */
 
-inline void object_move_get_turn_motion(obj_type *obj,d3pnt *mpt,float rot_y,d3pnt *turn_motion)
+static inline void object_move_get_turn_motion(obj_type *obj,d3pnt *mpt,float rot_y,d3pnt *turn_motion)
 {
 	float				fx,fy,fz;
 	matrix_type			mat;
@@ -59,7 +59,7 @@ inline void object_move_get_turn_motion(obj_type *obj,d3pnt *mpt,float rot_y,d3p
 	turn_motion->z=(((int)fz)+mpt->z)-obj->pnt.z;
 }
 
-inline void object_move_with_motion(obj_type *obj,d3pnt *motion,int crush_mesh_idx)
+static inline void object_move_with_motion(obj_type *obj,d3pnt *motion,int crush_mesh_idx)
 {
 		// collide with map and crush if blocked
 		

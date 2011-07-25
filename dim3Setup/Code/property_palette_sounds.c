@@ -77,6 +77,7 @@ void property_palette_click_sounds(int id)
 		
 	if ((id>=kSoundProperyName) && (id<(kSoundProperyName+max_iface_sound))) {
 		state.cur_sound_idx=id-kSoundProperyName;
+		list_palette_set_level(2);
 		main_wind_draw();
 		return;
 	}

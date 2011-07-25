@@ -29,7 +29,7 @@ and can be sold or given away.
 	#include "dim3baseutility.h"
 #endif
 
-#ifdef D3_OS_MAC
+#ifdef D3_OS_IPHONE
 	extern void cocoa_file_get_application_support_path(char *path);
 #endif
 
@@ -45,7 +45,7 @@ bool file_paths_setup(file_path_setup_type *file_path_setup)
 
 		// OS specific app path and name
 
-#ifdef D3_OS_MAC	
+#if defined(D3_OS_MAC) || defined(D3_OS_IPHONE)	
 	char			*c;
 	CFURLRef		cfurl;
 	
@@ -120,7 +120,7 @@ bool file_paths_setup(file_path_setup_type *file_path_setup)
 	
 		// app data path
 		
-#ifdef D3_OS_MAC	
+#if defined(D3_OS_MAC) || defined(D3_OS_IPHONE)	
 	sprintf(file_path_setup->path_app,"%s/%s.app/Contents/Data",file_path_setup->path_base,file_path_setup->app_name);
 	if (stat(file_path_setup->path_app,&sb)!=0) file_path_setup->path_app[0]=0x0;
 #else
@@ -236,7 +236,7 @@ void file_paths_app(file_path_setup_type *file_path_setup,char *path,char *sub_p
 		// on everything else, it's just a normal path
 		// to the app root directory
 
-#ifdef D3_OS_MAC
+#if defined(D3_OS_MAC) || defined(D3_OS_IPHONE)
 	strcat(path,"/");
 	strcat(path,file_path_setup->app_name);
 	strcat(path,".app");
@@ -291,17 +291,24 @@ void file_paths_app_data(file_path_setup_type *file_path_setup,char *path,char *
 		// get the application support directory
 		
 #ifdef D3_OS_MAC
+	FSRef		fsref;
+	
+	FSFindFolder(kUserDomain,kApplicationSupportFolderType,kDontCreateFolder,&fsref);
+	FSRefMakePath(&fsref,(unsigned char*)path,1024);
+#endif
+
+#ifdef D3_OS_IPHONE
 	cocoa_file_get_application_support_path(path);
+#endif
+
+#ifdef D3_OS_WINDOWS
+	SHGetSpecialFolderPath(NULL,path,CSIDL_APPDATA,FALSE);
 #endif
 
 #ifdef D3_OS_LINUX
 	strcpy(path,getenv("HOME"));
 	strcat(path,"/.dim3");
 	file_paths_create_directory(path);
-#endif
-
-#ifdef D3_OS_WINDOWS
-	SHGetSpecialFolderPath(NULL,path,CSIDL_APPDATA,FALSE);
 #endif
 
 		// get game's document directory based
