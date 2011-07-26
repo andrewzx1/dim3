@@ -51,7 +51,7 @@ void view_create_vertex_objects(void)
 {
 		// map, liquid and sky vbo
 
-	glGenBuffersARB(1,&vbo_map);
+	glGenBuffers(1,&vbo_map);
 	glGenBuffersARB(1,&vbo_map_index);
 
 	glGenBuffersARB(1,&vbo_liquid);
@@ -87,6 +87,12 @@ void view_dispose_vertex_objects(void)
       Map VBOs
       
 ======================================================= */
+
+void view_create_mesh_vertex_object(map_mesh_type *mesh)
+{
+	glGenBuffersARB(1,&mesh->vbo.vbo);
+	glGenBuffersARB(1,&mesh->vbo.vbo_index);
+}
 
 void view_init_map_vertex_object(int sz)
 {

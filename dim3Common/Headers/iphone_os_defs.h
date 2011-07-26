@@ -66,6 +66,14 @@ and can be sold or given away.
 #define D3_OPENGL_ES			1
 
 //
+// specific apple ES additions
+//
+
+#define glMapBuffer				glMapBufferOES
+#define glUnmapBuffer			glUnmapBufferOES
+#define GL_WRITE_ONLY			GL_WRITE_ONLY_OES
+
+//
 // os specific keys
 //
 

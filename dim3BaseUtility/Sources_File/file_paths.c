@@ -123,6 +123,11 @@ bool file_paths_setup(file_path_setup_type *file_path_setup)
 #if defined(D3_OS_MAC) || defined(D3_OS_IPHONE)	
 	sprintf(file_path_setup->path_app,"%s/%s.app/Contents/Data",file_path_setup->path_base,file_path_setup->app_name);
 	if (stat(file_path_setup->path_app,&sb)!=0) file_path_setup->path_app[0]=0x0;
+	
+	if (file_path_setup->path_app[0]==0x0) {
+		sprintf(file_path_setup->path_app,"%s/%s.app/Data",file_path_setup->path_base,file_path_setup->app_name);
+		if (stat(file_path_setup->path_app,&sb)!=0) file_path_setup->path_app[0]=0x0;
+	}
 #else
 	file_path_setup->path_app[0]=0x0;
 #endif
