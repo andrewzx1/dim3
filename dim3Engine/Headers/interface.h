@@ -85,11 +85,13 @@ extern void view_clear_fps(void);
 extern void view_calculate_fps(void);
 
 extern void view_game_reset_timing(void);
+extern void view_visibility_check_calculate(void);
 
 extern bool view_compile_mesh_gl_list_init(void);
 extern void view_compile_mesh_gl_list_free(void);
 
-extern void view_visibility_check_calculate(void);
+extern bool view_map_vbo_initialize(void);
+extern void view_map_vbo_release(void);
 
 //
 // timing
@@ -591,6 +593,20 @@ extern void gl_lights_build_model_light_list(model_type *mdl,model_draw *draw,vi
 
 extern void view_create_vertex_objects(void);
 extern void view_dispose_vertex_objects(void);
+
+extern void view_create_mesh_liquid_vertex_object(map_vbo_type *vbo,int vertex_count,int index_count);
+extern void view_dispose_mesh_liquid_vertex_object(map_vbo_type *vbo);
+extern inline float* view_bind_map_mesh_liquid_vertex_object(map_vbo_type *vbo);
+extern inline void view_unmap_mesh_liquid_vertex_object(void);
+extern inline void view_unbind_mesh_liquid_vertex_object(void);
+extern inline unsigned short* view_bind_mesh_liquid_index_object(map_vbo_type *vbo);
+extern inline void view_unmap_mesh_liquid_index_object(void);
+extern inline void view_unbind_mesh_liquid_index_object(void);
+
+extern void view_create_mesh_vertex_object(map_mesh_type *mesh);
+extern void view_dispose_mesh_vertex_object(map_mesh_type *mesh);
+extern void view_create_liquid_vertex_object(map_liquid_type *liq);
+extern void view_dispose_liquid_vertex_object(map_liquid_type *liq);
 
 extern void view_init_map_vertex_object(int sz);
 extern inline float* view_bind_map_map_vertex_object(void);

@@ -54,6 +54,8 @@ extern list_palette_type		property_palette;
 
 void property_palette_fill_setup(void)
 {
+	list_palette_set_title(&property_palette,"Setup");
+
 		// game setup
 
 	list_palette_add_header(&property_palette,0,"Game Setup");

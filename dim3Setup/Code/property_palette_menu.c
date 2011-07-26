@@ -53,6 +53,8 @@ void property_palette_fill_menu(void)
 	int				n;
 	char			str[256];
 
+	list_palette_set_title(&property_palette,"Menus");
+
 	list_palette_add_header_button(&property_palette,kMenuPropertyMenuAdd,"Menus",list_button_plus);
 
 	list_palette_sort_mark_start(&property_palette);

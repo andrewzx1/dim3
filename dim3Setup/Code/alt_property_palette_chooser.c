@@ -71,6 +71,8 @@ void alt_property_palette_fill_chooser(int chooser_idx)
 
 	chooser=&iface.chooser_list.choosers[chooser_idx];
 
+	list_palette_set_sub_title(&alt_property_palette,"Chooser",chooser->name);
+
 		// settings
 
 	list_palette_add_header(&alt_property_palette,0,"Settings");

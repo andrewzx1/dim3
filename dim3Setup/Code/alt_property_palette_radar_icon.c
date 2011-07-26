@@ -55,6 +55,8 @@ void alt_property_palette_fill_radar_icon(int radar_icon_idx)
 
 	icon=&iface.radar.icons[radar_icon_idx];
 
+	list_palette_set_sub_title(&alt_property_palette,"Radar Icon",icon->name);
+
 		// settings
 
 	list_palette_add_header(&alt_property_palette,0,"Settings");

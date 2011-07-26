@@ -83,7 +83,7 @@ typedef int						socklen_t;
 
 #define FOUR_CHAR_CODE(x)		(x)
 
-#define inline					__inline extern
+#define inline					__inline
 #define random					rand
 #define srandom					srand
 #define snprintf				_snprintf

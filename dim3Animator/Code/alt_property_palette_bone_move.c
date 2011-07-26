@@ -61,6 +61,8 @@ void alt_property_palette_fill_pose_bone_move(int pose_idx,int bone_move_idx)
 
 	bone_move=&model.poses[pose_idx].bone_moves[bone_move_idx];
 
+	list_palette_set_sub2_title(&alt_property_palette,"Bone Move",model.poses[pose_idx].name,model.bones[bone_move_idx].name);
+
 	list_palette_add_header(&alt_property_palette,0,"Pose Bone Move Position");
 	list_palette_add_vector(&alt_property_palette,kPoseBoneMovePropertyRot,"Rot",&bone_move->rot,FALSE);
 	list_palette_add_vector(&alt_property_palette,kPoseBoneMovePropertyMove,"Move",&bone_move->mov,FALSE);

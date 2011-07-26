@@ -192,8 +192,13 @@ and can be sold or given away.
 #define cinema_actor_hud_bitmap								7
 
 //
-// shared light cache
+// shared vbo and light cache
 //
+
+typedef struct		{
+						int									count;
+						GLuint								vertex,index;
+					} map_vbo_type;
 
 typedef struct		{
 						int									count,
@@ -298,8 +303,9 @@ typedef struct		{
 						map_mesh_message_type				msg;
 						map_mesh_draw_type					draw;
 						map_mesh_copy_type					copy;
-						map_light_cache_type				light_cache;
 						map_mesh_import_type				import;
+						map_light_cache_type				light_cache;
+						map_vbo_type						vbo;
 					} map_mesh_type;
 
 //
@@ -363,6 +369,7 @@ typedef struct		{
 						map_liquid_overlay_type				overlay;
 						map_liquid_copy_type				copy;
 						map_light_cache_type				light_cache;
+						map_vbo_type						vbo;
 					} map_liquid_type;
 
 //

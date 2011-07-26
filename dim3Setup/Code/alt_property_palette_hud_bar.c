@@ -66,6 +66,8 @@ void alt_property_palette_fill_hud_bar(int hud_bar_idx)
 
 	bar=&iface.bar_list.bars[hud_bar_idx];
 
+	list_palette_set_sub_title(&alt_property_palette,"HUD Bar",bar->name);
+
 		// settings
 
 	list_palette_add_header(&alt_property_palette,0,"Settings");

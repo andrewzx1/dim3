@@ -300,6 +300,16 @@ bool item_palette_click(d3pnt *pnt,bool double_click)
 			break;
 	}
 
+		// netural pose has no properties
+
+	if (item_palette.item_type==item_neutral_pose) {
+		list_palette_set_level(0);
+		main_wind_draw();
+		return(TRUE);
+	}
+
+		// switch to properties
+
 	property_palette_reset();
 	list_palette_set_level(1);
 	main_wind_draw();

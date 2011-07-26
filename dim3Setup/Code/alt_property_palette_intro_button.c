@@ -54,44 +54,70 @@ extern list_palette_type		alt_property_palette;
       
 ======================================================= */
 
-iface_intro_button_type* get_intro_button_from_item_idx(int item_idx)
+iface_intro_button_type* get_intro_button_from_item_idx(int item_idx,char *name)
 {
 	int				idx;
 
 	if ((item_idx>=item_intro_button_simple_save_start) && (item_idx<(item_intro_button_simple_save_start+max_simple_save_spot))) {
 		idx=item_idx-item_intro_button_simple_save_start;
+		if (name!=NULL) sprintf(name,"Simple Save %d",idx);
 		return(&iface.intro.simple_save[idx].button_start);
 	}
 
 	if ((item_idx>=item_intro_button_simple_save_erase) && (item_idx<(item_intro_button_simple_save_erase+max_simple_save_spot))) {
 		idx=item_idx-item_intro_button_simple_save_erase;
+		if (name!=NULL) sprintf(name,"Simple Erase %d",idx);
 		return(&iface.intro.simple_save[idx].button_erase);
 	}
 
 	switch (item_idx) {
+
 		case item_intro_button_game_new:
+			if (name!=NULL) strcpy(name,"Game New");
 			return(&iface.intro.button_game_new);
+
 		case item_intro_button_game_load:
+			if (name!=NULL) strcpy(name,"Game Load");
 			return(&iface.intro.button_game_load);
+
 		case item_intro_button_game_setup:
+			if (name!=NULL) strcpy(name,"Game Setup");
 			return(&iface.intro.button_game_setup);
+
 		case item_intro_button_game_new_easy:
+			if (name!=NULL) strcpy(name,"Game New Easy");
 			return(&iface.intro.button_game_new_easy);
+
 		case item_intro_button_game_new_medium:
+			if (name!=NULL) strcpy(name,"Game New Medium");
 			return(&iface.intro.button_game_new_medium);
+
 		case item_intro_button_game_new_hard:
+			if (name!=NULL) strcpy(name,"Game New Hard");
 			return(&iface.intro.button_game_new_hard);
+
 		case item_intro_button_game_new_cancel:
+			if (name!=NULL) strcpy(name,"Game New Cancel");
 			return(&iface.intro.button_game_new_cancel);
+
 		case item_intro_button_multiplayer_host:
+			if (name!=NULL) strcpy(name,"Multiplayer Host");
 			return(&iface.intro.button_multiplayer_host);
+
 		case item_intro_button_multiplayer_join:
+			if (name!=NULL) strcpy(name,"Multiplayer Join");
 			return(&iface.intro.button_multiplayer_join);
+
 		case item_intro_button_multiplayer_setup:
+			if (name!=NULL) strcpy(name,"Multiplayer Setup");
 			return(&iface.intro.button_multiplayer_setup);
+
 		case item_intro_button_credit:
+			if (name!=NULL) strcpy(name,"Credits");
 			return(&iface.intro.button_credit);
+
 		case item_intro_button_quit:
+			if (name!=NULL) strcpy(name,"Quit");
 			return(&iface.intro.button_quit);
 	}
 
@@ -118,11 +144,14 @@ iface_intro_simple_save_desc_type* get_intro_button_desc_from_item_idx(int item_
 
 void alt_property_palette_fill_intro_button(int intro_button_idx)
 {
+	char								name[64];
 	iface_intro_button_type				*btn;
 	iface_intro_simple_save_desc_type	*desc;
 
-	btn=get_intro_button_from_item_idx(intro_button_idx);
+	btn=get_intro_button_from_item_idx(intro_button_idx,name);
 	desc=get_intro_button_desc_from_item_idx(intro_button_idx);
+
+	list_palette_set_sub_title(&alt_property_palette,"Intro Button",name);
 
 		// settings
 	
@@ -158,7 +187,7 @@ void alt_property_palette_click_intro_button(int intro_button_idx,int id)
 	iface_intro_button_type				*btn;
 	iface_intro_simple_save_desc_type	*desc;
 
-	btn=get_intro_button_from_item_idx(intro_button_idx);
+	btn=get_intro_button_from_item_idx(intro_button_idx,NULL);
 	desc=get_intro_button_desc_from_item_idx(intro_button_idx);
 
 	switch (id) {

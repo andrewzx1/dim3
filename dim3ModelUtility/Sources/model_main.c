@@ -74,16 +74,13 @@ bool model_new(model_type *model,char *name)
 	model->import.factor=1.0f;
 	
 	for (n=0;n!=max_model_light;n++) {
-		model->tags.light_bone_tag[n]=model_null_tag;
 		model->tags.light_bone_idx[n]=-1;
 	}
 
 	for (n=0;n!=max_model_halo;n++) {
-		model->tags.halo_bone_tag[n]=model_null_tag;
 		model->tags.halo_bone_idx[n]=-1;
 	}
 
-	model->tags.name_bone_tag=model_null_tag;
 	model->tags.name_bone_idx=-1;
 
 	model->rigid_body.on=FALSE;

@@ -31,6 +31,7 @@ and can be sold or given away.
 
 #include "glue.h"
 #include "interface.h"
+#include "ui_common.h"
 
 extern map_type				map;
 extern editor_setup_type	setup;
@@ -775,6 +776,8 @@ void view_click_piece(editor_view_type *view,d3pnt *pt,bool double_click)
 	texture_palette_reset();
 	item_palette_reset();
 	property_palette_reset();
+
+	list_palette_set_level(1);
 
 	main_wind_draw();
 

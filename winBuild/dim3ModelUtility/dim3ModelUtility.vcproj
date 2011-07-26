@@ -42,7 +42,9 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="2"
-				InlineFunctionExpansion="1"
+				InlineFunctionExpansion="2"
+				EnableIntrinsicFunctions="true"
+				FavorSizeOrSpeed="1"
 				AdditionalIncludeDirectories="..\Libraries\GLEW;..\Libraries\ZLib;..\Libraries\SDL;..\Libraries\JavaScriptCore;..\Libraries\PNG;..\..\dim3ModelUtility\Headers;..\..\dim3Common\Headers"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_LIB;D3_PCH"
 				StringPooling="true"

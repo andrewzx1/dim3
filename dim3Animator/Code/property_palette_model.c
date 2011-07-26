@@ -75,8 +75,10 @@ extern list_palette_type		property_palette;
 
 void property_palette_fill_model(void)
 {
-	int				n,idx;
+	int				n;
 	char			name[256],str[256];
+
+	list_palette_set_title(&property_palette,"Model Properties");
 
 		// model options
 		
@@ -91,16 +93,14 @@ void property_palette_fill_model(void)
 
 	list_palette_add_header(&property_palette,0,"Model Name Bone");
 	str[0]=0x0;
-	idx=model_find_bone(&model,model.tags.name_bone_tag);
-	if (idx!=-1) strcpy(str,model.bones[idx].name);
+	if (model.tags.name_bone_idx!=-1) strcpy(str,model.bones[model.tags.name_bone_idx].name);
 	list_palette_add_string(&property_palette,kModelPropertyNameBone,"Bone",str,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Model Light Bones");
 	for (n=0;n!=max_model_light;n++) {
 		sprintf(name,"Bone %d",n);
 		str[0]=0x0;
-		idx=model_find_bone(&model,model.tags.light_bone_tag[n]);
-		if (idx!=-1) strcpy(str,model.bones[idx].name);
+		if (model.tags.light_bone_idx[n]!=-1) strcpy(str,model.bones[model.tags.light_bone_idx[n]].name);
 		list_palette_add_string(&property_palette,(kModelPropertyLightBoneStart+n),name,str,FALSE);
 	}
 
@@ -108,8 +108,7 @@ void property_palette_fill_model(void)
 	for (n=0;n!=max_model_halo;n++) {
 		sprintf(name,"Bone %d",n);
 		str[0]=0x0;
-		idx=model_find_bone(&model,model.tags.halo_bone_tag[n]);
-		if (idx!=-1) strcpy(str,model.bones[idx].name);
+		if (model.tags.halo_bone_idx[n]!=-1) strcpy(str,model.bones[model.tags.halo_bone_idx[n]].name);
 		list_palette_add_string(&property_palette,(kModelPropertyHaloBoneStart+n),name,str,FALSE);
 	}
 
@@ -146,14 +145,14 @@ void property_palette_click_model(int id)
 
 	if ((id>=kModelPropertyLightBoneStart) && (id<=kModelPropertyLightBoneEnd)) {
 		idx=id-kModelPropertyLightBoneStart;
-		property_palette_pick_bone_tag((unsigned long*)&model.tags.light_bone_tag[idx]);
+		property_palette_pick_bone(&model.tags.light_bone_idx[idx]);
 		main_wind_draw();
 		return;
 	}
 
 	if ((id>=kModelPropertyHaloBoneStart) && (id<=kModelPropertyHaloBoneEnd)) {
 		idx=id-kModelPropertyHaloBoneStart;
-		property_palette_pick_bone_tag((unsigned long*)&model.tags.halo_bone_tag[idx]);
+		property_palette_pick_bone(&model.tags.halo_bone_idx[idx]);
 		main_wind_draw();
 		return;
 	}
@@ -189,7 +188,7 @@ void property_palette_click_model(int id)
 			break;
 
 		case kModelPropertyNameBone:
-			property_palette_pick_bone_tag((unsigned long*)&model.tags.name_bone_tag);
+			property_palette_pick_bone(&model.tags.name_bone_idx);
 			break;
 
 		case kModelPropertyRigidBodyOn:

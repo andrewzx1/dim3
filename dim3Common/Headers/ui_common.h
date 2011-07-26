@@ -37,8 +37,14 @@ and can be sold or given away.
 #define list_item_font_high									14
 #define list_item_scroll_size								(list_item_font_high*5)
 
-#define list_palette_border_sz								10
-#define list_palette_tree_sz								250
+#ifndef D3_SETUP
+	#define list_palette_border_sz								10
+	#define list_palette_tree_sz								250
+#else
+	#define list_palette_border_sz								0
+	#define list_palette_tree_sz								400
+#endif
+
 #define list_palette_scroll_wid								15
 #define list_title_high										20
 
@@ -88,10 +94,19 @@ typedef struct		{
 															item_id,item_type,item_idx,
 															pixel_sz,scroll_page,
 															total_high;
-						bool								push_on,back_on,button_click;
-						char								title[name_str_len];
+						bool								back_on,back_push_on,
+															push_on,button_click;
+						char								title[128];
 						list_palette_item_type				*items;
 					} list_palette_type;
+
+typedef struct		{
+						int									count,item_sz,name_offset;
+						int									*picker_idx_ptr;
+						bool								on,include_none;
+						char								title[128];
+						char								*ptr,*picker_name_ptr;
+					} list_palette_picker_type;
 
 //
 // property utilities
@@ -142,6 +157,8 @@ extern void list_palette_list_initialize(list_palette_type *list,char *title,boo
 extern void list_palette_list_shutdown(list_palette_type *list);
 extern void list_palette_box(d3rect *box);
 extern void list_palette_set_title(list_palette_type *list,char *title);
+extern void list_palette_set_sub_title(list_palette_type *list,char *title,char *item_name);
+extern void list_palette_set_sub2_title(list_palette_type *list,char *title,char *item_name,char *sub_item_name);
 extern int list_palette_get_level(void);
 extern void list_palette_set_level(int level);
 extern void list_palette_add_header(list_palette_type *list,int piece_type,char *name);
@@ -164,6 +181,7 @@ extern void list_palette_add_texture(list_palette_type *list,texture_type *textu
 extern void list_palette_add_shader(list_palette_type *list,int id,char *name,char *shader_name,bool disabled);
 extern void list_palette_add_string_tag(list_palette_type *list,int id,char *name,unsigned long tag,bool disabled);
 extern void list_palette_delete_all_items(list_palette_type *list);
+extern void list_palette_start_picking_mode(char *title,char *list_ptr,int list_count,int list_item_sz,int list_name_offset,bool include_none,int *idx_ptr,char *name_ptr);
 extern void list_palette_sort_mark_start(list_palette_type *list);
 extern void list_palette_sort(list_palette_type *list);
 extern void list_palette_draw(list_palette_type *list);

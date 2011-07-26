@@ -75,82 +75,66 @@ void property_palette_fill(void)
 	switch (state.cur_item) {
 
 		case item_interface_settings:
-			list_palette_set_title(&property_palette,"Settings");
 			property_palette_fill_settings();
 			return;
 
 		case item_interface_intro:
-			list_palette_set_title(&property_palette,"Intro");
 			property_palette_fill_intro();
 			return;
 
 		case item_interface_setup:
-			list_palette_set_title(&property_palette,"Setup");
 			property_palette_fill_setup();
 			return;
 
 		case item_interface_hud:
-			list_palette_set_title(&property_palette,"HUD");
 			property_palette_fill_hud();
 			return;
 
 		case item_interface_radar:
-			list_palette_set_title(&property_palette,"Radar");
 			property_palette_fill_radar();
 			return;
 
 		case item_interface_multiplayer:
-			list_palette_set_title(&property_palette,"Multiplayer");
 			property_palette_fill_multiplayer();
 			return;
 
 		case item_interface_menu:
-			list_palette_set_title(&property_palette,"Menu List");
 			property_palette_fill_menu();
 			return;
 
 		case item_interface_chooser:
-			list_palette_set_title(&property_palette,"Chooser List");
 			property_palette_fill_chooser();
 			return;
 
 		case item_interface_sound:
-			list_palette_set_title(&property_palette,"Sounds List");
 			property_palette_fill_sounds();
 			return;
 
 		case item_interface_particle:
-			list_palette_set_title(&property_palette,"Particles List");
 			property_palette_fill_particles();
 			return;
 
 		case item_interface_ring:
-			list_palette_set_title(&property_palette,"Rings List");
 			property_palette_fill_rings();
 			return;
 
 		case item_interface_halo:
-			list_palette_set_title(&property_palette,"Halos List");
 			property_palette_fill_halos();
 			return;
 
 		case item_interface_mark:
-			list_palette_set_title(&property_palette,"Marks List");
 			property_palette_fill_marks();
 			return;
 
 		case item_interface_crosshair:
-			list_palette_set_title(&property_palette,"Crosshairs List");
 			property_palette_fill_crosshairs();
 			return;
 
 		case item_interface_action:
-			list_palette_set_title(&property_palette,"Actions List");
 			property_palette_fill_actions();
 			return;
 
 		case item_interface_shader:
-			list_palette_set_title(&property_palette,"Shaders List");
 			property_palette_fill_shaders();
 			return;
 
@@ -294,21 +278,11 @@ bool property_palette_click(d3pnt *pnt,bool double_click)
 
 void property_palette_pick_sound(char *name,bool include_none)
 {
-	int				idx;
-
-	dialog_property_list_run("Pick a Sound",(char*)iface.sound_list.sounds,iface.sound_list.nsound,sizeof(iface_sound_type),(int)offsetof(iface_sound_type,name),include_none,&idx);
-
-	name[0]=0x0;
-	if (idx!=-1) strcpy(name,iface.sound_list.sounds[idx].name);
+	list_palette_start_picking_mode("Pick a Sound",(char*)iface.sound_list.sounds,iface.sound_list.nsound,sizeof(iface_sound_type),(int)offsetof(iface_sound_type,name),include_none,NULL,name);
 }
 
 void property_palette_pick_particle(char *name)
 {
-	int				idx;
-
-	dialog_property_list_run("Pick a Particle",(char*)iface.particle_list.particles,iface.particle_list.nparticle,sizeof(iface_particle_type),(int)offsetof(iface_particle_type,name),FALSE,&idx);
-
-	name[0]=0x0;
-	if (idx!=-1) strcpy(name,iface.particle_list.particles[idx].name);
+	list_palette_start_picking_mode("Pick a Particle",(char*)iface.particle_list.particles,iface.particle_list.nparticle,sizeof(iface_particle_type),(int)offsetof(iface_particle_type,name),FALSE,NULL,name);
 }
 

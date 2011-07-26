@@ -62,11 +62,15 @@ extern char						action_actor_type_str[][32],action_action_type_str[][32];
 void alt_property_palette_fill_cinema_action(int cinema_idx,int action_idx)
 {
 	bool					has_actor,has_animation,has_node,is_fade;
+	map_cinema_type			*cinema;
 	map_cinema_action_type	*action;
 
 	if (action_idx==-1) return;
 
-	action=&map.cinema.cinemas[cinema_idx].actions[action_idx];
+	cinema=&map.cinema.cinemas[cinema_idx];
+	action=&cinema->actions[action_idx];
+
+	list_palette_set_sub2_title(&alt_property_palette,"Cinema",cinema->name,action_actor_type_str[action->actor_type]);
 
 		// setup some editing enables
 	

@@ -58,6 +58,8 @@ void property_palette_fill_group(int group_idx)
 
 	group=&map.group.groups[group_idx];
 
+	list_palette_set_sub_title(&property_palette,"Group",group->name);
+
 		// get some counts
 
 	mesh_cnt=0;

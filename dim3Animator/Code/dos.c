@@ -260,14 +260,14 @@ void file_close_model(void)
 	model.nanimate=0;
 	
 	for (n=0;n!=max_model_light;n++) {
-		model.tags.light_bone_tag[n]=FOUR_CHAR_CODE('\?\?\?\?');
+		model.tags.light_bone_idx[n]=-1;
 	}
 	
 	for (n=0;n!=max_model_halo;n++) {
-		model.tags.halo_bone_tag[n]=FOUR_CHAR_CODE('\?\?\?\?');
+		model.tags.halo_bone_idx[n]=-1;
 	}
 	
-	model.tags.name_bone_tag=FOUR_CHAR_CODE('\?\?\?\?');
+	model.tags.name_bone_idx=-1;
 
 	state.model_open=FALSE;
 

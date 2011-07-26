@@ -66,6 +66,8 @@ void property_palette_fill_mesh(int mesh_idx)
 	
 	mesh=&model.meshes[mesh_idx];
 
+	list_palette_set_sub_title(&property_palette,"Mesh",mesh->name);
+
 	list_palette_add_header(&property_palette,0,"Mesh Options");
 	list_palette_add_string(&property_palette,kMeshPropertyName,"Name",mesh->name,FALSE);
 

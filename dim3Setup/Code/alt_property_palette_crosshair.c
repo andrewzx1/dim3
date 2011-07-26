@@ -52,6 +52,8 @@ void alt_property_palette_fill_crosshair(int crosshair_idx)
 
 	crosshair=&iface.crosshair_list.crosshairs[crosshair_idx];
 
+	list_palette_set_sub_title(&alt_property_palette,"Crosshair",crosshair->name);
+
 		// settings
 
 	list_palette_add_header(&alt_property_palette,0,"Settings");

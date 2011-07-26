@@ -277,6 +277,248 @@ bool view_compile_mesh_gl_list_init(void)
 void view_compile_mesh_gl_list_free(void)
 {
 }
+// supergumba -- eventually delete all above
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+bool view_map_vbo_fill_mesh(map_mesh_type *mesh,bool initial_fill)
+{
+	int					n,k,vertex_cnt;
+	unsigned short		idx;
+	unsigned short		*index_ptr;
+	float				*vertex_ptr,*pv,*pt,*pn,*pc,*pp;
+	bool				shader_on;
+	d3pnt				*pnt;
+	map_mesh_poly_type	*poly;
+
+	shader_on=view_shader_on();
+
+		// setup vertex pointer
+
+	vertex_cnt=mesh->vbo.count;
+
+	vertex_ptr=view_bind_map_mesh_liquid_vertex_object(&mesh->vbo);
+	if (vertex_ptr==NULL) return(FALSE);
+
+	pv=vertex_ptr;
+	
+	if (shader_on) {
+		pt=vertex_ptr+(vertex_cnt*(3+2+2));
+		pn=vertex_ptr+(vertex_cnt*(3+3+2+2));
+	}
+	else {
+		pc=vertex_ptr+(vertex_cnt*(3+2+2));
+	}
+
+		// vertexes, tangents, normals and color
+		// we run this separate from the UVs
+		// as they are grouped for layers
+
+	poly=mesh->polys;
+	
+	for (n=0;n!=mesh->npoly;n++) {
+	
+		for (k=0;k!=poly->ptsz;k++) {
+		
+			pnt=&mesh->vertexes[poly->v[k]];
+
+			*pv++=(float)pnt->x;
+			*pv++=(float)pnt->y;
+			*pv++=(float)pnt->z;
+
+			if (shader_on) {
+				*pt++=poly->tangent_space.tangent.x;
+				*pt++=poly->tangent_space.tangent.y;
+				*pt++=poly->tangent_space.tangent.z;
+				*pn++=poly->tangent_space.normal.x;
+				*pn++=poly->tangent_space.normal.y;
+				*pn++=poly->tangent_space.normal.z;
+			}
+			else {
+				*pc++=1.0f;
+				*pc++=1.0f;
+				*pc++=1.0f;
+			}
+		}
+
+		poly++;
+	}
+	
+		// main UVs
+
+	pp=vertex_ptr+(vertex_cnt*3);
+
+	poly=mesh->polys;
+			
+	for (n=0;n!=mesh->npoly;n++) {
+			
+		for (k=0;k!=poly->ptsz;k++) {
+			*pp++=poly->main_uv.x[k]+poly->draw.x_shift_offset;
+			*pp++=poly->main_uv.y[k]+poly->draw.y_shift_offset;
+		}
+
+		poly++;
+	}
+
+		// light map UVs
+
+	poly=mesh->polys;
+		
+	for (n=0;n!=mesh->npoly;n++) {
+		
+		for (k=0;k!=poly->ptsz;k++) {
+			*pp++=poly->lmap_uv.x[k];
+			*pp++=poly->lmap_uv.y[k];
+		}
+
+		poly++;
+	}
+
+	view_unmap_mesh_liquid_vertex_object();
+	view_unbind_mesh_liquid_vertex_object();
+
+		// reset the mesh moved flag
+
+	mesh->draw.moved=FALSE;
+
+		// only create indexes on initial fill
+
+	if (!initial_fill) return(TRUE);
+
+		// create the indexes
+
+	index_ptr=view_bind_mesh_liquid_index_object(&mesh->vbo);
+	if (index_ptr==NULL) return(FALSE);
+
+	idx=0;
+
+	poly=mesh->polys;
+		
+	for (n=0;n!=mesh->npoly;n++) {
+		
+		for (k=0;k!=poly->ptsz;k++) {
+			*index_ptr++=idx;
+			idx++;
+		}
+
+		poly++;
+	}
+
+	view_unmap_mesh_liquid_index_object();
+	view_unbind_mesh_liquid_index_object();
+
+	return(TRUE);
+}
+
+bool view_map_vbo_initialize(void)
+{
+	int					n,k,vertex_cnt,index_cnt;
+	bool				shader_on;
+	map_mesh_type		*mesh;
+	map_mesh_poly_type	*poly;
+	map_liquid_type		*liq;
+
+	shader_on=view_shader_on();
+
+		// meshes
+
+	mesh=map.mesh.meshes;
+
+	for (n=0;n!=map.mesh.nmesh;n++) {
+
+			// get index count
+
+		index_cnt=0;
+		poly=mesh->polys;
+		
+		for (k=0;k!=mesh->npoly;k++) {
+			index_cnt+=poly->ptsz;
+			poly++;
+		}
+
+			// get vertex count
+
+		vertex_cnt=index_cnt*(3+2+2);
+		if (shader_on) {
+			vertex_cnt+=(index_cnt*(3+3));
+		}
+		else {
+			vertex_cnt+=(index_cnt*3);
+		}
+
+			// cretae the VBO
+
+		mesh->vbo.count=index_cnt;
+		view_create_mesh_liquid_vertex_object(&mesh->vbo,vertex_cnt,index_cnt);
+
+		if (!view_map_vbo_fill_mesh(mesh,TRUE)) return(FALSE);
+		
+	// supergumba -- create color cache!	
+	//	if (!map_mesh_create_colors_cache(mesh)) return(FALSE);
+		mesh++;
+	}
+
+		// liquids
+
+	if (shader_on) {
+		vertex_cnt=4*(3+2+2+3+3);
+	}
+	else {
+		vertex_cnt=4*(3+2+2+3);
+	}
+
+	liq=map.liquid.liquids;
+
+	for (n=0;n!=map.liquid.nliquid;n++) {
+		liq->vbo.count=4;
+		view_create_mesh_liquid_vertex_object(&liq->vbo,vertex_cnt,4);
+		liq++;
+	}
+
+	return(TRUE);
+}
+
+void view_map_vbo_release(void)
+{
+	int					n;
+	map_mesh_type		*mesh;
+	map_liquid_type		*liq;
+
+		// release meshes
+		// color caches get released when mesh is destroyed
+
+	mesh=map.mesh.meshes;
+
+	for (n=0;n!=map.mesh.nmesh;n++) {
+		view_dispose_mesh_liquid_vertex_object(&mesh->vbo);
+		mesh++;
+	}
+
+		// release liquids
+
+	liq=map.liquid.liquids;
+
+	for (n=0;n!=map.liquid.nliquid;n++) {
+		view_dispose_mesh_liquid_vertex_object(&liq->vbo);
+		liq++;
+	}
+
+}
+
+
+
 
 /* =======================================================
 

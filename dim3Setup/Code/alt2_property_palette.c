@@ -75,7 +75,6 @@ void alt2_property_palette_fill(void)
 
 		case item_interface_menu:
 			if ((state.cur_menu_idx!=-1) && (state.cur_menu_item_idx!=-1)) {
-				list_palette_set_title(&alt2_property_palette,"Menu Item");
 				alt2_property_palette_fill_menu_item(state.cur_menu_idx,state.cur_menu_item_idx);
 				return;
 			}
@@ -83,7 +82,6 @@ void alt2_property_palette_fill(void)
 
 		case item_interface_chooser:
 			if ((state.cur_chooser_idx!=-1) && (state.cur_chooser_piece_idx!=-1)) {
-				list_palette_set_title(&alt2_property_palette,"Chooser Piece");
 				alt2_property_palette_fill_chooser_piece(state.cur_chooser_idx,state.cur_chooser_piece_idx);
 				return;
 			}
@@ -93,7 +91,6 @@ void alt2_property_palette_fill(void)
 			if (state.cur_particle_idx!=-1) {
 				if (iface.particle_list.particles[state.cur_particle_idx].group.on) {
 					if (state.cur_group_particle_idx!=-1) {
-						list_palette_set_title(&alt2_property_palette,"Group Particle");
 						alt2_property_palette_fill_group_particle(state.cur_particle_idx,state.cur_group_particle_idx);
 						return;
 					}
@@ -102,8 +99,6 @@ void alt2_property_palette_fill(void)
 			break;
 
 	}
-
-	list_palette_set_title(&alt2_property_palette,"No Properties");
 }
 
 /* =======================================================

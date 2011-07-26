@@ -99,6 +99,7 @@ char							mesh_property_hide_list[][name_str_len]={"Never","Single Player","Mul
 
 void property_palette_fill_mesh(int mesh_idx,int poly_idx)
 {
+	char					str[32];
 	d3pnt					min,max;
 	d3fpnt					uv_offset,uv_size,uv_shift;
 	d3vct					binormal;
@@ -109,6 +110,9 @@ void property_palette_fill_mesh(int mesh_idx,int poly_idx)
 		// mesh settings
 
 	mesh=&map.mesh.meshes[mesh_idx];
+
+	sprintf(str,"%d",mesh_idx);
+	list_palette_set_sub_title(&property_palette,"Mesh",str);
 
 		// settings
 		

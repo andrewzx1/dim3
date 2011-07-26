@@ -52,9 +52,13 @@ extern list_palette_type		alt2_property_palette;
 
 void alt2_property_palette_fill_menu_item(int menu_idx,int menu_item_idx)
 {
+	iface_menu_type				*menu;
 	iface_menu_item_type		*item;
 
-	item=&iface.menu_list.menus[menu_idx].items[menu_item_idx];
+	menu=&iface.menu_list.menus[menu_idx];
+	item=&menu->items[menu_item_idx];
+
+	list_palette_set_sub2_title(&alt2_property_palette,"Menu Item",menu->name,item->data);
 
 		// settings
 

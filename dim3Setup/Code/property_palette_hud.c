@@ -64,6 +64,8 @@ void property_palette_fill_hud(void)
 {
 	int				n;
 
+	list_palette_set_title(&property_palette,"HUD");
+
 		// bitmaps
 
 	list_palette_add_header_button(&property_palette,kHUDPropertyBitmapAdd,"Bitmaps",list_button_plus);

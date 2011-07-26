@@ -56,6 +56,8 @@ void property_palette_fill_hit_box(int hit_box_idx)
 	
 	hit_box=&model.hit_boxes[hit_box_idx];
 
+	list_palette_set_sub_title(&property_palette,"Hit Box",hit_box->name);
+
 	list_palette_add_header(&property_palette,0,"Hit Box Options");
 	list_palette_add_string(&property_palette,kHitBoxPropertyName,"Name",hit_box->name,FALSE);
 	property_palette_add_string_bone(&property_palette,kHitBoxPropertyBone,"Bone",hit_box->bone_idx,FALSE);

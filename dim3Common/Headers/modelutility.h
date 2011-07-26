@@ -294,9 +294,6 @@ typedef struct		{
 						int								light_bone_idx[max_model_light],
 														halo_bone_idx[max_model_halo],
 														name_bone_idx;
-						model_tag						light_bone_tag[max_model_light],
-														halo_bone_tag[max_model_halo],
-														name_bone_tag;
 					} model_tags;
 
 //

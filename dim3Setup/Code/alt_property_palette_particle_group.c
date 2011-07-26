@@ -55,6 +55,8 @@ void alt_property_palette_fill_particle_group(int particle_idx)
 
 	particle=&iface.particle_list.particles[particle_idx];
 
+	list_palette_set_sub_title(&alt_property_palette,"Particle Group",particle->name);
+
 		// regular particles
 
 	list_palette_add_header_button(&alt_property_palette,kGroupParticlePropertyAdd,"Particles",list_button_plus);

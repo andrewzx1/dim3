@@ -55,11 +55,17 @@ extern list_palette_type		alt_property_palette;
 
 void alt_property_palette_fill_movement_move(int movement_idx,int move_idx)
 {
+	char				str[32];
+	movement_type		*movement;
 	movement_move_type	*move;
 
 	if (move_idx==-1) return;
 
-	move=&map.movement.movements[movement_idx].moves[move_idx];
+	movement=&map.movement.movements[movement_idx];
+	move=&movement->moves[move_idx];
+
+	sprintf(str,"(%d,%d,%d)",move->mov.x,move->mov.y,move->mov.z);
+	list_palette_set_sub2_title(&alt_property_palette,"Movement",movement->name,str);
 
 	list_palette_add_header(&alt_property_palette,0,"Movement Move Options");
 	list_palette_add_string_int(&alt_property_palette,kMovePropertyUserID,"Event User Id",move->user_id,FALSE);

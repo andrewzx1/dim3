@@ -56,6 +56,8 @@ void alt_property_palette_fill_multiplayer_character(int multiplayer_character_i
 
 	character=&iface.character.characters[multiplayer_character_idx];
 
+	list_palette_set_sub_title(&alt_property_palette,"Character",character->name);
+
 		// settings
 
 	list_palette_add_header(&alt_property_palette,0,"Settings");

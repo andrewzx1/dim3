@@ -52,16 +52,16 @@ void view_create_vertex_objects(void)
 		// map, liquid and sky vbo
 
 	glGenBuffers(1,&vbo_map);
-	glGenBuffersARB(1,&vbo_map_index);
+	glGenBuffers(1,&vbo_map_index);
 
-	glGenBuffersARB(1,&vbo_liquid);
+	glGenBuffers(1,&vbo_liquid);
 
-	glGenBuffersARB(1,&vbo_sky);
+	glGenBuffers(1,&vbo_sky);
 
 		// misc vbos
 
-	glGenBuffersARB(view_vertex_object_count,vbo_cache);
-	glGenBuffersARB(view_vertex_object_count,vbo_cache_index);
+	glGenBuffers(view_vertex_object_count,vbo_cache);
+	glGenBuffers(view_vertex_object_count,vbo_cache_index);
 
 		// start at first misc vbo
 
@@ -71,39 +71,130 @@ void view_create_vertex_objects(void)
 
 void view_dispose_vertex_objects(void)
 {
-	glDeleteBuffersARB(1,&vbo_map);
-	glDeleteBuffersARB(1,&vbo_map_index);
+	glDeleteBuffers(1,&vbo_map);
+	glDeleteBuffers(1,&vbo_map_index);
 
-	glDeleteBuffersARB(1,&vbo_liquid);
+	glDeleteBuffers(1,&vbo_liquid);
 
-	glDeleteBuffersARB(1,&vbo_sky);
+	glDeleteBuffers(1,&vbo_sky);
 
-	glDeleteBuffersARB(view_vertex_object_count,vbo_cache);
-	glDeleteBuffersARB(view_vertex_object_count,vbo_cache_index);
+	glDeleteBuffers(view_vertex_object_count,vbo_cache);
+	glDeleteBuffers(view_vertex_object_count,vbo_cache_index);
 }
 
 /* =======================================================
 
-      Map VBOs
+      Mesh and Liquid VBOs
       
 ======================================================= */
 
-void view_create_mesh_vertex_object(map_mesh_type *mesh)
+void view_create_mesh_liquid_vertex_object(map_vbo_type *vbo,int vertex_count,int index_count)
 {
-	glGenBuffersARB(1,&mesh->vbo.vbo);
-	glGenBuffersARB(1,&mesh->vbo.vbo_index);
+	glGenBuffers(1,&vbo->vertex);
+	glGenBuffers(1,&vbo->index);
+
+		// init the vertex buffer
+
+	glBindBuffer(GL_ARRAY_BUFFER,vbo->vertex);
+	glBufferData(GL_ARRAY_BUFFER,(vertex_count*sizeof(float)),NULL,GL_DYNAMIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER,0);
+
+		// init the index buffer
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,vbo->index);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER,(index_count*sizeof(unsigned short)),NULL,GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);
 }
+
+void view_dispose_mesh_liquid_vertex_object(map_vbo_type *vbo)
+{
+	glDeleteBuffers(1,&vbo->vertex);
+	glDeleteBuffers(1,&vbo->index);
+}
+
+float* view_bind_map_mesh_liquid_vertex_object(map_vbo_type *vbo)
+{
+	float		*vertex_ptr;
+
+		// bind to map specific VBO
+
+	glBindBuffer(GL_ARRAY_BUFFER,vbo->vertex);
+
+		// map pointer
+
+	vertex_ptr=(float*)glMapBuffer(GL_ARRAY_BUFFER,GL_WRITE_ONLY);
+	if (vertex_ptr==NULL) {
+		glBindBuffer(GL_ARRAY_BUFFER,0);
+		return(NULL);
+	}
+
+	return(vertex_ptr);
+}
+
+void view_unmap_mesh_liquid_vertex_object(void)
+{
+	glUnmapBuffer(GL_ARRAY_BUFFER);
+}
+
+void view_unbind_mesh_liquid_vertex_object(void)
+{
+	glBindBuffer(GL_ARRAY_BUFFER,0);
+}
+
+unsigned short* view_bind_mesh_liquid_index_object(map_vbo_type *vbo)
+{
+	unsigned short		*index_ptr;
+
+		// bind to map specific VBO
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,vbo->index);
+
+		// map pointer
+
+	index_ptr=(unsigned short*)glMapBuffer(GL_ELEMENT_ARRAY_BUFFER,GL_WRITE_ONLY);
+	if (index_ptr==NULL) {
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);
+		return(NULL);
+	}
+
+	return(index_ptr);
+}
+
+void view_unmap_mesh_liquid_index_object(void)
+{
+	glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
+}
+
+void view_unbind_mesh_liquid_index_object(void)
+{
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 void view_init_map_vertex_object(int sz)
 {
 		// create map geometery buffer
 
-	glBindBufferARB(GL_ARRAY_BUFFER_ARB,vbo_map);
+	glBindBuffer(GL_ARRAY_BUFFER,vbo_map);
 
 	sz*=sizeof(float);
-	glBufferDataARB(GL_ARRAY_BUFFER_ARB,sz,NULL,GL_DYNAMIC_DRAW_ARB);
+	glBufferData(GL_ARRAY_BUFFER,sz,NULL,GL_DYNAMIC_DRAW);
 
-	glBindBufferARB(GL_ARRAY_BUFFER_ARB,0);
+	glBindBuffer(GL_ARRAY_BUFFER,0);
 }
 
 float* view_bind_map_map_vertex_object(void)
@@ -112,13 +203,13 @@ float* view_bind_map_map_vertex_object(void)
 
 		// bind to map specific VBO
 
-	glBindBufferARB(GL_ARRAY_BUFFER_ARB,vbo_map);
+	glBindBuffer(GL_ARRAY_BUFFER,vbo_map);
 
 		// map pointer
 
-	vertex_ptr=(float*)glMapBufferARB(GL_ARRAY_BUFFER_ARB,GL_WRITE_ONLY_ARB);
+	vertex_ptr=(float*)glMapBuffer(GL_ARRAY_BUFFER,GL_WRITE_ONLY);
 	if (vertex_ptr==NULL) {
-		glBindBufferARB(GL_ARRAY_BUFFER_ARB,0);
+		glBindBuffer(GL_ARRAY_BUFFER,0);
 		return(NULL);
 	}
 
@@ -127,29 +218,29 @@ float* view_bind_map_map_vertex_object(void)
 
 void view_bind_map_vertex_object(void)
 {
-	glBindBufferARB(GL_ARRAY_BUFFER_ARB,vbo_map);
+	glBindBuffer(GL_ARRAY_BUFFER,vbo_map);
 }
 
 void view_unmap_map_vertex_object(void)
 {
-	glUnmapBufferARB(GL_ARRAY_BUFFER_ARB);
+	glUnmapBuffer(GL_ARRAY_BUFFER);
 }
 
 void view_unbind_map_vertex_object(void)
 {
-	glBindBufferARB(GL_ARRAY_BUFFER_ARB,0);
+	glBindBuffer(GL_ARRAY_BUFFER,0);
 }
 
 void view_init_map_index_object(int sz)
 {
 		// create map index buffer
 
-	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB,vbo_map_index);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,vbo_map_index);
 
 	sz*=sizeof(unsigned int);
-	glBufferDataARB(GL_ELEMENT_ARRAY_BUFFER_ARB,sz,NULL,GL_STATIC_DRAW_ARB);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER,sz,NULL,GL_STATIC_DRAW);
 
-	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB,0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);
 }
 
 unsigned int* view_bind_map_map_index_object(void)
@@ -158,13 +249,13 @@ unsigned int* view_bind_map_map_index_object(void)
 
 		// bind to map specific VBO
 
-	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB,vbo_map_index);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,vbo_map_index);
 
 		// map pointer
 
-	index_ptr=(unsigned int*)glMapBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB,GL_WRITE_ONLY_ARB);
+	index_ptr=(unsigned int*)glMapBuffer(GL_ELEMENT_ARRAY_BUFFER,GL_WRITE_ONLY);
 	if (index_ptr==NULL) {
-		glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB,0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);
 		return(NULL);
 	}
 
@@ -173,17 +264,17 @@ unsigned int* view_bind_map_map_index_object(void)
 
 void view_bind_map_index_object(void)
 {
-	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB,vbo_map_index);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,vbo_map_index);
 }
 
 void view_unmap_map_index_object(void)
 {
-	glUnmapBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB);
+	glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
 }
 
 void view_unbind_map_index_object(void)
 {
-	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB,0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);
 }
 
 /* =======================================================
@@ -198,18 +289,18 @@ float* view_bind_map_liquid_vertex_object(int sz)
 
 		// bind to liquid specific VBO
 
-	glBindBufferARB(GL_ARRAY_BUFFER_ARB,vbo_liquid);
+	glBindBuffer(GL_ARRAY_BUFFER,vbo_liquid);
 
 		// resize VBO
 
 	sz*=sizeof(float);
-	glBufferDataARB(GL_ARRAY_BUFFER_ARB,sz,NULL,GL_STREAM_DRAW_ARB);
+	glBufferData(GL_ARRAY_BUFFER,sz,NULL,GL_STREAM_DRAW);
 
 		// map pointer
 
-	vertex_ptr=(float*)glMapBufferARB(GL_ARRAY_BUFFER_ARB,GL_WRITE_ONLY_ARB);
+	vertex_ptr=(float*)glMapBuffer(GL_ARRAY_BUFFER,GL_WRITE_ONLY);
 	if (vertex_ptr==NULL) {
-		glBindBufferARB(GL_ARRAY_BUFFER_ARB,0);
+		glBindBuffer(GL_ARRAY_BUFFER,0);
 		return(NULL);
 	}
 
@@ -218,12 +309,12 @@ float* view_bind_map_liquid_vertex_object(int sz)
 
 void view_unmap_liquid_vertex_object(void)
 {
-	glUnmapBufferARB(GL_ARRAY_BUFFER_ARB);
+	glUnmapBuffer(GL_ARRAY_BUFFER);
 }
 
 void view_unbind_liquid_vertex_object(void)
 {
-	glBindBufferARB(GL_ARRAY_BUFFER_ARB,0);
+	glBindBuffer(GL_ARRAY_BUFFER,0);
 }
 
 /* =======================================================
@@ -238,18 +329,18 @@ float* view_bind_map_sky_vertex_object(int sz)
 
 		// bind to sky specific VBO
 
-	glBindBufferARB(GL_ARRAY_BUFFER_ARB,vbo_sky);
+	glBindBuffer(GL_ARRAY_BUFFER,vbo_sky);
 
 		// resize VBO
 
 	sz*=sizeof(float);
-	glBufferDataARB(GL_ARRAY_BUFFER_ARB,sz,NULL,GL_STATIC_DRAW_ARB);
+	glBufferData(GL_ARRAY_BUFFER,sz,NULL,GL_STATIC_DRAW);
 
 		// map pointer
 
-	vertex_ptr=(float*)glMapBufferARB(GL_ARRAY_BUFFER_ARB,GL_WRITE_ONLY_ARB);
+	vertex_ptr=(float*)glMapBuffer(GL_ARRAY_BUFFER,GL_WRITE_ONLY);
 	if (vertex_ptr==NULL) {
-		glBindBufferARB(GL_ARRAY_BUFFER_ARB,0);
+		glBindBuffer(GL_ARRAY_BUFFER,0);
 		return(NULL);
 	}
 
@@ -258,17 +349,17 @@ float* view_bind_map_sky_vertex_object(int sz)
 
 void view_bind_sky_vertex_object(void)
 {
-	glBindBufferARB(GL_ARRAY_BUFFER_ARB,vbo_sky);
+	glBindBuffer(GL_ARRAY_BUFFER,vbo_sky);
 }
 
 void view_unmap_sky_vertex_object(void)
 {
-	glUnmapBufferARB(GL_ARRAY_BUFFER_ARB);
+	glUnmapBuffer(GL_ARRAY_BUFFER);
 }
 
 void view_unbind_sky_vertex_object(void)
 {
-	glBindBufferARB(GL_ARRAY_BUFFER_ARB,0);
+	glBindBuffer(GL_ARRAY_BUFFER,0);
 }
 
 /* =======================================================
@@ -283,19 +374,19 @@ float* view_bind_map_next_vertex_object(int sz)
 
 		// bind it
 
-	glBindBufferARB(GL_ARRAY_BUFFER_ARB,vbo_cache[cur_vbo_cache_idx]);
+	glBindBuffer(GL_ARRAY_BUFFER,vbo_cache[cur_vbo_cache_idx]);
 
 		// change size of buffer
 		// we pass null to stop stalls
 
 	sz*=sizeof(float);
-	glBufferDataARB(GL_ARRAY_BUFFER_ARB,sz,NULL,GL_DYNAMIC_DRAW_ARB);
+	glBufferData(GL_ARRAY_BUFFER,sz,NULL,GL_DYNAMIC_DRAW);
 
 		// map pointer
 
-	vertex_ptr=(float*)glMapBufferARB(GL_ARRAY_BUFFER_ARB,GL_WRITE_ONLY_ARB);
+	vertex_ptr=(float*)glMapBuffer(GL_ARRAY_BUFFER,GL_WRITE_ONLY);
 	if (vertex_ptr==NULL) {
-		glBindBufferARB(GL_ARRAY_BUFFER_ARB,0);
+		glBindBuffer(GL_ARRAY_BUFFER,0);
 		return(NULL);
 	}
 
@@ -309,12 +400,12 @@ float* view_bind_map_next_vertex_object(int sz)
 
 void view_unmap_current_vertex_object(void)
 {
-	glUnmapBufferARB(GL_ARRAY_BUFFER_ARB);
+	glUnmapBuffer(GL_ARRAY_BUFFER);
 }
 
 void view_unbind_current_vertex_object(void)
 {
-	glBindBufferARB(GL_ARRAY_BUFFER_ARB,0);
+	glBindBuffer(GL_ARRAY_BUFFER,0);
 }
 
 unsigned short* view_bind_map_next_index_object(int sz)
@@ -323,19 +414,19 @@ unsigned short* view_bind_map_next_index_object(int sz)
 
 		// bind it
 
-	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB,vbo_cache_index[cur_vbo_cache_index_idx]);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,vbo_cache_index[cur_vbo_cache_index_idx]);
 
 		// change size of buffer
 		// we pass null to stop stalls
 
 	sz*=sizeof(unsigned short);
-	glBufferDataARB(GL_ELEMENT_ARRAY_BUFFER_ARB,sz,NULL,GL_DYNAMIC_DRAW_ARB);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER,sz,NULL,GL_DYNAMIC_DRAW);
 
 		// map pointer
 
-	index_ptr=(unsigned short*)glMapBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB,GL_WRITE_ONLY_ARB);
+	index_ptr=(unsigned short*)glMapBuffer(GL_ELEMENT_ARRAY_BUFFER,GL_WRITE_ONLY);
 	if (index_ptr==NULL) {
-		glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB,0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);
 		return(NULL);
 	}
 
@@ -349,12 +440,12 @@ unsigned short* view_bind_map_next_index_object(int sz)
 
 void view_unmap_current_index_object(void)
 {
-	glUnmapBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB);
+	glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
 }
 
 void view_unbind_current_index_object(void)
 {
-	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB,0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);
 }
 
 /* =======================================================
@@ -1052,9 +1143,9 @@ void view_draw_next_vertex_object_2D_texture_quad_rectangle(GLuint gl_id,float a
 	gl_texture_clear(0);
 
 	glActiveTexture(GL_TEXTURE0);
-	glEnable(GL_TEXTURE_RECTANGLE_ARB);
+	glEnable(GL_TEXTURE_RECTANGLE);
 	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_REPLACE);
-	glBindTexture(GL_TEXTURE_RECTANGLE_ARB,gl_id);
+	glBindTexture(GL_TEXTURE_RECTANGLE,gl_id);
 
 		// draw the quad
 
@@ -1071,8 +1162,8 @@ void view_draw_next_vertex_object_2D_texture_quad_rectangle(GLuint gl_id,float a
 
 		// finish texture draw
 	
-	glBindTexture(GL_TEXTURE_RECTANGLE_ARB,0);
-	glDisable(GL_TEXTURE_RECTANGLE_ARB);
+	glBindTexture(GL_TEXTURE_RECTANGLE,0);
+	glDisable(GL_TEXTURE_RECTANGLE);
 
 	glDisable(GL_BLEND);
 	glDisable(GL_ALPHA_TEST);

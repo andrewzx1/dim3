@@ -57,6 +57,8 @@ void alt_property_palette_fill_menu(int menu_idx)
 
 	menu=&iface.menu_list.menus[menu_idx];
 
+	list_palette_set_sub_title(&alt_property_palette,"Menu",menu->name);
+
 		// settings
 
 	list_palette_add_header(&alt_property_palette,0,"Settings");

@@ -48,7 +48,9 @@ void decode_mesh_xml(model_type *model,int model_head)
 							materials_tag,material_tag,fills_tag,fill_tag;
 	bool					had_tangent;
 	char					tag_name[32];
-	model_tag				hit_box_tags[max_model_hit_box],
+	model_tag				name_bone_tag,hit_box_tags[max_model_hit_box],
+							light_bone_tags[max_model_light],
+							halo_bone_tags[max_model_halo],
 							*major_bone_tags,*minor_bone_tags,*bone_parent_tags;
 	model_hit_box_type		*hit_box;
 	model_mesh_type			*mesh;
@@ -93,7 +95,7 @@ void decode_mesh_xml(model_type *model,int model_head)
 			else {
 				sprintf(tag_name,"light_bone_%d",k);
 			}
-			model->tags.light_bone_tag[k]=xml_get_attribute_model_tag(tag,tag_name);
+			light_bone_tags[k]=xml_get_attribute_model_tag(tag,tag_name);
 		}
 
 		for (k=0;k!=max_model_halo;k++) {
@@ -103,10 +105,10 @@ void decode_mesh_xml(model_type *model,int model_head)
 			else {
 				sprintf(tag_name,"halo_bone_%d",k);
 			}
-			model->tags.halo_bone_tag[k]=xml_get_attribute_model_tag(tag,tag_name);
+			halo_bone_tags[k]=xml_get_attribute_model_tag(tag,tag_name);
 		}
 
-        model->tags.name_bone_tag=xml_get_attribute_model_tag(tag,"name_bone");
+        name_bone_tag=xml_get_attribute_model_tag(tag,"name_bone");
     }
 	
         // hit boxes
@@ -231,14 +233,14 @@ void decode_mesh_xml(model_type *model,int model_head)
 		// fix some bone indexes
 		
 	for (k=0;k!=max_model_light;k++) {
-		model->tags.light_bone_idx[k]=model_find_bone(model,model->tags.light_bone_tag[k]);
+		model->tags.light_bone_idx[k]=model_find_bone(model,light_bone_tags[k]);
 	}
 
 	for (k=0;k!=max_model_halo;k++) {
-		model->tags.halo_bone_idx[k]=model_find_bone(model,model->tags.halo_bone_tag[k]);
+		model->tags.halo_bone_idx[k]=model_find_bone(model,halo_bone_tags[k]);
 	}
 
-	model->tags.name_bone_idx=model_find_bone(model,model->tags.name_bone_tag);
+	model->tags.name_bone_idx=model_find_bone(model,name_bone_tag);
 
 	for (k=0;k!=model->nhit_box;k++) {
 		model->hit_boxes[k].bone_idx=model_find_bone(model,hit_box_tags[k]);
@@ -481,7 +483,12 @@ void encode_mesh_xml(model_type *model)
 		else {
 			sprintf(tag_name,"light_bone_%d",k);
 		}
-		xml_add_attribute_model_tag(tag_name,model->tags.light_bone_tag[k]);
+		if (model->tags.light_bone_idx[k]==-1) {
+			xml_add_attribute_model_tag(tag_name,model_null_tag);
+		}
+		else {
+			xml_add_attribute_model_tag(tag_name,model->bones[model->tags.light_bone_idx[k]].tag);
+		}
 	}
 
 	for (k=0;k!=max_model_halo;k++) {
@@ -491,10 +498,20 @@ void encode_mesh_xml(model_type *model)
 		else {
 			sprintf(tag_name,"halo_bone_%d",k);
 		}
- 		xml_add_attribute_model_tag(tag_name,model->tags.halo_bone_tag[k]);
+ 		if (model->tags.halo_bone_idx[k]==-1) {
+			xml_add_attribute_model_tag(tag_name,model_null_tag);
+		}
+		else {
+			xml_add_attribute_model_tag(tag_name,model->bones[model->tags.halo_bone_idx[k]].tag);
+		}
 	}
 
- 	xml_add_attribute_model_tag("name_bone",model->tags.name_bone_tag);
+	if (model->tags.name_bone_idx==-1) {
+		xml_add_attribute_model_tag("name_bone",model_null_tag);
+	}
+	else {
+ 		xml_add_attribute_model_tag("name_bone",model->bones[model->tags.name_bone_idx].tag);
+	}
 
 	xml_add_tagend(TRUE);
 	

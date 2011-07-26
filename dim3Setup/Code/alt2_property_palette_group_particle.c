@@ -48,9 +48,13 @@ extern list_palette_type		alt2_property_palette;
 
 void alt2_property_palette_fill_group_particle(int particle_idx,int group_particle_idx)
 {
+	iface_particle_type					*particle;
 	iface_particle_group_piece_type			*group_particle;
 
-	group_particle=&iface.particle_list.particles[particle_idx].group.particles[group_particle_idx];
+	particle=&iface.particle_list.particles[particle_idx];
+	group_particle=&particle->group.particles[group_particle_idx];
+
+	list_palette_set_sub2_title(&alt2_property_palette,"Group Particle",particle->name,group_particle->name);
 
 		// settings
 

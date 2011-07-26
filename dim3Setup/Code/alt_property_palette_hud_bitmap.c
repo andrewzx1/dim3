@@ -82,6 +82,8 @@ void alt_property_palette_fill_hud_bitmap(int hud_bitmap_idx)
 
 	bitmap=&iface.bitmap_list.bitmaps[hud_bitmap_idx];
 
+	list_palette_set_sub_title(&alt_property_palette,"HUD Bitmap",bitmap->name);
+
 		// settings
 
 	list_palette_add_header(&alt_property_palette,0,"Settings");
