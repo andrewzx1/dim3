@@ -98,8 +98,8 @@ extern void view_visibility_check_calculate(void);
 extern void game_time_initialize(void);
 extern void game_time_calculate(void);
 extern void game_time_reset(int tick);
-inline int game_time_get_raw(void);
-inline int game_time_get(void);
+extern inline int game_time_get_raw(void);
+extern inline int game_time_get(void);
 extern float game_time_fequency_second_get(int start_tick);
 extern void game_time_pause_start(void);
 extern void game_time_pause_end(void);
@@ -187,12 +187,12 @@ extern void cursor_draw(void);
 extern void element_initialize(void);
 extern void element_shutdown(void);
 extern void element_clear(void);
-inline int element_get_control_high(void);
-inline int element_get_padding(void);
-inline int element_get_tab_margin(void);
-inline int element_get_tab_control_high(void);
-inline void element_get_button_bottom_left(int *x,int *y,int wid,int high);
-inline void element_get_button_bottom_right(int *x,int *y,int wid,int high);
+extern inline int element_get_control_high(void);
+extern inline int element_get_padding(void);
+extern inline int element_get_tab_margin(void);
+extern inline int element_get_tab_control_high(void);
+extern inline void element_get_button_bottom_left(int *x,int *y,int wid,int high);
+extern inline void element_get_button_bottom_right(int *x,int *y,int wid,int high);
 extern void element_button_text_add(char *name,int id,int x,int y,int wid,int high,int x_pos,int y_pos);
 extern void element_button_bitmap_add(char *path,char *path2,int id,int x,int y,int wid,int high,int x_pos,int y_pos);
 extern void element_bitmap_add(char *path,int id,int x,int y,int wid,int high,bool framed);
@@ -777,7 +777,7 @@ extern inline unsigned long view_images_get_gl_id(int idx);
 // fog
 //
 
-inline bool fog_solid_on(void);
+extern inline bool fog_solid_on(void);
 extern void fog_draw_textured(void);
 extern void fog_solid_start(void);
 extern void fog_solid_end(void);
