@@ -52,6 +52,8 @@ void property_palette_fill_rings(void)
 {
 	int						n;
 
+	list_palette_set_title(&property_palette,"Rings");
+
 	list_palette_add_header_button(&property_palette,kRingPropertyAdd,"Rings",list_button_plus);
 
 	list_palette_sort_mark_start(&property_palette);

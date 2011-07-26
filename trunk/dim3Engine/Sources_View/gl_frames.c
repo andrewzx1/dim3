@@ -251,7 +251,7 @@ void gl_project_point(int *x,int *y,int *z)
 {
 	float		dx,dy,dz;
 
-	glu_patch_gluProject(*x,*y,*z,mod_matrix,proj_matrix,vport,&dx,&dy,&dz);
+	glu_patch_gluProject((float)*x,(float)*y,(float)*z,mod_matrix,proj_matrix,vport,&dx,&dy,&dz);
 	
 	*x=((int)dx)-render_info.view_x;
 	*y=((int)dy)-render_info.view_y;
@@ -271,7 +271,7 @@ float gl_project_get_depth(int x,int y,int z)
 {
 	float		dx,dy,dz;
 
-	glu_patch_gluProject(x,y,z,mod_matrix,proj_matrix,vport,&dx,&dy,&dz);	
+	glu_patch_gluProject((float)x,(float)y,(float)z,mod_matrix,proj_matrix,vport,&dx,&dy,&dz);	
 	return((float)dz);
 }
 

@@ -53,6 +53,8 @@ void property_palette_fill_particles(void)
 {
 	int						n;
 
+	list_palette_set_title(&property_palette,"Particles");
+
 		// regular particles
 
 	list_palette_add_header_button(&property_palette,kParticlePropertyAdd,"Particles",list_button_plus);

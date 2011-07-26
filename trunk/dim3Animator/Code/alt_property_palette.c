@@ -78,17 +78,11 @@ void alt_property_palette_fill(void)
 	switch (state.cur_item) {
 
 		case item_animate:
-			list_palette_set_title(&alt_property_palette,"Animation Pose Properties");
 			alt_property_palette_fill_animate_pose_move(state.cur_animate_idx,state.cur_animate_pose_move_idx);
 			break;
 
 		case item_pose:
-			list_palette_set_title(&alt_property_palette,"Pose Bone Move Properties");
 			alt_property_palette_fill_pose_bone_move(state.cur_pose_idx,state.cur_pose_bone_move_idx);
-			break;
-
-		default:
-			list_palette_set_title(&alt_property_palette,"No Properties");
 			break;
 
 	}

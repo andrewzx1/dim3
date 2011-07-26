@@ -66,34 +66,15 @@ extern char						chooser_type_str[][32],
       
 ======================================================= */
 
-/*
-
-typedef struct		{
-						int								size,just;
-						char							str[max_chooser_text_data_sz];
-					} iface_chooser_text_type;
-
-typedef struct		{
-						char							file[file_str_len];
-					} iface_chooser_item_type;
-
-typedef struct		{
-						float							resize;
-						char							model_name[name_str_len],animate_name[name_str_len];
-						d3ang							rot;
-					} iface_chooser_model_type;
-
-typedef struct		{
-						char							name[max_chooser_button_text_sz];
-					} iface_chooser_button_type;
-
-*/
-
 void alt2_property_palette_fill_chooser_piece(int chooser_idx,int chooser_piece_idx)
 {
+	iface_chooser_type				*chooser;
 	iface_chooser_piece_type		*piece;
 
-	piece=&iface.chooser_list.choosers[chooser_idx].pieces[chooser_piece_idx];
+	chooser=&iface.chooser_list.choosers[chooser_idx];
+	piece=&chooser->pieces[chooser_piece_idx];
+
+	list_palette_set_sub2_title(&alt2_property_palette,"Chooser Piece",chooser->name,chooser_type_str[piece->type]);
 
 		// settings
 

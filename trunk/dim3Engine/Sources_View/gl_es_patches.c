@@ -46,7 +46,7 @@ void glu_patch_gluPerspective(float fovy,float aspect,float zNear,float zFar)
 {
 	float		x_min,x_max,y_min,y_max;
 
-	y_max=zNear*tan((fovy*D_TRIG_PI)/360.0);
+	y_max=zNear*(float)tan((double)(fovy*TRIG_PI)/360.0);
 	y_min=-y_max;
 	x_min=y_min*aspect;
 	x_max=y_max*aspect;
@@ -67,15 +67,20 @@ void glu_patch_gluPerspective(float fovy,float aspect,float zNear,float zFar)
 
 void glu_patch_vector_normalize(d3_d_vct *v)
 {
-	float			d;
+	float			dist;
+	double			dx,dy,dz;
+
+	dx=(double)(v->x*v->x);
+	dy=(double)(v->y*v->y);
+	dz=(double)(v->z*v->z);
 	
-	d=sqrt((v->x*v->x)+(v->y*v->y)+(v->z*v->z));
-	if (d==0.0) return;
+	dist=(float)sqrt(dx+dy+dz);
+	if (dist==0.0f) return;
 	
-	d=1.0/d;
-	v->x*=d;
-	v->y*=d;
-	v->z*=d;
+	dist=1.0f/dist;
+	v->x*=dist;
+	v->y*=dist;
+	v->z*=dist;
 }
 
 void glu_patch_vector_cross_product(d3_d_vct *v,d3_d_vct *v1,d3_d_vct *v2)
@@ -121,22 +126,22 @@ void glu_patch_vector_cross_product(d3_d_vct *v,d3_d_vct *v1,d3_d_vct *v2)
 	mat[0+0]=x.x;
 	mat[0+4]=x.y;
 	mat[0+8]=x.z;
-	mat[0+12]=0.0;
+	mat[0+12]=0.0f;
 
 	mat[1+0]=y.x;
 	mat[1+4]=y.y;
 	mat[1+8]=y.z;
-	mat[1+12]=0.0;
+	mat[1+12]=0.0f;
 
 	mat[2+0]=z.x;
 	mat[2+4]=z.y;
 	mat[2+8]=z.z;
-	mat[2+12]=0.0;
+	mat[2+12]=0.0f;
 
-	mat[3+0]=0.0;
-	mat[3+4]=0.0;
-	mat[3+8]=0.0;
-	mat[3+12]=1.0;
+	mat[3+0]=0.0f;
+	mat[3+4]=0.0f;
+	mat[3+8]=0.0f;
+	mat[3+12]=1.0f;
 
 	glMultMatrixf(mat);
 
@@ -307,9 +312,9 @@ bool glu_patch_matrix_invert(float mat_in[16],float mat_out[16])
 		(mat_in[8]*mat_in[2]*mat_in[5]);
 
     det=(mat_in[0]*mat_inv[0])+(mat_in[1]*mat_inv[4])+(mat_in[2]*mat_inv[8])+(mat_in[3]*mat_inv[12]);
-    if (det==0.0) return(FALSE);
+    if (det==0.0f) return(FALSE);
 
-    det=1.0/det;
+    det=1.0f/det;
 
 	for (n=0;n!=16;n++) {
         mat_out[n]=mat_inv[n]*det;
@@ -325,15 +330,15 @@ bool glu_patch_gluProject(float objx,float objy,float objz,float modelMatrix[16]
     in[0]=objx;
     in[1]=objy;
     in[2]=objz;
-    in[3]=1.0;
+    in[3]=1.0f;
 
     glu_patch_matrix_mult_vector(modelMatrix,in,out);
     glu_patch_matrix_mult_vector(projMatrix,out,in);
     if (in[3]==0.0f) return(FALSE);
 
-	in[0]=((in[0]/in[3])*0.5)+0.5;
-    in[1]=((in[1]/in[3])*0.5)+0.5;
-    in[2]=((in[2]/in[3])*0.5)+0.5;
+	in[0]=((in[0]/in[3])*0.5f)+0.5f;
+    in[1]=((in[1]/in[3])*0.5f)+0.5f;
+    in[2]=((in[2]/in[3])*0.5f)+0.5f;
 
     in[0]=(in[0]*viewport[2])+viewport[0];
     in[1]=(in[1]*viewport[3])+viewport[1];
@@ -355,17 +360,17 @@ bool glu_patch_gluUnProject(float winx,float winy,float winz,float modelMatrix[1
     in[0]=winx;
     in[1]=winy;
     in[2]=winz;
-    in[3]=1.0;
+    in[3]=1.0f;
 
     in[0]=(in[0]-viewport[0])/viewport[2];
     in[1]=(in[1]-viewport[1])/viewport[3];
 
-    in[0]=(in[0]*2)-1;
-    in[1]=(in[1]*2)-1;
-    in[2]=(in[2]*2)-1;
+    in[0]=(in[0]*2)-1.0f;
+    in[1]=(in[1]*2)-1.0f;
+    in[2]=(in[2]*2)-1.0f;
 
     glu_patch_matrix_mult_vector(mat,in,out);
-    if (out[3]==0.0) return(FALSE);
+    if (out[3]==0.0f) return(FALSE);
 
     *objx=out[0]/out[3];
     *objy=out[1]/out[3];

@@ -66,6 +66,8 @@ void property_palette_fill_multiplayer(void)
 	int				n;
 	char			str[256];
 
+	list_palette_set_title(&property_palette,"Multiplayer");
+
 		// options
 
 	list_palette_add_header(&property_palette,0,"News");

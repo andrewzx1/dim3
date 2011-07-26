@@ -71,6 +71,8 @@ void property_palette_fill_cinema(int cinema_idx)
 
 	cinema=&map.cinema.cinemas[cinema_idx];
 
+	list_palette_set_sub_title(&property_palette,"Cinema",cinema->name);
+
 	list_palette_add_header(&property_palette,0,"Cinema Options");
 	list_palette_add_string(&property_palette,kCinemaPropertyName,"Name",cinema->name,FALSE);
 	list_palette_add_string_int(&property_palette,kCinemaPropertyLength,"Total Length",cinema->len_msec,FALSE);

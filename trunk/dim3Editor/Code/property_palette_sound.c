@@ -55,6 +55,8 @@ void property_palette_fill_sound(int sound_idx)
 
 	sound=&map.sounds[sound_idx];
 
+	list_palette_set_sub_title(&property_palette,"Sound",sound->name);
+
 	list_palette_add_header(&property_palette,0,"Sound Settings");
 	list_palette_add_checkbox(&property_palette,kSoundPropertyOn,"On",sound->on,FALSE);
 

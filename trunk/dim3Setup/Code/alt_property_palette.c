@@ -75,12 +75,10 @@ void alt_property_palette_fill(void)
 
 		case item_interface_intro:
 			if (state.cur_intro_button_idx!=-1) {
-				list_palette_set_title(&alt_property_palette,"Intro Button");
 				alt_property_palette_fill_intro_button(state.cur_intro_button_idx);
 				return;
 			}
 			if (state.cur_intro_model_idx!=-1) {
-				list_palette_set_title(&alt_property_palette,"Intro Model");
 				alt_property_palette_fill_intro_model(state.cur_intro_model_idx);
 				return;
 			}
@@ -88,17 +86,14 @@ void alt_property_palette_fill(void)
 
 		case item_interface_hud:
 			if (state.cur_hud_bitmap_idx!=-1) {
-				list_palette_set_title(&alt_property_palette,"HUD Bitmap");
 				alt_property_palette_fill_hud_bitmap(state.cur_hud_bitmap_idx);
 				return;
 			}
 			if (state.cur_hud_text_idx!=-1) {
-				list_palette_set_title(&alt_property_palette,"HUD Text");
 				alt_property_palette_fill_hud_text(state.cur_hud_text_idx);
 				return;
 			}
 			if (state.cur_hud_bar_idx!=-1) {
-				list_palette_set_title(&alt_property_palette,"HUD Bar");
 				alt_property_palette_fill_hud_bar(state.cur_hud_bar_idx);
 				return;
 			}
@@ -106,7 +101,6 @@ void alt_property_palette_fill(void)
 
 		case item_interface_radar:
 			if (state.cur_radar_icon_idx!=-1) {
-				list_palette_set_title(&alt_property_palette,"Radar Icon");
 				alt_property_palette_fill_radar_icon(state.cur_radar_icon_idx);
 				return;
 			}
@@ -114,17 +108,14 @@ void alt_property_palette_fill(void)
 
 		case item_interface_multiplayer:
 			if (state.cur_multiplayer_character_idx!=-1) {
-				list_palette_set_title(&alt_property_palette,"Multiplayer Character");
 				alt_property_palette_fill_multiplayer_character(state.cur_multiplayer_character_idx);
 				return;
 			}
 			if (state.cur_multiplayer_game_idx!=-1) {
-				list_palette_set_title(&alt_property_palette,"Multiplayer Game");
 				alt_property_palette_fill_multiplayer_game(state.cur_multiplayer_game_idx);
 				return;
 			}
 			if (state.cur_multiplayer_option_idx!=-1) {
-				list_palette_set_title(&alt_property_palette,"Multiplayer Option");
 				alt_property_palette_fill_multiplayer_option(state.cur_multiplayer_option_idx);
 				return;
 			}
@@ -132,7 +123,6 @@ void alt_property_palette_fill(void)
 
 		case item_interface_menu:
 			if (state.cur_menu_idx!=-1) {
-				list_palette_set_title(&alt_property_palette,"Menu");
 				alt_property_palette_fill_menu(state.cur_menu_idx);
 				return;
 			}
@@ -140,7 +130,6 @@ void alt_property_palette_fill(void)
 
 		case item_interface_chooser:
 			if (state.cur_chooser_idx!=-1) {
-				list_palette_set_title(&alt_property_palette,"Chooser");
 				alt_property_palette_fill_chooser(state.cur_chooser_idx);
 				return;
 			}
@@ -148,7 +137,6 @@ void alt_property_palette_fill(void)
 
 		case item_interface_sound:
 			if (state.cur_sound_idx!=-1) {
-				list_palette_set_title(&alt_property_palette,"Sound");
 				alt_property_palette_fill_sound(state.cur_sound_idx);
 				return;
 			}
@@ -157,11 +145,9 @@ void alt_property_palette_fill(void)
 		case item_interface_particle:
 			if (state.cur_particle_idx!=-1) {
 				if (!iface.particle_list.particles[state.cur_particle_idx].group.on) {
-					list_palette_set_title(&alt_property_palette,"Particle");
 					alt_property_palette_fill_particle(state.cur_particle_idx);
 				}
 				else {
-					list_palette_set_title(&alt_property_palette,"Particle Group");
 					alt_property_palette_fill_particle_group(state.cur_particle_idx);
 				}
 				return;
@@ -170,7 +156,6 @@ void alt_property_palette_fill(void)
 
 		case item_interface_ring:
 			if (state.cur_ring_idx!=-1) {
-				list_palette_set_title(&alt_property_palette,"Ring");
 				alt_property_palette_fill_ring(state.cur_ring_idx);
 				return;
 			}
@@ -178,7 +163,6 @@ void alt_property_palette_fill(void)
 
 		case item_interface_halo:
 			if (state.cur_halo_idx!=-1) {
-				list_palette_set_title(&alt_property_palette,"Halo");
 				alt_property_palette_fill_halo(state.cur_halo_idx);
 				return;
 			}
@@ -186,7 +170,6 @@ void alt_property_palette_fill(void)
 
 		case item_interface_mark:
 			if (state.cur_mark_idx!=-1) {
-				list_palette_set_title(&alt_property_palette,"Mark");
 				alt_property_palette_fill_mark(state.cur_mark_idx);
 				return;
 			}
@@ -194,7 +177,6 @@ void alt_property_palette_fill(void)
 
 		case item_interface_crosshair:
 			if (state.cur_crosshair_idx!=-1) {
-				list_palette_set_title(&alt_property_palette,"Crosshair");
 				alt_property_palette_fill_crosshair(state.cur_crosshair_idx);
 				return;
 			}
@@ -202,7 +184,6 @@ void alt_property_palette_fill(void)
 
 		case item_interface_action:
 			if (state.cur_action_idx!=-1) {
-				list_palette_set_title(&alt_property_palette,"Action");
 				alt_property_palette_fill_action(state.cur_action_idx);
 				return;
 			}
@@ -210,15 +191,12 @@ void alt_property_palette_fill(void)
 
 		case item_interface_shader:
 			if (state.cur_shader_idx!=-1) {
-				list_palette_set_title(&alt_property_palette,"Shader");
 				alt_property_palette_fill_shader(state.cur_shader_idx);
 				return;
 			}
 			break;
 
 	}
-
-	list_palette_set_title(&alt_property_palette,"No Properties");
 }
 
 /* =======================================================

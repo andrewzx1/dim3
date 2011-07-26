@@ -103,6 +103,8 @@ extern list_palette_type		property_palette;
 
 void property_palette_fill_settings(void)
 {
+	list_palette_set_title(&property_palette,"Project Settings");
+
 		// project
 		
 	list_palette_add_header(&property_palette,0,"Project");

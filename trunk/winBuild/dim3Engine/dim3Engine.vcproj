@@ -44,7 +44,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="2"
-				InlineFunctionExpansion="1"
+				InlineFunctionExpansion="2"
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
 				AdditionalIncludeDirectories="..\Libraries;..\Libraries\GLEW;..\Libraries\ZLib;..\Libraries\SDL;..\Libraries\MPG123;..\Libraries\JavaScriptCore;..\Libraries\PNG;..\..\dim3Engine\Headers;..\..\dim3Common\Headers"

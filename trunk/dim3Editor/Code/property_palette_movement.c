@@ -69,6 +69,8 @@ void property_palette_fill_movement(int movement_idx)
 	
 	movement=&map.movement.movements[movement_idx];
 
+	list_palette_set_sub_title(&property_palette,"Movement",movement->name);
+
 	list_palette_add_header(&property_palette,0,"Movement Options");
 	list_palette_add_string(&property_palette,kMovementPropertyName,"Name",movement->name,FALSE);
 	list_palette_add_string_int(&property_palette,kMovementPropertyAutoOpenDistance,"Auto-Open Distance",movement->auto_open_distance,FALSE);

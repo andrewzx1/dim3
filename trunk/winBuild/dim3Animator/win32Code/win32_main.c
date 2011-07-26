@@ -48,9 +48,6 @@ extern file_path_setup_type		file_path_setup;
 extern iface_type				iface;
 extern animator_state_type		state;
 
-extern d3rect					tool_palette_box,txt_palette_box;
-extern list_palette_type		item_palette;
-
 extern int os_win32_menu_lookup(int id);
 
 /* =======================================================

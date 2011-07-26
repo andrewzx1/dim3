@@ -68,6 +68,8 @@ void property_palette_fill_spot(int spot_idx)
 
 	spot=&map.spots[spot_idx];
 
+	list_palette_set_sub_title(&property_palette,"Spot",spot->name);
+
 	list_palette_add_header(&property_palette,0,"Spot Settings");
 	list_palette_add_string(&property_palette,kSpotPropertyName,"Name",spot->name,FALSE);
 	list_palette_add_string(&property_palette,kSpotPropertyType,"Type",spot_property_type_list[spot->type],FALSE);

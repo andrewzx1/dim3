@@ -61,6 +61,8 @@ void alt_property_palette_fill_multiplayer_game(int multiplayer_game_idx)
 
 	game=&iface.net_game.games[multiplayer_game_idx];
 
+	list_palette_set_sub_title(&alt_property_palette,"Game",game->name);
+
 		// settings
 
 	list_palette_add_header(&alt_property_palette,0,"Settings");

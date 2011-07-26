@@ -69,6 +69,8 @@ void alt_property_palette_fill_mark(int mark_idx)
 
 	mark=&iface.mark_list.marks[mark_idx];
 
+	list_palette_set_sub_title(&alt_property_palette,"Mark",mark->name);
+
 		// settings
 
 	list_palette_add_header(&alt_property_palette,0,"Settings");

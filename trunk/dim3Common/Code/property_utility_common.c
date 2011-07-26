@@ -271,9 +271,9 @@ void property_pick_list(char *title,char *list,int *idx)
 		count++;
 	}
 
-		// run dialog
+		// run the list picker
 
-	dialog_property_list_run(title,list,count,name_str_len,0,FALSE,idx);
+	list_palette_start_picking_mode(title,list,count,name_str_len,0,FALSE,idx,NULL);
 }
 
 /* =======================================================

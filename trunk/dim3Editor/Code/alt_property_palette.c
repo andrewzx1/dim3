@@ -76,16 +76,11 @@ void alt_property_palette_fill(void)
 		// selection properties
 
 	if (state.cur_cinema_idx!=-1) {
-		list_palette_set_title(&alt_property_palette,"Cinema Action Properties");
 		alt_property_palette_fill_cinema_action(state.cur_cinema_idx,state.cur_cinema_action_idx);
 	}
 	else {
 		if (state.cur_movement_idx!=-1) {
-			list_palette_set_title(&alt_property_palette,"Movement Move Properties");
 			alt_property_palette_fill_movement_move(state.cur_movement_idx,state.cur_movement_move_idx);
-		}
-		else {
-			list_palette_set_title(&alt_property_palette,"No Properties");
 		}
 	}
 }

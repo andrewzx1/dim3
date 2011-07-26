@@ -113,6 +113,8 @@ void alt_property_palette_fill_animate_pose_move(int animate_idx,int pose_move_i
 	animate=&model.animates[animate_idx];
 	pose_move=&animate->pose_moves[pose_move_idx];
 
+	list_palette_set_sub2_title(&alt_property_palette,"Pose Move",animate->name,model.poses[pose_move->pose_idx].name);
+
 		// options
 
 	list_palette_add_header(&alt_property_palette,0,"Animate Pose Options");

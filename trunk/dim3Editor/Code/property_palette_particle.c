@@ -69,6 +69,8 @@ void property_palette_fill_particle(int particle_idx)
 
 	particle=&map.particles[particle_idx];
 
+	list_palette_set_sub_title(&property_palette,"Particle",particle->name);
+
 		// particle
 		
 	list_palette_add_header(&property_palette,0,"Particle Settings");

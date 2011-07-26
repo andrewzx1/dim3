@@ -52,6 +52,8 @@ void property_palette_fill_chooser(void)
 {
 	int				n;
 
+	list_palette_set_title(&property_palette,"Choosers");
+
 	list_palette_add_header_button(&property_palette,kChooserPropertyChooserAdd,"Choosers",list_button_plus);
 
 	list_palette_sort_mark_start(&property_palette);

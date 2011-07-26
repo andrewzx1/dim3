@@ -108,7 +108,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="2"
-				InlineFunctionExpansion="1"
+				InlineFunctionExpansion="2"
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
 				WholeProgramOptimization="false"
@@ -517,6 +517,10 @@
 				</File>
 				<File
 					RelativePath="..\..\dim3Setup\Headers\setup_defs.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3Common\Headers\ui_common.h"
 					>
 				</File>
 			</Filter>

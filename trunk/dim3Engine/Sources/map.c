@@ -320,6 +320,12 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 		return(FALSE);
 	}
 
+	if (!view_map_vbo_initialize()) {
+		progress_shutdown();
+		strcpy(err_str,"Out of memory");
+		return(FALSE);
+	}
+
 	draw_sky_init();
 
 		// start map ambients
@@ -559,6 +565,7 @@ void map_end(void)
 		
 	progress_draw(65);
 
+	view_map_vbo_release();
 	view_compile_mesh_gl_list_free();
 	render_transparent_dispose_sort_list();
 	map_group_dispose_unit_list(&map);

@@ -62,6 +62,8 @@ void property_palette_fill_radar(void)
 {
 	int				n;
 
+	list_palette_set_title(&property_palette,"Radar");
+
 		// settings
 
 	list_palette_add_header(&property_palette,0,"Settings");

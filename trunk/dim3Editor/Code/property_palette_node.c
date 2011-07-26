@@ -57,6 +57,8 @@ void property_palette_fill_node(int node_idx)
 
 	node=&map.nodes[node_idx];
 
+	list_palette_set_sub_title(&property_palette,"Node",node->name);
+
 	list_palette_add_header(&property_palette,0,"Node Identity");
 	list_palette_add_string(&property_palette,kNodePropertyName,"Name",node->name,FALSE);
 	list_palette_add_string_int(&property_palette,kNodePropertyEventID,"Event ID",node->event_id,FALSE);

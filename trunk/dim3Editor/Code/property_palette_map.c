@@ -171,7 +171,9 @@ void property_palette_fill_map(void)
 	int				n,size;
 	char			name[256],str[256];
 	d3fpnt			uv;
-	
+
+	list_palette_set_title(&property_palette,"Map Info");
+
 		// info
 
 	list_palette_add_header(&property_palette,0,"Map Info");

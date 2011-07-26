@@ -65,6 +65,8 @@ void property_palette_fill_scenery(int scenery_idx)
 
 	scenery=&map.sceneries[scenery_idx];
 
+	list_palette_set_sub_title(&property_palette,"Scenery",scenery->model_name);
+
 	list_palette_add_header(&property_palette,0,"Scenery Model");
 	list_palette_add_string(&property_palette,kSceneryPropertyModelName,"Model",scenery->model_name,FALSE);
 	list_palette_add_string(&property_palette,kSceneryPropertyAnimationName,"Animation",scenery->animation_name,FALSE);

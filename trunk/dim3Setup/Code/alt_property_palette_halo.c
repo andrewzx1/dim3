@@ -55,22 +55,13 @@ extern list_palette_type		alt_property_palette;
       
 ======================================================= */
 
-/*
-typedef struct		{
-						int								image_idx,
-														min_dist,max_dist,
-														min_size,max_size;
-						float							min_alpha,max_alpha;
-						bool							no_clip_object,no_clip_self;
-						char							name[name_str_len],bitmap_name[name_str_len];
-					} iface_halo_type;
-*/
-
 void alt_property_palette_fill_halo(int halo_idx)
 {
 	iface_halo_type			*halo;
 
 	halo=&iface.halo_list.halos[halo_idx];
+
+	list_palette_set_sub_title(&alt_property_palette,"Halo",halo->name);
 
 		// settings
 

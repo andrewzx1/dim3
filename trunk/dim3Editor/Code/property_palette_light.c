@@ -64,6 +64,8 @@ void property_palette_fill_light(int light_idx)
 
 	light=&map.lights[light_idx];
 
+	list_palette_set_sub_title(&property_palette,"Light",light->name);
+
 	list_palette_add_header(&property_palette,0,"Light Settings");
 	list_palette_add_checkbox(&property_palette,kLightPropertyOn,"On",light->setting.on,FALSE);
 	list_palette_add_checkbox(&property_palette,kLightPropertyLightMap,"Used in Light Map",light->setting.light_map,FALSE);

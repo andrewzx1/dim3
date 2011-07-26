@@ -47,6 +47,8 @@ int								list_palette_level;
 bool							list_palette_open;
 bitmap_type						list_bitmaps[5];
 
+list_palette_picker_type		list_picker;
+
 /* =======================================================
 
       Item Palette Setup
@@ -66,6 +68,10 @@ void list_palette_initialize(char *app_name)
 		// start level 0
 		
 	list_palette_level=0;
+
+		// list picker off
+
+	list_picker.on=FALSE;
 
 		// load buttons
 
@@ -95,6 +101,7 @@ void list_palette_list_initialize(list_palette_type *list,char *title,bool back_
 	list->total_high=0;
 	
 	list->back_on=back_on;
+	list->back_push_on=FALSE;
 
 	list->push_on=FALSE;
 	list->push_idx=-1;
@@ -115,6 +122,16 @@ void list_palette_set_title(list_palette_type *list,char *title)
 	strcpy(list->title,title);
 }
 
+void list_palette_set_sub_title(list_palette_type *list,char *title,char *item_name)
+{
+	sprintf(list->title,"%s:%s",title,item_name);
+}
+
+void list_palette_set_sub2_title(list_palette_type *list,char *title,char *item_name,char *sub_item_name)
+{
+	sprintf(list->title,"%s:%s:%s",title,item_name,sub_item_name);
+}
+
 /* =======================================================
 
       List Palette Levels
@@ -128,6 +145,7 @@ int list_palette_get_level(void)
 
 void list_palette_set_level(int level)
 {
+	list_picker.on=FALSE;		// level change always turns off picker
 	list_palette_level=level;
 }
 
@@ -462,6 +480,67 @@ void list_palette_delete_all_items(list_palette_type *list)
 
 /* =======================================================
 
+      List Palette Picking Mode
+      
+======================================================= */
+
+void list_palette_start_picking_mode(char *title,char *list_ptr,int list_count,int list_item_sz,int list_name_offset,bool include_none,int *idx_ptr,char *name_ptr)
+{
+	list_picker.on=TRUE;
+	list_picker.picker_idx_ptr=idx_ptr;
+	list_picker.picker_name_ptr=name_ptr;
+
+	list_picker.include_none=include_none;
+	list_picker.ptr=list_ptr;
+	list_picker.count=list_count;
+	list_picker.item_sz=list_item_sz;
+	list_picker.name_offset=list_name_offset;
+}
+
+void list_palette_fill_picking_mode(list_palette_type *list)
+{
+	int					n;
+	char				*str_ptr;
+	bool				sel;
+
+	strcpy(list->title,list_picker.title);
+
+	list_palette_delete_all_items(list);
+
+		// none item
+
+	if (list_picker.include_none) {
+
+		sel=FALSE;
+		if (list_picker.picker_idx_ptr!=NULL) {
+			sel=(*list_picker.picker_idx_ptr==-1);
+		}
+		if (list_picker.picker_name_ptr!=NULL) {
+			sel=(*list_picker.picker_name_ptr==0x0);
+		}
+
+		list_palette_add_item(list,-1,-1,"None",sel,FALSE);
+	}
+
+		// other items
+
+	for (n=0;n!=list_picker.count;n++) {
+		str_ptr=list_picker.ptr+((list_picker.item_sz*n)+list_picker.name_offset);
+
+		sel=FALSE;
+		if (list_picker.picker_idx_ptr!=NULL) {
+			sel=(*list_picker.picker_idx_ptr==n);
+		}
+		if (list_picker.picker_name_ptr!=NULL) {
+			sel=(strcasecmp(list_picker.picker_name_ptr,str_ptr)==0);
+		}
+
+		list_palette_add_item(list,-1,n,str_ptr,sel,FALSE);
+	}
+}
+
+/* =======================================================
+
       List Sorting
       
 ======================================================= */
@@ -675,9 +754,50 @@ void list_palette_draw_item_button(list_palette_type *list,int idx)
 
 /* =======================================================
 
-      List Palette Title
+      List Palette Title, Scrollbars and Border
       
 ======================================================= */
+
+void list_palette_draw_setup(list_palette_type *list)
+{
+	d3rect					wbox,box;
+
+	list_palette_box(&box);
+	
+		// viewport setup
+		
+	os_get_window_box(&wbox);
+
+	glEnable(GL_SCISSOR_TEST);
+	glScissor(box.lx,(wbox.by-box.by),(box.rx-box.lx),(box.by-box.ty));
+
+	glViewport(box.lx,(wbox.by-box.by),(box.rx-box.lx),(box.by-box.ty));
+		
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho((GLdouble)box.lx,(GLdouble)box.rx,(GLdouble)box.by,(GLdouble)box.ty,-1.0,1.0);
+	
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+
+		// draw setup
+
+	glDisable(GL_DEPTH_TEST);
+
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_NOTEQUAL,0);
+
+		// background
+
+	glColor4f(1.0f,1.0f,1.0f,1.0f);
+		
+	glBegin(GL_QUADS);
+	glVertex2i(box.lx,box.ty);
+	glVertex2i(box.rx,box.ty);
+	glVertex2i(box.rx,box.by);
+	glVertex2i(box.lx,box.by);
+	glEnd();
+}
 
 void list_palette_draw_title(list_palette_type *list)
 {
@@ -715,7 +835,7 @@ void list_palette_draw_title(list_palette_type *list)
 	
 		// back arrow
 		
-	if (!list->back_on) return;
+	if ((!list->back_on) && (!list_picker.on)) return;
 	
 	lx=box.lx+12;
 	rx=lx+32;
@@ -725,7 +845,12 @@ void list_palette_draw_title(list_palette_type *list)
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_NOTEQUAL,0);
 
-	glColor4f(1.0f,1.0f,1.0f,1.0f);
+	if (!list->back_push_on) {
+		glColor4f(1.0f,1.0f,1.0f,1.0f);
+	}
+	else {
+		glColor4f(0.7f,0.7f,0.7f,1.0f);
+	}
 
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D,list_bitmaps[0].gl_id);
@@ -743,6 +868,92 @@ void list_palette_draw_title(list_palette_type *list)
 	
 	glDisable(GL_TEXTURE_2D);
 	glDisable(GL_ALPHA_TEST);
+}
+
+void list_palette_draw_scrollbar(list_palette_type *list)
+{
+	int					lx,ty,by,thumb_ty,thumb_by,page_count;
+	d3rect				box;
+
+	list_palette_box(&box);
+	
+		// scroll bar
+	
+	lx=box.rx-list_palette_scroll_wid;
+	ty=box.ty+list_title_high;
+	by=box.by;
+	
+	glColor4f(0.5f,0.5f,0.5f,1.0f);
+		
+	glBegin(GL_QUADS);
+	glVertex2i(lx,ty);
+	glVertex2i(box.rx,ty);
+	glVertex2i(box.rx,by);
+	glVertex2i(lx,by);
+	glEnd();
+
+	page_count=list_palette_get_scroll_page_count(list);
+
+	if ((list->item_count!=0) && (page_count!=0)) {
+		
+		thumb_ty=ty+(((by-ty)*list->scroll_page)/(page_count+1));
+		if (thumb_ty<ty) thumb_ty=ty;
+		
+		thumb_by=ty+(((by-ty)*(list->scroll_page+1))/(page_count+1));
+		if (thumb_by>by) thumb_by=by;
+
+		glColor4f(0.9f,0.9f,0.9f,1.0f);
+			
+		glBegin(GL_QUADS);
+		glVertex2i((lx+1),(thumb_ty+1));
+		glVertex2i((box.rx-1),(thumb_ty+1));
+		glVertex2i((box.rx-1),(thumb_by-1));
+		glVertex2i((lx+1),(thumb_by-1));
+		glEnd();
+
+		glColor4f(0.0f,0.0f,0.0f,1.0f);
+			
+		glBegin(GL_LINE_LOOP);
+		glVertex2i((lx+1),thumb_ty);
+		glVertex2i(box.rx,(thumb_ty-1));
+		glVertex2i(box.rx,(thumb_by-1));
+		glVertex2i((lx+1),thumb_by);
+		glEnd();
+	}
+	
+	glColor4f(0.0f,0.0f,0.0f,1.0f);
+		
+	glBegin(GL_LINES);
+	glVertex2i(lx,box.ty);
+	glVertex2i(lx,box.by);
+	glEnd();
+}
+
+void list_palette_draw_border(list_palette_type *list)
+{
+	int					lx,rx,mx;
+	d3rect				box;
+	
+	list_palette_box(&box);
+
+	lx=box.lx;
+	rx=box.lx+list_palette_border_sz;
+	mx=(lx+rx)>>1;
+		
+	glBegin(GL_QUADS);
+	glColor4f(0.0f,0.0f,0.5f,1.0f);
+	glVertex2i(lx,box.by);
+	glVertex2i(lx,box.ty);
+	glColor4f(0.0f,0.0f,1.0f,1.0f);
+	glVertex2i(mx,box.ty);
+	glVertex2i(mx,box.by);
+	glColor4f(0.0f,0.0f,0.5f,1.0f);
+	glVertex2i(rx,box.by);
+	glVertex2i(rx,box.ty);
+	glColor4f(0.0f,0.0f,1.0f,1.0f);
+	glVertex2i(mx,box.ty);
+	glVertex2i(mx,box.by);
+	glEnd();
 }
 
 /* =======================================================
@@ -867,45 +1078,14 @@ void list_palette_draw_item(list_palette_type *list,int idx)
 
 void list_palette_draw(list_palette_type *list)
 {
-	int						n,lx,mx,rx,ty,by,
-							thumb_ty,thumb_by,page_count;
-	d3rect					wbox,box;
+	int						n;
 
-	list_palette_box(&box);
-	
-		// viewport setup
-		
-	os_get_window_box(&wbox);
+	list_palette_draw_setup(list);
 
-	glEnable(GL_SCISSOR_TEST);
-	glScissor(box.lx,(wbox.by-box.by),(box.rx-box.lx),(box.by-box.ty));
+		// in list picker?
+		// if so replace content with list
 
-	glViewport(box.lx,(wbox.by-box.by),(box.rx-box.lx),(box.by-box.ty));
-		
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glOrtho((GLdouble)box.lx,(GLdouble)box.rx,(GLdouble)box.by,(GLdouble)box.ty,-1.0,1.0);
-	
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-
-		// draw setup
-
-	glDisable(GL_DEPTH_TEST);
-
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_NOTEQUAL,0);
-
-		// background
-
-	glColor4f(1.0f,1.0f,1.0f,1.0f);
-		
-	glBegin(GL_QUADS);
-	glVertex2i(box.lx,box.ty);
-	glVertex2i(box.rx,box.ty);
-	glVertex2i(box.rx,box.by);
-	glVertex2i(box.lx,box.by);
-	glEnd();
+	if (list_picker.on) list_palette_fill_picking_mode(list);
 
 		// items
 
@@ -913,81 +1093,13 @@ void list_palette_draw(list_palette_type *list)
 		list_palette_draw_item(list,n);
 	}
 	
-		// scroll bar
-	
-	lx=box.rx-list_palette_scroll_wid;
-	ty=box.ty+list_title_high;
-	by=box.by;
-	
-	glColor4f(0.5f,0.5f,0.5f,1.0f);
-		
-	glBegin(GL_QUADS);
-	glVertex2i(lx,ty);
-	glVertex2i(box.rx,ty);
-	glVertex2i(box.rx,by);
-	glVertex2i(lx,by);
-	glEnd();
+		// list pieces
 
-	page_count=list_palette_get_scroll_page_count(list);
-
-	if ((list->item_count!=0) && (page_count!=0)) {
-		
-		thumb_ty=ty+(((by-ty)*list->scroll_page)/(page_count+1));
-		if (thumb_ty<ty) thumb_ty=ty;
-		
-		thumb_by=ty+(((by-ty)*(list->scroll_page+1))/(page_count+1));
-		if (thumb_by>by) thumb_by=by;
-
-		glColor4f(0.9f,0.9f,0.9f,1.0f);
-			
-		glBegin(GL_QUADS);
-		glVertex2i((lx+1),(thumb_ty+1));
-		glVertex2i((box.rx-1),(thumb_ty+1));
-		glVertex2i((box.rx-1),(thumb_by-1));
-		glVertex2i((lx+1),(thumb_by-1));
-		glEnd();
-
-		glColor4f(0.0f,0.0f,0.0f,1.0f);
-			
-		glBegin(GL_LINE_LOOP);
-		glVertex2i((lx+1),thumb_ty);
-		glVertex2i(box.rx,(thumb_ty-1));
-		glVertex2i(box.rx,(thumb_by-1));
-		glVertex2i((lx+1),thumb_by);
-		glEnd();
-	}
-	
-	glColor4f(0.0f,0.0f,0.0f,1.0f);
-		
-	glBegin(GL_LINES);
-	glVertex2i(lx,box.ty);
-	glVertex2i(lx,box.by);
-	glEnd();
-
-		// title
-		
+	list_palette_draw_scrollbar(list);
 	list_palette_draw_title(list);
-	
-		// click-close border
-
-	lx=box.lx;
-	rx=box.lx+list_palette_border_sz;
-	mx=(lx+rx)>>1;
-		
-	glBegin(GL_QUADS);
-	glColor4f(0.0f,0.0f,0.5f,1.0f);
-	glVertex2i(lx,box.by);
-	glVertex2i(lx,box.ty);
-	glColor4f(0.0f,0.0f,1.0f,1.0f);
-	glVertex2i(mx,box.ty);
-	glVertex2i(mx,box.by);
-	glColor4f(0.0f,0.0f,0.5f,1.0f);
-	glVertex2i(rx,box.by);
-	glVertex2i(rx,box.ty);
-	glColor4f(0.0f,0.0f,1.0f,1.0f);
-	glVertex2i(mx,box.ty);
-	glVertex2i(mx,box.by);
-	glEnd();
+#ifndef D3_SETUP
+	list_palette_draw_border(list);
+#endif
 
 	glDisable(GL_ALPHA_TEST);
 }
@@ -1020,6 +1132,8 @@ void list_palette_scroll_down(list_palette_type *list)
 
 void list_palette_scroll_wheel(list_palette_type *list,d3pnt *pnt,int move)
 {
+	if (list_picker.on) list_palette_fill_picking_mode(list);
+
 	if (move>0) list_palette_scroll_up(list);
 	if (move<0) list_palette_scroll_down(list);
 }
@@ -1029,6 +1143,8 @@ void list_palette_scroll_item_into_view(list_palette_type *list,int item_type,in
 	int							n,y,page_count;
 	bool						hit;
 	list_palette_item_type		*item;
+
+	if (list_picker.on) return;
 
 		// find item
 
@@ -1141,6 +1257,41 @@ bool list_palette_click_item(list_palette_type *list,int item_idx)
 	return(TRUE);
 }
 
+bool list_palette_click_back(list_palette_type *list)
+{
+	bool					on,out_box;
+	d3pnt					pt;
+	d3rect					box;
+
+		// do the hold and click
+		
+	list_palette_box(&box);
+	box.by=box.ty+list_title_high;
+
+	list->back_push_on=TRUE;
+	
+	main_wind_draw();
+
+	while (!os_track_mouse_location(&pt,NULL)) {
+	
+		out_box=FALSE;
+		out_box=out_box||(pt.x<box.lx);
+		out_box=out_box||(pt.x>box.rx);
+		out_box=out_box||(pt.y<box.ty);
+		out_box=out_box||(pt.y>box.by);
+		
+		list->back_push_on=!out_box;
+		main_wind_draw();
+		
+		usleep(10000);
+	}
+
+	on=list->back_push_on;
+	list->back_push_on=FALSE;
+
+	return(on);
+}
+
 void list_palette_click_scroll_bar(list_palette_type *list)
 {
 	int						old_page,page,page_count,
@@ -1204,8 +1355,15 @@ bool list_palette_click(list_palette_type *list,d3pnt *pnt,bool double_click)
 		
 	if (pt.y<list_title_high) {
 		if (list->back_on) {
-			list_palette_set_level(list_palette_level-1);
-			main_wind_draw();
+			if (list_palette_click_back(list)) {
+				if (list_picker.on) {
+					list_picker.on=FALSE;
+				}
+				else {
+					list_palette_set_level(list_palette_level-1);
+				}
+				main_wind_draw();
+			}
 		}
 		return(FALSE);
 	}
@@ -1217,6 +1375,11 @@ bool list_palette_click(list_palette_type *list,d3pnt *pnt,bool double_click)
 		return(FALSE);
 	}
 
+		// in list picker?
+		// if so replace content with list
+
+	if (list_picker.on) list_palette_fill_picking_mode(list);
+
 		// click in item
 
 	item_idx=((pt.y-list_title_high)+(list->scroll_page*list_item_scroll_size))/list_item_font_high;
@@ -1224,22 +1387,57 @@ bool list_palette_click(list_palette_type *list,d3pnt *pnt,bool double_click)
 
 		// is there a button?
 
-	list->button_click=FALSE;
+	if (!list_picker.on) {
+		list->button_click=FALSE;
 
-	if (list->items[item_idx].button_type!=list_button_none) {
-		if (pt.x>=(((box.rx-box.lx)-list_palette_scroll_wid)-list_item_font_high)) {
-			list->button_click=TRUE;
+		if (list->items[item_idx].button_type!=list_button_none) {
+			if (pt.x>=(((box.rx-box.lx)-list_palette_scroll_wid)-list_item_font_high)) {
+				list->button_click=TRUE;
+			}
 		}
 	}
 
 		// if a header or an id of -1, only click if there's
 		// a button
 
-	if (list->items[item_idx].ctrl_type==list_item_ctrl_header) {
-		if (!list->button_click) return(FALSE);
+	if (!list_picker.on) {
+		if (list->items[item_idx].ctrl_type==list_item_ctrl_header) {
+			if (!list->button_click) return(FALSE);
+		}
 	}
 
 		// run the click
 
-	return(list_palette_click_item(list,item_idx));
+	if (!list_palette_click_item(list,item_idx)) return(FALSE);
+
+		// list picker picks
+
+	if (!list_picker.on) return(TRUE);
+
+	if (list_picker.picker_idx_ptr!=NULL) {
+		if (!list_picker.include_none) {
+			*list_picker.picker_idx_ptr=item_idx;
+		}
+		else {
+			*list_picker.picker_idx_ptr=item_idx-1;
+		}
+	}
+	else {
+		if (!list_picker.include_none) {
+			strcpy(list_picker.picker_name_ptr,list->items[item_idx].name);
+		}
+		else {
+			if (item_idx==0) {
+				*list_picker.picker_name_ptr=0x0;
+			}
+			else {
+				strcpy(list_picker.picker_name_ptr,list->items[item_idx-1].name);
+			}
+		}
+	}
+
+	list_picker.on=FALSE;
+	main_wind_draw();
+
+	return(TRUE);
 }

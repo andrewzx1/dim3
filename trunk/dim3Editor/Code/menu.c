@@ -31,6 +31,7 @@ and can be sold or given away.
 
 #include "glue.h"
 #include "interface.h"
+#include "ui_common.h"
 
 extern map_type				map;
 extern editor_state_type	state;
@@ -201,6 +202,7 @@ bool menu_event_run(int cmd)
         case kCommandFilePreference:
 			state.in_preference=!state.in_preference;
 			property_palette_reset();
+			list_palette_set_level(1);
 			main_wind_draw();
             return(TRUE);
 
