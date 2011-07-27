@@ -112,7 +112,6 @@ void alt_property_palette_fill_mark(int mark_idx)
 
 void alt_property_palette_click_mark(int mark_idx,int id)
 {
-	char					file_name[file_str_len];
 	iface_mark_type			*mark;
 
 	mark=&iface.mark_list.marks[mark_idx];
@@ -126,8 +125,7 @@ void alt_property_palette_click_mark(int mark_idx,int id)
 			break;
 
 		case kMarkSettingsFileName:
-			strcpy(file_name,mark->bitmap_name);
-			if (dialog_file_open_run("Pick a Mark Bitmap","Bitmaps/Marks","png",NULL,file_name)) strcpy(mark->bitmap_name,file_name);
+			property_pick_file("Pick a Mark Bitmap","Bitmaps/Marks","png",NULL,mark->bitmap_name);
 			break;
 
 			// options

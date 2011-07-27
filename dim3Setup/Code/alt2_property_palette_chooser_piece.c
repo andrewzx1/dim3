@@ -132,7 +132,6 @@ void alt2_property_palette_fill_chooser_piece(int chooser_idx,int chooser_piece_
 
 void alt2_property_palette_click_chooser_piece(int chooser_idx,int chooser_piece_idx,int id)
 {
-	int								old_chooser_type;
 	char							file_name[file_str_len];
 	iface_chooser_piece_type		*piece;
 
@@ -143,12 +142,8 @@ void alt2_property_palette_click_chooser_piece(int chooser_idx,int chooser_piece
 			// settings
 
 		case kChooserPieceSettingsType:
-			old_chooser_type=piece->type;
+			bzero(&piece->data,sizeof(iface_chooser_piece_data_type));		// need to clear data or it'll crash
 			property_pick_list("Pick a Chooser Piece Type",(char*)chooser_type_str,&piece->type);
-
-				// if change of type, clear out the struct
-
-			if (old_chooser_type!=piece->type) bzero(&piece->data,sizeof(iface_chooser_piece_data_type));
 			break;
 
 		case kChooserPieceSettingsId:
@@ -196,13 +191,11 @@ void alt2_property_palette_click_chooser_piece(int chooser_idx,int chooser_piece
 			break;
 
 		case kChooserPieceItemFile:
-			strcpy(file_name,piece->data.item.file);
-			if (dialog_file_open_run("Pick a Chooser Bitmap","Chooser","png",NULL,file_name)) strcpy(piece->data.item.file,file_name);
+			property_pick_file("Pick a Chooser Bitmap","Chooser","png",NULL,piece->data.item.file);
 			break;
 
 		case kChooserPieceModelModelName:
-			strcpy(file_name,piece->data.model.model_name);
-			if (dialog_file_open_run("Pick a Model","Models",NULL,"Mesh.xml",file_name)) strcpy(piece->data.model.model_name,file_name);
+			property_pick_file("Pick a Model","Models",NULL,"Mesh.xml",piece->data.model.model_name);
 			break;
 
 		case kChooserPieceModelAnimateName:

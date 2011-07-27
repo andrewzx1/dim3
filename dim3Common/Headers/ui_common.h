@@ -119,6 +119,7 @@ extern bool property_chord_get_values(int value_type,void *value,char *str_x,cha
 extern void property_chord_set_values(int value_type,void *value,char *str_x,char *str_y,char *str_z);
 
 extern void property_pick_list(char *title,char *list,int *idx);
+extern void property_pick_file(char *title,char *search_path,char *extension,char *required_file_name,char *file_name);
 
 extern void property_get_parameter(int idx,char *param_list,char *str);
 extern void property_set_parameter(int idx,char *param_list,char *str);

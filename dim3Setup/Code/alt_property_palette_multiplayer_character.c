@@ -80,7 +80,6 @@ void alt_property_palette_fill_multiplayer_character(int multiplayer_character_i
 
 void alt_property_palette_click_multiplayer_character(int multiplayer_character_idx,int id)
 {
-	char							model_name[name_str_len];
 	iface_character_item_type		*character;
 
 	character=&iface.character.characters[multiplayer_character_idx];
@@ -94,8 +93,7 @@ void alt_property_palette_click_multiplayer_character(int multiplayer_character_
 			break;
 
 		case kMPCharacterPropertySettingsModelName:
-			strcpy(model_name,character->model_name);
-			if (dialog_file_open_run("Pick a Model","Models",NULL,"Mesh.xml",model_name)) strcpy(character->model_name,model_name);
+			property_pick_file("Pick a Model","Models",NULL,"Mesh.xml",character->model_name);
 			break;
 
 		case kMPCharacterPropertySettingsParam:

@@ -41,6 +41,10 @@ and can be sold or given away.
 #include "interface.h"
 #include "ui_common.h"
 
+extern file_path_setup_type		file_path_setup;
+
+char							property_file_list[file_paths_max_directory_file][file_str_len];
+
 /* =======================================================
 
       Property String Utilities
@@ -251,7 +255,7 @@ void property_chord_set_values(int value_type,void *value,char *str_x,char *str_
 
 /* =======================================================
 
-      Property List Utilities
+      Property Pick From List
       
 ======================================================= */
 
@@ -274,6 +278,88 @@ void property_pick_list(char *title,char *list,int *idx)
 		// run the list picker
 
 	list_palette_start_picking_mode(title,list,count,name_str_len,0,FALSE,idx,NULL);
+}
+
+/* =======================================================
+
+      Property Pick From File
+      
+======================================================= */
+
+int property_pick_file_add_dir_files(file_path_directory_type *fpd,int path_clip_depth,int path_depth,char *cur_path,int parent_idx,int count)
+{
+	int					n;
+	char				next_path[256];
+
+	for (n=0;n!=fpd->nfile;n++) {
+		if (fpd->files[n].parent_idx!=parent_idx) continue;
+
+			// going into another directory
+
+		if (fpd->files[n].is_dir) {
+
+			if (path_depth<path_clip_depth) {
+				count=property_pick_file_add_dir_files(fpd,path_clip_depth,(path_depth+1),NULL,n,count);
+			}
+			else {
+				if (cur_path==NULL) {
+					sprintf(next_path,"%s/",fpd->files[n].file_name);
+				}
+				else {
+					sprintf(next_path,"%s%s/",cur_path,fpd->files[n].file_name);
+				}
+
+				count=property_pick_file_add_dir_files(fpd,path_clip_depth,(path_depth+1),next_path,n,count);
+			}
+
+			continue;
+		}
+
+			// put in list
+
+		if (cur_path==NULL) {
+			strcpy(property_file_list[count],fpd->files[n].file_name);
+		}
+		else {
+			sprintf(property_file_list[count],"%s%s",cur_path,fpd->files[n].file_name);
+		}
+
+		count++;
+	}
+
+	return(count);
+}
+
+void property_pick_file(char *title,char *search_path,char *extension,char *required_file_name,char *file_name)
+{
+	int								path_clip_depth,count;
+	file_path_directory_type		*fpd;
+
+		// read files
+
+	if (extension!=NULL) {
+		fpd=file_paths_read_directory_data(&file_path_setup,search_path,extension);
+	}
+	else {
+		fpd=file_paths_read_directory_data_dir(&file_path_setup,search_path,required_file_name);
+	}
+
+		// get the path clip count
+
+	path_clip_depth=0;
+	if (strchr(search_path,'/')!=NULL) path_clip_depth++;
+
+		// make lists
+
+	count=property_pick_file_add_dir_files(fpd,path_clip_depth,0,NULL,-1,0);
+
+		// close directory read
+
+	file_paths_close_directory(fpd);
+
+		// run the list picker
+
+	list_palette_start_picking_mode(title,(char*)property_file_list,count,file_str_len,0,TRUE,NULL,file_name);
 }
 
 /* =======================================================

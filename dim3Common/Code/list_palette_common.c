@@ -490,6 +490,8 @@ void list_palette_start_picking_mode(char *title,char *list_ptr,int list_count,i
 	list_picker.picker_idx_ptr=idx_ptr;
 	list_picker.picker_name_ptr=name_ptr;
 
+	strcpy(list_picker.title,title);
+
 	list_picker.include_none=include_none;
 	list_picker.ptr=list_ptr;
 	list_picker.count=list_count;
@@ -837,7 +839,11 @@ void list_palette_draw_title(list_palette_type *list)
 		
 	if ((!list->back_on) && (!list_picker.on)) return;
 	
+#ifndef D3_SETUP
 	lx=box.lx+12;
+#else
+	lx=box.lx+4;
+#endif
 	rx=lx+32;
 	ty=box.ty+1;
 	by=ty+32;
@@ -1431,7 +1437,7 @@ bool list_palette_click(list_palette_type *list,d3pnt *pnt,bool double_click)
 				*list_picker.picker_name_ptr=0x0;
 			}
 			else {
-				strcpy(list_picker.picker_name_ptr,list->items[item_idx-1].name);
+				strcpy(list_picker.picker_name_ptr,list->items[item_idx].name);
 			}
 		}
 	}

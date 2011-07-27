@@ -73,7 +73,6 @@ void alt_property_palette_fill_sound(int sound_idx)
 
 void alt_property_palette_click_sound(int sound_idx,int id)
 {
-	char						file_name[file_str_len];
 	iface_sound_type			*sound;
 
 	sound=&iface.sound_list.sounds[sound_idx];
@@ -87,8 +86,7 @@ void alt_property_palette_click_sound(int sound_idx,int id)
 			break;
 
 		case kSoundSettingsFileName:
-			strcpy(file_name,sound->file_name);
-			if (dialog_file_open_run("Pick a Sound","Sounds","wav",NULL,file_name)) strcpy(sound->file_name,file_name);
+			property_pick_file("Pick a Sound","Sounds","wav",NULL,sound->file_name);
 			break;
 
 		case kSoundSettingsMinDist:

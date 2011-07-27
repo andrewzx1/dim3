@@ -103,7 +103,6 @@ void property_palette_fill_radar(void)
 void property_palette_click_radar(int id)
 {
 	int					idx,sz;
-	char				file_name[file_str_len];
 
 		// select icon
 
@@ -168,8 +167,7 @@ void property_palette_click_radar(int id)
 			break;
 
 		case kRadarPropertySettingsBackground:
-			strcpy(file_name,iface.radar.background_bitmap_name);
-			if (dialog_file_open_run("Pick a Background Bitmap","Bitmaps/Radar","png",NULL,file_name)) strcpy(iface.radar.background_bitmap_name,file_name);
+			property_pick_file("Pick a Background Bitmap","Bitmaps/Radar","png",NULL,iface.radar.background_bitmap_name);
 			break;
 
 		case kRadarPropertySettingsDisplayRadius:

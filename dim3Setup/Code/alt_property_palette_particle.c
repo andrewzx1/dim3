@@ -148,7 +148,6 @@ void alt_property_palette_fill_particle(int particle_idx)
 
 void alt_property_palette_click_particle(int particle_idx,int id)
 {
-	char						file_name[file_str_len];
 	iface_particle_type			*particle;
 
 	particle=&iface.particle_list.particles[particle_idx];
@@ -162,8 +161,7 @@ void alt_property_palette_click_particle(int particle_idx,int id)
 			break;
 
 		case kParticleSettingsBitmapName:
-			strcpy(file_name,particle->bitmap_name);
-			if (dialog_file_open_run("Pick a Particle Bitmap","Bitmaps/Particles","png",NULL,file_name)) strcpy(particle->bitmap_name,file_name);
+			property_pick_file("Pick a Particle Bitmap","Bitmaps/Particles","png",NULL,particle->bitmap_name);
 			break;
 
 		case kParticleSettingsChainName:

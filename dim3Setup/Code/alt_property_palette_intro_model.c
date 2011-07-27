@@ -87,7 +87,6 @@ void alt_property_palette_fill_intro_model(int intro_model_idx)
 
 void alt_property_palette_click_intro_model(int intro_model_idx,int id)
 {
-	char								model_name[name_str_len];
 	iface_intro_model_type				*model;
 
 	model=&iface.intro.model_list.models[intro_model_idx];
@@ -97,8 +96,7 @@ void alt_property_palette_click_intro_model(int intro_model_idx,int id)
 			// settings
 
 		case kModelSettingsName:
-			strcpy(model_name,model->model_name);
-			if (dialog_file_open_run("Pick a Model","Models",NULL,"Mesh.xml",model_name)) strcpy(model->model_name,model_name);
+			property_pick_file("Pick a Model","Models",NULL,"Mesh.xml",model->model_name);
 			break;
 
 		case kModelSettingsAnimate:

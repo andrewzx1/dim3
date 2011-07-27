@@ -127,7 +127,6 @@ void alt_property_palette_fill_ring(int ring_idx)
 
 void alt_property_palette_click_ring(int ring_idx,int id)
 {
-	char					file_name[file_str_len];
 	iface_ring_type			*ring;
 
 	ring=&iface.ring_list.rings[ring_idx];
@@ -141,8 +140,7 @@ void alt_property_palette_click_ring(int ring_idx,int id)
 			break;
 
 		case kRingSettingsBitmapName:
-			strcpy(file_name,ring->bitmap_name);
-			if (dialog_file_open_run("Pick a Ring Bitmap","Bitmaps/Rings","png",NULL,file_name)) strcpy(ring->bitmap_name,file_name);
+			property_pick_file("Pick a Ring Bitmap","Bitmaps/Rings","png",NULL,ring->bitmap_name);
 			break;
 
 		case kRingSettingsLife:
