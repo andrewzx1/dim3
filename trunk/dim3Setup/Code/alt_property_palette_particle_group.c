@@ -120,13 +120,14 @@ void alt_property_palette_click_particle_group(int particle_idx,int id)
 
 		idx=particle->group.count;
 		particle->group.count++;
-		
-		particle->group.particles[idx].name[0]=0x0;
-		property_palette_pick_particle(particle->group.particles[idx].name);
-	
-		particle->group.particles[idx].shift=0;
 
 		state.cur_group_particle_idx=idx;
+	
+		particle->group.particles[idx].name[0]=0x0;
+		particle->group.particles[idx].shift=0;
+
+		list_palette_set_level(3);
+		property_palette_pick_particle(particle->group.particles[idx].name);
 
 		main_wind_draw();
 		return;

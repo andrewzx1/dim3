@@ -69,7 +69,6 @@ void alt_property_palette_fill_crosshair(int crosshair_idx)
 
 void alt_property_palette_click_crosshair(int crosshair_idx,int id)
 {
-	char						file_name[file_str_len];
 	iface_crosshair_type		*crosshair;
 
 	crosshair=&iface.crosshair_list.crosshairs[crosshair_idx];
@@ -83,8 +82,7 @@ void alt_property_palette_click_crosshair(int crosshair_idx,int id)
 			break;
 
 		case kCrosshairSettingsFileName:
-			strcpy(file_name,crosshair->bitmap_name);
-			if (dialog_file_open_run("Pick a Crosshair Bitmap","Bitmaps/Crosshairs","png",NULL,file_name)) strcpy(crosshair->bitmap_name,file_name);
+			property_pick_file("Pick a Crosshair Bitmap","Bitmaps/Crosshairs","png",NULL,crosshair->bitmap_name);
 			break;
 
 	}

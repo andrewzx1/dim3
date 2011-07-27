@@ -78,7 +78,6 @@ void alt_property_palette_fill_radar_icon(int radar_icon_idx)
 
 void alt_property_palette_click_radar_icon(int radar_icon_idx,int id)
 {
-	char						file_name[file_str_len];
 	iface_radar_icon_type		*icon;
 
 	icon=&iface.radar.icons[radar_icon_idx];
@@ -92,8 +91,7 @@ void alt_property_palette_click_radar_icon(int radar_icon_idx,int id)
 			break;
 
 		case kRadarIconSettingsBitmapName:
-			strcpy(file_name,icon->bitmap_name);
-			if (dialog_file_open_run("Pick a Icon Bitmap","Bitmaps/Radar","png",NULL,file_name)) strcpy(icon->bitmap_name,file_name);
+			property_pick_file("Pick a Icon Bitmap","Bitmaps/Radar","png",NULL,icon->bitmap_name);
 			break;
 
 			// options

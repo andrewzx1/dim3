@@ -147,8 +147,6 @@ void property_palette_fill_intro(void)
 void property_palette_click_intro(int id)
 {
 	int					idx,sz;
-	char				model_name[name_str_len],music_name[name_str_len],
-						title_name[name_str_len];
 
 		// select button
 
@@ -215,23 +213,23 @@ void property_palette_click_intro(int id)
 			os_dialog_alert("Add Intro Model","Reached the maximum number of models");
 			return;
 		}
-		
-		model_name[0]=0x0;
-		if (!dialog_file_open_run("Pick a Model","Models",NULL,"Mesh.xml",model_name)) return;
 
 		idx=iface.intro.model_list.nmodel;
 		iface.intro.model_list.nmodel++;
 
+		iface.intro.model_list.models[idx].model_name[0]=0x0;
 		iface.intro.model_list.models[idx].x=0;
 		iface.intro.model_list.models[idx].y=0;
 		iface.intro.model_list.models[idx].resize=1.0f;
 		iface.intro.model_list.models[idx].rot.x=0.0f;
 		iface.intro.model_list.models[idx].rot.y=0.0f;
 		iface.intro.model_list.models[idx].rot.z=0.0f;
-		strcpy(iface.intro.model_list.models[idx].model_name,model_name);
 		iface.intro.model_list.models[idx].animate_name[0]=0x0;
 
 		state.cur_intro_model_idx=idx;
+		
+		list_palette_set_level(2);
+		property_pick_file("Pick a Model","Models",NULL,"Mesh.xml",iface.intro.model_list.models[idx].model_name);
 
 		main_wind_draw();
 		return;
@@ -246,23 +244,11 @@ void property_palette_click_intro(int id)
 	switch (id) {
 
 		case kIntroPropertyMusic:
-			strcpy(music_name,iface.intro.music);
-			if (dialog_file_open_run("Pick a MP3","Music","mp3",NULL,music_name)) {
-				strcpy(iface.intro.music,music_name);
-			}
-			else {
-				iface.intro.music[0]=0x0;
-			}
+			property_pick_file("Pick a MP3","Music","mp3",NULL,iface.intro.music);
 			break;
 
 		case kIntroPropertyTitleName:
-			strcpy(title_name,iface.intro.title.name);
-			if (dialog_file_open_run("Pick a Title","Titles","png",NULL,title_name)) {
-				strcpy(iface.intro.title.name,title_name);
-			}
-			else {
-				iface.intro.title.name[0]=0x0;
-			}
+			property_pick_file("Pick a Title","Titles","png",NULL,iface.intro.title.name);
 			break;
 			
 		case kIntroPropertyTitleSound:

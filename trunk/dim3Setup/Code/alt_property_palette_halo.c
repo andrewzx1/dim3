@@ -102,7 +102,6 @@ void alt_property_palette_fill_halo(int halo_idx)
 
 void alt_property_palette_click_halo(int halo_idx,int id)
 {
-	char					file_name[file_str_len];
 	iface_halo_type			*halo;
 
 	halo=&iface.halo_list.halos[halo_idx];
@@ -116,8 +115,7 @@ void alt_property_palette_click_halo(int halo_idx,int id)
 			break;
 
 		case kHaloSettingsFileName:
-			strcpy(file_name,halo->bitmap_name);
-			if (dialog_file_open_run("Pick a Halo Bitmap","Bitmaps/Halos","png",NULL,file_name)) strcpy(halo->bitmap_name,file_name);
+			property_pick_file("Pick a Halo Bitmap","Bitmaps/Halos","png",NULL,halo->bitmap_name);
 			break;
 
 			// distance

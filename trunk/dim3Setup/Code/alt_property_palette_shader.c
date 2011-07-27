@@ -75,7 +75,6 @@ void alt_property_palette_fill_shader(int shader_idx)
 
 void alt_property_palette_click_shader(int shader_idx,int id)
 {
-	char						file_name[file_str_len];
 	iface_shader_type			*shader;
 
 	shader=&iface.shader_list.shaders[shader_idx];
@@ -91,13 +90,11 @@ void alt_property_palette_click_shader(int shader_idx,int id)
 			// code
 
 		case kShaderCodeVertName:
-			strcpy(file_name,shader->vert_name);
-			if (dialog_file_open_run("Pick a Vertex Shader","Shaders","vert",NULL,file_name)) strcpy(shader->vert_name,file_name);
+			property_pick_file("Pick a Vertex Shader","Shaders","vert",NULL,shader->vert_name);
 			break;
 
 		case kShaderCodeFragName:
-			strcpy(file_name,shader->frag_name);
-			if (dialog_file_open_run("Pick a Fragment Shader","Shaders","frag",NULL,file_name)) strcpy(shader->frag_name,file_name);
+			property_pick_file("Pick a Fragment Shader","Shaders","frag",NULL,shader->frag_name);
 			break;
 
 	}
