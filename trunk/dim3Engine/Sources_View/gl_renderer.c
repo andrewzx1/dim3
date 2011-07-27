@@ -50,7 +50,11 @@ extern render_info_type		render_info;
 
 bool gl_in_window_mode(void)
 {
+#ifndef D3_OS_IPHONE
 	return((setup.window) || ((setup.editor_override.on) && (setup.window_editor)));
+#else
+	return(FALSE);
+#endif
 }
 
 /* =======================================================

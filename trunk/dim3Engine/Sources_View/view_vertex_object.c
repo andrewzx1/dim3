@@ -112,15 +112,14 @@ void view_dispose_mesh_liquid_vertex_object(map_vbo_type *vbo)
 	glDeleteBuffers(1,&vbo->index);
 }
 
-float* view_bind_map_mesh_liquid_vertex_object(map_vbo_type *vbo)
+void view_bind_mesh_liquid_vertex_object(map_vbo_type *vbo)
+{
+	glBindBuffer(GL_ARRAY_BUFFER,vbo->vertex);
+}
+
+float* view_map_mesh_liquid_vertex_object(map_vbo_type *vbo)
 {
 	float		*vertex_ptr;
-
-		// bind to map specific VBO
-
-	glBindBuffer(GL_ARRAY_BUFFER,vbo->vertex);
-
-		// map pointer
 
 	vertex_ptr=(float*)glMapBuffer(GL_ARRAY_BUFFER,GL_WRITE_ONLY);
 	if (vertex_ptr==NULL) {
@@ -141,15 +140,14 @@ void view_unbind_mesh_liquid_vertex_object(void)
 	glBindBuffer(GL_ARRAY_BUFFER,0);
 }
 
-unsigned short* view_bind_mesh_liquid_index_object(map_vbo_type *vbo)
+void view_bind_mesh_liquid_index_object(map_vbo_type *vbo)
+{
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,vbo->index);
+}
+
+unsigned short* view_map_mesh_liquid_index_object(map_vbo_type *vbo)
 {
 	unsigned short		*index_ptr;
-
-		// bind to map specific VBO
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,vbo->index);
-
-		// map pointer
 
 	index_ptr=(unsigned short*)glMapBuffer(GL_ELEMENT_ARRAY_BUFFER,GL_WRITE_ONLY);
 	if (index_ptr==NULL) {
@@ -380,7 +378,7 @@ float* view_bind_map_next_vertex_object(int sz)
 		// we pass null to stop stalls
 
 	sz*=sizeof(float);
-	glBufferData(GL_ARRAY_BUFFER,sz,NULL,GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER,sz,NULL,GL_STREAM_DRAW);
 
 		// map pointer
 
@@ -420,7 +418,7 @@ unsigned short* view_bind_map_next_index_object(int sz)
 		// we pass null to stop stalls
 
 	sz*=sizeof(unsigned short);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER,sz,NULL,GL_DYNAMIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER,sz,NULL,GL_STATIC_DRAW);
 
 		// map pointer
 

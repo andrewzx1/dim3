@@ -566,6 +566,7 @@ void render_model_opaque_shader(model_type *mdl,int mesh_idx,model_draw *draw,vi
 	glDepthMask(GL_TRUE);
 
 	gl_shader_draw_start();
+	gl_shader_draw_reset_normal_tangent_attrib();
 
 		// run through the materials
 
@@ -723,6 +724,7 @@ void render_model_transparent_shader(model_type *mdl,int mesh_idx,model_draw *dr
 	glDepthMask(GL_FALSE);
 	
 	gl_shader_draw_start();
+	gl_shader_draw_reset_normal_tangent_attrib();
 	
 		// minimize state changes
 

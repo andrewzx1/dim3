@@ -87,11 +87,9 @@ extern void view_calculate_fps(void);
 extern void view_game_reset_timing(void);
 extern void view_visibility_check_calculate(void);
 
-extern bool view_compile_mesh_gl_list_init(void);
-extern void view_compile_mesh_gl_list_free(void);
-
 extern bool view_map_vbo_initialize(void);
 extern void view_map_vbo_release(void);
+extern void view_map_vbo_rebuild(void);
 
 //
 // timing
@@ -596,10 +594,12 @@ extern void view_dispose_vertex_objects(void);
 
 extern void view_create_mesh_liquid_vertex_object(map_vbo_type *vbo,int vertex_count,int index_count);
 extern void view_dispose_mesh_liquid_vertex_object(map_vbo_type *vbo);
-extern inline float* view_bind_map_mesh_liquid_vertex_object(map_vbo_type *vbo);
+extern inline void view_bind_mesh_liquid_vertex_object(map_vbo_type *vbo);
+extern inline float* view_map_mesh_liquid_vertex_object(map_vbo_type *vbo);
 extern inline void view_unmap_mesh_liquid_vertex_object(void);
 extern inline void view_unbind_mesh_liquid_vertex_object(void);
-extern inline unsigned short* view_bind_mesh_liquid_index_object(map_vbo_type *vbo);
+extern inline void view_bind_mesh_liquid_index_object(map_vbo_type *vbo);
+extern inline unsigned short* view_map_mesh_liquid_index_object(map_vbo_type *vbo);
 extern inline void view_unmap_mesh_liquid_index_object(void);
 extern inline void view_unbind_mesh_liquid_index_object(void);
 
@@ -662,6 +662,7 @@ extern void gl_shader_draw_scene_code_start(shader_type *shader);
 extern void gl_shader_draw_scene_code_end(shader_type *shader);
 extern void gl_shader_draw_scene_start(void);
 extern void gl_shader_draw_start(void);
+extern void gl_shader_draw_reset_normal_tangent_attrib(void);
 extern void gl_shader_draw_end(void);
 extern void gl_shader_texture_override(GLuint gl_id,float alpha);
 extern void gl_shader_draw_execute(int core_shader_group,texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,view_light_list_type *light_list,int tangent_offset,int normal_offset);

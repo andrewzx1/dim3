@@ -687,8 +687,6 @@ void gl_shader_draw_scene_start(void)
 
 void gl_shader_draw_start(void)
 {
-	int					n,k;
-
 		// remember current shader
 
 	gl_shader_current=NULL;
@@ -708,10 +706,16 @@ void gl_shader_draw_start(void)
 
 	glActiveTexture(GL_TEXTURE0);
 	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_REPLACE);
+}
+
+void gl_shader_draw_reset_normal_tangent_attrib(void)
+{
+	int				n,k;
 	
-		// always reset vertexes attributes
-		// because VBO changes invalidate them
-	
+		// reset vertex attributes because the
+		// check to see if offsets are equal fails when
+		// switching VBOs
+		
 	for (k=0;k!=(max_shader_light+1);k++) {
 		for (n=0;n!=max_core_shader;n++) {
 			core_shaders[k][n].var_values.tangent_offset=-1;
