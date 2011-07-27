@@ -63,6 +63,12 @@ and can be sold or given away.
 #undef D3_OPENGL_ES
 
 //
+// some opengl defines
+//
+
+#define GL_TEXTURE_RECTANGLE	GL_TEXTURE_RECTANGLE_ARB
+
+//
 // os specific keys
 //
 

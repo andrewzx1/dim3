@@ -226,7 +226,7 @@ typedef struct		{
 typedef struct		{
 						int									vertex_offset,decal_stencil_idx,
 															txt_frame_offset,
-															gl_poly_index_min,gl_poly_index_max,gl_poly_index_offset;
+															gl_poly_index_min,gl_poly_index_max,gl_poly_index_offset;		// supergumba -- delete some of this
 						float								x_shift_offset,y_shift_offset;
 						bool								bump_ok,shift_on,transparent_on,glow_on;
 					} map_mesh_poly_draw_type;
@@ -234,6 +234,10 @@ typedef struct		{
 typedef struct		{
 						float								x[8],y[8];
 					} map_mesh_poly_uv_type;
+
+typedef struct		{
+						int									index_offset,index_min,index_max;
+					} map_mesh_poly_vbo_type;
 
 typedef struct		{
 						int									txt_idx,lmap_txt_idx,ptsz,v[8];
@@ -246,6 +250,7 @@ typedef struct		{
 						map_mesh_poly_line_type				line;
 						map_mesh_poly_slope_type			slope;
 						map_mesh_poly_draw_type				draw;
+						map_mesh_poly_vbo_type				vbo;
 					} map_mesh_poly_type;
 
 typedef struct		{

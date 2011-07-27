@@ -39,14 +39,6 @@ extern view_type		view;
 
 extern bitmap_type		lmap_black_bitmap;
 
-extern void view_compile_gl_list_attach(void);
-extern void view_compile_gl_list_attach_uv_light_map(void);
-extern void view_compile_gl_list_attach_uv_shader(void);
-extern void view_compile_gl_list_attach_uv_glow(void);
-extern void view_compile_gl_list_enable_color(void);
-extern void view_compile_gl_list_disable_color(void);
-extern void view_compile_gl_list_dettach(void);
-
 /* =======================================================
 
       Opaque Map Rendering Types
@@ -56,13 +48,16 @@ extern void view_compile_gl_list_dettach(void);
 void render_opaque_mesh_normal(void)
 {
 	int						n,k,frame;
-	bool					first_draw;
 	GLuint					gl_id,lmap_gl_id;
 	texture_type			*texture;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
 	
-	first_draw=TRUE;
+		// only this route uses color arrays
+		
+	glEnableClientState(GL_COLOR_ARRAY);
+	
+	gl_texture_opaque_light_map_start();
 
 		// run through draw list
 
@@ -74,6 +69,21 @@ void render_opaque_mesh_normal(void)
 
 		mesh=&map.mesh.meshes[view.render->draw_list.items[n].idx];
 		if (!mesh->draw.has_opaque) continue;
+		
+			// the mesh vbo
+			
+		view_bind_mesh_liquid_vertex_object(&mesh->vbo);
+		view_bind_mesh_liquid_index_object(&mesh->vbo);
+		
+		glVertexPointer(3,GL_FLOAT,0,(void*)0);
+
+		glClientActiveTexture(GL_TEXTURE1);
+		glTexCoordPointer(2,GL_FLOAT,0,(void*)((mesh->vbo.count*3)*sizeof(float)));
+
+		glClientActiveTexture(GL_TEXTURE0);
+		glTexCoordPointer(2,GL_FLOAT,0,(void*)((mesh->vbo.count*(3+2))*sizeof(float)));
+
+		glColorPointer(3,GL_FLOAT,0,(void*)((mesh->vbo.count*(3+2+2))*sizeof(float)));
 
 			// draw the polys
 
@@ -97,15 +107,6 @@ void render_opaque_mesh_normal(void)
 					poly++;
 					continue;
 				}
-			}
-
-				// setup
-
-			if (first_draw) {
-				first_draw=FALSE;
-				gl_texture_opaque_light_map_start();
-				view_compile_gl_list_enable_color();
-				view_compile_gl_list_attach_uv_light_map();
 			}
 
 				// get textures
@@ -134,40 +135,38 @@ void render_opaque_mesh_normal(void)
 				// draw polygon
 
 			#ifndef D3_OPENGL_ES
-				glDrawRangeElements(GL_TRIANGLE_FAN,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
+				glDrawRangeElements(GL_TRIANGLE_FAN,poly->vbo.index_min,poly->vbo.index_max,poly->ptsz,GL_UNSIGNED_SHORT,(GLvoid*)poly->vbo.index_offset);
 			#else
-				glDrawElements(GL_TRIANGLE_FAN,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
+				glDrawElements(GL_TRIANGLE_FAN,poly->ptsz,GL_UNSIGNED_SHORT,(GLvoid*)poly->vbo.index_offset);
 			#endif
 			
 			poly++;
 			view.count.poly++;
 		}
+		
+		view_unbind_mesh_liquid_vertex_object();
+		view_unbind_mesh_liquid_index_object();
 	}
 
-	if (!first_draw) {
-		view_compile_gl_list_disable_color();
-		gl_texture_opaque_light_map_end();
-	}
+		// only this route uses color arrays
+		
+	glDisableClientState(GL_COLOR_ARRAY);
+
+	gl_texture_opaque_light_map_end();
 }
 
 void render_opaque_mesh_shader(void)
 {
 	int						n,k,mesh_idx,frame,tangent_offset,normal_offset;
 	float					alpha;
-	bool					first_draw;
 	GLuint					gl_id;
 	texture_type			*texture;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
 	view_light_list_type	light_list;
 	
-	first_draw=TRUE;
+	gl_shader_draw_start();
 	
-		// get tangent and normal offset
-	
-	tangent_offset=(map.mesh.vbo_vertex_count*(3+2+2))*sizeof(float);
-	normal_offset=(map.mesh.vbo_vertex_count*(3+3+2+2))*sizeof(float);
-
 		// run through draw list
 
 	for (n=0;n!=view.render->draw_list.count;n++) {
@@ -180,6 +179,24 @@ void render_opaque_mesh_shader(void)
 
 		mesh=&map.mesh.meshes[mesh_idx];
 		if (!mesh->draw.has_opaque) continue;
+		
+			// the mesh vbo
+			
+		view_bind_mesh_liquid_vertex_object(&mesh->vbo);
+		view_bind_mesh_liquid_index_object(&mesh->vbo);
+		
+		glVertexPointer(3,GL_FLOAT,0,(void*)0);
+
+		glClientActiveTexture(GL_TEXTURE1);
+		glTexCoordPointer(2,GL_FLOAT,0,(void*)((mesh->vbo.count*(3+2))*sizeof(float)));
+	
+		glClientActiveTexture(GL_TEXTURE0);
+		glTexCoordPointer(2,GL_FLOAT,0,(void*)((mesh->vbo.count*3)*sizeof(float)));
+		
+		gl_shader_draw_reset_normal_tangent_attrib();
+		
+		tangent_offset=(mesh->vbo.count*(3+2+2))*sizeof(float);
+		normal_offset=(mesh->vbo.count*(3+3+2+2))*sizeof(float);
 
 			// draw the polys
 
@@ -205,14 +222,6 @@ void render_opaque_mesh_shader(void)
 				}
 			}
 
-				// setup
-
-			if (first_draw) {
-				first_draw=FALSE;
-				gl_shader_draw_start();
-				view_compile_gl_list_attach_uv_shader();
-			}
-
 				// setup shader
 
 			texture=&map.textures[poly->txt_idx];
@@ -230,31 +239,32 @@ void render_opaque_mesh_shader(void)
 				// draw polygon
 
 			#ifndef D3_OPENGL_ES
-				glDrawRangeElements(GL_TRIANGLE_FAN,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
+				glDrawRangeElements(GL_TRIANGLE_FAN,poly->vbo.index_min,poly->vbo.index_max,poly->ptsz,GL_UNSIGNED_SHORT,(GLvoid*)poly->vbo.index_offset);
 			#else
-				glDrawElements(GL_TRIANGLE_FAN,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
+				glDrawElements(GL_TRIANGLE_FAN,poly->ptsz,GL_UNSIGNED_SHORT,(GLvoid*)poly->vbo.index_offset);
 			#endif
 			
 			poly++;
 			view.count.poly++;
 		}
+		
+		view_unbind_mesh_liquid_vertex_object();
+		view_unbind_mesh_liquid_index_object();
 	}
-
-	if (!first_draw) {
-		gl_shader_draw_end();
-	}
+		
+	gl_shader_draw_end();
 }
 
 void render_opaque_mesh_glow(void)
 {
 	int						n,k,frame;
-	bool					first_draw;
+	bool					first_hit;
 	texture_type			*texture;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
-
-	first_draw=TRUE;
-
+	
+	first_hit=TRUE;
+	
 		// run through draw list
 
 	for (n=0;n!=view.render->draw_list.count;n++) {
@@ -267,6 +277,27 @@ void render_opaque_mesh_glow(void)
 		mesh=&map.mesh.meshes[view.render->draw_list.items[n].idx];
 		if (!mesh->draw.has_opaque) continue;
 		if (!mesh->draw.has_glow) continue;
+		
+			// turn on glow setup
+			
+		if (first_hit) {
+			gl_texture_glow_start();
+			glDepthMask(GL_FALSE);
+			first_hit=FALSE;
+		}
+		
+			// the mesh vbo
+			
+		view_bind_mesh_liquid_vertex_object(&mesh->vbo);
+		view_bind_mesh_liquid_index_object(&mesh->vbo);
+		
+		glVertexPointer(3,GL_FLOAT,0,(void*)0);
+
+		glClientActiveTexture(GL_TEXTURE1);
+		glTexCoordPointer(2,GL_FLOAT,0,(void*)((map.mesh.vbo_vertex_count*3)*sizeof(float)));
+
+		glClientActiveTexture(GL_TEXTURE0);
+		glTexCoordPointer(2,GL_FLOAT,0,(void*)((map.mesh.vbo_vertex_count*3)*sizeof(float)));
 
 			// draw the polys
 
@@ -293,15 +324,6 @@ void render_opaque_mesh_glow(void)
 				}
 			}
 
-				// setup
-
-			if (first_draw) {
-				first_draw=FALSE;
-				gl_texture_glow_start();
-				view_compile_gl_list_attach_uv_glow();
-				glDepthMask(GL_FALSE);
-			}
-
 				// get texture
 
 			texture=&map.textures[poly->txt_idx];
@@ -312,18 +334,23 @@ void render_opaque_mesh_glow(void)
 			gl_texture_glow_set(texture->frames[frame].bitmap.gl_id,texture->frames[frame].glowmap.gl_id,texture->glow.current_color);
 			
 			#ifndef D3_OPENGL_ES
-				glDrawRangeElements(GL_TRIANGLE_FAN,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
+				glDrawRangeElements(GL_TRIANGLE_FAN,poly->vbo.index_min,poly->vbo.index_max,poly->ptsz,GL_UNSIGNED_SHORT,(GLvoid*)poly->vbo.index_offset);
 			#else
-				glDrawElements(GL_TRIANGLE_FAN,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
+				glDrawElements(GL_TRIANGLE_FAN,poly->ptsz,GL_UNSIGNED_SHORT,(GLvoid*)poly->draw.vbo.index_offset);
 			#endif
 			
 			poly++;
 		}
+		
+		view_unbind_mesh_liquid_vertex_object();
+		view_unbind_mesh_liquid_index_object();
 	}
-
-	if (!first_draw) {
-		gl_texture_glow_end();
+	
+		// turn off glow if we used it
+		
+	if (!first_hit) {
 		glDepthMask(GL_TRUE);
+		gl_texture_glow_end();
 	}
 }
 
@@ -340,10 +367,6 @@ void render_map_mesh_opaque(void)
 	gl_3D_view();
 	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
 	gl_setup_project();
-
-		// attach compiled vertex lists
-
-	view_compile_gl_list_attach();
 	
 		// common setup
 		
@@ -355,6 +378,14 @@ void render_map_mesh_opaque(void)
 
 	glDisable(GL_BLEND);
 	glDepthMask(GL_TRUE);
+	
+	glEnableClientState(GL_VERTEX_ARRAY);
+	
+	glClientActiveTexture(GL_TEXTURE1);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	
+	glClientActiveTexture(GL_TEXTURE0);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
 		// draw the polygons
 
@@ -366,9 +397,15 @@ void render_map_mesh_opaque(void)
 	}
 
 	render_opaque_mesh_glow();
+	
+		// common finish
+		
+	glDisableClientState(GL_VERTEX_ARRAY);
 
-		// dettach lists
+	glClientActiveTexture(GL_TEXTURE1);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
-	view_compile_gl_list_dettach();
+	glClientActiveTexture(GL_TEXTURE0);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 }
 

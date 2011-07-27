@@ -50,7 +50,6 @@ extern void view_setup_objects(int tick);
 extern void view_setup_projectiles(int tick);
 extern void view_add_effect_draw_list(int tick);
 extern void view_add_halos(void);
-extern bool view_compile_mesh_gl_lists(void);
 extern void view_calculate_scope(obj_type *obj,obj_type *camera_obj);
 extern void view_calculate_recoil(obj_type *obj);
 extern void view_calculate_shakes(obj_type *obj);
@@ -308,9 +307,11 @@ void view_draw_scene_render(obj_type *obj,weapon_type *weap)
 
 	if (view_shader_on()) gl_shader_draw_scene_start();
 
-		// compile meshes for drawing
+		// rebuild anything in the map VBOs
+		// that needs chaning (lighting, UV shifts,
+		// moving meshes, etc)
 	
-	if (!view_compile_mesh_gl_lists()) return;
+	view_map_vbo_rebuild();
 
 		// draw opaque scene items
 
