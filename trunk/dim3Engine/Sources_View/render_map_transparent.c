@@ -41,14 +41,6 @@ extern bitmap_type		lmap_black_bitmap;
 
 map_poly_sort_type		trans_sort;
 
-extern void view_compile_gl_list_attach(void);
-extern void view_compile_gl_list_attach_uv_light_map(void);
-extern void view_compile_gl_list_attach_uv_shader(void);
-extern void view_compile_gl_list_attach_uv_glow(void);
-extern void view_compile_gl_list_enable_color(void);
-extern void view_compile_gl_list_disable_color(void);
-extern void view_compile_gl_list_dettach(void);
-
 /* =======================================================
 
       Transparent Sorting List
@@ -183,27 +175,54 @@ void render_transparent_sort(void)
 
 void render_transparent_mesh_normal(void)
 {
-	int						n,frame;
-	bool					first_draw,in_additive;
+	int						n,frame,mesh_idx,cur_mesh_idx;
+	bool					in_additive;
 	GLuint					gl_id,lmap_gl_id;
 	texture_type			*texture;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
 
-	first_draw=TRUE;
 	in_additive=FALSE;
+	cur_mesh_idx=-1;
+	
+		// only this route uses color arrays
+		
+	glEnableClientState(GL_COLOR_ARRAY);
+	
+	gl_texture_transparent_light_map_start();
+
+		// run through draw list
 
 	for (n=0;n!=trans_sort.count;n++) {
-		mesh=&map.mesh.meshes[trans_sort.list[n].mesh_idx];
+	
+		mesh_idx=trans_sort.list[n].mesh_idx;
+		mesh=&map.mesh.meshes[mesh_idx];
 		poly=&mesh->polys[trans_sort.list[n].poly_idx];
 
-			// mode switches
+			// the mesh vbo
+			// only change when mesh is changing
+			
+		if (cur_mesh_idx!=mesh_idx) {
+		
+			if (cur_mesh_idx!=-1) {
+				view_unbind_mesh_liquid_vertex_object();
+				view_unbind_mesh_liquid_index_object();
+			}
+			
+			cur_mesh_idx=mesh_idx;
+			
+			view_bind_mesh_liquid_vertex_object(&mesh->vbo);
+			view_bind_mesh_liquid_index_object(&mesh->vbo);
+			
+			glVertexPointer(3,GL_FLOAT,0,(void*)0);
 
-		if (first_draw) {
-			first_draw=FALSE;
-			gl_texture_transparent_light_map_start();
-			view_compile_gl_list_attach_uv_light_map();
-			view_compile_gl_list_enable_color();
+			glClientActiveTexture(GL_TEXTURE1);
+			glTexCoordPointer(2,GL_FLOAT,0,(void*)((mesh->vbo.count*3)*sizeof(float)));
+
+			glClientActiveTexture(GL_TEXTURE0);
+			glTexCoordPointer(2,GL_FLOAT,0,(void*)((mesh->vbo.count*(3+2))*sizeof(float)));
+
+			glColorPointer(3,GL_FLOAT,0,(void*)((mesh->vbo.count*(3+2+2))*sizeof(float)));
 		}
 
 			// textures
@@ -234,38 +253,44 @@ void render_transparent_mesh_normal(void)
 		gl_texture_transparent_light_map_set(gl_id,lmap_gl_id,1.0f);
 		
 		#ifndef D3_OPENGL_ES
-			glDrawRangeElements(GL_TRIANGLE_FAN,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
+			glDrawRangeElements(GL_TRIANGLE_FAN,poly->vbo.index_min,poly->vbo.index_max,poly->ptsz,GL_UNSIGNED_SHORT,(GLvoid*)poly->vbo.index_offset);
 		#else
-			glDrawElements(GL_TRIANGLE_FAN,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
+			glDrawElements(GL_TRIANGLE_FAN,poly->ptsz,GL_UNSIGNED_SHORT,(GLvoid*)poly->vbo.index_offset);
 		#endif
 		
 		view.count.poly++;
 	}
-
-	if (!first_draw) {
-		gl_texture_transparent_light_map_end();
-		view_compile_gl_list_disable_color();
+	
+		// if we setup a mesh, end the vbo
 		
-		if (in_additive) glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+	if (cur_mesh_idx!=-1) {
+		view_unbind_mesh_liquid_vertex_object();
+		view_unbind_mesh_liquid_index_object();
 	}
+
+		// only this route uses color arrays
+		
+	glDisableClientState(GL_COLOR_ARRAY);
+
+	gl_texture_transparent_light_map_end();
+		
+	if (in_additive) glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 }
 
 void render_transparent_mesh_shader(void)
 {
-	int						n,mesh_idx,frame,tangent_offset,normal_offset;
-	bool					first_draw,in_additive;
+	int						n,mesh_idx,cur_mesh_idx,
+							frame,tangent_offset,normal_offset;
+	bool					in_additive;
 	texture_type			*texture;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
 	view_light_list_type	light_list;
 
-	first_draw=TRUE;
 	in_additive=FALSE;
+	cur_mesh_idx=-1;
 	
-		// get tangent and normal offset
-	
-	tangent_offset=(((map.mesh.vbo_vertex_count*3)+((map.mesh.vbo_vertex_count*2)*2)))*sizeof(float);
-	normal_offset=tangent_offset+((map.mesh.vbo_vertex_count*3)*sizeof(float));
+	gl_shader_draw_start();
 
 		// run through draw list
 		
@@ -275,14 +300,35 @@ void render_transparent_mesh_shader(void)
 		mesh=&map.mesh.meshes[mesh_idx];
 		poly=&mesh->polys[trans_sort.list[n].poly_idx];
 
-			// mode switches
+			// the mesh vbo
+			// only change when mesh is changing
+			
+		if (cur_mesh_idx!=mesh_idx) {
+		
+			if (cur_mesh_idx!=-1) {
+				view_unbind_mesh_liquid_vertex_object();
+				view_unbind_mesh_liquid_index_object();
+			}
+			
+			cur_mesh_idx=mesh_idx;
+			
+			view_bind_mesh_liquid_vertex_object(&mesh->vbo);
+			view_bind_mesh_liquid_index_object(&mesh->vbo);
+			
+			glVertexPointer(3,GL_FLOAT,0,(void*)0);
 
-		if (first_draw) {
-			first_draw=FALSE;
-			gl_shader_draw_start();
-			view_compile_gl_list_attach_uv_shader();
+			glClientActiveTexture(GL_TEXTURE1);
+			glTexCoordPointer(2,GL_FLOAT,0,(void*)((mesh->vbo.count*(3+2))*sizeof(float)));
+		
+			glClientActiveTexture(GL_TEXTURE0);
+			glTexCoordPointer(2,GL_FLOAT,0,(void*)((mesh->vbo.count*3)*sizeof(float)));
+			
+			gl_shader_draw_reset_normal_tangent_attrib();
+			
+			tangent_offset=(mesh->vbo.count*(3+2+2))*sizeof(float);
+			normal_offset=(mesh->vbo.count*(3+3+2+2))*sizeof(float);
 		}
-
+		
 			// textures
 
 		texture=&map.textures[poly->txt_idx];
@@ -303,45 +349,76 @@ void render_transparent_mesh_shader(void)
 		gl_shader_draw_execute(core_shader_group_map,texture,poly->txt_idx,frame,poly->lmap_txt_idx,1.0f,&light_list,tangent_offset,normal_offset);
 
 		#ifndef D3_OPENGL_ES
-			glDrawRangeElements(GL_TRIANGLE_FAN,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
+			glDrawRangeElements(GL_TRIANGLE_FAN,poly->vbo.index_min,poly->vbo.index_max,poly->ptsz,GL_UNSIGNED_SHORT,(GLvoid*)poly->vbo.index_offset);
 		#else
-			glDrawElements(GL_TRIANGLE_FAN,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
+			glDrawElements(GL_TRIANGLE_FAN,poly->ptsz,GL_UNSIGNED_SHORT,(GLvoid*)poly->draw.vbo.index_offset);
 		#endif
 		
 		view.count.poly++;
 	}
 
-	if (!first_draw) {
-		gl_shader_draw_end();
+		// if we setup a mesh, end the vbo
 		
-		if (in_additive) glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+	if (cur_mesh_idx!=-1) {
+		view_unbind_mesh_liquid_vertex_object();
+		view_unbind_mesh_liquid_index_object();
 	}
+
+	gl_shader_draw_end();
+		
+	if (in_additive) glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 }
 
 void render_transparent_mesh_glow(void)
 {
-	int						n,frame;
-	bool					first_draw;
+	int						n,frame,mesh_idx,cur_mesh_idx;
+	bool					first_hit;
 	texture_type			*texture;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
 
-	first_draw=TRUE;
+	first_hit=TRUE;
 
 	for (n=0;n!=trans_sort.count;n++) {
-		mesh=&map.mesh.meshes[trans_sort.list[n].mesh_idx];
+	
+		mesh_idx=trans_sort.list[n].mesh_idx;
+		mesh=&map.mesh.meshes[mesh_idx];
 		poly=&mesh->polys[trans_sort.list[n].poly_idx];
 		
 		if (!poly->draw.glow_on) continue;
-
-			// mode switches
-
-		if (first_draw) {
-			first_draw=FALSE;
+		
+			// turn on glow setup
+			
+		if (first_hit) {
 			gl_texture_glow_start();
-			view_compile_gl_list_attach_uv_glow();
+			glDepthMask(GL_FALSE);
+			first_hit=FALSE;
 		}
+		
+			// the mesh vbo
+			// only change when mesh is changing
+			
+		if (cur_mesh_idx!=mesh_idx) {
+		
+			if (cur_mesh_idx!=-1) {
+				view_unbind_mesh_liquid_vertex_object();
+				view_unbind_mesh_liquid_index_object();
+			}
+			
+			cur_mesh_idx=mesh_idx;
+			
+			view_bind_mesh_liquid_vertex_object(&mesh->vbo);
+			view_bind_mesh_liquid_index_object(&mesh->vbo);
+			
+			glVertexPointer(3,GL_FLOAT,0,(void*)0);
 
+			glClientActiveTexture(GL_TEXTURE1);
+			glTexCoordPointer(2,GL_FLOAT,0,(void*)((map.mesh.vbo_vertex_count*3)*sizeof(float)));
+
+			glClientActiveTexture(GL_TEXTURE0);
+			glTexCoordPointer(2,GL_FLOAT,0,(void*)((map.mesh.vbo_vertex_count*3)*sizeof(float)));
+		}
+		
 			// textures
 
 		texture=&map.textures[poly->txt_idx];
@@ -352,15 +429,22 @@ void render_transparent_mesh_glow(void)
 		gl_texture_glow_set(texture->frames[frame].bitmap.gl_id,texture->frames[frame].glowmap.gl_id,texture->glow.current_color);
 		
 		#ifndef D3_OPENGL_ES
-			glDrawRangeElements(GL_TRIANGLE_FAN,poly->draw.gl_poly_index_min,poly->draw.gl_poly_index_max,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
+			glDrawRangeElements(GL_TRIANGLE_FAN,poly->vbo.index_min,poly->vbo.index_max,poly->ptsz,GL_UNSIGNED_SHORT,(GLvoid*)poly->vbo.index_offset);
 		#else
-			glDrawElements(GL_TRIANGLE_FAN,poly->ptsz,GL_UNSIGNED_INT,(GLvoid*)poly->draw.gl_poly_index_offset);
+			glDrawElements(GL_TRIANGLE_FAN,poly->ptsz,GL_UNSIGNED_SHORT,(GLvoid*)poly->vbo.index_offset);
 		#endif
 		
 		view.count.poly++;
 	}
+	
+		// if we setup a mesh, end the vbo
+		
+	if (cur_mesh_idx!=-1) {
+		view_unbind_mesh_liquid_vertex_object();
+		view_unbind_mesh_liquid_index_object();
+	}
 
-	if (!first_draw) {
+	if (!first_hit) {
 		gl_texture_glow_end();
 	}
 }
@@ -373,18 +457,12 @@ void render_transparent_mesh_glow(void)
 
 void render_map_mesh_transparent(void)
 {
-	return;
-	
 		// setup view
 
 	gl_3D_view();
 	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
 	gl_setup_project();
 	
-		// attach compiled vertex lists
-
-	view_compile_gl_list_attach();
-
 		// sort meshes
 
 	render_transparent_sort();
@@ -400,6 +478,14 @@ void render_map_mesh_transparent(void)
 	
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+	
+	glEnableClientState(GL_VERTEX_ARRAY);
+	
+	glClientActiveTexture(GL_TEXTURE1);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	
+	glClientActiveTexture(GL_TEXTURE0);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
 		// draw the polygons
 
@@ -414,10 +500,14 @@ void render_map_mesh_transparent(void)
 
 		// put depth mask back
 		
+	glDisableClientState(GL_VERTEX_ARRAY);
+
+	glClientActiveTexture(GL_TEXTURE1);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+
+	glClientActiveTexture(GL_TEXTURE0);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+		
 	glDepthMask(GL_TRUE);
-
-		// dettach any lists
-
-	view_compile_gl_list_dettach();
 }
 

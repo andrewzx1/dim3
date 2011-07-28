@@ -401,13 +401,13 @@ bool texture_edit_click_bitmap_open(char *bitmap_name)
 	if (!dialog_file_open_run("Open a Bitmap",sub_path,"png",NULL,bitmap_name)) return(FALSE);
 	
 		// check bitmap
-		
+
 	file_paths_data(&file_path_setup,path,sub_path,bitmap_name,"png");
 	if (!bitmap_check(path,err_str)) {
 		os_dialog_alert("Texture Error",err_str);
 		return(FALSE);
 	}
-	
+
 	return(TRUE);
 }
 

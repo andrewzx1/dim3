@@ -372,7 +372,7 @@ bool png_utility_check(char *path,char *err_str)
 	x=png_get_image_width(png_ptr,info_ptr);
 	y=png_get_image_height(png_ptr,info_ptr);
 	channels=png_get_channels(png_ptr,info_ptr);
-	bit_depth=png_get_bit_depth(png_ptr,info_ptr)*channels;
+	bit_depth=png_get_bit_depth(png_ptr,info_ptr);
 	color_type=png_get_color_type(png_ptr,info_ptr);
 	
 	png_set_interlace_handling(png_ptr);

@@ -225,8 +225,7 @@ typedef struct		{
 
 typedef struct		{
 						int									vertex_offset,decal_stencil_idx,
-															txt_frame_offset,
-															gl_poly_index_min,gl_poly_index_max,gl_poly_index_offset;		// supergumba -- delete some of this
+															txt_frame_offset;
 						float								x_shift_offset,y_shift_offset;
 						bool								bump_ok,shift_on,transparent_on,glow_on;
 					} map_mesh_poly_draw_type;
@@ -280,7 +279,6 @@ typedef struct		{
 					} map_mesh_message_type;
 
 typedef struct		{
-						int									vertex_offset;
 						bool								moved,cur_ambient_only,
 															has_opaque,has_transparent,has_glow;
 					} map_mesh_draw_type;
