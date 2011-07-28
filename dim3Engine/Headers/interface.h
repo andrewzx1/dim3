@@ -608,17 +608,6 @@ extern void view_dispose_mesh_vertex_object(map_mesh_type *mesh);
 extern void view_create_liquid_vertex_object(map_liquid_type *liq);
 extern void view_dispose_liquid_vertex_object(map_liquid_type *liq);
 
-extern void view_init_map_vertex_object(int sz);
-extern inline float* view_bind_map_map_vertex_object(void);
-extern inline void view_bind_map_vertex_object(void);
-extern inline void view_unmap_map_vertex_object(void);
-extern inline void view_unbind_map_vertex_object(void);
-extern void view_init_map_index_object(int sz);
-extern inline unsigned int* view_bind_map_map_index_object(void);
-extern inline void view_bind_map_index_object(void);
-extern inline void view_unmap_map_index_object(void);
-extern inline void view_unbind_map_index_object(void);
-
 extern inline float* view_bind_map_liquid_vertex_object(int sz);
 extern inline void view_unmap_liquid_vertex_object(void);
 extern inline void view_unbind_liquid_vertex_object(void);
@@ -733,6 +722,19 @@ extern inline float gl_project_get_depth(int x,int y,int z);
 extern inline void gl_unproject_point(float fx,float fy,float fz,int *x,int *y,int *z);
 extern inline void gl_project_to_eye_coordinates(float *x,float *y,float *z);
 extern void gl_project_fix_rotation(int *x,int *y,int *z);
+
+//
+// view culling
+//
+
+extern double view_cull_distance_to_view_center(int x,int y,int z);
+extern bool view_cull_mesh(map_mesh_type *mesh);
+extern bool view_cull_mesh_shadow(map_mesh_type *mesh);
+extern bool view_cull_liquid(map_liquid_type *liq);
+extern bool view_cull_model(model_draw *draw);
+extern bool view_model_shadow(model_draw *draw);
+extern bool view_cull_effect(effect_type *effect,int count,d3pnt *center_pnt);
+extern bool view_cull_halo(d3pnt *pnt);
 
 //
 // textures

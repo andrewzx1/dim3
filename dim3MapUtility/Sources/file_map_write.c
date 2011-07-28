@@ -158,7 +158,10 @@ void write_map_settings_xml(map_type *map)
     xml_add_attribute_boolean("never_cull",map->optimize.never_cull);
     xml_add_attribute_float("cull_angle",map->optimize.cull_angle);
     xml_add_attribute_boolean("no_shaders",map->optimize.no_shaders);
-    xml_add_attribute_int("shadow_obscure_distance",map->optimize.shadow_obscure_distance);
+    xml_add_attribute_int("model_obscure_distance",map->optimize.obscure_dist.model);
+    xml_add_attribute_int("shadow_obscure_distance",map->optimize.obscure_dist.shadow);
+    xml_add_attribute_int("effect_obscure_distance",map->optimize.obscure_dist.effect);
+    xml_add_attribute_int("mesh_obscure_distance",map->optimize.obscure_dist.mesh);
 	xml_add_tagend(TRUE);
 	
     xml_add_tagstart("Network");

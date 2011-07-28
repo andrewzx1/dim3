@@ -361,6 +361,10 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\dim3Editor\Code\property_palette_camera.c"
+						>
+					</File>
+					<File
 						RelativePath="..\..\dim3Editor\Code\property_palette_cinema.c"
 						>
 					</File>
@@ -402,6 +406,10 @@
 					</File>
 					<File
 						RelativePath="..\..\dim3Editor\Code\property_palette_scenery.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Editor\Code\property_palette_sky_weather.c"
 						>
 					</File>
 					<File

@@ -1110,6 +1110,12 @@ void render_model_target(model_draw *draw,d3col *col)
 		
 	if ((draw->model_idx==-1) || (!draw->on)) return;
 
+		// check distance obscure
+		
+	if (map.optimize.obscure_dist.model!=0) {
+		if (distance_get(draw->pnt.x,draw->pnt.y,draw->pnt.z,view.render->camera.pnt.x,view.render->camera.pnt.y,view.render->camera.pnt.z)>map.optimize.obscure_dist.model) return;
+	}
+
 	mdl=server.model_list.models[draw->model_idx];
 
 		// get draw coordinates
@@ -1144,7 +1150,7 @@ void render_model_target(model_draw *draw,d3col *col)
 
 		// build vertexes
 
-	vertex_ptr=view_bind_map_next_vertex_object(8*3);
+	vertex_ptr=view_bind_map_next_vertex_object(4*3);
 	if (vertex_ptr==NULL) return;
 
 		// get the vertexes
@@ -1158,27 +1164,11 @@ void render_model_target(model_draw *draw,d3col *col)
 	*vertex_ptr++=(float)rz;
 
 	*vertex_ptr++=(float)rx;
-	*vertex_ptr++=(float)ty;
-	*vertex_ptr++=(float)rz;
-
-	*vertex_ptr++=(float)rx;
-	*vertex_ptr++=(float)by;
-	*vertex_ptr++=(float)rz;
-
-	*vertex_ptr++=(float)rx;
 	*vertex_ptr++=(float)by;
 	*vertex_ptr++=(float)rz;
 
 	*vertex_ptr++=(float)lx;
 	*vertex_ptr++=(float)by;
-	*vertex_ptr++=(float)lz;
-
-	*vertex_ptr++=(float)lx;
-	*vertex_ptr++=(float)by;
-	*vertex_ptr++=(float)lz;
-
-	*vertex_ptr++=(float)lx;
-	*vertex_ptr++=(float)ty;
 	*vertex_ptr++=(float)lz;
 
   	view_unmap_current_vertex_object();
@@ -1198,7 +1188,7 @@ void render_model_target(model_draw *draw,d3col *col)
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(3,GL_FLOAT,0,(void*)0);
 
-	glDrawArrays(GL_LINES,0,8);
+	glDrawArrays(GL_LINE_LOOP,0,4);
 
 	glDisableClientState(GL_VERTEX_ARRAY);
 

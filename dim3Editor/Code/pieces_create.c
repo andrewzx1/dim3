@@ -81,7 +81,6 @@ void piece_create_get_spot(d3pnt *pnt)
 void piece_create_spot(void)
 {
 	int				index;
-	char			name[file_str_len];
 	spot_type		*spot;
 	
 	if (map.nspot==max_spot) {
@@ -97,10 +96,12 @@ void piece_create_spot(void)
 	
 	piece_create_get_spot(&spot->pnt);
     
+	spot->name[0]=0x0;
+	spot->script[0]=0x0;
+
 	spot->ang.y=0;
 	spot->name[0]=0x0;
 	spot->type=spot_type_object;
-	spot->script[0]=0x0;
 	spot->display_model[0]=0x0;
 	spot->params[0]=0x0;
     
@@ -114,19 +115,14 @@ void piece_create_spot(void)
 	item_palette_reset();
 	property_palette_reset();
 	menu_update_view();
+
+		// set to property level
+		// and pick script
+
+	list_palette_set_level(1);
+	property_pick_file("Pick a Script","Scripts/Objects","js",NULL,spot->script);
 	
 	main_wind_draw();
-
-		// pick script and auto-create name
-
-	name[0]=0x0;
-	if (!dialog_file_open_run("Pick a Script","Scripts/Objects","js",NULL,name)) return;
-
-	strncpy(spot->script,name,name_str_len);
-	spot->script[name_str_len-1]=0x0;
-	
-	strncpy(spot->name,name,name_str_len);
-	spot->name[name_str_len-1]=0x0;
 }
 
 /* =======================================================
@@ -138,18 +134,12 @@ void piece_create_spot(void)
 void piece_create_scenery(void)
 {
 	int					n,index;
-	char				file_name[file_str_len];
 	map_scenery_type	*scenery;
 	
 	if (map.nscenery==max_map_scenery) {
 		os_dialog_alert("Can Not Create Scenery","You've reached the maximum number of sceneries for this map.");
 	}
 	
-		// scenery must pick a model
-		
-	if (!dialog_file_open_run("Pick a Model","Models",NULL,"Mesh.xml",file_name)) return;
-	if (file_name[0]==0x0) return;
-
 		// create scenery
 
 	index=map.nscenery;
@@ -165,8 +155,7 @@ void piece_create_scenery(void)
 	
 	scenery->resize=1.0f;
 	
-	strncpy(scenery->model_name,file_name,name_str_len);
-	scenery->model_name[name_str_len-1]=0x0;
+	scenery->model_name[0]=0x0;
 
 	scenery->animation_name[0]=0x0;
 	scenery->contact_object_on=TRUE;
@@ -185,12 +174,16 @@ void piece_create_scenery(void)
 	
 	select_clear();
 	select_add(scenery_piece,index,-1);
-	
-	view_models_reset();
 
 	item_palette_reset();
 	property_palette_reset();
 	menu_update_view();
+
+		// switch to property list
+		// and get model
+
+	list_palette_set_level(1);
+	property_pick_file("Pick a Model","Models",NULL,"Mesh.xml",scenery->model_name);
 	
 	main_wind_draw();
 }

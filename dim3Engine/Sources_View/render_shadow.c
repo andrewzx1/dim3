@@ -497,10 +497,6 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 	model_mesh_type				*model_mesh;
     model_trig_type				*model_trig;
 	
-		// check distance obscure
-		
-	if (distance_get(draw->pnt.x,draw->pnt.y,draw->pnt.z,view.render->camera.pnt.x,view.render->camera.pnt.y,view.render->camera.pnt.z)>map.optimize.shadow_obscure_distance) return;
-	
 	model_mesh=&mdl->meshes[model_mesh_idx];
 	
 		// get light
@@ -741,10 +737,6 @@ void shadow_render_mesh(int shadow_mesh_idx)
 	shadow_mesh=&map.mesh.meshes[shadow_mesh_idx];
 	if (shadow_mesh->nvertex>=view_shadows_vertex_count) return;
 
-		// check distance obscure
-		
-	if (distance_get(shadow_mesh->box.mid.x,shadow_mesh->box.mid.y,shadow_mesh->box.mid.z,view.render->camera.pnt.x,view.render->camera.pnt.y,view.render->camera.pnt.z)>map.optimize.shadow_obscure_distance) return;
-	
 		// get light
 	
 	shadow_get_light_point(&shadow_mesh->box.mid,(shadow_mesh->box.max.y-shadow_mesh->box.min.y),&light_pnt,&light_intensity);

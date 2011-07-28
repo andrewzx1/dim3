@@ -286,7 +286,7 @@ void property_pick_list(char *title,char *list,int *idx)
       
 ======================================================= */
 
-int property_pick_file_add_dir_files(file_path_directory_type *fpd,int path_clip_depth,int path_depth,char *cur_path,int parent_idx,int count)
+int property_pick_file_add_dir_files(file_path_directory_type *fpd,int path_depth,char *cur_path,int parent_idx,int count)
 {
 	int					n;
 	char				next_path[256];
@@ -298,8 +298,8 @@ int property_pick_file_add_dir_files(file_path_directory_type *fpd,int path_clip
 
 		if (fpd->files[n].is_dir) {
 
-			if (path_depth<path_clip_depth) {
-				count=property_pick_file_add_dir_files(fpd,path_clip_depth,(path_depth+1),NULL,n,count);
+			if (path_depth<1) {
+				count=property_pick_file_add_dir_files(fpd,(path_depth+1),NULL,n,count);
 			}
 			else {
 				if (cur_path==NULL) {
@@ -309,7 +309,7 @@ int property_pick_file_add_dir_files(file_path_directory_type *fpd,int path_clip
 					sprintf(next_path,"%s%s/",cur_path,fpd->files[n].file_name);
 				}
 
-				count=property_pick_file_add_dir_files(fpd,path_clip_depth,(path_depth+1),next_path,n,count);
+				count=property_pick_file_add_dir_files(fpd,(path_depth+1),next_path,n,count);
 			}
 
 			continue;
@@ -332,7 +332,7 @@ int property_pick_file_add_dir_files(file_path_directory_type *fpd,int path_clip
 
 void property_pick_file(char *title,char *search_path,char *extension,char *required_file_name,char *file_name)
 {
-	int								path_clip_depth,count;
+	int								count;
 	file_path_directory_type		*fpd;
 
 		// read files
@@ -344,14 +344,9 @@ void property_pick_file(char *title,char *search_path,char *extension,char *requ
 		fpd=file_paths_read_directory_data_dir(&file_path_setup,search_path,required_file_name);
 	}
 
-		// get the path clip count
-
-	path_clip_depth=0;
-	if (strchr(search_path,'/')!=NULL) path_clip_depth++;
-
 		// make lists
 
-	count=property_pick_file_add_dir_files(fpd,path_clip_depth,0,NULL,-1,0);
+	count=property_pick_file_add_dir_files(fpd,0,NULL,-1,0);
 
 		// close directory read
 

@@ -50,7 +50,10 @@ and can be sold or given away.
 #define kMapPropertyNormalCull				21
 #define kMapPropertyCullAngle				22
 #define kMapPropertyDisableShaders			23
-#define kMapPropertyShadowObscureDistance	24
+#define kMapPropertyModelObscureDistance	24
+#define kMapPropertyShadowObscureDistance	25
+#define kMapPropertyEffectObscureDistance	26
+#define kMapPropertyMeshObscureDistance		27
 
 #define kMapPropertyAmbientColor			30
 #define kMapPropertyAmbientLightMapBoost	31
@@ -64,89 +67,21 @@ and can be sold or given away.
 #define kMapPropertyLightMapUseNormals		38
 #define kMapPropertyLightMapDiffuseBoost	39
 
-#define kMapPropertyCameraMode				40
-#define kMapPropertyCameraAngle				41
+#define kMapPropertyMediaType				50
+#define kMapPropertyMediaEventId			51
+#define kMapPropertyMediaName				52
+#define kMapPropertyMediaTitleSound			53
 
-#define kMapPropertyCameraFOV				42
-#define kMapPropertyCameraAspectRatio		43
-#define kMapPropertyCameraNearZ				44
-#define kMapPropertyCameraFarZ				45
-#define kMapPropertyCameraNearZOffset		46
+#define kMapPropertyMusicName				60
+#define kMapPropertyMusicFadeTime			61
 
-#define kMapPropertyCameraChaseDistance		47
-#define kMapPropertyCameraChaseTrackSpeed	48
-#define kMapPropertyCameraChaseSlop			49
+#define kMapPropertyEditorTextureFactor		70
+#define kMapPropertyEditorViewNearZ			71
+#define kMapPropertyEditorViewFarZ			72
+#define kMapPropertyEditorLinkStartAlways	73
 
-#define kMapPropertyCameraStaticFollow		50
-#define kMapPropertyCameraStaticAttachNode	51
-
-#define kMapPropertyMediaType				52
-#define kMapPropertyMediaEventId			53
-#define kMapPropertyMediaName				54
-#define kMapPropertyMediaTitleSound			55
-
-#define kMapPropertyMusicName				56
-#define kMapPropertyMusicFadeTime			57
-
-#define kMapPropertySkyOn					58
-#define kMapPropertySkyType					59
-#define kMapPropertySkyRadius				60
-#define kMapPropertyDomeY					61
-#define kMapPropertyDomeMirror				62
-#define kMapPropertyTextureRepeat			63
-#define kMapPropertyTextureShift			64
-#define kMapPropertyTextureFill				65
-#define kMapPropertyTextureBottomFill		66
-#define kMapPropertyTextureNorthFill		67
-#define kMapPropertyTextureSouthFill		68
-#define kMapPropertyTextureEastFill			69
-#define kMapPropertyTextureWestFill			70
-
-#define kMapPropertyBackgroundOn			71
-#define kMapPropertyBackgroundFrontFill		72
-#define kMapPropertyBackgroundFrontStamp	73
-#define kMapPropertyBackgroundFrontShift	74
-#define kMapPropertyBackgroundMiddleFill	75
-#define kMapPropertyBackgroundMiddleStamp	76
-#define kMapPropertyBackgroundMiddleShift	77
-#define kMapPropertyBackgroundBackFill		78
-#define kMapPropertyBackgroundBackStamp		79
-#define kMapPropertyBackgroundBackShift		80
-
-#define kMapPropertyFogOn					81
-#define kMapPropertyFogInnerRadius			82
-#define kMapPropertyFogOuterRadius			83
-#define kMapPropertyFogUseSolidColor		84
-#define kMapPropertyFogColor				85
-#define kMapPropertyFogTextureIndex			86
-#define kMapPropertyFogCount				87
-#define kMapPropertyFogHigh					88
-#define kMapPropertyFogDrop					89
-#define kMapPropertyFogAlpha				90
-#define kMapPropertyFogTextureSpeed			91
-#define kMapPropertyFogTextureFact			92
-
-#define kMapPropertyRainOn					100
-#define kMapPropertyRainDensity				101
-#define kMapPropertyRainRadius				102
-#define kMapPropertyRainHeight				103
-#define kMapPropertyRainSpeed				104
-#define kMapPropertyRainWidth				105
-#define kMapPropertyRainLength				106
-#define kMapPropertyRainAlpha				107
-#define kMapPropertyRainStartColor			108
-#define kMapPropertyRainEndColor			109
-#define kMapPropertyRainSlantAdd			110
-#define kMapPropertyRainSlantMaxTime		111
-#define kMapPropertyRainSlantChangeTime		112
-
-#define kMapPropertyEditorTextureFactor		120
-#define kMapPropertyEditorViewNearZ			121
-#define kMapPropertyEditorViewFarZ			122
-#define kMapPropertyEditorLinkStartAlways	123
-
-#define kMapPropertyParamsStart				200
-#define kMapPropertyParamsEnd				209
+#define kMapPropertyParamsStart				100
+#define kMapPropertyParamsEnd				109
 
 extern map_type					map;
 extern editor_state_type		state;
@@ -155,9 +90,7 @@ extern editor_setup_type		setup;
 extern list_palette_type		property_palette;
 
 char							map_property_light_map_size_list[][name_str_len]={"256","512","1024",""},
-								map_property_camera_mode_list[][name_str_len]={"FPP","Chase","Static","Chase Static",""},
 								map_property_media_type_list[][name_str_len]={"None","Chooser","Title","Cinema",""},
-								map_property_sky_type_list[][name_str_len]={"Panoramic","Dome Hemisphere","Cube",""},
 								map_property_light_map_quality_list[][name_str_len]={"Very Low","Low","Medium","High","Very High",""};
 
 /* =======================================================
@@ -172,7 +105,7 @@ void property_palette_fill_map(void)
 	char			name[256],str[256];
 	d3fpnt			uv;
 
-	list_palette_set_title(&property_palette,"Map Info");
+	list_palette_set_title(&property_palette,"Map Settings");
 
 		// info
 
@@ -204,7 +137,10 @@ void property_palette_fill_map(void)
 	list_palette_add_checkbox(&property_palette,kMapPropertyNormalCull,"Cull By Normals",(!map.optimize.never_cull),FALSE);
 	list_palette_add_string_float(&property_palette,kMapPropertyCullAngle,"Cull Angle",map.optimize.cull_angle,FALSE);
 	list_palette_add_checkbox(&property_palette,kMapPropertyDisableShaders,"Disable Shaders",map.optimize.no_shaders,FALSE);
-	list_palette_add_string_int(&property_palette,kMapPropertyShadowObscureDistance,"Shadow Obscure Distance",map.optimize.shadow_obscure_distance,FALSE);
+	list_palette_add_string_int(&property_palette,kMapPropertyModelObscureDistance,"Model Obscure Distance",map.optimize.obscure_dist.model,FALSE);
+	list_palette_add_string_int(&property_palette,kMapPropertyShadowObscureDistance,"Shadow Obscure Distance",map.optimize.obscure_dist.shadow,FALSE);
+	list_palette_add_string_int(&property_palette,kMapPropertyEffectObscureDistance,"Effect Obscure Distance",map.optimize.obscure_dist.effect,FALSE);
+	list_palette_add_string_int(&property_palette,kMapPropertyMeshObscureDistance,"Mesh Obscure Distance",map.optimize.obscure_dist.mesh,FALSE);
 
 		// ambient
 
@@ -227,34 +163,6 @@ void property_palette_fill_map(void)
 	list_palette_add_checkbox(&property_palette,kMapPropertyLightMapUseNormals,"Use Normals (Hard Edges)",map.light_map.use_normals,FALSE);
 	list_palette_add_string_float(&property_palette,kMapPropertyLightMapDiffuseBoost,"Diffuse Boost",map.light_map.diffuse_boost,FALSE);
 
-		// camera settings
-
-	list_palette_add_header(&property_palette,0,"Map Camera Settings");
-	list_palette_add_string(&property_palette,kMapPropertyCameraMode,"Mode",map_property_camera_mode_list[map.camera.mode],FALSE);
-	list_palette_add_angle(&property_palette,kMapPropertyCameraAngle,"Offset Angle",&map.camera.ang,FALSE);
-
-		// camera plane
-
-	list_palette_add_header(&property_palette,0,"Map Camera Plane");
-	list_palette_add_string_float(&property_palette,kMapPropertyCameraFOV,"FOV",map.camera.plane.fov,FALSE);
-	list_palette_add_string_float(&property_palette,kMapPropertyCameraAspectRatio,"Aspect Ratio",map.camera.plane.aspect_ratio,FALSE);
-	list_palette_add_string_int(&property_palette,kMapPropertyCameraNearZ,"Near Z",map.camera.plane.near_z,FALSE);
-	list_palette_add_string_int(&property_palette,kMapPropertyCameraFarZ,"Far Z",map.camera.plane.far_z,FALSE);
-	list_palette_add_string_int(&property_palette,kMapPropertyCameraNearZOffset,"Near Z Offset",map.camera.plane.near_z_offset,FALSE);
-
-		// camera chase
-
-	list_palette_add_header(&property_palette,0,"Map Camera Chase");
-	list_palette_add_string_int(&property_palette,kMapPropertyCameraChaseDistance,"Distance",map.camera.chase.distance,FALSE);
-	list_palette_add_string_float(&property_palette,kMapPropertyCameraChaseTrackSpeed,"Track Speed",map.camera.chase.track_speed,FALSE);
-	list_palette_add_angle(&property_palette,kMapPropertyCameraChaseSlop,"Slop",&map.camera.chase.slop,FALSE);
-
-		// camera static
-
-	list_palette_add_header(&property_palette,0,"Map Camera Static");
-	list_palette_add_checkbox(&property_palette,kMapPropertyCameraStaticFollow,"Follow Player",map.camera.c_static.follow,FALSE);
-	list_palette_add_string(&property_palette,kMapPropertyCameraStaticAttachNode,"Attach Node",map.camera.c_static.attach_node,FALSE);
-
 		// media
 
 	list_palette_add_header(&property_palette,0,"Map Media");
@@ -268,96 +176,6 @@ void property_palette_fill_map(void)
 	list_palette_add_header(&property_palette,0,"Map Music");
 	list_palette_add_string(&property_palette,kMapPropertyMusicName,"Name",map.music.name,FALSE);
 	list_palette_add_string_int(&property_palette,kMapPropertyMusicFadeTime,"Fade In Time",map.music.fade_msec,FALSE);
-
-		// sky
-
-	list_palette_add_header(&property_palette,0,"Map Sky");
-	list_palette_add_checkbox(&property_palette,kMapPropertySkyOn,"On",map.sky.on,FALSE);
-	list_palette_add_string(&property_palette,kMapPropertySkyType,"Type",map_property_sky_type_list[map.sky.type],FALSE);
-	list_palette_add_string_int(&property_palette,kMapPropertySkyRadius,"Radius",map.sky.radius,FALSE);
-	list_palette_add_string_int(&property_palette,kMapPropertyDomeY,"Dome Height",map.sky.dome_y,FALSE);
-	list_palette_add_checkbox(&property_palette,kMapPropertyDomeMirror,"Mirror Dome",map.sky.dome_mirror,FALSE);
-	list_palette_add_string_float(&property_palette,kMapPropertyTextureRepeat,"Texture Repeat",map.sky.txt_fact,FALSE);
-	uv.x=map.sky.txt_x_shift;
-	uv.y=map.sky.txt_y_shift;
-	list_palette_add_uv(&property_palette,kMapPropertyTextureShift,"Texture Shift",&uv,FALSE);
-	list_palette_add_texture(&property_palette,map.textures,kMapPropertyTextureFill,"Fill/Cube Top Fill",map.sky.fill,FALSE);
-	list_palette_add_texture(&property_palette,map.textures,kMapPropertyTextureBottomFill,"Cube Bottom Fill",map.sky.bottom_fill,FALSE);
-	list_palette_add_texture(&property_palette,map.textures,kMapPropertyTextureNorthFill,"Cube North Fill",map.sky.north_fill,FALSE);
-	list_palette_add_texture(&property_palette,map.textures,kMapPropertyTextureSouthFill,"Cube South Fill",map.sky.south_fill,FALSE);
-	list_palette_add_texture(&property_palette,map.textures,kMapPropertyTextureEastFill,"Cube East Fill",map.sky.east_fill,FALSE);
-	list_palette_add_texture(&property_palette,map.textures,kMapPropertyTextureWestFill,"Cube West Fill",map.sky.west_fill,FALSE);
-
-		// background
-
-	list_palette_add_header(&property_palette,0,"Map Background");
-	list_palette_add_checkbox(&property_palette,kMapPropertyBackgroundOn,"On",map.background.on,FALSE);
-	uv.x=map.background.front.x_fact;
-	uv.y=map.background.front.y_fact;
-	list_palette_add_uv(&property_palette,kMapPropertyBackgroundFrontStamp,"Front Stamp",&uv,FALSE);
-	uv.x=map.background.front.x_scroll_fact;
-	uv.y=map.background.front.y_scroll_fact;
-	list_palette_add_uv(&property_palette,kMapPropertyBackgroundFrontShift,"Front Scroll",&uv,FALSE);
-	list_palette_add_texture(&property_palette,map.textures,kMapPropertyBackgroundFrontFill,"Front Fill",map.background.front.fill,FALSE);
-	uv.x=map.background.middle.x_fact;
-	uv.y=map.background.middle.y_fact;
-	list_palette_add_uv(&property_palette,kMapPropertyBackgroundMiddleStamp,"Middle Stamp",&uv,FALSE);
-	uv.x=map.background.middle.x_scroll_fact;
-	uv.y=map.background.middle.y_scroll_fact;
-	list_palette_add_uv(&property_palette,kMapPropertyBackgroundMiddleShift,"Middle Scroll",&uv,FALSE);
-	list_palette_add_texture(&property_palette,map.textures,kMapPropertyBackgroundMiddleFill,"Middle Fill",map.background.middle.fill,FALSE);
-	uv.x=map.background.back.x_fact;
-	uv.y=map.background.back.y_fact;
-	list_palette_add_uv(&property_palette,kMapPropertyBackgroundBackStamp,"Back Stamp",&uv,FALSE);
-	uv.x=map.background.back.x_scroll_fact;
-	uv.y=map.background.back.y_scroll_fact;
-	list_palette_add_uv(&property_palette,kMapPropertyBackgroundBackShift,"Back Scroll",&uv,FALSE);
-	list_palette_add_texture(&property_palette,map.textures,kMapPropertyBackgroundBackFill,"Back Fill",map.background.back.fill,FALSE);
-
-		// fog general
-
-	list_palette_add_header(&property_palette,0,"Map Fog General");
-	list_palette_add_checkbox(&property_palette,kMapPropertyFogOn,"On",map.fog.on,FALSE);
-	list_palette_add_string_int(&property_palette,kMapPropertyFogInnerRadius,"Inner Radius",map.fog.inner_radius,FALSE);
-	list_palette_add_string_int(&property_palette,kMapPropertyFogOuterRadius,"Outer Radius",map.fog.outer_radius,FALSE);
-
-		// fog obscure
-
-	list_palette_add_header(&property_palette,0,"Map Fog Obscure");
-	list_palette_add_checkbox(&property_palette,kMapPropertyFogUseSolidColor,"Use Obscure (GL) Type",map.fog.use_solid_color,FALSE);
-	list_palette_add_pick_color(&property_palette,kMapPropertyFogColor,"Color",&map.fog.col,FALSE);
-
-		// fog textured
-
-	list_palette_add_header(&property_palette,0,"Map Fog Textured");
-	list_palette_add_texture(&property_palette,map.textures,kMapPropertyFogTextureIndex,"Fill",map.fog.texture_idx,FALSE);
-	list_palette_add_string_int(&property_palette,kMapPropertyFogCount,"Layer Count",map.fog.count,FALSE);
-	list_palette_add_string_int(&property_palette,kMapPropertyFogHigh,"Height",map.fog.high,FALSE);
-	list_palette_add_string_int(&property_palette,kMapPropertyFogDrop,"Y Drop",map.fog.drop,FALSE);
-	list_palette_add_string_float(&property_palette,kMapPropertyFogAlpha,"Alpha",map.fog.alpha,FALSE);
-	list_palette_add_string_float(&property_palette,kMapPropertyFogTextureSpeed,"Flow Speed",map.fog.speed,FALSE);
-	uv.x=map.fog.txt_x_fact;
-	uv.y=map.fog.txt_y_fact;
-	list_palette_add_uv(&property_palette,kMapPropertyFogTextureFact,"Texture Stamp",&uv,FALSE);
-
-		// rain
-
-	list_palette_add_header(&property_palette,0,"Map Rain General");
-	list_palette_add_checkbox(&property_palette,kMapPropertyRainOn,"On",map.rain.on,FALSE);
-	list_palette_add_string_int(&property_palette,kMapPropertyRainDensity,"Density",map.rain.density,FALSE);
-	list_palette_add_string_int(&property_palette,kMapPropertyRainRadius,"Radius",map.rain.radius,FALSE);
-	list_palette_add_string_int(&property_palette,kMapPropertyRainHeight,"Height",map.rain.height,FALSE);
-	list_palette_add_string_int(&property_palette,kMapPropertyRainSpeed,"Speed",map.rain.speed,FALSE);
-
-	list_palette_add_header(&property_palette,0,"Map Rain Look");
-	list_palette_add_string_int(&property_palette,kMapPropertyRainWidth,"Line Width",map.rain.line_width,FALSE);
-	list_palette_add_string_int(&property_palette,kMapPropertyRainLength,"Line Length",map.rain.line_length,FALSE);
-	list_palette_add_string_float(&property_palette,kMapPropertyRainAlpha,"Line Alpha",map.rain.alpha,FALSE);
-	list_palette_add_pick_color(&property_palette,kMapPropertyRainStartColor,"Line Start Color",&map.rain.start_color,FALSE);
-	list_palette_add_pick_color(&property_palette,kMapPropertyRainEndColor,"Line End Color",&map.rain.end_color,FALSE);
-	list_palette_add_string_int(&property_palette,kMapPropertyRainSlantAdd,"Slant Add",map.rain.slant_add,FALSE);
-	list_palette_add_string_int(&property_palette,kMapPropertyRainSlantMaxTime,"Slant Max Time",map.rain.slant_time_msec,FALSE);
-	list_palette_add_string_int(&property_palette,kMapPropertyRainSlantChangeTime,"Slant Change Time",map.rain.slant_change_msec,FALSE);
 
 		// parameters
 
@@ -481,9 +299,21 @@ void property_palette_click_map(int id)
 		case kMapPropertyDisableShaders:
 			map.optimize.no_shaders=!map.optimize.no_shaders;
 			break;
+
+		case kMapPropertyModelObscureDistance:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&map.optimize.obscure_dist.model,0,0,0);
+			break;
 			
 		case kMapPropertyShadowObscureDistance:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&map.optimize.shadow_obscure_distance,0,0,0);
+			dialog_property_string_run(list_string_value_positive_int,(void*)&map.optimize.obscure_dist.shadow,0,0,0);
+			break;
+
+		case kMapPropertyEffectObscureDistance:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&map.optimize.obscure_dist.effect,0,0,0);
+			break;
+
+		case kMapPropertyMeshObscureDistance:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&map.optimize.obscure_dist.mesh,0,0,0);
 			break;
 
 			// ambients
@@ -533,62 +363,6 @@ void property_palette_click_map(int id)
 			dialog_property_string_run(list_string_value_positive_float,(void*)&map.light_map.diffuse_boost,0,0,0);
 			break;
 
-			// camera settings
-
-		case kMapPropertyCameraMode:
-			property_pick_list("Pick a Camera Mode",(char*)map_property_camera_mode_list,&map.camera.mode);
-			break;
-			
-		case kMapPropertyCameraAngle:
-			dialog_property_chord_run(list_chord_value_angle,(void*)&map.camera.ang);
-			break;
-
-			// camera plane
-			
-		case kMapPropertyCameraFOV:
-			dialog_property_string_run(list_string_value_positive_float,(void*)&map.camera.plane.fov,0,0,0);
-			break;
-
-		case kMapPropertyCameraAspectRatio:
-			dialog_property_string_run(list_string_value_positive_float,(void*)&map.camera.plane.aspect_ratio,0,0,0);
-			break;
-
-		case kMapPropertyCameraNearZ:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&map.camera.plane.near_z,0,0,0);
-			break;
-
-		case kMapPropertyCameraFarZ:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&map.camera.plane.far_z,0,0,0);
-			break;
-
-		case kMapPropertyCameraNearZOffset:
-			dialog_property_string_run(list_string_value_int,(void*)&map.camera.plane.near_z_offset,0,0,0);
-			break;
-
-			// camera chase settings
-
-		case kMapPropertyCameraChaseDistance:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&map.camera.chase.distance,0,0,0);
-			break;
-
-		case kMapPropertyCameraChaseTrackSpeed:
-			dialog_property_string_run(list_string_value_positive_float,(void*)&map.camera.chase.track_speed,0,0,0);
-			break;
-
-		case kMapPropertyCameraChaseSlop:
-			dialog_property_chord_run(list_chord_value_angle,(void*)&map.camera.chase.slop);
-			break;
-
-			// camera static settings
-
-		case kMapPropertyCameraStaticFollow:
-			map.camera.c_static.follow=!map.camera.c_static.follow;
-			break;
-
-		case kMapPropertyCameraStaticAttachNode:
-			property_palette_pick_node(map.camera.c_static.attach_node);
-			break;
-	
 			// map media
 
 		case kMapPropertyMediaType:
@@ -615,244 +389,6 @@ void property_palette_click_map(int id)
 
 		case kMapPropertyMusicFadeTime:
 			dialog_property_string_run(list_string_value_positive_int,(void*)&map.music.fade_msec,0,0,0);
-			break;
-
-			// map sky
-
-		case kMapPropertySkyOn:
-			map.sky.on=!map.sky.on;
-			break;
-
-		case kMapPropertySkyType:
-			property_pick_list("Pick a Sky Type",(char*)map_property_sky_type_list,&map.sky.type);
-			break;
-
-		case kMapPropertySkyRadius:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&map.sky.radius,0,0,0);
-			break;
-
-		case kMapPropertyDomeY:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&map.sky.dome_y,0,0,0);
-			break;
-
-		case kMapPropertyDomeMirror:
-			map.sky.dome_mirror=!map.sky.dome_mirror;
-			break;
-
-		case kMapPropertyTextureRepeat:
-			dialog_property_string_run(list_string_value_positive_float,(void*)&map.sky.txt_fact,0,0,0);
-			break;
-
-		case kMapPropertyTextureShift:
-			uv.x=map.sky.txt_x_shift;
-			uv.y=map.sky.txt_y_shift;
-			dialog_property_chord_run(list_chord_value_uv,(void*)&uv);
-			map.sky.txt_x_shift=uv.x;
-			map.sky.txt_y_shift=uv.y;
-			break;
-
-		case kMapPropertyTextureFill:
-			property_palette_pick_texture(NULL,&map.sky.fill);
-			break;
-
-		case kMapPropertyTextureBottomFill:
-			property_palette_pick_texture(NULL,&map.sky.bottom_fill);
-			break;
-
-		case kMapPropertyTextureNorthFill:
-			property_palette_pick_texture(NULL,&map.sky.north_fill);
-			break;
-
-		case kMapPropertyTextureSouthFill:
-			property_palette_pick_texture(NULL,&map.sky.south_fill);
-			break;
-
-		case kMapPropertyTextureEastFill:
-			property_palette_pick_texture(NULL,&map.sky.east_fill);
-			break;
-
-		case kMapPropertyTextureWestFill:
-			property_palette_pick_texture(NULL,&map.sky.west_fill);
-			break;
-
-			// map background
-
-		case kMapPropertyBackgroundOn:
-			map.background.on=!map.background.on;
-			break;
-
-		case kMapPropertyBackgroundFrontStamp:
-			uv.x=map.background.front.x_fact;
-			uv.y=map.background.front.y_fact;
-			dialog_property_chord_run(list_chord_value_uv,(void*)&uv);
-			map.background.front.x_fact=uv.x;
-			map.background.front.y_fact=uv.y;
-			break;
-
-		case kMapPropertyBackgroundFrontShift:
-			uv.x=map.background.front.x_scroll_fact;
-			uv.y=map.background.front.y_scroll_fact;
-			dialog_property_chord_run(list_chord_value_uv,(void*)&uv);
-			map.background.front.x_scroll_fact=uv.x;
-			map.background.front.y_scroll_fact=uv.y;
-			break;
-
-		case kMapPropertyBackgroundFrontFill:
-			property_palette_pick_texture(NULL,&map.background.front.fill);
-			break;
-
-		case kMapPropertyBackgroundMiddleStamp:
-			uv.x=map.background.middle.x_fact;
-			uv.y=map.background.middle.y_fact;
-			dialog_property_chord_run(list_chord_value_uv,(void*)&uv);
-			map.background.middle.x_fact=uv.x;
-			map.background.middle.y_fact=uv.y;
-			break;
-
-		case kMapPropertyBackgroundMiddleShift:
-			uv.x=map.background.middle.x_scroll_fact;
-			uv.y=map.background.middle.y_scroll_fact;
-			dialog_property_chord_run(list_chord_value_uv,(void*)&uv);
-			map.background.middle.x_scroll_fact=uv.x;
-			map.background.middle.y_scroll_fact=uv.y;
-			break;
-
-		case kMapPropertyBackgroundMiddleFill:
-			property_palette_pick_texture(NULL,&map.background.middle.fill);
-			break;
-
-		case kMapPropertyBackgroundBackStamp:
-			uv.x=map.background.back.x_fact;
-			uv.y=map.background.back.y_fact;
-			dialog_property_chord_run(list_chord_value_uv,(void*)&uv);
-			map.background.back.x_fact=uv.x;
-			map.background.back.y_fact=uv.y;
-			break;
-
-		case kMapPropertyBackgroundBackShift:
-			uv.x=map.background.back.x_scroll_fact;
-			uv.y=map.background.back.y_scroll_fact;
-			dialog_property_chord_run(list_chord_value_uv,(void*)&uv);
-			map.background.back.x_scroll_fact=uv.x;
-			map.background.back.y_scroll_fact=uv.y;
-			break;
-
-		case kMapPropertyBackgroundBackFill:
-			property_palette_pick_texture(NULL,&map.background.back.fill);
-			break;
-
-			// fog general
-
-		case kMapPropertyFogOn:
-			map.fog.on=!map.fog.on;
-			break;
-
-		case kMapPropertyFogInnerRadius:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&map.fog.inner_radius,0,0,0);
-			break;
-
-		case kMapPropertyFogOuterRadius:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&map.fog.outer_radius,0,0,0);
-			break;
-
-			// fog obscure
-
-		case kMapPropertyFogUseSolidColor:
-			map.fog.use_solid_color=!map.fog.use_solid_color;
-			break;
-
-		case kMapPropertyFogColor:
-			os_pick_color(&map.fog.col);
-			break;
-
-			// fog textured
-
-		case kMapPropertyFogTextureIndex:
-			property_palette_pick_texture(NULL,&map.fog.texture_idx);
-			break;
-
-		case kMapPropertyFogCount:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&map.fog.count,0,0,0);
-			break;
-
-		case kMapPropertyFogHigh:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&map.fog.high,0,0,0);
-			break;
-
-		case kMapPropertyFogDrop:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&map.fog.drop,0,0,0);
-			break;
-
-		case kMapPropertyFogAlpha:
-			dialog_property_string_run(list_string_value_0_to_1_float,(void*)&map.fog.alpha,0,0,0);
-			break;
-
-		case kMapPropertyFogTextureSpeed:
-			dialog_property_string_run(list_string_value_positive_float,(void*)&map.fog.speed,0,0,0);
-			break;
-
-		case kMapPropertyFogTextureFact:
-			uv.x=map.fog.txt_x_fact;
-			uv.y=map.fog.txt_y_fact;
-			dialog_property_chord_run(list_chord_value_uv,(void*)&uv);
-			map.fog.txt_x_fact=uv.x;
-			map.fog.txt_y_fact=uv.y;
-			break;
-
-			// rain general
-
-		case kMapPropertyRainOn:
-			map.rain.on=!map.rain.on;
-			break;
-
-		case kMapPropertyRainDensity:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&map.rain.density,0,0,0);
-			break;
-
-		case kMapPropertyRainRadius:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&map.rain.radius,0,0,0);
-			break;
-
-		case kMapPropertyRainHeight:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&map.rain.height,0,0,0);
-			break;
-
-		case kMapPropertyRainSpeed:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&map.rain.speed,0,0,0);
-			break;
-
-			// rain look
-
-		case kMapPropertyRainWidth:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&map.rain.line_width,0,0,0);
-			break;
-
-		case kMapPropertyRainLength:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&map.rain.line_length,0,0,0);
-			break;
-
-		case kMapPropertyRainAlpha:
-			dialog_property_string_run(list_string_value_0_to_1_float,(void*)&map.rain.alpha,0,0,0);
-			break;
-
-		case kMapPropertyRainStartColor:
-			os_pick_color(&map.rain.start_color);
-			break;
-
-		case kMapPropertyRainEndColor:
-			os_pick_color(&map.rain.end_color);
-			break;
-
-		case kMapPropertyRainSlantAdd:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&map.rain.slant_add,0,0,0);
-			break;
-
-		case kMapPropertyRainSlantMaxTime:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&map.rain.slant_time_msec,0,0,0);
-			break;
-
-		case kMapPropertyRainSlantChangeTime:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&map.rain.slant_change_msec,0,0,0);
 			break;
 
 			// editor setup

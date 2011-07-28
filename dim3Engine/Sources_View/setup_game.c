@@ -117,7 +117,8 @@ void setup_game_video_pane(void)
 				x,y,control_y_add,control_y_sz;
 	
 	control_y_add=element_get_control_high();
-	control_y_sz=control_y_add*8;
+	control_y_sz=control_y_add*7;
+	if (!iface.setup.no_resolution_switch) control_y_sz+=control_y_add;
 	
 	x=(int)(((float)iface.scale_x)*0.4f);
 	y=(iface.scale_y>>1)-(control_y_sz>>1);
@@ -144,8 +145,11 @@ void setup_game_video_pane(void)
 	
 		// build the controls
 		
-	element_combo_add("Screen Size",(char*)setup_screen_size_list,idx,ctrl_screen_size_id,x,y,TRUE);
-	y+=control_y_add;
+	if (!iface.setup.no_resolution_switch) {
+		element_combo_add("Screen Size",(char*)setup_screen_size_list,idx,ctrl_screen_size_id,x,y,TRUE);
+		y+=control_y_add;
+	}
+
 	element_combo_add("Full-Screen Anti-Aliasing",(char*)setup_fsaa_mode_list,setup.fsaa_mode,ctrl_fsaa_id,x,y,TRUE);
 	element_enable(ctrl_fsaa_id,gl_check_fsaa_ok());
 	y+=control_y_add;

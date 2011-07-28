@@ -211,7 +211,8 @@ void iface_default_settings(iface_type *iface)
 	iface->setup.game_action=TRUE;
 	iface->setup.game_debug=FALSE;
 	iface->setup.net_player=TRUE;
-	iface->setup.net_host=TRUE;							
+	iface->setup.net_host=TRUE;		
+	iface->setup.no_resolution_switch=FALSE;
 	
 		// colors
 		

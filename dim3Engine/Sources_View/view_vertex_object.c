@@ -36,8 +36,7 @@ extern view_type			view;
 extern setup_type			setup;
 
 int							cur_vbo_cache_idx,cur_vbo_cache_index_idx;
-GLuint						vbo_map,vbo_map_index,
-							vbo_liquid,vbo_sky,
+GLuint						vbo_liquid,vbo_sky,
 							vbo_cache[view_vertex_object_count],
 							vbo_cache_index[view_vertex_object_count];
 
@@ -49,10 +48,7 @@ GLuint						vbo_map,vbo_map_index,
 
 void view_create_vertex_objects(void)
 {
-		// map, liquid and sky vbo
-
-	glGenBuffers(1,&vbo_map);
-	glGenBuffers(1,&vbo_map_index);
+		// sky vbo
 
 	glGenBuffers(1,&vbo_liquid);
 
@@ -71,9 +67,6 @@ void view_create_vertex_objects(void)
 
 void view_dispose_vertex_objects(void)
 {
-	glDeleteBuffers(1,&vbo_map);
-	glDeleteBuffers(1,&vbo_map_index);
-
 	glDeleteBuffers(1,&vbo_liquid);
 
 	glDeleteBuffers(1,&vbo_sky);
@@ -168,119 +161,13 @@ void view_unbind_mesh_liquid_index_object(void)
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-void view_init_map_vertex_object(int sz)
-{
-		// create map geometery buffer
-
-	glBindBuffer(GL_ARRAY_BUFFER,vbo_map);
-
-	sz*=sizeof(float);
-	glBufferData(GL_ARRAY_BUFFER,sz,NULL,GL_DYNAMIC_DRAW);
-
-	glBindBuffer(GL_ARRAY_BUFFER,0);
-}
-
-float* view_bind_map_map_vertex_object(void)
-{
-	float		*vertex_ptr;
-
-		// bind to map specific VBO
-
-	glBindBuffer(GL_ARRAY_BUFFER,vbo_map);
-
-		// map pointer
-
-	vertex_ptr=(float*)glMapBuffer(GL_ARRAY_BUFFER,GL_WRITE_ONLY);
-	if (vertex_ptr==NULL) {
-		glBindBuffer(GL_ARRAY_BUFFER,0);
-		return(NULL);
-	}
-
-	return(vertex_ptr);
-}
-
-void view_bind_map_vertex_object(void)
-{
-	glBindBuffer(GL_ARRAY_BUFFER,vbo_map);
-}
-
-void view_unmap_map_vertex_object(void)
-{
-	glUnmapBuffer(GL_ARRAY_BUFFER);
-}
-
-void view_unbind_map_vertex_object(void)
-{
-	glBindBuffer(GL_ARRAY_BUFFER,0);
-}
-
-void view_init_map_index_object(int sz)
-{
-		// create map index buffer
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,vbo_map_index);
-
-	sz*=sizeof(unsigned int);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER,sz,NULL,GL_STATIC_DRAW);
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);
-}
-
-unsigned int* view_bind_map_map_index_object(void)
-{
-	unsigned int		*index_ptr;
-
-		// bind to map specific VBO
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,vbo_map_index);
-
-		// map pointer
-
-	index_ptr=(unsigned int*)glMapBuffer(GL_ELEMENT_ARRAY_BUFFER,GL_WRITE_ONLY);
-	if (index_ptr==NULL) {
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);
-		return(NULL);
-	}
-
-	return(index_ptr);
-}
-
-void view_bind_map_index_object(void)
-{
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,vbo_map_index);
-}
-
-void view_unmap_map_index_object(void)
-{
-	glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
-}
-
-void view_unbind_map_index_object(void)
-{
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);
-}
-
 /* =======================================================
 
       Liquid VBOs
       
 ======================================================= */
 
+// supergumba -- delete
 float* view_bind_map_liquid_vertex_object(int sz)
 {
 	float		*vertex_ptr;

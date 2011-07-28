@@ -723,6 +723,7 @@ void iface_read_settings_interface(iface_type *iface)
 		iface->setup.game_debug=xml_get_attribute_boolean(setup_tag,"game_debug");
 		iface->setup.net_player=xml_get_attribute_boolean(setup_tag,"net_player");
 		iface->setup.net_host=xml_get_attribute_boolean(setup_tag,"net_host");
+		iface->setup.no_resolution_switch=xml_get_attribute_boolean(setup_tag,"no_resolution_switch");
 	}
 	
 		// sound
@@ -1252,6 +1253,7 @@ bool iface_write_settings_interface(iface_type *iface)
 	xml_add_attribute_boolean("game_debug",iface->setup.game_debug);
 	xml_add_attribute_boolean("net_player",iface->setup.net_player);
 	xml_add_attribute_boolean("net_host",iface->setup.net_host);
+	xml_add_attribute_boolean("no_resolution_switch",iface->setup.no_resolution_switch);
 	xml_add_tagend(TRUE);
 
 		// sound

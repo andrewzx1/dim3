@@ -378,6 +378,7 @@ void render_transparent_mesh_glow(void)
 	map_mesh_poly_type		*poly;
 
 	first_hit=TRUE;
+	cur_mesh_idx=-1;
 
 	for (n=0;n!=trans_sort.count;n++) {
 	
