@@ -334,6 +334,10 @@ void view_map_vbo_rebuild_mesh(map_mesh_type *mesh)
 
 			poly++;
 		}
+		
+			// only rebuild when moving
+			
+		mesh->draw.moved=FALSE;
 	}
 
 		// recalculate the uvs if this
@@ -478,140 +482,5 @@ void view_map_vbo_rebuild(void)
 		mesh=&map.mesh.meshes[view.render->draw_list.items[n].idx];
 		view_map_vbo_rebuild_mesh(mesh);
 	}
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* =======================================================
-
-      Use Map OpenGL Lists
-
-	  Simple is for single pass non-shader textures,
-	  only need a single UV list.
-
-	  Light map is for light mapped non-shader
-	  textures, the light map is texture 0, the texture
-	  is texture 1
-
-	  Shader is for shaders, where the texture is in 0
-	  and the light map in 1 (reverse of light map)
-
-	  Glow is for glow textures
-      
-======================================================= */
-
-// supergumba -- delete all this
-
-void view_compile_gl_list_attach(void)
-{
-/*
-		// use last compiled buffer
-
-	view_bind_map_vertex_object();
-	view_bind_map_index_object();
-
-		// vertexes
-
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(3,GL_FLOAT,0,(void*)0);
-	*/
-}
-
-void view_compile_gl_list_attach_uv_light_map(void)
-{
-/*
-	int			offset;
-
-	offset=(map.mesh.vbo_vertex_count*3)*sizeof(float);
-
-	glClientActiveTexture(GL_TEXTURE1);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,0,(void*)offset);
-	
-	offset=(map.mesh.vbo_vertex_count*(3+2))*sizeof(float);
-
-	glClientActiveTexture(GL_TEXTURE0);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,0,(void*)offset);
-	*/
-}
-
-void view_compile_gl_list_attach_uv_shader(void)
-{
-/*
-	int			offset;
-
-	offset=(map.mesh.vbo_vertex_count*(3+2))*sizeof(float);
-
-	glClientActiveTexture(GL_TEXTURE1);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,0,(void*)offset);
-	
-	offset=(map.mesh.vbo_vertex_count*3)*sizeof(float);
-	
-	glClientActiveTexture(GL_TEXTURE0);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,0,(void*)offset);
-	*/
-}
-
-void view_compile_gl_list_attach_uv_glow(void)
-{
-/*
-	int			offset;
-
-	offset=(map.mesh.vbo_vertex_count*3)*sizeof(float);
-	
-	glClientActiveTexture(GL_TEXTURE1);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,0,(void*)offset);
-	
-	glClientActiveTexture(GL_TEXTURE0);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,0,(void*)offset);
-	*/
-}
-
-void view_compile_gl_list_enable_color(void)
-{
-/*
-	int			offset;
-
-	offset=(map.mesh.vbo_vertex_count*(3+2+2))*sizeof(float);
-
-	glEnableClientState(GL_COLOR_ARRAY);
-	glColorPointer(3,GL_FLOAT,0,(void*)offset);
-	*/
-}
-
-void view_compile_gl_list_disable_color(void)
-{
-//	glDisableClientState(GL_COLOR_ARRAY);
-}
-
-void view_compile_gl_list_dettach(void)
-{
-/*
-	glClientActiveTexture(GL_TEXTURE1);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-
-	glClientActiveTexture(GL_TEXTURE0);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-
-	glDisableClientState(GL_VERTEX_ARRAY);
-
-	view_unbind_map_index_object();
-	view_unbind_map_vertex_object();
-	*/
 }
 
