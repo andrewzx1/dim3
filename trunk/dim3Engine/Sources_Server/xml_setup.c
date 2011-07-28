@@ -31,6 +31,7 @@ and can be sold or given away.
 
 #include "interface.h"
 
+extern iface_type			iface;
 extern network_setup_type	net_setup;
 
 setup_type					setup;
@@ -131,8 +132,8 @@ bool setup_xml_read_path(char *path)
 	
 		// keys
 
-    xml_key_read_int(setup_tag,"Screen_Width",&setup.screen_wid);
-    xml_key_read_int(setup_tag,"Screen_Height",&setup.screen_high);
+	xml_key_read_int(setup_tag,"Screen_Width",&setup.screen_wid);
+	xml_key_read_int(setup_tag,"Screen_Height",&setup.screen_high);
 	xml_key_read_float(setup_tag,"Gamma",&setup.gamma);
     xml_key_read_int(setup_tag,"Anisotropic_Mode",&setup.anisotropic_mode);
     xml_key_read_int(setup_tag,"Texture_Quality_Mode",&setup.texture_quality_mode);
@@ -258,7 +259,16 @@ bool setup_xml_read(void)
 		file_paths_data(&setup.file_path_setup,path,"Settings","Setup","xml");
 	}
 
-	return(setup_xml_read_path(path));
+	if (!setup_xml_read_path(path)) return(FALSE);
+
+		// fix resolution if no switch is on
+
+	if (iface.setup.no_resolution_switch) {
+		setup.screen_wid=setup.screen_high=-1;
+		setup.window=FALSE;
+	}
+
+	return(TRUE);
 }
 
 bool setup_xml_reset(void)

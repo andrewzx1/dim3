@@ -33,14 +33,16 @@ and can be sold or given away.
 #include "ui_common.h"
 #include "interface.h"
 
-#define kSetupPropertyGameVideo				0
-#define kSetupPropertyGameAudio				1
-#define kSetupPropertyGameControl			2
-#define kSetupPropertyGameAction			3
-#define kSetupPropertyGameDebug				4
+#define kSetupPropertyNoResSwitch			0
 
-#define kSetupPropertyNetPlayer				10
-#define kSetupPropertyNetHost				11
+#define kSetupPropertyGameVideo				10
+#define kSetupPropertyGameAudio				11
+#define kSetupPropertyGameControl			12
+#define kSetupPropertyGameAction			13
+#define kSetupPropertyGameDebug				14
+
+#define kSetupPropertyNetPlayer				20
+#define kSetupPropertyNetHost				21
 
 extern iface_type				iface;
 extern setup_state_type			state;
@@ -55,6 +57,11 @@ extern list_palette_type		property_palette;
 void property_palette_fill_setup(void)
 {
 	list_palette_set_title(&property_palette,"Setup");
+
+		// options
+
+	list_palette_add_header(&property_palette,0,"Options");
+	list_palette_add_checkbox(&property_palette,kSetupPropertyNoResSwitch,"No Resolution Switch",iface.setup.no_resolution_switch,FALSE);
 
 		// game setup
 
@@ -81,6 +88,12 @@ void property_palette_fill_setup(void)
 void property_palette_click_setup(int id)
 {
 	switch (id) {
+
+			// options
+
+		case kSetupPropertyNoResSwitch:
+			iface.setup.no_resolution_switch=!iface.setup.no_resolution_switch;
+			break;
 
 			// game setup
 

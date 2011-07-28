@@ -48,7 +48,7 @@ extern void ring_draw_position(effect_type *effect,int count,int *x,int *y,int *
       
 ======================================================= */
 
-bool complex_boundbox_inview(int *cbx,int *cby,int *cbz)
+bool view_cull_check_complex_boundbox(int *cbx,int *cby,int *cbz)
 {
 	int			n,pt_count,
 				px[14],py[14],pz[14];
@@ -127,7 +127,7 @@ bool complex_boundbox_inview(int *cbx,int *cby,int *cbz)
 	return(!(lft||rgt||top||bot));
 }
 
-bool boundbox_inview(int x,int z,int ex,int ez,int ty,int by)
+bool view_cull_check_boundbox(int x,int z,int ex,int ez,int ty,int by)
 {
 	int				px[8],py[8],pz[8];
 	
@@ -140,10 +140,10 @@ bool boundbox_inview(int x,int z,int ex,int ez,int ty,int by)
 	py[0]=py[1]=py[2]=py[3]=ty;
 	py[4]=py[5]=py[6]=py[7]=by;
 	
-	return(complex_boundbox_inview(px,py,pz));
+	return(view_cull_check_complex_boundbox(px,py,pz));
 }
 
-bool boundbox_2_inview(d3pnt *min,d3pnt *max)
+bool view_cull_check_boundbox_2(d3pnt *min,d3pnt *max)
 {
 	int				px[8],py[8],pz[8];
 	
@@ -156,7 +156,23 @@ bool boundbox_2_inview(d3pnt *min,d3pnt *max)
 	py[0]=py[1]=py[2]=py[3]=min->y;
 	py[4]=py[5]=py[6]=py[7]=max->y;
 	
-	return(complex_boundbox_inview(px,py,pz));
+	return(view_cull_check_complex_boundbox(px,py,pz));
+}
+
+/* =======================================================
+
+      Distances to View Center
+      
+======================================================= */
+
+double view_cull_distance_to_view_center(int x,int y,int z)
+{
+	double			dx,dz,dy;
+	
+	dx=(double)(x-view.render->camera.pnt.x);
+	dy=(double)(y-view.render->camera.pnt.y);
+	dz=(double)(z-view.render->camera.pnt.z);
+	return(sqrt((dx*dx)+(dy*dy)+(dz*dz)));
 }
 
 /* =======================================================
@@ -165,15 +181,50 @@ bool boundbox_2_inview(d3pnt *min,d3pnt *max)
       
 ======================================================= */
 
-bool mesh_inview(map_mesh_type *mesh)
+bool view_cull_mesh(map_mesh_type *mesh)
 {
-	return(boundbox_inview(mesh->box.min.x,mesh->box.min.z,mesh->box.max.x,mesh->box.max.z,mesh->box.min.y,mesh->box.max.y));
+	double			obscure_dist;
+
+		// check obscure distance
+
+	if (!fog_solid_on()) {
+		obscure_dist=(double)(camera.setup.plane.far_z-camera.setup.plane.near_z);
+	}
+	else {
+		obscure_dist=(double)((map.fog.outer_radius>>1)*3);
+	}
+
+	if (map.optimize.obscure_dist.mesh!=0) {
+		if (map.optimize.obscure_dist.mesh<obscure_dist) obscure_dist=map.optimize.obscure_dist.mesh;
+	}
+		
+	if (map_mesh_calculate_distance(mesh,&view.render->camera.pnt)>obscure_dist) return(FALSE);
+
+		// check bounding box
+
+	return(view_cull_check_boundbox(mesh->box.min.x,mesh->box.min.z,mesh->box.max.x,mesh->box.max.z,mesh->box.min.y,mesh->box.max.y));
 }
 
-bool mesh_shadow_inview(map_mesh_type *mesh)
+bool view_cull_mesh_shadow(map_mesh_type *mesh)
 {
 	int				high,light_intensity;
+	double			obscure_dist;
 	d3pnt			min,max,light_pnt;
+
+		// check obscure distance
+
+	if (!fog_solid_on()) {
+		obscure_dist=(double)(camera.setup.plane.far_z-camera.setup.plane.near_z);
+	}
+	else {
+		obscure_dist=(double)((map.fog.outer_radius>>1)*3);
+	}
+
+	if (map.optimize.obscure_dist.mesh!=0) {
+		if (map.optimize.obscure_dist.mesh<obscure_dist) obscure_dist=map.optimize.obscure_dist.mesh;
+	}
+		
+	if (map_mesh_calculate_distance(mesh,&view.render->camera.pnt)>obscure_dist) return(FALSE);
 	
 		// get shadow volume
 
@@ -184,25 +235,91 @@ bool mesh_shadow_inview(map_mesh_type *mesh)
 	memmove(&max,&mesh->box.max,sizeof(d3pnt));
 	shadow_get_bound_box(&mesh->box.mid,high,&light_pnt,light_intensity,&min,&max);
 		
-	return(boundbox_2_inview(&min,&max));
+		// check bounding box
+
+	return(view_cull_check_boundbox_2(&min,&max));
 }
 
-bool model_inview(model_draw *draw)
+bool view_cull_liquid(map_liquid_type *liq)
+{
+	double			obscure_dist;
+
+		// check obscure distance
+
+	if (!fog_solid_on()) {
+		obscure_dist=(double)(camera.setup.plane.far_z-camera.setup.plane.near_z);
+	}
+	else {
+		obscure_dist=(double)((map.fog.outer_radius>>1)*3);
+	}
+
+	if (map.optimize.obscure_dist.mesh!=0) {
+		if (map.optimize.obscure_dist.mesh<obscure_dist) obscure_dist=map.optimize.obscure_dist.mesh;
+	}
+		
+	if (map_liquid_calculate_distance(liq,&view.render->camera.pnt)>obscure_dist) return(FALSE);
+
+		// check bounding box
+
+	return(view_cull_check_boundbox(liq->lft,liq->top,liq->rgt,liq->bot,liq->y,liq->y));
+}
+
+bool view_cull_model(model_draw *draw)
 {
 	int				px[8],py[8],pz[8];
+	double			obscure_dist;
+
+		// no model
 
 	if ((draw->model_idx==-1) || (!draw->on)) return(FALSE);
+
+		// check obscure distance
+
+	if (!fog_solid_on()) {
+		obscure_dist=(double)(camera.setup.plane.far_z-camera.setup.plane.near_z);
+	}
+	else {
+		obscure_dist=(double)((map.fog.outer_radius>>1)*3);
+	}
+
+	if (map.optimize.obscure_dist.model!=0) {
+		if (map.optimize.obscure_dist.model<obscure_dist) obscure_dist=map.optimize.obscure_dist.model;
+	}
+		
+	draw->draw_dist=view_cull_distance_to_view_center(draw->pnt.x,draw->pnt.y,draw->pnt.z);
+	if (draw->draw_dist>=obscure_dist) return(FALSE);
+
+		// check bounding box
 	
 	model_get_view_complex_bounding_box(server.model_list.models[draw->model_idx],&draw->pnt,&draw->setup.ang,px,py,pz);
-	return(complex_boundbox_inview(px,py,pz));
+	return(view_cull_check_complex_boundbox(px,py,pz));
 }
 
-bool model_shadow_inview(model_draw *draw)
+bool view_model_shadow(model_draw *draw)
 {
 	int				light_intensity;
+	double			dist,obscure_dist;
 	d3pnt			min,max,light_pnt;
 
+		// no model to draw
+
 	if ((draw->model_idx==-1) || (!draw->on)) return(FALSE);
+
+		// check obscure distance
+
+	if (!fog_solid_on()) {
+		obscure_dist=(double)(camera.setup.plane.far_z-camera.setup.plane.near_z);
+	}
+	else {
+		obscure_dist=(double)((map.fog.outer_radius>>1)*3);
+	}
+
+	if (map.optimize.obscure_dist.shadow!=0) {
+		if (map.optimize.obscure_dist.shadow<obscure_dist) obscure_dist=map.optimize.obscure_dist.shadow;
+	}
+		
+	dist=view_cull_distance_to_view_center(draw->pnt.x,draw->pnt.y,draw->pnt.z);
+	if (dist>=obscure_dist) return(FALSE);
 	
 		// get shadow volume
 
@@ -210,13 +327,29 @@ bool model_shadow_inview(model_draw *draw)
 	shadow_get_light_point(&draw->pnt,draw->size.y,&light_pnt,&light_intensity);
 	shadow_get_bound_box(&draw->pnt,draw->size.y,&light_pnt,light_intensity,&min,&max);
 
-	return(boundbox_2_inview(&min,&max));
+	return(view_cull_check_boundbox_2(&min,&max));
 }
 
-bool effect_inview(effect_type *effect,int count,d3pnt *center_pnt)
+bool view_cull_effect(effect_type *effect,int count,d3pnt *center_pnt)
 {
 	int					x,y,z,lx,rx,tz,bz,ty,by,gravity_y,k,size;
+	double				obscure_dist;
 	iface_particle_type	*particle;
+
+		// check obscure distance
+
+	if (!fog_solid_on()) {
+		obscure_dist=(double)(camera.setup.plane.far_z-camera.setup.plane.near_z);
+	}
+	else {
+		obscure_dist=(double)((map.fog.outer_radius>>1)*3);
+	}
+
+	if (map.optimize.obscure_dist.effect!=0) {
+		if (map.optimize.obscure_dist.effect<obscure_dist) obscure_dist=map.optimize.obscure_dist.effect;
+	}
+		
+	if (view_cull_distance_to_view_center(effect->pnt.x,effect->pnt.y,effect->pnt.z)>obscure_dist) return(FALSE);
 	
 		// get box
 		
@@ -310,22 +443,26 @@ bool effect_inview(effect_type *effect,int count,d3pnt *center_pnt)
 	
 		// check bounds
 		
-	return(boundbox_inview(lx,tz,rx,bz,ty,by));
+	return(view_cull_check_boundbox(lx,tz,rx,bz,ty,by));
 }
 
-/* =======================================================
-
-      Distances to View Center
-      
-======================================================= */
-
-double distance_to_view_center(int x,int y,int z)
+bool view_cull_halo(d3pnt *pnt)
 {
-	double			dx,dz,dy;
-	
-	dx=(double)(x-view.render->camera.pnt.x);
-	dy=(double)(y-view.render->camera.pnt.y);
-	dz=(double)(z-view.render->camera.pnt.z);
-	return(sqrt((dx*dx)+(dy*dy)+(dz*dz)));
+	double				obscure_dist;
+
+		// check obscure distance
+
+	if (!fog_solid_on()) {
+		obscure_dist=(double)(camera.setup.plane.far_z-camera.setup.plane.near_z);
+	}
+	else {
+		obscure_dist=(double)((map.fog.outer_radius>>1)*3);
+	}
+
+	if (map.optimize.obscure_dist.effect!=0) {
+		if (map.optimize.obscure_dist.effect<obscure_dist) obscure_dist=map.optimize.obscure_dist.effect;
+	}
+		
+	return(view_cull_distance_to_view_center(pnt->x,pnt->y,pnt->z)<obscure_dist);
 }
 

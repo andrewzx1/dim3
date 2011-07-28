@@ -98,7 +98,10 @@ void decode_map_settings_xml(map_type *map,int map_head)
 		map->optimize.never_cull=xml_get_attribute_boolean(tag,"never_cull");
 		map->optimize.cull_angle=xml_get_attribute_float_default(tag,"cull_angle",0.0f);
 		map->optimize.no_shaders=xml_get_attribute_boolean(tag,"no_shaders");
-		map->optimize.shadow_obscure_distance=xml_get_attribute_int_default(tag,"shadow_obscure_distance",100000);
+		map->optimize.obscure_dist.model=xml_get_attribute_int(tag,"model_obscure_distance");
+		map->optimize.obscure_dist.shadow=xml_get_attribute_int(tag,"shadow_obscure_distance");
+		map->optimize.obscure_dist.effect=xml_get_attribute_int(tag,"effect_obscure_distance");
+		map->optimize.obscure_dist.mesh=xml_get_attribute_int(tag,"mesh_obscure_distance");
 	}
 	
     tag=xml_findfirstchild("Network",map_head);

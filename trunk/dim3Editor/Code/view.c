@@ -1131,6 +1131,10 @@ void view_draw(void)
 	int					n;
 	d3rect				box;
 	editor_view_type	*view;
+
+		// fix any model changes
+
+	view_models_reset();
 	
 		// draw the views
 		

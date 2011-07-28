@@ -231,7 +231,6 @@ bool file_open_map(void)
 		// start models
 		
 	view_models_start();
-	view_models_reset();
 	
 		// set flags as opened
 		

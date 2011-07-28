@@ -163,18 +163,20 @@ and can be sold or given away.
 // selection types
 //
 
-#define map_piece								0
-#define mesh_piece								1
-#define liquid_piece							2
-#define node_piece								3
-#define spot_piece								4
-#define scenery_piece							5
-#define light_piece								6
-#define sound_piece								7
-#define particle_piece							8
-#define group_piece								9
-#define movement_piece							10
-#define cinema_piece							11
+#define map_setting_piece						0
+#define map_camera_piece						1
+#define map_sky_weather_piece					2
+#define mesh_piece								3
+#define liquid_piece							4
+#define node_piece								5
+#define spot_piece								6
+#define scenery_piece							7
+#define light_piece								8
+#define sound_piece								9
+#define particle_piece							10
+#define group_piece								11
+#define movement_piece							12
+#define cinema_piece							13
 
 //
 // movement scales

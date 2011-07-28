@@ -77,7 +77,9 @@ void item_palette_fill(void)
 		// map
 
 	list_palette_add_header(&item_palette,spot_piece,"Map");
-	list_palette_add_item(&item_palette,map_piece,0,"Settings",(item_palette.item_type==map_piece),FALSE);
+	list_palette_add_item(&item_palette,map_setting_piece,0,"Settings",(item_palette.item_type==map_setting_piece),FALSE);
+	list_palette_add_item(&item_palette,map_camera_piece,0,"Camera",(item_palette.item_type==map_camera_piece),FALSE);
+	list_palette_add_item(&item_palette,map_sky_weather_piece,0,"Sky & Weather",(item_palette.item_type==map_sky_weather_piece),FALSE);
 
 		// spots
 
@@ -207,10 +209,10 @@ void item_palette_reset(void)
 	int				sel_type,main_idx,sub_idx;
 
 	if (select_count()==0) {
-		item_palette.item_type=map_piece;
+		item_palette.item_type=map_setting_piece;
 		item_palette.item_idx=-1;
 
-		item_palette_scroll_into_view(map_piece,0);
+		item_palette_scroll_into_view(map_setting_piece,0);
 		return;
 	}
 	
@@ -389,7 +391,9 @@ bool item_palette_click(d3pnt *pnt,bool double_click)
 
 	switch (item_palette.item_type) {
 
-		case map_piece:
+		case map_setting_piece:
+		case map_camera_piece:
+		case map_sky_weather_piece:
 			select_clear();
 			break;
 

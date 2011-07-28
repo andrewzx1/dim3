@@ -40,14 +40,6 @@ extern view_type			view;
 extern server_type			server;
 extern setup_type			setup;
 
-extern bool mesh_inview(map_mesh_type *mesh);
-extern bool mesh_shadow_inview(map_mesh_type *mesh);
-extern bool model_inview(model_draw *draw);
-extern bool model_shadow_inview(model_draw *draw);
-extern double distance_to_view_center(int x,int y,int z);
-extern bool boundbox_inview(int x,int z,int ex,int ez,int ty,int by);
-extern bool effect_inview(effect_type *effect,int count,d3pnt *center_pnt);
-
 /* =======================================================
 
       Map Visibility Obscuring
@@ -360,20 +352,10 @@ bool view_proj_in_draw_list(int proj_idx)
 void view_add_mesh_draw_list(int start_mesh_idx)
 {
 	int					n;
-	double				d,obscure_dist;
+	double				d;
 	map_mesh_type		*start_mesh,*mesh;
 	
 	start_mesh=&map.mesh.meshes[start_mesh_idx];
-
-		// obscure distance -- normally is the opengl projection
-		// distance but can be the fog distance if fog is on
-
-	if (!fog_solid_on()) {
-		obscure_dist=(double)(camera.setup.plane.far_z-camera.setup.plane.near_z);
-	}
-	else {
-		obscure_dist=(double)((map.fog.outer_radius>>1)*3);
-	}
 	
 		// check all visibile meshes from the start mesh
 	
@@ -383,17 +365,12 @@ void view_add_mesh_draw_list(int start_mesh_idx)
 		if (!mesh->flag.on) continue;
 			
 		if (!mesh->flag.never_obscure) {
-			
-				// auto-eliminate meshes drawn outside the obscure distance
-				
-			d=map_mesh_calculate_distance(mesh,&view.render->camera.pnt);
-			if (d>obscure_dist) continue;
 				
 				// check if bound box is within view
 				
-			if (!mesh_inview(mesh)) {
+			if (!view_cull_mesh(mesh)) {
 				if (!mesh->flag.shadow) continue;
-				if (!mesh_shadow_inview(mesh)) continue;
+				if (!view_cull_mesh_shadow(mesh)) continue;
 			}
 
 				// check if obscured by other meshes
@@ -403,12 +380,10 @@ void view_add_mesh_draw_list(int start_mesh_idx)
 				if (!view_visibility_check_mesh(start_mesh_idx,mesh)) continue;
 			}
 		}
-		else {
-			d=map_mesh_calculate_distance(mesh,&view.render->camera.pnt);
-		}
 
 			// sort meshes into drawing list
 
+		d=map_mesh_calculate_distance(mesh,&view.render->camera.pnt);
 		view_add_draw_list(view_render_type_mesh,n,d,0x0);
 	}
 }
@@ -455,14 +430,9 @@ void view_add_liquid_draw_list(int start_mesh_idx)
 				if ((-1.0f*(float)(liq->y-view.render->camera.pnt.y))>map.optimize.cull_angle) continue;
 			}
 
-				// auto-eliminate liquids drawn outside the obscure distance
-					
-			d=map_liquid_calculate_distance(liq,&view.render->camera.pnt);
-			if (d>obscure_dist) continue;
-					
-				// check if liquid within bound box
+				// eliminate liquids outside of view
 
-			if (!boundbox_inview(liq->lft,liq->top,liq->rgt,liq->bot,liq->y,liq->y)) continue;
+			if (!view_cull_liquid(liq)) continue;
 			
 				// check if obscured by other meshes
 
@@ -470,12 +440,10 @@ void view_add_liquid_draw_list(int start_mesh_idx)
 				if (!view_visibility_check_liquid(start_mesh_idx,liq)) continue;
 			}
 		}
-		else {
-			d=map_liquid_calculate_distance(liq,&view.render->camera.pnt);
-		}
 		
 			// sort liquids into drawing list
 
+		d=map_liquid_calculate_distance(liq,&view.render->camera.pnt);
 		view_add_draw_list(view_render_type_liquid,n,d,0x0);
 	}
 }
@@ -502,52 +470,6 @@ void view_add_mesh_liquid_draw_list(void)
       Model Setup and Draw List
       
 ======================================================= */
-
-bool view_setup_model_in_view(model_draw *draw)
-{
-	double					obscure_dist;
-	
-	if ((draw->model_idx==-1) || (!draw->on)) return(FALSE);
-	
-		// is model within obscure distance
-
-	if (!fog_solid_on()) {
-		obscure_dist=(double)(camera.setup.plane.far_z-camera.setup.plane.near_z);
-	}
-	else {
-		obscure_dist=(double)((map.fog.outer_radius>>1)*3);
-	}
-		
-	draw->draw_dist=distance_to_view_center(draw->pnt.x,draw->pnt.y,draw->pnt.z);
-	if (draw->draw_dist>=obscure_dist) return(FALSE);
-	
-		// is model in view?
-	
-	return(model_inview(draw));
-}
-
-bool view_setup_shadow_in_view(model_draw *draw)
-{
-	double					obscure_dist;
-
-	if ((draw->model_idx==-1) || (!draw->on)) return(FALSE);
-	
-		// is model within obscure distance
-
-	if (!fog_solid_on()) {
-		obscure_dist=(double)(camera.setup.plane.far_z-camera.setup.plane.near_z);
-	}
-	else {
-		obscure_dist=(double)((map.fog.outer_radius>>1)*3);
-	}
-		
-	draw->draw_dist=distance_to_view_center(draw->pnt.x,draw->pnt.y,draw->pnt.z);
-	if (draw->draw_dist>=obscure_dist) return(FALSE);
-	
-		// is model in view?
-
-	return(model_shadow_inview(draw));
-}
 
 void view_setup_objects(int tick)
 {
@@ -581,14 +503,14 @@ void view_setup_objects(int tick)
 			flag|=view_list_item_flag_shadow_in_view;
 		}
 		else {
-			if (view_setup_model_in_view(&obj->draw)) flag|=view_list_item_flag_model_in_view;
+			if (view_cull_model(&obj->draw)) flag|=view_list_item_flag_model_in_view;
 
 			if (obj->draw.shadow.on) {
 				if ((flag&view_list_item_flag_model_in_view)!=0x0) {		// model in view means shadow is automatically in view
 					flag|=view_list_item_flag_shadow_in_view;
 				}
 				else {
-					if (view_setup_shadow_in_view(&obj->draw)) flag|=view_list_item_flag_shadow_in_view;
+					if (view_model_shadow(&obj->draw)) flag|=view_list_item_flag_shadow_in_view;
 				}
 			}
 		}
@@ -613,7 +535,6 @@ void view_setup_objects(int tick)
 			weap=weapon_find_current(obj);
 			if (weap!=NULL) {
 				model_draw_setup_weapon(obj,weap,FALSE,FALSE);
-				view_setup_model_in_view(&weap->draw);
 			}
 		}
 	}
@@ -640,14 +561,14 @@ void view_setup_projectiles(int tick)
 			
 		flag=0x0;
 		
-		if (view_setup_model_in_view(&proj->draw)) flag|=view_list_item_flag_model_in_view;
+		if (view_cull_model(&proj->draw)) flag|=view_list_item_flag_model_in_view;
 
 		if (proj->draw.shadow.on) {
 			if ((flag&view_list_item_flag_model_in_view)!=0x0) {		// model in view means shadow is automatically in view
 				flag|=view_list_item_flag_shadow_in_view;
 			}
 			else {
-				if (model_shadow_inview(&proj->draw)) flag|=view_list_item_flag_shadow_in_view;
+				if (view_model_shadow(&proj->draw)) flag|=view_list_item_flag_shadow_in_view;
 			}
 		}
 	
@@ -673,19 +594,9 @@ void view_setup_projectiles(int tick)
 void view_add_effect_draw_list(int tick)
 {
 	int					n;
-	double				d,obscure_dist;
+	double				d;
 	d3pnt				center_pnt;
 	effect_type			*effect;
-
-		// obscure distance -- normally is the opengl projection
-		// distance but can be the fog distance if fog is on
-
-	if (!fog_solid_on()) {
-		obscure_dist=(double)(camera.setup.plane.far_z-camera.setup.plane.near_z);
-	}
-	else {
-		obscure_dist=(double)((map.fog.outer_radius>>1)*3);
-	}
 
 		// find all effects
 
@@ -699,17 +610,13 @@ void view_add_effect_draw_list(int tick)
 			if (!view_mesh_in_draw_list(effect->mesh_idx)) continue;
 		}
 				
-			// check if effect within bound box
+			// check for effect culling
 
-		if (!effect_inview(effect,(tick-effect->start_tick),&center_pnt)) continue;
-
-			// auto-eliminate effects drawn outside the obscure distance
-				
-		d=distance_to_view_center(center_pnt.x,center_pnt.y,center_pnt.z);
-		if (d>obscure_dist) continue;
+		if (!view_cull_effect(effect,(tick-effect->start_tick),&center_pnt)) continue;
 
 			// sort effects into drawing list
 			
+		d=view_cull_distance_to_view_center(effect->pnt.x,effect->pnt.y,effect->pnt.z);
 		view_add_draw_list(view_render_type_effect,n,d,0x0);
 	}
 }
@@ -740,12 +647,21 @@ void view_add_model_halo(model_draw *draw,int obj_idx)
 	for (n=0;n!=max_model_halo;n++) {
 
 		if (halo->on) {
+				
+				// get position
+
 			pnt.x=draw->pnt.x;
 			pnt.y=draw->pnt.y;
 			pnt.z=draw->pnt.z;
-			
+
 			model_get_halo_position(mdl,&draw->setup,n,&pnt.x,&pnt.y,&pnt.z);
 			if (draw->no_rot.on) gl_project_fix_rotation(&pnt.x,&pnt.y,&pnt.z);
+
+				// check for halo culling
+
+			if (!view_cull_halo(&pnt)) continue;
+	
+				// add the halo
 			
 			halo_draw_add(&pnt,obj_idx,halo->idx);
 		}

@@ -38,8 +38,6 @@ extern setup_type			setup;
 
 extern bitmap_type		lmap_black_bitmap;
 
-extern bool boundbox_inview(int x,int z,int ex,int ez,int ty,int by);
-
 /* =======================================================
 
       Liquid Tides

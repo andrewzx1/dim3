@@ -585,11 +585,15 @@ typedef struct		{
 															resistance,slope_min_ang,slope_max_ang,
 															slope_max_speed,slope_min_gravity;
 					} map_physics_type;
-					
+
 typedef struct		{
-						int									shadow_obscure_distance;
+						int									model,shadow,effect,mesh;
+					} map_optimize_obscure_dist_type;
+
+typedef struct		{
 						float								cull_angle;
 						bool								never_cull,no_shaders;
+						map_optimize_obscure_dist_type		obscure_dist;
 					} map_optimize_type;					
 
 typedef struct		{

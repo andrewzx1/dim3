@@ -123,7 +123,23 @@ void property_palette_fill(void)
 		// no selection, map properties
 
 	if (main_idx==-1) {
-		property_palette_fill_map();
+
+		switch (item_palette.item_type) {
+			
+			case map_setting_piece:
+				property_palette_fill_map();
+				return;
+
+			case map_camera_piece:
+				property_palette_fill_camera();
+				return;
+
+			case map_sky_weather_piece:
+				property_palette_fill_sky_weather();
+				return;
+
+		}
+
 		return;
 	}
 
@@ -275,7 +291,23 @@ bool property_palette_click(d3pnt *pnt,bool double_click)
 		// no selection, map properties
 
 	if (main_idx==-1) {
-		property_palette_click_map(property_palette.item_id);
+
+		switch (item_palette.item_type) {
+			
+			case map_setting_piece:
+				property_palette_click_map(property_palette.item_id);
+				return(TRUE);
+
+			case map_camera_piece:
+				property_palette_click_camera(property_palette.item_id);
+				return(TRUE);
+
+			case map_sky_weather_piece:
+				property_palette_click_sky_weather(property_palette.item_id);
+				return(TRUE);
+
+		}
+
 		return(TRUE);
 	}
 
