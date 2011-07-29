@@ -82,10 +82,11 @@ void alt_property_palette_fill_pose_bone_move(int pose_idx,int bone_move_idx)
       
 ======================================================= */
 
-void alt_property_palette_click_pose_bone_move(int pose_idx,int bone_move_idx,int id)
+void alt_property_palette_click_pose_bone_move(int pose_idx,int bone_move_idx,int id,bool double_click)
 {
 	model_bone_move_type	*bone_move;
 
+	if (!double_click) return;
 	if (bone_move_idx==-1) return;
 
 	bone_move=&model.poses[pose_idx].bone_moves[bone_move_idx];

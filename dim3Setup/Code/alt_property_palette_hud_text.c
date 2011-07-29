@@ -109,9 +109,11 @@ void alt_property_palette_fill_hud_text(int hud_text_idx)
       
 ======================================================= */
 
-void alt_property_palette_click_hud_text(int hud_text_idx,int id)
+void alt_property_palette_click_hud_text(int hud_text_idx,int id,bool double_click)
 {
 	iface_text_type				*text;
+
+	if (!double_click) return;
 
 	text=&iface.text_list.texts[hud_text_idx];
 

@@ -3004,6 +3004,10 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath="..\..\dim3Engine\Sources_View\input_touch.c"
+					>
+				</File>
+				<File
 					RelativePath="..\..\dim3Engine\Sources_View\network_draw.c"
 					>
 					<FileConfiguration

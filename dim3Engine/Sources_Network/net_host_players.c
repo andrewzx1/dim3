@@ -44,8 +44,6 @@ net_host_player_type		net_host_players[host_max_remote_count];
 
 SDL_mutex					*net_host_player_lock;
 
-extern void group_moves_synch_with_client(int group_idx,network_reply_group_synch *synch);
-
 /* =======================================================
 
       Initialize Players
@@ -358,7 +356,7 @@ void net_host_player_remote_group_synch(int net_uid)
 
 	for (n=0;n!=map.group.ngroup;n++) {
 
-		if (map.group.groups[n].move.was_moved) {
+		if (map.group.groups[n].run.was_moved) {
 			group_moves_synch_with_client(n,&reply_synch);
 			net_host_player_send_message_single(net_uid,net_action_reply_group_synch,(unsigned char*)&reply_synch,sizeof(network_reply_group_synch));
 		}

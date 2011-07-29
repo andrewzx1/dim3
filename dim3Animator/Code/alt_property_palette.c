@@ -136,11 +136,11 @@ bool alt_property_palette_click(d3pnt *pnt,bool double_click)
 	switch (state.cur_item) {
 
 		case item_animate:
-			alt_property_palette_click_animate_pose_move(state.cur_animate_idx,state.cur_animate_pose_move_idx,alt_property_palette.item_id);
+			alt_property_palette_click_animate_pose_move(state.cur_animate_idx,state.cur_animate_pose_move_idx,alt_property_palette.item_id,double_click);
 			break;
 
 		case item_pose:
-			alt_property_palette_click_pose_bone_move(state.cur_pose_idx,state.cur_pose_bone_move_idx,alt_property_palette.item_id);
+			alt_property_palette_click_pose_bone_move(state.cur_pose_idx,state.cur_pose_bone_move_idx,alt_property_palette.item_id,double_click);
 			break;
 
 	}

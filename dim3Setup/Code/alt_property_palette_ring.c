@@ -125,9 +125,11 @@ void alt_property_palette_fill_ring(int ring_idx)
       
 ======================================================= */
 
-void alt_property_palette_click_ring(int ring_idx,int id)
+void alt_property_palette_click_ring(int ring_idx,int id,bool double_click)
 {
 	iface_ring_type			*ring;
+
+	if (!double_click) return;
 
 	ring=&iface.ring_list.rings[ring_idx];
 

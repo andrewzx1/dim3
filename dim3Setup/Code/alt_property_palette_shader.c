@@ -73,9 +73,11 @@ void alt_property_palette_fill_shader(int shader_idx)
       
 ======================================================= */
 
-void alt_property_palette_click_shader(int shader_idx,int id)
+void alt_property_palette_click_shader(int shader_idx,int id,bool double_click)
 {
 	iface_shader_type			*shader;
+
+	if (!double_click) return;
 
 	shader=&iface.shader_list.shaders[shader_idx];
 

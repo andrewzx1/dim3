@@ -67,12 +67,12 @@ void property_palette_fill_actions(void)
       
 ======================================================= */
 
-void property_palette_click_actions(int id)
+void property_palette_click_actions(int id,bool double_click)
 {
 		// edit action
 		
 	state.cur_action_idx=id-kActionProperyName;
-	list_palette_set_level(2);
+	if (double_click) list_palette_set_level(2);
 	main_wind_draw();
 }
 

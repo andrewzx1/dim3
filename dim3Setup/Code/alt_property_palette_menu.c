@@ -80,7 +80,7 @@ void alt_property_palette_fill_menu(int menu_idx)
       
 ======================================================= */
 
-void alt_property_palette_click_menu(int menu_idx,int id)
+void alt_property_palette_click_menu(int menu_idx,int id,bool double_click)
 {
 	int					idx,sz;
 	iface_menu_type		*menu;
@@ -91,7 +91,7 @@ void alt_property_palette_click_menu(int menu_idx,int id)
 
 	if ((id>=kMenuPropertyMenuItemName) && (id<(kMenuPropertyMenuItemName+max_menu_item))) {
 		state.cur_menu_item_idx=id-kMenuPropertyMenuItemName;
-		list_palette_set_level(3);
+		if (double_click) list_palette_set_level(3);
 		main_wind_draw();
 		return;
 	}
@@ -140,6 +140,8 @@ void alt_property_palette_click_menu(int menu_idx,int id)
 
 		// regular picks, always
 		// disable selection
+
+	if (!double_click) return;
 
 	state.cur_menu_item_idx=-1;
 

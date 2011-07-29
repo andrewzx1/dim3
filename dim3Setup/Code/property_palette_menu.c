@@ -74,7 +74,7 @@ void property_palette_fill_menu(void)
       
 ======================================================= */
 
-void property_palette_click_menu(int id)
+void property_palette_click_menu(int id,bool double_click)
 {
 	int					idx,sz;
 
@@ -83,7 +83,7 @@ void property_palette_click_menu(int id)
 	if ((id>=kMenuPropertyMenuName) && (id<(kMenuPropertyMenuName+max_iface_menu))) {
 		state.cur_menu_idx=id-kMenuPropertyMenuName;
 		state.cur_menu_item_idx=-1;
-		list_palette_set_level(2);
+		if (double_click) list_palette_set_level(2);
 		main_wind_draw();
 		return;
 	}

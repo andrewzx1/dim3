@@ -103,11 +103,12 @@ void input_clear(void)
 		
 	input_event_pump();
 
-		// clear keyboard, mouse, joystick
+		// clear keyboard, mouse, joystick, and touch
 		
 	input_clear_keyboard();
 	input_clear_mouse();
 	input_clear_joystick();
+	input_clear_touch();
 }
 
 /* =======================================================
@@ -352,6 +353,21 @@ bool input_event_pump(void)
 			case SDL_JOYBUTTONUP:
 				input_event_joystick_button(event.button.button,FALSE);
 				break;
+
+				// touch events
+
+			#ifdef D3_SDL_1_3
+				case SDL_TOUCHFINGEREVENT:
+					if (event.finger.type==SDL_FINGERUP) {
+						input_touch_event_up(event.finger.fingerId);
+					}
+					else {
+						input_touch_event_down(event.finger.fingerId,event.finger.x,event.finger.y);
+					}
+					break;
+			#endif
+
+				// quit event
 				
 			case SDL_QUIT:
 				game_loop_quit=TRUE;

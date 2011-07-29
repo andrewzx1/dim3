@@ -29,15 +29,11 @@ and can be sold or given away.
 	#include "dim3engine.h"
 #endif
 
+#include "interface.h"
 #include "scripts.h"
 
 extern map_type			map;
 extern js_type			js;
-
-extern void group_show(int group_idx,bool show);
-extern void group_solid(int group_idx,bool solid);
-extern void group_texture(int group_idx,int index);
-extern void group_texture_shift(int group_idx,float x_shift,float y_shift);
 
 JSValueRef js_map_group_get_center_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_map_group_set_show_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
@@ -94,7 +90,7 @@ JSValueRef js_map_group_get_center_func(JSContextRef cx,JSObjectRef func,JSObjec
 
 	if ((group_idx>=0) && (group_idx<map.group.ngroup)) {
 		group=&map.group.groups[group_idx];
-		return(script_point_to_value(cx,group->center_pnt.x,group->center_pnt.y,group->center_pnt.z));
+		return(script_point_to_value(cx,group->run.center_pnt.x,group->run.center_pnt.y,group->run.center_pnt.z));
 	}
 
 	return(script_point_to_value(cx,0,0,0));

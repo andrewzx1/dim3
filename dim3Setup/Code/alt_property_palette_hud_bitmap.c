@@ -142,9 +142,11 @@ void alt_property_palette_fill_hud_bitmap(int hud_bitmap_idx)
       
 ======================================================= */
 
-void alt_property_palette_click_hud_bitmap(int hud_bitmap_idx,int id)
+void alt_property_palette_click_hud_bitmap(int hud_bitmap_idx,int id,bool double_click)
 {
 	iface_bitmap_type			*bitmap;
+
+	if (!double_click) return;
 
 	bitmap=&iface.bitmap_list.bitmaps[hud_bitmap_idx];
 

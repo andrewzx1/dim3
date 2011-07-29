@@ -131,11 +131,11 @@ bool alt_property_palette_click(d3pnt *pnt,bool double_click)
 		// selection properties
 
 	if (state.cur_cinema_idx!=-1) {
-		alt_property_palette_click_cinema_action(state.cur_cinema_idx,state.cur_cinema_action_idx,alt_property_palette.item_id);
+		alt_property_palette_click_cinema_action(state.cur_cinema_idx,state.cur_cinema_action_idx,alt_property_palette.item_id,double_click);
 	}
 	else {
 		if (state.cur_movement_idx!=-1) {
-			alt_property_palette_click_movement_move(state.cur_movement_idx,state.cur_movement_move_idx,alt_property_palette.item_id);
+			alt_property_palette_click_movement_move(state.cur_movement_idx,state.cur_movement_move_idx,alt_property_palette.item_id,double_click);
 		}
 	}
 	

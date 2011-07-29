@@ -42,6 +42,8 @@ extern file_path_setup_type		file_path_setup;
 extern bool						list_palette_open;
 extern list_palette_type		item_palette;
 
+char							list_texture_names[max_map_texture][name_str_len];
+
 list_palette_type				property_palette;
 
 /* =======================================================
@@ -250,14 +252,14 @@ bool property_palette_click(d3pnt *pnt,bool double_click)
 		// if texture window is up, texture properties
 
 	if (state.texture_edit_idx!=-1) {
-		property_palette_click_texture(state.texture_edit_idx,property_palette.item_id);
+		property_palette_click_texture(state.texture_edit_idx,property_palette.item_id,double_click);
 		return(TRUE);
 	}
 
 		// if preference window is up, preference properties
 
 	if (state.in_preference) {
-		property_palette_click_editor_preference(property_palette.item_id);
+		property_palette_click_editor_preference(property_palette.item_id,double_click);
 		return(TRUE);
 	}
 
@@ -268,16 +270,16 @@ bool property_palette_click(d3pnt *pnt,bool double_click)
 
 		case cinema_piece:
 			state.cur_cinema_idx=item_palette.item_idx;
-			property_palette_click_cinema(item_palette.item_idx,property_palette.item_id);
+			property_palette_click_cinema(item_palette.item_idx,property_palette.item_id,double_click);
 			return(TRUE);
 
 		case group_piece:
-			property_palette_click_group(item_palette.item_idx,property_palette.item_id);
+			property_palette_click_group(item_palette.item_idx,property_palette.item_id,double_click);
 			return(TRUE);
 
 		case movement_piece:
 			state.cur_movement_idx=item_palette.item_idx;
-			property_palette_click_movement(item_palette.item_idx,property_palette.item_id);
+			property_palette_click_movement(item_palette.item_idx,property_palette.item_id,double_click);
 			return(TRUE);
 
 	}
@@ -295,15 +297,15 @@ bool property_palette_click(d3pnt *pnt,bool double_click)
 		switch (item_palette.item_type) {
 			
 			case map_setting_piece:
-				property_palette_click_map(property_palette.item_id);
+				property_palette_click_map(property_palette.item_id,double_click);
 				return(TRUE);
 
 			case map_camera_piece:
-				property_palette_click_camera(property_palette.item_id);
+				property_palette_click_camera(property_palette.item_id,double_click);
 				return(TRUE);
 
 			case map_sky_weather_piece:
-				property_palette_click_sky_weather(property_palette.item_id);
+				property_palette_click_sky_weather(property_palette.item_id,double_click);
 				return(TRUE);
 
 		}
@@ -317,35 +319,35 @@ bool property_palette_click(d3pnt *pnt,bool double_click)
 
 		case mesh_piece:
 			if (state.drag_mode!=drag_mode_polygon) sub_idx=-1;
-			property_palette_click_mesh(main_idx,sub_idx,property_palette.item_id);
+			property_palette_click_mesh(main_idx,sub_idx,property_palette.item_id,double_click);
 			break;
 
 		case liquid_piece:
-			property_palette_click_liquid(main_idx,property_palette.item_id);
+			property_palette_click_liquid(main_idx,property_palette.item_id,double_click);
 			break;
 
 		case spot_piece:
-			property_palette_click_spot(main_idx,property_palette.item_id);
+			property_palette_click_spot(main_idx,property_palette.item_id,double_click);
 			break;
 
 		case light_piece:
-			property_palette_click_light(main_idx,property_palette.item_id);
+			property_palette_click_light(main_idx,property_palette.item_id,double_click);
 			break;
 
 		case sound_piece:
-			property_palette_click_sound(main_idx,property_palette.item_id);
+			property_palette_click_sound(main_idx,property_palette.item_id,double_click);
 			break;
 
 		case particle_piece:
-			property_palette_click_particle(main_idx,property_palette.item_id);
+			property_palette_click_particle(main_idx,property_palette.item_id,double_click);
 			break;
 
 		case scenery_piece:
-			property_palette_click_scenery(main_idx,property_palette.item_id);
+			property_palette_click_scenery(main_idx,property_palette.item_id,double_click);
 			break;
 
 		case node_piece:
-			property_palette_click_node(main_idx,property_palette.item_id);
+			property_palette_click_node(main_idx,property_palette.item_id,double_click);
 			break;
 
 	}
@@ -443,22 +445,21 @@ void property_palette_pick_hud_bitmap(char *name)
 void property_palette_pick_texture(char *title,int *txt_idx)
 {
 	int				n;
-	char			texture_names[max_map_texture][name_str_len];
 	
 	for (n=0;n!=max_map_texture;n++) {
 		if (map.textures[n].frames[0].name[0]==0x0) {
-			strcpy((char*)texture_names[n],"(none)");
+			strcpy((char*)list_texture_names[n],"(none)");
 		}
 		else {
-			strcpy((char*)texture_names[n],map.textures[n].frames[0].name);
+			strcpy((char*)list_texture_names[n],map.textures[n].frames[0].name);
 		}
 	}
 	
 	if (title==NULL) {
-		list_palette_start_picking_mode("Pick a Texture",(char*)texture_names,max_map_texture,name_str_len,0,TRUE,txt_idx,NULL);
+		list_palette_start_picking_mode("Pick a Texture",(char*)list_texture_names,max_map_texture,name_str_len,0,TRUE,txt_idx,NULL);
 	}
 	else {
-		list_palette_start_picking_mode(title,(char*)texture_names,max_map_texture,name_str_len,0,TRUE,txt_idx,NULL);
+		list_palette_start_picking_mode(title,(char*)list_texture_names,max_map_texture,name_str_len,0,TRUE,txt_idx,NULL);
 	}
 }
 

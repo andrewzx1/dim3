@@ -1343,7 +1343,7 @@ bool list_palette_click(list_palette_type *list,d3pnt *pnt,bool double_click)
 	int						item_idx;
 	d3pnt					pt;
 	d3rect					box;
-	
+
 	list_palette_box(&box);
 
 	pt.x=pnt->x-box.lx;
@@ -1393,8 +1393,9 @@ bool list_palette_click(list_palette_type *list,d3pnt *pnt,bool double_click)
 
 		// is there a button?
 
+	list->button_click=FALSE;
+
 	if (!list_picker.on) {
-		list->button_click=FALSE;
 
 		if (list->items[item_idx].button_type!=list_button_none) {
 			if (pt.x>=(((box.rx-box.lx)-list_palette_scroll_wid)-list_item_font_high)) {
@@ -1419,6 +1420,7 @@ bool list_palette_click(list_palette_type *list,d3pnt *pnt,bool double_click)
 		// list picker picks
 
 	if (!list_picker.on) return(TRUE);
+	if (!double_click) return(TRUE);
 
 	if (list_picker.picker_idx_ptr!=NULL) {
 		if (!list_picker.include_none) {

@@ -76,9 +76,11 @@ void alt_property_palette_fill_radar_icon(int radar_icon_idx)
       
 ======================================================= */
 
-void alt_property_palette_click_radar_icon(int radar_icon_idx,int id)
+void alt_property_palette_click_radar_icon(int radar_icon_idx,int id,bool double_click)
 {
 	iface_radar_icon_type		*icon;
+
+	if (!double_click) return;
 
 	icon=&iface.radar.icons[radar_icon_idx];
 

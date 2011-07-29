@@ -128,22 +128,22 @@ extern void property_palette_fill_particle(int particle_idx);
 extern void property_palette_fill_scenery(int scenery_idx);
 extern void property_palette_fill_node(int node_idx);
 
-extern void property_palette_click_texture(int texture_idx,int id);
-extern void property_palette_click_editor_preference(int id);
-extern void property_palette_click_map(int id);
-extern void property_palette_click_camera(int id);
-extern void property_palette_click_sky_weather(int id);
-extern void property_palette_click_cinema(int cinema_idx,int id);
-extern void property_palette_click_group(int group_idx,int id);
-extern void property_palette_click_movement(int movement_idx,int id);
-extern void property_palette_click_mesh(int mesh_idx,int poly_idx,int id);
-extern void property_palette_click_liquid(int liq_idx,int id);
-extern void property_palette_click_spot(int spot_idx,int id);
-extern void property_palette_click_light(int light_idx,int id);
-extern void property_palette_click_sound(int sound_idx,int id);
-extern void property_palette_click_particle(int particle_idx,int id);
-extern void property_palette_click_scenery(int scenery_idx,int id);
-extern void property_palette_click_node(int node_idx,int id);
+extern void property_palette_click_texture(int texture_idx,int id,bool double_click);
+extern void property_palette_click_editor_preference(int id,bool double_click);
+extern void property_palette_click_map(int id,bool double_click);
+extern void property_palette_click_camera(int id,bool double_click);
+extern void property_palette_click_sky_weather(int id,bool double_click);
+extern void property_palette_click_cinema(int cinema_idx,int id,bool double_click);
+extern void property_palette_click_group(int group_idx,int id,bool double_click);
+extern void property_palette_click_movement(int movement_idx,int id,bool double_click);
+extern void property_palette_click_mesh(int mesh_idx,int poly_idx,int id,bool double_click);
+extern void property_palette_click_liquid(int liq_idx,int id,bool double_click);
+extern void property_palette_click_spot(int spot_idx,int id,bool double_click);
+extern void property_palette_click_light(int light_idx,int id,bool double_click);
+extern void property_palette_click_sound(int sound_idx,int id,bool double_click);
+extern void property_palette_click_particle(int particle_idx,int id,bool double_click);
+extern void property_palette_click_scenery(int scenery_idx,int id,bool double_click);
+extern void property_palette_click_node(int node_idx,int id,bool double_click);
 
 extern void property_palette_initialize(void);
 extern void property_palette_shutdown(void);
@@ -176,8 +176,8 @@ extern bool alt_property_palette_click(d3pnt *pnt,bool double_click);
 extern void alt_property_palette_fill_cinema_action(int cinema_idx,int action_idx);
 extern void alt_property_palette_fill_movement_move(int movement_idx,int move_idx);
 
-extern void alt_property_palette_click_cinema_action(int cinema_idx,int action_idx,int id);
-extern void alt_property_palette_click_movement_move(int movement_idx,int move_idx,int id);
+extern void alt_property_palette_click_cinema_action(int cinema_idx,int action_idx,int id,bool double_click);
+extern void alt_property_palette_click_movement_move(int movement_idx,int move_idx,int id,bool double_click);
 
 //
 // dos

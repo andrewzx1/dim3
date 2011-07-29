@@ -504,15 +504,14 @@ typedef struct		{
 															movement_idx,movement_move_idx;
 						bool								on,was_moved,freeze,main_move;
 						d3fpnt								f_mov_add,f_mov_accum_add;
-						d3pnt								cuml_mov_add;
+						d3pnt								center_pnt,cuml_mov_add;
 						d3ang								rot_add,cuml_rot_add;
-					} group_move_type;
+					} group_run_type;
 
 typedef struct		{
 						int									unit_count;
 						char								name[name_str_len];
-						d3pnt								center_pnt;
-						group_move_type						move;
+						group_run_type						run;
 						group_unit_type						*unit_list;
 					} group_type;
 					
@@ -534,13 +533,17 @@ typedef struct		{
 					} movement_move_type;
 
 typedef struct		{
+						bool								started,opened,reverse;
+						d3pnt								auto_open_pnt;
+					} movement_run_type;
+
+typedef struct		{
 						int									nmove,group_idx,reverse_group_idx,
 															auto_open_distance;
 						char								name[name_str_len];
 						bool								auto_start,auto_open,auto_open_stand,
-															auto_open_never_close,
-															loop,started,opened,reverse;
-						d3pnt								auto_open_pnt;
+															auto_open_never_close,loop;
+						movement_run_type					run;
 						movement_move_type					*moves;
 					} movement_type;
 

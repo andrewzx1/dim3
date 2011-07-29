@@ -97,11 +97,13 @@ void alt_property_palette_fill_multiplayer_game(int multiplayer_game_idx)
       
 ======================================================= */
 
-void alt_property_palette_click_multiplayer_game(int multiplayer_game_idx,int id)
+void alt_property_palette_click_multiplayer_game(int multiplayer_game_idx,int id,bool double_click)
 {
 	iface_net_game_type		*game;
 
 	game=&iface.net_game.games[multiplayer_game_idx];
+
+	if (!double_click) return;
 
 	switch (id) {
 			

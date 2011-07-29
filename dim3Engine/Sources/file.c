@@ -395,8 +395,17 @@ bool game_file_save(char *err_str)
 
 	progress_draw(60);
 
-	game_file_add_chunk(map.group.groups,1,sizeof(group_type)*map.group.ngroup);
-	game_file_add_chunk(map.movement.movements,1,sizeof(movement_type)*map.movement.nmovement);
+	game_file_add_chunk(&map.group.ngroup,1,sizeof(int));
+
+	for (n=0;n!=map.group.ngroup;n++) {
+		game_file_add_chunk(&map.group.groups[n].run,1,sizeof(group_run_type));
+	}
+
+	game_file_add_chunk(&map.movement.nmovement,1,sizeof(int));
+
+	for (n=0;n!=map.movement.nmovement;n++) {
+		game_file_add_chunk(&map.movement.movements[n].run,1,sizeof(movement_run_type));
+	}
 	
 		// script states
 		
@@ -721,13 +730,21 @@ bool game_file_load(char *file_name,char *err_str)
 	game_file_get_chunk(&map.ambient);					
 	game_file_get_chunk(&map.fog);
 
-	progress_draw(60);
-	
-	map_group_dispose_unit_list(&map);			// need to destroy and rebuild unit lists
-	game_file_get_chunk(map.group.groups);
-	map_group_create_unit_list(&map);
+	progress_draw(65);
 
-	game_file_get_chunk(map.movement.movements);
+	game_file_get_chunk(&count);
+
+	for (n=0;n!=count;n++) {
+		game_file_get_chunk(&map.group.groups[n].run);
+	}
+
+	game_file_get_chunk(&count);
+
+	for (n=0;n!=count;n++) {
+		game_file_get_chunk(&map.movement.movements[n].run);
+	}
+
+	group_moves_rebuild();
 	
 		// script objects
 		
@@ -811,9 +828,14 @@ bool game_file_load(char *file_name,char *err_str)
 
 	map.rain.reset=TRUE;
 	view_fade_cancel();
+
+        // this is now the current saved
+		// game
+
+	strcpy(game_file_last_save_name,file_name);
 		
-		 // fix all the timing
-		 // and state informaton
+		// fix all the timing
+		// and state information
 		 
 	input_clear();
 
@@ -832,8 +854,8 @@ bool game_file_reload_ok(void)
 	if (game_file_last_save_name[0]==0x0) return(FALSE);
 	
 		// find the map name for this save
-		
-	strcpy(name,(game_file_last_save_name+19));
+
+	strcpy(name,(game_file_last_save_name+18));
 	
 	c=strchr(name,'.');			// remove the .sav
 	if (c!=NULL) *c=0x0;

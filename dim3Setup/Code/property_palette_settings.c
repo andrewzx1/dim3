@@ -212,8 +212,10 @@ void property_palette_fill_settings(void)
       
 ======================================================= */
 
-void property_palette_click_settings(int id)
+void property_palette_click_settings(int id,bool double_click)
 {
+	if (!double_click) return;
+
 	switch (id) {
 	
 			// project name

@@ -130,9 +130,11 @@ void alt2_property_palette_fill_chooser_piece(int chooser_idx,int chooser_piece_
       
 ======================================================= */
 
-void alt2_property_palette_click_chooser_piece(int chooser_idx,int chooser_piece_idx,int id)
+void alt2_property_palette_click_chooser_piece(int chooser_idx,int chooser_piece_idx,int id,bool double_click)
 {
 	iface_chooser_piece_type		*piece;
+
+	if (!double_click) return;
 
 	piece=&iface.chooser_list.choosers[chooser_idx].pieces[chooser_piece_idx];
 

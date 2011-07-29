@@ -67,9 +67,11 @@ void alt_property_palette_fill_action(int action_idx)
       
 ======================================================= */
 
-void alt_property_palette_click_action(int action_idx,int id)
+void alt_property_palette_click_action(int action_idx,int id,bool double_click)
 {
 	iface_action_display_type		*action;
+
+	if (!double_click) return;
 
 	action=&iface.action_display_list.action_displays[action_idx];
 

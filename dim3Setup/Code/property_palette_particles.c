@@ -86,7 +86,7 @@ void property_palette_fill_particles(void)
       
 ======================================================= */
 
-void property_palette_click_particles(int id)
+void property_palette_click_particles(int id,bool double_click)
 {
 	int					idx,sz;
 
@@ -95,7 +95,7 @@ void property_palette_click_particles(int id)
 	if ((id>=kParticleProperyName) && (id<(kParticleProperyName+max_iface_particle))) {
 		state.cur_particle_idx=id-kParticleProperyName;
 		state.cur_group_particle_idx=-1;
-		list_palette_set_level(2);
+		if (double_click) list_palette_set_level(2);
 		main_wind_draw();
 		return;
 	}

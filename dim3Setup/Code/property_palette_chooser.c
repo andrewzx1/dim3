@@ -71,7 +71,7 @@ void property_palette_fill_chooser(void)
       
 ======================================================= */
 
-void property_palette_click_chooser(int id)
+void property_palette_click_chooser(int id,bool double_click)
 {
 	int					idx,sz;
 
@@ -80,7 +80,7 @@ void property_palette_click_chooser(int id)
 	if ((id>=kChooserPropertyChooserName) && (id<(kChooserPropertyChooserName+max_iface_chooser))) {
 		state.cur_chooser_idx=id-kChooserPropertyChooserName;
 		state.cur_chooser_piece_idx=-1;
-		list_palette_set_level(2);
+		if (double_click) list_palette_set_level(2);
 		main_wind_draw();
 		return;
 	}

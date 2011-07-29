@@ -441,10 +441,13 @@ bool item_palette_click(d3pnt *pnt,bool double_click)
 			break;
 	}
 	
-		// open the property window
+		// open the property window for double-click
 		
-	property_palette_reset();
-	list_palette_set_level(1);
+	if (double_click) {
+		property_palette_reset();
+		list_palette_set_level(1);
+	}
+
 	main_wind_draw();
 	
 	return(TRUE);

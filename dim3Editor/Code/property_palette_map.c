@@ -213,11 +213,13 @@ void property_palette_fill_map(void)
       
 ======================================================= */
 
-void property_palette_click_map(int id)
+void property_palette_click_map(int id,bool double_click)
 {
 	int				param_idx,size;
 	char			str[256];
 	d3fpnt			uv;
+
+	if (!double_click) return;
 
 		// parameters
 

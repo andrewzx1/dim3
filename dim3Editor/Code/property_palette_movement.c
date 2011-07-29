@@ -113,7 +113,7 @@ void property_palette_fill_movement(int movement_idx)
       
 ======================================================= */
 
-void property_palette_click_movement(int movement_idx,int id)
+void property_palette_click_movement(int movement_idx,int id,bool double_click)
 {
 	movement_type		*movement;
 
@@ -123,7 +123,7 @@ void property_palette_click_movement(int movement_idx,int id)
 
 	if ((id>=kMovementPropertyMove) && (id<kMovementPropertyMoveDelete)) {
 		state.cur_movement_move_idx=id-kMovementPropertyMove;
-		list_palette_set_level(2);
+		if (double_click) list_palette_set_level(2);
 		main_wind_draw();
 		return;
 	}
@@ -132,6 +132,7 @@ void property_palette_click_movement(int movement_idx,int id)
 
 	if (id==kMovementPropertyMoveAdd) {
 		state.cur_movement_move_idx=map_movement_move_add(&map,movement_idx);
+		list_palette_set_level(2);
 		main_wind_draw();
 		return;
 	}
@@ -146,6 +147,8 @@ void property_palette_click_movement(int movement_idx,int id)
 	}
 
 		// regular items
+
+	if (!double_click) return;
 
 	state.cur_movement_move_idx=-1;
 

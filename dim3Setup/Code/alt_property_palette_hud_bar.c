@@ -104,9 +104,11 @@ void alt_property_palette_fill_hud_bar(int hud_bar_idx)
       
 ======================================================= */
 
-void alt_property_palette_click_hud_bar(int hud_bar_idx,int id)
+void alt_property_palette_click_hud_bar(int hud_bar_idx,int id,bool double_click)
 {
 	iface_bar_type				*bar;
+
+	if (!double_click) return;
 
 	bar=&iface.bar_list.bars[hud_bar_idx];
 

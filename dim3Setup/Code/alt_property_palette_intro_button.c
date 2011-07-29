@@ -182,10 +182,12 @@ void alt_property_palette_fill_intro_button(int intro_button_idx)
       
 ======================================================= */
 
-void alt_property_palette_click_intro_button(int intro_button_idx,int id)
+void alt_property_palette_click_intro_button(int intro_button_idx,int id,bool double_click)
 {
 	iface_intro_button_type				*btn;
 	iface_intro_simple_save_desc_type	*desc;
+
+	if (!double_click) return;
 
 	btn=get_intro_button_from_item_idx(intro_button_idx,NULL);
 	desc=get_intro_button_desc_from_item_idx(intro_button_idx);

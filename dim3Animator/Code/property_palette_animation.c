@@ -87,7 +87,7 @@ void property_palette_fill_animation(int animate_idx)
       
 ======================================================= */
 
-void property_palette_click_animation(int animate_idx,int id)
+void property_palette_click_animation(int animate_idx,int id,bool double_click)
 {
 	model_animate_type		*animate;
 
@@ -97,7 +97,7 @@ void property_palette_click_animation(int animate_idx,int id)
 		
 	if ((id>=kAnimationPropertyPoseMove) && (id<kAnimationPropertyPoseMoveDelete)) {
 		state.cur_animate_pose_move_idx=id-kAnimationPropertyPoseMove;
-		list_palette_set_level(2);
+		if (double_click) list_palette_set_level(2);
 		main_wind_draw();
 		return;
 	}
@@ -115,12 +115,15 @@ void property_palette_click_animation(int animate_idx,int id)
 		
 	if (id==kAnimationPropertyPoseAdd) {
 		state.cur_animate_pose_move_idx=model_animate_pose_insert(&model,animate_idx,state.cur_animate_pose_move_idx,0);
+		list_palette_set_level(2);
 		property_palette_pick_pose(&model.animates[animate_idx].pose_moves[state.cur_animate_pose_move_idx].pose_idx);
 		main_wind_draw();
 		return;
 	}
 	
 		// regular click
+
+	if (!double_click) return;
 
 	state.cur_animate_pose_move_idx=-1;
 

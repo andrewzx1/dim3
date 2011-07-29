@@ -71,7 +71,7 @@ void property_palette_fill_shaders(void)
       
 ======================================================= */
 
-void property_palette_click_shaders(int id)
+void property_palette_click_shaders(int id,bool double_click)
 {
 	int				idx,sz;
 
@@ -79,7 +79,7 @@ void property_palette_click_shaders(int id)
 		
 	if ((id>=kShaderProperyName) && (id<(kShaderProperyName+max_iface_user_shader))) {
 		state.cur_shader_idx=id-kShaderProperyName;
-		list_palette_set_level(2);
+		if (double_click) list_palette_set_level(2);
 		main_wind_draw();
 		return;
 	}

@@ -71,7 +71,7 @@ void property_palette_fill_crosshairs(void)
       
 ======================================================= */
 
-void property_palette_click_crosshairs(int id)
+void property_palette_click_crosshairs(int id,bool double_click)
 {
 	int				idx,sz;
 
@@ -79,7 +79,7 @@ void property_palette_click_crosshairs(int id)
 		
 	if ((id>=kCrosshairProperyName) && (id<(kCrosshairProperyName+max_iface_crosshair))) {
 		state.cur_crosshair_idx=id-kCrosshairProperyName;
-		list_palette_set_level(2);
+		if (double_click) list_palette_set_level(2);
 		main_wind_draw();
 		return;
 	}

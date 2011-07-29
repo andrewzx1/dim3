@@ -79,9 +79,11 @@ void property_palette_fill_node(int node_idx)
       
 ======================================================= */
 
-void property_palette_click_node(int node_idx,int id)
+void property_palette_click_node(int node_idx,int id,bool double_click)
 {
 	node_type			*node;
+
+	if (!double_click) return;
 
 	node=&map.nodes[node_idx];
 

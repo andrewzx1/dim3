@@ -86,10 +86,11 @@ void alt_property_palette_fill_movement_move(int movement_idx,int move_idx)
       
 ======================================================= */
 
-void alt_property_palette_click_movement_move(int movement_idx,int move_idx,int id)
+void alt_property_palette_click_movement_move(int movement_idx,int move_idx,int id,bool double_click)
 {
 	movement_move_type	*move;
 
+	if (!double_click) return;
 	if (move_idx==-1) return;
 
 	move=&map.movement.movements[movement_idx].moves[move_idx];
