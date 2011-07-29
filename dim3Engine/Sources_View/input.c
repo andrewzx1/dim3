@@ -301,6 +301,8 @@ bool input_event_pump(void)
 	
 		switch (event.type) {
 		
+				// window events
+				
 			#ifdef D3_SDL_1_3
 				case SDL_WINDOWEVENT:
 					active_change|=input_event_window(event.window.event);
@@ -311,6 +313,8 @@ bool input_event_pump(void)
 					break;
 			#endif
 
+				// keyboard events
+				
 			case SDL_KEYDOWN:
 				input_event_key(event.key.keysym.sym,TRUE);
 				break;
@@ -318,6 +322,8 @@ bool input_event_pump(void)
 			case SDL_KEYUP:
 				input_event_key(event.key.keysym.sym,FALSE);
 				break;
+				
+				// mouse events
 				
 			case SDL_MOUSEBUTTONDOWN:
 				input_event_mouse_button(event.button.button,TRUE);
@@ -337,6 +343,8 @@ bool input_event_pump(void)
 					break;
 			#endif
 			
+				// joystick events
+				
 			case SDL_JOYBUTTONDOWN:
 				input_event_joystick_button(event.button.button,TRUE);
 				break;

@@ -179,7 +179,7 @@ float* view_bind_map_liquid_vertex_object(int sz)
 		// resize VBO
 
 	sz*=sizeof(float);
-	glBufferData(GL_ARRAY_BUFFER,sz,NULL,GL_STREAM_DRAW);
+	glBufferData(GL_ARRAY_BUFFER,sz,NULL,GL_DYNAMIC_DRAW);
 
 		// map pointer
 
@@ -219,7 +219,7 @@ float* view_bind_map_sky_vertex_object(int sz)
 		// resize VBO
 
 	sz*=sizeof(float);
-	glBufferData(GL_ARRAY_BUFFER,sz,NULL,GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER,sz,NULL,GL_DYNAMIC_DRAW);
 
 		// map pointer
 
@@ -265,7 +265,7 @@ float* view_bind_map_next_vertex_object(int sz)
 		// we pass null to stop stalls
 
 	sz*=sizeof(float);
-	glBufferData(GL_ARRAY_BUFFER,sz,NULL,GL_STREAM_DRAW);
+	glBufferData(GL_ARRAY_BUFFER,sz,NULL,GL_DYNAMIC_DRAW);
 
 		// map pointer
 
@@ -341,7 +341,6 @@ void view_unbind_current_index_object(void)
 
 void view_draw_next_vertex_object_2D_tint_screen(void)
 {
-	unsigned short	indexes[4]={0,1,2,3};
 	float			*vertex_ptr;
 
 	vertex_ptr=view_bind_map_next_vertex_object(4*2);
@@ -368,7 +367,7 @@ void view_draw_next_vertex_object_2D_tint_screen(void)
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(2,GL_FLOAT,0,(void*)0);
 
-	glDrawElements(GL_TRIANGLE_STRIP,4,GL_UNSIGNED_SHORT,(GLvoid*)indexes);
+	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 
 	glDisableClientState(GL_VERTEX_ARRAY);
 
@@ -385,7 +384,6 @@ void view_draw_next_vertex_object_2D_tint_screen(void)
 
 void view_draw_next_vertex_object_2D_color_poly(int x0,int y0,d3col *col0,int x1,int y1,d3col *col1,int x2,int y2,d3col *col2,int x3,int y3,d3col *col3,float alpha)
 {
-	unsigned short	indexes[4]={0,1,2,3};
 	float			*vertex_ptr,*col_ptr;
 
 	vertex_ptr=view_bind_map_next_vertex_object(4*(2+4));
@@ -447,7 +445,7 @@ void view_draw_next_vertex_object_2D_color_poly(int x0,int y0,d3col *col0,int x1
 	glEnableClientState(GL_COLOR_ARRAY);
 	glColorPointer(4,GL_FLOAT,0,(void*)((4*2)*sizeof(float)));
 
-	glDrawElements(GL_TRIANGLE_STRIP,4,GL_UNSIGNED_SHORT,(GLvoid*)indexes);
+	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 
  	glDisableClientState(GL_COLOR_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
@@ -469,7 +467,6 @@ void view_draw_next_vertex_object_2D_color_quad(d3col *col,float alpha,int lft,i
 
 void view_draw_next_vertex_object_2D_color_trig(d3col *col,float alpha,int lft,int rgt,int top,int bot,int dir)
 {
-	unsigned short	indexes[3]={0,1,2};
 	float			*vertex_ptr;
 
 	vertex_ptr=view_bind_map_next_vertex_object(4*2);
@@ -535,7 +532,7 @@ void view_draw_next_vertex_object_2D_color_trig(d3col *col,float alpha,int lft,i
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(2,GL_FLOAT,0,(void*)0);
 
-	glDrawElements(GL_TRIANGLES,3,GL_UNSIGNED_SHORT,(GLvoid*)indexes);
+	glDrawArrays(GL_TRIANGLES,0,3);
 
 	glDisableClientState(GL_VERTEX_ARRAY);
 	
@@ -557,7 +554,6 @@ void view_draw_next_vertex_object_2D_color_trig(d3col *col,float alpha,int lft,i
 
 void view_draw_next_vertex_object_2D_line(d3col *col,float alpha,int x0,int y0,int x1,int y1)
 {
-	unsigned short	indexes[2]={0,1};
 	float			*vertex_ptr;
 
 	vertex_ptr=view_bind_map_next_vertex_object(2*2);
@@ -590,7 +586,7 @@ void view_draw_next_vertex_object_2D_line(d3col *col,float alpha,int x0,int y0,i
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(2,GL_FLOAT,0,(void*)0);
 
-	glDrawElements(GL_LINES,2,GL_UNSIGNED_SHORT,(GLvoid*)indexes);
+	glDrawArrays(GL_LINES,0,2);
 
 	glDisableClientState(GL_VERTEX_ARRAY);
 
@@ -606,7 +602,6 @@ void view_draw_next_vertex_object_2D_line(d3col *col,float alpha,int x0,int y0,i
 
 void view_draw_next_vertex_object_2D_line_poly(d3col *col,float alpha,int x0,int y0,int x1,int y1,int x2,int y2,int x3,int y3)
 {
-	unsigned short	indexes[8]={0,1,1,2,2,3,3,0};
 	float			*vertex_ptr;
 
 	vertex_ptr=view_bind_map_next_vertex_object(4*2);
@@ -645,7 +640,7 @@ void view_draw_next_vertex_object_2D_line_poly(d3col *col,float alpha,int x0,int
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(2,GL_FLOAT,0,(void*)0);
 	
-	glDrawElements(GL_LINES,8,GL_UNSIGNED_SHORT,(GLvoid*)indexes);
+	glDrawArrays(GL_LINE_LOOP,0,4);
 
 	glDisableClientState(GL_VERTEX_ARRAY);
 
@@ -666,7 +661,6 @@ void view_draw_next_vertex_object_2D_line_quad(d3col *col,float alpha,int lft,in
 
 void view_draw_next_vertex_object_2D_line_trig(d3col *col,float alpha,int lft,int rgt,int top,int bot,int dir)
 {
-	unsigned short	indexes[6]={0,1,1,2,2,0};
 	float			x0,x1,x2,y0,y1,y2;
 	float			*vertex_ptr;
 
@@ -742,7 +736,7 @@ void view_draw_next_vertex_object_2D_line_trig(d3col *col,float alpha,int lft,in
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(2,GL_FLOAT,0,(void*)0);
 
-	glDrawElements(GL_LINES,6,GL_UNSIGNED_SHORT,(GLvoid*)indexes);
+	glDrawArrays(GL_LINE_LOOP,0,3);
 
 	glDisableClientState(GL_VERTEX_ARRAY);
 
@@ -764,7 +758,6 @@ void view_draw_next_vertex_object_2D_line_trig(d3col *col,float alpha,int lft,in
 
 void view_draw_next_vertex_object_3D_line(d3col *col,float alpha,int x0,int y0,int z0,int x1,int y1,int z1)
 {
-	unsigned short	indexes[2]={0,1};
 	float			*vertex_ptr;
 
 	vertex_ptr=view_bind_map_next_vertex_object(2*3);
@@ -797,7 +790,7 @@ void view_draw_next_vertex_object_3D_line(d3col *col,float alpha,int x0,int y0,i
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(3,GL_FLOAT,0,(void*)0);
 
-	glDrawElements(GL_LINES,2,GL_UNSIGNED_SHORT,(GLvoid*)indexes);
+	glDrawArrays(GL_LINES,0,2);
 
 	glDisableClientState(GL_VERTEX_ARRAY);
 
@@ -892,7 +885,6 @@ void view_draw_next_vertex_object_3D_line_cube(d3col *col,float alpha,int *px,in
 
 void view_draw_next_vertex_object_2D_texture_quad(GLuint gl_id,d3col *col,float alpha,int lft,int rgt,int top,int bot,float gx,float gx2,float gy,float gy2)
 {
-	unsigned short		indexes[4]={0,1,2,3};
 	float				*vertex_ptr,*uv_ptr;
 
 	vertex_ptr=view_bind_map_next_vertex_object(4*(2+2));
@@ -958,7 +950,7 @@ void view_draw_next_vertex_object_2D_texture_quad(GLuint gl_id,d3col *col,float 
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2,GL_FLOAT,0,(void*)((4*2)*sizeof(float)));
 
-	glDrawElements(GL_TRIANGLE_STRIP,4,GL_UNSIGNED_SHORT,(GLvoid*)indexes);
+	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 
  	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
@@ -977,7 +969,9 @@ void view_draw_next_vertex_object_2D_texture_quad(GLuint gl_id,d3col *col,float 
 
 void view_draw_next_vertex_object_2D_texture_quad_rectangle(GLuint gl_id,float alpha,int lft,int rgt,int top,int bot,int pixel_wid,int pixel_high)
 {
-	unsigned short		indexes[4]={0,1,2,3};
+#ifdef D3_OS_IPHONE
+	view_draw_next_vertex_object_2D_texture_quad(gl_id,NULL,alpha,lft,rgt,top,bot,0.0f,1.0f,0.0f,1.0f);
+#else
 	float				*vertex_ptr,*uv_ptr;
 	
 		// create the vertexes and uv
@@ -1040,7 +1034,7 @@ void view_draw_next_vertex_object_2D_texture_quad_rectangle(GLuint gl_id,float a
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2,GL_FLOAT,0,(void*)((4*2)*sizeof(float)));
 
-	glDrawElements(GL_TRIANGLE_STRIP,4,GL_UNSIGNED_SHORT,(GLvoid*)indexes);
+	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 
  	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
@@ -1056,5 +1050,7 @@ void view_draw_next_vertex_object_2D_texture_quad_rectangle(GLuint gl_id,float a
 		// unbind the vbo
 
 	view_unbind_current_vertex_object();
+	
+#endif
 }
 

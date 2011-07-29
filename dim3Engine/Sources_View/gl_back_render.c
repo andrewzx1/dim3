@@ -47,6 +47,7 @@ extern bool view_draw_node(node_type *node);
       
 ======================================================= */
 
+// supergumba -- this is actually available, turn it back on 
 #ifdef D3_OPENGL_ES
 
 void gl_back_render_initialize(void) {}
