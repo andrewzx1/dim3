@@ -190,12 +190,14 @@ void property_palette_fill_liquid(int liq_idx)
       
 ======================================================= */
 
-void property_palette_click_liquid(int liq_idx,int id)
+void property_palette_click_liquid(int liq_idx,int id,bool double_click)
 {
 	int						size;
 	d3fpnt					uv;
 	map_liquid_type			*liq;
 	editor_view_type		*view;
+
+	if (!double_click) return;
 
 	liq=&map.liquid.liquids[liq_idx];
 	view=view_get_current_view();

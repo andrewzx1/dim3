@@ -123,7 +123,7 @@ void property_palette_fill_mesh(int mesh_idx)
       
 ======================================================= */
 
-void property_palette_click_mesh(int mesh_idx,int id)
+void property_palette_click_mesh(int mesh_idx,int id,bool double_click)
 {
 	int						n,idx;
 	d3pnt					import_move,move_pnt;
@@ -133,6 +133,8 @@ void property_palette_click_mesh(int mesh_idx,int id)
 	model_bone_type			*bone;
 	model_mesh_type			*mesh;
 	
+	if (!double_click) return;
+
 	mesh=&model.meshes[mesh_idx];
 
 	switch (id) {

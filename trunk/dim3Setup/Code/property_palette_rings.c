@@ -71,7 +71,7 @@ void property_palette_fill_rings(void)
       
 ======================================================= */
 
-void property_palette_click_rings(int id)
+void property_palette_click_rings(int id,bool double_click)
 {
 	int					idx,sz;
 
@@ -79,7 +79,7 @@ void property_palette_click_rings(int id)
 		
 	if ((id>=kRingProperyName) && (id<(kRingProperyName+max_iface_ring))) {
 		state.cur_ring_idx=id-kRingProperyName;
-		list_palette_set_level(2);
+		if (double_click) list_palette_set_level(2);
 		main_wind_draw();
 		return;
 	}

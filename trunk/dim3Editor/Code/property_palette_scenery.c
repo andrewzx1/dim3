@@ -97,10 +97,12 @@ void property_palette_fill_scenery(int scenery_idx)
       
 ======================================================= */
 
-void property_palette_click_scenery(int scenery_idx,int id)
+void property_palette_click_scenery(int scenery_idx,int id,bool double_click)
 {
 	int							frame_idx,frame;
 	map_scenery_type			*scenery;
+
+	if (!double_click) return;
 
 	scenery=&map.sceneries[scenery_idx];
 

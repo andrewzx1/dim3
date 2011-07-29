@@ -187,14 +187,14 @@ bool property_palette_click(d3pnt *pnt,bool double_click)
 		// if texture window is up, texture properties
 
 	if (state.texture_edit_idx!=-1) {
-		property_palette_click_texture(state.texture_edit_idx,property_palette.item_id);
+		property_palette_click_texture(state.texture_edit_idx,property_palette.item_id,double_click);
 		return(TRUE);
 	}
 
 		// if preference window is up, preference properties
 
 	if (state.in_preference) {
-		property_palette_click_animator_preference(property_palette.item_id);
+		property_palette_click_animator_preference(property_palette.item_id,double_click);
 		return(TRUE);
 	}
 
@@ -203,27 +203,27 @@ bool property_palette_click(d3pnt *pnt,bool double_click)
 	switch (state.cur_item) {
 
 		case item_model:
-			property_palette_click_model(property_palette.item_id);
+			property_palette_click_model(property_palette.item_id,double_click);
 			break;
 
 		case item_mesh:
-			property_palette_click_mesh(state.cur_mesh_idx,property_palette.item_id);
+			property_palette_click_mesh(state.cur_mesh_idx,property_palette.item_id,double_click);
 			break;
 
 		case item_animate:
-			property_palette_click_animation(state.cur_animate_idx,property_palette.item_id);
+			property_palette_click_animation(state.cur_animate_idx,property_palette.item_id,double_click);
 			break;
 
 		case item_pose:
-			property_palette_click_pose(state.cur_pose_idx,property_palette.item_id);
+			property_palette_click_pose(state.cur_pose_idx,property_palette.item_id,double_click);
 			break;
 
 		case item_bone:
-			property_palette_click_bone(state.cur_bone_idx,state.cur_pose_idx,property_palette.item_id);
+			property_palette_click_bone(state.cur_bone_idx,state.cur_pose_idx,property_palette.item_id,double_click);
 			break;
 
 		case item_hit_box:
-			property_palette_click_hit_box(state.cur_hit_box_idx,property_palette.item_id);
+			property_palette_click_hit_box(state.cur_hit_box_idx,property_palette.item_id,double_click);
 			break;
 
 	}

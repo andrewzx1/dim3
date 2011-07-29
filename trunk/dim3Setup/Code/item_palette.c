@@ -165,11 +165,14 @@ bool item_palette_click(d3pnt *pnt,bool double_click)
 
 	if (item_palette.item_idx==-1) return(TRUE);
 	
-		// handle click
+		// select item
 
 	state.cur_item=item_palette.item_type;
 
-	list_palette_set_level(1);
+		// if double click, edit
+
+	if (double_click) list_palette_set_level(1);
+
 	main_wind_draw();
 	
 	return(TRUE);

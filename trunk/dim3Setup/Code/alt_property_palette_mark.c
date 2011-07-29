@@ -110,9 +110,11 @@ void alt_property_palette_fill_mark(int mark_idx)
       
 ======================================================= */
 
-void alt_property_palette_click_mark(int mark_idx,int id)
+void alt_property_palette_click_mark(int mark_idx,int id,bool double_click)
 {
 	iface_mark_type			*mark;
+
+	if (!double_click) return;
 
 	mark=&iface.mark_list.marks[mark_idx];
 

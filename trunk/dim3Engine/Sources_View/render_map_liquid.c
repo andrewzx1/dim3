@@ -96,28 +96,24 @@ bool liquid_is_transparent(map_liquid_type *liq)
       
 ======================================================= */
 
-void liquid_render_liquid_create_vertex(map_liquid_type *liq,float uv_shift,bool is_overaly)
+bool liquid_render_liquid_create_vertex(map_liquid_type *liq,float uv_shift,bool is_overaly)
 {
-	int				n,k,vbo_cnt;
+	int				n,k;
+	unsigned short	*index_ptr;
 	float			fy,gx,gy,gx2,gy2,gx_add,gy_add,
 					f_tick,f_stamp_size;
-	bool			shader_on;
 	float			*vertex_ptr,*vl,*uv,*uv2,*ct,*cn,*cl;
+	bool			shader_on;
 	
 		// setup vbo
 		// shaders don't need light lists
 		
 	shader_on=view_shader_on();
 
-	if (shader_on) {
-		vbo_cnt=4*(3+2+2+3+3);
-	}
-	else {
-		vbo_cnt=4*(3+2+2+3);
-	}
+	view_bind_mesh_liquid_vertex_object(&liq->vbo);
 
-	vertex_ptr=view_bind_map_liquid_vertex_object(vbo_cnt);
-	if (vertex_ptr==NULL) return;
+	vertex_ptr=view_map_mesh_liquid_vertex_object(&liq->vbo);
+	if (vertex_ptr==NULL) return(FALSE);
 
 		// liquid texture uvs
 		
@@ -253,7 +249,25 @@ void liquid_render_liquid_create_vertex(map_liquid_type *liq,float uv_shift,bool
 		}
 	}
 
-	view_unmap_liquid_vertex_object();
+	view_unmap_mesh_liquid_vertex_object();
+	view_unbind_mesh_liquid_vertex_object();
+
+		// the indexes
+
+	view_bind_mesh_liquid_index_object(&liq->vbo);
+	
+	index_ptr=view_map_mesh_liquid_index_object(&liq->vbo);
+	if (index_ptr==NULL) return(FALSE);
+
+	*index_ptr++=0;
+	*index_ptr++=1;
+	*index_ptr++=2;
+	*index_ptr++=3;
+
+	view_unmap_mesh_liquid_index_object();
+	view_unbind_mesh_liquid_index_object();
+
+	return(TRUE);
 }
 
 /* =======================================================
@@ -282,20 +296,17 @@ void liquid_render_liquid_shader(map_liquid_type *liq,int txt_idx,int lmap_txt_i
 		glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 	}
 	
-		// start vertex array
+		// the liquid VBO
+	
+	view_bind_mesh_liquid_vertex_object(&liq->vbo);
+	view_bind_mesh_liquid_index_object(&liq->vbo);
 
-	glClientActiveTexture(GL_TEXTURE0);
-	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(3,GL_FLOAT,0,0);
 
-		// shader UVs
-
 	glClientActiveTexture(GL_TEXTURE1);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2,GL_FLOAT,0,(void*)((4*(3+2))*sizeof(float)));
 	
 	glClientActiveTexture(GL_TEXTURE0);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2,GL_FLOAT,0,(void*)((4*3)*sizeof(float)));
 
 		// shader lights and tangents
@@ -322,18 +333,16 @@ void liquid_render_liquid_shader(map_liquid_type *liq,int txt_idx,int lmap_txt_i
 	
 		// draw liquid
 	
-	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
-	
+	#ifndef D3_OPENGL_ES
+		glDrawRangeElements(GL_TRIANGLE_STRIP,0,4,4,GL_UNSIGNED_SHORT,(GLvoid*)0);
+	#else
+		glDrawElements(GL_TRIANGLE_STRIP,4,GL_UNSIGNED_INT,(GLvoid*)0);
+	#endif
+
 	gl_shader_draw_end();
-
-		// end arrays
-
-	glClientActiveTexture(GL_TEXTURE1);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	
-	glClientActiveTexture(GL_TEXTURE0);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-	glDisableClientState(GL_VERTEX_ARRAY);
+	view_unbind_mesh_liquid_vertex_object();
+	view_unbind_mesh_liquid_index_object();
 }
 
 void liquid_render_liquid_fixed(map_liquid_type *liq,int txt_idx,int lmap_txt_idx,bool back_rendering)
@@ -342,6 +351,10 @@ void liquid_render_liquid_fixed(map_liquid_type *liq,int txt_idx,int lmap_txt_id
 	float					alpha;
 	GLuint					gl_id,lmap_gl_id;
 	texture_type			*texture;
+
+		// only this route uses color arrays
+		
+	glEnableClientState(GL_COLOR_ARRAY);
 
 		// setup texture
 
@@ -354,26 +367,20 @@ void liquid_render_liquid_fixed(map_liquid_type *liq,int txt_idx,int lmap_txt_id
 	else {
 		glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 	}
-	
-		// start vertex array
 
-	glClientActiveTexture(GL_TEXTURE0);
-	glEnableClientState(GL_VERTEX_ARRAY);
+		// the liquid VBO
+	
+	view_bind_mesh_liquid_vertex_object(&liq->vbo);
+	view_bind_mesh_liquid_index_object(&liq->vbo);
+
 	glVertexPointer(3,GL_FLOAT,0,0);
 
-		// FF UVs
-
 	glClientActiveTexture(GL_TEXTURE1);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2,GL_FLOAT,0,(void*)((4*3)*sizeof(float)));
 	
 	glClientActiveTexture(GL_TEXTURE0);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2,GL_FLOAT,0,(void*)((4*(3+2))*sizeof(float)));
 
-		// need color pointers for fixed function
-
-	glEnableClientState(GL_COLOR_ARRAY);
 	glColorPointer(3,GL_FLOAT,0,(void*)((4*(3+2+2))*sizeof(float)));
 
 		// back rendering overrides
@@ -398,21 +405,23 @@ void liquid_render_liquid_fixed(map_liquid_type *liq,int txt_idx,int lmap_txt_id
 
 	gl_texture_transparent_light_map_start();
 	gl_texture_transparent_light_map_set(gl_id,lmap_gl_id,alpha);
-	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
-	gl_texture_transparent_light_map_end();
 
-		// disable color array
+		// draw liquid
+	
+	#ifndef D3_OPENGL_ES
+		glDrawRangeElements(GL_TRIANGLE_STRIP,0,4,4,GL_UNSIGNED_SHORT,(GLvoid*)0);
+	#else
+		glDrawElements(GL_TRIANGLE_STRIP,4,GL_UNSIGNED_INT,(GLvoid*)0);
+	#endif
+	
+		// only this route uses color arrays
 
 	glDisableClientState(GL_COLOR_ARRAY);
 
-		// end arrays
+	gl_texture_transparent_light_map_end();
 
-	glClientActiveTexture(GL_TEXTURE1);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-	
-	glClientActiveTexture(GL_TEXTURE0);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-	glDisableClientState(GL_VERTEX_ARRAY);
+	view_unbind_mesh_liquid_vertex_object();
+	view_unbind_mesh_liquid_index_object();
 }
 
 void liquid_render_liquid(map_liquid_type *liq)
@@ -429,7 +438,7 @@ void liquid_render_liquid(map_liquid_type *liq)
 		// draw the reflection liquid
 		// or just the regular texture
 
-	liquid_render_liquid_create_vertex(liq,uv_shift,FALSE);
+	if (!liquid_render_liquid_create_vertex(liq,uv_shift,FALSE)) return;
 
 	if (shader_on) {
 		liquid_render_liquid_shader(liq,liq->txt_idx,liq->lmap_txt_idx,TRUE);
@@ -437,8 +446,6 @@ void liquid_render_liquid(map_liquid_type *liq)
 	else {
 		liquid_render_liquid_fixed(liq,liq->txt_idx,liq->lmap_txt_idx,TRUE);
 	}
-
-	view_unbind_liquid_vertex_object();
 	
 		// count the liquid
 		
@@ -457,7 +464,7 @@ void liquid_render_liquid(map_liquid_type *liq)
 
 		// draw the overlay
 
-	liquid_render_liquid_create_vertex(liq,(uv_shift*0.5f),TRUE);
+	if (!liquid_render_liquid_create_vertex(liq,(uv_shift*0.5f),TRUE)) return;
 
 	if (shader_on) {
 		liquid_render_liquid_shader(liq,liq->overlay.txt_idx,liq->lmap_txt_idx,FALSE);
@@ -465,8 +472,6 @@ void liquid_render_liquid(map_liquid_type *liq)
 	else {
 		liquid_render_liquid_fixed(liq,liq->overlay.txt_idx,liq->lmap_txt_idx,FALSE);
 	}
-
-	view_unbind_liquid_vertex_object();
 
 	if (!is_transparent) {
 		glDisable(GL_BLEND);
@@ -491,7 +496,7 @@ void render_map_liquid_opaque(void)
 	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
 	gl_setup_project();
 	
-		// setup drawing
+		// common setup
 
 	glDisable(GL_BLEND);
 
@@ -501,6 +506,14 @@ void render_map_liquid_opaque(void)
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_TRUE);
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+	
+	glClientActiveTexture(GL_TEXTURE1);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	
+	glClientActiveTexture(GL_TEXTURE0);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	
 		// draw opaque liquids
 		
@@ -512,6 +525,16 @@ void render_map_liquid_opaque(void)
 			}
 		}
 	}
+
+		// common finish
+		
+	glDisableClientState(GL_VERTEX_ARRAY);
+
+	glClientActiveTexture(GL_TEXTURE1);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+
+	glClientActiveTexture(GL_TEXTURE0);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 }
 
 void render_map_liquid_transparent(void)
@@ -525,7 +548,7 @@ void render_map_liquid_transparent(void)
 	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
 	gl_setup_project();
 	
-		// setup drawing
+		// common setup
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
@@ -537,6 +560,14 @@ void render_map_liquid_transparent(void)
 	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_FALSE);
 	
+	glEnableClientState(GL_VERTEX_ARRAY);
+	
+	glClientActiveTexture(GL_TEXTURE1);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	
+	glClientActiveTexture(GL_TEXTURE0);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
 		// draw transparent liquids
 		
 	for (n=0;n!=view.render->draw_list.count;n++) {
@@ -547,5 +578,15 @@ void render_map_liquid_transparent(void)
 			}
 		}
 	}
+
+		// common finish
+		
+	glDisableClientState(GL_VERTEX_ARRAY);
+
+	glClientActiveTexture(GL_TEXTURE1);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+
+	glClientActiveTexture(GL_TEXTURE0);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 }
 

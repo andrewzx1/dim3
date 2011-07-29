@@ -202,67 +202,67 @@ bool property_palette_click(d3pnt *pnt,bool double_click)
 	switch (state.cur_item) {
 
 		case item_interface_settings:
-			property_palette_click_settings(property_palette.item_id);
+			property_palette_click_settings(property_palette.item_id,double_click);
 			break;
 
 		case item_interface_intro:
-			property_palette_click_intro(property_palette.item_id);
+			property_palette_click_intro(property_palette.item_id,double_click);
 			break;
 
 		case item_interface_setup:
-			property_palette_click_setup(property_palette.item_id);
+			property_palette_click_setup(property_palette.item_id,double_click);
 			break;
 
 		case item_interface_hud:
-			property_palette_click_hud(property_palette.item_id);
+			property_palette_click_hud(property_palette.item_id,double_click);
 			break;
 
 		case item_interface_radar:
-			property_palette_click_radar(property_palette.item_id);
+			property_palette_click_radar(property_palette.item_id,double_click);
 			break;
 
 		case item_interface_multiplayer:
-			property_palette_click_multiplayer(property_palette.item_id);
+			property_palette_click_multiplayer(property_palette.item_id,double_click);
 			break;
 
 		case item_interface_menu:
-			property_palette_click_menu(property_palette.item_id);
+			property_palette_click_menu(property_palette.item_id,double_click);
 			break;
 
 		case item_interface_chooser:
-			property_palette_click_chooser(property_palette.item_id);
+			property_palette_click_chooser(property_palette.item_id,double_click);
 			break;
 
 		case item_interface_sound:
-			property_palette_click_sounds(property_palette.item_id);
+			property_palette_click_sounds(property_palette.item_id,double_click);
 			break;
 
 		case item_interface_particle:
-			property_palette_click_particles(property_palette.item_id);
+			property_palette_click_particles(property_palette.item_id,double_click);
 			break;
 
 		case item_interface_ring:
-			property_palette_click_rings(property_palette.item_id);
+			property_palette_click_rings(property_palette.item_id,double_click);
 			break;
 
 		case item_interface_halo:
-			property_palette_click_halos(property_palette.item_id);
+			property_palette_click_halos(property_palette.item_id,double_click);
 			break;
 
 		case item_interface_mark:
-			property_palette_click_marks(property_palette.item_id);
+			property_palette_click_marks(property_palette.item_id,double_click);
 			break;
 
 		case item_interface_crosshair:
-			property_palette_click_crosshairs(property_palette.item_id);
+			property_palette_click_crosshairs(property_palette.item_id,double_click);
 			break;
 
 		case item_interface_action:
-			property_palette_click_actions(property_palette.item_id);
+			property_palette_click_actions(property_palette.item_id,double_click);
 			break;
 
 		case item_interface_shader:
-			property_palette_click_shaders(property_palette.item_id);
+			property_palette_click_shaders(property_palette.item_id,double_click);
 			break;
 
 	}

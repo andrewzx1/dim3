@@ -75,9 +75,11 @@ void property_palette_fill_sound(int sound_idx)
       
 ======================================================= */
 
-void property_palette_click_sound(int sound_idx,int id)
+void property_palette_click_sound(int sound_idx,int id,bool double_click)
 {
 	map_sound_type		*sound;
+
+	if (!double_click) return;
 
 	sound=&map.sounds[sound_idx];
 

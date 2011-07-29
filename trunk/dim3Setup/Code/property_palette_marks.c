@@ -71,7 +71,7 @@ void property_palette_fill_marks(void)
       
 ======================================================= */
 
-void property_palette_click_marks(int id)
+void property_palette_click_marks(int id,bool double_click)
 {
 	int				idx,sz;
 
@@ -79,7 +79,7 @@ void property_palette_click_marks(int id)
 		
 	if ((id>=kMarkProperyName) && (id<(kMarkProperyName+max_iface_mark))) {
 		state.cur_mark_idx=id-kMarkProperyName;
-		list_palette_set_level(2);
+		if (double_click) list_palette_set_level(2);
 		main_wind_draw();
 		return;
 	}

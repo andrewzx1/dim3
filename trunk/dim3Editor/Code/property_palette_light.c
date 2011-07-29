@@ -92,9 +92,11 @@ void property_palette_fill_light(int light_idx)
       
 ======================================================= */
 
-void property_palette_click_light(int light_idx,int id)
+void property_palette_click_light(int light_idx,int id,bool double_click)
 {
 	map_light_type		*light;
+
+	if (!double_click) return;
 
 	light=&map.lights[light_idx];
 

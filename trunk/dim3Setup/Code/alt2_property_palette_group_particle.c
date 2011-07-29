@@ -69,9 +69,11 @@ void alt2_property_palette_fill_group_particle(int particle_idx,int group_partic
       
 ======================================================= */
 
-void alt2_property_palette_click_group_particle(int particle_idx,int group_particle_idx,int id)
+void alt2_property_palette_click_group_particle(int particle_idx,int group_particle_idx,int id,bool double_click)
 {
 	iface_particle_group_piece_type			*group_particle;
+
+	if (!double_click) return;
 
 	group_particle=&iface.particle_list.particles[particle_idx].group.particles[group_particle_idx];
 

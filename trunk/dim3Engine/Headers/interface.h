@@ -361,9 +361,29 @@ extern void decal_add(int obj_idx,d3pnt *pnt,poly_pointer_type *poly_ptr,int mar
 extern void decal_dispose(void);
 
 //
+// groups
+//
+
+extern bool group_move_start(int group_idx,int movement_idx,int movement_move_idx,d3pnt *mov,d3ang *rot,int count,int user_id,int obj_idx,bool main_move);
+extern void group_move_freeze(int group_idx,bool freeze);
+extern bool group_move_frozen(int group_idx);
+extern bool group_move_object_stand(int group_idx,int stand_mesh_idx);
+extern void group_moves_run(bool run_events);
+extern void group_moves_rebuild(void);
+extern void group_moves_synch_with_client(int group_idx,network_reply_group_synch *synch);
+extern void group_moves_synch_with_host(network_reply_group_synch *synch);
+
+extern void group_show(int group_idx,bool show);
+extern void group_solid(int group_idx,bool solid);
+extern void group_texture(int group_idx,int index);
+extern void group_texture_shift(int group_idx,float x_shift,float y_shift);
+
+//
 // movements
 //
 
+extern void map_movements_auto_open(void);
+extern bool map_movement_next_move(int movement_idx,int move_idx,int obj_idx);
 extern void map_movements_script_start(int obj_idx,int movement_idx,bool reverse);
 extern void map_movements_script_start_or_thaw(int obj_idx,int movement_idx);
 extern void map_movements_script_freeze(int movement_idx);
@@ -542,6 +562,10 @@ extern inline bool input_get_joystick_axis_as_button_min(int axis);
 extern inline bool input_get_joystick_axis_as_button_max(int axis);
 extern bool input_get_joystick_button(int button);
 
+extern void input_clear_touch(void);
+extern void input_touch_event_up(int id);
+extern void input_touch_event_down(int id,int x,int y);
+
 //
 // gl init and shutdown
 //
@@ -607,10 +631,6 @@ extern void view_create_mesh_vertex_object(map_mesh_type *mesh);
 extern void view_dispose_mesh_vertex_object(map_mesh_type *mesh);
 extern void view_create_liquid_vertex_object(map_liquid_type *liq);
 extern void view_dispose_liquid_vertex_object(map_liquid_type *liq);
-
-extern inline float* view_bind_map_liquid_vertex_object(int sz);
-extern inline void view_unmap_liquid_vertex_object(void);
-extern inline void view_unbind_liquid_vertex_object(void);
 
 extern inline float* view_bind_map_sky_vertex_object(int sz);
 extern inline void view_bind_sky_vertex_object(void);

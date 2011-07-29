@@ -207,7 +207,7 @@ void alt_property_palette_fill_animate_pose_move(int animate_idx,int pose_move_i
       
 ======================================================= */
 
-void alt_property_palette_click_animate_pose_move(int animate_idx,int pose_move_idx,int id)
+void alt_property_palette_click_animate_pose_move(int animate_idx,int pose_move_idx,int id,bool double_click)
 {
 	int						idx;
 	model_animate_type		*animate;
@@ -226,7 +226,7 @@ void alt_property_palette_click_animate_pose_move(int animate_idx,int pose_move_
 		return;
 	}
 
-	if ((id>=kAnimationPoseMovePropertyParticleBase) && (id<kAnimationPoseMovePropertyRingBase)) {
+	if ((double_click) && ((id>=kAnimationPoseMovePropertyParticleBase) && (id<kAnimationPoseMovePropertyRingBase))) {
 
 		id-=kAnimationPoseMovePropertyParticleBase;
 		idx=id/kAnimationPoseMovePropertyParticleMult;
@@ -280,7 +280,7 @@ void alt_property_palette_click_animate_pose_move(int animate_idx,int pose_move_
 		return;
 	}
 
-	if (id>=kAnimationPoseMovePropertyRingBase) {
+	if ((double_click) && (id>=kAnimationPoseMovePropertyRingBase)) {
 
 		id-=kAnimationPoseMovePropertyRingBase;
 		idx=id/kAnimationPoseMovePropertyRingMult;
@@ -315,6 +315,8 @@ void alt_property_palette_click_animate_pose_move(int animate_idx,int pose_move_
 	}
 
 		// regular values
+
+	if (!double_click) return;
 
 	switch (id) {
 

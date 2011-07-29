@@ -40,9 +40,7 @@ extern js_type				js;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
 
-extern void group_moves_run(bool run_events);
 extern void cinema_run(void);
-extern void map_movements_auto_open(void);
 
 /* =======================================================
 

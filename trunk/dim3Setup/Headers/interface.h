@@ -94,22 +94,22 @@ extern void property_palette_fill_crosshairs(void);
 extern void property_palette_fill_actions(void);
 extern void property_palette_fill_shaders(void);
 
-extern void property_palette_click_settings(int id);
-extern void property_palette_click_intro(int id);
-extern void property_palette_click_setup(int id);
-extern void property_palette_click_hud(int id);
-extern void property_palette_click_radar(int id);
-extern void property_palette_click_multiplayer(int id);
-extern void property_palette_click_menu(int id);
-extern void property_palette_click_chooser(int id);
-extern void property_palette_click_sounds(int id);
-extern void property_palette_click_particles(int id);
-extern void property_palette_click_rings(int id);
-extern void property_palette_click_halos(int id);
-extern void property_palette_click_marks(int id);
-extern void property_palette_click_crosshairs(int id);
-extern void property_palette_click_actions(int id);
-extern void property_palette_click_shaders(int id);
+extern void property_palette_click_settings(int id,bool double_click);
+extern void property_palette_click_intro(int id,bool double_click);
+extern void property_palette_click_setup(int id,bool double_click);
+extern void property_palette_click_hud(int id,bool double_click);
+extern void property_palette_click_radar(int id,bool double_click);
+extern void property_palette_click_multiplayer(int id,bool double_click);
+extern void property_palette_click_menu(int id,bool double_click);
+extern void property_palette_click_chooser(int id,bool double_click);
+extern void property_palette_click_sounds(int id,bool double_click);
+extern void property_palette_click_particles(int id,bool double_click);
+extern void property_palette_click_rings(int id,bool double_click);
+extern void property_palette_click_halos(int id,bool double_click);
+extern void property_palette_click_marks(int id,bool double_click);
+extern void property_palette_click_crosshairs(int id,bool double_click);
+extern void property_palette_click_actions(int id,bool double_click);
+extern void property_palette_click_shaders(int id,bool double_click);
 
 //
 // alt property list palette
@@ -142,26 +142,26 @@ extern void alt_property_palette_fill_crosshair(int crosshair_idx);
 extern void alt_property_palette_fill_action(int action_idx);
 extern void alt_property_palette_fill_shader(int shader_idx);
 
-extern void alt_property_palette_click_intro_button(int intro_button_idx,int id);
-extern void alt_property_palette_click_intro_model(int intro_model_idx,int id);
-extern void alt_property_palette_click_hud_bitmap(int hud_bitmap_idx,int id);
-extern void alt_property_palette_click_hud_text(int hud_text_idx,int id);
-extern void alt_property_palette_click_hud_bar(int hud_bar_idx,int id);
-extern void alt_property_palette_click_radar_icon(int radar_icon_idx,int id);
-extern void alt_property_palette_click_multiplayer_character(int multiplayer_character_idx,int id);
-extern void alt_property_palette_click_multiplayer_game(int game_character_idx,int id);
-extern void alt_property_palette_click_multiplayer_option(int option_character_idx,int id);
-extern void alt_property_palette_click_menu(int menu_idx,int id);
-extern void alt_property_palette_click_chooser(int chooser_idx,int id);
-extern void alt_property_palette_click_sound(int sound_idx,int id);
-extern void alt_property_palette_click_particle(int particle_idx,int id);
-extern void alt_property_palette_click_particle_group(int particle_idx,int id);
-extern void alt_property_palette_click_ring(int ring_idx,int id);
-extern void alt_property_palette_click_halo(int halo_idx,int id);
-extern void alt_property_palette_click_mark(int mark_idx,int id);
-extern void alt_property_palette_click_crosshair(int crosshair_idx,int id);
-extern void alt_property_palette_click_action(int action_idx,int id);
-extern void alt_property_palette_click_shader(int shader_idx,int id);
+extern void alt_property_palette_click_intro_button(int intro_button_idx,int id,bool double_click);
+extern void alt_property_palette_click_intro_model(int intro_model_idx,int id,bool double_click);
+extern void alt_property_palette_click_hud_bitmap(int hud_bitmap_idx,int id,bool double_click);
+extern void alt_property_palette_click_hud_text(int hud_text_idx,int id,bool double_click);
+extern void alt_property_palette_click_hud_bar(int hud_bar_idx,int id,bool double_click);
+extern void alt_property_palette_click_radar_icon(int radar_icon_idx,int id,bool double_click);
+extern void alt_property_palette_click_multiplayer_character(int multiplayer_character_idx,int id,bool double_click);
+extern void alt_property_palette_click_multiplayer_game(int game_character_idx,int id,bool double_click);
+extern void alt_property_palette_click_multiplayer_option(int option_character_idx,int id,bool double_click);
+extern void alt_property_palette_click_menu(int menu_idx,int id,bool double_click);
+extern void alt_property_palette_click_chooser(int chooser_idx,int id,bool double_click);
+extern void alt_property_palette_click_sound(int sound_idx,int id,bool double_click);
+extern void alt_property_palette_click_particle(int particle_idx,int id,bool double_click);
+extern void alt_property_palette_click_particle_group(int particle_idx,int id,bool double_click);
+extern void alt_property_palette_click_ring(int ring_idx,int id,bool double_click);
+extern void alt_property_palette_click_halo(int halo_idx,int id,bool double_click);
+extern void alt_property_palette_click_mark(int mark_idx,int id,bool double_click);
+extern void alt_property_palette_click_crosshair(int crosshair_idx,int id,bool double_click);
+extern void alt_property_palette_click_action(int action_idx,int id,bool double_click);
+extern void alt_property_palette_click_shader(int shader_idx,int id,bool double_click);
 
 //
 // alt2 property list palette
@@ -177,9 +177,9 @@ extern void alt2_property_palette_fill_menu_item(int menu_idx,int menu_item_idx)
 extern void alt2_property_palette_fill_chooser_piece(int chooser_idx,int chooser_item_idx);
 extern void alt2_property_palette_fill_group_particle(int particle_idx,int group_particle_idx);
 
-extern void alt2_property_palette_click_menu_item(int menu_idx,int menu_item_idx,int id);
-extern void alt2_property_palette_click_chooser_piece(int chooser_idx,int chooser_item_idx,int id);
-extern void alt2_property_palette_click_group_particle(int particle_idx,int group_particle_idx,int id);
+extern void alt2_property_palette_click_menu_item(int menu_idx,int menu_item_idx,int id,bool double_click);
+extern void alt2_property_palette_click_chooser_piece(int chooser_idx,int chooser_item_idx,int id,bool double_click);
+extern void alt2_property_palette_click_group_particle(int particle_idx,int group_particle_idx,int id,bool double_click);
 
 //
 // dialogs

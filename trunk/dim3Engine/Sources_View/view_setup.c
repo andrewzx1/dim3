@@ -888,7 +888,7 @@ void view_calculate_shakes(obj_type *obj)
 	k=(int)((float)(game_time_get()-effect->start_tick)*shake_freq)%shake_sz;
 	if (k>(shake_sz>>1)) k=shake_sz-k;
 	
-	view.render->camera.ang.x=view.render->camera.ang.x+((float)k/25.0f);
+	view.render->camera.ang.x+=((float)k/25.0f);
 }
 
 void view_calculate_sways(obj_type *obj)

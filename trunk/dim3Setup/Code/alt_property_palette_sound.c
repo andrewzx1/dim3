@@ -71,9 +71,11 @@ void alt_property_palette_fill_sound(int sound_idx)
       
 ======================================================= */
 
-void alt_property_palette_click_sound(int sound_idx,int id)
+void alt_property_palette_click_sound(int sound_idx,int id,bool double_click)
 {
 	iface_sound_type			*sound;
+
+	if (!double_click) return;
 
 	sound=&iface.sound_list.sounds[sound_idx];
 

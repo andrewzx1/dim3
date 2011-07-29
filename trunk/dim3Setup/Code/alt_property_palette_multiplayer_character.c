@@ -78,9 +78,11 @@ void alt_property_palette_fill_multiplayer_character(int multiplayer_character_i
       
 ======================================================= */
 
-void alt_property_palette_click_multiplayer_character(int multiplayer_character_idx,int id)
+void alt_property_palette_click_multiplayer_character(int multiplayer_character_idx,int id,bool double_click)
 {
 	iface_character_item_type		*character;
+
+	if (!double_click) return;
 
 	character=&iface.character.characters[multiplayer_character_idx];
 

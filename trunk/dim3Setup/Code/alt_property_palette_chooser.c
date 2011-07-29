@@ -140,7 +140,7 @@ void alt_property_palette_fill_chooser(int chooser_idx)
       
 ======================================================= */
 
-void alt_property_palette_click_chooser(int chooser_idx,int id)
+void alt_property_palette_click_chooser(int chooser_idx,int id,bool double_click)
 {
 	int						idx,sz;
 	iface_chooser_type		*chooser;
@@ -151,7 +151,7 @@ void alt_property_palette_click_chooser(int chooser_idx,int id)
 
 	if ((id>=kChooserPropertyChooserItemName) && (id<(kChooserPropertyChooserItemName+max_chooser_piece))) {
 		state.cur_chooser_piece_idx=id-kChooserPropertyChooserItemName;
-		list_palette_set_level(3);
+		if (double_click) list_palette_set_level(3);
 		main_wind_draw();
 		return;
 	}
@@ -232,6 +232,8 @@ void alt_property_palette_click_chooser(int chooser_idx,int id)
 
 		// regular picks, always
 		// disable selection
+
+	if (!double_click) return;
 
 	state.cur_chooser_piece_idx=-1;
 

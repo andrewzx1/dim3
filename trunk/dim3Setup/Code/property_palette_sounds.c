@@ -71,7 +71,7 @@ void property_palette_fill_sounds(void)
       
 ======================================================= */
 
-void property_palette_click_sounds(int id)
+void property_palette_click_sounds(int id,bool double_click)
 {
 	int					idx,sz;
 
@@ -79,7 +79,7 @@ void property_palette_click_sounds(int id)
 		
 	if ((id>=kSoundProperyName) && (id<(kSoundProperyName+max_iface_sound))) {
 		state.cur_sound_idx=id-kSoundProperyName;
-		list_palette_set_level(2);
+		if (double_click) list_palette_set_level(2);
 		main_wind_draw();
 		return;
 	}

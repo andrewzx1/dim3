@@ -33,9 +33,43 @@ and can be sold or given away.
 
 extern setup_type			setup;
 
+#define max_touch_state		4		// supergumba move
+
+unsigned char				touch_states[max_touch_state];
+
+extern d3pnt				mouse_gui_pnt;		// supergumba -- temp testing!
+
 /* =======================================================
 
-      Keyboard Clear
+      Touch Clear
       
 ======================================================= */
+
+void input_clear_touch(void)
+{
+	int				n;
+
+	for (n=0;n!=max_touch_state;n++) {
+		touch_states[n]=0x0;
+	}
+}
+
+/* =======================================================
+
+      Touch Event
+      
+======================================================= */
+
+void input_touch_event_up(int id)
+{
+	fprintf(stdout,"touch UP %s\n",id);
+}
+
+void input_touch_event_down(int id,int x,int y)
+{
+	fprintf(stdout,"touch DOWN %s\n",id);
+
+	mouse_gui_pnt.x=x;
+	mouse_gui_pnt.y=y;
+}
 

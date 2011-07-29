@@ -67,9 +67,11 @@ void alt_property_palette_fill_crosshair(int crosshair_idx)
       
 ======================================================= */
 
-void alt_property_palette_click_crosshair(int crosshair_idx,int id)
+void alt_property_palette_click_crosshair(int crosshair_idx,int id,bool double_click)
 {
 	iface_crosshair_type		*crosshair;
+
+	if (!double_click) return;
 
 	crosshair=&iface.crosshair_list.crosshairs[crosshair_idx];
 

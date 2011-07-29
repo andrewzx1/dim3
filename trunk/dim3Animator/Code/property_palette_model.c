@@ -137,9 +137,11 @@ void property_palette_fill_model(void)
       
 ======================================================= */
 
-void property_palette_click_model(int id)
+void property_palette_click_model(int id,bool double_click)
 {
 	int					idx;
+
+	if (!double_click) return;
 
 		// light and halo bones
 

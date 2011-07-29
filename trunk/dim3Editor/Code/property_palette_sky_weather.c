@@ -202,9 +202,11 @@ void property_palette_fill_sky_weather(void)
       
 ======================================================= */
 
-void property_palette_click_sky_weather(int id)
+void property_palette_click_sky_weather(int id,bool double_click)
 {
 	d3fpnt			uv;
+
+	if (!double_click) return;
 
 	switch (id) {
 

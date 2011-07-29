@@ -36,7 +36,7 @@ extern view_type			view;
 extern setup_type			setup;
 
 int							cur_vbo_cache_idx,cur_vbo_cache_index_idx;
-GLuint						vbo_liquid,vbo_sky,
+GLuint						vbo_sky,
 							vbo_cache[view_vertex_object_count],
 							vbo_cache_index[view_vertex_object_count];
 
@@ -49,8 +49,6 @@ GLuint						vbo_liquid,vbo_sky,
 void view_create_vertex_objects(void)
 {
 		// sky vbo
-
-	glGenBuffers(1,&vbo_liquid);
 
 	glGenBuffers(1,&vbo_sky);
 
@@ -67,8 +65,6 @@ void view_create_vertex_objects(void)
 
 void view_dispose_vertex_objects(void)
 {
-	glDeleteBuffers(1,&vbo_liquid);
-
 	glDeleteBuffers(1,&vbo_sky);
 
 	glDeleteBuffers(view_vertex_object_count,vbo_cache);
@@ -159,47 +155,6 @@ void view_unmap_mesh_liquid_index_object(void)
 void view_unbind_mesh_liquid_index_object(void)
 {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);
-}
-
-/* =======================================================
-
-      Liquid VBOs
-      
-======================================================= */
-
-// supergumba -- delete
-float* view_bind_map_liquid_vertex_object(int sz)
-{
-	float		*vertex_ptr;
-
-		// bind to liquid specific VBO
-
-	glBindBuffer(GL_ARRAY_BUFFER,vbo_liquid);
-
-		// resize VBO
-
-	sz*=sizeof(float);
-	glBufferData(GL_ARRAY_BUFFER,sz,NULL,GL_DYNAMIC_DRAW);
-
-		// map pointer
-
-	vertex_ptr=(float*)glMapBuffer(GL_ARRAY_BUFFER,GL_WRITE_ONLY);
-	if (vertex_ptr==NULL) {
-		glBindBuffer(GL_ARRAY_BUFFER,0);
-		return(NULL);
-	}
-
-	return(vertex_ptr);
-}
-
-void view_unmap_liquid_vertex_object(void)
-{
-	glUnmapBuffer(GL_ARRAY_BUFFER);
-}
-
-void view_unbind_liquid_vertex_object(void)
-{
-	glBindBuffer(GL_ARRAY_BUFFER,0);
 }
 
 /* =======================================================

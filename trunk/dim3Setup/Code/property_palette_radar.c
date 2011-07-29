@@ -100,7 +100,7 @@ void property_palette_fill_radar(void)
       
 ======================================================= */
 
-void property_palette_click_radar(int id)
+void property_palette_click_radar(int id,bool double_click)
 {
 	int					idx,sz;
 
@@ -108,7 +108,7 @@ void property_palette_click_radar(int id)
 
 	if ((id>=kRadarPropertyIconName) && (id<(kRadarPropertyIconName+max_radar_icon))) {
 		state.cur_radar_icon_idx=id-kRadarPropertyIconName;
-		list_palette_set_level(2);
+		if (double_click) list_palette_set_level(2);
 		main_wind_draw();
 		return;
 	}
@@ -157,6 +157,8 @@ void property_palette_click_radar(int id)
 
 		// regular picks, always
 		// disable selection
+
+	if (!double_click) return;
 
 	state.cur_radar_icon_idx=-1;
 

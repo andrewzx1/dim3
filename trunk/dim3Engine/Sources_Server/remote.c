@@ -44,8 +44,6 @@ extern network_setup_type	net_setup;
 
 extern bool					game_loop_quit;
 
-extern void group_moves_synch_with_host(network_reply_group_synch *synch);
-
 /* =======================================================
 
       Add and Remove Remote Object

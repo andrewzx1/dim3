@@ -224,13 +224,15 @@ void property_palette_fill_mesh(int mesh_idx,int poly_idx)
       
 ======================================================= */
 
-void property_palette_click_mesh(int mesh_idx,int poly_idx,int id)
+void property_palette_click_mesh(int mesh_idx,int poly_idx,int id,bool double_click)
 {
 	float					x_txtoff,y_txtoff,x_txtfact,y_txtfact;
 	d3fpnt					uv;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
 	editor_view_type		*view;
+
+	if (!double_click) return;
 
 		// mesh settings
 

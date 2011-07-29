@@ -98,9 +98,11 @@ void property_palette_fill_texture(int texture_idx)
       
 ======================================================= */
 
-void property_palette_click_texture(int texture_idx,int id)
+void property_palette_click_texture(int texture_idx,int id,bool double_click)
 {
 	texture_type		*texture;
+
+	if (!double_click) return;
 
 	texture=&model.textures[texture_idx];
 

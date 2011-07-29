@@ -37,11 +37,6 @@ extern map_type			map;
 extern server_type		server;
 extern camera_type		camera;
 
-extern bool group_move_start(int group_idx,int movement_idx,int movement_move_idx,d3pnt *mov,d3ang *rot,int count,int user_id,int obj_idx,bool main_move);
-extern void group_move_freeze(int group_idx,bool freeze);
-extern bool group_move_frozen(int group_idx);
-extern bool group_move_object_stand(int group_idx,int stand_mesh_idx);
-
 /* =======================================================
 
       Calculate Movement Centers
@@ -54,15 +49,15 @@ void map_movements_get_center(movement_type *movement,d3pnt *pt)
 
 	group=&map.group.groups[movement->group_idx];
 
-	pt->x=group->center_pnt.x;
-	pt->y=group->center_pnt.y;
-	pt->z=group->center_pnt.z;
+	pt->x=group->run.center_pnt.x;
+	pt->y=group->run.center_pnt.y;
+	pt->z=group->run.center_pnt.z;
 	
 	if (movement->reverse_group_idx!=-1) {
 		group=&map.group.groups[movement->reverse_group_idx];
-		pt->x=(pt->x+group->center_pnt.x)>>1;
-		pt->y=(pt->y+group->center_pnt.y)>>1;
-		pt->z=(pt->z+group->center_pnt.z)>>1;
+		pt->x=(pt->x+group->run.center_pnt.x)>>1;
+		pt->y=(pt->y+group->run.center_pnt.y)>>1;
+		pt->z=(pt->z+group->run.center_pnt.z)>>1;
 	}
 }
 
@@ -85,7 +80,7 @@ void map_movements_start(int movement_idx,int move_idx,int obj_idx)
 	
 		// started
 		
-	movement->started=TRUE;
+	movement->run.started=TRUE;
 	
 	move=&movement->moves[move_idx];
 	
@@ -103,7 +98,7 @@ void map_movements_start(int movement_idx,int move_idx,int obj_idx)
 	
 	msec=move->msec/10;
 	
-	if (!movement->reverse) {
+	if (!movement->run.reverse) {
 		if (movement->group_idx!=-1) group_move_start(movement->group_idx,movement_idx,move_idx,&move->mov,&move->rot,msec,move->user_id,obj_idx,TRUE);
 		if (movement->reverse_group_idx!=-1) group_move_start(movement->reverse_group_idx,movement_idx,move_idx,&rev_mov,&rev_rot,msec,move->user_id,obj_idx,FALSE);
 	}
@@ -146,17 +141,17 @@ void map_movements_initialize(void)
 	
 			// start-up flags
 			
-		movement->started=FALSE;
-		movement->opened=FALSE;
+		movement->run.started=FALSE;
+		movement->run.opened=FALSE;
 		
 			// get center point
 		
-		map_movements_get_center(movement,&movement->auto_open_pnt);
+		map_movements_get_center(movement,&movement->run.auto_open_pnt);
 			
 			// run auto-starts
 		
 		if (movement->auto_start) {
-			movement->reverse=FALSE;
+			movement->run.reverse=FALSE;
 			map_movements_start(n,0,-1);
 		}
 		
@@ -176,14 +171,14 @@ void map_movements_script_start(int obj_idx,int movement_idx,bool reverse)
 	
 	movement=&map.movement.movements[movement_idx];
 
-	if (movement->started) return;
+	if (movement->run.started) return;
 	
 	if (!reverse) {
-		movement->reverse=FALSE;
+		movement->run.reverse=FALSE;
 		map_movements_start(movement_idx,0,obj_idx);
 	}
 	else {
-		movement->reverse=TRUE;
+		movement->run.reverse=TRUE;
 		map_movements_start(movement_idx,(movement->nmove-1),obj_idx);
 	}
 }
@@ -216,13 +211,13 @@ void map_movements_script_start_or_thaw(int obj_idx,int movement_idx)
 
 		// is movement started?
 		
-	if (movement->started) {
+	if (movement->run.started) {
 		if (group_move_frozen(movement->group_idx)) {
 			group_move_freeze(movement->group_idx,FALSE);		// if frozen, then thaw
 		}
 	}
 	else {
-		movement->reverse=FALSE;
+		movement->run.reverse=FALSE;
 		map_movements_start(movement_idx,0,obj_idx);
 	}
 }
@@ -244,17 +239,17 @@ bool map_movements_cinema_start(int movement_idx,bool reverse,char *err_str)
 	
 	movement=&map.movement.movements[movement_idx];
 
-	if (movement->started) {
+	if (movement->run.started) {
 		sprintf(err_str,"Can't start another movement during a movement: %s",movement->name);
 		return(FALSE);
 	}
 	
 	if (!reverse) {
-		movement->reverse=FALSE;
+		movement->run.reverse=FALSE;
 		map_movements_start(movement_idx,0,-1);
 	}
 	else {
-		movement->reverse=TRUE;
+		movement->run.reverse=TRUE;
 		map_movements_start(movement_idx,(movement->nmove-1),-1);
 	}
 	
@@ -275,7 +270,7 @@ bool map_movement_next_move(int movement_idx,int move_idx,int obj_idx)
 	
 		// get next movement
 		
-	if (!movement->reverse) {
+	if (!movement->run.reverse) {
 		
 		move_idx++;
 		
@@ -283,12 +278,12 @@ bool map_movement_next_move(int movement_idx,int move_idx,int obj_idx)
 		
 			if ((movement->auto_open) && (movement->auto_open_never_close)) {
 				movement->auto_open=FALSE;
-				movement->started=FALSE;
+				movement->run.started=FALSE;
 				return(TRUE);				// if auto-open and never close, then stop movement and turn off auto-open
 			}
 				
 			if (!movement->loop) {
-				movement->started=FALSE;
+				movement->run.started=FALSE;
 				return(TRUE);				// if looping is off, then stop
 			}
 			
@@ -302,7 +297,7 @@ bool map_movement_next_move(int movement_idx,int move_idx,int obj_idx)
 		if (move_idx<0) {
 		
 			if (!movement->loop) {
-				movement->started=FALSE;
+				movement->run.started=FALSE;
 				return(TRUE);				// if looping is off, then stop
 			}
 			
@@ -340,7 +335,7 @@ void map_movements_auto_open(void)
 	
 			// can't check started or non-auto-open movements
 			
-		if ((movement->started) || ((!movement->auto_open) && (!movement->auto_open_stand))) {
+		if ((movement->run.started) || ((!movement->auto_open) && (!movement->auto_open_stand))) {
 			movement++;
 			continue;
 		}
@@ -356,7 +351,7 @@ void map_movements_auto_open(void)
 				if (obj==NULL) continue;
 
 				if (((obj->type==object_type_player) || (obj->type==object_type_remote) || (obj->open_doors)) && (obj->status.health.value!=0)) {
-					if (distance_check(obj->pnt.x,(obj->pnt.y-(obj->size.y>>1)),obj->pnt.z,movement->auto_open_pnt.x,movement->auto_open_pnt.y,movement->auto_open_pnt.z,movement->auto_open_distance)) {
+					if (distance_check(obj->pnt.x,(obj->pnt.y-(obj->size.y>>1)),obj->pnt.z,movement->run.auto_open_pnt.x,movement->run.auto_open_pnt.y,movement->run.auto_open_pnt.z,movement->auto_open_distance)) {
 						obj_in_range=TRUE;
 						break;
 					}
@@ -367,7 +362,7 @@ void map_movements_auto_open(void)
 
 			if ((camera.setup.mode==cv_static) && (camera.auto_walk.on) && (camera.auto_walk.open_doors)) {
 				camera_static_get_position(&pnt,NULL);
-				obj_in_range=distance_check(pnt.x,pnt.y,pnt.z,movement->auto_open_pnt.x,movement->auto_open_pnt.y,movement->auto_open_pnt.z,movement->auto_open_distance);
+				obj_in_range=distance_check(pnt.x,pnt.y,pnt.z,movement->run.auto_open_pnt.x,movement->run.auto_open_pnt.y,movement->run.auto_open_pnt.z,movement->auto_open_distance);
 			}
 
 		}
@@ -400,17 +395,17 @@ void map_movements_auto_open(void)
 
 			// time to open or close?
 			
-		if (!movement->opened) {
+		if (!movement->run.opened) {
 			if (obj_in_range) {
-				movement->reverse=FALSE;
-				movement->opened=TRUE;
+				movement->run.reverse=FALSE;
+				movement->run.opened=TRUE;
 				map_movements_start(n,0,-1);
 			}
 		}
 		else {
 			if (!obj_in_range) {
-				movement->reverse=TRUE;
-				movement->opened=FALSE;
+				movement->run.reverse=TRUE;
+				movement->run.opened=FALSE;
 				map_movements_start(n,(movement->nmove-1),-1);
 			}
 		}

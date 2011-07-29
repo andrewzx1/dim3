@@ -146,9 +146,11 @@ void alt_property_palette_fill_particle(int particle_idx)
       
 ======================================================= */
 
-void alt_property_palette_click_particle(int particle_idx,int id)
+void alt_property_palette_click_particle(int particle_idx,int id,bool double_click)
 {
 	iface_particle_type			*particle;
+
+	if (!double_click) return;
 
 	particle=&iface.particle_list.particles[particle_idx];
 

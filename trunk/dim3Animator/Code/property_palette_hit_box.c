@@ -71,10 +71,12 @@ void property_palette_fill_hit_box(int hit_box_idx)
       
 ======================================================= */
 
-void property_palette_click_hit_box(int hit_box_idx,int id)
+void property_palette_click_hit_box(int hit_box_idx,int id,bool double_click)
 {
 	model_hit_box_type			*hit_box;
 	
+	if (!double_click) return;
+
 	hit_box=&model.hit_boxes[hit_box_idx];
 
 	switch (id) {

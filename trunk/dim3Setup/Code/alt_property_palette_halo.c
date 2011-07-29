@@ -100,9 +100,11 @@ void alt_property_palette_fill_halo(int halo_idx)
       
 ======================================================= */
 
-void alt_property_palette_click_halo(int halo_idx,int id)
+void alt_property_palette_click_halo(int halo_idx,int id,bool double_click)
 {
 	iface_halo_type			*halo;
+
+	if (!double_click) return;
 
 	halo=&iface.halo_list.halos[halo_idx];
 

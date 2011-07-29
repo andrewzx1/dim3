@@ -76,7 +76,7 @@ void alt_property_palette_fill_particle_group(int particle_idx)
       
 ======================================================= */
 
-void alt_property_palette_click_particle_group(int particle_idx,int id)
+void alt_property_palette_click_particle_group(int particle_idx,int id,bool double_click)
 {
 	int						idx,sz;
 	iface_particle_type		*particle;
@@ -87,7 +87,7 @@ void alt_property_palette_click_particle_group(int particle_idx,int id)
 		
 	if ((id>=kGroupParticleProperyName) && (id<(kGroupParticleProperyName+max_particle_group))) {
 		state.cur_group_particle_idx=id-kGroupParticleProperyName;
-		list_palette_set_level(3);
+		if (double_click) list_palette_set_level(3);
 		main_wind_draw();
 		return;
 	}

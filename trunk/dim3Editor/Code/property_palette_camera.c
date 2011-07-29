@@ -102,8 +102,10 @@ void property_palette_fill_camera(void)
       
 ======================================================= */
 
-void property_palette_click_camera(int id)
+void property_palette_click_camera(int id,bool double_click)
 {
+	if (!double_click) return;
+
 	switch (id) {
 
 			// camera settings

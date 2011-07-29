@@ -111,8 +111,10 @@ void property_palette_fill_editor_preference(void)
       
 ======================================================= */
 
-void property_palette_click_editor_preference(int id)
+void property_palette_click_editor_preference(int id,bool double_click)
 {
+	if (!double_click) return;
+
 	switch (id) {
 
 		case kPrefPropertyEngineName:

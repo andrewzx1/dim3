@@ -81,7 +81,7 @@ void property_palette_fill_pose(int pose_idx)
       
 ======================================================= */
 
-void property_palette_click_pose(int pose_idx,int id)
+void property_palette_click_pose(int pose_idx,int id,bool double_click)
 {
 	model_pose_type			*pose;
 
@@ -91,14 +91,16 @@ void property_palette_click_pose(int pose_idx,int id)
 
 	if (id>=kPosePropertyBoneMove) {
 		state.cur_pose_bone_move_idx=id-kPosePropertyBoneMove;
-		list_palette_set_level(2);
+		if (double_click) list_palette_set_level(2);
 		main_wind_draw();
 		return;
 	}
 
-	state.cur_pose_bone_move_idx=-1;
-
 		// regular values
+
+	if (!double_click) return;
+
+	state.cur_pose_bone_move_idx=-1;
 
 	switch (id) {
 

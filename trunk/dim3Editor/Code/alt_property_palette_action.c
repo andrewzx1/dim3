@@ -135,10 +135,11 @@ void alt_property_palette_fill_cinema_action(int cinema_idx,int action_idx)
       
 ======================================================= */
 
-void alt_property_palette_click_cinema_action(int cinema_idx,int action_idx,int id)
+void alt_property_palette_click_cinema_action(int cinema_idx,int action_idx,int id,bool double_click)
 {
 	map_cinema_action_type	*action;
 
+	if (!double_click) return;
 	if (action_idx==-1) return;
 
 	action=&map.cinema.cinemas[cinema_idx].actions[action_idx];

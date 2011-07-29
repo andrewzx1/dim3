@@ -98,9 +98,11 @@ void property_palette_fill_group(int group_idx)
       
 ======================================================= */
 
-void property_palette_click_group(int group_idx,int id)
+void property_palette_click_group(int group_idx,int id,bool double_click)
 {
 	group_type			*group;
+
+	if (!double_click) return;
 
 	group=&map.group.groups[group_idx];
 		

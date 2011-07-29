@@ -107,9 +107,11 @@ void property_palette_fill_particle(int particle_idx)
       
 ======================================================= */
 
-void property_palette_click_particle(int particle_idx,int id)
+void property_palette_click_particle(int particle_idx,int id,bool double_click)
 {
 	map_particle_type		*particle;
+
+	if (!double_click) return;
 
 	particle=&map.particles[particle_idx];
 

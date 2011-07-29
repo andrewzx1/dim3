@@ -103,11 +103,13 @@ void property_palette_fill_spot(int spot_idx)
       
 ======================================================= */
 
-void property_palette_click_spot(int spot_idx,int id)
+void property_palette_click_spot(int spot_idx,int id,bool double_click)
 {
 	int				param_idx;
 	char			file_name[256],str[256];
 	spot_type		*spot;
+
+	if (!double_click) return;
 
 	spot=&map.spots[spot_idx];
 

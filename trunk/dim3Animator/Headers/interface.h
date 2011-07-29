@@ -142,14 +142,14 @@ extern void property_palette_fill_pose(int pose_idx);
 extern void property_palette_fill_bone(int bone_idx,int pose_idx);
 extern void property_palette_fill_hit_box(int hit_box_idx);
 
-extern void property_palette_click_texture(int texture_idx,int id);
-extern void property_palette_click_animator_preference(int id);
-extern void property_palette_click_model(int id);
-extern void property_palette_click_mesh(int mesh_idx,int id);
-extern void property_palette_click_animation(int animation_idx,int id);
-extern void property_palette_click_pose(int pose_idx,int id);
-extern void property_palette_click_bone(int bone_idx,int pose_idx,int id);
-extern void property_palette_click_hit_box(int hit_box_idx,int id);
+extern void property_palette_click_texture(int texture_idx,int id,bool double_click);
+extern void property_palette_click_animator_preference(int id,bool double_click);
+extern void property_palette_click_model(int id,bool double_click);
+extern void property_palette_click_mesh(int mesh_idx,int id,bool double_click);
+extern void property_palette_click_animation(int animation_idx,int id,bool double_click);
+extern void property_palette_click_pose(int pose_idx,int id,bool double_click);
+extern void property_palette_click_bone(int bone_idx,int pose_idx,int id,bool double_click);
+extern void property_palette_click_hit_box(int hit_box_idx,int id,bool double_click);
 
 //
 // alt property list palette
@@ -164,8 +164,8 @@ extern bool alt_property_palette_click(d3pnt *pnt,bool double_click);
 extern void alt_property_palette_fill_animate_pose_move(int animate_idx,int pose_move_idx);
 extern void alt_property_palette_fill_pose_bone_move(int pose_idx,int bone_move_idx);
 
-extern void alt_property_palette_click_animate_pose_move(int animate_idx,int pose_move_idx,int id);
-extern void alt_property_palette_click_pose_bone_move(int pose_idx,int bone_move_idx,int id);
+extern void alt_property_palette_click_animate_pose_move(int animate_idx,int pose_move_idx,int id,bool double_click);
+extern void alt_property_palette_click_pose_bone_move(int pose_idx,int bone_move_idx,int id,bool double_click);
 
 //
 // pieces
