@@ -24,6 +24,7 @@
 		262955440F9E5C4B00763482 /* render_shadow.c in Sources */ = {isa = PBXBuildFile; fileRef = 262955430F9E5C4B00763482 /* render_shadow.c */; };
 		262CFBBA1212046200BD4214 /* gl_es_patches.c in Sources */ = {isa = PBXBuildFile; fileRef = 262CFBB91212046200BD4214 /* gl_es_patches.c */; };
 		263722E911E83E5000BE22EA /* script_map_polygon.c in Sources */ = {isa = PBXBuildFile; fileRef = 263722E811E83E5000BE22EA /* script_map_polygon.c */; };
+		2638FED413E253F400EA1640 /* input_touch.c in Sources */ = {isa = PBXBuildFile; fileRef = 2638FED313E253F400EA1640 /* input_touch.c */; };
 		263EF8C00FD9CFEE00FEB1E5 /* script_multiplayer_score.c in Sources */ = {isa = PBXBuildFile; fileRef = 263EF8BF0FD9CFEE00FEB1E5 /* script_multiplayer_score.c */; };
 		2649D14013412B2900573F6F /* gui_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 2649D13513412B2900573F6F /* gui_defs.h */; };
 		2649D14113412B2900573F6F /* input_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 2649D13613412B2900573F6F /* input_defs.h */; };
@@ -374,6 +375,7 @@
 		262955430F9E5C4B00763482 /* render_shadow.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = render_shadow.c; path = Sources_View/render_shadow.c; sourceTree = "<group>"; };
 		262CFBB91212046200BD4214 /* gl_es_patches.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = gl_es_patches.c; path = Sources_View/gl_es_patches.c; sourceTree = "<group>"; };
 		263722E811E83E5000BE22EA /* script_map_polygon.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = script_map_polygon.c; path = Sources_Server/script_map_polygon.c; sourceTree = "<group>"; };
+		2638FED313E253F400EA1640 /* input_touch.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = input_touch.c; path = Sources_View/input_touch.c; sourceTree = "<group>"; };
 		263EF8BF0FD9CFEE00FEB1E5 /* script_multiplayer_score.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = script_multiplayer_score.c; path = Sources_Server/script_multiplayer_score.c; sourceTree = "<group>"; };
 		2649D13513412B2900573F6F /* gui_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gui_defs.h; path = Headers/gui_defs.h; sourceTree = "<group>"; };
 		2649D13613412B2900573F6F /* input_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = input_defs.h; path = Headers/input_defs.h; sourceTree = "<group>"; };
@@ -988,6 +990,7 @@
 				F5DD1AAB09085DC300721649 /* input_keyboard.c */,
 				F5DD1AAD09085DC300721649 /* input_mouse.c */,
 				F51AB0DC0CFE3BDA0085DC72 /* input_joystick.c */,
+				2638FED313E253F400EA1640 /* input_touch.c */,
 			);
 			name = Input;
 			sourceTree = "<group>";
@@ -1739,6 +1742,7 @@
 				260C145D129C770800B6D5B5 /* SDLMain.m in Sources */,
 				26F8AA75133546FB0020367E /* chat.c in Sources */,
 				26F8AA7E133547770020367E /* console.c in Sources */,
+				2638FED413E253F400EA1640 /* input_touch.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

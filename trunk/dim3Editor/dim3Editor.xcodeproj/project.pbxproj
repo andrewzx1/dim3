@@ -71,6 +71,8 @@
 		26D15DC11329EB0400F9EC7B /* OSX_dialog_property_list.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D15DBA1329EB0400F9EC7B /* OSX_dialog_property_list.c */; };
 		26D15DC21329EB0400F9EC7B /* OSX_dialog_property_string.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D15DBB1329EB0400F9EC7B /* OSX_dialog_property_string.c */; };
 		26D15DC31329EB0400F9EC7B /* OSX_dialog_utility_common.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D15DBC1329EB0400F9EC7B /* OSX_dialog_utility_common.c */; };
+		26D6BC5E13E2112E0087FFD4 /* property_palette_camera.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D6BC5C13E2112E0087FFD4 /* property_palette_camera.c */; };
+		26D6BC5F13E2112E0087FFD4 /* property_palette_sky_weather.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D6BC5D13E2112E0087FFD4 /* property_palette_sky_weather.c */; };
 		26DB6D970DDFCE4100BDD008 /* dialog_resize.c in Sources */ = {isa = PBXBuildFile; fileRef = 26DB6D960DDFCE4100BDD008 /* dialog_resize.c */; };
 		26E0C40112F0D7EE00977D36 /* alt_property_palette_action.c in Sources */ = {isa = PBXBuildFile; fileRef = 26E0C3FE12F0D7EE00977D36 /* alt_property_palette_action.c */; };
 		26E0C40212F0D7EE00977D36 /* alt_property_palette_move.c in Sources */ = {isa = PBXBuildFile; fileRef = 26E0C3FF12F0D7EE00977D36 /* alt_property_palette_move.c */; };
@@ -387,6 +389,8 @@
 		26D15DBA1329EB0400F9EC7B /* OSX_dialog_property_list.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = OSX_dialog_property_list.c; path = ../dim3Common/Code/OSX_dialog_property_list.c; sourceTree = SOURCE_ROOT; };
 		26D15DBB1329EB0400F9EC7B /* OSX_dialog_property_string.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = OSX_dialog_property_string.c; path = ../dim3Common/Code/OSX_dialog_property_string.c; sourceTree = SOURCE_ROOT; };
 		26D15DBC1329EB0400F9EC7B /* OSX_dialog_utility_common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = OSX_dialog_utility_common.c; path = ../dim3Common/Code/OSX_dialog_utility_common.c; sourceTree = SOURCE_ROOT; };
+		26D6BC5C13E2112E0087FFD4 /* property_palette_camera.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_camera.c; path = Code/property_palette_camera.c; sourceTree = "<group>"; };
+		26D6BC5D13E2112E0087FFD4 /* property_palette_sky_weather.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_sky_weather.c; path = Code/property_palette_sky_weather.c; sourceTree = "<group>"; };
 		26DB6D960DDFCE4100BDD008 /* dialog_resize.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_resize.c; path = Code/dialog_resize.c; sourceTree = "<group>"; };
 		26E0C3FE12F0D7EE00977D36 /* alt_property_palette_action.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = alt_property_palette_action.c; path = Code/alt_property_palette_action.c; sourceTree = "<group>"; };
 		26E0C3FF12F0D7EE00977D36 /* alt_property_palette_move.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = alt_property_palette_move.c; path = Code/alt_property_palette_move.c; sourceTree = "<group>"; };
@@ -616,6 +620,8 @@
 				26EA5B211291E5200083C9BF /* property_palette.c */,
 				26CAEC6912D675A900310691 /* property_utility_common.c */,
 				267FA93512C014F20098B4B8 /* property_palette_map.c */,
+				26D6BC5C13E2112E0087FFD4 /* property_palette_camera.c */,
+				26D6BC5D13E2112E0087FFD4 /* property_palette_sky_weather.c */,
 				26EAA39F12CBF01400CF93AF /* property_palette_texture.c */,
 				26F1D2C113035B0A00CDAE6B /* property_palette_editor_preference.c */,
 				26F4B4DA1294CFB600D754CC /* property_palette_mesh.c */,
@@ -920,6 +926,8 @@
 				26D15DC31329EB0400F9EC7B /* OSX_dialog_utility_common.c in Sources */,
 				26EB2AA6135CDF3700C85532 /* dialog_resize_texture.c in Sources */,
 				264BC91B13661D900004A4AB /* liquid_reflection_maps.c in Sources */,
+				26D6BC5E13E2112E0087FFD4 /* property_palette_camera.c in Sources */,
+				26D6BC5F13E2112E0087FFD4 /* property_palette_sky_weather.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

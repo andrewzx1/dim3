@@ -66,8 +66,13 @@ and can be sold or given away.
 #define D3_OPENGL_ES			1
 
 //
-// specific apple ES additions
+// OpenGL ES re-defines
 //
+
+#define GL_SOURCE0_RGB			GL_SRC0_RGB
+#define GL_SOURCE1_RGB			GL_SRC1_RGB
+#define GL_SOURCE0_ALPHA		GL_SRC0_ALPHA
+#define GL_SOURCE1_ALPHA		GL_SRC1_ALPHA
 
 #define glMapBuffer				glMapBufferOES
 #define glUnmapBuffer			glUnmapBufferOES

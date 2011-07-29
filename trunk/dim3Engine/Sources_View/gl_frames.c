@@ -83,6 +83,11 @@ void gl_3D_view(void)
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	
+#ifdef D3_OS_IPHONE
+	glTranslatef((float)setup.screen.y_sz,0.0f,0.0f);
+	glRotatef(90.0f,0.0f,0.0f,1.0f);
+#endif
+	
 	glu_patch_gluLookAt((float)view.render->camera.pnt.x,(float)view.render->camera.pnt.y,(float)(view.render->camera.pnt.z+camera.setup.plane.near_z),(float)view.render->camera.pnt.x,(float)view.render->camera.pnt.y,(float)view.render->camera.pnt.z,0.0f,1.0f,0.0f);
 }
 
@@ -93,6 +98,11 @@ void gl_3D_rotate(d3pnt *pnt,d3ang *ang)
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+	
+#ifdef D3_OS_IPHONE
+	glTranslatef((float)setup.screen.y_sz,0.0f,0.0f);
+	glRotatef(90.0f,0.0f,0.0f,1.0f);
+#endif
 	
 		// need to cap look up/down at 90
 		
@@ -134,6 +144,11 @@ void gl_2D_view_screen(void)
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+	
+#ifdef D3_OS_IPHONE
+	glTranslatef((float)setup.screen.y_sz,0.0f,0.0f);
+	glRotatef(90.0f,0.0f,0.0f,1.0f);
+#endif
 }
 
 void gl_2D_view_interface(void)
@@ -149,6 +164,11 @@ void gl_2D_view_interface(void)
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+
+#ifdef D3_OS_IPHONE
+	glTranslatef((float)setup.screen.y_sz,0.0f,0.0f);
+	glRotatef(90.0f,0.0f,0.0f,1.0f);
+#endif
 }
 
 /* =======================================================
@@ -178,6 +198,11 @@ void gl_3D_view_interface_model()
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+	
+#ifdef D3_OS_IPHONE
+	glTranslatef((float)setup.screen.y_sz,0.0f,0.0f);
+	glRotatef(90.0f,0.0f,0.0f,1.0f);
+#endif
 }
 
 /* =======================================================

@@ -351,7 +351,7 @@ void render_transparent_mesh_shader(void)
 		#ifndef D3_OPENGL_ES
 			glDrawRangeElements(GL_TRIANGLE_FAN,poly->vbo.index_min,poly->vbo.index_max,poly->ptsz,GL_UNSIGNED_SHORT,(GLvoid*)poly->vbo.index_offset);
 		#else
-			glDrawElements(GL_TRIANGLE_FAN,poly->ptsz,GL_UNSIGNED_SHORT,(GLvoid*)poly->draw.vbo.index_offset);
+			glDrawElements(GL_TRIANGLE_FAN,poly->ptsz,GL_UNSIGNED_SHORT,(GLvoid*)poly->vbo.index_offset);
 		#endif
 		
 		view.count.poly++;

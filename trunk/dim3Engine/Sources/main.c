@@ -48,7 +48,7 @@ extern bool loop_main(char *err_str);
 
 void app_check_editor_link(void)
 {
-#ifndef D3_OS_SELF_CONTAINED
+#ifndef D3_OS_IPHONE
 
 	int				len;
 	char			path[1024];
