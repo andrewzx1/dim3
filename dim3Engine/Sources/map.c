@@ -266,7 +266,7 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 	
 	progress_draw(10);
 
-	map_setup(&setup.file_path_setup,setup.anisotropic_mode,setup.mipmap_mode,setup.texture_quality_mode,TRUE);
+	map_setup(&setup.file_path_setup,setup.anisotropic_mode,setup.mipmap_mode,setup.texture_quality_mode,TRUE,view_shader_on());
 
 	if (!map_open(&map,map.info.name)) {
 		progress_shutdown();

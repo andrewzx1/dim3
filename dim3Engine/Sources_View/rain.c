@@ -250,10 +250,10 @@ void rain_draw(void)
 	glLineWidth((float)map.rain.line_width);
 
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(3,GL_FLOAT,0,(void*)0);
+	glVertexPointer(3,GL_FLOAT,0,(GLvoid*)0);
 		
 	glEnableClientState(GL_COLOR_ARRAY);
-	glColorPointer(4,GL_FLOAT,0,(void*)(((density*2)*3)*sizeof(float)));
+	glColorPointer(4,GL_FLOAT,0,(GLvoid*)(((density*2)*3)*sizeof(float)));
 
 	glDrawArrays(GL_LINES,0,(density*2));
 

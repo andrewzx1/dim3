@@ -227,9 +227,14 @@ bool liquid_render_liquid_create_vertex(map_liquid_type *liq,float uv_shift,bool
 		cl=vertex_ptr+(4*(3+2+2));
 
 		gl_lights_calc_color_light_cache(liq->light_cache.count,liq->light_cache.indexes,FALSE,(double)liq->lft,fy,(double)liq->top,cl);
-		gl_lights_calc_color_light_cache(liq->light_cache.count,liq->light_cache.indexes,FALSE,(double)liq->rgt,fy,(double)liq->top,(cl+3));
-		gl_lights_calc_color_light_cache(liq->light_cache.count,liq->light_cache.indexes,FALSE,(double)liq->lft,fy,(double)liq->bot,(cl+6));
-		gl_lights_calc_color_light_cache(liq->light_cache.count,liq->light_cache.indexes,FALSE,(double)liq->rgt,fy,(double)liq->bot,(cl+9));
+		gl_lights_calc_color_light_cache(liq->light_cache.count,liq->light_cache.indexes,FALSE,(double)liq->rgt,fy,(double)liq->top,(cl+4));
+		gl_lights_calc_color_light_cache(liq->light_cache.count,liq->light_cache.indexes,FALSE,(double)liq->lft,fy,(double)liq->bot,(cl+8));
+		gl_lights_calc_color_light_cache(liq->light_cache.count,liq->light_cache.indexes,FALSE,(double)liq->rgt,fy,(double)liq->bot,(cl+12));
+		
+		*(cl+3)=1.0f;
+		*(cl+7)=1.0f;
+		*(cl+11)=1.0f;
+		*(cl+15)=1.0f;
 	}
 
 		// normals and tangents
@@ -301,13 +306,13 @@ void liquid_render_liquid_shader(map_liquid_type *liq,int txt_idx,int lmap_txt_i
 	view_bind_mesh_liquid_vertex_object(&liq->vbo);
 	view_bind_mesh_liquid_index_object(&liq->vbo);
 
-	glVertexPointer(3,GL_FLOAT,0,0);
+	glVertexPointer(3,GL_FLOAT,0,(GLvoid*)0);
 
 	glClientActiveTexture(GL_TEXTURE1);
-	glTexCoordPointer(2,GL_FLOAT,0,(void*)((4*(3+2))*sizeof(float)));
+	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)((4*(3+2))*sizeof(float)));
 	
 	glClientActiveTexture(GL_TEXTURE0);
-	glTexCoordPointer(2,GL_FLOAT,0,(void*)((4*3)*sizeof(float)));
+	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)((4*3)*sizeof(float)));
 
 		// shader lights and tangents
 
@@ -336,7 +341,7 @@ void liquid_render_liquid_shader(map_liquid_type *liq,int txt_idx,int lmap_txt_i
 	#ifndef D3_OPENGL_ES
 		glDrawRangeElements(GL_TRIANGLE_STRIP,0,4,4,GL_UNSIGNED_SHORT,(GLvoid*)0);
 	#else
-		glDrawElements(GL_TRIANGLE_STRIP,4,GL_UNSIGNED_INT,(GLvoid*)0);
+		glDrawElements(GL_TRIANGLE_STRIP,4,GL_UNSIGNED_SHORT,(GLvoid*)0);
 	#endif
 
 	gl_shader_draw_end();
@@ -373,15 +378,15 @@ void liquid_render_liquid_fixed(map_liquid_type *liq,int txt_idx,int lmap_txt_id
 	view_bind_mesh_liquid_vertex_object(&liq->vbo);
 	view_bind_mesh_liquid_index_object(&liq->vbo);
 
-	glVertexPointer(3,GL_FLOAT,0,0);
+	glVertexPointer(3,GL_FLOAT,0,(GLvoid*)0);
 
 	glClientActiveTexture(GL_TEXTURE1);
-	glTexCoordPointer(2,GL_FLOAT,0,(void*)((4*3)*sizeof(float)));
+	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)((4*3)*sizeof(float)));
 	
 	glClientActiveTexture(GL_TEXTURE0);
-	glTexCoordPointer(2,GL_FLOAT,0,(void*)((4*(3+2))*sizeof(float)));
+	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)((4*(3+2))*sizeof(float)));
 
-	glColorPointer(3,GL_FLOAT,0,(void*)((4*(3+2+2))*sizeof(float)));
+	glColorPointer(4,GL_FLOAT,0,(GLvoid*)((4*(3+2+2))*sizeof(float)));
 
 		// back rendering overrides
 		
@@ -411,7 +416,7 @@ void liquid_render_liquid_fixed(map_liquid_type *liq,int txt_idx,int lmap_txt_id
 	#ifndef D3_OPENGL_ES
 		glDrawRangeElements(GL_TRIANGLE_STRIP,0,4,4,GL_UNSIGNED_SHORT,(GLvoid*)0);
 	#else
-		glDrawElements(GL_TRIANGLE_STRIP,4,GL_UNSIGNED_INT,(GLvoid*)0);
+		glDrawElements(GL_TRIANGLE_STRIP,4,GL_UNSIGNED_SHORT,(GLvoid*)0);
 	#endif
 	
 		// only this route uses color arrays

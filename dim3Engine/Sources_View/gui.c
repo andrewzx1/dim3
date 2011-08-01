@@ -87,7 +87,7 @@ void gui_initialize(char *background_path,char *bitmap_name)
 		
 	x=iface.scale_x>>1;
 	y=iface.scale_y>>1;
-	input_gui_set_mouse(x,y);
+	input_gui_set_position(x,y);
 
 		// no last keypress
 
@@ -244,11 +244,11 @@ int gui_click(void)
 
 		// get click location
 
-	input_gui_get_mouse_position(&x,&y);
+	input_gui_get_position(&x,&y);
 	
 		// button down
 
-	if (input_gui_get_mouse_left_button_down()) {
+	if (input_gui_is_click_down()) {
 		element_click_down(x,y);
 		return(-1);
 	}

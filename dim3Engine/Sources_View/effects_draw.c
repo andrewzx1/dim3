@@ -91,7 +91,7 @@ void effect_draw_lightning_lines(int nline,float varient,int k,int sx,int sy,int
          // draw the lines
 
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(3,GL_FLOAT,0,0);
+	glVertexPointer(3,GL_FLOAT,0,(GLvoid*)0);
 
 	glDrawArrays(GL_LINES,0,(nline*2));
 
@@ -251,7 +251,7 @@ void effect_draw_ray(effect_type *effect,int count)
          // setup drawing
 
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(3,GL_FLOAT,0,0);
+	glVertexPointer(3,GL_FLOAT,0,(GLvoid*)0);
 
         // draw lines
 		

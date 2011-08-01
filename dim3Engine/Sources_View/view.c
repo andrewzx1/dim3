@@ -292,7 +292,7 @@ bool view_initialize(char *err_str)
 #else
 	const SDL_VideoInfo		*sdl_v_info;
 #endif
-	
+
 		// clear view structure
 		
 	memset(&view,0x0,sizeof(view_type));
@@ -334,7 +334,7 @@ bool view_initialize(char *err_str)
 	if (!view_initialize_display(err_str)) return(FALSE);
 
 		// sound initialize
-		
+	
 	if (!al_initialize(err_str)) {
 		view_shutdown_display();
 		view_memory_release();
@@ -549,6 +549,10 @@ void view_loop_draw(void)
 	hud_draw();
 	radar_draw();
 	network_draw();
+	
+		// virtual controls
+		
+	virtual_control_draw();
 	
 		// menu
 

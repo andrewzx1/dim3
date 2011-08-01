@@ -42,6 +42,23 @@ zlib1.dll (for ZLib)
 You can get these by downloading the current win32 version of dim3.
 
 
+For iPhone Compile:
+-----------------
+
+/iPadBuild/Libraries/JavaScriptCore (Javascript static lib and headers)
+/iPadBuild/Libraries/PNG (PNG static lib and headers)
+/iPadBuild/Libraries/MPG123 (mpg123 static lib and headers)
+/iPadBuild/Libraries/SDL (SDL static lib and headers)
+
+A pre-compiled archive of these can be found at: http://www.klinksoftware.net/download/iPad_Libraries.zip
+
+The iPhone compile requires no additional external libraries.
+
+NOTE that you must include the data directory inside the application to run it.  Check out
+the run script in the engine build, this copies the data folder into the executable.
+
+
+
 ============================================================================================
 
 Compiling Order:

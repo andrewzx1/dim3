@@ -410,7 +410,6 @@ typedef struct		{
 
 typedef struct		{
 						int						wid,high,alpha_mode;
-						unsigned char			*pixel_data;
 						GLuint					gl_id;
 					} bitmap_type;
 
@@ -449,8 +448,7 @@ typedef struct		{
 
 typedef struct		{
 						char					name[file_str_len];
-						bitmap_type				bitmap,bumpmap,specularmap,glowmap,
-												combinemap;
+						bitmap_type				bitmap,bumpmap,specularmap,glowmap;
 					} texture_frame_type;
 
 //
@@ -475,11 +473,10 @@ typedef struct		{
 //
 
 extern void bitmap_new(bitmap_type *bitmap);
-extern bool bitmap_open(bitmap_type *bitmap,char *path,int anisotropic_mode,int mipmap_mode,int texture_quality_mode,bool compress,bool rectangle,bool pixelated,bool scrub_black_to_alpha,bool keep_pixel_data);
+extern bool bitmap_open(bitmap_type *bitmap,char *path,int anisotropic_mode,int mipmap_mode,int texture_quality_mode,bool compress,bool rectangle,bool pixelated,bool scrub_black_to_alpha);
 extern bool bitmap_color(bitmap_type *bitmap,d3col *col);
 extern bool bitmap_data(bitmap_type *bitmap,unsigned char *data,int wid,int high,bool alpha_channel,int anisotropic_mode,int mipmap_mode,bool compress,bool rectangle);
-extern void bitmap_combine(bitmap_type *combinemap,bitmap_type *bitmap,bitmap_type *bumpmap,bitmap_type *specularmap,int anisotropic_mode,int mipmap_mode,bool compress);
-extern void bitmap_free_pixel_data(bitmap_type *bitmap);
+extern bool bitmap_combine(bitmap_type *bitmap,char *bitmap_path,char *bumpmap_path,int anisotropic_mode,int mipmap_mode,int texture_quality_mode,bool compress,bool pixelated);
 extern void bitmap_close(bitmap_type *bitmap);
 
 extern void bitmap_texture_setup_animation(texture_type *texture,int texture_count,int tick);
@@ -693,6 +690,36 @@ typedef struct		{
 						int								nbar;
 						iface_bar_type					*bars;
 					} iface_bar_list;
+
+//
+// virtual controls
+//
+
+#define max_virtual_stick								2
+#define max_virtual_button								8
+
+typedef struct		{
+						int								x,y,x_size,y_size,
+														outer_image_idx,inner_image_idx;
+						bool							on;
+						char							outer_bitmap_name[file_str_len],
+														inner_bitmap_name[file_str_len];
+						d3col							color;
+					} iface_virtual_stick_type;
+
+typedef struct		{
+						int								x,y,x_size,y_size,control_idx,
+														up_image_idx,down_image_idx;
+						bool							on;
+						char							up_bitmap_name[file_str_len],
+														down_bitmap_name[file_str_len];
+						d3col							color;
+					} iface_virtual_button_type;
+
+typedef struct		{
+						iface_virtual_stick_type		sticks[max_virtual_stick];
+						iface_virtual_button_type		buttons[max_virtual_button];
+					} iface_virtual_control_type;
 
 //
 // radar
@@ -1332,6 +1359,7 @@ typedef struct		{
 						iface_bitmap_list				bitmap_list;
 						iface_text_list					text_list;
 						iface_bar_list					bar_list;
+						iface_virtual_control_type		virtual_control;
 						iface_menu_list					menu_list;
 						iface_chooser_list				chooser_list;
 						iface_particle_list				particle_list;

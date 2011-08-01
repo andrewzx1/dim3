@@ -75,15 +75,15 @@ void render_opaque_mesh_normal(void)
 		view_bind_mesh_liquid_vertex_object(&mesh->vbo);
 		view_bind_mesh_liquid_index_object(&mesh->vbo);
 		
-		glVertexPointer(3,GL_FLOAT,0,(void*)0);
+		glVertexPointer(3,GL_FLOAT,0,(GLvoid*)0);
 
 		glClientActiveTexture(GL_TEXTURE1);
-		glTexCoordPointer(2,GL_FLOAT,0,(void*)((mesh->vbo.count*3)*sizeof(float)));
+		glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)((mesh->vbo.count*3)*sizeof(float)));
 
 		glClientActiveTexture(GL_TEXTURE0);
-		glTexCoordPointer(2,GL_FLOAT,0,(void*)((mesh->vbo.count*(3+2))*sizeof(float)));
+		glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)((mesh->vbo.count*(3+2))*sizeof(float)));
 
-		glColorPointer(3,GL_FLOAT,0,(void*)((mesh->vbo.count*(3+2+2))*sizeof(float)));
+		glColorPointer(4,GL_FLOAT,0,(GLvoid*)((mesh->vbo.count*(3+2+2))*sizeof(float)));
 
 			// draw the polys
 
@@ -121,14 +121,7 @@ void render_opaque_mesh_normal(void)
 				lmap_gl_id=map.textures[poly->lmap_txt_idx].frames[0].bitmap.gl_id;
 			}
 
-			if (!gl_back_render_get_texture(poly->camera,&gl_id,NULL)) {
-				if (texture->frames[frame].combinemap.gl_id==-1) {
-					gl_id=texture->frames[frame].bitmap.gl_id;
-				}
-				else {
-					gl_id=texture->frames[frame].combinemap.gl_id;
-				}
-			}
+			if (!gl_back_render_get_texture(poly->camera,&gl_id,NULL)) gl_id=texture->frames[frame].bitmap.gl_id;
 
 			gl_texture_opaque_light_map_set(gl_id,lmap_gl_id);
 
@@ -185,13 +178,13 @@ void render_opaque_mesh_shader(void)
 		view_bind_mesh_liquid_vertex_object(&mesh->vbo);
 		view_bind_mesh_liquid_index_object(&mesh->vbo);
 		
-		glVertexPointer(3,GL_FLOAT,0,(void*)0);
+		glVertexPointer(3,GL_FLOAT,0,(GLvoid*)0);
 
 		glClientActiveTexture(GL_TEXTURE1);
-		glTexCoordPointer(2,GL_FLOAT,0,(void*)((mesh->vbo.count*(3+2))*sizeof(float)));
+		glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)((mesh->vbo.count*(3+2))*sizeof(float)));
 	
 		glClientActiveTexture(GL_TEXTURE0);
-		glTexCoordPointer(2,GL_FLOAT,0,(void*)((mesh->vbo.count*3)*sizeof(float)));
+		glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)((mesh->vbo.count*3)*sizeof(float)));
 		
 		gl_shader_draw_reset_normal_tangent_attrib();
 		
@@ -291,13 +284,13 @@ void render_opaque_mesh_glow(void)
 		view_bind_mesh_liquid_vertex_object(&mesh->vbo);
 		view_bind_mesh_liquid_index_object(&mesh->vbo);
 		
-		glVertexPointer(3,GL_FLOAT,0,(void*)0);
+		glVertexPointer(3,GL_FLOAT,0,(GLvoid*)0);
 
 		glClientActiveTexture(GL_TEXTURE1);
-		glTexCoordPointer(2,GL_FLOAT,0,(void*)((map.mesh.vbo_vertex_count*3)*sizeof(float)));
+		glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)((map.mesh.vbo_vertex_count*3)*sizeof(float)));
 
 		glClientActiveTexture(GL_TEXTURE0);
-		glTexCoordPointer(2,GL_FLOAT,0,(void*)((map.mesh.vbo_vertex_count*3)*sizeof(float)));
+		glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)((map.mesh.vbo_vertex_count*3)*sizeof(float)));
 
 			// draw the polys
 

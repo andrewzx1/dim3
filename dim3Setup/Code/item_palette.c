@@ -57,6 +57,8 @@ void item_palette_initialize(void)
 	state.cur_hud_bitmap_idx=-1;
 	state.cur_hud_text_idx=-1;
 	state.cur_hud_bar_idx=-1;
+	state.cur_virtual_control_stick_idx=-1;
+	state.cur_virtual_control_button_idx=-1;
 	state.cur_radar_icon_idx=-1;
 	state.cur_menu_idx=-1;
 	state.cur_menu_item_idx=-1;
@@ -99,6 +101,7 @@ void item_palette_fill(void)
 	list_palette_add_item(&item_palette,item_interface_intro,0,"Intro",(state.cur_item==item_interface_intro),FALSE);
 	list_palette_add_item(&item_palette,item_interface_setup,0,"Setup",(state.cur_item==item_interface_setup),FALSE);
 	list_palette_add_item(&item_palette,item_interface_hud,0,"HUD",(state.cur_item==item_interface_hud),FALSE);
+	list_palette_add_item(&item_palette,item_interface_virtual_control,0,"Virtual Control",(state.cur_item==item_interface_virtual_control),FALSE);
 	list_palette_add_item(&item_palette,item_interface_radar,0,"Radar",(state.cur_item==item_interface_radar),FALSE);
 	list_palette_add_item(&item_palette,item_interface_multiplayer,0,"Multiplayer",(state.cur_item==item_interface_multiplayer),FALSE);
 	list_palette_add_item(&item_palette,item_interface_menu,0,"Menu",(state.cur_item==item_interface_menu),FALSE);

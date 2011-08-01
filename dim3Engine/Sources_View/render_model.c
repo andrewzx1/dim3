@@ -226,6 +226,7 @@ void render_model_vertex_object_no_shader(model_type *mdl,int mesh_idx,model_dra
 			*cl++=*cp++;
 			*cl++=*cp++;
 			*cl++=*cp;
+			*cl++=1.0f;
 		}
 
 		trig++;
@@ -306,6 +307,7 @@ void render_model_vertex_object_no_shader_diffuse(model_type *mdl,int mesh_idx,m
 			*cl++=(*cp++)*diffuse;
 			*cl++=(*cp++)*diffuse;
 			*cl++=(*cp)*diffuse;
+			*cl++=1.0f;
 		}
 
 		trig++;
@@ -380,23 +382,15 @@ bool render_model_initialize_vertex_objects(model_type *mdl,int mesh_idx,model_d
 
 		// also remember some offsets for later pointer work
 		
-	shader_on=view_shader_on();
+	shader_on=view_shader_on()&&(!draw->no_shader);
 		
 	mesh=&mdl->meshes[mesh_idx];
 
-	if ((!shader_on) || (draw->no_shader)) {
-		mem_sz=(mesh->ntrig*3)*(3+2+3);
-
-		draw->setup.vbo_offset.color=((mesh->ntrig*3)*(3+2))*sizeof(float);
-		draw->setup.vbo_offset.tangent=0;
-		draw->setup.vbo_offset.normal=0;
+	if (!shader_on) {
+		mem_sz=(mesh->ntrig*3)*(3+2+4);
 	}
 	else {
 		mem_sz=(mesh->ntrig*3)*(3+2+3+3);
-
-		draw->setup.vbo_offset.color=0;
-		draw->setup.vbo_offset.tangent=((mesh->ntrig*3)*(3+2))*sizeof(float);
-		draw->setup.vbo_offset.normal=((mesh->ntrig*3)*(3+2+3))*sizeof(float);
 	}
 
 	vertex_ptr=view_bind_map_next_vertex_object(mem_sz);
@@ -406,7 +400,7 @@ bool render_model_initialize_vertex_objects(model_type *mdl,int mesh_idx,model_d
 		// vertexes, UVs, and colors
 		// and dim3 generates the diffuse
 
-	if ((!shader_on) || (draw->no_shader)) {
+	if (!shader_on) {
 		if ((mesh->diffuse) && (!mesh->no_lighting)) {
 			render_model_vertex_object_no_shader_diffuse(mdl,mesh_idx,draw,vertex_ptr);
 		
@@ -431,28 +425,22 @@ bool render_model_initialize_vertex_objects(model_type *mdl,int mesh_idx,model_d
 		// glow maps use two texture units
 
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(3,GL_FLOAT,0,(void*)0);
+	glVertexPointer(3,GL_FLOAT,0,(GLvoid*)0);
+	
+	if (!shader_on) {
+		glEnableClientState(GL_COLOR_ARRAY);
+		glColorPointer(4,GL_FLOAT,0,(GLvoid*)(((mesh->ntrig*3)*(3+2))*sizeof(float)));
+	}
 
 	glClientActiveTexture(GL_TEXTURE1);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,0,(void*)(((mesh->ntrig*3)*3)*sizeof(float)));
+	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)(((mesh->ntrig*3)*3)*sizeof(float)));
 	
 	glClientActiveTexture(GL_TEXTURE0);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,0,(void*)(((mesh->ntrig*3)*3)*sizeof(float)));
+	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)(((mesh->ntrig*3)*3)*sizeof(float)));
 
 	return(TRUE);
-}
-
-static inline void render_model_enable_color_array(model_draw *draw)
-{
-	glEnableClientState(GL_COLOR_ARRAY);
-	glColorPointer(3,GL_FLOAT,0,(void*)draw->setup.vbo_offset.color);
-}
-
-static inline void render_model_disable_color_array(void)
-{
-	glDisableClientState(GL_COLOR_ARRAY);
 }
 
 void render_model_release_vertex_objects(void)
@@ -462,6 +450,8 @@ void render_model_release_vertex_objects(void)
 
 	glClientActiveTexture(GL_TEXTURE0);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+
+	glDisableClientState(GL_COLOR_ARRAY);
 
 	glDisableClientState(GL_VERTEX_ARRAY);
 
@@ -477,7 +467,6 @@ void render_model_release_vertex_objects(void)
 void render_model_opaque_normal(model_type *mdl,int mesh_idx,model_draw *draw)
 {
 	int						n,frame,trig_count,trig_idx;
-	bool					enabled;
 	model_mesh_type			*mesh;
 	model_draw_mesh_type	*draw_mesh;
     texture_type			*texture;
@@ -496,8 +485,6 @@ void render_model_opaque_normal(model_type *mdl,int mesh_idx,model_draw *draw)
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_TRUE);
-
-	enabled=FALSE;
 
 	gl_texture_opaque_start();
 
@@ -523,29 +510,21 @@ void render_model_opaque_normal(model_type *mdl,int mesh_idx,model_draw *draw)
 
 		trig_idx=material->trig_start*3;
 
-			// first color pointer enable?
-
-		if (!enabled) {
-			enabled=TRUE;
-			render_model_enable_color_array(draw);
-		}
-
 			// draw texture
-
+			
 		gl_texture_opaque_set(texture->frames[frame].bitmap.gl_id);
 		glDrawArrays(GL_TRIANGLES,trig_idx,(trig_count*3));
 		
 		view.count.poly+=trig_count;
 	}
 
-	if (enabled) render_model_disable_color_array();
-			
 	gl_texture_opaque_end();
 }
 
 void render_model_opaque_shader(model_type *mdl,int mesh_idx,model_draw *draw,view_light_list_type *light_list)
 {
-	int						n,trig_count,frame,trig_idx;
+	int						n,trig_count,frame,trig_idx,
+							tangent_offset,normal_offset;
 	model_mesh_type			*mesh;
  	model_draw_mesh_type	*draw_mesh;
 	texture_type			*texture;
@@ -602,8 +581,11 @@ void render_model_opaque_shader(model_type *mdl,int mesh_idx,model_draw *draw,vi
 		}
 
 			// run the shader
+			
+		tangent_offset=((mesh->ntrig*3)*(3+2))*sizeof(float);
+		normal_offset=((mesh->ntrig*3)*(3+2+3))*sizeof(float);
 
-		gl_shader_draw_execute(core_shader_group_model,texture,n,frame,-1,1.0f,light_list,draw->setup.vbo_offset.tangent,draw->setup.vbo_offset.normal);
+		gl_shader_draw_execute(core_shader_group_model,texture,n,frame,-1,1.0f,light_list,tangent_offset,normal_offset);
 		glDrawArrays(GL_TRIANGLES,trig_idx,(trig_count*3));
 		
 		view.count.poly+=trig_count;
@@ -615,7 +597,7 @@ void render_model_opaque_shader(model_type *mdl,int mesh_idx,model_draw *draw,vi
 void render_model_transparent_normal(model_type *mdl,int mesh_idx,model_draw *draw)
 {
 	int						n,frame,trig_count,trig_idx;
-	bool					enabled,cur_additive,is_additive;
+	bool					cur_additive,is_additive;
 	model_mesh_type			*mesh;
  	model_draw_mesh_type	*draw_mesh;
     texture_type			*texture;
@@ -640,7 +622,6 @@ void render_model_transparent_normal(model_type *mdl,int mesh_idx,model_draw *dr
 
 		// minimize state changes
 
-	enabled=FALSE;
 	cur_additive=FALSE;
 	
 		// run through textures
@@ -678,13 +659,6 @@ void render_model_transparent_normal(model_type *mdl,int mesh_idx,model_draw *dr
 			}
 		}
 
-			// first color pointer enable?
-
-		if (!enabled) {
-			enabled=TRUE;
-			render_model_enable_color_array(draw);
-		}
-
 			// draw texture
 
 		gl_texture_transparent_set(texture->frames[frame].bitmap.gl_id,draw_mesh->materials[n].alpha);
@@ -694,14 +668,14 @@ void render_model_transparent_normal(model_type *mdl,int mesh_idx,model_draw *dr
 	}
 	
 	if (cur_additive) glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-	if (enabled) render_model_disable_color_array();
 
 	gl_texture_transparent_end();
 }
 
 void render_model_transparent_shader(model_type *mdl,int mesh_idx,model_draw *draw,view_light_list_type *light_list)
 {
-	int						n,frame,trig_count,trig_idx;
+	int						n,frame,trig_count,trig_idx,
+							tangent_offset,normal_offset;
 	bool					cur_additive,is_additive;
 	model_mesh_type			*mesh;
  	model_draw_mesh_type	*draw_mesh;
@@ -777,8 +751,11 @@ void render_model_transparent_shader(model_type *mdl,int mesh_idx,model_draw *dr
 		}
 
 			// run the shader
+			
+		tangent_offset=((mesh->ntrig*3)*(3+2))*sizeof(float);
+		normal_offset=((mesh->ntrig*3)*(3+2+3))*sizeof(float);
 
-		gl_shader_draw_execute(core_shader_group_model,texture,n,frame,-1,draw_mesh->materials[n].alpha,light_list,draw->setup.vbo_offset.tangent,draw->setup.vbo_offset.normal);
+		gl_shader_draw_execute(core_shader_group_model,texture,n,frame,-1,draw_mesh->materials[n].alpha,light_list,tangent_offset,normal_offset);
 		glDrawArrays(GL_TRIANGLES,trig_idx,(trig_count*3));
 		
 		view.count.poly+=trig_count;
@@ -1015,9 +992,9 @@ void render_model_opaque(model_draw *draw)
 
 		// start glsl lighting
 		
-	shader_on=view_shader_on();
+	shader_on=view_shader_on()&&(!draw->no_shader);
 
-	if ((shader_on) && (!draw->no_shader)) gl_lights_build_model_light_list(mdl,draw,&light_list);
+	if (shader_on) gl_lights_build_model_light_list(mdl,draw,&light_list);
 
 		// draw opaque materials
 
@@ -1031,7 +1008,7 @@ void render_model_opaque(model_draw *draw)
 
 			// render opaque segments
 
-		if ((!shader_on) || (draw->no_shader)) {
+		if (!shader_on) {
 			render_model_opaque_normal(mdl,n,draw);
 		}
 		else {
@@ -1064,9 +1041,9 @@ void render_model_transparent(model_draw *draw)
 	
 		// start lighting
 		
-	shader_on=view_shader_on();
+	shader_on=view_shader_on()&&(!draw->no_shader);
 
-	if ((shader_on) && (!draw->no_shader)) gl_lights_build_model_light_list(mdl,draw,&light_list);
+	if (shader_on) gl_lights_build_model_light_list(mdl,draw,&light_list);
 
 		// draw transparent materials
 
@@ -1186,7 +1163,7 @@ void render_model_target(model_draw *draw,d3col *col)
 		// draw target
 		
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(3,GL_FLOAT,0,(void*)0);
+	glVertexPointer(3,GL_FLOAT,0,(GLvoid*)0);
 
 	glDrawArrays(GL_LINE_LOOP,0,4);
 

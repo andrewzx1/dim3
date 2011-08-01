@@ -44,15 +44,19 @@ int							cursor_image_idx;
 
 void cursor_initialize(void)
 {
+#ifndef D3_OS_IPHONE
 	char		path[1024];
 	
 	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","cursor","png");
 	cursor_image_idx=view_images_load_single(path,FALSE,TRUE);
+#endif
 }
 
 void cursor_shutdown(void)
 {
+#ifndef D3_OS_IPHONE
 	view_images_free_single(cursor_image_idx);
+#endif
 }
 
 /* =======================================================
@@ -63,6 +67,7 @@ void cursor_shutdown(void)
 
 void cursor_draw(void)
 {
+#ifndef D3_OS_IPHONE
 	int				x,y,sz,lft,top,rgt,bot;
 	GLuint			gl_id;
 
@@ -70,7 +75,7 @@ void cursor_draw(void)
 	
 		// get cursor position
 		
-	input_gui_get_mouse_position(&x,&y);
+	input_gui_get_position(&x,&y);
 
 	sz=(int)(((float)iface.scale_x)*cursor_size_factor);
 		
@@ -83,6 +88,7 @@ void cursor_draw(void)
 		
 	gl_id=view_images_get_gl_id(cursor_image_idx);
 	view_draw_next_vertex_object_2D_texture_quad(gl_id,NULL,1.0f,lft,rgt,top,bot,0.0f,1.0f,0.0f,1.0f);
+#endif
 }
 
 

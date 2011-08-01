@@ -43,24 +43,6 @@ extern bool view_draw_node(node_type *node);
 
 /* =======================================================
 
-      OpenGL ES Stubs
-      
-======================================================= */
-
-// supergumba -- this is actually available, turn it back on 
-#ifdef D3_OPENGL_ES
-
-void gl_back_render_initialize(void) {}
-void gl_back_render_shutdown(void) {}
-void gl_back_render_map_start(void) {}
-void gl_back_render_map_end(void) {}
-void gl_back_render_frame_start(void) {}
-bool gl_back_render_get_texture(char *node_name,GLuint *txt_id,float *alpha) { return(FALSE); }
-
-#else
-
-/* =======================================================
-
       Initialize Back Renderer
       
 ======================================================= */
@@ -271,10 +253,12 @@ void gl_back_render_frame_node(char *node_name)
 
 		// generate mipmaps
 		
+#ifndef D3_OS_IPHONE
 	gl_texture_bind(0,node->back_render.txt_id);
 	glGenerateMipmapEXT(GL_TEXTURE_2D);
 	gl_texture_clear(GL_TEXTURE_2D);
-	
+#endif
+
 		// mark as rendered for this frame
 		
 	node->back_render.render=TRUE;
@@ -354,5 +338,3 @@ bool gl_back_render_get_texture(char *node_name,GLuint *txt_id,float *alpha)
 	
 	return(TRUE);
 }
-
-#endif

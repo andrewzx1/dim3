@@ -191,10 +191,10 @@ void fog_draw_textured(void)
 		// draw the fog
 	
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(3,GL_FLOAT,0,(void*)0);
+	glVertexPointer(3,GL_FLOAT,0,(GLvoid*)0);
 		
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,0,(void*)((((16*6)*count)*3)*sizeof(float)));
+	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)((((16*6)*count)*3)*sizeof(float)));
 
 	glDrawArrays(GL_TRIANGLES,0,((16*6)*count));
 

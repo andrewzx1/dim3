@@ -132,7 +132,7 @@ void file_new_model(void)
 
 	os_set_wait_cursor();
 		
-	model_setup(&file_path_setup,anisotropic_mode_none,mipmap_mode_none,texture_quality_mode_high,FALSE);
+	model_setup(&file_path_setup,anisotropic_mode_none,mipmap_mode_none,texture_quality_mode_high,FALSE,FALSE);
 	model_new(&model,state.file_name);
 	
 	model.nmesh=1;
@@ -195,7 +195,7 @@ void file_open_model(void)
  	main_wind_open();
 	os_select_window();
    
-	model_setup(&file_path_setup,anisotropic_mode_none,mipmap_mode_none,texture_quality_mode_high,FALSE);
+	model_setup(&file_path_setup,anisotropic_mode_none,mipmap_mode_none,texture_quality_mode_high,FALSE,FALSE);
 	if (!model_open(&model,file_name,TRUE)) {
 		os_dialog_alert("Animator","There was a problem loading the model file.");
 		state.model_open=FALSE;

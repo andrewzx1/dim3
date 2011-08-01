@@ -190,6 +190,18 @@ void iface_default_settings(iface_type *iface)
 	iface->crosshair_list.ncrosshair=0;
 	iface->sound_list.nsound=0;
 	iface->shader_list.nshader=0;
+	
+		// virtual controls
+		
+	for (n=0;n!=max_virtual_stick;n++) {
+		iface->virtual_control.sticks[n].on=FALSE;
+		iface->virtual_control.sticks[n].color.r=iface->virtual_control.sticks[n].color.g=iface->virtual_control.sticks[n].color.b=1.0f;
+	}
+
+	for (n=0;n!=max_virtual_button;n++) {
+		iface->virtual_control.buttons[n].on=FALSE;
+		iface->virtual_control.buttons[n].color.r=iface->virtual_control.buttons[n].color.g=iface->virtual_control.buttons[n].color.b=1.0f;
+	}
 
 		// radar
 

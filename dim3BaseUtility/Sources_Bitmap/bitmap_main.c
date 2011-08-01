@@ -38,7 +38,6 @@ and can be sold or given away.
 void bitmap_new(bitmap_type *bitmap)
 {
 	bitmap->wid=bitmap->high=0;
-	bitmap->pixel_data=NULL;
 	bitmap->alpha_mode=alpha_mode_none;
 	bitmap->gl_id=-1;
 }
@@ -204,38 +203,10 @@ unsigned char* bitmap_fix_power_2_and_quality(bitmap_type *bitmap,bool has_alpha
 	return(data);
 }
 
-/* =======================================================
-
-      Open Bitmaps
-      
-======================================================= */
-
-bool bitmap_open(bitmap_type *bitmap,char *path,int anisotropic_mode,int mipmap_mode,int texture_quality_mode,bool compress,bool rectangle,bool pixelated,bool scrub_black_to_alpha,bool keep_pixel_data)
+unsigned char* bitmap_setup_alpha(bitmap_type *bitmap,unsigned char *png_data,bool alpha_channel,bool scrub_black_to_alpha)
 {
-	unsigned char		*png_data,*strip_data;
-	bool				ok,alpha_channel;
-
-	bitmap_new(bitmap);
+	unsigned char				*strip_data;
 	
-		// read bitmap
-	
-	png_data=png_utility_read(path,&bitmap->wid,&bitmap->high,&alpha_channel);
-	if (png_data==NULL) return(FALSE);
-
-		// if not a rectangle, fix size
-		// if not a power of two and do any
-		// texture quality changes
-
-		// opengl es doesn't support non-square textures
-
-#ifndef D3_OPENGL_ES
-	if (!rectangle) png_data=bitmap_fix_power_2_and_quality(bitmap,alpha_channel,texture_quality_mode,png_data);
-#else
-	png_data=bitmap_fix_power_2_and_quality(bitmap,alpha_channel,texture_quality_mode,png_data);
-#endif
-
-	// set alphas and scrubbing
-		
 	bitmap->alpha_mode=alpha_mode_none;
 
 	if (alpha_channel) {
@@ -260,20 +231,48 @@ bool bitmap_open(bitmap_type *bitmap,char *path,int anisotropic_mode,int mipmap_
 		}
 	}
 	
+	return(png_data);
+}
+
+/* =======================================================
+
+      Open Bitmaps
+      
+======================================================= */
+
+bool bitmap_open(bitmap_type *bitmap,char *path,int anisotropic_mode,int mipmap_mode,int texture_quality_mode,bool compress,bool rectangle,bool pixelated,bool scrub_black_to_alpha)
+{
+	unsigned char		*png_data;
+	bool				ok,alpha_channel;
+	
+	bitmap_new(bitmap);
+	
+		// read bitmap
+	
+	png_data=png_utility_read(path,&bitmap->wid,&bitmap->high,&alpha_channel);
+	if (png_data==NULL) return(FALSE);
+
+		// if not a rectangle, fix size
+		// if not a power of two and do any
+		// texture quality changes
+
+		// opengl es doesn't support non-square textures
+
+#ifndef D3_OPENGL_ES
+	if (!rectangle) png_data=bitmap_fix_power_2_and_quality(bitmap,alpha_channel,texture_quality_mode,png_data);
+#else
+	png_data=bitmap_fix_power_2_and_quality(bitmap,alpha_channel,texture_quality_mode,png_data);
+#endif
+
+		// set alphas and scrubbing
+		
+	png_data=bitmap_setup_alpha(bitmap,png_data,alpha_channel,scrub_black_to_alpha);
+		
 		// get the texture
 		
 	ok=bitmap_texture_open(bitmap,png_data,anisotropic_mode,mipmap_mode,compress,rectangle,pixelated);
-
-		// can return pixel data if requested,
-		// otherwise free it
 		
-	if (keep_pixel_data) {
-		bitmap->pixel_data=png_data;
-	}
-	else {
-		bitmap->pixel_data=NULL;
-		free(png_data);
-	}
+	free(png_data);
 	
 	return(ok);
 }
@@ -286,12 +285,11 @@ bool bitmap_open(bitmap_type *bitmap,char *path,int anisotropic_mode,int mipmap_
 
 bool bitmap_color(bitmap_type *bitmap,d3col *col)
 {
-	int				i,kr,kg,kb;
+	int				n,kr,kg,kb;
 	unsigned char	*png_data,*dptr;
 	bool			ok;
 	
 	bitmap->wid=bitmap->high=32;
-	bitmap->pixel_data=NULL;
 	bitmap->alpha_mode=alpha_mode_none;
 	
 	png_data=malloc((32*32)*3);
@@ -303,7 +301,7 @@ bool bitmap_color(bitmap_type *bitmap,d3col *col)
 	
 	dptr=png_data;
 
-	for (i=0;i!=(32*32);i++) {
+	for (n=0;n!=(32*32);n++) {
 		*dptr++=kr;
 		*dptr++=kg;
 		*dptr++=kb;
@@ -326,7 +324,6 @@ bool bitmap_data(bitmap_type *bitmap,unsigned char *data,int wid,int high,bool a
 {
 	bitmap->wid=wid;
 	bitmap->high=high;
-	bitmap->pixel_data=NULL;
 
 		// if not a rectangle, fix size
 		// if not a power of two
@@ -349,28 +346,54 @@ bool bitmap_data(bitmap_type *bitmap,unsigned char *data,int wid,int high,bool a
       
 ======================================================= */
 
-void bitmap_combine(bitmap_type *combinemap,bitmap_type *bitmap,bitmap_type *bumpmap,bitmap_type *specularmap,int anisotropic_mode,int mipmap_mode,bool compress)
+bool bitmap_combine(bitmap_type *bitmap,char *bitmap_path,char *bumpmap_path,int anisotropic_mode,int mipmap_mode,int texture_quality_mode,bool compress,bool pixelated)
 {
 	int					n,wid,high,pixel_cnt,data_sz;
 	float				f,pf[3];
-	unsigned char		*data,*srce,*dest;
+	unsigned char		*bitmap_data,*bumpmap_data,
+						*srce,*dest;
+	bool				ok,bitmap_only,alpha_channel;
 	d3vct				normal,bump;
-
-		// only works if all maps have
-		// same width/height
-
-	wid=bitmap->wid;
-	high=bitmap->high;
-
-	if (bumpmap->gl_id!=-1) {
-		if ((bumpmap->wid!=wid) || (bumpmap->high!=high)) return;
+	bitmap_type			bumpmap;
+	
+		// load the bitmap
+		
+	bitmap_new(bitmap);
+	
+	bitmap_data=png_utility_read(bitmap_path,&bitmap->wid,&bitmap->high,&alpha_channel);
+	if (bitmap_data==NULL) return(FALSE);
+	
+	bitmap_data=bitmap_fix_power_2_and_quality(bitmap,alpha_channel,texture_quality_mode,bitmap_data);
+	bitmap_data=bitmap_setup_alpha(bitmap,bitmap_data,alpha_channel,FALSE);
+	
+		// load the bump
+		// if no bump, just use bitmap
+		
+	bitmap_new(&bumpmap);
+	
+	bumpmap_data=png_utility_read(bumpmap_path,&bumpmap.wid,&bumpmap.high,&alpha_channel);
+	if (bumpmap_data!=NULL) {
+		bumpmap_data=bitmap_fix_power_2_and_quality(&bumpmap,alpha_channel,texture_quality_mode,bumpmap_data);
+		bumpmap_data=bitmap_setup_alpha(&bumpmap,bumpmap_data,alpha_channel,FALSE);
 	}
-	if (specularmap->gl_id!=-1) {
-		if ((specularmap->wid!=wid) || (specularmap->high!=high)) return;
+	
+		// if no bump map or
+		// different sizes, just use bitmap
+		
+	bitmap_only=TRUE;
+	
+	if (bumpmap_data!=NULL) {
+		bitmap_only=(bitmap->wid!=bumpmap.wid) || (bitmap->high!=bumpmap.high);
 	}
-
-		// create combined texture
-		// this is used for simple non-shader drawing
+	
+	if (bitmap_only) {
+		ok=bitmap_texture_open(bitmap,bitmap_data,anisotropic_mode,mipmap_mode,compress,FALSE,pixelated);
+		if (bumpmap_data!=NULL) free(bumpmap_data);
+		free(bitmap_data);
+		return(ok);
+	}
+	
+		// work the bump into the bitmap
 
 	pixel_cnt=wid*high;
 
@@ -380,85 +403,54 @@ void bitmap_combine(bitmap_type *combinemap,bitmap_type *bitmap,bitmap_type *bum
 	else {
 		data_sz=pixel_cnt*3;
 	}
-
-	data=(unsigned char*)malloc(data_sz);
-	if (data==NULL) return;
-
-		// the bitmap
-
-	memmove(data,bitmap->pixel_data,data_sz);
-
-		// the bump
-
-	if (bumpmap->gl_id!=-1) {
 		
-			// our fake normal
+		// our fake normal
 
-		normal.x=normal.y=0.0f;
-		normal.z=0.5f;
+	normal.x=normal.y=0.0f;
+	normal.z=0.5f;
 
-		dest=data;
-		srce=bumpmap->pixel_data;
+	dest=bitmap_data;
+	srce=bumpmap_data;
 
-		for (n=0;n!=pixel_cnt;n++) {
+	for (n=0;n!=pixel_cnt;n++) {
 
-				// unpack the bump normal
+			// unpack the bump normal
 
-			bump.x=((((float)*srce++)/255.0f)*2.0f)-1.0f;
-			bump.y=((((float)*srce++)/255.0f)*2.0f)-1.0f;
-			bump.z=((((float)*srce++)/255.0f)*2.0f)-1.0f;
-			vector_normalize(&bump);
+		bump.x=((((float)*srce++)/255.0f)*2.0f)-1.0f;
+		bump.y=((((float)*srce++)/255.0f)*2.0f)-1.0f;
+		bump.z=((((float)*srce++)/255.0f)*2.0f)-1.0f;
+		vector_normalize(&bump);
 
-			if (bumpmap->alpha_mode!=alpha_mode_none) srce++;
+		if (bumpmap.alpha_mode!=alpha_mode_none) srce++;
 
-				// get the dot3
-				// we make sure it never gets too
-				// dark for this simple version
+			// get the dot3
+			// we make sure it never gets too
+			// dark for this simple version
 
-			f=vector_dot_product(&normal,&bump);
-			if (f<0.75f) f=0.75f;
+		f=vector_dot_product(&normal,&bump);
+		if (f<0.75f) f=0.75f;
 
-				// multiply it into bitmap
+			// multiply it into bitmap
 
-			pf[0]=((float)*dest)/255.0f;
-			pf[1]=((float)*(dest+1))/255.0f;
-			pf[2]=((float)*(dest+2))/255.0f;
+		pf[0]=((float)*dest)/255.0f;
+		pf[1]=((float)*(dest+1))/255.0f;
+		pf[2]=((float)*(dest+2))/255.0f;
 
-			*dest++=(int)((pf[0]*f)*255.0f);
-			*dest++=(int)((pf[1]*f)*255.0f);
-			*dest++=(int)((pf[2]*f)*255.0f);
+		*dest++=(int)((pf[0]*f)*255.0f);
+		*dest++=(int)((pf[1]*f)*255.0f);
+		*dest++=(int)((pf[2]*f)*255.0f);
 
-			if (bitmap->alpha_mode!=alpha_mode_none) dest++;
-		}
+		if (bitmap->alpha_mode!=alpha_mode_none) dest++;
 	}
-
-/*
-		// the specular
-		// NOTE: not using this, keeping around code in
-		// case it makes a comeback
-
-	if (specularmap->gl_id!=-1) {
-
-		dest=data;
-		srce=specularmap->pixel_data;
-
-		for (n=0;n!=pixel_cnt;n++) {
-
-			for (k=0;k!=3;k++) {
-				pi=((int)*dest)+(((int)*srce++)>>1);
-				if (pi>255) pi=255;
-				*dest++=(unsigned char)pi;
-			}
-
-			if (specularmap->alpha_mode!=alpha_mode_none) srce++;
-			if (bitmap->alpha_mode!=alpha_mode_none) dest++;
-		}
-	}
-*/
 
 		// and finally make the combine bitmap
-
-	bitmap_data(combinemap,data,wid,high,(bitmap->alpha_mode!=alpha_mode_none),anisotropic_mode,mipmap_mode,compress,FALSE);
+	
+	ok=bitmap_texture_open(bitmap,bitmap_data,anisotropic_mode,mipmap_mode,compress,FALSE,pixelated);
+	
+	free(bumpmap_data);
+	free(bitmap_data);
+	
+	return(ok);
 }
 
 /* =======================================================
@@ -467,16 +459,8 @@ void bitmap_combine(bitmap_type *combinemap,bitmap_type *bitmap,bitmap_type *bum
       
 ======================================================= */
 
-void bitmap_free_pixel_data(bitmap_type *bitmap)
-{
-	if (bitmap->pixel_data!=NULL) free(bitmap->pixel_data);
-	bitmap->pixel_data=NULL;
-}
-
 void bitmap_close(bitmap_type *bitmap)
 {
-	bitmap_free_pixel_data(bitmap);
-
 	if (bitmap->gl_id!=-1) bitmap_texture_close(bitmap);
 	bitmap->gl_id=-1;
 }

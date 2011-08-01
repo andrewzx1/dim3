@@ -98,6 +98,17 @@ void alt_property_palette_fill(void)
 				return;
 			}
 			break;
+			
+		case item_interface_virtual_control:
+			if (state.cur_virtual_control_stick_idx!=-1) {
+				alt_property_palette_fill_virtual_control_stick(state.cur_virtual_control_stick_idx);
+				break;
+			}
+			if (state.cur_virtual_control_button_idx!=-1) {
+				alt_property_palette_fill_virtual_control_button(state.cur_virtual_control_button_idx);
+				break;
+			}
+			break;
 
 		case item_interface_radar:
 			if (state.cur_radar_icon_idx!=-1) {
@@ -268,6 +279,17 @@ bool alt_property_palette_click(d3pnt *pnt,bool double_click)
 			}
 			if (state.cur_hud_bar_idx!=-1) {
 				alt_property_palette_click_hud_bar(state.cur_hud_bar_idx,alt_property_palette.item_id,double_click);
+				break;
+			}
+			break;
+			
+		case item_interface_virtual_control:
+			if (state.cur_virtual_control_stick_idx!=-1) {
+				alt_property_palette_click_virtual_control_stick(state.cur_virtual_control_stick_idx,alt_property_palette.item_id,double_click);
+				break;
+			}
+			if (state.cur_virtual_control_button_idx!=-1) {
+				alt_property_palette_click_virtual_control_button(state.cur_virtual_control_button_idx,alt_property_palette.item_id,double_click);
 				break;
 			}
 			break;

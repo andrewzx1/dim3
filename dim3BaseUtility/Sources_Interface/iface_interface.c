@@ -268,6 +268,26 @@ void iface_read_settings_bar(iface_type *iface,int bar_tag)
 
 /* =======================================================
 
+      Read Virtual Control XML
+      
+======================================================= */
+
+void iface_read_settings_virtual_control(iface_type *iface,int virtual_head_tag)
+{
+
+/*
+	for (n=0;n!=max_virtual_stick;n++) {
+		iface->virtual_control.sticks[n].on=FALSE;
+	}
+
+	for (n=0;n!=max_virtual_button;n++) {
+		iface->virtual_control.buttons[n].on=FALSE;
+	}
+*/
+}
+
+/* =======================================================
+
       Read Radar XML
       
 ======================================================= */
@@ -472,7 +492,7 @@ void iface_read_settings_interface(iface_type *iface)
 {
 	int							n,interface_head_tag,scale_tag,
 								bitmap_head_tag,bitmap_tag,text_head_tag,text_tag,bar_head_tag,bar_tag,
-								radar_head_tag,menu_head_tag,menu_tag,title_tag,
+								virtual_head_tag,radar_head_tag,menu_head_tag,menu_tag,title_tag,
 								intro_head_tag,intro_model_head_tag,intro_model_tag,intro_confirm_tag,
 								color_tag,font_tag,progress_tag,chat_tag,fade_tag,button_tag,sound_tag,
 								proj_tag,setup_tag;
@@ -546,6 +566,11 @@ void iface_read_settings_interface(iface_type *iface)
 			bar_tag=xml_findnextchild(bar_tag);
 		}
 	}
+	
+		// virtual controls
+
+	virtual_head_tag=xml_findfirstchild("Virtual_Controls",interface_head_tag);
+	if (virtual_head_tag!=-1) iface_read_settings_virtual_control(iface,virtual_head_tag);
 
 		// radar
 
@@ -1011,6 +1036,33 @@ bool iface_write_settings_interface(iface_type *iface)
 	}
 	
 	xml_add_tagclose("Bars");
+	
+		// virtual controls
+		
+	xml_add_tagstart("Virtual_Control");
+	xml_add_tagend(FALSE);
+		
+		// virtual control sticks
+		
+	xml_add_tagstart("Sticks");
+	xml_add_tagend(FALSE);
+	
+	xml_add_tagstart("Stick");
+	xml_add_tagend(TRUE);
+	
+	xml_add_tagclose("Sticks");
+	
+		// virtual control buttons
+		
+	xml_add_tagstart("Buttons");
+	xml_add_tagend(FALSE);
+	
+	xml_add_tagstart("Button");
+	xml_add_tagend(TRUE);
+	
+	xml_add_tagclose("Buttons");
+
+	xml_add_tagclose("Virtual_Control");
 
 		// radar
 

@@ -37,6 +37,8 @@ extern iface_type				iface;
 extern file_path_setup_type		file_path_setup;
 extern setup_state_type			state;
 
+extern char						control_name_str[][32];
+
 list_palette_type				property_palette;
 
 /* =======================================================
@@ -88,6 +90,10 @@ void property_palette_fill(void)
 
 		case item_interface_hud:
 			property_palette_fill_hud();
+			return;
+			
+		case item_interface_virtual_control:
+			property_palette_fill_virtual_control();
 			return;
 
 		case item_interface_radar:
@@ -216,6 +222,10 @@ bool property_palette_click(d3pnt *pnt,bool double_click)
 		case item_interface_hud:
 			property_palette_click_hud(property_palette.item_id,double_click);
 			break;
+			
+		case item_interface_virtual_control:
+			property_palette_click_virtual_control(property_palette.item_id,double_click);
+			break;
 
 		case item_interface_radar:
 			property_palette_click_radar(property_palette.item_id,double_click);
@@ -284,5 +294,10 @@ void property_palette_pick_sound(char *name,bool include_none)
 void property_palette_pick_particle(char *name)
 {
 	list_palette_start_picking_mode("Pick a Particle",(char*)iface.particle_list.particles,iface.particle_list.nparticle,sizeof(iface_particle_type),(int)offsetof(iface_particle_type,name),FALSE,NULL,name);
+}
+
+void property_palette_pick_control(int *control_idx)
+{
+	list_palette_start_picking_mode("Pick a Control Action",(char*)control_name_str,ncontrol,32,0,FALSE,control_idx,NULL);
 }
 

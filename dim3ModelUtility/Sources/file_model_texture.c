@@ -59,7 +59,8 @@ void model_textures_clear(model_type *model)
 void model_textures_read(model_type *model)
 {
     int						n,k,texture_quality_mode;
-    char					sub_path[1024],path[1024],name[file_str_len];
+    char					sub_path[1024],path[1024],
+							path2[1024],name[file_str_len];
 	texture_type			*texture;
 	texture_frame_type		*frame;
    
@@ -78,7 +79,6 @@ void model_textures_read(model_type *model)
 			bitmap_new(&frame->bumpmap);
 			bitmap_new(&frame->specularmap);
 			bitmap_new(&frame->glowmap);
-			bitmap_new(&frame->combinemap);
 			
 			frame++;
         }
@@ -95,28 +95,46 @@ void model_textures_read(model_type *model)
         for (k=0;k!=max_texture_frame;k++) {
 		
 			if (frame->name[0]!=0x0) {
-
+			
 				sprintf(sub_path,"Models/%s/Textures",model->name);
-				file_paths_data(&modelutility_settings.file_path_setup,path,sub_path,frame->name,"png");
-				bitmap_open(&frame->bitmap,path,modelutility_settings.anisotropic_mode,modelutility_settings.mipmap_mode,texture_quality_mode,texture->compress,FALSE,texture->pixelated,FALSE,FALSE);
-
-					// bumpmap
-
-				sprintf(name,"%s_n",frame->name);
-				file_paths_data(&modelutility_settings.file_path_setup,path,sub_path,name,"png");	// compress messes up normals
-				bitmap_open(&frame->bumpmap,path,modelutility_settings.anisotropic_mode,modelutility_settings.mipmap_mode,texture_quality_mode,FALSE,FALSE,texture->pixelated,FALSE,FALSE);
+			
+					// if in engine and no shader,
+					// then combine bitmap and bump into bitmap
 				
-					// specular map
+				if ((modelutility_settings.in_engine) && (!modelutility_settings.shader_on)) {
+					file_paths_data(&modelutility_settings.file_path_setup,path,sub_path,frame->name,"png");
+				
+					sprintf(name,"%s_n",frame->name);
+					file_paths_data(&modelutility_settings.file_path_setup,path2,sub_path,name,"png");
+					
+					bitmap_combine(&frame->bitmap,path,path2,modelutility_settings.anisotropic_mode,modelutility_settings.mipmap_mode,texture_quality_mode,texture->compress,texture->pixelated);
+				}
+				
+					// else load all maps
+					
+				else {
 
-				sprintf(name,"%s_s",frame->name);
-				file_paths_data(&modelutility_settings.file_path_setup,path,sub_path,name,"png");
-				bitmap_open(&frame->specularmap,path,modelutility_settings.anisotropic_mode,modelutility_settings.mipmap_mode,texture_quality_mode,texture->compress,FALSE,texture->pixelated,FALSE,FALSE);
+					file_paths_data(&modelutility_settings.file_path_setup,path,sub_path,frame->name,"png");
+					bitmap_open(&frame->bitmap,path,modelutility_settings.anisotropic_mode,modelutility_settings.mipmap_mode,texture_quality_mode,texture->compress,FALSE,texture->pixelated,FALSE);
+
+						// bumpmap
+
+					sprintf(name,"%s_n",frame->name);
+					file_paths_data(&modelutility_settings.file_path_setup,path,sub_path,name,"png");	// compress messes up normals
+					bitmap_open(&frame->bumpmap,path,modelutility_settings.anisotropic_mode,modelutility_settings.mipmap_mode,texture_quality_mode,FALSE,FALSE,texture->pixelated,FALSE);
+					
+						// specular map
+
+					sprintf(name,"%s_s",frame->name);
+					file_paths_data(&modelutility_settings.file_path_setup,path,sub_path,name,"png");
+					bitmap_open(&frame->specularmap,path,modelutility_settings.anisotropic_mode,modelutility_settings.mipmap_mode,texture_quality_mode,texture->compress,FALSE,texture->pixelated,FALSE);
+				}
 				
 					// glow map
 
 				sprintf(name,"%s_g",frame->name);
 				file_paths_data(&modelutility_settings.file_path_setup,path,sub_path,name,"png");
-				bitmap_open(&frame->glowmap,path,modelutility_settings.anisotropic_mode,modelutility_settings.mipmap_mode,texture_quality_mode,texture->compress,FALSE,texture->pixelated,TRUE,FALSE);
+				bitmap_open(&frame->glowmap,path,modelutility_settings.anisotropic_mode,modelutility_settings.mipmap_mode,texture_quality_mode,texture->compress,FALSE,texture->pixelated,TRUE);
 			}
 			
 			frame++;

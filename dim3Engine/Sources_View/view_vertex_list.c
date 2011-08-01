@@ -52,7 +52,7 @@ bool view_map_vbo_initialize_mesh(map_mesh_type *mesh)
 	map_mesh_poly_type	*poly;
 
 	shader_on=view_shader_on();
-
+	
 		// setup vertex pointer
 
 	vertex_cnt=mesh->vbo.count;
@@ -96,6 +96,7 @@ bool view_map_vbo_initialize_mesh(map_mesh_type *mesh)
 				*pn++=poly->tangent_space.normal.z;
 			}
 			else {
+				*pc++=1.0f;
 				*pc++=1.0f;
 				*pc++=1.0f;
 				*pc++=1.0f;
@@ -206,10 +207,10 @@ bool view_map_vbo_initialize(void)
 
 		vertex_cnt=index_cnt*(3+2+2);
 		if (shader_on) {
-			vertex_cnt+=(index_cnt*(3+3));
+			vertex_cnt+=(index_cnt*(3+3));		// normals and tangents
 		}
 		else {
-			vertex_cnt+=(index_cnt*3);
+			vertex_cnt+=(index_cnt*4);			// colors
 		}
 
 			// cretae the VBO
@@ -225,11 +226,12 @@ bool view_map_vbo_initialize(void)
 
 		// liquids
 
+	vertex_cnt=4*(3+2+2);
 	if (shader_on) {
-		vertex_cnt=4*(3+2+2+3+3);
+		vertex_cnt+=(4*(3+3));					// normals and tangents
 	}
 	else {
-		vertex_cnt=4*(3+2+2+3);
+		vertex_cnt+=(4*3);						// colors
 	}
 
 	liq=map.liquid.liquids;
@@ -452,6 +454,7 @@ void view_map_vbo_rebuild_mesh(map_mesh_type *mesh)
 					*pc++=*pc2++;
 					*pc++=*pc2++;
 					*pc++=*pc2;
+					*pc++=1.0f;
 				}
 
 				poly++;

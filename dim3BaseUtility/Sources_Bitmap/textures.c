@@ -67,6 +67,12 @@ void bitmap_texture_set_mipmap_filter(int gl_bindtype,int mipmap_mode,bool pixel
 		glTexParameterf(gl_bindtype,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
 		return;
 	}
+	
+		// no mipmap mode for opengles
+		
+#ifdef D3_OPENGL_ES
+	mipmap_mode=mipmap_mode_none;
+#endif
 			
 		// regular mipmap modes
 		
@@ -310,7 +316,6 @@ void bitmap_texture_clear(texture_type *texture)
 		bitmap_new(&frame->bumpmap);
 		bitmap_new(&frame->specularmap);
 		bitmap_new(&frame->glowmap);
-		bitmap_new(&frame->combinemap);
 
 		texture->animate.wait[n]=100;
 		

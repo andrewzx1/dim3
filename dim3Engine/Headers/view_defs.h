@@ -471,8 +471,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						int									fade_start_tick,menu_idx,
-															click_item_idx;
+						int									fade_start_tick,menu_idx;
 						bool								fade_in,fade_out,active,
 															mouse_down;
 					} view_menu_type;

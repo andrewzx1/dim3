@@ -59,7 +59,7 @@ void map_textures_new(map_type *map)
 bool map_textures_read(map_type *map)
 {
 	int					i,k,n,texture_quality_mode;
-	char				path[1024],name[256];
+	char				path[1024],path2[1024],name[256];
 	bool				txt_ok[max_map_texture];
 	texture_type		*texture;
 	texture_frame_type	*frame;
@@ -131,7 +131,6 @@ bool map_textures_read(map_type *map)
 			bitmap_new(&frame->bumpmap);
 			bitmap_new(&frame->specularmap);
 			bitmap_new(&frame->glowmap);
-			bitmap_new(&frame->combinemap);
 			
 			frame++;
 		}
@@ -153,43 +152,45 @@ bool map_textures_read(map_type *map)
 		
 			if (frame->name[0]!=0x0) {
 			
-					// bitmap
-					
-				file_paths_data(&maputility_settings.file_path_setup,path,"Bitmaps/Textures",frame->name,"png");
-				bitmap_open(&frame->bitmap,path,maputility_settings.anisotropic_mode,maputility_settings.mipmap_mode,texture_quality_mode,texture->compress,FALSE,texture->pixelated,FALSE,TRUE);
+					// if in engine and no shader,
+					// then combine bitmap and bump into bitmap
 				
-					// bumpmap
+				if ((maputility_settings.in_engine) && (!maputility_settings.shader_on)) {
+				
+					file_paths_data(&maputility_settings.file_path_setup,path,"Bitmaps/Textures",frame->name,"png");
 					
-				sprintf(name,"%s_n",frame->name);
-				file_paths_data(&maputility_settings.file_path_setup,path,"Bitmaps/Textures",name,"png");		// compresses messes up normals
-				bitmap_open(&frame->bumpmap,path,anisotropic_mode_none,maputility_settings.mipmap_mode,texture_quality_mode,FALSE,FALSE,texture->pixelated,FALSE,TRUE);
-								
-					// specular map
+					sprintf(name,"%s_n",frame->name);
+					file_paths_data(&maputility_settings.file_path_setup,path2,"Bitmaps/Textures",name,"png");
+					bitmap_combine(&frame->bitmap,path,path2,maputility_settings.anisotropic_mode,maputility_settings.mipmap_mode,texture_quality_mode,texture->compress,texture->pixelated);
+				}
+				
+					// else load all maps
 					
-				sprintf(name,"%s_s",frame->name);
-				file_paths_data(&maputility_settings.file_path_setup,path,"Bitmaps/Textures",name,"png");
-				bitmap_open(&frame->specularmap,path,maputility_settings.anisotropic_mode,maputility_settings.mipmap_mode,texture_quality_mode,texture->compress,FALSE,texture->pixelated,FALSE,TRUE);
+				else {
+			
+						// bitmap
+						
+					file_paths_data(&maputility_settings.file_path_setup,path,"Bitmaps/Textures",frame->name,"png");
+					bitmap_open(&frame->bitmap,path,maputility_settings.anisotropic_mode,maputility_settings.mipmap_mode,texture_quality_mode,texture->compress,FALSE,texture->pixelated,FALSE);
+					
+						// bumpmap
+						
+					sprintf(name,"%s_n",frame->name);
+					file_paths_data(&maputility_settings.file_path_setup,path,"Bitmaps/Textures",name,"png");		// compresses messes up normals
+					bitmap_open(&frame->bumpmap,path,anisotropic_mode_none,maputility_settings.mipmap_mode,texture_quality_mode,FALSE,FALSE,texture->pixelated,FALSE);
+									
+						// specular map
+						
+					sprintf(name,"%s_s",frame->name);
+					file_paths_data(&maputility_settings.file_path_setup,path,"Bitmaps/Textures",name,"png");
+					bitmap_open(&frame->specularmap,path,maputility_settings.anisotropic_mode,maputility_settings.mipmap_mode,texture_quality_mode,texture->compress,FALSE,texture->pixelated,FALSE);
+				}
 				
 					// glow map
 					
 				sprintf(name,"%s_g",frame->name);
 				file_paths_data(&maputility_settings.file_path_setup,path,"Bitmaps/Textures",name,"png");
-				bitmap_open(&frame->glowmap,path,maputility_settings.anisotropic_mode,maputility_settings.mipmap_mode,texture_quality_mode,texture->compress,FALSE,texture->pixelated,TRUE,FALSE);
-
-					// combined version
-					// this is a special version for simplified/non-shader drawing
-
-				if ((maputility_settings.in_engine) && (frame->bumpmap.gl_id!=-1)) {
-					bitmap_combine(&frame->combinemap,&frame->bitmap,&frame->bumpmap,&frame->specularmap,maputility_settings.anisotropic_mode,maputility_settings.mipmap_mode,texture->compress);
-					bitmap_free_pixel_data(&frame->combinemap);
-				}
-
-					// get rid of saved pixel data
-					// we only needed it for combine version
-
-				bitmap_free_pixel_data(&frame->bitmap);
-				bitmap_free_pixel_data(&frame->bumpmap);
-				bitmap_free_pixel_data(&frame->specularmap);
+				bitmap_open(&frame->glowmap,path,maputility_settings.anisotropic_mode,maputility_settings.mipmap_mode,texture_quality_mode,texture->compress,FALSE,texture->pixelated,TRUE);
 			}
 			
 			frame++;
@@ -222,7 +223,6 @@ void map_textures_close(map_type *map)
 			bitmap_close(&frame->bumpmap);
 			bitmap_close(&frame->specularmap);
 			bitmap_close(&frame->glowmap);
-			bitmap_close(&frame->combinemap);
 			
 			frame++;
 		}

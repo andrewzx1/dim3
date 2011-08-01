@@ -31,13 +31,14 @@ and can be sold or given away.
 
 #include "interface.h"
 
+extern view_type			view;
 extern setup_type			setup;
 
-#define max_touch_state		4		// supergumba move
+#define max_touch_state		4		// supergumba move -- deal with multiple touches here
 
 unsigned char				touch_states[max_touch_state];
-
-extern d3pnt				mouse_gui_pnt;		// supergumba -- temp testing!
+bool						touch_gui_click;
+d3pnt						touch_gui_pnt;
 
 /* =======================================================
 
@@ -52,6 +53,9 @@ void input_clear_touch(void)
 	for (n=0;n!=max_touch_state;n++) {
 		touch_states[n]=0x0;
 	}
+	
+	touch_gui_pnt.x=touch_gui_pnt.y=-1;
+	touch_gui_click=FALSE;
 }
 
 /* =======================================================
@@ -62,14 +66,47 @@ void input_clear_touch(void)
 
 void input_touch_event_up(int id)
 {
-	fprintf(stdout,"touch UP %s\n",id);
+	touch_gui_click=FALSE;
 }
 
 void input_touch_event_down(int id,int x,int y)
 {
-	fprintf(stdout,"touch DOWN %s\n",id);
+	d3pnt				pt;
+	
+	pt.x=(y*view.desktop.high)/0x7FFF;
+	pt.y=view.desktop.wid-((x*view.desktop.wid)/0x7FFF);
 
-	mouse_gui_pnt.x=x;
-	mouse_gui_pnt.y=y;
+	touch_gui_pnt.x=pt.x;
+	touch_gui_pnt.y=pt.y;
+	
+	touch_gui_click=TRUE;
 }
+
+/* =======================================================
+
+      Touch GUI
+      
+======================================================= */
+
+void input_touch_gui_get_position(int *x,int *y)
+{
+	*x=touch_gui_pnt.x;
+	*y=touch_gui_pnt.y;
+}
+
+void input_touch_gui_get_hilite_position(int *x,int *y)
+{
+	if (touch_gui_click) {
+		input_touch_gui_get_position(x,y);
+	}
+	else {
+		*x=*y=-1;
+	}
+}
+
+bool input_touch_gui_is_click_down(void)
+{
+	return(touch_gui_click);
+}
+
 

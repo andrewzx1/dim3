@@ -138,8 +138,8 @@ void radar_draw(void)
 
 		// draw background
 
-	glVertexPointer(2,GL_FLOAT,0,0);
-	glTexCoordPointer(2,GL_FLOAT,0,(void*)((4*2)*sizeof(float)));
+	glVertexPointer(2,GL_FLOAT,0,(GLvoid*)0);
+	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)((4*2)*sizeof(float)));
 			
 	gl_texture_simple_start();
 	gl_texture_simple_set(view_images_get_gl_id(iface.radar.background_image_idx),TRUE,tint.r,tint.g,tint.b,1.0f);
@@ -276,8 +276,8 @@ void radar_draw(void)
 
 			// draw icon
 
-		glVertexPointer(2,GL_FLOAT,0,0);
-		glTexCoordPointer(2,GL_FLOAT,0,(void*)((4*2)*sizeof(float)));
+		glVertexPointer(2,GL_FLOAT,0,(GLvoid*)0);
+		glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)((4*2)*sizeof(float)));
 
 		glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 

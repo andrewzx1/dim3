@@ -323,8 +323,8 @@ void hud_bitmaps_draw(void)
 
 			// draw the quads
 
-		glVertexPointer(2,GL_FLOAT,0,0);
-		glTexCoordPointer(2,GL_FLOAT,0,(void*)(((repeat_count*4)*2)*sizeof(float)));
+		glVertexPointer(2,GL_FLOAT,0,(GLvoid*)0);
+		glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)(((repeat_count*4)*2)*sizeof(float)));
 			
 		for (r=0;r!=repeat_count;r++) {
 			glDrawArrays(GL_TRIANGLE_STRIP,(r*4),4);

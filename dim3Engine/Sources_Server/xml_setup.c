@@ -262,6 +262,11 @@ bool setup_xml_read(void)
 	if (!setup_xml_read_path(path)) return(FALSE);
 
 		// fix resolution if no switch is on
+		// mobile platforms always turn off resolution switching
+		
+#ifdef D3_OS_IPHONE
+	iface.setup.no_resolution_switch=TRUE;
+#endif
 
 	if (iface.setup.no_resolution_switch) {
 		setup.screen_wid=setup.screen_high=-1;

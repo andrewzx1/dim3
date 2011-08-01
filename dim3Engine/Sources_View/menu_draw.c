@@ -70,7 +70,6 @@ void menu_draw_start(char *name)
 	view.menu.fade_start_tick=game_time_get_raw();
 
 	view.menu.menu_idx=0;
-	view.menu.click_item_idx=-1;
 	view.menu.mouse_down=FALSE;
 
 		// any sub menu?
@@ -88,7 +87,7 @@ void menu_draw_start(char *name)
 		// setup cursor
 
 	cursor_initialize();
-	input_gui_set_mouse((iface.scale_x>>1),(iface.scale_y>>1));
+	input_gui_set_position((iface.scale_x>>1),(iface.scale_y>>1));
 }
 
 void menu_draw_end(bool fade)
@@ -115,20 +114,61 @@ void menu_draw_end(bool fade)
 
 /* =======================================================
 
+      Find Menu Item
+      
+======================================================= */
+
+int menu_find_item(iface_menu_type *menu,int kx,int ky)
+{
+	int						n,x,y,wid,high,half_high;
+	iface_menu_item_type	*item;
+	
+	high=gl_text_get_char_height(iface.font.text_size_large);
+	half_high=high>>1;
+
+	x=iface.scale_x>>1;
+	y=(iface.scale_y-((high+5)*menu->nitem))>>1;
+
+	item=menu->items;
+
+	for (n=0;n!=menu->nitem;n++) {
+			
+		if (!((net_setup.mode!=net_mode_none) && (item->multiplayer_disable))) {
+
+			wid=gl_text_get_string_width(font_interface_index,iface.font.text_size_large,item->data)>>1;
+				
+			if ((kx>=(x-wid)) && (kx<=(x+wid)) && (ky>=(y-half_high)) && (ky<=(y+half_high))) return(n);
+		}
+			
+		y+=(high+5);
+		item++;
+	}
+
+	return(-1);
+}
+
+/* =======================================================
+
       Menu Selection and Input
       
 ======================================================= */
 
 bool menu_select(void)
 {
-	int						sub_idx;
+	int						x,y,click_idx,sub_idx;
 	iface_menu_type			*menu;
 	iface_menu_item_type	*item;
 	
-	if (view.menu.click_item_idx==-1) return(FALSE);
-	
+		// find clicked item
+		
 	menu=&iface.menu_list.menus[view.menu.menu_idx];
-	item=&menu->items[view.menu.click_item_idx];
+
+	input_gui_get_position(&x,&y);
+	click_idx=menu_find_item(menu,x,y);
+	
+	if (click_idx==-1) return(FALSE);
+	
+	item=&menu->items[click_idx];
 		
 		// going into sub-menu
 			
@@ -189,7 +229,7 @@ void menu_input(void)
 
 	if (!view.menu.active) return;
 
-	if (input_gui_get_mouse_left_button_down()) {
+	if (input_gui_is_click_down()) {
 		view.menu.mouse_down=TRUE;
 		return;
 	}
@@ -208,8 +248,8 @@ void menu_input(void)
 
 void menu_draw(void)
 {
-	int						n,raw_tick,x,y,kx,ky,
-							wid,high,half_high;
+	int						n,raw_tick,x,y,
+							high,half_high,hilite_idx;
 	float					alpha;
 	d3col					*col;
 	iface_menu_type			*menu;
@@ -251,43 +291,19 @@ void menu_draw(void)
 		}
 	}
 
+		// find any hilite selection
+		
+	input_gui_get_hilite_position(&x,&y);
+	hilite_idx=menu_find_item(menu,x,y);
+		
 		// get height
 
 	high=gl_text_get_char_height(iface.font.text_size_large);
 	half_high=high>>1;
 
-		// find any selection
-
-	x=iface.scale_x>>1;
-	y=(iface.scale_y-((high+5)*menu->nitem))>>1;
-
-	view.menu.click_item_idx=-1;
-
-	if (game_app_active) {
-
-		input_gui_get_mouse_position(&kx,&ky);
-
-		item=menu->items;
-
-		for (n=0;n!=menu->nitem;n++) {
-			
-			if (!((net_setup.mode!=net_mode_none) && (item->multiplayer_disable))) {
-
-				wid=gl_text_get_string_width(font_interface_index,iface.font.text_size_large,item->data)>>1;
-				
-				if ((kx>=(x-wid)) && (kx<=(x+wid)) && (ky>=(y-half_high)) && (ky<=(y+half_high))) {
-					view.menu.click_item_idx=n;
-					break;
-				}
-			}
-			
-			y+=(high+5);
-			item++;
-		}
-	}
-	
 		// draw the menus
 		
+	x=iface.scale_x>>1;
 	y=(iface.scale_y-((high+5)*menu->nitem))>>1;
 	
 	gl_text_start(font_interface_index,iface.font.text_size_large);
@@ -302,7 +318,7 @@ void menu_draw(void)
 			col=&iface.color.menu.dimmed;
 		}
 		else {
-			if (n==view.menu.click_item_idx) {
+			if (n==hilite_idx) {
 				col=&iface.color.menu.mouse_over;
 			}
 			else {
