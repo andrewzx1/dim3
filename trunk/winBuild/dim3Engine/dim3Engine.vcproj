@@ -3138,6 +3138,10 @@
 					</FileConfiguration>
 				</File>
 				<File
+					RelativePath="..\..\dim3Engine\Sources_View\virtual_draw.c"
+					>
+				</File>
+				<File
 					RelativePath="..\..\dim3Engine\Sources_View\zoom_draw.c"
 					>
 					<FileConfiguration

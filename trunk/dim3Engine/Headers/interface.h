@@ -847,6 +847,7 @@ extern void render_map_mesh_transparent(void);
 //
 
 extern float liquid_tide_get_high(map_liquid_type *liq);
+extern int liquid_wave_get_divisions(map_liquid_type *liq);
 extern void render_map_liquid_opaque(void);
 extern void render_map_liquid_transparent(void);
 

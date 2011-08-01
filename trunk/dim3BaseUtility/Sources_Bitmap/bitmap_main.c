@@ -348,7 +348,7 @@ bool bitmap_data(bitmap_type *bitmap,unsigned char *data,int wid,int high,bool a
 
 bool bitmap_combine(bitmap_type *bitmap,char *bitmap_path,char *bumpmap_path,int anisotropic_mode,int mipmap_mode,int texture_quality_mode,bool compress,bool pixelated)
 {
-	int					n,wid,high,pixel_cnt,data_sz;
+	int					n,pixel_cnt,data_sz;
 	float				f,pf[3];
 	unsigned char		*bitmap_data,*bumpmap_data,
 						*srce,*dest;
@@ -395,7 +395,7 @@ bool bitmap_combine(bitmap_type *bitmap,char *bitmap_path,char *bumpmap_path,int
 	
 		// work the bump into the bitmap
 
-	pixel_cnt=wid*high;
+	pixel_cnt=bitmap->wid*bitmap->high;
 
 	if (bitmap->alpha_mode!=alpha_mode_none) {
 		data_sz=pixel_cnt*4;

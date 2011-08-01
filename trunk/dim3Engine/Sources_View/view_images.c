@@ -275,9 +275,11 @@ void view_images_cached_load(void)
  	iface_mark_type				*mark;
 	iface_halo_type				*halo;
 	iface_crosshair_type		*crosshair;
+#ifdef D3_OS_IPHONE
 	iface_virtual_stick_type	*stick;
 	iface_virtual_button_type	*button;
-   
+#endif
+
 		// hud bitmaps
 
 	iface_bitmap=iface.bitmap_list.bitmaps;
@@ -404,9 +406,11 @@ void view_images_cached_free(void)
  	iface_mark_type				*mark;
   	iface_halo_type				*halo;
 	iface_crosshair_type		*crosshair;
+#ifdef D3_OS_IPHONE
 	iface_virtual_stick_type	*stick;
 	iface_virtual_button_type	*button;
- 
+#endif
+
 		// hud bitmaps
 
 	iface_bitmap=iface.bitmap_list.bitmaps;

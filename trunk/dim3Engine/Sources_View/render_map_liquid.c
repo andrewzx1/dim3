@@ -78,6 +78,31 @@ float liquid_tide_get_uv_factor(map_liquid_type *liq)
 
 /* =======================================================
 
+      Liquid Waves
+      
+======================================================= */
+
+int liquid_wave_get_divisions(map_liquid_type *liq)
+{
+	int			len,count;
+
+	if (!liq->wave.on) return(1);
+
+	if (liq->wave.dir_north_south) {
+		len=liq->bot-liq->top;
+	}
+	else {
+		len=liq->rgt-liq->lft;
+	}
+
+	count=len/liq->wave.length;
+	if ((len%liq->wave.length)!=0) count++;
+
+	return(count);
+}
+
+/* =======================================================
+
       Check if Liquid is Transparent
       
 ======================================================= */
@@ -98,8 +123,7 @@ bool liquid_is_transparent(map_liquid_type *liq)
 
 bool liquid_render_liquid_create_vertex(map_liquid_type *liq,float uv_shift,bool is_overaly)
 {
-	int				n,k;
-	unsigned short	*index_ptr;
+	int				n,k,div,div_count,lft,rgt,top,bot;
 	float			fy,gx,gy,gx2,gy2,gx_add,gy_add,
 					f_tick,f_stamp_size;
 	float			*vertex_ptr,*vl,*uv,*uv2,*ct,*cn,*cl;
@@ -168,109 +192,137 @@ bool liquid_render_liquid_create_vertex(map_liquid_type *liq,float uv_shift,bool
 		// liquid vertexes
 
 	vl=vertex_ptr;
-	uv=vertex_ptr+(4*3);
-	uv2=vertex_ptr+(4*(3+2));
+	uv=vertex_ptr+(liq->vbo.count*3);
+	uv2=vertex_ptr+(liq->vbo.count*(3+2));
+
+	if (!shader_on) {
+		cl=vertex_ptr+(liq->vbo.count*(3+2+2));
+	}
+	else {
+		ct=vertex_ptr+(liq->vbo.count*(3+2+2));
+		cn=vertex_ptr+(liq->vbo.count*(3+2+2+3));
+	}
+
+		// tide Y
 
 	fy=((float)liq->y)-liquid_tide_get_high(liq);
 
-		// left-top
+		// get div count
 
-	*vl++=(float)liq->lft;
-	*vl++=fy;
-	*vl++=(float)liq->top;
+	lft=liq->lft;
+	rgt=liq->rgt;
+	top=liq->top;
+	bot=liq->bot;
 
-	*uv++=gx;
-	*uv++=gy;
+	div_count=liquid_wave_get_divisions(liq);
 
-	*uv2++=liq->lmap_uv.x_offset;
-	*uv2++=liq->lmap_uv.y_offset;
+		// draw the divisions
 
-		// right-top
+	for (div=0;div!=div_count;div++) {
 
-	*vl++=(float)liq->rgt;
-	*vl++=fy;
-	*vl++=(float)liq->top;
+		// divisions
 
-	*uv++=gx2;
-	*uv++=gy;
+		if (liq->wave.on) {
+			if (liq->wave.dir_north_south) {
+				bot=top+liq->wave.length;
+				if (bot>liq->bot) bot=liq->bot;
+			}
+			else {
+				rgt=lft+liq->wave.length;
+				if (rgt>liq->rgt) rgt=liq->rgt;
+			}
+		}
 
-	*uv2++=liq->lmap_uv.x_offset+liq->lmap_uv.x_size;
-	*uv2++=liq->lmap_uv.y_offset;
+			// left-top
 
-		// left-bottom
+		*vl++=(float)lft;
+		*vl++=fy;
+		*vl++=(float)top;
 
-	*vl++=(float)liq->lft;
-	*vl++=fy;
-	*vl++=(float)liq->bot;
+		*uv++=gx;
+		*uv++=gy;
 
-	*uv++=gx;
-	*uv++=gy2;
+		*uv2++=liq->lmap_uv.x_offset;
+		*uv2++=liq->lmap_uv.y_offset;
 
-	*uv2++=liq->lmap_uv.x_offset;
-	*uv2++=liq->lmap_uv.y_offset+liq->lmap_uv.y_size;
+			// right-top
 
-		// right-bottom
+		*vl++=(float)rgt;
+		*vl++=fy;
+		*vl++=(float)top;
 
-	*vl++=(float)liq->rgt;
-	*vl++=fy;
-	*vl++=(float)liq->bot;
+		*uv++=gx2;
+		*uv++=gy;
 
-	*uv++=gx2;
-	*uv++=gy2;
+		*uv2++=liq->lmap_uv.x_offset+liq->lmap_uv.x_size;
+		*uv2++=liq->lmap_uv.y_offset;
 
-	*uv2++=liq->lmap_uv.x_offset+liq->lmap_uv.x_size;
-	*uv2++=liq->lmap_uv.y_offset+liq->lmap_uv.y_size;
+			// left-bottom
 
-		// colors
+		*vl++=(float)lft;
+		*vl++=fy;
+		*vl++=(float)bot;
 
-	if (!shader_on) {
-		cl=vertex_ptr+(4*(3+2+2));
+		*uv++=gx;
+		*uv++=gy2;
 
-		gl_lights_calc_color_light_cache(liq->light_cache.count,liq->light_cache.indexes,FALSE,(double)liq->lft,fy,(double)liq->top,cl);
-		gl_lights_calc_color_light_cache(liq->light_cache.count,liq->light_cache.indexes,FALSE,(double)liq->rgt,fy,(double)liq->top,(cl+4));
-		gl_lights_calc_color_light_cache(liq->light_cache.count,liq->light_cache.indexes,FALSE,(double)liq->lft,fy,(double)liq->bot,(cl+8));
-		gl_lights_calc_color_light_cache(liq->light_cache.count,liq->light_cache.indexes,FALSE,(double)liq->rgt,fy,(double)liq->bot,(cl+12));
-		
-		*(cl+3)=1.0f;
-		*(cl+7)=1.0f;
-		*(cl+11)=1.0f;
-		*(cl+15)=1.0f;
-	}
+		*uv2++=liq->lmap_uv.x_offset;
+		*uv2++=liq->lmap_uv.y_offset+liq->lmap_uv.y_size;
 
-		// normals and tangents
+			// right-bottom
 
-	if (shader_on) {
+		*vl++=(float)rgt;
+		*vl++=fy;
+		*vl++=(float)bot;
 
-		ct=vertex_ptr+(4*(3+2+2));
-		cn=vertex_ptr+(4*(3+2+2+3));
+		*uv++=gx2;
+		*uv++=gy2;
 
-		for (n=0;n!=4;n++) {
-			*ct++=1.0f;
-			*ct++=0.0f;
-			*ct++=0.0f;
-			*cn++=0.0f;
-			*cn++=-1.0f;
-			*cn++=0.0f;
+		*uv2++=liq->lmap_uv.x_offset+liq->lmap_uv.x_size;
+		*uv2++=liq->lmap_uv.y_offset+liq->lmap_uv.y_size;
+
+			// no shaders use colors
+
+		if (!shader_on) {
+			cl=vertex_ptr+(liq->vbo.count*(3+2+2));
+
+			gl_lights_calc_color_light_cache(liq->light_cache.count,liq->light_cache.indexes,FALSE,(double)lft,fy,(double)top,cl);
+			gl_lights_calc_color_light_cache(liq->light_cache.count,liq->light_cache.indexes,FALSE,(double)rgt,fy,(double)top,(cl+4));
+			gl_lights_calc_color_light_cache(liq->light_cache.count,liq->light_cache.indexes,FALSE,(double)lft,fy,(double)bot,(cl+8));
+			gl_lights_calc_color_light_cache(liq->light_cache.count,liq->light_cache.indexes,FALSE,(double)rgt,fy,(double)bot,(cl+12));
+			
+			*(cl+3)=1.0f;
+			*(cl+7)=1.0f;
+			*(cl+11)=1.0f;
+			*(cl+15)=1.0f;
+		}
+
+			// shaders use normals and tangents
+
+		else {
+
+			for (n=0;n!=4;n++) {
+				*ct++=1.0f;
+				*ct++=0.0f;
+				*ct++=0.0f;
+				*cn++=0.0f;
+				*cn++=-1.0f;
+				*cn++=0.0f;
+			}
+		}
+
+			// division changes
+
+		if (liq->wave.on) {
+			top=bot;
+			lft=rgt;
 		}
 	}
 
 	view_unmap_mesh_liquid_vertex_object();
 	view_unbind_mesh_liquid_vertex_object();
 
-		// the indexes
-
-	view_bind_mesh_liquid_index_object(&liq->vbo);
-	
-	index_ptr=view_map_mesh_liquid_index_object(&liq->vbo);
-	if (index_ptr==NULL) return(FALSE);
-
-	*index_ptr++=0;
-	*index_ptr++=1;
-	*index_ptr++=2;
-	*index_ptr++=3;
-
-	view_unmap_mesh_liquid_index_object();
-	view_unbind_mesh_liquid_index_object();
+		// indexes are pre-created on startup
 
 	return(TRUE);
 }
@@ -309,17 +361,17 @@ void liquid_render_liquid_shader(map_liquid_type *liq,int txt_idx,int lmap_txt_i
 	glVertexPointer(3,GL_FLOAT,0,(GLvoid*)0);
 
 	glClientActiveTexture(GL_TEXTURE1);
-	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)((4*(3+2))*sizeof(float)));
+	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)((liq->vbo.count*(3+2))*sizeof(float)));
 	
 	glClientActiveTexture(GL_TEXTURE0);
-	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)((4*3)*sizeof(float)));
+	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)((liq->vbo.count*3)*sizeof(float)));
 
 		// shader lights and tangents
 
 	gl_lights_build_liquid_light_list(liq,&light_list);
 	
-	tangent_offset=(4*(3+2+2))*sizeof(float);
-	normal_offset=(4*(3+2+2+3))*sizeof(float);
+	tangent_offset=(liq->vbo.count*(3+2+2))*sizeof(float);
+	normal_offset=(liq->vbo.count*(3+2+2+3))*sizeof(float);
 
 	gl_shader_draw_start();
 	gl_shader_draw_reset_normal_tangent_attrib();
@@ -339,9 +391,9 @@ void liquid_render_liquid_shader(map_liquid_type *liq,int txt_idx,int lmap_txt_i
 		// draw liquid
 	
 	#ifndef D3_OPENGL_ES
-		glDrawRangeElements(GL_TRIANGLE_STRIP,0,4,4,GL_UNSIGNED_SHORT,(GLvoid*)0);
+		glDrawRangeElements(GL_TRIANGLE_STRIP,0,liq->vbo.count,liq->vbo.count,GL_UNSIGNED_SHORT,(GLvoid*)0);
 	#else
-		glDrawElements(GL_TRIANGLE_STRIP,4,GL_UNSIGNED_SHORT,(GLvoid*)0);
+		glDrawElements(GL_TRIANGLE_STRIP,liq->vbo.count,GL_UNSIGNED_SHORT,(GLvoid*)0);
 	#endif
 
 	gl_shader_draw_end();
@@ -381,12 +433,12 @@ void liquid_render_liquid_fixed(map_liquid_type *liq,int txt_idx,int lmap_txt_id
 	glVertexPointer(3,GL_FLOAT,0,(GLvoid*)0);
 
 	glClientActiveTexture(GL_TEXTURE1);
-	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)((4*3)*sizeof(float)));
+	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)((liq->vbo.count*3)*sizeof(float)));
 	
 	glClientActiveTexture(GL_TEXTURE0);
-	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)((4*(3+2))*sizeof(float)));
+	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)((liq->vbo.count*(3+2))*sizeof(float)));
 
-	glColorPointer(4,GL_FLOAT,0,(GLvoid*)((4*(3+2+2))*sizeof(float)));
+	glColorPointer(4,GL_FLOAT,0,(GLvoid*)((liq->vbo.count*(3+2+2))*sizeof(float)));
 
 		// back rendering overrides
 		
@@ -414,9 +466,9 @@ void liquid_render_liquid_fixed(map_liquid_type *liq,int txt_idx,int lmap_txt_id
 		// draw liquid
 	
 	#ifndef D3_OPENGL_ES
-		glDrawRangeElements(GL_TRIANGLE_STRIP,0,4,4,GL_UNSIGNED_SHORT,(GLvoid*)0);
+		glDrawRangeElements(GL_TRIANGLE_STRIP,0,liq->vbo.count,liq->vbo.count,GL_UNSIGNED_SHORT,(GLvoid*)0);
 	#else
-		glDrawElements(GL_TRIANGLE_STRIP,4,GL_UNSIGNED_SHORT,(GLvoid*)0);
+		glDrawElements(GL_TRIANGLE_STRIP,liq->vbo.count,GL_UNSIGNED_SHORT,(GLvoid*)0);
 	#endif
 	
 		// only this route uses color arrays

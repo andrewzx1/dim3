@@ -48,26 +48,31 @@ and can be sold or given away.
 #define kLiquidPropertyTideRate					10
 #define kLiquidPropertyTideUVShift				11
 
-#define kLiquidPropertyHarm						15
-#define kLiquidPropertyDrownTick				16
-#define kLiquidPropertyDrownHarm				17
+#define kLiquidPropertyWaveOn					20
+#define kLiquidPropertyWaveDirNorthSouth		21
+#define kLiquidPropertyWaveLength				22
+#define kLiquidPropertyWavePeriodMSec			23
 
-#define kLiquidPropertyReflectTextureSize		19
-#define kLiquidPropertyReflectXRefract			20
-#define kLiquidPropertyReflectZRefract			21
-#define kLiquidPropertyReflectNoHitColor		22
-#define kLiquidPropertyReflectAlpha				23
+#define kLiquidPropertyHarm						30
+#define kLiquidPropertyDrownTick				31
+#define kLiquidPropertyDrownHarm				32
 
-#define kLiquidPropertyOverlayOn				24
-#define kLiquidPropertyOverlayTexture			25
-#define kLiquidPropertyOverlayStampSize			26
+#define kLiquidPropertyReflectTextureSize		40
+#define kLiquidPropertyReflectXRefract			41
+#define kLiquidPropertyReflectZRefract			42
+#define kLiquidPropertyReflectNoHitColor		43
+#define kLiquidPropertyReflectAlpha				44
 
-#define kLiquidPropertyGroup					28
+#define kLiquidPropertyOverlayOn				50
+#define kLiquidPropertyOverlayTexture			51
+#define kLiquidPropertyOverlayStampSize			52
 
-#define kLiquidPropertyOff						29
-#define kLiquidPropertySize						30
-#define kLiquidPropertyShift					31
-#define kLiquidPropertyCamera					32
+#define kLiquidPropertyGroup					60
+
+#define kLiquidPropertyOff						70
+#define kLiquidPropertySize						71
+#define kLiquidPropertyShift					72
+#define kLiquidPropertyCamera					73
 
 extern map_type					map;
 extern editor_state_type		state;
@@ -113,6 +118,12 @@ void property_palette_fill_liquid(int liq_idx)
 	list_palette_add_string_int(&property_palette,kLiquidPropertyTideSize,"Size",liq->tide.high,FALSE);
 	list_palette_add_string_int(&property_palette,kLiquidPropertyTideRate,"Rate",liq->tide.rate,FALSE);
 	list_palette_add_string_float(&property_palette,kLiquidPropertyTideUVShift,"UV Shift",liq->tide.uv_shift,FALSE);
+
+	list_palette_add_header(&property_palette,0,"Liquid Waves");
+	list_palette_add_checkbox(&property_palette,kLiquidPropertyWaveOn,"On",liq->wave.on,FALSE);
+	list_palette_add_checkbox(&property_palette,kLiquidPropertyWaveDirNorthSouth,"North-South Dir",liq->wave.dir_north_south,FALSE);
+	list_palette_add_string_int(&property_palette,kLiquidPropertyWaveLength,"Length",liq->wave.length,FALSE);
+	list_palette_add_string_int(&property_palette,kLiquidPropertyWavePeriodMSec,"Period msec",liq->wave.period_msec,FALSE);
 	
 	list_palette_add_header(&property_palette,0,"Liquid Harm");
 	list_palette_add_string_int(&property_palette,kLiquidPropertyHarm,"In Damage",liq->harm.in_harm,FALSE);
@@ -252,6 +263,24 @@ void property_palette_click_liquid(int liq_idx,int id,bool double_click)
 
 		case kLiquidPropertyTideUVShift:
 			dialog_property_string_run(list_string_value_positive_float,(void*)&liq->tide.uv_shift,0,0,0);
+			break;
+
+			// waves
+
+		case kLiquidPropertyWaveOn:
+			liq->wave.on=!liq->wave.on;
+			break;
+
+		case kLiquidPropertyWaveDirNorthSouth:
+			liq->wave.dir_north_south=!liq->wave.dir_north_south;
+			break;
+
+		case kLiquidPropertyWaveLength:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&liq->wave.length,0,0,0);
+			break;
+
+		case kLiquidPropertyWavePeriodMSec:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&liq->wave.period_msec,0,0,0);
 			break;
 
 			// harm

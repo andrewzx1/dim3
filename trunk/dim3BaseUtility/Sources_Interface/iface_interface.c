@@ -274,16 +274,62 @@ void iface_read_settings_bar(iface_type *iface,int bar_tag)
 
 void iface_read_settings_virtual_control(iface_type *iface,int virtual_head_tag)
 {
+	int							n,head_tag,tag;
+	iface_virtual_stick_type	*stick;
+	iface_virtual_button_type	*button;
 
-/*
-	for (n=0;n!=max_virtual_stick;n++) {
-		iface->virtual_control.sticks[n].on=FALSE;
-	}
+		// virtual control sticks
 
-	for (n=0;n!=max_virtual_button;n++) {
-		iface->virtual_control.buttons[n].on=FALSE;
+	head_tag=xml_findfirstchild("Sticks",virtual_head_tag);
+	if (head_tag!=-1) {
+	
+		tag=xml_findfirstchild("Stick",head_tag);
+
+		stick=iface->virtual_control.sticks;
+
+		for (n=0;n!=max_virtual_stick;n++) {
+			if (tag==-1) break;
+
+			stick->on=xml_get_attribute_boolean(tag,"on");
+			stick->x=xml_get_attribute_int(tag,"x");
+			stick->y=xml_get_attribute_int(tag,"y");
+			stick->x_size=xml_get_attribute_int(tag,"x_size");
+			stick->y_size=xml_get_attribute_int(tag,"y_size");
+			xml_get_attribute_text(tag,"outer_bitmap",stick->outer_bitmap_name,file_str_len);
+			xml_get_attribute_text(tag,"inner_bitmap",stick->inner_bitmap_name,file_str_len);
+			xml_get_attribute_color(tag,"color",&stick->color);
+
+			stick++;
+			tag=xml_findnextchild(tag);
+		}
 	}
-*/
+	
+		// virtual control buttons
+		
+	head_tag=xml_findfirstchild("Buttons",virtual_head_tag);
+	if (head_tag!=-1) {
+	
+		tag=xml_findfirstchild("Button",head_tag);
+
+		button=iface->virtual_control.buttons;
+
+		for (n=0;n!=max_virtual_button;n++) {
+			if (tag==-1) break;
+
+			button->on=xml_get_attribute_boolean(tag,"on");
+			button->control_idx=xml_get_attribute_int(tag,"control");
+			button->x=xml_get_attribute_int(tag,"x");
+			button->y=xml_get_attribute_int(tag,"y");
+			button->x_size=xml_get_attribute_int(tag,"x_size");
+			button->y_size=xml_get_attribute_int(tag,"y_size");
+			xml_get_attribute_text(tag,"up_bitmap",button->up_bitmap_name,file_str_len);
+			xml_get_attribute_text(tag,"down_bitmap",button->down_bitmap_name,file_str_len);
+			xml_get_attribute_color(tag,"color",&button->color);
+
+			button++;
+			tag=xml_findnextchild(tag);
+		}
+	}
 }
 
 /* =======================================================
@@ -874,6 +920,8 @@ bool iface_write_settings_interface(iface_type *iface)
 	iface_bitmap_type			*bitmap;
 	iface_text_type				*text;
 	iface_bar_type				*bar;
+	iface_virtual_stick_type	*stick;
+	iface_virtual_button_type	*button;
 	iface_radar_icon_type		*radar_icon;
 	iface_menu_type				*menu;
 	iface_menu_item_type		*menu_item;
@@ -1043,13 +1091,27 @@ bool iface_write_settings_interface(iface_type *iface)
 	xml_add_tagend(FALSE);
 		
 		// virtual control sticks
-		
+
 	xml_add_tagstart("Sticks");
 	xml_add_tagend(FALSE);
 	
-	xml_add_tagstart("Stick");
-	xml_add_tagend(TRUE);
-	
+	stick=iface->virtual_control.sticks;
+
+	for (n=0;n!=max_virtual_stick;n++) {
+		xml_add_tagstart("Stick");
+		xml_add_attribute_boolean("on",stick->on);
+		xml_add_attribute_int("x",stick->x);
+		xml_add_attribute_int("y",stick->y);
+		xml_add_attribute_int("x_size",stick->x_size);
+		xml_add_attribute_int("y_size",stick->y_size);
+		xml_add_attribute_text("outer_bitmap",stick->outer_bitmap_name);
+		xml_add_attribute_text("inner_bitmap",stick->inner_bitmap_name);
+		xml_add_attribute_color("color",&stick->color);
+		xml_add_tagend(TRUE);
+
+		stick++;
+	}
+
 	xml_add_tagclose("Sticks");
 	
 		// virtual control buttons
@@ -1057,8 +1119,23 @@ bool iface_write_settings_interface(iface_type *iface)
 	xml_add_tagstart("Buttons");
 	xml_add_tagend(FALSE);
 	
-	xml_add_tagstart("Button");
-	xml_add_tagend(TRUE);
+	button=iface->virtual_control.buttons;
+
+	for (n=0;n!=max_virtual_button;n++) {
+		xml_add_tagstart("Button");
+		xml_add_attribute_boolean("on",button->on);
+		xml_add_attribute_int("control",button->control_idx);
+		xml_add_attribute_int("x",button->x);
+		xml_add_attribute_int("y",button->y);
+		xml_add_attribute_int("x_size",button->x_size);
+		xml_add_attribute_int("y_size",button->y_size);
+		xml_add_attribute_text("up_bitmap",button->up_bitmap_name);
+		xml_add_attribute_text("down_bitmap",button->down_bitmap_name);
+		xml_add_attribute_color("color",&button->color);
+		xml_add_tagend(TRUE);
+
+		button++;
+	}
 	
 	xml_add_tagclose("Buttons");
 

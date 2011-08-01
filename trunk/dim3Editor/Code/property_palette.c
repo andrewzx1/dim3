@@ -363,27 +363,27 @@ bool property_palette_click(d3pnt *pnt,bool double_click)
 
 void property_palette_pick_group(int *group_idx)
 {
-	list_palette_start_picking_mode("Pick a Group",(char*)map.group.groups,map.group.ngroup,sizeof(group_type),(int)offsetof(group_type,name),TRUE,group_idx,NULL);
+	list_palette_start_picking_mode("Pick a Group",(char*)map.group.groups,map.group.ngroup,sizeof(group_type),(int)offsetof(group_type,name),TRUE,FALSE,group_idx,NULL);
 }
 
 void property_palette_pick_spot(char *name)
 {
-	list_palette_start_picking_mode("Pick a Spot",(char*)map.spots,map.nspot,sizeof(spot_type),(int)offsetof(spot_type,name),TRUE,NULL,name);
+	list_palette_start_picking_mode("Pick a Spot",(char*)map.spots,map.nspot,sizeof(spot_type),(int)offsetof(spot_type,name),TRUE,FALSE,NULL,name);
 }
 
 void property_palette_pick_sound(char *name,bool include_none)
 {
-	list_palette_start_picking_mode("Pick a Sound",(char*)iface.sound_list.sounds,iface.sound_list.nsound,sizeof(iface_sound_type),(int)offsetof(iface_sound_type,name),include_none,NULL,name);
+	list_palette_start_picking_mode("Pick a Sound",(char*)iface.sound_list.sounds,iface.sound_list.nsound,sizeof(iface_sound_type),(int)offsetof(iface_sound_type,name),include_none,FALSE,NULL,name);
 }
 
 void property_palette_pick_halo(char *name)
 {
-	list_palette_start_picking_mode("Pick a Halo",(char*)iface.halo_list.halos,iface.halo_list.nhalo,sizeof(iface_halo_type),(int)offsetof(iface_halo_type,name),TRUE,NULL,name);
+	list_palette_start_picking_mode("Pick a Halo",(char*)iface.halo_list.halos,iface.halo_list.nhalo,sizeof(iface_halo_type),(int)offsetof(iface_halo_type,name),TRUE,FALSE,NULL,name);
 }
 
 void property_palette_pick_particle(char *name)
 {
-	list_palette_start_picking_mode("Pick a Particle",(char*)iface.particle_list.particles,iface.particle_list.nparticle,sizeof(iface_particle_type),(int)offsetof(iface_particle_type,name),FALSE,NULL,name);
+	list_palette_start_picking_mode("Pick a Particle",(char*)iface.particle_list.particles,iface.particle_list.nparticle,sizeof(iface_particle_type),(int)offsetof(iface_particle_type,name),FALSE,FALSE,NULL,name);
 }
 
 void property_palette_pick_node(char *name)
@@ -422,24 +422,24 @@ void property_palette_pick_node(char *name)
 		list_pos++;
 	}
 	
-	list_palette_start_picking_mode("Pick a Node",list_ptr,count,name_str_len,0,TRUE,NULL,name);
+	list_palette_start_picking_mode("Pick a Node",list_ptr,count,name_str_len,0,TRUE,FALSE,NULL,name);
 	
 	free(list_ptr);
 }
 
 void property_palette_pick_movement(char *name)
 {
-	list_palette_start_picking_mode("Pick a Movement",(char*)map.movement.movements,map.movement.nmovement,sizeof(movement_type),(int)offsetof(movement_type,name),TRUE,NULL,name);
+	list_palette_start_picking_mode("Pick a Movement",(char*)map.movement.movements,map.movement.nmovement,sizeof(movement_type),(int)offsetof(movement_type,name),TRUE,FALSE,NULL,name);
 }
 
 void property_palette_pick_hud_text(char *name)
 {
-	list_palette_start_picking_mode("Pick a HUD Text",(char*)iface.text_list.texts,iface.text_list.ntext,sizeof(iface_text_type),(int)offsetof(iface_text_type,name),FALSE,NULL,name);
+	list_palette_start_picking_mode("Pick a HUD Text",(char*)iface.text_list.texts,iface.text_list.ntext,sizeof(iface_text_type),(int)offsetof(iface_text_type,name),FALSE,FALSE,NULL,name);
 }
 
 void property_palette_pick_hud_bitmap(char *name)
 {
-	list_palette_start_picking_mode("Pick a HUD Bitmap",(char*)iface.bitmap_list.bitmaps,iface.bitmap_list.nbitmap,sizeof(iface_bitmap_type),(int)offsetof(iface_bitmap_type,name),FALSE,NULL,name);
+	list_palette_start_picking_mode("Pick a HUD Bitmap",(char*)iface.bitmap_list.bitmaps,iface.bitmap_list.nbitmap,sizeof(iface_bitmap_type),(int)offsetof(iface_bitmap_type,name),FALSE,FALSE,NULL,name);
 }
 
 void property_palette_pick_texture(char *title,int *txt_idx)
@@ -456,15 +456,15 @@ void property_palette_pick_texture(char *title,int *txt_idx)
 	}
 	
 	if (title==NULL) {
-		list_palette_start_picking_mode("Pick a Texture",(char*)list_texture_names,max_map_texture,name_str_len,0,TRUE,txt_idx,NULL);
+		list_palette_start_picking_mode("Pick a Texture",(char*)list_texture_names,max_map_texture,name_str_len,0,TRUE,FALSE,txt_idx,NULL);
 	}
 	else {
-		list_palette_start_picking_mode(title,(char*)list_texture_names,max_map_texture,name_str_len,0,TRUE,txt_idx,NULL);
+		list_palette_start_picking_mode(title,(char*)list_texture_names,max_map_texture,name_str_len,0,TRUE,FALSE,txt_idx,NULL);
 	}
 }
 
 void property_palette_pick_shader(char *name)
 {
-	list_palette_start_picking_mode("Pick a Shader",(char*)iface.shader_list.shaders,iface.shader_list.nshader,sizeof(iface_shader_type),(int)offsetof(iface_shader_type,name),TRUE,NULL,name);
+	list_palette_start_picking_mode("Pick a Shader",(char*)iface.shader_list.shaders,iface.shader_list.nshader,sizeof(iface_shader_type),(int)offsetof(iface_shader_type,name),TRUE,FALSE,NULL,name);
 }
 

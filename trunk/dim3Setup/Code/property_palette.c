@@ -288,16 +288,16 @@ bool property_palette_click(d3pnt *pnt,bool double_click)
 
 void property_palette_pick_sound(char *name,bool include_none)
 {
-	list_palette_start_picking_mode("Pick a Sound",(char*)iface.sound_list.sounds,iface.sound_list.nsound,sizeof(iface_sound_type),(int)offsetof(iface_sound_type,name),include_none,NULL,name);
+	list_palette_start_picking_mode("Pick a Sound",(char*)iface.sound_list.sounds,iface.sound_list.nsound,sizeof(iface_sound_type),(int)offsetof(iface_sound_type,name),include_none,FALSE,NULL,name);
 }
 
 void property_palette_pick_particle(char *name)
 {
-	list_palette_start_picking_mode("Pick a Particle",(char*)iface.particle_list.particles,iface.particle_list.nparticle,sizeof(iface_particle_type),(int)offsetof(iface_particle_type,name),FALSE,NULL,name);
+	list_palette_start_picking_mode("Pick a Particle",(char*)iface.particle_list.particles,iface.particle_list.nparticle,sizeof(iface_particle_type),(int)offsetof(iface_particle_type,name),FALSE,FALSE,NULL,name);
 }
 
 void property_palette_pick_control(int *control_idx)
 {
-	list_palette_start_picking_mode("Pick a Control Action",(char*)control_name_str,ncontrol,32,0,FALSE,control_idx,NULL);
+	list_palette_start_picking_mode("Pick a Control Action",(char*)control_name_str,ncontrol,32,0,FALSE,FALSE,control_idx,NULL);
 }
 
