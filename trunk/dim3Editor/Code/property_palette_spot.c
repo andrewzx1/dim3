@@ -106,7 +106,7 @@ void property_palette_fill_spot(int spot_idx)
 void property_palette_click_spot(int spot_idx,int id,bool double_click)
 {
 	int				param_idx;
-	char			file_name[256],str[256];
+	char			str[256];
 	spot_type		*spot;
 
 	if (!double_click) return;
@@ -139,11 +139,7 @@ void property_palette_click_spot(int spot_idx,int id,bool double_click)
 			break;
 
 		case kSpotPropertyScript:
-			strcpy(file_name,spot->script);
-			if (dialog_file_open_run("Pick a Script","Scripts/Objects","js",NULL,file_name)) {
-				strncpy(spot->script,file_name,name_str_len);
-				spot->script[name_str_len-1]=0x0;
-			}
+			property_pick_file("Pick a Script","Scripts/Objects","js",NULL,spot->script);
 			break;
 
 		case kSpotPropertyScriptEdit:

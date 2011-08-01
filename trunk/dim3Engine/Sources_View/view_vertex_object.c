@@ -320,7 +320,7 @@ void view_draw_next_vertex_object_2D_tint_screen(void)
 		// draw the quad
 
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(2,GL_FLOAT,0,(void*)0);
+	glVertexPointer(2,GL_FLOAT,0,(GLvoid*)0);
 
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 
@@ -395,10 +395,10 @@ void view_draw_next_vertex_object_2D_color_poly(int x0,int y0,d3col *col0,int x1
 		// draw the polygon
 
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(2,GL_FLOAT,0,(void*)0);
+	glVertexPointer(2,GL_FLOAT,0,(GLvoid*)0);
 
 	glEnableClientState(GL_COLOR_ARRAY);
-	glColorPointer(4,GL_FLOAT,0,(void*)((4*2)*sizeof(float)));
+	glColorPointer(4,GL_FLOAT,0,(GLvoid*)((4*2)*sizeof(float)));
 
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 
@@ -485,7 +485,7 @@ void view_draw_next_vertex_object_2D_color_trig(d3col *col,float alpha,int lft,i
 		// draw the trig
 		
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(2,GL_FLOAT,0,(void*)0);
+	glVertexPointer(2,GL_FLOAT,0,(GLvoid*)0);
 
 	glDrawArrays(GL_TRIANGLES,0,3);
 
@@ -539,7 +539,7 @@ void view_draw_next_vertex_object_2D_line(d3col *col,float alpha,int x0,int y0,i
 		// draw the quad
 		
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(2,GL_FLOAT,0,(void*)0);
+	glVertexPointer(2,GL_FLOAT,0,(GLvoid*)0);
 
 	glDrawArrays(GL_LINES,0,2);
 
@@ -593,7 +593,7 @@ void view_draw_next_vertex_object_2D_line_poly(d3col *col,float alpha,int x0,int
 		// draw the quad
 
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(2,GL_FLOAT,0,(void*)0);
+	glVertexPointer(2,GL_FLOAT,0,(GLvoid*)0);
 	
 	glDrawArrays(GL_LINE_LOOP,0,4);
 
@@ -689,7 +689,7 @@ void view_draw_next_vertex_object_2D_line_trig(d3col *col,float alpha,int lft,in
 		// draw the quad
 		
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(2,GL_FLOAT,0,(void*)0);
+	glVertexPointer(2,GL_FLOAT,0,(GLvoid*)0);
 
 	glDrawArrays(GL_LINE_LOOP,0,3);
 
@@ -743,7 +743,7 @@ void view_draw_next_vertex_object_3D_line(d3col *col,float alpha,int x0,int y0,i
 		// draw the quad
 		
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(3,GL_FLOAT,0,(void*)0);
+	glVertexPointer(3,GL_FLOAT,0,(GLvoid*)0);
 
 	glDrawArrays(GL_LINES,0,2);
 
@@ -816,7 +816,7 @@ void view_draw_next_vertex_object_3D_line_cube(d3col *col,float alpha,int *px,in
 		// draw the quad
 		
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(3,GL_FLOAT,0,(void*)0);
+	glVertexPointer(3,GL_FLOAT,0,(GLvoid*)0);
 
 	glDrawElements(GL_LINES,24,GL_UNSIGNED_SHORT,(GLvoid*)indexes);
 
@@ -900,10 +900,10 @@ void view_draw_next_vertex_object_2D_texture_quad(GLuint gl_id,d3col *col,float 
 		// draw the quad
 
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(2,GL_FLOAT,0,(void*)0);
+	glVertexPointer(2,GL_FLOAT,0,(GLvoid*)0);
 
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,0,(void*)((4*2)*sizeof(float)));
+	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)((4*2)*sizeof(float)));
 
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 
@@ -984,10 +984,10 @@ void view_draw_next_vertex_object_2D_texture_quad_rectangle(GLuint gl_id,float a
 		// draw the quad
 
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(2,GL_FLOAT,0,(void*)0);
+	glVertexPointer(2,GL_FLOAT,0,(GLvoid*)0);
 
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,0,(void*)((4*2)*sizeof(float)));
+	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)((4*2)*sizeof(float)));
 
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 

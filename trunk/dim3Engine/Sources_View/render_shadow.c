@@ -466,7 +466,7 @@ void shadow_render_generic_stencil_poly(int poly_ptsz,int stencil_idx)
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
 
-	glVertexPointer(3,GL_FLOAT,0,0);
+	glVertexPointer(3,GL_FLOAT,0,(GLvoid*)0);
 	
 	glColorMask(GL_FALSE,GL_FALSE,GL_FALSE,GL_FALSE);
 	glStencilOp(GL_KEEP,GL_KEEP,GL_REPLACE);
@@ -650,10 +650,10 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 
 			// setup arrays
 
-		glVertexPointer(3,GL_FLOAT,0,(void*)((map_poly->ptsz*3)*sizeof(float)));
+		glVertexPointer(3,GL_FLOAT,0,(GLvoid*)((map_poly->ptsz*3)*sizeof(float)));
 
 		glEnableClientState(GL_COLOR_ARRAY);
-		glColorPointer(4,GL_FLOAT,0,(void*)((((model_mesh->ntrig*3)*3)+(map_poly->ptsz*3))*sizeof(float)));
+		glColorPointer(4,GL_FLOAT,0,(GLvoid*)((((model_mesh->ntrig*3)*3)+(map_poly->ptsz*3))*sizeof(float)));
 
 			// run through all the stenciled polygons
 			// and draw their trigs
@@ -927,10 +927,10 @@ void shadow_render_mesh(int shadow_mesh_idx)
 
 			// setup arrays
 
-		glVertexPointer(3,GL_FLOAT,0,(void*)((map_poly->ptsz*3)*sizeof(float)));
+		glVertexPointer(3,GL_FLOAT,0,(GLvoid*)((map_poly->ptsz*3)*sizeof(float)));
 
 		glEnableClientState(GL_COLOR_ARRAY);
-		glColorPointer(4,GL_FLOAT,0,(void*)((((shadow_mesh_trig_count*3)*3)+(map_poly->ptsz*3))*sizeof(float)));
+		glColorPointer(4,GL_FLOAT,0,(GLvoid*)((((shadow_mesh_trig_count*3)*3)+(map_poly->ptsz*3))*sizeof(float)));
 
 			// run through all the stenciled polygons
 			// and draw their trigs

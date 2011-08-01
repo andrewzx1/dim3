@@ -253,6 +253,12 @@ extern void hud_draw(void);
 extern void network_draw(void);
 
 //
+// virtual controls
+//
+
+extern void virtual_control_draw(void);
+
+//
 // radar
 //
 
@@ -538,11 +544,16 @@ extern void input_event_mouse_wheel(int y);
 extern void input_get_mouse_movement(float *x,float *y);
 extern inline bool input_get_mouse_button(int button);
 extern void input_mouse_wheel_reset(void);
+extern void input_mouse_gui_set_position(int x,int y);
+extern void input_mouse_gui_get_position(int *x,int *y);
+extern void input_mouse_gui_get_hilite_position(int *x,int *y);
+extern bool input_mouse_gui_is_click_down(void);
 
-extern void input_gui_set_mouse(int x,int y);
-extern void input_gui_get_mouse_position(int *x,int *y);
-extern inline bool input_gui_get_mouse_left_button_down(void);
-extern inline void input_gui_wait_mouse_left_button_up(void);
+extern void input_gui_set_position(int x,int y);
+extern void input_gui_get_position(int *x,int *y);
+extern void input_gui_get_hilite_position(int *x,int *y);
+extern inline bool input_gui_is_click_down(void);
+extern inline void input_gui_wait_click_up(void);
 
 extern void input_clear_keyboard(void);
 extern void input_event_key(int key_idx,bool down);
@@ -565,6 +576,9 @@ extern bool input_get_joystick_button(int button);
 extern void input_clear_touch(void);
 extern void input_touch_event_up(int id);
 extern void input_touch_event_down(int id,int x,int y);
+extern void input_touch_gui_get_position(int *x,int *y);
+extern void input_touch_gui_get_hilite_position(int *x,int *y);
+extern bool input_touch_gui_is_click_down(void);
 
 //
 // gl init and shutdown

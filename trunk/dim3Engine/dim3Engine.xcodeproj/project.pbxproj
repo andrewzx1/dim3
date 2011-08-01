@@ -26,6 +26,7 @@
 		263722E911E83E5000BE22EA /* script_map_polygon.c in Sources */ = {isa = PBXBuildFile; fileRef = 263722E811E83E5000BE22EA /* script_map_polygon.c */; };
 		2638FED413E253F400EA1640 /* input_touch.c in Sources */ = {isa = PBXBuildFile; fileRef = 2638FED313E253F400EA1640 /* input_touch.c */; };
 		263EF8C00FD9CFEE00FEB1E5 /* script_multiplayer_score.c in Sources */ = {isa = PBXBuildFile; fileRef = 263EF8BF0FD9CFEE00FEB1E5 /* script_multiplayer_score.c */; };
+		2643482513E51B3800920D9B /* virtual_draw.c in Sources */ = {isa = PBXBuildFile; fileRef = 2643482413E51B3800920D9B /* virtual_draw.c */; };
 		2649D14013412B2900573F6F /* gui_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 2649D13513412B2900573F6F /* gui_defs.h */; };
 		2649D14113412B2900573F6F /* input_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 2649D13613412B2900573F6F /* input_defs.h */; };
 		2649D14213412B2900573F6F /* network_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 2649D13713412B2900573F6F /* network_defs.h */; };
@@ -377,6 +378,7 @@
 		263722E811E83E5000BE22EA /* script_map_polygon.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = script_map_polygon.c; path = Sources_Server/script_map_polygon.c; sourceTree = "<group>"; };
 		2638FED313E253F400EA1640 /* input_touch.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = input_touch.c; path = Sources_View/input_touch.c; sourceTree = "<group>"; };
 		263EF8BF0FD9CFEE00FEB1E5 /* script_multiplayer_score.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = script_multiplayer_score.c; path = Sources_Server/script_multiplayer_score.c; sourceTree = "<group>"; };
+		2643482413E51B3800920D9B /* virtual_draw.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = virtual_draw.c; path = Sources_View/virtual_draw.c; sourceTree = "<group>"; };
 		2649D13513412B2900573F6F /* gui_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gui_defs.h; path = Headers/gui_defs.h; sourceTree = "<group>"; };
 		2649D13613412B2900573F6F /* input_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = input_defs.h; path = Headers/input_defs.h; sourceTree = "<group>"; };
 		2649D13713412B2900573F6F /* network_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = network_defs.h; path = Headers/network_defs.h; sourceTree = "<group>"; };
@@ -1274,6 +1276,7 @@
 			isa = PBXGroup;
 			children = (
 				F5DD198E09080EA300721649 /* hud_draw.c */,
+				2643482413E51B3800920D9B /* virtual_draw.c */,
 				26F8AA74133546FB0020367E /* chat.c */,
 				26F8AA7D133547770020367E /* console.c */,
 				F58B7C070CD2B7A700CEE31F /* network_draw.c */,
@@ -1743,6 +1746,7 @@
 				26F8AA75133546FB0020367E /* chat.c in Sources */,
 				26F8AA7E133547770020367E /* console.c in Sources */,
 				2638FED413E253F400EA1640 /* input_touch.c in Sources */,
+				2643482513E51B3800920D9B /* virtual_draw.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

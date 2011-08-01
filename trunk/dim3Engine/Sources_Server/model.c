@@ -173,7 +173,7 @@ int model_load(char *name)
 
 		// load model
 
-	model_setup(&setup.file_path_setup,setup.anisotropic_mode,setup.mipmap_mode,setup.texture_quality_mode,TRUE);
+	model_setup(&setup.file_path_setup,setup.anisotropic_mode,setup.mipmap_mode,setup.texture_quality_mode,TRUE,view_shader_on());
 
 	if (!model_open(mdl,name,TRUE)) {
 		free(mdl);

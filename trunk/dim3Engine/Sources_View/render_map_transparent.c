@@ -214,15 +214,15 @@ void render_transparent_mesh_normal(void)
 			view_bind_mesh_liquid_vertex_object(&mesh->vbo);
 			view_bind_mesh_liquid_index_object(&mesh->vbo);
 			
-			glVertexPointer(3,GL_FLOAT,0,(void*)0);
+			glVertexPointer(3,GL_FLOAT,0,(GLvoid*)0);
 
 			glClientActiveTexture(GL_TEXTURE1);
-			glTexCoordPointer(2,GL_FLOAT,0,(void*)((mesh->vbo.count*3)*sizeof(float)));
+			glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)((mesh->vbo.count*3)*sizeof(float)));
 
 			glClientActiveTexture(GL_TEXTURE0);
-			glTexCoordPointer(2,GL_FLOAT,0,(void*)((mesh->vbo.count*(3+2))*sizeof(float)));
+			glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)((mesh->vbo.count*(3+2))*sizeof(float)));
 
-			glColorPointer(3,GL_FLOAT,0,(void*)((mesh->vbo.count*(3+2+2))*sizeof(float)));
+			glColorPointer(4,GL_FLOAT,0,(GLvoid*)((mesh->vbo.count*(3+2+2))*sizeof(float)));
 		}
 
 			// textures
@@ -315,13 +315,13 @@ void render_transparent_mesh_shader(void)
 			view_bind_mesh_liquid_vertex_object(&mesh->vbo);
 			view_bind_mesh_liquid_index_object(&mesh->vbo);
 			
-			glVertexPointer(3,GL_FLOAT,0,(void*)0);
+			glVertexPointer(3,GL_FLOAT,0,(GLvoid*)0);
 
 			glClientActiveTexture(GL_TEXTURE1);
-			glTexCoordPointer(2,GL_FLOAT,0,(void*)((mesh->vbo.count*(3+2))*sizeof(float)));
+			glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)((mesh->vbo.count*(3+2))*sizeof(float)));
 		
 			glClientActiveTexture(GL_TEXTURE0);
-			glTexCoordPointer(2,GL_FLOAT,0,(void*)((mesh->vbo.count*3)*sizeof(float)));
+			glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)((mesh->vbo.count*3)*sizeof(float)));
 			
 			gl_shader_draw_reset_normal_tangent_attrib();
 			
@@ -411,13 +411,13 @@ void render_transparent_mesh_glow(void)
 			view_bind_mesh_liquid_vertex_object(&mesh->vbo);
 			view_bind_mesh_liquid_index_object(&mesh->vbo);
 			
-			glVertexPointer(3,GL_FLOAT,0,(void*)0);
+			glVertexPointer(3,GL_FLOAT,0,(GLvoid*)0);
 
 			glClientActiveTexture(GL_TEXTURE1);
-			glTexCoordPointer(2,GL_FLOAT,0,(void*)((map.mesh.vbo_vertex_count*3)*sizeof(float)));
+			glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)((map.mesh.vbo_vertex_count*3)*sizeof(float)));
 
 			glClientActiveTexture(GL_TEXTURE0);
-			glTexCoordPointer(2,GL_FLOAT,0,(void*)((map.mesh.vbo_vertex_count*3)*sizeof(float)));
+			glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)((map.mesh.vbo_vertex_count*3)*sizeof(float)));
 		}
 		
 			// textures

@@ -241,7 +241,7 @@ bool al_initialize(char *err_str)
 {
 	int				n;
 	SDL_AudioSpec	aspec,ospec;
-
+	
 		// initialize SDL audio
 
 	aspec.freq=audio_frequency;

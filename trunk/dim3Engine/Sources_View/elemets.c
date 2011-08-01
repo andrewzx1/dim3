@@ -1661,7 +1661,7 @@ void element_draw_combo_open(element_type *element)
 
 		// get selected item
 
-	input_gui_get_mouse_position(&x,&y);
+	input_gui_get_hilite_position(&x,&y);
 
 	sel_item_idx=-1;
 
@@ -2936,7 +2936,7 @@ void element_draw_lock(bool cursor_hilite)
 				id=element_open_combo_id;
 			}
 			else {
-				input_gui_get_mouse_position(&x,&y);
+				input_gui_get_hilite_position(&x,&y);
 				id=element_find_for_xy(x,y);
 			}
 		}
@@ -3259,7 +3259,7 @@ int element_get_selected(void)
 	if (element_open_text_field_id!=-1) return(element_open_text_field_id);
 	if (element_open_combo_id!=-1) return(element_open_combo_id);
 
-	input_gui_get_mouse_position(&x,&y);
+	input_gui_get_hilite_position(&x,&y);
 				
 	return(element_find_for_xy(x,y));
 }

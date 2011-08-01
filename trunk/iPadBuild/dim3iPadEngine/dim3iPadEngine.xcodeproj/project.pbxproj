@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2643488313E63C1E00920D9B /* virtual_draw.c in Sources */ = {isa = PBXBuildFile; fileRef = 2643488213E63C1E00920D9B /* virtual_draw.c */; };
 		26A6841313DE405E007513D1 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26A6841213DE405E007513D1 /* UIKit.framework */; };
 		26A6841513DE405E007513D1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26A6841413DE405E007513D1 /* Foundation.framework */; };
 		26A6841713DE405E007513D1 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26A6841613DE405E007513D1 /* CoreGraphics.framework */; };
@@ -95,6 +96,7 @@
 		26A6851113DE4592007513D1 /* nodes.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A6850013DE4591007513D1 /* nodes.c */; };
 		26A6851213DE4592007513D1 /* prepare.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A6850113DE4591007513D1 /* prepare.c */; };
 		26A6851313DE4592007513D1 /* spots.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A6850213DE4591007513D1 /* spots.c */; };
+		26B48EB913E36132004F6CF6 /* input_touch.c in Sources */ = {isa = PBXBuildFile; fileRef = 26B48EB813E36132004F6CF6 /* input_touch.c */; };
 		26D6BFCE13E243510087FFD4 /* app.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D6BEBA13E243510087FFD4 /* app.c */; };
 		26D6BFCF13E243510087FFD4 /* debug.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D6BEBB13E243510087FFD4 /* debug.c */; };
 		26D6BFD013E243510087FFD4 /* file.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D6BEBC13E243510087FFD4 /* file.c */; };
@@ -427,6 +429,7 @@
 		2608F92013DE7355008D410D /* SDL_video.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDL_video.h; path = ../Libraries/SDL/SDL_video.h; sourceTree = "<group>"; };
 		2608F92113DE7355008D410D /* SDL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDL.h; path = ../Libraries/SDL/SDL.h; sourceTree = "<group>"; };
 		2608F92213DE7360008D410D /* mpg123.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mpg123.h; path = ../Libraries/MPG123/mpg123.h; sourceTree = "<group>"; };
+		2643488213E63C1E00920D9B /* virtual_draw.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = virtual_draw.c; sourceTree = "<group>"; };
 		26A6840E13DE405E007513D1 /* dim3iPadEngine.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = dim3iPadEngine.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		26A6841213DE405E007513D1 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		26A6841413DE405E007513D1 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -538,6 +541,7 @@
 		26A6850013DE4591007513D1 /* nodes.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = nodes.c; sourceTree = "<group>"; };
 		26A6850113DE4591007513D1 /* prepare.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = prepare.c; sourceTree = "<group>"; };
 		26A6850213DE4591007513D1 /* spots.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = spots.c; sourceTree = "<group>"; };
+		26B48EB813E36132004F6CF6 /* input_touch.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = input_touch.c; sourceTree = "<group>"; };
 		26D6BEAC13E243510087FFD4 /* dim3engine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dim3engine.h; sourceTree = "<group>"; };
 		26D6BEAD13E243510087FFD4 /* gui_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gui_defs.h; sourceTree = "<group>"; };
 		26D6BEAE13E243510087FFD4 /* input_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = input_defs.h; sourceTree = "<group>"; };
@@ -1523,6 +1527,7 @@
 				26D6BFAB13E243510087FFD4 /* input_joystick.c */,
 				26D6BFAC13E243510087FFD4 /* input_keyboard.c */,
 				26D6BFAD13E243510087FFD4 /* input_mouse.c */,
+				26B48EB813E36132004F6CF6 /* input_touch.c */,
 				26D6BFAE13E243510087FFD4 /* intro.c */,
 				26D6BFAF13E243510087FFD4 /* join.c */,
 				26D6BFB013E243510087FFD4 /* menu_draw.c */,
@@ -1554,6 +1559,7 @@
 				26D6BFCA13E243510087FFD4 /* view_setup.c */,
 				26D6BFCB13E243510087FFD4 /* view_vertex_list.c */,
 				26D6BFCC13E243510087FFD4 /* view_vertex_object.c */,
+				2643488213E63C1E00920D9B /* virtual_draw.c */,
 				26D6BFCD13E243510087FFD4 /* zoom_draw.c */,
 			);
 			name = Sources_View;
@@ -1983,6 +1989,8 @@
 				26D6C0DC13E243510087FFD4 /* view_vertex_list.c in Sources */,
 				26D6C0DD13E243510087FFD4 /* view_vertex_object.c in Sources */,
 				26D6C0DE13E243510087FFD4 /* zoom_draw.c in Sources */,
+				26B48EB913E36132004F6CF6 /* input_touch.c in Sources */,
+				2643488313E63C1E00920D9B /* virtual_draw.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

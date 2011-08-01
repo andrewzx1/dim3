@@ -132,8 +132,8 @@ bool view_images_load_single_normal(view_image_type *image,char *path,bool recta
 	image->nbitmap=1;
 	image->total_msec=0;
 	
-	if (simple) return(bitmap_open(&image->bitmaps[0].bitmap,path,anisotropic_mode_none,mipmap_mode_none,texture_quality_mode_high,FALSE,rectangle,FALSE,FALSE,FALSE));
-	return(bitmap_open(&image->bitmaps[0].bitmap,path,setup.anisotropic_mode,setup.mipmap_mode,texture_quality_mode_high,FALSE,rectangle,FALSE,FALSE,FALSE));
+	if (simple) return(bitmap_open(&image->bitmaps[0].bitmap,path,anisotropic_mode_none,mipmap_mode_none,texture_quality_mode_high,FALSE,rectangle,FALSE,FALSE));
+	return(bitmap_open(&image->bitmaps[0].bitmap,path,setup.anisotropic_mode,setup.mipmap_mode,texture_quality_mode_high,FALSE,rectangle,FALSE,FALSE));
 }
 
 bool view_images_load_single_animated(view_image_type *image,char *path,bool rectangle,bool simple)
@@ -170,10 +170,10 @@ bool view_images_load_single_animated(view_image_type *image,char *path,bool rec
 		sprintf(bitmap_path,"%s/%s.png",path,name);
 		
 		if (simple) {
-			if (!bitmap_open(&image->bitmaps[n].bitmap,bitmap_path,anisotropic_mode_none,mipmap_mode_none,texture_quality_mode_high,FALSE,rectangle,FALSE,FALSE,FALSE)) return(FALSE);
+			if (!bitmap_open(&image->bitmaps[n].bitmap,bitmap_path,anisotropic_mode_none,mipmap_mode_none,texture_quality_mode_high,FALSE,rectangle,FALSE,FALSE)) return(FALSE);
 		}
 		else {
-			if (!bitmap_open(&image->bitmaps[n].bitmap,bitmap_path,setup.anisotropic_mode,setup.mipmap_mode,texture_quality_mode_high,FALSE,rectangle,FALSE,FALSE,FALSE)) return(FALSE);
+			if (!bitmap_open(&image->bitmaps[n].bitmap,bitmap_path,setup.anisotropic_mode,setup.mipmap_mode,texture_quality_mode_high,FALSE,rectangle,FALSE,FALSE)) return(FALSE);
 		}
 		
 		image->bitmaps[n].msec=xml_get_attribute_int(animation_tag,"msec");
@@ -266,15 +266,17 @@ void view_images_free_single(int idx)
 
 void view_images_cached_load(void)
 {
-	int						n;
-	char					path[1024];
-	iface_bitmap_type		*iface_bitmap;
-	iface_radar_icon_type	*icon;
-	iface_particle_type		*particle;
-	iface_ring_type			*ring;
- 	iface_mark_type			*mark;
-	iface_halo_type			*halo;
-	iface_crosshair_type	*crosshair;
+	int							n;
+	char						path[1024];
+	iface_bitmap_type			*iface_bitmap;
+	iface_radar_icon_type		*icon;
+	iface_particle_type			*particle;
+	iface_ring_type				*ring;
+ 	iface_mark_type				*mark;
+	iface_halo_type				*halo;
+	iface_crosshair_type		*crosshair;
+	iface_virtual_stick_type	*stick;
+	iface_virtual_button_type	*button;
    
 		// hud bitmaps
 
@@ -360,18 +362,50 @@ void view_images_cached_load(void)
 		file_paths_data(&setup.file_path_setup,path,"Bitmaps/Network","talk","png");
 		remote_talk_image_idx=view_images_load_single(path,FALSE,TRUE);
 	}
+	
+		// virtual controls
+		
+#ifdef D3_OS_IPHONE
+	
+	stick=iface.virtual_control.sticks;
+	
+	for (n=0;n!=max_virtual_stick;n++) {
+		file_paths_data(&setup.file_path_setup,path,"Bitmaps/Virtual",stick->outer_bitmap_name,"png");
+		stick->outer_image_idx=view_images_load_single(path,FALSE,TRUE);
+	
+		file_paths_data(&setup.file_path_setup,path,"Bitmaps/Virtual",stick->inner_bitmap_name,"png");
+		stick->inner_image_idx=view_images_load_single(path,FALSE,TRUE);
+		
+		stick++;
+	}
+
+	button=iface.virtual_control.buttons;
+	
+	for (n=0;n!=max_virtual_button;n++) {
+		file_paths_data(&setup.file_path_setup,path,"Bitmaps/Virtual",button->up_bitmap_name,"png");
+		button->up_image_idx=view_images_load_single(path,FALSE,TRUE);
+	
+		file_paths_data(&setup.file_path_setup,path,"Bitmaps/Virtual",button->down_bitmap_name,"png");
+		button->down_image_idx=view_images_load_single(path,FALSE,TRUE);
+		
+		button++;
+	}
+
+#endif
 }
 
 void view_images_cached_free(void)
 {
-	int						n;
-	iface_bitmap_type		*iface_bitmap;
-	iface_radar_icon_type	*icon;
-	iface_particle_type		*particle;
-	iface_ring_type			*ring;
- 	iface_mark_type			*mark;
-  	iface_halo_type			*halo;
-	iface_crosshair_type	*crosshair;
+	int							n;
+	iface_bitmap_type			*iface_bitmap;
+	iface_radar_icon_type		*icon;
+	iface_particle_type			*particle;
+	iface_ring_type				*ring;
+ 	iface_mark_type				*mark;
+  	iface_halo_type				*halo;
+	iface_crosshair_type		*crosshair;
+	iface_virtual_stick_type	*stick;
+	iface_virtual_button_type	*button;
  
 		// hud bitmaps
 
@@ -451,6 +485,28 @@ void view_images_cached_free(void)
 		view_images_free_single(remote_slow_image_idx);
 		view_images_free_single(remote_talk_image_idx);
 	}
+	
+		// virtual controls
+		
+#ifdef D3_OS_IPHONE
+
+	stick=iface.virtual_control.sticks;
+	
+	for (n=0;n!=max_virtual_stick;n++) {
+		view_images_free_single(stick->outer_image_idx);
+		view_images_free_single(stick->inner_image_idx);
+		stick++;
+	}
+
+	button=iface.virtual_control.buttons;
+	
+	for (n=0;n!=max_virtual_button;n++) {
+		view_images_free_single(button->up_image_idx);
+		view_images_free_single(button->down_image_idx);
+		button++;
+	}
+
+#endif
 }
 
 /* =======================================================

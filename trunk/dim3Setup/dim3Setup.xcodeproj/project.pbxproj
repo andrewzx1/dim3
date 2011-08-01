@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2643487B13E617F600920D9B /* alt_property_palette_virtual_control_button.c in Sources */ = {isa = PBXBuildFile; fileRef = 2643487813E617F500920D9B /* alt_property_palette_virtual_control_button.c */; };
+		2643487C13E617F600920D9B /* alt_property_palette_virtual_control_stick.c in Sources */ = {isa = PBXBuildFile; fileRef = 2643487913E617F600920D9B /* alt_property_palette_virtual_control_stick.c */; };
+		2643488913E651F800920D9B /* property_palette_virtual_control.c in Sources */ = {isa = PBXBuildFile; fileRef = 2643488813E651F800920D9B /* property_palette_virtual_control.c */; };
 		26459B6E13DC9D5600D7DD73 /* Back.png in Resources */ = {isa = PBXBuildFile; fileRef = 26459B6D13DC9D5600D7DD73 /* Back.png */; };
 		26459B6F13DC9D6400D7DD73 /* Back.png in Copy (List Icons) */ = {isa = PBXBuildFile; fileRef = 26459B6D13DC9D5600D7DD73 /* Back.png */; };
 		2649D11E1341270B00573F6F /* property_palette_intro.c in Sources */ = {isa = PBXBuildFile; fileRef = 2649D11D1341270B00573F6F /* property_palette_intro.c */; };
@@ -123,6 +126,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		2643487813E617F500920D9B /* alt_property_palette_virtual_control_button.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = alt_property_palette_virtual_control_button.c; path = Code/alt_property_palette_virtual_control_button.c; sourceTree = "<group>"; };
+		2643487913E617F600920D9B /* alt_property_palette_virtual_control_stick.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = alt_property_palette_virtual_control_stick.c; path = Code/alt_property_palette_virtual_control_stick.c; sourceTree = "<group>"; };
+		2643488813E651F800920D9B /* property_palette_virtual_control.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_virtual_control.c; path = Code/property_palette_virtual_control.c; sourceTree = "<group>"; };
 		26459B6D13DC9D5600D7DD73 /* Back.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Back.png; path = "Resources/Additional Data/Icons/Lists/Back.png"; sourceTree = "<group>"; };
 		2649D11D1341270B00573F6F /* property_palette_intro.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_intro.c; path = Code/property_palette_intro.c; sourceTree = "<group>"; };
 		26514F6E13594F2500298860 /* alt_property_palette_chooser.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = alt_property_palette_chooser.c; path = Code/alt_property_palette_chooser.c; sourceTree = "<group>"; };
@@ -279,6 +285,7 @@
 				2649D11D1341270B00573F6F /* property_palette_intro.c */,
 				26784D2F13B940F400B5D8C3 /* property_palette_setup.c */,
 				26BDD87B134AA97C002E6723 /* property_palette_hud.c */,
+				2643488813E651F800920D9B /* property_palette_virtual_control.c */,
 				269EC50F1356501E00C3223C /* property_palette_radar.c */,
 				269EC50E1356501E00C3223C /* property_palette_multiplayer.c */,
 				26C324711357B3F800313FBF /* property_palette_menu.c */,
@@ -297,6 +304,8 @@
 				26D82FCB134FB5A800CC229F /* alt_property_palette_hud_bitmap.c */,
 				26D82FCC134FB5A800CC229F /* alt_property_palette_hud_text.c */,
 				26D82FCA134FB5A800CC229F /* alt_property_palette_hud_bar.c */,
+				2643487913E617F600920D9B /* alt_property_palette_virtual_control_stick.c */,
+				2643487813E617F500920D9B /* alt_property_palette_virtual_control_button.c */,
 				269EC50D1356501E00C3223C /* alt_property_palette_radar_icon.c */,
 				269EC50A1356501E00C3223C /* alt_property_palette_multiplayer_character.c */,
 				269EC50B1356501E00C3223C /* alt_property_palette_multiplayer_game.c */,
@@ -534,6 +543,9 @@
 				269A94F5137C8E080072F87F /* alt_property_palette_particle_group.c in Sources */,
 				269A94F6137C8E080072F87F /* alt2_property_palette_group_particle.c in Sources */,
 				26784D3013B940F400B5D8C3 /* property_palette_setup.c in Sources */,
+				2643487B13E617F600920D9B /* alt_property_palette_virtual_control_button.c in Sources */,
+				2643487C13E617F600920D9B /* alt_property_palette_virtual_control_stick.c in Sources */,
+				2643488913E651F800920D9B /* property_palette_virtual_control.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

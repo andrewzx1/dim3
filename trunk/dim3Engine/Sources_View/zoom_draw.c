@@ -232,7 +232,7 @@ void zoom_draw(obj_type *obj,weapon_type *weap)
 		// draw border and zoom
 	
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(2,GL_FLOAT,0,(void*)0);
+	glVertexPointer(2,GL_FLOAT,0,(GLvoid*)0);
 
 		// borders
 
@@ -245,7 +245,7 @@ void zoom_draw(obj_type *obj,weapon_type *weap)
 		// zoom
 
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,0,(void*)(((16*4)*2)*sizeof(float)));
+	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)(((16*4)*2)*sizeof(float)));
 
 	gl_texture_simple_start();
 

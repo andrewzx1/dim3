@@ -108,12 +108,6 @@ typedef struct		{
 					} model_draw_mesh_array_type;
 
 typedef struct		{
-						int								color,
-														tangent,
-														normal;
-					} model_draw_vbo_offset_type;
-
-typedef struct		{
 						d3pnt							center;
 						d3vct							move;
 						d3ang							ang;
@@ -122,7 +116,6 @@ typedef struct		{
 						model_draw_bone_type			bones[max_model_bone];
 						model_draw_alter_bone_type		alter_bones[max_model_bone];
 						model_draw_mesh_array_type		mesh_arrays[max_model_mesh];
-						model_draw_vbo_offset_type		vbo_offset;
                     } model_draw_setup;
 
 //
@@ -438,7 +431,7 @@ extern void model_floor(model_type *model,int mesh_idx);
 extern void model_floor_all(model_type *model);
 extern void model_flip_uv(model_type *model,int mesh_idx,bool flip_u,bool flip_v);
 
-extern void model_setup(file_path_setup_type *file_path_setup,int anisotropic_mode,int mipmap_mode,int texture_quality_mode,bool in_engine);
+extern void model_setup(file_path_setup_type *file_path_setup,int anisotropic_mode,int mipmap_mode,int texture_quality_mode,bool in_engine,bool shader_on);
 extern bool model_new(model_type *model,char *name);
 extern bool model_open(model_type *model,char *name,bool load_bitmaps);
 extern bool model_save(model_type *model);

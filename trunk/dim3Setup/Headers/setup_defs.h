@@ -46,18 +46,19 @@ and can be sold or given away.
 #define item_interface_intro					2
 #define item_interface_setup					3
 #define item_interface_hud						4
-#define item_interface_radar					5
-#define item_interface_multiplayer				6
-#define item_interface_menu						7
-#define item_interface_chooser					8
-#define item_interface_sound					9
-#define item_interface_particle					10
-#define item_interface_ring						11
-#define item_interface_halo						12
-#define item_interface_mark						13
-#define item_interface_crosshair				14
-#define item_interface_action					15
-#define item_interface_shader					16
+#define item_interface_virtual_control			5
+#define item_interface_radar					6
+#define item_interface_multiplayer				7
+#define item_interface_menu						8
+#define item_interface_chooser					9
+#define item_interface_sound					10
+#define item_interface_particle					11
+#define item_interface_ring						12
+#define item_interface_halo						13
+#define item_interface_mark						14
+#define item_interface_crosshair				15
+#define item_interface_action					16
+#define item_interface_shader					17
 
 //
 // intro button types
@@ -87,6 +88,7 @@ typedef struct		{
 						int						cur_item,
 												cur_intro_button_idx,cur_intro_model_idx,
 												cur_hud_bitmap_idx,cur_hud_text_idx,cur_hud_bar_idx,
+												cur_virtual_control_stick_idx,cur_virtual_control_button_idx,
 												cur_radar_icon_idx,cur_multiplayer_character_idx,
 												cur_menu_idx,cur_menu_item_idx,cur_chooser_idx,cur_chooser_piece_idx,
 												cur_multiplayer_game_idx,cur_multiplayer_option_idx,

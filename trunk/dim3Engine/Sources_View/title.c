@@ -176,7 +176,7 @@ void title_run(void)
 	
 		// the input
 		
-	if ((title_fade_mode==title_fade_mode_none) && (input_gui_get_mouse_left_button_down())) {
+	if ((title_fade_mode==title_fade_mode_none) && (input_gui_is_click_down())) {
 		title_fade_tick=-1;
 		title_fade_mode=title_fade_mode_out;
 	}

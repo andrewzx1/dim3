@@ -104,10 +104,10 @@ void remote_draw_icon(obj_type *obj,unsigned long gl_id)
 		// draw the bitmap
 	
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(3,GL_FLOAT,0,0);
+	glVertexPointer(3,GL_FLOAT,0,(GLvoid*)0);
 
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,0,(void*)((4*3)*sizeof(float)));
+	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)((4*3)*sizeof(float)));
 			
 	gl_texture_simple_start();
 

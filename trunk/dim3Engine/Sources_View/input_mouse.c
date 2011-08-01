@@ -229,11 +229,11 @@ void input_mouse_wheel_reset(void)
 
 /* =======================================================
 
-      GUI Mouse Input
+      Mouse GUI Input
       
 ======================================================= */
 
-void input_gui_set_mouse(int x,int y)
+void input_mouse_gui_set_position(int x,int y)
 {
 		// clear mouse
 		
@@ -245,7 +245,7 @@ void input_gui_set_mouse(int x,int y)
 	mouse_gui_pnt.y=iface.scale_y>>1;
 }
 
-void input_gui_get_mouse_position(int *x,int *y)
+void input_mouse_gui_get_position(int *x,int *y)
 {
 	mouse_gui_pnt.x+=mouse_motion.x;
 	mouse_motion.x=0;
@@ -263,14 +263,12 @@ void input_gui_get_mouse_position(int *x,int *y)
 	*y=mouse_gui_pnt.y;
 }
 
-bool input_gui_get_mouse_left_button_down(void)
+void input_mouse_gui_get_hilite_position(int *x,int *y)
 {
-	return(input_get_mouse_button(input_mouse_button_left));
+	input_mouse_gui_get_position(x,y);
 }
 
-void input_gui_wait_mouse_left_button_up(void)
+bool input_mouse_gui_is_click_down(void)
 {
-	while (input_gui_get_mouse_left_button_down()) {
-		usleep(1000);
-	}
+	return(input_get_mouse_button(input_mouse_button_left));
 }
