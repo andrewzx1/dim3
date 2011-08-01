@@ -277,7 +277,7 @@ void property_pick_list(char *title,char *list,int *idx)
 
 		// run the list picker
 
-	list_palette_start_picking_mode(title,list,count,name_str_len,0,FALSE,idx,NULL);
+	list_palette_start_picking_mode(title,list,count,name_str_len,0,FALSE,FALSE,idx,NULL);
 }
 
 /* =======================================================
@@ -289,42 +289,43 @@ void property_pick_list(char *title,char *list,int *idx)
 int property_pick_file_add_dir_files(file_path_directory_type *fpd,int path_depth,char *cur_path,int parent_idx,int count)
 {
 	int					n;
-	char				next_path[256];
+	char				next_path[256],str[256];
+
+		// do all the files first
 
 	for (n=0;n!=fpd->nfile;n++) {
 		if (fpd->files[n].parent_idx!=parent_idx) continue;
+		if (fpd->files[n].is_dir) continue;
 
-			// going into another directory
+				// put in list
 
-		if (fpd->files[n].is_dir) {
+		strcpy(property_file_list[count++],fpd->files[n].file_name);
+	}
 
-			if (path_depth<1) {
-				count=property_pick_file_add_dir_files(fpd,(path_depth+1),NULL,n,count);
-			}
-			else {
-				if (cur_path==NULL) {
-					sprintf(next_path,"%s/",fpd->files[n].file_name);
-				}
-				else {
-					sprintf(next_path,"%s%s/",cur_path,fpd->files[n].file_name);
-				}
+		// now the directories
 
-				count=property_pick_file_add_dir_files(fpd,(path_depth+1),next_path,n,count);
-			}
+	for (n=0;n!=fpd->nfile;n++) {
+		if (fpd->files[n].parent_idx!=parent_idx) continue;
+		if (!fpd->files[n].is_dir) continue;
 
-			continue;
-		}
-
-			// put in list
+			// get next path and header
 
 		if (cur_path==NULL) {
-			strcpy(property_file_list[count],fpd->files[n].file_name);
+			strcpy(str,"@Root/");
+			strcpy(next_path,"");
 		}
 		else {
-			sprintf(property_file_list[count],"%s%s",cur_path,fpd->files[n].file_name);
+			sprintf(str,"@Root/%s%s",cur_path,fpd->files[n].file_name);
+			sprintf(next_path,"%s%s/",cur_path,fpd->files[n].file_name);
 		}
 
-		count++;
+			// add the header
+
+		strcpy(property_file_list[count++],str);
+
+			// recurse into directory
+
+		count=property_pick_file_add_dir_files(fpd,(path_depth+1),next_path,n,count);
 	}
 
 	return(count);
@@ -354,7 +355,7 @@ void property_pick_file(char *title,char *search_path,char *extension,char *requ
 
 		// run the list picker
 
-	list_palette_start_picking_mode(title,(char*)property_file_list,count,file_str_len,0,TRUE,NULL,file_name);
+	list_palette_start_picking_mode(title,(char*)property_file_list,count,file_str_len,0,TRUE,TRUE,NULL,file_name);
 }
 
 /* =======================================================

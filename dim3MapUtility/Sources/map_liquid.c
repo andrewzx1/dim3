@@ -65,6 +65,11 @@ int map_liquid_add(map_type *map)
 	liq->flag.never_cull=FALSE;
 	liq->flag.no_draw=FALSE;
 
+	liq->wave.on=FALSE;
+	liq->wave.dir_north_south=FALSE;
+	liq->wave.length=2000;
+	liq->wave.period_msec=3000;
+
 	liq->overlay.on=FALSE;
 
 	liq->copy.copied=FALSE;

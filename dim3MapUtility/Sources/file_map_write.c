@@ -731,6 +731,15 @@ void write_single_liquid(map_liquid_type *liq)
 	xml_add_attribute_int("high",liq->tide.high);
 	xml_add_attribute_float("uv_shift",liq->tide.uv_shift);
 	xml_add_tagend(TRUE);
+
+		// waves
+
+	xml_add_tagstart("Wave");
+	xml_add_attribute_boolean("on",liq->wave.on);
+	xml_add_attribute_boolean("dir_north_south",liq->wave.dir_north_south);
+	xml_add_attribute_int("length",liq->wave.length);
+	xml_add_attribute_int("period_msec",liq->wave.period_msec);
+	xml_add_tagend(TRUE);
 	
 		// reflection
 

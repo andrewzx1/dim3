@@ -751,7 +751,23 @@ void read_single_liquid_v3(map_type *map,int liquid_idx,int liquid_tag)
 		liq->tide.high=xml_get_attribute_int(tag,"high");
 		liq->tide.uv_shift=xml_get_attribute_float(tag,"uv_shift");
 	}
-	
+
+		// waves
+
+    tag=xml_findfirstchild("Wave",liquid_tag);
+    if (tag!=-1) {
+		liq->wave.on=xml_get_attribute_boolean(tag,"on");
+		liq->wave.dir_north_south=xml_get_attribute_boolean(tag,"dir_north_south");
+		liq->wave.length=xml_get_attribute_int(tag,"length");
+		liq->wave.period_msec=xml_get_attribute_int(tag,"period_msec");
+	}
+	else {
+		liq->wave.on=FALSE;
+		liq->wave.dir_north_south=FALSE;
+		liq->wave.length=2000;
+		liq->wave.period_msec=3000;
+	}
+
 		// reflection
 
     tag=xml_findfirstchild("Reflect",liquid_tag);

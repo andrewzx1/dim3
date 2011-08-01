@@ -37,7 +37,7 @@ extern setup_type			setup;
 
 /* =======================================================
 
-      Initialize VBOs For Map
+      Initialize VBOs For Meshes
       
 ======================================================= */
 
@@ -177,9 +177,47 @@ bool view_map_vbo_initialize_mesh(map_mesh_type *mesh)
 	return(TRUE);
 }
 
+/* =======================================================
+
+      Initialize VBOs For Liquids
+      
+======================================================= */
+
+bool view_map_vbo_initialize_liquid(map_liquid_type *liq)
+{
+	int				n,idx;
+	unsigned short	*index_ptr;
+
+		// only setup indexes for liquids
+
+	view_bind_mesh_liquid_index_object(&liq->vbo);
+	
+	index_ptr=view_map_mesh_liquid_index_object(&liq->vbo);
+	if (index_ptr==NULL) return(FALSE);
+
+	idx=0;
+
+	for (n=0;n!=liq->vbo.count;n++) {
+		*index_ptr++=idx;
+		idx=(idx+1)&0x3;
+	}
+
+	view_unmap_mesh_liquid_index_object();
+	view_unbind_mesh_liquid_index_object();
+
+	return(TRUE);
+}
+
+/* =======================================================
+
+      Initialize VBOs For Map
+      
+======================================================= */
+
 bool view_map_vbo_initialize(void)
 {
-	int					n,k,vertex_cnt,index_cnt;
+	int					n,k,vertex_cnt,index_cnt,
+						liq_div_count;
 	bool				shader_on;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
@@ -226,19 +264,31 @@ bool view_map_vbo_initialize(void)
 
 		// liquids
 
-	vertex_cnt=4*(3+2+2);
-	if (shader_on) {
-		vertex_cnt+=(4*(3+3));					// normals and tangents
-	}
-	else {
-		vertex_cnt+=(4*3);						// colors
-	}
-
 	liq=map.liquid.liquids;
 
 	for (n=0;n!=map.liquid.nliquid;n++) {
-		liq->vbo.count=4;
+
+			// liquids can be broken up for waves,
+			// so get the div count * 4 for vertex count
+
+		liq_div_count=liquid_wave_get_divisions(liq)*4;
+
+		vertex_cnt=liq_div_count*(3+2+2);
+		if (shader_on) {
+			vertex_cnt+=(liq_div_count*(3+3));					// normals and tangents
+		}
+		else {
+			vertex_cnt+=(liq_div_count*3);						// colors
+		}
+
+			// create the liquid
+
+		liq->vbo.count=liq_div_count;
 		view_create_mesh_liquid_vertex_object(&liq->vbo,vertex_cnt,4);
+
+			// initialize the liquid
+
+		if (!view_map_vbo_initialize_liquid(liq)) return(FALSE);
 		liq++;
 	}
 

@@ -317,9 +317,9 @@ void list_palette_add_string_selectable(list_palette_type *list,int id,char *nam
 		return;
 	}
 	
-	if (strlen(value)>=25) {
-		strncpy(item->value.str,value,25);
-		strcpy((char*)&item->value.str[25],"...");
+	if (strlen(value)>=list_value_clip_size) {
+		strncpy(item->value.str,value,list_value_clip_size);
+		strcpy((char*)&item->value.str[list_value_clip_size],"...");
 	}
 	else {
 		strcpy(item->value.str,value);
@@ -484,7 +484,7 @@ void list_palette_delete_all_items(list_palette_type *list)
       
 ======================================================= */
 
-void list_palette_start_picking_mode(char *title,char *list_ptr,int list_count,int list_item_sz,int list_name_offset,bool include_none,int *idx_ptr,char *name_ptr)
+void list_palette_start_picking_mode(char *title,char *list_ptr,int list_count,int list_item_sz,int list_name_offset,bool include_none,bool file_list,int *idx_ptr,char *name_ptr)
 {
 	list_picker.on=TRUE;
 	list_picker.picker_idx_ptr=idx_ptr;
@@ -493,6 +493,7 @@ void list_palette_start_picking_mode(char *title,char *list_ptr,int list_count,i
 	strcpy(list_picker.title,title);
 
 	list_picker.include_none=include_none;
+	list_picker.file_list=file_list;
 	list_picker.ptr=list_ptr;
 	list_picker.count=list_count;
 	list_picker.item_sz=list_item_sz;
@@ -529,6 +530,15 @@ void list_palette_fill_picking_mode(list_palette_type *list)
 	for (n=0;n!=list_picker.count;n++) {
 		str_ptr=list_picker.ptr+((list_picker.item_sz*n)+list_picker.name_offset);
 
+			// @ marks headers
+
+		if (str_ptr[0]=='@') {
+			list_palette_add_header(list,-1,(char*)&str_ptr[1]);
+			continue;
+		}
+
+			// regular clickable items
+
 		sel=FALSE;
 		if (list_picker.picker_idx_ptr!=NULL) {
 			sel=(*list_picker.picker_idx_ptr==n);
@@ -539,6 +549,70 @@ void list_palette_fill_picking_mode(list_palette_type *list)
 
 		list_palette_add_item(list,-1,n,str_ptr,sel,FALSE);
 	}
+}
+
+void list_palette_choose_picking_mode(list_palette_type *list,int item_idx,bool double_click)
+{
+	int					idx;
+	char				dir[256];
+
+		// are we in the list picker?
+
+	if (!list_picker.on) return;
+	if (!double_click) return;
+
+		// turn off list picker
+
+	list_picker.on=FALSE;
+
+		// integer list pickers just get index
+
+	if (list_picker.picker_idx_ptr!=NULL) {
+		*list_picker.picker_idx_ptr=list->item_idx;
+		main_wind_draw();
+		return;
+	}
+
+		// blank string picker
+
+	if (list->item_idx==-1) {
+		*list_picker.picker_name_ptr=0x0;
+		main_wind_draw();
+		return;
+	}
+
+		// if not file picker, just grab the name
+
+	if (!list_picker.file_list) {
+		strcpy(list_picker.picker_name_ptr,list->items[item_idx].name);
+		main_wind_draw();
+		return;
+	}
+
+		// file picker needs to find directory
+
+	dir[0]=0x0;
+
+	idx=item_idx-1;
+
+	while (idx>=0) {
+		if (list->items[idx].ctrl_type==list_item_ctrl_header) {
+			strcpy(dir,(char*)&list->items[idx].name[5]);	// get over Root/
+			break;
+		}
+		idx--;
+	}
+
+		// now add in the directory + file name
+
+	if (dir[0]==0x0) {
+		strcpy(list_picker.picker_name_ptr,list->items[item_idx].name);
+	}
+	else {
+		sprintf(list_picker.picker_name_ptr,"%s/%s",dir,list->items[item_idx].name);
+	}
+
+	main_wind_draw();
 }
 
 /* =======================================================
@@ -1417,35 +1491,9 @@ bool list_palette_click(list_palette_type *list,d3pnt *pnt,bool double_click)
 
 	if (!list_palette_click_item(list,item_idx)) return(FALSE);
 
-		// list picker picks
+		// run any list picker modes
 
-	if (!list_picker.on) return(TRUE);
-	if (!double_click) return(TRUE);
-
-	if (list_picker.picker_idx_ptr!=NULL) {
-		if (!list_picker.include_none) {
-			*list_picker.picker_idx_ptr=item_idx;
-		}
-		else {
-			*list_picker.picker_idx_ptr=item_idx-1;
-		}
-	}
-	else {
-		if (!list_picker.include_none) {
-			strcpy(list_picker.picker_name_ptr,list->items[item_idx].name);
-		}
-		else {
-			if (item_idx==0) {
-				*list_picker.picker_name_ptr=0x0;
-			}
-			else {
-				strcpy(list_picker.picker_name_ptr,list->items[item_idx].name);
-			}
-		}
-	}
-
-	list_picker.on=FALSE;
-	main_wind_draw();
+	list_palette_choose_picking_mode(list,item_idx,double_click);
 
 	return(TRUE);
 }

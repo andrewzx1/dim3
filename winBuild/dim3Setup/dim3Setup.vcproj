@@ -403,6 +403,14 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\dim3Setup\Code\alt_property_palette_virtual_control_button.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Setup\Code\alt_property_palette_virtual_control_stick.c"
+						>
+					</File>
+					<File
 						RelativePath="..\..\dim3Setup\Code\item_palette.c"
 						>
 					</File>
@@ -480,6 +488,10 @@
 					</File>
 					<File
 						RelativePath="..\..\dim3Setup\Code\property_palette_sounds.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Setup\Code\property_palette_virtual_control.c"
 						>
 					</File>
 					<File

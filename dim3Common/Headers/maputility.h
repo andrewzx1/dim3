@@ -328,7 +328,12 @@ typedef struct		{
 						int									rate,high;
 						float								uv_shift;
 					} map_liquid_tide_type;
-					
+
+typedef struct		{
+						int									length,period_msec;
+						bool								on,dir_north_south;
+					} map_liquid_wave_type;
+
 typedef struct		{
 						bool								lock_uv,never_obscure,never_cull,
 															no_draw;
@@ -366,6 +371,7 @@ typedef struct		{
 						map_liquid_uv_type					main_uv,lmap_uv;
 						map_liquid_harm_type				harm;
 						map_liquid_tide_type				tide;
+						map_liquid_wave_type				wave;
 						map_liquid_flag_type				flag;
 						map_liquid_ambient_type				ambient;
 						map_liquid_reflection_type			reflect;

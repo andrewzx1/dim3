@@ -32,17 +32,21 @@ and can be sold or given away.
 #define list_max_item_count									4096
 #define list_max_section_count								32
 
+#define list_max_value_sz									64
+
 #define list_title_font_size								14.0f
 #define list_item_font_size									12.0f
 #define list_item_font_high									14
 #define list_item_scroll_size								(list_item_font_high*5)
 
 #ifndef D3_SETUP
-	#define list_palette_border_sz								10
-	#define list_palette_tree_sz								250
+	#define list_palette_border_sz							10
+	#define list_palette_tree_sz							250
+	#define list_value_clip_size							25
 #else
-	#define list_palette_border_sz								0
-	#define list_palette_tree_sz								400
+	#define list_palette_border_sz							0
+	#define list_palette_tree_sz							400
+	#define list_value_clip_size							35
 #endif
 
 #define list_palette_scroll_wid								15
@@ -77,7 +81,7 @@ and can be sold or given away.
 
 typedef union		{
 						bool								checkbox;
-						char								str[32];
+						char								str[list_max_value_sz];
 						d3col								col;
 					} list_palette_item_value_type;
 
@@ -103,7 +107,7 @@ typedef struct		{
 typedef struct		{
 						int									count,item_sz,name_offset;
 						int									*picker_idx_ptr;
-						bool								on,include_none;
+						bool								on,include_none,file_list;
 						char								title[128];
 						char								*ptr,*picker_name_ptr;
 					} list_palette_picker_type;
@@ -182,7 +186,7 @@ extern void list_palette_add_texture(list_palette_type *list,texture_type *textu
 extern void list_palette_add_shader(list_palette_type *list,int id,char *name,char *shader_name,bool disabled);
 extern void list_palette_add_string_tag(list_palette_type *list,int id,char *name,unsigned long tag,bool disabled);
 extern void list_palette_delete_all_items(list_palette_type *list);
-extern void list_palette_start_picking_mode(char *title,char *list_ptr,int list_count,int list_item_sz,int list_name_offset,bool include_none,int *idx_ptr,char *name_ptr);
+extern void list_palette_start_picking_mode(char *title,char *list_ptr,int list_count,int list_item_sz,int list_name_offset,bool include_none,bool file_list,int *idx_ptr,char *name_ptr);
 extern void list_palette_sort_mark_start(list_palette_type *list);
 extern void list_palette_sort(list_palette_type *list);
 extern void list_palette_draw(list_palette_type *list);
