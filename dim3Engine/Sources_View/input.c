@@ -367,6 +367,10 @@ bool input_event_pump(void)
 			case SDL_FINGERUP:
 				input_touch_event_up(event.tfinger.fingerId);
 				break;
+				
+			case SDL_FINGERMOTION:
+				input_touch_event_move(event.tfinger.fingerId,event.tfinger.x,event.tfinger.y);
+				break;
 		#endif
 
 				// quit event
@@ -524,7 +528,7 @@ bool input_action_get_state(int action_index)
 			case input_type_joystick_button:
 				if (input_get_joystick_button(item->index)) return(TRUE);
 				break;
-
+				
 		}
 		
 		item++;

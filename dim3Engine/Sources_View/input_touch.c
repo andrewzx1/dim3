@@ -34,11 +34,17 @@ and can be sold or given away.
 extern view_type			view;
 extern setup_type			setup;
 
-#define max_touch_state		4		// supergumba move -- deal with multiple touches here
+#define max_touch_state		4		// supergumba move
 
-unsigned char				touch_states[max_touch_state];
+typedef struct		{
+						int						id;
+						bool					on;
+						d3pnt					pt;
+					} touch_state_type;
+
 bool						touch_gui_click;
 d3pnt						touch_gui_pnt;
+touch_state_type			touch_states[max_touch_state];
 
 /* =======================================================
 
@@ -49,13 +55,86 @@ d3pnt						touch_gui_pnt;
 void input_clear_touch(void)
 {
 	int				n;
-
+	
 	for (n=0;n!=max_touch_state;n++) {
-		touch_states[n]=0x0;
+		touch_states[n].on=FALSE;
 	}
 	
 	touch_gui_pnt.x=touch_gui_pnt.y=-1;
 	touch_gui_click=FALSE;
+}
+
+/* =======================================================
+
+      Handle Touch States
+      
+======================================================= */
+
+bool input_touch_get_state(int idx)
+{
+	return(touch_states[idx].on);
+}
+
+void input_touch_get_point(int idx,int *x,int *y)
+{
+	*x=touch_states[idx].pt.x;
+	*y=touch_states[idx].pt.y;
+}
+
+void input_touch_state_add_up(int id)
+{
+	int					n;
+	touch_state_type	*state;
+	
+	state=touch_states;
+	
+	for (n=0;n!=max_touch_state;n++) {
+		if (state->on) {
+			if (state->id==id) {
+				state->on=FALSE;
+				return;
+			}
+		}
+		
+		state++;
+	}
+}
+
+void input_touch_state_add_down(int id,d3pnt *pt)
+{
+	int					n,idx;
+	touch_state_type	*state;
+	
+	state=touch_states;
+	
+	idx=-1;
+	
+		// if already in, then update
+		
+	for (n=0;n!=max_touch_state;n++) {
+	
+		if (state->on) {
+			if (state->id==id) {
+				state->pt.x=pt->x;
+				state->pt.y=pt->y;
+				break;
+			}
+		}
+		else {
+			if (idx==-1) idx=n;
+		}
+		
+		state++;
+	}
+	
+		// otherwise add it
+		
+	if (idx==-1) return;
+	
+	touch_states[idx].on=TRUE;
+	touch_states[idx].id=id;
+	touch_states[idx].pt.x=pt->x;
+	touch_states[idx].pt.y=pt->y;
 }
 
 /* =======================================================
@@ -76,10 +155,22 @@ void input_touch_event_down(int id,int x,int y)
 	pt.x=(y*view.desktop.high)/0x7FFF;
 	pt.y=view.desktop.wid-((x*view.desktop.wid)/0x7FFF);
 
+	input_touch_state_add_down(id,&pt);
+
 	touch_gui_pnt.x=pt.x;
 	touch_gui_pnt.y=pt.y;
 	
 	touch_gui_click=TRUE;
+}
+
+void input_touch_event_move(int id,int x,int y)
+{
+	d3pnt				pt;
+	
+	pt.x=(y*view.desktop.high)/0x7FFF;
+	pt.y=view.desktop.wid-((x*view.desktop.wid)/0x7FFF);
+
+	input_touch_state_add_down(id,&pt);
 }
 
 /* =======================================================

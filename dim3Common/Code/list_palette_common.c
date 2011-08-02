@@ -208,7 +208,6 @@ list_palette_item_type* list_palette_create_item(list_palette_type *list,int ctr
 	if (ctrl_type!=list_item_ctrl_header) item->x+=10;
 
 	item->y=box.ty+((list->item_count*list_item_font_high)+list_title_high);
-	item->y-=(list->scroll_page*list_item_scroll_size);
 
 	list->total_high+=list_item_font_high;
 
@@ -695,7 +694,7 @@ void list_palette_draw_item_color_box(list_palette_type *list,list_palette_item_
 	list_palette_box(&box);
 
 	x=box.rx-(list_item_font_high+(list_palette_scroll_wid+4));
-	y=item->y;
+	y=item->y-(list->scroll_page*list_item_scroll_size);
 
 	glColor4f((col->r*0.5f),(col->g*0.5f),(col->b*0.5f),1.0f);
 
@@ -718,7 +717,7 @@ void list_palette_draw_item_color_box(list_palette_type *list,list_palette_item_
 
 void list_palette_draw_item_check_box(list_palette_type *list,list_palette_item_type *item,bool checked)
 {
-	int					lx,rx,ty,by;
+	int					lx,rx,y,ty,by;
 	d3rect				box;
 	
 	list_palette_box(&box);
@@ -726,8 +725,9 @@ void list_palette_draw_item_check_box(list_palette_type *list,list_palette_item_
 	lx=box.rx-(list_item_font_high+(list_palette_scroll_wid+2));
 	rx=lx+(list_item_font_high-2);
 
-	ty=(item->y-list_item_font_high)+2;
-	by=item->y;
+	y=item->y-(list->scroll_page*list_item_scroll_size);
+	ty=(y-list_item_font_high)+2;
+	by=y;
 
 	glColor4f(0.0f,0.0f,0.0f,1.0f);
 
@@ -765,7 +765,7 @@ void list_palette_draw_item_check_box(list_palette_type *list,list_palette_item_
 
 void list_palette_draw_item_string(list_palette_type *list,list_palette_item_type *item)
 {
-	int					rx;
+	int					rx,y;
 	d3col				col;
 	d3rect				box;
 	
@@ -773,15 +773,17 @@ void list_palette_draw_item_string(list_palette_type *list,list_palette_item_typ
 
 	rx=box.rx-(list_palette_scroll_wid+4);
 	if (item->button_type!=list_button_none) rx-=(list_item_font_high+2);
+	
+	y=item->y-(list->scroll_page*list_item_scroll_size);
 
 	if (!item->disabled) {
-		text_draw_right(rx,item->y,list_item_font_size,NULL,item->value.str);
+		text_draw_right(rx,y,list_item_font_size,NULL,item->value.str);
 		return;
 	}
 
 	col.r=col.g=0.0f;
 	col.b=1.0f;
-	text_draw_right(rx,item->y,list_item_font_size,&col,item->value.str);
+	text_draw_right(rx,y,list_item_font_size,&col,item->value.str);
 }
 
 void list_palette_draw_item_button(list_palette_type *list,int idx)
@@ -797,7 +799,7 @@ void list_palette_draw_item_button(list_palette_type *list,int idx)
 
 	rx=box.rx-(list_palette_scroll_wid+1);
 	lx=rx-16;
-	ty=item->y-list_item_font_high;
+	ty=(item->y-list_item_font_high)-(list->scroll_page*list_item_scroll_size);
 	by=ty+16;
 
 	glEnable(GL_ALPHA_TEST);
@@ -1055,8 +1057,10 @@ void list_palette_draw_item(list_palette_type *list,int idx)
 	item=&list->items[idx];
 
 		// early exits
+		
+	y=item->y-(list->scroll_page*list_item_scroll_size);
 
-	if ((item->y<(box.ty+list_title_high)) || ((item->y-list_item_font_high)>box.by)) return;
+	if ((y<(box.ty+list_title_high)) || ((y-list_item_font_high)>box.by)) return;
 
 		// draw header
 		
@@ -1065,10 +1069,10 @@ void list_palette_draw_item(list_palette_type *list,int idx)
 		glColor4f(0.9f,0.9f,0.9f,1.0f);
 
 		glBegin(GL_QUADS);
-		glVertex2i(box.lx,(item->y-list_item_font_high));
-		glVertex2i((box.rx-list_palette_scroll_wid),(item->y-list_item_font_high));
-		glVertex2i((box.rx-list_palette_scroll_wid),item->y);
-		glVertex2i(box.lx,item->y);
+		glVertex2i(box.lx,(y-list_item_font_high));
+		glVertex2i((box.rx-list_palette_scroll_wid),(y-list_item_font_high));
+		glVertex2i((box.rx-list_palette_scroll_wid),y);
+		glVertex2i(box.lx,y);
 		glEnd();
 	}
 		
@@ -1092,10 +1096,10 @@ void list_palette_draw_item(list_palette_type *list,int idx)
 			glColor4f(1.0f,1.0f,0.0f,1.0f);
 
 			glBegin(GL_QUADS);
-			glVertex2i(box.lx,((item->y-list_item_font_high)+1));
-			glVertex2i((box.rx-list_palette_scroll_wid),((item->y-list_item_font_high)+1));
-			glVertex2i((box.rx-list_palette_scroll_wid),item->y);
-			glVertex2i(box.lx,item->y);
+			glVertex2i(box.lx,((y-list_item_font_high)+1));
+			glVertex2i((box.rx-list_palette_scroll_wid),((y-list_item_font_high)+1));
+			glVertex2i((box.rx-list_palette_scroll_wid),y);
+			glVertex2i(box.lx,y);
 			glEnd();
 		}
 	}
@@ -1103,7 +1107,7 @@ void list_palette_draw_item(list_palette_type *list,int idx)
 		// draw item
 		
 	x=item->x;
-	y=item->y;
+	y=item->y-(list->scroll_page*list_item_scroll_size);
 
 	switch (item->ctrl_type) {
 
@@ -1151,7 +1155,7 @@ void list_palette_draw_item(list_palette_type *list,int idx)
 	if (item->ctrl_type==list_item_ctrl_header) {
 		if (item->count!=-1) {
 			sprintf(str,"%d",item->count);
-			text_draw_right((box.rx-(list_palette_scroll_wid+4)),item->y,list_item_font_size,NULL,str);
+			text_draw_right((box.rx-(list_palette_scroll_wid+4)),y,list_item_font_size,NULL,str);
 		}
 	}
 }
@@ -1166,6 +1170,12 @@ void list_palette_draw(list_palette_type *list)
 		// if so replace content with list
 
 	if (list_picker.on) list_palette_fill_picking_mode(list);
+	
+		// check if scrolling is bad,
+		// usually when a page was switched
+		
+		
+	if (list->scroll_page>list_palette_get_scroll_page_count(list)) list->scroll_page=0;
 
 		// items
 
@@ -1265,6 +1275,7 @@ void list_palette_scroll_item_into_view(list_palette_type *list,int item_type,in
 
 bool list_palette_click_item(list_palette_type *list,int item_idx)
 {
+	int						y;
 	bool					out_box;
 	d3pnt					pt;
 	d3rect					box;
@@ -1283,14 +1294,16 @@ bool list_palette_click_item(list_palette_type *list,int item_idx)
 	list->push_on=TRUE;
 	list->push_idx=item_idx;
 	
+	y=item->y-(list->scroll_page*list_item_scroll_size);
+	
 	main_wind_draw();
 
 	while (!os_track_mouse_location(&pt,NULL)) {
 	
 		out_box=FALSE;
 		out_box=out_box||(pt.x>=(box.rx-list_palette_scroll_wid));
-		out_box=out_box||(pt.y<(item->y-list_item_font_high));
-		out_box=out_box||(pt.y>=item->y);
+		out_box=out_box||(pt.y<(y-list_item_font_high));
+		out_box=out_box||(pt.y>=y);
 		
 		if (!list->button_click) {
 			out_box=out_box||(pt.x<box.lx);
