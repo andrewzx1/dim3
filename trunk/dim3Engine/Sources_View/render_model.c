@@ -515,7 +515,7 @@ void render_model_opaque_normal(model_type *mdl,int mesh_idx,model_draw *draw)
 		gl_texture_opaque_set(texture->frames[frame].bitmap.gl_id);
 		glDrawArrays(GL_TRIANGLES,trig_idx,(trig_count*3));
 		
-		view.count.poly+=trig_count;
+		view.count.model_poly+=trig_count;
 	}
 
 	gl_texture_opaque_end();
@@ -588,7 +588,7 @@ void render_model_opaque_shader(model_type *mdl,int mesh_idx,model_draw *draw,vi
 		gl_shader_draw_execute(core_shader_group_model,texture,n,frame,-1,1.0f,light_list,tangent_offset,normal_offset);
 		glDrawArrays(GL_TRIANGLES,trig_idx,(trig_count*3));
 		
-		view.count.poly+=trig_count;
+		view.count.model_poly+=trig_count;
 	}
 			
 	gl_shader_draw_end();
@@ -664,7 +664,7 @@ void render_model_transparent_normal(model_type *mdl,int mesh_idx,model_draw *dr
 		gl_texture_transparent_set(texture->frames[frame].bitmap.gl_id,draw_mesh->materials[n].alpha);
 		glDrawArrays(GL_TRIANGLES,trig_idx,(trig_count*3));
 		
-		view.count.poly+=trig_count;
+		view.count.model_poly+=trig_count;
 	}
 	
 	if (cur_additive) glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
@@ -758,7 +758,7 @@ void render_model_transparent_shader(model_type *mdl,int mesh_idx,model_draw *dr
 		gl_shader_draw_execute(core_shader_group_model,texture,n,frame,-1,draw_mesh->materials[n].alpha,light_list,tangent_offset,normal_offset);
 		glDrawArrays(GL_TRIANGLES,trig_idx,(trig_count*3));
 		
-		view.count.poly+=trig_count;
+		view.count.model_poly+=trig_count;
 	}
 	
 	if (cur_additive) glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
@@ -817,7 +817,7 @@ void render_model_glow(model_type *mdl,int mesh_idx,model_draw *draw)
 		gl_texture_glow_set(texture->frames[frame].bitmap.gl_id,texture->frames[frame].glowmap.gl_id,texture->glow.current_color);
 		glDrawArrays(GL_TRIANGLES,trig_idx,(trig_count*3));
 		
-		view.count.poly+=trig_count;
+		view.count.model_poly+=trig_count;
 	}
 	
 	gl_texture_glow_end();

@@ -172,5 +172,5 @@ typedef struct		{
 typedef struct		{
 						int						nitem;
 						input_action_item_type  items[input_max_action_item];
-						bool					still_down;
+						bool					touch_trigger,still_down;
 					} input_action_type;

@@ -409,7 +409,11 @@ typedef struct		{
 //
 
 typedef struct		{
-						int									poly,liquid,model,shadow,effect;
+						int									mesh,mesh_poly,
+															liquid,liquid_poly,
+															model,model_poly,
+															shadow,shadow_poly,
+															effect;
 					} view_count_type;
 
 //
