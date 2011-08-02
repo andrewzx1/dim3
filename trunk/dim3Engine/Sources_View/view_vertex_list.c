@@ -198,8 +198,8 @@ bool view_map_vbo_initialize_liquid(map_liquid_type *liq)
 	idx=0;
 
 	for (n=0;n!=liq->vbo.count;n++) {
-		*index_ptr++=idx;
-		idx=(idx+1)&0x3;
+		*index_ptr++=(unsigned short)idx;
+		idx++;					// supergumba -- eventually share vertexes here
 	}
 
 	view_unmap_mesh_liquid_index_object();
@@ -284,7 +284,7 @@ bool view_map_vbo_initialize(void)
 			// create the liquid
 
 		liq->vbo.count=liq_div_count;
-		view_create_mesh_liquid_vertex_object(&liq->vbo,vertex_cnt,4);
+		view_create_mesh_liquid_vertex_object(&liq->vbo,vertex_cnt,liq_div_count);
 
 			// initialize the liquid
 

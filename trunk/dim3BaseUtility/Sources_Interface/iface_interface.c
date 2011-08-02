@@ -615,7 +615,7 @@ void iface_read_settings_interface(iface_type *iface)
 	
 		// virtual controls
 
-	virtual_head_tag=xml_findfirstchild("Virtual_Controls",interface_head_tag);
+	virtual_head_tag=xml_findfirstchild("Virtual_Control",interface_head_tag);
 	if (virtual_head_tag!=-1) iface_read_settings_virtual_control(iface,virtual_head_tag);
 
 		// radar

@@ -574,8 +574,11 @@ extern inline bool input_get_joystick_axis_as_button_max(int axis);
 extern bool input_get_joystick_button(int button);
 
 extern void input_clear_touch(void);
+extern bool input_touch_get_state(int idx);
+extern void input_touch_get_point(int idx,int *x,int *y);
 extern void input_touch_event_up(int id);
 extern void input_touch_event_down(int id,int x,int y);
+extern void input_touch_event_move(int id,int x,int y);
 extern void input_touch_gui_get_position(int *x,int *y);
 extern void input_touch_gui_get_hilite_position(int *x,int *y);
 extern bool input_touch_gui_is_click_down(void);
