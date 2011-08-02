@@ -529,6 +529,7 @@ extern bool input_event_pump(void);
 extern void input_action_clear(void);
 extern void input_action_attach(char *attach_name,int action_index);
 extern bool input_check_action_same_attachment(int action_1_index,int action_2_index);
+extern void input_action_set_touch_trigger_state(int action_idx,bool down);
 extern bool input_action_get_state(int action_index);
 extern bool input_action_get_state_range(int start_action_index,int end_action_index);
 extern bool input_action_get_state_single(int action_index);

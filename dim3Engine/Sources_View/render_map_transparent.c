@@ -258,7 +258,7 @@ void render_transparent_mesh_normal(void)
 			glDrawElements(GL_TRIANGLE_FAN,poly->ptsz,GL_UNSIGNED_SHORT,(GLvoid*)poly->vbo.index_offset);
 		#endif
 		
-		view.count.poly++;
+		view.count.mesh_poly++;
 	}
 	
 		// if we setup a mesh, end the vbo
@@ -354,7 +354,7 @@ void render_transparent_mesh_shader(void)
 			glDrawElements(GL_TRIANGLE_FAN,poly->ptsz,GL_UNSIGNED_SHORT,(GLvoid*)poly->vbo.index_offset);
 		#endif
 		
-		view.count.poly++;
+		view.count.mesh_poly++;
 	}
 
 		// if we setup a mesh, end the vbo
@@ -435,7 +435,7 @@ void render_transparent_mesh_glow(void)
 			glDrawElements(GL_TRIANGLE_FAN,poly->ptsz,GL_UNSIGNED_SHORT,(GLvoid*)poly->vbo.index_offset);
 		#endif
 		
-		view.count.poly++;
+		view.count.mesh_poly++;
 	}
 	
 		// if we setup a mesh, end the vbo

@@ -385,6 +385,8 @@ void view_add_mesh_draw_list(int start_mesh_idx)
 
 		d=map_mesh_calculate_distance(mesh,&view.render->camera.pnt);
 		view_add_draw_list(view_render_type_mesh,n,d,0x0);
+
+		view.count.mesh++;
 	}
 }
 
@@ -445,6 +447,8 @@ void view_add_liquid_draw_list(int start_mesh_idx)
 
 		d=map_liquid_calculate_distance(liq,&view.render->camera.pnt);
 		view_add_draw_list(view_render_type_liquid,n,d,0x0);
+
+		view.count.liquid++;
 	}
 }
 
@@ -523,6 +527,8 @@ void view_setup_objects(int tick)
 
 		obj->draw.built_vertex_list=FALSE;
 		view_add_draw_list(view_render_type_object,n,obj->draw.draw_dist,flag);
+
+		view.count.model++;
 	
 			// setup model in view
 		
@@ -535,6 +541,7 @@ void view_setup_objects(int tick)
 			weap=weapon_find_current(obj);
 			if (weap!=NULL) {
 				model_draw_setup_weapon(obj,weap,FALSE,FALSE);
+				view.count.model++;
 			}
 		}
 	}
@@ -578,6 +585,8 @@ void view_setup_projectiles(int tick)
 			// projs share vertex list so we can't do the "built_vertex_list" optimization
 
 		view_add_draw_list(view_render_type_projectile,n,proj->draw.draw_dist,flag);
+
+		view.count.model++;
 		
 			// setup model in view
 			
@@ -618,6 +627,8 @@ void view_add_effect_draw_list(int tick)
 			
 		d=view_cull_distance_to_view_center(effect->pnt.x,effect->pnt.y,effect->pnt.z);
 		view_add_draw_list(view_render_type_effect,n,d,0x0);
+
+		view.count.effect++;
 	}
 }
 
@@ -664,6 +675,8 @@ void view_add_model_halo(model_draw *draw,int obj_idx)
 				// add the halo
 			
 			halo_draw_add(&pnt,obj_idx,halo->idx);
+
+			view.count.effect++;
 		}
 
 		halo++;

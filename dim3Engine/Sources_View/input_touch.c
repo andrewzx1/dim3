@@ -32,6 +32,7 @@ and can be sold or given away.
 #include "interface.h"
 
 extern view_type			view;
+extern iface_type			iface;
 extern setup_type			setup;
 
 #define max_touch_state		4		// supergumba move
@@ -66,6 +67,28 @@ void input_clear_touch(void)
 
 /* =======================================================
 
+      Virtual Buttons
+      
+======================================================= */
+
+void input_touch_to_virtual_button(d3pnt *pt,bool down)
+{
+	int							n;
+	iface_virtual_button_type	*button;
+
+	for (n=0;n!=max_virtual_button;n++) {
+		button=&iface.virtual_control.buttons[n];
+		if (!button->on) continue;
+
+		if ((pt->x<button->x) || (pt->x>(button->x+button->x_size)) || (pt->y<button->y) || (pt->y>(button->y+button->y_size))) continue;
+
+		input_action_set_touch_trigger_state(button->control_idx,down);
+		return;
+	}
+}
+
+/* =======================================================
+
       Handle Touch States
       
 ======================================================= */
@@ -92,6 +115,7 @@ void input_touch_state_add_up(int id)
 		if (state->on) {
 			if (state->id==id) {
 				state->on=FALSE;
+				input_touch_to_virtual_button(&state->pt,FALSE);
 				return;
 			}
 		}
@@ -110,6 +134,7 @@ void input_touch_state_add_down(int id,d3pnt *pt)
 	idx=-1;
 	
 		// if already in, then update
+		// the point
 		
 	for (n=0;n!=max_touch_state;n++) {
 	
@@ -117,7 +142,7 @@ void input_touch_state_add_down(int id,d3pnt *pt)
 			if (state->id==id) {
 				state->pt.x=pt->x;
 				state->pt.y=pt->y;
-				break;
+				return;
 			}
 		}
 		else {
@@ -128,6 +153,7 @@ void input_touch_state_add_down(int id,d3pnt *pt)
 	}
 	
 		// otherwise add it
+		// if there is room
 		
 	if (idx==-1) return;
 	
@@ -135,6 +161,8 @@ void input_touch_state_add_down(int id,d3pnt *pt)
 	touch_states[idx].id=id;
 	touch_states[idx].pt.x=pt->x;
 	touch_states[idx].pt.y=pt->y;
+
+	input_touch_to_virtual_button(&state->pt,TRUE);
 }
 
 /* =======================================================

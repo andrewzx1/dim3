@@ -134,7 +134,7 @@ void render_opaque_mesh_normal(void)
 			#endif
 			
 			poly++;
-			view.count.poly++;
+			view.count.mesh_poly++;
 		}
 		
 		view_unbind_mesh_liquid_vertex_object();
@@ -238,7 +238,7 @@ void render_opaque_mesh_shader(void)
 			#endif
 			
 			poly++;
-			view.count.poly++;
+			view.count.mesh_poly++;
 		}
 		
 		view_unbind_mesh_liquid_vertex_object();

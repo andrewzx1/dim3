@@ -127,6 +127,7 @@ void input_action_clear(void)
     
 	for (n=0;n!=256;n++) {
 		action->nitem=0;
+		action->touch_trigger=FALSE;
 		action->still_down=FALSE;
 		action++;
 	}
@@ -492,7 +493,18 @@ bool input_check_action_same_attachment(int action_1_index,int action_2_index)
 
 /* =======================================================
 
-      Button States
+      Action Touch Changes
+      
+======================================================= */
+
+void input_action_set_touch_trigger_state(int action_idx,bool down)
+{
+	input_actions[action_idx].touch_trigger=down;
+}
+
+/* =======================================================
+
+      Action States
       
 ======================================================= */
 
@@ -503,6 +515,13 @@ bool input_action_get_state(int action_index)
 	input_action_item_type  *item;
 
 	action=&input_actions[action_index];
+
+		// touches send commands directly
+		// to this structure
+
+	if (action->touch_trigger) return(TRUE);
+
+		// check other inputs
 	
 	nitem=action->nitem;
 	item=action->items;

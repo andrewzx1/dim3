@@ -123,9 +123,11 @@ bool liquid_is_transparent(map_liquid_type *liq)
 
 bool liquid_render_liquid_create_vertex(map_liquid_type *liq,float uv_shift,bool is_overaly)
 {
-	int				n,k,div,div_count,lft,rgt,top,bot;
-	float			fy,gx,gy,gx2,gy2,gx_add,gy_add,
-					f_tick,f_stamp_size;
+	int				n,k,div,div_count,lft,rgt,top,bot,
+					top_add,lft_add;
+	float			fy,f_tick,f_stamp_size,
+					gx,gy,gx2,gy2,org_gx2,org_gy2,gx_add,gy_add,
+					lmap_gx,lmap_gy,lmap_gx2,lmap_gy2,org_lmap_gx2,org_lmap_gy2,lmap_gx_add,lmap_gy_add;
 	float			*vertex_ptr,*vl,*uv,*uv2,*ct,*cn,*cl;
 	bool			shader_on;
 	
@@ -207,29 +209,73 @@ bool liquid_render_liquid_create_vertex(map_liquid_type *liq,float uv_shift,bool
 
 	fy=((float)liq->y)-liquid_tide_get_high(liq);
 
-		// get div count
+		// get div count and setup
+		// the division calculations
 
 	lft=liq->lft;
 	rgt=liq->rgt;
 	top=liq->top;
 	bot=liq->bot;
 
+	org_gx2=gx2;
+	org_gy2=gy2;
+
+	lmap_gx=liq->lmap_uv.x_offset;
+	lmap_gx2=org_lmap_gx2=liq->lmap_uv.x_offset+liq->lmap_uv.x_size;
+
+	lmap_gy=liq->lmap_uv.y_offset;
+	lmap_gy2=org_lmap_gy2=liq->lmap_uv.y_offset+liq->lmap_uv.y_size;
+
 	div_count=liquid_wave_get_divisions(liq);
+
+	if (liq->wave.on) {
+
+		lft_add=rgt-lft;
+		gx_add=gx2-gx;
+		lmap_gx_add=lmap_gx2-lmap_gx;
+
+		top_add=bot-top;
+		gy_add=gy2-gy;
+		lmap_gy_add=lmap_gy2-lmap_gy;
+
+		if (liq->wave.dir_north_south) {
+			top_add=liq->wave.length;
+			gy_add=(gy2-gy)/((float)div_count);
+			lmap_gy_add=(lmap_gy2-lmap_gy)/((float)div_count);
+		}
+		else {
+			lft_add=liq->wave.length;
+			gx_add=(gx2-gx)/((float)div_count);
+			lmap_gx_add=(lmap_gx2-lmap_gx)/((float)div_count);
+		}
+	}
 
 		// draw the divisions
 
 	for (div=0;div!=div_count;div++) {
 
-		// divisions
+			// divisions
 
 		if (liq->wave.on) {
 			if (liq->wave.dir_north_south) {
-				bot=top+liq->wave.length;
+				bot=top+top_add;
 				if (bot>liq->bot) bot=liq->bot;
+
+				gy2=gy+gy_add;
+				if (gy2>org_gy2) gy2=org_gy2;
+
+				lmap_gy2=lmap_gy+lmap_gy_add;
+				if (lmap_gy2>org_lmap_gy2) lmap_gy2=org_lmap_gy2;
 			}
 			else {
-				rgt=lft+liq->wave.length;
+				rgt=lft+lft_add;
 				if (rgt>liq->rgt) rgt=liq->rgt;
+
+				gx2=gx+gx_add;
+				if (gx2>org_gx2) gx2=org_gx2;
+
+				lmap_gx2=lmap_gx+lmap_gx_add;
+				if (lmap_gx2>org_lmap_gx2) lmap_gx2=org_lmap_gx2;
 			}
 		}
 
@@ -242,8 +288,8 @@ bool liquid_render_liquid_create_vertex(map_liquid_type *liq,float uv_shift,bool
 		*uv++=gx;
 		*uv++=gy;
 
-		*uv2++=liq->lmap_uv.x_offset;
-		*uv2++=liq->lmap_uv.y_offset;
+		*uv2++=lmap_gx;
+		*uv2++=lmap_gy;
 
 			// right-top
 
@@ -254,8 +300,8 @@ bool liquid_render_liquid_create_vertex(map_liquid_type *liq,float uv_shift,bool
 		*uv++=gx2;
 		*uv++=gy;
 
-		*uv2++=liq->lmap_uv.x_offset+liq->lmap_uv.x_size;
-		*uv2++=liq->lmap_uv.y_offset;
+		*uv2++=lmap_gx2;
+		*uv2++=lmap_gy;
 
 			// left-bottom
 
@@ -266,8 +312,8 @@ bool liquid_render_liquid_create_vertex(map_liquid_type *liq,float uv_shift,bool
 		*uv++=gx;
 		*uv++=gy2;
 
-		*uv2++=liq->lmap_uv.x_offset;
-		*uv2++=liq->lmap_uv.y_offset+liq->lmap_uv.y_size;
+		*uv2++=lmap_gx;
+		*uv2++=lmap_gy2;
 
 			// right-bottom
 
@@ -278,14 +324,12 @@ bool liquid_render_liquid_create_vertex(map_liquid_type *liq,float uv_shift,bool
 		*uv++=gx2;
 		*uv++=gy2;
 
-		*uv2++=liq->lmap_uv.x_offset+liq->lmap_uv.x_size;
-		*uv2++=liq->lmap_uv.y_offset+liq->lmap_uv.y_size;
+		*uv2++=lmap_gx2;
+		*uv2++=lmap_gy2;
 
 			// no shaders use colors
 
 		if (!shader_on) {
-			cl=vertex_ptr+(liq->vbo.count*(3+2+2));
-
 			gl_lights_calc_color_light_cache(liq->light_cache.count,liq->light_cache.indexes,FALSE,(double)lft,fy,(double)top,cl);
 			gl_lights_calc_color_light_cache(liq->light_cache.count,liq->light_cache.indexes,FALSE,(double)rgt,fy,(double)top,(cl+4));
 			gl_lights_calc_color_light_cache(liq->light_cache.count,liq->light_cache.indexes,FALSE,(double)lft,fy,(double)bot,(cl+8));
@@ -314,8 +358,16 @@ bool liquid_render_liquid_create_vertex(map_liquid_type *liq,float uv_shift,bool
 			// division changes
 
 		if (liq->wave.on) {
-			top=bot;
-			lft=rgt;
+			if (liq->wave.dir_north_south) {
+				top=bot;
+				gy=gy2;
+				lmap_gy=lmap_gy2;
+			}
+			else {
+				lft=rgt;
+				gx=gx2;
+				lmap_gx=lmap_gx2;
+			}
 		}
 	}
 
@@ -504,9 +556,9 @@ void liquid_render_liquid(map_liquid_type *liq)
 		liquid_render_liquid_fixed(liq,liq->txt_idx,liq->lmap_txt_idx,TRUE);
 	}
 	
-		// count the liquid
+		// count the liquid polys
 		
-	view.count.liquid++;
+	view.count.liquid_poly+=(liq->vbo.count>>2);
 
 		// draw the overlay?
 
@@ -520,6 +572,8 @@ void liquid_render_liquid(map_liquid_type *liq)
 	}
 
 		// draw the overlay
+
+	view.count.liquid_poly+=(liq->vbo.count>>2);
 
 	if (!liquid_render_liquid_create_vertex(liq,(uv_shift*0.5f),TRUE)) return;
 

@@ -251,7 +251,7 @@ bool view_map_vbo_initialize(void)
 			vertex_cnt+=(index_cnt*4);			// colors
 		}
 
-			// cretae the VBO
+			// create the VBO
 
 		mesh->vbo.count=index_cnt;
 		view_create_mesh_liquid_vertex_object(&mesh->vbo,vertex_cnt,index_cnt);

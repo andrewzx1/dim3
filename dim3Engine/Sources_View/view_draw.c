@@ -409,11 +409,15 @@ void view_draw(void)
 	view_calculate_bump(obj);
 	
 		// reset view counts
-		
-	view.count.poly=0;
+	
+	view.count.mesh=0;
+	view.count.mesh_poly=0;
 	view.count.liquid=0;
+	view.count.liquid_poly=0;
 	view.count.model=0;
+	view.count.model_poly=0;
 	view.count.shadow=0;
+	view.count.shadow_poly=0;
 	view.count.effect=0;
 	
 		// build the scene

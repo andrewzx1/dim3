@@ -591,7 +591,7 @@ void hud_metrics_draw_single(int y,char *title,char *data)
 
 	col.r=col.g=col.b=1.0f;
 	
-	x=(int)(((float)iface.scale_x)*0.1f);
+	x=(int)(((float)iface.scale_x)*0.08f);
 
 	gl_text_draw(x,y,title,tx_right,FALSE,&col,1.0f);
 	gl_text_draw((x+5),y,data,tx_left,FALSE,&col,1.0f);
@@ -599,23 +599,14 @@ void hud_metrics_draw_single(int y,char *title,char *data)
 
 void hud_metrics_draw(void)
 {
-	int					y,high,txt_sz,rgt,bot;
+	int					y,high,txt_sz;
 	char				str[256],str2[256];
-	d3col				col;
 	obj_type			*obj;
 
 		// text sizes
 
-	txt_sz=(int)(((float)iface.scale_x)*0.02f);
-	high=gl_text_get_char_height(txt_sz);
-
-		// background
-
-	rgt=(((int)(((float)iface.scale_x)*0.1f))*2)+5;
-	bot=12+(9*high);
-
-	col.r=col.g=col.b=0.0f;
-	view_draw_next_vertex_object_2D_color_quad(&col,0.5f,5,rgt,5,bot);
+	txt_sz=18;
+	high=gl_text_get_char_height(txt_sz)-1;
 
 		// start text
 		
@@ -649,23 +640,30 @@ void hud_metrics_draw(void)
 
 		// meshes and polys and mesh shadows
 
-	sprintf(str,"%d",view.count.poly);
+	sprintf(str,"%d.%d",view.count.mesh,view.count.mesh_poly);
 
-	hud_metrics_draw_single(y,"Polys:",str);
+	hud_metrics_draw_single(y,"Meshes:",str);
 	y+=high;
 
 		// liquids
 
-	sprintf(str,"%d",view.count.liquid);
+	sprintf(str,"%d.%d",view.count.liquid,view.count.liquid_poly);
 
 	hud_metrics_draw_single(y,"Liquids:",str);
 	y+=high;
 
-		// models and model shadows
+		// models
 
-	sprintf(str,"%d %d",view.count.model,view.count.shadow);
+	sprintf(str,"%d.%d",view.count.model,view.count.model_poly);
 
 	hud_metrics_draw_single(y,"Models:",str);
+	y+=high;
+
+		// shadows
+
+	sprintf(str,"%d.%d",view.count.shadow,view.count.shadow_poly);
+
+	hud_metrics_draw_single(y,"Shadows:",str);
 	y+=high;
 
 		// effects
