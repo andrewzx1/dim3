@@ -77,12 +77,9 @@ void input_initialize(bool in_window)
 	SDL_EventState(SDL_VIDEORESIZE,SDL_IGNORE);
 	SDL_EventState(SDL_USEREVENT,SDL_IGNORE);
 
-		// initialize mouse
+		// initialize mouse and joysticks,
 
 	input_mouse_initialize();
-
-		// initialize joysticks
-
 	input_joystick_initialize();
 }
 
@@ -362,7 +359,7 @@ bool input_event_pump(void)
 
 		#ifdef D3_OS_IPHONE
 			case SDL_FINGERDOWN:
-				input_touch_event_down(event.tfinger.fingerId,event.tfinger.x,event.tfinger.y);
+				input_touch_event_down(event.tfinger.touchId,event.tfinger.fingerId,event.tfinger.x,event.tfinger.y);
 				break;
 					
 			case SDL_FINGERUP:
@@ -370,7 +367,7 @@ bool input_event_pump(void)
 				break;
 				
 			case SDL_FINGERMOTION:
-				input_touch_event_move(event.tfinger.fingerId,event.tfinger.x,event.tfinger.y);
+				input_touch_event_move(event.tfinger.touchId,event.tfinger.fingerId,event.tfinger.x,event.tfinger.y);
 				break;
 		#endif
 

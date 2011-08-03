@@ -144,7 +144,7 @@ bool gl_initialize(int screen_wid,int screen_high,int fsaa_mode,bool reset,char 
 
 #ifdef D3_SDL_1_3
 	sdl_flags=SDL_WINDOW_OPENGL|SDL_WINDOW_SHOWN;
-	if (!gl_in_window_mode()) sdl_flags|=SDL_WINDOW_FULLSCREEN;
+	if (!gl_in_window_mode()) sdl_flags|=(SDL_WINDOW_FULLSCREEN|SDL_WINDOW_BORDERLESS);
 	
 	sdl_wind=SDL_CreateWindow("dim3",SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,setup.screen.x_sz,setup.screen.y_sz,sdl_flags);
 	if (sdl_wind==NULL) {

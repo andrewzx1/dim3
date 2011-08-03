@@ -56,14 +56,14 @@ and can be sold or given away.
 #include <zlib.h>
 
 // supergumba -- temporary until only 1.3 remains
-#define SDL_1_3					1
+#define D3_SDL_1_3					1
 
 //
 // os flags
 //
 
-#define D3_OS_IPHONE			1
-#define D3_OPENGL_ES			1
+#define D3_OS_IPHONE				1
+#define D3_OPENGL_ES				1
 
 //
 // OpenGL ES re-defines
