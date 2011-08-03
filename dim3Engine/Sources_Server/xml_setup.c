@@ -258,7 +258,7 @@ bool setup_xml_read(void)
 	if (!file_paths_app_data_exist(&setup.file_path_setup,path,"Settings","Setup","xml")) {
 		file_paths_data(&setup.file_path_setup,path,"Settings","Setup","xml");
 	}
-
+	
 	if (!setup_xml_read_path(path)) return(FALSE);
 
 		// fix resolution if no switch is on

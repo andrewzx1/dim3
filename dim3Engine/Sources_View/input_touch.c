@@ -49,6 +49,21 @@ touch_state_type			touch_states[max_touch_state];
 
 /* =======================================================
 
+      Touch Stubs
+      
+======================================================= */
+
+#ifndef D3_OS_IPHONE
+
+void input_clear_touch(void) {}
+void input_touch_event_up(int finger_id) {}
+void input_touch_event_down(int touch_id,int finger_id,int x,int y) {}
+void input_touch_event_move(int touch_id,int finger_id,int x,int y) {}
+
+#else
+
+/* =======================================================
+
       Touch Clear
       
 ======================================================= */
@@ -75,7 +90,7 @@ void input_touch_to_virtual_button(d3pnt *pt,bool down)
 {
 	int							n;
 	iface_virtual_button_type	*button;
-
+	
 	for (n=0;n!=max_virtual_button;n++) {
 		button=&iface.virtual_control.buttons[n];
 		if (!button->on) continue;
@@ -157,10 +172,12 @@ void input_touch_state_add_down(int id,d3pnt *pt)
 		
 	if (idx==-1) return;
 	
-	touch_states[idx].on=TRUE;
-	touch_states[idx].id=id;
-	touch_states[idx].pt.x=pt->x;
-	touch_states[idx].pt.y=pt->y;
+	state=&touch_states[idx];
+	
+	state->on=TRUE;
+	state->id=id;
+	state->pt.x=pt->x;
+	state->pt.y=pt->y;
 
 	input_touch_to_virtual_button(&state->pt,TRUE);
 }
@@ -171,19 +188,33 @@ void input_touch_state_add_down(int id,d3pnt *pt)
       
 ======================================================= */
 
-void input_touch_event_up(int id)
+void input_touch_event_up(int finger_id)
 {
+	input_touch_state_add_up(finger_id);
+
 	touch_gui_click=FALSE;
 }
 
-void input_touch_event_down(int id,int x,int y)
+void input_touch_scrub_point(d3pnt *pt,int touch_id,int x,int y)
+{
+	float				fx,fy;
+	SDL_Touch			*touch;
+	
+	touch=SDL_GetTouch(touch_id);
+	
+	fx=((float)y)/((float)touch->yres);
+	pt->x=(int)(fx*((float)view.desktop.high));
+	
+	fy=((float)x)/((float)touch->xres);
+	pt->y=view.desktop.wid-(int)(fy*((float)view.desktop.wid));
+}
+
+void input_touch_event_down(int touch_id,int finger_id,int x,int y)
 {
 	d3pnt				pt;
 	
-	pt.x=(y*view.desktop.high)/0x7FFF;
-	pt.y=view.desktop.wid-((x*view.desktop.wid)/0x7FFF);
-
-	input_touch_state_add_down(id,&pt);
+	input_touch_scrub_point(&pt,touch_id,x,y);
+	input_touch_state_add_down(finger_id,&pt);
 
 	touch_gui_pnt.x=pt.x;
 	touch_gui_pnt.y=pt.y;
@@ -191,14 +222,12 @@ void input_touch_event_down(int id,int x,int y)
 	touch_gui_click=TRUE;
 }
 
-void input_touch_event_move(int id,int x,int y)
+void input_touch_event_move(int touch_id,int finger_id,int x,int y)
 {
 	d3pnt				pt;
 	
-	pt.x=(y*view.desktop.high)/0x7FFF;
-	pt.y=view.desktop.wid-((x*view.desktop.wid)/0x7FFF);
-
-	input_touch_state_add_down(id,&pt);
+	input_touch_scrub_point(&pt,touch_id,x,y);
+	input_touch_state_add_down(finger_id,&pt);
 }
 
 /* =======================================================
@@ -228,4 +257,4 @@ bool input_touch_gui_is_click_down(void)
 	return(touch_gui_click);
 }
 
-
+#endif
