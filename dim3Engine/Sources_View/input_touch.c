@@ -55,12 +55,39 @@ touch_state_type			touch_states[max_touch_state];
 
 #ifndef D3_OS_IPHONE
 
+void input_touch_initialize(void) {}
+void input_touch_shutdown(void) {}
 void input_clear_touch(void) {}
 void input_touch_event_up(int finger_id) {}
 void input_touch_event_down(int touch_id,int finger_id,int x,int y) {}
 void input_touch_event_move(int touch_id,int finger_id,int x,int y) {}
 
 #else
+
+/* =======================================================
+
+      Joystick Initialize
+      
+======================================================= */
+
+void input_touch_initialize(void)
+{
+	int							n;
+	iface_virtual_stick_type	*stick;
+
+	stick=&iface.virtual_control.sticks[n];
+
+	for (n=0;n!=max_virtual_stick;n++) {
+		stick->touch_x=0.0f;
+		stick->touch_y=0.0f;
+
+		sticks++;
+	}
+}
+
+void input_touch_shutdown(void)
+{
+}
 
 /* =======================================================
 

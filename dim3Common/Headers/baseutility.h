@@ -701,7 +701,8 @@ typedef struct		{
 typedef struct		{
 						int								x,y,x_size,y_size,
 														outer_image_idx,inner_image_idx;
-						bool							on;
+						float							touch_x,touch_y;
+						bool							on,use_bitmap;
 						char							outer_bitmap_name[file_str_len],
 														inner_bitmap_name[file_str_len];
 						d3col							color;
@@ -710,7 +711,7 @@ typedef struct		{
 typedef struct		{
 						int								x,y,x_size,y_size,control_idx,
 														up_image_idx,down_image_idx;
-						bool							on;
+						bool							on,use_bitmap;
 						char							up_bitmap_name[file_str_len],
 														down_bitmap_name[file_str_len];
 						d3col							color;

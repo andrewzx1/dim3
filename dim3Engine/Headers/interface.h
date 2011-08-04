@@ -574,6 +574,8 @@ extern inline bool input_get_joystick_axis_as_button_min(int axis);
 extern inline bool input_get_joystick_axis_as_button_max(int axis);
 extern bool input_get_joystick_button(int button);
 
+extern void input_touch_initialize(void);
+extern void input_touch_shutdown(void);
 extern void input_clear_touch(void);
 extern bool input_touch_get_state(int idx);
 extern void input_touch_get_point(int idx,int *x,int *y);
@@ -634,7 +636,7 @@ extern void gl_lights_build_model_light_list(model_type *mdl,model_draw *draw,vi
 extern void view_create_vertex_objects(void);
 extern void view_dispose_vertex_objects(void);
 
-extern void view_create_mesh_liquid_vertex_object(map_vbo_type *vbo,int vertex_count,int index_count);
+extern void view_create_mesh_liquid_vertex_object(map_vbo_type *vbo,int vertex_data_count,int vertex_count,int index_count);
 extern void view_dispose_mesh_liquid_vertex_object(map_vbo_type *vbo);
 extern inline void view_bind_mesh_liquid_vertex_object(map_vbo_type *vbo);
 extern inline float* view_map_mesh_liquid_vertex_object(map_vbo_type *vbo);

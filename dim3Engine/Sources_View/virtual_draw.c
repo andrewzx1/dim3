@@ -48,7 +48,35 @@ extern render_info_type		render_info;
 
 void virtual_stick_draw(iface_virtual_stick_type *stick)
 {
+	int					hx,hy,lft,rgt,top,bot;
+	float				fx,fy;
+	bitmap_type			*bitmap;
 
+	if (!stick->use_bitmap) return;
+	
+		// outer stick
+
+	rgt=stick->x+stick->x_size;
+	bot=stick->y+stick->y_size;
+	bitmap=view_images_get_bitmap(stick->outer_image_idx);
+	
+	view_draw_next_vertex_object_2D_texture_quad(bitmap->gl_id,&stick->color,1.0f,stick->x,rgt,stick->y,bot,0.0f,1.0f,0.0f,1.0f);
+
+		// inner stick
+
+	hx=stick->x_size>>1;
+	hy=stick->y_size>>1;
+	
+	fx=((float)hx)*stick->touch_x;
+	fy=((float)hy)*stick->touch_y;
+
+	lft=(stick->x+hx)+(int)fx;
+	rgt=lft+(stick->x_size>>2);
+	top=(stick->y+hy)+(int)fy;
+	bot=top+(stick->y_size>>2);
+	bitmap=view_images_get_bitmap(stick->inner_image_idx);
+	
+	view_draw_next_vertex_object_2D_texture_quad(bitmap->gl_id,&stick->color,1.0f,lft,rgt,top,bot,0.0f,1.0f,0.0f,1.0f);
 }
 
 /* =======================================================
@@ -61,6 +89,8 @@ void virtual_button_draw(iface_virtual_button_type *button)
 {
 	int					rgt,bot;
 	bitmap_type			*bitmap;
+
+	if (!button->use_bitmap) return;
 	
 	rgt=button->x+button->x_size;
 	bot=button->y+button->y_size;
@@ -102,29 +132,4 @@ void virtual_control_draw(void)
 		
 	glColor4f(0.0f,0.0f,0.0f,1.0f);
 }
-
-
-
-/* =======================================================
-
-      Click Virtual Controls
-      
-======================================================= */
-
-/*
-void virtual_control_click(void)
-{
-	int				n;
-
-		// check buttons
-	
-	for (n=0;n!=max_virtual_button;n++) {
-		if (iface.virtual_control.buttons[n].on) virtual_button_draw(&iface.virtual_control.buttons[n]);
-	}
-
-
-
-}
-*/
-
 
