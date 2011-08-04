@@ -51,7 +51,11 @@ void draw_background_single(map_background_layer_type *layer)
 	
 		// get y scaling
 		
+#ifndef D3_OS_IPHONE
 	gy_high=(((float)setup.screen.y_sz)/((float)setup.screen.x_sz))*layer->y_fact;
+#else
+	gy_high=(((float)setup.screen.x_sz)/((float)setup.screen.y_sz))*layer->y_fact;
+#endif
 
 		// get scrolling
 		

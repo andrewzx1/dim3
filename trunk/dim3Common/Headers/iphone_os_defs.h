@@ -100,6 +100,7 @@ and can be sold or given away.
 #define GL_FRAMEBUFFER_COMPLETE_EXT		GL_FRAMEBUFFER_COMPLETE_OES
 
 #define glOrtho							glOrthof
+#define glFrustum						glFrustumf
 
 //
 // os specific keys
