@@ -77,18 +77,23 @@ void view_dispose_vertex_objects(void)
       
 ======================================================= */
 
-void view_create_mesh_liquid_vertex_object(map_vbo_type *vbo,int vertex_count,int index_count)
+void view_create_mesh_liquid_vertex_object(map_vbo_type *vbo,int vertex_data_count,int vertex_count,int index_count)
 {
 	glGenBuffers(1,&vbo->vertex);
 	glGenBuffers(1,&vbo->index);
 
 		// init the vertex buffer
 
+	vbo->vertex_count=vertex_count;
+	vbo->vertex_data_count=vertex_data_count;
+
 	glBindBuffer(GL_ARRAY_BUFFER,vbo->vertex);
-	glBufferData(GL_ARRAY_BUFFER,(vertex_count*sizeof(float)),NULL,GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER,(vertex_data_count*sizeof(float)),NULL,GL_DYNAMIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER,0);
 
 		// init the index buffer
+
+	vbo->index_count=index_count;
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,vbo->index);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER,(index_count*sizeof(unsigned short)),NULL,GL_STATIC_DRAW);

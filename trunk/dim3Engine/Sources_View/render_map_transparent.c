@@ -217,12 +217,12 @@ void render_transparent_mesh_normal(void)
 			glVertexPointer(3,GL_FLOAT,0,(GLvoid*)0);
 
 			glClientActiveTexture(GL_TEXTURE1);
-			glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)((mesh->vbo.count*3)*sizeof(float)));
+			glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)((mesh->vbo.vertex_count*3)*sizeof(float)));
 
 			glClientActiveTexture(GL_TEXTURE0);
-			glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)((mesh->vbo.count*(3+2))*sizeof(float)));
+			glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)((mesh->vbo.vertex_count*(3+2))*sizeof(float)));
 
-			glColorPointer(4,GL_FLOAT,0,(GLvoid*)((mesh->vbo.count*(3+2+2))*sizeof(float)));
+			glColorPointer(4,GL_FLOAT,0,(GLvoid*)((mesh->vbo.vertex_count*(3+2+2))*sizeof(float)));
 		}
 
 			// textures
@@ -318,15 +318,15 @@ void render_transparent_mesh_shader(void)
 			glVertexPointer(3,GL_FLOAT,0,(GLvoid*)0);
 
 			glClientActiveTexture(GL_TEXTURE1);
-			glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)((mesh->vbo.count*(3+2))*sizeof(float)));
+			glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)((mesh->vbo.vertex_count*(3+2))*sizeof(float)));
 		
 			glClientActiveTexture(GL_TEXTURE0);
-			glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)((mesh->vbo.count*3)*sizeof(float)));
+			glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)((mesh->vbo.vertex_count*3)*sizeof(float)));
 			
 			gl_shader_draw_reset_normal_tangent_attrib();
 			
-			tangent_offset=(mesh->vbo.count*(3+2+2))*sizeof(float);
-			normal_offset=(mesh->vbo.count*(3+3+2+2))*sizeof(float);
+			tangent_offset=(mesh->vbo.vertex_count*(3+2+2))*sizeof(float);
+			normal_offset=(mesh->vbo.vertex_count*(3+3+2+2))*sizeof(float);
 		}
 		
 			// textures

@@ -77,14 +77,16 @@ void input_initialize(bool in_window)
 	SDL_EventState(SDL_VIDEORESIZE,SDL_IGNORE);
 	SDL_EventState(SDL_USEREVENT,SDL_IGNORE);
 
-		// initialize mouse and joysticks,
+		// initialize mouse, joysticks, and touch
 
 	input_mouse_initialize();
 	input_joystick_initialize();
+	input_touch_initialize();
 }
 
 void input_shutdown(void)
 {
+	input_touch_shutdown();
 	input_joystick_shutdown();
 	input_mouse_shutdown();
 }

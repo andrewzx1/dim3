@@ -55,7 +55,7 @@ bool view_map_vbo_initialize_mesh(map_mesh_type *mesh)
 	
 		// setup vertex pointer
 
-	vertex_cnt=mesh->vbo.count;
+	vertex_cnt=mesh->vbo.vertex_count;
 
 	view_bind_mesh_liquid_vertex_object(&mesh->vbo);
 	vertex_ptr=view_map_mesh_liquid_vertex_object(&mesh->vbo);
@@ -185,7 +185,8 @@ bool view_map_vbo_initialize_mesh(map_mesh_type *mesh)
 
 bool view_map_vbo_initialize_liquid(map_liquid_type *liq)
 {
-	int				n,idx;
+	int				n,idx,idx_add=0;
+	int				trig_offset_idx[4]={0,2,1,3};
 	unsigned short	*index_ptr;
 
 		// only setup indexes for liquids
@@ -196,10 +197,16 @@ bool view_map_vbo_initialize_liquid(map_liquid_type *liq)
 	if (index_ptr==NULL) return(FALSE);
 
 	idx=0;
+	idx_add=0;
 
-	for (n=0;n!=liq->vbo.count;n++) {
-		*index_ptr++=(unsigned short)idx;
-		idx++;					// supergumba -- eventually share vertexes here
+	for (n=0;n!=liq->vbo.index_count;n++) {
+		*index_ptr++=(unsigned short)(idx_add+trig_offset_idx[idx]);
+
+		idx++;
+		if (idx==4) {
+			idx=0;
+			idx_add+=2;
+		}
 	}
 
 	view_unmap_mesh_liquid_index_object();
@@ -216,7 +223,7 @@ bool view_map_vbo_initialize_liquid(map_liquid_type *liq)
 
 bool view_map_vbo_initialize(void)
 {
-	int					n,k,vertex_cnt,index_cnt,
+	int					n,k,vertex_data_cnt,vertex_cnt,index_cnt,
 						liq_div_count;
 	bool				shader_on;
 	map_mesh_type		*mesh;
@@ -243,18 +250,19 @@ bool view_map_vbo_initialize(void)
 
 			// get vertex count
 
-		vertex_cnt=index_cnt*(3+2+2);
+		vertex_cnt=index_cnt;
+
+		vertex_data_cnt=vertex_cnt*(3+2+2);
 		if (shader_on) {
-			vertex_cnt+=(index_cnt*(3+3));		// normals and tangents
+			vertex_data_cnt+=(vertex_cnt*(3+3));		// normals and tangents
 		}
 		else {
-			vertex_cnt+=(index_cnt*4);			// colors
+			vertex_data_cnt+=(vertex_cnt*4);			// colors
 		}
 
 			// create the VBO
 
-		mesh->vbo.count=index_cnt;
-		view_create_mesh_liquid_vertex_object(&mesh->vbo,vertex_cnt,index_cnt);
+		view_create_mesh_liquid_vertex_object(&mesh->vbo,vertex_data_cnt,vertex_cnt,index_cnt);
 
 		if (!view_map_vbo_initialize_mesh(mesh)) return(FALSE);
 		
@@ -269,22 +277,25 @@ bool view_map_vbo_initialize(void)
 	for (n=0;n!=map.liquid.nliquid;n++) {
 
 			// liquids can be broken up for waves,
-			// so get the div count * 4 for vertex count
+			// with 2 vertexes per wave and 4 indexes
+			// to draw the triangles
 
-		liq_div_count=liquid_wave_get_divisions(liq)*4;
+		liq_div_count=liquid_wave_get_divisions(liq);
 
-		vertex_cnt=liq_div_count*(3+2+2);
+		index_cnt=liq_div_count*4;
+		vertex_cnt=(liq_div_count+1)*2;
+
+		vertex_data_cnt=vertex_cnt*(3+2+2);
 		if (shader_on) {
-			vertex_cnt+=(liq_div_count*(3+3));					// normals and tangents
+			vertex_data_cnt+=(vertex_cnt*(3+3));					// normals and tangents
 		}
 		else {
-			vertex_cnt+=(liq_div_count*3);						// colors
+			vertex_data_cnt+=(vertex_cnt*3);						// colors
 		}
 
 			// create the liquid
 
-		liq->vbo.count=liq_div_count;
-		view_create_mesh_liquid_vertex_object(&liq->vbo,vertex_cnt,liq_div_count);
+		view_create_mesh_liquid_vertex_object(&liq->vbo,vertex_data_cnt,vertex_cnt,index_cnt);
 
 			// initialize the liquid
 
@@ -356,8 +367,8 @@ void view_map_vbo_rebuild_mesh(map_mesh_type *mesh)
 		pv=vertex_ptr;
 		
 		if (shader_on) {
-			pt=vertex_ptr+(mesh->vbo.count*(3+2+2));
-			pn=vertex_ptr+(mesh->vbo.count*(3+3+2+2));
+			pt=vertex_ptr+(mesh->vbo.vertex_count*(3+2+2));
+			pn=vertex_ptr+(mesh->vbo.vertex_count*(3+3+2+2));
 		}
 
 		poly=mesh->polys;
@@ -405,7 +416,7 @@ void view_map_vbo_rebuild_mesh(map_mesh_type *mesh)
 
 			// only shift main UVs (not light mapped ones)
 
-		pp=vertex_ptr+(mesh->vbo.count*3);
+		pp=vertex_ptr+(mesh->vbo.vertex_count*3);
 		
 		poly=mesh->polys;
 
@@ -493,7 +504,7 @@ void view_map_vbo_rebuild_mesh(map_mesh_type *mesh)
 				if (vertex_ptr==NULL) return;
 			}
 
-			pc=vertex_ptr+(mesh->vbo.count*(3+2+2));
+			pc=vertex_ptr+(mesh->vbo.vertex_count*(3+2+2));
 
 			poly=mesh->polys;
 			
