@@ -46,7 +46,7 @@ void render_model_create_color_vertexes(model_type *mdl,int mesh_mask,model_draw
 {
 	int				n,k;
 	float			fx,fy,fz;
-	float			*cp,*vp;
+	float			*vp,*cp;
 	d3fpnt			cnt;
 	d3col			col;
 	matrix_type		mat;
@@ -119,7 +119,7 @@ void render_model_create_color_vertexes(model_type *mdl,int mesh_mask,model_draw
 		if (!draw->no_rot.on) {
 
 			for (k=0;k!=mesh->nvertex;k++) {
-				gl_lights_calc_color_light_cache(draw->light_cache.count,draw->light_cache.indexes,FALSE,(double)*vp,(double)*(vp+1),(double)*(vp+2),cp);
+				gl_lights_calc_color_light_cache_float(draw->light_cache.count,draw->light_cache.indexes,FALSE,(double)*vp,(double)*(vp+1),(double)*(vp+2),cp);
 				cp+=3;
 				vp+=3;
 			}
@@ -138,7 +138,7 @@ void render_model_create_color_vertexes(model_type *mdl,int mesh_mask,model_draw
 				fz=(*vp++)-cnt.z;
 				matrix_vertex_multiply(&mat,&fx,&fy,&fz);
 				
-				gl_lights_calc_color_light_cache(draw->light_cache.count,draw->light_cache.indexes,FALSE,(double)(fx+cnt.x),(double)(fy+cnt.y),(double)(fz+cnt.z),cp);
+				gl_lights_calc_color_light_cache_float(draw->light_cache.count,draw->light_cache.indexes,FALSE,(double)(fx+cnt.x),(double)(fy+cnt.y),(double)(fz+cnt.z),cp);
 				cp+=3;
 			}
 		}
@@ -186,19 +186,20 @@ void render_model_create_normal_vertexes(model_type *mdl,int mesh_mask,model_dra
       
 ======================================================= */
 
-void render_model_vertex_object_no_shader(model_type *mdl,int mesh_idx,model_draw *draw,float *vertex_ptr)
+void render_model_vertex_object_no_shader(model_type *mdl,int mesh_idx,model_draw *draw,unsigned char *vertex_ptr)
 {
 	int					n,k,offset;
-	float				*gx,*gy,*vp,*cp,*vl,*ul,*cl,
-						*vp_start,*cp_start;
+	float				*gx,*gy,*vp,*vl,*ul,
+						*vp_start,*cp,*cp_start;
+	unsigned char		*cl;
 	model_trig_type		*trig;
 	model_mesh_type		*mesh;
 	
 	mesh=&mdl->meshes[mesh_idx];
 	
-	vl=vertex_ptr;
-	ul=vertex_ptr+((mesh->ntrig*3)*3);
-	cl=vertex_ptr+((mesh->ntrig*3)*(3+2));
+	vl=(float*)vertex_ptr;
+	ul=(float*)(vertex_ptr+(((mesh->ntrig*3)*3)*sizeof(float)));
+	cl=vertex_ptr+(((mesh->ntrig*3)*(3+2))*sizeof(float));
 
 	vp_start=draw->setup.mesh_arrays[mesh_idx].gl_vertex_array;
 	cp_start=draw->setup.mesh_arrays[mesh_idx].gl_color_array;
@@ -223,22 +224,23 @@ void render_model_vertex_object_no_shader(model_type *mdl,int mesh_idx,model_dra
 			*ul++=*gx++;
 			*ul++=*gy++;
 
-			*cl++=*cp++;
-			*cl++=*cp++;
-			*cl++=*cp;
-			*cl++=1.0f;
+			*cl++=(unsigned char)((*cp++)*255.0f);
+			*cl++=(unsigned char)((*cp++)*255.0f);
+			*cl++=(unsigned char)((*cp)*255.0f);
+			*cl++=0xFF;
 		}
 
 		trig++;
 	}
 }
 
-void render_model_vertex_object_no_shader_diffuse(model_type *mdl,int mesh_idx,model_draw *draw,float *vertex_ptr)
+void render_model_vertex_object_no_shader_diffuse(model_type *mdl,int mesh_idx,model_draw *draw,unsigned char *vertex_ptr)
 {
 	int					n,k,offset;
 	float				diffuse,min_diffuse,boost,
-						*gx,*gy,*vp,*cp,*vl,*ul,*cl,*nl,
-						*vp_start,*cp_start;
+						*gx,*gy,*vp,*vl,*ul,*nl,
+						*vp_start,*cp,*cp_start;
+	unsigned char		*cl;
 	d3vct				diffuse_vct;
 	d3col				ambient_col;
 	model_trig_type		*trig;
@@ -265,9 +267,9 @@ void render_model_vertex_object_no_shader_diffuse(model_type *mdl,int mesh_idx,m
 
 		// create the vertex object
 	
-	vl=vertex_ptr;
-	ul=vertex_ptr+((mesh->ntrig*3)*3);
-	cl=vertex_ptr+((mesh->ntrig*3)*(3+2));
+	vl=(float*)vertex_ptr;
+	ul=(float*)(vertex_ptr+(((mesh->ntrig*3)*3)*sizeof(float)));
+	cl=vertex_ptr+(((mesh->ntrig*3)*(3+2))*sizeof(float));
 
 	vp_start=draw->setup.mesh_arrays[mesh_idx].gl_vertex_array;
 	cp_start=draw->setup.mesh_arrays[mesh_idx].gl_color_array;
@@ -304,17 +306,17 @@ void render_model_vertex_object_no_shader_diffuse(model_type *mdl,int mesh_idx,m
 		
 				// apply diffuse
 				
-			*cl++=(*cp++)*diffuse;
-			*cl++=(*cp++)*diffuse;
-			*cl++=(*cp)*diffuse;
-			*cl++=1.0f;
+			*cl++=(unsigned char)(((*cp++)*diffuse)*255.0f);
+			*cl++=(unsigned char)(((*cp++)*diffuse)*255.0f);
+			*cl++=(unsigned char)(((*cp)*diffuse)*255.0f);
+			*cl++=0xFF;
 		}
 
 		trig++;
 	}
 }
 
-void render_model_vertex_object_shader(model_type *mdl,int mesh_idx,model_draw *draw,float *vertex_ptr)
+void render_model_vertex_object_shader(model_type *mdl,int mesh_idx,model_draw *draw,unsigned char *vertex_ptr)
 {
 	int					n,k,offset,mem_sz;
 	float				*gx,*gy,*vp,*vl,*ul,*tl,*nl,
@@ -324,8 +326,8 @@ void render_model_vertex_object_shader(model_type *mdl,int mesh_idx,model_draw *
 	
 	mesh=&mdl->meshes[mesh_idx];
 	
-	vl=vertex_ptr;
-	ul=vertex_ptr+((mesh->ntrig*3)*3);
+	vl=(float*)vertex_ptr;
+	ul=(float*)(vertex_ptr+(((mesh->ntrig*3)*3)*sizeof(float)));
 
 	vp_start=draw->setup.mesh_arrays[mesh_idx].gl_vertex_array;
 
@@ -356,10 +358,10 @@ void render_model_vertex_object_shader(model_type *mdl,int mesh_idx,model_draw *
 
 	mem_sz=((mesh->ntrig*3)*3)*sizeof(float);
 
-	tl=vertex_ptr+((mesh->ntrig*3)*(3+2));
+	tl=(float*)(vertex_ptr+(((mesh->ntrig*3)*(3+2))*sizeof(float)));
 	memmove(tl,draw->setup.mesh_arrays[mesh_idx].gl_tangent_array,mem_sz);
 
-	nl=vertex_ptr+((mesh->ntrig*3)*(3+2+3));
+	nl=(float*)(vertex_ptr+(((mesh->ntrig*3)*(3+2+3))*sizeof(float)));
 	memmove(nl,draw->setup.mesh_arrays[mesh_idx].gl_normal_array,mem_sz);
 }
 
@@ -372,7 +374,7 @@ void render_model_vertex_object_shader(model_type *mdl,int mesh_idx,model_draw *
 bool render_model_initialize_vertex_objects(model_type *mdl,int mesh_idx,model_draw *draw)
 {
 	int					mem_sz;
-	float				*vertex_ptr;
+	unsigned char		*vertex_ptr;
 	bool				shader_on;
 	model_mesh_type		*mesh;
 	
@@ -393,7 +395,7 @@ bool render_model_initialize_vertex_objects(model_type *mdl,int mesh_idx,model_d
 		mem_sz=(mesh->ntrig*3)*(3+2+3+3);
 	}
 
-	vertex_ptr=view_bind_map_next_vertex_object(mem_sz);
+	vertex_ptr=(unsigned char*)view_bind_map_next_vertex_object(mem_sz);
 	if (vertex_ptr==NULL) return(FALSE);
 	
 		// non-shader drawing requires
@@ -429,7 +431,7 @@ bool render_model_initialize_vertex_objects(model_type *mdl,int mesh_idx,model_d
 	
 	if (!shader_on) {
 		glEnableClientState(GL_COLOR_ARRAY);
-		glColorPointer(4,GL_FLOAT,0,(GLvoid*)(((mesh->ntrig*3)*(3+2))*sizeof(float)));
+		glColorPointer(4,GL_UNSIGNED_BYTE,0,(GLvoid*)(((mesh->ntrig*3)*(3+2))*sizeof(float)));
 	}
 
 	glClientActiveTexture(GL_TEXTURE1);

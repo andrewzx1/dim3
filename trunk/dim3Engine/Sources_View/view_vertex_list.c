@@ -46,7 +46,8 @@ bool view_map_vbo_initialize_mesh(map_mesh_type *mesh)
 	int					n,k,vertex_cnt;
 	unsigned short		idx;
 	unsigned short		*index_ptr;
-	float				*vertex_ptr,*pv,*pt,*pn,*pc,*pp;
+	float				*pv,*pt,*pn,*pp;
+	unsigned char		*vertex_ptr,*pc;
 	bool				shader_on;
 	d3pnt				*pnt;
 	map_mesh_poly_type	*poly;
@@ -61,14 +62,14 @@ bool view_map_vbo_initialize_mesh(map_mesh_type *mesh)
 	vertex_ptr=view_map_mesh_liquid_vertex_object(&mesh->vbo);
 	if (vertex_ptr==NULL) return(FALSE);
 
-	pv=vertex_ptr;
+	pv=(float*)vertex_ptr;
 	
 	if (shader_on) {
-		pt=vertex_ptr+(vertex_cnt*(3+2+2));
-		pn=vertex_ptr+(vertex_cnt*(3+3+2+2));
+		pt=(float*)(vertex_ptr+((vertex_cnt*(3+2+2))*sizeof(float)));
+		pn=(float*)(vertex_ptr+((vertex_cnt*(3+3+2+2))*sizeof(float)));
 	}
 	else {
-		pc=vertex_ptr+(vertex_cnt*(3+2+2));
+		pc=vertex_ptr+((vertex_cnt*(3+2+2))*sizeof(float));
 	}
 
 		// vertexes, tangents, normals and color
@@ -96,10 +97,10 @@ bool view_map_vbo_initialize_mesh(map_mesh_type *mesh)
 				*pn++=poly->tangent_space.normal.z;
 			}
 			else {
-				*pc++=1.0f;
-				*pc++=1.0f;
-				*pc++=1.0f;
-				*pc++=1.0f;
+				*pc++=0xFF;
+				*pc++=0x0;
+				*pc++=0x0;
+				*pc++=0xFF;
 			}
 		}
 
@@ -108,7 +109,7 @@ bool view_map_vbo_initialize_mesh(map_mesh_type *mesh)
 	
 		// main UVs
 
-	pp=vertex_ptr+(vertex_cnt*3);
+	pp=(float*)(vertex_ptr+((vertex_cnt*3)*sizeof(float)));
 
 	poly=mesh->polys;
 			
@@ -216,8 +217,8 @@ bool view_map_vbo_initialize_liquid(map_liquid_type *liq)
 
 bool view_map_vbo_initialize(void)
 {
-	int					n,k,vertex_data_cnt,vertex_cnt,index_cnt,
-						liq_div_count;
+	int					n,k,vertex_cnt,index_cnt,
+						vertex_mem_sz,liq_div_count;
 	bool				shader_on;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
@@ -245,17 +246,17 @@ bool view_map_vbo_initialize(void)
 
 		vertex_cnt=index_cnt;
 
-		vertex_data_cnt=vertex_cnt*(3+2+2);
+		vertex_mem_sz=(vertex_cnt*(3+2+2))*sizeof(float);
 		if (shader_on) {
-			vertex_data_cnt+=(vertex_cnt*(3+3));		// normals and tangents
+			vertex_mem_sz+=((vertex_cnt*(3+3))*sizeof(float));		// normals and tangents
 		}
 		else {
-			vertex_data_cnt+=(vertex_cnt*4);			// colors
+			vertex_mem_sz+=((vertex_cnt*4)*sizeof(unsigned char));	// colors
 		}
 
 			// create the VBO
 
-		view_create_mesh_liquid_vertex_object(&mesh->vbo,vertex_data_cnt,vertex_cnt,index_cnt);
+		view_create_mesh_liquid_vertex_object(&mesh->vbo,vertex_cnt,vertex_mem_sz,index_cnt);
 
 		if (!view_map_vbo_initialize_mesh(mesh)) return(FALSE);
 		
@@ -278,17 +279,17 @@ bool view_map_vbo_initialize(void)
 		index_cnt=(liq_div_count+1)*2;				// strip drawing, so only one per vertex
 		vertex_cnt=(liq_div_count+1)*2;
 
-		vertex_data_cnt=vertex_cnt*(3+2+2);
+		vertex_mem_sz=(vertex_cnt*(3+2+2))*sizeof(float);
 		if (shader_on) {
-			vertex_data_cnt+=(vertex_cnt*(3+3));					// normals and tangents
+			vertex_mem_sz+=((vertex_cnt*(3+3))*sizeof(float));		// normals and tangents
 		}
 		else {
-			vertex_data_cnt+=(vertex_cnt*4);						// colors
+			vertex_mem_sz+=((vertex_cnt*4)*sizeof(unsigned char));	// colors
 		}
 
 			// create the liquid
 
-		view_create_mesh_liquid_vertex_object(&liq->vbo,vertex_data_cnt,vertex_cnt,index_cnt);
+		view_create_mesh_liquid_vertex_object(&liq->vbo,vertex_cnt,vertex_mem_sz,index_cnt);
 
 			// initialize the liquid
 
@@ -336,7 +337,9 @@ void view_map_vbo_rebuild_mesh(map_mesh_type *mesh)
 {
 	int					n,k;
 	float				x_shift_offset,y_shift_offset;
-	float				*vertex_ptr,*pv,*pt,*pn,*pp,*pc,*pc2;
+	float				*pv,*pt,*pn,*pp;
+	unsigned char		ur,ug,ub;
+	unsigned char		*vertex_ptr,*pc,*pc2;
 	bool				shader_on,only_ambient,skip;
 	d3pnt				*pnt;
 	d3col				col;
@@ -357,11 +360,11 @@ void view_map_vbo_rebuild_mesh(map_mesh_type *mesh)
 			if (vertex_ptr==NULL) return;
 		}
 
-		pv=vertex_ptr;
+		pv=(float*)vertex_ptr;
 		
 		if (shader_on) {
-			pt=vertex_ptr+(mesh->vbo.vertex_count*(3+2+2));
-			pn=vertex_ptr+(mesh->vbo.vertex_count*(3+3+2+2));
+			pt=(float*)(vertex_ptr+((mesh->vbo.vertex_count*(3+2+2))*sizeof(float)));
+			pn=(float*)(vertex_ptr+((mesh->vbo.vertex_count*(3+3+2+2))*sizeof(float)));
 		}
 
 		poly=mesh->polys;
@@ -409,7 +412,7 @@ void view_map_vbo_rebuild_mesh(map_mesh_type *mesh)
 
 			// only shift main UVs (not light mapped ones)
 
-		pp=vertex_ptr+(mesh->vbo.vertex_count*3);
+		pp=(float*)(vertex_ptr+((mesh->vbo.vertex_count*3)*sizeof(float)));
 		
 		poly=mesh->polys;
 
@@ -454,7 +457,6 @@ void view_map_vbo_rebuild_mesh(map_mesh_type *mesh)
 			}
 			else {
 				mesh->draw.cur_ambient_only=TRUE;
-				gl_lights_calc_ambient_color(&col);
 			}
 		}
 		else {
@@ -464,54 +466,65 @@ void view_map_vbo_rebuild_mesh(map_mesh_type *mesh)
 			// set the colors
 			
 		if (!skip) {
-		
-			pc=mesh->colors_cache;
-			
-				// colors when only ambient lighting
-				
-			if (only_ambient) {
-				for (n=0;n!=mesh->nvertex;n++) {
-					*pc++=col.r;
-					*pc++=col.g;
-					*pc++=col.b;
-				}
-			}
-			
-				// colors hit by lights
-				
-			else {
-				pnt=mesh->vertexes;
 
-				for (n=0;n!=mesh->nvertex;n++) {
-					gl_lights_calc_color_light_cache(mesh->light_cache.count,mesh->light_cache.indexes,TRUE,(double)pnt->x,(double)pnt->y,(double)pnt->z,pc);
-					pc+=3;
-					pnt++;
-				}
-			}
+				// get the color pointer
 
-				// create per poly colors
-				
 			if (vertex_ptr==NULL) {
 				view_bind_mesh_liquid_vertex_object(&mesh->vbo);
 				vertex_ptr=view_map_mesh_liquid_vertex_object(&mesh->vbo);
 				if (vertex_ptr==NULL) return;
 			}
 
-			pc=vertex_ptr+(mesh->vbo.vertex_count*(3+2+2));
+			pc=vertex_ptr+((mesh->vbo.vertex_count*(3+2+2))*sizeof(float));
+		
+				// colors when only ambient lighting
+				
+			if (only_ambient) {
 
-			poly=mesh->polys;
+				gl_lights_calc_ambient_color(&col);
+
+				ur=(unsigned char)(col.r*255.0f);
+				ug=(unsigned char)(col.g*255.0f);
+				ub=(unsigned char)(col.b*255.0f);
+
+				for (n=0;n!=mesh->vbo.index_count;n++) {
+					*pc++=ur;
+					*pc++=ug;
+					*pc++=ub;
+					*pc++=0xFF;
+				}
+			}
 			
-			for (n=0;n!=mesh->npoly;n++) {
-			
-				for (k=0;k!=poly->ptsz;k++) {
-					pc2=mesh->colors_cache+(poly->v[k]*3);
-					*pc++=*pc2++;
-					*pc++=*pc2++;
-					*pc++=*pc2;
-					*pc++=1.0f;
+				// colors hit by lights
+				// we use the color cache so we only
+				// calculate once per mesh vertex even though
+				// the vertex pointer is once per poly vertex
+				
+			else {
+							
+				pc2=mesh->draw.colors_cache;
+				pnt=mesh->vertexes;
+
+				for (n=0;n!=mesh->nvertex;n++) {
+					gl_lights_calc_color_light_cache_byte(mesh->light_cache.count,mesh->light_cache.indexes,TRUE,(double)pnt->x,(double)pnt->y,(double)pnt->z,pc2);
+					pc2+=3;
+					pnt++;
 				}
 
-				poly++;
+				poly=mesh->polys;
+			
+				for (n=0;n!=mesh->npoly;n++) {
+			
+					for (k=0;k!=poly->ptsz;k++) {
+						pc2=mesh->draw.colors_cache+(poly->v[k]*3);
+						*pc++=(unsigned char)((*pc2++)*255.0f);
+						*pc++=(unsigned char)((*pc2++)*255.0f);
+						*pc++=(unsigned char)((*pc2)*255.0f);
+						*pc++=0xFF;
+					}
+
+					poly++;
+				}
 			}
 		}
 	}

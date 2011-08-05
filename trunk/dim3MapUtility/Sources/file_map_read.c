@@ -759,12 +759,14 @@ void read_single_liquid_v3(map_type *map,int liquid_idx,int liquid_tag)
 		liq->wave.on=xml_get_attribute_boolean(tag,"on");
 		liq->wave.dir_north_south=xml_get_attribute_boolean(tag,"dir_north_south");
 		liq->wave.length=xml_get_attribute_int(tag,"length");
+		liq->wave.high=xml_get_attribute_int(tag,"high");
 		liq->wave.period_msec=xml_get_attribute_int(tag,"period_msec");
 	}
 	else {
 		liq->wave.on=FALSE;
 		liq->wave.dir_north_south=FALSE;
 		liq->wave.length=2000;
+		liq->wave.high=200;
 		liq->wave.period_msec=3000;
 	}
 

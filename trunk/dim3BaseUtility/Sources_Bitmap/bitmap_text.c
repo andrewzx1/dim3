@@ -29,6 +29,10 @@ and can be sold or given away.
 	#include "dim3baseutility.h"
 #endif
 
+#if defined(D3_OS_MAC) || defined(D3_OS_IPHONE)
+	extern bool cocoa_bitmap_text_font_exist(char *name);
+#endif
+
 #ifdef D3_OS_LINUX
  #include <ft2build.h>
  #include FT_FREETYPE_H
@@ -41,7 +45,16 @@ and can be sold or given away.
       
 ======================================================= */
 
+	// supergumba -- NEED TO PUT COCOA STUBS IN ARCHIVE!
+  //  (UIFont *)fontWithName:(NSString *)fontName size:(CGFloat)fontSize = nil
+// put impact back in demo, and put in marker felt for alt
+
 #if defined(D3_OS_MAC) || defined(D3_OS_IPHONE)
+
+bool bitmap_text_font_exist(char *name)
+{
+	return(cocoa_bitmap_text_font_exist(name));
+}
 
 void bitmap_text_size_internal(texture_font_size_type *d3_size_font,char *name,int size,int bitmap_wid,int bitmap_high)
 {
@@ -165,6 +178,27 @@ void bitmap_text_size_internal(texture_font_size_type *d3_size_font,char *name,i
 #ifdef D3_OS_LINUX
 
 // code from cyst, additional edit by brian
+// not sure about my additions until some linux guy takes a run at it
+
+bool bitmap_text_font_exist(char *name)
+{
+	int				error;
+	char 			*font_filename;
+	FcPattern 		*pat, *match;
+	FcResult 		fc_result;
+	FT_Library 		font_library;
+	FT_Face 		face;
+
+	pat = FcPatternCreate();
+	FcPatternAddString(pat, FC_FAMILY, name);
+	FcConfigSubstitute(NULL, pat, FcMatchPattern);
+	FcDefaultSubstitute(pat);
+	match = FcFontMatch(NULL, pat, &fc_result);
+	FcPatternGetString(match, FC_FILE, 0, (FcChar8 **)&font_filename);
+
+	FT_Init_FreeType(&font_library);
+	return(FT_New_Face(font_library,font_filename,0,&face)==0);
+}
 
 void bitmap_text_size_internal(texture_font_size_type *d3_size_font,char *name,int size,int bitmap_wid,int bitmap_high)
 {
@@ -255,6 +289,18 @@ void bitmap_text_size_internal(texture_font_size_type *d3_size_font,char *name,i
 ======================================================= */
 
 #ifdef D3_OS_WINDOWS
+
+bool bitmap_text_font_exist(char *name)
+{
+	bool			ok;
+	HFONT			font;
+
+	font=CreateFont(-12,0,0,0,FW_MEDIUM,0,0,0,0,OUT_OUTLINE_PRECIS,0,ANTIALIASED_QUALITY,0,name);
+	ok=(font!=NULL);
+	DeleteObject(font);
+
+	return(ok);
+}
 
 void bitmap_text_size_internal(texture_font_size_type *d3_size_font,char *name,int size,int bitmap_wid,int bitmap_high)
 {
@@ -391,8 +437,23 @@ void bitmap_text_size(texture_font_size_type *d3_size_font,char *name,int size,i
 
 void bitmap_text_initialize(texture_font_type *d3_font)
 {
-	bitmap_text_size(&d3_font->size_24,d3_font->name,24,512,256);
-	bitmap_text_size(&d3_font->size_48,d3_font->name,48,1024,512);
+	int				n,idx;
+
+		// determine which font exists, and use that
+
+	idx=0;
+
+	for (n=0;n!=max_iface_font_variant;n++) {
+		if (bitmap_text_font_exist(d3_font->name[n])) {
+			idx=n;
+			break;
+		}
+	}
+
+		// load the font
+
+	bitmap_text_size(&d3_font->size_24,d3_font->name[idx],24,512,256);
+	bitmap_text_size(&d3_font->size_48,d3_font->name[idx],48,1024,512);
 }
 
 void bitmap_text_shutdown(texture_font_type *d3_font)

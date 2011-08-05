@@ -196,8 +196,7 @@ and can be sold or given away.
 //
 
 typedef struct		{
-						int									vertex_data_count,
-															vertex_count,index_count;
+						int									vertex_count,index_count;
 						GLuint								vertex,index;
 					} map_vbo_type;
 
@@ -282,6 +281,7 @@ typedef struct		{
 typedef struct		{
 						bool								moved,cur_ambient_only,
 															has_opaque,has_transparent,has_glow;
+						unsigned char						*colors_cache;
 					} map_mesh_draw_type;
 
 typedef struct		{
@@ -297,7 +297,6 @@ typedef struct		{
 typedef struct		{
 						int									nvertex,npoly,group_idx,
 															hide_mode,harm;
-						float								*colors_cache;
 						d3pnt								rot_off;
 						d3pnt								*vertexes;
 						map_mesh_poly_type					*polys;
@@ -331,7 +330,7 @@ typedef struct		{
 					} map_liquid_tide_type;
 
 typedef struct		{
-						int									length,period_msec;
+						int									length,high,period_msec;
 						bool								on,dir_north_south;
 					} map_liquid_wave_type;
 

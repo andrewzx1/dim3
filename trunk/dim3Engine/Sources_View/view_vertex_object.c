@@ -77,7 +77,7 @@ void view_dispose_vertex_objects(void)
       
 ======================================================= */
 
-void view_create_mesh_liquid_vertex_object(map_vbo_type *vbo,int vertex_data_count,int vertex_count,int index_count)
+void view_create_mesh_liquid_vertex_object(map_vbo_type *vbo,int vertex_count,int vertex_mem_sz,int index_count)
 {
 	glGenBuffers(1,&vbo->vertex);
 	glGenBuffers(1,&vbo->index);
@@ -85,10 +85,9 @@ void view_create_mesh_liquid_vertex_object(map_vbo_type *vbo,int vertex_data_cou
 		// init the vertex buffer
 
 	vbo->vertex_count=vertex_count;
-	vbo->vertex_data_count=vertex_data_count;
 
 	glBindBuffer(GL_ARRAY_BUFFER,vbo->vertex);
-	glBufferData(GL_ARRAY_BUFFER,(vertex_data_count*sizeof(float)),NULL,GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER,vertex_mem_sz,NULL,GL_DYNAMIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER,0);
 
 		// init the index buffer
@@ -111,11 +110,11 @@ void view_bind_mesh_liquid_vertex_object(map_vbo_type *vbo)
 	glBindBuffer(GL_ARRAY_BUFFER,vbo->vertex);
 }
 
-float* view_map_mesh_liquid_vertex_object(map_vbo_type *vbo)
+unsigned char* view_map_mesh_liquid_vertex_object(map_vbo_type *vbo)
 {
-	float		*vertex_ptr;
+	unsigned char		*vertex_ptr;
 
-	vertex_ptr=(float*)glMapBuffer(GL_ARRAY_BUFFER,GL_WRITE_ONLY);
+	vertex_ptr=(unsigned char*)glMapBuffer(GL_ARRAY_BUFFER,GL_WRITE_ONLY);
 	if (vertex_ptr==NULL) {
 		glBindBuffer(GL_ARRAY_BUFFER,0);
 		return(NULL);

@@ -493,27 +493,6 @@ extern bool bitmap_copy(char *srce_path,char *dest_path);
 
 /* =======================================================
 
-      Bitmap Fonts
-      
-======================================================= */
-
-typedef struct			{
-							int							char_box_wid,char_box_high,char_real_high,
-														char_baseline,char_per_line;
-							float						gl_xoff,gl_xadd,gl_yoff,gl_yadd,char_size[90];
-							bitmap_type					bitmap;
-						} texture_font_size_type;
-
-typedef struct			{
-							char						name[256];
-							texture_font_size_type		size_24,size_48;
-						} texture_font_type;
-
-extern void bitmap_text_initialize(texture_font_type *d3_font);
-extern void bitmap_text_shutdown(texture_font_type *d3_font);
-
-/* =======================================================
-
       Global Normal Modes
       
 ======================================================= */
@@ -546,6 +525,8 @@ extern void bitmap_text_shutdown(texture_font_type *d3_font);
 #define max_iface_action						128
 #define max_iface_sound							128
 #define max_iface_user_shader					128
+
+#define max_iface_font_variant					3
 
 #define max_hud_text_str_sz						256
 #define max_hud_intro_model						16
@@ -611,7 +592,8 @@ typedef struct		{
 
 typedef struct		{
 						int								text_size_mini,text_size_small,text_size_medium,text_size_large;
-						char							interface_name[name_str_len],hud_name[name_str_len];
+						char							interface_name[max_iface_font_variant][name_str_len],
+														hud_name[max_iface_font_variant][name_str_len];
 					} iface_font_type;
 
 //
@@ -1408,5 +1390,26 @@ extern void iface_read_settings_project_name(file_path_setup_type *path_setup);
 
 extern void simple_save_xml_read(iface_type *iface);
 extern void simple_save_xml_write(iface_type *iface);
+
+/* =======================================================
+
+      Bitmap Fonts
+      
+======================================================= */
+
+typedef struct			{
+							int							char_box_wid,char_box_high,char_real_high,
+														char_baseline,char_per_line;
+							float						gl_xoff,gl_xadd,gl_yoff,gl_yadd,char_size[90];
+							bitmap_type					bitmap;
+						} texture_font_size_type;
+
+typedef struct			{
+							char						name[max_iface_font_variant][name_str_len];
+							texture_font_size_type		size_24,size_48;
+						} texture_font_type;
+
+extern void bitmap_text_initialize(texture_font_type *d3_font);
+extern void bitmap_text_shutdown(texture_font_type *d3_font);
 
 

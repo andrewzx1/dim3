@@ -716,7 +716,7 @@ void gl_lights_calc_color(double x,double y,double z,float *cf)
 	*cf=(map.ambient.light_color.b+setup.gamma)+b;
 }
 
-void gl_lights_calc_color_light_cache(int count,int *indexes,bool skip_light_map,double x,double y,double z,float *cf)
+void gl_lights_calc_color_light_cache_byte(int count,int *indexes,bool skip_light_map,double x,double y,double z,unsigned char *cp)
 {
 	int						n;
 	float					f,mult,r,g,b;
@@ -755,9 +755,53 @@ void gl_lights_calc_color_light_cache(int count,int *indexes,bool skip_light_map
 
 		// set light value
 
-	*cf++=(map.ambient.light_color.r+setup.gamma)+r;
-	*cf++=(map.ambient.light_color.g+setup.gamma)+g;
-	*cf=(map.ambient.light_color.b+setup.gamma)+b;
+	*cp++=(unsigned char)(((map.ambient.light_color.r+setup.gamma)+r)*255.0f);
+	*cp++=(unsigned char)(((map.ambient.light_color.g+setup.gamma)+g)*255.0f);
+	*cp=(unsigned char)(((map.ambient.light_color.b+setup.gamma)+b)*255.0f);
+}
+
+void gl_lights_calc_color_light_cache_float(int count,int *indexes,bool skip_light_map,double x,double y,double z,float *cp)
+{
+	int						n;
+	float					f,mult,r,g,b;
+	double					dx,dz,dy;
+	view_light_spot_type	*lspot;
+
+		// combine all light spots attenuated for distance
+		
+	r=g=b=0.0f;
+	
+	for (n=0;n!=count;n++) {
+	
+		lspot=&view.render->light.spots[indexes[n]];
+		if ((skip_light_map) && (lspot->light_map)) continue;
+
+		dx=lspot->d_x-x;
+		dy=lspot->d_y-y;
+		dz=lspot->d_z-z;
+		
+		f=(float)sqrt((dx*dx)+(dy*dy)+(dz*dz));
+
+		if (f<=lspot->f_intensity) {
+
+			if (gl_lights_direction_ok(x,y,z,lspot)) {
+
+				mult=(lspot->f_intensity-f)*lspot->f_inv_intensity;
+				
+				mult+=powf(mult,lspot->f_exponent);
+
+				r+=(lspot->col.r*mult);
+				g+=(lspot->col.g*mult);
+				b+=(lspot->col.b*mult);
+			}
+		}
+	}
+
+		// set light value
+
+	*cp++=(map.ambient.light_color.r+setup.gamma)+r;
+	*cp++=(map.ambient.light_color.g+setup.gamma)+g;
+	*cp=(map.ambient.light_color.b+setup.gamma)+b;
 }
 
 /* =======================================================

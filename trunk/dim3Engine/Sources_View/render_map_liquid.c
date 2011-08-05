@@ -101,6 +101,36 @@ int liquid_wave_get_divisions(map_liquid_type *liq)
 	return(count);
 }
 
+void liquid_wave_get_high(map_liquid_type *liq,float *wave_y)
+{
+	float			f,fy,f_time,cs;
+
+		// start with the tide height
+
+	fy=((float)liq->y)-liquid_tide_get_high(liq);
+
+		// if no waves, then flat Ys
+
+	if (!liq->wave.on) {
+		wave_y[0]=wave_y[1]=wave_y[2]=wave_y[3]=fy;
+		return;
+	}
+
+		// get rate between 0..1
+
+	f_time=(float)(game_time_get()%liq->wave.period_msec);
+	f_time=f_time/((float)liq->wave.period_msec);
+	
+		// waves are sin waves
+
+	cs=(float)cos((TRIG_PI*2.0f)*f_time);
+	f=((float)liq->tide.high)*cs;
+	
+	wave_y[0]=fy-f;
+	wave_y[1]=wave_y[3]=fy-(f*0.5f);
+	wave_y[2]=fy-(f*0.25f);
+}
+
 /* =======================================================
 
       Check if Liquid is Transparent
@@ -125,10 +155,11 @@ bool liquid_render_liquid_create_vertex(map_liquid_type *liq,float uv_shift,bool
 {
 	int				k,div,div_count,lft,rgt,top,bot,
 					top_add,lft_add;
-	float			fy,f_tick,f_stamp_size,
+	float			fy,wave_y[4],f_tick,f_stamp_size,
 					gx,gy,gx2,gy2,gx_add,gy_add,
 					lmap_gx,lmap_gy,lmap_gx2,lmap_gy2,lmap_gx_add,lmap_gy_add;
-	float			*vertex_ptr,*vl,*uv,*uv2,*ct,*cn,*cl;
+	float			*vl,*uv,*uv2,*ct,*cn;
+	unsigned char	*vertex_ptr,*cl;
 	bool			shader_on;
 	
 		// setup vbo
@@ -193,21 +224,21 @@ bool liquid_render_liquid_create_vertex(map_liquid_type *liq,float uv_shift,bool
 
 		// liquid vertexes
 
-	vl=vertex_ptr;
-	uv=vertex_ptr+(liq->vbo.vertex_count*3);
-	uv2=vertex_ptr+(liq->vbo.vertex_count*(3+2));
+	vl=(float*)vertex_ptr;
+	uv=(float*)(vertex_ptr+((liq->vbo.vertex_count*3)*sizeof(float)));
+	uv2=(float*)(vertex_ptr+((liq->vbo.vertex_count*(3+2))*sizeof(float)));
 
 	if (!shader_on) {
-		cl=vertex_ptr+(liq->vbo.vertex_count*(3+2+2));
+		cl=vertex_ptr+((liq->vbo.vertex_count*(3+2+2))*sizeof(float));
 	}
 	else {
-		ct=vertex_ptr+(liq->vbo.vertex_count*(3+2+2));
-		cn=vertex_ptr+(liq->vbo.vertex_count*(3+2+2+3));
+		ct=(float*)(vertex_ptr+((liq->vbo.vertex_count*(3+2+2))*sizeof(float)));
+		cn=(float*)(vertex_ptr+((liq->vbo.vertex_count*(3+2+2+3))*sizeof(float)));
 	}
 
-		// tide Y
+		// build the tide and wave Y
 
-	fy=((float)liq->y)-liquid_tide_get_high(liq);
+	liquid_wave_get_high(liq,wave_y);
 
 		// get div count and setup
 		// the division calculations
@@ -248,7 +279,9 @@ bool liquid_render_liquid_create_vertex(map_liquid_type *liq,float uv_shift,bool
 	
 		// draw the divisions
 
-	for (div=0;div<=(div_count+1);div++) {
+	for (div=0;div<=div_count;div++) {
+
+		fy=wave_y[div&0x3];
 
 		if (liq->wave.dir_north_south) {
 			
@@ -308,13 +341,13 @@ bool liquid_render_liquid_create_vertex(map_liquid_type *liq,float uv_shift,bool
 			// no shaders use colors
 
 		if (!shader_on) {
-			gl_lights_calc_color_light_cache(liq->light_cache.count,liq->light_cache.indexes,FALSE,(double)lft,fy,(double)top,cl);
+			gl_lights_calc_color_light_cache_byte(liq->light_cache.count,liq->light_cache.indexes,FALSE,(double)lft,fy,(double)top,cl);
 			cl+=3;
-			*cl++=1.0f;
+			*cl++=0xFF;
 
-			gl_lights_calc_color_light_cache(liq->light_cache.count,liq->light_cache.indexes,FALSE,(double)lft,fy,(double)bot,cl);
+			gl_lights_calc_color_light_cache_byte(liq->light_cache.count,liq->light_cache.indexes,FALSE,(double)lft,fy,(double)bot,cl);
 			cl+=3;
-			*cl++=1.0f;
+			*cl++=0xFF;
 		}
 
 			// shaders use normals and tangents
@@ -480,7 +513,7 @@ void liquid_render_liquid_fixed(map_liquid_type *liq,int txt_idx,int lmap_txt_id
 	glClientActiveTexture(GL_TEXTURE0);
 	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)((liq->vbo.vertex_count*(3+2))*sizeof(float)));
 
-	glColorPointer(4,GL_FLOAT,0,(GLvoid*)((liq->vbo.vertex_count*(3+2+2))*sizeof(float)));
+	glColorPointer(4,GL_UNSIGNED_BYTE,0,(GLvoid*)((liq->vbo.vertex_count*(3+2+2))*sizeof(float)));
 
 		// back rendering overrides
 		

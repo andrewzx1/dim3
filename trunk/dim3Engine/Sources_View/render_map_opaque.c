@@ -83,7 +83,7 @@ void render_opaque_mesh_normal(void)
 		glClientActiveTexture(GL_TEXTURE0);
 		glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)((mesh->vbo.vertex_count*(3+2))*sizeof(float)));
 
-		glColorPointer(4,GL_FLOAT,0,(GLvoid*)((mesh->vbo.vertex_count*(3+2+2))*sizeof(float)));
+		glColorPointer(4,GL_UNSIGNED_BYTE,0,(GLvoid*)((mesh->vbo.vertex_count*(3+2+2))*sizeof(float)));
 
 			// draw the polys
 
