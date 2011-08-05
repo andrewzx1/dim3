@@ -372,11 +372,14 @@ void view_images_cached_load(void)
 	stick=iface.virtual_control.sticks;
 	
 	for (n=0;n!=max_virtual_stick;n++) {
-		file_paths_data(&setup.file_path_setup,path,"Bitmaps/Virtual",stick->outer_bitmap_name,"png");
-		stick->outer_image_idx=view_images_load_single(path,FALSE,TRUE);
-	
-		file_paths_data(&setup.file_path_setup,path,"Bitmaps/Virtual",stick->inner_bitmap_name,"png");
-		stick->inner_image_idx=view_images_load_single(path,FALSE,TRUE);
+		
+		if ((stick->on) && (stick->use_bitmap)) {
+			file_paths_data(&setup.file_path_setup,path,"Bitmaps/Virtual",stick->outer_bitmap_name,"png");
+			stick->outer_image_idx=view_images_load_single(path,FALSE,TRUE);
+		
+			file_paths_data(&setup.file_path_setup,path,"Bitmaps/Virtual",stick->inner_bitmap_name,"png");
+			stick->inner_image_idx=view_images_load_single(path,FALSE,TRUE);
+		}
 		
 		stick++;
 	}
@@ -384,11 +387,14 @@ void view_images_cached_load(void)
 	button=iface.virtual_control.buttons;
 	
 	for (n=0;n!=max_virtual_button;n++) {
-		file_paths_data(&setup.file_path_setup,path,"Bitmaps/Virtual",button->up_bitmap_name,"png");
-		button->up_image_idx=view_images_load_single(path,FALSE,TRUE);
 	
-		file_paths_data(&setup.file_path_setup,path,"Bitmaps/Virtual",button->down_bitmap_name,"png");
-		button->down_image_idx=view_images_load_single(path,FALSE,TRUE);
+		if ((button->on) && (button->use_bitmap)) {
+			file_paths_data(&setup.file_path_setup,path,"Bitmaps/Virtual",button->up_bitmap_name,"png");
+			button->up_image_idx=view_images_load_single(path,FALSE,TRUE);
+	
+			file_paths_data(&setup.file_path_setup,path,"Bitmaps/Virtual",button->down_bitmap_name,"png");
+			button->down_image_idx=view_images_load_single(path,FALSE,TRUE);
+		}
 		
 		button++;
 	}
@@ -497,16 +503,24 @@ void view_images_cached_free(void)
 	stick=iface.virtual_control.sticks;
 	
 	for (n=0;n!=max_virtual_stick;n++) {
-		view_images_free_single(stick->outer_image_idx);
-		view_images_free_single(stick->inner_image_idx);
+	
+		if ((stick->on) && (stick->use_bitmap)) {
+			view_images_free_single(stick->outer_image_idx);
+			view_images_free_single(stick->inner_image_idx);
+		}
+		
 		stick++;
 	}
 
 	button=iface.virtual_control.buttons;
 	
 	for (n=0;n!=max_virtual_button;n++) {
-		view_images_free_single(button->up_image_idx);
-		view_images_free_single(button->down_image_idx);
+	
+		if ((button->on) && (button->use_bitmap)) {
+			view_images_free_single(button->up_image_idx);
+			view_images_free_single(button->down_image_idx);
+		}
+		
 		button++;
 	}
 

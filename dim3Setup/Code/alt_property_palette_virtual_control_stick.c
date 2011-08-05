@@ -34,13 +34,14 @@ and can be sold or given away.
 #include "interface.h"
 
 #define kStickOn								0
-#define kStickOuterBitmap						1
-#define kStickInnerBitmap						2
-#define kStickPositionX							3
-#define kStickPositionY							4
-#define kStickPositionWid						5
-#define kStickPositionHigh						6
-#define kStickColor								7
+#define kStickUseBitmap							1
+#define kStickOuterBitmap						2
+#define kStickInnerBitmap						3
+#define kStickPositionX							4
+#define kStickPositionY							5
+#define kStickPositionWid						6
+#define kStickPositionHigh						7
+#define kStickColor								8
 
 extern iface_type				iface;
 extern setup_state_type			state;
@@ -64,6 +65,7 @@ void alt_property_palette_fill_virtual_control_stick(int virtual_control_stick_i
 		
 	list_palette_add_header(&alt_property_palette,0,"Settings");
 	list_palette_add_checkbox(&alt_property_palette,kStickOn,"On",stick->on,FALSE);
+	list_palette_add_checkbox(&alt_property_palette,kStickUseBitmap,"Use Bitmap",stick->use_bitmap,FALSE);
 	list_palette_add_string(&alt_property_palette,kStickOuterBitmap,"Outer Bitmap",stick->outer_bitmap_name,FALSE);
 	list_palette_add_string(&alt_property_palette,kStickInnerBitmap,"Inner Bitmap",stick->inner_bitmap_name,FALSE);
 	list_palette_add_pick_color(&alt_property_palette,kStickColor,"Color",&stick->color,FALSE);
@@ -93,6 +95,10 @@ void alt_property_palette_click_virtual_control_stick(int virtual_control_stick_
 	
 		case kStickOn:
 			stick->on=!stick->on;
+			break;
+			
+		case kStickUseBitmap:
+			stick->use_bitmap=!stick->use_bitmap;
 			break;
 			 
 		case kStickOuterBitmap:

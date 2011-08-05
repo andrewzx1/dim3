@@ -34,14 +34,15 @@ and can be sold or given away.
 #include "interface.h"
 
 #define kButtonOn								0
-#define kButtonControl							1
-#define kButtonUpBitmap							2
-#define kButtonDownBitmap						3
-#define kButtonPositionX						4
-#define kButtonPositionY						5
-#define kButtonPositionWid						6
-#define kButtonPositionHigh						7
-#define kButtonColor							8
+#define kButtonUseBitmap						1
+#define kButtonControl							2
+#define kButtonUpBitmap							3
+#define kButtonDownBitmap						4
+#define kButtonPositionX						5
+#define kButtonPositionY						6
+#define kButtonPositionWid						7
+#define kButtonPositionHigh						8
+#define kButtonColor							9
 
 extern iface_type				iface;
 extern setup_state_type			state;
@@ -69,6 +70,7 @@ void alt_property_palette_fill_virtual_control_button(int virtual_control_button
 		
 	list_palette_add_header(&alt_property_palette,0,"Settings");
 	list_palette_add_checkbox(&alt_property_palette,kButtonOn,"On",button->on,FALSE);
+	list_palette_add_checkbox(&alt_property_palette,kButtonUseBitmap,"Use Bitmap",button->use_bitmap,FALSE);
 	list_palette_add_string(&alt_property_palette,kButtonControl,"Action",control_name_str[button->control_idx],FALSE);
 	list_palette_add_string(&alt_property_palette,kButtonUpBitmap,"Up Bitmap",button->up_bitmap_name,FALSE);
 	list_palette_add_string(&alt_property_palette,kButtonDownBitmap,"Down Bitmap",button->down_bitmap_name,FALSE);
@@ -99,6 +101,10 @@ void alt_property_palette_click_virtual_control_button(int virtual_control_butto
 
 		case kButtonOn:
 			button->on=!button->on;
+			break;
+			
+		case kButtonUseBitmap:
+			button->use_bitmap=!button->use_bitmap;
 			break;
 			
 		case kButtonControl:

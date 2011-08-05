@@ -185,8 +185,7 @@ bool view_map_vbo_initialize_mesh(map_mesh_type *mesh)
 
 bool view_map_vbo_initialize_liquid(map_liquid_type *liq)
 {
-	int				n,idx,idx_add=0;
-	int				trig_offset_idx[4]={0,2,1,3};
+	int				n,idx;
 	unsigned short	*index_ptr;
 
 		// only setup indexes for liquids
@@ -197,16 +196,10 @@ bool view_map_vbo_initialize_liquid(map_liquid_type *liq)
 	if (index_ptr==NULL) return(FALSE);
 
 	idx=0;
-	idx_add=0;
 
 	for (n=0;n!=liq->vbo.index_count;n++) {
-		*index_ptr++=(unsigned short)(idx_add+trig_offset_idx[idx]);
-
+		*index_ptr++=(unsigned short)idx;
 		idx++;
-		if (idx==4) {
-			idx=0;
-			idx_add+=2;
-		}
 	}
 
 	view_unmap_mesh_liquid_index_object();
@@ -282,7 +275,7 @@ bool view_map_vbo_initialize(void)
 
 		liq_div_count=liquid_wave_get_divisions(liq);
 
-		index_cnt=liq_div_count*4;
+		index_cnt=(liq_div_count+1)*2;				// strip drawing, so only one per vertex
 		vertex_cnt=(liq_div_count+1)*2;
 
 		vertex_data_cnt=vertex_cnt*(3+2+2);
@@ -290,7 +283,7 @@ bool view_map_vbo_initialize(void)
 			vertex_data_cnt+=(vertex_cnt*(3+3));					// normals and tangents
 		}
 		else {
-			vertex_data_cnt+=(vertex_cnt*3);						// colors
+			vertex_data_cnt+=(vertex_cnt*4);						// colors
 		}
 
 			// create the liquid

@@ -126,7 +126,7 @@ bool liquid_render_liquid_create_vertex(map_liquid_type *liq,float uv_shift,bool
 	int				k,div,div_count,lft,rgt,top,bot,
 					top_add,lft_add;
 	float			fy,f_tick,f_stamp_size,
-					gx,gy,gx2,gy2,org_gx2,org_gy2,gx_add,gy_add,
+					gx,gy,gx2,gy2,gx_add,gy_add,
 					lmap_gx,lmap_gy,lmap_gx2,lmap_gy2,lmap_gx_add,lmap_gy_add;
 	float			*vertex_ptr,*vl,*uv,*uv2,*ct,*cn,*cl;
 	bool			shader_on;
@@ -217,9 +217,6 @@ bool liquid_render_liquid_create_vertex(map_liquid_type *liq,float uv_shift,bool
 	top=liq->top;
 	bot=liq->bot;
 
-	org_gx2=gx2;
-	org_gy2=gy2;
-
 	lmap_gx=liq->lmap_uv.x_offset;
 	lmap_gx2=liq->lmap_uv.x_offset+liq->lmap_uv.x_size;
 
@@ -227,7 +224,7 @@ bool liquid_render_liquid_create_vertex(map_liquid_type *liq,float uv_shift,bool
 	lmap_gy2=liq->lmap_uv.y_offset+liq->lmap_uv.y_size;
 
 	div_count=liquid_wave_get_divisions(liq);
-
+	
 	lft_add=rgt-lft;
 	gx_add=gx2-gx;
 	lmap_gx_add=lmap_gx2-lmap_gx;
@@ -236,23 +233,25 @@ bool liquid_render_liquid_create_vertex(map_liquid_type *liq,float uv_shift,bool
 	gy_add=gy2-gy;
 	lmap_gy_add=lmap_gy2-lmap_gy;
 
-	if (liq->wave.dir_north_south) {
-		top_add=liq->wave.length;
-		gy_add=(gy2-gy)/((float)div_count);
-		lmap_gy_add=(lmap_gy2-lmap_gy)/((float)div_count);
+	if (liq->wave.on) {
+		if (liq->wave.dir_north_south) {
+			top_add=liq->wave.length;
+			gy_add=(gy2-gy)/((float)div_count);
+			lmap_gy_add=(lmap_gy2-lmap_gy)/((float)div_count);
+		}
+		else {
+			lft_add=liq->wave.length;
+			gx_add=(gx2-gx)/((float)div_count);
+			lmap_gx_add=(lmap_gx2-lmap_gx)/((float)div_count);
+		}
 	}
-	else {
-		lft_add=liq->wave.length;
-		gx_add=(gx2-gx)/((float)div_count);
-		lmap_gx_add=(lmap_gx2-lmap_gx)/((float)div_count);
-	}
-
+	
 		// draw the divisions
 
-	for (div=0;div!=(div_count+1);div++) {
+	for (div=0;div<=(div_count+1);div++) {
 
 		if (liq->wave.dir_north_south) {
-
+			
 				// left-top
 
 			*vl++=(float)lft;
@@ -267,7 +266,7 @@ bool liquid_render_liquid_create_vertex(map_liquid_type *liq,float uv_shift,bool
 
 				// right-top
 
-			*vl++=(float)lft;
+			*vl++=(float)rgt;
 			*vl++=fy;
 			*vl++=(float)top;
 
@@ -276,10 +275,11 @@ bool liquid_render_liquid_create_vertex(map_liquid_type *liq,float uv_shift,bool
 
 			*uv2++=lmap_gx2;
 			*uv2++=lmap_gy;
+				
 		}
 
 		else {
-
+			
 				// left-top
 
 			*vl++=(float)lft;
@@ -309,19 +309,21 @@ bool liquid_render_liquid_create_vertex(map_liquid_type *liq,float uv_shift,bool
 
 		if (!shader_on) {
 			gl_lights_calc_color_light_cache(liq->light_cache.count,liq->light_cache.indexes,FALSE,(double)lft,fy,(double)top,cl);
-			*(cl+3)=1.0f;
+			cl+=3;
+			*cl++=1.0f;
 
-			gl_lights_calc_color_light_cache(liq->light_cache.count,liq->light_cache.indexes,FALSE,(double)lft,fy,(double)bot,(cl+4));
-			*(cl+7)=1.0f;
+			gl_lights_calc_color_light_cache(liq->light_cache.count,liq->light_cache.indexes,FALSE,(double)lft,fy,(double)bot,cl);
+			cl+=3;
+			*cl++=1.0f;
 		}
 
 			// shaders use normals and tangents
 
 		else {
-
 			*ct++=1.0f;
 			*ct++=0.0f;
 			*ct++=0.0f;
+			
 			*ct++=1.0f;
 			*ct++=0.0f;
 			*ct++=0.0f;
@@ -329,6 +331,7 @@ bool liquid_render_liquid_create_vertex(map_liquid_type *liq,float uv_shift,bool
 			*cn++=0.0f;
 			*cn++=-1.0f;
 			*cn++=0.0f;
+			
 			*cn++=0.0f;
 			*cn++=-1.0f;
 			*cn++=0.0f;
@@ -336,27 +339,25 @@ bool liquid_render_liquid_create_vertex(map_liquid_type *liq,float uv_shift,bool
 
 			// division changes
 
-		if (liq->wave.on) {
-			if (liq->wave.dir_north_south) {
-				top+=top_add;
-				if (top>liq->bot) top=liq->bot;
+		if (liq->wave.dir_north_south) {
+			top+=top_add;
+			if (top>liq->bot) top=liq->bot;
 
-				gy+=gy_add;
-				if (gy>gy2) gy=gy2;
+			gy+=gy_add;
+			if (gy>gy2) gy=gy2;
 
-				lmap_gy+=lmap_gy_add;
-				if (lmap_gy>lmap_gy2) lmap_gy=lmap_gy2;
-			}
-			else {
-				lft+=lft_add;
-				if (lft>liq->rgt) lft=liq->rgt;
+			lmap_gy+=lmap_gy_add;
+			if (lmap_gy>lmap_gy2) lmap_gy=lmap_gy2;
+		}
+		else {
+			lft+=lft_add;
+			if (lft>liq->rgt) lft=liq->rgt;
 
-				gx+=gx_add;
-				if (gx>gx2) gx=gx2;
+			gx+=gx_add;
+			if (gx>gx2) gx=gx2;
 
-				lmap_gx+=lmap_gx_add;
-				if (lmap_gx>lmap_gx2) lmap_gx=lmap_gx2;
-			}
+			lmap_gx+=lmap_gx_add;
+			if (lmap_gx>lmap_gx2) lmap_gx=lmap_gx2;
 		}
 	}
 
