@@ -680,8 +680,23 @@ void iface_read_settings_interface(iface_type *iface)
 
 	font_tag=xml_findfirstchild("Font",interface_head_tag);
 	if (font_tag!=-1) {
-		xml_get_attribute_text(font_tag,"name",iface->font.interface_name,name_str_len);
-		xml_get_attribute_text(font_tag,"hud_name",iface->font.hud_name,name_str_len);
+		for (n=0;n!=max_iface_font_variant;n++) {
+			if (n==0) {
+				strcpy(name,"name");
+			}
+			else {
+				sprintf(name,"name_%d",n);
+			}
+			xml_get_attribute_text(font_tag,name,iface->font.interface_name[n],name_str_len);
+
+			if (n==0) {
+				strcpy(name,"hud_name");
+			}
+			else {
+				sprintf(name,"hud_name_%d",n);
+			}
+			xml_get_attribute_text(font_tag,name,iface->font.hud_name[n],name_str_len);
+		}
 	}
 	
 		// progress
@@ -1269,8 +1284,24 @@ bool iface_write_settings_interface(iface_type *iface)
 		// fonts
 
 	xml_add_tagstart("Font");
-	xml_add_attribute_text("name",iface->font.interface_name);
-	xml_add_attribute_text("hud_name",iface->font.hud_name);
+	
+	for (n=0;n!=max_iface_font_variant;n++) {
+		if (n==0) {
+			strcpy(name,"name");
+		}
+		else {
+			sprintf(name,"name_%d",n);
+		}
+		xml_add_attribute_text(name,iface->font.interface_name[n]);
+		if (n==0) {
+			strcpy(name,"hud_name");
+		}
+		else {
+			sprintf(name,"hud_name_%d",n);
+		}
+		xml_add_attribute_text(name,iface->font.hud_name[n]);
+	}
+
 	xml_add_tagend(TRUE);
 	
 		// progress

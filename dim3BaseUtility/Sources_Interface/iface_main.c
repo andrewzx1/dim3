@@ -275,9 +275,11 @@ void iface_default_settings(iface_type *iface)
 	
 		// fonts
 
-	strcpy(iface->font.interface_name,"Arial");
-	strcpy(iface->font.hud_name,"Arial");
-	
+	for (n=0;n!=max_iface_font_variant;n++) {
+		strcpy(iface->font.interface_name[n],"Arial");
+		strcpy(iface->font.hud_name[n],"Arial");
+	}
+
 		// progress
 		
 	iface->progress.lx=0;

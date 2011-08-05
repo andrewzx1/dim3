@@ -36,60 +36,62 @@ and can be sold or given away.
 #define kSettingsProjectName					0
 #define kSettingsScaleX							1
 #define kSettingsScaleY							2
-#define kSettingsInterfaceFont					3
-#define kSettingsHUDFont						4
-#define kSettingsClickSound						5
 
-#define kSettingsColorBackground				10
-#define kSettingsColorDefaultTint				11
+#define kSettingsInterfaceFont					10
+#define kSettingsHUDFont						20
 
-#define kSettingsColorMenuText					12
-#define kSettingsColorMenuMouseOver				13
-#define kSettingsColorMenuDimmed				14
+#define kSettingsClickSound						30
 
-#define kSettingsColorDialogBackground			20
-#define kSettingsColorDialogHeader				21
-#define kSettingsColorDialogOutline				22
-#define kSettingsColorDialogTitle				23
+#define kSettingsColorBackground				40
+#define kSettingsColorDefaultTint				41
 
-#define kSettingsColorTabBackground				30
-#define kSettingsColorTabDimmed					31
-#define kSettingsColorTabOutline				32
-#define kSettingsColorTabText					33
-#define kSettingsColorTabTextMouseOver			34
-#define kSettingsColorTabTextDimmed				35
+#define kSettingsColorMenuText					50
+#define kSettingsColorMenuMouseOver				51
+#define kSettingsColorMenuDimmed				52
 
-#define kSettingsColorControlLabel				40
-#define kSettingsColorControlText				41
-#define kSettingsColorControlFill				42
-#define kSettingsColorControlHeader				43
-#define kSettingsColorControlOutline			44
-#define kSettingsColorControlMouseOver			45
-#define kSettingsColorControlHilite				46
-#define kSettingsColorControlDisabled			47
+#define kSettingsColorDialogBackground			60
+#define kSettingsColorDialogHeader				61
+#define kSettingsColorDialogOutline				62
+#define kSettingsColorDialogTitle				63
 
-#define kSettingsColorScrollBarBackground		48
-#define kSettingsColorScrollBarThumb			49
+#define kSettingsColorTabBackground				70
+#define kSettingsColorTabDimmed					71
+#define kSettingsColorTabOutline				72
+#define kSettingsColorTabText					73
+#define kSettingsColorTabTextMouseOver			74
+#define kSettingsColorTabTextDimmed				75
 
-#define kSettingsColorButtonFill				50
-#define kSettingsColorButtonText				51
-#define kSettingsColorButtonOutline				52
+#define kSettingsColorControlLabel				80
+#define kSettingsColorControlText				81
+#define kSettingsColorControlFill				82
+#define kSettingsColorControlHeader				83
+#define kSettingsColorControlOutline			84
+#define kSettingsColorControlMouseOver			85
+#define kSettingsColorControlHilite				86
+#define kSettingsColorControlDisabled			87
 
-#define kSettingsProgressLeft					60
-#define kSettingsProgressRight					61
-#define kSettingsProgressTop					62
-#define kSettingsProgressBottom					63
-#define kSettingsProgressTextSize				64
-#define kSettingsProgressOutline				65
-#define kSettingsProgressBaseColorStart			66
-#define kSettingsProgressBaseColorEnd			67
-#define kSettingsProgressHiliteColorStart		68
-#define kSettingsProgressHiliteColorEnd			69
-#define kSettingsProgressTextColor				70
-#define kSettingsProgressOutlineColor			71
+#define kSettingsColorScrollBarBackground		90
+#define kSettingsColorScrollBarThumb			91
 
-#define kSettingsFaseTitleMilliseconds			80
-#define kSettingsFaseMapMilliseconds			81
+#define kSettingsColorButtonFill				100
+#define kSettingsColorButtonText				101
+#define kSettingsColorButtonOutline				102
+
+#define kSettingsProgressLeft					110
+#define kSettingsProgressRight					111
+#define kSettingsProgressTop					112
+#define kSettingsProgressBottom					113
+#define kSettingsProgressTextSize				114
+#define kSettingsProgressOutline				115
+#define kSettingsProgressBaseColorStart			116
+#define kSettingsProgressBaseColorEnd			117
+#define kSettingsProgressHiliteColorStart		118
+#define kSettingsProgressHiliteColorEnd			119
+#define kSettingsProgressTextColor				120
+#define kSettingsProgressOutlineColor			121
+
+#define kSettingsFaseTitleMilliseconds			130
+#define kSettingsFaseMapMilliseconds			131
 
 extern iface_type				iface;
 extern setup_state_type			state;
@@ -103,6 +105,9 @@ extern list_palette_type		property_palette;
 
 void property_palette_fill_settings(void)
 {
+	int					n;
+	char				name[256];
+
 	list_palette_set_title(&property_palette,"Project Settings");
 
 		// project
@@ -116,11 +121,17 @@ void property_palette_fill_settings(void)
 	list_palette_add_string_int(&property_palette,kSettingsScaleX,"X",iface.scale_x,FALSE);
 	list_palette_add_string_int(&property_palette,kSettingsScaleY,"Y",iface.scale_y,FALSE);
 
-		// font
+		// fonts
 		
 	list_palette_add_header(&property_palette,0,"Font");
-	list_palette_add_string(&property_palette,kSettingsInterfaceFont,"Interface Font",iface.font.interface_name,FALSE);
-	list_palette_add_string(&property_palette,kSettingsHUDFont,"HUD Font",iface.font.hud_name,FALSE);
+	for (n=0;n!=max_iface_font_variant;n++) {
+		sprintf(name,"Interface Font %d",n);
+		list_palette_add_string(&property_palette,(kSettingsInterfaceFont+n),name,iface.font.interface_name[n],FALSE);
+	}
+	for (n=0;n!=max_iface_font_variant;n++) {
+		sprintf(name,"HUD Font %d",n);
+		list_palette_add_string(&property_palette,(kSettingsHUDFont+n),name,iface.font.hud_name[n],FALSE);
+	}
 
 		// sound
 		
@@ -216,6 +227,22 @@ void property_palette_click_settings(int id,bool double_click)
 {
 	if (!double_click) return;
 
+		// fonts
+
+	if ((id>=kSettingsInterfaceFont) && (id<(kSettingsInterfaceFont+max_iface_font_variant))) {
+		dialog_property_string_run(list_string_value_string,(void*)iface.font.interface_name[id-kSettingsInterfaceFont],name_str_len,0,0);
+		main_wind_draw();
+		return;
+	}
+
+	if ((id>=kSettingsHUDFont) && (id<(kSettingsHUDFont+max_iface_font_variant))) {
+		dialog_property_string_run(list_string_value_string,(void*)iface.font.hud_name[id-kSettingsHUDFont],name_str_len,0,0);
+		main_wind_draw();
+		return;
+	}
+
+		// regular items
+
 	switch (id) {
 	
 			// project name
@@ -234,17 +261,7 @@ void property_palette_click_settings(int id,bool double_click)
 			dialog_property_string_run(list_string_value_positive_int,(void*)&iface.scale_y,0,0,0);
 			break;
 			
-			// font
-
-		case kSettingsInterfaceFont:
-			dialog_property_string_run(list_string_value_string,(void*)iface.font.interface_name,name_str_len,0,0);
-			break;
-
-		case kSettingsHUDFont:
-			dialog_property_string_run(list_string_value_string,(void*)iface.font.hud_name,name_str_len,0,0);
-			break;
-			
-			// sounnd
+			// sound
 			
 		case kSettingsClickSound:
 			property_palette_pick_sound(iface.click_sound,FALSE);

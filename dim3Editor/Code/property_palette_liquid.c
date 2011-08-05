@@ -51,7 +51,8 @@ and can be sold or given away.
 #define kLiquidPropertyWaveOn					20
 #define kLiquidPropertyWaveDirNorthSouth		21
 #define kLiquidPropertyWaveLength				22
-#define kLiquidPropertyWavePeriodMSec			23
+#define kLiquidPropertyWaveHigh					23
+#define kLiquidPropertyWavePeriodMSec			24
 
 #define kLiquidPropertyHarm						30
 #define kLiquidPropertyDrownTick				31
@@ -123,6 +124,7 @@ void property_palette_fill_liquid(int liq_idx)
 	list_palette_add_checkbox(&property_palette,kLiquidPropertyWaveOn,"On",liq->wave.on,FALSE);
 	list_palette_add_checkbox(&property_palette,kLiquidPropertyWaveDirNorthSouth,"North-South Dir",liq->wave.dir_north_south,FALSE);
 	list_palette_add_string_int(&property_palette,kLiquidPropertyWaveLength,"Length",liq->wave.length,FALSE);
+	list_palette_add_string_int(&property_palette,kLiquidPropertyWaveHigh,"High",liq->wave.high,FALSE);
 	list_palette_add_string_int(&property_palette,kLiquidPropertyWavePeriodMSec,"Period msec",liq->wave.period_msec,FALSE);
 	
 	list_palette_add_header(&property_palette,0,"Liquid Harm");
@@ -277,6 +279,10 @@ void property_palette_click_liquid(int liq_idx,int id,bool double_click)
 
 		case kLiquidPropertyWaveLength:
 			dialog_property_string_run(list_string_value_positive_int,(void*)&liq->wave.length,0,0,0);
+			break;
+
+		case kLiquidPropertyWaveHigh:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&liq->wave.high,0,0,0);
 			break;
 
 		case kLiquidPropertyWavePeriodMSec:

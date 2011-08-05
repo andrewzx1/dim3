@@ -54,8 +54,9 @@ bool model_draw_setup_initialize(model_type *model,model_draw_setup *draw_setup,
 	mesh=model->meshes;
 	
 	for (n=0;n!=model->nmesh;n++) {
+
 		sz=(mesh->nvertex*3)*sizeof(float);
-		
+
 		draw_setup->mesh_arrays[n].gl_vertex_array=(float*)malloc(sz);
 		if (draw_setup->mesh_arrays[n].gl_vertex_array==NULL) return(FALSE);
 		bzero(draw_setup->mesh_arrays[n].gl_vertex_array,sz);

@@ -50,7 +50,12 @@ texture_font_type					txt_font;
 
 void text_initialize(void)
 {
-	strcpy(txt_font.name,"Arial");
+	int				n;
+
+	for (n=0;n!=max_iface_font_variant;n++) {
+		strcpy(txt_font.name[n],"Arial");
+	}
+
 	bitmap_text_initialize(&txt_font);
 }
 

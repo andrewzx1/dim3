@@ -624,7 +624,8 @@ extern view_light_spot_type* gl_light_find_closest_light(double x,double y,doubl
 extern void gl_lights_calc_ambient_color(d3col *col);
 extern void gl_lights_calc_diffuse_vector(d3pnt *pnt,int count,int *indexes,d3vct *vct);
 extern void gl_lights_calc_color(double x,double y,double z,float *cf);
-extern void gl_lights_calc_color_light_cache(int count,int *indexes,bool skip_light_map,double x,double y,double z,float *cf);
+extern void gl_lights_calc_color_light_cache_byte(int count,int *indexes,bool skip_light_map,double x,double y,double z,unsigned char *cp);
+extern void gl_lights_calc_color_light_cache_float(int count,int *indexes,bool skip_light_map,double x,double y,double z,float *cp);
 extern void gl_lights_build_poly_light_list(int mesh_idx,map_mesh_poly_type *poly,view_light_list_type *light_list);
 extern void gl_lights_build_liquid_light_list(map_liquid_type *liq,view_light_list_type *light_list);
 extern void gl_lights_build_model_light_list(model_type *mdl,model_draw *draw,view_light_list_type *light_list);
@@ -636,10 +637,10 @@ extern void gl_lights_build_model_light_list(model_type *mdl,model_draw *draw,vi
 extern void view_create_vertex_objects(void);
 extern void view_dispose_vertex_objects(void);
 
-extern void view_create_mesh_liquid_vertex_object(map_vbo_type *vbo,int vertex_data_count,int vertex_count,int index_count);
+extern void view_create_mesh_liquid_vertex_object(map_vbo_type *vbo,int vertex_count,int vertex_mem_sz,int index_count);
 extern void view_dispose_mesh_liquid_vertex_object(map_vbo_type *vbo);
 extern inline void view_bind_mesh_liquid_vertex_object(map_vbo_type *vbo);
-extern inline float* view_map_mesh_liquid_vertex_object(map_vbo_type *vbo);
+extern inline unsigned char* view_map_mesh_liquid_vertex_object(map_vbo_type *vbo);
 extern inline void view_unmap_mesh_liquid_vertex_object(void);
 extern inline void view_unbind_mesh_liquid_vertex_object(void);
 extern inline void view_bind_mesh_liquid_index_object(map_vbo_type *vbo);

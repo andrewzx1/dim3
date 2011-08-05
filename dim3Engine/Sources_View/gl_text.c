@@ -45,10 +45,14 @@ texture_font_type			fonts[2];
 
 void gl_text_initialize(void)
 {
-	strcpy(fonts[font_interface_index].name,iface.font.interface_name);
-	bitmap_text_initialize(&fonts[font_interface_index]);
+	int			n;
 
-	strcpy(fonts[font_hud_index].name,iface.font.hud_name);
+	for (n=0;n!=max_iface_font_variant;n++) {
+		strcpy(fonts[font_interface_index].name[n],iface.font.interface_name[n]);
+		strcpy(fonts[font_hud_index].name[n],iface.font.hud_name[n]);
+	}
+
+	bitmap_text_initialize(&fonts[font_interface_index]);
 	bitmap_text_initialize(&fonts[font_hud_index]);
 }
 
