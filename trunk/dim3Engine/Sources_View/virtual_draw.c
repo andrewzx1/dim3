@@ -48,7 +48,7 @@ extern render_info_type		render_info;
 
 void virtual_stick_draw(iface_virtual_stick_type *stick)
 {
-	int					hx,hy,lft,rgt,top,bot;
+	int					hx,hy,bx,by,lft,rgt,top,bot;
 	float				fx,fy;
 	bitmap_type			*bitmap;
 
@@ -67,13 +67,18 @@ void virtual_stick_draw(iface_virtual_stick_type *stick)
 	hx=stick->x_size>>1;
 	hy=stick->y_size>>1;
 	
+	bx=stick->x_size>>2;
+	by=stick->y_size>>2;
+	
 	fx=((float)hx)*stick->touch_x;
 	fy=((float)hy)*stick->touch_y;
 
 	lft=(stick->x+hx)+(int)fx;
-	rgt=lft+(stick->x_size>>2);
+	lft-=(bx>>1);
+	rgt=lft+bx;
 	top=(stick->y+hy)+(int)fy;
-	bot=top+(stick->y_size>>2);
+	top-=(by>>1);
+	bot=top+by;
 	bitmap=view_images_get_bitmap(stick->inner_image_idx);
 	
 	view_draw_next_vertex_object_2D_texture_quad(bitmap->gl_id,&stick->color,1.0f,lft,rgt,top,bot,0.0f,1.0f,0.0f,1.0f);

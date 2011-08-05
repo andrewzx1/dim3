@@ -552,8 +552,10 @@ void view_loop_draw(void)
 	
 		// virtual controls
 		
+#ifdef D3_OS_IPHONE
 	virtual_control_draw();
-	
+#endif
+
 		// menu
 
 	menu_draw();

@@ -1174,7 +1174,6 @@ void list_palette_draw(list_palette_type *list)
 		// check if scrolling is bad,
 		// usually when a page was switched
 		
-		
 	if (list->scroll_page>list_palette_get_scroll_page_count(list)) list->scroll_page=0;
 
 		// items

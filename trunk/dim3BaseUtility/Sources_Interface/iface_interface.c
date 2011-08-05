@@ -319,7 +319,7 @@ void iface_read_settings_virtual_control(iface_type *iface,int virtual_head_tag)
 
 			button->on=xml_get_attribute_boolean(tag,"on");
 			button->use_bitmap=xml_get_attribute_boolean(tag,"use_bitmap");
-			button->control_idx=xml_get_attribute_int(tag,"control");
+			button->control_idx=xml_get_attribute_int_default(tag,"control",0);
 			button->x=xml_get_attribute_int(tag,"x");
 			button->y=xml_get_attribute_int(tag,"y");
 			button->x_size=xml_get_attribute_int(tag,"x_size");

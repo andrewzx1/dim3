@@ -81,7 +81,7 @@ void input_touch_initialize(void)
 		stick->touch_x=0.0f;
 		stick->touch_y=0.0f;
 
-		sticks++;
+		stick++;
 	}
 }
 

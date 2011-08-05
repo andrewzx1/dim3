@@ -200,6 +200,7 @@ void iface_default_settings(iface_type *iface)
 
 	for (n=0;n!=max_virtual_button;n++) {
 		iface->virtual_control.buttons[n].on=FALSE;
+		iface->virtual_control.buttons[n].control_idx=0;
 		iface->virtual_control.buttons[n].color.r=iface->virtual_control.buttons[n].color.g=iface->virtual_control.buttons[n].color.b=1.0f;
 	}
 
