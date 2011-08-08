@@ -105,10 +105,10 @@ void input_clear(void)
 
 		// clear keyboard, mouse, joystick, and touch
 		
-	input_clear_keyboard();
-	input_clear_mouse();
-	input_clear_joystick();
-	input_clear_touch();
+	input_keyboard_clear();
+	input_mouse_clear();
+	input_joystick_clear();
+	input_touch_clear();
 }
 
 /* =======================================================
@@ -237,7 +237,7 @@ bool input_set_key_wait(char *name)
 	if (input_check_joystick_ok()) {
 
 		for (n=0;n!=input_max_joystick_button;n++) {
-			if (input_get_joystick_button(n)) {
+			if (input_joystick_get_button(n)) {
 				strcpy(name,joystick_button_define_str[n]);
 				return(TRUE);
 			}
@@ -544,7 +544,7 @@ bool input_action_get_state(int action_index)
 				// joystick buttons
 				
 			case input_type_joystick_button:
-				if (input_get_joystick_button(item->index)) return(TRUE);
+				if (input_joystick_get_button(item->index)) return(TRUE);
 				break;
 				
 		}

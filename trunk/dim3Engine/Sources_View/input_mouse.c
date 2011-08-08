@@ -74,7 +74,7 @@ void input_mouse_shutdown(void)
       
 ======================================================= */
 
-void input_clear_mouse(void)
+void input_mouse_clear(void)
 {
 	int				n;
 	
@@ -125,7 +125,7 @@ void input_mouse_resume(void)
 		// pump out any changes
 
 	input_event_pump();
-	input_clear_mouse();
+	input_mouse_clear();
 }
 
 /* =======================================================
@@ -237,7 +237,7 @@ void input_mouse_gui_set_position(int x,int y)
 {
 		// clear mouse
 		
-	input_clear_mouse();
+	input_mouse_clear();
 	
 		// center to window
 		

@@ -48,8 +48,10 @@ extern render_info_type		render_info;
 
 void virtual_stick_draw(iface_virtual_stick_type *stick)
 {
-	int					hx,hy,bx,by,lft,rgt,top,bot;
-	float				fx,fy;
+	int					x,y,sx,sy,bx,by,lft,rgt,top,bot,
+						radius;
+	float				f_outer_radius;
+	d3vct				vct;
 	bitmap_type			*bitmap;
 
 	if (!stick->use_bitmap) return;
@@ -58,29 +60,46 @@ void virtual_stick_draw(iface_virtual_stick_type *stick)
 
 	rgt=stick->x+stick->x_size;
 	bot=stick->y+stick->y_size;
-	bitmap=view_images_get_bitmap(stick->outer_image_idx);
 	
+	bitmap=view_images_get_bitmap(stick->outer_image_idx);
 	view_draw_next_vertex_object_2D_texture_quad(bitmap->gl_id,&stick->color,1.0f,stick->x,rgt,stick->y,bot,0.0f,1.0f,0.0f,1.0f);
 
-		// inner stick
-
-	hx=stick->x_size>>1;
-	hy=stick->y_size>>1;
+		// inner stick location
+		
+	sx=stick->x_size>>1;
+	sy=stick->y_size>>1;
 	
+	x=(int)(((float)sx)*stick->touch_x);
+	y=(int)(((float)sy)*stick->touch_y);
+	
+		// make sure it's within circle
+		
+	radius=(int)sqrt((double)(x*x)+(double)(y*y));
+	if (radius>stick->outer_radius) {
+	
+		vct.x=(float)x;
+		vct.y=(float)y;
+		vct.z=0.0f;
+		vector_normalize(&vct);
+		
+		f_outer_radius=(float)stick->outer_radius;
+		x=(int)(vct.x*f_outer_radius);
+		y=(int)(vct.y*f_outer_radius);
+	
+	}
+
 	bx=stick->x_size>>2;
 	by=stick->y_size>>2;
-	
-	fx=((float)hx)*stick->touch_x;
-	fy=((float)hy)*stick->touch_y;
 
-	lft=(stick->x+hx)+(int)fx;
+	lft=(stick->x+sx)+x;
 	lft-=(bx>>1);
 	rgt=lft+bx;
-	top=(stick->y+hy)+(int)fy;
+	
+	top=(stick->y+sy)+y;
 	top-=(by>>1);
 	bot=top+by;
-	bitmap=view_images_get_bitmap(stick->inner_image_idx);
 	
+	bitmap=view_images_get_bitmap(stick->inner_image_idx);
 	view_draw_next_vertex_object_2D_texture_quad(bitmap->gl_id,&stick->color,1.0f,lft,rgt,top,bot,0.0f,1.0f,0.0f,1.0f);
 }
 

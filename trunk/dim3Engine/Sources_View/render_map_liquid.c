@@ -36,8 +36,11 @@ extern server_type			server;
 extern view_type			view;
 extern setup_type			setup;
 
-extern bitmap_type		lmap_black_bitmap;
+extern bitmap_type			lmap_black_bitmap;
 
+float						liquid_normal_cycle_xz[4]={0.0f,0.5f,0.0f,-0.5f},
+							liquid_normal_cycle_y[4]={-1.0f,-0.5f,-1.0f,-0.5f};
+							
 /* =======================================================
 
       Liquid Tides
@@ -104,7 +107,7 @@ int liquid_wave_get_divisions(map_liquid_type *liq)
 void liquid_wave_get_high(map_liquid_type *liq,float *wave_y)
 {
 	float			f,fy,f_time,cs;
-
+	
 		// start with the tide height
 
 	fy=((float)liq->y)-liquid_tide_get_high(liq);
@@ -124,7 +127,7 @@ void liquid_wave_get_high(map_liquid_type *liq,float *wave_y)
 		// waves are sin waves
 
 	cs=(float)cos((TRIG_PI*2.0f)*f_time);
-	f=((float)liq->tide.high)*cs;
+	f=((float)liq->wave.high)*cs;
 	
 	wave_y[0]=fy-f;
 	wave_y[1]=wave_y[3]=fy-(f*0.5f);
@@ -151,7 +154,7 @@ bool liquid_is_transparent(map_liquid_type *liq)
       
 ======================================================= */
 
-bool liquid_render_liquid_create_vertex(map_liquid_type *liq,float uv_shift,bool is_overaly)
+bool liquid_render_liquid_create_vertex(map_liquid_type *liq,float uv_shift,bool is_overlay)
 {
 	int				k,div,div_count,lft,rgt,top,bot,
 					top_add,lft_add;
@@ -161,6 +164,7 @@ bool liquid_render_liquid_create_vertex(map_liquid_type *liq,float uv_shift,bool
 	float			*vl,*uv,*uv2,*ct,*cn;
 	unsigned char	*vertex_ptr,*cl;
 	bool			shader_on;
+	d3vct			normal;
 	
 		// setup vbo
 		// shaders don't need light lists
@@ -171,17 +175,19 @@ bool liquid_render_liquid_create_vertex(map_liquid_type *liq,float uv_shift,bool
 
 	vertex_ptr=view_map_mesh_liquid_vertex_object(&liq->vbo);
 	if (vertex_ptr==NULL) return(FALSE);
+	
+		// uv shift tick
+		
+	f_tick=((float)game_time_get())*0.001f;
 
 		// liquid texture uvs
 		
-	if (is_overaly) {
-		f_tick=((float)game_time_get())*0.001f;
-
-		gx_add=f_tick*liq->x_shift;
+	if (is_overlay) {
+		gx_add=f_tick*liq->overlay.x_shift;
 		k=(int)gx_add;
 		gx_add=gx_add-(float)k;
 		
-		gy_add=f_tick*liq->y_shift;
+		gy_add=f_tick*liq->overlay.y_shift;
 		k=(int)gy_add;
 		gy_add=gy_add-(float)k;
 
@@ -208,8 +214,16 @@ bool liquid_render_liquid_create_vertex(map_liquid_type *liq,float uv_shift,bool
 		gy2+=gy_add;
 	}
 	else {
-		gx=liq->main_uv.x_offset;
-		gy=liq->main_uv.y_offset;
+		gx_add=f_tick*liq->x_shift;
+		k=(int)gx_add;
+		gx_add=gx_add-(float)k;
+		
+		gy_add=f_tick*liq->y_shift;
+		k=(int)gy_add;
+		gy_add=gy_add-(float)k;
+
+		gx=liq->main_uv.x_offset+gx_add;
+		gy=liq->main_uv.y_offset+gy_add;
 
 		gx2=gx+liq->main_uv.x_size;
 		gy2=gy+liq->main_uv.y_size;
@@ -360,14 +374,29 @@ bool liquid_render_liquid_create_vertex(map_liquid_type *liq,float uv_shift,bool
 			*ct++=1.0f;
 			*ct++=0.0f;
 			*ct++=0.0f;
-
-			*cn++=0.0f;
-			*cn++=-1.0f;
-			*cn++=0.0f;
 			
-			*cn++=0.0f;
-			*cn++=-1.0f;
-			*cn++=0.0f;
+			normal.x=0.0f;
+			normal.y=-1.0f;
+			normal.z=0.0f;
+
+			if (liq->wave.on) {
+				if (liq->wave.dir_north_south) {
+					normal.z=liquid_normal_cycle_xz[div&0x3];
+					normal.y=liquid_normal_cycle_y[div&0x3];
+				}
+				else {
+					normal.x=liquid_normal_cycle_xz[div&0x3];
+					normal.y=liquid_normal_cycle_y[div&0x3];
+				}
+			}
+			
+			*cn++=normal.x;
+			*cn++=normal.y;
+			*cn++=normal.z;
+			
+			*cn++=normal.x;
+			*cn++=normal.y;
+			*cn++=normal.z;
 		}
 
 			// division changes
@@ -641,14 +670,6 @@ void render_map_liquid_opaque(void)
 	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_TRUE);
 
-	glEnableClientState(GL_VERTEX_ARRAY);
-	
-	glClientActiveTexture(GL_TEXTURE1);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	
-	glClientActiveTexture(GL_TEXTURE0);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	
 		// draw opaque liquids
 		
 	for (n=0;n!=view.render->draw_list.count;n++) {
@@ -659,16 +680,6 @@ void render_map_liquid_opaque(void)
 			}
 		}
 	}
-
-		// common finish
-		
-	glDisableClientState(GL_VERTEX_ARRAY);
-
-	glClientActiveTexture(GL_TEXTURE1);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-
-	glClientActiveTexture(GL_TEXTURE0);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 }
 
 void render_map_liquid_transparent(void)
@@ -693,14 +704,6 @@ void render_map_liquid_transparent(void)
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_FALSE);
-	
-	glEnableClientState(GL_VERTEX_ARRAY);
-	
-	glClientActiveTexture(GL_TEXTURE1);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	
-	glClientActiveTexture(GL_TEXTURE0);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
 		// draw transparent liquids
 		
@@ -712,15 +715,5 @@ void render_map_liquid_transparent(void)
 			}
 		}
 	}
-
-		// common finish
-		
-	glDisableClientState(GL_VERTEX_ARRAY);
-
-	glClientActiveTexture(GL_TEXTURE1);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-
-	glClientActiveTexture(GL_TEXTURE0);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 }
 

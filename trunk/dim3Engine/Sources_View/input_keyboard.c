@@ -72,7 +72,7 @@ unsigned char				key_states[1024];
       
 ======================================================= */
 
-void input_clear_keyboard(void)
+void input_keyboard_clear(void)
 {
 	bzero(key_states,1024);
 	bzero(text_input_keys,(sizeof(int)*text_input_keys_count));

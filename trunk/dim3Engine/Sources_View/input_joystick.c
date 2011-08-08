@@ -88,7 +88,7 @@ bool input_check_joystick_ok(void)
       
 ======================================================= */
 
-void input_clear_joystick(void)
+void input_joystick_clear(void)
 {
 	int				n;
 	
@@ -116,7 +116,7 @@ void input_event_joystick_button(int button,bool down)
       
 ======================================================= */
 
-float input_get_joystick_axis(int axis)
+float input_joystick_get_axis(int axis)
 {
 	float				f;
 	
@@ -131,17 +131,17 @@ float input_get_joystick_axis(int axis)
 	return(f+(f*setup.joystick.acceleration));
 }
 
-bool input_get_joystick_axis_as_button_min(int axis)
+bool input_joystick_get_axis_as_button_min(int axis)
 {
 	return(SDL_JoystickGetAxis(input_joystick,axis)<-8192);
 }
 
-bool input_get_joystick_axis_as_button_max(int axis)
+bool input_joystick_get_axis_as_button_max(int axis)
 {
 	return(SDL_JoystickGetAxis(input_joystick,axis)>8192);
 }
 
-bool input_get_joystick_button(int button)
+bool input_joystick_get_button(int button)
 {
 		// regular joystick input buttons
 		

@@ -795,11 +795,13 @@ void read_single_liquid_v3(map_type *map,int liquid_idx,int liquid_tag)
 		liq->overlay.on=xml_get_attribute_boolean(tag,"on");
 		liq->overlay.txt_idx=xml_get_attribute_int(tag,"txt_idx");
 		liq->overlay.stamp_size=xml_get_attribute_int(tag,"stamp_size");
+		xml_get_attribute_2_coord_float(tag,"shift",&liq->overlay.x_shift,&liq->overlay.y_shift);
 	}
 	else {
 		liq->overlay.on=FALSE;
 		liq->overlay.txt_idx=-1;
 		liq->overlay.stamp_size=10000;
+		liq->overlay.x_shift=liq->overlay.y_shift=0.0f;
 	}
 }
 

@@ -45,10 +45,6 @@ and can be sold or given away.
       
 ======================================================= */
 
-	// supergumba -- NEED TO PUT COCOA STUBS IN ARCHIVE!
-  //  (UIFont *)fontWithName:(NSString *)fontName size:(CGFloat)fontSize = nil
-// put impact back in demo, and put in marker felt for alt
-
 #if defined(D3_OS_MAC) || defined(D3_OS_IPHONE)
 
 bool bitmap_text_font_exist(char *name)

@@ -40,6 +40,7 @@ extern server_type			server;
 extern iface_type			iface;
 extern setup_type			setup;
 extern js_type				js;
+extern network_setup_type	net_setup;
 
 int							title_fade_tick,title_fade_mode,title_event_id,title_last_state,
 							title_start_tick,title_life_tick;
@@ -78,9 +79,21 @@ void title_open(void)
 
 void title_close(void)
 {
+	obj_type		*obj;
+	
 	gui_shutdown();
 
-	if (title_event_id!=-1) scripts_post_event_console(js.game_script_idx,-1,sd_event_interface,sd_event_interface_title_done,title_event_id);
+	if (title_event_id==-1) return;
+	
+		// events
+		
+	scripts_post_event_console(js.game_script_idx,-1,sd_event_interface,sd_event_interface_title_done,title_event_id);
+	scripts_post_event_console(js.course_script_idx,-1,sd_event_interface,sd_event_interface_title_done,title_event_id);
+
+	if ((server.game_open) && (net_setup.mode!=net_mode_host_dedicated)) {
+		obj=server.obj_list.objs[server.player_obj_idx];
+		scripts_post_event_console(obj->script_idx,-1,sd_event_interface,sd_event_interface_title_done,title_event_id);
+	}
 }
 
 bool title_setup(char *dir,char *name,char *sound_name,int life_tick,int event_id,char *err_str)

@@ -479,14 +479,6 @@ void render_map_mesh_transparent(void)
 	
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-	
-	glEnableClientState(GL_VERTEX_ARRAY);
-	
-	glClientActiveTexture(GL_TEXTURE1);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	
-	glClientActiveTexture(GL_TEXTURE0);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
 		// draw the polygons
 
@@ -500,14 +492,6 @@ void render_map_mesh_transparent(void)
 	render_transparent_mesh_glow();
 
 		// put depth mask back
-		
-	glDisableClientState(GL_VERTEX_ARRAY);
-
-	glClientActiveTexture(GL_TEXTURE1);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-
-	glClientActiveTexture(GL_TEXTURE0);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 		
 	glDepthMask(GL_TRUE);
 }

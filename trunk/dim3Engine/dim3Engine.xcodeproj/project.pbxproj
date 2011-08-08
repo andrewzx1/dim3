@@ -24,6 +24,7 @@
 		262955440F9E5C4B00763482 /* render_shadow.c in Sources */ = {isa = PBXBuildFile; fileRef = 262955430F9E5C4B00763482 /* render_shadow.c */; };
 		262CFBBA1212046200BD4214 /* gl_es_patches.c in Sources */ = {isa = PBXBuildFile; fileRef = 262CFBB91212046200BD4214 /* gl_es_patches.c */; };
 		263722E911E83E5000BE22EA /* script_map_polygon.c in Sources */ = {isa = PBXBuildFile; fileRef = 263722E811E83E5000BE22EA /* script_map_polygon.c */; };
+		2638D24513EDAD2300029B18 /* view_primitive.c in Sources */ = {isa = PBXBuildFile; fileRef = 2638D24413EDAD2300029B18 /* view_primitive.c */; };
 		2638FED413E253F400EA1640 /* input_touch.c in Sources */ = {isa = PBXBuildFile; fileRef = 2638FED313E253F400EA1640 /* input_touch.c */; };
 		263EF8C00FD9CFEE00FEB1E5 /* script_multiplayer_score.c in Sources */ = {isa = PBXBuildFile; fileRef = 263EF8BF0FD9CFEE00FEB1E5 /* script_multiplayer_score.c */; };
 		2643482513E51B3800920D9B /* virtual_draw.c in Sources */ = {isa = PBXBuildFile; fileRef = 2643482413E51B3800920D9B /* virtual_draw.c */; };
@@ -376,6 +377,7 @@
 		262955430F9E5C4B00763482 /* render_shadow.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = render_shadow.c; path = Sources_View/render_shadow.c; sourceTree = "<group>"; };
 		262CFBB91212046200BD4214 /* gl_es_patches.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = gl_es_patches.c; path = Sources_View/gl_es_patches.c; sourceTree = "<group>"; };
 		263722E811E83E5000BE22EA /* script_map_polygon.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = script_map_polygon.c; path = Sources_Server/script_map_polygon.c; sourceTree = "<group>"; };
+		2638D24413EDAD2300029B18 /* view_primitive.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = view_primitive.c; path = Sources_View/view_primitive.c; sourceTree = "<group>"; };
 		2638FED313E253F400EA1640 /* input_touch.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = input_touch.c; path = Sources_View/input_touch.c; sourceTree = "<group>"; };
 		263EF8BF0FD9CFEE00FEB1E5 /* script_multiplayer_score.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = script_multiplayer_score.c; path = Sources_Server/script_multiplayer_score.c; sourceTree = "<group>"; };
 		2643482413E51B3800920D9B /* virtual_draw.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = virtual_draw.c; path = Sources_View/virtual_draw.c; sourceTree = "<group>"; };
@@ -1144,6 +1146,7 @@
 				F5DD19E00908310200721649 /* view_setup.c */,
 				F5DD19DE0908310200721649 /* view_vertex_list.c */,
 				26101DCD0E5D075100D2919B /* view_vertex_object.c */,
+				2638D24413EDAD2300029B18 /* view_primitive.c */,
 				F5DD19E10908310200721649 /* view_draw.c */,
 				26A60BD411CC1DCF00E9AB33 /* view_draw_debug.c */,
 				F5DD19A70908101700721649 /* player_input.c */,
@@ -1747,6 +1750,7 @@
 				26F8AA7E133547770020367E /* console.c in Sources */,
 				2638FED413E253F400EA1640 /* input_touch.c in Sources */,
 				2643482513E51B3800920D9B /* virtual_draw.c in Sources */,
+				2638D24513EDAD2300029B18 /* view_primitive.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -43,7 +43,7 @@ extern setup_type			setup;
 
 bool view_map_vbo_initialize_mesh(map_mesh_type *mesh)
 {
-	int					n,k,vertex_cnt;
+	int					n,k;
 	unsigned short		idx;
 	unsigned short		*index_ptr;
 	float				*pv,*pt,*pn,*pp;
@@ -56,8 +56,6 @@ bool view_map_vbo_initialize_mesh(map_mesh_type *mesh)
 	
 		// setup vertex pointer
 
-	vertex_cnt=mesh->vbo.vertex_count;
-
 	view_bind_mesh_liquid_vertex_object(&mesh->vbo);
 	vertex_ptr=view_map_mesh_liquid_vertex_object(&mesh->vbo);
 	if (vertex_ptr==NULL) return(FALSE);
@@ -65,11 +63,11 @@ bool view_map_vbo_initialize_mesh(map_mesh_type *mesh)
 	pv=(float*)vertex_ptr;
 	
 	if (shader_on) {
-		pt=(float*)(vertex_ptr+((vertex_cnt*(3+2+2))*sizeof(float)));
-		pn=(float*)(vertex_ptr+((vertex_cnt*(3+3+2+2))*sizeof(float)));
+		pt=(float*)(vertex_ptr+((mesh->vbo.vertex_count*(3+2+2))*sizeof(float)));
+		pn=(float*)(vertex_ptr+((mesh->vbo.vertex_count*(3+3+2+2))*sizeof(float)));
 	}
 	else {
-		pc=vertex_ptr+((vertex_cnt*(3+2+2))*sizeof(float));
+		pc=vertex_ptr+((mesh->vbo.vertex_count*(3+2+2))*sizeof(float));
 	}
 
 		// vertexes, tangents, normals and color
@@ -97,7 +95,7 @@ bool view_map_vbo_initialize_mesh(map_mesh_type *mesh)
 				*pn++=poly->tangent_space.normal.z;
 			}
 			else {
-				*pc++=0xFF;
+				*pc++=0x0;
 				*pc++=0x0;
 				*pc++=0x0;
 				*pc++=0xFF;
@@ -109,7 +107,7 @@ bool view_map_vbo_initialize_mesh(map_mesh_type *mesh)
 	
 		// main UVs
 
-	pp=(float*)(vertex_ptr+((vertex_cnt*3)*sizeof(float)));
+	pp=(float*)(vertex_ptr+((mesh->vbo.vertex_count*3)*sizeof(float)));
 
 	poly=mesh->polys;
 			
@@ -475,7 +473,7 @@ void view_map_vbo_rebuild_mesh(map_mesh_type *mesh)
 				if (vertex_ptr==NULL) return;
 			}
 
-			pc=vertex_ptr+((mesh->vbo.vertex_count*(3+2+2))*sizeof(float));
+			pc=vertex_ptr+(((mesh->vbo.vertex_count*(3+2+2))*sizeof(float)));
 		
 				// colors when only ambient lighting
 				
@@ -517,9 +515,9 @@ void view_map_vbo_rebuild_mesh(map_mesh_type *mesh)
 			
 					for (k=0;k!=poly->ptsz;k++) {
 						pc2=mesh->draw.colors_cache+(poly->v[k]*3);
-						*pc++=(unsigned char)((*pc2++)*255.0f);
-						*pc++=(unsigned char)((*pc2++)*255.0f);
-						*pc++=(unsigned char)((*pc2)*255.0f);
+						*pc++=*pc2++;
+						*pc++=*pc2++;
+						*pc++=*pc2;
 						*pc++=0xFF;
 					}
 

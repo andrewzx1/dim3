@@ -90,12 +90,9 @@ void effect_draw_lightning_lines(int nline,float varient,int k,int sx,int sy,int
 	
          // draw the lines
 
-	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(3,GL_FLOAT,0,(GLvoid*)0);
 
 	glDrawArrays(GL_LINES,0,(nline*2));
-
-	glDisableClientState(GL_VERTEX_ARRAY);
 
 	view_unbind_current_vertex_object();
 }
@@ -151,7 +148,6 @@ void effect_draw_lightning(effect_type *effect)
 	alpha=0.6f;
 
 	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
 	glDisable(GL_ALPHA_TEST);
 
@@ -160,6 +156,20 @@ void effect_draw_lightning(effect_type *effect)
 	glDepthMask(GL_FALSE);
 		
 	glDisable(GL_LINE_SMOOTH);
+	
+	glLineWidth((float)(wid*3));
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE);
+	glColor4f(col->r,col->g,col->b,0.2f);
+	effect_draw_lightning_lines(nline,varient,k,sx,sy,sz,ex,ey,ez,xadd,yadd,zadd);
+
+	glLineWidth((float)wid);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+	glColor4f(col->r,col->g,col->b,0.6f);
+	effect_draw_lightning_lines(nline,varient,k,sx,sy,sz,ex,ey,ez,xadd,yadd,zadd);
+
+	glLineWidth(1.0f);
+	
+	/*
 	
 	if (wid>2) {
 		glLineWidth((float)wid);
@@ -183,7 +193,8 @@ void effect_draw_lightning(effect_type *effect)
 		glColor4f(1.0f,1.0f,1.0f,alpha);
 	}
 	effect_draw_lightning_lines(nline,varient,k,sx,sy,sz,ex,ey,ez,xadd,yadd,zadd);
-    
+    */
+	
 	glEnable(GL_LINE_SMOOTH);
 }
 
@@ -250,7 +261,6 @@ void effect_draw_ray(effect_type *effect,int count)
 	
          // setup drawing
 
-	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(3,GL_FLOAT,0,(GLvoid*)0);
 
         // draw lines
@@ -295,8 +305,6 @@ void effect_draw_ray(effect_type *effect,int count)
 	glEnable(GL_LINE_SMOOTH);
 
 		// unbind the vbo
-
-	glDisableClientState(GL_VERTEX_ARRAY);
 
 	view_unbind_current_vertex_object();
 }

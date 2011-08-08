@@ -116,7 +116,9 @@ void rain_draw(void)
 	int				n,tick,xadd,yadd,zadd,ypush,density,
 					slant_add,slant_mult,slant_div;
 	float			slant_ang_y;
-	float			*vertex_ptr,*col_ptr;
+	float			*vertex_ptr;
+	unsigned char	*col_ptr;
+	unsigned char	start_r,start_g,start_b,end_r,end_g,end_b,uc_alpha;
 	rain_draw_type	*rain_draw;
 
 		// is rain on and not under liquid?
@@ -189,7 +191,19 @@ void rain_draw(void)
 	vertex_ptr=view_bind_map_next_vertex_object(((density*2)*(3+4)));
 	if (vertex_ptr==NULL) return;
 
-	col_ptr=vertex_ptr+((density*2)*3);
+	col_ptr=(unsigned char*)(vertex_ptr+((density*2)*3));
+	
+		// uc rain colors
+		
+	start_r=(unsigned char)(map.rain.start_color.r*255.0f);
+	start_g=(unsigned char)(map.rain.start_color.g*255.0f);
+	start_b=(unsigned char)(map.rain.start_color.b*255.0f);
+	
+	end_r=(unsigned char)(map.rain.end_color.r*255.0f);
+	end_g=(unsigned char)(map.rain.end_color.g*255.0f);
+	end_b=(unsigned char)(map.rain.end_color.b*255.0f);
+	
+	uc_alpha=(unsigned char)(map.rain.alpha*255.0f);
 
 		// create vertexes
 
@@ -211,19 +225,19 @@ void rain_draw(void)
 		*vertex_ptr++=(float)rain_draw->y;
 		*vertex_ptr++=(float)rain_draw->z;
 
-		*col_ptr++=map.rain.start_color.r;
-		*col_ptr++=map.rain.start_color.g;
-		*col_ptr++=map.rain.start_color.b;
-		*col_ptr++=map.rain.alpha;
+		*col_ptr++=start_r;
+		*col_ptr++=start_g;
+		*col_ptr++=start_b;
+		*col_ptr++=uc_alpha;
 
 		*vertex_ptr++=(float)(rain_draw->x+xadd);
 		*vertex_ptr++=(float)(rain_draw->y+map.rain.line_length);
 		*vertex_ptr++=(float)(rain_draw->z+zadd);
 
-		*col_ptr++=map.rain.end_color.r;
-		*col_ptr++=map.rain.end_color.g;
-		*col_ptr++=map.rain.end_color.b;
-		*col_ptr++=map.rain.alpha;
+		*col_ptr++=end_r;
+		*col_ptr++=end_g;
+		*col_ptr++=end_b;
+		*col_ptr++=uc_alpha;
 
 		rain_draw++;
 	}
@@ -249,16 +263,14 @@ void rain_draw(void)
 
 	glLineWidth((float)map.rain.line_width);
 
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(3,GL_FLOAT,0,(GLvoid*)0);
-		
 	glEnableClientState(GL_COLOR_ARRAY);
-	glColorPointer(4,GL_FLOAT,0,(GLvoid*)(((density*2)*3)*sizeof(float)));
+	
+	glVertexPointer(3,GL_FLOAT,0,(GLvoid*)0);
+	glColorPointer(4,GL_UNSIGNED_BYTE,0,(GLvoid*)(((density*2)*3)*sizeof(float)));
 
 	glDrawArrays(GL_LINES,0,(density*2));
 
 	glDisableClientState(GL_COLOR_ARRAY);
-	glDisableClientState(GL_VERTEX_ARRAY);
 
 	glLineWidth(1);
 

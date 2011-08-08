@@ -1089,6 +1089,40 @@ void piece_poly_hole(void)
 
 /* =======================================================
 
+      Piece Liquid Reset
+      
+======================================================= */
+
+void piece_liquid_reset_size(map_liquid_type *liq)
+{
+	int				len,cnt;
+	
+	if (liq->wave.dir_north_south) {
+		len=liq->bot-liq->top;
+	}
+	else {
+		len=liq->rgt-liq->lft;
+	}
+	
+	cnt=len/liq->wave.length;
+	if ((len%liq->wave.length)!=0) cnt++;
+	
+	cnt=cnt/4;
+	if ((cnt%4)!=0) cnt++;
+	cnt=cnt*4;
+	
+	len=cnt*liq->wave.length;
+	
+	if (liq->wave.dir_north_south) {
+		liq->bot=liq->top+len;
+	}
+	else {
+		liq->rgt=liq->lft+len;
+	}
+}
+
+/* =======================================================
+
       Piece Keys
       
 ======================================================= */

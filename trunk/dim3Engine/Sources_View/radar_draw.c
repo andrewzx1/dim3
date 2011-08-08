@@ -131,11 +131,6 @@ void radar_draw(void)
 	
 	view_unmap_current_vertex_object();
 
-		// enable vertex drawing
-
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-
 		// draw background
 
 	glVertexPointer(2,GL_FLOAT,0,(GLvoid*)0);
@@ -285,10 +280,5 @@ void radar_draw(void)
 	}
 
 	gl_texture_simple_end();
-
-		// disable vertex drawing
-
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-	glDisableClientState(GL_VERTEX_ARRAY);
 }
 

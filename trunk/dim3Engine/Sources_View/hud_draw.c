@@ -114,11 +114,6 @@ void hud_bitmaps_draw(void)
 
 	gl_texture_simple_start();
 
-		// start vertex ptrs
-
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-
 		// timing for flashes and fades
 
 	tick=game_time_get();
@@ -334,11 +329,6 @@ void hud_bitmaps_draw(void)
 	}
 	
 	gl_texture_simple_end();
-
-		// disable vertex drawing
-
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 /* =======================================================
@@ -543,10 +533,9 @@ void hud_bars_draw(void)
 		
 			// find the color
 			
-		memmove(&fill_end_color,&bar->fill_end_color,sizeof(d3col));
-		fill_end_color.r+=((bar->fill_end_color.r-bar->fill_start_color.r)*bar->value);
-		fill_end_color.g+=((bar->fill_end_color.g-bar->fill_start_color.g)*bar->value);
-		fill_end_color.b+=((bar->fill_end_color.b-bar->fill_start_color.b)*bar->value);
+		fill_end_color.r=bar->fill_start_color.r+((bar->fill_end_color.r-bar->fill_start_color.r)*bar->value);
+		fill_end_color.g=bar->fill_start_color.g+((bar->fill_end_color.g-bar->fill_start_color.g)*bar->value);
+		fill_end_color.b=bar->fill_start_color.b+((bar->fill_end_color.b-bar->fill_start_color.b)*bar->value);
 		
 			// draw bar
 			

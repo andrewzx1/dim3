@@ -38,7 +38,7 @@ extern setup_type			setup;
 #define max_touch_state		4		// supergumba move
 
 typedef struct		{
-						int						id;
+						int						id,stick_idx;
 						bool					on;
 						d3pnt					pt;
 					} touch_state_type;
@@ -57,10 +57,13 @@ touch_state_type			touch_states[max_touch_state];
 
 void input_touch_initialize(void) {}
 void input_touch_shutdown(void) {}
-void input_clear_touch(void) {}
+void input_touch_clear(void) {}
 void input_touch_event_up(int finger_id) {}
 void input_touch_event_down(int touch_id,int finger_id,int x,int y) {}
 void input_touch_event_move(int touch_id,int finger_id,int x,int y) {}
+float input_touch_get_axis(int axis) { return(0.0f); }
+bool input_touch_get_axis_as_button_min(int axis) { return(FALSE); }
+bool input_touch_get_axis_as_button_max(int axis) { return(FALSE); }
 
 #else
 
@@ -73,6 +76,7 @@ void input_touch_event_move(int touch_id,int finger_id,int x,int y) {}
 void input_touch_initialize(void)
 {
 	int							n;
+	double						dx,dy;
 	iface_virtual_stick_type	*stick;
 
 	stick=&iface.virtual_control.sticks[n];
@@ -80,6 +84,10 @@ void input_touch_initialize(void)
 	for (n=0;n!=max_virtual_stick;n++) {
 		stick->touch_x=0.0f;
 		stick->touch_y=0.0f;
+		
+		dx=(double)(stick->x_size>>1);
+		dy=(double)(stick->y_size>>1);
+		stick->outer_radius=(int)sqrt((dx*dx)+(dy*dy));
 
 		stick++;
 	}
@@ -95,7 +103,7 @@ void input_touch_shutdown(void)
       
 ======================================================= */
 
-void input_clear_touch(void)
+void input_touch_clear(void)
 {
 	int				n;
 	
@@ -131,6 +139,71 @@ void input_touch_to_virtual_button(d3pnt *pt,bool down)
 
 /* =======================================================
 
+      Virtual Sticks
+      
+======================================================= */
+
+void input_touch_to_virtual_stick_move(touch_state_type *state)
+{
+	int							mx,my,sx,sy;
+	iface_virtual_stick_type	*stick;
+
+		// did this touch start in stick?
+		
+	if (state->stick_idx==-1) return;
+	
+		// still in stick?
+		
+	stick=&iface.virtual_control.sticks[state->stick_idx];
+		
+	if ((state->pt.x<stick->x) || (state->pt.x>(stick->x+stick->x_size)) || (state->pt.y<stick->y) || (state->pt.y>(stick->y+stick->y_size))) return;
+	
+		// move within stick
+		
+	sx=stick->x_size>>1;
+	mx=stick->x+sx;
+	
+	sy=stick->y_size>>1;
+	my=stick->y+sy;
+	
+	stick->touch_x=(float)(state->pt.x-mx)/(float)sx;
+	stick->touch_y=(float)(state->pt.y-my)/(float)sy;
+}
+
+void input_touch_to_virtual_stick_start(touch_state_type *state)
+{
+	int							n;
+	iface_virtual_stick_type	*stick;
+	
+	for (n=0;n!=max_virtual_stick;n++) {
+		stick=&iface.virtual_control.sticks[n];
+		if (!stick->on) continue;
+
+			// in this stick?
+			
+		if ((state->pt.x<stick->x) || (state->pt.x>(stick->x+stick->x_size)) || (state->pt.y<stick->y) || (state->pt.y>(stick->y+stick->y_size))) continue;
+		
+			// touch is now tied to this stick
+			
+		state->stick_idx=n;
+		input_touch_to_virtual_stick_move(state);
+		return;
+	}
+}
+
+void input_touch_to_virtual_stick_release(touch_state_type *state)
+{
+	iface_virtual_stick_type	*stick;
+
+	if (state->stick_idx==-1) return;
+	
+	stick=&iface.virtual_control.sticks[state->stick_idx];
+	stick->touch_x=0.0f;
+	stick->touch_y=0.0f;
+}
+
+/* =======================================================
+
       Handle Touch States
       
 ======================================================= */
@@ -158,6 +231,7 @@ void input_touch_state_add_up(int id)
 			if (state->id==id) {
 				state->on=FALSE;
 				input_touch_to_virtual_button(&state->pt,FALSE);
+				input_touch_to_virtual_stick_release(state);
 				return;
 			}
 		}
@@ -184,6 +258,7 @@ void input_touch_state_add_down(int id,d3pnt *pt)
 			if (state->id==id) {
 				state->pt.x=pt->x;
 				state->pt.y=pt->y;
+				input_touch_to_virtual_stick_move(state);
 				return;
 			}
 		}
@@ -203,10 +278,12 @@ void input_touch_state_add_down(int id,d3pnt *pt)
 	
 	state->on=TRUE;
 	state->id=id;
+	state->stick_idx=-1;
 	state->pt.x=pt->x;
 	state->pt.y=pt->y;
 
 	input_touch_to_virtual_button(&state->pt,TRUE);
+	input_touch_to_virtual_stick_start(state);
 }
 
 /* =======================================================
@@ -255,6 +332,45 @@ void input_touch_event_move(int touch_id,int finger_id,int x,int y)
 	
 	input_touch_scrub_point(&pt,touch_id,x,y);
 	input_touch_state_add_down(finger_id,&pt);
+}
+
+/* =======================================================
+
+      Touch Stick
+      
+======================================================= */
+
+float input_touch_get_axis(int axis)
+{
+	iface_virtual_stick_type	*stick;
+	
+		// get right stick
+		
+	if (axis<2) {
+		stick=&iface.virtual_control.sticks[0];
+	}
+	else {
+		stick=&iface.virtual_control.sticks[1];
+	}
+	
+		// if stick not on, always centered
+		
+	if (!stick->on) return(0.0f);
+	
+		// get right axis
+		
+	if ((axis==0) || (axis==2)) return(stick->touch_x);
+	return(stick->touch_y);
+}
+
+bool input_touch_get_axis_as_button_min(int axis)
+{
+	return(input_touch_get_axis(axis)<-0.75f);
+}
+
+bool input_touch_get_axis_as_button_max(int axis)
+{
+	return(input_touch_get_axis(axis)>0.75f);
 }
 
 /* =======================================================
