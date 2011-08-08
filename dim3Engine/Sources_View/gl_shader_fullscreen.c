@@ -316,16 +316,10 @@ void gl_fs_shader_render_finish(void)
 
 		// draw the quad
 
-	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(2,GL_FLOAT,0,(GLvoid*)0);
-
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)((4*2)*sizeof(float)));
 
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
-
- 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-	glDisableClientState(GL_VERTEX_ARRAY);
 
 		// end the shader
 

@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2638D23E13ED0A8D00029B18 /* bitmap_cocoa.m in Sources */ = {isa = PBXBuildFile; fileRef = 2638D23D13ED0A8D00029B18 /* bitmap_cocoa.m */; };
+		2638D24113ED0AD600029B18 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2638D24013ED0AD600029B18 /* UIKit.framework */; };
+		2638D27413EE446000029B18 /* view_primitive.c in Sources */ = {isa = PBXBuildFile; fileRef = 2638D27313EE446000029B18 /* view_primitive.c */; };
 		2643488313E63C1E00920D9B /* virtual_draw.c in Sources */ = {isa = PBXBuildFile; fileRef = 2643488213E63C1E00920D9B /* virtual_draw.c */; };
 		26A6841313DE405E007513D1 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26A6841213DE405E007513D1 /* UIKit.framework */; };
 		26A6841513DE405E007513D1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26A6841413DE405E007513D1 /* Foundation.framework */; };
@@ -429,6 +432,9 @@
 		2608F92013DE7355008D410D /* SDL_video.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDL_video.h; path = ../Libraries/SDL/SDL_video.h; sourceTree = "<group>"; };
 		2608F92113DE7355008D410D /* SDL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDL.h; path = ../Libraries/SDL/SDL.h; sourceTree = "<group>"; };
 		2608F92213DE7360008D410D /* mpg123.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mpg123.h; path = ../Libraries/MPG123/mpg123.h; sourceTree = "<group>"; };
+		2638D23D13ED0A8D00029B18 /* bitmap_cocoa.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = bitmap_cocoa.m; sourceTree = "<group>"; };
+		2638D24013ED0AD600029B18 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		2638D27313EE446000029B18 /* view_primitive.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = view_primitive.c; sourceTree = "<group>"; };
 		2643488213E63C1E00920D9B /* virtual_draw.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = virtual_draw.c; sourceTree = "<group>"; };
 		26A6840E13DE405E007513D1 /* dim3iPadEngine.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = dim3iPadEngine.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		26A6841213DE405E007513D1 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -851,6 +857,7 @@
 				26A6845313DE4277007513D1 /* libiOSJavaScriptCore.a in Frameworks */,
 				26D6C0E013E2442D0087FFD4 /* libstdc++.6.0.9.dylib in Frameworks */,
 				26D6C0E213E244400087FFD4 /* libicucore.A.dylib in Frameworks */,
+				2638D24113ED0AD600029B18 /* UIKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -887,6 +894,7 @@
 		26A6841113DE405E007513D1 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2638D24013ED0AD600029B18 /* UIKit.framework */,
 				26A6844813DE4213007513D1 /* OpenGLES.framework */,
 				26A6844613DE41F9007513D1 /* CoreAudio.framework */,
 				26A6844413DE41F1007513D1 /* AudioToolbox.framework */,
@@ -1066,6 +1074,7 @@
 			isa = PBXGroup;
 			children = (
 				26A6846E13DE456C007513D1 /* file_cocoa.m */,
+				2638D23D13ED0A8D00029B18 /* bitmap_cocoa.m */,
 			);
 			name = Cocoa_Stubs;
 			path = ../../dim3BaseUtility/Cocoa_Stubs;
@@ -1559,6 +1568,7 @@
 				26D6BFCA13E243510087FFD4 /* view_setup.c */,
 				26D6BFCB13E243510087FFD4 /* view_vertex_list.c */,
 				26D6BFCC13E243510087FFD4 /* view_vertex_object.c */,
+				2638D27313EE446000029B18 /* view_primitive.c */,
 				2643488213E63C1E00920D9B /* virtual_draw.c */,
 				26D6BFCD13E243510087FFD4 /* zoom_draw.c */,
 			);
@@ -1991,6 +2001,8 @@
 				26D6C0DE13E243510087FFD4 /* zoom_draw.c in Sources */,
 				26B48EB913E36132004F6CF6 /* input_touch.c in Sources */,
 				2643488313E63C1E00920D9B /* virtual_draw.c in Sources */,
+				2638D23E13ED0A8D00029B18 /* bitmap_cocoa.m in Sources */,
+				2638D27413EE446000029B18 /* view_primitive.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2020,6 +2032,7 @@
 		26A6843113DE405E007513D1 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = ../../dim3Engine/Headers/dim3engine.h;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -2049,6 +2062,7 @@
 				);
 				OTHER_LDFLAGS = "-lz";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos4.3;
 				WRAPPER_EXTENSION = app;
 			};

@@ -718,7 +718,7 @@ void gl_lights_calc_color(double x,double y,double z,float *cf)
 
 void gl_lights_calc_color_light_cache_byte(int count,int *indexes,bool skip_light_map,double x,double y,double z,unsigned char *cp)
 {
-	int						n;
+	int						n,k;
 	float					f,mult,r,g,b;
 	double					dx,dz,dy;
 	view_light_spot_type	*lspot;
@@ -754,10 +754,18 @@ void gl_lights_calc_color_light_cache_byte(int count,int *indexes,bool skip_ligh
 	}
 
 		// set light value
-
-	*cp++=(unsigned char)(((map.ambient.light_color.r+setup.gamma)+r)*255.0f);
-	*cp++=(unsigned char)(((map.ambient.light_color.g+setup.gamma)+g)*255.0f);
-	*cp=(unsigned char)(((map.ambient.light_color.b+setup.gamma)+b)*255.0f);
+		
+	k=(int)(((map.ambient.light_color.r+setup.gamma)+r)*255.0f);
+	if (k>255) k=255;
+	*cp++=(unsigned char)k;
+	
+	k=(int)(((map.ambient.light_color.g+setup.gamma)+g)*255.0f);
+	if (k>255) k=255;
+	*cp++=(unsigned char)k;
+	
+	k=(int)(((map.ambient.light_color.b+setup.gamma)+b)*255.0f);
+	if (k>255) k=255;
+	*cp=(unsigned char)k;
 }
 
 void gl_lights_calc_color_light_cache_float(int count,int *indexes,bool skip_light_map,double x,double y,double z,float *cp)
@@ -799,9 +807,17 @@ void gl_lights_calc_color_light_cache_float(int count,int *indexes,bool skip_lig
 
 		// set light value
 
-	*cp++=(map.ambient.light_color.r+setup.gamma)+r;
-	*cp++=(map.ambient.light_color.g+setup.gamma)+g;
-	*cp=(map.ambient.light_color.b+setup.gamma)+b;
+	f=(map.ambient.light_color.r+setup.gamma)+r;
+	if (f>1.0f) f=1.0f;
+	*cp++=f;
+	
+	f=(map.ambient.light_color.g+setup.gamma)+g;
+	if (f>1.0f) f=1.0f;
+	*cp++=f;
+	
+	f=(map.ambient.light_color.b+setup.gamma)+b;
+	if (f>1.0f) f=1.0f;
+	*cp=f;
 }
 
 /* =======================================================

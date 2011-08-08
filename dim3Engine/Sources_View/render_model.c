@@ -236,7 +236,7 @@ void render_model_vertex_object_no_shader(model_type *mdl,int mesh_idx,model_dra
 
 void render_model_vertex_object_no_shader_diffuse(model_type *mdl,int mesh_idx,model_draw *draw,unsigned char *vertex_ptr)
 {
-	int					n,k,offset;
+	int					n,k,i,offset;
 	float				diffuse,min_diffuse,boost,
 						*gx,*gy,*vp,*vl,*ul,*nl,
 						*vp_start,*cp,*cp_start;
@@ -306,9 +306,18 @@ void render_model_vertex_object_no_shader_diffuse(model_type *mdl,int mesh_idx,m
 		
 				// apply diffuse
 				
-			*cl++=(unsigned char)(((*cp++)*diffuse)*255.0f);
-			*cl++=(unsigned char)(((*cp++)*diffuse)*255.0f);
-			*cl++=(unsigned char)(((*cp)*diffuse)*255.0f);
+			i=(int)(((*cp++)*diffuse)*255.0f);
+			if (i>255) i=255;
+			*cl++=(unsigned char)i;
+			
+			i=(int)(((*cp++)*diffuse)*255.0f);
+			if (i>255) i=255;
+			*cl++=(unsigned char)i;
+			
+			i=(int)(((*cp++)*diffuse)*255.0f);
+			if (i>255) i=255;
+			*cl++=(unsigned char)i;
+			
 			*cl++=0xFF;
 		}
 
@@ -426,36 +435,21 @@ bool render_model_initialize_vertex_objects(model_type *mdl,int mesh_idx,model_d
 		// set the pointers
 		// glow maps use two texture units
 
-	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(3,GL_FLOAT,0,(GLvoid*)0);
+	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)(((mesh->ntrig*3)*3)*sizeof(float)));
+	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)(((mesh->ntrig*3)*3)*sizeof(float)));
 	
 	if (!shader_on) {
 		glEnableClientState(GL_COLOR_ARRAY);
 		glColorPointer(4,GL_UNSIGNED_BYTE,0,(GLvoid*)(((mesh->ntrig*3)*(3+2))*sizeof(float)));
 	}
 
-	glClientActiveTexture(GL_TEXTURE1);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)(((mesh->ntrig*3)*3)*sizeof(float)));
-	
-	glClientActiveTexture(GL_TEXTURE0);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)(((mesh->ntrig*3)*3)*sizeof(float)));
-
 	return(TRUE);
 }
 
 void render_model_release_vertex_objects(void)
 {
-	glClientActiveTexture(GL_TEXTURE1);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-
-	glClientActiveTexture(GL_TEXTURE0);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-
 	glDisableClientState(GL_COLOR_ARRAY);
-
-	glDisableClientState(GL_VERTEX_ARRAY);
 
 	view_unbind_current_vertex_object();
 }
@@ -1164,12 +1158,9 @@ void render_model_target(model_draw *draw,d3col *col)
 
 		// draw target
 		
-	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(3,GL_FLOAT,0,(GLvoid*)0);
 
 	glDrawArrays(GL_LINE_LOOP,0,4);
-
-	glDisableClientState(GL_VERTEX_ARRAY);
 
 		// unbind the vbo
 

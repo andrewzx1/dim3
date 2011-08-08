@@ -486,10 +486,11 @@ void shadow_render_generic_stencil_poly(int poly_ptsz,int stencil_idx)
 void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *draw)
 {
 	int							n,k,i,map_mesh_idx,map_poly_idx,
-								map_poly_count,draw_trig_count,
+								map_poly_count,draw_trig_count,i_alpha,
 								light_intensity;
 	double						dx,dy,dz,d_alpha;
-	float						*vp,*vl,*cl,*vertex_ptr;
+	float						*vp,*vl,*vertex_ptr;
+	unsigned char				*cl;
 	d3vct						*vct;
 	d3pnt						*spt,*hpt,*pt,bound_min,bound_max,light_pnt;
 	map_mesh_type				*map_mesh;
@@ -548,10 +549,6 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 	glDisable(GL_ALPHA_TEST);
 
 	glDepthMask(GL_FALSE);
-	
-		// enable vertex array
-		
-	glEnableClientState(GL_VERTEX_ARRAY);
 
 		// ray trace the mesh against
 		// the plane of the polygon
@@ -599,7 +596,7 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 			
 		draw_trig_count=0;
 			
-		cl=vertex_ptr+(((model_mesh->ntrig*3)*3)+(map_poly->ptsz*3));
+		cl=(unsigned char*)(vertex_ptr+(((model_mesh->ntrig*3)*3)+(map_poly->ptsz*3)));
 	
 		for (k=0;k!=model_mesh->ntrig;k++) {
 			model_trig=&model_mesh->trigs[k];
@@ -625,11 +622,14 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 				dx=(hpt->x-light_pnt.x);
 				dy=(hpt->y-light_pnt.y);
 				dz=(hpt->z-light_pnt.z);
+				
+				i_alpha=(int)(((float)(((dx*dx)+(dy*dy)+(dz*dz))*d_alpha))*255.0f);
+				if (i_alpha>255) i_alpha=255;
 
-				*cl++=0.0f;
-				*cl++=0.0f;
-				*cl++=0.0f;
-				*cl++=1.0f-(float)(((dx*dx)+(dy*dy)+(dz*dz))*d_alpha);
+				*cl++=0x0;
+				*cl++=0x0;
+				*cl++=0x0;
+				*cl++=(unsigned char)(255-i_alpha);
 			}
 
 			draw_trig_count++;
@@ -653,7 +653,7 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 		glVertexPointer(3,GL_FLOAT,0,(GLvoid*)((map_poly->ptsz*3)*sizeof(float)));
 
 		glEnableClientState(GL_COLOR_ARRAY);
-		glColorPointer(4,GL_FLOAT,0,(GLvoid*)((((model_mesh->ntrig*3)*3)+(map_poly->ptsz*3))*sizeof(float)));
+		glColorPointer(4,GL_UNSIGNED_BYTE,0,(GLvoid*)((((model_mesh->ntrig*3)*3)+(map_poly->ptsz*3))*sizeof(float)));
 
 			// run through all the stenciled polygons
 			// and draw their trigs
@@ -683,10 +683,6 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 				
 		view_unbind_current_vertex_object();
 	}
-
-		// disable vertex array
-		
-	glDisableClientState(GL_VERTEX_ARRAY);
 
 		// restore depth buffer and turn
 		// off stenciling
@@ -725,10 +721,11 @@ void shadow_render_model(model_draw *draw)
 
 void shadow_render_mesh(int shadow_mesh_idx)
 {
-	int							n,k,i,map_mesh_idx,map_poly_idx,
+	int							n,k,i,map_mesh_idx,map_poly_idx,i_alpha,
 								map_poly_count,shadow_mesh_trig_count,draw_trig_count,light_intensity;
 	double						dx,dy,dz,d_alpha;
-	float						*vl,*cl,*vertex_ptr;
+	float						*vl,*vertex_ptr;
+	unsigned char				*cl;
 	d3vct						*vct;
 	d3pnt						*spt,*hpt,*pt,bound_min,bound_max,light_pnt;
 	map_mesh_type				*map_mesh,*shadow_mesh;
@@ -793,10 +790,6 @@ void shadow_render_mesh(int shadow_mesh_idx)
 	glDisable(GL_ALPHA_TEST);
 
 	glDepthMask(GL_FALSE);
-	
-		// enable vertex array
-		
-	glEnableClientState(GL_VERTEX_ARRAY);
 
 		// ray trace the mesh against
 		// the plane of the polygon
@@ -844,7 +837,7 @@ void shadow_render_mesh(int shadow_mesh_idx)
 			
 		draw_trig_count=0;
 			
-		cl=vertex_ptr+(((shadow_mesh_trig_count*3)*3)+(map_poly->ptsz*3));
+		cl=(unsigned char*)(vertex_ptr+(((shadow_mesh_trig_count*3)*3)+(map_poly->ptsz*3)));
 	
 		for (k=0;k!=shadow_mesh->npoly;k++) {
 			shadow_poly=&shadow_mesh->polys[k];
@@ -869,10 +862,13 @@ void shadow_render_mesh(int shadow_mesh_idx)
 				dy=(hpt->y-light_pnt.y);
 				dz=(hpt->z-light_pnt.z);
 
-				*cl++=0.0f;
-				*cl++=0.0f;
-				*cl++=0.0f;
-				*cl++=1.0f-(float)(((dx*dx)+(dy*dy)+(dz*dz))*d_alpha);
+				i_alpha=(int)(((float)(((dx*dx)+(dy*dy)+(dz*dz))*d_alpha))*255.0f);
+				if (i_alpha>255) i_alpha=255;
+				
+				*cl++=0x0;
+				*cl++=0x0;
+				*cl++=0x0;
+				*cl++=(unsigned char)(255-i_alpha);
 
 					// vertex 2
 					
@@ -886,10 +882,13 @@ void shadow_render_mesh(int shadow_mesh_idx)
 				dy=(hpt->y-light_pnt.y);
 				dz=(hpt->z-light_pnt.z);
 
-				*cl++=0.0f;
-				*cl++=0.0f;
-				*cl++=0.0f;
-				*cl++=1.0f-(float)(((dx*dx)+(dy*dy)+(dz*dz))*d_alpha);
+				i_alpha=(int)(((float)(((dx*dx)+(dy*dy)+(dz*dz))*d_alpha))*255.0f);
+				if (i_alpha>255) i_alpha=255;
+				
+				*cl++=0x0;
+				*cl++=0x0;
+				*cl++=0x0;
+				*cl++=(unsigned char)(255-i_alpha);
 				
 					// vertex 3
 					
@@ -902,11 +901,14 @@ void shadow_render_mesh(int shadow_mesh_idx)
 				dx=(hpt->x-light_pnt.x);
 				dy=(hpt->y-light_pnt.y);
 				dz=(hpt->z-light_pnt.z);
-
-				*cl++=0.0f;
-				*cl++=0.0f;
-				*cl++=0.0f;
-				*cl++=1.0f-(float)(((dx*dx)+(dy*dy)+(dz*dz))*d_alpha);
+				
+				i_alpha=(int)(((float)(((dx*dx)+(dy*dy)+(dz*dz))*d_alpha))*255.0f);
+				if (i_alpha>255) i_alpha=255;
+				
+				*cl++=0x0;
+				*cl++=0x0;
+				*cl++=0x0;
+				*cl++=(unsigned char)(255-i_alpha);
 
 				draw_trig_count++;
 			}
@@ -930,7 +932,7 @@ void shadow_render_mesh(int shadow_mesh_idx)
 		glVertexPointer(3,GL_FLOAT,0,(GLvoid*)((map_poly->ptsz*3)*sizeof(float)));
 
 		glEnableClientState(GL_COLOR_ARRAY);
-		glColorPointer(4,GL_FLOAT,0,(GLvoid*)((((shadow_mesh_trig_count*3)*3)+(map_poly->ptsz*3))*sizeof(float)));
+		glColorPointer(4,GL_UNSIGNED_BYTE,0,(GLvoid*)((((shadow_mesh_trig_count*3)*3)+(map_poly->ptsz*3))*sizeof(float)));
 
 			// run through all the stenciled polygons
 			// and draw their trigs
@@ -960,10 +962,6 @@ void shadow_render_mesh(int shadow_mesh_idx)
 				
 		view_unbind_current_vertex_object();
 	}
-	
-		// disable vertex array
-		
-	glDisableClientState(GL_VERTEX_ARRAY);
 
 		// restore depth buffer and turn
 		// off stenciling

@@ -53,6 +53,7 @@ and can be sold or given away.
 #define kLiquidPropertyWaveLength				22
 #define kLiquidPropertyWaveHigh					23
 #define kLiquidPropertyWavePeriodMSec			24
+#define kLiquidPropertyWaveReset				25
 
 #define kLiquidPropertyHarm						30
 #define kLiquidPropertyDrownTick				31
@@ -67,6 +68,7 @@ and can be sold or given away.
 #define kLiquidPropertyOverlayOn				50
 #define kLiquidPropertyOverlayTexture			51
 #define kLiquidPropertyOverlayStampSize			52
+#define kLiquidPropertyOverlayShift				53
 
 #define kLiquidPropertyGroup					60
 
@@ -126,6 +128,7 @@ void property_palette_fill_liquid(int liq_idx)
 	list_palette_add_string_int(&property_palette,kLiquidPropertyWaveLength,"Length",liq->wave.length,FALSE);
 	list_palette_add_string_int(&property_palette,kLiquidPropertyWaveHigh,"High",liq->wave.high,FALSE);
 	list_palette_add_string_int(&property_palette,kLiquidPropertyWavePeriodMSec,"Period msec",liq->wave.period_msec,FALSE);
+	list_palette_add_string_selectable_button(&property_palette,kLiquidPropertyWaveReset,list_button_set,kLiquidPropertyWaveReset,"Resize Liquid To Fit Wave Length",NULL,FALSE,FALSE);
 	
 	list_palette_add_header(&property_palette,0,"Liquid Harm");
 	list_palette_add_string_int(&property_palette,kLiquidPropertyHarm,"In Damage",liq->harm.in_harm,FALSE);
@@ -143,6 +146,9 @@ void property_palette_fill_liquid(int liq_idx)
 	list_palette_add_checkbox(&property_palette,kLiquidPropertyOverlayOn,"On",liq->overlay.on,FALSE);
 	list_palette_add_texture(&property_palette,map.textures,kLiquidPropertyOverlayTexture,"Texture",liq->overlay.txt_idx,FALSE);
 	list_palette_add_string_int(&property_palette,kLiquidPropertyOverlayStampSize,"Stamp Size",liq->overlay.stamp_size,FALSE);
+	uv_shift.x=liq->overlay.x_shift;
+	uv_shift.y=liq->overlay.y_shift;
+	list_palette_add_uv(&property_palette,kLiquidPropertyOverlayShift,"Shift",&uv_shift,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Liquid Group");
 	if (liq->group_idx==-1) {
@@ -288,6 +294,10 @@ void property_palette_click_liquid(int liq_idx,int id,bool double_click)
 		case kLiquidPropertyWavePeriodMSec:
 			dialog_property_string_run(list_string_value_positive_int,(void*)&liq->wave.period_msec,0,0,0);
 			break;
+			
+		case kLiquidPropertyWaveReset:
+			piece_liquid_reset_size(liq);
+			break;
 
 			// harm
 			
@@ -341,6 +351,14 @@ void property_palette_click_liquid(int liq_idx,int id,bool double_click)
 			
 		case kLiquidPropertyOverlayStampSize:
 			dialog_property_string_run(list_string_value_positive_int,(void*)&liq->overlay.stamp_size,0,0,0);
+			break;
+			
+		case kLiquidPropertyOverlayShift:
+			uv.x=liq->overlay.x_shift;
+			uv.y=liq->overlay.y_shift;
+			dialog_property_chord_run(list_chord_value_uv,(void*)&uv);
+			liq->overlay.x_shift=uv.x;
+			liq->overlay.y_shift=uv.y;
 			break;
 
 			// group

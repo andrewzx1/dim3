@@ -252,13 +252,39 @@ bool gl_initialize(int screen_wid,int screen_high,int fsaa_mode,bool reset,char 
 		#endif
 	}
 	
+		// initialize all the pointers
+		
+	glClientActiveTexture(GL_TEXTURE0);
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	
+	glClientActiveTexture(GL_TEXTURE1);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	
+	glClientActiveTexture(GL_TEXTURE0);
+	
 	return(TRUE);
 }
 	
 void gl_shutdown(void)
 {
+		// disable pointers
+		
+	glClientActiveTexture(GL_TEXTURE0);
+	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+
+	glClientActiveTexture(GL_TEXTURE1);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+
+	glClientActiveTexture(GL_TEXTURE0);
+
+		 // shut down textures
+		 
 	gl_texture_shutdown();
 	
+		// close context
+		
 #ifdef D3_SDL_1_3
 	SDL_GL_DeleteContext(sdl_gl_ctx);
 	SDL_DestroyWindow(sdl_wind);

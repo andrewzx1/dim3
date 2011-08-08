@@ -73,14 +73,11 @@ void decal_render_stencil(map_mesh_type *mesh,map_mesh_poly_type *poly,int stenc
 	
 		// stencil
 
-	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(3,GL_FLOAT,0,(GLvoid*)0);
 
 	glStencilFunc(GL_ALWAYS,stencil_idx,0xFF);
 
 	glDrawArrays(GL_TRIANGLE_FAN,0,poly->ptsz);
-
-	glDisableClientState(GL_VERTEX_ARRAY);
 
 	view_unbind_current_vertex_object();
 
@@ -183,19 +180,13 @@ void decal_render_mark(int stencil_idx,decal_type *decal)
 	
          // draw the polygon
 
-	glEnableClientState(GL_VERTEX_ARRAY);
 	glVertexPointer(3,GL_FLOAT,0,(GLvoid*)0);
-
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)((4*3)*sizeof(float)));
 			
 	glStencilFunc(GL_EQUAL,stencil_idx,0xFF);
 	gl_texture_decal_set(view_images_get_gl_id(mark->image_idx),cf[0],cf[1],cf[2],alpha);
 
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
-
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-	glDisableClientState(GL_VERTEX_ARRAY);
 
 	view_unbind_current_vertex_object();
 }

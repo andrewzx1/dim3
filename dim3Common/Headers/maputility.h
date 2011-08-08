@@ -353,6 +353,7 @@ typedef struct		{
 
 typedef struct		{
 						int									txt_idx,stamp_size;
+						float								x_shift,y_shift;
 						bool								on;
 					} map_liquid_overlay_type;
 

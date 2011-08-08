@@ -608,13 +608,20 @@ void player_get_6_way_input(obj_type *obj,float *mouse_x,float *mouse_y,bool *go
 	*go_side_right=input_action_get_state(nc_sidestep_right);
 
 	if (input_check_joystick_ok()) {
-		(*mouse_x)-=input_get_joystick_axis(2);
-		(*mouse_y)+=input_get_joystick_axis(3);
+		(*mouse_x)-=input_joystick_get_axis(2);
+		(*mouse_x)-=input_touch_get_axis(2);
+		
+		(*mouse_y)+=input_joystick_get_axis(3);
+		(*mouse_y)+=input_touch_get_axis(3);
 
-		(*go_forward)|=input_get_joystick_axis_as_button_min(1);
-		(*go_backward)|=input_get_joystick_axis_as_button_max(1);
-		(*go_side_left)|=input_get_joystick_axis_as_button_min(0);
-		(*go_side_right)|=input_get_joystick_axis_as_button_max(0);
+		(*go_forward)|=input_joystick_get_axis_as_button_min(1);
+		(*go_forward)|=input_touch_get_axis_as_button_min(1);
+		(*go_backward)|=input_joystick_get_axis_as_button_max(1);
+		(*go_backward)|=input_touch_get_axis_as_button_max(1);
+		(*go_side_left)|=input_joystick_get_axis_as_button_min(0);
+		(*go_side_left)|=input_touch_get_axis_as_button_min(0);
+		(*go_side_right)|=input_joystick_get_axis_as_button_max(0);
+		(*go_side_right)|=input_touch_get_axis_as_button_max(0);
 	}
 
 	if (input_action_get_state(nc_turn_left)) (*mouse_x)-=obj->turn.key_speed;
@@ -644,10 +651,14 @@ void player_get_4_way_input(bool *go_left,bool *go_right,bool *go_up,bool *go_do
 	*go_down=input_action_get_state(nc_down);
 
 	if (input_check_joystick_ok()) {
-		(*go_left)|=input_get_joystick_axis_as_button_min(0);
-		(*go_right)|=input_get_joystick_axis_as_button_max(0);
-		(*go_up)|=input_get_joystick_axis_as_button_min(1);
-		(*go_down)|=input_get_joystick_axis_as_button_max(1);
+		(*go_left)|=input_joystick_get_axis_as_button_min(0);
+		(*go_left)|=input_touch_get_axis_as_button_min(0);
+		(*go_right)|=input_joystick_get_axis_as_button_max(0);
+		(*go_right)|=input_touch_get_axis_as_button_max(0);
+		(*go_up)|=input_joystick_get_axis_as_button_min(1);
+		(*go_up)|=input_touch_get_axis_as_button_min(1);
+		(*go_down)|=input_joystick_get_axis_as_button_max(1);
+		(*go_down)|=input_touch_get_axis_as_button_max(1);
 	}
 
 	if (*go_right) *go_left=FALSE;

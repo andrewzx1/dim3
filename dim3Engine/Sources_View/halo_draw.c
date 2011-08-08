@@ -250,11 +250,6 @@ void halo_draw_render(void)
 		
 	gl_2D_view_screen();
 
-		// enable vertex drawing
-
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-
 		// setup texture drawing
 
 	gl_texture_simple_start();
@@ -321,10 +316,5 @@ void halo_draw_render(void)
 	}
 		
 	gl_texture_simple_end();
-
-		// disable vertex drawing
-
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-	glDisableClientState(GL_VERTEX_ARRAY);
 }
 

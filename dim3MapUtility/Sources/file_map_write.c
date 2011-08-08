@@ -758,6 +758,7 @@ void write_single_liquid(map_liquid_type *liq)
 	xml_add_attribute_boolean("on",liq->overlay.on);
 	xml_add_attribute_int("txt_idx",liq->overlay.txt_idx);
 	xml_add_attribute_int("stamp_size",liq->overlay.stamp_size);
+	if ((liq->overlay.x_shift!=0) || (liq->overlay.y_shift!=0)) xml_add_attribute_2_coord_float("shift",liq->overlay.x_shift,liq->overlay.y_shift);
 	xml_add_tagend(TRUE);
 
 	xml_add_tagclose("Liquid");
