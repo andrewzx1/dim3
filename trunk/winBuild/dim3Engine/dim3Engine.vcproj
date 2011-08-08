@@ -3679,6 +3679,10 @@
 						</FileConfiguration>
 					</File>
 					<File
+						RelativePath="..\..\dim3Engine\Sources_View\view_primitive.c"
+						>
+					</File>
+					<File
 						RelativePath="..\..\dim3Engine\Sources_View\view_run.c"
 						>
 						<FileConfiguration

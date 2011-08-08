@@ -163,6 +163,63 @@ void view_unbind_mesh_liquid_index_object(void)
 
 /* =======================================================
 
+      Model VBOs
+      
+======================================================= */
+
+void view_create_model_vertex_object(model_draw *draw)
+{
+	/*
+	glGenBuffers(1,&vbo->vertex);
+
+		// init the vertex buffer
+
+	draw->vbo.vertex_count=vertex_count;
+
+	glBindBuffer(GL_ARRAY_BUFFER,draw->vbo.vertex);
+	glBufferData(GL_ARRAY_BUFFER,vertex_mem_sz,NULL,GL_DYNAMIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER,0);
+	*/
+}
+
+void view_dispose_model_vertex_object(model_draw *draw)
+{
+//	glDeleteBuffers(1,&draw->vbo.vertex);
+}
+
+void view_bind_model_vertex_object(map_vbo_type *vbo)
+{
+//	glBindBuffer(GL_ARRAY_BUFFER,vbo->vertex);
+}
+
+unsigned char* view_map_model_vertex_object(map_vbo_type *vbo)
+{
+	/*
+	unsigned char		*vertex_ptr;
+
+	vertex_ptr=(unsigned char*)glMapBuffer(GL_ARRAY_BUFFER,GL_WRITE_ONLY);
+	if (vertex_ptr==NULL) {
+		glBindBuffer(GL_ARRAY_BUFFER,0);
+		return(NULL);
+	}
+
+	return(vertex_ptr);
+	*/
+	return(NULL);
+}
+
+void view_unmap_model_vertex_object(void)
+{
+//	glUnmapBuffer(GL_ARRAY_BUFFER);
+}
+
+void view_unbind_model_vertex_object(void)
+{
+//	glBindBuffer(GL_ARRAY_BUFFER,0);
+}
+
+/* =======================================================
+
       Sky VBOs
       
 ======================================================= */

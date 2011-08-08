@@ -305,6 +305,11 @@ typedef struct		{
 					} model_light_cache;
 
 typedef struct		{
+						int								vertex_count;
+						GLuint							vertex;
+					} model_vbo_type;
+
+typedef struct		{
 						int								model_idx,spin_tick,
 														mesh_mask,render_mesh_mask,
 														script_animation_idx,
@@ -331,6 +336,7 @@ typedef struct		{
 						model_draw_no_rot				no_rot;
 						model_draw_remote_name			remote_name;
 						model_light_cache				light_cache;
+						model_vbo_type					vbo;
 						model_draw_setup				setup;
 					} model_draw;
 

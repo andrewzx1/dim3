@@ -669,6 +669,7 @@ void iface_read_settings_interface(iface_type *iface)
 		xml_get_attribute_color(color_tag,"button_fill",&iface->color.button.fill);
 		xml_get_attribute_color(color_tag,"button_text",&iface->color.button.text);
 		xml_get_attribute_color(color_tag,"button_outline",&iface->color.button.outline);
+		xml_get_attribute_color(color_tag,"system_metric",&iface->color.system.metric);
 		xml_get_attribute_color(color_tag,"default_tint",&iface->color.default_tint);
 	}
 
@@ -1278,6 +1279,7 @@ bool iface_write_settings_interface(iface_type *iface)
 	xml_add_attribute_color("button_fill",&iface->color.button.fill);
 	xml_add_attribute_color("button_text",&iface->color.button.text);
 	xml_add_attribute_color("button_outline",&iface->color.button.outline);
+	xml_add_attribute_color("system_metric",&iface->color.system.metric);
 	xml_add_attribute_color("default_tint",&iface->color.default_tint);
 	xml_add_tagend(TRUE);
 

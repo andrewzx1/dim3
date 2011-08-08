@@ -246,6 +246,10 @@ bool model_draw_load(model_draw *draw,char *item_type,char *item_name,char *err_
 
 	model_fade_clear(draw);
 
+		// create the VBO
+
+	if (draw->model_idx!=-1) view_create_model_vertex_object(draw);
+
 	return(ok);
 }
 
@@ -284,6 +288,10 @@ void model_draw_dispose(model_draw *draw)
 		// find model
 		
 	if (draw->model_idx==-1) return;
+
+		// dispose VBO
+
+	view_dispose_model_vertex_object(draw);
 	
 		// clear draw memory
 		
