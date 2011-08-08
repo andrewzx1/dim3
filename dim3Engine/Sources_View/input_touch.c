@@ -365,12 +365,12 @@ float input_touch_get_axis(int axis)
 
 bool input_touch_get_axis_as_button_min(int axis)
 {
-	return(input_touch_get_axis(axis)<-0.75f);
+	return(input_touch_get_axis(axis)<-0.5f);
 }
 
 bool input_touch_get_axis_as_button_max(int axis)
 {
-	return(input_touch_get_axis(axis)>0.75f);
+	return(input_touch_get_axis(axis)>0.5f);
 }
 
 /* =======================================================

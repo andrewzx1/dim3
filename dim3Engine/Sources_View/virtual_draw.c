@@ -77,8 +77,8 @@ void virtual_stick_draw(iface_virtual_stick_type *stick)
 	radius=(int)sqrt((double)(x*x)+(double)(y*y));
 	if (radius>stick->outer_radius) {
 	
-		vct.x=(float)x;
-		vct.y=(float)y;
+		vct.x=(float)(x-sx);
+		vct.y=(float)(y-sy);
 		vct.z=0.0f;
 		vector_normalize(&vct);
 		

@@ -77,6 +77,8 @@ and can be sold or given away.
 #define kSettingsColorButtonText				101
 #define kSettingsColorButtonOutline				102
 
+#define kSettingColorSystemMetric				103
+
 #define kSettingsProgressLeft					110
 #define kSettingsProgressRight					111
 #define kSettingsProgressTop					112
@@ -193,6 +195,11 @@ void property_palette_fill_settings(void)
 	list_palette_add_pick_color(&property_palette,kSettingsColorButtonFill,"Button Fill",&iface.color.button.fill,FALSE);
 	list_palette_add_pick_color(&property_palette,kSettingsColorButtonText,"Button Text",&iface.color.button.text,FALSE);
 	list_palette_add_pick_color(&property_palette,kSettingsColorButtonOutline,"Button Outline",&iface.color.button.outline,FALSE);
+
+		// system color
+		
+	list_palette_add_header(&property_palette,0,"System Colors");
+	list_palette_add_pick_color(&property_palette,kSettingColorSystemMetric,"Metrics",&iface.color.system.metric,FALSE);
 
 		// progress
 		
@@ -391,6 +398,12 @@ void property_palette_click_settings(int id,bool double_click)
 
 		case kSettingsColorButtonOutline:
 			os_pick_color(&iface.color.button.outline);
+			break;
+
+			// system color
+		
+		case kSettingColorSystemMetric:
+			os_pick_color(&iface.color.system.metric);
 			break;
 			
 			// progress

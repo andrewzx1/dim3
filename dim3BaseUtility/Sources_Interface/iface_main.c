@@ -266,6 +266,8 @@ void iface_default_settings(iface_type *iface)
 	iface->color.button.fill.r=iface->color.button.fill.g=iface->color.button.fill.b=0.6f;
 	iface->color.button.text.r=iface->color.button.text.g=iface->color.button.text.b=0.0f;
 	iface->color.button.outline.r=iface->color.button.outline.g=iface->color.button.outline.b=0.0f;
+
+	iface->color.system.metric.r=iface->color.system.metric.g=iface->color.system.metric.b=1.0f;
 	
 	iface->color.default_tint.r=iface->color.default_tint.g=iface->color.default_tint.b=1.0f;
 

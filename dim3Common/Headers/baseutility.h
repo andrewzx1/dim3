@@ -580,6 +580,10 @@ typedef struct		{
 					} iface_color_button_type;
 
 typedef struct		{
+						d3col							metric;
+					} iface_color_system_type;
+
+typedef struct		{
 						d3col							background,
 														default_tint,tints[max_tint_color];
 						iface_color_menu_type			menu;
@@ -588,6 +592,7 @@ typedef struct		{
 						iface_color_control_type		control;
 						iface_color_scrollbar_type		scrollbar;
 						iface_color_button_type			button;
+						iface_color_system_type			system;
 					} iface_color_type;
 
 typedef struct		{
