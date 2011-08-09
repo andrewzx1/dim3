@@ -68,6 +68,9 @@ void virtual_stick_draw(iface_virtual_stick_type *stick)
 		
 	sx=stick->x_size>>1;
 	sy=stick->y_size>>1;
+
+	bx=stick->x_size>>2;
+	by=stick->y_size>>2;
 	
 	x=(int)(((float)sx)*stick->touch_x);
 	y=(int)(((float)sy)*stick->touch_y);
@@ -75,21 +78,17 @@ void virtual_stick_draw(iface_virtual_stick_type *stick)
 		// make sure it's within circle
 		
 	radius=(int)sqrt((double)(x*x)+(double)(y*y));
-	if (radius>stick->outer_radius) {
 	
-		vct.x=(float)(x-sx);
-		vct.y=(float)(y-sy);
+	if (radius>sx) {
+		vct.x=(float)x;
+		vct.y=(float)y;
 		vct.z=0.0f;
 		vector_normalize(&vct);
 		
-		f_outer_radius=(float)stick->outer_radius;
+		f_outer_radius=(float)(sx-(bx>>1));
 		x=(int)(vct.x*f_outer_radius);
 		y=(int)(vct.y*f_outer_radius);
-	
 	}
-
-	bx=stick->x_size>>2;
-	by=stick->y_size>>2;
 
 	lft=(stick->x+sx)+x;
 	lft-=(bx>>1);

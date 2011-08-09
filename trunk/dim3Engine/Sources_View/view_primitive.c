@@ -37,8 +37,7 @@ extern setup_type			setup;
 
 float						view_primitive_vertexes[24],
 							view_primitive_uvs[24];
-unsigned short				view_primitive_cube_indexes[24]={0,1,1,2,2,3,3,0,4,5,5,6,6,7,7,4,0,4,1,5,2,6,3,7},
-							view_primitive_line_poly_indexes[8]={0,1,1,2,2,3,3,0};
+unsigned short				view_primitive_cube_indexes[24]={0,1,1,2,2,3,3,0,4,5,5,6,6,7,7,4,0,4,1,5,2,6,3,7};
 unsigned char				view_primitive_colors[24];
 
 /* =======================================================
@@ -255,8 +254,7 @@ void view_draw_next_vertex_object_2D_line_poly(d3col *col,float alpha,int x0,int
 		// draw the quad
 
 	glVertexPointer(2,GL_FLOAT,0,(GLvoid*)view_primitive_vertexes);
-	
-	glDrawElements(GL_LINES,8,GL_UNSIGNED_SHORT,(GLvoid*)view_primitive_line_poly_indexes);
+	glDrawArrays(GL_LINE_LOOP,0,4);
 
 		// finish draw
 

@@ -33,6 +33,7 @@ and can be sold or given away.
 
 extern map_type				map;
 extern view_type			view;
+extern server_type			server;
 extern setup_type			setup;
 
 int							cur_vbo_cache_idx,cur_vbo_cache_index_idx;
@@ -169,32 +170,64 @@ void view_unbind_mesh_liquid_index_object(void)
 
 void view_create_model_vertex_object(model_draw *draw)
 {
-	/*
-	glGenBuffers(1,&vbo->vertex);
+	int					n,vertex_cnt,mem_sz;
+	bool				shader_on;
+	model_type			*mdl;
+	model_mesh_type		*mesh;
+	
+	shader_on=view_shader_on()&&(!draw->no_shader);
+	
+		// each mesh has own VBO
+		
+	mdl=server.model_list.models[draw->model_idx];
 
-		// init the vertex buffer
+	for (n=0;n!=mdl->nmesh;n++) {
+		glGenBuffers(1,&draw->vbo[n].vertex);
+			
+			// get the size
+			
+		mesh=&mdl->meshes[n];
+		vertex_cnt=mesh->ntrig*3;
+			
+		mem_sz=(vertex_cnt*(3+2))*sizeof(float);
+		if (!shader_on) {
+			mem_sz+=((vertex_cnt*4)*sizeof(unsigned char));		// colors
+		}
+		else {
+			mem_sz+=((vertex_cnt*(3+3))*sizeof(float));			// tangents and normals
+		}
 
-	draw->vbo.vertex_count=vertex_count;
+			// init the vertex buffer
 
-	glBindBuffer(GL_ARRAY_BUFFER,draw->vbo.vertex);
-	glBufferData(GL_ARRAY_BUFFER,vertex_mem_sz,NULL,GL_DYNAMIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER,0);
-	*/
+		draw->vbo[n].vertex_count=vertex_cnt;
+
+		glBindBuffer(GL_ARRAY_BUFFER,draw->vbo[n].vertex);
+		glBufferData(GL_ARRAY_BUFFER,mem_sz,NULL,GL_DYNAMIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER,0);
+	}
 }
 
 void view_dispose_model_vertex_object(model_draw *draw)
 {
-//	glDeleteBuffers(1,&draw->vbo.vertex);
+	int					n;
+	model_type			*mdl;
+	
+		// each mesh has own VBO
+		
+	mdl=server.model_list.models[draw->model_idx];
+
+	for (n=0;n!=mdl->nmesh;n++) {
+		glDeleteBuffers(1,&draw->vbo[n].vertex);
+	}
 }
 
-void view_bind_model_vertex_object(map_vbo_type *vbo)
+void view_bind_model_vertex_object(model_draw *draw,int mesh_idx)
 {
-//	glBindBuffer(GL_ARRAY_BUFFER,vbo->vertex);
+	glBindBuffer(GL_ARRAY_BUFFER,draw->vbo[mesh_idx].vertex);
 }
 
-unsigned char* view_map_model_vertex_object(map_vbo_type *vbo)
+unsigned char* view_map_model_vertex_object(void)
 {
-	/*
 	unsigned char		*vertex_ptr;
 
 	vertex_ptr=(unsigned char*)glMapBuffer(GL_ARRAY_BUFFER,GL_WRITE_ONLY);
@@ -204,18 +237,16 @@ unsigned char* view_map_model_vertex_object(map_vbo_type *vbo)
 	}
 
 	return(vertex_ptr);
-	*/
-	return(NULL);
 }
 
 void view_unmap_model_vertex_object(void)
 {
-//	glUnmapBuffer(GL_ARRAY_BUFFER);
+	glUnmapBuffer(GL_ARRAY_BUFFER);
 }
 
 void view_unbind_model_vertex_object(void)
 {
-//	glBindBuffer(GL_ARRAY_BUFFER,0);
+	glBindBuffer(GL_ARRAY_BUFFER,0);
 }
 
 /* =======================================================
