@@ -130,8 +130,15 @@ void draw_sky_dome_panoramic_setup(void)
 	
 		// construct VBO
 
-	vertex_ptr=view_bind_map_sky_vertex_object(((120*6)*(3+2)));
-	if (vertex_ptr==NULL) return;
+	view_create_sky_object(((120*6)+(3*2))*sizeof(float));
+
+	view_bind_sky_vertex_object();
+
+	vertexe_ptr=(float*)view_map_sky_object();
+	if (vertex_ptr==NULL) {
+		view_unbind_sky_vertex_object();
+		return;
+	}
 
 	uv_ptr=vertex_ptr+((120*6)*3);
 
@@ -377,8 +384,15 @@ void draw_sky_dome_hemisphere_setup(void)
 	sz=(5*20)*6;
 	if (map.sky.dome_mirror) sz*=2;
 
-	vertex_ptr=view_bind_map_sky_vertex_object((sz*(3+2)));
-	if (vertex_ptr==NULL) return;
+	view_create_sky_object((sz+(3*2))*sizeof(float));
+
+	view_bind_sky_vertex_object();
+
+	vertexe_ptr=(float*)view_map_sky_object();
+	if (vertex_ptr==NULL) {
+		view_unbind_sky_vertex_object();
+		return;
+	}
 
 	uv_ptr=vertex_ptr+(sz*3);
 
@@ -704,8 +718,15 @@ void draw_sky_cube_setup(void)
 
 		// construct VBO
 
-	vertex_ptr=view_bind_map_sky_vertex_object(((6*4)*(3+2)));
-	if (vertex_ptr==NULL) return;
+	view_create_sky_object(((6*4)+(3*2))*sizeof(float));
+
+	view_bind_sky_vertex_object();
+
+	vertexe_ptr=(float*)view_map_sky_object();
+	if (vertex_ptr==NULL) {
+		view_unbind_sky_vertex_object();
+		return;
+	}
 
 	uv_ptr=vertex_ptr+((6*4)*3);
 
@@ -1067,6 +1088,11 @@ void draw_sky_init(void)
 			break;
 	
 	}
+}
+
+void draw_sky_release(void)
+{
+	if (map.sky.on) view_dispose_sky_vertex_object();
 }
 
 /* =======================================================

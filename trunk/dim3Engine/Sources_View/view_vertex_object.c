@@ -49,10 +49,6 @@ GLuint						vbo_sky,
 
 void view_create_vertex_objects(void)
 {
-		// sky vbo
-
-	glGenBuffers(1,&vbo_sky);
-
 		// misc vbos
 
 	glGenBuffers(view_vertex_object_count,vbo_cache);
@@ -66,8 +62,6 @@ void view_create_vertex_objects(void)
 
 void view_dispose_vertex_objects(void)
 {
-	glDeleteBuffers(1,&vbo_sky);
-
 	glDeleteBuffers(view_vertex_object_count,vbo_cache);
 	glDeleteBuffers(view_vertex_object_count,vbo_cache_index);
 }
@@ -184,7 +178,7 @@ void view_create_model_vertex_object(model_draw *draw)
 	for (n=0;n!=mdl->nmesh;n++) {
 		glGenBuffers(1,&draw->vbo[n].vertex);
 			
-			// get the size
+			// get the vertex size
 			
 		mesh=&mdl->meshes[n];
 		vertex_cnt=mesh->ntrig*3;
@@ -204,6 +198,21 @@ void view_create_model_vertex_object(model_draw *draw)
 		glBindBuffer(GL_ARRAY_BUFFER,draw->vbo[n].vertex);
 		glBufferData(GL_ARRAY_BUFFER,mem_sz,NULL,GL_DYNAMIC_DRAW);
 		glBindBuffer(GL_ARRAY_BUFFER,0);
+
+			// any shadows?
+
+		if (!draw->shadow.on) continue;
+
+		glGenBuffers(1,&draw->vbo[n].vertex);
+
+			// get the shadow vertex size
+			// always add in 8 for stencil polygon at top
+
+		mem_sz=(8+(vertex_cnt*(3+4)))*sizeof(float);
+
+		glBindBuffer(GL_ARRAY_BUFFER,draw->vbo[n].shadow_vertex);
+		glBufferData(GL_ARRAY_BUFFER,mem_sz,NULL,GL_DYNAMIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER,0);
 	}
 }
 
@@ -218,6 +227,7 @@ void view_dispose_model_vertex_object(model_draw *draw)
 
 	for (n=0;n!=mdl->nmesh;n++) {
 		glDeleteBuffers(1,&draw->vbo[n].vertex);
+		if (draw->shadow.on) glDeleteBuffers(1,&draw->vbo[n].shadow_vertex);
 	}
 }
 
@@ -249,28 +259,64 @@ void view_unbind_model_vertex_object(void)
 	glBindBuffer(GL_ARRAY_BUFFER,0);
 }
 
+void view_bind_model_shadow_vertex_object(model_draw *draw,int mesh_idx)
+{
+	glBindBuffer(GL_ARRAY_BUFFER,draw->vbo[mesh_idx].shadow_vertex);
+}
+
+unsigned char* view_map_model_shadow_vertex_object(void)
+{
+	unsigned char		*vertex_ptr;
+
+	vertex_ptr=(unsigned char*)glMapBuffer(GL_ARRAY_BUFFER,GL_WRITE_ONLY);
+	if (vertex_ptr==NULL) {
+		glBindBuffer(GL_ARRAY_BUFFER,0);
+		return(NULL);
+	}
+
+	return(vertex_ptr);
+}
+
+void view_unmap_model_shadow_vertex_object(void)
+{
+	glUnmapBuffer(GL_ARRAY_BUFFER);
+}
+
+void view_unbind_model_shadow_vertex_object(void)
+{
+	glBindBuffer(GL_ARRAY_BUFFER,0);
+}
+
 /* =======================================================
 
       Sky VBOs
       
 ======================================================= */
 
-float* view_bind_map_sky_vertex_object(int sz)
+void view_create_sky_vertex_object(int vertex_mem_sz)
 {
-	float		*vertex_ptr;
-
-		// bind to sky specific VBO
+	glGenBuffers(1,&vbo_sky);
 
 	glBindBuffer(GL_ARRAY_BUFFER,vbo_sky);
+	glBufferData(GL_ARRAY_BUFFER,sz,NULL,GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER,0);
+}
 
-		// resize VBO
+void view_dispose_sky_vertex_object(void)
+{
+	glDeleteBuffers(1,&vbo_spy);
+}
 
-	sz*=sizeof(float);
-	glBufferData(GL_ARRAY_BUFFER,sz,NULL,GL_DYNAMIC_DRAW);
+void view_bind_sky_vertex_object(void)
+{
+	glBindBuffer(GL_ARRAY_BUFFER,vbo_sky);
+}
 
-		// map pointer
+unsigned char* view_map_sky_vertex_object(void)
+{
+	unsigned char*		*vertex_ptr;
 
-	vertex_ptr=(float*)glMapBuffer(GL_ARRAY_BUFFER,GL_WRITE_ONLY);
+	vertex_ptr=(unsigned char*)glMapBuffer(GL_ARRAY_BUFFER,GL_WRITE_ONLY);
 	if (vertex_ptr==NULL) {
 		glBindBuffer(GL_ARRAY_BUFFER,0);
 		return(NULL);

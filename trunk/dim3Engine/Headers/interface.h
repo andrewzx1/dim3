@@ -657,9 +657,15 @@ extern inline void view_bind_model_vertex_object(model_draw *draw,int mesh_idx);
 extern inline unsigned char* view_map_model_vertex_object(void);
 extern inline void view_unmap_model_vertex_object(void);
 extern inline void view_unbind_model_vertex_object(void);
+extern inline void view_bind_model_shadow_vertex_object(model_draw *draw,int mesh_idx);
+extern inline unsigned char* view_map_model_shadow_vertex_object(void);
+extern inline void view_unmap_model_shadow_vertex_object(void);
+extern inline void view_unbind_model_shadow_vertex_object(void);
 
-extern inline float* view_bind_map_sky_vertex_object(int sz);
-extern inline void view_bind_sky_vertex_object(void);
+extern void view_create_sky_vertex_object(int vertex_mem_sz);
+extern void view_dispose_sky_vertex_object(void);
+extern inline void view_bind_sky_vertex_object(int sz);
+extern inline unsigned char* view_map_sky_vertex_object(void);
 extern inline void view_unmap_sky_vertex_object(void);
 extern inline void view_unbind_sky_vertex_object(void);
 
@@ -872,6 +878,13 @@ extern void shadow_get_bound_box(d3pnt *pnt,int high,d3pnt *light_pnt,int light_
 
 extern void shadow_render_model(model_draw *draw);
 extern void shadow_render_mesh(int shadow_mesh_idx);
+
+//
+// skies and backgrounds
+//
+
+extern void draw_sky_init(void);
+extern void draw_sky_release(void);
 
 //
 // misc rendering

@@ -306,7 +306,7 @@ typedef struct		{
 
 typedef struct		{
 						int								vertex_count;
-						GLuint							vertex;
+						GLuint							vertex,shadow_vertex;
 					} model_vbo_type;
 
 typedef struct		{
