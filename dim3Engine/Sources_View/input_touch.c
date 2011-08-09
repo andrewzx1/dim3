@@ -84,10 +84,6 @@ void input_touch_initialize(void)
 	for (n=0;n!=max_virtual_stick;n++) {
 		stick->touch_x=0.0f;
 		stick->touch_y=0.0f;
-		
-		dx=(double)(stick->x_size>>1);
-		dy=(double)(stick->y_size>>1);
-		stick->outer_radius=(int)sqrt((dx*dx)+(dy*dy));
 
 		stick++;
 	}

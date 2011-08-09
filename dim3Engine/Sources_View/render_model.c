@@ -36,6 +36,8 @@ extern server_type		server;
 extern view_type		view;
 extern setup_type		setup;
 
+float					render_model_taget_frame_vertexes[12];
+
 /* =======================================================
 
       Model Colors and Normals
@@ -382,7 +384,6 @@ void render_model_vertex_object_shader(model_type *mdl,int mesh_idx,model_draw *
 
 bool render_model_initialize_vertex_objects(model_type *mdl,int mesh_idx,model_draw *draw)
 {
-	int					mem_sz;
 	unsigned char		*vertex_ptr;
 	bool				shader_on;
 	model_mesh_type		*mesh;
@@ -397,15 +398,8 @@ bool render_model_initialize_vertex_objects(model_type *mdl,int mesh_idx,model_d
 		
 	mesh=&mdl->meshes[mesh_idx];
 
-	if (!shader_on) {
-		mem_sz=(mesh->ntrig*3)*(3+2+4);
-	}
-	else {
-		mem_sz=(mesh->ntrig*3)*(3+2+3+3);
-	}
-
-	vertex_ptr=(unsigned char*)view_bind_map_next_vertex_object(mem_sz);
-	if (vertex_ptr==NULL) return(FALSE);
+	view_bind_model_vertex_object(draw,mesh_idx);
+	vertex_ptr=(unsigned char*)view_map_model_vertex_object();
 	
 		// non-shader drawing requires
 		// vertexes, UVs, and colors
@@ -430,7 +424,7 @@ bool render_model_initialize_vertex_objects(model_type *mdl,int mesh_idx,model_d
 
 		// unmap VBO
 
-	view_unmap_current_vertex_object();
+	view_unmap_model_vertex_object();
 
 		// set the pointers
 		// glow maps use two texture units
@@ -451,7 +445,7 @@ void render_model_release_vertex_objects(void)
 {
 	glDisableClientState(GL_COLOR_ARRAY);
 
-	view_unbind_current_vertex_object();
+	view_unbind_model_vertex_object();
 }
 
 /* =======================================================
@@ -1076,7 +1070,6 @@ void render_model_target(model_draw *draw,d3col *col)
 {
 	int				ty,by,lx,rx,lz,rz,wid,xadd,zadd;
 	float			rang;
-	float			*vertex_ptr;
 	model_type		*mdl;
 	
 		// get model
@@ -1121,30 +1114,23 @@ void render_model_target(model_draw *draw,d3col *col)
 	lz-=zadd;
 	rz-=zadd;
 
-		// build vertexes
-
-	vertex_ptr=view_bind_map_next_vertex_object(4*3);
-	if (vertex_ptr==NULL) return;
-
 		// get the vertexes
 
-	*vertex_ptr++=(float)lx;
-	*vertex_ptr++=(float)ty;
-	*vertex_ptr++=(float)lz;
+	render_model_taget_frame_vertexes[0]=(float)lx;
+	render_model_taget_frame_vertexes[1]=(float)ty;
+	render_model_taget_frame_vertexes[2]=(float)lz;
 
-	*vertex_ptr++=(float)rx;
-	*vertex_ptr++=(float)ty;
-	*vertex_ptr++=(float)rz;
+	render_model_taget_frame_vertexes[3]=(float)rx;
+	render_model_taget_frame_vertexes[4]=(float)ty;
+	render_model_taget_frame_vertexes[5]=(float)rz;
 
-	*vertex_ptr++=(float)rx;
-	*vertex_ptr++=(float)by;
-	*vertex_ptr++=(float)rz;
+	render_model_taget_frame_vertexes[6]=(float)rx;
+	render_model_taget_frame_vertexes[7]=(float)by;
+	render_model_taget_frame_vertexes[8]=(float)rz;
 
-	*vertex_ptr++=(float)lx;
-	*vertex_ptr++=(float)by;
-	*vertex_ptr++=(float)lz;
-
-  	view_unmap_current_vertex_object();
+	render_model_taget_frame_vertexes[9]=(float)lx;
+	render_model_taget_frame_vertexes[10]=(float)by;
+	render_model_taget_frame_vertexes[11]=(float)lz;
 
 		// setup draw
 
@@ -1158,11 +1144,6 @@ void render_model_target(model_draw *draw,d3col *col)
 
 		// draw target
 		
-	glVertexPointer(3,GL_FLOAT,0,(GLvoid*)0);
-
+	glVertexPointer(3,GL_FLOAT,0,(GLvoid*)render_model_taget_frame_vertexes);
 	glDrawArrays(GL_LINE_LOOP,0,4);
-
-		// unbind the vbo
-
-	view_unbind_current_vertex_object();
 }

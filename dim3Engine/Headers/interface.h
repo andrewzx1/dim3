@@ -651,10 +651,10 @@ extern inline unsigned short* view_map_mesh_liquid_index_object(map_vbo_type *vb
 extern inline void view_unmap_mesh_liquid_index_object(void);
 extern inline void view_unbind_mesh_liquid_index_object(void);
 
-extern void view_create_model_vertex_object(map_vbo_type *vbo,int vertex_count,int vertex_mem_sz,int index_count);
-extern void view_dispose_model_vertex_object(map_vbo_type *vbo);
-extern inline void view_bind_model_vertex_object(map_vbo_type *vbo);
-extern inline unsigned char* view_map_model_vertex_object(map_vbo_type *vbo);
+extern void view_create_model_vertex_object(model_draw *draw);
+extern void view_dispose_model_vertex_object(model_draw *draw);
+extern inline void view_bind_model_vertex_object(model_draw *draw,int mesh_idx);
+extern inline unsigned char* view_map_model_vertex_object(void);
 extern inline void view_unmap_model_vertex_object(void);
 extern inline void view_unbind_model_vertex_object(void);
 

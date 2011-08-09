@@ -336,7 +336,7 @@ typedef struct		{
 						model_draw_no_rot				no_rot;
 						model_draw_remote_name			remote_name;
 						model_light_cache				light_cache;
-						model_vbo_type					vbo;
+						model_vbo_type					vbo[max_model_mesh];
 						model_draw_setup				setup;
 					} model_draw;
 
