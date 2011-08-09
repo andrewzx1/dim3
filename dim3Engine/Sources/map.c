@@ -45,7 +45,6 @@ char						current_map_name[name_str_len];
 
 extern void map_movements_initialize(void);
 extern void group_move_clear_all(void);
-extern void draw_sky_init(void);
 extern bool render_transparent_create_sort_list(void);
 extern void render_transparent_dispose_sort_list(void);
 extern void map_multiplayer_show_hide_meshes(void);
@@ -521,6 +520,10 @@ void map_end(void)
 
 	gl_fs_shader_map_end();
 	gl_back_render_map_end();
+
+		// finish with sky
+
+	map_sky_release();
 	
 		// stop sounds
 			
