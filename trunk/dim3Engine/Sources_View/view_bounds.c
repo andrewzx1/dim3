@@ -205,41 +205,6 @@ bool view_cull_mesh(map_mesh_type *mesh)
 	return(view_cull_check_boundbox(mesh->box.min.x,mesh->box.min.z,mesh->box.max.x,mesh->box.max.z,mesh->box.min.y,mesh->box.max.y));
 }
 
-bool view_cull_mesh_shadow(map_mesh_type *mesh)
-{
-	int				high,light_intensity;
-	double			obscure_dist;
-	d3pnt			min,max,light_pnt;
-
-		// check obscure distance
-
-	if (!fog_solid_on()) {
-		obscure_dist=(double)(camera.setup.plane.far_z-camera.setup.plane.near_z);
-	}
-	else {
-		obscure_dist=(double)((map.fog.outer_radius>>1)*3);
-	}
-
-	if (map.optimize.obscure_dist.mesh!=0) {
-		if (map.optimize.obscure_dist.mesh<obscure_dist) obscure_dist=map.optimize.obscure_dist.mesh;
-	}
-		
-	if (map_mesh_calculate_distance(mesh,&view.render->camera.pnt)>obscure_dist) return(FALSE);
-	
-		// get shadow volume
-
-	high=mesh->box.max.y-mesh->box.min.y;
-
-	shadow_get_light_point(&mesh->box.mid,high,&light_pnt,&light_intensity);
-	memmove(&min,&mesh->box.min,sizeof(d3pnt));
-	memmove(&max,&mesh->box.max,sizeof(d3pnt));
-	shadow_get_bound_box(&mesh->box.mid,high,&light_pnt,light_intensity,&min,&max);
-		
-		// check bounding box
-
-	return(view_cull_check_boundbox_2(&min,&max));
-}
-
 bool view_cull_liquid(map_liquid_type *liq)
 {
 	double			obscure_dist;

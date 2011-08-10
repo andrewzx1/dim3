@@ -664,7 +664,7 @@ extern inline void view_unbind_model_shadow_vertex_object(void);
 
 extern void view_create_sky_vertex_object(int vertex_mem_sz);
 extern void view_dispose_sky_vertex_object(void);
-extern inline void view_bind_sky_vertex_object(int sz);
+extern inline void view_bind_sky_vertex_object(void);
 extern inline unsigned char* view_map_sky_vertex_object(void);
 extern inline void view_unmap_sky_vertex_object(void);
 extern inline void view_unbind_sky_vertex_object(void);
@@ -781,7 +781,6 @@ extern void gl_project_fix_rotation(int *x,int *y,int *z);
 
 extern double view_cull_distance_to_view_center(int x,int y,int z);
 extern bool view_cull_mesh(map_mesh_type *mesh);
-extern bool view_cull_mesh_shadow(map_mesh_type *mesh);
 extern bool view_cull_liquid(map_liquid_type *liq);
 extern bool view_cull_model(model_draw *draw);
 extern bool view_model_shadow(model_draw *draw);
@@ -875,9 +874,7 @@ extern void render_map_liquid_transparent(void);
 
 extern void shadow_get_light_point(d3pnt *pnt,int high,d3pnt *light_pnt,int *light_intensity);
 extern void shadow_get_bound_box(d3pnt *pnt,int high,d3pnt *light_pnt,int light_intensity,d3pnt *min,d3pnt *max);
-
 extern void shadow_render_model(model_draw *draw);
-extern void shadow_render_mesh(int shadow_mesh_idx);
 
 //
 // skies and backgrounds
@@ -885,14 +882,14 @@ extern void shadow_render_mesh(int shadow_mesh_idx);
 
 extern void draw_sky_init(void);
 extern void draw_sky_release(void);
+extern void draw_background(void);
+extern void draw_sky(void);
 
 //
 // misc rendering
 //
 
 extern void draw_weapon_hand(obj_type *obj,weapon_type *weap);
-extern void draw_background(void);
-extern void draw_sky(void);
 extern void rain_draw(void);
 extern void decal_render(void);
 

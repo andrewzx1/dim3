@@ -368,10 +368,7 @@ void view_add_mesh_draw_list(int start_mesh_idx)
 				
 				// check if bound box is within view
 				
-			if (!view_cull_mesh(mesh)) {
-				if (!mesh->flag.shadow) continue;
-				if (!view_cull_mesh_shadow(mesh)) continue;
-			}
+			if (!view_cull_mesh(mesh)) continue;
 
 				// check if obscured by other meshes
 				// this only works in fpp

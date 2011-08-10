@@ -24,7 +24,6 @@
 		26A6845113DE4277007513D1 /* libpng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 26A6844D13DE4277007513D1 /* libpng.a */; };
 		26A6845213DE4277007513D1 /* libmpg123.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 26A6844E13DE4277007513D1 /* libmpg123.a */; };
 		26A6845313DE4277007513D1 /* libiOSJavaScriptCore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 26A6844F13DE4277007513D1 /* libiOSJavaScriptCore.a */; };
-		26A6845513DE4390007513D1 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A6845413DE4390007513D1 /* main.c */; };
 		26A6846913DE44AF007513D1 /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 26A6843413DE40BD007513D1 /* icon.png */; };
 		26A6849A13DE456C007513D1 /* file_cocoa.m in Sources */ = {isa = PBXBuildFile; fileRef = 26A6846E13DE456C007513D1 /* file_cocoa.m */; };
 		26A6849B13DE456C007513D1 /* xml.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A6847313DE456C007513D1 /* xml.c */; };
@@ -452,7 +451,6 @@
 		26A6844D13DE4277007513D1 /* libpng.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libpng.a; path = ../Libraries/PNG/libpng.a; sourceTree = "<group>"; };
 		26A6844E13DE4277007513D1 /* libmpg123.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libmpg123.a; path = ../Libraries/MPG123/libmpg123.a; sourceTree = "<group>"; };
 		26A6844F13DE4277007513D1 /* libiOSJavaScriptCore.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libiOSJavaScriptCore.a; path = ../Libraries/JavaScriptCore/libiOSJavaScriptCore.a; sourceTree = "<group>"; };
-		26A6845413DE4390007513D1 /* main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = SOURCE_ROOT; };
 		26A6845713DE4457007513D1 /* baseutility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = baseutility.h; path = ../../dim3Common/Headers/baseutility.h; sourceTree = "<group>"; };
 		26A6845813DE4457007513D1 /* iphone_os_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = iphone_os_defs.h; path = ../../dim3Common/Headers/iphone_os_defs.h; sourceTree = "<group>"; };
 		26A6845913DE4457007513D1 /* maputility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = maputility.h; path = ../../dim3Common/Headers/maputility.h; sourceTree = "<group>"; };
@@ -910,7 +908,6 @@
 		26A6841813DE405E007513D1 /* dim3iPadEngine */ = {
 			isa = PBXGroup;
 			children = (
-				26A6845413DE4390007513D1 /* main.c */,
 			);
 			path = dim3iPadEngine;
 			sourceTree = "<group>";
@@ -1652,7 +1649,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				26A6845513DE4390007513D1 /* main.c in Sources */,
 				26A6849A13DE456C007513D1 /* file_cocoa.m in Sources */,
 				26A6849B13DE456C007513D1 /* xml.c in Sources */,
 				26A6849C13DE456C007513D1 /* bitmap_main.c in Sources */,

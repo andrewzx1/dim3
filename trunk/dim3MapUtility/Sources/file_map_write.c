@@ -564,7 +564,6 @@ void write_single_mesh(map_mesh_type *mesh)
 	xml_add_attribute_boolean("never_obscure",mesh->flag.never_obscure);
 	xml_add_attribute_boolean("never_cull",mesh->flag.never_cull);
 	xml_add_attribute_boolean("rot_independent",mesh->flag.rot_independent);
-	xml_add_attribute_boolean("shadow",mesh->flag.shadow);
 	xml_add_attribute_boolean("no_light_map",mesh->flag.no_light_map);
 	xml_add_attribute_boolean("skip_light_map_trace",mesh->flag.skip_light_map_trace);
 	xml_add_attribute_boolean("no_halo_obscure",mesh->flag.no_halo_obscure);

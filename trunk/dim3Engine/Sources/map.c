@@ -523,7 +523,7 @@ void map_end(void)
 
 		// finish with sky
 
-	map_sky_release();
+	draw_sky_release();
 	
 		// stop sounds
 			

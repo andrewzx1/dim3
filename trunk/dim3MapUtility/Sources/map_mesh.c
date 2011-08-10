@@ -78,7 +78,6 @@ int map_mesh_add(map_type *map)
 	mesh->flag.never_obscure=FALSE;
 	mesh->flag.never_cull=FALSE;
 	mesh->flag.rot_independent=FALSE;
-	mesh->flag.shadow=FALSE;
 	mesh->flag.no_light_map=FALSE;
 	mesh->flag.skip_light_map_trace=FALSE;
 	

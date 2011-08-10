@@ -203,7 +203,7 @@ void view_create_model_vertex_object(model_draw *draw)
 
 		if (!draw->shadow.on) continue;
 
-		glGenBuffers(1,&draw->vbo[n].vertex);
+		glGenBuffers(1,&draw->vbo[n].shadow_vertex);
 
 			// get the shadow vertex size
 			// always add in 8 for stencil polygon at top
@@ -298,13 +298,13 @@ void view_create_sky_vertex_object(int vertex_mem_sz)
 	glGenBuffers(1,&vbo_sky);
 
 	glBindBuffer(GL_ARRAY_BUFFER,vbo_sky);
-	glBufferData(GL_ARRAY_BUFFER,sz,NULL,GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER,vertex_mem_sz,NULL,GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER,0);
 }
 
 void view_dispose_sky_vertex_object(void)
 {
-	glDeleteBuffers(1,&vbo_spy);
+	glDeleteBuffers(1,&vbo_sky);
 }
 
 void view_bind_sky_vertex_object(void)
@@ -314,7 +314,7 @@ void view_bind_sky_vertex_object(void)
 
 unsigned char* view_map_sky_vertex_object(void)
 {
-	unsigned char*		*vertex_ptr;
+	unsigned char		*vertex_ptr;
 
 	vertex_ptr=(unsigned char*)glMapBuffer(GL_ARRAY_BUFFER,GL_WRITE_ONLY);
 	if (vertex_ptr==NULL) {
@@ -323,11 +323,6 @@ unsigned char* view_map_sky_vertex_object(void)
 	}
 
 	return(vertex_ptr);
-}
-
-void view_bind_sky_vertex_object(void)
-{
-	glBindBuffer(GL_ARRAY_BUFFER,vbo_sky);
 }
 
 void view_unmap_sky_vertex_object(void)
