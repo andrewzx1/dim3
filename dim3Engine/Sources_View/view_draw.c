@@ -60,34 +60,6 @@ extern void view_draw_debug_projectile(proj_type *proj);
 
 /* =======================================================
 
-      Mesh Shadows
-      
-======================================================= */
-
-void view_draw_mesh_shadows(void)
-{
-	int					n;
-
-		// shadows on?
-	
-	if (!setup.shadow_on) return;
-
-		// setup draw
-		
-	gl_3D_view();
-	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
-	gl_setup_project();
-
-		// render the shadows
-
-	for (n=0;n!=view.render->draw_list.count;n++) {
-		if (view.render->draw_list.items[n].type!=view_render_type_mesh) continue;
-		if (map.mesh.meshes[view.render->draw_list.items[n].idx].flag.shadow) shadow_render_mesh(view.render->draw_list.items[n].idx);
-	}
-}
-
-/* =======================================================
-
       Draw Models in Scene
       
 ======================================================= */
@@ -319,10 +291,9 @@ void view_draw_scene_render(obj_type *obj,weapon_type *weap)
 	render_map_liquid_opaque();
 	view_draw_model_opaque();
 	
-		// additional mesh and model drawing
+		// additional model drawing
 		// shadows, remote names, etc
 
-	view_draw_mesh_shadows();
 	view_draw_models_final();
 	
 		// draw transparent scene items

@@ -130,11 +130,11 @@ void draw_sky_dome_panoramic_setup(void)
 	
 		// construct VBO
 
-	view_create_sky_object(((120*6)+(3*2))*sizeof(float));
+	view_create_sky_vertex_object(((120*6)+(3*2))*sizeof(float));
 
 	view_bind_sky_vertex_object();
 
-	vertexe_ptr=(float*)view_map_sky_object();
+	vertex_ptr=(float*)view_map_sky_vertex_object();
 	if (vertex_ptr==NULL) {
 		view_unbind_sky_vertex_object();
 		return;
@@ -384,11 +384,11 @@ void draw_sky_dome_hemisphere_setup(void)
 	sz=(5*20)*6;
 	if (map.sky.dome_mirror) sz*=2;
 
-	view_create_sky_object((sz+(3*2))*sizeof(float));
+	view_create_sky_vertex_object((sz+(3*2))*sizeof(float));
 
 	view_bind_sky_vertex_object();
 
-	vertexe_ptr=(float*)view_map_sky_object();
+	vertex_ptr=(float*)view_map_sky_vertex_object();
 	if (vertex_ptr==NULL) {
 		view_unbind_sky_vertex_object();
 		return;
@@ -718,11 +718,11 @@ void draw_sky_cube_setup(void)
 
 		// construct VBO
 
-	view_create_sky_object(((6*4)+(3*2))*sizeof(float));
+	view_create_sky_vertex_object(((6*4)+(3*2))*sizeof(float));
 
 	view_bind_sky_vertex_object();
 
-	vertexe_ptr=(float*)view_map_sky_object();
+	vertex_ptr=(float*)view_map_sky_vertex_object();
 	if (vertex_ptr==NULL) {
 		view_unbind_sky_vertex_object();
 		return;
