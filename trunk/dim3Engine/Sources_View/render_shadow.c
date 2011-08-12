@@ -450,8 +450,8 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 								map_poly_count,draw_trig_count,i_alpha,
 								light_intensity;
 	double						dx,dy,dz,d_alpha;
-	float						*vp,*vl,*vertex_ptr;
-	unsigned char				*cl;
+	float						*vp,*vl;
+	unsigned char				*vertex_ptr,*cl;
 	d3vct						*vct;
 	d3pnt						*spt,*hpt,*pt,bound_min,bound_max,light_pnt;
 	map_mesh_type				*map_mesh;
@@ -538,13 +538,18 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 			
 		map_mesh=&map.mesh.meshes[map_mesh_idx];
 		map_poly=&map_mesh->polys[map_poly_idx];
+		
+		view_bind_model_shadow_vertex_object(draw,model_mesh_idx);
 
-		vertex_ptr=view_bind_map_next_vertex_object(((model_mesh->ntrig*3)*(3+4))+(map_poly->ptsz*3));
-		if (vertex_ptr==NULL) return;
-
+		vertex_ptr=view_map_model_shadow_vertex_object();
+		if (vertex_ptr==NULL) {
+			view_unbind_model_shadow_vertex_object();
+			return;
+		}
+		
 			// the poly vertexes
 			
-		vl=vertex_ptr;
+		vl=(float*)vertex_ptr;
 		
 		for (k=0;k!=map_poly->ptsz;k++) {
 			pt=&map_mesh->vertexes[map_poly->v[k]];
@@ -557,7 +562,7 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 			
 		draw_trig_count=0;
 			
-		cl=(unsigned char*)(vertex_ptr+(((model_mesh->ntrig*3)*3)+(map_poly->ptsz*3)));
+		cl=vertex_ptr+((((model_mesh->ntrig*3)*3)+(map_poly->ptsz*3))*sizeof(float));
 	
 		for (k=0;k!=model_mesh->ntrig;k++) {
 			model_trig=&model_mesh->trigs[k];
@@ -596,12 +601,12 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 			draw_trig_count++;
 		}
 		
-		view_unmap_current_vertex_object();
+		view_unmap_model_shadow_vertex_object();
 
 			// if no trigs to draw, skip this mesh
 
 		if (draw_trig_count==0) {
-			view_unbind_current_vertex_object();
+			view_unbind_model_shadow_vertex_object();
 			continue;
 		}
 		
@@ -642,7 +647,7 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 
 			// unbind the vertex and index object
 				
-		view_unbind_current_vertex_object();
+		view_unbind_model_shadow_vertex_object();
 	}
 
 		// restore depth buffer and turn

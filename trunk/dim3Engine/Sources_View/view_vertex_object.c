@@ -208,7 +208,7 @@ void view_create_model_vertex_object(model_draw *draw)
 			// get the shadow vertex size
 			// always add in 8 for stencil polygon at top
 
-		mem_sz=(8+(vertex_cnt*(3+4)))*sizeof(float);
+		mem_sz=((8*3)+(vertex_cnt*(3+4)))*sizeof(float);
 
 		glBindBuffer(GL_ARRAY_BUFFER,draw->vbo[n].shadow_vertex);
 		glBufferData(GL_ARRAY_BUFFER,mem_sz,NULL,GL_DYNAMIC_DRAW);
