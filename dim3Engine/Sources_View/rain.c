@@ -39,6 +39,23 @@ int							rain_last_tick,rain_slant_add,rain_slant_next_add,
 							rain_slant_next_start_tick,rain_slant_next_end_tick,
 							rain_last_camera_y;
 float						rain_slant_ang_y,rain_slant_next_ang_y;
+bool						rain_vbo_created;
+
+/* =======================================================
+
+      Rain Initialize and Release
+      
+======================================================= */
+
+void rain_draw_init(void)
+{
+	rain_vbo_created=FALSE;
+}
+
+void rain_draw_release(void)
+{
+	if (rain_vbo_created) view_dispose_rain_vertex_object();
+}
 
 /* =======================================================
 
@@ -113,11 +130,11 @@ void rain_reset(void)
 
 void rain_draw(void)
 {
-	int				n,tick,xadd,yadd,zadd,ypush,density,
+	int				n,tick,xadd,yadd,zadd,ypush,density,mem_sz,
 					slant_add,slant_mult,slant_div;
 	float			slant_ang_y;
-	float			*vertex_ptr;
-	unsigned char	*col_ptr;
+	float			*vp;
+	unsigned char	*vertex_ptr,*cp;
 	unsigned char	start_r,start_g,start_b,end_r,end_g,end_b,uc_alpha;
 	rain_draw_type	*rain_draw;
 
@@ -125,6 +142,16 @@ void rain_draw(void)
 
 	if (!map.rain.on) return;
 	if (view.render->camera.under_liquid_idx!=-1) return;
+	
+		// if this is first time, setup VBO
+		
+	if (!rain_vbo_created) {
+		rain_vbo_created=TRUE;
+		
+		mem_sz=((max_rain_density*2)*3)*sizeof(float);
+		mem_sz+=(((max_rain_density*2)*4)*sizeof(unsigned char));
+		view_create_rain_vertex_object(mem_sz);
+	}
 	
 		// reset on?
 		
@@ -187,11 +214,13 @@ void rain_draw(void)
 	if (density>max_rain_density) density=max_rain_density;
 
 		// construct VBO
-
-	vertex_ptr=view_bind_map_next_vertex_object(((density*2)*(3+4)));
+		
+	view_bind_rain_vertex_object();
+	vertex_ptr=view_map_rain_vertex_object();
 	if (vertex_ptr==NULL) return;
 
-	col_ptr=(unsigned char*)(vertex_ptr+((density*2)*3));
+	vp=(float*)vertex_ptr;
+	cp=vertex_ptr+(((density*2)*3)*sizeof(float));
 	
 		// uc rain colors
 		
@@ -221,28 +250,28 @@ void rain_draw(void)
 
 			// draw rain
 
-		*vertex_ptr++=(float)rain_draw->x;
-		*vertex_ptr++=(float)rain_draw->y;
-		*vertex_ptr++=(float)rain_draw->z;
+		*vp++=(float)rain_draw->x;
+		*vp++=(float)rain_draw->y;
+		*vp++=(float)rain_draw->z;
 
-		*col_ptr++=start_r;
-		*col_ptr++=start_g;
-		*col_ptr++=start_b;
-		*col_ptr++=uc_alpha;
+		*cp++=start_r;
+		*cp++=start_g;
+		*cp++=start_b;
+		*cp++=uc_alpha;
 
-		*vertex_ptr++=(float)(rain_draw->x+xadd);
-		*vertex_ptr++=(float)(rain_draw->y+map.rain.line_length);
-		*vertex_ptr++=(float)(rain_draw->z+zadd);
+		*vp++=(float)(rain_draw->x+xadd);
+		*vp++=(float)(rain_draw->y+map.rain.line_length);
+		*vp++=(float)(rain_draw->z+zadd);
 
-		*col_ptr++=end_r;
-		*col_ptr++=end_g;
-		*col_ptr++=end_b;
-		*col_ptr++=uc_alpha;
+		*cp++=end_r;
+		*cp++=end_g;
+		*cp++=end_b;
+		*cp++=uc_alpha;
 
 		rain_draw++;
 	}
 
-  	view_unmap_current_vertex_object();
+  	view_unmap_rain_vertex_object();
 
 		// setup view
 
@@ -272,10 +301,10 @@ void rain_draw(void)
 
 	glDisableClientState(GL_COLOR_ARRAY);
 
-	glLineWidth(1);
+	glLineWidth(1.0f);
 
 		// unbind the vbo
 
-	view_unbind_current_vertex_object();
+	view_unbind_rain_vertex_object();
 }
 

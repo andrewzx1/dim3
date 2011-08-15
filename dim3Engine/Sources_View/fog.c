@@ -36,6 +36,24 @@ extern server_type			server;
 extern view_type			view;
 extern setup_type			setup;
 
+bool						fog_vbo_created;
+
+/* =======================================================
+
+      Fog Initialize and Release
+      
+======================================================= */
+
+void fog_draw_init(void)
+{
+	fog_vbo_created=FALSE;
+}
+
+void fog_draw_release(void)
+{
+	if (fog_vbo_created) view_dispose_fog_vertex_object();
+}
+
 /* =======================================================
 
       Textured Fog
@@ -45,7 +63,7 @@ extern setup_type			setup;
 void fog_draw_textured(void)
 {
 	int					n,k,tick,count,outer_radius,inner_radius,
-						radius_add,radius,frame;
+						radius_add,radius,frame,mem_sz;
 	unsigned long		gl_id;
 	float				r_ang,r_ang_2,r_add,fx,fz,fx_1,fx_2,fz_1,fz_2,f_ty,f_by,
 						gx,gx_add,gx_shift;
@@ -56,6 +74,15 @@ void fog_draw_textured(void)
 		// textured fog on?
 		
 	if ((!map.fog.on) || (map.fog.use_solid_color)) return;
+	
+		// if this is first time, setup VBO
+		
+	if (!fog_vbo_created) {
+		fog_vbo_created=TRUE;
+		
+		mem_sz=(((16*6)*map.fog.count)*(3+2))*sizeof(float);
+		view_create_fog_vertex_object(mem_sz);
+	}
 
 		// setup viewpoint
 		
@@ -72,8 +99,10 @@ void fog_draw_textured(void)
 	radius_add=(inner_radius-outer_radius)/count;
 
 		// construct VBO
+		
+	view_bind_fog_vertex_object();
 
-	vertex_ptr=view_bind_map_next_vertex_object((((16*6)*count)*(3+2)));
+	vertex_ptr=(float*)view_map_fog_vertex_object();
 	if (vertex_ptr==NULL) return;
 
 	uv_ptr=vertex_ptr+(((16*6)*count)*3);
@@ -168,7 +197,7 @@ void fog_draw_textured(void)
 		radius+=radius_add;
 	}
 
-  	view_unmap_current_vertex_object();
+  	view_unmap_fog_vertex_object();
 
 		// setup drawing
 		
@@ -201,7 +230,7 @@ void fog_draw_textured(void)
 
 		// unbind the vbo
 
-	view_unbind_current_vertex_object();
+	view_unbind_fog_vertex_object();
 }
 
 /* =======================================================

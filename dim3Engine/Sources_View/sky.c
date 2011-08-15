@@ -41,7 +41,7 @@ extern view_type		view;
       
 ======================================================= */
 
-void draw_background_single(map_background_layer_type *layer)
+void sky_draw_background_single(map_background_layer_type *layer)
 {
 	float				gx,gy,gy_high;
 	texture_type		*texture;
@@ -70,7 +70,7 @@ void draw_background_single(map_background_layer_type *layer)
 	view_draw_next_vertex_object_2D_texture_quad(bitmap->gl_id,NULL,1.0f,0,setup.screen.x_sz,0,setup.screen.y_sz,gx,(gx+layer->x_fact),gy,(gy+gy_high));
 }
 
-void draw_background(void)
+void sky_draw_background(void)
 {
 		// is there a background?
 	
@@ -90,9 +90,9 @@ void draw_background(void)
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_NOTEQUAL,0);
 		
-	draw_background_single(&map.background.back);
-	draw_background_single(&map.background.middle);
-	draw_background_single(&map.background.front);
+	sky_draw_background_single(&map.background.back);
+	sky_draw_background_single(&map.background.middle);
+	sky_draw_background_single(&map.background.front);
 
 	glDisable(GL_BLEND);
 	glDisable(GL_ALPHA_TEST);
@@ -104,7 +104,7 @@ void draw_background(void)
       
 ======================================================= */
 
-void draw_sky_dome_panoramic_setup(void)
+void sky_draw_dome_panoramic_setup(void)
 {
     int					i,n,radius;
 	float				gx1,gx2,tgy,bgy,f_ty,f_by;
@@ -290,7 +290,7 @@ void draw_sky_dome_panoramic_setup(void)
 	view_unbind_sky_vertex_object();
 }
 
-void draw_sky_dome_panoramic(void)
+void sky_draw_dome_panoramic(void)
 {
     int					k,tick,txt_id;
 	float				txt_x_shift,txt_y_shift;
@@ -355,7 +355,7 @@ void draw_sky_dome_panoramic(void)
       
 ======================================================= */
 
-void draw_sky_dome_hemisphere_setup(void)
+void sky_draw_dome_hemisphere_setup(void)
 {
     int					i,n,radius,sz;
 	float				f_ty,f_by,f_ty2,f_by2,gx1,gx2,tgy,bgy;
@@ -637,7 +637,7 @@ void draw_sky_dome_hemisphere_setup(void)
 	view_unbind_sky_vertex_object();
 }
 
-void draw_sky_dome_hemisphere(void)
+void sky_draw_dome_hemisphere(void)
 {
     int					k,tick,txt_id,dome_cnt;
 	float				txt_x_shift,txt_y_shift;
@@ -711,7 +711,7 @@ void draw_sky_dome_hemisphere(void)
       
 ======================================================= */
 
-void draw_sky_cube_setup(void)
+void sky_draw_cube_setup(void)
 {
     float				f_radius;
 	float				*vertex_ptr,*uv_ptr;
@@ -932,7 +932,7 @@ void draw_sky_cube_setup(void)
 	view_unbind_sky_vertex_object();
 }
 
-void draw_sky_cube(void)
+void sky_draw_cube(void)
 {
     int					k,tick,txt_id,offset;
     float				txt_fact,txt_x_shift,txt_y_shift;
@@ -1065,7 +1065,7 @@ void draw_sky_cube(void)
       
 ======================================================= */
 
-void draw_sky_init(void)
+void sky_draw_init(void)
 {
 		// is there a sky?
 	
@@ -1076,21 +1076,21 @@ void draw_sky_init(void)
 	switch (map.sky.type) {
 	
 		case st_dome_panoramic:
-			draw_sky_dome_panoramic_setup();
+			sky_draw_dome_panoramic_setup();
 			break;
 
 		case st_dome_hemisphere:
-			draw_sky_dome_hemisphere_setup();
+			sky_draw_dome_hemisphere_setup();
 			break;
 			
 		case st_cube:
-			draw_sky_cube_setup();
+			sky_draw_cube_setup();
 			break;
 	
 	}
 }
 
-void draw_sky_release(void)
+void sky_draw_release(void)
 {
 	if (map.sky.on) view_dispose_sky_vertex_object();
 }
@@ -1101,7 +1101,7 @@ void draw_sky_release(void)
       
 ======================================================= */
 
-void draw_sky(void)
+void sky_draw(void)
 {
 		// is there a sky?
 	
@@ -1112,15 +1112,15 @@ void draw_sky(void)
 	switch (map.sky.type) {
 	
 		case st_dome_panoramic:
-			draw_sky_dome_panoramic();
+			sky_draw_dome_panoramic();
 			break;
 
 		case st_dome_hemisphere:
-			draw_sky_dome_hemisphere();
+			sky_draw_dome_hemisphere();
 			break;
 			
 		case st_cube:
-			draw_sky_cube();
+			sky_draw_cube();
 			break;
 	
 	}

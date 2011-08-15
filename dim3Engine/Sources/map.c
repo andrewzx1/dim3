@@ -318,8 +318,12 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 		strcpy(err_str,"Out of memory");
 		return(FALSE);
 	}
+	
+		// sky, fog, rain
 
-	draw_sky_init();
+	sky_draw_init();
+	fog_draw_init();
+	rain_draw_init();
 
 		// start map ambients
 		// and clear all proj, effects, decals, etc
@@ -521,9 +525,11 @@ void map_end(void)
 	gl_fs_shader_map_end();
 	gl_back_render_map_end();
 
-		// finish with sky
+		// finish with sky, fog, rain
 
-	draw_sky_release();
+	sky_draw_release();
+	fog_draw_release();
+	rain_draw_release();
 	
 		// stop sounds
 			

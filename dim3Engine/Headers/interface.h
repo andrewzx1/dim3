@@ -503,6 +503,7 @@ extern void al_music_set_state(bool music_on);
 extern bool al_music_fade_in(char *name,int msec,char *err_str);
 extern void al_music_fade_out(int msec);
 extern bool al_music_fade_out_fade_in(char *name,int fade_out_msec,int fade_in_msec,char *err_str);
+extern bool al_music_cross_fade(char *name,int cross_msec,char *err_str);
 extern void al_music_run(void);
 
 extern void al_stop_all_sources(void);
@@ -669,6 +670,20 @@ extern inline unsigned char* view_map_sky_vertex_object(void);
 extern inline void view_unmap_sky_vertex_object(void);
 extern inline void view_unbind_sky_vertex_object(void);
 
+extern void view_create_fog_vertex_object(int vertex_mem_sz);
+extern void view_dispose_fog_vertex_object(void);
+extern inline void view_bind_fog_vertex_object(void);
+extern inline unsigned char* view_map_fog_vertex_object(void);
+extern inline void view_unmap_fog_vertex_object(void);
+extern inline void view_unbind_fog_vertex_object(void);
+
+extern void view_create_rain_vertex_object(int vertex_mem_sz);
+extern void view_dispose_rain_vertex_object(void);
+extern inline void view_bind_rain_vertex_object(void);
+extern inline unsigned char* view_map_rain_vertex_object(void);
+extern inline void view_unmap_rain_vertex_object(void);
+extern inline void view_unbind_rain_vertex_object(void);
+
 extern inline float* view_bind_map_next_vertex_object(int sz);
 extern inline void view_unmap_current_vertex_object(void);
 extern inline void view_unbind_current_vertex_object(void);
@@ -688,6 +703,7 @@ extern void view_draw_next_vertex_object_2D_line_trig(d3col *col,float alpha,int
 extern void view_draw_next_vertex_object_3D_line(d3col *col,float alpha,int x0,int y0,int z0,int x1,int y1,int z1);
 extern void view_draw_next_vertex_object_3D_line_cube(d3col *col,float alpha,int *px,int *py,int *pz);
 extern void view_draw_next_vertex_object_2D_texture_quad(GLuint gl_id,d3col *col,float alpha,int lft,int rgt,int top,int bot,float gx,float gx2,float gy,float gy2);
+extern void view_draw_next_vertex_object_2D_texture_quad_rot(GLuint gl_id,d3col *col,float alpha,int lft,int rgt,int top,int bot,float ang,float gx,float gx2,float gy,float gy2);
 extern void view_draw_next_vertex_object_2D_texture_quad_rectangle(GLuint gl_id,float alpha,int lft,int rgt,int top,int bot,int pixel_wid,int pixel_high);
 
 //
@@ -844,15 +860,6 @@ extern bitmap_type* view_images_get_bitmap(int idx);
 extern inline unsigned long view_images_get_gl_id(int idx);
 
 //
-// fog
-//
-
-extern inline bool fog_solid_on(void);
-extern void fog_draw_textured(void);
-extern void fog_solid_start(void);
-extern void fog_solid_end(void);
-
-//
 // map rendering
 //
 
@@ -877,20 +884,30 @@ extern void shadow_get_bound_box(d3pnt *pnt,int high,d3pnt *light_pnt,int light_
 extern void shadow_render_model(model_draw *draw);
 
 //
-// skies and backgrounds
+// skies, backgrounds, fogs, rain
 //
 
-extern void draw_sky_init(void);
-extern void draw_sky_release(void);
-extern void draw_background(void);
-extern void draw_sky(void);
+extern void sky_draw_init(void);
+extern void sky_draw_release(void);
+extern void sky_draw_background(void);
+extern void sky_draw(void);
+
+extern inline bool fog_solid_on(void);
+extern void fog_draw_init(void);
+extern void fog_draw_release(void);
+extern void fog_draw_textured(void);
+extern void fog_solid_start(void);
+extern void fog_solid_end(void);
+
+extern void rain_draw_init(void);
+extern void rain_draw_release(void);
+extern void rain_draw(void);
 
 //
 // misc rendering
 //
 
 extern void draw_weapon_hand(obj_type *obj,weapon_type *weap);
-extern void rain_draw(void);
 extern void decal_render(void);
 
 //
