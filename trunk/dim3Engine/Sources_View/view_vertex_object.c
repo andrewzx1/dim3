@@ -37,7 +37,7 @@ extern server_type			server;
 extern setup_type			setup;
 
 int							cur_vbo_cache_idx,cur_vbo_cache_index_idx;
-GLuint						vbo_sky,
+GLuint						vbo_sky,vbo_fog,vbo_rain,
 							vbo_cache[view_vertex_object_count],
 							vbo_cache_index[view_vertex_object_count];
 
@@ -331,6 +331,102 @@ void view_unmap_sky_vertex_object(void)
 }
 
 void view_unbind_sky_vertex_object(void)
+{
+	glBindBuffer(GL_ARRAY_BUFFER,0);
+}
+
+/* =======================================================
+
+      Fog VBOs
+      
+======================================================= */
+
+void view_create_fog_vertex_object(int vertex_mem_sz)
+{
+	glGenBuffers(1,&vbo_fog);
+
+	glBindBuffer(GL_ARRAY_BUFFER,vbo_fog);
+	glBufferData(GL_ARRAY_BUFFER,vertex_mem_sz,NULL,GL_DYNAMIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER,0);
+}
+
+void view_dispose_fog_vertex_object(void)
+{
+	glDeleteBuffers(1,&vbo_fog);
+}
+
+void view_bind_fog_vertex_object(void)
+{
+	glBindBuffer(GL_ARRAY_BUFFER,vbo_fog);
+}
+
+unsigned char* view_map_fog_vertex_object(void)
+{
+	unsigned char		*vertex_ptr;
+
+	vertex_ptr=(unsigned char*)glMapBuffer(GL_ARRAY_BUFFER,GL_WRITE_ONLY);
+	if (vertex_ptr==NULL) {
+		glBindBuffer(GL_ARRAY_BUFFER,0);
+		return(NULL);
+	}
+
+	return(vertex_ptr);
+}
+
+void view_unmap_fog_vertex_object(void)
+{
+	glUnmapBuffer(GL_ARRAY_BUFFER);
+}
+
+void view_unbind_fog_vertex_object(void)
+{
+	glBindBuffer(GL_ARRAY_BUFFER,0);
+}
+
+/* =======================================================
+
+      Rain VBOs
+      
+======================================================= */
+
+void view_create_rain_vertex_object(int vertex_mem_sz)
+{
+	glGenBuffers(1,&vbo_rain);
+
+	glBindBuffer(GL_ARRAY_BUFFER,vbo_rain);
+	glBufferData(GL_ARRAY_BUFFER,vertex_mem_sz,NULL,GL_DYNAMIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER,0);
+}
+
+void view_dispose_rain_vertex_object(void)
+{
+	glDeleteBuffers(1,&vbo_rain);
+}
+
+void view_bind_rain_vertex_object(void)
+{
+	glBindBuffer(GL_ARRAY_BUFFER,vbo_rain);
+}
+
+unsigned char* view_map_rain_vertex_object(void)
+{
+	unsigned char		*vertex_ptr;
+
+	vertex_ptr=(unsigned char*)glMapBuffer(GL_ARRAY_BUFFER,GL_WRITE_ONLY);
+	if (vertex_ptr==NULL) {
+		glBindBuffer(GL_ARRAY_BUFFER,0);
+		return(NULL);
+	}
+
+	return(vertex_ptr);
+}
+
+void view_unmap_rain_vertex_object(void)
+{
+	glUnmapBuffer(GL_ARRAY_BUFFER);
+}
+
+void view_unbind_rain_vertex_object(void)
 {
 	glBindBuffer(GL_ARRAY_BUFFER,0);
 }

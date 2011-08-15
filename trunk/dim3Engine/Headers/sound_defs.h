@@ -50,6 +50,7 @@ and can be sold or given away.
 #define music_fade_mode_in						1
 #define music_fade_mode_out						2
 #define music_fade_mode_out_fade_in				3
+#define music_fade_mode_cross_fade				4
 
 //
 // sound structures
@@ -76,3 +77,14 @@ typedef struct		{
 						bool					hit;
 						d3pnt					pnt;
 					} audio_ambient_type;
+					
+typedef struct		{
+						int						fade_mode,fade_start_tick,fade_msec,fade_next_msec,
+												volume,org_volume;
+						float					stream_pos,f_sample_len,freq_factor;
+						bool					playing,loop,paused;
+						char					name[name_str_len],fade_next_name[name_str_len];
+						short					*data;
+
+					} audio_music_song_type;
+

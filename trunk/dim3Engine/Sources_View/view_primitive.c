@@ -471,6 +471,72 @@ void view_draw_next_vertex_object_2D_texture_quad(GLuint gl_id,d3col *col,float 
 	glDisable(GL_ALPHA_TEST);
 }
 
+void view_draw_next_vertex_object_2D_texture_quad_rot(GLuint gl_id,d3col *col,float alpha,int lft,int rgt,int top,int bot,float ang,float gx,float gx2,float gy,float gy2)
+{
+	int				px[4],py[4];
+	
+	px[0]=px[3]=lft;
+	px[1]=px[2]=rgt;
+	py[0]=py[1]=top;
+	py[2]=py[3]=bot;
+
+	if (ang!=0.0f) rotate_2D_polygon(4,px,py,((lft+rgt)>>1),((top+bot)>>1),ang);
+
+	view_primitive_vertexes[0]=(float)px[0];
+	view_primitive_vertexes[1]=(float)py[0];
+	view_primitive_vertexes[2]=(float)px[3];
+	view_primitive_vertexes[3]=(float)py[3];
+	view_primitive_vertexes[4]=(float)px[1];
+	view_primitive_vertexes[5]=(float)py[1];
+	view_primitive_vertexes[6]=(float)px[2];
+	view_primitive_vertexes[7]=(float)py[2];
+	
+	view_primitive_uvs[0]=gx;
+	view_primitive_uvs[1]=gy;
+	view_primitive_uvs[2]=gx;
+	view_primitive_uvs[3]=gy2;
+	view_primitive_uvs[4]=gx2;
+	view_primitive_uvs[5]=gy;
+	view_primitive_uvs[6]=gx2;
+	view_primitive_uvs[7]=gy2;
+
+		// setup texture draw
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_NOTEQUAL,0);
+
+	glDisable(GL_DEPTH_TEST);
+
+	if (col==NULL) {
+		glColor4f(1.0f,1.0f,1.0f,alpha);
+	}
+	else {
+		glColor4f(col->r,col->g,col->b,alpha);
+	}
+	
+	glActiveTexture(GL_TEXTURE0);
+	glEnable(GL_TEXTURE_2D);
+	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
+	gl_texture_bind(0,gl_id);
+
+		// draw the quad
+
+	glVertexPointer(2,GL_FLOAT,0,(GLvoid*)view_primitive_vertexes);
+	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)view_primitive_uvs);
+
+	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
+
+		// finish texture draw
+	
+	glDisable(GL_TEXTURE_2D);
+
+	glDisable(GL_BLEND);
+	glDisable(GL_ALPHA_TEST);
+}
+
 void view_draw_next_vertex_object_2D_texture_quad_rectangle(GLuint gl_id,float alpha,int lft,int rgt,int top,int bot,int pixel_wid,int pixel_high)
 {
 #ifdef D3_OS_IPHONE

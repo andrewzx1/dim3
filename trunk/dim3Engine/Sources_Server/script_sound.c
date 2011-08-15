@@ -49,6 +49,7 @@ JSValueRef js_sound_set_music_looping_func(JSContextRef cx,JSObjectRef func,JSOb
 JSValueRef js_sound_fade_in_music_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_sound_fade_out_music_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_sound_fade_out_fade_in_music_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_sound_cross_fade_music_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 JSStaticFunction	sound_functions[]={
 							{"play",				js_sound_play_func,						kJSPropertyAttributeDontDelete},
@@ -61,6 +62,7 @@ JSStaticFunction	sound_functions[]={
 							{"fadeInMusic",			js_sound_fade_in_music_func,			kJSPropertyAttributeDontDelete},
 							{"fadeOutMusic",		js_sound_fade_out_music_func,			kJSPropertyAttributeDontDelete},
 							{"fadeOutFadeInMusic",	js_sound_fade_out_fade_in_music_func,	kJSPropertyAttributeDontDelete},
+							{"crossFadeMusic",		js_sound_cross_fade_music_func,			kJSPropertyAttributeDontDelete},
 							{0,0,0}};
 
 JSClassRef			sound_class;
@@ -342,4 +344,25 @@ JSValueRef js_sound_fade_out_fade_in_music_func(JSContextRef cx,JSObjectRef func
 	}
 
 	return(script_null_to_value(cx));
+}
+
+JSValueRef js_sound_cross_fade_music_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+{
+	int					cross_msec;
+	char				name[name_str_len],err_str[256];
+	
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+	
+	if (setup.music_on) {
+
+		script_value_to_string(cx,argv[0],name,name_str_len);
+		cross_msec=script_value_to_int(cx,argv[1]);
+
+		if (!al_music_cross_fade(name,cross_msec,err_str)) {
+			*exception=script_create_exception(cx,err_str);
+		}
+	}
+
+	return(script_null_to_value(cx));
+
 }

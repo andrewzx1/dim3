@@ -31,17 +31,15 @@ and can be sold or given away.
 
 #include "interface.h"
 
-int						audio_buffer_count,
-						audio_global_sound_volume,audio_global_music_volume;
-float					audio_listener_ang_y,audio_music_stream_pos;
-bool					audio_music_playing;
-d3pnt					audio_listener_pnt;
-audio_buffer_type		audio_buffers[audio_max_buffer];
-audio_play_type			audio_plays[audio_max_play];
+int									audio_buffer_count,
+									audio_global_sound_volume;
+float								audio_listener_ang_y;
+d3pnt								audio_listener_pnt;
+audio_buffer_type					audio_buffers[audio_max_buffer];
+audio_play_type						audio_plays[audio_max_play];
 
-extern float			audio_music_f_sample_len,audio_music_freq_factor;
-extern short			*audio_music_data;
-extern bool				audio_music_loop;
+extern camera_type					camera;
+extern audio_music_song_type		audio_music_song,audio_music_alt_song;
 
 /* =======================================================
 
@@ -109,6 +107,14 @@ void audio_callback(void *userdata,Uint8 *stream,int len)
 		else {
 			vol=1024-(int)(1024.0f*((float)(dist-buffer->min_dist)/(float)(buffer->max_dist-buffer->min_dist)));
 		}
+		
+			// don't do left-right if not in fpp
+			
+		if (camera.setup.mode!=cv_fpp) {
+			play->left_fact=vol>>1;
+			play->right_fact=vol>>1;
+			continue;
+		}
 
 			// get position to source
 			// need to add in player's Y angle
@@ -131,7 +137,7 @@ void audio_callback(void *userdata,Uint8 *stream,int len)
 
 		// if no plays or music, skip audio mix
 
-	if ((!has_play) && (!audio_music_playing)) return;
+	if ((!has_play) && (!audio_music_song.playing) && (!audio_music_alt_song.playing)) return;
 
 		// mix the audio
 
@@ -193,26 +199,52 @@ void audio_callback(void *userdata,Uint8 *stream,int len)
 		
 			// add in the music
 
-		if (audio_music_playing) {
-			pos=(int)audio_music_stream_pos;
+		if (audio_music_song.playing) {
+			pos=(int)audio_music_song.stream_pos;
 
-			data=(int)(*(audio_music_data+pos));
-			left_channel+=((data*audio_global_music_volume)>>10);
+			data=(int)(*(audio_music_song.data+pos));
+			left_channel+=((data*audio_music_song.volume)>>10);
 			
-			data=(int)(*(audio_music_data+(pos+1)));
-			right_channel+=((data*audio_global_music_volume)>>10);
+			data=(int)(*(audio_music_song.data+(pos+1)));
+			right_channel+=((data*audio_music_song.volume)>>10);
 
-			audio_music_stream_pos+=audio_music_freq_factor;		// in stereo
+			audio_music_song.stream_pos+=audio_music_song.freq_factor;		// in stereo
 
 				// time to loop?
 
-			if (audio_music_stream_pos>=audio_music_f_sample_len) {
-				if (audio_music_loop) {
-					audio_music_stream_pos=audio_music_stream_pos-audio_music_f_sample_len;
+			if (audio_music_song.stream_pos>=audio_music_song.f_sample_len) {
+				if (audio_music_song.loop) {
+					audio_music_song.stream_pos=audio_music_song.stream_pos-audio_music_song.f_sample_len;
 				}
 				else {
-					audio_music_stream_pos=0.0f;
-					audio_music_playing=FALSE;
+					audio_music_song.stream_pos=0.0f;
+					audio_music_song.playing=FALSE;
+				}
+			}
+		}
+		
+			// add in the alt music (for cross fades)
+
+		if (audio_music_alt_song.playing) {
+			pos=(int)audio_music_alt_song.stream_pos;
+
+			data=(int)(*(audio_music_alt_song.data+pos));
+			left_channel+=((data*audio_music_alt_song.volume)>>10);
+			
+			data=(int)(*(audio_music_alt_song.data+(pos+1)));
+			right_channel+=((data*audio_music_alt_song.volume)>>10);
+
+			audio_music_alt_song.stream_pos+=audio_music_alt_song.freq_factor;		// in stereo
+
+				// time to loop?
+
+			if (audio_music_alt_song.stream_pos>=audio_music_alt_song.f_sample_len) {
+				if (audio_music_alt_song.loop) {
+					audio_music_alt_song.stream_pos=audio_music_alt_song.stream_pos-audio_music_alt_song.f_sample_len;
+				}
+				else {
+					audio_music_alt_song.stream_pos=0.0f;
+					audio_music_alt_song.playing=FALSE;
 				}
 			}
 		}
@@ -279,7 +311,6 @@ bool al_initialize(char *err_str)
 		// sound volumes are factors of x/1024
 
 	audio_global_sound_volume=512;
-	audio_global_music_volume=512;
 	
 		// music setup
 		

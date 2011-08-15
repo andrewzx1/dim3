@@ -47,11 +47,10 @@ extern render_info_type		render_info;
 
 void radar_draw(void)
 {
-	int						n,tick,x,y,lx,rx,ty,by,px[4],py[4],
+	int						n,tick,x,y,lx,rx,ty,by,
 							dist,max_dist,fade_dist,fade_count,radar_sz;
-	unsigned long			cur_gl_id,gl_id;
-	float					alpha,cur_alpha,fade_mult;
-	float					*vp,*uv,*vertex_ptr,*uv_ptr;
+	unsigned long			gl_id;
+	float					alpha,fade_mult;
 	d3col					tint;
 	obj_type				*obj,*player_obj;
 	iface_radar_icon_type	*icon;
@@ -99,49 +98,10 @@ void radar_draw(void)
 		}
 	}
 
-		// setup vertex ptr
-
-	vertex_ptr=view_bind_map_next_vertex_object(4*(2+2));
-	if (vertex_ptr==NULL) return;
-
-	uv_ptr=vertex_ptr+(4*2);
-	
-	vp=vertex_ptr;
-	uv=uv_ptr;
-
-    *vp++=(float)lx;
-	*vp++=(float)ty;
-    *uv++=0.0f;
-	*uv++=0.0f;
-
-    *vp++=(float)lx;
-	*vp++=(float)by;
-    *uv++=0.0f;
-    *uv++=1.0f;
-
-    *vp++=(float)rx;
-	*vp++=(float)ty;
-    *uv++=1.0f;
-	*uv++=0.0f;
-
-    *vp++=(float)rx;
-	*vp++=(float)by;
-	*uv++=1.0f;
-	*uv++=1.0f;
-	
-	view_unmap_current_vertex_object();
-
 		// draw background
-
-	glVertexPointer(2,GL_FLOAT,0,(GLvoid*)0);
-	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)((4*2)*sizeof(float)));
-			
-	gl_texture_simple_start();
-	gl_texture_simple_set(view_images_get_gl_id(iface.radar.background_image_idx),TRUE,tint.r,tint.g,tint.b,1.0f);
-
-	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
-
-	view_unbind_current_vertex_object();
+		
+	gl_id=view_images_get_gl_id(iface.radar.background_image_idx);
+	view_draw_next_vertex_object_2D_texture_quad(gl_id,&tint,1.0f,lx,rx,ty,by,0.0f,1.0f,0.0f,1.0f);
 
 		// ticks for fades
 
@@ -149,9 +109,8 @@ void radar_draw(void)
 
 		// draw radar objects
 		
-	cur_gl_id=-1;
-	cur_alpha=1.0f;
-	
+	tint.r=tint.g=tint.b=1.0f;
+		
 	max_dist=iface.radar.view_radius;
 	fade_dist=max_dist>>1;
 	
@@ -222,63 +181,22 @@ void radar_draw(void)
 			// draw object
 		
 		icon=&iface.radar.icons[obj->radar.icon_idx];
-		
-		gl_id=view_images_get_gl_id(icon->image_idx);
-		if ((gl_id!=cur_gl_id) || (alpha!=cur_alpha)) {
-			cur_gl_id=gl_id;
-			cur_alpha=alpha;
-			gl_texture_simple_set(gl_id,TRUE,1.0f,1.0f,1.0f,alpha);
-		}
 
-		px[0]=px[3]=x-icon->size;
-		px[1]=px[2]=x+icon->size;
-		py[0]=py[1]=y-icon->size;
-		py[2]=py[3]=y+icon->size;
-
-		if (icon->rot) rotate_2D_polygon(4,px,py,x,y,obj->ang.y);
-
-			// setup vertex ptr
-
-		vertex_ptr=view_bind_map_next_vertex_object(4*(2+2));
-		if (vertex_ptr==NULL) continue;
-
-		uv_ptr=vertex_ptr+(4*2);
-		
-		vp=vertex_ptr;
-		uv=uv_ptr;
-
-		*vp++=(float)px[0];
-		*vp++=(float)py[0];
-		*uv++=0.0f;
-		*uv++=0.0f;
-
-		*vp++=(float)px[3];
-		*vp++=(float)py[3];
-		*uv++=0.0f;
-		*uv++=1.0f;
-
-		*vp++=(float)px[1];
-		*vp++=(float)py[1];
-		*uv++=1.0f;
-		*uv++=0.0f;
-
-		*vp++=(float)px[2];
-		*vp++=(float)py[2];
-		*uv++=1.0f;
-		*uv++=1.0f;
-		
-		view_unmap_current_vertex_object();
+		lx=x-icon->size;
+		rx=x+icon->size;
+		ty=y-icon->size;
+		by=y+icon->size;
 
 			// draw icon
+		
+		gl_id=view_images_get_gl_id(icon->image_idx);
 
-		glVertexPointer(2,GL_FLOAT,0,(GLvoid*)0);
-		glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)((4*2)*sizeof(float)));
-
-		glDrawArrays(GL_TRIANGLE_STRIP,0,4);
-
-		view_unbind_current_vertex_object();
+		if (icon->rot) {
+			view_draw_next_vertex_object_2D_texture_quad_rot(gl_id,&tint,alpha,lx,rx,ty,by,obj->ang.y,0.0f,1.0f,0.0f,1.0f);
+		}
+		else {
+			view_draw_next_vertex_object_2D_texture_quad(gl_id,&tint,alpha,lx,rx,ty,by,0.0f,1.0f,0.0f,1.0f);
+		}
 	}
-
-	gl_texture_simple_end();
 }
 

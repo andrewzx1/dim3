@@ -268,8 +268,8 @@ void view_draw_scene_render(obj_type *obj,weapon_type *weap)
 
 		// draw background and sky
 	
-	draw_background();
-	draw_sky();
+	sky_draw_background();
+	sky_draw();
 	
 		// turn on obscuring fog
 	
