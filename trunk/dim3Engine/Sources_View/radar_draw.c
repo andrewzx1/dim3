@@ -101,7 +101,7 @@ void radar_draw(void)
 		// draw background
 		
 	gl_id=view_images_get_gl_id(iface.radar.background_image_idx);
-	view_draw_next_vertex_object_2D_texture_quad(gl_id,&tint,1.0f,lx,rx,ty,by,0.0f,1.0f,0.0f,1.0f);
+	view_primitive_2D_texture_quad(gl_id,&tint,1.0f,lx,rx,ty,by,0.0f,1.0f,0.0f,1.0f);
 
 		// ticks for fades
 
@@ -192,10 +192,10 @@ void radar_draw(void)
 		gl_id=view_images_get_gl_id(icon->image_idx);
 
 		if (icon->rot) {
-			view_draw_next_vertex_object_2D_texture_quad_rot(gl_id,&tint,alpha,lx,rx,ty,by,obj->ang.y,0.0f,1.0f,0.0f,1.0f);
+			view_primitive_2D_texture_quad_rot(gl_id,&tint,alpha,lx,rx,ty,by,obj->ang.y,0.0f,1.0f,0.0f,1.0f);
 		}
 		else {
-			view_draw_next_vertex_object_2D_texture_quad(gl_id,&tint,alpha,lx,rx,ty,by,0.0f,1.0f,0.0f,1.0f);
+			view_primitive_2D_texture_quad(gl_id,&tint,alpha,lx,rx,ty,by,0.0f,1.0f,0.0f,1.0f);
 		}
 	}
 }

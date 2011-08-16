@@ -97,7 +97,7 @@ void view_draw_debug_bounding_box(d3pnt *pnt,d3ang *ang,d3pnt *size)
 	col.b=1.0f;
 
 	glLineWidth(2.0f);
-	view_draw_next_vertex_object_3D_line_cube(&col,1.0f,px,py,pz);
+	view_primitive_3D_line_cube(&col,1.0f,px,py,pz);
 	glLineWidth(1.0f);
 }
 
@@ -195,7 +195,7 @@ void view_draw_debug_object_path(obj_type *obj)
 	yadd=obj->size.y>>1;
 
 	glLineWidth(2.0f);
-	view_draw_next_vertex_object_3D_line(&col,1.0f,obj->pnt.x,(obj->pnt.y-yadd),obj->pnt.z,pnt.x,(pnt.y-yadd),pnt.z);
+	view_primitive_3D_line(&col,1.0f,obj->pnt.x,(obj->pnt.y-yadd),obj->pnt.z,pnt.x,(pnt.y-yadd),pnt.z);
 	glLineWidth(1.0f);
 }
 

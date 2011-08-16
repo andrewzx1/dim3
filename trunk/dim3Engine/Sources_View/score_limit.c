@@ -178,7 +178,7 @@ int score_limit_get_resume_time(void)
 void score_limit_run(void)
 {
 	gl_frame_clear(FALSE);
-	view_draw_next_vertex_object_2D_color_quad(&iface.color.background,1.0f,0,iface.scale_x,0,iface.scale_y);
+	view_primitive_2D_color_quad(&iface.color.background,1.0f,0,iface.scale_x,0,iface.scale_y);
 	network_score_draw();
 	gl_frame_swap();
 

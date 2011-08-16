@@ -133,7 +133,7 @@ void gui_draw_background(float alpha)
 		// background color
 
 	if (gui_background_image_idx==-1) {
-		view_draw_next_vertex_object_2D_color_quad(&iface.color.background,1.0f,0,iface.scale_x,0,iface.scale_y);
+		view_primitive_2D_color_quad(&iface.color.background,1.0f,0,iface.scale_x,0,iface.scale_y);
 		return;
 	}
 
@@ -142,10 +142,10 @@ void gui_draw_background(float alpha)
 	bitmap=view_images_get_bitmap(gui_background_image_idx);
 
 	if (gl_check_texture_rectangle_ok()) {
-		view_draw_next_vertex_object_2D_texture_quad_rectangle(bitmap->gl_id,alpha,0,iface.scale_x,0,iface.scale_y,bitmap->wid,bitmap->high);
+		view_primitive_2D_texture_quad_rectangle(bitmap->gl_id,alpha,0,iface.scale_x,0,iface.scale_y,bitmap->wid,bitmap->high);
 	}
 	else {
-		view_draw_next_vertex_object_2D_texture_quad(bitmap->gl_id,NULL,alpha,0,iface.scale_x,0,iface.scale_y,0.0f,1.0f,0.0f,1.0f);
+		view_primitive_2D_texture_quad(bitmap->gl_id,NULL,alpha,0,iface.scale_x,0,iface.scale_y,0.0f,1.0f,0.0f,1.0f);
 	}
 }
 
@@ -214,7 +214,7 @@ void gui_draw_message(char *txt)
 		
 	gl_2D_view_interface();
 
-	view_draw_next_vertex_object_2D_color_quad(&iface.color.control.header,1.0f,lx,rx,ty,by);
+	view_primitive_2D_color_quad(&iface.color.control.header,1.0f,lx,rx,ty,by);
 		
 	x=iface.scale_x>>1;
 	y=iface.scale_y>>1;

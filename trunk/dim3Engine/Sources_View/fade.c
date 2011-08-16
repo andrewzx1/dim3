@@ -105,6 +105,6 @@ void view_fade_draw(void)
 	gl_2D_view_screen();
 
 	col.r=col.g=col.b=0.0f;
-	view_draw_next_vertex_object_2D_color_quad(&col,alpha,0,setup.screen.x_sz,0,setup.screen.y_sz);
+	view_primitive_2D_color_quad(&col,alpha,0,setup.screen.x_sz,0,setup.screen.y_sz);
 }
 

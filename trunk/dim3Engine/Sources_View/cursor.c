@@ -87,7 +87,7 @@ void cursor_draw(void)
 		// draw mouse
 		
 	gl_id=view_images_get_gl_id(cursor_image_idx);
-	view_draw_next_vertex_object_2D_texture_quad(gl_id,NULL,1.0f,lft,rgt,top,bot,0.0f,1.0f,0.0f,1.0f);
+	view_primitive_2D_texture_quad(gl_id,NULL,1.0f,lft,rgt,top,bot,0.0f,1.0f,0.0f,1.0f);
 #endif
 }
 

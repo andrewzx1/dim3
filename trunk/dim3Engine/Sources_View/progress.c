@@ -104,10 +104,10 @@ void progress_draw(int percentage)
 	gl_texture_clear(0);			// progress can be called while baseutility loads bitmaps, need to reset the current bitmap so it doesn't get lost
 
 	if (gl_check_texture_rectangle_ok()) {
-		view_draw_next_vertex_object_2D_texture_quad_rectangle(progress_bitmap.gl_id,1.0f,0,iface.scale_x,0,iface.scale_y,progress_bitmap.wid,progress_bitmap.high);
+		view_primitive_2D_texture_quad_rectangle(progress_bitmap.gl_id,1.0f,0,iface.scale_x,0,iface.scale_y,progress_bitmap.wid,progress_bitmap.high);
 	}
 	else {
-		view_draw_next_vertex_object_2D_texture_quad(progress_bitmap.gl_id,NULL,1.0f,0,iface.scale_x,0,iface.scale_y,0.0f,1.0f,0.0f,1.0f);
+		view_primitive_2D_texture_quad(progress_bitmap.gl_id,NULL,1.0f,0,iface.scale_x,0,iface.scale_y,0.0f,1.0f,0.0f,1.0f);
 	}
 	
 		// draw the progress background
@@ -119,19 +119,19 @@ void progress_draw(int percentage)
 
 	mid=(top+bot)>>1;
 
-	view_draw_next_vertex_object_2D_color_poly(lft,top,&iface.progress.base_color_end,rgt,top,&iface.progress.base_color_end,rgt,mid,&iface.progress.base_color_start,lft,mid,&iface.progress.base_color_start,1.0f);
-	view_draw_next_vertex_object_2D_color_poly(lft,mid,&iface.progress.base_color_start,rgt,mid,&iface.progress.base_color_start,rgt,bot,&iface.progress.base_color_end,lft,bot,&iface.progress.base_color_end,1.0f);
+	view_primitive_2D_color_poly(lft,top,&iface.progress.base_color_end,rgt,top,&iface.progress.base_color_end,rgt,mid,&iface.progress.base_color_start,lft,mid,&iface.progress.base_color_start,1.0f);
+	view_primitive_2D_color_poly(lft,mid,&iface.progress.base_color_start,rgt,mid,&iface.progress.base_color_start,rgt,bot,&iface.progress.base_color_end,lft,bot,&iface.progress.base_color_end,1.0f);
 	
 		// draw the progress foreground
 	
 	rgt2=lft+(((rgt-lft)*percentage)/100);
 	
-	view_draw_next_vertex_object_2D_color_poly(lft,top,&iface.progress.hilite_color_start,rgt2,top,&iface.progress.hilite_color_start,rgt2,mid,&iface.progress.hilite_color_end,lft,mid,&iface.progress.hilite_color_end,1.0f);
-	view_draw_next_vertex_object_2D_color_poly(lft,mid,&iface.progress.hilite_color_end,rgt2,mid,&iface.progress.hilite_color_end,rgt2,bot,&iface.progress.hilite_color_start,lft,bot,&iface.progress.hilite_color_start,1.0f);
+	view_primitive_2D_color_poly(lft,top,&iface.progress.hilite_color_start,rgt2,top,&iface.progress.hilite_color_start,rgt2,mid,&iface.progress.hilite_color_end,lft,mid,&iface.progress.hilite_color_end,1.0f);
+	view_primitive_2D_color_poly(lft,mid,&iface.progress.hilite_color_end,rgt2,mid,&iface.progress.hilite_color_end,rgt2,bot,&iface.progress.hilite_color_start,lft,bot,&iface.progress.hilite_color_start,1.0f);
 	
 		// progress outline
 
-	if (iface.progress.outline) view_draw_next_vertex_object_2D_line_quad(&iface.progress.outline_color,1.0f,lft,rgt,top,bot);
+	if (iface.progress.outline) view_primitive_2D_line_quad(&iface.progress.outline_color,1.0f,lft,rgt,top,bot);
 
 	gl_frame_swap();
 }

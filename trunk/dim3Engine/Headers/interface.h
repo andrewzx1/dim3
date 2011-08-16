@@ -337,6 +337,8 @@ extern bool effect_spawn_flash(d3pnt *pt,d3col *col,int intensity,float exponent
 extern bool effect_spawn_lightning(d3pnt *start_pt,d3pnt *end_pt,int wid,float varient,d3col *col,int life_msec);
 extern bool effect_spawn_ray(d3pnt *start_pt,d3pnt *end_pt,int wid,d3col *col,int life_msec);
 extern bool effect_spawn_shake(d3pnt *pt,int distance,int size,int life_msec);
+extern void effect_draw_init(void);
+extern void effect_draw_release(void);
 extern void effect_draw_lightning(effect_type *effect);
 extern void effect_draw_ray(effect_type *effect,int count);
 extern void effect_image_animate_get_uv(int tick,iface_image_animation_type *animate,float *gx,float *gy,float *g_size);
@@ -692,19 +694,19 @@ extern inline unsigned short* view_bind_map_next_index_object(int sz);
 extern inline void view_unmap_current_index_object(void);
 extern inline void view_unbind_current_index_object(void);
 
-extern void view_draw_next_vertex_object_2D_tint_screen(void);
-extern void view_draw_next_vertex_object_2D_color_poly(int x0,int y0,d3col *col0,int x1,int y1,d3col *col1,int x2,int y2,d3col *col2,int x3,int y3,d3col *col3,float alpha);
-extern void view_draw_next_vertex_object_2D_color_quad(d3col *col,float alpha,int lft,int rgt,int top,int bot);
-extern void view_draw_next_vertex_object_2D_color_trig(d3col *col,float alpha,int lft,int rgt,int top,int bot,int dir);
-extern void view_draw_next_vertex_object_2D_line(d3col *col,float alpha,int x0,int y0,int x1,int y1);
-extern void view_draw_next_vertex_object_2D_line_poly(d3col *col,float alpha,int x0,int y0,int x1,int y1,int x2,int y2,int x3,int y3);
-extern void view_draw_next_vertex_object_2D_line_quad(d3col *col,float alpha,int lft,int rgt,int top,int bot);
-extern void view_draw_next_vertex_object_2D_line_trig(d3col *col,float alpha,int lft,int rgt,int top,int bot,int dir);
-extern void view_draw_next_vertex_object_3D_line(d3col *col,float alpha,int x0,int y0,int z0,int x1,int y1,int z1);
-extern void view_draw_next_vertex_object_3D_line_cube(d3col *col,float alpha,int *px,int *py,int *pz);
-extern void view_draw_next_vertex_object_2D_texture_quad(GLuint gl_id,d3col *col,float alpha,int lft,int rgt,int top,int bot,float gx,float gx2,float gy,float gy2);
-extern void view_draw_next_vertex_object_2D_texture_quad_rot(GLuint gl_id,d3col *col,float alpha,int lft,int rgt,int top,int bot,float ang,float gx,float gx2,float gy,float gy2);
-extern void view_draw_next_vertex_object_2D_texture_quad_rectangle(GLuint gl_id,float alpha,int lft,int rgt,int top,int bot,int pixel_wid,int pixel_high);
+extern void view_primitive_2D_tint_screen(void);
+extern void view_primitive_2D_color_poly(int x0,int y0,d3col *col0,int x1,int y1,d3col *col1,int x2,int y2,d3col *col2,int x3,int y3,d3col *col3,float alpha);
+extern void view_primitive_2D_color_quad(d3col *col,float alpha,int lft,int rgt,int top,int bot);
+extern void view_primitive_2D_color_trig(d3col *col,float alpha,int lft,int rgt,int top,int bot,int dir);
+extern void view_primitive_2D_line(d3col *col,float alpha,int x0,int y0,int x1,int y1);
+extern void view_primitive_2D_line_poly(d3col *col,float alpha,int x0,int y0,int x1,int y1,int x2,int y2,int x3,int y3);
+extern void view_primitive_2D_line_quad(d3col *col,float alpha,int lft,int rgt,int top,int bot);
+extern void view_primitive_2D_line_trig(d3col *col,float alpha,int lft,int rgt,int top,int bot,int dir);
+extern void view_primitive_3D_line(d3col *col,float alpha,int x0,int y0,int z0,int x1,int y1,int z1);
+extern void view_primitive_3D_line_cube(d3col *col,float alpha,int *px,int *py,int *pz);
+extern void view_primitive_2D_texture_quad(GLuint gl_id,d3col *col,float alpha,int lft,int rgt,int top,int bot,float gx,float gx2,float gy,float gy2);
+extern void view_primitive_2D_texture_quad_rot(GLuint gl_id,d3col *col,float alpha,int lft,int rgt,int top,int bot,float ang,float gx,float gx2,float gy,float gy2);
+extern void view_primitive_2D_texture_quad_rectangle(GLuint gl_id,float alpha,int lft,int rgt,int top,int bot,int pixel_wid,int pixel_high);
 
 //
 // shaders
