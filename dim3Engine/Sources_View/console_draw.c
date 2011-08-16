@@ -83,7 +83,7 @@ void console_draw(void)
 		// line
 
 	col.r=col.g=col.b=1.0f;
-	view_draw_next_vertex_object_2D_line(&col,1.0f,0,ty,iface.scale_x,ty);
+	view_primitive_2D_line(&col,1.0f,0,ty,iface.scale_x,ty);
 
 		// setup text drawing
 

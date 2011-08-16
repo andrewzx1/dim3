@@ -83,7 +83,7 @@ void network_score_single_name_draw(char *name,int score,int lx,int rx,int ty,in
 	
 	alpha=(server.state==gs_score_limit)?1.0f:0.4f;
 
-	view_draw_next_vertex_object_2D_color_poly(lx,ty,col,rx,ty,col,rx,by,&col2,lx,by,&col2,alpha);
+	view_primitive_2D_color_poly(lx,ty,col,rx,ty,col,rx,by,&col2,lx,by,&col2,alpha);
 	
 		// text
 		

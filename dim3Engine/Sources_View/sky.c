@@ -67,7 +67,7 @@ void sky_draw_background_single(map_background_layer_type *layer)
 	texture=&map.textures[layer->fill];
 	bitmap=&texture->frames[texture->animate.current_frame].bitmap;
 	
-	view_draw_next_vertex_object_2D_texture_quad(bitmap->gl_id,NULL,1.0f,0,setup.screen.x_sz,0,setup.screen.y_sz,gx,(gx+layer->x_fact),gy,(gy+gy_high));
+	view_primitive_2D_texture_quad(bitmap->gl_id,NULL,1.0f,0,setup.screen.x_sz,0,setup.screen.y_sz,gx,(gx+layer->x_fact),gy,(gy+gy_high));
 }
 
 void sky_draw_background(void)

@@ -368,12 +368,12 @@ void render_model_vertex_object_shader(model_type *mdl,int mesh_idx,model_draw *
 		// tangent space already in trig-vertex array
 
 	mem_sz=((mesh->ntrig*3)*3)*sizeof(float);
+// supergumba
+//	tl=(float*)(vertex_ptr+(((mesh->ntrig*3)*(3+2))*sizeof(float)));
+//	memmove(tl,draw->setup.mesh_arrays[mesh_idx].gl_tangent_array,mem_sz);
 
-	tl=(float*)(vertex_ptr+(((mesh->ntrig*3)*(3+2))*sizeof(float)));
-	memmove(tl,draw->setup.mesh_arrays[mesh_idx].gl_tangent_array,mem_sz);
-
-	nl=(float*)(vertex_ptr+(((mesh->ntrig*3)*(3+2+3))*sizeof(float)));
-	memmove(nl,draw->setup.mesh_arrays[mesh_idx].gl_normal_array,mem_sz);
+//	nl=(float*)(vertex_ptr+(((mesh->ntrig*3)*(3+2+3))*sizeof(float)));
+//	memmove(nl,draw->setup.mesh_arrays[mesh_idx].gl_normal_array,mem_sz);
 }
 
 /* =======================================================

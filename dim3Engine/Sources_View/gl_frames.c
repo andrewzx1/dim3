@@ -241,7 +241,7 @@ void gl_frame_swap(void)
 		glDisable(GL_DEPTH_TEST);
 
 		glColor4f(0.0f,0.0f,0.0f,0.5f);
-		view_draw_next_vertex_object_2D_tint_screen();
+		view_primitive_2D_tint_screen();
 	}
 
 		// swap buffer

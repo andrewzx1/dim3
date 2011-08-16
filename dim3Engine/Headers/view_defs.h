@@ -95,6 +95,13 @@ and can be sold or given away.
 #define view_shadows_clip_infinite_distance					100000
 
 //
+// effects
+//
+
+#define effect_lightning_min_lines							5
+#define effect_lightning_max_lines							150
+
+//
 // input rate
 //
 

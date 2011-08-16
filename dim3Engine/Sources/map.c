@@ -324,6 +324,7 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 	sky_draw_init();
 	fog_draw_init();
 	rain_draw_init();
+	effect_draw_init();
 
 		// start map ambients
 		// and clear all proj, effects, decals, etc
@@ -530,6 +531,7 @@ void map_end(void)
 	sky_draw_release();
 	fog_draw_release();
 	rain_draw_release();
+	effect_draw_release();
 	
 		// stop sounds
 			

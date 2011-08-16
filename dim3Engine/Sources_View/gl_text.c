@@ -35,6 +35,7 @@ extern iface_type			iface;
 extern setup_type			setup;
 
 int							font_index,font_size;
+float						*gl_text_vertexes,*gl_text_uvs;
 texture_font_type			fonts[2];
 
 /* =======================================================
@@ -47,6 +48,8 @@ void gl_text_initialize(void)
 {
 	int			n;
 
+		// load the fonts
+		
 	for (n=0;n!=max_iface_font_variant;n++) {
 		strcpy(fonts[font_interface_index].name[n],iface.font.interface_name[n]);
 		strcpy(fonts[font_hud_index].name[n],iface.font.hud_name[n]);
@@ -54,12 +57,20 @@ void gl_text_initialize(void)
 
 	bitmap_text_initialize(&fonts[font_interface_index]);
 	bitmap_text_initialize(&fonts[font_hud_index]);
+	
+		// memory for vertexes
+		
+	gl_text_vertexes=(float*)malloc(((1024*4)*2)*sizeof(float));
+	gl_text_uvs=(float*)malloc(((1024*4)*2)*sizeof(float));
 }
 
 void gl_text_shutdown(void)
 {
 	bitmap_text_shutdown(&fonts[font_interface_index]);
 	bitmap_text_shutdown(&fonts[font_hud_index]);
+	
+	free(gl_text_vertexes);
+	free(gl_text_uvs);
 }
 
 /* =======================================================
@@ -201,7 +212,7 @@ void gl_text_draw(int x,int y,char *txt,int just,bool vcenter,d3col *col,float a
 	int						n,txtlen,ch,xoff,yoff,cnt;
 	float					f_lft,f_rgt,f_top,f_bot,f_wid,f_high,
 							gx_lft,gx_rgt,gy_top,gy_bot;
-	float					*vertex_ptr,*uv_ptr;
+	float					*vp,*uv;
 	char					*c;
 	GLfloat					fct[4];
 	texture_font_size_type	*font;
@@ -210,6 +221,7 @@ void gl_text_draw(int x,int y,char *txt,int just,bool vcenter,d3col *col,float a
 
 	txtlen=strlen(txt);
 	if (txtlen==0) return;
+	if (txtlen>255) txtlen=255;
 	
 		// get font
 		
@@ -240,12 +252,10 @@ void gl_text_draw(int x,int y,char *txt,int just,bool vcenter,d3col *col,float a
 	f_wid=(float)font_size;
 	f_high=f_wid*text_height_factor;
 
-		// construct VBO
+		// construct vertexes
 
-	vertex_ptr=view_bind_map_next_vertex_object(((txtlen*4)*(2+2)));
-	if (vertex_ptr==NULL) return;
-
-	uv_ptr=vertex_ptr+((txtlen*4)*2);
+	vp=gl_text_vertexes;
+	uv=gl_text_uvs;
 
 		// create the quads
 
@@ -272,14 +282,14 @@ void gl_text_draw(int x,int y,char *txt,int just,bool vcenter,d3col *col,float a
 
 		f_rgt=f_lft+f_wid;
 
-		*vertex_ptr++=f_lft;
-		*vertex_ptr++=f_top;
-		*vertex_ptr++=f_lft;
-		*vertex_ptr++=f_bot;
-		*vertex_ptr++=f_rgt;
-		*vertex_ptr++=f_top;
-		*vertex_ptr++=f_rgt;
-		*vertex_ptr++=f_bot;
+		*vp++=f_lft;
+		*vp++=f_top;
+		*vp++=f_lft;
+		*vp++=f_bot;
+		*vp++=f_rgt;
+		*vp++=f_top;
+		*vp++=f_rgt;
+		*vp++=f_bot;
 
 		f_lft+=(f_wid*font->char_size[ch]);
 
@@ -293,31 +303,27 @@ void gl_text_draw(int x,int y,char *txt,int just,bool vcenter,d3col *col,float a
 		gy_top=((float)yoff)*font->gl_yoff;
 		gy_bot=gy_top+font->gl_yadd;
 
-		*uv_ptr++=gx_lft;
-		*uv_ptr++=gy_top;
-		*uv_ptr++=gx_lft;
-		*uv_ptr++=gy_bot;
-		*uv_ptr++=gx_rgt;
-		*uv_ptr++=gy_top;
-		*uv_ptr++=gx_rgt;
-		*uv_ptr++=gy_bot;
+		*uv++=gx_lft;
+		*uv++=gy_top;
+		*uv++=gx_lft;
+		*uv++=gy_bot;
+		*uv++=gx_rgt;
+		*uv++=gy_top;
+		*uv++=gx_rgt;
+		*uv++=gy_bot;
 
 			// remember number of characters
 
 		cnt++;
 	}
 
-	view_unmap_current_vertex_object();
-
 		// draw text
 
-	glVertexPointer(2,GL_FLOAT,0,(GLvoid*)0);
-	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)(((txtlen*4)*2)*sizeof(float)));
+	glVertexPointer(2,GL_FLOAT,0,(GLvoid*)gl_text_vertexes);
+	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)gl_text_uvs);
 
 	for (n=0;n!=cnt;n++) {
 		glDrawArrays(GL_TRIANGLE_STRIP,(n*4),4);
 	}
-
-	view_unbind_current_vertex_object();
 }
 
