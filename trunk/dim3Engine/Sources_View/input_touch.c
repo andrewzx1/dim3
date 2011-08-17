@@ -76,7 +76,6 @@ bool input_touch_get_axis_as_button_max(int axis) { return(FALSE); }
 void input_touch_initialize(void)
 {
 	int							n;
-	double						dx,dy;
 	iface_virtual_stick_type	*stick;
 
 	stick=&iface.virtual_control.sticks[n];
