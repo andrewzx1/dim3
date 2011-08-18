@@ -38,15 +38,16 @@ and can be sold or given away.
 #define kBonePropertyTag						2
 #define kBonePropertyParent						3
 
-#define kBonePropertyHandleRot					4
+#define kBonePropertyNaturalRot					10
+#define kBonePropertyNaturalOffset				11
 
-#define kPoseBoneMovePropertyRot				5
-#define kPoseBoneMovePropertyMove				6
-#define kPoseBoneMovePropertyAcceleration		7
-#define kPoseBoneMovePropertySkipBlended		8
+#define kPoseBoneMovePropertyRot				20
+#define kPoseBoneMovePropertyMove				21
+#define kPoseBoneMovePropertyAcceleration		22
+#define kPoseBoneMovePropertySkipBlended		23
 
-#define kPoseBoneMovePropertyConstraintBone		9
-#define kPoseBoneMovePropertyConstraintOffset	10
+#define kPoseBoneMovePropertyConstraintBone		30
+#define kPoseBoneMovePropertyConstraintOffset	31
 
 extern model_type				model;
 extern animator_state_type		state;
@@ -79,7 +80,9 @@ void property_palette_fill_bone(int bone_idx,int pose_idx)
 
 		// handles
 	
-	list_palette_add_angle(&property_palette,kBonePropertyHandleRot,"Natural Rotation",&bone->natural_rot,FALSE);
+	list_palette_add_header(&property_palette,0,"Natural Settings");
+	list_palette_add_angle(&property_palette,kBonePropertyNaturalRot,"Natural Rotation",&bone->natural_rot,FALSE);
+	list_palette_add_point(&property_palette,kBonePropertyNaturalOffset,"Natural Offset",&bone->natural_offset,FALSE);
 
 		// current pose
 
@@ -149,8 +152,12 @@ void property_palette_click_bone(int bone_idx,int pose_idx,int id,bool double_cl
 
 			// handles
 
-		case kBonePropertyHandleRot:
+		case kBonePropertyNaturalRot:
 			dialog_property_chord_run(list_chord_value_angle,(void*)&bone->natural_rot);
+			break;
+
+		case kBonePropertyNaturalOffset:
+			dialog_property_chord_run(list_chord_value_point,(void*)&bone->natural_offset);
 			break;
 
 			// current pose

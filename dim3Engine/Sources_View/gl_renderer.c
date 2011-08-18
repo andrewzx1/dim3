@@ -253,15 +253,13 @@ bool gl_initialize(int screen_wid,int screen_high,int fsaa_mode,bool reset,char 
 	}
 	
 		// initialize all the pointers
+	
+	glClientActiveTexture(GL_TEXTURE1);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 		
 	glClientActiveTexture(GL_TEXTURE0);
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	
-	glClientActiveTexture(GL_TEXTURE1);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	
-	glClientActiveTexture(GL_TEXTURE0);
 	
 	return(TRUE);
 }

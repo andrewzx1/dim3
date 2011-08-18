@@ -545,6 +545,7 @@ extern JSValueRef script_get_single_property_with_has_check(JSContextRef cx,JSOb
 extern JSObjectRef script_get_single_function(JSContextRef cx,JSObjectRef j_obj,const char *func_name);
 extern bool script_check_param_count(JSContextRef cx,JSObjectRef func,int argc,int need_argc,JSValueRef *exception);
 extern bool script_check_param_at_least_count(JSContextRef cx,JSObjectRef func,int argc,int need_argc,JSValueRef *exception);
+extern bool script_check_fail_in_construct(JSContextRef cx,JSObjectRef j_obj,JSValueRef *exception);
 extern JSObjectRef script_create_main_object(JSContextRef cx,int script_idx);
 extern JSObjectRef script_create_child_object(JSContextRef cx,JSObjectRef parent_obj,JSClassRef cls,const char *name,int script_idx);
 

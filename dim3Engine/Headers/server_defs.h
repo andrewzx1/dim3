@@ -951,6 +951,11 @@ typedef struct		{
 //
 
 typedef struct		{
+						bool					active;
+						GLuint					vertex;
+					} effect_vbo_type;
+
+typedef struct		{
 						int						intensity,mid_tick;
 						float					exponent;
 						d3col					col;
@@ -1019,6 +1024,7 @@ typedef struct		{
 						bool					on;
 						d3pnt					pnt;
 						effect_data				data;
+						effect_vbo_type			vbo;
 					} effect_type;
 
 typedef struct		{

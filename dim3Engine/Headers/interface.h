@@ -85,7 +85,6 @@ extern void view_clear_fps(void);
 extern void view_calculate_fps(void);
 
 extern void view_game_reset_timing(void);
-extern void view_visibility_check_calculate(void);
 
 extern bool view_map_vbo_initialize(void);
 extern void view_map_vbo_release(void);
@@ -337,8 +336,6 @@ extern bool effect_spawn_flash(d3pnt *pt,d3col *col,int intensity,float exponent
 extern bool effect_spawn_lightning(d3pnt *start_pt,d3pnt *end_pt,int wid,float varient,d3col *col,int life_msec);
 extern bool effect_spawn_ray(d3pnt *start_pt,d3pnt *end_pt,int wid,d3col *col,int life_msec);
 extern bool effect_spawn_shake(d3pnt *pt,int distance,int size,int life_msec);
-extern void effect_draw_init(void);
-extern void effect_draw_release(void);
 extern void effect_draw_lightning(effect_type *effect);
 extern void effect_draw_ray(effect_type *effect,int count);
 extern void effect_image_animate_get_uv(int tick,iface_image_animation_type *animate,float *gx,float *gy,float *g_size);
@@ -640,9 +637,6 @@ extern void gl_lights_build_model_light_list(model_type *mdl,model_draw *draw,vi
 // vbos
 //
 
-extern void view_create_vertex_objects(void);
-extern void view_dispose_vertex_objects(void);
-
 extern void view_create_mesh_liquid_vertex_object(map_vbo_type *vbo,int vertex_count,int vertex_mem_sz,int index_count);
 extern void view_dispose_mesh_liquid_vertex_object(map_vbo_type *vbo);
 extern inline void view_bind_mesh_liquid_vertex_object(map_vbo_type *vbo);
@@ -686,13 +680,13 @@ extern inline unsigned char* view_map_rain_vertex_object(void);
 extern inline void view_unmap_rain_vertex_object(void);
 extern inline void view_unbind_rain_vertex_object(void);
 
-extern inline float* view_bind_map_next_vertex_object(int sz);
-extern inline void view_unmap_current_vertex_object(void);
-extern inline void view_unbind_current_vertex_object(void);
-
-extern inline unsigned short* view_bind_map_next_index_object(int sz);
-extern inline void view_unmap_current_index_object(void);
-extern inline void view_unbind_current_index_object(void);
+extern void view_clear_effect_vertex_object(effect_type *effect);
+extern void view_create_effect_vertex_object(effect_type *effect,int vertex_mem_sz);
+extern void view_dispose_effect_vertex_object(effect_type *effect);
+extern inline void view_bind_effect_vertex_object(effect_type *effect);
+extern inline unsigned char* view_map_effect_vertex_object(void);
+extern inline void view_unmap_effect_vertex_object(void);
+extern inline void view_unbind_effect_vertex_object(void);
 
 extern void view_primitive_2D_tint_screen(void);
 extern void view_primitive_2D_color_poly(int x0,int y0,d3col *col0,int x1,int y1,d3col *col1,int x2,int y2,d3col *col2,int x3,int y3,d3col *col3,float alpha);

@@ -243,7 +243,7 @@ void gl_fs_shader_render_begin(void)
 
 void gl_fs_shader_render_finish(void)
 {
-	float					*vertex_ptr,*uv_ptr;
+	float					vertexes[8],uvs[8];
 	shader_type				*shader;
 	
 	if ((!fs_shader_on) || (!fs_shader_active)) return;
@@ -259,36 +259,29 @@ void gl_fs_shader_render_finish(void)
 
 		// create the vertexes and uv
 
-	vertex_ptr=view_bind_map_next_vertex_object(4*(2+2));
-	if (vertex_ptr==NULL) return;
+	vertexes[0]=0.0f;
+	vertexes[1]=0.0f;
 
-	uv_ptr=vertex_ptr+(4*2);
+	uvs[0]=0.0f;
+	uvs[1]=(float)setup.screen.y_sz;
 
-	*vertex_ptr++=0.0f;
-	*vertex_ptr++=0.0f;
+	vertexes[2]=0.0f;
+	vertexes[3]=(float)setup.screen.y_sz;
 
-	*uv_ptr++=0.0f;
-	*uv_ptr++=(float)setup.screen.y_sz;
+	uvs[2]=0.0f;
+	uvs[3]=0.0f;
 
-	*vertex_ptr++=0.0f;
-	*vertex_ptr++=(float)setup.screen.y_sz;
+	vertexes[4]=(float)setup.screen.x_sz;
+	vertexes[5]=0.0f;
 
-	*uv_ptr++=0.0f;
-	*uv_ptr++=0.0f;
+	uvs[4]=(float)setup.screen.x_sz;
+	uvs[5]=(float)setup.screen.y_sz;
 
-	*vertex_ptr++=(float)setup.screen.x_sz;
-	*vertex_ptr++=0.0f;
+	vertexes[6]=(float)setup.screen.x_sz;
+	vertexes[7]=(float)setup.screen.y_sz;
 
-	*uv_ptr++=(float)setup.screen.x_sz;
-	*uv_ptr++=(float)setup.screen.y_sz;
-
-	*vertex_ptr++=(float)setup.screen.x_sz;
-	*vertex_ptr++=(float)setup.screen.y_sz;
-
-	*uv_ptr++=(float)setup.screen.x_sz;
-	*uv_ptr++=0.0f;
-
-  	view_unmap_current_vertex_object();
+	uvs[6]=(float)setup.screen.x_sz;
+	uvs[7]=0.0f;
 
 		// setup fbo texture draw
 
@@ -316,8 +309,8 @@ void gl_fs_shader_render_finish(void)
 
 		// draw the quad
 
-	glVertexPointer(2,GL_FLOAT,0,(GLvoid*)0);
-	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)((4*2)*sizeof(float)));
+	glVertexPointer(2,GL_FLOAT,0,(GLvoid*)vertexes);
+	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)uvs);
 
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 
@@ -328,10 +321,6 @@ void gl_fs_shader_render_finish(void)
 		// finish fbo draw
 	
 	glDisable(GL_TEXTURE_RECTANGLE_ARB);
-
-		// unbind the vbo
-
-	view_unbind_current_vertex_object();
 }
 
 #endif

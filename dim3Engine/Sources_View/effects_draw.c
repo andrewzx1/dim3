@@ -32,7 +32,6 @@ and can be sold or given away.
 #include "interface.h"
 
 float					effect_lightning_line_zag[16]={1.0f,0.5f,0.8f,-0.2f,0.3f,-1.0f,-0.7f,0.1f,-0.4f,0.6f,-0.4f,0.5f,-0.6f,0.2f,-0.8f,-0.4f};
-float					*effect_lightning_vertexes;
 
 extern map_type			map;
 extern server_type		server;
@@ -40,80 +39,16 @@ extern view_type		view;
 
 /* =======================================================
 
-      Effect Draw Setup
-      
-======================================================= */
-
-void effect_draw_init(void)
-{
-	effect_lightning_vertexes=(float*)malloc(((effect_lightning_max_lines*2)*3)*sizeof(float));
-}
-
-void effect_draw_release(void)
-{
-	free(effect_lightning_vertexes);
-}
-
-/* =======================================================
-
       Draw Lightning
       
 ======================================================= */
 
-void effect_draw_lightning_lines(int nline,float varient,int k,int sx,int sy,int sz,int ex,int ey,int ez,int xadd,int yadd,int zadd)
-{
-    int			n;
-	float		fx,fy,fz,f_xadd,f_yadd,f_zadd;
-	float		*vp;
-
-		// setup vertexes
-
-	vp=effect_lightning_vertexes;
-
-	fx=(float)sx;
-	fy=(float)sy;
-	fz=(float)sz;
-
-	f_xadd=(float)xadd;
-	f_yadd=(float)yadd;
-	f_zadd=(float)zadd;
-
-	for (n=0;n!=nline;n++) {
-		
-		*vp++=fx;
-		*vp++=fy;
-		*vp++=fz;
-	
-		if (n==(nline-1)) {
-			*vp++=(float)ex;
-			*vp++=(float)ey;
-			*vp++=(float)ez;
-		}
-		else {
-			fx=(fx+f_xadd)+(int)(effect_lightning_line_zag[k]*varient);
-			fy=(fy+f_yadd)+(int)(effect_lightning_line_zag[(k+4)&0xF]*varient);
-			fz=(fz+f_zadd)+(int)(effect_lightning_line_zag[(k+8)&0xF]*varient);
-
-			*vp++=fx;
-			*vp++=fy;
-			*vp++=fz;
-		}
-
-		k=(k+1)&0xF;
-	}
-	
-         // draw the lines
-
-	glVertexPointer(3,GL_FLOAT,0,(GLvoid*)effect_lightning_vertexes);
-	glDrawArrays(GL_LINES,0,(nline*2));
-}
-
 void effect_draw_lightning(effect_type *effect)
 {
-	int						k,nline,wid,x,z,y,
+	int						n,k,nline,wid,x,z,y,
                             sx,sz,sy,ex,ez,ey,xadd,zadd,yadd;
-	float					varient,alpha;
-	d3col					*col;
+	float					varient,fx,fy,fz,f_xadd,f_yadd,f_zadd;
+	float					*vertex_ptr;
 	lightning_effect_data	*lightning;
 	
 	lightning=&effect->data.lightning;
@@ -148,17 +83,61 @@ void effect_draw_lightning(effect_type *effect)
         
 	k=((game_time_get()>>5)+lightning->line_offset)&0xF;
 	varient=lightning->varient;
-	
-		// line colors
+
+		// construct VBO
+		// effect vbos are dynamic, so it'll auto construct
+		// the first time called
+
+	view_create_effect_vertex_object(effect,(((nline*3)*2)*sizeof(float)));
+
+	view_bind_effect_vertex_object(effect);
+	vertex_ptr=(float*)view_map_effect_vertex_object();
+	if (vertex_ptr==NULL) return;
+
+		// setup vertexes
+
+	fx=(float)sx;
+	fy=(float)sy;
+	fz=(float)sz;
+
+	f_xadd=(float)xadd;
+	f_yadd=(float)yadd;
+	f_zadd=(float)zadd;
+
+	for (n=0;n!=nline;n++) {
 		
-	col=&lightning->col;
-    
+		*vertex_ptr++=fx;
+		*vertex_ptr++=fy;
+		*vertex_ptr++=fz;
+	
+		if (n==(nline-1)) {
+			*vertex_ptr++=(float)ex;
+			*vertex_ptr++=(float)ey;
+			*vertex_ptr++=(float)ez;
+		}
+		else {
+			fx=(fx+f_xadd)+(int)(effect_lightning_line_zag[k]*varient);
+			fy=(fy+f_yadd)+(int)(effect_lightning_line_zag[(k+4)&0xF]*varient);
+			fz=(fz+f_zadd)+(int)(effect_lightning_line_zag[(k+8)&0xF]*varient);
+
+			*vertex_ptr++=fx;
+			*vertex_ptr++=fy;
+			*vertex_ptr++=fz;
+		}
+
+		k=(k+1)&0xF;
+	}
+
+		// unmap vertex object
+
+	view_unmap_effect_vertex_object();
+	    
         // draw lines
 		
 	wid=lightning->wid;
-	alpha=0.6f;
 
 	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE);
 
 	glDisable(GL_ALPHA_TEST);
 
@@ -168,19 +147,28 @@ void effect_draw_lightning(effect_type *effect)
 		
 	glDisable(GL_LINE_SMOOTH);
 	
+	glLineWidth((float)(wid*6));
+	glColor4f(lightning->col.r,lightning->col.g,lightning->col.b,0.1f);
+	glVertexPointer(3,GL_FLOAT,0,(GLvoid*)0);
+	glDrawArrays(GL_LINES,0,(nline*2));
+
 	glLineWidth((float)(wid*3));
-	glBlendFunc(GL_SRC_ALPHA,GL_ONE);
-	glColor4f(col->r,col->g,col->b,0.2f);
-	effect_draw_lightning_lines(nline,varient,k,sx,sy,sz,ex,ey,ez,xadd,yadd,zadd);
+	glColor4f(lightning->col.r,lightning->col.g,lightning->col.b,0.2f);
+	glVertexPointer(3,GL_FLOAT,0,(GLvoid*)0);
+	glDrawArrays(GL_LINES,0,(nline*2));
 
 	glLineWidth((float)wid);
-	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-	glColor4f(col->r,col->g,col->b,0.6f);
-	effect_draw_lightning_lines(nline,varient,k,sx,sy,sz,ex,ey,ez,xadd,yadd,zadd);
+	glColor4f(lightning->col.r,lightning->col.g,lightning->col.b,0.4f);
+	glVertexPointer(3,GL_FLOAT,0,(GLvoid*)0);
+	glDrawArrays(GL_LINES,0,(nline*2));
 
 	glLineWidth(1.0f);
 	
 	glEnable(GL_LINE_SMOOTH);
+
+		// unbind vertex object
+		
+	view_unbind_effect_vertex_object();
 }
 
 /* =======================================================

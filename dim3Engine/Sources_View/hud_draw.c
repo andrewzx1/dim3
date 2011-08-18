@@ -92,17 +92,12 @@ void hud_bitmaps_draw(void)
 	int							n,tick,r,wrap_count,
 								px[4],py[4],sx,sy,rx,ry,
 								wid,high,repeat_count;
-	float						gx,gy,gx2,gy2,g_size,alpha,cur_alpha;
-	float						*vp,*uv,*vertex_ptr,*uv_ptr;
-	GLuint						cur_gl_id;
-	d3col						tint,cur_tint,team_tint;
+	float						gx,gy,gx2,gy2,g_size,alpha;
+	float						vertexes[8],uvs[8];
+	d3col						tint,team_tint;
 	iface_bitmap_type			*bitmap;
 	obj_type					*obj;
 	bitmap_type					*bitmap_data;
-	
-	cur_gl_id=-1;
-	cur_alpha=1.0f;
-	cur_tint.r=cur_tint.g=cur_tint.b=1.0f;
 	
 	obj=server.obj_list.objs[server.player_obj_idx];
 	object_get_tint(obj,&team_tint);
@@ -182,14 +177,9 @@ void hud_bitmaps_draw(void)
 			gy+=g_size;
 		}
 
-			// need to change texture?
+			// bind texture
 
-		if ((cur_gl_id!=bitmap_data->gl_id) || (cur_alpha!=alpha) || (cur_tint.r!=tint.r) || (cur_tint.g!=tint.g) || (cur_tint.b!=tint.b)) {
-			cur_gl_id=bitmap_data->gl_id;
-			cur_alpha=alpha;
-			memmove(&cur_tint,&tint,sizeof(d3col));
-			gl_texture_simple_set(cur_gl_id,TRUE,tint.r,tint.g,tint.b,cur_alpha);
-		}
+		gl_texture_simple_set(bitmap_data->gl_id,TRUE,tint.r,tint.g,tint.b,alpha);
 		
 			// find the repeat count
 		
@@ -219,39 +209,31 @@ void hud_bitmaps_draw(void)
 		
 		wrap_count=0;
 
-			// setup the vertex pointer
-
-		vertex_ptr=view_bind_map_next_vertex_object((repeat_count*4)*(2+2));
-		if (vertex_ptr==NULL) continue;
-
-		uv_ptr=vertex_ptr+((repeat_count*4)*2);
-		
-		vp=vertex_ptr;
-		uv=uv_ptr;
+			// draw the bitmap
 
 		for (r=0;r!=repeat_count;r++) {
 
 				// quad
 
-			*vp++=(float)px[0];
-			*vp++=(float)py[0];
-			*uv++=gx;
-			*uv++=gy;
+			vertexes[0]=(float)px[0];
+			vertexes[1]=(float)py[0];
+			uvs[0]=gx;
+			uvs[1]=gy;
 
-			*vp++=(float)px[3];
-			*vp++=(float)py[3];
-			*uv++=gx;
-			*uv++=gy2;
+			vertexes[2]=(float)px[3];
+			vertexes[3]=(float)py[3];
+			uvs[2]=gx;
+			uvs[3]=gy2;
 
-			*vp++=(float)px[1];
-			*vp++=(float)py[1];
-			*uv++=gx2;
-			*uv++=gy;
+			vertexes[4]=(float)px[1];
+			vertexes[5]=(float)py[1];
+			uvs[4]=gx2;
+			uvs[5]=gy;
 
-			*vp++=(float)px[2];
-			*vp++=(float)py[2];
-			*uv++=gx2;
-			*uv++=gy2;
+			vertexes[6]=(float)px[2];
+			vertexes[7]=(float)py[2];
+			uvs[6]=gx2;
+			uvs[7]=gy2;
 			
 				// column wrapping repeats
 				
@@ -312,20 +294,13 @@ void hud_bitmaps_draw(void)
 					py[3]+=ry;
 				}
 			}
+
+				// draw the quad
+
+			glVertexPointer(2,GL_FLOAT,0,(GLvoid*)vertexes);
+			glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)uvs);
+			glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 		}
-			
-		view_unmap_current_vertex_object();
-
-			// draw the quads
-
-		glVertexPointer(2,GL_FLOAT,0,(GLvoid*)0);
-		glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)(((repeat_count*4)*2)*sizeof(float)));
-			
-		for (r=0;r!=repeat_count;r++) {
-			glDrawArrays(GL_TRIANGLE_STRIP,(r*4),4);
-		}
-
-		view_unbind_current_vertex_object();
 	}
 	
 	gl_texture_simple_end();

@@ -102,6 +102,16 @@ void property_palette_click_group(int group_idx,int id,bool double_click)
 {
 	group_type			*group;
 
+		// group clear
+
+	if (id==kGroupPropertyClear) {
+		group_clear(group_idx,FALSE);
+		main_wind_draw();
+		return;
+	}
+
+		// regular clicks
+
 	if (!double_click) return;
 
 	group=&map.group.groups[group_idx];
@@ -110,10 +120,6 @@ void property_palette_click_group(int group_idx,int id,bool double_click)
 
 		case kGroupPropertyName:
 			dialog_property_string_run(list_string_value_string,(void*)group->name,name_str_len,0,0);
-			break;
-			
-		case kGroupPropertyClear:
-			group_clear(group_idx,FALSE);
 			break;
 
 	}

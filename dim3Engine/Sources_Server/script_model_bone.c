@@ -144,6 +144,7 @@ JSValueRef js_model_bone_find_offset_func(JSContextRef cx,JSObjectRef func,JSObj
 	model_draw			*draw;
 	
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+	if (!script_check_fail_in_construct(cx,j_obj,exception)) return(script_null_to_value(cx));
 	
 		// get proper draw setup
 		
@@ -170,6 +171,7 @@ JSValueRef js_model_bone_find_position_func(JSContextRef cx,JSObjectRef func,JSO
 	model_draw			*draw;
 	
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+	if (!script_check_fail_in_construct(cx,j_obj,exception)) return(script_null_to_value(cx));
 	
 		// get proper draw setup
 		
@@ -196,6 +198,7 @@ JSValueRef js_model_bone_get_brightness_func(JSContextRef cx,JSObjectRef func,JS
 	model_draw		*draw;
 	
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+	if (!script_check_fail_in_construct(cx,j_obj,exception)) return(script_null_to_value(cx));
 	
 		// get proper draw setup
 		
@@ -228,6 +231,7 @@ JSValueRef js_model_bone_set_dynamic_rotate_func(JSContextRef cx,JSObjectRef fun
 	model_draw		*draw;
 	
 	if (!script_check_param_count(cx,func,argc,4,exception)) return(script_null_to_value(cx));
+	if (!script_check_fail_in_construct(cx,j_obj,exception)) return(script_null_to_value(cx));
 	
 		// get proper draw setup
 		
@@ -255,6 +259,7 @@ JSValueRef js_model_bone_set_dynamic_move_func(JSContextRef cx,JSObjectRef func,
 	model_draw		*draw;
 	
 	if (!script_check_param_count(cx,func,argc,4,exception)) return(script_null_to_value(cx));
+	if (!script_check_fail_in_construct(cx,j_obj,exception)) return(script_null_to_value(cx));
 	
 		// get proper draw setup
 		
@@ -282,6 +287,7 @@ JSValueRef js_model_bone_set_dynamic_resize_func(JSContextRef cx,JSObjectRef fun
 	model_draw		*draw;
 	
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+	if (!script_check_fail_in_construct(cx,j_obj,exception)) return(script_null_to_value(cx));
 	
 		// get proper draw setup
 		

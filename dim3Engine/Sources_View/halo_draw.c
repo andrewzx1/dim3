@@ -239,7 +239,7 @@ void halo_draw_setup(void)
 void halo_draw_render(void)
 {
 	int						n,x,y,psz;
-	float					*vp,*uv,*vertex_ptr,*uv_ptr;
+	float					vertexes[8],uvs[8];
 	halo_draw_type			*halo_draw;
 	
 		// any halos to draw?
@@ -274,45 +274,33 @@ void halo_draw_render(void)
 
 			// setup vertex
 
-		vertex_ptr=view_bind_map_next_vertex_object(4*(2+2));
-		if (vertex_ptr==NULL) continue;
+		vertexes[0]=(float)(x-psz);
+		vertexes[1]=(float)(y-psz);
+		uvs[0]=0.0f;
+		uvs[1]=0.0f;
 
-		uv_ptr=vertex_ptr+(4*2);
-		
-		vp=vertex_ptr;
-		uv=uv_ptr;
+		vertexes[2]=(float)(x-psz);
+		vertexes[3]=(float)(y+psz);
+		uvs[2]=0.0f;
+		uvs[3]=1.0f;
 
-		*vp++=(float)(x-psz);
-		*vp++=(float)(y-psz);
-		*uv++=0.0f;
-		*uv++=0.0f;
+		vertexes[4]=(float)(x+psz);
+		vertexes[5]=(float)(y-psz);
+		uvs[4]=1.0f;
+		uvs[5]=0.0f;
 
-		*vp++=(float)(x-psz);
-		*vp++=(float)(y+psz);
-		*uv++=0.0f;
-		*uv++=1.0f;
-
-		*vp++=(float)(x+psz);
-		*vp++=(float)(y-psz);
-		*uv++=1.0f;
-		*uv++=0.0f;
-
-		*vp++=(float)(x+psz);
-		*vp++=(float)(y+psz);
-		*uv++=1.0f;
-		*uv++=1.0f;
-
-		view_unmap_current_vertex_object();
+		vertexes[6]=(float)(x+psz);
+		vertexes[7]=(float)(y+psz);
+		uvs[6]=1.0f;
+		uvs[7]=1.0f;
 
 			// draw halo
 
-		glVertexPointer(2,GL_FLOAT,0,(GLvoid*)0);
-		glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)((4*2)*sizeof(float)));
+		glVertexPointer(2,GL_FLOAT,0,(GLvoid*)vertexes);
+		glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)uvs);
 
 		gl_texture_simple_set(view_images_get_gl_id(iface.halo_list.halos[halo_draw->idx].image_idx),TRUE,1,1,1,halo_draw->alpha);
 		glDrawArrays(GL_TRIANGLE_STRIP,0,4);
-
-		view_unbind_current_vertex_object();
 	}
 		
 	gl_texture_simple_end();

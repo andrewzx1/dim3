@@ -520,6 +520,12 @@ JSObjectRef script_get_single_function(JSContextRef cx,JSObjectRef j_obj,const c
 	return((JSObjectRef)vp);
 }
 
+/* =======================================================
+
+      Script Param and Call Time Checking
+      
+======================================================= */
+
 bool script_check_param_count(JSContextRef cx,JSObjectRef func,int argc,int need_argc,JSValueRef *exception)
 {
 	char				func_name[64],err_str[256];
@@ -567,6 +573,14 @@ bool script_check_param_at_least_count(JSContextRef cx,JSObjectRef func,int argc
 	
 	*exception=script_create_exception(cx,err_str);
 
+	return(FALSE);
+}
+
+bool script_check_fail_in_construct(JSContextRef cx,JSObjectRef j_obj,JSValueRef *exception)
+{
+	if (!script_in_construct(j_obj)) return(TRUE);
+
+	*exception=script_create_exception(cx,"Can not be called in construct event, move to spawn event");
 	return(FALSE);
 }
 

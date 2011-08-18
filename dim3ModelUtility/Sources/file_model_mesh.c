@@ -223,6 +223,7 @@ void decode_mesh_xml(model_type *model,int model_head)
 		xml_get_attribute_text(tag,"name",bone->name,name_str_len);
         
         xml_get_attribute_3_coord_int(tag,"c3",&bone->pnt.x,&bone->pnt.y,&bone->pnt.z);
+        xml_get_attribute_3_coord_int(tag,"o3",&bone->natural_offset.x,&bone->natural_offset.y,&bone->natural_offset.z);
 		xml_get_attribute_3_coord_float(tag,"r3",&bone->natural_rot.x,&bone->natural_rot.y,&bone->natural_rot.z);
 
         bone_parent_tags[i]=xml_get_attribute_model_tag(tag,"parent");
@@ -577,6 +578,7 @@ void encode_mesh_xml(model_type *model)
 		xml_add_attribute_text("name",bone->name);
 		
         xml_add_attribute_3_coord_int("c3",bone->pnt.x,bone->pnt.y,bone->pnt.z);
+        xml_add_attribute_3_coord_int("o3",bone->natural_offset.x,bone->natural_offset.y,bone->natural_offset.z);
 		xml_add_attribute_3_coord_float("r3",bone->natural_rot.x,bone->natural_rot.y,bone->natural_rot.z);
 		
         if (bone->parent_idx!=-1) xml_add_attribute_model_tag("parent",model->bones[bone->parent_idx].tag);

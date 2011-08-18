@@ -597,7 +597,7 @@ typedef struct		{
 					} map_physics_type;
 
 typedef struct		{
-						int									model,shadow,effect,mesh;
+						int									model,shadow,effect;
 					} map_optimize_obscure_dist_type;
 
 typedef struct		{

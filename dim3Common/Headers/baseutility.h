@@ -1330,14 +1330,22 @@ typedef struct		{
 					} iface_net_games_type;
 
 //
+// project setup
+//
+
+typedef struct		{
+						char							name[name_str_len];
+						bool							modernize,skill;
+					} iface_project_type;
+
+//
 // main iface structure
 //
  
 typedef struct		{
 						int								scale_x,scale_y;
-						char							project_name[name_str_len],
-														click_sound[name_str_len];
-						bool							skill;
+						char							click_sound[name_str_len];
+						iface_project_type				project;
 						iface_color_type				color;
 						iface_font_type					font;
 						iface_progress_type				progress;

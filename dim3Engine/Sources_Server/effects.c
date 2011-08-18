@@ -56,6 +56,10 @@ bool effect_initialize_list(void)
 			// not used
 
 		server.effect_list.effects[n]->on=FALSE;
+
+			// clear the vbo
+
+		view_clear_effect_vertex_object(server.effect_list.effects[n]);
 	}
 
 	return(TRUE);
@@ -66,7 +70,15 @@ void effect_free_list(void)
 	int				n;
 
 	for (n=0;n!=max_effect_list;n++) {
-		if (server.effect_list.effects[n]!=NULL) free(server.effect_list.effects[n]);
+		if (server.effect_list.effects[n]==NULL) continue;
+				
+			// dispose vbo if it's active
+
+		view_dispose_effect_vertex_object(server.effect_list.effects[n]);
+
+			// free effect
+
+		free(server.effect_list.effects[n]);
 	}
 }
 
@@ -168,5 +180,9 @@ void effect_dispose(void)
 			// turn off effect
 
 		effect->on=FALSE;
+
+			// dispose any active VBOs
+
+		view_dispose_effect_vertex_object(effect);
 	}
 }

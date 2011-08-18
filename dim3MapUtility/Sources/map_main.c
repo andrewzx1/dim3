@@ -87,7 +87,6 @@ bool map_new(map_type *map,char *name)
 	map->optimize.obscure_dist.model=0;
 	map->optimize.obscure_dist.shadow=0;
 	map->optimize.obscure_dist.effect=0;
-	map->optimize.obscure_dist.mesh=0;
 
 		// light maps
 

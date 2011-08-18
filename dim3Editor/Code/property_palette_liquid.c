@@ -216,9 +216,20 @@ void property_palette_click_liquid(int liq_idx,int id,bool double_click)
 	map_liquid_type			*liq;
 	editor_view_type		*view;
 
+	liq=&map.liquid.liquids[liq_idx];
+
+		// wave reset
+
+	if (id==kLiquidPropertyWaveReset) {
+		piece_liquid_reset_size(liq);
+		main_wind_draw();
+		return;
+	}
+
+		// regular clicks
+
 	if (!double_click) return;
 
-	liq=&map.liquid.liquids[liq_idx];
 	view=view_get_current_view();
 
 	switch (id) {
@@ -293,10 +304,6 @@ void property_palette_click_liquid(int liq_idx,int id,bool double_click)
 
 		case kLiquidPropertyWavePeriodMSec:
 			dialog_property_string_run(list_string_value_positive_int,(void*)&liq->wave.period_msec,0,0,0);
-			break;
-			
-		case kLiquidPropertyWaveReset:
-			piece_liquid_reset_size(liq);
 			break;
 
 			// harm

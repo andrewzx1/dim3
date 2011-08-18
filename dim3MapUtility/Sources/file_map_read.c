@@ -101,7 +101,6 @@ void decode_map_settings_xml(map_type *map,int map_head)
 		map->optimize.obscure_dist.model=xml_get_attribute_int(tag,"model_obscure_distance");
 		map->optimize.obscure_dist.shadow=xml_get_attribute_int(tag,"shadow_obscure_distance");
 		map->optimize.obscure_dist.effect=xml_get_attribute_int(tag,"effect_obscure_distance");
-		map->optimize.obscure_dist.mesh=xml_get_attribute_int(tag,"mesh_obscure_distance");
 	}
 	
     tag=xml_findfirstchild("Network",map_head);

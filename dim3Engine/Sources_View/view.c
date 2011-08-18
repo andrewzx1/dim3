@@ -64,7 +64,6 @@ bool view_memory_allocate(void)
 		
 	view.images=NULL;
 	view.rain_draws=NULL;
-	view.obscure.grid=NULL;
 	view.chat.lines=NULL;
 	view.console.lines=NULL;
 	
@@ -75,9 +74,6 @@ bool view_memory_allocate(void)
 
 	view.rain_draws=(rain_draw_type*)malloc(max_rain_density*sizeof(rain_draw_type));
 	if (view.rain_draws==NULL) return(FALSE);
-
-	view.obscure.grid=(unsigned char*)malloc(obscure_grid_byte_size);
-	if (view.obscure.grid==NULL) return(FALSE);
 	
 	view.chat.lines=(view_chat_line_type*)malloc(max_view_chat_lines*sizeof(view_chat_line_type));
 	if (view.chat.lines==NULL) return(FALSE);
@@ -89,7 +85,6 @@ bool view_memory_allocate(void)
 
 	bzero(view.images,(max_view_image*sizeof(view_image_type)));
 	bzero(view.rain_draws,(max_rain_density*sizeof(rain_draw_type)));
-	bzero(view.obscure.grid,obscure_grid_byte_size);
 	bzero(view.chat.lines,(max_view_chat_lines*sizeof(view_chat_line_type)));
 	bzero(view.console.lines,(max_view_console_lines*sizeof(view_console_line_type)));
 
@@ -104,7 +99,6 @@ void view_memory_release(void)
 {
 	if (view.images!=NULL) free(view.images);
 	if (view.rain_draws!=NULL) free(view.rain_draws);
-	if (view.obscure.grid!=NULL) free(view.obscure.grid);
 	if (view.chat.lines!=NULL) free(view.chat.lines);
 	if (view.console.lines!=NULL) free(view.console.lines);
 }
@@ -254,16 +248,11 @@ bool view_initialize_display(char *err_str)
 		
 	gl_back_render_initialize();
 
-		// vertex objects
-	
-	view_create_vertex_objects();
-
 	return(TRUE);
 }
 
 void view_shutdown_display(void)
 {
-	view_dispose_vertex_objects();
 	shadow_shutdown();
 	gl_core_shader_shutdown();
 	gl_user_shader_shutdown();

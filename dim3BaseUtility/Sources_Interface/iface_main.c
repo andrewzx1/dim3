@@ -171,6 +171,12 @@ void iface_default_settings(iface_type *iface)
 {
 	int				n;
 	
+		// project setup
+	
+	iface->project.name[0]=0x0;
+	iface->project.modernize=TRUE;
+	iface->project.skill=FALSE;
+	
 		// scale
 
 	iface->scale_x=640;
@@ -207,10 +213,6 @@ void iface_default_settings(iface_type *iface)
 		// radar
 
 	iface->radar.on=FALSE;
-	
-		// project setup
-		
-	iface->skill=FALSE;
 	
 		// sounds
 		
