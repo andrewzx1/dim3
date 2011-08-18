@@ -430,7 +430,11 @@ bool render_model_initialize_vertex_objects(model_type *mdl,int mesh_idx,model_d
 		// glow maps use two texture units
 
 	glVertexPointer(3,GL_FLOAT,0,(GLvoid*)0);
+
+	glClientActiveTexture(GL_TEXTURE1);
 	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)(((mesh->ntrig*3)*3)*sizeof(float)));
+
+	glClientActiveTexture(GL_TEXTURE0);
 	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)(((mesh->ntrig*3)*3)*sizeof(float)));
 	
 	if (!shader_on) {

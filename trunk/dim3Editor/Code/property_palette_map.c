@@ -53,7 +53,6 @@ and can be sold or given away.
 #define kMapPropertyModelObscureDistance	24
 #define kMapPropertyShadowObscureDistance	25
 #define kMapPropertyEffectObscureDistance	26
-#define kMapPropertyMeshObscureDistance		27
 
 #define kMapPropertyAmbientColor			30
 #define kMapPropertyAmbientLightMapBoost	31
@@ -140,7 +139,6 @@ void property_palette_fill_map(void)
 	list_palette_add_string_int(&property_palette,kMapPropertyModelObscureDistance,"Model Obscure Distance",map.optimize.obscure_dist.model,FALSE);
 	list_palette_add_string_int(&property_palette,kMapPropertyShadowObscureDistance,"Shadow Obscure Distance",map.optimize.obscure_dist.shadow,FALSE);
 	list_palette_add_string_int(&property_palette,kMapPropertyEffectObscureDistance,"Effect Obscure Distance",map.optimize.obscure_dist.effect,FALSE);
-	list_palette_add_string_int(&property_palette,kMapPropertyMeshObscureDistance,"Mesh Obscure Distance",map.optimize.obscure_dist.mesh,FALSE);
 
 		// ambient
 
@@ -312,10 +310,6 @@ void property_palette_click_map(int id,bool double_click)
 
 		case kMapPropertyEffectObscureDistance:
 			dialog_property_string_run(list_string_value_positive_int,(void*)&map.optimize.obscure_dist.effect,0,0,0);
-			break;
-
-		case kMapPropertyMeshObscureDistance:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&map.optimize.obscure_dist.mesh,0,0,0);
 			break;
 
 			// ambients

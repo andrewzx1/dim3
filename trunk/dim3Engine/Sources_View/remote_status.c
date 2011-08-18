@@ -52,7 +52,7 @@ int							remote_slow_image_idx,remote_talk_image_idx;
 void remote_draw_icon(obj_type *obj,unsigned long gl_id)
 {
 	int			x,y,z,x_sz,y_sz,z_sz;
-	float		*vp,*uv,*vertex_ptr,*uv_ptr;
+	float		vertexes[12],uvs[8];
 	
 		// get the position and rotation
 		
@@ -67,44 +67,34 @@ void remote_draw_icon(obj_type *obj,unsigned long gl_id)
 
 		// setup vertex ptr
 
-	vertex_ptr=view_bind_map_next_vertex_object(4*(3+2));
-	if (vertex_ptr==NULL) return;
+    vertexes[0]=(float)(x-x_sz);
+	vertexes[1]=(float)(y-y_sz);
+	vertexes[2]=-(float)(z-z_sz);
+    uvs[0]=0.0f;
+	uvs[1]=0.0f;
 
-	uv_ptr=vertex_ptr+(4*3);
-	
-	vp=vertex_ptr;
-	uv=uv_ptr;
+    vertexes[3]=(float)(x-x_sz);
+	vertexes[4]=(float)y;
+	vertexes[5]=-(float)(z-z_sz);
+    uvs[2]=0.0f;
+	uvs[3]=1.0f;
 
-    *vp++=(float)(x-x_sz);
-	*vp++=(float)(y-y_sz);
-	*vp++=-(float)(z-z_sz);
-    *uv++=0.0f;
-	*uv++=0.0f;
+    vertexes[6]=(float)(x+x_sz);
+	vertexes[7]=(float)(y-y_sz);
+ 	vertexes[8]=-(float)(z+z_sz);
+    uvs[4]=1.0f;
+	uvs[5]=0.0f;
 
-    *vp++=(float)(x-x_sz);
-	*vp++=(float)y;
-	*vp++=-(float)(z-z_sz);
-    *uv++=0.0f;
-	*uv++=1.0f;
-
-    *vp++=(float)(x+x_sz);
-	*vp++=(float)(y-y_sz);
- 	*vp++=-(float)(z+z_sz);
-    *uv++=1.0f;
-	*uv++=0.0f;
-
-    *vp++=(float)(x+x_sz);
-	*vp++=(float)y;
-	*vp++=-(float)(z+z_sz);
-	*uv++=1.0f;
-	*uv++=1.0f;
-	
-	view_unmap_current_vertex_object();
+    vertexes[9]=(float)(x+x_sz);
+	vertexes[10]=(float)y;
+	vertexes[11]=-(float)(z+z_sz);
+	uvs[6]=1.0f;
+	uvs[7]=1.0f;
 
 		// draw the bitmap
 	
-	glVertexPointer(3,GL_FLOAT,0,(GLvoid*)0);
-	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)((4*3)*sizeof(float)));
+	glVertexPointer(3,GL_FLOAT,0,(GLvoid*)vertexes);
+	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)uvs);
 			
 	gl_texture_simple_start();
 
@@ -123,8 +113,6 @@ void remote_draw_icon(obj_type *obj,unsigned long gl_id)
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 
 	gl_texture_simple_end();
-
-	view_unbind_current_vertex_object();
 }
 
 void remote_draw_status(obj_type *obj)

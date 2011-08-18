@@ -36,35 +36,7 @@ extern view_type			view;
 extern server_type			server;
 extern setup_type			setup;
 
-int							cur_vbo_cache_idx,cur_vbo_cache_index_idx;
-GLuint						vbo_sky,vbo_fog,vbo_rain,
-							vbo_cache[view_vertex_object_count],
-							vbo_cache_index[view_vertex_object_count];
-
-/* =======================================================
-
-      Create and Dispose Vertex Objects
-      
-======================================================= */
-
-void view_create_vertex_objects(void)
-{
-		// misc vbos
-
-	glGenBuffers(view_vertex_object_count,vbo_cache);
-	glGenBuffers(view_vertex_object_count,vbo_cache_index);
-
-		// start at first misc vbo
-
-	cur_vbo_cache_idx=0;
-	cur_vbo_cache_index_idx=0;
-}
-
-void view_dispose_vertex_objects(void)
-{
-	glDeleteBuffers(view_vertex_object_count,vbo_cache);
-	glDeleteBuffers(view_vertex_object_count,vbo_cache_index);
-}
+GLuint						vbo_sky,vbo_fog,vbo_rain;
 
 /* =======================================================
 
@@ -435,87 +407,73 @@ void view_unbind_rain_vertex_object(void)
 
 /* =======================================================
 
-      Model, Particle, Etc VBOs
+      Effect VBOs
+
+	  Effect VBOs are the only VBOs that are dynamic
+	  so we need a flag to tell if they are active so
+	  we can clean them up later
       
 ======================================================= */
 
-float* view_bind_map_next_vertex_object(int sz)
+void view_clear_effect_vertex_object(effect_type *effect)
 {
-	float			*vertex_ptr;
+	effect->vbo.active=FALSE;
+}
 
-		// bind it
+void view_create_effect_vertex_object(effect_type *effect,int vertex_mem_sz)
+{
+		// is it already active?
 
-	glBindBuffer(GL_ARRAY_BUFFER,vbo_cache[cur_vbo_cache_idx]);
+	if (effect->vbo.active) return;
 
-		// change size of buffer
-		// we pass null to stop stalls
+		// start it
 
-	sz*=sizeof(float);
-	glBufferData(GL_ARRAY_BUFFER,sz,NULL,GL_DYNAMIC_DRAW);
+	effect->vbo.active=TRUE;
+	glGenBuffers(1,&effect->vbo.vertex);
 
-		// map pointer
+	glBindBuffer(GL_ARRAY_BUFFER,effect->vbo.vertex);
+	glBufferData(GL_ARRAY_BUFFER,vertex_mem_sz,NULL,GL_DYNAMIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER,0);
+}
 
-	vertex_ptr=(float*)glMapBuffer(GL_ARRAY_BUFFER,GL_WRITE_ONLY);
+void view_dispose_effect_vertex_object(effect_type *effect)
+{
+		// is it already disposed?
+
+	if (!effect->vbo.active) return;
+
+		// dispose it
+
+	effect->vbo.active=FALSE;
+	glDeleteBuffers(1,&effect->vbo.vertex);
+}
+
+void view_bind_effect_vertex_object(effect_type *effect)
+{
+	glBindBuffer(GL_ARRAY_BUFFER,effect->vbo.vertex);
+}
+
+unsigned char* view_map_effect_vertex_object(void)
+{
+	unsigned char		*vertex_ptr;
+
+	vertex_ptr=(unsigned char*)glMapBuffer(GL_ARRAY_BUFFER,GL_WRITE_ONLY);
 	if (vertex_ptr==NULL) {
 		glBindBuffer(GL_ARRAY_BUFFER,0);
 		return(NULL);
 	}
 
-		// get next object
-
-	cur_vbo_cache_idx++;
-	if (cur_vbo_cache_idx==view_vertex_object_count) cur_vbo_cache_idx=0;
-
 	return(vertex_ptr);
 }
 
-void view_unmap_current_vertex_object(void)
+void view_unmap_effect_vertex_object(void)
 {
 	glUnmapBuffer(GL_ARRAY_BUFFER);
 }
 
-void view_unbind_current_vertex_object(void)
+void view_unbind_effect_vertex_object(void)
 {
 	glBindBuffer(GL_ARRAY_BUFFER,0);
 }
 
-unsigned short* view_bind_map_next_index_object(int sz)
-{
-	unsigned short		*index_ptr;
-
-		// bind it
-
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,vbo_cache_index[cur_vbo_cache_index_idx]);
-
-		// change size of buffer
-		// we pass null to stop stalls
-
-	sz*=sizeof(unsigned short);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER,sz,NULL,GL_STATIC_DRAW);
-
-		// map pointer
-
-	index_ptr=(unsigned short*)glMapBuffer(GL_ELEMENT_ARRAY_BUFFER,GL_WRITE_ONLY);
-	if (index_ptr==NULL) {
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);
-		return(NULL);
-	}
-
-		// get next object
-
-	cur_vbo_cache_index_idx++;
-	if (cur_vbo_cache_index_idx==view_vertex_object_count) cur_vbo_cache_index_idx=0;
-
-	return(index_ptr);
-}
-
-void view_unmap_current_index_object(void)
-{
-	glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
-}
-
-void view_unbind_current_index_object(void)
-{
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);
-}
 

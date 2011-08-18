@@ -432,7 +432,7 @@ void intro_click(void)
 	switch (id) {
 	
 		case intro_button_game_new_id:
-			if (iface.skill) {
+			if (iface.project.skill) {
 				intro_mode=intro_mode_new_game;
 				intro_show_hide_for_mode();
 			}

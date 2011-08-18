@@ -172,7 +172,7 @@ typedef struct		{
 typedef struct		{
 						int								parent_idx;
 						char							name[name_str_len];
-						d3pnt							pnt;
+						d3pnt							pnt,natural_offset;
 						d3ang							natural_rot;
 						d3vct							parent_dist;
 						model_tag						tag;

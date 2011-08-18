@@ -194,10 +194,6 @@ bool view_cull_mesh(map_mesh_type *mesh)
 		obscure_dist=(double)((map.fog.outer_radius>>1)*3);
 	}
 
-	if (map.optimize.obscure_dist.mesh!=0) {
-		if (map.optimize.obscure_dist.mesh<obscure_dist) obscure_dist=map.optimize.obscure_dist.mesh;
-	}
-		
 	if (map_mesh_calculate_distance(mesh,&view.render->camera.pnt)>obscure_dist) return(FALSE);
 
 		// check bounding box
@@ -216,10 +212,6 @@ bool view_cull_liquid(map_liquid_type *liq)
 	}
 	else {
 		obscure_dist=(double)((map.fog.outer_radius>>1)*3);
-	}
-
-	if (map.optimize.obscure_dist.mesh!=0) {
-		if (map.optimize.obscure_dist.mesh<obscure_dist) obscure_dist=map.optimize.obscure_dist.mesh;
 	}
 		
 	if (map_liquid_calculate_distance(liq,&view.render->camera.pnt)>obscure_dist) return(FALSE);

@@ -56,9 +56,9 @@ void model_create_draw_bone_from_neutral(model_type *model,model_draw_setup *dra
 		draw_bone->rot.z=angle_add(alter_bone->rot_add.y,bone->natural_rot.y);
 		draw_bone->rot.y=angle_add(alter_bone->rot_add.z,bone->natural_rot.z);
 		
-		draw_bone->parent_dist.x=bone->parent_dist.x+alter_bone->parent_dist_add.x;
-		draw_bone->parent_dist.y=bone->parent_dist.y+alter_bone->parent_dist_add.y;
-		draw_bone->parent_dist.z=bone->parent_dist.z+alter_bone->parent_dist_add.z;
+		draw_bone->parent_dist.x=bone->parent_dist.x+(alter_bone->parent_dist_add.x+bone->natural_offset.x);
+		draw_bone->parent_dist.y=bone->parent_dist.y+(alter_bone->parent_dist_add.y+bone->natural_offset.y);
+		draw_bone->parent_dist.z=bone->parent_dist.z+(alter_bone->parent_dist_add.z+bone->natural_offset.z);
 
 		bone++;
 		draw_bone++;
@@ -102,9 +102,9 @@ void model_create_draw_bone_from_pose(model_type *model,model_draw_setup *draw_s
 		ang=angle_add(bone_move->rot.z,alter_bone->rot_add.z);
         draw_bone->rot.z=angle_add(ang,bone->natural_rot.z);
 
-		draw_bone->parent_dist.x=(bone->parent_dist.x*bone_move->mov.x)+alter_bone->parent_dist_add.x;
-		draw_bone->parent_dist.y=(bone->parent_dist.y*bone_move->mov.y)+alter_bone->parent_dist_add.y;
-		draw_bone->parent_dist.z=(bone->parent_dist.z*bone_move->mov.z)+alter_bone->parent_dist_add.z;
+		draw_bone->parent_dist.x=(bone->parent_dist.x*bone_move->mov.x)+(alter_bone->parent_dist_add.x+bone->natural_offset.x);
+		draw_bone->parent_dist.y=(bone->parent_dist.y*bone_move->mov.y)+(alter_bone->parent_dist_add.y+bone->natural_offset.y);
+		draw_bone->parent_dist.z=(bone->parent_dist.z*bone_move->mov.z)+(alter_bone->parent_dist_add.z+bone->natural_offset.z);
 		
 		bone++;
 		draw_bone++;
@@ -179,13 +179,13 @@ void model_create_draw_bone_from_pose_factor(model_type *model,model_draw_setup 
 		draw_bone->rot.z=angle_add(draw_bone->rot.z,bone->natural_rot.z);
 		
 		mov_x_start=mov_x_end+((mov_x_start-mov_x_end)*accel_pose_factor);
-		draw_bone->parent_dist.x=(bone->parent_dist.x*mov_x_start)+alter_bone->parent_dist_add.x;
+		draw_bone->parent_dist.x=(bone->parent_dist.x*mov_x_start)+(alter_bone->parent_dist_add.x+bone->natural_offset.x);
 
 		mov_y_start=mov_y_end+((mov_y_start-mov_y_end)*accel_pose_factor);
-		draw_bone->parent_dist.y=(bone->parent_dist.y*mov_y_start)+alter_bone->parent_dist_add.y;
+		draw_bone->parent_dist.y=(bone->parent_dist.y*mov_y_start)+(alter_bone->parent_dist_add.y+bone->natural_offset.y);
 
 		mov_z_start=mov_z_end+((mov_z_start-mov_z_end)*accel_pose_factor);
-		draw_bone->parent_dist.z=(bone->parent_dist.z*mov_z_start)+alter_bone->parent_dist_add.z;
+		draw_bone->parent_dist.z=(bone->parent_dist.z*mov_z_start)+(alter_bone->parent_dist_add.z+bone->natural_offset.z);
 
 		bone++;
 		draw_bone++;

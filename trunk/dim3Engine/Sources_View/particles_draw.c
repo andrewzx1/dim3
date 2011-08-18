@@ -347,10 +347,15 @@ void particle_draw(effect_type *effect,int count)
 	count=count/10;
 
 		// construct VBO
+		// effect vbos are dynamic, so it'll auto construct
+		// the first time called
 
 	nvertex=(particle->count*(particle->trail_count+1))*4;
 
-	vertex_ptr=view_bind_map_next_vertex_object((nvertex*(3+2)));
+	view_create_effect_vertex_object(effect,((nvertex*(3+2))*sizeof(float)));
+
+	view_bind_effect_vertex_object(effect);
+	vertex_ptr=(float*)view_map_effect_vertex_object();
 	if (vertex_ptr==NULL) return;
 	
 		// setup the arrays
@@ -383,7 +388,7 @@ void particle_draw(effect_type *effect,int count)
 
 		// unmap vertex object
 
-	view_unmap_current_vertex_object();
+	view_unmap_effect_vertex_object();
 	
 		// draw arrays
 		
@@ -419,6 +424,6 @@ void particle_draw(effect_type *effect,int count)
 
 		// unbind vertex object
 		
-	view_unbind_current_vertex_object();
+	view_unbind_effect_vertex_object();
 }
 

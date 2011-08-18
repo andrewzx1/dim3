@@ -176,7 +176,7 @@ void debug_dump(void)
 	debug_dump_header(file,"Engine");
 
 	debug_dump_info_str(file,"Engine",dim3_version);
-	debug_dump_info_str(file,"Project",iface.project_name);
+	debug_dump_info_str(file,"Project",iface.project.name);
 
 	debug_dump_info_str(file,"GPU",render_info.name);
 	sprintf(str,"%d,%d @ %d",render_info.monitor_x_sz,render_info.monitor_y_sz,render_info.monitor_refresh_rate);

@@ -314,6 +314,20 @@ void alt_property_palette_click_animate_pose_move(int animate_idx,int pose_move_
 		return;
 	}
 
+		// loop changes
+
+	if (id==kAnimatePoseMovePropertyLoopStart) {
+		model_animate_set_loop_start(&model,animate_idx,pose_move_idx);
+		main_wind_draw();
+		return;
+	}
+
+	if (id==kAnimatePoseMovePropertyLoopEnd) {
+		model_animate_set_loop_end(&model,animate_idx,pose_move_idx);
+		main_wind_draw();
+		return;
+	}
+
 		// regular values
 
 	if (!double_click) return;
@@ -342,16 +356,6 @@ void alt_property_palette_click_animate_pose_move(int animate_idx,int pose_move_
 
 		case kAnimatePoseMovePropertySway:
 			dialog_property_chord_run(list_chord_value_vector,(void*)&pose_move->sway);
-			break;
-
-			// loop
-
-		case kAnimatePoseMovePropertyLoopStart:
-			model_animate_set_loop_start(&model,animate_idx,pose_move_idx);
-			break;
-
-		case kAnimatePoseMovePropertyLoopEnd:
-			model_animate_set_loop_end(&model,animate_idx,pose_move_idx);
 			break;
 
 			// sound

@@ -142,10 +142,15 @@ void ring_draw(effect_type *effect,int count)
 	matrix_rotate_y(&mat_y,fy);
 
 		// construct VBO
+		// effect vbos are dynamic, so it'll auto construct
+		// the first time called
 
 	nvertex=36*4;
 
-	vertex_ptr=view_bind_map_next_vertex_object((nvertex*(3+2)));
+	view_create_effect_vertex_object(effect,((nvertex*(3+2))*sizeof(float)));
+
+	view_bind_effect_vertex_object(effect);
+	vertex_ptr=(float*)view_map_effect_vertex_object();
 	if (vertex_ptr==NULL) return;
 
 		// set ring arrays
@@ -228,7 +233,7 @@ void ring_draw(effect_type *effect,int count)
 
 		// unmap vertex object
 
-	view_unmap_current_vertex_object();
+	view_unmap_effect_vertex_object();
 
 		// draw ring
 		
@@ -264,6 +269,6 @@ void ring_draw(effect_type *effect,int count)
 
 		// unbind vertex object
 		
-	view_unbind_current_vertex_object();
+	view_unbind_effect_vertex_object();
 }
 

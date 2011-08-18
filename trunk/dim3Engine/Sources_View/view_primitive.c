@@ -70,14 +70,14 @@ void view_primitive_2D_color_poly(int x0,int y0,d3col *col0,int x1,int y1,d3col 
 	float			vertexes[8];
 	unsigned char	uc_alpha,colors[16];
 								
-	vertexes[0]=x0;
-	vertexes[1]=y0;
-	vertexes[2]=x3;
-	vertexes[3]=y3;
-	vertexes[4]=x1;
-	vertexes[5]=y1;
-	vertexes[6]=x2;
-	vertexes[7]=y2;
+	vertexes[0]=(float)x0;
+	vertexes[1]=(float)y0;
+	vertexes[2]=(float)x3;
+	vertexes[3]=(float)y3;
+	vertexes[4]=(float)x1;
+	vertexes[5]=(float)y1;
+	vertexes[6]=(float)x2;
+	vertexes[7]=(float)y2;
 	
 	uc_alpha=(unsigned char)(alpha*255.0f);
 	
@@ -205,10 +205,10 @@ void view_primitive_2D_line(d3col *col,float alpha,int x0,int y0,int x1,int y1)
 {
 	float			vertexes[4];
 
-	vertexes[0]=x0;
-	vertexes[1]=y0;
-	vertexes[2]=x1;
-	vertexes[3]=y1;
+	vertexes[0]=(float)x0;
+	vertexes[1]=(float)y0;
+	vertexes[2]=(float)x1;
+	vertexes[3]=(float)y1;
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
@@ -236,14 +236,14 @@ void view_primitive_2D_line_poly(d3col *col,float alpha,int x0,int y0,int x1,int
 {
 	float			vertexes[8];
 
-	vertexes[0]=x0;
-	vertexes[1]=y0;
-	vertexes[2]=x1;
-	vertexes[3]=y1;
-	vertexes[4]=x2;
-	vertexes[5]=y2;
-	vertexes[6]=x3;
-	vertexes[7]=y3;
+	vertexes[0]=(float)x0;
+	vertexes[1]=(float)y0;
+	vertexes[2]=(float)x1;
+	vertexes[3]=(float)y1;
+	vertexes[4]=(float)x2;
+	vertexes[5]=(float)y2;
+	vertexes[6]=(float)x3;
+	vertexes[7]=(float)y3;
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
@@ -350,12 +350,12 @@ void view_primitive_3D_line(d3col *col,float alpha,int x0,int y0,int z0,int x1,i
 {
 	float			vertexes[6];
 
-	vertexes[0]=x0;
-	vertexes[1]=y0;
-	vertexes[2]=z0;
-	vertexes[3]=x1;
-	vertexes[4]=y1;
-	vertexes[5]=z1;
+	vertexes[0]=(float)x0;
+	vertexes[1]=(float)y0;
+	vertexes[2]=(float)z0;
+	vertexes[3]=(float)x1;
+	vertexes[4]=(float)y1;
+	vertexes[5]=(float)z1;
 
 		// setup draw
 

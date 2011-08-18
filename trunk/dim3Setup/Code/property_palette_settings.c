@@ -34,8 +34,11 @@ and can be sold or given away.
 #include "interface.h"
 
 #define kSettingsProjectName					0
-#define kSettingsScaleX							1
-#define kSettingsScaleY							2
+#define kSettingsProjectModernize				1
+#define kSettingsProjectSkill					2
+
+#define kSettingsScaleX							5
+#define kSettingsScaleY							6
 
 #define kSettingsInterfaceFont					10
 #define kSettingsHUDFont						20
@@ -115,7 +118,9 @@ void property_palette_fill_settings(void)
 		// project
 		
 	list_palette_add_header(&property_palette,0,"Project");
-	list_palette_add_string(&property_palette,kSettingsProjectName,"Name",iface.project_name,FALSE);
+	list_palette_add_string(&property_palette,kSettingsProjectName,"Name",iface.project.name,FALSE);
+	list_palette_add_checkbox(&property_palette,kSettingsProjectModernize,"Modernize",iface.project.modernize,FALSE);
+	list_palette_add_checkbox(&property_palette,kSettingsProjectSkill,"Skill",iface.project.skill,FALSE);
 
 		// scale
 		
@@ -252,10 +257,18 @@ void property_palette_click_settings(int id,bool double_click)
 
 	switch (id) {
 	
-			// project name
+			// project
 
 		case kSettingsProjectName:
-			dialog_property_string_run(list_string_value_string,(void*)iface.project_name,name_str_len,0,0);
+			dialog_property_string_run(list_string_value_string,(void*)iface.project.name,name_str_len,0,0);
+			break;
+
+		case kSettingsProjectModernize:
+			iface.project.modernize=!iface.project.modernize;
+			break;
+
+		case kSettingsProjectSkill:
+			iface.project.skill=!iface.project.skill;
 			break;
 
 			// setting
