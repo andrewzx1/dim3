@@ -29,12 +29,81 @@ and can be sold or given away.
 // includes
 //
 
+#include <endian.h>
+#include <errno.h>
+#include <signal.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <math.h>
+#include <dirent.h>
+
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <sys/poll.h>
+#include <sys/fcntl.h>
+#include <sys/time.h>
+#include <netinet/in.h>
+#include <netinet/tcp.h>
+#include <arpa/inet.h>
+#include <netdb.h>
+
+#include <pthread.h>
+
+#include <OpenGLES/es1/gl.h>
+#include <OpenGLES/es1/glext.h>
+
+#include <zlib.h>
+
+// supergumba -- temporary until only 1.3 remains
+#define D3_SDL_1_3					1
+
+
 //
 // os flags
 //
 
 #define D3_OS_LINUX			    1
 #define D3_OPENGL_ES			1
+
+//
+// OpenGL ES re-defines
+//
+
+#define GL_SOURCE0_RGB					GL_SRC0_RGB
+#define GL_SOURCE1_RGB					GL_SRC1_RGB
+#define GL_SOURCE0_ALPHA				GL_SRC0_ALPHA
+#define GL_SOURCE1_ALPHA				GL_SRC1_ALPHA
+
+#define glMapBuffer						glMapBufferOES
+#define glUnmapBuffer					glUnmapBufferOES
+
+#define GL_WRITE_ONLY					GL_WRITE_ONLY_OES
+
+#define glFramebufferRenderbufferEXT	glFramebufferRenderbufferOES
+#define glGenFramebuffersEXT			glGenFramebuffersOES
+#define glBindFramebufferEXT			glBindFramebufferOES
+#define glDeleteFramebuffersEXT			glDeleteFramebuffersOES
+#define glFramebufferTexture2DEXT		glFramebufferTexture2DOES
+#define glCheckFramebufferStatusEXT		glCheckFramebufferStatusOES
+#define glGenRenderbuffersEXT			glGenRenderbuffersOES
+#define glRenderbufferStorageEXT		glRenderbufferStorageOES
+#define glBindRenderbufferEXT			glBindRenderbufferOES
+#define glDeleteRenderbuffersEXT		glDeleteRenderbuffersOES
+
+#define GL_RENDERBUFFER_EXT				GL_RENDERBUFFER_OES
+#define GL_FRAMEBUFFER_EXT				GL_FRAMEBUFFER_OES
+#define GL_DEPTH_ATTACHMENT_EXT			GL_DEPTH_ATTACHMENT_OES
+#define GL_DEPTH_STENCIL_EXT			GL_DEPTH_STENCIL_OES
+#define GL_STENCIL_ATTACHMENT_EXT		GL_STENCIL_ATTACHMENT_OES
+#define GL_FRAMEBUFFER_BINDING_EXT		GL_FRAMEBUFFER_BINDING_OES
+#define GL_COLOR_ATTACHMENT0_EXT		GL_COLOR_ATTACHMENT0_OES
+#define GL_FRAMEBUFFER_COMPLETE_EXT		GL_FRAMEBUFFER_COMPLETE_OES
+
+#define glOrtho							glOrthof
+#define glFrustum						glFrustumf
 
 //
 // os specific keys
@@ -60,3 +129,6 @@ typedef int						d3socket;
 #define D3_NULL_SOCKET			-1
 
 #define closesocket(x)			close(x)
+
+#define D3_APP_EXTENSION		"a"
+
