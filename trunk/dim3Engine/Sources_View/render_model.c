@@ -400,6 +400,10 @@ bool render_model_initialize_vertex_objects(model_type *mdl,int mesh_idx,model_d
 
 	view_bind_model_vertex_object(draw,mesh_idx);
 	vertex_ptr=(unsigned char*)view_map_model_vertex_object();
+	if (vertex_ptr==NULL) {
+		view_unbind_model_vertex_object();
+		return(FALSE);
+	}
 	
 		// non-shader drawing requires
 		// vertexes, UVs, and colors
