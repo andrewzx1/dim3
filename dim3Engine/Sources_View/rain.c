@@ -217,7 +217,10 @@ void rain_draw(void)
 		
 	view_bind_rain_vertex_object();
 	vertex_ptr=view_map_rain_vertex_object();
-	if (vertex_ptr==NULL) return;
+	if (vertex_ptr==NULL) {
+		view_unbind_rain_vertex_object();
+		return;
+	}
 
 	vp=(float*)vertex_ptr;
 	cp=vertex_ptr+(((density*2)*3)*sizeof(float));

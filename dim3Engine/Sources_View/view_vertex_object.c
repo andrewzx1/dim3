@@ -52,6 +52,7 @@ void view_create_mesh_liquid_vertex_object(map_vbo_type *vbo,int vertex_count,in
 		// init the vertex buffer
 
 	vbo->vertex_count=vertex_count;
+	vbo->vertex_mem_sz=vertex_mem_sz;
 
 	glBindBuffer(GL_ARRAY_BUFFER,vbo->vertex);
 	glBufferData(GL_ARRAY_BUFFER,vertex_mem_sz,NULL,GL_DYNAMIC_DRAW);
@@ -60,9 +61,10 @@ void view_create_mesh_liquid_vertex_object(map_vbo_type *vbo,int vertex_count,in
 		// init the index buffer
 
 	vbo->index_count=index_count;
+	vbo->index_mem_sz=index_count*sizeof(unsigned short);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,vbo->index);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER,(index_count*sizeof(unsigned short)),NULL,GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER,vbo->index_mem_sz,NULL,GL_STATIC_DRAW);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);
 }
 
@@ -79,15 +81,7 @@ void view_bind_mesh_liquid_vertex_object(map_vbo_type *vbo)
 
 unsigned char* view_map_mesh_liquid_vertex_object(map_vbo_type *vbo)
 {
-	unsigned char		*vertex_ptr;
-
-	vertex_ptr=(unsigned char*)glMapBuffer(GL_ARRAY_BUFFER,GL_WRITE_ONLY);
-	if (vertex_ptr==NULL) {
-		glBindBuffer(GL_ARRAY_BUFFER,0);
-		return(NULL);
-	}
-
-	return(vertex_ptr);
+	return((unsigned char*)glMapBuffer(GL_ARRAY_BUFFER,GL_WRITE_ONLY));
 }
 
 void view_unmap_mesh_liquid_vertex_object(void)
@@ -107,15 +101,7 @@ void view_bind_mesh_liquid_index_object(map_vbo_type *vbo)
 
 unsigned short* view_map_mesh_liquid_index_object(map_vbo_type *vbo)
 {
-	unsigned short		*index_ptr;
-
-	index_ptr=(unsigned short*)glMapBuffer(GL_ELEMENT_ARRAY_BUFFER,GL_WRITE_ONLY);
-	if (index_ptr==NULL) {
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);
-		return(NULL);
-	}
-
-	return(index_ptr);
+	return((unsigned short*)glMapBuffer(GL_ELEMENT_ARRAY_BUFFER,GL_WRITE_ONLY));
 }
 
 void view_unmap_mesh_liquid_index_object(void)
@@ -141,7 +127,12 @@ void view_create_model_vertex_object(model_draw *draw)
 	model_type			*mdl;
 	model_mesh_type		*mesh;
 	
-	shader_on=view_shader_on()&&(!draw->no_shader);
+		// there are some models that can
+		// draw without a shader dynamically (in the draw setup)
+		// so we ignore that flag and use shader on for most cases
+		// as it's greater than shader off
+
+	shader_on=view_shader_on();
 	
 		// each mesh has own VBO
 		
@@ -166,6 +157,7 @@ void view_create_model_vertex_object(model_draw *draw)
 			// init the vertex buffer
 
 		draw->vbo[n].vertex_count=vertex_cnt;
+		draw->vbo[n].vertex_mem_sz=mem_sz;
 
 		glBindBuffer(GL_ARRAY_BUFFER,draw->vbo[n].vertex);
 		glBufferData(GL_ARRAY_BUFFER,mem_sz,NULL,GL_DYNAMIC_DRAW);
@@ -212,15 +204,7 @@ void view_bind_model_vertex_object(model_draw *draw,int mesh_idx)
 
 unsigned char* view_map_model_vertex_object(void)
 {
-	unsigned char		*vertex_ptr;
-
-	vertex_ptr=(unsigned char*)glMapBuffer(GL_ARRAY_BUFFER,GL_WRITE_ONLY);
-	if (vertex_ptr==NULL) {
-		glBindBuffer(GL_ARRAY_BUFFER,0);
-		return(NULL);
-	}
-
-	return(vertex_ptr);
+	return((unsigned char*)glMapBuffer(GL_ARRAY_BUFFER,GL_WRITE_ONLY));
 }
 
 void view_unmap_model_vertex_object(void)
@@ -240,15 +224,7 @@ void view_bind_model_shadow_vertex_object(model_draw *draw,int mesh_idx)
 
 unsigned char* view_map_model_shadow_vertex_object(void)
 {
-	unsigned char		*vertex_ptr;
-
-	vertex_ptr=(unsigned char*)glMapBuffer(GL_ARRAY_BUFFER,GL_WRITE_ONLY);
-	if (vertex_ptr==NULL) {
-		glBindBuffer(GL_ARRAY_BUFFER,0);
-		return(NULL);
-	}
-
-	return(vertex_ptr);
+	return((unsigned char*)glMapBuffer(GL_ARRAY_BUFFER,GL_WRITE_ONLY));
 }
 
 void view_unmap_model_shadow_vertex_object(void)
@@ -288,15 +264,7 @@ void view_bind_sky_vertex_object(void)
 
 unsigned char* view_map_sky_vertex_object(void)
 {
-	unsigned char		*vertex_ptr;
-
-	vertex_ptr=(unsigned char*)glMapBuffer(GL_ARRAY_BUFFER,GL_WRITE_ONLY);
-	if (vertex_ptr==NULL) {
-		glBindBuffer(GL_ARRAY_BUFFER,0);
-		return(NULL);
-	}
-
-	return(vertex_ptr);
+	return((unsigned char*)glMapBuffer(GL_ARRAY_BUFFER,GL_WRITE_ONLY));
 }
 
 void view_unmap_sky_vertex_object(void)
@@ -336,15 +304,7 @@ void view_bind_fog_vertex_object(void)
 
 unsigned char* view_map_fog_vertex_object(void)
 {
-	unsigned char		*vertex_ptr;
-
-	vertex_ptr=(unsigned char*)glMapBuffer(GL_ARRAY_BUFFER,GL_WRITE_ONLY);
-	if (vertex_ptr==NULL) {
-		glBindBuffer(GL_ARRAY_BUFFER,0);
-		return(NULL);
-	}
-
-	return(vertex_ptr);
+	return((unsigned char*)glMapBuffer(GL_ARRAY_BUFFER,GL_WRITE_ONLY));
 }
 
 void view_unmap_fog_vertex_object(void)
@@ -384,15 +344,7 @@ void view_bind_rain_vertex_object(void)
 
 unsigned char* view_map_rain_vertex_object(void)
 {
-	unsigned char		*vertex_ptr;
-
-	vertex_ptr=(unsigned char*)glMapBuffer(GL_ARRAY_BUFFER,GL_WRITE_ONLY);
-	if (vertex_ptr==NULL) {
-		glBindBuffer(GL_ARRAY_BUFFER,0);
-		return(NULL);
-	}
-
-	return(vertex_ptr);
+	return((unsigned char*)glMapBuffer(GL_ARRAY_BUFFER,GL_WRITE_ONLY));
 }
 
 void view_unmap_rain_vertex_object(void)
@@ -431,6 +383,8 @@ void view_create_effect_vertex_object(effect_type *effect,int vertex_mem_sz)
 	effect->vbo.active=TRUE;
 	glGenBuffers(1,&effect->vbo.vertex);
 
+	effect->vbo.vertex_mem_sz=vertex_mem_sz;
+
 	glBindBuffer(GL_ARRAY_BUFFER,effect->vbo.vertex);
 	glBufferData(GL_ARRAY_BUFFER,vertex_mem_sz,NULL,GL_DYNAMIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER,0);
@@ -455,15 +409,7 @@ void view_bind_effect_vertex_object(effect_type *effect)
 
 unsigned char* view_map_effect_vertex_object(void)
 {
-	unsigned char		*vertex_ptr;
-
-	vertex_ptr=(unsigned char*)glMapBuffer(GL_ARRAY_BUFFER,GL_WRITE_ONLY);
-	if (vertex_ptr==NULL) {
-		glBindBuffer(GL_ARRAY_BUFFER,0);
-		return(NULL);
-	}
-
-	return(vertex_ptr);
+	return((unsigned char*)glMapBuffer(GL_ARRAY_BUFFER,GL_WRITE_ONLY));
 }
 
 void view_unmap_effect_vertex_object(void)

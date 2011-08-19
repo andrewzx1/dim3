@@ -151,7 +151,10 @@ void ring_draw(effect_type *effect,int count)
 
 	view_bind_effect_vertex_object(effect);
 	vertex_ptr=(float*)view_map_effect_vertex_object();
-	if (vertex_ptr==NULL) return;
+	if (vertex_ptr==NULL) {
+		view_unbind_effect_vertex_object();
+		return;
+	}
 
 		// set ring arrays
 

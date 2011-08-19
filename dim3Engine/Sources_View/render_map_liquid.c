@@ -174,8 +174,11 @@ bool liquid_render_liquid_create_vertex(map_liquid_type *liq,float uv_shift,bool
 	view_bind_mesh_liquid_vertex_object(&liq->vbo);
 
 	vertex_ptr=view_map_mesh_liquid_vertex_object(&liq->vbo);
-	if (vertex_ptr==NULL) return(FALSE);
-	
+	if (vertex_ptr==NULL) {
+		view_unbind_mesh_liquid_vertex_object();
+		return(FALSE);
+	}
+
 		// uv shift tick
 		
 	f_tick=((float)game_time_get())*0.001f;

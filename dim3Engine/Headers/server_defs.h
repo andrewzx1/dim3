@@ -305,7 +305,7 @@ typedef struct		{
 					} model_light_cache;
 
 typedef struct		{
-						int								vertex_count;
+						int								vertex_count,vertex_mem_sz;
 						GLuint							vertex,shadow_vertex;
 					} model_vbo_type;
 
@@ -951,6 +951,7 @@ typedef struct		{
 //
 
 typedef struct		{
+						int						vertex_mem_sz;
 						bool					active;
 						GLuint					vertex;
 					} effect_vbo_type;

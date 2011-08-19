@@ -130,7 +130,7 @@ void sky_draw_dome_panoramic_setup(void)
 	
 		// construct VBO
 
-	view_create_sky_vertex_object(((120*6)+(3*2))*sizeof(float));
+	view_create_sky_vertex_object(((120*6)*(3+2))*sizeof(float));
 
 	view_bind_sky_vertex_object();
 
@@ -214,8 +214,6 @@ void sky_draw_dome_panoramic_setup(void)
 
 			*uv_ptr++=gx1;
 			*uv_ptr++=tgy;
-
-
 
 			rxz+=r_add;
 		}
@@ -384,7 +382,7 @@ void sky_draw_dome_hemisphere_setup(void)
 	sz=(5*20)*6;
 	if (map.sky.dome_mirror) sz*=2;
 
-	view_create_sky_vertex_object((sz+(3*2))*sizeof(float));
+	view_create_sky_vertex_object((sz*(3+2))*sizeof(float));
 
 	view_bind_sky_vertex_object();
 
@@ -718,7 +716,7 @@ void sky_draw_cube_setup(void)
 
 		// construct VBO
 
-	view_create_sky_vertex_object(((6*4)+(3*2))*sizeof(float));
+	view_create_sky_vertex_object(((6*4)*(3+2))*sizeof(float));
 
 	view_bind_sky_vertex_object();
 

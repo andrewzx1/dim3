@@ -92,7 +92,10 @@ void effect_draw_lightning(effect_type *effect)
 
 	view_bind_effect_vertex_object(effect);
 	vertex_ptr=(float*)view_map_effect_vertex_object();
-	if (vertex_ptr==NULL) return;
+	if (vertex_ptr==NULL) {
+		view_unbind_effect_vertex_object();
+		return;
+	}
 
 		// setup vertexes
 

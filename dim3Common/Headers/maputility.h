@@ -196,7 +196,8 @@ and can be sold or given away.
 //
 
 typedef struct		{
-						int									vertex_count,index_count;
+						int									vertex_count,vertex_mem_sz,
+															index_count,index_mem_sz;
 						GLuint								vertex,index;
 					} map_vbo_type;
 

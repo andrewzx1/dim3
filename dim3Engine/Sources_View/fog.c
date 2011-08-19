@@ -103,7 +103,10 @@ void fog_draw_textured(void)
 	view_bind_fog_vertex_object();
 
 	vertex_ptr=(float*)view_map_fog_vertex_object();
-	if (vertex_ptr==NULL) return;
+	if (vertex_ptr==NULL) {
+		view_unbind_fog_vertex_object();
+		return;
+	}
 
 	uv_ptr=vertex_ptr+(((16*6)*count)*3);
 

@@ -58,7 +58,10 @@ bool view_map_vbo_initialize_mesh(map_mesh_type *mesh)
 
 	view_bind_mesh_liquid_vertex_object(&mesh->vbo);
 	vertex_ptr=view_map_mesh_liquid_vertex_object(&mesh->vbo);
-	if (vertex_ptr==NULL) return(FALSE);
+	if (vertex_ptr==NULL) {
+		view_unbind_mesh_liquid_vertex_object();
+		return(FALSE);
+	}
 
 	pv=(float*)vertex_ptr;
 	
@@ -143,7 +146,10 @@ bool view_map_vbo_initialize_mesh(map_mesh_type *mesh)
 	view_bind_mesh_liquid_index_object(&mesh->vbo);
 	
 	index_ptr=view_map_mesh_liquid_index_object(&mesh->vbo);
-	if (index_ptr==NULL) return(FALSE);
+	if (index_ptr==NULL) {
+		view_unbind_mesh_liquid_index_object();
+		return(FALSE);
+	}
 
 	idx=0;
 
@@ -192,7 +198,10 @@ bool view_map_vbo_initialize_liquid(map_liquid_type *liq)
 	view_bind_mesh_liquid_index_object(&liq->vbo);
 	
 	index_ptr=view_map_mesh_liquid_index_object(&liq->vbo);
-	if (index_ptr==NULL) return(FALSE);
+	if (index_ptr==NULL) {
+		view_unbind_mesh_liquid_index_object();
+		return(FALSE);
+	}
 
 	idx=0;
 
@@ -355,7 +364,10 @@ void view_map_vbo_rebuild_mesh(map_mesh_type *mesh)
 		if (vertex_ptr==NULL) {
 			view_bind_mesh_liquid_vertex_object(&mesh->vbo);
 			vertex_ptr=view_map_mesh_liquid_vertex_object(&mesh->vbo);
-			if (vertex_ptr==NULL) return;
+			if (vertex_ptr==NULL) {
+				view_unbind_mesh_liquid_vertex_object();
+				return;
+			}
 		}
 
 		pv=(float*)vertex_ptr;
@@ -405,7 +417,10 @@ void view_map_vbo_rebuild_mesh(map_mesh_type *mesh)
 		if (vertex_ptr==NULL) {
 			view_bind_mesh_liquid_vertex_object(&mesh->vbo);
 			vertex_ptr=view_map_mesh_liquid_vertex_object(&mesh->vbo);
-			if (vertex_ptr==NULL) return;
+			if (vertex_ptr==NULL) {
+				view_unbind_mesh_liquid_vertex_object();
+				return;
+			}
 		}
 
 			// only shift main UVs (not light mapped ones)
@@ -470,7 +485,10 @@ void view_map_vbo_rebuild_mesh(map_mesh_type *mesh)
 			if (vertex_ptr==NULL) {
 				view_bind_mesh_liquid_vertex_object(&mesh->vbo);
 				vertex_ptr=view_map_mesh_liquid_vertex_object(&mesh->vbo);
-				if (vertex_ptr==NULL) return;
+				if (vertex_ptr==NULL) {
+					view_unbind_mesh_liquid_vertex_object();
+					return;
+				}
 			}
 
 			pc=vertex_ptr+(((mesh->vbo.vertex_count*(3+2+2))*sizeof(float)));
