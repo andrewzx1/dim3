@@ -147,18 +147,19 @@ void effect_draw_lightning(effect_type *effect)
 		
 	glDisable(GL_LINE_SMOOTH);
 	
-	glLineWidth((float)(wid*6));
+	glLineWidth((float)(wid*5));
 	glColor4f(lightning->col.r,lightning->col.g,lightning->col.b,0.1f);
 	glVertexPointer(3,GL_FLOAT,0,(GLvoid*)0);
 	glDrawArrays(GL_LINES,0,(nline*2));
 
 	glLineWidth((float)(wid*3));
-	glColor4f(lightning->col.r,lightning->col.g,lightning->col.b,0.2f);
+	glColor4f(lightning->col.r,lightning->col.g,lightning->col.b,0.05f);
 	glVertexPointer(3,GL_FLOAT,0,(GLvoid*)0);
 	glDrawArrays(GL_LINES,0,(nline*2));
 
 	glLineWidth((float)wid);
-	glColor4f(lightning->col.r,lightning->col.g,lightning->col.b,0.4f);
+	glColor4f(lightning->col.r,lightning->col.g,lightning->col.b,0.6f);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 	glVertexPointer(3,GL_FLOAT,0,(GLvoid*)0);
 	glDrawArrays(GL_LINES,0,(nline*2));
 
