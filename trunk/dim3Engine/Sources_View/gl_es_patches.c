@@ -51,11 +51,7 @@ void glu_patch_gluPerspective(float fovy,float aspect,float zNear,float zFar)
 	x_min=y_min*aspect;
 	x_max=y_max*aspect;
 
-#ifndef D3_OPENGL_ES
 	glFrustum(x_min,x_max,y_min,y_max,zNear,zFar);
-#else
-	glFrustumf(x_min,x_max,y_min,y_max,zNear,zFar);
-#endif
 }
 
 /* =======================================================

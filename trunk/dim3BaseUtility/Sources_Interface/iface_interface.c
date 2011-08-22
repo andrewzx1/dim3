@@ -296,6 +296,8 @@ void iface_read_settings_virtual_control(iface_type *iface,int virtual_head_tag)
 			stick->y=xml_get_attribute_int(tag,"y");
 			stick->x_size=xml_get_attribute_int(tag,"x_size");
 			stick->y_size=xml_get_attribute_int(tag,"y_size");
+			stick->flip_x=xml_get_attribute_boolean(tag,"x_flip");
+			stick->flip_y=xml_get_attribute_boolean(tag,"y_flip");
 			xml_get_attribute_text(tag,"outer_bitmap",stick->outer_bitmap_name,file_str_len);
 			xml_get_attribute_text(tag,"inner_bitmap",stick->inner_bitmap_name,file_str_len);
 			xml_get_attribute_color(tag,"color",&stick->color);
@@ -1124,6 +1126,8 @@ bool iface_write_settings_interface(iface_type *iface)
 		xml_add_attribute_int("y",stick->y);
 		xml_add_attribute_int("x_size",stick->x_size);
 		xml_add_attribute_int("y_size",stick->y_size);
+		xml_add_attribute_boolean("x_flip",stick->flip_x);
+		xml_add_attribute_boolean("y_flip",stick->flip_y);
 		xml_add_attribute_text("outer_bitmap",stick->outer_bitmap_name);
 		xml_add_attribute_text("inner_bitmap",stick->inner_bitmap_name);
 		xml_add_attribute_color("color",&stick->color);

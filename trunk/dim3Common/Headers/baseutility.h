@@ -689,7 +689,7 @@ typedef struct		{
 						int								x,y,x_size,y_size,
 														outer_image_idx,inner_image_idx;
 						float							touch_x,touch_y;
-						bool							on,use_bitmap;
+						bool							on,flip_x,flip_y,use_bitmap;
 						char							outer_bitmap_name[file_str_len],
 														inner_bitmap_name[file_str_len];
 						d3col							color;
