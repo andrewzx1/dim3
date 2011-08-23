@@ -87,6 +87,9 @@ _map_open
 _map_reload
 _map_save
 _map_close
+
+_map_textures_read_setup
+_map_textures_read_texture
 _map_refresh_textures
 
 _map_prepare_mesh_poly

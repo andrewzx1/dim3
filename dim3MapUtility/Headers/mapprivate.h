@@ -168,9 +168,9 @@ extern bool map_mesh_create_copy_data(map_type *map,int mesh_idx);
 extern void map_liquid_create_copy_data(map_type *map,int liquid_idx);
 
 extern int map_count_texture_frames(map_type *map,int txt);
-extern bool map_textures_read(map_type *map);
 extern void map_textures_close(map_type *map);
 extern bool read_map_xml(map_type *map);
 extern bool write_map_xml(map_type *map);
 extern void map_textures_new(map_type *map);
+extern void map_textures_read_complete(map_type *map);
 

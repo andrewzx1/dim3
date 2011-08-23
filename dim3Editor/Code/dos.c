@@ -187,8 +187,9 @@ bool file_new_map(void)
 
 bool file_open_map(void)
 {
-	char			file_name[256];
-	bool			ok;
+	int			n;
+	char		file_name[256];
+	bool		ok;
 	
 		// open the map
 		
@@ -210,6 +211,12 @@ bool file_open_map(void)
 	map_setup(&file_path_setup,anisotropic_mode_none,setup.mipmap_mode,texture_quality_mode_high,FALSE,FALSE);
 	
 	ok=map_open(&map,file_name);
+
+	map_textures_read_setup(&map);
+
+	for (n=0;n!=max_map_texture;n++) {
+		map_textures_read_texture(&map,n);
+	}
 
     os_set_arrow_cursor();
 	
