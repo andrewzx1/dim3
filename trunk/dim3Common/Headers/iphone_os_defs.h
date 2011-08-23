@@ -79,6 +79,7 @@ and can be sold or given away.
 
 #define GL_WRITE_ONLY					GL_WRITE_ONLY_OES
 
+#define glGenerateMipmap				glGenerateMipmapOES
 #define glFramebufferRenderbufferEXT	glFramebufferRenderbufferOES
 #define glGenFramebuffersEXT			glGenFramebuffersOES
 #define glBindFramebufferEXT			glBindFramebufferOES

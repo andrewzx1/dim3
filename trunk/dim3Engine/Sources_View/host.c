@@ -193,7 +193,7 @@ void host_map_list_initialize(void)
 	host_table_map_list=malloc(sz);
 	bzero(host_table_map_list,sz);
 
-	progress_initialize(NULL);
+	progress_initialize(NULL,nfile);
 
 		// load the maps
 
@@ -201,7 +201,7 @@ void host_map_list_initialize(void)
 	
 	for (n=0;n!=nfile;n++) {
 
-		progress_draw(((n+1)*100)/nfile);
+		progress_next();
 
 			// if no JS file, don't put in list
 			// this is probably a backup file

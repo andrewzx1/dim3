@@ -36,7 +36,7 @@ extern server_type			server;
 extern iface_type			iface;
 extern setup_type			setup;
 
-int							progress_current;
+int							progress_current,progress_max;
 bitmap_type					progress_bitmap;
 
 /* =======================================================
@@ -45,7 +45,7 @@ bitmap_type					progress_bitmap;
       
 ======================================================= */
 
-void progress_initialize(char *map_name)
+void progress_initialize(char *map_name,int max)
 {
 	char			path[1024];
 	bool			bitmap_ok;
@@ -68,6 +68,7 @@ void progress_initialize(char *map_name)
 		// current progress
 		
 	progress_current=-1;
+	progress_max=max;
 }
 
 void progress_shutdown(void)
@@ -81,15 +82,11 @@ void progress_shutdown(void)
       
 ======================================================= */
 
-void progress_draw(int percentage)
+void progress_next(void)
 {
 	int				lft,rgt,top,bot,mid,rgt2;
 
-		// any change?
-		
-	if (progress_current==percentage) return;
-	
-	progress_current=percentage;
+	progress_current++;
 	
 		// start the frame
 	
@@ -124,11 +121,18 @@ void progress_draw(int percentage)
 	
 		// draw the progress foreground
 	
-	rgt2=lft+(((rgt-lft)*percentage)/100);
-	
-	view_primitive_2D_color_poly(lft,top,&iface.progress.hilite_color_start,rgt2,top,&iface.progress.hilite_color_start,rgt2,mid,&iface.progress.hilite_color_end,lft,mid,&iface.progress.hilite_color_end,1.0f);
-	view_primitive_2D_color_poly(lft,mid,&iface.progress.hilite_color_end,rgt2,mid,&iface.progress.hilite_color_end,rgt2,bot,&iface.progress.hilite_color_start,lft,bot,&iface.progress.hilite_color_start,1.0f);
-	
+	if (progress_current!=-1) {
+		if (progress_current>=progress_max) {
+			rgt2=rgt;
+		}
+		else {
+			rgt2=lft+(((rgt-lft)*progress_current)/progress_max);
+		}
+
+		view_primitive_2D_color_poly(lft,top,&iface.progress.hilite_color_start,rgt2,top,&iface.progress.hilite_color_start,rgt2,mid,&iface.progress.hilite_color_end,lft,mid,&iface.progress.hilite_color_end,1.0f);
+		view_primitive_2D_color_poly(lft,mid,&iface.progress.hilite_color_end,rgt2,mid,&iface.progress.hilite_color_end,rgt2,bot,&iface.progress.hilite_color_start,lft,bot,&iface.progress.hilite_color_start,1.0f);
+	}
+
 		// progress outline
 
 	if (iface.progress.outline) view_primitive_2D_line_quad(&iface.progress.outline_color,1.0f,lft,rgt,top,bot);

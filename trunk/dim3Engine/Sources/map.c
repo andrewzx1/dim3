@@ -246,7 +246,7 @@ void map_mesh_polygon_draw_flag_setup(void)
 
 bool map_start(bool in_file_load,bool skip_media,char *err_str)
 {
-	int				tick;
+	int				n,tick;
 	char			txt[256];
 	obj_type		*obj;
 
@@ -254,7 +254,7 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 
 		// start progress
 		
-	progress_initialize(map.info.name);
+	progress_initialize(map.info.name,(19+max_map_texture));
 	
 	strcpy(current_map_name,map.info.name);		// remember for close
 	
@@ -263,7 +263,7 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 	sprintf(txt,"Opening %s",map.info.name);
 	console_add_system(txt);
 	
-	progress_draw(10);
+	progress_next();
 
 	map_setup(&setup.file_path_setup,setup.anisotropic_mode,setup.mipmap_mode,setup.texture_quality_mode,TRUE,view_shader_on());
 
@@ -271,6 +271,13 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 		progress_shutdown();
 		sprintf(err_str,"Could not open map: %s",map.info.name);
 		return(FALSE);
+	}
+
+	map_textures_read_setup(&map);
+
+	for (n=0;n!=max_map_texture;n++) {
+		progress_next();
+		map_textures_read_texture(&map,n);
 	}
 
 		// don't run blank maps
@@ -284,20 +291,22 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 	
 		// attach shaders and camera
 
+	progress_next();
+
 	camera_map_setup();
 	
 	gl_shader_attach_map();
 
 		// prepare map surfaces
 	
-	progress_draw(20);
+	progress_next();
 
 	map_prepare(&map);
 	map_multiplayer_show_hide_meshes();
 
 		// map lists
 
-	progress_draw(30);
+	progress_next();
 
 	if (!render_transparent_create_sort_list()) {
 		progress_shutdown();
@@ -305,11 +314,15 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 		return(FALSE);
 	}
 
+	progress_next();
+
 	if (!map_group_create_unit_list(&map)) {
 		progress_shutdown();
 		strcpy(err_str,"Out of memory");
 		return(FALSE);
 	}
+
+	progress_next();
 
 	if (!view_map_vbo_initialize()) {
 		progress_shutdown();
@@ -319,6 +332,8 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 	
 		// sky, fog, rain
 
+	progress_next();
+
 	sky_draw_init();
 	fog_draw_init();
 	rain_draw_init();
@@ -326,10 +341,12 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 		// start map ambients
 		// and clear all proj, effects, decals, etc
 		
-	progress_draw(40);
+	progress_next();
 
 	map_start_ambient();
 	if (map.ambient.sound_name[0]!=0x0) map_set_ambient(map.ambient.sound_name,map.ambient.sound_pitch);
+
+	progress_next();
 
 	if (!projectile_initialize_list()) {
 		progress_shutdown();
@@ -343,11 +360,15 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 		return(FALSE);
 	}
 
+	progress_next();
+
 	if (!decal_initialize_list()) {
 		progress_shutdown();
 		strcpy(err_str,"Out of memory");
 		return(FALSE);
 	}
+
+	progress_next();
 
 	particle_map_initialize();
 	group_move_clear_all();
@@ -362,7 +383,7 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 
         // run the course script
 
-	progress_draw(50);
+	progress_next();
 	
 	js.course_script_idx=scripts_add(thing_type_course,"Courses",map.info.name,-1,-1,-1,err_str);
 	if (js.course_script_idx==-1) {
@@ -372,6 +393,8 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 			
 		// send the construct event
 	
+	progress_next();
+
 	if (!scripts_post_event(js.course_script_idx,-1,sd_event_construct,0,0,err_str)) {
 		progress_shutdown();
 		return(FALSE);
@@ -380,7 +403,7 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 		// create object and scenery
 		// and call spawn on all the objects
 
-	progress_draw(60);
+	progress_next();
 	
 	map_find_random_spot_clear(&map,NULL,-1);
 
@@ -391,6 +414,8 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 	
 	remote_setup_multiplayer_monsters();
 	
+	progress_next();
+
 	scenery_create();
 	scenery_start();
 	
@@ -406,7 +431,7 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 	
 		// attach player to map
 
-	progress_draw(70);
+	progress_next();
 
 	if (net_setup.mode!=net_mode_host_dedicated) {
 
@@ -424,7 +449,7 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 	
 		// initialize movements and lookups
 
-	progress_draw(80);
+	progress_next();
 	
 	map_movements_initialize();
 	map_lookups_setup();
@@ -436,7 +461,7 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 		// skip if we are reloading this map
 		// to restore a saved game
 		
-	progress_draw(90);
+	progress_next();
 
 	if (!in_file_load) {
 		scripts_post_event_console(js.game_script_idx,-1,sd_event_map,sd_event_map_open,0);
@@ -447,7 +472,7 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 	
 		// finish up
 
-	progress_draw(100);
+	progress_next();
 	
 	progress_shutdown();
 	
@@ -503,8 +528,8 @@ void map_end(void)
 
 		// setup progress
 		
-	progress_initialize(current_map_name);
-	progress_draw(5);
+	progress_initialize(current_map_name,12);
+	progress_next();
 	
 	console_add_system("Closing Map");
 	
@@ -513,6 +538,8 @@ void map_end(void)
 	scripts_post_event_console(js.game_script_idx,-1,sd_event_map,sd_event_map_close,0);
 	scripts_post_event_console(js.course_script_idx,-1,sd_event_map,sd_event_map_close,0);
 
+	progress_next();
+
 	if (net_setup.mode!=net_mode_host_dedicated) {
 		obj=server.obj_list.objs[server.player_obj_idx];
 		scripts_post_event_console(obj->script_idx,-1,sd_event_map,sd_event_map_close,0);
@@ -520,10 +547,14 @@ void map_end(void)
 
 		// clear all back buffers
 
+	progress_next();
+
 	gl_fs_shader_map_end();
 	gl_back_render_map_end();
 
 		// finish with sky, fog, rain
+
+	progress_next();
 
 	sky_draw_release();
 	fog_draw_release();
@@ -531,20 +562,20 @@ void map_end(void)
 	
 		// stop sounds
 			
-	progress_draw(15);
+	progress_next();
 
 	map_end_ambient();
 	al_stop_all_sources();
 
 		// remove all projectiles
 	
-	progress_draw(25);
+	progress_next();
 
 	projectile_dispose_all();
 
 		// free some map lists
 
-	progress_draw(30);
+	progress_next();
 
 	projectile_free_list();
 	effect_free_list();
@@ -552,19 +583,19 @@ void map_end(void)
 
         // end course script
 		
-	progress_draw(35);
+	progress_next();
 
 	scripts_dispose(js.course_script_idx);
 
 		// free map bound items
 		
-	progress_draw(45);
+	progress_next();
 
 	object_dispose_2(bt_map);
 	
 		// free group, portal segment, vertex and light lists
 		
-	progress_draw(65);
+	progress_next();
 
 	view_map_vbo_release();
 	render_transparent_dispose_sort_list();
@@ -572,13 +603,13 @@ void map_end(void)
 	
 		// close map
 	
-	progress_draw(85);
+	progress_next();
 
 	map_close(&map);
 	
 		// finish
 
-	progress_draw(100);
+	progress_next();
 	
 	progress_shutdown();
 	

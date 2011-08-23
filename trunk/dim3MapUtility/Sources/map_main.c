@@ -310,8 +310,6 @@ bool map_open(map_type *map,char *name)
 	
 	if (!read_map_xml(map)) return(FALSE);
 
-	if (!map_textures_read(map)) return(FALSE);
-
 	map_find_random_spot_clear(map,NULL,-1);
 	
 	return(TRUE);
@@ -421,6 +419,6 @@ void map_close(map_type *map)
 void map_refresh_textures(map_type *map)
 {
 	map_textures_close(map);
-	map_textures_read(map);
+	map_textures_read_complete(map);
 }
 

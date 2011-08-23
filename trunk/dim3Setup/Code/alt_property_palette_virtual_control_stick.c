@@ -41,7 +41,9 @@ and can be sold or given away.
 #define kStickPositionY							5
 #define kStickPositionWid						6
 #define kStickPositionHigh						7
-#define kStickColor								8
+#define kStickFlipX								8
+#define kStickFlipY								9
+#define kStickColor								10
 
 extern iface_type				iface;
 extern setup_state_type			state;
@@ -75,6 +77,10 @@ void alt_property_palette_fill_virtual_control_stick(int virtual_control_stick_i
 	list_palette_add_string_int(&alt_property_palette,kStickPositionY,"Y",stick->y,FALSE);
 	list_palette_add_string_int(&alt_property_palette,kStickPositionWid,"Width",stick->x_size,FALSE);
 	list_palette_add_string_int(&alt_property_palette,kStickPositionHigh,"Height",stick->y_size,FALSE);
+
+	list_palette_add_header(&alt_property_palette,0,"Axis");
+	list_palette_add_checkbox(&alt_property_palette,kStickFlipX,"Flip X",stick->flip_x,FALSE);
+	list_palette_add_checkbox(&alt_property_palette,kStickFlipY,"Flip Y",stick->flip_y,FALSE);
 }
 
 /* =======================================================
@@ -127,6 +133,14 @@ void alt_property_palette_click_virtual_control_stick(int virtual_control_stick_
 
 		case kStickPositionHigh:
 			dialog_property_string_run(list_string_value_int,(void*)&stick->y_size,0,0,0);
+			break;
+
+		case kStickFlipX:
+			stick->flip_x=!stick->flip_x;
+			break;
+
+		case kStickFlipY:
+			stick->flip_y=!stick->flip_y;
 			break;
 
 	}

@@ -264,8 +264,8 @@ bool game_file_save(char *err_str)
 	timer_type			*timer;
 	global_type			*global;
 	
-	progress_initialize(NULL);
-	progress_draw(5);
+	progress_initialize(NULL,(12+max_obj_list+max_proj_list+max_effect_list+max_decal_list));
+	progress_next();
 	
 		// get saved data file names
 		
@@ -294,10 +294,12 @@ bool game_file_save(char *err_str)
 	
 		// view & server state
 		
-	progress_draw(10);
+	progress_next();
 		
 	game_file_add_chunk(&view.time,1,sizeof(view_time_type));
 	game_file_add_chunk(&camera,1,sizeof(camera_type));
+
+	progress_next();
 	
 	game_file_add_chunk(&server.time,1,sizeof(server_time_type));
 	game_file_add_chunk(&server.player_obj_idx,1,sizeof(int));
@@ -305,12 +307,12 @@ bool game_file_save(char *err_str)
 	
 		// objects, weapons, and projectile setups
 
-	progress_draw(20);
-
 	count=object_count_list();
 	game_file_add_chunk(&count,1,sizeof(int));
 
 	for (n=0;n!=max_obj_list;n++) {
+		progress_next();
+
 		obj=server.obj_list.objs[n];
 		if (obj==NULL) continue;
 
@@ -342,12 +344,12 @@ bool game_file_save(char *err_str)
 
 		// projectiles, effects and decals
 
-	progress_draw(30);
-
 	count=projectile_count_list();
 	game_file_add_chunk(&count,1,sizeof(int));
 
 	for (n=0;n!=max_proj_list;n++) {
+		progress_next();
+
 		proj=server.proj_list.projs[n];
 		if (!proj->on) continue;
 
@@ -359,6 +361,8 @@ bool game_file_save(char *err_str)
 	game_file_add_chunk(&count,1,sizeof(int));
 
 	for (n=0;n!=max_effect_list;n++) {
+		progress_next();
+
 		effect=server.effect_list.effects[n];
 		if (effect==NULL) continue;
 		if (!effect->on) continue;
@@ -371,6 +375,8 @@ bool game_file_save(char *err_str)
 	game_file_add_chunk(&count,1,sizeof(int));
 
 	for (n=0;n!=max_decal_list;n++) {
+		progress_next();
+
 		decal=server.decal_list.decals[n];
 		if (decal==NULL) continue;
 		if (!decal->on) continue;
@@ -379,7 +385,7 @@ bool game_file_save(char *err_str)
 		game_file_add_chunk(decal,1,sizeof(decal_type));
 	}
 	
-	progress_draw(40);
+	progress_next();
 	
 	game_file_add_chunk(iface.bitmap_list.bitmaps,iface.bitmap_list.nbitmap,sizeof(iface_bitmap_type));
 	game_file_add_chunk(iface.text_list.texts,iface.text_list.ntext,sizeof(iface_text_type));
@@ -388,18 +394,20 @@ bool game_file_save(char *err_str)
 	
 		// map changes
 		
-	progress_draw(50);
+	progress_next();
 
 	game_file_add_chunk(&map.ambient,1,sizeof(map_ambient_type));					
 	game_file_add_chunk(&map.fog,1,sizeof(map_fog_type));
 
-	progress_draw(60);
+	progress_next();
 
 	game_file_add_chunk(&map.group.ngroup,1,sizeof(int));
 
 	for (n=0;n!=map.group.ngroup;n++) {
 		game_file_add_chunk(&map.group.groups[n].run,1,sizeof(group_run_type));
 	}
+
+	progress_next();
 
 	game_file_add_chunk(&map.movement.nmovement,1,sizeof(int));
 
@@ -409,7 +417,7 @@ bool game_file_save(char *err_str)
 	
 		// script states
 		
-	progress_draw(70);
+	progress_next();
 
 	if (!script_state_save(err_str)) {
 		free(game_file_data);
@@ -419,7 +427,7 @@ bool game_file_save(char *err_str)
 
 		// timers and script data
 
-	progress_draw(80);
+	progress_next();
 
 	count=timers_count_list();
 	game_file_add_chunk(&count,1,sizeof(int));
@@ -431,6 +439,8 @@ bool game_file_save(char *err_str)
 		game_file_add_chunk(&n,1,sizeof(int));
 		game_file_add_chunk(timer,1,sizeof(timer_type));
 	}
+
+	progress_next();
 
 	count=script_global_count_list();
 	game_file_add_chunk(&count,1,sizeof(int));
@@ -445,12 +455,12 @@ bool game_file_save(char *err_str)
 
 		// compress and save
 		
-	progress_draw(90);
+	progress_next();
 
 	file_paths_app_data(&setup.file_path_setup,path,"Saved Games",file_name,"sav");
 	ok=game_file_compress_save(path,err_str);
 	
-	progress_draw(100);
+	progress_next();
 	
 	free(game_file_data);
 	
@@ -551,22 +561,24 @@ bool game_file_load(char *file_name,char *err_str)
 
 		// start progress
 
-	progress_initialize(NULL);
+	progress_initialize(NULL,(13+max_obj_list+max_proj_list+max_effect_list+max_decal_list));
 
 		// view & server state
 		
-	progress_draw(10);
+	progress_next();
 					
 	game_file_get_chunk(&view.time);
 	game_file_get_chunk(&camera);
 	
+	progress_next();
+
 	game_file_get_chunk(&server.time);
 	game_file_get_chunk(&server.player_obj_idx);
 	game_file_get_chunk(&server.skill);
 
 		// objects, weapons, and projectile setups
 	
-	progress_draw(20);
+	progress_next();
 
 	object_dispose_all();
 	object_free_list();
@@ -584,6 +596,8 @@ bool game_file_load(char *file_name,char *err_str)
 			progress_shutdown();
 			return(FALSE);
 		}
+
+		progress_next();
 
 		obj=server.obj_list.objs[idx];
 		game_file_get_chunk(obj);
@@ -663,8 +677,6 @@ bool game_file_load(char *file_name,char *err_str)
 
 		// projectiles, effects and decals
 	
-	progress_draw(30);
-
 	projectile_free_list();
 	projectile_initialize_list();
 
@@ -678,6 +690,8 @@ bool game_file_load(char *file_name,char *err_str)
 			progress_shutdown();
 			return(FALSE);
 		}
+
+		progress_next();
 
 		game_file_get_chunk(server.proj_list.projs[idx]);
 	}
@@ -696,6 +710,8 @@ bool game_file_load(char *file_name,char *err_str)
 			return(FALSE);
 		}
 
+		progress_next();
+
 		game_file_get_chunk(server.effect_list.effects[idx]);
 	}
 
@@ -713,10 +729,12 @@ bool game_file_load(char *file_name,char *err_str)
 			return(FALSE);
 		}
 
+		progress_next();
+
 		game_file_get_chunk(server.decal_list.decals[idx]);
 	}
 
-	progress_draw(40);
+	progress_next();
 
 	game_file_get_chunk(iface.bitmap_list.bitmaps);
 	game_file_get_chunk(iface.text_list.texts);
@@ -725,18 +743,20 @@ bool game_file_load(char *file_name,char *err_str)
 	
 		// map changes
 		
-	progress_draw(60);
+	progress_next();
 
 	game_file_get_chunk(&map.ambient);					
 	game_file_get_chunk(&map.fog);
 
-	progress_draw(65);
+	progress_next();
 
 	game_file_get_chunk(&count);
 
 	for (n=0;n!=count;n++) {
 		game_file_get_chunk(&map.group.groups[n].run);
 	}
+
+	progress_next();
 
 	game_file_get_chunk(&count);
 
@@ -748,7 +768,7 @@ bool game_file_load(char *file_name,char *err_str)
 	
 		// script objects
 		
-	progress_draw(70);
+	progress_next();
 
 	if (!script_state_load(err_str)) {
 		free(game_file_data);
@@ -758,7 +778,7 @@ bool game_file_load(char *file_name,char *err_str)
 
 		// timers and script data
 
-	progress_draw(80);
+	progress_next();
 
 	timers_free_list();
 	timers_initialize_list();
@@ -776,6 +796,8 @@ bool game_file_load(char *file_name,char *err_str)
 
 		game_file_get_chunk(js.timer_list.timers[idx]);
 	}
+
+	progress_next();
 
 	script_global_free_list();
 	script_global_initialize_list();
@@ -805,7 +827,7 @@ bool game_file_load(char *file_name,char *err_str)
 		// model_reset() and fixes the model
 		// indexes and creates new model draw memory
 
-	progress_draw(90);
+	progress_next();
 
 	view_images_cached_load();
 	models_reset();
@@ -813,13 +835,13 @@ bool game_file_load(char *file_name,char *err_str)
 		// fix the script state
 		// and reset indexes on timers
 		
-	progress_draw(95);
+	progress_next();
 
 	timers_fix_script_indexes();
 
 		// finish
 		
-	progress_draw(100);
+	progress_next();
 
 	free(game_file_data);
 	progress_shutdown();

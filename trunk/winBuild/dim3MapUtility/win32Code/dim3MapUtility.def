@@ -87,10 +87,13 @@ EXPORTS
 	map_setup										@290
 	map_new											@291
 	map_open										@292
-	map_reload										@294
-	map_save										@295
-	map_close										@296
-	map_refresh_textures							@297
+	map_reload										@293
+	map_save										@294
+	map_close										@295
+	
+	map_textures_read_setup							@296
+	map_textures_read_texture						@297
+	map_refresh_textures							@298
 
 	map_prepare_mesh_poly							@300
 	map_prepare_mesh_box							@301
