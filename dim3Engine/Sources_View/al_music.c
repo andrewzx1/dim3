@@ -91,11 +91,11 @@ void al_music_shutdown(void)
 
 /* =======================================================
 
-      Load MP3
+      Load MP3 and Pre-Cache
       
 ======================================================= */
 
-bool al_open_music(audio_music_song_type *song,char *name,char *err_str)
+short* al_music_load_mp3(char *name,float *f_sample_len,float *freq_factor,char *err_str)
 {
 	int						err,channels,encoding;
 	size_t					sample_size,read_bytes;
@@ -104,12 +104,6 @@ bool al_open_music(audio_music_song_type *song,char *name,char *err_str)
 	unsigned char			*data;
 	mpg123_handle			*mh;
 
-		// have we already load this music?
-
-	if (song->data!=NULL) {
-		if (strcmp(song->name,name)==0) return(TRUE);
-	}
-
 		// load mp3
 		
 	file_paths_data(&setup.file_path_setup,path,"Music",name,"mp3");
@@ -117,13 +111,13 @@ bool al_open_music(audio_music_song_type *song,char *name,char *err_str)
 	mh=mpg123_new(NULL,&err);
 	if (mh==NULL) {
 		strcpy(err_str,"Out of Memory");
-		return(FALSE);
+		return(NULL);
 	}
 	
 	if (mpg123_open(mh,path)!=MPG123_OK) {
 		mpg123_delete(mh);
 		sprintf(err_str,"Unable to open %s\n",path);
-		return(FALSE);
+		return(NULL);
 	}
 	
 		// we need stereo and 16 signed
@@ -134,7 +128,7 @@ bool al_open_music(audio_music_song_type *song,char *name,char *err_str)
 		strcpy(err_str,"Music requires 16 bit stereo MP3");
 		mpg123_close(mh);
 		mpg123_delete(mh);
-		return(FALSE);
+		return(NULL);
 	}
 	
 		// make sure it's 16 bit and stereo
@@ -148,7 +142,7 @@ bool al_open_music(audio_music_song_type *song,char *name,char *err_str)
 		mpg123_close(mh);
 		mpg123_delete(mh);
 		sprintf(err_str,"Unable to read %s\n",path);
-		return(FALSE);
+		return(NULL);
 	}
 	
 		// get buffer size
@@ -161,7 +155,7 @@ bool al_open_music(audio_music_song_type *song,char *name,char *err_str)
 		mpg123_close(mh);
 		mpg123_delete(mh);
 		sprintf(err_str,"Unable to read %s\n",path);
-		return(FALSE);
+		return(NULL);
 	}
 
 		// read it
@@ -177,22 +171,49 @@ bool al_open_music(audio_music_song_type *song,char *name,char *err_str)
 		
 	if ((err!=MPG123_OK) && (err!=MPG123_DONE)) {
 		sprintf(err_str,"Unable to read %s\n",path);
-		return(FALSE);
+		return(NULL);
 	}
 	
-		// setup buffer
+		// pass back the data
 		// we need to alter some of these factors
 		// for stereo and 16-bit music
 
-	strcpy(song->name,name);
-	
+	*f_sample_len=(float)(read_bytes/2);
+	*freq_factor=((float)rate)/((float)audio_frequency)*2.0f;
+
+	return((short*)data);
+}
+
+void al_music_init_cache(void)
+{
+}
+
+void al_music_release_cache(void)
+{
+}
+
+/* =======================================================
+
+      Open Music
+      
+======================================================= */
+
+bool al_open_music(audio_music_song_type *song,char *name,char *err_str)
+{
+		// have we already load this music?
+
+	if (song->data!=NULL) {
+		if (strcmp(song->name,name)==0) return(TRUE);
+	}
+
+		// load mp3
+		
 	if (song->data!=NULL) free(song->data);
 	
-	song->data=(short*)data;
-	song->f_sample_len=(float)(read_bytes/2);
-	song->freq_factor=((float)rate)/((float)audio_frequency)*2.0f;
-
-	return(TRUE);
+	strcpy(song->name,name);
+	
+	song->data=al_music_load_mp3(name,&song->f_sample_len,&song->freq_factor,err_str);
+	return(song->data!=NULL);
 }
 
 /* =======================================================
@@ -325,6 +346,30 @@ void al_music_set_state(bool music_on)
 	}
 }
 
+void al_music_swap_alt_music(void)
+{
+	bool			old_loop;
+	
+	SDL_LockAudio();
+
+	old_loop=audio_music_song.loop;
+	free(audio_music_song.data);
+	
+	memmove(&audio_music_song,&audio_music_alt_song,sizeof(audio_music_song_type));
+	audio_music_song.loop=old_loop;
+		
+		// set all the flags
+		
+	audio_music_song.fade_mode=music_fade_mode_none;
+	audio_music_song.volume=audio_music_song.org_volume;
+	audio_music_song.playing=TRUE;
+	
+	audio_music_alt_song.playing=FALSE;
+	audio_music_alt_song.data=NULL;
+				
+	SDL_UnlockAudio();
+}
+
 /* =======================================================
 
       Music Fades and Crosses
@@ -446,7 +491,6 @@ void al_music_run_song(audio_music_song_type *song,bool alt_song)
 {
 	int				tick,dif;
 	char			err_str[256];
-	bool			old_loop;
 	
 		// is there a fade on?
 		
@@ -487,25 +531,7 @@ void al_music_run_song(audio_music_song_type *song,bool alt_song)
 				break;
 				
 			case music_fade_mode_cross_fade:
-			
-					// only do this for alt music
-					
-				if (!alt_song) break;
-			
-					// swap the music
-					
-				old_loop=audio_music_song.loop;
-				free(audio_music_song.data);
-				
-				memmove(&audio_music_song,&audio_music_alt_song,sizeof(audio_music_song_type));
-				audio_music_song.loop=old_loop;
-					
-					// set all the flags
-					
-				song->fade_mode=music_fade_mode_none;
-				song->volume=song->org_volume;
-				audio_music_song.playing=TRUE;
-				audio_music_alt_song.playing=FALSE;
+				if (alt_song) al_music_swap_alt_music();
 				break;
 
 		}

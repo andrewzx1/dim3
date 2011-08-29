@@ -492,6 +492,8 @@ extern void al_stop_source(int source_idx);
 
 extern bool al_music_initialize(char *err_str);
 extern void al_music_shutdown(void);
+extern void al_music_init_cache(void);
+extern void al_music_release_cache(void);
 extern bool al_music_play(char *name,char *err_str);
 extern void al_music_stop(void);
 extern void al_music_set_loop(bool loop);

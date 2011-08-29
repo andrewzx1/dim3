@@ -254,7 +254,7 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 
 		// start progress
 		
-	progress_initialize(map.info.name,(19+max_map_texture));
+	progress_initialize(map.info.name,(20+max_map_texture));
 	
 	strcpy(current_map_name,map.info.name);		// remember for close
 	
@@ -274,7 +274,7 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 	}
 
 	map_textures_read_setup(&map);
-
+	
 	for (n=0;n!=max_map_texture;n++) {
 		progress_next();
 		map_textures_read_texture(&map,n);
@@ -380,6 +380,11 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 		// setup FS shaders
 		
 	gl_fs_shader_map_start();
+	
+		// any music caches
+		
+	progress_next();
+	al_music_init_cache();
 
         // run the course script
 
@@ -520,18 +525,32 @@ void map_end(void)
 {
 	obj_type		*obj;
 	
-	game_time_pause_start();
-	
-		// detach objects
+		// stop all sounds
 		
-	map_object_detach_all();
+	map_end_ambient();
+	al_music_stop();
+	al_stop_all_sources();
+
+		// pause timing
+		
+	game_time_pause_start();
 
 		// setup progress
 		
-	progress_initialize(current_map_name,12);
+	progress_initialize(current_map_name,14);
 	progress_next();
 	
 	console_add_system("Closing Map");
+	
+		// detach objects
+		
+	progress_next();
+	map_object_detach_all();
+	
+		// remove music caches
+		
+	progress_next();
+	al_music_release_cache();
 	
 		// map close event
 		
@@ -559,13 +578,6 @@ void map_end(void)
 	sky_draw_release();
 	fog_draw_release();
 	rain_draw_release();
-	
-		// stop sounds
-			
-	progress_next();
-
-	map_end_ambient();
-	al_stop_all_sources();
 
 		// remove all projectiles
 	
