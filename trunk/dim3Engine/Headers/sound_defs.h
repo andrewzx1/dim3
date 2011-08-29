@@ -85,6 +85,5 @@ typedef struct		{
 						bool					playing,loop,paused;
 						char					name[name_str_len],fade_next_name[name_str_len];
 						short					*data;
-
 					} audio_music_song_type;
 
