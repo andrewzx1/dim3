@@ -36,8 +36,6 @@ extern server_type		server;
 extern view_type		view;
 extern setup_type		setup;
 
-float					render_model_taget_frame_vertexes[12];
-
 /* =======================================================
 
       Model Colors and Normals
@@ -1077,7 +1075,7 @@ void render_model_transparent(model_draw *draw)
 void render_model_target(model_draw *draw,d3col *col)
 {
 	int				ty,by,lx,rx,lz,rz,wid,xadd,zadd;
-	float			rang;
+	float			rang,vertexes[12];
 	model_type		*mdl;
 	
 		// get model
@@ -1124,21 +1122,21 @@ void render_model_target(model_draw *draw,d3col *col)
 
 		// get the vertexes
 
-	render_model_taget_frame_vertexes[0]=(float)lx;
-	render_model_taget_frame_vertexes[1]=(float)ty;
-	render_model_taget_frame_vertexes[2]=(float)lz;
+	vertexes[0]=(float)lx;
+	vertexes[1]=(float)ty;
+	vertexes[2]=(float)lz;
 
-	render_model_taget_frame_vertexes[3]=(float)rx;
-	render_model_taget_frame_vertexes[4]=(float)ty;
-	render_model_taget_frame_vertexes[5]=(float)rz;
+	vertexes[3]=(float)rx;
+	vertexes[4]=(float)ty;
+	vertexes[5]=(float)rz;
 
-	render_model_taget_frame_vertexes[6]=(float)rx;
-	render_model_taget_frame_vertexes[7]=(float)by;
-	render_model_taget_frame_vertexes[8]=(float)rz;
+	vertexes[6]=(float)rx;
+	vertexes[7]=(float)by;
+	vertexes[8]=(float)rz;
 
-	render_model_taget_frame_vertexes[9]=(float)lx;
-	render_model_taget_frame_vertexes[10]=(float)by;
-	render_model_taget_frame_vertexes[11]=(float)lz;
+	vertexes[9]=(float)lx;
+	vertexes[10]=(float)by;
+	vertexes[11]=(float)lz;
 
 		// setup draw
 
@@ -1152,6 +1150,6 @@ void render_model_target(model_draw *draw,d3col *col)
 
 		// draw target
 		
-	glVertexPointer(3,GL_FLOAT,0,(GLvoid*)render_model_taget_frame_vertexes);
+	glVertexPointer(3,GL_FLOAT,0,(GLvoid*)vertexes);
 	glDrawArrays(GL_LINE_LOOP,0,4);
 }
