@@ -37,9 +37,6 @@ extern server_type		server;
 extern iface_type		iface;
 extern setup_type		setup;
 
-float					decal_stencil_vertexes[8],
-						decal_draw_vertexes[20];
-
 extern bool view_mesh_in_draw_list(int mesh_idx);
 
 /* =======================================================
@@ -51,6 +48,7 @@ extern bool view_mesh_in_draw_list(int mesh_idx);
 void decal_render_stencil(map_mesh_type *mesh,map_mesh_poly_type *poly,int stencil_idx)
 {
 	int			n;
+	float		vertexes[8];
 	d3pnt		*pt;
 	float		*vp;
 
@@ -60,7 +58,7 @@ void decal_render_stencil(map_mesh_type *mesh,map_mesh_poly_type *poly,int stenc
 
 		// setup vertex ptr
 
-	vp=decal_stencil_vertexes;
+	vp=vertexes;
 	
 	for (n=0;n!=poly->ptsz;n++) {
 		pt=&mesh->vertexes[poly->v[n]];
@@ -71,7 +69,7 @@ void decal_render_stencil(map_mesh_type *mesh,map_mesh_poly_type *poly,int stenc
 	
 		// stencil
 
-	glVertexPointer(3,GL_FLOAT,0,(GLvoid*)decal_stencil_vertexes);
+	glVertexPointer(3,GL_FLOAT,0,(GLvoid*)vertexes);
 	glStencilFunc(GL_ALWAYS,stencil_idx,0xFF);
 	glDrawArrays(GL_TRIANGLE_FAN,0,poly->ptsz);
 
@@ -83,7 +81,7 @@ void decal_render_stencil(map_mesh_type *mesh,map_mesh_poly_type *poly,int stenc
 void decal_render_mark(int stencil_idx,decal_type *decal)
 {
 	int					k,tick,fade_out_start_tick;
-	float				alpha,g_size,gx,gy,cf[3];
+	float				alpha,g_size,gx,gy,cf[3],vertexes[20];
 	float				*vp,*uv;
 	iface_mark_type		*mark;
 	
@@ -134,7 +132,7 @@ void decal_render_mark(int stencil_idx,decal_type *decal)
 
 		// setup vertex ptr
 
-	vp=decal_draw_vertexes;
+	vp=vertexes;
 	uv=vp+(4*3);
 
     *vp++=(float)decal->x[0];
@@ -167,8 +165,8 @@ void decal_render_mark(int stencil_idx,decal_type *decal)
 	
          // draw the polygon
 
-	glVertexPointer(3,GL_FLOAT,0,(GLvoid*)decal_draw_vertexes);
-	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)&decal_draw_vertexes[4*3]);
+	glVertexPointer(3,GL_FLOAT,0,(GLvoid*)vertexes);
+	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)&vertexes[4*3]);
 			
 	glStencilFunc(GL_EQUAL,stencil_idx,0xFF);
 	gl_texture_decal_set(view_images_get_gl_id(mark->image_idx),cf[0],cf[1],cf[2],alpha);
