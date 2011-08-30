@@ -73,6 +73,7 @@ and can be sold or given away.
 
 #define kMapPropertyMusicName				60
 #define kMapPropertyMusicFadeTime			61
+#define kMapPropertyMusicPreloadName		62
 
 #define kMapPropertyEditorTextureFactor		70
 #define kMapPropertyEditorViewNearZ			71
@@ -174,6 +175,10 @@ void property_palette_fill_map(void)
 	list_palette_add_header(&property_palette,0,"Map Music");
 	list_palette_add_string(&property_palette,kMapPropertyMusicName,"Name",map.music.name,FALSE);
 	list_palette_add_string_int(&property_palette,kMapPropertyMusicFadeTime,"Fade In Time",map.music.fade_msec,FALSE);
+	for (n=0;n!=max_music_preload;n++) {
+		sprintf(name,"Preload Name %d",n);
+		list_palette_add_string(&property_palette,(kMapPropertyMusicPreloadName+n),name,map.music.preload_name[n],FALSE);
+	}
 
 		// parameters
 
@@ -213,7 +218,7 @@ void property_palette_fill_map(void)
 
 void property_palette_click_map(int id,bool double_click)
 {
-	int				param_idx,size;
+	int				param_idx,music_idx,size;
 	char			str[256];
 	d3fpnt			uv;
 
@@ -228,6 +233,15 @@ void property_palette_click_map(int id,bool double_click)
 		dialog_property_string_run(list_string_value_string,(void*)str,256,0,0);
 		property_set_parameter(param_idx,map.settings.params,str);
 
+		main_wind_draw();
+		return;
+	}
+
+		// preload music
+
+	if ((id>=kMapPropertyMusicPreloadName) && (id<(kMapPropertyMusicPreloadName+max_music_preload))) {
+		music_idx=(id-kMapPropertyMusicPreloadName);
+		dialog_property_string_run(list_string_value_string,(void*)map.music.preload_name[music_idx],name_str_len,0,0);
 		main_wind_draw();
 		return;
 	}

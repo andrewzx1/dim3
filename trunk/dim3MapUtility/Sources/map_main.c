@@ -55,6 +55,8 @@ void map_setup(file_path_setup_type *file_path_setup,int anisotropic_mode,int mi
 
 bool map_new(map_type *map,char *name)
 {
+	int				n;
+
 		// info
 		
 	strcpy(map->info.name,name);
@@ -144,6 +146,10 @@ bool map_new(map_type *map,char *name)
 		
 	map->music.fade_msec=0;
 	map->music.name[0]=0x0;
+
+	for (n=0;n!=max_music_preload;n++) {
+		map->music.preload_name[n][0]=0x0;
+	}
 	
 		// ambients
 		

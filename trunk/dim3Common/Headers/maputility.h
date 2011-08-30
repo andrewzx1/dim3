@@ -63,6 +63,8 @@ and can be sold or given away.
 
 #define max_editor_view										8
 
+#define max_music_preload									5
+
 //
 // strings
 //
@@ -225,6 +227,10 @@ typedef struct		{
 					} map_mesh_poly_slope_type;
 
 typedef struct		{
+						bool								climbable,never_cull,obscuring;
+					} map_mesh_poly_flag_type;
+
+typedef struct		{
 						int									vertex_offset,decal_stencil_idx,
 															txt_frame_offset;
 						float								x_shift_offset,y_shift_offset;
@@ -242,13 +248,13 @@ typedef struct		{
 typedef struct		{
 						int									txt_idx,lmap_txt_idx,ptsz,v[8];
 						float								x_shift,y_shift;
-						bool								climbable,never_cull;
 						char								camera[name_str_len];
 						tangent_space_type					tangent_space;
 						map_mesh_poly_uv_type				main_uv,lmap_uv;
 						map_mesh_poly_box_type				box;
 						map_mesh_poly_line_type				line;
 						map_mesh_poly_slope_type			slope;
+						map_mesh_poly_flag_type				flag;
 						map_mesh_poly_draw_type				draw;
 						map_mesh_poly_vbo_type				vbo;
 					} map_mesh_poly_type;
@@ -571,7 +577,8 @@ typedef struct		{
 					
 typedef struct		{
 						int									fade_msec;
-						char								name[name_str_len];
+						char								name[name_str_len],
+															preload_name[max_music_preload][name_str_len];
 					} map_music_type;
 					
 //

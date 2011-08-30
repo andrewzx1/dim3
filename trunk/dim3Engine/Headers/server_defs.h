@@ -305,7 +305,8 @@ typedef struct		{
 					} model_light_cache;
 
 typedef struct		{
-						int								vertex_count,vertex_mem_sz;
+						int								vertex_count,vertex_mem_sz,vertex_stride,
+														shadow_vertex_mem_sz,shadow_vertex_stride;
 						GLuint							vertex,shadow_vertex;
 					} model_vbo_type;
 

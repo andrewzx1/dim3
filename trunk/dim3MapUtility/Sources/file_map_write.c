@@ -133,6 +133,9 @@ void write_map_fix_problems(map_type *map)
 
 void write_map_settings_xml(map_type *map)
 {
+	int					n;
+	char				name[32];
+
     xml_add_tagstart("Creator");
     xml_add_attribute_text("name","dim3 Map Editor");
     xml_add_attribute_int("version",map_current_version);
@@ -195,6 +198,10 @@ void write_map_settings_xml(map_type *map)
     xml_add_tagstart("Music");
 	xml_add_attribute_int("fade_msec",map->music.fade_msec);
 	xml_add_attribute_text("name",map->music.name);
+	for (n=0;n!=max_music_preload;n++) {
+		sprintf(name,"preload_%d",n);
+		xml_add_attribute_text(name,map->music.preload_name[n]);
+	}
 	xml_add_tagend(TRUE);
 	
     xml_add_tagstart("Ambient_Light");
@@ -657,8 +664,9 @@ void write_single_mesh(map_mesh_type *mesh)
 			xml_add_attribute_float_array("y_1",poly->lmap_uv.y,poly->ptsz);
 		}
 		
-		xml_add_attribute_boolean("climbable",poly->climbable);
-		xml_add_attribute_boolean("never_cull",poly->never_cull);
+		xml_add_attribute_boolean("climbable",poly->flag.climbable);
+		xml_add_attribute_boolean("never_cull",poly->flag.never_cull);
+		xml_add_attribute_boolean("obscuring",poly->flag.obscuring);
 		
 		if (poly->camera[0]!=0x0) xml_add_attribute_text("camera",poly->camera);
 
