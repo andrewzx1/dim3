@@ -161,8 +161,8 @@ bool liquid_render_liquid_create_vertex(map_liquid_type *liq,float uv_shift,bool
 	float			fy,wave_y[4],f_tick,f_stamp_size,
 					gx,gy,gx2,gy2,gx_add,gy_add,
 					lmap_gx,lmap_gy,lmap_gx2,lmap_gy2,lmap_gx_add,lmap_gy_add;
-	float			*vl,*uv,*uv2,*ct,*cn;
-	unsigned char	*vertex_ptr,*cl;
+	float			*cf;
+	unsigned char	*vertex_ptr,*vp,*cp;
 	bool			shader_on;
 	d3vct			normal;
 	
@@ -239,20 +239,6 @@ bool liquid_render_liquid_create_vertex(map_liquid_type *liq,float uv_shift,bool
 	gx2-=uv_shift;
 	gy2-=uv_shift;
 
-		// liquid vertexes
-
-	vl=(float*)vertex_ptr;
-	uv=(float*)(vertex_ptr+((liq->vbo.vertex_count*3)*sizeof(float)));
-	uv2=(float*)(vertex_ptr+((liq->vbo.vertex_count*(3+2))*sizeof(float)));
-
-	if (!shader_on) {
-		cl=vertex_ptr+((liq->vbo.vertex_count*(3+2+2))*sizeof(float));
-	}
-	else {
-		ct=(float*)(vertex_ptr+((liq->vbo.vertex_count*(3+2+2))*sizeof(float)));
-		cn=(float*)(vertex_ptr+((liq->vbo.vertex_count*(3+2+2+3))*sizeof(float)));
-	}
-
 		// build the tide and wave Y
 
 	liquid_wave_get_high(liq,wave_y);
@@ -296,110 +282,176 @@ bool liquid_render_liquid_create_vertex(map_liquid_type *liq,float uv_shift,bool
 	
 		// draw the divisions
 
+	vp=vertex_ptr;
+
 	for (div=0;div<=div_count;div++) {
 
 		fy=wave_y[div&0x3];
-
+		
 		if (liq->wave.dir_north_south) {
 			
 				// left-top
+			
+			cf=(float*)vp;
 
-			*vl++=(float)lft;
-			*vl++=fy;
-			*vl++=(float)top;
+			*cf++=(float)lft;
+			*cf++=fy;
+			*cf++=(float)top;
 
-			*uv++=gx;
-			*uv++=gy;
+			*cf++=gx;
+			*cf++=gy;
 
-			*uv2++=lmap_gx;
-			*uv2++=lmap_gy;
+			*cf++=lmap_gx;
+			*cf++=lmap_gy;
+			
+			if (shader_on) {
+				*cf++=1.0f;
+				*cf++=0.0f;
+				*cf++=0.0f;
+			
+				normal.x=0.0f;
+				normal.y=-1.0f;
+				normal.z=0.0f;
+
+				if (liq->wave.on) {
+					normal.z=liquid_normal_cycle_xz[div&0x3];
+					normal.y=liquid_normal_cycle_y[div&0x3];
+				}
+			
+				*cf++=normal.x;
+				*cf++=normal.y;
+				*cf++=normal.z;
+			}
+			else {
+				cp=(unsigned char*)cf;
+				gl_lights_calc_color_light_cache_byte(liq->light_cache.count,liq->light_cache.indexes,FALSE,(double)lft,fy,(double)top,cp);
+				*(cp+3)=0xFF;
+			}
+			
+			vp+=liq->vbo.vertex_stride;
 
 				// right-top
 
-			*vl++=(float)rgt;
-			*vl++=fy;
-			*vl++=(float)top;
+			cf=(float*)vp;
 
-			*uv++=gx2;
-			*uv++=gy;
+			*cf++=(float)rgt;
+			*cf++=fy;
+			*cf++=(float)top;
 
-			*uv2++=lmap_gx2;
-			*uv2++=lmap_gy;
+			*cf++=gx2;
+			*cf++=gy;
+
+			*cf++=lmap_gx2;
+			*cf++=lmap_gy;
 				
+			if (shader_on) {
+				*cf++=1.0f;
+				*cf++=0.0f;
+				*cf++=0.0f;
+			
+				normal.x=0.0f;
+				normal.y=-1.0f;
+				normal.z=0.0f;
+
+				if (liq->wave.on) {
+					normal.z=liquid_normal_cycle_xz[div&0x3];
+					normal.y=liquid_normal_cycle_y[div&0x3];
+				}
+			
+				*cf++=normal.x;
+				*cf++=normal.y;
+				*cf++=normal.z;
+			}
+			else {
+				cp=(unsigned char*)cf;
+				gl_lights_calc_color_light_cache_byte(liq->light_cache.count,liq->light_cache.indexes,FALSE,(double)rgt,fy,(double)top,cp);
+				*(cp+3)=0xFF;
+			}
+			
+			vp+=liq->vbo.vertex_stride;
 		}
 
 		else {
 			
 				// left-top
 
-			*vl++=(float)lft;
-			*vl++=fy;
-			*vl++=(float)top;
+			cf=(float*)vp;
 
-			*uv++=gx;
-			*uv++=gy;
+			*cf++=(float)lft;
+			*cf++=fy;
+			*cf++=(float)top;
 
-			*uv2++=lmap_gx;
-			*uv2++=lmap_gy;
+			*cf++=gx;
+			*cf++=gy;
 
-				// left-bottom
-
-			*vl++=(float)lft;
-			*vl++=fy;
-			*vl++=(float)bot;
-
-			*uv++=gx;
-			*uv++=gy2;
-
-			*uv2++=lmap_gx;
-			*uv2++=lmap_gy2;
-		}
-
-			// no shaders use colors
-
-		if (!shader_on) {
-			gl_lights_calc_color_light_cache_byte(liq->light_cache.count,liq->light_cache.indexes,FALSE,(double)lft,fy,(double)top,cl);
-			cl+=3;
-			*cl++=0xFF;
-
-			gl_lights_calc_color_light_cache_byte(liq->light_cache.count,liq->light_cache.indexes,FALSE,(double)lft,fy,(double)bot,cl);
-			cl+=3;
-			*cl++=0xFF;
-		}
-
-			// shaders use normals and tangents
-
-		else {
-			*ct++=1.0f;
-			*ct++=0.0f;
-			*ct++=0.0f;
+			*cf++=lmap_gx;
+			*cf++=lmap_gy;
 			
-			*ct++=1.0f;
-			*ct++=0.0f;
-			*ct++=0.0f;
+			if (shader_on) {
+				*cf++=1.0f;
+				*cf++=0.0f;
+				*cf++=0.0f;
 			
-			normal.x=0.0f;
-			normal.y=-1.0f;
-			normal.z=0.0f;
+				normal.x=0.0f;
+				normal.y=-1.0f;
+				normal.z=0.0f;
 
-			if (liq->wave.on) {
-				if (liq->wave.dir_north_south) {
-					normal.z=liquid_normal_cycle_xz[div&0x3];
-					normal.y=liquid_normal_cycle_y[div&0x3];
-				}
-				else {
+				if (liq->wave.on) {
 					normal.x=liquid_normal_cycle_xz[div&0x3];
 					normal.y=liquid_normal_cycle_y[div&0x3];
 				}
+			
+				*cf++=normal.x;
+				*cf++=normal.y;
+				*cf++=normal.z;
+			}
+			else {
+				cp=(unsigned char*)cf;
+				gl_lights_calc_color_light_cache_byte(liq->light_cache.count,liq->light_cache.indexes,FALSE,(double)lft,fy,(double)top,cp);
+				*(cp+3)=0xFF;
 			}
 			
-			*cn++=normal.x;
-			*cn++=normal.y;
-			*cn++=normal.z;
+			vp+=liq->vbo.vertex_stride;
+
+				// left-bottom
+
+			cf=(float*)vp;
+
+			*cf++=(float)lft;
+			*cf++=fy;
+			*cf++=(float)bot;
+
+			*cf++=gx;
+			*cf++=gy2;
+
+			*cf++=lmap_gx;
+			*cf++=lmap_gy2;
 			
-			*cn++=normal.x;
-			*cn++=normal.y;
-			*cn++=normal.z;
+			if (shader_on) {
+				*cf++=1.0f;
+				*cf++=0.0f;
+				*cf++=0.0f;
+			
+				normal.x=0.0f;
+				normal.y=-1.0f;
+				normal.z=0.0f;
+
+				if (liq->wave.on) {
+					normal.x=liquid_normal_cycle_xz[div&0x3];
+					normal.y=liquid_normal_cycle_y[div&0x3];
+				}
+			
+				*cf++=normal.x;
+				*cf++=normal.y;
+				*cf++=normal.z;
+			}
+			else {
+				cp=(unsigned char*)cf;
+				gl_lights_calc_color_light_cache_byte(liq->light_cache.count,liq->light_cache.indexes,FALSE,(double)lft,fy,(double)bot,cp);
+				*(cp+3)=0xFF;
+			}
+		
+			vp+=liq->vbo.vertex_stride;
 		}
 
 			// division changes
@@ -442,7 +494,7 @@ bool liquid_render_liquid_create_vertex(map_liquid_type *liq,float uv_shift,bool
 
 void liquid_render_liquid_shader(map_liquid_type *liq,int txt_idx,int lmap_txt_idx,bool back_rendering)
 {
-	int						frame,tangent_offset,normal_offset;
+	int						frame;
 	float					alpha;
 	GLuint					gl_id;
 	texture_type			*texture;
@@ -465,24 +517,21 @@ void liquid_render_liquid_shader(map_liquid_type *liq,int txt_idx,int lmap_txt_i
 	view_bind_mesh_liquid_vertex_object(&liq->vbo);
 	view_bind_mesh_liquid_index_object(&liq->vbo);
 
-	glVertexPointer(3,GL_FLOAT,0,(GLvoid*)0);
+	glVertexPointer(3,GL_FLOAT,liq->vbo.vertex_stride,(GLvoid*)0);
 
 	glClientActiveTexture(GL_TEXTURE1);
-	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)((liq->vbo.vertex_count*(3+2))*sizeof(float)));
+	glTexCoordPointer(2,GL_FLOAT,liq->vbo.vertex_stride,(GLvoid*)(5*sizeof(float)));
 	
 	glClientActiveTexture(GL_TEXTURE0);
-	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)((liq->vbo.vertex_count*3)*sizeof(float)));
+	glTexCoordPointer(2,GL_FLOAT,liq->vbo.vertex_stride,(GLvoid*)(3*sizeof(float)));
 
 		// shader lights and tangents
 
 	gl_lights_build_liquid_light_list(liq,&light_list);
-	
-	tangent_offset=(liq->vbo.vertex_count*(3+2+2))*sizeof(float);
-	normal_offset=(liq->vbo.vertex_count*(3+2+2+3))*sizeof(float);
 
 	gl_shader_draw_start();
 	gl_shader_draw_reset_normal_tangent_attrib();
-	gl_shader_draw_execute(core_shader_group_liquid,texture,txt_idx,frame,lmap_txt_idx,1.0f,&light_list,tangent_offset,normal_offset);
+	gl_shader_draw_execute(core_shader_group_liquid,texture,txt_idx,frame,lmap_txt_idx,1.0f,&light_list,(7*sizeof(float)),(10*sizeof(float)),liq->vbo.vertex_stride);
 			
 		// fix texture if any back rendering
 		
@@ -497,11 +546,7 @@ void liquid_render_liquid_shader(map_liquid_type *liq,int txt_idx,int lmap_txt_i
 	
 		// draw liquid
 
-	#ifndef D3_OPENGL_ES
-		glDrawRangeElements(GL_TRIANGLE_STRIP,0,liq->vbo.index_count,liq->vbo.index_count,GL_UNSIGNED_SHORT,(GLvoid*)0);
-	#else
-		glDrawElements(GL_TRIANGLE_STRIP,liq->vbo.index_count,GL_UNSIGNED_SHORT,(GLvoid*)0);
-	#endif
+	glDrawElements(GL_TRIANGLE_STRIP,liq->vbo.index_count,GL_UNSIGNED_SHORT,(GLvoid*)0);
 
 	gl_shader_draw_end();
 	
@@ -537,15 +582,15 @@ void liquid_render_liquid_fixed(map_liquid_type *liq,int txt_idx,int lmap_txt_id
 	view_bind_mesh_liquid_vertex_object(&liq->vbo);
 	view_bind_mesh_liquid_index_object(&liq->vbo);
 
-	glVertexPointer(3,GL_FLOAT,0,(GLvoid*)0);
+	glVertexPointer(3,GL_FLOAT,liq->vbo.vertex_stride,(GLvoid*)0);
 
 	glClientActiveTexture(GL_TEXTURE1);
-	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)((liq->vbo.vertex_count*3)*sizeof(float)));
+	glTexCoordPointer(2,GL_FLOAT,liq->vbo.vertex_stride,(GLvoid*)(3*sizeof(float)));
 	
 	glClientActiveTexture(GL_TEXTURE0);
-	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)((liq->vbo.vertex_count*(3+2))*sizeof(float)));
+	glTexCoordPointer(2,GL_FLOAT,liq->vbo.vertex_stride,(GLvoid*)(5*sizeof(float)));
 
-	glColorPointer(4,GL_UNSIGNED_BYTE,0,(GLvoid*)((liq->vbo.vertex_count*(3+2+2))*sizeof(float)));
+	glColorPointer(4,GL_UNSIGNED_BYTE,liq->vbo.vertex_stride,(GLvoid*)(7*sizeof(float)));
 
 		// back rendering overrides
 		
@@ -572,11 +617,7 @@ void liquid_render_liquid_fixed(map_liquid_type *liq,int txt_idx,int lmap_txt_id
 
 		// draw liquid
 	
-	#ifndef D3_OPENGL_ES
-		glDrawRangeElements(GL_TRIANGLE_STRIP,0,liq->vbo.index_count,liq->vbo.index_count,GL_UNSIGNED_SHORT,(GLvoid*)0);
-	#else
-		glDrawElements(GL_TRIANGLE_STRIP,liq->vbo.index_count,GL_UNSIGNED_SHORT,(GLvoid*)0);
-	#endif
+	glDrawElements(GL_TRIANGLE_STRIP,liq->vbo.index_count,GL_UNSIGNED_SHORT,(GLvoid*)0);
 	
 		// only this route uses color arrays
 

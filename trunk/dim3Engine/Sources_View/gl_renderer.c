@@ -123,6 +123,10 @@ bool gl_initialize(int screen_wid,int screen_high,int fsaa_mode,bool reset,char 
 	SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE,8);
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER,1);
 	
+#ifdef D3_OS_IPHONE
+	SDL_GL_SetAttribute(SDL_GL_RETAINED_BACKING,1);
+#endif
+	
 		// full screen anti-aliasing attributes
 		
 	switch (fsaa_mode) {

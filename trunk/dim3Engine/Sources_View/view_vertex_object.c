@@ -44,7 +44,7 @@ GLuint						vbo_sky,vbo_fog,vbo_rain;
       
 ======================================================= */
 
-void view_create_mesh_liquid_vertex_object(map_vbo_type *vbo,int vertex_count,int vertex_mem_sz,int index_count)
+void view_create_mesh_liquid_vertex_object(map_vbo_type *vbo,int vertex_count,int vertex_stride,int index_count)
 {
 	glGenBuffers(1,&vbo->vertex);
 	glGenBuffers(1,&vbo->index);
@@ -52,10 +52,11 @@ void view_create_mesh_liquid_vertex_object(map_vbo_type *vbo,int vertex_count,in
 		// init the vertex buffer
 
 	vbo->vertex_count=vertex_count;
-	vbo->vertex_mem_sz=vertex_mem_sz;
+	vbo->vertex_mem_sz=vertex_count*vertex_stride;
+	vbo->vertex_stride=vertex_stride;
 
 	glBindBuffer(GL_ARRAY_BUFFER,vbo->vertex);
-	glBufferData(GL_ARRAY_BUFFER,vertex_mem_sz,NULL,GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER,vbo->vertex_mem_sz,NULL,GL_DYNAMIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER,0);
 
 		// init the index buffer

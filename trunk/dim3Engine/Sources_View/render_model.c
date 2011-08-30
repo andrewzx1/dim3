@@ -581,7 +581,7 @@ void render_model_opaque_shader(model_type *mdl,int mesh_idx,model_draw *draw,vi
 		tangent_offset=((mesh->ntrig*3)*(3+2))*sizeof(float);
 		normal_offset=((mesh->ntrig*3)*(3+2+3))*sizeof(float);
 
-		gl_shader_draw_execute(core_shader_group_model,texture,n,frame,-1,1.0f,light_list,tangent_offset,normal_offset);
+		gl_shader_draw_execute(core_shader_group_model,texture,n,frame,-1,1.0f,light_list,tangent_offset,normal_offset,0);	// supergumba
 		glDrawArrays(GL_TRIANGLES,trig_idx,(trig_count*3));
 		
 		view.count.model_poly+=trig_count;
@@ -751,7 +751,7 @@ void render_model_transparent_shader(model_type *mdl,int mesh_idx,model_draw *dr
 		tangent_offset=((mesh->ntrig*3)*(3+2))*sizeof(float);
 		normal_offset=((mesh->ntrig*3)*(3+2+3))*sizeof(float);
 
-		gl_shader_draw_execute(core_shader_group_model,texture,n,frame,-1,draw_mesh->materials[n].alpha,light_list,tangent_offset,normal_offset);
+		gl_shader_draw_execute(core_shader_group_model,texture,n,frame,-1,draw_mesh->materials[n].alpha,light_list,tangent_offset,normal_offset,0);	// supergumba
 		glDrawArrays(GL_TRIANGLES,trig_idx,(trig_count*3));
 		
 		view.count.model_poly+=trig_count;

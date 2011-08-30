@@ -48,9 +48,9 @@ extern bool view_mesh_in_draw_list(int mesh_idx);
 void decal_render_stencil(map_mesh_type *mesh,map_mesh_poly_type *poly,int stencil_idx)
 {
 	int			n;
-	float		vertexes[8];
+	float		vertexes[8*3];
+	float		*pf;
 	d3pnt		*pt;
-	float		*vp;
 
 		// already stenciled for decal?
 
@@ -58,13 +58,13 @@ void decal_render_stencil(map_mesh_type *mesh,map_mesh_poly_type *poly,int stenc
 
 		// setup vertex ptr
 
-	vp=vertexes;
+	pf=vertexes;
 	
 	for (n=0;n!=poly->ptsz;n++) {
 		pt=&mesh->vertexes[poly->v[n]];
-		*vp++=(float)pt->x;
-		*vp++=(float)pt->y;
-		*vp++=(float)pt->z;
+		*pf++=(float)pt->x;
+		*pf++=(float)pt->y;
+		*pf++=(float)pt->z;
 	}
 	
 		// stencil
@@ -81,8 +81,8 @@ void decal_render_stencil(map_mesh_type *mesh,map_mesh_poly_type *poly,int stenc
 void decal_render_mark(int stencil_idx,decal_type *decal)
 {
 	int					k,tick,fade_out_start_tick;
-	float				alpha,g_size,gx,gy,cf[3],vertexes[20];
-	float				*vp,*uv;
+	float				alpha,g_size,gx,gy,cf[3],vertexes[20*3];
+	float				*pf;
 	iface_mark_type		*mark;
 	
 		// get the alpha
@@ -132,41 +132,40 @@ void decal_render_mark(int stencil_idx,decal_type *decal)
 
 		// setup vertex ptr
 
-	vp=vertexes;
-	uv=vp+(4*3);
+	pf=vertexes;
 
-    *vp++=(float)decal->x[0];
-	*vp++=(float)decal->y[0];
-	*vp++=(float)decal->z[0];
+    *pf++=(float)decal->x[0];
+	*pf++=(float)decal->y[0];
+	*pf++=(float)decal->z[0];
 
-    *uv++=gx;
-	*uv++=gy;
+    *pf++=gx;
+	*pf++=gy;
 
-    *vp++=(float)decal->x[3];
-	*vp++=(float)decal->y[3];
-	*vp++=(float)decal->z[3];
+    *pf++=(float)decal->x[3];
+	*pf++=(float)decal->y[3];
+	*pf++=(float)decal->z[3];
 
-    *uv++=gx;
-	*uv++=gy+g_size;
+    *pf++=gx;
+	*pf++=gy+g_size;
 
-    *vp++=(float)decal->x[1];
-	*vp++=(float)decal->y[1];
-	*vp++=(float)decal->z[1];
+    *pf++=(float)decal->x[1];
+	*pf++=(float)decal->y[1];
+	*pf++=(float)decal->z[1];
 
-    *uv++=gx+g_size;
-	*uv++=gy;
+    *pf++=gx+g_size;
+	*pf++=gy;
 
-    *vp++=(float)decal->x[2];
-	*vp++=(float)decal->y[2];
-	*vp++=(float)decal->z[2];
+    *pf++=(float)decal->x[2];
+	*pf++=(float)decal->y[2];
+	*pf++=(float)decal->z[2];
 
-    *uv++=gx+g_size;
-	*uv++=gy+g_size;
+    *pf++=gx+g_size;
+	*pf++=gy+g_size;
 	
          // draw the polygon
 
-	glVertexPointer(3,GL_FLOAT,0,(GLvoid*)vertexes);
-	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)&vertexes[4*3]);
+	glVertexPointer(3,GL_FLOAT,(5*sizeof(float)),(GLvoid*)vertexes);
+	glTexCoordPointer(2,GL_FLOAT,(5*sizeof(float)),(GLvoid*)(vertexes+3));
 			
 	glStencilFunc(GL_EQUAL,stencil_idx,0xFF);
 	gl_texture_decal_set(view_images_get_gl_id(mark->image_idx),cf[0],cf[1],cf[2],alpha);
