@@ -123,7 +123,7 @@ void view_unbind_mesh_liquid_index_object(void)
 
 void view_create_model_vertex_object(model_draw *draw)
 {
-	int					n,vertex_cnt,mem_sz;
+	int					n,vertex_cnt,stride;
 	bool				shader_on;
 	model_type			*mdl;
 	model_mesh_type		*mesh;
@@ -147,21 +147,22 @@ void view_create_model_vertex_object(model_draw *draw)
 		mesh=&mdl->meshes[n];
 		vertex_cnt=mesh->ntrig*3;
 			
-		mem_sz=(vertex_cnt*(3+2))*sizeof(float);
-		if (!shader_on) {
-			mem_sz+=((vertex_cnt*4)*sizeof(unsigned char));		// colors
+		stride=(3+2)*sizeof(float);					// 3 vertex and 2 uv
+		if (shader_on) {
+			stride+=((3+3)*sizeof(float));			// 3 tangent and 3 normal
 		}
 		else {
-			mem_sz+=((vertex_cnt*(3+3))*sizeof(float));			// tangents and normals
+			stride+=(4*sizeof(unsigned char));		// 4 colors
 		}
 
 			// init the vertex buffer
 
 		draw->vbo[n].vertex_count=vertex_cnt;
-		draw->vbo[n].vertex_mem_sz=mem_sz;
+		draw->vbo[n].vertex_stride=stride;
+		draw->vbo[n].vertex_mem_sz=(stride*vertex_cnt);
 
 		glBindBuffer(GL_ARRAY_BUFFER,draw->vbo[n].vertex);
-		glBufferData(GL_ARRAY_BUFFER,mem_sz,NULL,GL_DYNAMIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER,draw->vbo[n].vertex_mem_sz,NULL,GL_DYNAMIC_DRAW);
 		glBindBuffer(GL_ARRAY_BUFFER,0);
 
 			// any shadows?
@@ -171,14 +172,15 @@ void view_create_model_vertex_object(model_draw *draw)
 		glGenBuffers(1,&draw->vbo[n].shadow_vertex);
 
 			// get the shadow vertex size
-			// always add in 8 for stencil polygon at top
 
-		mem_sz=(8*3)*sizeof(float);
-		mem_sz+=((vertex_cnt*3)*sizeof(float));
-		mem_sz+=((vertex_cnt*4)*sizeof(unsigned char));
+		stride+=(3*sizeof(float));								// 3 vertexes
+		stride+=(4*sizeof(unsigned char));						// 4 colors
+
+		draw->vbo[n].shadow_vertex_stride=stride;
+		draw->vbo[n].shadow_vertex_mem_sz=(stride*vertex_cnt);
 
 		glBindBuffer(GL_ARRAY_BUFFER,draw->vbo[n].shadow_vertex);
-		glBufferData(GL_ARRAY_BUFFER,mem_sz,NULL,GL_DYNAMIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER,draw->vbo[n].shadow_vertex_mem_sz,NULL,GL_DYNAMIC_DRAW);
 		glBindBuffer(GL_ARRAY_BUFFER,0);
 	}
 }

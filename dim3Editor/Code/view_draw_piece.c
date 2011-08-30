@@ -171,7 +171,7 @@ bool view_cull_poly(editor_view_type *view,map_mesh_type *mesh,map_mesh_poly_typ
 	if (!view->cull) return(FALSE);
 	if (mesh->flag.never_cull) return(FALSE);
 	if (poly->ptsz==0) return(FALSE);
-	if (poly->never_cull) return(FALSE);
+	if (poly->flag.never_cull) return(FALSE);
 	
 		// get center
 		

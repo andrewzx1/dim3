@@ -440,8 +440,9 @@ int map_mesh_add_poly(map_type *map,int mesh_idx,int ptsz,int *x,int *y,int *z,f
 	poly->x_shift=0.0f;
 	poly->y_shift=0.0f;
 
-	poly->climbable=FALSE;
-	poly->never_cull=FALSE;
+	poly->flag.climbable=FALSE;
+	poly->flag.never_cull=FALSE;
+	poly->flag.obscuring=FALSE;
 	
 	poly->camera[0]=0x0;
 

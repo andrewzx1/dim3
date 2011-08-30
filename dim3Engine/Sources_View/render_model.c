@@ -188,21 +188,21 @@ void render_model_create_normal_vertexes(model_type *mdl,int mesh_mask,model_dra
 
 void render_model_vertex_object_no_shader(model_type *mdl,int mesh_idx,model_draw *draw,unsigned char *vertex_ptr)
 {
-	int					n,k,offset;
-	float				*gx,*gy,*vp,*vl,*ul,
-						*vp_start,*cp,*cp_start;
-	unsigned char		*cl;
+	int					n,k,offset,stride;
+	float				*gx,*gy,*pf,
+						*va,*va_start,*ca,*ca_start;
+	unsigned char		*vp,*pc;
 	model_trig_type		*trig;
 	model_mesh_type		*mesh;
 	
 	mesh=&mdl->meshes[mesh_idx];
 	
-	vl=(float*)vertex_ptr;
-	ul=(float*)(vertex_ptr+(((mesh->ntrig*3)*3)*sizeof(float)));
-	cl=vertex_ptr+(((mesh->ntrig*3)*(3+2))*sizeof(float));
+	vp=vertex_ptr;
 
-	vp_start=draw->setup.mesh_arrays[mesh_idx].gl_vertex_array;
-	cp_start=draw->setup.mesh_arrays[mesh_idx].gl_color_array;
+	va_start=draw->setup.mesh_arrays[mesh_idx].gl_vertex_array;
+	ca_start=draw->setup.mesh_arrays[mesh_idx].gl_color_array;
+
+	stride=draw->vbo[mesh_idx].vertex_stride;
 
 	trig=mesh->trigs;
 	
@@ -214,20 +214,25 @@ void render_model_vertex_object_no_shader(model_type *mdl,int mesh_idx,model_dra
 		for (k=0;k!=3;k++) {
 			offset=trig->v[k]*3;
 			
-			vp=vp_start+offset;
-			cp=cp_start+offset;
+			va=va_start+offset;
+			ca=ca_start+offset;
 
-			*vl++=*vp++;
-			*vl++=*vp++;
-			*vl++=*vp;
+			pf=(float*)vp;
 
-			*ul++=*gx++;
-			*ul++=*gy++;
+			*pf++=*va++;
+			*pf++=*va++;
+			*pf++=*va;
 
-			*cl++=(unsigned char)((*cp++)*255.0f);
-			*cl++=(unsigned char)((*cp++)*255.0f);
-			*cl++=(unsigned char)((*cp)*255.0f);
-			*cl++=0xFF;
+			*pf++=*gx++;
+			*pf++=*gy++;
+
+			pc=(unsigned char*)pf;
+			*pc++=(unsigned char)((*ca++)*255.0f);
+			*pc++=(unsigned char)((*ca++)*255.0f);
+			*pc++=(unsigned char)((*ca)*255.0f);
+			*pc=0xFF;
+
+			vp+=stride;
 		}
 
 		trig++;
@@ -236,11 +241,11 @@ void render_model_vertex_object_no_shader(model_type *mdl,int mesh_idx,model_dra
 
 void render_model_vertex_object_no_shader_diffuse(model_type *mdl,int mesh_idx,model_draw *draw,unsigned char *vertex_ptr)
 {
-	int					n,k,i,offset;
+	int					n,k,i,offset,stride;
 	float				diffuse,min_diffuse,boost,
-						*gx,*gy,*vp,*vl,*ul,*nl,
-						*vp_start,*cp,*cp_start;
-	unsigned char		*cl;
+						*gx,*gy,*pf,
+						*va,*va_start,*ca,*ca_start,*na;
+	unsigned char		*vp,*pc;
 	d3vct				diffuse_vct;
 	d3col				ambient_col;
 	model_trig_type		*trig;
@@ -267,13 +272,13 @@ void render_model_vertex_object_no_shader_diffuse(model_type *mdl,int mesh_idx,m
 
 		// create the vertex object
 	
-	vl=(float*)vertex_ptr;
-	ul=(float*)(vertex_ptr+(((mesh->ntrig*3)*3)*sizeof(float)));
-	cl=vertex_ptr+(((mesh->ntrig*3)*(3+2))*sizeof(float));
+	vp=vertex_ptr;
 
-	vp_start=draw->setup.mesh_arrays[mesh_idx].gl_vertex_array;
-	cp_start=draw->setup.mesh_arrays[mesh_idx].gl_color_array;
-	nl=draw->setup.mesh_arrays[mesh_idx].gl_normal_array;
+	va_start=draw->setup.mesh_arrays[mesh_idx].gl_vertex_array;
+	ca_start=draw->setup.mesh_arrays[mesh_idx].gl_color_array;
+	na=draw->setup.mesh_arrays[mesh_idx].gl_normal_array;
+	
+	stride=draw->vbo[mesh_idx].vertex_stride;
 
 	trig=mesh->trigs;
 	
@@ -285,40 +290,46 @@ void render_model_vertex_object_no_shader_diffuse(model_type *mdl,int mesh_idx,m
 		for (k=0;k!=3;k++) {
 			offset=trig->v[k]*3;
 			
-			vp=vp_start+offset;
-			cp=cp_start+offset;
+			va=va_start+offset;
+			ca=ca_start+offset;
 
-			*vl++=*vp++;
-			*vl++=*vp++;
-			*vl++=*vp;
+			pf=(float*)vp;
 
-			*ul++=*gx++;
-			*ul++=*gy++;
+			*pf++=*va++;
+			*pf++=*va++;
+			*pf++=*va;
+
+			*pf++=*gx++;
+			*pf++=*gy++;
 			
 				// get the diffuse from
 				// the dot product and clamp it
 				
-			diffuse=(diffuse_vct.x*(*nl))+(diffuse_vct.y*(*(nl+1)))+(diffuse_vct.z*(*(nl+2)));
+			diffuse=(diffuse_vct.x*(*na))+(diffuse_vct.y*(*(na+1)))+(diffuse_vct.z*(*(na+2)));
 			diffuse=((diffuse+1.0f)*0.5f)+boost;
 			if (diffuse<min_diffuse) diffuse=min_diffuse;
 
-			nl+=3;
+			na+=3;
 		
 				// apply diffuse
 				
-			i=(int)(((*cp++)*diffuse)*255.0f);
+			pc=(unsigned char*)pf;
+
+			i=(int)(((*ca++)*diffuse)*255.0f);
 			if (i>255) i=255;
-			*cl++=(unsigned char)i;
+			*pc++=(unsigned char)i;
 			
-			i=(int)(((*cp++)*diffuse)*255.0f);
+			i=(int)(((*ca++)*diffuse)*255.0f);
 			if (i>255) i=255;
-			*cl++=(unsigned char)i;
+			*pc++=(unsigned char)i;
 			
-			i=(int)(((*cp++)*diffuse)*255.0f);
+			i=(int)(((*ca++)*diffuse)*255.0f);
 			if (i>255) i=255;
-			*cl++=(unsigned char)i;
+			*pc++=(unsigned char)i;
 			
-			*cl++=0xFF;
+			*pc=0xFF;
+
+			vp+=stride;
 		}
 
 		trig++;
@@ -327,18 +338,23 @@ void render_model_vertex_object_no_shader_diffuse(model_type *mdl,int mesh_idx,m
 
 void render_model_vertex_object_shader(model_type *mdl,int mesh_idx,model_draw *draw,unsigned char *vertex_ptr)
 {
-	int					n,k,offset,mem_sz;
-	float				*gx,*gy,*vp,*vl,*ul,*tl,*nl,
-						*vp_start;
+	int					n,k,offset,stride;
+	float				*gx,*gy,*pf,
+						*va,*va_start,*ta,*na;
+	unsigned char		*vp;
 	model_trig_type		*trig;
 	model_mesh_type		*mesh;
 	
 	mesh=&mdl->meshes[mesh_idx];
 	
-	vl=(float*)vertex_ptr;
-	ul=(float*)(vertex_ptr+(((mesh->ntrig*3)*3)*sizeof(float)));
+	vp=vertex_ptr;
 
-	vp_start=draw->setup.mesh_arrays[mesh_idx].gl_vertex_array;
+	va_start=draw->setup.mesh_arrays[mesh_idx].gl_vertex_array;
+
+	ta=draw->setup.mesh_arrays[mesh_idx].gl_tangent_array;		// tangents and normals are already in trig*3 setup
+	na=draw->setup.mesh_arrays[mesh_idx].gl_normal_array;
+
+	stride=draw->vbo[mesh_idx].vertex_stride;
 
 	trig=mesh->trigs;
 
@@ -350,28 +366,30 @@ void render_model_vertex_object_shader(model_type *mdl,int mesh_idx,model_draw *
 		for (k=0;k!=3;k++) {
 			offset=trig->v[k]*3;
 			
-			vp=vp_start+offset;
+			va=va_start+offset;
 
-			*vl++=*vp++;
-			*vl++=*vp++;
-			*vl++=*vp;
+			pf=(float*)vp;
 
-			*ul++=*gx++;
-			*ul++=*gy++;
+			*pf++=*va++;
+			*pf++=*va++;
+			*pf++=*va;
+
+			*pf++=*gx++;
+			*pf++=*gy++;
+
+			*pf++=*ta++;
+			*pf++=*ta++;
+			*pf++=*ta++;
+
+			*pf++=*na++;
+			*pf++=*na++;
+			*pf++=*na++;
+
+			vp+=stride;
 		}
 
 		trig++;
 	}
-
-		// tangent space already in trig-vertex array
-
-	mem_sz=((mesh->ntrig*3)*3)*sizeof(float);
-
-	tl=(float*)(vertex_ptr+(((mesh->ntrig*3)*(3+2))*sizeof(float)));
-	memmove(tl,draw->setup.mesh_arrays[mesh_idx].gl_tangent_array,mem_sz);
-
-	nl=(float*)(vertex_ptr+(((mesh->ntrig*3)*(3+2+3))*sizeof(float)));
-	memmove(nl,draw->setup.mesh_arrays[mesh_idx].gl_normal_array,mem_sz);
 }
 
 /* =======================================================
@@ -382,6 +400,7 @@ void render_model_vertex_object_shader(model_type *mdl,int mesh_idx,model_draw *
 
 bool render_model_initialize_vertex_objects(model_type *mdl,int mesh_idx,model_draw *draw)
 {
+	int					stride;
 	unsigned char		*vertex_ptr;
 	bool				shader_on;
 	model_mesh_type		*mesh;
@@ -431,17 +450,19 @@ bool render_model_initialize_vertex_objects(model_type *mdl,int mesh_idx,model_d
 		// set the pointers
 		// glow maps use two texture units
 
-	glVertexPointer(3,GL_FLOAT,0,(GLvoid*)0);
+	stride=draw->vbo[mesh_idx].vertex_stride;
+
+	glVertexPointer(3,GL_FLOAT,stride,(GLvoid*)0);
 
 	glClientActiveTexture(GL_TEXTURE1);
-	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)(((mesh->ntrig*3)*3)*sizeof(float)));
+	glTexCoordPointer(2,GL_FLOAT,stride,(GLvoid*)(3*sizeof(float)));
 
 	glClientActiveTexture(GL_TEXTURE0);
-	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)(((mesh->ntrig*3)*3)*sizeof(float)));
+	glTexCoordPointer(2,GL_FLOAT,stride,(GLvoid*)(3*sizeof(float)));
 	
 	if (!shader_on) {
 		glEnableClientState(GL_COLOR_ARRAY);
-		glColorPointer(4,GL_UNSIGNED_BYTE,0,(GLvoid*)(((mesh->ntrig*3)*(3+2))*sizeof(float)));
+		glColorPointer(4,GL_UNSIGNED_BYTE,stride,(GLvoid*)((3+2)*sizeof(float)));
 	}
 
 	return(TRUE);
@@ -519,8 +540,7 @@ void render_model_opaque_normal(model_type *mdl,int mesh_idx,model_draw *draw)
 
 void render_model_opaque_shader(model_type *mdl,int mesh_idx,model_draw *draw,view_light_list_type *light_list)
 {
-	int						n,trig_count,frame,trig_idx,
-							tangent_offset,normal_offset;
+	int						n,trig_count,frame,trig_idx,stride;
 	model_mesh_type			*mesh;
  	model_draw_mesh_type	*draw_mesh;
 	texture_type			*texture;
@@ -542,6 +562,8 @@ void render_model_opaque_shader(model_type *mdl,int mesh_idx,model_draw *draw,vi
 
 	gl_shader_draw_start();
 	gl_shader_draw_reset_normal_tangent_attrib();
+
+	stride=draw->vbo[mesh_idx].vertex_stride;
 
 		// run through the materials
 
@@ -578,10 +600,7 @@ void render_model_opaque_shader(model_type *mdl,int mesh_idx,model_draw *draw,vi
 
 			// run the shader
 			
-		tangent_offset=((mesh->ntrig*3)*(3+2))*sizeof(float);
-		normal_offset=((mesh->ntrig*3)*(3+2+3))*sizeof(float);
-
-		gl_shader_draw_execute(core_shader_group_model,texture,n,frame,-1,1.0f,light_list,tangent_offset,normal_offset,0);	// supergumba
+		gl_shader_draw_execute(core_shader_group_model,texture,n,frame,-1,1.0f,light_list,(5*sizeof(float)),(8*sizeof(float)),stride);
 		glDrawArrays(GL_TRIANGLES,trig_idx,(trig_count*3));
 		
 		view.count.model_poly+=trig_count;
@@ -670,8 +689,7 @@ void render_model_transparent_normal(model_type *mdl,int mesh_idx,model_draw *dr
 
 void render_model_transparent_shader(model_type *mdl,int mesh_idx,model_draw *draw,view_light_list_type *light_list)
 {
-	int						n,frame,trig_count,trig_idx,
-							tangent_offset,normal_offset;
+	int						n,frame,trig_count,trig_idx,stride;
 	bool					cur_additive,is_additive;
 	model_mesh_type			*mesh;
  	model_draw_mesh_type	*draw_mesh;
@@ -695,6 +713,8 @@ void render_model_transparent_shader(model_type *mdl,int mesh_idx,model_draw *dr
 	
 	gl_shader_draw_start();
 	gl_shader_draw_reset_normal_tangent_attrib();
+
+	stride=draw->vbo[mesh_idx].vertex_stride;
 	
 		// minimize state changes
 
@@ -748,10 +768,7 @@ void render_model_transparent_shader(model_type *mdl,int mesh_idx,model_draw *dr
 
 			// run the shader
 			
-		tangent_offset=((mesh->ntrig*3)*(3+2))*sizeof(float);
-		normal_offset=((mesh->ntrig*3)*(3+2+3))*sizeof(float);
-
-		gl_shader_draw_execute(core_shader_group_model,texture,n,frame,-1,draw_mesh->materials[n].alpha,light_list,tangent_offset,normal_offset,0);	// supergumba
+		gl_shader_draw_execute(core_shader_group_model,texture,n,frame,-1,draw_mesh->materials[n].alpha,light_list,(5*sizeof(float)),(8*sizeof(float)),stride);
 		glDrawArrays(GL_TRIANGLES,trig_idx,(trig_count*3));
 		
 		view.count.model_poly+=trig_count;

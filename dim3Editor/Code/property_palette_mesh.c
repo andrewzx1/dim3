@@ -70,6 +70,7 @@ and can be sold or given away.
 
 #define kMeshPolyPropertyClimbable				60
 #define kMeshPolyPropertyNeverCull				61
+#define kMeshPolyPropertyObscuring				62
 
 #define kMeshPolyPropertyOff					70
 #define kMeshPolyPropertySize					71
@@ -193,8 +194,9 @@ void property_palette_fill_mesh(int mesh_idx,int poly_idx)
 		uv_shift.y=poly->y_shift;
 		
 		list_palette_add_header(&property_palette,0,"Poly Settings");
-		list_palette_add_checkbox(&property_palette,kMeshPolyPropertyClimbable,"Cimbable",poly->climbable,FALSE);
-		list_palette_add_checkbox(&property_palette,kMeshPolyPropertyNeverCull,"Never Cull",poly->never_cull,FALSE);
+		list_palette_add_checkbox(&property_palette,kMeshPolyPropertyClimbable,"Cimbable",poly->flag.climbable,FALSE);
+		list_palette_add_checkbox(&property_palette,kMeshPolyPropertyNeverCull,"Never Cull",poly->flag.never_cull,FALSE);
+		list_palette_add_checkbox(&property_palette,kMeshPolyPropertyObscuring,"Obscuring",poly->flag.obscuring,FALSE);
 		
 		list_palette_add_header(&property_palette,0,"Poly UVs");
 		list_palette_add_uv(&property_palette,kMeshPolyPropertyOff,"Offset",&uv_offset,FALSE);
@@ -372,11 +374,15 @@ void property_palette_click_mesh(int mesh_idx,int poly_idx,int id,bool double_cl
 		switch (id) {
 
 			case kMeshPolyPropertyClimbable:
-				poly->climbable=!poly->climbable;
+				poly->flag.climbable=!poly->flag.climbable;
 				break;
 
 			case kMeshPolyPropertyNeverCull:
-				poly->never_cull=!poly->never_cull;
+				poly->flag.never_cull=!poly->flag.never_cull;
+				break;
+
+			case kMeshPolyPropertyObscuring:
+				poly->flag.obscuring=!poly->flag.obscuring;
 				break;
 
 			case kMeshPolyPropertyOff:

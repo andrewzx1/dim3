@@ -53,9 +53,10 @@ char					media_type_str[][32]={"none","chooser","title","movie",""},
 
 void decode_map_settings_xml(map_type *map,int map_head)
 {
-	int						main_ambient_light_tag,main_ambient_sound_tag,main_rain_tag,
-							main_background_tag,main_sky_tag,main_fog_tag,
-							tag;
+	int				n,main_ambient_light_tag,main_ambient_sound_tag,main_rain_tag,
+					main_background_tag,main_sky_tag,main_fog_tag,
+					tag;
+	char			name[32];
 	
         // map info
     
@@ -75,12 +76,8 @@ void decode_map_settings_xml(map_type *map,int map_head)
 		map->physics.slope_max_ang=xml_get_attribute_float_default(tag,"slope_max_ang",45.0f);
 		map->physics.slope_max_speed=xml_get_attribute_float_default(tag,"slope_max_speed",250.0f);
 		map->physics.slope_min_gravity=xml_get_attribute_float_default(tag,"slope_min_gravity",200.0f);
-		
-		// supergumba -- old location -- delete later
-		map->optimize.never_cull=xml_get_attribute_boolean(tag,"never_cull");
-		map->optimize.no_shaders=xml_get_attribute_boolean(tag,"no_shaders");
-		
-        xml_get_attribute_text(tag,"network_game_list",map->settings.network_game_list,256);
+
+		xml_get_attribute_text(tag,"network_game_list",map->settings.network_game_list,256);
 		xml_get_attribute_text(tag,"params",map->settings.params,param_str_len);
 
         map->light_map.quality=xml_get_attribute_int_default(tag,"light_map_quality",2);
@@ -90,7 +87,6 @@ void decode_map_settings_xml(map_type *map,int map_head)
 		map->light_map.use_normals=xml_get_attribute_boolean(tag,"light_map_use_normals");
         map->light_map.diffuse_boost=xml_get_attribute_float_default(tag,"light_map_diffuse_boost",0.0f);
 		if (map->light_map.quality>4) map->light_map.quality=2;		// reset from older map formats
-		// supergumba -- finished
 	}
 	
     tag=xml_findfirstchild("Optimize",map_head);
@@ -140,6 +136,11 @@ void decode_map_settings_xml(map_type *map,int map_head)
     if (tag!=-1) {
 		map->music.fade_msec=xml_get_attribute_int(tag,"fade_msec");
 		xml_get_attribute_text(tag,"name",map->music.name,name_str_len);
+
+		for (n=0;n!=max_music_preload;n++) {
+			sprintf(name,"preload_%d",n);
+			xml_get_attribute_text(tag,name,map->music.preload_name[n],name_str_len);
+		}
 	}
 	
 	main_ambient_light_tag=xml_findfirstchild("Ambient_Light",map_head);
@@ -672,8 +673,9 @@ bool read_single_mesh_v3(map_type *map,int mesh_idx,int mesh_tag)
 				xml_get_attribute_float_array(poly_tag,"y_1",poly->lmap_uv.y,8);
 			}
 
-			poly->climbable=xml_get_attribute_boolean(poly_tag,"climbable");
-			poly->never_cull=xml_get_attribute_boolean(poly_tag,"never_cull");
+			poly->flag.climbable=xml_get_attribute_boolean(poly_tag,"climbable");
+			poly->flag.never_cull=xml_get_attribute_boolean(poly_tag,"never_cull");
+			poly->flag.obscuring=xml_get_attribute_boolean(poly_tag,"obscuring");
 
 			xml_get_attribute_text(poly_tag,"camera",poly->camera,name_str_len);
 
