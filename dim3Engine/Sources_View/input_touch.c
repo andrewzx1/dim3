@@ -162,10 +162,10 @@ void input_touch_to_virtual_stick_move(touch_state_type *state)
 	my=stick->y+sy;
 	
 	stick->touch_x=(float)(state->pt.x-mx)/(float)sx;
-	if (stick->x_flip) stick->touch_x=-stick->touch_x;
+	if (stick->flip_x) stick->touch_x=-stick->touch_x;
 
 	stick->touch_y=(float)(state->pt.y-my)/(float)sy;
-	if (stick->y_flip) stick->touch_y=-stick->touch_y;
+	if (stick->flip_y) stick->touch_y=-stick->touch_y;
 }
 
 void input_touch_to_virtual_stick_start(touch_state_type *state)

@@ -639,7 +639,7 @@ extern void gl_lights_build_model_light_list(model_type *mdl,model_draw *draw,vi
 // vbos
 //
 
-extern void view_create_mesh_liquid_vertex_object(map_vbo_type *vbo,int vertex_count,int vertex_mem_sz,int index_count);
+extern void view_create_mesh_liquid_vertex_object(map_vbo_type *vbo,int vertex_count,int vertex_stride,int index_count);
 extern void view_dispose_mesh_liquid_vertex_object(map_vbo_type *vbo);
 extern inline void view_bind_mesh_liquid_vertex_object(map_vbo_type *vbo);
 extern inline unsigned char* view_map_mesh_liquid_vertex_object(map_vbo_type *vbo);
@@ -720,7 +720,7 @@ extern void gl_shader_draw_start(void);
 extern void gl_shader_draw_reset_normal_tangent_attrib(void);
 extern void gl_shader_draw_end(void);
 extern void gl_shader_texture_override(GLuint gl_id,float alpha);
-extern void gl_shader_draw_execute(int core_shader_group,texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,view_light_list_type *light_list,int tangent_offset,int normal_offset);
+extern void gl_shader_draw_execute(int core_shader_group,texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,view_light_list_type *light_list,int tangent_offset,int normal_offset,int stride);
 
 //
 // core shaders

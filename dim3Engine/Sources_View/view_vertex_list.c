@@ -46,8 +46,8 @@ bool view_map_vbo_initialize_mesh(map_mesh_type *mesh)
 	int					n,k;
 	unsigned short		idx;
 	unsigned short		*index_ptr;
-	float				*pv,*pt,*pn,*pp;
-	unsigned char		*vertex_ptr,*pc;
+	float				*pf;
+	unsigned char		*vertex_ptr,*vp,*pc;
 	bool				shader_on;
 	d3pnt				*pnt;
 	map_mesh_poly_type	*poly;
@@ -63,19 +63,11 @@ bool view_map_vbo_initialize_mesh(map_mesh_type *mesh)
 		return(FALSE);
 	}
 
-	pv=(float*)vertex_ptr;
-	
-	if (shader_on) {
-		pt=(float*)(vertex_ptr+((mesh->vbo.vertex_count*(3+2+2))*sizeof(float)));
-		pn=(float*)(vertex_ptr+((mesh->vbo.vertex_count*(3+3+2+2))*sizeof(float)));
-	}
-	else {
-		pc=vertex_ptr+((mesh->vbo.vertex_count*(3+2+2))*sizeof(float));
-	}
-
 		// vertexes, tangents, normals and color
 		// we run this separate from the UVs
 		// as they are grouped for layers
+		
+	vp=vertex_ptr;
 
 	poly=mesh->polys;
 	
@@ -84,60 +76,41 @@ bool view_map_vbo_initialize_mesh(map_mesh_type *mesh)
 		for (k=0;k!=poly->ptsz;k++) {
 		
 			pnt=&mesh->vertexes[poly->v[k]];
+			
+			pf=(float*)vp;
 
-			*pv++=(float)pnt->x;
-			*pv++=(float)pnt->y;
-			*pv++=(float)pnt->z;
+			*pf++=(float)pnt->x;
+			*pf++=(float)pnt->y;
+			*pf++=(float)pnt->z;
+			
+			*pf++=poly->main_uv.x[k]+poly->draw.x_shift_offset;
+			*pf++=poly->main_uv.y[k]+poly->draw.y_shift_offset;
+			
+			*pf++=poly->lmap_uv.x[k];
+			*pf++=poly->lmap_uv.y[k];
 
 			if (shader_on) {
-				*pt++=poly->tangent_space.tangent.x;
-				*pt++=poly->tangent_space.tangent.y;
-				*pt++=poly->tangent_space.tangent.z;
-				*pn++=poly->tangent_space.normal.x;
-				*pn++=poly->tangent_space.normal.y;
-				*pn++=poly->tangent_space.normal.z;
+				*pf++=poly->tangent_space.tangent.x;
+				*pf++=poly->tangent_space.tangent.y;
+				*pf++=poly->tangent_space.tangent.z;
+				*pf++=poly->tangent_space.normal.x;
+				*pf++=poly->tangent_space.normal.y;
+				*pf++=poly->tangent_space.normal.z;
 			}
 			else {
+				pc=(unsigned char*)pf;
 				*pc++=0x0;
 				*pc++=0x0;
 				*pc++=0x0;
 				*pc++=0xFF;
 			}
-		}
-
-		poly++;
-	}
-	
-		// main UVs
-
-	pp=(float*)(vertex_ptr+((mesh->vbo.vertex_count*3)*sizeof(float)));
-
-	poly=mesh->polys;
 			
-	for (n=0;n!=mesh->npoly;n++) {
-			
-		for (k=0;k!=poly->ptsz;k++) {
-			*pp++=poly->main_uv.x[k]+poly->draw.x_shift_offset;
-			*pp++=poly->main_uv.y[k]+poly->draw.y_shift_offset;
+			vp+=mesh->vbo.vertex_stride;
 		}
 
 		poly++;
 	}
 
-		// light map UVs
-
-	poly=mesh->polys;
-		
-	for (n=0;n!=mesh->npoly;n++) {
-		
-		for (k=0;k!=poly->ptsz;k++) {
-			*pp++=poly->lmap_uv.x[k];
-			*pp++=poly->lmap_uv.y[k];
-		}
-
-		poly++;
-	}
-	
 	view_unmap_mesh_liquid_vertex_object();
 	view_unbind_mesh_liquid_vertex_object();
 
@@ -156,9 +129,6 @@ bool view_map_vbo_initialize_mesh(map_mesh_type *mesh)
 	poly=mesh->polys;
 		
 	for (n=0;n!=mesh->npoly;n++) {
-	
-		poly->vbo.index_min=idx;
-		poly->vbo.index_max=idx+poly->ptsz;
 		
 		poly->vbo.index_offset=idx*sizeof(unsigned short);
 		
@@ -224,8 +194,8 @@ bool view_map_vbo_initialize_liquid(map_liquid_type *liq)
 
 bool view_map_vbo_initialize(void)
 {
-	int					n,k,vertex_cnt,index_cnt,
-						vertex_mem_sz,liq_div_count;
+	int					n,k,vertex_cnt,index_cnt,stride,
+						liq_div_count;
 	bool				shader_on;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
@@ -252,18 +222,18 @@ bool view_map_vbo_initialize(void)
 			// get vertex count
 
 		vertex_cnt=index_cnt;
-
-		vertex_mem_sz=(vertex_cnt*(3+2+2))*sizeof(float);
+		
+		stride=(3+2+2)*sizeof(float);			// 3 vertex, 2 uv, 2 light map uv
 		if (shader_on) {
-			vertex_mem_sz+=((vertex_cnt*(3+3))*sizeof(float));		// normals and tangents
+			stride+=((3+3)*sizeof(float));		// 3 tangent, 3 normal
 		}
 		else {
-			vertex_mem_sz+=((vertex_cnt*4)*sizeof(unsigned char));	// colors
+			stride+=(4*sizeof(unsigned char));	// 4 colors
 		}
 
 			// create the VBO
 
-		view_create_mesh_liquid_vertex_object(&mesh->vbo,vertex_cnt,vertex_mem_sz,index_cnt);
+		view_create_mesh_liquid_vertex_object(&mesh->vbo,vertex_cnt,stride,index_cnt);
 
 		if (!view_map_vbo_initialize_mesh(mesh)) return(FALSE);
 		
@@ -286,17 +256,17 @@ bool view_map_vbo_initialize(void)
 		index_cnt=(liq_div_count+1)*2;				// strip drawing, so only one per vertex
 		vertex_cnt=(liq_div_count+1)*2;
 
-		vertex_mem_sz=(vertex_cnt*(3+2+2))*sizeof(float);
+		stride=(3+2+2)*sizeof(float);				// 3 vertex, 2 uv, 2 light map uv
 		if (shader_on) {
-			vertex_mem_sz+=((vertex_cnt*(3+3))*sizeof(float));		// normals and tangents
+			stride+=((3+3)*sizeof(float));			// 3 tangent, 3 normal
 		}
 		else {
-			vertex_mem_sz+=((vertex_cnt*4)*sizeof(unsigned char));	// colors
+			stride+=(4*sizeof(unsigned char));		// 4 colors
 		}
 
 			// create the liquid
 
-		view_create_mesh_liquid_vertex_object(&liq->vbo,vertex_cnt,vertex_mem_sz,index_cnt);
+		view_create_mesh_liquid_vertex_object(&liq->vbo,vertex_cnt,stride,index_cnt);
 
 			// initialize the liquid
 
@@ -344,9 +314,9 @@ void view_map_vbo_rebuild_mesh(map_mesh_type *mesh)
 {
 	int					n,k;
 	float				x_shift_offset,y_shift_offset;
-	float				*pv,*pt,*pn,*pp;
+	float				*pf;
 	unsigned char		ur,ug,ub;
-	unsigned char		*vertex_ptr,*pc,*pc2;
+	unsigned char		*vertex_ptr,*vp,*pc,*pc2;
 	bool				shader_on,only_ambient,skip;
 	d3pnt				*pnt;
 	d3col				col;
@@ -370,12 +340,7 @@ void view_map_vbo_rebuild_mesh(map_mesh_type *mesh)
 			}
 		}
 
-		pv=(float*)vertex_ptr;
-		
-		if (shader_on) {
-			pt=(float*)(vertex_ptr+((mesh->vbo.vertex_count*(3+2+2))*sizeof(float)));
-			pn=(float*)(vertex_ptr+((mesh->vbo.vertex_count*(3+3+2+2))*sizeof(float)));
-		}
+		vp=vertex_ptr;
 
 		poly=mesh->polys;
 		
@@ -386,19 +351,23 @@ void view_map_vbo_rebuild_mesh(map_mesh_type *mesh)
 			for (k=0;k!=poly->ptsz;k++) {
 			
 				pnt=&mesh->vertexes[poly->v[k]];
+				
+				pf=(float*)vp;
 
-				*pv++=(float)pnt->x;
-				*pv++=(float)pnt->y;
-				*pv++=(float)pnt->z;
+				*pf++=(float)pnt->x;
+				*pf++=(float)pnt->y;
+				*pf++=(float)pnt->z;
 				
 				if (shader_on) {
-					*pt++=poly->tangent_space.tangent.x;
-					*pt++=poly->tangent_space.tangent.y;
-					*pt++=poly->tangent_space.tangent.z;
-					*pn++=poly->tangent_space.normal.x;
-					*pn++=poly->tangent_space.normal.y;
-					*pn++=poly->tangent_space.normal.z;
+					*pf++=poly->tangent_space.tangent.x;
+					*pf++=poly->tangent_space.tangent.y;
+					*pf++=poly->tangent_space.tangent.z;
+					*pf++=poly->tangent_space.normal.x;
+					*pf++=poly->tangent_space.normal.y;
+					*pf++=poly->tangent_space.normal.z;
 				}
+				
+				vp+=mesh->vbo.vertex_stride;
 			}
 
 			poly++;
@@ -425,7 +394,7 @@ void view_map_vbo_rebuild_mesh(map_mesh_type *mesh)
 
 			// only shift main UVs (not light mapped ones)
 
-		pp=(float*)(vertex_ptr+((mesh->vbo.vertex_count*3)*sizeof(float)));
+		vp=vertex_ptr;
 		
 		poly=mesh->polys;
 
@@ -435,8 +404,12 @@ void view_map_vbo_rebuild_mesh(map_mesh_type *mesh)
 			y_shift_offset=poly->draw.y_shift_offset;
 
 			for (k=0;k!=poly->ptsz;k++) {
-				*pp++=poly->main_uv.x[k]+x_shift_offset;
-				*pp++=poly->main_uv.y[k]+y_shift_offset;
+				pf=(float*)vp;
+				
+				*pf++=poly->main_uv.x[k]+x_shift_offset;
+				*pf=poly->main_uv.y[k]+y_shift_offset;
+				
+				vp+=mesh->vbo.vertex_stride;
 			}
 
 			poly++;
@@ -491,7 +464,7 @@ void view_map_vbo_rebuild_mesh(map_mesh_type *mesh)
 				}
 			}
 
-			pc=vertex_ptr+(((mesh->vbo.vertex_count*(3+2+2))*sizeof(float)));
+			vp=vertex_ptr;
 		
 				// colors when only ambient lighting
 				
@@ -504,10 +477,15 @@ void view_map_vbo_rebuild_mesh(map_mesh_type *mesh)
 				ub=(unsigned char)(col.b*255.0f);
 
 				for (n=0;n!=mesh->vbo.index_count;n++) {
+				
+					pc=vp+(7*sizeof(float));
+					
 					*pc++=ur;
 					*pc++=ug;
 					*pc++=ub;
 					*pc++=0xFF;
+					
+					vp+=mesh->vbo.vertex_stride;
 				}
 			}
 			
@@ -532,11 +510,16 @@ void view_map_vbo_rebuild_mesh(map_mesh_type *mesh)
 				for (n=0;n!=mesh->npoly;n++) {
 			
 					for (k=0;k!=poly->ptsz;k++) {
+					
+						pc=vp+(7*sizeof(float));
 						pc2=mesh->draw.colors_cache+(poly->v[k]*3);
+						
 						*pc++=*pc2++;
 						*pc++=*pc2++;
 						*pc++=*pc2;
 						*pc++=0xFF;
+						
+						vp+=mesh->vbo.vertex_stride;
 					}
 
 					poly++;

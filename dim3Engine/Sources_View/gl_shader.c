@@ -66,7 +66,7 @@ void gl_shader_draw_start(void) {}
 void gl_shader_draw_reset_normal_tangent_attrib(void) {}
 void gl_shader_draw_end(void) {}
 void gl_shader_texture_override(GLuint gl_id,float alpha) {}
-void gl_shader_draw_execute(int core_shader_group,texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,view_light_list_type *light_list,int tangent_offset,int normal_offset) {}
+void gl_shader_draw_execute(int core_shader_group,texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,view_light_list_type *light_list,int tangent_offset,int normal_offset,int stride) {}
 
 #else
 
@@ -569,7 +569,7 @@ void gl_shader_set_poly_variables(shader_type *shader,float alpha)
 	}
 }
 
-void gl_shader_set_tangent_normal_array(shader_type *shader,int tangent_offset,int normal_offset)
+void gl_shader_set_tangent_normal_array(shader_type *shader,int tangent_offset,int normal_offset,int stride)
 {
 		// tangent array
 		
@@ -583,7 +583,7 @@ void gl_shader_set_tangent_normal_array(shader_type *shader,int tangent_offset,i
 			
 		if (shader->var_values.tangent_offset!=tangent_offset) {
 			shader->var_values.tangent_offset=tangent_offset;
-			glVertexAttribPointerARB(shader->var_locs.dim3VertexTangent,3,GL_FLOAT,0,0,(void*)tangent_offset);
+			glVertexAttribPointerARB(shader->var_locs.dim3VertexTangent,3,GL_FLOAT,GL_FALSE,stride,(void*)tangent_offset);
 		}
 	}
 	
@@ -599,7 +599,7 @@ void gl_shader_set_tangent_normal_array(shader_type *shader,int tangent_offset,i
 			
 		if (shader->var_values.normal_offset!=normal_offset) {
 			shader->var_values.normal_offset=normal_offset;
-			glVertexAttribPointerARB(shader->var_locs.dim3VertexNormal,3,GL_FLOAT,0,0,(void*)normal_offset);
+			glVertexAttribPointerARB(shader->var_locs.dim3VertexNormal,3,GL_FLOAT,GL_FALSE,stride,(void*)normal_offset);
 		}
 	}
 }
@@ -848,7 +848,7 @@ void gl_shader_texture_override(GLuint gl_id,float alpha)
       
 ======================================================= */
 
-void gl_shader_draw_execute(int core_shader_group,texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,view_light_list_type *light_list,int tangent_offset,int normal_offset)
+void gl_shader_draw_execute(int core_shader_group,texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,view_light_list_type *light_list,int tangent_offset,int normal_offset,int stride)
 {
 	bool						is_core;
 	shader_type					*shader;
@@ -898,7 +898,7 @@ void gl_shader_draw_execute(int core_shader_group,texture_type *texture,int txt_
 	
 		// tangent and normal arrays
 		
-	gl_shader_set_tangent_normal_array(shader,tangent_offset,normal_offset);
+	gl_shader_set_tangent_normal_array(shader,tangent_offset,normal_offset,stride);
 	
 		// textures and per-texture variables
 		

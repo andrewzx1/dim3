@@ -214,15 +214,15 @@ void render_transparent_mesh_normal(void)
 			view_bind_mesh_liquid_vertex_object(&mesh->vbo);
 			view_bind_mesh_liquid_index_object(&mesh->vbo);
 			
-			glVertexPointer(3,GL_FLOAT,0,(GLvoid*)0);
+			glVertexPointer(3,GL_FLOAT,mesh->vbo.vertex_stride,(GLvoid*)0);
 
 			glClientActiveTexture(GL_TEXTURE1);
-			glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)((mesh->vbo.vertex_count*3)*sizeof(float)));
+			glTexCoordPointer(2,GL_FLOAT,mesh->vbo.vertex_stride,(GLvoid*)(3*sizeof(float)));
 
 			glClientActiveTexture(GL_TEXTURE0);
-			glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)((mesh->vbo.vertex_count*(3+2))*sizeof(float)));
+			glTexCoordPointer(2,GL_FLOAT,mesh->vbo.vertex_stride,(GLvoid*)(5*sizeof(float)));
 
-			glColorPointer(4,GL_UNSIGNED_BYTE,0,(GLvoid*)((mesh->vbo.vertex_count*(3+2+2))*sizeof(float)));
+			glColorPointer(4,GL_UNSIGNED_BYTE,mesh->vbo.vertex_stride,(GLvoid*)(7*sizeof(float)));
 		}
 
 			// textures
@@ -252,11 +252,7 @@ void render_transparent_mesh_normal(void)
 
 		gl_texture_transparent_light_map_set(gl_id,lmap_gl_id,1.0f);
 		
-		#ifndef D3_OPENGL_ES
-			glDrawRangeElements(GL_TRIANGLE_FAN,poly->vbo.index_min,poly->vbo.index_max,poly->ptsz,GL_UNSIGNED_SHORT,(GLvoid*)poly->vbo.index_offset);
-		#else
-			glDrawElements(GL_TRIANGLE_FAN,poly->ptsz,GL_UNSIGNED_SHORT,(GLvoid*)poly->vbo.index_offset);
-		#endif
+		glDrawElements(GL_TRIANGLE_FAN,poly->ptsz,GL_UNSIGNED_SHORT,(GLvoid*)poly->vbo.index_offset);
 		
 		view.count.mesh_poly++;
 	}
@@ -280,7 +276,7 @@ void render_transparent_mesh_normal(void)
 void render_transparent_mesh_shader(void)
 {
 	int						n,mesh_idx,cur_mesh_idx,
-							frame,tangent_offset,normal_offset;
+							frame;
 	bool					in_additive;
 	texture_type			*texture;
 	map_mesh_type			*mesh;
@@ -315,18 +311,15 @@ void render_transparent_mesh_shader(void)
 			view_bind_mesh_liquid_vertex_object(&mesh->vbo);
 			view_bind_mesh_liquid_index_object(&mesh->vbo);
 			
-			glVertexPointer(3,GL_FLOAT,0,(GLvoid*)0);
+			glVertexPointer(3,GL_FLOAT,mesh->vbo.vertex_stride,(GLvoid*)0);
 
 			glClientActiveTexture(GL_TEXTURE1);
-			glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)((mesh->vbo.vertex_count*(3+2))*sizeof(float)));
+			glTexCoordPointer(2,GL_FLOAT,mesh->vbo.vertex_stride,(GLvoid*)(5*sizeof(float)));
 		
 			glClientActiveTexture(GL_TEXTURE0);
-			glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)((mesh->vbo.vertex_count*3)*sizeof(float)));
+			glTexCoordPointer(2,GL_FLOAT,mesh->vbo.vertex_stride,(GLvoid*)(3*sizeof(float)));
 			
 			gl_shader_draw_reset_normal_tangent_attrib();
-			
-			tangent_offset=(mesh->vbo.vertex_count*(3+2+2))*sizeof(float);
-			normal_offset=(mesh->vbo.vertex_count*(3+3+2+2))*sizeof(float);
 		}
 		
 			// textures
@@ -346,13 +339,9 @@ void render_transparent_mesh_shader(void)
 			// draw the polygon
 
 		gl_lights_build_poly_light_list(mesh_idx,poly,&light_list);
-		gl_shader_draw_execute(core_shader_group_map,texture,poly->txt_idx,frame,poly->lmap_txt_idx,1.0f,&light_list,tangent_offset,normal_offset);
+		gl_shader_draw_execute(core_shader_group_map,texture,poly->txt_idx,frame,poly->lmap_txt_idx,1.0f,&light_list,(7*sizeof(float)),(10*sizeof(float)),mesh->vbo.vertex_stride);
 
-		#ifndef D3_OPENGL_ES
-			glDrawRangeElements(GL_TRIANGLE_FAN,poly->vbo.index_min,poly->vbo.index_max,poly->ptsz,GL_UNSIGNED_SHORT,(GLvoid*)poly->vbo.index_offset);
-		#else
-			glDrawElements(GL_TRIANGLE_FAN,poly->ptsz,GL_UNSIGNED_SHORT,(GLvoid*)poly->vbo.index_offset);
-		#endif
+		glDrawElements(GL_TRIANGLE_FAN,poly->ptsz,GL_UNSIGNED_SHORT,(GLvoid*)poly->vbo.index_offset);
 		
 		view.count.mesh_poly++;
 	}
@@ -411,13 +400,13 @@ void render_transparent_mesh_glow(void)
 			view_bind_mesh_liquid_vertex_object(&mesh->vbo);
 			view_bind_mesh_liquid_index_object(&mesh->vbo);
 			
-			glVertexPointer(3,GL_FLOAT,0,(GLvoid*)0);
+			glVertexPointer(3,GL_FLOAT,mesh->vbo.vertex_stride,(GLvoid*)0);
 
 			glClientActiveTexture(GL_TEXTURE1);
-			glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)((map.mesh.vbo_vertex_count*3)*sizeof(float)));
+			glTexCoordPointer(2,GL_FLOAT,mesh->vbo.vertex_stride,(GLvoid*)(3*sizeof(float)));
 
 			glClientActiveTexture(GL_TEXTURE0);
-			glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)((map.mesh.vbo_vertex_count*3)*sizeof(float)));
+			glTexCoordPointer(2,GL_FLOAT,mesh->vbo.vertex_stride,(GLvoid*)(3*sizeof(float)));
 		}
 		
 			// textures
@@ -429,11 +418,7 @@ void render_transparent_mesh_glow(void)
 
 		gl_texture_glow_set(texture->frames[frame].bitmap.gl_id,texture->frames[frame].glowmap.gl_id,texture->glow.current_color);
 		
-		#ifndef D3_OPENGL_ES
-			glDrawRangeElements(GL_TRIANGLE_FAN,poly->vbo.index_min,poly->vbo.index_max,poly->ptsz,GL_UNSIGNED_SHORT,(GLvoid*)poly->vbo.index_offset);
-		#else
-			glDrawElements(GL_TRIANGLE_FAN,poly->ptsz,GL_UNSIGNED_SHORT,(GLvoid*)poly->vbo.index_offset);
-		#endif
+		glDrawElements(GL_TRIANGLE_FAN,poly->ptsz,GL_UNSIGNED_SHORT,(GLvoid*)poly->vbo.index_offset);
 		
 		view.count.mesh_poly++;
 	}

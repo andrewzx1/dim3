@@ -196,7 +196,7 @@ and can be sold or given away.
 //
 
 typedef struct		{
-						int									vertex_count,vertex_mem_sz,
+						int									vertex_count,vertex_mem_sz,vertex_stride,
 															index_count,index_mem_sz;
 						GLuint								vertex,index;
 					} map_vbo_type;
@@ -236,7 +236,7 @@ typedef struct		{
 					} map_mesh_poly_uv_type;
 
 typedef struct		{
-						int									index_offset,index_min,index_max;
+						int									index_offset;
 					} map_mesh_poly_vbo_type;
 
 typedef struct		{
