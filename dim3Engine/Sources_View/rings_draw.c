@@ -71,10 +71,11 @@ void ring_draw(effect_type *effect,int count)
 	int						n,px,py,pz,nvertex,
 							life_tick;
 	float					mx,my,mz,fx,fy,fz,
+							vx[4],vy[4],vz[4],tx[4],ty[4],
 							outer_sz,inner_sz,
 							color_dif,alpha,gx,gy,g_size,
 							f_count,f_tick;
-	float					*vl,*vt,*vertex_ptr,*vertex_array,*coord_array;
+	float					*pf,*vertex_ptr;
 	double					rd,rd2;
 	d3col					col;
 	iface_ring_type			*ring;
@@ -145,7 +146,7 @@ void ring_draw(effect_type *effect,int count)
 		// effect vbos are dynamic, so it'll auto construct
 		// the first time called
 
-	nvertex=36*4;
+	nvertex=36*6;
 
 	view_create_effect_vertex_object(effect,((nvertex*(3+2))*sizeof(float)));
 
@@ -158,80 +159,125 @@ void ring_draw(effect_type *effect,int count)
 
 		// set ring arrays
 
-	vl=vertex_array=vertex_ptr;
-	vt=coord_array=vertex_ptr+(nvertex*3);
+	pf=vertex_ptr;
 
 	for (n=0;n!=360;n+=10) {
 		rd=(double)n*ANG_to_RAD;
 		rd2=((double)(n+10))*ANG_to_RAD;
 
-			// quad 1
+			// vertex 0
 
 		fx=(float)cos(rd)*outer_sz;
 		fy=-((float)sin(rd)*outer_sz);
 		fz=0.0f;
 
-		*vt++=gx+(g_size*((fx+outer_sz)/(outer_sz*2.0f)));
-		*vt++=gy+(g_size*((fy+outer_sz)/(outer_sz*2.0f)));
-		
 		matrix_vertex_multiply(&mat_x,&fx,&fy,&fz);
 		matrix_vertex_multiply(&mat_z,&fx,&fy,&fz);
 		matrix_vertex_multiply(&mat_y,&fx,&fy,&fz);
 
-		*vl++=mx+fx;
-		*vl++=my+fy;
-		*vl++=mz+fz;
+		vx[0]=mx+fx;
+		vy[0]=my+fy;
+		vz[0]=mz+fz;
 
-			// quad 4
+		tx[0]=gx+(g_size*((fx+outer_sz)/(outer_sz*2.0f)));
+		ty[0]=gy+(g_size*((fy+outer_sz)/(outer_sz*2.0f)));
 
-		fx=(float)cos(rd)*inner_sz;
-		fy=-((float)sin(rd)*inner_sz);
-		fz=0.0f;
-
-		*vt++=gx+(g_size*((fx+outer_sz)/(outer_sz*2.0f)));
-		*vt++=gy+(g_size*((fy+outer_sz)/(outer_sz*2.0f)));
-		
-		matrix_vertex_multiply(&mat_x,&fx,&fy,&fz);
-		matrix_vertex_multiply(&mat_z,&fx,&fy,&fz);
-		matrix_vertex_multiply(&mat_y,&fx,&fy,&fz);
-
-		*vl++=mx+fx;
-		*vl++=my+fy;
-		*vl++=mz+fz;
-
-			// quad 2
+			// vertex 1
 
 		fx=(float)cos(rd2)*outer_sz;
 		fy=-((float)sin(rd2)*outer_sz);
 		fz=0.0f;
-
-		*vt++=gx+(g_size*((fx+outer_sz)/(outer_sz*2.0f)));
-		*vt++=gy+(g_size*((fy+outer_sz)/(outer_sz*2.0f)));
 		
 		matrix_vertex_multiply(&mat_x,&fx,&fy,&fz);
 		matrix_vertex_multiply(&mat_z,&fx,&fy,&fz);
 		matrix_vertex_multiply(&mat_y,&fx,&fy,&fz);
 
-		*vl++=mx+fx;
-		*vl++=my+fy;
-		*vl++=mz+fz;
+		vx[1]=mx+fx;
+		vy[1]=my+fy;
+		vz[1]=mz+fz;
 
-			// quad 3
+		tx[1]=gx+(g_size*((fx+outer_sz)/(outer_sz*2.0f)));
+		ty[1]=gy+(g_size*((fy+outer_sz)/(outer_sz*2.0f)));
+
+			// vertex 2
 
 		fx=(float)cos(rd2)*inner_sz;
 		fy=-((float)sin(rd2)*inner_sz);
 		fz=0.0f;
 
-		*vt++=gx+(g_size*((fx+outer_sz)/(outer_sz*2.0f)));
-		*vt++=gy+(g_size*((fy+outer_sz)/(outer_sz*2.0f)));
-		
 		matrix_vertex_multiply(&mat_x,&fx,&fy,&fz);
 		matrix_vertex_multiply(&mat_z,&fx,&fy,&fz);
 		matrix_vertex_multiply(&mat_y,&fx,&fy,&fz);
 
-		*vl++=mx+fx;
-		*vl++=my+fy;
-		*vl++=mz+fz;
+		vx[2]=mx+fx;
+		vy[2]=my+fy;
+		vz[2]=mz+fz;
+
+		tx[2]=gx+(g_size*((fx+outer_sz)/(outer_sz*2.0f)));
+		ty[2]=gy+(g_size*((fy+outer_sz)/(outer_sz*2.0f)));
+		
+			// vertex 3
+
+		fx=(float)cos(rd)*inner_sz;
+		fy=-((float)sin(rd)*inner_sz);
+		fz=0.0f;
+
+		matrix_vertex_multiply(&mat_x,&fx,&fy,&fz);
+		matrix_vertex_multiply(&mat_z,&fx,&fy,&fz);
+		matrix_vertex_multiply(&mat_y,&fx,&fy,&fz);
+
+		vx[3]=mx+fx;
+		vy[3]=my+fy;
+		vz[3]=mz+fz;
+
+		tx[3]=gx+(g_size*((fx+outer_sz)/(outer_sz*2.0f)));
+		ty[3]=gy+(g_size*((fy+outer_sz)/(outer_sz*2.0f)));
+		
+			// 0-1-3 trig
+
+		*pf++=vx[0];
+		*pf++=vy[0];
+		*pf++=vz[0];
+
+		*pf++=tx[0];
+		*pf++=ty[0];
+
+		*pf++=vx[1];
+		*pf++=vy[1];
+		*pf++=vz[1];
+
+		*pf++=tx[1];
+		*pf++=ty[1];
+
+		*pf++=vx[3];
+		*pf++=vy[3];
+		*pf++=vz[3];
+
+		*pf++=tx[3];
+		*pf++=ty[3];
+
+			// 1-2-3 trig
+
+		*pf++=vx[1];
+		*pf++=vy[1];
+		*pf++=vz[1];
+
+		*pf++=tx[1];
+		*pf++=ty[1];
+
+		*pf++=vx[2];
+		*pf++=vy[2];
+		*pf++=vz[2];
+
+		*pf++=tx[2];
+		*pf++=ty[2];
+
+		*pf++=vx[3];
+		*pf++=vy[3];
+		*pf++=vz[3];
+
+		*pf++=tx[3];
+		*pf++=ty[3];
 	}
 
 		// unmap vertex object
@@ -259,12 +305,9 @@ void ring_draw(effect_type *effect,int count)
 	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_FALSE);
 
-	glVertexPointer(3,GL_FLOAT,0,(GLvoid*)0);
-	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)((nvertex*3)*sizeof(float)));
-
-	for (n=0;n<nvertex;n+=4) {
-		glDrawArrays(GL_TRIANGLE_STRIP,n,4);
-	}
+	glVertexPointer(3,GL_FLOAT,((3+2)*sizeof(float)),(GLvoid*)0);
+	glTexCoordPointer(2,GL_FLOAT,((3+2)*sizeof(float)),(GLvoid*)(3*sizeof(float)));
+	glDrawArrays(GL_TRIANGLES,0,nvertex);
 	
 	glDepthMask(GL_TRUE);
 	

@@ -33,6 +33,12 @@ and can be sold or given away.
 #include "ui_common.h"
 #include "interface.h"
 
+#define kModelPropertyMeshAdd				0
+#define kModelPropertyAnimateAdd			1
+#define kModelPropertyPoseAdd				2
+#define kModelPropertyBoneAdd				3
+#define kModelPropertyHitBoxAdd				4
+
 extern model_type				model;
 extern model_draw_setup			draw_setup;
 extern animator_state_type		state;
@@ -81,7 +87,7 @@ void item_palette_fill(void)
 
 		// meshes
 
-	list_palette_add_header_count(&item_palette,item_mesh,"Meshes",model.nmesh);
+	list_palette_add_header_button(&item_palette,kModelPropertyMeshAdd,"Meshes",list_button_plus);
 
 	for (n=0;n!=model.nmesh;n++) {
 		list_palette_add_item(&item_palette,item_mesh,n,model.meshes[n].name,((state.cur_item==item_mesh)&&(state.cur_mesh_idx==n)),FALSE);
@@ -89,7 +95,7 @@ void item_palette_fill(void)
 
 		// animations
 
-	list_palette_add_header_count(&item_palette,item_animate,"Animations",model.nanimate);
+	list_palette_add_header_button(&item_palette,kModelPropertyAnimateAdd,"Animations",list_button_plus);
 	list_palette_sort_mark_start(&item_palette);
 
 	for (n=0;n!=model.nanimate;n++) {
@@ -100,7 +106,7 @@ void item_palette_fill(void)
 
 		// poses
 
-	list_palette_add_header_count(&item_palette,item_pose,"Poses",model.npose);
+	list_palette_add_header_button(&item_palette,kModelPropertyPoseAdd,"Poses",list_button_plus);
 	list_palette_add_item(&item_palette,item_neutral_pose,0,"[Neutral]",((state.cur_item==item_neutral_pose)&&(state.cur_pose_idx==-1)),FALSE);
 
 	list_palette_sort_mark_start(&item_palette);
@@ -113,7 +119,7 @@ void item_palette_fill(void)
 
 		// bones
 
-	list_palette_add_header_count(&item_palette,item_bone,"Bones",model.nbone);
+	list_palette_add_header_button(&item_palette,kModelPropertyBoneAdd,"Bones",list_button_plus);
 
 	list_palette_sort_mark_start(&item_palette);
 
@@ -128,7 +134,7 @@ void item_palette_fill(void)
 
 		// hit boxes
 
-	list_palette_add_header_count(&item_palette,item_hit_box,"Hit Boxes",model.nhit_box);
+	list_palette_add_header_button(&item_palette,kModelPropertyHitBoxAdd,"Hit Boxes",list_button_plus);
 	list_palette_sort_mark_start(&item_palette);
 
 	for (n=0;n!=model.nhit_box;n++) {
@@ -251,12 +257,45 @@ bool item_palette_click(d3pnt *pnt,bool double_click)
 		if (old_open!=list_palette_open) item_palette_state_rebuild();
 		return(TRUE);
 	}
-
-	if (item_palette.item_idx==-1) return(TRUE);
 	
 		// turn off preferences
 
 	state.in_preference=FALSE;
+
+		// adding
+
+	switch (item_palette.item_id) {
+
+		case kModelPropertyMeshAdd:
+			model_piece_add_mesh();
+			main_wind_draw();
+			return(TRUE);
+
+		case kModelPropertyAnimateAdd:
+			model_piece_add_animate();
+			main_wind_draw();
+			return(TRUE);
+
+		case kModelPropertyPoseAdd:
+			model_piece_add_pose();
+			main_wind_draw();
+			return(TRUE);
+
+		case kModelPropertyBoneAdd:
+			model_piece_add_bone();
+			main_wind_draw();
+			return(TRUE);
+
+		case kModelPropertyHitBoxAdd:
+			model_piece_add_hit_box();
+            main_wind_draw();
+			return(TRUE);
+
+	}
+
+		// regular clicks
+
+	if (item_palette.item_idx==-1) return(TRUE);
 
 		// handle click
 

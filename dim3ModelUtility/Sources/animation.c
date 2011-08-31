@@ -136,8 +136,9 @@ void model_animate_delete(model_type *model,int animate_idx)
 
 int model_animate_pose_insert(model_type *model,int animate_idx,int animate_pose_idx,int pose_idx)
 {
-	int					k,t,npose,sz;
-	model_animate_type	*animate;
+	int						k,t,npose,sz;
+	model_animate_type		*animate;
+	model_pose_move_type	*pose_move;
 	
 	animate=&model->animates[animate_idx];
 	
@@ -155,57 +156,66 @@ int model_animate_pose_insert(model_type *model,int animate_idx,int animate_pose
     
         k=animate_pose_idx+1;
     }
-		
-	animate->pose_moves[k].pose_idx=pose_idx;
-	animate->pose_moves[k].msec=100;
-	
-	animate->pose_moves[k].sway.z=0;
-	animate->pose_moves[k].sway.x=0;
-	animate->pose_moves[k].sway.y=0;
-	
-	animate->pose_moves[k].mov.z=0;
-	animate->pose_moves[k].mov.x=0;
-	animate->pose_moves[k].mov.y=0;
- 	
-	animate->pose_moves[k].sound.name[0]=0x0;
-	animate->pose_moves[k].sound.pitch=1.0f;
-	animate->pose_moves[k].sound.no_position=FALSE;
-	
- 	animate->pose_moves[k].flash.intensity=0;
- 	animate->pose_moves[k].flash.flash_msec=0;
- 	animate->pose_moves[k].flash.fade_msec=0;
- 	animate->pose_moves[k].flash.intensity=0;
-	animate->pose_moves[k].flash.exponent=1.0f;
- 	animate->pose_moves[k].flash.col.r=1.0f;
- 	animate->pose_moves[k].flash.col.g=1.0f;
- 	animate->pose_moves[k].flash.col.b=1.0f;
-	
-	animate->pose_moves[k].shake.distance=0;
-	animate->pose_moves[k].shake.size=0;
-	animate->pose_moves[k].shake.life_msec=0;
 
-  	animate->pose_moves[k].particle.count=0;
+	pose_move=&animate->pose_moves[k];
+		
+	pose_move->pose_idx=pose_idx;
+	pose_move->msec=100;
+	
+	pose_move->sway.z=0;
+	pose_move->sway.x=0;
+	pose_move->sway.y=0;
+	
+	pose_move->mov.z=0;
+	pose_move->mov.x=0;
+	pose_move->mov.y=0;
+ 	
+	pose_move->sound.bone_idx=-1;
+	pose_move->sound.name[0]=0x0;
+	pose_move->sound.pitch=1.0f;
+	pose_move->sound.no_position=FALSE;
+
+	pose_move->mesh_fade.mesh_idx=-1;
+	pose_move->mesh_fade.fade_in_msec=0;
+	pose_move->mesh_fade.fade_life_msec=0;
+	pose_move->mesh_fade.fade_out_msec=0;
+	
+	pose_move->flash.bone_idx=-1;
+ 	pose_move->flash.intensity=0;
+ 	pose_move->flash.flash_msec=0;
+ 	pose_move->flash.fade_msec=0;
+ 	pose_move->flash.intensity=0;
+	pose_move->flash.exponent=1.0f;
+ 	pose_move->flash.col.r=1.0f;
+ 	pose_move->flash.col.g=1.0f;
+ 	pose_move->flash.col.b=1.0f;
+	
+	pose_move->shake.distance=0;
+	pose_move->shake.size=0;
+	pose_move->shake.life_msec=0;
+
+  	pose_move->particle.count=0;
 
 	for (t=0;t!=max_model_animate_particle;t++) {
-		animate->pose_moves[k].particle.particles[t].bone_idx=-1;
-		animate->pose_moves[k].particle.particles[t].name[0]=0x0;
-		animate->pose_moves[k].particle.particles[t].motion=FALSE;
-		animate->pose_moves[k].particle.particles[t].motion_factor=1.0f;
-		animate->pose_moves[k].particle.particles[t].stick=FALSE;
-		animate->pose_moves[k].particle.particles[t].slop.x=0;
-		animate->pose_moves[k].particle.particles[t].slop.y=0;
-		animate->pose_moves[k].particle.particles[t].slop.z=0;
+		pose_move->particle.particles[t].bone_idx=-1;
+		pose_move->particle.particles[t].name[0]=0x0;
+		pose_move->particle.particles[t].motion=FALSE;
+		pose_move->particle.particles[t].motion_factor=1.0f;
+		pose_move->particle.particles[t].stick=FALSE;
+		pose_move->particle.particles[t].slop.x=0;
+		pose_move->particle.particles[t].slop.y=0;
+		pose_move->particle.particles[t].slop.z=0;
 	}
 
-  	animate->pose_moves[k].ring.count=0;
+  	pose_move->ring.count=0;
 
 	for (t=0;t!=max_model_animate_ring;t++) {
-		animate->pose_moves[k].ring.rings[t].bone_idx=-1;
-		animate->pose_moves[k].ring.rings[t].name[0]=0x0;
-		animate->pose_moves[k].ring.rings[t].angle=FALSE;
-		animate->pose_moves[k].ring.rings[t].slop.x=0;
-		animate->pose_moves[k].ring.rings[t].slop.y=0;
-		animate->pose_moves[k].ring.rings[t].slop.z=0;
+		pose_move->ring.rings[t].bone_idx=-1;
+		pose_move->ring.rings[t].name[0]=0x0;
+		pose_move->ring.rings[t].angle=FALSE;
+		pose_move->ring.rings[t].slop.x=0;
+		pose_move->ring.rings[t].slop.y=0;
+		pose_move->ring.rings[t].slop.z=0;
 	}
 
 	animate->npose_move++;

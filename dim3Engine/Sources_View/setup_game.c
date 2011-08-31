@@ -66,7 +66,8 @@ and can be sold or given away.
 #define ctrl_debug_no_hud_id				72
 #define ctrl_debug_no_draw_weapon_id		73
 #define ctrl_debug_metrics_on_id			74
-#define ctrl_debug_disable_shaders_id		75
+#define ctrl_debug_ignore_fps_lock_id		75
+#define ctrl_debug_disable_shaders_id		76
 
 #define ctrl_tab_id							80
 
@@ -300,9 +301,9 @@ void setup_game_debug_pane(void)
 	int			x,y,control_y_add,control_y_sz;
 	
 	control_y_add=element_get_control_high();
-	control_y_sz=control_y_add*6;
+	control_y_sz=control_y_add*7;
 	
-	x=(int)(((float)iface.scale_x)*0.5f);
+	x=(int)(((float)iface.scale_x)*0.6f);
 	y=(iface.scale_y>>1)-(control_y_sz>>1);
 	
 	element_checkbox_add("Engine Windowed Mode (requires restart)",setup.window,ctrl_debug_engine_windowed_id,x,y,TRUE);
@@ -314,6 +315,8 @@ void setup_game_debug_pane(void)
 	element_checkbox_add("No Draw Weapon",setup.no_draw_weapon,ctrl_debug_no_draw_weapon_id,x,y,TRUE);
 	y+=control_y_add;
 	element_checkbox_add("Display Metrics",setup.metrics_on,ctrl_debug_metrics_on_id,x,y,TRUE);
+	y+=control_y_add;
+	element_checkbox_add("Ignore FPS Lock",setup.ignore_fps_lock,ctrl_debug_ignore_fps_lock_id,x,y,TRUE);
 	y+=control_y_add;
 	element_checkbox_add("Disable Shaders",setup.disable_shaders,ctrl_debug_disable_shaders_id,x,y,TRUE);
 }
@@ -782,6 +785,10 @@ void setup_game_handle_click(int id)
 
 		case ctrl_debug_metrics_on_id:
 			setup.metrics_on=element_get_value(ctrl_debug_metrics_on_id);
+			break;
+
+		case ctrl_debug_ignore_fps_lock_id:
+			setup.ignore_fps_lock=element_get_value(ctrl_debug_ignore_fps_lock_id);
 			break;
 
 		case ctrl_debug_disable_shaders_id:
