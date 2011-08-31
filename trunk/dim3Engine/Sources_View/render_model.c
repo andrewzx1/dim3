@@ -617,7 +617,7 @@ void render_model_transparent_normal(model_type *mdl,int mesh_idx,model_draw *dr
  	model_draw_mesh_type	*draw_mesh;
     texture_type			*texture;
 	model_material_type		*material;
-
+	
 	mesh=&mdl->meshes[mesh_idx];
 	draw_mesh=&draw->meshes[mesh_idx];
 
@@ -695,7 +695,7 @@ void render_model_transparent_shader(model_type *mdl,int mesh_idx,model_draw *dr
  	model_draw_mesh_type	*draw_mesh;
     texture_type			*texture;
 	model_material_type		*material;
-
+	
 	mesh=&mdl->meshes[mesh_idx];
 	draw_mesh=&draw->meshes[mesh_idx];
 
@@ -1010,11 +1010,11 @@ void render_model_opaque(model_draw *draw)
 	if (shader_on) gl_lights_build_model_light_list(mdl,draw,&light_list);
 
 		// draw opaque materials
-
+	
 	for (n=0;n!=mdl->nmesh;n++) {
 		if ((draw->render_mesh_mask&(0x1<<n))==0) continue;
 		if (!draw->meshes[n].has_opaque) continue;
-
+	
 			// create VBO for this mesh
 
 		if (!render_model_initialize_vertex_objects(mdl,n,draw)) return;
