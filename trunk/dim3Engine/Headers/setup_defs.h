@@ -157,7 +157,8 @@ typedef struct		{
 						bool						decal_on,lightmap_on,shadow_on,
 													always_run,toggle_run,invert_look,mouse_smooth,
 													music_on,window,window_editor,
-													no_hud,no_draw_weapon,metrics_on,disable_shaders;
+													no_hud,no_draw_weapon,metrics_on,
+													ignore_fps_lock,disable_shaders;
 						setup_path_type				path;
 						setup_screen_type			screen;
 						setup_axis_type				mouse,joystick;

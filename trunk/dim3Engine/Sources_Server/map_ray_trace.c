@@ -1376,3 +1376,35 @@ bool ray_trace_mesh_poly_plane_by_vector(int cnt,d3pnt *spt,d3vct *vct,d3pnt *hp
 	return(hits);
 }
 
+/* =======================================================
+
+      Ray Trace Plane
+      
+======================================================= */
+
+bool ray_trace_single_poly_hit(map_mesh_type *mesh,map_mesh_poly_type *poly,d3pnt *spt,d3pnt *ept)
+{
+	d3pnt			hpt;
+	d3vct			vct;
+
+		// rough bounds check
+		// list building is a little rough to quickly eliminate
+		// most meshes, so we'll still check it here just in case
+		// we can eliminate a easy mesh
+
+	if ((spt->x<poly->box.min.x) && (ept->x<poly->box.min.x)) return(FALSE);
+	if ((spt->x>poly->box.max.x) && (ept->x>poly->box.max.x)) return(FALSE);
+	if ((spt->y<poly->box.min.y) && (ept->y<poly->box.min.y)) return(FALSE);
+	if ((spt->y>poly->box.max.y) && (ept->y>poly->box.max.y)) return(FALSE);
+	if ((spt->z<poly->box.min.z) && (ept->z<poly->box.min.z)) return(FALSE);
+	if ((spt->z>poly->box.max.z) && (ept->z>poly->box.max.z)) return(FALSE);
+
+		// ray trace
+
+	vct.x=(float)(ept->x-spt->x);
+	vct.y=(float)(ept->y-spt->y);
+	vct.z=(float)(ept->z-spt->z);
+		
+	return(ray_trace_mesh_polygon(spt,&vct,&hpt,mesh,poly)!=-1.0f);
+}
+

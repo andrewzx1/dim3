@@ -33,11 +33,13 @@ and can be sold or given away.
 
 bool						audio_music_state_on;
 
-audio_music_song_type		audio_music_song,audio_music_alt_song;
+audio_music_song_type		audio_music_song,audio_music_alt_song,
+							audio_music_cache_songs[music_max_cache];
 
 extern int					audio_buffer_count;
 extern audio_buffer_type	audio_buffers[audio_max_buffer];
 
+extern map_type				map;
 extern setup_type			setup;
 
 /* =======================================================
@@ -91,7 +93,7 @@ void al_music_shutdown(void)
 
 /* =======================================================
 
-      Load MP3 and Pre-Cache
+      Load MP3
       
 ======================================================= */
 
@@ -184,12 +186,87 @@ short* al_music_load_mp3(char *name,float *f_sample_len,float *freq_factor,char 
 	return((short*)data);
 }
 
+/* =======================================================
+
+      Music Cache
+      
+======================================================= */
+
+bool al_music_load(char *name,audio_music_song_type *song,char *err_str)
+{
+	int						n,idx;
+	audio_music_song_type	*cache_song;
+
+		// any music?
+
+	if (name[0]==0x0) return(TRUE);
+
+		// in cache?
+
+	idx=-1;
+
+	for (n=0;n!=music_max_cache;n++) {
+		if (audio_music_cache_songs[n].data==NULL) {
+			if (idx!=-1) idx=n;				// remember the first blank item
+		}
+		else {
+			if (strcasecmp(name,audio_music_cache_songs[n].name)==0) {
+				if (song!=NULL) memmove(song,&audio_music_cache_songs[n],sizeof(audio_music_song_type));
+				return(TRUE);
+			}
+		}
+	}
+
+		// room to add to cache?
+
+	if (idx==-1) {
+		strcpy(err_str,"Music cache full");
+		return(FALSE);
+	}
+
+		// add to cache
+
+	cache_song=&audio_music_cache_songs[idx];
+
+	strcpy(cache_song->name,name);
+	cache_song->data=al_music_load_mp3(name,&cache_song->f_sample_len,&cache_song->freq_factor,err_str);
+	if (cache_song->data==NULL) return(FALSE);
+
+	if (song!=NULL) memmove(song,&audio_music_cache_songs[n],sizeof(audio_music_song_type));
+	return(TRUE);
+}
+
 void al_music_init_cache(void)
 {
+	int			n;
+	char		err_str[256];
+
+		// clear the cache
+
+	for (n=0;n!=music_max_cache;n++) {
+		al_music_initialize_song(&audio_music_cache_songs[n]);
+	}
+
+		// load in any pre-cached songs
+	
+	al_music_load(map.music.name,NULL,err_str);
+
+	for (n=0;n!=max_music_preload;n++) {
+		al_music_load(map.music.preload_name[n],NULL,err_str);
+	}
 }
 
 void al_music_release_cache(void)
 {
+	int			n;
+
+	for (n=0;n!=music_max_cache;n++) {
+		if (audio_music_cache_songs[n].data!=NULL) {
+			free(audio_music_cache_songs[n].data);
+			audio_music_cache_songs[n].name[0]=0x0;
+			audio_music_cache_songs[n].data=NULL;
+		}
+	}
 }
 
 /* =======================================================
@@ -200,20 +277,15 @@ void al_music_release_cache(void)
 
 bool al_open_music(audio_music_song_type *song,char *name,char *err_str)
 {
-		// have we already load this music?
+		// are we already playing this music?
 
 	if (song->data!=NULL) {
 		if (strcmp(song->name,name)==0) return(TRUE);
 	}
 
-		// load mp3
-		
-	if (song->data!=NULL) free(song->data);
+		// otherwise load it
 	
-	strcpy(song->name,name);
-	
-	song->data=al_music_load_mp3(name,&song->f_sample_len,&song->freq_factor,err_str);
-	return(song->data!=NULL);
+	return(al_music_load(name,song,err_str));
 }
 
 /* =======================================================

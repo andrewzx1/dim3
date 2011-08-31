@@ -254,7 +254,7 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 
 		// start progress
 		
-	progress_initialize(map.info.name,(20+max_map_texture));
+	progress_initialize(map.info.name,(21+max_map_texture));
 	
 	strcpy(current_map_name,map.info.name);		// remember for close
 	
@@ -372,6 +372,16 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 
 	particle_map_initialize();
 	group_move_clear_all();
+
+		// setup obscuring
+
+	progress_next();
+
+	if (!view_obscure_initialize()) {
+		progress_shutdown();
+		strcpy(err_str,"Out of memory");
+		return(FALSE);
+	}
 	
 		// reset rain
 		
@@ -570,6 +580,10 @@ void map_end(void)
 
 	gl_fs_shader_map_end();
 	gl_back_render_map_end();
+
+		// view obscuring
+
+	view_obscure_release();
 
 		// finish with sky, fog, rain
 

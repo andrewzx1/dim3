@@ -43,6 +43,12 @@ and can be sold or given away.
 #define audio_max_ambient						8
 
 //
+// music maximums
+//
+
+#define music_max_cache							10
+
+//
 // fade directions
 //
 
@@ -82,7 +88,7 @@ typedef struct		{
 						int						fade_mode,fade_start_tick,fade_msec,fade_next_msec,
 												volume,org_volume;
 						float					stream_pos,f_sample_len,freq_factor;
-						bool					playing,loop,paused;
+						bool					playing,loop,paused,in_cache;
 						char					name[name_str_len],fade_next_name[name_str_len];
 						short					*data;
 					} audio_music_song_type;

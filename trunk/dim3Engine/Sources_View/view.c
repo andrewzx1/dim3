@@ -507,7 +507,7 @@ void view_loop_draw(void)
 		// use raw ticks so it works through pauses
 		
 	raw_tick=game_time_get_raw();
-	if (raw_tick<view.time.draw_tick) return;
+	if ((!setup.ignore_fps_lock) && (raw_tick<view.time.draw_tick)) return;
 
 	view.time.draw_tick=raw_tick+view.time.draw_time;
 

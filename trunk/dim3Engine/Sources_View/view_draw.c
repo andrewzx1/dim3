@@ -252,6 +252,10 @@ void view_draw_scene_build(void)
 		
 	halo_draw_clear();
 	view_add_halos();
+
+		// do view obscuring
+
+	view_obscure_run();
 	
 		// compile all lights in map
 		

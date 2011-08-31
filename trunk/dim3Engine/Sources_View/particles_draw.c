@@ -128,7 +128,7 @@ int particle_fill_array_quad_single(float *vertex_ptr,int idx,int nvertex,int mx
 {
 	int					n,k;
 	float				fx,fy,fz,px[4],py[4],pz[4];
-	float				*pv,*pt;
+	float				*pf;
 	matrix_type			rot_mat;
 	
 		// if move angle, setup matrixes
@@ -151,8 +151,7 @@ int particle_fill_array_quad_single(float *vertex_ptr,int idx,int nvertex,int mx
 	
 		// fill particle arrays
 	
-	pv=vertex_ptr+(idx*3);
-	pt=vertex_ptr+(nvertex*3)+(idx*2);
+	pf=vertex_ptr+(idx*(3+2));
 	
 	for (n=0;n!=particle_count;n++) {
 	
@@ -177,33 +176,51 @@ int particle_fill_array_quad_single(float *vertex_ptr,int idx,int nvertex,int mx
 		
 		pps++;
 
-		*pv++=(px[0]+fx);
-		*pv++=(py[0]+fy);
-		*pv++=(pz[0]+fz);
-		
-		*pt++=gx;
-		*pt++=gy;
+			// 0-1-3
 
-		*pv++=(px[3]+fx);
-		*pv++=(py[3]+fy);
-		*pv++=(pz[3]+fz);
+		*pf++=(px[0]+fx);
+		*pf++=(py[0]+fy);
+		*pf++=(pz[0]+fz);
 		
-		*pt++=gx;
-		*pt++=gy+g_size;
+		*pf++=gx;
+		*pf++=gy;
 
-		*pv++=(px[1]+fx);
-		*pv++=(py[1]+fy);
-		*pv++=(pz[1]+fz);
+		*pf++=(px[1]+fx);
+		*pf++=(py[1]+fy);
+		*pf++=(pz[1]+fz);
 		
-		*pt++=gx+g_size;
-		*pt++=gy;
+		*pf++=gx+g_size;
+		*pf++=gy;
 
-		*pv++=(px[2]+fx);
-		*pv++=(py[2]+fy);
-		*pv++=(pz[2]+fz);
+		*pf++=(px[3]+fx);
+		*pf++=(py[3]+fy);
+		*pf++=(pz[3]+fz);
 		
-		*pt++=gx+g_size;
-		*pt++=gy+g_size;
+		*pf++=gx;
+		*pf++=gy+g_size;
+
+			// 1-2-3
+
+		*pf++=(px[1]+fx);
+		*pf++=(py[1]+fy);
+		*pf++=(pz[1]+fz);
+		
+		*pf++=gx+g_size;
+		*pf++=gy;
+
+		*pf++=(px[2]+fx);
+		*pf++=(py[2]+fy);
+		*pf++=(pz[2]+fz);
+		
+		*pf++=gx+g_size;
+		*pf++=gy+g_size;
+
+		*pf++=(px[3]+fx);
+		*pf++=(py[3]+fy);
+		*pf++=(pz[3]+fz);
+		
+		*pf++=gx;
+		*pf++=gy+g_size;
 
 			// change particle image
 		
@@ -219,7 +236,7 @@ int particle_fill_array_quad_single(float *vertex_ptr,int idx,int nvertex,int mx
 		if (gy>=1) gy=0;
 	}
 	
-	return(idx+(particle_count*4));
+	return(idx+(particle_count*6));
 }
 
 /* =======================================================
@@ -350,7 +367,7 @@ void particle_draw(effect_type *effect,int count)
 		// effect vbos are dynamic, so it'll auto construct
 		// the first time called
 
-	nvertex=(particle->count*(particle->trail_count+1))*4;
+	nvertex=(particle->count*(particle->trail_count+1))*6;
 
 	view_create_effect_vertex_object(effect,((nvertex*(3+2))*sizeof(float)));
 
@@ -414,12 +431,10 @@ void particle_draw(effect_type *effect,int count)
 	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_FALSE);			// don't let alpha z's interfere with each other
 
-	glVertexPointer(3,GL_FLOAT,0,(GLvoid*)0);
-	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)((nvertex*3)*sizeof(float)));
+	glVertexPointer(3,GL_FLOAT,((3+2)*sizeof(float)),(GLvoid*)0);
+	glTexCoordPointer(2,GL_FLOAT,((3+2)*sizeof(float)),(GLvoid*)(3*sizeof(float)));
 
-	for (n=0;n<idx;n+=4) {
-		glDrawArrays(GL_TRIANGLE_STRIP,n,4);
-	}
+	glDrawArrays(GL_TRIANGLES,0,nvertex);
 
 	glDepthMask(GL_TRUE);
 	
