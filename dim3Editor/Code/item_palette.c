@@ -33,6 +33,16 @@ and can be sold or given away.
 #include "ui_common.h"
 #include "interface.h"
 
+#define kPropertyAddSpot			0
+#define kPropertyAddLight			1
+#define kPropertyAddSound			2
+#define kPropertyAddParticle		3
+#define kPropertyAddScenery			4
+#define kPropertyAddNode			5
+#define kPropertyAddGroup			6
+#define kPropertyAddMovement		7
+#define kPropertyAddCinema			8
+
 extern map_type					map;
 extern editor_state_type		state;
 extern editor_setup_type		setup;
@@ -79,11 +89,12 @@ void item_palette_fill(void)
 	list_palette_add_header(&item_palette,spot_piece,"Map");
 	list_palette_add_item(&item_palette,map_setting_piece,0,"Settings",(item_palette.item_type==map_setting_piece),FALSE);
 	list_palette_add_item(&item_palette,map_camera_piece,0,"Camera",(item_palette.item_type==map_camera_piece),FALSE);
+	list_palette_add_item(&item_palette,map_light_media_piece,0,"Light & Media",(item_palette.item_type==map_light_media_piece),FALSE);
 	list_palette_add_item(&item_palette,map_sky_weather_piece,0,"Sky & Weather",(item_palette.item_type==map_sky_weather_piece),FALSE);
 
 		// spots
 
-	list_palette_add_header_count(&item_palette,spot_piece,"Spots",map.nspot);
+	list_palette_add_header_button(&item_palette,kPropertyAddSpot,"Spots",list_button_plus);
 	list_palette_sort_mark_start(&item_palette);
 
 	for (n=0;n!=map.nspot;n++) {
@@ -94,7 +105,7 @@ void item_palette_fill(void)
 
 		// lights
 
-	list_palette_add_header_count(&item_palette,light_piece,"Lights",map.nlight);
+	list_palette_add_header_button(&item_palette,kPropertyAddLight,"Lights",list_button_plus);
 
 	for (n=0;n!=map.nlight;n++) {
 		list_palette_add_color(&item_palette,light_piece,n,&map.lights[n].setting.col,((item_palette.item_type==light_piece)&&(n==item_palette.item_idx)),FALSE);
@@ -102,7 +113,7 @@ void item_palette_fill(void)
 
 		// sounds
 
-	list_palette_add_header_count(&item_palette,sound_piece,"Sounds",map.nsound);
+	list_palette_add_header_button(&item_palette,kPropertyAddSound,"Sounds",list_button_plus);
 	list_palette_sort_mark_start(&item_palette);
 
 	for (n=0;n!=map.nsound;n++) {
@@ -113,7 +124,7 @@ void item_palette_fill(void)
 
 		// particles
 
-	list_palette_add_header_count(&item_palette,particle_piece,"Particles",map.nparticle);
+	list_palette_add_header_button(&item_palette,kPropertyAddParticle,"Particles",list_button_plus);
 	list_palette_sort_mark_start(&item_palette);
 
 	for (n=0;n!=map.nparticle;n++) {
@@ -124,7 +135,7 @@ void item_palette_fill(void)
 
 		// sceneries
 
-	list_palette_add_header_count(&item_palette,scenery_piece,"Scenery",map.nscenery);
+	list_palette_add_header_button(&item_palette,kPropertyAddScenery,"Scenery",list_button_plus);
 	list_palette_sort_mark_start(&item_palette);
 
 	for (n=0;n!=map.nscenery;n++) {
@@ -135,7 +146,7 @@ void item_palette_fill(void)
 
 		// nodes
 
-	list_palette_add_header_count(&item_palette,node_piece,"Nodes",map.nnode);
+	list_palette_add_header_button(&item_palette,kPropertyAddNode,"Nodes",list_button_plus);
 	list_palette_sort_mark_start(&item_palette);
 
 	for (n=0;n!=map.nnode;n++) {
@@ -146,7 +157,7 @@ void item_palette_fill(void)
 
 		// groups
 
-	list_palette_add_header_count(&item_palette,group_piece,"Groups",map.group.ngroup);
+	list_palette_add_header_button(&item_palette,kPropertyAddGroup,"Groups",list_button_plus);
 	list_palette_sort_mark_start(&item_palette);
 
 	for (n=0;n!=map.group.ngroup;n++) {
@@ -157,7 +168,7 @@ void item_palette_fill(void)
 
 		// movements
 
-	list_palette_add_header_count(&item_palette,movement_piece,"Movements",map.movement.nmovement);
+	list_palette_add_header_button(&item_palette,kPropertyAddMovement,"Movements",list_button_plus);
 	list_palette_sort_mark_start(&item_palette);
 
 	for (n=0;n!=map.movement.nmovement;n++) {
@@ -168,7 +179,7 @@ void item_palette_fill(void)
 
 		// cinemas
 
-	list_palette_add_header_count(&item_palette,cinema_piece,"Cinemas",map.cinema.ncinema);
+	list_palette_add_header_button(&item_palette,kPropertyAddCinema,"Cinemas",list_button_plus);
 	list_palette_sort_mark_start(&item_palette);
 
 	for (n=0;n!=map.cinema.ncinema;n++) {
@@ -372,6 +383,47 @@ bool item_palette_click(d3pnt *pnt,bool double_click)
 		return(TRUE);
 	}
 
+		// add buttons
+
+	switch (item_palette.item_id) {
+
+		case kPropertyAddSpot:
+			piece_create_spot();
+			break;
+
+		case kPropertyAddLight:
+			piece_create_light();
+			break;
+
+		case kPropertyAddSound:
+			piece_create_sound();
+			break;
+
+		case kPropertyAddParticle:
+			piece_create_particle();
+			break;
+
+		case kPropertyAddScenery:
+			piece_create_scenery();
+			break;
+
+		case kPropertyAddNode:
+			piece_create_node();
+			break;
+
+		case kPropertyAddGroup:
+			piece_create_group();
+			break;
+
+		case kPropertyAddMovement:
+			piece_create_movement();
+			break;
+
+		case kPropertyAddCinema:
+			piece_create_cinema();
+			break;
+	}
+
 	if (item_palette.item_idx==-1) return(TRUE);
 
 		// alt window items
@@ -393,6 +445,7 @@ bool item_palette_click(d3pnt *pnt,bool double_click)
 
 		case map_setting_piece:
 		case map_camera_piece:
+		case map_light_media_piece:
 		case map_sky_weather_piece:
 			select_clear();
 			break;

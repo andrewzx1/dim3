@@ -165,18 +165,19 @@ and can be sold or given away.
 
 #define map_setting_piece						0
 #define map_camera_piece						1
-#define map_sky_weather_piece					2
-#define mesh_piece								3
-#define liquid_piece							4
-#define node_piece								5
-#define spot_piece								6
-#define scenery_piece							7
-#define light_piece								8
-#define sound_piece								9
-#define particle_piece							10
-#define group_piece								11
-#define movement_piece							12
-#define cinema_piece							13
+#define map_light_media_piece					2
+#define map_sky_weather_piece					3
+#define mesh_piece								4
+#define liquid_piece							5
+#define node_piece								6
+#define spot_piece								7
+#define scenery_piece							8
+#define light_piece								9
+#define sound_piece								10
+#define particle_piece							11
+#define group_piece								12
+#define movement_piece							13
+#define cinema_piece							14
 
 //
 // movement scales

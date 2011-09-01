@@ -47,38 +47,18 @@ and can be sold or given away.
 
 #define kMapPropertyNetworkGameList			20
 
-#define kMapPropertyNormalCull				21
-#define kMapPropertyCullAngle				22
-#define kMapPropertyDisableShaders			23
-#define kMapPropertyModelObscureDistance	24
-#define kMapPropertyShadowObscureDistance	25
-#define kMapPropertyEffectObscureDistance	26
+#define kMapPropertyNormalCull				30
+#define kMapPropertyCullAngle				31
+#define kMapPropertyDisableShaders			32
+#define kMapPropertyRayTraceObscure			33
+#define kMapPropertyModelObscureDistance	34
+#define kMapPropertyShadowObscureDistance	35
+#define kMapPropertyEffectObscureDistance	36
 
-#define kMapPropertyAmbientColor			30
-#define kMapPropertyAmbientLightMapBoost	31
-#define kMapPropertyAmbientSound			32
-#define kMapPropertyAmbientSoundPitch		33
-
-#define kMapPropertyLightMapQuality			34
-#define kMapPropertyLightMapSize			35
-#define kMapPropertyLightMapBorderCount		36
-#define kMapPropertyLightMapBlurCount		37
-#define kMapPropertyLightMapUseNormals		38
-#define kMapPropertyLightMapDiffuseBoost	39
-
-#define kMapPropertyMediaType				50
-#define kMapPropertyMediaEventId			51
-#define kMapPropertyMediaName				52
-#define kMapPropertyMediaTitleSound			53
-
-#define kMapPropertyMusicName				60
-#define kMapPropertyMusicFadeTime			61
-#define kMapPropertyMusicPreloadName		62
-
-#define kMapPropertyEditorTextureFactor		70
-#define kMapPropertyEditorViewNearZ			71
-#define kMapPropertyEditorViewFarZ			72
-#define kMapPropertyEditorLinkStartAlways	73
+#define kMapPropertyEditorTextureFactor		40
+#define kMapPropertyEditorViewNearZ			41
+#define kMapPropertyEditorViewFarZ			42
+#define kMapPropertyEditorLinkStartAlways	43
 
 #define kMapPropertyParamsStart				100
 #define kMapPropertyParamsEnd				109
@@ -89,10 +69,6 @@ extern editor_setup_type		setup;
 
 extern list_palette_type		property_palette;
 
-char							map_property_light_map_size_list[][name_str_len]={"256","512","1024",""},
-								map_property_media_type_list[][name_str_len]={"None","Chooser","Title","Cinema",""},
-								map_property_light_map_quality_list[][name_str_len]={"Very Low","Low","Medium","High","Very High",""};
-
 /* =======================================================
 
       Property Palette Fill Map
@@ -101,7 +77,7 @@ char							map_property_light_map_size_list[][name_str_len]={"256","512","1024",
 
 void property_palette_fill_map(void)
 {
-	int				n,size;
+	int				n;
 	char			name[256],str[256];
 	d3fpnt			uv;
 
@@ -137,48 +113,10 @@ void property_palette_fill_map(void)
 	list_palette_add_checkbox(&property_palette,kMapPropertyNormalCull,"Cull By Normals",(!map.optimize.never_cull),FALSE);
 	list_palette_add_string_float(&property_palette,kMapPropertyCullAngle,"Cull Angle",map.optimize.cull_angle,FALSE);
 	list_palette_add_checkbox(&property_palette,kMapPropertyDisableShaders,"Disable Shaders",map.optimize.no_shaders,FALSE);
+	list_palette_add_checkbox(&property_palette,kMapPropertyRayTraceObscure,"Ray Trace Obscure",map.optimize.ray_trace_obscure,FALSE);
 	list_palette_add_string_int(&property_palette,kMapPropertyModelObscureDistance,"Model Obscure Distance",map.optimize.obscure_dist.model,FALSE);
 	list_palette_add_string_int(&property_palette,kMapPropertyShadowObscureDistance,"Shadow Obscure Distance",map.optimize.obscure_dist.shadow,FALSE);
 	list_palette_add_string_int(&property_palette,kMapPropertyEffectObscureDistance,"Effect Obscure Distance",map.optimize.obscure_dist.effect,FALSE);
-
-		// ambient
-
-	list_palette_add_header(&property_palette,0,"Map Ambient");
-	list_palette_add_pick_color(&property_palette,kMapPropertyAmbientColor,"Color",&map.ambient.light_color,FALSE);
-	list_palette_add_string_float(&property_palette,kMapPropertyAmbientLightMapBoost,"Light Map Boost",map.ambient.light_map_boost,FALSE);
-	list_palette_add_string(&property_palette,kMapPropertyAmbientSound,"Sound",map.ambient.sound_name,FALSE);
-	list_palette_add_string_float(&property_palette,kMapPropertyAmbientSoundPitch,"Sound Pitch",map.ambient.sound_pitch,FALSE);
-
-		// light map
-
-	size=((int)log2(map.light_map.size))-8;
-	if ((size<0) || (size>2)) size=0;
-
-	list_palette_add_header(&property_palette,0,"Map Light Map");
-	list_palette_add_string(&property_palette,kMapPropertyLightMapQuality,"Quality",map_property_light_map_quality_list[map.light_map.quality],FALSE);
-	list_palette_add_string(&property_palette,kMapPropertyLightMapSize,"Texture Size",map_property_light_map_size_list[size],FALSE);
-	list_palette_add_string_int(&property_palette,kMapPropertyLightMapBorderCount,"Pixel Border Count",map.light_map.pixel_border_count,FALSE);
-	list_palette_add_string_int(&property_palette,kMapPropertyLightMapBlurCount,"Blur Count",map.light_map.blur_count,FALSE);
-	list_palette_add_checkbox(&property_palette,kMapPropertyLightMapUseNormals,"Use Normals (Hard Edges)",map.light_map.use_normals,FALSE);
-	list_palette_add_string_float(&property_palette,kMapPropertyLightMapDiffuseBoost,"Diffuse Boost",map.light_map.diffuse_boost,FALSE);
-
-		// media
-
-	list_palette_add_header(&property_palette,0,"Map Media");
-	list_palette_add_string(&property_palette,kMapPropertyMediaType,"Startup Type",map_property_media_type_list[map.media.type],FALSE);
-	list_palette_add_string_int(&property_palette,kMapPropertyMediaEventId,"Event Id",map.media.event_id,FALSE);
-	list_palette_add_string(&property_palette,kMapPropertyMediaName,"Startup Name",map.media.name,FALSE);
-	list_palette_add_string(&property_palette,kMapPropertyMediaTitleSound,"Startup Title Sound",map.media.title_sound_name,FALSE);
-
-		// music
-
-	list_palette_add_header(&property_palette,0,"Map Music");
-	list_palette_add_string(&property_palette,kMapPropertyMusicName,"Name",map.music.name,FALSE);
-	list_palette_add_string_int(&property_palette,kMapPropertyMusicFadeTime,"Fade In Time",map.music.fade_msec,FALSE);
-	for (n=0;n!=max_music_preload;n++) {
-		sprintf(name,"Preload Name %d",n);
-		list_palette_add_string(&property_palette,(kMapPropertyMusicPreloadName+n),name,map.music.preload_name[n],FALSE);
-	}
 
 		// parameters
 
@@ -218,7 +156,7 @@ void property_palette_fill_map(void)
 
 void property_palette_click_map(int id,bool double_click)
 {
-	int				param_idx,music_idx,size;
+	int				param_idx;
 	char			str[256];
 	d3fpnt			uv;
 
@@ -233,15 +171,6 @@ void property_palette_click_map(int id,bool double_click)
 		dialog_property_string_run(list_string_value_string,(void*)str,256,0,0);
 		property_set_parameter(param_idx,map.settings.params,str);
 
-		main_wind_draw();
-		return;
-	}
-
-		// preload music
-
-	if ((id>=kMapPropertyMusicPreloadName) && (id<(kMapPropertyMusicPreloadName+max_music_preload))) {
-		music_idx=(id-kMapPropertyMusicPreloadName);
-		dialog_property_string_run(list_string_value_string,(void*)map.music.preload_name[music_idx],name_str_len,0,0);
 		main_wind_draw();
 		return;
 	}
@@ -314,6 +243,10 @@ void property_palette_click_map(int id,bool double_click)
 			map.optimize.no_shaders=!map.optimize.no_shaders;
 			break;
 
+		case kMapPropertyRayTraceObscure:
+			map.optimize.ray_trace_obscure=!map.optimize.ray_trace_obscure;
+			break;
+
 		case kMapPropertyModelObscureDistance:
 			dialog_property_string_run(list_string_value_positive_int,(void*)&map.optimize.obscure_dist.model,0,0,0);
 			break;
@@ -324,81 +257,6 @@ void property_palette_click_map(int id,bool double_click)
 
 		case kMapPropertyEffectObscureDistance:
 			dialog_property_string_run(list_string_value_positive_int,(void*)&map.optimize.obscure_dist.effect,0,0,0);
-			break;
-
-			// ambients
-
-		case kMapPropertyAmbientColor:
-			os_pick_color(&map.ambient.light_color);
-			break;
-
-		case kMapPropertyAmbientLightMapBoost:
-			dialog_property_string_run(list_string_value_positive_float,(void*)&map.ambient.light_map_boost,0,0,0);
-			break;
-
-		case kMapPropertyAmbientSound:
-			property_palette_pick_sound(map.ambient.sound_name,TRUE);
-			break;
-
-		case kMapPropertyAmbientSoundPitch:
-			dialog_property_string_run(list_string_value_0_to_1_float,(void*)&map.ambient.sound_pitch,0,0,0);
-			break;
-
-			// light maps
-	
-		case kMapPropertyLightMapQuality:
-			property_pick_list("Pick Light Map Quality",(char*)map_property_light_map_quality_list,&map.light_map.quality);
-			break;
-			
-		case kMapPropertyLightMapSize:
-			size=((int)log2(map.light_map.size))-8;
-			if ((size<0) || (size>2)) size=0;
-			property_pick_list("Pick a Light Map Size",(char*)map_property_light_map_size_list,&size);
-			map.light_map.size=(int)pow(2,(size+8));
-			break;
-			
-		case kMapPropertyLightMapBorderCount:
-			dialog_property_string_run(list_string_value_range_int,(void*)&map.light_map.pixel_border_count,0,0,10);
-			break;
-			
-		case kMapPropertyLightMapBlurCount:
-			dialog_property_string_run(list_string_value_range_int,(void*)&map.light_map.blur_count,0,0,6);
-			break;
-
-		case kMapPropertyLightMapUseNormals:
-			map.light_map.use_normals=!map.light_map.use_normals;
-			break;
-
-		case kMapPropertyLightMapDiffuseBoost:
-			dialog_property_string_run(list_string_value_positive_float,(void*)&map.light_map.diffuse_boost,0,0,0);
-			break;
-
-			// map media
-
-		case kMapPropertyMediaType:
-			property_pick_list("Pick a Media Type",(char*)map_property_media_type_list,&map.media.type);
-			break;
-		
-		case kMapPropertyMediaEventId:
-			dialog_property_string_run(list_string_value_int,(void*)&map.media.event_id,0,0,0);
-			break;
-
-		case kMapPropertyMediaName:
-			dialog_property_string_run(list_string_value_string,(void*)map.media.name,name_str_len,0,0);
-			break;
-
-		case kMapPropertyMediaTitleSound:
-			property_palette_pick_sound(map.media.title_sound_name,TRUE);
-			break;
-
-			// map music
-
-		case kMapPropertyMusicName:
-			dialog_property_string_run(list_string_value_string,(void*)map.music.name,name_str_len,0,0);
-			break;
-
-		case kMapPropertyMusicFadeTime:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&map.music.fade_msec,0,0,0);
 			break;
 
 			// editor setup

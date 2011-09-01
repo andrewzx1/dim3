@@ -36,6 +36,123 @@ float					effect_lightning_line_zag[16]={1.0f,0.5f,0.8f,-0.2f,0.3f,-1.0f,-0.7f,0
 extern map_type			map;
 extern server_type		server;
 extern view_type		view;
+extern iface_type		iface;
+
+/* =======================================================
+
+      Effect Bound Box
+      
+======================================================= */
+
+void effect_draw_get_bound_box(effect_type *effect,d3pnt *min,d3pnt *max)
+{
+	int					x,y,z,count,size,gravity_y;
+	iface_particle_type	*particle;
+
+	switch (effect->effecttype) {
+
+		case ef_particle:
+			count=game_time_get()-effect->start_tick;
+			particle_draw_position(effect,count,&x,&y,&z);
+
+			size=effect->size;
+			min->x=x-(size>>1);
+			max->x=min->x+size;
+			min->z=z-(size>>1);
+			max->z=min->z+size;
+			min->y=y-size;
+			max->y=y;
+
+			particle=&iface.particle_list.particles[effect->data.particle.particle_idx];
+			gravity_y=(int)particle_get_gravity(particle,count);
+
+			if (gravity_y<0) {
+				min->y+=gravity_y;
+			}
+			else {
+				max->y+=gravity_y;
+			}
+			
+			break;
+
+		case ef_ring:
+			count=game_time_get()-effect->start_tick;
+			ring_draw_position(effect,count,&x,&y,&z);
+
+			size=effect->size;
+			min->x=x-(size>>1);
+			max->x=min->x+size;
+			min->z=z-(size>>1);
+			max->z=min->z+size;
+			min->y=y-size;
+			max->y=y;
+			break;
+
+		case ef_lightning:
+			if (effect->data.lightning.start_pnt.x<effect->data.lightning.end_pnt.x) {
+				min->x=effect->data.lightning.start_pnt.x;
+				max->x=effect->data.lightning.end_pnt.x;
+			}
+			else {
+				min->x=effect->data.lightning.end_pnt.x;
+				max->x=effect->data.lightning.start_pnt.x;
+			}
+			if (effect->data.lightning.start_pnt.y<effect->data.lightning.end_pnt.y) {
+				min->y=effect->data.lightning.start_pnt.y;
+				max->y=effect->data.lightning.end_pnt.y;
+			}
+			else {
+				min->y=effect->data.lightning.end_pnt.y;
+				max->y=effect->data.lightning.start_pnt.y;
+			}
+			if (effect->data.lightning.start_pnt.z<effect->data.lightning.end_pnt.z) {
+				min->z=effect->data.lightning.start_pnt.z;
+				max->z=effect->data.lightning.end_pnt.z;
+			}
+			else {
+				min->z=effect->data.lightning.end_pnt.z;
+				max->z=effect->data.lightning.start_pnt.z;
+			}
+			break;
+
+		case ef_ray:
+			if (effect->data.ray.start_pnt.x<effect->data.ray.end_pnt.x) {
+				min->x=effect->data.ray.start_pnt.x;
+				max->x=effect->data.ray.end_pnt.x;
+			}
+			else {
+				min->x=effect->data.ray.end_pnt.x;
+				max->x=effect->data.ray.start_pnt.x;
+			}
+			if (effect->data.ray.start_pnt.y<effect->data.ray.end_pnt.y) {
+				min->y=effect->data.ray.start_pnt.y;
+				max->y=effect->data.ray.end_pnt.y;
+			}
+			else {
+				min->y=effect->data.ray.end_pnt.y;
+				max->y=effect->data.ray.start_pnt.y;
+			}
+			if (effect->data.ray.start_pnt.z<effect->data.ray.end_pnt.z) {
+				min->z=effect->data.ray.start_pnt.z;
+				max->z=effect->data.ray.end_pnt.z;
+			}
+			else {
+				min->z=effect->data.ray.end_pnt.z;
+				max->z=effect->data.ray.start_pnt.z;
+			}
+			break;
+
+		default:
+			size=effect->size;
+			min->x=effect->pnt.x-(size>>1);
+			max->x=min->x+size;
+			min->z=effect->pnt.z-(size>>1);
+			max->z=min->z+size;
+			min->y=effect->pnt.y-size;
+			max->y=effect->pnt.y;
+			break;
+	}
+}
 
 /* =======================================================
 

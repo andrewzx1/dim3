@@ -610,7 +610,7 @@ typedef struct		{
 
 typedef struct		{
 						float								cull_angle;
-						bool								never_cull,no_shaders;
+						bool								never_cull,no_shaders,ray_trace_obscure;
 						map_optimize_obscure_dist_type		obscure_dist;
 					} map_optimize_type;					
 

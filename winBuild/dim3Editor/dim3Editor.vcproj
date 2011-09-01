@@ -386,6 +386,10 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\dim3Editor\Code\property_palette_light_media.c"
+						>
+					</File>
+					<File
 						RelativePath="..\..\dim3Editor\Code\property_palette_liquid.c"
 						>
 					</File>
