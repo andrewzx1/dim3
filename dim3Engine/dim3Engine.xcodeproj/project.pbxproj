@@ -10,6 +10,7 @@
 		260AE9350F832A5B00451942 /* gl_back_render.c in Sources */ = {isa = PBXBuildFile; fileRef = 260AE9340F832A5B00451942 /* gl_back_render.c */; };
 		260C145C129C770800B6D5B5 /* SDLMain.h in Headers */ = {isa = PBXBuildFile; fileRef = 260C145A129C770800B6D5B5 /* SDLMain.h */; };
 		260C145D129C770800B6D5B5 /* SDLMain.m in Sources */ = {isa = PBXBuildFile; fileRef = 260C145B129C770800B6D5B5 /* SDLMain.m */; };
+		260F7517140EEC83008593D4 /* view_obscure.c in Sources */ = {isa = PBXBuildFile; fileRef = 260F7516140EEC83008593D4 /* view_obscure.c */; };
 		26100DED10BB5156002B3FA1 /* gl_shader_core.c in Sources */ = {isa = PBXBuildFile; fileRef = 26100DEA10BB5156002B3FA1 /* gl_shader_core.c */; };
 		26100DEE10BB5156002B3FA1 /* gl_shader_fullscreen.c in Sources */ = {isa = PBXBuildFile; fileRef = 26100DEB10BB5156002B3FA1 /* gl_shader_fullscreen.c */; };
 		26100DEF10BB5156002B3FA1 /* gl_shader_user.c in Sources */ = {isa = PBXBuildFile; fileRef = 26100DEC10BB5156002B3FA1 /* gl_shader_user.c */; };
@@ -363,6 +364,7 @@
 		260AE9340F832A5B00451942 /* gl_back_render.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = gl_back_render.c; path = Sources_View/gl_back_render.c; sourceTree = "<group>"; };
 		260C145A129C770800B6D5B5 /* SDLMain.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDLMain.h; path = SDL/SDLMain.h; sourceTree = "<group>"; };
 		260C145B129C770800B6D5B5 /* SDLMain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SDLMain.m; path = SDL/SDLMain.m; sourceTree = "<group>"; };
+		260F7516140EEC83008593D4 /* view_obscure.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = view_obscure.c; path = Sources_View/view_obscure.c; sourceTree = "<group>"; };
 		26100DEA10BB5156002B3FA1 /* gl_shader_core.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = gl_shader_core.c; path = Sources_View/gl_shader_core.c; sourceTree = "<group>"; };
 		26100DEB10BB5156002B3FA1 /* gl_shader_fullscreen.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = gl_shader_fullscreen.c; path = Sources_View/gl_shader_fullscreen.c; sourceTree = "<group>"; };
 		26100DEC10BB5156002B3FA1 /* gl_shader_user.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = gl_shader_user.c; path = Sources_View/gl_shader_user.c; sourceTree = "<group>"; };
@@ -1142,6 +1144,7 @@
 				F5DD19DD0908310200721649 /* view.c */,
 				F5DD19E20908310200721649 /* view_run.c */,
 				F5E92CCD0AAFC3430019B693 /* view_bounds.c */,
+				260F7516140EEC83008593D4 /* view_obscure.c */,
 				F5AEF0F50D1CD57B00C99FF6 /* view_images.c */,
 				F5DD19E00908310200721649 /* view_setup.c */,
 				F5DD19DE0908310200721649 /* view_vertex_list.c */,
@@ -1751,6 +1754,7 @@
 				2638FED413E253F400EA1640 /* input_touch.c in Sources */,
 				2643482513E51B3800920D9B /* virtual_draw.c in Sources */,
 				2638D24513EDAD2300029B18 /* view_primitive.c in Sources */,
+				260F7517140EEC83008593D4 /* view_obscure.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

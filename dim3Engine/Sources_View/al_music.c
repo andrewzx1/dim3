@@ -31,16 +31,17 @@ and can be sold or given away.
 
 #include "interface.h"
 
-bool						audio_music_state_on;
+extern int						audio_music_song_idx,audio_music_alt_song_idx,
+								audio_music_global_volume;
+extern bool						audio_music_paused,audio_music_loop;
+extern audio_music_song_type	audio_music_song_cache[music_max_song_cache];
 
-audio_music_song_type		audio_music_song,audio_music_alt_song,
-							audio_music_cache_songs[music_max_cache];
+int								audio_music_fade_next_msec;
+bool							audio_music_alt_stage_loop;
+char							audio_music_fade_next_name[name_str_len];
 
-extern int					audio_buffer_count;
-extern audio_buffer_type	audio_buffers[audio_max_buffer];
-
-extern map_type				map;
-extern setup_type			setup;
+extern map_type					map;
+extern setup_type				setup;
 
 /* =======================================================
 
@@ -53,11 +54,34 @@ void al_music_initialize_song(audio_music_song_type *song)
 	song->fade_mode=music_fade_mode_none;
 	song->name[0]=0x0;
 	song->data=NULL;
-	song->playing=FALSE;
-	song->loop=TRUE;
-	song->paused=FALSE;
 	song->volume=600;
-	song->org_volume=512;
+}
+
+void al_music_initialize_cache(void)
+{
+	int						n;
+	audio_music_song_type	*song;
+	
+	song=audio_music_song_cache;
+	
+	for (n=0;n!=music_max_song_cache;n++) {
+		al_music_initialize_song(song);
+		song++;
+	}
+}
+
+void al_music_clear_cache(void)
+{
+	int						n;
+	audio_music_song_type	*song;
+	
+	song=audio_music_song_cache;
+		
+	for (n=0;n!=music_max_song_cache;n++) {
+		if (song->data!=NULL) free(song->data);
+		al_music_initialize_song(song);
+		song++;
+	}
 }
 
 bool al_music_initialize(char *err_str)
@@ -71,20 +95,27 @@ bool al_music_initialize(char *err_str)
 	
 		// setup music
 		
-	audio_music_state_on=TRUE;
+	audio_music_paused=FALSE;
 	
-	al_music_initialize_song(&audio_music_song);
-	al_music_initialize_song(&audio_music_alt_song);
+	audio_music_song_idx=-1;
+	audio_music_alt_song_idx=-1;
 	
+	audio_music_global_volume=600;
+
+		// initialize the cache
+
+	al_music_initialize_cache();
+
+		// load in any pre-cached songs
+
 	return(TRUE);
 }
 
 void al_music_shutdown(void)
 {
-		// free any loaded music
+		// free the cache
 		
-	if (audio_music_song.data!=NULL) free(audio_music_song.data);
-	if (audio_music_alt_song.data!=NULL) free(audio_music_alt_song.data);
+	al_music_clear_cache();
 	
 		// shut down the mp3 decoder library
 		
@@ -192,100 +223,75 @@ short* al_music_load_mp3(char *name,float *f_sample_len,float *freq_factor,char 
       
 ======================================================= */
 
-bool al_music_load(char *name,audio_music_song_type *song,char *err_str)
+int al_music_load(char *name,char *err_str)
 {
 	int						n,idx;
-	audio_music_song_type	*cache_song;
+	audio_music_song_type	*song;
 
 		// any music?
 
-	if (name[0]==0x0) return(TRUE);
+	if (name[0]==0x0) return(-1);
 
 		// in cache?
 
 	idx=-1;
+	
+	song=audio_music_song_cache;
 
-	for (n=0;n!=music_max_cache;n++) {
-		if (audio_music_cache_songs[n].data==NULL) {
-			if (idx!=-1) idx=n;				// remember the first blank item
+	for (n=0;n!=music_max_song_cache;n++) {
+		if (song->data==NULL) {
+			if (idx==-1) idx=n;				// remember the first blank item
 		}
 		else {
-			if (strcasecmp(name,audio_music_cache_songs[n].name)==0) {
-				if (song!=NULL) memmove(song,&audio_music_cache_songs[n],sizeof(audio_music_song_type));
-				return(TRUE);
-			}
+			if (strcasecmp(name,song->name)==0) return(n);
 		}
+		song++;
 	}
 
 		// room to add to cache?
 
 	if (idx==-1) {
 		strcpy(err_str,"Music cache full");
-		return(FALSE);
+		return(-1);
 	}
 
 		// add to cache
 
-	cache_song=&audio_music_cache_songs[idx];
+	song=&audio_music_song_cache[idx];
 
-	strcpy(cache_song->name,name);
-	cache_song->data=al_music_load_mp3(name,&cache_song->f_sample_len,&cache_song->freq_factor,err_str);
-	if (cache_song->data==NULL) return(FALSE);
-
-	if (song!=NULL) memmove(song,&audio_music_cache_songs[n],sizeof(audio_music_song_type));
-	return(TRUE);
+	strcpy(song->name,name);
+	song->data=al_music_load_mp3(name,&song->f_sample_len,&song->freq_factor,err_str);
+	if (song->data==NULL) return(-1);
+	
+	return(idx);
 }
 
-void al_music_init_cache(void)
+void al_music_map_pre_cache(void)
 {
 	int			n;
 	char		err_str[256];
-
-		// clear the cache
-
-	for (n=0;n!=music_max_cache;n++) {
-		al_music_initialize_song(&audio_music_cache_songs[n]);
-	}
-
-		// load in any pre-cached songs
 	
-	al_music_load(map.music.name,NULL,err_str);
+		// make sure everything is stopped
+		
+	SDL_LockAudio();
+
+	audio_music_song_idx=-1;
+	audio_music_alt_song_idx=-1;
+	
+		// clean the cache if we are
+		// going into a new map
+		
+	al_music_clear_cache();
+
+		// pre load anything map related
+		
+	al_music_load(map.music.name,err_str);
 
 	for (n=0;n!=max_music_preload;n++) {
-		al_music_load(map.music.preload_name[n],NULL,err_str);
+		al_music_load(map.music.preload_name[n],err_str);
 	}
-}
-
-void al_music_release_cache(void)
-{
-	int			n;
-
-	for (n=0;n!=music_max_cache;n++) {
-		if (audio_music_cache_songs[n].data!=NULL) {
-			free(audio_music_cache_songs[n].data);
-			audio_music_cache_songs[n].name[0]=0x0;
-			audio_music_cache_songs[n].data=NULL;
-		}
-	}
-}
-
-/* =======================================================
-
-      Open Music
-      
-======================================================= */
-
-bool al_open_music(audio_music_song_type *song,char *name,char *err_str)
-{
-		// are we already playing this music?
-
-	if (song->data!=NULL) {
-		if (strcmp(song->name,name)==0) return(TRUE);
-	}
-
-		// otherwise load it
 	
-	return(al_music_load(name,song,err_str));
+	SDL_UnlockAudio();
 }
 
 /* =======================================================
@@ -294,45 +300,46 @@ bool al_open_music(audio_music_song_type *song,char *name,char *err_str)
       
 ======================================================= */
 
-bool al_music_play_song(audio_music_song_type *song,char *name,char *err_str)
+int al_music_play_song(char *name,char *err_str)
 {
+	int						idx;
+	audio_music_song_type	*song;
+	
 	SDL_LockAudio();
 	
 		// open music
 		
-	if (!al_open_music(song,name,err_str)) {
+	idx=al_music_load(name,err_str);
+	if (idx==-1) {
 		SDL_UnlockAudio();
-		return(FALSE);
+		return(-1);
 	}
 	
 		// play
+		
+	song=&audio_music_song_cache[idx];
 
 	song->stream_pos=0.0f;
-	song->volume=audio_music_song.org_volume;
-	song->paused=FALSE;
+	song->volume=audio_music_global_volume;
 	song->fade_mode=music_fade_mode_none;
-		
-	song->playing=audio_music_state_on;
 
 	SDL_UnlockAudio();
 
-	return(TRUE);
+	return(idx);
 }
 
 bool al_music_play(char *name,char *err_str)
 {
-	return(al_music_play_song(&audio_music_song,name,err_str));
+	audio_music_song_idx=al_music_play_song(name,err_str);
+	return(audio_music_song_idx!=-1);
 }
 
 void al_music_stop(void)
 {
 	SDL_LockAudio();
 
-	audio_music_song.stream_pos=0.0f;
-	audio_music_song.playing=FALSE;
-	
-	audio_music_alt_song.stream_pos=0.0f;
-	audio_music_alt_song.playing=FALSE;
+	audio_music_song_idx=-1;
+	audio_music_alt_song_idx=-1;
 
 	SDL_UnlockAudio();
 }
@@ -340,53 +347,44 @@ void al_music_stop(void)
 void al_music_set_loop(bool loop)
 {
 	SDL_LockAudio();
-	audio_music_song.loop=loop;
+	
+		// if we have an alt music (during a cross fade)
+		// then we stage the loop setting until the alt
+		// music gets moved over
+		
+	if (audio_music_alt_song_idx==-1) {
+		audio_music_loop=loop;
+	}
+	else {
+		audio_music_alt_stage_loop=loop;
+	}
+	
 	SDL_UnlockAudio();
 }
 
 void al_music_pause(void)
 {
 	SDL_LockAudio();
-
-	if (audio_music_song.playing) {
-		audio_music_song.paused=TRUE;
-		audio_music_song.playing=FALSE;
-	}
-	if (audio_music_alt_song.playing) {
-		audio_music_alt_song.paused=TRUE;
-		audio_music_alt_song.playing=FALSE;
-	}
-
+	audio_music_paused=TRUE;
 	SDL_UnlockAudio();
 }
 
 void al_music_resume(void)
 {
 	SDL_LockAudio();
-
-	if (audio_music_song.paused) {
-		audio_music_song.paused=FALSE;
-		audio_music_song.playing=TRUE;
-	}
-	
-	if (audio_music_alt_song.paused) {
-		audio_music_alt_song.paused=FALSE;
-		audio_music_alt_song.playing=TRUE;
-	}
-
+	audio_music_paused=FALSE;
 	SDL_UnlockAudio();
 }
 
 bool al_music_playing(void)
 {
-	return(audio_music_song.playing);
+	return((!audio_music_paused) && (audio_music_song_idx!=-1));
 }
 
 bool al_music_playing_is_name(char *name)
 {
-	if (!audio_music_song.playing) return(FALSE);
-	
-	return(strcmp(audio_music_song.name,name)==0);
+	if ((audio_music_paused) || (audio_music_song_idx==-1)) return(FALSE);
+	return(strcasecmp(audio_music_song_cache[audio_music_song_idx].name,name)==0);
 }
 
 /* =======================================================
@@ -397,47 +395,51 @@ bool al_music_playing_is_name(char *name)
 
 void al_music_set_volume(float music_volume)
 {
-	int				volume;
-	
-	volume=(int)(1024.0f*music_volume);
-	
-	audio_music_song.volume=audio_music_song.org_volume=volume;
-	audio_music_alt_song.volume=audio_music_alt_song.org_volume=volume;
+	audio_music_global_volume=(int)(1024.0f*music_volume);
 }
 
 void al_music_set_state(bool music_on)
 {
-	if (audio_music_state_on==music_on) return;
+	if (audio_music_paused!=music_on) return;
 	
-	audio_music_state_on=music_on;
 	if (music_on) {
 		al_music_resume();
 	}
 	else {
 		al_music_pause();
 	}
+	
+	audio_music_paused=!music_on;
 }
+
+/* =======================================================
+
+      Swap Alternate Music
+      
+======================================================= */
 
 void al_music_swap_alt_music(void)
 {
-	bool			old_loop;
+	audio_music_song_type	*song;
 	
 	SDL_LockAudio();
-
-	old_loop=audio_music_song.loop;
-	free(audio_music_song.data);
 	
-	memmove(&audio_music_song,&audio_music_alt_song,sizeof(audio_music_song_type));
-	audio_music_song.loop=old_loop;
+		// switch the songs
+		
+	audio_music_song_idx=audio_music_alt_song_idx;
+	audio_music_alt_song_idx=-1;
 		
 		// set all the flags
 		
-	audio_music_song.fade_mode=music_fade_mode_none;
-	audio_music_song.volume=audio_music_song.org_volume;
-	audio_music_song.playing=TRUE;
+	song=&audio_music_song_cache[audio_music_song_idx];
 	
-	audio_music_alt_song.playing=FALSE;
-	audio_music_alt_song.data=NULL;
+	song->fade_mode=music_fade_mode_none;
+	song->volume=audio_music_global_volume;
+	
+		// fix the loop which could have
+		// been staged when alt music was playing
+		
+	audio_music_loop=audio_music_alt_stage_loop;
 				
 	SDL_UnlockAudio();
 }
@@ -450,105 +452,125 @@ void al_music_swap_alt_music(void)
 
 bool al_music_fade_in(char *name,int msec,char *err_str)
 {
+	audio_music_song_type	*song;
+
 		// start music
 
-	if (!al_music_play_song(&audio_music_song,name,err_str)) return(FALSE);
+	audio_music_song_idx=al_music_play_song(name,err_str);
+	if (audio_music_song_idx==-1) return(FALSE);
+
+	song=&audio_music_song_cache[audio_music_song_idx];
 
 		// if no msec, then just play music
 
 	if (msec<=0) {
-		audio_music_song.fade_mode=music_fade_mode_none;
-		audio_music_song.volume=audio_music_song.org_volume;
+		song->fade_mode=music_fade_mode_none;
+		song->volume=audio_music_global_volume;
 		return(TRUE);
 	}
 	
 		// start fade in
 
-	audio_music_song.fade_mode=music_fade_mode_in;
-	audio_music_song.fade_start_tick=game_time_get();
-	audio_music_song.fade_msec=msec;
+	song->fade_mode=music_fade_mode_in;
+	song->fade_start_tick=game_time_get();
+	song->fade_msec=msec;
 	
-	audio_music_song.volume=0;
+	song->volume=0;
 
 	return(TRUE);
 }
 
 void al_music_fade_out(int msec)
 {
+	audio_music_song_type	*song;
+
 		// if no music playing, no fade out
 
-	if (!audio_music_song.playing) {
-		audio_music_song.fade_mode=music_fade_mode_none;
-		return;
-	}
+	if (audio_music_song_idx==-1) return;
+	
+	song=&audio_music_song_cache[audio_music_song_idx];
 	
 		// if no msec, then just stop music
 
 	if (msec<=0) {
 		al_music_stop();
-		audio_music_song.fade_mode=music_fade_mode_none;
+		song->fade_mode=music_fade_mode_none;
 		return;
 	}
 
 		// start fade out
 
-	audio_music_song.fade_mode=music_fade_mode_out;
-	audio_music_song.fade_start_tick=game_time_get();
-	audio_music_song.fade_msec=msec;
-	audio_music_song.volume=audio_music_song.org_volume;
+	song->fade_mode=music_fade_mode_out;
+	song->fade_start_tick=game_time_get();
+	song->fade_msec=msec;
+	song->volume=audio_music_global_volume;
 }
 
 bool al_music_fade_out_fade_in(char *name,int fade_out_msec,int fade_in_msec,char *err_str)
 {
+	audio_music_song_type	*song;
+
 		// if no fade out or no music playing, go directly to fade in
 
-	if ((fade_out_msec<=0) || (!audio_music_song.playing)) {
+	if ((fade_out_msec<=0) || (audio_music_song_idx==-1)) {
 		return(al_music_fade_in(name,fade_in_msec,err_str));
 	}
 
 		// setup next music for fade in
 
-	strcpy(audio_music_song.fade_next_name,name);
-	audio_music_song.fade_next_msec=fade_in_msec;
+	song=&audio_music_song_cache[audio_music_song_idx];
+
+	strcpy(audio_music_fade_next_name,name);
+	audio_music_fade_next_msec=fade_in_msec;
 
 		// start fade
 
 	al_music_fade_out(fade_out_msec);
 
-	audio_music_song.fade_mode=music_fade_mode_out_fade_in;		// switch to fade out/fade in mode
+	song->fade_mode=music_fade_mode_out_fade_in;		// switch to fade out/fade in mode
 
 	return(TRUE);
 }
 
 bool al_music_cross_fade(char *name,int cross_msec,char *err_str)
 {
-	int				tick;
+	int						tick;
+	audio_music_song_type	*song,*alt_song;
 	
 		// if no fade out or no music playing, go directly to fade in
 		
-	if ((cross_msec<=0) || (!audio_music_song.playing)) {
+	if ((cross_msec<=0) || (audio_music_song_idx==-1)) {
 		return(al_music_fade_in(name,cross_msec,err_str));
 	}
 		
 		// start alt music
 
-	if (!al_music_play_song(&audio_music_alt_song,name,err_str)) return(FALSE);
+	audio_music_alt_song_idx=al_music_play_song(name,err_str);
+	if (audio_music_alt_song_idx==-1) return(FALSE);
+	
+	song=&audio_music_song_cache[audio_music_song_idx];
+	alt_song=&audio_music_song_cache[audio_music_alt_song_idx];
 
 		// setup fade out for current song
 		
 	tick=game_time_get();
 		
-	audio_music_song.fade_mode=music_fade_mode_cross_fade;
-	audio_music_song.fade_start_tick=tick;
-	audio_music_song.fade_msec=cross_msec;
-	audio_music_song.volume=audio_music_song.org_volume;
+	song->fade_mode=music_fade_mode_cross_fade;
+	song->fade_start_tick=tick;
+	song->fade_msec=cross_msec;
+	song->volume=audio_music_global_volume;
 
 		// setup fade in for alt song
 		
-	audio_music_alt_song.fade_mode=music_fade_mode_cross_fade;
-	audio_music_alt_song.fade_start_tick=tick;
-	audio_music_alt_song.fade_msec=cross_msec;
-	audio_music_alt_song.volume=0;
+	alt_song->fade_mode=music_fade_mode_cross_fade;
+	alt_song->fade_start_tick=tick;
+	alt_song->fade_msec=cross_msec;
+	alt_song->volume=0;
+	
+		// the staging looping in case looping
+		// is changed when an alt song is playing
+		
+	audio_music_alt_stage_loop=audio_music_loop;
 
 	return(TRUE);
 }
@@ -559,22 +581,20 @@ bool al_music_cross_fade(char *name,int cross_msec,char *err_str)
       
 ======================================================= */
 
-void al_music_run_song(audio_music_song_type *song,bool alt_song)
+void al_music_run_song(int song_idx,bool alt_song)
 {
-	int				tick,dif;
-	char			err_str[256];
+	int						tick,dif;
+	char					err_str[256];
+	audio_music_song_type	*song;
+
+		// any music?
+		
+	if (song_idx==-1) return;
 	
 		// is there a fade on?
 		
+	song=&audio_music_song_cache[song_idx];
 	if (song->fade_mode==music_fade_mode_none) return;
-	
-		// is music even playing?
-		
-	if (!song->playing) {
-		song->fade_mode=music_fade_mode_none;
-		song->volume=song->org_volume;
-		return;
-	}
 	
 		// time to stop fade?
 		// if it's a cross fade, then make sure to
@@ -588,18 +608,18 @@ void al_music_run_song(audio_music_song_type *song,bool alt_song)
 		switch (song->fade_mode) {
 
 			case music_fade_mode_in:
-				song->volume=song->org_volume;
+				song->volume=audio_music_global_volume;
 				song->fade_mode=music_fade_mode_none;
 				break;
 
 			case music_fade_mode_out:
 				al_music_stop();
-				song->volume=song->org_volume;
+				song->volume=audio_music_global_volume;
 				song->fade_mode=music_fade_mode_none;
 				break;
 
 			case music_fade_mode_out_fade_in:
-				al_music_fade_in(song->fade_next_name,song->fade_next_msec,err_str);
+				al_music_fade_in(audio_music_fade_next_name,audio_music_fade_next_msec,err_str);
 				break;
 				
 			case music_fade_mode_cross_fade:
@@ -616,20 +636,20 @@ void al_music_run_song(audio_music_song_type *song,bool alt_song)
 	switch (song->fade_mode) {
 		
 		case music_fade_mode_in:
-			song->volume=(int)((float)song->org_volume*(((float)dif)/(float)song->fade_msec));
+			song->volume=(int)((float)audio_music_global_volume*(((float)dif)/(float)song->fade_msec));
 			break;
 
 		case music_fade_mode_out:
 		case music_fade_mode_out_fade_in:
-			song->volume=(int)((float)song->org_volume*((float)(song->fade_msec-dif)/(float)song->fade_msec));
+			song->volume=(int)((float)audio_music_global_volume*((float)(song->fade_msec-dif)/(float)song->fade_msec));
 			break;
 			
 		case music_fade_mode_cross_fade:
 			if (alt_song) {
-				song->volume=(int)((float)song->org_volume*(((float)dif)/(float)song->fade_msec));
+				song->volume=(int)((float)audio_music_global_volume*(((float)dif)/(float)song->fade_msec));
 			}
 			else {
-				song->volume=(int)((float)song->org_volume*((float)(song->fade_msec-dif)/(float)song->fade_msec));
+				song->volume=(int)((float)audio_music_global_volume*((float)(song->fade_msec-dif)/(float)song->fade_msec));
 			}
 			break;
 
@@ -640,7 +660,7 @@ void al_music_run_song(audio_music_song_type *song,bool alt_song)
 
 void al_music_run(void)
 {
-	al_music_run_song(&audio_music_song,FALSE);
-	al_music_run_song(&audio_music_alt_song,TRUE);
+	al_music_run_song(audio_music_song_idx,FALSE);
+	al_music_run_song(audio_music_alt_song_idx,TRUE);
 }
 

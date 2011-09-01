@@ -391,10 +391,10 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 		
 	gl_fs_shader_map_start();
 	
-		// any music caches
+		// any music pre-cache
 		
 	progress_next();
-	al_music_init_cache();
+	al_music_map_pre_cache();
 
         // run the course script
 
@@ -556,11 +556,6 @@ void map_end(void)
 		
 	progress_next();
 	map_object_detach_all();
-	
-		// remove music caches
-		
-	progress_next();
-	al_music_release_cache();
 	
 		// map close event
 		

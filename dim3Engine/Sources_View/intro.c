@@ -317,7 +317,7 @@ void intro_close(void)
 {
 		// stop music
 		
-	if (al_music_playing()) al_music_stop();
+	al_music_stop();
 	
 		// shutdown UI
 		
@@ -333,6 +333,8 @@ void intro_close(void)
 void intro_click_game(int skill,int simple_save_idx)
 {
 	char			err_str[256];
+	
+	al_music_stop();
 	
 		// goto running state
 		

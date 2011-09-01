@@ -32,14 +32,16 @@ and can be sold or given away.
 #include "interface.h"
 
 int									audio_buffer_count,
-									audio_global_sound_volume;
+									audio_global_sound_volume,audio_music_global_volume,
+									audio_music_song_idx,audio_music_alt_song_idx;
 float								audio_listener_ang_y;
+bool								audio_music_paused,audio_music_loop;
 d3pnt								audio_listener_pnt;
 audio_buffer_type					audio_buffers[audio_max_buffer];
 audio_play_type						audio_plays[audio_max_play];
+audio_music_song_type				audio_music_song_cache[music_max_song_cache];
 
 extern camera_type					camera;
-extern audio_music_song_type		audio_music_song,audio_music_alt_song;
 
 /* =======================================================
 
@@ -49,14 +51,15 @@ extern audio_music_song_type		audio_music_song,audio_music_alt_song;
 
 void audio_callback(void *userdata,Uint8 *stream,int len)
 {
-	int					n,k,pos,stream_len,dist,vol,
-						data,left_channel,right_channel;
-	short				*s_stream;
-	float				ang;
-	double				d_ang;
-	bool				has_play;
-	audio_buffer_type	*buffer;
-	audio_play_type		*play;
+	int						n,k,pos,stream_len,dist,vol,
+							data,left_channel,right_channel;
+	short					*s_stream;
+	float					ang;
+	double					d_ang;
+	bool					has_play;
+	audio_buffer_type		*buffer;
+	audio_play_type			*play;
+	audio_music_song_type	*song;
 
 		// calculate pitch and left/right channel multiplications
 		// here.  We use a x/1024 factor to save on having to do
@@ -75,7 +78,7 @@ void audio_callback(void *userdata,Uint8 *stream,int len)
 
 		play->mix=FALSE;
 
-			// we have at least one sound
+			// we have at least one audio_music_song_idx,audio_music_alt_song_idxsound
 
 		has_play=TRUE;
 
@@ -137,8 +140,11 @@ void audio_callback(void *userdata,Uint8 *stream,int len)
 
 		// if no plays or music, skip audio mix
 
-	if ((!has_play) && (!audio_music_song.playing) && (!audio_music_alt_song.playing)) return;
-
+	if (!has_play) {
+		if (audio_music_paused) return;
+		if ((audio_music_song_idx==-1) && (audio_music_alt_song_idx==-1)) return;
+	}
+	
 		// mix the audio
 
 	s_stream=(short*)stream;
@@ -199,52 +205,56 @@ void audio_callback(void *userdata,Uint8 *stream,int len)
 		
 			// add in the music
 
-		if (audio_music_song.playing) {
-			pos=(int)audio_music_song.stream_pos;
-
-			data=(int)(*(audio_music_song.data+pos));
-			left_channel+=((data*audio_music_song.volume)>>10);
+		if ((audio_music_song_idx!=-1) && (!audio_music_paused)) {
+			song=&audio_music_song_cache[audio_music_song_idx];
 			
-			data=(int)(*(audio_music_song.data+(pos+1)));
-			right_channel+=((data*audio_music_song.volume)>>10);
+			pos=(int)song->stream_pos;
 
-			audio_music_song.stream_pos+=audio_music_song.freq_factor;		// in stereo
+			data=(int)(*(song->data+pos));
+			left_channel+=((data*song->volume)>>10);
+			
+			data=(int)(*(song->data+(pos+1)));
+			right_channel+=((data*song->volume)>>10);
+
+			song->stream_pos+=song->freq_factor;		// in stereo
 
 				// time to loop?
 
-			if (audio_music_song.stream_pos>=audio_music_song.f_sample_len) {
-				if (audio_music_song.loop) {
-					audio_music_song.stream_pos=audio_music_song.stream_pos-audio_music_song.f_sample_len;
+			if (song->stream_pos>=song->f_sample_len) {
+				if (audio_music_loop) {
+					song->stream_pos=song->stream_pos-song->f_sample_len;
 				}
 				else {
-					audio_music_song.stream_pos=0.0f;
-					audio_music_song.playing=FALSE;
+					song->stream_pos=0.0f;
+					audio_music_song_idx=-1;
 				}
 			}
 		}
 		
 			// add in the alt music (for cross fades)
 
-		if (audio_music_alt_song.playing) {
-			pos=(int)audio_music_alt_song.stream_pos;
-
-			data=(int)(*(audio_music_alt_song.data+pos));
-			left_channel+=((data*audio_music_alt_song.volume)>>10);
+		if ((audio_music_alt_song_idx!=-1) && (!audio_music_paused)) {
+			song=&audio_music_song_cache[audio_music_alt_song_idx];
 			
-			data=(int)(*(audio_music_alt_song.data+(pos+1)));
-			right_channel+=((data*audio_music_alt_song.volume)>>10);
+			pos=(int)song->stream_pos;
 
-			audio_music_alt_song.stream_pos+=audio_music_alt_song.freq_factor;		// in stereo
+			data=(int)(*(song->data+pos));
+			left_channel+=((data*song->volume)>>10);
+			
+			data=(int)(*(song->data+(pos+1)));
+			right_channel+=((data*song->volume)>>10);
+
+			song->stream_pos+=song->freq_factor;		// in stereo
 
 				// time to loop?
 
-			if (audio_music_alt_song.stream_pos>=audio_music_alt_song.f_sample_len) {
-				if (audio_music_alt_song.loop) {
-					audio_music_alt_song.stream_pos=audio_music_alt_song.stream_pos-audio_music_alt_song.f_sample_len;
+			if (song->stream_pos>=song->f_sample_len) {
+				if (audio_music_loop) {
+					song->stream_pos=song->stream_pos-song->f_sample_len;
 				}
 				else {
-					audio_music_alt_song.stream_pos=0.0f;
-					audio_music_alt_song.playing=FALSE;
+					song->stream_pos=0.0f;
+					audio_music_alt_song_idx=-1;
 				}
 			}
 		}
