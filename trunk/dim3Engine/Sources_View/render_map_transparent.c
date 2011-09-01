@@ -253,13 +253,14 @@ void render_transparent_mesh_normal(void)
 		gl_texture_transparent_light_map_set(gl_id,lmap_gl_id,1.0f);
 		
 		glDrawElements(GL_TRIANGLE_FAN,poly->ptsz,GL_UNSIGNED_SHORT,(GLvoid*)poly->vbo.index_offset);
-		
-		view.count.mesh_poly++;
 	}
 	
 		// if we setup a mesh, end the vbo
 		
 	if (cur_mesh_idx!=-1) {
+		
+		view.count.mesh++;
+
 		view_unbind_mesh_liquid_vertex_object();
 		view_unbind_mesh_liquid_index_object();
 	}

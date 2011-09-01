@@ -340,6 +340,7 @@ extern bool effect_spawn_shake(d3pnt *pt,int distance,int size,int life_msec);
 extern void effect_draw_lightning(effect_type *effect);
 extern void effect_draw_ray(effect_type *effect,int count);
 extern void effect_image_animate_get_uv(int tick,iface_image_animation_type *animate,float *gx,float *gy,float *g_size);
+extern void effect_draw_get_bound_box(effect_type *effect,d3pnt *min,d3pnt *max);
 extern void effect_draw(void);
 extern iface_particle_type* particle_find(char *name);
 extern int particle_find_index(char *name);
@@ -798,7 +799,7 @@ extern bool view_cull_mesh(map_mesh_type *mesh);
 extern bool view_cull_liquid(map_liquid_type *liq);
 extern bool view_cull_model(model_draw *draw);
 extern bool view_model_shadow(model_draw *draw);
-extern bool view_cull_effect(effect_type *effect,int count,d3pnt *center_pnt);
+extern bool view_cull_effect(effect_type *effect,d3pnt *center_pnt);
 extern bool view_cull_halo(d3pnt *pnt);
 
 //
@@ -915,6 +916,9 @@ extern void rain_draw(void);
 
 extern void draw_weapon_hand(obj_type *obj,weapon_type *weap);
 extern void decal_render(void);
+
+extern void particle_draw_position(effect_type *effect,int count,int *x,int *y,int *z);
+extern void ring_draw_position(effect_type *effect,int count,int *x,int *y,int *z);
 
 //
 // chats

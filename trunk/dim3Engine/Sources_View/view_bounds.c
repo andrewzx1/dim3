@@ -39,9 +39,6 @@ extern server_type			server;
 extern iface_type			iface;
 extern setup_type			setup;
 
-extern void particle_draw_position(effect_type *effect,int count,int *x,int *y,int *z);
-extern void ring_draw_position(effect_type *effect,int count,int *x,int *y,int *z);
-
 /* =======================================================
 
       Bounding Boxes in View
@@ -198,7 +195,7 @@ bool view_cull_mesh(map_mesh_type *mesh)
 
 		// check bounding box
 
-	return(view_cull_check_boundbox(mesh->box.min.x,mesh->box.min.z,mesh->box.max.x,mesh->box.max.z,mesh->box.min.y,mesh->box.max.y));
+	return(view_cull_check_boundbox_2(&mesh->box.min,&mesh->box.max));
 }
 
 bool view_cull_liquid(map_liquid_type *liq)
@@ -287,11 +284,10 @@ bool view_model_shadow(model_draw *draw)
 	return(view_cull_check_boundbox_2(&min,&max));
 }
 
-bool view_cull_effect(effect_type *effect,int count,d3pnt *center_pnt)
+bool view_cull_effect(effect_type *effect,d3pnt *center_pnt)
 {
-	int					x,y,z,lx,rx,tz,bz,ty,by,gravity_y,k,size;
 	double				obscure_dist;
-	iface_particle_type	*particle;
+	d3pnt				min,max;
 
 		// check obscure distance
 
@@ -309,98 +305,19 @@ bool view_cull_effect(effect_type *effect,int count,d3pnt *center_pnt)
 	if (view_cull_distance_to_view_center(effect->pnt.x,effect->pnt.y,effect->pnt.z)>obscure_dist) return(FALSE);
 	
 		// get box
-		
-	switch (effect->effecttype) {
 
-		case ef_particle:
-			particle_draw_position(effect,count,&x,&y,&z);
-
-			size=effect->size;
-			lx=x-(size>>1);
-			rx=lx+size;
-			tz=z-(size>>1);
-			bz=tz+size;
-			by=y;
-			ty=by-size;
-
-			particle=&iface.particle_list.particles[effect->data.particle.particle_idx];
-			gravity_y=(int)particle_get_gravity(particle,count);
-
-			if (gravity_y<0) {
-				ty+=gravity_y;
-			}
-			else {
-				by+=gravity_y;
-			}
-			
-			break;
-
-		case ef_ring:
-			ring_draw_position(effect,count,&x,&y,&z);
-			size=effect->size;
-			lx=x-(size>>1);
-			rx=lx+size;
-			tz=z-(size>>1);
-			bz=tz+size;
-			by=y;
-			ty=by-size;
-			break;
-
-		case ef_lightning:
-			lx=effect->data.lightning.start_pnt.x;
-			rx=effect->data.lightning.end_pnt.x;
-			tz=effect->data.lightning.start_pnt.z;
-			bz=effect->data.lightning.end_pnt.z;
-			ty=effect->data.lightning.start_pnt.y;
-			by=effect->data.lightning.end_pnt.y;
-			break;
-
-		case ef_ray:
-			lx=effect->data.ray.start_pnt.x;
-			rx=effect->data.ray.end_pnt.x;
-			tz=effect->data.ray.start_pnt.z;
-			bz=effect->data.ray.end_pnt.z;
-			ty=effect->data.ray.start_pnt.y;
-			by=effect->data.ray.end_pnt.y;
-			break;
-
-		default:
-			size=effect->size;
-			lx=effect->pnt.x-(size>>1);
-			rx=lx+size;
-			tz=effect->pnt.z-(size>>1);
-			bz=tz+size;
-			by=effect->pnt.y;
-			ty=by-size;
-			break;
-	}
-	
-	if (lx>rx) {
-		k=lx;
-		lx=rx;
-		rx=k;
-	}
-	if (tz>bz) {
-		k=tz;
-		tz=bz;
-		bz=k;
-	}
-	if (ty>by) {
-		k=ty;
-		ty=by;
-		by=k;
-	}
+	effect_draw_get_bound_box(effect,&min,&max);
 	
 		// remember center position for
 		// distance calcs
 		
-	center_pnt->x=(lx+rx)>>1;
-	center_pnt->y=(ty+by)>>1;
-	center_pnt->z=(tz+bz)>>1;
+	center_pnt->x=(min.x+max.x)>>1;
+	center_pnt->y=(min.y+max.y)>>1;
+	center_pnt->z=(min.z+max.z)>>1;
 	
 		// check bounds
 		
-	return(view_cull_check_boundbox(lx,tz,rx,bz,ty,by));
+	return(view_cull_check_boundbox_2(&min,&max));
 }
 
 bool view_cull_halo(d3pnt *pnt)

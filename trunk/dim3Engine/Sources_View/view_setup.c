@@ -376,7 +376,7 @@ void view_setup_projectiles(int tick)
       
 ======================================================= */
 
-void view_add_effect_draw_list(int tick)
+void view_add_effect_draw_list(void)
 {
 	int					n;
 	double				d;
@@ -397,7 +397,7 @@ void view_add_effect_draw_list(int tick)
 				
 			// check for effect culling
 
-		if (!view_cull_effect(effect,(tick-effect->start_tick),&center_pnt)) continue;
+		if (!view_cull_effect(effect,&center_pnt)) continue;
 
 			// sort effects into drawing list
 			

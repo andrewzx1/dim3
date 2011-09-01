@@ -136,6 +136,10 @@ void property_palette_fill(void)
 				property_palette_fill_camera();
 				return;
 
+			case map_light_media_piece:
+				property_palette_fill_light_media();
+				return;
+
 			case map_sky_weather_piece:
 				property_palette_fill_sky_weather();
 				return;
@@ -302,6 +306,10 @@ bool property_palette_click(d3pnt *pnt,bool double_click)
 
 			case map_camera_piece:
 				property_palette_click_camera(property_palette.item_id,double_click);
+				return(TRUE);
+
+			case map_light_media_piece:
+				property_palette_click_light_media(property_palette.item_id,double_click);
 				return(TRUE);
 
 			case map_sky_weather_piece:

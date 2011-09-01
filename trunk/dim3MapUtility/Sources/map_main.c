@@ -86,6 +86,7 @@ bool map_new(map_type *map,char *name)
 	map->optimize.never_cull=FALSE;
 	map->optimize.cull_angle=0.0f;
 	map->optimize.no_shaders=FALSE;
+	map->optimize.ray_trace_obscure=FALSE;
 	map->optimize.obscure_dist.model=0;
 	map->optimize.obscure_dist.shadow=0;
 	map->optimize.obscure_dist.effect=0;
