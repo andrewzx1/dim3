@@ -42,7 +42,7 @@ zlib1.dll (for ZLib)
 You can get these by downloading the current win32 version of dim3.
 
 
-For iPhone Compile:
+For iOS Compile:
 -----------------
 
 /iPadBuild/Libraries/JavaScriptCore (Javascript static lib and headers)
@@ -61,17 +61,11 @@ the run script in the engine build, this copies the data folder into the executa
 
 ============================================================================================
 
-Compiling Order:
+The Projects:
 
-On both OS X and Win32, the projects must be compiled in this order:
-
-dim3BaseUtility
-dim3ModelUtility (needs Base)
-dim3MapUtility (needs Base)
-dim3Engine (needs Base, Model, and Map)
-dim3Editor (needs Base, Model, and Map)
-dim3Animator (needs Base, Model)
-dim3Setup (needs Base)
+The OS X Xcode projects are in each directory.
+The iOS compile is in the iPadBuild directory.
+The win32 projects are in the winbuild directory.
 
 ============================================================================================
 
@@ -79,5 +73,4 @@ Pre-processor Macros:
 
 D3_ENGINE, D3_EDITOR, D3_ANIMATOR, D3_SETUP = which program we are compiling
 TARGET_IPHONE = for the iphone compile
-INCLUDE_UTILITY_LIBRARIES = for compiles where all the files are compiled together instead of in libraries (like the iphone port)
 

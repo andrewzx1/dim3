@@ -40,18 +40,21 @@ and can be sold or given away.
 #include "mpg123.h"
 
 //
-// Application Headers
+// Utility Headers
 //
 
 #include "baseutility.h"
-#include "modelutility.h"
-#include "maputility.h"
+#include "baseprivate.h"
 
-#ifdef INCLUDE_UTILITY_LIBRARIES
-	#include "baseprivate.h"
-	#include "modelprivate.h"
-	#include "mapprivate.h"
-#endif
+#include "modelutility.h"
+#include "modelprivate.h"
+
+#include "maputility.h"
+#include "mapprivate.h"
+
+//
+// Application Headers
+//
 
 #include "setup_defs.h"
 #include "script_defs.h"
