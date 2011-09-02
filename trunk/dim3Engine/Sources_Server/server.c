@@ -64,13 +64,13 @@ bool server_initialize(char *err_str)
 	memset(&js,0x0,sizeof(js_type));
 	
 		// allocate memory
-		
+
 	if (!iface_initialize(&iface,&setup.file_path_setup)) {
 		iface_shutdown(&iface);
 		strcpy(err_str,"Out of Memory");
 		return(FALSE);
 	}
-	
+
 		// start script engine
 		
 	if (!scripts_engine_initialize(err_str)) {
@@ -81,7 +81,7 @@ bool server_initialize(char *err_str)
 		// load project XML
 		
 	iface_read(&iface);
-	
+
 		// game states
 		
 	server.game_open=FALSE;

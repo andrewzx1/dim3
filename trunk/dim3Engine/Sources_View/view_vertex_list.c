@@ -359,6 +359,7 @@ void view_map_vbo_rebuild_mesh(map_mesh_type *mesh)
 				*pf++=(float)pnt->z;
 				
 				if (shader_on) {
+					pf+=4;
 					*pf++=poly->tangent_space.tangent.x;
 					*pf++=poly->tangent_space.tangent.y;
 					*pf++=poly->tangent_space.tangent.z;
