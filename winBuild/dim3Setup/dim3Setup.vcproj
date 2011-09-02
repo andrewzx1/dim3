@@ -113,7 +113,7 @@
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
 				WholeProgramOptimization="false"
-				AdditionalIncludeDirectories=".;..\Libraries;..\Libraries\GLEW;..\Libraries\ZLib;..\Libraries\SDL;..\Libraries\PNG;..\..\dim3Setup\Code;..\..\dim3Setup\Headers;..\..\dim3Common\Headers;..\Common;..\Common\Code;..\Common\Headers"
+				AdditionalIncludeDirectories=".;..\Libraries;..\Libraries\GLEW;..\Libraries\ZLib;..\Libraries\SDL;..\Libraries\PNG;..\..\dim3Setup\Code;..\..\dim3Setup\Headers;..\..\dim3Common\Headers;..\..\dim3BaseUtility\Headers;..\..\dim3BaseUtility\Sources;..\Common\Code;..\Common\Headers"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;D3_PCH;D3_SETUP"
 				StringPooling="true"
 				ExceptionHandling="0"
@@ -184,14 +184,6 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<Filter
-				Name="dim3 Libraries"
-				>
-				<File
-					RelativePath="..\Libraries\dim3\dim3BaseUtility.lib"
-					>
-				</File>
-			</Filter>
-			<Filter
 				Name="glew"
 				>
 				<File
@@ -210,10 +202,6 @@
 			<Filter
 				Name="Headers"
 				>
-				<File
-					RelativePath="..\..\dim3Common\Headers\baseutility.h"
-					>
-				</File>
 				<File
 					RelativePath="..\..\dim3Common\Headers\os_defs.h"
 					>
@@ -538,6 +526,170 @@
 				</File>
 				<File
 					RelativePath="..\..\dim3Common\Headers\ui_common.h"
+					>
+				</File>
+			</Filter>
+		</Filter>
+		<Filter
+			Name="dim3BaseUtility"
+			>
+			<Filter
+				Name="Headers"
+				>
+				<File
+					RelativePath="..\..\dim3BaseUtility\Headers\baseprivate.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3BaseUtility\Headers\baseutility.h"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3BaseUtility\Headers\dim3baseutility.h"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Sources"
+				>
+				<File
+					RelativePath="..\..\dim3BaseUtility\Sources\base_bitmap_main.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3BaseUtility\Sources\base_bitmap_pngutility.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3BaseUtility\Sources\base_bitmap_text.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3BaseUtility\Sources\base_bitmap_textures.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3BaseUtility\Sources\base_file_paths.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3BaseUtility\Sources\base_file_search.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3BaseUtility\Sources\base_iface_action.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3BaseUtility\Sources\base_iface_chooser.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3BaseUtility\Sources\base_iface_crosshairs.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3BaseUtility\Sources\base_iface_halos.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3BaseUtility\Sources\base_iface_interface.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3BaseUtility\Sources\base_iface_main.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3BaseUtility\Sources\base_iface_mark.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3BaseUtility\Sources\base_iface_multiplayer.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3BaseUtility\Sources\base_iface_particle.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3BaseUtility\Sources\base_iface_ring.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3BaseUtility\Sources\base_iface_shader.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3BaseUtility\Sources\base_iface_simple_save.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3BaseUtility\Sources\base_iface_sound.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3BaseUtility\Sources\base_lines.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3BaseUtility\Sources\base_math_acceleration.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3BaseUtility\Sources\base_math_angles.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3BaseUtility\Sources\base_math_area.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3BaseUtility\Sources\base_math_clip.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3BaseUtility\Sources\base_math_distance.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3BaseUtility\Sources\base_math_fast_trig.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3BaseUtility\Sources\base_math_matrix.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3BaseUtility\Sources\base_math_polygons.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3BaseUtility\Sources\base_math_random.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3BaseUtility\Sources\base_math_rotations.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3BaseUtility\Sources\base_math_vector.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3BaseUtility\Sources\base_strings.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3BaseUtility\Sources\base_time.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3BaseUtility\Sources\base_xml.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3BaseUtility\Sources\base_zip.c"
 					>
 				</File>
 			</Filter>

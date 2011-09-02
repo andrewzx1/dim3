@@ -107,19 +107,19 @@ typedef struct		{
 //
 
 extern void time_start(void);
-extern int time_get(void);
+extern inline int time_get(void);
 
 extern void random_reset(void);
-extern int random_int(int max);
-extern float random_float(float max);
-extern bool random_boolean(void);
-extern int random_int_spread(int spread);
+extern inline int random_int(int max);
+extern inline float random_float(float max);
+extern inline bool random_boolean(void);
+extern inline int random_int_spread(int spread);
 
 extern void matrix_identity(matrix_type *mat);
 extern void matrix_multiply(matrix_type *mat_1,matrix_type *mat_2);
-extern void matrix_vertex_multiply(matrix_type *mat,float *x,float *y,float *z);
-extern void matrix_vertex_multiply_ignore_transform(matrix_type *mat,float *x,float *y,float *z);
-extern void matrix_angle_multiply(matrix_type *mat,float *x,float *y,float *z);
+extern inline void matrix_vertex_multiply(matrix_type *mat,float *x,float *y,float *z);
+extern inline void matrix_vertex_multiply_ignore_transform(matrix_type *mat,float *x,float *y,float *z);
+extern inline void matrix_angle_multiply(matrix_type *mat,float *x,float *y,float *z);
 extern void matrix_rotate_x(matrix_type *mat,float ang);
 extern void matrix_rotate_y(matrix_type *mat,float ang);
 extern void matrix_rotate_z(matrix_type *mat,float ang);
@@ -132,17 +132,17 @@ extern void matrix_translate(matrix_type *mat,float x,float y,float z);
 extern void matrix_average(matrix_type *mat,int nmatrix,matrix_type *mats);
 
 extern void vector_normalize(d3vct *v);
-extern void vector_create(d3vct *v,int x1,int y1,int z1,int x2,int y2,int z2);
-extern void vector_scalar_multiply(d3vct *v,d3vct *v1,float f);
-extern void vector_add(d3vct *v,d3vct *v1,d3vct *v2);
-extern void vector_subtract(d3vct *v,d3vct *v1,d3vct *v2);
-extern void vector_cross_product(d3vct *v,d3vct *v1,d3vct *v2);
-extern float vector_dot_product(d3vct *v1,d3vct *v2);
+extern inline void vector_create(d3vct *v,int x1,int y1,int z1,int x2,int y2,int z2);
+extern inline void vector_scalar_multiply(d3vct *v,d3vct *v1,float f);
+extern inline void vector_add(d3vct *v,d3vct *v1,d3vct *v2);
+extern inline void vector_subtract(d3vct *v,d3vct *v1,d3vct *v2);
+extern inline void vector_cross_product(d3vct *v,d3vct *v1,d3vct *v2);
+extern inline float vector_dot_product(d3vct *v1,d3vct *v2);
 
 extern void fast_trig_setup(void);
-extern float fast_atan2f(float y,float x);
-extern float fast_sinf(float x);
-extern float fast_cosf(float x);
+extern inline float fast_atan2f(float y,float x);
+extern inline float fast_sinf(float x);
+extern inline float fast_cosf(float x);
 
 extern float angle_add(float ang1,float ang2);
 extern float angle_dif(float ang1,float ang2,bool *cwise);
@@ -186,9 +186,9 @@ extern int polygon_find_y_outside_point(int ptsz,int *px,int *py,int *pz,int kx,
 extern int area_2D_trig(int *px,int *py);
 extern int area_2D_polygon(int ptsz,int *px,int *py);
 
-extern int distance_get(int x,int y,int z,int tox,int toy,int toz);
-extern bool distance_check(int x,int y,int z,int tox,int toy,int toz,int max_distance);
-extern int distance_2D_get(int x,int z,int tox,int toz);
+extern inline int distance_get(int x,int y,int z,int tox,int toy,int toz);
+extern inline bool distance_check(int x,int y,int z,int tox,int toy,int toz,int max_distance);
+extern inline int distance_2D_get(int x,int z,int tox,int toz);
 
 extern void clip_line_to_2D_horizontal_line(int clip_z,int *x,int *y,int *z,int x1,int y1,int z1,int x2,int y2,int z2);
 extern void clip_line_to_2D_vertical_line(int clip_x,int *x,int *y,int *z,int x1,int y1,int z1,int x2,int y2,int z2);
