@@ -40,7 +40,10 @@ and can be sold or given away.
 //
 
 #include "baseutility.h"
+#include "baseprivate.h"
+
 #include "modelutility.h"
+#include "modelprivate.h"
 
 //
 // Application Headers

@@ -3848,6 +3848,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\dim3BaseUtility\Headers\baseutility.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\dim3BaseUtility\Headers\dim3baseutility.h"
 					>
 				</File>
@@ -3856,19 +3860,11 @@
 				Name="Sources"
 				>
 				<File
-					RelativePath="..\..\dim3BaseUtility\Sources\base_acceleration.c"
-					>
-				</File>
-				<File
-					RelativePath="..\..\dim3BaseUtility\Sources\base_angles.c"
-					>
-				</File>
-				<File
-					RelativePath="..\..\dim3BaseUtility\Sources\base_area.c"
-					>
-				</File>
-				<File
 					RelativePath="..\..\dim3BaseUtility\Sources\base_bitmap_main.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3BaseUtility\Sources\base_bitmap_pngutility.c"
 					>
 				</File>
 				<File
@@ -3876,15 +3872,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\dim3BaseUtility\Sources\base_clip.c"
-					>
-				</File>
-				<File
-					RelativePath="..\..\dim3BaseUtility\Sources\base_distance.c"
-					>
-				</File>
-				<File
-					RelativePath="..\..\dim3BaseUtility\Sources\base_fast_trig.c"
+					RelativePath="..\..\dim3BaseUtility\Sources\base_bitmap_textures.c"
 					>
 				</File>
 				<File
@@ -3952,23 +3940,47 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\dim3BaseUtility\Sources\base_matrix.c"
+					RelativePath="..\..\dim3BaseUtility\Sources\base_math_acceleration.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\dim3BaseUtility\Sources\base_pngutility.c"
+					RelativePath="..\..\dim3BaseUtility\Sources\base_math_angles.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\dim3BaseUtility\Sources\base_polygons.c"
+					RelativePath="..\..\dim3BaseUtility\Sources\base_math_area.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\dim3BaseUtility\Sources\base_random.c"
+					RelativePath="..\..\dim3BaseUtility\Sources\base_math_clip.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\dim3BaseUtility\Sources\base_rotations.c"
+					RelativePath="..\..\dim3BaseUtility\Sources\base_math_distance.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3BaseUtility\Sources\base_math_fast_trig.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3BaseUtility\Sources\base_math_matrix.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3BaseUtility\Sources\base_math_polygons.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3BaseUtility\Sources\base_math_random.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3BaseUtility\Sources\base_math_rotations.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3BaseUtility\Sources\base_math_vector.c"
 					>
 				</File>
 				<File
@@ -3976,15 +3988,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\dim3BaseUtility\Sources\base_textures.c"
-					>
-				</File>
-				<File
 					RelativePath="..\..\dim3BaseUtility\Sources\base_time.c"
-					>
-				</File>
-				<File
-					RelativePath="..\..\dim3BaseUtility\Sources\base_vector.c"
 					>
 				</File>
 				<File
@@ -4011,92 +4015,96 @@
 					RelativePath="..\..\dim3ModelUtility\Headers\modelprivate.h"
 					>
 				</File>
+				<File
+					RelativePath="..\..\dim3ModelUtility\Headers\modelutility.h"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="Sources"
 				>
 				<File
-					RelativePath="..\..\dim3ModelUtility\Sources\model_animation.c"
+					RelativePath="..\..\dim3ModelUtility\Sources\model_util_animation.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\dim3ModelUtility\Sources\model_bone.c"
+					RelativePath="..\..\dim3ModelUtility\Sources\model_util_bone.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\dim3ModelUtility\Sources\model_calculate.c"
+					RelativePath="..\..\dim3ModelUtility\Sources\model_util_calculate.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\dim3ModelUtility\Sources\model_draw_bones.c"
+					RelativePath="..\..\dim3ModelUtility\Sources\model_util_draw_bones.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\dim3ModelUtility\Sources\model_draw_normals.c"
+					RelativePath="..\..\dim3ModelUtility\Sources\model_util_draw_normals.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\dim3ModelUtility\Sources\model_draw_setup.c"
+					RelativePath="..\..\dim3ModelUtility\Sources\model_util_draw_setup.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\dim3ModelUtility\Sources\model_draw_vertexes.c"
+					RelativePath="..\..\dim3ModelUtility\Sources\model_util_draw_vertexes.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\dim3ModelUtility\Sources\model_file_animate.c"
+					RelativePath="..\..\dim3ModelUtility\Sources\model_util_file_animate.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\dim3ModelUtility\Sources\model_file_mesh.c"
+					RelativePath="..\..\dim3ModelUtility\Sources\model_util_file_mesh.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\dim3ModelUtility\Sources\model_file_pose.c"
+					RelativePath="..\..\dim3ModelUtility\Sources\model_util_file_pose.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\dim3ModelUtility\Sources\model_file_texture.c"
+					RelativePath="..\..\dim3ModelUtility\Sources\model_util_frames.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\dim3ModelUtility\Sources\model_frames.c"
+					RelativePath="..\..\dim3ModelUtility\Sources\model_util_hit_box.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\dim3ModelUtility\Sources\model_hit_box.c"
+					RelativePath="..\..\dim3ModelUtility\Sources\model_util_lookup.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\dim3ModelUtility\Sources\model_lookup.c"
+					RelativePath="..\..\dim3ModelUtility\Sources\model_util_main.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\dim3ModelUtility\Sources\model_main.c"
+					RelativePath="..\..\dim3ModelUtility\Sources\model_util_mesh.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\dim3ModelUtility\Sources\model_mesh.c"
+					RelativePath="..\..\dim3ModelUtility\Sources\model_util_normals.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\dim3ModelUtility\Sources\model_normals.c"
+					RelativePath="..\..\dim3ModelUtility\Sources\model_util_pose.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\dim3ModelUtility\Sources\model_pose.c"
+					RelativePath="..\..\dim3ModelUtility\Sources\model_util_positions.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\dim3ModelUtility\Sources\model_positions.c"
+					RelativePath="..\..\dim3ModelUtility\Sources\model_util_size.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\dim3ModelUtility\Sources\model_size.c"
+					RelativePath="..\..\dim3ModelUtility\Sources\model_util_texture.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\dim3ModelUtility\Sources\model_transform.c"
+					RelativePath="..\..\dim3ModelUtility\Sources\model_util_transform.c"
 					>
 				</File>
 			</Filter>
@@ -4115,72 +4123,76 @@
 					RelativePath="..\..\dim3MapUtility\Headers\mapprivate.h"
 					>
 				</File>
+				<File
+					RelativePath="..\..\dim3MapUtility\Headers\maputility.h"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="Sources"
 				>
 				<File
-					RelativePath="..\..\dim3MapUtility\Sources\map_cinema.c"
+					RelativePath="..\..\dim3MapUtility\Sources\map_util_cinema.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\dim3MapUtility\Sources\map_file_read.c"
+					RelativePath="..\..\dim3MapUtility\Sources\map_util_frames.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\dim3MapUtility\Sources\map_file_texture.c"
+					RelativePath="..\..\dim3MapUtility\Sources\map_util_groups.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\dim3MapUtility\Sources\map_file_write.c"
+					RelativePath="..\..\dim3MapUtility\Sources\map_util_liquid.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\dim3MapUtility\Sources\map_frames.c"
+					RelativePath="..\..\dim3MapUtility\Sources\map_util_liquid_update.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\dim3MapUtility\Sources\map_groups.c"
+					RelativePath="..\..\dim3MapUtility\Sources\map_util_main.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\dim3MapUtility\Sources\map_liquid.c"
+					RelativePath="..\..\dim3MapUtility\Sources\map_util_mesh.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\dim3MapUtility\Sources\map_liquid_update.c"
+					RelativePath="..\..\dim3MapUtility\Sources\map_util_mesh_update.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\dim3MapUtility\Sources\map_main.c"
+					RelativePath="..\..\dim3MapUtility\Sources\map_util_movements.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\dim3MapUtility\Sources\map_mesh.c"
+					RelativePath="..\..\dim3MapUtility\Sources\map_util_nodes.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\dim3MapUtility\Sources\map_mesh_update.c"
+					RelativePath="..\..\dim3MapUtility\Sources\map_util_normals.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\dim3MapUtility\Sources\map_movements.c"
+					RelativePath="..\..\dim3MapUtility\Sources\map_util_prepare.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\dim3MapUtility\Sources\map_nodes.c"
+					RelativePath="..\..\dim3MapUtility\Sources\map_util_read.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\dim3MapUtility\Sources\map_normals.c"
+					RelativePath="..\..\dim3MapUtility\Sources\map_util_spots.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\dim3MapUtility\Sources\map_prepare.c"
+					RelativePath="..\..\dim3MapUtility\Sources\map_util_texture.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\dim3MapUtility\Sources\map_spots.c"
+					RelativePath="..\..\dim3MapUtility\Sources\map_util_write.c"
 					>
 				</File>
 			</Filter>
