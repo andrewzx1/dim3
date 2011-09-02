@@ -302,6 +302,18 @@ bool view_initialize(char *err_str)
 		return(FALSE);
 	}
 	
+		// fix resolution if no switch is on
+		// mobile platforms always turn off resolution switching
+		
+#ifdef D3_OS_IPHONE
+	iface.setup.no_resolution_switch=TRUE;
+#endif
+
+	if (iface.setup.no_resolution_switch) {
+		setup.screen_wid=setup.screen_high=-1;
+		setup.window=FALSE;
+	}
+	
 		// get desktop screen size
 		
 #ifdef D3_SDL_1_3

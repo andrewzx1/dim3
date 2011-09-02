@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		260B3BF014105015006ED023 /* view_obscure.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B3BEF14105015006ED023 /* view_obscure.c */; };
 		2638D23E13ED0A8D00029B18 /* bitmap_cocoa.m in Sources */ = {isa = PBXBuildFile; fileRef = 2638D23D13ED0A8D00029B18 /* bitmap_cocoa.m */; };
 		2638D24113ED0AD600029B18 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2638D24013ED0AD600029B18 /* UIKit.framework */; };
 		2638D27413EE446000029B18 /* view_primitive.c in Sources */ = {isa = PBXBuildFile; fileRef = 2638D27313EE446000029B18 /* view_primitive.c */; };
@@ -431,6 +432,7 @@
 		2608F92013DE7355008D410D /* SDL_video.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDL_video.h; path = ../Libraries/SDL/SDL_video.h; sourceTree = "<group>"; };
 		2608F92113DE7355008D410D /* SDL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SDL.h; path = ../Libraries/SDL/SDL.h; sourceTree = "<group>"; };
 		2608F92213DE7360008D410D /* mpg123.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mpg123.h; path = ../Libraries/MPG123/mpg123.h; sourceTree = "<group>"; };
+		260B3BEF14105015006ED023 /* view_obscure.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = view_obscure.c; sourceTree = "<group>"; };
 		2638D23D13ED0A8D00029B18 /* bitmap_cocoa.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = bitmap_cocoa.m; sourceTree = "<group>"; };
 		2638D24013ED0AD600029B18 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		2638D27313EE446000029B18 /* view_primitive.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = view_primitive.c; sourceTree = "<group>"; };
@@ -1562,6 +1564,7 @@
 				26D6BFC713E243510087FFD4 /* view_draw_debug.c */,
 				26D6BFC813E243510087FFD4 /* view_images.c */,
 				26D6BFC913E243510087FFD4 /* view_run.c */,
+				260B3BEF14105015006ED023 /* view_obscure.c */,
 				26D6BFCA13E243510087FFD4 /* view_setup.c */,
 				26D6BFCB13E243510087FFD4 /* view_vertex_list.c */,
 				26D6BFCC13E243510087FFD4 /* view_vertex_object.c */,
@@ -1999,6 +2002,7 @@
 				2643488313E63C1E00920D9B /* virtual_draw.c in Sources */,
 				2638D23E13ED0A8D00029B18 /* bitmap_cocoa.m in Sources */,
 				2638D27413EE446000029B18 /* view_primitive.c in Sources */,
+				260B3BF014105015006ED023 /* view_obscure.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

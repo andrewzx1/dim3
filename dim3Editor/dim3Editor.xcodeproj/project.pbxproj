@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		260B3BE414103A3A006ED023 /* property_palette_light_media.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B3BE314103A3A006ED023 /* property_palette_light_media.c */; };
 		260C1471129C777100B6D5B5 /* property_palette_node.c in Sources */ = {isa = PBXBuildFile; fileRef = 260C146E129C777100B6D5B5 /* property_palette_node.c */; };
 		260C1472129C777100B6D5B5 /* property_palette_particle.c in Sources */ = {isa = PBXBuildFile; fileRef = 260C146F129C777100B6D5B5 /* property_palette_particle.c */; };
 		260C1473129C777100B6D5B5 /* property_palette_scenery.c in Sources */ = {isa = PBXBuildFile; fileRef = 260C1470129C777100B6D5B5 /* property_palette_scenery.c */; };
@@ -295,6 +296,7 @@
 		0123D86700C0AFD57F000001 /* nodes.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = nodes.c; path = Code/nodes.c; sourceTree = "<group>"; };
 		0867D6ABFE840B52C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		20286C33FDCF999611CA2CEA /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
+		260B3BE314103A3A006ED023 /* property_palette_light_media.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_light_media.c; path = Code/property_palette_light_media.c; sourceTree = "<group>"; };
 		260C146E129C777100B6D5B5 /* property_palette_node.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_node.c; path = Code/property_palette_node.c; sourceTree = "<group>"; };
 		260C146F129C777100B6D5B5 /* property_palette_particle.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_particle.c; path = Code/property_palette_particle.c; sourceTree = "<group>"; };
 		260C1470129C777100B6D5B5 /* property_palette_scenery.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_scenery.c; path = Code/property_palette_scenery.c; sourceTree = "<group>"; };
@@ -621,6 +623,7 @@
 				26CAEC6912D675A900310691 /* property_utility_common.c */,
 				267FA93512C014F20098B4B8 /* property_palette_map.c */,
 				26D6BC5C13E2112E0087FFD4 /* property_palette_camera.c */,
+				260B3BE314103A3A006ED023 /* property_palette_light_media.c */,
 				26D6BC5D13E2112E0087FFD4 /* property_palette_sky_weather.c */,
 				26EAA39F12CBF01400CF93AF /* property_palette_texture.c */,
 				26F1D2C113035B0A00CDAE6B /* property_palette_editor_preference.c */,
@@ -928,6 +931,7 @@
 				264BC91B13661D900004A4AB /* liquid_reflection_maps.c in Sources */,
 				26D6BC5E13E2112E0087FFD4 /* property_palette_camera.c in Sources */,
 				26D6BC5F13E2112E0087FFD4 /* property_palette_sky_weather.c in Sources */,
+				260B3BE414103A3A006ED023 /* property_palette_light_media.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
