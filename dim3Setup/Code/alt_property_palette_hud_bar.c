@@ -50,6 +50,10 @@ and can be sold or given away.
 #define kBarOutlineColor						11
 #define kBarOutlineAlpha						12
 
+#define kBarSettingsBackground					20
+#define kBarBackgroundColor						21
+#define kBarBackgroundAlpha						22
+
 extern iface_type				iface;
 extern setup_state_type			state;
 extern list_palette_type		alt_property_palette;
@@ -93,9 +97,16 @@ void alt_property_palette_fill_hud_bar(int hud_bar_idx)
 		// outline
 
 	list_palette_add_header(&alt_property_palette,0,"Outline");
-	list_palette_add_checkbox(&alt_property_palette,kBarSettingsOutline,"Outline",bar->outline,FALSE);
+	list_palette_add_checkbox(&alt_property_palette,kBarSettingsOutline,"On",bar->outline,FALSE);
 	list_palette_add_pick_color(&alt_property_palette,kBarOutlineColor,"Color",&bar->outline_color,FALSE);
 	list_palette_add_string_float(&alt_property_palette,kBarOutlineAlpha,"Alpha",bar->outline_alpha,FALSE);
+
+		// background
+
+	list_palette_add_header(&alt_property_palette,0,"Background");
+	list_palette_add_checkbox(&alt_property_palette,kBarSettingsBackground,"On",bar->background,FALSE);
+	list_palette_add_pick_color(&alt_property_palette,kBarBackgroundColor,"Color",&bar->background_color,FALSE);
+	list_palette_add_string_float(&alt_property_palette,kBarBackgroundAlpha,"Alpha",bar->background_alpha,FALSE);
 }
 
 /* =======================================================
@@ -172,6 +183,20 @@ void alt_property_palette_click_hud_bar(int hud_bar_idx,int id,bool double_click
 
 		case kBarOutlineAlpha:
 			dialog_property_string_run(list_string_value_0_to_1_float,(void*)&bar->outline_alpha,0,0,0);
+			break;
+
+			//  background
+
+		case kBarSettingsBackground:
+			bar->background=!bar->background;
+			break;
+
+		case kBarBackgroundColor:
+			os_pick_color(&bar->background_color);
+			break;
+
+		case kBarBackgroundAlpha:
+			dialog_property_string_run(list_string_value_0_to_1_float,(void*)&bar->background_alpha,0,0,0);
 			break;
 
 	}

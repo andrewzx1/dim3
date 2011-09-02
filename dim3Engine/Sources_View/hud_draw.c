@@ -511,9 +511,20 @@ void hud_bars_draw(void)
 		fill_end_color.r=bar->fill_start_color.r+((bar->fill_end_color.r-bar->fill_start_color.r)*bar->value);
 		fill_end_color.g=bar->fill_start_color.g+((bar->fill_end_color.g-bar->fill_start_color.g)*bar->value);
 		fill_end_color.b=bar->fill_start_color.b+((bar->fill_end_color.b-bar->fill_start_color.b)*bar->value);
-		
+
+			// background
+
+		if (bar->background) {
+			lx=bar->x;
+			rx=lx+bar->x_size;
+			ty=bar->y;
+			by=ty+bar->y_size;
+
+			view_primitive_2D_color_quad(&bar->background_color,bar->background_alpha,lx,rx,ty,by);
+		}
+
 			// draw bar
-			
+
 		lx=bar->x;
 		rx=lx+wid;
 		by=bar->y+bar->y_size;

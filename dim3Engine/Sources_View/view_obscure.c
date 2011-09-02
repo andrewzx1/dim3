@@ -32,6 +32,10 @@ and can be sold or given away.
 #include "interface.h"
 #include "objects.h"
 
+#define view_obscure_split_div			15000
+#define view_obscure_max_split			4
+#define view_obscure_max_rays			(view_obscure_max_split*view_obscure_max_split*view_obscure_max_split)
+
 extern map_type				map;
 extern camera_type			camera;
 extern view_type			view;
@@ -97,51 +101,93 @@ void view_obscure_release(void)
       
 ======================================================= */
 
-bool view_obscure_check_box(int poly_cnt,d3pnt *min,d3pnt *max)
+bool view_obscure_check_box(int poly_cnt,int skip_mesh_idx,d3pnt *min,d3pnt *max)
 {
-	int					n,k;
-	bool				hits[9];
-	d3pnt				pnts[9];
+	int					n,k,x,y,z,kx,ky,ray_cnt,hit_cnt;
+	bool				*hit,hits[view_obscure_max_rays];
+	d3pnt				div,*pnt,pnts[view_obscure_max_rays];
+	d3fpnt				div_add;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 	poly_pointer_type	*poly_ptr;
 
-		// no hits
+		// find the divisions
+		// we do ray tracing against a grid
+		// created from the mesh box
 
-	for (n=0;n!=9;n++) {
-		hits[n]=FALSE;
-	}
+	k=max->x-min->x;
+	div.x=k/view_obscure_split_div;
+	if (div.x<1) div.x=1;
+	if (div.x>view_obscure_max_split) div.x=view_obscure_max_split;
+	div_add.x=((float)k)/((float)div.x);
+
+	k=max->y-min->y;
+	div.y=k/view_obscure_split_div;
+	if (div.y<1) div.y=1;
+	if (div.y>view_obscure_max_split) div.y=view_obscure_max_split;
+	div_add.y=((float)k)/((float)div.y);
+
+	k=max->z-min->z;
+	div.z=k/view_obscure_split_div;
+	if (div.z<1) div.z=1;
+	if (div.z>view_obscure_max_split) div.z=view_obscure_max_split;
+	div_add.z=((float)k)/((float)div.z);
 
 		// build rays
 
-	pnts[0].x=(min->x+max->x)>>1;
-	pnts[0].y=(min->y+max->y)>>1;
-	pnts[0].z=(min->z+max->z)>>1;
+	ray_cnt=0;
 
-	pnts[1].y=pnts[2].y=pnts[3].y=pnts[4].y=min->y;
-	pnts[5].y=pnts[6].y=pnts[7].y=pnts[8].y=max->y;
+	hit=hits;
+	pnt=pnts;
 
-	pnts[1].x=pnts[4].x=pnts[5].x=pnts[8].x=min->x;
-	pnts[2].x=pnts[3].x=pnts[6].x=pnts[7].x=max->x;
+	for (y=0;y!=div.y;y++) {
+		ky=min->y+(int)(((float)y)*div_add.y);
 
-	pnts[1].z=pnts[2].z=pnts[5].z=pnts[6].z=min->z;
-	pnts[3].z=pnts[4].z=pnts[7].z=pnts[8].z=max->z;
+		for (x=0;x!=div.x;x++) {
+			kx=min->x+(int)(((float)x)*div_add.x);
+
+			for (z=0;z!=div.z;z++) {
+				pnt->x=kx;
+				pnt->y=ky;
+				pnt->z=min->z+(int)(((float)z)*div_add.z);
+
+				*hit++=FALSE;			// mark no hit here
+				pnt++;
+
+				ray_cnt++;
+			}
+		}
+	}
 
 		// check rays
 
 	poly_ptr=view_obscure_polys;
 
 	for (n=0;n!=poly_cnt;n++) {
+
+			// if we are comparing meshes, don't
+			// compare against itself
+
+		if (skip_mesh_idx==poly_ptr->mesh_idx) {
+			poly_ptr++;
+			continue;
+		}
+
+			// check the box
+
 		mesh=&map.mesh.meshes[poly_ptr->mesh_idx];
 		poly=&mesh->polys[poly_ptr->poly_idx];
 
-		for (k=0;k!=9;k++) {
+		hit_cnt=0;
+
+		for (k=0;k!=ray_cnt;k++) {
 			if (!hits[k]) hits[k]=ray_trace_single_poly_hit(mesh,poly,&view.render->camera.pnt,&pnts[k]);
+			if (hits[k]) hit_cnt++;
 		}
 
 			// are we obscured?
 
-		if (hits[0] && hits[1] && hits[2] && hits[3] && hits[4] && hits[5] && hits[6] && hits[7] && hits[8]) return(FALSE);
+		if (hit_cnt==ray_cnt) return(FALSE);
 
 		poly_ptr++;
 	}
@@ -209,9 +255,10 @@ void view_obscure_run(void)
 				// mesh
 
 			case view_render_type_mesh:
-				mesh=&map.mesh.meshes[view.render->draw_list.items[idx].idx];
+				mesh_idx=view.render->draw_list.items[idx].idx;
+				mesh=&map.mesh.meshes[mesh_idx];
 
-				if (!view_obscure_check_box(poly_cnt,&mesh->box.min,&mesh->box.max)) {
+				if (!view_obscure_check_box(poly_cnt,mesh_idx,&mesh->box.min,&mesh->box.max)) {
 					remove=TRUE;
 					view.count.mesh--;
 				}
@@ -226,7 +273,7 @@ void view_obscure_run(void)
 				mdl=server.model_list.models[obj->draw.model_idx];
 				model_get_view_complex_bounding_volume(mdl,&obj->draw.pnt,&obj->ang,&min,&max);
 
-				if (!view_obscure_check_box(poly_cnt,&min,&max)) {
+				if (!view_obscure_check_box(poly_cnt,-1,&min,&max)) {
 					remove=TRUE;
 					view.count.model--;
 				}
@@ -239,7 +286,7 @@ void view_obscure_run(void)
 				mdl=server.model_list.models[proj->draw.model_idx];
 				model_get_view_complex_bounding_volume(mdl,&proj->draw.pnt,&proj->ang,&min,&max);
 
-				if (!view_obscure_check_box(poly_cnt,&min,&max)) {
+				if (!view_obscure_check_box(poly_cnt,-1,&min,&max)) {
 					remove=TRUE;
 					view.count.model--;
 				}
@@ -251,7 +298,7 @@ void view_obscure_run(void)
 				effect=server.effect_list.effects[view.render->draw_list.items[idx].idx];
 				effect_draw_get_bound_box(effect,&min,&max);
 
-				if (!view_obscure_check_box(poly_cnt,&min,&max)) {
+				if (!view_obscure_check_box(poly_cnt,-1,&min,&max)) {
 					remove=TRUE;
 					view.count.effect--;
 				}
