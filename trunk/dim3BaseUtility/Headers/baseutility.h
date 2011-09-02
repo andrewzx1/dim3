@@ -31,7 +31,7 @@ and can be sold or given away.
       
 ======================================================= */
 
-#define dim3_version					"0002"
+#define dim3_version					"0003"
 
 /* =======================================================
 
@@ -667,10 +667,12 @@ typedef struct		{
 					
 typedef struct		{
 						int								x,y,x_size,y_size;
-						float							fill_alpha,outline_alpha,value;
+						float							fill_alpha,outline_alpha,background_alpha,
+														value;
 						char							name[name_str_len];
-						bool							show,old_show,outline,vert;
-						d3col							fill_start_color,fill_end_color,outline_color;
+						bool							show,old_show,outline,background,vert;
+						d3col							fill_start_color,fill_end_color,
+														outline_color,background_color;
 					} iface_bar_type;
 
 typedef struct		{

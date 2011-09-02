@@ -240,6 +240,17 @@ void iface_read_settings_bar(iface_type *iface,int bar_tag)
 		bar->outline_alpha=xml_get_attribute_float_default(tag,"alpha",1.0f);
 		xml_get_attribute_color(tag,"color",&bar->outline_color);
 	}
+
+	bar->background=FALSE;
+	bar->background_alpha=1;
+	bar->background_color.r=bar->background_color.g=bar->background_color.b=0;
+	
+	tag=xml_findfirstchild("Background",bar_tag);
+	if (tag!=-1) {
+		bar->background=xml_get_attribute_boolean(tag,"on");
+		bar->background_alpha=xml_get_attribute_float_default(tag,"alpha",1.0f);
+		xml_get_attribute_color(tag,"color",&bar->background_color);
+	}
 	
 	bar->fill_alpha=1;
 	bar->fill_start_color.r=bar->fill_start_color.g=bar->fill_start_color.b=0;
@@ -1088,6 +1099,12 @@ bool iface_write_settings_interface(iface_type *iface)
 		xml_add_attribute_boolean("on",bar->outline);
 		xml_add_attribute_float("alpha",bar->outline_alpha);
 		xml_add_attribute_color("color",&bar->outline_color);
+		xml_add_tagend(TRUE);
+
+		xml_add_tagstart("Background");
+		xml_add_attribute_boolean("on",bar->background);
+		xml_add_attribute_float("alpha",bar->background_alpha);
+		xml_add_attribute_color("color",&bar->background_color);
 		xml_add_tagend(TRUE);
 		
 		xml_add_tagstart("Fill");
