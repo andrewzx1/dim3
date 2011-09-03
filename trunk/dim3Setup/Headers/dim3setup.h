@@ -36,6 +36,12 @@ and can be sold or given away.
 #endif
 
 //
+// Open Source Libraries
+//
+
+#include "png.h"
+
+//
 // Utility Headers
 //
 
