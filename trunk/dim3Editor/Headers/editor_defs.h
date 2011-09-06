@@ -227,15 +227,53 @@ and can be sold or given away.
 // light maps
 //
 
-#define light_map_texture_block_size			8
+#define light_map_texture_block_size						8
 
-#define light_map_quality_very_low				0
-#define light_map_quality_low					1
-#define light_map_quality_medium				2
-#define light_map_quality_high					3
-#define light_map_quality_very_high				4
+#define light_map_max_textures								64
+#define light_map_max_solid_color							64
+#define light_map_render_margin								5
 
-#define light_map_quality_values				{(10.0f/10000.0f),(30.0f/10000.0f),(50.0f/10000.0f),(75.0f/10000.0f),(100.0f/10000.0f)}
+#define light_map_texture_min_rect_size						20
+
+
+#define light_map_quality_very_low							0
+#define light_map_quality_low								1
+#define light_map_quality_medium							2
+#define light_map_quality_high								3
+#define light_map_quality_very_high							4
+
+#define light_map_quality_values							{(10.0f/10000.0f),(30.0f/10000.0f),(50.0f/10000.0f),(75.0f/10000.0f),(100.0f/10000.0f)}
+
+typedef struct		{
+						int									x_shift,y_shift;
+						unsigned char						col[3];
+					} light_map_solid_color_cache_type;
+
+typedef struct		{
+						int									solid_color_cache_count;
+						unsigned char						*block,*pixel_data,
+															*pixel_touch,*pixel_ignore;
+						light_map_solid_color_cache_type	*solid_color_cache;
+					} light_map_texture_type;
+					
+typedef struct		{
+						int									ptsz,txt_idx,
+															mesh_idx,poly_idx,liquid_idx,
+															x[8],y[8],
+															x_shift,y_shift,
+															x_sz,y_sz;
+						bool								solid_color;
+						d3pnt								pt[8];
+						d3rect								box;
+					} light_map_poly_type;
+					
+typedef struct		{
+						unsigned char						*data;
+					} light_map_map_texture_alpha_type;
+
+//
+// uv layers
+//
 
 #define uv_layer_normal							0
 #define uv_layer_light_map						1

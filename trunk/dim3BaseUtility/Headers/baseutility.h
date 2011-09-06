@@ -190,13 +190,6 @@ extern inline int distance_get(int x,int y,int z,int tox,int toy,int toz);
 extern inline bool distance_check(int x,int y,int z,int tox,int toy,int toz,int max_distance);
 extern inline int distance_2D_get(int x,int z,int tox,int toz);
 
-extern void clip_line_to_2D_horizontal_line(int clip_z,int *x,int *y,int *z,int x1,int y1,int z1,int x2,int y2,int z2);
-extern void clip_line_to_2D_vertical_line(int clip_x,int *x,int *y,int *z,int x1,int y1,int z1,int x2,int y2,int z2);
-extern void clip_extend_line_to_2D_horizontal_line(int clip_z,int *x,int *y,int *z,int x1,int y1,int z1,int x2,int y2,int z2);
-extern void clip_extend_line_to_2D_vertical_line(int clip_x,int *x,int *y,int *z,int x1,int y1,int z1,int x2,int y2,int z2);
-extern int clip_polygon_to_2D_rect(int ptsz,int *x,int *y,int *z,int lx,int rx,int tz,int bz);
-extern int clip_extend_polygon_to_2D_rect(int ptsz,int *x,int *y,int *z,int lx,int rx,int tz,int bz);
-
 extern float acceleration_calculate(float factor,float acceleration);
 
 extern void string_convert_float(char *str,float f);

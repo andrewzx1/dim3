@@ -37,39 +37,6 @@ extern map_type					map;
 
 extern file_path_setup_type		file_path_setup;
 
-#define max_light_map_textures								64		// supergumba -- move
-#define max_light_map_solid_color							64
-#define light_map_render_margin								5
-
-#define light_map_texture_min_rect_size						50
-					
-typedef struct		{
-						int									x_shift,y_shift;
-						unsigned char						col[3];
-					} light_map_solid_color_cache_type;
-
-typedef struct		{
-						int									solid_color_cache_count;
-						unsigned char						*block,*pixel_data,
-															*pixel_touch,*pixel_ignore;
-						light_map_solid_color_cache_type	*solid_color_cache;
-					} light_map_texture_type;
-					
-typedef struct		{
-						int									ptsz,txt_idx,
-															mesh_idx,poly_idx,liquid_idx,
-															x[8],y[8],
-															x_shift,y_shift,
-															x_sz,y_sz;
-						bool								solid_color;
-						d3pnt								pt[8];
-						d3rect								box;
-					} light_map_poly_type;
-					
-typedef struct		{
-						unsigned char						*data;
-					} light_map_map_texture_alpha_type;
-
 int									light_map_poly_count,light_map_texture_count;
 float								light_map_quality_value_list[]=light_map_quality_values;
 light_map_texture_type				*light_map_textures;
@@ -89,7 +56,7 @@ bool light_map_textures_create(void)
 	
 		// any free textures?
 		
-	if (light_map_texture_count==max_light_map_textures) return(FALSE);
+	if (light_map_texture_count==light_map_max_textures) return(FALSE);
 	
 		// setup texture
 		
@@ -131,7 +98,7 @@ bool light_map_textures_create(void)
 		
 	lmap->solid_color_cache_count=0;
 	
-	sz=sizeof(light_map_solid_color_cache_type)*max_light_map_solid_color;
+	sz=sizeof(light_map_solid_color_cache_type)*light_map_max_solid_color;
 	lmap->solid_color_cache=(light_map_solid_color_cache_type*)malloc(sz);
 	
 	return(TRUE);
@@ -143,7 +110,7 @@ bool light_map_textures_start(char *err_str)
 	
 		// textures
 		
-	sz=sizeof(light_map_texture_type)*max_light_map_textures;
+	sz=sizeof(light_map_texture_type)*light_map_max_textures;
 	light_map_textures=(light_map_texture_type*)malloc(sz);
 	if (light_map_textures==NULL) {
 		strcpy(err_str,"Out of Memory");
@@ -197,7 +164,7 @@ void light_map_textures_save(char *base_path)
 	
 		// delete any old textures
 		
-	map_delete_texture(&map,(max_map_texture-max_light_map_textures),max_map_texture);
+	map_delete_texture(&map,(max_map_texture-light_map_max_textures),max_map_texture);
 	
 		// get better name
 		
@@ -205,7 +172,7 @@ void light_map_textures_save(char *base_path)
 	
 		// write textures
 		
-	txt_idx=max_map_texture-max_light_map_textures;
+	txt_idx=max_map_texture-light_map_max_textures;
 	
 	for (n=0;n!=light_map_texture_count;n++) {
 
@@ -558,7 +525,7 @@ void light_map_reduce_polys_greater_than_quarter_of_lmap(light_map_poly_type *lm
 void light_map_create_mesh_poly_flatten(map_mesh_type *mesh,map_mesh_poly_type *poly,light_map_poly_type *lm_poly)
 {
 	int					n,x,y,x_sz,y_sz;
-	float				factor;
+	float				x_factor,y_factor;
 	double				dx,dz;
 	d3pnt				*pt;
 			
@@ -599,30 +566,30 @@ void light_map_create_mesh_poly_flatten(map_mesh_type *mesh,map_mesh_poly_type *
 		// factor, the 2D drawing rectangle becomes
 		// too small.  If so, increase the factor
 	
-	factor=light_map_quality_value_list[map.light_map.quality];
+	x_factor=y_factor=light_map_quality_value_list[map.light_map.quality];
 	
-	if ((int)(((float)x_sz)*factor)<=light_map_texture_min_rect_size) {		// supergumba
-		factor=(((float)light_map_texture_min_rect_size)/((float)x_sz));
+	if ((int)(((float)x_sz)*x_factor)<=light_map_texture_min_rect_size) {		// supergumba
+		x_factor=(((float)light_map_texture_min_rect_size)/((float)x_sz));
 	}
-	if ((int)(((float)y_sz)*factor)<=light_map_texture_min_rect_size) {
-		factor=(((float)light_map_texture_min_rect_size)/((float)y_sz));
+	if ((int)(((float)y_sz)*y_factor)<=light_map_texture_min_rect_size) {
+		y_factor=(((float)light_map_texture_min_rect_size)/((float)y_sz));
 	}
 	
 		// reduce the 2D coordinates
 		
 	for (n=0;n!=poly->ptsz;n++) {
-		lm_poly->x[n]=(int)(((float)lm_poly->x[n])*factor);
-		lm_poly->y[n]=(int)(((float)lm_poly->y[n])*factor);
+		lm_poly->x[n]=(int)(((float)lm_poly->x[n])*x_factor);
+		lm_poly->y[n]=(int)(((float)lm_poly->y[n])*y_factor);
 		
 		fprintf(stdout,"   %d: %d,%d\n",n,lm_poly->x[n],lm_poly->y[n]);
 	}
 	
 		// get the final 2D drawing rectangle
 		
-	lm_poly->x_sz=(int)(((float)x_sz)*factor);
-	lm_poly->y_sz=(int)(((float)y_sz)*factor);
+	lm_poly->x_sz=(int)(((float)x_sz)*x_factor);
+	lm_poly->y_sz=(int)(((float)y_sz)*y_factor);
 	
-	fprintf(stdout,"%d.%d [%.2f]\n",lm_poly->x_sz,lm_poly->y_sz,factor);
+	fprintf(stdout,"%d.%d\n",lm_poly->x_sz,lm_poly->y_sz);
 	
 		// reduce any poly greater than
 		// quarter of light map
@@ -1682,7 +1649,7 @@ void light_map_add_solid_color(unsigned char *col,int x,int y,light_map_texture_
 {
 	light_map_solid_color_cache_type		*cache;
 	
-	if (lmap->solid_color_cache_count==max_light_map_solid_color) return;
+	if (lmap->solid_color_cache_count==light_map_max_solid_color) return;
 	
 	cache=&lmap->solid_color_cache[lmap->solid_color_cache_count];
 	lmap->solid_color_cache_count++;
@@ -1755,7 +1722,7 @@ bool light_map_run_for_poly(int lm_poly_idx,char *err_str)
 		
 	if (!light_map_texture_find_open_area(lm_poly->x_sz,lm_poly->y_sz,&x,&y,&box,lm_poly->solid_color,lmap)) {
 		if (!light_map_textures_create()) {
-			sprintf(err_str,"Too many polys in map, would create more than %d light maps.  Turn down the quality or turn up the texture size.",max_light_map_textures);
+			sprintf(err_str,"Too many polys in map, would create more than %d light maps.  Turn down the quality or turn up the texture size.",light_map_max_textures);
 			return(FALSE);
 		}
 		
@@ -1807,7 +1774,7 @@ void light_map_set_texture_uv_mesh_poly(light_map_poly_type *lm_poly)
 			
 		// set light map texture
 	
-	poly->lmap_txt_idx=(max_map_texture-max_light_map_textures)+lm_poly->txt_idx;
+	poly->lmap_txt_idx=(max_map_texture-light_map_max_textures)+lm_poly->txt_idx;
 	
 		// UVs across the light map texture size
 		
@@ -1846,7 +1813,7 @@ void light_map_set_texture_uv_liquid(light_map_poly_type *lm_poly)
 			
 		// set light map texture
 	
-	liq->lmap_txt_idx=(max_map_texture-max_light_map_textures)+lm_poly->txt_idx;
+	liq->lmap_txt_idx=(max_map_texture-light_map_max_textures)+lm_poly->txt_idx;
 	
 		// UVs across the light map texture size
 		
@@ -2012,7 +1979,7 @@ bool light_maps_create(void)
 		
 	npoly=light_map_get_poly_count();
 	
-	progress_start("Generating Light Maps...",(6+(max_light_map_textures*3)+(npoly/100)));
+	progress_start("Generating Light Maps...",(6+(light_map_max_textures*3)+(npoly/100)));
 	ok=light_maps_create_process(err_str);
 	progress_end();
 
@@ -2034,7 +2001,7 @@ void light_maps_clear(void)
 
 		// delete old textures
 		
-	map_delete_texture(&map,(max_map_texture-max_light_map_textures),max_map_texture);
+	map_delete_texture(&map,(max_map_texture-light_map_max_textures),max_map_texture);
 
 		// clear polys
 	
