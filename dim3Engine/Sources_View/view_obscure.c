@@ -70,14 +70,24 @@ bool view_obscure_initialize(void)
 	mesh=map.mesh.meshes;
 
 	for (n=0;n!=map.mesh.nmesh;n++) {
-
-		poly=mesh->polys;
-
-		for (k=0;k!=mesh->npoly;k++) {
-			if (poly->flag.obscuring) cnt++;
-			poly++;
+	
+			// all polys in a mesh
+			
+		if (mesh->flag.obscuring) {
+			cnt+=mesh->npoly;
 		}
+		
+			// specific polys
+			
+		else {
+			poly=mesh->polys;
 
+			for (k=0;k!=mesh->npoly;k++) {
+				if (poly->flag.obscuring) cnt++;
+				poly++;
+			}
+		}
+		
 		mesh++;
 	}
 
@@ -224,18 +234,36 @@ void view_obscure_run(void)
 
 		mesh_idx=view.render->draw_list.items[n].idx;
 		mesh=&map.mesh.meshes[mesh_idx];
+		
+			// all over mesh obscure
+			
+		if (mesh->flag.obscuring) {
+			poly=mesh->polys;
 
-		poly=mesh->polys;
-
-		for (k=0;k!=mesh->npoly;k++) {
-			if (poly->flag.obscuring) {
+			for (k=0;k!=mesh->npoly;k++) {
 				poly_ptr->mesh_idx=mesh_idx;
 				poly_ptr->poly_idx=k;
 				poly_ptr++;
 				poly_cnt++;
+				poly++;
 			}
+		}
+		
+			// single poly obscure
+			
+		else {
+			poly=mesh->polys;
 
-			poly++;
+			for (k=0;k!=mesh->npoly;k++) {
+				if (poly->flag.obscuring) {
+					poly_ptr->mesh_idx=mesh_idx;
+					poly_ptr->poly_idx=k;
+					poly_ptr++;
+					poly_cnt++;
+				}
+
+				poly++;
+			}
 		}
 	}
 
