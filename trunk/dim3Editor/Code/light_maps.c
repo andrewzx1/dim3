@@ -37,9 +37,11 @@ extern map_type					map;
 
 extern file_path_setup_type		file_path_setup;
 
-#define max_light_map_textures								64
+#define max_light_map_textures								64		// supergumba -- move
 #define max_light_map_solid_color							64
 #define light_map_render_margin								5
+
+#define light_map_texture_min_rect_size						50
 					
 typedef struct		{
 						int									x_shift,y_shift;
@@ -476,31 +478,45 @@ void light_map_textures_blur(void)
 
 /* =======================================================
 
-      Create Mesh Light Map Polys
+      Create a list of polys to draw into the light
+	  map textures
+	  
+	  Store the 3D points and create the 2D point
+	  representation of the mesh or liquid polys for
+	  drawing into the light map texture
       
 ======================================================= */
 
-void light_map_create_mesh_poly_flatten_setup_size(light_map_poly_type *lm_poly)
+int light_map_get_poly_count(void)
 {
-	int				n;
+	int					n,count;
+	map_mesh_type		*mesh;
 	
-	lm_poly->x_sz=0;
-	lm_poly->y_sz=0;
+	count=0;
+		
+		// meshes
+		
+	mesh=map.mesh.meshes;
+		
+	for (n=0;n!=map.mesh.nmesh;n++) {
 	
-	for (n=0;n!=lm_poly->ptsz;n++) {
-		if (lm_poly->x[n]>lm_poly->x_sz) lm_poly->x_sz=lm_poly->x[n];
-		if (lm_poly->y[n]>lm_poly->y_sz) lm_poly->y_sz=lm_poly->y[n];
+		mesh->flag.no_light_map=(n!=596);	// supergumba -- testing
+		
+		if (!mesh->flag.no_light_map) count+=mesh->npoly;
+		mesh++;
 	}
+	
+		// liquids
+		
+	count+=map.liquid.nliquid;
+	
+	return(count);
 }
 
-void light_map_create_poly_flatten(light_map_poly_type *lm_poly)
+void light_map_reduce_polys_greater_than_quarter_of_lmap(light_map_poly_type *lm_poly)
 {
 	int				n,max_sz,min_x,min_y;
 	float			factor;
-	
-		// flatten
-		
-	light_map_create_mesh_poly_flatten_setup_size(lm_poly);
 	
 		// largest poly is 1/4 of texture size
 		
@@ -535,21 +551,24 @@ void light_map_create_poly_flatten(light_map_poly_type *lm_poly)
 		lm_poly->y[n]-=min_y;
 	}
 	
-	light_map_create_mesh_poly_flatten_setup_size(lm_poly);
+	lm_poly->x_sz=(int)(((float)lm_poly->x_sz)*factor);
+	lm_poly->y_sz=(int)(((float)lm_poly->y_sz)*factor);
 }
 
 void light_map_create_mesh_poly_flatten(map_mesh_type *mesh,map_mesh_poly_type *poly,light_map_poly_type *lm_poly)
 {
-	int					n,x,y;
+	int					n,x,y,x_sz,y_sz;
 	float				factor;
 	double				dx,dz;
 	d3pnt				*pt;
-	
-	factor=light_map_quality_value_list[map.light_map.quality];
 			
-		// flatten the poly
-		// and get 3D points
+		// flatten the poly for 2D drawing
+		// into the light map based on the
+		// poly being wall or floor like
 	
+	x_sz=0;
+	y_sz=0;
+
 	lm_poly->ptsz=poly->ptsz;
 		
 	for (n=0;n!=poly->ptsz;n++) {
@@ -569,11 +588,46 @@ void light_map_create_mesh_poly_flatten(map_mesh_type *mesh,map_mesh_poly_type *
 			y=pt->z-poly->box.min.z;
 		}
 		
-			// reduce to pixel factor (size of render)
-			
-		lm_poly->x[n]=(int)((float)x*factor);
-		lm_poly->y[n]=(int)((float)y*factor);
+		lm_poly->x[n]=x;
+		lm_poly->y[n]=y;
+		
+		if (x>x_sz) x_sz=x;
+		if (y>y_sz) y_sz=y;
+	}		
+		
+		// check if, when multiplied by the reduction
+		// factor, the 2D drawing rectangle becomes
+		// too small.  If so, increase the factor
+	
+	factor=light_map_quality_value_list[map.light_map.quality];
+	
+	if ((int)(((float)x_sz)*factor)<=light_map_texture_min_rect_size) {		// supergumba
+		factor=(((float)light_map_texture_min_rect_size)/((float)x_sz));
 	}
+	if ((int)(((float)y_sz)*factor)<=light_map_texture_min_rect_size) {
+		factor=(((float)light_map_texture_min_rect_size)/((float)y_sz));
+	}
+	
+		// reduce the 2D coordinates
+		
+	for (n=0;n!=poly->ptsz;n++) {
+		lm_poly->x[n]=(int)(((float)lm_poly->x[n])*factor);
+		lm_poly->y[n]=(int)(((float)lm_poly->y[n])*factor);
+		
+		fprintf(stdout,"   %d: %d,%d\n",n,lm_poly->x[n],lm_poly->y[n]);
+	}
+	
+		// get the final 2D drawing rectangle
+		
+	lm_poly->x_sz=(int)(((float)x_sz)*factor);
+	lm_poly->y_sz=(int)(((float)y_sz)*factor);
+	
+	fprintf(stdout,"%d.%d [%.2f]\n",lm_poly->x_sz,lm_poly->y_sz,factor);
+	
+		// reduce any poly greater than
+		// quarter of light map
+		
+	light_map_reduce_polys_greater_than_quarter_of_lmap(lm_poly);
 }
 
 void light_map_create_liquid_poly_flatten(map_liquid_type *liq,light_map_poly_type *lm_poly)
@@ -582,8 +636,8 @@ void light_map_create_liquid_poly_flatten(map_liquid_type *liq,light_map_poly_ty
 	
 	factor=light_map_quality_value_list[map.light_map.quality];
 			
-		// flatten the poly
-		// and get 3D points
+		// flatten the liquid for 2D drawing
+		// into the light map
 	
 	lm_poly->ptsz=4;
 	
@@ -597,29 +651,16 @@ void light_map_create_liquid_poly_flatten(map_liquid_type *liq,light_map_poly_ty
 	lm_poly->x[1]=lm_poly->x[2]=(int)((float)(liq->rgt-liq->lft)*factor);
 	lm_poly->y[0]=lm_poly->y[1]=0;
 	lm_poly->y[2]=lm_poly->y[3]=(int)((float)(liq->bot-liq->top)*factor);
-}
-
-int light_map_get_poly_count(void)
-{
-	int					n,count;
-	map_mesh_type		*mesh;
 	
-	count=0;
+		// get the total size
 		
-		// meshes
-		
-	mesh=map.mesh.meshes;
-		
-	for (n=0;n!=map.mesh.nmesh;n++) {
-		if (!mesh->flag.no_light_map) count+=mesh->npoly;
-		mesh++;
-	}
+	lm_poly->x_sz=lm_poly->x[1];
+	lm_poly->y_sz=lm_poly->y[2];
 	
-		// liquids
+		// reduce any poly greater than
+		// quarter of light map
 		
-	count+=map.liquid.nliquid;
-	
-	return(count);
+	light_map_reduce_polys_greater_than_quarter_of_lmap(lm_poly);
 }
 
 bool light_map_polys_start(char *err_str)
@@ -730,7 +771,6 @@ bool light_map_polys_start(char *err_str)
 				
 			map_prepare_mesh_poly(&map,mesh,poly);
 			light_map_create_mesh_poly_flatten(mesh,poly,lm_poly);
-			light_map_create_poly_flatten(lm_poly);
 
 			poly++;
 			lm_poly++;
@@ -756,7 +796,6 @@ bool light_map_polys_start(char *err_str)
 			// flatten the poly
 			
 		light_map_create_liquid_poly_flatten(liq,lm_poly);
-		light_map_create_poly_flatten(lm_poly);
 
 		liq++;
 		lm_poly++;
@@ -1576,6 +1615,12 @@ bool light_map_render_poly(int lm_poly_idx,unsigned char *solid_color,light_map_
 			
 			light_map_ray_trace(lm_poly->mesh_idx,lm_poly->poly_idx,&rpt,col);
 			
+			if ((x==x_start) || (x==x_end) || (y==ty) || (y==by)) {
+				col[0]=0xFF;		// supergumba
+				col[1]=0;
+				col[2]=0;
+			}
+			
 			if (lmap!=NULL) {
 				*pixel++=col[0];
 				*pixel++=col[1];
@@ -1683,7 +1728,7 @@ bool light_map_run_for_poly(int lm_poly_idx,char *err_str)
 	}
 	
 	if (!lm_poly->solid_color) {
-		lm_poly->solid_color=light_map_render_poly(lm_poly_idx,solid_col,NULL);
+	//	lm_poly->solid_color=light_map_render_poly(lm_poly_idx,solid_col,NULL);		// supergumba
 	}
 	
 		// current light map
