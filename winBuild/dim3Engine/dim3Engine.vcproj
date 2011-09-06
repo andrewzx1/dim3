@@ -3952,10 +3952,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\dim3BaseUtility\Sources\base_math_clip.c"
-					>
-				</File>
-				<File
 					RelativePath="..\..\dim3BaseUtility\Sources\base_math_distance.c"
 					>
 				</File>
