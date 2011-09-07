@@ -720,7 +720,7 @@ typedef struct		{
 						int									quality,size,
 															pixel_border_count,blur_count;
 						float								diffuse_boost;
-						bool								use_normals;
+						bool								use_normals,skip_glows;
 					} map_light_map_type;
 					
 typedef struct		{

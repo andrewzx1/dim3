@@ -466,9 +466,6 @@ int light_map_get_poly_count(void)
 	mesh=map.mesh.meshes;
 		
 	for (n=0;n!=map.mesh.nmesh;n++) {
-	
-		mesh->flag.no_light_map=(n!=596);	// supergumba -- testing
-		
 		if (!mesh->flag.no_light_map) count+=mesh->npoly;
 		mesh++;
 	}
@@ -568,11 +565,16 @@ void light_map_create_mesh_poly_flatten(map_mesh_type *mesh,map_mesh_poly_type *
 	
 	x_factor=y_factor=light_map_quality_value_list[map.light_map.quality];
 	
-	if ((int)(((float)x_sz)*x_factor)<=light_map_texture_min_rect_size) {		// supergumba
-		x_factor=(((float)light_map_texture_min_rect_size)/((float)x_sz));
+	if (x_sz!=0) {
+		if ((int)(((float)x_sz)*x_factor)<=light_map_texture_min_rect_size) {
+			x_factor=(((float)light_map_texture_min_rect_size)/((float)x_sz));
+		}
 	}
-	if ((int)(((float)y_sz)*y_factor)<=light_map_texture_min_rect_size) {
-		y_factor=(((float)light_map_texture_min_rect_size)/((float)y_sz));
+	
+	if (y_sz!=0) {
+		if ((int)(((float)y_sz)*y_factor)<=light_map_texture_min_rect_size) {
+			y_factor=(((float)light_map_texture_min_rect_size)/((float)y_sz));
+		}
 	}
 	
 		// reduce the 2D coordinates
@@ -580,16 +582,12 @@ void light_map_create_mesh_poly_flatten(map_mesh_type *mesh,map_mesh_poly_type *
 	for (n=0;n!=poly->ptsz;n++) {
 		lm_poly->x[n]=(int)(((float)lm_poly->x[n])*x_factor);
 		lm_poly->y[n]=(int)(((float)lm_poly->y[n])*y_factor);
-		
-		fprintf(stdout,"   %d: %d,%d\n",n,lm_poly->x[n],lm_poly->y[n]);
 	}
 	
 		// get the final 2D drawing rectangle
 		
 	lm_poly->x_sz=(int)(((float)x_sz)*x_factor);
 	lm_poly->y_sz=(int)(((float)y_sz)*y_factor);
-	
-	fprintf(stdout,"%d.%d\n",lm_poly->x_sz,lm_poly->y_sz);
 	
 		// reduce any poly greater than
 		// quarter of light map
@@ -1582,12 +1580,6 @@ bool light_map_render_poly(int lm_poly_idx,unsigned char *solid_color,light_map_
 			
 			light_map_ray_trace(lm_poly->mesh_idx,lm_poly->poly_idx,&rpt,col);
 			
-			if ((x==x_start) || (x==x_end) || (y==ty) || (y==by)) {
-				col[0]=0xFF;		// supergumba
-				col[1]=0;
-				col[2]=0;
-			}
-			
 			if (lmap!=NULL) {
 				*pixel++=col[0];
 				*pixel++=col[1];
@@ -1673,7 +1665,7 @@ bool light_map_run_for_poly(int lm_poly_idx,char *err_str)
 	d3rect						box;
 	light_map_poly_type			*lm_poly;
 	light_map_texture_type		*lmap;
-
+	
 	lm_poly=&light_map_polys[lm_poly_idx];
 	
 		// detect if this poly's
@@ -1694,8 +1686,21 @@ bool light_map_run_for_poly(int lm_poly_idx,char *err_str)
 		}
 	}
 	
+		// check for glow textures
+	
+	if (map.light_map.skip_glows) {
+		if (lm_poly->mesh_idx!=-1) {
+			if (map.textures[map.mesh.meshes[lm_poly->mesh_idx].polys[lm_poly->poly_idx].txt_idx].frames[0].glowmap.gl_id!=-1) {
+				lm_poly->solid_color=TRUE;
+				solid_col[0]=solid_col[1]=solid_col[2]=0xFF;
+			}
+		}
+	}
+
+		// back render to check for solid colors
+	
 	if (!lm_poly->solid_color) {
-	//	lm_poly->solid_color=light_map_render_poly(lm_poly_idx,solid_col,NULL);		// supergumba
+		lm_poly->solid_color=light_map_render_poly(lm_poly_idx,solid_col,NULL);
 	}
 	
 		// current light map
