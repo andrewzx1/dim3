@@ -98,6 +98,7 @@ bool map_new(map_type *map,char *name)
 	map->light_map.pixel_border_count=6;
 	map->light_map.blur_count=3;
 	map->light_map.use_normals=FALSE;
+	map->light_map.skip_glows=FALSE;
 	map->light_map.diffuse_boost=0.0f;
 	
 		// editor setup
