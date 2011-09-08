@@ -990,7 +990,7 @@
 		20286C29FDCF999611CA2CEA /* dim3 Engine */ = {
 			isa = PBXGroup;
 			children = (
-				260B3E771411F75D006ED023 /* Engine */,
+				260B3E771411F75D006ED023 /* dim3Engine */,
 				260B3DBF1411F28B006ED023 /* dim3BaseUtility */,
 				260B3DC01411F296006ED023 /* dim3ModelUtility */,
 				260B3DC11411F2A4006ED023 /* dim3MapUtility */,
@@ -1195,7 +1195,7 @@
 			path = ../dim3MapUtility/Sources;
 			sourceTree = "<group>";
 		};
-		260B3E771411F75D006ED023 /* Engine */ = {
+		260B3E771411F75D006ED023 /* dim3Engine */ = {
 			isa = PBXGroup;
 			children = (
 				016FFAA200BCCD027F000001 /* Headers */,
@@ -1205,7 +1205,7 @@
 				260B3E8E1411F781006ED023 /* Sources_Server */,
 				260B3F471411F781006ED023 /* Sources_View */,
 			);
-			name = Engine;
+			name = dim3Engine;
 			sourceTree = "<group>";
 		};
 		260B3E781411F781006ED023 /* SDL */ = {
