@@ -382,24 +382,31 @@ void group_moves_run(bool run_events)
 void group_moves_rebuild(void)
 {
 	int				n;
-	d3pnt			mov_pnt;
+	d3pnt			mov;
+	d3ang			rot;
 	group_type		*group;
 	group_run_type	*run;
 
 		// rebuild moves after save/load
+		// groups have the cumlative moves, so we
+		// we just pass a 0 move and 0 ang to
+		// rebuild from those moves
 		
 	for (n=0;n!=map.group.ngroup;n++) {
 
 		group=&map.group.groups[n];
 		run=&group->run;
 		
-		mov_pnt.x=(int)run->f_mov_accum_add.x;
-		mov_pnt.y=(int)run->f_mov_accum_add.y;
-		mov_pnt.z=(int)run->f_mov_accum_add.z;
+		mov.x=(int)run->f_mov_accum_add.x;
+		mov.y=(int)run->f_mov_accum_add.y;
+		mov.z=(int)run->f_mov_accum_add.z;
 
-		if ((mov_pnt.x==0) && (mov_pnt.y==0) && (mov_pnt.z==0) && (run->rot_add.x==0.0f) && (run->rot_add.y==0.0f) && (run->rot_add.z==0.0f)) continue;
+	//	if ((mov.x==0) && (mov.y==0) && (mov.z==0) && (run->rot_add.x==0.0f) && (run->rot_add.y==0.0f) && (run->rot_add.z==0.0f)) continue;
 		
-		group_move_and_rotate(group,&mov_pnt,&run->rot_add);
+		mov.x=mov.y=mov.z=0;
+		rot.x=rot.y=rot.z=0.0f;
+		
+		group_move_and_rotate(group,&mov,&rot);
 	}
 }
 
