@@ -99,9 +99,9 @@ bool view_map_vbo_initialize_mesh(map_mesh_type *mesh)
 			}
 			else {
 				pc=(unsigned char*)pf;
-				*pc++=0x0;
-				*pc++=0x0;
-				*pc++=0x0;
+				*pc++=0xFF;
+				*pc++=0xFF;
+				*pc++=0xFF;
 				*pc++=0xFF;
 			}
 			
@@ -405,7 +405,7 @@ void view_map_vbo_rebuild_mesh(map_mesh_type *mesh)
 			y_shift_offset=poly->draw.y_shift_offset;
 
 			for (k=0;k!=poly->ptsz;k++) {
-				pf=(float*)vp;
+				pf=(float*)(vp+(3*sizeof(float)));
 				
 				*pf++=poly->main_uv.x[k]+x_shift_offset;
 				*pf=poly->main_uv.y[k]+y_shift_offset;
@@ -419,7 +419,7 @@ void view_map_vbo_rebuild_mesh(map_mesh_type *mesh)
 
 		// non-shader lighting
 		
-	if (!shader_on) {
+	if ((!shader_on) && (!mesh->flag.hilite)) {
 	
 			// get the lights for this mesh
 			// we have a special check for ambient only
