@@ -189,7 +189,7 @@ void light_map_textures_save(char *base_path)
 			
 		map.textures[txt_idx].additive=FALSE;
 		map.textures[txt_idx].pixelated=FALSE;
-		map.textures[txt_idx].compress=TRUE;
+		map.textures[txt_idx].compress=FALSE;
 		map.textures[txt_idx].keep_quality=TRUE;
 		
 			// save bitmap
