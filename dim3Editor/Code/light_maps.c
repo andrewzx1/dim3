@@ -189,7 +189,7 @@ void light_map_textures_save(char *base_path)
 			
 		map.textures[txt_idx].additive=FALSE;
 		map.textures[txt_idx].pixelated=FALSE;
-		map.textures[txt_idx].compress=FALSE;
+		map.textures[txt_idx].compress=TRUE;
 		map.textures[txt_idx].keep_quality=TRUE;
 		
 			// save bitmap
@@ -231,6 +231,245 @@ void light_map_textures_free(void)
       
 ======================================================= */
 
+
+void light_map_texture_smudge_to_edge(int lm_poly_idx)
+{
+
+
+	int						n,x,y,cx,cy,sz,i_col[3],col_count;
+	unsigned char			*pixel,*pixel_touch,*pixel_ignore,
+							*back_pixel_data,*back_pixel_touch,
+							*back,*back_touch,
+							*blur,*pixel_border_touch;
+	light_map_poly_type		*lm_poly;
+	light_map_texture_type	*lmap;
+	
+	return;
+	
+	
+		// get the poly
+		
+	lm_poly=&light_map_polys[lm_poly_idx];
+	
+		// no smudge for solid colors
+		
+	if (lm_poly->solid_color) return;
+	
+		// get light map
+		
+	lmap=&light_map_textures[lm_poly->txt_idx];
+	if (lmap->pixel_data==NULL) return;
+					
+		// back pixel/touch data
+		
+	sz=(map.light_map.size*map.light_map.size)*3;
+	back_pixel_data=(unsigned char*)malloc(sz);
+		
+	sz=map.light_map.size*map.light_map.size;
+	back_pixel_touch=(unsigned char*)malloc(sz);
+
+		// add pixel border
+		
+	for (n=0;n!=3;n++) {
+	
+		for (y=lm_poly->box.ty;y<lm_poly->box.by;y++) {
+	
+			for (x=lm_poly->box.lx;x<lm_poly->box.rx;x++) {
+			
+					// get pixels and default to leaving
+					// the same
+					
+				pixel_touch=lmap->pixel_touch+((map.light_map.size*y)+x);
+				back_touch=back_pixel_touch+((map.light_map.size*y)+x);
+				
+				*back_touch=*pixel_touch;
+				
+				pixel=lmap->pixel_data+(((map.light_map.size*3)*y)+(x*3));
+				back=back_pixel_data+(((map.light_map.size*3)*y)+(x*3));
+				
+				*back=*pixel;
+				*(back+1)=*(pixel+1);
+				*(back+2)=*(pixel+2);
+				
+					// pixel borders only effect non-touched pixels
+					// or pixels set to ignore (for solid color shared maps)
+					
+				pixel_ignore=lmap->pixel_ignore+((map.light_map.size*y)+x);
+
+				if ((*pixel_touch!=0x0) || (*pixel_ignore!=0x0)) continue;
+			
+					// find largest hilited pixel to
+					// make border from
+					
+				col_count=0;
+				i_col[0]=i_col[1]=i_col[2]=0;
+				
+				for (cy=(y-1);cy!=(y+2);cy++) {
+					for (cx=(x-1);cx!=(x+2);cx++) {
+					
+						if ((cy==y) && (cx==x)) continue;
+						if ((cy<0) || (cy>=map.light_map.size) || (cx<0) || (cx>=map.light_map.size)) continue;
+					
+						pixel_border_touch=lmap->pixel_touch+((map.light_map.size*cy)+cx);
+						if (*pixel_border_touch==0x0) continue;
+						
+							// is this a bigger hilite?
+							
+						blur=lmap->pixel_data+(((map.light_map.size*3)*cy)+(cx*3));
+						i_col[0]+=(int)*blur;
+						i_col[1]+=(int)*(blur+1);
+						i_col[2]+=(int)*(blur+2);
+						col_count++;
+					}
+				}
+				
+				if (col_count!=0) {
+					i_col[0]=i_col[0]/col_count;
+					if (i_col[0]>255) i_col[0]=255;
+					
+					i_col[1]=i_col[1]/col_count;
+					if (i_col[1]>255) i_col[1]=255;
+					
+					i_col[2]=i_col[2]/col_count;
+					if (i_col[2]>255) i_col[2]=255;
+					
+					*back++=(unsigned char)i_col[0];
+					*back++=(unsigned char)i_col[1];
+					*back++=(unsigned char)i_col[2];
+					
+					*back_touch=0x1;		// next time this is part of the smear
+				}
+			}
+		}
+		
+		memmove(lmap->pixel_data,back_pixel_data,((map.light_map.size*3)*map.light_map.size));
+		memmove(lmap->pixel_touch,back_pixel_touch,(map.light_map.size*map.light_map.size));
+	}
+		
+		// free backgrounds
+		
+	free(back_pixel_data);
+	free(back_pixel_touch);
+}
+
+
+
+
+
+/*
+void light_map_texture_smudge_to_edge(int lm_poly_idx)
+{
+	int						x,y,kx,ky;
+	float					fx,fy;
+	unsigned char			*pixel_src,*pixel_dest,*pixel_touch,*pixel_ignore;
+	d3pnt					mid;
+	d3vct					vct;
+	light_map_poly_type		*lm_poly;
+	light_map_texture_type	*lmap;
+	
+		// get the poly
+		
+	lm_poly=&light_map_polys[lm_poly_idx];
+	
+		// no smudge for solid colors
+		
+	if (lm_poly->solid_color) return;
+	
+		// get light map
+		
+	lmap=&light_map_textures[lm_poly->txt_idx];
+	if (lmap->pixel_data==NULL) return;
+	
+		// get the middle
+		
+	mid.x=(lm_poly->box.lx+lm_poly->box.rx)>>1;
+	mid.y=(lm_poly->box.ty+lm_poly->box.by)>>1;
+
+		// we go through every non-touched pixels
+		// or pixels not set to ignore, and then we find
+		// the vector to the center.  The first non-touched
+		// or non-ignore pixel is used to fill in
+		// the border
+		
+	for (y=lm_poly->box.ty;y<lm_poly->box.by;y++) {
+	
+		for (x=lm_poly->box.lx;x<lm_poly->box.rx;x++) {
+		
+				// is this a touched pixel or ignored pixel?
+				
+			pixel_touch=lmap->pixel_touch+((map.light_map.size*y)+x);
+			pixel_ignore=lmap->pixel_ignore+((map.light_map.size*y)+x);
+
+			if ((*pixel_touch!=0x0) || (*pixel_ignore!=0x0)) continue;
+
+				// vector to center
+				
+			vector_create(&vct,mid.x,mid.y,0,x,y,0);
+			
+			if ((vct.x==0.0f) && (vct.y==0.0f)) vct.x=1.0f;
+			
+				// run towards center until we
+				// find a touched point
+				
+			fx=(float)x;
+			fy=(float)y;
+			
+			while (TRUE) {
+				fx+=vct.x;
+				fy+=vct.y;
+				
+				kx=(int)fx;
+				ky=(int)fy;
+				
+					// are we done?
+				
+				if ((kx<lm_poly->box.lx) || (kx>lm_poly->box.rx)) break;
+				if ((ky<lm_poly->box.ty) || (ky>lm_poly->box.by)) break;
+				
+					// is this a color we can use?
+					
+				pixel_touch=lmap->pixel_touch+((map.light_map.size*ky)+kx);
+				if (*pixel_touch==0x0) continue;
+				
+					// smudge it
+					
+				pixel_src=lmap->pixel_data+(((map.light_map.size*3)*ky)+(kx*3));
+				pixel_dest=lmap->pixel_data+(((map.light_map.size*3)*y)+(x*3));
+				
+				*pixel_dest++=*pixel_src++;
+				*pixel_dest++=*pixel_src++;
+				*pixel_dest=*pixel_src;
+				
+				pixel_touch=lmap->pixel_touch+((map.light_map.size*y)+x);
+				*pixel_touch=0x1;
+				
+			//	pixel_src=lmap->pixel_data+(((map.light_map.size*3)*ky)+(kx*3));
+			//	*pixel_src++=0xFF;
+			//	*pixel_src++=0x0;
+			//	*pixel_src=0x0;		// supergumba -- test
+			
+				break;
+			}
+		}
+	}
+}
+*/
+
+void light_map_textures_pixel_border(void)
+{
+	int						n;
+	
+	// supergumba -- do this inline
+	
+	for (n=0;n!=light_map_poly_count;n++) {
+		light_map_texture_smudge_to_edge(n);
+	}
+}
+
+
+
+
+/*
 void light_map_texture_single_pixel_border(int idx,int pixel_border_count)
 {
 	int						n,x,y,cx,cy,sz,i_col[3],col_count;
@@ -346,6 +585,7 @@ void light_map_textures_pixel_border(void)
 		light_map_texture_single_pixel_border(n,map.light_map.pixel_border_count);
 	}
 }
+*/
 
 void light_map_texture_single_blur(int idx,int blur_count)
 {
@@ -436,6 +676,8 @@ void light_map_texture_single_blur(int idx,int blur_count)
 void light_map_textures_blur(void)
 {
 	int						n;
+	
+	return;
 	
 	for (n=0;n!=light_map_texture_count;n++) {
 		progress_next();
@@ -844,7 +1086,7 @@ bool light_map_texture_find_open_area(int x_sz,int y_sz,int *kx,int *ky,d3rect *
 			}
 			
 				// remember the block so we can smear
-				// the colors laters to eliminate edge bleeding
+				// the colors later to eliminate edge bleeding
 				
 			x=(x*light_map_texture_block_size);
 			y=(y*light_map_texture_block_size);

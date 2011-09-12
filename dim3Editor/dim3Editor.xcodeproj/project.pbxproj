@@ -38,7 +38,6 @@
 		260B3D521411F217006ED023 /* base_math_acceleration.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B3D2A1411F217006ED023 /* base_math_acceleration.c */; };
 		260B3D531411F217006ED023 /* base_math_angles.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B3D2B1411F217006ED023 /* base_math_angles.c */; };
 		260B3D541411F217006ED023 /* base_math_area.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B3D2C1411F217006ED023 /* base_math_area.c */; };
-		260B3D551411F217006ED023 /* base_math_clip.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B3D2D1411F217006ED023 /* base_math_clip.c */; };
 		260B3D561411F217006ED023 /* base_math_distance.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B3D2E1411F217006ED023 /* base_math_distance.c */; };
 		260B3D571411F217006ED023 /* base_math_fast_trig.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B3D2F1411F217006ED023 /* base_math_fast_trig.c */; };
 		260B3D581411F217006ED023 /* base_math_matrix.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B3D301411F217006ED023 /* base_math_matrix.c */; };
@@ -403,7 +402,6 @@
 		260B3D2A1411F217006ED023 /* base_math_acceleration.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = base_math_acceleration.c; sourceTree = "<group>"; };
 		260B3D2B1411F217006ED023 /* base_math_angles.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = base_math_angles.c; sourceTree = "<group>"; };
 		260B3D2C1411F217006ED023 /* base_math_area.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = base_math_area.c; sourceTree = "<group>"; };
-		260B3D2D1411F217006ED023 /* base_math_clip.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = base_math_clip.c; sourceTree = "<group>"; };
 		260B3D2E1411F217006ED023 /* base_math_distance.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = base_math_distance.c; sourceTree = "<group>"; };
 		260B3D2F1411F217006ED023 /* base_math_fast_trig.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = base_math_fast_trig.c; sourceTree = "<group>"; };
 		260B3D301411F217006ED023 /* base_math_matrix.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = base_math_matrix.c; sourceTree = "<group>"; };
@@ -770,7 +768,6 @@
 				260B3D2A1411F217006ED023 /* base_math_acceleration.c */,
 				260B3D2B1411F217006ED023 /* base_math_angles.c */,
 				260B3D2C1411F217006ED023 /* base_math_area.c */,
-				260B3D2D1411F217006ED023 /* base_math_clip.c */,
 				260B3D2E1411F217006ED023 /* base_math_distance.c */,
 				260B3D2F1411F217006ED023 /* base_math_fast_trig.c */,
 				260B3D301411F217006ED023 /* base_math_matrix.c */,
@@ -1309,7 +1306,6 @@
 				260B3D521411F217006ED023 /* base_math_acceleration.c in Sources */,
 				260B3D531411F217006ED023 /* base_math_angles.c in Sources */,
 				260B3D541411F217006ED023 /* base_math_area.c in Sources */,
-				260B3D551411F217006ED023 /* base_math_clip.c in Sources */,
 				260B3D561411F217006ED023 /* base_math_distance.c in Sources */,
 				260B3D571411F217006ED023 /* base_math_fast_trig.c in Sources */,
 				260B3D581411F217006ED023 /* base_math_matrix.c in Sources */,
