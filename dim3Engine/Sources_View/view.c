@@ -87,10 +87,6 @@ bool view_memory_allocate(void)
 	bzero(view.rain_draws,(max_rain_density*sizeof(rain_draw_type)));
 	bzero(view.chat.lines,(max_view_chat_lines*sizeof(view_chat_line_type)));
 	bzero(view.console.lines,(max_view_console_lines*sizeof(view_console_line_type)));
-
-		// start with debug off
-
-	view.debug.on=FALSE;
 			
 	return(TRUE);
 }

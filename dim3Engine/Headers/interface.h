@@ -947,7 +947,6 @@ extern void view_fade_draw(void);
 // debug
 //
 
-extern void debug_game(void);
 extern bool debug_change_map(char *name);
 
 

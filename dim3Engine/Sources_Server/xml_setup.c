@@ -99,6 +99,7 @@ void setup_xml_default(void)
 	setup.no_hud=FALSE;
 	setup.no_draw_weapon=FALSE;
 	setup.metrics_on=FALSE;
+	setup.debug_on=FALSE;
 	setup.ignore_fps_lock=FALSE;
 	setup.disable_shaders=FALSE;
 }
@@ -169,6 +170,7 @@ bool setup_xml_read_path(char *path)
 	xml_key_read_boolean(setup_tag,"No_HUD",&setup.no_hud);
 	xml_key_read_boolean(setup_tag,"No_Draw_Weapon",&setup.no_draw_weapon);
 	xml_key_read_boolean(setup_tag,"Metrics_On",&setup.metrics_on);
+	xml_key_read_boolean(setup_tag,"Debug_On",&setup.debug_on);
 	xml_key_read_boolean(setup_tag,"Ignore_FPS_Lock",&setup.ignore_fps_lock);
 	xml_key_read_boolean(setup_tag,"Disable_Shaders",&setup.disable_shaders);
 
@@ -336,6 +338,7 @@ bool setup_xml_write(void)
 	xml_key_write_boolean("No_HUD",setup.no_hud);
 	xml_key_write_boolean("No_Draw_Weapon",setup.no_draw_weapon);
 	xml_key_write_boolean("Metrics_On",setup.metrics_on);
+	xml_key_write_boolean("Debug_On",setup.debug_on);
 	xml_key_write_boolean("Ignore_FPS_Lock",setup.ignore_fps_lock);
 	xml_key_write_boolean("Disable_Shaders",setup.disable_shaders);
 	
@@ -450,6 +453,7 @@ void setup_restore(void)
 	setup.no_hud=FALSE;
 	setup.no_draw_weapon=FALSE;
 	setup.metrics_on=FALSE;
+	setup.debug_on=FALSE;
 	setup.ignore_fps_lock=FALSE;
 	setup.disable_shaders=FALSE;
 	

@@ -37,7 +37,7 @@ extern setup_type		setup;
 extern camera_type		camera;
 extern view_type		view;
 
-extern bitmap_type		lmap_black_bitmap;
+extern bitmap_type		lmap_black_bitmap,lmap_white_bitmap;
 
 /* =======================================================
 
@@ -114,11 +114,16 @@ void render_opaque_mesh_normal(void)
 			texture=&map.textures[poly->txt_idx];
 			frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
 
-			if (poly->lmap_txt_idx==-1) {
-				lmap_gl_id=lmap_black_bitmap.gl_id;
+			if ((mesh->flag.hilite) || (setup.debug_on)) {
+				lmap_gl_id=lmap_white_bitmap.gl_id;
 			}
 			else {
-				lmap_gl_id=map.textures[poly->lmap_txt_idx].frames[0].bitmap.gl_id;
+				if (poly->lmap_txt_idx==-1) {
+					lmap_gl_id=lmap_black_bitmap.gl_id;
+				}
+				else {
+					lmap_gl_id=map.textures[poly->lmap_txt_idx].frames[0].bitmap.gl_id;
+				}
 			}
 
 			if (!gl_back_render_get_texture(poly->camera,&gl_id,NULL)) gl_id=texture->frames[frame].bitmap.gl_id;

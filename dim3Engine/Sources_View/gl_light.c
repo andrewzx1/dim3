@@ -836,9 +836,12 @@ void gl_lights_build_poly_light_list(int mesh_idx,map_mesh_poly_type *poly,view_
 
 		// misc settings, mostly for models
 
-	light_list->hilite=FALSE;
 	light_list->diffuse_vct.x=light_list->diffuse_vct.y=light_list->diffuse_vct.z=0.0f;
 	light_list->diffuse_boost=0.0f;
+
+		// highlighting
+
+	light_list->hilite=setup.debug_on;
 	
 		// meshes already have a reduced light list
 		
@@ -913,9 +916,12 @@ void gl_lights_build_liquid_light_list(map_liquid_type *liq,view_light_list_type
 
 		// misc settings, mostly for models
 
-	light_list->hilite=FALSE;
 	light_list->diffuse_vct.x=light_list->diffuse_vct.y=light_list->diffuse_vct.z=0.0f;
 	light_list->diffuse_boost=0.0f;
+
+		// highlighting
+
+	light_list->hilite=setup.debug_on;
 
 		// lights
 

@@ -34,7 +34,7 @@ and can be sold or given away.
 
 #define view_obscure_split_div			15000
 #define view_obscure_max_split			4
-#define view_obscure_max_rays			(view_obscure_max_split*view_obscure_max_split*view_obscure_max_split)
+#define view_obscure_max_rays			((view_obscure_max_split+1)*(view_obscure_max_split+1)*(view_obscure_max_split+1))
 
 extern map_type				map;
 extern camera_type			camera;
@@ -135,7 +135,7 @@ void view_obscure_release(void)
 bool view_obscure_check_box(int skip_mesh_idx,d3pnt *min,d3pnt *max)
 {
 	int					k,x,y,z,kx,ky,ray_cnt,hit_cnt,last_mesh_idx;
-	int chk_count;
+	int chk_count,chk_total;	// supergumba -- testing
 	bool				hits[view_obscure_max_rays];
 	bool				*hit;
 	d3pnt				div,ray_min,ray_max;
@@ -175,13 +175,13 @@ bool view_obscure_check_box(int skip_mesh_idx,d3pnt *min,d3pnt *max)
 	hit=hits;
 	pnt=view_obscure_pnts;
 
-	for (y=0;y!=div.y;y++) {
+	for (y=0;y<=div.y;y++) {
 		ky=min->y+(int)(((float)y)*div_add.y);
 
-		for (x=0;x!=div.x;x++) {
+		for (x=0;x<=div.x;x++) {
 			kx=min->x+(int)(((float)x)*div_add.x);
 
-			for (z=0;z!=div.z;z++) {
+			for (z=0;z<=div.z;z++) {
 				pnt->x=kx;
 				pnt->y=ky;
 				pnt->z=min->z+(int)(((float)z)*div_add.z);
@@ -208,18 +208,22 @@ bool view_obscure_check_box(int skip_mesh_idx,d3pnt *min,d3pnt *max)
 	if (max->z>ray_max.z) ray_max.z=max->z;
 
 		// remember what the last mesh was
-		// we do this to see if we can completely
+		// we do this so we can check when a mesh
+		// changes to see if we can completely
 		// eliminate meshes from comparison
 
 	last_mesh_idx=-1;
 
 		// check rays
 
-	chk_count=0;
+	chk_count=0;		// supergumba -- testing
+	chk_total=0;
 
 	poly_ptr=view_obscure_polys;
 
 	while (TRUE) {
+
+		chk_total++;
 
 			// last poly?
 
@@ -248,10 +252,10 @@ bool view_obscure_check_box(int skip_mesh_idx,d3pnt *min,d3pnt *max)
 		if (last_mesh_idx!=poly_ptr->mesh_idx) {
 			last_mesh_idx=poly_ptr->mesh_idx;
 
-			fprintf(stdout,"CHECK %d\n",poly_ptr->mesh_idx);
-
 			if ((ray_max.x<mesh->box.min.x) || (ray_min.x>mesh->box.max.x) || (ray_max.y<mesh->box.min.y) || (ray_min.y>mesh->box.max.y) || (ray_max.z<mesh->box.min.z) || (ray_min.z>mesh->box.max.z)) {
 			
+		//		fprintf(stdout,"SKIPPING!!!!\n");	// supergumba
+
 				while (last_mesh_idx==poly_ptr->mesh_idx) {
 					poly_ptr++;
 				}
@@ -281,14 +285,14 @@ bool view_obscure_check_box(int skip_mesh_idx,d3pnt *min,d3pnt *max)
 		poly_ptr++;
 	}
 
-	if (skip_mesh_idx!=-1) fprintf(stdout,"mesh %d = %d\n",skip_mesh_idx,chk_count,ray_cnt,view_obscure_max_rays);
+//	fprintf(stdout,"%d/%d\n",chk_count,chk_total);		// supergumba
 
 	return(TRUE);
 }
 
 void view_obscure_run(void)
 {
-	int					n,k,idx,sz,
+	int					n,k,idx,remove_count,org_count,
 						mesh_idx;
 	bool				remove;
 	d3pnt				min,max;
@@ -299,8 +303,6 @@ void view_obscure_run(void)
 	proj_type			*proj;
 	model_type			*mdl;
 	effect_type			*effect;
-	
-	return;
 
 		// view obscure on?
 
@@ -357,6 +359,9 @@ void view_obscure_run(void)
 		// meshes, models, and effects
 
 	idx=0;
+
+	remove_count=0;
+	org_count=view.render->draw_list.count;
 
 	while (idx<view.render->draw_list.count) {
 
@@ -426,12 +431,11 @@ void view_obscure_run(void)
 
 			// remove
 
-		sz=(view.render->draw_list.count-(idx+1));
-		if (sz>0) {
-			sz*=sizeof(view_render_draw_list_item_type);
-			memmove(&view.render->draw_list.items[idx],&view.render->draw_list.items[idx+1],sz);
-		}
-		
+		view.render->draw_list.items[idx].type=view_render_type_none;
 		view.render->draw_list.count--;
+
+		remove_count++;
 	}
+
+	view.count.obscure_percent=(100*remove_count)/org_count;
 }

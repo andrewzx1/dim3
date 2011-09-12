@@ -65,7 +65,7 @@ void render_model_create_color_vertexes(model_type *mdl,int mesh_mask,model_draw
 
 			// debug draw
 			
-		if (view.debug.on) {
+		if (setup.debug_on) {
 		
 			for (k=0;k!=mesh->nvertex;k++) {
 				*cp++=1.0f;

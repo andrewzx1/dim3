@@ -188,7 +188,7 @@ void view_draw_models_final(void)
 				if ((view.render->draw_list.items[n].flag&view_list_item_flag_model_in_view)!=0x0) {
 					if (obj->type==object_type_remote) remote_draw_status(obj);
 					if (object_is_targetted(obj,&col)) render_model_target(&obj->draw,&col);
-					if (view.debug.on) view_draw_debug_object(obj);
+					if (setup.debug_on) view_draw_debug_object(obj);
 				}
 				break;
 
@@ -204,7 +204,7 @@ void view_draw_models_final(void)
 				}
 
 				if ((view.render->draw_list.items[n].flag&view_list_item_flag_model_in_view)!=0x0) {
-					if (view.debug.on) view_draw_debug_projectile(proj);
+					if (setup.debug_on) view_draw_debug_projectile(proj);
 				}
 				break;
 
@@ -394,6 +394,7 @@ void view_draw(void)
 	view.count.shadow=0;
 	view.count.shadow_poly=0;
 	view.count.effect=0;
+	view.count.obscure_percent=0;
 	
 		// build the scene
 		
