@@ -678,7 +678,7 @@ void piece_split_mesh(void)
 	
 		// add in the selected polygons
 		
-	first_mesh=FALSE;
+	first_mesh=TRUE;
 	mesh=&map.mesh.meshes[mesh_idx];
 		
 	for (n=0;n!=select_count();n++) {

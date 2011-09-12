@@ -233,7 +233,7 @@ and can be sold or given away.
 #define light_map_max_solid_color							64
 #define light_map_render_margin								5
 
-#define light_map_texture_min_rect_size						20
+#define light_map_texture_min_rect_size						16
 
 
 #define light_map_quality_very_low							0
