@@ -36,7 +36,7 @@ extern server_type			server;
 extern view_type			view;
 extern setup_type			setup;
 
-extern bitmap_type			lmap_black_bitmap;
+extern bitmap_type			lmap_black_bitmap,lmap_white_bitmap;
 
 float						liquid_normal_cycle_xz[4]={0.0f,0.5f,0.0f,-0.5f},
 							liquid_normal_cycle_y[4]={-1.0f,-0.5f,-1.0f,-0.5f};
@@ -631,6 +631,7 @@ void liquid_render_liquid_fixed(map_liquid_type *liq,int txt_idx,int lmap_txt_id
 
 void liquid_render_liquid(map_liquid_type *liq)
 {
+	int					lmap_txt_idx;
 	float				uv_shift;
 	bool				shader_on,is_transparent;
 
@@ -640,16 +641,25 @@ void liquid_render_liquid(map_liquid_type *liq)
 
 	uv_shift=liquid_tide_get_uv_factor(liq);
 
+		// get light map
+
+	if (!setup.debug_on) {
+		lmap_txt_idx=liq->lmap_txt_idx;
+	}
+	else {
+		lmap_txt_idx=lmap_white_bitmap.gl_id;
+	}
+
 		// draw the reflection liquid
 		// or just the regular texture
 
 	if (!liquid_render_liquid_create_vertex(liq,uv_shift,FALSE)) return;
 
 	if (shader_on) {
-		liquid_render_liquid_shader(liq,liq->txt_idx,liq->lmap_txt_idx,TRUE);
+		liquid_render_liquid_shader(liq,liq->txt_idx,lmap_txt_idx,TRUE);
 	}
 	else {
-		liquid_render_liquid_fixed(liq,liq->txt_idx,liq->lmap_txt_idx,TRUE);
+		liquid_render_liquid_fixed(liq,liq->txt_idx,lmap_txt_idx,TRUE);
 	}
 	
 		// count the liquid polys
@@ -674,10 +684,10 @@ void liquid_render_liquid(map_liquid_type *liq)
 	if (!liquid_render_liquid_create_vertex(liq,(uv_shift*0.5f),TRUE)) return;
 
 	if (shader_on) {
-		liquid_render_liquid_shader(liq,liq->overlay.txt_idx,liq->lmap_txt_idx,FALSE);
+		liquid_render_liquid_shader(liq,liq->overlay.txt_idx,lmap_txt_idx,FALSE);
 	}
 	else {
-		liquid_render_liquid_fixed(liq,liq->overlay.txt_idx,liq->lmap_txt_idx,FALSE);
+		liquid_render_liquid_fixed(liq,liq->overlay.txt_idx,lmap_txt_idx,FALSE);
 	}
 
 	if (!is_transparent) {

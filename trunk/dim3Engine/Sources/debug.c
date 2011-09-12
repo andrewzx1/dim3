@@ -528,17 +528,6 @@ void debug_dump(void)
 
 /* =======================================================
 
-      Debug Game
-      
-======================================================= */
-
-void debug_game(void)
-{
-	view.debug.on=!view.debug.on;
-}
-
-/* =======================================================
-
       Debug ScreenShot
       
 ======================================================= */
@@ -587,11 +576,6 @@ void debug_input(void)
 	
 	if (input_action_get_state_single(nc_debug_status)) {
 		debug_dump();
-		return;
-	}
-	
-	if (input_action_get_state_single(nc_debug_game)) {
-		debug_game();
 		return;
 	}
 }

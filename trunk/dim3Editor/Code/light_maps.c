@@ -244,9 +244,6 @@ void light_map_texture_smudge_to_edge(int lm_poly_idx)
 	light_map_poly_type		*lm_poly;
 	light_map_texture_type	*lmap;
 	
-	return;
-	
-	
 		// get the poly
 		
 	lm_poly=&light_map_polys[lm_poly_idx];
@@ -308,7 +305,7 @@ void light_map_texture_smudge_to_edge(int lm_poly_idx)
 					for (cx=(x-1);cx!=(x+2);cx++) {
 					
 						if ((cy==y) && (cx==x)) continue;
-						if ((cy<0) || (cy>=map.light_map.size) || (cx<0) || (cx>=map.light_map.size)) continue;
+						if ((cy<lm_poly->box.ty) || (cy>=lm_poly->box.by) || (cx<lm_poly->box.lx) || (cx>=lm_poly->box.rx)) continue;
 					
 						pixel_border_touch=lmap->pixel_touch+((map.light_map.size*cy)+cx);
 						if (*pixel_border_touch==0x0) continue;

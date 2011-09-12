@@ -1053,14 +1053,14 @@ typedef struct		{
 								 "player_15","player_16","player_17","player_18","player_19", \
 								 "console","menu","quick_save","save","load", \
 								 "message","network_score", \
-								 "debug_status","debug_game","debug_screenshot", \
+								 "debug_status","debug_screenshot", \
 								 ""}
 
 //
 // configurable controls
 //
 
-#define ncontrol					93				// total number of controls
+#define ncontrol					92				// total number of controls
 
 #define nc_move_forward				0
 #define nc_move_backward			1
@@ -1168,8 +1168,7 @@ typedef struct		{
 #define nc_score					89
 
 #define nc_debug_status				90
-#define nc_debug_game				91
-#define nc_debug_screenshot			92
+#define nc_debug_screenshot			91
 
 //
 // control ranges

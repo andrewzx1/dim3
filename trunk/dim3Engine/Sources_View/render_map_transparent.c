@@ -37,7 +37,7 @@ extern view_type		view;
 extern camera_type		camera;
 extern setup_type		setup;
 
-extern bitmap_type		lmap_black_bitmap;
+extern bitmap_type		lmap_black_bitmap,lmap_white_bitmap;
 
 map_poly_sort_type		trans_sort;
 
@@ -232,11 +232,16 @@ void render_transparent_mesh_normal(void)
 
 		gl_id=texture->frames[frame].bitmap.gl_id;
 
-		if (poly->lmap_txt_idx==-1) {
-			lmap_gl_id=lmap_black_bitmap.gl_id;
+		if ((mesh->flag.hilite) || (setup.debug_on)) {
+			lmap_gl_id=lmap_white_bitmap.gl_id;
 		}
 		else {
-			lmap_gl_id=map.textures[poly->lmap_txt_idx].frames[frame].bitmap.gl_id;
+			if (poly->lmap_txt_idx==-1) {
+				lmap_gl_id=lmap_black_bitmap.gl_id;
+			}
+			else {
+				lmap_gl_id=map.textures[poly->lmap_txt_idx].frames[frame].bitmap.gl_id;
+			}
 		}
 
 		if (texture->additive!=in_additive) {

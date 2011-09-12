@@ -44,7 +44,7 @@ extern shader_type			user_shaders[max_iface_user_shader],
 
 extern float				light_shader_direction[7][3];
 
-extern bitmap_type			lmap_black_bitmap;
+extern bitmap_type			lmap_black_bitmap,lmap_white_bitmap;
 
 /* =======================================================
 
@@ -789,11 +789,16 @@ void gl_shader_set_texture(shader_type *shader,int core_shader_group,texture_typ
 		// light map
 
 	if ((core_shader_group==core_shader_group_map) || (core_shader_group==core_shader_group_liquid)) {
-		if (lmap_txt_idx==-1) {
-			gl_id=lmap_black_bitmap.gl_id;
+		if (setup.debug_on) {
+			gl_id=lmap_white_bitmap.gl_id;
 		}
 		else {
-			gl_id=map.textures[lmap_txt_idx].frames[0].bitmap.gl_id;
+			if (lmap_txt_idx==-1) {
+				gl_id=lmap_black_bitmap.gl_id;
+			}
+			else {
+				gl_id=map.textures[lmap_txt_idx].frames[0].bitmap.gl_id;
+			}
 		}
 		if (gl_id!=-1) gl_texture_bind(3,gl_id);
 	}
@@ -885,7 +890,7 @@ void gl_shader_draw_execute(int core_shader_group,texture_type *texture,int txt_
 	
 		// hiliting
 		
-	if ((core_shader_group==core_shader_group_model) && (light_list->hilite)) {
+	if (light_list->hilite) {
 		shader->in_hilite=TRUE;
 		gl_shader_ambient_hilite_override(shader,TRUE);
 	}

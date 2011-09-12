@@ -129,6 +129,7 @@ and can be sold or given away.
 // render item type
 //
 
+#define view_render_type_none								-1
 #define view_render_type_mesh								0
 #define view_render_type_liquid								1
 #define view_render_type_object								2
@@ -155,10 +156,10 @@ and can be sold or given away.
 // screen sizes
 //
 
-#define max_screen_size									64
+#define max_screen_size										64
 
 typedef struct		{
-						int								wid,high;
+						int									wid,high;
 					} screen_size_type;
 					
 //
@@ -166,13 +167,13 @@ typedef struct		{
 //
  
 typedef struct		{
-						int								view_x,view_y,
-														monitor_x_sz,monitor_y_sz,
-														monitor_refresh_rate,
-														texture_unit_count,texture_max_size,
-														nscreen_size;
-						char							name[64],ext_string[8192];
-						screen_size_type				screen_sizes[max_screen_size];
+						int									view_x,view_y,
+															monitor_x_sz,monitor_y_sz,
+															monitor_refresh_rate,
+															texture_unit_count,texture_max_size,
+															nscreen_size;
+						char								name[64],ext_string[8192];
+						screen_size_type					screen_sizes[max_screen_size];
 					} render_info_type;
 
 //
@@ -263,38 +264,38 @@ typedef struct		{
 // chat, console and score structures
 //
 
-#define max_view_chat_lines								15
-#define max_view_chat_str_len							64
+#define max_view_chat_lines									15
+#define max_view_chat_str_len								64
 
-#define max_view_console_lines							14
-#define max_view_console_txt_sz							128
+#define max_view_console_lines								14
+#define max_view_console_txt_sz								128
 
 typedef struct		{
-						char							name[name_str_len],str[max_view_chat_str_len];
-						d3col							col;
+						char								name[name_str_len],str[max_view_chat_str_len];
+						d3col								col;
 					} view_chat_line_type;
 
 typedef struct		{
-						int								nline,remove_tick;
-						char							type_str[max_view_chat_str_len];
-						bool							type_on;
-						view_chat_line_type				*lines;
+						int									nline,remove_tick;
+						char								type_str[max_view_chat_str_len];
+						bool								type_on;
+						view_chat_line_type					*lines;
 					} view_chat_type;
 
 typedef struct		{
-						int								style;
-						char							txt[max_view_console_txt_sz];
-						d3col							color;
+						int									style;
+						char								txt[max_view_console_txt_sz];
+						d3col								color;
 					} view_console_line_type;
 					
 typedef struct		{
-						int								nline;
-						bool							on;
-						view_console_line_type			*lines;
+						int									nline;
+						bool								on;
+						view_console_line_type				*lines;
 					} view_console_type;
 
 typedef struct		{
-						bool							on;
+						bool								on;
 					} view_score_type;
 
 //
@@ -410,7 +411,7 @@ typedef struct		{
 															liquid,liquid_poly,
 															model,model_poly,
 															shadow,shadow_poly,
-															effect;
+															effect,obscure_percent;
 					} view_count_type;
 
 //
@@ -478,10 +479,6 @@ typedef struct		{
 						char								str[256],str_2[256];
 					} view_error_type;
 
-typedef struct		{
-						bool								on;
-					} view_debug_type;
-
 //
 // main view structure
 //
@@ -500,7 +497,6 @@ typedef struct		{
 						view_console_type					console;
 						view_score_type						score;
 						view_error_type						error;
-						view_debug_type						debug;
 					} view_type;
 
 

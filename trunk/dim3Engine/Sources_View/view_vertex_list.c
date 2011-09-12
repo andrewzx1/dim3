@@ -425,7 +425,7 @@ void view_map_vbo_rebuild_mesh(map_mesh_type *mesh)
 			// we have a special check for ambient only
 			// lighting which can skip a number of stages
 			
-		if (view.debug.on) {
+		if (setup.debug_on) {
 			only_ambient=TRUE;
 			col.r=col.g=col.b=1.0f;
 		}

@@ -595,22 +595,19 @@ void hud_metrics_draw(void)
 
 		// latency
 
-	if (net_setup.mode!=net_mode_client) {
-		strcpy(str,"---");
-	}
-	else {
+	if (net_setup.mode==net_mode_client) {
 		if (net_setup.client.latency>=100) {
 			strcat(str,"---");
 		}
 		else {
 			sprintf(str,"%d",net_setup.client.latency);
 		}
+
+		hud_metrics_draw_single(y,"Latency:",str);
+		y+=high;
 	}
 
-	hud_metrics_draw_single(y,"Latency:",str);
-	y+=high;
-
-		// meshes and polys and mesh shadows
+		// meshes and polys
 
 	sprintf(str,"%d.%d",view.count.mesh,view.count.mesh_poly);
 
@@ -652,6 +649,15 @@ void hud_metrics_draw(void)
 	hud_metrics_draw_single(y,"Lights:",str);
 	y+=high;
 
+		// obscure
+
+	if (map.optimize.ray_trace_obscure) {
+		sprintf(str,"%d%%",view.count.obscure_percent);
+
+		hud_metrics_draw_single(y,"Obscure:",str);
+		y+=high;
+	}
+
 		// object projectile hits
 
 	obj=server.obj_list.objs[server.player_obj_idx];
@@ -659,7 +665,7 @@ void hud_metrics_draw(void)
 	str[0]=0x0;
 
 	if (obj->contact.obj_idx==-1) {
-		strcat(str,"* ");
+		strcat(str,"- ");
 	}
 	else {
 		sprintf(str2,"%d ",obj->contact.obj_idx);
@@ -667,7 +673,7 @@ void hud_metrics_draw(void)
 	}
 
 	if (obj->contact.proj_idx==-1) {
-		strcat(str,"* ");
+		strcat(str,"- ");
 	}
 	else {
 		sprintf(str2,"%d ",obj->contact.proj_idx);
@@ -682,7 +688,7 @@ void hud_metrics_draw(void)
 	str[0]=0x0;
 
 	if (obj->contact.hit_poly.mesh_idx==-1) {
-		strcat(str,"* ");
+		strcat(str,"- ");
 	}
 	else {
 		sprintf(str2,"%d.%d ",obj->contact.hit_poly.mesh_idx,obj->contact.hit_poly.poly_idx);
@@ -690,7 +696,7 @@ void hud_metrics_draw(void)
 	}
 
 	if (obj->contact.stand_poly.mesh_idx==-1) {
-		strcat(str,"* ");
+		strcat(str,"- ");
 	}
 	else {
 		sprintf(str2,"%d.%d ",obj->contact.stand_poly.mesh_idx,obj->contact.stand_poly.poly_idx);
@@ -698,7 +704,7 @@ void hud_metrics_draw(void)
 	}
 
 	if (obj->contact.liquid_idx==-1) {
-		strcat(str,"* ");
+		strcat(str,"- ");
 	}
 	else {
 		sprintf(str2,"%d ",obj->contact.liquid_idx);
