@@ -135,7 +135,6 @@ void view_obscure_release(void)
 bool view_obscure_check_box(int skip_mesh_idx,d3pnt *min,d3pnt *max)
 {
 	int					k,x,y,z,kx,ky,ray_cnt,hit_cnt,last_mesh_idx;
-	int chk_count,chk_total;	// supergumba -- testing
 	bool				hits[view_obscure_max_rays];
 	bool				*hit;
 	d3pnt				div,ray_min,ray_max;
@@ -216,14 +215,9 @@ bool view_obscure_check_box(int skip_mesh_idx,d3pnt *min,d3pnt *max)
 
 		// check rays
 
-	chk_count=0;		// supergumba -- testing
-	chk_total=0;
-
 	poly_ptr=view_obscure_polys;
 
 	while (TRUE) {
-
-		chk_total++;
 
 			// last poly?
 
@@ -253,8 +247,6 @@ bool view_obscure_check_box(int skip_mesh_idx,d3pnt *min,d3pnt *max)
 			last_mesh_idx=poly_ptr->mesh_idx;
 
 			if ((ray_max.x<mesh->box.min.x) || (ray_min.x>mesh->box.max.x) || (ray_max.y<mesh->box.min.y) || (ray_min.y>mesh->box.max.y) || (ray_max.z<mesh->box.min.z) || (ray_min.z>mesh->box.max.z)) {
-			
-		//		fprintf(stdout,"SKIPPING!!!!\n");	// supergumba
 
 				while (last_mesh_idx==poly_ptr->mesh_idx) {
 					poly_ptr++;
@@ -265,11 +257,16 @@ bool view_obscure_check_box(int skip_mesh_idx,d3pnt *min,d3pnt *max)
 			}
 		}
 
-			// check the box
-
-		chk_count++;
-
+			// min-max poly elimination
+			
 		poly=&mesh->polys[poly_ptr->poly_idx];
+		
+		if ((ray_max.x<poly->box.min.x) || (ray_min.x>poly->box.max.x) || (ray_max.y<poly->box.min.y) || (ray_min.y>poly->box.max.y) || (ray_max.z<poly->box.min.z) || (ray_min.z>poly->box.max.z)) {
+			poly_ptr++;
+			continue;
+		}
+		
+			// check the box
 
 		hit_cnt=0;
 
@@ -284,8 +281,6 @@ bool view_obscure_check_box(int skip_mesh_idx,d3pnt *min,d3pnt *max)
 
 		poly_ptr++;
 	}
-
-//	fprintf(stdout,"%d/%d\n",chk_count,chk_total);		// supergumba
 
 	return(TRUE);
 }
