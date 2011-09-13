@@ -235,6 +235,7 @@ and can be sold or given away.
 
 #define light_map_texture_min_rect_size						16
 
+#define light_map_blur_count								3
 
 #define light_map_quality_very_low							0
 #define light_map_quality_low								1
@@ -252,7 +253,7 @@ typedef struct		{
 typedef struct		{
 						int									solid_color_cache_count;
 						unsigned char						*block,*pixel_data,
-															*pixel_touch,*pixel_ignore;
+															*pixel_touch;
 						light_map_solid_color_cache_type	*solid_color_cache;
 					} light_map_texture_type;
 					

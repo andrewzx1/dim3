@@ -40,11 +40,9 @@ and can be sold or given away.
 
 #define kMapPropertyLightMapQuality			10
 #define kMapPropertyLightMapSize			11
-#define kMapPropertyLightMapBorderCount		12
-#define kMapPropertyLightMapBlurCount		13
-#define kMapPropertyLightMapUseNormals		14
-#define kMapPropertyLightMapSkipGlows		15
-#define kMapPropertyLightMapDiffuseBoost	16
+#define kMapPropertyLightMapUseNormals		12
+#define kMapPropertyLightMapSkipGlows		13
+#define kMapPropertyLightMapDiffuseBoost	14
 
 #define kMapPropertyMediaType				20
 #define kMapPropertyMediaEventId			21
@@ -94,8 +92,6 @@ void property_palette_fill_light_media(void)
 	list_palette_add_header(&property_palette,0,"Map Light Map");
 	list_palette_add_string(&property_palette,kMapPropertyLightMapQuality,"Quality",map_property_light_map_quality_list[map.light_map.quality],FALSE);
 	list_palette_add_string(&property_palette,kMapPropertyLightMapSize,"Texture Size",map_property_light_map_size_list[size],FALSE);
-	list_palette_add_string_int(&property_palette,kMapPropertyLightMapBorderCount,"Pixel Border Count",map.light_map.pixel_border_count,FALSE);
-	list_palette_add_string_int(&property_palette,kMapPropertyLightMapBlurCount,"Blur Count",map.light_map.blur_count,FALSE);
 	list_palette_add_checkbox(&property_palette,kMapPropertyLightMapUseNormals,"Use Normals (Hard Edges)",map.light_map.use_normals,FALSE);
 	list_palette_add_checkbox(&property_palette,kMapPropertyLightMapSkipGlows,"Skip Glow Mapped Polys",map.light_map.skip_glows,FALSE);
 	list_palette_add_string_float(&property_palette,kMapPropertyLightMapDiffuseBoost,"Diffuse Boost",map.light_map.diffuse_boost,FALSE);
@@ -175,14 +171,6 @@ void property_palette_click_light_media(int id,bool double_click)
 			map.light_map.size=(int)pow(2,(size+8));
 			break;
 			
-		case kMapPropertyLightMapBorderCount:
-			dialog_property_string_run(list_string_value_range_int,(void*)&map.light_map.pixel_border_count,0,0,10);
-			break;
-			
-		case kMapPropertyLightMapBlurCount:
-			dialog_property_string_run(list_string_value_range_int,(void*)&map.light_map.blur_count,0,0,6);
-			break;
-
 		case kMapPropertyLightMapUseNormals:
 			map.light_map.use_normals=!map.light_map.use_normals;
 			break;

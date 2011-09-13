@@ -102,8 +102,6 @@ void decode_map_settings_xml(map_type *map,int map_head)
     if (tag!=-1) {
         map->light_map.quality=xml_get_attribute_int_default(tag,"quality",2);
         map->light_map.size=xml_get_attribute_int_default(tag,"size",1024);
-        map->light_map.pixel_border_count=xml_get_attribute_int_default(tag,"pixel_border_count",6);
-        map->light_map.blur_count=xml_get_attribute_int_default(tag,"blur_count",3);
 		map->light_map.use_normals=xml_get_attribute_boolean(tag,"use_normals");
 		map->light_map.skip_glows=xml_get_attribute_boolean(tag,"skip_glows");
         map->light_map.diffuse_boost=xml_get_attribute_float_default(tag,"diffuse_boost",0.0f);

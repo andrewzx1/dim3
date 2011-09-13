@@ -101,9 +101,10 @@ void view_draw_debug_bounding_box(d3pnt *pnt,d3ang *ang,d3pnt *size)
 	glLineWidth(1.0f);
 }
 
-void view_draw_debug_info(char *name,char *info,d3pnt *pnt,d3pnt *size)
+void view_draw_debug_info(char *name,char *info,d3pnt *pnt,d3pnt *size,d3ang *ang)
 {
 	int						x,y,z,dist,font_size;
+	char					str[256];
 	d3col					col;
 	d3pnt					spt,ept,hpt;
 	ray_trace_contact_type	contact;
@@ -111,13 +112,15 @@ void view_draw_debug_info(char *name,char *info,d3pnt *pnt,d3pnt *size)
 		// get size and fade
 
 	x=pnt->x;
-	y=pnt->y-(size->y>>1);
+	y=pnt->y;
 	z=pnt->z;
 
 	dist=distance_get(x,y,z,view.render->camera.pnt.x,view.render->camera.pnt.y,view.render->camera.pnt.z);
 		
-	font_size=iface.font.text_size_medium-(int)((float)(iface.font.text_size_medium*dist)/(float)(remote_name_max_distance-remote_name_min_distance));
-	if (font_size<10) font_size=10;
+	font_size=iface.font.text_size_medium-((iface.font.text_size_medium*dist)/75000);
+	if (font_size<1) return;
+
+	y-=size->y;
 
 		// ray trace check
 
@@ -151,19 +154,27 @@ void view_draw_debug_info(char *name,char *info,d3pnt *pnt,d3pnt *size)
 	x=(x*iface.scale_x)/setup.screen.x_sz;
 	y=((setup.screen.y_sz-y)*iface.scale_y)/setup.screen.y_sz;
 
+	y-=(font_size*2);
+	if (info!=NULL) y-=font_size;
+
 		// draw text
 
 	col.r=col.b=1.0f;
 	col.g=0.0f;
 	
 	gl_text_start(font_hud_index,font_size);
+
 	gl_text_draw(x,y,name,tx_center,FALSE,&col,1.0f);
+
+	y+=font_size;
+	sprintf(str,"%d,%d,%d @ %.2f,%.2f,%.2f",pnt->x,pnt->y,pnt->z,ang->x,ang->y,ang->z);
+	gl_text_draw(x,y,str,tx_center,FALSE,&col,1.0f);
+
 	if (info!=NULL) {
-		if (info[0]!=0x0) {
-			y+=font_size;
-			gl_text_draw(x,y,info,tx_center,FALSE,&col,1.0f);
-		}
+		y+=font_size;
+		gl_text_draw(x,y,info,tx_center,FALSE,&col,1.0f);
 	}
+
 	gl_text_end();
 
 	glEnable(GL_DEPTH_TEST);
@@ -218,7 +229,7 @@ void view_draw_debug_object(obj_type *obj)
 
 	view_draw_debug_bounding_box(&obj->draw.pnt,&obj->draw.setup.ang,&size);
 	view_draw_debug_object_path(obj);
-	view_draw_debug_info(obj->name,obj->debug.str,&obj->draw.pnt,&size);
+	view_draw_debug_info(obj->name,obj->debug.str,&obj->draw.pnt,&size,&obj->ang);
 }
 
 void view_draw_debug_projectile(proj_type *proj)
@@ -233,6 +244,6 @@ void view_draw_debug_projectile(proj_type *proj)
 	view_draw_debug_bounding_box(&proj->draw.pnt,&proj->draw.setup.ang,&size);
 
 	proj_setup=server.obj_list.objs[proj->obj_idx]->weap_list.weaps[proj->weap_idx]->proj_setup_list.proj_setups[proj->proj_setup_idx];
-	view_draw_debug_info(proj_setup->name,NULL,&proj->draw.pnt,&size);
+	view_draw_debug_info(proj_setup->name,NULL,&proj->draw.pnt,&size,&proj->ang);
 }
 
