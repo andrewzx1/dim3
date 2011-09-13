@@ -137,9 +137,8 @@ bool view_obscure_check_box(int skip_mesh_idx,d3pnt *min,d3pnt *max)
 	int					k,x,y,z,kx,ky,ray_cnt,hit_cnt,last_mesh_idx;
 	bool				hits[view_obscure_max_rays];
 	bool				*hit;
-	d3pnt				div,ray_min,ray_max;
+	d3pnt				div,div_add,ray_min,ray_max;
 	d3pnt				*pnt;
-	d3fpnt				div_add;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 	poly_pointer_type	*poly_ptr;
@@ -148,23 +147,26 @@ bool view_obscure_check_box(int skip_mesh_idx,d3pnt *min,d3pnt *max)
 		// we do ray tracing against a grid
 		// created from the mesh box
 
+		// we always have at least 0..2 divisions
+		// so we hit corners and middle
+
 	k=max->x-min->x;
 	div.x=k/view_obscure_split_div;
-	if (div.x<1) div.x=1;
+	if (div.x<2) div.x=2;
 	if (div.x>view_obscure_max_split) div.x=view_obscure_max_split;
-	div_add.x=((float)k)/((float)div.x);
+	div_add.x=k/div.x;
 
 	k=max->y-min->y;
 	div.y=k/view_obscure_split_div;
-	if (div.y<1) div.y=1;
+	if (div.y<2) div.y=2;
 	if (div.y>view_obscure_max_split) div.y=view_obscure_max_split;
-	div_add.y=((float)k)/((float)div.y);
+	div_add.y=k/div.y;
 
 	k=max->z-min->z;
 	div.z=k/view_obscure_split_div;
-	if (div.z<1) div.z=1;
+	if (div.z<2) div.z=2;
 	if (div.z>view_obscure_max_split) div.z=view_obscure_max_split;
-	div_add.z=((float)k)/((float)div.z);
+	div_add.z=k/div.z;
 
 		// build rays
 		// get the min/max for quick mesh elimination
@@ -175,15 +177,15 @@ bool view_obscure_check_box(int skip_mesh_idx,d3pnt *min,d3pnt *max)
 	pnt=view_obscure_pnts;
 
 	for (y=0;y<=div.y;y++) {
-		ky=min->y+(int)(((float)y)*div_add.y);
+		ky=min->y+(y*div_add.y);
 
 		for (x=0;x<=div.x;x++) {
-			kx=min->x+(int)(((float)x)*div_add.x);
+			kx=min->x+(x*div_add.x);
 
 			for (z=0;z<=div.z;z++) {
 				pnt->x=kx;
 				pnt->y=ky;
-				pnt->z=min->z+(int)(((float)z)*div_add.z);
+				pnt->z=min->z+(z*div_add.z);
 
 				*hit++=FALSE;			// mark no hit here
 				pnt++;
@@ -267,12 +269,21 @@ bool view_obscure_check_box(int skip_mesh_idx,d3pnt *min,d3pnt *max)
 		}
 		
 			// check the box
+			// skipping checking rays that
+			// all already obscured
 
 		hit_cnt=0;
 
 		for (k=0;k!=ray_cnt;k++) {
-			if (!hits[k]) hits[k]=ray_trace_single_poly_hit(mesh,poly,&view.render->camera.pnt,&view_obscure_pnts[k]);
-			if (hits[k]) hit_cnt++;
+			if (hits[k]) {
+				hit_cnt++;
+				continue;
+			}
+
+			if (ray_trace_single_poly_hit(mesh,poly,&view.render->camera.pnt,&view_obscure_pnts[k])) {
+				hits[k]=TRUE;
+				hit_cnt++;
+			}
 		}
 
 			// are we obscured?

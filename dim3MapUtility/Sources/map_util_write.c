@@ -175,8 +175,6 @@ void write_map_settings_xml(map_type *map)
     xml_add_tagstart("LightMap");
     xml_add_attribute_int("quality",map->light_map.quality);
     xml_add_attribute_int("size",map->light_map.size);
-    xml_add_attribute_int("pixel_border_count",map->light_map.pixel_border_count);
-    xml_add_attribute_int("blur_count",map->light_map.blur_count);
 	xml_add_attribute_boolean("use_normals",map->light_map.use_normals);
 	xml_add_attribute_boolean("skip_glows",map->light_map.skip_glows);
 	xml_add_attribute_float("diffuse_boost",map->light_map.diffuse_boost);

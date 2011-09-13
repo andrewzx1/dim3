@@ -33,9 +33,9 @@ and can be sold or given away.
 #include "interface.h"
 #include "ui_common.h"
 
-extern map_type					map;
+extern map_type						map;
 
-extern file_path_setup_type		file_path_setup;
+extern file_path_setup_type			file_path_setup;
 
 int									light_map_poly_count,light_map_texture_count;
 float								light_map_quality_value_list[]=light_map_quality_values;
@@ -83,14 +83,6 @@ bool light_map_textures_create(void)
 	sz=map.light_map.size*map.light_map.size;
 	lmap->pixel_touch=(unsigned char*)malloc(sz);
 	bzero(lmap->pixel_touch,sz);
-	
-		// pixel ignore data
-		// special flag to deal with solid color
-		// blocks (shared between polygons)
-		// these blocks are ignored by blur & pixel borders
-		
-	lmap->pixel_ignore=(unsigned char*)malloc(sz);
-	bzero(lmap->pixel_ignore,sz);
 	
 		// color cache for solid color polygons
 		// each texture can use the same spot
@@ -216,7 +208,6 @@ void light_map_textures_free(void)
 		if (lmap->block!=NULL) free(lmap->block);
 		if (lmap->pixel_data!=NULL) free(lmap->pixel_data);
 		if (lmap->pixel_touch!=NULL) free(lmap->pixel_touch);
-		if (lmap->pixel_ignore!=NULL) free(lmap->pixel_ignore);
 		if (lmap->solid_color_cache!=NULL) free(lmap->solid_color_cache);
 		
 		lmap++;
@@ -236,7 +227,7 @@ void light_map_texture_smudge_to_edge(int lm_poly_idx)
 	int						x,y,cx,cy,i_col[3],col_count,
 							x_off,y_off,wid,high;
 	bool					no_fill;
-	unsigned char			*pixel,*pixel_touch,*pixel_ignore,
+	unsigned char			*pixel,*pixel_touch,
 							*back_pixel_data,*back_pixel_touch,
 							*back,*back_touch,
 							*blur,*pixel_border_touch;
@@ -297,11 +288,8 @@ void light_map_texture_smudge_to_edge(int lm_poly_idx)
 				*back=*pixel;
 				
 					// pixel borders only effect non-touched pixels
-					// or pixels set to ignore (for solid color shared maps)
-					
-				pixel_ignore=lmap->pixel_ignore+((map.light_map.size*(y+y_off))+(x+x_off));
 
-				if ((*pixel_touch!=0x0) || (*pixel_ignore!=0x0)) continue;
+				if (*pixel_touch!=0x0) continue;
 			
 					// find largest hilited pixel to
 					// make border from
@@ -381,55 +369,54 @@ void light_map_texture_smudge_to_edge(int lm_poly_idx)
 	free(back_pixel_touch);
 }
 
-
-
-
-
-
-
 void light_map_texture_blur(int lm_poly_idx)
 {
-}
-
-
-void light_map_texture_single_blur(int idx,int blur_count)
-{
-	int						n,x,y,cx,cy,sz,i_col[3],col_count;
+	int						n,x,y,cx,cy,i_col[3],col_count,
+							x_off,y_off,wid,high;
 	unsigned char			*pixel,*back_pixel_data,
-							*pixel_ignore,*back,*blur;
+							*back,*blur;
+	light_map_poly_type		*lm_poly;
 	light_map_texture_type	*lmap;
 	
-		// get light map
+		// get the poly
+		
+	lm_poly=&light_map_polys[lm_poly_idx];
 	
-	lmap=&light_map_textures[idx];
+		// no blur for solid colors
+		
+	if (lm_poly->solid_color) return;
+	
+	lmap=&light_map_textures[lm_poly->txt_idx];
 	if (lmap->pixel_data==NULL) return;
+	
+		// light map poly size
+		
+	x_off=lm_poly->box.lx;
+	y_off=lm_poly->box.ty;
+	
+	wid=(lm_poly->box.rx-lm_poly->box.lx)+1;
+	high=(lm_poly->box.by-lm_poly->box.ty)+1;
 					
 		// back pixel data
 		
-	sz=(map.light_map.size*map.light_map.size)*3;
-	back_pixel_data=(unsigned char*)malloc(sz);
+	back_pixel_data=(unsigned char*)malloc((wid*3)*high);
 
 		// blur pixels
 		
-	for (n=0;n!=blur_count;n++) {
+	for (n=0;n!=light_map_blur_count;n++) {
 	
-		for (y=0;y!=map.light_map.size;y++) {
-		
-			for (x=0;x!=map.light_map.size;x++) {
+		for (y=0;y<high;y++) {
+	
+			for (x=0;x<wid;x++) {
 			
 					// default to back being same as pixels
 					
-				pixel=lmap->pixel_data+(((map.light_map.size*3)*y)+(x*3));
-				back=back_pixel_data+(((map.light_map.size*3)*y)+(x*3));
+				pixel=lmap->pixel_data+(((map.light_map.size*3)*(y+y_off))+((x+x_off)*3));
+				back=back_pixel_data+(((wid*3)*y)+(x*3));
 				
+				*back++=*pixel++;
+				*back++=*pixel++;
 				*back=*pixel;
-				*(back+1)=*(pixel+1);
-				*(back+2)=*(pixel+2);
-			
-					// skip all shared solid colors
-					
-				pixel_ignore=lmap->pixel_ignore+((map.light_map.size*y)+x);
-				if (*pixel_ignore!=0x0) continue;
 										
 					// get blur from 8 surrounding pixels
 					
@@ -440,11 +427,11 @@ void light_map_texture_single_blur(int idx,int blur_count)
 					for (cx=(x-1);cx!=(x+2);cx++) {
 					
 						if ((cy==y) && (cx==x)) continue;
-						if ((cy<0) || (cy>=map.light_map.size) || (cx<0) || (cx>=map.light_map.size)) continue;
+						if ((cy<0) || (cy>=high) || (cx<0) || (cx>=wid)) continue;
 						
 							// add up blur
 							
-						blur=lmap->pixel_data+(((map.light_map.size*3)*cy)+(cx*3));
+						blur=lmap->pixel_data+(((map.light_map.size*3)*(cy+y_off))+((cx+x_off)*3));
 						i_col[0]+=(int)*blur;
 						i_col[1]+=(int)*(blur+1);
 						i_col[2]+=(int)*(blur+2);
@@ -462,6 +449,8 @@ void light_map_texture_single_blur(int idx,int blur_count)
 					i_col[2]=i_col[2]/col_count;
 					if (i_col[2]>255) i_col[2]=255;
 					
+					back=back_pixel_data+(((wid*3)*y)+(x*3));
+				
 					*back++=(unsigned char)i_col[0];
 					*back++=(unsigned char)i_col[1];
 					*back++=(unsigned char)i_col[2];
@@ -469,8 +458,21 @@ void light_map_texture_single_blur(int idx,int blur_count)
 			}
 			
 		}
+
+			// transfer over the changed pixels
+			
+		back=back_pixel_data;
 		
-		memmove(lmap->pixel_data,back_pixel_data,((map.light_map.size*3)*map.light_map.size));
+		for (y=0;y<high;y++) {
+	
+			pixel=lmap->pixel_data+(((map.light_map.size*3)*(y+y_off))+(x_off*3));
+			
+			for (x=0;x<wid;x++) {
+				*pixel++=*back++;
+				*pixel++=*back++;
+				*pixel++=*back++;
+			}
+		}
 	}
 		
 		// free backgrounds
@@ -832,12 +834,12 @@ bool light_map_texture_find_open_area(int x_sz,int y_sz,int *kx,int *ky,d3rect *
 		b_y_sz=(y_sz/light_map_texture_block_size);
 		if ((y_sz%light_map_texture_block_size)!=0) b_y_sz++;
 		
-			// always take one extra block on each
-			// side so we can better center the polygon
-			// in the middle and smear the colors
+			// always take one extra block because
+			// we draw the polygon centered around
+			// extra space for smearing and bluring
 			
-		b_x_sz+=2;
-		b_y_sz+=2;
+		b_x_sz++;
+		b_y_sz++;
 	}
 	else {
 		b_x_sz=b_y_sz=1;
@@ -903,8 +905,8 @@ bool light_map_texture_find_open_area(int x_sz,int y_sz,int *kx,int *ky,d3rect *
 				// extra border blocks so we have more room to smear
 				
 			else {
-				*kx=x+light_map_texture_block_size;
-				*ky=y+light_map_texture_block_size;
+				*kx=x+(light_map_texture_block_size>>1);
+				*ky=y+(light_map_texture_block_size>>1);
 			}
 			
 			return(TRUE);
@@ -917,23 +919,18 @@ bool light_map_texture_find_open_area(int x_sz,int y_sz,int *kx,int *ky,d3rect *
 void light_map_texture_fill_solid_color(unsigned char *col,int bx,int by,light_map_texture_type *lmap)
 {
 	int				x,y;
-	unsigned char	*pixel,*pixel_ignore;
+	unsigned char	*pixel;
 	
-		// fill it
-		// we mark the pixel ignore because these shouldn't
-		// add a border or be blured
+		// fill with solid color, one block size
 		
 	for (y=0;y!=light_map_texture_block_size;y++) {
 	
 		pixel=lmap->pixel_data+(((by+y)*(map.light_map.size*3))+(bx*3));
-		pixel_ignore=lmap->pixel_ignore+(((by+y)*map.light_map.size)+bx);
 		
 		for (x=0;x!=light_map_texture_block_size;x++) {
 			*pixel++=col[0];
 			*pixel++=col[1];
 			*pixel++=col[2];
-			
-			*pixel_ignore++=0x1;
 		}
 	}
 }
@@ -1771,7 +1768,7 @@ bool light_map_run_for_poly(int lm_poly_idx,char *err_str)
 		light_map_texture_find_open_area(lm_poly->x_sz,lm_poly->y_sz,&x,&y,&box,lm_poly->solid_color,lmap);
 	}
 	
-		// remember the shift for creating the UVs
+		// setup the polygon shift for UVs
 		
 	lm_poly->x_shift=x;
 	lm_poly->y_shift=y;
