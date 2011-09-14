@@ -119,7 +119,7 @@ void weapon_clear_ammo(weap_ammo_type *ammo,bool use)
       
 ======================================================= */
 
-bool weapon_start_script(obj_type *obj,weapon_type *weap,char *err_str)
+bool weapon_start_script(obj_type *obj,weapon_type *weap,bool no_construct,char *err_str)
 {
 		// create script
 
@@ -128,6 +128,8 @@ bool weapon_start_script(obj_type *obj,weapon_type *weap,char *err_str)
 		
 		// send the construct event
 	
+	if (no_construct) return(TRUE);
+
 	return(scripts_post_event(weap->script_idx,-1,sd_event_construct,0,0,err_str));
 }
 
@@ -292,7 +294,7 @@ bool weapon_add(obj_type *obj,char *name)
 		// the scripts
 		
 	ok=FALSE;
-	if (weapon_start_script(obj,weap,err_str)) {
+	if (weapon_start_script(obj,weap,FALSE,err_str)) {
 		ok=model_draw_load(&weap->draw,"Weapon",weap->name,err_str);
 	}
 	

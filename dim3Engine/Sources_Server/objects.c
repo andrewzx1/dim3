@@ -736,7 +736,7 @@ int object_create(char *name,int type,int bind)
       
 ======================================================= */
 
-bool object_start_script(obj_type *obj,char *err_str)
+bool object_start_script(obj_type *obj,bool no_construct,char *err_str)
 {
 	char				script_name[file_str_len];
 
@@ -770,6 +770,8 @@ bool object_start_script(obj_type *obj,char *err_str)
 			
 		// send the construct event
 	
+	if (no_construct) return(TRUE);
+
 	return(scripts_post_event(obj->script_idx,-1,sd_event_construct,0,0,err_str));
 }
 
@@ -962,7 +964,7 @@ int object_start(spot_type *spot,char *name,int type,int bind,char *err_str)
 
 		// start script
 
-	if (!object_start_script(obj,err_str)) {
+	if (!object_start_script(obj,FALSE,err_str)) {
 		server.obj_list.objs[idx]=NULL;
 		free(obj);
 		return(-1);

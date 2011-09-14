@@ -303,7 +303,7 @@ bool game_file_save(char *err_str)
 	
 	game_file_add_chunk(&server.time,1,sizeof(server_time_type));
 	game_file_add_chunk(&server.player_obj_idx,1,sizeof(int));
-	game_file_add_chunk(&server.skill,1,sizeof(int));
+	game_file_add_chunk(&server.simple_save_idx,1,sizeof(int));
 	
 		// objects, weapons, and projectile setups
 
@@ -385,6 +385,8 @@ bool game_file_save(char *err_str)
 		game_file_add_chunk(decal,1,sizeof(decal_type));
 	}
 	
+		// HUD
+
 	progress_next();
 	
 	game_file_add_chunk(iface.bitmap_list.bitmaps,iface.bitmap_list.nbitmap,sizeof(iface_bitmap_type));
@@ -539,6 +541,10 @@ bool game_file_load(char *file_name,char *err_str)
 			return(FALSE);
 		}
 	}
+
+		// skill from header
+
+	server.skill=head.skill;
 		
 		// reload map
 
@@ -574,7 +580,7 @@ bool game_file_load(char *file_name,char *err_str)
 
 	game_file_get_chunk(&server.time);
 	game_file_get_chunk(&server.player_obj_idx);
-	game_file_get_chunk(&server.skill);
+	game_file_get_chunk(&server.simple_save_idx);
 
 		// objects, weapons, and projectile setups
 	
@@ -605,7 +611,7 @@ bool game_file_load(char *file_name,char *err_str)
 			// rebuild object script
 
 		scripts_lock_events();
-		ok=object_start_script(obj,err_str);
+		ok=object_start_script(obj,TRUE,err_str);
 		scripts_unlock_events();
 
 		if (!ok) {
@@ -634,7 +640,7 @@ bool game_file_load(char *file_name,char *err_str)
 				// rebuild weapon script
 
 			scripts_lock_events();
-			ok=weapon_start_script(obj,weap,err_str);
+			ok=weapon_start_script(obj,weap,TRUE,err_str);
 			scripts_unlock_events();
 			
 			if (!ok) {
@@ -663,7 +669,7 @@ bool game_file_load(char *file_name,char *err_str)
 					// rebuild projectile setup script
 
 				scripts_lock_events();
-				ok=proj_setup_start_script(obj,weap,proj_setup,err_str);
+				ok=proj_setup_start_script(obj,weap,proj_setup,TRUE,err_str);
 				scripts_unlock_events();
 
 				if (!ok) {
@@ -733,6 +739,8 @@ bool game_file_load(char *file_name,char *err_str)
 
 		game_file_get_chunk(server.decal_list.decals[idx]);
 	}
+
+		// HUD
 
 	progress_next();
 

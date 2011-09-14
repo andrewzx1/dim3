@@ -88,7 +88,7 @@ bool remote_add(network_reply_join_remote *remote,bool send_event)
 		// special remote type always reroutes to
 		// regular player scripts
 		
-	if (!object_start_script(obj,err_str)) {
+	if (!object_start_script(obj,FALSE,err_str)) {
 		console_add_error(err_str);
 		free(server.obj_list.objs[idx]);
 		server.obj_list.objs[idx]=NULL;

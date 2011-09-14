@@ -54,7 +54,7 @@ extern void object_set_current_mesh(obj_type *obj);
 extern void object_set_position(obj_type *obj,int x,int y,int z,float ang_y,float ymove);
 extern void object_stop(obj_type *obj);
 
-extern bool object_start_script(obj_type *obj,char *err_str);
+extern bool object_start_script(obj_type *obj,bool no_construct,char *err_str);
 
 extern void object_clear_size(obj_size *size);
 extern void object_clear_position(d3pnt *pnt);
@@ -285,7 +285,7 @@ extern inline weapon_type* weapon_get_attach(JSObjectRef j_obj);
 extern weapon_type* weapon_find_name(obj_type *obj,char *name);
 extern inline weapon_type* weapon_find_current(obj_type *obj);
 
-extern bool weapon_start_script(obj_type *obj,weapon_type *weap,char *err_str);
+extern bool weapon_start_script(obj_type *obj,weapon_type *weap,bool no_construct,char *err_str);
 extern bool weapon_add(obj_type *obj,char *name);
 extern void weapon_dispose(obj_type *obj,int idx);
 
@@ -377,7 +377,7 @@ extern void projectile_dispose_all(void);
 
 extern proj_setup_type* find_proj_setups(weapon_type *weap,char *name);
 
-extern bool proj_setup_start_script(obj_type *obj,weapon_type *weap,proj_setup_type *proj_setup,char *err_str);
+extern bool proj_setup_start_script(obj_type *obj,weapon_type *weap,proj_setup_type *proj_setup,bool no_construct,char *err_str);
 extern bool proj_setup_create(obj_type *obj,weapon_type *weap,char *name);
 extern void proj_setup_dispose(weapon_type *weap,int idx);
 
