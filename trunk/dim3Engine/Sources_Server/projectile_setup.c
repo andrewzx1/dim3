@@ -65,7 +65,7 @@ proj_setup_type* find_proj_setups(weapon_type *weap,char *name)
       
 ======================================================= */
 
-bool proj_setup_start_script(obj_type *obj,weapon_type *weap,proj_setup_type *proj_setup,char *err_str)
+bool proj_setup_start_script(obj_type *obj,weapon_type *weap,proj_setup_type *proj_setup,bool no_construct,char *err_str)
 {
 		// create the script
 
@@ -74,6 +74,8 @@ bool proj_setup_start_script(obj_type *obj,weapon_type *weap,proj_setup_type *pr
 		
 		// send the construct event
 	
+	if (no_construct) return(TRUE);
+
 	return(scripts_post_event(proj_setup->script_idx,-1,sd_event_construct,0,0,err_str));
 }
 
@@ -165,7 +167,7 @@ bool proj_setup_create(obj_type *obj,weapon_type *weap,char *name)
 		// start the script
 		// and load the models
 
-	if (proj_setup_start_script(obj,weap,proj_setup,err_str)) {
+	if (proj_setup_start_script(obj,weap,proj_setup,FALSE,err_str)) {
 		if (model_draw_load(&proj_setup->draw,"Projectile",proj_setup->name,err_str)) return(TRUE);
 	}
 	

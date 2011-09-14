@@ -32,9 +32,10 @@ and can be sold or given away.
 #include "interface.h"
 #include "objects.h"
 
-#define view_obscure_split_div			15000
-#define view_obscure_max_split			4
+#define view_obscure_split_div			10000
+#define view_obscure_max_split			8
 #define view_obscure_max_rays			((view_obscure_max_split+1)*(view_obscure_max_split+1)*(view_obscure_max_split+1))
+#define view_obscure_skip_range			20000
 
 extern map_type				map;
 extern camera_type			camera;
@@ -370,6 +371,12 @@ void view_obscure_run(void)
 	org_count=view.render->draw_list.count;
 
 	while (idx<view.render->draw_list.count) {
+
+			// if too close, don't obscure
+
+		if (view.render->draw_list.items[idx].dist<view_obscure_skip_range) continue;
+
+			// check for removal
 
 		remove=FALSE;
 
