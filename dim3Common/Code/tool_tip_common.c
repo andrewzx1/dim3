@@ -103,6 +103,7 @@ void tool_tip_clear(void)
 
 void tool_tip_draw(void)
 {
+	float			vertexes[8];
 	d3rect			wbox;
 	
 	if (tool_tip_str[0]==0x0) return;
@@ -130,25 +131,24 @@ void tool_tip_draw(void)
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_NOTEQUAL,0);
 
-		// background
+		// background and line
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+
+	vertexes[0]=vertexes[6]=(float)tool_tip_box.lx;
+	vertexes[2]=vertexes[4]=(float)tool_tip_box.rx;
+	vertexes[1]=vertexes[3]=(float)tool_tip_box.ty;
+	vertexes[5]=vertexes[7]=(float)tool_tip_box.by;
+
+	glVertexPointer(2,GL_FLOAT,0,vertexes);
 
 	glColor4f(1.0f,1.0f,0.5f,0.9f);
-
-	glBegin(GL_QUADS);
-	glVertex2i(tool_tip_box.lx,tool_tip_box.ty);
-	glVertex2i(tool_tip_box.rx,tool_tip_box.ty);
-	glVertex2i(tool_tip_box.rx,tool_tip_box.by);
-	glVertex2i(tool_tip_box.lx,tool_tip_box.by);
-	glEnd();
+	glDrawArrays(GL_QUADS,0,4);
 
 	glColor4f(0.0f,0.0f,0.0f,1.0f);
+	glDrawArrays(GL_LINE_LOOP,0,4);
 
-	glBegin(GL_LINE_LOOP);
-	glVertex2i(tool_tip_box.lx,tool_tip_box.ty);
-	glVertex2i(tool_tip_box.rx,tool_tip_box.ty);
-	glVertex2i(tool_tip_box.rx,tool_tip_box.by);
-	glVertex2i(tool_tip_box.lx,tool_tip_box.by);
-	glEnd();
+	glDisableClientState(GL_VERTEX_ARRAY);
 	
 		// the tip
 

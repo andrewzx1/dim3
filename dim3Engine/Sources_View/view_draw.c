@@ -399,7 +399,7 @@ void view_draw(void)
 		// build the scene
 		
 	view_draw_scene_build();
-	
+
 		// do any back frame rendering
 		
 	gl_back_render_frame_start();

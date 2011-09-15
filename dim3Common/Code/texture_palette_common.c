@@ -52,6 +52,7 @@ void texture_palette_draw(texture_type *txt_list)
 {
 	int					n,k,x,ty,by,sel,idx,
 						page_list_count,per_page_count,pixel_sz;
+	float				vertexes[8],uvs[8]={0.0f,0.0f,1.0f,0.0f,1.0f,1.0f,0.0f,1.0f};
 	bool				has_texture;
 	d3rect				wbox,tbox;
 	texture_type		*texture;
@@ -79,6 +80,8 @@ void texture_palette_draw(texture_type *txt_list)
 
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_NOTEQUAL,0);
+
+	glEnableClientState(GL_VERTEX_ARRAY);
 	
 		// settings
 		
@@ -105,7 +108,14 @@ void texture_palette_draw(texture_type *txt_list)
 			}
 			
 				// draw page
-				
+
+			vertexes[0]=vertexes[6]=(float)x;
+			vertexes[2]=vertexes[4]=(float)(x+16);
+			vertexes[1]=vertexes[3]=(float)ty;
+			vertexes[5]=vertexes[7]=(float)by;
+			
+			glVertexPointer(2,GL_FLOAT,0,vertexes);
+			
 			if (txt_palette_cur_page==n) {
 				glColor4f(0.3f,0.3f,1.0f,1.0f);
 			}
@@ -113,24 +123,12 @@ void texture_palette_draw(texture_type *txt_list)
 				glColor4f(0.75f,0.75f,0.75f,1.0f);
 			}
 
-			glBegin(GL_QUADS);
-			glVertex2i(x,ty);
-			glVertex2i((x+16),ty);
-			glVertex2i((x+16),by);
-			glVertex2i(x,by);
-			glEnd();
+			glDrawArrays(GL_QUADS,0,4);
 
 				// outline
 
 			glColor4f(0.0f,0.0f,0.0f,1.0f);
-			
-			glBegin(GL_LINE_LOOP);
-			glVertex2i(x,ty);
-			glVertex2i((x+16),ty);
-			glVertex2i((x+16),by);
-			glVertex2i(x,by);
-			glEnd();
-			
+			glDrawArrays(GL_LINE_LOOP,0,4);
 			
 				// mark if there are textures
 				
@@ -145,14 +143,15 @@ void texture_palette_draw(texture_type *txt_list)
 			}
 			
 			if (has_texture) {
-				glColor4f(0.0f,0.0f,0.0f,1.0f);
+				vertexes[0]=vertexes[6]=(float)(x+11);
+				vertexes[2]=vertexes[4]=(float)(x+14);
+				vertexes[1]=vertexes[3]=(float)(by-5);
+				vertexes[5]=vertexes[7]=(float)(by-2);
+			
+				glVertexPointer(2,GL_FLOAT,0,vertexes);
 				
-				glBegin(GL_QUADS);
-				glVertex2i((x+11),(by-5));
-				glVertex2i((x+14),(by-5));
-				glVertex2i((x+14),(by-2));
-				glVertex2i((x+11),(by-2));
-				glEnd();
+				glColor4f(0.0f,0.0f,0.0f,1.0f);
+				glDrawArrays(GL_QUADS,0,4);
 			}
 			
 			x+=16;
@@ -165,7 +164,9 @@ void texture_palette_draw(texture_type *txt_list)
 	glAlphaFunc(GL_NOTEQUAL,0);
 	
 	glColor4f(1.0f,1.0f,1.0f,1.0f);
+
 	glEnable(GL_TEXTURE_2D);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	
 	x=texture_palette_page_list_width();
 	ty=tbox.ty+1;
@@ -177,37 +178,37 @@ void texture_palette_draw(texture_type *txt_list)
 			// the textures
 			
 		if (texture->frames[0].bitmap.gl_id!=-1) {
-			glBindTexture(GL_TEXTURE_2D,texture->frames[0].bitmap.gl_id);
+			vertexes[0]=vertexes[6]=(float)x;
+			vertexes[2]=vertexes[4]=(float)(x+pixel_sz);
+			vertexes[1]=vertexes[3]=(float)ty;
+			vertexes[5]=vertexes[7]=(float)by;
 
-			glBegin(GL_QUADS);
-			glTexCoord2f(0.0f,0.0f);
-			glVertex2i(x,ty);
-			glTexCoord2f(1.0f,0.0f);
-			glVertex2i((x+pixel_sz),ty);
-			glTexCoord2f(1.0f,1.0f);
-			glVertex2i((x+pixel_sz),by);
-			glTexCoord2f(0.0f,1.0f);
-			glVertex2i(x,by);
-			glEnd();
+			glVertexPointer(2,GL_FLOAT,0,vertexes);
+			glTexCoordPointer(2,GL_FLOAT,0,uvs);
+
+			glBindTexture(GL_TEXTURE_2D,texture->frames[0].bitmap.gl_id);
+			glDrawArrays(GL_QUADS,0,4);
 		}
 		
 		x+=pixel_sz;
 	}
 	
 	glDisable(GL_TEXTURE_2D);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	
 	glDisable(GL_ALPHA_TEST);
 	
 		// right fill
+	
+	vertexes[0]=vertexes[6]=(float)x;
+	vertexes[2]=vertexes[4]=(float)tbox.rx;
+	vertexes[1]=vertexes[3]=(float)ty;
+	vertexes[5]=vertexes[7]=(float)by;
+
+	glVertexPointer(2,GL_FLOAT,0,vertexes);
 		
 	glColor4f(0.75f,0.75f,0.75f,1.0f);
-		
-	glBegin(GL_QUADS);
-	glVertex2i(x,ty);
-	glVertex2i(tbox.rx,ty);
-	glVertex2i(tbox.rx,by);
-	glVertex2i(x,by);
-	glEnd();
+	glDrawArrays(GL_QUADS,0,4);
 	
 		// lines
 		
@@ -217,21 +218,24 @@ void texture_palette_draw(texture_type *txt_list)
 		
 	for (n=0;n!=per_page_count;n++) {
 		idx=n+(txt_palette_cur_page*per_page_count);
-		
-		glBegin(GL_LINE_LOOP);
-		glVertex2i(x,ty);
-		glVertex2i((x+pixel_sz),ty);
-		glVertex2i((x+pixel_sz),by);
-		glVertex2i(x,by);
-		glEnd();
+	
+		vertexes[0]=vertexes[6]=(float)x;
+		vertexes[2]=vertexes[4]=(float)(x+pixel_sz);
+		vertexes[1]=vertexes[3]=(float)ty;
+		vertexes[5]=vertexes[7]=(float)by;
+
+		glVertexPointer(2,GL_FLOAT,0,vertexes);
+		glDrawArrays(GL_LINE_LOOP,0,4);
 		
 		x+=pixel_sz;
 	}
+
+	vertexes[0]=(float)tbox.lx;
+	vertexes[2]=(float)tbox.rx;
+	vertexes[1]=vertexes[3]=(float)ty;
 	
-	glBegin(GL_LINES);
-	glVertex2i(tbox.lx,ty);
-	glVertex2i(tbox.rx,ty);
-	glEnd();
+	glVertexPointer(2,GL_FLOAT,0,vertexes);
+	glDrawArrays(GL_LINES,0,2);
 	
 		// selection
 		
@@ -241,14 +245,17 @@ void texture_palette_draw(texture_type *txt_list)
 	
 	x=((sel-(txt_palette_cur_page*per_page_count))*pixel_sz)+texture_palette_page_list_width();
 	
+	vertexes[0]=vertexes[6]=(float)x;
+	vertexes[2]=vertexes[4]=(float)(x+pixel_sz);
+	vertexes[1]=vertexes[3]=(float)ty;
+	vertexes[5]=vertexes[7]=(float)by;
+
+	glVertexPointer(2,GL_FLOAT,0,vertexes);
+
 	glColor4f(1.0f,0.0f,0.0f,1.0f);
-	
-	glBegin(GL_LINE_LOOP);
-	glVertex2i(x,ty);
-	glVertex2i((x+pixel_sz),ty);
-	glVertex2i((x+pixel_sz),by);
-	glVertex2i(x,by);
-	glEnd();
+	glDrawArrays(GL_LINE_LOOP,0,4);
+
+	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 /* =======================================================

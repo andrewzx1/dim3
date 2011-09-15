@@ -40,6 +40,7 @@ and can be sold or given away.
 #include "glue.h"
 #include "interface.h"
 
+float								*txt_vertexes,*txt_uvs;
 texture_font_type					txt_font;
 
 /* =======================================================
@@ -57,10 +58,16 @@ void text_initialize(void)
 	}
 
 	bitmap_text_initialize(&txt_font);
+
+	txt_vertexes=(float*)malloc((256*2)*sizeof(float));
+	txt_uvs=(float*)malloc((256*2)*sizeof(float));
 }
 
 void text_shutdown(void)
 {
+	free(txt_vertexes);
+	free(txt_uvs);
+
 	bitmap_text_shutdown(&txt_font);
 }
 
@@ -109,9 +116,10 @@ int text_width(float txt_size,char *str)
 
 void text_draw(int x,int y,float txt_size,d3col *col,char *str)
 {
-	int			n,len,ch,xoff,yoff;
+	int			n,len,ch,xoff,yoff,cnt;
 	float		f_lx,f_rx,f_ty,f_by,
 				gx_lft,gx_rgt,gy_top,gy_bot;
+	float		*pv,*pt;
 	char		*c;
 
 		// get text length
@@ -152,7 +160,10 @@ void text_draw(int x,int y,float txt_size,d3col *col,char *str)
 		glColor4f(col->r,col->g,col->b,1.0f);
 	}
 	
-	glBegin(GL_QUADS);
+	pv=txt_vertexes;
+	pt=txt_uvs;
+
+	cnt=0;
 	
 	for (n=0;n!=len;n++) {
 	
@@ -178,19 +189,45 @@ void text_draw(int x,int y,float txt_size,d3col *col,char *str)
 
 		f_rx=f_lx+txt_size;
 
-		glTexCoord2f(gx_lft,gy_top);
-		glVertex2f(f_lx,f_ty);
-		glTexCoord2f(gx_rgt,gy_top);
-		glVertex2f(f_rx,f_ty);
-		glTexCoord2f(gx_rgt,gy_bot);
-		glVertex2f(f_rx,f_by);
-		glTexCoord2f(gx_lft,gy_bot);
-		glVertex2f(f_lx,f_by);
+		*pv++=f_lx;
+		*pv++=f_ty;
+
+		*pt++=gx_lft;
+		*pt++=gy_top;
+
+		*pv++=f_rx;
+		*pv++=f_ty;
+
+		*pt++=gx_rgt;
+		*pt++=gy_top;
+
+		*pv++=f_rx;
+		*pv++=f_by;
+
+		*pt++=gx_rgt;
+		*pt++=gy_bot;
+
+		*pv++=f_lx;
+		*pv++=f_by;
+
+		*pt++=gx_lft;
+		*pt++=gy_bot;
+
+		cnt+=4;
 
 		f_lx+=(txt_size*txt_font.size_24.char_size[ch]);
 	}
 
-	glEnd();
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+	glVertexPointer(2,GL_FLOAT,0,txt_vertexes);
+	glTexCoordPointer(2,GL_FLOAT,0,txt_uvs);
+
+	glDrawArrays(GL_QUADS,0,cnt);
+
+	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
 		// fix wrapping back to default
 

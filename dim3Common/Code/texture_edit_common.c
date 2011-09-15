@@ -103,6 +103,20 @@ void texture_edit_get_box(d3rect *box)
 
 void texture_edit_draw_bitmap(d3rect *box,char *name,unsigned long gl_id)
 {
+	float				vertexes[8],uvs[8]={0.0f,0.0f,1.0f,0.0f,1.0f,1.0f,0.0f,1.0f};
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+		// the draw vertexes
+
+	vertexes[0]=vertexes[6]=(float)box->lx;
+	vertexes[2]=vertexes[4]=(float)box->rx;
+	vertexes[1]=vertexes[3]=(float)box->ty;
+	vertexes[5]=vertexes[7]=(float)box->by;
+	
+	glVertexPointer(2,GL_FLOAT,0,vertexes);
+
 		// the bitmap
 
 	if (gl_id!=-1) {
@@ -115,16 +129,9 @@ void texture_edit_draw_bitmap(d3rect *box,char *name,unsigned long gl_id)
   		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP);
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP);
 
-		glBegin(GL_QUADS);
-		glTexCoord2f(0.0f,0.0f);
-		glVertex2i(box->lx,box->ty);
-		glTexCoord2f(1.0f,0.0f);
-		glVertex2i(box->rx,box->ty);
-		glTexCoord2f(1.0f,1.0f);
-		glVertex2i(box->rx,box->by);
-		glTexCoord2f(0.0f,1.0f);
-		glVertex2i(box->lx,box->by);
-		glEnd();
+		glTexCoordPointer(2,GL_FLOAT,0,uvs);
+
+		glDrawArrays(GL_QUADS,0,4);
 
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
@@ -135,13 +142,10 @@ void texture_edit_draw_bitmap(d3rect *box,char *name,unsigned long gl_id)
 		// the box
 
 	glColor4f(0.0f,0.0f,0.0f,1.0f);
+	glDrawArrays(GL_LINE_LOOP,0,4);
 
-	glBegin(GL_LINE_LOOP);
-	glVertex2i(box->lx,box->ty);
-	glVertex2i(box->rx,box->ty);
-	glVertex2i(box->rx,box->by);
-	glVertex2i(box->lx,box->by);
-	glEnd();
+	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
 		// the name
 		
@@ -150,53 +154,58 @@ void texture_edit_draw_bitmap(d3rect *box,char *name,unsigned long gl_id)
 
 void texture_edit_draw_button(d3rect *box,char *title,float font_size,bool has_trig,int sel_idx)
 {
-	float			comp;
-	
-	comp=0.9f;
-	if (texture_edit_frame_click_idx==sel_idx) comp=0.8f;
+	float			comp,vertexes[8];
 
-	glBegin(GL_QUADS);
-	glColor4f(comp,comp,comp,1.0f);
-	glVertex2i(box->lx,box->ty);
-	glVertex2i(box->rx,box->ty);
-	glColor4f((comp-0.2f),(comp-0.2f),(comp-0.2f),1.0f);
-	glVertex2i(box->rx,box->by);
-	glVertex2i(box->lx,box->by);
-	glEnd();
-
-	if (has_trig) {
-		glBegin(GL_TRIANGLES);
-		glColor4f(0.2f,0.2f,1.0f,1.0f);
-		glVertex2i((box->rx-20),(box->ty+5));
-		glColor4f(0.0f,0.0f,0.8f,1.0f);
-		glVertex2i((box->rx-5),(box->by-5));
-		glVertex2i((box->rx-35),(box->by-5));
-		glEnd();
-	}
+	glEnableClientState(GL_VERTEX_ARRAY);
 	
+		// the button box
+
+	comp=0.6f;
+	if (texture_edit_frame_click_idx==sel_idx) comp=0.4f;
+
+	vertexes[0]=vertexes[6]=(float)box->lx;
+	vertexes[2]=vertexes[4]=(float)box->rx;
+	vertexes[1]=vertexes[3]=(float)box->ty;
+	vertexes[5]=vertexes[7]=(float)box->by;
+
+	glVertexPointer(2,GL_FLOAT,0,vertexes);
+
+	glColor4f(comp,comp,1.0f,1.0f);
+	glDrawArrays(GL_QUADS,0,4);
+
 	glColor4f(0.0f,0.0f,0.0f,1.0f);
+	glDrawArrays(GL_LINE_LOOP,0,4);
+
+		// the trig
 
 	if (has_trig) {
-		glBegin(GL_LINE_LOOP);
-		glVertex2i((box->rx-20),(box->ty+5));
-		glVertex2i((box->rx-5),(box->by-5));
-		glVertex2i((box->rx-35),(box->by-5));
-		glEnd();
-	}
+		vertexes[0]=(float)(box->rx-20);
+		vertexes[1]=(float)(box->ty+5);
+		vertexes[2]=(float)(box->rx-5);
+		vertexes[3]=(float)(box->by-5);
+		vertexes[4]=(float)(box->rx-35);
+		vertexes[5]=(float)(box->by-5);
+		
+		glVertexPointer(2,GL_FLOAT,0,vertexes);
+
+		glColor4f(0.2f,0.2f,1.0f,1.0f);
+		glDrawArrays(GL_TRIANGLES,0,3);
 	
-	glBegin(GL_LINE_LOOP);
-	glVertex2i(box->lx,box->ty);
-	glVertex2i(box->rx,box->ty);
-	glVertex2i(box->rx,box->by);
-	glVertex2i(box->lx,box->by);
-	glEnd();
+		glColor4f(0.0f,0.0f,0.0f,1.0f);
+		glDrawArrays(GL_LINE_LOOP,0,3);
+	}
+
+		// the button text
 
 	text_draw((box->lx+5),(box->by-5),font_size,NULL,title);
+	
+	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 void texture_edit_draw(void)
 {
 	int					n,ty,by,wid,high,frame_count;
+	float				vertexes[8];
 	char				str[256];
 	char				type_str[3][32]={"Opaque","Cut-Out","Transparent"};
 	d3rect				wbox,box,tbox;
@@ -221,9 +230,9 @@ void texture_edit_draw(void)
 	high=box.by-box.ty;
 
 	glEnable(GL_SCISSOR_TEST);
-	glScissor(box.lx,(wbox.by-box.by),(box.rx-box.lx),(box.by-box.ty));
+	glScissor(box.lx,(wbox.by-box.by),((box.rx-box.lx)+1),(box.by-box.ty));
 
-	glViewport(box.lx,(wbox.by-box.by),(box.rx-box.lx),(box.by-box.ty));
+	glViewport(box.lx,(wbox.by-box.by),((box.rx-box.lx)+1),(box.by-box.ty));
 		
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -258,22 +267,30 @@ void texture_edit_draw(void)
 				glColor4f(0.95f,0.95f,0.95f,1.0f);
 			}
 		}
-		
-		glBegin(GL_QUADS);
-		glVertex2i(0,ty);
-		glVertex2i(wid,ty);
-		glVertex2i(wid,by);
-		glVertex2i(0,by);
-		glEnd();
+	
+		glEnableClientState(GL_VERTEX_ARRAY);
+
+		vertexes[0]=vertexes[6]=0.0f;
+		vertexes[1]=vertexes[3]=(float)ty;
+		vertexes[2]=vertexes[4]=(float)wid;
+		vertexes[5]=vertexes[7]=(float)by;
+
+		glVertexPointer(2,GL_FLOAT,0,vertexes);
+		glDrawArrays(GL_QUADS,0,4);
 
 			// the separator
 
 		glColor4f(0.0f,0.0f,0.0f,1.0f);
 
-		glBegin(GL_LINES);
-		glVertex2i(0,ty);
-		glVertex2i(wid,ty);
-		glEnd();
+		vertexes[0]=0.0f;
+		vertexes[1]=(float)ty;
+		vertexes[2]=(float)wid;
+		vertexes[3]=(float)ty;
+
+		glVertexPointer(2,GL_FLOAT,0,vertexes);
+		glDrawArrays(GL_LINES,0,2);
+
+		glDisableClientState(GL_VERTEX_ARRAY);
 
 			// the frame
 
