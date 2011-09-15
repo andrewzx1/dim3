@@ -96,71 +96,69 @@ void tool_palette_shutdown(void)
 void tool_palette_draw_icon(int x,int y,unsigned long gl_id,bool is_highlight,bool is_pushed)
 {
 	int				pixel_sz;
-	float			top_col,bot_col;
+	float			col;
+	float			vertexes[8],uvs[8]={0.0f,0.0f,1.0f,0.0f,1.0f,1.0f,0.0f,1.0f};
+
+	glEnableClientState(GL_VERTEX_ARRAY);
 	
 	pixel_sz=tool_palette_pixel_size();
 
 		// background
 
 	if (is_pushed) {
-		top_col=0.60f;
-		bot_col=0.85f;
+		col=0.60f;
 	}
 	else {
 		if (!is_highlight) {
-			top_col=0.95f;
-			bot_col=0.85f;
+			col=0.95f;
 		}
 		else {
-			top_col=0.85f;
-			bot_col=0.60f;
+			col=0.85f;
 		}
 	}
 
-	glBegin(GL_QUADS);
-	glColor4f(top_col,top_col,top_col,1.0f);
-	glVertex2i(x,y);
-	glVertex2i((x+pixel_sz),y);
-	glColor4f(bot_col,bot_col,bot_col,1.0f);
-	glVertex2i((x+pixel_sz),(y+pixel_sz));
-	glVertex2i(x,(y+pixel_sz));
-	glEnd();
+	vertexes[0]=vertexes[6]=(float)x;
+	vertexes[2]=vertexes[4]=(float)(x+pixel_sz);
+	vertexes[1]=vertexes[3]=(float)y;
+	vertexes[5]=vertexes[7]=(float)(y+pixel_sz);
+			
+	glVertexPointer(2,GL_FLOAT,0,vertexes);
+
+	glColor4f(col,col,col,1.0f);
+	glDrawArrays(GL_QUADS,0,4);
 
 		// bitmap
 
 	glColor4f(1.0f,1.0f,1.0f,1.0f);
 	
 	glEnable(GL_TEXTURE_2D);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
 	glBindTexture(GL_TEXTURE_2D,gl_id);
 
-	glBegin(GL_QUADS);
-	glTexCoord2f(0.0f,0.0f);
-	glVertex2i(x,y);
-	glTexCoord2f(1.0f,0.0f);
-	glVertex2i((x+pixel_sz),y);
-	glTexCoord2f(1.0f,1.0f);
-	glVertex2i((x+pixel_sz),(y+pixel_sz));
-	glTexCoord2f(0.0f,1.0f);
-	glVertex2i(x,(y+pixel_sz));
-	glEnd();
+	glTexCoordPointer(2,GL_FLOAT,0,uvs);
+	glDrawArrays(GL_QUADS,0,4);
 
 	glDisable(GL_TEXTURE_2D);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
 		// outline
 
+	vertexes[0]=vertexes[6]=(float)x;
+	vertexes[2]=vertexes[4]=(float)(x+pixel_sz);
+	vertexes[1]=vertexes[3]=(float)y;
+	vertexes[5]=vertexes[7]=(float)(y+(pixel_sz+1));
+			
+	glVertexPointer(2,GL_FLOAT,0,vertexes);
+
 	glColor4f(0.4f,0.4f,0.4f,1.0f);
-		
-	glBegin(GL_LINE_LOOP);
-	glVertex2i(x,y);
-	glVertex2i((x+pixel_sz),y);
-	glVertex2i((x+pixel_sz),(y+(pixel_sz+1)));
-	glVertex2i(x,(y+(pixel_sz+1)));
-	glEnd();
+	glDrawArrays(GL_LINE_LOOP,0,4);
 }
 
 void tool_palette_draw(void)
 {
 	int				n,x,pixel_sz;
+	float			vertexes[8];
 	d3rect			wbox,tbox;
 	
 	tool_palette_box(&tbox);
@@ -188,16 +186,19 @@ void tool_palette_draw(void)
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_NOTEQUAL,0);
 
+	glEnableClientState(GL_VERTEX_ARRAY);
+
 		// background
 
+	vertexes[0]=vertexes[6]=(float)tbox.lx;
+	vertexes[2]=vertexes[4]=(float)tbox.rx;
+	vertexes[1]=vertexes[3]=(float)tbox.ty;
+	vertexes[5]=vertexes[7]=(float)tbox.by;
+			
+	glVertexPointer(2,GL_FLOAT,0,vertexes);
+
 	glColor4f(0.9f,0.9f,0.9f,1.0f);
-		
-	glBegin(GL_QUADS);
-	glVertex2i(tbox.lx,tbox.ty);
-	glVertex2i(tbox.rx,tbox.ty);
-	glVertex2i(tbox.rx,tbox.by);
-	glVertex2i(tbox.lx,tbox.by);
-	glEnd();
+	glDrawArrays(GL_QUADS,0,4);
 
 		// tools
 
@@ -226,20 +227,22 @@ void tool_palette_draw(void)
 	glDisable(GL_ALPHA_TEST);
 	
 		// border
-		
-	glColor4f(0.0f,0.0f,0.0f,1.0f);
 
-	glBegin(GL_LINES);
+	vertexes[0]=vertexes[4]=(float)tbox.lx;
+	vertexes[2]=vertexes[6]=(float)tbox.rx;
 #ifdef D3_OS_WINDOWS
-	glVertex2i(tbox.lx,(tbox.ty+1));		// win32 has white line under menu
-	glVertex2i(tbox.rx,(tbox.ty+1));
+	vertexes[1]=vertexes[3]=(float)(tbox.ty+1);		// win32 has white line under menu
 #else
-	glVertex2i(tbox.lx,tbox.ty);
-	glVertex2i(tbox.rx,tbox.ty);
+	vertexes[1]=vertexes[3]=(float)tbox.ty;
 #endif
-	glVertex2i(tbox.lx,tbox.by);
-	glVertex2i(tbox.rx,tbox.by);
-	glEnd();
+	vertexes[5]=vertexes[7]=(float)tbox.by;
+
+	glVertexPointer(2,GL_FLOAT,0,vertexes);
+
+	glColor4f(0.0f,0.0f,0.0f,1.0f);
+	glDrawArrays(GL_LINES,0,4);
+
+	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 /* =======================================================

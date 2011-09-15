@@ -32,10 +32,9 @@ and can be sold or given away.
 #include "interface.h"
 #include "objects.h"
 
-#define view_obscure_split_div			10000
+#define view_obscure_split_div			25000
 #define view_obscure_max_split			8
-#define view_obscure_max_rays			((view_obscure_max_split+1)*(view_obscure_max_split+1)*(view_obscure_max_split+1))
-#define view_obscure_skip_range			20000
+#define view_obscure_skip_range			50000
 
 extern map_type				map;
 extern camera_type			camera;
@@ -44,6 +43,7 @@ extern server_type			server;
 extern iface_type			iface;
 extern setup_type			setup;
 
+unsigned char				*view_obscure_hits;
 d3pnt						*view_obscure_pnts;
 poly_pointer_type			*view_obscure_polys;
 
@@ -55,7 +55,7 @@ poly_pointer_type			*view_obscure_polys;
 
 bool view_obscure_initialize(void)
 {
-	int					n,k,cnt;
+	int					n,k,cnt,ray_count;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 
@@ -63,6 +63,7 @@ bool view_obscure_initialize(void)
 
 	view_obscure_polys=NULL;
 	view_obscure_pnts=NULL;
+	view_obscure_hits=NULL;
 
 	if (!map.optimize.ray_trace_obscure) return(TRUE);
 
@@ -106,12 +107,27 @@ bool view_obscure_initialize(void)
 	view_obscure_polys=(poly_pointer_type*)malloc(cnt*sizeof(poly_pointer_type));
 	if (view_obscure_polys==NULL) return(FALSE);
 
-		// memory for rays
+		// memory for rays and hits
+		// rays have divisions on each side plus
+		// one extra for the end of the division,
+		// and one more for the direct to mid point
+		// check
 
-	view_obscure_pnts=(d3pnt*)malloc(view_obscure_max_rays*sizeof(d3pnt));
+	ray_count=((view_obscure_max_split+1)*(view_obscure_max_split+1)*(view_obscure_max_split+1))+1;
+
+	view_obscure_pnts=(d3pnt*)malloc(ray_count*sizeof(d3pnt));
 	if (view_obscure_pnts==NULL) {
 		free(view_obscure_polys);
 		view_obscure_polys=NULL;
+		return(FALSE);
+	}
+
+	view_obscure_hits=(unsigned char*)malloc(ray_count*sizeof(unsigned char));
+	if (view_obscure_hits==NULL) {
+		free(view_obscure_polys);
+		free(view_obscure_polys);
+		view_obscure_polys=NULL;
+		view_obscure_hits=NULL;
 		return(FALSE);
 	}
 
@@ -125,6 +141,9 @@ void view_obscure_release(void)
 
 	if (view_obscure_pnts!=NULL) free(view_obscure_pnts);
 	view_obscure_pnts=NULL;
+
+	if (view_obscure_hits!=NULL) free(view_obscure_hits);
+	view_obscure_hits=NULL;
 }
 
 /* =======================================================
@@ -136,13 +155,17 @@ void view_obscure_release(void)
 bool view_obscure_check_box(int skip_mesh_idx,d3pnt *min,d3pnt *max)
 {
 	int					k,x,y,z,kx,ky,ray_cnt,hit_cnt,last_mesh_idx;
-	bool				hits[view_obscure_max_rays];
 	bool				*hit;
 	d3pnt				div,div_add,ray_min,ray_max;
 	d3pnt				*pnt;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 	poly_pointer_type	*poly_ptr;
+
+		// if camera is inside this box, do
+		// not obscure
+
+	if ((min->x>=view.render->camera.pnt.x) && (max->x<=view.render->camera.pnt.x) && (min->y>=view.render->camera.pnt.y) && (max->y<=view.render->camera.pnt.y) && (min->z>=view.render->camera.pnt.z) && (max->z<=view.render->camera.pnt.z)) return(TRUE);
 
 		// find the divisions
 		// we do ray tracing against a grid
@@ -174,7 +197,7 @@ bool view_obscure_check_box(int skip_mesh_idx,d3pnt *min,d3pnt *max)
 
 	ray_cnt=0;
 
-	hit=hits;
+	hit=view_obscure_hits;
 	pnt=view_obscure_pnts;
 
 	for (y=0;y<=div.y;y++) {
@@ -188,13 +211,23 @@ bool view_obscure_check_box(int skip_mesh_idx,d3pnt *min,d3pnt *max)
 				pnt->y=ky;
 				pnt->z=min->z+(z*div_add.z);
 
-				*hit++=FALSE;			// mark no hit here
+				*hit++=0x0;			// mark no hit here
 				pnt++;
 
 				ray_cnt++;
 			}
 		}
 	}
+
+		// the midpoint ray
+
+	pnt->x=(min->x+max->x)>>1;
+	pnt->y=(min->y+max->y)>>1;
+	pnt->z=(min->z+max->z)>>1;
+
+	*hit=0x0;
+
+	ray_cnt++;
 
 		// get the rays min/max
 
@@ -276,13 +309,13 @@ bool view_obscure_check_box(int skip_mesh_idx,d3pnt *min,d3pnt *max)
 		hit_cnt=0;
 
 		for (k=0;k!=ray_cnt;k++) {
-			if (hits[k]) {
+			if (*(view_obscure_hits+k)==0x1) {
 				hit_cnt++;
 				continue;
 			}
 
 			if (ray_trace_single_poly_hit(mesh,poly,&view.render->camera.pnt,&view_obscure_pnts[k])) {
-				hits[k]=TRUE;
+				*(view_obscure_hits+k)=0x1;
 				hit_cnt++;
 			}
 		}
@@ -374,7 +407,10 @@ void view_obscure_run(void)
 
 			// if too close, don't obscure
 
-		if (view.render->draw_list.items[idx].dist<view_obscure_skip_range) continue;
+		if (view.render->draw_list.items[idx].dist<view_obscure_skip_range) {
+			idx++;
+			continue;
+		}
 
 			// check for removal
 

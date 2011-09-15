@@ -35,6 +35,7 @@ and can be sold or given away.
 extern map_type				map;
 extern view_type			view;
 extern server_type			server;
+extern camera_type			camera;
 extern setup_type			setup;
 
 float						light_shader_direction[7][3]={{0.0f,0.0f,0.0f},{1.0f,0.0f,0.0f},{-1.0f,0.0f,0.0f},{0.0f,1.0f,0.0f},{0.0f,-1.0f,0.0f},{0.0f,0.0f,1.0f},{0.0f,0.0f,-1.0f}};
@@ -323,11 +324,6 @@ void gl_lights_setup_cache(void)
 
 				obj->draw.light_cache.count=0;
 				if ((view.render->draw_list.items[n].flag&view_list_item_flag_model_in_view)!=0x0) gl_lights_setup_model(&obj->draw);
-				
-				if ((obj->idx==server.player_obj_idx) && (obj->held_weapon.current_idx!=-1)) {
-					weap=weapon_find_current(obj);
-					if (weap!=NULL) gl_lights_setup_model(&weap->draw);
-				}
 				break;
 
 			case view_render_type_projectile:
@@ -338,6 +334,23 @@ void gl_lights_setup_cache(void)
 				break;
 				
 		}
+	}
+
+		// if in FPP, then hand weapon needs
+		// light cache
+
+	if (camera.setup.mode==cv_fpp) {
+
+		obj=server.obj_list.objs[server.player_obj_idx];
+
+		if (obj->held_weapon.current_idx!=-1) {
+			weap=weapon_find_current(obj);
+			if (weap!=NULL) {
+				weap->draw.light_cache.count=0;
+				gl_lights_setup_model(&weap->draw);
+			}
+		}
+
 	}
 }
 

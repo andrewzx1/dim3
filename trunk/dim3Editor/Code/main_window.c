@@ -135,45 +135,14 @@ void main_wind_clear_viewport(void)
 	glViewport(0,0,wid,high);
 }
 
-void main_wind_draw(void)
-{
-		// clear draw buffer
-
-	glEnable(GL_DEPTH_TEST);
-	glDepthMask(GL_TRUE);
-
-	main_wind_clear_viewport();
-
-	glClearColor(0.75f,0.75f,0.75f,0.0f);
-	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-
-		// draw window
-
-	if (state.map_opened) {
-
-		if (state.texture_edit_idx==-1) {
-			view_draw();
-		}
-		else {
-			texture_edit_draw();
-		}
-
-		tool_palette_draw();
-		texture_palette_draw(map.textures);
-		item_palette_draw();
-		property_palette_draw();
-		alt_property_palette_draw();
-		
-		tool_tip_draw();
-	}
-
-		// swap buffers
-
-	os_swap_gl_buffer();
-}
-
 void main_wind_draw_no_swap(void)
 {
+#ifdef D3_OS_WINDOWS
+	int			tick;	// supergumba -- testing
+	char	str[256];
+	d3col	col;
+#endif
+
 		// clear draw buffer
 
 	glEnable(GL_DEPTH_TEST);
@@ -188,6 +157,10 @@ void main_wind_draw_no_swap(void)
 
 	if (state.map_opened) {
 
+#ifdef D3_OS_WINDOWS
+		tick=GetTickCount();		// supergumba testing
+#endif
+
 		if (state.texture_edit_idx==-1) {
 			view_draw();
 		}
@@ -200,9 +173,22 @@ void main_wind_draw_no_swap(void)
 		item_palette_draw();
 		property_palette_draw();
 		alt_property_palette_draw();
-		
+
+#ifdef D3_OS_WINDOWS
+		sprintf(str,"%d",GetTickCount()-tick);		// supergumba -- testing
+		col.r=col.g=1.0f;
+		col.b=0.0f;
+		text_draw(1600,60,20,&col,str);
+#endif
+
 		tool_tip_draw();
 	}
+}
+
+void main_wind_draw(void)
+{
+	main_wind_draw_no_swap();
+	os_swap_gl_buffer();
 }
 
 /* =======================================================
