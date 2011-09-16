@@ -351,6 +351,8 @@ void view_pick_list_add(int type,int main_idx,int sub_idx)
 void view_pick_list_add_cube(d3pnt *v_pnts,int type,int main_idx,int sub_idx)
 {
 	int				n,idx,quad_list[24]={0,1,2,3,4,5,6,7,3,2,5,6,0,1,4,7,0,7,6,3,1,2,5,4};
+	float			vertexes[24*3];
+	float			*pv;
 
 		// set the color
 
@@ -358,47 +360,71 @@ void view_pick_list_add_cube(d3pnt *v_pnts,int type,int main_idx,int sub_idx)
 
 		// draw the cube
 
-	glBegin(GL_QUADS);
+	pv=vertexes;
 	
 	for (n=0;n!=24;n++) {
 		idx=quad_list[n];
-		glVertex3i(v_pnts[idx].x,v_pnts[idx].y,v_pnts[idx].z);
+		*pv++=(float)v_pnts[idx].x;
+		*pv++=(float)v_pnts[idx].y;
+		*pv++=(float)v_pnts[idx].z;
 	}
 
-	glEnd();
+	glEnableClientState(GL_VERTEX_ARRAY);
+
+	glVertexPointer(3,GL_FLOAT,0,vertexes);
+	glDrawArrays(GL_QUADS,0,(24*3));
+
+	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 void view_pick_list_add_handle(d3pnt *pnt,int type,int main_idx,int sub_idx)
 {
+	float				vertexes[3];
+
 		// set the color
 
 	view_pick_list_add(type,main_idx,sub_idx);
 
 		// draw the point
 
+	vertexes[0]=(float)pnt->x;
+	vertexes[1]=(float)pnt->y;
+	vertexes[2]=(float)pnt->z;
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+
 	glPointSize(view_handle_size);
-	
-	glBegin(GL_POINTS);
-	glVertex3i(pnt->x,pnt->y,pnt->z);
-	glEnd();
+
+	glVertexPointer(3,GL_FLOAT,0,vertexes);
+	glDrawArrays(GL_POINTS,0,3);
 	
 	glPointSize(1.0f);
+
+	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 void view_pick_list_add_2D_handle(d3pnt *pnt,int type,int main_idx,int sub_idx)
 {
+	float				vertexes[2];
+
 		// set the color
 
 	view_pick_list_add(type,main_idx,sub_idx);
 
 		// draw the point
 
+	vertexes[0]=(float)pnt->x;
+	vertexes[1]=(float)pnt->y;
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+
 	glPointSize(view_handle_size);
 	
-	glBegin(GL_POINTS);
-	glVertex2i(pnt->x,pnt->y);
-	glEnd();
+	glVertexPointer(2,GL_FLOAT,0,vertexes);
+	glDrawArrays(GL_POINTS,0,2);
 	
 	glPointSize(1.0f);
+
+	glDisableClientState(GL_VERTEX_ARRAY);
 }
 

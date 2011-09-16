@@ -48,6 +48,8 @@ void draw_model_selected_vertexes(int mesh_idx)
 	int				n,nvertex;
 	float			*pv;
 	model_mesh_type	*mesh;
+
+	glEnableClientState(GL_VERTEX_ARRAY);
 	
 	glPointSize(draw_vertex_handle_size);
 	
@@ -56,8 +58,6 @@ void draw_model_selected_vertexes(int mesh_idx)
 	
 	pv=draw_setup.mesh_arrays[mesh_idx].gl_vertex_array;
 
-	glBegin(GL_POINTS);
-	
 	for (n=0;n!=nvertex;n++) {
 	
 		if ((!vertex_check_sel_mask(mesh_idx,n)) || (vertex_check_hide_mask(mesh_idx,n))) {
@@ -76,15 +76,16 @@ void draw_model_selected_vertexes(int mesh_idx)
 		else {
 			glColor4f(0.5f,0.5f,0.5f,1.0f);
 		}
-		
-		glVertex3f(*pv,*(pv+1),*(pv+2));
+	
+		glVertexPointer(3,GL_FLOAT,0,pv);
+		glDrawArrays(GL_POINTS,0,1);
 		
 		pv+=3;
 	}
 	
-	glEnd();
-	
 	glPointSize(1.0f);
+
+	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 /* =======================================================
@@ -96,12 +97,15 @@ void draw_model_selected_vertexes(int mesh_idx)
 void draw_model_selected_trig(int mesh_idx)
 {
 	int					n,k,ntrig,vertex_idx;
-	float				*pv;
+	float				vertexes[3*3];
+	float				*pv,*pa;
 	model_mesh_type		*mesh;
 	model_trig_type		*trig;
 
 	mesh=&model.meshes[mesh_idx];
 	ntrig=mesh->ntrig;
+
+	glEnableClientState(GL_VERTEX_ARRAY);
 
 		// selection
 	
@@ -115,15 +119,18 @@ void draw_model_selected_trig(int mesh_idx)
 		trig=&model.meshes[mesh_idx].trigs[n];
 
 			// draw the selected trig
-			
-		glBegin(GL_LINE_LOOP);
+
+		pv=vertexes;
 
 		for (k=0;k!=3;k++) {
-			pv=draw_setup.mesh_arrays[mesh_idx].gl_vertex_array+(3*trig->v[k]);
-			glVertex3f(*pv,*(pv+1),*(pv+2));
+			pa=draw_setup.mesh_arrays[mesh_idx].gl_vertex_array+(3*trig->v[k]);
+			*pv++=*pa++;
+			*pv++=*pa++;
+			*pv++=*pa;
 		}
 	
-		glEnd();
+		glVertexPointer(3,GL_FLOAT,0,vertexes);
+		glDrawArrays(GL_LINE_LOOP,0,3);
 	}
 		
 	glLineWidth(1.0f);
@@ -133,8 +140,6 @@ void draw_model_selected_trig(int mesh_idx)
 	glColor4f(0.0f,0.0f,0.0f,1.0f);
 	glPointSize(draw_vertex_handle_size);
 		
-	glBegin(GL_POINTS);
-
 	for (n=0;n!=ntrig;n++) {
 
 		if ((!trig_check_sel_mask(mesh_idx,n)) || (trig_check_hide_mask(mesh_idx,n))) continue;
@@ -147,15 +152,17 @@ void draw_model_selected_trig(int mesh_idx)
 		for (k=0;k!=3;k++) {
 			vertex_idx=trig->v[k];
 			if ((vertex_check_sel_mask(mesh_idx,vertex_idx)) && (!vertex_check_hide_mask(mesh_idx,vertex_idx))) {
-				pv=draw_setup.mesh_arrays[mesh_idx].gl_vertex_array+(3*vertex_idx);
-				glVertex3f(*pv,*(pv+1),*(pv+2));
+				pa=draw_setup.mesh_arrays[mesh_idx].gl_vertex_array+(3*vertex_idx);
+
+				glVertexPointer(3,GL_FLOAT,0,pa);
+				glDrawArrays(GL_POINTS,0,1);
 			}
 		}
 	}
 		
-	glEnd();
-		
 	glPointSize(1.0f);
+
+	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 /* =======================================================
@@ -167,11 +174,13 @@ void draw_model_selected_trig(int mesh_idx)
 void draw_model_normals_vertexes(int mesh_idx)
 {
 	int				n,k,ntrig;
-	float			fx,fy,fz,fx2,fy2,fz2;
+	float			fx,fy,fz,vertexes[6];
 	float			*pv,*pn,*pt;
 	bool			has_sel;
 	d3vct			tangent,normal,binormal;
 	model_trig_type	*trig;
+
+	glEnableClientState(GL_VERTEX_ARRAY);
 	
 		// is there a vertex selection?
 		
@@ -219,52 +228,63 @@ void draw_model_normals_vertexes(int mesh_idx)
 
 					// tangent
 
+				vertexes[0]=fx;
+				vertexes[1]=fy;
+				vertexes[2]=fz;
+
 				tangent.x=*pt++;
 				tangent.y=*pt++;
 				tangent.z=*pt++;
 
+				vertexes[3]=fx+(tangent.x*draw_model_normal_len);
+				vertexes[4]=fy+(tangent.y*draw_model_normal_len);
+				vertexes[5]=fz+(tangent.z*draw_model_normal_len);
+			
+				glVertexPointer(3,GL_FLOAT,0,vertexes);
+
 				glColor4f(1.0f,0.0f,0.0f,1.0f);
-
-				glVertex3f(fx,fy,fz);
-				
-				fx2=fx+(tangent.x*draw_model_normal_len);
-				fy2=fy+(tangent.y*draw_model_normal_len);
-				fz2=fz+(tangent.z*draw_model_normal_len);
-
-				glVertex3f(fx2,fy2,fz2);
+				glDrawArrays(GL_LINES,0,2);
 
 					// binormal
 
 				vector_cross_product(&binormal,&tangent,&normal);
 
+				vertexes[0]=fx;
+				vertexes[1]=fy;
+				vertexes[2]=fz;
+
+				vertexes[3]=fx+(binormal.x*draw_model_normal_len);
+				vertexes[4]=fy+(binormal.y*draw_model_normal_len);
+				vertexes[5]=fz+(binormal.z*draw_model_normal_len);
+
+				glVertexPointer(3,GL_FLOAT,0,vertexes);
+
 				glColor4f(0.0f,0.0f,1.0f,1.0f);
-
-				glVertex3f(fx,fy,fz);
-				
-				fx2=fx+(binormal.x*draw_model_normal_len);
-				fy2=fy+(binormal.y*draw_model_normal_len);
-				fz2=fz+(binormal.z*draw_model_normal_len);
-
-				glVertex3f(fx2,fy2,fz2);
+				glDrawArrays(GL_LINES,0,2);
 			}
 
 				// normal
 
+			vertexes[0]=fx;
+			vertexes[1]=fy;
+			vertexes[2]=fz;
+
+			vertexes[3]=fx+(normal.x*draw_model_normal_len);
+			vertexes[4]=fy+(normal.y*draw_model_normal_len);
+			vertexes[5]=fz+(normal.z*draw_model_normal_len);
+
+			glVertexPointer(3,GL_FLOAT,0,vertexes);
+
 			glColor4f(1.0f,0.0f,1.0f,1.0f);
-
-			glVertex3f(fx,fy,fz);
-			
-			fx2=fx+(normal.x*draw_model_normal_len);
-			fy2=fy+(normal.y*draw_model_normal_len);
-			fz2=fz+(normal.z*draw_model_normal_len);
-
-			glVertex3f(fx2,fy2,fz2);
+			glDrawArrays(GL_LINES,0,2);
 		}
 	}
 	
 	glEnd();
 	
 	glLineWidth(1.0f);
+
+	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 void draw_model_normals_trig(int mesh_idx)
