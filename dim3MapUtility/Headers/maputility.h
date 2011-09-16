@@ -275,7 +275,7 @@ typedef struct		{
 															never_obscure,never_cull,rot_independent,
 															no_light_map,skip_light_map_trace,
 															no_halo_obscure,
-															shiftable,touched,poly_has_camera;
+															shiftable,poly_has_camera;
 					} map_mesh_flag_type;
 
 typedef struct		{
