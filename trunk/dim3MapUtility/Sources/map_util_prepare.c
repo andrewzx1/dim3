@@ -486,7 +486,6 @@ void map_prepare(map_type *map)
 
 			// default some flags
 
-		mesh->flag.touched=FALSE;
 		mesh->flag.shiftable=FALSE;
 		mesh->flag.poly_has_camera=FALSE;
 		

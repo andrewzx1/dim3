@@ -72,7 +72,6 @@ int map_mesh_add(map_type *map)
 	mesh->flag.moveable=FALSE;
 	mesh->flag.hilite=FALSE;
 	mesh->flag.simple_collision=FALSE;
-	mesh->flag.touched=FALSE;
 	mesh->flag.lock_uv=FALSE;
 	mesh->flag.lock_move=FALSE;
 	mesh->flag.obscuring=FALSE;

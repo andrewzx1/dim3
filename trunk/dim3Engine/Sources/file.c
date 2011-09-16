@@ -34,7 +34,7 @@ and can be sold or given away.
 #include "scripts.h"
 
 typedef struct		{
-						int					tick,skill;
+						int					tick,skill,player_obj_idx,simple_save_idx;
 						char				version[16],map_name[name_str_len];
 					} file_save_header;					
 
@@ -287,6 +287,9 @@ bool game_file_save(char *err_str)
 
 	head.tick=tick;
 	head.skill=server.skill;
+	head.player_obj_idx=server.player_obj_idx;
+	head.simple_save_idx=server.simple_save_idx;
+	
 	strcpy(head.version,dim3_version);
 	strcpy(head.map_name,map.info.name);
 		
@@ -302,8 +305,6 @@ bool game_file_save(char *err_str)
 	progress_next();
 	
 	game_file_add_chunk(&server.time,1,sizeof(server_time_type));
-	game_file_add_chunk(&server.player_obj_idx,1,sizeof(int));
-	game_file_add_chunk(&server.simple_save_idx,1,sizeof(int));
 	
 		// objects, weapons, and projectile setups
 
@@ -513,13 +514,6 @@ bool game_file_load(char *file_name,char *err_str)
 
 	game_file_get_chunk(&head);
 
-		// setup map and determine if it's changed
-
-	map_change=((!server.map_open) || (strcmp(head.map_name,map.info.name)!=0));
-
-	strcpy(map.info.name,head.map_name);
-	map.info.player_start_name[0]=0x0;
-
 		// check version
 		
 	if (strcmp(head.version,dim3_version)!=0) {
@@ -529,31 +523,42 @@ bool game_file_load(char *file_name,char *err_str)
 	}
 
 		// if game isn't running, then start
+		// game and set map change,
+		// otherwise just determine if map
+		// has changed
 		
 	if (!server.game_open) {
 
 		scripts_lock_events();
-		ok=game_start(TRUE,head.skill,0,err_str);
+		ok=game_start(TRUE,head.skill,head.simple_save_idx,err_str);
 		scripts_unlock_events();
 		
 		if (!ok) {
 			free(game_file_data);
 			return(FALSE);
 		}
+		
+		server.map_open=FALSE;
+		map_change=TRUE;
+	}
+	else {
+		map_change=((!server.map_open) || (strcmp(head.map_name,map.info.name)!=0));
 	}
 
-		// skill from header
+		// additional header stuff
+		
+	strcpy(map.info.name,head.map_name);
+	map.info.player_start_name[0]=0x0;
 
 	server.skill=head.skill;
+	server.simple_save_idx=head.simple_save_idx;
+	server.player_obj_idx=head.player_obj_idx;
 		
 		// reload map
 
 	if (map_change) {
 
 		if (server.map_open) map_end();
-
-		strcpy(map.info.name,head.map_name);
-		map.info.player_start_name[0]=0x0;
 
 		scripts_lock_events();
 		ok=map_start(TRUE,TRUE,err_str);
@@ -579,8 +584,6 @@ bool game_file_load(char *file_name,char *err_str)
 	progress_next();
 
 	game_file_get_chunk(&server.time);
-	game_file_get_chunk(&server.player_obj_idx);
-	game_file_get_chunk(&server.simple_save_idx);
 
 		// objects, weapons, and projectile setups
 	
@@ -607,6 +610,8 @@ bool game_file_load(char *file_name,char *err_str)
 
 		obj=server.obj_list.objs[idx];
 		game_file_get_chunk(obj);
+		
+		// supergumba -- if map_change, need to reload models
 
 			// rebuild object script
 

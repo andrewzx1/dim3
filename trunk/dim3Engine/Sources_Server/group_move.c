@@ -202,7 +202,7 @@ bool group_move_object_stand(int group_idx,int stand_mesh_idx)
       
 ======================================================= */
 
-void group_move_and_rotate(group_type *group,d3pnt *move_pnt,d3ang *rot_ang)
+void group_move_and_rotate(group_type *group,d3pnt *move_pnt,d3ang *rot_ang,bool skip_obj_decal)
 {
 	int					n,unit_cnt;
 	bool				move_objs,rot_objs;
@@ -222,8 +222,13 @@ void group_move_and_rotate(group_type *group,d3pnt *move_pnt,d3ang *rot_ang)
 		// can this group move or
 		// rotate objects?
 
-	move_objs=(group->run.cuml_mov_add.x!=0) || (group->run.cuml_mov_add.z!=0);
-	rot_objs=(group->run.cuml_rot_add.y!=0.0f);
+	if (skip_obj_decal) {
+		move_objs=rot_objs=FALSE;
+	}
+	else {
+		move_objs=(group->run.cuml_mov_add.x!=0) || (group->run.cuml_mov_add.z!=0);
+		rot_objs=(group->run.cuml_rot_add.y!=0.0f);
+	}
 	
 		// move the meshes
 
@@ -241,8 +246,7 @@ void group_move_and_rotate(group_type *group,d3pnt *move_pnt,d3ang *rot_ang)
 				mesh=&map.mesh.meshes[unit_list->idx];
 				if (!mesh->flag.moveable) break;
 
-					// move/rotate mesh and mark as
-					// touched so it can be saved with games
+					// move/rotate mesh
 
 				if (mesh->flag.rot_independent) {
 					map_mesh_move_rotate_copy(&map,unit_list->idx,&mesh->box.mid,&group->run.cuml_mov_add,&group->run.cuml_rot_add);
@@ -250,8 +254,6 @@ void group_move_and_rotate(group_type *group,d3pnt *move_pnt,d3ang *rot_ang)
 				else {
 					map_mesh_move_rotate_copy(&map,unit_list->idx,&group->run.center_pnt,&group->run.cuml_mov_add,&group->run.cuml_rot_add);
 				}
-
-				mesh->flag.touched=TRUE;
 
 					// will need to update vertex/lights in vbo
 
@@ -329,7 +331,7 @@ void group_moves_run(bool run_events)
 		
 			// move it
 		
-		group_move_and_rotate(group,&mov_pnt,&run->rot_add);
+		group_move_and_rotate(group,&mov_pnt,&run->rot_add,FALSE);
 
 		run->was_moved=TRUE;
 		
@@ -394,7 +396,7 @@ void group_moves_rebuild(void)
 	rot.x=rot.y=rot.z=0.0f;
 		
 	for (n=0;n!=map.group.ngroup;n++) {
-		group_move_and_rotate(&map.group.groups[n],&mov,&rot);
+		group_move_and_rotate(&map.group.groups[n],&mov,&rot,TRUE);
 	}
 }
 
@@ -499,6 +501,6 @@ void group_moves_synch_with_host(network_reply_group_synch *synch)
 	cuml_rot_add.y=ntohf(synch->fp_cuml_rot_add_y)-group->run.cuml_rot_add.y;
 	cuml_rot_add.z=ntohf(synch->fp_cuml_rot_add_z)-group->run.cuml_rot_add.z;
 
-	group_move_and_rotate(group,&cuml_mov_add,&cuml_rot_add);
+	group_move_and_rotate(group,&cuml_mov_add,&cuml_rot_add,FALSE);
 }
 

@@ -155,7 +155,7 @@ void view_obscure_release(void)
 bool view_obscure_check_box(int skip_mesh_idx,d3pnt *min,d3pnt *max)
 {
 	int					k,x,y,z,kx,ky,ray_cnt,hit_cnt,last_mesh_idx;
-	bool				*hit;
+	unsigned char		*hit;
 	d3pnt				div,div_add,ray_min,ray_max;
 	d3pnt				*pnt;
 	map_mesh_type		*mesh;
