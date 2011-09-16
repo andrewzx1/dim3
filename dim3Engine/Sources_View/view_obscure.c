@@ -32,7 +32,7 @@ and can be sold or given away.
 #include "interface.h"
 #include "objects.h"
 
-#define view_obscure_split_div			25000
+#define view_obscure_split_div			20000
 #define view_obscure_max_split			8
 #define view_obscure_skip_range			50000
 
@@ -108,12 +108,12 @@ bool view_obscure_initialize(void)
 	if (view_obscure_polys==NULL) return(FALSE);
 
 		// memory for rays and hits
-		// rays have divisions on each side plus
-		// one extra for the end of the division,
-		// and one more for the direct to mid point
-		// check
+		// rays have grid divisions on each side
+		// of a cube plus one extra for the end of
+		// the division, and one more for the direct
+		// to mid point check
 
-	ray_count=((view_obscure_max_split+1)*(view_obscure_max_split+1)*(view_obscure_max_split+1))+1;
+	ray_count=(((view_obscure_max_split+1)*(view_obscure_max_split+1))*6)+1;
 
 	view_obscure_pnts=(d3pnt*)malloc(ray_count*sizeof(d3pnt));
 	if (view_obscure_pnts==NULL) {
@@ -152,11 +152,11 @@ void view_obscure_release(void)
       
 ======================================================= */
 
-bool view_obscure_check_box(int skip_mesh_idx,d3pnt *min,d3pnt *max)
+bool view_obscure_check_box(d3pnt *camera_pnt,int skip_mesh_idx,d3pnt *min,d3pnt *max)
 {
-	int					k,x,y,z,kx,ky,ray_cnt,hit_cnt,last_mesh_idx;
+	int					n,k,x,y,z,kx,ky,kz,ray_cnt,hit_cnt,last_mesh_idx;
 	unsigned char		*hit;
-	d3pnt				div,div_add,ray_min,ray_max;
+	d3pnt				mid,div,div_add,ray_min,ray_max;
 	d3pnt				*pnt;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
@@ -165,7 +165,7 @@ bool view_obscure_check_box(int skip_mesh_idx,d3pnt *min,d3pnt *max)
 		// if camera is inside this box, do
 		// not obscure
 
-	if ((min->x>=view.render->camera.pnt.x) && (max->x<=view.render->camera.pnt.x) && (min->y>=view.render->camera.pnt.y) && (max->y<=view.render->camera.pnt.y) && (min->z>=view.render->camera.pnt.z) && (max->z<=view.render->camera.pnt.z)) return(TRUE);
+	if ((min->x>=camera_pnt->x) && (max->x<=camera_pnt->x) && (min->y>=camera_pnt->y) && (max->y<=camera_pnt->y) && (min->z>=camera_pnt->z) && (max->z<=camera_pnt->z)) return(TRUE);
 
 		// find the divisions
 		// we do ray tracing against a grid
@@ -192,48 +192,114 @@ bool view_obscure_check_box(int skip_mesh_idx,d3pnt *min,d3pnt *max)
 	if (div.z>view_obscure_max_split) div.z=view_obscure_max_split;
 	div_add.z=k/div.z;
 
+		// get the mid point
+
+	mid.x=(min->x+max->x)>>1;
+	mid.y=(min->y+max->y)>>1;
+	mid.z=(min->z+max->z)>>1;
+
 		// build rays
-		// get the min/max for quick mesh elimination
+		// we check against grids on a cube
+		// we auto-eliminate sides of the cube
+		// that aren't seen from the camera point
 
 	ray_cnt=0;
 
-	hit=view_obscure_hits;
 	pnt=view_obscure_pnts;
+
+		// top and bottom
+
+	for (x=0;x<=div.x;x++) {
+		kx=min->x+(x*div_add.x);
+
+		for (z=0;z<=div.z;z++) {
+			kz=min->z+(z*div_add.z);
+
+			if (camera_pnt->y<=mid.y) {
+				pnt->x=kx;
+				pnt->y=min->y;
+				pnt->z=kz;
+			}
+			else {
+				pnt->x=kx;
+				pnt->y=max->y;
+				pnt->z=kz;
+			}
+
+			pnt++;
+			ray_cnt++;
+		}
+	}
+
+		// left and right
 
 	for (y=0;y<=div.y;y++) {
 		ky=min->y+(y*div_add.y);
 
-		for (x=0;x<=div.x;x++) {
-			kx=min->x+(x*div_add.x);
+		for (z=0;z<=div.z;z++) {
+			kz=min->z+(z*div_add.z);
 
-			for (z=0;z<=div.z;z++) {
+			if (camera_pnt->x<=mid.x) {
+				pnt->x=min->x;
+				pnt->y=ky;
+				pnt->z=kz;
+			}
+			else {
+				pnt->x=max->x;
+				pnt->y=ky;
+				pnt->z=kz;
+			}
+
+			pnt++;
+			ray_cnt++;
+		}
+	}
+
+		// front and back
+
+	for (x=0;x<=div.x;x++) {
+		kx=min->x+(x*div_add.x);
+
+		for (y=0;y<=div.y;y++) {
+			ky=min->y+(y*div_add.y);
+
+			if (camera_pnt->z<=mid.z) {
 				pnt->x=kx;
 				pnt->y=ky;
-				pnt->z=min->z+(z*div_add.z);
-
-				*hit++=0x0;			// mark no hit here
-				pnt++;
-
-				ray_cnt++;
+				pnt->z=min->z;
 			}
+			else {
+				pnt->x=kx;
+				pnt->y=ky;
+				pnt->z=max->z;
+			}
+
+			pnt++;
+			ray_cnt++;
 		}
 	}
 
 		// the midpoint ray
 
-	pnt->x=(min->x+max->x)>>1;
-	pnt->y=(min->y+max->y)>>1;
-	pnt->z=(min->z+max->z)>>1;
-
-	*hit=0x0;
+	pnt->x=mid.x;
+	pnt->y=mid.y;
+	pnt->z=mid.z;
 
 	ray_cnt++;
 
+		// mark no hits
+
+	hit=view_obscure_hits;
+
+	for (n=0;n!=ray_cnt;n++) {
+		*hit++=0x0;
+	}
+
 		// get the rays min/max
 
-	ray_min.x=ray_max.x=view.render->camera.pnt.x;
-	ray_min.y=ray_max.y=view.render->camera.pnt.y;
-	ray_min.z=ray_max.z=view.render->camera.pnt.z;
+	ray_min.x=ray_max.x=camera_pnt->x;
+	ray_min.y=ray_max.y=camera_pnt->y;
+	ray_min.z=ray_max.z=camera_pnt->z;
 
 	if (min->x<ray_min.x) ray_min.x=min->x;
 	if (max->x>ray_max.x) ray_max.x=max->x;
@@ -314,7 +380,7 @@ bool view_obscure_check_box(int skip_mesh_idx,d3pnt *min,d3pnt *max)
 				continue;
 			}
 
-			if (ray_trace_single_poly_hit(mesh,poly,&view.render->camera.pnt,&view_obscure_pnts[k])) {
+			if (ray_trace_single_poly_hit(mesh,poly,camera_pnt,&view_obscure_pnts[k])) {
 				*(view_obscure_hits+k)=0x1;
 				hit_cnt++;
 			}
@@ -332,10 +398,9 @@ bool view_obscure_check_box(int skip_mesh_idx,d3pnt *min,d3pnt *max)
 
 void view_obscure_run(void)
 {
-	int					n,k,idx,remove_count,org_count,
+	int					n,k,remove_count,org_count,
 						mesh_idx;
-	bool				remove;
-	d3pnt				min,max;
+	d3pnt				min,max,camera_pnt;
 	poly_pointer_type	*poly_ptr;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
@@ -395,38 +460,38 @@ void view_obscure_run(void)
 
 	poly_ptr->mesh_idx=-1;
 
+		// build the camera pnt
+
+	camera_pnt.x=view.render->camera.pnt.x;
+	camera_pnt.y=view.render->camera.pnt.y;
+	camera_pnt.z=view.render->camera.pnt.z+camera.setup.plane.near_z;
+
 		// run through and obscure all
 		// meshes, models, and effects
-
-	idx=0;
 
 	remove_count=0;
 	org_count=view.render->draw_list.count;
 
-	while (idx<view.render->draw_list.count) {
+	for (n=0;n!=view.render->draw_list.count;n++) {
 
 			// if too close, don't obscure
 
-		if (view.render->draw_list.items[idx].dist<view_obscure_skip_range) {
-			idx++;
-			continue;
-		}
+		if (view.render->draw_list.items[n].dist<view_obscure_skip_range) continue;
 
 			// check for removal
 
-		remove=FALSE;
-
-		switch (view.render->draw_list.items[idx].type) {
+		switch (view.render->draw_list.items[n].type) {
 
 				// mesh
 
 			case view_render_type_mesh:
-				mesh_idx=view.render->draw_list.items[idx].idx;
+				mesh_idx=view.render->draw_list.items[n].idx;
 				mesh=&map.mesh.meshes[mesh_idx];
 				if (mesh->flag.never_obscure) break;
 
-				if (!view_obscure_check_box(mesh_idx,&mesh->box.min,&mesh->box.max)) {
-					remove=TRUE;
+				if (!view_obscure_check_box(&camera_pnt,mesh_idx,&mesh->box.min,&mesh->box.max)) {
+					view.render->draw_list.items[n].type=view_render_type_none;
+					remove_count++;
 					view.count.mesh--;
 				}
 				break;
@@ -434,27 +499,29 @@ void view_obscure_run(void)
 				// model
 
 			case view_render_type_object:
-				obj=server.obj_list.objs[view.render->draw_list.items[idx].idx];
+				obj=server.obj_list.objs[view.render->draw_list.items[n].idx];
 				if ((obj->draw.model_idx==-1) || (!obj->draw.on)) break;
 	
 				mdl=server.model_list.models[obj->draw.model_idx];
 				model_get_view_complex_bounding_volume(mdl,&obj->draw.pnt,&obj->ang,&min,&max);
 
-				if (!view_obscure_check_box(-1,&min,&max)) {
-					remove=TRUE;
+				if (!view_obscure_check_box(&camera_pnt,-1,&min,&max)) {
+					view.render->draw_list.items[n].type=view_render_type_none;
+					remove_count++;
 					view.count.model--;
 				}
 				break;
 
 			case view_render_type_projectile:
-				proj=server.proj_list.projs[view.render->draw_list.items[idx].idx];
+				proj=server.proj_list.projs[view.render->draw_list.items[n].idx];
 				if ((proj->draw.model_idx==-1) || (!proj->draw.on)) break;
 	
 				mdl=server.model_list.models[proj->draw.model_idx];
 				model_get_view_complex_bounding_volume(mdl,&proj->draw.pnt,&proj->ang,&min,&max);
 
-				if (!view_obscure_check_box(-1,&min,&max)) {
-					remove=TRUE;
+				if (!view_obscure_check_box(&camera_pnt,-1,&min,&max)) {
+					view.render->draw_list.items[n].type=view_render_type_none;
+					remove_count++;
 					view.count.model--;
 				}
 				break;
@@ -462,28 +529,17 @@ void view_obscure_run(void)
 				// effects
 
 			case view_render_type_effect:
-				effect=server.effect_list.effects[view.render->draw_list.items[idx].idx];
+				effect=server.effect_list.effects[view.render->draw_list.items[n].idx];
 				effect_draw_get_bound_box(effect,&min,&max);
 
-				if (!view_obscure_check_box(-1,&min,&max)) {
-					remove=TRUE;
+				if (!view_obscure_check_box(&camera_pnt,-1,&min,&max)) {
+					view.render->draw_list.items[n].type=view_render_type_none;
+					remove_count++;
 					view.count.effect--;
 				}
 				break;
 
 		}
-
-		if (!remove) {
-			idx++;
-			continue;
-		}
-
-			// remove
-
-		view.render->draw_list.items[idx].type=view_render_type_none;
-		view.render->draw_list.count--;
-
-		remove_count++;
 	}
 
 	view.count.obscure_percent=(100*remove_count)/org_count;

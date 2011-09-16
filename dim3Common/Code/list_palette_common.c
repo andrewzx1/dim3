@@ -689,6 +689,7 @@ int list_palette_get_scroll_page_count(list_palette_type *list)
 void list_palette_draw_item_color_box(list_palette_type *list,list_palette_item_type *item,d3col *col)
 {
 	int					x,y;
+	float				vertexes[8];
 	d3rect				box;
 	
 	list_palette_box(&box);
@@ -696,28 +697,35 @@ void list_palette_draw_item_color_box(list_palette_type *list,list_palette_item_
 	x=box.rx-(list_item_font_high+(list_palette_scroll_wid+4));
 	y=item->y-(list->scroll_page*list_item_scroll_size);
 
-	glColor4f((col->r*0.5f),(col->g*0.5f),(col->b*0.5f),1.0f);
+	glEnableClientState(GL_VERTEX_ARRAY);
 
-	glBegin(GL_QUADS);
-	glVertex2i(x,((y-list_item_font_high)+2));
-	glVertex2i((x+list_item_font_high),((y-list_item_font_high)+2));
-	glVertex2i((x+list_item_font_high),(y-2));
-	glVertex2i(x,(y-2));
-	glEnd();
+	vertexes[0]=vertexes[6]=(float)x;
+	vertexes[2]=vertexes[4]=(float)(x+list_item_font_high);
+	vertexes[1]=vertexes[3]=(float)((y-list_item_font_high)+2);
+	vertexes[5]=vertexes[7]=(float)(y-2);
+
+	glVertexPointer(2,GL_FLOAT,0,vertexes);
+
+	glColor4f((col->r*0.5f),(col->g*0.5f),(col->b*0.5f),1.0f);
+	glDrawArrays(GL_QUADS,0,4);
+
+	vertexes[0]=vertexes[6]=(float)(x+1);
+	vertexes[2]=vertexes[4]=(float)((x+list_item_font_high)-1);
+	vertexes[1]=vertexes[3]=(float)((y-list_item_font_high)+3);
+	vertexes[5]=vertexes[7]=(float)(y-3);
+
+	glVertexPointer(2,GL_FLOAT,0,vertexes);
 
 	glColor4f(col->r,col->g,col->b,1.0f);
-			
-	glBegin(GL_QUADS);
-	glVertex2i((x+1),((y-list_item_font_high)+3));
-	glVertex2i(((x+list_item_font_high)-1),((y-list_item_font_high)+3));
-	glVertex2i(((x+list_item_font_high)-1),(y-3));
-	glVertex2i((x+1),(y-3));
-	glEnd();
+	glDrawArrays(GL_QUADS,0,4);
+
+	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 void list_palette_draw_item_check_box(list_palette_type *list,list_palette_item_type *item,bool checked)
 {
 	int					lx,rx,y,ty,by;
+	float				vertexes[8];
 	d3rect				box;
 	
 	list_palette_box(&box);
@@ -729,38 +737,45 @@ void list_palette_draw_item_check_box(list_palette_type *list,list_palette_item_
 	ty=(y-list_item_font_high)+2;
 	by=y;
 
-	glColor4f(0.0f,0.0f,0.0f,1.0f);
+	glEnableClientState(GL_VERTEX_ARRAY);
 
-	glBegin(GL_QUADS);
-	glVertex2i(lx,ty);
-	glVertex2i(rx,ty);
-	glVertex2i(rx,by);
-	glVertex2i(lx,by);
-	glEnd();
+	vertexes[0]=vertexes[6]=(float)lx;
+	vertexes[2]=vertexes[4]=(float)rx;
+	vertexes[1]=vertexes[3]=(float)ty;
+	vertexes[5]=vertexes[7]=(float)by;
+
+	glVertexPointer(2,GL_FLOAT,0,vertexes);
+
+	glColor4f(0.0f,0.0f,0.0f,1.0f);
+	glDrawArrays(GL_QUADS,0,4);
+
+	vertexes[0]=vertexes[6]=(float)(lx+1);
+	vertexes[2]=vertexes[4]=(float)(rx-1);
+	vertexes[1]=vertexes[3]=(float)(ty+1);
+	vertexes[5]=vertexes[7]=(float)(by-1);
+
+	glVertexPointer(2,GL_FLOAT,0,vertexes);
 
 	glColor4f(0.9f,0.9f,0.9f,1.0f);
-
-	glBegin(GL_QUADS);
-	glVertex2i((lx+1),(ty+1));
-	glVertex2i((rx-1),(ty+1));
-	glVertex2i((rx-1),(by-1));
-	glVertex2i((lx+1),(by-1));
-	glEnd();
+	glDrawArrays(GL_QUADS,0,4);
 
 	if (checked) {
 		glLineWidth(3.0f);
 
-		glColor4f(0.0f,0.8f,0.0f,1.0f);
+		vertexes[0]=vertexes[6]=(float)(lx+1);
+		vertexes[2]=vertexes[4]=(float)(rx-1);
+		vertexes[1]=vertexes[5]=(float)(ty+1);
+		vertexes[3]=vertexes[7]=(float)(by-1);
 
-		glBegin(GL_LINES);
-		glVertex2i((lx+1),(ty+1));
-		glVertex2i((rx-1),(by-1));
-		glVertex2i((rx-1),(ty+1));
-		glVertex2i((lx+1),(by-1));
-		glEnd();
+		glVertexPointer(2,GL_FLOAT,0,vertexes);
+
+		glColor4f(0.0f,0.8f,0.0f,1.0f);
+		glDrawArrays(GL_LINES,0,4);
 
 		glLineWidth(1.0f);
 	}
+
+	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 void list_palette_draw_item_string(list_palette_type *list,list_palette_item_type *item)
@@ -789,6 +804,7 @@ void list_palette_draw_item_string(list_palette_type *list,list_palette_item_typ
 void list_palette_draw_item_button(list_palette_type *list,int idx)
 {
 	int						lx,rx,ty,by;
+	float					vertexes[8],uvs[8]={0.0f,0.0f,1.0f,0.0f,1.0f,1.0f,0.0f,1.0f};
 	d3rect					box;
 	list_palette_item_type *item;
 	
@@ -804,7 +820,15 @@ void list_palette_draw_item_button(list_palette_type *list,int idx)
 
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_NOTEQUAL,0);
-	
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+	vertexes[0]=vertexes[6]=(float)lx;
+	vertexes[2]=vertexes[4]=(float)rx;
+	vertexes[1]=vertexes[3]=(float)ty;
+	vertexes[5]=vertexes[7]=(float)by;
+
 	if ((list->push_on) && (list->push_idx==idx) && (list->button_click)) {
 		glColor4f(0.6f,0.6f,0.6f,1.0f);
 	}
@@ -815,19 +839,16 @@ void list_palette_draw_item_button(list_palette_type *list,int idx)
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D,list_bitmaps[item->button_type+1].gl_id);
 
-	glBegin(GL_QUADS);
-	glTexCoord2f(0.0f,0.0f);
-	glVertex2i(lx,ty);
-	glTexCoord2f(1.0f,0.0f);
-	glVertex2i(rx,ty);
-	glTexCoord2f(1.0f,1.0f);
-	glVertex2i(rx,by);
-	glTexCoord2f(0.0f,1.0f);
-	glVertex2i(lx,by);
-	glEnd();
+	glVertexPointer(2,GL_FLOAT,0,vertexes);
+	glTexCoordPointer(2,GL_FLOAT,0,uvs);
+
+	glDrawArrays(GL_QUADS,0,4);
 	
 	glDisable(GL_TEXTURE_2D);
 	glDisable(GL_ALPHA_TEST);
+
+	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 }
 
 /* =======================================================
@@ -838,6 +859,7 @@ void list_palette_draw_item_button(list_palette_type *list,int idx)
 
 void list_palette_draw_setup(list_palette_type *list)
 {
+	float					vertexes[8];
 	d3rect					wbox,box;
 
 	list_palette_box(&box);
@@ -865,21 +887,27 @@ void list_palette_draw_setup(list_palette_type *list)
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_NOTEQUAL,0);
 
+	glEnableClientState(GL_VERTEX_ARRAY);
+
 		// background
 
+	vertexes[0]=vertexes[6]=(float)box.lx;
+	vertexes[2]=vertexes[4]=(float)box.rx;
+	vertexes[1]=vertexes[3]=(float)box.ty;
+	vertexes[5]=vertexes[7]=(float)box.by;
+
+	glVertexPointer(2,GL_FLOAT,0,vertexes);
+
 	glColor4f(1.0f,1.0f,1.0f,1.0f);
-		
-	glBegin(GL_QUADS);
-	glVertex2i(box.lx,box.ty);
-	glVertex2i(box.rx,box.ty);
-	glVertex2i(box.rx,box.by);
-	glVertex2i(box.lx,box.by);
-	glEnd();
+	glDrawArrays(GL_QUADS,0,4);
+
+	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 void list_palette_draw_title(list_palette_type *list)
 {
 	int					lx,rx,ty,by;
+	float				vertexes[8],uvs[8]={0.0f,0.0f,1.0f,0.0f,1.0f,1.0f,0.0f,1.0f};
 	d3rect				box;
 	
 	list_palette_box(&box);
@@ -889,23 +917,29 @@ void list_palette_draw_title(list_palette_type *list)
 	ty=box.ty;
 	by=ty+list_title_high;
 
-	glColor4f(0.6f,0.6f,0.6f,1.0f);
+	glEnableClientState(GL_VERTEX_ARRAY);
 
-	glBegin(GL_QUADS);
-	glVertex2i(box.lx,ty);
-	glVertex2i(box.rx,ty);
-	glVertex2i(box.rx,by);
-	glVertex2i(box.lx,by);
-	glEnd();
+	vertexes[0]=vertexes[6]=(float)box.lx;
+	vertexes[2]=vertexes[4]=(float)box.rx;
+	vertexes[1]=vertexes[3]=(float)ty;
+	vertexes[5]=vertexes[7]=(float)by;
+
+	glVertexPointer(2,GL_FLOAT,0,vertexes);
+
+	glColor4f(0.6f,0.6f,0.6f,1.0f);
+	glDrawArrays(GL_QUADS,0,4);
+
+	vertexes[0]=vertexes[4]=(float)box.lx;
+	vertexes[2]=vertexes[6]=(float)box.rx;
+	vertexes[1]=vertexes[3]=(float)(ty+1);
+	vertexes[5]=vertexes[7]=(float)by;
+
+	glVertexPointer(2,GL_FLOAT,0,vertexes);
 
 	glColor4f(0.0f,0.0f,0.0f,1.0f);
-	
-	glBegin(GL_LINES);
-	glVertex2i(box.lx,(ty+1));
-	glVertex2i(box.rx,(ty+1));
-	glVertex2i(box.lx,by);
-	glVertex2i(box.rx,by);
-	glEnd();
+	glDrawArrays(GL_LINES,0,4);
+
+	glDisableClientState(GL_VERTEX_ARRAY);
 
 		// text
 	
@@ -927,6 +961,9 @@ void list_palette_draw_title(list_palette_type *list)
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_NOTEQUAL,0);
 
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
 	if (!list->back_push_on) {
 		glColor4f(1.0f,1.0f,1.0f,1.0f);
 	}
@@ -934,45 +971,52 @@ void list_palette_draw_title(list_palette_type *list)
 		glColor4f(0.7f,0.7f,0.7f,1.0f);
 	}
 
+	vertexes[0]=vertexes[6]=(float)lx;
+	vertexes[2]=vertexes[4]=(float)rx;
+	vertexes[1]=vertexes[3]=(float)ty;
+	vertexes[5]=vertexes[7]=(float)by;
+
+	glVertexPointer(2,GL_FLOAT,0,vertexes);
+	glTexCoordPointer(2,GL_FLOAT,0,uvs);
+
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D,list_bitmaps[0].gl_id);
 
-	glBegin(GL_QUADS);
-	glTexCoord2f(0.0f,0.0f);
-	glVertex2i(lx,ty);
-	glTexCoord2f(1.0f,0.0f);
-	glVertex2i(rx,ty);
-	glTexCoord2f(1.0f,1.0f);
-	glVertex2i(rx,by);
-	glTexCoord2f(0.0f,1.0f);
-	glVertex2i(lx,by);
-	glEnd();
+	glColor4f(0.6f,0.6f,0.6f,1.0f);
+	glDrawArrays(GL_QUADS,0,4);
 	
 	glDisable(GL_TEXTURE_2D);
 	glDisable(GL_ALPHA_TEST);
+
+	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 }
 
 void list_palette_draw_scrollbar(list_palette_type *list)
 {
 	int					lx,ty,by,thumb_ty,thumb_by,page_count;
+	float				vertexes[8];
 	d3rect				box;
 
 	list_palette_box(&box);
 	
 		// scroll bar
+
+	glEnableClientState(GL_VERTEX_ARRAY);
 	
 	lx=box.rx-list_palette_scroll_wid;
 	ty=box.ty+list_title_high;
 	by=box.by;
+
+	vertexes[0]=vertexes[6]=(float)lx;
+	vertexes[2]=vertexes[4]=(float)box.rx;
+	vertexes[1]=vertexes[3]=(float)ty;
+	vertexes[5]=vertexes[7]=(float)by;
+
+	glVertexPointer(2,GL_FLOAT,0,vertexes);
 	
 	glColor4f(0.5f,0.5f,0.5f,1.0f);
-		
-	glBegin(GL_QUADS);
-	glVertex2i(lx,ty);
-	glVertex2i(box.rx,ty);
-	glVertex2i(box.rx,by);
-	glVertex2i(lx,by);
-	glEnd();
+	glDrawArrays(GL_QUADS,0,4);
 
 	page_count=list_palette_get_scroll_page_count(list);
 
@@ -984,58 +1028,74 @@ void list_palette_draw_scrollbar(list_palette_type *list)
 		thumb_by=ty+(((by-ty)*(list->scroll_page+1))/(page_count+1));
 		if (thumb_by>by) thumb_by=by;
 
-		glColor4f(0.9f,0.9f,0.9f,1.0f);
-			
-		glBegin(GL_QUADS);
-		glVertex2i((lx+1),(thumb_ty+1));
-		glVertex2i((box.rx-1),(thumb_ty+1));
-		glVertex2i((box.rx-1),(thumb_by-1));
-		glVertex2i((lx+1),(thumb_by-1));
-		glEnd();
+		vertexes[0]=vertexes[6]=(float)(lx+1);
+		vertexes[2]=vertexes[4]=(float)(box.rx-1);
+		vertexes[1]=vertexes[3]=(float)(thumb_ty+1);
+		vertexes[5]=vertexes[7]=(float)(thumb_by-1);
 
-		glColor4f(0.0f,0.0f,0.0f,1.0f);
-			
-		glBegin(GL_LINE_LOOP);
-		glVertex2i((lx+1),thumb_ty);
-		glVertex2i(box.rx,(thumb_ty-1));
-		glVertex2i(box.rx,(thumb_by-1));
-		glVertex2i((lx+1),thumb_by);
-		glEnd();
-	}
+		glVertexPointer(2,GL_FLOAT,0,vertexes);
 	
+		glColor4f(0.9f,0.9f,0.9f,1.0f);
+		glDrawArrays(GL_QUADS,0,4);
+
+		vertexes[0]=vertexes[6]=(float)(lx+1);
+		vertexes[2]=vertexes[4]=(float)box.rx;
+		vertexes[1]=vertexes[3]=(float)(thumb_ty+1);
+		vertexes[5]=vertexes[7]=(float)thumb_by;
+
+		glVertexPointer(2,GL_FLOAT,0,vertexes);
+	
+		glColor4f(0.0f,0.0f,0.0f,1.0f);
+		glDrawArrays(GL_LINE_LOOP,0,4);
+	}
+
+	vertexes[0]=vertexes[2]=(float)lx;
+	vertexes[1]=(float)ty;
+	vertexes[3]=(float)by;
+
+	glVertexPointer(2,GL_FLOAT,0,vertexes);
+
 	glColor4f(0.0f,0.0f,0.0f,1.0f);
-		
-	glBegin(GL_LINES);
-	glVertex2i(lx,box.ty);
-	glVertex2i(lx,box.by);
-	glEnd();
+	glDrawArrays(GL_LINES,0,2);
+
+	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 void list_palette_draw_border(list_palette_type *list)
 {
 	int					lx,rx,mx;
+	float				vertexes[8];
 	d3rect				box;
 	
 	list_palette_box(&box);
 
+	glEnableClientState(GL_VERTEX_ARRAY);
+
 	lx=box.lx;
 	rx=box.lx+list_palette_border_sz;
 	mx=(lx+rx)>>1;
-		
-	glBegin(GL_QUADS);
-	glColor4f(0.0f,0.0f,0.5f,1.0f);
-	glVertex2i(lx,box.by);
-	glVertex2i(lx,box.ty);
-	glColor4f(0.0f,0.0f,1.0f,1.0f);
-	glVertex2i(mx,box.ty);
-	glVertex2i(mx,box.by);
-	glColor4f(0.0f,0.0f,0.5f,1.0f);
-	glVertex2i(rx,box.by);
-	glVertex2i(rx,box.ty);
-	glColor4f(0.0f,0.0f,1.0f,1.0f);
-	glVertex2i(mx,box.ty);
-	glVertex2i(mx,box.by);
-	glEnd();
+
+	vertexes[0]=vertexes[6]=(float)lx;
+	vertexes[2]=vertexes[4]=(float)rx;
+	vertexes[1]=vertexes[3]=(float)box.ty;
+	vertexes[5]=vertexes[7]=(float)box.by;
+
+	glVertexPointer(2,GL_FLOAT,0,vertexes);
+	
+	glColor4f(0.0f,0.0f,0.9f,1.0f);
+	glDrawArrays(GL_QUADS,0,4);
+
+	vertexes[0]=vertexes[2]=(float)lx;
+	vertexes[4]=vertexes[6]=(float)(rx-1);
+	vertexes[1]=vertexes[5]=(float)box.ty;
+	vertexes[3]=vertexes[7]=(float)box.by;
+
+	glVertexPointer(2,GL_FLOAT,0,vertexes);
+	
+	glColor4f(0.0f,0.0f,0.0f,1.0f);
+	glDrawArrays(GL_LINES,0,4);
+
+	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 /* =======================================================
@@ -1047,10 +1107,13 @@ void list_palette_draw_border(list_palette_type *list)
 void list_palette_draw_item(list_palette_type *list,int idx)
 {
 	int							x,y;
+	float						vertexes[8];
 	bool						selected;
 	char						str[32];
 	d3rect						box;
 	list_palette_item_type		*item;
+
+	glEnableClientState(GL_VERTEX_ARRAY);
 	
 	list_palette_box(&box);
 	
@@ -1065,15 +1128,15 @@ void list_palette_draw_item(list_palette_type *list,int idx)
 		// draw header
 		
 	if (item->ctrl_type==list_item_ctrl_header) {
+		vertexes[0]=vertexes[6]=(float)box.lx;
+		vertexes[2]=vertexes[4]=(float)(box.rx-list_palette_scroll_wid);
+		vertexes[1]=vertexes[3]=(float)(y-list_item_font_high);
+		vertexes[5]=vertexes[7]=(float)y;
 
+		glVertexPointer(2,GL_FLOAT,0,vertexes);
+	
 		glColor4f(0.9f,0.9f,0.9f,1.0f);
-
-		glBegin(GL_QUADS);
-		glVertex2i(box.lx,(y-list_item_font_high));
-		glVertex2i((box.rx-list_palette_scroll_wid),(y-list_item_font_high));
-		glVertex2i((box.rx-list_palette_scroll_wid),y);
-		glVertex2i(box.lx,y);
-		glEnd();
+		glDrawArrays(GL_QUADS,0,4);
 	}
 		
 		// draw selected item
@@ -1093,16 +1156,19 @@ void list_palette_draw_item(list_palette_type *list,int idx)
 		}
 
 		if (selected) {
-			glColor4f(1.0f,1.0f,0.0f,1.0f);
+			vertexes[0]=vertexes[6]=(float)box.lx;
+			vertexes[2]=vertexes[4]=(float)(box.rx-list_palette_scroll_wid);
+			vertexes[1]=vertexes[3]=(float)((y-list_item_font_high)+1);
+			vertexes[5]=vertexes[7]=(float)y;
 
-			glBegin(GL_QUADS);
-			glVertex2i(box.lx,((y-list_item_font_high)+1));
-			glVertex2i((box.rx-list_palette_scroll_wid),((y-list_item_font_high)+1));
-			glVertex2i((box.rx-list_palette_scroll_wid),y);
-			glVertex2i(box.lx,y);
-			glEnd();
+			glVertexPointer(2,GL_FLOAT,0,vertexes);
+		
+			glColor4f(1.0f,1.0f,0.0f,1.0f);
+			glDrawArrays(GL_QUADS,0,4);
 		}
 	}
+
+	glDisableClientState(GL_VERTEX_ARRAY);
 
 		// draw item
 		

@@ -235,6 +235,7 @@ void draw_model_info(void)
 void draw_model_mesh_list(void)
 {
 	int				n,x,y,wid;
+	float			vertexes[8];
 	d3col			col;
 	d3rect			mbox;
 
@@ -259,12 +260,17 @@ void draw_model_mesh_list(void)
 				glColor4f(0.5f,0.5f,1.0f,1.0f);
 			}
 
-			glBegin(GL_QUADS);
-			glVertex2i((x-2),(y-16));
-			glVertex2i(((x+wid)+4),(y-16));
-			glVertex2i(((x+wid)+4),(y-1));
-			glVertex2i((x-2),(y-1));
-			glEnd();
+			glEnableClientState(GL_VERTEX_ARRAY);
+
+			vertexes[0]=vertexes[6]=(float)(x-2);
+			vertexes[2]=vertexes[4]=(float)((x+wid)+4);
+			vertexes[1]=vertexes[3]=(float)(y-16);
+			vertexes[5]=vertexes[7]=(float)(y-1);
+
+			glVertexPointer(2,GL_FLOAT,0,vertexes);
+			glDrawArrays(GL_QUADS,0,4);
+
+			glDisableClientState(GL_VERTEX_ARRAY);
 		}
 
 			// mesh name
@@ -283,6 +289,7 @@ void draw_model_mesh_list(void)
 void draw_model_wind(int mesh_idx)
 {
 	int					n;
+	float				vertexes[8];
 	d3rect				mbox;
 
 	if (!state.model_open) return;
@@ -384,15 +391,19 @@ void draw_model_wind(int mesh_idx)
 		// draw the drag selection
 		
 	if (state.drag_sel_on) {
-		glColor4f(0.8f,0.8f,0.8f,0.4f);
-		
-		glBegin(GL_QUADS);
-		glVertex2i((state.drag_sel_box.lx+mbox.lx),(state.drag_sel_box.ty+mbox.ty));
-		glVertex2i((state.drag_sel_box.rx+mbox.lx),(state.drag_sel_box.ty+mbox.ty));
-		glVertex2i((state.drag_sel_box.rx+mbox.lx),(state.drag_sel_box.by+mbox.ty));
-		glVertex2i((state.drag_sel_box.lx+mbox.lx),(state.drag_sel_box.by+mbox.ty));
+		glEnableClientState(GL_VERTEX_ARRAY);
 
-		glEnd();
+		vertexes[0]=vertexes[6]=(float)(state.drag_sel_box.lx+mbox.lx);
+		vertexes[2]=vertexes[4]=(float)(state.drag_sel_box.rx+mbox.lx);
+		vertexes[1]=vertexes[3]=(float)(state.drag_sel_box.ty+mbox.ty);
+		vertexes[5]=vertexes[7]=(float)(state.drag_sel_box.by+mbox.ty);
+
+		glVertexPointer(2,GL_FLOAT,0,vertexes);
+
+		glColor4f(0.8f,0.8f,0.8f,0.4f);
+		glDrawArrays(GL_QUADS,0,4);
+
+		glDisableClientState(GL_VERTEX_ARRAY);
 	}
 	
 		// info

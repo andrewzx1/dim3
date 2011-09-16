@@ -216,9 +216,11 @@ void view_get_model_size(char *model_name,d3pnt *size)
       
 ======================================================= */
 
-void view_model_draw_material(model_type *model,texture_type *texture,model_material_type *material,int frame)
+void view_model_draw_material(model_type *model,model_draw_setup *draw_setup,texture_type *texture,model_material_type *material,int frame)
 {
-	int					k,trig_count,bitmap_gl_id;
+	int					n,k,trig_count,bitmap_gl_id;
+	float				vertexes[3*3],uvs[3*2];
+	float				*pa,*pv,*pt;
     model_trig_type		*trig;
 
 	trig_count=material->trig_count;
@@ -231,24 +233,29 @@ void view_model_draw_material(model_type *model,texture_type *texture,model_mate
 	
 		// triangles
 		
-	glBegin(GL_TRIANGLES);
-	
 	trig=&model->meshes[0].trigs[material->trig_start];
 
-	for (k=0;k!=trig_count;k++) {
-		glTexCoord2f(trig->gx[0],trig->gy[0]);
-		glMultiTexCoord2f(GL_TEXTURE1,trig->gx[0],trig->gy[0]);
-		glArrayElement(trig->v[0]);
-		glTexCoord2f(trig->gx[1],trig->gy[1]);
-		glMultiTexCoord2f(GL_TEXTURE1,trig->gx[1],trig->gy[1]);
-		glArrayElement(trig->v[1]);
-		glTexCoord2f(trig->gx[2],trig->gy[2]);
-		glMultiTexCoord2f(GL_TEXTURE1,trig->gx[2],trig->gy[2]);
-		glArrayElement(trig->v[2]);
+	for (n=0;n!=trig_count;n++) {
+
+		pv=vertexes;
+		pt=uvs;
+
+		for (k=0;k!=3;k++) {
+			pa=draw_setup->mesh_arrays[0].gl_vertex_array+(trig->v[k]*3);
+			*pv++=*pa++;
+			*pv++=*pa++;
+			*pv++=*pa;
+			*pt++=trig->gx[k];
+			*pt++=trig->gy[k];
+		}
+
+		glVertexPointer(3,GL_FLOAT,0,vertexes);
+		glTexCoordPointer(2,GL_FLOAT,0,uvs);
+
+		glDrawArrays(GL_TRIANGLES,0,3);
+
 		trig++;
 	}
-	
-	glEnd();
 }
 
 bool view_model_draw(d3pnt *pnt,d3ang *ang,char *name,float resize,short *texture_frame,int frame_count)
@@ -292,8 +299,7 @@ bool view_model_draw(d3pnt *pnt,d3ang *ang,char *name,float resize,short *textur
 	glEnable(GL_TEXTURE_2D);
 	
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glVertexPointer(3,GL_FLOAT,0,draw_setup.mesh_arrays[0].gl_vertex_array);
-	glLockArraysEXT(0,mesh->nvertex);	
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_NOTEQUAL,0);
@@ -312,7 +318,7 @@ bool view_model_draw(d3pnt *pnt,d3ang *ang,char *name,float resize,short *textur
     for (n=0;n!=max_model_texture;n++) {
 		frame=0;
 		if (n<frame_count) frame=(int)texture_frame[n];
-		if (texture->frames[0].bitmap.alpha_mode!=alpha_mode_transparent) view_model_draw_material(model,texture,material,frame);
+		if (texture->frames[0].bitmap.alpha_mode!=alpha_mode_transparent) view_model_draw_material(model,&draw_setup,texture,material,frame);
 		texture++;
 		material++;
 	}
@@ -328,7 +334,7 @@ bool view_model_draw(d3pnt *pnt,d3ang *ang,char *name,float resize,short *textur
     for (n=0;n!=max_model_texture;n++) {
 		frame=0;
 		if (n<frame_count) frame=(int)texture_frame[n];
-		if (texture->frames[0].bitmap.alpha_mode==alpha_mode_transparent) view_model_draw_material(model,texture,material,frame);
+		if (texture->frames[0].bitmap.alpha_mode==alpha_mode_transparent) view_model_draw_material(model,&draw_setup,texture,material,frame);
 		texture++;
 		material++;
 	}
@@ -337,8 +343,8 @@ bool view_model_draw(d3pnt *pnt,d3ang *ang,char *name,float resize,short *textur
 	
 	glDisable(GL_ALPHA_TEST);
     
-	glUnlockArraysEXT();
 	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	
 	glDisable(GL_TEXTURE_2D);
 	

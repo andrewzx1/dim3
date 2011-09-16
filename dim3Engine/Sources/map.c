@@ -415,25 +415,29 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 		return(FALSE);
 	}
 
+		// if not restoring an existing game,
 		// create object and scenery
-		// and call spawn on all the objects
 
 	progress_next();
 	
 	map_find_random_spot_clear(&map,NULL,-1);
 
-	if (!map_objects_create(err_str)) {
-		progress_shutdown();
-		return(FALSE);
+	if (!in_file_load) {
+		if (!map_objects_create(err_str)) {
+			progress_shutdown();
+			return(FALSE);
+		}
+	
+		remote_setup_multiplayer_monsters();
 	}
-	
-	remote_setup_multiplayer_monsters();
-	
+
 	progress_next();
 
-	scenery_create();
-	scenery_start();
-	
+	if (!in_file_load) {
+		scenery_create();
+		scenery_start();
+	}
+
 		// if not restoring a existing game,
 		// spawn objects into map
 		
