@@ -80,8 +80,6 @@ void texture_palette_draw(texture_type *txt_list)
 
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_NOTEQUAL,0);
-
-	glEnableClientState(GL_VERTEX_ARRAY);
 	
 		// settings
 		
@@ -166,7 +164,6 @@ void texture_palette_draw(texture_type *txt_list)
 	glColor4f(1.0f,1.0f,1.0f,1.0f);
 
 	glEnable(GL_TEXTURE_2D);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	
 	x=texture_palette_page_list_width();
 	ty=tbox.ty+1;
@@ -194,7 +191,6 @@ void texture_palette_draw(texture_type *txt_list)
 	}
 	
 	glDisable(GL_TEXTURE_2D);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	
 	glDisable(GL_ALPHA_TEST);
 	
@@ -254,8 +250,6 @@ void texture_palette_draw(texture_type *txt_list)
 
 	glColor4f(1.0f,0.0f,0.0f,1.0f);
 	glDrawArrays(GL_LINE_LOOP,0,4);
-
-	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 /* =======================================================

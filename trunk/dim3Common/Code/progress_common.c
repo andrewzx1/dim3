@@ -86,8 +86,6 @@ void progress_draw(void)
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
-	glEnableClientState(GL_VERTEX_ARRAY);
-
 		// background
 
 	vertexes[0]=vertexes[6]=(float)wbox.lx;
@@ -154,8 +152,6 @@ void progress_draw(void)
 
 	glColor4f(0.0f,0.0f,0.0f,1.0f);
 	glDrawArrays(GL_LINE_LOOP,0,4);
-
-	glDisableClientState(GL_VERTEX_ARRAY);
 
 		// title
 

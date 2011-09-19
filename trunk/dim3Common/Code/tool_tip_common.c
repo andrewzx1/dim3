@@ -133,8 +133,6 @@ void tool_tip_draw(void)
 
 		// background and line
 
-	glEnableClientState(GL_VERTEX_ARRAY);
-
 	vertexes[0]=vertexes[6]=(float)tool_tip_box.lx;
 	vertexes[2]=vertexes[4]=(float)tool_tip_box.rx;
 	vertexes[1]=vertexes[3]=(float)tool_tip_box.ty;
@@ -147,8 +145,6 @@ void tool_tip_draw(void)
 
 	glColor4f(0.0f,0.0f,0.0f,1.0f);
 	glDrawArrays(GL_LINE_LOOP,0,4);
-
-	glDisableClientState(GL_VERTEX_ARRAY);
 	
 		// the tip
 

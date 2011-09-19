@@ -218,16 +218,10 @@ void text_draw(int x,int y,float txt_size,d3col *col,char *str)
 		f_lx+=(txt_size*txt_font.size_24.char_size[ch]);
 	}
 
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-
 	glVertexPointer(2,GL_FLOAT,0,txt_vertexes);
 	glTexCoordPointer(2,GL_FLOAT,0,txt_uvs);
 
 	glDrawArrays(GL_QUADS,0,cnt);
-
-	glDisableClientState(GL_VERTEX_ARRAY);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
 		// fix wrapping back to default
 

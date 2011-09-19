@@ -106,7 +106,8 @@ void main_wind_gl_setup(void)
 	glEnable(GL_DEPTH_TEST);
 	glDisable(GL_ALPHA_TEST);
 	
-	glEnableClientState(GL_VERTEX_ARRAY);
+ 	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 }
 
 /* =======================================================

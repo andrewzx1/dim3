@@ -485,7 +485,9 @@ bool view_click_rot_handles(editor_view_type *view,d3pnt *click_pt)
 
 void view_click_piece_map_pick_start(editor_view_type *view)
 {
-	int					n,k,t,y,count;
+	int					n,k,t,count;
+	float				vertexes[8*3];
+	float				*pv;
 	d3pnt				*pt;
 	d3pnt				v_pnts[8];
 	map_mesh_type		*mesh;
@@ -570,14 +572,17 @@ void view_click_piece_map_pick_start(editor_view_type *view)
 
 			view_pick_list_add(mesh_piece,n,k);
 
-			glBegin(GL_POLYGON);
+			pv=vertexes;
 			
 			for (t=0;t!=poly->ptsz;t++) {
 				pt=&mesh->vertexes[poly->v[t]];
-				glVertex3i(pt->x,pt->y,pt->z);
+				*pv++=(float)pt->x;
+				*pv++=(float)pt->y;
+				*pv++=(float)pt->z;
 			}
 			
-			glEnd();
+			glVertexPointer(3,GL_FLOAT,0,vertexes);
+			glDrawArrays(GL_POLYGON,0,poly->ptsz);
 
 			poly++;
 		}
@@ -604,22 +609,24 @@ void view_click_piece_map_pick_start(editor_view_type *view)
 
 			view_pick_list_add(liquid_piece,n,-1);
 
-			glBegin(GL_POLYGON);
-			glVertex3i(liq->lft,liq->y,liq->top);
-			glVertex3i(liq->rgt,liq->y,liq->top);
-			glVertex3i(liq->rgt,liq->y,liq->bot);
-			glVertex3i(liq->lft,liq->y,liq->bot);
-			glEnd();
-			
-			y=liq->y+liq->depth;
-			
-			glBegin(GL_POLYGON);
-			glVertex3i(liq->lft,y,liq->top);
-			glVertex3i(liq->rgt,y,liq->top);
-			glVertex3i(liq->rgt,y,liq->bot);
-			glVertex3i(liq->lft,y,liq->bot);
-			glEnd();
-			
+			vertexes[0]=vertexes[9]=(float)liq->lft;
+			vertexes[3]=vertexes[6]=(float)liq->rgt;
+			vertexes[1]=vertexes[4]=vertexes[7]=vertexes[10]=(float)liq->y;
+			vertexes[2]=vertexes[5]=(float)liq->top;
+			vertexes[8]=vertexes[11]=(float)liq->bot;
+
+			glVertexPointer(3,GL_FLOAT,0,vertexes);
+			glDrawArrays(GL_QUADS,0,4);
+
+			vertexes[0]=vertexes[9]=(float)liq->lft;
+			vertexes[3]=vertexes[6]=(float)liq->rgt;
+			vertexes[1]=vertexes[4]=vertexes[7]=vertexes[10]=(float)(liq->y+liq->depth);
+			vertexes[2]=vertexes[5]=(float)liq->top;
+			vertexes[8]=vertexes[11]=(float)liq->bot;
+
+			glVertexPointer(3,GL_FLOAT,0,vertexes);
+			glDrawArrays(GL_QUADS,0,4);
+
 			liq++;
 		}
 	}

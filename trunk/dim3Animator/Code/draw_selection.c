@@ -190,8 +190,6 @@ void draw_model_normals_vertexes(int mesh_idx)
 	
 	glLineWidth(draw_model_normal_size);
 	
-	glBegin(GL_LINES);
-	
 	ntrig=model.meshes[mesh_idx].ntrig;
 
 	for (n=0;n!=ntrig;n++) {
@@ -280,8 +278,6 @@ void draw_model_normals_vertexes(int mesh_idx)
 		}
 	}
 	
-	glEnd();
-	
 	glLineWidth(1.0f);
 
 	glDisableClientState(GL_VERTEX_ARRAY);
@@ -290,16 +286,16 @@ void draw_model_normals_vertexes(int mesh_idx)
 void draw_model_normals_trig(int mesh_idx)
 {
 	int				n,k,ntrig;
-	float			fx,fy,fz,fx2,fy2,fz2;
-	float			*pv,*pn,*pt;
+	float			fx,fy,fz,vertexes[2*3];
+	float			*pa,*pn,*pt;
 	d3vct			tangent,normal,binormal;
 	model_trig_type	*trig;
+
+	glEnableClientState(GL_VERTEX_ARRAY);
 	
 	glLineWidth(draw_model_normal_size);
 	glColor4f(1.0f,0.0f,1.0f,1.0f);
 	
-	glBegin(GL_LINES);
-
 	ntrig=model.meshes[mesh_idx].ntrig;
 
 	for (n=0;n!=ntrig;n++) {
@@ -321,10 +317,10 @@ void draw_model_normals_trig(int mesh_idx)
 				continue;
 			}
 		
-			pv=draw_setup.mesh_arrays[mesh_idx].gl_vertex_array+(trig->v[k]*3);
-			fx=*pv++;
-			fy=*pv++;
-			fz=*pv;
+			pa=draw_setup.mesh_arrays[mesh_idx].gl_vertex_array+(trig->v[k]*3);
+			fx=*pa++;
+			fy=*pa++;
+			fz=*pa;
 
 			normal.x=*pn++;
 			normal.y=*pn++;
@@ -338,46 +334,56 @@ void draw_model_normals_trig(int mesh_idx)
 				tangent.y=*pt++;
 				tangent.z=*pt++;
 
-				glColor4f(1.0f,0.0f,0.0f,1.0f);
-
-				glVertex3f(fx,fy,fz);
+				vertexes[0]=fx;
+				vertexes[1]=fy;
+				vertexes[2]=fz;
 				
-				fx2=fx+(tangent.x*draw_model_normal_len);
-				fy2=fy+(tangent.y*draw_model_normal_len);
-				fz2=fz+(tangent.z*draw_model_normal_len);
+				vertexes[3]=fx+(tangent.x*draw_model_normal_len);
+				vertexes[4]=fy+(tangent.y*draw_model_normal_len);
+				vertexes[5]=fz+(tangent.z*draw_model_normal_len);
 
-				glVertex3f(fx2,fy2,fz2);
+				glVertexPointer(3,GL_FLOAT,0,vertexes);
+
+				glColor4f(1.0f,0.0f,0.0f,1.0f);
+				glDrawArrays(GL_LINES,0,2);
 
 					// binormal
 
 				vector_cross_product(&binormal,&tangent,&normal);
 
-				glColor4f(0.0f,0.0f,1.0f,1.0f);
-
-				glVertex3f(fx,fy,fz);
+				vertexes[0]=fx;
+				vertexes[1]=fy;
+				vertexes[2]=fz;
 				
-				fx2=fx+(binormal.x*draw_model_normal_len);
-				fy2=fy+(binormal.y*draw_model_normal_len);
-				fz2=fz+(binormal.z*draw_model_normal_len);
+				vertexes[3]=fx+(binormal.x*draw_model_normal_len);
+				vertexes[4]=fy+(binormal.y*draw_model_normal_len);
+				vertexes[5]=fz+(binormal.z*draw_model_normal_len);
 
-				glVertex3f(fx2,fy2,fz2);
+				glVertexPointer(3,GL_FLOAT,0,vertexes);
+
+				glColor4f(0.0f,0.0f,1.0f,1.0f);
+				glDrawArrays(GL_LINES,0,2);
 			}
 
 				// normal
 
-			glColor4f(1.0f,0.0f,1.0f,1.0f);
-
-			glVertex3f(fx,fy,fz);
+			vertexes[0]=fx;
+			vertexes[1]=fy;
+			vertexes[2]=fz;
 			
-			fx2=fx+(normal.x*draw_model_normal_len);
-			fy2=fy+(normal.y*draw_model_normal_len);
-			fz2=fz+(normal.z*draw_model_normal_len);
+			vertexes[3]=fx+(normal.x*draw_model_normal_len);
+			vertexes[4]=fy+(normal.y*draw_model_normal_len);
+			vertexes[5]=fz+(normal.z*draw_model_normal_len);
 
-			glVertex3f(fx2,fy2,fz2);
+			glVertexPointer(3,GL_FLOAT,0,vertexes);
+
+			glColor4f(1.0f,0.0f,1.0f,1.0f);
+			glDrawArrays(GL_LINES,0,2);
 		}
 	}
 
-	glEnd();
 	glLineWidth(1.0f);
+
+	glDisableClientState(GL_VERTEX_ARRAY);
 }
 

@@ -46,16 +46,17 @@ extern animator_state_type		state;
 
 void draw_model_mesh(int mesh_idx)
 {
-	int					n,ntrig;
-    model_trig_type		*trig;
+	int					n,k,ntrig;
+ 	float				vertexes[3*3];
+	float				*pa,*pv;
+	model_trig_type		*trig;
 	model_mesh_type		*mesh;
 	
+	glEnableClientState(GL_VERTEX_ARRAY);
+
 		// draw the mesh
 		
 	mesh=&model.meshes[mesh_idx];
-		
-	glVertexPointer(3,GL_FLOAT,0,draw_setup.mesh_arrays[mesh_idx].gl_vertex_array);
-	glLockArraysEXT(0,mesh->nvertex);
 	
 	glColor4f(setup.col.mesh_line.r,setup.col.mesh_line.g,setup.col.mesh_line.b,1.0f);
     
@@ -64,18 +65,27 @@ void draw_model_mesh(int mesh_idx)
     
     for (n=0;n!=ntrig;n++) {
 	
-		if (!vertex_check_hide_mask_trig(mesh_idx,trig)) {
-			glBegin(GL_LINE_LOOP);
-			glArrayElement(trig->v[0]);
-			glArrayElement(trig->v[1]);
-			glArrayElement(trig->v[2]);
-			glEnd();
+		if (vertex_check_hide_mask_trig(mesh_idx,trig)) {
+			trig++;
+			continue;
 		}
+
+		pv=vertexes;
+
+		for (k=0;k!=3;k++) {
+			pa=draw_setup.mesh_arrays[0].gl_vertex_array+(trig->v[k]*3);
+			*pv++=*pa++;
+			*pv++=*pa++;
+			*pv++=*pa;
+		}
+
+		glVertexPointer(3,GL_FLOAT,0,vertexes);
+		glDrawArrays(GL_LINE_LOOP,0,3);
 		
 		trig++;
     }
     
-	glUnlockArraysEXT();
+	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 /* =======================================================
@@ -125,7 +135,10 @@ void draw_model_bones_drag_handle_calc(d3fpnt *bone_pnt,d3vct *vct,d3ang *ang,d3
 
 void draw_model_bones_drag_handle(d3fpnt *pnt,d3vct *vct,d3ang *ang,d3col *col)
 {
+	float			vertexes[2*3];
 	d3fpnt			hand_pnt;
+
+	glEnableClientState(GL_VERTEX_ARRAY);
 	
 		// handle coordinates
 		
@@ -133,24 +146,36 @@ void draw_model_bones_drag_handle(d3fpnt *pnt,d3vct *vct,d3ang *ang,d3col *col)
 		
 		// line
 		
-	glColor4f(col->r,col->g,col->b,1);
-		
 	glLineWidth(2);
+
+	vertexes[0]=(float)pnt->x;
+	vertexes[1]=(float)pnt->y;
+	vertexes[2]=(float)pnt->z;
+	vertexes[3]=(float)hand_pnt.x;
+	vertexes[4]=(float)hand_pnt.y;
+	vertexes[5]=(float)hand_pnt.z;
 	
-	glBegin(GL_LINES);
-	glVertex3f(pnt->x,pnt->y,pnt->z);
-	glVertex3f(hand_pnt.x,hand_pnt.y,hand_pnt.z);
-	glEnd();
+	glVertexPointer(3,GL_FLOAT,0,vertexes);
+	
+	glColor4f(col->r,col->g,col->b,1.0f);
+	glDrawArrays(GL_LINES,0,2);
 	
 	glLineWidth(1);
 	
 	glPointSize(10);
+
+	vertexes[0]=(float)hand_pnt.x;
+	vertexes[1]=(float)hand_pnt.y;
+	vertexes[2]=(float)hand_pnt.z;
 	
-	glBegin(GL_POINTS);
-	glVertex3f(hand_pnt.x,hand_pnt.y,hand_pnt.z);
-	glEnd();
+	glVertexPointer(3,GL_FLOAT,0,vertexes);
+	
+	glColor4f(col->r,col->g,col->b,1.0f);
+	glDrawArrays(GL_POINTS,0,1);
 	
 	glPointSize(1);
+
+	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 /* =======================================================
@@ -200,7 +225,8 @@ void draw_model_bones(int sel_bone_idx)
 {
 	int						n,nbone,parent_idx;
 	float					x_move,z_move,y_move,
-							bone_drag_handle_offset;
+							bone_drag_handle_offset,
+							vertexes[2*3];
 	d3fpnt					bone_pnt;
 	d3vct					vct;
 	d3ang					ang,rot;
@@ -208,6 +234,8 @@ void draw_model_bones(int sel_bone_idx)
 	model_bone_type			*bone;
 	model_draw_bone_type	*draw_bone,*parent_bone;
 	
+	glEnableClientState(GL_VERTEX_ARRAY);
+
 	glDisable(GL_DEPTH_TEST);
 
 		// draw the bones
@@ -223,8 +251,6 @@ void draw_model_bones(int sel_bone_idx)
 	glColor4f(0.2f,0.2f,0.2f,1.0f);
 	glLineWidth(2);
 	
-	glBegin(GL_LINES);
-	
 	draw_bone=draw_setup.bones;
 	
 	for (n=0;n!=nbone;n++) {
@@ -232,23 +258,20 @@ void draw_model_bones(int sel_bone_idx)
         if (parent_idx!=-1) {
             parent_bone=&draw_setup.bones[parent_idx];
 			
-			bone_pnt.x=draw_bone->fpnt.x+x_move;
-			bone_pnt.y=draw_bone->fpnt.y+y_move;
-			bone_pnt.z=draw_bone->fpnt.z+z_move;
-
-            glVertex3f(bone_pnt.x,bone_pnt.y,bone_pnt.z);
+			vertexes[0]=draw_bone->fpnt.x+x_move;
+			vertexes[1]=draw_bone->fpnt.y+y_move;
+			vertexes[2]=draw_bone->fpnt.z+z_move;
 			
-			bone_pnt.x=parent_bone->fpnt.x+x_move;
-			bone_pnt.y=parent_bone->fpnt.y-y_move;
-			bone_pnt.z=parent_bone->fpnt.z-z_move;
+			vertexes[3]=parent_bone->fpnt.x+x_move;
+			vertexes[4]=parent_bone->fpnt.y-y_move;
+			vertexes[5]=parent_bone->fpnt.z-z_move;
 			
-            glVertex3f(bone_pnt.x,bone_pnt.y,bone_pnt.z);
+			glVertexPointer(3,GL_FLOAT,0,vertexes);
+			glDrawArrays(GL_LINES,0,2);
         }
 		
 		draw_bone++;
 	}
-	
-	glEnd();
 	
 	glLineWidth(1);
         
@@ -260,12 +283,14 @@ void draw_model_bones(int sel_bone_idx)
 	bone_drag_handle_offset=draw_model_bones_drag_handle_offset();
 	
 	for (n=0;n!=nbone;n++) {
-	
-			// bone position
-			
-		bone_pnt.x=draw_bone->fpnt.x+x_move;
-		bone_pnt.y=draw_bone->fpnt.y+y_move;
-		bone_pnt.z=draw_bone->fpnt.z+z_move;
+
+			// bone points
+
+		vertexes[0]=bone_pnt.x=draw_bone->fpnt.x+x_move;
+		vertexes[1]=bone_pnt.y=draw_bone->fpnt.y+y_move;
+		vertexes[2]=bone_pnt.z=draw_bone->fpnt.z+z_move;
+
+		glVertexPointer(3,GL_FLOAT,0,vertexes);
 	
 			// selected or normal
 	
@@ -276,10 +301,7 @@ void draw_model_bones(int sel_bone_idx)
 				// draw selected bone
 				
 			glColor4f(1.0f,0.0f,1.0f,1.0f);
-			
-			glBegin(GL_POINTS);
-			glVertex3f(bone_pnt.x,bone_pnt.y,bone_pnt.z);
-			glEnd();
+			glDrawArrays(GL_POINTS,0,1);
 		
 				// draw drag handles
 				
@@ -325,11 +347,9 @@ void draw_model_bones(int sel_bone_idx)
 				// draw regular bone
 				
 			glPointSize(8.0f);
+
 			glColor4f(1.0f,0.0f,0.0f,1.0f);
-			
-			glBegin(GL_POINTS);
-			glVertex3f(bone_pnt.x,bone_pnt.y,bone_pnt.z);
-			glEnd();
+			glDrawArrays(GL_POINTS,0,1);
 		}
 		
 		bone++;
@@ -337,6 +357,8 @@ void draw_model_bones(int sel_bone_idx)
 	}
 	
 	glPointSize(1);
+
+	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 void draw_model_bone_names(int sel_bone_idx)

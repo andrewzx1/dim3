@@ -96,7 +96,6 @@ void view_draw_select_mesh(int mesh_idx)
 		// draw selected mesh
 		
 	glEnable(GL_DEPTH_TEST);
-	glEnableClientState(GL_VERTEX_ARRAY);
 
 	glColor4f(setup.col.mesh_sel.r,setup.col.mesh_sel.g,setup.col.mesh_sel.b,1.0f);
 		
@@ -108,9 +107,9 @@ void view_draw_select_mesh(int mesh_idx)
 		
 		for (t=0;t!=poly->ptsz;t++) {
 			pt=&mesh->vertexes[poly->v[t]];
-			*pv++=pt->x;
-			*pv++=pt->y;
-			*pv++=pt->z;
+			*pv++=(float)pt->x;
+			*pv++=(float)pt->y;
+			*pv++=(float)pt->z;
 		}
 		
 		glVertexPointer(3,GL_FLOAT,0,vertexes);
@@ -141,9 +140,9 @@ void view_draw_select_mesh(int mesh_idx)
 				glColor4f(setup.col.mesh_sel.r,setup.col.mesh_sel.g,setup.col.mesh_sel.b,1.0f);
 			}
 			
-			*pv++=pts[n].x;
-			*pv++=pts[n].y;
-			*pv++=pts[n].z;
+			*pv++=(float)pts[n].x;
+			*pv++=(float)pts[n].y;
+			*pv++=(float)pts[n].z;
 		}
 
 		glVertexPointer(3,GL_FLOAT,0,vertexes);
@@ -163,9 +162,9 @@ void view_draw_select_mesh(int mesh_idx)
 				glColor4f(setup.col.mesh_sel.r,setup.col.mesh_sel.g,setup.col.mesh_sel.b,1.0f);
 			}
 
-			*pv++=pts[n].x;
-			*pv++=pts[n].y;
-			*pv++=pts[n].z;
+			*pv++=(float)pts[n].x;
+			*pv++=(float)pts[n].y;
+			*pv++=(float)pts[n].z;
 		}
 
 		glVertexPointer(3,GL_FLOAT,0,vertexes);
@@ -173,8 +172,6 @@ void view_draw_select_mesh(int mesh_idx)
 
 		glPointSize(1.0f);
 	}
-	
-	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 void view_draw_select_mesh_vertex(int mesh_idx)
@@ -185,7 +182,6 @@ void view_draw_select_mesh_vertex(int mesh_idx)
 	map_mesh_type			*mesh;
 	
 	glEnable(GL_DEPTH_TEST);
-	glEnableClientState(GL_VERTEX_ARRAY);
 
 	glPointSize(view_handle_size);
 	
@@ -201,17 +197,15 @@ void view_draw_select_mesh_vertex(int mesh_idx)
 			glColor4f(setup.col.mesh_sel.r,setup.col.mesh_sel.g,setup.col.mesh_sel.b,1.0f);
 		}
 		
-		vertexes[0]=pt->x;
-		vertexes[1]=pt->y;
-		vertexes[2]=pt->z;
+		vertexes[0]=(float)pt->x;
+		vertexes[1]=(float)pt->y;
+		vertexes[2]=(float)pt->z;
 		
 		glVertexPointer(3,GL_FLOAT,0,vertexes);
 		glDrawArrays(GL_POINTS,0,1);
 		
 		pt++;
 	}
-
-	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 void view_draw_select_mesh_poly(int mesh_idx,int poly_idx)
@@ -224,7 +218,6 @@ void view_draw_select_mesh_poly(int mesh_idx,int poly_idx)
 	map_mesh_poly_type		*poly;
 	
 	glDisable(GL_DEPTH_TEST);
-	glEnableClientState(GL_VERTEX_ARRAY);
 	
 	glLineWidth(2.0f);
 
@@ -235,9 +228,9 @@ void view_draw_select_mesh_poly(int mesh_idx,int poly_idx)
 	
 	for (n=0;n!=poly->ptsz;n++) {
 		pt=&mesh->vertexes[poly->v[n]];
-		*pv++=pt->x;
-		*pv++=pt->y;
-		*pv++=pt->z;
+		*pv++=(float)pt->x;
+		*pv++=(float)pt->y;
+		*pv++=(float)pt->z;
 	}
 	
 	glVertexPointer(3,GL_FLOAT,0,vertexes);
@@ -246,8 +239,6 @@ void view_draw_select_mesh_poly(int mesh_idx,int poly_idx)
 	glDrawArrays(GL_LINE_LOOP,0,poly->ptsz);
 	
 	glLineWidth(1.0f);
-	
-	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 /* =======================================================
@@ -281,26 +272,25 @@ void view_draw_select_liquid(int liquid_idx)
 	liq=&map.liquid.liquids[liquid_idx];
 	
 	glEnable(GL_DEPTH_TEST);
-	glEnableClientState(GL_VERTEX_ARRAY);
 
 	glColor4f(setup.col.mesh_sel.r,setup.col.mesh_sel.g,setup.col.mesh_sel.b,1.0f);
 	
 		// outline
 		
-	vertexes[0]=vertexes[9]=liq->lft;
-	vertexes[3]=vertexes[6]=liq->rgt;
-	vertexes[1]=vertexes[4]=vertexes[7]=vertexes[10]=liq->y;
-	vertexes[2]=vertexes[5]=liq->top;
-	vertexes[8]=vertexes[11]=liq->bot;
+	vertexes[0]=vertexes[9]=(float)liq->lft;
+	vertexes[3]=vertexes[6]=(float)liq->rgt;
+	vertexes[1]=vertexes[4]=vertexes[7]=vertexes[10]=(float)liq->y;
+	vertexes[2]=vertexes[5]=(float)liq->top;
+	vertexes[8]=vertexes[11]=(float)liq->bot;
 	
 	glVertexPointer(3,GL_FLOAT,0,vertexes);
 	glDrawArrays(GL_LINE_LOOP,0,4);
 
-	vertexes[0]=vertexes[9]=liq->lft;
-	vertexes[3]=vertexes[6]=liq->rgt;
-	vertexes[1]=vertexes[4]=vertexes[7]=vertexes[10]=liq->y+liq->depth;
-	vertexes[2]=vertexes[5]=liq->top;
-	vertexes[8]=vertexes[11]=liq->bot;
+	vertexes[0]=vertexes[9]=(float)liq->lft;
+	vertexes[3]=vertexes[6]=(float)liq->rgt;
+	vertexes[1]=vertexes[4]=vertexes[7]=vertexes[10]=(float)(liq->y+liq->depth);
+	vertexes[2]=vertexes[5]=(float)liq->top;
+	vertexes[8]=vertexes[11]=(float)liq->bot;
 	
 	glVertexPointer(3,GL_FLOAT,0,vertexes);
 	glDrawArrays(GL_LINE_LOOP,0,4);
@@ -321,15 +311,13 @@ void view_draw_select_liquid(int liquid_idx)
 			glColor4f(setup.col.mesh_sel.r,setup.col.mesh_sel.g,setup.col.mesh_sel.b,1.0f);
 		}
 		
-		*pv++=pts[n].x;
-		*pv++=pts[n].y;
-		*pv++=pts[n].z;
+		*pv++=(float)pts[n].x;
+		*pv++=(float)pts[n].y;
+		*pv++=(float)pts[n].z;
 	}
 	
 	glVertexPointer(3,GL_FLOAT,0,vertexes);
 	glDrawArrays(GL_POINTS,0,8);
-
-	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 /* =======================================================
@@ -344,17 +332,15 @@ void view_draw_select_cube(d3pnt *v_pnts)
 	float			vertexes[8*3];
 	float			*pv;
 	
-	glEnableClientState(GL_VERTEX_ARRAY);
-
     glLineWidth(3.0f);
 	glColor4f(1.0f,0.0f,0.0f,1.0f);
 	
 	pv=vertexes;
 	
 	for (n=0;n!=4;n++) {
-		*pv++=v_pnts[n].x;
-		*pv++=v_pnts[n].y;
-		*pv++=v_pnts[n].z;
+		*pv++=(float)v_pnts[n].x;
+		*pv++=(float)v_pnts[n].y;
+		*pv++=(float)v_pnts[n].z;
 	}
 	
 	glVertexPointer(3,GL_FLOAT,0,vertexes);
@@ -363,9 +349,9 @@ void view_draw_select_cube(d3pnt *v_pnts)
 	pv=vertexes;
 	
 	for (n=4;n!=8;n++) {
-		*pv++=v_pnts[n].x;
-		*pv++=v_pnts[n].y;
-		*pv++=v_pnts[n].z;
+		*pv++=(float)v_pnts[n].x;
+		*pv++=(float)v_pnts[n].y;
+		*pv++=(float)v_pnts[n].z;
 	}
 	
 	glVertexPointer(3,GL_FLOAT,0,vertexes);
@@ -373,22 +359,20 @@ void view_draw_select_cube(d3pnt *v_pnts)
 	
 	for (n=0;n!=8;n+=2) {
 		k=line_indexes[n];
-		vertexes[0]=v_pnts[k].x;
-		vertexes[1]=v_pnts[k].y;
-		vertexes[2]=v_pnts[k].z;
+		vertexes[0]=(float)v_pnts[k].x;
+		vertexes[1]=(float)v_pnts[k].y;
+		vertexes[2]=(float)v_pnts[k].z;
 		
 		k=line_indexes[n+1];
-		vertexes[3]=v_pnts[k].x;
-		vertexes[4]=v_pnts[k].y;
-		vertexes[5]=v_pnts[k].z;
+		vertexes[3]=(float)v_pnts[k].x;
+		vertexes[4]=(float)v_pnts[k].y;
+		vertexes[5]=(float)v_pnts[k].z;
 		
 		glVertexPointer(3,GL_FLOAT,0,vertexes);
 		glDrawArrays(GL_LINES,0,2);
 	}
 
     glLineWidth(1.0f);
-	
-	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 /* =======================================================
@@ -401,16 +385,14 @@ void view_draw_select_2D_rot_handle(d3pnt *pnt,d3pnt *hand_pnt,d3col *col)
 {
 	float			vertexes[2*2];
 	
-	glEnableClientState(GL_VERTEX_ARRAY);
-
     glLineWidth(view_handle_line_width);
 	
 	glColor4f(col->r,col->g,col->b,1.0f);
 	
-	vertexes[0]=pnt->x;
-	vertexes[1]=pnt->y;
-	vertexes[2]=hand_pnt->x;
-	vertexes[3]=hand_pnt->y;
+	vertexes[0]=(float)pnt->x;
+	vertexes[1]=(float)pnt->y;
+	vertexes[2]=(float)hand_pnt->x;
+	vertexes[3]=(float)hand_pnt->y;
 	
 	glVertexPointer(2,GL_FLOAT,0,vertexes);
 	glDrawArrays(GL_LINES,0,2);
@@ -420,8 +402,6 @@ void view_draw_select_2D_rot_handle(d3pnt *pnt,d3pnt *hand_pnt,d3col *col)
 	glPointSize(view_handle_size);
 	glDrawArrays(GL_POINTS,1,1);
 	glPointSize(1.0f);
-	
-	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 void view_draw_select_rot_handles(editor_view_type *view,d3pnt *pnt,d3ang *ang)
@@ -494,12 +474,10 @@ void view_draw_select_box(editor_view_type *view)
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_NOTEQUAL,0);
 
-	glEnableClientState(GL_VERTEX_ARRAY);
-
-	vertexes[0]=vertexes[6]=lx;
-	vertexes[2]=vertexes[4]=rx;
-	vertexes[1]=vertexes[3]=ty;
-	vertexes[5]=vertexes[7]=by;
+	vertexes[0]=vertexes[6]=(float)lx;
+	vertexes[2]=vertexes[4]=(float)rx;
+	vertexes[1]=vertexes[3]=(float)ty;
+	vertexes[5]=vertexes[7]=(float)by;
 	
 	glVertexPointer(2,GL_FLOAT,0,vertexes);
 
@@ -510,7 +488,6 @@ void view_draw_select_box(editor_view_type *view)
 	glDrawArrays(GL_LINE_LOOP,0,4);
 
 	glDisable(GL_ALPHA_TEST);
-	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 /* =======================================================

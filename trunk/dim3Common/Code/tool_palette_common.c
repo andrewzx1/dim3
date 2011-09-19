@@ -99,8 +99,6 @@ void tool_palette_draw_icon(int x,int y,unsigned long gl_id,bool is_highlight,bo
 	float			col;
 	float			vertexes[8],uvs[8]={0.0f,0.0f,1.0f,0.0f,1.0f,1.0f,0.0f,1.0f};
 
-	glEnableClientState(GL_VERTEX_ARRAY);
-	
 	pixel_sz=tool_palette_pixel_size();
 
 		// background
@@ -132,7 +130,6 @@ void tool_palette_draw_icon(int x,int y,unsigned long gl_id,bool is_highlight,bo
 	glColor4f(1.0f,1.0f,1.0f,1.0f);
 	
 	glEnable(GL_TEXTURE_2D);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
 	glBindTexture(GL_TEXTURE_2D,gl_id);
 
@@ -140,7 +137,6 @@ void tool_palette_draw_icon(int x,int y,unsigned long gl_id,bool is_highlight,bo
 	glDrawArrays(GL_QUADS,0,4);
 
 	glDisable(GL_TEXTURE_2D);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
 		// outline
 
@@ -185,8 +181,6 @@ void tool_palette_draw(void)
 
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_NOTEQUAL,0);
-
-	glEnableClientState(GL_VERTEX_ARRAY);
 
 		// background
 
@@ -241,8 +235,6 @@ void tool_palette_draw(void)
 
 	glColor4f(0.0f,0.0f,0.0f,1.0f);
 	glDrawArrays(GL_LINES,0,4);
-
-	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 /* =======================================================

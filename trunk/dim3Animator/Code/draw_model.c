@@ -106,45 +106,56 @@ void model_end_texture(texture_type *texture)
 
 void draw_model_material(int mesh_idx,texture_type *texture,model_material_type *material)
 {
-	int					k,trig_count;
+	int					n,k,trig_count;
+	float				vertexes[3*3],uvs[3*2];
+	float				*pa,*pv,*pt;
     model_trig_type		*trig;
 
 	trig_count=material->trig_count;
 	if (trig_count==0) return;
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	
 	glColor3f(0.5f,0.5f,0.5f);
 
 	model_start_texture(texture);
 	
-	glBegin(GL_TRIANGLES);
-	
 	trig=&model.meshes[mesh_idx].trigs[material->trig_start];
 
-	for (k=0;k!=trig_count;k++) {
+	for (n=0;n!=trig_count;n++) {
 
 		if (vertex_check_hide_mask_trig(mesh_idx,trig)) {
 			trig++;
 			continue;
 		}
-	
-		glTexCoord2f(trig->gx[0],trig->gy[0]);
-		glMultiTexCoord2f(GL_TEXTURE1,trig->gx[0],trig->gy[0]);
-		glArrayElement(trig->v[0]);
-		glTexCoord2f(trig->gx[1],trig->gy[1]);
-		glMultiTexCoord2f(GL_TEXTURE1,trig->gx[1],trig->gy[1]);
-		glArrayElement(trig->v[1]);
-		glTexCoord2f(trig->gx[2],trig->gy[2]);
-		glMultiTexCoord2f(GL_TEXTURE1,trig->gx[2],trig->gy[2]);
-		glArrayElement(trig->v[2]);
-		
+
+		pv=vertexes;
+		pt=uvs;
+
+		for (k=0;k!=3;k++) {
+			pa=draw_setup.mesh_arrays[0].gl_vertex_array+(trig->v[k]*3);
+			*pv++=*pa++;
+			*pv++=*pa++;
+			*pv++=*pa;
+			*pt++=trig->gx[k];
+			*pt++=trig->gy[k];
+		}
+
+		glVertexPointer(3,GL_FLOAT,0,vertexes);
+		glTexCoordPointer(2,GL_FLOAT,0,uvs);
+
+		glDrawArrays(GL_TRIANGLES,0,3);
+
 		trig++;
 	}
-	
-	glEnd();
 	
 	model_end_texture(texture);
 	
 	glColor3f(1.0f,1.0f,1.0f);
+
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 void draw_model(int mesh_idx)
@@ -157,10 +168,6 @@ void draw_model(int mesh_idx)
 		// model vertexes and normal arrays
 		
 	mesh=&model.meshes[mesh_idx];
-	
-	glVertexPointer(3,GL_FLOAT,0,draw_setup.mesh_arrays[mesh_idx].gl_vertex_array);
-		
-	glLockArraysEXT(0,mesh->nvertex);
 	
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_NOTEQUAL,0);
@@ -204,9 +211,5 @@ void draw_model(int mesh_idx)
 	glDepthMask(GL_TRUE);
     
 	glDisable(GL_ALPHA_TEST);
-	
-	glUnlockArraysEXT();
-	
-	glFlush();
 }
 

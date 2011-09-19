@@ -697,8 +697,6 @@ void list_palette_draw_item_color_box(list_palette_type *list,list_palette_item_
 	x=box.rx-(list_item_font_high+(list_palette_scroll_wid+4));
 	y=item->y-(list->scroll_page*list_item_scroll_size);
 
-	glEnableClientState(GL_VERTEX_ARRAY);
-
 	vertexes[0]=vertexes[6]=(float)x;
 	vertexes[2]=vertexes[4]=(float)(x+list_item_font_high);
 	vertexes[1]=vertexes[3]=(float)((y-list_item_font_high)+2);
@@ -718,8 +716,6 @@ void list_palette_draw_item_color_box(list_palette_type *list,list_palette_item_
 
 	glColor4f(col->r,col->g,col->b,1.0f);
 	glDrawArrays(GL_QUADS,0,4);
-
-	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 void list_palette_draw_item_check_box(list_palette_type *list,list_palette_item_type *item,bool checked)
@@ -736,8 +732,6 @@ void list_palette_draw_item_check_box(list_palette_type *list,list_palette_item_
 	y=item->y-(list->scroll_page*list_item_scroll_size);
 	ty=(y-list_item_font_high)+2;
 	by=y;
-
-	glEnableClientState(GL_VERTEX_ARRAY);
 
 	vertexes[0]=vertexes[6]=(float)lx;
 	vertexes[2]=vertexes[4]=(float)rx;
@@ -774,8 +768,6 @@ void list_palette_draw_item_check_box(list_palette_type *list,list_palette_item_
 
 		glLineWidth(1.0f);
 	}
-
-	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 void list_palette_draw_item_string(list_palette_type *list,list_palette_item_type *item)
@@ -821,9 +813,6 @@ void list_palette_draw_item_button(list_palette_type *list,int idx)
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_NOTEQUAL,0);
 
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-
 	vertexes[0]=vertexes[6]=(float)lx;
 	vertexes[2]=vertexes[4]=(float)rx;
 	vertexes[1]=vertexes[3]=(float)ty;
@@ -846,9 +835,6 @@ void list_palette_draw_item_button(list_palette_type *list,int idx)
 	
 	glDisable(GL_TEXTURE_2D);
 	glDisable(GL_ALPHA_TEST);
-
-	glDisableClientState(GL_VERTEX_ARRAY);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 }
 
 /* =======================================================
@@ -887,8 +873,6 @@ void list_palette_draw_setup(list_palette_type *list)
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_NOTEQUAL,0);
 
-	glEnableClientState(GL_VERTEX_ARRAY);
-
 		// background
 
 	vertexes[0]=vertexes[6]=(float)box.lx;
@@ -900,8 +884,6 @@ void list_palette_draw_setup(list_palette_type *list)
 
 	glColor4f(1.0f,1.0f,1.0f,1.0f);
 	glDrawArrays(GL_QUADS,0,4);
-
-	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 void list_palette_draw_title(list_palette_type *list)
@@ -916,8 +898,6 @@ void list_palette_draw_title(list_palette_type *list)
 
 	ty=box.ty;
 	by=ty+list_title_high;
-
-	glEnableClientState(GL_VERTEX_ARRAY);
 
 	vertexes[0]=vertexes[6]=(float)box.lx;
 	vertexes[2]=vertexes[4]=(float)box.rx;
@@ -939,8 +919,6 @@ void list_palette_draw_title(list_palette_type *list)
 	glColor4f(0.0f,0.0f,0.0f,1.0f);
 	glDrawArrays(GL_LINES,0,4);
 
-	glDisableClientState(GL_VERTEX_ARRAY);
-
 		// text
 	
 	text_draw_center(((box.lx+box.rx)>>1),(by-2),list_title_font_size,NULL,list->title);
@@ -960,9 +938,6 @@ void list_palette_draw_title(list_palette_type *list)
 
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_NOTEQUAL,0);
-
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
 	if (!list->back_push_on) {
 		glColor4f(1.0f,1.0f,1.0f,1.0f);
@@ -987,9 +962,6 @@ void list_palette_draw_title(list_palette_type *list)
 	
 	glDisable(GL_TEXTURE_2D);
 	glDisable(GL_ALPHA_TEST);
-
-	glDisableClientState(GL_VERTEX_ARRAY);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 }
 
 void list_palette_draw_scrollbar(list_palette_type *list)
@@ -1002,8 +974,6 @@ void list_palette_draw_scrollbar(list_palette_type *list)
 	
 		// scroll bar
 
-	glEnableClientState(GL_VERTEX_ARRAY);
-	
 	lx=box.rx-list_palette_scroll_wid;
 	ty=box.ty+list_title_high;
 	by=box.by;
@@ -1057,8 +1027,6 @@ void list_palette_draw_scrollbar(list_palette_type *list)
 
 	glColor4f(0.0f,0.0f,0.0f,1.0f);
 	glDrawArrays(GL_LINES,0,2);
-
-	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 void list_palette_draw_border(list_palette_type *list)
@@ -1068,8 +1036,6 @@ void list_palette_draw_border(list_palette_type *list)
 	d3rect				box;
 	
 	list_palette_box(&box);
-
-	glEnableClientState(GL_VERTEX_ARRAY);
 
 	lx=box.lx;
 	rx=box.lx+list_palette_border_sz;
@@ -1093,8 +1059,6 @@ void list_palette_draw_border(list_palette_type *list)
 	
 	glColor4f(0.0f,0.0f,0.0f,1.0f);
 	glDrawArrays(GL_LINES,0,4);
-
-	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 /* =======================================================
@@ -1112,8 +1076,6 @@ void list_palette_draw_item(list_palette_type *list,int idx)
 	d3rect						box;
 	list_palette_item_type		*item;
 
-	glEnableClientState(GL_VERTEX_ARRAY);
-	
 	list_palette_box(&box);
 	
 	item=&list->items[idx];
@@ -1166,8 +1128,6 @@ void list_palette_draw_item(list_palette_type *list,int idx)
 			glDrawArrays(GL_QUADS,0,4);
 		}
 	}
-
-	glDisableClientState(GL_VERTEX_ARRAY);
 
 		// draw item
 		
