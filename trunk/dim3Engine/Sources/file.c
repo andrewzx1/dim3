@@ -818,8 +818,6 @@ bool game_file_load(char *file_name,char *err_str)
 		game_file_get_chunk(&map.movement.movements[n].run);
 	}
 
-	group_moves_rebuild();
-	
 		// script objects
 		
 	progress_next();

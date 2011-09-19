@@ -96,8 +96,7 @@ typedef struct		{
 typedef struct		{
 						int									item_count,item_sort_start_idx,push_idx,
 															item_id,item_type,item_idx,
-															pixel_sz,scroll_page,
-															total_high;
+															scroll_page,total_high;
 						bool								back_on,back_push_on,
 															push_on,button_click;
 						char								title[128];

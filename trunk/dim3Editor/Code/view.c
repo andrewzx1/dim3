@@ -151,15 +151,16 @@ void view_setup_default_views(void)
 void view_get_pixel_box(editor_view_type *view,d3rect *box)
 {
 	float			wid,high;
-	d3rect			wbox;
+	d3rect			wbox,lbox;
 	
 		// get viewport
 		
 	os_get_window_box(&wbox);
+	list_palette_box(&lbox);
 	
 	wbox.ty+=tool_palette_pixel_size();
 	wbox.by-=texture_palette_pixel_size();
-	wbox.rx-=item_palette.pixel_sz;
+	wbox.rx=lbox.lx;
 	
 	wid=(float)(wbox.rx-wbox.lx);
 	high=(float)(wbox.by-wbox.ty);
@@ -520,6 +521,7 @@ void view_get_lookat_point(editor_view_type *view,float dist,d3vct *look_vct)
 
 void view_set_viewport_box(d3rect *box,bool erase,bool use_background)
 {
+	float			vertexes[8];
 	d3rect			wbox;
 	
 		// set viewport
@@ -545,6 +547,15 @@ void view_set_viewport_box(d3rect *box,bool erase,bool use_background)
 		// erase viewport
 		
 	if (!erase) return;
+	
+	glEnableClientState(GL_VERTEX_ARRAY);
+	
+	vertexes[0]=vertexes[6]=(float)box->lx;
+	vertexes[2]=vertexes[4]=(float)box->rx;
+	vertexes[1]=vertexes[3]=(float)box->ty;
+	vertexes[5]=vertexes[7]=(float)box->by;
+	
+	glVertexPointer(2,GL_FLOAT,0,vertexes);
 		
 	if (use_background) {
 		glColor4f(setup.col.background.r,setup.col.background.g,setup.col.background.b,1.0f);
@@ -552,13 +563,10 @@ void view_set_viewport_box(d3rect *box,bool erase,bool use_background)
 	else {
 		glColor4f(1.0f,1.0f,1.0f,1.0f);
 	}
+
+	glDrawArrays(GL_QUADS,0,4);
 	
-	glBegin(GL_QUADS);
-	glVertex2i(box->lx,box->ty);
-	glVertex2i(box->rx,box->ty);
-	glVertex2i(box->rx,box->by);
-	glVertex2i(box->lx,box->by);
-	glEnd();
+	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 void view_set_viewport(editor_view_type *view,bool erase,bool use_background)
@@ -1129,6 +1137,7 @@ bool view_click(d3pnt *pnt,bool double_click)
 void view_draw(void)
 {
 	int					n;
+	float				vertexes[8];
 	d3rect				box;
 	editor_view_type	*view;
 
@@ -1141,6 +1150,8 @@ void view_draw(void)
 	for (n=0;n!=map.editor_views.count;n++) {
 		view_draw_view(&map.editor_views.views[n]);
 	}
+	
+	glEnableClientState(GL_VERTEX_ARRAY);
 
 		// view box outlines
 		
@@ -1150,14 +1161,16 @@ void view_draw(void)
 		view_get_pixel_box(view,&box);
 
 		glLineWidth(1.0f);
-		glColor4f(0.0f,0.0f,0.0f,1.0f);
+		
+		vertexes[0]=vertexes[6]=(float)(box.lx+1);
+		vertexes[2]=vertexes[4]=(float)(box.rx+1);
+		vertexes[1]=vertexes[3]=(float)(box.ty+1);
+		vertexes[5]=vertexes[7]=(float)(box.by+1);
+	
+		glVertexPointer(2,GL_FLOAT,0,vertexes);
 
-		glBegin(GL_LINE_LOOP);
-		glVertex2i((box.lx+1),(box.ty+1));
-		glVertex2i((box.rx+1),(box.ty+1));
-		glVertex2i((box.rx+1),(box.by+1));
-		glVertex2i((box.lx+1),(box.by+1));
-		glEnd();
+		glColor4f(0.0f,0.0f,0.0f,1.0f);
+		glDrawArrays(GL_LINE_LOOP,0,4);
 	}
 	
 		// draw the selection
@@ -1169,39 +1182,49 @@ void view_draw(void)
 		view_get_pixel_box(view,&box);
 		
 		glColor4f(0.8f,0.8f,0.8f,0.5f);
-
-		glBegin(GL_QUADS);
 		
 			// top
 			
-		glVertex2i(box.lx,box.ty);
-		glVertex2i(box.rx,box.ty);
-		glVertex2i(box.rx,(box.ty+view_selection_size));
-		glVertex2i(box.lx,(box.ty+view_selection_size));
+		vertexes[0]=vertexes[6]=(float)box.lx;
+		vertexes[2]=vertexes[4]=(float)box.rx;
+		vertexes[1]=vertexes[3]=(float)box.ty;
+		vertexes[5]=vertexes[7]=(float)(box.ty+view_selection_size);
+	
+		glVertexPointer(2,GL_FLOAT,0,vertexes);
+		glDrawArrays(GL_QUADS,0,4);
 		
 			// bottom
 			
-		glVertex2i(box.lx,(box.by-view_selection_size));
-		glVertex2i(box.rx,(box.by-view_selection_size));
-		glVertex2i(box.rx,box.by);
-		glVertex2i(box.lx,box.by);
+		vertexes[0]=vertexes[6]=(float)box.lx;
+		vertexes[2]=vertexes[4]=(float)box.rx;
+		vertexes[1]=vertexes[3]=(float)(box.by-view_selection_size);
+		vertexes[5]=vertexes[7]=(float)box.by;
+	
+		glVertexPointer(2,GL_FLOAT,0,vertexes);
+		glDrawArrays(GL_QUADS,0,4);
 		
 			// left
 			
-		glVertex2i(box.lx,(box.ty+view_selection_size));
-		glVertex2i((box.lx+view_selection_size),(box.ty+view_selection_size));
-		glVertex2i((box.lx+view_selection_size),(box.by-view_selection_size));
-		glVertex2i(box.lx,(box.by-view_selection_size));
+		vertexes[0]=vertexes[6]=(float)box.lx;
+		vertexes[2]=vertexes[4]=(float)(box.lx+view_selection_size);
+		vertexes[1]=vertexes[3]=(float)(box.ty+view_selection_size);
+		vertexes[5]=vertexes[7]=(float)(box.by-view_selection_size);
+	
+		glVertexPointer(2,GL_FLOAT,0,vertexes);
+		glDrawArrays(GL_QUADS,0,4);
 
 			// right
 			
-		glVertex2i((box.rx-view_selection_size),(box.ty+view_selection_size));
-		glVertex2i(box.rx,(box.ty+view_selection_size));
-		glVertex2i(box.rx,(box.by-view_selection_size));
-		glVertex2i((box.rx-view_selection_size),(box.by-view_selection_size));
-
-		glEnd();
+		vertexes[0]=vertexes[6]=(float)(box.rx-view_selection_size);
+		vertexes[2]=vertexes[4]=(float)box.rx;
+		vertexes[1]=vertexes[3]=(float)(box.ty+view_selection_size);
+		vertexes[5]=vertexes[7]=(float)(box.by-view_selection_size);
+	
+		glVertexPointer(2,GL_FLOAT,0,vertexes);
+		glDrawArrays(GL_QUADS,0,4);
 	}
+	
+	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 

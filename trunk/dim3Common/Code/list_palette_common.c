@@ -1063,7 +1063,7 @@ void list_palette_draw_scrollbar(list_palette_type *list)
 
 void list_palette_draw_border(list_palette_type *list)
 {
-	int					lx,rx,mx;
+	int					lx,rx;
 	float				vertexes[8];
 	d3rect				box;
 	
@@ -1073,7 +1073,6 @@ void list_palette_draw_border(list_palette_type *list)
 
 	lx=box.lx;
 	rx=box.lx+list_palette_border_sz;
-	mx=(lx+rx)>>1;
 
 	vertexes[0]=vertexes[6]=(float)lx;
 	vertexes[2]=vertexes[4]=(float)rx;

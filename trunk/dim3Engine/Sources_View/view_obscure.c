@@ -44,7 +44,7 @@ extern iface_type			iface;
 extern setup_type			setup;
 
 unsigned char				*view_obscure_hits;
-d3pnt						*view_obscure_pnts;
+d3vct						*view_obscure_vcts;
 poly_pointer_type			*view_obscure_polys;
 
 /* =======================================================
@@ -62,7 +62,7 @@ bool view_obscure_initialize(void)
 		// is view obscuring on?
 
 	view_obscure_polys=NULL;
-	view_obscure_pnts=NULL;
+	view_obscure_vcts=NULL;
 	view_obscure_hits=NULL;
 
 	if (!map.optimize.ray_trace_obscure) return(TRUE);
@@ -115,8 +115,8 @@ bool view_obscure_initialize(void)
 
 	ray_count=(((view_obscure_max_split+1)*(view_obscure_max_split+1))*6)+1;
 
-	view_obscure_pnts=(d3pnt*)malloc(ray_count*sizeof(d3pnt));
-	if (view_obscure_pnts==NULL) {
+	view_obscure_vcts=(d3vct*)malloc(ray_count*sizeof(d3vct));
+	if (view_obscure_vcts==NULL) {
 		free(view_obscure_polys);
 		view_obscure_polys=NULL;
 		return(FALSE);
@@ -124,7 +124,7 @@ bool view_obscure_initialize(void)
 
 	view_obscure_hits=(unsigned char*)malloc(ray_count*sizeof(unsigned char));
 	if (view_obscure_hits==NULL) {
-		free(view_obscure_polys);
+		free(view_obscure_vcts);
 		free(view_obscure_polys);
 		view_obscure_polys=NULL;
 		view_obscure_hits=NULL;
@@ -139,8 +139,8 @@ void view_obscure_release(void)
 	if (view_obscure_polys!=NULL) free(view_obscure_polys);
 	view_obscure_polys=NULL;
 
-	if (view_obscure_pnts!=NULL) free(view_obscure_pnts);
-	view_obscure_pnts=NULL;
+	if (view_obscure_vcts!=NULL) free(view_obscure_vcts);
+	view_obscure_vcts=NULL;
 
 	if (view_obscure_hits!=NULL) free(view_obscure_hits);
 	view_obscure_hits=NULL;
@@ -156,8 +156,8 @@ bool view_obscure_check_box(d3pnt *camera_pnt,int skip_mesh_idx,d3pnt *min,d3pnt
 {
 	int					n,k,x,y,z,kx,ky,kz,ray_cnt,hit_cnt,last_mesh_idx;
 	unsigned char		*hit;
-	d3pnt				mid,div,div_add,ray_min,ray_max;
-	d3pnt				*pnt;
+	d3pnt				mid,div,div_add,ray_min,ray_max,hpt;
+	d3vct				*vct;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 	poly_pointer_type	*poly_ptr;
@@ -205,7 +205,7 @@ bool view_obscure_check_box(d3pnt *camera_pnt,int skip_mesh_idx,d3pnt *min,d3pnt
 
 	ray_cnt=0;
 
-	pnt=view_obscure_pnts;
+	vct=view_obscure_vcts;
 
 		// top and bottom
 
@@ -216,17 +216,17 @@ bool view_obscure_check_box(d3pnt *camera_pnt,int skip_mesh_idx,d3pnt *min,d3pnt
 			kz=min->z+(z*div_add.z);
 
 			if (camera_pnt->y<=mid.y) {
-				pnt->x=kx;
-				pnt->y=min->y;
-				pnt->z=kz;
+				vct->x=(float)(kx-camera_pnt->x);
+				vct->y=(float)(min->y-camera_pnt->y);
+				vct->z=(float)(kz-camera_pnt->z);
 			}
 			else {
-				pnt->x=kx;
-				pnt->y=max->y;
-				pnt->z=kz;
+				vct->x=(float)(kx-camera_pnt->x);
+				vct->y=(float)(max->y-camera_pnt->y);
+				vct->z=(float)(kz-camera_pnt->z);
 			}
 
-			pnt++;
+			vct++;
 			ray_cnt++;
 		}
 	}
@@ -240,17 +240,17 @@ bool view_obscure_check_box(d3pnt *camera_pnt,int skip_mesh_idx,d3pnt *min,d3pnt
 			kz=min->z+(z*div_add.z);
 
 			if (camera_pnt->x<=mid.x) {
-				pnt->x=min->x;
-				pnt->y=ky;
-				pnt->z=kz;
+				vct->x=(float)(min->x-camera_pnt->x);
+				vct->y=(float)(ky-camera_pnt->y);
+				vct->z=(float)(kz-camera_pnt->z);
 			}
 			else {
-				pnt->x=max->x;
-				pnt->y=ky;
-				pnt->z=kz;
+				vct->x=(float)(max->x-camera_pnt->x);
+				vct->y=(float)(ky-camera_pnt->y);
+				vct->z=(float)(kz-camera_pnt->z);
 			}
 
-			pnt++;
+			vct++;
 			ray_cnt++;
 		}
 	}
@@ -264,26 +264,26 @@ bool view_obscure_check_box(d3pnt *camera_pnt,int skip_mesh_idx,d3pnt *min,d3pnt
 			ky=min->y+(y*div_add.y);
 
 			if (camera_pnt->z<=mid.z) {
-				pnt->x=kx;
-				pnt->y=ky;
-				pnt->z=min->z;
+				vct->x=(float)(kx-camera_pnt->x);
+				vct->y=(float)(ky-camera_pnt->y);
+				vct->z=(float)(min->z-camera_pnt->z);
 			}
 			else {
-				pnt->x=kx;
-				pnt->y=ky;
-				pnt->z=max->z;
+				vct->x=(float)(kx-camera_pnt->x);
+				vct->y=(float)(ky-camera_pnt->y);
+				vct->z=(float)(max->z-camera_pnt->z);
 			}
 
-			pnt++;
+			vct++;
 			ray_cnt++;
 		}
 	}
 
 		// the midpoint ray
 
-	pnt->x=mid.x;
-	pnt->y=mid.y;
-	pnt->z=mid.z;
+	vct->x=(float)(mid.x-camera_pnt->x);
+	vct->y=(float)(mid.y-camera_pnt->y);
+	vct->z=(float)(mid.z-camera_pnt->z);
 
 	ray_cnt++;
 
@@ -379,8 +379,8 @@ bool view_obscure_check_box(d3pnt *camera_pnt,int skip_mesh_idx,d3pnt *min,d3pnt
 				hit_cnt++;
 				continue;
 			}
-
-			if (ray_trace_single_poly_hit(mesh,poly,camera_pnt,&view_obscure_pnts[k])) {
+		
+			if (ray_trace_mesh_polygon(camera_pnt,&view_obscure_vcts[k],&hpt,mesh,poly)!=-1.0f) {
 				*(view_obscure_hits+k)=0x1;
 				hit_cnt++;
 			}
