@@ -369,12 +369,8 @@ void view_pick_list_add_cube(d3pnt *v_pnts,int type,int main_idx,int sub_idx)
 		*pv++=(float)v_pnts[idx].z;
 	}
 
-	glEnableClientState(GL_VERTEX_ARRAY);
-
 	glVertexPointer(3,GL_FLOAT,0,vertexes);
 	glDrawArrays(GL_QUADS,0,(24*3));
-
-	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 void view_pick_list_add_handle(d3pnt *pnt,int type,int main_idx,int sub_idx)
@@ -391,16 +387,12 @@ void view_pick_list_add_handle(d3pnt *pnt,int type,int main_idx,int sub_idx)
 	vertexes[1]=(float)pnt->y;
 	vertexes[2]=(float)pnt->z;
 
-	glEnableClientState(GL_VERTEX_ARRAY);
-
 	glPointSize(view_handle_size);
 
 	glVertexPointer(3,GL_FLOAT,0,vertexes);
 	glDrawArrays(GL_POINTS,0,3);
 	
 	glPointSize(1.0f);
-
-	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 void view_pick_list_add_2D_handle(d3pnt *pnt,int type,int main_idx,int sub_idx)
@@ -416,15 +408,11 @@ void view_pick_list_add_2D_handle(d3pnt *pnt,int type,int main_idx,int sub_idx)
 	vertexes[0]=(float)pnt->x;
 	vertexes[1]=(float)pnt->y;
 
-	glEnableClientState(GL_VERTEX_ARRAY);
-
 	glPointSize(view_handle_size);
 	
 	glVertexPointer(2,GL_FLOAT,0,vertexes);
 	glDrawArrays(GL_POINTS,0,2);
 	
 	glPointSize(1.0f);
-
-	glDisableClientState(GL_VERTEX_ARRAY);
 }
 

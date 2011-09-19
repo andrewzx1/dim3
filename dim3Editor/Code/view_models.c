@@ -298,9 +298,6 @@ bool view_model_draw(d3pnt *pnt,d3ang *ang,char *name,float resize,short *textur
 	
 	glEnable(GL_TEXTURE_2D);
 	
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_NOTEQUAL,0);
 	
@@ -342,9 +339,6 @@ bool view_model_draw(d3pnt *pnt,d3ang *ang,char *name,float resize,short *textur
 	glDepthMask(GL_TRUE);
 	
 	glDisable(GL_ALPHA_TEST);
-    
-	glDisableClientState(GL_VERTEX_ARRAY);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	
 	glDisable(GL_TEXTURE_2D);
 	

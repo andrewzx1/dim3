@@ -43,32 +43,53 @@ extern animator_state_type	state;
 
 void draw_model_axis(void)
 {
+	float			vertexes[2*3];
+
+	glEnableClientState(GL_VERTEX_ARRAY);
+
 		// x axis
-		
-	glColor4f(1.0f,0.0f,0.0f,1.0f);
+
+	vertexes[0]=-20000.0f;
+	vertexes[1]=(float)model.center.y;
+	vertexes[2]=(float)model.center.z;
+	vertexes[3]=20000.0f;
+	vertexes[4]=(float)model.center.y;
+	vertexes[5]=(float)model.center.z;
 	
-    glBegin(GL_LINES);
-	glVertex3i(-20000,model.center.y,model.center.z);
-	glVertex3i(20000,model.center.y,model.center.z);
-	glEnd();
+	glVertexPointer(3,GL_FLOAT,0,vertexes);
+
+	glColor4f(1.0f,0.0f,0.0f,1.0f);
+	glDrawArrays(GL_LINES,0,4);
 	
 		// y axis
 		
+    vertexes[0]=(float)model.center.x;
+	vertexes[1]=-20000.0f;
+	vertexes[2]=(float)model.center.z;
+	vertexes[3]=(float)model.center.x;
+	vertexes[4]=20000.0f;
+	vertexes[5]=(float)model.center.z;
+
+	glVertexPointer(3,GL_FLOAT,0,vertexes);
+
 	glColor4f(0.0f,1.0f,0.0f,1.0f);
-	
-    glBegin(GL_LINES);
-	glVertex3i(model.center.x,-20000,model.center.z);
-	glVertex3i(model.center.x,20000,model.center.z);
-    glEnd();
+	glDrawArrays(GL_LINES,0,4);
 
 		// z axis
 		
+    vertexes[0]=(float)model.center.x;
+	vertexes[1]=(float)model.center.y;
+	vertexes[2]=-20000.0f;
+	vertexes[3]=(float)model.center.x;
+	vertexes[4]=(float)model.center.y;
+	vertexes[5]=(float)20000.0f;
+
+	glVertexPointer(3,GL_FLOAT,0,vertexes);
+
 	glColor4f(0.0f,0.0f,1.0f,1.0f);
-	
-    glBegin(GL_LINES);
-	glVertex3i(model.center.x,model.center.y,-20000);
-	glVertex3i(model.center.x,model.center.y,20000);
-    glEnd();
+	glDrawArrays(GL_LINES,0,4);
+
+	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 /* =======================================================
@@ -81,7 +102,11 @@ void draw_model_box_view(void)
 {
 	int				n,xsz,zsz,ysz,offx,offz,offy,
 					x[8],y[8],z[8];
+	float			vertexes[8*3];
+	float			*pv;
 	
+	glEnableClientState(GL_VERTEX_ARRAY);
+
 		// get box
 
     xsz=model.view_box.size.x/2;
@@ -106,25 +131,42 @@ void draw_model_box_view(void)
 
  	glColor4f(0.0f,1.0f,0.0f,0.5f);
 	glLineWidth(4.0f);
+
+	pv=vertexes;
     
-    glBegin(GL_LINE_LOOP);
 	for (n=0;n!=4;n++) {
-		glVertex3i(x[n],y[n],z[n]);
+		*pv++=(float)x[n];
+		*pv++=(float)y[n];
+		*pv++=(float)z[n];
 	}
-    glEnd();
+
+	glVertexPointer(3,GL_FLOAT,0,vertexes);
+	glDrawArrays(GL_LINE_LOOP,0,4);
     
-    glBegin(GL_LINE_LOOP);
+	pv=vertexes;
+    
 	for (n=4;n!=8;n++) {
-		glVertex3i(x[n],y[n],z[n]);
+		*pv++=(float)x[n];
+		*pv++=(float)y[n];
+		*pv++=(float)z[n];
 	}
-    glEnd();
+
+	glVertexPointer(3,GL_FLOAT,0,vertexes);
+	glDrawArrays(GL_LINE_LOOP,0,4);
     
-    glBegin(GL_LINES);
+	pv=vertexes;
+
 	for (n=0;n!=4;n++) {
-		glVertex3i(x[n],y[n],z[n]);
-		glVertex3i(x[n+4],y[n+4],z[n+4]);
+		*pv++=(float)x[n];
+		*pv++=(float)y[n];
+		*pv++=(float)z[n];
+		*pv++=(float)x[n+4];
+		*pv++=(float)y[n+4];
+		*pv++=(float)z[n+4];
 	}
-    glEnd();
+
+	glVertexPointer(3,GL_FLOAT,0,vertexes);
+	glDrawArrays(GL_LINES,0,8);
 		
     glLineWidth(1.0f);
 
@@ -132,14 +174,19 @@ void draw_model_box_view(void)
 
 	glColor4f(0.5f,0.5f,0.5f,0.5f);
 		
-	glBegin(GL_POLYGON);
+	pv=vertexes;
+
 	for (n=4;n!=8;n++) {
-		glVertex3i(x[n],y[n],z[n]);
+		*pv++=(float)x[n];
+		*pv++=(float)y[n];
+		*pv++=(float)z[n];
 	}
-	glEnd();
+
+	glVertexPointer(3,GL_FLOAT,0,vertexes);
+	glDrawArrays(GL_QUADS,0,4);
+
+	glDisableClientState(GL_VERTEX_ARRAY);
 }
-
-
 
 /* =======================================================
 
@@ -150,7 +197,11 @@ void draw_model_box_view(void)
 void draw_model_box_hit_boxes(void)
 {
 	int				n,k,x[8],y[8],z[8];
+	float			vertexes[8*3];
+	float			*pv;
 	d3pnt			pnt,min,max;
+
+	glEnableClientState(GL_VERTEX_ARRAY);
 
 	pnt.x=pnt.y=pnt.z=0;
 	
@@ -176,24 +227,41 @@ void draw_model_box_hit_boxes(void)
 		glColor4f(1.0f,1.0f,0.0f,0.5f);
 		glLineWidth(4.0f);
 	    
-		glBegin(GL_LINE_LOOP);
+		pv=vertexes;
+
 		for (k=0;k!=4;k++) {
-			glVertex3i(x[k],y[k],z[k]);
+			*pv++=(float)x[k];
+			*pv++=(float)y[k];
+			*pv++=(float)z[k];
 		}
-		glEnd();
+		
+		glVertexPointer(3,GL_FLOAT,0,vertexes);
+		glDrawArrays(GL_LINE_LOOP,0,4);
 	    
-		glBegin(GL_LINE_LOOP);
+		pv=vertexes;
+
 		for (k=4;k!=8;k++) {
-			glVertex3i(x[k],y[k],z[k]);
+			*pv++=(float)x[k];
+			*pv++=(float)y[k];
+			*pv++=(float)z[k];
 		}
-		glEnd();
+
+		glVertexPointer(3,GL_FLOAT,0,vertexes);
+		glDrawArrays(GL_LINE_LOOP,0,4);
 	    
-		glBegin(GL_LINES);
+		pv=vertexes;
+
 		for (k=0;k!=4;k++) {
-			glVertex3i(x[k],y[k],z[k]);
-			glVertex3i(x[k+4],y[k+4],z[k+4]);
+			*pv++=(float)x[k];
+			*pv++=(float)y[k];
+			*pv++=(float)z[k];
+			*pv++=(float)x[k+4];
+			*pv++=(float)y[k+4];
+			*pv++=(float)z[k+4];
 		}
-		glEnd();
+		
+		glVertexPointer(3,GL_FLOAT,0,vertexes);
+		glDrawArrays(GL_LINES,0,8);
 		
 		glLineWidth(1.0f);
 	
@@ -204,16 +272,22 @@ void draw_model_box_hit_boxes(void)
 		glColor4f(0.0f,0.0f,0.0f,1.0f);
 		glPointSize(10.0f);
 		
-		glBegin(GL_POINTS);
-		
+		pv=vertexes;
+
 		for (k=0;k!=8;k++) {
-			glVertex3i(x[k],y[k],z[k]);
+			*pv++=(float)x[k];
+			*pv++=(float)y[k];
+			*pv++=(float)z[k];
 		}
 		
-		glEnd();
+		glVertexPointer(3,GL_FLOAT,0,vertexes);
+		glDrawArrays(GL_POINTS,0,8);
+
 		glPointSize(1.0f);
 		
 		glEnable(GL_DEPTH_TEST);
 	}
+
+	glDisableClientState(GL_VERTEX_ARRAY);
 }
 

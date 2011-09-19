@@ -105,9 +105,6 @@ void texture_edit_draw_bitmap(d3rect *box,char *name,unsigned long gl_id)
 {
 	float				vertexes[8],uvs[8]={0.0f,0.0f,1.0f,0.0f,1.0f,1.0f,0.0f,1.0f};
 
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-
 		// the draw vertexes
 
 	vertexes[0]=vertexes[6]=(float)box->lx;
@@ -144,9 +141,6 @@ void texture_edit_draw_bitmap(d3rect *box,char *name,unsigned long gl_id)
 	glColor4f(0.0f,0.0f,0.0f,1.0f);
 	glDrawArrays(GL_LINE_LOOP,0,4);
 
-	glDisableClientState(GL_VERTEX_ARRAY);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-
 		// the name
 		
 	text_draw_center(((box->lx+box->rx)>>1),(box->by+15),12.0f,NULL,name);
@@ -155,8 +149,6 @@ void texture_edit_draw_bitmap(d3rect *box,char *name,unsigned long gl_id)
 void texture_edit_draw_button(d3rect *box,char *title,float font_size,bool has_trig,int sel_idx)
 {
 	float			comp,vertexes[8];
-
-	glEnableClientState(GL_VERTEX_ARRAY);
 	
 		// the button box
 
@@ -198,8 +190,6 @@ void texture_edit_draw_button(d3rect *box,char *title,float font_size,bool has_t
 		// the button text
 
 	text_draw((box->lx+5),(box->by-5),font_size,NULL,title);
-	
-	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 void texture_edit_draw(void)
@@ -268,8 +258,6 @@ void texture_edit_draw(void)
 			}
 		}
 	
-		glEnableClientState(GL_VERTEX_ARRAY);
-
 		vertexes[0]=vertexes[6]=0.0f;
 		vertexes[1]=vertexes[3]=(float)ty;
 		vertexes[2]=vertexes[4]=(float)wid;
@@ -289,8 +277,6 @@ void texture_edit_draw(void)
 
 		glVertexPointer(2,GL_FLOAT,0,vertexes);
 		glDrawArrays(GL_LINES,0,2);
-
-		glDisableClientState(GL_VERTEX_ARRAY);
 
 			// the frame
 

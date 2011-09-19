@@ -75,39 +75,57 @@ void view_get_sprite_vertexes(d3pnt *pnt,d3ang *ang,d3pnt *v_pnts)
 void view_draw_sprite(d3pnt *pnt,d3ang *ang,unsigned long gl_id)
 {
 	int				n,idx,face_idx[24]={0,1,2,3,4,5,6,7,0,1,5,4,3,2,6,7,1,2,6,5,0,3,7,4};
+	float			vertexes[24*3],uvs[24*2];
+	float			*pv,*pt;
 	d3pnt			v_pnts[8];
 	
 	view_get_sprite_vertexes(pnt,ang,v_pnts);
 	
 		// draw sprite
-		
+
 	glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D,gl_id);
-    
+   
 	glColor4f(1.0f,1.0f,1.0f,1.0f);
 	
-	glBegin(GL_QUADS);
+	pv=vertexes;
+	pt=uvs;
 	
 	for (n=0;n!=24;n+=4) {
 	
 		idx=face_idx[n];
-		glTexCoord2f(0,0);
-		glVertex3i(v_pnts[idx].x,v_pnts[idx].y,v_pnts[idx].z);
+		*pv++=(float)v_pnts[idx].x;
+		*pv++=(float)v_pnts[idx].y;
+		*pv++=(float)v_pnts[idx].z;
+		*pt++=0.0f;
+		*pt++=0.0f;
 		
 		idx=face_idx[n+1];
-		glTexCoord2f(1,0);
-		glVertex3i(v_pnts[idx].x,v_pnts[idx].y,v_pnts[idx].z);
-		
+		*pv++=(float)v_pnts[idx].x;
+		*pv++=(float)v_pnts[idx].y;
+		*pv++=(float)v_pnts[idx].z;
+		*pt++=1.0f;
+		*pt++=0.0f;
+	
 		idx=face_idx[n+2];
-		glTexCoord2f(1,1);
-		glVertex3i(v_pnts[idx].x,v_pnts[idx].y,v_pnts[idx].z);
+		*pv++=(float)v_pnts[idx].x;
+		*pv++=(float)v_pnts[idx].y;
+		*pv++=(float)v_pnts[idx].z;
+		*pt++=1.0f;
+		*pt++=1.0f;
 		
 		idx=face_idx[n+3];
-		glTexCoord2f(0,1);
-		glVertex3i(v_pnts[idx].x,v_pnts[idx].y,v_pnts[idx].z);
+		*pv++=(float)v_pnts[idx].x;
+		*pv++=(float)v_pnts[idx].y;
+		*pv++=(float)v_pnts[idx].z;
+		*pt++=0.0f;
+		*pt++=1.0f;
 	}
 	
-	glEnd();
+	glVertexPointer(3,GL_FLOAT,0,vertexes);
+	glTexCoordPointer(2,GL_FLOAT,0,uvs);
+
+	glDrawArrays(GL_QUADS,0,24);
 	
 	glDisable(GL_TEXTURE_2D);
 }
@@ -115,42 +133,53 @@ void view_draw_sprite(d3pnt *pnt,d3ang *ang,unsigned long gl_id)
 void view_draw_circle(d3pnt *pnt,d3col *col,int dist)
 {
     int				n,kx,ky,kz;
-	
+	float			vertexes[36*3];
+	float			*pv;
+
 	glLineWidth(4.0f);
 	glColor4f(col->r,col->g,col->b,0.5f);
 	
-	glBegin(GL_LINE_LOOP);
+	pv=vertexes;
 	
 	for (n=0;n!=360;n+=10) {
 		ky=dist;
 		kz=0;
 		rotate_2D_point_center(&ky,&kz,(float)n);
-		glVertex3i(pnt->x,(pnt->y+ky),(pnt->z+kz));
+		*pv++=(float)pnt->x;
+		*pv++=(float)(pnt->y+ky);
+		*pv++=(float)(pnt->z+kz);
 	}
 	
-	glEnd();
+	glVertexPointer(3,GL_FLOAT,0,vertexes);
+	glDrawArrays(GL_LINE_LOOP,0,36);
 	
-	glBegin(GL_LINE_LOOP);
+	pv=vertexes;
 	
 	for (n=0;n!=360;n+=10) {
 		kx=dist;
 		kz=0;
 		rotate_2D_point_center(&kx,&kz,(float)n);
-		glVertex3i((pnt->x+kx),pnt->y,(pnt->z+kz));
+		*pv++=(float)(pnt->x+kx);
+		*pv++=(float)pnt->y;
+		*pv++=(float)(pnt->z+kz);
 	}
 	
-	glEnd();
+	glVertexPointer(3,GL_FLOAT,0,vertexes);
+	glDrawArrays(GL_LINE_LOOP,0,36);
 	
-	glBegin(GL_LINE_LOOP);
+	pv=vertexes;
 	
 	for (n=0;n!=360;n+=10) {
 		kx=dist;
 		ky=0;
 		rotate_2D_point_center(&kx,&ky,(float)n);
-		glVertex3i((pnt->x+kx),(pnt->y+ky),pnt->z);
+		*pv++=(float)(pnt->x+kx);
+		*pv++=(float)(pnt->y+ky);
+		*pv++=(float)pnt->z;
 	}
 
-	glEnd();
+	glVertexPointer(3,GL_FLOAT,0,vertexes);
+	glDrawArrays(GL_LINE_LOOP,0,36);
 	
 	glLineWidth(1.0f);
 	glColor4f(1.0f,1.0f,1.0f,1.0f);
@@ -387,16 +416,18 @@ bool view_hidden_poly(editor_view_type *view,map_mesh_type *mesh,map_mesh_poly_t
 void view_draw_meshes_texture(editor_view_type *view,bool opaque)
 {
 	int						n,k,t;
-	unsigned long			old_gl_id;
+	float					vertexes[8*3],uvs[8*2];
+	float					*pv,*pt;
+	GLuint					old_gl_id;
 	bool					culled;
-	d3pnt					*pt;
+	d3pnt					*pnt;
 	map_mesh_type			*mesh;
-	map_mesh_poly_type		*mesh_poly;
+	map_mesh_poly_type		*poly;
 	map_mesh_poly_uv_type	*uv;
 	texture_type			*texture;
 							
 		// no depth buffer for transparent segments
-		
+
 	glEnable(GL_TEXTURE_2D);
 
 	if (opaque) {
@@ -446,26 +477,26 @@ void view_draw_meshes_texture(editor_view_type *view,bool opaque)
 	
 		for (k=0;k!=mesh->npoly;k++) {
 		
-			mesh_poly=&mesh->polys[k];
+			poly=&mesh->polys[k];
 			
 				// clipping
 				
-			if (view_clip_poly(view,mesh,mesh_poly)) continue;
+			if (view_clip_poly(view,mesh,poly)) continue;
 			
 				// no light map?
 				
-			if ((view->uv_layer==uv_layer_light_map) && (mesh_poly->lmap_txt_idx==-1)) continue;
+			if ((view->uv_layer==uv_layer_light_map) && (poly->lmap_txt_idx==-1)) continue;
 			
 				// get texture.  If in second UV, we use light map
 				// texture for display if it exists
 				
 			if (view->uv_layer==uv_layer_normal) {
-				texture=&map.textures[mesh_poly->txt_idx];
-				uv=&mesh_poly->main_uv;
+				texture=&map.textures[poly->txt_idx];
+				uv=&poly->main_uv;
 			}
 			else {
-				texture=&map.textures[mesh_poly->lmap_txt_idx];
-				uv=&mesh_poly->lmap_uv;
+				texture=&map.textures[poly->lmap_txt_idx];
+				uv=&poly->lmap_uv;
 			}
 		
 				// opaque or transparent flag
@@ -479,7 +510,7 @@ void view_draw_meshes_texture(editor_view_type *view,bool opaque)
 			
 				// culling
 			
-			culled=view_cull_poly(view,mesh,mesh_poly,n,k);
+			culled=view_cull_poly(view,mesh,poly,n,k);
 		
 				// setup texture
 				
@@ -496,15 +527,21 @@ void view_draw_meshes_texture(editor_view_type *view,bool opaque)
 		
 				// draw polygon
 				
-			glBegin(GL_POLYGON);
+			pv=vertexes;
+			pt=uvs;
 			
-			for (t=0;t!=mesh_poly->ptsz;t++) {
-				pt=&mesh->vertexes[mesh_poly->v[t]];
-				glTexCoord2f(uv->x[t],uv->y[t]);
-				glVertex3i(pt->x,pt->y,pt->z);
+			for (t=0;t!=poly->ptsz;t++) {
+				pnt=&mesh->vertexes[poly->v[t]];
+				*pv++=(float)pnt->x;
+				*pv++=(float)pnt->y;
+				*pv++=(float)pnt->z;
+				*pt++=uv->x[t];
+				*pt++=uv->y[t];
 			}
 			
-			glEnd();
+			glVertexPointer(3,GL_FLOAT,0,vertexes);
+			glTexCoordPointer(2,GL_FLOAT,0,uvs);
+			glDrawArrays(GL_POLYGON,0,poly->ptsz);
 			
 				// if culled, turn back on texture
 				
@@ -527,11 +564,13 @@ void view_draw_meshes_texture(editor_view_type *view,bool opaque)
 void view_draw_meshes_line(editor_view_type *view,bool opaque)
 {
 	int					n,k,t;
-	d3pnt				*pt;
+	float				vertexes[8*3];
+	float				*pv;
+	d3pnt				*pnt;
 	map_mesh_type		*mesh;
-	map_mesh_poly_type	*mesh_poly;
+	map_mesh_poly_type	*poly;
 	texture_type		*texture;
-							
+
 	glDisable(GL_TEXTURE_2D);
 	glDisable(GL_ALPHA_TEST);
 	
@@ -554,12 +593,12 @@ void view_draw_meshes_line(editor_view_type *view,bool opaque)
 	
 		for (k=0;k!=mesh->npoly;k++) {
 		
-			mesh_poly=&mesh->polys[k];
-			texture=&map.textures[mesh_poly->txt_idx];
+			poly=&mesh->polys[k];
+			texture=&map.textures[poly->txt_idx];
 			
 				// clipping
 				
-			if (view_clip_poly(view,mesh,mesh_poly)) continue;
+			if (view_clip_poly(view,mesh,poly)) continue;
 			
 				// opaque or transparent flag
 		
@@ -570,14 +609,17 @@ void view_draw_meshes_line(editor_view_type *view,bool opaque)
 				if (texture->frames[0].bitmap.alpha_mode!=alpha_mode_transparent) continue;
 			}
 			
-			glBegin(GL_LINE_LOOP);
+			pv=vertexes;
 			
-			for (t=0;t!=mesh_poly->ptsz;t++) {
-				pt=&mesh->vertexes[mesh_poly->v[t]];
-				glVertex3i(pt->x,pt->y,pt->z);
+			for (t=0;t!=poly->ptsz;t++) {
+				pnt=&mesh->vertexes[poly->v[t]];
+				*pv++=(float)pnt->x;
+				*pv++=(float)pnt->y;
+				*pv++=(float)pnt->z;
 			}
 			
-			glEnd();
+			glVertexPointer(3,GL_FLOAT,0,vertexes);
+			glDrawArrays(GL_LINE_LOOP,0,poly->ptsz);
 		}
 	
 		mesh++;
@@ -592,8 +634,10 @@ void view_draw_meshes_line(editor_view_type *view,bool opaque)
 
 void view_draw_liquids(editor_view_type *view,bool opaque)
 {
-	int					n,nliquid,x,y,z,y2,lx,rx,tz,bz;
-	unsigned long		old_gl_id;
+	int					n,nliquid,y,y2,lx,rx,tz,bz;
+	float				vertexes[8*3],uvs[8*2];
+	float				*pv,*pt;
+	GLuint				old_gl_id;
 	texture_type		*texture;
 	map_liquid_type		*liquid;
 	map_liquid_uv_type	*uv;
@@ -602,8 +646,6 @@ void view_draw_liquids(editor_view_type *view,bool opaque)
 	
 		// no depth buffer for transparent segments
 		
-	glEnable(GL_TEXTURE_2D);
-
 	if (opaque) {
 		glDisable(GL_BLEND);
 	}
@@ -627,9 +669,6 @@ void view_draw_liquids(editor_view_type *view,bool opaque)
 		// run through the liquids
 		
 	nliquid=map.liquid.nliquid;
-	
-	glEnable(GL_TEXTURE_2D);
-	glColor4f(1.0f,1.0f,1.0f,1.0f);
 	
 	for (n=0;n!=nliquid;n++) {
 		liquid=&map.liquid.liquids[n];
@@ -678,66 +717,115 @@ void view_draw_liquids(editor_view_type *view,bool opaque)
 
 		glColor4f(1.0f,1.0f,1.0f,1.0f);
 		
-		glBegin(GL_QUADS);
+		pv=vertexes;
+		pt=uvs;
 		
 			// bottom
 			
-		glTexCoord2f(uv->x_offset,uv->y_offset);
-		glVertex3i(lx,y2,tz);
-		glTexCoord2f((uv->x_offset+uv->x_size),uv->y_offset);
-		glVertex3i(rx,y2,tz);
-		glTexCoord2f((uv->x_offset+uv->x_size),(uv->y_offset+uv->y_size));
-		glVertex3i(rx,y2,bz);
-		glTexCoord2f(uv->x_offset,(uv->y_offset+uv->y_size));
-		glVertex3i(lx,y2,bz);
+		*pv++=(float)lx;
+		*pv++=(float)y2;
+		*pv++=(float)tz;
+		*pt++=uv->x_offset;
+		*pt++=uv->y_offset;
+
+		*pv++=(float)rx;
+		*pv++=(float)y2;
+		*pv++=(float)tz;
+		*pt++=(uv->x_offset+uv->x_size);
+		*pt++=uv->y_offset;
+
+		*pv++=(float)rx;
+		*pv++=(float)y2;
+		*pv++=(float)bz;
+		*pt++=(uv->x_offset+uv->x_size);
+		*pt++=(uv->y_offset+uv->y_size);
+
+		*pv++=(float)lx;
+		*pv++=(float)y2;
+		*pv++=(float)bz;
+		*pt++=uv->x_offset;
+		*pt++=(uv->y_offset+uv->y_size);
 
 			// top
 			
-		glTexCoord2f(uv->x_offset,uv->y_offset);
-		glVertex3i(lx,y,tz);
-		glTexCoord2f((uv->x_offset+uv->x_size),uv->y_offset);
-		glVertex3i(rx,y,tz);
-		glTexCoord2f((uv->x_offset+uv->x_size),(uv->y_offset+uv->y_size));
-		glVertex3i(rx,y,bz);
-		glTexCoord2f(uv->x_offset,(uv->y_offset+uv->y_size));
-		glVertex3i(lx,y,bz);
+		*pv++=(float)lx;
+		*pv++=(float)y;
+		*pv++=(float)tz;
+		*pt++=uv->x_offset;
+		*pt++=uv->y_offset;
 
-		glEnd();
+		*pv++=(float)rx;
+		*pv++=(float)y;
+		*pv++=(float)tz;
+		*pt++=(uv->x_offset+uv->x_size);
+		*pt++=uv->y_offset;
+
+		*pv++=(float)rx;
+		*pv++=(float)y;
+		*pv++=(float)bz;
+		*pt++=(uv->x_offset+uv->x_size);
+		*pt++=(uv->y_offset+uv->y_size);
+
+		*pv++=(float)lx;
+		*pv++=(float)y;
+		*pv++=(float)bz;
+		*pt++=uv->x_offset;
+		*pt++=(uv->y_offset+uv->y_size);
+
+		glEnable(GL_TEXTURE_2D);
+		glColor4f(1.0f,1.0f,1.0f,1.0f);
+
+		glVertexPointer(3,GL_FLOAT,0,vertexes);
+		glTexCoordPointer(2,GL_FLOAT,0,uvs);
+		glDrawArrays(GL_QUADS,0,8);
+
+		glDisable(GL_TEXTURE_2D);
 		
 			// depth lines
 	
 		glColor4f(setup.col.mesh_line.r,setup.col.mesh_line.g,setup.col.mesh_line.b,1.0f);
+
+		pv=vertexes;
 		
-		glBegin(GL_LINES);
-		
-		x=liquid->lft;
-		z=liquid->top;
-		glVertex3i(x,y,z);
-		glVertex3i(x,y2,z);
+		*pv++=(float)liquid->lft;
+		*pv++=(float)y;
+		*pv++=(float)liquid->top;
 
-		x=liquid->rgt;
-		z=liquid->top;
-		glVertex3i(x,y,z);
-		glVertex3i(x,y2,z);
+		*pv++=(float)liquid->lft;
+		*pv++=(float)y2;
+		*pv++=(float)liquid->top;
 
-		x=liquid->lft;
-		z=liquid->bot;
-		glVertex3i(x,y,z);
-		glVertex3i(x,y2,z);
+		*pv++=(float)liquid->rgt;
+		*pv++=(float)y;
+		*pv++=(float)liquid->top;
 
-		x=liquid->rgt;
-		z=liquid->bot;
-		glVertex3i(x,y,z);
-		glVertex3i(x,y2,z);
+		*pv++=(float)liquid->rgt;
+		*pv++=(float)y2;
+		*pv++=(float)liquid->top;
 
-		glEnd();
+		*pv++=(float)liquid->lft;
+		*pv++=(float)y;
+		*pv++=(float)liquid->bot;
+
+		*pv++=(float)liquid->lft;
+		*pv++=(float)y2;
+		*pv++=(float)liquid->bot;
+
+		*pv++=(float)liquid->rgt;
+		*pv++=(float)y;
+		*pv++=(float)liquid->bot;
+
+		*pv++=(float)liquid->rgt;
+		*pv++=(float)y2;
+		*pv++=(float)liquid->bot;
+
+		glVertexPointer(3,GL_FLOAT,0,vertexes);
+		glDrawArrays(GL_LINES,0,8);
 	}
 	
 	glDisable(GL_ALPHA_TEST);
 	if (opaque) glEnable(GL_BLEND);
 	if (!opaque) glDepthMask(GL_TRUE);
-	
-	glDisable(GL_TEXTURE_2D);
 }
 
 /* =======================================================
@@ -749,12 +837,12 @@ void view_draw_liquids(editor_view_type *view,bool opaque)
 void view_draw_meshes_normals(editor_view_type *view)
 {
 	int					n,k,t,dist;
-	float				p_sz;
-	d3pnt				*pt,cnt;
+	float				p_sz,vertexes[2*3];
+	d3pnt				*pnt,cnt;
 	d3vct				binormal;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
-							
+
 	glDisable(GL_TEXTURE_2D);
 	glDisable(GL_ALPHA_TEST);
 
@@ -778,10 +866,10 @@ void view_draw_meshes_normals(editor_view_type *view)
 			cnt.x=cnt.y=cnt.z=0;
 			
 			for (t=0;t!=poly->ptsz;t++) {
-				pt=&mesh->vertexes[poly->v[t]];
-				cnt.x+=pt->x;
-				cnt.y+=pt->y;
-				cnt.z+=pt->z;
+				pnt=&mesh->vertexes[poly->v[t]];
+				cnt.x+=pnt->x;
+				cnt.y+=pnt->y;
+				cnt.z+=pnt->z;
 			}
 			
 			cnt.x/=poly->ptsz;
@@ -792,33 +880,48 @@ void view_draw_meshes_normals(editor_view_type *view)
 			
 					// draw the tangent
 
+				vertexes[0]=(float)cnt.x;
+				vertexes[1]=(float)cnt.y;
+				vertexes[2]=(float)cnt.z;
+				vertexes[3]=vertexes[0]+(poly->tangent_space.tangent.x*normal_vector_scale);
+				vertexes[4]=vertexes[1]+(poly->tangent_space.tangent.y*normal_vector_scale);
+				vertexes[5]=vertexes[2]+(poly->tangent_space.tangent.z*normal_vector_scale);
+
+				glVertexPointer(3,GL_FLOAT,0,vertexes);
+
 				glColor4f(1.0f,0.0f,0.0f,1.0f);
-				
-				glBegin(GL_LINES);
-				glVertex3i(cnt.x,cnt.y,cnt.z);
-				glVertex3i((cnt.x+(int)(poly->tangent_space.tangent.x*normal_vector_scale)),(cnt.y+(int)(poly->tangent_space.tangent.y*normal_vector_scale)),(cnt.z+(int)(poly->tangent_space.tangent.z*normal_vector_scale)));
-				glEnd();
+				glDrawArrays(GL_LINES,0,2);
 				
 					// draw the binormal
 
 				vector_cross_product(&binormal,&poly->tangent_space.tangent,&poly->tangent_space.normal);
 
+				vertexes[0]=(float)cnt.x;
+				vertexes[1]=(float)cnt.y;
+				vertexes[2]=(float)cnt.z;
+				vertexes[3]=vertexes[0]+(binormal.x*normal_vector_scale);
+				vertexes[4]=vertexes[1]+(binormal.y*normal_vector_scale);
+				vertexes[5]=vertexes[2]+(binormal.z*normal_vector_scale);
+
+				glVertexPointer(3,GL_FLOAT,0,vertexes);
+
 				glColor4f(0.0f,0.0f,1.0f,1.0f);
-				
-				glBegin(GL_LINES);
-				glVertex3i(cnt.x,cnt.y,cnt.z);
-				glVertex3i((cnt.x+(int)(binormal.x*normal_vector_scale)),(cnt.y+(int)(binormal.y*normal_vector_scale)),(cnt.z+(int)(binormal.z*normal_vector_scale)));
-				glEnd();
+				glDrawArrays(GL_LINES,0,2);
 			}
 
 				// draw normal
-				
+
+			vertexes[0]=(float)cnt.x;
+			vertexes[1]=(float)cnt.y;
+			vertexes[2]=(float)cnt.z;
+			vertexes[3]=vertexes[0]+(poly->tangent_space.normal.x*normal_vector_scale);
+			vertexes[4]=vertexes[1]+(poly->tangent_space.normal.y*normal_vector_scale);
+			vertexes[5]=vertexes[2]+(poly->tangent_space.normal.z*normal_vector_scale);
+
+			glVertexPointer(3,GL_FLOAT,0,vertexes);
+
 			glColor4f(1.0f,0.0f,1.0f,1.0f);
-			
-			glBegin(GL_LINES);
-			glVertex3i(cnt.x,cnt.y,cnt.z);
-			glVertex3i((cnt.x+(int)(poly->tangent_space.normal.x*normal_vector_scale)),(cnt.y+(int)(poly->tangent_space.normal.y*normal_vector_scale)),(cnt.z+(int)(poly->tangent_space.normal.z*normal_vector_scale)));
-			glEnd();
+			glDrawArrays(GL_LINES,0,2);
 
 				// draw the center
 
@@ -826,13 +929,14 @@ void view_draw_meshes_normals(editor_view_type *view)
 
 			p_sz=10.0f-(((float)dist)*0.0001f);
 			if (p_sz>2.0f) {
+				vertexes[0]=(float)cnt.x;
+				vertexes[1]=(float)cnt.y;
+				vertexes[2]=(float)cnt.z;
+
+				glVertexPointer(3,GL_FLOAT,0,vertexes);
 
 				glColor4f(0.6f,0.0f,0.6f,1.0f);
-				glPointSize(p_sz);
-
-				glBegin(GL_POINTS);
-				glVertex3i(cnt.x,cnt.y,cnt.z);
-				glEnd();
+				glDrawArrays(GL_POINTS,0,1);
 			}
 		}
 	
@@ -852,7 +956,7 @@ void view_draw_meshes_normals(editor_view_type *view)
 void view_draw_nodes(editor_view_type *view)
 {
 	int			n,k;
-	float		fx,fy,fz;
+	float		fx,fy,fz,vertexes[2*3];
 	node_type	*node,*lnode;
 	matrix_type	mat;
 
@@ -865,8 +969,6 @@ void view_draw_nodes(editor_view_type *view)
 	glLineWidth(3.0f);
 	glColor4f(1.0f,0.7f,0.0f,1.0f);
 	
-	glBegin(GL_LINES);
-		
 	for (n=0;n!=map.nnode;n++) {
 		node=&map.nodes[n];
 		
@@ -879,18 +981,21 @@ void view_draw_nodes(editor_view_type *view)
 		matrix_rotate_xyz(&mat,node->ang.x,node->ang.y,node->ang.z);
 		matrix_vertex_multiply(&mat,&fx,&fy,&fz);
 			
-		glVertex3i(node->pnt.x,(node->pnt.y-300),node->pnt.z);
-		glVertex3i((node->pnt.x+(int)fx),((node->pnt.y-300)+(int)fy),(node->pnt.z+(int)fz));
+		vertexes[0]=(float)node->pnt.x;
+		vertexes[1]=(float)(node->pnt.y-300);
+		vertexes[2]=(float)node->pnt.z;
+		vertexes[3]=(float)(node->pnt.x+(int)fx);
+		vertexes[4]=(float)((node->pnt.y-300)+(int)fy);
+		vertexes[5]=(float)(node->pnt.z+(int)fz);
+		
+		glVertexPointer(3,GL_FLOAT,0,vertexes);
+		glDrawArrays(GL_LINES,0,2);
 	}
-	
-	glEnd();
 	
 		// connections
 		
 	glColor4f(0.0f,1.0f,0.0f,1.0f);
 	
-	glBegin(GL_LINES);
-		
 	for (n=0;n!=map.nnode;n++) {
 		node=&map.nodes[n];
 		
@@ -899,14 +1004,21 @@ void view_draw_nodes(editor_view_type *view)
 		for (k=0;k!=max_node_link;k++) {
 		
 			if (node->link[k]!=-1) {
-				glVertex3i(node->pnt.x,(node->pnt.y-300),node->pnt.z);
 				lnode=&map.nodes[node->link[k]];
-				glVertex3i(lnode->pnt.x,(lnode->pnt.y-300),lnode->pnt.z);
+
+				vertexes[0]=(float)node->pnt.x;
+				vertexes[1]=(float)(node->pnt.y-300);
+				vertexes[2]=(float)node->pnt.z;
+
+				vertexes[3]=(float)lnode->pnt.x;
+				vertexes[4]=(float)(lnode->pnt.y-300);
+				vertexes[5]=(float)lnode->pnt.z;
+		
+				glVertexPointer(3,GL_FLOAT,0,vertexes);
+				glDrawArrays(GL_LINES,0,2);
 			}
 		}
 	}
-	
-	glEnd();
 
 	glLineWidth(1.0f);
 	glColor4f(1.0f,1.0f,1.0f,1.0f);

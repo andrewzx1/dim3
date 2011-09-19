@@ -548,8 +548,6 @@ void view_set_viewport_box(d3rect *box,bool erase,bool use_background)
 		
 	if (!erase) return;
 	
-	glEnableClientState(GL_VERTEX_ARRAY);
-	
 	vertexes[0]=vertexes[6]=(float)box->lx;
 	vertexes[2]=vertexes[4]=(float)box->rx;
 	vertexes[1]=vertexes[3]=(float)box->ty;
@@ -565,8 +563,6 @@ void view_set_viewport_box(d3rect *box,bool erase,bool use_background)
 	}
 
 	glDrawArrays(GL_QUADS,0,4);
-	
-	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 void view_set_viewport(editor_view_type *view,bool erase,bool use_background)
@@ -1150,8 +1146,6 @@ void view_draw(void)
 	for (n=0;n!=map.editor_views.count;n++) {
 		view_draw_view(&map.editor_views.views[n]);
 	}
-	
-	glEnableClientState(GL_VERTEX_ARRAY);
 
 		// view box outlines
 		
@@ -1223,8 +1217,6 @@ void view_draw(void)
 		glVertexPointer(2,GL_FLOAT,0,vertexes);
 		glDrawArrays(GL_QUADS,0,4);
 	}
-	
-	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 
