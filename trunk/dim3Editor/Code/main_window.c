@@ -102,6 +102,8 @@ void main_wind_shutdown(void)
 
 void main_wind_gl_setup(void)
 {
+		// setup
+
 	glClearColor(1.0f,1.0f,1.0f,0.0f);
 
 	glEnable(GL_SMOOTH);
@@ -145,7 +147,6 @@ void main_wind_draw_no_swap(void)
 	char	str[256];
 	d3col	col;
 #endif
-
 		// clear draw buffer
 
 	glEnable(GL_DEPTH_TEST);

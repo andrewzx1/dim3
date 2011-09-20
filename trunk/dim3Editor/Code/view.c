@@ -33,7 +33,10 @@ and can be sold or given away.
 #include "ui_common.h"
 #include "interface.h"
 
-extern int						top_view_x,top_view_z;
+extern int						top_view_x,top_view_z,
+								view_mesh_sort_count;
+extern view_mesh_sort_list_type	*view_mesh_sort_list;
+
 extern list_palette_type		item_palette;
 
 extern file_path_setup_type		file_path_setup;
@@ -83,6 +86,11 @@ bool view_initialize(void)
 	file_paths_app(&file_path_setup,path,sub_path,"particle","png");
 	bitmap_open(&particle_bitmap,path,anisotropic_mode_none,mipmap_mode_none,texture_quality_mode_high,FALSE,FALSE,FALSE,FALSE);
 	
+		// view mesh sorting
+
+	view_mesh_sort_list=(view_mesh_sort_list_type*)malloc(view_mesh_sort_max_mesh*sizeof(view_mesh_sort_list_type));
+	if (view_mesh_sort_list==NULL) return(FALSE);
+
 		// some defaults
 		
 	state.view_select_idx=0;
@@ -93,6 +101,10 @@ bool view_initialize(void)
 
 void view_shutdown(void)
 {
+		// view sort list
+
+	free(view_mesh_sort_list);
+
 		// interface textures
 		
     bitmap_close(&spot_bitmap);

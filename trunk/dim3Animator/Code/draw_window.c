@@ -260,8 +260,6 @@ void draw_model_mesh_list(void)
 				glColor4f(0.5f,0.5f,1.0f,1.0f);
 			}
 
-			glEnableClientState(GL_VERTEX_ARRAY);
-
 			vertexes[0]=vertexes[6]=(float)(x-2);
 			vertexes[2]=vertexes[4]=(float)((x+wid)+4);
 			vertexes[1]=vertexes[3]=(float)(y-16);
@@ -269,8 +267,6 @@ void draw_model_mesh_list(void)
 
 			glVertexPointer(2,GL_FLOAT,0,vertexes);
 			glDrawArrays(GL_QUADS,0,4);
-
-			glDisableClientState(GL_VERTEX_ARRAY);
 		}
 
 			// mesh name
@@ -391,8 +387,6 @@ void draw_model_wind(int mesh_idx)
 		// draw the drag selection
 		
 	if (state.drag_sel_on) {
-		glEnableClientState(GL_VERTEX_ARRAY);
-
 		vertexes[0]=vertexes[6]=(float)(state.drag_sel_box.lx+mbox.lx);
 		vertexes[2]=vertexes[4]=(float)(state.drag_sel_box.rx+mbox.lx);
 		vertexes[1]=vertexes[3]=(float)(state.drag_sel_box.ty+mbox.ty);
@@ -402,8 +396,6 @@ void draw_model_wind(int mesh_idx)
 
 		glColor4f(0.8f,0.8f,0.8f,0.4f);
 		glDrawArrays(GL_QUADS,0,4);
-
-		glDisableClientState(GL_VERTEX_ARRAY);
 	}
 	
 		// info

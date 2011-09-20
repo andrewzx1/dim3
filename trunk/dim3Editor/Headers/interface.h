@@ -387,6 +387,16 @@ extern bool view_click(d3pnt *pnt,bool double_click);
 extern void view_draw(void);
 
 //
+// view VBO
+//
+
+extern void view_vbo_mesh_rebuild(int mesh_idx);
+extern void view_vbo_mesh_initialize(int mesh_idx);
+extern void view_vbo_mesh_free(int mesh_idx);
+extern void view_vbo_map_initialize(void);
+extern void view_vbo_map_free(void);
+
+//
 // view draw piece
 //
 

@@ -312,6 +312,10 @@ void undo_pull(void)
 	if (undo_level==0) return;
 	
 	undo=&undos[0];
+
+		// free VBOs
+
+	view_vbo_map_free();
 	
 		// backup old meshes
 		// and clear mesh list
@@ -435,6 +439,10 @@ void undo_pull(void)
 		
 	undo_level--;
 	if (undo_level==0) os_menu_enable_item(app_menu_edit,1,FALSE);
+
+		// rebuild VBOs
+
+	view_vbo_map_initialize();
 	
 		// redraw windows
 		

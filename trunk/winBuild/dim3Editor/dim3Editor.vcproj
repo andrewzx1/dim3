@@ -589,6 +589,10 @@
 						RelativePath="..\..\dim3Editor\Code\view_picker.c"
 						>
 					</File>
+					<File
+						RelativePath="..\..\dim3Editor\Code\view_vbo.c"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="Windows"
