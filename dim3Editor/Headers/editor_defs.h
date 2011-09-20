@@ -455,6 +455,16 @@ typedef struct		{
 					} view_picker_type;
 
 //
+// editor draw sorting
+//
+
+#define view_mesh_sort_max_mesh					5000
+
+typedef struct		{
+						int						idx,dist;
+					} view_mesh_sort_list_type;
+
+//
 // editor state struct
 //
 

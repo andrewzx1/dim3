@@ -702,6 +702,8 @@ bool import_create_mesh_from_obj_group(obj_import_state_type *import_state,char 
 
 bool import_obj_state_initialize(obj_import_state_type *import_state)
 {
+		// import data
+
 	import_state->vertexes=(d3fpnt*)malloc(sizeof(d3fpnt)*import_state->nvertex);
 	if (import_state->vertexes==NULL) return(FALSE);
 	
@@ -734,17 +736,27 @@ bool import_obj_state_initialize(obj_import_state_type *import_state)
 		free(import_state->groups);
 		return(FALSE);
 	}
+
+		// free all the VBOs
+
+	view_vbo_map_free();
 	
 	return(TRUE);
 }
 
 void import_obj_state_shutdown(obj_import_state_type *import_state)
 {
+		// free the data
+
 	free(import_state->vertexes);
 	free(import_state->uvs);
 	free(import_state->normals);
 	free(import_state->groups);
 	free(import_state->materials);
+
+		// rebuild the VBOs
+
+	view_vbo_map_initialize();
 }
 
 /* =======================================================

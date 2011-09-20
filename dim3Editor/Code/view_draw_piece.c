@@ -37,7 +37,10 @@ extern editor_setup_type	setup;
 extern editor_state_type	state;
 extern bitmap_type			spot_bitmap,scenery_bitmap,node_bitmap,node_defined_bitmap,
 							light_bitmap,sound_bitmap,particle_bitmap;
-						
+
+int							view_mesh_sort_count;
+view_mesh_sort_list_type	*view_mesh_sort_list;
+
 extern bool obscure_mesh_view_bit_get(unsigned char *visibility_flag,int idx);
 
 /* =======================================================
@@ -409,21 +412,84 @@ bool view_hidden_poly(editor_view_type *view,map_mesh_type *mesh,map_mesh_poly_t
 
 /* =======================================================
 
+      View Mesh Draw List
+      
+======================================================= */
+
+void view_draw_create_mesh_sort_list(editor_view_type *view)
+{
+	int						n,k,sz,idx,dist;
+	d3pnt					*pnt;
+	map_mesh_type			*mesh;
+
+		// sort it
+
+	view_mesh_sort_count=0;
+
+	for (n=0;n!=map.mesh.nmesh;n++) {
+
+			// ignore hidden meshes
+
+		if (view_hidden_mesh(view,n)) continue;
+
+			// get distance and ignore
+			// meshes past view z
+			// this is really rough but should work
+			// good enough for editor
+
+		mesh=&map.mesh.meshes[n];
+
+		pnt=&mesh->vertexes[0];
+		dist=distance_get(view->pnt.x,view->pnt.y,view->pnt.z,pnt->x,pnt->y,pnt->z);
+
+			// add to list, near ones first
+
+		idx=-1;
+
+		for (k=0;k!=view_mesh_sort_count;k++) {
+			if (view_mesh_sort_list[k].dist>dist) {
+				idx=k;
+				break;
+			}
+		}
+
+			// insert at end of list
+			
+		if (idx==-1) {
+			view_mesh_sort_list[view_mesh_sort_count].idx=n;
+			view_mesh_sort_list[view_mesh_sort_count].dist=dist;
+		}
+		
+			// insert in list
+		
+		else {
+			sz=sizeof(view_mesh_sort_list_type)*(view_mesh_sort_count-idx);
+			memmove(&view_mesh_sort_list[idx+1],&view_mesh_sort_list[idx],sz);
+			
+			view_mesh_sort_list[idx].idx=n;
+			view_mesh_sort_list[idx].dist=dist;
+		}
+
+			// add up list
+
+		view_mesh_sort_count++;
+		if (view_mesh_sort_count==view_mesh_sort_max_mesh) break;
+	}
+}
+
+/* =======================================================
+
       Walk View Mesh Drawing
       
 ======================================================= */
 
 void view_draw_meshes_texture(editor_view_type *view,bool opaque)
 {
-	int						n,k,t;
-	float					vertexes[8*3],uvs[8*2];
-	float					*pv,*pt;
+	int						n,k,mesh_idx;
 	GLuint					old_gl_id;
 	bool					culled;
-	d3pnt					*pnt;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
-	map_mesh_poly_uv_type	*uv;
 	texture_type			*texture;
 							
 		// no depth buffer for transparent segments
@@ -454,33 +520,35 @@ void view_draw_meshes_texture(editor_view_type *view,bool opaque)
 
 		// draw meshes
 		
-	mesh=map.mesh.meshes;
-	
-	for (n=0;n!=map.mesh.nmesh;n++) {
+	for (n=0;n!=view_mesh_sort_count;n++) {
+
+		mesh_idx=view_mesh_sort_list[n].idx;
+		mesh=&map.mesh.meshes[mesh_idx];
 	
 			// skip any meshes that don't have
 			// light maps if on light maps
 			
-		if ((view->uv_layer==uv_layer_light_map) && (mesh->flag.no_light_map)) {
-			mesh++;
-			continue;
+		if ((view->uv_layer==uv_layer_light_map) && (mesh->flag.no_light_map)) continue;
+
+			// mesh VBO
+
+		glBindBuffer(GL_ARRAY_BUFFER,mesh->vbo.vertex);
+		glVertexPointer(3,GL_FLOAT,((3+2+2)*sizeof(float)),(GLvoid*)0);
+
+		if (view->uv_layer==uv_layer_normal) {
+			glTexCoordPointer(2,GL_FLOAT,((3+2+2)*sizeof(float)),(GLvoid*)(3*sizeof(float)));
 		}
-		
-			// is mesh hidden?
-			
-		if (view_hidden_mesh(view,n)) {
-			mesh++;
-			continue;
+		else {
+			glTexCoordPointer(2,GL_FLOAT,((3+2+2)*sizeof(float)),(GLvoid*)((3+2)*sizeof(float)));
 		}
-		
+
 			// draw polys
 	
 		for (k=0;k!=mesh->npoly;k++) {
 		
+				// check for clipping
+
 			poly=&mesh->polys[k];
-			
-				// clipping
-				
 			if (view_clip_poly(view,mesh,poly)) continue;
 			
 				// no light map?
@@ -492,11 +560,9 @@ void view_draw_meshes_texture(editor_view_type *view,bool opaque)
 				
 			if (view->uv_layer==uv_layer_normal) {
 				texture=&map.textures[poly->txt_idx];
-				uv=&poly->main_uv;
 			}
 			else {
 				texture=&map.textures[poly->lmap_txt_idx];
-				uv=&poly->lmap_uv;
 			}
 		
 				// opaque or transparent flag
@@ -510,7 +576,7 @@ void view_draw_meshes_texture(editor_view_type *view,bool opaque)
 			
 				// culling
 			
-			culled=view_cull_poly(view,mesh,poly,n,k);
+			culled=view_cull_poly(view,mesh,poly,mesh_idx,k);
 		
 				// setup texture
 				
@@ -526,23 +592,9 @@ void view_draw_meshes_texture(editor_view_type *view,bool opaque)
 			}
 		
 				// draw polygon
-				
-			pv=vertexes;
-			pt=uvs;
-			
-			for (t=0;t!=poly->ptsz;t++) {
-				pnt=&mesh->vertexes[poly->v[t]];
-				*pv++=(float)pnt->x;
-				*pv++=(float)pnt->y;
-				*pv++=(float)pnt->z;
-				*pt++=uv->x[t];
-				*pt++=uv->y[t];
-			}
-			
-			glVertexPointer(3,GL_FLOAT,0,vertexes);
-			glTexCoordPointer(2,GL_FLOAT,0,uvs);
-			glDrawArrays(GL_POLYGON,0,poly->ptsz);
-			
+
+			glDrawArrays(GL_POLYGON,poly->draw.vertex_offset,poly->ptsz);
+
 				// if culled, turn back on texture
 				
 			if (culled) {
@@ -550,8 +602,6 @@ void view_draw_meshes_texture(editor_view_type *view,bool opaque)
 				glColor4f(1.0f,1.0f,1.0f,1.0f);
 			}
 		}
-	
-		mesh++;
 	}
 	
 	glDisable(GL_ALPHA_TEST);
@@ -559,14 +609,15 @@ void view_draw_meshes_texture(editor_view_type *view,bool opaque)
 	if (!opaque) glDepthMask(GL_TRUE);
 
 	glDisable(GL_TEXTURE_2D);
+
+		// unbind any VBO
+
+	glBindBuffer(GL_ARRAY_BUFFER,0);
 }
 
 void view_draw_meshes_line(editor_view_type *view,bool opaque)
 {
-	int					n,k,t;
-	float				vertexes[8*3];
-	float				*pv;
-	d3pnt				*pnt;
+	int					n,k,mesh_idx;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 	texture_type		*texture;
@@ -575,32 +626,31 @@ void view_draw_meshes_line(editor_view_type *view,bool opaque)
 	glDisable(GL_ALPHA_TEST);
 	
 	glColor4f(setup.col.mesh_line.r,setup.col.mesh_line.g,setup.col.mesh_line.b,1.0f);
-	
+
 		// draw portal mesh lines
 
-	mesh=map.mesh.meshes;
-	
-	for (n=0;n!=map.mesh.nmesh;n++) {
-	
-			// is mesh hidden?
-			
-		if (view_hidden_mesh(view,n)) {
-			mesh++;
-			continue;
-		}
-		
+	for (n=0;n!=view_mesh_sort_count;n++) {
+
+		mesh_idx=view_mesh_sort_list[n].idx;
+		mesh=&map.mesh.meshes[mesh_idx];
+
+			// mesh VBO
+
+		glBindBuffer(GL_ARRAY_BUFFER,mesh->vbo.vertex);
+		glVertexPointer(3,GL_FLOAT,((3+2+2)*sizeof(float)),(GLvoid*)0);
+
 			// draw polys
 	
 		for (k=0;k!=mesh->npoly;k++) {
 		
+				// check for clipping
+
 			poly=&mesh->polys[k];
-			texture=&map.textures[poly->txt_idx];
-			
-				// clipping
-				
 			if (view_clip_poly(view,mesh,poly)) continue;
 			
 				// opaque or transparent flag
+
+			texture=&map.textures[poly->txt_idx];
 		
 			if (opaque) {
 				if (texture->frames[0].bitmap.alpha_mode==alpha_mode_transparent) continue;
@@ -608,22 +658,14 @@ void view_draw_meshes_line(editor_view_type *view,bool opaque)
 			else {
 				if (texture->frames[0].bitmap.alpha_mode!=alpha_mode_transparent) continue;
 			}
-			
-			pv=vertexes;
-			
-			for (t=0;t!=poly->ptsz;t++) {
-				pnt=&mesh->vertexes[poly->v[t]];
-				*pv++=(float)pnt->x;
-				*pv++=(float)pnt->y;
-				*pv++=(float)pnt->z;
-			}
-			
-			glVertexPointer(3,GL_FLOAT,0,vertexes);
-			glDrawArrays(GL_LINE_LOOP,0,poly->ptsz);
+
+			glDrawArrays(GL_LINE_LOOP,poly->draw.vertex_offset,poly->ptsz);
 		}
-	
-		mesh++;
 	}
+
+		// unbind any VBO
+
+	glBindBuffer(GL_ARRAY_BUFFER,0);
 }
 
 /* =======================================================
@@ -1108,6 +1150,10 @@ void view_draw_view(editor_view_type *view)
 
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
+
+		// create the sort list
+
+	view_draw_create_mesh_sort_list(view);
 
         // draw opaque parts of portals in sight path
         

@@ -224,6 +224,10 @@ bool file_open_map(void)
 		file_close_window();
 		return(FALSE);
 	}
+
+		// start the VBOs
+
+	view_vbo_map_initialize();
 	
 		// if no views in map, then
 		// set to default
@@ -288,8 +292,16 @@ void file_close_map(void)
 	
 	os_set_wait_cursor();
 
+		// delete VBOs
+
+	view_vbo_map_free();
+
+		// close map
+
 	map_close(&map);
 	view_models_close();
+
+		// clear undo
 	
 	undo_clear();
 

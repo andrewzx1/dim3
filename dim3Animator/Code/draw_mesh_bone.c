@@ -51,8 +51,6 @@ void draw_model_mesh(int mesh_idx)
 	float				*pa,*pv;
 	model_trig_type		*trig;
 	model_mesh_type		*mesh;
-	
-	glEnableClientState(GL_VERTEX_ARRAY);
 
 		// draw the mesh
 		
@@ -84,8 +82,6 @@ void draw_model_mesh(int mesh_idx)
 		
 		trig++;
     }
-    
-	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 /* =======================================================
@@ -137,8 +133,6 @@ void draw_model_bones_drag_handle(d3fpnt *pnt,d3vct *vct,d3ang *ang,d3col *col)
 {
 	float			vertexes[2*3];
 	d3fpnt			hand_pnt;
-
-	glEnableClientState(GL_VERTEX_ARRAY);
 	
 		// handle coordinates
 		
@@ -174,8 +168,6 @@ void draw_model_bones_drag_handle(d3fpnt *pnt,d3vct *vct,d3ang *ang,d3col *col)
 	glDrawArrays(GL_POINTS,0,1);
 	
 	glPointSize(1);
-
-	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 /* =======================================================
@@ -233,8 +225,6 @@ void draw_model_bones(int sel_bone_idx)
 	d3col					col;
 	model_bone_type			*bone;
 	model_draw_bone_type	*draw_bone,*parent_bone;
-	
-	glEnableClientState(GL_VERTEX_ARRAY);
 
 	glDisable(GL_DEPTH_TEST);
 
@@ -357,8 +347,6 @@ void draw_model_bones(int sel_bone_idx)
 	}
 	
 	glPointSize(1);
-
-	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 void draw_model_bone_names(int sel_bone_idx)

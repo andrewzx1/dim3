@@ -400,6 +400,8 @@ void piece_add_height_map_mesh(void)
 	os_set_arrow_cursor();
 	
 		// finish up
+
+	view_vbo_mesh_initialize(mesh_idx);
 		
 	select_clear();
 	select_add(mesh_piece,mesh_idx,0);
@@ -525,6 +527,8 @@ void piece_add_grid_mesh(void)
 	
 		// finish up
 		
+	view_vbo_mesh_initialize(mesh_idx);
+
 	select_clear();
 	select_add(mesh_piece,mesh_idx,0);
 
@@ -581,6 +585,8 @@ void piece_add_polygon_mesh(void)
 	
 		// finish up
 		
+	view_vbo_mesh_initialize(mesh_idx);
+
 	select_clear();
 	select_add(mesh_piece,mesh_idx,0);
 
@@ -625,7 +631,10 @@ void piece_combine_mesh(void)
 	
 	if (nsel<2) return;
 	
-	
+		// clear all VBOs
+
+	view_vbo_map_free();
+
 		// clear selection
 		
 	select_clear();
@@ -654,6 +663,10 @@ void piece_combine_mesh(void)
 	}
 	
 	if (mesh_combine_idx!=-1) select_add(mesh_piece,mesh_combine_idx,0);
+
+		// rebuild the VBOs
+
+	view_vbo_map_initialize();
 }
 
 /* =======================================================
@@ -675,6 +688,10 @@ void piece_split_mesh(void)
 		
 	mesh_idx=map_mesh_add(&map);
 	if (mesh_idx==-1) return;
+
+		// clear all VBOs
+
+	view_vbo_map_free();
 	
 		// add in the selected polygons
 		
@@ -720,8 +737,13 @@ void piece_split_mesh(void)
 		
 	if (map.mesh.meshes[mesh_idx].npoly==0) {
 		map_mesh_delete(&map,mesh_idx);
+		view_vbo_map_initialize();
 		return;
 	}
+
+		// rebuild the VBOs
+
+	view_vbo_map_initialize();
 	
 		// make new mesh selection
 		
@@ -752,15 +774,19 @@ void map_mesh_move_all(int x,int y,int z)
 	
 	for (n=0;n!=map.mesh.nmesh;n++) {
 		map_mesh_move(&map,n,&pt);
+		view_vbo_mesh_rebuild(n);
 	}
 }
 
 void map_mesh_reset_uv_all(void)
 {
 	int				n;
-	
+
 	for (n=0;n!=map.mesh.nmesh;n++) {
-		if (!map.mesh.meshes[n].flag.lock_uv) map_mesh_reset_uv(&map,n);
+		if (!map.mesh.meshes[n].flag.lock_uv) {
+			map_mesh_reset_uv(&map,n);
+			view_vbo_mesh_rebuild(n);
+		}
 	}
 }
 

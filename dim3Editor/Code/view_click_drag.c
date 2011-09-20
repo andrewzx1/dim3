@@ -80,6 +80,7 @@ void view_click_drag_mesh_handle_resize(int mesh_idx,d3pnt *old_dpt,int handle_i
 
 	memmove(mesh->vertexes,old_dpt,(mesh->nvertex*sizeof(d3pnt)));
 	map_mesh_resize(&map,mesh_idx,&min,&max);
+	view_vbo_mesh_rebuild(mesh_idx);
 }
 
 void view_click_drag_mesh_handle_skew(int mesh_idx,d3pnt *old_dpt,int handle_idx,d3pnt *mpt)
@@ -158,6 +159,8 @@ void view_click_drag_mesh_handle_skew(int mesh_idx,d3pnt *old_dpt,int handle_idx
 	
 	map_mesh_skew(&map,mesh_idx,axis,dir,size);
 	map_mesh_move(&map,mesh_idx,&move_pnt);
+
+	view_vbo_mesh_rebuild(mesh_idx);
 }
 
 bool view_click_drag_mesh_handle(editor_view_type *view,d3pnt *pt)
@@ -275,6 +278,8 @@ bool view_click_drag_mesh_handle(editor_view_type *view,d3pnt *pt)
 		}
 		
 		if ((state.auto_texture) && (!mesh->flag.lock_uv)) map_mesh_reset_uv(&map,mesh_idx);
+
+		view_vbo_mesh_rebuild(mesh_idx);
 
         main_wind_draw();
 	}
@@ -458,6 +463,8 @@ bool view_click_drag_mesh(editor_view_type *view,d3pnt *pt)
 			
 			if ((state.auto_texture) && (!mesh->flag.lock_uv)) map_mesh_reset_uv(&map,mesh_idx);
 		}
+
+		view_vbo_mesh_rebuild(mesh_idx);
 		
         main_wind_draw();
 	}
@@ -591,6 +598,8 @@ bool view_click_drag_mesh_poly(editor_view_type *view,d3pnt *pt)
 
 		if ((state.auto_texture) && (!mesh->flag.lock_uv)) map_mesh_reset_poly_uv(&map,mesh_idx,poly_idx);
 
+		view_vbo_mesh_rebuild(mesh_idx);
+
         main_wind_draw();
 	}
 	
@@ -710,6 +719,8 @@ bool view_click_drag_vertex(editor_view_type *view,d3pnt *pt)
 		view_click_snap(mesh_idx,-1,dpt);
 	
 		if ((state.auto_texture) && (!mesh->flag.lock_uv)) map_mesh_reset_uv(&map,mesh_idx);
+
+		view_vbo_mesh_rebuild(mesh_idx);
 
         main_wind_draw();
 	}

@@ -1712,8 +1712,8 @@ bool light_map_run_for_poly(int lm_poly_idx,char *err_str)
 	lm_poly->solid_color=FALSE;
 	
 	if (lm_poly->mesh_idx!=-1) {
-		if (map.mesh.meshes[lm_poly->mesh_idx].flag.hilite) {
-//		if ((map.mesh.meshes[lm_poly->mesh_idx].flag.hilite) || (lm_poly->mesh_idx<387) || (lm_poly->mesh_idx>387)) {	// supergumba, test
+//		if (map.mesh.meshes[lm_poly->mesh_idx].flag.hilite) {
+		if ((map.mesh.meshes[lm_poly->mesh_idx].flag.hilite) || (lm_poly->mesh_idx<387) || (lm_poly->mesh_idx>387)) {	// supergumba, test
 			lm_poly->solid_color=TRUE;
 			solid_col[0]=solid_col[1]=solid_col[2]=0xFF;
 		}

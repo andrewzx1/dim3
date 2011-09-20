@@ -96,6 +96,8 @@ void piece_duplicate(void)
 				
 				map_mesh_calculate_center(&map,index,&mpt);
 				map_mesh_move(&map,index,&mov_pt);
+
+				view_vbo_mesh_initialize(index);
 				
 				select_duplicate_add(mesh_piece,index,0);
 				break;
@@ -429,6 +431,7 @@ void piece_tesselate(bool mesh)
 			else {
 				map_mesh_poly_tesselate(&map,mesh_idx,poly_idx);
 			}
+			view_vbo_mesh_rebuild(mesh_idx);
 		}
 	}
 
@@ -481,6 +484,7 @@ void piece_resize(void)
 			max.z=(int)((float)(max.z-mpt.z)*fct_z)+mpt.z;
 
 			map_mesh_resize(&map,mesh_idx,&min,&max);
+			view_vbo_mesh_rebuild(mesh_idx);
 		}
 	}
 	
@@ -509,6 +513,7 @@ void piece_reposition(void)
 	undo_push();
 	
 	map_mesh_resize(&map,mesh_idx,&mesh->box.min,&mesh->box.max);
+	view_vbo_mesh_rebuild(mesh_idx);
 	
 	main_wind_draw();
 }
@@ -586,7 +591,10 @@ void piece_flip(bool flip_x,bool flip_y,bool flip_z)
 	
 	for (n=0;n!=sel_count;n++) {
 		select_get(n,&type,&mesh_idx,&poly_idx);
-		if (type==mesh_piece) map_mesh_flip(&map,mesh_idx,flip_x,flip_y,flip_z);
+		if (type==mesh_piece) {
+			map_mesh_flip(&map,mesh_idx,flip_x,flip_y,flip_z);
+			view_vbo_mesh_rebuild(mesh_idx);
+		}
 	}
 	
 	main_wind_draw();
@@ -612,6 +620,7 @@ void piece_rotate(float rot_x,float rot_y,float rot_z)
 		
 		map_mesh_calculate_center(&map,mesh_idx,&center_pnt);
 		map_mesh_rotate(&map,mesh_idx,&center_pnt,&rot);
+		view_vbo_mesh_rebuild(mesh_idx);
 	}
 	
 	main_wind_draw();
@@ -644,7 +653,10 @@ void piece_move(int move_x,int move_y,int move_z)
 	for (n=0;n!=sel_count;n++) {
 		select_get(n,&type,&mesh_idx,&poly_idx);
 		if (type==mesh_piece) {
-			if (!map.mesh.meshes[mesh_idx].flag.lock_move) map_mesh_move(&map,mesh_idx,&mov_pnt);
+			if (!map.mesh.meshes[mesh_idx].flag.lock_move) {
+				map_mesh_move(&map,mesh_idx,&mov_pnt);
+				view_vbo_mesh_rebuild(mesh_idx);
+			}
 		}
 	}
 	
@@ -916,6 +928,8 @@ void piece_reset_uvs(bool poly_only)
 		else {
 			map_mesh_reset_uv(&map,mesh_idx);
 		}
+
+		view_vbo_mesh_rebuild(mesh_idx);
 	}
 }
 
@@ -936,6 +950,7 @@ void piece_whole_uvs(bool poly_only)
 		else {
 			map_mesh_whole_uv(&map,mesh_idx);
 		}
+		view_vbo_mesh_rebuild(mesh_idx);
 	}
 }
 
@@ -956,6 +971,7 @@ void piece_single_uvs(bool poly_only)
 		else {
 			map_mesh_single_uv(&map,mesh_idx);
 		}
+		view_vbo_mesh_rebuild(mesh_idx);
 	}
 }
 
@@ -971,6 +987,7 @@ void piece_rotate_uvs(void)
 		if (type!=mesh_piece) continue;
 
 		map_mesh_rotate_poly_uv(&map,mesh_idx,poly_idx,90);
+		view_vbo_mesh_rebuild(mesh_idx);
 	}
 }
 
@@ -986,6 +1003,7 @@ void piece_flip_uvs(bool flip_u,bool flip_v)
 		if (type!=mesh_piece) continue;
 
 		map_mesh_flip_poly_uv(&map,mesh_idx,poly_idx,flip_u,flip_v);
+		view_vbo_mesh_rebuild(mesh_idx);
 	}
 }
 
@@ -1079,7 +1097,10 @@ void piece_poly_hole(void)
 	
 	for (n=0;n!=sel_count;n++) {
 		select_get(n,&type,&mesh_idx,&poly_idx);
-		if (type==mesh_piece) map_mesh_poly_punch_hole(&map,mesh_idx,poly_idx,NULL);
+		if (type==mesh_piece) {
+			map_mesh_poly_punch_hole(&map,mesh_idx,poly_idx,NULL);
+			view_vbo_mesh_rebuild(mesh_idx);
+		}
 	}
 	
 	select_clear();
@@ -1191,6 +1212,7 @@ void piece_key(char ch)
 				if (map.mesh.meshes[main_idx].flag.lock_move) break;
 				map_mesh_move(&map,main_idx,&move_pnt);
 				if ((state.auto_texture) && (!map.mesh.meshes[main_idx].flag.lock_uv)) map_mesh_reset_uv(&map,main_idx);
+				view_vbo_mesh_rebuild(main_idx);
 				break;
 				
 			case liquid_piece:

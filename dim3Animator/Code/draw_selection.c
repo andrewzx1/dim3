@@ -48,8 +48,6 @@ void draw_model_selected_vertexes(int mesh_idx)
 	int				n,nvertex;
 	float			*pv;
 	model_mesh_type	*mesh;
-
-	glEnableClientState(GL_VERTEX_ARRAY);
 	
 	glPointSize(draw_vertex_handle_size);
 	
@@ -84,8 +82,6 @@ void draw_model_selected_vertexes(int mesh_idx)
 	}
 	
 	glPointSize(1.0f);
-
-	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 /* =======================================================
@@ -104,8 +100,6 @@ void draw_model_selected_trig(int mesh_idx)
 
 	mesh=&model.meshes[mesh_idx];
 	ntrig=mesh->ntrig;
-
-	glEnableClientState(GL_VERTEX_ARRAY);
 
 		// selection
 	
@@ -161,8 +155,6 @@ void draw_model_selected_trig(int mesh_idx)
 	}
 		
 	glPointSize(1.0f);
-
-	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 /* =======================================================
@@ -179,8 +171,6 @@ void draw_model_normals_vertexes(int mesh_idx)
 	bool			has_sel;
 	d3vct			tangent,normal,binormal;
 	model_trig_type	*trig;
-
-	glEnableClientState(GL_VERTEX_ARRAY);
 	
 		// is there a vertex selection?
 		
@@ -279,8 +269,6 @@ void draw_model_normals_vertexes(int mesh_idx)
 	}
 	
 	glLineWidth(1.0f);
-
-	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 void draw_model_normals_trig(int mesh_idx)
@@ -290,8 +278,6 @@ void draw_model_normals_trig(int mesh_idx)
 	float			*pa,*pn,*pt;
 	d3vct			tangent,normal,binormal;
 	model_trig_type	*trig;
-
-	glEnableClientState(GL_VERTEX_ARRAY);
 	
 	glLineWidth(draw_model_normal_size);
 	glColor4f(1.0f,0.0f,1.0f,1.0f);
@@ -383,7 +369,5 @@ void draw_model_normals_trig(int mesh_idx)
 	}
 
 	glLineWidth(1.0f);
-
-	glDisableClientState(GL_VERTEX_ARRAY);
 }
 

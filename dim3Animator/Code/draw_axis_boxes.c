@@ -45,8 +45,6 @@ void draw_model_axis(void)
 {
 	float			vertexes[2*3];
 
-	glEnableClientState(GL_VERTEX_ARRAY);
-
 		// x axis
 
 	vertexes[0]=-20000.0f;
@@ -88,8 +86,6 @@ void draw_model_axis(void)
 
 	glColor4f(0.0f,0.0f,1.0f,1.0f);
 	glDrawArrays(GL_LINES,0,4);
-
-	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 /* =======================================================
@@ -104,8 +100,6 @@ void draw_model_box_view(void)
 					x[8],y[8],z[8];
 	float			vertexes[8*3];
 	float			*pv;
-	
-	glEnableClientState(GL_VERTEX_ARRAY);
 
 		// get box
 
@@ -184,8 +178,6 @@ void draw_model_box_view(void)
 
 	glVertexPointer(3,GL_FLOAT,0,vertexes);
 	glDrawArrays(GL_QUADS,0,4);
-
-	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 /* =======================================================
@@ -200,8 +192,6 @@ void draw_model_box_hit_boxes(void)
 	float			vertexes[8*3];
 	float			*pv;
 	d3pnt			pnt,min,max;
-
-	glEnableClientState(GL_VERTEX_ARRAY);
 
 	pnt.x=pnt.y=pnt.z=0;
 	
@@ -287,7 +277,5 @@ void draw_model_box_hit_boxes(void)
 		
 		glEnable(GL_DEPTH_TEST);
 	}
-
-	glDisableClientState(GL_VERTEX_ARRAY);
 }
 

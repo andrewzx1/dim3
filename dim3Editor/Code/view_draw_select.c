@@ -84,10 +84,10 @@ void view_draw_select_mesh_get_grow_handles(int mesh_idx,d3pnt *pts)
 
 void view_draw_select_mesh(int mesh_idx)
 {
-	int						n,k,t;
+	int						n,k;
 	float					vertexes[12*3];
 	float					*pv;
-	d3pnt					*pt,pts[20];
+	d3pnt					pts[20];
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
 	
@@ -98,25 +98,18 @@ void view_draw_select_mesh(int mesh_idx)
 	glEnable(GL_DEPTH_TEST);
 
 	glColor4f(setup.col.mesh_sel.r,setup.col.mesh_sel.g,setup.col.mesh_sel.b,1.0f);
+
+	glBindBuffer(GL_ARRAY_BUFFER,mesh->vbo.vertex);
+	glVertexPointer(3,GL_FLOAT,((3+2+2)*sizeof(float)),(GLvoid*)0);
 		
 	poly=mesh->polys;
 	
 	for (k=0;k!=mesh->npoly;k++) {
-	
-		pv=vertexes;
-		
-		for (t=0;t!=poly->ptsz;t++) {
-			pt=&mesh->vertexes[poly->v[t]];
-			*pv++=(float)pt->x;
-			*pv++=(float)pt->y;
-			*pv++=(float)pt->z;
-		}
-		
-		glVertexPointer(3,GL_FLOAT,0,vertexes);
-		glDrawArrays(GL_LINE_LOOP,0,poly->ptsz);
-		
+		glDrawArrays(GL_LINE_LOOP,poly->draw.vertex_offset,poly->ptsz);
 		poly++;
 	}
+
+	glBindBuffer(GL_ARRAY_BUFFER,0);
 	
 		// is mesh only, draw resize handles
 		

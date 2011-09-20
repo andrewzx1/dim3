@@ -113,9 +113,6 @@ void draw_model_material(int mesh_idx,texture_type *texture,model_material_type 
 
 	trig_count=material->trig_count;
 	if (trig_count==0) return;
-
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	
 	glColor3f(0.5f,0.5f,0.5f);
 
@@ -153,9 +150,6 @@ void draw_model_material(int mesh_idx,texture_type *texture,model_material_type 
 	model_end_texture(texture);
 	
 	glColor3f(1.0f,1.0f,1.0f);
-
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-	glDisableClientState(GL_VERTEX_ARRAY);
 }
 
 void draw_model(int mesh_idx)

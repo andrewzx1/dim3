@@ -395,12 +395,14 @@ void property_palette_click_mesh(int mesh_idx,int poly_idx,int id,bool double_cl
 				map_mesh_get_poly_uv_as_box(&map,mesh_idx,poly_idx,(view->uv_layer==uv_layer_light_map),&uv.x,&uv.y,&x_txtfact,&y_txtfact);
 				dialog_property_chord_run(list_chord_value_uv,(void*)&uv);
 				map_mesh_set_poly_uv_as_box(&map,mesh_idx,poly_idx,(view->uv_layer==uv_layer_light_map),uv.x,uv.y,x_txtfact,y_txtfact);
+				view_vbo_mesh_rebuild(mesh_idx);
 				break;
 
 			case kMeshPolyPropertySize:
 				map_mesh_get_poly_uv_as_box(&map,mesh_idx,poly_idx,(view->uv_layer==uv_layer_light_map),&x_txtoff,&y_txtoff,&uv.x,&uv.y);
 				dialog_property_chord_run(list_chord_value_uv,(void*)&uv);
 				map_mesh_set_poly_uv_as_box(&map,mesh_idx,poly_idx,(view->uv_layer==uv_layer_light_map),x_txtoff,y_txtoff,uv.x,uv.y);
+				view_vbo_mesh_rebuild(mesh_idx);
 				break;
 
 			case kMeshPolyPropertyShift:
