@@ -207,7 +207,7 @@ bool view_cull_poly(editor_view_type *view,map_mesh_type *mesh,map_mesh_poly_typ
 	
 		// get center
 		
-	center.x=center.y=center.z=0;
+	center.x=center.y=center.z=0;		// supergumba -- calc all this with VBO
 	
 	for (n=0;n!=poly->ptsz;n++) {
 		center.x+=mesh->vertexes[poly->v[n]].x;
@@ -234,7 +234,7 @@ bool view_clip_poly(editor_view_type *view,map_mesh_type *mesh,map_mesh_poly_typ
 	
 		// get center
 		
-	center.x=center.y=center.z=0;
+	center.x=center.y=center.z=0;		// supergumba -- calc all this with VBO
 	
 	for (n=0;n!=poly->ptsz;n++) {
 		center.x+=mesh->vertexes[poly->v[n]].x;
@@ -437,7 +437,7 @@ void view_draw_create_mesh_sort_list(editor_view_type *view)
 			// this is really rough but should work
 			// good enough for editor
 
-		mesh=&map.mesh.meshes[n];
+		mesh=&map.mesh.meshes[n];		// supergumba -- calc the middle here in VBO
 
 		pnt=&mesh->vertexes[0];
 		dist=distance_get(view->pnt.x,view->pnt.y,view->pnt.z,pnt->x,pnt->y,pnt->z);
@@ -546,33 +546,29 @@ void view_draw_meshes_texture(editor_view_type *view,bool opaque)
 	
 		for (k=0;k!=mesh->npoly;k++) {
 		
-				// check for clipping
-
 			poly=&mesh->polys[k];
-			if (view_clip_poly(view,mesh,poly)) continue;
 			
-				// no light map?
-				
-			if ((view->uv_layer==uv_layer_light_map) && (poly->lmap_txt_idx==-1)) continue;
-			
-				// get texture.  If in second UV, we use light map
-				// texture for display if it exists
-				
-			if (view->uv_layer==uv_layer_normal) {
-				texture=&map.textures[poly->txt_idx];
-			}
-			else {
-				texture=&map.textures[poly->lmap_txt_idx];
-			}
-		
 				// opaque or transparent flag
 				
+			texture=&map.textures[poly->txt_idx];
+			
 			if (opaque) {
 				if (texture->frames[0].bitmap.alpha_mode==alpha_mode_transparent) continue;
 			}
 			else {
 				if (texture->frames[0].bitmap.alpha_mode!=alpha_mode_transparent) continue;
 			}
+			
+				// need to switch to light map?
+				
+			if (view->uv_layer==uv_layer_light_map) {
+				if (poly->lmap_txt_idx==-1) continue;
+				texture=&map.textures[poly->lmap_txt_idx];
+			}
+			
+				// check for clipping
+				
+			if (view_clip_poly(view,mesh,poly)) continue;
 			
 				// culling
 			
@@ -642,11 +638,8 @@ void view_draw_meshes_line(editor_view_type *view,bool opaque)
 			// draw polys
 	
 		for (k=0;k!=mesh->npoly;k++) {
-		
-				// check for clipping
 
 			poly=&mesh->polys[k];
-			if (view_clip_poly(view,mesh,poly)) continue;
 			
 				// opaque or transparent flag
 
@@ -658,6 +651,12 @@ void view_draw_meshes_line(editor_view_type *view,bool opaque)
 			else {
 				if (texture->frames[0].bitmap.alpha_mode!=alpha_mode_transparent) continue;
 			}
+			
+				// check for clipping
+				
+			if (view_clip_poly(view,mesh,poly)) continue;
+
+				// draw mesh line
 
 			glDrawArrays(GL_LINE_LOOP,poly->draw.vertex_offset,poly->ptsz);
 		}
@@ -1155,7 +1154,7 @@ void view_draw_view(editor_view_type *view)
 
 	view_draw_create_mesh_sort_list(view);
 
-        // draw opaque parts of portals in sight path
+        // draw opaque meshes and liquids
         
 	view_draw_meshes_texture(view,TRUE);
 	view_draw_nodes(view);
@@ -1169,7 +1168,7 @@ void view_draw_view(editor_view_type *view)
 	view_set_3D_projection(view,(map.editor_setup.view_near_dist+10),(map.editor_setup.view_far_dist-10),view_near_offset);
 	view_draw_meshes_line(view,TRUE);
 
-        // draw transparent parts of portals in sight path
+        // draw transparent meshes and liquids
         
 	view_set_3D_projection(view,map.editor_setup.view_near_dist,map.editor_setup.view_far_dist,view_near_offset);
 
@@ -1180,9 +1179,9 @@ void view_draw_view(editor_view_type *view)
 		// push view forward to better z-buffer lines
         
 	view_set_3D_projection(view,(map.editor_setup.view_near_dist+10),(map.editor_setup.view_far_dist-10),view_near_offset);
-	view_draw_meshes_line(view,TRUE);
+	view_draw_meshes_line(view,FALSE);
 	
-        // draw normals mesh lines
+        // draw normals
 		// push view forward to better z-buffer lines
       
 	if (state.show_normals) {
