@@ -106,6 +106,7 @@
 		26232DD313065713008DC42B /* osx_dialog.h in Headers */ = {isa = PBXBuildFile; fileRef = 26232DD213065713008DC42B /* osx_dialog.h */; };
 		262C38D212D0211200A94FEE /* ui_common.h in Headers */ = {isa = PBXBuildFile; fileRef = 262C38D112D0211200A94FEE /* ui_common.h */; };
 		262C397012D0268500A94FEE /* list_palette_common.c in Sources */ = {isa = PBXBuildFile; fileRef = 262C396F12D0268500A94FEE /* list_palette_common.c */; };
+		263ADA6B14296509009EE0E0 /* view_vbo.c in Sources */ = {isa = PBXBuildFile; fileRef = 263ADA6A14296509009EE0E0 /* view_vbo.c */; };
 		263C5EBE122045E3008935B9 /* view_handle.c in Sources */ = {isa = PBXBuildFile; fileRef = 263C5EBD122045E3008935B9 /* view_handle.c */; };
 		2642872B12EE8C740078851E /* Set.png in Copy (Lists Icons) */ = {isa = PBXBuildFile; fileRef = 2642872912EE8C640078851E /* Set.png */; };
 		26452F11127F9B3100043C34 /* view_movement.c in Sources */ = {isa = PBXBuildFile; fileRef = 26452F0F127F9B3100043C34 /* view_movement.c */; };
@@ -469,6 +470,7 @@
 		26232DD213065713008DC42B /* osx_dialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = osx_dialog.h; path = ../dim3Common/Headers/osx_dialog.h; sourceTree = SOURCE_ROOT; };
 		262C38D112D0211200A94FEE /* ui_common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ui_common.h; path = ../dim3Common/Headers/ui_common.h; sourceTree = SOURCE_ROOT; };
 		262C396F12D0268500A94FEE /* list_palette_common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = list_palette_common.c; path = ../dim3Common/Code/list_palette_common.c; sourceTree = SOURCE_ROOT; };
+		263ADA6A14296509009EE0E0 /* view_vbo.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = view_vbo.c; path = Code/view_vbo.c; sourceTree = "<group>"; };
 		263C5EBD122045E3008935B9 /* view_handle.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = view_handle.c; path = Code/view_handle.c; sourceTree = "<group>"; };
 		2642872912EE8C640078851E /* Set.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Set.png; sourceTree = "<group>"; };
 		26452F0F127F9B3100043C34 /* view_movement.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = view_movement.c; path = Code/view_movement.c; sourceTree = "<group>"; };
@@ -1010,6 +1012,7 @@
 				26452F1A127F9BA800043C34 /* view_models.c */,
 				263C5EBD122045E3008935B9 /* view_handle.c */,
 				26808224122057F600EB7897 /* view_picker.c */,
+				263ADA6A14296509009EE0E0 /* view_vbo.c */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -1354,6 +1357,7 @@
 				260B3DB81411F22A006ED023 /* map_util_spots.c in Sources */,
 				260B3DB91411F22A006ED023 /* map_util_texture.c in Sources */,
 				260B3DBA1411F22A006ED023 /* map_util_write.c in Sources */,
+				263ADA6B14296509009EE0E0 /* view_vbo.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
