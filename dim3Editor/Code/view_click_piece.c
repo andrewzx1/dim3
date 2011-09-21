@@ -556,7 +556,7 @@ void view_click_piece_map_pick_start(editor_view_type *view)
 					
 				// clipping
 				
-			if (view_clip_poly(view,mesh,poly)) {
+			if (view_clip_poly(view,poly)) {
 				poly++;
 				continue;
 			}

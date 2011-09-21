@@ -196,8 +196,6 @@ void view_draw_circle(d3pnt *pnt,d3col *col,int dist)
 
 bool view_cull_poly(editor_view_type *view,map_mesh_type *mesh,map_mesh_poly_type *poly,int mn,int mk)
 {
-	int			n;
-	d3pnt		center;
 	d3vct		face_vct;
 	
 	if (!view->cull) return(FALSE);
@@ -205,54 +203,25 @@ bool view_cull_poly(editor_view_type *view,map_mesh_type *mesh,map_mesh_poly_typ
 	if (poly->ptsz==0) return(FALSE);
 	if (poly->flag.never_cull) return(FALSE);
 	
-		// get center
-		
-	center.x=center.y=center.z=0;		// supergumba -- calc all this with VBO
-	
-	for (n=0;n!=poly->ptsz;n++) {
-		center.x+=mesh->vertexes[poly->v[n]].x;
-		center.y+=mesh->vertexes[poly->v[n]].y;
-		center.z+=mesh->vertexes[poly->v[n]].z;
-	}
-	
-	center.x/=poly->ptsz;
-	center.y/=poly->ptsz;
-	center.z/=poly->ptsz;
-	
 		// is normal facing away?
 		
-	vector_create(&face_vct,center.x,center.y,center.z,view->pnt.x,view->pnt.y,view->pnt.z);
+	vector_create(&face_vct,poly->box.mid.x,poly->box.mid.y,poly->box.mid.z,view->pnt.x,view->pnt.y,view->pnt.z);
 	return(vector_dot_product(&poly->tangent_space.normal,&face_vct)>map.optimize.cull_angle);
 }
 
-bool view_clip_poly(editor_view_type *view,map_mesh_type *mesh,map_mesh_poly_type *poly)
+bool view_clip_poly(editor_view_type *view,map_mesh_poly_type *poly)
 {
-	int			n,dist;
-	d3pnt		center;
+	int			dist;
 
 	if (!view->clip) return(FALSE);
-	
-		// get center
-		
-	center.x=center.y=center.z=0;		// supergumba -- calc all this with VBO
-	
-	for (n=0;n!=poly->ptsz;n++) {
-		center.x+=mesh->vertexes[poly->v[n]].x;
-		center.y+=mesh->vertexes[poly->v[n]].y;
-		center.z+=mesh->vertexes[poly->v[n]].z;
-	}
-	
-	center.x/=poly->ptsz;
-	center.y/=poly->ptsz;
-	center.z/=poly->ptsz;
 	
 		// if top or bottom, only clip Y
 		
 	if ((view->ang.x<=270.0f) && (view->ang.x>=45.0f)) {
-		dist=abs(view->pnt.y-center.y);
+		dist=abs(view->pnt.y-poly->box.mid.y);
 	}
 	else {
-		dist=distance_2D_get(view->pnt.x,view->pnt.z,center.x,center.z);
+		dist=distance_2D_get(view->pnt.x,view->pnt.z,poly->box.mid.x,poly->box.mid.z);
 	}
 	
 		// get distance
@@ -418,9 +387,8 @@ bool view_hidden_poly(editor_view_type *view,map_mesh_type *mesh,map_mesh_poly_t
 
 void view_draw_create_mesh_sort_list(editor_view_type *view)
 {
-	int						n,k,sz,idx,dist;
-	d3pnt					*pnt;
-	map_mesh_type			*mesh;
+	int					n,k,sz,idx,dist;
+	map_mesh_type		*mesh;
 
 		// sort it
 
@@ -437,10 +405,8 @@ void view_draw_create_mesh_sort_list(editor_view_type *view)
 			// this is really rough but should work
 			// good enough for editor
 
-		mesh=&map.mesh.meshes[n];		// supergumba -- calc the middle here in VBO
-
-		pnt=&mesh->vertexes[0];
-		dist=distance_get(view->pnt.x,view->pnt.y,view->pnt.z,pnt->x,pnt->y,pnt->z);
+		mesh=&map.mesh.meshes[n];
+		dist=distance_get(view->pnt.x,view->pnt.y,view->pnt.z,mesh->box.mid.x,mesh->box.mid.y,mesh->box.mid.z);
 
 			// add to list, near ones first
 
@@ -568,7 +534,7 @@ void view_draw_meshes_texture(editor_view_type *view,bool opaque)
 			
 				// check for clipping
 				
-			if (view_clip_poly(view,mesh,poly)) continue;
+			if (view_clip_poly(view,poly)) continue;
 			
 				// culling
 			
@@ -619,7 +585,10 @@ void view_draw_meshes_line(editor_view_type *view,bool opaque)
 	texture_type		*texture;
 
 	glDisable(GL_TEXTURE_2D);
+	glEnable(GL_BLEND);
 	glDisable(GL_ALPHA_TEST);
+
+	glDepthMask(GL_FALSE);
 	
 	glColor4f(setup.col.mesh_line.r,setup.col.mesh_line.g,setup.col.mesh_line.b,1.0f);
 
@@ -654,13 +623,15 @@ void view_draw_meshes_line(editor_view_type *view,bool opaque)
 			
 				// check for clipping
 				
-			if (view_clip_poly(view,mesh,poly)) continue;
+			if (view_clip_poly(view,poly)) continue;
 
 				// draw mesh line
 
 			glDrawArrays(GL_LINE_LOOP,poly->draw.vertex_offset,poly->ptsz);
 		}
 	}
+
+	glDepthMask(GL_TRUE);
 
 		// unbind any VBO
 

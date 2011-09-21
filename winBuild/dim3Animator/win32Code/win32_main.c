@@ -226,7 +226,7 @@ void win32_main_wind_open(void)
 	pf.iPixelType=PFD_TYPE_RGBA;
 	pf.cColorBits=24;
 	pf.cAlphaBits=8;
-	pf.cDepthBits=16;
+	pf.cDepthBits=24;
 	
 	format=ChoosePixelFormat(wnd_gl_dc,&pf);
 	SetPixelFormat(wnd_gl_dc,format,&pf);
