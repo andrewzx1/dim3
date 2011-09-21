@@ -2955,8 +2955,6 @@ void element_draw_lock(bool cursor_hilite)
 	glDisable(GL_ALPHA_TEST);
 	glDisable(GL_DEPTH_TEST);
 
-	glDisable(GL_LINE_SMOOTH);
-
 	glLineWidth(1.0f);
 	
 		// draw elements
@@ -3030,10 +3028,6 @@ void element_draw_lock(bool cursor_hilite)
 	if (element_open_combo_id!=-1) {
 		element_draw_combo_open(element_find(element_open_combo_id));
 	}
-
-		// reset line smoothing
-
-	glEnable(GL_LINE_SMOOTH);
 }
 
 void element_draw(bool cursor_hilite)
