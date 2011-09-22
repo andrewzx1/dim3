@@ -387,8 +387,13 @@ bool view_hidden_poly(editor_view_type *view,map_mesh_type *mesh,map_mesh_poly_t
 
 void view_draw_create_mesh_sort_list(editor_view_type *view)
 {
-	int					n,k,sz,idx,dist;
+	int					n,k,sz,idx,
+						dist,obscure_dist;
 	map_mesh_type		*mesh;
+
+		// get the obscure distance
+		
+	obscure_dist=map.editor_setup.view_far_dist-view_near_offset;
 
 		// sort it
 
@@ -402,11 +407,11 @@ void view_draw_create_mesh_sort_list(editor_view_type *view)
 
 			// get distance and ignore
 			// meshes past view z
-			// this is really rough but should work
-			// good enough for editor
 
 		mesh=&map.mesh.meshes[n];
 		dist=distance_get(view->pnt.x,view->pnt.y,view->pnt.z,mesh->box.mid.x,mesh->box.mid.y,mesh->box.mid.z);
+		
+		if (dist>obscure_dist) continue;
 
 			// add to list, near ones first
 

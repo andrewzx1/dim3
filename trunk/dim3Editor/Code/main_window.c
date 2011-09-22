@@ -149,11 +149,6 @@ void main_wind_clear_viewport(void)
 
 void main_wind_draw_no_swap(void)
 {
-#ifdef D3_OS_WINDOWS
-	int			tick;	// supergumba -- testing
-	char	str[256];
-	d3col	col;
-#endif
 		// clear draw buffer
 
 	glEnable(GL_DEPTH_TEST);
@@ -168,10 +163,6 @@ void main_wind_draw_no_swap(void)
 
 	if (state.map_opened) {
 
-#ifdef D3_OS_WINDOWS
-		tick=GetTickCount();		// supergumba testing
-#endif
-
 		if (state.texture_edit_idx==-1) {
 			view_draw();
 		}
@@ -184,13 +175,6 @@ void main_wind_draw_no_swap(void)
 		item_palette_draw();
 		property_palette_draw();
 		alt_property_palette_draw();
-
-#ifdef D3_OS_WINDOWS
-		sprintf(str,"%d",GetTickCount()-tick);		// supergumba -- testing
-		col.r=col.g=1.0f;
-		col.b=0.0f;
-		text_draw(1600,60,20,&col,str);
-#endif
 
 		tool_tip_draw();
 	}
