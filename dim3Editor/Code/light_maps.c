@@ -1333,9 +1333,9 @@ void light_map_ray_trace(int mesh_idx,int poly_idx,d3pnt *rpt,unsigned char *uc_
 			
 		d_intensity=(double)lit->setting.intensity;
 			
-		dx=(lit->pnt.x-rpt->x);
-		dy=(lit->pnt.y-rpt->y);
-		dz=(lit->pnt.z-rpt->z);
+		dx=(double)(lit->pnt.x-rpt->x);
+		dy=(double)(lit->pnt.y-rpt->y);
+		dz=(double)(lit->pnt.z-rpt->z);
 		dist=sqrt((dx*dx)+(dy*dy)+(dz*dz));
 		if (dist>d_intensity) continue;
 
@@ -1368,22 +1368,23 @@ void light_map_ray_trace(int mesh_idx,int poly_idx,d3pnt *rpt,unsigned char *uc_
 	
 	for (n=0;n!=map.nparticle;n++) {
 		prt=&map.particles[n];
+		if (!prt->light_setting.on) continue;
 		if (!prt->light_setting.light_map) continue;
 		
 			// light within radius?
 			
 		d_intensity=(double)prt->light_setting.intensity;
 			
-		dx=(prt->pnt.x-rpt->x);
-		dy=(prt->pnt.y-rpt->y);
-		dz=(prt->pnt.z-rpt->z);
+		dx=(double)(prt->pnt.x-rpt->x);
+		dy=(double)(prt->pnt.y-rpt->y);
+		dz=(double)(prt->pnt.z-rpt->z);
 		dist=sqrt((dx*dx)+(dy*dy)+(dz*dz));
 		if (dist>d_intensity) continue;
 
 			// is it visible?
 			
 		if (light_map_ray_trace_map(mesh_idx,poly_idx,rpt,&prt->pnt,prt->light_setting.direction)) continue;
-		
+	
 			// get color
 			
 		d=1.0-(dist/d_intensity);

@@ -264,8 +264,6 @@ void effect_draw_lightning(effect_type *effect)
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_FALSE);
-		
-	glDisable(GL_LINE_SMOOTH);
 	
 	glLineWidth((float)(wid*5));
 	glColor4f(lightning->col.r,lightning->col.g,lightning->col.b,0.1f);
@@ -284,8 +282,6 @@ void effect_draw_lightning(effect_type *effect)
 	glDrawArrays(GL_LINES,0,(nline*2));
 
 	glLineWidth(1.0f);
-	
-	glEnable(GL_LINE_SMOOTH);
 
 		// unbind vertex object
 		
@@ -355,8 +351,6 @@ void effect_draw_ray(effect_type *effect,int count)
 	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_FALSE);
 		
-	glDisable(GL_LINE_SMOOTH);
-	
 	glVertexPointer(3,GL_FLOAT,0,(GLvoid*)vertexes);
 	
 	while (wid>0) {
@@ -367,8 +361,6 @@ void effect_draw_ray(effect_type *effect,int count)
 		
 		wid-=2;
 	}
-	
-	glEnable(GL_LINE_SMOOTH);
 }
 
 /* =======================================================
