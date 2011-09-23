@@ -1306,7 +1306,9 @@ void light_map_ray_trace_diffuse(int mesh_idx,int poly_idx,d3pnt *rpt,d3pnt *lit
 
 	if (diffuse>=1.0f) return;
 	if (diffuse<0.0f) diffuse=0.0f;
-
+	
+		// calculate the color
+		
 	col->r*=diffuse;
 	col->g*=diffuse;
 	col->b*=diffuse;
@@ -1713,8 +1715,7 @@ bool light_map_run_for_poly(int lm_poly_idx,char *err_str)
 	lm_poly->solid_color=FALSE;
 	
 	if (lm_poly->mesh_idx!=-1) {
-//		if (map.mesh.meshes[lm_poly->mesh_idx].flag.hilite) {
-		if ((map.mesh.meshes[lm_poly->mesh_idx].flag.hilite) || (lm_poly->mesh_idx<380) || (lm_poly->mesh_idx>400)) {	// supergumba, test
+		if (map.mesh.meshes[lm_poly->mesh_idx].flag.hilite) {
 			lm_poly->solid_color=TRUE;
 			solid_col[0]=solid_col[1]=solid_col[2]=0xFF;
 		}

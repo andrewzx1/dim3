@@ -678,11 +678,11 @@ void piece_combine_mesh(void)
 void piece_split_mesh(void)
 {
 	int					n,k,mesh_idx,x[8],y[8],z[8],
-						type,add_mesh_idx,add_poly_idx;
+						type,add_mesh_idx,add_poly_idx,poly_idx;
 	bool				first_mesh;
 	d3pnt				*pt;
 	map_mesh_type		*mesh,*copy_mesh;
-	map_mesh_poly_type	*poly;
+	map_mesh_poly_type	*poly,*copy_poly;
 	
 		// create new mesh
 		
@@ -725,7 +725,21 @@ void piece_split_mesh(void)
 			z[k]=pt->z;
 		}
 		
-		map_mesh_add_poly(&map,mesh_idx,poly->ptsz,x,y,z,poly->main_uv.x,poly->main_uv.y,poly->txt_idx);
+		poly_idx=map_mesh_add_poly(&map,mesh_idx,poly->ptsz,x,y,z,poly->main_uv.x,poly->main_uv.y,poly->txt_idx);
+		
+			// dupe some polygon settings
+			// get original polygon against as memory could
+			// have moved
+			
+		poly=&map.mesh.meshes[add_mesh_idx].polys[add_poly_idx];
+		copy_poly=&map.mesh.meshes[mesh_idx].polys[poly_idx];
+		
+		memmove(&copy_poly->tangent_space,&poly->tangent_space,sizeof(tangent_space_type));
+		memmove(&copy_poly->flag,&poly->flag,sizeof(map_mesh_poly_flag_type));
+		
+		copy_poly->x_shift=poly->x_shift;
+		copy_poly->y_shift=poly->y_shift;
+		strcpy(copy_poly->camera,poly->camera);
 		
 			// delete poly from mesh
 			

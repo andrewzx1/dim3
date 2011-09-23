@@ -203,6 +203,10 @@ bool view_cull_poly(editor_view_type *view,map_mesh_type *mesh,map_mesh_poly_typ
 	if (poly->ptsz==0) return(FALSE);
 	if (poly->flag.never_cull) return(FALSE);
 	
+		// zero normals are always culled
+		
+	if ((poly->tangent_space.normal.x==0.0f) && (poly->tangent_space.normal.y==0.0f) && (poly->tangent_space.normal.z==0.0f)) return(TRUE);
+	
 		// is normal facing away?
 		
 	vector_create(&face_vct,poly->box.mid.x,poly->box.mid.y,poly->box.mid.z,view->pnt.x,view->pnt.y,view->pnt.z);
@@ -853,9 +857,8 @@ void view_draw_liquids(editor_view_type *view,bool opaque)
 
 void view_draw_meshes_normals(editor_view_type *view)
 {
-	int					n,k,t,dist;
+	int					n,k,dist;
 	float				p_sz,vertexes[2*3];
-	d3pnt				*pnt,cnt;
 	d3vct				binormal;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
@@ -878,28 +881,13 @@ void view_draw_meshes_normals(editor_view_type *view)
 		
 			poly=&mesh->polys[k];
 			
-				// get center
-				
-			cnt.x=cnt.y=cnt.z=0;
-			
-			for (t=0;t!=poly->ptsz;t++) {
-				pnt=&mesh->vertexes[poly->v[t]];
-				cnt.x+=pnt->x;
-				cnt.y+=pnt->y;
-				cnt.z+=pnt->z;
-			}
-			
-			cnt.x/=poly->ptsz;
-			cnt.y/=poly->ptsz;
-			cnt.z/=poly->ptsz;
-
 			if (setup.show_tangent_binormal) {
 			
 					// draw the tangent
 
-				vertexes[0]=(float)cnt.x;
-				vertexes[1]=(float)cnt.y;
-				vertexes[2]=(float)cnt.z;
+				vertexes[0]=(float)poly->box.mid.x;
+				vertexes[1]=(float)poly->box.mid.y;
+				vertexes[2]=(float)poly->box.mid.z;
 				vertexes[3]=vertexes[0]+(poly->tangent_space.tangent.x*normal_vector_scale);
 				vertexes[4]=vertexes[1]+(poly->tangent_space.tangent.y*normal_vector_scale);
 				vertexes[5]=vertexes[2]+(poly->tangent_space.tangent.z*normal_vector_scale);
@@ -913,9 +901,9 @@ void view_draw_meshes_normals(editor_view_type *view)
 
 				vector_cross_product(&binormal,&poly->tangent_space.tangent,&poly->tangent_space.normal);
 
-				vertexes[0]=(float)cnt.x;
-				vertexes[1]=(float)cnt.y;
-				vertexes[2]=(float)cnt.z;
+				vertexes[0]=(float)poly->box.mid.x;
+				vertexes[1]=(float)poly->box.mid.y;
+				vertexes[2]=(float)poly->box.mid.z;
 				vertexes[3]=vertexes[0]+(binormal.x*normal_vector_scale);
 				vertexes[4]=vertexes[1]+(binormal.y*normal_vector_scale);
 				vertexes[5]=vertexes[2]+(binormal.z*normal_vector_scale);
@@ -928,9 +916,9 @@ void view_draw_meshes_normals(editor_view_type *view)
 
 				// draw normal
 
-			vertexes[0]=(float)cnt.x;
-			vertexes[1]=(float)cnt.y;
-			vertexes[2]=(float)cnt.z;
+			vertexes[0]=(float)poly->box.mid.x;
+			vertexes[1]=(float)poly->box.mid.y;
+			vertexes[2]=(float)poly->box.mid.z;
 			vertexes[3]=vertexes[0]+(poly->tangent_space.normal.x*normal_vector_scale);
 			vertexes[4]=vertexes[1]+(poly->tangent_space.normal.y*normal_vector_scale);
 			vertexes[5]=vertexes[2]+(poly->tangent_space.normal.z*normal_vector_scale);
@@ -942,13 +930,16 @@ void view_draw_meshes_normals(editor_view_type *view)
 
 				// draw the center
 
-			dist=distance_get(view->pnt.x,view->pnt.y,view->pnt.z,cnt.x,cnt.y,cnt.z);
+			dist=distance_get(view->pnt.x,view->pnt.y,view->pnt.z,poly->box.mid.x,poly->box.mid.y,poly->box.mid.z);
 
 			p_sz=10.0f-(((float)dist)*0.0001f);
 			if (p_sz>2.0f) {
-				vertexes[0]=(float)cnt.x;
-				vertexes[1]=(float)cnt.y;
-				vertexes[2]=(float)cnt.z;
+			
+				glPointSize(p_sz);
+				
+				vertexes[0]=(float)poly->box.mid.x;
+				vertexes[1]=(float)poly->box.mid.y;
+				vertexes[2]=(float)poly->box.mid.z;
 
 				glVertexPointer(3,GL_FLOAT,0,vertexes);
 
