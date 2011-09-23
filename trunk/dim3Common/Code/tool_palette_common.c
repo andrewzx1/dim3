@@ -97,7 +97,7 @@ void tool_palette_draw_icon(int x,int y,unsigned long gl_id,bool is_highlight,bo
 {
 	int				pixel_sz;
 	float			col;
-	float			vertexes[8],uvs[8]={0.0f,0.0f,1.0f,0.0f,1.0f,1.0f,0.0f,1.0f};
+	float			vertexes[8],colors[16],uvs[8]={0.0f,0.0f,1.0f,0.0f,1.0f,1.0f,0.0f,1.0f};
 
 	pixel_sz=tool_palette_pixel_size();
 
@@ -119,11 +119,19 @@ void tool_palette_draw_icon(int x,int y,unsigned long gl_id,bool is_highlight,bo
 	vertexes[2]=vertexes[4]=(float)(x+pixel_sz);
 	vertexes[1]=vertexes[3]=(float)y;
 	vertexes[5]=vertexes[7]=(float)(y+pixel_sz);
+
+	colors[0]=colors[1]=colors[2]=colors[4]=colors[5]=colors[6]=col;
+	colors[8]=colors[9]=colors[10]=colors[12]=colors[13]=colors[14]=col-0.2f;
+	colors[3]=colors[7]=colors[11]=colors[15]=1.0f;
 			
 	glVertexPointer(2,GL_FLOAT,0,vertexes);
 
-	glColor4f(col,col,col,1.0f);
+	glEnableClientState(GL_COLOR_ARRAY);
+	glColorPointer(4,GL_FLOAT,0,colors);
+
 	glDrawArrays(GL_QUADS,0,4);
+
+	glDisableClientState(GL_COLOR_ARRAY);
 
 		// bitmap
 

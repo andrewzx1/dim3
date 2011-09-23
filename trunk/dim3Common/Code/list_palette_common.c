@@ -889,7 +889,7 @@ void list_palette_draw_setup(list_palette_type *list)
 void list_palette_draw_title(list_palette_type *list)
 {
 	int					lx,rx,ty,by;
-	float				vertexes[8],uvs[8]={0.0f,0.0f,1.0f,0.0f,1.0f,1.0f,0.0f,1.0f};
+	float				vertexes[8],colors[16],uvs[8]={0.0f,0.0f,1.0f,0.0f,1.0f,1.0f,0.0f,1.0f};
 	d3rect				box;
 	
 	list_palette_box(&box);
@@ -904,10 +904,20 @@ void list_palette_draw_title(list_palette_type *list)
 	vertexes[1]=vertexes[3]=(float)ty;
 	vertexes[5]=vertexes[7]=(float)by;
 
+	colors[0]=colors[1]=colors[2]=colors[4]=colors[5]=colors[6]=0.9f;
+	colors[8]=colors[9]=colors[10]=colors[12]=colors[13]=colors[14]=0.7f;
+	colors[3]=colors[7]=colors[11]=colors[15]=1.0f;
+
 	glVertexPointer(2,GL_FLOAT,0,vertexes);
 
-	glColor4f(0.6f,0.6f,0.6f,1.0f);
+	glEnableClientState(GL_COLOR_ARRAY);
+	glColorPointer(4,GL_FLOAT,0,colors);
+
 	glDrawArrays(GL_QUADS,0,4);
+
+	glDisableClientState(GL_COLOR_ARRAY);
+
+		// title line
 
 	vertexes[0]=vertexes[4]=(float)box.lx;
 	vertexes[2]=vertexes[6]=(float)box.rx;
@@ -933,7 +943,7 @@ void list_palette_draw_title(list_palette_type *list)
 	lx=box.lx+4;
 #endif
 	rx=lx+32;
-	ty=box.ty+1;
+	ty=box.ty+2;
 	by=ty+32;
 
 	glEnable(GL_ALPHA_TEST);
@@ -957,7 +967,6 @@ void list_palette_draw_title(list_palette_type *list)
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D,list_bitmaps[0].gl_id);
 
-	glColor4f(0.6f,0.6f,0.6f,1.0f);
 	glDrawArrays(GL_QUADS,0,4);
 	
 	glDisable(GL_TEXTURE_2D);
@@ -966,27 +975,51 @@ void list_palette_draw_title(list_palette_type *list)
 
 void list_palette_draw_scrollbar(list_palette_type *list)
 {
-	int					lx,ty,by,thumb_ty,thumb_by,page_count;
-	float				vertexes[8];
+	int					lx,mx,ty,by,thumb_ty,thumb_by,page_count;
+	float				vertexes[8],colors[16];
 	d3rect				box;
 
 	list_palette_box(&box);
 	
-		// scroll bar
+		// scroll bar background
+
+	glEnableClientState(GL_COLOR_ARRAY);
 
 	lx=box.rx-list_palette_scroll_wid;
 	ty=box.ty+list_title_high;
 	by=box.by;
 
+	mx=(lx+box.rx)>>1;
+
 	vertexes[0]=vertexes[6]=(float)lx;
+	vertexes[2]=vertexes[4]=(float)mx;
+	vertexes[1]=vertexes[3]=(float)ty;
+	vertexes[5]=vertexes[7]=(float)by;
+
+	colors[0]=colors[1]=colors[2]=colors[12]=colors[13]=colors[14]=0.6f;
+	colors[4]=colors[5]=colors[6]=colors[8]=colors[9]=colors[10]=0.9f;
+	colors[3]=colors[7]=colors[11]=colors[15]=1.0f;
+
+	glVertexPointer(2,GL_FLOAT,0,vertexes);
+	glColorPointer(4,GL_FLOAT,0,colors);
+	glDrawArrays(GL_QUADS,0,4);
+
+	vertexes[0]=vertexes[6]=(float)mx;
 	vertexes[2]=vertexes[4]=(float)box.rx;
 	vertexes[1]=vertexes[3]=(float)ty;
 	vertexes[5]=vertexes[7]=(float)by;
 
+	colors[0]=colors[1]=colors[2]=colors[12]=colors[13]=colors[14]=0.9f;
+	colors[4]=colors[5]=colors[6]=colors[8]=colors[9]=colors[10]=0.6f;
+	colors[3]=colors[7]=colors[11]=colors[15]=1.0f;
+
 	glVertexPointer(2,GL_FLOAT,0,vertexes);
-	
-	glColor4f(0.5f,0.5f,0.5f,1.0f);
+	glColorPointer(4,GL_FLOAT,0,colors);
 	glDrawArrays(GL_QUADS,0,4);
+
+	glDisableClientState(GL_COLOR_ARRAY);
+
+		// scroll bar thumb
 
 	page_count=list_palette_get_scroll_page_count(list);
 
@@ -1032,7 +1065,7 @@ void list_palette_draw_scrollbar(list_palette_type *list)
 void list_palette_draw_border(list_palette_type *list)
 {
 	int					lx,rx;
-	float				vertexes[8];
+	float				vertexes[8],colors[16];
 	d3rect				box;
 	
 	list_palette_box(&box);
@@ -1045,10 +1078,20 @@ void list_palette_draw_border(list_palette_type *list)
 	vertexes[1]=vertexes[3]=(float)box.ty;
 	vertexes[5]=vertexes[7]=(float)box.by;
 
+	colors[0]=colors[1]=colors[12]=colors[13]=0.0f;
+	colors[2]=colors[14]=1.0f;
+	colors[4]=colors[5]=colors[8]=colors[9]=0.0f;
+	colors[6]=colors[10]=0.6f;
+	colors[3]=colors[7]=colors[11]=colors[15]=1.0f;
+
 	glVertexPointer(2,GL_FLOAT,0,vertexes);
+
+	glEnableClientState(GL_COLOR_ARRAY);
+	glColorPointer(4,GL_FLOAT,0,colors);
 	
-	glColor4f(0.0f,0.0f,0.9f,1.0f);
 	glDrawArrays(GL_QUADS,0,4);
+
+	glDisableClientState(GL_COLOR_ARRAY);
 
 	vertexes[0]=vertexes[2]=(float)lx;
 	vertexes[4]=vertexes[6]=(float)(rx-1);
