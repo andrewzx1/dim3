@@ -155,6 +155,7 @@ void view_obscure_release(void)
 bool view_obscure_check_box(d3pnt *camera_pnt,int skip_mesh_idx,d3pnt *min,d3pnt *max)
 {
 	int					n,k,x,y,z,kx,ky,kz,ray_cnt,hit_cnt,last_mesh_idx;
+	float				hit_t;
 	unsigned char		*hit;
 	d3pnt				mid,div,div_add,ray_min,ray_max,hpt;
 	d3vct				*vct;
@@ -375,15 +376,24 @@ bool view_obscure_check_box(d3pnt *camera_pnt,int skip_mesh_idx,d3pnt *min,d3pnt
 		hit_cnt=0;
 
 		for (k=0;k!=ray_cnt;k++) {
+
+				// did we already hit this ray?
+
 			if (*(view_obscure_hits+k)==0x1) {
 				hit_cnt++;
 				continue;
 			}
 		
-			if (ray_trace_mesh_polygon(camera_pnt,&view_obscure_vcts[k],&hpt,mesh,poly)!=-1.0f) {
-				*(view_obscure_hits+k)=0x1;
-				hit_cnt++;
-			}
+				// run the ray trace
+
+			hit_t=ray_trace_mesh_polygon(camera_pnt,&view_obscure_vcts[k],&hpt,mesh,poly);
+			if (hit_t==-1.0f) continue;			// no hit
+			if (hit_t>=1.0f) continue;			// hit on or past vertex, skip these
+
+				// was a hit, mark it
+
+			*(view_obscure_hits+k)=0x1;
+			hit_cnt++;
 		}
 
 			// are we obscured?

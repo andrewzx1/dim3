@@ -148,22 +148,34 @@ void texture_edit_draw_bitmap(d3rect *box,char *name,unsigned long gl_id)
 
 void texture_edit_draw_button(d3rect *box,char *title,float font_size,bool has_trig,int sel_idx)
 {
-	float			comp,vertexes[8];
+	float			col_rg,vertexes[8],colors[16];
 	
 		// the button box
 
-	comp=0.6f;
-	if (texture_edit_frame_click_idx==sel_idx) comp=0.4f;
+	col_rg=0.6f;
+	if (texture_edit_frame_click_idx==sel_idx) col_rg=0.4f;
 
 	vertexes[0]=vertexes[6]=(float)box->lx;
 	vertexes[2]=vertexes[4]=(float)box->rx;
 	vertexes[1]=vertexes[3]=(float)box->ty;
 	vertexes[5]=vertexes[7]=(float)box->by;
 
+	colors[0]=colors[1]=colors[4]=colors[5]=col_rg;
+	colors[2]=colors[6]=1.0f;
+	colors[8]=colors[9]=colors[12]=colors[13]=col_rg-0.2f;
+	colors[10]=colors[14]=0.8f;
+	colors[3]=colors[7]=colors[11]=colors[15]=1.0f;
+
 	glVertexPointer(2,GL_FLOAT,0,vertexes);
 
-	glColor4f(comp,comp,1.0f,1.0f);
+	glEnableClientState(GL_COLOR_ARRAY);
+	glColorPointer(4,GL_FLOAT,0,colors);
+
 	glDrawArrays(GL_QUADS,0,4);
+
+	glDisableClientState(GL_COLOR_ARRAY);
+
+		// the outline
 
 	glColor4f(0.0f,0.0f,0.0f,1.0f);
 	glDrawArrays(GL_LINE_LOOP,0,4);
