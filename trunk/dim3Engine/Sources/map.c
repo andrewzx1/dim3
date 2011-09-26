@@ -108,6 +108,8 @@ void map_music_start(map_music_type *music)
 	if (al_music_playing()) al_music_stop();
 	
 		// start new music
+		
+	al_music_set_loop(TRUE);
 	
 	if (music->fade_msec==0) {
 		ok=al_music_play(music->name,err_str);

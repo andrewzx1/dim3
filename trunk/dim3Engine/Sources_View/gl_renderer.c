@@ -220,7 +220,7 @@ bool gl_initialize(int screen_wid,int screen_high,int fsaa_mode,bool reset,char 
 
         // clear the entire window so it doesn't flash
         
-	glClearColor(0,0,0,0);
+	glClearColor(0.0f,0.0f,0.0f,0.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
    
 #ifdef D3_SDL_1_3
@@ -246,7 +246,7 @@ bool gl_initialize(int screen_wid,int screen_high,int fsaa_mode,bool reset,char 
 		// do an initial draw
 		
 	if (!reset) {
-		glClearColor(0,0,0,0);
+		glClearColor(0.0f,0.0f,0.0f,0.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 		
 		#ifdef D3_SDL_1_3

@@ -309,7 +309,10 @@ void intro_open(void)
 			}
 		}
 		
-		if (start_music) al_music_play(iface.intro.music,err_str);
+		if (start_music) {
+			al_music_set_loop(TRUE);
+			al_music_play(iface.intro.music,err_str);
+		}
 	}
 }
 
