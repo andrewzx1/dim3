@@ -9,7 +9,7 @@ Author: Brian Barnes
 This code can be freely used as long as these conditions are met:
 
 1. This header, in its entirety, is kept with the code
-2. This credit “Created with dim3 Technology” is given on a single
+2. This credit ‚ÄúCreated with dim3 Technology‚Äù is given on a single
 application screen and in a single piece of the documentation
 3. It is not resold, in it's current form or modified, as an
 engine-only product
@@ -60,6 +60,7 @@ void bitmap_texture_set_anisotropic_mode(int gl_bindtype,int anisotropic_mode)
 
 void bitmap_texture_set_mipmap_filter(int gl_bindtype,int mipmap_mode,bool pixelated)
 {
+		
 		// pixelated textures are always nearest
 		
 	if (pixelated) {
@@ -67,12 +68,20 @@ void bitmap_texture_set_mipmap_filter(int gl_bindtype,int mipmap_mode,bool pixel
 		glTexParameterf(gl_bindtype,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
 		return;
 	}
-	
-		// no mipmap mode for opengles
+
+		// OpenGLES filters are pretty limited
 		
 #ifdef D3_OPENGL_ES
-	mipmap_mode=mipmap_mode_none;
+
+//	glTexParameterf(gl_bindtype,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_LINEAR);		// supergumba -- something wrong with this, we need to turn it on
+	glTexParameterf(gl_bindtype,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+	glTexParameterf(gl_bindtype,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+	
+	return;
+
 #endif
+
+		// regular OpenGL filters
 			
 		// regular mipmap modes
 		
@@ -157,7 +166,9 @@ bool bitmap_texture_open(bitmap_type *bitmap,unsigned char *data,int anisotropic
 
 	if ((mipmap_mode!=mipmap_mode_none) && (!rectangle) && (!pixelated)) {
 		glHint(GL_GENERATE_MIPMAP_HINT,GL_NICEST);
-		glGenerateMipmap(GL_TEXTURE_2D);
+		glEnable(GL_TEXTURE_2D);
+		glGenerateMipmapEXT(GL_TEXTURE_2D);
+		glDisable(GL_TEXTURE_2D);
 	}
 
 		// set to bitmap

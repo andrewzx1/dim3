@@ -418,26 +418,23 @@ bool shadow_render_model_trig_bounds_check(d3pnt *min,d3pnt *max,int v_idx0,int 
       
 ======================================================= */
 
-void shadow_render_generic_stencil_poly(map_mesh_type *mesh,map_mesh_poly_type *poly,int stencil_idx)
+int shadow_render_stencil_poly_setup(map_mesh_type *mesh,map_mesh_poly_type *poly,float *vertexes)
 {
 	int				n;
-	float			vertexes[8*3];
-	float			*pf;
 	d3pnt			*pnt;
-
-		// setup polygon
-
-	pf=vertexes;
 
 	for (n=0;n!=poly->ptsz;n++) {
 		pnt=&mesh->vertexes[poly->v[n]];
-		*pf++=(float)pnt->x;
-		*pf++=(float)pnt->y;
-		*pf++=(float)pnt->z;
+		*vertexes++=(float)pnt->x;
+		*vertexes++=(float)pnt->y;
+		*vertexes++=(float)pnt->z;
 	}
-		
-		// stencil the polygon
-		
+	
+	return(poly->ptsz);
+}
+
+void shadow_render_stencil_poly_draw(int ptsz,float *vertexes,int stencil_idx)
+{
 	glDisable(GL_BLEND);
 	
 	glEnable(GL_DEPTH_TEST);
@@ -447,9 +444,9 @@ void shadow_render_generic_stencil_poly(map_mesh_type *mesh,map_mesh_poly_type *
 	
 	glColorMask(GL_FALSE,GL_FALSE,GL_FALSE,GL_FALSE);
 	glStencilOp(GL_KEEP,GL_KEEP,GL_REPLACE);
-	
 	glStencilFunc(GL_ALWAYS,stencil_idx,0xFF);
-	glDrawArrays(GL_TRIANGLE_FAN,0,poly->ptsz);
+
+	glDrawArrays(GL_TRIANGLE_FAN,0,ptsz);
 		
 	glColorMask(GL_TRUE,GL_TRUE,GL_TRUE,GL_TRUE);
 }
@@ -466,6 +463,7 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 								map_poly_count,draw_trig_count,i_alpha,
 								light_intensity;
 	double						dx,dy,dz,d_alpha;
+	float						stencil_poly_vertexes[8*3];
 	float						*pf,*va;
 	unsigned char				*vertex_ptr,*vp,*pc;
 	d3vct						*vct;
@@ -547,7 +545,8 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 		map_mesh=&map.mesh.meshes[map_mesh_idx];
 		map_poly=&map_mesh->polys[map_poly_idx];
 		
-		shadow_render_generic_stencil_poly(map_mesh,map_poly,1);
+		shadow_render_stencil_poly_setup(map_mesh,map_poly,stencil_poly_vertexes);
+		shadow_render_stencil_poly_draw(map_poly->ptsz,stencil_poly_vertexes,1);
 		
 			// setup bounding eliminations
 		
@@ -615,10 +614,12 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 		
 		view_unmap_model_shadow_vertex_object();
 
-			// if no trigs to draw, skip this mesh
+			// if no trigs to draw, skip this poly
+			// and turn off the stencil
 
 		if (draw_trig_count==0) {
 			view_unbind_model_shadow_vertex_object();
+			shadow_render_stencil_poly_draw(map_poly->ptsz,stencil_poly_vertexes,0);
 			continue;
 		}
 
@@ -655,7 +656,7 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 				
 			// clear the stencils
 
-		shadow_render_generic_stencil_poly(map_mesh,map_poly,0);
+		shadow_render_stencil_poly_draw(map_poly->ptsz,stencil_poly_vertexes,0);
 	}
 
 		// restore depth buffer and turn

@@ -361,7 +361,6 @@
 		260B44801411FB29006ED023 /* map_util_spots.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B44701411FB29006ED023 /* map_util_spots.c */; };
 		260B44811411FB29006ED023 /* map_util_texture.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B44711411FB29006ED023 /* map_util_texture.c */; };
 		260B44821411FB29006ED023 /* map_util_write.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B44721411FB29006ED023 /* map_util_write.c */; };
-		2638D24113ED0AD600029B18 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2638D24013ED0AD600029B18 /* UIKit.framework */; };
 		26A6841313DE405E007513D1 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26A6841213DE405E007513D1 /* UIKit.framework */; };
 		26A6841513DE405E007513D1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26A6841413DE405E007513D1 /* Foundation.framework */; };
 		26A6841713DE405E007513D1 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26A6841613DE405E007513D1 /* CoreGraphics.framework */; };
@@ -850,7 +849,6 @@
 				26A6844913DE4213007513D1 /* OpenGLES.framework in Frameworks */,
 				26D6C0E013E2442D0087FFD4 /* libstdc++.6.0.9.dylib in Frameworks */,
 				26D6C0E213E244400087FFD4 /* libicucore.A.dylib in Frameworks */,
-				2638D24113ED0AD600029B18 /* UIKit.framework in Frameworks */,
 				260B43A21411F966006ED023 /* libiOSJavaScriptCore.a in Frameworks */,
 				260B43A31411F966006ED023 /* libmpg123.a in Frameworks */,
 				260B43A41411F966006ED023 /* libpng.a in Frameworks */,
@@ -1556,6 +1554,9 @@
 /* Begin PBXProject section */
 		26A6840513DE405D007513D1 /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0410;
+			};
 			buildConfigurationList = 26A6840813DE405D007513D1 /* Build configuration list for PBXProject "dim3iPadEngine" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
@@ -2015,7 +2016,7 @@
 				OTHER_LDFLAGS = "-lz";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
-				SDKROOT = iphoneos4.3;
+				SDKROOT = iphoneos;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

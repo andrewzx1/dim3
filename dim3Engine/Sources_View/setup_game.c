@@ -119,10 +119,13 @@ void setup_game_video_pane(void)
 				x,y,control_y_add,control_y_sz;
 	
 	control_y_add=element_get_control_high();
-	control_y_sz=control_y_add*5;
+	control_y_sz=control_y_add*4;
 	if (!iface.setup.no_resolution_switch) control_y_sz+=control_y_add;
 	if (gl_check_fsaa_ok()) control_y_sz+=control_y_add;
 	if (gl_check_texture_anisotropic_filter_ok()) control_y_sz+=control_y_add;
+#ifndef D3_OPENGL_ES
+	control_y_sz+=control_y_add;
+#endif
 	
 	x=(int)(((float)iface.scale_x)*0.4f);
 	y=(iface.scale_y>>1)-(control_y_sz>>1);
@@ -169,8 +172,10 @@ void setup_game_video_pane(void)
 		y+=control_y_add;
 	}
 	
+#ifndef D3_OPENGL_ES
 	element_combo_add("MipMap Filtering",(char*)setup_mipmap_mode_list,setup.mipmap_mode,ctrl_mipmap_id,x,y,TRUE);
 	y+=control_y_add;
+#endif
 	element_combo_add("Texture Quality",(char*)setup_texture_quality_mode_list,setup.texture_quality_mode,ctrl_texture_quality_id,x,y,TRUE);
 	y+=control_y_add;
 
