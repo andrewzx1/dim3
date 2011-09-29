@@ -693,7 +693,7 @@ typedef struct		{
 typedef struct		{
 						int								x,y,x_size,y_size,control_idx,
 														up_image_idx,down_image_idx;
-						bool							on,use_bitmap;
+						bool							on,down,use_bitmap;
 						char							up_bitmap_name[file_str_len],
 														down_bitmap_name[file_str_len];
 						d3col							color;

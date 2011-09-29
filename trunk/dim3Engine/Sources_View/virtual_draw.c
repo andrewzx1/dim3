@@ -48,7 +48,7 @@ extern render_info_type		render_info;
 
 void virtual_stick_draw(iface_virtual_stick_type *stick)
 {
-	int					x,y,sx,sy,bx,by,lft,rgt,top,bot,
+	int					x,y,sx,sy,lft,rgt,top,bot,
 						radius;
 	float				f_outer_radius;
 	d3vct				vct;
@@ -69,9 +69,6 @@ void virtual_stick_draw(iface_virtual_stick_type *stick)
 	sx=stick->x_size>>1;
 	sy=stick->y_size>>1;
 
-	bx=stick->x_size>>2;
-	by=stick->y_size>>2;
-	
 	x=(int)(((float)sx)*stick->touch_x);
 	y=(int)(((float)sy)*stick->touch_y);
 	
@@ -79,24 +76,22 @@ void virtual_stick_draw(iface_virtual_stick_type *stick)
 		
 	radius=(int)sqrt((double)(x*x)+(double)(y*y));
 	
-	if (radius>sx) {
-		vct.x=(float)x;
-		vct.y=(float)y;
-		vct.z=0.0f;
-		vector_normalize(&vct);
+	vct.x=(float)x;
+	vct.y=(float)y;
+	vct.z=0.0f;
+	vector_normalize(&vct);
 		
-		f_outer_radius=(float)(sx-(bx>>1));
-		x=(int)(vct.x*f_outer_radius);
-		y=(int)(vct.y*f_outer_radius);
-	}
+	f_outer_radius=(float)(sx-(sx>>1));
+	x=(int)(vct.x*f_outer_radius);
+	y=(int)(vct.y*f_outer_radius);
 
 	lft=(stick->x+sx)+x;
-	lft-=(bx>>1);
-	rgt=lft+bx;
+	lft-=(sx>>1);
+	rgt=lft+sx;
 	
 	top=(stick->y+sy)+y;
-	top-=(by>>1);
-	bot=top+by;
+	top-=(sy>>1);
+	bot=top+sy;
 	
 	bitmap=view_images_get_bitmap(stick->inner_image_idx);
 	view_primitive_2D_texture_quad(bitmap->gl_id,&stick->color,1.0f,lft,rgt,top,bot,0.0f,1.0f,0.0f,1.0f);
@@ -117,7 +112,13 @@ void virtual_button_draw(iface_virtual_button_type *button)
 	
 	rgt=button->x+button->x_size;
 	bot=button->y+button->y_size;
-	bitmap=view_images_get_bitmap(button->up_image_idx);
+	
+	if (button->down) {
+		bitmap=view_images_get_bitmap(button->down_image_idx);
+	}
+	else {
+		bitmap=view_images_get_bitmap(button->up_image_idx);
+	}
 	
 	view_primitive_2D_texture_quad(bitmap->gl_id,&button->color,1.0f,button->x,rgt,button->y,bot,0.0f,1.0f,0.0f,1.0f);
 }

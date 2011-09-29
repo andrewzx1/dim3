@@ -286,7 +286,6 @@
 		260B42E11411F812006ED023 /* zoom_draw.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B41CA1411F812006ED023 /* zoom_draw.c */; };
 		260B43A21411F966006ED023 /* libiOSJavaScriptCore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 260B43631411F966006ED023 /* libiOSJavaScriptCore.a */; };
 		260B43A31411F966006ED023 /* libmpg123.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 260B43661411F966006ED023 /* libmpg123.a */; };
-		260B43A41411F966006ED023 /* libpng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 260B43691411F966006ED023 /* libpng.a */; };
 		260B43A51411F966006ED023 /* libSDL.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 260B436F1411F966006ED023 /* libSDL.a */; };
 		260B44091411FB18006ED023 /* bitmap_cocoa.m in Sources */ = {isa = PBXBuildFile; fileRef = 260B43DF1411FB18006ED023 /* bitmap_cocoa.m */; };
 		260B440A1411FB18006ED023 /* file_cocoa.m in Sources */ = {isa = PBXBuildFile; fileRef = 260B43E01411FB18006ED023 /* file_cocoa.m */; };
@@ -361,7 +360,8 @@
 		260B44801411FB29006ED023 /* map_util_spots.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B44701411FB29006ED023 /* map_util_spots.c */; };
 		260B44811411FB29006ED023 /* map_util_texture.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B44711411FB29006ED023 /* map_util_texture.c */; };
 		260B44821411FB29006ED023 /* map_util_write.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B44721411FB29006ED023 /* map_util_write.c */; };
-		26A6841313DE405E007513D1 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26A6841213DE405E007513D1 /* UIKit.framework */; };
+		26920D7B1433F6F500EF55EF /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2638D24013ED0AD600029B18 /* UIKit.framework */; };
+		269F18E014341DA30050DF4A /* libpng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 269F18DF14341DA30050DF4A /* libpng.a */; };
 		26A6841513DE405E007513D1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26A6841413DE405E007513D1 /* Foundation.framework */; };
 		26A6841713DE405E007513D1 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26A6841613DE405E007513D1 /* CoreGraphics.framework */; };
 		26A6843513DE40BD007513D1 /* Default-Landscape~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 26A6843313DE40BD007513D1 /* Default-Landscape~ipad.png */; };
@@ -665,7 +665,6 @@
 		260B43641411F966006ED023 /* WebKitAvailability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WebKitAvailability.h; sourceTree = "<group>"; };
 		260B43661411F966006ED023 /* libmpg123.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libmpg123.a; sourceTree = "<group>"; };
 		260B43671411F966006ED023 /* mpg123.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mpg123.h; sourceTree = "<group>"; };
-		260B43691411F966006ED023 /* libpng.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libpng.a; sourceTree = "<group>"; };
 		260B436A1411F966006ED023 /* png.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = png.h; sourceTree = "<group>"; };
 		260B436B1411F966006ED023 /* pngconf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pngconf.h; sourceTree = "<group>"; };
 		260B436D1411F966006ED023 /* begin_code.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = begin_code.h; sourceTree = "<group>"; };
@@ -803,8 +802,8 @@
 		260B44711411FB29006ED023 /* map_util_texture.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = map_util_texture.c; sourceTree = "<group>"; };
 		260B44721411FB29006ED023 /* map_util_write.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = map_util_write.c; sourceTree = "<group>"; };
 		2638D24013ED0AD600029B18 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		269F18DF14341DA30050DF4A /* libpng.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libpng.a; sourceTree = "<group>"; };
 		26A6840E13DE405E007513D1 /* dim3iPadEngine.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = dim3iPadEngine.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		26A6841213DE405E007513D1 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		26A6841413DE405E007513D1 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		26A6841613DE405E007513D1 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		26A6841A13DE405E007513D1 /* dim3iPadEngine-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "dim3iPadEngine-Info.plist"; path = "dim3iPadEngine/dim3iPadEngine-Info.plist"; sourceTree = "<group>"; };
@@ -839,7 +838,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				26A6841313DE405E007513D1 /* UIKit.framework in Frameworks */,
+				26920D7B1433F6F500EF55EF /* UIKit.framework in Frameworks */,
 				26A6841513DE405E007513D1 /* Foundation.framework in Frameworks */,
 				26A6841713DE405E007513D1 /* CoreGraphics.framework in Frameworks */,
 				26A6844113DE41D2007513D1 /* CoreFoundation.framework in Frameworks */,
@@ -851,8 +850,8 @@
 				26D6C0E213E244400087FFD4 /* libicucore.A.dylib in Frameworks */,
 				260B43A21411F966006ED023 /* libiOSJavaScriptCore.a in Frameworks */,
 				260B43A31411F966006ED023 /* libmpg123.a in Frameworks */,
-				260B43A41411F966006ED023 /* libpng.a in Frameworks */,
 				260B43A51411F966006ED023 /* libSDL.a in Frameworks */,
+				269F18E014341DA30050DF4A /* libpng.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1211,7 +1210,7 @@
 		260B43681411F966006ED023 /* PNG */ = {
 			isa = PBXGroup;
 			children = (
-				260B43691411F966006ED023 /* libpng.a */,
+				269F18DF14341DA30050DF4A /* libpng.a */,
 				260B436A1411F966006ED023 /* png.h */,
 				260B436B1411F966006ED023 /* pngconf.h */,
 			);
@@ -1448,7 +1447,6 @@
 				26A6844413DE41F1007513D1 /* AudioToolbox.framework */,
 				26A6844213DE41E1007513D1 /* QuartzCore.framework */,
 				26A6844013DE41D2007513D1 /* CoreFoundation.framework */,
-				26A6841213DE405E007513D1 /* UIKit.framework */,
 				26A6841413DE405E007513D1 /* Foundation.framework */,
 				26A6841613DE405E007513D1 /* CoreGraphics.framework */,
 			);
@@ -1963,11 +1961,12 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		26A6842E13DE405E007513D1 /* Release */ = {
+		269F18D81434154D0050DF4A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_UNIVERSAL_IPHONE_OS)";
+				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -1977,6 +1976,71 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 2;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Debug;
+		};
+		269F18D91434154D0050DF4A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = ../../dim3Engine/Headers/dim3engine.h;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					D3_ENGINE,
+					TARGET_IPHONE,
+				);
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = NO;
+				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/../../dim3Common/Headers",
+					"$(SRCROOT)/../../dim3BaseUtility/Headers",
+					"$(SRCROOT)/../../dim3ModelUtility/Headers",
+					"$(SRCROOT)/../../dim3MapUtility/Headers",
+					"$(SRCROOT)/../Libraries",
+					"$(SRCROOT)/../Libraries/SDL",
+					"$(SRCROOT)/../Libraries/PNG",
+					"$(SRCROOT)/../Libraries/MPG123",
+					"$(SRCROOT)/../Libraries/JavaScriptCore",
+				);
+				INFOPLIST_FILE = "dim3iPadEngine/dim3iPadEngine-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(SRCROOT)/../Libraries/SDL",
+					"$(SRCROOT)/../Libraries/PNG",
+					"$(SRCROOT)/../Libraries/MPG123",
+					"$(SRCROOT)/../Libraries/JavaScriptCore",
+				);
+				OTHER_LDFLAGS = "-lz";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 2;
+				VALIDATE_PRODUCT = NO;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		26A6842E13DE405E007513D1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_UNIVERSAL_IPHONE_OS)";
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 2;
 				VALIDATE_PRODUCT = YES;
@@ -1986,6 +2050,7 @@
 		26A6843113DE405E007513D1 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = ../../dim3Engine/Headers/dim3engine.h;
@@ -2017,6 +2082,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
 				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 2;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -2028,6 +2094,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				26A6842E13DE405E007513D1 /* Release */,
+				269F18D81434154D0050DF4A /* Debug */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -2036,6 +2103,7 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				26A6843113DE405E007513D1 /* Release */,
+				269F18D91434154D0050DF4A /* Debug */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

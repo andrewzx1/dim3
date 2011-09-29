@@ -76,7 +76,15 @@ bool input_touch_get_axis_as_button_max(int axis) { return(FALSE); }
 void input_touch_initialize(void)
 {
 	int							n;
+	iface_virtual_button_type	*button;
 	iface_virtual_stick_type	*stick;
+	
+	button=iface.virtual_control.buttons;
+	
+	for (n=0;n!=max_virtual_button;n++) {
+		button->down=FALSE;
+		button++;
+	}
 
 	stick=&iface.virtual_control.sticks[n];
 
@@ -100,8 +108,20 @@ void input_touch_shutdown(void)
 
 void input_touch_clear(void)
 {
-	int				n;
+	int							n;
+	iface_virtual_button_type	*button;
 	
+		// clear all buttons
+		
+	button=iface.virtual_control.buttons;
+	
+	for (n=0;n!=max_virtual_button;n++) {
+		button->down=FALSE;
+		button++;
+	}
+
+		// clear all states
+		
 	for (n=0;n!=max_touch_state;n++) {
 		touch_states[n].on=FALSE;
 	}
@@ -126,6 +146,8 @@ void input_touch_to_virtual_button(d3pnt *pt,bool down)
 		if (!button->on) continue;
 
 		if ((pt->x<button->x) || (pt->x>(button->x+button->x_size)) || (pt->y<button->y) || (pt->y>(button->y+button->y_size))) continue;
+		
+		button->down=down;
 
 		input_action_set_touch_trigger_state(button->control_idx,down);
 		return;
