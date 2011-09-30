@@ -66,25 +66,25 @@ bool view_initialize(void)
 	strcat(sub_path,"/Items");
 		
 	file_paths_app(&file_path_setup,path,sub_path,"spot","png");
-	bitmap_open(&spot_bitmap,path,anisotropic_mode_none,mipmap_mode_none,texture_quality_mode_high,FALSE,FALSE,FALSE,FALSE);
+	bitmap_open(&spot_bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE,FALSE);
 
 	file_paths_app(&file_path_setup,path,sub_path,"scenery","png");
-	bitmap_open(&scenery_bitmap,path,anisotropic_mode_none,mipmap_mode_none,texture_quality_mode_high,FALSE,FALSE,FALSE,FALSE);
+	bitmap_open(&scenery_bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE,FALSE);
 	
 	file_paths_app(&file_path_setup,path,sub_path,"node","png");
-	bitmap_open(&node_bitmap,path,anisotropic_mode_none,mipmap_mode_none,texture_quality_mode_high,FALSE,FALSE,FALSE,FALSE);
+	bitmap_open(&node_bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE,FALSE);
 	
 	file_paths_app(&file_path_setup,path,sub_path,"node_defined","png");
-	bitmap_open(&node_defined_bitmap,path,anisotropic_mode_none,mipmap_mode_none,texture_quality_mode_high,FALSE,FALSE,FALSE,FALSE);
+	bitmap_open(&node_defined_bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE,FALSE);
 	
 	file_paths_app(&file_path_setup,path,sub_path,"light","png");
-	bitmap_open(&light_bitmap,path,anisotropic_mode_none,mipmap_mode_none,texture_quality_mode_high,FALSE,FALSE,FALSE,FALSE);
+	bitmap_open(&light_bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE,FALSE);
 
 	file_paths_app(&file_path_setup,path,sub_path,"sound","png");
-	bitmap_open(&sound_bitmap,path,anisotropic_mode_none,mipmap_mode_none,texture_quality_mode_high,FALSE,FALSE,FALSE,FALSE);
+	bitmap_open(&sound_bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE,FALSE);
 
 	file_paths_app(&file_path_setup,path,sub_path,"particle","png");
-	bitmap_open(&particle_bitmap,path,anisotropic_mode_none,mipmap_mode_none,texture_quality_mode_high,FALSE,FALSE,FALSE,FALSE);
+	bitmap_open(&particle_bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE,FALSE);
 	
 		// view mesh sorting
 

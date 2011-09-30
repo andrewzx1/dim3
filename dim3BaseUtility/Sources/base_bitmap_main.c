@@ -134,9 +134,9 @@ int bitmap_find_nearest_power_2(int sz)
 	return(1024);
 }
 
-unsigned char* bitmap_fix_power_2_and_quality(bitmap_type *bitmap,bool has_alpha,int texture_quality_mode,unsigned char *png_data)
+unsigned char* bitmap_fix_power_2(bitmap_type *bitmap,bool has_alpha,unsigned char *png_data)
 {
-	int				max_sz,wid,high,byte_sz,x,y,dsz;
+	int				wid,high,byte_sz,x,y,dsz;
 	float			x_skip,y_skip;
 	unsigned char	*data,*sptr,*dptr;
 
@@ -144,16 +144,6 @@ unsigned char* bitmap_fix_power_2_and_quality(bitmap_type *bitmap,bool has_alpha
 
 	wid=bitmap_find_nearest_power_2(bitmap->wid);
 	high=bitmap_find_nearest_power_2(bitmap->high);
-
-			// get quality
-
-	if (texture_quality_mode!=texture_quality_mode_high) {
-		max_sz=512;
-		if (texture_quality_mode==texture_quality_mode_low) max_sz=256;
-
-		if (wid>max_sz) wid=max_sz;
-		if (high>max_sz) high=max_sz;
-	}
 
 		// any changes?
 
@@ -240,7 +230,7 @@ unsigned char* bitmap_setup_alpha(bitmap_type *bitmap,unsigned char *png_data,bo
       
 ======================================================= */
 
-bool bitmap_open(bitmap_type *bitmap,char *path,int anisotropic_mode,int mipmap_mode,int texture_quality_mode,bool compress,bool rectangle,bool pixelated,bool scrub_black_to_alpha)
+bool bitmap_open(bitmap_type *bitmap,char *path,int anisotropic_mode,int mipmap_mode,bool compress,bool rectangle,bool pixelated,bool scrub_black_to_alpha)
 {
 	unsigned char		*png_data;
 	bool				ok,alpha_channel;
@@ -259,9 +249,9 @@ bool bitmap_open(bitmap_type *bitmap,char *path,int anisotropic_mode,int mipmap_
 		// opengl es doesn't support non-square textures
 
 #ifndef D3_OPENGL_ES
-	if (!rectangle) png_data=bitmap_fix_power_2_and_quality(bitmap,alpha_channel,texture_quality_mode,png_data);
+	if (!rectangle) png_data=bitmap_fix_power_2(bitmap,alpha_channel,png_data);
 #else
-	png_data=bitmap_fix_power_2_and_quality(bitmap,alpha_channel,texture_quality_mode,png_data);
+	png_data=bitmap_fix_power_2(bitmap,alpha_channel,png_data);
 #endif
 
 		// set alphas and scrubbing
@@ -328,7 +318,7 @@ bool bitmap_data(bitmap_type *bitmap,unsigned char *data,int wid,int high,bool a
 		// if not a rectangle, fix size
 		// if not a power of two
 
-	if (!rectangle) data=bitmap_fix_power_2_and_quality(bitmap,alpha_channel,texture_quality_mode_high,data);
+	if (!rectangle) data=bitmap_fix_power_2(bitmap,alpha_channel,data);
 	
 		// find if bitmap has transparencies
 	
@@ -346,7 +336,7 @@ bool bitmap_data(bitmap_type *bitmap,unsigned char *data,int wid,int high,bool a
       
 ======================================================= */
 
-bool bitmap_combine(bitmap_type *bitmap,char *bitmap_path,char *bumpmap_path,int anisotropic_mode,int mipmap_mode,int texture_quality_mode,bool compress,bool pixelated)
+bool bitmap_combine(bitmap_type *bitmap,char *bitmap_path,char *bumpmap_path,int anisotropic_mode,int mipmap_mode,bool compress,bool pixelated)
 {
 	int					n,pixel_cnt,data_sz;
 	float				f,pf[3];
@@ -363,7 +353,7 @@ bool bitmap_combine(bitmap_type *bitmap,char *bitmap_path,char *bumpmap_path,int
 	bitmap_data=png_utility_read(bitmap_path,&bitmap->wid,&bitmap->high,&alpha_channel);
 	if (bitmap_data==NULL) return(FALSE);
 	
-	bitmap_data=bitmap_fix_power_2_and_quality(bitmap,alpha_channel,texture_quality_mode,bitmap_data);
+	bitmap_data=bitmap_fix_power_2(bitmap,alpha_channel,bitmap_data);
 	bitmap_data=bitmap_setup_alpha(bitmap,bitmap_data,alpha_channel,FALSE);
 	
 		// load the bump
@@ -373,7 +363,7 @@ bool bitmap_combine(bitmap_type *bitmap,char *bitmap_path,char *bumpmap_path,int
 	
 	bumpmap_data=png_utility_read(bumpmap_path,&bumpmap.wid,&bumpmap.high,&alpha_channel);
 	if (bumpmap_data!=NULL) {
-		bumpmap_data=bitmap_fix_power_2_and_quality(&bumpmap,alpha_channel,texture_quality_mode,bumpmap_data);
+		bumpmap_data=bitmap_fix_power_2(&bumpmap,alpha_channel,bumpmap_data);
 		bumpmap_data=bitmap_setup_alpha(&bumpmap,bumpmap_data,alpha_channel,FALSE);
 	}
 	

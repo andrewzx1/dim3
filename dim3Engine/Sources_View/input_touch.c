@@ -49,29 +49,11 @@ touch_state_type			touch_states[max_touch_state];
 
 /* =======================================================
 
-      Touch Stubs
-      
-======================================================= */
-
-#ifndef D3_OS_IPHONE
-
-void input_touch_initialize(void) {}
-void input_touch_shutdown(void) {}
-void input_touch_clear(void) {}
-void input_touch_event_up(int finger_id) {}
-void input_touch_event_down(int touch_id,int finger_id,int x,int y) {}
-void input_touch_event_move(int touch_id,int finger_id,int x,int y) {}
-float input_touch_get_axis(int axis) { return(0.0f); }
-bool input_touch_get_axis_as_button_min(int axis) { return(FALSE); }
-bool input_touch_get_axis_as_button_max(int axis) { return(FALSE); }
-
-#else
-
-/* =======================================================
-
       Joystick Initialize
       
 ======================================================= */
+
+#if defined(D3_OS_IPHONE) || defined(D3_OS_ANDRIOD)
 
 void input_touch_initialize(void)
 {
@@ -326,11 +308,19 @@ void input_touch_scrub_point(d3pnt *pt,int touch_id,int x,int y)
 	
 	touch=SDL_GetTouch(touch_id);
 	
+#ifndef D3_ROTATE_VIEW
+	fx=((float)x)/((float)touch->xres);
+	pt->x=(int)(fx*((float)setup.screen.x_sz));
+	
+	fy=((float)y)/((float)touch->yres);
+	pt->y=setup.screen.y_sz-(int)(fy*((float)setup.screen.y_sz));
+#else
 	fx=((float)y)/((float)touch->yres);
-	pt->x=(int)(fx*((float)view.desktop.wid));
+	pt->x=(int)(fx*((float)setup.screen.x_sz));
 	
 	fy=((float)x)/((float)touch->xres);
-	pt->y=view.desktop.high-(int)(fy*((float)view.desktop.high));
+	pt->y=setup.screen.y_sz-(int)(fy*((float)setup.screen.y_sz));
+#endif
 }
 
 void input_touch_event_down(int touch_id,int finger_id,int x,int y)
@@ -419,5 +409,23 @@ bool input_touch_gui_is_click_down(void)
 {
 	return(touch_gui_click);
 }
+
+/* =======================================================
+
+      Touch Stubs
+      
+======================================================= */
+
+#else
+
+void input_touch_initialize(void) {}
+void input_touch_shutdown(void) {}
+void input_touch_clear(void) {}
+void input_touch_event_up(int finger_id) {}
+void input_touch_event_down(int touch_id,int finger_id,int x,int y) {}
+void input_touch_event_move(int touch_id,int finger_id,int x,int y) {}
+float input_touch_get_axis(int axis) { return(0.0f); }
+bool input_touch_get_axis_as_button_min(int axis) { return(FALSE); }
+bool input_touch_get_axis_as_button_max(int axis) { return(FALSE); }
 
 #endif

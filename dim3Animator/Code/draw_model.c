@@ -131,7 +131,7 @@ void draw_model_material(int mesh_idx,texture_type *texture,model_material_type 
 		pt=uvs;
 
 		for (k=0;k!=3;k++) {
-			pa=draw_setup.mesh_arrays[0].gl_vertex_array+(trig->v[k]*3);
+			pa=draw_setup.mesh_arrays[mesh_idx].gl_vertex_array+(trig->v[k]*3);
 			*pv++=*pa++;
 			*pv++=*pa++;
 			*pv++=*pa;

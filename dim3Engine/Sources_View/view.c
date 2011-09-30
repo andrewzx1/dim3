@@ -301,7 +301,7 @@ bool view_initialize(char *err_str)
 		// fix resolution if no switch is on
 		// mobile platforms always turn off resolution switching
 		
-#ifdef D3_OS_IPHONE
+#if defined(D3_OS_IPHONE) || defined(D3_OS_ANDRIOD)
 	iface.setup.no_resolution_switch=TRUE;
 #endif
 
@@ -314,12 +314,12 @@ bool view_initialize(char *err_str)
 		
 #ifdef D3_SDL_1_3
 	SDL_GetDesktopDisplayMode(0,&sdl_mode);
-	view.desktop.wid=sdl_mode.w;
-	view.desktop.high=sdl_mode.h;
+	render_info.desktop.wid=sdl_mode.w;
+	render_info.desktop.high=sdl_mode.h;
 #else
 	sdl_v_info=SDL_GetVideoInfo();
-	view.desktop.wid=sdl_v_info->current_w;
-	view.desktop.high=sdl_v_info->current_h;
+	render_info.desktop.wid=sdl_v_info->current_w;
+	render_info.desktop.high=sdl_v_info->current_h;
 #endif
 
 		// create screen sizes
@@ -534,7 +534,7 @@ void view_loop_draw(void)
 		
 	if (view.console.on) {
 		y_add=(int)(((float)setup.screen.y_sz)*console_screen_percent);
-		glViewport(render_info.view_x,(render_info.view_y+y_add),setup.screen.x_sz,(setup.screen.y_sz-y_add));
+		glViewport(0,y_add,setup.screen.x_sz,(setup.screen.y_sz-y_add));
 	}
 	
 		// draw view
@@ -549,7 +549,7 @@ void view_loop_draw(void)
 	
 		// virtual controls
 		
-#ifdef D3_OS_IPHONE
+#if defined(D3_OS_IPHONE) || defined(D3_OS_ANDRIOD)
 	virtual_control_draw();
 #endif
 
@@ -561,7 +561,7 @@ void view_loop_draw(void)
 		// and draw console
 		
 	if (view.console.on) {
-		glViewport(render_info.view_x,render_info.view_y,setup.screen.x_sz,setup.screen.y_sz);
+		glViewport(0,0,setup.screen.x_sz,setup.screen.y_sz);
 		console_draw();
 	}
 
@@ -613,6 +613,6 @@ void view_capture_draw(char *path)
 	
 		// make screenshot
 
-	gl_screen_shot(render_info.view_x,render_info.view_y,setup.screen.x_sz,setup.screen.y_sz,TRUE,path);
+	gl_screen_shot(0,0,setup.screen.x_sz,setup.screen.y_sz,TRUE,path);
 }
 

@@ -50,10 +50,10 @@ extern render_info_type		render_info;
 
 bool gl_in_window_mode(void)
 {
-#ifndef D3_OS_IPHONE
-	return((setup.window) || ((setup.editor_override.on) && (setup.window_editor)));
-#else
+#if defined(D3_OS_IPHONE) || defined(D3_OS_ANDRIOD)
 	return(FALSE);
+#else
+	return((setup.window) || ((setup.editor_override.on) && (setup.window_editor)));
 #endif
 }
 
@@ -95,6 +95,9 @@ bool gl_initialize(int screen_wid,int screen_high,int fsaa_mode,bool reset,char 
 #ifdef D3_SDL_1_3
 	int						sdl_flags;
 #endif
+#ifdef D3_ROTATE_VIEW
+	int						swap_sz;
+#endif
     GLint					ntxtunit,ntxtsize;
 #if defined(D3_OS_LINUX) || defined(D3_OS_WINDOWS)
 	GLenum					glew_error;
@@ -104,14 +107,27 @@ bool gl_initialize(int screen_wid,int screen_high,int fsaa_mode,bool reset,char 
 		// if they are at default
 		
 	if ((screen_wid==-1) || (screen_high==-1)) {
-		screen_wid=view.desktop.wid;
-		screen_high=view.desktop.high;
+		screen_wid=render_info.desktop.wid;
+		screen_high=render_info.desktop.high;
 	}
 
 		// setup rendering sizes
         
 	setup.screen.x_sz=screen_wid;
 	setup.screen.y_sz=screen_high;
+
+		// rotations
+		// need to swap all the coordinates
+
+#ifdef D3_ROTATE_VIEW
+	swap_sz=setup.screen.x_sz;
+	setup.screen.x_sz=setup.screen.y_sz;
+	setup.screen.y_sz=swap_sz;
+
+	swap_sz=iface.iface.scale_x;
+	iface.iface.scale_x=iface.iface.scale_y;
+	iface.iface.scale_y=swap_sz;
+#endif
 	
 		// normal attributes
 		
@@ -201,24 +217,6 @@ bool gl_initialize(int screen_wid,int screen_high,int fsaa_mode,bool reset,char 
 	render_info.texture_max_size=(int)ntxtsize;
 	
 	gl_check_initialize();
-
-		// in case screen is bigger than window
-		
-#ifdef D3_SDL_1_3
-
-#ifndef D3_OS_IPHONE
-	SDL_GetWindowSize(sdl_wind,&render_info.monitor_x_sz,&render_info.monitor_y_sz);
-#else
-	SDL_GetWindowSize(sdl_wind,&render_info.monitor_y_sz,&render_info.monitor_x_sz);
-#endif
-
-#else
-	render_info.monitor_x_sz=surface->w;
-	render_info.monitor_y_sz=surface->h;
-#endif
-
-	render_info.view_x=(render_info.monitor_x_sz-setup.screen.x_sz)>>1;
-	render_info.view_y=(render_info.monitor_y_sz-setup.screen.y_sz)>>1;
 	
 		// stick refresh rate to 60
 
@@ -235,10 +233,10 @@ bool gl_initialize(int screen_wid,int screen_high,int fsaa_mode,bool reset,char 
 	SDL_GL_SwapBuffers();
 #endif
 
-#ifndef D3_OS_IPHONE
-	glViewport(render_info.view_x,render_info.view_y,setup.screen.x_sz,setup.screen.y_sz);
+#ifndef D3_ROTATE_VIEW2
+	glViewport(0,0,setup.screen.x_sz,setup.screen.y_sz);
 #else
-	glViewport(render_info.view_y,render_info.view_x,setup.screen.y_sz,setup.screen.x_sz);
+	glViewport(0,0,setup.screen.y_sz,setup.screen.x_sz);
 #endif
 
 	gl_setup_context();
