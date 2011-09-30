@@ -392,7 +392,6 @@ bool liquid_reflection_map_run_for_liquid(int txt_idx,int liq_idx,char *base_pat
 	map.textures[txt_idx].additive=FALSE;
 	map.textures[txt_idx].pixelated=FALSE;
 	map.textures[txt_idx].compress=TRUE;
-	map.textures[txt_idx].keep_quality=TRUE;
 		
 		// save bitmap
 		

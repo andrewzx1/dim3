@@ -64,6 +64,7 @@ and can be sold or given away.
 
 #define D3_OS_IPHONE				1
 #define D3_OPENGL_ES				1
+#define D3_ROTATE_VIEW				1
 
 //
 // OpenGL ES re-defines

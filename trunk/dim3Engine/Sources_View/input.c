@@ -315,9 +315,25 @@ bool input_event_pump(void)
 					break;
 			#endif
 
+				// touch events
+
+		#if defined(D3_OS_IPHONE) || defined(D3_OS_ANDRIOD)
+			case SDL_FINGERDOWN:
+				input_touch_event_down(event.tfinger.touchId,event.tfinger.fingerId,event.tfinger.x,event.tfinger.y);
+				break;
+					
+			case SDL_FINGERUP:
+				input_touch_event_up(event.tfinger.fingerId);
+				break;
+				
+			case SDL_FINGERMOTION:
+				input_touch_event_move(event.tfinger.touchId,event.tfinger.fingerId,event.tfinger.x,event.tfinger.y);
+				break;
+
 				// keyboard events
 				
-		#ifndef D3_OS_IPHONE
+		#else
+
 			case SDL_KEYDOWN:
 				input_event_key(event.key.keysym.sym,TRUE);
 				break;
@@ -356,22 +372,6 @@ bool input_event_pump(void)
 			case SDL_JOYBUTTONUP:
 				input_event_joystick_button(event.button.button,FALSE);
 				break;
-
-				// touch events
-
-		#ifdef D3_OS_IPHONE
-			case SDL_FINGERDOWN:
-				input_touch_event_down(event.tfinger.touchId,event.tfinger.fingerId,event.tfinger.x,event.tfinger.y);
-				break;
-					
-			case SDL_FINGERUP:
-				input_touch_event_up(event.tfinger.fingerId);
-				break;
-				
-			case SDL_FINGERMOTION:
-				input_touch_event_move(event.tfinger.touchId,event.tfinger.fingerId,event.tfinger.x,event.tfinger.y);
-				break;
-		#endif
 
 				// quit event
 				
@@ -586,42 +586,55 @@ bool input_action_get_state_single(int action_index)
 /* =======================================================
 
       GUI Input
+
+	  Either Mouse or Touch
       
 ======================================================= */
 
+#if defined(D3_OS_IPHONE) || defined(D3_OS_ANDRIOD)
+
 void input_gui_set_position(int x,int y)
 {
-#ifndef D3_OS_IPHONE
-	input_mouse_gui_set_position(x,y);
-#endif
 }
 
 void input_gui_get_position(int *x,int *y)
 {
-#ifndef D3_OS_IPHONE
-	input_mouse_gui_get_position(x,y);
-#else
 	input_touch_gui_get_position(x,y);
-#endif
 }
 
 void input_gui_get_hilite_position(int *x,int *y)
 {
-#ifndef D3_OS_IPHONE
-	input_mouse_gui_get_hilite_position(x,y);
-#else
 	input_touch_gui_get_hilite_position(x,y);
-#endif
 }
 
 bool input_gui_is_click_down(void)
 {
-#ifndef D3_OS_IPHONE
-	return(input_mouse_gui_is_click_down());
-#else
 	return(input_touch_gui_is_click_down());
-#endif
 }
+
+#else
+
+void input_gui_set_position(int x,int y)
+{
+	input_mouse_gui_set_position(x,y);
+}
+
+void input_gui_get_position(int *x,int *y)
+{
+	input_mouse_gui_get_position(x,y);
+}
+
+void input_gui_get_hilite_position(int *x,int *y)
+{
+	input_mouse_gui_get_hilite_position(x,y);
+}
+
+bool input_gui_is_click_down(void)
+{
+	return(input_mouse_gui_is_click_down());
+}
+
+#endif
 
 void input_gui_wait_click_up(void)
 {

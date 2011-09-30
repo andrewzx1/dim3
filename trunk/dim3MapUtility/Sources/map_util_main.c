@@ -37,12 +37,11 @@ maputility_settings_type		maputility_settings;
       
 ======================================================= */
 
-void map_setup(file_path_setup_type *file_path_setup,int anisotropic_mode,int mipmap_mode,int texture_quality_mode,bool in_engine,bool shader_on)
+void map_setup(file_path_setup_type *file_path_setup,int anisotropic_mode,int mipmap_mode,bool in_engine,bool shader_on)
 {
 	memmove(&maputility_settings.file_path_setup,file_path_setup,sizeof(file_path_setup_type));
 	maputility_settings.anisotropic_mode=anisotropic_mode;
 	maputility_settings.mipmap_mode=mipmap_mode;
-	maputility_settings.texture_quality_mode=texture_quality_mode;
 	maputility_settings.in_engine=in_engine;
 	maputility_settings.shader_on=shader_on;
 }

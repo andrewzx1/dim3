@@ -125,39 +125,34 @@ void input_event_key(int key_idx,bool down)
 /* =======================================================
 
       Keyboard Input
+
+	  Stubs for Mobile Devices
       
 ======================================================= */
 
-#ifdef D3_OS_IPHONE		// iphone stubs -- supergumba -- investigate later
-	bool input_get_keyboard_key(int key_idx)
-	{
-		return(FALSE);
-	}
+#if defined(D3_OS_IPHONE) || defined(D3_OS_ANDRIOD)
 
-	bool input_get_keyboard_escape(void)
-	{
-		return(FALSE);
-	}
+bool input_get_keyboard_key(int key_idx) { return(FALSE); }
+bool input_get_keyboard_escape(void) { return(FALSE); }
+bool input_get_keyboard_return(void) { return(FALSE); }
 
-	bool input_get_keyboard_return(void)
-	{
-		return(FALSE);
-	}
 #else
-	bool input_get_keyboard_key(int key_idx)
-	{
-		return(key_states[key_idx]);
-	}
 
-	bool input_get_keyboard_escape(void)
-	{
-		return(key_states[SDL_SCANCODE_ESCAPE]);
-	}
+bool input_get_keyboard_key(int key_idx)
+{
+	return(key_states[key_idx]);
+}
 
-	bool input_get_keyboard_return(void)
-	{
-		return((key_states[SDL_SCANCODE_RETURN]) || (key_states[SDL_SCANCODE_KP_ENTER]));
-	}
+bool input_get_keyboard_escape(void)
+{
+	return(key_states[SDL_SCANCODE_ESCAPE]);
+}
+
+bool input_get_keyboard_return(void)
+{
+	return((key_states[SDL_SCANCODE_RETURN]) || (key_states[SDL_SCANCODE_KP_ENTER]));
+}
+
 #endif
 
 /* =======================================================

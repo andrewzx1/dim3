@@ -179,7 +179,7 @@ void debug_dump(void)
 	debug_dump_info_str(file,"Project",iface.project.name);
 
 	debug_dump_info_str(file,"GPU",render_info.name);
-	sprintf(str,"%d,%d @ %d",render_info.monitor_x_sz,render_info.monitor_y_sz,render_info.monitor_refresh_rate);
+	sprintf(str,"%d,%d @ %d",render_info.desktop.wid,render_info.desktop.high,render_info.monitor_refresh_rate);
 	debug_dump_info_str(file,"Screen",str);
 	debug_dump_info_int(file,"Max Texture Units",render_info.texture_unit_count);
 	debug_dump_info_int(file,"Max Texture Size",render_info.texture_max_size);
@@ -544,7 +544,7 @@ void debug_screenshot(void)
 	sprintf(file_name,"%.4d%.2d%.2d_%.2d%.2d%.2d",(tm->tm_year+1900),(tm->tm_mon+1),tm->tm_mday,tm->tm_hour,tm->tm_min,tm->tm_sec);
 	file_paths_app_data(&setup.file_path_setup,path,"Screenshots",file_name,"png");
 		
-	if (!gl_screen_shot(render_info.view_x,render_info.view_y,setup.screen.x_sz,setup.screen.y_sz,FALSE,path)) {
+	if (!gl_screen_shot(0,0,setup.screen.x_sz,setup.screen.y_sz,FALSE,path)) {
 		console_add_system("Unable to save screenshot");
 		return;
 	}

@@ -167,13 +167,12 @@ typedef struct		{
 //
  
 typedef struct		{
-						int									view_x,view_y,
-															monitor_x_sz,monitor_y_sz,
-															monitor_refresh_rate,
+						int									monitor_refresh_rate,
 															texture_unit_count,texture_max_size,
 															nscreen_size;
 						char								name[64],ext_string[8192];
-						screen_size_type					screen_sizes[max_screen_size];
+						screen_size_type					desktop,
+															screen_sizes[max_screen_size];
 					} render_info_type;
 
 //
@@ -484,7 +483,6 @@ typedef struct		{
 //
  
 typedef struct		{
-						screen_size_type					desktop;
 						view_count_type						count;
 						view_render_type					*render;
 						view_time_type						time;

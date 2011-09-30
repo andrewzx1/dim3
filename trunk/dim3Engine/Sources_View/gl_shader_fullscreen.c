@@ -255,7 +255,7 @@ void gl_fs_shader_render_finish(void)
 		// turn off the fbo
 
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,0);
-	glViewport(render_info.view_x,render_info.view_y,setup.screen.x_sz,setup.screen.y_sz);
+	glViewport(0,0,setup.screen.x_sz,setup.screen.y_sz);
 
 		// create the vertexes and uv
 

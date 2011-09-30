@@ -61,6 +61,7 @@ and can be sold or given away.
 
 #define D3_OS_MAC				1
 #undef D3_OPENGL_ES
+#undef D3_ROTATE_VIEW
 
 //
 // some opengl defines

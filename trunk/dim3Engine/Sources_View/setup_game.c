@@ -98,7 +98,6 @@ char						setup_tab_list[5][name_str_len],
 							setup_screen_size_list[max_screen_size+1][32],
 							setup_anisotropic_mode_list[][32]=anisotropic_mode_setup_list_def,
 							setup_mipmap_mode_list[][32]=mipmap_mode_setup_list_def,
-							setup_texture_quality_mode_list[][32]=texture_quality_mode_setup_list_def,
 							setup_fsaa_mode_list[][32]=setup_fsaa_mode_list_def,
 							setup_control_names[][32]=control_names,
 							setup_action_list[ncontrol+1][128];
@@ -119,7 +118,7 @@ void setup_game_video_pane(void)
 				x,y,control_y_add,control_y_sz;
 	
 	control_y_add=element_get_control_high();
-	control_y_sz=control_y_add*4;
+	control_y_sz=control_y_add*3;
 	if (!iface.setup.no_resolution_switch) control_y_sz+=control_y_add;
 	if (gl_check_fsaa_ok()) control_y_sz+=control_y_add;
 	if (gl_check_texture_anisotropic_filter_ok()) control_y_sz+=control_y_add;
@@ -176,8 +175,6 @@ void setup_game_video_pane(void)
 	element_combo_add("MipMap Filtering",(char*)setup_mipmap_mode_list,setup.mipmap_mode,ctrl_mipmap_id,x,y,TRUE);
 	y+=control_y_add;
 #endif
-	element_combo_add("Texture Quality",(char*)setup_texture_quality_mode_list,setup.texture_quality_mode,ctrl_texture_quality_id,x,y,TRUE);
-	y+=control_y_add;
 
 	element_slider_add("Gamma",setup.gamma,-0.5f,0.5f,ctrl_gamma_id,x,y,TRUE);
 }
@@ -712,10 +709,6 @@ void setup_game_handle_click(int id)
 			setup.mipmap_mode=element_get_value(ctrl_mipmap_id);
 			break;
 			
-		case ctrl_texture_quality_id:
-			setup.texture_quality_mode=element_get_value(ctrl_texture_quality_id);
-			break;
-
 		case ctrl_fsaa_id:
 			setup.fsaa_mode=element_get_value(ctrl_fsaa_id);
 			break;

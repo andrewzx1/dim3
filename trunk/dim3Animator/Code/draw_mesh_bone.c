@@ -71,7 +71,7 @@ void draw_model_mesh(int mesh_idx)
 		pv=vertexes;
 
 		for (k=0;k!=3;k++) {
-			pa=draw_setup.mesh_arrays[0].gl_vertex_array+(trig->v[k]*3);
+			pa=draw_setup.mesh_arrays[mesh_idx].gl_vertex_array+(trig->v[k]*3);
 			*pv++=*pa++;
 			*pv++=*pa++;
 			*pv++=*pa;

@@ -132,8 +132,8 @@ bool view_images_load_single_normal(view_image_type *image,char *path,bool recta
 	image->nbitmap=1;
 	image->total_msec=0;
 	
-	if (simple) return(bitmap_open(&image->bitmaps[0].bitmap,path,anisotropic_mode_none,mipmap_mode_none,texture_quality_mode_high,FALSE,rectangle,FALSE,FALSE));
-	return(bitmap_open(&image->bitmaps[0].bitmap,path,setup.anisotropic_mode,setup.mipmap_mode,texture_quality_mode_high,FALSE,rectangle,FALSE,FALSE));
+	if (simple) return(bitmap_open(&image->bitmaps[0].bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,rectangle,FALSE,FALSE));
+	return(bitmap_open(&image->bitmaps[0].bitmap,path,setup.anisotropic_mode,setup.mipmap_mode,FALSE,rectangle,FALSE,FALSE));
 }
 
 bool view_images_load_single_animated(view_image_type *image,char *path,bool rectangle,bool simple)
@@ -170,10 +170,10 @@ bool view_images_load_single_animated(view_image_type *image,char *path,bool rec
 		sprintf(bitmap_path,"%s/%s.png",path,name);
 		
 		if (simple) {
-			if (!bitmap_open(&image->bitmaps[n].bitmap,bitmap_path,anisotropic_mode_none,mipmap_mode_none,texture_quality_mode_high,FALSE,rectangle,FALSE,FALSE)) return(FALSE);
+			if (!bitmap_open(&image->bitmaps[n].bitmap,bitmap_path,anisotropic_mode_none,mipmap_mode_none,FALSE,rectangle,FALSE,FALSE)) return(FALSE);
 		}
 		else {
-			if (!bitmap_open(&image->bitmaps[n].bitmap,bitmap_path,setup.anisotropic_mode,setup.mipmap_mode,texture_quality_mode_high,FALSE,rectangle,FALSE,FALSE)) return(FALSE);
+			if (!bitmap_open(&image->bitmaps[n].bitmap,bitmap_path,setup.anisotropic_mode,setup.mipmap_mode,FALSE,rectangle,FALSE,FALSE)) return(FALSE);
 		}
 		
 		image->bitmaps[n].msec=xml_get_attribute_int(animation_tag,"msec");
@@ -275,7 +275,7 @@ void view_images_cached_load(void)
  	iface_mark_type				*mark;
 	iface_halo_type				*halo;
 	iface_crosshair_type		*crosshair;
-#ifdef D3_OS_IPHONE
+#if defined(D3_OS_IPHONE) || defined(D3_OS_ANDRIOD)
 	iface_virtual_stick_type	*stick;
 	iface_virtual_button_type	*button;
 #endif
@@ -367,7 +367,7 @@ void view_images_cached_load(void)
 	
 		// virtual controls
 		
-#ifdef D3_OS_IPHONE
+#if defined(D3_OS_IPHONE) || defined(D3_OS_ANDRIOD)
 	
 	stick=iface.virtual_control.sticks;
 	
@@ -412,7 +412,7 @@ void view_images_cached_free(void)
  	iface_mark_type				*mark;
   	iface_halo_type				*halo;
 	iface_crosshair_type		*crosshair;
-#ifdef D3_OS_IPHONE
+#if defined(D3_OS_IPHONE) || defined(D3_OS_ANDRIOD)
 	iface_virtual_stick_type	*stick;
 	iface_virtual_button_type	*button;
 #endif
@@ -498,7 +498,7 @@ void view_images_cached_free(void)
 	
 		// virtual controls
 		
-#ifdef D3_OS_IPHONE
+#if defined(D3_OS_IPHONE) || defined(D3_OS_ANDRIOD)
 
 	stick=iface.virtual_control.sticks;
 	

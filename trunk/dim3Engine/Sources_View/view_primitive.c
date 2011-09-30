@@ -552,7 +552,7 @@ void view_primitive_2D_texture_quad_rot(GLuint gl_id,d3col *col,float alpha,int 
 
 void view_primitive_2D_texture_quad_rectangle(GLuint gl_id,float alpha,int lft,int rgt,int top,int bot,int pixel_wid,int pixel_high)
 {
-#ifdef D3_OS_IPHONE
+#if defined(D3_OS_IPHONE) || defined(D3_OS_ANDRIOD)
 	view_primitive_2D_texture_quad(gl_id,NULL,alpha,lft,rgt,top,bot,0.0f,1.0f,0.0f,1.0f);
 #else
 	float			vertexes[8],uvs[8];

@@ -46,9 +46,12 @@ extern bool loop_main(char *err_str);
       
 ======================================================= */
 
+#if defined(D3_OS_IPHONE) || defined(D3_OS_ANDRIOD)
+void app_check_editor_link(void) {}
+#else
 void app_check_editor_link(void)
 {
-#ifndef D3_OS_IPHONE
+
 
 	int				len;
 	char			path[1024];
@@ -84,9 +87,8 @@ void app_check_editor_link(void)
 		// mark editor override
 
 	setup.editor_override.on=TRUE;
-	
-#endif
 }
+#endif
 
 /* =======================================================
 
@@ -97,6 +99,8 @@ void app_check_editor_link(void)
 
 void app_report_error(char *err_str)
 {
+		// mac and windows have alerts
+
 #ifdef D3_OS_MAC	
 	CFStringRef			cf_str;
 	CFOptionFlags		resp;
@@ -106,19 +110,18 @@ void app_report_error(char *err_str)
 	cf_str=CFStringCreateWithCString(kCFAllocatorDefault,err_str,kCFStringEncodingMacRoman);
 	CFUserNotificationDisplayAlert(0,kCFUserNotificationStopAlertLevel,NULL,NULL,NULL,CFSTR("dim3 Error"),cf_str,NULL,NULL,NULL,&resp);
 	CFRelease(cf_str);
-#endif
 
-#ifdef D3_OS_IPHONE
-	fprintf(stderr,"dim3 Error: %s\n", err_str);
+	return;
 #endif
 
 #ifdef D3_OS_WINDOWS
 	MessageBox(NULL,err_str,"dim3 Error",MB_OK);
+	return;
 #endif
 
-#ifdef D3_OS_LINUX
-	fprintf(stderr,"dim3 Error: %s\n", err_str);
-#endif
+		// everything else prints to stderr
+
+	fprintf(stderr,"dim3 Error: %s\n",err_str);
 }
 
 /* =======================================================
