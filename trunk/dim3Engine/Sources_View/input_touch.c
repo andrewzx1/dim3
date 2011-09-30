@@ -327,10 +327,10 @@ void input_touch_scrub_point(d3pnt *pt,int touch_id,int x,int y)
 	touch=SDL_GetTouch(touch_id);
 	
 	fx=((float)y)/((float)touch->yres);
-	pt->x=(int)(fx*((float)view.desktop.high));
+	pt->x=(int)(fx*((float)view.desktop.wid));
 	
 	fy=((float)x)/((float)touch->xres);
-	pt->y=view.desktop.wid-(int)(fy*((float)view.desktop.wid));
+	pt->y=view.desktop.high-(int)(fy*((float)view.desktop.high));
 }
 
 void input_touch_event_down(int touch_id,int finger_id,int x,int y)

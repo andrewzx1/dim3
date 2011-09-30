@@ -63,8 +63,12 @@ void gl_3D_view(void)
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
+#ifndef D3_OS_IPHONE
 	ratio=(((float)setup.screen.x_sz)/((float)setup.screen.y_sz))*camera.setup.plane.aspect_ratio;
-	
+#else
+	ratio=(((float)setup.screen.y_sz)/((float)setup.screen.x_sz))*camera.setup.plane.aspect_ratio;
+#endif
+
 	glu_patch_gluPerspective(view.render->camera.fov,ratio,(float)camera.setup.plane.near_z,(float)camera.setup.plane.far_z);
 	
 		// projection flips

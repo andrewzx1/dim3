@@ -73,8 +73,13 @@ void bitmap_texture_set_mipmap_filter(int gl_bindtype,int mipmap_mode,bool pixel
 		
 #ifdef D3_OPENGL_ES
 
-//	glTexParameterf(gl_bindtype,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_LINEAR);		// supergumba -- something wrong with this, we need to turn it on
-	glTexParameterf(gl_bindtype,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+	if (mipmap_mode==mipmap_mode_none) {
+		glTexParameterf(gl_bindtype,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+	}
+	else {
+		glTexParameterf(gl_bindtype,GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_LINEAR);
+	}
+	
 	glTexParameterf(gl_bindtype,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
 	
 	return;
@@ -165,7 +170,6 @@ bool bitmap_texture_open(bitmap_type *bitmap,unsigned char *data,int anisotropic
 	glTexImage2D(gl_bindtype,0,gl_txtformat,bitmap->wid,bitmap->high,0,gl_txttype,GL_UNSIGNED_BYTE,data);
 
 	if ((mipmap_mode!=mipmap_mode_none) && (!rectangle) && (!pixelated)) {
-		glHint(GL_GENERATE_MIPMAP_HINT,GL_NICEST);
 		glEnable(GL_TEXTURE_2D);
 		glGenerateMipmapEXT(GL_TEXTURE_2D);
 		glDisable(GL_TEXTURE_2D);

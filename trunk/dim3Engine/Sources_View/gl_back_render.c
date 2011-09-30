@@ -249,15 +249,12 @@ void gl_back_render_frame_node(char *node_name)
 		
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,old_fbo);
 	glViewport(old_vport[0],old_vport[1],old_vport[2],old_vport[3]);
-	
 
 		// generate mipmaps
 		
-#ifndef D3_OS_IPHONE
 	gl_texture_bind(0,node->back_render.txt_id);
 	glGenerateMipmapEXT(GL_TEXTURE_2D);
 	gl_texture_clear(GL_TEXTURE_2D);
-#endif
 
 		// mark as rendered for this frame
 		
