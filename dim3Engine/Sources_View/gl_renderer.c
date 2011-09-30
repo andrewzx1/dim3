@@ -205,7 +205,13 @@ bool gl_initialize(int screen_wid,int screen_high,int fsaa_mode,bool reset,char 
 		// in case screen is bigger than window
 		
 #ifdef D3_SDL_1_3
+
+#ifndef D3_OS_IPHONE
 	SDL_GetWindowSize(sdl_wind,&render_info.monitor_x_sz,&render_info.monitor_y_sz);
+#else
+	SDL_GetWindowSize(sdl_wind,&render_info.monitor_y_sz,&render_info.monitor_x_sz);
+#endif
+
 #else
 	render_info.monitor_x_sz=surface->w;
 	render_info.monitor_y_sz=surface->h;
@@ -229,8 +235,12 @@ bool gl_initialize(int screen_wid,int screen_high,int fsaa_mode,bool reset,char 
 	SDL_GL_SwapBuffers();
 #endif
 
+#ifndef D3_OS_IPHONE
 	glViewport(render_info.view_x,render_info.view_y,setup.screen.x_sz,setup.screen.y_sz);
-	
+#else
+	glViewport(render_info.view_y,render_info.view_x,setup.screen.y_sz,setup.screen.x_sz);
+#endif
+
 	gl_setup_context();
 		
 	if (fsaa_mode!=fsaa_mode_none) glEnable(GL_MULTISAMPLE);
