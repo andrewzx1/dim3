@@ -52,8 +52,8 @@ char				progress_title[256];
 
 void progress_draw(void)
 {
-	int					lx,rx,mx,ty,by;
-	float				vertexes[8];
+	int					lx,rx,mx,ty,by,my;
+	float				vertexes[8*2],colors[8*4];
 	d3rect				wbox;
 
 		// draw the main window
@@ -118,7 +118,9 @@ void progress_draw(void)
 	glColor4f(0.0f,0.0f,0.0f,1.0f);
 	glDrawArrays(GL_LINE_LOOP,0,4);
 
-		// progress bar
+		// progress bar background
+
+	glEnableClientState(GL_COLOR_ARRAY);
 
 	lx+=10;
 	rx-=10;
@@ -126,19 +128,53 @@ void progress_draw(void)
 	ty=by-15;
 
 	mx=lx+((rx-lx)*progress_pos)/progress_count;
+	my=(ty+by)>>1;
 
-	vertexes[0]=vertexes[6]=(float)lx;
-	vertexes[2]=vertexes[4]=(float)rx;
+	vertexes[0]=vertexes[6]=vertexes[8]=vertexes[14]=(float)lx;
+	vertexes[2]=vertexes[4]=vertexes[10]=vertexes[12]=(float)rx;
 	vertexes[1]=vertexes[3]=(float)ty;
-	vertexes[5]=vertexes[7]=(float)by;
+	vertexes[5]=vertexes[7]=vertexes[13]=vertexes[9]=vertexes[11]=(float)my;
+	vertexes[13]=vertexes[15]=(float)by;
+
+	colors[0]=colors[4]=colors[24]=colors[28]=0.7f;
+	colors[8]=colors[12]=colors[16]=colors[20]=0.5f;
+	colors[1]=colors[5]=colors[25]=colors[29]=0.7f;
+	colors[9]=colors[13]=colors[17]=colors[21]=0.5f;
+	colors[2]=colors[6]=colors[26]=colors[30]=0.7f;
+	colors[10]=colors[14]=colors[18]=colors[22]=0.5f;
+	colors[3]=colors[7]=colors[11]=colors[15]=colors[19]=colors[23]=colors[27]=colors[31]=1.0f;
 
 	glVertexPointer(2,GL_FLOAT,0,vertexes);
+	glColorPointer(4,GL_FLOAT,0,colors);
 
-	glColor4f(0.7f,0.7f,0.7f,1.0f);
-	glDrawArrays(GL_QUADS,0,4);
+	glDrawArrays(GL_QUADS,0,8);
+
+		// progress bar foreground
+
+	vertexes[0]=vertexes[6]=vertexes[8]=vertexes[14]=(float)lx;
+	vertexes[2]=vertexes[4]=vertexes[10]=vertexes[12]=(float)mx;
+	vertexes[1]=vertexes[3]=(float)ty;
+	vertexes[5]=vertexes[7]=vertexes[13]=vertexes[9]=vertexes[11]=(float)my;
+	vertexes[13]=vertexes[15]=(float)by;
+
+	colors[0]=colors[4]=colors[24]=colors[28]=0.0f;
+	colors[8]=colors[12]=colors[16]=colors[20]=0.0f;
+	colors[1]=colors[5]=colors[25]=colors[29]=0.75f;
+	colors[9]=colors[13]=colors[17]=colors[21]=1.0f;
+	colors[2]=colors[6]=colors[26]=colors[30]=0.0f;
+	colors[10]=colors[14]=colors[18]=colors[22]=0.0f;
+	colors[3]=colors[7]=colors[11]=colors[15]=colors[19]=colors[23]=colors[27]=colors[31]=1.0f;
+
+	glVertexPointer(2,GL_FLOAT,0,vertexes);
+	glColorPointer(4,GL_FLOAT,0,colors);
+
+	glDrawArrays(GL_QUADS,0,8);
+
+	glDisableClientState(GL_COLOR_ARRAY);
+
+		// bar borders
 
 	glColor4f(0.0f,0.0f,0.0f,1.0f);
-	glDrawArrays(GL_LINE_LOOP,0,4);
 
 	vertexes[0]=vertexes[6]=(float)lx;
 	vertexes[2]=vertexes[4]=(float)mx;
@@ -146,11 +182,14 @@ void progress_draw(void)
 	vertexes[5]=vertexes[7]=(float)by;
 
 	glVertexPointer(2,GL_FLOAT,0,vertexes);
+	glDrawArrays(GL_LINE_LOOP,0,4);
 
-	glColor4f(0.0f,0.8f,0.0f,1.0f);
-	glDrawArrays(GL_QUADS,0,4);
+	vertexes[0]=vertexes[6]=(float)lx;
+	vertexes[2]=vertexes[4]=(float)rx;
+	vertexes[1]=vertexes[3]=(float)ty;
+	vertexes[5]=vertexes[7]=(float)by;
 
-	glColor4f(0.0f,0.0f,0.0f,1.0f);
+	glVertexPointer(2,GL_FLOAT,0,vertexes);
 	glDrawArrays(GL_LINE_LOOP,0,4);
 
 		// title
