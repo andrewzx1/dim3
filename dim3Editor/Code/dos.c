@@ -188,7 +188,7 @@ bool file_new_map(void)
 bool file_open_map(void)
 {
 	int			n;
-	char		file_name[256];
+	char		str[256],file_name[256];
 	bool		ok;
 	
 		// open the map
@@ -207,16 +207,24 @@ bool file_open_map(void)
 	
 	main_wind_open();
 	os_set_title_window(file_name);
+
+	sprintf(str,"Loading %s...",file_name);
+	progress_start("Loading...",(max_map_texture+3));
 	
 	map_setup(&file_path_setup,anisotropic_mode_none,setup.mipmap_mode,FALSE,FALSE);
+	progress_next();
 	
 	ok=map_open(&map,file_name);
+	progress_next();
 
 	map_textures_read_setup(&map);
 
 	for (n=0;n!=max_map_texture;n++) {
 		map_textures_read_texture(&map,n);
+		progress_next();
 	}
+
+	progress_end();
 
     os_set_arrow_cursor();
 	

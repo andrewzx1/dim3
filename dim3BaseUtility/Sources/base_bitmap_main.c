@@ -125,22 +125,39 @@ int bitmap_find_nearest_power_2(int sz)
 {
 	int			n,p2;
 
-	p2=4;
-	for (n=0;n!=11;n++) {
-		if (p2>sz) return(p2/2);
+		// all textures need to be
+		// at least 8 pixels
+
+	if (sz<8) return(8);
+
+		// get closest power of 2,
+		// from 8 to 2048
+
+	p2=8;
+	for (n=0;n!=9;n++) {
+		if (p2>sz) {
+			if ((sz-(p2/2))<(p2-sz)) return(p2/2);
+			return(p2);
+		}
 		p2*=2;
 	}
+
+		// most be really big,
+		// just use 1024
 
 	return(1024);
 }
 
 unsigned char* bitmap_fix_power_2(bitmap_type *bitmap,bool has_alpha,unsigned char *png_data)
 {
-	int				wid,high,byte_sz,x,y,dsz;
+	int				wid,high,byte_sz,x,y,kx,ky,dsz,
+					line_x,line_y,old_line_x,old_line_y,
+					i_r,i_g,i_b,i_alpha;
 	float			x_skip,y_skip;
+	unsigned char	ub_r,ub_g,ub_b,ub_alpha;
 	unsigned char	*data,*sptr,*dptr;
 
-		// get power of 2 sizes
+		// get closest power of 2 sizes
 
 	wid=bitmap_find_nearest_power_2(bitmap->wid);
 	high=bitmap_find_nearest_power_2(bitmap->high);
@@ -160,6 +177,11 @@ unsigned char* bitmap_fix_power_2(bitmap_type *bitmap,bool has_alpha,unsigned ch
 
 		// convert data
 
+		// sometimes we can be making bigger widths
+		// or heights so we check to see if the lines
+		// have stayed the same and then create
+		// the new pixel from the averages
+
 	dsz=(wid*byte_sz)*high;
 
 	data=(unsigned char*)malloc(dsz);
@@ -168,19 +190,68 @@ unsigned char* bitmap_fix_power_2(bitmap_type *bitmap,bool has_alpha,unsigned ch
 	x_skip=(float)bitmap->wid/(float)wid;
 	y_skip=(float)bitmap->high/(float)high;
 
+	old_line_y=-1;
+
 	dptr=data;
 
 	for (y=0;y!=high;y++) {
+
+		line_y=(int)(y_skip*((float)y));
+
+		old_line_x=-1;
 	
 		for (x=0;x!=wid;x++) {
-			sptr=png_data+(byte_sz*(int)(x_skip*(float)x))+((bitmap->wid*byte_sz)*(int)(y_skip*(float)y));
+			line_x=(int)(x_skip*((float)x));
 
-			*dptr++=*sptr++;
-			*dptr++=*sptr++;
-			*dptr++=*sptr++;
+				// get the regular pixel
+				// this is the one we use if no blending
 
-			if (byte_sz==4) *dptr++=*sptr;
+			sptr=png_data+(byte_sz*line_x)+((bitmap->wid*byte_sz)*line_y);
+
+			ub_r=*sptr++;
+			ub_g=*sptr++;
+			ub_b=*sptr++;
+
+			if (byte_sz==4) ub_alpha=*sptr;
+
+				// check to see if this is a repeated
+				// line, if so, we need to create it
+				// by averaging
+
+			if ((line_x==old_line_x) || (line_y==old_line_y)) {
+				if ((line_x>0) && (line_x<(wid-1)) && (line_y>0) && (line_y<(high-1))) {
+
+					i_r=i_g=i_b=i_alpha=0;
+
+					for (ky=(line_y-1);ky<=(line_y+1);ky++) {
+						for (kx=(line_x-1);kx<=(line_x+1);kx++) {
+							if ((ky==line_y) && (kx==line_x)) continue;
+
+							sptr=png_data+(byte_sz*line_x)+((bitmap->wid*byte_sz)*line_y);
+							i_r+=(int)*sptr++;
+							i_g+=(int)*sptr++;
+							i_b+=(int)*sptr++;
+
+							if (byte_sz==4) i_alpha+=(int)*sptr;
+						}
+					}
+
+					ub_r=(unsigned char)(i_r>>3);
+					ub_g=(unsigned char)(i_g>>3);
+					ub_b=(unsigned char)(i_b>>3);
+					if (byte_sz==4) ub_alpha=(unsigned char)(i_alpha>>3);
+				}
+			}
+
+			*dptr++=ub_r;
+			*dptr++=ub_g;
+			*dptr++=ub_b;
+			if (byte_sz==4) *dptr++=ub_alpha;
+
+			old_line_x=line_x;
 		}
+
+		old_line_y=line_y;
 	}
 
 	free(png_data);
