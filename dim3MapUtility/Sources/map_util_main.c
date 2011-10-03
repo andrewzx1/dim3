@@ -119,6 +119,7 @@ bool map_new(map_type *map,char *name)
 	map->camera.ang.z=0.0f;
     
     map->camera.chase.distance=8000;
+	map->camera.chase.distance_width_factor=0.0f;
 	map->camera.chase.track_speed=1.0f;
     
 	map->camera.chase.slop.x=0.0f;

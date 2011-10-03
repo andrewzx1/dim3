@@ -33,6 +33,7 @@ and can be sold or given away.
 
 extern view_type			view;
 extern setup_type			setup;
+extern iface_type			iface;
 extern render_info_type		render_info;
 
 #ifdef D3_SDL_1_3
@@ -95,9 +96,6 @@ bool gl_initialize(int screen_wid,int screen_high,int fsaa_mode,bool reset,char 
 #ifdef D3_SDL_1_3
 	int						sdl_flags;
 #endif
-#ifdef D3_ROTATE_VIEW
-	int						swap_sz;
-#endif
     GLint					ntxtunit,ntxtsize;
 #if defined(D3_OS_LINUX) || defined(D3_OS_WINDOWS)
 	GLenum					glew_error;
@@ -115,19 +113,6 @@ bool gl_initialize(int screen_wid,int screen_high,int fsaa_mode,bool reset,char 
         
 	setup.screen.x_sz=screen_wid;
 	setup.screen.y_sz=screen_high;
-
-		// rotations
-		// need to swap all the coordinates
-
-#ifdef D3_ROTATE_VIEW
-	swap_sz=setup.screen.x_sz;
-	setup.screen.x_sz=setup.screen.y_sz;
-	setup.screen.y_sz=swap_sz;
-
-	swap_sz=iface.iface.scale_x;
-	iface.iface.scale_x=iface.iface.scale_y;
-	iface.iface.scale_y=swap_sz;
-#endif
 	
 		// normal attributes
 		
@@ -233,7 +218,7 @@ bool gl_initialize(int screen_wid,int screen_high,int fsaa_mode,bool reset,char 
 	SDL_GL_SwapBuffers();
 #endif
 
-#ifndef D3_ROTATE_VIEW2
+#ifndef D3_ROTATE_VIEW
 	glViewport(0,0,setup.screen.x_sz,setup.screen.y_sz);
 #else
 	glViewport(0,0,setup.screen.y_sz,setup.screen.x_sz);

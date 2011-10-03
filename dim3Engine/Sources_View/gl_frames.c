@@ -63,7 +63,7 @@ void gl_3D_view(void)
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
-#ifndef D3_ROTATE_VIEW2
+#ifndef D3_ROTATE_VIEW
 	ratio=(((float)setup.screen.x_sz)/((float)setup.screen.y_sz))*camera.setup.plane.aspect_ratio;
 #else
 	ratio=(((float)setup.screen.y_sz)/((float)setup.screen.x_sz))*camera.setup.plane.aspect_ratio;
@@ -88,7 +88,7 @@ void gl_3D_view(void)
 	glLoadIdentity();
 	
 #ifdef D3_ROTATE_VIEW
-	glTranslatef((float)setup.screen.x_sz,0.0f,0.0f);
+	glTranslatef((float)setup.screen.y_sz,0.0f,0.0f);
 	glRotatef(-90.0f,0.0f,0.0f,1.0f);
 #endif
 	
@@ -104,7 +104,7 @@ void gl_3D_rotate(d3pnt *pnt,d3ang *ang)
 	glLoadIdentity();
 	
 #ifdef D3_ROTATE_VIEW
-	glTranslatef((float)setup.screen.x_sz,0.0f,0.0f);
+	glTranslatef((float)setup.screen.y_sz,0.0f,0.0f);
 	glRotatef(-90.0f,0.0f,0.0f,1.0f);
 #endif
 	
@@ -140,7 +140,7 @@ void gl_2D_view_screen(void)
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	
-#ifndef D3_ROTATE_VIEW2
+#ifndef D3_ROTATE_VIEW
 	glOrtho(0.0f,(GLfloat)setup.screen.x_sz,(GLfloat)setup.screen.y_sz,0.0f,-1.0f,1.0f);
 #else
 	glOrtho(0.0f,(GLfloat)setup.screen.y_sz,(GLfloat)setup.screen.x_sz,0.0f,-1.0f,1.0f);
@@ -150,7 +150,7 @@ void gl_2D_view_screen(void)
 	glLoadIdentity();
 	
 #ifdef D3_ROTATE_VIEW
-	glTranslatef((float)setup.screen.x_sz,0.0f,0.0f);
+	glTranslatef((float)setup.screen.y_sz,0.0f,0.0f);
 	glRotatef(90.0f,0.0f,0.0f,1.0f);
 #endif
 }
@@ -160,7 +160,7 @@ void gl_2D_view_interface(void)
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	
-#ifndef D3_ROTATE_VIEW2
+#ifndef D3_ROTATE_VIEW
 	glOrtho(0.0f,(GLfloat)iface.scale_x,(GLfloat)iface.scale_y,0.0f,-1.0f,1.0f);
 #else
 	glOrtho(0.0f,(GLfloat)iface.scale_y,(GLfloat)iface.scale_x,0.0f,-1.0f,1.0f);
@@ -170,7 +170,7 @@ void gl_2D_view_interface(void)
 	glLoadIdentity();
 
 #ifdef D3_ROTATE_VIEW
-	glTranslatef((float)iface.scale_x,0.0f,0.0f);
+	glTranslatef((float)iface.scale_y,0.0f,0.0f);
 	glRotatef(90.0f,0.0f,0.0f,1.0f);
 #endif
 }
@@ -191,7 +191,7 @@ void gl_3D_view_interface_model()
 	x=(float)(iface.scale_x>>1);
 	y=(float)(iface.scale_y>>1);
 
-#ifndef D3_ROTATE_VIEW2
+#ifndef D3_ROTATE_VIEW
 	glFrustum(-x,x,-y,y,1000.0f,21000.0f);
 #else
 	glFrustum(-y,y,-x,x,1000.0f,21000.0f);
@@ -279,8 +279,12 @@ void gl_project_point(int *x,int *y,int *z)
 {
 	float		dx,dy,dz;
 
+#ifndef D3_ROTATE_VIEW
 	glu_patch_gluProject((float)*x,(float)*y,(float)*z,mod_matrix,proj_matrix,vport,&dx,&dy,&dz);
-	
+#else
+	glu_patch_gluProject((float)*x,(float)*y,(float)*z,mod_matrix,proj_matrix,vport,&dy,&dx,&dz);
+#endif
+
 	*x=(int)dx;
 	*y=(int)dy;
 	*z=(int)dz;
@@ -307,8 +311,12 @@ void gl_unproject_point(float fx,float fy,float fz,int *x,int *y,int *z)
 {
 	float		dx,dy,dz;
 	
+#ifndef D3_ROTATE_VIEW
 	glu_patch_gluUnProject(fx,fy,fz,mod_matrix,proj_matrix,vport,&dx,&dy,&dz);
-	
+#else
+	glu_patch_gluUnProject(fy,fx,fz,mod_matrix,proj_matrix,vport,&dx,&dy,&dz);
+#endif
+
 	*x=(int)dx;
 	*y=(int)dy;
 	*z=(int)dz;

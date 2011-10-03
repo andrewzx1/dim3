@@ -111,7 +111,7 @@ bool view_cull_check_complex_boundbox(int *cbx,int *cby,int *cbz)
 	
 		// are points grouped completely
 		// off one side of the screen?
-
+		
 	lft=rgt=top=bot=TRUE;
 
 	for (n=0;n!=pt_count;n++) {

@@ -136,6 +136,8 @@ void camera_chase_get_position(d3pnt *pnt,d3ang *ang)
 	fy=0;
 	fz=(float)camera.setup.chase.distance;
 	
+	fz+=((float)(camera_distance_width_factor_start_width-setup.screen.x_sz)*camera.setup.chase.distance_width_factor);
+	
 	fang=angle_add(camera.cur_chase_ang.x,-obj->view_ang.x);
 	
 	matrix_rotate_zyx(&mat,fang,camera.cur_chase_ang.y,camera.cur_chase_ang.z);
@@ -238,6 +240,8 @@ void camera_chase_static_get_position(d3pnt *pnt,d3ang *ang)
 	fx=0;
 	fy=0;
 	fz=(float)camera.setup.chase.distance;
+
+	fz+=((float)(camera_distance_width_factor_start_width-setup.screen.x_sz)*camera.setup.chase.distance_width_factor);
 	
 	x_ang=camera.setup.ang.x;
 	if (x_ang>180.0f) x_ang-=360.0f;
