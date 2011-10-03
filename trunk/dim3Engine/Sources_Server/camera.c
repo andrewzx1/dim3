@@ -52,6 +52,7 @@ void camera_initialize(void)
 	camera.setup.ang.z=0;
     
     camera.setup.chase.distance=7500;
+    camera.setup.chase.distance_width_factor=0.0f;
 	camera.setup.chase.track_speed=1.0f;
     
 	camera.setup.chase.slop.x=0;

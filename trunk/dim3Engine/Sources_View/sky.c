@@ -51,11 +51,7 @@ void sky_draw_background_single(map_background_layer_type *layer)
 	
 		// get y scaling
 		
-#ifndef D3_ROTATE_VIEW2
 	gy_high=(((float)setup.screen.y_sz)/((float)setup.screen.x_sz))*layer->y_fact;
-#else
-	gy_high=(((float)setup.screen.x_sz)/((float)setup.screen.y_sz))*layer->y_fact;
-#endif
 
 		// get scrolling
 		
@@ -67,11 +63,7 @@ void sky_draw_background_single(map_background_layer_type *layer)
 	texture=&map.textures[layer->fill];
 	bitmap=&texture->frames[texture->animate.current_frame].bitmap;
 	
-#ifndef D3_ROTATE_VIEW2
 	view_primitive_2D_texture_quad(bitmap->gl_id,NULL,1.0f,0,setup.screen.x_sz,0,setup.screen.y_sz,gx,(gx+layer->x_fact),gy,(gy+gy_high));
-#else
-	view_primitive_2D_texture_quad(bitmap->gl_id,NULL,1.0f,0,setup.screen.y_sz,0,setup.screen.x_sz,gx,(gx+layer->x_fact),gy,(gy+gy_high));
-#endif
 }
 
 void sky_draw_background(void)

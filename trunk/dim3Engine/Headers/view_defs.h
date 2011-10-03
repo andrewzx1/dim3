@@ -151,6 +151,11 @@ and can be sold or given away.
 
 #define console_screen_percent								0.4f
 
+//
+// camera defines
+//
+
+#define camera_distance_width_factor_start_width			1680
 
 //
 // screen sizes

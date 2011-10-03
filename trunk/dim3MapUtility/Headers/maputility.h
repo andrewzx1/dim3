@@ -667,7 +667,7 @@ typedef struct		{
 
 typedef struct		{
 						int									distance;
-						float								track_speed;
+						float								distance_width_factor,track_speed;
 						d3ang								slop;
 					} map_camera_setup_chase_type;
 
