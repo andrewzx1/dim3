@@ -91,7 +91,7 @@ and can be sold or given away.
 
 #define element_control_padding_factor			0.01f
 
-#define element_control_draw_height				0.025f
+#define element_control_draw_height				0.03f
 #define element_control_draw_short_width		0.15f
 #define element_control_draw_long_width			0.4f
 
