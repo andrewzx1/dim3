@@ -75,34 +75,6 @@ void model_move_single_tangent_space_vector(model_draw_bone_type *draw_bones,mod
 	v->z=minz+((majz-minz)*bone_factor);
 }
 
-static inline void model_move_single_tangent_space(model_mesh_type *mesh,model_draw_bone_type *draw_bones,model_trig_type *trig,int idx,tangent_space_type *space,bool normal_only)
-{
-	model_vertex_type		*vertex;
-
-		// get vertex
-
-	vertex=&mesh->vertexes[trig->v[idx]];
-	
-		// default space
-		
-	if (!normal_only) {
-		space->tangent.x=trig->tangent_space[idx].tangent.x;
-		space->tangent.y=trig->tangent_space[idx].tangent.y;
-		space->tangent.z=trig->tangent_space[idx].tangent.z;
-	}
-	
-	space->normal.x=trig->tangent_space[idx].normal.x;
-	space->normal.y=trig->tangent_space[idx].normal.y;
-	space->normal.z=trig->tangent_space[idx].normal.z;
-
-		// bone rotations
-		
-	if (vertex->major_bone_idx!=-1) {
-		if (!normal_only) model_move_single_tangent_space_vector(draw_bones,vertex,&space->tangent);
-		model_move_single_tangent_space_vector(draw_bones,vertex,&space->normal);
-	}
-}
-
 /* =======================================================
 
       Build Normal Lists
@@ -116,6 +88,7 @@ void model_create_draw_normals(model_type *model,int mesh_idx,model_draw_setup *
 	bool					no_sway;
 	model_mesh_type			*mesh;
 	model_trig_type			*trig;
+	model_vertex_type		*vertex;
 	matrix_type				rot_mat,sway_mat;
 	tangent_space_type		space;
 	
@@ -144,9 +117,20 @@ void model_create_draw_normals(model_type *model,int mesh_idx,model_draw_setup *
 		for (n=0;n!=ntrig;n++) {
 
 			for (k=0;k!=3;k++) {
-				model_move_single_tangent_space(mesh,draw_setup->bones,trig,k,&space,normal_only);
+
+					// get the attached vertexe
+				
+				vertex=&mesh->vertexes[trig->v[k]];
+
+					// run the tangent
 				
 				if (!normal_only) {
+					space.tangent.x=trig->tangent_space[k].tangent.x;
+					space.tangent.y=trig->tangent_space[k].tangent.y;
+					space.tangent.z=trig->tangent_space[k].tangent.z;
+
+					if (vertex->major_bone_idx!=-1) model_move_single_tangent_space_vector(draw_setup->bones,vertex,&space.tangent);
+
 					fx=(space.tangent.x*sway_mat.data[0][0])+(space.tangent.y*sway_mat.data[0][1])+(space.tangent.z*sway_mat.data[0][2]);
 					fy=(space.tangent.x*sway_mat.data[1][0])+(space.tangent.y*sway_mat.data[1][1])+(space.tangent.z*sway_mat.data[1][2]);
 					fz=(space.tangent.x*sway_mat.data[2][0])+(space.tangent.y*sway_mat.data[2][1])+(space.tangent.z*sway_mat.data[2][2]);
@@ -156,6 +140,14 @@ void model_create_draw_normals(model_type *model,int mesh_idx,model_draw_setup *
 					*pt++=(fx*rot_mat.data[2][0])+(fy*rot_mat.data[2][1])+(fz*rot_mat.data[2][2]);
 				}
 				
+					// run the normal
+				
+				space.normal.x=trig->tangent_space[k].normal.x;
+				space.normal.y=trig->tangent_space[k].normal.y;
+				space.normal.z=trig->tangent_space[k].normal.z;
+
+				model_move_single_tangent_space_vector(draw_setup->bones,vertex,&space.normal);
+
 				fx=(space.normal.x*sway_mat.data[0][0])+(space.normal.y*sway_mat.data[0][1])+(space.normal.z*sway_mat.data[0][2]);
 				fy=(space.normal.x*sway_mat.data[1][0])+(space.normal.y*sway_mat.data[1][1])+(space.normal.z*sway_mat.data[1][2]);
 				fz=(space.normal.x*sway_mat.data[2][0])+(space.normal.y*sway_mat.data[2][1])+(space.normal.z*sway_mat.data[2][2]);
@@ -176,13 +168,32 @@ void model_create_draw_normals(model_type *model,int mesh_idx,model_draw_setup *
 	for (n=0;n!=ntrig;n++) {
 		
 		for (k=0;k!=3;k++) {
-			model_move_single_tangent_space(mesh,draw_setup->bones,trig,k,&space,normal_only);
+
+				// get the attached vertexe
+				
+			vertex=&mesh->vertexes[trig->v[k]];
+
+				// run the tangent
 	
 			if (!normal_only) {
+				space.tangent.x=trig->tangent_space[k].tangent.x;
+				space.tangent.y=trig->tangent_space[k].tangent.y;
+				space.tangent.z=trig->tangent_space[k].tangent.z;
+
+				if (vertex->major_bone_idx!=-1) model_move_single_tangent_space_vector(draw_setup->bones,vertex,&space.tangent);
+
 				*pt++=(space.tangent.x*rot_mat.data[0][0])+(space.tangent.y*rot_mat.data[0][1])+(space.tangent.z*rot_mat.data[0][2]);
 				*pt++=(space.tangent.x*rot_mat.data[1][0])+(space.tangent.y*rot_mat.data[1][1])+(space.tangent.z*rot_mat.data[1][2]);
 				*pt++=(space.tangent.x*rot_mat.data[2][0])+(space.tangent.y*rot_mat.data[2][1])+(space.tangent.z*rot_mat.data[2][2]);
 			}
+			
+				// run the normal
+
+			space.normal.x=trig->tangent_space[k].normal.x;
+			space.normal.y=trig->tangent_space[k].normal.y;
+			space.normal.z=trig->tangent_space[k].normal.z;
+
+			model_move_single_tangent_space_vector(draw_setup->bones,vertex,&space.normal);
 			
 			*pn++=(space.normal.x*rot_mat.data[0][0])+(space.normal.y*rot_mat.data[0][1])+(space.normal.z*rot_mat.data[0][2]);
 			*pn++=(space.normal.x*rot_mat.data[1][0])+(space.normal.y*rot_mat.data[1][1])+(space.normal.z*rot_mat.data[1][2]);

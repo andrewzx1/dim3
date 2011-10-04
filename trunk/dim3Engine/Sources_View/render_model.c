@@ -171,8 +171,8 @@ void render_model_create_normal_vertexes(model_type *mdl,int mesh_mask,model_dra
 			ts_count=mdl->meshes[n].ntrig*3;
 
 			for (k=0;k!=ts_count;k++) {
-				matrix_vertex_multiply(&mat,tl,(tl+1),(tl+2));
-				matrix_vertex_multiply(&mat,nl,(nl+1),(nl+2));
+				matrix_vertex_multiply_ignore_transform(&mat,tl,(tl+1),(tl+2));
+				matrix_vertex_multiply_ignore_transform(&mat,nl,(nl+1),(nl+2));
 				tl+=3;
 				nl+=3;
 			}
@@ -241,7 +241,7 @@ void render_model_vertex_object_no_shader(model_type *mdl,int mesh_idx,model_dra
 
 void render_model_vertex_object_no_shader_diffuse(model_type *mdl,int mesh_idx,model_draw *draw,unsigned char *vertex_ptr)
 {
-	int					n,k,i,offset,stride;
+	int					n,k,offset,stride;
 	float				diffuse,min_diffuse,boost,
 						*gx,*gy,*pf,
 						*va,*va_start,*ca,*ca_start,*na;
@@ -305,27 +305,25 @@ void render_model_vertex_object_no_shader_diffuse(model_type *mdl,int mesh_idx,m
 				// get the diffuse from
 				// the dot product and clamp it
 				
-			diffuse=(diffuse_vct.x*(*na))+(diffuse_vct.y*(*(na+1)))+(diffuse_vct.z*(*(na+2)));
-			diffuse=((diffuse+1.0f)*0.5f)+boost;
-			if (diffuse<min_diffuse) diffuse=min_diffuse;
+			diffuse=(diffuse_vct.x*(*na++));
+			diffuse+=(diffuse_vct.y*(*na++));
+			diffuse+=(diffuse_vct.z*(*na++));
 
-			na+=3;
+			diffuse=((diffuse+1.0f)*0.5f)+boost;
+
+			if (diffuse<min_diffuse) diffuse=min_diffuse;
+			if (diffuse>1.0f) diffuse=1.0f;
 		
 				// apply diffuse
+				// multiply in 255 to convert float to ub
 				
+			diffuse*=255.0f;
+
 			pc=(unsigned char*)pf;
 
-			i=(int)(((*ca++)*diffuse)*255.0f);
-			if (i>255) i=255;
-			*pc++=(unsigned char)i;
-			
-			i=(int)(((*ca++)*diffuse)*255.0f);
-			if (i>255) i=255;
-			*pc++=(unsigned char)i;
-			
-			i=(int)(((*ca++)*diffuse)*255.0f);
-			if (i>255) i=255;
-			*pc++=(unsigned char)i;
+			*pc++=(unsigned char)((*ca++)*diffuse);
+			*pc++=(unsigned char)((*ca++)*diffuse);
+			*pc++=(unsigned char)((*ca++)*diffuse);
 			
 			*pc=0xFF;
 

@@ -32,7 +32,16 @@ void cocoa_file_get_application_support_path(char *path)
 	NSArray			*paths;
 	CFStringRef		path_str;
 	
+		// iOS applications need to write
+		// to the application/document directory
+		// OS X writes to the application support
+		
+#ifdef D3_OS_IPHONE
+	paths=NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask,TRUE);
+#else
 	paths=NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory,NSUserDomainMask,TRUE);
+#endif
+
 	path_str=(CFStringRef)[paths objectAtIndex:0];
 	CFStringGetCString(path_str,path,1024,kCFStringEncodingMacRoman);
 }
