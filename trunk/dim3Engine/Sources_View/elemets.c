@@ -516,7 +516,7 @@ void element_checkbox_add(char *str,int value,int id,int x,int y,bool selectable
 	element->enabled=TRUE;
 	element->hidden=FALSE;
 
-	element->wid=(int)(((float)iface.scale_x)*element_control_draw_height);
+	element->wid=(int)(((float)iface.scale_x)*element_control_draw_short_width);
 	element->high=(int)(((float)iface.scale_x)*element_control_draw_height);
 	
 	strcpy(element->str,str);
@@ -1227,8 +1227,12 @@ void element_draw_text_field(element_type *element,int sel_id)
 
 		// background
 
-	col.r=col.g=col.b=0.0f;
-	view_primitive_2D_color_quad(&col,0.2f,lft,rgt,top,bot);
+	memmove(&col,&iface.color.dialog.background,sizeof(d3col));
+	col.r*=element_gradient_lighten_1;
+	col.g*=element_gradient_lighten_1;
+	col.b*=element_gradient_lighten_1;
+
+	view_primitive_2D_color_quad(&col,1.0f,lft,rgt,top,bot);
 
 		// outline
 
@@ -1280,22 +1284,22 @@ void element_draw_text_field(element_type *element,int sel_id)
 
 void element_click_number(element_type *element,int x,int y)
 {
-	int				lft,lft_mid,rgt,rgt_mid;
+	int				lft,rgt,mid;
 
-		// minus button
+	lft=element->x;
+	rgt=lft+element->wid;
+	mid=(lft+rgt)>>1;
 
-	lft=element->x+10;
-	lft_mid=lft+35;
+		// left arrow
 
-	if ((x>=lft) && (x<=lft_mid)) {
+	if ((x>=lft) && (x<=mid)) {
 		if (element->value>element->setup.number.min) element->value--;
 		return;
 	}
 
-	rgt=lft+element->wid;
-	rgt_mid=rgt-35;
+		// right arrow
 
-	if ((x>=rgt_mid) && (x<=rgt)) {
+	if ((x>=mid) && (x<=rgt)) {
 		if (element->value<element->setup.number.max) element->value++;
 		return;
 	}
@@ -1339,21 +1343,16 @@ void element_draw_number(element_type *element,int sel_id)
 	gradient_end.g=gradient_start.g*element_gradient_factor;
 	gradient_end.b=gradient_start.b*element_gradient_factor;
 
-	view_primitive_2D_color_poly(lft,top,&gradient_start,lft_mid,top,&gradient_start,lft_mid,bot,&gradient_end,lft,bot,&gradient_end,alpha);
-	view_primitive_2D_color_poly(lft_mid,top,&gradient_start,rgt_mid,top,&gradient_start,rgt_mid,bot,&gradient_end,lft_mid,bot,&gradient_end,alpha);
-	view_primitive_2D_color_poly(rgt_mid,top,&gradient_start,rgt,top,&gradient_start,rgt,bot,&gradient_end,rgt_mid,bot,&gradient_end,alpha);
+	view_primitive_2D_color_poly(lft,top,&gradient_start,rgt,top,&gradient_start,rgt,ky,&gradient_end,lft,ky,&gradient_end,alpha);
+	view_primitive_2D_color_poly(lft,ky,&gradient_end,rgt,ky,&gradient_end,rgt,bot,&gradient_start,lft,bot,&gradient_start,alpha);
 
 		// outline
 
 	if ((element->id==sel_id) && (element->enabled)) {
-		view_primitive_2D_line_quad(&iface.color.control.mouse_over,alpha,lft,lft_mid,top,bot);
-		view_primitive_2D_line_quad(&iface.color.control.mouse_over,alpha,lft_mid,rgt_mid,top,bot);
-		view_primitive_2D_line_quad(&iface.color.control.mouse_over,alpha,rgt_mid,rgt,top,bot);
+		view_primitive_2D_line_quad(&iface.color.control.mouse_over,alpha,lft,rgt,top,bot);
 	}
 	else {
-		view_primitive_2D_line_quad(&iface.color.control.outline,alpha,lft,lft_mid,top,bot);
-		view_primitive_2D_line_quad(&iface.color.control.outline,alpha,lft_mid,rgt_mid,top,bot);
-		view_primitive_2D_line_quad(&iface.color.control.outline,alpha,rgt_mid,rgt,top,bot);
+		view_primitive_2D_line_quad(&iface.color.control.outline,alpha,lft,rgt,top,bot);
 	}
 
 		// control text
@@ -1387,16 +1386,18 @@ void element_draw_number(element_type *element,int sel_id)
 
 	col.r=col.g=col.b=0.0f;
 
-	alpha=(element->value>element->setup.number.min)?1.0f:0.1f;
-	view_primitive_2D_color_trig(&iface.color.control.hilite,alpha,lft,lft_mid,top,bot,3);
-	view_primitive_2D_line_trig(&col,alpha,lft,lft_mid,top,bot,3);
+	if (element->value>element->setup.number.min) {
+		view_primitive_2D_color_trig(&iface.color.control.hilite,1.0f,lft,lft_mid,top,bot,3);
+		view_primitive_2D_line_trig(&col,1.0f,lft,lft_mid,top,bot,3);
+	}
 
 	rgt_mid+=4;
 	rgt-=4;
 
-	alpha=(element->value<element->setup.number.max)?1.0f:0.1f;
-	view_primitive_2D_color_trig(&iface.color.control.hilite,alpha,rgt_mid,rgt,top,bot,1);
-	view_primitive_2D_line_trig(&col,alpha,rgt_mid,rgt,top,bot,1);
+	if (element->value<element->setup.number.max) {
+		view_primitive_2D_color_trig(&iface.color.control.hilite,1.0f,rgt_mid,rgt,top,bot,1);
+		view_primitive_2D_line_trig(&col,1.0f,rgt_mid,rgt,top,bot,1);
+	}
 }
 
 /* =======================================================
@@ -1410,18 +1411,21 @@ void element_click_checkbox(element_type *element)
 	element->value=element->value^0x1;
 }
 
-void element_draw_checkbox_control(int x,int y,int draw_sz,bool checked,bool enabled,bool hilite)
+void element_draw_checkbox_control(int x,int y,int wid,bool checked,bool enabled,bool hilite)
 {
-	int			lft,rgt,top,bot,px[4],py[4];
+	int			lft,rgt,top,bot,high,
+				chk_lft,chk_rgt;
 	float		alpha,f;
 	d3col		col,col2,gradient_start,gradient_end;
 
 		// checkbox
 
+	high=(int)(((float)iface.scale_x)*element_control_draw_height);
+
 	lft=x;
-	rgt=lft+draw_sz;
-	top=y-(draw_sz>>1);
-	bot=top+draw_sz;
+	rgt=lft+wid;
+	top=y-(high>>1);
+	bot=top+high;
 
 	alpha=(enabled?1.0f:0.3f);
 
@@ -1432,57 +1436,55 @@ void element_draw_checkbox_control(int x,int y,int draw_sz,bool checked,bool ena
 	gradient_end.g=gradient_start.g*element_gradient_factor;
 	gradient_end.b=gradient_start.b*element_gradient_factor;
 
-	view_primitive_2D_color_poly(lft,top,&gradient_start,rgt,top,&gradient_start,rgt,bot,&gradient_end,lft,bot,&gradient_end,alpha);
+	view_primitive_2D_color_poly(lft,top,&gradient_start,rgt,top,&gradient_start,rgt,y,&gradient_end,lft,y,&gradient_end,alpha);
+	view_primitive_2D_color_poly(lft,y,&gradient_end,rgt,y,&gradient_end,rgt,bot,&gradient_start,lft,bot,&gradient_start,alpha);
 
-		// check
+		// check position
 
 	if (checked) {
-		col.r=iface.color.control.hilite.r*element_gradient_factor;
-		col.g=iface.color.control.hilite.g*element_gradient_factor;
-		col.b=iface.color.control.hilite.b*element_gradient_factor;
-
-		f=element_gradient_factor*1.5f;
-
-		col2.r=iface.color.control.hilite.r*f;
-		col2.g=iface.color.control.hilite.g*f;
-		col2.b=iface.color.control.hilite.b*f;
-
-		px[0]=lft;
-		py[0]=bot-((bot-top)/3);
-		px[1]=lft+((rgt-lft)/8);
-		py[1]=top+((bot-top)/3);
-		px[2]=lft+((rgt-lft)/3);
-		py[2]=bot-((bot-top)/3);
-		px[3]=lft+((rgt-lft)/3);
-		py[3]=bot;
-
-		view_primitive_2D_color_poly(px[0],py[0],&col,px[1],py[1],&col,px[2],py[2],&col2,px[3],py[3],&iface.color.control.hilite,alpha);
-
-		px[0]=lft+((rgt-lft)/3);
-		py[0]=bot-((bot-top)/3);
-		px[1]=rgt-((rgt-lft)/4);
-		py[1]=top;
-		px[2]=rgt;
-		py[2]=top+((bot-top)/4);
-		px[3]=lft+((rgt-lft)/3);
-		py[3]=bot;
-
-		view_primitive_2D_color_poly(px[0],py[0],&col2,px[1],py[1],&col,px[2],py[2],&iface.color.control.hilite,px[3],py[3],&iface.color.control.hilite,alpha);
+		chk_lft=lft+(wid>>1);
+		chk_rgt=rgt;
 	}
+	else {
+		chk_lft=lft;
+		chk_rgt=lft+(wid>>1);
+	}
+
+	col.r=iface.color.control.hilite.r*element_gradient_factor;
+	col.g=iface.color.control.hilite.g*element_gradient_factor;
+	col.b=iface.color.control.hilite.b*element_gradient_factor;
+
+	f=element_gradient_factor*1.5f;
+
+	col2.r=iface.color.control.hilite.r*f;
+	col2.g=iface.color.control.hilite.g*f;
+	col2.b=iface.color.control.hilite.b*f;
+
+	view_primitive_2D_color_poly(chk_lft,top,&col,chk_rgt,top,&col,chk_rgt,y,&col2,chk_lft,y,&col2,alpha);
+	view_primitive_2D_color_poly(chk_lft,y,&col2,chk_rgt,y,&col2,chk_rgt,bot,&col,chk_lft,bot,&col,alpha);
+
+		// text
+
+	gl_text_start(font_interface_index,iface.font.text_size_medium);
+	gl_text_draw((lft+(wid>>2)),(y-1),"off",tx_center,TRUE,&iface.color.control.label,1.0f);
+	gl_text_draw((rgt-(wid>>2)),(y-1),"on",tx_center,TRUE,&iface.color.control.label,1.0f);
+	gl_text_end();
 
 		// outline
 
 	if ((hilite) && (enabled)) {
 		view_primitive_2D_line_quad(&iface.color.control.mouse_over,alpha,lft,rgt,top,bot);
+		view_primitive_2D_line_quad(&iface.color.control.mouse_over,alpha,chk_lft,chk_rgt,top,bot);
 	}
 	else {
 		view_primitive_2D_line_quad(&iface.color.control.outline,alpha,lft,rgt,top,bot);
+		view_primitive_2D_line_quad(&iface.color.control.outline,alpha,chk_lft,chk_rgt,top,bot);
 	}
 }
 
 void element_draw_checkbox(element_type *element,int sel_id)
 {
-	int				x,y,ky;
+	int				x,y,wid,ky;
 	
 	x=element->x;
 	y=element->y;
@@ -1498,7 +1500,8 @@ void element_draw_checkbox(element_type *element,int sel_id)
 	
 		// checkbox
 
-	element_draw_checkbox_control((x+10),ky,element->high,(element->value!=0),element->enabled,(element->id==sel_id));
+	wid=(int)(((float)iface.scale_x)*element_control_draw_short_width);
+	element_draw_checkbox_control((x+10),ky,wid,(element->value!=0),element->enabled,(element->id==sel_id));
 }
 
 /* =======================================================
@@ -1531,13 +1534,16 @@ void element_click_combo(element_type *element)
 
 void element_box_combo_open(element_type *element,int *lft,int *rgt,int *top,int *bot)
 {
-	int				cnt;
+	int				y,cnt;
 
 	cnt=element_get_combo_list_count(element);
+
+	y=element->y-(element->high*element->value);
+	if (y<element->high) y=element->high;
 		
 	*lft=element->x+10;
 	*rgt=(*lft+element->wid)-element->high;
-	*top=element->y-element->high;
+	*top=y-element->high;
 	*bot=*top+(cnt*element->high);
 }
 
@@ -1573,7 +1579,7 @@ bool element_click_combo_open(element_type *element,int x,int y)
 
 void element_draw_combo(element_type *element,int sel_id)
 {
-	int				x,y,sz,kx,ky,lft,rgt,top,bot;
+	int				x,y,ky,lft,rgt,top,bot;
 	char			str[256];
 	float			alpha;
 	d3col			col,gradient_start,gradient_end;
@@ -1606,20 +1612,16 @@ void element_draw_combo(element_type *element,int sel_id)
 	gradient_end.g=gradient_start.g*element_gradient_factor;
 	gradient_end.b=gradient_start.b*element_gradient_factor;
 
-	view_primitive_2D_color_poly(lft,top,&gradient_start,rgt,top,&gradient_start,rgt,bot,&gradient_end,lft,bot,&gradient_end,alpha);
+	view_primitive_2D_color_poly(lft,top,&gradient_start,rgt,top,&gradient_start,rgt,ky,&gradient_end,lft,ky,&gradient_end,alpha);
+	view_primitive_2D_color_poly(lft,ky,&gradient_end,rgt,ky,&gradient_end,rgt,bot,&gradient_start,lft,bot,&gradient_start,alpha);
 
 		// outline
 
-	sz=(bot-top)-8;
-	kx=(rgt-8)-sz;
-
 	if ((element->id==sel_id) && (element->enabled)) {
-		view_primitive_2D_line_quad(&iface.color.control.mouse_over,alpha,lft,kx,top,bot);
-		view_primitive_2D_line_quad(&iface.color.control.mouse_over,alpha,kx,rgt,top,bot);
+		view_primitive_2D_line_quad(&iface.color.control.mouse_over,alpha,lft,rgt,top,bot);
 	}
 	else {
-		view_primitive_2D_line_quad(&iface.color.control.outline,alpha,lft,kx,top,bot);
-		view_primitive_2D_line_quad(&iface.color.control.outline,alpha,kx,rgt,top,bot);
+		view_primitive_2D_line_quad(&iface.color.control.outline,alpha,lft,rgt,top,bot);
 	}
 
 		// arrow
@@ -1651,7 +1653,7 @@ void element_draw_combo(element_type *element,int sel_id)
 
 void element_draw_combo_open(element_type *element)
 {
-	int				x,y,n,cnt,lft,rgt,top,bot,sel_item_idx;
+	int				x,y,ky,n,cnt,lft,rgt,top,bot,sel_item_idx;
 	char			str[256];
 	d3col			gradient_start,gradient_end;
 	
@@ -1673,7 +1675,9 @@ void element_draw_combo_open(element_type *element)
 		// drawing sizes
 
 	x=element->x;
-	y=element->y;
+	y=element->y-(element->high*element->value);
+
+	if (y<element->high) y=element->high;
 	
 	lft=x+10;
 	rgt=(lft+element->wid)-element->high;
@@ -1688,7 +1692,7 @@ void element_draw_combo_open(element_type *element)
 
 	bot=top+(cnt*element->high);
 
-	view_primitive_2D_color_poly(lft,top,&gradient_start,rgt,top,&gradient_start,rgt,bot,&gradient_end,lft,bot,&gradient_end,1.0f);
+	view_primitive_2D_color_quad(&gradient_start,1.0f,lft,rgt,top,bot);
 
 		// combo items
 
@@ -1698,7 +1702,16 @@ void element_draw_combo_open(element_type *element)
 
 			// selection
 
-		if (element->value==n) view_primitive_2D_color_quad(&iface.color.control.hilite,1.0f,lft,rgt,top,bot);
+		if (element->value==n) {
+			memmove(&gradient_start,&iface.color.control.hilite,sizeof(d3col));
+			gradient_end.r=gradient_start.r*element_gradient_factor;
+			gradient_end.g=gradient_start.g*element_gradient_factor;
+			gradient_end.b=gradient_start.b*element_gradient_factor;
+
+			ky=(top+bot)>>1;
+			view_primitive_2D_color_poly(lft,top,&gradient_start,rgt,top,&gradient_start,rgt,ky,&gradient_end,lft,ky,&gradient_end,1.0f);
+			view_primitive_2D_color_poly(lft,ky,&gradient_end,rgt,ky,&gradient_end,rgt,bot,&gradient_start,lft,bot,&gradient_start,1.0f);
+		}
 
 			// text
 
@@ -1752,6 +1765,7 @@ void element_draw_slider(element_type *element,int sel_id)
 {
 	int				x,y,ky,lft,rgt,top,bot,mid;
 	float			alpha;
+	char			str[32];
 	d3col			col2,gradient_start,gradient_end;
 	
 	x=element->x;
@@ -1784,43 +1798,127 @@ void element_draw_slider(element_type *element,int sel_id)
 	gradient_end.g=gradient_start.g*element_gradient_factor;
 	gradient_end.b=gradient_start.b*element_gradient_factor;
 
-	view_primitive_2D_color_poly(lft,top,&gradient_start,rgt,top,&gradient_start,rgt,bot,&gradient_end,lft,bot,&gradient_end,1.0f);
+	ky=(top+bot)>>1;
+
+	view_primitive_2D_color_poly(lft,top,&gradient_start,rgt,top,&gradient_start,rgt,ky,&gradient_end,lft,ky,&gradient_end,1.0f);
+	view_primitive_2D_color_poly(lft,ky,&gradient_end,rgt,ky,&gradient_end,rgt,bot,&gradient_start,lft,bot,&gradient_start,1.0f);
 
 		// slider value
 		
 	if (element->enabled) {
-		col2.r=iface.color.control.hilite.r*0.5f;
-		col2.g=iface.color.control.hilite.g*0.5f;
-		col2.b=iface.color.control.hilite.b*0.5f;
+		col2.r=iface.color.control.hilite.r*element_gradient_factor;
+		col2.g=iface.color.control.hilite.g*element_gradient_factor;
+		col2.b=iface.color.control.hilite.b*element_gradient_factor;
 
-		view_primitive_2D_color_poly(lft,top,&iface.color.control.hilite,mid,top,&iface.color.control.hilite,mid,bot,&col2,lft,bot,&col2,alpha);
+		view_primitive_2D_color_poly(lft,top,&iface.color.control.hilite,mid,top,&iface.color.control.hilite,mid,ky,&col2,lft,ky,&col2,alpha);
+		view_primitive_2D_color_poly(lft,ky,&col2,mid,ky,&col2,mid,bot,&iface.color.control.hilite,lft,bot,&iface.color.control.hilite,alpha);
 	}
 
-		// outline
+		// outlines
 
 	if ((element->id==sel_id) && (element->enabled)) {
 		view_primitive_2D_line_quad(&iface.color.control.mouse_over,alpha,lft,rgt,top,bot);
+		view_primitive_2D_line_quad(&iface.color.control.mouse_over,alpha,lft,mid,top,bot);
 	}
 	else {
 		view_primitive_2D_line_quad(&iface.color.control.outline,alpha,lft,rgt,top,bot);
+		view_primitive_2D_line_quad(&iface.color.control.outline,alpha,lft,mid,top,bot);
 	}
 
-		// slider drag
+		// text
 
-	if ((mid+16)>rgt) mid=rgt-16;
+	gl_text_start(font_interface_index,iface.font.text_size_medium);
+	sprintf(str,"%d%%",(int)(element->setup.slider.value*100.0f));
+	gl_text_draw((rgt-5),ky,str,tx_right,TRUE,&iface.color.control.text,1.0f);
+	gl_text_end();
+}
 
-	col2.r=iface.color.control.hilite.r*0.5f;
-	col2.g=iface.color.control.hilite.g*0.5f;
-	col2.b=iface.color.control.hilite.b*0.5f;
+/* =======================================================
 
-	view_primitive_2D_color_poly(mid,top,&iface.color.control.hilite,(mid+8),top,&col2,(mid+8),bot,&col2,mid,bot,&iface.color.control.hilite,alpha);
-	view_primitive_2D_color_poly((mid+8),top,&col2,(mid+16),top,&iface.color.control.hilite,(mid+16),bot,&iface.color.control.hilite,(mid+8),bot,&col2,alpha);
+      Scrolling Controls for Tables and Text Elements
+      
+======================================================= */
 
-	if ((element->id==sel_id) && (element->enabled)) {
-		view_primitive_2D_line_quad(&iface.color.control.mouse_over,alpha,mid,(mid+16),top,bot);
+int element_click_scroll_controls(element_type *element,int header_high,int x,int y,bool up_ok,bool down_ok)
+{
+	int				lft,rgt,top,bot,ctrl_sz;
+	
+		// element size
+
+	ctrl_sz=(int)(((float)iface.scale_x)*element_scroll_control_size);
+		
+	element_get_box(element,&lft,&rgt,&top,&bot);
+	
+	lft=(rgt-ctrl_sz)-4;
+	rgt-=4;
+	top=top+(header_high+8);
+	bot-=4;
+
+		// top scroll bar
+
+	if (up_ok) {
+		if ((x>=lft) && (x<=rgt) && (y>=top) && (y<=(top+ctrl_sz))) return(-1);
 	}
-	else {
-		view_primitive_2D_line_quad(&iface.color.control.outline,alpha,mid,(mid+16),top,bot);
+
+		// bottom scroll bar
+
+	if (down_ok) {
+		if ((x>=lft) && (x<=rgt) && (y>=(bot-ctrl_sz)) && (y<=bot)) return(1);
+	}
+
+	return(0);
+}
+
+void element_draw_scroll_controls(element_type *element,int header_high,bool up_ok,bool down_ok)
+{
+	int				lft,rgt,top,bot,ty,by,
+					ctrl_sz;
+	d3col			col,col2,col3;
+	
+		// element size
+
+	ctrl_sz=(int)(((float)iface.scale_x)*element_scroll_control_size);
+		
+	element_get_box(element,&lft,&rgt,&top,&bot);
+	
+	lft=(rgt-ctrl_sz)-4;
+	rgt-=4;
+	top=top+(header_high+8);
+	bot-=4;
+
+		// colors
+
+	memmove(&col,&iface.color.dialog.background,sizeof(d3col));
+	col2.r=col.r*element_gradient_factor;
+	col2.g=col.g*element_gradient_factor;
+	col2.b=col.b*element_gradient_factor;
+	
+	col3.r=col3.g=col3.b=0.0f;
+
+		// top scroll bar
+
+	if (up_ok) {
+		ty=top;
+		by=top+ctrl_sz;
+
+		view_primitive_2D_color_poly(lft,ty,&col2,rgt,ty,&col2,rgt,by,&col,lft,by,&col,1.0f);
+		view_primitive_2D_line_quad(&iface.color.control.outline,1.0f,lft,rgt,ty,by);
+
+		view_primitive_2D_color_trig(&iface.color.control.hilite,1.0f,(lft+5),(rgt-5),(ty+5),(by-5),0);
+		view_primitive_2D_line_trig(&col3,1.0f,(lft+5),(rgt-5),(ty+5),(by-5),0);
+	}
+
+		// bottom scroll bar
+
+	if (down_ok) {
+		ty=bot-ctrl_sz;
+		by=bot;
+
+		view_primitive_2D_color_poly(lft,ty,&col,rgt,ty,&col,rgt,by,&col2,lft,by,&col2,1.0f);
+		view_primitive_2D_line_quad(&iface.color.control.outline,1.0f,lft,rgt,ty,by);
+
+		view_primitive_2D_color_trig(&iface.color.control.hilite,1.0f,(lft+5),(rgt-5),(ty+5),(by-5),2);
+		view_primitive_2D_line_trig(&col3,1.0f,(lft+5),(rgt-5),(ty+5),(by-5),2);
 	}
 }
 
@@ -1857,7 +1955,8 @@ static inline int element_get_table_row_high(element_type *element)
 
 void element_click_table(element_type *element,int x,int y)
 {
-	int				high,row_high,row_cnt,cnt,scroll_high,my;
+	int				high,row_high,row_cnt,cnt,
+					scroll_dir;
 	bool			up_ok,down_ok;
 	
 		// get text sizes
@@ -1869,31 +1968,15 @@ void element_click_table(element_type *element,int x,int y)
 	
 		// check for clicking in scroll bar
 
-	if ((x>((element->x+element->wid)-24)) && (row_cnt!=0)) {
+	cnt=((element->high-(high+4))/row_high)-1;
 
-			// get scrolling sizes
-			
-		cnt=((element->high-(high+4))/row_high)-1;
+	up_ok=(element->offset!=0);
+	down_ok=((element->offset+(cnt+1))<row_cnt);
 
-		scroll_high=element->high/row_cnt;
-		my=(28+(scroll_high*element->offset))+((scroll_high*(cnt+1))/2);
-
-			// is up and down OK?
-
-		up_ok=(element->offset!=0);
-		down_ok=((element->offset+(cnt+1))<row_cnt);
-		
-		y-=element->y;
-		
-		if ((y>=(high+4)) && (y<=my) && (up_ok)) {
-			element->offset-=(cnt+1);
-		}
-		else {
-			if ((y>=my) && (down_ok)) {
-				element->offset+=(cnt+1);
-			}
-		}
-		
+	scroll_dir=element_click_scroll_controls(element,high,x,y,up_ok,down_ok);
+	
+	if (scroll_dir!=0) {
+		element->offset+=((cnt+1)*scroll_dir);
 		return;
 	}
 	
@@ -1946,12 +2029,12 @@ void element_draw_table_header_fill(element_type *element,int high)
 	bot=(top+high)+4;
 	y=(top+bot)>>1;
 	
-	col2.r=iface.color.control.header.r*0.5f;
-	col2.g=iface.color.control.header.g*0.5f;
-	col2.b=iface.color.control.header.b*0.5f;
+	col2.r=iface.color.control.header.r*element_gradient_factor;
+	col2.g=iface.color.control.header.g*element_gradient_factor;
+	col2.b=iface.color.control.header.b*element_gradient_factor;
 	
-	view_primitive_2D_color_poly(lft,top,&iface.color.control.header,rgt,top,&iface.color.control.header,rgt,y,&col2,lft,y,&col2,1.0f);
-	view_primitive_2D_color_poly(lft,y,&col2,rgt,y,&col2,rgt,bot,&iface.color.control.header,lft,bot,&iface.color.control.header,1.0f);
+	view_primitive_2D_color_poly(lft,top,&col2,rgt,top,&col2,rgt,y,&iface.color.control.header,lft,y,&iface.color.control.header,1.0f);
+	view_primitive_2D_color_poly(lft,y,&iface.color.control.header,rgt,y,&iface.color.control.header,rgt,bot,&col2,lft,bot,&col2,1.0f);
 	
 	element_draw_table_row_column_lines(element,top,bot,1.0f);
 }
@@ -2038,7 +2121,7 @@ unsigned long element_draw_table_get_image_gl_id(element_type *element,int row_i
 
 void element_draw_table_line_data(element_type *element,int x,int y,int row,int wid,int row_high,d3col *txt_col,char *data)
 {
-	int				n,dx,dy,tx,col_wid,ctrl_sz;
+	int				n,dx,dy,tx,col_wid;
 	unsigned long	gl_id;
 	char			*c,*c2,txt[256];
 	bool			first_col,checked;
@@ -2059,12 +2142,11 @@ void element_draw_table_line_data(element_type *element,int x,int y,int row,int 
 		if ((element->setup.table.checkbox) && (n==0)) {
 
 			col_wid=(int)(element->setup.table.cols[n].percent_size*(float)wid);
-			ctrl_sz=col_wid>>1;
 
 			checked=FALSE;
 			if ((row>=0) && (row<element_table_max_check)) checked=element->setup.table.checks[row];
 
-			element_draw_checkbox_control((((dx-4)+(col_wid>>1))-(ctrl_sz>>1)),dy,ctrl_sz,checked,TRUE,FALSE);
+			element_draw_checkbox_control((dx+4),dy,(col_wid-20),checked,TRUE,FALSE);
 
 			dx+=col_wid;
 			continue;
@@ -2142,89 +2224,26 @@ void element_draw_table_line_data(element_type *element,int x,int y,int row,int 
 	}
 }
 
-int element_draw_table_scrollbar(element_type *element,int high,int row_high,int row_count,bool up_ok,bool down_ok)
-{
-	int				lft,rgt,top,bot,x,y,pos_my,
-					page_count,row_per_page,scroll_high;
-	bool			has_scroll;
-	d3col			col,col2;
-	
-		// scroll bar background and border
-		
-	element_get_box(element,&lft,&rgt,&top,&bot);
-	
-	lft=rgt-24;
-
-	view_primitive_2D_color_quad(&iface.color.scrollbar.background,1.0f,lft,rgt,(top+high),bot);
-	view_primitive_2D_line(&iface.color.control.outline,1.0f,lft,top,lft,bot);
-	
-		// scroll position
-
-	top+=high;
-
-	has_scroll=FALSE;
-
-	page_count=((row_count*row_high)/(bot-top));
-	if (((row_count*row_high)%(bot-top))!=0) page_count++;
-
-	if (page_count>1) {
-		row_per_page=(bot-top)/row_high;
-
-		scroll_high=(bot-top)/page_count;
-		if (element->offset!=0) top+=((element->offset/row_per_page)*scroll_high);
-
-		y=top+scroll_high;
-		if (y>bot) y=bot;
-
-		bot=y;
-
-		has_scroll=TRUE;
-	}
-
-	x=(lft+rgt)>>1;
-	pos_my=(top+bot)/2;
-	
-	if (has_scroll) {
-		memmove(&col,&iface.color.scrollbar.thumb,sizeof(d3col));
-		col2.r=col.r*0.5f;
-		col2.g=col.g*0.5f;
-		col2.b=col.b*0.5f;
-
-		view_primitive_2D_color_poly(lft,bot,&col,lft,top,&col,x,top,&col2,x,bot,&col2,1.0f);
-		view_primitive_2D_color_poly(x,bot,&col2,x,top,&col2,rgt,top,&col,rgt,bot,&col,1.0f);
-		view_primitive_2D_line_quad(&iface.color.control.outline,1.0f,lft,rgt,top,bot);
-	}
-		
-	return(pos_my);
-}
-
 void element_draw_table(element_type *element,int sel_id)
 {
-	int				n,x,y,wid,high,cnt,lft,rgt,top,bot,mid,row_high;
-	float			alpha;
+	int				n,x,y,ky,wid,high,cnt,lft,rgt,top,bot,mid,row_high;
 	char			*c;
 	bool			up_ok,down_ok;
 	d3col			col,col2;
 
 		// sizes
 	
-	wid=element->wid-30;
+	wid=element->wid;
 	high=gl_text_get_char_height(iface.font.text_size_medium)+2;
 	row_high=element_get_table_row_high(element);
 	
 		// get element counts
 		
 	cnt=((element->high-(high+4))/row_high)-1;
-	up_ok=(element->offset!=0);
-	down_ok=((element->offset+(cnt+1))<element_get_table_row_count(element));
 	
 		// header fill
 		
 	element_draw_table_header_fill(element,high);
-	
-		// scrollbar
-		
-	element_draw_table_scrollbar(element,(high+4),row_high,element_get_table_row_count(element),up_ok,down_ok);
 		
 		// outline
 		
@@ -2257,37 +2276,44 @@ void element_draw_table(element_type *element,int sel_id)
 			if (*c==0x0) break;
 			
 				// selection or background
-				
-			if (((n+element->offset)==element->value) && (!element->setup.table.checkbox)) {
-				memmove(&col,&iface.color.control.hilite,sizeof(d3col));
-				col2.r=col.r*0.5f;
-				col2.g=col.g*0.5f;
-				col2.b=col.b*0.5f;
-				alpha=0.75f;
-			}
-			else {
-				if (((n+element->offset)&0x1)==0) {
-					col.r=col.g=col.b=0.0f;
-					col2.r=col2.g=col2.b=0.0f;
-				}
-				else {
-					col.r=col.g=col.b=0.35f;
-					col2.r=col2.g=col2.b=0.35f;
-				}
-				alpha=0.3f;
-			}
-				
+
 			element_get_box(element,&lft,&rgt,&top,&bot);
 			
 			lft+=1;
-			rgt-=25;
+			rgt-=1;
 			top=y;
 			bot=y+row_high;
-			
-			view_primitive_2D_color_poly(lft,top,&col,rgt,top,&col,rgt,bot,&col2,lft,bot,&col2,alpha);
-			
+				
+			if (((n+element->offset)==element->value) && (!element->setup.table.checkbox)) {
+				memmove(&col,&iface.color.control.hilite,sizeof(d3col));
+				col2.r=col.r*element_gradient_factor;
+				col2.g=col.g*element_gradient_factor;
+				col2.b=col.b*element_gradient_factor;
+
+				ky=(top+bot)>>1;
+
+				view_primitive_2D_color_poly(lft,top,&col2,rgt,top,&col2,rgt,ky,&col,lft,ky,&col,1.0f);
+				view_primitive_2D_color_poly(lft,ky,&col,rgt,ky,&col,rgt,bot,&col2,lft,bot,&col2,1.0f);
+			}
+			else {
+				memmove(&col,&iface.color.dialog.background,sizeof(d3col));
+
+				if (((n+element->offset)&0x1)==0) {
+					col.r*=element_gradient_lighten_1;
+					col.g*=element_gradient_lighten_1;
+					col.b*=element_gradient_lighten_1;
+				}
+				else {
+					col.r*=element_gradient_lighten_2;
+					col.g*=element_gradient_lighten_2;
+					col.b*=element_gradient_lighten_2;
+				}
+				
+				view_primitive_2D_color_poly(lft,top,&col,rgt,top,&col,rgt,bot,&col,lft,bot,&col,1.0f);
+			}
+
 			element_draw_table_row_column_lines(element,top,bot,0.5f);
-			
+
 				// table line data
 				
 			element_draw_table_line_data(element,x,y,(element->offset+n),wid,row_high,&iface.color.control.text,c);
@@ -2296,6 +2322,13 @@ void element_draw_table(element_type *element,int sel_id)
 			y+=row_high;
 		}
 	}
+
+		// scroll controls
+
+	up_ok=(element->offset!=0);
+	down_ok=((element->offset+(cnt+1))<element_get_table_row_count(element));
+
+	element_draw_scroll_controls(element,high,up_ok,down_ok);
 	
 		// busy
 		
@@ -2312,9 +2345,9 @@ void element_draw_table(element_type *element,int sel_id)
 	
 	view_primitive_2D_color_quad(&col,0.25f,lft,rgt,top,bot);
 	
-	col.r=iface.color.control.hilite.r*0.5f;
-	col.g=iface.color.control.hilite.g*0.5f;
-	col.b=iface.color.control.hilite.b*0.5f;
+	col.r=iface.color.control.hilite.r*element_gradient_factor;
+	col.g=iface.color.control.hilite.g*element_gradient_factor;
+	col.b=iface.color.control.hilite.b*element_gradient_factor;
 	
 	if (element->setup.table.busy_count!=0) {
 	
@@ -2562,9 +2595,9 @@ void element_draw_color(element_type *element,int sel_id)
 			s_rx=rx;
 		}
 
-		col.r=iface.color.tints[n].r*0.5f;
-		col.g=iface.color.tints[n].g*0.5f;
-		col.b=iface.color.tints[n].b*0.5f;
+		col.r=iface.color.tints[n].r*element_gradient_factor;
+		col.g=iface.color.tints[n].g*element_gradient_factor;
+		col.b=iface.color.tints[n].b*element_gradient_factor;
 
 		view_primitive_2D_color_poly(lx,top,&iface.color.tints[n],rx,top,&iface.color.tints[n],rx,bot,&col,lx,bot,&col,alpha);
 
@@ -2595,31 +2628,17 @@ void element_draw_color(element_type *element,int sel_id)
 
 void element_click_text_box(element_type *element,int x,int y)
 {
-	int				high,page_count;
-	
-		// any scrollbars?
-		
-	if (element->setup.text_box.pos_y==-1) return;
-	
-		// check for clicking in scroll bar
+	int				high,page_count,scroll_dir;
 
-	if (x<((element->x+element->wid)-24)) return;
-	
-		// get page sizes
-		
+		// run the scroll click
+
+	scroll_dir=element_click_scroll_controls(element,0,x,y,element->setup.text_box.scroll_up_ok,element->setup.text_box.scroll_down_ok);
+	if (scroll_dir==0) return;
+
 	high=gl_text_get_char_height(iface.font.text_size_medium);
 	page_count=(element->high-5)/high;
-	
-		// is up and down OK?
 
-	if ((y<=element->setup.text_box.pos_y) && (element->setup.text_box.scroll_up_ok)) {
-		element->offset-=page_count;
-		if (element->offset<0) element->offset=0;
-	}
-
-	if ((y>=element->setup.text_box.pos_y) && (element->setup.text_box.scroll_down_ok)) {
-		element->offset+=page_count;
-	}
+	element->offset+=(scroll_dir*page_count);
 }
 
 void element_draw_text_box(element_type *element)
@@ -2756,12 +2775,8 @@ void element_draw_text_box(element_type *element)
 	element->setup.text_box.line_count=line_count;
 	
 		// scrollbar
-		
-	element->setup.text_box.pos_y=-1;
-	
-	if ((element->setup.text_box.scroll_up_ok) || (element->setup.text_box.scroll_down_ok)) {
-		element->setup.text_box.pos_y=element_draw_table_scrollbar(element,0,high,line_count,element->setup.text_box.scroll_up_ok,element->setup.text_box.scroll_down_ok);
-	}
+
+	element_draw_scroll_controls(element,0,element->setup.text_box.scroll_up_ok,element->setup.text_box.scroll_down_ok);
 	
 		// outline
 
@@ -2881,9 +2896,9 @@ void element_draw_frame(element_type *element)
 		y=(head_top+top)>>1;
 
 		memmove(&col,&iface.color.dialog.header,sizeof(d3col));
-		col2.r=col.r*0.5f;
-		col2.g=col.g*0.5f;
-		col2.b=col.b*0.5f;
+		col2.r=col.r*element_gradient_factor;
+		col2.g=col.g*element_gradient_factor;
+		col2.b=col.b*element_gradient_factor;
 
 		view_primitive_2D_color_poly(lft,head_top,&col,rgt,head_top,&col,rgt,y,&col2,lft,y,&col2,1.0f);
 		view_primitive_2D_color_poly(lft,y,&col2,rgt,y,&col2,rgt,top,&col,lft,top,&col,1.0f);

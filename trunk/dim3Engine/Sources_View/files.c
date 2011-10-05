@@ -330,8 +330,8 @@ void file_open(void)
 	
 		// buttons
 		
-	wid=(int)(((float)iface.scale_x)*0.1f);
-	high=(int)(((float)iface.scale_x)*0.04f);
+	wid=(int)(((float)iface.scale_x)*element_control_button_short_width);
+	high=(int)(((float)iface.scale_x)*element_control_button_height);
 	
 	element_get_button_bottom_right(&x,&y,wid,high);
 	

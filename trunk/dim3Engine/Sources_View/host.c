@@ -371,7 +371,7 @@ void host_game_pane(void)
 	}
 	net_game_types[iface.net_game.ngame][0]=0x0;
 
-	x=(int)(((float)iface.scale_x)*0.20f);
+	x=(int)(((float)iface.scale_x)*0.25f);
 	y=((margin+element_get_tab_control_high())+padding)+control_y_add;
 	
 	element_combo_add("Game Type",(char*)net_game_types,setup.network.game_type,host_game_type_id,x,y,TRUE);
@@ -420,10 +420,10 @@ void host_options_pane(void)
 		// panel sizes
 
 	control_y_add=element_get_control_high();
-	control_y_sz=((control_y_add*3)+(control_y_add*iface.net_option.noption));
+	control_y_sz=(control_y_add*(3+iface.net_option.noption))+element_get_padding();
 	if (iface.net_bot.on) control_y_sz+=(control_y_add*2);
 	
-	x=(int)(((float)iface.scale_x)*0.4f);
+	x=(int)(((float)iface.scale_x)*0.45f);
 	y=(iface.scale_y>>1)-(control_y_sz>>1);
 	
 		// bots
@@ -552,8 +552,8 @@ void host_create_pane(void)
 	
 		// buttons
 		
-	wid=(int)(((float)iface.scale_x)*0.1f);
-	high=(int)(((float)iface.scale_x)*0.04f);
+	wid=(int)(((float)iface.scale_x)*element_control_button_short_width);
+	high=(int)(((float)iface.scale_x)*element_control_button_height);
 
 	element_get_button_bottom_right(&x,&y,wid,high);
 	element_button_text_add("Host",host_button_host_id,x,y,wid,high,element_pos_right,element_pos_bottom);

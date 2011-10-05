@@ -98,13 +98,21 @@ and can be sold or given away.
 #define element_table_max_image					16
 #define element_table_bitmap_size				64
 #define element_table_max_check					128
-#define element_table_check_column_size			0.05f
+#define element_table_check_column_size			0.18f
+
+#define element_scroll_control_size				0.06f
+
+#define element_control_button_short_width		0.15f
+#define element_control_button_long_width		0.25f
+#define element_control_button_height			0.05f
 
 //
 // gradients
 //
 
 #define element_gradient_factor					0.75f
+#define element_gradient_lighten_1				1.1f
+#define element_gradient_lighten_2				1.2f
 
 //
 // screenshot backgrounds
@@ -160,7 +168,7 @@ typedef struct		{
 					} element_tab_type;
 
 typedef struct		{
-						int						line_count,pos_y;
+						int						line_count;
 						bool					scroll_up_ok,scroll_down_ok;
 					} element_text_box_type;
 
