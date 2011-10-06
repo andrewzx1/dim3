@@ -403,7 +403,7 @@ float projectile_reflect_angle(proj_type *proj)
 		// get the angle between them
 
 	f=vector_dot_product(&proj_vct,&normal_vct);
-	f=((float)acos(f))*RAD_to_ANG;
+	f=acosf(f)*RAD_to_ANG;
 
 	if (f>90.0f) f=180.0f-f;							// always use the most shallow angle
 

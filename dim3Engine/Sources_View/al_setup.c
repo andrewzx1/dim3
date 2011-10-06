@@ -54,8 +54,7 @@ void audio_callback(void *userdata,Uint8 *stream,int len)
 	int						n,k,pos,stream_len,dist,vol,
 							data,left_channel,right_channel;
 	short					*s_stream;
-	float					ang;
-	double					d_ang;
+	float					ang,f_ang;
 	bool					has_play;
 	audio_buffer_type		*buffer;
 	audio_play_type			*play;
@@ -128,14 +127,14 @@ void audio_callback(void *userdata,Uint8 *stream,int len)
 			// calculate left/right channels
 
 		if (ang<180.0f) {
-			d_ang=(double)((ang/2.0f)*ANG_to_RAD);
+			f_ang=(ang/2.0f)*ANG_to_RAD;
 		}
 		else {
-			d_ang=(double)(((350.0f-ang)/2.0f)*ANG_to_RAD);
+			f_ang=((350.0f-ang)/2.0f)*ANG_to_RAD;
 		}
 		
-		play->left_fact=(int)(((float)vol)*fabs(cos(d_ang)));
-		play->right_fact=(int)(((float)vol)*fabs(sin(d_ang)));
+		play->left_fact=(int)(((float)vol)*fabs(cosf(f_ang)));
+		play->right_fact=(int)(((float)vol)*fabs(sinf(f_ang)));
 	}
 
 		// if no plays or music, skip audio mix

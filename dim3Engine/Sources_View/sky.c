@@ -103,26 +103,26 @@ void sky_draw_background(void)
 void sky_draw_dome_panoramic_setup(void)
 {
     int					i,n,radius;
-	float				gx1,gx2,tgy,bgy,f_ty,f_by;
-	float				*vertex_ptr,*uv_ptr;
-	double				top_reduce,bot_reduce,d_radius,
+	float				gx1,gx2,tgy,bgy,f_ty,f_by,
+						top_reduce,bot_reduce,f_radius,
 						rxz,rxz2,r_add;
+	float				*vertex_ptr,*uv_ptr;
 
 		// dome setup
 
 	int					y_fct[5]={2,3,5,6,9};
-	float				gy_fct[6]={1.00f,0.80f,0.60f,0.40f,0.20f,0.01f};
-	double				reduce_fct[5]={6.8f,6.4f,6.0f,5.5f,5.0f};
+	float				gy_fct[6]={1.00f,0.80f,0.60f,0.40f,0.20f,0.01f},
+						reduce_fct[5]={6.8f,6.4f,6.0f,5.5f,5.0f};
 	
 		// dome setup
 	
 	radius=map.sky.radius;
-	d_radius=(double)radius;
+	f_radius=(float)radius;
 
 	f_ty=(float)map.sky.dome_y;
-	top_reduce=d_radius;
+	top_reduce=f_radius;
 
-	r_add=ANG_to_RAD*(360/20);
+	r_add=ANG_to_RAD*(360.0f/20.0f);
 	
 		// construct VBO
 
@@ -145,10 +145,10 @@ void sky_draw_dome_panoramic_setup(void)
 		f_by=f_ty;
 		f_ty-=(float)(radius/y_fct[i]);
 
-		rxz=0.0;
+		rxz=0.0f;
 
 		bot_reduce=top_reduce;
-		top_reduce-=(d_radius/reduce_fct[i]);
+		top_reduce-=(f_radius/reduce_fct[i]);
 			
 		bgy=gy_fct[i];
 		tgy=gy_fct[i+1];
@@ -159,7 +159,7 @@ void sky_draw_dome_panoramic_setup(void)
 				rxz2=rxz+r_add;
 			}
 			else {
-				rxz2=0.0;
+				rxz2=0.0f;
 			}
 			
 			gx1=((float)n)/20.0f;
@@ -167,46 +167,46 @@ void sky_draw_dome_panoramic_setup(void)
 		
 				// trig 1
 
-			*vertex_ptr++=(float)(-sin(rxz)*bot_reduce);
+			*vertex_ptr++=-(sinf(rxz)*bot_reduce);
 			*vertex_ptr++=f_by;
-			*vertex_ptr++=(float)(cos(rxz)*bot_reduce);
+			*vertex_ptr++=cosf(rxz)*bot_reduce;
 
 			*uv_ptr++=gx1;
 			*uv_ptr++=bgy;
 
-			*vertex_ptr++=(float)(-sin(rxz2)*bot_reduce);
+			*vertex_ptr++=-(sinf(rxz2)*bot_reduce);
 			*vertex_ptr++=f_by;
-			*vertex_ptr++=(float)(cos(rxz2)*bot_reduce);
+			*vertex_ptr++=cosf(rxz2)*bot_reduce;
 
 			*uv_ptr++=gx2;
 			*uv_ptr++=bgy;
 
-			*vertex_ptr++=(float)(-sin(rxz)*top_reduce);
+			*vertex_ptr++=-(sinf(rxz)*top_reduce);
 			*vertex_ptr++=f_ty;
-			*vertex_ptr++=(float)(cos(rxz)*top_reduce);
+			*vertex_ptr++=cosf(rxz)*top_reduce;
 
 			*uv_ptr++=gx1;
 			*uv_ptr++=tgy;
 
 				// trig 2
 
-			*vertex_ptr++=(float)(-sin(rxz2)*bot_reduce);
+			*vertex_ptr++=-(sinf(rxz2)*bot_reduce);
 			*vertex_ptr++=f_by;
-			*vertex_ptr++=(float)(cos(rxz2)*bot_reduce);
+			*vertex_ptr++=cosf(rxz2)*bot_reduce;
 
 			*uv_ptr++=gx2;
 			*uv_ptr++=bgy;
 			
-			*vertex_ptr++=(float)(-sin(rxz2)*top_reduce);
+			*vertex_ptr++=-(sinf(rxz2)*top_reduce);
 			*vertex_ptr++=f_ty;
-			*vertex_ptr++=(float)(cos(rxz2)*top_reduce);
+			*vertex_ptr++=cosf(rxz2)*top_reduce;
 
 			*uv_ptr++=gx2;
 			*uv_ptr++=tgy;
 
-			*vertex_ptr++=(float)(-sin(rxz)*top_reduce);
+			*vertex_ptr++=-(sinf(rxz)*top_reduce);
 			*vertex_ptr++=f_ty;
-			*vertex_ptr++=(float)(cos(rxz)*top_reduce);
+			*vertex_ptr++=cosf(rxz)*top_reduce;
 
 			*uv_ptr++=gx1;
 			*uv_ptr++=tgy;
@@ -226,21 +226,21 @@ void sky_draw_dome_panoramic_setup(void)
 			rxz2=rxz+r_add;
 		}
 		else {
-			rxz2=0.0;
+			rxz2=0.0f;
 		}
 	
 			// trig 1
 
-		*vertex_ptr++=(float)(-sin(rxz)*top_reduce);
+		*vertex_ptr++=-(sinf(rxz)*top_reduce);
 		*vertex_ptr++=f_by;
-		*vertex_ptr++=(float)(cos(rxz)*top_reduce);
+		*vertex_ptr++=cosf(rxz)*top_reduce;
 	
 		*uv_ptr++=0.0f;
 		*uv_ptr++=0.0f;
 
-		*vertex_ptr++=(float)(-sin(rxz2)*top_reduce);
+		*vertex_ptr++=-(sinf(rxz2)*top_reduce);
 		*vertex_ptr++=f_by;
-		*vertex_ptr++=(float)(cos(rxz2)*top_reduce);
+		*vertex_ptr++=cosf(rxz2)*top_reduce;
 		
 		*uv_ptr++=0.0f;
 		*uv_ptr++=0.0f;
@@ -254,9 +254,9 @@ void sky_draw_dome_panoramic_setup(void)
 
 			// trig 2
 
-		*vertex_ptr++=(float)(-sin(rxz2)*top_reduce);
+		*vertex_ptr++=-(sinf(rxz2)*top_reduce);
 		*vertex_ptr++=f_by;
-		*vertex_ptr++=(float)(cos(rxz2)*top_reduce);
+		*vertex_ptr++=cosf(rxz2)*top_reduce;
 		
 		*uv_ptr++=0.0f;
 		*uv_ptr++=0.0f;
@@ -352,26 +352,26 @@ void sky_draw_dome_panoramic(void)
 void sky_draw_dome_hemisphere_setup(void)
 {
     int					i,n,radius,sz;
-	float				f_ty,f_by,f_ty2,f_by2,gx1,gx2,tgy,bgy;
-	float				*vertex_ptr,*uv_ptr;
-	double				top_reduce,bot_reduce,d_radius,
+	float				f_ty,f_by,f_ty2,f_by2,gx1,gx2,tgy,bgy,
+						top_reduce,bot_reduce,f_radius,
 						rxz,rxz2,r_add;
+	float				*vertex_ptr,*uv_ptr;
 
 		// dome setup
 
 	int					y_fct[6]={2,3,4,6,8,11};
-	float				gy_fct[7]={1.00f,0.70f,0.40f,0.20f,0.10f,0.01f,0.01f};
-	double				reduce_fct[7]={6.6f,6.4f,5.9f,5.2f,4.3f,3.2f};
+	float				gy_fct[7]={1.00f,0.70f,0.40f,0.20f,0.10f,0.01f,0.01f},
+						reduce_fct[7]={6.6f,6.4f,5.9f,5.2f,4.3f,3.2f};
 
 		// dome setup
 	
 	radius=map.sky.radius;
-	d_radius=(double)radius;
+	f_radius=(float)radius;
 
 	f_ty=f_ty2=(float)map.sky.dome_y;
-	top_reduce=d_radius;
+	top_reduce=f_radius;
 
-	r_add=ANG_to_RAD*(360/20);
+	r_add=ANG_to_RAD*(360.0f/20.0f);
 
 		// construct VBO
 		
@@ -395,15 +395,15 @@ void sky_draw_dome_hemisphere_setup(void)
 	for (i=0;i!=5;i++) {				// the y
 		
 		f_by=f_ty;
-		f_ty-=((float)(radius/y_fct[i]));
+		f_ty-=(float)(radius/y_fct[i]);
 
 		f_by2=f_ty2;
-		f_ty2+=((float)(radius/y_fct[i]));
+		f_ty2+=(float)(radius/y_fct[i]);
 
 		rxz=0.0;
 
 		bot_reduce=top_reduce;
-		top_reduce-=(d_radius/reduce_fct[i]);
+		top_reduce-=(f_radius/reduce_fct[i]);
 
 		bgy=gy_fct[i];
 		tgy=gy_fct[i+1];
@@ -414,7 +414,7 @@ void sky_draw_dome_hemisphere_setup(void)
 				rxz2=rxz+r_add;
 			}
 			else {
-				rxz2=0.0;
+				rxz2=0.0f;
 			}
 
 			gx1=((float)n)/20.0f;
@@ -426,46 +426,46 @@ void sky_draw_dome_hemisphere_setup(void)
 
 					// trig 1
 
-				*vertex_ptr++=(float)(-sin(rxz)*bot_reduce);
+				*vertex_ptr++=-(sinf(rxz)*bot_reduce);
 				*vertex_ptr++=f_by;
-				*vertex_ptr++=(float)(cos(rxz)*bot_reduce);
+				*vertex_ptr++=cosf(rxz)*bot_reduce;
 
 				*uv_ptr++=gx1;
 				*uv_ptr++=bgy;
 
-				*vertex_ptr++=(float)(-sin(rxz2)*bot_reduce);
+				*vertex_ptr++=-(sinf(rxz2)*bot_reduce);
 				*vertex_ptr++=f_by;
-				*vertex_ptr++=(float)(cos(rxz2)*bot_reduce);
+				*vertex_ptr++=cosf(rxz2)*bot_reduce;
 
 				*uv_ptr++=gx2;
 				*uv_ptr++=bgy;
 
-				*vertex_ptr++=(float)(-sin(rxz)*top_reduce);
+				*vertex_ptr++=-(sinf(rxz)*top_reduce);
 				*vertex_ptr++=f_ty;
-				*vertex_ptr++=(float)(cos(rxz)*top_reduce);
+				*vertex_ptr++=cosf(rxz)*top_reduce;
 
 				*uv_ptr++=gx1;
 				*uv_ptr++=tgy;
 
 					// trig 2
 
-				*vertex_ptr++=(float)(-sin(rxz2)*bot_reduce);
+				*vertex_ptr++=-(sinf(rxz2)*bot_reduce);
 				*vertex_ptr++=f_by;
-				*vertex_ptr++=(float)(cos(rxz2)*bot_reduce);
+				*vertex_ptr++=cosf(rxz2)*bot_reduce;
 
 				*uv_ptr++=gx2;
 				*uv_ptr++=bgy;
 
-				*vertex_ptr++=(float)(-sin(rxz2)*top_reduce);
+				*vertex_ptr++=-(sinf(rxz2)*top_reduce);
 				*vertex_ptr++=f_ty;
-				*vertex_ptr++=(float)(cos(rxz2)*top_reduce);
+				*vertex_ptr++=cosf(rxz2)*top_reduce;
 
 				*uv_ptr++=gx2;
 				*uv_ptr++=tgy;
 
-				*vertex_ptr++=(float)(-sin(rxz)*top_reduce);
+				*vertex_ptr++=-(sinf(rxz)*top_reduce);
 				*vertex_ptr++=f_ty;
-				*vertex_ptr++=(float)(cos(rxz)*top_reduce);
+				*vertex_ptr++=cosf(rxz)*top_reduce;
 
 				*uv_ptr++=gx1;
 				*uv_ptr++=tgy;
@@ -474,16 +474,16 @@ void sky_draw_dome_hemisphere_setup(void)
 
 					// trig 1
 
-				*vertex_ptr++=(float)(-sin(rxz)*bot_reduce);
+				*vertex_ptr++=-(-sinf(rxz)*bot_reduce);
 				*vertex_ptr++=f_by;
-				*vertex_ptr++=(float)(cos(rxz)*bot_reduce);
+				*vertex_ptr++=cosf(rxz)*bot_reduce;
 
 				*uv_ptr++=gx1;
 				*uv_ptr++=bgy;
 
-				*vertex_ptr++=(float)(-sin(rxz2)*bot_reduce);
+				*vertex_ptr++=-(sinf(rxz2)*bot_reduce);
 				*vertex_ptr++=f_by;
-				*vertex_ptr++=(float)(cos(rxz2)*bot_reduce);
+				*vertex_ptr++=cosf(rxz2)*bot_reduce;
 
 				*uv_ptr++=gx2;
 				*uv_ptr++=bgy;
@@ -497,9 +497,9 @@ void sky_draw_dome_hemisphere_setup(void)
 
 					// trig 2
 
-				*vertex_ptr++=(float)(-sin(rxz2)*bot_reduce);
+				*vertex_ptr++=-(sinf(rxz2)*bot_reduce);
 				*vertex_ptr++=f_by;
-				*vertex_ptr++=(float)(cos(rxz2)*bot_reduce);
+				*vertex_ptr++=cosf(rxz2)*bot_reduce;
 
 				*uv_ptr++=gx2;
 				*uv_ptr++=bgy;
@@ -527,46 +527,46 @@ void sky_draw_dome_hemisphere_setup(void)
 
 						// trig 1
 
-					*vertex_ptr++=(float)(-sin(rxz)*bot_reduce);
+					*vertex_ptr++=-(sinf(rxz)*bot_reduce);
 					*vertex_ptr++=f_by2;
-					*vertex_ptr++=(float)(cos(rxz)*bot_reduce);
+					*vertex_ptr++=cosf(rxz)*bot_reduce;
 				
 					*uv_ptr++=gx1;
 					*uv_ptr++=bgy;
 
-					*vertex_ptr++=(float)(-sin(rxz2)*bot_reduce);
+					*vertex_ptr++=-(sinf(rxz2)*bot_reduce);
 					*vertex_ptr++=f_by2;
-					*vertex_ptr++=(float)(cos(rxz2)*bot_reduce);
+					*vertex_ptr++=cosf(rxz2)*bot_reduce;
 					
 					*uv_ptr++=gx2;
 					*uv_ptr++=bgy;
 
-					*vertex_ptr++=(float)(-sin(rxz)*top_reduce);
+					*vertex_ptr++=-(sinf(rxz)*top_reduce);
 					*vertex_ptr++=f_ty2;
-					*vertex_ptr++=(float)(cos(rxz)*top_reduce);
+					*vertex_ptr++=cosf(rxz)*top_reduce;
 					
 					*uv_ptr++=gx1;
 					*uv_ptr++=tgy;
 
 						// trig 2
 
-					*vertex_ptr++=(float)(-sin(rxz2)*bot_reduce);
+					*vertex_ptr++=-(sinf(rxz2)*bot_reduce);
 					*vertex_ptr++=f_by2;
-					*vertex_ptr++=(float)(cos(rxz2)*bot_reduce);
+					*vertex_ptr++=cosf(rxz2)*bot_reduce;
 					
 					*uv_ptr++=gx2;
 					*uv_ptr++=bgy;
 
-					*vertex_ptr++=(float)(-sin(rxz2)*top_reduce);
+					*vertex_ptr++=-(sinf(rxz2)*top_reduce);
 					*vertex_ptr++=f_ty2;
-					*vertex_ptr++=(float)(cos(rxz2)*top_reduce);
+					*vertex_ptr++=cosf(rxz2)*top_reduce;
 					
 					*uv_ptr++=gx2;
 					*uv_ptr++=tgy;
 
-					*vertex_ptr++=(float)(-sin(rxz)*top_reduce);
+					*vertex_ptr++=-(sinf(rxz)*top_reduce);
 					*vertex_ptr++=f_ty2;
-					*vertex_ptr++=(float)(cos(rxz)*top_reduce);
+					*vertex_ptr++=cosf(rxz)*top_reduce;
 					
 					*uv_ptr++=gx1;
 					*uv_ptr++=tgy;
@@ -575,16 +575,16 @@ void sky_draw_dome_hemisphere_setup(void)
 
 						// trig 1
 
-					*vertex_ptr++=(float)(-sin(rxz)*bot_reduce);
+					*vertex_ptr++=-(sinf(rxz)*bot_reduce);
 					*vertex_ptr++=f_by2;
-					*vertex_ptr++=(float)(cos(rxz)*bot_reduce);
+					*vertex_ptr++=cosf(rxz)*bot_reduce;
 				
 					*uv_ptr++=gx1;
 					*uv_ptr++=bgy;
 
-					*vertex_ptr++=(float)(-sin(rxz2)*bot_reduce);
+					*vertex_ptr++=-(sinf(rxz2)*bot_reduce);
 					*vertex_ptr++=f_by2;
-					*vertex_ptr++=(float)(cos(rxz2)*bot_reduce);
+					*vertex_ptr++=cosf(rxz2)*bot_reduce;
 					
 					*uv_ptr++=gx2;
 					*uv_ptr++=bgy;
@@ -598,9 +598,9 @@ void sky_draw_dome_hemisphere_setup(void)
 
 						// trig 2
 
-					*vertex_ptr++=(float)(-sin(rxz2)*bot_reduce);
+					*vertex_ptr++=-(sinf(rxz2)*bot_reduce);
 					*vertex_ptr++=f_by2;
-					*vertex_ptr++=(float)(cos(rxz2)*bot_reduce);
+					*vertex_ptr++=cosf(rxz2)*bot_reduce;
 					
 					*uv_ptr++=gx2;
 					*uv_ptr++=bgy;

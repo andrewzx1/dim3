@@ -131,8 +131,8 @@ void matrix_rotate_x(matrix_type *mat,float ang)
 	float		rad,r_cos,r_sin;
 	
 	rad=ang*ANG_to_RAD;
-	r_cos=(float)cos(rad);
-	r_sin=(float)sin(rad);
+	r_cos=cosf(rad);
+	r_sin=sinf(rad);
 	
 	matrix_identity(mat);
 
@@ -147,8 +147,8 @@ void matrix_rotate_y(matrix_type *mat,float ang)
 	float		rad,r_cos,r_sin;
 	
 	rad=ang*ANG_to_RAD;
-	r_cos=(float)cos(rad);
-	r_sin=(float)sin(rad);
+	r_cos=cosf(rad);
+	r_sin=sinf(rad);
 	
 	matrix_identity(mat);
 	
@@ -163,8 +163,8 @@ void matrix_rotate_z(matrix_type *mat,float ang)
 	float		rad,r_cos,r_sin;
 	
 	rad=ang*ANG_to_RAD;
-	r_cos=(float)cos(rad);
-	r_sin=(float)sin(rad);
+	r_cos=cosf(rad);
+	r_sin=sinf(rad);
 	
 	matrix_identity(mat);
 	

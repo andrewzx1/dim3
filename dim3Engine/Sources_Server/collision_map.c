@@ -102,7 +102,8 @@ static inline bool line_line_intersect(d3pnt *p0,d3pnt *p1,d3pnt *p2,d3pnt *p3,d
 int circle_line_intersect(d3pnt *p1,d3pnt *p2,d3pnt *circle_pnt,int radius,d3pnt *hit_pnt)
 {
 	int				n,dist,cur_dist;
-	double			rad,rad_add,d_radius,dx,dz;
+	float			rad,rad_add,f_radius;
+	double			dx,dz;
 	d3pnt			cp2,temp_hit_pnt;
 	
 		// ray cast like spokes from the circle
@@ -112,14 +113,14 @@ int circle_line_intersect(d3pnt *p1,d3pnt *p2,d3pnt *circle_pnt,int radius,d3pnt
 
 	cur_dist=-1;
 
-	d_radius=(double)radius;
+	f_radius=(float)radius;
 
-	rad=0.0;
-	rad_add=(D_TRIG_PI*2.0)/24.0;
+	rad=0.0f;
+	rad_add=(TRIG_PI*2.0f)/24.0f;
 
 	for (n=0;n!=24;n++) {
-		cp2.x=circle_pnt->x+(int)(d_radius*sin(rad));
-		cp2.z=circle_pnt->z-(int)(d_radius*cos(rad));
+		cp2.x=circle_pnt->x+(int)(f_radius*sinf(rad));
+		cp2.z=circle_pnt->z-(int)(f_radius*cosf(rad));
 		
 		if (line_line_intersect(p1,p2,circle_pnt,&cp2,&temp_hit_pnt)) {
 			dx=(double)(temp_hit_pnt.x-circle_pnt->x);

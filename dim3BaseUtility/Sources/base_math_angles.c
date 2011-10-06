@@ -78,35 +78,35 @@ float angle_dif(float ang1,float ang2,bool *cwise)
 
 void angle_get_movement(float ang,int mv,int *xadd,int *zadd)
 {
-	double			rad,fmv;
-
-	rad=ang*ANG_to_RAD;
-	fmv=(double)mv;
-
-	*xadd=(int)(fmv*sin(rad));
-	*zadd=-(int)(fmv*cos(rad));
-}
-
-void angle_get_movement_float(float ang,float fmv,float *xadd,float *zadd)
-{
-	double			rad,dmv;
-	
-	rad=ang*ANG_to_RAD;
-	dmv=(double)fmv;
-	
-	*xadd=(float)(fmv*sin(rad));
-	*zadd=-(float)(fmv*cos(rad));
-}
-
-void angle_add_movement(float ang,int mv,int *x,int *z)
-{
-	double			rad,fmv;
+	float			rad,fmv;
 
 	rad=ang*ANG_to_RAD;
 	fmv=(float)mv;
 
-	*x+=(int)(fmv*sin(rad));
-	*z-=(int)(fmv*cos(rad));
+	*xadd=(int)(fmv*sinf(rad));
+	*zadd=-(int)(fmv*cosf(rad));
+}
+
+void angle_get_movement_float(float ang,float fmv,float *xadd,float *zadd)
+{
+	float			rad,dmv;
+	
+	rad=ang*ANG_to_RAD;
+	dmv=(float)fmv;
+	
+	*xadd=(fmv*sinf(rad));
+	*zadd=-(fmv*cosf(rad));
+}
+
+void angle_add_movement(float ang,int mv,int *x,int *z)
+{
+	float			rad,fmv;
+
+	rad=ang*ANG_to_RAD;
+	fmv=(float)mv;
+
+	*x+=(int)(fmv*sinf(rad));
+	*z-=(int)(fmv*cosf(rad));
 }
 
 /* =======================================================
@@ -117,8 +117,7 @@ void angle_add_movement(float ang,int mv,int *x,int *z)
 
 float angle_find(int x,int z,int tox,int toz)
 {
-	float		fang;
-	double		dx,dz;
+	float		fang,fx,fz;
 	
 	if (x==tox) {
 		if (toz>z) return(180.0f);
@@ -129,9 +128,9 @@ float angle_find(int x,int z,int tox,int toz)
 		return(270.0f);
 	}
 
-	dx=(double)abs(tox-x);
-	dz=(double)abs(toz-z);
-	fang=(float)(atan2(dx,dz)*RAD_to_ANG);
+	fx=(float)abs(tox-x);
+	fz=(float)abs(toz-z);
+	fang=atan2f(fx,fz)*RAD_to_ANG;
 	
 	if (toz>z) {
 		if (tox<x) return(180.0f+fang);
@@ -172,25 +171,3 @@ float angle_turn_toward(float ang,float rang,float mv)
 	return(angle_add(ang,mv));
 }
 
-/* =======================================================
-
-      Angle To Normal
-      
-======================================================= */
-
-float angle_to_normal(int x,int z,int tox,int toz)
-{
-	float		dx,dz,ang;
-
-	dx=(float)abs(tox-x);
-	dz=(float)abs(toz-z);
-	ang=fast_atan2f(dx,dz);
-
-	if (toz>z) {
-		if (tox<x) return(fast_sinf(TRIG_PI+ang));
-		return(fast_sinf(TRIG_PI-ang));
-	}
-	
-	if (tox<x) return(fast_sinf((2.0f*TRIG_PI)-ang));
-	return(fast_sinf(ang));
-}

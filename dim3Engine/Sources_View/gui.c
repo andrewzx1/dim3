@@ -38,7 +38,7 @@ extern iface_type			iface;
 extern setup_type			setup;
 extern render_info_type		render_info;
 
-int							gui_background_image_idx;
+int							gui_draw_tick,gui_background_image_idx;
 char						gui_last_key;
 
 /* =======================================================
@@ -92,6 +92,10 @@ void gui_initialize(char *background_path,char *bitmap_name)
 		// no last keypress
 
 	gui_last_key=0x0;
+
+		// draw tick
+
+	gui_draw_tick=game_time_get_raw();
 }
 
 void gui_shutdown(void)
@@ -157,6 +161,17 @@ void gui_draw_background(float alpha)
 
 void gui_draw(float background_alpha,bool cursor)
 {
+	int				tick;
+
+		// gui draw sticks to 30fps
+
+	tick=game_time_get_raw();
+	if (tick<gui_draw_tick) return;
+
+	gui_draw_tick+=(1000/30);
+
+		// clear background
+
 	gl_frame_clear(FALSE);
 
 		// background

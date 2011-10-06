@@ -463,8 +463,8 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 								map_poly_count,draw_trig_count,i_alpha,
 								light_intensity;
 	double						dx,dy,dz,d_alpha;
-	float						stencil_poly_vertexes[8*3];
-	float						*pf,*va,*na;
+	float						f_light_intensity,stencil_poly_vertexes[8*3];
+	float						*pf,*va;
 	unsigned char				*vertex_ptr,*vp,*pc;
 	d3vct						*vct;
 	d3pnt						*spt,*hpt,bound_min,bound_max,light_pnt;
@@ -496,11 +496,15 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 	d_alpha=1.0/(d_alpha*d_alpha);
 
 		// setup the rays
+		// clip them at the light intensity
+		// distance
+
+	if (model_mesh->nvertex>=view_shadows_vertex_count) return;
 
 	spt=shadow_spt;
 	vct=shadow_vct;
 
-	if (model_mesh->nvertex>=view_shadows_vertex_count) return;
+	f_light_intensity=(float)light_intensity;
 
 	va=draw->setup.mesh_arrays[model_mesh_idx].gl_vertex_array;
 			
@@ -509,9 +513,14 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 		spt->y=(int)*va++;
 		spt->z=(int)*va++;
 				
-		vct->x=(float)((spt->x-light_pnt.x)*100);
-		vct->y=(float)((spt->y-light_pnt.y)*100);
-		vct->z=(float)((spt->z-light_pnt.z)*100);
+		vct->x=(float)(spt->x-light_pnt.x);
+		vct->y=(float)(spt->y-light_pnt.y);
+		vct->z=(float)(spt->z-light_pnt.z);
+
+		vector_normalize(vct);
+		vct->x*=f_light_intensity;
+		vct->y*=f_light_intensity;
+		vct->z*=f_light_intensity;
 				
 		spt++;
 		vct++;
@@ -577,8 +586,6 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 				// supergumba == move this outside!
 				
 		//	na=draw->setup.mesh_arrays[model_mesh_idx].gl_normal_array+(k*3);
-
-				
 		//	if (((na[0]*(float)(draw->pnt.x-light_pnt.x))+(na[1]*(float)(draw->pnt.y-light_pnt.y))+(na[2]*(float)(draw->pnt.z-light_pnt.z)))<0.0f) continue;
 
 				// do a bounds check for quick eliminations
@@ -639,8 +646,8 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 		glEnableClientState(GL_COLOR_ARRAY);
 		glColorPointer(4,GL_UNSIGNED_BYTE,draw->vbo[model_mesh_idx].shadow_vertex_stride,(GLvoid*)(3*sizeof(float)));
 
-			// run through all the stenciled polygons
-			// and draw their trigs
+			// draw the trigs onto the
+			// stenciled polygon
 
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);

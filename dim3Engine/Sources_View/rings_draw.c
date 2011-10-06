@@ -72,11 +72,10 @@ void ring_draw(effect_type *effect,int count)
 							life_tick;
 	float					mx,my,mz,fx,fy,fz,
 							vx[4],vy[4],vz[4],tx[4],ty[4],
-							outer_sz,inner_sz,
+							outer_sz,inner_sz,rd,rd2,
 							color_dif,alpha,gx,gy,g_size,
 							f_count,f_tick;
 	float					*pf,*vertex_ptr;
-	double					rd,rd2;
 	d3col					col;
 	iface_ring_type			*ring;
 	ring_effect_data		*eff_ring;
@@ -162,13 +161,13 @@ void ring_draw(effect_type *effect,int count)
 	pf=vertex_ptr;
 
 	for (n=0;n!=360;n+=10) {
-		rd=(double)n*ANG_to_RAD;
-		rd2=((double)(n+10))*ANG_to_RAD;
+		rd=((float)n)*ANG_to_RAD;
+		rd2=((float)(n+10))*ANG_to_RAD;
 
 			// vertex 0
 
-		fx=(float)cos(rd)*outer_sz;
-		fy=-((float)sin(rd)*outer_sz);
+		fx=cosf(rd)*outer_sz;
+		fy=-(sinf(rd)*outer_sz);
 		fz=0.0f;
 
 		matrix_vertex_multiply(&mat_x,&fx,&fy,&fz);
@@ -184,8 +183,8 @@ void ring_draw(effect_type *effect,int count)
 
 			// vertex 1
 
-		fx=(float)cos(rd2)*outer_sz;
-		fy=-((float)sin(rd2)*outer_sz);
+		fx=cosf(rd2)*outer_sz;
+		fy=-(sinf(rd2)*outer_sz);
 		fz=0.0f;
 		
 		matrix_vertex_multiply(&mat_x,&fx,&fy,&fz);
@@ -201,8 +200,8 @@ void ring_draw(effect_type *effect,int count)
 
 			// vertex 2
 
-		fx=(float)cos(rd2)*inner_sz;
-		fy=-((float)sin(rd2)*inner_sz);
+		fx=cosf(rd2)*inner_sz;
+		fy=-(sinf(rd2)*inner_sz);
 		fz=0.0f;
 
 		matrix_vertex_multiply(&mat_x,&fx,&fy,&fz);
@@ -218,8 +217,8 @@ void ring_draw(effect_type *effect,int count)
 		
 			// vertex 3
 
-		fx=(float)cos(rd)*inner_sz;
-		fy=-((float)sin(rd)*inner_sz);
+		fx=cosf(rd)*inner_sz;
+		fy=-(sinf(rd)*inner_sz);
 		fz=0.0f;
 
 		matrix_vertex_multiply(&mat_x,&fx,&fy,&fz);

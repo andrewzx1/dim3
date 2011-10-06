@@ -394,7 +394,7 @@ void host_game_pane(void)
 	x=margin+padding;
 
 	wid=iface.scale_x-((margin+padding)*2);
-	high=(int)(((float)iface.scale_y)*0.85f)-y;
+	high=(int)(((float)iface.scale_y)*0.83f)-y;
 
 	strcpy(cols[0].name,"Map");
 	cols[0].percent_size=1.0f;

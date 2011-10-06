@@ -83,7 +83,7 @@ int pin_build_ray_set_obj(obj_type *obj,int ty,int by)
 {
 	int				n,k,x,z,radius,radius_sub,
 					circle_count,ray_count;
-	double			rad,rad_add,d_radius;
+	float			rad,rad_add,f_radius;
 
 		// get radius
 		
@@ -107,7 +107,7 @@ int pin_build_ray_set_obj(obj_type *obj,int ty,int by)
 
 		// loop in radians
 
-	rad_add=(D_TRIG_PI*2.0)/16.0;
+	rad_add=(TRIG_PI*2.0f)/16.0f;
 
 		// create circles
 
@@ -115,12 +115,12 @@ int pin_build_ray_set_obj(obj_type *obj,int ty,int by)
 
 	for (n=0;n!=circle_count;n++) {
 
-		rad=0.0;
-		d_radius=(double)radius;
+		rad=0.0f;
+		f_radius=(float)radius;
 
 		for (k=0;k!=16;k++) {
-			pin_movement_spt[ray_count].x=pin_movement_ept[ray_count].x=x+(int)(d_radius*sin(rad));
-			pin_movement_spt[ray_count].z=pin_movement_ept[ray_count].z=z-(int)(d_radius*cos(rad));
+			pin_movement_spt[ray_count].x=pin_movement_ept[ray_count].x=x+(int)(f_radius*sinf(rad));
+			pin_movement_spt[ray_count].z=pin_movement_ept[ray_count].z=z-(int)(f_radius*cosf(rad));
 			pin_movement_spt[ray_count].y=ty;
 			pin_movement_ept[ray_count].y=by;
 			ray_count++;

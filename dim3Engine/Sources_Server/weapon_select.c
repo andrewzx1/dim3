@@ -640,7 +640,7 @@ int weapon_get_bounce(obj_type *obj,weapon_type *weap)
 {
 	float		f;
 	
-	f=(float)sin(((float)obj->held_weapon.bounce_y)*ANG_to_RAD);
+	f=sinf(((float)obj->held_weapon.bounce_y)*ANG_to_RAD);
 	return((int)(f*weap->hand.bounce_ang));
 }
 
