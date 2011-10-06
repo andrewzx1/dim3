@@ -3956,10 +3956,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\dim3BaseUtility\Sources\base_math_fast_trig.c"
-					>
-				</File>
-				<File
 					RelativePath="..\..\dim3BaseUtility\Sources\base_math_matrix.c"
 					>
 				</File>

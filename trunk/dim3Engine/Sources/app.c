@@ -54,10 +54,6 @@ bool app_start(char *err_str)
 
 	game_time_initialize();
 	
-		// math utility initialization
-		
-	fast_trig_setup();
-	
 		// ray tracing structures
 		
 	if (!ray_trace_initialize(err_str)) return(FALSE);

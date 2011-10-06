@@ -66,9 +66,8 @@ void fog_draw_textured(void)
 						radius_add,radius,frame,mem_sz;
 	unsigned long		gl_id;
 	float				r_ang,r_ang_2,r_add,fx,fz,fx_1,fx_2,fz_1,fz_2,f_ty,f_by,
-						gx,gx_add,gx_shift;
+						f_radius,gx,gx_add,gx_shift;
 	float				*vertex_ptr,*uv_ptr;
-	double				d_radius;
 	texture_type		*texture;
 	
 		// textured fog on?
@@ -134,18 +133,17 @@ void fog_draw_textured(void)
 		gx=gx_shift*((float)n);
 
 		r_ang=0.0f;
+		f_radius=(float)radius;
 
 		for (k=0;k!=16;k++) {
 
-			d_radius=(double)radius;
-
 			r_ang_2=r_ang+r_add;
 
-			fx_1=(float)(-sin(r_ang)*d_radius)+fx;
-			fx_2=(float)(-sin(r_ang_2)*d_radius)+fx;
+			fx_1=(-sinf(r_ang)*f_radius)+fx;
+			fx_2=(-sinf(r_ang_2)*f_radius)+fx;
 
-			fz_1=-(float)(cos(r_ang)*d_radius)+fz;
-			fz_2=-(float)(cos(r_ang_2)*d_radius)+fz;
+			fz_1=-(cosf(r_ang)*f_radius)+fz;
+			fz_2=-(cosf(r_ang_2)*f_radius)+fz;
 
 				// triangle 1
 				

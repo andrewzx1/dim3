@@ -89,10 +89,8 @@ typedef struct		{
 //
 
 #define TRIG_PI					3.14159265358979f
-#define D_TRIG_PI				3.14159265358979
-#define D_INV_TRIG_PI			0.31830988618379
-#define ANG_to_RAD				(float)(TRIG_PI/180.0f)
-#define RAD_to_ANG				(float)(180.0f/TRIG_PI)
+#define ANG_to_RAD				(TRIG_PI/180.0f)
+#define RAD_to_ANG				(180.0f/TRIG_PI)
 
 //
 // Matrix Structure
@@ -139,11 +137,6 @@ extern inline void vector_subtract(d3vct *v,d3vct *v1,d3vct *v2);
 extern inline void vector_cross_product(d3vct *v,d3vct *v1,d3vct *v2);
 extern inline float vector_dot_product(d3vct *v1,d3vct *v2);
 
-extern void fast_trig_setup(void);
-extern inline float fast_atan2f(float y,float x);
-extern inline float fast_sinf(float x);
-extern inline float fast_cosf(float x);
-
 extern float angle_add(float ang1,float ang2);
 extern float angle_dif(float ang1,float ang2,bool *cwise);
 extern void angle_get_movement(float ang,int mv,int *xadd,int *zadd);
@@ -151,7 +144,6 @@ extern void angle_get_movement_float(float ang,float fmv,float *xadd,float *zadd
 extern void angle_add_movement(float ang,int mv,int *x,int *z);
 extern float angle_find(int x,int z,int tox,int toz);
 extern float angle_turn_toward(float ang,float rang,float mv);
-extern float angle_to_normal(int x,int z,int tox,int toz);
 
 extern void rotate_point(int *x,int *y,int *z,int cx,int cy,int cz,float ang_x,float ang_y,float ang_z);
 extern void rotate_polygon(int ptsz,int *x,int *y,int *z,int cx,int cy,int cz,float ang_x,float ang_y,float ang_z);

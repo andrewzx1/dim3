@@ -58,7 +58,7 @@ float liquid_tide_get_high(map_liquid_type *liq)
 	
 		// waves are sin waves
 
-	sn=(float)sin((TRIG_PI*2.0f)*f_time);
+	sn=sinf((TRIG_PI*2.0f)*f_time);
 	return(((float)liq->tide.high)*sn);
 }
 
@@ -73,7 +73,7 @@ float liquid_tide_get_uv_factor(map_liquid_type *liq)
 	
 		// waves are sin waves
 
-	sn=(float)sin((TRIG_PI*2.0f)*f_time);
+	sn=sinf((TRIG_PI*2.0f)*f_time);
 	
 	shift=liq->tide.uv_shift*0.5f;
 	return(shift+(shift*sn));
@@ -126,7 +126,7 @@ void liquid_wave_get_high(map_liquid_type *liq,float *wave_y)
 	
 		// waves are sin waves
 
-	cs=(float)cos((TRIG_PI*2.0f)*f_time);
+	cs=cosf((TRIG_PI*2.0f)*f_time);
 	f=((float)liq->wave.high)*cs;
 	
 	wave_y[0]=fy-f;

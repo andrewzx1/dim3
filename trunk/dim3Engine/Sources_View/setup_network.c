@@ -149,7 +149,7 @@ void setup_network_player_pane(void)
 	y+=padding;
 
 	wid=(int)(((float)iface.scale_x)*0.80f)-((margin+padding)*2);
-	high=(int)(((float)iface.scale_y)*0.85f)-y;
+	high=(int)(((float)iface.scale_y)*0.84f)-y;
 
 	strcpy(cols[0].name,"Characters");
 	cols[0].percent_size=1.0f;
@@ -166,7 +166,7 @@ void setup_network_player_pane(void)
 		// character model
 
 	x=(int)(((float)iface.scale_x)*0.81f);
-	y=(int)(((float)iface.scale_y)*0.8f);
+	y=(int)(((float)iface.scale_y)*0.78f);
 	
 	hud_character=&iface.character.characters[setup.network.character_idx];
 
@@ -185,7 +185,7 @@ void setup_network_host_pane(void)
 	y=(margin+element_get_tab_control_high())+padding;
 
 	wid=iface.scale_x-((margin+padding)*2);
-	high=(int)(((float)iface.scale_y)*0.72f)-y;
+	high=(int)(((float)iface.scale_y)*0.73f)-y;
 
 	control_y_add=element_get_control_high();
 
@@ -203,7 +203,7 @@ void setup_network_host_pane(void)
 
 		// host editing
 
-	x=(int)(((float)iface.scale_x)*0.15f);
+	x=(int)(((float)iface.scale_x)*0.17f);
 	y+=(high+control_y_add+8);
 
 	element_text_field_add("Name","",name_str_len,ctrl_network_host_name_id,x,y,TRUE);
@@ -219,15 +219,15 @@ void setup_network_host_pane(void)
 	
 	wid=(int)(((float)iface.scale_x)*element_control_button_long_width);
 	high=(int)(((float)iface.scale_x)*element_control_button_height);
-	
-	y+=(padding+(high/2));
 
-	element_button_text_add("Add Host",setup_network_host_add_button,(x-(padding/2)),y,wid,high,element_pos_right,element_pos_center);
+	element_get_button_bottom_left(&x,&y,wid,high);
+	element_button_text_add("Add Host",setup_network_host_add_button,x,y,wid,high,element_pos_left,element_pos_bottom);
 
-	element_button_text_add("Update Host",setup_network_host_update_button,(x-(padding/2)),y,wid,high,element_pos_right,element_pos_center);
+	element_button_text_add("Update Host",setup_network_host_update_button,x,y,wid,high,element_pos_left,element_pos_bottom);
 	element_hide(setup_network_host_update_button,TRUE);
 	
-	element_button_text_add("Delete Host",setup_network_host_delete_button,(x+(padding/2)),y,wid,high,element_pos_left,element_pos_center);
+	x=element_get_x_position(setup_network_host_add_button)+(wid+element_get_padding());
+	element_button_text_add("Delete Host",setup_network_host_delete_button,x,y,wid,high,element_pos_left,element_pos_bottom);
 	element_enable(setup_network_host_delete_button,FALSE);
 }
 

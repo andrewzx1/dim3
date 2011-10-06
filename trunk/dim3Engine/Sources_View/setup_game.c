@@ -240,7 +240,7 @@ void setup_game_action_pane(void)
 	y=(margin+element_get_tab_control_high())+padding;
 
 	wid=iface.scale_x-((margin+padding)*2);
-	high=(int)(((float)iface.scale_y)*0.82f)-y;
+	high=(int)(((float)iface.scale_y)*0.76f)-y;
 	
 		// setup action list
 		

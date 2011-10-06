@@ -140,7 +140,7 @@ void particle_globe_precalculate(iface_particle_type *particle)
 {
 	int							n,k,y,count,row_count;
 	float						rxz,ry,vy,r_xz_add,r_y_add,xz_reduce;
-	double						d_x_radius,d_y_radius,d_z_radius,d_vx_radius,d_vz_radius;
+	double						f_x_radius,f_y_radius,f_z_radius,f_vx_radius,f_vz_radius;
 	iface_particle_piece_type	*pps;
 
 		// get per-row count
@@ -154,7 +154,7 @@ void particle_globe_precalculate(iface_particle_type *particle)
 
 		// create particle globe
 
-	d_y_radius=(double)particle->pt.y;
+	f_y_radius=(float)particle->pt.y;
 
 	r_xz_add=ANG_to_RAD*(360/row_count);
 
@@ -170,27 +170,27 @@ void particle_globe_precalculate(iface_particle_type *particle)
 			r_y_add=-r_y_add;			// both hemispheres
 		}
 		
-		y=(int)(-sin(ry)*d_y_radius);
-		vy=(float)(-sin(ry)*particle->vct.y);
+		y=(int)(-sinf(ry)*f_y_radius);
+		vy=(float)(-sinf(ry)*particle->vct.y);
 
-		xz_reduce=(float)cos(ry);
+		xz_reduce=cosf(ry);
 
-		d_x_radius=(double)(((float)particle->pt.x)*xz_reduce);
-		d_z_radius=(double)(((float)particle->pt.z)*xz_reduce);
+		f_x_radius=((float)particle->pt.x)*xz_reduce;
+		f_z_radius=((float)particle->pt.z)*xz_reduce;
 
-		d_vx_radius=(double)(particle->vct.x*xz_reduce);
-		d_vz_radius=(double)(particle->vct.z*xz_reduce);
+		f_vx_radius=((float)particle->vct.x)*xz_reduce;
+		f_vz_radius=((float)particle->vct.z)*xz_reduce;
 
 		rxz=0.0;
 			
 		for (k=0;k!=row_count;k++) {			// the x and z
-			pps->pt.x=(int)(-sin(rxz)*d_x_radius);
+			pps->pt.x=(int)(-sinf(rxz)*f_x_radius);
 			pps->pt.y=y;
-			pps->pt.z=(int)(cos(rxz)*d_z_radius);
+			pps->pt.z=(int)(cosf(rxz)*f_z_radius);
 
-			pps->vct.x=(float)(-sin(rxz)*d_vx_radius);
+			pps->vct.x=-sinf(rxz)*f_vx_radius;
 			pps->vct.y=vy;
-			pps->vct.z=(float)(cos(rxz)*d_vz_radius);
+			pps->vct.z=cosf(rxz)*f_vz_radius;
 
 			pps++;
 			count++;
