@@ -464,7 +464,7 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 								light_intensity;
 	double						dx,dy,dz,d_alpha;
 	float						stencil_poly_vertexes[8*3];
-	float						*pf,*va;
+	float						*pf,*va,*na;
 	unsigned char				*vertex_ptr,*vp,*pc;
 	d3vct						*vct;
 	d3pnt						*spt,*hpt,bound_min,bound_max,light_pnt;
@@ -571,6 +571,15 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 	
 		for (k=0;k!=model_mesh->ntrig;k++) {
 			model_trig=&model_mesh->trigs[k];
+			
+				// ignore anything pointing towards
+				// light (assume solid objects)
+				// supergumba == move this outside!
+				
+		//	na=draw->setup.mesh_arrays[model_mesh_idx].gl_normal_array+(k*3);
+
+				
+		//	if (((na[0]*(float)(draw->pnt.x-light_pnt.x))+(na[1]*(float)(draw->pnt.y-light_pnt.y))+(na[2]*(float)(draw->pnt.z-light_pnt.z)))<0.0f) continue;
 
 				// do a bounds check for quick eliminations
 

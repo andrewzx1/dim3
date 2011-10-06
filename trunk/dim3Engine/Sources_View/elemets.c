@@ -1466,8 +1466,8 @@ void element_draw_checkbox_control(int x,int y,int wid,bool checked,bool enabled
 		// text
 
 	gl_text_start(font_interface_index,iface.font.text_size_medium);
-	gl_text_draw((lft+(wid>>2)),(y-1),"off",tx_center,TRUE,&iface.color.control.label,1.0f);
-	gl_text_draw((rgt-(wid>>2)),(y-1),"on",tx_center,TRUE,&iface.color.control.label,1.0f);
+	gl_text_draw((lft+(wid>>2)),(y-2),"off",tx_center,TRUE,&iface.color.control.label,1.0f);
+	gl_text_draw((rgt-(wid>>2)),(y-2),"on",tx_center,TRUE,&iface.color.control.label,1.0f);
 	gl_text_end();
 
 		// outline
@@ -1647,7 +1647,7 @@ void element_draw_combo(element_type *element,int sel_id)
 	strcpy(str,(element->data+(element->value*32)));
 
 	gl_text_start(font_interface_index,iface.font.text_size_medium);
-	gl_text_draw((x+15),(ky-1),str,tx_left,TRUE,&iface.color.control.text,alpha);
+	gl_text_draw((x+15),(ky-2),str,tx_left,TRUE,&iface.color.control.text,alpha);
 	gl_text_end();
 }
 
@@ -1719,10 +1719,10 @@ void element_draw_combo_open(element_type *element)
 		strcpy(str,(element->data+(n*32)));
 
 		if (sel_item_idx==n) {
-			gl_text_draw((x+10),((top+bot)>>1),str,tx_left,TRUE,&iface.color.control.mouse_over,1.0f);
+			gl_text_draw((x+10),(((top+bot)>>1)-2),str,tx_left,TRUE,&iface.color.control.mouse_over,1.0f);
 		}
 		else {
-			gl_text_draw((x+10),((top+bot)>>1),str,tx_left,TRUE,&iface.color.control.text,1.0f);
+			gl_text_draw((x+10),(((top+bot)>>1)-2),str,tx_left,TRUE,&iface.color.control.text,1.0f);
 		}
 
 		gl_text_end();
@@ -1829,7 +1829,7 @@ void element_draw_slider(element_type *element,int sel_id)
 
 	gl_text_start(font_interface_index,iface.font.text_size_medium);
 	sprintf(str,"%d%%",(int)(element->setup.slider.value*100.0f));
-	gl_text_draw((rgt-5),ky,str,tx_right,TRUE,&iface.color.control.text,1.0f);
+	gl_text_draw((rgt-5),(ky-1),str,tx_right,TRUE,&iface.color.control.text,1.0f);
 	gl_text_end();
 }
 
