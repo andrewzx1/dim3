@@ -536,6 +536,13 @@ void list_palette_fill_picking_mode(list_palette_type *list)
 			continue;
 		}
 
+			// ~ marks disabled
+
+		if (str_ptr[0]=='~') {
+			list_palette_add_string(list,-1,(char*)&str_ptr[1],"(Circular Reference)",TRUE);
+			continue;
+		}
+
 			// regular clickable items
 
 		sel=FALSE;
@@ -1116,6 +1123,7 @@ void list_palette_draw_item(list_palette_type *list,int idx)
 	float						vertexes[8];
 	bool						selected;
 	char						str[32];
+	d3col						col;
 	d3rect						box;
 	list_palette_item_type		*item;
 
@@ -1197,7 +1205,14 @@ void list_palette_draw_item(list_palette_type *list,int idx)
 			// string
 
 		case list_item_ctrl_string:
-			text_draw(x,y,list_item_font_size,NULL,item->name);
+			if (!item->disabled) {
+				col.r=col.g=col.b=0.0f;
+			}
+			else {
+				col.r=col.g=0.0f;
+				col.b=1.0f;
+			}
+			text_draw(x,y,list_item_font_size,&col,item->name);
 			list_palette_draw_item_string(list,item);
 			list_palette_draw_item_button(list,idx);
 			break;

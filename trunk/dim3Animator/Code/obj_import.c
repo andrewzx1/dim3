@@ -558,8 +558,6 @@ bool import_obj(char *path,bool replace,bool *found_normals,char *err_str)
 		free(old_vertex);
 	}
 	
-	model_calculate_parents(&model);
-	
 	progress_end();
 
 	return(TRUE);

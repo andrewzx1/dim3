@@ -198,10 +198,6 @@ void property_palette_click_mesh(int mesh_idx,int id,bool double_click)
 					bone++;
 				}
 			}
-
-				// recalc the vertexes
-			
-			model_calculate_parents(&model);
 				
 			break;
 

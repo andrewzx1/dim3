@@ -477,10 +477,6 @@ void select_model_wind_mesh(d3pnt *start_pnt)
 			}
 		}
 
-			// recalc the vertexes
-		
-		model_calculate_parents(&model);
-
 			// save movement for future imports
 
 		mesh->import_move.x=old_import_move.x+shift.x;
@@ -744,6 +740,8 @@ bool drag_bone_model_wind(d3pnt *start_pnt)
 		item_palette_scroll_into_view(item_bone,state.cur_bone_idx);
 
 		if (state.sel_vertex_with_bone) vertex_set_sel_mask_bone(state.cur_mesh_idx,state.cur_bone_idx);
+
+		list_palette_set_level(1);
 
 		main_wind_draw();
 

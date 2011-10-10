@@ -393,8 +393,6 @@ void vertex_set_sel_vertex_to_bone(int mesh_idx,int major_bone_idx,int minor_bon
 		
 		vertex++;
 	}
-	
-	model_calculate_parents(&model);
 }
 
 /* =======================================================

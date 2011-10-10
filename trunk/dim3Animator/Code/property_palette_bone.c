@@ -111,7 +111,6 @@ void property_palette_fill_bone(int bone_idx,int pose_idx)
 
 void property_palette_click_bone(int bone_idx,int pose_idx,int id,bool double_click)
 {
-	int						old_parent_bone_idx;
 	model_bone_type			*bone;
 	model_bone_move_type	*bone_move;
 	
@@ -129,7 +128,6 @@ void property_palette_click_bone(int bone_idx,int pose_idx,int id,bool double_cl
 
 		case kBonePropertyPosition:
 			dialog_property_chord_run(list_chord_value_point,(void*)&bone->pnt);
-			model_calculate_parents(&model);
 			break;
 
 		case kBonePropertyTag:
@@ -137,17 +135,7 @@ void property_palette_click_bone(int bone_idx,int pose_idx,int id,bool double_cl
 			break;
 
 		case kBonePropertyParent:
-			old_parent_bone_idx=bone->parent_idx;
-			property_palette_pick_bone(&bone->parent_idx);
-			if (bone->parent_idx==bone_idx) {
-				os_dialog_alert("Parent Bone","Can not set itself as the parent bone.");
-				bone->parent_idx=old_parent_bone_idx;
-			}
-			if (model_check_bone_circular(&model,bone)) {
-				os_dialog_alert("Parent Bone","This parent bone will make a circular bone reference.");
-				bone->parent_idx=old_parent_bone_idx;
-			}
-			model_calculate_parents(&model);
+			property_palette_pick_bone(&bone->parent_idx,bone_idx);
 			break;
 
 			// handles
@@ -184,7 +172,7 @@ void property_palette_click_bone(int bone_idx,int pose_idx,int id,bool double_cl
 
 		case kPoseBoneMovePropertyConstraintBone:
 			bone_move=&model.poses[pose_idx].bone_moves[bone_idx];
-			property_palette_pick_bone(&bone_move->constraint.bone_idx);
+			property_palette_pick_bone(&bone_move->constraint.bone_idx,-1);
 			break;
 
 		case kPoseBoneMovePropertyConstraintOffset:

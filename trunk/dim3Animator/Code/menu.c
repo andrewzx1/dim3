@@ -200,49 +200,41 @@ bool menu_event_run(int cmd)
 		case kCommandScaleAll:
 			if (!dialog_scale_run(&model,&fx,&fy,&fz)) return(TRUE);
 			model_scale_all(&model,fx,fy,fz);
-            model_calculate_parents(&model);
             main_wind_draw();
 			return(TRUE);
 			
 		case kCommandFlipXAll:
 			model_flip_all(&model,TRUE,FALSE,FALSE);
-            model_calculate_parents(&model);
             main_wind_draw();
 			return(TRUE);
 			
 		case kCommandFlipYAll:
 			model_flip_all(&model,FALSE,TRUE,FALSE);
-            model_calculate_parents(&model);
             main_wind_draw();
 			return(TRUE);
 
 		case kCommandFlipZAll:
 			model_flip_all(&model,FALSE,FALSE,TRUE);
-            model_calculate_parents(&model);
             main_wind_draw();
 			return(TRUE);
 			
 		case kCommandSwapXZAll:
 			model_swap_xz_all(&model);
-            model_calculate_parents(&model);
             main_wind_draw();
 			return(TRUE);
 			
 		case kCommandSwapYZAll:
 			model_swap_yz_all(&model);
-            model_calculate_parents(&model);
             main_wind_draw();
 			return(TRUE);
             
 		case kCommandCenterXZAll:
 			model_center_xz_all(&model);
-            model_calculate_parents(&model);
             main_wind_draw();
 			return(TRUE);
             
 		case kCommandFloorYAll:
 			model_floor_all(&model);
-            model_calculate_parents(&model);
             main_wind_draw();
 			return(TRUE);
 
@@ -325,19 +317,16 @@ bool menu_event_run(int cmd)
 			
 		case kCommandFlipX:
 			model_flip(&model,state.cur_mesh_idx,TRUE,FALSE,FALSE);
-            model_calculate_parents(&model);
             main_wind_draw();
 			return(TRUE);
 
 		case kCommandFlipY:
 			model_flip(&model,state.cur_mesh_idx,FALSE,TRUE,FALSE);
-            model_calculate_parents(&model);
             main_wind_draw();
 			return(TRUE);
 			
 		case kCommandFlipZ:
 			model_flip(&model,state.cur_mesh_idx,FALSE,FALSE,TRUE);
-            model_calculate_parents(&model);
             main_wind_draw();
 			return(TRUE);
 			
@@ -353,25 +342,21 @@ bool menu_event_run(int cmd)
 			
 		case kCommandSwapXZ:
 			model_swap_xz(&model,state.cur_mesh_idx);
-            model_calculate_parents(&model);
             main_wind_draw();
 			return(TRUE);
 			
 		case kCommandSwapYZ:
 			model_swap_yz(&model,state.cur_mesh_idx);
-            model_calculate_parents(&model);
             main_wind_draw();
 			return(TRUE);
             
 		case kCommandCenterXZ:
 			model_center_xz(&model,state.cur_mesh_idx);
-            model_calculate_parents(&model);
             main_wind_draw();
 			return(TRUE);
             
 		case kCommandFloorY:
 			model_floor(&model,state.cur_mesh_idx);
-            model_calculate_parents(&model);
             main_wind_draw();
 			return(TRUE);
 			
@@ -434,7 +419,6 @@ bool menu_event_run(int cmd)
 			
 		case kCommandVertexDelete:
 			vertex_delete_sel_vertex(state.cur_mesh_idx);
-			model_calculate_parents(&model);
 			main_wind_draw();
 			return(TRUE);
 			

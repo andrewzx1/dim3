@@ -86,7 +86,7 @@ void property_palette_click_hit_box(int hit_box_idx,int id,bool double_click)
 			break;
 
 		case kHitBoxPropertyBone:
-			property_palette_pick_bone(&hit_box->bone_idx);
+			property_palette_pick_bone(&hit_box->bone_idx,-1);
 			break;
 
 		case kHitBoxPropertyOffset:
