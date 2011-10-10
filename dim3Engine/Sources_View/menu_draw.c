@@ -120,24 +120,24 @@ void menu_draw_end(bool fade)
 
 int menu_find_item(iface_menu_type *menu,int kx,int ky)
 {
-	int						n,x,y,wid,high,half_high;
+	int						n,x,y,high,half_high,lft,rgt;
 	iface_menu_item_type	*item;
 	
-	high=gl_text_get_char_height(iface.font.text_size_large);
+	high=gl_text_get_char_height(iface.font.text_size_large)+10;
 	half_high=high>>1;
 
 	x=iface.scale_x>>1;
 	y=(iface.scale_y-((high+5)*menu->nitem))>>1;
+
+	lft=x-(iface.scale_x>>2);
+	rgt=x+(iface.scale_x>>2);
 
 	item=menu->items;
 
 	for (n=0;n!=menu->nitem;n++) {
 			
 		if (!((net_setup.mode!=net_mode_none) && (item->multiplayer_disable))) {
-
-			wid=gl_text_get_string_width(font_interface_index,iface.font.text_size_large,item->data)>>1;
-				
-			if ((kx>=(x-wid)) && (kx<=(x+wid)) && (ky>=(y-half_high)) && (ky<=(y+half_high))) return(n);
+			if ((kx>=lft) && (kx<=rgt) && (ky>=(y-half_high)) && (ky<=(y+half_high))) return(n);
 		}
 			
 		y+=(high+5);
@@ -248,10 +248,10 @@ void menu_input(void)
 
 void menu_draw(void)
 {
-	int						n,raw_tick,x,y,
+	int						n,raw_tick,x,y,lft,rgt,top,bot,my,
 							high,half_high,hilite_idx;
-	float					alpha;
-	d3col					*col;
+	float					alpha,draw_alpha;
+	d3col					back_col,back_col2;
 	iface_menu_type			*menu;
 	iface_menu_item_type	*item;
 
@@ -298,7 +298,7 @@ void menu_draw(void)
 		
 		// get height
 
-	high=gl_text_get_char_height(iface.font.text_size_large);
+	high=gl_text_get_char_height(iface.font.text_size_large)+10;
 	half_high=high>>1;
 
 		// draw the menus
@@ -306,33 +306,54 @@ void menu_draw(void)
 	x=iface.scale_x>>1;
 	y=(iface.scale_y-((high+5)*menu->nitem))>>1;
 	
-	gl_text_start(font_interface_index,iface.font.text_size_large);
+	lft=x-(iface.scale_x>>2);
+	rgt=x+(iface.scale_x>>2);
 	
 	item=menu->items;
 
 	for (n=0;n!=menu->nitem;n++) {
-
-			// color
+	
+			// colors
 
 		if ((net_setup.mode!=net_mode_none) && (item->multiplayer_disable)) {
-			col=&iface.color.menu.dimmed;
+			draw_alpha=alpha*0.2f;
 		}
 		else {
+			draw_alpha=alpha;
+			
 			if (n==hilite_idx) {
-				col=&iface.color.menu.mouse_over;
+				memmove(&back_col,&iface.color.menu.mouse_over,sizeof(d3col));
 			}
 			else {
-				col=&iface.color.menu.text;
+				memmove(&back_col,&iface.color.menu.background,sizeof(d3col));
 			}
 		}
+		
+			// background
+			
+		back_col2.r=back_col.r*element_gradient_factor;
+		back_col2.g=back_col.g*element_gradient_factor;
+		back_col2.b=back_col.b*element_gradient_factor;
+		
+		top=y-half_high;
+		bot=y+half_high;
+		
+		my=(top+bot)>>1;
+	
+		view_primitive_2D_color_poly(lft,top,&back_col2,rgt,top,&back_col2,rgt,my,&back_col,lft,my,&back_col,draw_alpha);
+		view_primitive_2D_color_poly(lft,my,&back_col,rgt,my,&back_col,rgt,bot,&back_col2,lft,bot,&back_col2,draw_alpha);
+		
+		view_primitive_2D_line_quad(&iface.color.menu.outline,draw_alpha,lft,rgt,top,bot);
 
-		gl_text_draw(x,y,item->data,tx_center,TRUE,col,alpha);
+			// text
+			
+		gl_text_start(font_interface_index,iface.font.text_size_large);
+		gl_text_draw(x,y,item->data,tx_center,TRUE,&iface.color.menu.text,draw_alpha);
+		gl_text_end();
 
 		y+=(high+5);
 		item++;
 	}
-
-	gl_text_end();
 
 		// cursor
 

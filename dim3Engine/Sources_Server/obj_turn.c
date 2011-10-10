@@ -101,7 +101,7 @@ void object_turn(obj_type *obj)
 	}
 	
 	if (turn_add<0) {
-		if (fabs(turn_add)>=subway) {
+		if (fabsf(turn_add)>=subway) {
 			obj->ang.y=rang;
 			return;
 		}

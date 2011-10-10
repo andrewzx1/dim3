@@ -136,7 +136,7 @@ void iface_read_settings_particle(iface_type *iface)
         if (tag!=-1) {
             xml_get_attribute_text(tag,"file",particle->bitmap_name,file_str_len);
             particle->animate.image_count=xml_get_attribute_int(tag,"count");
-			particle->animate.image_per_row=(int)sqrt((float)particle->animate.image_count);
+			particle->animate.image_per_row=(int)sqrtf((float)particle->animate.image_count);
 			particle->animate.msec=xml_get_attribute_int(tag,"time");
             particle->animate.loop=xml_get_attribute_boolean(tag,"loop");
             particle->animate.loop_back=xml_get_attribute_boolean(tag,"loop_back");

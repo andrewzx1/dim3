@@ -38,9 +38,9 @@ extern server_type			server;
 extern camera_type			camera;
 extern setup_type			setup;
 
-float						light_shader_direction[7][3]={{0.0f,0.0f,0.0f},{1.0f,0.0f,0.0f},{-1.0f,0.0f,0.0f},{0.0f,1.0f,0.0f},{0.0f,-1.0f,0.0f},{0.0f,0.0f,1.0f},{0.0f,0.0f,-1.0f}};
+float						light_shader_direction[7][3]={{0.0f,0.0f,0.0f},{1.0f,0.0f,0.0f},{-1.0f,0.0f,0.0f},{0.0f,1.0f,0.0f},{0.0f,-1.0f,0.0f},{0.0f,0.0f,1.0f},{0.0f,0.0f,-1.0f}},
 
-double						light_flicker_value[64]={
+							light_flicker_value[64]={
 														1.00,1.00,1.00,1.00,1.00,1.00,1.00,1.00,
 														0.92,0.85,0.70,0.85,0.92,1.00,0.92,0.85,
 														0.92,1.00,1.00,1.00,1.00,0.92,0.85,0.70,
@@ -50,6 +50,7 @@ double						light_flicker_value[64]={
 														0.50,0.70,0.85,0.92,1.00,1.00,0.92,1.00,
 														0.92,0.85,0.70,0.85,0.92,1.00,1.00,1.00
 													},
+													
 							light_fail_value[64]=	{
 														0.00,0.00,0.00,0.00,0.00,0.00,0.00,0.00,
 														0.00,0.15,0.45,0.15,0.00,0.00,0.00,0.15,
@@ -157,7 +158,7 @@ static inline bool gl_lights_collide_with_box(view_light_spot_type *lspot,d3pnt 
 	return(TRUE);
 }
 
-static inline bool gl_lights_direction_ok(double x,double y,double z,view_light_spot_type *lspot)
+static inline bool gl_lights_direction_ok(float x,float y,float z,view_light_spot_type *lspot)
 {
 	switch (lspot->direction) {
 
@@ -165,22 +166,22 @@ static inline bool gl_lights_direction_ok(double x,double y,double z,view_light_
 			return(TRUE);
 
 		case ld_neg_x:
-			return(x<=lspot->d_x);
+			return(x<=lspot->f_x);
 
 		case ld_pos_x:
-			return(x>=lspot->d_x);
+			return(x>=lspot->f_x);
 
 		case ld_neg_y:
-			return(y<=lspot->d_y);
+			return(y<=lspot->f_y);
 
 		case ld_pos_y:
-			return(y>=lspot->d_y);
+			return(y>=lspot->f_y);
 
 		case ld_neg_z:
-			return(z<=lspot->d_z);
+			return(z<=lspot->f_z);
 
 		case ld_pos_z:
-			return(z>=lspot->d_z);
+			return(z>=lspot->f_z);
 
 	}
 
@@ -198,7 +199,7 @@ static inline bool gl_lights_direction_ok(double x,double y,double z,view_light_
 int gl_lights_setup_box(d3pnt *mid,d3pnt *min,d3pnt *max,int max_list_idx,int *list_idx,bool light_map_skip)
 {
 	int							n,k,far_idx,count;
-	double						d,dx,dy,dz,far_dist,
+	float						f,fx,fy,fz,far_dist,
 								list_dist[max_map_light_cache_index];
 	view_light_spot_type		*lspot;
 
@@ -223,17 +224,17 @@ int gl_lights_setup_box(d3pnt *mid,d3pnt *min,d3pnt *max,int max_list_idx,int *l
 			// skip square root as we are comparing
 			// them against other distances
 
-		dx=mid->x-lspot->pnt.x;
-		dy=mid->y-lspot->pnt.y;
-		dz=mid->z-lspot->pnt.z;
+		fx=(float)(mid->x-lspot->pnt.x);
+		fy=(float)(mid->y-lspot->pnt.y);
+		fz=(float)(mid->z-lspot->pnt.z);
 
-		d=((dx*dx)+(dy*dy)+(dz*dz));
+		f=((fx*fx)+(fy*fy)+(fz*fz));
 
 			// put in list
 
 		if (count<max_list_idx) {
 			list_idx[count]=n;
-			list_dist[count]=d;
+			list_dist[count]=f;
 			count++;
 		}
 		else {
@@ -247,9 +248,9 @@ int gl_lights_setup_box(d3pnt *mid,d3pnt *min,d3pnt *max,int max_list_idx,int *l
 				}
 			}
 
-			if (d<far_dist) {
+			if (f<far_dist) {
 				list_idx[far_idx]=n;
-				list_dist[far_idx]=d;
+				list_dist[far_idx]=f;
 			}
 		}
 	}
@@ -398,10 +399,6 @@ void gl_lights_compile_add(int tick,d3pnt *pnt,int light_type,bool light_map,int
 	lspot->f_x=(float)lspot->pnt.x;
 	lspot->f_y=(float)lspot->pnt.y;
 	lspot->f_z=(float)lspot->pnt.z;
-		
-	lspot->d_x=(double)lspot->f_x;
-	lspot->d_y=(double)lspot->f_y;
-	lspot->d_z=(double)lspot->f_z;
 
 		// eye space for shaders
 
@@ -549,11 +546,10 @@ void gl_lights_compile(int tick)
       
 ======================================================= */
 
-view_light_spot_type* gl_light_find_closest_light(double x,double y,double z)
+view_light_spot_type* gl_light_find_closest_light(float x,float y,float z)
 {
 	int						n,k;
-	float					f,dist;
-	double					dx,dz,dy;
+	float					f,fx,fy,fz,dist;
 	view_light_spot_type	*lspot;
 
 		// no lights in scene
@@ -571,11 +567,11 @@ view_light_spot_type* gl_light_find_closest_light(double x,double y,double z)
 		
 			// get distance to light spot
 			
-		dx=lspot->d_x-x;
-		dz=lspot->d_z-z;
-		dy=lspot->d_y-y;
+		fx=lspot->f_x-x;
+		fy=lspot->f_y-y;
+		fz=lspot->f_z-z;
 
-		f=(float)sqrt((dx*dx)+(dz*dz)+(dy*dy));
+		f=sqrtf((fx*fx)+(fy*fy)+(fz*fz));
 		
 			// reject lights outside globe
 			// and in wrong direction
@@ -685,11 +681,10 @@ void gl_lights_calc_diffuse_vector(d3pnt *pnt,int count,int *indexes,d3vct *vct)
       
 ======================================================= */
 
-void gl_lights_calc_color(double x,double y,double z,float *cf)
+void gl_lights_calc_color(float x,float y,float z,float *cf)
 {
 	int						n;
-	float					f,mult,r,g,b;
-	double					dx,dz,dy;
+	float					f,fx,fy,fz,mult,r,g,b;
 	view_light_spot_type	*lspot;
 	
 		// combine all light spots attenuated for distance
@@ -700,11 +695,11 @@ void gl_lights_calc_color(double x,double y,double z,float *cf)
 	
 	for (n=0;n!=view.render->light.count;n++) {
 
-		dx=lspot->d_x-x;
-		dy=lspot->d_y-y;
-		dz=lspot->d_z-z;
+		fx=lspot->f_x-x;
+		fy=lspot->f_y-y;
+		fz=lspot->f_z-z;
 		
-		f=(float)sqrt((dx*dx)+(dz*dz)+(dy*dy));
+		f=sqrtf((fx*fx)+(fz*fz)+(fy*fy));
 
 		if (f<=lspot->f_intensity) {
 			if (gl_lights_direction_ok(x,y,z,lspot)) {
@@ -729,11 +724,10 @@ void gl_lights_calc_color(double x,double y,double z,float *cf)
 	*cf=(map.ambient.light_color.b+setup.gamma)+b;
 }
 
-void gl_lights_calc_color_light_cache_byte(int count,int *indexes,bool skip_light_map,double x,double y,double z,unsigned char *cp)
+void gl_lights_calc_color_light_cache_byte(int count,int *indexes,bool skip_light_map,float x,float y,float z,unsigned char *cp)
 {
 	int						n,k;
-	float					f,mult,r,g,b;
-	double					dx,dz,dy;
+	float					f,fx,fy,fz,mult,r,g,b;
 	view_light_spot_type	*lspot;
 
 		// combine all light spots attenuated for distance
@@ -745,11 +739,11 @@ void gl_lights_calc_color_light_cache_byte(int count,int *indexes,bool skip_ligh
 		lspot=&view.render->light.spots[indexes[n]];
 		if ((skip_light_map) && (lspot->light_map)) continue;
 
-		dx=lspot->d_x-x;
-		dy=lspot->d_y-y;
-		dz=lspot->d_z-z;
+		fx=lspot->f_x-x;
+		fy=lspot->f_y-y;
+		fz=lspot->f_z-z;
 		
-		f=(float)sqrt((dx*dx)+(dy*dy)+(dz*dz));
+		f=sqrtf((fx*fx)+(fy*fy)+(fz*fz));
 
 		if (f<=lspot->f_intensity) {
 
@@ -781,11 +775,10 @@ void gl_lights_calc_color_light_cache_byte(int count,int *indexes,bool skip_ligh
 	*cp=(unsigned char)k;
 }
 
-void gl_lights_calc_color_light_cache_float(int count,int *indexes,bool skip_light_map,double x,double y,double z,float *cp)
+void gl_lights_calc_color_light_cache_float(int count,int *indexes,bool skip_light_map,float x,float y,float z,float *cp)
 {
 	int						n;
-	float					f,mult,r,g,b;
-	double					dx,dz,dy;
+	float					f,fx,fy,fz,mult,r,g,b;
 	view_light_spot_type	*lspot;
 
 		// combine all light spots attenuated for distance
@@ -797,11 +790,11 @@ void gl_lights_calc_color_light_cache_float(int count,int *indexes,bool skip_lig
 		lspot=&view.render->light.spots[indexes[n]];
 		if ((skip_light_map) && (lspot->light_map)) continue;
 
-		dx=lspot->d_x-x;
-		dy=lspot->d_y-y;
-		dz=lspot->d_z-z;
+		fx=lspot->f_x-x;
+		fy=lspot->f_y-y;
+		fz=lspot->f_z-z;
 		
-		f=(float)sqrt((dx*dx)+(dy*dy)+(dz*dz));
+		f=sqrtf((fx*fx)+(fy*fy)+(fz*fz));
 
 		if (f<=lspot->f_intensity) {
 
@@ -842,7 +835,7 @@ void gl_lights_calc_color_light_cache_float(int count,int *indexes,bool skip_lig
 void gl_lights_build_poly_light_list(int mesh_idx,map_mesh_poly_type *poly,view_light_list_type *light_list)
 {
 	int						n,k,count,far_idx;
-	double					d,dx,dy,dz,far_dist,
+	float					f,fx,fy,fz,far_dist,
 							list_dist[max_shader_light];
 	map_mesh_type			*mesh;
 	view_light_spot_type	*lspot;
@@ -889,17 +882,17 @@ void gl_lights_build_poly_light_list(int mesh_idx,map_mesh_poly_type *poly,view_
 			// skip square root as we are comparing
 			// them against other distances
 
-		dx=poly->box.mid.x-lspot->pnt.x;
-		dy=poly->box.mid.y-lspot->pnt.y;
-		dz=poly->box.mid.z-lspot->pnt.z;
+		fx=(float)(poly->box.mid.x-lspot->pnt.x);
+		fy=(float)(poly->box.mid.y-lspot->pnt.y);
+		fz=(float)(poly->box.mid.z-lspot->pnt.z);
 
-		d=((dx*dx)+(dy*dy)+(dz*dz));
+		f=((fx*fx)+(fy*fy)+(fz*fz));
 
 			// put in list
 
 		if (count<max_shader_light) {
 			light_list->light_idx[count]=mesh->light_cache.indexes[n];
-			list_dist[count]=d;
+			list_dist[count]=f;
 			count++;
 		}
 		else {
@@ -913,9 +906,9 @@ void gl_lights_build_poly_light_list(int mesh_idx,map_mesh_poly_type *poly,view_
 				}
 			}
 
-			if (d<far_dist) {
+			if (f<far_dist) {
 				light_list->light_idx[far_idx]=mesh->light_cache.indexes[n];
-				list_dist[far_idx]=d;
+				list_dist[far_idx]=f;
 			}
 		}
 	}

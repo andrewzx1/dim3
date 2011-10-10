@@ -31,7 +31,6 @@
 		260B3C3A1411EC71006ED023 /* base_math_angles.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B3C171411EC71006ED023 /* base_math_angles.c */; };
 		260B3C3B1411EC71006ED023 /* base_math_area.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B3C181411EC71006ED023 /* base_math_area.c */; };
 		260B3C3D1411EC71006ED023 /* base_math_distance.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B3C1A1411EC71006ED023 /* base_math_distance.c */; };
-		260B3C3E1411EC71006ED023 /* base_math_fast_trig.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B3C1B1411EC71006ED023 /* base_math_fast_trig.c */; };
 		260B3C3F1411EC71006ED023 /* base_math_matrix.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B3C1C1411EC71006ED023 /* base_math_matrix.c */; };
 		260B3C401411EC71006ED023 /* base_math_polygons.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B3C1D1411EC71006ED023 /* base_math_polygons.c */; };
 		260B3C411411EC71006ED023 /* base_math_random.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B3C1E1411EC71006ED023 /* base_math_random.c */; };
@@ -188,7 +187,6 @@
 		260B3C171411EC71006ED023 /* base_math_angles.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = base_math_angles.c; sourceTree = "<group>"; };
 		260B3C181411EC71006ED023 /* base_math_area.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = base_math_area.c; sourceTree = "<group>"; };
 		260B3C1A1411EC71006ED023 /* base_math_distance.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = base_math_distance.c; sourceTree = "<group>"; };
-		260B3C1B1411EC71006ED023 /* base_math_fast_trig.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = base_math_fast_trig.c; sourceTree = "<group>"; };
 		260B3C1C1411EC71006ED023 /* base_math_matrix.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = base_math_matrix.c; sourceTree = "<group>"; };
 		260B3C1D1411EC71006ED023 /* base_math_polygons.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = base_math_polygons.c; sourceTree = "<group>"; };
 		260B3C1E1411EC71006ED023 /* base_math_random.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = base_math_random.c; sourceTree = "<group>"; };
@@ -215,6 +213,7 @@
 		26514F6F13594F2500298860 /* alt_property_palette_menu.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = alt_property_palette_menu.c; path = Code/alt_property_palette_menu.c; sourceTree = "<group>"; };
 		26514F7013594F2500298860 /* alt2_property_palette_chooser_piece.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = alt2_property_palette_chooser_piece.c; path = Code/alt2_property_palette_chooser_piece.c; sourceTree = "<group>"; };
 		26514F7113594F2500298860 /* alt2_property_palette_menu_item.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = alt2_property_palette_menu_item.c; path = Code/alt2_property_palette_menu_item.c; sourceTree = "<group>"; };
+		265E98F61440E0C300622047 /* mac_os_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mac_os_defs.h; path = ../dim3Common/Headers/mac_os_defs.h; sourceTree = "<group>"; };
 		26784D2F13B940F400B5D8C3 /* property_palette_setup.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_setup.c; path = Code/property_palette_setup.c; sourceTree = "<group>"; };
 		2683829A133D4F3D0035315B /* property_palette_actions.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_actions.c; path = Code/property_palette_actions.c; sourceTree = "<group>"; };
 		2683829B133D4F3D0035315B /* property_palette_crosshairs.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_crosshairs.c; path = Code/property_palette_crosshairs.c; sourceTree = "<group>"; };
@@ -352,7 +351,6 @@
 				260B3C171411EC71006ED023 /* base_math_angles.c */,
 				260B3C181411EC71006ED023 /* base_math_area.c */,
 				260B3C1A1411EC71006ED023 /* base_math_distance.c */,
-				260B3C1B1411EC71006ED023 /* base_math_fast_trig.c */,
 				260B3C1C1411EC71006ED023 /* base_math_matrix.c */,
 				260B3C1D1411EC71006ED023 /* base_math_polygons.c */,
 				260B3C1E1411EC71006ED023 /* base_math_random.c */,
@@ -429,6 +427,7 @@
 				269FED8313285CB30030B0B5 /* dim3setup.h */,
 				269FED8513285CB30030B0B5 /* setup_defs.h */,
 				269FED8913285CE70030B0B5 /* os_defs.h */,
+				265E98F61440E0C300622047 /* mac_os_defs.h */,
 				269FED8813285CE70030B0B5 /* glue.h */,
 				26D15D5B1329E7F700F9EC7B /* ui_common.h */,
 				269FED8413285CB30030B0B5 /* interface.h */,
@@ -742,7 +741,6 @@
 				260B3C3A1411EC71006ED023 /* base_math_angles.c in Sources */,
 				260B3C3B1411EC71006ED023 /* base_math_area.c in Sources */,
 				260B3C3D1411EC71006ED023 /* base_math_distance.c in Sources */,
-				260B3C3E1411EC71006ED023 /* base_math_fast_trig.c in Sources */,
 				260B3C3F1411EC71006ED023 /* base_math_matrix.c in Sources */,
 				260B3C401411EC71006ED023 /* base_math_polygons.c in Sources */,
 				260B3C411411EC71006ED023 /* base_math_random.c in Sources */,

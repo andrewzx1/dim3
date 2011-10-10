@@ -78,33 +78,6 @@ void polygon_find_center(int ptsz,int *px,int *py,int *pz,int *mx,int *my,int *m
 	*mz=(min_z+max_z)>>1;
 }
 
-void polgyon_enlarge(int ptsz,int *px,int *py,int *pz,int *ex,int *ey,int *ez,int factor)
-{
-	int			n,mx,my,mz,sx,sy,sz,d,d2;
-
-	polygon_find_center(ptsz,px,py,pz,&mx,&my,&mz);
-
-	for (n=0;n!=ptsz;n++) {
-	
-			// original vector and distance
-			
-		sx=px[n]-mx;
-		sy=py[n]-my;
-		sz=pz[n]-mz;
-		d=(int)sqrt((sx*sx)+(sy*sy)+(sz*sz));
-		
-			// new distance
-			
-		d2=d+factor;
-		
-			// create new point
-		
-		ex[n]=mx+((sx*d2)/d);
-		ey[n]=my+((sy*d2)/d);
-		ez[n]=mz+((sz*d2)/d);
-	}
-}
-
 /* =======================================================
 
       Get 2D Polygon Box
@@ -383,60 +356,3 @@ int polygon_find_y(int ptsz,int *px,int *py,int *pz,int kx,int kz)
 	return(ly+(((ry-ly)*abs(kx-lx))/k));
 }
 
-/* =======================================================
-
-      Find Y at X,Z outside Polygon
-      
-======================================================= */
-
-int polygon_find_y_outside_point(int ptsz,int *px,int *py,int *pz,int x,int z)
-{
-	int			n,k,kx,ky,kz,idx,idx2,d,d2;
-	d3pnt		mid;
-	
-		// get mid point
-		
-	mid.x=mid.y=mid.z=0;
-	
-	for (n=0;n!=ptsz;n++) {
-		mid.x+=px[n];
-		mid.y+=py[n];
-		mid.z+=pz[n];
-	}
-	
-	mid.x/=ptsz;
-	mid.y/=ptsz;
-	mid.z/=ptsz;
-	
-		// find a intersection from center
-		// to a polygon line
-		
-	idx=-1;
-	
-	for (n=0;n!=ptsz;n++) {
-		k=n+1;
-		if (k==ptsz) k=0;
-		
-		if (line_2D_get_intersect(mid.x,mid.z,x,z,px[n],pz[n],px[k],pz[k],&kx,&kz)) {
-			idx=n;
-			idx2=k;
-			break;
-		}
-	}
-
-	if (idx==-1) return(mid.y);
-	
-		// find the y on the line
-		
-	d=distance_2D_get(px[idx],pz[idx],px[idx2],pz[idx2]);
-	d2=distance_2D_get(px[idx],pz[idx],kx,kz);
-	
-	ky=py[idx]+(((py[idx2]-py[idx])*d2)/d);
-	
-		// find y for the point outside polygon
-	
-	d=distance_2D_get(mid.x,mid.z,kx,kz);
-	d2=distance_2D_get(kx,kz,x,z);
-	
-	return(ky+(((ky-mid.y)*d2)/d));
-}

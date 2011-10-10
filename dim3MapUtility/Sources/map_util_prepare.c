@@ -38,8 +38,7 @@ and can be sold or given away.
 void map_prepare_mesh_poly_slope_ang(map_mesh_type *mesh,map_mesh_poly_type *poly)
 {
 	int			n,tx,bx,tz,bz,t_add,b_add;
-	float		dist;
-	double		dx,dz;
+	float		dist,fx,fz;
 	d3pnt		*pt;
 
 		// separate polygon vertexes by Ys
@@ -84,9 +83,9 @@ void map_prepare_mesh_poly_slope_ang(map_mesh_type *mesh,map_mesh_poly_type *pol
 
 		// xz distance
 
-	dx=(double)(bx-tx);
-	dz=(double)(bz-tz);
-	dist=(float)sqrt((dx*dx)+(dz*dz));
+	fx=(float)(bx-tx);
+	fz=(float)(bz-tz);
+	dist=sqrtf((fx*fx)+(fz*fz));
 
 	if (dist==0.0f) {
 		poly->slope.ang_y=0.0f;
@@ -169,7 +168,7 @@ void map_prepare_mesh_poly(map_type *map,map_mesh_type *mesh,map_mesh_poly_type 
 		map_up.y=-1.0f;
 		map_up.z=0.0f;
 
-		ang=(float)fabs(vector_dot_product(&map_up,&poly->tangent_space.normal));
+		ang=fabsf(vector_dot_product(&map_up,&poly->tangent_space.normal));
 
 			// use dot product to tell if wall like
 			// and the y slope

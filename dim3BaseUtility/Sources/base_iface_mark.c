@@ -116,7 +116,7 @@ void iface_read_settings_mark(iface_type *iface)
 		if (tag!=-1) {
 			xml_get_attribute_text(tag,"file",mark->bitmap_name,file_str_len);
 			mark->animate.image_count=xml_get_attribute_int(tag,"count");
-			mark->animate.image_per_row=(int)sqrt((float)mark->animate.image_count);
+			mark->animate.image_per_row=(int)sqrtf((float)mark->animate.image_count);
 			mark->animate.msec=xml_get_attribute_int(tag,"time");
 			mark->animate.loop=xml_get_attribute_boolean(tag,"loop");
 			mark->animate.loop_back=xml_get_attribute_boolean(tag,"loop_back");

@@ -162,14 +162,14 @@ bool view_cull_check_boundbox_2(d3pnt *min,d3pnt *max)
       
 ======================================================= */
 
-double view_cull_distance_to_view_center(int x,int y,int z)
+float view_cull_distance_to_view_center(int x,int y,int z)
 {
-	double			dx,dz,dy;
+	float			fx,fy,fz;
 	
-	dx=(double)(x-view.render->camera.pnt.x);
-	dy=(double)(y-view.render->camera.pnt.y);
-	dz=(double)(z-view.render->camera.pnt.z);
-	return(sqrt((dx*dx)+(dy*dy)+(dz*dz)));
+	fx=(float)(x-view.render->camera.pnt.x);
+	fy=(float)(y-view.render->camera.pnt.y);
+	fz=(float)(z-view.render->camera.pnt.z);
+	return(sqrtf((fx*fx)+(fy*fy)+(fz*fz)));
 }
 
 /* =======================================================
@@ -180,15 +180,15 @@ double view_cull_distance_to_view_center(int x,int y,int z)
 
 bool view_cull_mesh(map_mesh_type *mesh)
 {
-	double			obscure_dist;
+	float			obscure_dist;
 
 		// check obscure distance
 
 	if (!fog_solid_on()) {
-		obscure_dist=(double)(camera.setup.plane.far_z-camera.setup.plane.near_z);
+		obscure_dist=(float)(camera.setup.plane.far_z-camera.setup.plane.near_z);
 	}
 	else {
-		obscure_dist=(double)((map.fog.outer_radius>>1)*3);
+		obscure_dist=(float)((map.fog.outer_radius>>1)*3);
 	}
 
 	if (map_mesh_calculate_distance(mesh,&view.render->camera.pnt)>obscure_dist) return(FALSE);
@@ -200,15 +200,15 @@ bool view_cull_mesh(map_mesh_type *mesh)
 
 bool view_cull_liquid(map_liquid_type *liq)
 {
-	double			obscure_dist;
+	float			obscure_dist;
 
 		// check obscure distance
 
 	if (!fog_solid_on()) {
-		obscure_dist=(double)(camera.setup.plane.far_z-camera.setup.plane.near_z);
+		obscure_dist=(float)(camera.setup.plane.far_z-camera.setup.plane.near_z);
 	}
 	else {
-		obscure_dist=(double)((map.fog.outer_radius>>1)*3);
+		obscure_dist=(float)((map.fog.outer_radius>>1)*3);
 	}
 		
 	if (map_liquid_calculate_distance(liq,&view.render->camera.pnt)>obscure_dist) return(FALSE);
@@ -221,7 +221,7 @@ bool view_cull_liquid(map_liquid_type *liq)
 bool view_cull_model(model_draw *draw)
 {
 	int				px[8],py[8],pz[8];
-	double			obscure_dist;
+	float			obscure_dist;
 
 		// no model
 
@@ -230,10 +230,10 @@ bool view_cull_model(model_draw *draw)
 		// check obscure distance
 
 	if (!fog_solid_on()) {
-		obscure_dist=(double)(camera.setup.plane.far_z-camera.setup.plane.near_z);
+		obscure_dist=(float)(camera.setup.plane.far_z-camera.setup.plane.near_z);
 	}
 	else {
-		obscure_dist=(double)((map.fog.outer_radius>>1)*3);
+		obscure_dist=(float)((map.fog.outer_radius>>1)*3);
 	}
 
 	if (map.optimize.obscure_dist.model!=0) {
@@ -252,7 +252,7 @@ bool view_cull_model(model_draw *draw)
 bool view_model_shadow(model_draw *draw)
 {
 	int				light_intensity;
-	double			dist,obscure_dist;
+	float			dist,obscure_dist;
 	d3pnt			min,max,light_pnt;
 
 		// no model to draw
@@ -262,10 +262,10 @@ bool view_model_shadow(model_draw *draw)
 		// check obscure distance
 
 	if (!fog_solid_on()) {
-		obscure_dist=(double)(camera.setup.plane.far_z-camera.setup.plane.near_z);
+		obscure_dist=(float)(camera.setup.plane.far_z-camera.setup.plane.near_z);
 	}
 	else {
-		obscure_dist=(double)((map.fog.outer_radius>>1)*3);
+		obscure_dist=(float)((map.fog.outer_radius>>1)*3);
 	}
 
 	if (map.optimize.obscure_dist.shadow!=0) {
@@ -286,16 +286,16 @@ bool view_model_shadow(model_draw *draw)
 
 bool view_cull_effect(effect_type *effect,d3pnt *center_pnt)
 {
-	double				obscure_dist;
+	float				obscure_dist;
 	d3pnt				min,max;
 
 		// check obscure distance
 
 	if (!fog_solid_on()) {
-		obscure_dist=(double)(camera.setup.plane.far_z-camera.setup.plane.near_z);
+		obscure_dist=(float)(camera.setup.plane.far_z-camera.setup.plane.near_z);
 	}
 	else {
-		obscure_dist=(double)((map.fog.outer_radius>>1)*3);
+		obscure_dist=(float)((map.fog.outer_radius>>1)*3);
 	}
 
 	if (map.optimize.obscure_dist.effect!=0) {
@@ -322,15 +322,15 @@ bool view_cull_effect(effect_type *effect,d3pnt *center_pnt)
 
 bool view_cull_halo(d3pnt *pnt)
 {
-	double				obscure_dist;
+	float				obscure_dist;
 
 		// check obscure distance
 
 	if (!fog_solid_on()) {
-		obscure_dist=(double)(camera.setup.plane.far_z-camera.setup.plane.near_z);
+		obscure_dist=(float)(camera.setup.plane.far_z-camera.setup.plane.near_z);
 	}
 	else {
-		obscure_dist=(double)((map.fog.outer_radius>>1)*3);
+		obscure_dist=(float)((map.fog.outer_radius>>1)*3);
 	}
 
 	if (map.optimize.obscure_dist.effect!=0) {

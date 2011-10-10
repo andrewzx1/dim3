@@ -188,7 +188,7 @@ bool file_new_map(void)
 bool file_open_map(void)
 {
 	int			n;
-	char		str[256],file_name[256];
+	char		str[256],file_name[file_str_len];
 	bool		ok;
 	
 		// open the map

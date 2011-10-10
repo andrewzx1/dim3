@@ -43,12 +43,12 @@ float acceleration_calculate(float factor,float acceleration)
 
 	if (acceleration<0) {
 		f=1-factor;
-		factor=f*(1-f)*(float)exp(-acceleration)+f;
+		factor=f*(1-f)*expf(-acceleration)+f;
 		factor=1-factor;
 	}
 	else {
 		f=factor;
-		factor=factor*(1-factor)*(float)exp(acceleration)+factor;
+		factor=factor*(1-factor)*expf(acceleration)+factor;
 	}
 
 	if (factor<0.0f) return(0.0f);

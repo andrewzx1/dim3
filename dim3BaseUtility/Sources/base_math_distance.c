@@ -37,36 +37,36 @@ and can be sold or given away.
 
 int distance_get(int x,int y,int z,int tox,int toy,int toz)
 {
-	double		dx,dz,dy;
+	float		fx,fz,fy;
 	
-	dx=(double)(x-tox);
-	dy=(double)(y-toy);
-	dz=(double)(z-toz);
+	fx=(float)(x-tox);
+	fy=(float)(y-toy);
+	fz=(float)(z-toz);
 	
-	return((int)sqrt((dx*dx)+(dy*dy)+(dz*dz)));
+	return((int)sqrtf((fx*fx)+(fy*fy)+(fz*fz)));
 }
 
 bool distance_check(int x,int y,int z,int tox,int toy,int toz,int max_distance)
 {
-	double		d,dx,dz,dy,md;
+	float		f,fx,fz,fy,md;
 	
-	dx=(double)(x-tox);
-	dy=(double)(y-toy);
-	dz=(double)(z-toz);
-	d=(dx*dx)+(dy*dy)+(dz*dz);
+	fx=(float)(x-tox);
+	fy=(float)(y-toy);
+	fz=(float)(z-toz);
+	f=(fx*fx)+(fy*fy)+(fz*fz);
 	
-	md=(double)max_distance;
-	if (d>(md*md)) return(FALSE);
+	md=(float)max_distance;
+	if (f>(md*md)) return(FALSE);
 	
-	return(sqrt(d)<=md);
+	return(sqrtf(f)<=md);
 }
 
 int distance_2D_get(int x,int z,int tox,int toz)
 {
-	double		dx,dz;
+	float		fx,fz;
 	
-	dx=(double)(x-tox);
-	dz=(double)(z-toz);
+	fx=(float)(x-tox);
+	fz=(float)(z-toz);
 	
-	return((int)sqrt((dx*dx)+(dz*dz)));
+	return((int)sqrtf((fx*fx)+(fz*fz)));
 }

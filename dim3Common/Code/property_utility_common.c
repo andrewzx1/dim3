@@ -134,7 +134,7 @@ void property_string_set_values(int value_type,void *value,int value_len,int i_m
 			break;
 			
 		case list_string_value_positive_float:
-			*((float*)value)=(float)fabs(atof(str));
+			*((float*)value)=fabsf(atof(str));
 			break;
 			
 		case list_string_value_0_to_1_float:

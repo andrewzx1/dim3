@@ -48,9 +48,10 @@ and can be sold or given away.
 #define kSettingsColorBackground				40
 #define kSettingsColorDefaultTint				41
 
-#define kSettingsColorMenuText					50
-#define kSettingsColorMenuMouseOver				51
-#define kSettingsColorMenuDimmed				52
+#define kSettingsColorMenuBackground			50
+#define kSettingsColorMenuText					51
+#define kSettingsColorMenuMouseOver				52
+#define kSettingsColorMenuOutline				53
 
 #define kSettingsColorDialogBackground			60
 #define kSettingsColorDialogHeader				61
@@ -154,9 +155,10 @@ void property_palette_fill_settings(void)
 		// menu color
 		
 	list_palette_add_header(&property_palette,0,"Menu Colors");
+	list_palette_add_pick_color(&property_palette,kSettingsColorMenuBackground,"Background",&iface.color.menu.background,FALSE);
 	list_palette_add_pick_color(&property_palette,kSettingsColorMenuText,"Text",&iface.color.menu.text,FALSE);
 	list_palette_add_pick_color(&property_palette,kSettingsColorMenuMouseOver,"Mouse Over",&iface.color.menu.mouse_over,FALSE);
-	list_palette_add_pick_color(&property_palette,kSettingsColorMenuDimmed,"Dimmed",&iface.color.menu.dimmed,FALSE);
+	list_palette_add_pick_color(&property_palette,kSettingsColorMenuOutline,"Outline",&iface.color.menu.outline,FALSE);
 
 		// dialog color
 		
@@ -299,6 +301,10 @@ void property_palette_click_settings(int id,bool double_click)
 			
 			// menu color
 			
+		case kSettingsColorMenuBackground:
+			os_pick_color(&iface.color.menu.background);
+			break;
+
 		case kSettingsColorMenuText:
 			os_pick_color(&iface.color.menu.text);
 			break;
@@ -307,8 +313,8 @@ void property_palette_click_settings(int id,bool double_click)
 			os_pick_color(&iface.color.menu.mouse_over);
 			break;
 			
-		case kSettingsColorMenuDimmed:
-			os_pick_color(&iface.color.menu.dimmed);
+		case kSettingsColorMenuOutline:
+			os_pick_color(&iface.color.menu.outline);
 			break;
 
 			// dialog color

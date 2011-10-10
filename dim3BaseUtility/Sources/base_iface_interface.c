@@ -61,7 +61,7 @@ void iface_read_settings_bitmap(iface_type *iface,int bitmap_tag)
 	
 	xml_get_attribute_text(tag,"file",bitmap->filename,file_str_len);
 	bitmap->animate.image_count=xml_get_attribute_int_default(tag,"count",1);
-	bitmap->animate.image_per_row=(int)sqrt((float)bitmap->animate.image_count);
+	bitmap->animate.image_per_row=(int)sqrtf((float)bitmap->animate.image_count);
 	bitmap->animate.msec=xml_get_attribute_int(tag,"time");
     bitmap->animate.loop=xml_get_attribute_boolean(tag,"loop");
     bitmap->animate.loop_back=xml_get_attribute_boolean(tag,"loop_back");
@@ -658,7 +658,8 @@ void iface_read_settings_interface(iface_type *iface)
 		xml_get_attribute_color(color_tag,"background",&iface->color.background);
 		xml_get_attribute_color(color_tag,"menu_text",&iface->color.menu.text);
 		xml_get_attribute_color(color_tag,"menu_mouse_over",&iface->color.menu.mouse_over);
-		xml_get_attribute_color(color_tag,"menu_dimmed",&iface->color.menu.dimmed);
+		xml_get_attribute_color(color_tag,"menu_background",&iface->color.menu.background);
+		xml_get_attribute_color(color_tag,"menu_outline",&iface->color.menu.outline);
 		xml_get_attribute_color(color_tag,"dialog_background",&iface->color.dialog.background);
 		xml_get_attribute_color(color_tag,"dialog_header",&iface->color.dialog.header);
 		xml_get_attribute_color(color_tag,"dialog_outline",&iface->color.dialog.outline);
@@ -1277,7 +1278,8 @@ bool iface_write_settings_interface(iface_type *iface)
 	xml_add_attribute_color("background",&iface->color.background);
 	xml_add_attribute_color("menu_text",&iface->color.menu.text);
 	xml_add_attribute_color("menu_mouse_over",&iface->color.menu.mouse_over);
-	xml_add_attribute_color("menu_dimmed",&iface->color.menu.dimmed);
+	xml_add_attribute_color("menu_background",&iface->color.menu.background);
+	xml_add_attribute_color("menu_outline",&iface->color.menu.outline);
 	xml_add_attribute_color("dialog_background",&iface->color.dialog.background);
 	xml_add_attribute_color("dialog_header",&iface->color.dialog.header);
 	xml_add_attribute_color("dialog_outline",&iface->color.dialog.outline);

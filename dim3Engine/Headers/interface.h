@@ -186,12 +186,17 @@ extern void cursor_draw(void);
 extern void element_initialize(void);
 extern void element_shutdown(void);
 extern void element_clear(void);
+
 extern inline int element_get_control_high(void);
 extern inline int element_get_padding(void);
 extern inline int element_get_tab_margin(void);
 extern inline int element_get_tab_control_high(void);
 extern inline void element_get_button_bottom_left(int *x,int *y,int wid,int high);
 extern inline void element_get_button_bottom_right(int *x,int *y,int wid,int high);
+extern int element_get_button_short_wid(void);
+extern int element_get_button_long_wid(void);
+extern int element_get_button_high(void);
+
 extern void element_button_text_add(char *name,int id,int x,int y,int wid,int high,int x_pos,int y_pos);
 extern void element_button_bitmap_add(char *path,char *path2,int id,int x,int y,int wid,int high,int x_pos,int y_pos);
 extern void element_bitmap_add(char *path,int id,int x,int y,int wid,int high,bool framed);
@@ -627,12 +632,12 @@ extern inline bool gl_check_shader_ok(void);
 //
 
 extern void gl_lights_compile(int tick);
-extern view_light_spot_type* gl_light_find_closest_light(double x,double y,double z);
+extern view_light_spot_type* gl_light_find_closest_light(float x,float y,float z);
 extern void gl_lights_calc_ambient_color(d3col *col);
 extern void gl_lights_calc_diffuse_vector(d3pnt *pnt,int count,int *indexes,d3vct *vct);
-extern void gl_lights_calc_color(double x,double y,double z,float *cf);
-extern void gl_lights_calc_color_light_cache_byte(int count,int *indexes,bool skip_light_map,double x,double y,double z,unsigned char *cp);
-extern void gl_lights_calc_color_light_cache_float(int count,int *indexes,bool skip_light_map,double x,double y,double z,float *cp);
+extern void gl_lights_calc_color(float x,float y,float z,float *cf);
+extern void gl_lights_calc_color_light_cache_byte(int count,int *indexes,bool skip_light_map,float x,float y,float z,unsigned char *cp);
+extern void gl_lights_calc_color_light_cache_float(int count,int *indexes,bool skip_light_map,float x,float y,float z,float *cp);
 extern void gl_lights_build_poly_light_list(int mesh_idx,map_mesh_poly_type *poly,view_light_list_type *light_list);
 extern void gl_lights_build_liquid_light_list(map_liquid_type *liq,view_light_list_type *light_list);
 extern void gl_lights_build_model_light_list(model_type *mdl,model_draw *draw,view_light_list_type *light_list);
@@ -795,7 +800,7 @@ extern void gl_project_fix_rotation(int *x,int *y,int *z);
 // view culling
 //
 
-extern double view_cull_distance_to_view_center(int x,int y,int z);
+extern float view_cull_distance_to_view_center(int x,int y,int z);
 extern bool view_cull_mesh(map_mesh_type *mesh);
 extern bool view_cull_liquid(map_liquid_type *liq);
 extern bool view_cull_model(model_draw *draw);

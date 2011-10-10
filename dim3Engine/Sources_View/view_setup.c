@@ -51,7 +51,7 @@ void view_start_draw_list(void)
 	view.render->draw_list.count=0;
 }
 
-void view_add_draw_list(int item_type,int item_idx,double item_dist,int item_flag)
+void view_add_draw_list(int item_type,int item_idx,float item_dist,int item_flag)
 {
 	int				t,idx,sz;
 
@@ -144,7 +144,7 @@ bool view_proj_in_draw_list(int proj_idx)
 void view_add_mesh_draw_list(int start_mesh_idx)
 {
 	int					n;
-	double				d;
+	float				dist;
 	map_mesh_type		*start_mesh,*mesh;
 	
 	start_mesh=&map.mesh.meshes[start_mesh_idx];
@@ -165,8 +165,8 @@ void view_add_mesh_draw_list(int start_mesh_idx)
 
 			// sort meshes into drawing list
 
-		d=map_mesh_calculate_distance(mesh,&view.render->camera.pnt);
-		view_add_draw_list(view_render_type_mesh,n,d,0x0);
+		dist=map_mesh_calculate_distance(mesh,&view.render->camera.pnt);
+		view_add_draw_list(view_render_type_mesh,n,dist,0x0);
 
 		view.count.mesh++;
 	}
@@ -175,17 +175,17 @@ void view_add_mesh_draw_list(int start_mesh_idx)
 void view_add_liquid_draw_list(int start_mesh_idx)
 {
 	int					n,mx,mz;
-	double				d,obscure_dist;
+	float				dist,obscure_dist;
 	map_liquid_type		*liq;
 
 		// obscure distance -- normally is the opengl projection
 		// distance but can be the fog distance if fog is on
 
 	if (!fog_solid_on()) {
-		obscure_dist=(double)(camera.setup.plane.far_z-camera.setup.plane.near_z);
+		obscure_dist=(float)(camera.setup.plane.far_z-camera.setup.plane.near_z);
 	}
 	else {
-		obscure_dist=(double)((map.fog.outer_radius>>1)*3);
+		obscure_dist=(float)((map.fog.outer_radius>>1)*3);
 	}
 
 		// find all drawable liquids
@@ -221,8 +221,8 @@ void view_add_liquid_draw_list(int start_mesh_idx)
 		
 			// sort liquids into drawing list
 
-		d=map_liquid_calculate_distance(liq,&view.render->camera.pnt);
-		view_add_draw_list(view_render_type_liquid,n,d,0x0);
+		dist=map_liquid_calculate_distance(liq,&view.render->camera.pnt);
+		view_add_draw_list(view_render_type_liquid,n,dist,0x0);
 
 		view.count.liquid++;
 	}
@@ -379,7 +379,7 @@ void view_setup_projectiles(int tick)
 void view_add_effect_draw_list(void)
 {
 	int					n;
-	double				d;
+	float				dist;
 	d3pnt				center_pnt;
 	effect_type			*effect;
 
@@ -401,8 +401,8 @@ void view_add_effect_draw_list(void)
 
 			// sort effects into drawing list
 			
-		d=view_cull_distance_to_view_center(effect->pnt.x,effect->pnt.y,effect->pnt.z);
-		view_add_draw_list(view_render_type_effect,n,d,0x0);
+		dist=view_cull_distance_to_view_center(effect->pnt.x,effect->pnt.y,effect->pnt.z);
+		view_add_draw_list(view_render_type_effect,n,dist,0x0);
 
 		view.count.effect++;
 	}

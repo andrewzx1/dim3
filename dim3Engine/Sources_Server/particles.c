@@ -139,8 +139,8 @@ void particle_precalculate(iface_particle_type *particle)
 void particle_globe_precalculate(iface_particle_type *particle)
 {
 	int							n,k,y,count,row_count;
-	float						rxz,ry,vy,r_xz_add,r_y_add,xz_reduce;
-	double						f_x_radius,f_y_radius,f_z_radius,f_vx_radius,f_vz_radius;
+	float						rxz,ry,vy,r_xz_add,r_y_add,xz_reduce,
+								f_x_radius,f_y_radius,f_z_radius,f_vx_radius,f_vz_radius;
 	iface_particle_piece_type	*pps;
 
 		// get per-row count
@@ -156,10 +156,10 @@ void particle_globe_precalculate(iface_particle_type *particle)
 
 	f_y_radius=(float)particle->pt.y;
 
-	r_xz_add=ANG_to_RAD*(360/row_count);
+	r_xz_add=ANG_to_RAD*(360.0f/((float)row_count));
 
 	ry=0.0f;
-	r_y_add=ANG_to_RAD*(180/10);
+	r_y_add=ANG_to_RAD*(180.0f/10.0f);
 
 	count=0;
 

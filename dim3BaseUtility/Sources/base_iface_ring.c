@@ -102,7 +102,7 @@ void iface_read_settings_ring(iface_type *iface)
         if (tag!=-1) {
             xml_get_attribute_text(tag,"file",ring->bitmap_name,file_str_len);
             ring->animate.image_count=xml_get_attribute_int(tag,"count");
-			ring->animate.image_per_row=(int)sqrt((float)ring->animate.image_count);
+			ring->animate.image_per_row=(int)sqrtf((float)ring->animate.image_count);
 			ring->animate.msec=xml_get_attribute_int(tag,"time");
             ring->animate.loop=xml_get_attribute_boolean(tag,"loop");
             ring->animate.loop_back=xml_get_attribute_boolean(tag,"loop_back");

@@ -207,7 +207,6 @@ typedef struct		{
 						bool								light_map;
 						float								f_x,f_y,f_z,
 															f_intensity,f_inv_intensity,f_exponent;
-						double								d_x,d_y,d_z;
 						d3pnt								pnt;
 						d3vct								pnt_eye_space;
 						d3col								col;
@@ -436,7 +435,7 @@ typedef struct		{
 typedef struct		{
 						int									flag;
 						short								type,idx;
-						double								dist;
+						float								dist;
 					} view_render_draw_list_item_type;
 					
 typedef struct		{

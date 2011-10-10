@@ -119,7 +119,7 @@ void render_model_create_color_vertexes(model_type *mdl,int mesh_mask,model_draw
 		if (!draw->no_rot.on) {
 
 			for (k=0;k!=mesh->nvertex;k++) {
-				gl_lights_calc_color_light_cache_float(draw->light_cache.count,draw->light_cache.indexes,FALSE,(double)*vp,(double)*(vp+1),(double)*(vp+2),cp);
+				gl_lights_calc_color_light_cache_float(draw->light_cache.count,draw->light_cache.indexes,FALSE,*vp,*(vp+1),*(vp+2),cp);
 				cp+=3;
 				vp+=3;
 			}
@@ -138,7 +138,7 @@ void render_model_create_color_vertexes(model_type *mdl,int mesh_mask,model_draw
 				fz=(*vp++)-cnt.z;
 				matrix_vertex_multiply(&mat,&fx,&fy,&fz);
 				
-				gl_lights_calc_color_light_cache_float(draw->light_cache.count,draw->light_cache.indexes,FALSE,(double)(fx+cnt.x),(double)(fy+cnt.y),(double)(fz+cnt.z),cp);
+				gl_lights_calc_color_light_cache_float(draw->light_cache.count,draw->light_cache.indexes,FALSE,(fx+cnt.x),(fy+cnt.y),(fz+cnt.z),cp);
 				cp+=3;
 			}
 		}
@@ -284,6 +284,14 @@ void render_model_vertex_object_no_shader_diffuse(model_type *mdl,int mesh_idx,m
 	
 	for (n=0;n!=mesh->ntrig;n++) {
 	
+		/* supergumba -- testing
+		if ((((*na)*(float)(draw->pnt.x-view.render->camera.pnt.x))+((*(na+1))*(float)(draw->pnt.y-view.render->camera.pnt.y))+((*(na+2))*(float)(draw->pnt.z-view.render->camera.pnt.x)))<0.0f) {
+			trig++;
+			na+=3;
+			continue;
+		}
+		*/
+		
 		gx=trig->gx;
 		gy=trig->gy;
 
@@ -312,7 +320,7 @@ void render_model_vertex_object_no_shader_diffuse(model_type *mdl,int mesh_idx,m
 			diffuse=((diffuse+1.0f)*0.5f)+boost;
 
 			if (diffuse<min_diffuse) diffuse=min_diffuse;
-			if (diffuse>1.0f) diffuse=1.0f;
+			if (diffuse>=1.0f) diffuse=1.0f;
 		
 				// apply diffuse
 				// multiply in 255 to convert float to ub

@@ -217,8 +217,8 @@ void setup_network_host_pane(void)
 
 	x=iface.scale_x>>1;
 	
-	wid=(int)(((float)iface.scale_x)*element_control_button_long_width);
-	high=(int)(((float)iface.scale_x)*element_control_button_height);
+	wid=element_get_button_long_wid();
+	high=element_get_button_high();
 
 	element_get_button_bottom_left(&x,&y,wid,high);
 	element_button_text_add("Add Host",setup_network_host_add_button,x,y,wid,high,element_pos_left,element_pos_bottom);
@@ -256,8 +256,8 @@ void setup_network_create_pane(void)
 	
 		// buttons
 		
-	wid=(int)(((float)iface.scale_x)*element_control_button_short_width);
-	high=(int)(((float)iface.scale_x)*element_control_button_height);
+	wid=element_get_button_short_wid();
+	high=element_get_button_high();
 
 	element_get_button_bottom_right(&x,&y,wid,high);
 	element_button_text_add("OK",setup_network_ok_button,x,y,wid,high,element_pos_right,element_pos_bottom);

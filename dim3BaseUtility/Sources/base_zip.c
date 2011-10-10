@@ -41,7 +41,7 @@ unsigned char* zip_compress(unsigned char *data,unsigned long data_sz,unsigned l
 	unsigned long	compress_sz;
 	unsigned char	*compress_data;
 
-	compress_sz=data_sz+(int)(((double)data_sz)*0.1)+12;
+	compress_sz=data_sz+(int)(((float)data_sz)*0.1f)+12;
 	compress_data=malloc(compress_sz);
 	if (compress_data==NULL) {
 		strcpy(err_str,"Out of memory");

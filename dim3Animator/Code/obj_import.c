@@ -292,7 +292,7 @@ bool import_obj(char *path,bool replace,bool *found_normals,char *err_str)
 		
 	if (!replace) {
 		high=dialog_import_finish_run();
-		model.import.factor=((float)high)/(float)fabs(f_by-f_ty);
+		model.import.factor=((float)high)/fabsf(f_by-f_ty);
 	}
 
 		// if a replacement, remember the old

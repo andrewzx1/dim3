@@ -154,7 +154,7 @@ void view_mouse_get_forward_axis(editor_view_type *view,d3pnt *pnt,int dist)
 	matrix_vertex_multiply(&mat,&fx,&fy,&fz);
 	
 	ang_x=view_get_lookat_x_angle(view);
-	if (fabs(view->ang.x)<45.0f) ang_x=-ang_x;
+	if (fabsf(view->ang.x)<45.0f) ang_x=-ang_x;
 
 	matrix_rotate_x(&mat,ang_x);
 	matrix_vertex_multiply(&mat,&fx,&fy,&fz);

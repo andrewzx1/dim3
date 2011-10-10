@@ -88,7 +88,7 @@ void shadow_get_light_point(d3pnt *pnt,int high,d3pnt *light_pnt,int *light_inte
 
 		// get closest light
 
-	lspot=gl_light_find_closest_light(pnt->x,pnt->y,pnt->z);
+	lspot=gl_light_find_closest_light((float)pnt->x,(float)pnt->y,(float)pnt->z);
 	if (lspot!=NULL) {
 		memmove(light_pnt,&lspot->pnt,sizeof(d3pnt));
 		*light_intensity=lspot->i_intensity;
@@ -462,8 +462,8 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 	int							n,k,i,map_mesh_idx,map_poly_idx,
 								map_poly_count,draw_trig_count,i_alpha,
 								light_intensity;
-	double						dx,dy,dz,d_alpha;
-	float						f_light_intensity,stencil_poly_vertexes[8*3];
+	float						fx,fy,fz,alpha,
+								f_light_intensity,stencil_poly_vertexes[8*3];
 	float						*pf,*va;
 	unsigned char				*vertex_ptr,*vp,*pc;
 	d3vct						*vct;
@@ -472,6 +472,8 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 	map_mesh_poly_type			*map_poly;
 	model_mesh_type				*model_mesh;
     model_trig_type				*model_trig;
+	
+//	float		*na;	// supergumba -- testing
 	
 	model_mesh=&mdl->meshes[model_mesh_idx];
 	
@@ -492,8 +494,8 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 
 		// get distance alpha factor
 
-	d_alpha=(double)light_intensity;
-	d_alpha=1.0/(d_alpha*d_alpha);
+	alpha=(float)light_intensity;
+	alpha=1.0f/(alpha*alpha);
 
 		// setup the rays
 		// clip them at the light intensity
@@ -585,8 +587,8 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 				// light (assume solid objects)
 				// supergumba == move this outside!
 				
-		//	na=draw->setup.mesh_arrays[model_mesh_idx].gl_normal_array+(k*3);
-		//	if (((na[0]*(float)(draw->pnt.x-light_pnt.x))+(na[1]*(float)(draw->pnt.y-light_pnt.y))+(na[2]*(float)(draw->pnt.z-light_pnt.z)))<0.0f) continue;
+//			na=draw->setup.mesh_arrays[model_mesh_idx].gl_normal_array+(k*3);
+//			if (((na[0]*(float)(light_pnt.x-draw->pnt.x))+(na[1]*(float)(light_pnt.y-draw->pnt.y))+(na[2]*(float)(light_pnt.z-draw->pnt.z)))<0.0f) continue;
 
 				// do a bounds check for quick eliminations
 
@@ -610,11 +612,11 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 
 				pc=(unsigned char*)pf;
 
-				dx=(hpt->x-light_pnt.x);
-				dy=(hpt->y-light_pnt.y);
-				dz=(hpt->z-light_pnt.z);
+				fx=(float)(hpt->x-light_pnt.x);
+				fy=(float)(hpt->y-light_pnt.y);
+				fz=(float)(hpt->z-light_pnt.z);
 				
-				i_alpha=(int)(((float)(((dx*dx)+(dy*dy)+(dz*dz))*d_alpha))*255.0f);
+				i_alpha=(int)((((fx*fx)+(fy*fy)+(fz*fz))*alpha)*255.0f);
 				if (i_alpha>255) i_alpha=255;
 
 				*pc++=0x0;

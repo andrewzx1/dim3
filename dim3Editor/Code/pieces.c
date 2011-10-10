@@ -48,7 +48,7 @@ void piece_duplicate_offset(d3pnt *pnt)
 	
 	view=view_get_current_view();
 	
-	if (fabs(view->ang.x)<15.0f) {
+	if (fabsf(view->ang.x)<15.0f) {
 		pnt->x=setup.duplicate_offset*view_snap_clip_size_factor;
 		pnt->z=0;
 		pnt->y=0;

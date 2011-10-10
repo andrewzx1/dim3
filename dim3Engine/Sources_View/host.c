@@ -394,7 +394,7 @@ void host_game_pane(void)
 	x=margin+padding;
 
 	wid=iface.scale_x-((margin+padding)*2);
-	high=(int)(((float)iface.scale_y)*0.83f)-y;
+	high=(int)(((float)iface.scale_y)*0.84f)-y;
 
 	strcpy(cols[0].name,"Map");
 	cols[0].percent_size=1.0f;
@@ -424,7 +424,7 @@ void host_options_pane(void)
 	if (iface.net_bot.on) control_y_sz+=(control_y_add*2);
 	
 	x=(int)(((float)iface.scale_x)*0.45f);
-	y=(iface.scale_y>>1)-(control_y_sz>>1);
+	y=((iface.scale_y>>1)+(element_get_button_high()>>1))-(control_y_sz>>1);
 	
 		// bots
 
@@ -481,7 +481,7 @@ void host_info_pane(void)
 	control_y_sz=5*control_y_add;
 	
 	x=(int)(((float)iface.scale_x)*0.4f);
-	y=(iface.scale_y>>1)-(control_y_sz>>1);
+	y=((iface.scale_y>>1)+(element_get_button_high()>>1))-(control_y_sz>>1);
 	
 		// type
 		
@@ -552,8 +552,8 @@ void host_create_pane(void)
 	
 		// buttons
 		
-	wid=(int)(((float)iface.scale_x)*element_control_button_short_width);
-	high=(int)(((float)iface.scale_x)*element_control_button_height);
+	wid=element_get_button_short_wid();
+	high=element_get_button_high();
 
 	element_get_button_bottom_right(&x,&y,wid,high);
 	element_button_text_add("Host",host_button_host_id,x,y,wid,high,element_pos_right,element_pos_bottom);
