@@ -767,7 +767,8 @@ int map_mesh_find(map_type *map,d3pnt *pnt)
 
 		// look for meshes we are inside of
 
-	dist=(float)(map_max_size*map_max_size);
+	dist=(float)map_max_size;
+	dist=dist*dist;
 
 	mesh=map->mesh.meshes;
 
@@ -810,7 +811,8 @@ int map_mesh_find_closest(map_type *map,d3pnt *pnt)
 
 	mesh_idx=0;
 	
-	dist=(float)(map_max_size*map_max_size);
+	dist=(float)map_max_size;
+	dist=dist*dist;
 
 	mesh=map->mesh.meshes;
 

@@ -178,6 +178,12 @@ void draw_model_setup_bones_vertexes(int mesh_idx)
 {
 	int				n;
 
+		// calc the distance
+		// normally this is only done once, but many
+		// things can change bone positions in animator
+
+	model_calculate_parents(&model);
+
 		// create the drawing bones
 	
 	model_create_draw_bones(&model,&draw_setup);

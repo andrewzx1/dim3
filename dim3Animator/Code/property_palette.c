@@ -1,6 +1,6 @@
 /****************************** File *********************************
 
-Module: dim3 Editor
+Module: dim3 Animator
 Author: Brian Barnes
  Usage: Property Palette
 
@@ -40,6 +40,8 @@ extern file_path_setup_type		file_path_setup;
 extern iface_type				iface;
 
 extern bool						list_palette_open;
+
+char							property_bone_list[max_model_bone][name_str_len+1];
 
 list_palette_type				property_palette;
 
@@ -296,9 +298,24 @@ void property_palette_pick_mesh(int *mesh_idx)
 	list_palette_start_picking_mode("Pick a Mesh",(char*)model.meshes,model.nmesh,sizeof(model_mesh_type),(int)offsetof(model_mesh_type,name),TRUE,FALSE,mesh_idx,NULL);
 }
 
-void property_palette_pick_bone(int *bone_idx)
+void property_palette_pick_bone(int *bone_idx,int circular_check_bone_idx)
 {
-	list_palette_start_picking_mode("Pick a Bone",(char*)model.bones,model.nbone,sizeof(model_bone_type),(int)offsetof(model_bone_type,name),TRUE,FALSE,bone_idx,NULL);
+	int				n;
+
+	for (n=0;n!=model.nbone;n++) {
+
+		if (circular_check_bone_idx!=-1) {
+			if ((n==circular_check_bone_idx) || (model_check_bone_circular(&model,&model.bones[circular_check_bone_idx]))) {
+				property_bone_list[n][0]='~';
+				strcpy((char*)&property_bone_list[n][1],model.bones[n].name);
+				continue;
+			}
+		}
+
+		strcpy(property_bone_list[n],model.bones[n].name);
+	}
+
+	list_palette_start_picking_mode("Pick a Bone",(char*)property_bone_list,model.nbone,(name_str_len+1),0,TRUE,FALSE,bone_idx,NULL);
 }
 
 void property_palette_pick_pose(int *pose_idx)

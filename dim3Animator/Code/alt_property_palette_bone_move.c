@@ -110,7 +110,7 @@ void alt_property_palette_click_pose_bone_move(int pose_idx,int bone_move_idx,in
 			break;
 
 		case kPoseBoneMovePropertyConstraintBone:
-			property_palette_pick_bone(&bone_move->constraint.bone_idx);
+			property_palette_pick_bone(&bone_move->constraint.bone_idx,-1);
 			break;
 
 		case kPoseBoneMovePropertyConstraintOffset:

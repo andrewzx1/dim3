@@ -147,14 +147,14 @@ void property_palette_click_model(int id,bool double_click)
 
 	if ((id>=kModelPropertyLightBoneStart) && (id<=kModelPropertyLightBoneEnd)) {
 		idx=id-kModelPropertyLightBoneStart;
-		property_palette_pick_bone(&model.tags.light_bone_idx[idx]);
+		property_palette_pick_bone(&model.tags.light_bone_idx[idx],-1);
 		main_wind_draw();
 		return;
 	}
 
 	if ((id>=kModelPropertyHaloBoneStart) && (id<=kModelPropertyHaloBoneEnd)) {
 		idx=id-kModelPropertyHaloBoneStart;
-		property_palette_pick_bone(&model.tags.halo_bone_idx[idx]);
+		property_palette_pick_bone(&model.tags.halo_bone_idx[idx],-1);
 		main_wind_draw();
 		return;
 	}
@@ -190,7 +190,7 @@ void property_palette_click_model(int id,bool double_click)
 			break;
 
 		case kModelPropertyNameBone:
-			property_palette_pick_bone(&model.tags.name_bone_idx);
+			property_palette_pick_bone(&model.tags.name_bone_idx,-1);
 			break;
 
 		case kModelPropertyRigidBodyOn:

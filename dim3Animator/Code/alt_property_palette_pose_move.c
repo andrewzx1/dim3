@@ -243,7 +243,7 @@ void alt_property_palette_click_animate_pose_move(int animate_idx,int pose_move_
 				break;
 
 			case kAnimationPoseMovePropertyParticleBone:
-				property_palette_pick_bone(&pose_move->particle.particles[idx].bone_idx);
+				property_palette_pick_bone(&pose_move->particle.particles[idx].bone_idx,-1);
 				break;
 
 			case kAnimationPoseMovePropertyParticleMotionFactor:
@@ -297,7 +297,7 @@ void alt_property_palette_click_animate_pose_move(int animate_idx,int pose_move_
 				break;
 
 			case kAnimationPoseMovePropertyRingBone:
-				property_palette_pick_bone(&pose_move->ring.rings[idx].bone_idx);
+				property_palette_pick_bone(&pose_move->ring.rings[idx].bone_idx,-1);
 				break;
 
 			case kAnimationPoseMovePropertyRingAngle:
@@ -361,7 +361,7 @@ void alt_property_palette_click_animate_pose_move(int animate_idx,int pose_move_
 			// sound
 
 		case kAnimationPoseMovePropertySoundBone:
-			property_palette_pick_bone(&pose_move->sound.bone_idx);
+			property_palette_pick_bone(&pose_move->sound.bone_idx,-1);
 			break;
 
 		case kAnimationPoseMovePropertySoundName:
@@ -397,7 +397,7 @@ void alt_property_palette_click_animate_pose_move(int animate_idx,int pose_move_
 			// mesh flash
 
 		case kAnimationPoseMovePropertyFlashBone:
-			property_palette_pick_bone(&pose_move->flash.bone_idx);
+			property_palette_pick_bone(&pose_move->flash.bone_idx,-1);
 			break;
 
 		case kAnimationPoseMovePropertyFlashIntensity:

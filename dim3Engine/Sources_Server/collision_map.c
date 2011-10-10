@@ -653,9 +653,9 @@ bool collide_box_to_sphere(d3pnt *sphere_pnt,int radius,d3pnt *pt,d3pnt *box_sz)
 		// see if distance between points
 		// is less than both radiuses
 
-	fx=sphere_pnt->x-pt->x;
-	fy=sphere_pnt->y-pt->y;
-	fz=sphere_pnt->z-pt->z;
+	fx=(float)(sphere_pnt->x-pt->x);
+	fy=(float)(sphere_pnt->y-pt->y);
+	fz=(float)(sphere_pnt->z-pt->z);
 
 	dist=(int)sqrtf((fx*fx)+(fy*fy)+(fz*fz));
 

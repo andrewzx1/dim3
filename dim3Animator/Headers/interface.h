@@ -129,7 +129,7 @@ extern void property_palette_pick_sound(char *name,bool include_none);
 extern void property_palette_pick_particle(char *name);
 extern void property_palette_pick_ring(char *name);
 extern void property_palette_pick_mesh(int *mesh_idx);
-extern void property_palette_pick_bone(int *bone_idx);
+extern void property_palette_pick_bone(int *bone_idx,int circular_check_bone_idx);
 extern void property_palette_pick_pose(int *pose_idx);
 extern void property_palette_pick_shader(char *name);
 
