@@ -855,7 +855,7 @@ extern void map_mesh_calculate_uv_center(map_type *map,int mesh_idx,float *gx,fl
 extern int map_mesh_find(map_type *map,d3pnt *pnt);
 extern int map_mesh_find_closest(map_type *map,d3pnt *pnt);
 extern int map_mesh_find_always(map_type *map,d3pnt *pnt);
-extern double map_mesh_calculate_distance(map_mesh_type *mesh,d3pnt *pnt);
+extern float map_mesh_calculate_distance(map_mesh_type *mesh,d3pnt *pnt);
 
 extern bool map_mesh_create_colors_cache(map_mesh_type *mesh);
 
@@ -885,7 +885,7 @@ extern int map_liquid_add(map_type *map);
 extern bool map_liquid_delete(map_type *map,int liquid_idx);
 extern int map_liquid_duplicate(map_type *map,int liquid_idx);
 extern void map_liquid_calculate_center(map_type *map,int liquid_idx,d3pnt *pt);
-extern double map_liquid_calculate_distance(map_liquid_type *liq,d3pnt *pnt);
+extern float map_liquid_calculate_distance(map_liquid_type *liq,d3pnt *pnt);
 
 extern void map_liquid_move(map_type *map,int liquid_idx,d3pnt *mov_pnt);
 extern void map_liquid_move_copy(map_type *map,int liquid_idx,d3pnt *mov_pt);

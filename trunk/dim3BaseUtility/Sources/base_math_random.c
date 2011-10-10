@@ -66,14 +66,9 @@ bool random_boolean(void)
 int random_int_spread(int spread)
 {
 	int			r,k;
-	double		sd,rd;
 	
-	r=(int)random();
-	r=r%10240;
-
-	sd=(double)(spread<<1);
-	rd=(double)r;
-	k=(int)((sd*rd)/10240.0);
+	r=((int)random())%10240;
+	k=((spread<<1)*r)/10240;
 
 	return(spread-k);
 }

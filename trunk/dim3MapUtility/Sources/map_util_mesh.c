@@ -760,15 +760,14 @@ void map_mesh_calculate_uv_center(map_type *map,int mesh_idx,float *gx,float *gy
 int map_mesh_find(map_type *map,d3pnt *pnt)
 {
 	int				n,mesh_idx;
-	double			d,dx,dy,dz,dist;
+	float			d,fx,fy,fz,dist;
 	map_mesh_type	*mesh;
 
 	mesh_idx=-1;
 
 		// look for meshes we are inside of
 
-	dist=(double)map_max_size;
-	dist=dist*dist;
+	dist=(float)(map_max_size*map_max_size);
 
 	mesh=map->mesh.meshes;
 
@@ -785,10 +784,10 @@ int map_mesh_find(map_type *map,d3pnt *pnt)
 			// don't need to do the square root as we are
 			// only comparing if one is greater than the other
 
-		dx=(double)(mesh->box.mid.x-pnt->x);
-		dy=(double)(mesh->box.mid.y-pnt->y);
-		dz=(double)(mesh->box.mid.z-pnt->z);
-		d=(dx*dx)+(dy*dy)+(dz*dz);
+		fx=(float)(mesh->box.mid.x-pnt->x);
+		fy=(float)(mesh->box.mid.y-pnt->y);
+		fz=(float)(mesh->box.mid.z-pnt->z);
+		d=(fx*fx)+(fy*fy)+(fz*fz);
 			
 		if (d<dist) {
 			dist=d;
@@ -804,24 +803,23 @@ int map_mesh_find(map_type *map,d3pnt *pnt)
 int map_mesh_find_closest(map_type *map,d3pnt *pnt)
 {
 	int				n,mesh_idx;
-	double			d,dx,dy,dz,dist;
+	float			d,fx,fy,fz,dist;
 	map_mesh_type	*mesh;
 
 		// find closest by distance to center
 
 	mesh_idx=0;
 	
-	dist=(double)map_max_size;
-	dist=dist*dist;
+	dist=(float)(map_max_size*map_max_size);
 
 	mesh=map->mesh.meshes;
 
 	for (n=0;n!=map->mesh.nmesh;n++) {
 
-		dx=(double)(mesh->box.mid.x-pnt->x);
-		dy=(double)(mesh->box.mid.y-pnt->y);
-		dz=(double)(mesh->box.mid.z-pnt->z);
-		d=(dx*dx)+(dy*dy)+(dz*dz);
+		fx=(float)(mesh->box.mid.x-pnt->x);
+		fy=(float)(mesh->box.mid.y-pnt->y);
+		fz=(float)(mesh->box.mid.z-pnt->z);
+		d=(fx*fx)+(fy*fy)+(fz*fz);
 
 		if (d<dist) {
 			dist=d;
@@ -844,46 +842,46 @@ int map_mesh_find_always(map_type *map,d3pnt *pnt)
 	return(mesh_idx);
 }
 
-double map_mesh_calculate_distance(map_mesh_type *mesh,d3pnt *pnt)
+float map_mesh_calculate_distance(map_mesh_type *mesh,d3pnt *pnt)
 {
-	double			dx,dx2,dy,dy2,dz,dz2;
+	float			fx,fx2,fy,fy2,fz,fz2;
 	
 		// find collision points
 		
 	if ((pnt->x>=mesh->box.min.x) && (pnt->x<=mesh->box.max.x)) {
-		dx=0;
+		fx=0.0f;
 	}
 	else {
-		dx=mesh->box.min.x-pnt->x;
-		dx2=pnt->x-mesh->box.max.x;
-		if (dx2<dx) dx=dx2;
-		dx2=(double)abs(pnt->x-mesh->box.mid.x);
-		if (dx2<dx) dx=dx2;
+		fx=(float)(mesh->box.min.x-pnt->x);
+		fx2=(float)(pnt->x-mesh->box.max.x);
+		if (fx2<fx) fx=fx2;
+		fx2=(float)abs(pnt->x-mesh->box.mid.x);
+		if (fx2<fx) fx=fx2;
 	}
 	
 	if ((pnt->y>=mesh->box.min.y) && (pnt->y<=mesh->box.max.y)) {
-		dy=0;
+		fy=0.0f;
 	}
 	else {
-		dy=mesh->box.min.y-pnt->y;
-		dy2=pnt->y-mesh->box.max.y;
-		if (dy2<dy) dy=dy2;
-		dy2=(double)abs(pnt->y-mesh->box.mid.y);
-		if (dy2<dy) dy=dy2;
+		fy=(float)(mesh->box.min.y-pnt->y);
+		fy2=(float)(pnt->y-mesh->box.max.y);
+		if (fy2<fy) fy=fy2;
+		fy2=(float)abs(pnt->y-mesh->box.mid.y);
+		if (fy2<fy) fy=fy2;
 	}
 	
 	if ((pnt->z>=mesh->box.min.z) && (pnt->z<=mesh->box.max.z)) {
-		dz=0;
+		fz=0.0f;
 	}
 	else {
-		dz=mesh->box.min.z-pnt->z;
-		dz2=pnt->z-mesh->box.max.z;
-		if (dz2<dz) dz=dz2;
-		dz2=(double)abs(pnt->z-mesh->box.mid.z);
-		if (dz2<dz) dz=dz2;
+		fz=(float)(mesh->box.min.z-pnt->z);
+		fz2=(float)(pnt->z-mesh->box.max.z);
+		if (fz2<fz) fz=fz2;
+		fz2=(float)abs(pnt->z-mesh->box.mid.z);
+		if (fz2<fz) fz=fz2;
 	}
 	
-	return(sqrt((dx*dx)+(dy*dy)+(dz*dz)));
+	return(sqrtf((fx*fx)+(fy*fy)+(fz*fz)));
 }
 
 /* =======================================================

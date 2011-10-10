@@ -268,7 +268,7 @@ void particle_draw(effect_type *effect,int count)
 	particle_draw_position(effect,count,&mx,&my,&mz);
 
 	if (particle->ambient_factor!=1.0f) {		// get ambient before position change
-		gl_lights_calc_color((double)mx,(double)my,(double)mz,pc);
+		gl_lights_calc_color((float)mx,(float)my,(float)mz,pc);
 		ambient_col.r=pc[0];
 		ambient_col.g=pc[1];
 		ambient_col.b=pc[2];

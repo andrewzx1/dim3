@@ -118,7 +118,10 @@ void piece_add_obj_replace_delete_existing(void)
 		
 	for (n=0;n!=sel_cnt;n++) {
 		select_get(n,&type,&mesh_idx,&poly_idx);
-		if (type==mesh_piece) map_mesh_delete(&map,mesh_idx);
+		if (type==mesh_piece) {
+			view_vbo_mesh_free(mesh_idx);
+			map_mesh_delete(&map,mesh_idx);
+		}
 	}
 	
 	select_clear();
@@ -482,17 +485,17 @@ void import_get_scale_from_axis_unit(obj_import_state_type *import_state,int sca
 	switch (scale_axis) {
 		case 0:
 			scale.x=(float)scale_unit;
-			scale.y=(float)((fabs(import_state->obj_max.y-import_state->obj_min.y)*((double)scale_unit))/fabs(import_state->obj_max.x-import_state->obj_min.x));
-			scale.z=(float)((fabs(import_state->obj_max.z-import_state->obj_min.z)*((double)scale_unit))/fabs(import_state->obj_max.z-import_state->obj_min.z));
+			scale.y=(float)((fabsf(import_state->obj_max.y-import_state->obj_min.y)*((float)scale_unit))/fabsf(import_state->obj_max.x-import_state->obj_min.x));
+			scale.z=(float)((fabsf(import_state->obj_max.z-import_state->obj_min.z)*((float)scale_unit))/fabsf(import_state->obj_max.z-import_state->obj_min.z));
 			break;
 		case 1:
-			scale.x=(float)((fabs(import_state->obj_max.x-import_state->obj_min.x)*((double)scale_unit))/fabs(import_state->obj_max.y-import_state->obj_min.y));
+			scale.x=(float)((fabsf(import_state->obj_max.x-import_state->obj_min.x)*((float)scale_unit))/fabsf(import_state->obj_max.y-import_state->obj_min.y));
 			scale.y=(float)scale_unit;
-			scale.z=(float)((fabs(import_state->obj_max.z-import_state->obj_min.z)*((double)scale_unit))/fabs(import_state->obj_max.y-import_state->obj_min.y));
+			scale.z=(float)((fabsf(import_state->obj_max.z-import_state->obj_min.z)*((float)scale_unit))/fabsf(import_state->obj_max.y-import_state->obj_min.y));
 			break;
 		case 2:
-			scale.x=(float)((fabs(import_state->obj_max.x-import_state->obj_min.x)*((double)scale_unit))/fabs(import_state->obj_max.z-import_state->obj_min.z));
-			scale.y=(float)((fabs(import_state->obj_max.y-import_state->obj_min.y)*((double)scale_unit))/fabs(import_state->obj_max.z-import_state->obj_min.z));
+			scale.x=(float)((fabsf(import_state->obj_max.x-import_state->obj_min.x)*((float)scale_unit))/fabsf(import_state->obj_max.z-import_state->obj_min.z));
+			scale.y=(float)((fabsf(import_state->obj_max.y-import_state->obj_min.y)*((float)scale_unit))/fabsf(import_state->obj_max.z-import_state->obj_min.z));
 			scale.z=(float)scale_unit;
 			break;
 	}
@@ -538,9 +541,9 @@ bool import_create_mesh_from_obj_group(obj_import_state_type *import_state,char 
 
 		// get the multiply factor
 		
-	factor.x=(float)(fabs(import_state->mesh_max.x-import_state->mesh_min.x)/fabs(import_state->obj_max.x-import_state->obj_min.x));
-	factor.y=(float)(fabs(import_state->mesh_max.y-import_state->mesh_min.y)/fabs(import_state->obj_max.y-import_state->obj_min.y));
-	factor.z=(float)(fabs(import_state->mesh_max.z-import_state->mesh_min.z)/fabs(import_state->obj_max.z-import_state->obj_min.z));
+	factor.x=fabsf(import_state->mesh_max.x-import_state->mesh_min.x)/fabsf(import_state->obj_max.x-import_state->obj_min.x);
+	factor.y=fabsf(import_state->mesh_max.y-import_state->mesh_min.y)/fabsf(import_state->obj_max.y-import_state->obj_min.y);
+	factor.z=fabsf(import_state->mesh_max.z-import_state->mesh_min.z)/fabsf(import_state->obj_max.z-import_state->obj_min.z);
 
 		// add the mesh
 		
@@ -691,6 +694,10 @@ bool import_create_mesh_from_obj_group(obj_import_state_type *import_state,char 
 		
 	map_recalc_normals_mesh(&map,&map.mesh.meshes[mesh_idx],normal_mode_none,(import_state->nnormal!=0));
 	
+		// vbo
+		
+	view_vbo_mesh_initialize(mesh_idx);
+	
 	return(TRUE);
 }
 
@@ -736,10 +743,6 @@ bool import_obj_state_initialize(obj_import_state_type *import_state)
 		free(import_state->groups);
 		return(FALSE);
 	}
-
-		// free all the VBOs
-
-	view_vbo_map_free();
 	
 	return(TRUE);
 }
@@ -753,10 +756,6 @@ void import_obj_state_shutdown(obj_import_state_type *import_state)
 	free(import_state->normals);
 	free(import_state->groups);
 	free(import_state->materials);
-
-		// rebuild the VBOs
-
-	view_vbo_map_initialize();
 }
 
 /* =======================================================
@@ -1032,6 +1031,7 @@ bool import_obj(char *path,char *err_str)
 
 	for (n=(nmesh-1);n>=0;n--) {
 		if (mesh_mark[n]==0x1) {
+			view_vbo_mesh_free(n);
 			map_mesh_delete(&map,n);
 		}
 	}

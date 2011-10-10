@@ -37,19 +37,15 @@ and can be sold or given away.
 
 void vector_normalize(d3vct *v)
 {
-	double			dx,dy,dz,d;
+	float			f;
 	
-	dx=(double)v->x;
-	dy=(double)v->y;
-	dz=(double)v->z;
-
-	d=sqrt((dx*dx)+(dy*dy)+(dz*dz));
-	if (d==0.0) return;
+	f=sqrtf((v->x*v->x)+(v->y*v->y)+(v->z*v->z));
+	if (f==0.0f) return;
 	
-	d=1.0/d;
-	v->x=(float)(dx*d);
-	v->y=(float)(dy*d);
-	v->z=(float)(dz*d);
+	f=1.0f/f;
+	v->x*=f;
+	v->y*=f;
+	v->z*=f;
 }
 
 void vector_create(d3vct *v,int x1,int y1,int z1,int x2,int y2,int z2)

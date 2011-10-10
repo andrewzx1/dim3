@@ -84,7 +84,7 @@ bool object_watch_restrict(obj_type *obj,obj_type *watch_obj)
 void object_watch(obj_type *obj)
 {
 	int						n,dist,x,z,y,kx,kz,ky;
-	double					dx,dz,dy;
+	float					fx,fy,fz;
 	bool					is_near;
 	obj_type				*watch_obj;
 	
@@ -118,10 +118,10 @@ void object_watch(obj_type *obj)
 			if (kz<=dist) {
 				ky=abs(y-watch_obj->pnt.y);
 				if (ky<=dist) {
-					dx=(double)(kx*kx);
-					dz=(double)(kz*kz);
-					dy=(double)(ky*ky);
-					is_near=(((int)sqrt(dx+dz+dy))<=dist);
+					fx=(float)(kx*kx);
+					fy=(float)(ky*ky);
+					fz=(float)(kz*kz);
+					is_near=(((int)sqrtf(fx+fz+fy))<=dist);
 				}
 			}
 		}

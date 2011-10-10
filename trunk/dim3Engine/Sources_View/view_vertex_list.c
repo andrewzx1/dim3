@@ -501,7 +501,7 @@ void view_map_vbo_rebuild_mesh(map_mesh_type *mesh)
 				pnt=mesh->vertexes;
 
 				for (n=0;n!=mesh->nvertex;n++) {
-					gl_lights_calc_color_light_cache_byte(mesh->light_cache.count,mesh->light_cache.indexes,TRUE,(double)pnt->x,(double)pnt->y,(double)pnt->z,pc2);
+					gl_lights_calc_color_light_cache_byte(mesh->light_cache.count,mesh->light_cache.indexes,TRUE,(float)pnt->x,(float)pnt->y,(float)pnt->z,pc2);
 					pc2+=3;
 					pnt++;
 				}

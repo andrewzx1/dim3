@@ -38,7 +38,7 @@ and can be sold or given away.
 float angle_add(float ang1,float ang2)
 {
 	ang1+=ang2;
-	return(ang1-(360.0f*(float)floor((double)(ang1/360.0f))));
+	return(ang1-(360.0f*floorf(ang1/360.0f)));
 }
 
 float angle_dif(float ang1,float ang2,bool *cwise)

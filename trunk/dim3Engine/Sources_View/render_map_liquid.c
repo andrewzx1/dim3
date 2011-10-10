@@ -324,7 +324,7 @@ bool liquid_render_liquid_create_vertex(map_liquid_type *liq,float uv_shift,bool
 			}
 			else {
 				cp=(unsigned char*)cf;
-				gl_lights_calc_color_light_cache_byte(liq->light_cache.count,liq->light_cache.indexes,FALSE,(double)lft,fy,(double)top,cp);
+				gl_lights_calc_color_light_cache_byte(liq->light_cache.count,liq->light_cache.indexes,FALSE,(float)lft,fy,(float)top,cp);
 				*(cp+3)=0xFF;
 			}
 			
@@ -364,7 +364,7 @@ bool liquid_render_liquid_create_vertex(map_liquid_type *liq,float uv_shift,bool
 			}
 			else {
 				cp=(unsigned char*)cf;
-				gl_lights_calc_color_light_cache_byte(liq->light_cache.count,liq->light_cache.indexes,FALSE,(double)rgt,fy,(double)top,cp);
+				gl_lights_calc_color_light_cache_byte(liq->light_cache.count,liq->light_cache.indexes,FALSE,(float)rgt,fy,(float)top,cp);
 				*(cp+3)=0xFF;
 			}
 			
@@ -407,7 +407,7 @@ bool liquid_render_liquid_create_vertex(map_liquid_type *liq,float uv_shift,bool
 			}
 			else {
 				cp=(unsigned char*)cf;
-				gl_lights_calc_color_light_cache_byte(liq->light_cache.count,liq->light_cache.indexes,FALSE,(double)lft,fy,(double)top,cp);
+				gl_lights_calc_color_light_cache_byte(liq->light_cache.count,liq->light_cache.indexes,FALSE,(float)lft,fy,(float)top,cp);
 				*(cp+3)=0xFF;
 			}
 			
@@ -447,7 +447,7 @@ bool liquid_render_liquid_create_vertex(map_liquid_type *liq,float uv_shift,bool
 			}
 			else {
 				cp=(unsigned char*)cf;
-				gl_lights_calc_color_light_cache_byte(liq->light_cache.count,liq->light_cache.indexes,FALSE,(double)lft,fy,(double)bot,cp);
+				gl_lights_calc_color_light_cache_byte(liq->light_cache.count,liq->light_cache.indexes,FALSE,(float)lft,fy,(float)bot,cp);
 				*(cp+3)=0xFF;
 			}
 		

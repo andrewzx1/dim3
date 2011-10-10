@@ -75,8 +75,8 @@ void error_open(void)
 	
 		// buttons
 		
-	wid=(int)(((float)iface.scale_x)*element_control_button_short_width);
-	high=(int)(((float)iface.scale_x)*element_control_button_height);
+	wid=element_get_button_short_wid();
+	high=element_get_button_high();
 	
 	element_get_button_bottom_right(&x,&y,wid,high);
 	

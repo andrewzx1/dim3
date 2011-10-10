@@ -162,17 +162,17 @@ bool map_recalc_normals_find_box_for_connected_poly(map_mesh_type *mesh,int poly
 
 int map_recalc_normals_get_auto_mode(map_mesh_type *mesh)
 {
-	double			dx,dy,dz;
+	float			fx,fy,fz;
 	
 		// find square footage
 		
-	dx=(double)(mesh->box.max.x-mesh->box.min.x)/1000.0;
-	dy=(double)(mesh->box.max.y-mesh->box.min.y)/1000.0;
-	dz=(double)(mesh->box.max.z-mesh->box.min.z)/1000.0;
+	fx=(float)(mesh->box.max.x-mesh->box.min.x)/1000.0f;
+	fy=(float)(mesh->box.max.y-mesh->box.min.y)/1000.0f;
+	fz=(float)(mesh->box.max.z-mesh->box.min.z)/1000.0f;
 	
 		// compare square footage
 		
-	if ((dx*dy*dz)<normal_min_size_auto_out) return(normal_mode_out);
+	if ((fx*fy*fz)<normal_min_size_auto_out) return(normal_mode_out);
 
 	return(normal_mode_in);
 }

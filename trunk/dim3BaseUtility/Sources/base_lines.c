@@ -37,22 +37,15 @@ and can be sold or given away.
 
 void line_get_movement(int x1,int y1,int z1,int x2,int y2,int z2,int mv,int *xadd,int *yadd,int *zadd)
 {
-    int				dx,dz,dy;
-    float			f;
-    double			kx,kz,ky,k;
-    
+    float			f,fx,fy,fz;
+     
         // line size
     
-    dx=x1-x2;
-    dz=z1-z2;
-    dy=y1-y2;
+    fx=(float)(x1-x2);
+    fy=(float)(y1-y2);
+    fz=(float)(z1-z2);
     
-    kx=(double)dx;
-    kz=(double)dz;
-    ky=(double)dy;
-	k=(kx*kx)+(kz*kz)+(ky*ky);
-	
-    f=(float)sqrt(k);
+    f=sqrtf((fx*fx)+(fy*fy)+(fz*fz));
     
         // fraction moved
         
@@ -60,9 +53,9 @@ void line_get_movement(int x1,int y1,int z1,int x2,int y2,int z2,int mv,int *xad
     
         // separate x/z/y moves
         
-    *xadd=(int)(((float)dx)*f);
-    *zadd=(int)(((float)dz)*f);
-    *yadd=(int)(((float)dy)*f);
+    *xadd=(int)(fx*f);
+    *yadd=(int)(fy*f);
+    *zadd=(int)(fz*f);
 }
 
 /* =======================================================
@@ -191,15 +184,13 @@ void line_2D_find_angle_hit(int x,int z,float ang,int lx,int lz,int rx,int rz,in
 void line_2D_find_inside_infinite(int x,int z,int wid,int lx,int lz,int rx,int rz,int *klx,int *klz,int *krx,int *krz)
 {
 	int			xadd,zadd,dist;
-	double		d,dx,dz;
+	float		fx,fz;
 
 		// find line size
 		
-	dx=(double)(rx-lx);
-	dz=(double)(rz-lz);
-	
-	d=(dx*dx)+(dz*dz);
-	dist=(int)sqrt(d);
+	fx=(float)(rx-lx);
+	fz=(float)(rz-lz);
+	dist=(int)sqrtf((fx*fx)+(fz*fz));
 	
 		// calc new line from slope
 	

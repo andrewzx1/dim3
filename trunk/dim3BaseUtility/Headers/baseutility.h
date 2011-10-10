@@ -162,7 +162,6 @@ extern void line_2D_find_inside_infinite(int x,int z,int wid,int lx,int lz,int r
 
 extern void polygon_get_box(int ptsz,int *px,int *py,int *pz,int *p_min_x,int *p_max_x,int *p_min_y,int *p_max_y,int *p_min_z,int *p_max_z);
 extern void polygon_find_center(int ptsz,int *px,int *py,int *pz,int *mx,int *my,int *mz);
-extern void polgyon_enlarge(int ptsz,int *px,int *py,int *pz,int *ex,int *ey,int *ez,int factor);
 extern void polygon_2D_get_box(int ptsz,int *px,int *py,int *p_lft,int *p_rgt,int *p_top,int *p_bot);
 extern bool polygon_2D_point_inside(int ptsz,int *px,int *py,int x,int y);
 extern bool polygon_2D_polygon_points_inside(int ptsz,int *px,int *py,int ptsz_2,int *px_2,int *py_2);
@@ -173,7 +172,6 @@ extern bool polygon_2D_collision_bound_box(int lft,int rgt,int top,int bot);
 extern bool polygon_2D_collision_bound_polygon(int ptsz,int *x,int *y,int lft,int rgt,int top,int bot);
 extern bool polygon_2D_collision_polygon(int ptsz,int *x,int *y);
 extern int polygon_find_y(int ptsz,int *px,int *py,int *pz,int kx,int kz);
-extern int polygon_find_y_outside_point(int ptsz,int *px,int *py,int *pz,int kx,int kz);
 
 extern int area_2D_trig(int *px,int *py);
 extern int area_2D_polygon(int ptsz,int *px,int *py);
@@ -528,7 +526,7 @@ extern bool bitmap_copy(char *srce_path,char *dest_path);
 //
 
 typedef struct		{
-						d3col							text,mouse_over,dimmed;
+						d3col							text,mouse_over,background,outline;
 					} iface_color_menu_type;
 
 typedef struct		{

@@ -74,7 +74,7 @@ void virtual_stick_draw(iface_virtual_stick_type *stick)
 	
 		// make sure it's within circle
 		
-	radius=(int)sqrt((double)(x*x)+(double)(y*y));
+	radius=(int)sqrtf((float)((x*x)+(y*y)));
 	
 	vct.x=(float)x;
 	vct.y=(float)y;

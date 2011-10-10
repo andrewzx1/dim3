@@ -229,6 +229,21 @@ void element_get_button_bottom_right(int *x,int *y,int wid,int high)
 	*y=iface.scale_y-(element_get_tab_margin()+element_get_padding());
 }
 
+int element_get_button_short_wid(void)
+{
+	return((int)(((float)iface.scale_x)*element_control_button_short_width));
+}
+
+int element_get_button_long_wid(void)
+{
+	return((int)(((float)iface.scale_x)*element_control_button_long_width));
+}
+
+int element_get_button_high(void)
+{
+	return((int)(((float)iface.scale_x)*element_control_button_height));
+}
+
 /* =======================================================
 
       Add Elements
@@ -1041,7 +1056,12 @@ void element_draw_button_text(element_type *element,int sel_id)
 	y=((top+bot)>>1)-(iface.font.text_size_medium/10);
 
 	gl_text_start(font_interface_index,iface.font.text_size_medium);
-	gl_text_draw(x,y,element->setup.button.name,tx_center,TRUE,&iface.color.button.text,alpha);
+	if (element->id!=sel_id) {
+		gl_text_draw(x,y,element->setup.button.name,tx_center,TRUE,&iface.color.button.text,alpha);
+	}
+	else {
+		gl_text_draw(x,y,element->setup.button.name,tx_center,TRUE,&iface.color.control.mouse_over,alpha);
+	}
 	gl_text_end();
 }
 
@@ -2005,7 +2025,7 @@ void element_draw_table_row_column_lines(element_type *element,int ty,int by,flo
 	d3col		col;
 	
 	x=element->x;
-	f_wid=(float)(element->wid-30);
+	f_wid=(float)element->wid;
 	
 	col.r=iface.color.control.outline.r*col_factor;
 	col.g=iface.color.control.outline.g*col_factor;
@@ -2337,9 +2357,9 @@ void element_draw_table(element_type *element,int sel_id)
 	element_get_box(element,&lft,&rgt,&top,&bot);
 	
 	bot-=10;
-	top=bot-25;
+	top=bot-(high+5);
 	lft+=10;
-	rgt-=35;
+	rgt-=10;
 	
 	col.r=col.g=col.b=0.0f;
 	
@@ -2653,19 +2673,20 @@ void element_draw_text_box(element_type *element)
 	
 	high=gl_text_get_char_height(iface.font.text_size_medium);
 	
-		// background
-
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_NOTEQUAL,0);
-		
-	col.r=col.g=col.b=0.0f;
-	view_primitive_2D_color_quad(&col,0.2f,lft,rgt,top,bot);
-
 	glDisable(GL_BLEND);
 	glDisable(GL_ALPHA_TEST);
+	
+		// background
+
+	memmove(&col,&iface.color.dialog.background,sizeof(d3col));
+	col.r*=element_gradient_lighten_1;
+	col.g*=element_gradient_lighten_1;
+	col.b*=element_gradient_lighten_1;
+
+	view_primitive_2D_color_quad(&col,1.0f,lft,rgt,top,bot);
 	
 		// scrolling flags
 		
@@ -2724,7 +2745,7 @@ void element_draw_text_box(element_type *element)
 		
 		wid=gl_text_get_string_width(font_interface_index,iface.font.text_size_medium,str);
 		
-		if (wid>=(element->wid-30)) {
+		if (wid>=(element->wid-10)) {
 			line_break=TRUE;
 			
 			if (last_space_idx!=-1) {

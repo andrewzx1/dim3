@@ -178,38 +178,38 @@ void map_liquid_calculate_center(map_type *map,int liquid_idx,d3pnt *pt)
       
 ======================================================= */
 
-double map_liquid_calculate_distance(map_liquid_type *liq,d3pnt *pnt)
+float map_liquid_calculate_distance(map_liquid_type *liq,d3pnt *pnt)
 {
-	double			dx,dy,dz;
+	float			fx,fy,fz;
 	
 		// find collision points
 		
 	if ((pnt->x>=liq->lft) && (pnt->x<=liq->rgt)) {
-		dx=0;
+		fx=0.0f;
 	}
 	else {
 		if (pnt->x<liq->lft) {
-			dx=liq->lft-pnt->x;
+			fx=(float)(liq->lft-pnt->x);
 		}
 		else {
-			dx=pnt->x-liq->rgt;
+			fx=(float)(pnt->x-liq->rgt);
 		}
 	}
 	
-	dy=liq->y-pnt->y;
+	fy=(float)(liq->y-pnt->y);
 	
 	if ((pnt->z>=liq->top) && (pnt->z<=liq->bot)) {
-		dz=0;
+		fz=0.0f;
 	}
 	else {
 		if (pnt->z<liq->top) {
-			dz=liq->top-pnt->z;
+			fz=(float)(liq->top-pnt->z);
 		}
 		else {
-			dz=pnt->z-liq->bot;
+			fz=(float)(pnt->z-liq->bot);
 		}
 	}
 	
-	return(sqrt((dx*dx)+(dy*dy)+(dz*dz)));
+	return(sqrtf((fx*fx)+(fy*fy)+(fz*fz)));
 }
 

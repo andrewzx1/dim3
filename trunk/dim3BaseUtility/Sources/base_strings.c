@@ -37,10 +37,24 @@ and can be sold or given away.
 
 void string_safe_strcat(char *str,char *cat_str,int buf_len)
 {
-	int				len;
-
-	len=(buf_len-strlen(str))-1;
-	if (len>0) strncat(str,cat_str,len);
+	int				idx;
+	char			c,*src,*dest;
+	
+	idx=strlen(str);
+	if (idx>=(buf_len-1)) return;
+	
+	dest=str+idx;
+	src=cat_str;
+	
+	while (TRUE) {
+		c=*src++;
+		*dest++=c;
+		
+		if (c==0x0) break;
+		
+		idx++;
+		if (idx>=(buf_len-1)) break;
+	}
 
 	str[buf_len-1]=0x0;
 }

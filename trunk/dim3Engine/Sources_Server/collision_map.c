@@ -103,7 +103,7 @@ int circle_line_intersect(d3pnt *p1,d3pnt *p2,d3pnt *circle_pnt,int radius,d3pnt
 {
 	int				n,dist,cur_dist;
 	float			rad,rad_add,f_radius;
-	double			dx,dz;
+	float			fx,fz;
 	d3pnt			cp2,temp_hit_pnt;
 	
 		// ray cast like spokes from the circle
@@ -123,9 +123,9 @@ int circle_line_intersect(d3pnt *p1,d3pnt *p2,d3pnt *circle_pnt,int radius,d3pnt
 		cp2.z=circle_pnt->z-(int)(f_radius*cosf(rad));
 		
 		if (line_line_intersect(p1,p2,circle_pnt,&cp2,&temp_hit_pnt)) {
-			dx=(double)(temp_hit_pnt.x-circle_pnt->x);
-			dz=(double)(temp_hit_pnt.z-circle_pnt->z);
-			dist=(int)sqrt((dx*dx)+(dz*dz));
+			fx=(float)(temp_hit_pnt.x-circle_pnt->x);
+			fz=(float)(temp_hit_pnt.z-circle_pnt->z);
+			dist=(int)sqrtf((fx*fx)+(fz*fz));
 
 			if ((dist<cur_dist) || (cur_dist==-1)) {
 				cur_dist=dist;
@@ -185,19 +185,18 @@ int circle_box_intersect(d3pnt *min,d3pnt *max,d3pnt *circle_pnt,int radius,d3pn
 
 void circle_get_point_on_radius_through_hit_point(d3pnt *circle_pnt,int radius,d3pnt *hit_pnt,d3pnt *radius_pt)
 {
-	double			d,dx,dz;
-	float			fr,fx,fz;
+	float			f_dist,fr,fx,fz;
 
 		// get the normalized line vector
 		
-	dx=(double)(hit_pnt->x-circle_pnt->x);
-	dz=(double)(hit_pnt->z-circle_pnt->z);
+	fx=(float)(hit_pnt->x-circle_pnt->x);
+	fz=(float)(hit_pnt->z-circle_pnt->z);
 
-	d=sqrt((dx*dx)+(dz*dz));
-	if (d!=0.0) {
-		d=1.0/d;
-		fx=(float)(dx*d);
-		fz=(float)(dz*d);
+	f_dist=sqrtf((fx*fx)+(fz*fz));
+	if (f_dist!=0.0f) {
+		f_dist=1.0f/f_dist;
+		fx*=f_dist;
+		fz*=f_dist;
 	}
 
 		// get point on radius
@@ -218,7 +217,7 @@ void circle_get_point_on_radius_through_hit_point(d3pnt *circle_pnt,int radius,d
 bool collide_circle_check_object_cylinder(d3pnt *circle_pnt,int radius,d3pnt *min,d3pnt *max,bool skip_pickup,int *p_cur_dist,obj_type *obj,d3pnt *cur_hit_pnt)
 {
 	int			dist,chk_radius;
-	double		dx,dz;
+	float		fx,fz;
 	
 		// y check
 		
@@ -233,10 +232,10 @@ bool collide_circle_check_object_cylinder(d3pnt *circle_pnt,int radius,d3pnt *mi
 		// is greater than radius+chk_radius,
 		// then no contact
 
-	dx=(double)(circle_pnt->x-obj->pnt.x);
-	dz=(double)(circle_pnt->z-obj->pnt.z);
+	fx=(float)(circle_pnt->x-obj->pnt.x);
+	fz=(float)(circle_pnt->z-obj->pnt.z);
 
-	dist=(int)sqrt((dx*dx)+(dz*dz));
+	dist=(int)sqrtf((fx*fx)+(fz*fz));
 
 	if (dist>(chk_radius+radius)) return(FALSE);
 
@@ -326,7 +325,7 @@ bool collide_circle_check_object(d3pnt *circle_pnt,int radius,d3pnt *min,d3pnt *
 bool collide_circle_check_projectile(d3pnt *circle_pnt,int radius,d3pnt *min,d3pnt *max,int *p_cur_dist,proj_type *proj,d3pnt *cur_hit_pnt)
 {
 	int			dist,chk_radius;
-	double		dx,dz;
+	float		fx,fz;
 	
 		// y check
 		
@@ -341,10 +340,10 @@ bool collide_circle_check_projectile(d3pnt *circle_pnt,int radius,d3pnt *min,d3p
 		// is greater than radius+chk_radius,
 		// then no contact
 
-	dx=(double)(circle_pnt->x-proj->pnt.x);
-	dz=(double)(circle_pnt->z-proj->pnt.z);
+	fx=(float)(circle_pnt->x-proj->pnt.x);
+	fz=(float)(circle_pnt->z-proj->pnt.z);
 
-	dist=(int)sqrt((dx*dx)+(dz*dz));
+	dist=(int)sqrtf((fx*fx)+(fz*fz));
 
 	if (dist>(chk_radius+radius)) return(FALSE);
 
@@ -366,7 +365,7 @@ bool collide_circle_check_mesh(d3pnt *circle_pnt,int radius,d3pnt *min,d3pnt *ma
 {
 	int					n,y,dist,poly_count,cur_dist;
 	short				*poly_idx;
-	double				dx,dz,hit_dist,tot_dist;
+	float				fx,fz,hit_dist,tot_dist;
 	bool				hit;
 	d3pnt				p1,p2,hit_pnt;
 	map_mesh_type		*mesh;
@@ -447,16 +446,16 @@ bool collide_circle_check_mesh(d3pnt *circle_pnt,int radius,d3pnt *min,d3pnt *ma
 			// against y collisions
 
 		if (poly->line.l_ty!=poly->line.r_ty) {
-			dx=(double)(hit_pnt.x-poly->line.lx);
-			dz=(double)(hit_pnt.z-poly->line.lz);
-			hit_dist=sqrt((dx*dx)+(dz*dz));
+			fx=(float)(hit_pnt.x-poly->line.lx);
+			fz=(float)(hit_pnt.z-poly->line.lz);
+			hit_dist=sqrtf((fx*fx)+(fz*fz));
 			
-			dx=(double)(poly->line.rx-poly->line.lx);
-			dz=(double)(poly->line.rz-poly->line.lz);
-			tot_dist=sqrt((dx*dx)+(dz*dz));
+			fx=(float)(poly->line.rx-poly->line.lx);
+			fz=(float)(poly->line.rz-poly->line.lz);
+			tot_dist=sqrtf((fx*fx)+(fz*fz));
 			
 			if ((tot_dist!=0.0) && (hit_dist!=0.0)) {
-				y=poly->line.l_ty+(int)((double)(poly->line.r_ty-poly->line.l_ty)*(hit_dist/tot_dist));
+				y=poly->line.l_ty+(int)((float)(poly->line.r_ty-poly->line.l_ty)*(hit_dist/tot_dist));
 				if (y>=circle_pnt->y) continue;
 			}
 		}
@@ -642,7 +641,7 @@ bool collide_box_slide_to_map(d3pnt *pt,d3pnt *box_sz,d3pnt *motion,bool check_o
 bool collide_box_to_sphere(d3pnt *sphere_pnt,int radius,d3pnt *pt,d3pnt *box_sz)
 {
 	int			dist,box_radius;
-	double		dx,dy,dz;
+	float		fx,fy,fz;
 
 		// get the box radius
 
@@ -654,11 +653,11 @@ bool collide_box_to_sphere(d3pnt *sphere_pnt,int radius,d3pnt *pt,d3pnt *box_sz)
 		// see if distance between points
 		// is less than both radiuses
 
-	dx=sphere_pnt->x-pt->x;
-	dy=sphere_pnt->y-pt->y;
-	dz=sphere_pnt->z-pt->z;
+	fx=sphere_pnt->x-pt->x;
+	fy=sphere_pnt->y-pt->y;
+	fz=sphere_pnt->z-pt->z;
 
-	dist=(int)sqrt((dx*dx)+(dy*dy)+(dz*dz));
+	dist=(int)sqrtf((fx*fx)+(fy*fy)+(fz*fz));
 
 	return(dist<=(box_radius+radius));
 }

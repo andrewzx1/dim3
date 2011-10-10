@@ -46,7 +46,7 @@ void glu_patch_gluPerspective(float fovy,float aspect,float zNear,float zFar)
 {
 	float		x_min,x_max,y_min,y_max;
 
-	y_max=zNear*(float)tan((double)(fovy*TRIG_PI)/360.0);
+	y_max=zNear*tanf((fovy*TRIG_PI)/360.0f);
 	y_min=-y_max;
 	x_min=y_min*aspect;
 	x_max=y_max*aspect;
@@ -63,14 +63,13 @@ void glu_patch_gluPerspective(float fovy,float aspect,float zNear,float zFar)
 
 void glu_patch_vector_normalize(d3_d_vct *v)
 {
-	float			dist;
-	double			dx,dy,dz;
+	float			dist,fx,fy,fz;
 
-	dx=(double)(v->x*v->x);
-	dy=(double)(v->y*v->y);
-	dz=(double)(v->z*v->z);
+	fx=v->x*v->x;
+	fy=v->y*v->y;
+	fz=v->z*v->z;
 	
-	dist=(float)sqrt(dx+dy+dz);
+	dist=sqrtf(fx+fy+fz);
 	if (dist==0.0f) return;
 	
 	dist=1.0f/dist;

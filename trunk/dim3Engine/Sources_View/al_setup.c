@@ -133,8 +133,8 @@ void audio_callback(void *userdata,Uint8 *stream,int len)
 			f_ang=((350.0f-ang)/2.0f)*ANG_to_RAD;
 		}
 		
-		play->left_fact=(int)(((float)vol)*fabs(cosf(f_ang)));
-		play->right_fact=(int)(((float)vol)*fabs(sinf(f_ang)));
+		play->left_fact=(int)(((float)vol)*fabsf(cosf(f_ang)));
+		play->right_fact=(int)(((float)vol)*fabsf(sinf(f_ang)));
 	}
 
 		// if no plays or music, skip audio mix

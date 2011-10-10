@@ -1122,10 +1122,9 @@ void map_get_texture_uv_get_scale(map_type *map,int txt_idx,float *txt_scale_x,f
 void map_mesh_reset_poly_uv(map_type *map,int mesh_idx,int poly_idx)
 {
 	int						n,kx,ky,kz;
-	float					fx,fy,fz,ltxtx,rtxtx,ltxty,rtxty,ltxtz,rtxtz,
+	float					f,fx,fy,fz,ltxtx,rtxtx,ltxty,rtxty,ltxtz,rtxtz,
 							x_txtoff,y_txtoff,x_txtfact,y_txtfact,x_txtfact_2,
 							f_dist_1,f_dist_2,txt_scale_x,txt_scale_y;
-	double					dx,dz,d;
 	d3pnt					*pt;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
@@ -1155,13 +1154,13 @@ void map_mesh_reset_poly_uv(map_type *map,int mesh_idx,int poly_idx)
 			
 			// get distance texture factor
 				
-		dx=(double)(poly->line.rx-poly->line.lx);
-		dz=(double)(poly->line.rz-poly->line.lz);
-		d=(dx*dx)+(dz*dz);
-		x_txtfact_2=(float)(sqrt(d)*txt_scale_x);
+		fx=(float)(poly->line.rx-poly->line.lx);
+		fz=(float)(poly->line.rz-poly->line.lz);
+		f=(fx*fx)+(fz*fz);
+		x_txtfact_2=sqrtf(f)*txt_scale_x;
 		if (x_txtfact<0) x_txtfact_2=-x_txtfact_2;
 		
-		if (fabs(x_txtfact_2)>fabs(x_txtfact)) x_txtfact=x_txtfact_2;		// if distance calc is longer, use that
+		if (fabsf(x_txtfact_2)>fabsf(x_txtfact)) x_txtfact=x_txtfact_2;		// if distance calc is longer, use that
 		
 		x_txtoff=map_get_texture_round_coord(map_get_texture_reduce_coord(ltxtx));
 		x_txtfact=map_get_texture_round_coord(x_txtfact);
@@ -1181,16 +1180,16 @@ void map_mesh_reset_poly_uv(map_type *map,int mesh_idx,int poly_idx)
 				
 			// create the polygons UVs
 			
-		dx=(double)(poly->box.max.x-poly->line.lx);
-		dz=(double)(poly->box.max.z-poly->line.lz);
-		f_dist_2=(float)sqrt((dx*dx)+(dz*dz));
+		fx=(float)(poly->box.max.x-poly->line.lx);
+		fz=(float)(poly->box.max.z-poly->line.lz);
+		f_dist_2=sqrtf((fx*fx)+(fz*fz));
 			
 		for (n=0;n!=poly->ptsz;n++) {
 			pt=&mesh->vertexes[poly->v[n]];
 
-			dx=(double)(pt->x-poly->line.lx);
-			dz=(double)(pt->z-poly->line.lz);
-			f_dist_1=(float)sqrt((dx*dx)+(dz*dz));
+			fx=(float)(pt->x-poly->line.lx);
+			fz=(float)(pt->z-poly->line.lz);
+			f_dist_1=sqrtf((fx*fx)+(fz*fz));
 			
 			ky=pt->y-poly->box.min.y;
 

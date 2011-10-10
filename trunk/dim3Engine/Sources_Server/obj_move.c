@@ -1267,11 +1267,11 @@ void object_thrust(obj_type *obj)
 		drag=1.0f-(obj->thrust.speed/obj->thrust.max_speed);
 
 		angle_get_movement_float(obj->ang.y,obj->thrust.max_speed,&xmax,&zmax);
-		xmax=(float)fabs(xmax);
-		zmax=(float)fabs(zmax);
+		xmax=fabsf(xmax);
+		zmax=fabsf(zmax);
 	
 		angle_get_movement_float(obj->view_ang.x,obj->thrust.max_speed,&ymax,&ztemp);
-		ymax=(float)fabs(ymax);
+		ymax=fabsf(ymax);
 	
 		if ((obj->thrust.vct.x>xmax) || (obj->thrust.vct.x<-xmax)) obj->thrust.vct.x*=drag;
 		if ((obj->thrust.vct.y>ymax) || (obj->thrust.vct.y<-ymax)) obj->thrust.vct.y*=drag;

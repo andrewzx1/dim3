@@ -127,7 +127,7 @@ void setup_game_video_pane(void)
 #endif
 	
 	x=(int)(((float)iface.scale_x)*0.4f);
-	y=(iface.scale_y>>1)-(control_y_sz>>1);
+	y=((iface.scale_y>>1)+(element_get_button_high()>>1))-(control_y_sz>>1);
 	
 		// setup screen size list
 		
@@ -187,7 +187,7 @@ void setup_game_audio_pane(void)
 	control_y_sz=control_y_add*2;
 	
 	x=(int)(((float)iface.scale_x)*0.4f);
-	y=(iface.scale_y>>1)-(control_y_sz>>1);
+	y=((iface.scale_y>>1)+(element_get_button_high()>>1))-(control_y_sz>>1);
 	
 	element_slider_add("Sound Volume",setup.sound_volume,0.0f,1.0f,ctrl_sound_volume_id,x,y,TRUE);
 	y+=control_y_add;
@@ -205,7 +205,7 @@ void setup_game_mouse_pane(void)
 	control_y_sz=8*control_y_add;
 	
 	x=(int)(((float)iface.scale_x)*0.4f);
-	y=(iface.scale_y>>1)-(control_y_sz>>1);
+	y=((iface.scale_y>>1)+(element_get_button_high()>>1))-(control_y_sz>>1);
 	
 	element_checkbox_add("Always Run",setup.always_run,ctrl_always_run_id,x,y,TRUE);
 	y+=control_y_add;
@@ -292,8 +292,8 @@ void setup_game_action_pane(void)
 	x=iface.scale_x>>1;
 	y+=high;
 	
-	wid=(int)(((float)iface.scale_x)*element_control_button_long_width);
-	high=(int)(((float)iface.scale_x)*element_control_button_height);
+	wid=element_get_button_long_wid();
+	high=element_get_button_high();
 	
 	y+=(((padding/2)+(high/2))+5);
 	
@@ -312,7 +312,7 @@ void setup_game_debug_pane(void)
 	control_y_sz=control_y_add*8;
 	
 	x=(int)(((float)iface.scale_x)*0.6f);
-	y=(iface.scale_y>>1)-(control_y_sz>>1);
+	y=((iface.scale_y>>1)+(element_get_button_high()>>1))-(control_y_sz>>1);
 	
 	element_checkbox_add("Engine Windowed Mode (requires restart)",setup.window,ctrl_debug_engine_windowed_id,x,y,TRUE);
 	y+=control_y_add;
@@ -371,13 +371,13 @@ void setup_game_create_pane(void)
 	
 		// buttons
 		
-	wid=(int)(((float)iface.scale_x)*element_control_button_long_width);
-	high=(int)(((float)iface.scale_x)*element_control_button_height);
+	wid=element_get_button_long_wid();
+	high=element_get_button_high();
 	
 	element_get_button_bottom_left(&x,&y,wid,high);
 	element_button_text_add("Default",setup_game_default_button,x,y,wid,high,element_pos_left,element_pos_bottom);
 
-	wid=(int)(((float)iface.scale_x)*element_control_button_short_width);
+	wid=element_get_button_short_wid();
 	
 	element_get_button_bottom_right(&x,&y,wid,high);
 	element_button_text_add("OK",setup_game_ok_button,x,y,wid,high,element_pos_right,element_pos_bottom);
