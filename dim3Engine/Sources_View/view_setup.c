@@ -143,8 +143,7 @@ bool view_proj_in_draw_list(int proj_idx)
 
 void view_add_mesh_draw_list(int start_mesh_idx)
 {
-	int					n;
-	float				dist;
+	int					n,dist;
 	map_mesh_type		*start_mesh,*mesh;
 	
 	start_mesh=&map.mesh.meshes[start_mesh_idx];
@@ -174,18 +173,18 @@ void view_add_mesh_draw_list(int start_mesh_idx)
 
 void view_add_liquid_draw_list(int start_mesh_idx)
 {
-	int					n,mx,mz;
-	float				dist,obscure_dist;
+	int					n,mx,mz,
+						dist,obscure_dist;
 	map_liquid_type		*liq;
 
 		// obscure distance -- normally is the opengl projection
 		// distance but can be the fog distance if fog is on
 
 	if (!fog_solid_on()) {
-		obscure_dist=(float)(camera.setup.plane.far_z-camera.setup.plane.near_z);
+		obscure_dist=camera.setup.plane.far_z-camera.setup.plane.near_z;
 	}
 	else {
-		obscure_dist=(float)((map.fog.outer_radius>>1)*3);
+		obscure_dist=(map.fog.outer_radius>>1)*3;
 	}
 
 		// find all drawable liquids
@@ -378,8 +377,7 @@ void view_setup_projectiles(int tick)
 
 void view_add_effect_draw_list(void)
 {
-	int					n;
-	float				dist;
+	int					n,dist;
 	d3pnt				center_pnt;
 	effect_type			*effect;
 

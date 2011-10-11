@@ -587,7 +587,7 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 				// light (assume solid objects)
 				// supergumba == move this outside!
 				
-//			na=draw->setup.mesh_arrays[model_mesh_idx].gl_normal_array+(k*3);
+//			na=draw->setup.mesh_arrays[model_mesh_idx].gl_normal_array+(k*9);
 //			if (((na[0]*(float)(light_pnt.x-draw->pnt.x))+(na[1]*(float)(light_pnt.y-draw->pnt.y))+(na[2]*(float)(light_pnt.z-draw->pnt.z)))<0.0f) continue;
 
 				// do a bounds check for quick eliminations

@@ -162,14 +162,14 @@ bool view_cull_check_boundbox_2(d3pnt *min,d3pnt *max)
       
 ======================================================= */
 
-float view_cull_distance_to_view_center(int x,int y,int z)
+int view_cull_distance_to_view_center(int x,int y,int z)
 {
 	float			fx,fy,fz;
 	
 	fx=(float)(x-view.render->camera.pnt.x);
 	fy=(float)(y-view.render->camera.pnt.y);
 	fz=(float)(z-view.render->camera.pnt.z);
-	return(sqrtf((fx*fx)+(fy*fy)+(fz*fz)));
+	return((int)sqrtf((fx*fx)+(fy*fy)+(fz*fz)));
 }
 
 /* =======================================================
@@ -252,8 +252,7 @@ bool view_cull_model(model_draw *draw)
 bool view_model_shadow(model_draw *draw)
 {
 	int				light_intensity,
-					obscure_dist;
-	float			dist;
+					obscure_dist,dist;
 	d3pnt			min,max,light_pnt;
 
 		// no model to draw

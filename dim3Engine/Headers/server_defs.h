@@ -311,12 +311,12 @@ typedef struct		{
 					} model_vbo_type;
 
 typedef struct		{
-						int								model_idx,spin_tick,
+						int								model_idx,spin_tick,draw_dist,
 														mesh_mask,render_mesh_mask,
 														script_animation_idx,
 														script_light_idx,script_halo_idx;
 						char							name[name_str_len];
-						float							alpha,resize,draw_dist,normal[3];
+						float							alpha,resize,normal[3];
 						bool							on,player,
 														flip_x,ui_lighting,no_shader,
 														bounce,face_forward,

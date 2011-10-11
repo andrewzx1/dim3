@@ -800,7 +800,7 @@ extern void gl_project_fix_rotation(int *x,int *y,int *z);
 // view culling
 //
 
-extern float view_cull_distance_to_view_center(int x,int y,int z);
+extern int view_cull_distance_to_view_center(int x,int y,int z);
 extern bool view_cull_mesh(map_mesh_type *mesh);
 extern bool view_cull_liquid(map_liquid_type *liq);
 extern bool view_cull_model(model_draw *draw);
