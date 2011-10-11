@@ -283,15 +283,13 @@ void render_model_vertex_object_no_shader_diffuse(model_type *mdl,int mesh_idx,m
 	trig=mesh->trigs;
 	
 	for (n=0;n!=mesh->ntrig;n++) {
-	
-		/* supergumba -- testing
+	/* supergumba -- redo this
 		if ((((*na)*(float)(draw->pnt.x-view.render->camera.pnt.x))+((*(na+1))*(float)(draw->pnt.y-view.render->camera.pnt.y))+((*(na+2))*(float)(draw->pnt.z-view.render->camera.pnt.x)))<0.0f) {
 			trig++;
 			na+=3;
 			continue;
 		}
-		*/
-		
+	*/	
 		gx=trig->gx;
 		gy=trig->gy;
 
