@@ -180,15 +180,15 @@ int view_cull_distance_to_view_center(int x,int y,int z)
 
 bool view_cull_mesh(map_mesh_type *mesh)
 {
-	float			obscure_dist;
+	int				obscure_dist;
 
 		// check obscure distance
 
 	if (!fog_solid_on()) {
-		obscure_dist=(float)(camera.setup.plane.far_z-camera.setup.plane.near_z);
+		obscure_dist=camera.setup.plane.far_z-camera.setup.plane.near_z;
 	}
 	else {
-		obscure_dist=(float)((map.fog.outer_radius>>1)*3);
+		obscure_dist=(map.fog.outer_radius>>1)*3;
 	}
 
 	if (map_mesh_calculate_distance(mesh,&view.render->camera.pnt)>obscure_dist) return(FALSE);
@@ -200,15 +200,15 @@ bool view_cull_mesh(map_mesh_type *mesh)
 
 bool view_cull_liquid(map_liquid_type *liq)
 {
-	float			obscure_dist;
+	int				obscure_dist;
 
 		// check obscure distance
 
 	if (!fog_solid_on()) {
-		obscure_dist=(float)(camera.setup.plane.far_z-camera.setup.plane.near_z);
+		obscure_dist=camera.setup.plane.far_z-camera.setup.plane.near_z;
 	}
 	else {
-		obscure_dist=(float)((map.fog.outer_radius>>1)*3);
+		obscure_dist=(map.fog.outer_radius>>1)*3;
 	}
 		
 	if (map_liquid_calculate_distance(liq,&view.render->camera.pnt)>obscure_dist) return(FALSE);

@@ -75,8 +75,7 @@ void liquid_reflection_map_bitmap_pixel_get(d3pnt *spt,d3vct *vct,map_mesh_type 
 {
 	int				n,txt_idx,txt_sz,x,y,
 					lft_idx,rgt_idx,top_idx,bot_idx;
-	float			fx,fy,min_gx,max_gx,min_gy,max_gy;
-	double			dx,dz,d1,d2;
+	float			fx,fy,fz,f1,f2,min_gx,max_gx,min_gy,max_gy;
 	unsigned char	*ptr;
 	d3pnt			hpt;
 	d3pnt			*pt;
@@ -129,15 +128,15 @@ void liquid_reflection_map_bitmap_pixel_get(d3pnt *spt,d3vct *vct,map_mesh_type 
 			// find distances that hit point is on
 			// wall x/z plane
 			
-		dx=(double)(poly->line.rx-poly->line.lx);
-		dz=(double)(poly->line.rz-poly->line.lz);
-		d1=sqrt((dx*dx)+(dz*dz));
+		fx=(float)(poly->line.rx-poly->line.lx);
+		fz=(float)(poly->line.rz-poly->line.lz);
+		f1=sqrtf((fx*fx)+(fz*fz));
 		
-		dx=(double)(hpt.x-poly->line.lx);
-		dz=(double)(hpt.z-poly->line.lz);
-		d2=sqrt((dx*dx)+(dz*dz));
+		fx=(float)(hpt.x-poly->line.lx);
+		fz=(float)(hpt.z-poly->line.lz);
+		f2=sqrtf((fx*fx)+(fz*fz));
 		
-		fx=(float)(d2/d1);
+		fx=f2/f1;
 		fx=poly->main_uv.x[lft_idx]+(fx*(poly->main_uv.x[rgt_idx]-poly->main_uv.x[lft_idx]));
 		
 			// find the distances for hit point on y plane

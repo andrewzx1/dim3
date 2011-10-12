@@ -433,9 +433,8 @@ typedef struct		{
 					} view_render_camera_type;
 	
 typedef struct		{
-						int									flag;
+						int									flag,dist;
 						short								type,idx;
-						float								dist;
 					} view_render_draw_list_item_type;
 					
 typedef struct		{

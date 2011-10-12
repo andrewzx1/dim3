@@ -51,7 +51,7 @@ void view_start_draw_list(void)
 	view.render->draw_list.count=0;
 }
 
-void view_add_draw_list(int item_type,int item_idx,float item_dist,int item_flag)
+void view_add_draw_list(int item_type,int item_idx,int item_dist,int item_flag)
 {
 	int				t,idx,sz;
 

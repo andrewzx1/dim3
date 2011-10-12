@@ -175,7 +175,7 @@ bool model_mesh_set_vertex_count(model_type *model,int mesh_idx,int vertex_count
 		count=mesh->nvertex;
 		if (count>vertex_count) count=vertex_count;
 	
-		memmove(vtx,mesh->vertexes,(count*sizeof(model_vertex_type)));
+		if (count!=0) memmove(vtx,mesh->vertexes,(count*sizeof(model_vertex_type)));
 	
 		free(mesh->vertexes);
 	}
@@ -203,7 +203,7 @@ bool model_mesh_set_trig_count(model_type *model,int mesh_idx,int trig_count)
 		count=mesh->ntrig;
 		if (count>trig_count) count=trig_count;
 	
-		memmove(trg,mesh->trigs,(count*sizeof(model_trig_type)));
+		if (count!=0) memmove(trg,mesh->trigs,(count*sizeof(model_trig_type)));
 	
 		free(mesh->trigs);
 	}
