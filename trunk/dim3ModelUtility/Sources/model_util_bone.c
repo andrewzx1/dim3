@@ -31,24 +31,17 @@ and can be sold or given away.
 
 /* =======================================================
 
-      Add and Delete Bones
+      Create Bone Tags
       
 ======================================================= */
 
-int model_bone_add(model_type *model,int x,int y,int z)
+model_tag model_bone_create_tag(model_type *model,int skip_bone_idx)
 {
-	int					n,idx,bone_idx;
-	bool				hit;
-	char				str[8];
-	model_tag			tag;
-	model_bone_type		*bone,*ptr;
-
-		// only allow a maximum number of bones
-
-	if (model->nbone>=max_model_bone) return(-1);
-
-		// find a good tag
-
+	int				n,idx;
+	bool			hit;
+	char			str[8];
+	model_tag		tag;
+	
 	idx=0;
 
 	while (TRUE) {
@@ -57,10 +50,13 @@ int model_bone_add(model_type *model,int x,int y,int z)
 		tag=text_to_model_tag(str);
 
 		hit=FALSE;
+		
 		for (n=0;n!=model->nbone;n++) {
-			if (tag==model->bones[n].tag) {
-				hit=TRUE;
-				break;
+			if (n!=skip_bone_idx) {
+				if (tag==model->bones[n].tag) {
+					hit=TRUE;
+					break;
+				}
 			}
 		}
 
@@ -68,6 +64,29 @@ int model_bone_add(model_type *model,int x,int y,int z)
 
 		idx++;
 	}
+	
+	return(tag);
+}
+
+/* =======================================================
+
+      Add and Delete Bones
+      
+======================================================= */
+
+int model_bone_add(model_type *model,int x,int y,int z)
+{
+	int					n,bone_idx;
+	model_tag			tag;
+	model_bone_type		*bone,*ptr;
+
+		// only allow a maximum number of bones
+
+	if (model->nbone>=max_model_bone) return(-1);
+
+		// find a good tag
+		
+	tag=model_bone_create_tag(model,-1);
 
 		// create memory for new bones
 
