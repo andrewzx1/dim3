@@ -558,8 +558,7 @@ void light_map_reduce_polys_greater_than_quarter_of_lmap(light_map_poly_type *lm
 void light_map_create_mesh_poly_flatten(map_mesh_type *mesh,map_mesh_poly_type *poly,light_map_poly_type *lm_poly)
 {
 	int					n,x,y,x_sz,y_sz;
-	float				x_factor,y_factor;
-	double				dx,dz;
+	float				fx,fz,x_factor,y_factor;
 	d3pnt				*pt;
 			
 		// flatten the poly for 2D drawing
@@ -577,10 +576,10 @@ void light_map_create_mesh_poly_flatten(map_mesh_type *mesh,map_mesh_poly_type *
 		memmove(&lm_poly->pt[n],pt,sizeof(d3pnt));
 
 		if (poly->box.wall_like) {
-			dx=(double)(pt->x-poly->line.lx);
-			dz=(double)(pt->z-poly->line.lz);
+			fx=(float)(pt->x-poly->line.lx);
+			fz=(float)(pt->z-poly->line.lz);
 			
-			x=(int)sqrt((dx*dx)+(dz*dz));
+			x=(int)sqrtf((fx*fx)+(fz*fz));
 			y=pt->y-poly->box.min.y;
 		}
 		else {
@@ -962,8 +961,7 @@ bool light_map_bitmap_transparency_check(d3pnt *spt,d3vct *vct,map_mesh_type *me
 {
 	int				n,txt_idx,txt_sz,x,y,
 					lft_idx,rgt_idx,top_idx,bot_idx;
-	float			fx,fy,min_gx,max_gx,min_gy,max_gy;
-	double			dx,dz,d1,d2;
+	float			fx,fy,fz,f1,f2,min_gx,max_gx,min_gy,max_gy;
 	unsigned char	*aptr;
 	d3pnt			hpt;
 	d3pnt			*pt;
@@ -1018,15 +1016,15 @@ bool light_map_bitmap_transparency_check(d3pnt *spt,d3vct *vct,map_mesh_type *me
 			// find distances that hit point is on
 			// wall x/z plane
 			
-		dx=(double)(poly->line.rx-poly->line.lx);
-		dz=(double)(poly->line.rz-poly->line.lz);
-		d1=sqrt((dx*dx)+(dz*dz));
+		fx=(float)(poly->line.rx-poly->line.lx);
+		fz=(float)(poly->line.rz-poly->line.lz);
+		f1=sqrtf((fx*fx)+(fz*fz));
 		
-		dx=(double)(hpt.x-poly->line.lx);
-		dz=(double)(hpt.z-poly->line.lz);
-		d2=sqrt((dx*dx)+(dz*dz));
+		fx=(float)(hpt.x-poly->line.lx);
+		fz=(float)(hpt.z-poly->line.lz);
+		f2=sqrtf((fx*fx)+(fz*fz));
 		
-		fx=(float)(d2/d1);
+		fx=f2/f1;
 		fx=poly->main_uv.x[lft_idx]+(fx*(poly->main_uv.x[rgt_idx]-poly->main_uv.x[lft_idx]));
 		
 			// find the distances for hit point on y plane
@@ -1316,9 +1314,8 @@ void light_map_ray_trace_diffuse(int mesh_idx,int poly_idx,d3pnt *rpt,d3pnt *lit
 void light_map_ray_trace(int mesh_idx,int poly_idx,d3pnt *rpt,unsigned char *uc_col)
 {
 	int					n;
-	float				f;
+	float				f,f_intensity,dist,fx,fy,fz;
 	d3col				col,add_col;
-	double				d,d_intensity,dist,dx,dy,dz;
 	map_light_type		*lit;
 	map_particle_type	*prt;
 	
@@ -1332,13 +1329,13 @@ void light_map_ray_trace(int mesh_idx,int poly_idx,d3pnt *rpt,unsigned char *uc_
 		
 			// light within radius?
 			
-		d_intensity=(double)lit->setting.intensity;
+		f_intensity=(float)lit->setting.intensity;
 			
-		dx=(double)(lit->pnt.x-rpt->x);
-		dy=(double)(lit->pnt.y-rpt->y);
-		dz=(double)(lit->pnt.z-rpt->z);
-		dist=sqrt((dx*dx)+(dy*dy)+(dz*dz));
-		if (dist>d_intensity) continue;
+		fx=(float)(lit->pnt.x-rpt->x);
+		fy=(float)(lit->pnt.y-rpt->y);
+		fz=(float)(lit->pnt.z-rpt->z);
+		dist=sqrtf((fx*fx)+(fy*fy)+(fz*fz));
+		if (dist>f_intensity) continue;
 
 			// is it visible?
 			
@@ -1346,9 +1343,8 @@ void light_map_ray_trace(int mesh_idx,int poly_idx,d3pnt *rpt,unsigned char *uc_
 		
 			// get color
 			
-		d=1.0-(dist/d_intensity);
-		d+=pow(d,(double)lit->setting.exponent);
-		f=(float)d;
+		f=1.0f-(dist/f_intensity);
+		f+=powf(f,(float)lit->setting.exponent);
 
 		add_col.r=lit->setting.col.r*f;
 		add_col.g=lit->setting.col.g*f;
@@ -1374,13 +1370,13 @@ void light_map_ray_trace(int mesh_idx,int poly_idx,d3pnt *rpt,unsigned char *uc_
 		
 			// light within radius?
 			
-		d_intensity=(double)prt->light_setting.intensity;
+		f_intensity=(float)prt->light_setting.intensity;
 			
-		dx=(double)(prt->pnt.x-rpt->x);
-		dy=(double)(prt->pnt.y-rpt->y);
-		dz=(double)(prt->pnt.z-rpt->z);
-		dist=sqrt((dx*dx)+(dy*dy)+(dz*dz));
-		if (dist>d_intensity) continue;
+		fx=(float)(prt->pnt.x-rpt->x);
+		fy=(float)(prt->pnt.y-rpt->y);
+		fz=(float)(prt->pnt.z-rpt->z);
+		dist=sqrtf((fx*fx)+(fy*fy)+(fz*fz));
+		if (dist>f_intensity) continue;
 
 			// is it visible?
 			
@@ -1388,9 +1384,8 @@ void light_map_ray_trace(int mesh_idx,int poly_idx,d3pnt *rpt,unsigned char *uc_
 	
 			// get color
 			
-		d=1.0-(dist/d_intensity);
-		d+=pow(d,(double)prt->light_setting.exponent);
-		f=(float)d;
+		f=1.0f-(dist/f_intensity);
+		f+=powf(f,(float)prt->light_setting.exponent);
 
 		add_col.r=prt->light_setting.col.r*f;
 		add_col.g=prt->light_setting.col.g*f;

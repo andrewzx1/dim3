@@ -178,7 +178,7 @@ void map_liquid_calculate_center(map_type *map,int liquid_idx,d3pnt *pt)
       
 ======================================================= */
 
-float map_liquid_calculate_distance(map_liquid_type *liq,d3pnt *pnt)
+int map_liquid_calculate_distance(map_liquid_type *liq,d3pnt *pnt)
 {
 	float			fx,fy,fz;
 	
@@ -210,6 +210,6 @@ float map_liquid_calculate_distance(map_liquid_type *liq,d3pnt *pnt)
 		}
 	}
 	
-	return(sqrtf((fx*fx)+(fy*fy)+(fz*fz)));
+	return((int)sqrtf((fx*fx)+(fy*fy)+(fz*fz)));
 }
 

@@ -416,7 +416,7 @@ void piece_create_liquid(void)
 	piece_create_get_spot(&pnt);
 	
 		// create the liquid
-		
+
 	index=map_liquid_add(&map);
 	if (index==-1) {
 		os_dialog_alert("Can Not Create Liquid","Not enough memory.");

@@ -182,8 +182,6 @@ void model_pick_list_add_trig(int idx,d3pnt *v_pnts)
 	}
 
 	glVertexPointer(3,GL_FLOAT,0,vertexes);
-	
-	glColor4f(0.9f,0.9f,0.9f,1.0f);
-	glDrawArrays(GL_TRIANGLES,0,(3*3));
+	glDrawArrays(GL_TRIANGLES,0,3);
 }
 

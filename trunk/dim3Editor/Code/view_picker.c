@@ -350,7 +350,7 @@ void view_pick_list_add(int type,int main_idx,int sub_idx)
 
 void view_pick_list_add_cube(d3pnt *v_pnts,int type,int main_idx,int sub_idx)
 {
-	int				n,idx,quad_list[24]={0,1,2,3,4,5,6,7,3,2,5,6,0,1,4,7,0,7,6,3,1,2,5,4};
+	int				n,idx,quad_list[24]={0,1,2,3,4,5,6,7,3,2,6,7,0,1,5,4,0,3,7,4,1,2,6,5};
 	float			vertexes[24*3];
 	float			*pv;
 
@@ -370,7 +370,7 @@ void view_pick_list_add_cube(d3pnt *v_pnts,int type,int main_idx,int sub_idx)
 	}
 
 	glVertexPointer(3,GL_FLOAT,0,vertexes);
-	glDrawArrays(GL_QUADS,0,(24*3));
+	glDrawArrays(GL_QUADS,0,24);
 }
 
 void view_pick_list_add_handle(d3pnt *pnt,int type,int main_idx,int sub_idx)
@@ -390,7 +390,7 @@ void view_pick_list_add_handle(d3pnt *pnt,int type,int main_idx,int sub_idx)
 	glPointSize(view_handle_size);
 
 	glVertexPointer(3,GL_FLOAT,0,vertexes);
-	glDrawArrays(GL_POINTS,0,3);
+	glDrawArrays(GL_POINTS,0,1);
 	
 	glPointSize(1.0f);
 }
@@ -411,7 +411,7 @@ void view_pick_list_add_2D_handle(d3pnt *pnt,int type,int main_idx,int sub_idx)
 	glPointSize(view_handle_size);
 	
 	glVertexPointer(2,GL_FLOAT,0,vertexes);
-	glDrawArrays(GL_POINTS,0,2);
+	glDrawArrays(GL_POINTS,0,1);
 	
 	glPointSize(1.0f);
 }

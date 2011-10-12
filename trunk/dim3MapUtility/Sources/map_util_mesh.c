@@ -844,7 +844,7 @@ int map_mesh_find_always(map_type *map,d3pnt *pnt)
 	return(mesh_idx);
 }
 
-float map_mesh_calculate_distance(map_mesh_type *mesh,d3pnt *pnt)
+int map_mesh_calculate_distance(map_mesh_type *mesh,d3pnt *pnt)
 {
 	float			fx,fx2,fy,fy2,fz,fz2;
 	
@@ -883,7 +883,7 @@ float map_mesh_calculate_distance(map_mesh_type *mesh,d3pnt *pnt)
 		if (fz2<fz) fz=fz2;
 	}
 	
-	return(sqrtf((fx*fx)+(fy*fy)+(fz*fz)));
+	return((int)sqrtf((fx*fx)+(fy*fy)+(fz*fz)));
 }
 
 /* =======================================================
