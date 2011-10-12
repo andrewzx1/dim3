@@ -212,6 +212,5 @@ bool model_mesh_set_trig_count(model_type *model,int mesh_idx,int trig_count)
 	mesh->trigs=trg;
 	
 	return(TRUE);
-
-
 }
+

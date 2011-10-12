@@ -343,6 +343,7 @@ extern bool model_mesh_delete(model_type *model,int mesh_idx);
 extern bool model_mesh_set_vertex_count(model_type *model,int mesh_idx,int vertex_count);
 extern bool model_mesh_set_trig_count(model_type *model,int mesh_idx,int trig_count);
 
+extern model_tag model_bone_create_tag(model_type *model,int skip_bone_idx);
 extern int model_bone_add(model_type *model,int x,int y,int z);
 extern void model_bone_delete(model_type *model,int bone_idx);
 extern bool model_check_bone_duplicate_tag(model_type *model,model_bone_type *bone);

@@ -45,12 +45,11 @@ extern animator_state_type		state;
 
 void insert_model(char *file_name)
 {
-	int						i,k,t,b_off,v_off,t_off,idx;
-	char					str[8],path[1024],path2[1024],sub_path[1024];
-	bool					bone_ok;
+	int						i,k,t,b_off,v_off,t_off,nvertex,ntrig,idx;
+	char					path[1024],path2[1024],sub_path[1024];
 	model_bone_type			*bone,*ins_bone;
-	model_vertex_type		*vertex,*ins_vertex;
-	model_trig_type			*trig,*ins_trig;
+	model_vertex_type		*vertex;
+	model_trig_type			*trig;
 	texture_type			*texture,*ins_texture;
 	model_material_type		*material,*ins_material;
 	
@@ -75,26 +74,10 @@ void insert_model(char *file_name)
 		
 			// fix duplicate names
 			
-		while (TRUE) {
-			
-			bone_ok=TRUE;
-			
-			for (k=0;k!=b_off;k++) {
-				if (model.bones[k].tag==bone->tag) {
-					model_tag_to_text(bone->tag,str);
-					if ((str[3]<'0') || (str[3]>'9')) {
-						str[3]='1';
-					}
-					else {
-						str[3]+=1;
-					}
-					bone->tag=text_to_model_tag(str);
-					bone_ok=FALSE;
-					break;
-				}
+		for (k=0;k!=b_off;k++) {
+			if (model.bones[k].tag==bone->tag) {
+				bone->tag=model_bone_create_tag(&model,idx);
 			}
-			
-			if (bone_ok) break;
 		}
 		
 		ins_bone++;
@@ -103,40 +86,34 @@ void insert_model(char *file_name)
 		// bring in the vertexes
 		
 	v_off=model.meshes[state.cur_mesh_idx].nvertex;
+	nvertex=ins_model.meshes[0].nvertex;
 	
-	model_mesh_set_vertex_count(&model,state.cur_mesh_idx,(model.meshes[state.cur_mesh_idx].nvertex+ins_model.meshes[0].nvertex));
+	model_mesh_set_vertex_count(&model,state.cur_mesh_idx,(v_off+nvertex));
 	
 	vertex=&model.meshes[state.cur_mesh_idx].vertexes[v_off];
-	ins_vertex=ins_model.meshes[0].vertexes;
+	memmove(vertex,ins_model.meshes[0].vertexes,(nvertex*sizeof(model_vertex_type)));
 	
-	for (i=0;i!=ins_model.meshes[0].nvertex;i++) {
-		memmove(vertex,ins_vertex,sizeof(model_vertex_type));
-		
+	for (i=0;i!=nvertex;i++) {
 		if (vertex->major_bone_idx!=-1) vertex->major_bone_idx+=b_off;
 		if (vertex->minor_bone_idx!=-1) vertex->minor_bone_idx+=b_off;
-		
 		vertex++;
-		ins_vertex++;
 	}
 	
 		// bring in the trigs
 		
 	t_off=model.meshes[state.cur_mesh_idx].ntrig;
+	ntrig=ins_model.meshes[0].ntrig;
 	
-	model_mesh_set_trig_count(&model,state.cur_mesh_idx,(model.meshes[state.cur_mesh_idx].ntrig+ins_model.meshes[0].ntrig));
+	model_mesh_set_trig_count(&model,state.cur_mesh_idx,(t_off+ntrig));
 	
 	trig=&model.meshes[state.cur_mesh_idx].trigs[t_off];
-	ins_trig=ins_model.meshes[0].trigs;
+	memmove(trig,ins_model.meshes[0].trigs,(ntrig*sizeof(model_trig_type)));
 	
-	for (i=0;i!=ins_model.meshes[0].ntrig;i++) {
-		memmove(trig,ins_trig,sizeof(model_trig_type));
-		
+	for (i=0;i!=ntrig;i++) {
 		trig->v[0]+=v_off;
 		trig->v[1]+=v_off;
 		trig->v[2]+=v_off;
-		
 		trig++;
-		ins_trig++;
 	}
 	
 		// bring in the textures
@@ -163,7 +140,7 @@ void insert_model(char *file_name)
 		texture=&model.textures[k];
 		memmove(texture,ins_texture,sizeof(texture_type));
 		
-		for (t=0;t!=max_model_texture;t++) {
+		for (t=0;t!=max_texture_frame;t++) {
 			if (texture->frames[t].bitmap.gl_id!=-1) {
 				sprintf(texture->frames[t].name,"Image_%d_%d",k,t);
 			}
@@ -176,13 +153,13 @@ void insert_model(char *file_name)
 		
 			// force bitmap to not close when closing insert model
 					
-		for (t=0;t!=max_model_texture;t++) {
+		for (t=0;t!=max_texture_frame;t++) {
 			ins_texture->frames[t].bitmap.gl_id=-1;
 		}
 		
 			// copy over bitmap
 
-		for (t=0;t!=max_model_texture;t++) {
+		for (t=0;t!=max_texture_frame;t++) {
 			if (texture->frames[t].bitmap.gl_id!=-1) {
 				sprintf(sub_path,"Models/%s/Textures",file_name);
 				file_paths_data_default(&file_path_setup,path,sub_path,ins_texture->frames[t].name,"png");	
