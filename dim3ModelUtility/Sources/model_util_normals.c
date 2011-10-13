@@ -37,26 +37,6 @@ and can be sold or given away.
       
 ======================================================= */
 
-int model_recalc_normals_find_material(model_type *model,int mesh_idx,int trig_idx)
-{
-	int						n;
-	model_material_type		*material;
-    texture_type			*texture;
-
-	texture=model->textures;
-	material=model->meshes[mesh_idx].materials;
-
-	for (n=0;n!=max_model_texture;n++) {
-		if (texture->frames[0].name[0]!=0x0) {
-			if ((trig_idx>=material->trig_start) && (trig_idx<(material->trig_start+material->trig_count))) return(n);
-		}
-		texture++;
-		material++;
-	}
-
-	return(0);
-}
-
 bool model_recalc_normals_compare_sign(float f1,float f2)
 {
 	if ((f1<0.0f) && (f2<0.0f)) return(TRUE);
@@ -66,7 +46,7 @@ bool model_recalc_normals_compare_sign(float f1,float f2)
 
 void map_recalc_normals_get_trig_box(model_type *model,int mesh_idx,int trig_idx,d3pnt *min,d3pnt *max)
 {
-	int					k,j,trig_material_idx;
+	int					k,j;
 	bool				first_hit;
 	d3pnt				*pnt;
 	model_mesh_type		*mesh;
@@ -81,12 +61,10 @@ void map_recalc_normals_get_trig_box(model_type *model,int mesh_idx,int trig_idx
 
 	chk_trig=mesh->trigs;
 
-	trig_material_idx=model_recalc_normals_find_material(model,mesh_idx,trig_idx);
-
 	for (k=0;k!=mesh->ntrig;k++) {
 
 		chk_trig=&mesh->trigs[k];
-		if (model_recalc_normals_find_material(model,mesh_idx,k)!=trig_material_idx) continue;
+		if (chk_trig->txt_idx!=trig->txt_idx) continue;
 
 		for (j=0;j!=3;j++) {
 

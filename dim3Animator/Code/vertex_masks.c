@@ -397,15 +397,15 @@ void vertex_set_sel_vertex_to_bone(int mesh_idx,int major_bone_idx,int minor_bon
 
 /* =======================================================
 
-      Sel/Material Interactions
+      Sel/Texture Interactions
       
 ======================================================= */
 
-void vertex_set_sel_mask_material(int mesh_idx,int material_idx)
+void vertex_set_sel_mask_texture(int mesh_idx,int txt_idx)
 {
-	int					i,k,nt;
+	int					n,k;
+	model_mesh_type		*mesh;
 	model_trig_type		*trig;
-	model_material_type	*material;
 	
 		// clear selection
 		
@@ -413,15 +413,15 @@ void vertex_set_sel_mask_material(int mesh_idx,int material_idx)
 	
 		// select vertexes in trigs
 
-	material=&model.meshes[mesh_idx].materials[material_idx];
-	trig=&model.meshes[mesh_idx].trigs[material->trig_start];
+	mesh=&model.meshes[mesh_idx];
+	trig=mesh->trigs;
 	
-	nt=material->trig_count;
-	
-	for (i=0;i!=nt;i++) {
-	
-		for (k=0;k!=3;k++) {
-			if (!vertex_check_hide_mask(mesh_idx,trig->v[k])) vertex_set_sel_mask(mesh_idx,trig->v[k],TRUE);
+	for (n=0;n!=mesh->ntrig;n++) {
+
+		if (trig->txt_idx==txt_idx) {
+			for (k=0;k!=3;k++) {
+				if (!vertex_check_hide_mask(mesh_idx,trig->v[k])) vertex_set_sel_mask(mesh_idx,trig->v[k],TRUE);
+			}
 		}
 		
 		trig++;

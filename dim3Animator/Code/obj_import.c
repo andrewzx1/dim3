@@ -152,13 +152,8 @@ bool import_obj(char *path,bool replace,bool *found_normals,char *err_str)
 	model_mesh_type			*mesh;
 	model_vertex_type		*vertex,*old_vertex;
     model_trig_type			*trig;
-	model_material_type		*material;
 	
 	mesh=&model.meshes[state.cur_mesh_idx];
-	
-		// clear mesh materials
-    
-    clear_materials();
 	
 		// load the file
 		
@@ -379,9 +374,6 @@ bool import_obj(char *path,bool replace,bool *found_normals,char *err_str)
 	*found_normals=(nnormal!=0);
 
 		// get the triangles
-		// we run through the materials to
-		// combine triangles that are on different
-		// materials but with the same name
 
     ntrig=0;
 	trig=mesh->trigs;
@@ -396,9 +388,6 @@ bool import_obj(char *path,bool replace,bool *found_normals,char *err_str)
 			textdecode_close();
 			return(FALSE);
 		}
-
-		material=&mesh->materials[texture_idx];
-		material->trig_start=ntrig;
 
 		in_material=FALSE;
 
@@ -489,6 +478,8 @@ bool import_obj(char *path,bool replace,bool *found_normals,char *err_str)
 			}
 			
 			for (k=0;k!=(npt-2);k++) {
+				trig->txt_idx=i;
+
 				trig->v[0]=pvtx[0];
 				trig->v[1]=pvtx[k+1];
 				trig->v[2]=pvtx[k+2];
@@ -501,18 +492,14 @@ bool import_obj(char *path,bool replace,bool *found_normals,char *err_str)
 				trig->gy[1]=pt_uv[k+1].y;
 				trig->gy[2]=pt_uv[k+2].y;
 				
-				trig->tangent_space.normal.x=(pnormal[0].x+pnormal[1].x+pnormal[2].x)/3.0f;
-				trig->tangent_space.normal.y=(pnormal[0].y+pnormal[1].y+pnormal[2].y)/3.0f;
-				trig->tangent_space.normal.z=(pnormal[0].z+pnormal[1].z+pnormal[2].z)/3.0f;
-				
-				vector_normalize(&trig->tangent_space.normal);
+				memmove(&trig->tangent_space[0].normal,&pnormal[0],sizeof(d3vct));
+				memmove(&trig->tangent_space[1].normal,&pnormal[k+1],sizeof(d3vct));
+				memmove(&trig->tangent_space[2].normal,&pnormal[k+2],sizeof(d3vct));
 	            
 				trig++;
 				ntrig++;
 			}
 		}
-
-		material->trig_count=ntrig-material->trig_start;
 	}
 	
 	mesh->ntrig=ntrig;

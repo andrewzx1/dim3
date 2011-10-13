@@ -3338,7 +3338,7 @@
 					</File>
 				</Filter>
 				<Filter
-					Name="Render Map"
+					Name="Render"
 					>
 					<File
 						RelativePath="..\..\dim3Engine\Sources_View\render_map_liquid.c"

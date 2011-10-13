@@ -216,26 +216,45 @@ void view_get_model_size(char *model_name,d3pnt *size)
       
 ======================================================= */
 
-void view_model_draw_material(model_type *model,model_draw_setup *draw_setup,texture_type *texture,model_material_type *material,int frame)
+void view_model_draw_triangles(model_type *model,model_draw_setup *draw_setup,short *texture_frame,int frame_count,BOOL opaque)
 {
-	int					n,k,trig_count,bitmap_gl_id;
+	int					n,k,frame,cur_txt_idx;
 	float				vertexes[3*3],uvs[3*2];
 	float				*pa,*pv,*pt;
+	model_mesh_type		*mesh;
     model_trig_type		*trig;
 
-	trig_count=material->trig_count;
-	if (trig_count==0) return;
-
-		// setup texture
-
-	bitmap_gl_id=texture->frames[frame].bitmap.gl_id;
-	glBindTexture(GL_TEXTURE_2D,bitmap_gl_id);
+	cur_txt_idx=-1;
 	
 		// triangles
 		
-	trig=&model->meshes[0].trigs[material->trig_start];
+	mesh=&model->meshes[0];
+	trig=mesh->trigs;
 
-	for (n=0;n!=trig_count;n++) {
+	for (n=0;n!=mesh->ntrig;n++) {
+		trig=&mesh->trigs[n];
+
+			// opaque?
+
+		if (opaque) {
+			if (model->textures[trig->txt_idx].frames[0].bitmap.alpha_mode==alpha_mode_transparent) continue;
+		}
+		else {
+			if (model->textures[trig->txt_idx].frames[0].bitmap.alpha_mode!=alpha_mode_transparent) continue;
+		}
+
+			// new texture
+
+		if (trig->txt_idx!=cur_txt_idx) {
+			cur_txt_idx=trig->txt_idx;
+
+			frame=0;
+			if (n<frame_count) frame=(int)texture_frame[n];
+
+			glBindTexture(GL_TEXTURE_2D,model->textures[cur_txt_idx].frames[frame].bitmap.gl_id);
+		}
+
+			// draw triangle
 
 		pv=vertexes;
 		pt=uvs;
@@ -253,19 +272,15 @@ void view_model_draw_material(model_type *model,model_draw_setup *draw_setup,tex
 		glTexCoordPointer(2,GL_FLOAT,0,uvs);
 
 		glDrawArrays(GL_TRIANGLES,0,3);
-
-		trig++;
 	}
 }
 
 bool view_model_draw(d3pnt *pnt,d3ang *ang,char *name,float resize,short *texture_frame,int frame_count)
 {
-	int								idx,n,frame;
+	int								idx;
 	model_type						*model;
 	model_draw_setup				draw_setup;
 	model_mesh_type					*mesh;
-    texture_type					*texture;
-	model_material_type				*material;
 
 	if (name[0]==0x0) return(FALSE);
 	
@@ -309,35 +324,16 @@ bool view_model_draw(d3pnt *pnt,d3ang *ang,char *name,float resize,short *textur
 	
 	glDisable(GL_BLEND);
 	
-    texture=model->textures;
-	material=mesh->materials;
-    
-    for (n=0;n!=max_model_texture;n++) {
-		frame=0;
-		if (n<frame_count) frame=(int)texture_frame[n];
-		if (texture->frames[0].bitmap.alpha_mode!=alpha_mode_transparent) view_model_draw_material(model,&draw_setup,texture,material,frame);
-		texture++;
-		material++;
-	}
+	view_model_draw_triangles(model,&draw_setup,texture_frame,frame_count,TRUE);
 	
 		// run through the transparent textures
 
 	glEnable(GL_BLEND);
 	glDepthMask(GL_FALSE);
 	
-	texture=model->textures;
-	material=mesh->materials;
-    
-    for (n=0;n!=max_model_texture;n++) {
-		frame=0;
-		if (n<frame_count) frame=(int)texture_frame[n];
-		if (texture->frames[0].bitmap.alpha_mode==alpha_mode_transparent) view_model_draw_material(model,&draw_setup,texture,material,frame);
-		texture++;
-		material++;
-	}
+	view_model_draw_triangles(model,&draw_setup,texture_frame,frame_count,FALSE);
 	
 	glDepthMask(GL_TRUE);
-	
 	glDisable(GL_ALPHA_TEST);
 	
 	glDisable(GL_TEXTURE_2D);

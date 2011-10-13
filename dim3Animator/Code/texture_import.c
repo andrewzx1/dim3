@@ -38,25 +38,6 @@ extern animator_state_type		state;
 
 /* =======================================================
 
-      Clear Material Structures
-      
-======================================================= */
-
-void clear_materials(void)
-{
-    int						i;
-	model_material_type		*material;
-    
-	material=model.meshes[state.cur_mesh_idx].materials;
-    
-    for (i=0;i!=max_model_texture;i++) {
-		material->trig_start=material->trig_count=0;
-		material++;
-    }
-}
-
-/* =======================================================
-
       Texture Counts
       
 ======================================================= */

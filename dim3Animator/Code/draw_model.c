@@ -32,6 +32,8 @@ and can be sold or given away.
 #include "glue.h"
 #include "interface.h"
 
+int								cur_txt_idx;
+
 extern model_type				model;
 extern model_draw_setup			draw_setup;
 extern animator_state_type		state;
@@ -42,10 +44,42 @@ extern animator_state_type		state;
       
 ======================================================= */
 
-void model_start_texture(texture_type *texture)
+void model_texture_start(void)
 {
-	int			bitmap_gl_id;
+		// setup texturing
+
+	glActiveTexture(GL_TEXTURE0);
+	glEnable(GL_TEXTURE_2D);
+
+	glColor3f(1.0f,1.0f,1.0f);
+
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 	
+	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
+	
+	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_REPLACE);
+	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_RGB,GL_TEXTURE);
+	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_RGB,GL_SRC_COLOR);
+	
+	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_ALPHA,GL_REPLACE);
+	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_ALPHA,GL_TEXTURE);
+	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_ALPHA,GL_SRC_ALPHA);
+
+		// no texture set
+
+	cur_txt_idx=-1;
+}
+
+void model_texture_set(int txt_idx)
+{
+	GLuint			gl_id;
+	texture_type	*texture;
+	
+	if (txt_idx==cur_txt_idx) return;
+
+	cur_txt_idx=txt_idx;
+	texture=&model.textures[txt_idx];
+
 		// blending
 		
 	if (texture->additive) {
@@ -58,44 +92,25 @@ void model_start_texture(texture_type *texture)
 		// get texture ids
 		
 	if (state.playing) {
-		bitmap_gl_id=texture->frames[texture->animate.current_frame].bitmap.gl_id;
+		gl_id=texture->frames[texture->animate.current_frame].bitmap.gl_id;
 	}
 	else {
-		bitmap_gl_id=texture->frames[0].bitmap.gl_id;
+		gl_id=texture->frames[0].bitmap.gl_id;
 	}
 	
-		// setup texturing
-		
-	glActiveTexture(GL_TEXTURE0);
-	glEnable(GL_TEXTURE_2D);
-	
-	glBindTexture(GL_TEXTURE_2D,bitmap_gl_id);
-	
-	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
-	
-	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_REPLACE);
-	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_RGB,GL_TEXTURE);
-	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_RGB,GL_SRC_COLOR);
-	
-	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_ALPHA,GL_REPLACE);
-	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_ALPHA,GL_TEXTURE);
-	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_ALPHA,GL_SRC_ALPHA);
+	glBindTexture(GL_TEXTURE_2D,gl_id);
 }
 
-void model_end_texture(texture_type *texture)
+void model_texture_end(void)
 {
-		// reset blending
+		// reset blending and combine
 		
 	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
 
 		// turn off texturing
 		
-	glActiveTexture(GL_TEXTURE0);
 	glDisable(GL_TEXTURE_2D);
-	
-		// reset texture combine
-		
-	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
 }
 
 /* =======================================================
@@ -104,28 +119,37 @@ void model_end_texture(texture_type *texture)
       
 ======================================================= */
 
-void draw_model_material(int mesh_idx,texture_type *texture,model_material_type *material)
+void draw_model_mesh_triangles(int mesh_idx,bool opaque)
 {
-	int					n,k,trig_count;
+	int					n,k;
 	float				vertexes[3*3],uvs[3*2];
 	float				*pa,*pv,*pt;
+	model_mesh_type		*mesh;
     model_trig_type		*trig;
 
-	trig_count=material->trig_count;
-	if (trig_count==0) return;
-	
-	glColor3f(0.5f,0.5f,0.5f);
+	mesh=&model.meshes[mesh_idx];
 
-	model_start_texture(texture);
-	
-	trig=&model.meshes[mesh_idx].trigs[material->trig_start];
+	for (n=0;n!=mesh->ntrig;n++) {
+		trig=&mesh->trigs[n];
 
-	for (n=0;n!=trig_count;n++) {
+			// hidden?
 
-		if (vertex_check_hide_mask_trig(mesh_idx,trig)) {
-			trig++;
-			continue;
+		if (vertex_check_hide_mask_trig(mesh_idx,trig)) continue;
+
+			// opaque?
+
+		if (opaque) {
+			if (model.textures[trig->txt_idx].frames[0].bitmap.alpha_mode==alpha_mode_transparent) continue;
 		}
+		else {
+			if (model.textures[trig->txt_idx].frames[0].bitmap.alpha_mode!=alpha_mode_transparent) continue;
+		}
+
+			// switch texture?
+
+		model_texture_set(trig->txt_idx);
+
+			// setup and draw triangle
 
 		pv=vertexes;
 		pt=uvs;
@@ -143,20 +167,11 @@ void draw_model_material(int mesh_idx,texture_type *texture,model_material_type 
 		glTexCoordPointer(2,GL_FLOAT,0,uvs);
 
 		glDrawArrays(GL_TRIANGLES,0,3);
-
-		trig++;
 	}
-	
-	model_end_texture(texture);
-	
-	glColor3f(1.0f,1.0f,1.0f);
 }
 
 void draw_model(int mesh_idx)
 {
-	int						n;
-    texture_type			*texture;
-	model_material_type		*material;
 	model_mesh_type			*mesh;
 	
 		// model vertexes and normal arrays
@@ -173,37 +188,28 @@ void draw_model(int mesh_idx)
 	}
 	
 	glColor4f(1.0f,1.0f,1.0f,1.0f);
+
+	model_texture_start();
     
         // run through the opaque textures
 
 	glDisable(GL_BLEND);
 
-    texture=model.textures;
-	material=mesh->materials;
-    
-    for (n=0;n!=max_model_texture;n++) {
-		if (texture->frames[0].bitmap.alpha_mode!=alpha_mode_transparent) draw_model_material(mesh_idx,texture,material);
-		texture++;
-		material++;
-	}
+	draw_model_mesh_triangles(mesh_idx,TRUE);
 	
 		// run through the transparent textures
 		
 	glEnable(GL_BLEND);
-
 	glDepthMask(GL_FALSE);
 	
-	texture=model.textures;
-	material=mesh->materials;
-    
-    for (n=0;n!=max_model_texture;n++) {
-		if (texture->frames[0].bitmap.alpha_mode==alpha_mode_transparent) draw_model_material(mesh_idx,texture,material);
-		texture++;
-		material++;
-	}
+	draw_model_mesh_triangles(mesh_idx,FALSE);
 	
 	glDepthMask(GL_TRUE);
     
 	glDisable(GL_ALPHA_TEST);
+
+		// finish texturing
+
+	model_texture_end();	
 }
 

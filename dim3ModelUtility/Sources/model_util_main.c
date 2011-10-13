@@ -118,11 +118,6 @@ bool model_new(model_type *model,char *name)
 	model->meshes[0].import_move.y=0;
 	model->meshes[0].import_move.z=0;
 
-	model->meshes[0].materials=malloc(max_model_texture*sizeof(model_material_type));
-	if (model->meshes[0].materials==NULL) return(FALSE);
-
-	bzero(model->meshes[0].materials,(max_model_texture*sizeof(model_material_type)));
-
 		// other model structures
 
 	model->nbone=0;
@@ -221,7 +216,6 @@ void model_close(model_type *model)
 	for (n=0;n!=model->nmesh;n++) {
 		if (model->meshes[n].vertexes!=NULL) free(model->meshes[n].vertexes);
 		if (model->meshes[n].trigs!=NULL) free(model->meshes[n].trigs);
-		if (model->meshes[n].materials!=NULL) free(model->meshes[n].materials);
 	}
 
 	free(model->textures);
@@ -259,7 +253,6 @@ int model_memory_size(model_type *model)
 	for (n=0;n!=model->nmesh;n++) {
 		sz+=(model->meshes[n].nvertex*sizeof(model_vertex_type));
 		sz+=(model->meshes[n].ntrig*sizeof(model_trig_type));
-		sz+=(max_model_texture*sizeof(model_material_type));
 
 		sz+=((model->meshes[n].nvertex*3)*sizeof(float));
 		sz+=((model->meshes[n].nvertex*3)*sizeof(float));

@@ -700,7 +700,7 @@ void shadow_render_model(model_draw *draw)
 	mdl=server.model_list.models[draw->model_idx];
 
 		// run through the meshes
-		
+
 	for (n=0;n!=mdl->nmesh;n++) {
 		if ((draw->render_mesh_mask&(0x1<<n))!=0) shadow_render_model_mesh(mdl,n,draw);
 	}

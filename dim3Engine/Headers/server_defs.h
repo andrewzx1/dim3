@@ -289,14 +289,14 @@ typedef struct		{
 
 typedef struct		{
 						int								frame;
-						bool							has_transparent,has_glow;
-						float							alpha;
-					} model_draw_material_type;
-					
+						bool							opaque,transparent,glow;
+					} model_draw_texture_type;
+
 typedef struct		{
 						bool							has_opaque,has_transparent,has_glow;
+						float							alpha;
 						model_draw_mesh_fade			fade;
-						model_draw_material_type		materials[max_model_texture];
+						model_draw_texture_type			textures[max_model_texture];
 					} model_draw_mesh_type;
 
 typedef struct		{
@@ -329,7 +329,7 @@ typedef struct		{
 						model_draw_light				lights[max_model_light];
 						model_draw_halo					halos[max_model_halo];
 						model_draw_animation			animations[max_model_blend_animation];
-						model_draw_mesh_type			meshes[max_model_texture];
+						model_draw_mesh_type			meshes[max_model_mesh];
 						model_draw_dynamic_bone			dynamic_bones[max_model_dynamic_bone];
 						model_draw_shadow				shadow;
 						model_draw_fade					fade;

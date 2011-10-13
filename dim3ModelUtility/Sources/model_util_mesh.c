@@ -37,7 +37,7 @@ and can be sold or given away.
 
 int model_mesh_add(model_type *model)
 {
-	int					n,nmesh;
+	int					nmesh;
 	model_mesh_type		*mesh;
 	
 	nmesh=model->nmesh;
@@ -54,17 +54,6 @@ int model_mesh_add(model_type *model)
 
 	mesh->vertexes=NULL;
 	mesh->trigs=NULL;
-
-		// materials
-
-	mesh->materials=malloc(max_model_texture*sizeof(model_material_type));
-	if (mesh->materials==NULL) return(-1);
-	
-	bzero(mesh->materials,(max_model_texture*sizeof(model_material_type)));
-		
-	for (n=0;n!=max_model_texture;n++) {
-		mesh->materials[n].trig_start=mesh->materials[n].trig_count=0;
-	}
 	
 		// setup
 
@@ -109,8 +98,6 @@ int model_mesh_duplicate(model_type *model,int mesh_idx)
 	mesh->ntrig=org_mesh->ntrig;
 	if (!model_mesh_set_trig_count(model,idx,org_mesh->ntrig)) return(-1);
 	memmove(mesh->trigs,org_mesh->trigs,(org_mesh->ntrig*sizeof(model_trig_type)));
-
-	memmove(mesh->materials,org_mesh->materials,(max_model_texture*sizeof(model_material_type)));
 	
 	mesh->no_lighting=org_mesh->no_lighting;
 	mesh->diffuse=org_mesh->diffuse;
@@ -140,7 +127,6 @@ bool model_mesh_delete(model_type *model,int mesh_idx)
 		
 	if (mesh->vertexes!=NULL) free(mesh->vertexes);
 	if (mesh->trigs!=NULL) free(mesh->trigs);
-	if (mesh->materials!=NULL) free(mesh->materials);
 	
 		// delete current mesh
 				

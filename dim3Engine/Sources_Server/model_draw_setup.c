@@ -491,7 +491,6 @@ void model_draw_setup_interface_models(model_type *mdl,model_draw *draw,int x,in
 	}
 
 	for (n=0;n!=max_model_texture;n++) {
-		draw->meshes[0].materials[n].frame=0;
 		draw->cur_texture_frame[n]=0;
 	}
 }

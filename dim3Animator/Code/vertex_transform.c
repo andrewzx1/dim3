@@ -82,7 +82,7 @@ void vertex_find_center_sel_vertexes(int mesh_idx,int *p_cx,int *p_cy,int *p_cz)
 
 void vertex_invert_normals(int mesh_idx)
 {
-	int					n,ntrig;
+	int					n,k,ntrig;
 	model_trig_type		*trig;
 	
 	ntrig=model.meshes[mesh_idx].ntrig;
@@ -99,9 +99,16 @@ void vertex_invert_normals(int mesh_idx)
 			}
 		}
 
-		trig->tangent_space.normal.x=-trig->tangent_space.normal.x;
-		trig->tangent_space.normal.y=-trig->tangent_space.normal.y;
-		trig->tangent_space.normal.z=-trig->tangent_space.normal.z;
+		for (k=0;k!=3;k++) {
+		
+				// this triangle vertex in the select list?
+				
+			if (!vertex_check_sel_mask(mesh_idx,trig->v[k])) continue;
+
+			trig->tangent_space[k].normal.x=-trig->tangent_space[k].normal.x;
+			trig->tangent_space[k].normal.y=-trig->tangent_space[k].normal.y;
+			trig->tangent_space[k].normal.z=-trig->tangent_space[k].normal.z;
+		}
 
 		trig++;
 	}
@@ -109,7 +116,7 @@ void vertex_invert_normals(int mesh_idx)
 
 void vertex_set_normals(int mesh_idx)
 {
-	int					n,ntrig;
+	int					n,k,ntrig;
 	d3vct				normal;
 	model_trig_type		*trig;
 	
@@ -137,9 +144,16 @@ void vertex_set_normals(int mesh_idx)
 			}
 		}
 
-		trig->tangent_space.normal.x=normal.x;
-		trig->tangent_space.normal.y=normal.y;
-		trig->tangent_space.normal.z=normal.z;
+		for (k=0;k!=3;k++) {
+		
+				// this triangle vertex in the select list?
+				
+			if (!vertex_check_sel_mask(mesh_idx,trig->v[k])) continue;
+			
+			trig->tangent_space[k].normal.x=normal.x;
+			trig->tangent_space[k].normal.y=normal.y;
+			trig->tangent_space[k].normal.z=normal.z;
+		}
 
 		trig++;
 	}
@@ -225,15 +239,24 @@ void vertex_set_normals_in_out(int mesh_idx,bool out)
 		trig_center.y/=3;
 		trig_center.z/=3;
 
-			// determine if poly is facing 'out'
-		
-		vector_create(&face_vct,trig_center.x,trig_center.y,trig_center.z,center.x,center.y,center.z);
-		is_out=(vector_dot_product(&trig->tangent_space.normal,&face_vct)>0.0f);
+			// determine in/out flips
 
-		if (is_out!=out) {
-			trig->tangent_space.normal.x=-trig->tangent_space.normal.x;
-			trig->tangent_space.normal.y=-trig->tangent_space.normal.y;
-			trig->tangent_space.normal.z=-trig->tangent_space.normal.z;
+		for (k=0;k!=3;k++) {
+		
+				// this triangle vertex in the select list?
+				
+			if (!vertex_check_sel_mask(mesh_idx,trig->v[k])) continue;
+
+				// determine if poly is facing 'out'
+		
+			vector_create(&face_vct,trig_center.x,trig_center.y,trig_center.z,center.x,center.y,center.z);
+			is_out=(vector_dot_product(&trig->tangent_space[k].normal,&face_vct)>0.0f);
+
+			if (is_out!=out) {
+				trig->tangent_space[k].normal.x=-trig->tangent_space[k].normal.x;
+				trig->tangent_space[k].normal.y=-trig->tangent_space[k].normal.y;
+				trig->tangent_space[k].normal.z=-trig->tangent_space[k].normal.z;
+			}
 		}
 
 		trig++;
@@ -319,8 +342,7 @@ void vertex_auto_bone_attachments(int mesh_idx)
 
 void vertex_delete_sel_vertex(int mesh_idx)
 {
-	int					i,n,k,j,
-						trig_start,trig_end,sz;
+	int					i,n,j,sz;
 	char				*vertex_sel;
 	bool				hit;
 
@@ -381,28 +403,6 @@ void vertex_delete_sel_vertex(int mesh_idx)
 			}
 				
 			model.meshes[mesh_idx].ntrig--;
-		
-				// move texture trig starts
-					
-			for (k=0;k!=max_model_texture;k++) {
-			
-				if (model.textures[k].frames[0].bitmap.gl_id!=-1) {
-				
-					trig_start=model.meshes[mesh_idx].materials[k].trig_start;
-					trig_end=trig_start+model.meshes[mesh_idx].materials[k].trig_count;
-					
-					if (trig_start>n) {
-						model.meshes[mesh_idx].materials[k].trig_start--;
-					}
-					else {
-						if ((n>=trig_start) && (n<trig_end)) {
-							model.meshes[mesh_idx].materials[k].trig_count--;
-						}
-					}
-				
-				}
-				
-			}
 		}
 	}
 	

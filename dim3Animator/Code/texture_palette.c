@@ -116,6 +116,6 @@ int texture_palette_get_selected_texture(void)
 
 void texture_palette_put_selected_texture(int txt_idx)
 {
-	vertex_set_sel_mask_material(state.cur_mesh_idx,txt_idx);
+	vertex_set_sel_mask_texture(state.cur_mesh_idx,txt_idx);
 }
 
