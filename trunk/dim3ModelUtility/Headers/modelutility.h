@@ -145,15 +145,15 @@ typedef struct		{
 					} model_vertex_type;
 					
 typedef struct		{
-						short							v[3];
+						int								txt_idx,v[3];
 						float							gx[3],gy[3];
-						tangent_space_type				tangent_space;
+						tangent_space_type				tangent_space[3];
 					} model_trig_type;
-					
+/*					
 typedef struct		{
 						int								trig_start,trig_count;
 					} model_material_type;
-
+*/
 typedef struct		{
 						int								nvertex,ntrig;
 						char							name[name_str_len];
@@ -162,7 +162,7 @@ typedef struct		{
 						d3pnt							import_move;
  						model_vertex_type				*vertexes;
                         model_trig_type					*trigs;
-						model_material_type				*materials;
+					//	model_material_type				*materials;
 					} model_mesh_type;
 
 //

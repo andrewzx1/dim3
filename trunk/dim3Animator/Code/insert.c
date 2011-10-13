@@ -48,10 +48,10 @@ void insert_model(char *file_name)
 	int						i,k,t,b_off,v_off,t_off,nvertex,ntrig,idx;
 	char					path[1024],path2[1024],sub_path[1024];
 	model_bone_type			*bone,*ins_bone;
+	model_mesh_type			*mesh,*ins_mesh;
 	model_vertex_type		*vertex;
 	model_trig_type			*trig;
 	texture_type			*texture,*ins_texture;
-	model_material_type		*material,*ins_material;
 	
 		// open model
 		
@@ -82,16 +82,21 @@ void insert_model(char *file_name)
 		
 		ins_bone++;
 	}
+
+		// model mesh
+
+	mesh=&model.meshes[state.cur_mesh_idx];
+	ins_mesh=&ins_model.meshes[0];
 	
 		// bring in the vertexes
 		
-	v_off=model.meshes[state.cur_mesh_idx].nvertex;
-	nvertex=ins_model.meshes[0].nvertex;
+	v_off=mesh->nvertex;
+	nvertex=ins_mesh->nvertex;
 	
 	model_mesh_set_vertex_count(&model,state.cur_mesh_idx,(v_off+nvertex));
 	
-	vertex=&model.meshes[state.cur_mesh_idx].vertexes[v_off];
-	memmove(vertex,ins_model.meshes[0].vertexes,(nvertex*sizeof(model_vertex_type)));
+	vertex=&mesh->vertexes[v_off];
+	memmove(vertex,ins_mesh->vertexes,(nvertex*sizeof(model_vertex_type)));
 	
 	for (i=0;i!=nvertex;i++) {
 		if (vertex->major_bone_idx!=-1) vertex->major_bone_idx+=b_off;
@@ -101,13 +106,13 @@ void insert_model(char *file_name)
 	
 		// bring in the trigs
 		
-	t_off=model.meshes[state.cur_mesh_idx].ntrig;
-	ntrig=ins_model.meshes[0].ntrig;
+	t_off=mesh->ntrig;
+	ntrig=ins_mesh->ntrig;
 	
 	model_mesh_set_trig_count(&model,state.cur_mesh_idx,(t_off+ntrig));
 	
-	trig=&model.meshes[state.cur_mesh_idx].trigs[t_off];
-	memmove(trig,ins_model.meshes[0].trigs,(ntrig*sizeof(model_trig_type)));
+	trig=&mesh->trigs[t_off];
+	memmove(trig,ins_mesh->trigs,(ntrig*sizeof(model_trig_type)));
 	
 	for (i=0;i!=ntrig;i++) {
 		trig->v[0]+=v_off;
@@ -119,7 +124,6 @@ void insert_model(char *file_name)
 		// bring in the textures
 		
 	ins_texture=ins_model.textures;
-	ins_material=ins_model.meshes[0].materials;
 	
 	for (i=0;i!=max_model_texture;i++) {
 	
@@ -145,11 +149,15 @@ void insert_model(char *file_name)
 				sprintf(texture->frames[t].name,"Image_%d_%d",k,t);
 			}
 		}
-		
-		material=&model.meshes[state.cur_mesh_idx].materials[k];
-		memmove(material,ins_material,sizeof(model_material_type));
 
-		material->trig_start+=t_off;
+			// fix the imported triangles texture index
+
+		trig=&mesh->trigs[t_off];
+
+		for (t=t_off;t!=mesh->ntrig;t++) {
+			if (trig->txt_idx==i) trig->txt_idx=k;
+			t_off++;
+		}
 		
 			// force bitmap to not close when closing insert model
 					
@@ -172,7 +180,6 @@ void insert_model(char *file_name)
 		}
 		
 		ins_texture++;
-		ins_material++;
 	}
 	
 		// close model

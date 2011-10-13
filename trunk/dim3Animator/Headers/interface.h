@@ -196,7 +196,6 @@ extern void model_piece_delete_hit_box(int hit_box_idx);
 extern bool import_obj(char *path,bool replace,bool *found_normals,char *err_str);
 extern void insert_model(char *file_name);
 
-extern void clear_materials(void);
 extern int texture_count(void);
 extern bool texture_exists(char *material_name);
 extern int texture_pick(char *material_name,char *err_str);
@@ -253,7 +252,7 @@ extern void vertex_set_sel_mask_no_bone(int mesh_idx);
 extern void vertex_set_sel_mask_near_bone(int mesh_idx,int bone_idx,float percentage);
 extern void vertex_set_sel_vertex_to_bone(int mesh_idx,int major_bone_idx,int minor_bone_idx,float factor);
 extern void vertex_set_sel_mask_trig_mask(int mesh_idx);
-extern void vertex_set_sel_mask_material(int mesh_idx,int material_idx);
+extern void vertex_set_sel_mask_texture(int mesh_idx,int txt_idx);
 
 //
 // vertex calcs

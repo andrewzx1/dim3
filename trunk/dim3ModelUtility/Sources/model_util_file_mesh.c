@@ -39,9 +39,10 @@ char									deform_mode_str[][32]=deform_mode_xml_list_str;
       
 ======================================================= */
 
+// supergumba -- this is version 2 decode
 void decode_mesh_xml(model_type *model,int model_head)
 {
-	int						i,n,k,j,bone_idx,nbone,hit_box_idx,nhit_box,
+	int						i,n,k,j,bone_idx,nbone,hit_box_idx,nhit_box,trig_count,
 							import_tag,ui_tag,mesh_idx,nmesh,nfill,trig_idx,
 							tag,hit_box_tag,rigid_body_tag,meshes_tag,mesh_tag,
 							vertex_tag,bone_tag,vtag,trig_tag,
@@ -55,7 +56,6 @@ void decode_mesh_xml(model_type *model,int model_head)
 	model_hit_box_type		*hit_box;
 	model_mesh_type			*mesh;
     model_vertex_type		*vertex;
-	model_material_type		*material;
     model_bone_type			*bone;
     model_trig_type			*trig;
     texture_type			*texture;
@@ -348,21 +348,19 @@ void decode_mesh_xml(model_type *model,int model_head)
 		trig_idx=0;
 		trig=mesh->trigs;
 
-		texture=model->textures;
-		material=mesh->materials;
-		
 		material_tag=xml_findfirstchild("Material",materials_tag);
 		
 		for (n=0;n!=nfill;n++) {
 		
 			trig_tag=xml_findfirstchild("Triangles",material_tag);
 			
-			material->trig_start=trig_idx;
-			material->trig_count=xml_countchildren(trig_tag)/3;
+			trig_count=xml_countchildren(trig_tag)/3;
 			
 			vtag=xml_findfirstchild("v",trig_tag);
 		
-			for (i=0;i!=material->trig_count;i++) {
+			for (i=0;i!=trig_count;i++) {
+
+				trig->txt_idx=n;
 		
 				for (k=0;k!=3;k++) {
 					trig->v[k]=xml_get_attribute_int(vtag,"id");
@@ -377,9 +375,6 @@ void decode_mesh_xml(model_type *model,int model_head)
 				trig++;
 				trig_idx++;
 			}
-			
-			texture++;
-			material++;
 			
 			material_tag=xml_findnextchild(material_tag);
 		}
@@ -441,10 +436,11 @@ void encode_mesh_xml(model_type *model)
 	model_hit_box_type		*hit_box;
 	model_mesh_type			*mesh;
     model_vertex_type		*vertex;
-	model_material_type		*material;
     model_bone_type			*bone;
     model_trig_type			*trig;
     texture_type			*texture;
+
+	return;		// supergumba -- no writing meshes until translation is over
     
         // model info
     
@@ -634,57 +630,32 @@ void encode_mesh_xml(model_type *model)
 						
 		xml_add_tagclose("Vertexes");
 		
-			// materials
-			
-		xml_add_tagstart("Materials");
+			// triangles
+				
+		xml_add_tagstart("Polys");
 		xml_add_tagend(FALSE);
 		
-		texture=model->textures;
-		material=mesh->materials;
+		trig=mesh->trigs;
 		
-		for (n=0;n!=max_model_texture;n++) {
+		for (i=0;i!=mesh->ntrig;i++) {
 		
-			if (texture->frames[0].name[0]==0x0) {
-				texture++;
-				material++;
-				continue;
-			}
-			
-			xml_add_tagstart("Material");
-			xml_add_tagend(FALSE);
-
-				// triangles
-				
-			xml_add_tagstart("Triangles");
-			xml_add_tagend(FALSE);
-		
-			trig=&mesh->trigs[material->trig_start];
-		
-			for (i=0;i!=material->trig_count;i++) {
-		
-				for (k=0;k!=3;k++) {
-					xml_add_tagstart("v");
+			// supergumba -- fix all this up
+			/*
+			xml_add_tagstart("p");
+			xml_add_attribute_int_array("v",poly->v,poly->ptsz,FALSE);
 					
-					xml_add_attribute_int("id",trig->v[k]);
-					xml_add_attribute_2_coord_float("uv",trig->gx[k],trig->gy[k]);
+			xml_add_attribute_int("id",trig->v[k]);
+			xml_add_attribute_2_coord_float("uv",trig->gx[k],trig->gy[k]);
 
-					xml_add_attribute_3_coord_float("t3",trig->tangent_space[k].tangent.x,trig->tangent_space[k].tangent.y,trig->tangent_space[k].tangent.z);
-					xml_add_attribute_3_coord_float("n3",trig->tangent_space[k].normal.x,trig->tangent_space[k].normal.y,trig->tangent_space[k].normal.z);
+			xml_add_attribute_3_coord_float("t3",trig->tangent_space[k].tangent.x,trig->tangent_space[k].tangent.y,trig->tangent_space[k].tangent.z);
+			xml_add_attribute_3_coord_float("n3",trig->tangent_space[k].normal.x,trig->tangent_space[k].normal.y,trig->tangent_space[k].normal.z);
 					
-					xml_add_tagend(TRUE);
-				}
-				
-				trig++;
-			}
-			
-			xml_add_tagclose("Triangles");
-			xml_add_tagclose("Material");
-			
-			texture++;
-			material++;
+			xml_add_tagend(TRUE);
+			*/
+			trig++;
 		}
-		
-		xml_add_tagclose("Materials");
+			
+		xml_add_tagclose("Triangles");
 		
 		xml_add_tagclose("Mesh");
 	}
