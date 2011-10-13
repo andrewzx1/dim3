@@ -501,9 +501,11 @@ bool import_obj(char *path,bool replace,bool *found_normals,char *err_str)
 				trig->gy[1]=pt_uv[k+1].y;
 				trig->gy[2]=pt_uv[k+2].y;
 				
-				memmove(&trig->tangent_space[0].normal,&pnormal[0],sizeof(d3vct));
-				memmove(&trig->tangent_space[1].normal,&pnormal[k+1],sizeof(d3vct));
-				memmove(&trig->tangent_space[2].normal,&pnormal[k+2],sizeof(d3vct));
+				trig->tangent_space.normal.x=(pnormal[0].x+pnormal[1].x+pnormal[2].x)/3.0f;
+				trig->tangent_space.normal.y=(pnormal[0].y+pnormal[1].y+pnormal[2].y)/3.0f;
+				trig->tangent_space.normal.z=(pnormal[0].z+pnormal[1].z+pnormal[2].z)/3.0f;
+				
+				vector_normalize(&trig->tangent_space.normal);
 	            
 				trig++;
 				ntrig++;
