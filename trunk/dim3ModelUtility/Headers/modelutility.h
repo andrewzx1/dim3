@@ -147,7 +147,7 @@ typedef struct		{
 typedef struct		{
 						short							v[3];
 						float							gx[3],gy[3];
-						tangent_space_type				tangent_space[3];
+						tangent_space_type				tangent_space;
 					} model_trig_type;
 					
 typedef struct		{
