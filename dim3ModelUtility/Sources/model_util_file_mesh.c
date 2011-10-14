@@ -380,13 +380,56 @@ void decode_mesh_xml(model_type *model,int model_head)
 		}
 		
 			// reset the vertexes from tags to indexes
+			// and create the vertex level tangent
+			// space
 			
 		vertex=mesh->vertexes;
 		
 		for (i=0;i!=mesh->nvertex;i++) {
+
+				// fix bones
+
 			vertex->major_bone_idx=model_find_bone(model,major_bone_tags[i]);
 			vertex->minor_bone_idx=model_find_bone(model,minor_bone_tags[i]);
 			if ((vertex->major_bone_idx==-1) || (vertex->minor_bone_idx==-1)) vertex->bone_factor=1;
+
+				// run through the trigs
+				// to build the vertex tangent
+				// space
+
+			vertex->tangent_space.normal.x=vertex->tangent_space.normal.y=vertex->tangent_space.normal.z=0.0f;
+			vertex->tangent_space.tangent.x=vertex->tangent_space.tangent.y=vertex->tangent_space.tangent.z=0.0f;
+
+			trig_count=0;
+			trig=mesh->trigs;
+
+			for (n=0;n!=mesh->ntrig;n++) {
+				for (k=0;k!=3;k++) {
+					if (trig->v[k]==i) {
+						vertex->tangent_space.normal.x+=trig->tangent_space[k].normal.x;
+						vertex->tangent_space.normal.y+=trig->tangent_space[k].normal.y;
+						vertex->tangent_space.normal.z+=trig->tangent_space[k].normal.z;
+						vertex->tangent_space.tangent.x+=trig->tangent_space[k].tangent.x;
+						vertex->tangent_space.tangent.y+=trig->tangent_space[k].tangent.y;
+						vertex->tangent_space.tangent.z+=trig->tangent_space[k].tangent.z;
+						trig_count++;
+					}
+				}
+				
+				trig++;
+			}
+
+			if (trig_count!=0) {
+				vertex->tangent_space.normal.x/=(float)trig_count;
+				vertex->tangent_space.normal.y/=(float)trig_count;
+				vertex->tangent_space.normal.z/=(float)trig_count;
+				vector_normalize(&vertex->tangent_space.normal);
+				vertex->tangent_space.tangent.x/=(float)trig_count;
+				vertex->tangent_space.tangent.y/=(float)trig_count;
+				vertex->tangent_space.tangent.z/=(float)trig_count;
+				vector_normalize(&vertex->tangent_space.tangent);
+			}
+
 			vertex++;
 		}
 		

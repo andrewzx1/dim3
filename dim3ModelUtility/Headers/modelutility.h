@@ -142,6 +142,7 @@ typedef struct		{
 						float							bone_factor;
 						d3pnt							pnt;
 						d3vct							major_dist,minor_dist;
+						tangent_space_type				tangent_space;
 					} model_vertex_type;
 					
 typedef struct		{
@@ -149,11 +150,7 @@ typedef struct		{
 						float							gx[3],gy[3];
 						tangent_space_type				tangent_space[3];
 					} model_trig_type;
-/*					
-typedef struct		{
-						int								trig_start,trig_count;
-					} model_material_type;
-*/
+
 typedef struct		{
 						int								nvertex,ntrig;
 						char							name[name_str_len];
@@ -162,7 +159,6 @@ typedef struct		{
 						d3pnt							import_move;
  						model_vertex_type				*vertexes;
                         model_trig_type					*trigs;
-					//	model_material_type				*materials;
 					} model_mesh_type;
 
 //
