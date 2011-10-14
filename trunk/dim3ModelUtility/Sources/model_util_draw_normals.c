@@ -122,6 +122,47 @@ void model_create_draw_normals(model_type *model,int mesh_idx,model_draw_setup *
 				
 				vertex=&mesh->vertexes[trig->v[k]];
 
+
+
+					// run the tangent
+				
+				if (!normal_only) {
+					space.tangent.x=vertex->tangent_space.tangent.x;
+					space.tangent.y=vertex->tangent_space.tangent.y;
+					space.tangent.z=vertex->tangent_space.tangent.z;
+
+					if (vertex->major_bone_idx!=-1) model_move_single_tangent_space_vector(draw_setup->bones,vertex,&space.tangent);
+
+					fx=(space.tangent.x*sway_mat.data[0][0])+(space.tangent.y*sway_mat.data[0][1])+(space.tangent.z*sway_mat.data[0][2]);
+					fy=(space.tangent.x*sway_mat.data[1][0])+(space.tangent.y*sway_mat.data[1][1])+(space.tangent.z*sway_mat.data[1][2]);
+					fz=(space.tangent.x*sway_mat.data[2][0])+(space.tangent.y*sway_mat.data[2][1])+(space.tangent.z*sway_mat.data[2][2]);
+				
+					*pt++=(fx*rot_mat.data[0][0])+(fy*rot_mat.data[0][1])+(fz*rot_mat.data[0][2]);
+					*pt++=(fx*rot_mat.data[1][0])+(fy*rot_mat.data[1][1])+(fz*rot_mat.data[1][2]);
+					*pt++=(fx*rot_mat.data[2][0])+(fy*rot_mat.data[2][1])+(fz*rot_mat.data[2][2]);
+				}
+				
+					// run the normal
+				
+				space.normal.x=vertex->tangent_space.normal.x;
+				space.normal.y=vertex->tangent_space.normal.y;
+				space.normal.z=vertex->tangent_space.normal.z;
+
+				if (vertex->major_bone_idx!=-1) model_move_single_tangent_space_vector(draw_setup->bones,vertex,&space.normal);
+
+				fx=(space.normal.x*sway_mat.data[0][0])+(space.normal.y*sway_mat.data[0][1])+(space.normal.z*sway_mat.data[0][2]);
+				fy=(space.normal.x*sway_mat.data[1][0])+(space.normal.y*sway_mat.data[1][1])+(space.normal.z*sway_mat.data[1][2]);
+				fz=(space.normal.x*sway_mat.data[2][0])+(space.normal.y*sway_mat.data[2][1])+(space.normal.z*sway_mat.data[2][2]);
+			
+				*pn++=(fx*rot_mat.data[0][0])+(fy*rot_mat.data[0][1])+(fz*rot_mat.data[0][2]);
+				*pn++=(fx*rot_mat.data[1][0])+(fy*rot_mat.data[1][1])+(fz*rot_mat.data[1][2]);
+				*pn++=(fx*rot_mat.data[2][0])+(fy*rot_mat.data[2][1])+(fz*rot_mat.data[2][2]);
+
+
+
+
+				/*
+
 					// run the tangent
 				
 				if (!normal_only) {
@@ -155,6 +196,7 @@ void model_create_draw_normals(model_type *model,int mesh_idx,model_draw_setup *
 				*pn++=(fx*rot_mat.data[0][0])+(fy*rot_mat.data[0][1])+(fz*rot_mat.data[0][2]);
 				*pn++=(fx*rot_mat.data[1][0])+(fy*rot_mat.data[1][1])+(fz*rot_mat.data[1][2]);
 				*pn++=(fx*rot_mat.data[2][0])+(fy*rot_mat.data[2][1])+(fz*rot_mat.data[2][2]);
+				*/
 			}
 			
 			trig++;
