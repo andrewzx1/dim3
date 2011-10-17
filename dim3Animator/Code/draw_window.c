@@ -360,18 +360,7 @@ void draw_model_wind(int mesh_idx)
 		
 	if (state.normal) {
 		draw_model_gl_setup(3);
-
-		switch (state.select_mode) {
-
-			case select_mode_polygon:
-				draw_model_normals_trig(mesh_idx);
-				break;
-
-			case select_mode_vertex:
-				draw_model_normals_vertexes(mesh_idx);
-				break;
-		}
-
+		draw_model_normals(mesh_idx);
 		draw_model_gl_setup(0);
 	}
 	

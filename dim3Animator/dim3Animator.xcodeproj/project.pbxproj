@@ -144,6 +144,7 @@
 		26EE4A32126B8DBF001D0025 /* import_text_decode_common.c in Sources */ = {isa = PBXBuildFile; fileRef = 26EE4A31126B8DBF001D0025 /* import_text_decode_common.c */; };
 		26F1D25F1303566500CDAE6B /* property_palette_animator_preference.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F1D25D1303566500CDAE6B /* property_palette_animator_preference.c */; };
 		26F1D2601303566500CDAE6B /* xml_setup.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F1D25E1303566500CDAE6B /* xml_setup.c */; };
+		26F70B2F144B47F000F791F7 /* dim3 Animator.xib in Resources */ = {isa = PBXBuildFile; fileRef = 26F70B2E144B47F000F791F7 /* dim3 Animator.xib */; };
 		26FF98FE13B2A99D00CCB836 /* Tool Select Vertex With Bone.png in Resources */ = {isa = PBXBuildFile; fileRef = 26FF98FD13B2A99D00CCB836 /* Tool Select Vertex With Bone.png */; };
 		26FF98FF13B2A9A200CCB836 /* Tool Select Vertex With Bone.png in Copy (Tool Icons) */ = {isa = PBXBuildFile; fileRef = 26FF98FD13B2A99D00CCB836 /* Tool Select Vertex With Bone.png */; };
 		F503D2570981A35B00DEDC74 /* draw_model.c in Sources */ = {isa = PBXBuildFile; fileRef = F503D2560981A35B00DEDC74 /* draw_model.c */; };
@@ -165,7 +166,6 @@
 		F5A42DBA0555EC87002DF965 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5197CF8014F1AFA0140F45C /* OpenGL.framework */; };
 		F5A42DBB0555EC87002DF965 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 20286C33FDCF999611CA2CEA /* Carbon.framework */; };
 		F5B4082807104E7700600D33 /* click_window.c in Sources */ = {isa = PBXBuildFile; fileRef = F5B4082707104E7700600D33 /* click_window.c */; };
-		F5BDB6C3055A0DEA00556316 /* dim3 Animator.nib in Resources */ = {isa = PBXBuildFile; fileRef = F5BDB6C2055A0DEA00556316 /* dim3 Animator.nib */; };
 		F5C48B860C88F5CE0011D6B1 /* dialog_scale.c in Sources */ = {isa = PBXBuildFile; fileRef = F5C48B850C88F5CE0011D6B1 /* dialog_scale.c */; };
 		F5D1A7A40CF933E6001B5E1B /* dialog_play_blend_animation.c in Sources */ = {isa = PBXBuildFile; fileRef = F5D1A7A30CF933E6001B5E1B /* dialog_play_blend_animation.c */; };
 		F5DB0C310856A832005A7CB7 /* dim3 Animator.app in Copy Application */ = {isa = PBXBuildFile; fileRef = F5A42DC40555EC87002DF965 /* dim3 Animator.app */; };
@@ -380,6 +380,7 @@
 		26EE4A31126B8DBF001D0025 /* import_text_decode_common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = import_text_decode_common.c; path = ../dim3Common/Code/import_text_decode_common.c; sourceTree = SOURCE_ROOT; };
 		26F1D25D1303566500CDAE6B /* property_palette_animator_preference.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_animator_preference.c; path = Code/property_palette_animator_preference.c; sourceTree = "<group>"; };
 		26F1D25E1303566500CDAE6B /* xml_setup.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = xml_setup.c; path = Code/xml_setup.c; sourceTree = "<group>"; };
+		26F70B2E144B47F000F791F7 /* dim3 Animator.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = "dim3 Animator.xib"; path = "Resources/dim3 Animator.xib"; sourceTree = "<group>"; };
 		26FF98FD13B2A99D00CCB836 /* Tool Select Vertex With Bone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Select Vertex With Bone.png"; path = "Tools/Tool Select Vertex With Bone.png"; sourceTree = "<group>"; };
 		F503D2560981A35B00DEDC74 /* draw_model.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = draw_model.c; path = Code/draw_model.c; sourceTree = "<group>"; };
 		F503D25E0981A3DC00DEDC74 /* draw_mesh_bone.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = draw_mesh_bone.c; path = Code/draw_mesh_bone.c; sourceTree = "<group>"; };
@@ -394,7 +395,6 @@
 		F5A42DC40555EC87002DF965 /* dim3 Animator.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "dim3 Animator.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F5A431F0055601EC002DF965 /* Info-dim3_Animator.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.xml; name = "Info-dim3_Animator.plist"; path = "Resources/Info-dim3_Animator.plist"; sourceTree = "<group>"; };
 		F5B4082707104E7700600D33 /* click_window.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = click_window.c; path = Code/click_window.c; sourceTree = "<group>"; };
-		F5BDB6C2055A0DEA00556316 /* dim3 Animator.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = "dim3 Animator.nib"; path = "Resources/dim3 Animator.nib"; sourceTree = "<group>"; };
 		F5C12EAB0143003C01000001 /* obj_import.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = obj_import.c; path = Code/obj_import.c; sourceTree = "<group>"; };
 		F5C48B850C88F5CE0011D6B1 /* dialog_scale.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = dialog_scale.c; path = Code/dialog_scale.c; sourceTree = "<group>"; };
 		F5D1A7A30CF933E6001B5E1B /* dialog_play_blend_animation.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = dialog_play_blend_animation.c; path = Code/dialog_play_blend_animation.c; sourceTree = "<group>"; };
@@ -530,7 +530,7 @@
 			children = (
 				F5A431F0055601EC002DF965 /* Info-dim3_Animator.plist */,
 				0867D6AAFE840B52C02AAC07 /* InfoPlist.strings */,
-				F5BDB6C2055A0DEA00556316 /* dim3 Animator.nib */,
+				26F70B2E144B47F000F791F7 /* dim3 Animator.xib */,
 				011160A300BE30DC7F000001 /* dim3 Animator.icns */,
 			);
 			name = Resources;
@@ -858,7 +858,7 @@
 		20286C28FDCF999611CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0410;
+				LastUpgradeCheck = 0420;
 			};
 			buildConfigurationList = F5DB0C250856A7FD005A7CB7 /* Build configuration list for PBXProject "dim3Animator" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -886,10 +886,10 @@
 			files = (
 				F5A42D9C0555EC87002DF965 /* InfoPlist.strings in Resources */,
 				F5A42D9D0555EC87002DF965 /* dim3 Animator.icns in Resources */,
-				F5BDB6C3055A0DEA00556316 /* dim3 Animator.nib in Resources */,
 				26A2A57713B15A56003FE092 /* Tool Show Bone Names.png in Resources */,
 				26FF98FE13B2A99D00CCB836 /* Tool Select Vertex With Bone.png in Resources */,
 				26459B6813DC9D1900D7DD73 /* Back.png in Resources */,
+				26F70B2F144B47F000F791F7 /* dim3 Animator.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

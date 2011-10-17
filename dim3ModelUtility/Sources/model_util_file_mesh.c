@@ -59,6 +59,7 @@ void decode_mesh_xml(model_type *model,int model_head)
     model_bone_type			*bone;
     model_trig_type			*trig;
     texture_type			*texture;
+	tangent_space_type		*trig_tangent_spaces,*trig_ts;
 
         // options
     
@@ -342,11 +343,17 @@ void decode_mesh_xml(model_type *model,int model_head)
 		}
 
 		model_mesh_set_trig_count(model,mesh_idx,mesh->ntrig);
+		
+			// memory for the old trig based tangent spaces
+			
+		trig_tangent_spaces=(tangent_space_type*)malloc((mesh->ntrig*3)*sizeof(tangent_space_type));
 
 			// run the materials
 		
 		trig_idx=0;
 		trig=mesh->trigs;
+		
+		trig_ts=trig_tangent_spaces;
 
 		material_tag=xml_findfirstchild("Material",materials_tag);
 		
@@ -366,8 +373,10 @@ void decode_mesh_xml(model_type *model,int model_head)
 					trig->v[k]=xml_get_attribute_int(vtag,"id");
 					xml_get_attribute_2_coord_float(vtag,"uv",&trig->gx[k],&trig->gy[k]);
 
-					had_tangent=xml_get_attribute_3_coord_float(vtag,"t3",&trig->tangent_space[k].tangent.x,&trig->tangent_space[k].tangent.y,&trig->tangent_space[k].tangent.z);
-					xml_get_attribute_3_coord_float(vtag,"n3",&trig->tangent_space[k].normal.x,&trig->tangent_space[k].normal.y,&trig->tangent_space[k].normal.z);
+					had_tangent=xml_get_attribute_3_coord_float(vtag,"t3",&trig_ts->tangent.x,&trig_ts->tangent.y,&trig_ts->tangent.z);
+					xml_get_attribute_3_coord_float(vtag,"n3",&trig_ts->normal.x,&trig_ts->normal.y,&trig_ts->normal.z);
+					
+					trig_ts++;
 
 					vtag=xml_findnextchild(vtag);
 				}
@@ -402,18 +411,21 @@ void decode_mesh_xml(model_type *model,int model_head)
 
 			trig_count=0;
 			trig=mesh->trigs;
+			
+			trig_ts=trig_tangent_spaces;
 
 			for (n=0;n!=mesh->ntrig;n++) {
 				for (k=0;k!=3;k++) {
 					if (trig->v[k]==i) {
-						vertex->tangent_space.normal.x+=trig->tangent_space[k].normal.x;
-						vertex->tangent_space.normal.y+=trig->tangent_space[k].normal.y;
-						vertex->tangent_space.normal.z+=trig->tangent_space[k].normal.z;
-						vertex->tangent_space.tangent.x+=trig->tangent_space[k].tangent.x;
-						vertex->tangent_space.tangent.y+=trig->tangent_space[k].tangent.y;
-						vertex->tangent_space.tangent.z+=trig->tangent_space[k].tangent.z;
+						vertex->tangent_space.normal.x+=trig_ts->normal.x;
+						vertex->tangent_space.normal.y+=trig_ts->normal.y;
+						vertex->tangent_space.normal.z+=trig_ts->normal.z;
+						vertex->tangent_space.tangent.x+=trig_ts->tangent.x;
+						vertex->tangent_space.tangent.y+=trig_ts->tangent.y;
+						vertex->tangent_space.tangent.z+=trig_ts->tangent.z;
 						trig_count++;
 					}
+					trig_ts++;
 				}
 				
 				trig++;
@@ -440,6 +452,8 @@ void decode_mesh_xml(model_type *model,int model_head)
 	}
 	
 	model->nmesh=nmesh;
+	
+	free(trig_tangent_spaces);
   
         // fills
 

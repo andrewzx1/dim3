@@ -167,6 +167,7 @@
 		26E0C40212F0D7EE00977D36 /* alt_property_palette_move.c in Sources */ = {isa = PBXBuildFile; fileRef = 26E0C3FF12F0D7EE00977D36 /* alt_property_palette_move.c */; };
 		26E0C40312F0D7EE00977D36 /* alt_property_palette.c in Sources */ = {isa = PBXBuildFile; fileRef = 26E0C40012F0D7EE00977D36 /* alt_property_palette.c */; };
 		26E155EF12601C9D003158E5 /* OSX_glue.c in Sources */ = {isa = PBXBuildFile; fileRef = 26E155EE12601C9D003158E5 /* OSX_glue.c */; };
+		26E30100144B6FDE00BB4BD5 /* dim3 Editor.xib in Resources */ = {isa = PBXBuildFile; fileRef = 26E300FF144B6FDE00BB4BD5 /* dim3 Editor.xib */; };
 		26E4677812EB4CAD00867C53 /* property_palette_cinema.c in Sources */ = {isa = PBXBuildFile; fileRef = 26E4677512EB4CAD00867C53 /* property_palette_cinema.c */; };
 		26E4677912EB4CAD00867C53 /* property_palette_group.c in Sources */ = {isa = PBXBuildFile; fileRef = 26E4677612EB4CAD00867C53 /* property_palette_group.c */; };
 		26E4677A12EB4CAD00867C53 /* property_palette_movement.c in Sources */ = {isa = PBXBuildFile; fileRef = 26E4677712EB4CAD00867C53 /* property_palette_movement.c */; };
@@ -219,7 +220,6 @@
 		F54583E4094F868300CBE89A /* pieces_create.c in Sources */ = {isa = PBXBuildFile; fileRef = F54583E3094F868300CBE89A /* pieces_create.c */; };
 		F5595F7E0918717300B60FAD /* groups.c in Sources */ = {isa = PBXBuildFile; fileRef = F5595F7D0918717300B60FAD /* groups.c */; };
 		F571C8770B34DA6300F979B7 /* xml_setup.c in Sources */ = {isa = PBXBuildFile; fileRef = F571C8760B34DA6300F979B7 /* xml_setup.c */; };
-		F57537BA055B5F4900D42FAF /* dim3 Editor.nib in Resources */ = {isa = PBXBuildFile; fileRef = F57537B9055B5F4900D42FAF /* dim3 Editor.nib */; };
 		F57CACA70C38B76200B595F4 /* texture_palette.c in Sources */ = {isa = PBXBuildFile; fileRef = F57CACA60C38B76200B595F4 /* texture_palette.c */; };
 		F5A4321F055602DF002DF965 /* dim3editor.h in Headers */ = {isa = PBXBuildFile; fileRef = F51ABAD3048DAB0200B78D6A /* dim3editor.h */; };
 		F5A4322B055602DF002DF965 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0867D6AAFE840B52C02AAC07 /* InfoPlist.strings */; };
@@ -560,6 +560,7 @@
 		26E0C3FF12F0D7EE00977D36 /* alt_property_palette_move.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = alt_property_palette_move.c; path = Code/alt_property_palette_move.c; sourceTree = "<group>"; };
 		26E0C40012F0D7EE00977D36 /* alt_property_palette.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = alt_property_palette.c; path = Code/alt_property_palette.c; sourceTree = "<group>"; };
 		26E155EE12601C9D003158E5 /* OSX_glue.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = OSX_glue.c; path = ../dim3Common/Code/OSX_glue.c; sourceTree = SOURCE_ROOT; };
+		26E300FF144B6FDE00BB4BD5 /* dim3 Editor.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = "dim3 Editor.xib"; path = "Resources/dim3 Editor.xib"; sourceTree = "<group>"; };
 		26E4677512EB4CAD00867C53 /* property_palette_cinema.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_cinema.c; path = Code/property_palette_cinema.c; sourceTree = "<group>"; };
 		26E4677612EB4CAD00867C53 /* property_palette_group.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_group.c; path = Code/property_palette_group.c; sourceTree = "<group>"; };
 		26E4677712EB4CAD00867C53 /* property_palette_movement.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_movement.c; path = Code/property_palette_movement.c; sourceTree = "<group>"; };
@@ -583,7 +584,6 @@
 		F54CD2090233430101250BB8 /* main_window.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = main_window.c; path = Code/main_window.c; sourceTree = "<group>"; };
 		F5595F7D0918717300B60FAD /* groups.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = groups.c; path = Code/groups.c; sourceTree = "<group>"; };
 		F571C8760B34DA6300F979B7 /* xml_setup.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = xml_setup.c; path = Code/xml_setup.c; sourceTree = "<group>"; };
-		F57537B9055B5F4900D42FAF /* dim3 Editor.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = "dim3 Editor.nib"; path = "Resources/dim3 Editor.nib"; sourceTree = "<group>"; };
 		F57CACA60C38B76200B595F4 /* texture_palette.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = texture_palette.c; path = Code/texture_palette.c; sourceTree = "<group>"; };
 		F59E531D014DBA5801382915 /* AGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AGL.framework; path = /System/Library/Frameworks/AGL.framework; sourceTree = "<absolute>"; };
 		F5A43266055602E0002DF965 /* dim3 Editor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "dim3 Editor.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -675,7 +675,7 @@
 			children = (
 				F5A43278055607CC002DF965 /* Info-dim3_Editor.plist */,
 				0867D6AAFE840B52C02AAC07 /* InfoPlist.strings */,
-				F57537B9055B5F4900D42FAF /* dim3 Editor.nib */,
+				26E300FF144B6FDE00BB4BD5 /* dim3 Editor.xib */,
 				0123D85400C0AF0B7F000001 /* dim3 Editor.icns */,
 			);
 			name = Resources;
@@ -1185,8 +1185,8 @@
 			files = (
 				F5A4322B055602DF002DF965 /* InfoPlist.strings in Resources */,
 				F5A4322C055602DF002DF965 /* dim3 Editor.icns in Resources */,
-				F57537BA055B5F4900D42FAF /* dim3 Editor.nib in Resources */,
 				26459B6513DBDA8800D7DD73 /* Back.png in Resources */,
+				26E30100144B6FDE00BB4BD5 /* dim3 Editor.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

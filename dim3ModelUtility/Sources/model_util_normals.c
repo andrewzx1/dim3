@@ -44,31 +44,47 @@ bool model_recalc_normals_compare_sign(float f1,float f2)
 	return(FALSE);
 }
 
-void map_recalc_normals_get_trig_box(model_type *model,int mesh_idx,int trig_idx,d3pnt *min,d3pnt *max)
+void map_recalc_normals_get_vertex_box(model_type *model,int mesh_idx,int vertex_idx,d3pnt *min,d3pnt *max)
 {
-	int					k,j;
+	int					n,k,txt_idx;
+	int					*vertex_txt_idx;
 	bool				first_hit;
 	d3pnt				*pnt;
 	model_mesh_type		*mesh;
-	model_trig_type		*trig,*chk_trig;
+	model_vertex_type	*vertex;
+	model_trig_type		*trig;
 
 	mesh=&model->meshes[mesh_idx];
-	trig=&mesh->trigs[trig_idx];
+	
+		// get a texture index for
+		// each vertex
+		
+	vertex_txt_idx=(int*)malloc(mesh->nvertex*sizeof(int));
+	bzero(vertex_txt_idx,(mesh->nvertex*sizeof(int)));
+		
+	for (n=0;n!=mesh->ntrig;n++) {
+		for (k=0;k!=3;k++) {
+			vertex_txt_idx[trig->v[k]]=trig->txt_idx;
+		}
+		trig++;
+	}
+	
+		// find center by all vertexes
+		// with the same texture
+	
+	txt_idx=vertex_txt_idx[vertex_idx];
 	
 	first_hit=FALSE;
 	min->x=min->y=min->z=0;
 	max->x=max->y=max->z=0;
 
-	chk_trig=mesh->trigs;
+	vertex=mesh->vertexes;
 
-	for (k=0;k!=mesh->ntrig;k++) {
-
-		chk_trig=&mesh->trigs[k];
-		if (chk_trig->txt_idx!=trig->txt_idx) continue;
-
-		for (j=0;j!=3;j++) {
-
-			pnt=&mesh->vertexes[chk_trig->v[j]].pnt;
+	for (n=0;n!=mesh->nvertex;n++) {
+	
+		if (txt_idx==vertex_txt_idx[n]) {
+	
+			pnt=&mesh->vertexes[n].pnt;
 
 			if (!first_hit) {
 				min->x=max->x=pnt->x;
@@ -88,7 +104,7 @@ void map_recalc_normals_get_trig_box(model_type *model,int mesh_idx,int trig_idx
 	}
 }
 
-bool model_recalc_normals_determine_vector_in_out(model_type *model,int mesh_idx,int trig_idx,int pt_idx)
+bool model_recalc_normals_determine_vector_in_out(model_type *model,int mesh_idx,int vertex_idx)
 {
 	int					x,y,z,k,pos_dist,neg_dist;
 	float				f_dist;
@@ -96,18 +112,18 @@ bool model_recalc_normals_determine_vector_in_out(model_type *model,int mesh_idx
 	d3pnt				*pnt,min,max,center,pos_pt,neg_pt;
 	d3vct				face_vct;
 	model_mesh_type		*mesh;
-	model_trig_type		*trig;
+	model_vertex_type	*vertex;
 
-		// get box for trig.  This will be the combination
+		// get box for vertex.  This will be the combination
 		// of vertexes with the same material
 
-	map_recalc_normals_get_trig_box(model,mesh_idx,trig_idx,&min,&max);
+	map_recalc_normals_get_vertex_box(model,mesh_idx,vertex_idx,&min,&max);
 
 		// get the box center
 
 	mesh=&model->meshes[mesh_idx];
-	trig=&mesh->trigs[trig_idx];
-	pnt=&mesh->vertexes[trig->v[pt_idx]].pnt;
+	vertex=&mesh->vertexes[vertex_idx];
+	pnt=&vertex->pnt;
 
 	center.x=(min.x+max.x)>>1;
 	center.y=(min.y+max.y)>>1;
@@ -117,7 +133,7 @@ bool model_recalc_normals_determine_vector_in_out(model_type *model,int mesh_idx
 		// if these specialized checks fail
 
 	vector_create(&face_vct,pnt->x,pnt->y,pnt->z,center.x,center.y,center.z);
-	is_out=(vector_dot_product(&trig->tangent_space[pt_idx].normal,&face_vct)>0.0f);
+	is_out=(vector_dot_product(&vertex->tangent_space.normal,&face_vct)>0.0f);
 
 		// get a point from the current normal vector
 		// and inverse of the current normal vector, using 10%
@@ -126,13 +142,13 @@ bool model_recalc_normals_determine_vector_in_out(model_type *model,int mesh_idx
 	f_dist=(float)distance_get(pnt->x,pnt->y,pnt->z,center.x,center.y,center.z);
 	f_dist*=0.1f;
 
-	pos_pt.x=pnt->x+(int)(trig->tangent_space[pt_idx].normal.x*f_dist);
-	pos_pt.y=pnt->y+(int)(trig->tangent_space[pt_idx].normal.y*f_dist);
-	pos_pt.z=pnt->z+(int)(trig->tangent_space[pt_idx].normal.z*f_dist);
+	pos_pt.x=pnt->x+(int)(vertex->tangent_space.normal.x*f_dist);
+	pos_pt.y=pnt->y+(int)(vertex->tangent_space.normal.y*f_dist);
+	pos_pt.z=pnt->z+(int)(vertex->tangent_space.normal.z*f_dist);
 
-	neg_pt.x=pnt->x-(int)(trig->tangent_space[pt_idx].normal.x*f_dist);
-	neg_pt.y=pnt->y-(int)(trig->tangent_space[pt_idx].normal.y*f_dist);
-	neg_pt.z=pnt->z-(int)(trig->tangent_space[pt_idx].normal.z*f_dist);
+	neg_pt.x=pnt->x-(int)(vertex->tangent_space.normal.x*f_dist);
+	neg_pt.y=pnt->y-(int)(vertex->tangent_space.normal.y*f_dist);
+	neg_pt.z=pnt->z-(int)(vertex->tangent_space.normal.z*f_dist);
 
 		// first we determine if we can think of the
 		// poly's box (which is determined by all connected
@@ -181,13 +197,15 @@ bool model_recalc_normals_determine_vector_in_out(model_type *model,int mesh_idx
 
 void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent)
 {
-	int					n,k,t,j,cnt;
+	int					n,k,t,cnt;
     float				u10,u20,v10,v20,f_denom,f;
+	bool				vertex_in_trig;
 	d3vct				p10,p20,vlft,vrgt,v_num;
 	d3vct				*normals,*nptr,*tangents,*tptr;
 	d3pnt				*pt,*pt_1,*pt_2,v_center;
 	model_mesh_type		*mesh;
-	model_trig_type		*trig,*chk_trig;
+	model_vertex_type	*vertex;
+	model_trig_type		*trig;
 	tangent_space_type	avg_space;
 	
 	mesh=&model->meshes[mesh_idx];
@@ -252,82 +270,70 @@ void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent)
 	}
     
 		// average tangent space for each
-		// trig vertex that are within 45 degrees
-		// of each other.  otherwise, treat as a hard
-		// edge
+		// trig vertex to find one for shared
+		// vertexes
 		
-	trig=mesh->trigs;
-
-	for (n=0;n!=mesh->ntrig;n++) {
-
-			// average each vertex of the trig
-
-		for (t=0;t!=3;t++) {
+	vertex=mesh->vertexes;
+		
+	for (n=0;n!=mesh->nvertex;n++) {
 	
-			cnt=1;
-
-			memmove(&avg_space.normal,(normals+n),sizeof(d3vct));
-			memmove(&avg_space.tangent,(tangents+n),sizeof(d3vct));
+		avg_space.tangent.x=avg_space.tangent.y=avg_space.tangent.z=0.0f;
+		avg_space.tangent.x=avg_space.tangent.y=avg_space.tangent.z=0.0f;
+		
+		cnt=0;
+		trig=mesh->trigs;
+		
+		nptr=normals;
+		tptr=tangents;
+		
+		for (k=0;k!=mesh->ntrig;k++) {
+		
+			vertex_in_trig=FALSE;
 			
-			for (k=0;k!=mesh->ntrig;k++) {
-
-					// same trig
-
-				if (n==k) continue;
-
-					// get trig
-
-				chk_trig=&mesh->trigs[k];
-
-				nptr=normals+k;
-				tptr=tangents+k;
-
-					// check for shared vertexes
-					// and normals within 45 degrees
-
-				for (j=0;j!=3;j++) {
-
-					if (trig->v[t]==chk_trig->v[j]) {
-
-						if (vector_dot_product(&avg_space.normal,nptr)<0.7f) continue;
-
-						avg_space.normal.x+=nptr->x;
-						avg_space.normal.y+=nptr->y;
-						avg_space.normal.z+=nptr->z;
-
-						avg_space.tangent.x+=tptr->x;
-						avg_space.tangent.y+=tptr->y;
-						avg_space.tangent.z+=tptr->z;
-
-						cnt++;
-						break;
-					}
+			for (t=0;t!=3;t++) {
+				if (trig->v[t]==n) {
+					vertex_in_trig=TRUE;
+					break;
 				}
 			}
 			
-				// create average vector
-
-			if (cnt>1) {
-				f=(float)cnt;
-
-				avg_space.normal.x/=f;
-				avg_space.normal.y/=f;
-				avg_space.normal.z/=f;
-				vector_normalize(&avg_space.normal);
-
-				avg_space.tangent.x/=f;
-				avg_space.tangent.y/=f;
-				avg_space.tangent.z/=f;
-				vector_normalize(&avg_space.tangent);
+			if (vertex_in_trig) {
+				cnt++;
+				
+				avg_space.tangent.x+=tptr->x;
+				avg_space.tangent.y+=tptr->y;
+				avg_space.tangent.z+=tptr->z;
+				
+				avg_space.normal.x+=tptr->x;
+				avg_space.normal.y+=tptr->y;
+				avg_space.normal.z+=tptr->z;
 			}
-
-			if (!only_tangent) memmove(&trig->tangent_space[t].normal,&avg_space.normal,sizeof(d3vct));
-			memmove(&trig->tangent_space[t].tangent,&avg_space.tangent,sizeof(d3vct));
+			
+			trig++;
+			nptr++;
+			tptr++;
+		}
+		
+		if (cnt!=0) {
+				
+			f=(float)cnt;
+			
+			vertex->tangent_space.tangent.x=avg_space.tangent.x/f;
+			vertex->tangent_space.tangent.y=avg_space.tangent.y/f;
+			vertex->tangent_space.tangent.z=avg_space.tangent.z/f;
+			vector_normalize(&vertex->tangent_space.tangent);
+			
+			if (!only_tangent) {
+				vertex->tangent_space.normal.x=avg_space.normal.x/f;
+				vertex->tangent_space.normal.y=avg_space.normal.y/f;
+				vertex->tangent_space.normal.z=avg_space.normal.z/f;
+				vector_normalize(&vertex->tangent_space.normal);
+			}
 		}
 
-		trig++;
+		vertex++;
 	}
-
+		
 		// free the tangent spaces
 
 	free(normals);
@@ -337,36 +343,16 @@ void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent)
 		// this usually happens when there are bad
 		// or no UVs
 		
-	cnt=0;
-	v_center.x=v_center.y=v_center.z=0;
-	
-	if (mesh->nvertex!=0) {
-
-		for (k=0;k!=mesh->nvertex;k++) {
+	for (k=0;k!=mesh->nvertex;k++) {
+		
+		if ((vertex->tangent_space.normal.x==0.0f) && (vertex->tangent_space.normal.y==0.0f) && (vertex->tangent_space.normal.z==0.0f)) {
 			pt=&mesh->vertexes[k].pnt;
-			v_center.x+=pt->x;
-			v_center.y+=pt->y;
-			v_center.z+=pt->z;
+			
+			vertex->tangent_space.normal.x=(float)(pt->x-v_center.x);
+			vertex->tangent_space.normal.y=(float)(pt->y-v_center.y);
+			vertex->tangent_space.normal.z=(float)(pt->z-v_center.z);
+			vector_normalize(&vertex->tangent_space.normal);
 		}
-		
-		v_center.x/=mesh->nvertex;
-		v_center.y/=mesh->nvertex;
-		v_center.z/=mesh->nvertex;
-	}
-		
-	trig=mesh->trigs;
-	
-	for (n=0;n!=mesh->ntrig;n++) {
-		for (t=0;t!=3;t++) {
-			if ((trig->tangent_space[t].normal.x==0.0f) && (trig->tangent_space[t].normal.y==0.0f) && (trig->tangent_space[t].normal.z==0.0f)) {
-				pt=&mesh->vertexes[trig->v[t]].pnt;
-				trig->tangent_space[t].normal.x=(float)(pt->x-v_center.x);
-				trig->tangent_space[t].normal.y=(float)(pt->y-v_center.y);
-				trig->tangent_space[t].normal.z=(float)(pt->z-v_center.z);
-				vector_normalize(&trig->tangent_space[t].normal);
-			}
-		}
-		trig++;
 	}
 
 		// determine in-out to map flips
@@ -376,19 +362,17 @@ void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent)
 
 		// determine in/out and invert
 		
-	trig=mesh->trigs;
+	vertex=mesh->vertexes;
 
-	for (n=0;n!=mesh->ntrig;n++) {
+	for (n=0;n!=mesh->nvertex;n++) {
 	
-		for (k=0;k!=3;k++) {
-			if (!model_recalc_normals_determine_vector_in_out(model,mesh_idx,n,k)) {
-				trig->tangent_space[k].normal.x=-trig->tangent_space[k].normal.x;
-				trig->tangent_space[k].normal.y=-trig->tangent_space[k].normal.y;
-				trig->tangent_space[k].normal.z=-trig->tangent_space[k].normal.z;
-			}
+		if (!model_recalc_normals_determine_vector_in_out(model,mesh_idx,n)) {
+			vertex->tangent_space.normal.x=-vertex->tangent_space.normal.x;
+			vertex->tangent_space.normal.y=-vertex->tangent_space.normal.y;
+			vertex->tangent_space.normal.z=-vertex->tangent_space.normal.z;
 		}
 		
-		trig++;
+		vertex++;
 	}
 }
 

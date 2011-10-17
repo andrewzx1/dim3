@@ -216,7 +216,7 @@ void view_get_model_size(char *model_name,d3pnt *size)
       
 ======================================================= */
 
-void view_model_draw_triangles(model_type *model,model_draw_setup *draw_setup,short *texture_frame,int frame_count,BOOL opaque)
+void view_model_draw_triangles(model_type *model,model_draw_setup *draw_setup,short *texture_frame,int frame_count,bool opaque)
 {
 	int					n,k,frame,cur_txt_idx;
 	float				vertexes[3*3],uvs[3*2];

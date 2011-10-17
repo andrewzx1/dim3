@@ -75,7 +75,6 @@
 		269EC5141356501E00C3223C /* property_palette_multiplayer.c in Sources */ = {isa = PBXBuildFile; fileRef = 269EC50E1356501E00C3223C /* property_palette_multiplayer.c */; };
 		269EC5151356501E00C3223C /* property_palette_radar.c in Sources */ = {isa = PBXBuildFile; fileRef = 269EC50F1356501E00C3223C /* property_palette_radar.c */; };
 		269FECBD132845880030B0B5 /* dim3 Setup.icns in Resources */ = {isa = PBXBuildFile; fileRef = 269FECBB132845880030B0B5 /* dim3 Setup.icns */; };
-		269FECBE132845880030B0B5 /* dim3 Setup.nib in Resources */ = {isa = PBXBuildFile; fileRef = 269FECBC132845880030B0B5 /* dim3 Setup.nib */; };
 		269FECC11328488B0030B0B5 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 269FECC01328488B0030B0B5 /* Carbon.framework */; };
 		269FED7C132848970030B0B5 /* AGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 269FED7B132848970030B0B5 /* AGL.framework */; };
 		269FED7E132848A10030B0B5 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 269FED7D132848A10030B0B5 /* OpenGL.framework */; };
@@ -109,6 +108,7 @@
 		26D82FCD134FB5A800CC229F /* alt_property_palette_hud_bar.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D82FCA134FB5A800CC229F /* alt_property_palette_hud_bar.c */; };
 		26D82FCE134FB5A800CC229F /* alt_property_palette_hud_bitmap.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D82FCB134FB5A800CC229F /* alt_property_palette_hud_bitmap.c */; };
 		26D82FCF134FB5A800CC229F /* alt_property_palette_hud_text.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D82FCC134FB5A800CC229F /* alt_property_palette_hud_text.c */; };
+		26E300F5144B6F9600BB4BD5 /* dim3 Setup.xib in Resources */ = {isa = PBXBuildFile; fileRef = 26E300F4144B6F9600BB4BD5 /* dim3 Setup.xib */; };
 		26EB2AB2135CE09700C85532 /* alt_property_palette_action.c in Sources */ = {isa = PBXBuildFile; fileRef = 26EB2AAD135CE09700C85532 /* alt_property_palette_action.c */; };
 		26EB2AB3135CE09700C85532 /* alt_property_palette_crosshair.c in Sources */ = {isa = PBXBuildFile; fileRef = 26EB2AAE135CE09700C85532 /* alt_property_palette_crosshair.c */; };
 		26EB2AB4135CE09700C85532 /* alt_property_palette_halo.c in Sources */ = {isa = PBXBuildFile; fileRef = 26EB2AAF135CE09700C85532 /* alt_property_palette_halo.c */; };
@@ -235,7 +235,6 @@
 		269FECB0132844680030B0B5 /* dim3 Setup.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "dim3 Setup.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		269FECB91328457F0030B0B5 /* Info-dim3_Setup.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "Info-dim3_Setup.plist"; path = "Resources/Info-dim3_Setup.plist"; sourceTree = "<group>"; };
 		269FECBB132845880030B0B5 /* dim3 Setup.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = "dim3 Setup.icns"; path = "Resources/dim3 Setup.icns"; sourceTree = "<group>"; };
-		269FECBC132845880030B0B5 /* dim3 Setup.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = "dim3 Setup.nib"; path = "Resources/dim3 Setup.nib"; sourceTree = "<group>"; };
 		269FECC01328488B0030B0B5 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
 		269FED7B132848970030B0B5 /* AGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AGL.framework; path = /System/Library/Frameworks/AGL.framework; sourceTree = "<absolute>"; };
 		269FED7D132848A10030B0B5 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
@@ -276,6 +275,7 @@
 		26D82FCA134FB5A800CC229F /* alt_property_palette_hud_bar.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = alt_property_palette_hud_bar.c; path = Code/alt_property_palette_hud_bar.c; sourceTree = "<group>"; };
 		26D82FCB134FB5A800CC229F /* alt_property_palette_hud_bitmap.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = alt_property_palette_hud_bitmap.c; path = Code/alt_property_palette_hud_bitmap.c; sourceTree = "<group>"; };
 		26D82FCC134FB5A800CC229F /* alt_property_palette_hud_text.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = alt_property_palette_hud_text.c; path = Code/alt_property_palette_hud_text.c; sourceTree = "<group>"; };
+		26E300F4144B6F9600BB4BD5 /* dim3 Setup.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = "dim3 Setup.xib"; path = "Resources/dim3 Setup.xib"; sourceTree = "<group>"; };
 		26EB2AAD135CE09700C85532 /* alt_property_palette_action.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = alt_property_palette_action.c; path = Code/alt_property_palette_action.c; sourceTree = "<group>"; };
 		26EB2AAE135CE09700C85532 /* alt_property_palette_crosshair.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = alt_property_palette_crosshair.c; path = Code/alt_property_palette_crosshair.c; sourceTree = "<group>"; };
 		26EB2AAF135CE09700C85532 /* alt_property_palette_halo.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = alt_property_palette_halo.c; path = Code/alt_property_palette_halo.c; sourceTree = "<group>"; };
@@ -514,7 +514,7 @@
 			isa = PBXGroup;
 			children = (
 				269FECB91328457F0030B0B5 /* Info-dim3_Setup.plist */,
-				269FECBC132845880030B0B5 /* dim3 Setup.nib */,
+				26E300F4144B6F9600BB4BD5 /* dim3 Setup.xib */,
 				269FECBB132845880030B0B5 /* dim3 Setup.icns */,
 			);
 			name = Resources;
@@ -646,8 +646,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				269FECBD132845880030B0B5 /* dim3 Setup.icns in Resources */,
-				269FECBE132845880030B0B5 /* dim3 Setup.nib in Resources */,
 				26459B6E13DC9D5600D7DD73 /* Back.png in Resources */,
+				26E300F5144B6F9600BB4BD5 /* dim3 Setup.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

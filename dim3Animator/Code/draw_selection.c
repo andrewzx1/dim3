@@ -163,14 +163,15 @@ void draw_model_selected_trig(int mesh_idx)
       
 ======================================================= */
 
-void draw_model_normals_vertexes(int mesh_idx)
+void draw_model_normals(int mesh_idx)
 {
-	int				n,k,ntrig;
-	float			fx,fy,fz,vertexes[6];
-	float			*pv,*pn,*pt;
-	bool			has_sel;
-	d3vct			tangent,normal,binormal;
-	model_trig_type	*trig;
+	int					n,nvertex;
+	float				fx,fy,fz,vertexes[6];
+	float				*pv,*pn,*pt;
+	bool				has_sel;
+	d3vct				tangent,normal,binormal;
+	model_mesh_type		*mesh;
+	model_vertex_type	*vertex;
 	
 		// is there a vertex selection?
 		
@@ -180,194 +181,88 @@ void draw_model_normals_vertexes(int mesh_idx)
 	
 	glLineWidth(draw_model_normal_size);
 	
-	ntrig=model.meshes[mesh_idx].ntrig;
-
-	for (n=0;n!=ntrig;n++) {
+	mesh=&model.meshes[mesh_idx];
 	
-		trig=&model.meshes[mesh_idx].trigs[n];
-		
-		pn=draw_setup.mesh_arrays[mesh_idx].gl_normal_array+(n*9);
-		pt=draw_setup.mesh_arrays[mesh_idx].gl_tangent_array+(n*9);
-		
-			// vertex normals
-			
-		for (k=0;k!=3;k++) {
-				
-			if (has_sel) {
-				if (!vertex_check_sel_mask(mesh_idx,trig->v[k])) {
-					pn+=3;
-					pt+=3;
-					continue;
-				}
-			}
+	nvertex=mesh->nvertex;
+	vertex=mesh->vertexes;
+	
+	pv=draw_setup.mesh_arrays[mesh_idx].gl_vertex_array;
+	pn=draw_setup.mesh_arrays[mesh_idx].gl_normal_array;
+	pt=draw_setup.mesh_arrays[mesh_idx].gl_tangent_array;
 
-				// vertex point
+	for (n=0;n!=nvertex;n++) {
 
-			pv=draw_setup.mesh_arrays[mesh_idx].gl_vertex_array+(trig->v[k]*3);
-			fx=*pv++;
-			fy=*pv++;
-			fz=*pv;
+		if (!vertex_check_sel_mask(mesh_idx,n)) {
+			pv+=3;
+			pn+=3;
+			pt+=3;
+			continue;
+		}
 
-			normal.x=*pn++;
-			normal.y=*pn++;
-			normal.z=*pn++;
+			// vertex point
 
-			if (setup.show_tangent_binormal) {
+		fx=*pv++;
+		fy=*pv++;
+		fz=*pv++;
 
-					// tangent
+		normal.x=*pn++;
+		normal.y=*pn++;
+		normal.z=*pn++;
 
-				vertexes[0]=fx;
-				vertexes[1]=fy;
-				vertexes[2]=fz;
+		if (setup.show_tangent_binormal) {
 
-				tangent.x=*pt++;
-				tangent.y=*pt++;
-				tangent.z=*pt++;
-
-				vertexes[3]=fx+(tangent.x*draw_model_normal_len);
-				vertexes[4]=fy+(tangent.y*draw_model_normal_len);
-				vertexes[5]=fz+(tangent.z*draw_model_normal_len);
-			
-				glVertexPointer(3,GL_FLOAT,0,vertexes);
-
-				glColor4f(1.0f,0.0f,0.0f,1.0f);
-				glDrawArrays(GL_LINES,0,2);
-
-					// binormal
-
-				vector_cross_product(&binormal,&tangent,&normal);
-
-				vertexes[0]=fx;
-				vertexes[1]=fy;
-				vertexes[2]=fz;
-
-				vertexes[3]=fx+(binormal.x*draw_model_normal_len);
-				vertexes[4]=fy+(binormal.y*draw_model_normal_len);
-				vertexes[5]=fz+(binormal.z*draw_model_normal_len);
-
-				glVertexPointer(3,GL_FLOAT,0,vertexes);
-
-				glColor4f(0.0f,0.0f,1.0f,1.0f);
-				glDrawArrays(GL_LINES,0,2);
-			}
-
-				// normal
+				// tangent
 
 			vertexes[0]=fx;
 			vertexes[1]=fy;
 			vertexes[2]=fz;
 
-			vertexes[3]=fx+(normal.x*draw_model_normal_len);
-			vertexes[4]=fy+(normal.y*draw_model_normal_len);
-			vertexes[5]=fz+(normal.z*draw_model_normal_len);
+			tangent.x=*pt++;
+			tangent.y=*pt++;
+			tangent.z=*pt++;
 
+			vertexes[3]=fx+(tangent.x*draw_model_normal_len);
+			vertexes[4]=fy+(tangent.y*draw_model_normal_len);
+			vertexes[5]=fz+(tangent.z*draw_model_normal_len);
+		
 			glVertexPointer(3,GL_FLOAT,0,vertexes);
 
-			glColor4f(1.0f,0.0f,1.0f,1.0f);
+			glColor4f(1.0f,0.0f,0.0f,1.0f);
 			glDrawArrays(GL_LINES,0,2);
-		}
-	}
-	
-	glLineWidth(1.0f);
-}
 
-void draw_model_normals_trig(int mesh_idx)
-{
-	int				n,k,ntrig;
-	float			fx,fy,fz,vertexes[2*3];
-	float			*pa,*pn,*pt;
-	d3vct			tangent,normal,binormal;
-	model_trig_type	*trig;
-	
-	glLineWidth(draw_model_normal_size);
-	glColor4f(1.0f,0.0f,1.0f,1.0f);
-	
-	ntrig=model.meshes[mesh_idx].ntrig;
+				// binormal
 
-	for (n=0;n!=ntrig;n++) {
-		
-		if ((!trig_check_sel_mask(mesh_idx,n)) || (trig_check_hide_mask(mesh_idx,n))) continue;
-		
-		trig=&model.meshes[mesh_idx].trigs[n];
-
-			// draw trig normals
-		
-		pn=draw_setup.mesh_arrays[mesh_idx].gl_normal_array+(n*9);
-		pt=draw_setup.mesh_arrays[mesh_idx].gl_tangent_array+(n*9);
-			
-		for (k=0;k!=3;k++) {
-
-			if (!vertex_check_sel_mask(mesh_idx,trig->v[k])) {
-				pn+=3;
-				pt+=3;
-				continue;
-			}
-		
-			pa=draw_setup.mesh_arrays[mesh_idx].gl_vertex_array+(trig->v[k]*3);
-			fx=*pa++;
-			fy=*pa++;
-			fz=*pa;
-
-			normal.x=*pn++;
-			normal.y=*pn++;
-			normal.z=*pn++;
-
-			if (setup.show_tangent_binormal) {
-
-					// tangent
-
-				tangent.x=*pt++;
-				tangent.y=*pt++;
-				tangent.z=*pt++;
-
-				vertexes[0]=fx;
-				vertexes[1]=fy;
-				vertexes[2]=fz;
-				
-				vertexes[3]=fx+(tangent.x*draw_model_normal_len);
-				vertexes[4]=fy+(tangent.y*draw_model_normal_len);
-				vertexes[5]=fz+(tangent.z*draw_model_normal_len);
-
-				glVertexPointer(3,GL_FLOAT,0,vertexes);
-
-				glColor4f(1.0f,0.0f,0.0f,1.0f);
-				glDrawArrays(GL_LINES,0,2);
-
-					// binormal
-
-				vector_cross_product(&binormal,&tangent,&normal);
-
-				vertexes[0]=fx;
-				vertexes[1]=fy;
-				vertexes[2]=fz;
-				
-				vertexes[3]=fx+(binormal.x*draw_model_normal_len);
-				vertexes[4]=fy+(binormal.y*draw_model_normal_len);
-				vertexes[5]=fz+(binormal.z*draw_model_normal_len);
-
-				glVertexPointer(3,GL_FLOAT,0,vertexes);
-
-				glColor4f(0.0f,0.0f,1.0f,1.0f);
-				glDrawArrays(GL_LINES,0,2);
-			}
-
-				// normal
+			vector_cross_product(&binormal,&tangent,&normal);
 
 			vertexes[0]=fx;
 			vertexes[1]=fy;
 			vertexes[2]=fz;
-			
-			vertexes[3]=fx+(normal.x*draw_model_normal_len);
-			vertexes[4]=fy+(normal.y*draw_model_normal_len);
-			vertexes[5]=fz+(normal.z*draw_model_normal_len);
+
+			vertexes[3]=fx+(binormal.x*draw_model_normal_len);
+			vertexes[4]=fy+(binormal.y*draw_model_normal_len);
+			vertexes[5]=fz+(binormal.z*draw_model_normal_len);
 
 			glVertexPointer(3,GL_FLOAT,0,vertexes);
 
-			glColor4f(1.0f,0.0f,1.0f,1.0f);
+			glColor4f(0.0f,0.0f,1.0f,1.0f);
 			glDrawArrays(GL_LINES,0,2);
 		}
-	}
 
+			// normal
+
+		vertexes[0]=fx;
+		vertexes[1]=fy;
+		vertexes[2]=fz;
+
+		vertexes[3]=fx+(normal.x*draw_model_normal_len);
+		vertexes[4]=fy+(normal.y*draw_model_normal_len);
+		vertexes[5]=fz+(normal.z*draw_model_normal_len);
+
+		glVertexPointer(3,GL_FLOAT,0,vertexes);
+
+		glColor4f(1.0f,0.0f,1.0f,1.0f);
+		glDrawArrays(GL_LINES,0,2);
+	}
+	
 	glLineWidth(1.0f);
 }
-

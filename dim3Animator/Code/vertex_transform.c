@@ -82,43 +82,29 @@ void vertex_find_center_sel_vertexes(int mesh_idx,int *p_cx,int *p_cy,int *p_cz)
 
 void vertex_invert_normals(int mesh_idx)
 {
-	int					n,k,ntrig;
-	model_trig_type		*trig;
+	int					n,nvertex;
+	model_vertex_type	*vertex;
 	
-	ntrig=model.meshes[mesh_idx].ntrig;
-	trig=model.meshes[mesh_idx].trigs;
+	nvertex=model.meshes[mesh_idx].nvertex;
+	vertex=model.meshes[mesh_idx].vertexes;
 	
-	for (n=0;n!=ntrig;n++) {
+	for (n=0;n!=nvertex;n++) {
 		
-			// if in triangle mode, skip non-selected vertexes
+		if (!vertex_check_sel_mask(mesh_idx,n)) continue;
 
-		if (state.select_mode!=select_mode_vertex) {
-			if (!trig_check_sel_mask(mesh_idx,n)) {
-				trig++;
-				continue;
-			}
-		}
+		vertex->tangent_space.normal.x=-vertex->tangent_space.normal.x;
+		vertex->tangent_space.normal.y=-vertex->tangent_space.normal.y;
+		vertex->tangent_space.normal.z=-vertex->tangent_space.normal.z;
 
-		for (k=0;k!=3;k++) {
-		
-				// this triangle vertex in the select list?
-				
-			if (!vertex_check_sel_mask(mesh_idx,trig->v[k])) continue;
-
-			trig->tangent_space[k].normal.x=-trig->tangent_space[k].normal.x;
-			trig->tangent_space[k].normal.y=-trig->tangent_space[k].normal.y;
-			trig->tangent_space[k].normal.z=-trig->tangent_space[k].normal.z;
-		}
-
-		trig++;
+		vertex++;
 	}
 }
 
 void vertex_set_normals(int mesh_idx)
 {
-	int					n,k,ntrig;
+	int					n,nvertex;
 	d3vct				normal;
-	model_trig_type		*trig;
+	model_vertex_type	*vertex;
 	
 		// run dialog
 
@@ -130,77 +116,48 @@ void vertex_set_normals(int mesh_idx)
 
 		// set the normals
 
-	ntrig=model.meshes[mesh_idx].ntrig;
-	trig=model.meshes[mesh_idx].trigs;
+	nvertex=model.meshes[mesh_idx].nvertex;
+	vertex=model.meshes[mesh_idx].vertexes;
 	
-	for (n=0;n!=ntrig;n++) {
+	for (n=0;n!=nvertex;n++) {
 		
-			// if in triangle mode, skip non-selected vertexes
-
-		if (state.select_mode!=select_mode_vertex) {
-			if (!trig_check_sel_mask(mesh_idx,n)) {
-				trig++;
-				continue;
-			}
-		}
-
-		for (k=0;k!=3;k++) {
-		
-				// this triangle vertex in the select list?
-				
-			if (!vertex_check_sel_mask(mesh_idx,trig->v[k])) continue;
+		if (!vertex_check_sel_mask(mesh_idx,n)) continue;
 			
-			trig->tangent_space[k].normal.x=normal.x;
-			trig->tangent_space[k].normal.y=normal.y;
-			trig->tangent_space[k].normal.z=normal.z;
-		}
+		vertex->tangent_space.normal.x=normal.x;
+		vertex->tangent_space.normal.y=normal.y;
+		vertex->tangent_space.normal.z=normal.z;
 
-		trig++;
+		vertex++;
 	}
 }
 
 void vertex_set_normals_in_out(int mesh_idx,bool out)
 {
-	int					n,k,count,ntrig;
+	int					n,count,nvertex;
 	bool				is_out;
-	d3pnt				center,trig_center,*pnt;
+	d3pnt				center,*pnt;
 	d3vct				face_vct;
-	model_trig_type		*trig;
-
-	ntrig=model.meshes[mesh_idx].ntrig;
+	model_vertex_type	*vertex;
 
 		// get the center
 
 	center.x=center.y=center.z=0;
 	count=0;
 
-	trig=model.meshes[mesh_idx].trigs;
+	nvertex=model.meshes[mesh_idx].nvertex;
+	vertex=model.meshes[mesh_idx].vertexes;
 	
-	for (n=0;n!=ntrig;n++) {
-		
-			// if in triangle mode, skip non-selected vertexes
-
-		if (state.select_mode!=select_mode_vertex) {
-			if (!trig_check_sel_mask(mesh_idx,n)) {
-				trig++;
-				continue;
-			}
-		}
-
-		for (k=0;k!=3;k++) {
-		
-				// this triangle vertex in the select list?
+	for (n=0;n!=nvertex;n++) {
 				
-			if (vertex_check_sel_mask(mesh_idx,trig->v[k])) {
-				pnt=&model.meshes[mesh_idx].vertexes[trig->v[k]].pnt;
-				center.x+=pnt->x;
-				center.y+=pnt->y;
-				center.z+=pnt->z;
-				count++;
-			}
+		if (vertex_check_sel_mask(mesh_idx,n)) {
+			pnt=&model.meshes[mesh_idx].vertexes[n].pnt;
+			center.x+=pnt->x;
+			center.y+=pnt->y;
+			center.z+=pnt->z;
+			count++;
 		}
 
-		trig++;
+		vertex++;
 	}
 
 	if (count==0) return;
@@ -210,56 +167,25 @@ void vertex_set_normals_in_out(int mesh_idx,bool out)
 	center.z/=count;
 
 		// flip the normals for in/out
-
-	trig=model.meshes[mesh_idx].trigs;
-	
-	for (n=0;n!=ntrig;n++) {
 		
-			// if in triangle mode, skip non-selected vertexes
+	vertex=model.meshes[mesh_idx].vertexes;
 
-		if (state.select_mode!=select_mode_vertex) {
-			if (!trig_check_sel_mask(mesh_idx,n)) {
-				trig++;
-				continue;
-			}
-		}
-
-			// get trig center
-
-		trig_center.x=trig_center.y=trig_center.z=0;
-
-		for (k=0;k!=3;k++) {
-			pnt=&model.meshes[mesh_idx].vertexes[trig->v[k]].pnt;
-			trig_center.x+=pnt->x;
-			trig_center.y+=pnt->y;
-			trig_center.z+=pnt->z;
-		}
-
-		trig_center.x/=3;
-		trig_center.y/=3;
-		trig_center.z/=3;
-
-			// determine in/out flips
-
-		for (k=0;k!=3;k++) {
-		
-				// this triangle vertex in the select list?
+	for (n=0;n!=nvertex;n++) {
 				
-			if (!vertex_check_sel_mask(mesh_idx,trig->v[k])) continue;
+		if (!vertex_check_sel_mask(mesh_idx,n)) continue;
 
-				// determine if poly is facing 'out'
+			// determine if vertex is facing 'out'
 		
-			vector_create(&face_vct,trig_center.x,trig_center.y,trig_center.z,center.x,center.y,center.z);
-			is_out=(vector_dot_product(&trig->tangent_space[k].normal,&face_vct)>0.0f);
+		vector_create(&face_vct,vertex->pnt.x,vertex->pnt.y,vertex->pnt.z,center.x,center.y,center.z);
+		is_out=(vector_dot_product(&vertex->tangent_space.normal,&face_vct)>0.0f);
 
-			if (is_out!=out) {
-				trig->tangent_space[k].normal.x=-trig->tangent_space[k].normal.x;
-				trig->tangent_space[k].normal.y=-trig->tangent_space[k].normal.y;
-				trig->tangent_space[k].normal.z=-trig->tangent_space[k].normal.z;
-			}
+		if (is_out!=out) {
+			vertex->tangent_space.normal.x=-vertex->tangent_space.normal.x;
+			vertex->tangent_space.normal.y=-vertex->tangent_space.normal.y;
+			vertex->tangent_space.normal.z=-vertex->tangent_space.normal.z;
 		}
 
-		trig++;
+		vertex++;
 	}
 }
 
