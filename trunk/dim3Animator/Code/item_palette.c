@@ -76,7 +76,6 @@ void item_palette_shutdown(void)
 void item_palette_fill(void)
 {
 	int			n;
-	char		str[256],str_tag[8];
 
 	list_palette_delete_all_items(&item_palette);
 
@@ -124,10 +123,7 @@ void item_palette_fill(void)
 	list_palette_sort_mark_start(&item_palette);
 
 	for (n=0;n!=model.nbone;n++) {
-		memmove(str_tag,&model.bones[n].tag,4);
-		str_tag[4]=0x0;
-		sprintf(str,"%s (%s)",model.bones[n].name,str_tag);
-		list_palette_add_item(&item_palette,item_bone,n,str,((state.cur_item==item_bone)&&(state.cur_bone_idx==n)),FALSE);
+		list_palette_add_item(&item_palette,item_bone,n,model.bones[n].name,((state.cur_item==item_bone)&&(state.cur_bone_idx==n)),FALSE);
 	}
 
 	list_palette_sort(&item_palette);

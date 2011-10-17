@@ -75,8 +75,8 @@ void insert_model(char *file_name)
 			// fix duplicate names
 			
 		for (k=0;k!=b_off;k++) {
-			if (model.bones[k].tag==bone->tag) {
-				bone->tag=model_bone_create_tag(&model,idx);
+			if (strcasecmp(model.bones[k].name,bone->name)==0) {
+				model_bone_create_name(&model,idx);
 			}
 		}
 		

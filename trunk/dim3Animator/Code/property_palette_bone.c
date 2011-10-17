@@ -35,8 +35,7 @@ and can be sold or given away.
 
 #define kBonePropertyName						0
 #define kBonePropertyPosition					1
-#define kBonePropertyTag						2
-#define kBonePropertyParent						3
+#define kBonePropertyParent						2
 
 #define kBonePropertyNaturalRot					10
 #define kBonePropertyNaturalOffset				11
@@ -75,7 +74,6 @@ void property_palette_fill_bone(int bone_idx,int pose_idx)
 	list_palette_add_header(&property_palette,0,"Bone Options");
 	list_palette_add_string(&property_palette,kBonePropertyName,"Name",bone->name,FALSE);
 	list_palette_add_point(&property_palette,kBonePropertyPosition,"Position",&bone->pnt,FALSE);
-	list_palette_add_string_tag(&property_palette,kBonePropertyTag,"Tag",bone->tag,FALSE);
 	property_palette_add_string_bone(&property_palette,kBonePropertyParent,"Parent Bone",bone->parent_idx,FALSE);
 
 		// handles
@@ -128,10 +126,6 @@ void property_palette_click_bone(int bone_idx,int pose_idx,int id,bool double_cl
 
 		case kBonePropertyPosition:
 			dialog_property_chord_run(list_chord_value_point,(void*)&bone->pnt);
-			break;
-
-		case kBonePropertyTag:
-			dialog_property_string_run(list_string_value_tag,(void*)&bone->tag,0,0,0);
 			break;
 
 		case kBonePropertyParent:

@@ -62,6 +62,8 @@ void map_recalc_normals_get_vertex_box(model_type *model,int mesh_idx,int vertex
 	vertex_txt_idx=(int*)malloc(mesh->nvertex*sizeof(int));
 	bzero(vertex_txt_idx,(mesh->nvertex*sizeof(int)));
 		
+	trig=mesh->trigs;
+
 	for (n=0;n!=mesh->ntrig;n++) {
 		for (k=0;k!=3;k++) {
 			vertex_txt_idx[trig->v[k]]=trig->txt_idx;
@@ -202,7 +204,7 @@ void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent)
 	bool				vertex_in_trig;
 	d3vct				p10,p20,vlft,vrgt,v_num;
 	d3vct				*normals,*nptr,*tangents,*tptr;
-	d3pnt				*pt,*pt_1,*pt_2,v_center;
+	d3pnt				*pt,*pt_1,*pt_2;
 	model_mesh_type		*mesh;
 	model_vertex_type	*vertex;
 	model_trig_type		*trig;
@@ -278,7 +280,7 @@ void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent)
 	for (n=0;n!=mesh->nvertex;n++) {
 	
 		avg_space.tangent.x=avg_space.tangent.y=avg_space.tangent.z=0.0f;
-		avg_space.tangent.x=avg_space.tangent.y=avg_space.tangent.z=0.0f;
+		avg_space.normal.x=avg_space.normal.y=avg_space.normal.z=0.0f;
 		
 		cnt=0;
 		trig=mesh->trigs;
@@ -348,9 +350,9 @@ void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent)
 		if ((vertex->tangent_space.normal.x==0.0f) && (vertex->tangent_space.normal.y==0.0f) && (vertex->tangent_space.normal.z==0.0f)) {
 			pt=&mesh->vertexes[k].pnt;
 			
-			vertex->tangent_space.normal.x=(float)(pt->x-v_center.x);
-			vertex->tangent_space.normal.y=(float)(pt->y-v_center.y);
-			vertex->tangent_space.normal.z=(float)(pt->z-v_center.z);
+			vertex->tangent_space.normal.x=(float)(pt->x-vertex->pnt.x);
+			vertex->tangent_space.normal.y=(float)(pt->y-vertex->pnt.y);
+			vertex->tangent_space.normal.z=(float)(pt->z-vertex->pnt.z);
 			vector_normalize(&vertex->tangent_space.normal);
 		}
 	}

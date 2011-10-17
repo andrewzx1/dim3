@@ -31,29 +31,27 @@ and can be sold or given away.
 
 /* =======================================================
 
-      Create Bone Tags
+      Create Bone Name
       
 ======================================================= */
 
-model_tag model_bone_create_tag(model_type *model,int skip_bone_idx)
+void model_bone_create_name(model_type *model,int bone_idx)
 {
 	int				n,idx;
 	bool			hit;
-	char			str[8];
-	model_tag		tag;
+	char			name[name_str_len];
 	
 	idx=0;
 
 	while (TRUE) {
 
-		sprintf(str,"b%03d",idx);
-		tag=text_to_model_tag(str);
+		sprintf(name,"bone_%03d",idx);
 
 		hit=FALSE;
 		
 		for (n=0;n!=model->nbone;n++) {
-			if (n!=skip_bone_idx) {
-				if (tag==model->bones[n].tag) {
+			if (n!=bone_idx) {
+				if (strcasecmp(name,model->bones[n].name)==0) {
 					hit=TRUE;
 					break;
 				}
@@ -65,7 +63,7 @@ model_tag model_bone_create_tag(model_type *model,int skip_bone_idx)
 		idx++;
 	}
 	
-	return(tag);
+	strcpy(model->bones[bone_idx].name,name);
 }
 
 /* =======================================================
@@ -77,16 +75,11 @@ model_tag model_bone_create_tag(model_type *model,int skip_bone_idx)
 int model_bone_add(model_type *model,int x,int y,int z)
 {
 	int					n,bone_idx;
-	model_tag			tag;
 	model_bone_type		*bone,*ptr;
 
 		// only allow a maximum number of bones
 
 	if (model->nbone>=max_model_bone) return(-1);
-
-		// find a good tag
-		
-	tag=model_bone_create_tag(model,-1);
 
 		// create memory for new bones
 
@@ -107,9 +100,9 @@ int model_bone_add(model_type *model,int x,int y,int z)
 	
 	bone=&model->bones[bone_idx];
 	bzero(bone,sizeof(model_bone_type));
+
+	model_bone_create_name(model,bone_idx);
 	
-	strcpy(bone->name,"New Bone");
-	bone->tag=tag;
 	bone->parent_idx=-1;
 	bone->pnt.x=x;
 	bone->pnt.y=y;
@@ -241,11 +234,11 @@ void model_bone_delete(model_type *model,int bone_idx)
 
 /* =======================================================
 
-      Check for Circular Bones
+      Check for Circular or Duplicate Bones
       
 ======================================================= */
 
-bool model_check_bone_duplicate_tag(model_type *model,model_bone_type *bone)
+bool model_check_bone_duplicate_name(model_type *model,model_bone_type *bone)
 {
 	int				n,nt;
 	model_bone_type	*chk_bone;
@@ -255,7 +248,7 @@ bool model_check_bone_duplicate_tag(model_type *model,model_bone_type *bone)
 	
 	for (n=0;n!=nt;n++) {
 		if (chk_bone!=bone) {
-			if (chk_bone->tag==bone->tag) return(TRUE);
+			if (strcasecmp(chk_bone->name,bone->name)==0) return(TRUE);
 		}
 		chk_bone++;
 	}

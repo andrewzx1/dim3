@@ -115,7 +115,7 @@ bool model_get_light_position(model_type *model,model_draw_setup *draw_setup,int
 	
 		// get bone position
 	
-	bone_idx=model->tags.light_bone_idx[idx];
+	bone_idx=model->bone_connect.light_bone_idx[idx];
 	if (bone_idx==-1) return(FALSE);
 	
 	model_get_draw_bone_position(draw_setup,bone_idx,&px,&py,&pz);
@@ -135,7 +135,7 @@ bool model_get_halo_position(model_type *model,model_draw_setup *draw_setup,int 
 	
 		// get bone position
 	
-	bone_idx=model->tags.halo_bone_idx[idx];
+	bone_idx=model->bone_connect.halo_bone_idx[idx];
 	if (bone_idx==-1) return(FALSE);
 		
 	model_get_draw_bone_position(draw_setup,bone_idx,&px,&py,&pz);
@@ -155,7 +155,7 @@ bool model_get_name_position(model_type *model,model_draw_setup *draw_setup,int 
 	
 		// get bone position
 	
-	bone_idx=model->tags.name_bone_idx;
+	bone_idx=model->bone_connect.name_bone_idx;
 	if (bone_idx==-1) return(FALSE);
 		
 	model_get_draw_bone_position(draw_setup,bone_idx,&px,&py,&pz);

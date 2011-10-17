@@ -55,13 +55,13 @@ and can be sold or given away.
 #define max_model_hit_box								16			// maximum number of hit boxes
 
 //
-// Animator vertex select and hide
+// animator vertex select and hide
 //
 
 #define vertex_sel_hide_mask_sz							(((max_model_vertex*max_model_mesh)/8)+1)
 
 //
-// Deform Modes
+// deform Modes
 //
 
 #define deform_mode_single_rotate						0
@@ -70,14 +70,7 @@ and can be sold or given away.
 #define deform_mode_xml_list_str						{"single_rotate","comulative_rotate",""}
 
 //
-// Model Tags
-//
-
-#define model_tag										unsigned long
-#define model_null_tag									0x3F3F3F3F
-
-//
-// Drawing Stuctures
+// drawing stuctures
 //
 
 typedef struct		{
@@ -119,7 +112,7 @@ typedef struct		{
                     } model_draw_setup;
 
 //
-// Model Info Structures
+// model info structures
 //		
 
 typedef struct		{
@@ -134,7 +127,7 @@ typedef struct		{
 					} model_hit_box_type;
                     
 //
-// Model Mesh Structures
+// model mesh structures
 //
 
 typedef struct		{
@@ -161,7 +154,7 @@ typedef struct		{
 					} model_mesh_type;
 
 //
-// Model Bone Structures
+// model bone structures
 //
 
 typedef struct		{
@@ -170,7 +163,6 @@ typedef struct		{
 						d3pnt							pnt,natural_offset;
 						d3ang							natural_rot;
 						d3vct							parent_dist;
-						model_tag						tag;
 					} model_bone_type;
 
 //
@@ -187,7 +179,7 @@ typedef struct		{
 					} model_rigid_body_type;
 
 //
-// Model Poses and Animation Structures
+// model poses and animation structures
 //
 
 typedef struct		{
@@ -275,17 +267,17 @@ typedef struct		{
 					} model_animate_type;
 
 //
-// Model Special Bones
+// model bone connections
 //
 
 typedef struct		{
 						int								light_bone_idx[max_model_light],
 														halo_bone_idx[max_model_halo],
 														name_bone_idx;
-					} model_tags;
+					} model_bone_connect_type;
 
 //
-// Model Import
+// model import
 //
 
 typedef struct		{
@@ -293,7 +285,7 @@ typedef struct		{
 					} model_import_type;
 
 //
-// Model UI Settings
+// model UI settings
 //
 
 typedef struct		{
@@ -302,7 +294,7 @@ typedef struct		{
 					} model_ui_type;
 
 //
-// Model Main Structures
+// model main structures
 //
 
 typedef struct		{
@@ -313,7 +305,7 @@ typedef struct		{
 						char							name[name_str_len],load_base_path[1024];
 						d3pnt							center;
 						model_box_type					view_box;
-						model_tags						tags;
+						model_bone_connect_type			bone_connect;
  						model_mesh_type					meshes[max_model_mesh];
 						model_rigid_body_type			rigid_body;
 						model_import_type				import;
@@ -326,11 +318,8 @@ typedef struct		{
 					} model_type;
 
 //
-// Model Functions
+// model functions
 //
-
-extern model_tag text_to_model_tag(char *str);
-extern void model_tag_to_text(model_tag tag,char *str);
 
 extern int model_mesh_add(model_type *model);
 extern int model_mesh_duplicate(model_type *model,int mesh_idx);
@@ -338,10 +327,10 @@ extern bool model_mesh_delete(model_type *model,int mesh_idx);
 extern bool model_mesh_set_vertex_count(model_type *model,int mesh_idx,int vertex_count);
 extern bool model_mesh_set_trig_count(model_type *model,int mesh_idx,int trig_count);
 
-extern model_tag model_bone_create_tag(model_type *model,int skip_bone_idx);
+extern void model_bone_create_name(model_type *model,int bone_idx);
 extern int model_bone_add(model_type *model,int x,int y,int z);
 extern void model_bone_delete(model_type *model,int bone_idx);
-extern bool model_check_bone_duplicate_tag(model_type *model,model_bone_type *bone);
+extern bool model_check_bone_duplicate_name(model_type *model,model_bone_type *bone);
 extern bool model_check_bone_circular(model_type *model,model_bone_type *bone);
 extern void model_bone_move(model_type *model,int bone_idx,int x,int y,int z,bool nudge_children,bool nudge_vertexes);
 
@@ -370,8 +359,7 @@ extern void model_hit_box_get_center(model_type *model,int hit_box_idx,d3pnt *pn
 extern void model_hit_box_get_box(model_type *model,int hit_box_idx,d3pnt *pnt,model_draw_setup *draw_setup,d3pnt *min,d3pnt *max);
 
 extern int model_find_mesh(model_type *model,char *mesh_name);
-extern int model_find_bone(model_type *model,model_tag tag);
-extern int model_find_bone2(model_type *model,char *bone_name);		// supergumba -- temporary until 
+extern int model_find_bone(model_type *model,char *bone_name);
 extern int model_find_pose(model_type *model,char *pose_name);
 extern int model_find_animate(model_type *model,char *animate_name);
 

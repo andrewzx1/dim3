@@ -39,11 +39,6 @@ typedef struct		{
 // Functions
 //
 
-extern int model_find_bone(model_type *mdl,model_tag tag);
-extern int model_find_pose(model_type *mdl,char *posename);
-extern void xml_add_attribute_model_tag(char *name,model_tag tag);
-
-extern model_tag xml_get_attribute_model_tag(int xml_tag,char *name);
 extern void decode_mesh_v1_xml(model_type *model,int model_head);
 extern void decode_mesh_v2_xml(model_type *model,int model_head);
 extern void encode_mesh_v2_xml(model_type *model);

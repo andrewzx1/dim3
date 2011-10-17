@@ -52,7 +52,6 @@ extern list_palette_type		property_palette;
 void property_palette_fill_pose(int pose_idx)
 {
 	int						n;
-	char					str_tag[8],str[256];
 	model_pose_type			*pose;
 
 	pose=&model.poses[pose_idx];
@@ -66,10 +65,7 @@ void property_palette_fill_pose(int pose_idx)
 	list_palette_sort_mark_start(&property_palette);
 
 	for (n=0;n!=model.nbone;n++) {
-		memmove(str_tag,&model.bones[n].tag,4);
-		str_tag[4]=0x0;
-		sprintf(str,"%s (%s)",model.bones[n].name,str_tag);
-		list_palette_add_string_selectable(&property_palette,(kPosePropertyBoneMove+n),str,NULL,((state.cur_pose_idx==pose_idx)&&(state.cur_pose_bone_move_idx==n)),FALSE);
+		list_palette_add_string_selectable(&property_palette,(kPosePropertyBoneMove+n),model.bones[n].name,NULL,((state.cur_pose_idx==pose_idx)&&(state.cur_pose_bone_move_idx==n)),FALSE);
 	}
 
 	list_palette_sort(&property_palette);

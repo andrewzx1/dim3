@@ -260,14 +260,14 @@ void file_close_model(void)
 	model.nanimate=0;
 	
 	for (n=0;n!=max_model_light;n++) {
-		model.tags.light_bone_idx[n]=-1;
+		model.bone_connect.light_bone_idx[n]=-1;
 	}
 	
 	for (n=0;n!=max_model_halo;n++) {
-		model.tags.halo_bone_idx[n]=-1;
+		model.bone_connect.halo_bone_idx[n]=-1;
 	}
 	
-	model.tags.name_bone_idx=-1;
+	model.bone_connect.name_bone_idx=-1;
 
 	state.model_open=FALSE;
 

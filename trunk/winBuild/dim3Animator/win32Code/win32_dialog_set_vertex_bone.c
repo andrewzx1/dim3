@@ -46,34 +46,23 @@ float							dialog_set_vertex_bone_factor;
       
 ======================================================= */
 
-void win32_dialog_set_bone_combo(HWND diag,int id,int sel_idx)
+void win32_dialog_set_bone_combo(HWND diag,int id,int bone_idx)
 {
 	int				n;
-	char			txt[128];
 	
 	win32_dialog_combo_clear(diag,id);
 
 	win32_dialog_combo_add(diag,id,"None");
 	
 	for (n=0;n!=model.nbone;n++) {
-	
-		memmove(txt,&model.bones[n].tag,4);
-		txt[4]=0x0;
-		
-		if (model.bones[n].name[0]!=0x0) {
-			strcat(txt," (");
-			strcat(txt,model.bones[n].name);
-			strcat(txt,")");
-		}
-		
-		win32_dialog_combo_add(diag,id,txt);
+		win32_dialog_combo_add(diag,id,model.bones[n].name);
 	}
 	
-	if (sel_idx==-1) {
+	if (bone_idx==-1) {
 		win32_dialog_combo_set_value(diag,id,0);
 	}
 	else {
-		win32_dialog_combo_set_value(diag,id,(sel_idx+1));
+		win32_dialog_combo_set_value(diag,id,(bone_idx+1));
 	}
 }
 
