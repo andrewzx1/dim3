@@ -41,8 +41,6 @@ and can be sold or given away.
 #define kMeshPropertyMovement				5
 
 #define kMeshPropertyTrigUV					10
-#define kMeshPropertyTrigNormal				20
-#define kMeshPropertyTrigTangent			30
 
 extern model_type				model;
 extern animator_state_type		state;
@@ -94,21 +92,6 @@ void property_palette_fill_mesh(int mesh_idx)
 				sprintf(str,"Vertex %d",n);
 				list_palette_add_uv(&property_palette,(kMeshPropertyTrigUV+n),str,&uv,FALSE);
 			}
-
-			list_palette_add_header(&property_palette,0,"Selected Trig Normals");
-
-			for (n=0;n!=3;n++) {
-				sprintf(str,"Normal %d",n);
-				list_palette_add_vector(&property_palette,(kMeshPropertyTrigNormal+n),str,&trig->tangent_space[n].normal,FALSE);
-			}
-
-			list_palette_add_header(&property_palette,0,"Selected Trig Normals");
-
-			for (n=0;n!=3;n++) {
-				sprintf(str,"Tangent %d",n);
-				list_palette_add_vector(&property_palette,(kMeshPropertyTrigTangent+n),str,&trig->tangent_space[n].tangent,FALSE);
-			}
-
 		}
 	}
 
@@ -215,28 +198,6 @@ void property_palette_click_mesh(int mesh_idx,int id,bool double_click)
 			trig->gx[idx]=uv.x;
 			trig->gy[idx]=uv.y;
 
-			break;
-
-		case kMeshPropertyTrigNormal:
-		case (kMeshPropertyTrigNormal+1):
-		case (kMeshPropertyTrigNormal+2):
-			trig=trig_mask_get_single_select(mesh_idx);
-			if (trig==NULL) break;
-
-			idx=id-kMeshPropertyTrigNormal;
-			dialog_property_chord_run(list_chord_value_vector,(void*)&trig->tangent_space[idx].normal);
-			vector_normalize(&trig->tangent_space[idx].normal);
-			break;
-
-		case kMeshPropertyTrigTangent:
-		case (kMeshPropertyTrigTangent+1):
-		case (kMeshPropertyTrigTangent+2):
-			trig=trig_mask_get_single_select(mesh_idx);
-			if (trig==NULL) break;
-
-			idx=id-kMeshPropertyTrigTangent;
-			dialog_property_chord_run(list_chord_value_vector,(void*)&trig->tangent_space[idx].tangent);
-			vector_normalize(&trig->tangent_space[idx].tangent);
 			break;
 			
 	}

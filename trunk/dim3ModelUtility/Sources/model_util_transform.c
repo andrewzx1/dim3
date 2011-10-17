@@ -107,38 +107,30 @@ void model_scale_all(model_type *model,float x_fact,float y_fact,float z_fact)
 
 void model_flip(model_type *model,int mesh_idx,bool flip_x,bool flip_y,bool flip_z)
 {
-	int						n,k,nvertex,ntrig;
+	int						n,nvertex;
 	model_vertex_type		*vertex;
-	model_trig_type			*trig;
 	
-		// flip vertexes
-
 	nvertex=model->meshes[mesh_idx].nvertex;
 	vertex=model->meshes[mesh_idx].vertexes;
 	
 	for (n=0;n!=nvertex;n++) {
 	
-		if (flip_x) vertex->pnt.x=-vertex->pnt.x;
-		if (flip_y) vertex->pnt.y=-vertex->pnt.y;
-		if (flip_z) vertex->pnt.z=-vertex->pnt.z;
-		
-		vertex++;
-	}
-
-		// flip tangent space
-
-	ntrig=model->meshes[mesh_idx].ntrig;
-	trig=model->meshes[mesh_idx].trigs;
-	
-	for (n=0;n!=ntrig;n++) {
-
-		for (k=0;k!=3;k++) {
-			if (flip_x) trig->tangent_space[k].normal.x=-trig->tangent_space[k].normal.x;
-			if (flip_y) trig->tangent_space[k].normal.y=-trig->tangent_space[k].normal.y;
-			if (flip_z) trig->tangent_space[k].normal.z=-trig->tangent_space[k].normal.z;
+		if (flip_x) {
+			vertex->pnt.x=-vertex->pnt.x;
+			vertex->tangent_space.normal.x=-vertex->tangent_space.normal.x;
 		}
 		
-		trig++;
+		if (flip_y) {
+			vertex->pnt.y=-vertex->pnt.y;
+			vertex->tangent_space.normal.y=-vertex->tangent_space.normal.y;
+		}
+
+		if (flip_z) {
+			vertex->pnt.z=-vertex->pnt.z;
+			vertex->tangent_space.normal.z=-vertex->tangent_space.normal.z;
+		}
+		
+		vertex++;
 	}
 }
 
@@ -213,38 +205,24 @@ void model_flip_all(model_type *model,bool flip_x,bool flip_y,bool flip_z)
 
 void model_swap_xz(model_type *model,int mesh_idx)
 {
-	int					n,k,nvertex,ntrig;
+	int					n,k,nvertex;
 	float				f;
 	model_vertex_type	*vertex;
-	model_trig_type		*trig;
 	
-		// flip vertexes
-
 	nvertex=model->meshes[mesh_idx].nvertex;
 	vertex=model->meshes[mesh_idx].vertexes;
 	
 	for (n=0;n!=nvertex;n++) {
+	
 		k=vertex->pnt.x;
 		vertex->pnt.x=vertex->pnt.z;
 		vertex->pnt.z=k;
+		
+		f=vertex->tangent_space.normal.x;
+		vertex->tangent_space.normal.x=vertex->tangent_space.normal.z;
+		vertex->tangent_space.normal.z=f;
 
 		vertex++;
-	}
-
-		// flip tangent space
-
-	ntrig=model->meshes[mesh_idx].ntrig;
-	trig=model->meshes[mesh_idx].trigs;
-	
-	for (n=0;n!=ntrig;n++) {
-
-		for (k=0;k!=3;k++) {
-			f=trig->tangent_space[k].normal.x;
-			trig->tangent_space[k].normal.x=trig->tangent_space[k].normal.z;
-			trig->tangent_space[k].normal.z=f;
-		}
-
-		trig++;
 	}
 }
 
@@ -306,38 +284,24 @@ void model_swap_xz_all(model_type *model)
 
 void model_swap_yz(model_type *model,int mesh_idx)
 {
-	int					n,k,nvertex,ntrig;
+	int					n,k,nvertex;
 	float				f;
 	model_vertex_type	*vertex;
-	model_trig_type		*trig;
 	
-		// flip vertexes
-
 	nvertex=model->meshes[mesh_idx].nvertex;
 	vertex=model->meshes[mesh_idx].vertexes;
 	
 	for (n=0;n!=nvertex;n++) {
+	
 		k=vertex->pnt.y;
 		vertex->pnt.y=vertex->pnt.z;
 		vertex->pnt.z=k;
+		
+		f=vertex->tangent_space.normal.y;
+		vertex->tangent_space.normal.y=vertex->tangent_space.normal.z;
+		vertex->tangent_space.normal.z=f;
 
 		vertex++;
-	}
-
-		// flip tangent space
-
-	ntrig=model->meshes[mesh_idx].ntrig;
-	trig=model->meshes[mesh_idx].trigs;
-	
-	for (n=0;n!=ntrig;n++) {
-
-		for (k=0;k!=3;k++) {
-			f=trig->tangent_space[k].normal.y;
-			trig->tangent_space[k].normal.y=trig->tangent_space[k].normal.z;
-			trig->tangent_space[k].normal.z=f;
-		}
-
-		trig++;
 	}
 }
 

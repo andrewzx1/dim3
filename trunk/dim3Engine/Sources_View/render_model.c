@@ -74,7 +74,7 @@ void render_model_create_color_vertexes(model_type *mdl,int mesh_mask,model_draw
 	matrix_type		mat;
 	model_mesh_type	*mesh;
 
-		// need color lists
+		// color lists for non-shader paths
 
 	for (n=0;n!=mdl->nmesh;n++) {
 		if ((mesh_mask&(0x1<<n))==0) continue;
@@ -169,7 +169,7 @@ void render_model_create_color_vertexes(model_type *mdl,int mesh_mask,model_draw
 
 void render_model_create_normal_vertexes(model_type *mdl,int mesh_mask,model_draw *draw,bool shader_off)
 {
-	int				n,k,ts_count;
+	int				n,k,nvertex;
 	float			*tl,*nl;
 	matrix_type		mat;
 
@@ -190,14 +190,83 @@ void render_model_create_normal_vertexes(model_type *mdl,int mesh_mask,model_dra
 			tl=draw->setup.mesh_arrays[n].gl_tangent_array;
 			nl=draw->setup.mesh_arrays[n].gl_normal_array;
 
-			ts_count=mdl->meshes[n].ntrig*3;
+			nvertex=mdl->meshes[n].nvertex;
 
-			for (k=0;k!=ts_count;k++) {
+			for (k=0;k!=nvertex;k++) {
 				matrix_vertex_multiply_ignore_transform(&mat,tl,(tl+1),(tl+2));
 				matrix_vertex_multiply_ignore_transform(&mat,nl,(nl+1),(nl+2));
 				tl+=3;
 				nl+=3;
 			}
+		}
+	}
+}
+
+void render_model_diffuse_color_vertexes(model_type *mdl,int mesh_mask,model_draw *draw)
+{
+	int					n,k,nvertex;
+	float				diffuse,min_diffuse,boost;
+	float				*na,*cp;
+	d3col				ambient_col;
+	d3vct				diffuse_vct;
+	model_mesh_type		*mesh;
+	
+		// setup diffuse
+		
+	if (!draw->ui_lighting) {
+		gl_lights_calc_diffuse_vector(&draw->pnt,draw->light_cache.count,draw->light_cache.indexes,&diffuse_vct);
+
+		gl_lights_calc_ambient_color(&ambient_col);
+		min_diffuse=(ambient_col.r+ambient_col.g+ambient_col.b)*(0.33f*gl_diffuse_ambient_factor);
+	}
+	else {
+		diffuse_vct.x=mdl->ui.diffuse_vct.x;
+		diffuse_vct.y=mdl->ui.diffuse_vct.y;
+		diffuse_vct.z=mdl->ui.diffuse_vct.z;
+		min_diffuse=mdl->ui.min_diffuse;
+	}
+	
+	boost=mdl->diffuse_boost;
+
+		// run the colors
+		
+	for (n=0;n!=mdl->nmesh;n++) {
+		if ((mesh_mask&(0x1<<n))==0) continue;
+		
+		mesh=&mdl->meshes[n];
+		
+			// is this a diffuse mesh?
+			
+		if ((!mesh->diffuse) || (mesh->no_lighting)) continue;
+		
+			// get colors and normals
+		
+		na=draw->setup.mesh_arrays[n].gl_normal_array;
+		cp=draw->setup.mesh_arrays[n].gl_color_array;
+		
+			// run through the vertexes
+			
+		nvertex=mesh->nvertex;
+		
+		for (k=0;k!=nvertex;k++) {
+
+				// get the diffuse from
+				// the dot product and clamp it
+				
+			diffuse=(diffuse_vct.x*(*na++));
+			diffuse+=(diffuse_vct.y*(*na++));
+			diffuse+=(diffuse_vct.z*(*na++));
+
+			diffuse=((diffuse+1.0f)*0.5f)+boost;
+
+			if (diffuse<min_diffuse) diffuse=min_diffuse;
+			if (diffuse>=1.0f) diffuse=1.0f;
+		
+				// apply diffuse
+			
+			*cp++=(*cp)*diffuse;
+			*cp++=(*cp)*diffuse;
+			*cp++=(*cp)*diffuse;
 		}
 	}
 }
@@ -261,112 +330,11 @@ void render_model_vertex_object_no_shader(model_type *mdl,int mesh_idx,model_dra
 	}
 }
 
-void render_model_vertex_object_no_shader_diffuse(model_type *mdl,int mesh_idx,model_draw *draw,unsigned char *vertex_ptr)
-{
-	int					n,k,offset,stride;
-	float				diffuse,min_diffuse,boost,
-						*gx,*gy,*pf,
-						*va,*va_start,*ca,*ca_start,*na;
-	unsigned char		*vp,*pc;
-	d3vct				diffuse_vct;
-	d3col				ambient_col;
-	model_trig_type		*trig;
-	model_mesh_type		*mesh;
-	
-	mesh=&mdl->meshes[mesh_idx];
-	
-		// setup diffuse
-		
-	if (!draw->ui_lighting) {
-		gl_lights_calc_diffuse_vector(&draw->pnt,draw->light_cache.count,draw->light_cache.indexes,&diffuse_vct);
-
-		gl_lights_calc_ambient_color(&ambient_col);
-		min_diffuse=(ambient_col.r+ambient_col.g+ambient_col.b)*(0.33f*gl_diffuse_ambient_factor);
-	}
-	else {
-		diffuse_vct.x=mdl->ui.diffuse_vct.x;
-		diffuse_vct.y=mdl->ui.diffuse_vct.y;
-		diffuse_vct.z=mdl->ui.diffuse_vct.z;
-		min_diffuse=mdl->ui.min_diffuse;
-	}
-	
-	boost=mdl->diffuse_boost;
-
-		// create the vertex object
-	
-	vp=vertex_ptr;
-
-	va_start=draw->setup.mesh_arrays[mesh_idx].gl_vertex_array;
-	ca_start=draw->setup.mesh_arrays[mesh_idx].gl_color_array;
-	na=draw->setup.mesh_arrays[mesh_idx].gl_normal_array;
-	
-	stride=draw->vbo[mesh_idx].vertex_stride;
-
-	trig=mesh->trigs;
-	
-	for (n=0;n!=mesh->ntrig;n++) {
-	/* supergumba -- redo this
-		if ((((*na)*(float)(draw->pnt.x-view.render->camera.pnt.x))+((*(na+1))*(float)(draw->pnt.y-view.render->camera.pnt.y))+((*(na+2))*(float)(draw->pnt.z-view.render->camera.pnt.x)))<0.0f) {
-			trig++;
-			na+=3;
-			continue;
-		}
-	*/	
-		gx=trig->gx;
-		gy=trig->gy;
-
-		for (k=0;k!=3;k++) {
-			offset=trig->v[k]*3;
-			
-			va=va_start+offset;
-			ca=ca_start+offset;
-
-			pf=(float*)vp;
-
-			*pf++=*va++;
-			*pf++=*va++;
-			*pf++=*va;
-
-			*pf++=*gx++;
-			*pf++=*gy++;
-			
-				// get the diffuse from
-				// the dot product and clamp it
-				
-			diffuse=(diffuse_vct.x*(*na++));
-			diffuse+=(diffuse_vct.y*(*na++));
-			diffuse+=(diffuse_vct.z*(*na++));
-
-			diffuse=((diffuse+1.0f)*0.5f)+boost;
-
-			if (diffuse<min_diffuse) diffuse=min_diffuse;
-			if (diffuse>=1.0f) diffuse=1.0f;
-		
-				// apply diffuse
-				// multiply in 255 to convert float to ub
-				
-			diffuse*=255.0f;
-
-			pc=(unsigned char*)pf;
-
-			*pc++=(unsigned char)((*ca++)*diffuse);
-			*pc++=(unsigned char)((*ca++)*diffuse);
-			*pc++=(unsigned char)((*ca++)*diffuse);
-			
-			*pc=0xFF;
-
-			vp+=stride;
-		}
-
-		trig++;
-	}
-}
-
 void render_model_vertex_object_shader(model_type *mdl,int mesh_idx,model_draw *draw,unsigned char *vertex_ptr)
 {
 	int					n,k,offset,stride;
 	float				*gx,*gy,*pf,
-						*va,*va_start,*ta,*na;
+						*va,*va_start,*ta,*ta_start,*na,*na_start;
 	unsigned char		*vp;
 	model_trig_type		*trig;
 	model_mesh_type		*mesh;
@@ -376,9 +344,8 @@ void render_model_vertex_object_shader(model_type *mdl,int mesh_idx,model_draw *
 	vp=vertex_ptr;
 
 	va_start=draw->setup.mesh_arrays[mesh_idx].gl_vertex_array;
-
-	ta=draw->setup.mesh_arrays[mesh_idx].gl_tangent_array;		// tangents and normals are already in trig*3 setup
-	na=draw->setup.mesh_arrays[mesh_idx].gl_normal_array;
+	ta_start=draw->setup.mesh_arrays[mesh_idx].gl_tangent_array;
+	na_start=draw->setup.mesh_arrays[mesh_idx].gl_normal_array;
 
 	stride=draw->vbo[mesh_idx].vertex_stride;
 
@@ -393,6 +360,8 @@ void render_model_vertex_object_shader(model_type *mdl,int mesh_idx,model_draw *
 			offset=trig->v[k]*3;
 			
 			va=va_start+offset;
+			ta=ta_start+offset;
+			na=na_start+offset;
 
 			pf=(float*)vp;
 
@@ -405,11 +374,11 @@ void render_model_vertex_object_shader(model_type *mdl,int mesh_idx,model_draw *
 
 			*pf++=*ta++;
 			*pf++=*ta++;
-			*pf++=*ta++;
+			*pf++=*ta;
 
 			*pf++=*na++;
 			*pf++=*na++;
-			*pf++=*na++;
+			*pf++=*na;
 
 			vp+=stride;
 		}
@@ -450,16 +419,9 @@ bool render_model_initialize_vertex_objects(model_type *mdl,int mesh_idx,model_d
 	
 		// non-shader drawing requires
 		// vertexes, UVs, and colors
-		// and dim3 generates the diffuse
 
 	if (!shader_on) {
-		if ((mesh->diffuse) && (!mesh->no_lighting)) {
-			render_model_vertex_object_no_shader_diffuse(mdl,mesh_idx,draw,vertex_ptr);
-		
-		}
-		else {
-			render_model_vertex_object_no_shader(mdl,mesh_idx,draw,vertex_ptr);
-		}
+		render_model_vertex_object_no_shader(mdl,mesh_idx,draw,vertex_ptr);
 	}
 
 		// shader drawing requires
@@ -1019,8 +981,13 @@ void render_model_build_vertex_lists(model_draw *draw)
 		// shaders don't need color list
 
 	shader_off=((!view_shader_on()) || (draw->no_shader));
+	
 	render_model_create_normal_vertexes(mdl,draw->render_mesh_mask,draw,shader_off);
-	if (shader_off) render_model_create_color_vertexes(mdl,draw->render_mesh_mask,draw);
+	
+	if (shader_off) {
+		render_model_create_color_vertexes(mdl,draw->render_mesh_mask,draw);
+		render_model_diffuse_color_vertexes(mdl,draw->render_mesh_mask,draw);
+	}
 }
 
 /* =======================================================

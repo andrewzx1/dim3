@@ -142,7 +142,8 @@ bool import_obj(char *path,bool replace,bool *found_normals,char *err_str)
 	int						n,k,i,idx,nvertex,ntrig,nuv,nnormal,nline,nmaterial,
 							texture_idx,high,npt,old_nvertex,sz,
 							pvtx[obj_max_face_vertex];
-	float					fy,f_ty,f_by;
+	int						*trig_normal_count;
+	float					f_count,fy,f_ty,f_by;
 	char					txt[256],*c,vstr[256],vtstr[256],vnstr[256],
 							material_name[256],
 							material_list[max_model_texture][name_str_len];
@@ -338,7 +339,10 @@ bool import_obj(char *path,bool replace,bool *found_normals,char *err_str)
             
             vertex->major_bone_idx=vertex->minor_bone_idx=-1;
             vertex->bone_factor=1;
-       
+			
+			vertex->tangent_space.normal.x=vertex->tangent_space.normal.y=vertex->tangent_space.normal.z=0.0f;
+ 			vertex->tangent_space.tangent.x=vertex->tangent_space.tangent.y=vertex->tangent_space.tangent.z=0.0f;
+      
             vertex++;
         }
         else {
@@ -372,6 +376,13 @@ bool import_obj(char *path,bool replace,bool *found_normals,char *err_str)
     }
 
 	*found_normals=(nnormal!=0);
+	
+		// a count for averaging the
+		// normals from the trigs into
+		// the vertexes
+		
+	trig_normal_count=(int*)malloc(sizeof(int)*nvertex);
+	bzero(trig_normal_count,(sizeof(int)*nvertex));
 
 		// get the triangles
 
@@ -477,6 +488,8 @@ bool import_obj(char *path,bool replace,bool *found_normals,char *err_str)
 				npt++;
 			}
 			
+				// create the trigs
+			
 			for (k=0;k!=(npt-2);k++) {
 				trig->txt_idx=i;
 
@@ -491,18 +504,60 @@ bool import_obj(char *path,bool replace,bool *found_normals,char *err_str)
 				trig->gy[0]=pt_uv[0].y;
 				trig->gy[1]=pt_uv[k+1].y;
 				trig->gy[2]=pt_uv[k+2].y;
-				
-				memmove(&trig->tangent_space[0].normal,&pnormal[0],sizeof(d3vct));
-				memmove(&trig->tangent_space[1].normal,&pnormal[k+1],sizeof(d3vct));
-				memmove(&trig->tangent_space[2].normal,&pnormal[k+2],sizeof(d3vct));
 	            
 				trig++;
 				ntrig++;
 			}
+			
+				// add up the normals
+				// supergumba -- we can combine these when we move away from trigs
+				
+			if (nnormal!=0) {
+				for (k=0;k!=npt;k++) {
+					idx=pvtx[k];
+					vertex=&mesh->vertexes[idx];
+					
+					vertex->tangent_space.normal.x+=pnormal[k].x;
+					vertex->tangent_space.normal.y+=pnormal[k].y;
+					vertex->tangent_space.normal.z+=pnormal[k].z;
+					
+					trig_normal_count[idx]++;
+				}
+			}
+				
 		}
 	}
 	
 	mesh->ntrig=ntrig;
+		
+		// average the vertex normals
+		
+	if (nnormal!=0) {
+	
+		vertex=mesh->vertexes;
+		
+		for (i=0;i!=mesh->nvertex;i++) {
+
+			if (trig_normal_count[i]!=0) {
+				f_count=(float)trig_normal_count[i];
+				
+				vertex->tangent_space.normal.x/=f_count;
+				vertex->tangent_space.normal.y/=f_count;
+				vertex->tangent_space.normal.z/=f_count;
+				vector_normalize(&vertex->tangent_space.normal);
+				
+				vertex->tangent_space.tangent.x/=f_count;
+				vertex->tangent_space.tangent.y/=f_count;
+				vertex->tangent_space.tangent.z/=f_count;
+				vector_normalize(&vertex->tangent_space.tangent);
+			}
+
+			vertex++;
+		}
+		
+	}
+
+	free(trig_normal_count);
 	
 	free(uv_ptr);
 	free(normal_ptr);
