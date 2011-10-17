@@ -74,14 +74,14 @@ bool model_new(model_type *model,char *name)
 	model->import.factor=1.0f;
 	
 	for (n=0;n!=max_model_light;n++) {
-		model->tags.light_bone_idx[n]=-1;
+		model->bone_connect.light_bone_idx[n]=-1;
 	}
 
 	for (n=0;n!=max_model_halo;n++) {
-		model->tags.halo_bone_idx[n]=-1;
+		model->bone_connect.halo_bone_idx[n]=-1;
 	}
 
-	model->tags.name_bone_idx=-1;
+	model->bone_connect.name_bone_idx=-1;
 
 	model->rigid_body.on=FALSE;
 

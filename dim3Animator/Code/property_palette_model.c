@@ -93,14 +93,14 @@ void property_palette_fill_model(void)
 
 	list_palette_add_header(&property_palette,0,"Model Name Bone");
 	str[0]=0x0;
-	if (model.tags.name_bone_idx!=-1) strcpy(str,model.bones[model.tags.name_bone_idx].name);
+	if (model.bone_connect.name_bone_idx!=-1) strcpy(str,model.bones[model.bone_connect.name_bone_idx].name);
 	list_palette_add_string(&property_palette,kModelPropertyNameBone,"Bone",str,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Model Light Bones");
 	for (n=0;n!=max_model_light;n++) {
 		sprintf(name,"Bone %d",n);
 		str[0]=0x0;
-		if (model.tags.light_bone_idx[n]!=-1) strcpy(str,model.bones[model.tags.light_bone_idx[n]].name);
+		if (model.bone_connect.light_bone_idx[n]!=-1) strcpy(str,model.bones[model.bone_connect.light_bone_idx[n]].name);
 		list_palette_add_string(&property_palette,(kModelPropertyLightBoneStart+n),name,str,FALSE);
 	}
 
@@ -108,7 +108,7 @@ void property_palette_fill_model(void)
 	for (n=0;n!=max_model_halo;n++) {
 		sprintf(name,"Bone %d",n);
 		str[0]=0x0;
-		if (model.tags.halo_bone_idx[n]!=-1) strcpy(str,model.bones[model.tags.halo_bone_idx[n]].name);
+		if (model.bone_connect.halo_bone_idx[n]!=-1) strcpy(str,model.bones[model.bone_connect.halo_bone_idx[n]].name);
 		list_palette_add_string(&property_palette,(kModelPropertyHaloBoneStart+n),name,str,FALSE);
 	}
 
@@ -147,14 +147,14 @@ void property_palette_click_model(int id,bool double_click)
 
 	if ((id>=kModelPropertyLightBoneStart) && (id<=kModelPropertyLightBoneEnd)) {
 		idx=id-kModelPropertyLightBoneStart;
-		property_palette_pick_bone(&model.tags.light_bone_idx[idx],-1);
+		property_palette_pick_bone(&model.bone_connect.light_bone_idx[idx],-1);
 		main_wind_draw();
 		return;
 	}
 
 	if ((id>=kModelPropertyHaloBoneStart) && (id<=kModelPropertyHaloBoneEnd)) {
 		idx=id-kModelPropertyHaloBoneStart;
-		property_palette_pick_bone(&model.tags.halo_bone_idx[idx],-1);
+		property_palette_pick_bone(&model.bone_connect.halo_bone_idx[idx],-1);
 		main_wind_draw();
 		return;
 	}
@@ -190,7 +190,7 @@ void property_palette_click_model(int id,bool double_click)
 			break;
 
 		case kModelPropertyNameBone:
-			property_palette_pick_bone(&model.tags.name_bone_idx,-1);
+			property_palette_pick_bone(&model.bone_connect.name_bone_idx,-1);
 			break;
 
 		case kModelPropertyRigidBodyOn:

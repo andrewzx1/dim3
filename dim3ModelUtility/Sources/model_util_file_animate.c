@@ -31,12 +31,16 @@ and can be sold or given away.
 
 extern modelutility_settings_type		modelutility_settings;
 
+extern int model_xml_get_attribute_bone(model_type *model,int tag,char *tag_name);
+extern void model_write_bone_or_blank_attribute(model_type *model,char *attrib_name,int bone_idx);
+
 /* =======================================================
 
       Read Animate XML
       
 ======================================================= */
 
+// supergumba -- v2 of animate
 bool read_animate_xml(model_type *model)
 {
 	int						n,k,t,nanimate,animate_idx,
@@ -109,7 +113,7 @@ bool read_animate_xml(model_type *model)
             pose_move->acceleration=xml_get_attribute_float_default(tag,"acceleration",0.0f);
 
 			xml_get_attribute_text(tag,"sound",pose_move->sound.name,name_str_len);
-			pose_move->sound.bone_idx=model_find_bone(model,xml_get_attribute_model_tag(tag,"sound_bone"));
+			pose_move->sound.bone_idx=model_xml_get_attribute_bone(model,tag,"sound_bone");
 			pose_move->sound.pitch=xml_get_attribute_float_default(tag,"sound_pitch",1.0f);
 			pose_move->sound.no_position=xml_get_attribute_boolean(tag,"sound_global");
          
@@ -119,7 +123,7 @@ bool read_animate_xml(model_type *model)
 			pose_move->mesh_fade.fade_out_msec=xml_get_attribute_int(tag,"mesh_fade_out_time");
 			pose_move->mesh_fade.mesh_idx=model_find_mesh(model,mesh_name);
 
-			pose_move->flash.bone_idx=model_find_bone(model,xml_get_attribute_model_tag(tag,"flash_bone"));
+			pose_move->flash.bone_idx=model_xml_get_attribute_bone(model,tag,"flash_bone");
 			pose_move->flash.intensity=xml_get_attribute_int(tag,"flash_intensity");
 			pose_move->flash.flash_msec=xml_get_attribute_int(tag,"flash_time");
 			pose_move->flash.fade_msec=xml_get_attribute_int(tag,"flash_fade_time");
@@ -142,8 +146,8 @@ bool read_animate_xml(model_type *model)
 				particle_tag=xml_findfirstchild("Particle",particles_head);
     
 				for (t=0;t!=pose_move->particle.count;t++) {
-					pose_move->particle.particles[t].bone_idx=model_find_bone(model,xml_get_attribute_model_tag(particle_tag,"bone"));
 					xml_get_attribute_text(particle_tag,"particle",pose_move->particle.particles[t].name,name_str_len);
+					pose_move->particle.particles[t].bone_idx=model_xml_get_attribute_bone(model,particle_tag,"bone");
 					pose_move->particle.particles[t].rotate=xml_get_attribute_boolean(particle_tag,"particle_rotate");
 					pose_move->particle.particles[t].motion=xml_get_attribute_boolean(particle_tag,"particle_motion");
 					pose_move->particle.particles[t].motion_factor=xml_get_attribute_float_default(particle_tag,"particle_motion_factor",1.0f);
@@ -155,7 +159,6 @@ bool read_animate_xml(model_type *model)
 			}
 
 				// rings
-				// supergumba -- delete later
 
 			pose_move->ring.count=0;
 
@@ -166,8 +169,8 @@ bool read_animate_xml(model_type *model)
 				ring_tag=xml_findfirstchild("Ring",rings_head);
     
 				for (t=0;t!=pose_move->ring.count;t++) {
-					pose_move->ring.rings[t].bone_idx=model_find_bone(model,xml_get_attribute_model_tag(ring_tag,"bone"));
 					xml_get_attribute_text(ring_tag,"ring",pose_move->ring.rings[t].name,name_str_len);
+					pose_move->ring.rings[t].bone_idx=model_xml_get_attribute_bone(model,ring_tag,"bone");
 					pose_move->ring.rings[t].angle=xml_get_attribute_boolean(ring_tag,"ring_angle");
 					xml_get_attribute_3_coord_int(ring_tag,"ring_slop",&pose_move->ring.rings[t].slop.x,&pose_move->ring.rings[t].slop.y,&pose_move->ring.rings[t].slop.z);
 
@@ -204,6 +207,8 @@ bool write_animate_xml(model_type *model)
 	bool					ok;
     model_pose_move_type	*pose_move;
 	model_animate_type		*animate;
+
+	return(TRUE);		// supergumba -- testing
     
     xml_new_file();
     
@@ -257,7 +262,7 @@ bool write_animate_xml(model_type *model)
 			xml_add_attribute_float("acceleration",pose_move->acceleration);
 			
             xml_add_attribute_text("sound",pose_move->sound.name);
- 			xml_add_attribute_model_tag("sound_bone",model->bones[pose_move->sound.bone_idx].tag);
+ 			model_write_bone_or_blank_attribute(model,"sound_bone",pose_move->sound.bone_idx);
 			xml_add_attribute_float("sound_pitch",pose_move->sound.pitch);
 			xml_add_attribute_boolean("sound_global",pose_move->sound.no_position);
 			
@@ -271,7 +276,7 @@ bool write_animate_xml(model_type *model)
 			xml_add_attribute_int("mesh_fade_life_time",pose_move->mesh_fade.fade_life_msec);
 			xml_add_attribute_int("mesh_fade_out_time",pose_move->mesh_fade.fade_out_msec);
 
- 			xml_add_attribute_model_tag("flash_bone",model->bones[pose_move->flash.bone_idx].tag);
+ 			model_write_bone_or_blank_attribute(model,"flash_bone",pose_move->flash.bone_idx);
 			xml_add_attribute_int("flash_intensity",pose_move->flash.intensity);
 			xml_add_attribute_int("flash_time",pose_move->flash.flash_msec);
 			xml_add_attribute_int("flash_fade_time",pose_move->flash.fade_msec);
@@ -292,14 +297,8 @@ bool write_animate_xml(model_type *model)
 			for (t=0;t!=pose_move->particle.count;t++) {
 			
 				xml_add_tagstart("Particle");
-				
-				if (pose_move->particle.particles[t].bone_idx==-1) {
-					xml_add_attribute_model_tag("bone",model_null_tag);
-				}
-				else {
-					xml_add_attribute_model_tag("bone",model->bones[pose_move->particle.particles[t].bone_idx].tag);
-				}
 				xml_add_attribute_text("particle",pose_move->particle.particles[t].name);
+				model_write_bone_or_blank_attribute(model,"bone",pose_move->particle.particles[t].bone_idx);
 				xml_add_attribute_boolean("particle_rotate",pose_move->particle.particles[t].rotate);
 				xml_add_attribute_boolean("particle_motion",pose_move->particle.particles[t].motion);
 				xml_add_attribute_float("particle_motion_factor",pose_move->particle.particles[t].motion_factor);
@@ -319,14 +318,8 @@ bool write_animate_xml(model_type *model)
 			for (t=0;t!=pose_move->ring.count;t++) {
 			
 				xml_add_tagstart("Ring");
-				
-				if (pose_move->ring.rings[t].bone_idx==-1) {
-					xml_add_attribute_model_tag("bone",model_null_tag);
-				}
-				else {
-					xml_add_attribute_model_tag("bone",model->bones[pose_move->ring.rings[t].bone_idx].tag);
-				}
 				xml_add_attribute_text("ring",pose_move->ring.rings[t].name);
+				model_write_bone_or_blank_attribute(model,"bone",pose_move->ring.rings[t].bone_idx);
 				xml_add_attribute_boolean("ring_angle",pose_move->ring.rings[t].angle);
 				xml_add_attribute_3_coord_int("ring_slop",pose_move->ring.rings[t].slop.x,pose_move->ring.rings[t].slop.y,pose_move->ring.rings[t].slop.z);
 				

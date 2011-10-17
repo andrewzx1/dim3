@@ -32,6 +32,7 @@ and can be sold or given away.
 extern modelutility_settings_type		modelutility_settings;
 
 char									deform_mode_str[][32]=deform_mode_xml_list_str;
+char									bone_v2_tags[max_model_bone][8];
 
 /* =======================================================
 
@@ -40,6 +41,29 @@ char									deform_mode_str[][32]=deform_mode_xml_list_str;
 ======================================================= */
 
 // supergumba -- this is version 2 decode
+int model_find_v2_bone_tag(model_type *model,char *tag_name)
+{
+	int				n;
+	char			*c;
+
+	c=(char*)bone_v2_tags;
+
+	for (n=0;n!=model->nbone;n++) {
+		if (strcasecmp(c,tag_name)) return(n);
+		c+=8;
+	}
+
+	return(-1);
+}
+
+int model_xml_get_attribute_bone(model_type *model,int tag,char *tag_name)
+{
+	char			bone_name[name_str_len];
+
+	xml_get_attribute_text(tag,tag_name,bone_name,name_str_len);
+	return(model_find_v2_bone_tag(model,bone_name));
+}
+
 void decode_mesh_xml(model_type *model,int model_head)
 {
 	int						i,n,k,j,bone_idx,nbone,hit_box_idx,nhit_box,trig_count,
@@ -48,11 +72,8 @@ void decode_mesh_xml(model_type *model,int model_head)
 							vertex_tag,bone_tag,vtag,trig_tag,
 							materials_tag,material_tag,fills_tag,fill_tag;
 	bool					had_tangent;
-	char					tag_name[32];
-	model_tag				name_bone_tag,hit_box_tags[max_model_hit_box],
-							light_bone_tags[max_model_light],
-							halo_bone_tags[max_model_halo],
-							*major_bone_tags,*minor_bone_tags,*bone_parent_tags;
+	char					tag_name[32],
+							bone_parent_tags[max_model_bone][8];
 	model_hit_box_type		*hit_box;
 	model_mesh_type			*mesh;
     model_vertex_type		*vertex;
@@ -83,33 +104,74 @@ void decode_mesh_xml(model_type *model,int model_head)
         xml_get_attribute_3_coord_int(tag,"size",&model->view_box.size.x,&model->view_box.size.y,&model->view_box.size.z);
         xml_get_attribute_3_coord_int(tag,"offset",&model->view_box.offset.x,&model->view_box.offset.y,&model->view_box.offset.z);
     }
+ 
+        // bones
+ 
+    bone_tag=xml_findfirstchild("Bones",model_head);
+
+    nbone=xml_countchildren(bone_tag);
+	tag=xml_findfirstchild("Bone",bone_tag);
+    
+    for (n=0;n!=nbone;n++) {
+
+ 			// add new bone
+
+		bone_idx=model_bone_add(model,0,0,0);
+		if (bone_idx==-1) break;
+
+			// fill in bone
+
+		bone=&model->bones[bone_idx];
+		
+		xml_get_attribute_text(tag,"name",bone->name,name_str_len);
+ 		xml_get_attribute_text(tag,"tag",bone_v2_tags[bone_idx],8);
+       
+        xml_get_attribute_3_coord_int(tag,"c3",&bone->pnt.x,&bone->pnt.y,&bone->pnt.z);
+        xml_get_attribute_3_coord_int(tag,"o3",&bone->natural_offset.x,&bone->natural_offset.y,&bone->natural_offset.z);
+		xml_get_attribute_3_coord_float(tag,"r3",&bone->natural_rot.x,&bone->natural_rot.y,&bone->natural_rot.z);
+
+  		xml_get_attribute_text(tag,"parent",bone_parent_tags[bone_idx],8);
+   
+		tag=xml_findnextchild(tag);
+    }
+		
+		// reset the bones from tags to indexes
+		
+	bone=model->bones;
+	
+	for (n=0;n!=model->nbone;n++) {
+		bone->parent_idx=model_find_v2_bone_tag(model,bone_parent_tags[n]);
+		bone++;
+	}
 	
         // light
         
     tag=xml_findfirstchild("Light",model_head);
     if (tag!=-1) {
 
-		for (k=0;k!=max_model_light;k++) {
-			if (k==0) {
+		for (n=0;n!=max_model_light;n++) {
+			if (n==0) {
 				strcpy(tag_name,"light_bone");
 			}
 			else {
-				sprintf(tag_name,"light_bone_%d",k);
+				sprintf(tag_name,"light_bone_%d",n);
 			}
-			light_bone_tags[k]=xml_get_attribute_model_tag(tag,tag_name);
+
+			model->bone_connect.light_bone_idx[n]=model_xml_get_attribute_bone(model,tag,tag_name);
 		}
 
-		for (k=0;k!=max_model_halo;k++) {
-			if (k==0) {
+		for (n=0;n!=max_model_halo;n++) {
+			if (n==0) {
 				strcpy(tag_name,"halo_bone");
 			}
 			else {
-				sprintf(tag_name,"halo_bone_%d",k);
+				sprintf(tag_name,"halo_bone_%d",n);
 			}
-			halo_bone_tags[k]=xml_get_attribute_model_tag(tag,tag_name);
+			
+			model->bone_connect.halo_bone_idx[n]=model_xml_get_attribute_bone(model,tag,tag_name);
 		}
 
-        name_bone_tag=xml_get_attribute_model_tag(tag,"name_bone");
+		model->bone_connect.name_bone_idx=model_xml_get_attribute_bone(model,tag,"name_bone");
     }
 	
         // hit boxes
@@ -120,7 +182,7 @@ void decode_mesh_xml(model_type *model,int model_head)
 		nhit_box=xml_countchildren(hit_box_tag);
 		tag=xml_findfirstchild("Hit_Box",hit_box_tag);
 		
-		for (i=0;i!=nhit_box;i++) {
+		for (n=0;n!=nhit_box;n++) {
  				
 				// add new hit box
 
@@ -132,7 +194,7 @@ void decode_mesh_xml(model_type *model,int model_head)
 			hit_box=&model->hit_boxes[hit_box_idx];
 
 			xml_get_attribute_text(tag,"name",hit_box->name,64);
-			hit_box_tags[i]=xml_get_attribute_model_tag(tag,"bone");
+			hit_box->bone_idx=model_xml_get_attribute_bone(model,tag,"bone");
 			xml_get_attribute_3_coord_int(tag,"size",&hit_box->box.size.x,&hit_box->box.size.y,&hit_box->box.size.z);
 			xml_get_attribute_3_coord_int(tag,"offset",&hit_box->box.offset.x,&hit_box->box.offset.y,&hit_box->box.offset.z);
 			
@@ -199,65 +261,6 @@ void decode_mesh_xml(model_type *model,int model_head)
 		model->ui.diffuse_vct.y=-1.0f;
 		model->ui.diffuse_vct.z=0.0f;
 	}
- 
-        // bones
- 
-    bone_tag=xml_findfirstchild("Bones",model_head);
-
-    nbone=xml_countchildren(bone_tag);
-	tag=xml_findfirstchild("Bone",bone_tag);
-	
-	bone_parent_tags=(model_tag*)malloc(max_model_bone*sizeof(model_tag));
-    
-    for (i=0;i!=nbone;i++) {
-
- 			// add new bone
-
-		bone_idx=model_bone_add(model,0,0,0);
-		if (bone_idx==-1) break;
-
-			// fill in bone
-
-		bone=&model->bones[bone_idx];
-		
-		bone->tag=xml_get_attribute_model_tag(tag,"tag");
-		xml_get_attribute_text(tag,"name",bone->name,name_str_len);
-        
-        xml_get_attribute_3_coord_int(tag,"c3",&bone->pnt.x,&bone->pnt.y,&bone->pnt.z);
-        xml_get_attribute_3_coord_int(tag,"o3",&bone->natural_offset.x,&bone->natural_offset.y,&bone->natural_offset.z);
-		xml_get_attribute_3_coord_float(tag,"r3",&bone->natural_rot.x,&bone->natural_rot.y,&bone->natural_rot.z);
-
-        bone_parent_tags[i]=xml_get_attribute_model_tag(tag,"parent");
-    
-		tag=xml_findnextchild(tag);
-    }
-	
-		// fix some bone indexes
-		
-	for (k=0;k!=max_model_light;k++) {
-		model->tags.light_bone_idx[k]=model_find_bone(model,light_bone_tags[k]);
-	}
-
-	for (k=0;k!=max_model_halo;k++) {
-		model->tags.halo_bone_idx[k]=model_find_bone(model,halo_bone_tags[k]);
-	}
-
-	model->tags.name_bone_idx=model_find_bone(model,name_bone_tag);
-
-	for (k=0;k!=model->nhit_box;k++) {
-		model->hit_boxes[k].bone_idx=model_find_bone(model,hit_box_tags[k]);
-	}
-		
-		// reset the bones from tags to indexes
-		
-	bone=model->bones;
-	
-	for (i=0;i!=model->nbone;i++) {
-		bone->parent_idx=model_find_bone(model,bone_parent_tags[i]);
-		bone++;
-	}
-	
-	free(bone_parent_tags);
 	
 		// meshes
 		
@@ -311,17 +314,14 @@ void decode_mesh_xml(model_type *model,int model_head)
 
 		model_mesh_set_vertex_count(model,mesh_idx,mesh->nvertex);
 		
-		major_bone_tags=(model_tag*)malloc(mesh->nvertex*sizeof(model_tag));
-		minor_bone_tags=(model_tag*)malloc(mesh->nvertex*sizeof(model_tag));
-		
 		vertex=mesh->vertexes;
 		
 		for (i=0;i!=mesh->nvertex;i++) {
 			xml_get_attribute_3_coord_int(tag,"c3",&vertex->pnt.x,&vertex->pnt.y,&vertex->pnt.z);
 			
-			major_bone_tags[i]=xml_get_attribute_model_tag(tag,"major");
-			minor_bone_tags[i]=xml_get_attribute_model_tag(tag,"minor");
-			vertex->bone_factor=xml_get_attribute_float_default(tag,"factor",1);
+			vertex->major_bone_idx=model_xml_get_attribute_bone(model,tag,"major");
+			vertex->minor_bone_idx=model_xml_get_attribute_bone(model,tag,"minor");
+			vertex->bone_factor=xml_get_attribute_float_default(tag,"factor",1.0f);
 		
 			vertex++;
 			tag=xml_findnextchild(tag);
@@ -388,19 +388,12 @@ void decode_mesh_xml(model_type *model,int model_head)
 			material_tag=xml_findnextchild(material_tag);
 		}
 		
-			// reset the vertexes from tags to indexes
-			// and create the vertex level tangent
+			// create the vertex level tangent
 			// space
 			
 		vertex=mesh->vertexes;
 		
 		for (i=0;i!=mesh->nvertex;i++) {
-
-				// fix bones
-
-			vertex->major_bone_idx=model_find_bone(model,major_bone_tags[i]);
-			vertex->minor_bone_idx=model_find_bone(model,minor_bone_tags[i]);
-			if ((vertex->major_bone_idx==-1) || (vertex->minor_bone_idx==-1)) vertex->bone_factor=1;
 
 				// run through the trigs
 				// to build the vertex tangent
@@ -445,9 +438,6 @@ void decode_mesh_xml(model_type *model,int model_head)
 			vertex++;
 		}
 		
-		free(major_bone_tags);
-		free(minor_bone_tags);
-		
 		mesh_tag=xml_findnextchild(mesh_tag);
 	}
 	
@@ -486,10 +476,20 @@ void decode_mesh_xml(model_type *model,int model_head)
       
 ======================================================= */
 
+void model_write_bone_or_blank_attribute(model_type *model,char *attrib_name,int bone_idx)
+{
+	if (bone_idx==-1) {
+		xml_add_attribute_text(attrib_name,"");
+		return;
+	}
+
+	xml_add_attribute_text(attrib_name,model->bones[bone_idx].name);
+}
+
 void encode_mesh_xml(model_type *model)
 {
 	int						i,n,k,j,frame_count;
-	char					tag_name[32];
+	char					attrib_name[name_str_len];
 	model_hit_box_type		*hit_box;
 	model_mesh_type			*mesh;
     model_vertex_type		*vertex;
@@ -531,41 +531,16 @@ void encode_mesh_xml(model_type *model)
     xml_add_tagstart("Light");
 
 	for (k=0;k!=max_model_light;k++) {
-		if (k==0) {
-			strcpy(tag_name,"light_bone");
-		}
-		else {
-			sprintf(tag_name,"light_bone_%d",k);
-		}
-		if (model->tags.light_bone_idx[k]==-1) {
-			xml_add_attribute_model_tag(tag_name,model_null_tag);
-		}
-		else {
-			xml_add_attribute_model_tag(tag_name,model->bones[model->tags.light_bone_idx[k]].tag);
-		}
+		sprintf(attrib_name,"light_bone_%d",k);
+		model_write_bone_or_blank_attribute(model,attrib_name,model->bone_connect.light_bone_idx[k]);
 	}
 
 	for (k=0;k!=max_model_halo;k++) {
-		if (k==0) {
-			strcpy(tag_name,"halo_bone");
-		}
-		else {
-			sprintf(tag_name,"halo_bone_%d",k);
-		}
- 		if (model->tags.halo_bone_idx[k]==-1) {
-			xml_add_attribute_model_tag(tag_name,model_null_tag);
-		}
-		else {
-			xml_add_attribute_model_tag(tag_name,model->bones[model->tags.halo_bone_idx[k]].tag);
-		}
+		sprintf(attrib_name,"halo_bone_%d",k);
+		model_write_bone_or_blank_attribute(model,attrib_name,model->bone_connect.halo_bone_idx[k]);
 	}
 
-	if (model->tags.name_bone_idx==-1) {
-		xml_add_attribute_model_tag("name_bone",model_null_tag);
-	}
-	else {
- 		xml_add_attribute_model_tag("name_bone",model->bones[model->tags.name_bone_idx].tag);
-	}
+	model_write_bone_or_blank_attribute(model,"name_bone",model->bone_connect.name_bone_idx);
 
 	xml_add_tagend(TRUE);
 	
@@ -579,7 +554,7 @@ void encode_mesh_xml(model_type *model)
     for (i=0;i!=model->nhit_box;i++) {
 		xml_add_tagstart("Hit_Box");
 		xml_add_attribute_text("name",hit_box->name);
-		if (hit_box->bone_idx!=-1) xml_add_attribute_model_tag("bone",model->bones[hit_box->bone_idx].tag);
+		model_write_bone_or_blank_attribute(model,"bone",hit_box->bone_idx);
 		xml_add_attribute_3_coord_int("size",hit_box->box.size.x,hit_box->box.size.y,hit_box->box.size.z);
 		xml_add_attribute_3_coord_int("offset",hit_box->box.offset.x,hit_box->box.offset.y,hit_box->box.offset.z);
 		xml_add_tagend(TRUE);
@@ -627,14 +602,13 @@ void encode_mesh_xml(model_type *model)
     
         xml_add_tagstart("Bone");
         
-        xml_add_attribute_model_tag("tag",bone->tag);
 		xml_add_attribute_text("name",bone->name);
 		
         xml_add_attribute_3_coord_int("c3",bone->pnt.x,bone->pnt.y,bone->pnt.z);
         xml_add_attribute_3_coord_int("o3",bone->natural_offset.x,bone->natural_offset.y,bone->natural_offset.z);
 		xml_add_attribute_3_coord_float("r3",bone->natural_rot.x,bone->natural_rot.y,bone->natural_rot.z);
 		
-        if (bone->parent_idx!=-1) xml_add_attribute_model_tag("parent",model->bones[bone->parent_idx].tag);
+		model_write_bone_or_blank_attribute(model,"parent",bone->parent_idx);
         
         xml_add_tagend(TRUE);
     
@@ -674,11 +648,9 @@ void encode_mesh_xml(model_type *model)
 			
 			xml_add_attribute_3_coord_int("c3",vertex->pnt.x,vertex->pnt.y,vertex->pnt.z);
 
-			if (vertex->major_bone_idx!=-1) xml_add_attribute_model_tag("major",model->bones[vertex->major_bone_idx].tag);
-			if (vertex->minor_bone_idx!=-1) {
-				xml_add_attribute_model_tag("minor",model->bones[vertex->minor_bone_idx].tag);
-				xml_add_attribute_float("factor",vertex->bone_factor);
-			}
+			model_write_bone_or_blank_attribute(model,"major",vertex->major_bone_idx);
+			model_write_bone_or_blank_attribute(model,"minor",vertex->minor_bone_idx);
+			xml_add_attribute_float("factor",vertex->bone_factor);
 			
 			xml_add_tagend(TRUE);
 		

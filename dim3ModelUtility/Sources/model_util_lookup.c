@@ -31,56 +31,6 @@ and can be sold or given away.
 
 /* =======================================================
 
-      Model Tag Routines
-      
-======================================================= */
-
-model_tag text_to_model_tag(char *str)
-{
-	model_tag			tag;
-	
-	while (strlen(str)<4) {
-		strcat(str," ");
-	}
-	
-	str[4]=0x0;
-	
-	memmove(&tag,str,4);
-	return(tag);
-}
-
-void model_tag_to_text(model_tag tag,char *str)
-{
-	memmove(str,&tag,4);
-	str[4]=0x0;
-}
-
-/* =======================================================
-
-      Model XML-Tag Routines
-      
-======================================================= */
-
-model_tag xml_get_attribute_model_tag(int xml_tag,char *name)
-{
-	char			str[16];
-    
-	if (!xml_get_attribute_raw(xml_tag,name,str,16)) return(model_null_tag);
-	return(text_to_model_tag(str));
-}
-
-void xml_add_attribute_model_tag(char *name,model_tag tag)
-{
-	char		str[16];
-    
-    if (tag==model_null_tag) return;
-    
-	model_tag_to_text(tag,str);
-	xml_add_attribute_text(name,str);
-}
-
-/* =======================================================
-
       Model Lookup Routines
       
 ======================================================= */
@@ -101,25 +51,7 @@ int model_find_mesh(model_type *model,char *mesh_name)
 	return(-1);
 }
 
-int model_find_bone(model_type *model,model_tag tag)
-{
-	int					n,nbone;
-	model_bone_type		*bone;
-	
-	if (tag==model_null_tag) return(-1);
-	
-	nbone=model->nbone;
-	bone=model->bones;
-	
-	for (n=0;n!=nbone;n++) {
-		if (bone->tag==tag) return(n);
-		bone++;
-	}
-	
-	return(-1);
-}
-
-int model_find_bone2(model_type *model,char *bone_name)
+int model_find_bone(model_type *model,char *bone_name)
 {
 	int					n,nbone;
 	model_bone_type		*bone;

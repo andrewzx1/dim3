@@ -36,8 +36,6 @@ extern server_type				server;
 extern view_type				view;
 extern map_type					map;
 
-extern int engine_model_find_bone(model_type *mdl,char *bone_name);	// supergumba -- temporary
-
 /* =======================================================
 
       Model Fills
@@ -631,7 +629,7 @@ bool model_find_bone_offset(model_draw *draw,char *pose_name,char *bone_name,int
 	
 		// get bone index
 		
-	bone_idx=engine_model_find_bone(mdl,bone_name);
+	bone_idx=model_find_bone(mdl,bone_name);
 	if (bone_idx==-1) return(FALSE);
 	
 		// get bone
@@ -730,7 +728,7 @@ int model_dynamic_bone_get_bone_idx(model_type *mdl,char *bone_name,char *err_st
 {
 	int					bone_idx;
 
-	bone_idx=engine_model_find_bone(mdl,bone_name);
+	bone_idx=model_find_bone(mdl,bone_name);
 	if (bone_idx!=-1) return(bone_idx);
 
 	sprintf(err_str,"Bone name '%s' does not exist in model '%s'",bone_name,mdl->name);

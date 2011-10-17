@@ -41,8 +41,6 @@ extern view_type			view;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
 
-extern int engine_model_find_bone(model_type *mdl,char *bone_name);	// supergumba -- temporary
-
 /* =======================================================
 
       Setup Weapon Fire Script Objects
@@ -177,7 +175,7 @@ bool weapon_get_projectile_position_angle_weapon_model(obj_type *obj,weapon_type
 	
 		// get 'fire' bone offset and calc
 
-	bone_idx=engine_model_find_bone(mdl,weap->proj.fire_bone_name);
+	bone_idx=model_find_bone(mdl,weap->proj.fire_bone_name);
 	if (bone_idx==-1) {
 		if (err_str!=NULL) strcpy(err_str,"Weapon has missing or no fire bone");
 		return(FALSE);
@@ -245,7 +243,7 @@ bool weapon_get_projectile_position_angle_weapon_barrel(obj_type *obj,weapon_typ
 	
 		// get 'fire' bone offset and calc
 
-	bone_idx=engine_model_find_bone(mdl,weap->proj.fire_bone_name);
+	bone_idx=model_find_bone(mdl,weap->proj.fire_bone_name);
 	if (bone_idx==-1) {
 		if (err_str!=NULL) strcpy(err_str,"Weapon has missing or no fire bone");
 		return(FALSE);
@@ -277,7 +275,7 @@ bool weapon_get_projectile_position_angle_weapon_barrel(obj_type *obj,weapon_typ
 
 		// get 'barrel' bone offset (draw bones already calced above)
 
-	bone_idx=engine_model_find_bone(mdl,weap->proj.barrel_bone_name);
+	bone_idx=model_find_bone(mdl,weap->proj.barrel_bone_name);
 	if (bone_idx==-1) {
 		if (err_str!=NULL) strcpy(err_str,"Weapon has missing or no barrel bone");
 		return(FALSE);
@@ -328,7 +326,7 @@ bool weapon_get_projectile_position_angle_object_model(obj_type *obj,weapon_type
 	
 		// get bone offset and calc
 
-	bone_idx=engine_model_find_bone(mdl,weap->proj.object_fire_bone_name);
+	bone_idx=model_find_bone(mdl,weap->proj.object_fire_bone_name);
 	if (bone_idx==-1) {
 		if (err_str!=NULL) strcpy(err_str,"Object has missing or no fire bone");
 		return(FALSE);
