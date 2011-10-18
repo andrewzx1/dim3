@@ -45,12 +45,12 @@ extern animator_state_type		state;
 
 void insert_model(char *file_name)
 {
-	int						i,k,t,b_off,v_off,t_off,nvertex,ntrig,idx;
+	int						i,k,t,b_off,v_off,t_off,nvertex,npoly,idx;
 	char					path[1024],path2[1024],sub_path[1024];
 	model_bone_type			*bone,*ins_bone;
 	model_mesh_type			*mesh,*ins_mesh;
 	model_vertex_type		*vertex;
-	model_trig_type			*trig;
+	model_poly_type			*trig;
 	texture_type			*texture,*ins_texture;
 	
 		// open model
@@ -106,15 +106,15 @@ void insert_model(char *file_name)
 	
 		// bring in the trigs
 		
-	t_off=mesh->ntrig;
-	ntrig=ins_mesh->ntrig;
+	t_off=mesh->npoly;
+	npoly=ins_mesh->npoly;
 	
-	model_mesh_set_trig_count(&model,state.cur_mesh_idx,(t_off+ntrig));
+	model_mesh_set_poly_count(&model,state.cur_mesh_idx,(t_off+npoly));
 	
-	trig=&mesh->trigs[t_off];
-	memmove(trig,ins_mesh->trigs,(ntrig*sizeof(model_trig_type)));
+	trig=&mesh->polys[t_off];
+	memmove(trig,ins_mesh->polys,(npoly*sizeof(model_poly_type)));
 	
-	for (i=0;i!=ntrig;i++) {
+	for (i=0;i!=npoly;i++) {
 		trig->v[0]+=v_off;
 		trig->v[1]+=v_off;
 		trig->v[2]+=v_off;
@@ -152,9 +152,9 @@ void insert_model(char *file_name)
 
 			// fix the imported triangles texture index
 
-		trig=&mesh->trigs[t_off];
+		trig=&mesh->polys[t_off];
 
-		for (t=t_off;t!=mesh->ntrig;t++) {
+		for (t=t_off;t!=mesh->npoly;t++) {
 			if (trig->txt_idx==i) trig->txt_idx=k;
 			t_off++;
 		}

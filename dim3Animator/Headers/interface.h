@@ -245,7 +245,7 @@ extern bool vertex_check_hide_mask(int mesh_idx,int vertex_idx);
 extern void vertex_hide_mask_set_sel_vertexes(int mesh_idx);
 extern void vertex_hide_mask_set_non_sel_vertexes(int mesh_idx);
 extern void vertex_hide_mask_show_all_vertexes(int mesh_idx);
-extern bool vertex_check_hide_mask_trig(int mesh_idx,model_trig_type *trig);
+extern bool vertex_check_hide_mask_poly(int mesh_idx,model_poly_type *poly);
 extern void vertex_set_sel_mask_bone(int mesh_idx,int bone_idx);
 extern void vertex_set_sel_mask_no_bone(int mesh_idx);
 extern void vertex_set_sel_mask_near_bone(int mesh_idx,int bone_idx,float percentage);
@@ -267,19 +267,19 @@ extern void vertex_delete_sel_vertex(int mesh_idx);
 extern void vertex_delete_unused_vertexes(int mesh_idx);
 
 //
-// triangle masks
+// poly masks
 //
 
-extern bool trig_mask_initialize(void);
-extern void trig_mask_shutdown(void);
-extern void trig_clear_sel_mask(int mesh_idx);
-extern void trig_set_sel_mask(int mesh_idx,int trig_idx,bool value);
-extern bool trig_check_sel_mask(int mesh_idx,int trig_idx);
-extern void trig_clear_hide_mask(int mesh_idx);
-extern void trig_set_hide_mask(int mesh_idx,int trig_idx,bool value);
-extern bool trig_check_hide_mask(int mesh_idx,int trig_idx);
-extern model_trig_type* trig_mask_get_single_select(int mesh_idx);
-extern void trig_mask_select_more(int mesh_idx);
+extern bool poly_mask_initialize(void);
+extern void poly_mask_shutdown(void);
+extern void poly_mask_clear_sel(int mesh_idx);
+extern void poly_mask_set_sel(int mesh_idx,int poly_idx,bool value);
+extern bool poly_mask_check_sel(int mesh_idx,int poly_idx);
+extern void poly_mask_clear_hide(int mesh_idx);
+extern void poly_mask_set_hide(int mesh_idx,int trig_idx,bool value);
+extern bool poly_mask_check_hide(int mesh_idx,int poly_idx);
+extern model_poly_type* poly_mask_get_single_select(int mesh_idx);
+extern void poly_mask_select_more(int mesh_idx);
 
 //
 // model picking

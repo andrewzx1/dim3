@@ -65,7 +65,7 @@ void main_wind_initialize(void)
 		// vertex and trig masks
 		
 	vertex_mask_initialize();
-	trig_mask_initialize();
+	poly_mask_initialize();
 }
 
 void main_wind_shutdown(void)
@@ -73,7 +73,7 @@ void main_wind_shutdown(void)
 		// free vertex and trig masks
 		
 	vertex_mask_shutdown();
-	trig_mask_shutdown();
+	poly_mask_shutdown();
 	
 		// shutdown palettes
 		

@@ -437,7 +437,7 @@ void debug_dump(void)
 
 		for (k=0;k!=mdl->nmesh;k++) {
 			nvertex+=mdl->meshes[k].nvertex;
-			ntrig+=mdl->meshes[k].ntrig;
+			ntrig+=mdl->meshes[k].npoly;
 		}
 
 		debug_info_table_str(file,mdl->name,25);

@@ -492,13 +492,13 @@ void model_floor_all(model_type *model)
 
 void model_flip_uv(model_type *model,int mesh_idx,bool flip_u,bool flip_v)
 {
-	int						i,k,ntrig;
-	model_trig_type			*trig;
+	int						i,k,npoly;
+	model_poly_type			*trig;
 
-	ntrig=model->meshes[mesh_idx].ntrig;
-	trig=model->meshes[mesh_idx].trigs;
+	npoly=model->meshes[mesh_idx].npoly;
+	trig=model->meshes[mesh_idx].polys;
 	
-	for (i=0;i!=ntrig;i++) {
+	for (i=0;i!=npoly;i++) {
 		for (k=0;k!=3;k++) {
 			if (flip_u) trig->gx[k]=1.0f-trig->gx[k];
 			if (flip_v) trig->gy[k]=1.0f-trig->gy[k];

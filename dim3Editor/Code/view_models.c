@@ -222,17 +222,16 @@ void view_model_draw_triangles(model_type *model,model_draw_setup *draw_setup,sh
 	float				vertexes[3*3],uvs[3*2];
 	float				*pa,*pv,*pt;
 	model_mesh_type		*mesh;
-    model_trig_type		*trig;
+    model_poly_type		*trig;
 
 	cur_txt_idx=-1;
 	
 		// triangles
 		
 	mesh=&model->meshes[0];
-	trig=mesh->trigs;
 
-	for (n=0;n!=mesh->ntrig;n++) {
-		trig=&mesh->trigs[n];
+	for (n=0;n!=mesh->npoly;n++) {
+		trig=&mesh->polys[n];
 
 			// opaque?
 

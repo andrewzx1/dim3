@@ -471,7 +471,7 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 	map_mesh_type				*map_mesh;
 	map_mesh_poly_type			*map_poly;
 	model_mesh_type				*model_mesh;
-    model_trig_type				*model_trig;
+    model_poly_type				*model_trig;
 	
 //	float		*na;	// supergumba -- testing
 	
@@ -580,8 +580,8 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 
 		draw_trig_count=0;
 	
-		for (k=0;k!=model_mesh->ntrig;k++) {
-			model_trig=&model_mesh->trigs[k];
+		for (k=0;k!=model_mesh->npoly;k++) {
+			model_trig=&model_mesh->polys[k];
 			
 				// ignore anything pointing towards
 				// light (assume solid objects)
