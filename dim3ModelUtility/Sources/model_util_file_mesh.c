@@ -44,13 +44,9 @@ char									bone_v2_tags[max_model_bone][8];
 int model_find_v2_bone_tag(model_type *model,char *tag_name)
 {
 	int				n;
-	char			*c;
-
-	c=(char*)bone_v2_tags;
 
 	for (n=0;n!=model->nbone;n++) {
-		if (strcasecmp(c,tag_name)) return(n);
-		c+=8;
+		if (strcasecmp(bone_v2_tags[n],tag_name)==0) return(n);
 	}
 
 	return(-1);
@@ -125,6 +121,8 @@ void decode_mesh_xml(model_type *model,int model_head)
 		
 		xml_get_attribute_text(tag,"name",bone->name,name_str_len);
  		xml_get_attribute_text(tag,"tag",bone_v2_tags[bone_idx],8);
+		
+		if (bone->name[0]==0x0) strcpy(bone->name,bone_v2_tags[bone_idx]);		// if no name, use the tag name
        
         xml_get_attribute_3_coord_int(tag,"c3",&bone->pnt.x,&bone->pnt.y,&bone->pnt.z);
         xml_get_attribute_3_coord_int(tag,"o3",&bone->natural_offset.x,&bone->natural_offset.y,&bone->natural_offset.z);

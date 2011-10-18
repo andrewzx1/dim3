@@ -47,7 +47,6 @@ WindowRef					dialog_set_vertex_bone_wind;
 void dialog_set_bone_combo(WindowRef wind,unsigned long sig,int id,int sel_idx)
 {
 	int				n;
-	char			txt[128];
 	
 	dialog_clear_combo(wind,sig,id);
 
@@ -55,17 +54,7 @@ void dialog_set_bone_combo(WindowRef wind,unsigned long sig,int id,int sel_idx)
 	dialog_add_combo_item(wind,sig,id,"-",0);
 	
 	for (n=0;n!=model.nbone;n++) {
-	
-		memmove(txt,&model.bones[n].tag,4);
-		txt[4]=0x0;
-		
-		if (model.bones[n].name[0]!=0x0) {
-			strcat(txt," (");
-			strcat(txt,model.bones[n].name);
-			strcat(txt,")");
-		}
-		
-		dialog_add_combo_item(wind,sig,id,txt,0);
+		dialog_add_combo_item(wind,sig,id,model.bones[n].name,0);
 	}
 	
 	if (sel_idx==-1) {
