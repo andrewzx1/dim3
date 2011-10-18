@@ -283,8 +283,8 @@ void render_model_vertex_object_no_shader(model_type *mdl,int mesh_idx,model_dra
 	float				*gx,*gy,*pf,
 						*va,*va_start,*ca,*ca_start;
 	unsigned char		*vp,*pc;
-	model_trig_type		*trig;
 	model_mesh_type		*mesh;
+	model_poly_type		*trig;
 	
 	mesh=&mdl->meshes[mesh_idx];
 	
@@ -295,9 +295,9 @@ void render_model_vertex_object_no_shader(model_type *mdl,int mesh_idx,model_dra
 
 	stride=draw->vbo[mesh_idx].vertex_stride;
 
-	trig=mesh->trigs;
+	trig=mesh->polys;
 	
-	for (n=0;n!=mesh->ntrig;n++) {
+	for (n=0;n!=mesh->npoly;n++) {
 	
 		gx=trig->gx;
 		gy=trig->gy;
@@ -336,8 +336,8 @@ void render_model_vertex_object_shader(model_type *mdl,int mesh_idx,model_draw *
 	float				*gx,*gy,*pf,
 						*va,*va_start,*ta,*ta_start,*na,*na_start;
 	unsigned char		*vp;
-	model_trig_type		*trig;
 	model_mesh_type		*mesh;
+	model_poly_type		*trig;
 	
 	mesh=&mdl->meshes[mesh_idx];
 	
@@ -349,9 +349,9 @@ void render_model_vertex_object_shader(model_type *mdl,int mesh_idx,model_draw *
 
 	stride=draw->vbo[mesh_idx].vertex_stride;
 
-	trig=mesh->trigs;
+	trig=mesh->polys;
 
-	for (n=0;n!=mesh->ntrig;n++) {
+	for (n=0;n!=mesh->npoly;n++) {
 	
 		gx=trig->gx;
 		gy=trig->gy;
@@ -473,7 +473,7 @@ void render_model_opaque_normal(model_type *mdl,int mesh_idx,model_draw *draw)
 {
 	int						n,frame,txt_idx;
 	model_mesh_type			*mesh;
-	model_trig_type			*trig;
+	model_poly_type			*trig;
 	model_draw_mesh_type	*draw_mesh;
     texture_type			*texture;
 	
@@ -495,9 +495,9 @@ void render_model_opaque_normal(model_type *mdl,int mesh_idx,model_draw *draw)
 
 		// run through the trigs
 
-	trig=mesh->trigs;
+	trig=mesh->polys;
 
-	for (n=0;n!=mesh->ntrig;n++) {
+	for (n=0;n!=mesh->npoly;n++) {
 
 			// is this trig texture opaque
 
@@ -530,7 +530,7 @@ void render_model_opaque_shader(model_type *mdl,int mesh_idx,model_draw *draw,vi
 {
 	int						n,frame,txt_idx,stride;
 	model_mesh_type			*mesh;
-	model_trig_type			*trig;
+	model_poly_type			*trig;
  	model_draw_mesh_type	*draw_mesh;
 	texture_type			*texture;
 	
@@ -555,9 +555,9 @@ void render_model_opaque_shader(model_type *mdl,int mesh_idx,model_draw *draw,vi
 
 		// run through the trigs
 
-	trig=mesh->trigs;
+	trig=mesh->polys;
 
-	for (n=0;n!=mesh->ntrig;n++) {
+	for (n=0;n!=mesh->npoly;n++) {
 
 			// is this trig texture opaque
 
@@ -601,7 +601,7 @@ void render_model_transparent_normal(model_type *mdl,int mesh_idx,model_draw *dr
 	int						n,frame,txt_idx;
 	bool					cur_additive,is_additive;
 	model_mesh_type			*mesh;
-	model_trig_type			*trig;
+	model_poly_type			*trig;
  	model_draw_mesh_type	*draw_mesh;
     texture_type			*texture;
 	
@@ -628,9 +628,9 @@ void render_model_transparent_normal(model_type *mdl,int mesh_idx,model_draw *dr
 	
 		// run through the trigs
 
-	trig=mesh->trigs;
+	trig=mesh->polys;
 
-	for (n=0;n!=mesh->ntrig;n++) {
+	for (n=0;n!=mesh->npoly;n++) {
 
 			// is this trig texture transparent
 
@@ -679,7 +679,7 @@ void render_model_transparent_shader(model_type *mdl,int mesh_idx,model_draw *dr
 	int						n,frame,txt_idx,stride;
 	bool					cur_additive,is_additive;
 	model_mesh_type			*mesh;
-	model_trig_type			*trig;
+	model_poly_type			*trig;
  	model_draw_mesh_type	*draw_mesh;
     texture_type			*texture;
 	
@@ -709,9 +709,9 @@ void render_model_transparent_shader(model_type *mdl,int mesh_idx,model_draw *dr
 
 		// run through the trigs
 
-	trig=mesh->trigs;
+	trig=mesh->polys;
 
-	for (n=0;n!=mesh->ntrig;n++) {
+	for (n=0;n!=mesh->npoly;n++) {
 
 			// is this trig texture transparent
 
@@ -769,7 +769,7 @@ void render_model_glow(model_type *mdl,int mesh_idx,model_draw *draw)
 {
 	int						n,frame,txt_idx;
 	model_mesh_type			*mesh;
- 	model_trig_type			*trig;
+ 	model_poly_type			*trig;
 	model_draw_mesh_type	*draw_mesh;
     texture_type			*texture;
 	
@@ -791,9 +791,9 @@ void render_model_glow(model_type *mdl,int mesh_idx,model_draw *draw)
 
 		// run through the trigs
 
-	trig=mesh->trigs;
+	trig=mesh->polys;
 
-	for (n=0;n!=mesh->ntrig;n++) {
+	for (n=0;n!=mesh->npoly;n++) {
 
 			// is this trig texture glow
 
@@ -834,7 +834,7 @@ void render_model_setup(model_draw *draw,int tick)
 	bool				texture_hits[max_model_texture];
 	model_type			*mdl;
 	model_mesh_type		*mesh;
-	model_trig_type		*trig;
+	model_poly_type		*trig;
     texture_type		*texture;
 	
 		// get model
@@ -911,9 +911,9 @@ void render_model_setup(model_draw *draw,int tick)
 		draw->meshes[n].has_transparent=(draw->meshes[n].alpha!=1.0f);
 		draw->meshes[n].has_glow=FALSE;
 
-		trig=mesh->trigs;
+		trig=mesh->polys;
 
-		for (k=0;k!=mesh->ntrig;k++) {
+		for (k=0;k!=mesh->npoly;k++) {
 
 				// only check once per texture
 

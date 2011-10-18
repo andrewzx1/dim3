@@ -34,7 +34,7 @@ and can be sold or given away.
 
 extern model_type				model;
 
-unsigned char					*trig_mask_ptr;
+unsigned char					*poly_mask_ptr;
 
 /* =======================================================
 
@@ -42,25 +42,25 @@ unsigned char					*trig_mask_ptr;
       
 ======================================================= */
 
-bool trig_mask_initialize(void)
+bool poly_mask_initialize(void)
 {
-	trig_mask_ptr=(unsigned char*)malloc(animator_max_trig*max_model_mesh);
-	return(trig_mask_ptr!=NULL);
+	poly_mask_ptr=(unsigned char*)malloc(animator_max_trig*max_model_mesh);
+	return(poly_mask_ptr!=NULL);
 }
 
-void trig_mask_shutdown(void)
+void poly_mask_shutdown(void)
 {
-	free(trig_mask_ptr);
+	free(poly_mask_ptr);
 }
 
-unsigned char trig_mask_get(int mesh_idx,int trig_idx)
+unsigned char poly_mask_get(int mesh_idx,int poly_idx)
 {
-	return(*(trig_mask_ptr+((animator_max_trig*mesh_idx)+trig_idx)));
+	return(*(poly_mask_ptr+((animator_max_trig*mesh_idx)+poly_idx)));
 }
 
-void trig_mask_set(int mesh_idx,int trig_idx,unsigned char mask)
+void poly_mask_set(int mesh_idx,int poly_idx,unsigned char mask)
 {
-	*(trig_mask_ptr+((animator_max_trig*mesh_idx)+trig_idx))=mask;
+	*(poly_mask_ptr+((animator_max_trig*mesh_idx)+poly_idx))=mask;
 }
 
 /* =======================================================
@@ -69,7 +69,7 @@ void trig_mask_set(int mesh_idx,int trig_idx,unsigned char mask)
       
 ======================================================= */
 
-void trig_clear_sel_mask(int mesh_idx)
+void poly_mask_clear_sel(int mesh_idx)
 {
 	int				n;
 	unsigned char	mask;
@@ -77,18 +77,18 @@ void trig_clear_sel_mask(int mesh_idx)
 	
 	mesh=&model.meshes[mesh_idx];
 	
-	for (n=0;n!=mesh->ntrig;n++) {
-		mask=trig_mask_get(mesh_idx,n);
+	for (n=0;n!=mesh->npoly;n++) {
+		mask=poly_mask_get(mesh_idx,n);
 		mask&=(animator_mask_flag_sel^0xFF);
-		trig_mask_set(mesh_idx,n,mask);
+		poly_mask_set(mesh_idx,n,mask);
 	}
 }
 
-void trig_set_sel_mask(int mesh_idx,int trig_idx,bool value)
+void poly_mask_set_sel(int mesh_idx,int poly_idx,bool value)
 {
 	unsigned char	mask;
 	
-	mask=trig_mask_get(mesh_idx,trig_idx);
+	mask=poly_mask_get(mesh_idx,poly_idx);
 	
 	if (value) {
 		mask|=animator_mask_flag_sel;
@@ -97,14 +97,14 @@ void trig_set_sel_mask(int mesh_idx,int trig_idx,bool value)
 		mask&=(animator_mask_flag_sel^0xFF);
 	}
 	
-	trig_mask_set(mesh_idx,trig_idx,mask);
+	poly_mask_set(mesh_idx,poly_idx,mask);
 }
 
-bool trig_check_sel_mask(int mesh_idx,int trig_idx)
+bool poly_mask_check_sel(int mesh_idx,int poly_idx)
 {
 	unsigned char	mask;
 	
-	mask=trig_mask_get(mesh_idx,trig_idx);
+	mask=poly_mask_get(mesh_idx,poly_idx);
 	return((mask&animator_mask_flag_sel)!=0x0);
 }
 
@@ -114,7 +114,7 @@ bool trig_check_sel_mask(int mesh_idx,int trig_idx)
       
 ======================================================= */
 
-void trig_clear_hide_mask(int mesh_idx)
+void poly_mask_clear_hide(int mesh_idx)
 {
 	int				n;
 	unsigned char	mask;
@@ -123,17 +123,17 @@ void trig_clear_hide_mask(int mesh_idx)
 	mesh=&model.meshes[mesh_idx];
 	
 	for (n=0;n!=mesh->nvertex;n++) {
-		mask=trig_mask_get(mesh_idx,n);
+		mask=poly_mask_get(mesh_idx,n);
 		mask&=(animator_mask_flag_hide^0xFF);
-		trig_mask_set(mesh_idx,n,mask);
+		poly_mask_set(mesh_idx,n,mask);
 	}
 }
 
-void trig_set_hide_mask(int mesh_idx,int trig_idx,bool value)
+void poly_mask_set_hide(int mesh_idx,int poly_idx,bool value)
 {
 	unsigned char	mask;
 	
-	mask=trig_mask_get(mesh_idx,trig_idx);
+	mask=poly_mask_get(mesh_idx,poly_idx);
 
 	if (value) {
 		mask|=animator_mask_flag_hide;
@@ -142,14 +142,14 @@ void trig_set_hide_mask(int mesh_idx,int trig_idx,bool value)
 		mask&=(animator_mask_flag_hide^0xFF);
 	}
 	
-	trig_mask_set(mesh_idx,trig_idx,mask);
+	poly_mask_set(mesh_idx,poly_idx,mask);
 }
 
-bool trig_check_hide_mask(int mesh_idx,int trig_idx)
+bool poly_mask_check_hide(int mesh_idx,int poly_idx)
 {
 	unsigned char	mask;
 
-	mask=trig_mask_get(mesh_idx,trig_idx);
+	mask=poly_mask_get(mesh_idx,poly_idx);
 	return((mask&animator_mask_flag_hide)!=0x0);
 }
 
@@ -159,20 +159,20 @@ bool trig_check_hide_mask(int mesh_idx,int trig_idx)
       
 ======================================================= */
 
-model_trig_type* trig_mask_get_single_select(int mesh_idx)
+model_poly_type* poly_mask_get_single_select(int mesh_idx)
 {
-	int					n,ntrig,idx;
+	int					n,npoly,idx;
 	model_mesh_type		*mesh;
 
 	mesh=&model.meshes[mesh_idx];
-	ntrig=mesh->ntrig;
+	npoly=mesh->npoly;
 
 		// find first and only selection
 
 	idx=-1;
 
-	for (n=0;n!=ntrig;n++) {
-		if ((trig_check_sel_mask(mesh_idx,n)) && (!trig_check_hide_mask(mesh_idx,n))) {
+	for (n=0;n!=npoly;n++) {
+		if ((poly_mask_check_sel(mesh_idx,n)) && (!poly_mask_check_hide(mesh_idx,n))) {
 			if (idx!=-1) return(NULL);		// more than one!
 			idx=n;
 		}
@@ -180,7 +180,7 @@ model_trig_type* trig_mask_get_single_select(int mesh_idx)
 
 	if (idx==-1) return(NULL);
 
-	return(&mesh->trigs[idx]);
+	return(&mesh->polys[idx]);
 }
 
 /* =======================================================
@@ -189,38 +189,38 @@ model_trig_type* trig_mask_get_single_select(int mesh_idx)
       
 ======================================================= */
 
-void trig_mask_select_more(int mesh_idx)
+void poly_mask_select_more(int mesh_idx)
 {
-	int					n,k,i,i2,t,t2,ntrig;
+	int					n,k,i,i2,t,t2,npoly;
 	bool				hit;
 	unsigned char		*sel_mask;
 	model_mesh_type		*mesh;
-	model_trig_type		*trig,*trig2;
+	model_poly_type		*trig,*trig2;
 
 	mesh=&model.meshes[mesh_idx];
-	ntrig=mesh->ntrig;
+	npoly=mesh->npoly;
 
 		// need sel mask outside of
 		// regular sel mask
 
-	sel_mask=(unsigned char*)malloc(ntrig);
+	sel_mask=(unsigned char*)malloc(npoly);
 	if (sel_mask==NULL) return;
 
-	bzero(sel_mask,ntrig);
+	bzero(sel_mask,npoly);
 
 		// find hit triangles
 	
-	for (n=0;n!=ntrig;n++) {
+	for (n=0;n!=npoly;n++) {
 
-		if ((!trig_check_sel_mask(mesh_idx,n)) || (trig_check_hide_mask(mesh_idx,n))) continue;
-		trig=&model.meshes[mesh_idx].trigs[n];
+		if ((!poly_mask_check_sel(mesh_idx,n)) || (poly_mask_check_hide(mesh_idx,n))) continue;
+		trig=&model.meshes[mesh_idx].polys[n];
 
-		for (k=0;k!=ntrig;k++) {
+		for (k=0;k!=npoly;k++) {
 
 			if (k==n) continue;
 
-			if (trig_check_hide_mask(mesh_idx,k)) continue;
-			trig2=&model.meshes[mesh_idx].trigs[k];
+			if (poly_mask_check_hide(mesh_idx,k)) continue;
+			trig2=&model.meshes[mesh_idx].polys[k];
 
 				// check for shared edges
 
@@ -254,8 +254,8 @@ void trig_mask_select_more(int mesh_idx)
 
 		// select triangles
 
-	for (n=0;n!=ntrig;n++) {
-		if (sel_mask[n]!=0x0) trig_set_sel_mask(mesh_idx,n,TRUE);
+	for (n=0;n!=npoly;n++) {
+		if (sel_mask[n]!=0x0) poly_mask_set_sel(mesh_idx,n,TRUE);
 	}
 
 	free(sel_mask);

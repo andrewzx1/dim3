@@ -104,17 +104,17 @@ void select_model_wind_restore_drag_sel_state(char *vertex_sel)
 void select_model_wind_select_trig_for_vertex_drag_sel(void)
 {
 	int					n,k,nt;
-	model_trig_type		*trig;
+	model_poly_type		*trig;
 
-	trig_clear_sel_mask(state.cur_mesh_idx);
+	poly_mask_clear_sel(state.cur_mesh_idx);
 
-	nt=model.meshes[state.cur_mesh_idx].ntrig;
-	trig=model.meshes[state.cur_mesh_idx].trigs;
+	nt=model.meshes[state.cur_mesh_idx].npoly;
+	trig=model.meshes[state.cur_mesh_idx].polys;
 
 	for (n=0;n!=nt;n++) {
 		for (k=0;k!=3;k++) {
 			if (vertex_check_sel_mask(state.cur_mesh_idx,trig->v[k])) {
-				trig_set_sel_mask(state.cur_mesh_idx,n,TRUE);
+				poly_mask_set_sel(state.cur_mesh_idx,n,TRUE);
 				break;
 			}
 		}
@@ -242,20 +242,20 @@ bool select_model_wind_vertex_sel_trig(d3pnt *start_pnt,float *pv)
 	d3fpnt				pnt;
 	d3pnt				tran_pnt;
 	model_mesh_type		*mesh;
-	model_trig_type		*trig;
+	model_poly_type		*trig;
 
 		// clicked on a vertex?
 		
 	mesh=&model.meshes[state.cur_mesh_idx];
 		
 	idx=-1;
-	nt=mesh->ntrig;
+	nt=mesh->npoly;
 
 	for (n=0;n!=nt;n++) {
 
-		trig=&mesh->trigs[n];
-		if (vertex_check_hide_mask_trig(state.cur_mesh_idx,trig)) continue;
-		if (!trig_check_sel_mask(state.cur_mesh_idx,n)) continue;
+		trig=&mesh->polys[n];
+		if (vertex_check_hide_mask_poly(state.cur_mesh_idx,trig)) continue;
+		if (!poly_mask_check_sel(state.cur_mesh_idx,n)) continue;
 
 		for (k=0;k!=3;k++) {
 			pv2=pv+(trig->v[k]*3);
@@ -291,11 +291,11 @@ bool select_model_wind_vertex_sel_trig(d3pnt *start_pnt,float *pv)
 
 bool select_model_wind_polygon(d3pnt *start_pnt,bool check_only)
 {
-	int					n,k,idx,ntrig;
+	int					n,k,idx,npoly;
 	float				*pv;
 	d3pnt				v_pnts[3];
-    model_trig_type		*trig;
-	model_mesh_type		*mesh;
+ 	model_mesh_type		*mesh;
+	model_poly_type		*trig;
 	
 		// clicking mesh
 	
@@ -303,19 +303,19 @@ bool select_model_wind_polygon(d3pnt *start_pnt,bool check_only)
 	
 		// draw and pick the triangles
 		
-	ntrig=mesh->ntrig;
-	if (!model_pick_list_start(ntrig)) return(FALSE);
+	npoly=mesh->npoly;
+	if (!model_pick_list_start(npoly)) return(FALSE);
 	
 		// draw the mesh
 		
 	model_draw_setup_initialize(&model,&draw_setup,TRUE);
 	draw_model_setup_bones_vertexes(state.cur_mesh_idx);
 
-	trig=mesh->trigs;
+	trig=mesh->polys;
     
-    for (n=0;n!=ntrig;n++) {
+    for (n=0;n!=npoly;n++) {
 	
-		if (!vertex_check_hide_mask_trig(state.cur_mesh_idx,trig)) {
+		if (!vertex_check_hide_mask_poly(state.cur_mesh_idx,trig)) {
 			
 			for (k=0;k!=3;k++) {
 				pv=draw_setup.mesh_arrays[state.cur_mesh_idx].gl_vertex_array+(trig->v[k]*3);
@@ -342,8 +342,8 @@ bool select_model_wind_polygon(d3pnt *start_pnt,bool check_only)
 
 		// run the selection
 
-	if (!os_key_shift_down()) trig_clear_sel_mask(state.cur_mesh_idx);
-	trig_set_sel_mask(state.cur_mesh_idx,idx,TRUE);
+	if (!os_key_shift_down()) poly_mask_clear_sel(state.cur_mesh_idx);
+	poly_mask_set_sel(state.cur_mesh_idx,idx,TRUE);
 	
 		// select all the vertexes attached to trig
 

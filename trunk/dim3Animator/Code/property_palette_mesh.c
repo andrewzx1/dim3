@@ -60,7 +60,7 @@ void property_palette_fill_mesh(int mesh_idx)
 	char				str[256];
 	d3fpnt				uv;
 	model_mesh_type		*mesh;
-	model_trig_type		*trig;
+	model_poly_type		*trig;
 	
 	mesh=&model.meshes[mesh_idx];
 
@@ -81,7 +81,7 @@ void property_palette_fill_mesh(int mesh_idx)
 		// any selected trig
 
 	if (state.select_mode==select_mode_polygon) {
-		trig=trig_mask_get_single_select(mesh_idx);
+		trig=poly_mask_get_single_select(mesh_idx);
 		if (trig!=NULL) {
 
 			list_palette_add_header(&property_palette,0,"Selected Trig UVs");
@@ -97,7 +97,7 @@ void property_palette_fill_mesh(int mesh_idx)
 
 	list_palette_add_header(&property_palette,0,"Mesh Info");
 	list_palette_add_string_int(&property_palette,-1,"Vertexes",mesh->nvertex,TRUE);
-	list_palette_add_string_int(&property_palette,-1,"Triangles",mesh->ntrig,TRUE);
+	list_palette_add_string_int(&property_palette,-1,"Triangles",mesh->npoly,TRUE);
 }
 
 /* =======================================================
@@ -112,7 +112,7 @@ void property_palette_click_mesh(int mesh_idx,int id,bool double_click)
 	d3pnt					import_move,move_pnt;
 	d3fpnt					uv;
 	model_vertex_type		*vtx;
-	model_trig_type			*trig;
+	model_poly_type			*trig;
 	model_bone_type			*bone;
 	model_mesh_type			*mesh;
 	
@@ -187,7 +187,7 @@ void property_palette_click_mesh(int mesh_idx,int id,bool double_click)
 		case kMeshPropertyTrigUV:
 		case (kMeshPropertyTrigUV+1):
 		case (kMeshPropertyTrigUV+2):
-			trig=trig_mask_get_single_select(mesh_idx);
+			trig=poly_mask_get_single_select(mesh_idx);
 			if (trig==NULL) break;
 
 			idx=id-kMeshPropertyTrigUV;

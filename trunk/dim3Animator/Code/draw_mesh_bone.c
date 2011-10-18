@@ -46,11 +46,11 @@ extern animator_state_type		state;
 
 void draw_model_mesh(int mesh_idx)
 {
-	int					n,k,ntrig;
+	int					n,k,npoly;
  	float				vertexes[3*3];
 	float				*pa,*pv;
-	model_trig_type		*trig;
 	model_mesh_type		*mesh;
+	model_poly_type		*trig;
 
 		// draw the mesh
 		
@@ -58,12 +58,12 @@ void draw_model_mesh(int mesh_idx)
 	
 	glColor4f(setup.col.mesh_line.r,setup.col.mesh_line.g,setup.col.mesh_line.b,1.0f);
     
-	ntrig=mesh->ntrig;
-	trig=mesh->trigs;
+	npoly=mesh->npoly;
+	trig=mesh->polys;
     
-    for (n=0;n!=ntrig;n++) {
+    for (n=0;n!=npoly;n++) {
 	
-		if (vertex_check_hide_mask_trig(mesh_idx,trig)) {
+		if (vertex_check_hide_mask_poly(mesh_idx,trig)) {
 			trig++;
 			continue;
 		}

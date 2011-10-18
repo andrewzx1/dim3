@@ -74,7 +74,7 @@ void decode_mesh_xml(model_type *model,int model_head)
 	model_mesh_type			*mesh;
     model_vertex_type		*vertex;
     model_bone_type			*bone;
-    model_trig_type			*trig;
+    model_poly_type			*trig;
     texture_type			*texture;
 	tangent_space_type		*trig_tangent_spaces,*trig_ts;
 
@@ -332,24 +332,24 @@ void decode_mesh_xml(model_type *model,int model_head)
 		nfill=xml_countchildren(materials_tag);
 		material_tag=xml_findfirstchild("Material",materials_tag);
 
-		mesh->ntrig=0;
+		mesh->npoly=0;
 		
 		for (n=0;n!=nfill;n++) {
 			trig_tag=xml_findfirstchild("Triangles",material_tag);
-			mesh->ntrig+=(xml_countchildren(trig_tag)/3);
+			mesh->npoly+=(xml_countchildren(trig_tag)/3);
 			material_tag=xml_findnextchild(material_tag);
 		}
 
-		model_mesh_set_trig_count(model,mesh_idx,mesh->ntrig);
+		model_mesh_set_poly_count(model,mesh_idx,mesh->npoly);
 		
 			// memory for the old trig based tangent spaces
 			
-		trig_tangent_spaces=(tangent_space_type*)malloc((mesh->ntrig*3)*sizeof(tangent_space_type));
+		trig_tangent_spaces=(tangent_space_type*)malloc((mesh->npoly*3)*sizeof(tangent_space_type));
 
 			// run the materials
 		
 		trig_idx=0;
-		trig=mesh->trigs;
+		trig=mesh->polys;
 		
 		trig_ts=trig_tangent_spaces;
 
@@ -366,6 +366,7 @@ void decode_mesh_xml(model_type *model,int model_head)
 			for (i=0;i!=trig_count;i++) {
 
 				trig->txt_idx=n;
+				trig->ptsz=3;
 		
 				for (k=0;k!=3;k++) {
 					trig->v[k]=xml_get_attribute_int(vtag,"id");
@@ -401,11 +402,11 @@ void decode_mesh_xml(model_type *model,int model_head)
 			vertex->tangent_space.tangent.x=vertex->tangent_space.tangent.y=vertex->tangent_space.tangent.z=0.0f;
 
 			trig_count=0;
-			trig=mesh->trigs;
+			trig=mesh->polys;
 			
 			trig_ts=trig_tangent_spaces;
 
-			for (n=0;n!=mesh->ntrig;n++) {
+			for (n=0;n!=mesh->npoly;n++) {
 				for (k=0;k!=3;k++) {
 					if (trig->v[k]==i) {
 						vertex->tangent_space.normal.x+=trig_ts->normal.x;
@@ -492,7 +493,7 @@ void encode_mesh_xml(model_type *model)
 	model_mesh_type			*mesh;
     model_vertex_type		*vertex;
     model_bone_type			*bone;
-    model_trig_type			*trig;
+    model_poly_type			*trig;
     texture_type			*texture;
 
 	return;		// supergumba -- no writing meshes until translation is over
@@ -662,9 +663,9 @@ void encode_mesh_xml(model_type *model)
 		xml_add_tagstart("Polys");
 		xml_add_tagend(FALSE);
 		
-		trig=mesh->trigs;
+		trig=mesh->polys;
 		
-		for (i=0;i!=mesh->ntrig;i++) {
+		for (i=0;i!=mesh->npoly;i++) {
 		
 			// supergumba -- fix all this up
 			/*

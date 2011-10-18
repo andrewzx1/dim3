@@ -176,7 +176,7 @@ bool menu_event_run(int cmd)
 			return(TRUE);
 
 		case kCommandEditSelectMore:
-			trig_mask_select_more(state.cur_mesh_idx);
+			poly_mask_select_more(state.cur_mesh_idx);
 			main_wind_draw();
 			return(TRUE);
 			

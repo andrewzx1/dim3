@@ -139,18 +139,18 @@ typedef struct		{
 					} model_vertex_type;
 					
 typedef struct		{
-						int								txt_idx,v[3];
+						int								txt_idx,ptsz,v[3];
 						float							gx[3],gy[3];
-					} model_trig_type;
+					} model_poly_type;
 
 typedef struct		{
-						int								nvertex,ntrig;
+						int								nvertex,npoly;
 						char							name[name_str_len];
 						bool							no_lighting,diffuse,
 														blend_add,locked;
 						d3pnt							import_move;
  						model_vertex_type				*vertexes;
-                        model_trig_type					*trigs;
+                        model_poly_type					*polys;
 					} model_mesh_type;
 
 //
@@ -325,7 +325,7 @@ extern int model_mesh_add(model_type *model);
 extern int model_mesh_duplicate(model_type *model,int mesh_idx);
 extern bool model_mesh_delete(model_type *model,int mesh_idx);
 extern bool model_mesh_set_vertex_count(model_type *model,int mesh_idx,int vertex_count);
-extern bool model_mesh_set_trig_count(model_type *model,int mesh_idx,int trig_count);
+extern bool model_mesh_set_poly_count(model_type *model,int mesh_idx,int poly_count);
 
 extern void model_bone_create_name(model_type *model,int bone_idx);
 extern int model_bone_add(model_type *model,int x,int y,int z);

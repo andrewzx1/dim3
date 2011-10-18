@@ -92,25 +92,25 @@ void draw_model_selected_vertexes(int mesh_idx)
 
 void draw_model_selected_trig(int mesh_idx)
 {
-	int					n,k,ntrig,vertex_idx;
+	int					n,k,npoly,vertex_idx;
 	float				vertexes[3*3];
 	float				*pv,*pa;
 	model_mesh_type		*mesh;
-	model_trig_type		*trig;
+	model_poly_type		*trig;
 
 	mesh=&model.meshes[mesh_idx];
-	ntrig=mesh->ntrig;
+	npoly=mesh->npoly;
 
 		// selection
 	
 	glColor4f(setup.col.mesh_sel.r,setup.col.mesh_sel.g,setup.col.mesh_sel.b,1.0f);
 	glLineWidth(draw_trig_select_line_size);
 
-	for (n=0;n!=ntrig;n++) {
+	for (n=0;n!=npoly;n++) {
 
-		if ((!trig_check_sel_mask(mesh_idx,n)) || (trig_check_hide_mask(mesh_idx,n))) continue;
+		if ((!poly_mask_check_sel(mesh_idx,n)) || (poly_mask_check_hide(mesh_idx,n))) continue;
 		
-		trig=&model.meshes[mesh_idx].trigs[n];
+		trig=&model.meshes[mesh_idx].polys[n];
 
 			// draw the selected trig
 
@@ -134,11 +134,11 @@ void draw_model_selected_trig(int mesh_idx)
 	glColor4f(0.0f,0.0f,0.0f,1.0f);
 	glPointSize(draw_vertex_handle_size);
 		
-	for (n=0;n!=ntrig;n++) {
+	for (n=0;n!=npoly;n++) {
 
-		if ((!trig_check_sel_mask(mesh_idx,n)) || (trig_check_hide_mask(mesh_idx,n))) continue;
+		if ((!poly_mask_check_sel(mesh_idx,n)) || (poly_mask_check_hide(mesh_idx,n))) continue;
 		
-		trig=&model.meshes[mesh_idx].trigs[n];
+		trig=&model.meshes[mesh_idx].polys[n];
 		
 			// draw any selected vertexes
 			// on the trig

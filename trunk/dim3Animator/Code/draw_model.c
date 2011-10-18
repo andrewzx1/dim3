@@ -125,16 +125,16 @@ void draw_model_mesh_triangles(int mesh_idx,bool opaque)
 	float				vertexes[3*3],uvs[3*2];
 	float				*pa,*pv,*pt;
 	model_mesh_type		*mesh;
-    model_trig_type		*trig;
+    model_poly_type		*trig;
 
 	mesh=&model.meshes[mesh_idx];
 
-	for (n=0;n!=mesh->ntrig;n++) {
-		trig=&mesh->trigs[n];
+	for (n=0;n!=mesh->npoly;n++) {
+		trig=&mesh->polys[n];
 
 			// hidden?
 
-		if (vertex_check_hide_mask_trig(mesh_idx,trig)) continue;
+		if (vertex_check_hide_mask_poly(mesh_idx,trig)) continue;
 
 			// opaque?
 

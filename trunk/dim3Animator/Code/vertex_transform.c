@@ -306,13 +306,13 @@ void vertex_delete_sel_vertex(int mesh_idx)
 			
 		n=0;
 		
-		while (n<model.meshes[mesh_idx].ntrig) {
+		while (n<model.meshes[mesh_idx].npoly) {
 		
 			hit=FALSE;
 			
 			for (j=0;j!=3;j++) {
-				hit=hit||(model.meshes[mesh_idx].trigs[n].v[j]==i);
-				if (model.meshes[mesh_idx].trigs[n].v[j]>i) model.meshes[mesh_idx].trigs[n].v[j]--;
+				hit=hit||(model.meshes[mesh_idx].polys[n].v[j]==i);
+				if (model.meshes[mesh_idx].polys[n].v[j]>i) model.meshes[mesh_idx].polys[n].v[j]--;
 			}
 		
 			if (!hit) {
@@ -322,13 +322,13 @@ void vertex_delete_sel_vertex(int mesh_idx)
 			
 				// delete trig
 					
-			sz=((model.meshes[mesh_idx].ntrig-1)-n);
+			sz=((model.meshes[mesh_idx].npoly-1)-n);
 			
 			if (sz>0) {
-				memmove(&model.meshes[mesh_idx].trigs[n],&model.meshes[mesh_idx].trigs[n+1],(sz*sizeof(model_trig_type)));
+				memmove(&model.meshes[mesh_idx].polys[n],&model.meshes[mesh_idx].polys[n+1],(sz*sizeof(model_poly_type)));
 			}
 				
-			model.meshes[mesh_idx].ntrig--;
+			model.meshes[mesh_idx].npoly--;
 		}
 	}
 	
@@ -348,9 +348,9 @@ void vertex_delete_sel_vertex(int mesh_idx)
 
 void vertex_delete_unused_vertexes(int mesh_idx)
 {
-	int					n,k,i,t,nvertex,ntrig,sz;
+	int					n,k,i,t,nvertex,npoly,sz;
 	unsigned char		*v_ok;
-    model_trig_type		*trig;
+    model_poly_type		*trig;
 	
 		// vertex hit list
 			
@@ -361,10 +361,10 @@ void vertex_delete_unused_vertexes(int mesh_idx)
 	
 		// find vertexes hit
 		
-	ntrig=model.meshes[mesh_idx].ntrig;
-	trig=model.meshes[mesh_idx].trigs;
+	npoly=model.meshes[mesh_idx].npoly;
+	trig=model.meshes[mesh_idx].polys;
 	
-	for (n=0;n!=ntrig;n++) {
+	for (n=0;n!=npoly;n++) {
 		for (k=0;k!=3;k++) {
 			v_ok[trig->v[k]]=0x1;
 		}
@@ -379,9 +379,9 @@ void vertex_delete_unused_vertexes(int mesh_idx)
 		
 			// change all trigs vertex pointers
 	
-		trig=model.meshes[mesh_idx].trigs;
+		trig=model.meshes[mesh_idx].polys;
 		
-		for (i=0;i!=ntrig;i++) {
+		for (i=0;i!=npoly;i++) {
 			for (t=0;t!=3;t++) {
 				if (trig->v[t]>n) trig->v[t]--;
 			}

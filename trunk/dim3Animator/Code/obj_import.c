@@ -139,7 +139,7 @@ void import_obj_rerig(model_mesh_type *mesh,int old_nvertex,model_vertex_type *o
 
 bool import_obj(char *path,bool replace,bool *found_normals,char *err_str)
 {
-	int						n,k,i,idx,nvertex,ntrig,nuv,nnormal,nline,nmaterial,
+	int						n,k,i,idx,nvertex,npoly,nuv,nnormal,nline,nmaterial,
 							texture_idx,high,npt,old_nvertex,sz,
 							pvtx[obj_max_face_vertex];
 	int						*trig_normal_count;
@@ -152,7 +152,7 @@ bool import_obj(char *path,bool replace,bool *found_normals,char *err_str)
 	d3vct					*normal,*normal_ptr,pnormal[obj_max_face_vertex];
 	model_mesh_type			*mesh;
 	model_vertex_type		*vertex,*old_vertex;
-    model_trig_type			*trig;
+    model_poly_type			*trig;
 	
 	mesh=&model.meshes[state.cur_mesh_idx];
 	
@@ -226,7 +226,7 @@ bool import_obj(char *path,bool replace,bool *found_normals,char *err_str)
 	nvertex=0;
 	nuv=0;
 	nnormal=0;
-	ntrig=0;
+	npoly=0;
 	
 	f_ty=f_by=0;
 
@@ -271,7 +271,7 @@ bool import_obj(char *path,bool replace,bool *found_normals,char *err_str)
 				npt++;
 			}
 			
-			ntrig+=(npt-2);
+			npoly+=(npt-2);
 		}
 	}
 	
@@ -306,7 +306,7 @@ bool import_obj(char *path,bool replace,bool *found_normals,char *err_str)
 	progress_next_title("Obj Import: Building New Model");
 		
 	model_mesh_set_vertex_count(&model,state.cur_mesh_idx,nvertex);
-	model_mesh_set_trig_count(&model,state.cur_mesh_idx,ntrig);
+	model_mesh_set_poly_count(&model,state.cur_mesh_idx,npoly);
 	uv_ptr=(d3uv*)malloc(nuv*sizeof(d3uv));
 	
 	if (nnormal==0) {
@@ -386,8 +386,8 @@ bool import_obj(char *path,bool replace,bool *found_normals,char *err_str)
 
 		// get the triangles
 
-    ntrig=0;
-	trig=mesh->trigs;
+    npoly=0;
+	trig=mesh->polys;
 
 	for (i=0;i!=nmaterial;i++) {
 
@@ -506,7 +506,7 @@ bool import_obj(char *path,bool replace,bool *found_normals,char *err_str)
 				trig->gy[2]=pt_uv[k+2].y;
 	            
 				trig++;
-				ntrig++;
+				npoly++;
 			}
 			
 				// add up the normals
@@ -528,7 +528,7 @@ bool import_obj(char *path,bool replace,bool *found_normals,char *err_str)
 		}
 	}
 	
-	mesh->ntrig=ntrig;
+	mesh->npoly=npoly;
 		
 		// average the vertex normals
 		

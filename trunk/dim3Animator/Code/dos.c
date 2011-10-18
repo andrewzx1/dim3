@@ -91,8 +91,8 @@ void file_reset_state(void)
 	vertex_clear_sel_mask(state.cur_mesh_idx);
 	vertex_clear_hide_mask(state.cur_mesh_idx);
 
-	trig_clear_sel_mask(state.cur_mesh_idx);
-	trig_clear_hide_mask(state.cur_mesh_idx);
+	poly_mask_clear_sel(state.cur_mesh_idx);
+	poly_mask_clear_hide(state.cur_mesh_idx);
 
 	for (n=0;n!=max_model_blend_animation;n++) {
 		state.blend[n].animate_idx=-1;
@@ -252,12 +252,13 @@ void file_close_model(void)
 	
 	for (n=0;n!=max_model_mesh;n++) {
 		model.meshes[n].nvertex=0;
-		model.meshes[n].ntrig=0;
+		model.meshes[n].npoly=0;
 	}
 	
 	model.nbone=0;
 	model.npose=0;
 	model.nanimate=0;
+	model.nhit_box=0;
 	
 	for (n=0;n!=max_model_light;n++) {
 		model.bone_connect.light_bone_idx[n]=-1;
@@ -300,8 +301,8 @@ void file_import_mesh_obj(bool replace)
 	vertex_clear_sel_mask(state.cur_mesh_idx);
 	vertex_clear_hide_mask(state.cur_mesh_idx);
 
-	trig_clear_sel_mask(state.cur_mesh_idx);
-	trig_clear_hide_mask(state.cur_mesh_idx);
+	poly_mask_clear_sel(state.cur_mesh_idx);
+	poly_mask_clear_hide(state.cur_mesh_idx);
 	
 	main_wind_draw();
 }

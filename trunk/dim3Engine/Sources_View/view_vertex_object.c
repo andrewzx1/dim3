@@ -145,7 +145,7 @@ void view_create_model_vertex_object(model_draw *draw)
 			// get the vertex size
 			
 		mesh=&mdl->meshes[n];
-		vertex_cnt=mesh->ntrig*3;
+		vertex_cnt=mesh->npoly*3;
 			
 		stride=(3+2)*sizeof(float);					// 3 vertex and 2 uv
 		if (shader_on) {

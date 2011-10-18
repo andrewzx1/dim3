@@ -50,10 +50,10 @@ int model_mesh_add(model_type *model)
 		// vertexes and trigs
 		
 	mesh->nvertex=0;
-	mesh->ntrig=0;
+	mesh->npoly=0;
 
 	mesh->vertexes=NULL;
-	mesh->trigs=NULL;
+	mesh->polys=NULL;
 	
 		// setup
 
@@ -95,9 +95,9 @@ int model_mesh_duplicate(model_type *model,int mesh_idx)
 	if (!model_mesh_set_vertex_count(model,idx,org_mesh->nvertex)) return(-1);
 	memmove(mesh->vertexes,org_mesh->vertexes,(org_mesh->nvertex*sizeof(model_vertex_type)));
 
-	mesh->ntrig=org_mesh->ntrig;
-	if (!model_mesh_set_trig_count(model,idx,org_mesh->ntrig)) return(-1);
-	memmove(mesh->trigs,org_mesh->trigs,(org_mesh->ntrig*sizeof(model_trig_type)));
+	mesh->npoly=org_mesh->npoly;
+	if (!model_mesh_set_poly_count(model,idx,org_mesh->npoly)) return(-1);
+	memmove(mesh->polys,org_mesh->polys,(org_mesh->npoly*sizeof(model_poly_type)));
 	
 	mesh->no_lighting=org_mesh->no_lighting;
 	mesh->diffuse=org_mesh->diffuse;
@@ -126,7 +126,7 @@ bool model_mesh_delete(model_type *model,int mesh_idx)
 	mesh=&model->meshes[mesh_idx];
 		
 	if (mesh->vertexes!=NULL) free(mesh->vertexes);
-	if (mesh->trigs!=NULL) free(mesh->trigs);
+	if (mesh->polys!=NULL) free(mesh->polys);
 	
 		// delete current mesh
 				
@@ -172,30 +172,30 @@ bool model_mesh_set_vertex_count(model_type *model,int mesh_idx,int vertex_count
 	return(TRUE);
 }
 
-bool model_mesh_set_trig_count(model_type *model,int mesh_idx,int trig_count)
+bool model_mesh_set_poly_count(model_type *model,int mesh_idx,int poly_count)
 {
 	int					count;
 	model_mesh_type		*mesh;
-	model_trig_type		*trg;
+	model_poly_type		*trig;
 	
 	mesh=&model->meshes[mesh_idx];
 
-	trg=malloc(trig_count*sizeof(model_trig_type));
-	if (trg==NULL) return(FALSE);
+	trig=malloc(poly_count*sizeof(model_poly_type));
+	if (trig==NULL) return(FALSE);
 
-	bzero(trg,(trig_count*sizeof(model_trig_type)));
+	bzero(trig,(poly_count*sizeof(model_poly_type)));
 	
-	if (mesh->trigs!=NULL) {
-		count=mesh->ntrig;
-		if (count>trig_count) count=trig_count;
+	if (mesh->polys!=NULL) {
+		count=mesh->npoly;
+		if (count>poly_count) count=poly_count;
 	
-		if (count!=0) memmove(trg,mesh->trigs,(count*sizeof(model_trig_type)));
+		if (count!=0) memmove(trig,mesh->polys,(count*sizeof(model_poly_type)));
 	
-		free(mesh->trigs);
+		free(mesh->polys);
 	}
 	
-	mesh->ntrig=trig_count;
-	mesh->trigs=trg;
+	mesh->npoly=poly_count;
+	mesh->polys=trig;
 	
 	return(TRUE);
 }

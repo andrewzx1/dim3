@@ -225,7 +225,7 @@ void vertex_hide_mask_show_all_vertexes(int mesh_idx)
       
 ======================================================= */
 
-bool vertex_check_hide_mask_trig(int mesh_idx,model_trig_type *trig)
+bool vertex_check_hide_mask_poly(int mesh_idx,model_poly_type *trig)
 {
 	int				n;
 	
@@ -340,9 +340,9 @@ void vertex_set_sel_mask_near_bone(int mesh_idx,int bone_idx,float percentage)
 
 void vertex_set_sel_mask_trig_mask(int mesh_idx)
 {
-	int					n,k,ntrig;
+	int					n,k,npoly;
 	model_mesh_type		*mesh;
-	model_trig_type		*trig;
+	model_poly_type		*trig;
 
 		// clear vertexes
 
@@ -351,15 +351,15 @@ void vertex_set_sel_mask_trig_mask(int mesh_idx)
 		// set for all trigs
 
 	mesh=&model.meshes[mesh_idx];
-	ntrig=mesh->ntrig;
+	npoly=mesh->npoly;
 
 		// selection
 	
-	for (n=0;n!=ntrig;n++) {
+	for (n=0;n!=npoly;n++) {
 
-		if ((!trig_check_sel_mask(mesh_idx,n)) || (trig_check_hide_mask(mesh_idx,n))) continue;
+		if ((!poly_mask_check_sel(mesh_idx,n)) || (poly_mask_check_hide(mesh_idx,n))) continue;
 		
-		trig=&model.meshes[mesh_idx].trigs[n];
+		trig=&model.meshes[mesh_idx].polys[n];
 	
 		for (k=0;k!=3;k++) {
 			vertex_set_sel_mask(mesh_idx,trig->v[k],TRUE);
@@ -405,7 +405,7 @@ void vertex_set_sel_mask_texture(int mesh_idx,int txt_idx)
 {
 	int					n,k;
 	model_mesh_type		*mesh;
-	model_trig_type		*trig;
+	model_poly_type		*trig;
 	
 		// clear selection
 		
@@ -414,9 +414,9 @@ void vertex_set_sel_mask_texture(int mesh_idx,int txt_idx)
 		// select vertexes in trigs
 
 	mesh=&model.meshes[mesh_idx];
-	trig=mesh->trigs;
+	trig=mesh->polys;
 	
-	for (n=0;n!=mesh->ntrig;n++) {
+	for (n=0;n!=mesh->npoly;n++) {
 
 		if (trig->txt_idx==txt_idx) {
 			for (k=0;k!=3;k++) {

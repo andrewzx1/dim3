@@ -52,7 +52,7 @@ void map_recalc_normals_get_vertex_box(model_type *model,int mesh_idx,int vertex
 	d3pnt				*pnt;
 	model_mesh_type		*mesh;
 	model_vertex_type	*vertex;
-	model_trig_type		*trig;
+	model_poly_type		*trig;
 
 	mesh=&model->meshes[mesh_idx];
 	
@@ -62,9 +62,9 @@ void map_recalc_normals_get_vertex_box(model_type *model,int mesh_idx,int vertex
 	vertex_txt_idx=(int*)malloc(mesh->nvertex*sizeof(int));
 	bzero(vertex_txt_idx,(mesh->nvertex*sizeof(int)));
 		
-	trig=mesh->trigs;
+	trig=mesh->polys;
 
-	for (n=0;n!=mesh->ntrig;n++) {
+	for (n=0;n!=mesh->npoly;n++) {
 		for (k=0;k!=3;k++) {
 			vertex_txt_idx[trig->v[k]]=trig->txt_idx;
 		}
@@ -207,18 +207,18 @@ void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent)
 	d3pnt				*pt,*pt_1,*pt_2;
 	model_mesh_type		*mesh;
 	model_vertex_type	*vertex;
-	model_trig_type		*trig;
+	model_poly_type		*trig;
 	tangent_space_type	avg_space;
 	
 	mesh=&model->meshes[mesh_idx];
-	if ((mesh->nvertex==0) || (mesh->ntrig==0)) return;
+	if ((mesh->nvertex==0) || (mesh->npoly==0)) return;
 
 		// memory for tangent space
 
-	normals=(d3vct*)malloc(mesh->ntrig*sizeof(d3vct));
+	normals=(d3vct*)malloc(mesh->npoly*sizeof(d3vct));
 	if (normals==NULL) return;
 
-	tangents=(d3vct*)malloc(mesh->ntrig*sizeof(d3vct));
+	tangents=(d3vct*)malloc(mesh->npoly*sizeof(d3vct));
 	if (tangents==NULL) {
 		free(normals);
 		return;
@@ -226,12 +226,12 @@ void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent)
 	
         // find tangent and binormal for triangles
 		
-	trig=mesh->trigs;
+	trig=mesh->polys;
 
 	nptr=normals;
 	tptr=tangents;
 	
-	for (n=0;n!=mesh->ntrig;n++) {
+	for (n=0;n!=mesh->npoly;n++) {
     
 			// get the side vectors (p1-p0) and (p2-p0)
 
@@ -283,12 +283,12 @@ void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent)
 		avg_space.normal.x=avg_space.normal.y=avg_space.normal.z=0.0f;
 		
 		cnt=0;
-		trig=mesh->trigs;
+		trig=mesh->polys;
 		
 		nptr=normals;
 		tptr=tangents;
 		
-		for (k=0;k!=mesh->ntrig;k++) {
+		for (k=0;k!=mesh->npoly;k++) {
 		
 			vertex_in_trig=FALSE;
 			
