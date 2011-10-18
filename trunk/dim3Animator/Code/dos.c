@@ -93,7 +93,7 @@ void file_reset_state(void)
 
 	trig_clear_sel_mask(state.cur_mesh_idx);
 	trig_clear_hide_mask(state.cur_mesh_idx);
-	
+
 	for (n=0;n!=max_model_blend_animation;n++) {
 		state.blend[n].animate_idx=-1;
 	}
@@ -191,7 +191,7 @@ void file_open_model(void)
 		// open model
 		
 	os_set_wait_cursor();
-
+	
  	main_wind_open();
 	os_select_window();
    
