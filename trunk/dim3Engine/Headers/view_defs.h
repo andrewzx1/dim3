@@ -88,8 +88,9 @@ and can be sold or given away.
 // shadows
 //
 
-#define view_shadows_poly_count								256
-#define view_shadows_vertex_count							10240
+#define view_shadows_map_poly_count							256
+#define view_shadows_model_vertex_count						10240
+#define view_shadows_model_poly_count						5120
 #define view_shadows_infinite_light_shift					100
 #define view_shadows_bounds_check_slop						100
 #define view_shadows_clip_infinite_distance					100000

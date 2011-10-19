@@ -305,9 +305,8 @@ bool view_initialize(char *err_str)
 	iface.setup.no_resolution_switch=TRUE;
 #endif
 
-	if (iface.setup.no_resolution_switch) {
+	if ((iface.setup.no_resolution_switch) && (!setup.window)) {
 		setup.screen_wid=setup.screen_high=-1;
-		setup.window=FALSE;
 	}
 	
 		// get desktop screen size

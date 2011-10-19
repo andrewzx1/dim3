@@ -127,7 +127,7 @@ JSValueRef js_model_bone_name_exception(JSContextRef cx,char *pose_name,char *bo
 {
 	char			err_str[256];
 
-	sprintf(err_str,"Named pose or bone does not exist: %s,%s",pose_name,bone_name);
+	sprintf(err_str,"Named pose (%s) or bone (%s) does not exist",pose_name,bone_name);
 	return(script_create_exception(cx,err_str));
 }
 

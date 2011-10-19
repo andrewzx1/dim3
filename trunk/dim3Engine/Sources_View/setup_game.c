@@ -116,10 +116,13 @@ void setup_game_video_pane(void)
 {
 	int			n,idx,wid,high,
 				x,y,control_y_add,control_y_sz;
+	bool		no_res_combo;
+	
+	no_res_combo=(iface.setup.no_resolution_switch) && (!setup.window);
 	
 	control_y_add=element_get_control_high();
 	control_y_sz=control_y_add*3;
-	if (!iface.setup.no_resolution_switch) control_y_sz+=control_y_add;
+	if (!no_res_combo) control_y_sz+=control_y_add;
 	if (gl_check_fsaa_ok()) control_y_sz+=control_y_add;
 	if (gl_check_texture_anisotropic_filter_ok()) control_y_sz+=control_y_add;
 #ifndef D3_OPENGL_ES
@@ -151,7 +154,7 @@ void setup_game_video_pane(void)
 	
 		// build the controls
 		
-	if (!iface.setup.no_resolution_switch) {
+	if (!no_res_combo) {
 		element_combo_add("Screen Size",(char*)setup_screen_size_list,idx,ctrl_screen_size_id,x,y,TRUE);
 		y+=control_y_add;
 	}

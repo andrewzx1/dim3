@@ -123,10 +123,11 @@ void view_unbind_mesh_liquid_index_object(void)
 
 void view_create_model_vertex_object(model_draw *draw)
 {
-	int					n,vertex_cnt,stride;
+	int					n,k,vertex_cnt,stride;
 	bool				shader_on;
 	model_type			*mdl;
 	model_mesh_type		*mesh;
+	model_poly_type		*poly;
 	
 		// there are some models that can
 		// draw without a shader dynamically (in the draw setup)
@@ -141,11 +142,20 @@ void view_create_model_vertex_object(model_draw *draw)
 
 	for (n=0;n!=mdl->nmesh;n++) {
 		glGenBuffers(1,&draw->vbo[n].vertex);
-			
-			// get the vertex size
+		
+			// get the vertex count
 			
 		mesh=&mdl->meshes[n];
-		vertex_cnt=mesh->npoly*3;
+		
+		vertex_cnt=0;
+		poly=mesh->polys;
+		
+		for (k=0;k!=mesh->npoly;k++) {
+			vertex_cnt+=poly->ptsz;
+			poly++;
+		}
+			
+			// get the model vertex size
 			
 		stride=(3+2)*sizeof(float);					// 3 vertex and 2 uv
 		if (shader_on) {
