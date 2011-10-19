@@ -161,11 +161,11 @@ and can be sold or given away.
 #define kCommandPlayBlendAnimate		FOUR_CHAR_CODE('plyb')
 
 //
-// vertex and trig masks
+// vertex and poly masks
 //
 
 #define animator_max_vertex				10240
-#define animator_max_trig				10240
+#define animator_max_poly				10240
 
 #define animator_mask_flag_sel			0x1
 #define animator_mask_flag_hide			0x2
@@ -232,7 +232,7 @@ and can be sold or given away.
 // drawing sizes
 //
 
-#define draw_trig_select_line_size		2.0f
+#define draw_poly_select_line_size		2.0f
 #define draw_vertex_handle_size			8.0f
 
 #define draw_model_normal_size			3.0f

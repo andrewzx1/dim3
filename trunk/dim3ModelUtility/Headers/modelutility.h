@@ -137,10 +137,10 @@ typedef struct		{
 						d3vct							major_dist,minor_dist;
 						tangent_space_type				tangent_space;
 					} model_vertex_type;
-					
+		
 typedef struct		{
-						int								txt_idx,ptsz,v[3];
-						float							gx[3],gy[3];
+						int								txt_idx,ptsz,v[8];
+						float							gx[8],gy[8];
 					} model_poly_type;
 
 typedef struct		{

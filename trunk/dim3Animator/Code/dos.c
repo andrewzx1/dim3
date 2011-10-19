@@ -88,8 +88,8 @@ void file_reset_state(void)
 	state.texture_edit_idx=-1;
 	state.in_preference=FALSE;
 	
-	vertex_clear_sel_mask(state.cur_mesh_idx);
-	vertex_clear_hide_mask(state.cur_mesh_idx);
+	vertex_mask_clear_sel(state.cur_mesh_idx);
+	vertex_mask_clear_hide(state.cur_mesh_idx);
 
 	poly_mask_clear_sel(state.cur_mesh_idx);
 	poly_mask_clear_hide(state.cur_mesh_idx);
@@ -298,8 +298,8 @@ void file_import_mesh_obj(bool replace)
 
 		// finish setup
 		
-	vertex_clear_sel_mask(state.cur_mesh_idx);
-	vertex_clear_hide_mask(state.cur_mesh_idx);
+	vertex_mask_clear_sel(state.cur_mesh_idx);
+	vertex_mask_clear_hide(state.cur_mesh_idx);
 
 	poly_mask_clear_sel(state.cur_mesh_idx);
 	poly_mask_clear_hide(state.cur_mesh_idx);

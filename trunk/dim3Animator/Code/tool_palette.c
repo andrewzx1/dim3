@@ -155,17 +155,17 @@ void tool_click(int tool_idx)
 			break;
 			
 		case 4:
-			vertex_clear_sel_mask(state.cur_mesh_idx);
+			vertex_mask_clear_sel(state.cur_mesh_idx);
 			state.select_mode=select_mode_mesh;
 			break;
 
 		case 5:
-			vertex_clear_sel_mask(state.cur_mesh_idx);
+			vertex_mask_clear_sel(state.cur_mesh_idx);
 			state.select_mode=select_mode_polygon;
 			break;
 			
 		case 6:
-			vertex_clear_sel_mask(state.cur_mesh_idx);
+			vertex_mask_clear_sel(state.cur_mesh_idx);
 			state.select_mode=select_mode_vertex;
 			break;
 			

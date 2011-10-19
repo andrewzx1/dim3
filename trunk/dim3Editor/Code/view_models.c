@@ -216,13 +216,13 @@ void view_get_model_size(char *model_name,d3pnt *size)
       
 ======================================================= */
 
-void view_model_draw_triangles(model_type *model,model_draw_setup *draw_setup,short *texture_frame,int frame_count,bool opaque)
+void view_model_draw_polys(model_type *model,model_draw_setup *draw_setup,short *texture_frame,int frame_count,bool opaque)
 {
 	int					n,k,frame,cur_txt_idx;
-	float				vertexes[3*3],uvs[3*2];
+	float				vertexes[8*3],uvs[8*2];
 	float				*pa,*pv,*pt;
 	model_mesh_type		*mesh;
-    model_poly_type		*trig;
+    model_poly_type		*poly;
 
 	cur_txt_idx=-1;
 	
@@ -231,21 +231,21 @@ void view_model_draw_triangles(model_type *model,model_draw_setup *draw_setup,sh
 	mesh=&model->meshes[0];
 
 	for (n=0;n!=mesh->npoly;n++) {
-		trig=&mesh->polys[n];
+		poly=&mesh->polys[n];
 
 			// opaque?
 
 		if (opaque) {
-			if (model->textures[trig->txt_idx].frames[0].bitmap.alpha_mode==alpha_mode_transparent) continue;
+			if (model->textures[poly->txt_idx].frames[0].bitmap.alpha_mode==alpha_mode_transparent) continue;
 		}
 		else {
-			if (model->textures[trig->txt_idx].frames[0].bitmap.alpha_mode!=alpha_mode_transparent) continue;
+			if (model->textures[poly->txt_idx].frames[0].bitmap.alpha_mode!=alpha_mode_transparent) continue;
 		}
 
 			// new texture
 
-		if (trig->txt_idx!=cur_txt_idx) {
-			cur_txt_idx=trig->txt_idx;
+		if (poly->txt_idx!=cur_txt_idx) {
+			cur_txt_idx=poly->txt_idx;
 
 			frame=0;
 			if (n<frame_count) frame=(int)texture_frame[n];
@@ -258,19 +258,19 @@ void view_model_draw_triangles(model_type *model,model_draw_setup *draw_setup,sh
 		pv=vertexes;
 		pt=uvs;
 
-		for (k=0;k!=3;k++) {
-			pa=draw_setup->mesh_arrays[0].gl_vertex_array+(trig->v[k]*3);
+		for (k=0;k!=poly->ptsz;k++) {
+			pa=draw_setup->mesh_arrays[0].gl_vertex_array+(poly->v[k]*3);
 			*pv++=*pa++;
 			*pv++=*pa++;
 			*pv++=*pa;
-			*pt++=trig->gx[k];
-			*pt++=trig->gy[k];
+			*pt++=poly->gx[k];
+			*pt++=poly->gy[k];
 		}
 
 		glVertexPointer(3,GL_FLOAT,0,vertexes);
 		glTexCoordPointer(2,GL_FLOAT,0,uvs);
 
-		glDrawArrays(GL_TRIANGLES,0,3);
+		glDrawArrays(GL_POLYGON,0,poly->ptsz);
 	}
 }
 
@@ -323,14 +323,14 @@ bool view_model_draw(d3pnt *pnt,d3ang *ang,char *name,float resize,short *textur
 	
 	glDisable(GL_BLEND);
 	
-	view_model_draw_triangles(model,&draw_setup,texture_frame,frame_count,TRUE);
+	view_model_draw_polys(model,&draw_setup,texture_frame,frame_count,TRUE);
 	
 		// run through the transparent textures
 
 	glEnable(GL_BLEND);
 	glDepthMask(GL_FALSE);
 	
-	view_model_draw_triangles(model,&draw_setup,texture_frame,frame_count,FALSE);
+	view_model_draw_polys(model,&draw_setup,texture_frame,frame_count,FALSE);
 	
 	glDepthMask(GL_TRUE);
 	glDisable(GL_ALPHA_TEST);

@@ -363,12 +363,12 @@ bool menu_event_run(int cmd)
 			// vertex menu
 			
 		case kCommandVertexSelectAll:
-			vertex_set_sel_mask_all(state.cur_mesh_idx);
+			vertex_mask_set_sel_all(state.cur_mesh_idx);
 			main_wind_draw();
 			return(TRUE);
 			
 		case kCommandVertexSelectNotAttached:
-			vertex_set_sel_mask_no_bone(state.cur_mesh_idx);
+			vertex_mask_set_sel_no_bone(state.cur_mesh_idx);
 			main_wind_draw();
 			return(TRUE);
 			
@@ -403,17 +403,17 @@ bool menu_event_run(int cmd)
 			return(TRUE);
 				
 		case kCommandVertexHideSelected:
-			vertex_hide_mask_set_sel_vertexes(state.cur_mesh_idx);
+			vertex_mask_hide_set_sel_vertexes(state.cur_mesh_idx);
 			main_wind_draw();
 			return(TRUE);
 			
 		case kCommandVertexHideNonSelected:
-			vertex_hide_mask_set_non_sel_vertexes(state.cur_mesh_idx);
+			vertex_mask_hide_set_non_sel_vertexes(state.cur_mesh_idx);
 			main_wind_draw();
 			return(TRUE);
 			
 		case kCommandVertexShowAll:
-			vertex_hide_mask_show_all_vertexes(state.cur_mesh_idx);
+			vertex_mask_hide_show_all_vertexes(state.cur_mesh_idx);
 			main_wind_draw();
 			return(TRUE);
 			
@@ -431,7 +431,7 @@ bool menu_event_run(int cmd)
 			
 		case kCommandSetBone:
 			if (!dialog_set_vertex_bone_run(&major_bone_idx,&minor_bone_idx,&bone_factor)) return(TRUE);
-			vertex_set_sel_vertex_to_bone(state.cur_mesh_idx,major_bone_idx,minor_bone_idx,bone_factor);
+			vertex_mask_set_sel_vertex_to_bone(state.cur_mesh_idx,major_bone_idx,minor_bone_idx,bone_factor);
 			main_wind_draw();
 			return(TRUE);
 

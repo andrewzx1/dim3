@@ -341,7 +341,7 @@ void draw_model_wind(int mesh_idx)
 
 		switch(state.select_mode) {
 			case select_mode_polygon:
-				draw_model_selected_trig(mesh_idx);
+				draw_model_selected_poly(mesh_idx);
 				break;
 			case select_mode_vertex:
 				draw_model_selected_vertexes(mesh_idx);

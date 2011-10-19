@@ -145,7 +145,7 @@ void debug_info_table_tag(FILE *file,unsigned long tag,int fieldsz)
 
 void debug_dump(void)
 {
-	int					n,k,t,nvertex,ntrig;
+	int					n,k,t,nvertex,npoly;
 	char				str[256],path[1024];
 	char				timer_type_str[][32]={"Single","Repeat","Chain","Dispose"};
 	obj_type			*obj;
@@ -420,7 +420,7 @@ void debug_dump(void)
 	
 	debug_info_table_str(file,"Name",25);
 	debug_info_table_str(file,"Vertexes",10);
-	debug_info_table_str(file,"Trigs",10);
+	debug_info_table_str(file,"Polygons",10);
 	debug_info_table_str(file,"Ref Count",10);
 	debug_info_return(file);
 	debug_info_table_str(file,"-----------------------",25);
@@ -433,16 +433,16 @@ void debug_dump(void)
 		mdl=server.model_list.models[n];
 		if (mdl==NULL) continue;
 
-		nvertex=ntrig=0;
+		nvertex=npoly=0;
 
 		for (k=0;k!=mdl->nmesh;k++) {
 			nvertex+=mdl->meshes[k].nvertex;
-			ntrig+=mdl->meshes[k].npoly;
+			npoly+=mdl->meshes[k].npoly;
 		}
 
 		debug_info_table_str(file,mdl->name,25);
 		debug_info_table_int(file,nvertex,10);
-		debug_info_table_int(file,ntrig,10);
+		debug_info_table_int(file,npoly,10);
 		debug_info_table_int(file,mdl->reference_count,10);
 		debug_info_return(file);
 	}

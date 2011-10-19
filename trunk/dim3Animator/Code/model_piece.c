@@ -114,7 +114,7 @@ void model_piece_add_bone(void)
 		return;
 	}
 	
-	vertex_set_sel_vertex_to_bone(state.cur_mesh_idx,idx,-1,1.0f);
+	vertex_mask_set_sel_vertex_to_bone(state.cur_mesh_idx,idx,-1,1.0f);
 
 	state.cur_item=item_bone;
 	state.cur_bone_idx=idx;

@@ -69,7 +69,7 @@ void vertex_mask_set(int mesh_idx,int vertex_idx,unsigned char mask)
       
 ======================================================= */
 
-void vertex_clear_sel_mask(int mesh_idx)
+void vertex_mask_clear_sel(int mesh_idx)
 {
 	int				n;
 	unsigned char	mask;
@@ -84,7 +84,7 @@ void vertex_clear_sel_mask(int mesh_idx)
 	}
 }
 
-void vertex_set_sel_mask(int mesh_idx,int vertex_idx,bool value)
+void vertex_mask_set_sel(int mesh_idx,int vertex_idx,bool value)
 {
 	unsigned char	mask;
 	
@@ -100,7 +100,7 @@ void vertex_set_sel_mask(int mesh_idx,int vertex_idx,bool value)
 	vertex_mask_set(mesh_idx,vertex_idx,mask);
 }
 
-void vertex_set_sel_mask_all(int mesh_idx)
+void vertex_mask_set_sel_all(int mesh_idx)
 {
 	int				n;
 	unsigned char	mask;
@@ -115,7 +115,7 @@ void vertex_set_sel_mask_all(int mesh_idx)
 	}
 }
 
-bool vertex_check_sel_any(int mesh_idx)
+bool vertex_mask_check_sel_any(int mesh_idx)
 {
 	int				n;
 	unsigned char	mask;
@@ -131,7 +131,7 @@ bool vertex_check_sel_any(int mesh_idx)
 	return(FALSE);
 }
 
-bool vertex_check_sel_mask(int mesh_idx,int vertex_idx)
+bool vertex_mask_check_sel(int mesh_idx,int vertex_idx)
 {
 	unsigned char	mask;
 	
@@ -145,7 +145,7 @@ bool vertex_check_sel_mask(int mesh_idx,int vertex_idx)
       
 ======================================================= */
 
-void vertex_clear_hide_mask(int mesh_idx)
+void vertex_mask_clear_hide(int mesh_idx)
 {
 	int				n;
 	unsigned char	mask;
@@ -160,7 +160,7 @@ void vertex_clear_hide_mask(int mesh_idx)
 	}
 }
 
-void vertex_set_hide_mask(int mesh_idx,int vertex_idx,bool value)
+void vertex_mask_set_hide(int mesh_idx,int vertex_idx,bool value)
 {
 	unsigned char	mask;
 	
@@ -176,7 +176,7 @@ void vertex_set_hide_mask(int mesh_idx,int vertex_idx,bool value)
 	vertex_mask_set(mesh_idx,vertex_idx,mask);
 }
 
-bool vertex_check_hide_mask(int mesh_idx,int vertex_idx)
+bool vertex_mask_check_hide(int mesh_idx,int vertex_idx)
 {
 	unsigned char	mask;
 
@@ -190,47 +190,47 @@ bool vertex_check_hide_mask(int mesh_idx,int vertex_idx)
       
 ======================================================= */
 
-void vertex_hide_mask_set_sel_vertexes(int mesh_idx)
+void vertex_mask_hide_set_sel_vertexes(int mesh_idx)
 {
 	int				n,nt;
 	
 	nt=model.meshes[mesh_idx].nvertex;
 	
 	for (n=0;n!=nt;n++) {
-		if (vertex_check_sel_mask(mesh_idx,n)) vertex_set_hide_mask(mesh_idx,n,TRUE);
+		if (vertex_mask_check_sel(mesh_idx,n)) vertex_mask_set_hide(mesh_idx,n,TRUE);
 	}
 	
-	vertex_clear_sel_mask(mesh_idx);
+	vertex_mask_clear_sel(mesh_idx);
 }
 
-void vertex_hide_mask_set_non_sel_vertexes(int mesh_idx)
+void vertex_mask_hide_set_non_sel_vertexes(int mesh_idx)
 {
 	int				n,nt;
 	
 	nt=model.meshes[mesh_idx].nvertex;
 	
 	for (n=0;n!=nt;n++) {
-		if (!vertex_check_sel_mask(mesh_idx,n)) vertex_set_hide_mask(mesh_idx,n,TRUE);
+		if (!vertex_mask_check_sel(mesh_idx,n)) vertex_mask_set_hide(mesh_idx,n,TRUE);
 	}
 }
 
-void vertex_hide_mask_show_all_vertexes(int mesh_idx)
+void vertex_mask_hide_show_all_vertexes(int mesh_idx)
 {
-	vertex_clear_hide_mask(mesh_idx);
+	vertex_mask_clear_hide(mesh_idx);
 }
 
 /* =======================================================
 
-      Hide/Trig Interactions
+      Hide/Poly Interactions
       
 ======================================================= */
 
-bool vertex_check_hide_mask_poly(int mesh_idx,model_poly_type *trig)
+bool vertex_mask_check_hide_poly(int mesh_idx,model_poly_type *poly)
 {
 	int				n;
 	
-	for (n=0;n!=3;n++) {
-		if (vertex_check_hide_mask(mesh_idx,trig->v[n])) return(TRUE);
+	for (n=0;n!=poly->ptsz;n++) {
+		if (vertex_mask_check_hide(mesh_idx,poly->v[n])) return(TRUE);
 	}
 	
 	return(FALSE);
@@ -242,14 +242,14 @@ bool vertex_check_hide_mask_poly(int mesh_idx,model_poly_type *trig)
       
 ======================================================= */
 
-void vertex_set_sel_mask_bone(int mesh_idx,int bone_idx)
+void vertex_mask_set_sel_bone(int mesh_idx,int bone_idx)
 {
 	int					i,nt;
 	model_vertex_type	*vertex;
 	
 		// clear selection
 		
-	vertex_clear_sel_mask(mesh_idx);
+	vertex_mask_clear_sel(mesh_idx);
 	
 		// find vertexes attached to bone
 
@@ -260,21 +260,21 @@ void vertex_set_sel_mask_bone(int mesh_idx,int bone_idx)
 	for (i=0;i!=nt;i++) {
 	
 		if ((vertex->major_bone_idx==bone_idx) || (vertex->minor_bone_idx==bone_idx)) {
-			if (!vertex_check_hide_mask(mesh_idx,i)) vertex_set_sel_mask(mesh_idx,i,TRUE);
+			if (!vertex_mask_check_hide(mesh_idx,i)) vertex_mask_set_sel(mesh_idx,i,TRUE);
 		}
 		
 		vertex++;
 	}
 }
 
-void vertex_set_sel_mask_no_bone(int mesh_idx)
+void vertex_mask_set_sel_no_bone(int mesh_idx)
 {
 	int					i,nt;
 	model_vertex_type	*vertex;
 	
 		// clear selection
 		
-	vertex_clear_sel_mask(mesh_idx);
+	vertex_mask_clear_sel(mesh_idx);
 	
 		// find vertexes to no bone
 
@@ -285,14 +285,14 @@ void vertex_set_sel_mask_no_bone(int mesh_idx)
 	for (i=0;i!=nt;i++) {
 	
 		if ((vertex->major_bone_idx==-1) && (vertex->minor_bone_idx==-1)) {
-			if (!vertex_check_hide_mask(mesh_idx,i)) vertex_set_sel_mask(mesh_idx,i,TRUE);
+			if (!vertex_mask_check_hide(mesh_idx,i)) vertex_mask_set_sel(mesh_idx,i,TRUE);
 		}
 		
 		vertex++;
 	}
 }
 
-void vertex_set_sel_mask_near_bone(int mesh_idx,int bone_idx,float percentage)
+void vertex_mask_set_sel_near_bone(int mesh_idx,int bone_idx,float percentage)
 {
 	int					i,nt,x,y,z,v_dist,dist;
 	model_bone_type		*bone;
@@ -304,7 +304,7 @@ void vertex_set_sel_mask_near_bone(int mesh_idx,int bone_idx,float percentage)
 	
 		// clear selection
 		
-	vertex_clear_sel_mask(mesh_idx);
+	vertex_mask_clear_sel(mesh_idx);
 
 		// get check distance
 		
@@ -325,7 +325,7 @@ void vertex_set_sel_mask_near_bone(int mesh_idx,int bone_idx,float percentage)
 		y=labs(bone->pnt.y-vertex->pnt.y);
 		dist=(int)(sqrt((x*x)+(z*z)+(y*y)));
 	
-		if (dist<v_dist) vertex_set_sel_mask(mesh_idx,i,TRUE);
+		if (dist<v_dist) vertex_mask_set_sel(mesh_idx,i,TRUE);
 	
 		vertex++;
 	}
@@ -334,19 +334,19 @@ void vertex_set_sel_mask_near_bone(int mesh_idx,int bone_idx,float percentage)
 
 /* =======================================================
 
-      Sel/Trig Interactions
+      Sel/Poly Interactions
       
 ======================================================= */
 
-void vertex_set_sel_mask_trig_mask(int mesh_idx)
+void vertex_mask_set_sel_poly_mask(int mesh_idx)
 {
 	int					n,k,npoly;
 	model_mesh_type		*mesh;
-	model_poly_type		*trig;
+	model_poly_type		*poly;
 
 		// clear vertexes
 
-	vertex_clear_sel_mask(mesh_idx);
+	vertex_mask_clear_sel(mesh_idx);
 
 		// set for all trigs
 
@@ -359,10 +359,10 @@ void vertex_set_sel_mask_trig_mask(int mesh_idx)
 
 		if ((!poly_mask_check_sel(mesh_idx,n)) || (poly_mask_check_hide(mesh_idx,n))) continue;
 		
-		trig=&model.meshes[mesh_idx].polys[n];
+		poly=&model.meshes[mesh_idx].polys[n];
 	
-		for (k=0;k!=3;k++) {
-			vertex_set_sel_mask(mesh_idx,trig->v[k],TRUE);
+		for (k=0;k!=poly->ptsz;k++) {
+			vertex_mask_set_sel(mesh_idx,poly->v[k],TRUE);
 		}
 	}
 }
@@ -373,7 +373,7 @@ void vertex_set_sel_mask_trig_mask(int mesh_idx)
       
 ======================================================= */
 
-void vertex_set_sel_vertex_to_bone(int mesh_idx,int major_bone_idx,int minor_bone_idx,float factor)
+void vertex_mask_set_sel_vertex_to_bone(int mesh_idx,int major_bone_idx,int minor_bone_idx,float factor)
 {
 	int					i,nt;
 	model_vertex_type	*vertex;
@@ -385,7 +385,7 @@ void vertex_set_sel_vertex_to_bone(int mesh_idx,int major_bone_idx,int minor_bon
 	
 	for (i=0;i!=nt;i++) {
 	
-		if (vertex_check_sel_mask(mesh_idx,i)) {
+		if (vertex_mask_check_sel(mesh_idx,i)) {
 			vertex->major_bone_idx=major_bone_idx;
 			vertex->minor_bone_idx=minor_bone_idx;
 			vertex->bone_factor=factor;
@@ -401,30 +401,30 @@ void vertex_set_sel_vertex_to_bone(int mesh_idx,int major_bone_idx,int minor_bon
       
 ======================================================= */
 
-void vertex_set_sel_mask_texture(int mesh_idx,int txt_idx)
+void vertex_mask_set_sel_texture(int mesh_idx,int txt_idx)
 {
 	int					n,k;
 	model_mesh_type		*mesh;
-	model_poly_type		*trig;
+	model_poly_type		*poly;
 	
 		// clear selection
 		
-	vertex_clear_sel_mask(mesh_idx);
+	vertex_mask_clear_sel(mesh_idx);
 	
-		// select vertexes in trigs
+		// select vertexes in polys
 
 	mesh=&model.meshes[mesh_idx];
-	trig=mesh->polys;
+	poly=mesh->polys;
 	
 	for (n=0;n!=mesh->npoly;n++) {
 
-		if (trig->txt_idx==txt_idx) {
-			for (k=0;k!=3;k++) {
-				if (!vertex_check_hide_mask(mesh_idx,trig->v[k])) vertex_set_sel_mask(mesh_idx,trig->v[k],TRUE);
+		if (poly->txt_idx==txt_idx) {
+			for (k=0;k!=poly->ptsz;k++) {
+				if (!vertex_mask_check_hide(mesh_idx,poly->v[k])) vertex_mask_set_sel(mesh_idx,poly->v[k],TRUE);
 			}
 		}
 		
-		trig++;
+		poly++;
 	}
 }
 

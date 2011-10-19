@@ -55,7 +55,7 @@ void vertex_find_center_sel_vertexes(int mesh_idx,int *p_cx,int *p_cy,int *p_cz)
 	cnt=0;
 	
 	for (i=0;i!=nt;i++) {
-		if (vertex_check_sel_mask(mesh_idx,i)) {
+		if (vertex_mask_check_sel(mesh_idx,i)) {
 			cx+=vertex->pnt.x;
 			cy+=vertex->pnt.y;
 			cz+=vertex->pnt.z;
@@ -90,7 +90,7 @@ void vertex_invert_normals(int mesh_idx)
 	
 	for (n=0;n!=nvertex;n++) {
 		
-		if (!vertex_check_sel_mask(mesh_idx,n)) continue;
+		if (!vertex_mask_check_sel(mesh_idx,n)) continue;
 
 		vertex->tangent_space.normal.x=-vertex->tangent_space.normal.x;
 		vertex->tangent_space.normal.y=-vertex->tangent_space.normal.y;
@@ -121,7 +121,7 @@ void vertex_set_normals(int mesh_idx)
 	
 	for (n=0;n!=nvertex;n++) {
 		
-		if (!vertex_check_sel_mask(mesh_idx,n)) continue;
+		if (!vertex_mask_check_sel(mesh_idx,n)) continue;
 			
 		vertex->tangent_space.normal.x=normal.x;
 		vertex->tangent_space.normal.y=normal.y;
@@ -149,7 +149,7 @@ void vertex_set_normals_in_out(int mesh_idx,bool out)
 	
 	for (n=0;n!=nvertex;n++) {
 				
-		if (vertex_check_sel_mask(mesh_idx,n)) {
+		if (vertex_mask_check_sel(mesh_idx,n)) {
 			pnt=&model.meshes[mesh_idx].vertexes[n].pnt;
 			center.x+=pnt->x;
 			center.y+=pnt->y;
@@ -172,7 +172,7 @@ void vertex_set_normals_in_out(int mesh_idx,bool out)
 
 	for (n=0;n!=nvertex;n++) {
 				
-		if (!vertex_check_sel_mask(mesh_idx,n)) continue;
+		if (!vertex_mask_check_sel(mesh_idx,n)) continue;
 
 			// determine if vertex is facing 'out'
 		
@@ -204,7 +204,7 @@ void vertex_clear_bone_attachments_sel_vertexes(int mesh_idx)
 	vertex=model.meshes[mesh_idx].vertexes;
 	
 	for (n=0;n!=nt;n++) {
-		if (vertex_check_sel_mask(mesh_idx,n)) {
+		if (vertex_mask_check_sel(mesh_idx,n)) {
 			vertex->major_bone_idx=-1;
 			vertex->minor_bone_idx=-1;
 		}
@@ -271,13 +271,14 @@ void vertex_delete_sel_vertex(int mesh_idx)
 	int					i,n,j,sz;
 	char				*vertex_sel;
 	bool				hit;
+	model_poly_type		*poly;
 
 		// convert sels to boolean
 		
 	vertex_sel=(char*)malloc(model.meshes[mesh_idx].nvertex);
 		
 	for (i=0;i!=model.meshes[mesh_idx].nvertex;i++) {
-		vertex_sel[i]=(char)vertex_check_sel_mask(mesh_idx,i);
+		vertex_sel[i]=(char)vertex_mask_check_sel(mesh_idx,i);
 	}
 	
 		// delete all vertexes
@@ -309,10 +310,12 @@ void vertex_delete_sel_vertex(int mesh_idx)
 		while (n<model.meshes[mesh_idx].npoly) {
 		
 			hit=FALSE;
+
+			poly=&model.meshes[mesh_idx].polys[n];
 			
-			for (j=0;j!=3;j++) {
-				hit=hit||(model.meshes[mesh_idx].polys[n].v[j]==i);
-				if (model.meshes[mesh_idx].polys[n].v[j]>i) model.meshes[mesh_idx].polys[n].v[j]--;
+			for (j=0;j!=poly->ptsz;j++) {
+				hit=hit||(poly->v[j]==i);
+				if (poly->v[j]>i) poly->v[j]--;
 			}
 		
 			if (!hit) {
@@ -336,8 +339,8 @@ void vertex_delete_sel_vertex(int mesh_idx)
 	
 		// clear sels
 		
-	vertex_clear_sel_mask(mesh_idx);
-	vertex_clear_hide_mask(mesh_idx);
+	vertex_mask_clear_sel(mesh_idx);
+	vertex_mask_clear_hide(mesh_idx);
 }
 
 /* =======================================================
@@ -350,7 +353,7 @@ void vertex_delete_unused_vertexes(int mesh_idx)
 {
 	int					n,k,i,t,nvertex,npoly,sz;
 	unsigned char		*v_ok;
-    model_poly_type		*trig;
+    model_poly_type		*poly;
 	
 		// vertex hit list
 			
@@ -362,13 +365,13 @@ void vertex_delete_unused_vertexes(int mesh_idx)
 		// find vertexes hit
 		
 	npoly=model.meshes[mesh_idx].npoly;
-	trig=model.meshes[mesh_idx].polys;
+	poly=model.meshes[mesh_idx].polys;
 	
 	for (n=0;n!=npoly;n++) {
-		for (k=0;k!=3;k++) {
-			v_ok[trig->v[k]]=0x1;
+		for (k=0;k!=poly->ptsz;k++) {
+			v_ok[poly->v[k]]=0x1;
 		}
-		trig++;
+		poly++;
 	}
 	
 		// delete unused vertexes
@@ -379,13 +382,13 @@ void vertex_delete_unused_vertexes(int mesh_idx)
 		
 			// change all trigs vertex pointers
 	
-		trig=model.meshes[mesh_idx].polys;
+		poly=model.meshes[mesh_idx].polys;
 		
 		for (i=0;i!=npoly;i++) {
-			for (t=0;t!=3;t++) {
-				if (trig->v[t]>n) trig->v[t]--;
+			for (t=0;t!=poly->ptsz;t++) {
+				if (poly->v[t]>n) poly->v[t]--;
 			}
-			trig++;
+			poly++;
 		}
 		
 			// delete vertex

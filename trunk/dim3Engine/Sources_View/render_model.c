@@ -284,7 +284,7 @@ void render_model_vertex_object_no_shader(model_type *mdl,int mesh_idx,model_dra
 						*va,*va_start,*ca,*ca_start;
 	unsigned char		*vp,*pc;
 	model_mesh_type		*mesh;
-	model_poly_type		*trig;
+	model_poly_type		*poly;
 	
 	mesh=&mdl->meshes[mesh_idx];
 	
@@ -295,15 +295,15 @@ void render_model_vertex_object_no_shader(model_type *mdl,int mesh_idx,model_dra
 
 	stride=draw->vbo[mesh_idx].vertex_stride;
 
-	trig=mesh->polys;
+	poly=mesh->polys;
 	
 	for (n=0;n!=mesh->npoly;n++) {
 	
-		gx=trig->gx;
-		gy=trig->gy;
+		gx=poly->gx;
+		gy=poly->gy;
 
-		for (k=0;k!=3;k++) {
-			offset=trig->v[k]*3;
+		for (k=0;k!=poly->ptsz;k++) {
+			offset=poly->v[k]*3;
 			
 			va=va_start+offset;
 			ca=ca_start+offset;
@@ -326,7 +326,7 @@ void render_model_vertex_object_no_shader(model_type *mdl,int mesh_idx,model_dra
 			vp+=stride;
 		}
 
-		trig++;
+		poly++;
 	}
 }
 
@@ -337,7 +337,7 @@ void render_model_vertex_object_shader(model_type *mdl,int mesh_idx,model_draw *
 						*va,*va_start,*ta,*ta_start,*na,*na_start;
 	unsigned char		*vp;
 	model_mesh_type		*mesh;
-	model_poly_type		*trig;
+	model_poly_type		*poly;
 	
 	mesh=&mdl->meshes[mesh_idx];
 	
@@ -349,15 +349,15 @@ void render_model_vertex_object_shader(model_type *mdl,int mesh_idx,model_draw *
 
 	stride=draw->vbo[mesh_idx].vertex_stride;
 
-	trig=mesh->polys;
+	poly=mesh->polys;
 
 	for (n=0;n!=mesh->npoly;n++) {
 	
-		gx=trig->gx;
-		gy=trig->gy;
+		gx=poly->gx;
+		gy=poly->gy;
 
-		for (k=0;k!=3;k++) {
-			offset=trig->v[k]*3;
+		for (k=0;k!=poly->ptsz;k++) {
+			offset=poly->v[k]*3;
 			
 			va=va_start+offset;
 			ta=ta_start+offset;
@@ -383,7 +383,7 @@ void render_model_vertex_object_shader(model_type *mdl,int mesh_idx,model_draw *
 			vp+=stride;
 		}
 
-		trig++;
+		poly++;
 	}
 }
 
@@ -465,15 +465,15 @@ void render_model_release_vertex_objects(void)
 
 /* =======================================================
 
-      Draw Model Trigs
+      Draw Model Polys
       
 ======================================================= */
 
 void render_model_opaque_normal(model_type *mdl,int mesh_idx,model_draw *draw)
 {
-	int						n,frame,txt_idx;
+	int						n,v_idx,frame,txt_idx;
 	model_mesh_type			*mesh;
-	model_poly_type			*trig;
+	model_poly_type			*poly;
 	model_draw_mesh_type	*draw_mesh;
     texture_type			*texture;
 	
@@ -493,18 +493,20 @@ void render_model_opaque_normal(model_type *mdl,int mesh_idx,model_draw *draw)
 
 	gl_texture_opaque_start();
 
-		// run through the trigs
+		// run through the polys
 
-	trig=mesh->polys;
+	v_idx=0;
+	poly=mesh->polys;
 
 	for (n=0;n!=mesh->npoly;n++) {
 
-			// is this trig texture opaque
+			// is this poly texture opaque
 
-		txt_idx=trig->txt_idx;
+		txt_idx=poly->txt_idx;
 
 		if (!draw_mesh->textures[txt_idx].opaque) {
-			trig++;
+			v_idx+=poly->ptsz;
+			poly++;
 			continue;
 		}
 	
@@ -515,11 +517,13 @@ void render_model_opaque_normal(model_type *mdl,int mesh_idx,model_draw *draw)
 
 		gl_texture_opaque_set(texture->frames[frame].bitmap.gl_id);
 
-			// draw trig
+			// draw poly
 			
-		glDrawArrays(GL_TRIANGLES,(n*3),3);
+		glDrawArrays(GL_TRIANGLE_FAN,v_idx,poly->ptsz);
 		
-		trig++;
+		v_idx+=poly->ptsz;
+		poly++;
+
 		view.count.model_poly++;
 	}
 
@@ -528,9 +532,9 @@ void render_model_opaque_normal(model_type *mdl,int mesh_idx,model_draw *draw)
 
 void render_model_opaque_shader(model_type *mdl,int mesh_idx,model_draw *draw,view_light_list_type *light_list)
 {
-	int						n,frame,txt_idx,stride;
+	int						n,v_idx,frame,txt_idx,stride;
 	model_mesh_type			*mesh;
-	model_poly_type			*trig;
+	model_poly_type			*poly;
  	model_draw_mesh_type	*draw_mesh;
 	texture_type			*texture;
 	
@@ -553,18 +557,20 @@ void render_model_opaque_shader(model_type *mdl,int mesh_idx,model_draw *draw,vi
 
 	stride=draw->vbo[mesh_idx].vertex_stride;
 
-		// run through the trigs
+		// run through the polys
 
-	trig=mesh->polys;
+	v_idx=0;
+	poly=mesh->polys;
 
 	for (n=0;n!=mesh->npoly;n++) {
 
-			// is this trig texture opaque
+			// is this poly texture opaque
 
-		txt_idx=trig->txt_idx;
+		txt_idx=poly->txt_idx;
 
 		if (!draw_mesh->textures[txt_idx].opaque) {
-			trig++;
+			v_idx+=poly->ptsz;
+			poly++;
 			continue;
 		}
 
@@ -587,9 +593,11 @@ void render_model_opaque_shader(model_type *mdl,int mesh_idx,model_draw *draw,vi
 			// run the shader
 			
 		gl_shader_draw_execute(core_shader_group_model,texture,txt_idx,frame,-1,1.0f,light_list,(5*sizeof(float)),(8*sizeof(float)),stride);
-		glDrawArrays(GL_TRIANGLES,(n*3),3);
+		glDrawArrays(GL_TRIANGLE_FAN,v_idx,poly->ptsz);
 		
-		trig++;
+		v_idx+=poly->ptsz;
+		poly++;
+
 		view.count.model_poly++;
 	}
 			
@@ -598,10 +606,10 @@ void render_model_opaque_shader(model_type *mdl,int mesh_idx,model_draw *draw,vi
 
 void render_model_transparent_normal(model_type *mdl,int mesh_idx,model_draw *draw)
 {
-	int						n,frame,txt_idx;
+	int						n,v_idx,frame,txt_idx;
 	bool					cur_additive,is_additive;
 	model_mesh_type			*mesh;
-	model_poly_type			*trig;
+	model_poly_type			*poly;
  	model_draw_mesh_type	*draw_mesh;
     texture_type			*texture;
 	
@@ -626,18 +634,20 @@ void render_model_transparent_normal(model_type *mdl,int mesh_idx,model_draw *dr
 
 	cur_additive=FALSE;
 	
-		// run through the trigs
+		// run through the polys
 
-	trig=mesh->polys;
+	v_idx=0;
+	poly=mesh->polys;
 
 	for (n=0;n!=mesh->npoly;n++) {
 
-			// is this trig texture transparent
+			// is this poly texture transparent
 
-		txt_idx=trig->txt_idx;
+		txt_idx=poly->txt_idx;
 
 		if (!draw_mesh->textures[txt_idx].transparent) {
-			trig++;
+			v_idx+=poly->ptsz;
+			poly++;
 			continue;
 		}
 
@@ -661,11 +671,13 @@ void render_model_transparent_normal(model_type *mdl,int mesh_idx,model_draw *dr
 
 		gl_texture_transparent_set(texture->frames[frame].bitmap.gl_id,draw_mesh->alpha);
 
-			// draw trig
+			// draw poly
 			
-		glDrawArrays(GL_TRIANGLES,(n*3),3);
+		glDrawArrays(GL_TRIANGLE_FAN,v_idx,poly->ptsz);
 		
-		trig++;
+		v_idx+=poly->ptsz;
+		poly++;
+
 		view.count.model_poly++;
 	}
 	
@@ -676,10 +688,10 @@ void render_model_transparent_normal(model_type *mdl,int mesh_idx,model_draw *dr
 
 void render_model_transparent_shader(model_type *mdl,int mesh_idx,model_draw *draw,view_light_list_type *light_list)
 {
-	int						n,frame,txt_idx,stride;
+	int						n,v_idx,frame,txt_idx,stride;
 	bool					cur_additive,is_additive;
 	model_mesh_type			*mesh;
-	model_poly_type			*trig;
+	model_poly_type			*poly;
  	model_draw_mesh_type	*draw_mesh;
     texture_type			*texture;
 	
@@ -707,18 +719,20 @@ void render_model_transparent_shader(model_type *mdl,int mesh_idx,model_draw *dr
 
 	cur_additive=FALSE;
 
-		// run through the trigs
+		// run through the polys
 
-	trig=mesh->polys;
+	v_idx=0;
+	poly=mesh->polys;
 
 	for (n=0;n!=mesh->npoly;n++) {
 
-			// is this trig texture transparent
+			// is this poly texture transparent
 
-		txt_idx=trig->txt_idx;
+		txt_idx=poly->txt_idx;
 
 		if (!draw_mesh->textures[txt_idx].transparent) {
-			trig++;
+			v_idx+=poly->ptsz;
+			poly++;
 			continue;
 		}
 
@@ -751,12 +765,14 @@ void render_model_transparent_shader(model_type *mdl,int mesh_idx,model_draw *dr
 			light_list->diffuse_boost=mdl->diffuse_boost;
 		}
 
-			// draw trig
+			// draw poly
 			
 		gl_shader_draw_execute(core_shader_group_model,texture,txt_idx,frame,-1,draw_mesh->alpha,light_list,(5*sizeof(float)),(8*sizeof(float)),stride);
-		glDrawArrays(GL_TRIANGLES,(n*3),3);
+		glDrawArrays(GL_TRIANGLE_FAN,v_idx,poly->ptsz);
 		
-		trig++;
+		v_idx+=poly->ptsz;
+		poly++;
+
 		view.count.model_poly++;
 	}
 	
@@ -767,9 +783,9 @@ void render_model_transparent_shader(model_type *mdl,int mesh_idx,model_draw *dr
 
 void render_model_glow(model_type *mdl,int mesh_idx,model_draw *draw)
 {
-	int						n,frame,txt_idx;
+	int						n,v_idx,frame,txt_idx;
 	model_mesh_type			*mesh;
- 	model_poly_type			*trig;
+ 	model_poly_type			*poly;
 	model_draw_mesh_type	*draw_mesh;
     texture_type			*texture;
 	
@@ -789,18 +805,20 @@ void render_model_glow(model_type *mdl,int mesh_idx,model_draw *draw)
 
 	gl_texture_glow_start();
 
-		// run through the trigs
+		// run through the polys
 
-	trig=mesh->polys;
+	v_idx=0;
+	poly=mesh->polys;
 
 	for (n=0;n!=mesh->npoly;n++) {
 
-			// is this trig texture glow
+			// is this poly texture glow
 
-		txt_idx=trig->txt_idx;
+		txt_idx=poly->txt_idx;
 
 		if (!draw_mesh->textures[txt_idx].glow) {
-			trig++;
+			v_idx+=poly->ptsz;
+			poly++;
 			continue;
 		}
 
@@ -811,11 +829,13 @@ void render_model_glow(model_type *mdl,int mesh_idx,model_draw *draw)
 
 		gl_texture_glow_set(texture->frames[frame].bitmap.gl_id,texture->frames[frame].glowmap.gl_id,texture->glow.current_color);
 
-			// draw trig
+			// draw poly
 		
-		glDrawArrays(GL_TRIANGLES,(n*3),3);
+		glDrawArrays(GL_TRIANGLE_FAN,v_idx,poly->ptsz);
 		
-		trig++;
+		v_idx+=poly->ptsz;
+		poly++;
+
 		view.count.model_poly++;
 	}
 	
@@ -834,7 +854,7 @@ void render_model_setup(model_draw *draw,int tick)
 	bool				texture_hits[max_model_texture];
 	model_type			*mdl;
 	model_mesh_type		*mesh;
-	model_poly_type		*trig;
+	model_poly_type		*poly;
     texture_type		*texture;
 	
 		// get model
@@ -911,15 +931,15 @@ void render_model_setup(model_draw *draw,int tick)
 		draw->meshes[n].has_transparent=(draw->meshes[n].alpha!=1.0f);
 		draw->meshes[n].has_glow=FALSE;
 
-		trig=mesh->polys;
+		poly=mesh->polys;
 
 		for (k=0;k!=mesh->npoly;k++) {
 
 				// only check once per texture
 
-			txt_idx=trig->txt_idx;
+			txt_idx=poly->txt_idx;
 			if (texture_hits[txt_idx]) {
-				trig++;
+				poly++;
 				continue;
 			}
 
@@ -944,7 +964,7 @@ void render_model_setup(model_draw *draw,int tick)
 				draw->has_opaque=TRUE;
 			}
 			
-			trig++;
+			poly++;
 		}
 	}
 }

@@ -44,7 +44,7 @@ unsigned char					*poly_mask_ptr;
 
 bool poly_mask_initialize(void)
 {
-	poly_mask_ptr=(unsigned char*)malloc(animator_max_trig*max_model_mesh);
+	poly_mask_ptr=(unsigned char*)malloc(animator_max_poly*max_model_mesh);
 	return(poly_mask_ptr!=NULL);
 }
 
@@ -55,12 +55,12 @@ void poly_mask_shutdown(void)
 
 unsigned char poly_mask_get(int mesh_idx,int poly_idx)
 {
-	return(*(poly_mask_ptr+((animator_max_trig*mesh_idx)+poly_idx)));
+	return(*(poly_mask_ptr+((animator_max_poly*mesh_idx)+poly_idx)));
 }
 
 void poly_mask_set(int mesh_idx,int poly_idx,unsigned char mask)
 {
-	*(poly_mask_ptr+((animator_max_trig*mesh_idx)+poly_idx))=mask;
+	*(poly_mask_ptr+((animator_max_poly*mesh_idx)+poly_idx))=mask;
 }
 
 /* =======================================================
@@ -195,7 +195,7 @@ void poly_mask_select_more(int mesh_idx)
 	bool				hit;
 	unsigned char		*sel_mask;
 	model_mesh_type		*mesh;
-	model_poly_type		*trig,*trig2;
+	model_poly_type		*poly,*poly2;
 
 	mesh=&model.meshes[mesh_idx];
 	npoly=mesh->npoly;
@@ -213,33 +213,33 @@ void poly_mask_select_more(int mesh_idx)
 	for (n=0;n!=npoly;n++) {
 
 		if ((!poly_mask_check_sel(mesh_idx,n)) || (poly_mask_check_hide(mesh_idx,n))) continue;
-		trig=&model.meshes[mesh_idx].polys[n];
+		poly=&model.meshes[mesh_idx].polys[n];
 
 		for (k=0;k!=npoly;k++) {
 
 			if (k==n) continue;
 
 			if (poly_mask_check_hide(mesh_idx,k)) continue;
-			trig2=&model.meshes[mesh_idx].polys[k];
+			poly2=&model.meshes[mesh_idx].polys[k];
 
 				// check for shared edges
 
 			hit=FALSE;
 
-			for (i=0;i!=3;i++) {
+			for (i=0;i!=poly->ptsz;i++) {
 				i2=i+1;
-				if (i2==3) i2=0;
+				if (i2==poly->ptsz) i2=0;
 
-				for (t=0;t!=3;t++) {
+				for (t=0;t!=poly2->ptsz;t++) {
 					t2=t+1;
-					if (t2==3) t2=0;
+					if (t2==poly2->ptsz) t2=0;
 
-					if ((trig2->v[t]==trig->v[i]) && (trig2->v[t2]==trig->v[i2])) {
+					if ((poly2->v[t]==poly->v[i]) && (poly2->v[t2]==poly->v[i2])) {
 						hit=TRUE;
 						break;
 					}
 
-					if ((trig2->v[t]==trig->v[i2]) && (trig2->v[t2]==trig->v[i])) {
+					if ((poly2->v[t]==poly->v[i2]) && (poly2->v[t2]==poly->v[i])) {
 						hit=TRUE;
 						break;
 					}
@@ -252,7 +252,7 @@ void poly_mask_select_more(int mesh_idx)
 		}
 	}
 
-		// select triangles
+		// select polygons
 
 	for (n=0;n!=npoly;n++) {
 		if (sel_mask[n]!=0x0) poly_mask_set_sel(mesh_idx,n,TRUE);
@@ -262,5 +262,5 @@ void poly_mask_select_more(int mesh_idx)
 	
 		// get the new vertexes
 
-	vertex_set_sel_mask_trig_mask(mesh_idx);
+	vertex_mask_set_sel_poly_mask(mesh_idx);
 }

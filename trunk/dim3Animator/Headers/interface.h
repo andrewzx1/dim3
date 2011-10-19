@@ -214,7 +214,7 @@ extern void draw_model_bones_get_handle_rot(int bone_idx,d3ang *rot);
 extern float draw_model_bones_drag_handle_offset(void);
 extern void draw_model_bones_drag_handle_calc(d3fpnt *bone_pnt,d3vct *vct,d3ang *ang,d3fpnt *hand_pnt);
 extern void draw_model_selected_vertexes(int mesh_idx);
-extern void draw_model_selected_trig(int mesh_idx);
+extern void draw_model_selected_poly(int mesh_idx);
 extern void draw_model_box_view(void);
 extern void draw_model_box_hit_boxes(void);
 extern void draw_model_axis(void);
@@ -234,24 +234,24 @@ extern void draw_model_wind(int mesh_idx);
 
 extern bool vertex_mask_initialize(void);
 extern void vertex_mask_shutdown(void);
-extern void vertex_clear_sel_mask(int mesh_idx);
-extern void vertex_set_sel_mask(int mesh_idx,int vertex_idx,bool value);
-extern void vertex_set_sel_mask_all(int mesh_idx);
-extern bool vertex_check_sel_any(int mesh_idx);
-extern bool vertex_check_sel_mask(int mesh_idx,int vertex_idx);
-extern void vertex_clear_hide_mask(int mesh_idx);
-extern void vertex_set_hide_mask(int mesh_idx,int vertex_idx,bool value);
-extern bool vertex_check_hide_mask(int mesh_idx,int vertex_idx);
-extern void vertex_hide_mask_set_sel_vertexes(int mesh_idx);
-extern void vertex_hide_mask_set_non_sel_vertexes(int mesh_idx);
-extern void vertex_hide_mask_show_all_vertexes(int mesh_idx);
-extern bool vertex_check_hide_mask_poly(int mesh_idx,model_poly_type *poly);
-extern void vertex_set_sel_mask_bone(int mesh_idx,int bone_idx);
-extern void vertex_set_sel_mask_no_bone(int mesh_idx);
-extern void vertex_set_sel_mask_near_bone(int mesh_idx,int bone_idx,float percentage);
-extern void vertex_set_sel_vertex_to_bone(int mesh_idx,int major_bone_idx,int minor_bone_idx,float factor);
-extern void vertex_set_sel_mask_trig_mask(int mesh_idx);
-extern void vertex_set_sel_mask_texture(int mesh_idx,int txt_idx);
+extern void vertex_mask_clear_sel(int mesh_idx);
+extern void vertex_mask_set_sel(int mesh_idx,int vertex_idx,bool value);
+extern void vertex_mask_set_sel_all(int mesh_idx);
+extern bool vertex_mask_check_sel_any(int mesh_idx);
+extern bool vertex_mask_check_sel(int mesh_idx,int vertex_idx);
+extern void vertex_mask_clear_hide(int mesh_idx);
+extern void vertex_mask_set_hide(int mesh_idx,int vertex_idx,bool value);
+extern bool vertex_mask_check_hide(int mesh_idx,int vertex_idx);
+extern void vertex_mask_hide_set_sel_vertexes(int mesh_idx);
+extern void vertex_mask_hide_set_non_sel_vertexes(int mesh_idx);
+extern void vertex_mask_hide_show_all_vertexes(int mesh_idx);
+extern bool vertex_mask_check_hide_poly(int mesh_idx,model_poly_type *poly);
+extern void vertex_mask_set_sel_bone(int mesh_idx,int bone_idx);
+extern void vertex_mask_set_sel_no_bone(int mesh_idx);
+extern void vertex_mask_set_sel_near_bone(int mesh_idx,int bone_idx,float percentage);
+extern void vertex_mask_set_sel_vertex_to_bone(int mesh_idx,int major_bone_idx,int minor_bone_idx,float factor);
+extern void vertex_mask_set_sel_poly_mask(int mesh_idx);
+extern void vertex_mask_set_sel_texture(int mesh_idx,int txt_idx);
 
 //
 // vertex calcs
@@ -287,7 +287,7 @@ extern void poly_mask_select_more(int mesh_idx);
 
 extern bool model_pick_list_start(int count);
 extern void model_pick_list_end(d3pnt *pnt,int *idx);
-extern void model_pick_list_add_trig(int idx,d3pnt *v_pnts);
+extern void model_pick_list_add_poly(int idx,int ptsz,d3pnt *v_pnts);
 
 //
 // dialogs
