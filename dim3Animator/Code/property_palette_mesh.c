@@ -60,7 +60,7 @@ void property_palette_fill_mesh(int mesh_idx)
 	char				str[256];
 	d3fpnt				uv;
 	model_mesh_type		*mesh;
-	model_poly_type		*trig;
+	model_poly_type		*poly;
 	
 	mesh=&model.meshes[mesh_idx];
 
@@ -78,17 +78,17 @@ void property_palette_fill_mesh(int mesh_idx)
 	list_palette_add_header(&property_palette,0,"Replace OBJ");
 	list_palette_add_point(&property_palette,kMeshPropertyMovement,"Movement",&mesh->import_move,FALSE);
 
-		// any selected trig
+		// any selected polygon
 
 	if (state.select_mode==select_mode_polygon) {
-		trig=poly_mask_get_single_select(mesh_idx);
-		if (trig!=NULL) {
+		poly=poly_mask_get_single_select(mesh_idx);
+		if (poly!=NULL) {
 
 			list_palette_add_header(&property_palette,0,"Selected Trig UVs");
 
-			for (n=0;n!=3;n++) {
-				uv.x=trig->gx[n];
-				uv.y=trig->gy[n];
+			for (n=0;n!=poly->ptsz;n++) {
+				uv.x=poly->gx[n];
+				uv.y=poly->gy[n];
 				sprintf(str,"Vertex %d",n);
 				list_palette_add_uv(&property_palette,(kMeshPropertyTrigUV+n),str,&uv,FALSE);
 			}
@@ -97,7 +97,7 @@ void property_palette_fill_mesh(int mesh_idx)
 
 	list_palette_add_header(&property_palette,0,"Mesh Info");
 	list_palette_add_string_int(&property_palette,-1,"Vertexes",mesh->nvertex,TRUE);
-	list_palette_add_string_int(&property_palette,-1,"Triangles",mesh->npoly,TRUE);
+	list_palette_add_string_int(&property_palette,-1,"Polygons",mesh->npoly,TRUE);
 }
 
 /* =======================================================

@@ -122,51 +122,51 @@ void model_texture_end(void)
 void draw_model_mesh_triangles(int mesh_idx,bool opaque)
 {
 	int					n,k;
-	float				vertexes[3*3],uvs[3*2];
+	float				vertexes[8*3],uvs[8*2];
 	float				*pa,*pv,*pt;
 	model_mesh_type		*mesh;
-    model_poly_type		*trig;
+    model_poly_type		*poly;
 
 	mesh=&model.meshes[mesh_idx];
 
 	for (n=0;n!=mesh->npoly;n++) {
-		trig=&mesh->polys[n];
+		poly=&mesh->polys[n];
 
 			// hidden?
 
-		if (vertex_check_hide_mask_poly(mesh_idx,trig)) continue;
+		if (vertex_mask_check_hide_poly(mesh_idx,poly)) continue;
 
 			// opaque?
 
 		if (opaque) {
-			if (model.textures[trig->txt_idx].frames[0].bitmap.alpha_mode==alpha_mode_transparent) continue;
+			if (model.textures[poly->txt_idx].frames[0].bitmap.alpha_mode==alpha_mode_transparent) continue;
 		}
 		else {
-			if (model.textures[trig->txt_idx].frames[0].bitmap.alpha_mode!=alpha_mode_transparent) continue;
+			if (model.textures[poly->txt_idx].frames[0].bitmap.alpha_mode!=alpha_mode_transparent) continue;
 		}
 
 			// switch texture?
 
-		model_texture_set(trig->txt_idx);
+		model_texture_set(poly->txt_idx);
 
 			// setup and draw triangle
 
 		pv=vertexes;
 		pt=uvs;
 
-		for (k=0;k!=3;k++) {
-			pa=draw_setup.mesh_arrays[mesh_idx].gl_vertex_array+(trig->v[k]*3);
+		for (k=0;k!=poly->ptsz;k++) {
+			pa=draw_setup.mesh_arrays[mesh_idx].gl_vertex_array+(poly->v[k]*3);
 			*pv++=*pa++;
 			*pv++=*pa++;
 			*pv++=*pa;
-			*pt++=trig->gx[k];
-			*pt++=trig->gy[k];
+			*pt++=poly->gx[k];
+			*pt++=poly->gy[k];
 		}
 
 		glVertexPointer(3,GL_FLOAT,0,vertexes);
 		glTexCoordPointer(2,GL_FLOAT,0,uvs);
 
-		glDrawArrays(GL_TRIANGLES,0,3);
+		glDrawArrays(GL_TRIANGLES,0,poly->ptsz);
 	}
 }
 

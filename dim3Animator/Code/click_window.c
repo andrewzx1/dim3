@@ -68,7 +68,7 @@ void model_drag_sel_vertex(float *pv,d3rect *box,bool chg_sel)
 		draw_model_2D_transform(&pnt,&tran_pnt);
 		
 		if ((tran_pnt.x>=box->lx) && (tran_pnt.x<=box->rx) && (tran_pnt.y>=box->ty) && (tran_pnt.y<=box->by)) {
-			if (!vertex_check_hide_mask(state.cur_mesh_idx,n)) vertex_set_sel_mask(state.cur_mesh_idx,n,chg_sel);
+			if (!vertex_mask_check_hide(state.cur_mesh_idx,n)) vertex_mask_set_sel(state.cur_mesh_idx,n,chg_sel);
 		}
 	}
 }
@@ -82,7 +82,7 @@ void select_model_wind_save_drag_sel_state(char *vertex_sel)
 	vertex=model.meshes[state.cur_mesh_idx].vertexes;
 
 	for (n=0;n!=nt;n++) {
-		vertex_sel[n]=(char)vertex_check_sel_mask(state.cur_mesh_idx,n);
+		vertex_sel[n]=(char)vertex_mask_check_sel(state.cur_mesh_idx,n);
 		vertex++;
 	}
 }
@@ -96,7 +96,7 @@ void select_model_wind_restore_drag_sel_state(char *vertex_sel)
 	vertex=model.meshes[state.cur_mesh_idx].vertexes;
 
 	for (n=0;n!=nt;n++) {
-		vertex_set_sel_mask(state.cur_mesh_idx,n,(vertex_sel[n]!=0));
+		vertex_mask_set_sel(state.cur_mesh_idx,n,(vertex_sel[n]!=0));
 		vertex++;
 	}
 }
@@ -104,21 +104,21 @@ void select_model_wind_restore_drag_sel_state(char *vertex_sel)
 void select_model_wind_select_trig_for_vertex_drag_sel(void)
 {
 	int					n,k,nt;
-	model_poly_type		*trig;
+	model_poly_type		*poly;
 
 	poly_mask_clear_sel(state.cur_mesh_idx);
 
 	nt=model.meshes[state.cur_mesh_idx].npoly;
-	trig=model.meshes[state.cur_mesh_idx].polys;
+	poly=model.meshes[state.cur_mesh_idx].polys;
 
 	for (n=0;n!=nt;n++) {
-		for (k=0;k!=3;k++) {
-			if (vertex_check_sel_mask(state.cur_mesh_idx,trig->v[k])) {
+		for (k=0;k!=poly->ptsz;k++) {
+			if (vertex_mask_check_sel(state.cur_mesh_idx,poly->v[k])) {
 				poly_mask_set_sel(state.cur_mesh_idx,n,TRUE);
 				break;
 			}
 		}
-		trig++;
+		poly++;
 	}
 }
 
@@ -229,8 +229,8 @@ bool select_model_wind_vertex(d3pnt *start_pnt,float *pv)
 
 	if (idx==-1) return(FALSE);
 
-	if (!os_key_shift_down()) vertex_clear_sel_mask(state.cur_mesh_idx);
-	vertex_set_sel_mask(state.cur_mesh_idx,idx,TRUE);
+	if (!os_key_shift_down()) vertex_mask_clear_sel(state.cur_mesh_idx);
+	vertex_mask_set_sel(state.cur_mesh_idx,idx,TRUE);
 
 	return(TRUE);
 }
@@ -242,7 +242,7 @@ bool select_model_wind_vertex_sel_trig(d3pnt *start_pnt,float *pv)
 	d3fpnt				pnt;
 	d3pnt				tran_pnt;
 	model_mesh_type		*mesh;
-	model_poly_type		*trig;
+	model_poly_type		*poly;
 
 		// clicked on a vertex?
 		
@@ -253,12 +253,12 @@ bool select_model_wind_vertex_sel_trig(d3pnt *start_pnt,float *pv)
 
 	for (n=0;n!=nt;n++) {
 
-		trig=&mesh->polys[n];
-		if (vertex_check_hide_mask_poly(state.cur_mesh_idx,trig)) continue;
+		poly=&mesh->polys[n];
+		if (vertex_mask_check_hide_poly(state.cur_mesh_idx,poly)) continue;
 		if (!poly_mask_check_sel(state.cur_mesh_idx,n)) continue;
 
-		for (k=0;k!=3;k++) {
-			pv2=pv+(trig->v[k]*3);
+		for (k=0;k!=poly->ptsz;k++) {
+			pv2=pv+(poly->v[k]*3);
 	
 			pnt.x=*pv2++;
 			pnt.y=*pv2++;
@@ -267,18 +267,18 @@ bool select_model_wind_vertex_sel_trig(d3pnt *start_pnt,float *pv)
 			draw_model_2D_transform(&pnt,&tran_pnt);
 		
 			if ((start_pnt->x>=(tran_pnt.x-5)) && (start_pnt->x<=(tran_pnt.x+5)) && (start_pnt->y>=(tran_pnt.y-5)) && (start_pnt->y<=(tran_pnt.y+5))) {
-				idx=trig->v[k];
+				idx=poly->v[k];
 				break;
 			}
 		}
 
-		trig++;
+		poly++;
 	}
 
 	if (idx==-1) return(FALSE);
 
-	if (!os_key_shift_down()) vertex_clear_sel_mask(state.cur_mesh_idx);
-	vertex_set_sel_mask(state.cur_mesh_idx,idx,TRUE);
+	if (!os_key_shift_down()) vertex_mask_clear_sel(state.cur_mesh_idx);
+	vertex_mask_set_sel(state.cur_mesh_idx,idx,TRUE);
 
 	return(TRUE);
 }
@@ -293,15 +293,15 @@ bool select_model_wind_polygon(d3pnt *start_pnt,bool check_only)
 {
 	int					n,k,idx,npoly;
 	float				*pv;
-	d3pnt				v_pnts[3];
+	d3pnt				v_pnts[8];
  	model_mesh_type		*mesh;
-	model_poly_type		*trig;
+	model_poly_type		*poly;
 	
 		// clicking mesh
 	
 	mesh=&model.meshes[state.cur_mesh_idx];
 	
-		// draw and pick the triangles
+		// draw and pick the polygons
 		
 	npoly=mesh->npoly;
 	if (!model_pick_list_start(npoly)) return(FALSE);
@@ -311,23 +311,23 @@ bool select_model_wind_polygon(d3pnt *start_pnt,bool check_only)
 	model_draw_setup_initialize(&model,&draw_setup,TRUE);
 	draw_model_setup_bones_vertexes(state.cur_mesh_idx);
 
-	trig=mesh->polys;
+	poly=mesh->polys;
     
     for (n=0;n!=npoly;n++) {
 	
-		if (!vertex_check_hide_mask_poly(state.cur_mesh_idx,trig)) {
+		if (!vertex_mask_check_hide_poly(state.cur_mesh_idx,poly)) {
 			
-			for (k=0;k!=3;k++) {
-				pv=draw_setup.mesh_arrays[state.cur_mesh_idx].gl_vertex_array+(trig->v[k]*3);
+			for (k=0;k!=poly->ptsz;k++) {
+				pv=draw_setup.mesh_arrays[state.cur_mesh_idx].gl_vertex_array+(poly->v[k]*3);
 				v_pnts[k].x=(int)*pv++;
 				v_pnts[k].y=(int)*pv++;
 				v_pnts[k].z=(int)*pv;
 			}
 			
-			model_pick_list_add_trig(n,v_pnts);
+			model_pick_list_add_poly(n,poly->ptsz,v_pnts);
 		}
 		
-		trig++;
+		poly++;
     }
 	
 	model_draw_setup_shutdown(&model,&draw_setup);
@@ -345,9 +345,9 @@ bool select_model_wind_polygon(d3pnt *start_pnt,bool check_only)
 	if (!os_key_shift_down()) poly_mask_clear_sel(state.cur_mesh_idx);
 	poly_mask_set_sel(state.cur_mesh_idx,idx,TRUE);
 	
-		// select all the vertexes attached to trig
+		// select all the vertexes attached to polygon
 
-	vertex_set_sel_mask_trig_mask(state.cur_mesh_idx);
+	vertex_mask_set_sel_poly_mask(state.cur_mesh_idx);
 
 	return(TRUE);
 }
@@ -739,7 +739,7 @@ bool drag_bone_model_wind(d3pnt *start_pnt)
 		state.cur_bone_idx=k;
 		item_palette_scroll_into_view(item_bone,state.cur_bone_idx);
 
-		if (state.sel_vertex_with_bone) vertex_set_sel_mask_bone(state.cur_mesh_idx,state.cur_bone_idx);
+		if (state.sel_vertex_with_bone) vertex_mask_set_sel_bone(state.cur_mesh_idx,state.cur_bone_idx);
 
 		list_palette_set_level(1);
 

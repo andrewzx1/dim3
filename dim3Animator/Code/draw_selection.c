@@ -58,7 +58,7 @@ void draw_model_selected_vertexes(int mesh_idx)
 
 	for (n=0;n!=nvertex;n++) {
 	
-		if ((!vertex_check_sel_mask(mesh_idx,n)) || (vertex_check_hide_mask(mesh_idx,n))) {
+		if ((!vertex_mask_check_sel(mesh_idx,n)) || (vertex_mask_check_hide(mesh_idx,n))) {
 			pv+=3;
 			continue;
 		}
@@ -86,17 +86,17 @@ void draw_model_selected_vertexes(int mesh_idx)
 
 /* =======================================================
 
-      Draw Selected Trig
+      Draw Selected Poly
       
 ======================================================= */
 
-void draw_model_selected_trig(int mesh_idx)
+void draw_model_selected_poly(int mesh_idx)
 {
 	int					n,k,npoly,vertex_idx;
-	float				vertexes[3*3];
+	float				vertexes[8*3];
 	float				*pv,*pa;
 	model_mesh_type		*mesh;
-	model_poly_type		*trig;
+	model_poly_type		*poly;
 
 	mesh=&model.meshes[mesh_idx];
 	npoly=mesh->npoly;
@@ -104,27 +104,27 @@ void draw_model_selected_trig(int mesh_idx)
 		// selection
 	
 	glColor4f(setup.col.mesh_sel.r,setup.col.mesh_sel.g,setup.col.mesh_sel.b,1.0f);
-	glLineWidth(draw_trig_select_line_size);
+	glLineWidth(draw_poly_select_line_size);
 
 	for (n=0;n!=npoly;n++) {
 
 		if ((!poly_mask_check_sel(mesh_idx,n)) || (poly_mask_check_hide(mesh_idx,n))) continue;
 		
-		trig=&model.meshes[mesh_idx].polys[n];
+		poly=&model.meshes[mesh_idx].polys[n];
 
 			// draw the selected trig
 
 		pv=vertexes;
 
-		for (k=0;k!=3;k++) {
-			pa=draw_setup.mesh_arrays[mesh_idx].gl_vertex_array+(3*trig->v[k]);
+		for (k=0;k!=poly->ptsz;k++) {
+			pa=draw_setup.mesh_arrays[mesh_idx].gl_vertex_array+(poly->v[k]*3);
 			*pv++=*pa++;
 			*pv++=*pa++;
 			*pv++=*pa;
 		}
 	
 		glVertexPointer(3,GL_FLOAT,0,vertexes);
-		glDrawArrays(GL_LINE_LOOP,0,3);
+		glDrawArrays(GL_LINE_LOOP,0,poly->ptsz);
 	}
 		
 	glLineWidth(1.0f);
@@ -138,15 +138,15 @@ void draw_model_selected_trig(int mesh_idx)
 
 		if ((!poly_mask_check_sel(mesh_idx,n)) || (poly_mask_check_hide(mesh_idx,n))) continue;
 		
-		trig=&model.meshes[mesh_idx].polys[n];
+		poly=&model.meshes[mesh_idx].polys[n];
 		
 			// draw any selected vertexes
 			// on the trig
 		
-		for (k=0;k!=3;k++) {
-			vertex_idx=trig->v[k];
-			if ((vertex_check_sel_mask(mesh_idx,vertex_idx)) && (!vertex_check_hide_mask(mesh_idx,vertex_idx))) {
-				pa=draw_setup.mesh_arrays[mesh_idx].gl_vertex_array+(3*vertex_idx);
+		for (k=0;k!=poly->ptsz;k++) {
+			vertex_idx=poly->v[k];
+			if ((vertex_mask_check_sel(mesh_idx,vertex_idx)) && (!vertex_mask_check_hide(mesh_idx,vertex_idx))) {
+				pa=draw_setup.mesh_arrays[mesh_idx].gl_vertex_array+(vertex_idx*3);
 
 				glVertexPointer(3,GL_FLOAT,0,pa);
 				glDrawArrays(GL_POINTS,0,1);
@@ -175,7 +175,7 @@ void draw_model_normals(int mesh_idx)
 	
 		// is there a vertex selection?
 		
-	has_sel=vertex_check_sel_any(mesh_idx);
+	has_sel=vertex_mask_check_sel_any(mesh_idx);
 	
 		// draw normals
 	
@@ -192,7 +192,7 @@ void draw_model_normals(int mesh_idx)
 
 	for (n=0;n!=nvertex;n++) {
 
-		if (!vertex_check_sel_mask(mesh_idx,n)) {
+		if (!vertex_mask_check_sel(mesh_idx,n)) {
 			pv+=3;
 			pn+=3;
 			pt+=3;

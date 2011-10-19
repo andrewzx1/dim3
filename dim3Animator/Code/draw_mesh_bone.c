@@ -47,10 +47,10 @@ extern animator_state_type		state;
 void draw_model_mesh(int mesh_idx)
 {
 	int					n,k,npoly;
- 	float				vertexes[3*3];
+ 	float				vertexes[8*3];
 	float				*pa,*pv;
 	model_mesh_type		*mesh;
-	model_poly_type		*trig;
+	model_poly_type		*poly;
 
 		// draw the mesh
 		
@@ -59,19 +59,19 @@ void draw_model_mesh(int mesh_idx)
 	glColor4f(setup.col.mesh_line.r,setup.col.mesh_line.g,setup.col.mesh_line.b,1.0f);
     
 	npoly=mesh->npoly;
-	trig=mesh->polys;
+	poly=mesh->polys;
     
     for (n=0;n!=npoly;n++) {
 	
-		if (vertex_check_hide_mask_poly(mesh_idx,trig)) {
-			trig++;
+		if (vertex_mask_check_hide_poly(mesh_idx,poly)) {
+			poly++;
 			continue;
 		}
 
 		pv=vertexes;
 
-		for (k=0;k!=3;k++) {
-			pa=draw_setup.mesh_arrays[mesh_idx].gl_vertex_array+(trig->v[k]*3);
+		for (k=0;k!=poly->ptsz;k++) {
+			pa=draw_setup.mesh_arrays[mesh_idx].gl_vertex_array+(poly->v[k]*3);
 			*pv++=*pa++;
 			*pv++=*pa++;
 			*pv++=*pa;
@@ -80,7 +80,7 @@ void draw_model_mesh(int mesh_idx)
 		glVertexPointer(3,GL_FLOAT,0,vertexes);
 		glDrawArrays(GL_LINE_LOOP,0,3);
 		
-		trig++;
+		poly++;
     }
 }
 

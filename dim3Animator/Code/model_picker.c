@@ -137,10 +137,10 @@ void model_pick_list_end(d3pnt *pnt,int *idx)
 	glEnable(GL_SMOOTH);
 }
 
-void model_pick_list_add_trig(int idx,d3pnt *v_pnts)
+void model_pick_list_add_poly(int idx,int ptsz,d3pnt *v_pnts)
 {
 	int					n;
-	float				vertexes[3*3];
+	float				vertexes[8*3];
 	float				*pv;
 	model_picker_type	*pick;
 
@@ -175,13 +175,13 @@ void model_pick_list_add_trig(int idx,d3pnt *v_pnts)
 
 	pv=vertexes;
 
-	for (n=0;n!=3;n++) {
+	for (n=0;n!=ptsz;n++) {
 		*pv++=(float)v_pnts[n].x;
 		*pv++=(float)v_pnts[n].y;
 		*pv++=(float)v_pnts[n].z;
 	}
 
 	glVertexPointer(3,GL_FLOAT,0,vertexes);
-	glDrawArrays(GL_TRIANGLES,0,3);
+	glDrawArrays(GL_POLYGON,0,ptsz);
 }
 

@@ -36,8 +36,6 @@ extern server_type		server;
 extern view_type		view;
 extern setup_type		setup;
 
-short					*shadow_poly_ptsz_list;
-unsigned char			*shadow_alpha;
 d3pnt					*shadow_spt,*shadow_hpt;
 d3vct					*shadow_vct;
 poly_pointer_type		*shadow_poly_ptrs;
@@ -50,11 +48,6 @@ poly_pointer_type		*shadow_poly_ptrs;
 
 bool shadow_initialize(void)
 {
-		// memory for polygon counts
-	
-	shadow_poly_ptsz_list=(short*)malloc(sizeof(short)*view_shadows_model_poly_count);
-	if (shadow_poly_ptsz_list==NULL) return(FALSE);
-	
 		// memory for ray tracing lists
 		
 	shadow_spt=(d3pnt*)malloc(sizeof(d3pnt)*view_shadows_model_vertex_count);
@@ -65,11 +58,6 @@ bool shadow_initialize(void)
 	
 	shadow_vct=(d3vct*)malloc(sizeof(d3vct)*view_shadows_model_vertex_count);
 	if (shadow_vct==NULL) return(FALSE);
-	
-		// memory for vertex alpha data
-		
-	shadow_alpha=(unsigned char*)malloc(sizeof(unsigned char)*view_shadows_model_vertex_count);
-	if (shadow_alpha==NULL) return(FALSE);
 	
 		// memory for map poly ptrs
 	
@@ -83,13 +71,9 @@ void shadow_shutdown(void)
 {
 	free(shadow_poly_ptrs);
 
-	free(shadow_alpha);
-	
 	free(shadow_spt);
 	free(shadow_vct);
 	free(shadow_hpt);
-	
-	free(shadow_poly_ptsz_list);
 }
 
 /* =======================================================
@@ -479,14 +463,14 @@ void shadow_render_stencil_poly_draw(int ptsz,float *vertexes,int stencil_idx)
 
 void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *draw)
 {
-	int							n,k,i,map_mesh_idx,map_poly_idx,v_idx,ptsz,
-								map_poly_count,draw_poly_count,i_alpha,
+	int							n,k,i,map_mesh_idx,map_poly_idx,
+								map_poly_count,i_alpha,
 								light_intensity;
-	short						*poly_ptsz_list;
+	unsigned short				indexes[8];
 	float						fx,fy,fz,alpha,
 								f_light_intensity,stencil_poly_vertexes[8*3];
 	float						*pf,*va;
-	unsigned char				*vertex_ptr,*vp,*pc,*uc_alpha;
+	unsigned char				*vertex_ptr,*vp,*pc;
 	d3vct						*vct;
 	d3pnt						*spt,*hpt,bound_min,bound_max,light_pnt;
 	map_mesh_type				*map_mesh;
@@ -579,10 +563,6 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 		
 		shadow_render_stencil_poly_setup(map_mesh,map_poly,stencil_poly_vertexes);
 		shadow_render_stencil_poly_draw(map_poly->ptsz,stencil_poly_vertexes,1);
-		
-			// setup bounding eliminations
-		
-		shadow_render_prepare_bounds_check(&shadow_poly_ptrs[n],&bound_min,&bound_max);
 
 			// create the vertexes
 			
@@ -594,87 +574,44 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 			return;
 		}
 		
-			// build the color list
-			
-		uc_alpha=shadow_alpha;
+			// build the vertex and color list
+	
+		vp=vertex_ptr;
+
 		hpt=shadow_hpt;
 		
 		for (k=0;k!=model_mesh->nvertex;k++) {
+
+				// vertex
+
+			pf=(float*)vp;
+
+			*pf++=(float)hpt->x;
+			*pf++=(float)hpt->y;
+			*pf++=(float)hpt->z;
+
+				// color
+
 			fx=(float)(hpt->x-light_pnt.x);
 			fy=(float)(hpt->y-light_pnt.y);
 			fz=(float)(hpt->z-light_pnt.z);
 				
 			i_alpha=(int)((((fx*fx)+(fy*fy)+(fz*fz))*alpha)*255.0f);
 			if (i_alpha>255) i_alpha=255;
-			
-			*uc_alpha++=(unsigned char)(255-i_alpha);
+
+			pc=(unsigned char*)pf;
+
+			*pc++=0x0;
+			*pc++=0x0;
+			*pc++=0x0;
+			*pc=(unsigned char)(255-i_alpha);
+
 			hpt++;
-		}
 
-			// the shadow vertexes and colors
-			// skip triangles with no collisions
-			
-		vp=vertex_ptr;
-
-		draw_poly_count=0;
-		poly_ptsz_list=shadow_poly_ptsz_list;
-	
-		for (k=0;k!=model_mesh->npoly;k++) {
-			model_poly=&model_mesh->polys[k];
-			
-				// ignore anything pointing towards
-				// light (assume solid objects)
-				// supergumba == move this outside!
-				
-//			na=draw->setup.mesh_arrays[model_mesh_idx].gl_normal_array+(k*9);
-//			if (((na[0]*(float)(light_pnt.x-draw->pnt.x))+(na[1]*(float)(light_pnt.y-draw->pnt.y))+(na[2]*(float)(light_pnt.z-draw->pnt.z)))<0.0f) continue;
-
-				// do a bounds check for quick eliminations
-
-			if (shadow_render_model_poly_bounds_check_skip(&bound_min,&bound_max,model_poly)) continue;
-
-				// triangle indexes
-				
-			*poly_ptsz_list++=(short)model_poly->ptsz;
-				
-			for (i=0;i!=model_poly->ptsz;i++) {
-				
-				hpt=&shadow_hpt[model_poly->v[i]];
-			
-					// vertex
-
-				pf=(float*)vp;
-
-				*pf++=(float)hpt->x;
-				*pf++=(float)hpt->y;
-				*pf++=(float)hpt->z;
-
-					// color
-
-				pc=(unsigned char*)pf;
-
-				*pc++=0x0;
-				*pc++=0x0;
-				*pc++=0x0;
-				*pc=*(shadow_alpha+model_poly->v[i]);
-
-				vp+=draw->vbo[model_mesh_idx].shadow_vertex_stride;
-			}
-
-			draw_poly_count++;
-			if (draw_poly_count>=view_shadows_model_poly_count) break;
+			vp+=draw->vbo[model_mesh_idx].shadow_vertex_stride;
 		}
 		
 		view_unmap_model_shadow_vertex_object();
-
-			// if no trigs to draw, skip this poly
-			// and turn off the stencil
-
-		if (draw_poly_count==0) {
-			view_unbind_model_shadow_vertex_object();
-			shadow_render_stencil_poly_draw(map_poly->ptsz,stencil_poly_vertexes,0);
-			continue;
-		}
 
 			// setup arrays
 
@@ -695,16 +632,37 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 		glColor4f(0.0f,0.0f,0.0f,1.0f);
 		glStencilFunc(GL_EQUAL,1,0xFF);
 		
-		v_idx=0;
-		poly_ptsz_list=shadow_poly_ptsz_list;
+			// setup bounding eliminations
 		
-		for (k=0;k!=draw_poly_count;k++) {
-			ptsz=(int)*poly_ptsz_list++;
-			glDrawArrays(GL_TRIANGLE_FAN,v_idx,ptsz);
-			v_idx+=ptsz;
+		shadow_render_prepare_bounds_check(&shadow_poly_ptrs[n],&bound_min,&bound_max);
+
+			// run through the shadow polygons
+			// skipping any we can
+			
+		for (k=0;k!=model_mesh->npoly;k++) {
+			model_poly=&model_mesh->polys[k];
+			
+				// ignore anything pointing towards
+				// light (assume solid objects)
+				// supergumba == move this outside!
+				
+//			na=draw->setup.mesh_arrays[model_mesh_idx].gl_normal_array+(k*9);
+//			if (((na[0]*(float)(light_pnt.x-draw->pnt.x))+(na[1]*(float)(light_pnt.y-draw->pnt.y))+(na[2]*(float)(light_pnt.z-draw->pnt.z)))<0.0f) continue;
+
+				// do a bounds check for quick eliminations
+
+			if (shadow_render_model_poly_bounds_check_skip(&bound_min,&bound_max,model_poly)) continue;
+
+				// triangle indexes
+				
+			for (i=0;i!=model_poly->ptsz;i++) {
+				indexes[i]=(unsigned short)model_poly->v[i];
+			}
+
+			glDrawElements(GL_TRIANGLE_FAN,model_poly->ptsz,GL_UNSIGNED_SHORT,(GLvoid*)indexes);
+
+			view.count.shadow_poly++;
 		}
-		
-		view.count.shadow_poly+=draw_poly_count;
 
 			// disable the color array
 

@@ -474,7 +474,7 @@ void main_wind_key(char ch)
 		// esc key deselects
 		
 	if (ch==0x1B) {
-		vertex_clear_sel_mask(state.cur_mesh_idx);
+		vertex_mask_clear_sel(state.cur_mesh_idx);
 		main_wind_draw();
 		return;
 	}
