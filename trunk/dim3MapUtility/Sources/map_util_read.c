@@ -435,7 +435,6 @@ void decode_map_camera_xml(map_type *map,int map_head)
     tag=xml_findfirstchild("Chase",camera_tag);
     if (tag!=-1) {
 		map->camera.chase.distance=xml_get_attribute_int(tag,"distance");
-		map->camera.chase.distance_width_factor=xml_get_attribute_float(tag,"distance_width_factor");
 		map->camera.chase.track_speed=xml_get_attribute_float(tag,"track_speed");
 		xml_get_attribute_3_coord_float(tag,"slop",&map->camera.chase.slop.x,&map->camera.chase.slop.y,&map->camera.chase.slop.z);
 	}

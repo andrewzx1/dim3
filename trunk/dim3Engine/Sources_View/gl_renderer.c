@@ -110,7 +110,7 @@ bool gl_initialize(int screen_wid,int screen_high,int fsaa_mode,bool reset,char 
 	}
 
 		// setup rendering sizes
-        
+		
 	setup.screen.x_sz=screen_wid;
 	setup.screen.y_sz=screen_high;
 	

@@ -60,6 +60,28 @@ void camera_chase_connect(void)
 
 /* =======================================================
 
+      Chase Camera Width Adjustments
+	  
+	  This code tries to maintain chase camera dimensions
+	  when ratios aren't 1.6
+      
+======================================================= */
+
+float camera_chase_width_adjust(void)
+{
+	float		ratio;
+	
+#ifndef D3_ROTATE_VIEW
+	ratio=(((float)setup.screen.x_sz)/((float)setup.screen.y_sz))*camera.setup.plane.aspect_ratio;
+#else
+	ratio=(((float)setup.screen.y_sz)/((float)setup.screen.x_sz))*camera.setup.plane.aspect_ratio;
+#endif
+
+	return((1.6f-ratio)*13500.0f);
+}
+
+/* =======================================================
+
       Run Chase Camera
       
 ======================================================= */
@@ -134,9 +156,7 @@ void camera_chase_get_position(d3pnt *pnt,d3ang *ang)
 		
 	fx=0;
 	fy=0;
-	fz=(float)camera.setup.chase.distance;
-	
-	fz+=((float)(camera_distance_width_factor_start_width-setup.screen.x_sz)*camera.setup.chase.distance_width_factor);
+	fz=((float)camera.setup.chase.distance)+camera_chase_width_adjust();
 	
 	fang=angle_add(camera.cur_chase_ang.x,-obj->view_ang.x);
 	
@@ -239,9 +259,7 @@ void camera_chase_static_get_position(d3pnt *pnt,d3ang *ang)
 
 	fx=0;
 	fy=0;
-	fz=(float)camera.setup.chase.distance;
-
-	fz+=((float)(camera_distance_width_factor_start_width-setup.screen.x_sz)*camera.setup.chase.distance_width_factor);
+	fz=((float)camera.setup.chase.distance)+camera_chase_width_adjust();
 	
 	x_ang=camera.setup.ang.x;
 	if (x_ang>180.0f) x_ang-=360.0f;
