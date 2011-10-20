@@ -76,7 +76,9 @@ BEGIN
         MENUITEM "Swap Y/Z",								ID_MESH_SWAP_YZ
         MENUITEM "Center X/Z",								ID_MESH_CENTER_XZ
         MENUITEM "Floor Y",									ID_MESH_FLOOR_Y
-   END
+ 		MENUITEM SEPARATOR
+        MENUITEM "Tessellate",								ID_MESH_TESSELLATE
+  END
     POPUP "Vertexes"
     BEGIN
         MENUITEM "Select All\tCtrl+A",						ID_VERTEX_SELECT_ALL
@@ -95,6 +97,9 @@ BEGIN
         MENUITEM "Show All",								ID_VERTEX_SHOW_ALL
  		MENUITEM SEPARATOR
         MENUITEM "Delete Vertexes",							ID_VERTEX_DELETE
+ 		MENUITEM SEPARATOR
+        MENUITEM "Make Quad",								ID_VERTEX_MAKE_QUAD
+        MENUITEM "Tessellate Polygon",						ID_VERTEX_TESSELLATE_POLYGON
     END
     POPUP "Bones"
     BEGIN

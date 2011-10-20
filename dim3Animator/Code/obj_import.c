@@ -33,8 +33,6 @@ and can be sold or given away.
 #include "interface.h"
 #include "ui_common.h"
 
-#define obj_max_face_vertex		128
-
 extern model_type				model;
 extern animator_state_type		state;
 
@@ -44,7 +42,7 @@ extern animator_state_type		state;
       
 ======================================================= */
 
-void import_obj_rerig(model_mesh_type *mesh,int old_nvertex,model_vertex_type *old_vertex)
+void import_obj_rerig_vertexes(model_mesh_type *mesh,int old_nvertex,model_vertex_type *old_vertex)
 {
 	int						n,k,v_idx,
 							cur_dist,dist,dist2;
@@ -140,19 +138,18 @@ void import_obj_rerig(model_mesh_type *mesh,int old_nvertex,model_vertex_type *o
 bool import_obj(char *path,bool replace,bool *found_normals,char *err_str)
 {
 	int						n,k,i,idx,nvertex,npoly,nuv,nnormal,nline,nmaterial,
-							texture_idx,high,npt,old_nvertex,sz,
-							pvtx[obj_max_face_vertex];
-	int						*trig_normal_count;
+							texture_idx,high,ptsz,old_nvertex,sz;
+	int						*poly_normal_count;
 	float					f_count,fy,f_ty,f_by;
 	char					txt[256],*c,vstr[256],vtstr[256],vnstr[256],
 							material_name[256],
 							material_list[max_model_texture][name_str_len];
 	bool					hit_material,in_material,all_material_exists;
-	d3uv					*uv,*uv_ptr,pt_uv[obj_max_face_vertex];
-	d3vct					*normal,*normal_ptr,pnormal[obj_max_face_vertex];
+	d3uv					*uv,*uv_ptr;
+	d3vct					*normal,*normal_ptr;
 	model_mesh_type			*mesh;
 	model_vertex_type		*vertex,*old_vertex;
-    model_poly_type			*trig;
+    model_poly_type			*poly;
 	
 	mesh=&model.meshes[state.cur_mesh_idx];
 	
@@ -220,7 +217,7 @@ bool import_obj(char *path,bool replace,bool *found_normals,char *err_str)
 		return(FALSE);
 	}
 	
-		// count the vertexes, uvs, normals, and trigs
+		// count the vertexes, uvs, normals, and polys
 		// and find the total height
 		
 	nvertex=0;
@@ -261,17 +258,8 @@ bool import_obj(char *path,bool replace,bool *found_normals,char *err_str)
 		}
 
 		if (strcmp(txt,"f")==0) {
-        
-			npt=0;
-        
-			for (k=0;k!=obj_max_face_vertex;k++) {
-				textdecode_get_piece(n,(k+1),txt);
-				if (txt[0]==0x0) break;
-				
-				npt++;
-			}
-			
-			npoly+=(npt-2);
+			npoly++;
+			continue;
 		}
 	}
 	
@@ -378,16 +366,15 @@ bool import_obj(char *path,bool replace,bool *found_normals,char *err_str)
 	*found_normals=(nnormal!=0);
 	
 		// a count for averaging the
-		// normals from the trigs into
+		// normals from the polys into
 		// the vertexes
 		
-	trig_normal_count=(int*)malloc(sizeof(int)*nvertex);
-	bzero(trig_normal_count,(sizeof(int)*nvertex));
+	poly_normal_count=(int*)malloc(sizeof(int)*nvertex);
+	bzero(poly_normal_count,(sizeof(int)*nvertex));
 
-		// get the triangles
+		// get the polygons
 
-    npoly=0;
-	trig=mesh->polys;
+	poly=mesh->polys;
 
 	for (i=0;i!=nmaterial;i++) {
 
@@ -402,7 +389,7 @@ bool import_obj(char *path,bool replace,bool *found_normals,char *err_str)
 
 		in_material=FALSE;
 
-			// run through the trigs
+			// run through the polys
 
 		for (n=0;n!=nline;n++) {
 
@@ -424,11 +411,13 @@ bool import_obj(char *path,bool replace,bool *found_normals,char *err_str)
 	            
 			if (strcmp(txt,"f")!=0) continue;
 	        
-				// get the face points
+				// create the poly
+
+			poly->txt_idx=texture_idx;
+			
+			ptsz=0;
 	        
-			npt=0;
-	        
-			for (k=0;k!=obj_max_face_vertex;k++) {
+			for (k=0;k!=8;k++) {
 				textdecode_get_piece(n,(k+1),txt);
 				if (txt[0]==0x0) break;
 	            
@@ -449,16 +438,16 @@ bool import_obj(char *path,bool replace,bool *found_normals,char *err_str)
 					*c=0x0;
 				}
 				
-				pvtx[npt]=atoi(vstr);
-				if (pvtx[npt]>0) {
-					pvtx[npt]--;
+				poly->v[ptsz]=atoi(vstr);
+				if (poly->v[ptsz]>0) {
+					poly->v[ptsz]--;
 				}
 				else {
-					pvtx[npt]=nvertex+pvtx[npt];
+					poly->v[ptsz]=nvertex+poly->v[ptsz];
 				}
 	            
 				if (vtstr[0]==0x0) {
-					pt_uv[npt].x=pt_uv[npt].y=0.0f;
+					poly->gx[ptsz]=poly->gy[ptsz]=0.0f;
 				}
 				else {
 					idx=atoi(vtstr);
@@ -469,8 +458,8 @@ bool import_obj(char *path,bool replace,bool *found_normals,char *err_str)
 						idx=nuv+idx;
 					}
 					
-					pt_uv[npt].x=uv_ptr[idx].x;
-					pt_uv[npt].y=1.0f-uv_ptr[idx].y;
+					poly->gx[ptsz]=uv_ptr[idx].x;
+					poly->gy[ptsz]=1.0f-uv_ptr[idx].y;
 				}
 					
 				if (vnstr[0]!=0x0) {
@@ -481,54 +470,24 @@ bool import_obj(char *path,bool replace,bool *found_normals,char *err_str)
 					else {
 						idx=nnormal+idx;
 					}
-					
-					memmove(&pnormal[npt],&normal_ptr[idx],sizeof(d3vct));
-				}
-				
-				npt++;
-			}
-			
-				// create the trigs
-			
-			for (k=0;k!=(npt-2);k++) {
-				trig->txt_idx=i;
 
-				trig->v[0]=pvtx[0];
-				trig->v[1]=pvtx[k+1];
-				trig->v[2]=pvtx[k+2];
-	                
-				trig->gx[0]=pt_uv[0].x;
-				trig->gx[1]=pt_uv[k+1].x;
-				trig->gx[2]=pt_uv[k+2].x;
-	            
-				trig->gy[0]=pt_uv[0].y;
-				trig->gy[1]=pt_uv[k+1].y;
-				trig->gy[2]=pt_uv[k+2].y;
-	            
-				trig++;
-				npoly++;
-			}
-			
-				// add up the normals
-				// supergumba -- we can combine these when we move away from trigs
-				
-			if (nnormal!=0) {
-				for (k=0;k!=npt;k++) {
-					idx=pvtx[k];
-					vertex=&mesh->vertexes[idx];
+					vertex=&mesh->vertexes[poly->v[ptsz]];
 					
-					vertex->tangent_space.normal.x+=pnormal[k].x;
-					vertex->tangent_space.normal.y+=pnormal[k].y;
-					vertex->tangent_space.normal.z+=pnormal[k].z;
+					vertex->tangent_space.normal.x+=normal_ptr[idx].x;
+					vertex->tangent_space.normal.y+=normal_ptr[idx].y;
+					vertex->tangent_space.normal.z+=normal_ptr[idx].z;
 					
-					trig_normal_count[idx]++;
+					poly_normal_count[poly->v[ptsz]]++;
 				}
-			}
 				
+				ptsz++;
+			}
+
+			poly->ptsz=ptsz;
+
+			poly++;
 		}
 	}
-	
-	mesh->npoly=npoly;
 		
 		// average the vertex normals
 		
@@ -536,20 +495,15 @@ bool import_obj(char *path,bool replace,bool *found_normals,char *err_str)
 	
 		vertex=mesh->vertexes;
 		
-		for (i=0;i!=mesh->nvertex;i++) {
+		for (n=0;n!=mesh->nvertex;n++) {
 
-			if (trig_normal_count[i]!=0) {
-				f_count=(float)trig_normal_count[i];
+			if (poly_normal_count[n]!=0) {
+				f_count=(float)poly_normal_count[n];
 				
 				vertex->tangent_space.normal.x/=f_count;
 				vertex->tangent_space.normal.y/=f_count;
 				vertex->tangent_space.normal.z/=f_count;
 				vector_normalize(&vertex->tangent_space.normal);
-				
-				vertex->tangent_space.tangent.x/=f_count;
-				vertex->tangent_space.tangent.y/=f_count;
-				vertex->tangent_space.tangent.z/=f_count;
-				vector_normalize(&vertex->tangent_space.tangent);
 			}
 
 			vertex++;
@@ -557,7 +511,7 @@ bool import_obj(char *path,bool replace,bool *found_normals,char *err_str)
 		
 	}
 
-	free(trig_normal_count);
+	free(poly_normal_count);
 	
 	free(uv_ptr);
 	free(normal_ptr);
@@ -598,7 +552,7 @@ bool import_obj(char *path,bool replace,bool *found_normals,char *err_str)
 		
 	if (replace) {
 		progress_next_title("Obj Import: Fixing Bone Rigging");
-		import_obj_rerig(mesh,old_nvertex,old_vertex);
+		import_obj_rerig_vertexes(mesh,old_nvertex,old_vertex);
 		free(old_vertex);
 	}
 	

@@ -348,7 +348,7 @@ void vertex_mask_set_sel_poly_mask(int mesh_idx)
 
 	vertex_mask_clear_sel(mesh_idx);
 
-		// set for all trigs
+		// set for all polys
 
 	mesh=&model.meshes[mesh_idx];
 	npoly=mesh->npoly;

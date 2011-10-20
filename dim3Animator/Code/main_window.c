@@ -62,7 +62,7 @@ void main_wind_initialize(void)
 	
 	tool_tip_initialize();
 
-		// vertex and trig masks
+		// vertex and poly masks
 		
 	vertex_mask_initialize();
 	poly_mask_initialize();
@@ -70,7 +70,7 @@ void main_wind_initialize(void)
 
 void main_wind_shutdown(void)
 {
-		// free vertex and trig masks
+		// free vertex and poly masks
 		
 	vertex_mask_shutdown();
 	poly_mask_shutdown();

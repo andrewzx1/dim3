@@ -131,6 +131,7 @@ and can be sold or given away.
 #define kCommandSwapYZ					FOUR_CHAR_CODE('spyz')
 #define kCommandCenterXZ				FOUR_CHAR_CODE('ctxz')
 #define kCommandFloorY					FOUR_CHAR_CODE('flry')
+#define kCommandMeshTessellate			FOUR_CHAR_CODE('tsms')
 
 #define kCommandVertexSelectAll			FOUR_CHAR_CODE('vsla')
 #define kCommandVertexSelectNotAttached	FOUR_CHAR_CODE('vsna')
@@ -144,6 +145,8 @@ and can be sold or given away.
 #define kCommandVertexHideNonSelected	FOUR_CHAR_CODE('vhns')
 #define kCommandVertexShowAll			FOUR_CHAR_CODE('vsal')
 #define kCommandVertexDelete			FOUR_CHAR_CODE('vdel')
+#define kCommandVertexMakeQuad			FOUR_CHAR_CODE('vmqd')
+#define kCommandVertexTessellatePoly	FOUR_CHAR_CODE('vtpy')
 
 #define kCommandNewBone					FOUR_CHAR_CODE('nbne')
 #define kCommandSetBone					FOUR_CHAR_CODE('sbn2')
