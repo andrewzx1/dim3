@@ -1550,7 +1550,7 @@
 		26A6840513DE405D007513D1 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0410;
+				LastUpgradeCheck = 0420;
 			};
 			buildConfigurationList = 26A6840813DE405D007513D1 /* Build configuration list for PBXProject "dim3iPadEngine" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -2005,6 +2005,7 @@
 					"$(SRCROOT)/../Libraries/JavaScriptCore",
 				);
 				INFOPLIST_FILE = "dim3iPadEngine/dim3iPadEngine-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(SRCROOT)/../Libraries/SDL",
 					"$(SRCROOT)/../Libraries/PNG",
@@ -2068,6 +2069,7 @@
 					"$(SRCROOT)/../Libraries/JavaScriptCore",
 				);
 				INFOPLIST_FILE = "dim3iPadEngine/dim3iPadEngine-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				LIBRARY_SEARCH_PATHS = (
 					"$(SRCROOT)/../Libraries/SDL",
 					"$(SRCROOT)/../Libraries/PNG",

@@ -43,9 +43,8 @@ and can be sold or given away.
 #define kMapPropertyCameraNearZOffset				14
 
 #define kMapPropertyCameraChaseDistance				20
-#define kMapPropertyCameraChaseDistanceWidthFactor	21
-#define kMapPropertyCameraChaseTrackSpeed			22
-#define kMapPropertyCameraChaseSlop					23
+#define kMapPropertyCameraChaseTrackSpeed			21
+#define kMapPropertyCameraChaseSlop					22
 
 #define kMapPropertyCameraStaticFollow				30
 #define kMapPropertyCameraStaticAttachNode			31
@@ -87,7 +86,6 @@ void property_palette_fill_camera(void)
 
 	list_palette_add_header(&property_palette,0,"Map Camera Chase");
 	list_palette_add_string_int(&property_palette,kMapPropertyCameraChaseDistance,"Distance",map.camera.chase.distance,FALSE);
-	list_palette_add_string_float(&property_palette,kMapPropertyCameraChaseDistanceWidthFactor,"Distance/Width Factor",map.camera.chase.distance_width_factor,FALSE);
 	list_palette_add_string_float(&property_palette,kMapPropertyCameraChaseTrackSpeed,"Track Speed",map.camera.chase.track_speed,FALSE);
 	list_palette_add_angle(&property_palette,kMapPropertyCameraChaseSlop,"Slop",&map.camera.chase.slop,FALSE);
 
@@ -148,10 +146,6 @@ void property_palette_click_camera(int id,bool double_click)
 			dialog_property_string_run(list_string_value_positive_int,(void*)&map.camera.chase.distance,0,0,0);
 			break;
 			
-		case kMapPropertyCameraChaseDistanceWidthFactor:
-			dialog_property_string_run(list_string_value_positive_float,(void*)&map.camera.chase.distance_width_factor,0,0,0);
-			break;
-
 		case kMapPropertyCameraChaseTrackSpeed:
 			dialog_property_string_run(list_string_value_positive_float,(void*)&map.camera.chase.track_speed,0,0,0);
 			break;

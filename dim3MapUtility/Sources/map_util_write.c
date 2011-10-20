@@ -487,7 +487,6 @@ void write_map_camera_xml(map_type *map)
 
 	xml_add_tagstart("Chase");
 	xml_add_attribute_int("distance",map->camera.chase.distance);
-	xml_add_attribute_float("distance_width_factor",map->camera.chase.distance_width_factor);
 	xml_add_attribute_float("track_speed",map->camera.chase.track_speed);
 	xml_add_attribute_3_coord_float("slop",map->camera.chase.slop.x,map->camera.chase.slop.y,map->camera.chase.slop.z);
 	xml_add_tagend(TRUE);
