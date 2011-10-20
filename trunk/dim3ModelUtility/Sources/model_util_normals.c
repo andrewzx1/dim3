@@ -52,7 +52,7 @@ void map_recalc_normals_get_vertex_box(model_type *model,int mesh_idx,int vertex
 	d3pnt				*pnt;
 	model_mesh_type		*mesh;
 	model_vertex_type	*vertex;
-	model_poly_type		*trig;
+	model_poly_type		*poly;
 
 	mesh=&model->meshes[mesh_idx];
 	
@@ -62,13 +62,13 @@ void map_recalc_normals_get_vertex_box(model_type *model,int mesh_idx,int vertex
 	vertex_txt_idx=(int*)malloc(mesh->nvertex*sizeof(int));
 	bzero(vertex_txt_idx,(mesh->nvertex*sizeof(int)));
 		
-	trig=mesh->polys;
+	poly=mesh->polys;
 
 	for (n=0;n!=mesh->npoly;n++) {
-		for (k=0;k!=3;k++) {
-			vertex_txt_idx[trig->v[k]]=trig->txt_idx;
+		for (k=0;k!=poly->ptsz;k++) {
+			vertex_txt_idx[poly->v[k]]=poly->txt_idx;
 		}
-		trig++;
+		poly++;
 	}
 	
 		// find center by all vertexes
@@ -199,15 +199,15 @@ bool model_recalc_normals_determine_vector_in_out(model_type *model,int mesh_idx
 
 void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent)
 {
-	int					n,k,t,cnt;
+	int					n,k,t,neg_v,cnt;
     float				u10,u20,v10,v20,f_denom,f;
-	bool				vertex_in_trig;
+	bool				vertex_in_poly;
 	d3vct				p10,p20,vlft,vrgt,v_num;
 	d3vct				*normals,*nptr,*tangents,*tptr;
 	d3pnt				*pt,*pt_1,*pt_2;
 	model_mesh_type		*mesh;
 	model_vertex_type	*vertex;
-	model_poly_type		*trig;
+	model_poly_type		*poly;
 	tangent_space_type	avg_space;
 	
 	mesh=&model->meshes[mesh_idx];
@@ -226,18 +226,22 @@ void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent)
 	
         // find tangent and binormal for triangles
 		
-	trig=mesh->polys;
+	poly=mesh->polys;
 
 	nptr=normals;
 	tptr=tangents;
 	
 	for (n=0;n!=mesh->npoly;n++) {
+
+			// treat all polys as triangles
+
+		neg_v=poly->ptsz-1;
     
 			// get the side vectors (p1-p0) and (p2-p0)
 
-		pt=&mesh->vertexes[trig->v[0]].pnt;
-		pt_1=&mesh->vertexes[trig->v[1]].pnt;
-		pt_2=&mesh->vertexes[trig->v[2]].pnt;
+		pt=&mesh->vertexes[poly->v[0]].pnt;
+		pt_1=&mesh->vertexes[poly->v[1]].pnt;
+		pt_2=&mesh->vertexes[poly->v[neg_v]].pnt;
 
 		vector_create(&p10,pt_1->x,pt_1->y,pt_1->z,pt->x,pt->y,pt->z);
 		vector_create(&p20,pt_2->x,pt_2->y,pt_2->z,pt->x,pt->y,pt->z);
@@ -249,10 +253,10 @@ void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent)
 
 			// get the UV scalars (u1-u0), (u2-u0), (v1-v0), (v2-v0)
 
-		u10=trig->gx[1]-trig->gx[0];
-		u20=trig->gx[2]-trig->gx[0];
-		v10=trig->gy[1]-trig->gy[0];
-		v20=trig->gy[2]-trig->gy[0];
+		u10=poly->gx[1]-poly->gx[0];
+		u20=poly->gx[neg_v]-poly->gx[0];
+		v10=poly->gy[1]-poly->gy[0];
+		v20=poly->gy[neg_v]-poly->gy[0];
 
 			// calculate the tangent
 			// (v20xp10)-(v10xp20) / (u10*v20)-(v10*u20)
@@ -268,11 +272,11 @@ void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent)
 		vector_normalize(tptr);
 		tptr++;
 			
-		trig++;
+		poly++;
 	}
     
 		// average tangent space for each
-		// trig vertex to find one for shared
+		// poly vertex to find one for shared
 		// vertexes
 		
 	vertex=mesh->vertexes;
@@ -283,23 +287,23 @@ void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent)
 		avg_space.normal.x=avg_space.normal.y=avg_space.normal.z=0.0f;
 		
 		cnt=0;
-		trig=mesh->polys;
+		poly=mesh->polys;
 		
 		nptr=normals;
 		tptr=tangents;
 		
 		for (k=0;k!=mesh->npoly;k++) {
 		
-			vertex_in_trig=FALSE;
+			vertex_in_poly=FALSE;
 			
-			for (t=0;t!=3;t++) {
-				if (trig->v[t]==n) {
-					vertex_in_trig=TRUE;
+			for (t=0;t!=poly->ptsz;t++) {
+				if (poly->v[t]==n) {
+					vertex_in_poly=TRUE;
 					break;
 				}
 			}
 			
-			if (vertex_in_trig) {
+			if (vertex_in_poly) {
 				cnt++;
 				
 				avg_space.tangent.x+=tptr->x;
@@ -311,7 +315,7 @@ void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent)
 				avg_space.normal.z+=tptr->z;
 			}
 			
-			trig++;
+			poly++;
 			nptr++;
 			tptr++;
 		}

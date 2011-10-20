@@ -40,7 +40,7 @@ and can be sold or given away.
 #define kMeshPropertyLocked					4
 #define kMeshPropertyMovement				5
 
-#define kMeshPropertyTrigUV					10
+#define kMeshPropertyPolyUV					10
 
 extern model_type				model;
 extern animator_state_type		state;
@@ -84,13 +84,13 @@ void property_palette_fill_mesh(int mesh_idx)
 		poly=poly_mask_get_single_select(mesh_idx);
 		if (poly!=NULL) {
 
-			list_palette_add_header(&property_palette,0,"Selected Trig UVs");
+			list_palette_add_header(&property_palette,0,"Selected Poly UVs");
 
 			for (n=0;n!=poly->ptsz;n++) {
 				uv.x=poly->gx[n];
 				uv.y=poly->gy[n];
 				sprintf(str,"Vertex %d",n);
-				list_palette_add_uv(&property_palette,(kMeshPropertyTrigUV+n),str,&uv,FALSE);
+				list_palette_add_uv(&property_palette,(kMeshPropertyPolyUV+n),str,&uv,FALSE);
 			}
 		}
 	}
@@ -112,13 +112,33 @@ void property_palette_click_mesh(int mesh_idx,int id,bool double_click)
 	d3pnt					import_move,move_pnt;
 	d3fpnt					uv;
 	model_vertex_type		*vtx;
-	model_poly_type			*trig;
+	model_poly_type			*poly;
 	model_bone_type			*bone;
 	model_mesh_type			*mesh;
 	
 	if (!double_click) return;
 
 	mesh=&model.meshes[mesh_idx];
+
+		// poly UVs
+
+	if ((id>=kMeshPropertyPolyUV) && (id<(kMeshPropertyPolyUV+8))) {
+		poly=poly_mask_get_single_select(mesh_idx);
+		if (poly==NULL) return;
+
+		idx=id-kMeshPropertyPolyUV;
+
+		uv.x=poly->gx[idx];
+		uv.y=poly->gy[idx];
+		dialog_property_chord_run(list_chord_value_uv,(void*)&uv);
+		poly->gx[idx]=uv.x;
+		poly->gy[idx]=uv.y;
+
+		main_wind_draw();
+		return;
+	}
+
+		// regular clicks
 
 	switch (id) {
 
@@ -182,22 +202,6 @@ void property_palette_click_mesh(int mesh_idx,int id,bool double_click)
 				}
 			}
 				
-			break;
-
-		case kMeshPropertyTrigUV:
-		case (kMeshPropertyTrigUV+1):
-		case (kMeshPropertyTrigUV+2):
-			trig=poly_mask_get_single_select(mesh_idx);
-			if (trig==NULL) break;
-
-			idx=id-kMeshPropertyTrigUV;
-
-			uv.x=trig->gx[idx];
-			uv.y=trig->gy[idx];
-			dialog_property_chord_run(list_chord_value_uv,(void*)&uv);
-			trig->gx[idx]=uv.x;
-			trig->gy[idx]=uv.y;
-
 			break;
 			
 	}

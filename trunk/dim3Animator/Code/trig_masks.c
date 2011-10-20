@@ -2,7 +2,7 @@
 
 Module: dim3 Animator
 Author: Brian Barnes
- Usage: Model Trig Select/Hide Masks
+ Usage: Model Poly Select/Hide Masks
 
 ***************************** License ********************************
 
@@ -38,7 +38,7 @@ unsigned char					*poly_mask_ptr;
 
 /* =======================================================
 
-      Initialize and Shutdown Trig Masks
+      Initialize and Shutdown Poly Masks
       
 ======================================================= */
 
@@ -155,7 +155,7 @@ bool poly_mask_check_hide(int mesh_idx,int poly_idx)
 
 /* =======================================================
 
-      Single Trig Selection
+      Single Poly Selection
       
 ======================================================= */
 

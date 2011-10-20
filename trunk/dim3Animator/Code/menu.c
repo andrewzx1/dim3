@@ -359,15 +359,22 @@ bool menu_event_run(int cmd)
 			model_floor(&model,state.cur_mesh_idx);
             main_wind_draw();
 			return(TRUE);
+
+		case kCommandMeshTessellate:
+			polygon_tessellate(state.cur_mesh_idx,FALSE);
+			main_wind_draw();
+			return(TRUE);
 			
 			// vertex menu
 			
 		case kCommandVertexSelectAll:
+			state.select_mode=select_mode_vertex;
 			vertex_mask_set_sel_all(state.cur_mesh_idx);
 			main_wind_draw();
 			return(TRUE);
 			
 		case kCommandVertexSelectNotAttached:
+			state.select_mode=select_mode_vertex;
 			vertex_mask_set_sel_no_bone(state.cur_mesh_idx);
 			main_wind_draw();
 			return(TRUE);
@@ -393,32 +400,48 @@ bool menu_event_run(int cmd)
 			return(TRUE);
 		
 		case kCommandVertexClearBones:
+			state.select_mode=select_mode_vertex;
 			vertex_clear_bone_attachments_sel_vertexes(state.cur_mesh_idx);
 			main_wind_draw();
 			return(TRUE);
 			
 		case kCommandVertexAutoBones:
+			state.select_mode=select_mode_vertex;
 			vertex_auto_bone_attachments(state.cur_mesh_idx);
 			main_wind_draw();
 			return(TRUE);
 				
 		case kCommandVertexHideSelected:
+			state.select_mode=select_mode_vertex;
 			vertex_mask_hide_set_sel_vertexes(state.cur_mesh_idx);
 			main_wind_draw();
 			return(TRUE);
 			
 		case kCommandVertexHideNonSelected:
+			state.select_mode=select_mode_vertex;
 			vertex_mask_hide_set_non_sel_vertexes(state.cur_mesh_idx);
 			main_wind_draw();
 			return(TRUE);
 			
 		case kCommandVertexShowAll:
+			state.select_mode=select_mode_vertex;
 			vertex_mask_hide_show_all_vertexes(state.cur_mesh_idx);
 			main_wind_draw();
 			return(TRUE);
 			
 		case kCommandVertexDelete:
+			state.select_mode=select_mode_vertex;
 			vertex_delete_sel_vertex(state.cur_mesh_idx);
+			main_wind_draw();
+			return(TRUE);
+
+		case kCommandVertexMakeQuad:
+			polygon_make_quad(state.cur_mesh_idx);
+			main_wind_draw();
+			return(TRUE);
+
+		case kCommandVertexTessellatePoly:
+			polygon_tessellate(state.cur_mesh_idx,TRUE);
 			main_wind_draw();
 			return(TRUE);
 			

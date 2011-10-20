@@ -303,7 +303,7 @@ void vertex_delete_sel_vertex(int mesh_idx)
 		
 		model.meshes[mesh_idx].nvertex--;
 		
-			// delete all trigs with vertex
+			// delete all polys with vertex
 			
 		n=0;
 		
@@ -323,7 +323,7 @@ void vertex_delete_sel_vertex(int mesh_idx)
 				continue;
 			}
 			
-				// delete trig
+				// delete poly
 					
 			sz=((model.meshes[mesh_idx].npoly-1)-n);
 			
@@ -380,7 +380,7 @@ void vertex_delete_unused_vertexes(int mesh_idx)
 	
 		if (v_ok[n]==0x1) continue;
 		
-			// change all trigs vertex pointers
+			// change all poly vertex pointers
 	
 		poly=model.meshes[mesh_idx].polys;
 		
@@ -402,5 +402,106 @@ void vertex_delete_unused_vertexes(int mesh_idx)
 	model.meshes[mesh_idx].nvertex=nvertex;
 
 	free(v_ok);
+}
+
+/* =======================================================
+
+      Poly Combine and Tesselate
+      
+======================================================= */
+
+void polygon_make_quad(int mesh_idx)
+{
+	int					n,npoly,ptsz,idx,dir,
+						poly_1_idx,poly_2_idx,
+						v[8];
+	bool				first_poly;
+	model_mesh_type		*mesh;
+	model_poly_type		*poly_1,*poly_2;
+
+	mesh=&model.meshes[mesh_idx];
+	npoly=mesh->npoly;
+
+		// find two triangles
+
+	poly_1_idx=poly_2_idx=-1;
+
+	for (n=0;n!=npoly;n++) {
+		if ((poly_mask_check_sel(mesh_idx,n)) && (!poly_mask_check_hide(mesh_idx,n))) {
+			if (poly_1_idx==-1) {
+				poly_1_idx=n;
+				continue;
+			}
+			if (poly_2_idx==-1) {
+				poly_2_idx=n;
+				continue;
+			}
+			os_dialog_alert("Make Quad","There are more than two polygons selected");
+			return;
+		}
+	}
+
+	if ((poly_1_idx==-1) || (poly_2_idx==-1)) {
+		os_dialog_alert("Make Quad","Need to select two triangle polygons");
+		return;
+	}
+
+		// make sure they are correct
+
+	poly_1=&mesh->polys[poly_1_idx];
+	poly_2=&mesh->polys[poly_2_idx];
+
+	if ((poly_1->ptsz!=3) || (poly_2->ptsz!=3)) {
+		os_dialog_alert("Make Quad","Both polygons need to be triangles");
+		return;
+	}
+
+		// run around and switch when
+		// we hit a shared vertex
+
+	first_poly=TRUE;
+
+	idx=0;
+
+	ptsz=0;
+	dir=1;
+
+	while (TRUE) {
+
+		if (first_poly) {
+			v[ptsz++]=poly_1->v[idx];
+		}
+		else {
+			v[ptsz++]=poly_2->v[idx];
+		}
+
+			// if these vertexes are
+			// shared, switch to other poly
+			// and go in the direction
+			// of the next unshared vertex
+
+		// DO THIS!
+
+		idx+=dir;
+		if (first_poly) {
+			if (idx==poly_1->ptsz) idx=0;
+			if (idx<0) idx=poly_1->ptsz-1;
+		}
+		else {
+			if (idx==poly_2->ptsz) idx=0;
+			if (idx<0) idx=poly_2->ptsz-1;
+		}
+
+			// we are at end if next vertex
+			// is equal to poly_1->v[0] where
+			// we started
+
+		if ((first_poly) && (idx==0)) break;
+	}
+}
+
+void polygon_tessellate(int mesh_idx,bool sel_only)
+{
+
 }
 

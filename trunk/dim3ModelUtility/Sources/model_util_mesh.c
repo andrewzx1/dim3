@@ -47,7 +47,7 @@ int model_mesh_add(model_type *model)
 	
 	mesh=&model->meshes[nmesh];
 	
-		// vertexes and trigs
+		// vertexes and polys
 		
 	mesh->nvertex=0;
 	mesh->npoly=0;
@@ -140,7 +140,7 @@ bool model_mesh_delete(model_type *model,int mesh_idx)
 
 /* =======================================================
 
-      Vertex and Trig Sizes
+      Vertex and Poly Sizes
       
 ======================================================= */
 
@@ -176,26 +176,26 @@ bool model_mesh_set_poly_count(model_type *model,int mesh_idx,int poly_count)
 {
 	int					count;
 	model_mesh_type		*mesh;
-	model_poly_type		*trig;
+	model_poly_type		*poly;
 	
 	mesh=&model->meshes[mesh_idx];
 
-	trig=malloc(poly_count*sizeof(model_poly_type));
-	if (trig==NULL) return(FALSE);
+	poly=malloc(poly_count*sizeof(model_poly_type));
+	if (poly==NULL) return(FALSE);
 
-	bzero(trig,(poly_count*sizeof(model_poly_type)));
+	bzero(poly,(poly_count*sizeof(model_poly_type)));
 	
 	if (mesh->polys!=NULL) {
 		count=mesh->npoly;
 		if (count>poly_count) count=poly_count;
 	
-		if (count!=0) memmove(trig,mesh->polys,(count*sizeof(model_poly_type)));
+		if (count!=0) memmove(poly,mesh->polys,(count*sizeof(model_poly_type)));
 	
 		free(mesh->polys);
 	}
 	
 	mesh->npoly=poly_count;
-	mesh->polys=trig;
+	mesh->polys=poly;
 	
 	return(TRUE);
 }

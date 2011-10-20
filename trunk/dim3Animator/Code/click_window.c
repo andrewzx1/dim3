@@ -38,7 +38,7 @@ extern model_draw_setup			draw_setup;
 extern animator_state_type		state;
 
 // supergumba -- this code repeats draw setups and only uses the
-//               view picker for trig hits, fix all this
+//               view picker for poly hits, fix all this
 
 /* =======================================================
 
@@ -101,7 +101,7 @@ void select_model_wind_restore_drag_sel_state(char *vertex_sel)
 	}
 }
 
-void select_model_wind_select_trig_for_vertex_drag_sel(void)
+void select_model_wind_select_poly_for_vertex_drag_sel(void)
 {
 	int					n,k,nt;
 	model_poly_type		*poly;
@@ -183,7 +183,7 @@ void select_model_wind_vertex_drag_sel(d3pnt *start_pnt,float *pv)
 		select_model_wind_restore_drag_sel_state(org_vertex_sel);
 		model_drag_sel_vertex(pv,&state.drag_sel_box,chg_sel);
 
-		if (state.select_mode==select_mode_polygon) select_model_wind_select_trig_for_vertex_drag_sel();
+		if (state.select_mode==select_mode_polygon) select_model_wind_select_poly_for_vertex_drag_sel();
 		
 		main_wind_draw();
 	}
@@ -235,7 +235,7 @@ bool select_model_wind_vertex(d3pnt *start_pnt,float *pv)
 	return(TRUE);
 }
 
-bool select_model_wind_vertex_sel_trig(d3pnt *start_pnt,float *pv)
+bool select_model_wind_vertex_sel_poly(d3pnt *start_pnt,float *pv)
 {
 	int					n,k,nt,idx;
 	float				*pv2;
@@ -285,7 +285,7 @@ bool select_model_wind_vertex_sel_trig(d3pnt *start_pnt,float *pv)
 
 /* =======================================================
 
-      Model Trig Selection
+      Model Poly Selection
       
 ======================================================= */
 
@@ -542,7 +542,7 @@ void select_model_wind(d3pnt *start_pnt)
 			break;
 
 		case select_mode_polygon:
-			if (!select_model_wind_vertex_sel_trig(start_pnt,pv)) {
+			if (!select_model_wind_vertex_sel_poly(start_pnt,pv)) {
 				if (!select_model_wind_polygon(start_pnt,FALSE)) {
 					select_model_wind_vertex_drag_sel(start_pnt,pv);
 				}

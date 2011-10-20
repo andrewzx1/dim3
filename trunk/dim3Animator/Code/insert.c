@@ -45,12 +45,12 @@ extern animator_state_type		state;
 
 void insert_model(char *file_name)
 {
-	int						i,k,t,b_off,v_off,t_off,nvertex,npoly,idx;
+	int						n,k,t,b_off,v_off,t_off,nvertex,npoly,idx;
 	char					path[1024],path2[1024],sub_path[1024];
 	model_bone_type			*bone,*ins_bone;
 	model_mesh_type			*mesh,*ins_mesh;
 	model_vertex_type		*vertex;
-	model_poly_type			*trig;
+	model_poly_type			*poly;
 	texture_type			*texture,*ins_texture;
 	
 		// open model
@@ -63,7 +63,7 @@ void insert_model(char *file_name)
 	b_off=model.nbone;
 	ins_bone=ins_model.bones;
 	
-	for (i=0;i!=ins_model.nbone;i++) {
+	for (n=0;n!=ins_model.nbone;n++) {
 		idx=model_bone_add(&model,0,0,0);
 		if (idx==-1) break;
 		
@@ -98,34 +98,33 @@ void insert_model(char *file_name)
 	vertex=&mesh->vertexes[v_off];
 	memmove(vertex,ins_mesh->vertexes,(nvertex*sizeof(model_vertex_type)));
 	
-	for (i=0;i!=nvertex;i++) {
+	for (n=0;n!=nvertex;n++) {
 		if (vertex->major_bone_idx!=-1) vertex->major_bone_idx+=b_off;
 		if (vertex->minor_bone_idx!=-1) vertex->minor_bone_idx+=b_off;
 		vertex++;
 	}
-	
-		// bring in the trigs
+
+		// bring in the polys
 		
 	t_off=mesh->npoly;
 	npoly=ins_mesh->npoly;
 	
 	model_mesh_set_poly_count(&model,state.cur_mesh_idx,(t_off+npoly));
 	
-	trig=&mesh->polys[t_off];
-	memmove(trig,ins_mesh->polys,(npoly*sizeof(model_poly_type)));
+	poly=&mesh->polys[t_off];
+	memmove(poly,ins_mesh->polys,(npoly*sizeof(model_poly_type)));
 	
-	for (i=0;i!=npoly;i++) {
-		trig->v[0]+=v_off;
-		trig->v[1]+=v_off;
-		trig->v[2]+=v_off;
-		trig++;
+	for (n=t_off;n!=mesh->npoly;n++) {
+		for (k=0;k!=poly->ptsz;k++) {
+			poly->v[k]+=v_off;
+		}
+		poly++;
 	}
-	
+
 		// bring in the textures
-		
-	ins_texture=ins_model.textures;
-	
-	for (i=0;i!=max_model_texture;i++) {
+
+	for (n=0;n!=max_model_texture;n++) {
+		ins_texture=&ins_model.textures[n];
 	
 		if (ins_texture->frames[0].bitmap.gl_id==-1) continue;
 	
@@ -140,10 +139,13 @@ void insert_model(char *file_name)
 		if (k>=max_model_texture) break;
 		
 			// copy texture
-			
+
 		texture=&model.textures[k];
 		memmove(texture,ins_texture,sizeof(texture_type));
 		
+			// need to change names so they
+			// don't conflict with what's already there
+
 		for (t=0;t!=max_texture_frame;t++) {
 			if (texture->frames[t].bitmap.gl_id!=-1) {
 				sprintf(texture->frames[t].name,"Image_%d_%d",k,t);
@@ -152,11 +154,11 @@ void insert_model(char *file_name)
 
 			// fix the imported triangles texture index
 
-		trig=&mesh->polys[t_off];
+		poly=&mesh->polys[t_off];
 
 		for (t=t_off;t!=mesh->npoly;t++) {
-			if (trig->txt_idx==i) trig->txt_idx=k;
-			t_off++;
+			if (poly->txt_idx==n) poly->txt_idx=k;
+			poly++;
 		}
 		
 			// force bitmap to not close when closing insert model
@@ -164,7 +166,7 @@ void insert_model(char *file_name)
 		for (t=0;t!=max_texture_frame;t++) {
 			ins_texture->frames[t].bitmap.gl_id=-1;
 		}
-		
+
 			// copy over bitmap
 
 		for (t=0;t!=max_texture_frame;t++) {
@@ -174,14 +176,12 @@ void insert_model(char *file_name)
 
 				sprintf(sub_path,"Models/%s/Textures",model.name);
 				file_paths_data_default(&file_path_setup,path2,sub_path,texture->frames[t].name,"png");
-				
+
 				bitmap_copy(path,path2);
 			}
 		}
-		
-		ins_texture++;
 	}
-	
+
 		// close model
 		
 	model_close(&ins_model);

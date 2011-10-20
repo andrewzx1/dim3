@@ -430,7 +430,7 @@ bool png_utility_copy(char *srce_path,char *dest_path)
 	int				sz;
 	unsigned char	c[1024];
 	FILE			*srce,*dest;
-	
+
 		// open files
 		
 	srce=fopen(srce_path,"rb");

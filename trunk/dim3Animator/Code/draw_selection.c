@@ -112,7 +112,7 @@ void draw_model_selected_poly(int mesh_idx)
 		
 		poly=&model.meshes[mesh_idx].polys[n];
 
-			// draw the selected trig
+			// draw the selected poly
 
 		pv=vertexes;
 
@@ -141,7 +141,7 @@ void draw_model_selected_poly(int mesh_idx)
 		poly=&model.meshes[mesh_idx].polys[n];
 		
 			// draw any selected vertexes
-			// on the trig
+			// on the poly
 		
 		for (k=0;k!=poly->ptsz;k++) {
 			vertex_idx=poly->v[k];

@@ -254,7 +254,22 @@ extern void vertex_mask_set_sel_poly_mask(int mesh_idx);
 extern void vertex_mask_set_sel_texture(int mesh_idx,int txt_idx);
 
 //
-// vertex calcs
+// poly masks
+//
+
+extern bool poly_mask_initialize(void);
+extern void poly_mask_shutdown(void);
+extern void poly_mask_clear_sel(int mesh_idx);
+extern void poly_mask_set_sel(int mesh_idx,int poly_idx,bool value);
+extern bool poly_mask_check_sel(int mesh_idx,int poly_idx);
+extern void poly_mask_clear_hide(int mesh_idx);
+extern void poly_mask_set_hide(int mesh_idx,int poly_idx,bool value);
+extern bool poly_mask_check_hide(int mesh_idx,int poly_idx);
+extern model_poly_type* poly_mask_get_single_select(int mesh_idx);
+extern void poly_mask_select_more(int mesh_idx);
+
+//
+// vertex and poly calcs
 //
 
 extern void vertex_find_center_sel_vertexes(int mesh_idx,int *p_cx,int *p_cy,int *p_cz);
@@ -266,20 +281,8 @@ extern void vertex_auto_bone_attachments(int mesh_idx);
 extern void vertex_delete_sel_vertex(int mesh_idx);
 extern void vertex_delete_unused_vertexes(int mesh_idx);
 
-//
-// poly masks
-//
-
-extern bool poly_mask_initialize(void);
-extern void poly_mask_shutdown(void);
-extern void poly_mask_clear_sel(int mesh_idx);
-extern void poly_mask_set_sel(int mesh_idx,int poly_idx,bool value);
-extern bool poly_mask_check_sel(int mesh_idx,int poly_idx);
-extern void poly_mask_clear_hide(int mesh_idx);
-extern void poly_mask_set_hide(int mesh_idx,int trig_idx,bool value);
-extern bool poly_mask_check_hide(int mesh_idx,int poly_idx);
-extern model_poly_type* poly_mask_get_single_select(int mesh_idx);
-extern void poly_mask_select_more(int mesh_idx);
+extern void polygon_make_quad(int mesh_idx);
+extern void polygon_tessellate(int mesh_idx,bool sel_only);
 
 //
 // model picking
