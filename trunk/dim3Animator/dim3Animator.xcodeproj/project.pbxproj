@@ -119,7 +119,7 @@
 		269AF91E1288D016001344EC /* draw_selection.c in Sources */ = {isa = PBXBuildFile; fileRef = 269AF91D1288D016001344EC /* draw_selection.c */; };
 		26A2A57713B15A56003FE092 /* Tool Show Bone Names.png in Resources */ = {isa = PBXBuildFile; fileRef = 26A2A57613B15A56003FE092 /* Tool Show Bone Names.png */; };
 		26A2A57813B15AAB003FE092 /* Tool Show Bone Names.png in Copy (Tool Icons) */ = {isa = PBXBuildFile; fileRef = 26A2A57613B15A56003FE092 /* Tool Show Bone Names.png */; };
-		26A2AB0912F3D21500E4E73B /* trig_masks.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A2AB0812F3D21500E4E73B /* trig_masks.c */; };
+		26A7A49E145122EE00E074BC /* poly_masks.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A7A49D145122EE00E074BC /* poly_masks.c */; };
 		26C5EEFC1260F027000B0F9E /* OSX_glue.c in Sources */ = {isa = PBXBuildFile; fileRef = 26C5EEFB1260F027000B0F9E /* OSX_glue.c */; };
 		26C5F10D12613790000B0F9E /* tool_palette.c in Sources */ = {isa = PBXBuildFile; fileRef = 26C5F10C12613790000B0F9E /* tool_palette.c */; };
 		26C5F11212613805000B0F9E /* glue.h in Headers */ = {isa = PBXBuildFile; fileRef = 26C5F11112613805000B0F9E /* glue.h */; };
@@ -355,7 +355,7 @@
 		269AF91B1288D007001344EC /* draw_axis_boxes.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = draw_axis_boxes.c; path = Code/draw_axis_boxes.c; sourceTree = "<group>"; };
 		269AF91D1288D016001344EC /* draw_selection.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = draw_selection.c; path = Code/draw_selection.c; sourceTree = "<group>"; };
 		26A2A57613B15A56003FE092 /* Tool Show Bone Names.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Show Bone Names.png"; path = "Tools/Tool Show Bone Names.png"; sourceTree = "<group>"; };
-		26A2AB0812F3D21500E4E73B /* trig_masks.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = trig_masks.c; path = Code/trig_masks.c; sourceTree = "<group>"; };
+		26A7A49D145122EE00E074BC /* poly_masks.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = poly_masks.c; path = Code/poly_masks.c; sourceTree = "<group>"; };
 		26C5EEFB1260F027000B0F9E /* OSX_glue.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = OSX_glue.c; path = ../dim3Common/Code/OSX_glue.c; sourceTree = SOURCE_ROOT; };
 		26C5F10C12613790000B0F9E /* tool_palette.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tool_palette.c; path = Code/tool_palette.c; sourceTree = "<group>"; };
 		26C5F11112613805000B0F9E /* glue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = glue.h; path = ../dim3Common/Headers/glue.h; sourceTree = SOURCE_ROOT; };
@@ -696,7 +696,7 @@
 				26C9371712DD18B6005C0708 /* model_piece.c */,
 				261F12430ED3CB2F00A8A0D8 /* vertex_masks.c */,
 				261F12890ED3D04A00A8A0D8 /* vertex_transform.c */,
-				26A2AB0812F3D21500E4E73B /* trig_masks.c */,
+				26A7A49D145122EE00E074BC /* poly_masks.c */,
 				269AF83D12887DEF001344EC /* model_picker.c */,
 			);
 			name = Model;
@@ -957,7 +957,6 @@
 				26C9371512DD1896005C0708 /* alt_property_palette_bone_move.c in Sources */,
 				26C9371612DD1896005C0708 /* alt_property_palette_pose_move.c in Sources */,
 				26C9371812DD18B6005C0708 /* model_piece.c in Sources */,
-				26A2AB0912F3D21500E4E73B /* trig_masks.c in Sources */,
 				26F1D25F1303566500CDAE6B /* property_palette_animator_preference.c in Sources */,
 				26F1D2601303566500CDAE6B /* xml_setup.c in Sources */,
 				26CFA0851320714200DB808F /* tool_tip_common.c in Sources */,
@@ -1024,6 +1023,7 @@
 				260B3CFE1411F14E006ED023 /* model_util_size.c in Sources */,
 				260B3CFF1411F14E006ED023 /* model_util_texture.c in Sources */,
 				260B3D001411F14E006ED023 /* model_util_transform.c in Sources */,
+				26A7A49E145122EE00E074BC /* poly_masks.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
