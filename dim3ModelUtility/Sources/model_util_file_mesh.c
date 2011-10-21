@@ -31,7 +31,7 @@ and can be sold or given away.
 
 extern modelutility_settings_type		modelutility_settings;
 
-char									deform_mode_str[][32]=deform_mode_xml_list_str;
+extern char								deform_mode_str[][32];
 char									bone_v2_tags[max_model_bone][8];
 
 /* =======================================================
@@ -60,7 +60,7 @@ int model_xml_get_attribute_bone(model_type *model,int tag,char *tag_name)
 	return(model_find_v2_bone_tag(model,bone_name));
 }
 
-void decode_mesh_xml(model_type *model,int model_head)
+void model_decode_v2_mesh_xml(model_type *model,int model_head)
 {
 	int						i,n,k,j,bone_idx,nbone,hit_box_idx,nhit_box,trig_count,
 							import_tag,ui_tag,mesh_idx,nmesh,nfill,trig_idx,
@@ -471,263 +471,16 @@ void decode_mesh_xml(model_type *model,int model_head)
 
 /* =======================================================
 
-      Write Mesh XML
-      
-======================================================= */
-
-void model_write_bone_or_blank_attribute(model_type *model,char *attrib_name,int bone_idx)
-{
-	if (bone_idx==-1) {
-		xml_add_attribute_text(attrib_name,"");
-		return;
-	}
-
-	xml_add_attribute_text(attrib_name,model->bones[bone_idx].name);
-}
-
-void encode_mesh_xml(model_type *model)
-{
-	int						i,n,k,j,frame_count;
-	char					attrib_name[name_str_len];
-	model_hit_box_type		*hit_box;
-	model_mesh_type			*mesh;
-    model_vertex_type		*vertex;
-    model_bone_type			*bone;
-    model_poly_type			*trig;
-    texture_type			*texture;
-
-	return;		// supergumba -- no writing meshes until translation is over
-    
-        // model info
-    
-    xml_add_tagstart("Creator");
-    xml_add_attribute_text("name","dim3 Animator");
-    xml_add_attribute_int("version",model_current_version);
-    xml_add_tagend(TRUE);
-	
-        // options
-    
-    xml_add_tagstart("Options");
-	xml_add_attribute_list("deform",(char*)deform_mode_str,model->deform_mode);
-	xml_add_attribute_float("diffuse_boost",model->diffuse_boost);
-    xml_add_tagend(TRUE);
- 	
-        // center
-	
-    xml_add_tagstart("Center");
-    xml_add_attribute_3_coord_int("offset",model->center.x,model->center.y,model->center.z);
-    xml_add_tagend(TRUE);
-    
-        // boxes
-    
-    xml_add_tagstart("View_Box");
-    xml_add_attribute_3_coord_int("size",model->view_box.size.x,model->view_box.size.y,model->view_box.size.z);
-    xml_add_attribute_3_coord_int("offset",model->view_box.offset.x,model->view_box.offset.y,model->view_box.offset.z);
-    xml_add_tagend(TRUE);
-	
-		// light
-	
-    xml_add_tagstart("Light");
-
-	for (k=0;k!=max_model_light;k++) {
-		sprintf(attrib_name,"light_bone_%d",k);
-		model_write_bone_or_blank_attribute(model,attrib_name,model->bone_connect.light_bone_idx[k]);
-	}
-
-	for (k=0;k!=max_model_halo;k++) {
-		sprintf(attrib_name,"halo_bone_%d",k);
-		model_write_bone_or_blank_attribute(model,attrib_name,model->bone_connect.halo_bone_idx[k]);
-	}
-
-	model_write_bone_or_blank_attribute(model,"name_bone",model->bone_connect.name_bone_idx);
-
-	xml_add_tagend(TRUE);
-	
-		// hit boxes
-		
-    xml_add_tagstart("Hit_Boxes");
-    xml_add_tagend(FALSE);
-    
-    hit_box=model->hit_boxes;
-    
-    for (i=0;i!=model->nhit_box;i++) {
-		xml_add_tagstart("Hit_Box");
-		xml_add_attribute_text("name",hit_box->name);
-		model_write_bone_or_blank_attribute(model,"bone",hit_box->bone_idx);
-		xml_add_attribute_3_coord_int("size",hit_box->box.size.x,hit_box->box.size.y,hit_box->box.size.z);
-		xml_add_attribute_3_coord_int("offset",hit_box->box.offset.x,hit_box->box.offset.y,hit_box->box.offset.z);
-		xml_add_tagend(TRUE);
-		
-		hit_box++;
-	}
-	
-    xml_add_tagclose("Hit_Boxes");
-
-		// rigid body
-
-    xml_add_tagstart("Rigid_Body");
-	xml_add_attribute_boolean("on",model->rigid_body.on);
-	xml_add_attribute_float("y_factor",model->rigid_body.y.reset_factor);
-	xml_add_attribute_float("y_smooth",model->rigid_body.y.smooth_factor);
-	xml_add_attribute_float("x_max_ang",model->rigid_body.x.max_ang);
-	xml_add_attribute_float("x_factor",model->rigid_body.x.reset_factor);
-	xml_add_attribute_float("x_smooth",model->rigid_body.x.smooth_factor);
-	xml_add_attribute_float("z_max_ang",model->rigid_body.z.max_ang);
-	xml_add_attribute_float("z_factor",model->rigid_body.z.reset_factor);
-	xml_add_attribute_float("z_smooth",model->rigid_body.z.smooth_factor);
-    xml_add_tagend(TRUE);
-	
-		// import
-		
-    xml_add_tagstart("Import");
-	xml_add_attribute_float("factor",model->import.factor);
-    xml_add_tagend(TRUE);
-
-  		// ui
-		
-    xml_add_tagstart("UI");
-	xml_add_attribute_float("min_diffuse",model->ui.min_diffuse);
-	xml_add_attribute_3_coord_float("diffuse_vector",model->ui.diffuse_vct.x,model->ui.diffuse_vct.y,model->ui.diffuse_vct.z);
-	xml_add_tagend(TRUE);
- 
-        // bones
-        
-    xml_add_tagstart("Bones");
-    xml_add_tagend(FALSE);
-    
-    bone=model->bones;
-    
-    for (i=0;i!=model->nbone;i++) {
-    
-        xml_add_tagstart("Bone");
-        
-		xml_add_attribute_text("name",bone->name);
-		
-        xml_add_attribute_3_coord_int("c3",bone->pnt.x,bone->pnt.y,bone->pnt.z);
-        xml_add_attribute_3_coord_int("o3",bone->natural_offset.x,bone->natural_offset.y,bone->natural_offset.z);
-		xml_add_attribute_3_coord_float("r3",bone->natural_rot.x,bone->natural_rot.y,bone->natural_rot.z);
-		
-		model_write_bone_or_blank_attribute(model,"parent",bone->parent_idx);
-        
-        xml_add_tagend(TRUE);
-    
-        bone++;
-    }
-
-    xml_add_tagclose("Bones");
-	
-        // meshes
-        
-    xml_add_tagstart("Meshes");
-    xml_add_tagend(FALSE);
-	
-	for (j=0;j!=model->nmesh;j++) {
-	
-		mesh=&model->meshes[j];
-	
-		xml_add_tagstart("Mesh");
-		xml_add_attribute_text("name",mesh->name);
-		xml_add_attribute_boolean("no_lighting",mesh->no_lighting);
-		xml_add_attribute_boolean("diffuse",mesh->diffuse);
-		xml_add_attribute_boolean("additive",mesh->blend_add);
-		xml_add_attribute_boolean("locked",mesh->locked);
-		xml_add_attribute_3_coord_int("import_move",mesh->import_move.x,mesh->import_move.y,mesh->import_move.z);
-		xml_add_tagend(FALSE);
-	   
-			// vertexes
-			
-		xml_add_tagstart("Vertexes");
-		xml_add_tagend(FALSE);
-		
-		vertex=mesh->vertexes;
-		
-		for (i=0;i!=mesh->nvertex;i++) {
-		
-			xml_add_tagstart("v");
-			
-			xml_add_attribute_3_coord_int("c3",vertex->pnt.x,vertex->pnt.y,vertex->pnt.z);
-
-			model_write_bone_or_blank_attribute(model,"major",vertex->major_bone_idx);
-			model_write_bone_or_blank_attribute(model,"minor",vertex->minor_bone_idx);
-			xml_add_attribute_float("factor",vertex->bone_factor);
-			
-			xml_add_tagend(TRUE);
-		
-			vertex++;
-		}
-						
-		xml_add_tagclose("Vertexes");
-		
-			// triangles
-				
-		xml_add_tagstart("Polys");
-		xml_add_tagend(FALSE);
-		
-		trig=mesh->polys;
-		
-		for (i=0;i!=mesh->npoly;i++) {
-		
-			// supergumba -- fix all this up
-			/*
-			xml_add_tagstart("p");
-			xml_add_attribute_int_array("v",poly->v,poly->ptsz,FALSE);
-					
-			xml_add_attribute_int("id",trig->v[k]);
-			xml_add_attribute_2_coord_float("uv",trig->gx[k],trig->gy[k]);
-
-			xml_add_attribute_3_coord_float("t3",trig->tangent_space[k].tangent.x,trig->tangent_space[k].tangent.y,trig->tangent_space[k].tangent.z);
-			xml_add_attribute_3_coord_float("n3",trig->tangent_space[k].normal.x,trig->tangent_space[k].normal.y,trig->tangent_space[k].normal.z);
-					
-			xml_add_tagend(TRUE);
-			*/
-			trig++;
-		}
-			
-		xml_add_tagclose("Triangles");
-		
-		xml_add_tagclose("Mesh");
-	}
-	
-	xml_add_tagclose("Meshes");
-   
-         // fills
-         
-    xml_add_tagstart("Fills");
-    xml_add_tagend(FALSE);
-    
-    texture=model->textures;
-    
-    for (n=0;n!=max_model_texture;n++) {
-    
-        if (texture->frames[0].name[0]==0x0) {
-            texture++;
-            continue;
-        }
-
-		frame_count=model_count_texture_frames(model,n);
-        
-        xml_add_tagstart("Fill");
-		bitmap_texture_write_xml(texture,frame_count,FALSE);
-        xml_add_tagclose("Fill");
-        
-		texture++;
-    }
-    
-    xml_add_tagclose("Fills");
-}
-
-/* =======================================================
-
       Read Mesh XML
       
 ======================================================= */
 
-bool read_mesh_xml(model_type *model)
+bool model_read_v2_mesh_xml(model_type *model)
 {
-	int						version,model_head;
+	int						model_head;
 	char					sub_path[1024],path[1024];
 
-        // load the model xml
+        // load the mesh xml
 		
 	sprintf(sub_path,"Models/%s",model->name);
 	file_paths_data(&modelutility_settings.file_path_setup,path,sub_path,"mesh","xml");
@@ -739,52 +492,11 @@ bool read_mesh_xml(model_type *model)
 		xml_close_file();
 		return(FALSE);
 	}
-	
-		// get the version
-	
-	version=xml_get_attribute_int_default(model_head,"version",model_current_version);
-	if (version!=model_current_version) return(FALSE);
-	
-		// decode
 		
-	decode_mesh_xml(model,model_head);
+	model_decode_v2_mesh_xml(model,model_head);
 	
 	xml_close_file(); 
 	  
     return(TRUE);
 }
 
-/* =======================================================
-
-      Write Mesh XML
-      
-======================================================= */
-
-bool write_mesh_xml(model_type *model)
-{
-	char					path[1024];
-	bool					ok;
-    
-		// start
-		
-    xml_new_file();
-    
-    xml_add_tagstart("Model");
-	xml_add_attribute_int("version",2);
-    xml_add_tagend(FALSE);
-    
-		// encode
-		
-	encode_mesh_xml(model);
-
-        // save model
-        
-    xml_add_tagclose("Model");
-    
-	sprintf(path,"%s/mesh.xml",model->load_base_path);
-	ok=xml_save_file(path);
-	
-    xml_close_file();
-
-	return(ok);
-}

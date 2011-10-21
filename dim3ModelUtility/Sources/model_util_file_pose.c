@@ -41,7 +41,7 @@ extern void model_write_bone_or_blank_attribute(model_type *model,char *attrib_n
 ======================================================= */
 
 // supergumba -- this is v2 of poses
-bool read_pose_xml(model_type *model)
+bool model_read_v2_pose_xml(model_type *model)
 {
 	int						n,k,bone_idx,npose,pose_idx,cnt,
 							tag,model_head,bone_tag,poses_tag,pose_tag;
@@ -134,6 +134,7 @@ bool read_pose_xml(model_type *model)
       
 ======================================================= */
 
+/*
 bool write_bone_move(model_bone_move_type *bone_move)
 {
     if ((bone_move->rot.x!=0) || (bone_move->rot.z!=0) || (bone_move->rot.y!=0)) return(TRUE);
@@ -222,3 +223,4 @@ bool write_pose_xml(model_type *model)
 
 	return(ok);
 }
+*/

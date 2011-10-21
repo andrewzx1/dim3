@@ -37,8 +37,9 @@ and can be sold or given away.
 #define kMeshPropertyDiffuse				1
 #define kMeshPropertyNoLighting				2
 #define kMeshPropertyAdditive				3
-#define kMeshPropertyLocked					4
-#define kMeshPropertyMovement				5
+#define kMeshPropertyCull					4
+#define kMeshPropertyLocked					5
+#define kMeshPropertyMovement				6
 
 #define kMeshPropertyPolyUV					10
 
@@ -73,6 +74,7 @@ void property_palette_fill_mesh(int mesh_idx)
 	list_palette_add_checkbox(&property_palette,kMeshPropertyDiffuse,"Diffuse Lighting",mesh->diffuse,FALSE);
 	list_palette_add_checkbox(&property_palette,kMeshPropertyNoLighting,"Highlighted",mesh->no_lighting,FALSE);
 	list_palette_add_checkbox(&property_palette,kMeshPropertyAdditive,"Alpha is Additive",mesh->blend_add,FALSE);
+	list_palette_add_checkbox(&property_palette,kMeshPropertyCull,"Cull",mesh->cull,FALSE);
 	list_palette_add_checkbox(&property_palette,kMeshPropertyLocked,"Locked",mesh->locked,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Replace OBJ");
@@ -156,6 +158,10 @@ void property_palette_click_mesh(int mesh_idx,int id,bool double_click)
 
 		case kMeshPropertyAdditive:
 			mesh->blend_add=!mesh->blend_add;
+			break;
+
+		case kMeshPropertyCull:
+			mesh->cull=!mesh->cull;
 			break;
 
 		case kMeshPropertyLocked:

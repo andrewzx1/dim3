@@ -39,16 +39,12 @@ typedef struct		{
 // Functions
 //
 
-extern void decode_mesh_v1_xml(model_type *model,int model_head);
-extern void decode_mesh_v2_xml(model_type *model,int model_head);
-extern void encode_mesh_v2_xml(model_type *model);
-extern bool read_mesh_xml(model_type *model);
-extern bool write_mesh_xml(model_type *model);
+extern bool model_read_xml(model_type *model);
+extern bool model_write_xml(model_type *model);
 
-extern bool read_pose_xml(model_type *model);
-extern bool write_pose_xml(model_type *model);
-extern bool read_animate_xml(model_type *model);
-extern bool write_animate_xml(model_type *model);
+extern bool model_read_v2_mesh_xml(model_type *model);
+extern bool model_read_v2_pose_xml(model_type *model);
+extern bool model_read_v2_animate_xml(model_type *model);
 
 extern void model_textures_clear(model_type *model);
 extern void model_textures_read(model_type *model);

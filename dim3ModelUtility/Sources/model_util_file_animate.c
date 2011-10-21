@@ -32,7 +32,7 @@ and can be sold or given away.
 extern modelutility_settings_type		modelutility_settings;
 
 extern int model_xml_get_attribute_bone(model_type *model,int tag,char *tag_name);
-extern void model_write_bone_or_blank_attribute(model_type *model,char *attrib_name,int bone_idx);
+extern void model_write_xml_bone(model_type *model,char *attrib_name,int bone_idx);
 
 /* =======================================================
 
@@ -41,7 +41,7 @@ extern void model_write_bone_or_blank_attribute(model_type *model,char *attrib_n
 ======================================================= */
 
 // supergumba -- v2 of animate
-bool read_animate_xml(model_type *model)
+bool model_read_v2_animate_xml(model_type *model)
 {
 	int						n,k,t,nanimate,animate_idx,
 							tag,model_head,poses_tag,animations_tag,animation_tag,
@@ -262,7 +262,7 @@ bool write_animate_xml(model_type *model)
 			xml_add_attribute_float("acceleration",pose_move->acceleration);
 			
             xml_add_attribute_text("sound",pose_move->sound.name);
- 			model_write_bone_or_blank_attribute(model,"sound_bone",pose_move->sound.bone_idx);
+ 			model_write_xml_bone(model,"sound_bone",pose_move->sound.bone_idx);
 			xml_add_attribute_float("sound_pitch",pose_move->sound.pitch);
 			xml_add_attribute_boolean("sound_global",pose_move->sound.no_position);
 			
@@ -276,7 +276,7 @@ bool write_animate_xml(model_type *model)
 			xml_add_attribute_int("mesh_fade_life_time",pose_move->mesh_fade.fade_life_msec);
 			xml_add_attribute_int("mesh_fade_out_time",pose_move->mesh_fade.fade_out_msec);
 
- 			model_write_bone_or_blank_attribute(model,"flash_bone",pose_move->flash.bone_idx);
+ 			model_write_xml_bone(model,"flash_bone",pose_move->flash.bone_idx);
 			xml_add_attribute_int("flash_intensity",pose_move->flash.intensity);
 			xml_add_attribute_int("flash_time",pose_move->flash.flash_msec);
 			xml_add_attribute_int("flash_fade_time",pose_move->flash.fade_msec);
@@ -298,7 +298,7 @@ bool write_animate_xml(model_type *model)
 			
 				xml_add_tagstart("Particle");
 				xml_add_attribute_text("particle",pose_move->particle.particles[t].name);
-				model_write_bone_or_blank_attribute(model,"bone",pose_move->particle.particles[t].bone_idx);
+				model_write_xml_bone(model,"bone",pose_move->particle.particles[t].bone_idx);
 				xml_add_attribute_boolean("particle_rotate",pose_move->particle.particles[t].rotate);
 				xml_add_attribute_boolean("particle_motion",pose_move->particle.particles[t].motion);
 				xml_add_attribute_float("particle_motion_factor",pose_move->particle.particles[t].motion_factor);
@@ -319,7 +319,7 @@ bool write_animate_xml(model_type *model)
 			
 				xml_add_tagstart("Ring");
 				xml_add_attribute_text("ring",pose_move->ring.rings[t].name);
-				model_write_bone_or_blank_attribute(model,"bone",pose_move->ring.rings[t].bone_idx);
+				model_write_xml_bone(model,"bone",pose_move->ring.rings[t].bone_idx);
 				xml_add_attribute_boolean("ring_angle",pose_move->ring.rings[t].angle);
 				xml_add_attribute_3_coord_int("ring_slop",pose_move->ring.rings[t].slop.x,pose_move->ring.rings[t].slop.y,pose_move->ring.rings[t].slop.z);
 				

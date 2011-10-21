@@ -29,7 +29,7 @@ and can be sold or given away.
 // version
 //
 
-#define model_current_version							2
+#define model_current_version							3
 
 //
 // definitions
@@ -147,7 +147,7 @@ typedef struct		{
 						int								nvertex,npoly;
 						char							name[name_str_len];
 						bool							no_lighting,diffuse,
-														blend_add,locked;
+														blend_add,cull,locked;
 						d3pnt							import_move;
  						model_vertex_type				*vertexes;
                         model_poly_type					*polys;

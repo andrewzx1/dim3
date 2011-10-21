@@ -119,7 +119,7 @@ void model_texture_end(void)
       
 ======================================================= */
 
-void draw_model_mesh_triangles(int mesh_idx,bool opaque)
+void draw_model_mesh_polygons(int mesh_idx,bool opaque)
 {
 	int					n,k;
 	float				vertexes[8*3],uvs[8*2];
@@ -166,7 +166,7 @@ void draw_model_mesh_triangles(int mesh_idx,bool opaque)
 		glVertexPointer(3,GL_FLOAT,0,vertexes);
 		glTexCoordPointer(2,GL_FLOAT,0,uvs);
 
-		glDrawArrays(GL_TRIANGLES,0,poly->ptsz);
+		glDrawArrays(GL_POLYGON,0,poly->ptsz);
 	}
 }
 
@@ -195,14 +195,14 @@ void draw_model(int mesh_idx)
 
 	glDisable(GL_BLEND);
 
-	draw_model_mesh_triangles(mesh_idx,TRUE);
+	draw_model_mesh_polygons(mesh_idx,TRUE);
 	
 		// run through the transparent textures
 		
 	glEnable(GL_BLEND);
 	glDepthMask(GL_FALSE);
 	
-	draw_model_mesh_triangles(mesh_idx,FALSE);
+	draw_model_mesh_polygons(mesh_idx,FALSE);
 	
 	glDepthMask(GL_TRUE);
     

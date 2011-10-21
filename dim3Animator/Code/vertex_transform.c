@@ -406,18 +406,36 @@ void vertex_delete_unused_vertexes(int mesh_idx)
 
 /* =======================================================
 
+      Poly Shared Vertex Utility
+      
+======================================================= */
+
+int polygon_find_vertex_offset(model_poly_type *poly,int v_idx)
+{
+	int			n;
+
+	for (n=0;n!=poly->ptsz;n++) {
+		if (poly->v[n]==v_idx) return(n);
+	}
+
+	return(-1);
+}
+
+/* =======================================================
+
       Poly Combine and Tesselate
       
 ======================================================= */
 
 void polygon_make_quad(int mesh_idx)
 {
-	int					n,npoly,ptsz,idx,dir,
-						poly_1_idx,poly_2_idx,
+	int					n,npoly,ptsz,idx,next_idx,dir,sz,
+						poly_1_idx,poly_2_idx,start_idx,
 						v[8];
-	bool				first_poly;
+	float				gx[8],gy[8];
 	model_mesh_type		*mesh;
-	model_poly_type		*poly_1,*poly_2;
+	model_poly_type		*poly_1,*poly_2,
+						*cur_poly,*other_poly,*swap_poly;
 
 	mesh=&model.meshes[mesh_idx];
 	npoly=mesh->npoly;
@@ -456,52 +474,172 @@ void polygon_make_quad(int mesh_idx)
 		return;
 	}
 
-		// run around and switch when
-		// we hit a shared vertex
+		// find a non shared vertex on first
+		// polygon to start on
 
-	first_poly=TRUE;
+	start_idx=0;
 
-	idx=0;
+	while (start_idx<poly_1->ptsz) {
+		if (polygon_find_vertex_offset(poly_2,poly_1->v[start_idx])==-1) break;
+		start_idx++;
+	}
+
+	if (start_idx==poly_1->ptsz) {
+		os_dialog_alert("Make Quad","Unable to merge these triangle polygons into a single quad");
+		return;
+	}
+
+		// run around the first polygon
+		// and switch when to the second
+		// when we hit a shared vertex
 
 	ptsz=0;
+
+	idx=start_idx;
 	dir=1;
+
+	cur_poly=poly_1;
+	other_poly=poly_2;
 
 	while (TRUE) {
 
-		if (first_poly) {
-			v[ptsz++]=poly_1->v[idx];
-		}
-		else {
-			v[ptsz++]=poly_2->v[idx];
-		}
+		v[ptsz]=cur_poly->v[idx];
+		gx[ptsz]=cur_poly->gx[idx];
+		gy[ptsz]=cur_poly->gy[idx];
+
+		ptsz++;
 
 			// if these vertexes are
 			// shared, switch to other poly
 			// and go in the direction
 			// of the next unshared vertex
 
-		// DO THIS!
+		next_idx=polygon_find_vertex_offset(other_poly,cur_poly->v[idx]);
+
+		if (next_idx!=-1) {
+			idx=next_idx;
+
+			swap_poly=cur_poly;
+			cur_poly=other_poly;
+			other_poly=swap_poly;
+
+			next_idx=idx+1;
+			if (next_idx==cur_poly->ptsz) next_idx=0;
+
+			if (polygon_find_vertex_offset(other_poly,cur_poly->v[next_idx])==-1) {
+				dir=1;
+			}
+			else {
+				dir=-1;
+			}
+		}
+
+			// next vertex
 
 		idx+=dir;
-		if (first_poly) {
-			if (idx==poly_1->ptsz) idx=0;
-			if (idx<0) idx=poly_1->ptsz-1;
-		}
-		else {
-			if (idx==poly_2->ptsz) idx=0;
-			if (idx<0) idx=poly_2->ptsz-1;
-		}
+		if (idx==cur_poly->ptsz) idx=0;
+		if (idx<0) idx=cur_poly->ptsz-1;
 
 			// we are at end if next vertex
-			// is equal to poly_1->v[0] where
+			// is equal to the index where
 			// we started
 
-		if ((first_poly) && (idx==0)) break;
+		if ((cur_poly==poly_1) && (idx==start_idx)) break;
 	}
+
+		// rebuild first polygon into quad
+
+	for (n=0;n!=ptsz;n++) {
+		poly_1->v[n]=v[n];
+		poly_1->gx[n]=gx[n];
+		poly_1->gy[n]=gy[n];
+	}
+
+	poly_1->ptsz=ptsz;
+
+		// delete the second
+
+	sz=(mesh->npoly-poly_2_idx)-1;
+	if (sz>0) memmove(&mesh->polys[poly_2_idx],&mesh->polys[poly_2_idx+1],(sz*sizeof(model_poly_type)));
+
+	mesh->npoly--;
+
+		// rebuild the sel
+
+	if (poly_1_idx>poly_2_idx) poly_1_idx--;
+
+	poly_mask_clear_sel(mesh_idx);
+	poly_mask_set_sel(mesh_idx,poly_1_idx,TRUE);
 }
 
 void polygon_tessellate(int mesh_idx,bool sel_only)
 {
+	int					n,k,t,npoly,ntrig,idx,txt_idx,
+						trigs_v[6][3];
+	float				trigs_gx[6][3],trigs_gy[6][3];
+	model_mesh_type		*mesh;
+	model_poly_type		*poly;
 
+	mesh=&model.meshes[mesh_idx];
+	npoly=mesh->npoly;
+
+		// run through the polys
+
+	for (n=0;n!=npoly;n++) {
+
+			// if only tessellating selection
+
+		if (sel_only) {
+			if ((!poly_mask_check_sel(mesh_idx,n)) || (poly_mask_check_hide(mesh_idx,n))) continue;
+		}
+
+			// tessellate
+
+		poly=&mesh->polys[n];
+		if (poly->ptsz==3) continue;
+
+		ntrig=poly->ptsz-2;
+
+		for (k=0;k!=ntrig;k++) {
+			trigs_v[k][0]=poly->v[0];
+			trigs_gx[k][0]=poly->gx[0];
+			trigs_gy[k][0]=poly->gy[0];
+
+			trigs_v[k][1]=poly->v[k+1];
+			trigs_gx[k][1]=poly->gx[k+1];
+			trigs_gy[k][1]=poly->gy[k+1];
+
+			trigs_v[k][2]=poly->v[k+2];
+			trigs_gx[k][2]=poly->gx[k+2];
+			trigs_gy[k][2]=poly->gy[k+2];
+		}
+
+		txt_idx=poly->txt_idx;
+
+			// fix the original poly
+
+		poly->ptsz=3;
+
+			// add the new polys
+
+		idx=mesh->npoly;
+
+		model_mesh_set_poly_count(&model,mesh_idx,(mesh->npoly+(ntrig-1)));
+
+		for (k=1;k!=ntrig;k++) {
+			poly=&mesh->polys[idx];
+
+			poly->ptsz=3;
+			poly->txt_idx=txt_idx;
+
+			for (t=0;t!=3;t++) {
+				poly->v[t]=trigs_v[k][t];
+				poly->gx[t]=trigs_gx[k][t];
+				poly->gy[t]=trigs_gy[k][t];
+			}
+
+			idx++;
+		}
+	}
 }
 

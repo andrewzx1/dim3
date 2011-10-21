@@ -113,6 +113,8 @@ bool model_new(model_type *model,char *name)
 	model->meshes[0].no_lighting=FALSE;
 	model->meshes[0].diffuse=TRUE;
 	model->meshes[0].blend_add=FALSE;
+	model->meshes[0].cull=FALSE;
+	model->meshes[0].locked=FALSE;
 
 	model->meshes[0].import_move.x=0;
 	model->meshes[0].import_move.y=0;
@@ -160,16 +162,21 @@ bool model_open(model_type *model,char *name,bool load_bitmaps)
 		
 	sprintf(sub_path,"Models/%s",model->name);
 	file_paths_data(&modelutility_settings.file_path_setup,model->load_base_path,sub_path,NULL,NULL);
+
+		// read XML for new format
+
+	if (!model_read_xml(model)) {
 	
-		// read XML
+			// try v2 XML
+			
+		if (!model_read_v2_mesh_xml(model)) {
+			model_close(model);
+			return(FALSE);
+		}
 		
-	if (!read_mesh_xml(model)) {
-		model_close(model);
-		return(FALSE);
+		model_read_v2_pose_xml(model);
+		model_read_v2_animate_xml(model);
 	}
-	
-	read_pose_xml(model);
-	read_animate_xml(model);
 	
 		// pre-calculate parents
 		
@@ -190,15 +197,7 @@ bool model_open(model_type *model,char *name,bool load_bitmaps)
 
 bool model_save(model_type *model)
 {
-	bool			ok,ok2,ok3;
-	
-		// write XML
-
-    ok=write_mesh_xml(model);
-    ok2=write_pose_xml(model);
-    ok3=write_animate_xml(model);
-	
-	return(ok||ok2||ok3);
+	return(model_write_xml(model));
 }
 
 /* =======================================================
