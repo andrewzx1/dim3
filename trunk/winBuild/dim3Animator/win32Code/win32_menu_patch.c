@@ -76,6 +76,7 @@ int				win32_menu_remap[][2]={
 					{kCommandSwapYZ,ID_MESH_SWAP_YZ},
 					{kCommandCenterXZ,ID_MESH_CENTER_XZ},
 					{kCommandFloorY,ID_MESH_FLOOR_Y},
+					{kCommandMeshTessellate,ID_MESH_TESSELLATE},
 
 					{kCommandVertexSelectAll,ID_VERTEX_SELECT_ALL},
 					{kCommandVertexSelectNotAttached,ID_VERTEX_SELECT_NOT_ATTACHED},
@@ -89,6 +90,8 @@ int				win32_menu_remap[][2]={
 					{kCommandVertexHideNonSelected,ID_VERTEX_HIDE_NON_SELECTED},
 					{kCommandVertexShowAll,ID_VERTEX_SHOW_ALL},
 					{kCommandVertexDelete,ID_VERTEX_DELETE},
+					{kCommandVertexMakeQuad,ID_VERTEX_MAKE_QUAD},
+					{kCommandVertexTessellatePoly,ID_VERTEX_TESSELLATE_POLYGON},
 
 					{kCommandNewBone,ID_BONE_ADD},
 					{kCommandSetBone,ID_BONE_SET},

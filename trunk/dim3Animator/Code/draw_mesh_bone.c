@@ -78,7 +78,7 @@ void draw_model_mesh(int mesh_idx)
 		}
 
 		glVertexPointer(3,GL_FLOAT,0,vertexes);
-		glDrawArrays(GL_LINE_LOOP,0,3);
+		glDrawArrays(GL_LINE_LOOP,0,poly->ptsz);
 		
 		poly++;
     }

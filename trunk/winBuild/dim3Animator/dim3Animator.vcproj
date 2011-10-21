@@ -320,11 +320,11 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\dim3Animator\Code\texture_import.c"
+					RelativePath="..\..\dim3Animator\Code\poly_masks.c"
 					>
 				</File>
 				<File
-					RelativePath="..\..\dim3Animator\Code\trig_masks.c"
+					RelativePath="..\..\dim3Animator\Code\texture_import.c"
 					>
 				</File>
 				<File
@@ -749,6 +749,10 @@
 				</File>
 				<File
 					RelativePath="..\..\dim3ModelUtility\Sources\model_util_file_mesh.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3ModelUtility\Sources\model_util_file_model.c"
 					>
 				</File>
 				<File
