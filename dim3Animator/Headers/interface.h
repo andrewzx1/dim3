@@ -280,7 +280,8 @@ extern void vertex_clear_bone_attachments_sel_vertexes(int mesh_idx);
 extern void vertex_auto_bone_attachments(int mesh_idx);
 extern void vertex_delete_sel_vertex(int mesh_idx);
 extern void vertex_delete_unused_vertexes(int mesh_idx);
-
+extern void vertex_delete_sel_poly(int mesh_idx);
+extern void vertex_collapse(int mesh_idx);
 extern void polygon_make_quad(int mesh_idx);
 extern void polygon_tessellate(int mesh_idx,bool sel_only);
 

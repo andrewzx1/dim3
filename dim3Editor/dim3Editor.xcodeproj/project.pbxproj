@@ -134,6 +134,7 @@
 		26937AE112D2D5C3001DEEB8 /* import_obj.c in Sources */ = {isa = PBXBuildFile; fileRef = 26937AE012D2D5C3001DEEB8 /* import_obj.c */; };
 		26A0009D12975A130006F64F /* property_palette_light.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A0009B12975A130006F64F /* property_palette_light.c */; };
 		26A0009E12975A130006F64F /* property_palette_sound.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A0009C12975A130006F64F /* property_palette_sound.c */; };
+		26A32EEA1453D09F0005AABD /* model_util_file_model.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A32EE91453D09E0005AABD /* model_util_file_model.c */; };
 		26AFB4490D95E0E60004805A /* pieces_mesh.c in Sources */ = {isa = PBXBuildFile; fileRef = 26AFB4480D95E0E60004805A /* pieces_mesh.c */; };
 		26C5F02712612832000B0F9E /* Tool Grid.png in Copy (Tools Icons) */ = {isa = PBXBuildFile; fileRef = 26C5F00F12612826000B0F9E /* Tool Grid.png */; };
 		26C5F02812612832000B0F9E /* Tool Height Map.png in Copy (Tools Icons) */ = {isa = PBXBuildFile; fileRef = 26C5F01012612826000B0F9E /* Tool Height Map.png */; };
@@ -527,6 +528,7 @@
 		26937AE012D2D5C3001DEEB8 /* import_obj.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = import_obj.c; path = Code/import_obj.c; sourceTree = "<group>"; };
 		26A0009B12975A130006F64F /* property_palette_light.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_light.c; path = Code/property_palette_light.c; sourceTree = "<group>"; };
 		26A0009C12975A130006F64F /* property_palette_sound.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_sound.c; path = Code/property_palette_sound.c; sourceTree = "<group>"; };
+		26A32EE91453D09E0005AABD /* model_util_file_model.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = model_util_file_model.c; sourceTree = "<group>"; };
 		26AFB4480D95E0E60004805A /* pieces_mesh.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pieces_mesh.c; path = Code/pieces_mesh.c; sourceTree = "<group>"; };
 		26C5F00F12612826000B0F9E /* Tool Grid.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool Grid.png"; sourceTree = "<group>"; };
 		26C5F01012612826000B0F9E /* Tool Height Map.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool Height Map.png"; sourceTree = "<group>"; };
@@ -806,6 +808,7 @@
 				260B3D6C1411F221006ED023 /* model_util_draw_vertexes.c */,
 				260B3D6D1411F221006ED023 /* model_util_file_animate.c */,
 				260B3D6E1411F221006ED023 /* model_util_file_mesh.c */,
+				26A32EE91453D09E0005AABD /* model_util_file_model.c */,
 				260B3D6F1411F221006ED023 /* model_util_file_pose.c */,
 				260B3D701411F221006ED023 /* model_util_frames.c */,
 				260B3D711411F221006ED023 /* model_util_hit_box.c */,
@@ -1354,6 +1357,7 @@
 				260B3DB91411F22A006ED023 /* map_util_texture.c in Sources */,
 				260B3DBA1411F22A006ED023 /* map_util_write.c in Sources */,
 				263ADA6B14296509009EE0E0 /* view_vbo.c in Sources */,
+				26A32EEA1453D09F0005AABD /* model_util_file_model.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

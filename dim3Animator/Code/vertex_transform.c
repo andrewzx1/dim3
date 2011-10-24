@@ -406,6 +406,114 @@ void vertex_delete_unused_vertexes(int mesh_idx)
 
 /* =======================================================
 
+      Remove Polygon
+      
+======================================================= */
+
+void vertex_delete_sel_poly(int mesh_idx)
+{
+	int					n,sz;
+	char				*poly_sel;
+
+		// convert sels to boolean
+		
+	poly_sel=(char*)malloc(model.meshes[mesh_idx].npoly);
+		
+	for (n=0;n!=model.meshes[mesh_idx].npoly;n++) {
+		poly_sel[n]=(char)poly_mask_check_sel(mesh_idx,n);
+	}
+	
+		// delete all polys
+		
+	n=0;
+	
+	while (n<model.meshes[mesh_idx].npoly) {
+	
+		if (poly_sel[n]==0) {
+			n++;
+			continue;
+		}
+		
+			// delete the poly
+			
+		sz=((model.meshes[mesh_idx].npoly-1)-n);
+		
+		if (sz>0) {
+			memmove(&model.meshes[mesh_idx].polys[n],&model.meshes[mesh_idx].polys[n+1],(sz*sizeof(model_poly_type)));
+			memmove(&poly_sel[n],&poly_sel[n+1],sz);
+		}
+		
+		model.meshes[mesh_idx].npoly--;
+	}
+	
+	free(poly_sel);
+	
+		// clear sels
+		
+	poly_mask_clear_sel(mesh_idx);
+	poly_mask_clear_hide(mesh_idx);
+	
+		// any remove any vertexes
+		// that are now unattached
+		
+	vertex_delete_unused_vertexes(mesh_idx);
+}
+
+/* =======================================================
+
+      Collapse Vertexes
+      
+======================================================= */
+
+void vertex_collapse(int mesh_idx)
+{
+	int					n,k,idx;
+	model_mesh_type		*mesh;
+	model_poly_type		*poly;
+
+	mesh=&model.meshes[mesh_idx];
+	
+		// find fist vertex to collapse to
+		
+	idx=-1;
+	
+	for (n=0;n!=mesh->nvertex;n++) {
+		if ((vertex_mask_check_sel(mesh_idx,n)) && (!vertex_mask_check_hide(mesh_idx,n))) {
+			if (idx==-1) {
+				idx=n;
+				break;
+			}
+		}
+	}
+	
+	if (idx==-1) return;
+	
+		// collapse
+		
+	poly=mesh->polys;
+		
+	for (n=0;n!=mesh->npoly;n++) {
+	
+		for (k=0;k!=poly->ptsz;k++) {
+			if (poly->v[k]==idx) continue;
+			
+			if ((vertex_mask_check_sel(mesh_idx,poly->v[k])) && (!vertex_mask_check_hide(mesh_idx,poly->v[k]))) {
+				poly->v[k]=idx;
+			}
+		}
+
+		poly++;
+	}
+	
+		// finish by cleaning all the
+		// now collapses and unconnected
+		// vertexes
+		
+	vertex_delete_unused_vertexes(mesh_idx);
+}
+
+/* =======================================================
+
       Poly Shared Vertex Utility
       
 ======================================================= */
