@@ -67,7 +67,7 @@ void alt_property_palette_fill_radar_icon(int radar_icon_idx)
 
 	list_palette_add_header(&alt_property_palette,0,"Options");
 	list_palette_add_string_int(&alt_property_palette,kRadarIconOptionSize,"Size",icon->size,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kRadarIconOptionRotate,"Rotate",icon->rot,FALSE);
+	list_palette_add_checkbox(&alt_property_palette,kRadarIconOptionRotate,"Rotate",&icon->rot,FALSE);
 }
 
 /* =======================================================
@@ -102,14 +102,6 @@ void alt_property_palette_click_radar_icon(int radar_icon_idx,int id,bool double
 			dialog_property_string_run(list_string_value_positive_int,(void*)&icon->size,0,0,0);
 			break;
 
-		case kRadarIconOptionRotate:
-			icon->rot=!icon->rot;
-			break;
-
 	}
-
-		// redraw
-
-	main_wind_draw();
 }
 

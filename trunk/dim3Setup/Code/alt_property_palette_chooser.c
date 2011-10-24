@@ -82,7 +82,7 @@ void alt_property_palette_fill_chooser(int chooser_idx)
 		// frame
 
 	list_palette_add_header(&alt_property_palette,0,"Frame");
-	list_palette_add_checkbox(&alt_property_palette,kChooserPropertyFrameOn,"On",chooser->frame.on,FALSE);
+	list_palette_add_checkbox(&alt_property_palette,kChooserPropertyFrameOn,"On",&chooser->frame.on,FALSE);
 	list_palette_add_string_int(&alt_property_palette,kChooserPropertyFrameX,"X",chooser->frame.x,FALSE);
 	list_palette_add_string_int(&alt_property_palette,kChooserPropertyFrameY,"Y",chooser->frame.y,FALSE);
 	list_palette_add_string_int(&alt_property_palette,kChooserPropertyFrameWid,"Wid",chooser->frame.wid,FALSE);
@@ -152,7 +152,6 @@ void alt_property_palette_click_chooser(int chooser_idx,int id,bool double_click
 	if ((id>=kChooserPropertyChooserItemName) && (id<(kChooserPropertyChooserItemName+max_chooser_piece))) {
 		state.cur_chooser_piece_idx=id-kChooserPropertyChooserItemName;
 		if (double_click) list_palette_set_level(3);
-		main_wind_draw();
 		return;
 	}
 
@@ -168,7 +167,6 @@ void alt_property_palette_click_chooser(int chooser_idx,int id,bool double_click
 
 		chooser->npiece--;
 
-		main_wind_draw();
 		return;
 	}
 
@@ -226,7 +224,6 @@ void alt_property_palette_click_chooser(int chooser_idx,int id,bool double_click
 
 		state.cur_chooser_piece_idx=idx;
 
-		main_wind_draw();
 		return;
 	}
 
@@ -250,10 +247,6 @@ void alt_property_palette_click_chooser(int chooser_idx,int id,bool double_click
 			break;
 
 			// frame
-
-		case kChooserPropertyFrameOn:
-			chooser->frame.on=!chooser->frame.on;
-			break;
 
 		case kChooserPropertyFrameX:
 			dialog_property_string_run(list_string_value_positive_int,(void*)&chooser->frame.x,0,0,0);
@@ -286,9 +279,5 @@ void alt_property_palette_click_chooser(int chooser_idx,int id,bool double_click
 			break;
 
 	}
-
-		// redraw
-
-	main_wind_draw();
 }
 

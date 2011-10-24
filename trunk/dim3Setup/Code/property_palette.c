@@ -276,6 +276,8 @@ bool property_palette_click(d3pnt *pnt,bool double_click)
 			break;
 
 	}
+
+	main_wind_draw();
 	
 	return(TRUE);
 }

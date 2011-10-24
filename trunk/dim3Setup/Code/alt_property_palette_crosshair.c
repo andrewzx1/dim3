@@ -88,9 +88,5 @@ void alt_property_palette_click_crosshair(int crosshair_idx,int id,bool double_c
 			break;
 
 	}
-
-		// redraw
-
-	main_wind_draw();
 }
 

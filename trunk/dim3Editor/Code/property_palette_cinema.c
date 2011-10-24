@@ -78,9 +78,9 @@ void property_palette_fill_cinema(int cinema_idx)
 	list_palette_add_string_int(&property_palette,kCinemaPropertyLength,"Total Length",cinema->len_msec,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Cinema Settings");
-	list_palette_add_checkbox(&property_palette,kCinemaPropertyFreezeInput,"Freeze Input",cinema->freeze_input,FALSE);
-	list_palette_add_checkbox(&property_palette,kCinemaPropertyShowHUD,"Show HUD",cinema->show_hud,FALSE);
-	list_palette_add_checkbox(&property_palette,kCinemaPropertyNoCancel,"No Cancel",cinema->no_cancel,FALSE);
+	list_palette_add_checkbox(&property_palette,kCinemaPropertyFreezeInput,"Freeze Input",&cinema->freeze_input,FALSE);
+	list_palette_add_checkbox(&property_palette,kCinemaPropertyShowHUD,"Show HUD",&cinema->show_hud,FALSE);
+	list_palette_add_checkbox(&property_palette,kCinemaPropertyNoCancel,"No Cancel",&cinema->no_cancel,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Cinema Operations");
 	list_palette_add_string_selectable_button(&property_palette,kCinemaPropertySort,list_button_set,kCinemaPropertySort,"Sort Actions",NULL,FALSE,FALSE);
@@ -221,7 +221,6 @@ void property_palette_click_cinema(int cinema_idx,int id,bool double_click)
 	if ((id>=kCinemaPropertyAction) && (id<kCinemaPropertyActionDelete)) {
 		state.cur_cinema_action_idx=id-kCinemaPropertyAction;
 		if (double_click) list_palette_set_level(2);
-		main_wind_draw();
 		return;
 	}
 
@@ -231,7 +230,6 @@ void property_palette_click_cinema(int cinema_idx,int id,bool double_click)
 		state.cur_cinema_action_idx=map_cinema_add_action(&map,cinema_idx);
 		list_palette_set_level(2);
 		dialog_property_string_run(list_string_value_positive_int,(void*)&cinema->actions[state.cur_cinema_action_idx].start_msec,0,0,0);
-		main_wind_draw();
 		return;
 	}
 
@@ -240,7 +238,6 @@ void property_palette_click_cinema(int cinema_idx,int id,bool double_click)
 	if (id>=kCinemaPropertyActionDelete) {
 		state.cur_cinema_action_idx=-1;
 		map_cinema_delete_action(&map,cinema_idx,(id-kCinemaPropertyActionDelete));
-		main_wind_draw();
 		return;
 	}
 
@@ -248,7 +245,6 @@ void property_palette_click_cinema(int cinema_idx,int id,bool double_click)
 
 	if (id==kCinemaPropertySort) {
 		cinemas_action_sort(cinema_idx);
-		main_wind_draw();
 		return;
 	}
 
@@ -267,7 +263,6 @@ void property_palette_click_cinema(int cinema_idx,int id,bool double_click)
 		dialog_property_string_run(list_string_value_int,(void*)&shift,0,0,0);
 		
 		cinemas_action_shift(cinema_idx,action_idx,shift);
-		main_wind_draw();
 		return;
 	}
 
@@ -287,20 +282,6 @@ void property_palette_click_cinema(int cinema_idx,int id,bool double_click)
 			dialog_property_string_run(list_string_value_positive_int,(void*)&cinema->len_msec,0,0,0);
 			break;
 
-		case kCinemaPropertyFreezeInput:
-			cinema->freeze_input=!cinema->freeze_input;
-			break;
-
-		case kCinemaPropertyShowHUD:
-			cinema->show_hud=!cinema->show_hud;
-			break;
-
-		case kCinemaPropertyNoCancel:
-			cinema->no_cancel=!cinema->no_cancel;
-			break;
-
 	}
-
-	main_wind_draw();
 }
 

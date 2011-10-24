@@ -74,19 +74,19 @@ void property_palette_fill_particle(int particle_idx)
 		// particle
 		
 	list_palette_add_header(&property_palette,0,"Particle Settings");
-	list_palette_add_checkbox(&property_palette,kParticleOn,"On",particle->on,FALSE);
+	list_palette_add_checkbox(&property_palette,kParticleOn,"On",&particle->on,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Particle Type");
 	list_palette_add_string(&property_palette,kParticlePropertyName,"Name",particle->name,FALSE);
 	list_palette_add_string_int(&property_palette,kParticlePropertySpawnTick,"Spawn Tick",particle->spawn_tick,FALSE);
 	list_palette_add_string_int(&property_palette,kParticlePropertySlopTick,"Slop Tick",particle->slop_tick,FALSE);
-	list_palette_add_checkbox(&property_palette,kParticlePropertySingleSpawn,"Single Spawn",particle->single_spawn,FALSE);
+	list_palette_add_checkbox(&property_palette,kParticlePropertySingleSpawn,"Single Spawn",&particle->single_spawn,FALSE);
 
 		// particle lighting
 		
 	list_palette_add_header(&property_palette,0,"Particle Light Settings");
-	list_palette_add_checkbox(&property_palette,kLightPropertyOn,"On",particle->light_setting.on,FALSE);
-	list_palette_add_checkbox(&property_palette,kLightPropertyLightMap,"Used in Light Map",particle->light_setting.light_map,FALSE);
+	list_palette_add_checkbox(&property_palette,kLightPropertyOn,"On",&particle->light_setting.on,FALSE);
+	list_palette_add_checkbox(&property_palette,kLightPropertyLightMap,"Used in Light Map",&particle->light_setting.light_map,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Particle Light Display");
 	list_palette_add_string(&property_palette,kLightPropertyType,"Type",light_property_type_list[particle->light_setting.type],FALSE);
@@ -119,10 +119,6 @@ void property_palette_click_particle(int particle_idx,int id,bool double_click)
 
 			// particle
 			
-		case kParticleOn:
-			particle->on=!particle->on;
-			break;
-
 		case kParticlePropertyName:
 			property_palette_pick_particle(particle->name);
 			break;
@@ -134,21 +130,9 @@ void property_palette_click_particle(int particle_idx,int id,bool double_click)
 		case kParticlePropertySlopTick:
 			dialog_property_string_run(list_string_value_positive_int,(void*)&particle->slop_tick,0,0,0);
 			break;
-
-		case kParticlePropertySingleSpawn:
-			particle->single_spawn=!particle->single_spawn;
-			break;
 			
 			// particle lighting
 			
-		case kLightPropertyOn:
-			particle->light_setting.on=!particle->light_setting.on;
-			break;
-
-		case kLightPropertyLightMap:
-			particle->light_setting.light_map=!particle->light_setting.light_map;
-			break;
-
 		case kLightPropertyType:
 			property_pick_list("Pick a Light Type",(char*)light_property_type_list,&particle->light_setting.type);
 			break;
@@ -165,16 +149,10 @@ void property_palette_click_particle(int particle_idx,int id,bool double_click)
 			dialog_property_string_run(list_string_value_positive_float,(void*)&particle->light_setting.exponent,0,0,0);
 			break;
 			
-		case kLightPropertyColor:
-			os_pick_color(&particle->light_setting.col);
-			break;
-
 		case kLightPropertyHalo:
 			property_palette_pick_halo(particle->light_setting.halo_name);
 			break;
 
 	}
-
-	main_wind_draw();
 }
 

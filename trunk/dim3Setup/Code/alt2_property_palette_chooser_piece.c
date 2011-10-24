@@ -81,7 +81,7 @@ void alt2_property_palette_fill_chooser_piece(int chooser_idx,int chooser_piece_
 	list_palette_add_header(&alt2_property_palette,0,"Settings");
 	list_palette_add_string(&alt2_property_palette,kChooserPieceSettingsType,"Type",chooser_type_str[piece->type],FALSE);
 	list_palette_add_string_int(&alt2_property_palette,kChooserPieceSettingsId,"Id",piece->id,FALSE);
-	list_palette_add_checkbox(&alt2_property_palette,kChooserPieceSettingsClickable,"Clickable",piece->clickable,FALSE);
+	list_palette_add_checkbox(&alt2_property_palette,kChooserPieceSettingsClickable,"Clickable",&piece->clickable,FALSE);
 	list_palette_add_string(&alt2_property_palette,kChooserPieceSettingsGoto,"Goto Chooser",piece->goto_name,FALSE);
 
 		// position
@@ -151,10 +151,6 @@ void alt2_property_palette_click_chooser_piece(int chooser_idx,int chooser_piece
 			dialog_property_string_run(list_string_value_int,(void*)&piece->id,0,0,0);
 			break;
 
-		case kChooserPieceSettingsClickable:
-			piece->clickable=!piece->clickable;
-			break;
-
 		case kChooserPieceSettingsGoto:
 			dialog_property_string_run(list_string_value_string,(void*)piece->goto_name,name_str_len,0,0);
 			break;
@@ -216,9 +212,5 @@ void alt2_property_palette_click_chooser_piece(int chooser_idx,int chooser_piece
 			break;
 
 	}
-
-		// redraw
-
-	main_wind_draw();
 }
 

@@ -140,7 +140,7 @@ void alt_property_palette_fill_animate_pose_move(int animate_idx,int pose_move_i
 	property_palette_add_string_bone(&alt_property_palette,kAnimationPoseMovePropertySoundBone,"Bone",pose_move->sound.bone_idx,FALSE);
 	list_palette_add_string(&alt_property_palette,kAnimationPoseMovePropertySoundName,"Sound",pose_move->sound.name,FALSE);
 	list_palette_add_string_float(&alt_property_palette,kAnimationPoseMovePropertySoundPitch,"Pitch",pose_move->sound.pitch,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kAnimationPoseMovePropertySoundGlobal,"Play Globally",pose_move->sound.no_position,FALSE);
+	list_palette_add_checkbox(&alt_property_palette,kAnimationPoseMovePropertySoundGlobal,"Play Globally",&pose_move->sound.no_position,FALSE);
 
 		// mesh fades
 
@@ -179,9 +179,9 @@ void alt_property_palette_fill_animate_pose_move(int animate_idx,int pose_move_i
 		list_palette_add_string(&alt_property_palette,(id_base+kAnimationPoseMovePropertyParticleName),"Name",pose_move->particle.particles[n].name,FALSE);
 		property_palette_add_string_bone(&alt_property_palette,(id_base+kAnimationPoseMovePropertyParticleBone),"Bone",pose_move->particle.particles[n].bone_idx,FALSE);
 		list_palette_add_string_float(&alt_property_palette,(id_base+kAnimationPoseMovePropertyParticleMotionFactor),"Motion Factor",pose_move->particle.particles[n].motion_factor,FALSE);
-		list_palette_add_checkbox(&alt_property_palette,(id_base+kAnimationPoseMovePropertyParticleMotion),"Follow Model Motion",pose_move->particle.particles[n].motion,FALSE);
-		list_palette_add_checkbox(&alt_property_palette,(id_base+kAnimationPoseMovePropertyParticleRotate),"Follow Model Rotation",pose_move->particle.particles[n].rotate,FALSE);
-		list_palette_add_checkbox(&alt_property_palette,(id_base+kAnimationPoseMovePropertyParticleStick),"Follow Model Bone",pose_move->particle.particles[n].stick,FALSE);
+		list_palette_add_checkbox(&alt_property_palette,(id_base+kAnimationPoseMovePropertyParticleMotion),"Follow Model Motion",&pose_move->particle.particles[n].motion,FALSE);
+		list_palette_add_checkbox(&alt_property_palette,(id_base+kAnimationPoseMovePropertyParticleRotate),"Follow Model Rotation",&pose_move->particle.particles[n].rotate,FALSE);
+		list_palette_add_checkbox(&alt_property_palette,(id_base+kAnimationPoseMovePropertyParticleStick),"Follow Model Bone",&pose_move->particle.particles[n].stick,FALSE);
 		list_palette_add_point(&alt_property_palette,(id_base+kAnimationPoseMovePropertyParticleSlop),"Position Slop",&pose_move->particle.particles[n].slop,FALSE);
 	}
 
@@ -196,7 +196,7 @@ void alt_property_palette_fill_animate_pose_move(int animate_idx,int pose_move_i
 		list_palette_add_header_button(&alt_property_palette,(id_base+kAnimationPoseMovePropertyRingDelete),str,list_button_minus);
 		list_palette_add_string(&alt_property_palette,(id_base+kAnimationPoseMovePropertyRingName),"Name",pose_move->ring.rings[n].name,FALSE);
 		property_palette_add_string_bone(&alt_property_palette,(id_base+kAnimationPoseMovePropertyRingBone),"Bone",pose_move->ring.rings[n].bone_idx,FALSE);
-		list_palette_add_checkbox(&alt_property_palette,(id_base+kAnimationPoseMovePropertyRingAngle),"Follow Model Angle",pose_move->ring.rings[n].angle,FALSE);
+		list_palette_add_checkbox(&alt_property_palette,(id_base+kAnimationPoseMovePropertyRingAngle),"Follow Model Angle",&pose_move->ring.rings[n].angle,FALSE);
 		list_palette_add_point(&alt_property_palette,(id_base+kAnimationPoseMovePropertyRingSlop),"Position Slop",&pose_move->ring.rings[n].slop,FALSE);
 	}
 }
@@ -222,11 +222,12 @@ void alt_property_palette_click_animate_pose_move(int animate_idx,int pose_move_
 
 	if (id==kAnimationPoseMovePropertyParticleAdd) {
 		model_piece_add_animation_pose_move_particle(animate_idx,pose_move_idx);
-		main_wind_draw();
 		return;
 	}
 
-	if ((double_click) && ((id>=kAnimationPoseMovePropertyParticleBase) && (id<kAnimationPoseMovePropertyRingBase))) {
+	if ((id>=kAnimationPoseMovePropertyParticleBase) && (id<kAnimationPoseMovePropertyRingBase)) {
+
+		if (!double_click) return;
 
 		id-=kAnimationPoseMovePropertyParticleBase;
 		idx=id/kAnimationPoseMovePropertyParticleMult;
@@ -248,19 +249,7 @@ void alt_property_palette_click_animate_pose_move(int animate_idx,int pose_move_
 
 			case kAnimationPoseMovePropertyParticleMotionFactor:
 				dialog_property_string_run(list_string_value_positive_float,(void*)&pose_move->particle.particles[idx].motion_factor,0,0,0);
-				break;
-
-			case kAnimationPoseMovePropertyParticleMotion:
-				pose_move->particle.particles[idx].motion=!pose_move->particle.particles[idx].motion;
-				break;
-
-			case kAnimationPoseMovePropertyParticleRotate:
-				pose_move->particle.particles[idx].rotate=!pose_move->particle.particles[idx].rotate;
-				break;
-
-			case kAnimationPoseMovePropertyParticleStick:
-				pose_move->particle.particles[idx].stick=!pose_move->particle.particles[idx].stick;
-				break;
+				return;
 
 			case kAnimationPoseMovePropertyParticleSlop:
 				dialog_property_chord_run(list_chord_value_point,(void*)&pose_move->particle.particles[idx].slop);
@@ -268,7 +257,6 @@ void alt_property_palette_click_animate_pose_move(int animate_idx,int pose_move_
 
 		}
 
-		main_wind_draw();
 		return;
 	}
 
@@ -276,11 +264,12 @@ void alt_property_palette_click_animate_pose_move(int animate_idx,int pose_move_
 
 	if (id==kAnimationPoseMovePropertyRingAdd) {
 		model_piece_add_animation_pose_move_ring(animate_idx,pose_move_idx);
-		main_wind_draw();
 		return;
 	}
 
-	if ((double_click) && (id>=kAnimationPoseMovePropertyRingBase)) {
+	if (id>=kAnimationPoseMovePropertyRingBase) {
+
+		if (!double_click) return;
 
 		id-=kAnimationPoseMovePropertyRingBase;
 		idx=id/kAnimationPoseMovePropertyRingMult;
@@ -300,17 +289,12 @@ void alt_property_palette_click_animate_pose_move(int animate_idx,int pose_move_
 				property_palette_pick_bone(&pose_move->ring.rings[idx].bone_idx,-1);
 				break;
 
-			case kAnimationPoseMovePropertyRingAngle:
-				pose_move->ring.rings[idx].angle=!pose_move->ring.rings[idx].angle;
-				break;
-
 			case kAnimationPoseMovePropertyRingSlop:
 				dialog_property_chord_run(list_chord_value_point,(void*)&pose_move->ring.rings[idx].slop);
 				break;
 
 		}
 
-		main_wind_draw();
 		return;
 	}
 
@@ -318,17 +302,15 @@ void alt_property_palette_click_animate_pose_move(int animate_idx,int pose_move_
 
 	if (id==kAnimatePoseMovePropertyLoopStart) {
 		model_animate_set_loop_start(&model,animate_idx,pose_move_idx);
-		main_wind_draw();
 		return;
 	}
 
 	if (id==kAnimatePoseMovePropertyLoopEnd) {
 		model_animate_set_loop_end(&model,animate_idx,pose_move_idx);
-		main_wind_draw();
 		return;
 	}
 
-		// regular values
+		// double click items
 
 	if (!double_click) return;
 
@@ -370,10 +352,6 @@ void alt_property_palette_click_animate_pose_move(int animate_idx,int pose_move_
 
 		case kAnimationPoseMovePropertySoundPitch:
 			dialog_property_string_run(list_string_value_positive_float,(void*)&pose_move->sound.pitch,0,0,0);
-			break;
-
-		case kAnimationPoseMovePropertySoundGlobal:
-			pose_move->sound.no_position=!pose_move->sound.no_position;
 			break;
 
 			// mesh fade
@@ -435,9 +413,5 @@ void alt_property_palette_click_animate_pose_move(int animate_idx,int pose_move_
 			break;
 
 	}
-
-		// redraw
-
-	main_wind_draw();
 }
 

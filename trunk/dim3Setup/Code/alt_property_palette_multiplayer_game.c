@@ -67,8 +67,8 @@ void alt_property_palette_fill_multiplayer_game(int multiplayer_game_idx)
 
 	list_palette_add_header(&alt_property_palette,0,"Settings");
 	list_palette_add_string(&alt_property_palette,kMPGamePropertySettingsName,"Name",game->name,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kMPGamePropertySettingsTeam,"Requires Teams",game->use_teams,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kMPGamePropertySettingsMonster,"Include Monsters",game->monsters,FALSE);
+	list_palette_add_checkbox(&alt_property_palette,kMPGamePropertySettingsTeam,"Requires Teams",&game->use_teams,FALSE);
+	list_palette_add_checkbox(&alt_property_palette,kMPGamePropertySettingsMonster,"Include Monsters",&game->monsters,FALSE);
 
 		// bots
 
@@ -80,7 +80,7 @@ void alt_property_palette_fill_multiplayer_game(int multiplayer_game_idx)
 
 	list_palette_add_header(&alt_property_palette,0,"Spawning");
 	list_palette_add_string(&alt_property_palette,kMPGamePropertySpawnSpotName,"Spot Name",game->spawn.spot_name,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kMPGamePropertySpawnForceTeam,"Force Team Spots",game->spawn.force_team_spot,FALSE);
+	list_palette_add_checkbox(&alt_property_palette,kMPGamePropertySpawnForceTeam,"Force Team Spots",&game->spawn.force_team_spot,FALSE);
 	
 		// score
 
@@ -113,14 +113,6 @@ void alt_property_palette_click_multiplayer_game(int multiplayer_game_idx,int id
 			dialog_property_string_run(list_string_value_string,(void*)game->name,name_str_len,0,0);
 			break;
 			
-		case kMPGamePropertySettingsTeam:
-			game->use_teams=!game->use_teams;
-			break;
-			
-		case kMPGamePropertySettingsMonster:
-			game->monsters=!game->monsters;
-			break;
-
 			// bots
 
 		case kMPGamePropertyScriptPlayerScript:
@@ -135,10 +127,6 @@ void alt_property_palette_click_multiplayer_game(int multiplayer_game_idx,int id
 
 		case kMPGamePropertySpawnSpotName:
 			dialog_property_string_run(list_string_value_string,(void*)game->spawn.spot_name,name_str_len,0,0);
-			break;
-
-		case kMPGamePropertySpawnForceTeam:
-			game->spawn.force_team_spot=!game->spawn.force_team_spot;
 			break;
 	
 			// score
@@ -161,9 +149,5 @@ void alt_property_palette_click_multiplayer_game(int multiplayer_game_idx,int id
 
 
 	}
-
-		// redraw
-
-	main_wind_draw();
 }
 

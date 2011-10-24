@@ -129,7 +129,6 @@ void property_palette_click_hud(int id,bool double_click)
 		state.cur_hud_text_idx=-1;
 		state.cur_hud_bar_idx=-1;
 		if (double_click) list_palette_set_level(2);
-		main_wind_draw();
 		return;
 	}
 
@@ -147,7 +146,6 @@ void property_palette_click_hud(int id,bool double_click)
 
 		iface.bitmap_list.nbitmap--;
 
-		main_wind_draw();
 		return;
 	}
 
@@ -202,7 +200,6 @@ void property_palette_click_hud(int id,bool double_click)
 
 		state.cur_hud_bitmap_idx=idx;
 
-		main_wind_draw();
 		return;
 	}
 
@@ -213,7 +210,6 @@ void property_palette_click_hud(int id,bool double_click)
 		state.cur_hud_text_idx=id-kHUDPropertyTextName;
 		state.cur_hud_bar_idx=-1;
 		if (double_click) list_palette_set_level(2);
-		main_wind_draw();
 		return;
 	}
 
@@ -231,7 +227,6 @@ void property_palette_click_hud(int id,bool double_click)
 
 		iface.text_list.ntext--;
 
-		main_wind_draw();
 		return;
 	}
 
@@ -274,7 +269,6 @@ void property_palette_click_hud(int id,bool double_click)
 
 		state.cur_hud_text_idx=idx;
 
-		main_wind_draw();
 		return;
 	}
 
@@ -285,7 +279,6 @@ void property_palette_click_hud(int id,bool double_click)
 		state.cur_hud_text_idx=-1;
 		state.cur_hud_bar_idx=id-kHUDPropertyBarName;
 		if (double_click) list_palette_set_level(2);
-		main_wind_draw();
 		return;
 	}
 
@@ -303,7 +296,6 @@ void property_palette_click_hud(int id,bool double_click)
 
 		iface.bar_list.nbar--;
 
-		main_wind_draw();
 		return;
 	}
 
@@ -351,7 +343,6 @@ void property_palette_click_hud(int id,bool double_click)
 
 		state.cur_hud_bar_idx=idx;
 
-		main_wind_draw();
 		return;
 	}
 	
@@ -380,9 +371,5 @@ void property_palette_click_hud(int id,bool double_click)
 			break;
 			
 	}
-
-		// redraw
-
-	main_wind_draw();
 }
 

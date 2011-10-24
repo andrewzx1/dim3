@@ -68,7 +68,7 @@ bool model_new(model_type *model,char *name)
 		
 		// default settings
 	
-	model->deform_mode=deform_mode_comulative_rotate;
+	model->comulative_rotation=TRUE;
 	model->diffuse_boost=0.0f;
 	
 	model->import.factor=1.0f;
@@ -113,7 +113,7 @@ bool model_new(model_type *model,char *name)
 	model->meshes[0].no_lighting=FALSE;
 	model->meshes[0].diffuse=TRUE;
 	model->meshes[0].blend_add=FALSE;
-	model->meshes[0].cull=FALSE;
+	model->meshes[0].never_cull=FALSE;
 	model->meshes[0].locked=FALSE;
 
 	model->meshes[0].import_move.x=0;

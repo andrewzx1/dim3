@@ -106,10 +106,10 @@ void property_palette_fill_liquid(int liq_idx)
 	list_palette_set_sub_title(&property_palette,"Liquid",str);
 
 	list_palette_add_header(&property_palette,0,"Liquid Settings");
-	list_palette_add_checkbox(&property_palette,kLiquidPropertyLockUV,"Lock UV",liq->flag.lock_uv,FALSE);
-	list_palette_add_checkbox(&property_palette,kLiquidPropertyNeverObscure,"Never Obscure",liq->flag.never_obscure,FALSE);
-	list_palette_add_checkbox(&property_palette,kLiquidPropertyNeverCull,"Never Cull",liq->flag.never_cull,FALSE);
-	list_palette_add_checkbox(&property_palette,kLiquidPropertyNoDraw,"No Draw (Volume Only)",liq->flag.no_draw,FALSE);
+	list_palette_add_checkbox(&property_palette,kLiquidPropertyLockUV,"Lock UV",&liq->flag.lock_uv,FALSE);
+	list_palette_add_checkbox(&property_palette,kLiquidPropertyNeverObscure,"Never Obscure",&liq->flag.never_obscure,FALSE);
+	list_palette_add_checkbox(&property_palette,kLiquidPropertyNeverCull,"Never Cull",&liq->flag.never_cull,FALSE);
+	list_palette_add_checkbox(&property_palette,kLiquidPropertyNoDraw,"No Draw (Volume Only)",&liq->flag.no_draw,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Liquid Under");
 	list_palette_add_pick_color(&property_palette,kLiquidPropertyColor,"Color",&liq->col,FALSE);
@@ -123,8 +123,8 @@ void property_palette_fill_liquid(int liq_idx)
 	list_palette_add_string_float(&property_palette,kLiquidPropertyTideUVShift,"UV Shift",liq->tide.uv_shift,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Liquid Waves");
-	list_palette_add_checkbox(&property_palette,kLiquidPropertyWaveOn,"On",liq->wave.on,FALSE);
-	list_palette_add_checkbox(&property_palette,kLiquidPropertyWaveDirNorthSouth,"North-South Dir",liq->wave.dir_north_south,FALSE);
+	list_palette_add_checkbox(&property_palette,kLiquidPropertyWaveOn,"On",&liq->wave.on,FALSE);
+	list_palette_add_checkbox(&property_palette,kLiquidPropertyWaveDirNorthSouth,"North-South Dir",&liq->wave.dir_north_south,FALSE);
 	list_palette_add_string_int(&property_palette,kLiquidPropertyWaveLength,"Length",liq->wave.length,FALSE);
 	list_palette_add_string_int(&property_palette,kLiquidPropertyWaveHigh,"High",liq->wave.high,FALSE);
 	list_palette_add_string_int(&property_palette,kLiquidPropertyWavePeriodMSec,"Period msec",liq->wave.period_msec,FALSE);
@@ -143,7 +143,7 @@ void property_palette_fill_liquid(int liq_idx)
 	list_palette_add_string_float(&property_palette,kLiquidPropertyReflectAlpha,"Alpha",liq->reflect.alpha,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Liquid Overlay");
-	list_palette_add_checkbox(&property_palette,kLiquidPropertyOverlayOn,"On",liq->overlay.on,FALSE);
+	list_palette_add_checkbox(&property_palette,kLiquidPropertyOverlayOn,"On",&liq->overlay.on,FALSE);
 	list_palette_add_texture(&property_palette,map.textures,kLiquidPropertyOverlayTexture,"Texture",liq->overlay.txt_idx,FALSE);
 	list_palette_add_string_int(&property_palette,kLiquidPropertyOverlayStampSize,"Stamp Size",liq->overlay.stamp_size,FALSE);
 	uv_shift.x=liq->overlay.x_shift;
@@ -222,7 +222,6 @@ void property_palette_click_liquid(int liq_idx,int id,bool double_click)
 
 	if (id==kLiquidPropertyWaveReset) {
 		piece_liquid_reset_size(liq);
-		main_wind_draw();
 		return;
 	}
 
@@ -234,30 +233,8 @@ void property_palette_click_liquid(int liq_idx,int id,bool double_click)
 
 	switch (id) {
 	
-			// flags
-
-		case kLiquidPropertyLockUV:
-			liq->flag.lock_uv=!liq->flag.lock_uv;
-			break;
-
-		case kLiquidPropertyNeverObscure:
-			liq->flag.never_obscure=!liq->flag.never_obscure;
-			break;
-
-		case kLiquidPropertyNeverCull:
-			liq->flag.never_cull=!liq->flag.never_cull;
-			break;
-			
-		case kLiquidPropertyNoDraw:
-			liq->flag.no_draw=!liq->flag.no_draw;
-			break;
-			
 			// options
 
-		case kLiquidPropertyColor:
-			os_pick_color(&liq->col);
-			break;
-			
 		case kLiquidPropertyTintAlpha:
 			dialog_property_string_run(list_string_value_0_to_1_float,(void*)&liq->tint_alpha,0,0,0);
 			break;
@@ -285,14 +262,6 @@ void property_palette_click_liquid(int liq_idx,int id,bool double_click)
 			break;
 
 			// waves
-
-		case kLiquidPropertyWaveOn:
-			liq->wave.on=!liq->wave.on;
-			break;
-
-		case kLiquidPropertyWaveDirNorthSouth:
-			liq->wave.dir_north_south=!liq->wave.dir_north_south;
-			break;
 
 		case kLiquidPropertyWaveLength:
 			dialog_property_string_run(list_string_value_positive_int,(void*)&liq->wave.length,0,0,0);
@@ -338,19 +307,11 @@ void property_palette_click_liquid(int liq_idx,int id,bool double_click)
 			dialog_property_string_run(list_string_value_positive_int,(void*)&liq->reflect.z_refract_factor,0,0,0);
 			break;
 
-		case kLiquidPropertyReflectNoHitColor:
-			os_pick_color(&liq->reflect.no_hit_col);
-			break;
-
 		case kLiquidPropertyReflectAlpha:
 			dialog_property_string_run(list_string_value_0_to_1_float,(void*)&liq->reflect.alpha,0,0,0);
 			break;
 
 			// overlay
-			
-		case kLiquidPropertyOverlayOn:
-			liq->overlay.on=!liq->overlay.on;
-			break;
 			
 		case kLiquidPropertyOverlayTexture:
 			property_palette_pick_texture(NULL,&liq->overlay.txt_idx);
@@ -427,7 +388,5 @@ void property_palette_click_liquid(int liq_idx,int id,bool double_click)
 			break;
 
 	}
-
-	main_wind_draw();
 }
 

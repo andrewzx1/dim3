@@ -31,8 +31,6 @@ and can be sold or given away.
 
 extern modelutility_settings_type		modelutility_settings;
 
-char									deform_mode_str[][32]=deform_mode_xml_list_str;
-
 /* =======================================================
 
       Model Read XML Utilities
@@ -105,7 +103,7 @@ bool model_read_xml(model_type *model)
         // options
     
     tag=xml_findfirstchild("Options",model_head);
-	model->deform_mode=xml_get_attribute_list(tag,"deform",(char*)deform_mode_str);
+	model->comulative_rotation=xml_get_attribute_boolean(tag,"comulative_rotation");
 	model->diffuse_boost=xml_get_attribute_float_default(tag,"diffuse_boost",0.0f);
 	
         // center
@@ -255,7 +253,7 @@ bool model_read_xml(model_type *model)
 		mesh->no_lighting=xml_get_attribute_boolean(mesh_tag,"no_lighting");
 		mesh->diffuse=xml_get_attribute_boolean(mesh_tag,"diffuse");
 		mesh->blend_add=xml_get_attribute_boolean(mesh_tag,"additive");
-		mesh->cull=xml_get_attribute_boolean(mesh_tag,"cull");
+		mesh->never_cull=xml_get_attribute_boolean(mesh_tag,"never_cull");
 		mesh->locked=xml_get_attribute_boolean(mesh_tag,"locked");
 		xml_get_attribute_3_coord_int(mesh_tag,"import_move",&mesh->import_move.x,&mesh->import_move.y,&mesh->import_move.z);
 		
@@ -580,7 +578,7 @@ bool model_write_xml(model_type *model)
         // options
     
     xml_add_tagstart("Options");
-	xml_add_attribute_list("deform",(char*)deform_mode_str,model->deform_mode);
+	xml_add_attribute_boolean("comulative_rotation",model->comulative_rotation);
 	xml_add_attribute_float("diffuse_boost",model->diffuse_boost);
 	xml_add_tagend(TRUE);
  	
@@ -714,7 +712,7 @@ bool model_write_xml(model_type *model)
 		xml_add_attribute_boolean("no_lighting",mesh->no_lighting);
 		xml_add_attribute_boolean("diffuse",mesh->diffuse);
 		xml_add_attribute_boolean("additive",mesh->blend_add);
-		xml_add_attribute_boolean("cull",mesh->cull);
+		xml_add_attribute_boolean("never_cull",mesh->never_cull);
 		xml_add_attribute_boolean("locked",mesh->locked);
 		xml_add_attribute_3_coord_int("import_move",mesh->import_move.x,mesh->import_move.y,mesh->import_move.z);
 		xml_add_tagend(FALSE);

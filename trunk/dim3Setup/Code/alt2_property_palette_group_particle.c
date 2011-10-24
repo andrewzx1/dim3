@@ -90,9 +90,5 @@ void alt2_property_palette_click_group_particle(int particle_idx,int group_parti
 			break;
 
 	}
-
-		// redraw
-
-	main_wind_draw();
 }
 

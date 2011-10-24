@@ -189,7 +189,7 @@ void draw_model_bones_get_handle_rot(int bone_idx,d3ang *rot)
 	rot->y=draw_bone->rot.y;
 	rot->z=draw_bone->rot.z;
 
-	if (model.deform_mode!=deform_mode_comulative_rotate) return;
+	if (!model.comulative_rotation) return;
 	
 		// cumulative rotations
 		

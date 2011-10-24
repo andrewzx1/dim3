@@ -445,17 +445,13 @@ void model_create_draw_bones_single(model_type *model,model_draw_setup *draw_set
 		// combine rotations and create matrixes
 		// based on deform mode
 
-	switch (model->deform_mode) {
-	
-		case deform_mode_single_rotate:
-			model_combine_draw_bone_rotations(model,bones);
-			model_move_draw_bones(model,bones);
-			break;
-		
-		case deform_mode_comulative_rotate:
-			model_comulative_combine_draw_bone_rotations(model,bones);
-			model_move_draw_bones(model,bones);
-			break;
+	if (!model->comulative_rotation) {
+		model_combine_draw_bone_rotations(model,bones);
+		model_move_draw_bones(model,bones);
+	}
+	else {
+		model_comulative_combine_draw_bone_rotations(model,bones);
+		model_move_draw_bones(model,bones);
 	}
 	
 		// fix any constrained bones

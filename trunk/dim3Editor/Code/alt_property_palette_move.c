@@ -122,8 +122,4 @@ void alt_property_palette_click_movement_move(int movement_idx,int move_idx,int 
 			break;
 
 	}
-
-		// redraw
-
-	main_wind_draw();
 }

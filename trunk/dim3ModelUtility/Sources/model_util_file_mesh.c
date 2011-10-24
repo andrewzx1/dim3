@@ -31,7 +31,7 @@ and can be sold or given away.
 
 extern modelutility_settings_type		modelutility_settings;
 
-extern char								deform_mode_str[][32];
+char									deform_mode_str[][32]={"single_rotate","comulative_rotate",""};
 char									bone_v2_tags[max_model_bone][8];
 
 /* =======================================================
@@ -62,7 +62,7 @@ int model_xml_get_attribute_bone(model_type *model,int tag,char *tag_name)
 
 void model_decode_v2_mesh_xml(model_type *model,int model_head)
 {
-	int						i,n,k,j,bone_idx,nbone,hit_box_idx,nhit_box,trig_count,
+	int						i,n,k,j,deform_mode,bone_idx,nbone,hit_box_idx,nhit_box,trig_count,
 							import_tag,ui_tag,mesh_idx,nmesh,nfill,trig_idx,
 							tag,hit_box_tag,rigid_body_tag,meshes_tag,mesh_tag,
 							vertex_tag,bone_tag,vtag,trig_tag,
@@ -82,7 +82,8 @@ void model_decode_v2_mesh_xml(model_type *model,int model_head)
     
     tag=xml_findfirstchild("Options",model_head);
     if (tag!=-1) {
-		model->deform_mode=xml_get_attribute_list(tag,"deform",(char*)deform_mode_str);
+		deform_mode=xml_get_attribute_list(tag,"deform",(char*)deform_mode_str);
+		model->comulative_rotation=(deform_mode!=0);
 		model->diffuse_boost=xml_get_attribute_float_default(tag,"diffuse_boost",0.0f);
 	}
 	
@@ -291,6 +292,8 @@ void model_decode_v2_mesh_xml(model_type *model,int model_head)
 		mesh->blend_add=xml_get_attribute_boolean(mesh_tag,"additive");
 		mesh->locked=xml_get_attribute_boolean(mesh_tag,"locked");
 		xml_get_attribute_3_coord_int(mesh_tag,"import_move",&mesh->import_move.x,&mesh->import_move.y,&mesh->import_move.z);
+
+		mesh->never_cull=FALSE;
 		
 			// don't allow blank mesh names
 			

@@ -71,11 +71,11 @@ void property_palette_fill_mesh(int mesh_idx)
 	list_palette_add_string(&property_palette,kMeshPropertyName,"Name",mesh->name,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Mesh Settings");
-	list_palette_add_checkbox(&property_palette,kMeshPropertyDiffuse,"Diffuse Lighting",mesh->diffuse,FALSE);
-	list_palette_add_checkbox(&property_palette,kMeshPropertyNoLighting,"Highlighted",mesh->no_lighting,FALSE);
-	list_palette_add_checkbox(&property_palette,kMeshPropertyAdditive,"Alpha is Additive",mesh->blend_add,FALSE);
-	list_palette_add_checkbox(&property_palette,kMeshPropertyCull,"Cull",mesh->cull,FALSE);
-	list_palette_add_checkbox(&property_palette,kMeshPropertyLocked,"Locked",mesh->locked,FALSE);
+	list_palette_add_checkbox(&property_palette,kMeshPropertyDiffuse,"Diffuse Lighting",&mesh->diffuse,FALSE);
+	list_palette_add_checkbox(&property_palette,kMeshPropertyNoLighting,"Highlighted",&mesh->no_lighting,FALSE);
+	list_palette_add_checkbox(&property_palette,kMeshPropertyAdditive,"Alpha is Additive",&mesh->blend_add,FALSE);
+	list_palette_add_checkbox(&property_palette,kMeshPropertyCull,"Never Cull",&mesh->never_cull,FALSE);
+	list_palette_add_checkbox(&property_palette,kMeshPropertyLocked,"Locked",&mesh->locked,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Replace OBJ");
 	list_palette_add_point(&property_palette,kMeshPropertyMovement,"Movement",&mesh->import_move,FALSE);
@@ -117,10 +117,10 @@ void property_palette_click_mesh(int mesh_idx,int id,bool double_click)
 	model_poly_type			*poly;
 	model_bone_type			*bone;
 	model_mesh_type			*mesh;
-	
-	if (!double_click) return;
 
 	mesh=&model.meshes[mesh_idx];
+	
+	if (!double_click) return;
 
 		// poly UVs
 
@@ -136,7 +136,6 @@ void property_palette_click_mesh(int mesh_idx,int id,bool double_click)
 		poly->gx[idx]=uv.x;
 		poly->gy[idx]=uv.y;
 
-		main_wind_draw();
 		return;
 	}
 
@@ -146,26 +145,6 @@ void property_palette_click_mesh(int mesh_idx,int id,bool double_click)
 
 		case kMeshPropertyName:
 			dialog_property_string_run(list_string_value_string,(void*)mesh->name,name_str_len,0,0);
-			break;
-
-		case kMeshPropertyDiffuse:
-			mesh->diffuse=!mesh->diffuse;
-			break;
-
-		case kMeshPropertyNoLighting:
-			mesh->no_lighting=!mesh->no_lighting;
-			break;
-
-		case kMeshPropertyAdditive:
-			mesh->blend_add=!mesh->blend_add;
-			break;
-
-		case kMeshPropertyCull:
-			mesh->cull=!mesh->cull;
-			break;
-
-		case kMeshPropertyLocked:
-			mesh->locked=!mesh->locked;
 			break;
 
 		case kMeshPropertyMovement:
@@ -211,9 +190,5 @@ void property_palette_click_mesh(int mesh_idx,int id,bool double_click)
 			break;
 			
 	}
-
-		// redraw
-
-	main_wind_draw();
 }
 

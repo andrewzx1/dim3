@@ -71,10 +71,10 @@ void property_palette_fill_texture(int texture_idx)
 	list_palette_set_sub_title(&property_palette,"Texture",texture->frames[0].name);
 
 	list_palette_add_header(&property_palette,0,"Texture Settings");
-	list_palette_add_checkbox(&property_palette,kTexturePropertyAnimate,"Animated",texture->animate.on,FALSE);
-	list_palette_add_checkbox(&property_palette,kTexturePropertyAlphaAdditive,"Alpha Additive",texture->additive,FALSE);
-	list_palette_add_checkbox(&property_palette,kTexturePropertyPixelated,"Pixelated",texture->pixelated,FALSE);
-	list_palette_add_checkbox(&property_palette,kTexturePropertyCompress,"Compressed",texture->compress,FALSE);
+	list_palette_add_checkbox(&property_palette,kTexturePropertyAnimate,"Animated",&texture->animate.on,FALSE);
+	list_palette_add_checkbox(&property_palette,kTexturePropertyAlphaAdditive,"Alpha Additive",&texture->additive,FALSE);
+	list_palette_add_checkbox(&property_palette,kTexturePropertyPixelated,"Pixelated",&texture->pixelated,FALSE);
+	list_palette_add_checkbox(&property_palette,kTexturePropertyCompress,"Compressed",&texture->compress,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Texture Options");
 	list_palette_add_shader(&property_palette,kTexturePropertyShader,"Shader",texture->shader_name,FALSE);
@@ -109,29 +109,12 @@ void property_palette_click_texture(int texture_idx,int id,bool double_click)
 
 	if ((id>=kTexturePropertyFrameWaitStart) && (id<=kTexturePropertyFrameWaitEnd)) {
 		dialog_property_string_run(list_string_value_positive_int,(void*)&texture->animate.wait[id-kTexturePropertyFrameWaitStart],0,0,0);
-		main_wind_draw();
 		return;
 	}
 
 		// other properties
 
 	switch (id) {
-
-		case kTexturePropertyAnimate:
-			texture->animate.on=!texture->animate.on;
-			break;
-
-		case kTexturePropertyAlphaAdditive:
-			texture->additive=!texture->additive;
-			break;
-
-		case kTexturePropertyPixelated:
-			texture->pixelated=!texture->pixelated;
-			break;
-
-		case kTexturePropertyCompress:
-			texture->compress=!texture->compress;
-			break;
 
 		case kTexturePropertyShader:
 			property_palette_pick_shader(texture->shader_name);
@@ -158,7 +141,5 @@ void property_palette_click_texture(int texture_idx,int id,bool double_click)
 			break;
 
 	}
-
-	main_wind_draw();
 }
 

@@ -207,11 +207,13 @@ void draw_model_setup_bones_vertexes(int mesh_idx)
 
 void draw_model_info(void)
 {
-	int				x,y;
+	int				x,y,pose_idx;
 	char			str[256];
 	d3rect			mbox;
 
 	model_wind_get_box(&mbox);
+
+		// model info
 
 	x=mbox.lx+5;
 	y=mbox.ty+20;
@@ -226,16 +228,42 @@ void draw_model_info(void)
 	else {
 		strcpy(str,"Animation: (none)");
 	}
+
 	text_draw(x,y,15,NULL,str);
 	y+=15;
 
-	if (state.cur_pose_idx!=-1) {
-		sprintf(str,"Pose: %s",model.poses[state.cur_pose_idx].name);
+	pose_idx=state.cur_pose_idx;
+	if ((state.playing) && (state.cur_animate_idx!=-1)) pose_idx=model.animates[state.cur_animate_idx].pose_moves[state.blend[0].pose_move_idx].pose_idx;
+	
+	if (pose_idx!=-1) {
+		sprintf(str,"Pose: %s",model.poses[pose_idx].name);
 	}
 	else {
 		strcpy(str,"Pose: (none)");
 	}
+
 	text_draw(x,y,15,NULL,str);
+
+		// selection info
+
+	x=mbox.rx-5;
+	y=mbox.by-2;
+
+	str[0]=0x0;
+
+	switch (state.select_mode) {
+
+		case select_mode_vertex:
+			sprintf(str,"Selected Vertexes: %d",vertex_mask_count_sel(state.cur_mesh_idx));
+			break;
+
+		case select_mode_polygon:
+			sprintf(str,"Selected Polys: %d",poly_mask_count_sel(state.cur_mesh_idx));
+			break;
+
+	}
+
+	if (str[0]!=0x0) text_draw_right(x,y,15,NULL,str);
 }
 
 void draw_model_mesh_list(void)

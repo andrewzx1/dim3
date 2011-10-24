@@ -118,20 +118,20 @@ void property_palette_fill_mesh(int mesh_idx,int poly_idx)
 		// settings
 		
 	list_palette_add_header(&property_palette,0,"Mesh Settings");
-	list_palette_add_checkbox(&property_palette,kMeshPropertyOn,"On",mesh->flag.on,FALSE);
-	list_palette_add_checkbox(&property_palette,kMeshPropertyPassThrough,"Pass Through",mesh->flag.pass_through,FALSE);
-	list_palette_add_checkbox(&property_palette,kMeshPropertyMovable,"Movable",mesh->flag.moveable,FALSE);
-	list_palette_add_checkbox(&property_palette,kMeshPropertyHilite,"High Lighted",mesh->flag.hilite,FALSE);
-	list_palette_add_checkbox(&property_palette,kMeshPropertySimpleCollision,"Simple Box Collision",mesh->flag.simple_collision,FALSE);
-	list_palette_add_checkbox(&property_palette,kMeshPropertyLockUV,"Lock UVs",mesh->flag.lock_uv,FALSE);
-	list_palette_add_checkbox(&property_palette,kMeshPropertyLockMove,"Lock Position",mesh->flag.lock_move,FALSE);
-	list_palette_add_checkbox(&property_palette,kMeshPropertyObscuring,"Obscuring",mesh->flag.obscuring,FALSE);
-	list_palette_add_checkbox(&property_palette,kMeshPropertyNeverObscure,"Never Obscure",mesh->flag.never_obscure,FALSE);
-	list_palette_add_checkbox(&property_palette,kMeshPropertyNeverCull,"Never Cull",mesh->flag.never_cull,FALSE);
-	list_palette_add_checkbox(&property_palette,kMeshPropertyRotIndependent,"Rotate Independently",mesh->flag.rot_independent,FALSE);
-	list_palette_add_checkbox(&property_palette,kMeshPropertyNoLightMap,"No Light Map",mesh->flag.no_light_map,FALSE);
-	list_palette_add_checkbox(&property_palette,kMeshPropertySkipLightMapTrace,"Skip Light Map Trace",mesh->flag.skip_light_map_trace,FALSE);
-	list_palette_add_checkbox(&property_palette,kMeshPropertyNoHaloObscure,"No Halo Obscure",mesh->flag.no_halo_obscure,FALSE);
+	list_palette_add_checkbox(&property_palette,kMeshPropertyOn,"On",&mesh->flag.on,FALSE);
+	list_palette_add_checkbox(&property_palette,kMeshPropertyPassThrough,"Pass Through",&mesh->flag.pass_through,FALSE);
+	list_palette_add_checkbox(&property_palette,kMeshPropertyMovable,"Movable",&mesh->flag.moveable,FALSE);
+	list_palette_add_checkbox(&property_palette,kMeshPropertyHilite,"High Lighted",&mesh->flag.hilite,FALSE);
+	list_palette_add_checkbox(&property_palette,kMeshPropertySimpleCollision,"Simple Box Collision",&mesh->flag.simple_collision,FALSE);
+	list_palette_add_checkbox(&property_palette,kMeshPropertyLockUV,"Lock UVs",&mesh->flag.lock_uv,FALSE);
+	list_palette_add_checkbox(&property_palette,kMeshPropertyLockMove,"Lock Position",&mesh->flag.lock_move,FALSE);
+	list_palette_add_checkbox(&property_palette,kMeshPropertyObscuring,"Obscuring",&mesh->flag.obscuring,FALSE);
+	list_palette_add_checkbox(&property_palette,kMeshPropertyNeverObscure,"Never Obscure",&mesh->flag.never_obscure,FALSE);
+	list_palette_add_checkbox(&property_palette,kMeshPropertyNeverCull,"Never Cull",&mesh->flag.never_cull,FALSE);
+	list_palette_add_checkbox(&property_palette,kMeshPropertyRotIndependent,"Rotate Independently",&mesh->flag.rot_independent,FALSE);
+	list_palette_add_checkbox(&property_palette,kMeshPropertyNoLightMap,"No Light Map",&mesh->flag.no_light_map,FALSE);
+	list_palette_add_checkbox(&property_palette,kMeshPropertySkipLightMapTrace,"Skip Light Map Trace",&mesh->flag.skip_light_map_trace,FALSE);
+	list_palette_add_checkbox(&property_palette,kMeshPropertyNoHaloObscure,"No Halo Obscure",&mesh->flag.no_halo_obscure,FALSE);
 
 		// options
 		
@@ -151,18 +151,18 @@ void property_palette_fill_mesh(int mesh_idx,int poly_idx)
 		// messages
 		
 	list_palette_add_header(&property_palette,0,"Mesh Messages");
-	list_palette_add_checkbox(&property_palette,kMeshPropertyMessageEnter,"Entry On",mesh->msg.entry_on,FALSE);
+	list_palette_add_checkbox(&property_palette,kMeshPropertyMessageEnter,"Entry On",&mesh->msg.entry_on,FALSE);
 	list_palette_add_string_int(&property_palette,kMeshPropertyMessageEnterId,"Entry ID",mesh->msg.entry_id,FALSE);
-	list_palette_add_checkbox(&property_palette,kMeshPropertyMessageExit,"Exit On",mesh->msg.exit_on,FALSE);
+	list_palette_add_checkbox(&property_palette,kMeshPropertyMessageExit,"Exit On",&mesh->msg.exit_on,FALSE);
 	list_palette_add_string_int(&property_palette,kMeshPropertyMessageExitId,"Exit ID",mesh->msg.exit_id,FALSE);
-	list_palette_add_checkbox(&property_palette,kMeshPropertyMessageMapChange,"Map Change On",mesh->msg.map_change_on,FALSE);
+	list_palette_add_checkbox(&property_palette,kMeshPropertyMessageMapChange,"Map Change On",&mesh->msg.map_change_on,FALSE);
 	list_palette_add_string(&property_palette,kMeshPropertyMessageMapChangeName,"Map Name",mesh->msg.map_name,FALSE);
 	list_palette_add_string(&property_palette,kMeshPropertyMessageMapChangeSpotName,"Map Spot Name",mesh->msg.map_spot_name,FALSE);
 	
 		// bases
 		
 	list_palette_add_header(&property_palette,0,"Mesh Base");
-	list_palette_add_checkbox(&property_palette,kMeshPropertyBaseOn,"On",mesh->msg.base_on,FALSE);
+	list_palette_add_checkbox(&property_palette,kMeshPropertyBaseOn,"On",&mesh->msg.base_on,FALSE);
 	list_palette_add_string(&property_palette,kMeshPropertyBaseTeam,"Team",mesh_property_team_list[mesh->msg.base_team],FALSE);
 
 		// import
@@ -196,9 +196,9 @@ void property_palette_fill_mesh(int mesh_idx,int poly_idx)
 		uv_shift.y=poly->y_shift;
 		
 		list_palette_add_header(&property_palette,0,"Poly Settings");
-		list_palette_add_checkbox(&property_palette,kMeshPolyPropertyClimbable,"Cimbable",poly->flag.climbable,FALSE);
-		list_palette_add_checkbox(&property_palette,kMeshPolyPropertyNeverCull,"Never Cull",poly->flag.never_cull,FALSE);
-		list_palette_add_checkbox(&property_palette,kMeshPolyPropertyObscuring,"Obscuring",poly->flag.obscuring,FALSE);
+		list_palette_add_checkbox(&property_palette,kMeshPolyPropertyClimbable,"Cimbable",&poly->flag.climbable,FALSE);
+		list_palette_add_checkbox(&property_palette,kMeshPolyPropertyNeverCull,"Never Cull",&poly->flag.never_cull,FALSE);
+		list_palette_add_checkbox(&property_palette,kMeshPolyPropertyObscuring,"Obscuring",&poly->flag.obscuring,FALSE);
 		
 		list_palette_add_header(&property_palette,0,"Poly UVs");
 		list_palette_add_uv(&property_palette,kMeshPolyPropertyOff,"Offset",&uv_offset,FALSE);
@@ -242,64 +242,6 @@ void property_palette_click_mesh(int mesh_idx,int poly_idx,int id,bool double_cl
 
 	switch (id) {
 
-			// settings
-			
-		case kMeshPropertyOn:
-			mesh->flag.on=!mesh->flag.on;
-			break;
-
-		case kMeshPropertyPassThrough:
-			mesh->flag.pass_through=!mesh->flag.pass_through;
-			break;
-
-		case kMeshPropertyMovable:
-			mesh->flag.moveable=!mesh->flag.moveable;
-			break;
-
-		case kMeshPropertyHilite:
-			mesh->flag.hilite=!mesh->flag.hilite;
-			break;
-			
-		case kMeshPropertySimpleCollision:
-			mesh->flag.simple_collision=!mesh->flag.simple_collision;
-			break;
-
-		case kMeshPropertyLockUV:
-			mesh->flag.lock_uv=!mesh->flag.lock_uv;
-			break;
-
-		case kMeshPropertyLockMove:
-			mesh->flag.lock_move=!mesh->flag.lock_move;
-			break;
-			
-		case kMeshPropertyObscuring:
-			mesh->flag.obscuring=!mesh->flag.obscuring;
-			break;
-
-		case kMeshPropertyNeverObscure:
-			mesh->flag.never_obscure=!mesh->flag.never_obscure;
-			break;
-
-		case kMeshPropertyNeverCull:
-			mesh->flag.never_cull=!mesh->flag.never_cull;
-			break;
-
-		case kMeshPropertyRotIndependent:
-			mesh->flag.rot_independent=!mesh->flag.rot_independent;
-			break;
-
-		case kMeshPropertyNoLightMap:
-			mesh->flag.no_light_map=!mesh->flag.no_light_map;
-			break;
-
-		case kMeshPropertySkipLightMapTrace:
-			mesh->flag.skip_light_map_trace=!mesh->flag.skip_light_map_trace;
-			break;
-
-		case kMeshPropertyNoHaloObscure:
-			mesh->flag.no_halo_obscure=!mesh->flag.no_halo_obscure;
-			break;
-
 			// options
 			
 		case kMeshPropertyHideMode:
@@ -320,24 +262,12 @@ void property_palette_click_mesh(int mesh_idx,int poly_idx,int id,bool double_cl
 			
 			// messages
 
-		case kMeshPropertyMessageEnter:
-			mesh->msg.entry_on=!mesh->msg.entry_on;
-			break;
-
 		case kMeshPropertyMessageEnterId:
 			dialog_property_string_run(list_string_value_positive_int,(void*)&mesh->msg.entry_id,0,0,0);
 			break;
 
-		case kMeshPropertyMessageExit:
-			mesh->msg.exit_on=!mesh->msg.exit_on;
-			break;
-
 		case kMeshPropertyMessageExitId:
 			dialog_property_string_run(list_string_value_positive_int,(void*)&mesh->msg.exit_id,0,0,0);
-			break;
-
-		case kMeshPropertyMessageMapChange:
-			mesh->msg.map_change_on=!mesh->msg.map_change_on;
 			break;
 
 		case kMeshPropertyMessageMapChangeName:
@@ -350,10 +280,6 @@ void property_palette_click_mesh(int mesh_idx,int poly_idx,int id,bool double_cl
 
 			// base
 			
-		case kMeshPropertyBaseOn:
-			mesh->msg.base_on=!mesh->msg.base_on;
-			break;
-
 		case kMeshPropertyBaseTeam:
 			property_pick_list("Pick a Team",(char*)mesh_property_team_list,&mesh->msg.base_team);
 			break;
@@ -378,18 +304,6 @@ void property_palette_click_mesh(int mesh_idx,int poly_idx,int id,bool double_cl
 		poly=&mesh->polys[poly_idx];
 
 		switch (id) {
-
-			case kMeshPolyPropertyClimbable:
-				poly->flag.climbable=!poly->flag.climbable;
-				break;
-
-			case kMeshPolyPropertyNeverCull:
-				poly->flag.never_cull=!poly->flag.never_cull;
-				break;
-
-			case kMeshPolyPropertyObscuring:
-				poly->flag.obscuring=!poly->flag.obscuring;
-				break;
 
 			case kMeshPolyPropertyOff:
 				map_mesh_get_poly_uv_as_box(&map,mesh_idx,poly_idx,(view->uv_layer==uv_layer_light_map),&uv.x,&uv.y,&x_txtfact,&y_txtfact);
@@ -429,9 +343,5 @@ void property_palette_click_mesh(int mesh_idx,int poly_idx,int id,bool double_cl
 
 		}
 	}
-
-		// redraw
-
-	main_wind_draw();
 }
 

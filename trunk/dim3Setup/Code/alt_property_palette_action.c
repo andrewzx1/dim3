@@ -58,7 +58,7 @@ void alt_property_palette_fill_action(int action_idx)
 
 	list_palette_add_header(&alt_property_palette,0,"Settings");
 	list_palette_add_string(&alt_property_palette,kActionSettingsName,"Name",action->display_name,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kActionSettingsShow,"Show",action->show,FALSE);
+	list_palette_add_checkbox(&alt_property_palette,kActionSettingsShow,"Show",&action->show,FALSE);
 }
 
 /* =======================================================
@@ -77,20 +77,10 @@ void alt_property_palette_click_action(int action_idx,int id,bool double_click)
 
 	switch (id) {
 
-			// settings
-
 		case kActionSettingsName:
 			dialog_property_string_run(list_string_value_string,(void*)action->display_name,name_str_len,0,0);
 			break;
 
-		case kActionSettingsShow:
-			action->show=!action->show;
-			break;
-
 	}
-
-		// redraw
-
-	main_wind_draw();
 }
 

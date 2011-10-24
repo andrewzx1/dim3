@@ -70,8 +70,8 @@ void alt2_property_palette_fill_menu_item(int menu_idx,int menu_item_idx)
 
 	list_palette_add_header(&alt2_property_palette,0,"Options");
 	list_palette_add_string(&alt2_property_palette,kMenuItemPropertyOptionsSubMenu,"Goto SubMenu",item->sub_menu,FALSE);
-	list_palette_add_checkbox(&alt2_property_palette,kMenuItemPropertyOptionsMultiplayerDisable,"Multiplayer Disable",item->multiplayer_disable,FALSE);
-	list_palette_add_checkbox(&alt2_property_palette,kMenuItemPropertyOptionsQuit,"Quit",item->quit,FALSE);
+	list_palette_add_checkbox(&alt2_property_palette,kMenuItemPropertyOptionsMultiplayerDisable,"Multiplayer Disable",&item->multiplayer_disable,FALSE);
+	list_palette_add_checkbox(&alt2_property_palette,kMenuItemPropertyOptionsQuit,"Quit",&item->quit,FALSE);
 }
 
 /* =======================================================
@@ -106,19 +106,6 @@ void alt2_property_palette_click_menu_item(int menu_idx,int menu_item_idx,int id
 			dialog_property_string_run(list_string_value_string,(void*)item->sub_menu,name_str_len,0,0);
 			break;
 
-		case kMenuItemPropertyOptionsMultiplayerDisable:
-			item->multiplayer_disable=!item->multiplayer_disable;
-			break;
-
-		case kMenuItemPropertyOptionsQuit:
-			item->quit=!item->quit;
-			break;
-
-
 	}
-
-		// redraw
-
-	main_wind_draw();
 }
 

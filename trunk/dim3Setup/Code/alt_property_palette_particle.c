@@ -126,18 +126,18 @@ void alt_property_palette_fill_particle(int particle_idx)
 		// options
 
 	list_palette_add_header(&alt_property_palette,0,"Options");
-	list_palette_add_checkbox(&alt_property_palette,kParticleOptionReverse,"Reverse Motion",particle->reverse,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kParticleOptionBlendAdd,"Additive Blend",particle->blend_add,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kParticleOptionGlobe,"Globe",particle->globe,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kParticleOptionTeamTint,"Team Tint",particle->team_tint,FALSE);
+	list_palette_add_checkbox(&alt_property_palette,kParticleOptionReverse,"Reverse Motion",&particle->reverse,FALSE);
+	list_palette_add_checkbox(&alt_property_palette,kParticleOptionBlendAdd,"Additive Blend",&particle->blend_add,FALSE);
+	list_palette_add_checkbox(&alt_property_palette,kParticleOptionGlobe,"Globe",&particle->globe,FALSE);
+	list_palette_add_checkbox(&alt_property_palette,kParticleOptionTeamTint,"Team Tint",&particle->team_tint,FALSE);
 
 		// animation
 
 	list_palette_add_header(&alt_property_palette,0,"Animation");
 	list_palette_add_string_int(&alt_property_palette,kParticleImageCount,"Count",particle->animate.image_count,FALSE);
 	list_palette_add_string_int(&alt_property_palette,kParticleImageMillisecond,"Display Milliseconds",particle->animate.msec,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kParticleImageLoop,"Loop",particle->animate.loop,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kParticleImageLoopBack,"Loop Back",particle->animate.loop_back,FALSE);
+	list_palette_add_checkbox(&alt_property_palette,kParticleImageLoop,"Loop",&particle->animate.loop,FALSE);
+	list_palette_add_checkbox(&alt_property_palette,kParticleImageLoopBack,"Loop Back",&particle->animate.loop_back,FALSE);
 }
 
 /* =======================================================
@@ -208,14 +208,6 @@ void alt_property_palette_click_particle(int particle_idx,int id,bool double_cli
 			dialog_property_string_run(list_string_value_0_to_1_float,(void*)&particle->ambient_factor,0,0,0);
 			break;
 
-		case kParticleParticleStartColor:
-			os_pick_color(&particle->start_color);
-			break;
-
-		case kParticleParticleEndColor:
-			os_pick_color(&particle->end_color);
-			break;
-
 			// motion
 
 		case kParticleMotionOffset:
@@ -248,24 +240,6 @@ void alt_property_palette_click_particle(int particle_idx,int id,bool double_cli
 			dialog_property_string_run(list_string_value_positive_float,(void*)&particle->reduce_pixel_fact,0,0,0);
 			break;
 
-			// options
-
-		case kParticleOptionReverse:
-			particle->reverse=!particle->reverse;
-			break;
-
-		case kParticleOptionBlendAdd:
-			particle->blend_add=!particle->blend_add;
-			break;
-
-		case kParticleOptionGlobe:
-			particle->globe=!particle->globe;
-			break;
-
-		case kParticleOptionTeamTint:
-			particle->team_tint=!particle->team_tint;
-			break;
-
 			// animation
 
 		case kParticleImageCount:
@@ -276,18 +250,6 @@ void alt_property_palette_click_particle(int particle_idx,int id,bool double_cli
 			dialog_property_string_run(list_string_value_positive_int,(void*)&particle->animate.msec,0,0,0);
 			break;
 
-		case kParticleImageLoop:
-			particle->animate.loop=!particle->animate.loop;
-			break;
-
-		case kParticleImageLoopBack:
-			particle->animate.loop_back=!particle->animate.loop_back;
-			break;
-
 	}
-
-		// redraw
-
-	main_wind_draw();
 }
 

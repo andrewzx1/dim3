@@ -4052,6 +4052,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\dim3ModelUtility\Sources\model_util_file_model.c"
+					>
+				</File>
+				<File
 					RelativePath="..\..\dim3ModelUtility\Sources\model_util_file_pose.c"
 					>
 				</File>

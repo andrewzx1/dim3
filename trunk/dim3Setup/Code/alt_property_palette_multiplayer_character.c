@@ -113,9 +113,5 @@ void alt_property_palette_click_multiplayer_character(int multiplayer_character_
 			break;
 
 	}
-
-		// redraw
-
-	main_wind_draw();
 }
 

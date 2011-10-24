@@ -69,8 +69,8 @@ void alt_property_palette_fill_virtual_control_button(int virtual_control_button
 	button=&iface.virtual_control.buttons[virtual_control_button_idx];
 		
 	list_palette_add_header(&alt_property_palette,0,"Settings");
-	list_palette_add_checkbox(&alt_property_palette,kButtonOn,"On",button->on,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kButtonUseBitmap,"Use Bitmap",button->use_bitmap,FALSE);
+	list_palette_add_checkbox(&alt_property_palette,kButtonOn,"On",&button->on,FALSE);
+	list_palette_add_checkbox(&alt_property_palette,kButtonUseBitmap,"Use Bitmap",&button->use_bitmap,FALSE);
 	list_palette_add_string(&alt_property_palette,kButtonControl,"Action",control_name_str[button->control_idx],FALSE);
 	list_palette_add_string(&alt_property_palette,kButtonUpBitmap,"Up Bitmap",button->up_bitmap_name,FALSE);
 	list_palette_add_string(&alt_property_palette,kButtonDownBitmap,"Down Bitmap",button->down_bitmap_name,FALSE);
@@ -99,14 +99,6 @@ void alt_property_palette_click_virtual_control_button(int virtual_control_butto
 
 	switch (id) {
 
-		case kButtonOn:
-			button->on=!button->on;
-			break;
-			
-		case kButtonUseBitmap:
-			button->use_bitmap=!button->use_bitmap;
-			break;
-			
 		case kButtonControl:
 			property_palette_pick_control(&button->control_idx);
 			break;
@@ -119,10 +111,6 @@ void alt_property_palette_click_virtual_control_button(int virtual_control_butto
 			property_pick_file("Pick a Down Button Bitmap","Bitmaps/Virtual","png",NULL,button->down_bitmap_name);
 			break;
 			
-		case kButtonColor:
-			os_pick_color(&button->color);
-			break;
-	
 		case kButtonPositionX:
 			dialog_property_string_run(list_string_value_positive_int,(void*)&button->x,0,0,0);
 			break;
@@ -140,9 +128,5 @@ void alt_property_palette_click_virtual_control_button(int virtual_control_butto
 			break;
 
 	}
-
-		// redraw
-
-	main_wind_draw();
 }
 

@@ -257,6 +257,7 @@ bool property_palette_click(d3pnt *pnt,bool double_click)
 
 	if (state.texture_edit_idx!=-1) {
 		property_palette_click_texture(state.texture_edit_idx,property_palette.item_id,double_click);
+		main_wind_draw();
 		return(TRUE);
 	}
 
@@ -264,6 +265,7 @@ bool property_palette_click(d3pnt *pnt,bool double_click)
 
 	if (state.in_preference) {
 		property_palette_click_editor_preference(property_palette.item_id,double_click);
+		main_wind_draw();
 		return(TRUE);
 	}
 
@@ -275,15 +277,18 @@ bool property_palette_click(d3pnt *pnt,bool double_click)
 		case cinema_piece:
 			state.cur_cinema_idx=item_palette.item_idx;
 			property_palette_click_cinema(item_palette.item_idx,property_palette.item_id,double_click);
+			main_wind_draw();
 			return(TRUE);
 
 		case group_piece:
 			property_palette_click_group(item_palette.item_idx,property_palette.item_id,double_click);
+			main_wind_draw();
 			return(TRUE);
 
 		case movement_piece:
 			state.cur_movement_idx=item_palette.item_idx;
 			property_palette_click_movement(item_palette.item_idx,property_palette.item_id,double_click);
+			main_wind_draw();
 			return(TRUE);
 
 	}
@@ -302,21 +307,23 @@ bool property_palette_click(d3pnt *pnt,bool double_click)
 			
 			case map_setting_piece:
 				property_palette_click_map(property_palette.item_id,double_click);
-				return(TRUE);
+				break;
 
 			case map_camera_piece:
 				property_palette_click_camera(property_palette.item_id,double_click);
-				return(TRUE);
+				break;
 
 			case map_light_media_piece:
 				property_palette_click_light_media(property_palette.item_id,double_click);
-				return(TRUE);
+				break;
 
 			case map_sky_weather_piece:
 				property_palette_click_sky_weather(property_palette.item_id,double_click);
-				return(TRUE);
+				break;
 
 		}
+
+		main_wind_draw();
 
 		return(TRUE);
 	}
@@ -360,6 +367,8 @@ bool property_palette_click(d3pnt *pnt,bool double_click)
 
 	}
 	
+	main_wind_draw();
+
 	return(TRUE);
 }
 

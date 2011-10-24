@@ -80,7 +80,6 @@ void property_palette_click_halos(int id,bool double_click)
 	if ((id>=kHaloProperyName) && (id<(kHaloProperyName+max_iface_halo))) {
 		state.cur_halo_idx=id-kHaloProperyName;
 		if (double_click) list_palette_set_level(2);
-		main_wind_draw();
 		return;
 	}
 	
@@ -96,7 +95,6 @@ void property_palette_click_halos(int id,bool double_click)
 
 		iface.halo_list.nhalo--;
 
-		main_wind_draw();
 		return;
 	}
 	
@@ -129,7 +127,6 @@ void property_palette_click_halos(int id,bool double_click)
 
 		state.cur_halo_idx=idx;
 
-		main_wind_draw();
 		return;
 	}
 }

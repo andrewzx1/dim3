@@ -106,7 +106,6 @@ void property_palette_click_group(int group_idx,int id,bool double_click)
 
 	if (id==kGroupPropertyClear) {
 		group_clear(group_idx,FALSE);
-		main_wind_draw();
 		return;
 	}
 
@@ -123,7 +122,5 @@ void property_palette_click_group(int group_idx,int id,bool double_click)
 			break;
 
 	}
-
-	main_wind_draw();
 }
 

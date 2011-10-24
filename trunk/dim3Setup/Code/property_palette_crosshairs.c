@@ -80,7 +80,6 @@ void property_palette_click_crosshairs(int id,bool double_click)
 	if ((id>=kCrosshairProperyName) && (id<(kCrosshairProperyName+max_iface_crosshair))) {
 		state.cur_crosshair_idx=id-kCrosshairProperyName;
 		if (double_click) list_palette_set_level(2);
-		main_wind_draw();
 		return;
 	}
 	
@@ -96,7 +95,6 @@ void property_palette_click_crosshairs(int id,bool double_click)
 
 		iface.crosshair_list.ncrosshair--;
 
-		main_wind_draw();
 		return;
 	}
 	
@@ -120,7 +118,6 @@ void property_palette_click_crosshairs(int id,bool double_click)
 
 		state.cur_crosshair_idx=idx;
 
-		main_wind_draw();
 		return;
 	}
 }

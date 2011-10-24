@@ -110,10 +110,10 @@ void property_palette_fill_map(void)
 		// optimizations
 
 	list_palette_add_header(&property_palette,0,"Map Optimizations");
-	list_palette_add_checkbox(&property_palette,kMapPropertyNormalCull,"Cull By Normals",(!map.optimize.never_cull),FALSE);
+	list_palette_add_checkbox(&property_palette,kMapPropertyNormalCull,"Never Cull",&map.optimize.never_cull,FALSE);
 	list_palette_add_string_float(&property_palette,kMapPropertyCullAngle,"Cull Angle",map.optimize.cull_angle,FALSE);
-	list_palette_add_checkbox(&property_palette,kMapPropertyDisableShaders,"Disable Shaders",map.optimize.no_shaders,FALSE);
-	list_palette_add_checkbox(&property_palette,kMapPropertyRayTraceObscure,"Ray Trace Obscure",map.optimize.ray_trace_obscure,FALSE);
+	list_palette_add_checkbox(&property_palette,kMapPropertyDisableShaders,"Disable Shaders",&map.optimize.no_shaders,FALSE);
+	list_palette_add_checkbox(&property_palette,kMapPropertyRayTraceObscure,"Ray Trace Obscure",&map.optimize.ray_trace_obscure,FALSE);
 	list_palette_add_string_int(&property_palette,kMapPropertyModelObscureDistance,"Model Obscure Distance",map.optimize.obscure_dist.model,FALSE);
 	list_palette_add_string_int(&property_palette,kMapPropertyShadowObscureDistance,"Shadow Obscure Distance",map.optimize.obscure_dist.shadow,FALSE);
 	list_palette_add_string_int(&property_palette,kMapPropertyEffectObscureDistance,"Effect Obscure Distance",map.optimize.obscure_dist.effect,FALSE);
@@ -135,7 +135,7 @@ void property_palette_fill_map(void)
 	list_palette_add_uv(&property_palette,kMapPropertyEditorTextureFactor,"Default Texture Scale",&uv,FALSE);
 	list_palette_add_string_int(&property_palette,kMapPropertyEditorViewNearZ,"Near Z",map.editor_setup.view_near_dist,FALSE);
 	list_palette_add_string_int(&property_palette,kMapPropertyEditorViewFarZ,"Far Z",map.editor_setup.view_far_dist,FALSE);
-	list_palette_add_checkbox(&property_palette,kMapPropertyEditorLinkStartAlways,"Always Start at Player Spot",map.editor_setup.link_always_start,FALSE);
+	list_palette_add_checkbox(&property_palette,kMapPropertyEditorLinkStartAlways,"Always Start at Player Spot",&map.editor_setup.link_always_start,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Map Counts");
 	list_palette_add_string_int(&property_palette,-1,"Meshes",map.mesh.nmesh,TRUE);
@@ -171,7 +171,6 @@ void property_palette_click_map(int id,bool double_click)
 		dialog_property_string_run(list_string_value_string,(void*)str,256,0,0);
 		property_set_parameter(param_idx,map.settings.params,str);
 
-		main_wind_draw();
 		return;
 	}
 	
@@ -231,20 +230,8 @@ void property_palette_click_map(int id,bool double_click)
 			
 			// optimizations
 			
-		case kMapPropertyNormalCull:
-			map.optimize.never_cull=!map.optimize.never_cull;
-			break;
-			
 		case kMapPropertyCullAngle:
 			dialog_property_string_run(list_string_value_float,(void*)&map.optimize.cull_angle,0,0,0);
-			break;
-
-		case kMapPropertyDisableShaders:
-			map.optimize.no_shaders=!map.optimize.no_shaders;
-			break;
-
-		case kMapPropertyRayTraceObscure:
-			map.optimize.ray_trace_obscure=!map.optimize.ray_trace_obscure;
 			break;
 
 		case kMapPropertyModelObscureDistance:
@@ -277,12 +264,6 @@ void property_palette_click_map(int id,bool double_click)
 			dialog_property_string_run(list_string_value_positive_int,(void*)&map.editor_setup.view_far_dist,0,0,0);
 			break;
 
-		case kMapPropertyEditorLinkStartAlways:
-			map.editor_setup.link_always_start=!map.editor_setup.link_always_start;
-			break;
-
 	}
-
-	main_wind_draw();
 }
 

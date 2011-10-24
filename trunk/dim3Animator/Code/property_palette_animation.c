@@ -68,8 +68,8 @@ void property_palette_fill_animation(int animate_idx)
 	list_palette_add_string(&property_palette,kAnimationPropertyName,"Name",animate->name,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Animation Settings");
-	list_palette_add_checkbox(&property_palette,kAnimationPropertyLoop,"Looping",animate->loop,FALSE);
-	list_palette_add_checkbox(&property_palette,kAnimationPropertyNoSmooth,"No Smoothing",animate->no_smooth,FALSE);
+	list_palette_add_checkbox(&property_palette,kAnimationPropertyLoop,"Looping",&animate->loop,FALSE);
+	list_palette_add_checkbox(&property_palette,kAnimationPropertyNoSmooth,"No Smoothing",&animate->no_smooth,FALSE);
 	
 	list_palette_add_header_button(&property_palette,kAnimationPropertyPoseAdd,"Animation Poses",list_button_plus);
 
@@ -98,7 +98,6 @@ void property_palette_click_animation(int animate_idx,int id,bool double_click)
 	if ((id>=kAnimationPropertyPoseMove) && (id<kAnimationPropertyPoseMoveDelete)) {
 		state.cur_animate_pose_move_idx=id-kAnimationPropertyPoseMove;
 		if (double_click) list_palette_set_level(2);
-		main_wind_draw();
 		return;
 	}
 	
@@ -107,7 +106,6 @@ void property_palette_click_animation(int animate_idx,int id,bool double_click)
 	if (id>=kAnimationPropertyPoseMoveDelete) {
 		state.cur_animate_pose_move_idx=-1;
 		model_animate_pose_delete(&model,animate_idx,(id-kAnimationPropertyPoseMoveDelete));
-		main_wind_draw();
 		return;
 	}
 	
@@ -117,7 +115,6 @@ void property_palette_click_animation(int animate_idx,int id,bool double_click)
 		state.cur_animate_pose_move_idx=model_animate_pose_insert(&model,animate_idx,state.cur_animate_pose_move_idx,0);
 		list_palette_set_level(2);
 		property_palette_pick_pose(&model.animates[animate_idx].pose_moves[state.cur_animate_pose_move_idx].pose_idx);
-		main_wind_draw();
 		return;
 	}
 	
@@ -133,18 +130,6 @@ void property_palette_click_animation(int animate_idx,int id,bool double_click)
 			dialog_property_string_run(list_string_value_string,(void*)animate->name,name_str_len,0,0);
 			break;
 
-		case kAnimationPropertyLoop:
-			animate->loop=!animate->loop;
-			break;
-			
-		case kAnimationPropertyNoSmooth:
-			animate->no_smooth=!animate->no_smooth;
-			break;
-
 	}
-
-		// redraw
-
-	main_wind_draw();
 }
 

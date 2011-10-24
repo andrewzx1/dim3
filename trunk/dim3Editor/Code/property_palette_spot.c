@@ -122,7 +122,6 @@ void property_palette_click_spot(int spot_idx,int id,bool double_click)
 		dialog_property_string_run(list_string_value_string,(void*)str,256,0,0);
 		property_set_parameter(param_idx,spot->params,str);
 
-		main_wind_draw();
 		return;
 	}
 
@@ -159,7 +158,5 @@ void property_palette_click_spot(int spot_idx,int id,bool double_click)
 			break;
 
 	}
-
-	main_wind_draw();
 }
 

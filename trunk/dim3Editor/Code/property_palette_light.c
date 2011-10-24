@@ -67,8 +67,8 @@ void property_palette_fill_light(int light_idx)
 	list_palette_set_sub_title(&property_palette,"Light",light->name);
 
 	list_palette_add_header(&property_palette,0,"Light Settings");
-	list_palette_add_checkbox(&property_palette,kLightPropertyOn,"On",light->setting.on,FALSE);
-	list_palette_add_checkbox(&property_palette,kLightPropertyLightMap,"Used in Light Map",light->setting.light_map,FALSE);
+	list_palette_add_checkbox(&property_palette,kLightPropertyOn,"On",&light->setting.on,FALSE);
+	list_palette_add_checkbox(&property_palette,kLightPropertyLightMap,"Used in Light Map",&light->setting.light_map,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Light Naming");
 	list_palette_add_string(&property_palette,kLightPropertyName,"Name",light->name,FALSE);
@@ -102,14 +102,6 @@ void property_palette_click_light(int light_idx,int id,bool double_click)
 
 	switch (id) {
 
-		case kLightPropertyOn:
-			light->setting.on=!light->setting.on;
-			break;
-
-		case kLightPropertyLightMap:
-			light->setting.light_map=!light->setting.light_map;
-			break;
-
 		case kLightPropertyName:
 			dialog_property_string_run(list_string_value_string,(void*)light->name,name_str_len,0,0);
 			break;
@@ -130,16 +122,10 @@ void property_palette_click_light(int light_idx,int id,bool double_click)
 			dialog_property_string_run(list_string_value_positive_float,(void*)&light->setting.exponent,0,0,0);
 			break;
 			
-		case kLightPropertyColor:
-			os_pick_color(&light->setting.col);
-			break;
-
 		case kLightPropertyHalo:
 			property_palette_pick_halo(light->setting.halo_name);
 			break;
 
 	}
-
-	main_wind_draw();
 }
 

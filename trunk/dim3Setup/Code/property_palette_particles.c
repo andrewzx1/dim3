@@ -96,7 +96,6 @@ void property_palette_click_particles(int id,bool double_click)
 		state.cur_particle_idx=id-kParticleProperyName;
 		state.cur_group_particle_idx=-1;
 		if (double_click) list_palette_set_level(2);
-		main_wind_draw();
 		return;
 	}
 	
@@ -113,7 +112,6 @@ void property_palette_click_particles(int id,bool double_click)
 
 		iface.particle_list.nparticle--;
 
-		main_wind_draw();
 		return;
 	}
 	
@@ -189,7 +187,6 @@ void property_palette_click_particles(int id,bool double_click)
 
 		state.cur_particle_idx=idx;
 
-		main_wind_draw();
 		return;
 	}
 

@@ -89,7 +89,7 @@ void alt_property_palette_fill_hud_bitmap(int hud_bitmap_idx)
 	list_palette_add_header(&alt_property_palette,0,"Settings");
 	list_palette_add_string(&alt_property_palette,kBitmapSettingsName,"Name",bitmap->name,FALSE);
 	list_palette_add_string(&alt_property_palette,kBitmapSettingsFileName,"File",bitmap->filename,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kBitmapSettingsShow,"Show",bitmap->show,FALSE);
+	list_palette_add_checkbox(&alt_property_palette,kBitmapSettingsShow,"Show",&bitmap->show,FALSE);
 
 		// position
 
@@ -104,15 +104,15 @@ void alt_property_palette_fill_hud_bitmap(int hud_bitmap_idx)
 	list_palette_add_header(&alt_property_palette,0,"Options");
 	list_palette_add_string_float(&alt_property_palette,kBitmapOptionAlpha,"Alpha",bitmap->alpha,FALSE);
 	list_palette_add_string_float(&alt_property_palette,kBitmapOptionRotate,"Rotate",bitmap->rot,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kBitmapOptionFlash,"Flash",bitmap->flash,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kBitmapOptionFlipHorz,"Flip Horizontal",bitmap->flip_horz,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kBitmapOptionFlipVert,"Flip Vertical",bitmap->flip_vert,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kBitmapOptionTeamTint,"Team Tint",bitmap->team_tint,FALSE);
+	list_palette_add_checkbox(&alt_property_palette,kBitmapOptionFlash,"Flash",&bitmap->flash,FALSE);
+	list_palette_add_checkbox(&alt_property_palette,kBitmapOptionFlipHorz,"Flip Horizontal",&bitmap->flip_horz,FALSE);
+	list_palette_add_checkbox(&alt_property_palette,kBitmapOptionFlipVert,"Flip Vertical",&bitmap->flip_vert,FALSE);
+	list_palette_add_checkbox(&alt_property_palette,kBitmapOptionTeamTint,"Team Tint",&bitmap->team_tint,FALSE);
 
 		// repeat
 
 	list_palette_add_header(&alt_property_palette,0,"Repeat");
-	list_palette_add_checkbox(&alt_property_palette,kBitmapRepeatOn,"On",bitmap->repeat.on,FALSE);
+	list_palette_add_checkbox(&alt_property_palette,kBitmapRepeatOn,"On",&bitmap->repeat.on,FALSE);
 	list_palette_add_string_int(&alt_property_palette,kBitmapRepeatXAdd,"X Add",bitmap->repeat.x_add,FALSE);
 	list_palette_add_string_int(&alt_property_palette,kBitmapRepeatYAdd,"Y Add",bitmap->repeat.y_add,FALSE);
 	list_palette_add_string_int(&alt_property_palette,kBitmapRepeatColumn,"Column Count",bitmap->repeat.col,FALSE);
@@ -122,7 +122,7 @@ void alt_property_palette_fill_hud_bitmap(int hud_bitmap_idx)
 		// fade
 
 	list_palette_add_header(&alt_property_palette,0,"Fade");
-	list_palette_add_checkbox(&alt_property_palette,kBitmapFadeOn,"On",bitmap->fade.on,FALSE);
+	list_palette_add_checkbox(&alt_property_palette,kBitmapFadeOn,"On",&bitmap->fade.on,FALSE);
 	list_palette_add_string_int(&alt_property_palette,kBitmapFadeInTick,"Fade In Milliseconds",bitmap->fade.fade_in_tick,FALSE);
 	list_palette_add_string_int(&alt_property_palette,kBitmapFadeLifeTick,"Life Milliseconds",bitmap->fade.life_tick,FALSE);
 	list_palette_add_string_int(&alt_property_palette,kBitmapFadeOutTick,"Fade Out Milliseconds",bitmap->fade.fade_out_tick,FALSE);
@@ -132,8 +132,8 @@ void alt_property_palette_fill_hud_bitmap(int hud_bitmap_idx)
 	list_palette_add_header(&alt_property_palette,0,"Animation");
 	list_palette_add_string_int(&alt_property_palette,kBitmapImageCount,"Count",bitmap->animate.image_count,FALSE);
 	list_palette_add_string_int(&alt_property_palette,kBitmapImageMillisecond,"Display Milliseconds",bitmap->animate.msec,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kBitmapImageLoop,"Loop",bitmap->animate.loop,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kBitmapImageLoopBack,"Loop Back",bitmap->animate.loop_back,FALSE);
+	list_palette_add_checkbox(&alt_property_palette,kBitmapImageLoop,"Loop",&bitmap->animate.loop,FALSE);
+	list_palette_add_checkbox(&alt_property_palette,kBitmapImageLoopBack,"Loop Back",&bitmap->animate.loop_back,FALSE);
 }
 
 /* =======================================================
@@ -160,10 +160,6 @@ void alt_property_palette_click_hud_bitmap(int hud_bitmap_idx,int id,bool double
 
 		case kBitmapSettingsFileName:
 			property_pick_file("Pick a Interface Bitmap","Bitmaps/Interface","png",NULL,bitmap->filename);
-			break;
-
-		case kBitmapSettingsShow:
-			bitmap->show=!bitmap->show;
 			break;
 
 			// position
@@ -194,27 +190,7 @@ void alt_property_palette_click_hud_bitmap(int hud_bitmap_idx,int id,bool double
 			dialog_property_string_run(list_string_value_positive_float,(void*)&bitmap->rot,0,0,0);
 			break;
 
-		case kBitmapOptionFlash:
-			bitmap->flash=!bitmap->flash;
-			break;
-
-		case kBitmapOptionFlipHorz:
-			bitmap->flip_horz=!bitmap->flip_horz;
-			break;
-
-		case kBitmapOptionFlipVert:
-			bitmap->flip_vert=!bitmap->flip_vert;
-			break;
-
-		case kBitmapOptionTeamTint:
-			bitmap->team_tint=!bitmap->team_tint;
-			break;
-
 			// repeat
-
-		case kBitmapRepeatOn:
-			bitmap->repeat.on=!bitmap->repeat.on;
-			break;
 
 		case kBitmapRepeatXAdd:
 			dialog_property_string_run(list_string_value_positive_int,(void*)&bitmap->repeat.x_add,0,0,0);
@@ -238,10 +214,6 @@ void alt_property_palette_click_hud_bitmap(int hud_bitmap_idx,int id,bool double
 
 			// fade
 
-		case kBitmapFadeOn:
-			bitmap->fade.on=!bitmap->fade.on;
-			break;
-
 		case kBitmapFadeInTick:
 			dialog_property_string_run(list_string_value_positive_int,(void*)&bitmap->fade.fade_in_tick,0,0,0);
 			break;
@@ -264,18 +236,6 @@ void alt_property_palette_click_hud_bitmap(int hud_bitmap_idx,int id,bool double
 			dialog_property_string_run(list_string_value_positive_int,(void*)&bitmap->animate.msec,0,0,0);
 			break;
 
-		case kBitmapImageLoop:
-			bitmap->animate.loop=!bitmap->animate.loop;
-			break;
-
-		case kBitmapImageLoopBack:
-			bitmap->animate.loop_back=!bitmap->animate.loop_back;
-			break;
-
 	}
-
-		// redraw
-
-	main_wind_draw();
 }
 

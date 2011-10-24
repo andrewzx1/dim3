@@ -116,7 +116,7 @@ void alt_property_palette_fill_cinema_action(int cinema_idx,int action_idx)
 
 	list_palette_add_header(&alt_property_palette,0,"Cinema Action Options");
 	if (action->actor_type==cinema_actor_movement) {
-		list_palette_add_checkbox(&alt_property_palette,kCinemaActionPropertyReverseMove,"Reverse Move",action->move_reverse,FALSE);
+		list_palette_add_checkbox(&alt_property_palette,kCinemaActionPropertyReverseMove,"Reverse Move",&action->move_reverse,FALSE);
 	}
 	else {
 		list_palette_add_string(&alt_property_palette,kCinemaActionPropertyReverseMove,"Reverse Move","n/a",TRUE);
@@ -205,17 +205,9 @@ void alt_property_palette_click_cinema_action(int cinema_idx,int action_idx,int 
 			property_palette_pick_node(action->node_name);
 			break;
 
-		case kCinemaActionPropertyReverseMove:
-			action->move_reverse=!action->move_reverse;
-			break;
-
 		case kCinemaActionPropertyText:
 			dialog_property_string_run(list_string_value_string,(void*)action->text_str,256,0,0);
 			break;
 
 	}
-
-		// redraw
-
-	main_wind_draw();
 }

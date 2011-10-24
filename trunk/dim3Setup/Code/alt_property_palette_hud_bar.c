@@ -76,8 +76,8 @@ void alt_property_palette_fill_hud_bar(int hud_bar_idx)
 
 	list_palette_add_header(&alt_property_palette,0,"Settings");
 	list_palette_add_string(&alt_property_palette,kBarSettingsName,"Name",bar->name,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kBarSettingsShow,"Show",bar->show,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kBarSettingsVertical,"Vertical",bar->vert,FALSE);
+	list_palette_add_checkbox(&alt_property_palette,kBarSettingsShow,"Show",&bar->show,FALSE);
+	list_palette_add_checkbox(&alt_property_palette,kBarSettingsVertical,"Vertical",&bar->vert,FALSE);
 
 		// position
 
@@ -97,14 +97,14 @@ void alt_property_palette_fill_hud_bar(int hud_bar_idx)
 		// outline
 
 	list_palette_add_header(&alt_property_palette,0,"Outline");
-	list_palette_add_checkbox(&alt_property_palette,kBarSettingsOutline,"On",bar->outline,FALSE);
+	list_palette_add_checkbox(&alt_property_palette,kBarSettingsOutline,"On",&bar->outline,FALSE);
 	list_palette_add_pick_color(&alt_property_palette,kBarOutlineColor,"Color",&bar->outline_color,FALSE);
 	list_palette_add_string_float(&alt_property_palette,kBarOutlineAlpha,"Alpha",bar->outline_alpha,FALSE);
 
 		// background
 
 	list_palette_add_header(&alt_property_palette,0,"Background");
-	list_palette_add_checkbox(&alt_property_palette,kBarSettingsBackground,"On",bar->background,FALSE);
+	list_palette_add_checkbox(&alt_property_palette,kBarSettingsBackground,"On",&bar->background,FALSE);
 	list_palette_add_pick_color(&alt_property_palette,kBarBackgroundColor,"Color",&bar->background_color,FALSE);
 	list_palette_add_string_float(&alt_property_palette,kBarBackgroundAlpha,"Alpha",bar->background_alpha,FALSE);
 }
@@ -131,14 +131,6 @@ void alt_property_palette_click_hud_bar(int hud_bar_idx,int id,bool double_click
 			dialog_property_string_run(list_string_value_string,(void*)bar->name,name_str_len,0,0);
 			break;
 
-		case kBarSettingsShow:
-			bar->show=!bar->show;
-			break;
-
-		case kBarSettingsVertical:
-			bar->vert=!bar->vert;
-			break;
-
 			// position
 
 		case kBarPositionX:
@@ -159,27 +151,11 @@ void alt_property_palette_click_hud_bar(int hud_bar_idx,int id,bool double_click
 
 			// fill
 
-		case kBarFillStartColor:
-			os_pick_color(&bar->fill_start_color);
-			break;
-
-		case kBarFillEndColor:
-			os_pick_color(&bar->fill_end_color);
-			break;
-
 		case kBarFillAlpha:
 			dialog_property_string_run(list_string_value_0_to_1_float,(void*)&bar->fill_alpha,0,0,0);
 			break;
 
 			// outline
-
-		case kBarSettingsOutline:
-			bar->outline=!bar->outline;
-			break;
-
-		case kBarOutlineColor:
-			os_pick_color(&bar->outline_color);
-			break;
 
 		case kBarOutlineAlpha:
 			dialog_property_string_run(list_string_value_0_to_1_float,(void*)&bar->outline_alpha,0,0,0);
@@ -187,22 +163,10 @@ void alt_property_palette_click_hud_bar(int hud_bar_idx,int id,bool double_click
 
 			//  background
 
-		case kBarSettingsBackground:
-			bar->background=!bar->background;
-			break;
-
-		case kBarBackgroundColor:
-			os_pick_color(&bar->background_color);
-			break;
-
 		case kBarBackgroundAlpha:
 			dialog_property_string_run(list_string_value_0_to_1_float,(void*)&bar->background_alpha,0,0,0);
 			break;
 
 	}
-
-		// redraw
-
-	main_wind_draw();
 }
 

@@ -100,9 +100,5 @@ void alt_property_palette_click_shader(int shader_idx,int id,bool double_click)
 			break;
 
 	}
-
-		// redraw
-
-	main_wind_draw();
 }
 

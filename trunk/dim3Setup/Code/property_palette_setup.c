@@ -61,22 +61,22 @@ void property_palette_fill_setup(void)
 		// options
 
 	list_palette_add_header(&property_palette,0,"Options");
-	list_palette_add_checkbox(&property_palette,kSetupPropertyNoResSwitch,"No Resolution Switch",iface.setup.no_resolution_switch,FALSE);
+	list_palette_add_checkbox(&property_palette,kSetupPropertyNoResSwitch,"No Resolution Switch",&iface.setup.no_resolution_switch,FALSE);
 
 		// game setup
 
 	list_palette_add_header(&property_palette,0,"Game Setup");
-	list_palette_add_checkbox(&property_palette,kSetupPropertyGameVideo,"Video Tab",iface.setup.game_video,FALSE);
-	list_palette_add_checkbox(&property_palette,kSetupPropertyGameAudio,"Audio Tab",iface.setup.game_audio,FALSE);
-	list_palette_add_checkbox(&property_palette,kSetupPropertyGameControl,"Control Tab",iface.setup.game_control,FALSE);
-	list_palette_add_checkbox(&property_palette,kSetupPropertyGameAction,"Action Tab",iface.setup.game_action,FALSE);
-	list_palette_add_checkbox(&property_palette,kSetupPropertyGameDebug,"Debug Tab",iface.setup.game_debug,FALSE);
+	list_palette_add_checkbox(&property_palette,kSetupPropertyGameVideo,"Video Tab",&iface.setup.game_video,FALSE);
+	list_palette_add_checkbox(&property_palette,kSetupPropertyGameAudio,"Audio Tab",&iface.setup.game_audio,FALSE);
+	list_palette_add_checkbox(&property_palette,kSetupPropertyGameControl,"Control Tab",&iface.setup.game_control,FALSE);
+	list_palette_add_checkbox(&property_palette,kSetupPropertyGameAction,"Action Tab",&iface.setup.game_action,FALSE);
+	list_palette_add_checkbox(&property_palette,kSetupPropertyGameDebug,"Debug Tab",&iface.setup.game_debug,FALSE);
 
 		// net setup
 
 	list_palette_add_header(&property_palette,0,"Net Setup");
-	list_palette_add_checkbox(&property_palette,kSetupPropertyNetPlayer,"Player Tab",iface.setup.net_player,FALSE);
-	list_palette_add_checkbox(&property_palette,kSetupPropertyNetHost,"Host Tab",iface.setup.net_host,FALSE);
+	list_palette_add_checkbox(&property_palette,kSetupPropertyNetPlayer,"Player Tab",&iface.setup.net_player,FALSE);
+	list_palette_add_checkbox(&property_palette,kSetupPropertyNetHost,"Host Tab",&iface.setup.net_host,FALSE);
 }
 
 /* =======================================================
@@ -87,52 +87,5 @@ void property_palette_fill_setup(void)
 
 void property_palette_click_setup(int id,bool double_click)
 {
-	if (!double_click) return;
-
-	switch (id) {
-
-			// options
-
-		case kSetupPropertyNoResSwitch:
-			iface.setup.no_resolution_switch=!iface.setup.no_resolution_switch;
-			break;
-
-			// game setup
-
-		case kSetupPropertyGameVideo:
-			iface.setup.game_video=!iface.setup.game_video;
-			break;
-
-		case kSetupPropertyGameAudio:
-			iface.setup.game_audio=!iface.setup.game_audio;
-			break;
-
-		case kSetupPropertyGameControl:
-			iface.setup.game_control=!iface.setup.game_control;
-			break;
-
-		case kSetupPropertyGameAction:
-			iface.setup.game_action=!iface.setup.game_action;
-			break;
-
-		case kSetupPropertyGameDebug:
-			iface.setup.game_debug=!iface.setup.game_debug;
-			break;
-
-			// net setup
-
-		case kSetupPropertyNetPlayer:
-			iface.setup.net_player=!iface.setup.net_player;
-			break;
-
-		case kSetupPropertyNetHost:
-			iface.setup.net_host=!iface.setup.net_host;
-			break;
-
-	}
-
-		// redraw
-
-	main_wind_draw();
 }
 
