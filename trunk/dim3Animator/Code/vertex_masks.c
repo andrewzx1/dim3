@@ -44,8 +44,15 @@ unsigned char					*vertex_mask_ptr;
 
 bool vertex_mask_initialize(void)
 {
-	vertex_mask_ptr=(unsigned char*)malloc(animator_max_vertex*max_model_mesh);
-	return(vertex_mask_ptr!=NULL);
+	int				sz;
+	
+	sz=animator_max_vertex*max_model_mesh;
+	
+	vertex_mask_ptr=(unsigned char*)malloc(sz);
+	if (vertex_mask_ptr==NULL) return(FALSE);
+
+	bzero(vertex_mask_ptr,animator_max_vertex*max_model_mesh);
+	return(TRUE);
 }
 
 void vertex_mask_shutdown(void)

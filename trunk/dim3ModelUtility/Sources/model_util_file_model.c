@@ -57,15 +57,18 @@ int model_read_xml_bone(model_type *model,int tag,char *attrib_name)
 
 bool model_read_xml(model_type *model)
 {
-	int						n,k,version,model_head,
+	int						n,k,t,version,model_head,
 							bone_idx,nbone,hit_box_idx,nhit_box,
 							import_tag,ui_tag,mesh_idx,nmesh,nfill,
 							tag,light_tag,halo_tag,hit_box_tag,
 							rigid_body_tag,meshes_tag,mesh_tag,
-							vertex_tag,poly_tag,bone_tag,
-							fills_tag,fill_tag;
-	bool					had_tangent;
+							vertex_tag,poly_tag,bone_tag,fills_tag,fill_tag,
+							particles_head,particle_tag,rings_head,ring_tag,
+							npose,poses_tag,pose_tag,pose_idx,cnt,
+							nanimate,animations_tag,animation_tag,animate_idx,
+							sound_tag,fade_tag,flash_tag,shake_tag;
 	char					sub_path[1024],path[1024],
+							pose_name[name_str_len],mesh_name[name_str_len],
 							bone_parent_name[max_model_bone][name_str_len];
 	model_hit_box_type		*hit_box;
 	model_mesh_type			*mesh;
@@ -73,8 +76,10 @@ bool model_read_xml(model_type *model)
     model_bone_type			*bone;
     model_poly_type			*poly;
     texture_type			*texture;
-
-	return(FALSE);		// supergumba -- trigger looking at old XML
+	model_pose_type			*pose;
+    model_bone_move_type	*bone_move;
+	model_animate_type		*animate;
+    model_pose_move_type	*pose_move;
 
         // load the model xml
 		
@@ -100,26 +105,20 @@ bool model_read_xml(model_type *model)
         // options
     
     tag=xml_findfirstchild("Options",model_head);
-    if (tag!=-1) {
-		model->deform_mode=xml_get_attribute_list(tag,"deform",(char*)deform_mode_str);
-		model->diffuse_boost=xml_get_attribute_float_default(tag,"diffuse_boost",0.0f);
-	}
+	model->deform_mode=xml_get_attribute_list(tag,"deform",(char*)deform_mode_str);
+	model->diffuse_boost=xml_get_attribute_float_default(tag,"diffuse_boost",0.0f);
 	
         // center
     
     tag=xml_findfirstchild("Center",model_head);
-    if (tag!=-1) {
-		xml_get_attribute_3_coord_int(tag,"offset",&model->center.x,&model->center.y,&model->center.z);
-    }
+	xml_get_attribute_3_coord_int(tag,"offset",&model->center.x,&model->center.y,&model->center.z);
     
         // boxes
     
     tag=xml_findfirstchild("View_Box",model_head);
-    if (tag!=-1) {
-        xml_get_attribute_3_coord_int(tag,"size",&model->view_box.size.x,&model->view_box.size.y,&model->view_box.size.z);
-        xml_get_attribute_3_coord_int(tag,"offset",&model->view_box.offset.x,&model->view_box.offset.y,&model->view_box.offset.z);
-    }
- 
+	xml_get_attribute_3_coord_int(tag,"size",&model->view_box.size.x,&model->view_box.size.y,&model->view_box.size.z);
+	xml_get_attribute_3_coord_int(tag,"offset",&model->view_box.offset.x,&model->view_box.offset.y,&model->view_box.offset.z);
+
         // bones
  
     bone_tag=xml_findfirstchild("Bones",model_head);
@@ -164,23 +163,19 @@ bool model_read_xml(model_type *model)
         // light
 
     light_tag=xml_findfirstchild("Lights",model_head);
-    if (light_tag!=-1) {
-		tag=xml_findfirstchild("Light",light_tag);
+	tag=xml_findfirstchild("Light",light_tag);
 
-		for (n=0;n!=max_model_light;n++) {
-			model->bone_connect.light_bone_idx[n]=model_read_xml_bone(model,tag,"bone");
-			tag=xml_findnextchild(tag);
-		}
+	for (n=0;n!=max_model_light;n++) {
+		model->bone_connect.light_bone_idx[n]=model_read_xml_bone(model,tag,"bone");
+		tag=xml_findnextchild(tag);
 	}
 
     halo_tag=xml_findfirstchild("Halos",model_head);
-    if (halo_tag!=-1) {
-		tag=xml_findfirstchild("Halo",halo_tag);
+	tag=xml_findfirstchild("Halo",halo_tag);
 
-		for (n=0;n!=max_model_halo;n++) {
-			model->bone_connect.halo_bone_idx[n]=model_read_xml_bone(model,tag,"bone");
-			tag=xml_findnextchild(tag);
-		}
+	for (n=0;n!=max_model_halo;n++) {
+		model->bone_connect.halo_bone_idx[n]=model_read_xml_bone(model,tag,"bone");
+		tag=xml_findnextchild(tag);
 	}
 
     tag=xml_findfirstchild("Name",model_head);
@@ -217,37 +212,31 @@ bool model_read_xml(model_type *model)
 		// rigid body
 
     rigid_body_tag=xml_findfirstchild("Rigid_Body",model_head);
-	if (rigid_body_tag!=-1) {
-		model->rigid_body.on=xml_get_attribute_boolean(rigid_body_tag,"on");
-		model->rigid_body.y.max_ang=0.0f;			// unused, but in struct
-		model->rigid_body.y.reset_factor=xml_get_attribute_float_default(rigid_body_tag,"y_factor",0.8f);
-		model->rigid_body.y.smooth_factor=xml_get_attribute_float_default(rigid_body_tag,"y_smooth",0.2f);
-		model->rigid_body.x.max_ang=xml_get_attribute_float_default(rigid_body_tag,"x_max_ang",45.0f);
-		model->rigid_body.x.reset_factor=xml_get_attribute_float_default(rigid_body_tag,"x_factor",0.8f);
-		model->rigid_body.x.smooth_factor=xml_get_attribute_float_default(rigid_body_tag,"x_smooth",0.2f);
-		model->rigid_body.z.max_ang=xml_get_attribute_float_default(rigid_body_tag,"z_max_ang",45.0f);
-		model->rigid_body.z.reset_factor=xml_get_attribute_float_default(rigid_body_tag,"z_factor",0.8f);
-		model->rigid_body.z.smooth_factor=xml_get_attribute_float_default(rigid_body_tag,"z_smooth",0.2f);
-	}
+	model->rigid_body.on=xml_get_attribute_boolean(rigid_body_tag,"on");
+	model->rigid_body.y.max_ang=0.0f;			// unused, but in struct
+	model->rigid_body.y.reset_factor=xml_get_attribute_float_default(rigid_body_tag,"y_factor",0.8f);
+	model->rigid_body.y.smooth_factor=xml_get_attribute_float_default(rigid_body_tag,"y_smooth",0.2f);
+	model->rigid_body.x.max_ang=xml_get_attribute_float_default(rigid_body_tag,"x_max_ang",45.0f);
+	model->rigid_body.x.reset_factor=xml_get_attribute_float_default(rigid_body_tag,"x_factor",0.8f);
+	model->rigid_body.x.smooth_factor=xml_get_attribute_float_default(rigid_body_tag,"x_smooth",0.2f);
+	model->rigid_body.z.max_ang=xml_get_attribute_float_default(rigid_body_tag,"z_max_ang",45.0f);
+	model->rigid_body.z.reset_factor=xml_get_attribute_float_default(rigid_body_tag,"z_factor",0.8f);
+	model->rigid_body.z.smooth_factor=xml_get_attribute_float_default(rigid_body_tag,"z_smooth",0.2f);
 	
 		// importing
 		
     import_tag=xml_findfirstchild("Import",model_head);
-	if (import_tag!=-1) {
-		model->import.factor=xml_get_attribute_float_default(import_tag,"factor",1.0f);
-	}
+	model->import.factor=xml_get_attribute_float_default(import_tag,"factor",1.0f);
 	
   		// ui
 		
     ui_tag=xml_findfirstchild("UI",model_head);
-	if (ui_tag!=-1) {
-		model->ui.min_diffuse=xml_get_attribute_float(ui_tag,"min_diffuse");
-		xml_get_attribute_3_coord_float(ui_tag,"diffuse_vector",&model->ui.diffuse_vct.x,&model->ui.diffuse_vct.y,&model->ui.diffuse_vct.z);
-	}
+	model->ui.min_diffuse=xml_get_attribute_float(ui_tag,"min_diffuse");
+	xml_get_attribute_3_coord_float(ui_tag,"diffuse_vector",&model->ui.diffuse_vct.x,&model->ui.diffuse_vct.y,&model->ui.diffuse_vct.z);
 	
 		// meshes
 		
-	had_tangent=FALSE;
+	model->nmesh=0;
 		
 	meshes_tag=xml_findfirstchild("Meshes",model_head);
 
@@ -313,8 +302,6 @@ bool model_read_xml(model_type *model)
 			tag=xml_findnextchild(tag);
 		}
 	}
-
-	model->nmesh=nmesh;
   
         // fills
 
@@ -334,6 +321,200 @@ bool model_read_xml(model_type *model)
 		texture++;
 		
 		fill_tag=xml_findnextchild(fill_tag);
+    }
+	
+        // poses
+        
+    poses_tag=xml_findfirstchild("Poses",model_head);
+
+    npose=xml_countchildren(poses_tag);
+	pose_tag=xml_findfirstchild("Pose",poses_tag);
+    
+    for (n=0;n!=npose;n++) {
+
+			// add new pose
+
+		pose_idx=model_pose_add(model);
+		if (pose_idx==-1) {
+			xml_close_file();
+			return(FALSE);
+		}
+
+		pose=&model->poses[pose_idx];
+
+			// set pose data
+
+        xml_get_attribute_text(pose_tag,"name",pose->name,64);
+        
+        bone_move=pose->bone_moves;
+        for (k=0;k!=model->nbone;k++) {
+            bone_move->rot.x=bone_move->rot.z=bone_move->rot.y=0.0f;
+            bone_move->mov.x=bone_move->mov.z=bone_move->mov.y=1.0f;
+			bone_move->acceleration=0.0f;
+			bone_move->skip_blended=FALSE;
+			bone_move->constraint.bone_idx=-1;
+			bone_move->constraint.offset.x=bone_move->constraint.offset.y=bone_move->constraint.offset.z=0;
+			bone_move++;
+        }
+            
+        bone_tag=xml_findfirstchild("Bones",pose_tag);
+        
+        cnt=xml_countchildren(bone_tag);
+		tag=xml_findfirstchild("Bone",bone_tag);
+        
+        for (k=0;k!=cnt;k++) {
+			
+			bone_idx=model_read_xml_bone(model,tag,"name");
+		
+            if (bone_idx!=-1) {
+                bone_move=&pose->bone_moves[bone_idx];
+                xml_get_attribute_3_coord_float(tag,"rot",&bone_move->rot.x,&bone_move->rot.y,&bone_move->rot.z);
+				xml_get_attribute_3_coord_float(tag,"move",&bone_move->mov.x,&bone_move->mov.y,&bone_move->mov.z);
+				
+				bone_move->acceleration=xml_get_attribute_float(tag,"acceleration");
+				bone_move->skip_blended=xml_get_attribute_boolean(tag,"skip_blended");
+				
+				bone_move->constraint.bone_idx=model_read_xml_bone(model,tag,"constraint_bone");
+				xml_get_attribute_3_coord_int(tag,"constraint_offset",&bone_move->constraint.offset.x,&bone_move->constraint.offset.y,&bone_move->constraint.offset.z);
+			}
+		  
+			tag=xml_findnextchild(tag);
+        }
+    
+		pose_tag=xml_findnextchild(pose_tag);
+    }
+
+        // animations
+        
+    animations_tag=xml_findfirstchild("Animations",model_head);
+
+    nanimate=xml_countchildren(animations_tag);
+	animation_tag=xml_findfirstchild("Animation",animations_tag);
+    
+    for (n=0;n!=nanimate;n++) {
+ 
+			// add new animation
+
+		animate_idx=model_animate_add(model);
+		if (animate_idx==-1) {
+			xml_close_file();
+			return(FALSE);
+		}
+
+		animate=&model->animates[animate_idx];
+
+			// set pose animation
+
+		xml_get_attribute_text(animation_tag,"name",animate->name,64);
+        
+        tag=xml_findfirstchild("Loop",animation_tag);
+        animate->loop=xml_get_attribute_boolean(tag,"repeat");
+        animate->no_smooth=xml_get_attribute_boolean(tag,"no_smooth");
+        animate->loop_start=xml_get_attribute_int(tag,"start");
+        animate->loop_end=xml_get_attribute_int(tag,"end");
+        
+			// pose moves
+
+        poses_tag=xml_findfirstchild("Poses",animation_tag);
+        
+        animate->npose_move=xml_countchildren(poses_tag);
+		tag=xml_findfirstchild("Pose",poses_tag);
+		
+        pose_move=animate->pose_moves;
+        
+        for (k=0;k!=animate->npose_move;k++) {
+            xml_get_attribute_text(tag,"name",pose_name,name_str_len);
+            pose_move->pose_idx=model_find_pose(model,pose_name);
+			
+            pose_move->msec=xml_get_attribute_int(tag,"time");
+            xml_get_attribute_3_coord_float(tag,"sway",&pose_move->sway.x,&pose_move->sway.y,&pose_move->sway.z);
+            xml_get_attribute_3_coord_float(tag,"move",&pose_move->mov.x,&pose_move->mov.y,&pose_move->mov.z);
+            pose_move->acceleration=xml_get_attribute_float_default(tag,"acceleration",0.0f);
+
+				// sound
+				
+			sound_tag=xml_findfirstchild("Sound",tag);
+			xml_get_attribute_text(sound_tag,"name",pose_move->sound.name,name_str_len);
+			pose_move->sound.bone_idx=model_read_xml_bone(model,sound_tag,"bone");
+			pose_move->sound.pitch=xml_get_attribute_float_default(sound_tag,"pitch",1.0f);
+			pose_move->sound.no_position=xml_get_attribute_boolean(sound_tag,"global");
+         
+				// fade
+				
+			fade_tag=xml_findfirstchild("Fade",tag);
+			xml_get_attribute_text(fade_tag,"mesh",mesh_name,name_str_len);
+			pose_move->mesh_fade.mesh_idx=model_find_mesh(model,mesh_name);
+			pose_move->mesh_fade.fade_in_msec=xml_get_attribute_int(fade_tag,"in_time");
+			pose_move->mesh_fade.fade_life_msec=xml_get_attribute_int_default(fade_tag,"life_time",0);
+			pose_move->mesh_fade.fade_out_msec=xml_get_attribute_int(fade_tag,"out_time");
+
+				// flash
+				
+			flash_tag=xml_findfirstchild("Flash",tag);
+			pose_move->flash.bone_idx=model_read_xml_bone(model,flash_tag,"bone");
+			pose_move->flash.intensity=xml_get_attribute_int(flash_tag,"intensity");
+			pose_move->flash.flash_msec=xml_get_attribute_int(flash_tag,"time");
+			pose_move->flash.fade_msec=xml_get_attribute_int(flash_tag,"fade_time");
+			pose_move->flash.exponent=xml_get_attribute_float_default(flash_tag,"exponent",1.0f);
+			xml_get_attribute_color(flash_tag,"color",&pose_move->flash.col);
+
+				// shake
+				
+			shake_tag=xml_findfirstchild("Shake",tag);
+			pose_move->shake.distance=xml_get_attribute_int(shake_tag,"distance");
+			pose_move->shake.size=xml_get_attribute_int(shake_tag,"size");
+			pose_move->shake.life_msec=xml_get_attribute_int(shake_tag,"time");
+
+				// particles
+
+			pose_move->particle.count=0;
+
+			particles_head=xml_findfirstchild("Particles",tag);
+    
+			pose_move->particle.count=xml_countchildren(particles_head);
+			particle_tag=xml_findfirstchild("Particle",particles_head);
+
+			for (t=0;t!=pose_move->particle.count;t++) {
+				xml_get_attribute_text(particle_tag,"particle",pose_move->particle.particles[t].name,name_str_len);
+				pose_move->particle.particles[t].bone_idx=model_read_xml_bone(model,particle_tag,"bone");
+				pose_move->particle.particles[t].rotate=xml_get_attribute_boolean(particle_tag,"particle_rotate");
+				pose_move->particle.particles[t].motion=xml_get_attribute_boolean(particle_tag,"particle_motion");
+				pose_move->particle.particles[t].motion_factor=xml_get_attribute_float_default(particle_tag,"particle_motion_factor",1.0f);
+				pose_move->particle.particles[t].stick=xml_get_attribute_boolean(particle_tag,"particle_stick");
+				xml_get_attribute_3_coord_int(particle_tag,"particle_slop",&pose_move->particle.particles[t].slop.x,&pose_move->particle.particles[t].slop.y,&pose_move->particle.particles[t].slop.z);
+
+				particle_tag=xml_findnextchild(particle_tag);
+			}
+
+				// rings
+
+			pose_move->ring.count=0;
+
+			rings_head=xml_findfirstchild("Rings",tag);
+
+			pose_move->ring.count=xml_countchildren(rings_head);
+			ring_tag=xml_findfirstchild("Ring",rings_head);
+
+			for (t=0;t!=pose_move->ring.count;t++) {
+				xml_get_attribute_text(ring_tag,"ring",pose_move->ring.rings[t].name,name_str_len);
+				pose_move->ring.rings[t].bone_idx=model_read_xml_bone(model,ring_tag,"bone");
+				pose_move->ring.rings[t].angle=xml_get_attribute_boolean(ring_tag,"ring_angle");
+				xml_get_attribute_3_coord_int(ring_tag,"ring_slop",&pose_move->ring.rings[t].slop.x,&pose_move->ring.rings[t].slop.y,&pose_move->ring.rings[t].slop.z);
+
+				ring_tag=xml_findnextchild(ring_tag);
+			}
+
+            pose_move++;
+			tag=xml_findnextchild(tag);
+        }
+        
+			// fix any bad animation loops
+			
+ 		if (animate->loop_start<0) animate->loop_start=0;
+		if (animate->loop_end==-1) animate->loop_end=animate->npose_move-1;
+        if (animate->loop_end>(animate->npose_move-1)) animate->loop_end=animate->npose_move-1;
+         
+		animation_tag=xml_findnextchild(animation_tag);
     }
 
 	xml_close_file(); 
@@ -395,13 +576,6 @@ bool model_write_xml(model_type *model)
     xml_add_tagstart("Model");
 	xml_add_attribute_int("version",model_current_version);
     xml_add_tagend(FALSE);
-
-        // model info
-    
-    xml_add_tagstart("Creator");
-    xml_add_attribute_text("name","dim3 Animator");
-    xml_add_attribute_int("version",model_current_version);
-    xml_add_tagend(TRUE);
 	
         // options
     

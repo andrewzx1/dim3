@@ -434,6 +434,18 @@ bool menu_event_run(int cmd)
 			vertex_delete_sel_vertex(state.cur_mesh_idx);
 			main_wind_draw();
 			return(TRUE);
+			
+		case kCommandVertexPolygonDelete:
+			if (state.select_mode!=select_mode_polygon) return(TRUE);
+			vertex_delete_sel_poly(state.cur_mesh_idx);
+			main_wind_draw();
+			return(TRUE);
+			
+		case kCommandVertexCollapse:
+			if (state.select_mode!=select_mode_vertex) return(TRUE);
+			vertex_collapse(state.cur_mesh_idx);
+			main_wind_draw();
+			return(TRUE);
 
 		case kCommandVertexMakeQuad:
 			polygon_make_quad(state.cur_mesh_idx);

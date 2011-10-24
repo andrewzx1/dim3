@@ -44,8 +44,15 @@ unsigned char					*poly_mask_ptr;
 
 bool poly_mask_initialize(void)
 {
-	poly_mask_ptr=(unsigned char*)malloc(animator_max_poly*max_model_mesh);
-	return(poly_mask_ptr!=NULL);
+	int				sz;
+	
+	sz=animator_max_poly*max_model_mesh;
+	
+	poly_mask_ptr=(unsigned char*)malloc(sz);
+	if (poly_mask_ptr==NULL) return(FALSE);
+	
+	bzero(poly_mask_ptr,sz);
+	return(TRUE);
 }
 
 void poly_mask_shutdown(void)

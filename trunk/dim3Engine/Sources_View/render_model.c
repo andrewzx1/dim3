@@ -477,6 +477,9 @@ void render_model_opaque_normal(model_type *mdl,int mesh_idx,model_draw *draw)
 	model_draw_mesh_type	*draw_mesh;
     texture_type			*texture;
 	
+//	float		*na;		// supergumba
+//	float		*va;
+	
 	mesh=&mdl->meshes[mesh_idx];
 	draw_mesh=&draw->meshes[mesh_idx];
 	
@@ -499,6 +502,17 @@ void render_model_opaque_normal(model_type *mdl,int mesh_idx,model_draw *draw)
 	poly=mesh->polys;
 
 	for (n=0;n!=mesh->npoly;n++) {
+	
+			// culling
+/* supergumba			
+		va=draw->setup.mesh_arrays[mesh_idx].gl_vertex_array+(poly->v[0]*3);
+		na=draw->setup.mesh_arrays[mesh_idx].gl_normal_array+(poly->v[0]*3);
+		if (((na[0]*(float)(va[0]-view.render->camera.pnt.x))+(na[1]*(float)(va[1]-view.render->camera.pnt.y))+(na[2]*(float)(va[2]-view.render->camera.pnt.z)))>0.0f) {
+			v_idx+=poly->ptsz;
+			poly++;
+			continue;
+		}
+*/
 
 			// is this poly texture opaque
 
