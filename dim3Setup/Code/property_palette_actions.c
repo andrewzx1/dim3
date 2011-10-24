@@ -73,6 +73,5 @@ void property_palette_click_actions(int id,bool double_click)
 		
 	state.cur_action_idx=id-kActionProperyName;
 	if (double_click) list_palette_set_level(2);
-	main_wind_draw();
 }
 

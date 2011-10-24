@@ -92,7 +92,7 @@ void property_palette_fill_camera(void)
 		// camera static
 
 	list_palette_add_header(&property_palette,0,"Map Camera Static");
-	list_palette_add_checkbox(&property_palette,kMapPropertyCameraStaticFollow,"Follow Player",map.camera.c_static.follow,FALSE);
+	list_palette_add_checkbox(&property_palette,kMapPropertyCameraStaticFollow,"Follow Player",&map.camera.c_static.follow,FALSE);
 	list_palette_add_string(&property_palette,kMapPropertyCameraStaticAttachNode,"Attach Node",map.camera.c_static.attach_node,FALSE);
 }
 
@@ -156,16 +156,10 @@ void property_palette_click_camera(int id,bool double_click)
 
 			// camera static settings
 
-		case kMapPropertyCameraStaticFollow:
-			map.camera.c_static.follow=!map.camera.c_static.follow;
-			break;
-
 		case kMapPropertyCameraStaticAttachNode:
 			property_palette_pick_node(map.camera.c_static.attach_node);
 			break;
 	
 	}
-
-	main_wind_draw();
 }
 

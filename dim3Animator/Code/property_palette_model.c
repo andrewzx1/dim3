@@ -83,7 +83,7 @@ void property_palette_fill_model(void)
 		// model options
 		
 	list_palette_add_header(&property_palette,0,"Model Options");
-	list_palette_add_checkbox(&property_palette,kModelPropertyRotateMode,"Cumulative Rotation",(model.deform_mode==deform_mode_comulative_rotate),FALSE);
+	list_palette_add_checkbox(&property_palette,kModelPropertyRotateMode,"Cumulative Rotation",&model.comulative_rotation,FALSE);
 	list_palette_add_string_float(&property_palette,kModelPropertyDiffuseBoost,"Diffuse Boost",model.diffuse_boost,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Model Positions");
@@ -113,7 +113,7 @@ void property_palette_fill_model(void)
 	}
 
 	list_palette_add_header(&property_palette,0,"Model Rigid Body");
-	list_palette_add_checkbox(&property_palette,kModelPropertyRigidBodyOn,"On",model.rigid_body.on,FALSE);
+	list_palette_add_checkbox(&property_palette,kModelPropertyRigidBodyOn,"On",&model.rigid_body.on,FALSE);
 	list_palette_add_string_float(&property_palette,kModelPropertyRigidBodyYResetFact,"Y Reset Factor",model.rigid_body.y.reset_factor,FALSE);
 	list_palette_add_string_float(&property_palette,kModelPropertyRigidBodyYSmoothFact,"Y Smooth Factor",model.rigid_body.y.smooth_factor,FALSE);
 	list_palette_add_string_float(&property_palette,kModelPropertyRigidBodyXMaxAngle,"X Max Angle",model.rigid_body.x.max_ang,FALSE);
@@ -148,14 +148,12 @@ void property_palette_click_model(int id,bool double_click)
 	if ((id>=kModelPropertyLightBoneStart) && (id<=kModelPropertyLightBoneEnd)) {
 		idx=id-kModelPropertyLightBoneStart;
 		property_palette_pick_bone(&model.bone_connect.light_bone_idx[idx],-1);
-		main_wind_draw();
 		return;
 	}
 
 	if ((id>=kModelPropertyHaloBoneStart) && (id<=kModelPropertyHaloBoneEnd)) {
 		idx=id-kModelPropertyHaloBoneStart;
 		property_palette_pick_bone(&model.bone_connect.halo_bone_idx[idx],-1);
-		main_wind_draw();
 		return;
 	}
 
@@ -164,15 +162,6 @@ void property_palette_click_model(int id,bool double_click)
 
 	switch (id) {
 
-		case kModelPropertyRotateMode:
-			if (model.deform_mode!=deform_mode_comulative_rotate) {
-				model.deform_mode=deform_mode_comulative_rotate;
-			}
-			else {
-				model.deform_mode=deform_mode_single_rotate;
-			}
-			break;
-			
 		case kModelPropertyDiffuseBoost:
 			dialog_property_string_run(list_string_value_float,(void*)&model.diffuse_boost,0,0,0);
 			break;
@@ -191,10 +180,6 @@ void property_palette_click_model(int id,bool double_click)
 
 		case kModelPropertyNameBone:
 			property_palette_pick_bone(&model.bone_connect.name_bone_idx,-1);
-			break;
-
-		case kModelPropertyRigidBodyOn:
-			model.rigid_body.on=!model.rigid_body.on;
 			break;
 
 		case kModelPropertyRigidBodyYResetFact:
@@ -243,9 +228,5 @@ void property_palette_click_model(int id,bool double_click)
 			break;
 
 	}
-
-		// redraw
-
-	main_wind_draw();
 }
 

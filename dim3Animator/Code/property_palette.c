@@ -190,6 +190,7 @@ bool property_palette_click(d3pnt *pnt,bool double_click)
 
 	if (state.texture_edit_idx!=-1) {
 		property_palette_click_texture(state.texture_edit_idx,property_palette.item_id,double_click);
+		main_wind_draw();
 		return(TRUE);
 	}
 
@@ -197,6 +198,7 @@ bool property_palette_click(d3pnt *pnt,bool double_click)
 
 	if (state.in_preference) {
 		property_palette_click_animator_preference(property_palette.item_id,double_click);
+		main_wind_draw();
 		return(TRUE);
 	}
 
@@ -229,6 +231,8 @@ bool property_palette_click(d3pnt *pnt,bool double_click)
 			break;
 
 	}
+
+	main_wind_draw();
 
 		// need to reset in case
 		// the alt window has open/closed

@@ -126,9 +126,5 @@ void alt_property_palette_click_intro_model(int intro_model_idx,int id,bool doub
 			break;
 
 	}
-
-		// redraw
-
-	main_wind_draw();
 }
 

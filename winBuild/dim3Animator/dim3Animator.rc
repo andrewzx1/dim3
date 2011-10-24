@@ -96,7 +96,10 @@ BEGIN
         MENUITEM "Hide Non-Selected",						ID_VERTEX_HIDE_NON_SELECTED
         MENUITEM "Show All",								ID_VERTEX_SHOW_ALL
  		MENUITEM SEPARATOR
+		MENUITEM "Collapse Selected Vertexes",				ID_VERTEX_COLLAPSE
+ 		MENUITEM SEPARATOR
         MENUITEM "Delete Vertexes",							ID_VERTEX_DELETE
+        MENUITEM "Delete Polygons",							ID_VERTEX_DELETE_POLYGON
  		MENUITEM SEPARATOR
         MENUITEM "Make Quad",								ID_VERTEX_MAKE_QUAD
         MENUITEM "Tessellate Polygon",						ID_VERTEX_TESSELLATE_POLYGON

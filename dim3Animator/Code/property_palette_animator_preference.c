@@ -57,7 +57,7 @@ void property_palette_fill_animator_preference(void)
 	list_palette_set_title(&property_palette,"Animator Preferences");
 
 	list_palette_add_header(&property_palette,0,"Animator Settings");
-	list_palette_add_checkbox(&property_palette,kPrefPropertyShowTangentBinormal,"Show Tangent-Binormal",setup.show_tangent_binormal,FALSE);
+	list_palette_add_checkbox(&property_palette,kPrefPropertyShowTangentBinormal,"Show Tangent-Binormal",&setup.show_tangent_binormal,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Animator Colors");
 	list_palette_add_pick_color(&property_palette,kPrefPropertyBackgroundColor,"Background",&setup.col.background,FALSE);
@@ -73,32 +73,6 @@ void property_palette_fill_animator_preference(void)
 
 void property_palette_click_animator_preference(int id,bool double_click)
 {
-	if (!double_click) return;
-
-	switch (id) {
-
-		case kPrefPropertyShowTangentBinormal:
-			setup.show_tangent_binormal=!setup.show_tangent_binormal;
-			break;
-
-		case kPrefPropertyBackgroundColor:
-			os_pick_color(&setup.col.background);
-			break;
-
-		case kPrefPropertyMeshLineColor:
-			os_pick_color(&setup.col.mesh_line);
-			break;
-
-		case kPrefPropertyMeshSelectColor:
-			os_pick_color(&setup.col.mesh_sel);
-			break;
-
-	}
-
-		// write prefs
-
 	setup_xml_write();
-
-	main_wind_draw();
 }
 

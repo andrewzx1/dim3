@@ -156,7 +156,7 @@ void alt_property_palette_fill_intro_button(int intro_button_idx)
 		// settings
 	
 	list_palette_add_header(&alt_property_palette,0,"Settings");
-	list_palette_add_checkbox(&alt_property_palette,kButtonOptionOn,"On",btn->on,FALSE);
+	list_palette_add_checkbox(&alt_property_palette,kButtonOptionOn,"On",&btn->on,FALSE);
 	
 		// position
 
@@ -193,12 +193,6 @@ void alt_property_palette_click_intro_button(int intro_button_idx,int id,bool do
 	desc=get_intro_button_desc_from_item_idx(intro_button_idx);
 
 	switch (id) {
-
-			// settings
-	
-		case kButtonOptionOn:
-			btn->on=!btn->on;
-			break;
 	
 			// position
 
@@ -233,9 +227,5 @@ void alt_property_palette_click_intro_button(int intro_button_idx,int id,bool do
 			break;
 
 	}
-
-		// redraw
-
-	main_wind_draw();
 }
 

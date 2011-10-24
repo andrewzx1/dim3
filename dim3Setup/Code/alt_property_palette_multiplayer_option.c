@@ -88,9 +88,5 @@ void alt_property_palette_click_multiplayer_option(int multiplayer_option_idx,in
 			break;
 
 	}
-
-		// redraw
-
-	main_wind_draw();
 }
 

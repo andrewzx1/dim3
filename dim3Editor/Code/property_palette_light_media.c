@@ -92,8 +92,8 @@ void property_palette_fill_light_media(void)
 	list_palette_add_header(&property_palette,0,"Map Light Map");
 	list_palette_add_string(&property_palette,kMapPropertyLightMapQuality,"Quality",map_property_light_map_quality_list[map.light_map.quality],FALSE);
 	list_palette_add_string(&property_palette,kMapPropertyLightMapSize,"Texture Size",map_property_light_map_size_list[size],FALSE);
-	list_palette_add_checkbox(&property_palette,kMapPropertyLightMapUseNormals,"Use Normals (Hard Edges)",map.light_map.use_normals,FALSE);
-	list_palette_add_checkbox(&property_palette,kMapPropertyLightMapSkipGlows,"Skip Glow Mapped Polys",map.light_map.skip_glows,FALSE);
+	list_palette_add_checkbox(&property_palette,kMapPropertyLightMapUseNormals,"Use Normals (Hard Edges)",&map.light_map.use_normals,FALSE);
+	list_palette_add_checkbox(&property_palette,kMapPropertyLightMapSkipGlows,"Skip Glow Mapped Polys",&map.light_map.skip_glows,FALSE);
 	list_palette_add_string_float(&property_palette,kMapPropertyLightMapDiffuseBoost,"Diffuse Boost",map.light_map.diffuse_boost,FALSE);
 
 		// media
@@ -132,7 +132,6 @@ void property_palette_click_light_media(int id,bool double_click)
 	if ((id>=kMapPropertyMusicPreloadName) && (id<(kMapPropertyMusicPreloadName+max_music_preload))) {
 		music_idx=(id-kMapPropertyMusicPreloadName);
 		dialog_property_string_run(list_string_value_string,(void*)map.music.preload_name[music_idx],name_str_len,0,0);
-		main_wind_draw();
 		return;
 	}
 	
@@ -141,10 +140,6 @@ void property_palette_click_light_media(int id,bool double_click)
 	switch (id) {
 
 			// ambients
-
-		case kMapPropertyAmbientColor:
-			os_pick_color(&map.ambient.light_color);
-			break;
 
 		case kMapPropertyAmbientLightMapBoost:
 			dialog_property_string_run(list_string_value_positive_float,(void*)&map.ambient.light_map_boost,0,0,0);
@@ -171,14 +166,6 @@ void property_palette_click_light_media(int id,bool double_click)
 			map.light_map.size=(int)pow(2,(size+8));
 			break;
 			
-		case kMapPropertyLightMapUseNormals:
-			map.light_map.use_normals=!map.light_map.use_normals;
-			break;
-			
-		case kMapPropertyLightMapSkipGlows:
-			map.light_map.skip_glows=!map.light_map.skip_glows;
-			break;
-
 		case kMapPropertyLightMapDiffuseBoost:
 			dialog_property_string_run(list_string_value_positive_float,(void*)&map.light_map.diffuse_boost,0,0,0);
 			break;
@@ -212,7 +199,5 @@ void property_palette_click_light_media(int id,bool double_click)
 			break;
 
 	}
-
-	main_wind_draw();
 }
 

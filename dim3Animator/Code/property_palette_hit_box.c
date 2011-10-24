@@ -98,9 +98,5 @@ void property_palette_click_hit_box(int hit_box_idx,int id,bool double_click)
 			break;
 
 	}
-
-		// redraw
-
-	main_wind_draw();
 }
 

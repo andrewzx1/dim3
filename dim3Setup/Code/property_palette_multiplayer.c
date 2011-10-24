@@ -78,7 +78,7 @@ void property_palette_fill_multiplayer(void)
 		// bots
 
 	list_palette_add_header(&property_palette,0,"Bots");
-	list_palette_add_checkbox(&property_palette,kMPPropertyBotOn,"On",iface.net_bot.on,FALSE);
+	list_palette_add_checkbox(&property_palette,kMPPropertyBotOn,"On",&iface.net_bot.on,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Bot Names");
 	for (n=0;n!=max_net_bot;n++) {
@@ -140,7 +140,6 @@ void property_palette_click_multiplayer(int id,bool double_click)
 		state.cur_multiplayer_game_idx=-1;
 		state.cur_multiplayer_option_idx=-1;
 		if (double_click) list_palette_set_level(2);
-		main_wind_draw();
 		return;
 	}
 
@@ -149,7 +148,6 @@ void property_palette_click_multiplayer(int id,bool double_click)
 		state.cur_multiplayer_game_idx=id-kMPPropertyGameName;
 		state.cur_multiplayer_option_idx=-1;
 		if (double_click) list_palette_set_level(2);
-		main_wind_draw();
 		return;
 	}
 
@@ -158,7 +156,6 @@ void property_palette_click_multiplayer(int id,bool double_click)
 		state.cur_multiplayer_game_idx=-1;
 		state.cur_multiplayer_option_idx=id-kMPPropertyOptionName;
 		if (double_click) list_palette_set_level(2);
-		main_wind_draw();
 		return;
 	}
 
@@ -176,7 +173,6 @@ void property_palette_click_multiplayer(int id,bool double_click)
 
 		iface.character.ncharacter--;
 
-		main_wind_draw();
 		return;
 	}
 
@@ -192,7 +188,6 @@ void property_palette_click_multiplayer(int id,bool double_click)
 
 		iface.net_game.ngame--;
 
-		main_wind_draw();
 		return;
 	}
 
@@ -208,7 +203,6 @@ void property_palette_click_multiplayer(int id,bool double_click)
 
 		iface.net_option.noption--;
 
-		main_wind_draw();
 		return;
 	}
 
@@ -239,7 +233,6 @@ void property_palette_click_multiplayer(int id,bool double_click)
 
 		state.cur_multiplayer_character_idx=idx;
 
-		main_wind_draw();
 		return;
 	}
 
@@ -275,7 +268,6 @@ void property_palette_click_multiplayer(int id,bool double_click)
 
 		state.cur_multiplayer_game_idx=idx;
 
-		main_wind_draw();
 		return;
 	}
 
@@ -299,7 +291,6 @@ void property_palette_click_multiplayer(int id,bool double_click)
 
 		state.cur_multiplayer_option_idx=idx;
 
-		main_wind_draw();
 		return;
 	}
 
@@ -336,16 +327,6 @@ void property_palette_click_multiplayer(int id,bool double_click)
 			dialog_property_string_run(list_string_value_positive_int,(void*)&iface.net_news.port,0,0,0);
 			break;
 
-			// bots
-
-		case kMPPropertyBotOn:
-			iface.net_bot.on=!iface.net_bot.on;
-			break;
-
 	}
-
-		// redraw
-
-	main_wind_draw();
 }
 

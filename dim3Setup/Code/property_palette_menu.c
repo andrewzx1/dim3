@@ -84,7 +84,6 @@ void property_palette_click_menu(int id,bool double_click)
 		state.cur_menu_idx=id-kMenuPropertyMenuName;
 		state.cur_menu_item_idx=-1;
 		if (double_click) list_palette_set_level(2);
-		main_wind_draw();
 		return;
 	}
 
@@ -101,7 +100,6 @@ void property_palette_click_menu(int id,bool double_click)
 
 		iface.menu_list.nmenu--;
 
-		main_wind_draw();
 		return;
 	}
 
@@ -126,12 +124,7 @@ void property_palette_click_menu(int id,bool double_click)
 
 		state.cur_menu_idx=idx;
 
-		main_wind_draw();
 		return;
 	}
-
-		// redraw
-
-	main_wind_draw();
 }
 

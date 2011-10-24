@@ -280,7 +280,7 @@ void list_palette_add_item(list_palette_type *list,int piece_type,int piece_idx,
 	strcpy(item->name,name);
 }
 
-void list_palette_add_color(list_palette_type *list,int piece_type,int piece_idx,d3col *col,bool selected,bool disabled)
+void list_palette_add_color(list_palette_type *list,int piece_type,int piece_idx,d3col *col_ptr,bool selected,bool disabled)
 {
 	list_palette_item_type		*item;
 
@@ -293,7 +293,7 @@ void list_palette_add_color(list_palette_type *list,int piece_type,int piece_idx
 	item->selected=selected;
 	item->disabled=disabled;
 
-	memmove(&item->value.col,col,sizeof(d3col));
+	item->value.col_ptr=col_ptr;
 }
 
 void list_palette_add_string_selectable(list_palette_type *list,int id,char *name,char *value,bool selected,bool disabled)
@@ -361,7 +361,7 @@ void list_palette_add_string_float(list_palette_type *list,int id,char *name,flo
 	list_palette_add_string(list,id,name,str,disabled);
 }
 
-void list_palette_add_checkbox(list_palette_type *list,int id,char *name,bool value,bool disabled)
+void list_palette_add_checkbox(list_palette_type *list,int id,char *name,bool *bool_ptr,bool disabled)
 {
 	list_palette_item_type		*item;
 
@@ -375,10 +375,10 @@ void list_palette_add_checkbox(list_palette_type *list,int id,char *name,bool va
 	item->disabled=disabled;
 
 	strcpy(item->name,name);
-	item->value.checkbox=value;
+	item->value.bool_ptr=bool_ptr;
 }
 
-void list_palette_add_pick_color(list_palette_type *list,int id,char *name,d3col *col,bool disabled)
+void list_palette_add_pick_color(list_palette_type *list,int id,char *name,d3col *col_ptr,bool disabled)
 {
 	list_palette_item_type		*item;
 
@@ -392,7 +392,7 @@ void list_palette_add_pick_color(list_palette_type *list,int id,char *name,d3col
 	item->disabled=disabled;
 
 	strcpy(item->name,name);
-	memmove(&item->value.col,col,sizeof(d3col));
+	item->value.col_ptr=col_ptr;
 }
 
 void list_palette_add_point(list_palette_type *list,int id,char *name,d3pnt *pnt,bool disabled)
@@ -1199,7 +1199,7 @@ void list_palette_draw_item(list_palette_type *list,int idx)
 
 		case list_item_ctrl_color:
 			text_draw(x,y,list_item_font_size,NULL,"Light");
-			list_palette_draw_item_color_box(list,item,&item->value.col);
+			list_palette_draw_item_color_box(list,item,item->value.col_ptr);
 			break;
 
 			// string
@@ -1221,14 +1221,14 @@ void list_palette_draw_item(list_palette_type *list,int idx)
 
 		case list_item_ctrl_checkbox:
 			text_draw(x,y,list_item_font_size,NULL,item->name);
-			list_palette_draw_item_check_box(list,item,item->value.checkbox);
+			list_palette_draw_item_check_box(list,item,*item->value.bool_ptr);
 			break;
 
 			// pick color
 
 		case list_item_ctrl_pick_color:
 			text_draw(x,y,list_item_font_size,NULL,item->name);
-			list_palette_draw_item_color_box(list,item,&item->value.col);
+			list_palette_draw_item_color_box(list,item,item->value.col_ptr);
 			break;
 
 	}
@@ -1560,7 +1560,7 @@ bool list_palette_click(list_palette_type *list,d3pnt *pnt,bool double_click)
 	item_idx=((pt.y-list_title_high)+(list->scroll_page*list_item_scroll_size))/list_item_font_high;
 	if ((item_idx<0) || (item_idx>=list->item_count)) return(FALSE);
 
-		// is there a button?
+		// is there a button
 
 	list->button_click=FALSE;
 
@@ -1579,6 +1579,22 @@ bool list_palette_click(list_palette_type *list,d3pnt *pnt,bool double_click)
 	if (!list_picker.on) {
 		if (list->items[item_idx].ctrl_type==list_item_ctrl_header) {
 			if (!list->button_click) return(FALSE);
+		}
+	}
+
+		// checkboxes and colors
+		// are handled internally
+
+	if (!list_picker.on) {
+		if (list->items[item_idx].ctrl_type==list_item_ctrl_checkbox) {
+			*list->items[item_idx].value.bool_ptr=!(*list->items[item_idx].value.bool_ptr);
+			main_wind_draw();
+			return(FALSE);
+		}
+		if (list->items[item_idx].ctrl_type==list_item_ctrl_pick_color) {
+			os_pick_color(list->items[item_idx].value.col_ptr);
+			main_wind_draw();
+			return(FALSE);
 		}
 	}
 

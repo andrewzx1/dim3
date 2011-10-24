@@ -108,11 +108,11 @@ void property_palette_fill_sky_weather(void)
 		// sky
 
 	list_palette_add_header(&property_palette,0,"Map Sky");
-	list_palette_add_checkbox(&property_palette,kMapPropertySkyOn,"On",map.sky.on,FALSE);
+	list_palette_add_checkbox(&property_palette,kMapPropertySkyOn,"On",&map.sky.on,FALSE);
 	list_palette_add_string(&property_palette,kMapPropertySkyType,"Type",map_property_sky_type_list[map.sky.type],FALSE);
 	list_palette_add_string_int(&property_palette,kMapPropertySkyRadius,"Radius",map.sky.radius,FALSE);
 	list_palette_add_string_int(&property_palette,kMapPropertyDomeY,"Dome Height",map.sky.dome_y,FALSE);
-	list_palette_add_checkbox(&property_palette,kMapPropertyDomeMirror,"Mirror Dome",map.sky.dome_mirror,FALSE);
+	list_palette_add_checkbox(&property_palette,kMapPropertyDomeMirror,"Mirror Dome",&map.sky.dome_mirror,FALSE);
 	list_palette_add_string_float(&property_palette,kMapPropertyTextureRepeat,"Texture Repeat",map.sky.txt_fact,FALSE);
 	uv.x=map.sky.txt_x_shift;
 	uv.y=map.sky.txt_y_shift;
@@ -127,7 +127,7 @@ void property_palette_fill_sky_weather(void)
 		// background
 
 	list_palette_add_header(&property_palette,0,"Map Background");
-	list_palette_add_checkbox(&property_palette,kMapPropertyBackgroundOn,"On",map.background.on,FALSE);
+	list_palette_add_checkbox(&property_palette,kMapPropertyBackgroundOn,"On",&map.background.on,FALSE);
 	uv.x=map.background.front.x_fact;
 	uv.y=map.background.front.y_fact;
 	list_palette_add_uv(&property_palette,kMapPropertyBackgroundFrontStamp,"Front Stamp",&uv,FALSE);
@@ -153,14 +153,14 @@ void property_palette_fill_sky_weather(void)
 		// fog general
 
 	list_palette_add_header(&property_palette,0,"Map Fog General");
-	list_palette_add_checkbox(&property_palette,kMapPropertyFogOn,"On",map.fog.on,FALSE);
+	list_palette_add_checkbox(&property_palette,kMapPropertyFogOn,"On",&map.fog.on,FALSE);
 	list_palette_add_string_int(&property_palette,kMapPropertyFogInnerRadius,"Inner Radius",map.fog.inner_radius,FALSE);
 	list_palette_add_string_int(&property_palette,kMapPropertyFogOuterRadius,"Outer Radius",map.fog.outer_radius,FALSE);
 
 		// fog obscure
 
 	list_palette_add_header(&property_palette,0,"Map Fog Obscure");
-	list_palette_add_checkbox(&property_palette,kMapPropertyFogUseSolidColor,"Use Obscure (GL) Type",map.fog.use_solid_color,FALSE);
+	list_palette_add_checkbox(&property_palette,kMapPropertyFogUseSolidColor,"Use Obscure (GL) Type",&map.fog.use_solid_color,FALSE);
 	list_palette_add_pick_color(&property_palette,kMapPropertyFogColor,"Color",&map.fog.col,FALSE);
 
 		// fog textured
@@ -179,7 +179,7 @@ void property_palette_fill_sky_weather(void)
 		// rain
 
 	list_palette_add_header(&property_palette,0,"Map Rain General");
-	list_palette_add_checkbox(&property_palette,kMapPropertyRainOn,"On",map.rain.on,FALSE);
+	list_palette_add_checkbox(&property_palette,kMapPropertyRainOn,"On",&map.rain.on,FALSE);
 	list_palette_add_string_int(&property_palette,kMapPropertyRainDensity,"Density",map.rain.density,FALSE);
 	list_palette_add_string_int(&property_palette,kMapPropertyRainRadius,"Radius",map.rain.radius,FALSE);
 	list_palette_add_string_int(&property_palette,kMapPropertyRainHeight,"Height",map.rain.height,FALSE);
@@ -212,10 +212,6 @@ void property_palette_click_sky_weather(int id,bool double_click)
 
 			// map sky
 
-		case kMapPropertySkyOn:
-			map.sky.on=!map.sky.on;
-			break;
-
 		case kMapPropertySkyType:
 			property_pick_list("Pick a Sky Type",(char*)map_property_sky_type_list,&map.sky.type);
 			break;
@@ -226,10 +222,6 @@ void property_palette_click_sky_weather(int id,bool double_click)
 
 		case kMapPropertyDomeY:
 			dialog_property_string_run(list_string_value_positive_int,(void*)&map.sky.dome_y,0,0,0);
-			break;
-
-		case kMapPropertyDomeMirror:
-			map.sky.dome_mirror=!map.sky.dome_mirror;
 			break;
 
 		case kMapPropertyTextureRepeat:
@@ -269,10 +261,6 @@ void property_palette_click_sky_weather(int id,bool double_click)
 			break;
 
 			// map background
-
-		case kMapPropertyBackgroundOn:
-			map.background.on=!map.background.on;
-			break;
 
 		case kMapPropertyBackgroundFrontStamp:
 			uv.x=map.background.front.x_fact;
@@ -336,26 +324,12 @@ void property_palette_click_sky_weather(int id,bool double_click)
 
 			// fog general
 
-		case kMapPropertyFogOn:
-			map.fog.on=!map.fog.on;
-			break;
-
 		case kMapPropertyFogInnerRadius:
 			dialog_property_string_run(list_string_value_positive_int,(void*)&map.fog.inner_radius,0,0,0);
 			break;
 
 		case kMapPropertyFogOuterRadius:
 			dialog_property_string_run(list_string_value_positive_int,(void*)&map.fog.outer_radius,0,0,0);
-			break;
-
-			// fog obscure
-
-		case kMapPropertyFogUseSolidColor:
-			map.fog.use_solid_color=!map.fog.use_solid_color;
-			break;
-
-		case kMapPropertyFogColor:
-			os_pick_color(&map.fog.col);
 			break;
 
 			// fog textured
@@ -394,10 +368,6 @@ void property_palette_click_sky_weather(int id,bool double_click)
 
 			// rain general
 
-		case kMapPropertyRainOn:
-			map.rain.on=!map.rain.on;
-			break;
-
 		case kMapPropertyRainDensity:
 			dialog_property_string_run(list_string_value_positive_int,(void*)&map.rain.density,0,0,0);
 			break;
@@ -428,14 +398,6 @@ void property_palette_click_sky_weather(int id,bool double_click)
 			dialog_property_string_run(list_string_value_0_to_1_float,(void*)&map.rain.alpha,0,0,0);
 			break;
 
-		case kMapPropertyRainStartColor:
-			os_pick_color(&map.rain.start_color);
-			break;
-
-		case kMapPropertyRainEndColor:
-			os_pick_color(&map.rain.end_color);
-			break;
-
 		case kMapPropertyRainSlantAdd:
 			dialog_property_string_run(list_string_value_positive_int,(void*)&map.rain.slant_add,0,0,0);
 			break;
@@ -449,7 +411,5 @@ void property_palette_click_sky_weather(int id,bool double_click)
 			break;
 
 	}
-
-	main_wind_draw();
 }
 

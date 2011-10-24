@@ -80,7 +80,6 @@ void property_palette_click_rings(int id,bool double_click)
 	if ((id>=kRingProperyName) && (id<(kRingProperyName+max_iface_ring))) {
 		state.cur_ring_idx=id-kRingProperyName;
 		if (double_click) list_palette_set_level(2);
-		main_wind_draw();
 		return;
 	}
 	
@@ -96,7 +95,6 @@ void property_palette_click_rings(int id,bool double_click)
 
 		iface.ring_list.nring--;
 
-		main_wind_draw();
 		return;
 	}
 	
@@ -160,7 +158,6 @@ void property_palette_click_rings(int id,bool double_click)
 
 		state.cur_ring_idx=idx;
 
-		main_wind_draw();
 		return;
 	}
 

@@ -92,7 +92,6 @@ void alt_property_palette_click_menu(int menu_idx,int id,bool double_click)
 	if ((id>=kMenuPropertyMenuItemName) && (id<(kMenuPropertyMenuItemName+max_menu_item))) {
 		state.cur_menu_item_idx=id-kMenuPropertyMenuItemName;
 		if (double_click) list_palette_set_level(3);
-		main_wind_draw();
 		return;
 	}
 
@@ -108,7 +107,6 @@ void alt_property_palette_click_menu(int menu_idx,int id,bool double_click)
 
 		menu->nitem--;
 
-		main_wind_draw();
 		return;
 	}
 
@@ -134,7 +132,6 @@ void alt_property_palette_click_menu(int menu_idx,int id,bool double_click)
 
 		state.cur_menu_item_idx=idx;
 
-		main_wind_draw();
 		return;
 	}
 
@@ -152,9 +149,5 @@ void alt_property_palette_click_menu(int menu_idx,int id,bool double_click)
 			break;
 
 	}
-
-		// redraw
-
-	main_wind_draw();
 }
 

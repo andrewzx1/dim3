@@ -504,6 +504,10 @@ void vertex_collapse(int mesh_idx)
 
 		poly++;
 	}
+
+		// clear selection
+
+	vertex_mask_clear_sel(mesh_idx);
 	
 		// finish by cleaning all the
 		// now collapses and unconnected

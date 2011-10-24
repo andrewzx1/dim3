@@ -80,7 +80,6 @@ void property_palette_click_marks(int id,bool double_click)
 	if ((id>=kMarkProperyName) && (id<(kMarkProperyName+max_iface_mark))) {
 		state.cur_mark_idx=id-kMarkProperyName;
 		if (double_click) list_palette_set_level(2);
-		main_wind_draw();
 		return;
 	}
 	
@@ -96,7 +95,6 @@ void property_palette_click_marks(int id,bool double_click)
 
 		iface.mark_list.nmark--;
 
-		main_wind_draw();
 		return;
 	}
 	
@@ -140,7 +138,6 @@ void property_palette_click_marks(int id,bool double_click)
 
 		state.cur_mark_idx=idx;
 
-		main_wind_draw();
 		return;
 	}
 }

@@ -77,7 +77,7 @@ void alt_property_palette_fill_hud_text(int hud_text_idx)
 	list_palette_add_header(&alt_property_palette,0,"Settings");
 	list_palette_add_string(&alt_property_palette,kTextSettingsName,"Name",text->name,FALSE);
 	list_palette_add_string(&alt_property_palette,kTextSettingsData,"Data",text->data,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kTextSettingsShow,"Show",text->show,FALSE);
+	list_palette_add_checkbox(&alt_property_palette,kTextSettingsShow,"Show",&text->show,FALSE);
 
 		// position
 
@@ -97,7 +97,7 @@ void alt_property_palette_fill_hud_text(int hud_text_idx)
 		// fade
 
 	list_palette_add_header(&alt_property_palette,0,"Fade");
-	list_palette_add_checkbox(&alt_property_palette,kTextFadeOn,"On",text->fade.on,FALSE);
+	list_palette_add_checkbox(&alt_property_palette,kTextFadeOn,"On",&text->fade.on,FALSE);
 	list_palette_add_string_int(&alt_property_palette,kTextFadeInTick,"Fade In Milliseconds",text->fade.fade_in_tick,FALSE);
 	list_palette_add_string_int(&alt_property_palette,kTextFadeLifeTick,"Life Milliseconds",text->fade.life_tick,FALSE);
 	list_palette_add_string_int(&alt_property_palette,kTextFadeOutTick,"Fade Out Milliseconds",text->fade.fade_out_tick,FALSE);
@@ -129,10 +129,6 @@ void alt_property_palette_click_hud_text(int hud_text_idx,int id,bool double_cli
 			dialog_property_string_run(list_string_value_string,(void*)text->data,max_hud_text_str_sz,0,0);
 			break;
 
-		case kTextSettingsShow:
-			text->show=!text->show;
-			break;
-
 			// position
 
 		case kTextPositionX:
@@ -161,15 +157,7 @@ void alt_property_palette_click_hud_text(int hud_text_idx,int id,bool double_cli
 			dialog_property_string_run(list_string_value_0_to_1_float,(void*)&text->alpha,0,0,0);
 			break;
 
-		case kTextOptionColor:
-			os_pick_color(&text->color);
-			break;
-
 			// fade
-
-		case kTextFadeOn:
-			text->fade.on=!text->fade.on;
-			break;
 
 		case kTextFadeInTick:
 			dialog_property_string_run(list_string_value_positive_int,(void*)&text->fade.fade_in_tick,0,0,0);
@@ -184,9 +172,5 @@ void alt_property_palette_click_hud_text(int hud_text_idx,int id,bool double_cli
 			break;
 
 	}
-
-		// redraw
-
-	main_wind_draw();
 }
 

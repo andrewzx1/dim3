@@ -80,7 +80,6 @@ void property_palette_click_sounds(int id,bool double_click)
 	if ((id>=kSoundProperyName) && (id<(kSoundProperyName+max_iface_sound))) {
 		state.cur_sound_idx=id-kSoundProperyName;
 		if (double_click) list_palette_set_level(2);
-		main_wind_draw();
 		return;
 	}
 	
@@ -96,7 +95,6 @@ void property_palette_click_sounds(int id,bool double_click)
 
 		iface.sound_list.nsound--;
 
-		main_wind_draw();
 		return;
 	}
 	
@@ -123,7 +121,6 @@ void property_palette_click_sounds(int id,bool double_click)
 
 		state.cur_sound_idx=idx;
 
-		main_wind_draw();
 		return;
 	}
 }

@@ -80,9 +80,9 @@ and can be sold or given away.
 #define list_button_set										3
 
 typedef union		{
-						bool								checkbox;
+						bool								*bool_ptr;
 						char								str[list_max_value_sz];
-						d3col								col;
+						d3col								*col_ptr;
 					} list_palette_item_value_type;
 
 typedef struct		{
@@ -169,14 +169,14 @@ extern void list_palette_add_header(list_palette_type *list,int piece_type,char 
 extern void list_palette_add_header_count(list_palette_type *list,int piece_type,char *name,int count);
 extern void list_palette_add_header_button(list_palette_type *list,int id,char *name,int button_type);
 extern void list_palette_add_item(list_palette_type *list,int piece_type,int piece_idx,char *name,bool selected,bool disabled);
-extern void list_palette_add_color(list_palette_type *list,int piece_type,int piece_idx,d3col *col,bool selected,bool disabled);
+extern void list_palette_add_color(list_palette_type *list,int piece_type,int piece_idx,d3col *col_ptr,bool selected,bool disabled);
 extern void list_palette_add_string_selectable(list_palette_type *list,int id,char *name,char *value,bool selected,bool disabled);
 extern void list_palette_add_string_selectable_button(list_palette_type *list,int id,int button_type,int button_id,char *name,char *value,bool selected,bool disabled);
 extern void list_palette_add_string(list_palette_type *list,int id,char *name,char *value,bool disabled);
 extern void list_palette_add_string_int(list_palette_type *list,int id,char *name,int value,bool disabled);
 extern void list_palette_add_string_float(list_palette_type *list,int id,char *name,float value,bool disabled);
-extern void list_palette_add_checkbox(list_palette_type *list,int id,char *name,bool value,bool disabled);
-extern void list_palette_add_pick_color(list_palette_type *list,int id,char *name,d3col *col,bool disabled);
+extern void list_palette_add_checkbox(list_palette_type *list,int id,char *name,bool *bool_ptr,bool disabled);
+extern void list_palette_add_pick_color(list_palette_type *list,int id,char *name,d3col *col_ptr,bool disabled);
 extern void list_palette_add_point(list_palette_type *list,int id,char *name,d3pnt *pnt,bool disabled);
 extern void list_palette_add_angle(list_palette_type *list,int id,char *name,d3ang *ang,bool disabled);
 extern void list_palette_add_vector(list_palette_type *list,int id,char *name,d3vct *vct,bool disabled);

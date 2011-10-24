@@ -90,8 +90,8 @@ void alt_property_palette_fill_halo(int halo_idx)
 		// options
 
 	list_palette_add_header(&alt_property_palette,0,"Options");
-	list_palette_add_checkbox(&alt_property_palette,kHaloOptionNoClipObject,"No Clip Object",halo->no_clip_object,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kHaloOptionNoClipSelf,"No Clip Self",halo->no_clip_self,FALSE);
+	list_palette_add_checkbox(&alt_property_palette,kHaloOptionNoClipObject,"No Clip Object",&halo->no_clip_object,FALSE);
+	list_palette_add_checkbox(&alt_property_palette,kHaloOptionNoClipSelf,"No Clip Self",&halo->no_clip_self,FALSE);
 }
 
 /* =======================================================
@@ -150,20 +150,6 @@ void alt_property_palette_click_halo(int halo_idx,int id,bool double_click)
 			dialog_property_string_run(list_string_value_0_to_1_float,(void*)&halo->max_alpha,0,0,0);
 			break;
 
-			// options
-
-		case kHaloOptionNoClipObject:
-			halo->no_clip_object=!halo->no_clip_object;
-			break;
-
-		case kHaloOptionNoClipSelf:
-			halo->no_clip_self=!halo->no_clip_self;
-			break;
-
 	}
-
-		// redraw
-
-	main_wind_draw();
 }
 

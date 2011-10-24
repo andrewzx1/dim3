@@ -120,8 +120,8 @@ void property_palette_fill_settings(void)
 		
 	list_palette_add_header(&property_palette,0,"Project");
 	list_palette_add_string(&property_palette,kSettingsProjectName,"Name",iface.project.name,FALSE);
-	list_palette_add_checkbox(&property_palette,kSettingsProjectModernize,"Modernize",iface.project.modernize,FALSE);
-	list_palette_add_checkbox(&property_palette,kSettingsProjectSkill,"Skill",iface.project.skill,FALSE);
+	list_palette_add_checkbox(&property_palette,kSettingsProjectModernize,"Modernize",&iface.project.modernize,FALSE);
+	list_palette_add_checkbox(&property_palette,kSettingsProjectSkill,"Skill",&iface.project.skill,FALSE);
 
 		// scale
 		
@@ -216,7 +216,7 @@ void property_palette_fill_settings(void)
 	list_palette_add_string_int(&property_palette,kSettingsProgressTop,"Top Y",iface.progress.ty,FALSE);
 	list_palette_add_string_int(&property_palette,kSettingsProgressBottom,"Bottom Y",iface.progress.by,FALSE);
 	list_palette_add_string_int(&property_palette,kSettingsProgressTextSize,"Text Size",iface.progress.text_size,FALSE);
-	list_palette_add_checkbox(&property_palette,kSettingsProgressOutline,"Outline",iface.progress.outline,FALSE);
+	list_palette_add_checkbox(&property_palette,kSettingsProgressOutline,"Outline",&iface.progress.outline,FALSE);
 	list_palette_add_pick_color(&property_palette,kSettingsProgressBaseColorStart,"Base Color Start",&iface.progress.base_color_start,FALSE);
 	list_palette_add_pick_color(&property_palette,kSettingsProgressBaseColorEnd,"Base Color End",&iface.progress.base_color_end,FALSE);
 	list_palette_add_pick_color(&property_palette,kSettingsProgressHiliteColorStart,"Highlight Color Start",&iface.progress.hilite_color_start,FALSE);
@@ -245,13 +245,11 @@ void property_palette_click_settings(int id,bool double_click)
 
 	if ((id>=kSettingsInterfaceFont) && (id<(kSettingsInterfaceFont+max_iface_font_variant))) {
 		dialog_property_string_run(list_string_value_string,(void*)iface.font.interface_name[id-kSettingsInterfaceFont],name_str_len,0,0);
-		main_wind_draw();
 		return;
 	}
 
 	if ((id>=kSettingsHUDFont) && (id<(kSettingsHUDFont+max_iface_font_variant))) {
 		dialog_property_string_run(list_string_value_string,(void*)iface.font.hud_name[id-kSettingsHUDFont],name_str_len,0,0);
-		main_wind_draw();
 		return;
 	}
 
@@ -263,14 +261,6 @@ void property_palette_click_settings(int id,bool double_click)
 
 		case kSettingsProjectName:
 			dialog_property_string_run(list_string_value_string,(void*)iface.project.name,name_str_len,0,0);
-			break;
-
-		case kSettingsProjectModernize:
-			iface.project.modernize=!iface.project.modernize;
-			break;
-
-		case kSettingsProjectSkill:
-			iface.project.skill=!iface.project.skill;
 			break;
 
 			// setting
@@ -288,143 +278,7 @@ void property_palette_click_settings(int id,bool double_click)
 		case kSettingsClickSound:
 			property_palette_pick_sound(iface.click_sound,FALSE);
 			break;
-			
-			// main color
-			
-		case kSettingsColorBackground:
-			os_pick_color(&iface.color.background);
-			break;
-			
-		case kSettingsColorDefaultTint:
-			os_pick_color(&iface.color.default_tint);
-			break;
-			
-			// menu color
-			
-		case kSettingsColorMenuBackground:
-			os_pick_color(&iface.color.menu.background);
-			break;
-
-		case kSettingsColorMenuText:
-			os_pick_color(&iface.color.menu.text);
-			break;
-			
-		case kSettingsColorMenuMouseOver:
-			os_pick_color(&iface.color.menu.mouse_over);
-			break;
-			
-		case kSettingsColorMenuOutline:
-			os_pick_color(&iface.color.menu.outline);
-			break;
-
-			// dialog color
-			
-		case kSettingsColorDialogBackground:
-			os_pick_color(&iface.color.dialog.background);
-			break;
-
-		case kSettingsColorDialogHeader:
-			os_pick_color(&iface.color.dialog.header);
-			break;
-
-		case kSettingsColorDialogOutline:
-			os_pick_color(&iface.color.dialog.outline);
-			break;
-
-		case kSettingsColorDialogTitle:
-			os_pick_color(&iface.color.dialog.title);
-			break;
-
-			// tab color
-			
-		case kSettingsColorTabBackground:
-			os_pick_color(&iface.color.tab.background);
-			break;
-
-		case kSettingsColorTabDimmed:
-			os_pick_color(&iface.color.tab.dimmed);
-			break;
-
-		case kSettingsColorTabOutline:
-			os_pick_color(&iface.color.tab.outline);
-			break;
-			
-		case kSettingsColorTabText:
-			os_pick_color(&iface.color.tab.text);
-			break;
-			
-		case kSettingsColorTabTextMouseOver:
-			os_pick_color(&iface.color.tab.text_mouse_over);
-			break;
-			
-		case kSettingsColorTabTextDimmed:
-			os_pick_color(&iface.color.tab.text_dimmed);
-			break;
-
-			// control color
-			
-		case kSettingsColorControlLabel:
-			os_pick_color(&iface.color.control.label);
-			break;
-
-		case kSettingsColorControlText:
-			os_pick_color(&iface.color.control.text);
-			break;
-
-		case kSettingsColorControlFill:
-			os_pick_color(&iface.color.control.fill);
-			break;
-
-		case kSettingsColorControlHeader:
-			os_pick_color(&iface.color.control.header);
-			break;
-
-		case kSettingsColorControlOutline:
-			os_pick_color(&iface.color.control.outline);
-			break;
-
-		case kSettingsColorControlMouseOver:
-			os_pick_color(&iface.color.control.mouse_over);
-			break;
-
-		case kSettingsColorControlHilite:
-			os_pick_color(&iface.color.control.hilite);
-			break;
-
-		case kSettingsColorControlDisabled:
-			os_pick_color(&iface.color.control.disabled);
-			break;
-
-			// scrollbar color
-		
-		case kSettingsColorScrollBarBackground:
-			os_pick_color(&iface.color.scrollbar.background);
-			break;
-
-		case kSettingsColorScrollBarThumb:
-			os_pick_color(&iface.color.scrollbar.thumb);
-			break;
-
-			// button color
-			
-		case kSettingsColorButtonFill:
-			os_pick_color(&iface.color.button.fill);
-			break;
-
-		case kSettingsColorButtonText:
-			os_pick_color(&iface.color.button.text);
-			break;
-
-		case kSettingsColorButtonOutline:
-			os_pick_color(&iface.color.button.outline);
-			break;
-
-			// system color
-		
-		case kSettingColorSystemMetric:
-			os_pick_color(&iface.color.system.metric);
-			break;
-			
+									
 			// progress
 			
 		case kSettingsProgressLeft:
@@ -446,34 +300,6 @@ void property_palette_click_settings(int id,bool double_click)
 		case kSettingsProgressTextSize:
 			dialog_property_string_run(list_string_value_positive_int,(void*)&iface.progress.text_size,0,0,0);
 			break;
-
-		case kSettingsProgressOutline:
-			iface.progress.outline=!iface.progress.outline;
-			break;
-			
-		case kSettingsProgressBaseColorStart:
-			os_pick_color(&iface.progress.base_color_start);
-			break;
-			
-		case kSettingsProgressBaseColorEnd:
-			os_pick_color(&iface.progress.base_color_end);
-			break;
-			
-		case kSettingsProgressHiliteColorStart:
-			os_pick_color(&iface.progress.hilite_color_start);
-			break;
-			
-		case kSettingsProgressHiliteColorEnd:
-			os_pick_color(&iface.progress.hilite_color_end);
-			break;
-			
-		case kSettingsProgressTextColor:
-			os_pick_color(&iface.progress.text_color);
-			break;
-			
-		case kSettingsProgressOutlineColor:
-			os_pick_color(&iface.progress.outline_color);
-			break;
 	
 			// fades
 		
@@ -487,9 +313,5 @@ void property_palette_click_settings(int id,bool double_click)
 			
 
 	}
-
-		// redraw
-
-	main_wind_draw();
 }
 

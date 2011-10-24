@@ -88,7 +88,6 @@ void property_palette_click_pose(int pose_idx,int id,bool double_click)
 	if (id>=kPosePropertyBoneMove) {
 		state.cur_pose_bone_move_idx=id-kPosePropertyBoneMove;
 		if (double_click) list_palette_set_level(2);
-		main_wind_draw();
 		return;
 	}
 
@@ -105,9 +104,5 @@ void property_palette_click_pose(int pose_idx,int id,bool double_click)
 			break;
 
 	}
-
-		// redraw
-
-	main_wind_draw();
 }
 

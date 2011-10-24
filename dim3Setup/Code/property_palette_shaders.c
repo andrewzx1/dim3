@@ -80,7 +80,6 @@ void property_palette_click_shaders(int id,bool double_click)
 	if ((id>=kShaderProperyName) && (id<(kShaderProperyName+max_iface_user_shader))) {
 		state.cur_shader_idx=id-kShaderProperyName;
 		if (double_click) list_palette_set_level(2);
-		main_wind_draw();
 		return;
 	}
 	
@@ -96,7 +95,6 @@ void property_palette_click_shaders(int id,bool double_click)
 
 		iface.shader_list.nshader--;
 
-		main_wind_draw();
 		return;
 	}
 	
@@ -121,7 +119,6 @@ void property_palette_click_shaders(int id,bool double_click)
 
 		state.cur_shader_idx=idx;
 
-		main_wind_draw();
 		return;
 	}
 }

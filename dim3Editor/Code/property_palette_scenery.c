@@ -73,11 +73,11 @@ void property_palette_fill_scenery(int scenery_idx)
 	list_palette_add_string_float(&property_palette,kSceneryPropertyResize,"Resize",scenery->resize,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Scenery Settings");
-	list_palette_add_checkbox(&property_palette,kSceneryPropertyContactObject,"Contact Object",scenery->contact_object_on,FALSE);
-	list_palette_add_checkbox(&property_palette,kSceneryPropertyContactProjectile,"Contact Projectile",scenery->contact_projectile_on,FALSE);
-	list_palette_add_checkbox(&property_palette,kSceneryPropertyContactHitBox,"Use Hit Box",scenery->contact_hit_box,FALSE);
-	list_palette_add_checkbox(&property_palette,kSceneryPropertyFaceFront,"Face Front",scenery->face_forward,FALSE);
-	list_palette_add_checkbox(&property_palette,kSceneryPropertyShadow,"Shadow",scenery->shadow,FALSE);
+	list_palette_add_checkbox(&property_palette,kSceneryPropertyContactObject,"Contact Object",&scenery->contact_object_on,FALSE);
+	list_palette_add_checkbox(&property_palette,kSceneryPropertyContactProjectile,"Contact Projectile",&scenery->contact_projectile_on,FALSE);
+	list_palette_add_checkbox(&property_palette,kSceneryPropertyContactHitBox,"Use Hit Box",&scenery->contact_hit_box,FALSE);
+	list_palette_add_checkbox(&property_palette,kSceneryPropertyFaceFront,"Face Front",&scenery->face_forward,FALSE);
+	list_palette_add_checkbox(&property_palette,kSceneryPropertyShadow,"Shadow",&scenery->shadow,FALSE);
 	
 	list_palette_add_header(&property_palette,0,"Scenery Mesh Frames");
 	for (n=0;n!=max_map_scenery_model_texture_frame;n++) {
@@ -115,7 +115,6 @@ void property_palette_click_scenery(int scenery_idx,int id,bool double_click)
 		dialog_property_string_run(list_string_value_positive_int,(void*)&frame,0,0,0);
 		scenery->texture_frame[frame_idx]=(char)frame;
 
-		main_wind_draw();
 		return;
 	}
 
@@ -135,28 +134,6 @@ void property_palette_click_scenery(int scenery_idx,int id,bool double_click)
 			dialog_property_string_run(list_string_value_positive_float,(void*)&scenery->resize,0,0,0);
 			break;
 
-		case kSceneryPropertyContactObject:
-			scenery->contact_object_on=!scenery->contact_object_on;
-			break;
-
-		case kSceneryPropertyContactProjectile:
-			scenery->contact_projectile_on=!scenery->contact_projectile_on;
-			break;
-
-		case kSceneryPropertyContactHitBox:
-			scenery->contact_hit_box=!scenery->contact_hit_box;
-			break;
-
-		case kSceneryPropertyFaceFront:
-			scenery->face_forward=!scenery->face_forward;
-			break;
-
-		case kSceneryPropertyShadow:
-			scenery->shadow=!scenery->shadow;
-			break;
-
 	}
-
-	main_wind_draw();
 }
 

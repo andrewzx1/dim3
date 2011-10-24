@@ -89,7 +89,9 @@ int				win32_menu_remap[][2]={
 					{kCommandVertexHideSelected,ID_VERTEX_HIDE_SELECTED},
 					{kCommandVertexHideNonSelected,ID_VERTEX_HIDE_NON_SELECTED},
 					{kCommandVertexShowAll,ID_VERTEX_SHOW_ALL},
+					{kCommandVertexCollapse,ID_VERTEX_COLLAPSE},
 					{kCommandVertexDelete,ID_VERTEX_DELETE},
+					{kCommandVertexPolygonDelete,ID_VERTEX_DELETE_POLYGON},
 					{kCommandVertexMakeQuad,ID_VERTEX_MAKE_QUAD},
 					{kCommandVertexTessellatePoly,ID_VERTEX_TESSELLATE_POLYGON},
 

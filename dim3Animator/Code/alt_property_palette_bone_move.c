@@ -69,7 +69,7 @@ void alt_property_palette_fill_pose_bone_move(int pose_idx,int bone_move_idx)
 	
 	list_palette_add_header(&alt_property_palette,0,"Pose Bone Move Options");
 	list_palette_add_string_float(&alt_property_palette,kPoseBoneMovePropertyAcceleration,"Acceleration",bone_move->acceleration,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kPoseBoneMovePropertySkipBlended,"Skip Blending",bone_move->skip_blended,FALSE);
+	list_palette_add_checkbox(&alt_property_palette,kPoseBoneMovePropertySkipBlended,"Skip Blending",&bone_move->skip_blended,FALSE);
 
 	list_palette_add_header(&alt_property_palette,0,"Pose Bone Move Constraint");
 	property_palette_add_string_bone(&alt_property_palette,kPoseBoneMovePropertyConstraintBone,"Constraint Bone",bone_move->constraint.bone_idx,FALSE);
@@ -86,10 +86,10 @@ void alt_property_palette_click_pose_bone_move(int pose_idx,int bone_move_idx,in
 {
 	model_bone_move_type	*bone_move;
 
-	if (!double_click) return;
 	if (bone_move_idx==-1) return;
-
 	bone_move=&model.poses[pose_idx].bone_moves[bone_move_idx];
+
+	if (!double_click) return;
 
 	switch (id) {
 
@@ -105,10 +105,6 @@ void alt_property_palette_click_pose_bone_move(int pose_idx,int bone_move_idx,in
 			dialog_property_string_run(list_string_value_positive_float,(void*)&bone_move->acceleration,0,0,0);
 			break;
 
-		case kPoseBoneMovePropertySkipBlended:
-			bone_move->skip_blended=!bone_move->skip_blended;
-			break;
-
 		case kPoseBoneMovePropertyConstraintBone:
 			property_palette_pick_bone(&bone_move->constraint.bone_idx,-1);
 			break;
@@ -118,9 +114,5 @@ void alt_property_palette_click_pose_bone_move(int pose_idx,int bone_move_idx,in
 			break;
 
 	}
-
-		// redraw
-
-	main_wind_draw();
 }
 

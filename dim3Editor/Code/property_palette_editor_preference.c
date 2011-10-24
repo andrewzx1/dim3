@@ -76,10 +76,10 @@ void property_palette_fill_editor_preference(void)
 	list_palette_add_string(&property_palette,kPrefPropertyEngineName,"Engine Name",setup.engine_name,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Editor Settings");
-	list_palette_add_checkbox(&property_palette,kPrefPropertyFreeLook,"Free Look",setup.free_look,FALSE);
-	list_palette_add_checkbox(&property_palette,kPrefPropertyAutoTexture,"Auto Texture",setup.auto_texture,FALSE);
-	list_palette_add_checkbox(&property_palette,kPrefPropertyBigTexture,"Large Texture Palette",setup.big_texture,FALSE);
-	list_palette_add_checkbox(&property_palette,kPrefPropertyShowTangentBinormal,"Show Tangent-Binormal",setup.show_tangent_binormal,FALSE);
+	list_palette_add_checkbox(&property_palette,kPrefPropertyFreeLook,"Free Look",&setup.free_look,FALSE);
+	list_palette_add_checkbox(&property_palette,kPrefPropertyAutoTexture,"Auto Texture",&setup.auto_texture,FALSE);
+	list_palette_add_checkbox(&property_palette,kPrefPropertyBigTexture,"Large Texture Palette",&setup.big_texture,FALSE);
+	list_palette_add_checkbox(&property_palette,kPrefPropertyShowTangentBinormal,"Show Tangent-Binormal",&setup.show_tangent_binormal,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Editor Options");
 	list_palette_add_string(&property_palette,kPrefPropertyMipMapMode,"Mipmap Mode",pref_mipmap_type_str[setup.mipmap_mode],FALSE);
@@ -88,11 +88,11 @@ void property_palette_fill_editor_preference(void)
 	list_palette_add_string_int(&property_palette,kPrefPropertyClipDistance,"Clip Distance",setup.clip_distance,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Editor Movement");
-	list_palette_add_checkbox(&property_palette,kPrefPropertyFlipHorzMovement,"Flip Horizontal Movement",setup.flip_horz_movement,FALSE);
-	list_palette_add_checkbox(&property_palette,kPrefPropertyFlipVertMovement,"Flip Vertical Movement",setup.flip_vert_movement,FALSE);
-	list_palette_add_checkbox(&property_palette,kPrefPropertyFlipHorzTurn,"Flip Horizontal Turn",setup.flip_horz_turn,FALSE);
-	list_palette_add_checkbox(&property_palette,kPrefPropertyFlipVertTurn,"Flip Vertical Turn",setup.flip_vert_turn,FALSE);
-	list_palette_add_checkbox(&property_palette,kPrefPropertyFlipForwardMovement,"Flip Forward Movement",setup.flip_forward_movement,FALSE);
+	list_palette_add_checkbox(&property_palette,kPrefPropertyFlipHorzMovement,"Flip Horizontal Movement",&setup.flip_horz_movement,FALSE);
+	list_palette_add_checkbox(&property_palette,kPrefPropertyFlipVertMovement,"Flip Vertical Movement",&setup.flip_vert_movement,FALSE);
+	list_palette_add_checkbox(&property_palette,kPrefPropertyFlipHorzTurn,"Flip Horizontal Turn",&setup.flip_horz_turn,FALSE);
+	list_palette_add_checkbox(&property_palette,kPrefPropertyFlipVertTurn,"Flip Vertical Turn",&setup.flip_vert_turn,FALSE);
+	list_palette_add_checkbox(&property_palette,kPrefPropertyFlipForwardMovement,"Flip Forward Movement",&setup.flip_forward_movement,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Editor Colors");
 	list_palette_add_pick_color(&property_palette,kPrefPropertyBackgroundColor,"Background",&setup.col.background,FALSE);
@@ -121,22 +121,6 @@ void property_palette_click_editor_preference(int id,bool double_click)
 			dialog_property_string_run(list_string_value_string,(void*)setup.engine_name,name_str_len,0,0);
 			break;
 
-		case kPrefPropertyFreeLook:
-			setup.free_look=!setup.free_look;
-			break;
-
-		case kPrefPropertyAutoTexture:
-			setup.auto_texture=!setup.auto_texture;
-			break;
-
-		case kPrefPropertyBigTexture:
-			setup.big_texture=!setup.big_texture;
-			break;
-
-		case kPrefPropertyShowTangentBinormal:
-			setup.show_tangent_binormal=!setup.show_tangent_binormal;
-			break;
-
 		case kPrefPropertyMipMapMode:
 			property_pick_list("Pick a MipMap Mode",(char*)pref_mipmap_type_str,&setup.mipmap_mode);
 			break;
@@ -152,46 +136,6 @@ void property_palette_click_editor_preference(int id,bool double_click)
 		case kPrefPropertyClipDistance:
 			dialog_property_string_run(list_string_value_positive_int,(void*)&setup.clip_distance,0,0,0);
 			break;
-
-		case kPrefPropertyFlipHorzMovement:
-			setup.flip_horz_movement=!setup.flip_horz_movement;
-			break;
-
-		case kPrefPropertyFlipVertMovement:
-			setup.flip_vert_movement=!setup.flip_vert_movement;
-			break;
-
-		case kPrefPropertyFlipHorzTurn:
-			setup.flip_horz_turn=!setup.flip_horz_turn;
-			break;
-
-		case kPrefPropertyFlipVertTurn:
-			setup.flip_vert_turn=!setup.flip_vert_turn;
-			break;
-
-		case kPrefPropertyFlipForwardMovement:
-			setup.flip_forward_movement=!setup.flip_forward_movement;
-			break;
-
-		case kPrefPropertyBackgroundColor:
-			os_pick_color(&setup.col.background);
-			break;
-
-		case kPrefPropertyLineColor:
-			os_pick_color(&setup.col.mesh_line);
-			break;
-
-		case kPrefPropertyMeshSelColor:
-			os_pick_color(&setup.col.mesh_sel);
-			break;
-
-		case kPrefPropertyPolySelColor:
-			os_pick_color(&setup.col.poly_sel);
-			break;
-
-		case kPrefPropertyPolyCullColor:
-			os_pick_color(&setup.col.poly_cull);
-			break;
 		
 		case kPrefPropertyImportNormalFactor:
 			dialog_property_chord_run(list_chord_value_vector,(void*)&setup.import_normal_factor);
@@ -202,7 +146,5 @@ void property_palette_click_editor_preference(int id,bool double_click)
 		// write prefs
 
 	setup_xml_write();
-
-	main_wind_draw();
 }
 

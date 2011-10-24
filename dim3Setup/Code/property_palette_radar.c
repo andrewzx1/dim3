@@ -67,13 +67,13 @@ void property_palette_fill_radar(void)
 		// settings
 
 	list_palette_add_header(&property_palette,0,"Settings");
-	list_palette_add_checkbox(&property_palette,kRadarPropertySettingsOn,"On",iface.radar.on,FALSE);
+	list_palette_add_checkbox(&property_palette,kRadarPropertySettingsOn,"On",&iface.radar.on,FALSE);
 	list_palette_add_string(&property_palette,kRadarPropertySettingsBackground,"Background",iface.radar.background_bitmap_name,FALSE);
 	list_palette_add_string_int(&property_palette,kRadarPropertySettingsDisplayRadius,"Display Radius",iface.radar.display_radius,FALSE);
 	list_palette_add_string_int(&property_palette,kRadarPropertySettingsViewRadius,"View Radius",iface.radar.view_radius,FALSE);
 	list_palette_add_string_int(&property_palette,kRadarPropertySettingsNoMotionFade,"No Motion Fade Milliseconds",iface.radar.no_motion_fade,FALSE);
-	list_palette_add_checkbox(&property_palette,kRadarPropertySettingsRot,"Rotate",iface.radar.rot,FALSE);
-	list_palette_add_checkbox(&property_palette,kRadarPropertySettingsTeamTint,"Team Tint",iface.radar.team_tint,FALSE);
+	list_palette_add_checkbox(&property_palette,kRadarPropertySettingsRot,"Rotate",&iface.radar.rot,FALSE);
+	list_palette_add_checkbox(&property_palette,kRadarPropertySettingsTeamTint,"Team Tint",&iface.radar.team_tint,FALSE);
 
 		// position
 
@@ -109,7 +109,6 @@ void property_palette_click_radar(int id,bool double_click)
 	if ((id>=kRadarPropertyIconName) && (id<(kRadarPropertyIconName+max_radar_icon))) {
 		state.cur_radar_icon_idx=id-kRadarPropertyIconName;
 		if (double_click) list_palette_set_level(2);
-		main_wind_draw();
 		return;
 	}
 
@@ -125,7 +124,6 @@ void property_palette_click_radar(int id,bool double_click)
 
 		iface.radar.nicon--;
 
-		main_wind_draw();
 		return;
 	}
 
@@ -151,7 +149,6 @@ void property_palette_click_radar(int id,bool double_click)
 
 		state.cur_radar_icon_idx=idx;
 
-		main_wind_draw();
 		return;
 	}
 
@@ -163,10 +160,6 @@ void property_palette_click_radar(int id,bool double_click)
 	state.cur_radar_icon_idx=-1;
 
 	switch (id) {
-
-		case kRadarPropertySettingsOn:
-			iface.radar.on=!iface.radar.on;
-			break;
 
 		case kRadarPropertySettingsBackground:
 			property_pick_file("Pick a Background Bitmap","Bitmaps/Radar","png",NULL,iface.radar.background_bitmap_name);
@@ -184,14 +177,6 @@ void property_palette_click_radar(int id,bool double_click)
 			dialog_property_string_run(list_string_value_positive_int,(void*)&iface.radar.no_motion_fade,0,0,0);
 			break;
 
-		case kRadarPropertySettingsRot:
-			iface.radar.rot=!iface.radar.rot;
-			break;
-
-		case kRadarPropertySettingsTeamTint:
-			iface.radar.team_tint=!iface.radar.team_tint;
-			break;
-
 		case kRadarPropertyPositionX:
 			dialog_property_string_run(list_string_value_positive_int,(void*)&iface.radar.x,0,0,0);
 			break;
@@ -201,9 +186,5 @@ void property_palette_click_radar(int id,bool double_click)
 			break;
 
 	}
-
-		// redraw
-
-	main_wind_draw();
 }
 

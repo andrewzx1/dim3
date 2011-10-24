@@ -61,7 +61,7 @@ int model_mesh_add(model_type *model)
 	mesh->no_lighting=FALSE;
 	model->meshes[0].diffuse=TRUE;
 	mesh->blend_add=FALSE;
-	mesh->cull=FALSE;
+	mesh->never_cull=FALSE;
 	mesh->locked=FALSE;
 
 	mesh->import_move.x=0;
@@ -105,7 +105,7 @@ int model_mesh_duplicate(model_type *model,int mesh_idx)
 	mesh->no_lighting=org_mesh->no_lighting;
 	mesh->diffuse=org_mesh->diffuse;
 	mesh->blend_add=org_mesh->blend_add;
-	mesh->cull=org_mesh->cull;
+	mesh->never_cull=org_mesh->never_cull;
 	
 	return(idx);
 }

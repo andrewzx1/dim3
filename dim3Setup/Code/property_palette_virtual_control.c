@@ -86,7 +86,6 @@ void property_palette_click_virtual_control(int id,bool double_click)
 		state.cur_virtual_control_stick_idx=id-kVirutalControlStick;
 		state.cur_virtual_control_button_idx=-1;
 		if (double_click) list_palette_set_level(2);
-		main_wind_draw();
 		return;
 	}
 
@@ -96,12 +95,7 @@ void property_palette_click_virtual_control(int id,bool double_click)
 		state.cur_virtual_control_button_idx=id-kVirutalControlButton;
 		state.cur_virtual_control_stick_idx=-1;
 		if (double_click) list_palette_set_level(2);
-		main_wind_draw();
 		return;
 	}
-
-		// redraw
-
-	main_wind_draw();
 }
 

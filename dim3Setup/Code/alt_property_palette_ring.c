@@ -107,16 +107,16 @@ void alt_property_palette_fill_ring(int ring_idx)
 		// options
 
 	list_palette_add_header(&alt_property_palette,0,"Options");
-	list_palette_add_checkbox(&alt_property_palette,kRingOptionBlendAdd,"Additive Blend",ring->blend_add,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kRingOptionTeamTint,"Team Tint",ring->team_tint,FALSE);
+	list_palette_add_checkbox(&alt_property_palette,kRingOptionBlendAdd,"Additive Blend",&ring->blend_add,FALSE);
+	list_palette_add_checkbox(&alt_property_palette,kRingOptionTeamTint,"Team Tint",&ring->team_tint,FALSE);
 
 		// animation
 
 	list_palette_add_header(&alt_property_palette,0,"Animation");
 	list_palette_add_string_int(&alt_property_palette,kRingImageCount,"Count",ring->animate.image_count,FALSE);
 	list_palette_add_string_int(&alt_property_palette,kRingImageMillisecond,"Display Milliseconds",ring->animate.msec,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kRingImageLoop,"Loop",ring->animate.loop,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kRingImageLoopBack,"Loop Back",ring->animate.loop_back,FALSE);
+	list_palette_add_checkbox(&alt_property_palette,kRingImageLoop,"Loop",&ring->animate.loop,FALSE);
+	list_palette_add_checkbox(&alt_property_palette,kRingImageLoopBack,"Loop Back",&ring->animate.loop_back,FALSE);
 }
 
 /* =======================================================
@@ -175,14 +175,6 @@ void alt_property_palette_click_ring(int ring_idx,int id,bool double_click)
 			dialog_property_string_run(list_string_value_0_to_1_float,(void*)&ring->end_alpha,0,0,0);
 			break;
 
-		case kRingRingStartColor:
-			os_pick_color(&ring->start_color);
-			break;
-
-		case kRingRingEndColor:
-			os_pick_color(&ring->end_color);
-			break;
-
 			// motion
 
 		case kRingMotionMove:
@@ -201,16 +193,6 @@ void alt_property_palette_click_ring(int ring_idx,int id,bool double_click)
 			dialog_property_chord_run(list_chord_value_vector,(void*)&ring->rot_accel);
 			break;
 
-			// options
-
-		case kRingOptionBlendAdd:
-			ring->blend_add=!ring->blend_add;
-			break;
-
-		case kRingOptionTeamTint:
-			ring->team_tint=!ring->team_tint;
-			break;
-
 			// animation
 
 		case kRingImageCount:
@@ -221,18 +203,6 @@ void alt_property_palette_click_ring(int ring_idx,int id,bool double_click)
 			dialog_property_string_run(list_string_value_positive_int,(void*)&ring->animate.msec,0,0,0);
 			break;
 
-		case kRingImageLoop:
-			ring->animate.loop=!ring->animate.loop;
-			break;
-
-		case kRingImageLoopBack:
-			ring->animate.loop_back=!ring->animate.loop_back;
-			break;
-
 	}
-
-		// redraw
-
-	main_wind_draw();
 }
 

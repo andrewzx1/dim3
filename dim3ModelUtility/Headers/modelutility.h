@@ -55,21 +55,6 @@ and can be sold or given away.
 #define max_model_hit_box								16			// maximum number of hit boxes
 
 //
-// animator vertex select and hide
-//
-
-#define vertex_sel_hide_mask_sz							(((max_model_vertex*max_model_mesh)/8)+1)
-
-//
-// deform Modes
-//
-
-#define deform_mode_single_rotate						0
-#define deform_mode_comulative_rotate					1
-
-#define deform_mode_xml_list_str						{"single_rotate","comulative_rotate",""}
-
-//
 // drawing stuctures
 //
 
@@ -147,7 +132,7 @@ typedef struct		{
 						int								nvertex,npoly;
 						char							name[name_str_len];
 						bool							no_lighting,diffuse,
-														blend_add,cull,locked;
+														blend_add,never_cull,locked;
 						d3pnt							import_move;
  						model_vertex_type				*vertexes;
                         model_poly_type					*polys;
@@ -299,9 +284,9 @@ typedef struct		{
 
 typedef struct		{
 						int								uid,reference_count,
-														nmesh,nbone,npose,nanimate,nhit_box,
-														deform_mode;
+														nmesh,nbone,npose,nanimate,nhit_box;
 						float							diffuse_boost;
+						bool							comulative_rotation;
 						char							name[name_str_len],load_base_path[1024];
 						d3pnt							center;
 						model_box_type					view_box;

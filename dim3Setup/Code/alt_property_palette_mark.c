@@ -80,12 +80,12 @@ void alt_property_palette_fill_mark(int mark_idx)
 		// options
 
 	list_palette_add_header(&alt_property_palette,0,"Options");
-	list_palette_add_checkbox(&alt_property_palette,kMarkOptionNoRotate,"No Rotate",mark->no_rotate,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kMarkOptionNoTransparent,"Ignore Transaparent Polys",mark->no_transparent,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kMarkOptionNoOpaque,"Ignore Opaque Polys",mark->no_opaque,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kMarkOptionHilite,"High Light",mark->hilite,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kMarkOptionBlendAdd,"Additive Blending",mark->blend_add,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kMarkOptionTeamTint,"Team Tinting",mark->team_tint,FALSE);
+	list_palette_add_checkbox(&alt_property_palette,kMarkOptionNoRotate,"No Rotate",&mark->no_rotate,FALSE);
+	list_palette_add_checkbox(&alt_property_palette,kMarkOptionNoTransparent,"Ignore Transaparent Polys",&mark->no_transparent,FALSE);
+	list_palette_add_checkbox(&alt_property_palette,kMarkOptionNoOpaque,"Ignore Opaque Polys",&mark->no_opaque,FALSE);
+	list_palette_add_checkbox(&alt_property_palette,kMarkOptionHilite,"High Light",&mark->hilite,FALSE);
+	list_palette_add_checkbox(&alt_property_palette,kMarkOptionBlendAdd,"Additive Blending",&mark->blend_add,FALSE);
+	list_palette_add_checkbox(&alt_property_palette,kMarkOptionTeamTint,"Team Tinting",&mark->team_tint,FALSE);
 	list_palette_add_pick_color(&alt_property_palette,kMarkOptionColor,"Color",&mark->color,FALSE);
 
 		// fade
@@ -100,8 +100,8 @@ void alt_property_palette_fill_mark(int mark_idx)
 	list_palette_add_header(&alt_property_palette,0,"Animation");
 	list_palette_add_string_int(&alt_property_palette,kMarkImageCount,"Count",mark->animate.image_count,FALSE);
 	list_palette_add_string_int(&alt_property_palette,kMarkImageMillisecond,"Display Milliseconds",mark->animate.msec,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kMarkImageLoop,"Loop",mark->animate.loop,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kMarkImageLoopBack,"Loop Back",mark->animate.loop_back,FALSE);
+	list_palette_add_checkbox(&alt_property_palette,kMarkImageLoop,"Loop",&mark->animate.loop,FALSE);
+	list_palette_add_checkbox(&alt_property_palette,kMarkImageLoopBack,"Loop Back",&mark->animate.loop_back,FALSE);
 }
 
 /* =======================================================
@@ -130,36 +130,6 @@ void alt_property_palette_click_mark(int mark_idx,int id,bool double_click)
 			property_pick_file("Pick a Mark Bitmap","Bitmaps/Marks","png",NULL,mark->bitmap_name);
 			break;
 
-			// options
-
-		case kMarkOptionNoRotate:
-			mark->no_rotate=!mark->no_rotate;
-			break;
-
-		case kMarkOptionNoTransparent:
-			mark->no_transparent=!mark->no_transparent;
-			break;
-
-		case kMarkOptionNoOpaque:
-			mark->no_opaque=!mark->no_opaque;
-			break;
-
-		case kMarkOptionHilite:
-			mark->hilite=!mark->hilite;
-			break;
-
-		case kMarkOptionBlendAdd:
-			mark->blend_add=!mark->blend_add;
-			break;
-
-		case kMarkOptionTeamTint:
-			mark->team_tint=!mark->team_tint;
-			break;
-
-		case kMarkOptionColor:
-			os_pick_color(&mark->color);
-			break;
-
 			// fade
 
 		case kMarkFadeInTick:
@@ -184,18 +154,6 @@ void alt_property_palette_click_mark(int mark_idx,int id,bool double_click)
 			dialog_property_string_run(list_string_value_positive_int,(void*)&mark->animate.msec,0,0,0);
 			break;
 
-		case kMarkImageLoop:
-			mark->animate.loop=!mark->animate.loop;
-			break;
-
-		case kMarkImageLoopBack:
-			mark->animate.loop_back=!mark->animate.loop_back;
-			break;
-
 	}
-
-		// redraw
-
-	main_wind_draw();
 }
 

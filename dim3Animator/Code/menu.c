@@ -442,7 +442,7 @@ bool menu_event_run(int cmd)
 			return(TRUE);
 			
 		case kCommandVertexCollapse:
-			if (state.select_mode!=select_mode_vertex) return(TRUE);
+			if (state.select_mode==select_mode_mesh) return(TRUE);
 			vertex_collapse(state.cur_mesh_idx);
 			main_wind_draw();
 			return(TRUE);

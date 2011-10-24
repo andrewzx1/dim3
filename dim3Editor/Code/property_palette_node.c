@@ -65,7 +65,7 @@ void property_palette_fill_node(int node_idx)
 	list_palette_add_string_float(&property_palette,kNodePropertyAlpha,"Alpha",node->alpha,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Node Settings");
-	list_palette_add_checkbox(&property_palette,kNodePropertyFollowCamera,"Follow Camera",node->follow_camera,FALSE);
+	list_palette_add_checkbox(&property_palette,kNodePropertyFollowCamera,"Follow Camera",&node->follow_camera,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Node Info");
 	list_palette_add_string_int(&property_palette,-1,"Index",node_idx,TRUE);
@@ -101,12 +101,6 @@ void property_palette_click_node(int node_idx,int id,bool double_click)
 			dialog_property_string_run(list_string_value_0_to_1_float,(void*)&node->alpha,0,0,0);
 			break;
 
-		case kNodePropertyFollowCamera:
-			node->follow_camera=!node->follow_camera;
-			break;
-
 	}
-
-	main_wind_draw();
 }
 

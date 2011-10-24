@@ -81,7 +81,6 @@ void property_palette_click_chooser(int id,bool double_click)
 		state.cur_chooser_idx=id-kChooserPropertyChooserName;
 		state.cur_chooser_piece_idx=-1;
 		if (double_click) list_palette_set_level(2);
-		main_wind_draw();
 		return;
 	}
 
@@ -98,7 +97,6 @@ void property_palette_click_chooser(int id,bool double_click)
 
 		iface.chooser_list.nchooser--;
 
-		main_wind_draw();
 		return;
 	}
 
@@ -135,12 +133,7 @@ void property_palette_click_chooser(int id,bool double_click)
 
 		state.cur_chooser_idx=idx;
 
-		main_wind_draw();
 		return;
 	}
-
-		// redraw
-
-	main_wind_draw();
 }
 
