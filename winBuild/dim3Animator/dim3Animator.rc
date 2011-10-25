@@ -96,7 +96,8 @@ BEGIN
         MENUITEM "Hide Non-Selected",						ID_VERTEX_HIDE_NON_SELECTED
         MENUITEM "Show All",								ID_VERTEX_SHOW_ALL
  		MENUITEM SEPARATOR
-		MENUITEM "Collapse Selected Vertexes",				ID_VERTEX_COLLAPSE
+		MENUITEM "Collapse Selected Vertexes",				ID_VERTEX_COLLAPSE_SELECTED
+		MENUITEM "Collapse Similar Vertexes",				ID_VERTEX_COLLAPSE_SIMILAR
  		MENUITEM SEPARATOR
         MENUITEM "Delete Vertexes",							ID_VERTEX_DELETE
         MENUITEM "Delete Polygons",							ID_VERTEX_DELETE_POLYGON

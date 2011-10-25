@@ -37,6 +37,7 @@ bool						scripts_event_lock;
 extern server_type			server;
 extern js_type				js;
 extern setup_type			setup;
+extern iface_type			iface;
 
 /* =======================================================
 
@@ -46,6 +47,11 @@ extern setup_type			setup;
 
 void scripts_setup_events(script_type *script)
 {
+	if (iface.project.modernize) {
+		script->event_func=NULL;
+		return;
+	}
+
 	script->event_func=script_get_single_function(script->cx,script->global_obj,"event");
 }
 

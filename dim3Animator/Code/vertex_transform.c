@@ -465,7 +465,7 @@ void vertex_delete_sel_poly(int mesh_idx)
       
 ======================================================= */
 
-void vertex_collapse(int mesh_idx)
+void vertex_collapse_selected(int mesh_idx)
 {
 	int					n,k,idx;
 	model_mesh_type		*mesh;
@@ -489,17 +489,17 @@ void vertex_collapse(int mesh_idx)
 	if (idx==-1) return;
 	
 		// collapse
-		
+
 	poly=mesh->polys;
 		
 	for (n=0;n!=mesh->npoly;n++) {
 	
 		for (k=0;k!=poly->ptsz;k++) {
 			if (poly->v[k]==idx) continue;
-			
-			if ((vertex_mask_check_sel(mesh_idx,poly->v[k])) && (!vertex_mask_check_hide(mesh_idx,poly->v[k]))) {
-				poly->v[k]=idx;
-			}
+			if (!vertex_mask_check_sel(mesh_idx,poly->v[k])) continue;
+			if (vertex_mask_check_hide(mesh_idx,poly->v[k])) continue;
+
+			poly->v[k]=idx;
 		}
 
 		poly++;
@@ -516,6 +516,50 @@ void vertex_collapse(int mesh_idx)
 	vertex_delete_unused_vertexes(mesh_idx);
 }
 
+void vertex_collapse_similar(int mesh_idx)
+{
+	int					n,k,t,dist;
+	model_mesh_type		*mesh;
+	model_vertex_type	*vertex,*chk_vertex;
+	model_poly_type		*poly;
+
+	mesh=&model.meshes[mesh_idx];
+
+		// run through all the vertexes
+
+	vertex=mesh->vertexes;
+
+	for (n=0;n!=mesh->nvertex;n++) {
+
+		poly=mesh->polys;
+			
+		for (k=0;k!=mesh->npoly;k++) {
+		
+			for (t=0;t!=poly->ptsz;t++) {
+				if (poly->v[t]==n) continue;
+
+				chk_vertex=&mesh->vertexes[poly->v[t]];
+				dist=abs(chk_vertex->pnt.x-vertex->pnt.x)+abs(chk_vertex->pnt.y-vertex->pnt.y)+abs(chk_vertex->pnt.z-vertex->pnt.z);
+
+				if (dist<10) poly->v[t]=n;
+			}
+
+			poly++;
+		}
+
+		vertex++;
+	}
+
+		// clear selection
+
+	vertex_mask_clear_sel(mesh_idx);
+	
+		// finish by cleaning all the
+		// now collapses and unconnected
+		// vertexes
+		
+	vertex_delete_unused_vertexes(mesh_idx);
+}
 /* =======================================================
 
       Poly Shared Vertex Utility

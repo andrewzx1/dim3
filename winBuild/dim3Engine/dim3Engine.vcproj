@@ -835,6 +835,10 @@
 						</FileConfiguration>
 					</File>
 					<File
+						RelativePath="..\..\dim3Engine\Sources_Server\script_dim3.c"
+						>
+					</File>
+					<File
 						RelativePath="..\..\dim3Engine\Sources_Server\script_event.c"
 						>
 						<FileConfiguration

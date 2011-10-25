@@ -32,6 +32,7 @@ and can be sold or given away.
 #include "scripts.h"
 
 extern js_type			js;
+extern iface_type		iface;
 
 /* =======================================================
 
@@ -85,6 +86,8 @@ void script_initialize_classes(void)
 	
 		// global classes
 		
+	script_init_global_dim3_object();
+
 	script_init_global_script_object();
 
 	script_init_global_map_object();
@@ -230,6 +233,8 @@ void script_release_classes(void)
 	script_free_class(js.main_empty_class);
 
 		// global classes
+
+	script_free_global_dim3_object();
 		
 	script_free_global_script_object();
 	
@@ -377,15 +382,23 @@ void script_release_classes(void)
 
 bool script_add_global_object(script_type *script,char *err_str)
 {
-	JSObjectRef			j_sub_obj,j_sub_obj_2;
+	JSObjectRef			j_parent_obj,j_sub_obj,j_sub_obj_2;
+
+		// dim3 object
+
+	j_parent_obj=script->global_obj;
+
+	if (iface.project.modernize) {
+		j_parent_obj=script_add_global_dim3_object(script->cx,script->global_obj,script->idx);
+	}
 	
 		// script object
 		
-	script_add_global_script_object(script->cx,script->global_obj,script->idx);
+	script_add_global_script_object(script->cx,j_parent_obj,script->idx);
 
 		// map object
 
-	j_sub_obj=script_add_global_map_object(script->cx,script->global_obj,script->idx);
+	j_sub_obj=script_add_global_map_object(script->cx,j_parent_obj,script->idx);
 	script_add_map_info_object(script->cx,j_sub_obj,script->idx);
 	script_add_map_setting_object(script->cx,j_sub_obj,script->idx);
 	script_add_map_action_object(script->cx,j_sub_obj,script->idx);
@@ -402,14 +415,14 @@ bool script_add_global_object(script_type *script,char *err_str)
 
 		// multiplayer object
 		
-	j_sub_obj=script_add_global_multiplayer_object(script->cx,script->global_obj,script->idx);
+	j_sub_obj=script_add_global_multiplayer_object(script->cx,j_parent_obj,script->idx);
 	script_add_multiplayer_setting_object(script->cx,j_sub_obj,script->idx);
 	script_add_multiplayer_bot_object(script->cx,j_sub_obj,script->idx);
 	script_add_multiplayer_score_object(script->cx,j_sub_obj,script->idx);
 
 		// camera object
 		
-	j_sub_obj=script_add_global_camera_object(script->cx,script->global_obj,script->idx);
+	j_sub_obj=script_add_global_camera_object(script->cx,j_parent_obj,script->idx);
 	script_add_camera_setting_object(script->cx,j_sub_obj,script->idx);
 	script_add_camera_position_object(script->cx,j_sub_obj,script->idx);
 	script_add_camera_angle_object(script->cx,j_sub_obj,script->idx);
@@ -421,7 +434,7 @@ bool script_add_global_object(script_type *script,char *err_str)
 
 		// interface object
 		
-	j_sub_obj=script_add_global_interface_object(script->cx,script->global_obj,script->idx);
+	j_sub_obj=script_add_global_interface_object(script->cx,j_parent_obj,script->idx);
 	script_add_interface_screen_object(script->cx,j_sub_obj,script->idx);
 	script_add_interface_console_object(script->cx,j_sub_obj,script->idx);
 	script_add_interface_text_object(script->cx,j_sub_obj,script->idx);
@@ -432,31 +445,40 @@ bool script_add_global_object(script_type *script,char *err_str)
 
 		// data, sound, and spawn objects
 		
-	script_add_global_data_object(script->cx,script->global_obj,script->idx);
-	script_add_global_sound_object(script->cx,script->global_obj,script->idx);
-	script_add_global_spawn_object(script->cx,script->global_obj,script->idx);
+	script_add_global_data_object(script->cx,j_parent_obj,script->idx);
+	script_add_global_sound_object(script->cx,j_parent_obj,script->idx);
+	script_add_global_spawn_object(script->cx,j_parent_obj,script->idx);
 
 		// utility object
 		
-	j_sub_obj=script_add_global_utility_object(script->cx,script->global_obj,script->idx);
+	j_sub_obj=script_add_global_utility_object(script->cx,j_parent_obj,script->idx);
 	script_add_utility_angle_object(script->cx,j_sub_obj,script->idx);
 	script_add_utility_point_object(script->cx,j_sub_obj,script->idx);
 	script_add_utility_random_object(script->cx,j_sub_obj,script->idx);
-	script_add_utility_pack_object(script->cx,j_sub_obj,script->idx);
+
+	if (!iface.project.modernize) {
+		script_add_utility_pack_object(script->cx,j_sub_obj,script->idx);		// depreciated in modernize
+	}
 
 	return(TRUE);
 }
 
 bool script_is_prop_global_object(char *name)
 {
-	if (strcmp(name,"camera")==0) return(TRUE);
-	if (strcmp(name,"data")==0) return(TRUE);
-	if (strcmp(name,"iface")==0) return(TRUE);
-	if (strcmp(name,"map")==0) return(TRUE);
-	if (strcmp(name,"sound")==0) return(TRUE);
-	if (strcmp(name,"spawn")==0) return(TRUE);
-	if (strcmp(name,"utility")==0) return(TRUE);
-	if (strcmp(name,"multiplayer")==0) return(TRUE);
+	if (iface.project.modernize) {
+		return(strcmp(name,"dim3")==0);
+	}
+	else {
+		if (strcmp(name,"script")==0) return(TRUE);
+		if (strcmp(name,"camera")==0) return(TRUE);
+		if (strcmp(name,"data")==0) return(TRUE);
+		if (strcmp(name,"iface")==0) return(TRUE);
+		if (strcmp(name,"map")==0) return(TRUE);
+		if (strcmp(name,"sound")==0) return(TRUE);
+		if (strcmp(name,"spawn")==0) return(TRUE);
+		if (strcmp(name,"utility")==0) return(TRUE);
+		if (strcmp(name,"multiplayer")==0) return(TRUE);
+	}
 
 	return(FALSE);
 }
