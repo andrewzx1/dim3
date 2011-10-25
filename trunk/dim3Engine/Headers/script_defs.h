@@ -447,7 +447,7 @@ typedef struct		{
 					} script_msg_type;
 
 typedef struct		{
-						script_msg_type					set[max_script_msg_data],
+						script_msg_type					set[max_script_msg_data],	// supergumba:modernize -- get rid of this after modernize is finished
 														get[max_script_msg_data];
 					} script_message_data_type;
 

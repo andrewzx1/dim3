@@ -270,17 +270,10 @@ void model_decode_v2_mesh_xml(model_type *model,int model_head)
     nmesh=xml_countchildren(meshes_tag);
 	mesh_tag=xml_findfirstchild("Mesh",meshes_tag);
 	
-	model->nmesh=1;				// new models have a single mesh
+	model->nmesh=0;				// new models have a single mesh
 	
 	for (j=0;j!=nmesh;j++) {
-	
-			// need new mesh?
-			
-		mesh_idx=j;
-		if (j>0) {
-			mesh_idx=model_mesh_add(model);
-		}
-		
+		mesh_idx=model_mesh_add(model);
 		if (mesh_idx==-1) break;
 	
 			// mesh settings

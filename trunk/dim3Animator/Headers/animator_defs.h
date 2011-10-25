@@ -146,7 +146,8 @@ and can be sold or given away.
 #define kCommandVertexShowAll			FOUR_CHAR_CODE('vsal')
 #define kCommandVertexDelete			FOUR_CHAR_CODE('vdel')
 #define kCommandVertexPolygonDelete		FOUR_CHAR_CODE('pdel')
-#define kCommandVertexCollapse			FOUR_CHAR_CODE('csvt')
+#define kCommandVertexCollapseSelected	FOUR_CHAR_CODE('csvt')
+#define kCommandVertexCollapseSimilar	FOUR_CHAR_CODE('csml')
 #define kCommandVertexMakeQuad			FOUR_CHAR_CODE('vmqd')
 #define kCommandVertexTessellatePoly	FOUR_CHAR_CODE('vtpy')
 

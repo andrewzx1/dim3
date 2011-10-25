@@ -35,7 +35,7 @@ and can be sold or given away.
 
 extern server_type		server;
 extern js_type			js;
-
+extern iface_type		iface;
 
 JSValueRef js_event_start_timer_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_event_clear_timer_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
@@ -44,6 +44,13 @@ JSValueRef js_event_start_wait_random_func(JSContextRef cx,JSObjectRef func,JSOb
 JSValueRef js_event_clear_wait_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_event_chain_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_event_clear_chain_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_event_call_object_by_id_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_event_call_player_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_event_call_course_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_event_call_game_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_event_call_held_weapon_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_event_call_spawn_weapon_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+
 JSValueRef js_event_send_message_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_event_send_message_to_player_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_event_send_message_to_object_by_id_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
@@ -54,11 +61,24 @@ JSValueRef js_event_send_message_to_held_weapon_func(JSContextRef cx,JSObjectRef
 JSValueRef js_event_send_message_to_spawn_weapon_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_event_set_message_data_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_event_get_message_data_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_event_call_object_by_id_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_event_call_player_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_event_call_course_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_event_call_game_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
+JSStaticFunction	event_functions_modernize[]={
+							{"startTimer",					js_event_start_timer_func,						kJSPropertyAttributeDontDelete},
+							{"clearTimer",					js_event_clear_timer_func,						kJSPropertyAttributeDontDelete},
+							{"startWait",					js_event_start_wait_func,						kJSPropertyAttributeDontDelete},
+							{"startWaitRandom",				js_event_start_wait_random_func,				kJSPropertyAttributeDontDelete},
+							{"clearWait",					js_event_clear_wait_func,						kJSPropertyAttributeDontDelete},
+							{"chain",						js_event_chain_func,							kJSPropertyAttributeDontDelete},
+							{"clearChain",					js_event_clear_chain_func,						kJSPropertyAttributeDontDelete},
+							{"callObjectById",				js_event_call_object_by_id_func,				kJSPropertyAttributeDontDelete},
+							{"callPlayer",					js_event_call_player_func,						kJSPropertyAttributeDontDelete},
+							{"callCourse",					js_event_call_course_func,						kJSPropertyAttributeDontDelete},
+							{"callGame",					js_event_call_game_func,						kJSPropertyAttributeDontDelete},
+							{"callHeldWeapon",				js_event_call_held_weapon_func,					kJSPropertyAttributeDontDelete},
+							{"callSpawnWeapon",				js_event_call_spawn_weapon_func,				kJSPropertyAttributeDontDelete},
+							{0,0,0}};
+
+							// supergumba:modernize -- remove this all after modernization is finialized
 JSStaticFunction	event_functions[]={
 							{"startTimer",					js_event_start_timer_func,						kJSPropertyAttributeDontDelete},
 							{"clearTimer",					js_event_clear_timer_func,						kJSPropertyAttributeDontDelete},
@@ -67,6 +87,10 @@ JSStaticFunction	event_functions[]={
 							{"clearWait",					js_event_clear_wait_func,						kJSPropertyAttributeDontDelete},
 							{"chain",						js_event_chain_func,							kJSPropertyAttributeDontDelete},
 							{"clearChain",					js_event_clear_chain_func,						kJSPropertyAttributeDontDelete},
+							{"callObjectById",				js_event_call_object_by_id_func,				kJSPropertyAttributeDontDelete},
+							{"callPlayer",					js_event_call_player_func,						kJSPropertyAttributeDontDelete},
+							{"callCourse",					js_event_call_course_func,						kJSPropertyAttributeDontDelete},
+							{"callGame",					js_event_call_game_func,						kJSPropertyAttributeDontDelete},
 							{"sendMessage",					js_event_send_message_func,						kJSPropertyAttributeDontDelete},
 							{"sendMessageToPlayer",			js_event_send_message_to_player_func,			kJSPropertyAttributeDontDelete},
 							{"sendMessageToObjectById",		js_event_send_message_to_object_by_id_func,		kJSPropertyAttributeDontDelete},
@@ -77,10 +101,6 @@ JSStaticFunction	event_functions[]={
 							{"sendMessageToSpawnWeapon",	js_event_send_message_to_spawn_weapon_func,		kJSPropertyAttributeDontDelete},
 							{"setMessageData",				js_event_set_message_data_func,					kJSPropertyAttributeDontDelete},
 							{"getMessageData",				js_event_get_message_data_func,					kJSPropertyAttributeDontDelete},
-							{"callObjectById",				js_event_call_object_by_id_func,				kJSPropertyAttributeDontDelete},
-							{"callPlayer",					js_event_call_player_func,						kJSPropertyAttributeDontDelete},
-							{"callCourse",					js_event_call_course_func,						kJSPropertyAttributeDontDelete},
-							{"callGame",					js_event_call_game_func,						kJSPropertyAttributeDontDelete},
 							{0,0,0}};
 
 JSClassRef			event_class;
@@ -93,7 +113,12 @@ JSClassRef			event_class;
 
 void script_init_event_object(void)
 {
-	event_class=script_create_class("event_class",NULL,event_functions);
+	if (iface.project.modernize) {
+		event_class=script_create_class("event_class",NULL,event_functions_modernize);
+	}
+	else {
+		event_class=script_create_class("event_class",NULL,event_functions);
+	}
 }
 
 void script_free_event_object(void)
@@ -687,5 +712,111 @@ JSValueRef js_event_call_game_func(JSContextRef cx,JSObjectRef func,JSObjectRef 
 		return(script_null_to_value(cx));
 	}
 	
+	return(rval);
+}
+
+JSValueRef js_event_call_held_weapon_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+{
+	int				n,arg_count,script_idx;
+	char			func_name[64],err_str[256];
+	JSValueRef		rval,args[20];
+	obj_type		*obj;
+	weapon_type		*weap;
+	script_type		*script;
+
+		// find held weapon
+
+	script_idx=(int)JSObjectGetPrivate(j_obj);
+	script=js.script_list.scripts[script_idx];
+	
+	if (script->attach.thing_type!=thing_type_object) {
+		*exception=script_create_exception(cx,"Not an object script");
+		return(script_null_to_value(cx));
+	}
+
+	obj=object_get_attach(j_obj);
+	weap=weapon_find_current(obj);
+	if (weap==NULL) {
+		*exception=script_create_exception(cx,"No held weapon");
+		return(script_null_to_value(cx));
+	}
+
+		// get arguments
+
+	script_value_to_string(cx,argv[0],func_name,64);
+
+	arg_count=argc-1;
+	if (arg_count<0) arg_count=0;
+	if (arg_count>20) arg_count=20;
+
+	for (n=0;n!=arg_count;n++) {
+		args[n]=argv[n+1];
+	}
+
+		// call function
+
+	rval=scripts_direct_call(weap->script_idx,-1,func_name,arg_count,args,err_str);
+	if (rval==NULL) {
+		*exception=script_create_exception(cx,err_str);
+		return(script_null_to_value(cx));
+	}
+
+	return(rval);
+}
+
+JSValueRef js_event_call_spawn_weapon_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+{
+	int				n,arg_count,script_idx;
+	char			func_name[64],err_str[256];
+	JSValueRef		rval,args[20];
+	obj_type		*obj;
+	weapon_type		*weap;
+	proj_type		*proj;
+	script_type		*script;
+
+		// find weapon that fired
+		// this projectile
+
+	script_idx=(int)JSObjectGetPrivate(j_obj);
+	script=js.script_list.scripts[script_idx];
+	
+	if (script->attach.thing_type!=thing_type_projectile) {
+		*exception=script_create_exception(cx,"Not an projectile script");
+		return(script_null_to_value(cx));
+	}
+
+	proj=server.proj_list.projs[script->attach.proj_idx];
+	if (!proj->on) {
+		*exception=script_create_exception(cx,"Could not find projectile");
+		return(script_null_to_value(cx));
+	}
+
+	obj=server.obj_list.objs[script->attach.obj_idx];
+	weap=obj->weap_list.weaps[script->attach.weap_idx];
+	if (weap==NULL) {
+		*exception=script_create_exception(cx,"Could not find weapon");
+		return(script_null_to_value(cx));
+	}
+
+		// get arguments
+
+	script_value_to_string(cx,argv[0],func_name,64);
+
+	arg_count=argc-1;
+	if (arg_count<0) arg_count=0;
+	if (arg_count>20) arg_count=20;
+
+	for (n=0;n!=arg_count;n++) {
+		args[n]=argv[n+1];
+	}
+
+		// call function
+
+	rval=scripts_direct_call(weap->script_idx,-1,func_name,arg_count,args,err_str);
+	if (rval==NULL) {
+		*exception=script_create_exception(cx,err_str);
+		return(script_null_to_value(cx));
+	}
+
 	return(rval);
 }

@@ -174,10 +174,8 @@ float ray_trace_mesh_polygon(d3pnt *spt,d3vct *vct,d3pnt *hpt,map_mesh_type *mes
 {
 	int			n,trig_count;
 	int			px[3],py[3],pz[3];
-	float		t,hit_t;
-	d3pnt		pt,*m_pt;
-	
-	hit_t=-1.0f;
+	float		hit_t;
+	d3pnt		*m_pt;
 	
 		// first vertex is always 0
 
@@ -188,6 +186,8 @@ float ray_trace_mesh_polygon(d3pnt *spt,d3vct *vct,d3pnt *hpt,map_mesh_type *mes
 	pz[0]=m_pt->z;
 	
 		// run through all the triangles of the polygon
+		// since this is a single polygon, the
+		// first hit is always the correct hit
 		
 	trig_count=poly->ptsz-2;
 	
@@ -204,30 +204,18 @@ float ray_trace_mesh_polygon(d3pnt *spt,d3vct *vct,d3pnt *hpt,map_mesh_type *mes
 		
 			// check for hit
 			
-		t=ray_trace_triangle(spt,vct,&pt,px,py,pz);
-		if (t==-1.0f) continue;
-		
-			// closer hit or first hit?
-			
-		if ((t<hit_t) || (hit_t==-1.0f)) {
-			hit_t=t;
-			hpt->x=pt.x;
-			hpt->y=pt.y;
-			hpt->z=pt.z;
-		}
+		hit_t=ray_trace_triangle(spt,vct,hpt,px,py,pz);
+		if (hit_t!=-1.0f) return(hit_t);
 	}
 	
-	return(hit_t);
+	return(-1.0f);
 }
 
 float ray_trace_polygon(d3pnt *spt,d3vct *vct,d3pnt *hpt,int ptsz,int *x,int *y,int *z)
 {
-	int			n,k,trig_count;
+	int			n,trig_count;
 	int			px[3],py[3],pz[3];
-	float		t,hit_t;
-	d3pnt		pt;
-	
-	hit_t=-1.0f;
+	float		hit_t;
 	
 		// first vertex is always 0
 		
@@ -236,35 +224,28 @@ float ray_trace_polygon(d3pnt *spt,d3vct *vct,d3pnt *hpt,int ptsz,int *x,int *y,
 	pz[0]=z[0];
 	
 		// run through all the triangles of the polygon
+		// since this is a single polygon, the
+		// first hit is always the correct hit
 		
 	trig_count=ptsz-2;
 	
 	for (n=0;n<trig_count;n++) {
-		k=n+1;
-		px[1]=x[k];
-		py[1]=y[k];
-		pz[1]=z[k];
-		k++;
-		px[2]=x[k];
-		py[2]=y[k];
-		pz[2]=z[k];
+
+		px[1]=x[n+1];
+		py[1]=y[n+1];
+		pz[1]=z[n+1];
+
+		px[2]=x[n+2];
+		py[2]=y[n+2];
+		pz[2]=z[n+2];
 		
 			// check for hit
 			
-		t=ray_trace_triangle(spt,vct,&pt,px,py,pz);
-		if (t==-1.0f) continue;
-		
-			// closer hit or first hit?
-			
-		if ((t<hit_t) || (hit_t==-1.0f)) {
-			hit_t=t;
-			hpt->x=pt.x;
-			hpt->y=pt.y;
-			hpt->z=pt.z;
-		}
+		hit_t=ray_trace_triangle(spt,vct,hpt,px,py,pz);
+		if (hit_t!=-1.0f) return(hit_t);
 	}
 	
-	return(hit_t);
+	return(-1.0f);
 }
 
 float ray_trace_rotated_box(d3pnt *spt,d3vct *vct,d3pnt *hpt,int x,int z,int lx,int rx,int tz,int bz,int ty,int by,float rang)
@@ -1274,62 +1255,12 @@ void ray_trace_map_by_point_array_no_contact(int cnt,d3pnt *spt,d3pnt *ept,d3pnt
       
 ======================================================= */
 
-float ray_trace_plane(d3pnt *spt,d3vct *vct,d3pnt *hpt,int ptsz,d3pnt *plane)
-{
-	int			n,trig_count,px[3],py[3],pz[3];
-	float		t,hit_t;
-	d3pnt		pt,*m_pt;
-	
-	hit_t=-1.0f;
-	
-		// first vertex is always 0
-
-	m_pt=&plane[0];
-		
-	px[0]=m_pt->x;
-	py[0]=m_pt->y;
-	pz[0]=m_pt->z;
-	
-		// run through all the triangles of the polygon
-		
-	trig_count=ptsz-2;
-	
-	for (n=0;n<trig_count;n++) {
-		m_pt=&plane[n+1];
-		px[1]=m_pt->x;
-		py[1]=m_pt->y;
-		pz[1]=m_pt->z;
-
-		m_pt=&plane[n+2];
-		px[2]=m_pt->x;
-		py[2]=m_pt->y;
-		pz[2]=m_pt->z;
-		
-			// check for hit
-			
-		t=ray_trace_triangle(spt,vct,&pt,px,py,pz);
-		if (t==-1.0f) continue;
-		
-			// closer hit or first hit?
-			
-		if ((t<hit_t) || (hit_t==-1.0f)) {
-			hit_t=t;
-			hpt->x=pt.x;
-			hpt->y=pt.y;
-			hpt->z=pt.z;
-		}
-	}
-	
-	return(hit_t);
-}
-
 bool ray_trace_mesh_poly_plane_by_vector(int cnt,d3pnt *spt,d3vct *vct,d3pnt *hpt,int mesh_idx,int poly_idx)
 {
-	int						n;
-	float					hit_t;
+	int						n,k,trig_count,px[3],py[3],pz[3];
 	bool					hits;
-	d3pnt					*pt,*pp,*sp,*hp,
-							plane_vp[8];
+	d3pnt					*pt,*pp,*sp,*hp,*m_pt;
+	d3pnt					plane_vp[8];
 	d3vct					*vp;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
@@ -1351,6 +1282,19 @@ bool ray_trace_mesh_poly_plane_by_vector(int cnt,d3pnt *spt,d3vct *vct,d3pnt *hp
 		pp->z=((pt->z-poly->box.mid.z)*100)+poly->box.mid.z;
 		pp++;
 	}
+
+		// we split the plane into
+		// triangles, and the first triangle
+		// is always position 0, so pre-calc it
+		// here
+
+	m_pt=&plane_vp[0];
+		
+	px[0]=m_pt->x;
+	py[0]=m_pt->y;
+	pz[0]=m_pt->z;
+	
+	trig_count=poly->ptsz-2;
 	
 		// run the ray array
 		
@@ -1361,12 +1305,35 @@ bool ray_trace_mesh_poly_plane_by_vector(int cnt,d3pnt *spt,d3vct *vct,d3pnt *hp
 	vp=vct;
 
 	for (n=0;n!=cnt;n++) {
+		
 		hp->x=sp->x;
 		hp->y=sp->y;
 		hp->z=sp->z;
+	
+			// run through all the triangles
+			// of the plane, we've already
+			// calculated point 0
+			
+		for (k=0;k<trig_count;k++) {
+			m_pt=&plane_vp[k+1];
+			px[1]=m_pt->x;
+			py[1]=m_pt->y;
+			pz[1]=m_pt->z;
 
-		hit_t=ray_trace_plane(sp,vp,hp,poly->ptsz,plane_vp);
-		hits=hits||((hit_t>=0.0f) && (hit_t<=1.0f));
+			m_pt=&plane_vp[k+2];
+			px[2]=m_pt->x;
+			py[2]=m_pt->y;
+			pz[2]=m_pt->z;
+			
+				// check for hit
+				// this is one plane so the first
+				// hit is always the right hit
+				
+			if (ray_trace_triangle(sp,vp,hp,px,py,pz)!=-1.0f) {
+				hits=TRUE;
+				break;
+			}
+		}
 
 		sp++;
 		hp++;
@@ -1374,37 +1341,5 @@ bool ray_trace_mesh_poly_plane_by_vector(int cnt,d3pnt *spt,d3vct *vct,d3pnt *hp
 	}
 
 	return(hits);
-}
-
-/* =======================================================
-
-      Ray Trace Plane
-      
-======================================================= */
-
-bool ray_trace_single_poly_hit(map_mesh_type *mesh,map_mesh_poly_type *poly,d3pnt *spt,d3pnt *ept)
-{
-	d3pnt			hpt;
-	d3vct			vct;
-
-		// rough bounds check
-		// list building is a little rough to quickly eliminate
-		// most meshes, so we'll still check it here just in case
-		// we can eliminate a easy mesh
-
-	if ((spt->x<poly->box.min.x) && (ept->x<poly->box.min.x)) return(FALSE);
-	if ((spt->x>poly->box.max.x) && (ept->x>poly->box.max.x)) return(FALSE);
-	if ((spt->y<poly->box.min.y) && (ept->y<poly->box.min.y)) return(FALSE);
-	if ((spt->y>poly->box.max.y) && (ept->y>poly->box.max.y)) return(FALSE);
-	if ((spt->z<poly->box.min.z) && (ept->z<poly->box.min.z)) return(FALSE);
-	if ((spt->z>poly->box.max.z) && (ept->z>poly->box.max.z)) return(FALSE);
-
-		// ray trace
-
-	vct.x=(float)(ept->x-spt->x);
-	vct.y=(float)(ept->y-spt->y);
-	vct.z=(float)(ept->z-spt->z);
-		
-	return(ray_trace_mesh_polygon(spt,&vct,&hpt,mesh,poly)!=-1.0f);
 }
 

@@ -299,6 +299,8 @@ bool model_read_xml(model_type *model)
 			poly++;
 			tag=xml_findnextchild(tag);
 		}
+
+		mesh_tag=xml_findnextchild(mesh_tag);
 	}
   
         // fills

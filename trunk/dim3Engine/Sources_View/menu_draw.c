@@ -301,6 +301,20 @@ void menu_draw(void)
 	high=gl_text_get_char_height(iface.font.text_size_large)+10;
 	half_high=high>>1;
 
+		// draw the background
+
+	lft=(iface.scale_x>>2)-5;
+	rgt=iface.scale_x-((iface.scale_x>>2)-5);
+
+	top=((iface.scale_y-((high+5)*menu->nitem))>>1)-((high>>1)+5);
+	bot=top+(((high+5)*menu->nitem)+5);
+
+	view_primitive_2D_color_quad(&iface.color.dialog.background,alpha,lft,rgt,top,bot);
+	
+	glLineWidth(2.0f);
+	view_primitive_2D_line_quad(&iface.color.dialog.outline,alpha,lft,rgt,top,bot);
+	glLineWidth(1.0f);
+
 		// draw the menus
 		
 	x=iface.scale_x>>1;
