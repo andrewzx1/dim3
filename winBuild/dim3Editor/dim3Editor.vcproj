@@ -659,10 +659,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\Common\Code\win32_dialog_property_list.c"
-					>
-				</File>
-				<File
 					RelativePath="..\Common\Code\win32_dialog_property_string.c"
 					>
 				</File>

@@ -471,7 +471,7 @@ extern bool model_dynamic_bone_set_move(model_draw *draw,char *bone_name,d3pnt *
 extern bool model_dynamic_bone_set_resize(model_draw *draw,char *bone_name,float resize,char *err_str);
 
 extern void render_model_setup(model_draw *draw,int tick);
-extern void render_model_build_vertex_lists(model_draw *draw);
+extern void render_model_build_vertex_lists(model_draw *draw,bool always_build);
 extern void render_model_opaque(model_draw *draw);
 extern void render_model_transparent(model_draw *draw);
 extern void render_model_target(model_draw *draw,d3col *col);

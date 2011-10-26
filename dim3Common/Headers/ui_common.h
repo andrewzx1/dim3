@@ -127,7 +127,6 @@ extern void property_pick_file(char *title,char *search_path,char *extension,cha
 extern void property_get_parameter(int idx,char *param_list,char *str);
 extern void property_set_parameter(int idx,char *param_list,char *str);
 
-extern void dialog_property_list_run(char *title,char *list_ptr,int list_count,int list_item_sz,int list_name_offset,bool include_none,int *idx);
 extern void dialog_property_string_run(int value_type,void *value,int value_len,int i_min,int i_max);
 extern void dialog_property_chord_run(int value_type,void *value);
 

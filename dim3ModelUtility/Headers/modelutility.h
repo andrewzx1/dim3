@@ -83,6 +83,7 @@ typedef struct		{
 														*gl_color_array,
 														*gl_tangent_array,
 														*gl_normal_array;
+						unsigned char					*poly_cull_array;
 					} model_draw_mesh_array_type;
 
 typedef struct		{

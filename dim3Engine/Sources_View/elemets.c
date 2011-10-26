@@ -1464,21 +1464,31 @@ void element_draw_checkbox_control(int x,int y,int wid,bool checked,bool enabled
 	if (checked) {
 		chk_lft=lft+(wid>>1);
 		chk_rgt=rgt;
+
+		col.r=iface.color.control.hilite.r*element_gradient_factor;
+		col.g=iface.color.control.hilite.g*element_gradient_factor;
+		col.b=iface.color.control.hilite.b*element_gradient_factor;
+
+		f=element_gradient_factor*1.5f;
+
+		col2.r=iface.color.control.hilite.r*f;
+		col2.g=iface.color.control.hilite.g*f;
+		col2.b=iface.color.control.hilite.b*f;
 	}
 	else {
 		chk_lft=lft;
 		chk_rgt=lft+(wid>>1);
+
+		col.r=(iface.color.control.fill.r*element_gradient_factor)*0.7f;
+		col.g=(iface.color.control.fill.g*element_gradient_factor)*0.7f;
+		col.b=(iface.color.control.fill.b*element_gradient_factor)*0.7f;
+
+		f=(element_gradient_factor*0.7f)*1.5f;
+
+		col2.r=iface.color.control.fill.r*f;
+		col2.g=iface.color.control.fill.g*f;
+		col2.b=iface.color.control.fill.b*f;
 	}
-
-	col.r=iface.color.control.hilite.r*element_gradient_factor;
-	col.g=iface.color.control.hilite.g*element_gradient_factor;
-	col.b=iface.color.control.hilite.b*element_gradient_factor;
-
-	f=element_gradient_factor*1.5f;
-
-	col2.r=iface.color.control.hilite.r*f;
-	col2.g=iface.color.control.hilite.g*f;
-	col2.b=iface.color.control.hilite.b*f;
 
 	view_primitive_2D_color_poly(chk_lft,top,&col,chk_rgt,top,&col,chk_rgt,y,&col2,chk_lft,y,&col2,alpha);
 	view_primitive_2D_color_poly(chk_lft,y,&col2,chk_rgt,y,&col2,chk_rgt,bot,&col,chk_lft,bot,&col,alpha);
@@ -1486,8 +1496,12 @@ void element_draw_checkbox_control(int x,int y,int wid,bool checked,bool enabled
 		// text
 
 	gl_text_start(font_interface_index,iface.font.text_size_medium);
-	gl_text_draw((lft+(wid>>2)),(y-2),"off",tx_center,TRUE,&iface.color.control.label,1.0f);
-	gl_text_draw((rgt-(wid>>2)),(y-2),"on",tx_center,TRUE,&iface.color.control.label,1.0f);
+	if (checked) {
+		gl_text_draw((rgt-(wid>>2)),(y-2),"on",tx_center,TRUE,&iface.color.control.label,1.0f);
+	}
+	else {
+		gl_text_draw((lft+(wid>>2)),(y-2),"off",tx_center,TRUE,&iface.color.control.label,1.0f);
+	}
 	gl_text_end();
 
 		// outline
@@ -2870,7 +2884,7 @@ void element_draw_model(element_type *element)
 	model_calc_animation(draw,tick);
 	model_calc_draw_bones(draw);
 	render_model_setup(draw,tick);
-	render_model_build_vertex_lists(draw);
+	render_model_build_vertex_lists(draw,TRUE);
 	render_model_opaque(draw);
 	render_model_transparent(draw);
 

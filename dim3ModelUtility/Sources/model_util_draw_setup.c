@@ -47,6 +47,7 @@ bool model_draw_setup_initialize(model_type *model,model_draw_setup *draw_setup,
 		draw_setup->mesh_arrays[n].gl_color_array=NULL;
 		draw_setup->mesh_arrays[n].gl_tangent_array=NULL;
 		draw_setup->mesh_arrays[n].gl_normal_array=NULL;
+		draw_setup->mesh_arrays[n].poly_cull_array=NULL;
 	}
 	
 		// setup per-mesh arrays
@@ -74,6 +75,10 @@ bool model_draw_setup_initialize(model_type *model,model_draw_setup *draw_setup,
 			if (draw_setup->mesh_arrays[n].gl_normal_array==NULL) return(FALSE);
 			bzero(draw_setup->mesh_arrays[n].gl_normal_array,sz);
 		}
+
+		draw_setup->mesh_arrays[n].poly_cull_array=(unsigned char*)malloc(mesh->npoly);
+		if (draw_setup->mesh_arrays[n].poly_cull_array==NULL) return(FALSE);
+		bzero(draw_setup->mesh_arrays[n].poly_cull_array,mesh->npoly);
 		
 		mesh++;
 	}
@@ -92,6 +97,7 @@ void model_draw_setup_shutdown(model_type *model,model_draw_setup *draw_setup)
 		if (draw_setup->mesh_arrays[n].gl_color_array!=NULL) free(draw_setup->mesh_arrays[n].gl_color_array);
 		if (draw_setup->mesh_arrays[n].gl_tangent_array!=NULL) free(draw_setup->mesh_arrays[n].gl_tangent_array);
 		if (draw_setup->mesh_arrays[n].gl_normal_array!=NULL) free(draw_setup->mesh_arrays[n].gl_normal_array);
+		if (draw_setup->mesh_arrays[n].poly_cull_array!=NULL) free(draw_setup->mesh_arrays[n].poly_cull_array);
 	}
 }
 

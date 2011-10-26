@@ -300,7 +300,6 @@ void view_setup_objects(int tick)
 		
 			// add to draw list
 
-		obj->draw.built_vertex_list=FALSE;
 		view_add_draw_list(view_render_type_object,n,obj->draw.draw_dist,flag);
 
 		view.count.model++;
@@ -357,7 +356,6 @@ void view_setup_projectiles(int tick)
 		if (flag==0x0) continue;
 
 			// add to draw list
-			// projs share vertex list so we can't do the "built_vertex_list" optimization
 
 		view_add_draw_list(view_render_type_projectile,n,proj->draw.draw_dist,flag);
 

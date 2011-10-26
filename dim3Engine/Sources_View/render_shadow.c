@@ -341,7 +341,7 @@ int shadow_build_poly_cross_volume_set(d3pnt *light_pnt,d3pnt *volume_min,d3pnt 
 			
 				// use normals to cull
 				
-			if (((poly->tangent_space.normal.x*(float)(poly->box.mid.x-light_pnt->x))+(poly->tangent_space.normal.y*(float)(poly->box.mid.y-light_pnt->y))+(poly->tangent_space.normal.z*(float)(poly->box.mid.z-light_pnt->z)))>map.optimize.cull_angle) continue;
+			if (((poly->tangent_space.normal.x*(float)(poly->box.mid.x-view.render->camera.pnt.x))+(poly->tangent_space.normal.y*(float)(poly->box.mid.y-view.render->camera.pnt.y))+(poly->tangent_space.normal.z*(float)(poly->box.mid.z-view.render->camera.pnt.z)))>map.optimize.cull_angle) continue;
 
 				// add to shadow list
 				
@@ -463,15 +463,14 @@ void shadow_render_stencil_poly_draw(int ptsz,float *vertexes,int stencil_idx)
 
 void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *draw)
 {
-	int							n,k,i,map_mesh_idx,map_poly_idx,idx,
+	int							n,k,i,map_mesh_idx,map_poly_idx,
 								map_poly_count,i_alpha,
 								light_intensity;
 	unsigned short				indexes[8];
 	float						fx,fy,fz,alpha,
 								f_light_intensity,stencil_poly_vertexes[8*3];
-	float						*pf,*va,*na;
-	bool						cull;
-	unsigned char				*vertex_ptr,*vp,*pc;
+	float						*pf,*va;
+	unsigned char				*vertex_ptr,*vp,*pc,*cull_ptr;
 	d3vct						*vct;
 	d3pnt						*spt,*hpt,bound_min,bound_max,light_pnt;
 	map_mesh_type				*map_mesh;
@@ -480,8 +479,6 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
     model_poly_type				*model_poly;
 	
 	model_mesh=&mdl->meshes[model_mesh_idx];
-
-	cull=(!model_mesh->never_cull)&&(!draw->no_culling);
 	
 		// get light
 
@@ -639,18 +636,15 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 
 			// run through the shadow polygons
 			// skipping any we can
+
+		cull_ptr=draw->setup.mesh_arrays[model_mesh_idx].poly_cull_array;
 			
 		for (k=0;k!=model_mesh->npoly;k++) {
 			model_poly=&model_mesh->polys[k];
 			
 				// polygon culling
-				
-			if (cull) {
-				idx=model_poly->v[0]*3;
-				va=draw->setup.mesh_arrays[model_mesh_idx].gl_vertex_array+idx;
-				na=draw->setup.mesh_arrays[model_mesh_idx].gl_normal_array+idx;
-				if (((na[0]*(float)(va[0]-view.render->camera.pnt.x))+(na[1]*(float)(va[1]-view.render->camera.pnt.y))+(na[2]*(float)(va[2]-view.render->camera.pnt.z)))>0.0f) continue;
-			}
+			
+			if (*cull_ptr++==0x1) continue;
 
 				// do a bounds check for quick eliminations
 
