@@ -363,7 +363,17 @@ void draw_model_wind(int mesh_idx)
 			draw_model_gl_setup(0);			// names goes into 2D
 		}
 	}
-	
+
+		// normals
+		
+	if (state.normal) {
+		draw_model_gl_setup(2);
+		draw_model_normals(mesh_idx);
+		draw_model_gl_setup(0);
+	}
+
+		// selection
+
 	if ((state.texture) || (state.mesh)) {
 		draw_model_gl_setup(2);
 
@@ -383,14 +393,6 @@ void draw_model_wind(int mesh_idx)
 		
 	if (state.hit_box) draw_model_box_hit_boxes();
 	if (state.view_box) draw_model_box_view();
-	
-		// normals
-		
-	if (state.normal) {
-		draw_model_gl_setup(3);
-		draw_model_normals(mesh_idx);
-		draw_model_gl_setup(0);
-	}
 	
 		// free memory
 		

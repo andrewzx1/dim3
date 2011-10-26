@@ -89,7 +89,7 @@ void draw_weapon_hand(obj_type *obj,weapon_type *weap)
 	model_calc_draw_bones(draw);
 	
 	render_model_setup(draw,tick);
-	render_model_build_vertex_lists(draw);
+	render_model_build_vertex_lists(draw,TRUE);
 	render_model_opaque(draw);
 	render_model_transparent(draw);
 
@@ -105,7 +105,7 @@ void draw_weapon_hand(obj_type *obj,weapon_type *weap)
 		model_calc_draw_bones(draw);
 		
 		render_model_setup(draw,tick);
-		render_model_build_vertex_lists(draw);
+		render_model_build_vertex_lists(draw,TRUE);
 		render_model_opaque(draw);
 		render_model_transparent(draw);
 	}

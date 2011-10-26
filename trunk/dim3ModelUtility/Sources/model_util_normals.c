@@ -199,8 +199,8 @@ bool model_recalc_normals_determine_vector_in_out(model_type *model,int mesh_idx
 
 void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent)
 {
-	int					n,k,t,neg_v,cnt;
-    float				u10,u20,v10,v20,f_denom,f;
+	int					n,k,t,neg_v;
+    float				u10,u20,v10,v20,f_denom;
 	bool				vertex_in_poly;
 	d3vct				p10,p20,vlft,vrgt,v_num;
 	d3vct				*normals,*nptr,*tangents,*tptr;
@@ -208,7 +208,6 @@ void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent)
 	model_mesh_type		*mesh;
 	model_vertex_type	*vertex;
 	model_poly_type		*poly;
-	tangent_space_type	avg_space;
 	
 	mesh=&model->meshes[mesh_idx];
 	if ((mesh->nvertex==0) || (mesh->npoly==0)) return;
@@ -283,10 +282,9 @@ void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent)
 		
 	for (n=0;n!=mesh->nvertex;n++) {
 	
-		avg_space.tangent.x=avg_space.tangent.y=avg_space.tangent.z=0.0f;
-		avg_space.normal.x=avg_space.normal.y=avg_space.normal.z=0.0f;
+		vertex->tangent_space.tangent.x=vertex->tangent_space.tangent.y=vertex->tangent_space.tangent.z=0.0f;
+		vertex->tangent_space.normal.x=vertex->tangent_space.normal.y=vertex->tangent_space.normal.z=0.0f;
 		
-		cnt=0;
 		poly=mesh->polys;
 		
 		nptr=normals;
@@ -304,38 +302,22 @@ void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent)
 			}
 			
 			if (vertex_in_poly) {
-				cnt++;
+				vertex->tangent_space.tangent.x+=tptr->x;
+				vertex->tangent_space.tangent.y+=tptr->y;
+				vertex->tangent_space.tangent.z+=tptr->z;
 				
-				avg_space.tangent.x+=tptr->x;
-				avg_space.tangent.y+=tptr->y;
-				avg_space.tangent.z+=tptr->z;
-				
-				avg_space.normal.x+=tptr->x;
-				avg_space.normal.y+=tptr->y;
-				avg_space.normal.z+=tptr->z;
+				vertex->tangent_space.normal.x+=nptr->x;
+				vertex->tangent_space.normal.y+=nptr->y;
+				vertex->tangent_space.normal.z+=nptr->z;
 			}
 			
 			poly++;
 			nptr++;
 			tptr++;
 		}
-		
-		if (cnt!=0) {
-				
-			f=(float)cnt;
-			
-			vertex->tangent_space.tangent.x=avg_space.tangent.x/f;
-			vertex->tangent_space.tangent.y=avg_space.tangent.y/f;
-			vertex->tangent_space.tangent.z=avg_space.tangent.z/f;
-			vector_normalize(&vertex->tangent_space.tangent);
-			
-			if (!only_tangent) {
-				vertex->tangent_space.normal.x=avg_space.normal.x/f;
-				vertex->tangent_space.normal.y=avg_space.normal.y/f;
-				vertex->tangent_space.normal.z=avg_space.normal.z/f;
-				vector_normalize(&vertex->tangent_space.normal);
-			}
-		}
+
+		vector_normalize(&vertex->tangent_space.tangent);
+		if (!only_tangent) vector_normalize(&vertex->tangent_space.normal);
 
 		vertex++;
 	}
@@ -347,7 +329,7 @@ void model_recalc_normals_mesh(model_type *model,int mesh_idx,bool only_tangent)
 	
 		// fix any normals that are 0,0,0
 		// this usually happens when there are bad
-		// or no UVs
+		// polys
 		
 	for (k=0;k!=mesh->nvertex;k++) {
 		

@@ -85,10 +85,7 @@ void view_draw_model_opaque(void)
 			case view_render_type_object:
 				obj=server.obj_list.objs[view.render->draw_list.items[n].idx];
 				if (((view.render->draw_list.items[n].flag&view_list_item_flag_model_in_view)!=0x0) && (obj->draw.has_opaque)) {
-					if (!obj->draw.built_vertex_list) {
-						obj->draw.built_vertex_list=TRUE;
-						render_model_build_vertex_lists(&obj->draw);
-					}
+					render_model_build_vertex_lists(&obj->draw,FALSE);
 					render_model_opaque(&obj->draw);
 				}
 				break;
@@ -96,7 +93,7 @@ void view_draw_model_opaque(void)
 			case view_render_type_projectile:
 				proj=server.proj_list.projs[view.render->draw_list.items[n].idx];
 				if (((view.render->draw_list.items[n].flag&view_list_item_flag_model_in_view)!=0x0) && (proj->draw.has_opaque)) {
-					render_model_build_vertex_lists(&proj->draw);	// projectiles share vertex lists
+					render_model_build_vertex_lists(&proj->draw,TRUE);	// projectiles share vertex lists
 					render_model_opaque(&proj->draw);
 				}
 				break;
@@ -127,10 +124,7 @@ void view_draw_model_transparent(void)
 			case view_render_type_object:
 				obj=server.obj_list.objs[view.render->draw_list.items[n].idx];
 				if (((view.render->draw_list.items[n].flag&view_list_item_flag_model_in_view)!=0x0) && (obj->draw.has_transparent)) {
-					if (!obj->draw.built_vertex_list) {
-						obj->draw.built_vertex_list=TRUE;
-						render_model_build_vertex_lists(&obj->draw);
-					}
+					render_model_build_vertex_lists(&obj->draw,FALSE);
 					render_model_transparent(&obj->draw);
 				}
 				break;
@@ -138,7 +132,7 @@ void view_draw_model_transparent(void)
 			case view_render_type_projectile:
 				proj=server.proj_list.projs[view.render->draw_list.items[n].idx];
 				if (((view.render->draw_list.items[n].flag&view_list_item_flag_model_in_view)!=0x0) && (proj->draw.has_transparent)) {
-					render_model_build_vertex_lists(&proj->draw);		// projectiles share draw lists
+					render_model_build_vertex_lists(&proj->draw,TRUE);		// projectiles share draw lists
 					render_model_transparent(&proj->draw);
 				}
 				break;
@@ -177,10 +171,7 @@ void view_draw_models_final(void)
 
 				if ((shadow_on) && (obj->draw.shadow.on)) {
 					if ((view.render->draw_list.items[n].flag&view_list_item_flag_shadow_in_view)!=0x0) {
-						if (!obj->draw.built_vertex_list) {
-							obj->draw.built_vertex_list=TRUE;
-							render_model_build_vertex_lists(&obj->draw);
-						}
+						render_model_build_vertex_lists(&obj->draw,FALSE);
 						shadow_render_model(&obj->draw);
 					}
 				}
@@ -197,8 +188,7 @@ void view_draw_models_final(void)
 
 				if ((shadow_on) && (proj->draw.shadow.on)) {
 					if ((view.render->draw_list.items[n].flag&view_list_item_flag_shadow_in_view)!=0x0) {
-						render_model_setup(&proj->draw,game_time_get());
-						render_model_build_vertex_lists(&proj->draw);
+						render_model_build_vertex_lists(&proj->draw,TRUE);		// projectiles share draw lists
 						shadow_render_model(&proj->draw);
 					}
 				}

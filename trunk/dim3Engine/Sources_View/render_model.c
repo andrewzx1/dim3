@@ -471,9 +471,8 @@ void render_model_release_vertex_objects(void)
 
 void render_model_opaque_normal(model_type *mdl,int mesh_idx,model_draw *draw)
 {
-	int						n,idx,v_idx,frame,txt_idx;
-	float					*na,*va;
-	bool					cull;
+	int						n,v_idx,frame,txt_idx;
+	unsigned char			*cull_ptr;
 	model_mesh_type			*mesh;
 	model_poly_type			*poly;
 	model_draw_mesh_type	*draw_mesh;
@@ -481,8 +480,6 @@ void render_model_opaque_normal(model_type *mdl,int mesh_idx,model_draw *draw)
 	
 	mesh=&mdl->meshes[mesh_idx];
 	draw_mesh=&draw->meshes[mesh_idx];
-	
-	cull=(!mesh->never_cull)&&(!draw->no_culling);
 	
 		// setup drawing
 
@@ -500,21 +497,18 @@ void render_model_opaque_normal(model_type *mdl,int mesh_idx,model_draw *draw)
 		// run through the polys
 
 	v_idx=0;
+	cull_ptr=draw->setup.mesh_arrays[mesh_idx].poly_cull_array;
+
 	poly=mesh->polys;
 
 	for (n=0;n!=mesh->npoly;n++) {
 	
 			// polygon culling
 			
-		if (cull) {
-			idx=poly->v[0]*3;
-			va=draw->setup.mesh_arrays[mesh_idx].gl_vertex_array+idx;
-			na=draw->setup.mesh_arrays[mesh_idx].gl_normal_array+idx;
-			if (((na[0]*(float)(va[0]-view.render->camera.pnt.x))+(na[1]*(float)(va[1]-view.render->camera.pnt.y))+(na[2]*(float)(va[2]-view.render->camera.pnt.z)))>0.0f) {
-				v_idx+=poly->ptsz;
-				poly++;
-				continue;
-			}
+		if (*cull_ptr++==0x1) {
+			v_idx+=poly->ptsz;
+			poly++;
+			continue;
 		}
 
 			// is this poly texture opaque
@@ -550,6 +544,7 @@ void render_model_opaque_normal(model_type *mdl,int mesh_idx,model_draw *draw)
 void render_model_opaque_shader(model_type *mdl,int mesh_idx,model_draw *draw,view_light_list_type *light_list)
 {
 	int						n,v_idx,frame,txt_idx,stride;
+	unsigned char			*cull_ptr;
 	model_mesh_type			*mesh;
 	model_poly_type			*poly;
  	model_draw_mesh_type	*draw_mesh;
@@ -577,9 +572,19 @@ void render_model_opaque_shader(model_type *mdl,int mesh_idx,model_draw *draw,vi
 		// run through the polys
 
 	v_idx=0;
+	cull_ptr=draw->setup.mesh_arrays[mesh_idx].poly_cull_array;
+
 	poly=mesh->polys;
 
 	for (n=0;n!=mesh->npoly;n++) {
+
+			// polygon culling
+			
+		if (*cull_ptr++==0x1) {
+			v_idx+=poly->ptsz;
+			poly++;
+			continue;
+		}
 
 			// is this poly texture opaque
 
@@ -894,6 +899,10 @@ void render_model_setup(model_draw *draw,int tick)
 		}
 	}
 
+		// hasn't build vertex list yet
+
+	draw->built_vertex_list=FALSE;
+
 		// run through the meshes and
 		// setup flags
 
@@ -986,11 +995,26 @@ void render_model_setup(model_draw *draw,int tick)
 	}
 }
 
-void render_model_build_vertex_lists(model_draw *draw)
+void render_model_build_vertex_lists(model_draw *draw,bool always_build)
 {
-	int					n;
+	int					n,k,t,idx;
 	bool				shader_off;
+	float				f,*va,*na;
+	unsigned char		*cull_ptr;
+	d3fpnt				pnt,camera_pnt;
+	d3vct				normal;
 	model_type			*mdl;
+	model_mesh_type		*mesh;
+	model_poly_type		*poly;
+
+		// already built list?
+		// this happens if we've already draw for
+		// the model but need it again for shadows
+		// or other rendering
+
+	if ((!always_build) && (draw->built_vertex_list)) return;
+
+	draw->built_vertex_list=TRUE;
 
 		// get model
 		
@@ -1024,6 +1048,64 @@ void render_model_build_vertex_lists(model_draw *draw)
 	if (shader_off) {
 		render_model_create_color_vertexes(mdl,draw->render_mesh_mask,draw);
 		render_model_diffuse_color_vertexes(mdl,draw->render_mesh_mask,draw);
+	}
+
+		// setup culling
+
+	camera_pnt.x=(float)view.render->camera.pnt.x;
+	camera_pnt.y=(float)view.render->camera.pnt.y;
+	camera_pnt.z=(float)view.render->camera.pnt.z;
+
+	for (n=0;n!=mdl->nmesh;n++) {
+		if ((draw->render_mesh_mask&(0x1<<n))==0) continue;
+
+		mesh=&mdl->meshes[n];
+
+			// no culling
+
+		if ((mesh->never_cull) || (draw->no_culling)) {
+			bzero(draw->setup.mesh_arrays[n].poly_cull_array,mesh->npoly);
+			continue;
+		}
+
+			// culled
+
+		poly=mesh->polys;
+		cull_ptr=draw->setup.mesh_arrays[n].poly_cull_array;
+
+		for (k=0;k!=mesh->npoly;k++) {
+
+				// get poly normal
+				// don't need to normalize or divide
+				// out average for normal, but have to
+				// for point
+
+			pnt.x=pnt.y=pnt.z=0.0f;
+			normal.x=normal.y=normal.z=0.0f;
+
+			for (t=0;t!=poly->ptsz;t++) {
+				idx=poly->v[t]*3;
+
+				va=draw->setup.mesh_arrays[n].gl_vertex_array+idx;
+				pnt.x+=*va++;
+				pnt.y+=*va++;
+				pnt.z+=*va;
+
+				na=draw->setup.mesh_arrays[n].gl_normal_array+idx;
+				normal.x+=*na++;
+				normal.y+=*na++;
+				normal.z+=*na;
+			}
+
+			f=(float)poly->ptsz;
+			pnt.x=(pnt.x/f)-camera_pnt.x;
+			pnt.y=(pnt.y/f)-camera_pnt.y;
+			pnt.z=(pnt.z/f)-camera_pnt.z;
+
+			*cull_ptr++=(((normal.x*pnt.x)+(normal.y*pnt.y)+(normal.z*pnt.z))>0.0f)?0x1:0x0;
+
+			poly++;
+		}
 	}
 }
 
