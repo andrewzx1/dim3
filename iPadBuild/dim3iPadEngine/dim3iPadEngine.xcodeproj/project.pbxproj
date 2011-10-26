@@ -359,6 +359,8 @@
 		260B44801411FB29006ED023 /* map_util_spots.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B44701411FB29006ED023 /* map_util_spots.c */; };
 		260B44811411FB29006ED023 /* map_util_texture.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B44711411FB29006ED023 /* map_util_texture.c */; };
 		260B44821411FB29006ED023 /* map_util_write.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B44721411FB29006ED023 /* map_util_write.c */; };
+		264356A614576B0F00CA4CFE /* model_util_file_model.c in Sources */ = {isa = PBXBuildFile; fileRef = 264356A514576B0F00CA4CFE /* model_util_file_model.c */; };
+		2675E47814576C5C00C31962 /* script_dim3.c in Sources */ = {isa = PBXBuildFile; fileRef = 2675E47714576C5C00C31962 /* script_dim3.c */; };
 		26920D7B1433F6F500EF55EF /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2638D24013ED0AD600029B18 /* UIKit.framework */; };
 		269F18E014341DA30050DF4A /* libpng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 269F18DF14341DA30050DF4A /* libpng.a */; };
 		26A6841513DE405E007513D1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26A6841413DE405E007513D1 /* Foundation.framework */; };
@@ -800,6 +802,8 @@
 		260B44711411FB29006ED023 /* map_util_texture.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = map_util_texture.c; sourceTree = "<group>"; };
 		260B44721411FB29006ED023 /* map_util_write.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = map_util_write.c; sourceTree = "<group>"; };
 		2638D24013ED0AD600029B18 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		264356A514576B0F00CA4CFE /* model_util_file_model.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = model_util_file_model.c; sourceTree = "<group>"; };
+		2675E47714576C5C00C31962 /* script_dim3.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_dim3.c; sourceTree = "<group>"; };
 		269F18DF14341DA30050DF4A /* libpng.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libpng.a; sourceTree = "<group>"; };
 		26A6840E13DE405E007513D1 /* dim3iPadEngine.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = dim3iPadEngine.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		26A6841413DE405E007513D1 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -958,6 +962,7 @@
 				260B40F91411F812006ED023 /* script_camera_state.c */,
 				260B40FA1411F812006ED023 /* script_camera_static_position.c */,
 				260B40FB1411F812006ED023 /* script_data.c */,
+				2675E47714576C5C00C31962 /* script_dim3.c */,
 				260B40FC1411F812006ED023 /* script_event.c */,
 				260B40FD1411F812006ED023 /* script_game_setting.c */,
 				260B40FE1411F812006ED023 /* script_interface.c */,
@@ -1361,6 +1366,7 @@
 				260B443A1411FB21006ED023 /* model_util_draw_vertexes.c */,
 				260B443B1411FB21006ED023 /* model_util_file_animate.c */,
 				260B443C1411FB21006ED023 /* model_util_file_mesh.c */,
+				264356A514576B0F00CA4CFE /* model_util_file_model.c */,
 				260B443D1411FB21006ED023 /* model_util_file_pose.c */,
 				260B443E1411FB21006ED023 /* model_util_frames.c */,
 				260B443F1411FB21006ED023 /* model_util_hit_box.c */,
@@ -1951,6 +1957,8 @@
 				260B44801411FB29006ED023 /* map_util_spots.c in Sources */,
 				260B44811411FB29006ED023 /* map_util_texture.c in Sources */,
 				260B44821411FB29006ED023 /* map_util_write.c in Sources */,
+				264356A614576B0F00CA4CFE /* model_util_file_model.c in Sources */,
+				2675E47814576C5C00C31962 /* script_dim3.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

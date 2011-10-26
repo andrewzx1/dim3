@@ -471,17 +471,18 @@ void render_model_release_vertex_objects(void)
 
 void render_model_opaque_normal(model_type *mdl,int mesh_idx,model_draw *draw)
 {
-	int						n,v_idx,frame,txt_idx;
+	int						n,idx,v_idx,frame,txt_idx;
+	float					*na,*va;
+	bool					cull;
 	model_mesh_type			*mesh;
 	model_poly_type			*poly;
 	model_draw_mesh_type	*draw_mesh;
     texture_type			*texture;
 	
-//	float		*na;		// supergumba
-//	float		*va;
-	
 	mesh=&mdl->meshes[mesh_idx];
 	draw_mesh=&draw->meshes[mesh_idx];
+	
+	cull=(!mesh->never_cull)&&(!draw->no_culling);
 	
 		// setup drawing
 
@@ -503,16 +504,18 @@ void render_model_opaque_normal(model_type *mdl,int mesh_idx,model_draw *draw)
 
 	for (n=0;n!=mesh->npoly;n++) {
 	
-			// culling
-/* supergumba			
-		va=draw->setup.mesh_arrays[mesh_idx].gl_vertex_array+(poly->v[0]*3);
-		na=draw->setup.mesh_arrays[mesh_idx].gl_normal_array+(poly->v[0]*3);
-		if (((na[0]*(float)(va[0]-view.render->camera.pnt.x))+(na[1]*(float)(va[1]-view.render->camera.pnt.y))+(na[2]*(float)(va[2]-view.render->camera.pnt.z)))>0.0f) {
-			v_idx+=poly->ptsz;
-			poly++;
-			continue;
+			// polygon culling
+			
+		if (cull) {
+			idx=poly->v[0]*3;
+			va=draw->setup.mesh_arrays[mesh_idx].gl_vertex_array+idx;
+			na=draw->setup.mesh_arrays[mesh_idx].gl_normal_array+idx;
+			if (((na[0]*(float)(va[0]-view.render->camera.pnt.x))+(na[1]*(float)(va[1]-view.render->camera.pnt.y))+(na[2]*(float)(va[2]-view.render->camera.pnt.z)))>0.0f) {
+				v_idx+=poly->ptsz;
+				poly++;
+				continue;
+			}
 		}
-*/
 
 			// is this poly texture opaque
 

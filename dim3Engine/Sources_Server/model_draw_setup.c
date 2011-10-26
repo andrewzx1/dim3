@@ -119,6 +119,10 @@ void model_draw_setup_object(obj_type *obj)
 	draw->pnt.x=obj->pnt.x+draw->offset.x;
 	draw->pnt.z=obj->pnt.z+draw->offset.z;
 	draw->pnt.y=obj->pnt.y+draw->offset.y;
+	
+		// regular object models can be culled
+		
+	draw->no_culling=FALSE;
 
 		// regular lighting and shaders
 
@@ -269,6 +273,10 @@ void model_draw_setup_weapon(obj_type *obj,weapon_type *weap,bool ignore_y_shift
 	draw->pnt.x=(int)fx+obj->pnt.x;
 	draw->pnt.y=(int)fy+obj->pnt.y;
 	draw->pnt.z=(int)fz+obj->pnt.z;
+	
+		// don't cull held weapons
+		
+	draw->no_culling=TRUE;
 
 		// regular lighting and shaders
 
@@ -371,6 +379,10 @@ void model_draw_setup_projectile(proj_type *proj)
 	draw->pnt.x=proj->pnt.x+draw->offset.x;
 	draw->pnt.z=proj->pnt.z+draw->offset.z;
 	draw->pnt.y=proj->pnt.y+draw->offset.y;
+	
+		// regular projectile models can be culled
+		
+	draw->no_culling=FALSE;
 
 		// regular lighting and shaders
 
@@ -451,6 +463,12 @@ void model_draw_setup_interface_models(model_type *mdl,model_draw *draw,int x,in
 
 	draw->flip_x=FALSE;
 	draw->no_rot.on=FALSE;
+	
+		// don't cull interface
+		// normals as there's no
+		// real camera
+		
+	draw->no_culling=TRUE;
 
 		// always hilite these
 		// and never draw shaders

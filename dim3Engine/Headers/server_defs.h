@@ -317,7 +317,7 @@ typedef struct		{
 														script_light_idx,script_halo_idx;
 						char							name[name_str_len];
 						float							alpha,resize,normal[3];
-						bool							on,player,
+						bool							on,player,no_culling,
 														flip_x,ui_lighting,no_shader,
 														bounce,face_forward,
 														has_opaque,has_transparent,has_glow,
