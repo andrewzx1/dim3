@@ -463,13 +463,14 @@ void shadow_render_stencil_poly_draw(int ptsz,float *vertexes,int stencil_idx)
 
 void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *draw)
 {
-	int							n,k,i,map_mesh_idx,map_poly_idx,
+	int							n,k,i,map_mesh_idx,map_poly_idx,idx,
 								map_poly_count,i_alpha,
 								light_intensity;
 	unsigned short				indexes[8];
 	float						fx,fy,fz,alpha,
 								f_light_intensity,stencil_poly_vertexes[8*3];
-	float						*pf,*va;
+	float						*pf,*va,*na;
+	bool						cull;
 	unsigned char				*vertex_ptr,*vp,*pc;
 	d3vct						*vct;
 	d3pnt						*spt,*hpt,bound_min,bound_max,light_pnt;
@@ -478,9 +479,9 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 	model_mesh_type				*model_mesh;
     model_poly_type				*model_poly;
 	
-//	float		*na;	// supergumba -- testing
-	
 	model_mesh=&mdl->meshes[model_mesh_idx];
+
+	cull=(!model_mesh->never_cull)&&(!draw->no_culling);
 	
 		// get light
 
@@ -642,12 +643,14 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 		for (k=0;k!=model_mesh->npoly;k++) {
 			model_poly=&model_mesh->polys[k];
 			
-				// ignore anything pointing towards
-				// light (assume solid objects)
-				// supergumba == move this outside!
+				// polygon culling
 				
-//			na=draw->setup.mesh_arrays[model_mesh_idx].gl_normal_array+(k*9);
-//			if (((na[0]*(float)(light_pnt.x-draw->pnt.x))+(na[1]*(float)(light_pnt.y-draw->pnt.y))+(na[2]*(float)(light_pnt.z-draw->pnt.z)))<0.0f) continue;
+			if (cull) {
+				idx=model_poly->v[0]*3;
+				va=draw->setup.mesh_arrays[model_mesh_idx].gl_vertex_array+idx;
+				na=draw->setup.mesh_arrays[model_mesh_idx].gl_normal_array+idx;
+				if (((na[0]*(float)(va[0]-view.render->camera.pnt.x))+(na[1]*(float)(va[1]-view.render->camera.pnt.y))+(na[2]*(float)(va[2]-view.render->camera.pnt.z)))>0.0f) continue;
+			}
 
 				// do a bounds check for quick eliminations
 

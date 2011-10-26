@@ -286,7 +286,7 @@ void model_decode_v2_mesh_xml(model_type *model,int model_head)
 		mesh->locked=xml_get_attribute_boolean(mesh_tag,"locked");
 		xml_get_attribute_3_coord_int(mesh_tag,"import_move",&mesh->import_move.x,&mesh->import_move.y,&mesh->import_move.z);
 
-		mesh->never_cull=FALSE;
+		mesh->never_cull=TRUE;
 		
 			// don't allow blank mesh names
 			

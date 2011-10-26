@@ -438,6 +438,7 @@
 		2649D14813412B2900573F6F /* setup_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 2649D13D13412B2900573F6F /* setup_defs.h */; };
 		2649D14913412B2900573F6F /* sound_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 2649D13E13412B2900573F6F /* sound_defs.h */; };
 		2649D14A13412B2900573F6F /* view_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 2649D13F13412B2900573F6F /* view_defs.h */; };
+		2675E47D14576D8A00C31962 /* script_dim3.c in Sources */ = {isa = PBXBuildFile; fileRef = 2675E47C14576D8A00C31962 /* script_dim3.c */; };
 		267E82861330155B0087DCED /* interface.h in Headers */ = {isa = PBXBuildFile; fileRef = 267E82851330155B0087DCED /* interface.h */; };
 		269D27C312DEBB7E00AF5695 /* mac_os_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 269D27C212DEBB7E00AF5695 /* mac_os_defs.h */; };
 		26A32EDF1453CFE80005AABD /* model_util_file_model.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A32EDE1453CFE80005AABD /* model_util_file_model.c */; };
@@ -910,6 +911,7 @@
 		2649D13D13412B2900573F6F /* setup_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = setup_defs.h; path = Headers/setup_defs.h; sourceTree = "<group>"; };
 		2649D13E13412B2900573F6F /* sound_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = sound_defs.h; path = Headers/sound_defs.h; sourceTree = "<group>"; };
 		2649D13F13412B2900573F6F /* view_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = view_defs.h; path = Headers/view_defs.h; sourceTree = "<group>"; };
+		2675E47C14576D8A00C31962 /* script_dim3.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_dim3.c; sourceTree = "<group>"; };
 		267E82851330155B0087DCED /* interface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = interface.h; path = Headers/interface.h; sourceTree = "<group>"; };
 		269D27C212DEBB7E00AF5695 /* mac_os_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mac_os_defs.h; path = ../dim3Common/Headers/mac_os_defs.h; sourceTree = SOURCE_ROOT; };
 		26A32EDE1453CFE80005AABD /* model_util_file_model.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = model_util_file_model.c; sourceTree = "<group>"; };
@@ -1303,6 +1305,7 @@
 				260B3EC31411F781006ED023 /* script_camera_state.c */,
 				260B3EC41411F781006ED023 /* script_camera_static_position.c */,
 				260B3EC51411F781006ED023 /* script_data.c */,
+				2675E47C14576D8A00C31962 /* script_dim3.c */,
 				260B3EC61411F781006ED023 /* script_event.c */,
 				260B3EC71411F781006ED023 /* script_game_setting.c */,
 				260B3EC81411F781006ED023 /* script_interface.c */,
@@ -2107,6 +2110,7 @@
 				260B40AB1411F781006ED023 /* virtual_draw.c in Sources */,
 				260B40AC1411F781006ED023 /* zoom_draw.c in Sources */,
 				26A32EDF1453CFE80005AABD /* model_util_file_model.c in Sources */,
+				2675E47D14576D8A00C31962 /* script_dim3.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
