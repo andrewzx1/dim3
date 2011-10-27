@@ -118,6 +118,7 @@ void model_piece_add_bone(void)
 
 	state.cur_item=item_bone;
 	state.cur_bone_idx=idx;
+	state.cur_pose_idx=-1;		// reset to neutral pose so user doesn't get confused by bone movement
 
 	item_palette_scroll_into_view(item_bone,idx);
 	item_palette_state_rebuild();

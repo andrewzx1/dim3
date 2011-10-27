@@ -102,7 +102,6 @@
 		26D15D6D1329E8A000F9EC7B /* property_utility_common.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D15D4F1329E7CD00F9EC7B /* property_utility_common.c */; };
 		26D15DE01329EB6100F9EC7B /* OSX_dialog_about.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D15DD91329EB6100F9EC7B /* OSX_dialog_about.c */; };
 		26D15DE31329EB6100F9EC7B /* OSX_dialog_property_chord.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D15DDC1329EB6100F9EC7B /* OSX_dialog_property_chord.c */; };
-		26D15DE41329EB6100F9EC7B /* OSX_dialog_property_list.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D15DDD1329EB6100F9EC7B /* OSX_dialog_property_list.c */; };
 		26D15DE51329EB6100F9EC7B /* OSX_dialog_property_string.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D15DDE1329EB6100F9EC7B /* OSX_dialog_property_string.c */; };
 		26D15DE61329EB6100F9EC7B /* OSX_dialog_utility_common.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D15DDF1329EB6100F9EC7B /* OSX_dialog_utility_common.c */; };
 		26D82FCD134FB5A800CC229F /* alt_property_palette_hud_bar.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D82FCA134FB5A800CC229F /* alt_property_palette_hud_bar.c */; };
@@ -269,7 +268,6 @@
 		26D15D5B1329E7F700F9EC7B /* ui_common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ui_common.h; path = ../dim3Common/Headers/ui_common.h; sourceTree = SOURCE_ROOT; };
 		26D15DD91329EB6100F9EC7B /* OSX_dialog_about.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = OSX_dialog_about.c; path = ../dim3Common/Code/OSX_dialog_about.c; sourceTree = SOURCE_ROOT; };
 		26D15DDC1329EB6100F9EC7B /* OSX_dialog_property_chord.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = OSX_dialog_property_chord.c; path = ../dim3Common/Code/OSX_dialog_property_chord.c; sourceTree = SOURCE_ROOT; };
-		26D15DDD1329EB6100F9EC7B /* OSX_dialog_property_list.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = OSX_dialog_property_list.c; path = ../dim3Common/Code/OSX_dialog_property_list.c; sourceTree = SOURCE_ROOT; };
 		26D15DDE1329EB6100F9EC7B /* OSX_dialog_property_string.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = OSX_dialog_property_string.c; path = ../dim3Common/Code/OSX_dialog_property_string.c; sourceTree = SOURCE_ROOT; };
 		26D15DDF1329EB6100F9EC7B /* OSX_dialog_utility_common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = OSX_dialog_utility_common.c; path = ../dim3Common/Code/OSX_dialog_utility_common.c; sourceTree = SOURCE_ROOT; };
 		26D82FCA134FB5A800CC229F /* alt_property_palette_hud_bar.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = alt_property_palette_hud_bar.c; path = Code/alt_property_palette_hud_bar.c; sourceTree = "<group>"; };
@@ -584,7 +582,6 @@
 				26D15DD91329EB6100F9EC7B /* OSX_dialog_about.c */,
 				26D15DDE1329EB6100F9EC7B /* OSX_dialog_property_string.c */,
 				26D15DDC1329EB6100F9EC7B /* OSX_dialog_property_chord.c */,
-				26D15DDD1329EB6100F9EC7B /* OSX_dialog_property_list.c */,
 			);
 			name = Dialogs;
 			sourceTree = "<group>";
@@ -670,7 +667,6 @@
 				26D15D6D1329E8A000F9EC7B /* property_utility_common.c in Sources */,
 				26D15DE01329EB6100F9EC7B /* OSX_dialog_about.c in Sources */,
 				26D15DE31329EB6100F9EC7B /* OSX_dialog_property_chord.c in Sources */,
-				26D15DE41329EB6100F9EC7B /* OSX_dialog_property_list.c in Sources */,
 				26D15DE51329EB6100F9EC7B /* OSX_dialog_property_string.c in Sources */,
 				26D15DE61329EB6100F9EC7B /* OSX_dialog_utility_common.c in Sources */,
 				26C87D9B1339435500DA562E /* property_palette_sounds.c in Sources */,
@@ -762,6 +758,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				SDKROOT = macosx10.6;
 			};
 			name = Release;
 		};
