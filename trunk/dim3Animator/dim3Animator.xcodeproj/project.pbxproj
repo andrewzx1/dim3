@@ -135,7 +135,6 @@
 		26D15D9A1329EA9200F9EC7B /* OSX_dialog_file_new.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D15D931329EA9200F9EC7B /* OSX_dialog_file_new.c */; };
 		26D15D9B1329EA9200F9EC7B /* OSX_dialog_file_open.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D15D941329EA9200F9EC7B /* OSX_dialog_file_open.c */; };
 		26D15D9C1329EA9200F9EC7B /* OSX_dialog_property_chord.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D15D951329EA9200F9EC7B /* OSX_dialog_property_chord.c */; };
-		26D15D9D1329EA9200F9EC7B /* OSX_dialog_property_list.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D15D961329EA9200F9EC7B /* OSX_dialog_property_list.c */; };
 		26D15D9E1329EA9200F9EC7B /* OSX_dialog_property_string.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D15D971329EA9200F9EC7B /* OSX_dialog_property_string.c */; };
 		26D15D9F1329EA9200F9EC7B /* OSX_dialog_utility_common.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D15D981329EA9200F9EC7B /* OSX_dialog_utility_common.c */; };
 		26E45E8314527FBA00007E57 /* model_util_file_model.c in Sources */ = {isa = PBXBuildFile; fileRef = 26E45E8214527FBA00007E57 /* model_util_file_model.c */; };
@@ -372,7 +371,6 @@
 		26D15D931329EA9200F9EC7B /* OSX_dialog_file_new.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = OSX_dialog_file_new.c; path = ../dim3Common/Code/OSX_dialog_file_new.c; sourceTree = SOURCE_ROOT; };
 		26D15D941329EA9200F9EC7B /* OSX_dialog_file_open.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = OSX_dialog_file_open.c; path = ../dim3Common/Code/OSX_dialog_file_open.c; sourceTree = SOURCE_ROOT; };
 		26D15D951329EA9200F9EC7B /* OSX_dialog_property_chord.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = OSX_dialog_property_chord.c; path = ../dim3Common/Code/OSX_dialog_property_chord.c; sourceTree = SOURCE_ROOT; };
-		26D15D961329EA9200F9EC7B /* OSX_dialog_property_list.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = OSX_dialog_property_list.c; path = ../dim3Common/Code/OSX_dialog_property_list.c; sourceTree = SOURCE_ROOT; };
 		26D15D971329EA9200F9EC7B /* OSX_dialog_property_string.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = OSX_dialog_property_string.c; path = ../dim3Common/Code/OSX_dialog_property_string.c; sourceTree = SOURCE_ROOT; };
 		26D15D981329EA9200F9EC7B /* OSX_dialog_utility_common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = OSX_dialog_utility_common.c; path = ../dim3Common/Code/OSX_dialog_utility_common.c; sourceTree = SOURCE_ROOT; };
 		26E45E8214527FBA00007E57 /* model_util_file_model.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = model_util_file_model.c; sourceTree = "<group>"; };
@@ -793,7 +791,6 @@
 				26D15D941329EA9200F9EC7B /* OSX_dialog_file_open.c */,
 				26D15D971329EA9200F9EC7B /* OSX_dialog_property_string.c */,
 				26D15D951329EA9200F9EC7B /* OSX_dialog_property_chord.c */,
-				26D15D961329EA9200F9EC7B /* OSX_dialog_property_list.c */,
 				F5EA20E80CCB0B6D005A75F6 /* dialog_finish_import.c */,
 				F594B4E409A97EB000408388 /* dialog_set_vertex_bone.c */,
 				F5895D3E0C6570EC00AA2669 /* dialog_animation_time_reset.c */,
@@ -967,7 +964,6 @@
 				26D15D9A1329EA9200F9EC7B /* OSX_dialog_file_new.c in Sources */,
 				26D15D9B1329EA9200F9EC7B /* OSX_dialog_file_open.c in Sources */,
 				26D15D9C1329EA9200F9EC7B /* OSX_dialog_property_chord.c in Sources */,
-				26D15D9D1329EA9200F9EC7B /* OSX_dialog_property_list.c in Sources */,
 				26D15D9E1329EA9200F9EC7B /* OSX_dialog_property_string.c in Sources */,
 				26D15D9F1329EA9200F9EC7B /* OSX_dialog_utility_common.c in Sources */,
 				260B3CA71411F13E006ED023 /* bitmap_cocoa.m in Sources */,

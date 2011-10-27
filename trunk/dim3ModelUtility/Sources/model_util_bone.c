@@ -114,13 +114,13 @@ int model_bone_add(model_type *model,int x,int y,int z)
 		// fix any poses
 		
 	for (n=0;n!=model->npose;n++) {
-		model->poses[n].bone_moves[bone_idx].rot.x=0;
-		model->poses[n].bone_moves[bone_idx].rot.y=0;
-		model->poses[n].bone_moves[bone_idx].rot.z=0;
-		model->poses[n].bone_moves[bone_idx].mov.x=1;
-		model->poses[n].bone_moves[bone_idx].mov.y=1;
-		model->poses[n].bone_moves[bone_idx].mov.z=1;
-		model->poses[n].bone_moves[bone_idx].acceleration=0;
+		model->poses[n].bone_moves[bone_idx].rot.x=0.0f;
+		model->poses[n].bone_moves[bone_idx].rot.y=0.0f;
+		model->poses[n].bone_moves[bone_idx].rot.z=0.0f;
+		model->poses[n].bone_moves[bone_idx].mov.x=1.0f;
+		model->poses[n].bone_moves[bone_idx].mov.y=1.0f;
+		model->poses[n].bone_moves[bone_idx].mov.z=1.0f;
+		model->poses[n].bone_moves[bone_idx].acceleration=0.0f;
 		model->poses[n].bone_moves[bone_idx].skip_blended=FALSE;
 		model->poses[n].bone_moves[bone_idx].constraint.bone_idx=-1;
 		model->poses[n].bone_moves[bone_idx].constraint.offset.x=0;
