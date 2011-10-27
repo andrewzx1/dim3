@@ -155,7 +155,7 @@ typedef struct		{
 						float						gamma,sound_volume,music_volume;
 						bool						decal_on,lightmap_on,shadow_on,
 													always_run,toggle_run,invert_look,mouse_smooth,
-													music_on,window,window_editor,
+													music_on,auto_aim,window,window_editor,
 													no_hud,no_draw_weapon,metrics_on,debug_on,
 													ignore_fps_lock,disable_shaders;
 						setup_path_type				path;

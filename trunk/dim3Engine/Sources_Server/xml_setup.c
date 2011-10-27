@@ -64,6 +64,7 @@ void setup_xml_default(void)
 	setup.toggle_run=FALSE;
 	setup.invert_look=FALSE;
 	setup.mouse_smooth=TRUE;
+	setup.auto_aim=FALSE;
 
 	setup.mouse.speed=0.03f;
 	setup.mouse.acceleration=0.6f;
@@ -147,6 +148,7 @@ bool setup_xml_read_path(char *path)
 	xml_key_read_boolean(setup_tag,"Always_Run",&setup.always_run);
 	xml_key_read_boolean(setup_tag,"Toggle_Run",&setup.toggle_run);
 	xml_key_read_boolean(setup_tag,"Invert_Look",&setup.invert_look);
+	xml_key_read_boolean(setup_tag,"Auto_Aim",&setup.auto_aim);
 	xml_key_read_boolean(setup_tag,"Mouse_Smooth",&setup.mouse_smooth);
 	xml_key_read_float(setup_tag,"Mouse_Speed",&setup.mouse.speed);
 	xml_key_read_float(setup_tag,"Mouse_Acceleration",&setup.mouse.acceleration);
@@ -315,6 +317,7 @@ bool setup_xml_write(void)
 	xml_key_write_boolean("Always_Run",setup.always_run);
 	xml_key_write_boolean("Toggle_Run",setup.toggle_run);
 	xml_key_write_boolean("Invert_Look",setup.invert_look);
+	xml_key_write_boolean("Auto_Aim",setup.auto_aim);
 	xml_key_write_boolean("Mouse_Smooth",setup.mouse_smooth);
 	xml_key_write_float("Mouse_Speed",setup.mouse.speed);
 	xml_key_write_float("Mouse_Acceleration",setup.mouse.acceleration);

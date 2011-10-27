@@ -32,6 +32,12 @@ and can be sold or given away.
 #include "interface.h"
 #include "objects.h"
 
+// supergumba -- these should eventually be settable
+#define auto_aim_max_ray_trace_distance			150000
+#define auto_aim_max_catch_angle				8.0f
+#define auto_aim_turn_speed_factor				0.25f
+
+extern iface_type			iface;
 extern map_type				map;
 extern server_type			server;
 extern setup_type			setup;
@@ -280,6 +286,70 @@ void object_player_turn_direct(obj_type *obj,float ang)
 	obj->forward_move.reverse=FALSE;
 	obj->turn.ang_add.y=0.0f;
 	obj->ang.y=obj->motion.ang.y=ang;
+}
+
+void object_player_turn_auto_aim(obj_type *obj)
+{
+	d3pnt					pnt,hpt;
+	d3ang					ang;
+	weapon_type				*weap;
+	ray_trace_contact_type	contact;
+
+	if ((!iface.setup.allow_auto_aim) || (!setup.auto_aim)) return;
+
+		// get weapon
+
+	weap=weapon_find_current(obj);
+	if (weap==NULL) return;
+
+		// angle to crosshair
+
+	pnt.x=obj->pnt.x;
+	pnt.y=(obj->pnt.y+obj->duck.y_move)+obj->size.eye_offset;
+	pnt.z=obj->pnt.z;
+
+	ang.x=-obj->view_ang.x;
+	ang.y=obj->ang.y;
+	ang.z=0.0f;
+
+		// check if any objects
+		// are in current crosshair
+		// if so, just return
+
+	contact.obj.on=TRUE;
+	contact.obj.ignore_idx=obj->idx;
+	contact.proj.on=FALSE;
+	contact.origin=poly_ray_trace_origin_object;
+
+	ray_trace_map_by_angle(&pnt,&ang,auto_aim_max_ray_trace_distance,&hpt,&contact);
+	if (contact.obj.idx!=-1) return;
+
+		// turn towards near objects
+		// only if we are turning in that direction
+
+		// check slightly to left
+
+	ang.y=angle_add(obj->ang.y,-auto_aim_max_catch_angle);
+
+	ray_trace_map_by_angle(&pnt,&ang,auto_aim_max_ray_trace_distance,&hpt,&contact);
+	if (contact.obj.idx!=-1) {
+		if (obj->turn.ang_add.y<=0.0f) {
+			obj->ang.y=angle_add(obj->ang.y,-(obj->turn.walk_speed*auto_aim_turn_speed_factor));
+			return;
+		}
+	}
+
+		// check slightly to right
+
+	ang.y=angle_add(obj->ang.y,auto_aim_max_catch_angle);
+
+	ray_trace_map_by_angle(&pnt,&ang,auto_aim_max_ray_trace_distance,&hpt,&contact);
+	if (contact.obj.idx!=-1) {
+		if (obj->turn.ang_add.y>=0.0f) {
+			obj->ang.y=angle_add(obj->ang.y,(obj->turn.walk_speed*auto_aim_turn_speed_factor));
+			return;
+		}
+	}
 }
 
 /* =======================================================

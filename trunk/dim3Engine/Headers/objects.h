@@ -177,6 +177,7 @@ extern void object_face_object_start(obj_type *obj,obj_type *track_obj);
 extern void object_face_stop(obj_type *obj);
 extern void object_player_turn(obj_type *obj);
 extern void object_player_turn_direct(obj_type *obj,float ang);
+extern void object_player_turn_auto_aim(obj_type *obj);
 extern void object_player_look(obj_type *obj);
 extern void object_player_look_stop(obj_type *obj);
 extern void object_player_look_fix_zoom(obj_type *obj,weapon_type *weap);

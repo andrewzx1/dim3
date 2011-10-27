@@ -34,6 +34,7 @@ and can be sold or given away.
 #include "interface.h"
 
 #define kSetupPropertyNoResSwitch			0
+#define kSetupPropertyAllowAutoAim			1
 
 #define kSetupPropertyGameVideo				10
 #define kSetupPropertyGameAudio				11
@@ -62,6 +63,7 @@ void property_palette_fill_setup(void)
 
 	list_palette_add_header(&property_palette,0,"Options");
 	list_palette_add_checkbox(&property_palette,kSetupPropertyNoResSwitch,"No Resolution Switch",&iface.setup.no_resolution_switch,FALSE);
+	list_palette_add_checkbox(&property_palette,kSetupPropertyAllowAutoAim,"Allow Auto Aiming",&iface.setup.allow_auto_aim,FALSE);
 
 		// game setup
 
