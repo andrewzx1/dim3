@@ -53,11 +53,12 @@ and can be sold or given away.
 #define ctrl_always_run_id					40
 #define ctrl_toggle_run_id					41
 #define ctrl_invert_look_id					42
-#define ctrl_mouse_speed_id					43
-#define ctrl_mouse_accel_id					44
-#define ctrl_mouse_smooth_id				45
-#define ctrl_joystick_speed_id				46
-#define ctrl_joystick_accel_id				47
+#define ctrl_auto_aim_id					43
+#define ctrl_mouse_speed_id					44
+#define ctrl_mouse_accel_id					45
+#define ctrl_mouse_smooth_id				46
+#define ctrl_joystick_speed_id				47
+#define ctrl_joystick_accel_id				48
 
 #define ctrl_action_id						60
 
@@ -206,6 +207,7 @@ void setup_game_mouse_pane(void)
 	
 	control_y_add=element_get_control_high();
 	control_y_sz=8*control_y_add;
+	if (iface.setup.allow_auto_aim) control_y_sz+=control_y_add;
 	
 	x=(int)(((float)iface.scale_x)*0.4f);
 	y=((iface.scale_y>>1)+(element_get_button_high()>>1))-(control_y_sz>>1);
@@ -217,6 +219,10 @@ void setup_game_mouse_pane(void)
 	
 	element_checkbox_add("Invert Look",setup.invert_look,ctrl_invert_look_id,x,y,TRUE);
 	y+=control_y_add;
+	if (iface.setup.allow_auto_aim) {
+		element_checkbox_add("Auto Aim",setup.auto_aim,ctrl_auto_aim_id,x,y,TRUE);
+		y+=control_y_add;
+	}
 	element_checkbox_add("Mouse Smoothing",setup.mouse_smooth,ctrl_mouse_smooth_id,x,y,TRUE);
 	y+=control_y_add;
 
@@ -746,6 +752,10 @@ void setup_game_handle_click(int id)
 			
 		case ctrl_invert_look_id:
 			setup.invert_look=element_get_value(ctrl_invert_look_id);
+			break;
+
+		case ctrl_auto_aim_id:
+			setup.auto_aim=element_get_value(ctrl_auto_aim_id);
 			break;
 			
 		case ctrl_mouse_smooth_id:

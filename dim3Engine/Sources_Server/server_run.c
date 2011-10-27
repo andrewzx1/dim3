@@ -128,6 +128,7 @@ void run_object_single(obj_type *obj)
 	if (obj->type==object_type_player) {
 		if (!obj->input.freeze) {
 			object_player_turn(obj);
+			object_player_turn_auto_aim(obj);
 			object_player_look(obj);
 		}
 		else {

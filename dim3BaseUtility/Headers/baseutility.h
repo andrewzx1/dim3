@@ -872,7 +872,7 @@ typedef struct		{
 						bool							game_video,game_audio,game_control,
 														game_action,game_debug,
 														net_player,net_host,
-														no_resolution_switch;							
+														no_resolution_switch,allow_auto_aim;							
 					} iface_setup_type;
 
 //
