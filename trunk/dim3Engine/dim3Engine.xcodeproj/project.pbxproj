@@ -370,15 +370,12 @@
 		260B40AA1411F781006ED023 /* view_vertex_object.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B3F921411F781006ED023 /* view_vertex_object.c */; };
 		260B40AB1411F781006ED023 /* virtual_draw.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B3F931411F781006ED023 /* virtual_draw.c */; };
 		260B40AC1411F781006ED023 /* zoom_draw.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B3F941411F781006ED023 /* zoom_draw.c */; };
-		260B431F1411F8CC006ED023 /* libmpg123.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 260B42EA1411F8CC006ED023 /* libmpg123.dylib */; };
 		260B43201411F8CC006ED023 /* mpg123.h in Headers */ = {isa = PBXBuildFile; fileRef = 260B42EB1411F8CC006ED023 /* mpg123.h */; };
-		260B43211411F8CC006ED023 /* libPNG.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 260B42ED1411F8CC006ED023 /* libPNG.dylib */; };
 		260B43221411F8CC006ED023 /* png.h in Headers */ = {isa = PBXBuildFile; fileRef = 260B42EE1411F8CC006ED023 /* png.h */; };
 		260B43231411F8CC006ED023 /* pngconf.h in Headers */ = {isa = PBXBuildFile; fileRef = 260B42EF1411F8CC006ED023 /* pngconf.h */; };
 		260B43241411F8CC006ED023 /* pnglibconf.h in Headers */ = {isa = PBXBuildFile; fileRef = 260B42F01411F8CC006ED023 /* pnglibconf.h */; };
 		260B43251411F8CC006ED023 /* begin_code.h in Headers */ = {isa = PBXBuildFile; fileRef = 260B42F21411F8CC006ED023 /* begin_code.h */; };
 		260B43261411F8CC006ED023 /* close_code.h in Headers */ = {isa = PBXBuildFile; fileRef = 260B42F31411F8CC006ED023 /* close_code.h */; };
-		260B43271411F8CC006ED023 /* libSDL.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 260B42F41411F8CC006ED023 /* libSDL.dylib */; };
 		260B43281411F8CC006ED023 /* SDL.h in Headers */ = {isa = PBXBuildFile; fileRef = 260B42F51411F8CC006ED023 /* SDL.h */; };
 		260B43291411F8CC006ED023 /* SDL_active.h in Headers */ = {isa = PBXBuildFile; fileRef = 260B42F61411F8CC006ED023 /* SDL_active.h */; };
 		260B432A1411F8CC006ED023 /* SDL_audio.h in Headers */ = {isa = PBXBuildFile; fileRef = 260B42F71411F8CC006ED023 /* SDL_audio.h */; };
@@ -423,7 +420,6 @@
 		260B43511411F8CC006ED023 /* SDL_video.h in Headers */ = {isa = PBXBuildFile; fileRef = 260B431E1411F8CC006ED023 /* SDL_video.h */; };
 		260B43571411F90C006ED023 /* libSDL.dylib in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 260B42F41411F8CC006ED023 /* libSDL.dylib */; };
 		260B43581411F910006ED023 /* libPNG.dylib in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 260B42ED1411F8CC006ED023 /* libPNG.dylib */; };
-		260B43591411F915006ED023 /* libmpg123.dylib in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 260B42EA1411F8CC006ED023 /* libmpg123.dylib */; };
 		26184E7213CA0CE6003A9A79 /* CoreAudioKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26184E7113CA0CE6003A9A79 /* CoreAudioKit.framework */; };
 		26184E7613CA0D2E003A9A79 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26184E7513CA0D2E003A9A79 /* IOKit.framework */; };
 		26184E7813CA1022003A9A79 /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26184E7713CA1022003A9A79 /* JavaScriptCore.framework */; };
@@ -440,6 +436,10 @@
 		2649D14A13412B2900573F6F /* view_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 2649D13F13412B2900573F6F /* view_defs.h */; };
 		2675E47D14576D8A00C31962 /* script_dim3.c in Sources */ = {isa = PBXBuildFile; fileRef = 2675E47C14576D8A00C31962 /* script_dim3.c */; };
 		267E82861330155B0087DCED /* interface.h in Headers */ = {isa = PBXBuildFile; fileRef = 267E82851330155B0087DCED /* interface.h */; };
+		269BF262145C7FE700A20323 /* libSDL.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 260B42F41411F8CC006ED023 /* libSDL.dylib */; };
+		269BF263145C7FF800A20323 /* libPNG.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 260B42ED1411F8CC006ED023 /* libPNG.dylib */; };
+		269BF265145C800200A20323 /* libmpg123.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 269BF250145C7DB600A20323 /* libmpg123.dylib */; };
+		269BF269145C80FF00A20323 /* libmpg123.dylib in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 269BF250145C7DB600A20323 /* libmpg123.dylib */; };
 		269D27C312DEBB7E00AF5695 /* mac_os_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 269D27C212DEBB7E00AF5695 /* mac_os_defs.h */; };
 		26A32EDF1453CFE80005AABD /* model_util_file_model.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A32EDE1453CFE80005AABD /* model_util_file_model.c */; };
 		26E1844513CEA27800812348 /* dim3 Engine.app in Copy Application */ = {isa = PBXBuildFile; fileRef = F5CD87F70557721D0023AD9B /* dim3 Engine.app */; };
@@ -461,7 +461,7 @@
 			files = (
 				260B43571411F90C006ED023 /* libSDL.dylib in Copy Frameworks */,
 				260B43581411F910006ED023 /* libPNG.dylib in Copy Frameworks */,
-				260B43591411F915006ED023 /* libmpg123.dylib in Copy Frameworks */,
+				269BF269145C80FF00A20323 /* libmpg123.dylib in Copy Frameworks */,
 			);
 			name = "Copy Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -846,7 +846,6 @@
 		260B3F921411F781006ED023 /* view_vertex_object.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = view_vertex_object.c; sourceTree = "<group>"; };
 		260B3F931411F781006ED023 /* virtual_draw.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = virtual_draw.c; sourceTree = "<group>"; };
 		260B3F941411F781006ED023 /* zoom_draw.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = zoom_draw.c; sourceTree = "<group>"; };
-		260B42EA1411F8CC006ED023 /* libmpg123.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libmpg123.dylib; sourceTree = "<group>"; };
 		260B42EB1411F8CC006ED023 /* mpg123.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = mpg123.h; sourceTree = "<group>"; };
 		260B42ED1411F8CC006ED023 /* libPNG.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libPNG.dylib; sourceTree = "<group>"; };
 		260B42EE1411F8CC006ED023 /* png.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = png.h; sourceTree = "<group>"; };
@@ -913,6 +912,7 @@
 		2649D13F13412B2900573F6F /* view_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = view_defs.h; path = Headers/view_defs.h; sourceTree = "<group>"; };
 		2675E47C14576D8A00C31962 /* script_dim3.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_dim3.c; sourceTree = "<group>"; };
 		267E82851330155B0087DCED /* interface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = interface.h; path = Headers/interface.h; sourceTree = "<group>"; };
+		269BF250145C7DB600A20323 /* libmpg123.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libmpg123.dylib; sourceTree = "<group>"; };
 		269D27C212DEBB7E00AF5695 /* mac_os_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mac_os_defs.h; path = ../dim3Common/Headers/mac_os_defs.h; sourceTree = SOURCE_ROOT; };
 		26A32EDE1453CFE80005AABD /* model_util_file_model.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = model_util_file_model.c; sourceTree = "<group>"; };
 		26EE3E1613DA7F78000ABAF1 /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = ../../../../System/Library/Frameworks/AudioUnit.framework; sourceTree = "<group>"; };
@@ -938,9 +938,9 @@
 				26EE3E1713DA7F78000ABAF1 /* AudioUnit.framework in Frameworks */,
 				260B3C721411EFED006ED023 /* Foundation.framework in Frameworks */,
 				260B3C741411EFF6006ED023 /* AppKit.framework in Frameworks */,
-				260B431F1411F8CC006ED023 /* libmpg123.dylib in Frameworks */,
-				260B43211411F8CC006ED023 /* libPNG.dylib in Frameworks */,
-				260B43271411F8CC006ED023 /* libSDL.dylib in Frameworks */,
+				269BF262145C7FE700A20323 /* libSDL.dylib in Frameworks */,
+				269BF263145C7FF800A20323 /* libPNG.dylib in Frameworks */,
+				269BF265145C800200A20323 /* libmpg123.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1526,7 +1526,7 @@
 		260B42E91411F8CC006ED023 /* MPG123 */ = {
 			isa = PBXGroup;
 			children = (
-				260B42EA1411F8CC006ED023 /* libmpg123.dylib */,
+				269BF250145C7DB600A20323 /* libmpg123.dylib */,
 				260B42EB1411F8CC006ED023 /* mpg123.h */,
 			);
 			name = MPG123;

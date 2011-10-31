@@ -36,6 +36,7 @@ extern server_type		server;
 extern view_type		view;
 extern setup_type		setup;
 
+unsigned char			*shadow_vertex_cull;
 d3pnt					*shadow_spt,*shadow_hpt;
 d3vct					*shadow_vct;
 poly_pointer_type		*shadow_poly_ptrs;
@@ -63,12 +64,19 @@ bool shadow_initialize(void)
 	
 	shadow_poly_ptrs=(poly_pointer_type*)malloc(view_shadows_map_poly_count*sizeof(poly_pointer_type));
 	if (shadow_poly_ptrs==NULL) return(FALSE);
+	
+		// memory for vertex culling
+		
+	shadow_vertex_cull=(unsigned char*)malloc(view_shadows_model_vertex_count*sizeof(unsigned char));
+	if (shadow_vertex_cull==NULL) return(FALSE);
 
 	return(TRUE);
 }
 
 void shadow_shutdown(void)
 {
+	free(shadow_vertex_cull);
+	
 	free(shadow_poly_ptrs);
 
 	free(shadow_spt);
@@ -281,7 +289,7 @@ int shadow_build_poly_cross_volume_set(d3pnt *light_pnt,d3pnt *volume_min,d3pnt 
 		// testing -- shadow box
 	/*
 	glColor4f(0.0f,1.0f,0.0f,1.0f);
-	glLineWidth(0.0f);
+	glLineWidth(1.0f);
 	glBegin(GL_LINE_LOOP);
 	glVertex3i(min->x,min->y,min->z);
 	glVertex3i(max->x,min->y,min->z);
@@ -340,8 +348,11 @@ int shadow_build_poly_cross_volume_set(d3pnt *light_pnt,d3pnt *volume_min,d3pnt 
 			if ((poly->box.max.y<min->y) || (poly->box.min.y>max->y)) continue;		// check Y last as X/Z are usually better eliminations
 			
 				// use normals to cull
+				// by camera culling and
+				// light direction culling
 				
 			if (((poly->tangent_space.normal.x*(float)(poly->box.mid.x-view.render->camera.pnt.x))+(poly->tangent_space.normal.y*(float)(poly->box.mid.y-view.render->camera.pnt.y))+(poly->tangent_space.normal.z*(float)(poly->box.mid.z-view.render->camera.pnt.z)))>map.optimize.cull_angle) continue;
+			if (((poly->tangent_space.normal.x*(float)(poly->box.mid.x-light_pnt->x))+(poly->tangent_space.normal.y*(float)(poly->box.mid.y-light_pnt->y))+(poly->tangent_space.normal.z*(float)(poly->box.mid.z-light_pnt->z)))>map.optimize.cull_angle) continue;
 
 				// add to shadow list
 				
@@ -445,7 +456,7 @@ void shadow_render_stencil_poly_draw(int ptsz,float *vertexes,int stencil_idx)
 	glDepthFunc(GL_LEQUAL);
 
 	glVertexPointer(3,GL_FLOAT,0,(GLvoid*)vertexes);
-	
+
 	glColorMask(GL_FALSE,GL_FALSE,GL_FALSE,GL_FALSE);
 	glStencilOp(GL_KEEP,GL_KEEP,GL_REPLACE);
 	glStencilFunc(GL_ALWAYS,stencil_idx,0xFF);
@@ -470,7 +481,7 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 	float						fx,fy,fz,alpha,
 								f_light_intensity,stencil_poly_vertexes[8*3];
 	float						*pf,*va;
-	unsigned char				*vertex_ptr,*vp,*pc,*cull_ptr;
+	unsigned char				*vertex_ptr,*vp,*pc,*poly_cull_ptr,*vertex_cull_ptr;
 	d3vct						*vct;
 	d3pnt						*spt,*hpt,bound_min,bound_max,light_pnt;
 	map_mesh_type				*map_mesh;
@@ -479,6 +490,9 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
     model_poly_type				*model_poly;
 	
 	model_mesh=&mdl->meshes[model_mesh_idx];
+	
+	if (model_mesh->nvertex>=view_shadows_model_vertex_count) return;
+
 	
 		// get light
 
@@ -499,25 +513,52 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 
 	alpha=(float)light_intensity;
 	alpha=1.0f/(alpha*alpha);
+	
+		// check the vertex culling
+		
+	poly_cull_ptr=draw->setup.mesh_arrays[model_mesh_idx].poly_cull_array;
+	bzero(shadow_vertex_cull,model_mesh->nvertex);
+	
+	model_poly=model_mesh->polys;
+	
+	for (n=0;n!=model_mesh->npoly;n++) {
+		if (*poly_cull_ptr++!=0x1) {
+			for (k=0;k!=model_poly->ptsz;k++) {
+				*(shadow_vertex_cull+model_poly->v[k])=0x1;
+			}
+		}
+		model_poly++;
+	}
 
 		// setup the rays
 		// clip them at the light intensity
 		// distance
-
-	if (model_mesh->nvertex>=view_shadows_model_vertex_count) return;
 
 	spt=shadow_spt;
 	vct=shadow_vct;
 
 	f_light_intensity=(float)light_intensity;
 
+	vertex_cull_ptr=shadow_vertex_cull;
 	va=draw->setup.mesh_arrays[model_mesh_idx].gl_vertex_array;
 			
 	for (n=0;n!=model_mesh->nvertex;n++) {
+	
 		spt->x=(int)*va++;
 		spt->y=(int)*va++;
 		spt->z=(int)*va++;
-				
+		
+			// skip culled vertexes
+			
+		if (*vertex_cull_ptr++==0x0) {
+			vct->x=vct->y=vct->z=0;
+			spt++;
+			vct++;
+			continue;
+		}
+		
+			// setup vector
+			
 		vct->x=(float)(spt->x-light_pnt.x);
 		vct->y=(float)(spt->y-light_pnt.y);
 		vct->z=(float)(spt->z-light_pnt.z);
@@ -637,14 +678,14 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 			// run through the shadow polygons
 			// skipping any we can
 
-		cull_ptr=draw->setup.mesh_arrays[model_mesh_idx].poly_cull_array;
+		poly_cull_ptr=draw->setup.mesh_arrays[model_mesh_idx].poly_cull_array;
 			
 		for (k=0;k!=model_mesh->npoly;k++) {
 			model_poly=&model_mesh->polys[k];
 			
 				// polygon culling
 			
-			if (*cull_ptr++==0x1) continue;
+			if (*poly_cull_ptr++==0x1) continue;
 
 				// do a bounds check for quick eliminations
 

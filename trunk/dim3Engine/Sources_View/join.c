@@ -373,12 +373,21 @@ void join_ping_thread_start(void)
 		
 	join_thread_started=TRUE;
 	
+#ifndef D3_SDL_1_3
 	if (element_get_value(join_tab_id)==join_pane_lan) {
 		join_thread=SDL_CreateThread(join_ping_thread_lan,NULL);
 	}
 	else {
 		join_thread=SDL_CreateThread(join_ping_thread_internet,NULL);
 	}
+#else
+	if (element_get_value(join_tab_id)==join_pane_lan) {
+		join_thread=SDL_CreateThread(join_ping_thread_lan,"join",NULL);
+	}
+	else {
+		join_thread=SDL_CreateThread(join_ping_thread_internet,"join",NULL);
+	}
+#endif
 }
 
 void join_ping_thread_end(void)

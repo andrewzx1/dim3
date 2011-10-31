@@ -244,7 +244,7 @@ bool select_model_wind_vertex_sel_poly(d3pnt *start_pnt,float *pv)
 	model_mesh_type		*mesh;
 	model_poly_type		*poly;
 
-		// clicked on a vertex?
+		// clicked on a poly vertex?
 		
 	mesh=&model.meshes[state.cur_mesh_idx];
 		
@@ -339,6 +339,21 @@ bool select_model_wind_polygon(d3pnt *start_pnt,bool check_only)
 		// are we checking only?
 
 	if (check_only) return(TRUE);
+	
+	// supergumba
+	// this is some temp code that can be used
+	// to quickly make quads by selecting triangles
+	// one after another
+/*	
+	poly_mask_set_sel(state.cur_mesh_idx,idx,TRUE);
+	if (poly_mask_count_sel(state.cur_mesh_idx)==2) {
+		polygon_make_quad(state.cur_mesh_idx);
+		poly_mask_clear_sel(state.cur_mesh_idx);
+		main_wind_draw();
+	}
+	
+	return(TRUE);
+*/	
 
 		// run the selection
 
