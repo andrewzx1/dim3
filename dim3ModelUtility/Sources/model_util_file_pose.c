@@ -32,7 +32,8 @@ and can be sold or given away.
 extern modelutility_settings_type		modelutility_settings;
 
 extern int model_xml_get_attribute_bone(model_type *model,int tag,char *tag_name);
-extern void model_write_bone_or_blank_attribute(model_type *model,char *attrib_name,int bone_idx);
+
+// supergumba -- eventually remove this code, this is v2 of pose reading
 
 /* =======================================================
 
@@ -40,7 +41,6 @@ extern void model_write_bone_or_blank_attribute(model_type *model,char *attrib_n
       
 ======================================================= */
 
-// supergumba -- this is v2 of poses
 bool model_read_v2_pose_xml(model_type *model)
 {
 	int						n,k,bone_idx,npose,pose_idx,cnt,
@@ -128,99 +128,3 @@ bool model_read_v2_pose_xml(model_type *model)
     return(TRUE);
 }
 
-/* =======================================================
-
-      Write Pose XML
-      
-======================================================= */
-
-/*
-bool write_bone_move(model_bone_move_type *bone_move)
-{
-    if ((bone_move->rot.x!=0) || (bone_move->rot.z!=0) || (bone_move->rot.y!=0)) return(TRUE);
-    if ((bone_move->mov.x!=1) || (bone_move->mov.z!=1) || (bone_move->mov.y!=1)) return(TRUE);
-	if (bone_move->acceleration!=0) return(TRUE);
-	if (bone_move->skip_blended) return(TRUE);
-    return(FALSE);
-}
-
-bool write_pose_xml(model_type *model)
-{
-	int						n,k;
-	char					path[1024];
-	bool					ok;
-    model_bone_move_type	*bone_move;
-	model_pose_type			*pose;
-
-	return(TRUE);		// supergumba -- testing
-	
-    xml_new_file();
-    
-    xml_add_tagstart("Model");
-    xml_add_tagend(FALSE);
-    
-        // model info
-    
-    xml_add_tagstart("Creator");
-    xml_add_attribute_text("name","dim3 Animator");
-    xml_add_attribute_int("version",model_current_version);
-    xml_add_tagend(TRUE);
-    
-        // poses
-   
-    xml_add_tagstart("Poses");
-    xml_add_tagend(FALSE);
-    
-    pose=model->poses;
-    
-    for (n=0;n!=model->npose;n++) {
-    
-        xml_add_tagstart("Pose");
-        xml_add_attribute_text("name",pose->name);
-        xml_add_tagend(FALSE);
-        
-        xml_add_tagstart("Bones");
-        xml_add_tagend(FALSE);
-        
-        bone_move=pose->bone_moves;
-        
-        for (k=0;k!=model->nbone;k++) {
-        
-            if (write_bone_move(bone_move)) {
-                xml_add_tagstart("Bone");
-                xml_add_attribute_text("name",model->bones[k].name);
-                xml_add_attribute_3_coord_float("rot",bone_move->rot.x,bone_move->rot.y,bone_move->rot.z);
-                xml_add_attribute_3_coord_float("move",bone_move->mov.x,bone_move->mov.y,bone_move->mov.z);
-				
-				xml_add_attribute_float("acceleration",bone_move->acceleration);
-				xml_add_attribute_boolean("skip_blended",bone_move->skip_blended);
-				
-				model_write_bone_or_blank_attribute(model,"constraint_bone",bone_move->constraint.bone_idx);
-				xml_add_attribute_3_coord_int("constraint_offset",bone_move->constraint.offset.x,bone_move->constraint.offset.y,bone_move->constraint.offset.z);
-
-				xml_add_tagend(TRUE);
-            }
-            
-            bone_move++;
-        }
-            
-        xml_add_tagclose("Bones");
-        xml_add_tagclose("Pose");
-    
-        pose++;
-    }
-    
-    xml_add_tagclose("Poses");
-
-        // finish model
-        
-    xml_add_tagclose("Model");
-    
-	sprintf(path,"%s/pose.xml",model->load_base_path);
-	ok=xml_save_file(path);
-
-    xml_close_file();
-
-	return(ok);
-}
-*/

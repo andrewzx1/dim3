@@ -34,13 +34,14 @@ extern modelutility_settings_type		modelutility_settings;
 char									deform_mode_str[][32]={"single_rotate","comulative_rotate",""};
 char									bone_v2_tags[max_model_bone][8];
 
+// supergumba -- eventually remove this code, this is v2 of mesh reading
+
 /* =======================================================
 
       Decode Mesh XML
       
 ======================================================= */
 
-// supergumba -- this is version 2 decode
 int model_find_v2_bone_tag(model_type *model,char *tag_name)
 {
 	int				n;

@@ -271,7 +271,7 @@ typedef struct		{
 typedef struct		{
 						bool								on,pass_through,moveable,
 															hilite,simple_collision,
-															lock_uv,lock_move,obscuring,
+															lock_uv,lock_move,
 															never_obscure,never_cull,rot_independent,
 															no_light_map,skip_light_map_trace,
 															no_halo_obscure,
