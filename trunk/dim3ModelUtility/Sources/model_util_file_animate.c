@@ -32,7 +32,8 @@ and can be sold or given away.
 extern modelutility_settings_type		modelutility_settings;
 
 extern int model_xml_get_attribute_bone(model_type *model,int tag,char *tag_name);
-extern void model_write_xml_bone(model_type *model,char *attrib_name,int bone_idx);
+
+// supergumba -- eventually remove this code, this is v2 of animate reading
 
 /* =======================================================
 
@@ -40,7 +41,6 @@ extern void model_write_xml_bone(model_type *model,char *attrib_name,int bone_id
       
 ======================================================= */
 
-// supergumba -- v2 of animate
 bool model_read_v2_animate_xml(model_type *model)
 {
 	int						n,k,t,nanimate,animate_idx,
@@ -192,164 +192,5 @@ bool model_read_v2_animate_xml(model_type *model)
     xml_close_file();
     
     return(TRUE);
-}
-
-/* =======================================================
-
-      Write Animate XML
-      
-======================================================= */
-
-bool write_animate_xml(model_type *model)
-{
-	int						n,k,t;
-	char					path[1024];
-	bool					ok;
-    model_pose_move_type	*pose_move;
-	model_animate_type		*animate;
-
-	return(TRUE);		// supergumba -- testing
-    
-    xml_new_file();
-    
-    xml_add_tagstart("Model");
-    xml_add_tagend(FALSE);
-    
-        // model info
-    
-    xml_add_tagstart("Creator");
-    xml_add_attribute_text("name","dim3 Animator");
-    xml_add_attribute_int("version",model_current_version);
-    xml_add_tagend(TRUE);
-    
-        // animations
-   
-    xml_add_tagstart("Animations");
-    xml_add_tagend(FALSE);
-    
-    animate=model->animates;
-    
-    for (n=0;n!=model->nanimate;n++) {
-    
-        xml_add_tagstart("Animation");
-        xml_add_attribute_text("name",animate->name);
-        xml_add_tagend(FALSE);
-        
-        xml_add_tagstart("Loop");
-        xml_add_attribute_boolean("repeat",animate->loop);
-        xml_add_attribute_boolean("no_smooth",animate->no_smooth);
-        xml_add_attribute_int("start",animate->loop_start);
-        xml_add_attribute_int("end",animate->loop_end);
-        xml_add_tagend(TRUE);
-        
-			// pose moves
-
-        xml_add_tagstart("Poses");
-        xml_add_tagend(FALSE);
-        
-        pose_move=animate->pose_moves;
-        
-        for (k=0;k!=animate->npose_move;k++) {
-        
-            xml_add_tagstart("Pose");
-			
-            xml_add_attribute_text("name",model->poses[pose_move->pose_idx].name);
-			
-            xml_add_attribute_int("time",pose_move->msec);
-            xml_add_attribute_3_coord_float("sway",pose_move->sway.x,pose_move->sway.y,pose_move->sway.z);
-            xml_add_attribute_3_coord_float("move",pose_move->mov.x,pose_move->mov.y,pose_move->mov.z);
- 
-			xml_add_attribute_float("acceleration",pose_move->acceleration);
-			
-            xml_add_attribute_text("sound",pose_move->sound.name);
- 			model_write_xml_bone(model,"sound_bone",pose_move->sound.bone_idx);
-			xml_add_attribute_float("sound_pitch",pose_move->sound.pitch);
-			xml_add_attribute_boolean("sound_global",pose_move->sound.no_position);
-			
-			if (pose_move->mesh_fade.mesh_idx!=-1) {
-				xml_add_attribute_text("mesh_fade",model->meshes[pose_move->mesh_fade.mesh_idx].name);
-			}
-			else {
-				xml_add_attribute_text("mesh_fade","");
-			}
-			xml_add_attribute_int("mesh_fade_in_time",pose_move->mesh_fade.fade_in_msec);
-			xml_add_attribute_int("mesh_fade_life_time",pose_move->mesh_fade.fade_life_msec);
-			xml_add_attribute_int("mesh_fade_out_time",pose_move->mesh_fade.fade_out_msec);
-
- 			model_write_xml_bone(model,"flash_bone",pose_move->flash.bone_idx);
-			xml_add_attribute_int("flash_intensity",pose_move->flash.intensity);
-			xml_add_attribute_int("flash_time",pose_move->flash.flash_msec);
-			xml_add_attribute_int("flash_fade_time",pose_move->flash.fade_msec);
-			xml_add_attribute_float("flash_exponent",pose_move->flash.exponent);
-			xml_add_attribute_color("flash_color",&pose_move->flash.col);
-			
-			xml_add_attribute_int("shake_distance",pose_move->shake.distance);
-			xml_add_attribute_int("shake_size",pose_move->shake.size);
-			xml_add_attribute_int("shake_time",pose_move->shake.life_msec);
-			
-			xml_add_tagend(FALSE);
-
-				// particles
-
-			xml_add_tagstart("Particles");
-			xml_add_tagend(FALSE);
-
-			for (t=0;t!=pose_move->particle.count;t++) {
-			
-				xml_add_tagstart("Particle");
-				xml_add_attribute_text("particle",pose_move->particle.particles[t].name);
-				model_write_xml_bone(model,"bone",pose_move->particle.particles[t].bone_idx);
-				xml_add_attribute_boolean("particle_rotate",pose_move->particle.particles[t].rotate);
-				xml_add_attribute_boolean("particle_motion",pose_move->particle.particles[t].motion);
-				xml_add_attribute_float("particle_motion_factor",pose_move->particle.particles[t].motion_factor);
-				xml_add_attribute_boolean("particle_stick",pose_move->particle.particles[t].stick);
-				xml_add_attribute_3_coord_int("particle_slop",pose_move->particle.particles[t].slop.x,pose_move->particle.particles[t].slop.y,pose_move->particle.particles[t].slop.z);
-				
-				xml_add_tagend(TRUE);
-			}
-
-			xml_add_tagclose("Particles");
-
-				// rings
-
-			xml_add_tagstart("Rings");
-			xml_add_tagend(FALSE);
-
-			for (t=0;t!=pose_move->ring.count;t++) {
-			
-				xml_add_tagstart("Ring");
-				xml_add_attribute_text("ring",pose_move->ring.rings[t].name);
-				model_write_xml_bone(model,"bone",pose_move->ring.rings[t].bone_idx);
-				xml_add_attribute_boolean("ring_angle",pose_move->ring.rings[t].angle);
-				xml_add_attribute_3_coord_int("ring_slop",pose_move->ring.rings[t].slop.x,pose_move->ring.rings[t].slop.y,pose_move->ring.rings[t].slop.z);
-				
-				xml_add_tagend(TRUE);
-			}
-
-			xml_add_tagclose("Rings");
-			
-			xml_add_tagclose("Pose");
-            
-            pose_move++;
-        }
-        
-        xml_add_tagclose("Poses");
-        xml_add_tagclose("Animation");
-        
-        animate++;
-    }
-
-    xml_add_tagclose("Animations");
-
-        // finish model
-        
-    xml_add_tagclose("Model");
-    
-	sprintf(path,"%s/animate.xml",model->load_base_path);
-	ok=xml_save_file(path);
-
-    xml_close_file();
-
-	return(ok);
 }
 

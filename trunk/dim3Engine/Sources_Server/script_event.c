@@ -78,7 +78,7 @@ JSStaticFunction	event_functions_modernize[]={
 							{"callSpawnWeapon",				js_event_call_spawn_weapon_func,				kJSPropertyAttributeDontDelete},
 							{0,0,0}};
 
-							// supergumba:modernize -- remove this all after modernization is finialized
+// supergumba:modernize -- remove this all after modernization is finialized
 JSStaticFunction	event_functions[]={
 							{"startTimer",					js_event_start_timer_func,						kJSPropertyAttributeDontDelete},
 							{"clearTimer",					js_event_clear_timer_func,						kJSPropertyAttributeDontDelete},
