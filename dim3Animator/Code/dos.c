@@ -73,7 +73,6 @@ void file_reset_state(void)
 	state.cur_bone_idx=-1;
 
 	state.cur_pose_idx=-1;
-	if (model.npose!=0) state.cur_pose_idx=0;
 	
 	state.cur_animate_idx=-1;
 	if (model.nanimate!=0) state.cur_animate_idx=0;

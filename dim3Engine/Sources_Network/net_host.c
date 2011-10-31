@@ -68,7 +68,11 @@ bool net_host_initialize(char *err_str)
 	host_start_shutdown=FALSE;
 	host_socket=D3_NULL_SOCKET;
 	
+#ifndef D3_SDL_1_3
 	host_thread=SDL_CreateThread(net_host_thread,NULL);
+#else
+	host_thread=SDL_CreateThread(net_host_thread,"host",NULL);
+#endif
 	if (host_thread==NULL) {
 		net_queue_shutdown(&host_queue);
 		strcpy(err_str,"Networking: Could not start host listener thread");

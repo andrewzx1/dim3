@@ -239,7 +239,7 @@ void draw_model_info(void)
 		sprintf(str,"Pose: %s",model.poses[pose_idx].name);
 	}
 	else {
-		strcpy(str,"Pose: (none)");
+		strcpy(str,"Pose: (Neutral)");
 	}
 
 	text_draw(x,y,15,NULL,str);

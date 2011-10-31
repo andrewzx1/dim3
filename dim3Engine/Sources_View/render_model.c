@@ -672,6 +672,11 @@ void render_model_transparent_normal(model_type *mdl,int mesh_idx,model_draw *dr
 			poly++;
 			continue;
 		}
+	
+			// set texture
+
+		frame=draw_mesh->textures[txt_idx].frame;
+		texture=&mdl->textures[txt_idx];
 
 			// blending changes
 			
@@ -685,11 +690,6 @@ void render_model_transparent_normal(model_type *mdl,int mesh_idx,model_draw *dr
 				glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 			}
 		}
-	
-			// set texture
-
-		frame=draw_mesh->textures[txt_idx].frame;
-		texture=&mdl->textures[txt_idx];
 
 		gl_texture_transparent_set(texture->frames[frame].bitmap.gl_id,draw_mesh->alpha);
 
@@ -757,6 +757,11 @@ void render_model_transparent_shader(model_type *mdl,int mesh_idx,model_draw *dr
 			poly++;
 			continue;
 		}
+	
+			// get texture
+
+		frame=draw_mesh->textures[txt_idx].frame;
+		texture=&mdl->textures[txt_idx];
 
 			// blending changes
 			
@@ -770,11 +775,6 @@ void render_model_transparent_shader(model_type *mdl,int mesh_idx,model_draw *dr
 				glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 			}
 		}
-	
-			// get texture
-
-		frame=draw_mesh->textures[txt_idx].frame;
-		texture=&mdl->textures[txt_idx];
 
 			// set hilite and diffuse on a per
 			// mesh basis
@@ -1062,11 +1062,10 @@ void render_model_build_vertex_lists(model_draw *draw,bool always_build)
 		mesh=&mdl->meshes[n];
 
 			// no culling
+			// initial array is set to 0s so we
+			// can just skip out
 
-		if ((mesh->never_cull) || (draw->no_culling)) {
-			bzero(draw->setup.mesh_arrays[n].poly_cull_array,mesh->npoly);
-			continue;
-		}
+		if ((mesh->never_cull) || (draw->no_culling)) continue;
 
 			// culled
 
