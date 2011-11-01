@@ -33,6 +33,7 @@ and can be sold or given away.
 #include "scripts.h"
 #include "objects.h"
 
+extern iface_type		iface;
 extern server_type		server;
 extern js_type			js;
 
