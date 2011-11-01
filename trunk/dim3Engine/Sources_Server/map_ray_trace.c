@@ -64,31 +64,6 @@ void ray_trace_shutdown(void)
 
 /* =======================================================
 
-      Ray Trace Vector Utilities
-      
-======================================================= */
-/*
-static inline void ray_trace_create_vector_from_points(d3vct *v,int x1,int y1,int z1,int x2,int y2,int z2)
-{
-	v->x=(float)(x1-x2);
-	v->y=(float)(y1-y2);
-	v->z=(float)(z1-z2);
-}
-
-static inline void ray_trace_vector_cross_product(d3vct *cp,d3vct *v1,d3vct *v2)
-{
-	cp->x=(v1->y*v2->z)-(v2->y*v1->z);
-	cp->y=(v1->z*v2->x)-(v2->z*v1->x);
-	cp->z=(v1->x*v2->y)-(v2->x*v1->y);
-}
-
-static inline float ray_trace_vector_inner_product(d3vct *v1,d3vct *v2)
-{
-	return((v1->x*v2->x)+(v1->y*v2->y)+(v1->z*v2->z));
-}
-*/
-/* =======================================================
-
       Ray Trace Contact Utility
       
 ======================================================= */
@@ -117,64 +92,8 @@ ray_trace_check_item_type* ray_trace_get_last_item_list(int *item_count)
       Ray Trace Triangles and Polygons
       
 ======================================================= */
-/*
-float ray_trace_triangle(d3pnt *spt,d3vct *vct,d3pnt *hpt,int *x,int *y,int *z)
-{
-	float				det,invDet,t,u,v;
-	d3vct				perpVector,lineToTrigPointVector,lineToTrigPerpVector,v1,v2;
-	
-		// get triangle vectors
-		
-	ray_trace_create_vector_from_points(&v1,x[1],y[1],z[1],x[0],y[0],z[0]);
-	ray_trace_create_vector_from_points(&v2,x[2],y[2],z[2],x[0],y[0],z[0]);
-	
-		// calculate the determinate
 
-	ray_trace_vector_cross_product(&perpVector,vct,&v2);
-	det=ray_trace_vector_inner_product(&v1,&perpVector);
-	
-		// is line on the same plane as triangle?
-		
-	if ((det>-0.00001f) && (det<0.00001f)) return(-1.0f);
-
-		// get the inverse determinate
-
-	invDet=1.0f/det;
-
-		// calculate triangle U and test
-	
-	ray_trace_create_vector_from_points(&lineToTrigPointVector,spt->x,spt->y,spt->z,x[0],y[0],z[0]);
-	u=invDet*ray_trace_vector_inner_product(&lineToTrigPointVector,&perpVector);
-	if ((u<0.0f) || (u>1.0f)) return(-1.0f);
-	
-		// calculate triangle V and test
-
-	ray_trace_vector_cross_product(&lineToTrigPerpVector,&lineToTrigPointVector,&v1);
-	v=invDet*ray_trace_vector_inner_product(vct,&lineToTrigPerpVector);
-	if ((v<0.0f) || ((u+v)>1.0f)) return(-1.0f);
-	
-		// get line T for point(t) =  start_point + (vector*t)
-		// -t are on the negative vector behind the point, so ignore
-
-	t=invDet*ray_trace_vector_inner_product(&v2,&lineToTrigPerpVector);
-	if (t<0.0f) return(-1.0f);
-	
-		// get point on line of intersection
-		
-	hpt->x=spt->x+(int)(vct->x*t);
-	hpt->y=spt->y+(int)(vct->y*t);
-	hpt->z=spt->z+(int)(vct->z*t);
-	
-		// return t
-		
-	return(t);
-}
-*/
-
-
-
-
-float ray_trace_triangle_2(d3pnt *spt,d3vct *vct,d3pnt *hpt,d3pnt *tpt_0,d3pnt *tpt_1,d3pnt *tpt_2)
+float ray_trace_triangle(d3pnt *spt,d3vct *vct,d3pnt *hpt,d3pnt *tpt_0,d3pnt *tpt_1,d3pnt *tpt_2)
 {
 	float				det,invDet,t,u,v;
 	d3vct				perpVector,lineToTrigPointVector,lineToTrigPerpVector,v1,v2;
@@ -286,7 +205,7 @@ float ray_trace_mesh_polygon(d3pnt *spt,d3vct *vct,d3pnt *hpt,map_mesh_type *mes
 	trig_count=poly->ptsz-2;
 	
 	for (n=0;n<trig_count;n++) {
-		hit_t=ray_trace_triangle_2(spt,vct,hpt,tpt_0,&mesh->vertexes[poly->v[n+1]],&mesh->vertexes[poly->v[n+2]]);
+		hit_t=ray_trace_triangle(spt,vct,hpt,tpt_0,&mesh->vertexes[poly->v[n+1]],&mesh->vertexes[poly->v[n+2]]);
 		if (hit_t!=-1.0f) return(hit_t);
 	}
 	
@@ -314,7 +233,7 @@ float ray_trace_quad(d3pnt *spt,d3vct *vct,d3pnt *hpt,int ptsz,int *x,int *y,int
 	tpt_2.y=y[2];
 	tpt_2.z=z[2];
 		
-	hit_t=ray_trace_triangle_2(spt,vct,hpt,&tpt_0,&tpt_1,&tpt_2);
+	hit_t=ray_trace_triangle(spt,vct,hpt,&tpt_0,&tpt_1,&tpt_2);
 	if (hit_t!=-1.0f) return(hit_t);
 	
 		// second trig of quad
@@ -323,7 +242,7 @@ float ray_trace_quad(d3pnt *spt,d3vct *vct,d3pnt *hpt,int ptsz,int *x,int *y,int
 	tpt_3.y=y[3];
 	tpt_3.z=z[3];
 		
-	hit_t=ray_trace_triangle_2(spt,vct,hpt,&tpt_0,&tpt_2,&tpt_3);
+	hit_t=ray_trace_triangle(spt,vct,hpt,&tpt_0,&tpt_2,&tpt_3);
 	if (hit_t!=-1.0f) return(hit_t);
 	
 	return(-1.0f);
@@ -1450,7 +1369,7 @@ bool ray_trace_mesh_poly_plane_by_vector(int cnt,d3pnt *spt,d3vct *vct,d3pnt *hp
 				// this is one plane so the first
 				// hit is always the right hit
 				
-			if (ray_trace_triangle_2(sp,vp,hp,tpt_0,&plane_vp[k+1],&plane_vp[k+2])!=-1.0f) {
+			if (ray_trace_triangle(sp,vp,hp,tpt_0,&plane_vp[k+1],&plane_vp[k+2])!=-1.0f) {
 				hits=TRUE;
 				break;
 			}

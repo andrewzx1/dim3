@@ -32,9 +32,16 @@ and can be sold or given away.
 #include "interface.h"
 #include "objects.h"
 
+// supergumba -- move to defs
+
 #define view_obscure_split_div			20000
 #define view_obscure_max_split			8
 #define view_obscure_skip_range			50000
+
+typedef struct		{
+						int						mesh_idx,poly_idx,
+												dist;
+					} view_obscure_poly_type;
 
 extern map_type				map;
 extern camera_type			camera;
@@ -45,7 +52,7 @@ extern setup_type			setup;
 
 unsigned char				*view_obscure_hits;
 d3vct						*view_obscure_vcts;
-poly_pointer_type			*view_obscure_polys;
+view_obscure_poly_type		*view_obscure_polys;
 
 /* =======================================================
 
@@ -74,22 +81,11 @@ bool view_obscure_initialize(void)
 	mesh=map.mesh.meshes;
 
 	for (n=0;n!=map.mesh.nmesh;n++) {
-	
-			// all polys in a mesh
-			
-		if (mesh->flag.obscuring) {
-			cnt+=mesh->npoly;
-		}
-		
-			// specific polys
-			
-		else {
-			poly=mesh->polys;
+		poly=mesh->polys;
 
-			for (k=0;k!=mesh->npoly;k++) {
-				if (poly->flag.obscuring) cnt++;
-				poly++;
-			}
+		for (k=0;k!=mesh->npoly;k++) {
+			if (poly->flag.obscuring) cnt++;
+			poly++;
 		}
 		
 		mesh++;
@@ -104,7 +100,7 @@ bool view_obscure_initialize(void)
 
 		// memory for polys
 
-	view_obscure_polys=(poly_pointer_type*)malloc(cnt*sizeof(poly_pointer_type));
+	view_obscure_polys=(view_obscure_poly_type*)malloc(cnt*sizeof(view_obscure_poly_type));
 	if (view_obscure_polys==NULL) return(FALSE);
 
 		// memory for rays and hits
@@ -152,16 +148,16 @@ void view_obscure_release(void)
       
 ======================================================= */
 
-bool view_obscure_check_box(d3pnt *camera_pnt,int skip_mesh_idx,d3pnt *min,d3pnt *max)
+bool view_obscure_check_box(d3pnt *camera_pnt,int skip_mesh_idx,d3pnt *min,d3pnt *max,int dist)
 {
-	int					n,k,x,y,z,kx,ky,kz,ray_cnt,hit_cnt,last_mesh_idx;
-	float				hit_t;
-	unsigned char		*hit;
-	d3pnt				mid,div,div_add,ray_min,ray_max,hpt;
-	d3vct				*vct;
-	map_mesh_type		*mesh;
-	map_mesh_poly_type	*poly;
-	poly_pointer_type	*poly_ptr;
+	int						n,k,x,y,z,kx,ky,kz,ray_cnt,hit_cnt,last_mesh_idx;
+	float					hit_t;
+	unsigned char			*hit;
+	d3pnt					mid,div,div_add,ray_min,ray_max,hpt;
+	d3vct					*vct;
+	map_mesh_type			*mesh;
+	map_mesh_poly_type		*poly;
+	view_obscure_poly_type	*poly_ptr;
 
 		// if camera is inside this box, do
 		// not obscure
@@ -359,6 +355,13 @@ bool view_obscure_check_box(d3pnt *camera_pnt,int skip_mesh_idx,d3pnt *min,d3pnt
 				continue;
 			}
 		}
+		
+			// distance poly elimination
+			
+		if (poly_ptr->dist>dist) {
+			poly_ptr++;
+			continue;
+		}
 
 			// min-max poly elimination
 			
@@ -408,16 +411,16 @@ bool view_obscure_check_box(d3pnt *camera_pnt,int skip_mesh_idx,d3pnt *min,d3pnt
 
 void view_obscure_run(void)
 {
-	int					n,k,remove_count,org_count,
-						mesh_idx;
-	d3pnt				min,max,camera_pnt;
-	poly_pointer_type	*poly_ptr;
-	map_mesh_type		*mesh;
-	map_mesh_poly_type	*poly;
-	obj_type			*obj;
-	proj_type			*proj;
-	model_type			*mdl;
-	effect_type			*effect;
+	int						n,k,dist,remove_count,org_count,
+							mesh_idx;
+	d3pnt					min,max,camera_pnt;
+	view_obscure_poly_type	*poly_ptr;
+	map_mesh_type			*mesh;
+	map_mesh_poly_type		*poly;
+	obj_type				*obj;
+	proj_type				*proj;
+	model_type				*mdl;
+	effect_type				*effect;
 	
 		// view obscure on?
 
@@ -434,33 +437,17 @@ void view_obscure_run(void)
 		mesh_idx=view.render->draw_list.items[n].idx;
 		mesh=&map.mesh.meshes[mesh_idx];
 		
-			// all over mesh obscure
-			
-		if (mesh->flag.obscuring) {
-			poly=mesh->polys;
+		poly=mesh->polys;
 
-			for (k=0;k!=mesh->npoly;k++) {
+		for (k=0;k!=mesh->npoly;k++) {
+			if (poly->flag.obscuring) {
 				poly_ptr->mesh_idx=mesh_idx;
 				poly_ptr->poly_idx=k;
+				poly_ptr->dist=view_cull_distance_to_view_center(poly->box.mid.x,poly->box.mid.y,poly->box.mid.z);
 				poly_ptr++;
-				poly++;
 			}
-		}
-		
-			// single poly obscure
-			
-		else {
-			poly=mesh->polys;
 
-			for (k=0;k!=mesh->npoly;k++) {
-				if (poly->flag.obscuring) {
-					poly_ptr->mesh_idx=mesh_idx;
-					poly_ptr->poly_idx=k;
-					poly_ptr++;
-				}
-
-				poly++;
-			}
+			poly++;
 		}
 	}
 
@@ -486,7 +473,8 @@ void view_obscure_run(void)
 
 			// if too close, don't obscure
 
-		if (view.render->draw_list.items[n].dist<view_obscure_skip_range) continue;
+		dist=view.render->draw_list.items[n].dist;
+		if (dist<view_obscure_skip_range) continue;
 
 			// check for removal
 
@@ -499,7 +487,7 @@ void view_obscure_run(void)
 				mesh=&map.mesh.meshes[mesh_idx];
 				if (mesh->flag.never_obscure) break;
 
-				if (!view_obscure_check_box(&camera_pnt,mesh_idx,&mesh->box.min,&mesh->box.max)) {
+				if (!view_obscure_check_box(&camera_pnt,mesh_idx,&mesh->box.min,&mesh->box.max,dist)) {
 					view.render->draw_list.items[n].type=view_render_type_none;
 					remove_count++;
 					view.count.mesh--;
@@ -515,7 +503,7 @@ void view_obscure_run(void)
 				mdl=server.model_list.models[obj->draw.model_idx];
 				model_get_view_complex_bounding_volume(mdl,&obj->draw.pnt,&obj->ang,&min,&max);
 
-				if (!view_obscure_check_box(&camera_pnt,-1,&min,&max)) {
+				if (!view_obscure_check_box(&camera_pnt,-1,&min,&max,dist)) {
 					view.render->draw_list.items[n].type=view_render_type_none;
 					remove_count++;
 					view.count.model--;
@@ -529,7 +517,7 @@ void view_obscure_run(void)
 				mdl=server.model_list.models[proj->draw.model_idx];
 				model_get_view_complex_bounding_volume(mdl,&proj->draw.pnt,&proj->ang,&min,&max);
 
-				if (!view_obscure_check_box(&camera_pnt,-1,&min,&max)) {
+				if (!view_obscure_check_box(&camera_pnt,-1,&min,&max,dist)) {
 					view.render->draw_list.items[n].type=view_render_type_none;
 					remove_count++;
 					view.count.model--;
@@ -542,7 +530,7 @@ void view_obscure_run(void)
 				effect=server.effect_list.effects[view.render->draw_list.items[n].idx];
 				effect_draw_get_bound_box(effect,&min,&max);
 
-				if (!view_obscure_check_box(&camera_pnt,-1,&min,&max)) {
+				if (!view_obscure_check_box(&camera_pnt,-1,&min,&max,dist)) {
 					view.render->draw_list.items[n].type=view_render_type_none;
 					remove_count++;
 					view.count.effect--;
