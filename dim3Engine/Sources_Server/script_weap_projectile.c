@@ -33,19 +33,20 @@ and can be sold or given away.
 #include "scripts.h"
 #include "objects.h"
 
+extern iface_type		iface;
 extern js_type			js;
 
-JSValueRef js_weap_projectile_get_fireBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-JSValueRef js_weap_projectile_get_barrelBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_weap_projectile_get_fireBoneName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_weap_projectile_get_barrelBoneName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_weap_projectile_get_firePoseName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-JSValueRef js_weap_projectile_get_objectFireBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_weap_projectile_get_objectFireBoneName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_weap_projectile_get_objectFirePoseName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_weap_projectile_get_repeat_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_weap_projectile_get_repeat_tick(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
-bool js_weap_projectile_set_fireBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-bool js_weap_projectile_set_barrelBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_weap_projectile_set_fireBoneName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_weap_projectile_set_barrelBoneName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 bool js_weap_projectile_set_firePoseName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
-bool js_weap_projectile_set_objectFireBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_weap_projectile_set_objectFireBoneName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 bool js_weap_projectile_set_objectFirePoseName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 bool js_weap_projectile_set_repeat_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 bool js_weap_projectile_set_repeat_tick(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
@@ -67,11 +68,22 @@ JSValueRef js_weap_projectile_spawn_from_center_slop_func(JSContextRef cx,JSObje
 JSValueRef js_weap_projectile_spawn_from_center_multi_slop_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_weap_projectile_spawn_from_center_offset_angle_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
-JSStaticValue 		weap_projectile_props[]={
-							{"fireBoneTag",				js_weap_projectile_get_fireBoneTag,				js_weap_projectile_set_fireBoneTag,				kJSPropertyAttributeDontDelete},
-							{"barrelBoneTag",			js_weap_projectile_get_barrelBoneTag,			js_weap_projectile_set_barrelBoneTag,			kJSPropertyAttributeDontDelete},
+JSStaticValue 		weap_projectile_props_modernize[]={
+							{"fireBoneName",			js_weap_projectile_get_fireBoneName,			js_weap_projectile_set_fireBoneName,			kJSPropertyAttributeDontDelete},
+							{"barrelBoneName",			js_weap_projectile_get_barrelBoneName,			js_weap_projectile_set_barrelBoneName,			kJSPropertyAttributeDontDelete},
 							{"firePoseName",			js_weap_projectile_get_firePoseName,			js_weap_projectile_set_firePoseName,			kJSPropertyAttributeDontDelete},
-							{"objectFireBoneTag",		js_weap_projectile_get_objectFireBoneTag,		js_weap_projectile_set_objectFireBoneTag,		kJSPropertyAttributeDontDelete},
+							{"objectFireBoneName",		js_weap_projectile_get_objectFireBoneName,		js_weap_projectile_set_objectFireBoneName,		kJSPropertyAttributeDontDelete},
+							{"objectFirePoseName",		js_weap_projectile_get_objectFirePoseName,		js_weap_projectile_set_objectFirePoseName,		kJSPropertyAttributeDontDelete},
+							{"repeatOn",				js_weap_projectile_get_repeat_on,				js_weap_projectile_set_repeat_on,				kJSPropertyAttributeDontDelete},
+							{"repeatTick",				js_weap_projectile_get_repeat_tick,				js_weap_projectile_set_repeat_tick,				kJSPropertyAttributeDontDelete},
+							{0,0,0,0}};
+
+// supergumba:modernize -- remove this all after modernization is finialized
+JSStaticValue 		weap_projectile_props[]={
+							{"fireBoneTag",				js_weap_projectile_get_fireBoneName,			js_weap_projectile_set_fireBoneName,			kJSPropertyAttributeDontDelete},
+							{"barrelBoneTag",			js_weap_projectile_get_barrelBoneName,			js_weap_projectile_set_barrelBoneName,			kJSPropertyAttributeDontDelete},
+							{"firePoseName",			js_weap_projectile_get_firePoseName,			js_weap_projectile_set_firePoseName,			kJSPropertyAttributeDontDelete},
+							{"objectFireBoneTag",		js_weap_projectile_get_objectFireBoneName,		js_weap_projectile_set_objectFireBoneName,		kJSPropertyAttributeDontDelete},
 							{"objectFirePoseName",		js_weap_projectile_get_objectFirePoseName,		js_weap_projectile_set_objectFirePoseName,		kJSPropertyAttributeDontDelete},
 							{"repeatOn",				js_weap_projectile_get_repeat_on,				js_weap_projectile_set_repeat_on,				kJSPropertyAttributeDontDelete},
 							{"repeatTick",				js_weap_projectile_get_repeat_tick,				js_weap_projectile_set_repeat_tick,				kJSPropertyAttributeDontDelete},
@@ -107,7 +119,12 @@ JSClassRef			weap_projectile_class;
 
 void script_init_weap_projectile_object(void)
 {
-	weap_projectile_class=script_create_class("weap_projectile_class",weap_projectile_props,weap_projectile_functions);
+	if (iface.project.modernize) {
+		weap_projectile_class=script_create_class("weap_projectile_class",weap_projectile_props_modernize,weap_projectile_functions);
+	}
+	else {
+		weap_projectile_class=script_create_class("weap_projectile_class",weap_projectile_props,weap_projectile_functions);
+	}
 }
 
 void script_free_weap_projectile_object(void)
@@ -126,7 +143,7 @@ JSObjectRef script_add_weap_projectile_object(JSContextRef cx,JSObjectRef parent
       
 ======================================================= */
 
-JSValueRef js_weap_projectile_get_fireBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
+JSValueRef js_weap_projectile_get_fireBoneName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	weapon_type		*weap;
 
@@ -134,7 +151,7 @@ JSValueRef js_weap_projectile_get_fireBoneTag(JSContextRef cx,JSObjectRef j_obj,
 	return(script_string_to_value(cx,weap->proj.fire_bone_name));
 }
 
-JSValueRef js_weap_projectile_get_barrelBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
+JSValueRef js_weap_projectile_get_barrelBoneName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	weapon_type		*weap;
 
@@ -150,7 +167,7 @@ JSValueRef js_weap_projectile_get_firePoseName(JSContextRef cx,JSObjectRef j_obj
 	return(script_string_to_value(cx,weap->proj.fire_pose_name));
 }
 
-JSValueRef js_weap_projectile_get_objectFireBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
+JSValueRef js_weap_projectile_get_objectFireBoneName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	weapon_type		*weap;
 
@@ -188,7 +205,7 @@ JSValueRef js_weap_projectile_get_repeat_tick(JSContextRef cx,JSObjectRef j_obj,
       
 ======================================================= */
 
-bool js_weap_projectile_set_fireBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+bool js_weap_projectile_set_fireBoneName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
@@ -198,7 +215,7 @@ bool js_weap_projectile_set_fireBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStri
 	return(TRUE);
 }
 
-bool js_weap_projectile_set_barrelBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+bool js_weap_projectile_set_barrelBoneName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
@@ -218,7 +235,7 @@ bool js_weap_projectile_set_firePoseName(JSContextRef cx,JSObjectRef j_obj,JSStr
 	return(TRUE);
 }
 
-bool js_weap_projectile_set_objectFireBoneTag(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+bool js_weap_projectile_set_objectFireBoneName(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
 	weapon_type		*weap;
 	
