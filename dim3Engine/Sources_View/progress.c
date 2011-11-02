@@ -84,7 +84,8 @@ void progress_shutdown(void)
 
 void progress_next(void)
 {
-	int				lft,rgt,top,bot,mid,rgt2;
+	int				lft,rgt,top,bot,mid,rgt2,
+					ty,by;
 
 	progress_current++;
 	
@@ -100,11 +101,13 @@ void progress_next(void)
 
 	gl_texture_clear(0);			// progress can be called while baseutility loads bitmaps, need to reset the current bitmap so it doesn't get lost
 
+	gui_get_background_letterbox(&progress_bitmap,&ty,&by);
+
 	if (gl_check_texture_rectangle_ok()) {
-		view_primitive_2D_texture_quad_rectangle(progress_bitmap.gl_id,1.0f,0,iface.scale_x,0,iface.scale_y,progress_bitmap.wid,progress_bitmap.high);
+		view_primitive_2D_texture_quad_rectangle(progress_bitmap.gl_id,1.0f,0,iface.scale_x,ty,by,progress_bitmap.wid,progress_bitmap.high);
 	}
 	else {
-		view_primitive_2D_texture_quad(progress_bitmap.gl_id,NULL,1.0f,0,iface.scale_x,0,iface.scale_y,0.0f,1.0f,0.0f,1.0f);
+		view_primitive_2D_texture_quad(progress_bitmap.gl_id,NULL,1.0f,0,iface.scale_x,ty,by,0.0f,1.0f,0.0f,1.0f);
 	}
 	
 		// draw the progress background

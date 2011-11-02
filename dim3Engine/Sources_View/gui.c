@@ -128,8 +128,28 @@ void gui_shutdown(void)
       
 ======================================================= */
 
+void gui_get_background_letterbox(bitmap_type *bitmap,int *ty,int *by)
+{
+	int			high;
+	
+		// scale into letterbox if scale is wrong
+		// use real screen size to check, then convert
+		// to interface size
+		
+	*ty=0;
+	*by=iface.scale_y;
+	
+	high=(setup.screen.x_sz*bitmap->high)/bitmap->wid;
+	if (high<setup.screen.y_sz) {
+		high=(iface.scale_y*high)/setup.screen.y_sz;
+		*ty=(iface.scale_y-high)>>1;
+		*by=(*ty)+high;
+	}
+}
+
 void gui_draw_background(float alpha)
 {
+	int				ty,by;
 	bitmap_type		*bitmap;
 	
 	gl_2D_view_interface();
@@ -144,12 +164,14 @@ void gui_draw_background(float alpha)
 		// background image
 
 	bitmap=view_images_get_bitmap(gui_background_image_idx);
+		
+	gui_get_background_letterbox(bitmap,&ty,&by);
 
 	if (gl_check_texture_rectangle_ok()) {
-		view_primitive_2D_texture_quad_rectangle(bitmap->gl_id,alpha,0,iface.scale_x,0,iface.scale_y,bitmap->wid,bitmap->high);
+		view_primitive_2D_texture_quad_rectangle(bitmap->gl_id,alpha,0,iface.scale_x,ty,by,bitmap->wid,bitmap->high);
 	}
 	else {
-		view_primitive_2D_texture_quad(bitmap->gl_id,NULL,alpha,0,iface.scale_x,0,iface.scale_y,0.0f,1.0f,0.0f,1.0f);
+		view_primitive_2D_texture_quad(bitmap->gl_id,NULL,alpha,0,iface.scale_x,ty,by,0.0f,1.0f,0.0f,1.0f);
 	}
 }
 

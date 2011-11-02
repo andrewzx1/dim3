@@ -440,12 +440,27 @@ void view_obscure_run(void)
 		poly=mesh->polys;
 
 		for (k=0;k!=mesh->npoly;k++) {
-			if (poly->flag.obscuring) {
-				poly_ptr->mesh_idx=mesh_idx;
-				poly_ptr->poly_idx=k;
-				poly_ptr->dist=view_cull_distance_to_view_center(poly->box.mid.x,poly->box.mid.y,poly->box.mid.z);
-				poly_ptr++;
+		
+				// only use obscuring polys
+				
+			if (!poly->flag.obscuring) {
+				poly++;
+				continue;
 			}
+			
+				// skip polys clipped by normals
+				
+			if (((poly->tangent_space.normal.x*(float)(poly->box.mid.x-view.render->camera.pnt.x))+(poly->tangent_space.normal.y*(float)(poly->box.mid.y-view.render->camera.pnt.y))+(poly->tangent_space.normal.z*(float)(poly->box.mid.z-view.render->camera.pnt.z)))>map.optimize.cull_angle) {
+				poly++;
+				continue;
+			}
+			
+				// add poly to list
+
+			poly_ptr->mesh_idx=mesh_idx;
+			poly_ptr->poly_idx=k;
+			poly_ptr->dist=view_cull_distance_to_view_center(poly->box.mid.x,poly->box.mid.y,poly->box.mid.z);
+			poly_ptr++;
 
 			poly++;
 		}
