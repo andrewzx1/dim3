@@ -45,20 +45,21 @@ and can be sold or given away.
 #define item_interface_settings					1
 #define item_interface_intro					2
 #define item_interface_setup					3
-#define item_interface_hud						4
-#define item_interface_virtual_control			5
-#define item_interface_radar					6
-#define item_interface_multiplayer				7
-#define item_interface_menu						8
-#define item_interface_chooser					9
-#define item_interface_sound					10
-#define item_interface_particle					11
-#define item_interface_ring						12
-#define item_interface_halo						13
-#define item_interface_mark						14
-#define item_interface_crosshair				15
-#define item_interface_action					16
-#define item_interface_shader					17
+#define item_interface_progress					4
+#define item_interface_hud						5
+#define item_interface_virtual_control			6
+#define item_interface_radar					7
+#define item_interface_multiplayer				8
+#define item_interface_menu						9
+#define item_interface_chooser					10
+#define item_interface_sound					11
+#define item_interface_particle					12
+#define item_interface_ring						13
+#define item_interface_halo						14
+#define item_interface_mark						15
+#define item_interface_crosshair				16
+#define item_interface_action					17
+#define item_interface_shader					18
 
 //
 // intro button types

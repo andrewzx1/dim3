@@ -456,6 +456,10 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\dim3Setup\Code\property_palette_progress.c"
+						>
+					</File>
+					<File
 						RelativePath="..\..\dim3Setup\Code\property_palette_radar.c"
 						>
 					</File>

@@ -954,8 +954,15 @@ void render_model_setup(model_draw *draw,int tick)
 			// or shaders
 		
 		draw->meshes[n].has_opaque=FALSE;
-		draw->meshes[n].has_transparent=(draw->meshes[n].alpha!=1.0f);
 		draw->meshes[n].has_glow=FALSE;
+
+		if (draw->meshes[n].alpha!=1.0f) {
+			draw->meshes[n].has_transparent=TRUE;
+			draw->has_transparent=TRUE;
+		}
+		else {
+			draw->meshes[n].has_transparent=FALSE;
+		}
 
 		poly=mesh->polys;
 

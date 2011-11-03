@@ -88,6 +88,10 @@ void property_palette_fill(void)
 			property_palette_fill_setup();
 			return;
 
+		case item_interface_progress:
+			property_palette_fill_progress();
+			return;
+
 		case item_interface_hud:
 			property_palette_fill_hud();
 			return;
@@ -217,6 +221,10 @@ bool property_palette_click(d3pnt *pnt,bool double_click)
 
 		case item_interface_setup:
 			property_palette_click_setup(property_palette.item_id,double_click);
+			break;
+
+		case item_interface_progress:
+			property_palette_click_progress(property_palette.item_id,double_click);
 			break;
 
 		case item_interface_hud:

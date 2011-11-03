@@ -722,13 +722,12 @@ void iface_read_settings_interface(iface_type *iface)
 		iface->progress.rx=xml_get_attribute_int(progress_tag,"right_x");
 		iface->progress.ty=xml_get_attribute_int(progress_tag,"top_y");
 		iface->progress.by=xml_get_attribute_int(progress_tag,"bottom_y");
-		iface->progress.text_size=xml_get_attribute_int(progress_tag,"text_size");
 		iface->progress.outline=xml_get_attribute_boolean(progress_tag,"outline");
+		iface->progress.overlay=xml_get_attribute_boolean(progress_tag,"overlay");
 		xml_get_attribute_color(progress_tag,"base_color_start",&iface->progress.base_color_start);
 		xml_get_attribute_color(progress_tag,"base_color_end",&iface->progress.base_color_end);
 		xml_get_attribute_color(progress_tag,"hilite_color_start",&iface->progress.hilite_color_start);
 		xml_get_attribute_color(progress_tag,"hilite_color_end",&iface->progress.hilite_color_end);
-		xml_get_attribute_color(progress_tag,"text_color",&iface->progress.text_color);
 		xml_get_attribute_color(progress_tag,"outline_color",&iface->progress.outline_color);
 	}
 	
@@ -1338,13 +1337,12 @@ bool iface_write_settings_interface(iface_type *iface)
 	xml_add_attribute_int("right_x",iface->progress.rx);
 	xml_add_attribute_int("top_y",iface->progress.ty);
 	xml_add_attribute_int("bottom_y",iface->progress.by);
-	xml_add_attribute_int("text_size",iface->progress.text_size);
 	xml_add_attribute_boolean("outline",iface->progress.outline);
+	xml_add_attribute_boolean("overlay",iface->progress.overlay);
 	xml_add_attribute_color("base_color_start",&iface->progress.base_color_start);
 	xml_add_attribute_color("base_color_end",&iface->progress.base_color_end);
 	xml_add_attribute_color("hilite_color_start",&iface->progress.hilite_color_start);
 	xml_add_attribute_color("hilite_color_end",&iface->progress.hilite_color_end);
-	xml_add_attribute_color("text_color",&iface->progress.text_color);
 	xml_add_attribute_color("outline_color",&iface->progress.outline_color);
 	xml_add_tagend(TRUE);
 
