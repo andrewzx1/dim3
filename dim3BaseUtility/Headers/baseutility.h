@@ -804,11 +804,11 @@ typedef struct		{
 //
 
 typedef struct		{
-						int								lx,rx,ty,by,text_size;
-						bool							outline;
+						int								lx,rx,ty,by;
+						bool							outline,overlay;
 						d3col							base_color_start,base_color_end,
 														hilite_color_start,hilite_color_end,
-														text_color,outline_color;
+														outline_color;
 					} iface_progress_type;
 					
 //

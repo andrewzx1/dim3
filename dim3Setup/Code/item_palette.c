@@ -100,6 +100,7 @@ void item_palette_fill(void)
 	list_palette_add_item(&item_palette,item_interface_settings,0,"Settings",(state.cur_item==item_interface_settings),FALSE);
 	list_palette_add_item(&item_palette,item_interface_intro,0,"Intro",(state.cur_item==item_interface_intro),FALSE);
 	list_palette_add_item(&item_palette,item_interface_setup,0,"Setup",(state.cur_item==item_interface_setup),FALSE);
+	list_palette_add_item(&item_palette,item_interface_progress,0,"Progress",(state.cur_item==item_interface_progress),FALSE);
 	list_palette_add_item(&item_palette,item_interface_hud,0,"HUD",(state.cur_item==item_interface_hud),FALSE);
 	list_palette_add_item(&item_palette,item_interface_virtual_control,0,"Virtual Control",(state.cur_item==item_interface_virtual_control),FALSE);
 	list_palette_add_item(&item_palette,item_interface_radar,0,"Radar",(state.cur_item==item_interface_radar),FALSE);

@@ -81,23 +81,10 @@ and can be sold or given away.
 #define kSettingsColorButtonText				101
 #define kSettingsColorButtonOutline				102
 
-#define kSettingColorSystemMetric				103
+#define kSettingColorSystemMetric				110
 
-#define kSettingsProgressLeft					110
-#define kSettingsProgressRight					111
-#define kSettingsProgressTop					112
-#define kSettingsProgressBottom					113
-#define kSettingsProgressTextSize				114
-#define kSettingsProgressOutline				115
-#define kSettingsProgressBaseColorStart			116
-#define kSettingsProgressBaseColorEnd			117
-#define kSettingsProgressHiliteColorStart		118
-#define kSettingsProgressHiliteColorEnd			119
-#define kSettingsProgressTextColor				120
-#define kSettingsProgressOutlineColor			121
-
-#define kSettingsFaseTitleMilliseconds			130
-#define kSettingsFaseMapMilliseconds			131
+#define kSettingsFaseTitleMilliseconds			120
+#define kSettingsFaseMapMilliseconds			121
 
 extern iface_type				iface;
 extern setup_state_type			state;
@@ -207,22 +194,6 @@ void property_palette_fill_settings(void)
 		
 	list_palette_add_header(&property_palette,0,"System Colors");
 	list_palette_add_pick_color(&property_palette,kSettingColorSystemMetric,"Metrics",&iface.color.system.metric,FALSE);
-
-		// progress
-		
-	list_palette_add_header(&property_palette,0,"Progress");
-	list_palette_add_string_int(&property_palette,kSettingsProgressLeft,"Left X",iface.progress.lx,FALSE);
-	list_palette_add_string_int(&property_palette,kSettingsProgressRight,"Right X",iface.progress.rx,FALSE);
-	list_palette_add_string_int(&property_palette,kSettingsProgressTop,"Top Y",iface.progress.ty,FALSE);
-	list_palette_add_string_int(&property_palette,kSettingsProgressBottom,"Bottom Y",iface.progress.by,FALSE);
-	list_palette_add_string_int(&property_palette,kSettingsProgressTextSize,"Text Size",iface.progress.text_size,FALSE);
-	list_palette_add_checkbox(&property_palette,kSettingsProgressOutline,"Outline",&iface.progress.outline,FALSE);
-	list_palette_add_pick_color(&property_palette,kSettingsProgressBaseColorStart,"Base Color Start",&iface.progress.base_color_start,FALSE);
-	list_palette_add_pick_color(&property_palette,kSettingsProgressBaseColorEnd,"Base Color End",&iface.progress.base_color_end,FALSE);
-	list_palette_add_pick_color(&property_palette,kSettingsProgressHiliteColorStart,"Highlight Color Start",&iface.progress.hilite_color_start,FALSE);
-	list_palette_add_pick_color(&property_palette,kSettingsProgressHiliteColorEnd,"Highlight Color End",&iface.progress.hilite_color_end,FALSE);
-	list_palette_add_pick_color(&property_palette,kSettingsProgressTextColor,"Text Color",&iface.progress.text_color,FALSE);
-	list_palette_add_pick_color(&property_palette,kSettingsProgressOutlineColor,"Outline Color",&iface.progress.outline_color,FALSE);
 	
 		// fades
 		
@@ -277,28 +248,6 @@ void property_palette_click_settings(int id,bool double_click)
 			
 		case kSettingsClickSound:
 			property_palette_pick_sound(iface.click_sound,FALSE);
-			break;
-									
-			// progress
-			
-		case kSettingsProgressLeft:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&iface.progress.lx,0,0,0);
-			break;
-
-		case kSettingsProgressRight:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&iface.progress.rx,0,0,0);
-			break;
-
-		case kSettingsProgressTop:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&iface.progress.ty,0,0,0);
-			break;
-
-		case kSettingsProgressBottom:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&iface.progress.by,0,0,0);
-			break;
-
-		case kSettingsProgressTextSize:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&iface.progress.text_size,0,0,0);
 			break;
 	
 			// fades

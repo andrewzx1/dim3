@@ -293,6 +293,7 @@ void iface_default_settings(iface_type *iface)
 	iface->progress.ty=450;
 	iface->progress.by=470;
 	iface->progress.outline=TRUE;
+	iface->progress.overlay=FALSE;
 	iface->progress.base_color_start.r=0.4f;
 	iface->progress.base_color_start.g=iface->progress.base_color_start.b=0.0f;
 	iface->progress.base_color_end.r=1.0f;
@@ -301,8 +302,6 @@ void iface_default_settings(iface_type *iface)
 	iface->progress.hilite_color_start.r=iface->progress.hilite_color_start.b=0.0f;
 	iface->progress.hilite_color_end.g=1.0f;
 	iface->progress.hilite_color_end.r=iface->progress.hilite_color_end.b=0.0f;
-	iface->progress.text_size=20;
-	iface->progress.text_color.r=iface->progress.text_color.g=iface->progress.text_color.b=0.0f;
 	iface->progress.outline_color.r=iface->progress.outline_color.g=iface->progress.outline_color.b=1.0f;
 	
 		// chat

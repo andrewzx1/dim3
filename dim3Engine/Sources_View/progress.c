@@ -37,7 +37,7 @@ extern iface_type			iface;
 extern setup_type			setup;
 
 int							progress_current,progress_max;
-bitmap_type					progress_bitmap;
+bitmap_type					progress_background_bitmap,progress_overlay_bitmap;
 
 /* =======================================================
 
@@ -57,12 +57,19 @@ void progress_initialize(char *map_name,int max)
 		
 	if (map_name!=NULL) {
 		file_paths_data(&setup.file_path_setup,path,"Bitmaps/Backgrounds_Map",map_name,"png");
-		bitmap_ok=bitmap_open(&progress_bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,gl_check_texture_rectangle_ok(),FALSE,FALSE);
+		bitmap_ok=bitmap_open(&progress_background_bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,gl_check_texture_rectangle_ok(),FALSE,FALSE);
 	}
 	
 	if (!bitmap_ok) {
 		file_paths_data(&setup.file_path_setup,path,"Bitmaps/Backgrounds","load","png");
-		bitmap_open(&progress_bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,gl_check_texture_rectangle_ok(),FALSE,FALSE);
+		bitmap_open(&progress_background_bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,gl_check_texture_rectangle_ok(),FALSE,FALSE);
+	}
+
+		// overlay bitmap
+
+	if (iface.progress.overlay) {
+		file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements","progress_overlay","png");
+		bitmap_open(&progress_overlay_bitmap,path,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE,FALSE,FALSE);
 	}
 	
 		// current progress
@@ -73,7 +80,8 @@ void progress_initialize(char *map_name,int max)
 
 void progress_shutdown(void)
 {
-	bitmap_close(&progress_bitmap);
+	bitmap_close(&progress_background_bitmap);
+	if (iface.progress.overlay) bitmap_close(&progress_overlay_bitmap);
 }
 
 /* =======================================================
@@ -101,10 +109,10 @@ void progress_next(void)
 	gl_texture_clear(0);			// progress can be called while baseutility loads bitmaps, need to reset the current bitmap so it doesn't get lost
 
 	if (gl_check_texture_rectangle_ok()) {
-		view_primitive_2D_texture_quad_rectangle(progress_bitmap.gl_id,1.0f,0,iface.scale_x,0,iface.scale_y,progress_bitmap.wid,progress_bitmap.high);
+		view_primitive_2D_texture_quad_rectangle(progress_background_bitmap.gl_id,1.0f,0,iface.scale_x,0,iface.scale_y,progress_background_bitmap.wid,progress_background_bitmap.high);
 	}
 	else {
-		view_primitive_2D_texture_quad(progress_bitmap.gl_id,NULL,1.0f,0,iface.scale_x,0,iface.scale_y,0.0f,1.0f,0.0f,1.0f);
+		view_primitive_2D_texture_quad(progress_background_bitmap.gl_id,NULL,1.0f,0,iface.scale_x,0,iface.scale_y,0.0f,1.0f,0.0f,1.0f);
 	}
 	
 		// draw the progress background
@@ -136,6 +144,10 @@ void progress_next(void)
 		// progress outline
 
 	if (iface.progress.outline) view_primitive_2D_line_quad(&iface.progress.outline_color,1.0f,lft,rgt,top,bot);
+
+		// progress overlay
+
+	if (iface.progress.overlay) view_primitive_2D_texture_quad(progress_overlay_bitmap.gl_id,NULL,1.0f,lft,rgt,top,bot,0.0f,1.0f,0.0f,1.0f);
 
 	gl_frame_swap();
 }
