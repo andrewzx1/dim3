@@ -112,12 +112,14 @@ bool gl_initialize(int screen_wid,int screen_high,int fsaa_mode,bool reset,char 
 		// setup rendering sizes
 		
 #ifndef D3_ROTATE_VIEW
-	setup.screen.x_sz=screen_wid;
-	setup.screen.y_sz=screen_high;
+	view.screen.x_sz=screen_wid;
+	view.screen.y_sz=screen_high;
 #else
-	setup.screen.x_sz=screen_high;
-	setup.screen.y_sz=screen_wid;
+	view.screen.x_sz=screen_high;
+	view.screen.y_sz=screen_wid;
 #endif
+
+	view.screen.wide=gl_is_size_widescreen(view.screen.x_sz,view.screen.y_sz);
 	
 		// normal attributes
 		
@@ -156,7 +158,7 @@ bool gl_initialize(int screen_wid,int screen_high,int fsaa_mode,bool reset,char 
 	sdl_flags=SDL_WINDOW_OPENGL|SDL_WINDOW_SHOWN;
 	if (!gl_in_window_mode()) sdl_flags|=(SDL_WINDOW_FULLSCREEN|SDL_WINDOW_BORDERLESS);
 	
-	sdl_wind=SDL_CreateWindow("dim3",SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,setup.screen.x_sz,setup.screen.y_sz,sdl_flags);
+	sdl_wind=SDL_CreateWindow("dim3",SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,view.screen.x_sz,view.screen.y_sz,sdl_flags);
 	if (sdl_wind==NULL) {
 		sprintf(err_str,"SDL: Could not create window (Error: %s)",SDL_GetError());
 		return(FALSE);
@@ -165,11 +167,11 @@ bool gl_initialize(int screen_wid,int screen_high,int fsaa_mode,bool reset,char 
 	sdl_gl_ctx=SDL_GL_CreateContext(sdl_wind);
 #else
 	if (gl_in_window_mode()) {
-		surface=SDL_SetVideoMode(setup.screen.x_sz,setup.screen.y_sz,32,SDL_OPENGL|SDL_HWSURFACE);
+		surface=SDL_SetVideoMode(view.screen.x_sz,view.screen.y_sz,32,SDL_OPENGL|SDL_HWSURFACE);
 		SDL_WM_SetCaption("dim3",NULL);
 	}
 	else {
-		surface=SDL_SetVideoMode(setup.screen.x_sz,setup.screen.y_sz,32,SDL_OPENGL|SDL_FULLSCREEN);
+		surface=SDL_SetVideoMode(view.screen.x_sz,view.screen.y_sz,32,SDL_OPENGL|SDL_FULLSCREEN);
 	}
 
 	if (surface==NULL) {
@@ -224,9 +226,9 @@ bool gl_initialize(int screen_wid,int screen_high,int fsaa_mode,bool reset,char 
 #endif
 
 #ifndef D3_ROTATE_VIEW
-	glViewport(0,0,setup.screen.x_sz,setup.screen.y_sz);
+	glViewport(0,0,view.screen.x_sz,view.screen.y_sz);
 #else
-	glViewport(0,0,setup.screen.y_sz,setup.screen.x_sz);
+	glViewport(0,0,view.screen.y_sz,view.screen.x_sz);
 #endif
 
 	gl_setup_context();
@@ -300,11 +302,6 @@ void gl_shutdown(void)
 bool gl_is_size_widescreen(int wid,int high)
 {
 	return(((float)high/(float)wid)<=0.625f);
-}
-
-bool gl_is_screen_widescreen(void)
-{
-	return(gl_is_size_widescreen(setup.screen.x_sz,setup.screen.y_sz));
 }
 
 /* =======================================================

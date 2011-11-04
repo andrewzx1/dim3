@@ -412,6 +412,16 @@ typedef struct		{
 					} view_count_type;
 
 //
+// view screen
+//
+
+typedef struct		{
+						int									x_sz,y_sz;
+						bool								wide;
+					} view_screen_type;
+
+
+//
 // view rendering structure
 //
 
@@ -481,6 +491,7 @@ typedef struct		{
  
 typedef struct		{
 						view_count_type						count;
+						view_screen_type					screen;
 						view_render_type					*render;
 						view_time_type						time;
 						view_fps_type						fps;

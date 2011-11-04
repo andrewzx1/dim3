@@ -296,12 +296,12 @@ void remote_draw_names_render(void)
 				// get 2D position in screen resolution
 
 			x=obj->draw.remote_name.proj_pnt.x;
-			y=setup.screen.y_sz-obj->draw.remote_name.proj_pnt.y;
+			y=view.screen.y_sz-obj->draw.remote_name.proj_pnt.y;
 
 				// covert to interface resolution
 
-			x=(x*iface.scale_x)/setup.screen.x_sz;
-			y=(y*iface.scale_y)/setup.screen.y_sz;
+			x=(x*iface.scale_x)/view.screen.x_sz;
+			y=(y*iface.scale_y)/view.screen.y_sz;
 
 				// draw text
 				

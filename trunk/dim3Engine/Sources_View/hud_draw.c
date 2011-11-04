@@ -546,7 +546,7 @@ void hud_bars_draw(void)
 			ty=bar->y;
 			by=ty+bar->y_size;
 			
-			glLineWidth((float)setup.screen.x_sz/(float)iface.scale_x);
+			glLineWidth((float)view.screen.x_sz/(float)iface.scale_x);
 			view_primitive_2D_line_quad(&bar->outline_color,bar->outline_alpha,lx,rx,ty,by);
 			glLineWidth(1.0f);
 		}

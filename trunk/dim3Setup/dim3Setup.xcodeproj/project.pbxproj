@@ -104,6 +104,7 @@
 		26D15DE31329EB6100F9EC7B /* OSX_dialog_property_chord.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D15DDC1329EB6100F9EC7B /* OSX_dialog_property_chord.c */; };
 		26D15DE51329EB6100F9EC7B /* OSX_dialog_property_string.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D15DDE1329EB6100F9EC7B /* OSX_dialog_property_string.c */; };
 		26D15DE61329EB6100F9EC7B /* OSX_dialog_utility_common.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D15DDF1329EB6100F9EC7B /* OSX_dialog_utility_common.c */; };
+		26D31D3314635BBE00DAB820 /* property_palette_progress.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D31D3214635BBE00DAB820 /* property_palette_progress.c */; };
 		26D82FCD134FB5A800CC229F /* alt_property_palette_hud_bar.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D82FCA134FB5A800CC229F /* alt_property_palette_hud_bar.c */; };
 		26D82FCE134FB5A800CC229F /* alt_property_palette_hud_bitmap.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D82FCB134FB5A800CC229F /* alt_property_palette_hud_bitmap.c */; };
 		26D82FCF134FB5A800CC229F /* alt_property_palette_hud_text.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D82FCC134FB5A800CC229F /* alt_property_palette_hud_text.c */; };
@@ -270,6 +271,7 @@
 		26D15DDC1329EB6100F9EC7B /* OSX_dialog_property_chord.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = OSX_dialog_property_chord.c; path = ../dim3Common/Code/OSX_dialog_property_chord.c; sourceTree = SOURCE_ROOT; };
 		26D15DDE1329EB6100F9EC7B /* OSX_dialog_property_string.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = OSX_dialog_property_string.c; path = ../dim3Common/Code/OSX_dialog_property_string.c; sourceTree = SOURCE_ROOT; };
 		26D15DDF1329EB6100F9EC7B /* OSX_dialog_utility_common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = OSX_dialog_utility_common.c; path = ../dim3Common/Code/OSX_dialog_utility_common.c; sourceTree = SOURCE_ROOT; };
+		26D31D3214635BBE00DAB820 /* property_palette_progress.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_progress.c; path = Code/property_palette_progress.c; sourceTree = "<group>"; };
 		26D82FCA134FB5A800CC229F /* alt_property_palette_hud_bar.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = alt_property_palette_hud_bar.c; path = Code/alt_property_palette_hud_bar.c; sourceTree = "<group>"; };
 		26D82FCB134FB5A800CC229F /* alt_property_palette_hud_bitmap.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = alt_property_palette_hud_bitmap.c; path = Code/alt_property_palette_hud_bitmap.c; sourceTree = "<group>"; };
 		26D82FCC134FB5A800CC229F /* alt_property_palette_hud_text.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = alt_property_palette_hud_text.c; path = Code/alt_property_palette_hud_text.c; sourceTree = "<group>"; };
@@ -452,6 +454,7 @@
 				268382A0133D4F3D0035315B /* property_palette_settings.c */,
 				2649D11D1341270B00573F6F /* property_palette_intro.c */,
 				26784D2F13B940F400B5D8C3 /* property_palette_setup.c */,
+				26D31D3214635BBE00DAB820 /* property_palette_progress.c */,
 				26BDD87B134AA97C002E6723 /* property_palette_hud.c */,
 				2643488813E651F800920D9B /* property_palette_virtual_control.c */,
 				269EC50F1356501E00C3223C /* property_palette_radar.c */,
@@ -748,6 +751,7 @@
 				260B3C471411EC71006ED023 /* base_zip.c in Sources */,
 				260B3C531411EE24006ED023 /* bitmap_cocoa.m in Sources */,
 				260B3C541411EE24006ED023 /* file_cocoa.m in Sources */,
+				26D31D3314635BBE00DAB820 /* property_palette_progress.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

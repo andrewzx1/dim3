@@ -77,6 +77,8 @@ extern void view_game_start(void);
 extern void view_game_stop(void);
 
 extern bool view_shader_on(void);
+extern bool view_file_paths_bitmap_check_wide(char *path,char *dir,char *name);
+
 extern void view_loop_input(void);
 extern void view_run(void);
 extern void view_loop_draw(void);
@@ -611,7 +613,6 @@ extern void gl_shutdown(void);
 //
 
 extern bool gl_is_size_widescreen(int wid,int high);
-extern bool gl_is_screen_widescreen(void);
 extern bool gl_screen_shot(int lft_x,int top_y,int wid,int high,bool thumbnail,char *path);
 
 //

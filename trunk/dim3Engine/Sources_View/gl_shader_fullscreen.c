@@ -79,7 +79,7 @@ void gl_fs_shader_initialize(void)
 
 	glGenRenderbuffersEXT(1,&fs_shader_fbo_depth_stencil_id);
 	glBindRenderbufferEXT(GL_RENDERBUFFER_EXT,fs_shader_fbo_depth_stencil_id);
-	glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT,GL_DEPTH_STENCIL_EXT,setup.screen.x_sz,setup.screen.y_sz);
+	glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT,GL_DEPTH_STENCIL_EXT,view.screen.x_sz,view.screen.y_sz);
 	glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT,GL_DEPTH_ATTACHMENT_EXT,GL_RENDERBUFFER_EXT,fs_shader_fbo_depth_stencil_id);
 	glFramebufferRenderbufferEXT(GL_FRAMEBUFFER_EXT,GL_STENCIL_ATTACHMENT_EXT,GL_RENDERBUFFER_EXT,fs_shader_fbo_depth_stencil_id);
 
@@ -105,7 +105,7 @@ void gl_fs_shader_initialize(void)
 	gl_texture_clear(0);
 	glBindTexture(GL_TEXTURE_RECTANGLE_ARB,fs_shader_txt_id);
 	
-	glTexImage2D(GL_TEXTURE_RECTANGLE_ARB,0,GL_RGBA,setup.screen.x_sz,setup.screen.y_sz,0,GL_RGBA,GL_UNSIGNED_BYTE,0);
+	glTexImage2D(GL_TEXTURE_RECTANGLE_ARB,0,GL_RGBA,view.screen.x_sz,view.screen.y_sz,0,GL_RGBA,GL_UNSIGNED_BYTE,0);
 	
 	glTexParameterf(GL_TEXTURE_RECTANGLE_ARB,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
 	glTexParameterf(GL_TEXTURE_RECTANGLE_ARB,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
@@ -234,7 +234,7 @@ void gl_fs_shader_render_begin(void)
 		fs_shader_active=FALSE;
 	}
 	
-	glViewport(0,0,setup.screen.x_sz,setup.screen.y_sz);
+	glViewport(0,0,view.screen.x_sz,view.screen.y_sz);
 
 		// clear buffer
 
@@ -255,7 +255,7 @@ void gl_fs_shader_render_finish(void)
 		// turn off the fbo
 
 	glBindFramebufferEXT(GL_FRAMEBUFFER_EXT,0);
-	glViewport(0,0,setup.screen.x_sz,setup.screen.y_sz);
+	glViewport(0,0,view.screen.x_sz,view.screen.y_sz);
 
 		// create the vertexes and uv
 
@@ -263,24 +263,24 @@ void gl_fs_shader_render_finish(void)
 	vertexes[1]=0.0f;
 
 	uvs[0]=0.0f;
-	uvs[1]=(float)setup.screen.y_sz;
+	uvs[1]=(float)view.screen.y_sz;
 
 	vertexes[2]=0.0f;
-	vertexes[3]=(float)setup.screen.y_sz;
+	vertexes[3]=(float)view.screen.y_sz;
 
 	uvs[2]=0.0f;
 	uvs[3]=0.0f;
 
-	vertexes[4]=(float)setup.screen.x_sz;
+	vertexes[4]=(float)view.screen.x_sz;
 	vertexes[5]=0.0f;
 
-	uvs[4]=(float)setup.screen.x_sz;
-	uvs[5]=(float)setup.screen.y_sz;
+	uvs[4]=(float)view.screen.x_sz;
+	uvs[5]=(float)view.screen.y_sz;
 
-	vertexes[6]=(float)setup.screen.x_sz;
-	vertexes[7]=(float)setup.screen.y_sz;
+	vertexes[6]=(float)view.screen.x_sz;
+	vertexes[7]=(float)view.screen.y_sz;
 
-	uvs[6]=(float)setup.screen.x_sz;
+	uvs[6]=(float)view.screen.x_sz;
 	uvs[7]=0.0f;
 
 		// setup fbo texture draw

@@ -115,7 +115,7 @@ void zoom_draw(obj_type *obj,weapon_type *weap)
 	x=obj->zoom_draw.x;
 	y=obj->zoom_draw.y;
 	
-	sz=setup.screen.y_sz>>1;
+	sz=view.screen.y_sz>>1;
 
 	lft=x-sz;
 	rgt=x+sz;
@@ -138,10 +138,10 @@ void zoom_draw(obj_type *obj,weapon_type *weap)
 
 	col.r=col.g=col.b=0.0f;
 		
-	if (lft>0) view_primitive_2D_color_quad(&col,1.0f,0,(lft+1),0,setup.screen.y_sz);
-	if (rgt<setup.screen.x_sz) view_primitive_2D_color_quad(&col,1.0f,(rgt-1),setup.screen.x_sz,0,setup.screen.y_sz);
-	if (top>0) view_primitive_2D_color_quad(&col,1.0f,0,setup.screen.x_sz,0,(top+1));
-	if (bot<setup.screen.y_sz) view_primitive_2D_color_quad(&col,1.0f,0,setup.screen.x_sz,(bot-1),setup.screen.y_sz);
+	if (lft>0) view_primitive_2D_color_quad(&col,1.0f,0,(lft+1),0,view.screen.y_sz);
+	if (rgt<view.screen.x_sz) view_primitive_2D_color_quad(&col,1.0f,(rgt-1),view.screen.x_sz,0,view.screen.y_sz);
+	if (top>0) view_primitive_2D_color_quad(&col,1.0f,0,view.screen.x_sz,0,(top+1));
+	if (bot<view.screen.y_sz) view_primitive_2D_color_quad(&col,1.0f,0,view.screen.x_sz,(bot-1),view.screen.y_sz);
 
 		// zoom
 

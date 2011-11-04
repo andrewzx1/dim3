@@ -33,6 +33,7 @@ and can be sold or given away.
 #include "objects.h"
 
 extern server_type		server;
+extern view_type		view;
 extern map_type			map;
 extern camera_type		camera;
 extern setup_type		setup;
@@ -72,9 +73,9 @@ float camera_chase_width_adjust(void)
 	float		ratio;
 	
 #ifndef D3_ROTATE_VIEW
-	ratio=(((float)setup.screen.x_sz)/((float)setup.screen.y_sz))*camera.setup.plane.aspect_ratio;
+	ratio=(((float)view.screen.x_sz)/((float)view.screen.y_sz))*camera.setup.plane.aspect_ratio;
 #else
-	ratio=(((float)setup.screen.y_sz)/((float)setup.screen.x_sz))*camera.setup.plane.aspect_ratio;
+	ratio=(((float)view.screen.y_sz)/((float)view.screen.x_sz))*camera.setup.plane.aspect_ratio;
 #endif
 
 	return((1.6f-ratio)*13500.0f);

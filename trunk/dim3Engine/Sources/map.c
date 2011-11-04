@@ -550,17 +550,11 @@ void map_end(void)
 		// pause timing
 		
 	game_time_pause_start();
-
-		// setup progress
-		
-	progress_initialize(current_map_name,14);
-	progress_next();
 	
 	console_add_system("Closing Map");
 	
 		// detach objects
 		
-	progress_next();
 	map_object_detach_all();
 	
 		// map close event
@@ -568,16 +562,12 @@ void map_end(void)
 	scripts_post_event_console(js.game_script_idx,-1,sd_event_map,sd_event_map_close,0);
 	scripts_post_event_console(js.course_script_idx,-1,sd_event_map,sd_event_map_close,0);
 
-	progress_next();
-
 	if (net_setup.mode!=net_mode_host_dedicated) {
 		obj=server.obj_list.objs[server.player_obj_idx];
 		scripts_post_event_console(obj->script_idx,-1,sd_event_map,sd_event_map_close,0);
 	}
 
 		// clear all back buffers
-
-	progress_next();
 
 	gl_fs_shader_map_end();
 	gl_back_render_map_end();
@@ -588,21 +578,15 @@ void map_end(void)
 
 		// finish with sky, fog, rain
 
-	progress_next();
-
 	sky_draw_release();
 	fog_draw_release();
 	rain_draw_release();
 
 		// remove all projectiles
 	
-	progress_next();
-
 	projectile_dispose_all();
 
 		// free some map lists
-
-	progress_next();
 
 	projectile_free_list();
 	effect_free_list();
@@ -610,36 +594,22 @@ void map_end(void)
 
         // end course script
 		
-	progress_next();
-
 	scripts_dispose(js.course_script_idx);
 
 		// free map bound items
 		
-	progress_next();
-
 	object_dispose_2(bt_map);
 	
 		// free group, portal segment, vertex and light lists
 		
-	progress_next();
-
 	view_map_vbo_release();
 	render_transparent_dispose_sort_list();
 	map_group_dispose_unit_list(&map);
 	
 		// close map
 	
-	progress_next();
-
 	map_close(&map);
-	
-		// finish
-
-	progress_next();
-	
-	progress_shutdown();
-	
+		
 		// map closed
 		
 	server.map_open=FALSE;

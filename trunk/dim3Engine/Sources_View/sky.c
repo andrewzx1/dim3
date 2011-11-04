@@ -51,7 +51,7 @@ void sky_draw_background_single(map_background_layer_type *layer)
 	
 		// get y scaling
 		
-	gy_high=(((float)setup.screen.y_sz)/((float)setup.screen.x_sz))*layer->y_fact;
+	gy_high=(((float)view.screen.y_sz)/((float)view.screen.x_sz))*layer->y_fact;
 
 		// get scrolling
 		
@@ -63,7 +63,7 @@ void sky_draw_background_single(map_background_layer_type *layer)
 	texture=&map.textures[layer->fill];
 	bitmap=&texture->frames[texture->animate.current_frame].bitmap;
 	
-	view_primitive_2D_texture_quad(bitmap->gl_id,NULL,1.0f,0,setup.screen.x_sz,0,setup.screen.y_sz,gx,(gx+layer->x_fact),gy,(gy+gy_high));
+	view_primitive_2D_texture_quad(bitmap->gl_id,NULL,1.0f,0,view.screen.x_sz,0,view.screen.y_sz,gx,(gx+layer->x_fact),gy,(gy+gy_high));
 }
 
 void sky_draw_background(void)

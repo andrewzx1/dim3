@@ -116,9 +116,9 @@ bool view_cull_check_complex_boundbox(int *cbx,int *cby,int *cbz)
 
 	for (n=0;n!=pt_count;n++) {
 		lft=lft&&(px[n]<0);
-		rgt=rgt&&(px[n]>=setup.screen.x_sz);
+		rgt=rgt&&(px[n]>=view.screen.x_sz);
 		top=top&&(py[n]<0);
-		bot=bot&&(py[n]>=setup.screen.y_sz);
+		bot=bot&&(py[n]>=view.screen.y_sz);
 	}
 
 	return(!(lft||rgt||top||bot));

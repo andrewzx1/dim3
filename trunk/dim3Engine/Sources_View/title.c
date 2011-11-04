@@ -99,7 +99,6 @@ void title_close(void)
 bool title_setup(char *dir,char *name,char *sound_name,int life_tick,int event_id,char *err_str)
 {
 	char			path[1024];
-	struct stat		sb;
 
 	strcpy(title_dir,dir);
 	strcpy(title_name,name);
@@ -114,10 +113,9 @@ bool title_setup(char *dir,char *name,char *sound_name,int life_tick,int event_i
 	title_start_tick=game_time_get_raw();
 	title_life_tick=life_tick;
 	
-		// does title exist?
+		// get the title path
 		
-	file_paths_data(&setup.file_path_setup,path,dir,name,"png");
-	if (stat(path,&sb)==-1) {
+	if (!view_file_paths_bitmap_check_wide(path,dir,name)) {
 		sprintf(err_str,"Title does not exist: %s.png",name);
 		return(FALSE);
 	}

@@ -468,6 +468,31 @@ bool view_shader_on(void)
 
 /* =======================================================
 
+      View Wide Check
+      
+======================================================= */
+
+bool view_file_paths_bitmap_check_wide(char *path,char *dir,char *name)
+{
+	char			name2[256];
+	struct stat		sb;
+	
+		// check for wide
+		
+	if (view.screen.wide) {
+		sprintf(name2,"%s_wide",name);
+		file_paths_data(&setup.file_path_setup,path,dir,name2,"png");
+		if (stat(path,&sb)!=-1) return(TRUE);
+	}
+	
+		// fall back to standard
+		
+	file_paths_data(&setup.file_path_setup,path,dir,name,"png");
+	return(stat(path,&sb)!=-1);
+}
+
+/* =======================================================
+
       View Loop Input
       
 ======================================================= */
@@ -532,8 +557,8 @@ void view_loop_draw(void)
 		// squish for open console
 		
 	if (view.console.on) {
-		y_add=(int)(((float)setup.screen.y_sz)*console_screen_percent);
-		glViewport(0,y_add,setup.screen.x_sz,(setup.screen.y_sz-y_add));
+		y_add=(int)(((float)view.screen.y_sz)*console_screen_percent);
+		glViewport(0,y_add,view.screen.x_sz,(view.screen.y_sz-y_add));
 	}
 	
 		// draw view
@@ -560,7 +585,7 @@ void view_loop_draw(void)
 		// and draw console
 		
 	if (view.console.on) {
-		glViewport(0,0,setup.screen.x_sz,setup.screen.y_sz);
+		glViewport(0,0,view.screen.x_sz,view.screen.y_sz);
 		console_draw();
 	}
 
@@ -612,6 +637,6 @@ void view_capture_draw(char *path)
 	
 		// make screenshot
 
-	gl_screen_shot(0,0,setup.screen.x_sz,setup.screen.y_sz,TRUE,path);
+	gl_screen_shot(0,0,view.screen.x_sz,view.screen.y_sz,TRUE,path);
 }
 
