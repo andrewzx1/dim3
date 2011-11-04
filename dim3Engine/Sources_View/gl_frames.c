@@ -64,9 +64,9 @@ void gl_3D_view(void)
 	glLoadIdentity();
 
 #ifndef D3_ROTATE_VIEW
-	ratio=(((float)setup.screen.x_sz)/((float)setup.screen.y_sz))*camera.setup.plane.aspect_ratio;
+	ratio=(((float)view.screen.x_sz)/((float)view.screen.y_sz))*camera.setup.plane.aspect_ratio;
 #else
-	ratio=(((float)setup.screen.y_sz)/((float)setup.screen.x_sz))*camera.setup.plane.aspect_ratio;
+	ratio=(((float)view.screen.y_sz)/((float)view.screen.x_sz))*camera.setup.plane.aspect_ratio;
 #endif
 
 	glu_patch_gluPerspective(view.render->camera.fov,ratio,(float)camera.setup.plane.near_z,(float)camera.setup.plane.far_z);
@@ -88,7 +88,7 @@ void gl_3D_view(void)
 	glLoadIdentity();
 	
 #ifdef D3_ROTATE_VIEW
-	glTranslatef((float)setup.screen.y_sz,0.0f,0.0f);
+	glTranslatef((float)view.screen.y_sz,0.0f,0.0f);
 	glRotatef(-90.0f,0.0f,0.0f,1.0f);
 #endif
 	
@@ -104,7 +104,7 @@ void gl_3D_rotate(d3pnt *pnt,d3ang *ang)
 	glLoadIdentity();
 	
 #ifdef D3_ROTATE_VIEW
-	glTranslatef((float)setup.screen.y_sz,0.0f,0.0f);
+	glTranslatef((float)view.screen.y_sz,0.0f,0.0f);
 	glRotatef(-90.0f,0.0f,0.0f,1.0f);
 #endif
 	
@@ -141,16 +141,16 @@ void gl_2D_view_screen(void)
 	glLoadIdentity();
 	
 #ifndef D3_ROTATE_VIEW
-	glOrtho(0.0f,(GLfloat)setup.screen.x_sz,(GLfloat)setup.screen.y_sz,0.0f,-1.0f,1.0f);
+	glOrtho(0.0f,(GLfloat)view.screen.x_sz,(GLfloat)view.screen.y_sz,0.0f,-1.0f,1.0f);
 #else
-	glOrtho(0.0f,(GLfloat)setup.screen.y_sz,(GLfloat)setup.screen.x_sz,0.0f,-1.0f,1.0f);
+	glOrtho(0.0f,(GLfloat)view.screen.y_sz,(GLfloat)view.screen.x_sz,0.0f,-1.0f,1.0f);
 #endif
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	
 #ifdef D3_ROTATE_VIEW
-	glTranslatef((float)setup.screen.y_sz,0.0f,0.0f);
+	glTranslatef((float)view.screen.y_sz,0.0f,0.0f);
 	glRotatef(90.0f,0.0f,0.0f,1.0f);
 #endif
 }

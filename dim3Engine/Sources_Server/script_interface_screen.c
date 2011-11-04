@@ -33,6 +33,7 @@ and can be sold or given away.
 #include "scripts.h"
 
 extern js_type			js;
+extern view_type		view;
 extern setup_type		setup;
 
 JSValueRef js_interface_screen_get_width(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
@@ -83,12 +84,12 @@ JSObjectRef script_add_interface_screen_object(JSContextRef cx,JSObjectRef paren
 
 JSValueRef js_interface_screen_get_width(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_int_to_value(cx,setup.screen.x_sz));
+	return(script_int_to_value(cx,view.screen.x_sz));
 }
 
 JSValueRef js_interface_screen_get_height(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_int_to_value(cx,setup.screen.y_sz));
+	return(script_int_to_value(cx,view.screen.y_sz));
 }
 
 /* =======================================================

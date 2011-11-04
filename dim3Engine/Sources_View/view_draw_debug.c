@@ -151,8 +151,8 @@ void view_draw_debug_info(char *name,char *info,d3pnt *pnt,d3pnt *size,d3ang *an
 	
 		// covert to interface resolution
 
-	x=(x*iface.scale_x)/setup.screen.x_sz;
-	y=((setup.screen.y_sz-y)*iface.scale_y)/setup.screen.y_sz;
+	x=(x*iface.scale_x)/view.screen.x_sz;
+	y=((view.screen.y_sz-y)*iface.scale_y)/view.screen.y_sz;
 
 	y-=(font_size*2);
 	if (info!=NULL) y-=font_size;

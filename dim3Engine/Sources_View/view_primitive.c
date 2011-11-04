@@ -48,11 +48,11 @@ void view_primitive_2D_tint_screen(void)
 	vertexes[0]=0.0f;
 	vertexes[1]=0.0f;
 	vertexes[2]=0.0f;
-	vertexes[3]=(float)setup.screen.y_sz;
-	vertexes[4]=(float)setup.screen.x_sz;
+	vertexes[3]=(float)view.screen.y_sz;
+	vertexes[4]=(float)view.screen.x_sz;
 	vertexes[5]=0.0f;
-	vertexes[6]=(float)setup.screen.x_sz;
-	vertexes[7]=(float)setup.screen.y_sz;
+	vertexes[6]=(float)view.screen.x_sz;
+	vertexes[7]=(float)view.screen.y_sz;
 
 	glVertexPointer(2,GL_FLOAT,0,(GLvoid*)vertexes);
 

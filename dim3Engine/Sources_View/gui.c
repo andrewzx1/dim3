@@ -51,7 +51,7 @@ void gui_background_load(char *background_path,char *bitmap_name)
 {
 	char		path[1024];
 
-	file_paths_data(&setup.file_path_setup,path,background_path,bitmap_name,"png");
+	view_file_paths_bitmap_check_wide(path,background_path,bitmap_name);
 	gui_background_image_idx=view_images_load_single(path,gl_check_texture_rectangle_ok(),TRUE);
 }
 

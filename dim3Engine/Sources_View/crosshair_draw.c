@@ -97,8 +97,8 @@ bool crosshair_get_location(obj_type *obj,weapon_type *weap,int *kx,int *ky,int 
 		// get the 2D point
 		
 	if (weap->crosshair.type==ct_center) {
-		*kx=setup.screen.x_sz/2;
-		*ky=setup.screen.y_sz/2;
+		*kx=view.screen.x_sz/2;
+		*ky=view.screen.y_sz/2;
 		if (dist!=NULL) *dist=0;
 	}
 	else {
@@ -113,7 +113,7 @@ bool crosshair_get_location(obj_type *obj,weapon_type *weap,int *kx,int *ky,int 
 		gl_project_point(&tx,&ty,&tz);
 		
 		*kx=tx;
-		*ky=setup.screen.y_sz-ty;
+		*ky=view.screen.y_sz-ty;
 		
 		if (dist!=NULL) *dist=distance_get(view.render->camera.pnt.x,view.render->camera.pnt.y,view.render->camera.pnt.z,hpt.x,hpt.y,hpt.z);
 	}
@@ -137,14 +137,14 @@ void crosshair_setup_click(obj_type *obj)
 	crosshair_draw=&obj->crosshair_draw;
 	if (!crosshair_draw->on) {
 		crosshair_draw->on=TRUE;
-		crosshair_draw->x=setup.screen.x_sz>>1;
-		crosshair_draw->y=setup.screen.y_sz-(setup.screen.y_sz>>1);				// 2D view has Y flipped
+		crosshair_draw->x=view.screen.x_sz>>1;
+		crosshair_draw->y=view.screen.y_sz-(view.screen.y_sz>>1);				// 2D view has Y flipped
 	}
 	
 		// static setup for click crosshair
 		
 	crosshair_draw->aim_obj_idx=-1;
-	crosshair_draw->sz=setup.screen.x_sz/10;
+	crosshair_draw->sz=view.screen.x_sz/10;
 	crosshair_draw->alpha=1;
 	crosshair_draw->color.r=crosshair_draw->color.g=crosshair_draw->color.b=1;
 
@@ -199,7 +199,7 @@ void crosshair_setup_weapon(obj_type *obj,weapon_type *weap)
 
 		case ct_bone_tracking:
 		case ct_barrel_tracking:
-			sz=setup.screen.x_sz>>5;
+			sz=view.screen.x_sz>>5;
 			break;
 
 		case ct_bone_tracking_resizing:

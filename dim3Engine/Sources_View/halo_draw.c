@@ -219,7 +219,7 @@ void halo_draw_setup(void)
 		
 			// obscure halos outside of view port
 			
-		if (((halo_draw->proj_pnt.x+halo_draw->pixel_sz)<0) || ((halo_draw->proj_pnt.y+halo_draw->pixel_sz)<0) || ((halo_draw->proj_pnt.x-halo_draw->pixel_sz)>=setup.screen.x_sz) || ((halo_draw->proj_pnt.y-halo_draw->pixel_sz)>=setup.screen.y_sz)) {
+		if (((halo_draw->proj_pnt.x+halo_draw->pixel_sz)<0) || ((halo_draw->proj_pnt.y+halo_draw->pixel_sz)<0) || ((halo_draw->proj_pnt.x-halo_draw->pixel_sz)>=view.screen.x_sz) || ((halo_draw->proj_pnt.y-halo_draw->pixel_sz)>=view.screen.y_sz)) {
 			halo_draw->in_view=FALSE;
 			continue;
 		}
@@ -269,7 +269,7 @@ void halo_draw_render(void)
 			// halo size
 			
 		x=halo_draw->proj_pnt.x;
-		y=setup.screen.y_sz-halo_draw->proj_pnt.y;
+		y=view.screen.y_sz-halo_draw->proj_pnt.y;
 		psz=halo_draw->pixel_sz>>1;
 
 			// setup vertex

@@ -72,14 +72,6 @@ typedef struct		{
 					} setup_action_list_type;
 					
 //
-// setup screen
-//
-
-typedef struct		{
-						int							x_sz,y_sz;
-					} setup_screen_type;
-
-//
 // setup mouse/joystick axis
 //
 
@@ -159,7 +151,6 @@ typedef struct		{
 													no_hud,no_draw_weapon,metrics_on,debug_on,
 													ignore_fps_lock,disable_shaders;
 						setup_path_type				path;
-						setup_screen_type			screen;
 						setup_axis_type				mouse,joystick;
 						setup_action_list_type		action_list;
 						setup_network_type			network;

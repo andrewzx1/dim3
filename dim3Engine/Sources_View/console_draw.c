@@ -63,8 +63,8 @@ void console_draw(void)
 		// need to convert to HUD scale
 		// and deal with height factor
 
-	y=(int)(((float)setup.screen.y_sz)*(1.0f-console_screen_percent));
-	ty=(y*iface.scale_y)/setup.screen.y_sz;
+	y=(int)(((float)view.screen.y_sz)*(1.0f-console_screen_percent));
+	ty=(y*iface.scale_y)/view.screen.y_sz;
 
 	txt_size=((int)((float)(iface.scale_y-ty)/text_height_factor)/max_view_console_lines);
 
