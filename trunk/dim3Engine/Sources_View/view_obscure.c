@@ -41,6 +41,7 @@ and can be sold or given away.
 typedef struct		{
 						int						mesh_idx,poly_idx,
 												dist;
+						bool					skip;
 					} view_obscure_poly_type;
 
 extern map_type				map;
@@ -140,6 +141,90 @@ void view_obscure_release(void)
 
 	if (view_obscure_hits!=NULL) free(view_obscure_hits);
 	view_obscure_hits=NULL;
+}
+
+/* =======================================================
+
+      Build Obscuring Polygon List
+      
+======================================================= */
+
+bool view_obscure_create_obscuring_poly_list(void)
+{
+	int						n,k,mesh_idx;
+	view_obscure_poly_type	*poly_ptr;
+	map_mesh_type			*mesh;
+	map_mesh_poly_type		*poly;
+
+		// build the obscure polygons
+		// to ray trace against
+
+	poly_ptr=view_obscure_polys;
+
+	for (n=0;n!=view.render->draw_list.count;n++) {
+		if (view.render->draw_list.items[n].type!=view_render_type_mesh) continue;
+
+		mesh_idx=view.render->draw_list.items[n].idx;
+		mesh=&map.mesh.meshes[mesh_idx];
+		
+		poly=mesh->polys;
+
+		for (k=0;k!=mesh->npoly;k++) {
+		
+				// only use obscuring polys
+				
+			if (!poly->flag.obscuring) {
+				poly++;
+				continue;
+			}
+			
+				// skip polys clipped by normals
+				
+			if (((poly->tangent_space.normal.x*(float)(poly->box.mid.x-view.render->camera.pnt.x))+(poly->tangent_space.normal.y*(float)(poly->box.mid.y-view.render->camera.pnt.y))+(poly->tangent_space.normal.z*(float)(poly->box.mid.z-view.render->camera.pnt.z)))>map.optimize.cull_angle) {
+				poly++;
+				continue;
+			}
+			
+				// add poly to list
+
+			poly_ptr->mesh_idx=mesh_idx;
+			poly_ptr->poly_idx=k;
+			poly_ptr->dist=view_cull_distance_to_view_center(poly->box.mid.x,poly->box.mid.y,poly->box.mid.z);
+			poly_ptr->skip=FALSE;
+			poly_ptr++;
+
+			poly++;
+		}
+	}
+
+		// end marker
+
+	poly_ptr->mesh_idx=-1;
+
+	return(poly_ptr!=view_obscure_polys);
+}
+
+void view_obscure_remove_mesh_from_obscuring_poly_list(int mesh_idx)
+{
+	view_obscure_poly_type	*poly_ptr;
+
+	poly_ptr=view_obscure_polys;
+
+	while (TRUE) {
+		if (poly_ptr->mesh_idx==-1) break;
+
+		if (mesh_idx==poly_ptr->mesh_idx) {
+
+			while (mesh_idx==poly_ptr->mesh_idx) {
+				poly_ptr->skip=TRUE;
+				poly_ptr++;
+			}
+
+			return;
+		}
+
+		poly_ptr++;
+	}
 }
 
 /* =======================================================
@@ -322,6 +407,13 @@ bool view_obscure_check_box(d3pnt *camera_pnt,int skip_mesh_idx,d3pnt *min,d3pnt
 
 		if (poly_ptr->mesh_idx==-1) break;
 
+			// skipped poly?
+
+		if (poly_ptr->skip) {
+			poly_ptr++;
+			continue;
+		}
+
 			// if we are comparing meshes, don't
 			// compare against itself, and then
 			// skip all polys for this mesh
@@ -411,12 +503,10 @@ bool view_obscure_check_box(d3pnt *camera_pnt,int skip_mesh_idx,d3pnt *min,d3pnt
 
 void view_obscure_run(void)
 {
-	int						n,k,dist,remove_count,org_count,
+	int						n,dist,remove_count,org_count,
 							mesh_idx;
 	d3pnt					min,max,camera_pnt;
-	view_obscure_poly_type	*poly_ptr;
 	map_mesh_type			*mesh;
-	map_mesh_poly_type		*poly;
 	obj_type				*obj;
 	proj_type				*proj;
 	model_type				*mdl;
@@ -429,48 +519,7 @@ void view_obscure_run(void)
 		// build the obscure polygons
 		// to ray trace against
 
-	poly_ptr=view_obscure_polys;
-
-	for (n=0;n!=view.render->draw_list.count;n++) {
-		if (view.render->draw_list.items[n].type!=view_render_type_mesh) continue;
-
-		mesh_idx=view.render->draw_list.items[n].idx;
-		mesh=&map.mesh.meshes[mesh_idx];
-		
-		poly=mesh->polys;
-
-		for (k=0;k!=mesh->npoly;k++) {
-		
-				// only use obscuring polys
-				
-			if (!poly->flag.obscuring) {
-				poly++;
-				continue;
-			}
-			
-				// skip polys clipped by normals
-				
-			if (((poly->tangent_space.normal.x*(float)(poly->box.mid.x-view.render->camera.pnt.x))+(poly->tangent_space.normal.y*(float)(poly->box.mid.y-view.render->camera.pnt.y))+(poly->tangent_space.normal.z*(float)(poly->box.mid.z-view.render->camera.pnt.z)))>map.optimize.cull_angle) {
-				poly++;
-				continue;
-			}
-			
-				// add poly to list
-
-			poly_ptr->mesh_idx=mesh_idx;
-			poly_ptr->poly_idx=k;
-			poly_ptr->dist=view_cull_distance_to_view_center(poly->box.mid.x,poly->box.mid.y,poly->box.mid.z);
-			poly_ptr++;
-
-			poly++;
-		}
-	}
-
-	if (poly_ptr==view_obscure_polys) return;
-
-		// end marker
-
-	poly_ptr->mesh_idx=-1;
+	if (!view_obscure_create_obscuring_poly_list()) return;
 
 		// build the camera pnt
 
@@ -496,6 +545,9 @@ void view_obscure_run(void)
 		switch (view.render->draw_list.items[n].type) {
 
 				// mesh
+				// if we remove a mesh, remove any of it's
+				// polys from the removal list as they aren't
+				// blocking anymore
 
 			case view_render_type_mesh:
 				mesh_idx=view.render->draw_list.items[n].idx;
@@ -504,6 +556,7 @@ void view_obscure_run(void)
 
 				if (!view_obscure_check_box(&camera_pnt,mesh_idx,&mesh->box.min,&mesh->box.max,dist)) {
 					view.render->draw_list.items[n].type=view_render_type_none;
+					view_obscure_remove_mesh_from_obscuring_poly_list(mesh_idx);
 					remove_count++;
 					view.count.mesh--;
 				}
