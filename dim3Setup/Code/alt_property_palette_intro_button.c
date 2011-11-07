@@ -35,14 +35,18 @@ and can be sold or given away.
 
 #define kButtonOptionOn							0
 	
-#define kButtonPositionX						1
-#define kButtonPositionY						2
-#define kButtonPositionWid						3
-#define kButtonPositionHigh						4
+#define kButtonPositionX						10
+#define kButtonPositionY						11
+#define kButtonPositionWid						12
+#define kButtonPositionHigh						13
 
-#define kButtonDescPositionX					5
-#define kButtonDescPositionY					6
-#define kButtonDescTextSize						7
+#define kButtonMobileSkip						20
+#define kButtonMobilePositionX					21
+#define kButtonMobilePositionY					22
+
+#define kButtonDescPositionX					30
+#define kButtonDescPositionY					31
+#define kButtonDescTextSize						32
 
 extern iface_type				iface;
 extern setup_state_type			state;
@@ -166,6 +170,13 @@ void alt_property_palette_fill_intro_button(int intro_button_idx)
 	list_palette_add_string_int(&alt_property_palette,kButtonPositionWid,"Width",btn->wid,FALSE);
 	list_palette_add_string_int(&alt_property_palette,kButtonPositionHigh,"Height",btn->high,FALSE);
 
+		// mobile override
+
+	list_palette_add_header(&alt_property_palette,0,"Mobile Override");
+	list_palette_add_checkbox(&alt_property_palette,kButtonMobileSkip,"Hide if Mobile",&btn->mobile_hide,FALSE);
+	list_palette_add_string_int(&alt_property_palette,kButtonMobilePositionX,"X",btn->mobile_x,FALSE);
+	list_palette_add_string_int(&alt_property_palette,kButtonMobilePositionY,"Y",btn->mobile_y,FALSE);
+
 		// description
 
 	if (desc!=NULL) {
@@ -210,6 +221,16 @@ void alt_property_palette_click_intro_button(int intro_button_idx,int id,bool do
 
 		case kButtonPositionHigh:
 			dialog_property_string_run(list_string_value_int,(void*)&btn->high,0,0,0);
+			break;
+
+			// mobile override
+
+		case kButtonMobilePositionX:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&btn->mobile_x,0,0,0);
+			break;
+
+		case kButtonMobilePositionY:
+			dialog_property_string_run(list_string_value_positive_int,(void*)&btn->mobile_y,0,0,0);
 			break;
 
 			// description
