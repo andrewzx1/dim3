@@ -471,8 +471,8 @@ void iface_read_settings_intro_button(int tag,iface_intro_button_type *btn,iface
 	
 	btn->x=xml_get_attribute_int(tag,"x");
 	btn->y=xml_get_attribute_int(tag,"y");
-	btn->x_mobile=xml_get_attribute_int_default(tag,"x_mobile");
-	btn->y_mobile=xml_get_attribute_int_default(tag,"y_mobile",-1);
+	btn->mobile_x=xml_get_attribute_int_default(tag,"mobile_x",-1);
+	btn->mobile_y=xml_get_attribute_int_default(tag,"mobile_y",-1);
 	btn->wid=xml_get_attribute_int_default(tag,"width",-1);
 	btn->high=xml_get_attribute_int_default(tag,"height",-1);
 	btn->on=xml_get_attribute_boolean(tag,"on");

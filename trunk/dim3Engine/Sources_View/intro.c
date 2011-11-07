@@ -199,9 +199,26 @@ void intro_show_hide_for_mode(void)
 
 void intro_open_add_button(iface_intro_button_type *btn,char *name,int id)
 {
+	int			x,y;
 	char		sel_name[256],path[1024],path2[1024];
 
 	if (!btn->on) return;
+
+		// check for overrides
+
+	x=btn->x;
+	y=btn->y;
+
+#if defined(D3_OS_IPHONE) || defined(D3_OS_ANDRIOD)
+
+	if (btn->mobile_hide) return;
+
+	if (btn->mobile_x!=-1) {
+		x=btn->mobile_x;
+		y=btn->mobile_y;
+	}
+
+#endif
 
 		// get name and position
 
@@ -209,7 +226,7 @@ void intro_open_add_button(iface_intro_button_type *btn,char *name,int id)
 
 	file_paths_data(&setup.file_path_setup,path,"Bitmaps/UI_Elements",name,"png");
 	file_paths_data(&setup.file_path_setup,path2,"Bitmaps/UI_Elements",sel_name,"png");
-	element_button_bitmap_add(path,path2,id,btn->x,btn->y,btn->wid,btn->high,element_pos_left,element_pos_top);
+	element_button_bitmap_add(path,path2,id,x,y,btn->wid,btn->high,element_pos_left,element_pos_top);
 	
 	btn->element_id=id;
 }
