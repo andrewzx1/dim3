@@ -818,8 +818,9 @@ typedef struct		{
 #define max_simple_save_spot							5
 
 typedef struct		{
-						int								x,y,wid,high,element_id;
-						bool							on;
+						int								x,y,mobile_x,mobile_y,
+														wid,high,element_id;
+						bool							on,mobile_hide;
 					} iface_intro_button_type;
 
 typedef struct		{

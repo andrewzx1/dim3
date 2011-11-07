@@ -471,9 +471,12 @@ void iface_read_settings_intro_button(int tag,iface_intro_button_type *btn,iface
 	
 	btn->x=xml_get_attribute_int(tag,"x");
 	btn->y=xml_get_attribute_int(tag,"y");
+	btn->x_mobile=xml_get_attribute_int_default(tag,"x_mobile");
+	btn->y_mobile=xml_get_attribute_int_default(tag,"y_mobile",-1);
 	btn->wid=xml_get_attribute_int_default(tag,"width",-1);
 	btn->high=xml_get_attribute_int_default(tag,"height",-1);
 	btn->on=xml_get_attribute_boolean(tag,"on");
+	btn->mobile_hide=xml_get_attribute_boolean(tag,"mobile_hide");
 
 	if (desc!=NULL) {
 		desc->x=xml_get_attribute_int(tag,"desc_x");
@@ -926,9 +929,12 @@ void iface_write_settings_interface_intro_button(char *name,iface_intro_button_t
 	
 	xml_add_attribute_int("x",btn->x);
 	xml_add_attribute_int("y",btn->y);
+	if (btn->mobile_x!=-1) xml_add_attribute_int("mobile_x",btn->mobile_x);
+	if (btn->mobile_y!=-1) xml_add_attribute_int("mobile_y",btn->mobile_y);
 	if (btn->wid!=-1) xml_add_attribute_int("width",btn->wid);
 	if (btn->high!=-1) xml_add_attribute_int("height",btn->high);
 	xml_add_attribute_boolean("on",btn->on);
+	xml_add_attribute_boolean("mobile_hide",btn->mobile_hide);
 
 	if (desc!=NULL) {
 		xml_add_attribute_int("desc_x",desc->x);
