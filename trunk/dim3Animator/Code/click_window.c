@@ -353,7 +353,7 @@ bool select_model_wind_polygon(d3pnt *start_pnt,bool check_only)
 	}
 	
 	return(TRUE);
-*/	
+*/
 
 		// run the selection
 

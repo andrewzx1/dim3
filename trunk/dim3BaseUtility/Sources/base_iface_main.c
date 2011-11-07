@@ -162,9 +162,12 @@ void iface_default_settings_button(iface_intro_button_type *button,int x,int y,b
 {
 	button->x=x;
 	button->y=y;
+	button->mobile_x=-1;
+	button->mobile_y=-1;
 	button->wid=128;
 	button->high=32;
 	button->on=on;
+	button->mobile_hide=FALSE;
 }
 
 void iface_default_settings(iface_type *iface)
