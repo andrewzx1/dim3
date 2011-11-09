@@ -209,7 +209,7 @@ bool file_open_map(void)
 	os_set_title_window(file_name);
 
 	sprintf(str,"Loading %s...",file_name);
-	progress_start("Loading...",(max_map_texture+3));
+	progress_start("Loading...",11);
 	
 	map_setup(&file_path_setup,anisotropic_mode_none,setup.mipmap_mode,FALSE,FALSE);
 	progress_next();
@@ -221,7 +221,7 @@ bool file_open_map(void)
 
 	for (n=0;n!=max_map_texture;n++) {
 		map_textures_read_texture(&map,n);
-		progress_next();
+		if ((n%32)==0) progress_next();
 	}
 
 	progress_end();

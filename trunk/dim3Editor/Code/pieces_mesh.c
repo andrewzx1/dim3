@@ -318,6 +318,8 @@ void piece_add_height_map_mesh(void)
 		return;
 	}
 	
+	view_vbo_mesh_initialize(mesh_idx);
+	
 	os_set_wait_cursor();
 
 	progress_start("Height Map Import: Importing PNG",(div_cnt+3));
@@ -382,6 +384,7 @@ void piece_add_height_map_mesh(void)
 			}
 		}
 
+		view_vbo_mesh_rebuild(mesh_idx);
 		progress_next();
 	}
 	
@@ -401,8 +404,6 @@ void piece_add_height_map_mesh(void)
 	
 		// finish up
 
-	view_vbo_mesh_initialize(mesh_idx);
-		
 	select_clear();
 	select_add(mesh_piece,mesh_idx,0);
 
