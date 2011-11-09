@@ -51,6 +51,8 @@ void view_vbo_mesh_rebuild(int mesh_idx)
 	map_mesh_poly_type		*poly;
 
 	mesh=&map.mesh.meshes[mesh_idx];
+	
+	if (mesh->npoly==0) return;
 
 		// get the total vertex count
 		// and calculate the center
