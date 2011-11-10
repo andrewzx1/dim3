@@ -83,17 +83,17 @@ void alt_property_palette_fill_chooser(int chooser_idx)
 
 	list_palette_add_header(&alt_property_palette,0,"Frame");
 	list_palette_add_checkbox(&alt_property_palette,kChooserPropertyFrameOn,"On",&chooser->frame.on,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kChooserPropertyFrameX,"X",chooser->frame.x,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kChooserPropertyFrameY,"Y",chooser->frame.y,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kChooserPropertyFrameWid,"Wid",chooser->frame.wid,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kChooserPropertyFrameHigh,"High",chooser->frame.high,FALSE);
+	list_palette_add_int(&alt_property_palette,kChooserPropertyFrameX,"X",&chooser->frame.x,FALSE);
+	list_palette_add_int(&alt_property_palette,kChooserPropertyFrameY,"Y",&chooser->frame.y,FALSE);
+	list_palette_add_int(&alt_property_palette,kChooserPropertyFrameWid,"Wid",&chooser->frame.wid,FALSE);
+	list_palette_add_int(&alt_property_palette,kChooserPropertyFrameHigh,"High",&chooser->frame.high,FALSE);
 	list_palette_add_string(&alt_property_palette,kChooserPropertyFrameTitle,"Title",chooser->frame.title,FALSE);
 
 		// keys
 
 	list_palette_add_header(&alt_property_palette,0,"Keys");
-	list_palette_add_string_int(&alt_property_palette,kChooserPropertyOKID,"OK Id",chooser->key.ok_id,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kChooserPropertyCancelID,"Cancel Id",chooser->key.cancel_id,FALSE);
+	list_palette_add_int(&alt_property_palette,kChooserPropertyOKID,"OK Id",&chooser->key.ok_id,FALSE);
+	list_palette_add_int(&alt_property_palette,kChooserPropertyCancelID,"Cancel Id",&chooser->key.cancel_id,FALSE);
 
 		// chooser items
 
@@ -248,34 +248,8 @@ void alt_property_palette_click_chooser(int chooser_idx,int id,bool double_click
 
 			// frame
 
-		case kChooserPropertyFrameX:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&chooser->frame.x,0,0,0);
-			break;
-
-		case kChooserPropertyFrameY:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&chooser->frame.y,0,0,0);
-			break;
-
-		case kChooserPropertyFrameWid:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&chooser->frame.wid,0,0,0);
-			break;
-
-		case kChooserPropertyFrameHigh:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&chooser->frame.high,0,0,0);
-			break;
-
 		case kChooserPropertyFrameTitle:
 			dialog_property_string_run(list_string_value_string,(void*)chooser->frame.title,max_chooser_frame_text_sz,0,0);
-			break;
-
-			// keys
-
-		case kChooserPropertyOKID:
-			dialog_property_string_run(list_string_value_int,(void*)&chooser->key.ok_id,0,0,0);
-			break;
-
-		case kChooserPropertyCancelID:
-			dialog_property_string_run(list_string_value_int,(void*)&chooser->key.cancel_id,0,0,0);
 			break;
 
 	}

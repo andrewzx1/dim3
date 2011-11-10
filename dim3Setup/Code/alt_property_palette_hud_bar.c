@@ -82,31 +82,31 @@ void alt_property_palette_fill_hud_bar(int hud_bar_idx)
 		// position
 
 	list_palette_add_header(&alt_property_palette,0,"Position");
-	list_palette_add_string_int(&alt_property_palette,kBarPositionX,"X",bar->x,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kBarPositionY,"Y",bar->y,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kBarPositionWid,"Width",bar->x_size,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kBarPositionHigh,"Height",bar->y_size,FALSE);
+	list_palette_add_int(&alt_property_palette,kBarPositionX,"X",&bar->x,FALSE);
+	list_palette_add_int(&alt_property_palette,kBarPositionY,"Y",&bar->y,FALSE);
+	list_palette_add_int(&alt_property_palette,kBarPositionWid,"Width",&bar->x_size,FALSE);
+	list_palette_add_int(&alt_property_palette,kBarPositionHigh,"Height",&bar->y_size,FALSE);
 
 		// fill
 
 	list_palette_add_header(&alt_property_palette,0,"Fill");
 	list_palette_add_pick_color(&alt_property_palette,kBarFillStartColor,"Start Color",&bar->fill_start_color,FALSE);
 	list_palette_add_pick_color(&alt_property_palette,kBarFillEndColor,"End Color",&bar->fill_end_color,FALSE);
-	list_palette_add_string_float(&alt_property_palette,kBarFillAlpha,"Alpha",bar->fill_alpha,FALSE);
+	list_palette_add_float(&alt_property_palette,kBarFillAlpha,"Alpha",&bar->fill_alpha,FALSE);
 
 		// outline
 
 	list_palette_add_header(&alt_property_palette,0,"Outline");
 	list_palette_add_checkbox(&alt_property_palette,kBarSettingsOutline,"On",&bar->outline,FALSE);
 	list_palette_add_pick_color(&alt_property_palette,kBarOutlineColor,"Color",&bar->outline_color,FALSE);
-	list_palette_add_string_float(&alt_property_palette,kBarOutlineAlpha,"Alpha",bar->outline_alpha,FALSE);
+	list_palette_add_float(&alt_property_palette,kBarOutlineAlpha,"Alpha",&bar->outline_alpha,FALSE);
 
 		// background
 
 	list_palette_add_header(&alt_property_palette,0,"Background");
 	list_palette_add_checkbox(&alt_property_palette,kBarSettingsBackground,"On",&bar->background,FALSE);
 	list_palette_add_pick_color(&alt_property_palette,kBarBackgroundColor,"Color",&bar->background_color,FALSE);
-	list_palette_add_string_float(&alt_property_palette,kBarBackgroundAlpha,"Alpha",bar->background_alpha,FALSE);
+	list_palette_add_float(&alt_property_palette,kBarBackgroundAlpha,"Alpha",&bar->background_alpha,FALSE);
 }
 
 /* =======================================================
@@ -129,42 +129,6 @@ void alt_property_palette_click_hud_bar(int hud_bar_idx,int id,bool double_click
 
 		case kBarSettingsName:
 			dialog_property_string_run(list_string_value_string,(void*)bar->name,name_str_len,0,0);
-			break;
-
-			// position
-
-		case kBarPositionX:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&bar->x,0,0,0);
-			break;
-
-		case kBarPositionY:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&bar->y,0,0,0);
-			break;
-
-		case kBarPositionWid:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&bar->x_size,0,0,0);
-			break;
-
-		case kBarPositionHigh:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&bar->y_size,0,0,0);
-			break;
-
-			// fill
-
-		case kBarFillAlpha:
-			dialog_property_string_run(list_string_value_0_to_1_float,(void*)&bar->fill_alpha,0,0,0);
-			break;
-
-			// outline
-
-		case kBarOutlineAlpha:
-			dialog_property_string_run(list_string_value_0_to_1_float,(void*)&bar->outline_alpha,0,0,0);
-			break;
-
-			//  background
-
-		case kBarBackgroundAlpha:
-			dialog_property_string_run(list_string_value_0_to_1_float,(void*)&bar->background_alpha,0,0,0);
 			break;
 
 	}

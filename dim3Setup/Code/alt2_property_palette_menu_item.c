@@ -64,7 +64,7 @@ void alt2_property_palette_fill_menu_item(int menu_idx,int menu_item_idx)
 
 	list_palette_add_header(&alt2_property_palette,0,"Settings");
 	list_palette_add_string(&alt2_property_palette,kMenuItemPropertySettingsData,"Data",item->data,FALSE);
-	list_palette_add_string_int(&alt2_property_palette,kMenuItemPropertySettingsID,"Id",item->item_id,FALSE);
+	list_palette_add_int(&alt2_property_palette,kMenuItemPropertySettingsID,"Id",&item->item_id,FALSE);
 
 		// options
 
@@ -94,10 +94,6 @@ void alt2_property_palette_click_menu_item(int menu_idx,int menu_item_idx,int id
 
 		case kMenuItemPropertySettingsData:
 			dialog_property_string_run(list_string_value_string,(void*)item->data,max_menu_item_data_sz,0,0);
-			break;
-
-		case kMenuItemPropertySettingsID:
-			dialog_property_string_run(list_string_value_int,(void*)&item->item_id,0,0,0);
 			break;
 
 			// options

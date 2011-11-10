@@ -91,15 +91,15 @@ void alt_property_palette_fill_mark(int mark_idx)
 		// fade
 
 	list_palette_add_header(&alt_property_palette,0,"Fade");
-	list_palette_add_string_int(&alt_property_palette,kMarkFadeInTick,"Fade In Milliseconds",mark->fade_in_msec,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kMarkFadeLifeTick,"Life Milliseconds",mark->life_msec,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kMarkFadeOutTick,"Fade Out Milliseconds",mark->fade_out_msec,FALSE);
+	list_palette_add_int(&alt_property_palette,kMarkFadeInTick,"Fade In Milliseconds",&mark->fade_in_msec,FALSE);
+	list_palette_add_int(&alt_property_palette,kMarkFadeLifeTick,"Life Milliseconds",&mark->life_msec,FALSE);
+	list_palette_add_int(&alt_property_palette,kMarkFadeOutTick,"Fade Out Milliseconds",&mark->fade_out_msec,FALSE);
 
 		// animation
 
 	list_palette_add_header(&alt_property_palette,0,"Animation");
-	list_palette_add_string_int(&alt_property_palette,kMarkImageCount,"Count",mark->animate.image_count,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kMarkImageMillisecond,"Display Milliseconds",mark->animate.msec,FALSE);
+	list_palette_add_int(&alt_property_palette,kMarkImageCount,"Count",&mark->animate.image_count,FALSE);
+	list_palette_add_int(&alt_property_palette,kMarkImageMillisecond,"Display Milliseconds",&mark->animate.msec,FALSE);
 	list_palette_add_checkbox(&alt_property_palette,kMarkImageLoop,"Loop",&mark->animate.loop,FALSE);
 	list_palette_add_checkbox(&alt_property_palette,kMarkImageLoopBack,"Loop Back",&mark->animate.loop_back,FALSE);
 }
@@ -128,30 +128,6 @@ void alt_property_palette_click_mark(int mark_idx,int id,bool double_click)
 
 		case kMarkSettingsFileName:
 			property_pick_file("Pick a Mark Bitmap","Bitmaps/Marks","png",NULL,mark->bitmap_name);
-			break;
-
-			// fade
-
-		case kMarkFadeInTick:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&mark->fade_in_msec,0,0,0);
-			break;
-
-		case kMarkFadeLifeTick:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&mark->life_msec,0,0,0);
-			break;
-
-		case kMarkFadeOutTick:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&mark->fade_out_msec,0,0,0);
-			break;
-
-			// animation
-
-		case kMarkImageCount:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&mark->animate.image_count,0,0,0);
-			break;
-
-		case kMarkImageMillisecond:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&mark->animate.msec,0,0,0);
 			break;
 
 	}

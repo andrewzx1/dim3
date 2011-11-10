@@ -56,8 +56,10 @@ and can be sold or given away.
 #define list_item_ctrl_text									1
 #define list_item_ctrl_color								2
 #define list_item_ctrl_string								3
-#define list_item_ctrl_checkbox								4
-#define list_item_ctrl_pick_color							5
+#define list_item_ctrl_int									4
+#define list_item_ctrl_float								5
+#define list_item_ctrl_checkbox								6
+#define list_item_ctrl_pick_color							7
 
 #define list_string_value_string							0
 #define list_string_value_int								1
@@ -80,6 +82,8 @@ and can be sold or given away.
 #define list_button_set										3
 
 typedef union		{
+						int									*int_ptr;
+						float								*float_ptr;
 						bool								*bool_ptr;
 						char								str[list_max_value_sz];
 						d3col								*col_ptr;
@@ -172,8 +176,8 @@ extern void list_palette_add_color(list_palette_type *list,int piece_type,int pi
 extern void list_palette_add_string_selectable(list_palette_type *list,int id,char *name,char *value,bool selected,bool disabled);
 extern void list_palette_add_string_selectable_button(list_palette_type *list,int id,int button_type,int button_id,char *name,char *value,bool selected,bool disabled);
 extern void list_palette_add_string(list_palette_type *list,int id,char *name,char *value,bool disabled);
-extern void list_palette_add_string_int(list_palette_type *list,int id,char *name,int value,bool disabled);
-extern void list_palette_add_string_float(list_palette_type *list,int id,char *name,float value,bool disabled);
+extern void list_palette_add_int(list_palette_type *list,int id,char *name,int *int_ptr,bool disabled);
+extern void list_palette_add_float(list_palette_type *list,int id,char *name,float *float_ptr,bool disabled);
 extern void list_palette_add_checkbox(list_palette_type *list,int id,char *name,bool *bool_ptr,bool disabled);
 extern void list_palette_add_pick_color(list_palette_type *list,int id,char *name,d3col *col_ptr,bool disabled);
 extern void list_palette_add_point(list_palette_type *list,int id,char *name,d3pnt *pnt,bool disabled);

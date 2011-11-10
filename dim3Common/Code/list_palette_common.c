@@ -345,20 +345,38 @@ void list_palette_add_string(list_palette_type *list,int id,char *name,char *val
 	list_palette_add_string_selectable(list,id,name,value,FALSE,disabled);
 }
 
-void list_palette_add_string_int(list_palette_type *list,int id,char *name,int value,bool disabled)
+void list_palette_add_int(list_palette_type *list,int id,char *name,int *int_ptr,bool disabled)
 {
-	char		str[64];
-	
-	sprintf(str,"%d",value);
-	list_palette_add_string(list,id,name,str,disabled);
+	list_palette_item_type		*item;
+
+	item=list_palette_create_item(list,list_item_ctrl_int);
+
+	item->type=-1;
+	item->idx=-1;
+	item->id=id;
+
+	item->selected=FALSE;
+	item->disabled=disabled;
+
+	strcpy(item->name,name);
+	item->value.int_ptr=int_ptr;
 }
 
-void list_palette_add_string_float(list_palette_type *list,int id,char *name,float value,bool disabled)
+void list_palette_add_float(list_palette_type *list,int id,char *name,float *float_ptr,bool disabled)
 {
-	char		str[64];
-	
-	sprintf(str,"%.2f",value);
-	list_palette_add_string(list,id,name,str,disabled);
+	list_palette_item_type		*item;
+
+	item=list_palette_create_item(list,list_item_ctrl_float);
+
+	item->type=-1;
+	item->idx=-1;
+	item->id=id;
+
+	item->selected=FALSE;
+	item->disabled=disabled;
+
+	strcpy(item->name,name);
+	item->value.float_ptr=float_ptr;
 }
 
 void list_palette_add_checkbox(list_palette_type *list,int id,char *name,bool *bool_ptr,bool disabled)
@@ -777,7 +795,7 @@ void list_palette_draw_item_check_box(list_palette_type *list,list_palette_item_
 	}
 }
 
-void list_palette_draw_item_string(list_palette_type *list,list_palette_item_type *item)
+void list_palette_draw_item_string(list_palette_type *list,list_palette_item_type *item,char *str)
 {
 	int					rx,y;
 	d3col				col;
@@ -791,13 +809,13 @@ void list_palette_draw_item_string(list_palette_type *list,list_palette_item_typ
 	y=item->y-(list->scroll_page*list_item_scroll_size);
 
 	if (!item->disabled) {
-		text_draw_right(rx,y,list_item_font_size,NULL,item->value.str);
+		text_draw_right(rx,y,list_item_font_size,NULL,str);
 		return;
 	}
 
 	col.r=col.g=0.0f;
 	col.b=1.0f;
-	text_draw_right(rx,y,list_item_font_size,&col,item->value.str);
+	text_draw_right(rx,y,list_item_font_size,&col,str);
 }
 
 void list_palette_draw_item_button(list_palette_type *list,int idx)
@@ -1122,7 +1140,7 @@ void list_palette_draw_item(list_palette_type *list,int idx)
 	int							x,y;
 	float						vertexes[8];
 	bool						selected;
-	char						str[32];
+	char						str[256];
 	d3col						col;
 	d3rect						box;
 	list_palette_item_type		*item;
@@ -1180,6 +1198,16 @@ void list_palette_draw_item(list_palette_type *list,int idx)
 		}
 	}
 
+		// disable/enable colors
+
+	if (!item->disabled) {
+		col.r=col.g=col.b=0.0f;
+	}
+	else {
+		col.r=col.g=0.0f;
+		col.b=1.0f;
+	}
+
 		// draw item
 		
 	x=item->x;
@@ -1205,15 +1233,26 @@ void list_palette_draw_item(list_palette_type *list,int idx)
 			// string
 
 		case list_item_ctrl_string:
-			if (!item->disabled) {
-				col.r=col.g=col.b=0.0f;
-			}
-			else {
-				col.r=col.g=0.0f;
-				col.b=1.0f;
-			}
 			text_draw(x,y,list_item_font_size,&col,item->name);
-			list_palette_draw_item_string(list,item);
+			list_palette_draw_item_string(list,item,item->value.str);
+			list_palette_draw_item_button(list,idx);
+			break;
+
+			// int
+
+		case list_item_ctrl_int:
+			sprintf(str,"%d",*item->value.int_ptr);
+			text_draw(x,y,list_item_font_size,&col,item->name);
+			list_palette_draw_item_string(list,item,str);
+			list_palette_draw_item_button(list,idx);
+			break;
+
+			// float
+
+		case list_item_ctrl_float:
+			sprintf(str,"%.2f",*item->value.float_ptr);
+			text_draw(x,y,list_item_font_size,&col,item->name);
+			list_palette_draw_item_string(list,item,str);
 			list_palette_draw_item_button(list,idx);
 			break;
 
@@ -1582,25 +1621,40 @@ bool list_palette_click(list_palette_type *list,d3pnt *pnt,bool double_click)
 		}
 	}
 
-		// checkboxes and colors
-		// are handled internally
-
-	if (!list_picker.on) {
-		if (list->items[item_idx].ctrl_type==list_item_ctrl_checkbox) {
-			*list->items[item_idx].value.bool_ptr=!(*list->items[item_idx].value.bool_ptr);
-			main_wind_draw();
-			return(FALSE);
-		}
-		if (list->items[item_idx].ctrl_type==list_item_ctrl_pick_color) {
-			os_pick_color(list->items[item_idx].value.col_ptr);
-			main_wind_draw();
-			return(FALSE);
-		}
-	}
-
 		// run the click
 
 	if (!list_palette_click_item(list,item_idx)) return(FALSE);
+
+		// handle click editing
+
+	if (!list_picker.on) {
+
+		switch (list->items[item_idx].ctrl_type) {
+			
+			case list_item_ctrl_int:
+				if (!double_click) return(FALSE);
+				dialog_property_string_run(list_string_value_int,(void*)list->items[item_idx].value.int_ptr,0,0,0);
+				main_wind_draw();
+				return(FALSE);
+
+			case list_item_ctrl_float:
+				if (!double_click) return(FALSE);
+				dialog_property_string_run(list_string_value_float,(void*)list->items[item_idx].value.float_ptr,0,0,0);
+				main_wind_draw();
+				return(FALSE);
+
+			case list_item_ctrl_checkbox:
+				*list->items[item_idx].value.bool_ptr=!(*list->items[item_idx].value.bool_ptr);
+				main_wind_draw();
+				return(FALSE);
+		
+			case list_item_ctrl_pick_color:
+				os_pick_color(list->items[item_idx].value.col_ptr);
+				main_wind_draw();
+				return(FALSE);
+
+		}
+	}
 
 		// run any list picker modes
 

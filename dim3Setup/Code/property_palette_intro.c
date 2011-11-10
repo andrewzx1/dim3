@@ -89,7 +89,7 @@ void property_palette_fill_intro(void)
 	list_palette_add_header(&property_palette,0,"Title");
 	list_palette_add_string(&property_palette,kIntroPropertyTitleName,"Name",iface.intro.title.name,FALSE);
 	list_palette_add_string(&property_palette,kIntroPropertyTitleSound,"Sound",iface.intro.title.sound,FALSE);
-	list_palette_add_string_int(&property_palette,kIntroPropertyTitleLifeMsec,"Life Millsec",iface.intro.title.life_msec,FALSE);
+	list_palette_add_int(&property_palette,kIntroPropertyTitleLifeMsec,"Life Millsec",&iface.intro.title.life_msec,FALSE);
 
 		// buttons
 
@@ -122,8 +122,8 @@ void property_palette_fill_intro(void)
 		// confirm
 		
 	list_palette_add_header(&property_palette,0,"Confirm");
-	list_palette_add_string_int(&property_palette,kIntroPropertyConfirmX,"X",iface.intro.confirm.x,FALSE);
-	list_palette_add_string_int(&property_palette,kIntroPropertyConfirmY,"Y",iface.intro.confirm.y,FALSE);
+	list_palette_add_int(&property_palette,kIntroPropertyConfirmX,"X",&iface.intro.confirm.x,FALSE);
+	list_palette_add_int(&property_palette,kIntroPropertyConfirmY,"Y",&iface.intro.confirm.y,FALSE);
 
 		// models
 
@@ -249,18 +249,6 @@ void property_palette_click_intro(int id,bool double_click)
 			
 		case kIntroPropertyTitleSound:
 			property_palette_pick_sound(iface.intro.title.sound,TRUE);
-			break;
-
-		case kIntroPropertyTitleLifeMsec:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&iface.intro.title.life_msec,0,0,0);
-			break;
-		
-		case kIntroPropertyConfirmX:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&iface.intro.confirm.x,0,0,0);
-			break;
-
-		case kIntroPropertyConfirmY:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&iface.intro.confirm.y,0,0,0);
 			break;
 
 	}

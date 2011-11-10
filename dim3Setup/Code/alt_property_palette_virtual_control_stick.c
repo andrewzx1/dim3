@@ -73,10 +73,10 @@ void alt_property_palette_fill_virtual_control_stick(int virtual_control_stick_i
 	list_palette_add_pick_color(&alt_property_palette,kStickColor,"Color",&stick->color,FALSE);
 	
 	list_palette_add_header(&alt_property_palette,0,"Position");
-	list_palette_add_string_int(&alt_property_palette,kStickPositionX,"X",stick->x,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kStickPositionY,"Y",stick->y,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kStickPositionWid,"Width",stick->x_size,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kStickPositionHigh,"Height",stick->y_size,FALSE);
+	list_palette_add_int(&alt_property_palette,kStickPositionX,"X",&stick->x,FALSE);
+	list_palette_add_int(&alt_property_palette,kStickPositionY,"Y",&stick->y,FALSE);
+	list_palette_add_int(&alt_property_palette,kStickPositionWid,"Width",&stick->x_size,FALSE);
+	list_palette_add_int(&alt_property_palette,kStickPositionHigh,"Height",&stick->y_size,FALSE);
 
 	list_palette_add_header(&alt_property_palette,0,"Axis");
 	list_palette_add_checkbox(&alt_property_palette,kStickFlipX,"Flip X",&stick->flip_x,FALSE);
@@ -107,22 +107,6 @@ void alt_property_palette_click_virtual_control_stick(int virtual_control_stick_
 			property_pick_file("Pick a Inner Stick Bitmap","Bitmaps/Virtual","png",NULL,stick->inner_bitmap_name);
 			break;
 	
-		case kStickPositionX:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&stick->x,0,0,0);
-			break;
-
-		case kStickPositionY:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&stick->y,0,0,0);
-			break;
-
-		case kStickPositionWid:
-			dialog_property_string_run(list_string_value_int,(void*)&stick->x_size,0,0,0);
-			break;
-
-		case kStickPositionHigh:
-			dialog_property_string_run(list_string_value_int,(void*)&stick->y_size,0,0,0);
-			break;
-
 	}
 }
 

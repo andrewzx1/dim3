@@ -165,25 +165,25 @@ void alt_property_palette_fill_intro_button(int intro_button_idx)
 		// position
 
 	list_palette_add_header(&alt_property_palette,0,"Position");
-	list_palette_add_string_int(&alt_property_palette,kButtonPositionX,"X",btn->x,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kButtonPositionY,"Y",btn->y,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kButtonPositionWid,"Width",btn->wid,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kButtonPositionHigh,"Height",btn->high,FALSE);
+	list_palette_add_int(&alt_property_palette,kButtonPositionX,"X",&btn->x,FALSE);
+	list_palette_add_int(&alt_property_palette,kButtonPositionY,"Y",&btn->y,FALSE);
+	list_palette_add_int(&alt_property_palette,kButtonPositionWid,"Width",&btn->wid,FALSE);
+	list_palette_add_int(&alt_property_palette,kButtonPositionHigh,"Height",&btn->high,FALSE);
 
 		// mobile override
 
 	list_palette_add_header(&alt_property_palette,0,"Mobile Override");
 	list_palette_add_checkbox(&alt_property_palette,kButtonMobileSkip,"Hide if Mobile",&btn->mobile_hide,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kButtonMobilePositionX,"X",btn->mobile_x,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kButtonMobilePositionY,"Y",btn->mobile_y,FALSE);
+	list_palette_add_int(&alt_property_palette,kButtonMobilePositionX,"X",&btn->mobile_x,FALSE);
+	list_palette_add_int(&alt_property_palette,kButtonMobilePositionY,"Y",&btn->mobile_y,FALSE);
 
 		// description
 
 	if (desc!=NULL) {
 		list_palette_add_header(&alt_property_palette,0,"Save Description");
-		list_palette_add_string_int(&alt_property_palette,kButtonDescPositionX,"X",desc->x,FALSE);
-		list_palette_add_string_int(&alt_property_palette,kButtonDescPositionY,"Y",desc->y,FALSE);
-		list_palette_add_string_int(&alt_property_palette,kButtonDescTextSize,"Text Size",desc->text_size,FALSE);
+		list_palette_add_int(&alt_property_palette,kButtonDescPositionX,"X",&desc->x,FALSE);
+		list_palette_add_int(&alt_property_palette,kButtonDescPositionY,"Y",&desc->y,FALSE);
+		list_palette_add_int(&alt_property_palette,kButtonDescTextSize,"Text Size",&desc->text_size,FALSE);
 	}
 }
 
@@ -195,58 +195,5 @@ void alt_property_palette_fill_intro_button(int intro_button_idx)
 
 void alt_property_palette_click_intro_button(int intro_button_idx,int id,bool double_click)
 {
-	iface_intro_button_type				*btn;
-	iface_intro_simple_save_desc_type	*desc;
-
-	if (!double_click) return;
-
-	btn=get_intro_button_from_item_idx(intro_button_idx,NULL);
-	desc=get_intro_button_desc_from_item_idx(intro_button_idx);
-
-	switch (id) {
-	
-			// position
-
-		case kButtonPositionX:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&btn->x,0,0,0);
-			break;
-
-		case kButtonPositionY:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&btn->y,0,0,0);
-			break;
-
-		case kButtonPositionWid:
-			dialog_property_string_run(list_string_value_int,(void*)&btn->wid,0,0,0);
-			break;
-
-		case kButtonPositionHigh:
-			dialog_property_string_run(list_string_value_int,(void*)&btn->high,0,0,0);
-			break;
-
-			// mobile override
-
-		case kButtonMobilePositionX:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&btn->mobile_x,0,0,0);
-			break;
-
-		case kButtonMobilePositionY:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&btn->mobile_y,0,0,0);
-			break;
-
-			// description
-
-		case kButtonDescPositionX:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&desc->x,0,0,0);
-			break;
-
-		case kButtonDescPositionY:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&desc->y,0,0,0);
-			break;
-
-		case kButtonDescTextSize:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&desc->text_size,0,0,0);
-			break;
-
-	}
 }
 

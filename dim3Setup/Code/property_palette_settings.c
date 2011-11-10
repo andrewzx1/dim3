@@ -113,8 +113,8 @@ void property_palette_fill_settings(void)
 		// scale
 		
 	list_palette_add_header(&property_palette,0,"Scale");
-	list_palette_add_string_int(&property_palette,kSettingsScaleX,"X",iface.scale_x,FALSE);
-	list_palette_add_string_int(&property_palette,kSettingsScaleY,"Y",iface.scale_y,FALSE);
+	list_palette_add_int(&property_palette,kSettingsScaleX,"X",&iface.scale_x,FALSE);
+	list_palette_add_int(&property_palette,kSettingsScaleY,"Y",&iface.scale_y,FALSE);
 
 		// fonts
 		
@@ -198,8 +198,8 @@ void property_palette_fill_settings(void)
 		// fades
 		
 	list_palette_add_header(&property_palette,0,"Fades");
-	list_palette_add_string_int(&property_palette,kSettingsFaseTitleMilliseconds,"Title Milliseconds",iface.fade.title_msec,FALSE);
-	list_palette_add_string_int(&property_palette,kSettingsFaseMapMilliseconds,"Map Milliseconds",iface.fade.map_msec,FALSE);
+	list_palette_add_int(&property_palette,kSettingsFaseTitleMilliseconds,"Title Milliseconds",&iface.fade.title_msec,FALSE);
+	list_palette_add_int(&property_palette,kSettingsFaseMapMilliseconds,"Map Milliseconds",&iface.fade.map_msec,FALSE);
 }
 
 /* =======================================================
@@ -234,32 +234,11 @@ void property_palette_click_settings(int id,bool double_click)
 			dialog_property_string_run(list_string_value_string,(void*)iface.project.name,name_str_len,0,0);
 			break;
 
-			// setting
-			
-		case kSettingsScaleX:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&iface.scale_x,0,0,0);
-			break;
-
-		case kSettingsScaleY:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&iface.scale_y,0,0,0);
-			break;
-			
 			// sound
 			
 		case kSettingsClickSound:
 			property_palette_pick_sound(iface.click_sound,FALSE);
-			break;
-	
-			// fades
-		
-		case kSettingsFaseTitleMilliseconds:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&iface.fade.title_msec,0,0,0);
-			break;
-			
-		case kSettingsFaseMapMilliseconds:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&iface.fade.map_msec,0,0,0);
-			break;
-			
+			break;			
 
 	}
 }

@@ -85,10 +85,10 @@ void alt_property_palette_fill_multiplayer_game(int multiplayer_game_idx)
 		// score
 
 	list_palette_add_header(&alt_property_palette,0,"Scoring");
-	list_palette_add_string_int(&alt_property_palette,kMPGamePropertyScoreKill,"Kill",game->score.kill,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kMPGamePropertyScoreDeath,"Death",game->score.death,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kMPGamePropertyScoreSuicide,"Suicide",game->score.suicide,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kMPGamePropertyScoreGoal,"Goal",game->score.goal,FALSE);
+	list_palette_add_int(&alt_property_palette,kMPGamePropertyScoreKill,"Kill",&game->score.kill,FALSE);
+	list_palette_add_int(&alt_property_palette,kMPGamePropertyScoreDeath,"Death",&game->score.death,FALSE);
+	list_palette_add_int(&alt_property_palette,kMPGamePropertyScoreSuicide,"Suicide",&game->score.suicide,FALSE);
+	list_palette_add_int(&alt_property_palette,kMPGamePropertyScoreGoal,"Goal",&game->score.goal,FALSE);
 }
 
 /* =======================================================
@@ -128,25 +128,6 @@ void alt_property_palette_click_multiplayer_game(int multiplayer_game_idx,int id
 		case kMPGamePropertySpawnSpotName:
 			dialog_property_string_run(list_string_value_string,(void*)game->spawn.spot_name,name_str_len,0,0);
 			break;
-	
-			// score
-
-		case kMPGamePropertyScoreKill:
-			dialog_property_string_run(list_string_value_int,(void*)&game->score.kill,0,0,0);
-			break;
-			
-		case kMPGamePropertyScoreDeath:
-			dialog_property_string_run(list_string_value_int,(void*)&game->score.death,0,0,0);
-			break;
-			
-		case kMPGamePropertyScoreSuicide:
-			dialog_property_string_run(list_string_value_int,(void*)&game->score.suicide,0,0,0);
-			break;
-			
-		case kMPGamePropertyScoreGoal:
-			dialog_property_string_run(list_string_value_int,(void*)&game->score.goal,0,0,0);
-			break;
-
 
 	}
 }

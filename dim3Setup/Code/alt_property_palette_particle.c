@@ -92,19 +92,19 @@ void alt_property_palette_fill_particle(int particle_idx)
 	list_palette_add_string(&alt_property_palette,kParticleSettingsName,"Name",particle->name,FALSE);
 	list_palette_add_string(&alt_property_palette,kParticleSettingsBitmapName,"Bitmap",particle->bitmap_name,FALSE);
 	list_palette_add_string(&alt_property_palette,kParticleSettingsChainName,"Chain Particle",particle->chain_name,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kParticleSettingsCount,"Count",particle->count,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kParticleSettingsLife,"Life Milliseconds",particle->life_msec,FALSE);
+	list_palette_add_int(&alt_property_palette,kParticleSettingsCount,"Count",&particle->count,FALSE);
+	list_palette_add_int(&alt_property_palette,kParticleSettingsLife,"Life Milliseconds",&particle->life_msec,FALSE);
 
 		// particles
 
 	list_palette_add_header(&alt_property_palette,0,"Particles");
-	list_palette_add_string_int(&alt_property_palette,kParticleParticleStartSize,"Start Size",particle->start_pixel_size,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kParticleParticleEndSize,"End Size",particle->end_pixel_size,FALSE);
-	list_palette_add_string_float(&alt_property_palette,kParticleParticleStartGravity,"Start Gravity",particle->start_gravity,FALSE);
-	list_palette_add_string_float(&alt_property_palette,kParticleParticleGravityAdd,"Gravity Add",particle->gravity_add,FALSE);
-	list_palette_add_string_float(&alt_property_palette,kParticleParticleStartAlpha,"Start Alpha",particle->start_alpha,FALSE);
-	list_palette_add_string_float(&alt_property_palette,kParticleParticleEndAlpha,"End Alpha",particle->end_alpha,FALSE);
-	list_palette_add_string_float(&alt_property_palette,kParticleParticleAmbientFactor,"Ambient Factor",particle->ambient_factor,FALSE);
+	list_palette_add_int(&alt_property_palette,kParticleParticleStartSize,"Start Size",&particle->start_pixel_size,FALSE);
+	list_palette_add_int(&alt_property_palette,kParticleParticleEndSize,"End Size",&particle->end_pixel_size,FALSE);
+	list_palette_add_float(&alt_property_palette,kParticleParticleStartGravity,"Start Gravity",&particle->start_gravity,FALSE);
+	list_palette_add_float(&alt_property_palette,kParticleParticleGravityAdd,"Gravity Add",&particle->gravity_add,FALSE);
+	list_palette_add_float(&alt_property_palette,kParticleParticleStartAlpha,"Start Alpha",&particle->start_alpha,FALSE);
+	list_palette_add_float(&alt_property_palette,kParticleParticleEndAlpha,"End Alpha",&particle->end_alpha,FALSE);
+	list_palette_add_float(&alt_property_palette,kParticleParticleAmbientFactor,"Ambient Factor",&particle->ambient_factor,FALSE);
 	list_palette_add_pick_color(&alt_property_palette,kParticleParticleStartColor,"Start Color",&particle->start_color,FALSE);
 	list_palette_add_pick_color(&alt_property_palette,kParticleParticleEndColor,"End Color",&particle->end_color,FALSE);
 
@@ -119,9 +119,9 @@ void alt_property_palette_fill_particle(int particle_idx)
 		// trail
 
 	list_palette_add_header(&alt_property_palette,0,"Trails");
-	list_palette_add_string_int(&alt_property_palette,kParticleSettingsTrailCount,"Count",particle->trail_count,FALSE);
-	list_palette_add_string_float(&alt_property_palette,kParticleSettingsTrailStep,"Step",particle->trail_step,FALSE);
-	list_palette_add_string_float(&alt_property_palette,kParticleSettingsTrailReduceFactor,"Reduction Factor",particle->reduce_pixel_fact,FALSE);
+	list_palette_add_int(&alt_property_palette,kParticleSettingsTrailCount,"Count",&particle->trail_count,FALSE);
+	list_palette_add_float(&alt_property_palette,kParticleSettingsTrailStep,"Step",&particle->trail_step,FALSE);
+	list_palette_add_float(&alt_property_palette,kParticleSettingsTrailReduceFactor,"Reduction Factor",&particle->reduce_pixel_fact,FALSE);
 
 		// options
 
@@ -134,8 +134,8 @@ void alt_property_palette_fill_particle(int particle_idx)
 		// animation
 
 	list_palette_add_header(&alt_property_palette,0,"Animation");
-	list_palette_add_string_int(&alt_property_palette,kParticleImageCount,"Count",particle->animate.image_count,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kParticleImageMillisecond,"Display Milliseconds",particle->animate.msec,FALSE);
+	list_palette_add_int(&alt_property_palette,kParticleImageCount,"Count",&particle->animate.image_count,FALSE);
+	list_palette_add_int(&alt_property_palette,kParticleImageMillisecond,"Display Milliseconds",&particle->animate.msec,FALSE);
 	list_palette_add_checkbox(&alt_property_palette,kParticleImageLoop,"Loop",&particle->animate.loop,FALSE);
 	list_palette_add_checkbox(&alt_property_palette,kParticleImageLoopBack,"Loop Back",&particle->animate.loop_back,FALSE);
 }
@@ -170,44 +170,6 @@ void alt_property_palette_click_particle(int particle_idx,int id,bool double_cli
 			property_palette_pick_particle(particle->chain_name);
 			break;
 
-		case kParticleSettingsCount:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&particle->count,0,0,0);
-			break;
-
-		case kParticleSettingsLife:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&particle->life_msec,0,0,0);
-			break;
-
-			// particles
-
-		case kParticleParticleStartSize:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&particle->start_pixel_size,0,0,0);
-			break;
-
-		case kParticleParticleEndSize:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&particle->end_pixel_size,0,0,0);
-			break;
-
-		case kParticleParticleStartGravity:
-			dialog_property_string_run(list_string_value_float,(void*)&particle->start_gravity,0,0,0);
-			break;
-
-		case kParticleParticleGravityAdd:
-			dialog_property_string_run(list_string_value_float,(void*)&particle->gravity_add,0,0,0);
-			break;
-
-		case kParticleParticleStartAlpha:
-			dialog_property_string_run(list_string_value_0_to_1_float,(void*)&particle->start_alpha,0,0,0);
-			break;
-
-		case kParticleParticleEndAlpha:
-			dialog_property_string_run(list_string_value_0_to_1_float,(void*)&particle->end_alpha,0,0,0);
-			break;
-
-		case kParticleParticleAmbientFactor:
-			dialog_property_string_run(list_string_value_0_to_1_float,(void*)&particle->ambient_factor,0,0,0);
-			break;
-
 			// motion
 
 		case kParticleMotionOffset:
@@ -224,30 +186,6 @@ void alt_property_palette_click_particle(int particle_idx,int id,bool double_cli
 
 		case kParticleMotionRotAccel:
 			dialog_property_chord_run(list_chord_value_vector,(void*)&particle->rot_accel);
-			break;
-
-			// trail
-
-		case kParticleSettingsTrailCount:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&particle->trail_count,0,0,0);
-			break;
-
-		case kParticleSettingsTrailStep:
-			dialog_property_string_run(list_string_value_positive_float,(void*)&particle->trail_step,0,0,0);
-			break;
-
-		case kParticleSettingsTrailReduceFactor:
-			dialog_property_string_run(list_string_value_positive_float,(void*)&particle->reduce_pixel_fact,0,0,0);
-			break;
-
-			// animation
-
-		case kParticleImageCount:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&particle->animate.image_count,0,0,0);
-			break;
-
-		case kParticleImageMillisecond:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&particle->animate.msec,0,0,0);
 			break;
 
 	}
