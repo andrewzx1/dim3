@@ -60,7 +60,7 @@ void alt2_property_palette_fill_group_particle(int particle_idx,int group_partic
 
 	list_palette_add_header(&alt2_property_palette,0,"Settings");
 	list_palette_add_string(&alt2_property_palette,kGroupParticleSettingsName,"Particle",group_particle->name,FALSE);
-	list_palette_add_string_int(&alt2_property_palette,kGroupParticleSettingsShift,"Shift",group_particle->shift,FALSE);
+	list_palette_add_int(&alt2_property_palette,kGroupParticleSettingsShift,"Shift",&group_particle->shift,FALSE);
 }
 
 /* =======================================================
@@ -79,14 +79,8 @@ void alt2_property_palette_click_group_particle(int particle_idx,int group_parti
 
 	switch (id) {
 
-			// settings
-
 		case kGroupParticleSettingsName:
 			property_palette_pick_particle(group_particle->name);
-			break;
-
-		case kGroupParticleSettingsShift:
-			dialog_property_string_run(list_string_value_int,(void*)&group_particle->shift,0,0,0);
 			break;
 
 	}

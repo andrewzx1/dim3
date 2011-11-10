@@ -105,10 +105,10 @@ void property_palette_fill_hud(void)
 		// chat
 		
 	list_palette_add_header(&property_palette,0,"Chat");
-	list_palette_add_string_int(&property_palette,kHUDPropertyChatX,"X",iface.chat.x,FALSE);
-	list_palette_add_string_int(&property_palette,kHUDPropertyChatY,"Y",iface.chat.y,FALSE);
-	list_palette_add_string_int(&property_palette,kHUDPropertyChatLastAddLifeSeconds,"Last Add Life Seconds",iface.chat.last_add_life_sec,FALSE);
-	list_palette_add_string_int(&property_palette,kHUDPropertyChatNextLifeSeconds,"Next Life Seconds",iface.chat.next_life_sec,FALSE);
+	list_palette_add_int(&property_palette,kHUDPropertyChatX,"X",&iface.chat.x,FALSE);
+	list_palette_add_int(&property_palette,kHUDPropertyChatY,"Y",&iface.chat.y,FALSE);
+	list_palette_add_int(&property_palette,kHUDPropertyChatLastAddLifeSeconds,"Last Add Life Seconds",&iface.chat.last_add_life_sec,FALSE);
+	list_palette_add_int(&property_palette,kHUDPropertyChatNextLifeSeconds,"Next Life Seconds",&iface.chat.next_life_sec,FALSE);
 }
 
 /* =======================================================
@@ -344,32 +344,6 @@ void property_palette_click_hud(int id,bool double_click)
 		state.cur_hud_bar_idx=idx;
 
 		return;
-	}
-	
-		// regular settings
-
-	if (!double_click) return;
-
-	switch (id) {
-
-			// chat
-			
-		case kHUDPropertyChatX:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&iface.chat.x,0,0,0);
-			break;
-			
-		case kHUDPropertyChatY:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&iface.chat.y,0,0,0);
-			break;
-			
-		case kHUDPropertyChatLastAddLifeSeconds:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&iface.chat.last_add_life_sec,0,0,0);
-			break;
-			
-		case kHUDPropertyChatNextLifeSeconds:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&iface.chat.next_life_sec,0,0,0);
-			break;
-			
 	}
 }
 

@@ -68,7 +68,7 @@ void alt_property_palette_fill_multiplayer_character(int multiplayer_character_i
 		// options
 
 	list_palette_add_header(&alt_property_palette,0,"UI Drawing");
-	list_palette_add_string_float(&alt_property_palette,kMPCharacterPropertyOptionsResize,"Resize",character->interface_resize,FALSE);
+	list_palette_add_float(&alt_property_palette,kMPCharacterPropertyOptionsResize,"Resize",&character->interface_resize,FALSE);
 	list_palette_add_point(&alt_property_palette,kMPCharacterPropertyOptionsOffset,"Offset",&character->interface_offset,FALSE);
 }
 
@@ -103,10 +103,6 @@ void alt_property_palette_click_multiplayer_character(int multiplayer_character_
 			break;
 
 			// options
-
-		case kMPCharacterPropertyOptionsResize:
-			dialog_property_string_run(list_string_value_positive_float,(void*)&character->interface_resize,0,0,0);
-			break;
 
 		case kMPCharacterPropertyOptionsOffset:
 			dialog_property_chord_run(list_chord_value_point,(void*)&character->interface_offset);

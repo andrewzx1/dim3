@@ -62,10 +62,10 @@ void property_palette_fill_progress(void)
 		// progress
 		
 	list_palette_add_header(&property_palette,0,"Position");
-	list_palette_add_string_int(&property_palette,kSettingsProgressLeft,"Left X",iface.progress.lx,FALSE);
-	list_palette_add_string_int(&property_palette,kSettingsProgressRight,"Right X",iface.progress.rx,FALSE);
-	list_palette_add_string_int(&property_palette,kSettingsProgressTop,"Top Y",iface.progress.ty,FALSE);
-	list_palette_add_string_int(&property_palette,kSettingsProgressBottom,"Bottom Y",iface.progress.by,FALSE);
+	list_palette_add_int(&property_palette,kSettingsProgressLeft,"Left X",&iface.progress.lx,FALSE);
+	list_palette_add_int(&property_palette,kSettingsProgressRight,"Right X",&iface.progress.rx,FALSE);
+	list_palette_add_int(&property_palette,kSettingsProgressTop,"Top Y",&iface.progress.ty,FALSE);
+	list_palette_add_int(&property_palette,kSettingsProgressBottom,"Bottom Y",&iface.progress.by,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Display");
 	list_palette_add_checkbox(&property_palette,kSettingsProgressOutline,"Outline",&iface.progress.outline,FALSE);
@@ -87,26 +87,5 @@ void property_palette_fill_progress(void)
 
 void property_palette_click_progress(int id,bool double_click)
 {
-	if (!double_click) return;
-
-	switch (id) {
-									
-		case kSettingsProgressLeft:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&iface.progress.lx,0,0,0);
-			break;
-
-		case kSettingsProgressRight:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&iface.progress.rx,0,0,0);
-			break;
-
-		case kSettingsProgressTop:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&iface.progress.ty,0,0,0);
-			break;
-
-		case kSettingsProgressBottom:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&iface.progress.by,0,0,0);
-			break;
-
-	}
 }
 

@@ -82,17 +82,17 @@ void alt_property_palette_fill_ring(int ring_idx)
 	list_palette_add_header(&alt_property_palette,0,"Settings");
 	list_palette_add_string(&alt_property_palette,kRingSettingsName,"Name",ring->name,FALSE);
 	list_palette_add_string(&alt_property_palette,kRingSettingsBitmapName,"Bitmap",ring->bitmap_name,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kRingSettingsLife,"Life Milliseconds",ring->life_msec,FALSE);
+	list_palette_add_int(&alt_property_palette,kRingSettingsLife,"Life Milliseconds",&ring->life_msec,FALSE);
 
 		// ring
 
 	list_palette_add_header(&alt_property_palette,0,"Ring");
-	list_palette_add_string_int(&alt_property_palette,kRingRingStartOuterSize,"Start Outer Size",ring->start_outer_size,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kRingRingEndOuterSize,"End Outer Size",ring->end_outer_size,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kRingRingStartInnerSize,"Start Inner Size",ring->start_inner_size,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kRingRingEndInnerSize,"End Inner Size",ring->end_inner_size,FALSE);
-	list_palette_add_string_float(&alt_property_palette,kRingRingStartAlpha,"Start Alpha",ring->start_alpha,FALSE);
-	list_palette_add_string_float(&alt_property_palette,kRingRingEndAlpha,"End Alpha",ring->end_alpha,FALSE);
+	list_palette_add_int(&alt_property_palette,kRingRingStartOuterSize,"Start Outer Size",&ring->start_outer_size,FALSE);
+	list_palette_add_int(&alt_property_palette,kRingRingEndOuterSize,"End Outer Size",&ring->end_outer_size,FALSE);
+	list_palette_add_int(&alt_property_palette,kRingRingStartInnerSize,"Start Inner Size",&ring->start_inner_size,FALSE);
+	list_palette_add_int(&alt_property_palette,kRingRingEndInnerSize,"End Inner Size",&ring->end_inner_size,FALSE);
+	list_palette_add_float(&alt_property_palette,kRingRingStartAlpha,"Start Alpha",&ring->start_alpha,FALSE);
+	list_palette_add_float(&alt_property_palette,kRingRingEndAlpha,"End Alpha",&ring->end_alpha,FALSE);
 	list_palette_add_pick_color(&alt_property_palette,kRingRingStartColor,"Start Color",&ring->start_color,FALSE);
 	list_palette_add_pick_color(&alt_property_palette,kRingRingEndColor,"End Color",&ring->end_color,FALSE);
 
@@ -113,8 +113,8 @@ void alt_property_palette_fill_ring(int ring_idx)
 		// animation
 
 	list_palette_add_header(&alt_property_palette,0,"Animation");
-	list_palette_add_string_int(&alt_property_palette,kRingImageCount,"Count",ring->animate.image_count,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kRingImageMillisecond,"Display Milliseconds",ring->animate.msec,FALSE);
+	list_palette_add_int(&alt_property_palette,kRingImageCount,"Count",&ring->animate.image_count,FALSE);
+	list_palette_add_int(&alt_property_palette,kRingImageMillisecond,"Display Milliseconds",&ring->animate.msec,FALSE);
 	list_palette_add_checkbox(&alt_property_palette,kRingImageLoop,"Loop",&ring->animate.loop,FALSE);
 	list_palette_add_checkbox(&alt_property_palette,kRingImageLoopBack,"Loop Back",&ring->animate.loop_back,FALSE);
 }
@@ -145,36 +145,6 @@ void alt_property_palette_click_ring(int ring_idx,int id,bool double_click)
 			property_pick_file("Pick a Ring Bitmap","Bitmaps/Rings","png",NULL,ring->bitmap_name);
 			break;
 
-		case kRingSettingsLife:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&ring->life_msec,0,0,0);
-			break;
-
-			// ring
-
-		case kRingRingStartOuterSize:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&ring->start_outer_size,0,0,0);
-			break;
-
-		case kRingRingEndOuterSize:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&ring->end_outer_size,0,0,0);
-			break;
-
-		case kRingRingStartInnerSize:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&ring->start_inner_size,0,0,0);
-			break;
-
-		case kRingRingEndInnerSize:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&ring->end_inner_size,0,0,0);
-			break;
-
-		case kRingRingStartAlpha:
-			dialog_property_string_run(list_string_value_0_to_1_float,(void*)&ring->start_alpha,0,0,0);
-			break;
-
-		case kRingRingEndAlpha:
-			dialog_property_string_run(list_string_value_0_to_1_float,(void*)&ring->end_alpha,0,0,0);
-			break;
-
 			// motion
 
 		case kRingMotionMove:
@@ -191,16 +161,6 @@ void alt_property_palette_click_ring(int ring_idx,int id,bool double_click)
 
 		case kRingMotionRotAccel:
 			dialog_property_chord_run(list_chord_value_vector,(void*)&ring->rot_accel);
-			break;
-
-			// animation
-
-		case kRingImageCount:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&ring->animate.image_count,0,0,0);
-			break;
-
-		case kRingImageMillisecond:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&ring->animate.msec,0,0,0);
 			break;
 
 	}

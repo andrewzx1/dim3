@@ -69,13 +69,13 @@ void alt_property_palette_fill_intro_model(int intro_model_idx)
 		// position
 
 	list_palette_add_header(&alt_property_palette,0,"Position");
-	list_palette_add_string_int(&alt_property_palette,kModelPositionX,"X",model->x,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kModelPositionY,"Y",model->y,FALSE);
+	list_palette_add_int(&alt_property_palette,kModelPositionX,"X",&model->x,FALSE);
+	list_palette_add_int(&alt_property_palette,kModelPositionY,"Y",&model->y,FALSE);
 
 		// options
 
 	list_palette_add_header(&alt_property_palette,0,"Options");
-	list_palette_add_string_float(&alt_property_palette,kModelOptionResize,"Resize",model->resize,FALSE);
+	list_palette_add_float(&alt_property_palette,kModelOptionResize,"Resize",&model->resize,FALSE);
 	list_palette_add_angle(&alt_property_palette,kModelOptionRot,"Rotate",&model->rot,FALSE);
 }
 
@@ -105,21 +105,7 @@ void alt_property_palette_click_intro_model(int intro_model_idx,int id,bool doub
 			dialog_property_string_run(list_string_value_string,(void*)model->animate_name,name_str_len,0,0);
 			break;
 
-			// position
-
-		case kModelPositionX:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&model->x,0,0,0);
-			break;
-
-		case kModelPositionY:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&model->y,0,0,0);
-			break;
-
 			// options
-
-		case kModelOptionResize:
-			dialog_property_string_run(list_string_value_positive_float,(void*)&model->resize,0,0,0);
-			break;
 
 		case kModelOptionRot:
 			dialog_property_chord_run(list_chord_value_angle,(void*)&model->rot);

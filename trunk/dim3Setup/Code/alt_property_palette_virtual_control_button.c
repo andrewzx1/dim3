@@ -77,10 +77,10 @@ void alt_property_palette_fill_virtual_control_button(int virtual_control_button
 	list_palette_add_pick_color(&alt_property_palette,kButtonColor,"Color",&button->color,FALSE);
 	
 	list_palette_add_header(&alt_property_palette,0,"Position");
-	list_palette_add_string_int(&alt_property_palette,kButtonPositionX,"X",button->x,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kButtonPositionY,"Y",button->y,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kButtonPositionWid,"Width",button->x_size,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kButtonPositionHigh,"Height",button->y_size,FALSE);
+	list_palette_add_int(&alt_property_palette,kButtonPositionX,"X",&button->x,FALSE);
+	list_palette_add_int(&alt_property_palette,kButtonPositionY,"Y",&button->y,FALSE);
+	list_palette_add_int(&alt_property_palette,kButtonPositionWid,"Width",&button->x_size,FALSE);
+	list_palette_add_int(&alt_property_palette,kButtonPositionHigh,"Height",&button->y_size,FALSE);
 }
 
 /* =======================================================
@@ -111,22 +111,6 @@ void alt_property_palette_click_virtual_control_button(int virtual_control_butto
 			property_pick_file("Pick a Down Button Bitmap","Bitmaps/Virtual","png",NULL,button->down_bitmap_name);
 			break;
 			
-		case kButtonPositionX:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&button->x,0,0,0);
-			break;
-
-		case kButtonPositionY:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&button->y,0,0,0);
-			break;
-
-		case kButtonPositionWid:
-			dialog_property_string_run(list_string_value_int,(void*)&button->x_size,0,0,0);
-			break;
-
-		case kButtonPositionHigh:
-			dialog_property_string_run(list_string_value_int,(void*)&button->y_size,0,0,0);
-			break;
-
 	}
 }
 

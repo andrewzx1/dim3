@@ -80,17 +80,17 @@ void alt2_property_palette_fill_chooser_piece(int chooser_idx,int chooser_piece_
 
 	list_palette_add_header(&alt2_property_palette,0,"Settings");
 	list_palette_add_string(&alt2_property_palette,kChooserPieceSettingsType,"Type",chooser_type_str[piece->type],FALSE);
-	list_palette_add_string_int(&alt2_property_palette,kChooserPieceSettingsId,"Id",piece->id,FALSE);
+	list_palette_add_int(&alt2_property_palette,kChooserPieceSettingsId,"Id",&piece->id,FALSE);
 	list_palette_add_checkbox(&alt2_property_palette,kChooserPieceSettingsClickable,"Clickable",&piece->clickable,FALSE);
 	list_palette_add_string(&alt2_property_palette,kChooserPieceSettingsGoto,"Goto Chooser",piece->goto_name,FALSE);
 
 		// position
 
 	list_palette_add_header(&alt2_property_palette,0,"Position");
-	list_palette_add_string_int(&alt2_property_palette,kChooserPiecePositionX,"X",piece->x,FALSE);
-	list_palette_add_string_int(&alt2_property_palette,kChooserPiecePositionY,"Y",piece->y,FALSE);
-	list_palette_add_string_int(&alt2_property_palette,kChooserPiecePositionWid,"Width",piece->wid,FALSE);
-	list_palette_add_string_int(&alt2_property_palette,kChooserPiecePositionHigh,"Height",piece->high,FALSE);
+	list_palette_add_int(&alt2_property_palette,kChooserPiecePositionX,"X",&piece->x,FALSE);
+	list_palette_add_int(&alt2_property_palette,kChooserPiecePositionY,"Y",&piece->y,FALSE);
+	list_palette_add_int(&alt2_property_palette,kChooserPiecePositionWid,"Width",&piece->wid,FALSE);
+	list_palette_add_int(&alt2_property_palette,kChooserPiecePositionHigh,"Height",&piece->high,FALSE);
 
 		// types
 
@@ -99,7 +99,7 @@ void alt2_property_palette_fill_chooser_piece(int chooser_idx,int chooser_piece_
 		case chooser_piece_type_text:
 			list_palette_add_header(&alt2_property_palette,0,"Text");
 			list_palette_add_string(&alt2_property_palette,kChooserPieceTextStr,"Text",piece->data.text.str,FALSE);
-			list_palette_add_string_int(&alt2_property_palette,kChooserPieceTextSize,"Size",piece->data.text.size,FALSE);
+			list_palette_add_int(&alt2_property_palette,kChooserPieceTextSize,"Size",&piece->data.text.size,FALSE);
 			list_palette_add_string(&alt2_property_palette,kChooserPieceTextJust,"Justification",hud_text_just_type_str[piece->data.text.just],FALSE);
 			break;
 
@@ -112,7 +112,7 @@ void alt2_property_palette_fill_chooser_piece(int chooser_idx,int chooser_piece_
 			list_palette_add_header(&alt2_property_palette,0,"Model");
 			list_palette_add_string(&alt2_property_palette,kChooserPieceModelModelName,"Model",piece->data.model.model_name,FALSE);
 			list_palette_add_string(&alt2_property_palette,kChooserPieceModelAnimateName,"Animation",piece->data.model.animate_name,FALSE);
-			list_palette_add_string_float(&alt2_property_palette,kChooserPieceModelResize,"Resize",piece->data.model.resize,FALSE);
+			list_palette_add_float(&alt2_property_palette,kChooserPieceModelResize,"Resize",&piece->data.model.resize,FALSE);
 			list_palette_add_angle(&alt2_property_palette,kChooserPieceModelRot,"Rotate",&piece->data.model.rot,FALSE);
 			break;
 
@@ -147,40 +147,14 @@ void alt2_property_palette_click_chooser_piece(int chooser_idx,int chooser_piece
 			property_pick_list("Pick a Chooser Piece Type",(char*)chooser_type_str,&piece->type);
 			break;
 
-		case kChooserPieceSettingsId:
-			dialog_property_string_run(list_string_value_int,(void*)&piece->id,0,0,0);
-			break;
-
 		case kChooserPieceSettingsGoto:
 			dialog_property_string_run(list_string_value_string,(void*)piece->goto_name,name_str_len,0,0);
-			break;
-
-			// position
-
-		case kChooserPiecePositionX:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&piece->x,0,0,0);
-			break;
-
-		case kChooserPiecePositionY:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&piece->y,0,0,0);
-			break;
-
-		case kChooserPiecePositionWid:
-			dialog_property_string_run(list_string_value_int,(void*)&piece->wid,0,0,0);
-			break;
-
-		case kChooserPiecePositionHigh:
-			dialog_property_string_run(list_string_value_int,(void*)&piece->high,0,0,0);
 			break;
 
 			// types
 
 		case kChooserPieceTextStr:
 			dialog_property_string_run(list_string_value_string,(void*)piece->data.text.str,max_chooser_text_data_sz,0,0);
-			break;
-
-		case kChooserPieceTextSize:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&piece->data.text.size,0,0,0);
 			break;
 
 		case kChooserPieceTextJust:
@@ -197,10 +171,6 @@ void alt2_property_palette_click_chooser_piece(int chooser_idx,int chooser_piece
 
 		case kChooserPieceModelAnimateName:
 			dialog_property_string_run(list_string_value_string,(void*)piece->data.model.animate_name,name_str_len,0,0);
-			break;
-
-		case kChooserPieceModelResize:
-			dialog_property_string_run(list_string_value_positive_float,(void*)&piece->data.model.resize,0,0,0);
 			break;
 
 		case kChooserPieceModelRot:

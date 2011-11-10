@@ -72,20 +72,20 @@ void alt_property_palette_fill_halo(int halo_idx)
 		// distance
 
 	list_palette_add_header(&alt_property_palette,0,"Distance");
-	list_palette_add_string_int(&alt_property_palette,kHaloDistanceMin,"Minimum",halo->min_dist,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kHaloDistanceMax,"Maximum",halo->max_dist,FALSE);
+	list_palette_add_int(&alt_property_palette,kHaloDistanceMin,"Minimum",&halo->min_dist,FALSE);
+	list_palette_add_int(&alt_property_palette,kHaloDistanceMax,"Maximum",&halo->max_dist,FALSE);
 
 		// size
 
 	list_palette_add_header(&alt_property_palette,0,"Size");
-	list_palette_add_string_int(&alt_property_palette,kHaloSizeMin,"Minimum",halo->min_size,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kHaloSizeMax,"Maximum",halo->max_size,FALSE);
+	list_palette_add_int(&alt_property_palette,kHaloSizeMin,"Minimum",&halo->min_size,FALSE);
+	list_palette_add_int(&alt_property_palette,kHaloSizeMax,"Maximum",&halo->max_size,FALSE);
 
 		// alpha
 
 	list_palette_add_header(&alt_property_palette,0,"Alpha");
-	list_palette_add_string_float(&alt_property_palette,kHaloAlphaMin,"Minimum",halo->min_alpha,FALSE);
-	list_palette_add_string_float(&alt_property_palette,kHaloAlphaMax,"Maximum",halo->max_alpha,FALSE);
+	list_palette_add_float(&alt_property_palette,kHaloAlphaMin,"Minimum",&halo->min_alpha,FALSE);
+	list_palette_add_float(&alt_property_palette,kHaloAlphaMax,"Maximum",&halo->max_alpha,FALSE);
 
 		// options
 
@@ -118,36 +118,6 @@ void alt_property_palette_click_halo(int halo_idx,int id,bool double_click)
 
 		case kHaloSettingsFileName:
 			property_pick_file("Pick a Halo Bitmap","Bitmaps/Halos","png",NULL,halo->bitmap_name);
-			break;
-
-			// distance
-
-		case kHaloDistanceMin:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&halo->min_dist,0,0,0);
-			break;
-
-		case kHaloDistanceMax:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&halo->max_dist,0,0,0);
-			break;
-
-			// size
-
-		case kHaloSizeMin:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&halo->min_size,0,0,0);
-			break;
-
-		case kHaloSizeMax:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&halo->max_size,0,0,0);
-			break;
-
-			// alpha
-
-		case kHaloAlphaMin:
-			dialog_property_string_run(list_string_value_0_to_1_float,(void*)&halo->min_alpha,0,0,0);
-			break;
-
-		case kHaloAlphaMax:
-			dialog_property_string_run(list_string_value_0_to_1_float,(void*)&halo->max_alpha,0,0,0);
 			break;
 
 	}

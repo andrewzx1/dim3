@@ -73,7 +73,7 @@ void property_palette_fill_multiplayer(void)
 	list_palette_add_header(&property_palette,0,"News");
 	list_palette_add_string(&property_palette,kMPPropertyNewsHost,"Host",iface.net_news.host,FALSE);
 	list_palette_add_string(&property_palette,kMPPropertyNewsURL,"URL",iface.net_news.url,FALSE);
-	list_palette_add_string_int(&property_palette,kMPPropertyNewsPort,"Port",iface.net_news.port,FALSE);
+	list_palette_add_int(&property_palette,kMPPropertyNewsPort,"Port",&iface.net_news.port,FALSE);
 
 		// bots
 
@@ -321,10 +321,6 @@ void property_palette_click_multiplayer(int id,bool double_click)
 
 		case kMPPropertyNewsURL:
 			dialog_property_string_run(list_string_value_string,(void*)iface.net_news.url,name_str_len,0,0);
-			break;
-
-		case kMPPropertyNewsPort:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&iface.net_news.port,0,0,0);
 			break;
 
 	}

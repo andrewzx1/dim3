@@ -69,17 +69,17 @@ void property_palette_fill_radar(void)
 	list_palette_add_header(&property_palette,0,"Settings");
 	list_palette_add_checkbox(&property_palette,kRadarPropertySettingsOn,"On",&iface.radar.on,FALSE);
 	list_palette_add_string(&property_palette,kRadarPropertySettingsBackground,"Background",iface.radar.background_bitmap_name,FALSE);
-	list_palette_add_string_int(&property_palette,kRadarPropertySettingsDisplayRadius,"Display Radius",iface.radar.display_radius,FALSE);
-	list_palette_add_string_int(&property_palette,kRadarPropertySettingsViewRadius,"View Radius",iface.radar.view_radius,FALSE);
-	list_palette_add_string_int(&property_palette,kRadarPropertySettingsNoMotionFade,"No Motion Fade Milliseconds",iface.radar.no_motion_fade,FALSE);
+	list_palette_add_int(&property_palette,kRadarPropertySettingsDisplayRadius,"Display Radius",&iface.radar.display_radius,FALSE);
+	list_palette_add_int(&property_palette,kRadarPropertySettingsViewRadius,"View Radius",&iface.radar.view_radius,FALSE);
+	list_palette_add_int(&property_palette,kRadarPropertySettingsNoMotionFade,"No Motion Fade Milliseconds",&iface.radar.no_motion_fade,FALSE);
 	list_palette_add_checkbox(&property_palette,kRadarPropertySettingsRot,"Rotate",&iface.radar.rot,FALSE);
 	list_palette_add_checkbox(&property_palette,kRadarPropertySettingsTeamTint,"Team Tint",&iface.radar.team_tint,FALSE);
 
 		// position
 
 	list_palette_add_header(&property_palette,0,"Position");
-	list_palette_add_string_int(&property_palette,kRadarPropertyPositionX,"X",iface.radar.x,FALSE);
-	list_palette_add_string_int(&property_palette,kRadarPropertyPositionY,"Y",iface.radar.y,FALSE);
+	list_palette_add_int(&property_palette,kRadarPropertyPositionX,"X",&iface.radar.x,FALSE);
+	list_palette_add_int(&property_palette,kRadarPropertyPositionY,"Y",&iface.radar.y,FALSE);
 
 		// icons
 
@@ -163,26 +163,6 @@ void property_palette_click_radar(int id,bool double_click)
 
 		case kRadarPropertySettingsBackground:
 			property_pick_file("Pick a Background Bitmap","Bitmaps/Radar","png",NULL,iface.radar.background_bitmap_name);
-			break;
-
-		case kRadarPropertySettingsDisplayRadius:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&iface.radar.display_radius,0,0,0);
-			break;
-
-		case kRadarPropertySettingsViewRadius:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&iface.radar.view_radius,0,0,0);
-			break;
-
-		case kRadarPropertySettingsNoMotionFade:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&iface.radar.no_motion_fade,0,0,0);
-			break;
-
-		case kRadarPropertyPositionX:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&iface.radar.x,0,0,0);
-			break;
-
-		case kRadarPropertyPositionY:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&iface.radar.y,0,0,0);
 			break;
 
 	}
