@@ -432,9 +432,13 @@ void particle_draw(effect_type *effect,int count)
 	glDepthMask(GL_FALSE);			// don't let alpha z's interfere with each other
 
 	glVertexPointer(3,GL_FLOAT,((3+2)*sizeof(float)),(GLvoid*)0);
+
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2,GL_FLOAT,((3+2)*sizeof(float)),(GLvoid*)(3*sizeof(float)));
 
 	glDrawArrays(GL_TRIANGLES,0,nvertex);
+
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
 	glDepthMask(GL_TRUE);
 	

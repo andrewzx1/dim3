@@ -471,9 +471,13 @@ void view_primitive_2D_texture_quad(GLuint gl_id,d3col *col,float alpha,int lft,
 		// draw the quad
 
 	glVertexPointer(2,GL_FLOAT,0,(GLvoid*)vertexes);
+
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)uvs);
 
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
+
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
 		// finish texture draw
 	
@@ -538,9 +542,13 @@ void view_primitive_2D_texture_quad_rot(GLuint gl_id,d3col *col,float alpha,int 
 		// draw the quad
 
 	glVertexPointer(2,GL_FLOAT,0,(GLvoid*)vertexes);
+
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)uvs);
 
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
+
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
 		// finish texture draw
 	
@@ -597,9 +605,13 @@ void view_primitive_2D_texture_quad_rectangle(GLuint gl_id,float alpha,int lft,i
 		// draw the quad
 
 	glVertexPointer(2,GL_FLOAT,0,(GLvoid*)vertexes);
+
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)uvs);
 
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
+
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
 		// finish texture draw
 	

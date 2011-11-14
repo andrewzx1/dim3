@@ -320,10 +320,14 @@ void gl_text_draw(int x,int y,char *txt,int just,bool vcenter,d3col *col,float a
 		// draw text
 
 	glVertexPointer(2,GL_FLOAT,0,(GLvoid*)gl_text_vertexes);
+
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)gl_text_uvs);
 
 	for (n=0;n!=cnt;n++) {
 		glDrawArrays(GL_TRIANGLE_STRIP,(n*4),4);
 	}
+
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 }
 

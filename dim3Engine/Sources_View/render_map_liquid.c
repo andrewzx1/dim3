@@ -520,9 +520,11 @@ void liquid_render_liquid_shader(map_liquid_type *liq,int txt_idx,int lmap_txt_i
 	glVertexPointer(3,GL_FLOAT,liq->vbo.vertex_stride,(GLvoid*)0);
 
 	glClientActiveTexture(GL_TEXTURE1);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2,GL_FLOAT,liq->vbo.vertex_stride,(GLvoid*)(5*sizeof(float)));
 	
 	glClientActiveTexture(GL_TEXTURE0);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2,GL_FLOAT,liq->vbo.vertex_stride,(GLvoid*)(3*sizeof(float)));
 
 		// shader lights and tangents
@@ -549,6 +551,12 @@ void liquid_render_liquid_shader(map_liquid_type *liq,int txt_idx,int lmap_txt_i
 	glDrawElements(GL_TRIANGLE_STRIP,liq->vbo.index_count,GL_UNSIGNED_SHORT,(GLvoid*)0);
 
 	gl_shader_draw_end();
+
+	glClientActiveTexture(GL_TEXTURE1);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	
+	glClientActiveTexture(GL_TEXTURE0);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	
 	view_unbind_mesh_liquid_vertex_object();
 	view_unbind_mesh_liquid_index_object();
@@ -560,10 +568,6 @@ void liquid_render_liquid_fixed(map_liquid_type *liq,int txt_idx,int lmap_txt_id
 	float					alpha;
 	GLuint					gl_id,lmap_gl_id;
 	texture_type			*texture;
-
-		// only this route uses color arrays
-		
-	glEnableClientState(GL_COLOR_ARRAY);
 
 		// setup texture
 
@@ -585,11 +589,14 @@ void liquid_render_liquid_fixed(map_liquid_type *liq,int txt_idx,int lmap_txt_id
 	glVertexPointer(3,GL_FLOAT,liq->vbo.vertex_stride,(GLvoid*)0);
 
 	glClientActiveTexture(GL_TEXTURE1);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2,GL_FLOAT,liq->vbo.vertex_stride,(GLvoid*)(3*sizeof(float)));
 	
 	glClientActiveTexture(GL_TEXTURE0);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2,GL_FLOAT,liq->vbo.vertex_stride,(GLvoid*)(5*sizeof(float)));
 
+	glEnableClientState(GL_COLOR_ARRAY);
 	glColorPointer(4,GL_UNSIGNED_BYTE,liq->vbo.vertex_stride,(GLvoid*)(7*sizeof(float)));
 
 		// back rendering overrides
@@ -621,9 +628,15 @@ void liquid_render_liquid_fixed(map_liquid_type *liq,int txt_idx,int lmap_txt_id
 	
 		// only this route uses color arrays
 
-	glDisableClientState(GL_COLOR_ARRAY);
-
 	gl_texture_transparent_light_map_end();
+
+	glClientActiveTexture(GL_TEXTURE1);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	
+	glClientActiveTexture(GL_TEXTURE0);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+
+	glDisableClientState(GL_COLOR_ARRAY);
 
 	view_unbind_mesh_liquid_vertex_object();
 	view_unbind_mesh_liquid_index_object();

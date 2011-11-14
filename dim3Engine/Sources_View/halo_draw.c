@@ -262,6 +262,8 @@ void halo_draw_render(void)
 
 	glDisable(GL_DEPTH_TEST);
 	
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
 	for (n=0;n!=view.render->halo_draw.count;n++) {
 		halo_draw=&view.render->halo_draw.halos[n];
 		if (!halo_draw->in_view) continue;
@@ -302,6 +304,8 @@ void halo_draw_render(void)
 		gl_texture_simple_set(view_images_get_gl_id(iface.halo_list.halos[halo_draw->idx].image_idx),TRUE,1,1,1,halo_draw->alpha);
 		glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 	}
+
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 		
 	gl_texture_simple_end();
 }

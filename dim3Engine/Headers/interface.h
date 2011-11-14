@@ -605,7 +605,7 @@ extern bool input_touch_gui_is_click_down(void);
 
 extern inline bool gl_in_window_mode(void);
 extern void gl_setup_context(void);
-extern bool gl_initialize(int screen_wid,int screen_high,int fsaa_mode,bool reset,char *err_str);
+extern bool gl_initialize(int screen_wid,int screen_high,int fsaa_mode,char *err_str);
 extern void gl_shutdown(void);
 
 //

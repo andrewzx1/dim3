@@ -202,7 +202,7 @@ bool view_initialize_display(char *err_str)
 	
 		// start openGL
 		
-	if (!gl_initialize(setup.screen_wid,setup.screen_high,setup.fsaa_mode,FALSE,err_str)) {
+	if (!gl_initialize(setup.screen_wid,setup.screen_high,setup.fsaa_mode,err_str)) {
 		view_memory_release();
 		SDL_Quit();
 		return(FALSE);

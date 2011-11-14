@@ -53,9 +53,15 @@ void render_opaque_mesh_normal(void)
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
 	
-		// only this route uses color arrays
+		// enable arrays
 		
 	glEnableClientState(GL_COLOR_ARRAY);
+
+	glClientActiveTexture(GL_TEXTURE1);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	
+	glClientActiveTexture(GL_TEXTURE0);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	
 	gl_texture_opaque_light_map_start();
 
@@ -142,11 +148,17 @@ void render_opaque_mesh_normal(void)
 		view_unbind_mesh_liquid_index_object();
 	}
 
-		// only this route uses color arrays
-		
-	glDisableClientState(GL_COLOR_ARRAY);
+		// disable arrays
 
 	gl_texture_opaque_light_map_end();
+	
+	glClientActiveTexture(GL_TEXTURE1);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	
+	glClientActiveTexture(GL_TEXTURE0);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+
+	glDisableClientState(GL_COLOR_ARRAY);
 }
 
 void render_opaque_mesh_shader(void)
@@ -158,7 +170,17 @@ void render_opaque_mesh_shader(void)
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
 	view_light_list_type	light_list;
+
+		// enable arrays
+		
+	glClientActiveTexture(GL_TEXTURE1);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	
+	glClientActiveTexture(GL_TEXTURE0);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	
+		// start shader
+
 	gl_shader_draw_start();
 	
 		// run through draw list
@@ -240,6 +262,14 @@ void render_opaque_mesh_shader(void)
 	}
 		
 	gl_shader_draw_end();
+
+		// disable arrays
+
+	glClientActiveTexture(GL_TEXTURE1);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	
+	glClientActiveTexture(GL_TEXTURE0);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 }
 
 void render_opaque_mesh_glow(void)
@@ -249,10 +279,18 @@ void render_opaque_mesh_glow(void)
 	texture_type			*texture;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
+
+		// enable arrays
+		
+	glClientActiveTexture(GL_TEXTURE1);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	
-	first_hit=TRUE;
+	glClientActiveTexture(GL_TEXTURE0);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	
 		// run through draw list
+
+	first_hit=TRUE;
 
 	for (n=0;n!=view.render->draw_list.count;n++) {
 
@@ -335,6 +373,14 @@ void render_opaque_mesh_glow(void)
 		glDepthMask(GL_TRUE);
 		gl_texture_glow_end();
 	}
+
+		// disable arrays
+
+	glClientActiveTexture(GL_TEXTURE1);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	
+	glClientActiveTexture(GL_TEXTURE0);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 }
 
 /* =======================================================

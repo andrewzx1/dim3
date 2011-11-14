@@ -859,7 +859,7 @@ void object_move_swim(obj_type *obj)
 void object_move_normal(obj_type *obj)
 {
 	int					bump_y_move,start_y,fall_damage;
-	bool				old_falling;
+	bool				old_on_ground;
 	d3pnt				motion,temp_motion,old_pnt;
 
 		// get object motion
@@ -869,9 +869,10 @@ void object_move_normal(obj_type *obj)
 	object_motion_lock(obj,&motion);
 	object_motion_set_script_property(obj,&motion);
 
-		// save old settings
+		// remember if we are currently
+		// on the ground
 
-	old_falling=(obj->air_mode==am_falling);
+	old_on_ground=(obj->air_mode==am_ground);
 
 		// special check for non-moving objects that can retain their
 		// position and not run physics.  They must be standing on
@@ -1021,13 +1022,17 @@ void object_move_normal(obj_type *obj)
 		}
 	}
 	
-		// check for objects that have finished falling
+		// check for objects that have hit the ground,
+		// either from finished falling or driven into
+		// the ground by going up or down
 		// here we do any damage and send any landing
 		// events
 	
-    if (obj->air_mode!=am_falling) {
+    if (obj->air_mode==am_ground) {
     
-        if (old_falling) {
+        if (!old_on_ground) {
+		
+		// supergumba -- need to rework a lot of this
             if (obj->fall.dist>map_collide_y_slop) {
 			
 					// get damage
