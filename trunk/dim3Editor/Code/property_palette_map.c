@@ -93,14 +93,14 @@ void property_palette_fill_map(void)
 		// settings
 
 	list_palette_add_header(&property_palette,0,"Map Physics");
-	list_palette_add_string_float(&property_palette,kMapPropertyGravity,"Gravity",map.physics.gravity,FALSE);
-	list_palette_add_string_float(&property_palette,kMapPropertyGravityMaxPower,"Gravity Max Power",map.physics.gravity_max_power,FALSE);
-	list_palette_add_string_float(&property_palette,kMapPropertyGravityMaxSpeed,"Gravity Max Speed",map.physics.gravity_max_speed,FALSE);
-	list_palette_add_string_float(&property_palette,kMapPropertyResistance,"Resistance",map.physics.resistance,FALSE);
-	list_palette_add_string_float(&property_palette,kMapPropertySlopeMinAngle,"Slope Min Angle",map.physics.slope_min_ang,FALSE);
-	list_palette_add_string_float(&property_palette,kMapPropertySlopeMaxAngle,"Slope Max Angle",map.physics.slope_max_ang,FALSE);
-	list_palette_add_string_float(&property_palette,kMapPropertySlopeMaxSpeed,"Slope Max Speed",map.physics.slope_max_speed,FALSE);
-	list_palette_add_string_float(&property_palette,kMapPropertySlopeMinGravity,"Slope Min Gravity",map.physics.slope_min_gravity,FALSE);
+	list_palette_add_float(&property_palette,kMapPropertyGravity,"Gravity",&map.physics.gravity,FALSE);
+	list_palette_add_float(&property_palette,kMapPropertyGravityMaxPower,"Gravity Max Power",&map.physics.gravity_max_power,FALSE);
+	list_palette_add_float(&property_palette,kMapPropertyGravityMaxSpeed,"Gravity Max Speed",&map.physics.gravity_max_speed,FALSE);
+	list_palette_add_float(&property_palette,kMapPropertyResistance,"Resistance",&map.physics.resistance,FALSE);
+	list_palette_add_float(&property_palette,kMapPropertySlopeMinAngle,"Slope Min Angle",&map.physics.slope_min_ang,FALSE);
+	list_palette_add_float(&property_palette,kMapPropertySlopeMaxAngle,"Slope Max Angle",&map.physics.slope_max_ang,FALSE);
+	list_palette_add_float(&property_palette,kMapPropertySlopeMaxSpeed,"Slope Max Speed",&map.physics.slope_max_speed,FALSE);
+	list_palette_add_float(&property_palette,kMapPropertySlopeMinGravity,"Slope Min Gravity",&map.physics.slope_min_gravity,FALSE);
 
 		// network
 
@@ -111,12 +111,12 @@ void property_palette_fill_map(void)
 
 	list_palette_add_header(&property_palette,0,"Map Optimizations");
 	list_palette_add_checkbox(&property_palette,kMapPropertyNormalCull,"Never Cull",&map.optimize.never_cull,FALSE);
-	list_palette_add_string_float(&property_palette,kMapPropertyCullAngle,"Cull Angle",map.optimize.cull_angle,FALSE);
+	list_palette_add_float(&property_palette,kMapPropertyCullAngle,"Cull Angle",&map.optimize.cull_angle,FALSE);
 	list_palette_add_checkbox(&property_palette,kMapPropertyDisableShaders,"Disable Shaders",&map.optimize.no_shaders,FALSE);
 	list_palette_add_checkbox(&property_palette,kMapPropertyRayTraceObscure,"Ray Trace Obscure",&map.optimize.ray_trace_obscure,FALSE);
-	list_palette_add_string_int(&property_palette,kMapPropertyModelObscureDistance,"Model Obscure Distance",map.optimize.obscure_dist.model,FALSE);
-	list_palette_add_string_int(&property_palette,kMapPropertyShadowObscureDistance,"Shadow Obscure Distance",map.optimize.obscure_dist.shadow,FALSE);
-	list_palette_add_string_int(&property_palette,kMapPropertyEffectObscureDistance,"Effect Obscure Distance",map.optimize.obscure_dist.effect,FALSE);
+	list_palette_add_int(&property_palette,kMapPropertyModelObscureDistance,"Model Obscure Distance",&map.optimize.obscure_dist.model,FALSE);
+	list_palette_add_int(&property_palette,kMapPropertyShadowObscureDistance,"Shadow Obscure Distance",&map.optimize.obscure_dist.shadow,FALSE);
+	list_palette_add_int(&property_palette,kMapPropertyEffectObscureDistance,"Effect Obscure Distance",&map.optimize.obscure_dist.effect,FALSE);
 
 		// parameters
 
@@ -133,19 +133,19 @@ void property_palette_fill_map(void)
 	uv.x=map.editor_setup.txt_scale_x;
 	uv.y=map.editor_setup.txt_scale_y;
 	list_palette_add_uv(&property_palette,kMapPropertyEditorTextureFactor,"Default Texture Scale",&uv,FALSE);
-	list_palette_add_string_int(&property_palette,kMapPropertyEditorViewNearZ,"Near Z",map.editor_setup.view_near_dist,FALSE);
-	list_palette_add_string_int(&property_palette,kMapPropertyEditorViewFarZ,"Far Z",map.editor_setup.view_far_dist,FALSE);
+	list_palette_add_int(&property_palette,kMapPropertyEditorViewNearZ,"Near Z",&map.editor_setup.view_near_dist,FALSE);
+	list_palette_add_int(&property_palette,kMapPropertyEditorViewFarZ,"Far Z",&map.editor_setup.view_far_dist,FALSE);
 	list_palette_add_checkbox(&property_palette,kMapPropertyEditorLinkStartAlways,"Always Start at Player Spot",&map.editor_setup.link_always_start,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Map Counts");
-	list_palette_add_string_int(&property_palette,-1,"Meshes",map.mesh.nmesh,TRUE);
-	list_palette_add_string_int(&property_palette,-1,"Liquids",map.liquid.nliquid,TRUE);
-	list_palette_add_string_int(&property_palette,-1,"Spot",map.nspot,TRUE);
-	list_palette_add_string_int(&property_palette,-1,"Light",map.nlight,TRUE);
-	list_palette_add_string_int(&property_palette,-1,"Sound",map.nsound,TRUE);
-	list_palette_add_string_int(&property_palette,-1,"Particle",map.nparticle,TRUE);
-	list_palette_add_string_int(&property_palette,-1,"Scenery",map.nscenery,TRUE);
-	list_palette_add_string_int(&property_palette,-1,"Node",map.nnode,TRUE);
+	list_palette_add_int(&property_palette,-1,"Meshes",&map.mesh.nmesh,TRUE);
+	list_palette_add_int(&property_palette,-1,"Liquids",&map.liquid.nliquid,TRUE);
+	list_palette_add_int(&property_palette,-1,"Spot",&map.nspot,TRUE);
+	list_palette_add_int(&property_palette,-1,"Light",&map.nlight,TRUE);
+	list_palette_add_int(&property_palette,-1,"Sound",&map.nsound,TRUE);
+	list_palette_add_int(&property_palette,-1,"Particle",&map.nparticle,TRUE);
+	list_palette_add_int(&property_palette,-1,"Scenery",&map.nscenery,TRUE);
+	list_palette_add_int(&property_palette,-1,"Node",&map.nnode,TRUE);
 }
 
 /* =======================================================
@@ -188,64 +188,12 @@ void property_palette_click_map(int id,bool double_click)
 			dialog_property_string_run(list_string_value_string,(void*)map.info.author,name_str_len,0,0);
 			break;
 
-			// physics
-
-		case kMapPropertyGravity:
-			dialog_property_string_run(list_string_value_positive_float,(void*)&map.physics.gravity,0,0,0);
-			break;
-
-		case kMapPropertyGravityMaxPower:
-			dialog_property_string_run(list_string_value_positive_float,(void*)&map.physics.gravity_max_power,0,0,0);
-			break;
-
-		case kMapPropertyGravityMaxSpeed:
-			dialog_property_string_run(list_string_value_positive_float,(void*)&map.physics.gravity_max_speed,0,0,0);
-			break;
-
-		case kMapPropertyResistance:
-			dialog_property_string_run(list_string_value_positive_float,(void*)&map.physics.resistance,0,0,0);
-			break;
-
-		case kMapPropertySlopeMinAngle:
-			dialog_property_string_run(list_string_value_positive_float,(void*)&map.physics.slope_min_ang,0,0,0);
-			break;
-
-		case kMapPropertySlopeMaxAngle:
-			dialog_property_string_run(list_string_value_positive_float,(void*)&map.physics.slope_max_ang,0,0,0);
-			break;
-
-		case kMapPropertySlopeMaxSpeed:
-			dialog_property_string_run(list_string_value_positive_float,(void*)&map.physics.slope_max_speed,0,0,0);
-			break;
-
-		case kMapPropertySlopeMinGravity:
-			dialog_property_string_run(list_string_value_positive_float,(void*)&map.physics.slope_min_gravity,0,0,0);
-			break;
-
 			// networking
 
 		case kMapPropertyNetworkGameList:
 			dialog_property_string_run(list_string_value_string,(void*)map.settings.network_game_list,256,0,0);
 			break;
 			
-			// optimizations
-			
-		case kMapPropertyCullAngle:
-			dialog_property_string_run(list_string_value_float,(void*)&map.optimize.cull_angle,0,0,0);
-			break;
-
-		case kMapPropertyModelObscureDistance:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&map.optimize.obscure_dist.model,0,0,0);
-			break;
-			
-		case kMapPropertyShadowObscureDistance:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&map.optimize.obscure_dist.shadow,0,0,0);
-			break;
-
-		case kMapPropertyEffectObscureDistance:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&map.optimize.obscure_dist.effect,0,0,0);
-			break;
-
 			// editor setup
 
 		case kMapPropertyEditorTextureFactor:
@@ -254,14 +202,6 @@ void property_palette_click_map(int id,bool double_click)
 			dialog_property_chord_run(list_chord_value_uv,(void*)&uv);
 			map.editor_setup.txt_scale_x=uv.x;
 			map.editor_setup.txt_scale_y=uv.y;
-			break;
-
-		case kMapPropertyEditorViewNearZ:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&map.editor_setup.view_near_dist,0,0,0);
-			break;
-
-		case kMapPropertyEditorViewFarZ:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&map.editor_setup.view_far_dist,0,0,0);
 			break;
 
 	}

@@ -83,9 +83,9 @@ void property_palette_fill_editor_preference(void)
 
 	list_palette_add_header(&property_palette,0,"Editor Options");
 	list_palette_add_string(&property_palette,kPrefPropertyMipMapMode,"Mipmap Mode",pref_mipmap_type_str[setup.mipmap_mode],FALSE);
-	list_palette_add_string_int(&property_palette,kPrefPropertyDuplicateOffset,"Duplicate Offset",setup.duplicate_offset,FALSE);
-	list_palette_add_string_int(&property_palette,kPrefPropertySnapSize,"Snap Size",setup.snap_size,FALSE);
-	list_palette_add_string_int(&property_palette,kPrefPropertyClipDistance,"Clip Distance",setup.clip_distance,FALSE);
+	list_palette_add_int(&property_palette,kPrefPropertyDuplicateOffset,"Duplicate Offset",&setup.duplicate_offset,FALSE);
+	list_palette_add_int(&property_palette,kPrefPropertySnapSize,"Snap Size",&setup.snap_size,FALSE);
+	list_palette_add_int(&property_palette,kPrefPropertyClipDistance,"Clip Distance",&setup.clip_distance,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Editor Movement");
 	list_palette_add_checkbox(&property_palette,kPrefPropertyFlipHorzMovement,"Flip Horizontal Movement",&setup.flip_horz_movement,FALSE);
@@ -125,18 +125,6 @@ void property_palette_click_editor_preference(int id,bool double_click)
 			property_pick_list("Pick a MipMap Mode",(char*)pref_mipmap_type_str,&setup.mipmap_mode);
 			break;
 
-		case kPrefPropertyDuplicateOffset:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&setup.duplicate_offset,0,0,0);
-			break;
-
-		case kPrefPropertySnapSize:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&setup.snap_size,0,0,0);
-			break;
-
-		case kPrefPropertyClipDistance:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&setup.clip_distance,0,0,0);
-			break;
-		
 		case kPrefPropertyImportNormalFactor:
 			dialog_property_chord_run(list_chord_value_vector,(void*)&setup.import_normal_factor);
 			break;

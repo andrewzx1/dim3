@@ -57,6 +57,8 @@ extern list_palette_type		property_palette;
 extern char						light_property_type_list[][name_str_len],
 								light_property_direction_list[][name_str_len];
 
+int								pal_particle_index;
+
 /* =======================================================
 
       Property Palette Fill Particle
@@ -78,8 +80,8 @@ void property_palette_fill_particle(int particle_idx)
 
 	list_palette_add_header(&property_palette,0,"Particle Type");
 	list_palette_add_string(&property_palette,kParticlePropertyName,"Name",particle->name,FALSE);
-	list_palette_add_string_int(&property_palette,kParticlePropertySpawnTick,"Spawn Tick",particle->spawn_tick,FALSE);
-	list_palette_add_string_int(&property_palette,kParticlePropertySlopTick,"Slop Tick",particle->slop_tick,FALSE);
+	list_palette_add_int(&property_palette,kParticlePropertySpawnTick,"Spawn Tick",&particle->spawn_tick,FALSE);
+	list_palette_add_int(&property_palette,kParticlePropertySlopTick,"Slop Tick",&particle->slop_tick,FALSE);
 	list_palette_add_checkbox(&property_palette,kParticlePropertySingleSpawn,"Single Spawn",&particle->single_spawn,FALSE);
 
 		// particle lighting
@@ -91,13 +93,15 @@ void property_palette_fill_particle(int particle_idx)
 	list_palette_add_header(&property_palette,0,"Particle Light Display");
 	list_palette_add_string(&property_palette,kLightPropertyType,"Type",light_property_type_list[particle->light_setting.type],FALSE);
 	list_palette_add_string(&property_palette,kLightPropertyDirection,"Direction",light_property_direction_list[particle->light_setting.direction],FALSE);
-	list_palette_add_string_int(&property_palette,kLightPropertyIntensity,"Intensity",particle->light_setting.intensity,FALSE);
-	list_palette_add_string_float(&property_palette,kLightPropertyExponent,"Exponent",particle->light_setting.exponent,FALSE);
+	list_palette_add_int(&property_palette,kLightPropertyIntensity,"Intensity",&particle->light_setting.intensity,FALSE);
+	list_palette_add_float(&property_palette,kLightPropertyExponent,"Exponent",&particle->light_setting.exponent,FALSE);
 	list_palette_add_pick_color(&property_palette,kLightPropertyColor,"Color",&particle->light_setting.col,FALSE);
 	list_palette_add_string(&property_palette,kLightPropertyHalo,"Halo",particle->light_setting.halo_name,FALSE);
 	
+	pal_particle_index=particle_idx;
+	
 	list_palette_add_header(&property_palette,0,"Paticle Info");
-	list_palette_add_string_int(&property_palette,-1,"Index",particle_idx,TRUE);
+	list_palette_add_int(&property_palette,-1,"Index",&pal_particle_index,TRUE);
 	list_palette_add_point(&property_palette,-1,"Position",&particle->pnt,TRUE);
 }
 
@@ -122,14 +126,6 @@ void property_palette_click_particle(int particle_idx,int id,bool double_click)
 		case kParticlePropertyName:
 			property_palette_pick_particle(particle->name);
 			break;
-
-		case kParticlePropertySpawnTick:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&particle->spawn_tick,0,0,0);
-			break;
-			
-		case kParticlePropertySlopTick:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&particle->slop_tick,0,0,0);
-			break;
 			
 			// particle lighting
 			
@@ -141,14 +137,6 @@ void property_palette_click_particle(int particle_idx,int id,bool double_click)
 			property_pick_list("Pick a Light Direction",(char*)light_property_direction_list,&particle->light_setting.direction);
 			break;
 
-		case kLightPropertyIntensity:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&particle->light_setting.intensity,0,0,0);
-			break;
-			
-		case kLightPropertyExponent:
-			dialog_property_string_run(list_string_value_positive_float,(void*)&particle->light_setting.exponent,0,0,0);
-			break;
-			
 		case kLightPropertyHalo:
 			property_palette_pick_halo(particle->light_setting.halo_name);
 			break;

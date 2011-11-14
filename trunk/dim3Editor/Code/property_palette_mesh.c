@@ -91,6 +91,8 @@ extern list_palette_type		property_palette;
 char							mesh_property_hide_list[][name_str_len]={"Never","Single Player","Multiplayer",""},
 								mesh_property_team_list[][name_str_len]={"None","Red","Blue","Common",""};
 
+int								pal_mesh_index,pal_poly_index;
+
 /* =======================================================
 
       Property Palette Fill Mesh
@@ -135,7 +137,7 @@ void property_palette_fill_mesh(int mesh_idx,int poly_idx)
 		
 	list_palette_add_header(&property_palette,0,"Mesh Options");
 	list_palette_add_string(&property_palette,kMeshPropertyHideMode,"Hide",mesh_property_hide_list[mesh->hide_mode],FALSE);
-	list_palette_add_string_int(&property_palette,kMeshPropertyHarm,"Harm",mesh->harm,FALSE);
+	list_palette_add_int(&property_palette,kMeshPropertyHarm,"Harm",&mesh->harm,FALSE);
 	list_palette_add_point(&property_palette,kMeshPropertyRot,"Rotational Center",&mesh->rot_off,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Mesh Group");
@@ -150,9 +152,9 @@ void property_palette_fill_mesh(int mesh_idx,int poly_idx)
 		
 	list_palette_add_header(&property_palette,0,"Mesh Messages");
 	list_palette_add_checkbox(&property_palette,kMeshPropertyMessageEnter,"Entry On",&mesh->msg.entry_on,FALSE);
-	list_palette_add_string_int(&property_palette,kMeshPropertyMessageEnterId,"Entry ID",mesh->msg.entry_id,FALSE);
+	list_palette_add_int(&property_palette,kMeshPropertyMessageEnterId,"Entry ID",&mesh->msg.entry_id,FALSE);
 	list_palette_add_checkbox(&property_palette,kMeshPropertyMessageExit,"Exit On",&mesh->msg.exit_on,FALSE);
-	list_palette_add_string_int(&property_palette,kMeshPropertyMessageExitId,"Exit ID",mesh->msg.exit_id,FALSE);
+	list_palette_add_int(&property_palette,kMeshPropertyMessageExitId,"Exit ID",&mesh->msg.exit_id,FALSE);
 	list_palette_add_checkbox(&property_palette,kMeshPropertyMessageMapChange,"Map Change On",&mesh->msg.map_change_on,FALSE);
 	list_palette_add_string(&property_palette,kMeshPropertyMessageMapChangeName,"Map Name",mesh->msg.map_name,FALSE);
 	list_palette_add_string(&property_palette,kMeshPropertyMessageMapChangeSpotName,"Map Spot Name",mesh->msg.map_spot_name,FALSE);
@@ -175,10 +177,12 @@ void property_palette_fill_mesh(int mesh_idx,int poly_idx)
 	max.x-=min.x;
 	max.y-=min.y;
 	max.z-=min.z;
+	
+	pal_mesh_index=mesh_idx;
 		
 	list_palette_add_header(&property_palette,0,"Mesh Info");
-	list_palette_add_string_int(&property_palette,-1,"Mesh Index",mesh_idx,TRUE);
-	list_palette_add_string_int(&property_palette,-1,"Poly Count",mesh->npoly,TRUE);
+	list_palette_add_int(&property_palette,-1,"Mesh Index",&pal_mesh_index,TRUE);
+	list_palette_add_int(&property_palette,-1,"Poly Count",&mesh->npoly,TRUE);
 	list_palette_add_point(&property_palette,-1,"Position",&min,TRUE);
 	list_palette_add_point(&property_palette,-1,"Size",&max,TRUE);
 
@@ -212,9 +216,11 @@ void property_palette_fill_mesh(int mesh_idx,int poly_idx)
 		list_palette_add_header(&property_palette,0,"Poly Camera");
 		list_palette_add_string(&property_palette,kMeshPolyPropertyCamera,"Node",poly->camera,FALSE);
 		
+		pal_poly_index=poly_idx;
+		
 		list_palette_add_header(&property_palette,0,"Poly Info");
-		list_palette_add_string_int(&property_palette,-1,"Index",poly_idx,TRUE);
-		list_palette_add_string_int(&property_palette,-1,"Vertexes",poly->ptsz,TRUE);
+		list_palette_add_int(&property_palette,-1,"Index",&pal_poly_index,TRUE);
+		list_palette_add_int(&property_palette,-1,"Vertexes",&poly->ptsz,TRUE);
 	}
 }
 
@@ -246,10 +252,6 @@ void property_palette_click_mesh(int mesh_idx,int poly_idx,int id,bool double_cl
 			property_pick_list("Pick a Hide Mode",(char*)mesh_property_hide_list,&mesh->hide_mode);
 			break;
 
-		case kMeshPropertyHarm:
-			dialog_property_string_run(list_string_value_int,(void*)&mesh->harm,0,0,0);
-			break;
-			
 		case kMeshPropertyRot:
 			dialog_property_chord_run(list_chord_value_point,(void*)&mesh->rot_off);
 			break;
@@ -259,14 +261,6 @@ void property_palette_click_mesh(int mesh_idx,int poly_idx,int id,bool double_cl
 			break;
 			
 			// messages
-
-		case kMeshPropertyMessageEnterId:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&mesh->msg.entry_id,0,0,0);
-			break;
-
-		case kMeshPropertyMessageExitId:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&mesh->msg.exit_id,0,0,0);
-			break;
 
 		case kMeshPropertyMessageMapChangeName:
 			dialog_property_string_run(list_string_value_string,(void*)mesh->msg.map_name,name_str_len,0,0);

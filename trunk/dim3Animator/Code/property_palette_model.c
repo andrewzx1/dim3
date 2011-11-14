@@ -84,7 +84,7 @@ void property_palette_fill_model(void)
 		
 	list_palette_add_header(&property_palette,0,"Model Options");
 	list_palette_add_checkbox(&property_palette,kModelPropertyRotateMode,"Cumulative Rotation",&model.comulative_rotation,FALSE);
-	list_palette_add_string_float(&property_palette,kModelPropertyDiffuseBoost,"Diffuse Boost",model.diffuse_boost,FALSE);
+	list_palette_add_float(&property_palette,kModelPropertyDiffuseBoost,"Diffuse Boost",&model.diffuse_boost,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Model Positions");
 	list_palette_add_point(&property_palette,kModelPropertyCenterOffset,"Center",&model.center,FALSE);
@@ -114,21 +114,21 @@ void property_palette_fill_model(void)
 
 	list_palette_add_header(&property_palette,0,"Model Rigid Body");
 	list_palette_add_checkbox(&property_palette,kModelPropertyRigidBodyOn,"On",&model.rigid_body.on,FALSE);
-	list_palette_add_string_float(&property_palette,kModelPropertyRigidBodyYResetFact,"Y Reset Factor",model.rigid_body.y.reset_factor,FALSE);
-	list_palette_add_string_float(&property_palette,kModelPropertyRigidBodyYSmoothFact,"Y Smooth Factor",model.rigid_body.y.smooth_factor,FALSE);
-	list_palette_add_string_float(&property_palette,kModelPropertyRigidBodyXMaxAngle,"X Max Angle",model.rigid_body.x.max_ang,FALSE);
-	list_palette_add_string_float(&property_palette,kModelPropertyRigidBodyXResetFact,"X Reset Factor",model.rigid_body.x.reset_factor,FALSE);
-	list_palette_add_string_float(&property_palette,kModelPropertyRigidBodyXSmoothFact,"X Smooth Factor",model.rigid_body.x.smooth_factor,FALSE);
-	list_palette_add_string_float(&property_palette,kModelPropertyRigidBodyZMaxAngle,"Z Max Angle",model.rigid_body.z.max_ang,FALSE);
-	list_palette_add_string_float(&property_palette,kModelPropertyRigidBodyZResetFact,"Z Reset Fact",model.rigid_body.z.reset_factor,FALSE);
-	list_palette_add_string_float(&property_palette,kModelPropertyRigidBodyZSmoothFact,"Z Smooth Fact",model.rigid_body.z.smooth_factor,FALSE);
+	list_palette_add_float(&property_palette,kModelPropertyRigidBodyYResetFact,"Y Reset Factor",&model.rigid_body.y.reset_factor,FALSE);
+	list_palette_add_float(&property_palette,kModelPropertyRigidBodyYSmoothFact,"Y Smooth Factor",&model.rigid_body.y.smooth_factor,FALSE);
+	list_palette_add_float(&property_palette,kModelPropertyRigidBodyXMaxAngle,"X Max Angle",&model.rigid_body.x.max_ang,FALSE);
+	list_palette_add_float(&property_palette,kModelPropertyRigidBodyXResetFact,"X Reset Factor",&model.rigid_body.x.reset_factor,FALSE);
+	list_palette_add_float(&property_palette,kModelPropertyRigidBodyXSmoothFact,"X Smooth Factor",&model.rigid_body.x.smooth_factor,FALSE);
+	list_palette_add_float(&property_palette,kModelPropertyRigidBodyZMaxAngle,"Z Max Angle",&model.rigid_body.z.max_ang,FALSE);
+	list_palette_add_float(&property_palette,kModelPropertyRigidBodyZResetFact,"Z Reset Fact",&model.rigid_body.z.reset_factor,FALSE);
+	list_palette_add_float(&property_palette,kModelPropertyRigidBodyZSmoothFact,"Z Smooth Fact",&model.rigid_body.z.smooth_factor,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Model UI");
-	list_palette_add_string_float(&property_palette,kModelPropertyUIMinDiffuse,"Minimum Diffuse",model.ui.min_diffuse,FALSE);
+	list_palette_add_float(&property_palette,kModelPropertyUIMinDiffuse,"Minimum Diffuse",&model.ui.min_diffuse,FALSE);
 	list_palette_add_vector(&property_palette,kModelPropertyUIDiffuseVector,"Diffuse Vector",&model.ui.diffuse_vct,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Model Import");
-	list_palette_add_string_float(&property_palette,kModelPropertyImportScale,"Scale",model.import.factor,FALSE);
+	list_palette_add_float(&property_palette,kModelPropertyImportScale,"Scale",&model.import.factor,FALSE);
 }
 
 /* =======================================================
@@ -162,10 +162,6 @@ void property_palette_click_model(int id,bool double_click)
 
 	switch (id) {
 
-		case kModelPropertyDiffuseBoost:
-			dialog_property_string_run(list_string_value_float,(void*)&model.diffuse_boost,0,0,0);
-			break;
-
 		case kModelPropertyCenterOffset:
 			dialog_property_chord_run(list_chord_value_point,(void*)&model.center);
 			break;
@@ -182,49 +178,9 @@ void property_palette_click_model(int id,bool double_click)
 			property_palette_pick_bone(&model.bone_connect.name_bone_idx,-1);
 			break;
 
-		case kModelPropertyRigidBodyYResetFact:
-			dialog_property_string_run(list_string_value_positive_float,(void*)&model.rigid_body.y.reset_factor,0,0,0);
-			break;
-
-		case kModelPropertyRigidBodyYSmoothFact:
-			dialog_property_string_run(list_string_value_positive_float,(void*)&model.rigid_body.y.smooth_factor,0,0,0);
-			break;
-
-		case kModelPropertyRigidBodyXMaxAngle:
-			dialog_property_string_run(list_string_value_positive_float,(void*)&model.rigid_body.x.max_ang,0,0,0);
-			break;
-
-		case kModelPropertyRigidBodyXResetFact:
-			dialog_property_string_run(list_string_value_positive_float,(void*)&model.rigid_body.x.reset_factor,0,0,0);
-			break;
-
-		case kModelPropertyRigidBodyXSmoothFact:
-			dialog_property_string_run(list_string_value_positive_float,(void*)&model.rigid_body.x.smooth_factor,0,0,0);
-			break;
-
-		case kModelPropertyRigidBodyZMaxAngle:
-			dialog_property_string_run(list_string_value_positive_float,(void*)&model.rigid_body.z.max_ang,0,0,0);
-			break;
-
-		case kModelPropertyRigidBodyZResetFact:
-			dialog_property_string_run(list_string_value_positive_float,(void*)&model.rigid_body.z.reset_factor,0,0,0);
-			break;
-
-		case kModelPropertyRigidBodyZSmoothFact:
-			dialog_property_string_run(list_string_value_positive_float,(void*)&model.rigid_body.z.smooth_factor,0,0,0);
-			break;
-
-		case kModelPropertyUIMinDiffuse:
-			dialog_property_string_run(list_string_value_positive_float,(void*)&model.ui.min_diffuse,0,0,0);
-			break;
-
 		case kModelPropertyUIDiffuseVector:
 			dialog_property_chord_run(list_chord_value_vector,(void*)&model.ui.diffuse_vct);
 			vector_normalize(&model.ui.diffuse_vct);
-			break;
-
-		case kModelPropertyImportScale:
-			dialog_property_string_run(list_string_value_positive_float,(void*)&model.import.factor,0,0,0);
 			break;
 
 	}

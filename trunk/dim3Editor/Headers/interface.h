@@ -470,7 +470,7 @@ extern void view_models_start(void);
 extern void view_models_close(void);
 extern void view_models_reset(void);
 extern void view_get_model_size(char *model_name,d3pnt *size);
-extern bool view_model_draw(d3pnt *pnt,d3ang *ang,char *name,float resize,short *texture_frame,int frame_count);
+extern bool view_model_draw(d3pnt *pnt,d3ang *ang,char *name,float resize,int *texture_frame,int frame_count);
 extern void view_model_cube_vertexes(char *name,d3pnt *pnt,d3ang *ang,float resize,d3pnt *v_pnts);
 
 //

@@ -98,8 +98,8 @@ void property_palette_fill_mesh(int mesh_idx)
 	}
 
 	list_palette_add_header(&property_palette,0,"Mesh Info");
-	list_palette_add_string_int(&property_palette,-1,"Vertexes",mesh->nvertex,TRUE);
-	list_palette_add_string_int(&property_palette,-1,"Polygons",mesh->npoly,TRUE);
+	list_palette_add_int(&property_palette,-1,"Vertexes",&mesh->nvertex,TRUE);
+	list_palette_add_int(&property_palette,-1,"Polygons",&mesh->npoly,TRUE);
 }
 
 /* =======================================================

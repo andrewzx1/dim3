@@ -73,7 +73,7 @@ void property_palette_fill_movement(int movement_idx)
 
 	list_palette_add_header(&property_palette,0,"Movement Options");
 	list_palette_add_string(&property_palette,kMovementPropertyName,"Name",movement->name,FALSE);
-	list_palette_add_string_int(&property_palette,kMovementPropertyAutoOpenDistance,"Auto-Open Distance",movement->auto_open_distance,FALSE);
+	list_palette_add_int(&property_palette,kMovementPropertyAutoOpenDistance,"Auto-Open Distance",&movement->auto_open_distance,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Movement Groups");
 	if (movement->group_idx==-1) {
@@ -153,10 +153,6 @@ void property_palette_click_movement(int movement_idx,int id,bool double_click)
 
 		case kMovementPropertyName:
 			dialog_property_string_run(list_string_value_string,(void*)movement->name,name_str_len,0,0);
-			break;
-
-		case kMovementPropertyAutoOpenDistance:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&movement->auto_open_distance,0,0,0);
 			break;
 
 		case kMovementPropertyGroup:

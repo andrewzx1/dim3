@@ -92,7 +92,7 @@ void property_palette_fill_bone(int bone_idx,int pose_idx)
 		list_palette_add_vector(&property_palette,kPoseBoneMovePropertyMove,"Move",&bone_move->mov,FALSE);
 	
 		list_palette_add_header(&property_palette,0,"Current Pose Move Options");
-		list_palette_add_string_float(&property_palette,kPoseBoneMovePropertyAcceleration,"Acceleration",bone_move->acceleration,FALSE);
+		list_palette_add_float(&property_palette,kPoseBoneMovePropertyAcceleration,"Acceleration",&bone_move->acceleration,FALSE);
 		list_palette_add_checkbox(&property_palette,kPoseBoneMovePropertySkipBlended,"Skip Blending",&bone_move->skip_blended,FALSE);
 
 		list_palette_add_header(&property_palette,0,"Current Pose Move Constraint");
@@ -152,11 +152,6 @@ void property_palette_click_bone(int bone_idx,int pose_idx,int id,bool double_cl
 		case kPoseBoneMovePropertyMove:
 			bone_move=&model.poses[pose_idx].bone_moves[bone_idx];
 			dialog_property_chord_run(list_chord_value_vector,(void*)&bone_move->mov);
-			break;
-
-		case kPoseBoneMovePropertyAcceleration:
-			bone_move=&model.poses[pose_idx].bone_moves[bone_idx];
-			dialog_property_string_run(list_string_value_positive_float,(void*)&bone_move->acceleration,0,0,0);
 			break;
 
 		case kPoseBoneMovePropertyConstraintBone:

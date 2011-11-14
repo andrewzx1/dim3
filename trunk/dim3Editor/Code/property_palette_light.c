@@ -76,13 +76,12 @@ void property_palette_fill_light(int light_idx)
 	list_palette_add_header(&property_palette,0,"Light Display");
 	list_palette_add_string(&property_palette,kLightPropertyType,"Type",light_property_type_list[light->setting.type],FALSE);
 	list_palette_add_string(&property_palette,kLightPropertyDirection,"Direction",light_property_direction_list[light->setting.direction],FALSE);
-	list_palette_add_string_int(&property_palette,kLightPropertyIntensity,"Intensity",light->setting.intensity,FALSE);
-	list_palette_add_string_float(&property_palette,kLightPropertyExponent,"Exponent",light->setting.exponent,FALSE);
+	list_palette_add_int(&property_palette,kLightPropertyIntensity,"Intensity",&light->setting.intensity,FALSE);
+	list_palette_add_float(&property_palette,kLightPropertyExponent,"Exponent",&light->setting.exponent,FALSE);
 	list_palette_add_pick_color(&property_palette,kLightPropertyColor,"Color",&light->setting.col,FALSE);
 	list_palette_add_string(&property_palette,kLightPropertyHalo,"Halo",light->setting.halo_name,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Light Info");
-	list_palette_add_string_int(&property_palette,-1,"Index",light_idx,TRUE);
 	list_palette_add_point(&property_palette,-1,"Position",&light->pnt,TRUE);
 }
 
@@ -114,14 +113,6 @@ void property_palette_click_light(int light_idx,int id,bool double_click)
 			property_pick_list("Pick a Light Direction",(char*)light_property_direction_list,&light->setting.direction);
 			break;
 
-		case kLightPropertyIntensity:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&light->setting.intensity,0,0,0);
-			break;
-			
-		case kLightPropertyExponent:
-			dialog_property_string_run(list_string_value_positive_float,(void*)&light->setting.exponent,0,0,0);
-			break;
-			
 		case kLightPropertyHalo:
 			property_palette_pick_halo(light->setting.halo_name);
 			break;

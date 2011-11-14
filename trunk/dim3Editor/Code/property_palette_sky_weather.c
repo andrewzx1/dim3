@@ -110,10 +110,10 @@ void property_palette_fill_sky_weather(void)
 	list_palette_add_header(&property_palette,0,"Map Sky");
 	list_palette_add_checkbox(&property_palette,kMapPropertySkyOn,"On",&map.sky.on,FALSE);
 	list_palette_add_string(&property_palette,kMapPropertySkyType,"Type",map_property_sky_type_list[map.sky.type],FALSE);
-	list_palette_add_string_int(&property_palette,kMapPropertySkyRadius,"Radius",map.sky.radius,FALSE);
-	list_palette_add_string_int(&property_palette,kMapPropertyDomeY,"Dome Height",map.sky.dome_y,FALSE);
+	list_palette_add_int(&property_palette,kMapPropertySkyRadius,"Radius",&map.sky.radius,FALSE);
+	list_palette_add_int(&property_palette,kMapPropertyDomeY,"Dome Height",&map.sky.dome_y,FALSE);
 	list_palette_add_checkbox(&property_palette,kMapPropertyDomeMirror,"Mirror Dome",&map.sky.dome_mirror,FALSE);
-	list_palette_add_string_float(&property_palette,kMapPropertyTextureRepeat,"Texture Repeat",map.sky.txt_fact,FALSE);
+	list_palette_add_float(&property_palette,kMapPropertyTextureRepeat,"Texture Repeat",&map.sky.txt_fact,FALSE);
 	uv.x=map.sky.txt_x_shift;
 	uv.y=map.sky.txt_y_shift;
 	list_palette_add_uv(&property_palette,kMapPropertyTextureShift,"Texture Shift",&uv,FALSE);
@@ -154,8 +154,8 @@ void property_palette_fill_sky_weather(void)
 
 	list_palette_add_header(&property_palette,0,"Map Fog General");
 	list_palette_add_checkbox(&property_palette,kMapPropertyFogOn,"On",&map.fog.on,FALSE);
-	list_palette_add_string_int(&property_palette,kMapPropertyFogInnerRadius,"Inner Radius",map.fog.inner_radius,FALSE);
-	list_palette_add_string_int(&property_palette,kMapPropertyFogOuterRadius,"Outer Radius",map.fog.outer_radius,FALSE);
+	list_palette_add_int(&property_palette,kMapPropertyFogInnerRadius,"Inner Radius",&map.fog.inner_radius,FALSE);
+	list_palette_add_int(&property_palette,kMapPropertyFogOuterRadius,"Outer Radius",&map.fog.outer_radius,FALSE);
 
 		// fog obscure
 
@@ -167,11 +167,11 @@ void property_palette_fill_sky_weather(void)
 
 	list_palette_add_header(&property_palette,0,"Map Fog Textured");
 	list_palette_add_texture(&property_palette,map.textures,kMapPropertyFogTextureIndex,"Fill",map.fog.texture_idx,FALSE);
-	list_palette_add_string_int(&property_palette,kMapPropertyFogCount,"Layer Count",map.fog.count,FALSE);
-	list_palette_add_string_int(&property_palette,kMapPropertyFogHigh,"Height",map.fog.high,FALSE);
-	list_palette_add_string_int(&property_palette,kMapPropertyFogDrop,"Y Drop",map.fog.drop,FALSE);
-	list_palette_add_string_float(&property_palette,kMapPropertyFogAlpha,"Alpha",map.fog.alpha,FALSE);
-	list_palette_add_string_float(&property_palette,kMapPropertyFogTextureSpeed,"Flow Speed",map.fog.speed,FALSE);
+	list_palette_add_int(&property_palette,kMapPropertyFogCount,"Layer Count",&map.fog.count,FALSE);
+	list_palette_add_int(&property_palette,kMapPropertyFogHigh,"Height",&map.fog.high,FALSE);
+	list_palette_add_int(&property_palette,kMapPropertyFogDrop,"Y Drop",&map.fog.drop,FALSE);
+	list_palette_add_float(&property_palette,kMapPropertyFogAlpha,"Alpha",&map.fog.alpha,FALSE);
+	list_palette_add_float(&property_palette,kMapPropertyFogTextureSpeed,"Flow Speed",&map.fog.speed,FALSE);
 	uv.x=map.fog.txt_x_fact;
 	uv.y=map.fog.txt_y_fact;
 	list_palette_add_uv(&property_palette,kMapPropertyFogTextureFact,"Texture Stamp",&uv,FALSE);
@@ -180,20 +180,20 @@ void property_palette_fill_sky_weather(void)
 
 	list_palette_add_header(&property_palette,0,"Map Rain General");
 	list_palette_add_checkbox(&property_palette,kMapPropertyRainOn,"On",&map.rain.on,FALSE);
-	list_palette_add_string_int(&property_palette,kMapPropertyRainDensity,"Density",map.rain.density,FALSE);
-	list_palette_add_string_int(&property_palette,kMapPropertyRainRadius,"Radius",map.rain.radius,FALSE);
-	list_palette_add_string_int(&property_palette,kMapPropertyRainHeight,"Height",map.rain.height,FALSE);
-	list_palette_add_string_int(&property_palette,kMapPropertyRainSpeed,"Speed",map.rain.speed,FALSE);
+	list_palette_add_int(&property_palette,kMapPropertyRainDensity,"Density",&map.rain.density,FALSE);
+	list_palette_add_int(&property_palette,kMapPropertyRainRadius,"Radius",&map.rain.radius,FALSE);
+	list_palette_add_int(&property_palette,kMapPropertyRainHeight,"Height",&map.rain.height,FALSE);
+	list_palette_add_int(&property_palette,kMapPropertyRainSpeed,"Speed",&map.rain.speed,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Map Rain Look");
-	list_palette_add_string_int(&property_palette,kMapPropertyRainWidth,"Line Width",map.rain.line_width,FALSE);
-	list_palette_add_string_int(&property_palette,kMapPropertyRainLength,"Line Length",map.rain.line_length,FALSE);
-	list_palette_add_string_float(&property_palette,kMapPropertyRainAlpha,"Line Alpha",map.rain.alpha,FALSE);
+	list_palette_add_int(&property_palette,kMapPropertyRainWidth,"Line Width",&map.rain.line_width,FALSE);
+	list_palette_add_int(&property_palette,kMapPropertyRainLength,"Line Length",&map.rain.line_length,FALSE);
+	list_palette_add_float(&property_palette,kMapPropertyRainAlpha,"Line Alpha",&map.rain.alpha,FALSE);
 	list_palette_add_pick_color(&property_palette,kMapPropertyRainStartColor,"Line Start Color",&map.rain.start_color,FALSE);
 	list_palette_add_pick_color(&property_palette,kMapPropertyRainEndColor,"Line End Color",&map.rain.end_color,FALSE);
-	list_palette_add_string_int(&property_palette,kMapPropertyRainSlantAdd,"Slant Add",map.rain.slant_add,FALSE);
-	list_palette_add_string_int(&property_palette,kMapPropertyRainSlantMaxTime,"Slant Max Time",map.rain.slant_time_msec,FALSE);
-	list_palette_add_string_int(&property_palette,kMapPropertyRainSlantChangeTime,"Slant Change Time",map.rain.slant_change_msec,FALSE);
+	list_palette_add_int(&property_palette,kMapPropertyRainSlantAdd,"Slant Add",&map.rain.slant_add,FALSE);
+	list_palette_add_int(&property_palette,kMapPropertyRainSlantMaxTime,"Slant Max Time",&map.rain.slant_time_msec,FALSE);
+	list_palette_add_int(&property_palette,kMapPropertyRainSlantChangeTime,"Slant Change Time",&map.rain.slant_change_msec,FALSE);
 }
 
 /* =======================================================
@@ -214,18 +214,6 @@ void property_palette_click_sky_weather(int id,bool double_click)
 
 		case kMapPropertySkyType:
 			property_pick_list("Pick a Sky Type",(char*)map_property_sky_type_list,&map.sky.type);
-			break;
-
-		case kMapPropertySkyRadius:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&map.sky.radius,0,0,0);
-			break;
-
-		case kMapPropertyDomeY:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&map.sky.dome_y,0,0,0);
-			break;
-
-		case kMapPropertyTextureRepeat:
-			dialog_property_string_run(list_string_value_positive_float,(void*)&map.sky.txt_fact,0,0,0);
 			break;
 
 		case kMapPropertyTextureShift:
@@ -322,40 +310,10 @@ void property_palette_click_sky_weather(int id,bool double_click)
 			property_palette_pick_texture(NULL,&map.background.back.fill);
 			break;
 
-			// fog general
-
-		case kMapPropertyFogInnerRadius:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&map.fog.inner_radius,0,0,0);
-			break;
-
-		case kMapPropertyFogOuterRadius:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&map.fog.outer_radius,0,0,0);
-			break;
-
 			// fog textured
 
 		case kMapPropertyFogTextureIndex:
 			property_palette_pick_texture(NULL,&map.fog.texture_idx);
-			break;
-
-		case kMapPropertyFogCount:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&map.fog.count,0,0,0);
-			break;
-
-		case kMapPropertyFogHigh:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&map.fog.high,0,0,0);
-			break;
-
-		case kMapPropertyFogDrop:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&map.fog.drop,0,0,0);
-			break;
-
-		case kMapPropertyFogAlpha:
-			dialog_property_string_run(list_string_value_0_to_1_float,(void*)&map.fog.alpha,0,0,0);
-			break;
-
-		case kMapPropertyFogTextureSpeed:
-			dialog_property_string_run(list_string_value_positive_float,(void*)&map.fog.speed,0,0,0);
 			break;
 
 		case kMapPropertyFogTextureFact:
@@ -366,49 +324,6 @@ void property_palette_click_sky_weather(int id,bool double_click)
 			map.fog.txt_y_fact=uv.y;
 			break;
 
-			// rain general
-
-		case kMapPropertyRainDensity:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&map.rain.density,0,0,0);
-			break;
-
-		case kMapPropertyRainRadius:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&map.rain.radius,0,0,0);
-			break;
-
-		case kMapPropertyRainHeight:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&map.rain.height,0,0,0);
-			break;
-
-		case kMapPropertyRainSpeed:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&map.rain.speed,0,0,0);
-			break;
-
-			// rain look
-
-		case kMapPropertyRainWidth:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&map.rain.line_width,0,0,0);
-			break;
-
-		case kMapPropertyRainLength:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&map.rain.line_length,0,0,0);
-			break;
-
-		case kMapPropertyRainAlpha:
-			dialog_property_string_run(list_string_value_0_to_1_float,(void*)&map.rain.alpha,0,0,0);
-			break;
-
-		case kMapPropertyRainSlantAdd:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&map.rain.slant_add,0,0,0);
-			break;
-
-		case kMapPropertyRainSlantMaxTime:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&map.rain.slant_time_msec,0,0,0);
-			break;
-
-		case kMapPropertyRainSlantChangeTime:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&map.rain.slant_change_msec,0,0,0);
-			break;
 
 	}
 }

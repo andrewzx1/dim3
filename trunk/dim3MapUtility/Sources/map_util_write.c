@@ -879,7 +879,7 @@ bool write_map_xml(map_type *map)
 		xml_add_attribute_boolean("contact_hit_box",scenery->contact_hit_box);
 		xml_add_attribute_boolean("face_forward",scenery->face_forward);
 		xml_add_attribute_boolean("shadow",scenery->shadow);
-		xml_add_attribute_short_array("frames",scenery->texture_frame,max_map_scenery_model_texture_frame,FALSE);
+		xml_add_attribute_int_array("frames",scenery->texture_frame,max_map_scenery_model_texture_frame,FALSE);
 		xml_add_attribute_float("resize",scenery->resize);
 		xml_add_tagend(TRUE);
 	}

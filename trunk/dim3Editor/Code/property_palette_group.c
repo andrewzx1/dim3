@@ -43,6 +43,8 @@ extern editor_setup_type		setup;
 
 extern list_palette_type		property_palette;
 
+int								pal_mesh_count,pal_liquid_count;
+
 /* =======================================================
 
       Property Palette Fill Group
@@ -51,7 +53,7 @@ extern list_palette_type		property_palette;
 
 void property_palette_fill_group(int group_idx)
 {
-	int					n,mesh_cnt,liq_cnt;
+	int					n;
 	map_mesh_type		*mesh;
 	map_liquid_type		*liq;
 	group_type			*group;
@@ -62,20 +64,20 @@ void property_palette_fill_group(int group_idx)
 
 		// get some counts
 
-	mesh_cnt=0;
-	liq_cnt=0;
+	pal_mesh_count=0;
+	pal_liquid_count=0;
 	
 	mesh=map.mesh.meshes;
 	
 	for (n=0;n!=map.mesh.nmesh;n++) {
-		if (mesh->group_idx==group_idx) mesh_cnt++;
+		if (mesh->group_idx==group_idx) pal_mesh_count++;
 		mesh++;
 	}
 	
 	liq=map.liquid.liquids;
 	
 	for (n=0;n!=map.liquid.nliquid;n++) {
-		if (liq->group_idx==group_idx) liq_cnt++;
+		if (liq->group_idx==group_idx) pal_liquid_count++;
 		liq++;
 	}
 
@@ -85,8 +87,8 @@ void property_palette_fill_group(int group_idx)
 	list_palette_add_string(&property_palette,kGroupPropertyName,"Name",group->name,FALSE);
 	
 	list_palette_add_header(&property_palette,0,"Group Info");
-	list_palette_add_string_int(&property_palette,-1,"Mesh Count",mesh_cnt,TRUE);
-	list_palette_add_string_int(&property_palette,-1,"Liquid Count",liq_cnt,TRUE);
+	list_palette_add_int(&property_palette,-1,"Mesh Count",&pal_mesh_count,TRUE);
+	list_palette_add_int(&property_palette,-1,"Liquid Count",&pal_liquid_count,TRUE);
 	
 	list_palette_add_header(&property_palette,0,"Group Clear");
 	list_palette_add_string_selectable_button(&property_palette,kGroupPropertyClear,list_button_set,kGroupPropertyClear,"Clear Group Mesh and Liquids",NULL,FALSE,FALSE);

@@ -80,9 +80,9 @@ void property_palette_fill_light_media(void)
 
 	list_palette_add_header(&property_palette,0,"Map Ambient");
 	list_palette_add_pick_color(&property_palette,kMapPropertyAmbientColor,"Color",&map.ambient.light_color,FALSE);
-	list_palette_add_string_float(&property_palette,kMapPropertyAmbientLightMapBoost,"Light Map Boost",map.ambient.light_map_boost,FALSE);
+	list_palette_add_float(&property_palette,kMapPropertyAmbientLightMapBoost,"Light Map Boost",&map.ambient.light_map_boost,FALSE);
 	list_palette_add_string(&property_palette,kMapPropertyAmbientSound,"Sound",map.ambient.sound_name,FALSE);
-	list_palette_add_string_float(&property_palette,kMapPropertyAmbientSoundPitch,"Sound Pitch",map.ambient.sound_pitch,FALSE);
+	list_palette_add_float(&property_palette,kMapPropertyAmbientSoundPitch,"Sound Pitch",&map.ambient.sound_pitch,FALSE);
 
 		// light map
 
@@ -94,13 +94,13 @@ void property_palette_fill_light_media(void)
 	list_palette_add_string(&property_palette,kMapPropertyLightMapSize,"Texture Size",map_property_light_map_size_list[size],FALSE);
 	list_palette_add_checkbox(&property_palette,kMapPropertyLightMapUseNormals,"Use Normals (Hard Edges)",&map.light_map.use_normals,FALSE);
 	list_palette_add_checkbox(&property_palette,kMapPropertyLightMapSkipGlows,"Skip Glow Mapped Polys",&map.light_map.skip_glows,FALSE);
-	list_palette_add_string_float(&property_palette,kMapPropertyLightMapDiffuseBoost,"Diffuse Boost",map.light_map.diffuse_boost,FALSE);
+	list_palette_add_float(&property_palette,kMapPropertyLightMapDiffuseBoost,"Diffuse Boost",&map.light_map.diffuse_boost,FALSE);
 
 		// media
 
 	list_palette_add_header(&property_palette,0,"Map Media");
 	list_palette_add_string(&property_palette,kMapPropertyMediaType,"Startup Type",map_property_media_type_list[map.media.type],FALSE);
-	list_palette_add_string_int(&property_palette,kMapPropertyMediaEventId,"Event Id",map.media.event_id,FALSE);
+	list_palette_add_int(&property_palette,kMapPropertyMediaEventId,"Event Id",&map.media.event_id,FALSE);
 	list_palette_add_string(&property_palette,kMapPropertyMediaName,"Startup Name",map.media.name,FALSE);
 	list_palette_add_string(&property_palette,kMapPropertyMediaTitleSound,"Startup Title Sound",map.media.title_sound_name,FALSE);
 
@@ -108,7 +108,7 @@ void property_palette_fill_light_media(void)
 
 	list_palette_add_header(&property_palette,0,"Map Music");
 	list_palette_add_string(&property_palette,kMapPropertyMusicName,"Name",map.music.name,FALSE);
-	list_palette_add_string_int(&property_palette,kMapPropertyMusicFadeTime,"Fade In Time",map.music.fade_msec,FALSE);
+	list_palette_add_int(&property_palette,kMapPropertyMusicFadeTime,"Fade In Time",&map.music.fade_msec,FALSE);
 	for (n=0;n!=max_music_preload;n++) {
 		sprintf(name,"Preload Name %d",n);
 		list_palette_add_string(&property_palette,(kMapPropertyMusicPreloadName+n),name,map.music.preload_name[n],FALSE);
@@ -141,16 +141,8 @@ void property_palette_click_light_media(int id,bool double_click)
 
 			// ambients
 
-		case kMapPropertyAmbientLightMapBoost:
-			dialog_property_string_run(list_string_value_positive_float,(void*)&map.ambient.light_map_boost,0,0,0);
-			break;
-
 		case kMapPropertyAmbientSound:
 			property_palette_pick_sound(map.ambient.sound_name,TRUE);
-			break;
-
-		case kMapPropertyAmbientSoundPitch:
-			dialog_property_string_run(list_string_value_0_to_1_float,(void*)&map.ambient.sound_pitch,0,0,0);
 			break;
 
 			// light maps
@@ -165,10 +157,6 @@ void property_palette_click_light_media(int id,bool double_click)
 			property_pick_list("Pick a Light Map Size",(char*)map_property_light_map_size_list,&size);
 			map.light_map.size=(int)pow(2,(size+8));
 			break;
-			
-		case kMapPropertyLightMapDiffuseBoost:
-			dialog_property_string_run(list_string_value_positive_float,(void*)&map.light_map.diffuse_boost,0,0,0);
-			break;
 
 			// map media
 
@@ -176,10 +164,6 @@ void property_palette_click_light_media(int id,bool double_click)
 			property_pick_list("Pick a Media Type",(char*)map_property_media_type_list,&map.media.type);
 			break;
 		
-		case kMapPropertyMediaEventId:
-			dialog_property_string_run(list_string_value_int,(void*)&map.media.event_id,0,0,0);
-			break;
-
 		case kMapPropertyMediaName:
 			dialog_property_string_run(list_string_value_string,(void*)map.media.name,name_str_len,0,0);
 			break;
@@ -192,10 +176,6 @@ void property_palette_click_light_media(int id,bool double_click)
 
 		case kMapPropertyMusicName:
 			dialog_property_string_run(list_string_value_string,(void*)map.music.name,name_str_len,0,0);
-			break;
-
-		case kMapPropertyMusicFadeTime:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&map.music.fade_msec,0,0,0);
 			break;
 
 	}

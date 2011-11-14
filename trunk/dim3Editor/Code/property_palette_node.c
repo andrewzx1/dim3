@@ -45,6 +45,8 @@ extern editor_setup_type		setup;
 
 extern list_palette_type		property_palette;
 
+int								pal_node_index;
+
 /* =======================================================
 
       Property Palette Fill Node
@@ -61,14 +63,16 @@ void property_palette_fill_node(int node_idx)
 
 	list_palette_add_header(&property_palette,0,"Node Identity");
 	list_palette_add_string(&property_palette,kNodePropertyName,"Name",node->name,FALSE);
-	list_palette_add_string_int(&property_palette,kNodePropertyEventID,"Event ID",node->event_id,FALSE);
-	list_palette_add_string_float(&property_palette,kNodePropertyAlpha,"Alpha",node->alpha,FALSE);
+	list_palette_add_int(&property_palette,kNodePropertyEventID,"Event ID",&node->event_id,FALSE);
+	list_palette_add_float(&property_palette,kNodePropertyAlpha,"Alpha",&node->alpha,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Node Settings");
 	list_palette_add_checkbox(&property_palette,kNodePropertyFollowCamera,"Follow Camera",&node->follow_camera,FALSE);
 
+	pal_node_index=node_idx;
+
 	list_palette_add_header(&property_palette,0,"Node Info");
-	list_palette_add_string_int(&property_palette,-1,"Index",node_idx,TRUE);
+	list_palette_add_int(&property_palette,-1,"Index",&pal_node_index,TRUE);
 	list_palette_add_point(&property_palette,-1,"Position",&node->pnt,TRUE);
 	list_palette_add_angle(&property_palette,-1,"Angle",&node->ang,TRUE);
 }
@@ -91,14 +95,6 @@ void property_palette_click_node(int node_idx,int id,bool double_click)
 
 		case kNodePropertyName:
 			dialog_property_string_run(list_string_value_string,(void*)node->name,name_str_len,0,0);
-			break;
-
-		case kNodePropertyEventID:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&node->event_id,0,0,0);
-			break;
-
-		case kNodePropertyAlpha:
-			dialog_property_string_run(list_string_value_0_to_1_float,(void*)&node->alpha,0,0,0);
 			break;
 
 	}

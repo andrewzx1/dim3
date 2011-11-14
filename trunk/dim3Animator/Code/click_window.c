@@ -344,7 +344,7 @@ bool select_model_wind_polygon(d3pnt *start_pnt,bool check_only)
 	// this is some temp code that can be used
 	// to quickly make quads by selecting triangles
 	// one after another
-	
+/*	
 	poly_mask_set_sel(state.cur_mesh_idx,idx,TRUE);
 	if (poly_mask_count_sel(state.cur_mesh_idx)==2) {
 		polygon_make_quad(state.cur_mesh_idx);
@@ -353,7 +353,7 @@ bool select_model_wind_polygon(d3pnt *start_pnt,bool check_only)
 	}
 	
 	return(TRUE);
-
+*/
 
 		// run the selection
 

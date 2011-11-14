@@ -216,7 +216,7 @@ void view_get_model_size(char *model_name,d3pnt *size)
       
 ======================================================= */
 
-void view_model_draw_polys(model_type *model,model_draw_setup *draw_setup,short *texture_frame,int frame_count,bool opaque)
+void view_model_draw_polys(model_type *model,model_draw_setup *draw_setup,int *texture_frame,int frame_count,bool opaque)
 {
 	int					n,k,frame,cur_txt_idx;
 	float				vertexes[8*3],uvs[8*2];
@@ -248,7 +248,7 @@ void view_model_draw_polys(model_type *model,model_draw_setup *draw_setup,short 
 			cur_txt_idx=poly->txt_idx;
 
 			frame=0;
-			if (n<frame_count) frame=(int)texture_frame[n];
+			if (n<frame_count) frame=texture_frame[n];
 
 			glBindTexture(GL_TEXTURE_2D,model->textures[cur_txt_idx].frames[frame].bitmap.gl_id);
 		}
@@ -274,7 +274,7 @@ void view_model_draw_polys(model_type *model,model_draw_setup *draw_setup,short 
 	}
 }
 
-bool view_model_draw(d3pnt *pnt,d3ang *ang,char *name,float resize,short *texture_frame,int frame_count)
+bool view_model_draw(d3pnt *pnt,d3ang *ang,char *name,float resize,int *texture_frame,int frame_count)
 {
 	int								idx;
 	model_type						*model;
