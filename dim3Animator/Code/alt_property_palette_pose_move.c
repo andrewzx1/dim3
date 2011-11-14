@@ -119,8 +119,8 @@ void alt_property_palette_fill_animate_pose_move(int animate_idx,int pose_move_i
 
 	list_palette_add_header(&alt_property_palette,0,"Animate Pose Options");
 	list_palette_add_string(&alt_property_palette,kAnimatePoseMovePropertyPose,"Pose",model.poses[pose_move->pose_idx].name,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kAnimatePoseMovePropertyMilliseconds,"Milliseconds",pose_move->msec,FALSE);
-	list_palette_add_string_float(&alt_property_palette,kAnimatePoseMovePropertyAcceleration,"Acceleration",pose_move->acceleration,FALSE);
+	list_palette_add_int(&alt_property_palette,kAnimatePoseMovePropertyMilliseconds,"Milliseconds",&pose_move->msec,FALSE);
+	list_palette_add_float(&alt_property_palette,kAnimatePoseMovePropertyAcceleration,"Acceleration",&pose_move->acceleration,FALSE);
 
 		// position
 
@@ -139,33 +139,33 @@ void alt_property_palette_fill_animate_pose_move(int animate_idx,int pose_move_i
 	list_palette_add_header(&alt_property_palette,0,"Animate Pose Sound");
 	property_palette_add_string_bone(&alt_property_palette,kAnimationPoseMovePropertySoundBone,"Bone",pose_move->sound.bone_idx,FALSE);
 	list_palette_add_string(&alt_property_palette,kAnimationPoseMovePropertySoundName,"Sound",pose_move->sound.name,FALSE);
-	list_palette_add_string_float(&alt_property_palette,kAnimationPoseMovePropertySoundPitch,"Pitch",pose_move->sound.pitch,FALSE);
+	list_palette_add_float(&alt_property_palette,kAnimationPoseMovePropertySoundPitch,"Pitch",&pose_move->sound.pitch,FALSE);
 	list_palette_add_checkbox(&alt_property_palette,kAnimationPoseMovePropertySoundGlobal,"Play Globally",&pose_move->sound.no_position,FALSE);
 
 		// mesh fades
 
 	list_palette_add_header(&alt_property_palette,0,"Animate Pose Mesh Fade");
 	property_palette_add_string_mesh(&alt_property_palette,kAnimationPoseMovePropertyFadeMesh,"Mesh",pose_move->mesh_fade.mesh_idx,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kAnimationPoseMovePropertyFadeIn,"Fade In Milliseconds",pose_move->mesh_fade.fade_in_msec,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kAnimationPoseMovePropertyFadeLife,"Fade Life Milliseconds",pose_move->mesh_fade.fade_life_msec,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kAnimationPoseMovePropertyFadeOut,"Fade Out Milliseconds",pose_move->mesh_fade.fade_out_msec,FALSE);
+	list_palette_add_int(&alt_property_palette,kAnimationPoseMovePropertyFadeIn,"Fade In Milliseconds",&pose_move->mesh_fade.fade_in_msec,FALSE);
+	list_palette_add_int(&alt_property_palette,kAnimationPoseMovePropertyFadeLife,"Fade Life Milliseconds",&pose_move->mesh_fade.fade_life_msec,FALSE);
+	list_palette_add_int(&alt_property_palette,kAnimationPoseMovePropertyFadeOut,"Fade Out Milliseconds",&pose_move->mesh_fade.fade_out_msec,FALSE);
 
 		// flash
 
 	list_palette_add_header(&alt_property_palette,0,"Animate Pose Flash");
 	property_palette_add_string_bone(&alt_property_palette,kAnimationPoseMovePropertyFlashBone,"Bone",pose_move->flash.bone_idx,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kAnimationPoseMovePropertyFlashIntensity,"Intensity",pose_move->flash.intensity,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kAnimationPoseMovePropertyFlashFlash,"Flash Milliseconds",pose_move->flash.flash_msec,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kAnimationPoseMovePropertyFlashFade,"Fade Milliseconds",pose_move->flash.fade_msec,FALSE);
-	list_palette_add_string_float(&alt_property_palette,kAnimationPoseMovePropertyFlashExponent,"Exponent",pose_move->flash.exponent,FALSE);
+	list_palette_add_int(&alt_property_palette,kAnimationPoseMovePropertyFlashIntensity,"Intensity",&pose_move->flash.intensity,FALSE);
+	list_palette_add_int(&alt_property_palette,kAnimationPoseMovePropertyFlashFlash,"Flash Milliseconds",&pose_move->flash.flash_msec,FALSE);
+	list_palette_add_int(&alt_property_palette,kAnimationPoseMovePropertyFlashFade,"Fade Milliseconds",&pose_move->flash.fade_msec,FALSE);
+	list_palette_add_float(&alt_property_palette,kAnimationPoseMovePropertyFlashExponent,"Exponent",&pose_move->flash.exponent,FALSE);
 	list_palette_add_pick_color(&alt_property_palette,kAnimationPoseMovePropertyFlashColor,"Color",&pose_move->flash.col,FALSE);
 
 		// shake
 
 	list_palette_add_header(&alt_property_palette,0,"Animate Pose Shake");
-	list_palette_add_string_int(&alt_property_palette,kAnimationPoseMovePropertyShakeDistance,"Distance",pose_move->shake.distance,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kAnimationPoseMovePropertyShakeSize,"Size",pose_move->shake.size,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kAnimationPoseMovePropertyShakeLife,"Life Milliseconds",pose_move->shake.life_msec,FALSE);
+	list_palette_add_int(&alt_property_palette,kAnimationPoseMovePropertyShakeDistance,"Distance",&pose_move->shake.distance,FALSE);
+	list_palette_add_int(&alt_property_palette,kAnimationPoseMovePropertyShakeSize,"Size",&pose_move->shake.size,FALSE);
+	list_palette_add_int(&alt_property_palette,kAnimationPoseMovePropertyShakeLife,"Life Milliseconds",&pose_move->shake.life_msec,FALSE);
 
 		// particles
 
@@ -178,7 +178,7 @@ void alt_property_palette_fill_animate_pose_move(int animate_idx,int pose_move_i
 		list_palette_add_header_button(&alt_property_palette,(id_base+kAnimationPoseMovePropertyParticleDelete),str,list_button_minus);
 		list_palette_add_string(&alt_property_palette,(id_base+kAnimationPoseMovePropertyParticleName),"Name",pose_move->particle.particles[n].name,FALSE);
 		property_palette_add_string_bone(&alt_property_palette,(id_base+kAnimationPoseMovePropertyParticleBone),"Bone",pose_move->particle.particles[n].bone_idx,FALSE);
-		list_palette_add_string_float(&alt_property_palette,(id_base+kAnimationPoseMovePropertyParticleMotionFactor),"Motion Factor",pose_move->particle.particles[n].motion_factor,FALSE);
+		list_palette_add_float(&alt_property_palette,(id_base+kAnimationPoseMovePropertyParticleMotionFactor),"Motion Factor",&pose_move->particle.particles[n].motion_factor,FALSE);
 		list_palette_add_checkbox(&alt_property_palette,(id_base+kAnimationPoseMovePropertyParticleMotion),"Follow Model Motion",&pose_move->particle.particles[n].motion,FALSE);
 		list_palette_add_checkbox(&alt_property_palette,(id_base+kAnimationPoseMovePropertyParticleRotate),"Follow Model Rotation",&pose_move->particle.particles[n].rotate,FALSE);
 		list_palette_add_checkbox(&alt_property_palette,(id_base+kAnimationPoseMovePropertyParticleStick),"Follow Model Bone",&pose_move->particle.particles[n].stick,FALSE);
@@ -246,10 +246,6 @@ void alt_property_palette_click_animate_pose_move(int animate_idx,int pose_move_
 			case kAnimationPoseMovePropertyParticleBone:
 				property_palette_pick_bone(&pose_move->particle.particles[idx].bone_idx,-1);
 				break;
-
-			case kAnimationPoseMovePropertyParticleMotionFactor:
-				dialog_property_string_run(list_string_value_positive_float,(void*)&pose_move->particle.particles[idx].motion_factor,0,0,0);
-				return;
 
 			case kAnimationPoseMovePropertyParticleSlop:
 				dialog_property_chord_run(list_chord_value_point,(void*)&pose_move->particle.particles[idx].slop);
@@ -322,14 +318,6 @@ void alt_property_palette_click_animate_pose_move(int animate_idx,int pose_move_
 			property_palette_pick_pose(&pose_move->pose_idx);
 			break;
 
-		case kAnimatePoseMovePropertyMilliseconds:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&pose_move->msec,0,0,0);
-			break;
-
-		case kAnimatePoseMovePropertyAcceleration:
-			dialog_property_string_run(list_string_value_positive_float,(void*)&pose_move->acceleration,0,0,0);
-			break;
-
 			// position
 
 		case kAnimatePoseMovePropertyMove:
@@ -350,26 +338,10 @@ void alt_property_palette_click_animate_pose_move(int animate_idx,int pose_move_
 			property_palette_pick_sound(pose_move->sound.name,TRUE);
 			break;
 
-		case kAnimationPoseMovePropertySoundPitch:
-			dialog_property_string_run(list_string_value_positive_float,(void*)&pose_move->sound.pitch,0,0,0);
-			break;
-
 			// mesh fade
 
 		case kAnimationPoseMovePropertyFadeMesh:
 			property_palette_pick_mesh(&pose_move->mesh_fade.mesh_idx);
-			break;
-
-		case kAnimationPoseMovePropertyFadeIn:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&pose_move->mesh_fade.fade_in_msec,0,0,0);
-			break;
-
-		case kAnimationPoseMovePropertyFadeLife:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&pose_move->mesh_fade.fade_life_msec,0,0,0);
-			break;
-
-		case kAnimationPoseMovePropertyFadeOut:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&pose_move->mesh_fade.fade_out_msec,0,0,0);
 			break;
 
 			// mesh flash
@@ -378,39 +350,6 @@ void alt_property_palette_click_animate_pose_move(int animate_idx,int pose_move_
 			property_palette_pick_bone(&pose_move->flash.bone_idx,-1);
 			break;
 
-		case kAnimationPoseMovePropertyFlashIntensity:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&pose_move->flash.intensity,0,0,0);
-			break;
-
-		case kAnimationPoseMovePropertyFlashFlash:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&pose_move->flash.flash_msec,0,0,0);
-			break;
-
-		case kAnimationPoseMovePropertyFlashFade:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&pose_move->flash.fade_msec,0,0,0);
-			break;
-
-		case kAnimationPoseMovePropertyFlashExponent:
-			dialog_property_string_run(list_string_value_positive_float,(void*)&pose_move->flash.exponent,0,0,0);
-			break;
-
-		case kAnimationPoseMovePropertyFlashColor:
-			os_pick_color(&pose_move->flash.col);
-			break;
-
-			// shake
-
-		case kAnimationPoseMovePropertyShakeDistance:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&pose_move->shake.distance,0,0,0);
-			break;
-
-		case kAnimationPoseMovePropertyShakeSize:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&pose_move->shake.size,0,0,0);
-			break;
-
-		case kAnimationPoseMovePropertyShakeLife:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&pose_move->shake.life_msec,0,0,0);
-			break;
 
 	}
 }

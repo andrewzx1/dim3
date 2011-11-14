@@ -51,6 +51,8 @@ extern editor_setup_type		setup;
 
 extern list_palette_type		property_palette;
 
+int								pal_scenery_index;
+
 /* =======================================================
 
       Property Palette Fill Scenery
@@ -70,7 +72,7 @@ void property_palette_fill_scenery(int scenery_idx)
 	list_palette_add_header(&property_palette,0,"Scenery Model");
 	list_palette_add_string(&property_palette,kSceneryPropertyModelName,"Model",scenery->model_name,FALSE);
 	list_palette_add_string(&property_palette,kSceneryPropertyAnimationName,"Animation",scenery->animation_name,FALSE);
-	list_palette_add_string_float(&property_palette,kSceneryPropertyResize,"Resize",scenery->resize,FALSE);
+	list_palette_add_float(&property_palette,kSceneryPropertyResize,"Resize",&scenery->resize,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Scenery Settings");
 	list_palette_add_checkbox(&property_palette,kSceneryPropertyContactObject,"Contact Object",&scenery->contact_object_on,FALSE);
@@ -82,11 +84,13 @@ void property_palette_fill_scenery(int scenery_idx)
 	list_palette_add_header(&property_palette,0,"Scenery Mesh Frames");
 	for (n=0;n!=max_map_scenery_model_texture_frame;n++) {
 		sprintf(name,"Mesh %d",n);
-		list_palette_add_string_int(&property_palette,(kSceneryPropertyFramesStart+n),name,(int)scenery->texture_frame[n],FALSE);
+		list_palette_add_int(&property_palette,(kSceneryPropertyFramesStart+n),name,&scenery->texture_frame[n],FALSE);
 	}
 	
+	pal_scenery_index=scenery_idx;
+	
 	list_palette_add_header(&property_palette,0,"Scenery Info");
-	list_palette_add_string_int(&property_palette,-1,"Index",scenery_idx,TRUE);
+	list_palette_add_int(&property_palette,-1,"Index",&pal_scenery_index,TRUE);
 	list_palette_add_point(&property_palette,-1,"Position",&scenery->pnt,TRUE);
 	list_palette_add_angle(&property_palette,-1,"Angle",&scenery->ang,TRUE);
 }
@@ -99,26 +103,11 @@ void property_palette_fill_scenery(int scenery_idx)
 
 void property_palette_click_scenery(int scenery_idx,int id,bool double_click)
 {
-	int							frame_idx,frame;
 	map_scenery_type			*scenery;
 
 	if (!double_click) return;
 
 	scenery=&map.sceneries[scenery_idx];
-
-		// parameters
-
-	if ((id>=kSceneryPropertyFramesStart) && (id<=kSceneryPropertyFramesEnd)) {
-		frame_idx=(id-kSceneryPropertyFramesStart);
-		
-		frame=(int)scenery->texture_frame[frame_idx];
-		dialog_property_string_run(list_string_value_positive_int,(void*)&frame,0,0,0);
-		scenery->texture_frame[frame_idx]=(char)frame;
-
-		return;
-	}
-
-		// regular properties
 
 	switch (id) {
 
@@ -128,10 +117,6 @@ void property_palette_click_scenery(int scenery_idx,int id,bool double_click)
 
 		case kSceneryPropertyAnimationName:
 			dialog_property_string_run(list_string_value_string,(void*)scenery->animation_name,name_str_len,0,0);
-			break;
-			
-		case kSceneryPropertyResize:
-			dialog_property_string_run(list_string_value_positive_float,(void*)&scenery->resize,0,0,0);
 			break;
 
 	}

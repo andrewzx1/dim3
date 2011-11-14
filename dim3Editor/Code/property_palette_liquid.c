@@ -84,6 +84,8 @@ extern editor_setup_type		setup;
 extern list_palette_type		property_palette;
 extern char						map_property_light_map_size_list[][name_str_len];
 
+int								pal_liquid_index;
+
 /* =======================================================
 
       Property Palette Fill Liquid
@@ -92,8 +94,9 @@ extern char						map_property_light_map_size_list[][name_str_len];
 
 void property_palette_fill_liquid(int liq_idx)
 {
+	int						size;
 	char					str[32];
-	d3pnt					pnt,size;
+	d3pnt					pnt,sz;
 	d3fpnt					uv_offset,uv_size,uv_shift;
 	map_liquid_type			*liq;
 	editor_view_type		*view;
@@ -113,39 +116,42 @@ void property_palette_fill_liquid(int liq_idx)
 
 	list_palette_add_header(&property_palette,0,"Liquid Under");
 	list_palette_add_pick_color(&property_palette,kLiquidPropertyColor,"Color",&liq->col,FALSE);
-	list_palette_add_string_float(&property_palette,kLiquidPropertyTintAlpha,"Tint Alpha",liq->tint_alpha,FALSE);
-	list_palette_add_string_float(&property_palette,kLiquidPropertySpeedAlter,"Speed Alter",liq->speed_alter,FALSE);
+	list_palette_add_float(&property_palette,kLiquidPropertyTintAlpha,"Tint Alpha",&liq->tint_alpha,FALSE);
+	list_palette_add_float(&property_palette,kLiquidPropertySpeedAlter,"Speed Alter",&liq->speed_alter,FALSE);
 	list_palette_add_string(&property_palette,kLiquidPropertySoundName,"Sound",liq->ambient.sound_name,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Liquid Tides");
-	list_palette_add_string_int(&property_palette,kLiquidPropertyTideSize,"Size",liq->tide.high,FALSE);
-	list_palette_add_string_int(&property_palette,kLiquidPropertyTideRate,"Rate",liq->tide.rate,FALSE);
-	list_palette_add_string_float(&property_palette,kLiquidPropertyTideUVShift,"UV Shift",liq->tide.uv_shift,FALSE);
+	list_palette_add_int(&property_palette,kLiquidPropertyTideSize,"Size",&liq->tide.high,FALSE);
+	list_palette_add_int(&property_palette,kLiquidPropertyTideRate,"Rate",&liq->tide.rate,FALSE);
+	list_palette_add_float(&property_palette,kLiquidPropertyTideUVShift,"UV Shift",&liq->tide.uv_shift,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Liquid Waves");
 	list_palette_add_checkbox(&property_palette,kLiquidPropertyWaveOn,"On",&liq->wave.on,FALSE);
 	list_palette_add_checkbox(&property_palette,kLiquidPropertyWaveDirNorthSouth,"North-South Dir",&liq->wave.dir_north_south,FALSE);
-	list_palette_add_string_int(&property_palette,kLiquidPropertyWaveLength,"Length",liq->wave.length,FALSE);
-	list_palette_add_string_int(&property_palette,kLiquidPropertyWaveHigh,"High",liq->wave.high,FALSE);
-	list_palette_add_string_int(&property_palette,kLiquidPropertyWavePeriodMSec,"Period msec",liq->wave.period_msec,FALSE);
+	list_palette_add_int(&property_palette,kLiquidPropertyWaveLength,"Length",&liq->wave.length,FALSE);
+	list_palette_add_int(&property_palette,kLiquidPropertyWaveHigh,"High",&liq->wave.high,FALSE);
+	list_palette_add_int(&property_palette,kLiquidPropertyWavePeriodMSec,"Period msec",&liq->wave.period_msec,FALSE);
 	list_palette_add_string_selectable_button(&property_palette,kLiquidPropertyWaveReset,list_button_set,kLiquidPropertyWaveReset,"Resize Liquid To Fit Wave Length",NULL,FALSE,FALSE);
 	
 	list_palette_add_header(&property_palette,0,"Liquid Harm");
-	list_palette_add_string_int(&property_palette,kLiquidPropertyHarm,"In Damage",liq->harm.in_harm,FALSE);
-	list_palette_add_string_int(&property_palette,kLiquidPropertyDrownTick,"Drowning Tick",liq->harm.drown_tick,FALSE);
-	list_palette_add_string_int(&property_palette,kLiquidPropertyDrownHarm,"Drowning Damage",liq->harm.drown_harm,FALSE);
+	list_palette_add_int(&property_palette,kLiquidPropertyHarm,"In Damage",&liq->harm.in_harm,FALSE);
+	list_palette_add_int(&property_palette,kLiquidPropertyDrownTick,"Drowning Tick",&liq->harm.drown_tick,FALSE);
+	list_palette_add_int(&property_palette,kLiquidPropertyDrownHarm,"Drowning Damage",&liq->harm.drown_harm,FALSE);
+
+	size=((int)log2(liq->reflect.texture_size))-8;
+	if ((size<0) || (size>2)) size=0;
 
 	list_palette_add_header(&property_palette,0,"Liquid Reflection");
-	list_palette_add_string_int(&property_palette,kLiquidPropertyReflectTextureSize,"Texture Size",liq->reflect.texture_size,FALSE);
-	list_palette_add_string_int(&property_palette,kLiquidPropertyReflectXRefract,"X Refraction Factor",liq->reflect.x_refract_factor,FALSE);
-	list_palette_add_string_int(&property_palette,kLiquidPropertyReflectZRefract,"Z Refraction Factor",liq->reflect.z_refract_factor,FALSE);
+	list_palette_add_string(&property_palette,kLiquidPropertyReflectTextureSize,"Texture Size",map_property_light_map_size_list[size],FALSE);
+	list_palette_add_int(&property_palette,kLiquidPropertyReflectXRefract,"X Refraction Factor",&liq->reflect.x_refract_factor,FALSE);
+	list_palette_add_int(&property_palette,kLiquidPropertyReflectZRefract,"Z Refraction Factor",&liq->reflect.z_refract_factor,FALSE);
 	list_palette_add_pick_color(&property_palette,kLiquidPropertyReflectNoHitColor,"No Hit Color",&liq->reflect.no_hit_col,FALSE);
-	list_palette_add_string_float(&property_palette,kLiquidPropertyReflectAlpha,"Alpha",liq->reflect.alpha,FALSE);
+	list_palette_add_float(&property_palette,kLiquidPropertyReflectAlpha,"Alpha",&liq->reflect.alpha,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Liquid Overlay");
 	list_palette_add_checkbox(&property_palette,kLiquidPropertyOverlayOn,"On",&liq->overlay.on,FALSE);
 	list_palette_add_texture(&property_palette,map.textures,kLiquidPropertyOverlayTexture,"Texture",liq->overlay.txt_idx,FALSE);
-	list_palette_add_string_int(&property_palette,kLiquidPropertyOverlayStampSize,"Stamp Size",liq->overlay.stamp_size,FALSE);
+	list_palette_add_int(&property_palette,kLiquidPropertyOverlayStampSize,"Stamp Size",&liq->overlay.stamp_size,FALSE);
 	uv_shift.x=liq->overlay.x_shift;
 	uv_shift.y=liq->overlay.y_shift;
 	list_palette_add_uv(&property_palette,kLiquidPropertyOverlayShift,"Shift",&uv_shift,FALSE);
@@ -193,14 +199,16 @@ void property_palette_fill_liquid(int liq_idx)
 	pnt.y=liq->y;
 	pnt.z=liq->top;
 	
-	size.x=liq->rgt-liq->lft;
-	size.y=liq->depth;
-	size.z=liq->bot-liq->top;
+	sz.x=liq->rgt-liq->lft;
+	sz.y=liq->depth;
+	sz.z=liq->bot-liq->top;
+	
+	pal_liquid_index=liq_idx;
 		
 	list_palette_add_header(&property_palette,0,"Liquid Info");
-	list_palette_add_string_int(&property_palette,-1,"Index",liq_idx,FALSE);
+	list_palette_add_int(&property_palette,-1,"Index",&pal_liquid_index,FALSE);
 	list_palette_add_point(&property_palette,-1,"Position",&pnt,TRUE);
-	list_palette_add_point(&property_palette,-1,"Size",&size,TRUE);
+	list_palette_add_point(&property_palette,-1,"Size",&sz,TRUE);
 }
 
 /* =======================================================
@@ -235,60 +243,10 @@ void property_palette_click_liquid(int liq_idx,int id,bool double_click)
 	
 			// options
 
-		case kLiquidPropertyTintAlpha:
-			dialog_property_string_run(list_string_value_0_to_1_float,(void*)&liq->tint_alpha,0,0,0);
-			break;
-			
-		case kLiquidPropertySpeedAlter:
-			dialog_property_string_run(list_string_value_positive_float,(void*)&liq->speed_alter,0,0,0);
-			break;
-
 		case kLiquidPropertySoundName:
 			property_palette_pick_sound(liq->ambient.sound_name,TRUE);
 			break;
 
-			// tides
-			
-		case kLiquidPropertyTideSize:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&liq->tide.high,0,0,0);
-			break;
-			
-		case kLiquidPropertyTideRate:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&liq->tide.rate,0,0,0);
-			break;
-
-		case kLiquidPropertyTideUVShift:
-			dialog_property_string_run(list_string_value_positive_float,(void*)&liq->tide.uv_shift,0,0,0);
-			break;
-
-			// waves
-
-		case kLiquidPropertyWaveLength:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&liq->wave.length,0,0,0);
-			break;
-
-		case kLiquidPropertyWaveHigh:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&liq->wave.high,0,0,0);
-			break;
-
-		case kLiquidPropertyWavePeriodMSec:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&liq->wave.period_msec,0,0,0);
-			break;
-
-			// harm
-			
-		case kLiquidPropertyHarm:
-			dialog_property_string_run(list_string_value_int,(void*)&liq->harm.in_harm,0,0,0);
-			break;
-			
-		case kLiquidPropertyDrownTick:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&liq->harm.drown_tick,0,0,0);
-			break;
-			
-		case kLiquidPropertyDrownHarm:
-			dialog_property_string_run(list_string_value_int,(void*)&liq->harm.drown_harm,0,0,0);
-			break;
-			
 			// reflect
 			
 		case kLiquidPropertyReflectTextureSize:
@@ -297,28 +255,11 @@ void property_palette_click_liquid(int liq_idx,int id,bool double_click)
 			property_pick_list("Pick a Liquid Reflect Map Size",(char*)map_property_light_map_size_list,&size);
 			liq->reflect.texture_size=(int)pow(2,(size+8));
 			break;
-			break;
-			
-		case kLiquidPropertyReflectXRefract:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&liq->reflect.x_refract_factor,0,0,0);
-			break;
-			
-		case kLiquidPropertyReflectZRefract:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&liq->reflect.z_refract_factor,0,0,0);
-			break;
-
-		case kLiquidPropertyReflectAlpha:
-			dialog_property_string_run(list_string_value_0_to_1_float,(void*)&liq->reflect.alpha,0,0,0);
-			break;
 
 			// overlay
 			
 		case kLiquidPropertyOverlayTexture:
 			property_palette_pick_texture(NULL,&liq->overlay.txt_idx);
-			break;
-			
-		case kLiquidPropertyOverlayStampSize:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&liq->overlay.stamp_size,0,0,0);
 			break;
 			
 		case kLiquidPropertyOverlayShift:

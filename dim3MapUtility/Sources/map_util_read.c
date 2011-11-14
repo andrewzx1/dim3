@@ -918,7 +918,7 @@ bool decode_map_xml(map_type *map,int map_head)
 			scenery->face_forward=xml_get_attribute_boolean(obj_tag,"face_forward");
 			scenery->shadow=xml_get_attribute_boolean(obj_tag,"shadow");
 			
-			xml_get_attribute_short_array(obj_tag,"frames",scenery->texture_frame,max_map_scenery_model_texture_frame);
+			xml_get_attribute_int_array(obj_tag,"frames",scenery->texture_frame,max_map_scenery_model_texture_frame);
 			
 			scenery->resize=xml_get_attribute_float_default(obj_tag,"resize",1.0f);
 			

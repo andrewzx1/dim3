@@ -50,6 +50,7 @@ extern editor_setup_type		setup;
 
 extern list_palette_type		property_palette;
 
+int								pal_spot_index;
 char							spot_property_type_list[][name_str_len]={"Object","Bot","Player","Spawn",""},
 								spot_property_skill_list[][name_str_len]={"Easy","Medium","Hard",""},
 								spot_property_spawn_list[][name_str_len]={"Always","Single Player Only","Multiplayer Only",""};
@@ -91,8 +92,10 @@ void property_palette_fill_spot(int spot_idx)
 		list_palette_add_string(&property_palette,(kSpotPropertyParamsStart+n),name,str,FALSE);
 	}
 	
+	pal_spot_index=spot_idx;
+	
 	list_palette_add_header(&property_palette,0,"Spot Info");
-	list_palette_add_string_int(&property_palette,-1,"Index",spot_idx,TRUE);
+	list_palette_add_int(&property_palette,-1,"Index",&pal_spot_index,TRUE);
 	list_palette_add_point(&property_palette,-1,"Position",&spot->pnt,TRUE);
 	list_palette_add_angle(&property_palette,-1,"Angle",&spot->ang,TRUE);
 }

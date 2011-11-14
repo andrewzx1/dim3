@@ -43,6 +43,8 @@ extern editor_setup_type		setup;
 
 extern list_palette_type		property_palette;
 
+int								pal_sound_index;
+
 /* =======================================================
 
       Property Palette Fill Sound
@@ -62,10 +64,12 @@ void property_palette_fill_sound(int sound_idx)
 
 	list_palette_add_header(&property_palette,0,"Sound Audio");
 	list_palette_add_string(&property_palette,kSoundPropertyName,"Sound",sound->name,FALSE);
-	list_palette_add_string_float(&property_palette,kSoundPropertyPitch,"Pitch",sound->pitch,FALSE);
+	list_palette_add_float(&property_palette,kSoundPropertyPitch,"Pitch",&sound->pitch,FALSE);
+	
+	pal_sound_index=sound_idx;
 	
 	list_palette_add_header(&property_palette,0,"Sound Info");
-	list_palette_add_string_int(&property_palette,-1,"Index",sound_idx,TRUE);
+	list_palette_add_int(&property_palette,-1,"Index",&pal_sound_index,TRUE);
 	list_palette_add_point(&property_palette,-1,"Position",&sound->pnt,TRUE);
 }
 

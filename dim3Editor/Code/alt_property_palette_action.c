@@ -82,8 +82,8 @@ void alt_property_palette_fill_cinema_action(int cinema_idx,int action_idx)
 		// the properties
 
 	list_palette_add_header(&alt_property_palette,0,"Cinema Action Timing");
-	list_palette_add_string_int(&alt_property_palette,kCinemaActionPropertyTimeStart,"Time Start",action->start_msec,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kCinemaActionPropertyTimeEnd,"Time End",action->end_msec,FALSE);
+	list_palette_add_int(&alt_property_palette,kCinemaActionPropertyTimeStart,"Time Start",&action->start_msec,FALSE);
+	list_palette_add_int(&alt_property_palette,kCinemaActionPropertyTimeEnd,"Time End",&action->end_msec,FALSE);
 
 	list_palette_add_header(&alt_property_palette,0,"Cinema Action Actor");
 	list_palette_add_string(&alt_property_palette,kCinemaActionPropertyAction,"Action",action_action_type_str[action->action],FALSE);
@@ -146,14 +146,6 @@ void alt_property_palette_click_cinema_action(int cinema_idx,int action_idx,int 
 
 	switch (id) {
 	
-		case kCinemaActionPropertyTimeStart:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&action->start_msec,0,0,0);
-			break;
-
-		case kCinemaActionPropertyTimeEnd:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&action->end_msec,0,0,0);
-			break;
-
 		case kCinemaActionPropertyAction:
 			property_pick_list("Pick an Action",(char*)action_action_type_str,&action->action);
 			break;

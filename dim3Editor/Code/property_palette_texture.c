@@ -82,16 +82,16 @@ void property_palette_fill_texture(int texture_idx)
 
 	list_palette_add_header(&property_palette,0,"Texture Options");
 	list_palette_add_shader(&property_palette,kTexturePropertyShader,"Shader",texture->shader_name,FALSE);
-	list_palette_add_string_int(&property_palette,kTexturePropertyGlowRate,"Glow Rate",texture->glow.rate,FALSE);
-	list_palette_add_string_float(&property_palette,kTexturePropertyGlowMin,"Glow Min",texture->glow.min,FALSE);
-	list_palette_add_string_float(&property_palette,kTexturePropertyGlowMax,"Glow Max",texture->glow.max,FALSE);
-	list_palette_add_string_float(&property_palette,kTexturePropertyShineFactor,"Shine Factor",texture->shine_factor,FALSE);
+	list_palette_add_int(&property_palette,kTexturePropertyGlowRate,"Glow Rate",&texture->glow.rate,FALSE);
+	list_palette_add_float(&property_palette,kTexturePropertyGlowMin,"Glow Min",&texture->glow.min,FALSE);
+	list_palette_add_float(&property_palette,kTexturePropertyGlowMax,"Glow Max",&texture->glow.max,FALSE);
+	list_palette_add_float(&property_palette,kTexturePropertyShineFactor,"Shine Factor",&texture->shine_factor,FALSE);
 	list_palette_add_string(&property_palette,kTexturePropertyMaterialName,"Material Name",texture->material_name,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Texture Frame Waits");
 	for (n=0;n!=max_texture_frame;n++) {
 		sprintf(name,"Frame %d Wait Time",n);
-		list_palette_add_string_int(&property_palette,(kTexturePropertyFrameWaitStart+n),name,texture->animate.wait[n],FALSE);
+		list_palette_add_int(&property_palette,(kTexturePropertyFrameWaitStart+n),name,&texture->animate.wait[n],FALSE);
 	}
 
 	list_palette_add_header(&property_palette,0,"Texture Auto UVs");
@@ -117,35 +117,10 @@ void property_palette_click_texture(int texture_idx,int id,bool double_click)
 
 	texture=&map.textures[texture_idx];
 
-		// waits
-
-	if ((id>=kTexturePropertyFrameWaitStart) && (id<=kTexturePropertyFrameWaitEnd)) {
-		dialog_property_string_run(list_string_value_positive_int,(void*)&texture->animate.wait[id-kTexturePropertyFrameWaitStart],0,0,0);
-		return;
-	}
-
-		// other properties
-
 	switch (id) {
 
 		case kTexturePropertyShader:
 			property_palette_pick_shader(texture->shader_name);
-			break;
-
-		case kTexturePropertyGlowRate:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&texture->glow.rate,0,0,0);
-			break;
-
-		case kTexturePropertyGlowMin:
-			dialog_property_string_run(list_string_value_0_to_1_float,(void*)&texture->glow.min,0,0,0);
-			break;
-
-		case kTexturePropertyGlowMax:
-			dialog_property_string_run(list_string_value_0_to_1_float,(void*)&texture->glow.max,0,0,0);
-			break;
-
-		case kTexturePropertyShineFactor:
-			dialog_property_string_run(list_string_value_float,(void*)&texture->shine_factor,0,0,0);
 			break;
 
 		case kTexturePropertyMaterialName:

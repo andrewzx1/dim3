@@ -68,8 +68,8 @@ void alt_property_palette_fill_movement_move(int movement_idx,int move_idx)
 	list_palette_set_sub2_title(&alt_property_palette,"Movement",movement->name,str);
 
 	list_palette_add_header(&alt_property_palette,0,"Movement Move Options");
-	list_palette_add_string_int(&alt_property_palette,kMovePropertyUserID,"Event User Id",move->user_id,FALSE);
-	list_palette_add_string_int(&alt_property_palette,kMovePropertyMillisecond,"Millisecond Time",move->msec,FALSE);
+	list_palette_add_int(&alt_property_palette,kMovePropertyUserID,"Event User Id",&move->user_id,FALSE);
+	list_palette_add_int(&alt_property_palette,kMovePropertyMillisecond,"Millisecond Time",&move->msec,FALSE);
 
 	list_palette_add_header(&alt_property_palette,0,"Movement Move Position");
 	list_palette_add_point(&alt_property_palette,kMovePropertyMove,"Move",&move->mov,FALSE);
@@ -77,7 +77,7 @@ void alt_property_palette_fill_movement_move(int movement_idx,int move_idx)
 	
 	list_palette_add_header(&alt_property_palette,0,"Movement Move Sound");
 	list_palette_add_string(&alt_property_palette,kMovePropertySoundName,"Sound",move->sound_name,FALSE);
-	list_palette_add_string_float(&alt_property_palette,kMovePropertySoundPitch,"Pitch",move->sound_pitch,FALSE);
+	list_palette_add_float(&alt_property_palette,kMovePropertySoundPitch,"Pitch",&move->sound_pitch,FALSE);
 }
 
 /* =======================================================
@@ -97,14 +97,6 @@ void alt_property_palette_click_movement_move(int movement_idx,int move_idx,int 
 
 	switch (id) {
 
-		case kMovePropertyUserID:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&move->user_id,0,0,0);
-			break;
-
-		case kMovePropertyMillisecond:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&move->msec,0,0,0);
-			break;
-
 		case kMovePropertyMove:
 			dialog_property_chord_run(list_chord_value_point,(void*)&move->mov);
 			break;
@@ -115,10 +107,6 @@ void alt_property_palette_click_movement_move(int movement_idx,int move_idx,int 
 	
 		case kMovePropertySoundName:
 			property_palette_pick_sound(move->sound_name,FALSE);
-			break;
-
-		case kMovePropertySoundPitch:
-			dialog_property_string_run(list_string_value_positive_float,(void*)&move->sound_pitch,0,0,0);
 			break;
 
 	}

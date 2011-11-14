@@ -75,7 +75,7 @@ void property_palette_fill_cinema(int cinema_idx)
 
 	list_palette_add_header(&property_palette,0,"Cinema Options");
 	list_palette_add_string(&property_palette,kCinemaPropertyName,"Name",cinema->name,FALSE);
-	list_palette_add_string_int(&property_palette,kCinemaPropertyLength,"Total Length",cinema->len_msec,FALSE);
+	list_palette_add_int(&property_palette,kCinemaPropertyLength,"Total Length",&cinema->len_msec,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Cinema Settings");
 	list_palette_add_checkbox(&property_palette,kCinemaPropertyFreezeInput,"Freeze Input",&cinema->freeze_input,FALSE);
@@ -276,10 +276,6 @@ void property_palette_click_cinema(int cinema_idx,int id,bool double_click)
 
 		case kCinemaPropertyName:
 			dialog_property_string_run(list_string_value_string,(void*)cinema->name,name_str_len,0,0);
-			break;
-
-		case kCinemaPropertyLength:
-			dialog_property_string_run(list_string_value_positive_int,(void*)&cinema->len_msec,0,0,0);
 			break;
 
 	}
