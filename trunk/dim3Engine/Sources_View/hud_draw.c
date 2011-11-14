@@ -109,6 +109,8 @@ void hud_bitmaps_draw(void)
 
 	gl_texture_simple_start();
 
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
 		// timing for flashes and fades
 
 	tick=game_time_get();
@@ -302,6 +304,8 @@ void hud_bitmaps_draw(void)
 			glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 		}
 	}
+
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	
 	gl_texture_simple_end();
 }

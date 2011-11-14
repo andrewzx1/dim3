@@ -313,6 +313,8 @@ void sky_draw_dome_panoramic(void)
 	view_bind_sky_vertex_object();
 
 	glVertexPointer(3,GL_FLOAT,0,(GLvoid*)0);
+
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)(((120*6)*3)*sizeof(float)));
 
 		// draw textured dome
@@ -339,6 +341,8 @@ void sky_draw_dome_panoramic(void)
 	gl_texture_simple_end();
 
 		// unbind the vbo
+
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
 	view_unbind_sky_vertex_object();
 }
@@ -683,9 +687,13 @@ void sky_draw_dome_hemisphere(void)
 		// draw the dome
 	
 	glVertexPointer(3,GL_FLOAT,0,(GLvoid*)0);
+
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)((dome_cnt*3)*sizeof(float)));
 
 	glDrawArrays(GL_TRIANGLES,0,dome_cnt);
+
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
 		// end textures
 		
@@ -971,6 +979,8 @@ void sky_draw_cube(void)
 		// draw cube sides
 
 	glVertexPointer(3,GL_FLOAT,0,(GLvoid*)0);
+
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)(((6*4)*3)*sizeof(float)));
 
 	offset=0;
@@ -1044,6 +1054,8 @@ void sky_draw_cube(void)
 	}
 
 		// end texture
+
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 		
 	glLoadIdentity();
 	gl_texture_simple_end();

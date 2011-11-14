@@ -94,6 +94,8 @@ void remote_draw_icon(obj_type *obj,unsigned long gl_id)
 		// draw the bitmap
 	
 	glVertexPointer(3,GL_FLOAT,0,(GLvoid*)vertexes);
+
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)uvs);
 			
 	gl_texture_simple_start();
@@ -113,6 +115,8 @@ void remote_draw_icon(obj_type *obj,unsigned long gl_id)
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 
 	gl_texture_simple_end();
+
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 }
 
 void remote_draw_status(obj_type *obj)

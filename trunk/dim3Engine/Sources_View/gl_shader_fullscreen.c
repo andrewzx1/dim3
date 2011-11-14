@@ -310,6 +310,8 @@ void gl_fs_shader_render_finish(void)
 		// draw the quad
 
 	glVertexPointer(2,GL_FLOAT,0,(GLvoid*)vertexes);
+
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2,GL_FLOAT,0,(GLvoid*)uvs);
 
 	glDrawArrays(GL_TRIANGLE_STRIP,0,4);
@@ -321,6 +323,8 @@ void gl_fs_shader_render_finish(void)
 		// finish fbo draw
 	
 	glDisable(GL_TEXTURE_RECTANGLE_ARB);
+
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 }
 
 #endif

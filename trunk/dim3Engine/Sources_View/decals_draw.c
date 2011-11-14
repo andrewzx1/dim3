@@ -238,6 +238,10 @@ void decal_render(void)
 
 	glColorMask(GL_TRUE,GL_TRUE,GL_TRUE,GL_TRUE);
 
+		// decals use tex coords
+
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
 		// draw decals to stencils
 
 	gl_texture_decal_start();
@@ -260,6 +264,8 @@ void decal_render(void)
 
 	gl_texture_decal_end();
 	
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+
 	glDisable(GL_STENCIL_TEST);
 }
 

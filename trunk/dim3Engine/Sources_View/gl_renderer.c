@@ -91,7 +91,7 @@ void gl_setup_context(void)
       
 ======================================================= */
 
-bool gl_initialize(int screen_wid,int screen_high,int fsaa_mode,bool reset,char *err_str)
+bool gl_initialize(int screen_wid,int screen_high,int fsaa_mode,char *err_str)
 {
 #ifdef D3_SDL_1_3
 	int						sdl_flags;
@@ -243,27 +243,17 @@ bool gl_initialize(int screen_wid,int screen_high,int fsaa_mode,bool reset,char 
 		
 	gl_texture_initialize();
 	
-		// do an initial draw
-		
-	if (!reset) {
-		glClearColor(0.0f,0.0f,0.0f,0.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
-		
-		#ifdef D3_SDL_1_3
-			SDL_GL_SwapWindow(sdl_wind);
-		#else
-			SDL_GL_SwapBuffers();
-		#endif
-	}
+		// we always use vertex
+		// pointers so we can initialize
+		// here
+
+		// tried to pre-initialize tex coords
+		// but that crashes some nvidia hardware
+		// so we have to take the cost of doing
+		// it on the fly
 	
-		// initialize all the pointers
-	
-	glClientActiveTexture(GL_TEXTURE1);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-		
 	glClientActiveTexture(GL_TEXTURE0);
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	
 	return(TRUE);
 }

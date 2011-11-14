@@ -185,13 +185,19 @@ void render_transparent_mesh_normal(void)
 	in_additive=FALSE;
 	cur_mesh_idx=-1;
 	
-		// only this route uses color arrays
+		// enable arrays
 		
 	glEnableClientState(GL_COLOR_ARRAY);
 	
-	gl_texture_transparent_light_map_start();
+	glClientActiveTexture(GL_TEXTURE1);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	
+	glClientActiveTexture(GL_TEXTURE0);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
 		// run through draw list
+
+	gl_texture_transparent_light_map_start();
 
 	for (n=0;n!=trans_sort.count;n++) {
 	
@@ -270,13 +276,21 @@ void render_transparent_mesh_normal(void)
 		view_unbind_mesh_liquid_index_object();
 	}
 
-		// only this route uses color arrays
+		// stop rendering
 		
-	glDisableClientState(GL_COLOR_ARRAY);
-
 	gl_texture_transparent_light_map_end();
 		
 	if (in_additive) glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+
+		// disable arrays
+
+	glDisableClientState(GL_COLOR_ARRAY);
+
+	glClientActiveTexture(GL_TEXTURE1);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	
+	glClientActiveTexture(GL_TEXTURE0);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 }
 
 void render_transparent_mesh_shader(void)
@@ -289,12 +303,20 @@ void render_transparent_mesh_shader(void)
 	map_mesh_poly_type		*poly;
 	view_light_list_type	light_list;
 
+		// enable arrays
+		
+	glClientActiveTexture(GL_TEXTURE1);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	
+	glClientActiveTexture(GL_TEXTURE0);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+		// run through draw list
+
 	in_additive=FALSE;
 	cur_mesh_idx=-1;
 	
 	gl_shader_draw_start();
-
-		// run through draw list
 		
 	for (n=0;n!=trans_sort.count;n++) {
 
@@ -362,6 +384,14 @@ void render_transparent_mesh_shader(void)
 	gl_shader_draw_end();
 		
 	if (in_additive) glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+
+		// disable arrays
+
+	glClientActiveTexture(GL_TEXTURE1);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	
+	glClientActiveTexture(GL_TEXTURE0);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 }
 
 void render_transparent_mesh_glow(void)
@@ -371,6 +401,16 @@ void render_transparent_mesh_glow(void)
 	texture_type			*texture;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
+
+		// enable arrays
+		
+	glClientActiveTexture(GL_TEXTURE1);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	
+	glClientActiveTexture(GL_TEXTURE0);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+		// run through the list
 
 	first_hit=TRUE;
 	cur_mesh_idx=-1;
@@ -439,6 +479,14 @@ void render_transparent_mesh_glow(void)
 	if (!first_hit) {
 		gl_texture_glow_end();
 	}
+
+		// disable arrays
+
+	glClientActiveTexture(GL_TEXTURE1);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	
+	glClientActiveTexture(GL_TEXTURE0);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 }
 
 /* =======================================================

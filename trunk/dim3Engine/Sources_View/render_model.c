@@ -443,9 +443,11 @@ bool render_model_initialize_vertex_objects(model_type *mdl,int mesh_idx,model_d
 	glVertexPointer(3,GL_FLOAT,stride,(GLvoid*)0);
 
 	glClientActiveTexture(GL_TEXTURE1);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2,GL_FLOAT,stride,(GLvoid*)(3*sizeof(float)));
 
 	glClientActiveTexture(GL_TEXTURE0);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2,GL_FLOAT,stride,(GLvoid*)(3*sizeof(float)));
 	
 	if (!shader_on) {
@@ -458,9 +460,15 @@ bool render_model_initialize_vertex_objects(model_type *mdl,int mesh_idx,model_d
 
 void render_model_release_vertex_objects(void)
 {
-	glDisableClientState(GL_COLOR_ARRAY);
-
 	view_unbind_model_vertex_object();
+
+	glDisableClientState(GL_COLOR_ARRAY);
+		
+	glClientActiveTexture(GL_TEXTURE1);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	
+	glClientActiveTexture(GL_TEXTURE0);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 }
 
 /* =======================================================
