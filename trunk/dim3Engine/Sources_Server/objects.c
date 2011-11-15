@@ -688,7 +688,8 @@ int object_create(char *name,int type,int bind)
 	obj->fall.dist=0;
 	obj->fall.damage_minimum_height=3000;
 	obj->fall.damage_factor=0.0f;
-    obj->fall.change=FALSE;
+    obj->fall.started=FALSE;
+	obj->fall.land_event_ok=FALSE;
 	
 	obj->last_move_animation_event=-1;
 	obj->last_turn_animation_event=-1;

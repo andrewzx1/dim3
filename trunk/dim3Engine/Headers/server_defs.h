@@ -552,7 +552,7 @@ typedef struct		{
 typedef struct		{
 						int						dist,damage_minimum_height;
 						float					damage_factor;
-						bool					change;
+						bool					started,land_event_ok;
 					} obj_fall;
 
 typedef struct		{
