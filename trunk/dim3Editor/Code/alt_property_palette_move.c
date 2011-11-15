@@ -96,14 +96,6 @@ void alt_property_palette_click_movement_move(int movement_idx,int move_idx,int 
 	move=&map.movement.movements[movement_idx].moves[move_idx];
 
 	switch (id) {
-
-		case kMovePropertyMove:
-			dialog_property_chord_run(list_chord_value_point,(void*)&move->mov);
-			break;
-
-		case kMovePropertyRot:
-			dialog_property_chord_run(list_chord_value_angle,(void*)&move->rot);
-			break;
 	
 		case kMovePropertySoundName:
 			property_palette_pick_sound(move->sound_name,FALSE);

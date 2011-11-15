@@ -170,24 +170,6 @@ void alt_property_palette_click_particle(int particle_idx,int id,bool double_cli
 			property_palette_pick_particle(particle->chain_name);
 			break;
 
-			// motion
-
-		case kParticleMotionOffset:
-			dialog_property_chord_run(list_chord_value_point,(void*)&particle->pt);
-			break;
-
-		case kParticleMotionMove:
-			dialog_property_chord_run(list_chord_value_vector,(void*)&particle->vct);
-			break;
-
-		case kParticleMotionRot:
-			dialog_property_chord_run(list_chord_value_angle,(void*)&particle->rot);
-			break;
-
-		case kParticleMotionRotAccel:
-			dialog_property_chord_run(list_chord_value_vector,(void*)&particle->rot_accel);
-			break;
-
 	}
 }
 

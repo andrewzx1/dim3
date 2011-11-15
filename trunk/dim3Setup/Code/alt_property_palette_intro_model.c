@@ -105,12 +105,6 @@ void alt_property_palette_click_intro_model(int intro_model_idx,int id,bool doub
 			dialog_property_string_run(list_string_value_string,(void*)model->animate_name,name_str_len,0,0);
 			break;
 
-			// options
-
-		case kModelOptionRot:
-			dialog_property_chord_run(list_chord_value_angle,(void*)&model->rot);
-			break;
-
 	}
 }
 

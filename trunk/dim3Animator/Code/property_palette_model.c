@@ -125,7 +125,7 @@ void property_palette_fill_model(void)
 
 	list_palette_add_header(&property_palette,0,"Model UI");
 	list_palette_add_float(&property_palette,kModelPropertyUIMinDiffuse,"Minimum Diffuse",&model.ui.min_diffuse,FALSE);
-	list_palette_add_vector(&property_palette,kModelPropertyUIDiffuseVector,"Diffuse Vector",&model.ui.diffuse_vct,FALSE);
+	list_palette_add_normal_vector(&property_palette,kModelPropertyUIDiffuseVector,"Diffuse Vector",&model.ui.diffuse_vct,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Model Import");
 	list_palette_add_float(&property_palette,kModelPropertyImportScale,"Scale",&model.import.factor,FALSE);
@@ -162,25 +162,8 @@ void property_palette_click_model(int id,bool double_click)
 
 	switch (id) {
 
-		case kModelPropertyCenterOffset:
-			dialog_property_chord_run(list_chord_value_point,(void*)&model.center);
-			break;
-
-		case kModelPropertyViewBoxOffset:
-			dialog_property_chord_run(list_chord_value_point,(void*)&model.view_box.offset);
-			break;
-
-		case kModelPropertyViewBoxSize:
-			dialog_property_chord_run(list_chord_value_point,(void*)&model.view_box.size);
-			break;
-
 		case kModelPropertyNameBone:
 			property_palette_pick_bone(&model.bone_connect.name_bone_idx,-1);
-			break;
-
-		case kModelPropertyUIDiffuseVector:
-			dialog_property_chord_run(list_chord_value_vector,(void*)&model.ui.diffuse_vct);
-			vector_normalize(&model.ui.diffuse_vct);
 			break;
 
 	}

@@ -413,36 +413,90 @@ void list_palette_add_pick_color(list_palette_type *list,int id,char *name,d3col
 	item->value.col_ptr=col_ptr;
 }
 
-void list_palette_add_point(list_palette_type *list,int id,char *name,d3pnt *pnt,bool disabled)
+void list_palette_add_point(list_palette_type *list,int id,char *name,d3pnt *pnt_ptr,bool disabled)
 {
-	char		str[64];
-	
-	sprintf(str,"%d,%d,%d",pnt->x,pnt->y,pnt->z);
-	list_palette_add_string(list,id,name,str,disabled);
+	list_palette_item_type		*item;
+
+	item=list_palette_create_item(list,list_item_ctrl_point);
+
+	item->type=-1;
+	item->idx=-1;
+	item->id=id;
+
+	item->selected=FALSE;
+	item->disabled=disabled;
+
+	strcpy(item->name,name);
+	item->value.pnt_ptr=pnt_ptr;
 }
 
-void list_palette_add_angle(list_palette_type *list,int id,char *name,d3ang *ang,bool disabled)
+void list_palette_add_angle(list_palette_type *list,int id,char *name,d3ang *ang_ptr,bool disabled)
 {
-	char		str[64];
-	
-	sprintf(str,"%.2f,%.2f,%.2f",ang->x,ang->y,ang->z);
-	list_palette_add_string(list,id,name,str,disabled);
+	list_palette_item_type		*item;
+
+	item=list_palette_create_item(list,list_item_ctrl_angle);
+
+	item->type=-1;
+	item->idx=-1;
+	item->id=id;
+
+	item->selected=FALSE;
+	item->disabled=disabled;
+
+	strcpy(item->name,name);
+	item->value.ang_ptr=ang_ptr;
 }
 
-void list_palette_add_vector(list_palette_type *list,int id,char *name,d3vct *vct,bool disabled)
+void list_palette_add_vector(list_palette_type *list,int id,char *name,d3vct *vct_ptr,bool disabled)
 {
-	char		str[64];
-	
-	sprintf(str,"%.2f,%.2f,%.2f",vct->x,vct->y,vct->z);
-	list_palette_add_string(list,id,name,str,disabled);
+	list_palette_item_type		*item;
+
+	item=list_palette_create_item(list,list_item_ctrl_vector);
+
+	item->type=-1;
+	item->idx=-1;
+	item->id=id;
+
+	item->selected=FALSE;
+	item->disabled=disabled;
+
+	strcpy(item->name,name);
+	item->value.vct_ptr=vct_ptr;
 }
 
-void list_palette_add_uv(list_palette_type *list,int id,char *name,d3fpnt *fpnt,bool disabled)
+void list_palette_add_normal_vector(list_palette_type *list,int id,char *name,d3vct *vct_ptr,bool disabled)
 {
-	char		str[64];
-	
-	sprintf(str,"%.2f,%.2f",fpnt->x,fpnt->y);
-	list_palette_add_string(list,id,name,str,disabled);
+	list_palette_item_type		*item;
+
+	item=list_palette_create_item(list,list_item_ctrl_normal_vector);
+
+	item->type=-1;
+	item->idx=-1;
+	item->id=id;
+
+	item->selected=FALSE;
+	item->disabled=disabled;
+
+	strcpy(item->name,name);
+	item->value.vct_ptr=vct_ptr;
+}
+
+void list_palette_add_uv(list_palette_type *list,int id,char *name,float *u_ptr,float *v_ptr,bool disabled)
+{
+	list_palette_item_type		*item;
+
+	item=list_palette_create_item(list,list_item_ctrl_uv);
+
+	item->type=-1;
+	item->idx=-1;
+	item->id=id;
+
+	item->selected=FALSE;
+	item->disabled=disabled;
+
+	strcpy(item->name,name);
+	item->value.u_ptr=u_ptr;
+	item->value.v_ptr=v_ptr;
 }
 
 void list_palette_add_texture(list_palette_type *list,texture_type *textures,int id,char *name,int txt_idx,bool disabled)
@@ -1263,6 +1317,43 @@ void list_palette_draw_item(list_palette_type *list,int idx)
 			list_palette_draw_item_check_box(list,item,*item->value.bool_ptr);
 			break;
 
+			// point
+
+		case list_item_ctrl_point:
+			sprintf(str,"%d,%d,%d",item->value.pnt_ptr->x,item->value.pnt_ptr->y,item->value.pnt_ptr->z);
+			text_draw(x,y,list_item_font_size,&col,item->name);
+			list_palette_draw_item_string(list,item,str);
+			list_palette_draw_item_button(list,idx);
+			break;
+
+			// angle
+
+		case list_item_ctrl_angle:
+			sprintf(str,"%.2f,%.2f,%.2f",item->value.ang_ptr->x,item->value.ang_ptr->y,item->value.ang_ptr->z);
+			text_draw(x,y,list_item_font_size,&col,item->name);
+			list_palette_draw_item_string(list,item,str);
+			list_palette_draw_item_button(list,idx);
+			break;
+
+			// vector
+
+		case list_item_ctrl_vector:
+		case list_item_ctrl_normal_vector:
+			sprintf(str,"%.2f,%.2f,%.2f",item->value.vct_ptr->x,item->value.vct_ptr->y,item->value.vct_ptr->z);
+			text_draw(x,y,list_item_font_size,&col,item->name);
+			list_palette_draw_item_string(list,item,str);
+			list_palette_draw_item_button(list,idx);
+			break;
+
+			// uv
+
+		case list_item_ctrl_uv:
+			sprintf(str,"%.2f,%.2f",*item->value.u_ptr,*item->value.v_ptr);
+			text_draw(x,y,list_item_font_size,&col,item->name);
+			list_palette_draw_item_string(list,item,str);
+			list_palette_draw_item_button(list,idx);
+			break;
+
 			// pick color
 
 		case list_item_ctrl_pick_color:
@@ -1551,6 +1642,7 @@ bool list_palette_click(list_palette_type *list,d3pnt *pnt,bool double_click)
 	int						item_idx;
 	d3pnt					pt;
 	d3rect					box;
+	d3fpnt					uv_ptr;
 
 	list_palette_box(&box);
 
@@ -1635,23 +1727,58 @@ bool list_palette_click(list_palette_type *list,d3pnt *pnt,bool double_click)
 				if (!double_click) return(FALSE);
 				dialog_property_string_run(list_string_value_int,(void*)list->items[item_idx].value.int_ptr,0,0,0);
 				main_wind_draw();
-				return(FALSE);
+				return(TRUE);
 
 			case list_item_ctrl_float:
 				if (!double_click) return(FALSE);
 				dialog_property_string_run(list_string_value_float,(void*)list->items[item_idx].value.float_ptr,0,0,0);
 				main_wind_draw();
-				return(FALSE);
+				return(TRUE);
 
 			case list_item_ctrl_checkbox:
 				*list->items[item_idx].value.bool_ptr=!(*list->items[item_idx].value.bool_ptr);
 				main_wind_draw();
-				return(FALSE);
-		
+				return(TRUE);
+
+			case list_item_ctrl_point:
+				if (!double_click) return(FALSE);
+				dialog_property_chord_run(list_chord_value_point,(void*)list->items[item_idx].value.pnt_ptr);
+				main_wind_draw();
+				return(TRUE);
+			
+			case list_item_ctrl_angle:
+				if (!double_click) return(FALSE);
+				dialog_property_chord_run(list_chord_value_angle,(void*)list->items[item_idx].value.ang_ptr);
+				main_wind_draw();
+				return(TRUE);
+
+			case list_item_ctrl_vector:
+				if (!double_click) return(FALSE);
+				dialog_property_chord_run(list_chord_value_vector,(void*)list->items[item_idx].value.vct_ptr);
+				main_wind_draw();
+				return(TRUE);
+
+			case list_item_ctrl_normal_vector:
+				if (!double_click) return(FALSE);
+				dialog_property_chord_run(list_chord_value_vector,(void*)list->items[item_idx].value.vct_ptr);
+				vector_normalize(list->items[item_idx].value.vct_ptr);
+				main_wind_draw();
+				return(TRUE);
+
+			case list_item_ctrl_uv:
+				if (!double_click) return(FALSE);
+				uv_ptr.x=*list->items[item_idx].value.u_ptr;
+				uv_ptr.y=*list->items[item_idx].value.v_ptr;
+				dialog_property_chord_run(list_chord_value_uv,&uv_ptr);
+				*list->items[item_idx].value.u_ptr=uv_ptr.x;
+				*list->items[item_idx].value.v_ptr=uv_ptr.y;
+				main_wind_draw();
+				return(TRUE);
+	
 			case list_item_ctrl_pick_color:
 				os_pick_color(list->items[item_idx].value.col_ptr);
 				main_wind_draw();
-				return(FALSE);
+				return(TRUE);
 
 		}
 	}

@@ -67,7 +67,6 @@ void property_palette_fill_texture(int texture_idx)
 {
 	int					n;
 	char				name[32];
-	d3fpnt				uv;
 	texture_type		*texture;
 
 	texture=&map.textures[texture_idx];
@@ -97,9 +96,7 @@ void property_palette_fill_texture(int texture_idx)
 	list_palette_add_header(&property_palette,0,"Texture Auto UVs");
 	list_palette_add_checkbox(&property_palette,kTexturePropertyScaleOn,"Use Texture Scale",&texture->scale.on,FALSE);
 	list_palette_add_checkbox(&property_palette,kTexturePropertyScaleLockOffset,"Lock Offsets",&texture->scale.lock_offset,FALSE);
-	uv.x=texture->scale.x;
-	uv.y=texture->scale.y;
-	list_palette_add_uv(&property_palette,kTexturePropertyScale,"Scale",&uv,FALSE);
+	list_palette_add_uv(&property_palette,kTexturePropertyScale,"Scale",&texture->scale.x,&texture->scale.y,FALSE);
 }
 
 /* =======================================================
@@ -110,7 +107,6 @@ void property_palette_fill_texture(int texture_idx)
 
 void property_palette_click_texture(int texture_idx,int id,bool double_click)
 {
-	d3fpnt				uv;
 	texture_type		*texture;
 
 	if (!double_click) return;
@@ -125,14 +121,6 @@ void property_palette_click_texture(int texture_idx,int id,bool double_click)
 
 		case kTexturePropertyMaterialName:
 			dialog_property_string_run(list_string_value_string,(void*)texture->material_name,name_str_len,0,0);
-			break;
-
-		case kTexturePropertyScale:
-			uv.x=texture->scale.x;
-			uv.y=texture->scale.y;
-			dialog_property_chord_run(list_chord_value_uv,(void*)&uv);
-			texture->scale.x=uv.x;
-			texture->scale.y=uv.y;
 			break;
 
 	}

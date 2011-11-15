@@ -173,10 +173,6 @@ void alt2_property_palette_click_chooser_piece(int chooser_idx,int chooser_piece
 			dialog_property_string_run(list_string_value_string,(void*)piece->data.model.animate_name,name_str_len,0,0);
 			break;
 
-		case kChooserPieceModelRot:
-			dialog_property_chord_run(list_chord_value_angle,(void*)&piece->data.model.rot);
-			break;
-
 		case kChooserPieceButtonText:
 			dialog_property_string_run(list_string_value_string,(void*)piece->data.button.name,max_chooser_button_text_sz,0,0);
 			break;

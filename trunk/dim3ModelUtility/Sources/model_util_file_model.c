@@ -256,6 +256,7 @@ bool model_read_xml(model_type *model)
 		mesh->never_cull=xml_get_attribute_boolean(mesh_tag,"never_cull");
 		mesh->locked=xml_get_attribute_boolean(mesh_tag,"locked");
 		xml_get_attribute_3_coord_int(mesh_tag,"import_move",&mesh->import_move.x,&mesh->import_move.y,&mesh->import_move.z);
+		memmove(&mesh->org_import_move,&mesh->import_move,sizeof(d3pnt));
 		
 			// vertexes
 		

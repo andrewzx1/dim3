@@ -145,24 +145,6 @@ void alt_property_palette_click_ring(int ring_idx,int id,bool double_click)
 			property_pick_file("Pick a Ring Bitmap","Bitmaps/Rings","png",NULL,ring->bitmap_name);
 			break;
 
-			// motion
-
-		case kRingMotionMove:
-			dialog_property_chord_run(list_chord_value_vector,(void*)&ring->vct);
-			break;
-
-		case kRingMotionRot:
-			dialog_property_chord_run(list_chord_value_angle,(void*)&ring->ang);
-			break;
-
-		case kRingMotionRotAdd:
-			dialog_property_chord_run(list_chord_value_angle,(void*)&ring->rot);
-			break;
-
-		case kRingMotionRotAccel:
-			dialog_property_chord_run(list_chord_value_vector,(void*)&ring->rot_accel);
-			break;
-
 	}
 }
 

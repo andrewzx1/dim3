@@ -85,6 +85,7 @@ extern list_palette_type		property_palette;
 extern char						map_property_light_map_size_list[][name_str_len];
 
 int								pal_liquid_index;
+d3pnt							pal_liquid_pnt,pal_liquid_size;
 
 /* =======================================================
 
@@ -96,7 +97,6 @@ void property_palette_fill_liquid(int liq_idx)
 {
 	int						size;
 	char					str[32];
-	d3pnt					pnt,sz;
 	d3fpnt					uv_offset,uv_size,uv_shift;
 	map_liquid_type			*liq;
 	editor_view_type		*view;
@@ -152,9 +152,7 @@ void property_palette_fill_liquid(int liq_idx)
 	list_palette_add_checkbox(&property_palette,kLiquidPropertyOverlayOn,"On",&liq->overlay.on,FALSE);
 	list_palette_add_texture(&property_palette,map.textures,kLiquidPropertyOverlayTexture,"Texture",liq->overlay.txt_idx,FALSE);
 	list_palette_add_int(&property_palette,kLiquidPropertyOverlayStampSize,"Stamp Size",&liq->overlay.stamp_size,FALSE);
-	uv_shift.x=liq->overlay.x_shift;
-	uv_shift.y=liq->overlay.y_shift;
-	list_palette_add_uv(&property_palette,kLiquidPropertyOverlayShift,"Shift",&uv_shift,FALSE);
+	list_palette_add_uv(&property_palette,kLiquidPropertyOverlayShift,"Shift",&liq->overlay.x_shift,&liq->overlay.y_shift,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Liquid Group");
 	if (liq->group_idx==-1) {
@@ -171,44 +169,35 @@ void property_palette_fill_liquid(int liq_idx)
 	list_palette_add_header(&property_palette,0,"Liquid UVs");
 
 	if (view->uv_layer==uv_layer_normal) {
-		uv_offset.x=liq->main_uv.x_offset;
-		uv_offset.y=liq->main_uv.y_offset;
-		uv_size.x=liq->main_uv.x_size;
-		uv_size.y=liq->main_uv.y_size;
+		list_palette_add_uv(&property_palette,kLiquidPropertyOff,"Offset",&liq->main_uv.x_offset,&liq->main_uv.y_offset,FALSE);
+		list_palette_add_uv(&property_palette,kLiquidPropertySize,"Size",&liq->main_uv.x_size,&liq->main_uv.y_size,FALSE);
 	}
 	else {
-		uv_offset.x=liq->lmap_uv.x_offset;
-		uv_offset.y=liq->lmap_uv.y_offset;
-		uv_size.x=liq->lmap_uv.x_size;
-		uv_size.y=liq->lmap_uv.y_size;
+		list_palette_add_uv(&property_palette,kLiquidPropertyOff,"Offset",&liq->lmap_uv.x_offset,&liq->lmap_uv.y_offset,FALSE);
+		list_palette_add_uv(&property_palette,kLiquidPropertySize,"Size",&liq->lmap_uv.x_size,&liq->lmap_uv.y_size,FALSE);
 	}
 	
-	uv_shift.x=liq->x_shift;
-	uv_shift.y=liq->y_shift;
-
-	list_palette_add_uv(&property_palette,kLiquidPropertyOff,"Offset",&uv_offset,FALSE);
-	list_palette_add_uv(&property_palette,kLiquidPropertySize,"Size",&uv_size,FALSE);
-	list_palette_add_uv(&property_palette,kLiquidPropertyShift,"Shift",&uv_shift,FALSE);
+	list_palette_add_uv(&property_palette,kLiquidPropertyShift,"Shift",&liq->x_shift,&liq->y_shift,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Liquid Camera");
 	list_palette_add_string(&property_palette,kLiquidPropertyCamera,"Node",liq->camera,FALSE);
 	
 		// info
-		
-	pnt.x=liq->lft;
-	pnt.y=liq->y;
-	pnt.z=liq->top;
-	
-	sz.x=liq->rgt-liq->lft;
-	sz.y=liq->depth;
-	sz.z=liq->bot-liq->top;
 	
 	pal_liquid_index=liq_idx;
 		
+	pal_liquid_pnt.x=liq->lft;
+	pal_liquid_pnt.y=liq->y;
+	pal_liquid_pnt.z=liq->top;
+	
+	pal_liquid_size.x=liq->rgt-liq->lft;
+	pal_liquid_size.y=liq->depth;
+	pal_liquid_size.z=liq->bot-liq->top;
+		
 	list_palette_add_header(&property_palette,0,"Liquid Info");
 	list_palette_add_int(&property_palette,-1,"Index",&pal_liquid_index,FALSE);
-	list_palette_add_point(&property_palette,-1,"Position",&pnt,TRUE);
-	list_palette_add_point(&property_palette,-1,"Size",&sz,TRUE);
+	list_palette_add_point(&property_palette,-1,"Position",&pal_liquid_pnt,TRUE);
+	list_palette_add_point(&property_palette,-1,"Size",&pal_liquid_size,TRUE);
 }
 
 /* =======================================================
@@ -261,14 +250,6 @@ void property_palette_click_liquid(int liq_idx,int id,bool double_click)
 		case kLiquidPropertyOverlayTexture:
 			property_palette_pick_texture(NULL,&liq->overlay.txt_idx);
 			break;
-			
-		case kLiquidPropertyOverlayShift:
-			uv.x=liq->overlay.x_shift;
-			uv.y=liq->overlay.y_shift;
-			dialog_property_chord_run(list_chord_value_uv,(void*)&uv);
-			liq->overlay.x_shift=uv.x;
-			liq->overlay.y_shift=uv.y;
-			break;
 
 			// group
 			
@@ -276,54 +257,6 @@ void property_palette_click_liquid(int liq_idx,int id,bool double_click)
 			property_palette_pick_group(&liq->group_idx);
 			break;
 			
-		case kLiquidPropertyOff:
-			if (view->uv_layer==uv_layer_normal) {
-				uv.x=liq->main_uv.x_offset;
-				uv.y=liq->main_uv.y_offset;
-			}
-			else {
-				uv.x=liq->lmap_uv.x_offset;
-				uv.y=liq->lmap_uv.y_offset;
-			}
-			dialog_property_chord_run(list_chord_value_uv,(void*)&uv);
-			if (view->uv_layer==uv_layer_normal) {
-				liq->main_uv.x_offset=uv.x;
-				liq->main_uv.y_offset=uv.y;
-			}
-			else {
-				liq->lmap_uv.x_offset=uv.x;
-				liq->lmap_uv.y_offset=uv.y;
-			}
-			break;
-			
-		case kLiquidPropertySize:
-			if (view->uv_layer==uv_layer_normal) {
-				uv.x=liq->main_uv.x_size;
-				uv.y=liq->main_uv.y_size;
-			}
-			else {
-				uv.x=liq->lmap_uv.x_size;
-				uv.y=liq->lmap_uv.y_size;
-			}
-			dialog_property_chord_run(list_chord_value_uv,(void*)&uv);
-			if (view->uv_layer==uv_layer_normal) {
-				liq->main_uv.x_size=uv.x;
-				liq->main_uv.y_size=uv.y;
-			}
-			else {
-				liq->lmap_uv.x_size=uv.x;
-				liq->lmap_uv.y_size=uv.y;
-			}
-			break;
-			
-		case kLiquidPropertyShift:
-			uv.x=liq->x_shift;
-			uv.y=liq->y_shift;
-			dialog_property_chord_run(list_chord_value_uv,(void*)&uv);
-			liq->x_shift=uv.x;
-			liq->y_shift=uv.y;
-			break;
-
 		case kLiquidPropertyCamera:
 			property_palette_pick_node(liq->camera);
 			break;
