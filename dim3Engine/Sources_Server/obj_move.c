@@ -931,6 +931,7 @@ void object_move_normal(obj_type *obj)
 
 	if (motion.y<0) {
 		object_move_y_up(obj,motion.y);
+		obj->fall.land_event_ok=TRUE;			// jumping up automatically sets trigger for eventual land event
 	}
 	else {
 		object_move_y_fall(obj);
@@ -1032,35 +1033,35 @@ void object_move_normal(obj_type *obj)
     
         if (!old_on_ground) {
 		
-		// supergumba -- need to rework a lot of this
-            if (obj->fall.dist>map_collide_y_slop) {
-			
-					// get damage
+				// get damage
 					
-				if (obj->fall.dist>=obj->fall.damage_minimum_height) {
-					fall_damage=(int)(((float)(obj->fall.dist-obj->fall.damage_minimum_height))*obj->fall.damage_factor);
-					if (fall_damage!=0) object_damage(obj,NULL,NULL,NULL,NULL,fall_damage);
-				}
+			if (obj->fall.dist>=obj->fall.damage_minimum_height) {
+				fall_damage=(int)(((float)(obj->fall.dist-obj->fall.damage_minimum_height))*obj->fall.damage_factor);
+				if (fall_damage!=0) object_damage(obj,NULL,NULL,NULL,NULL,fall_damage);
+			}
 				
 					// send the land events
 					
+			if (obj->fall.land_event_ok) {
                 scripts_post_event_console(obj->script_idx,-1,sd_event_land,0,0);
                 object_post_move_animation_event(obj,sd_event_animation_object_land);
-            }
+			}
         }
         
         obj->fall.dist=0;
-        obj->fall.change=FALSE;
+        obj->fall.started=FALSE;
+		obj->fall.land_event_ok=TRUE;
 
 		return;
 	}
 	
 		// check for objects that have started falling
 	
-	if ((obj->fall.dist>map_collide_y_slop) && (!obj->fall.change)) {
+	if ((obj->fall.dist>map_collide_y_slop) && (!obj->fall.started)) {
 		scripts_post_event_console(obj->script_idx,-1,sd_event_fall,0,0);
 		scripts_post_event_console(obj->script_idx,-1,sd_event_animation_object,sd_event_animation_object_fall,0);
-		obj->fall.change=TRUE;
+		obj->fall.started=TRUE;
+		obj->fall.land_event_ok=TRUE;
 	}
 }
 

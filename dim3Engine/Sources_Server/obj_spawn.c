@@ -180,7 +180,8 @@ bool object_spawn(obj_type *obj,char *err_str)
 	obj->air_mode=am_ground;
     obj->liquid.mode=lm_out;
 	obj->fall.dist=0;
-    obj->fall.change=FALSE;
+    obj->fall.started=FALSE;
+	obj->fall.land_event_ok=FALSE;
 
 		// update any team colors
 
