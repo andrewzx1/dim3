@@ -59,7 +59,12 @@ and can be sold or given away.
 #define list_item_ctrl_int									4
 #define list_item_ctrl_float								5
 #define list_item_ctrl_checkbox								6
-#define list_item_ctrl_pick_color							7
+#define list_item_ctrl_point								7
+#define list_item_ctrl_angle								8
+#define list_item_ctrl_vector								9
+#define list_item_ctrl_normal_vector						10
+#define list_item_ctrl_uv									11
+#define list_item_ctrl_pick_color							12
 
 #define list_string_value_string							0
 #define list_string_value_int								1
@@ -83,9 +88,12 @@ and can be sold or given away.
 
 typedef union		{
 						int									*int_ptr;
-						float								*float_ptr;
+						float								*float_ptr,*u_ptr,*v_ptr;
 						bool								*bool_ptr;
 						char								str[list_max_value_sz];
+						d3pnt								*pnt_ptr;
+						d3ang								*ang_ptr;
+						d3vct								*vct_ptr;
 						d3col								*col_ptr;
 					} list_palette_item_value_type;
 
@@ -180,10 +188,11 @@ extern void list_palette_add_int(list_palette_type *list,int id,char *name,int *
 extern void list_palette_add_float(list_palette_type *list,int id,char *name,float *float_ptr,bool disabled);
 extern void list_palette_add_checkbox(list_palette_type *list,int id,char *name,bool *bool_ptr,bool disabled);
 extern void list_palette_add_pick_color(list_palette_type *list,int id,char *name,d3col *col_ptr,bool disabled);
-extern void list_palette_add_point(list_palette_type *list,int id,char *name,d3pnt *pnt,bool disabled);
-extern void list_palette_add_angle(list_palette_type *list,int id,char *name,d3ang *ang,bool disabled);
-extern void list_palette_add_vector(list_palette_type *list,int id,char *name,d3vct *vct,bool disabled);
-extern void list_palette_add_uv(list_palette_type *list,int id,char *name,d3fpnt *fpnt,bool disabled);
+extern void list_palette_add_point(list_palette_type *list,int id,char *name,d3pnt *pnt_ptr,bool disabled);
+extern void list_palette_add_angle(list_palette_type *list,int id,char *name,d3ang *ang_ptr,bool disabled);
+extern void list_palette_add_vector(list_palette_type *list,int id,char *name,d3vct *vct_ptr,bool disabled);
+extern void list_palette_add_normal_vector(list_palette_type *list,int id,char *name,d3vct *vct_ptr,bool disabled);
+extern void list_palette_add_uv(list_palette_type *list,int id,char *name,float *u_ptr,float *v_ptr,bool disabled);
 extern void list_palette_add_texture(list_palette_type *list,texture_type *textures,int id,char *name,int txt_idx,bool disabled);
 extern void list_palette_add_shader(list_palette_type *list,int id,char *name,char *shader_name,bool disabled);
 extern void list_palette_add_string_tag(list_palette_type *list,int id,char *name,unsigned long tag,bool disabled);

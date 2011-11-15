@@ -113,16 +113,6 @@ void property_palette_click_camera(int id,bool double_click)
 		case kMapPropertyCameraMode:
 			property_pick_list("Pick a Camera Mode",(char*)map_property_camera_mode_list,&map.camera.mode);
 			break;
-			
-		case kMapPropertyCameraAngle:
-			dialog_property_chord_run(list_chord_value_angle,(void*)&map.camera.ang);
-			break;
-
-			// camera chase settings
-
-		case kMapPropertyCameraChaseSlop:
-			dialog_property_chord_run(list_chord_value_angle,(void*)&map.camera.chase.slop);
-			break;
 
 			// camera static settings
 

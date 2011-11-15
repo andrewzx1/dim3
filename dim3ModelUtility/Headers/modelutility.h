@@ -134,7 +134,7 @@ typedef struct		{
 						char							name[name_str_len];
 						bool							no_lighting,diffuse,
 														blend_add,never_cull,locked;
-						d3pnt							import_move;
+						d3pnt							import_move,org_import_move;
  						model_vertex_type				*vertexes;
                         model_poly_type					*polys;
 					} model_mesh_type;

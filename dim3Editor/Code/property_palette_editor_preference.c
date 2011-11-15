@@ -125,10 +125,6 @@ void property_palette_click_editor_preference(int id,bool double_click)
 			property_pick_list("Pick a MipMap Mode",(char*)pref_mipmap_type_str,&setup.mipmap_mode);
 			break;
 
-		case kPrefPropertyImportNormalFactor:
-			dialog_property_chord_run(list_chord_value_vector,(void*)&setup.import_normal_factor);
-			break;
-
 	}
 
 		// write prefs

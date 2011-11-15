@@ -286,6 +286,7 @@ void model_decode_v2_mesh_xml(model_type *model,int model_head)
 		mesh->blend_add=xml_get_attribute_boolean(mesh_tag,"additive");
 		mesh->locked=xml_get_attribute_boolean(mesh_tag,"locked");
 		xml_get_attribute_3_coord_int(mesh_tag,"import_move",&mesh->import_move.x,&mesh->import_move.y,&mesh->import_move.z);
+		memmove(&mesh->org_import_move,&mesh->import_move,sizeof(d3pnt));
 
 		mesh->never_cull=TRUE;
 		

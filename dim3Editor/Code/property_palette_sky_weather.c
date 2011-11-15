@@ -101,8 +101,6 @@ char							map_property_sky_type_list[][name_str_len]={"Panoramic","Dome Hemisph
 
 void property_palette_fill_sky_weather(void)
 {
-	d3fpnt			uv;
-
 	list_palette_set_title(&property_palette,"Map Sky & Weather");
 
 		// sky
@@ -114,9 +112,7 @@ void property_palette_fill_sky_weather(void)
 	list_palette_add_int(&property_palette,kMapPropertyDomeY,"Dome Height",&map.sky.dome_y,FALSE);
 	list_palette_add_checkbox(&property_palette,kMapPropertyDomeMirror,"Mirror Dome",&map.sky.dome_mirror,FALSE);
 	list_palette_add_float(&property_palette,kMapPropertyTextureRepeat,"Texture Repeat",&map.sky.txt_fact,FALSE);
-	uv.x=map.sky.txt_x_shift;
-	uv.y=map.sky.txt_y_shift;
-	list_palette_add_uv(&property_palette,kMapPropertyTextureShift,"Texture Shift",&uv,FALSE);
+	list_palette_add_uv(&property_palette,kMapPropertyTextureShift,"Texture Shift",&map.sky.txt_x_shift,&map.sky.txt_y_shift,FALSE);
 	list_palette_add_texture(&property_palette,map.textures,kMapPropertyTextureFill,"Fill/Cube Top Fill",map.sky.fill,FALSE);
 	list_palette_add_texture(&property_palette,map.textures,kMapPropertyTextureBottomFill,"Cube Bottom Fill",map.sky.bottom_fill,FALSE);
 	list_palette_add_texture(&property_palette,map.textures,kMapPropertyTextureNorthFill,"Cube North Fill",map.sky.north_fill,FALSE);
@@ -128,26 +124,14 @@ void property_palette_fill_sky_weather(void)
 
 	list_palette_add_header(&property_palette,0,"Map Background");
 	list_palette_add_checkbox(&property_palette,kMapPropertyBackgroundOn,"On",&map.background.on,FALSE);
-	uv.x=map.background.front.x_fact;
-	uv.y=map.background.front.y_fact;
-	list_palette_add_uv(&property_palette,kMapPropertyBackgroundFrontStamp,"Front Stamp",&uv,FALSE);
-	uv.x=map.background.front.x_scroll_fact;
-	uv.y=map.background.front.y_scroll_fact;
-	list_palette_add_uv(&property_palette,kMapPropertyBackgroundFrontShift,"Front Scroll",&uv,FALSE);
+	list_palette_add_uv(&property_palette,kMapPropertyBackgroundFrontStamp,"Front Stamp",&map.background.front.x_fact,&map.background.front.y_fact,FALSE);
+	list_palette_add_uv(&property_palette,kMapPropertyBackgroundFrontShift,"Front Scroll",&map.background.front.x_scroll_fact,&map.background.front.y_scroll_fact,FALSE);
 	list_palette_add_texture(&property_palette,map.textures,kMapPropertyBackgroundFrontFill,"Front Fill",map.background.front.fill,FALSE);
-	uv.x=map.background.middle.x_fact;
-	uv.y=map.background.middle.y_fact;
-	list_palette_add_uv(&property_palette,kMapPropertyBackgroundMiddleStamp,"Middle Stamp",&uv,FALSE);
-	uv.x=map.background.middle.x_scroll_fact;
-	uv.y=map.background.middle.y_scroll_fact;
-	list_palette_add_uv(&property_palette,kMapPropertyBackgroundMiddleShift,"Middle Scroll",&uv,FALSE);
+	list_palette_add_uv(&property_palette,kMapPropertyBackgroundMiddleStamp,"Middle Stamp",&map.background.middle.x_fact,&map.background.middle.y_fact,FALSE);
+	list_palette_add_uv(&property_palette,kMapPropertyBackgroundMiddleShift,"Middle Scroll",&map.background.middle.x_scroll_fact,&map.background.middle.y_scroll_fact,FALSE);
 	list_palette_add_texture(&property_palette,map.textures,kMapPropertyBackgroundMiddleFill,"Middle Fill",map.background.middle.fill,FALSE);
-	uv.x=map.background.back.x_fact;
-	uv.y=map.background.back.y_fact;
-	list_palette_add_uv(&property_palette,kMapPropertyBackgroundBackStamp,"Back Stamp",&uv,FALSE);
-	uv.x=map.background.back.x_scroll_fact;
-	uv.y=map.background.back.y_scroll_fact;
-	list_palette_add_uv(&property_palette,kMapPropertyBackgroundBackShift,"Back Scroll",&uv,FALSE);
+	list_palette_add_uv(&property_palette,kMapPropertyBackgroundBackStamp,"Back Stamp",&map.background.back.x_fact,&map.background.back.y_fact,FALSE);
+	list_palette_add_uv(&property_palette,kMapPropertyBackgroundBackShift,"Back Scroll",&map.background.back.x_scroll_fact,&map.background.back.y_scroll_fact,FALSE);
 	list_palette_add_texture(&property_palette,map.textures,kMapPropertyBackgroundBackFill,"Back Fill",map.background.back.fill,FALSE);
 
 		// fog general
@@ -172,9 +156,7 @@ void property_palette_fill_sky_weather(void)
 	list_palette_add_int(&property_palette,kMapPropertyFogDrop,"Y Drop",&map.fog.drop,FALSE);
 	list_palette_add_float(&property_palette,kMapPropertyFogAlpha,"Alpha",&map.fog.alpha,FALSE);
 	list_palette_add_float(&property_palette,kMapPropertyFogTextureSpeed,"Flow Speed",&map.fog.speed,FALSE);
-	uv.x=map.fog.txt_x_fact;
-	uv.y=map.fog.txt_y_fact;
-	list_palette_add_uv(&property_palette,kMapPropertyFogTextureFact,"Texture Stamp",&uv,FALSE);
+	list_palette_add_uv(&property_palette,kMapPropertyFogTextureFact,"Texture Stamp",&map.fog.txt_x_fact,&map.fog.txt_y_fact,FALSE);
 
 		// rain
 
@@ -204,8 +186,6 @@ void property_palette_fill_sky_weather(void)
 
 void property_palette_click_sky_weather(int id,bool double_click)
 {
-	d3fpnt			uv;
-
 	if (!double_click) return;
 
 	switch (id) {
@@ -214,14 +194,6 @@ void property_palette_click_sky_weather(int id,bool double_click)
 
 		case kMapPropertySkyType:
 			property_pick_list("Pick a Sky Type",(char*)map_property_sky_type_list,&map.sky.type);
-			break;
-
-		case kMapPropertyTextureShift:
-			uv.x=map.sky.txt_x_shift;
-			uv.y=map.sky.txt_y_shift;
-			dialog_property_chord_run(list_chord_value_uv,(void*)&uv);
-			map.sky.txt_x_shift=uv.x;
-			map.sky.txt_y_shift=uv.y;
 			break;
 
 		case kMapPropertyTextureFill:
@@ -250,60 +222,12 @@ void property_palette_click_sky_weather(int id,bool double_click)
 
 			// map background
 
-		case kMapPropertyBackgroundFrontStamp:
-			uv.x=map.background.front.x_fact;
-			uv.y=map.background.front.y_fact;
-			dialog_property_chord_run(list_chord_value_uv,(void*)&uv);
-			map.background.front.x_fact=uv.x;
-			map.background.front.y_fact=uv.y;
-			break;
-
-		case kMapPropertyBackgroundFrontShift:
-			uv.x=map.background.front.x_scroll_fact;
-			uv.y=map.background.front.y_scroll_fact;
-			dialog_property_chord_run(list_chord_value_uv,(void*)&uv);
-			map.background.front.x_scroll_fact=uv.x;
-			map.background.front.y_scroll_fact=uv.y;
-			break;
-
 		case kMapPropertyBackgroundFrontFill:
 			property_palette_pick_texture(NULL,&map.background.front.fill);
 			break;
 
-		case kMapPropertyBackgroundMiddleStamp:
-			uv.x=map.background.middle.x_fact;
-			uv.y=map.background.middle.y_fact;
-			dialog_property_chord_run(list_chord_value_uv,(void*)&uv);
-			map.background.middle.x_fact=uv.x;
-			map.background.middle.y_fact=uv.y;
-			break;
-
-		case kMapPropertyBackgroundMiddleShift:
-			uv.x=map.background.middle.x_scroll_fact;
-			uv.y=map.background.middle.y_scroll_fact;
-			dialog_property_chord_run(list_chord_value_uv,(void*)&uv);
-			map.background.middle.x_scroll_fact=uv.x;
-			map.background.middle.y_scroll_fact=uv.y;
-			break;
-
 		case kMapPropertyBackgroundMiddleFill:
 			property_palette_pick_texture(NULL,&map.background.middle.fill);
-			break;
-
-		case kMapPropertyBackgroundBackStamp:
-			uv.x=map.background.back.x_fact;
-			uv.y=map.background.back.y_fact;
-			dialog_property_chord_run(list_chord_value_uv,(void*)&uv);
-			map.background.back.x_fact=uv.x;
-			map.background.back.y_fact=uv.y;
-			break;
-
-		case kMapPropertyBackgroundBackShift:
-			uv.x=map.background.back.x_scroll_fact;
-			uv.y=map.background.back.y_scroll_fact;
-			dialog_property_chord_run(list_chord_value_uv,(void*)&uv);
-			map.background.back.x_scroll_fact=uv.x;
-			map.background.back.y_scroll_fact=uv.y;
 			break;
 
 		case kMapPropertyBackgroundBackFill:
@@ -315,15 +239,6 @@ void property_palette_click_sky_weather(int id,bool double_click)
 		case kMapPropertyFogTextureIndex:
 			property_palette_pick_texture(NULL,&map.fog.texture_idx);
 			break;
-
-		case kMapPropertyFogTextureFact:
-			uv.x=map.fog.txt_x_fact;
-			uv.y=map.fog.txt_y_fact;
-			dialog_property_chord_run(list_chord_value_uv,(void*)&uv);
-			map.fog.txt_x_fact=uv.x;
-			map.fog.txt_y_fact=uv.y;
-			break;
-
 
 	}
 }

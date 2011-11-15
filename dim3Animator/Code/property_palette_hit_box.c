@@ -89,14 +89,6 @@ void property_palette_click_hit_box(int hit_box_idx,int id,bool double_click)
 			property_palette_pick_bone(&hit_box->bone_idx,-1);
 			break;
 
-		case kHitBoxPropertyOffset:
-			dialog_property_chord_run(list_chord_value_point,(void*)&hit_box->box.offset);
-			break;
-
-		case kHitBoxPropertySize:
-			dialog_property_chord_run(list_chord_value_point,(void*)&hit_box->box.size);
-			break;
-
 	}
 }
 

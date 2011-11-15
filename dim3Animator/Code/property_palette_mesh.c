@@ -41,8 +41,6 @@ and can be sold or given away.
 #define kMeshPropertyLocked					5
 #define kMeshPropertyMovement				6
 
-#define kMeshPropertyPolyUV					10
-
 extern model_type				model;
 extern animator_state_type		state;
 extern file_path_setup_type		file_path_setup;
@@ -57,11 +55,7 @@ extern list_palette_type		property_palette;
 
 void property_palette_fill_mesh(int mesh_idx)
 {
-	int					n;
-	char				str[256];
-	d3fpnt				uv;
 	model_mesh_type		*mesh;
-	model_poly_type		*poly;
 	
 	mesh=&model.meshes[mesh_idx];
 
@@ -80,23 +74,6 @@ void property_palette_fill_mesh(int mesh_idx)
 	list_palette_add_header(&property_palette,0,"Replace OBJ");
 	list_palette_add_point(&property_palette,kMeshPropertyMovement,"Movement",&mesh->import_move,FALSE);
 
-		// any selected polygon
-
-	if (state.select_mode==select_mode_polygon) {
-		poly=poly_mask_get_single_select(mesh_idx);
-		if (poly!=NULL) {
-
-			list_palette_add_header(&property_palette,0,"Selected Poly UVs");
-
-			for (n=0;n!=poly->ptsz;n++) {
-				uv.x=poly->gx[n];
-				uv.y=poly->gy[n];
-				sprintf(str,"Vertex %d",n);
-				list_palette_add_uv(&property_palette,(kMeshPropertyPolyUV+n),str,&uv,FALSE);
-			}
-		}
-	}
-
 	list_palette_add_header(&property_palette,0,"Mesh Info");
 	list_palette_add_int(&property_palette,-1,"Vertexes",&mesh->nvertex,TRUE);
 	list_palette_add_int(&property_palette,-1,"Polygons",&mesh->npoly,TRUE);
@@ -110,34 +87,15 @@ void property_palette_fill_mesh(int mesh_idx)
 
 void property_palette_click_mesh(int mesh_idx,int id,bool double_click)
 {
-	int						n,idx;
-	d3pnt					import_move,move_pnt;
-	d3fpnt					uv;
+	int						n;
+	d3pnt					move_pnt;
 	model_vertex_type		*vtx;
-	model_poly_type			*poly;
 	model_bone_type			*bone;
 	model_mesh_type			*mesh;
 
 	mesh=&model.meshes[mesh_idx];
 	
 	if (!double_click) return;
-
-		// poly UVs
-
-	if ((id>=kMeshPropertyPolyUV) && (id<(kMeshPropertyPolyUV+8))) {
-		poly=poly_mask_get_single_select(mesh_idx);
-		if (poly==NULL) return;
-
-		idx=id-kMeshPropertyPolyUV;
-
-		uv.x=poly->gx[idx];
-		uv.y=poly->gy[idx];
-		dialog_property_chord_run(list_chord_value_uv,(void*)&uv);
-		poly->gx[idx]=uv.x;
-		poly->gy[idx]=uv.y;
-
-		return;
-	}
 
 		// regular clicks
 
@@ -151,13 +109,10 @@ void property_palette_click_mesh(int mesh_idx,int id,bool double_click)
 		
 				// get change
 				
-			memmove(&import_move,&mesh->import_move,sizeof(d3pnt));
-			dialog_property_chord_run(list_chord_value_point,(void*)&import_move);
-			
-			move_pnt.x=import_move.x-mesh->import_move.x;
-			move_pnt.y=import_move.y-mesh->import_move.y;
-			move_pnt.z=import_move.z-mesh->import_move.z;
-			memmove(&mesh->import_move,&import_move,sizeof(d3pnt));
+			move_pnt.x=mesh->import_move.x-mesh->org_import_move.x;
+			move_pnt.y=mesh->import_move.y-mesh->org_import_move.y;
+			move_pnt.z=mesh->import_move.z-mesh->org_import_move.z;
+			memmove(&mesh->org_import_move,&mesh->import_move,sizeof(d3pnt));
 			
 				// now set the vertexes
 				
@@ -186,6 +141,8 @@ void property_palette_click_mesh(int mesh_idx,int id,bool double_click)
 					bone++;
 				}
 			}
+
+			main_wind_draw();
 				
 			break;
 			

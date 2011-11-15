@@ -130,9 +130,7 @@ void property_palette_fill_map(void)
 		// editor setup
 
 	list_palette_add_header(&property_palette,0,"Map Editor Setup");
-	uv.x=map.editor_setup.txt_scale_x;
-	uv.y=map.editor_setup.txt_scale_y;
-	list_palette_add_uv(&property_palette,kMapPropertyEditorTextureFactor,"Default Texture Scale",&uv,FALSE);
+	list_palette_add_uv(&property_palette,kMapPropertyEditorTextureFactor,"Default Texture Scale",&map.editor_setup.txt_scale_x,&map.editor_setup.txt_scale_y,FALSE);
 	list_palette_add_int(&property_palette,kMapPropertyEditorViewNearZ,"Near Z",&map.editor_setup.view_near_dist,FALSE);
 	list_palette_add_int(&property_palette,kMapPropertyEditorViewFarZ,"Far Z",&map.editor_setup.view_far_dist,FALSE);
 	list_palette_add_checkbox(&property_palette,kMapPropertyEditorLinkStartAlways,"Always Start at Player Spot",&map.editor_setup.link_always_start,FALSE);
@@ -192,16 +190,6 @@ void property_palette_click_map(int id,bool double_click)
 
 		case kMapPropertyNetworkGameList:
 			dialog_property_string_run(list_string_value_string,(void*)map.settings.network_game_list,256,0,0);
-			break;
-			
-			// editor setup
-
-		case kMapPropertyEditorTextureFactor:
-			uv.x=map.editor_setup.txt_scale_x;
-			uv.y=map.editor_setup.txt_scale_y;
-			dialog_property_chord_run(list_chord_value_uv,(void*)&uv);
-			map.editor_setup.txt_scale_x=uv.x;
-			map.editor_setup.txt_scale_y=uv.y;
 			break;
 
 	}

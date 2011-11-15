@@ -102,12 +102,6 @@ void alt_property_palette_click_multiplayer_character(int multiplayer_character_
 			dialog_property_string_run(list_string_value_string,(void*)character->param,name_str_len,0,0);
 			break;
 
-			// options
-
-		case kMPCharacterPropertyOptionsOffset:
-			dialog_property_chord_run(list_chord_value_point,(void*)&character->interface_offset);
-			break;
-
 	}
 }
 

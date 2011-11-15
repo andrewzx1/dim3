@@ -124,44 +124,15 @@ void property_palette_click_bone(int bone_idx,int pose_idx,int id,bool double_cl
 			dialog_property_string_run(list_string_value_string,(void*)bone->name,name_str_len,0,0);
 			break;
 
-		case kBonePropertyPosition:
-			dialog_property_chord_run(list_chord_value_point,(void*)&bone->pnt);
-			break;
-
 		case kBonePropertyParent:
 			property_palette_pick_bone(&bone->parent_idx,bone_idx);
 			break;
 
-			// handles
-
-		case kBonePropertyNaturalRot:
-			dialog_property_chord_run(list_chord_value_angle,(void*)&bone->natural_rot);
-			break;
-
-		case kBonePropertyNaturalOffset:
-			dialog_property_chord_run(list_chord_value_point,(void*)&bone->natural_offset);
-			break;
-
 			// current pose
-
-		case kPoseBoneMovePropertyRot:
-			bone_move=&model.poses[pose_idx].bone_moves[bone_idx];
-			dialog_property_chord_run(list_chord_value_vector,(void*)&bone_move->rot);
-			break;
-
-		case kPoseBoneMovePropertyMove:
-			bone_move=&model.poses[pose_idx].bone_moves[bone_idx];
-			dialog_property_chord_run(list_chord_value_vector,(void*)&bone_move->mov);
-			break;
 
 		case kPoseBoneMovePropertyConstraintBone:
 			bone_move=&model.poses[pose_idx].bone_moves[bone_idx];
 			property_palette_pick_bone(&bone_move->constraint.bone_idx,-1);
-			break;
-
-		case kPoseBoneMovePropertyConstraintOffset:
-			bone_move=&model.poses[pose_idx].bone_moves[bone_idx];
-			dialog_property_chord_run(list_chord_value_point,(void*)&bone_move->constraint.offset);
 			break;
 
 	}

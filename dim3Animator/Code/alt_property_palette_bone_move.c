@@ -93,20 +93,8 @@ void alt_property_palette_click_pose_bone_move(int pose_idx,int bone_move_idx,in
 
 	switch (id) {
 
-		case kPoseBoneMovePropertyRot:
-			dialog_property_chord_run(list_chord_value_vector,(void*)&bone_move->rot);
-			break;
-
-		case kPoseBoneMovePropertyMove:
-			dialog_property_chord_run(list_chord_value_vector,(void*)&bone_move->mov);
-			break;
-
 		case kPoseBoneMovePropertyConstraintBone:
 			property_palette_pick_bone(&bone_move->constraint.bone_idx,-1);
-			break;
-
-		case kPoseBoneMovePropertyConstraintOffset:
-			dialog_property_chord_run(list_chord_value_point,(void*)&bone_move->constraint.offset);
 			break;
 
 	}

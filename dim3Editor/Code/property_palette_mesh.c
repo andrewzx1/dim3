@@ -92,6 +92,10 @@ char							mesh_property_hide_list[][name_str_len]={"Never","Single Player","Mul
 								mesh_property_team_list[][name_str_len]={"None","Red","Blue","Common",""};
 
 int								pal_mesh_index,pal_poly_index;
+d3pnt							pal_mesh_pnt,pal_mesh_size;
+d3vct							pal_mesh_binormal;
+d3fpnt							pal_mesh_uv_offset,pal_mesh_uv_size,
+								pal_mesh_prev_uv_offset,pal_mesh_prev_uv_size;
 
 /* =======================================================
 
@@ -102,9 +106,6 @@ int								pal_mesh_index,pal_poly_index;
 void property_palette_fill_mesh(int mesh_idx,int poly_idx)
 {
 	char					str[32];
-	d3pnt					min,max;
-	d3fpnt					uv_offset,uv_size,uv_shift;
-	d3vct					binormal;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
 	editor_view_type		*view;
@@ -172,19 +173,19 @@ void property_palette_fill_mesh(int mesh_idx,int poly_idx)
 	list_palette_add_string(&property_palette,kMeshPropertyImportGroupName,"Group Name",mesh->import.group_name,FALSE);
 	
 		// info
-		
-	map_mesh_calculate_extent(&map,mesh_idx,&min,&max);
-	max.x-=min.x;
-	max.y-=min.y;
-	max.z-=min.z;
+
+	map_mesh_calculate_extent(&map,mesh_idx,&pal_mesh_pnt,&pal_mesh_size);
+	pal_mesh_size.x-=pal_mesh_pnt.x;
+	pal_mesh_size.y-=pal_mesh_pnt.y;
+	pal_mesh_size.z-=pal_mesh_pnt.z;
 	
 	pal_mesh_index=mesh_idx;
 		
 	list_palette_add_header(&property_palette,0,"Mesh Info");
 	list_palette_add_int(&property_palette,-1,"Mesh Index",&pal_mesh_index,TRUE);
 	list_palette_add_int(&property_palette,-1,"Poly Count",&mesh->npoly,TRUE);
-	list_palette_add_point(&property_palette,-1,"Position",&min,TRUE);
-	list_palette_add_point(&property_palette,-1,"Size",&max,TRUE);
+	list_palette_add_point(&property_palette,-1,"Position",&pal_mesh_pnt,TRUE);
+	list_palette_add_point(&property_palette,-1,"Size",&pal_mesh_size,TRUE);
 
 		// polygon settings
 
@@ -192,26 +193,26 @@ void property_palette_fill_mesh(int mesh_idx,int poly_idx)
 
 		view=view_get_current_view();
 		poly=&mesh->polys[poly_idx];
-
-		map_mesh_get_poly_uv_as_box(&map,mesh_idx,poly_idx,(view->uv_layer==uv_layer_light_map),&uv_offset.x,&uv_offset.y,&uv_size.x,&uv_size.y);
-		uv_shift.x=poly->x_shift;
-		uv_shift.y=poly->y_shift;
 		
 		list_palette_add_header(&property_palette,0,"Poly Settings");
 		list_palette_add_checkbox(&property_palette,kMeshPolyPropertyClimbable,"Cimbable",&poly->flag.climbable,FALSE);
 		list_palette_add_checkbox(&property_palette,kMeshPolyPropertyNeverCull,"Never Cull",&poly->flag.never_cull,FALSE);
 		list_palette_add_checkbox(&property_palette,kMeshPolyPropertyObscuring,"Obscuring",&poly->flag.obscuring,FALSE);
+
+		memmove(&pal_mesh_prev_uv_offset,&pal_mesh_uv_offset,sizeof(d3fpnt));		// need to remember previous as list redraw will reset before we get change
+		memmove(&pal_mesh_prev_uv_size,&pal_mesh_uv_size,sizeof(d3fpnt));
+		map_mesh_get_poly_uv_as_box(&map,mesh_idx,poly_idx,(view->uv_layer==uv_layer_light_map),&pal_mesh_uv_offset.x,&pal_mesh_uv_offset.y,&pal_mesh_uv_size.x,&pal_mesh_uv_size.y);
 		
 		list_palette_add_header(&property_palette,0,"Poly UVs");
-		list_palette_add_uv(&property_palette,kMeshPolyPropertyOff,"Offset",&uv_offset,FALSE);
-		list_palette_add_uv(&property_palette,kMeshPolyPropertySize,"Size",&uv_size,FALSE);
-		list_palette_add_uv(&property_palette,kMeshPolyPropertyShift,"Shift",&uv_shift,FALSE);
+		list_palette_add_uv(&property_palette,kMeshPolyPropertyOff,"Offset",&pal_mesh_uv_offset.x,&pal_mesh_uv_offset.y,FALSE);
+		list_palette_add_uv(&property_palette,kMeshPolyPropertySize,"Size",&pal_mesh_uv_size.x,&pal_mesh_uv_size.y,FALSE);
+		list_palette_add_uv(&property_palette,kMeshPolyPropertyShift,"Shift",&poly->x_shift,&poly->y_shift,FALSE);
 		
 		list_palette_add_header(&property_palette,0,"Poly Tangent Space");
-		list_palette_add_vector(&property_palette,kMeshPolyPropertyTangent,"Tangent",&poly->tangent_space.tangent,FALSE);
-		vector_cross_product(&binormal,&poly->tangent_space.tangent,&poly->tangent_space.normal);
-		list_palette_add_vector(&property_palette,kMeshPolyPropertyBinormal,"Binormal",&binormal,TRUE);
-		list_palette_add_vector(&property_palette,kMeshPolyPropertyNormal,"Normal",&poly->tangent_space.normal,FALSE);
+		list_palette_add_normal_vector(&property_palette,kMeshPolyPropertyTangent,"Tangent",&poly->tangent_space.tangent,FALSE);
+		vector_cross_product(&pal_mesh_binormal,&poly->tangent_space.tangent,&poly->tangent_space.normal);
+		list_palette_add_normal_vector(&property_palette,kMeshPolyPropertyBinormal,"Binormal",&pal_mesh_binormal,TRUE);
+		list_palette_add_normal_vector(&property_palette,kMeshPolyPropertyNormal,"Normal",&poly->tangent_space.normal,FALSE);
 
 		list_palette_add_header(&property_palette,0,"Poly Camera");
 		list_palette_add_string(&property_palette,kMeshPolyPropertyCamera,"Node",poly->camera,FALSE);
@@ -232,8 +233,6 @@ void property_palette_fill_mesh(int mesh_idx,int poly_idx)
 
 void property_palette_click_mesh(int mesh_idx,int poly_idx,int id,bool double_click)
 {
-	float					x_txtoff,y_txtoff,x_txtfact,y_txtfact;
-	d3fpnt					uv;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
 	editor_view_type		*view;
@@ -252,10 +251,6 @@ void property_palette_click_mesh(int mesh_idx,int poly_idx,int id,bool double_cl
 			property_pick_list("Pick a Hide Mode",(char*)mesh_property_hide_list,&mesh->hide_mode);
 			break;
 
-		case kMeshPropertyRot:
-			dialog_property_chord_run(list_chord_value_point,(void*)&mesh->rot_off);
-			break;
-			
 		case kMeshPropertyGroup:
 			property_palette_pick_group(&mesh->group_idx);
 			break;
@@ -298,35 +293,9 @@ void property_palette_click_mesh(int mesh_idx,int poly_idx,int id,bool double_cl
 		switch (id) {
 
 			case kMeshPolyPropertyOff:
-				map_mesh_get_poly_uv_as_box(&map,mesh_idx,poly_idx,(view->uv_layer==uv_layer_light_map),&uv.x,&uv.y,&x_txtfact,&y_txtfact);
-				dialog_property_chord_run(list_chord_value_uv,(void*)&uv);
-				map_mesh_set_poly_uv_as_box(&map,mesh_idx,poly_idx,(view->uv_layer==uv_layer_light_map),uv.x,uv.y,x_txtfact,y_txtfact);
-				view_vbo_mesh_rebuild(mesh_idx);
-				break;
-
 			case kMeshPolyPropertySize:
-				map_mesh_get_poly_uv_as_box(&map,mesh_idx,poly_idx,(view->uv_layer==uv_layer_light_map),&x_txtoff,&y_txtoff,&uv.x,&uv.y);
-				dialog_property_chord_run(list_chord_value_uv,(void*)&uv);
-				map_mesh_set_poly_uv_as_box(&map,mesh_idx,poly_idx,(view->uv_layer==uv_layer_light_map),x_txtoff,y_txtoff,uv.x,uv.y);
+				map_mesh_set_poly_uv_as_box(&map,mesh_idx,poly_idx,(view->uv_layer==uv_layer_light_map),pal_mesh_prev_uv_offset.x,pal_mesh_prev_uv_offset.y,pal_mesh_prev_uv_size.x,pal_mesh_prev_uv_size.y);
 				view_vbo_mesh_rebuild(mesh_idx);
-				break;
-
-			case kMeshPolyPropertyShift:
-				uv.x=poly->x_shift;
-				uv.y=poly->y_shift;
-				dialog_property_chord_run(list_chord_value_uv,(void*)&uv);
-				poly->x_shift=uv.x;
-				poly->y_shift=uv.y;
-				break;
-				
-			case kMeshPolyPropertyTangent:
-				dialog_property_chord_run(list_chord_value_vector,(void*)&poly->tangent_space.tangent);
-				vector_normalize(&poly->tangent_space.tangent);
-				break;
-				
-			case kMeshPolyPropertyNormal:
-				dialog_property_chord_run(list_chord_value_vector,(void*)&poly->tangent_space.normal);
-				vector_normalize(&poly->tangent_space.normal);
 				break;
 				
 			case kMeshPolyPropertyCamera:

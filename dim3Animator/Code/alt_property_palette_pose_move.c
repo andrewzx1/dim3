@@ -247,10 +247,6 @@ void alt_property_palette_click_animate_pose_move(int animate_idx,int pose_move_
 				property_palette_pick_bone(&pose_move->particle.particles[idx].bone_idx,-1);
 				break;
 
-			case kAnimationPoseMovePropertyParticleSlop:
-				dialog_property_chord_run(list_chord_value_point,(void*)&pose_move->particle.particles[idx].slop);
-				break;
-
 		}
 
 		return;
@@ -285,10 +281,6 @@ void alt_property_palette_click_animate_pose_move(int animate_idx,int pose_move_
 				property_palette_pick_bone(&pose_move->ring.rings[idx].bone_idx,-1);
 				break;
 
-			case kAnimationPoseMovePropertyRingSlop:
-				dialog_property_chord_run(list_chord_value_point,(void*)&pose_move->ring.rings[idx].slop);
-				break;
-
 		}
 
 		return;
@@ -316,16 +308,6 @@ void alt_property_palette_click_animate_pose_move(int animate_idx,int pose_move_
 
 		case kAnimatePoseMovePropertyPose:
 			property_palette_pick_pose(&pose_move->pose_idx);
-			break;
-
-			// position
-
-		case kAnimatePoseMovePropertyMove:
-			dialog_property_chord_run(list_chord_value_vector,(void*)&pose_move->mov);
-			break;
-
-		case kAnimatePoseMovePropertySway:
-			dialog_property_chord_run(list_chord_value_vector,(void*)&pose_move->sway);
 			break;
 
 			// sound
