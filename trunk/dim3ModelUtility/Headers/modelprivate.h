@@ -40,7 +40,7 @@ typedef struct		{
 //
 
 extern bool model_read_xml(model_type *model);
-extern bool model_write_xml(model_type *model);
+extern bool model_write_xml(model_type *model,char *err_str);
 
 extern bool model_read_v2_mesh_xml(model_type *model);
 extern bool model_read_v2_pose_xml(model_type *model);

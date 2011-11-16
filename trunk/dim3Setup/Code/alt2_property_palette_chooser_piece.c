@@ -166,7 +166,7 @@ void alt2_property_palette_click_chooser_piece(int chooser_idx,int chooser_piece
 			break;
 
 		case kChooserPieceModelModelName:
-			property_pick_file("Pick a Model","Models",NULL,"Mesh.xml",piece->data.model.model_name);
+			property_pick_file("Pick a Model","Models",NULL,"Mesh.xml;Model.xml",piece->data.model.model_name);
 			break;
 
 		case kChooserPieceModelAnimateName:

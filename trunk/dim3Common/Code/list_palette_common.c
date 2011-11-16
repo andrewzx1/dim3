@@ -908,9 +908,13 @@ void list_palette_draw_item_button(list_palette_type *list,int idx)
 	glBindTexture(GL_TEXTURE_2D,list_bitmaps[item->button_type+1].gl_id);
 
 	glVertexPointer(2,GL_FLOAT,0,vertexes);
+
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2,GL_FLOAT,0,uvs);
 
 	glDrawArrays(GL_QUADS,0,4);
+
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	
 	glDisable(GL_TEXTURE_2D);
 	glDisable(GL_ALPHA_TEST);
@@ -1035,18 +1039,22 @@ void list_palette_draw_title(list_palette_type *list)
 		glColor4f(0.7f,0.7f,0.7f,1.0f);
 	}
 
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D,list_bitmaps[0].gl_id);
+
 	vertexes[0]=vertexes[6]=(float)lx;
 	vertexes[2]=vertexes[4]=(float)rx;
 	vertexes[1]=vertexes[3]=(float)ty;
 	vertexes[5]=vertexes[7]=(float)by;
 
 	glVertexPointer(2,GL_FLOAT,0,vertexes);
+
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2,GL_FLOAT,0,uvs);
 
-	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D,list_bitmaps[0].gl_id);
-
 	glDrawArrays(GL_QUADS,0,4);
+
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	
 	glDisable(GL_TEXTURE_2D);
 	glDisable(GL_ALPHA_TEST);

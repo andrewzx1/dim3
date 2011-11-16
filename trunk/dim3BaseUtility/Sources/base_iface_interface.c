@@ -951,7 +951,7 @@ void iface_write_settings_interface_intro_button(char *name,iface_intro_button_t
       
 ======================================================= */
 
-bool iface_write_settings_interface(iface_type *iface)
+bool iface_write_settings_interface(iface_type *iface,char *err_str)
 {
 	int							n,k;
 	char						path[1024],name[256];
@@ -1474,7 +1474,7 @@ bool iface_write_settings_interface(iface_type *iface)
 		
 	file_paths_data(&iface_file_path_setup,path,"Settings","Interface","xml");
 		
-	ok=xml_save_file(path);
+	ok=xml_save_file(path,err_str);
     xml_close_file();
 	
 	return(ok);

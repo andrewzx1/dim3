@@ -195,9 +195,9 @@ bool model_open(model_type *model,char *name,bool load_bitmaps)
       
 ======================================================= */
 
-bool model_save(model_type *model)
+bool model_save(model_type *model,char *err_str)
 {
-	return(model_write_xml(model));
+	return(model_write_xml(model,err_str));
 }
 
 /* =======================================================

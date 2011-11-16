@@ -401,6 +401,7 @@ void intro_click_simple_save_erase(int idx)
 
 void intro_click_simple_save_erase_ok(void)
 {
+	char					err_str[256];
 	iface_simple_save_type	*save;
 	
 		// reset save
@@ -409,7 +410,7 @@ void intro_click_simple_save_erase_ok(void)
 	save->save_id=-1;
 	save->desc[0]=0x0;
 	
-	simple_save_xml_write(&iface);
+	simple_save_xml_write(&iface,err_str);
 	
 		// back to intro
 

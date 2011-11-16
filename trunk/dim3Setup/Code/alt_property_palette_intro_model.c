@@ -98,7 +98,7 @@ void alt_property_palette_click_intro_model(int intro_model_idx,int id,bool doub
 			// settings
 
 		case kModelSettingsName:
-			property_pick_file("Pick a Model","Models",NULL,"Mesh.xml",model->model_name);
+			property_pick_file("Pick a Model","Models",NULL,"Mesh.xml;Model.xml",model->model_name);
 			break;
 
 		case kModelSettingsAnimate:

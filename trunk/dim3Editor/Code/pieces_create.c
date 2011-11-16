@@ -183,7 +183,7 @@ void piece_create_scenery(void)
 		// and get model
 
 	list_palette_set_level(1);
-	property_pick_file("Pick a Model","Models",NULL,"Mesh.xml",scenery->model_name);
+	property_pick_file("Pick a Model","Models",NULL,"Mesh.xml;Model.xml",scenery->model_name);
 	
 	main_wind_draw();
 }

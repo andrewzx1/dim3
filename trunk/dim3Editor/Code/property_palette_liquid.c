@@ -97,7 +97,6 @@ void property_palette_fill_liquid(int liq_idx)
 {
 	int						size;
 	char					str[32];
-	d3fpnt					uv_offset,uv_size,uv_shift;
 	map_liquid_type			*liq;
 	editor_view_type		*view;
 
@@ -209,7 +208,6 @@ void property_palette_fill_liquid(int liq_idx)
 void property_palette_click_liquid(int liq_idx,int id,bool double_click)
 {
 	int						size;
-	d3fpnt					uv;
 	map_liquid_type			*liq;
 	editor_view_type		*view;
 

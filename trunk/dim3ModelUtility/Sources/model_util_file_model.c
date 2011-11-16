@@ -554,7 +554,7 @@ bool model_write_xml_check_bone_move(model_bone_move_type *bone_move)
       
 ======================================================= */
 
-bool model_write_xml(model_type *model)
+bool model_write_xml(model_type *model,char *err_str)
 {
 	int						n,k,t,frame_count;
 	char					path[1024];
@@ -981,7 +981,7 @@ bool model_write_xml(model_type *model)
     xml_add_tagclose("Model");
     
 	sprintf(path,"%s/model.xml",model->load_base_path);
-	ok=xml_save_file(path);
+	ok=xml_save_file(path,err_str);
 	
     xml_close_file();
 

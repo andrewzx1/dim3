@@ -117,7 +117,8 @@ void file_reset_state(void)
 
 void file_new_model(void)
 {
-	char		fname[256],base_path[1024],path[1024];
+	char		fname[256],err_str[256],
+				base_path[1024],path[1024];
 	
 		// get name
 	
@@ -157,7 +158,12 @@ void file_new_model(void)
 
         // write the XML
 	
-	model_save(&model);
+	if (!model_save(&model,err_str)) {
+		main_wind_close();
+		os_set_arrow_cursor();
+		os_dialog_alert("dim3 Animator could not save model.",err_str);
+		return;
+	}
 	
 	os_set_arrow_cursor();
 	
@@ -181,7 +187,7 @@ void file_open_model(void)
 	
 	os_set_arrow_cursor();
 
-    if (!dialog_file_open_run("Open a Model","Models",NULL,"Mesh.xml",file_name)) {
+    if (!dialog_file_open_run("Open a Model","Models",NULL,"Mesh.xml;Model.xml",file_name)) {
 		state.model_open=FALSE;
 		file_reset_state();
 		return;
@@ -223,14 +229,15 @@ void file_open_model(void)
 
 bool file_save_model(void)
 {
-	bool				ok;
+	char			err_str[256];
+	bool			ok;
 	
 	os_set_wait_cursor();
 	
-	ok=model_save(&model);
+	ok=model_save(&model,err_str);
 	os_set_arrow_cursor();
 	
-	if (!ok) os_dialog_alert("dim3 Animator could not save model.","The disk might be locked or a folder might be missing.\n\nIf you are running dim3 directly from the DMG file, then you need to move the files to your harddrive (DMGs are read-only).");
+	if (!ok) os_dialog_alert("dim3 Animator could not save model.",err_str);
 	
 	return(ok);
 }
@@ -318,7 +325,7 @@ void file_insert_mesh_dim3_model(void)
 	
 	os_set_arrow_cursor();
 
-    if (!dialog_file_open_run("Open a Model","Models",NULL,"Mesh.xml",file_name)) return;
+    if (!dialog_file_open_run("Open a Model","Models",NULL,"Mesh.xml;Model.xml",file_name)) return;
 	
 	if (state.cur_mesh_idx==-1) state.cur_mesh_idx=0;
 	

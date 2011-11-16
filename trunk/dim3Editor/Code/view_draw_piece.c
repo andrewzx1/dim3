@@ -126,9 +126,13 @@ void view_draw_sprite(d3pnt *pnt,d3ang *ang,unsigned long gl_id)
 	}
 	
 	glVertexPointer(3,GL_FLOAT,0,vertexes);
+
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2,GL_FLOAT,0,uvs);
 
 	glDrawArrays(GL_QUADS,0,24);
+
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	
 	glDisable(GL_TEXTURE_2D);
 }
@@ -510,6 +514,8 @@ void view_draw_meshes_texture(editor_view_type *view,bool opaque)
 		glBindBuffer(GL_ARRAY_BUFFER,mesh->vbo.vertex);
 		glVertexPointer(3,GL_FLOAT,((3+2+2)*sizeof(float)),(GLvoid*)0);
 
+		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
 		if (view->uv_layer==uv_layer_normal) {
 			glTexCoordPointer(2,GL_FLOAT,((3+2+2)*sizeof(float)),(GLvoid*)(3*sizeof(float)));
 		}
@@ -574,6 +580,8 @@ void view_draw_meshes_texture(editor_view_type *view,bool opaque)
 			}
 		}
 	}
+
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	
 	glDisable(GL_ALPHA_TEST);
 	if (opaque) glEnable(GL_BLEND);
@@ -797,8 +805,13 @@ void view_draw_liquids(editor_view_type *view,bool opaque)
 		glColor4f(1.0f,1.0f,1.0f,1.0f);
 
 		glVertexPointer(3,GL_FLOAT,0,vertexes);
+
+		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 		glTexCoordPointer(2,GL_FLOAT,0,uvs);
+
 		glDrawArrays(GL_QUADS,0,8);
+
+		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
 		glDisable(GL_TEXTURE_2D);
 		

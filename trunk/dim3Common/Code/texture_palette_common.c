@@ -164,6 +164,8 @@ void texture_palette_draw(texture_type *txt_list)
 	glColor4f(1.0f,1.0f,1.0f,1.0f);
 
 	glEnable(GL_TEXTURE_2D);
+
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	
 	x=texture_palette_page_list_width();
 	ty=tbox.ty+1;
@@ -175,6 +177,8 @@ void texture_palette_draw(texture_type *txt_list)
 			// the textures
 			
 		if (texture->frames[0].bitmap.gl_id!=-1) {
+			glBindTexture(GL_TEXTURE_2D,texture->frames[0].bitmap.gl_id);
+
 			vertexes[0]=vertexes[6]=(float)x;
 			vertexes[2]=vertexes[4]=(float)(x+pixel_sz);
 			vertexes[1]=vertexes[3]=(float)ty;
@@ -183,15 +187,15 @@ void texture_palette_draw(texture_type *txt_list)
 			glVertexPointer(2,GL_FLOAT,0,vertexes);
 			glTexCoordPointer(2,GL_FLOAT,0,uvs);
 
-			glBindTexture(GL_TEXTURE_2D,texture->frames[0].bitmap.gl_id);
 			glDrawArrays(GL_QUADS,0,4);
 		}
 		
 		x+=pixel_sz;
 	}
+
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	
 	glDisable(GL_TEXTURE_2D);
-	
 	glDisable(GL_ALPHA_TEST);
 	
 		// right fill

@@ -124,7 +124,7 @@ LRESULT CALLBACK setup_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam)
 			break;
 
 		case WM_CLOSE:
-			if (menu_save()) os_application_quit();
+			if (menu_quit_save()) os_application_quit();
 			break;
 
 		default:
