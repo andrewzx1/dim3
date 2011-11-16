@@ -126,9 +126,12 @@ void texture_edit_draw_bitmap(d3rect *box,char *name,unsigned long gl_id)
   		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP);
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP);
 
+		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 		glTexCoordPointer(2,GL_FLOAT,0,uvs);
 
 		glDrawArrays(GL_QUADS,0,4);
+
+		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);

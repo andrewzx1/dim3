@@ -91,7 +91,7 @@ void simple_save_xml_read(iface_type *iface)
       
 ======================================================= */
 
-void simple_save_xml_write(iface_type *iface)
+void simple_save_xml_write(iface_type *iface,char *err_str)
 {
 	int							n;
 	char						path[1024];
@@ -128,7 +128,7 @@ void simple_save_xml_write(iface_type *iface)
 		
 	file_paths_app_data(&iface_file_path_setup,path,"Settings","SimpleSave","xml");
 		
-	ok=xml_save_file(path);
+	ok=xml_save_file(path,err_str);
     xml_close_file();
 }
 

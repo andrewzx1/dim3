@@ -157,7 +157,7 @@ void property_palette_click_spot(int spot_idx,int id,bool double_click)
 			break;
 
 		case kSpotPropertyDisplayModel:
-			property_pick_file("Pick a Model","Models",NULL,"Mesh.xml",spot->display_model);
+			property_pick_file("Pick a Model","Models",NULL,"Mesh.xml;Model.xml",spot->display_model);
 			break;
 
 	}

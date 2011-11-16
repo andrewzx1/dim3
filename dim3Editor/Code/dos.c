@@ -268,6 +268,7 @@ bool file_open_map(void)
 
 void file_save_map(void)
 {
+	char			err_str[256];
 	bool			save_ok;
 
 	os_set_wait_cursor();
@@ -278,14 +279,14 @@ void file_save_map(void)
 	node_path_rebuild();
 	
 	progress_next();
-	save_ok=map_save(&map);
+	save_ok=map_save(&map,err_str);
 	
 	progress_next();
 	progress_end();
 	
 	os_set_arrow_cursor();
 	
-	if (!save_ok) os_dialog_alert("dim3 Editor could not save map","The disk might be locked or a folder might be missing.\n\nIf you are running dim3 directly from the DMG file, then you need to move the files to your harddrive (DMGs are read-only).");
+	if (!save_ok) os_dialog_alert("dim3 Editor could not save map",err_str);
 }
 
 /* =======================================================

@@ -53,12 +53,22 @@ void menu_update(void)
 
 bool menu_save(void)
 {
+	char		err_str[256];
+
+	if (iface_write(&iface,err_str)) return(TRUE);
+	
+	os_dialog_alert("Could not save setup files",err_str);
+	return(FALSE);
+}
+
+bool menu_quit_save(void)
+{
 	int			choice;
 
 	choice=os_dialog_confirm("Save Changes?","Do you want to save the changes to this project?",TRUE);
 	if (choice==1) return(FALSE);
 	
-	if (choice==0) iface_write(&iface);
+	if (choice==0) return(menu_save());
 	
 	return(TRUE);
 }
@@ -82,11 +92,11 @@ bool menu_event_run(int cmd)
 			// file menu
 			
 		case kCommandFileSave:
-			iface_write(&iface);
+			menu_save();
 			return(TRUE);						
 
 		case kCommandFileQuit:
-			if (menu_save()) os_application_quit();
+			if (menu_quit_save()) os_application_quit();
 			return(TRUE);
 							
 	}

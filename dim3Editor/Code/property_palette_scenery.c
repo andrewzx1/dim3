@@ -112,7 +112,7 @@ void property_palette_click_scenery(int scenery_idx,int id,bool double_click)
 	switch (id) {
 
 		case kSceneryPropertyModelName:
-			property_pick_file("Pick a Model","Models",NULL,"Mesh.xml",scenery->model_name);
+			property_pick_file("Pick a Model","Models",NULL,"Mesh.xml;Model.xml",scenery->model_name);
 			break;
 
 		case kSceneryPropertyAnimationName:

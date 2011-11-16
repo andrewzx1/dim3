@@ -265,7 +265,7 @@ extern unsigned char* zip_expand(unsigned char *compress_data,unsigned long comp
 
 extern bool xml_new_file(void);
 extern bool xml_open_file(char *path);
-extern bool xml_save_file(char *path);
+extern bool xml_save_file(char *path,char *err_str);
 extern void xml_close_file(void);
 extern char* xml_get_stream(int *sz);
 
@@ -1371,12 +1371,12 @@ extern void iface_bars_hide_all(iface_type *iface);
 
 extern void iface_read(iface_type *iface);
 extern void iface_refresh_hud_only(iface_type *iface);
-extern bool iface_write(iface_type *iface);
+extern bool iface_write(iface_type *iface,char *err_str);
 
 extern void iface_read_settings_project_name(file_path_setup_type *path_setup);
 
 extern void simple_save_xml_read(iface_type *iface);
-extern void simple_save_xml_write(iface_type *iface);
+extern void simple_save_xml_write(iface_type *iface,char *err_str);
 
 /* =======================================================
 

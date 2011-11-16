@@ -307,7 +307,7 @@ void iface_write_settings_chooser_piece_type(iface_chooser_type *chooser,int pie
 	xml_add_tagclose(major_tag);
 }
 
-bool iface_write_settings_chooser(iface_type *iface)
+bool iface_write_settings_chooser(iface_type *iface,char *err_str)
 {
 	int							n;
 	char						path[1024];
@@ -366,7 +366,7 @@ bool iface_write_settings_chooser(iface_type *iface)
 		
 	file_paths_data(&iface_file_path_setup,path,"Settings","Choosers","xml");
 		
-	ok=xml_save_file(path);
+	ok=xml_save_file(path,err_str);
     xml_close_file();
 	
 	return(ok);

@@ -339,9 +339,9 @@ bool map_reload(map_type *map)
       
 ======================================================= */
 
-bool map_save(map_type *map)
+bool map_save(map_type *map,char *err_str)
 {
-    return(write_map_xml(map));
+    return(write_map_xml(map,err_str));
 }
 
 /* =======================================================

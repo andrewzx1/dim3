@@ -145,7 +145,7 @@ void iface_read_settings_mark(iface_type *iface)
       
 ======================================================= */
 
-bool iface_write_settings_mark(iface_type *iface)
+bool iface_write_settings_mark(iface_type *iface,char *err_str)
 {
 	int					n;
 	char				path[1024];
@@ -202,7 +202,7 @@ bool iface_write_settings_mark(iface_type *iface)
 		
 	file_paths_data(&iface_file_path_setup,path,"Settings","Marks","xml");
 		
-	ok=xml_save_file(path);
+	ok=xml_save_file(path,err_str);
     xml_close_file();
 	
 	return(ok);

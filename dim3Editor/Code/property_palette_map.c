@@ -79,7 +79,6 @@ void property_palette_fill_map(void)
 {
 	int				n;
 	char			name[256],str[256];
-	d3fpnt			uv;
 
 	list_palette_set_title(&property_palette,"Map Settings");
 
@@ -156,7 +155,6 @@ void property_palette_click_map(int id,bool double_click)
 {
 	int				param_idx;
 	char			str[256];
-	d3fpnt			uv;
 
 	if (!double_click) return;
 

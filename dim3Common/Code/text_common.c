@@ -219,9 +219,13 @@ void text_draw(int x,int y,float txt_size,d3col *col,char *str)
 	}
 
 	glVertexPointer(2,GL_FLOAT,0,txt_vertexes);
+
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2,GL_FLOAT,0,txt_uvs);
 
 	glDrawArrays(GL_QUADS,0,cnt);
+
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
 		// fix wrapping back to default
 

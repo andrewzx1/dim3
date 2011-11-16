@@ -289,7 +289,7 @@ bool setup_xml_reset(void)
 bool setup_xml_write(void)
 {
 	int							n,k;
-	char						path[1024],tag_name[32];
+	char						path[1024],tag_name[32],err_str[256];
 	bool						ok;
 	setup_action_type			*action;
 	setup_network_host_type		*host;
@@ -420,7 +420,7 @@ bool setup_xml_write(void)
 		
 	file_paths_app_data(&setup.file_path_setup,path,"Settings","Setup","xml");
 		
-	ok=xml_save_file(path);
+	ok=xml_save_file(path,err_str);
     xml_close_file();
 	
 	return(ok);

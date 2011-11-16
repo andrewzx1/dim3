@@ -141,8 +141,12 @@ void tool_palette_draw_icon(int x,int y,unsigned long gl_id,bool is_highlight,bo
 
 	glBindTexture(GL_TEXTURE_2D,gl_id);
 
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2,GL_FLOAT,0,uvs);
+
 	glDrawArrays(GL_QUADS,0,4);
+
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
 	glDisable(GL_TEXTURE_2D);
 

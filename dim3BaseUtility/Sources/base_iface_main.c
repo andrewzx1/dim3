@@ -579,19 +579,19 @@ void iface_refresh_hud_only(iface_type *iface)
 	iface_refresh_settings_interface_hud_only(iface);
 }
 
-bool iface_write(iface_type *iface)
+bool iface_write(iface_type *iface,char *err_str)
 {
-	if (!iface_write_settings_interface(iface)) return(FALSE);
-	if (!iface_write_settings_chooser(iface)) return(FALSE);
-	if (!iface_write_settings_multiplayer(iface)) return(FALSE);
-	if (!iface_write_settings_particle(iface)) return(FALSE);
-	if (!iface_write_settings_ring(iface)) return(FALSE);
-	if (!iface_write_settings_halo(iface)) return(FALSE);
-	if (!iface_write_settings_mark(iface)) return(FALSE);
-	if (!iface_write_settings_crosshair(iface)) return(FALSE);
-	if (!iface_write_settings_sound(iface)) return(FALSE);
-	if (!iface_write_settings_action(iface)) return(FALSE);
-	if (!iface_write_settings_shader(iface)) return(FALSE);
+	if (!iface_write_settings_interface(iface,err_str)) return(FALSE);
+	if (!iface_write_settings_chooser(iface,err_str)) return(FALSE);
+	if (!iface_write_settings_multiplayer(iface,err_str)) return(FALSE);
+	if (!iface_write_settings_particle(iface,err_str)) return(FALSE);
+	if (!iface_write_settings_ring(iface,err_str)) return(FALSE);
+	if (!iface_write_settings_halo(iface,err_str)) return(FALSE);
+	if (!iface_write_settings_mark(iface,err_str)) return(FALSE);
+	if (!iface_write_settings_crosshair(iface,err_str)) return(FALSE);
+	if (!iface_write_settings_sound(iface,err_str)) return(FALSE);
+	if (!iface_write_settings_action(iface,err_str)) return(FALSE);
+	if (!iface_write_settings_shader(iface,err_str)) return(FALSE);
 	
 	return(TRUE);
 }

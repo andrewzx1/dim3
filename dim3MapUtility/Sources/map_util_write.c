@@ -794,7 +794,7 @@ void write_single_light_setting(map_light_setting_type *lit_set)
       
 ======================================================= */
 
-bool write_map_xml(map_type *map)
+bool write_map_xml(map_type *map,char *err_str)
 {
     int						k,nmesh,nliq;
 	bool					ok;
@@ -1009,7 +1009,7 @@ bool write_map_xml(map_type *map)
 
         // save the map
 		
-	ok=xml_save_file(map->info.load_path);
+	ok=xml_save_file(map->info.load_path,err_str);
     xml_close_file();
 	
 	return(ok);

@@ -805,7 +805,7 @@ extern void map_setup(file_path_setup_type *file_path_setup,int anisotropic_mode
 extern bool map_new(map_type *map,char *name);
 extern bool map_open(map_type *map,char *name);
 extern bool map_reload(map_type *map);
-extern bool map_save(map_type *map);
+extern bool map_save(map_type *map,char *err_str);
 extern void map_close(map_type *map);
 
 extern void map_textures_read_setup(map_type *map);

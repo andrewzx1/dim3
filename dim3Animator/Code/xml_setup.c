@@ -104,8 +104,8 @@ bool setup_xml_read(void)
 
 bool setup_xml_write(void)
 {
-	char						path[1024];
-	bool						ok;
+	char				path[1024],err_str[256];
+	bool				ok;
 	
 		// start the setup file
 		
@@ -125,7 +125,7 @@ bool setup_xml_write(void)
 		// always save to user specific data
 		
 	file_paths_dim3_app_data(&file_path_setup,path,"dim3Animator","xml");
-	ok=xml_save_file(path);
+	ok=xml_save_file(path,err_str);
     xml_close_file();
 	
 	return(ok);

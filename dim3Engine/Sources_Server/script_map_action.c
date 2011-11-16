@@ -195,6 +195,7 @@ JSValueRef js_map_action_restart_map_from_save_func(JSContextRef cx,JSObjectRef 
 
 JSValueRef js_map_action_set_simple_save_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
+	char						err_str[256];
 	iface_simple_save_type		*save;
 	
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
@@ -208,7 +209,7 @@ JSValueRef js_map_action_set_simple_save_func(JSContextRef cx,JSObjectRef func,J
 	save->save_id=script_value_to_int(cx,argv[0]);
 	script_value_to_string(cx,argv[1],save->desc,64);
 	
-	simple_save_xml_write(&iface);
+	simple_save_xml_write(&iface,err_str);
 	
 	return(script_null_to_value(cx));
 }

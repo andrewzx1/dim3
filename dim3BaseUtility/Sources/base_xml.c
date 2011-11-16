@@ -253,13 +253,17 @@ bool xml_open_file(char *path)
 	return(xml_decode());
 }
 
-bool xml_save_file(char *path)
+bool xml_save_file(char *path,char *err_str)
 {
 	FILE				*file;
 	
 	file=fopen(path,"w");
-	if (file==NULL) return(FALSE);
-	
+	if (file==NULL) {
+		strncpy(err_str,strerror(errno),256);
+		err_str[255]=0x0;
+		return(FALSE);
+	}
+
 	fwrite(xml_dataptr,1,xml_filesz,file);
 	fclose(file);
     

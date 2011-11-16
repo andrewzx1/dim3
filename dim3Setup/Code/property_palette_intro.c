@@ -224,7 +224,7 @@ void property_palette_click_intro(int id,bool double_click)
 		state.cur_intro_model_idx=idx;
 		
 		list_palette_set_level(2);
-		property_pick_file("Pick a Model","Models",NULL,"Mesh.xml",iface.intro.model_list.models[idx].model_name);
+		property_pick_file("Pick a Model","Models",NULL,"Mesh.xml;Model.xml",iface.intro.model_list.models[idx].model_name);
 
 		return;
 	}

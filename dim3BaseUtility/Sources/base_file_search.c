@@ -112,17 +112,35 @@ int file_paths_add_file(file_path_directory_type *fpd,int parent_idx,char *name,
 
 bool file_paths_check_required_file(char *path,char *path_add,char *dir_name,char *required_file_name)
 {
-	char					path2[1024];
+	char					str[256],path2[1024];
+	char					*c,*c2;
 	struct stat				sb;
-	
-	if (path_add!=NULL) {
-		sprintf(path2,"%s/%s/%s/%s",path,path_add,dir_name,required_file_name);
+
+		// loop through multiple required file names
+
+	c=required_file_name;
+
+	while (TRUE) {
+		if (*c==0x0) break;
+
+		strcpy(str,c);
+		c2=strchr(c,';');
+		if (c2!=NULL) str[c2-c]=0x0;
+
+		if (path_add!=NULL) {
+			sprintf(path2,"%s/%s/%s/%s",path,path_add,dir_name,str);
+		}
+		else {
+			sprintf(path2,"%s/%s/%s",path,dir_name,str);
+		}
+				
+		if (stat(path2,&sb)==0) return(TRUE);
+
+		if (c2==NULL) break;
+		c=c2+1;
 	}
-	else {
-		sprintf(path2,"%s/%s/%s",path,dir_name,required_file_name);
-	}
-			
-	return(stat(path2,&sb)==0);
+
+	return(FALSE);
 }
 
 /* =======================================================

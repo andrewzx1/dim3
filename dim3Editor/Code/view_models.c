@@ -226,8 +226,8 @@ void view_model_draw_polys(model_type *model,model_draw_setup *draw_setup,int *t
 
 	cur_txt_idx=-1;
 	
-		// triangles
-		
+		// model meshes
+
 	mesh=&model->meshes[0];
 
 	for (n=0;n!=mesh->npoly;n++) {
@@ -317,6 +317,8 @@ bool view_model_draw(d3pnt *pnt,d3ang *ang,char *name,float resize,int *texture_
 	
 	glEnable(GL_DEPTH_TEST);
 
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
 	glColor4f(1,1,1,1);
     
         // run through the opaque textures
@@ -334,6 +336,8 @@ bool view_model_draw(d3pnt *pnt,d3ang *ang,char *name,float resize,int *texture_
 	
 	glDepthMask(GL_TRUE);
 	glDisable(GL_ALPHA_TEST);
+
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	
 	glDisable(GL_TEXTURE_2D);
 	

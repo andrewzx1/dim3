@@ -180,6 +180,8 @@ void draw_model(int mesh_idx)
 	
 	glEnable(GL_ALPHA_TEST);
 	glAlphaFunc(GL_NOTEQUAL,0);
+
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	
 		// setup the current texture frames
 		
@@ -207,6 +209,8 @@ void draw_model(int mesh_idx)
 	glDepthMask(GL_TRUE);
     
 	glDisable(GL_ALPHA_TEST);
+
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
 		// finish texturing
 

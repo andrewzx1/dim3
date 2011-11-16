@@ -95,7 +95,7 @@ void alt_property_palette_click_multiplayer_character(int multiplayer_character_
 			break;
 
 		case kMPCharacterPropertySettingsModelName:
-			property_pick_file("Pick a Model","Models",NULL,"Mesh.xml",character->model_name);
+			property_pick_file("Pick a Model","Models",NULL,"Mesh.xml;Model.xml",character->model_name);
 			break;
 
 		case kMPCharacterPropertySettingsParam:
