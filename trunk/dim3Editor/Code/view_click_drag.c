@@ -587,6 +587,7 @@ bool view_click_drag_mesh_poly(editor_view_type *view,d3pnt *pt)
 				break;
 			}
 		}
+
 			// move vertexes
 			
 		for (n=0;n!=mesh_poly->ptsz;n++) {
