@@ -276,7 +276,7 @@ float piece_add_height_map_mesh_get_height(unsigned char *data,int wid,int high,
 
 void piece_add_height_map_mesh(void)
 {
-	int					x,z,px,pz,div_cnt,div_sz,total_sz,bwid,bhigh,high,
+	int					n,x,z,px,pz,div_cnt,div_sz,total_sz,bwid,bhigh,high,
 						kx[4],ky[4],kz[4],y[4],
 						mesh_idx,txt_idx;
 	float				f_portal_y_sz,gx[4],gy[4];
@@ -284,6 +284,8 @@ void piece_add_height_map_mesh(void)
 	unsigned char		*data;
 	bool				alpha_channel;
 	d3pnt				pnt;
+	map_mesh_type		*mesh;
+	map_mesh_poly_type	*poly;
 	
 	if (!piece_create_texture_ok()) return;
 	
@@ -389,12 +391,26 @@ void piece_add_height_map_mesh(void)
 	}
 	
 		// reset UVs and normals
+
+	mesh=&map.mesh.meshes[mesh_idx];
 	
 	progress_next_title("Height Map Import: Creating UVs");			
 	map_mesh_reset_uv(&map,mesh_idx);
 	
 	progress_next_title("Height Map Import: Building Normals");
-	map_recalc_normals_mesh(&map,&map.mesh.meshes[mesh_idx],normal_mode_none,FALSE);
+	map_recalc_normals_mesh(&map,mesh,normal_mode_none,FALSE);
+
+		// on height maps, make sure all
+		// Ys face up
+
+	poly=mesh->polys;
+
+	for (n=0;n!=mesh->npoly;n++) {
+		if (poly->tangent_space.normal.y>0) poly->tangent_space.normal.y=-poly->tangent_space.normal.y;
+		poly++;
+	}
+
+	view_vbo_mesh_rebuild(mesh_idx);
 		
 	progress_next();
 	free(data);
@@ -451,10 +467,12 @@ void piece_add_grid_mesh(void)
 		
 	gx[0]=gx[1]=gx[2]=gx[3]=0.0f;
 	gy[0]=gy[1]=gy[2]=gy[3]=0.0f;
+
+	view_vbo_mesh_initialize(mesh_idx);
 	
 	os_set_wait_cursor();
 
-	progress_start("Create Grid",((xdiv*zdiv)*3));
+	progress_start("Create Grid",(xdiv+zdiv+zdiv));
 	
 		// add top and bottom polys
 		
@@ -472,9 +490,10 @@ void piece_add_grid_mesh(void)
 				py[0]=py[1]=py[2]=py[3]=(ydiv*sz)+pnt.y;
 				map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
 			}
-
-			progress_next();
 		}
+		
+		view_vbo_mesh_rebuild(mesh_idx);
+		progress_next();
 	}
 	
 		// sides
@@ -494,8 +513,10 @@ void piece_add_grid_mesh(void)
 				map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
 			}
 
-			progress_next();
 		}
+
+		view_vbo_mesh_rebuild(mesh_idx);
+		progress_next();
 	}
 	
 	for (z=0;z!=zdiv;z++) {
@@ -513,8 +534,10 @@ void piece_add_grid_mesh(void)
 				map_mesh_add_poly(&map,mesh_idx,4,px,py,pz,gx,gy,txt_idx);
 			}
 
-			progress_next();
 		}
+
+		view_vbo_mesh_rebuild(mesh_idx);
+		progress_next();
 	}
 	
 		// reset UVs
@@ -528,8 +551,6 @@ void piece_add_grid_mesh(void)
 	
 		// finish up
 		
-	view_vbo_mesh_initialize(mesh_idx);
-
 	select_clear();
 	select_add(mesh_piece,mesh_idx,0);
 
