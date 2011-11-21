@@ -64,7 +64,8 @@ and can be sold or given away.
 #define list_item_ctrl_vector								9
 #define list_item_ctrl_normal_vector						10
 #define list_item_ctrl_uv									11
-#define list_item_ctrl_pick_color							12
+#define list_item_ctrl_picker								12
+#define list_item_ctrl_pick_color							13
 
 #define list_string_value_string							0
 #define list_string_value_int								1
@@ -90,7 +91,8 @@ typedef union		{
 						int									*int_ptr;
 						float								*float_ptr,*u_ptr,*v_ptr;
 						bool								*bool_ptr;
-						char								str[list_max_value_sz];
+						char								*str_ptr;
+						char								str[list_max_value_sz];		// supergumba -- remove later
 						d3pnt								*pnt_ptr;
 						d3ang								*ang_ptr;
 						d3vct								*vct_ptr;
@@ -98,11 +100,18 @@ typedef union		{
 					} list_palette_item_value_type;
 
 typedef struct		{
+						int									count,item_sz,name_offset;
+						bool								include_none,file_list,is_index;
+						char								*ptr;
+					} list_palette_item_list_type;
+
+typedef struct		{
 						int									x,y,ctrl_type,button_type,
 															id,button_id,type,count,idx;
 						bool								selected,disabled;
 						char								name[name_str_len];
 						list_palette_item_value_type		value;
+						list_palette_item_list_type			list;
 					} list_palette_item_type;
 
 typedef struct		{
@@ -133,7 +142,11 @@ extern void property_string_set_values(int value_type,void *value,int value_len,
 extern bool property_chord_get_values(int value_type,void *value,char *str_x,char *str_y,char *str_z,char *desc);
 extern void property_chord_set_values(int value_type,void *value,char *str_x,char *str_y,char *str_z);
 
+extern int property_pick_get_list_count(char *list_ptr,int list_item_sz,int list_name_offset);
+
 extern void property_pick_list(char *title,char *list,int *idx);
+extern int property_pick_file_fill_list(char *search_path,char *extension,char *required_file_name);
+extern char* property_pick_file_get_list(void);
 extern void property_pick_file(char *title,char *search_path,char *extension,char *required_file_name,char *file_name);
 
 extern void property_get_parameter(int idx,char *param_list,char *str);
@@ -193,6 +206,9 @@ extern void list_palette_add_angle(list_palette_type *list,int id,char *name,d3a
 extern void list_palette_add_vector(list_palette_type *list,int id,char *name,d3vct *vct_ptr,bool disabled);
 extern void list_palette_add_normal_vector(list_palette_type *list,int id,char *name,d3vct *vct_ptr,bool disabled);
 extern void list_palette_add_uv(list_palette_type *list,int id,char *name,float *u_ptr,float *v_ptr,bool disabled);
+extern void list_palette_add_picker_list_int(list_palette_type *list,int id,char *name,char *list_ptr,int list_count,int list_item_sz,int list_name_offset,bool include_none,int *int_ptr,bool disabled);
+extern void list_palette_add_picker_list_string(list_palette_type *list,int id,char *name,char *list_ptr,int list_count,int list_item_sz,int list_name_offset,bool include_none,char *str_ptr,bool disabled);
+extern void list_palette_add_picker_file(list_palette_type *list,int id,int button_type,int button_id,char *name,char *search_path,char *extension,char *required_file_name,char *str_ptr,bool disabled);
 extern void list_palette_add_texture(list_palette_type *list,texture_type *textures,int id,char *name,int txt_idx,bool disabled);
 extern void list_palette_add_shader(list_palette_type *list,int id,char *name,char *shader_name,bool disabled);
 extern void list_palette_add_string_tag(list_palette_type *list,int id,char *name,unsigned long tag,bool disabled);
