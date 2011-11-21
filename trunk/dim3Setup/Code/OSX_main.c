@@ -116,7 +116,7 @@ OSStatus main_wind_event_handler(EventHandlerCallRef eventhandler,EventRef event
 					return(noErr);
 					
 				case kEventWindowClose:
-					if (menu_save()) os_application_quit();
+					if (menu_quit_save()) os_application_quit();
 					return(noErr);
 					
                 case kEventWindowCursorChange:

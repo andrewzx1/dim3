@@ -37,7 +37,7 @@ extern map_type						map;
 
 extern file_path_setup_type			file_path_setup;
 
-int									light_map_poly_count,light_map_texture_count;
+int									light_map_poly_count,light_map_texture_count,light_map_pixel_size;
 float								light_map_quality_value_list[]=light_map_quality_values;
 light_map_texture_type				*light_map_textures;
 light_map_poly_type					*light_map_polys;
@@ -66,21 +66,21 @@ bool light_map_textures_create(void)
 		// blocking data
 		// this is used to find empty slots to put in polygons
 		
-	sz=map.light_map.size/light_map_texture_block_size;
+	sz=light_map_pixel_size/light_map_texture_block_size;
 	sz=sz*sz;
 	lmap->block=(unsigned char*)malloc(sz);
 	bzero(lmap->block,sz);
 	
 		// pixel data
 		
-	sz=(map.light_map.size*map.light_map.size)*3;
+	sz=(light_map_pixel_size*light_map_pixel_size)*3;
 	lmap->pixel_data=(unsigned char*)malloc(sz);
 	bzero(lmap->pixel_data,sz);
 	
 		// pixel touch data
 		// this tells if a pixel was written
 		
-	sz=map.light_map.size*map.light_map.size;
+	sz=light_map_pixel_size*light_map_pixel_size;
 	lmap->pixel_touch=(unsigned char*)malloc(sz);
 	bzero(lmap->pixel_touch,sz);
 	
@@ -187,7 +187,7 @@ void light_map_textures_save(char *base_path)
 		
 		sprintf(bitmap_name,"LightMaps/%s/lm%.3d",map_name,n);
 		sprintf(path,"%s/%s.png",base_path,bitmap_name);
-		bitmap_write_png_data(light_map_textures[n].pixel_data,map.light_map.size,map.light_map.size,FALSE,path);
+		bitmap_write_png_data(light_map_textures[n].pixel_data,light_map_pixel_size,light_map_pixel_size,FALSE,path);
 		
 			// put in texture list
 			
@@ -274,12 +274,12 @@ void light_map_texture_smudge_to_edge(int lm_poly_idx)
 					// get pixels and default to leaving
 					// the same
 					
-				pixel_touch=lmap->pixel_touch+((map.light_map.size*(y+y_off))+(x+x_off));
+				pixel_touch=lmap->pixel_touch+((light_map_pixel_size*(y+y_off))+(x+x_off));
 				back_touch=back_pixel_touch+((wid*y)+x);
 				
 				*back_touch=*pixel_touch;
 				
-				pixel=lmap->pixel_data+(((map.light_map.size*3)*(y+y_off))+((x+x_off)*3));
+				pixel=lmap->pixel_data+(((light_map_pixel_size*3)*(y+y_off))+((x+x_off)*3));
 				back=back_pixel_data+(((wid*3)*y)+(x*3));
 				
 				*back++=*pixel++;
@@ -302,12 +302,12 @@ void light_map_texture_smudge_to_edge(int lm_poly_idx)
 						if ((cy==y) && (cx==x)) continue;
 						if ((cy<0) || (cy>=high) || (cx<0) || (cx>=wid)) continue;
 					
-						pixel_border_touch=lmap->pixel_touch+((map.light_map.size*(cy+y_off))+(cx+x_off));
+						pixel_border_touch=lmap->pixel_touch+((light_map_pixel_size*(cy+y_off))+(cx+x_off));
 						if (*pixel_border_touch==0x0) continue;
 						
 							// is this a bigger hilite?
 							
-						blur=lmap->pixel_data+(((map.light_map.size*3)*(cy+y_off))+((cx+x_off)*3));
+						blur=lmap->pixel_data+(((light_map_pixel_size*3)*(cy+y_off))+((cx+x_off)*3));
 						i_col[0]+=(int)*blur++;
 						i_col[1]+=(int)*blur++;
 						i_col[2]+=(int)*blur;
@@ -345,8 +345,8 @@ void light_map_texture_smudge_to_edge(int lm_poly_idx)
 		
 		for (y=0;y<high;y++) {
 	
-			pixel=lmap->pixel_data+(((map.light_map.size*3)*(y+y_off))+(x_off*3));
-			pixel_touch=lmap->pixel_touch+((map.light_map.size*(y+y_off))+x_off);
+			pixel=lmap->pixel_data+(((light_map_pixel_size*3)*(y+y_off))+(x_off*3));
+			pixel_touch=lmap->pixel_touch+((light_map_pixel_size*(y+y_off))+x_off);
 			
 			for (x=0;x<wid;x++) {
 				*pixel++=*back++;
@@ -410,7 +410,7 @@ void light_map_texture_blur(int lm_poly_idx)
 			
 					// default to back being same as pixels
 					
-				pixel=lmap->pixel_data+(((map.light_map.size*3)*(y+y_off))+((x+x_off)*3));
+				pixel=lmap->pixel_data+(((light_map_pixel_size*3)*(y+y_off))+((x+x_off)*3));
 				back=back_pixel_data+(((wid*3)*y)+(x*3));
 				
 				*back++=*pixel++;
@@ -430,7 +430,7 @@ void light_map_texture_blur(int lm_poly_idx)
 						
 							// add up blur
 							
-						blur=lmap->pixel_data+(((map.light_map.size*3)*(cy+y_off))+((cx+x_off)*3));
+						blur=lmap->pixel_data+(((light_map_pixel_size*3)*(cy+y_off))+((cx+x_off)*3));
 						i_col[0]+=(int)*blur;
 						i_col[1]+=(int)*(blur+1);
 						i_col[2]+=(int)*(blur+2);
@@ -464,7 +464,7 @@ void light_map_texture_blur(int lm_poly_idx)
 		
 		for (y=0;y<high;y++) {
 	
-			pixel=lmap->pixel_data+(((map.light_map.size*3)*(y+y_off))+(x_off*3));
+			pixel=lmap->pixel_data+(((light_map_pixel_size*3)*(y+y_off))+(x_off*3));
 			
 			for (x=0;x<wid;x++) {
 				*pixel++=*back++;
@@ -520,7 +520,7 @@ void light_map_reduce_polys_greater_than_quarter_of_lmap(light_map_poly_type *lm
 	
 		// largest poly is 1/4 of texture size
 		
-	max_sz=map.light_map.size>>2;
+	max_sz=light_map_pixel_size>>2;
 	if ((lm_poly->x_sz<=max_sz) && (lm_poly->y_sz<=max_sz)) return;
 	
 		// reduce to 1/4 size
@@ -821,7 +821,7 @@ bool light_map_texture_find_open_area(int x_sz,int y_sz,int *kx,int *ky,d3rect *
 	bool			hit;
 	unsigned char	*bptr;
 	
-	block_count=map.light_map.size/light_map_texture_block_size;
+	block_count=light_map_pixel_size/light_map_texture_block_size;
 	
 		// get block size
 	
@@ -923,7 +923,7 @@ void light_map_texture_fill_solid_color(unsigned char *col,int bx,int by,light_m
 		
 	for (y=0;y!=light_map_texture_block_size;y++) {
 	
-		pixel=lmap->pixel_data+(((by+y)*(map.light_map.size*3))+(bx*3));
+		pixel=lmap->pixel_data+(((by+y)*(light_map_pixel_size*3))+(bx*3));
 		
 		for (x=0;x!=light_map_texture_block_size;x++) {
 			*pixel++=col[0];
@@ -1132,9 +1132,13 @@ float light_map_ray_trace_triangle(d3pnt *spt,d3vct *vct,int *x,int *y,int *z)
 	
 		// get line T for point(t) =  start_point + (vector*t)
 		// -t are on the negative vector behind the point, so ignore
+		
+		// this is a little different then normal ray trace
+		// hits, we add in an extra 0.01f slop so polygons that are
+		// touching each other don't have edges grayed in
 
 	t=invDet*ray_trace_vector_inner_product(&v2,&lineToTrigPerpVector);
-	if (t<0.0f) return(-1.0f);
+	if (t<=0.01f) return(-1.0f);
 	
 		// a hit!
 		
@@ -1584,8 +1588,8 @@ bool light_map_render_poly(int lm_poly_idx,unsigned char *solid_color,light_map_
 			// NULL lmap means just check if it's all in black
 			
 		if (lmap!=NULL) {
-			pixel=lmap->pixel_data+(((map.light_map.size*3)*y)+(x_start*3));
-			touch=lmap->pixel_touch+((map.light_map.size*y)+x_start);
+			pixel=lmap->pixel_data+(((light_map_pixel_size*3)*y)+(x_start*3));
+			touch=lmap->pixel_touch+((light_map_pixel_size*y)+x_start);
 		}
 		
 			// draw the scan line
@@ -1707,7 +1711,7 @@ bool light_map_run_for_poly(int lm_poly_idx,char *err_str)
 	lm_poly->txt_idx=0;
 		
 	lm_poly->solid_color=FALSE;
-	
+
 	if (lm_poly->mesh_idx!=-1) {
 		if (map.mesh.meshes[lm_poly->mesh_idx].flag.hilite) {
 			lm_poly->solid_color=TRUE;
@@ -1731,7 +1735,7 @@ bool light_map_run_for_poly(int lm_poly_idx,char *err_str)
 	if (!lm_poly->solid_color) {
 		lm_poly->solid_color=light_map_render_poly(lm_poly_idx,solid_col,NULL);
 	}
-	
+
 		// current light map
 		
 	lmap=&light_map_textures[light_map_texture_count-1];
@@ -1817,7 +1821,7 @@ void light_map_set_texture_uv_mesh_poly(light_map_poly_type *lm_poly)
 	
 		// UVs across the light map texture size
 		
-	f_pixel_size=(float)map.light_map.size;
+	f_pixel_size=(float)light_map_pixel_size;
 
 		// solid color maps
 		// put the UV in the center of the block
@@ -1856,7 +1860,7 @@ void light_map_set_texture_uv_liquid(light_map_poly_type *lm_poly)
 	
 		// UVs across the light map texture size
 		
-	f_pixel_size=(float)map.light_map.size;
+	f_pixel_size=(float)light_map_pixel_size;
 
 		// solid color maps
 		// put the UV in the center of the block
@@ -2009,6 +2013,10 @@ bool light_maps_create(void)
 		os_dialog_alert("Can not build light maps","There are no lights set to generate light maps in this map.");
 		return(FALSE);
 	}
+	
+		// get pixel size
+		
+	light_map_pixel_size=(int)pow(2,(map.light_map.size+8));
 	
 		// generate the light maps
 		

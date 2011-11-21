@@ -255,18 +255,12 @@ void piece_create_light(void)
 void piece_create_sound(void)
 {
 	int					index;
-	char				name[name_str_len];
 	map_sound_type		*snd;
 	
 	if (map.nsound==max_map_sound) {
 		os_dialog_alert("Can Not Create Sound","You've reached the maximum number of sounds for this map.");
         return;
     }
-	
-		// must pick a sound
-		
-	property_palette_pick_sound(name,FALSE);
-	if (name[0]==0x0) return;
 	
 		// create sound
 	
@@ -278,7 +272,7 @@ void piece_create_sound(void)
 	piece_create_get_spot(&snd->pnt);
     
 	snd->on=TRUE;
-	strcpy(snd->name,name);
+	snd->name[0]=0x0;
 	snd->pitch=1.0f;
 	
 		// select sound
@@ -293,6 +287,10 @@ void piece_create_sound(void)
 	menu_update_view();
 	
 	main_wind_draw();
+	
+		// pick sound
+		
+	property_palette_pick_sound(snd->name,FALSE);
 }
 
 /* =======================================================
@@ -304,18 +302,12 @@ void piece_create_sound(void)
 void piece_create_particle(void)
 {
 	int					index;
-	char				name[name_str_len];
 	map_particle_type	*prt;
 	
 	if (map.nparticle==max_map_particle) {
 		os_dialog_alert("Can Not Create Particle","You've reached the maximum number of particles for this map.");
         return;
     }
-	
-		// must pick a particle
-		
-	property_palette_pick_particle(name);
-	if (name[0]==0x0) return;
 	
 		// create particle
 	
@@ -327,7 +319,7 @@ void piece_create_particle(void)
 	piece_create_get_spot(&prt->pnt);
     
 	prt->on=TRUE;
-	strcpy(prt->name,name);
+	prt->name[0]=0x0;
 	prt->spawn_tick=5000;
 	prt->slop_tick=0;
 	prt->single_spawn=FALSE;
@@ -346,6 +338,10 @@ void piece_create_particle(void)
 	menu_update_view();
 	
 	main_wind_draw();
+	
+		// pick particle
+		
+	property_palette_pick_particle(prt->name);
 }
 
 /* =======================================================
@@ -460,7 +456,7 @@ void piece_create_liquid(void)
 	liq->harm.drown_tick=10000;
 	liq->harm.drown_harm=10;
 	
-	liq->reflect.texture_size=512;
+	liq->reflect.texture_size=1;
 	liq->reflect.x_refract_factor=20000;
 	liq->reflect.z_refract_factor=20000;
 	liq->reflect.no_hit_col.r=liq->reflect.no_hit_col.g=liq->reflect.no_hit_col.b=0.5f;

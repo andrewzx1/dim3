@@ -325,6 +325,9 @@ void piece_add_height_map_mesh(void)
 	os_set_wait_cursor();
 
 	progress_start("Height Map Import: Importing PNG",(div_cnt+3));
+
+	gx[0]=gx[1]=gx[2]=gx[3]=0.0f;
+	gy[0]=gy[1]=gy[2]=gy[3]=0.0f;
 	
 	for (z=0;z!=div_cnt;z++) {
 		for (x=0;x!=div_cnt;x++) {
@@ -332,57 +335,74 @@ void piece_add_height_map_mesh(void)
 			px=(pnt.x-(total_sz/2))+(x*div_sz);
 			pz=(pnt.z-(total_sz/2))+(z*div_sz);
 			
-				// floors
+				// get the Ys
 				
 			y[0]=pnt.y-(int)(f_portal_y_sz*piece_add_height_map_mesh_get_height(data,bwid,bhigh,alpha_channel,x,z,div_cnt));
 			y[1]=pnt.y-(int)(f_portal_y_sz*piece_add_height_map_mesh_get_height(data,bwid,bhigh,alpha_channel,(x+1),z,div_cnt));
 			y[2]=pnt.y-(int)(f_portal_y_sz*piece_add_height_map_mesh_get_height(data,bwid,bhigh,alpha_channel,(x+1),(z+1),div_cnt));
 			y[3]=pnt.y-(int)(f_portal_y_sz*piece_add_height_map_mesh_get_height(data,bwid,bhigh,alpha_channel,x,(z+1),div_cnt));
-										
-			gx[0]=gx[1]=gx[2]=0.0f;
-			gy[0]=gy[1]=gy[2]=0.0f;
-					
-			if (((x+z)&0x1)!=0) {
-				kx[0]=px;
+			
+				// if all Ys are the same, add as a quad
+				
+			if ((y[0]==y[1]) && (y[0]==y[2]) && (y[0]==y[3])) {
+			
+				kx[0]=kx[3]=px;
 				kx[1]=kx[2]=px+div_sz;
 				kz[0]=kz[1]=pz;
-				kz[2]=pz+div_sz;
-				ky[0]=y[0];
-				ky[1]=y[1];
-				ky[2]=y[2];
+				kz[2]=kz[3]=pz+div_sz;
+				ky[0]=ky[1]=ky[2]=ky[3]=y[0];
 				
-				map_mesh_add_poly(&map,mesh_idx,3,kx,ky,kz,gx,gy,txt_idx);
-			
-				kx[0]=kx[2]=px;
-				kx[1]=px+div_sz;
-				kz[0]=pz;
-				kz[1]=kz[2]=pz+div_sz;
-				ky[0]=y[0];
-				ky[1]=y[2];
-				ky[2]=y[3];
-				
-				map_mesh_add_poly(&map,mesh_idx,3,kx,ky,kz,gx,gy,txt_idx);
+				map_mesh_add_poly(&map,mesh_idx,4,kx,ky,kz,gx,gy,txt_idx);
 			}
-			else {
-				kx[0]=kx[2]=px;
-				kx[1]=px+div_sz;
-				kz[0]=kz[1]=pz;
-				kz[2]=pz+div_sz;
-				ky[0]=y[0];
-				ky[1]=y[1];
-				ky[2]=y[3];
-				
-				map_mesh_add_poly(&map,mesh_idx,3,kx,ky,kz,gx,gy,txt_idx);
 			
-				kx[0]=kx[1]=px+div_sz;
-				kx[2]=px;
-				kz[0]=pz;
-				kz[1]=kz[2]=pz+div_sz;
-				ky[0]=y[1];
-				ky[1]=y[2];
-				ky[2]=y[3];
+				// otherwise add as two triangles
+				// face the triangle in opposite directions
+				// on each pass
 				
-				map_mesh_add_poly(&map,mesh_idx,3,kx,ky,kz,gx,gy,txt_idx);
+			else {
+					
+				if (((x+z)&0x1)!=0) {
+					kx[0]=px;
+					kx[1]=kx[2]=px+div_sz;
+					kz[0]=kz[1]=pz;
+					kz[2]=pz+div_sz;
+					ky[0]=y[0];
+					ky[1]=y[1];
+					ky[2]=y[2];
+					
+					map_mesh_add_poly(&map,mesh_idx,3,kx,ky,kz,gx,gy,txt_idx);
+				
+					kx[0]=kx[2]=px;
+					kx[1]=px+div_sz;
+					kz[0]=pz;
+					kz[1]=kz[2]=pz+div_sz;
+					ky[0]=y[0];
+					ky[1]=y[2];
+					ky[2]=y[3];
+					
+					map_mesh_add_poly(&map,mesh_idx,3,kx,ky,kz,gx,gy,txt_idx);
+				}
+				else {
+					kx[0]=kx[2]=px;
+					kx[1]=px+div_sz;
+					kz[0]=kz[1]=pz;
+					kz[2]=pz+div_sz;
+					ky[0]=y[0];
+					ky[1]=y[1];
+					ky[2]=y[3];
+					
+					map_mesh_add_poly(&map,mesh_idx,3,kx,ky,kz,gx,gy,txt_idx);
+				
+					kx[0]=kx[1]=px+div_sz;
+					kx[2]=px;
+					kz[0]=pz;
+					kz[1]=kz[2]=pz+div_sz;
+					ky[0]=y[1];
+					ky[1]=y[2];
+					ky[2]=y[3];
+					
+					map_mesh_add_poly(&map,mesh_idx,3,kx,ky,kz,gx,gy,txt_idx);
+				}
 			}
 		}
 
@@ -394,11 +414,11 @@ void piece_add_height_map_mesh(void)
 
 	mesh=&map.mesh.meshes[mesh_idx];
 	
-	progress_next_title("Height Map Import: Creating UVs");			
-	map_mesh_reset_uv(&map,mesh_idx);
-	
 	progress_next_title("Height Map Import: Building Normals");
 	map_recalc_normals_mesh(&map,mesh,normal_mode_none,FALSE);
+	
+	progress_next_title("Height Map Import: Creating UVs");			
+	map_mesh_reset_uv(&map,mesh_idx);
 
 		// on height maps, make sure all
 		// Ys face up

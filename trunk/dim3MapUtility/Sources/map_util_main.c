@@ -93,7 +93,7 @@ bool map_new(map_type *map,char *name)
 		// light maps
 
 	map->light_map.quality=2;
-	map->light_map.size=512;
+	map->light_map.size=1;
 	map->light_map.use_normals=FALSE;
 	map->light_map.skip_glows=FALSE;
 	map->light_map.diffuse_boost=0.0f;
@@ -104,7 +104,7 @@ bool map_new(map_type *map,char *name)
 	map->editor_setup.txt_scale_y=0.04f;
 	map->editor_setup.view_near_dist=400;
 	map->editor_setup.view_far_dist=300000;
-	map->editor_setup.link_always_start=FALSE;
+	map->editor_setup.link_always_start=TRUE;
 
 		// camera
 
@@ -152,7 +152,7 @@ bool map_new(map_type *map,char *name)
 	
 		// ambients
 		
-	map->ambient.light_color.r=map->ambient.light_color.g=map->ambient.light_color.b=0.0f;
+	map->ambient.light_color.r=map->ambient.light_color.g=map->ambient.light_color.b=1.0f;
 	map->ambient.light_map_boost=0.0f;
 	map->ambient.sound_name[0]=0x0;
 	map->ambient.sound_pitch=1.0f;

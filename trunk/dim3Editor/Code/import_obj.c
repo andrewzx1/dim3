@@ -684,15 +684,15 @@ bool import_create_mesh_from_obj_group(obj_import_state_type *import_state,char 
 		map_mesh_delete(&map,mesh_idx);
 		return(TRUE);
 	}
-	
-		// if no uvs, force auto-texture
-		
-	if (!mesh->flag.lock_uv) map_mesh_reset_uv(&map,mesh_idx);
 
 		// calc the normals
 		// or only tangent if normals come with OBJ
 		
 	map_recalc_normals_mesh(&map,&map.mesh.meshes[mesh_idx],normal_mode_none,(import_state->nnormal!=0));
+	
+		// if no uvs, force auto-texture
+		
+	if (!mesh->flag.lock_uv) map_mesh_reset_uv(&map,mesh_idx);
 	
 		// vbo
 		

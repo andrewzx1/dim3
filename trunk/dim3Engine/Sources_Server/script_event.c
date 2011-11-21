@@ -91,6 +91,8 @@ JSStaticFunction	event_functions[]={
 							{"callPlayer",					js_event_call_player_func,						kJSPropertyAttributeDontDelete},
 							{"callCourse",					js_event_call_course_func,						kJSPropertyAttributeDontDelete},
 							{"callGame",					js_event_call_game_func,						kJSPropertyAttributeDontDelete},
+							{"callHeldWeapon",				js_event_call_held_weapon_func,					kJSPropertyAttributeDontDelete},
+							{"callSpawnWeapon",				js_event_call_spawn_weapon_func,				kJSPropertyAttributeDontDelete},
 							{"sendMessage",					js_event_send_message_func,						kJSPropertyAttributeDontDelete},
 							{"sendMessageToPlayer",			js_event_send_message_to_player_func,			kJSPropertyAttributeDontDelete},
 							{"sendMessageToObjectById",		js_event_send_message_to_object_by_id_func,		kJSPropertyAttributeDontDelete},
