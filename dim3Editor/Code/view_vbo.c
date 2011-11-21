@@ -53,15 +53,18 @@ void view_vbo_mesh_rebuild(int mesh_idx)
 	mesh=&map.mesh.meshes[mesh_idx];
 	
 	if (mesh->npoly==0) return;
+	
+	map_prepare_mesh_box(mesh);
+
 
 		// get the total vertex count
-		// and calculate the center
+		// and calculate the min/max/center
 		// to speed up some drawing operations
 
 	cnt=0;
 	poly=mesh->polys;
 
-	mesh->box.mid.x=mesh->box.mid.y=mesh->box.mid.z=0;
+//	mesh->box.mid.x=mesh->box.mid.y=mesh->box.mid.z=0;
 
 	for (k=0;k!=mesh->npoly;k++) {
 
@@ -71,22 +74,24 @@ void view_vbo_mesh_rebuild(int mesh_idx)
 
 			// calc center
 
-		poly->box.mid.x=poly->box.mid.y=poly->box.mid.z=0;
+	//	poly->box.mid.x=poly->box.mid.y=poly->box.mid.z=0;
 
-		for (t=0;t!=poly->ptsz;t++) {
+	//	for (t=0;t!=poly->ptsz;t++) {
 			pnt=&mesh->vertexes[poly->v[t]];
-			poly->box.mid.x+=pnt->x;
-			poly->box.mid.y+=pnt->y;
-			poly->box.mid.z+=pnt->z;
-		}
+		//	poly->box.mid.x+=pnt->x;
+		//	poly->box.mid.y+=pnt->y;
+		//	poly->box.mid.z+=pnt->z;
+	//	}
 
-		poly->box.mid.x/=poly->ptsz;
-		poly->box.mid.y/=poly->ptsz;
-		poly->box.mid.z/=poly->ptsz;
+	////	poly->box.mid.x/=poly->ptsz;
+	//	poly->box.mid.y/=poly->ptsz;
+	//	poly->box.mid.z/=poly->ptsz;
+		
+		map_prepare_mesh_poly(&map,mesh,poly);
 
-		mesh->box.mid.x+=poly->box.mid.x;
-		mesh->box.mid.y+=poly->box.mid.y;
-		mesh->box.mid.z+=poly->box.mid.z;
+//		mesh->box.mid.x+=poly->box.mid.x;
+//		mesh->box.mid.y+=poly->box.mid.y;
+//		mesh->box.mid.z+=poly->box.mid.z;
 
 			// next poly index
 
@@ -96,9 +101,10 @@ void view_vbo_mesh_rebuild(int mesh_idx)
 
 		// finish with mesh center
 
-	mesh->box.mid.x/=mesh->npoly;
-	mesh->box.mid.y/=mesh->npoly;
-	mesh->box.mid.z/=mesh->npoly;
+//	mesh->box.mid.x/=mesh->npoly;
+//	mesh->box.mid.y/=mesh->npoly;
+//	mesh->box.mid.z/=mesh->npoly;
+	
 
 		// setup the VBO
 

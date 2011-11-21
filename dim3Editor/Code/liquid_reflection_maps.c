@@ -45,6 +45,7 @@ typedef struct		{
 						unsigned char						*data;
 					} liquid_reflection_map_map_texture_type;
 
+int										liquid_reflection_texture_pixel_size;
 liquid_reflection_map_map_texture_type	liquid_reflection_map_map_texture[max_map_texture];
 					
 /* =======================================================
@@ -317,7 +318,7 @@ void liquid_reflection_map_ray_trace_map(d3pnt *spt,d3pnt *ept,d3col *col)
 
 bool liquid_reflection_map_run_for_liquid(int txt_idx,int liq_idx,char *base_path,char *map_name,char *err_str)
 {
-	int							x,z,x_add,z_add,sz;
+	int							x,z,x_add,z_add,sz,pixel_size;
 	unsigned char				*pixel,*pixel_data,uc_alpha;
 	char						path[1024],bitmap_name[256];
 	d3pnt						spt,ept,center;
@@ -328,9 +329,11 @@ bool liquid_reflection_map_run_for_liquid(int txt_idx,int liq_idx,char *base_pat
 		
 	liq=&map.liquid.liquids[liq_idx];
 
+	pixel_size=(int)pow(2,(liq->reflect.texture_size+8));
+
 		// get the pixel data for texture
 
-	sz=(liq->reflect.texture_size*liq->reflect.texture_size)*4;
+	sz=(pixel_size*pixel_size)*4;
 	pixel_data=(unsigned char*)malloc(sz);
 	bzero(pixel_data,sz);
 	
@@ -338,8 +341,8 @@ bool liquid_reflection_map_run_for_liquid(int txt_idx,int liq_idx,char *base_pat
 
 		// get scan ratio
 
-	x_add=((liq->rgt-1)-liq->lft)/liq->reflect.texture_size;
-	z_add=((liq->bot-1)-liq->top)/liq->reflect.texture_size;
+	x_add=((liq->rgt-1)-liq->lft)/pixel_size;
+	z_add=((liq->bot-1)-liq->top)/pixel_size;
 
 	center.x=(liq->lft+liq->rgt)>>1;
 	center.z=(liq->top+liq->bot)>>1;
@@ -351,11 +354,11 @@ bool liquid_reflection_map_run_for_liquid(int txt_idx,int liq_idx,char *base_pat
 	spt.y=liq->y;
 	spt.z=liq->top;
 	
-	for (z=0;z!=liq->reflect.texture_size;z++) {
+	for (z=0;z!=pixel_size;z++) {
 
 		spt.x=liq->lft;
 
-		for (x=0;x!=liq->reflect.texture_size;x++) {
+		for (x=0;x!=pixel_size;x++) {
 
 				// create the ray.  The further from
 				// the center, the more it slants out
@@ -396,7 +399,7 @@ bool liquid_reflection_map_run_for_liquid(int txt_idx,int liq_idx,char *base_pat
 		
 	sprintf(bitmap_name,"ReflectionMaps/%s/rm%.3d",map_name,liq_idx);
 	sprintf(path,"%s/%s.png",base_path,bitmap_name);
-	bitmap_write_png_data(pixel_data,liq->reflect.texture_size,liq->reflect.texture_size,TRUE,path);
+	bitmap_write_png_data(pixel_data,pixel_size,pixel_size,TRUE,path);
 
 	liq->txt_idx=txt_idx;
 	liq->flag.lock_uv=TRUE;
@@ -484,7 +487,7 @@ bool liquid_reflection_maps_create_process(int nliq,char *err_str)
 
 		sprintf(str,"Liquid Reflection Map: Rendering Liquid %d/%d",(n+1),nliq);
 		progress_next_title(str);
-	
+			
 		if (!liquid_reflection_map_run_for_liquid(txt_idx,n,base_path,map_name,err_str)) {
 			liquid_reflection_map_bitmap_pixel_free();
 			return(FALSE);

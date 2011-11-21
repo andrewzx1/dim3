@@ -417,7 +417,7 @@ void view_draw_create_mesh_sort_list(editor_view_type *view)
 			// meshes past view z
 
 		mesh=&map.mesh.meshes[n];
-		dist=distance_get(view->pnt.x,view->pnt.y,view->pnt.z,mesh->box.mid.x,mesh->box.mid.y,mesh->box.mid.z);
+		dist=map_mesh_calculate_distance(mesh,&view->pnt);
 		
 		if (dist>obscure_dist) continue;
 

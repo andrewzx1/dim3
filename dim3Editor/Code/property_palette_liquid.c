@@ -95,7 +95,6 @@ d3pnt							pal_liquid_pnt,pal_liquid_size;
 
 void property_palette_fill_liquid(int liq_idx)
 {
-	int						size;
 	char					str[32];
 	map_liquid_type			*liq;
 	editor_view_type		*view;
@@ -137,11 +136,8 @@ void property_palette_fill_liquid(int liq_idx)
 	list_palette_add_int(&property_palette,kLiquidPropertyDrownTick,"Drowning Tick",&liq->harm.drown_tick,FALSE);
 	list_palette_add_int(&property_palette,kLiquidPropertyDrownHarm,"Drowning Damage",&liq->harm.drown_harm,FALSE);
 
-	size=((int)log2(liq->reflect.texture_size))-8;
-	if ((size<0) || (size>2)) size=0;
-
 	list_palette_add_header(&property_palette,0,"Liquid Reflection");
-	list_palette_add_string(&property_palette,kLiquidPropertyReflectTextureSize,"Texture Size",map_property_light_map_size_list[size],FALSE);
+	list_palette_add_string(&property_palette,kLiquidPropertyReflectTextureSize,"Texture Size",map_property_light_map_size_list[liq->reflect.texture_size],FALSE);
 	list_palette_add_int(&property_palette,kLiquidPropertyReflectXRefract,"X Refraction Factor",&liq->reflect.x_refract_factor,FALSE);
 	list_palette_add_int(&property_palette,kLiquidPropertyReflectZRefract,"Z Refraction Factor",&liq->reflect.z_refract_factor,FALSE);
 	list_palette_add_pick_color(&property_palette,kLiquidPropertyReflectNoHitColor,"No Hit Color",&liq->reflect.no_hit_col,FALSE);
@@ -207,7 +203,6 @@ void property_palette_fill_liquid(int liq_idx)
 
 void property_palette_click_liquid(int liq_idx,int id,bool double_click)
 {
-	int						size;
 	map_liquid_type			*liq;
 	editor_view_type		*view;
 
@@ -237,10 +232,7 @@ void property_palette_click_liquid(int liq_idx,int id,bool double_click)
 			// reflect
 			
 		case kLiquidPropertyReflectTextureSize:
-			size=((int)log2(liq->reflect.texture_size))-8;
-			if ((size<0) || (size>2)) size=0;
-			property_pick_list("Pick a Liquid Reflect Map Size",(char*)map_property_light_map_size_list,&size);
-			liq->reflect.texture_size=(int)pow(2,(size+8));
+			property_pick_list("Pick a Liquid Reflect Map Size",(char*)map_property_light_map_size_list,&liq->reflect.texture_size);
 			break;
 
 			// overlay

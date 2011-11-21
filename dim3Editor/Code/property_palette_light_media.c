@@ -71,7 +71,7 @@ char							map_property_light_map_size_list[][name_str_len]={"256","512","1024",
 
 void property_palette_fill_light_media(void)
 {
-	int				n,size;
+	int				n;
 	char			name[256];
 
 	list_palette_set_title(&property_palette,"Map Light Media Settings");
@@ -86,12 +86,9 @@ void property_palette_fill_light_media(void)
 
 		// light map
 
-	size=((int)log2(map.light_map.size))-8;
-	if ((size<0) || (size>2)) size=0;
-
 	list_palette_add_header(&property_palette,0,"Map Light Map");
 	list_palette_add_string(&property_palette,kMapPropertyLightMapQuality,"Quality",map_property_light_map_quality_list[map.light_map.quality],FALSE);
-	list_palette_add_string(&property_palette,kMapPropertyLightMapSize,"Texture Size",map_property_light_map_size_list[size],FALSE);
+	list_palette_add_string(&property_palette,kMapPropertyLightMapSize,"Texture Size",map_property_light_map_size_list[map.light_map.size],FALSE);
 	list_palette_add_checkbox(&property_palette,kMapPropertyLightMapUseNormals,"Use Normals (Hard Edges)",&map.light_map.use_normals,FALSE);
 	list_palette_add_checkbox(&property_palette,kMapPropertyLightMapSkipGlows,"Skip Glow Mapped Polys",&map.light_map.skip_glows,FALSE);
 	list_palette_add_float(&property_palette,kMapPropertyLightMapDiffuseBoost,"Diffuse Boost",&map.light_map.diffuse_boost,FALSE);
@@ -123,7 +120,7 @@ void property_palette_fill_light_media(void)
 
 void property_palette_click_light_media(int id,bool double_click)
 {
-	int				music_idx,size;
+	int				music_idx;
 
 	if (!double_click) return;
 
@@ -152,10 +149,7 @@ void property_palette_click_light_media(int id,bool double_click)
 			break;
 			
 		case kMapPropertyLightMapSize:
-			size=((int)log2(map.light_map.size))-8;
-			if ((size<0) || (size>2)) size=0;
-			property_pick_list("Pick a Light Map Size",(char*)map_property_light_map_size_list,&size);
-			map.light_map.size=(int)pow(2,(size+8));
+			property_pick_list("Pick a Light Map Size",(char*)map_property_light_map_size_list,&map.light_map.size);
 			break;
 
 			// map media

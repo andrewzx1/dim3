@@ -101,10 +101,12 @@ void decode_map_settings_xml(map_type *map,int map_head)
     tag=xml_findfirstchild("LightMap",map_head);
     if (tag!=-1) {
         map->light_map.quality=xml_get_attribute_int_default(tag,"quality",2);
-        map->light_map.size=xml_get_attribute_int_default(tag,"size",1024);
+        map->light_map.size=xml_get_attribute_int_default(tag,"size",2);
 		map->light_map.use_normals=xml_get_attribute_boolean(tag,"use_normals");
 		map->light_map.skip_glows=xml_get_attribute_boolean(tag,"skip_glows");
         map->light_map.diffuse_boost=xml_get_attribute_float_default(tag,"diffuse_boost",0.0f);
+		
+		if (map->light_map.size>=256) map->light_map.size=((int)log2(map->light_map.size))-8;
 	}
 	
     tag=xml_findfirstchild("Editor",map_head);
@@ -771,9 +773,10 @@ void read_single_liquid_v3(map_type *map,int liquid_idx,int liquid_tag)
 		liq->reflect.z_refract_factor=xml_get_attribute_int(tag,"z_refract_factor");
 		xml_get_attribute_color(tag,"no_hit_col",&liq->reflect.no_hit_col);
 		liq->reflect.alpha=xml_get_attribute_float(tag,"alpha");
+		if (liq->reflect.texture_size>=256) liq->reflect.texture_size=((int)log2(liq->reflect.texture_size))-8;
 	}
 	else {
-		liq->reflect.texture_size=512;
+		liq->reflect.texture_size=1;
 		liq->reflect.x_refract_factor=20000;
 		liq->reflect.z_refract_factor=20000;
 		liq->reflect.no_hit_col.r=liq->reflect.no_hit_col.g=liq->reflect.no_hit_col.b=0.5f;
