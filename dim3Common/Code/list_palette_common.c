@@ -499,6 +499,111 @@ void list_palette_add_uv(list_palette_type *list,int id,char *name,float *u_ptr,
 	item->value.v_ptr=v_ptr;
 }
 
+void list_palette_add_picker_list_int(list_palette_type *list,int id,char *name,char *list_ptr,int list_count,int list_item_sz,int list_name_offset,bool include_none,int *int_ptr,bool disabled)
+{
+	list_palette_item_type		*item;
+
+	item=list_palette_create_item(list,list_item_ctrl_picker);
+
+	item->type=-1;
+	item->idx=-1;
+	item->id=id;
+
+	item->selected=FALSE;
+	item->disabled=disabled;
+
+		// if list count is -1, then calculate
+		// it from the first blank string
+
+	if (list_count==-1) list_count=property_pick_get_list_count(list_ptr,list_item_sz,list_name_offset);
+
+		// setup the picking list
+
+	item->list.ptr=list_ptr;
+	item->list.count=list_count;
+	item->list.item_sz=list_item_sz;
+	item->list.name_offset=list_name_offset;
+	item->list.include_none=include_none;
+	item->list.file_list=FALSE;
+
+		// setup the value
+
+	strcpy(item->name,name);
+	item->list.is_index=TRUE;
+	item->value.int_ptr=int_ptr;
+}
+
+void list_palette_add_picker_list_string(list_palette_type *list,int id,char *name,char *list_ptr,int list_count,int list_item_sz,int list_name_offset,bool include_none,char *str_ptr,bool disabled)
+{
+	list_palette_item_type		*item;
+
+	item=list_palette_create_item(list,list_item_ctrl_picker);
+
+	item->type=-1;
+	item->idx=-1;
+	item->id=id;
+
+	item->selected=FALSE;
+	item->disabled=disabled;
+
+		// if list count is -1, then calculate
+		// it from the first blank string
+
+	if (list_count==-1) list_count=property_pick_get_list_count(list_ptr,list_item_sz,list_name_offset);
+
+		// setup the picking list
+
+	item->list.ptr=list_ptr;
+	item->list.count=list_count;
+	item->list.item_sz=list_item_sz;
+	item->list.name_offset=list_name_offset;
+	item->list.include_none=include_none;
+	item->list.file_list=FALSE;
+
+		// setup the value
+
+	strcpy(item->name,name);
+	item->list.is_index=FALSE;
+	item->value.str_ptr=str_ptr;
+}
+
+void list_palette_add_picker_file(list_palette_type *list,int id,int button_type,int button_id,char *name,char *search_path,char *extension,char *required_file_name,char *str_ptr,bool disabled)
+{
+	int							count;
+	list_palette_item_type		*item;
+
+	item=list_palette_create_item(list,list_item_ctrl_picker);
+
+	item->type=-1;
+	item->idx=-1;
+	item->id=id;
+
+	item->selected=FALSE;
+	item->disabled=disabled;
+
+	count=property_pick_file_fill_list(search_path,extension,required_file_name);
+
+		// setup the picking list
+
+	item->list.ptr=property_pick_file_get_list();
+	item->list.count=count;
+	item->list.item_sz=file_str_len;
+	item->list.name_offset=0;
+	item->list.include_none=TRUE;
+	item->list.file_list=TRUE;
+
+		// setup the value
+
+	strcpy(item->name,name);
+	item->list.is_index=FALSE;
+	item->value.str_ptr=str_ptr;
+
+		// the button
+
+	item->button_type=button_type;
+	item->button_id=button_id;
+}
+
 void list_palette_add_texture(list_palette_type *list,texture_type *textures,int id,char *name,int txt_idx,bool disabled)
 {
 	char		str[name_str_len];
@@ -738,6 +843,30 @@ void list_palette_sort(list_palette_type *list)
 
 		if (!shuffle) break;
 	}
+}
+
+/* =======================================================
+
+      Picker Index/Name to Name
+      
+======================================================= */
+
+void list_palette_get_current_picker_value(list_palette_item_type *item,char *str)
+{
+	int				idx;
+
+	if (!item->list.is_index) {
+		strcpy(str,item->value.str_ptr);
+		return;
+	}
+
+	idx=*item->value.int_ptr;
+	if (idx==-1) {
+		str[0]=0x0;
+		return;
+	}
+	
+	strcpy(str,(item->list.ptr+((item->list.item_sz*idx)+item->list.name_offset)));
 }
 
 /* =======================================================
@@ -1362,6 +1491,15 @@ void list_palette_draw_item(list_palette_type *list,int idx)
 			list_palette_draw_item_button(list,idx);
 			break;
 
+			// a list
+
+		case list_item_ctrl_picker:
+			list_palette_get_current_picker_value(item,str);
+			text_draw(x,y,list_item_font_size,&col,item->name);
+			list_palette_draw_item_string(list,item,str);
+			list_palette_draw_item_button(list,idx);
+			break;
+
 			// pick color
 
 		case list_item_ctrl_pick_color:
@@ -1648,9 +1786,11 @@ void list_palette_click_scroll_bar(list_palette_type *list)
 bool list_palette_click(list_palette_type *list,d3pnt *pnt,bool double_click)
 {
 	int						item_idx;
+	char					title[256];
 	d3pnt					pt;
 	d3rect					box;
 	d3fpnt					uv_ptr;
+	list_palette_item_type	*item;
 
 	list_palette_box(&box);
 
@@ -1712,11 +1852,15 @@ bool list_palette_click(list_palette_type *list,d3pnt *pnt,bool double_click)
 		}
 	}
 
+		// get clicked item
+
+	item=&list->items[item_idx];
+
 		// if a header or an id of -1, only click if there's
 		// a button
 
 	if (!list_picker.on) {
-		if (list->items[item_idx].ctrl_type==list_item_ctrl_header) {
+		if (item->ctrl_type==list_item_ctrl_header) {
 			if (!list->button_click) return(FALSE);
 		}
 	}
@@ -1725,75 +1869,89 @@ bool list_palette_click(list_palette_type *list,d3pnt *pnt,bool double_click)
 
 	if (!list_palette_click_item(list,item_idx)) return(FALSE);
 
-		// handle click editing
+		// button clicks just return
 
-	if (!list_picker.on) {
+	if (list->button_click) return(TRUE);
 
-		switch (list->items[item_idx].ctrl_type) {
-			
-			case list_item_ctrl_int:
-				if (!double_click) return(FALSE);
-				dialog_property_string_run(list_string_value_int,(void*)list->items[item_idx].value.int_ptr,0,0,0);
-				main_wind_draw();
-				return(TRUE);
+		// handle clicking in list picker
 
-			case list_item_ctrl_float:
-				if (!double_click) return(FALSE);
-				dialog_property_string_run(list_string_value_float,(void*)list->items[item_idx].value.float_ptr,0,0,0);
-				main_wind_draw();
-				return(TRUE);
-
-			case list_item_ctrl_checkbox:
-				*list->items[item_idx].value.bool_ptr=!(*list->items[item_idx].value.bool_ptr);
-				main_wind_draw();
-				return(TRUE);
-
-			case list_item_ctrl_point:
-				if (!double_click) return(FALSE);
-				dialog_property_chord_run(list_chord_value_point,(void*)list->items[item_idx].value.pnt_ptr);
-				main_wind_draw();
-				return(TRUE);
-			
-			case list_item_ctrl_angle:
-				if (!double_click) return(FALSE);
-				dialog_property_chord_run(list_chord_value_angle,(void*)list->items[item_idx].value.ang_ptr);
-				main_wind_draw();
-				return(TRUE);
-
-			case list_item_ctrl_vector:
-				if (!double_click) return(FALSE);
-				dialog_property_chord_run(list_chord_value_vector,(void*)list->items[item_idx].value.vct_ptr);
-				main_wind_draw();
-				return(TRUE);
-
-			case list_item_ctrl_normal_vector:
-				if (!double_click) return(FALSE);
-				dialog_property_chord_run(list_chord_value_vector,(void*)list->items[item_idx].value.vct_ptr);
-				vector_normalize(list->items[item_idx].value.vct_ptr);
-				main_wind_draw();
-				return(TRUE);
-
-			case list_item_ctrl_uv:
-				if (!double_click) return(FALSE);
-				uv_ptr.x=*list->items[item_idx].value.u_ptr;
-				uv_ptr.y=*list->items[item_idx].value.v_ptr;
-				dialog_property_chord_run(list_chord_value_uv,&uv_ptr);
-				*list->items[item_idx].value.u_ptr=uv_ptr.x;
-				*list->items[item_idx].value.v_ptr=uv_ptr.y;
-				main_wind_draw();
-				return(TRUE);
-	
-			case list_item_ctrl_pick_color:
-				os_pick_color(list->items[item_idx].value.col_ptr);
-				main_wind_draw();
-				return(TRUE);
-
-		}
+	if (list_picker.on) {
+		list_palette_choose_picking_mode(list,item_idx,double_click);
+		return(TRUE);
 	}
 
-		// run any list picker modes
+		// handle click editing
 
-	list_palette_choose_picking_mode(list,item_idx,double_click);
+	switch (item->ctrl_type) {
+		
+		case list_item_ctrl_int:
+			if (!double_click) return(FALSE);
+			dialog_property_string_run(list_string_value_int,(void*)item->value.int_ptr,0,0,0);
+			main_wind_draw();
+			return(TRUE);
 
-	return(TRUE);
+		case list_item_ctrl_float:
+			if (!double_click) return(FALSE);
+			dialog_property_string_run(list_string_value_float,(void*)item->value.float_ptr,0,0,0);
+			main_wind_draw();
+			return(TRUE);
+
+		case list_item_ctrl_checkbox:
+			*item->value.bool_ptr=!(*item->value.bool_ptr);
+			main_wind_draw();
+			return(TRUE);
+
+		case list_item_ctrl_point:
+			if (!double_click) return(FALSE);
+			dialog_property_chord_run(list_chord_value_point,(void*)item->value.pnt_ptr);
+			main_wind_draw();
+			return(TRUE);
+		
+		case list_item_ctrl_angle:
+			if (!double_click) return(FALSE);
+			dialog_property_chord_run(list_chord_value_angle,(void*)item->value.ang_ptr);
+			main_wind_draw();
+			return(TRUE);
+
+		case list_item_ctrl_vector:
+			if (!double_click) return(FALSE);
+			dialog_property_chord_run(list_chord_value_vector,(void*)item->value.vct_ptr);
+			main_wind_draw();
+			return(TRUE);
+
+		case list_item_ctrl_normal_vector:
+			if (!double_click) return(FALSE);
+			dialog_property_chord_run(list_chord_value_vector,(void*)item->value.vct_ptr);
+			vector_normalize(item->value.vct_ptr);
+			main_wind_draw();
+			return(TRUE);
+
+		case list_item_ctrl_uv:
+			if (!double_click) return(FALSE);
+			uv_ptr.x=*item->value.u_ptr;
+			uv_ptr.y=*item->value.v_ptr;
+			dialog_property_chord_run(list_chord_value_uv,&uv_ptr);
+			*item->value.u_ptr=uv_ptr.x;
+			*item->value.v_ptr=uv_ptr.y;
+			main_wind_draw();
+			return(TRUE);
+
+		case list_item_ctrl_picker:
+			sprintf(title,"Pick %s",item->name);
+			if (item->list.is_index) {
+				list_palette_start_picking_mode(title,item->list.ptr,item->list.count,item->list.item_sz,item->list.name_offset,item->list.include_none,item->list.file_list,item->value.int_ptr,NULL);
+			}
+			else {
+				list_palette_start_picking_mode(title,item->list.ptr,item->list.count,item->list.item_sz,item->list.name_offset,item->list.include_none,item->list.file_list,NULL,item->value.str_ptr);
+			}
+			return(TRUE);
+
+		case list_item_ctrl_pick_color:
+			os_pick_color(item->value.col_ptr);
+			main_wind_draw();
+			return(TRUE);
+
+	}
+
+	return(FALSE);
 }

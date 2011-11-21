@@ -93,10 +93,6 @@ void property_palette_click_sound(int sound_idx,int id,bool double_click)
 			property_palette_pick_sound(sound->name,FALSE);
 			break;
 
-		case kSoundPropertyPitch:
-			dialog_property_string_run(list_string_value_positive_float,(void*)&sound->pitch,0,0,0);
-			break;
-
 	}
 }
 

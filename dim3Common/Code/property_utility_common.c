@@ -255,10 +255,28 @@ void property_chord_set_values(int value_type,void *value,char *str_x,char *str_
 
 /* =======================================================
 
-      Property Pick From List
+      Get List Count
       
 ======================================================= */
 
+int property_pick_get_list_count(char *list_ptr,int list_item_sz,int list_name_offset)
+{
+	int			list_count;
+	char		*c;
+
+	list_count=0;
+	c=list_ptr+list_name_offset;
+
+	while (*c!=0x0) {
+		c+=list_item_sz;
+		list_count++;
+	}
+	
+	return(list_count);
+}
+
+
+// supergumba -- delete later
 void property_pick_list(char *title,char *list,int *idx)
 {
 	int			count;
@@ -331,6 +349,37 @@ int property_pick_file_add_dir_files(file_path_directory_type *fpd,int path_dept
 	return(count);
 }
 
+int property_pick_file_fill_list(char *search_path,char *extension,char *required_file_name)
+{
+	int								count;
+	file_path_directory_type		*fpd;
+
+		// read files
+
+	if (extension!=NULL) {
+		fpd=file_paths_read_directory_data(&file_path_setup,search_path,extension);
+	}
+	else {
+		fpd=file_paths_read_directory_data_dir(&file_path_setup,search_path,required_file_name);
+	}
+
+		// make lists
+
+	count=property_pick_file_add_dir_files(fpd,0,NULL,-1,0);
+
+		// close directory read
+
+	file_paths_close_directory(fpd);
+
+	return(count);
+}
+
+char* property_pick_file_get_list(void)
+{
+	return((char*)property_file_list);
+}
+
+// supergumba -- delete later
 void property_pick_file(char *title,char *search_path,char *extension,char *required_file_name,char *file_name)
 {
 	int								count;

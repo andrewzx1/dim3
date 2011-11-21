@@ -73,17 +73,18 @@ void property_palette_fill_spot(int spot_idx)
 
 	list_palette_add_header(&property_palette,0,"Spot Settings");
 	list_palette_add_string(&property_palette,kSpotPropertyName,"Name",spot->name,FALSE);
-	list_palette_add_string(&property_palette,kSpotPropertyType,"Type",spot_property_type_list[spot->type],FALSE);
-	
+	list_palette_add_picker_list_int(&property_palette,kSpotPropertyType,"Type",(char*)spot_property_type_list,-1,name_str_len,0,FALSE,&spot->type,FALSE);
+
 	if (spot->script[0]!=0x0) {
-		list_palette_add_string_selectable_button(&property_palette,kSpotPropertyScript,list_button_edit,kSpotPropertyScriptEdit,"Script",spot->script,FALSE,FALSE);
+		list_palette_add_picker_file(&property_palette,kSpotPropertyScript,list_button_edit,kSpotPropertyScriptEdit,"Script","Scripts/Objects","js",NULL,spot->script,FALSE);
 	}
 	else {
-		list_palette_add_string(&property_palette,kSpotPropertyScript,"Script",spot->script,FALSE);
+		list_palette_add_picker_file(&property_palette,kSpotPropertyScript,list_button_none,0,"Script","Scripts/Objects","js",NULL,spot->script,FALSE);
 	}
-	list_palette_add_string(&property_palette,kSpotPropertySkill,"Skill",spot_property_skill_list[spot->skill],FALSE);
-	list_palette_add_string(&property_palette,kSpotPropertySpawn,"Spawn",spot_property_spawn_list[spot->spawn],FALSE);
-	list_palette_add_string(&property_palette,kSpotPropertyDisplayModel,"Model",spot->display_model,FALSE);
+
+	list_palette_add_picker_list_int(&property_palette,kSpotPropertySkill,"Skill",(char*)spot_property_skill_list,-1,name_str_len,0,FALSE,&spot->skill,FALSE);
+	list_palette_add_picker_list_int(&property_palette,kSpotPropertySpawn,"Spawn",(char*)spot_property_spawn_list,-1,name_str_len,0,FALSE,&spot->spawn,FALSE);
+	list_palette_add_picker_file(&property_palette,kSpotPropertyDisplayModel,list_button_none,0,"Model","Models",NULL,"Mesh.xml;Model.xml",spot->display_model,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Spot Parameters");
 	for (n=0;n!=10;n++) {
@@ -112,9 +113,16 @@ void property_palette_click_spot(int spot_idx,int id,bool double_click)
 	char			str[256];
 	spot_type		*spot;
 
-	if (!double_click) return;
-
 	spot=&map.spots[spot_idx];
+
+		// script editing
+
+	if (id==kSpotPropertyScriptEdit) {
+		launch_spot_script_editor(spot);
+		return;
+	}
+
+	if (!double_click) return;
 
 		// parameters
 
@@ -134,30 +142,6 @@ void property_palette_click_spot(int spot_idx,int id,bool double_click)
 
 		case kSpotPropertyName:
 			dialog_property_string_run(list_string_value_string,(void*)spot->name,name_str_len,0,0);
-			break;
-
-		case kSpotPropertyType:
-			property_pick_list("Pick a Spot Type",(char*)spot_property_type_list,&spot->type);
-			break;
-
-		case kSpotPropertyScript:
-			property_pick_file("Pick a Script","Scripts/Objects","js",NULL,spot->script);
-			break;
-
-		case kSpotPropertyScriptEdit:
-			launch_spot_script_editor(spot);
-			break;
-
-		case kSpotPropertySkill:
-			property_pick_list("Pick a Skill",(char*)spot_property_skill_list,&spot->skill);
-			break;
-
-		case kSpotPropertySpawn:
-			property_pick_list("Pick a Spawn Type",(char*)spot_property_spawn_list,&spot->spawn);
-			break;
-
-		case kSpotPropertyDisplayModel:
-			property_pick_file("Pick a Model","Models",NULL,"Mesh.xml;Model.xml",spot->display_model);
 			break;
 
 	}

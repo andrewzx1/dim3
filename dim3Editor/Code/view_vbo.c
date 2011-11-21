@@ -44,7 +44,7 @@ extern editor_state_type	state;
 
 void view_vbo_mesh_rebuild(int mesh_idx)
 {
-	int						k,t,cnt;
+	int						n,k,cnt;
 	float					*pv;
 	d3pnt					*pnt;
 	map_mesh_type			*mesh;
@@ -54,57 +54,30 @@ void view_vbo_mesh_rebuild(int mesh_idx)
 	
 	if (mesh->npoly==0) return;
 	
+		// prepare the mesh
+
 	map_prepare_mesh_box(mesh);
 
-
 		// get the total vertex count
-		// and calculate the min/max/center
-		// to speed up some drawing operations
 
 	cnt=0;
 	poly=mesh->polys;
 
-//	mesh->box.mid.x=mesh->box.mid.y=mesh->box.mid.z=0;
+	for (n=0;n!=mesh->npoly;n++) {
 
-	for (k=0;k!=mesh->npoly;k++) {
+			// prepare poly
+
+		map_prepare_mesh_poly(&map,mesh,poly);
 
 			// remember poly index for drawing
 
 		poly->draw.vertex_offset=cnt;
-
-			// calc center
-
-	//	poly->box.mid.x=poly->box.mid.y=poly->box.mid.z=0;
-
-	//	for (t=0;t!=poly->ptsz;t++) {
-			pnt=&mesh->vertexes[poly->v[t]];
-		//	poly->box.mid.x+=pnt->x;
-		//	poly->box.mid.y+=pnt->y;
-		//	poly->box.mid.z+=pnt->z;
-	//	}
-
-	////	poly->box.mid.x/=poly->ptsz;
-	//	poly->box.mid.y/=poly->ptsz;
-	//	poly->box.mid.z/=poly->ptsz;
-		
-		map_prepare_mesh_poly(&map,mesh,poly);
-
-//		mesh->box.mid.x+=poly->box.mid.x;
-//		mesh->box.mid.y+=poly->box.mid.y;
-//		mesh->box.mid.z+=poly->box.mid.z;
 
 			// next poly index
 
 		cnt+=poly->ptsz;
 		poly++;
 	}
-
-		// finish with mesh center
-
-//	mesh->box.mid.x/=mesh->npoly;
-//	mesh->box.mid.y/=mesh->npoly;
-//	mesh->box.mid.z/=mesh->npoly;
-	
 
 		// setup the VBO
 
@@ -118,20 +91,20 @@ void view_vbo_mesh_rebuild(int mesh_idx)
 
 	poly=mesh->polys;
 
-	for (k=0;k!=mesh->npoly;k++) {
+	for (n=0;n!=mesh->npoly;n++) {
 
-		for (t=0;t!=poly->ptsz;t++) {
+		for (k=0;k!=poly->ptsz;k++) {
 
-			pnt=&mesh->vertexes[poly->v[t]];
+			pnt=&mesh->vertexes[poly->v[k]];
 			*pv++=(float)pnt->x;
 			*pv++=(float)pnt->y;
 			*pv++=(float)pnt->z;
 
-			*pv++=poly->main_uv.x[t];
-			*pv++=poly->main_uv.y[t];
+			*pv++=poly->main_uv.x[k];
+			*pv++=poly->main_uv.y[k];
 
-			*pv++=poly->lmap_uv.x[t];
-			*pv++=poly->lmap_uv.y[t];
+			*pv++=poly->lmap_uv.x[k];
+			*pv++=poly->lmap_uv.y[k];
 		}
 
 		poly++;
