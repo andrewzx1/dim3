@@ -32,6 +32,7 @@ and can be sold or given away.
 #include "interface.h"
 #include "scripts.h"
 
+extern iface_type		iface;
 extern map_type			map;
 extern camera_type		camera;
 extern js_type			js;
@@ -107,6 +108,18 @@ bool js_camera_static_position_set_follow(JSContextRef cx,JSObjectRef j_obj,JSSt
 
 JSValueRef js_camera_static_position_move_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
+	if (iface.project.modernize) {
+		if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+		
+		camera.setup.pnt.x=script_value_to_int(cx,argv[0]);
+		camera.setup.pnt.y=script_value_to_int(cx,argv[2]);
+		camera.setup.pnt.z=script_value_to_int(cx,argv[1]);
+		
+		return(script_null_to_value(cx));
+	}
+
+		// supergumba:modernize -- delete later
+
 	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
 	
 	camera.setup.pnt.x=script_value_to_int(cx,argv[0]);

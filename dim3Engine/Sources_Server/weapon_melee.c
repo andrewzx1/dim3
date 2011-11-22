@@ -160,7 +160,7 @@ bool melee_strike_position_weapon_model(obj_type *obj,weapon_type *weap,d3pnt *f
 	setup->move.x=setup->move.y=setup->move.z=0;
 	setup->sway.x=setup->sway.y=setup->sway.z=0.0f;
 
-	model_calc_draw_bone_position(mdl,setup,pose_idx,bone_idx,&fire_pnt->x,&fire_pnt->y,&fire_pnt->z);
+	model_calc_draw_bone_position(mdl,setup,pose_idx,bone_idx,fire_pnt);
 	
 		// move fire point to weapon
 
@@ -168,7 +168,7 @@ bool melee_strike_position_weapon_model(obj_type *obj,weapon_type *weap,d3pnt *f
 	fire_pnt->y+=weap->draw.pnt.y+obj->duck.y_move;
 	fire_pnt->z+=weap->draw.pnt.z;
 
-	if (weap->draw.no_rot.on) gl_project_fix_rotation(&fire_pnt->x,&fire_pnt->y,&fire_pnt->z);
+	if (weap->draw.no_rot.on) gl_project_fix_rotation(fire_pnt);
 
 	return(TRUE);
 }
@@ -218,7 +218,7 @@ bool melee_strike_position_object_model(obj_type *obj,weapon_type *weap,d3pnt *f
 	setup->move.x=setup->move.y=setup->move.z=0;
 	setup->sway.x=setup->sway.y=setup->sway.z=0.0f;
 
-	model_calc_draw_bone_position(mdl,setup,pose_idx,bone_idx,&fire_pnt->x,&fire_pnt->y,&fire_pnt->z);
+	model_calc_draw_bone_position(mdl,setup,pose_idx,bone_idx,fire_pnt);
 	
 		// move fire point to obj
 
@@ -226,7 +226,7 @@ bool melee_strike_position_object_model(obj_type *obj,weapon_type *weap,d3pnt *f
 	fire_pnt->y+=obj->draw.pnt.y+obj->duck.y_move;
 	fire_pnt->z+=obj->draw.pnt.z;
 
-	if (obj->draw.no_rot.on) gl_project_fix_rotation(&fire_pnt->x,&fire_pnt->y,&fire_pnt->z);
+	if (obj->draw.no_rot.on) gl_project_fix_rotation(fire_pnt);
 
 	return(TRUE);
 }
@@ -269,7 +269,7 @@ bool melee_strike_position_projectile_model(obj_type *obj,weapon_type *weap,proj
 	setup->move.x=setup->move.y=setup->move.z=0;
 	setup->sway.x=setup->sway.y=setup->sway.z=0.0f;
 
-	model_calc_draw_bone_position(mdl,setup,pose_idx,bone_idx,&fire_pnt->x,&fire_pnt->y,&fire_pnt->z);
+	model_calc_draw_bone_position(mdl,setup,pose_idx,bone_idx,fire_pnt);
 	
 		// move fire point to projectile
 
@@ -277,7 +277,7 @@ bool melee_strike_position_projectile_model(obj_type *obj,weapon_type *weap,proj
 	fire_pnt->y+=proj->draw.pnt.y;
 	fire_pnt->z+=proj->draw.pnt.z;
 
-	if (proj->draw.no_rot.on) gl_project_fix_rotation(&fire_pnt->x,&fire_pnt->y,&fire_pnt->z);
+	if (proj->draw.no_rot.on) gl_project_fix_rotation(fire_pnt);
 
 	return(TRUE);
 }

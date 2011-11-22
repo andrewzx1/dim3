@@ -86,9 +86,9 @@ void alt_property_palette_fill_cinema_action(int cinema_idx,int action_idx)
 	list_palette_add_int(&alt_property_palette,kCinemaActionPropertyTimeEnd,"Time End",&action->end_msec,FALSE);
 
 	list_palette_add_header(&alt_property_palette,0,"Cinema Action Actor");
-	list_palette_add_string(&alt_property_palette,kCinemaActionPropertyAction,"Action",action_action_type_str[action->action],FALSE);
+	list_palette_add_picker_list_int(&alt_property_palette,kCinemaActionPropertyAction,"Action",(char*)action_action_type_str,-1,name_str_len,0,FALSE,&action->action,FALSE);
 	if (!is_fade) {
-		list_palette_add_string(&alt_property_palette,kCinemaActionPropertyActorType,"Type",action_actor_type_str[action->actor_type],FALSE);
+		list_palette_add_picker_list_int(&alt_property_palette,kCinemaActionPropertyActorType,"Type",(char*)action_actor_type_str,-1,name_str_len,0,FALSE,&action->actor_type,FALSE);
 	}
 	else {
 		list_palette_add_string(&alt_property_palette,kCinemaActionPropertyActorName,"Type","n/a",TRUE);
@@ -146,14 +146,6 @@ void alt_property_palette_click_cinema_action(int cinema_idx,int action_idx,int 
 
 	switch (id) {
 	
-		case kCinemaActionPropertyAction:
-			property_pick_list("Pick an Action",(char*)action_action_type_str,&action->action);
-			break;
-
-		case kCinemaActionPropertyActorType:
-			property_pick_list("Pick an Actor Type",(char*)action_actor_type_str,&action->actor_type);
-			break;
-
 		case kCinemaActionPropertyActorName:
 			switch (action->actor_type) {
 

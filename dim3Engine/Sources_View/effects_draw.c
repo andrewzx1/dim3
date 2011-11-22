@@ -46,22 +46,23 @@ extern iface_type		iface;
 
 void effect_draw_get_bound_box(effect_type *effect,d3pnt *min,d3pnt *max)
 {
-	int					x,y,z,count,size,gravity_y;
+	int					count,size,gravity_y;
+	d3pnt				pnt;
 	iface_particle_type	*particle;
 
 	switch (effect->effecttype) {
 
 		case ef_particle:
 			count=game_time_get()-effect->start_tick;
-			particle_draw_position(effect,count,&x,&y,&z);
+			particle_draw_position(effect,count,&pnt);
 
 			size=effect->size;
-			min->x=x-(size>>1);
+			min->x=pnt.x-(size>>1);
 			max->x=min->x+size;
-			min->z=z-(size>>1);
+			min->z=pnt.z-(size>>1);
 			max->z=min->z+size;
-			min->y=y-size;
-			max->y=y;
+			min->y=pnt.y-size;
+			max->y=pnt.y;
 
 			particle=&iface.particle_list.particles[effect->data.particle.particle_idx];
 			gravity_y=(int)particle_get_gravity(particle,count);
@@ -77,15 +78,15 @@ void effect_draw_get_bound_box(effect_type *effect,d3pnt *min,d3pnt *max)
 
 		case ef_ring:
 			count=game_time_get()-effect->start_tick;
-			ring_draw_position(effect,count,&x,&y,&z);
+			ring_draw_position(effect,count,&pnt);
 
 			size=effect->size;
-			min->x=x-(size>>1);
+			min->x=pnt.x-(size>>1);
 			max->x=min->x+size;
-			min->z=z-(size>>1);
+			min->z=pnt.z-(size>>1);
 			max->z=min->z+size;
-			min->y=y-size;
-			max->y=y;
+			min->y=pnt.y-size;
+			max->y=pnt.y;
 			break;
 
 		case ef_lightning:

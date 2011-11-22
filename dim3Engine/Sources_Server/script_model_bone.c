@@ -140,7 +140,7 @@ JSValueRef js_model_bone_name_exception(JSContextRef cx,char *pose_name,char *bo
 JSValueRef js_model_bone_find_offset_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	char				pose_name[name_str_len],bone_name[name_str_len];
-	int					x,y,z;
+	d3pnt				pnt;
 	model_draw			*draw;
 	
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
@@ -156,18 +156,18 @@ JSValueRef js_model_bone_find_offset_func(JSContextRef cx,JSObjectRef func,JSObj
 	script_value_to_string(cx,argv[0],pose_name,name_str_len);
 	script_value_to_string(cx,argv[1],bone_name,name_str_len);
 	
-	if (!model_find_bone_offset(draw,pose_name,bone_name,&x,&y,&z)) {
+	if (!model_find_bone_offset(draw,pose_name,bone_name,&pnt)) {
 		*exception=js_model_bone_name_exception(cx,pose_name,bone_name);
 		return(script_null_to_value(cx));
 	}
 	
-	return(script_point_to_value(cx,x,y,z));
+	return(script_point_to_value(cx,&pnt));
 }
 
 JSValueRef js_model_bone_find_position_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	char				pose_name[name_str_len],bone_name[name_str_len];
-	int					x,y,z;
+	d3pnt				pnt;
 	model_draw			*draw;
 	
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
@@ -183,12 +183,12 @@ JSValueRef js_model_bone_find_position_func(JSContextRef cx,JSObjectRef func,JSO
 	script_value_to_string(cx,argv[0],pose_name,name_str_len);
 	script_value_to_string(cx,argv[1],bone_name,name_str_len);
 	
-	if (!model_find_bone_position(draw,pose_name,bone_name,&x,&y,&z)) {
+	if (!model_find_bone_position(draw,pose_name,bone_name,&pnt)) {
 		*exception=js_model_bone_name_exception(cx,pose_name,bone_name);
 		return(script_null_to_value(cx));
 	}
 	
-	return(script_point_to_value(cx,x,y,z));
+	return(script_point_to_value(cx,&pnt));
 }
 
 JSValueRef js_model_bone_get_brightness_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)

@@ -90,27 +90,27 @@ void model_animation_effect_setup(model_type *mdl)
       
 ======================================================= */
 
-void model_animation_effect_launch_bone_position(model_draw *draw,int animate_idx,int pose_idx,int bone_idx,d3pnt *pt)
+void model_animation_effect_launch_bone_position(model_draw *draw,int animate_idx,int pose_idx,int bone_idx,d3pnt *pnt)
 {
 	model_type				*mdl;
 
 		// default to center of model
 
-	pt->x=draw->pnt.x;
-	pt->y=draw->pnt.y;
-	pt->z=draw->pnt.z;
+	pnt->x=draw->pnt.x;
+	pnt->y=draw->pnt.y;
+	pnt->z=draw->pnt.z;
 
 		// bone position
 
 	if ((bone_idx!=-1) && (draw->model_idx!=-1)) {
 		mdl=server.model_list.models[draw->model_idx];
 
-		model_calc_draw_bone_position(mdl,&draw->setup,pose_idx,bone_idx,&pt->x,&pt->y,&pt->z);
-		pt->x+=draw->pnt.x;
-		pt->y+=draw->pnt.y;
-		pt->z+=draw->pnt.z;
+		model_calc_draw_bone_position(mdl,&draw->setup,pose_idx,bone_idx,pnt);
+		pnt->x+=draw->pnt.x;
+		pnt->y+=draw->pnt.y;
+		pnt->z+=draw->pnt.z;
 
-		if (draw->no_rot.on) gl_project_fix_rotation(&pt->x,&pt->y,&pt->z);
+		if (draw->no_rot.on) gl_project_fix_rotation(pnt);
 	}
 }
 

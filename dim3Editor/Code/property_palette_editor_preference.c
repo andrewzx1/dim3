@@ -82,7 +82,7 @@ void property_palette_fill_editor_preference(void)
 	list_palette_add_checkbox(&property_palette,kPrefPropertyShowTangentBinormal,"Show Tangent-Binormal",&setup.show_tangent_binormal,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Editor Options");
-	list_palette_add_string(&property_palette,kPrefPropertyMipMapMode,"Mipmap Mode",pref_mipmap_type_str[setup.mipmap_mode],FALSE);
+	list_palette_add_picker_list_int(&property_palette,kPrefPropertyMipMapMode,"Mipmap Mode",(char*)pref_mipmap_type_str,-1,name_str_len,0,FALSE,&setup.mipmap_mode,FALSE);
 	list_palette_add_int(&property_palette,kPrefPropertyDuplicateOffset,"Duplicate Offset",&setup.duplicate_offset,FALSE);
 	list_palette_add_int(&property_palette,kPrefPropertySnapSize,"Snap Size",&setup.snap_size,FALSE);
 	list_palette_add_int(&property_palette,kPrefPropertyClipDistance,"Clip Distance",&setup.clip_distance,FALSE);
@@ -113,18 +113,15 @@ void property_palette_fill_editor_preference(void)
 
 void property_palette_click_editor_preference(int id,bool double_click)
 {
-	if (!double_click) return;
+	if (double_click) {
 
-	switch (id) {
+		switch (id) {
 
-		case kPrefPropertyEngineName:
-			dialog_property_string_run(list_string_value_string,(void*)setup.engine_name,name_str_len,0,0);
-			break;
+			case kPrefPropertyEngineName:
+				dialog_property_string_run(list_string_value_string,(void*)setup.engine_name,name_str_len,0,0);
+				break;
 
-		case kPrefPropertyMipMapMode:
-			property_pick_list("Pick a MipMap Mode",(char*)pref_mipmap_type_str,&setup.mipmap_mode);
-			break;
-
+		}
 	}
 
 		// write prefs

@@ -107,7 +107,7 @@ void property_palette_fill_sky_weather(void)
 
 	list_palette_add_header(&property_palette,0,"Map Sky");
 	list_palette_add_checkbox(&property_palette,kMapPropertySkyOn,"On",&map.sky.on,FALSE);
-	list_palette_add_string(&property_palette,kMapPropertySkyType,"Type",map_property_sky_type_list[map.sky.type],FALSE);
+	list_palette_add_picker_list_int(&property_palette,kMapPropertySkyType,"Type",(char*)map_property_sky_type_list,-1,name_str_len,0,FALSE,&map.sky.type,FALSE);
 	list_palette_add_int(&property_palette,kMapPropertySkyRadius,"Radius",&map.sky.radius,FALSE);
 	list_palette_add_int(&property_palette,kMapPropertyDomeY,"Dome Height",&map.sky.dome_y,FALSE);
 	list_palette_add_checkbox(&property_palette,kMapPropertyDomeMirror,"Mirror Dome",&map.sky.dome_mirror,FALSE);
@@ -191,10 +191,6 @@ void property_palette_click_sky_weather(int id,bool double_click)
 	switch (id) {
 
 			// map sky
-
-		case kMapPropertySkyType:
-			property_pick_list("Pick a Sky Type",(char*)map_property_sky_type_list,&map.sky.type);
-			break;
 
 		case kMapPropertyTextureFill:
 			property_palette_pick_texture(NULL,&map.sky.fill);

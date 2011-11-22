@@ -87,8 +87,8 @@ void property_palette_fill_light_media(void)
 		// light map
 
 	list_palette_add_header(&property_palette,0,"Map Light Map");
-	list_palette_add_string(&property_palette,kMapPropertyLightMapQuality,"Quality",map_property_light_map_quality_list[map.light_map.quality],FALSE);
-	list_palette_add_string(&property_palette,kMapPropertyLightMapSize,"Texture Size",map_property_light_map_size_list[map.light_map.size],FALSE);
+	list_palette_add_picker_list_int(&property_palette,kMapPropertyLightMapQuality,"Quality",(char*)map_property_light_map_quality_list,-1,name_str_len,0,FALSE,&map.light_map.quality,FALSE);
+	list_palette_add_picker_list_int(&property_palette,kMapPropertyLightMapSize,"Texture Size",(char*)map_property_light_map_size_list,-1,name_str_len,0,FALSE,&map.light_map.size,FALSE);
 	list_palette_add_checkbox(&property_palette,kMapPropertyLightMapUseNormals,"Use Normals (Hard Edges)",&map.light_map.use_normals,FALSE);
 	list_palette_add_checkbox(&property_palette,kMapPropertyLightMapSkipGlows,"Skip Glow Mapped Polys",&map.light_map.skip_glows,FALSE);
 	list_palette_add_float(&property_palette,kMapPropertyLightMapDiffuseBoost,"Diffuse Boost",&map.light_map.diffuse_boost,FALSE);
@@ -96,7 +96,7 @@ void property_palette_fill_light_media(void)
 		// media
 
 	list_palette_add_header(&property_palette,0,"Map Media");
-	list_palette_add_string(&property_palette,kMapPropertyMediaType,"Startup Type",map_property_media_type_list[map.media.type],FALSE);
+	list_palette_add_picker_list_int(&property_palette,kMapPropertyMediaType,"Startup Type",(char*)map_property_media_type_list,-1,name_str_len,0,FALSE,&map.media.type,FALSE);
 	list_palette_add_int(&property_palette,kMapPropertyMediaEventId,"Event Id",&map.media.event_id,FALSE);
 	list_palette_add_string(&property_palette,kMapPropertyMediaName,"Startup Name",map.media.name,FALSE);
 	list_palette_add_string(&property_palette,kMapPropertyMediaTitleSound,"Startup Title Sound",map.media.title_sound_name,FALSE);
@@ -142,22 +142,8 @@ void property_palette_click_light_media(int id,bool double_click)
 			property_palette_pick_sound(map.ambient.sound_name,TRUE);
 			break;
 
-			// light maps
-	
-		case kMapPropertyLightMapQuality:
-			property_pick_list("Pick Light Map Quality",(char*)map_property_light_map_quality_list,&map.light_map.quality);
-			break;
-			
-		case kMapPropertyLightMapSize:
-			property_pick_list("Pick a Light Map Size",(char*)map_property_light_map_size_list,&map.light_map.size);
-			break;
-
 			// map media
 
-		case kMapPropertyMediaType:
-			property_pick_list("Pick a Media Type",(char*)map_property_media_type_list,&map.media.type);
-			break;
-		
 		case kMapPropertyMediaName:
 			dialog_property_string_run(list_string_value_string,(void*)map.media.name,name_str_len,0,0);
 			break;

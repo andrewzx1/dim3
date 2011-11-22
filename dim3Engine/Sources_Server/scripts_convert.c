@@ -158,6 +158,169 @@ JSValueRef script_int_array_to_value(JSContextRef cx,int cnt,int *values)
 
 /* =======================================================
 
+      Angle-JSValue Transformations
+      
+======================================================= */
+
+void script_value_to_angle(JSContextRef cx,JSValueRef val,d3ang *ang)
+{
+	JSObjectRef			obj;
+	JSValueRef			vp;
+
+	ang->x=ang->y=ang->z=0.0f;
+
+	obj=JSValueToObject(cx,val,NULL);
+	if (obj==NULL) return;
+
+	vp=script_get_single_property(cx,obj,"x");
+	if (vp!=NULL) ang->x=script_value_to_float(cx,vp);
+
+	vp=script_get_single_property(cx,obj,"y");
+	if (vp!=NULL) ang->y=script_value_to_float(cx,vp);
+
+	vp=script_get_single_property(cx,obj,"z");
+	if (vp!=NULL) ang->z=script_value_to_float(cx,vp);
+}
+
+JSValueRef script_angle_to_value(JSContextRef cx,d3ang *ang)
+{
+	JSObjectRef		j_obj;
+
+	j_obj=JSObjectMake(cx,NULL,NULL);
+
+	script_set_single_property(cx,j_obj,"x",script_float_to_value(cx,ang->x),(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
+	script_set_single_property(cx,j_obj,"y",script_float_to_value(cx,ang->y),(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
+	script_set_single_property(cx,j_obj,"z",script_float_to_value(cx,ang->z),(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
+	
+	return((JSValueRef)j_obj);
+}
+
+/* =======================================================
+
+      Vector-JSValue Transformations
+      
+======================================================= */
+
+void script_value_to_vector(JSContextRef cx,JSValueRef val,d3vct *vct)
+{
+	JSObjectRef			obj;
+	JSValueRef			vp;
+
+	vct->x=vct->y=vct->z=0.0f;
+
+	obj=JSValueToObject(cx,val,NULL);
+	if (obj==NULL) return;
+
+	vp=script_get_single_property(cx,obj,"x");
+	if (vp!=NULL) vct->x=script_value_to_float(cx,vp);
+
+	vp=script_get_single_property(cx,obj,"y");
+	if (vp!=NULL) vct->y=script_value_to_float(cx,vp);
+
+	vp=script_get_single_property(cx,obj,"z");
+	if (vp!=NULL) vct->z=script_value_to_float(cx,vp);
+}
+
+JSValueRef script_vector_to_value(JSContextRef cx,d3vct *vct)
+{
+	JSObjectRef		j_obj;
+
+	j_obj=JSObjectMake(cx,NULL,NULL);
+
+	script_set_single_property(cx,j_obj,"x",script_float_to_value(cx,vct->x),(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
+	script_set_single_property(cx,j_obj,"y",script_float_to_value(cx,vct->y),(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
+	script_set_single_property(cx,j_obj,"z",script_float_to_value(cx,vct->z),(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
+	
+	return((JSValueRef)j_obj);
+}
+
+/* =======================================================
+
+      Point-JSValue Transformations
+      
+======================================================= */
+
+void script_value_to_point(JSContextRef cx,JSValueRef val,d3pnt *pnt)
+{
+	JSObjectRef			obj;
+	JSValueRef			vp;
+
+	pnt->x=pnt->y=pnt->z=0;
+
+	obj=JSValueToObject(cx,val,NULL);
+	if (obj==NULL) return;
+
+	vp=script_get_single_property(cx,obj,"x");
+	if (vp!=NULL) pnt->x=script_value_to_int(cx,vp);
+
+	vp=script_get_single_property(cx,obj,"y");
+	if (vp!=NULL) pnt->y=script_value_to_int(cx,vp);
+
+	vp=script_get_single_property(cx,obj,"z");
+	if (vp!=NULL) pnt->z=script_value_to_int(cx,vp);
+}
+
+JSValueRef script_point_to_value(JSContextRef cx,d3pnt *pnt)
+{
+	JSObjectRef		j_obj;
+
+	j_obj=JSObjectMake(cx,NULL,NULL);
+
+	script_set_single_property(cx,j_obj,"x",script_int_to_value(cx,pnt->x),(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
+	script_set_single_property(cx,j_obj,"y",script_int_to_value(cx,pnt->y),(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
+	script_set_single_property(cx,j_obj,"z",script_int_to_value(cx,pnt->z),(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
+	
+	return((JSValueRef)j_obj);
+}
+
+/* =======================================================
+
+      Color-JSValue Transformations
+      
+======================================================= */
+
+void script_value_to_color(JSContextRef cx,JSValueRef val,d3col *col)
+{
+	JSObjectRef			obj;
+	JSValueRef			vp;
+
+		// check for both red/r, green/g, and blue/b
+
+	col->r=col->g=col->b=0.0f;
+
+	obj=JSValueToObject(cx,val,NULL);
+	if (obj==NULL) return;
+
+	vp=script_get_single_property(cx,obj,"red");
+	if (vp==NULL) vp=script_get_single_property(cx,obj,"r");
+	if (vp!=NULL) col->r=script_value_to_float(cx,vp);
+
+	col->g=0.0f;
+	vp=script_get_single_property(cx,obj,"green");
+	if (vp==NULL) vp=script_get_single_property(cx,obj,"g");
+	if (vp!=NULL) col->g=script_value_to_float(cx,vp);
+
+	col->b=0.0f;
+	vp=script_get_single_property(cx,obj,"blue");
+	if (vp==NULL) vp=script_get_single_property(cx,obj,"b");
+	if (vp!=NULL) col->b=script_value_to_float(cx,vp);
+}
+
+JSValueRef script_color_to_value(JSContextRef cx,d3col *col)
+{
+	JSObjectRef		j_obj;
+
+	j_obj=JSObjectMake(cx,NULL,NULL);
+
+	script_set_single_property(cx,j_obj,"r",script_float_to_value(cx,col->r),(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
+	script_set_single_property(cx,j_obj,"g",script_float_to_value(cx,col->g),(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
+	script_set_single_property(cx,j_obj,"b",script_float_to_value(cx,col->b),(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
+	
+	return((JSValueRef)j_obj);
+}
+
+/* =======================================================
+
       Exceptions
       
 ======================================================= */
@@ -204,50 +367,5 @@ void script_exception_to_string(JSContextRef cx,int main_event,JSValueRef ex_val
 		script_value_to_string(cx,vp,txt,256);
 		string_safe_strcat(str,txt,len);
 	}
-}
-
-/* =======================================================
-
-      Create dim3 Primitives
-      
-======================================================= */
-
-JSValueRef script_angle_to_value(JSContextRef cx,float x,float y,float z)
-{
-	JSObjectRef		j_obj;
-
-	j_obj=JSObjectMake(cx,NULL,NULL);
-
-	script_set_single_property(cx,j_obj,"x",script_float_to_value(cx,x),(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
-	script_set_single_property(cx,j_obj,"y",script_float_to_value(cx,y),(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
-	script_set_single_property(cx,j_obj,"z",script_float_to_value(cx,z),(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
-	
-	return((JSValueRef)j_obj);
-}
-
-JSValueRef script_point_to_value(JSContextRef cx,int x,int y,int z)
-{
-	JSObjectRef		j_obj;
-
-	j_obj=JSObjectMake(cx,NULL,NULL);
-
-	script_set_single_property(cx,j_obj,"x",script_int_to_value(cx,x),(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
-	script_set_single_property(cx,j_obj,"y",script_int_to_value(cx,y),(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
-	script_set_single_property(cx,j_obj,"z",script_int_to_value(cx,z),(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
-	
-	return((JSValueRef)j_obj);
-}
-
-JSValueRef script_color_to_value(JSContextRef cx,d3col *col)
-{
-	JSObjectRef		j_obj;
-
-	j_obj=JSObjectMake(cx,NULL,NULL);
-
-	script_set_single_property(cx,j_obj,"r",script_float_to_value(cx,col->r),(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
-	script_set_single_property(cx,j_obj,"g",script_float_to_value(cx,col->g),(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
-	script_set_single_property(cx,j_obj,"b",script_float_to_value(cx,col->b),(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
-	
-	return((JSValueRef)j_obj);
 }
 

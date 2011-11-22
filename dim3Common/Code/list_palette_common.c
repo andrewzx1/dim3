@@ -668,6 +668,11 @@ void list_palette_start_picking_mode(char *title,char *list_ptr,int list_count,i
 
 	strcpy(list_picker.title,title);
 
+		// if list count is -1, then calculate
+		// it from the first blank string
+
+	if (list_count==-1) list_count=property_pick_get_list_count(list_ptr,list_item_sz,list_name_offset);
+
 	list_picker.include_none=include_none;
 	list_picker.file_list=file_list;
 	list_picker.ptr=list_ptr;
@@ -1937,6 +1942,7 @@ bool list_palette_click(list_palette_type *list,d3pnt *pnt,bool double_click)
 			return(TRUE);
 
 		case list_item_ctrl_picker:
+			if (!double_click) return(FALSE);
 			sprintf(title,"Pick %s",item->name);
 			if (item->list.is_index) {
 				list_palette_start_picking_mode(title,item->list.ptr,item->list.count,item->list.item_sz,item->list.name_offset,item->list.include_none,item->list.file_list,item->value.int_ptr,NULL);
@@ -1953,5 +1959,5 @@ bool list_palette_click(list_palette_type *list,d3pnt *pnt,bool double_click)
 
 	}
 
-	return(FALSE);
+	return(TRUE);
 }

@@ -335,7 +335,7 @@ void gl_project_to_eye_coordinates(float *x,float *y,float *z)
 	*z=(float)((fx*mod_matrix[2])+(fy*mod_matrix[6])+(fz*mod_matrix[10])+mod_matrix[14]);
 }
 
-void gl_project_fix_rotation(int *x,int *y,int *z)
+void gl_project_fix_rotation(d3pnt *pnt)
 {
 	float			dx,dy,dz,dx2,dy2,dz2;
 
@@ -350,9 +350,9 @@ void gl_project_fix_rotation(int *x,int *y,int *z)
 		// translate from non-rotated 3D space
 		// to rotated 3D space
 		
-	dx=(float)(*x);
-	dy=(float)(*y);
-	dz=(float)(*z);
+	dx=(float)pnt->x;
+	dy=(float)pnt->y;
+	dz=(float)pnt->z;
 
 	gl_3D_view();
 	gl_setup_project();
@@ -362,9 +362,9 @@ void gl_project_fix_rotation(int *x,int *y,int *z)
 	gl_setup_project();
 	glu_patch_gluUnProject(dx2,dy2,dz2,mod_matrix,proj_matrix,vport,&dx,&dy,&dz);
 
-	*x=((int)dx);
-	*y=((int)dy);
-	*z=((int)dz);
+	pnt->x=(int)dx;
+	pnt->y=(int)dy;
+	pnt->z=(int)dz;
 
 		// restore settings
 

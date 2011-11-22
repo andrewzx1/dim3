@@ -128,7 +128,8 @@ JSValueRef js_utility_point_distance_to_func(JSContextRef cx,JSObjectRef func,JS
 
 JSValueRef js_utility_point_transform_3D_to_2D_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	int				x,z,y,x2,y2;
+	int				x,y,z;
+	d3pnt			pnt;
 	
 	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
 
@@ -136,9 +137,10 @@ JSValueRef js_utility_point_transform_3D_to_2D_func(JSContextRef cx,JSObjectRef 
 	z=script_value_to_int(cx,argv[1]);
 	y=script_value_to_int(cx,argv[2]);
 	
-	view_script_transform_3D_to_2D(x,y,z,&x2,&y2);
+	view_script_transform_3D_to_2D(x,y,z,&pnt.x,&pnt.y);
+	pnt.z=z;
 
-	return(script_point_to_value(cx,x2,y2,z));
+	return(script_point_to_value(cx,&pnt));
 }
 
 

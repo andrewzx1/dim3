@@ -69,11 +69,16 @@ extern inline JSValueRef script_bool_to_value(JSContextRef cx,bool b);
 extern void script_value_to_string(JSContextRef cx,JSValueRef val,char *str,int len);
 extern JSValueRef script_string_to_value(JSContextRef cx,char *str);
 extern JSValueRef script_int_array_to_value(JSContextRef cx,int cnt,int *values);
+extern void script_value_to_angle(JSContextRef cx,JSValueRef val,d3ang *ang);
+extern JSValueRef script_angle_to_value(JSContextRef cx,d3ang *ang);
+extern void script_value_to_vector(JSContextRef cx,JSValueRef val,d3vct *vct);
+extern JSValueRef script_vector_to_value(JSContextRef cx,d3vct *vct);
+extern void script_value_to_point(JSContextRef cx,JSValueRef val,d3pnt *pnt);
+extern JSValueRef script_point_to_value(JSContextRef cx,d3pnt *pnt);
+extern void script_value_to_color(JSContextRef cx,JSValueRef val,d3col *col);
+extern JSValueRef script_color_to_value(JSContextRef cx,d3col *col);
 extern JSValueRef script_create_exception(JSContextRef cx,char *str);
 extern void script_exception_to_string(JSContextRef cx,int main_event,JSValueRef ex_val,char *str,int len);
-extern JSValueRef script_angle_to_value(JSContextRef cx,float x,float y,float z);
-extern JSValueRef script_point_to_value(JSContextRef cx,int x,int y,int z);
-extern JSValueRef script_color_to_value(JSContextRef cx,d3col *col);
 
 //
 // lookups

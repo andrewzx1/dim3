@@ -275,29 +275,6 @@ int property_pick_get_list_count(char *list_ptr,int list_item_sz,int list_name_o
 	return(list_count);
 }
 
-
-// supergumba -- delete later
-void property_pick_list(char *title,char *list,int *idx)
-{
-	int			count;
-	char		*c;
-
-		// get count
-
-	c=list;
-	count=0;
-
-	while (TRUE) {
-		if (*c==0x0) break;
-		c+=name_str_len;
-		count++;
-	}
-
-		// run the list picker
-
-	list_palette_start_picking_mode(title,list,count,name_str_len,0,FALSE,FALSE,idx,NULL);
-}
-
 /* =======================================================
 
       Property Pick From File

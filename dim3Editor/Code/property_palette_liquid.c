@@ -137,7 +137,7 @@ void property_palette_fill_liquid(int liq_idx)
 	list_palette_add_int(&property_palette,kLiquidPropertyDrownHarm,"Drowning Damage",&liq->harm.drown_harm,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Liquid Reflection");
-	list_palette_add_string(&property_palette,kLiquidPropertyReflectTextureSize,"Texture Size",map_property_light_map_size_list[liq->reflect.texture_size],FALSE);
+	list_palette_add_picker_list_int(&property_palette,kLiquidPropertyReflectTextureSize,"Texture Size",(char*)map_property_light_map_size_list,-1,name_str_len,0,FALSE,&liq->reflect.texture_size,FALSE);
 	list_palette_add_int(&property_palette,kLiquidPropertyReflectXRefract,"X Refraction Factor",&liq->reflect.x_refract_factor,FALSE);
 	list_palette_add_int(&property_palette,kLiquidPropertyReflectZRefract,"Z Refraction Factor",&liq->reflect.z_refract_factor,FALSE);
 	list_palette_add_pick_color(&property_palette,kLiquidPropertyReflectNoHitColor,"No Hit Color",&liq->reflect.no_hit_col,FALSE);
@@ -227,12 +227,6 @@ void property_palette_click_liquid(int liq_idx,int id,bool double_click)
 
 		case kLiquidPropertySoundName:
 			property_palette_pick_sound(liq->ambient.sound_name,TRUE);
-			break;
-
-			// reflect
-			
-		case kLiquidPropertyReflectTextureSize:
-			property_pick_list("Pick a Liquid Reflect Map Size",(char*)map_property_light_map_size_list,&liq->reflect.texture_size);
 			break;
 
 			// overlay

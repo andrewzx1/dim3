@@ -81,6 +81,7 @@ JSObjectRef script_add_map_group_object(JSContextRef cx,JSObjectRef parent_obj,i
 JSValueRef js_map_group_get_center_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				group_idx;
+	d3pnt			pnt;
 	group_type		*group;
 	
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
@@ -90,10 +91,11 @@ JSValueRef js_map_group_get_center_func(JSContextRef cx,JSObjectRef func,JSObjec
 
 	if ((group_idx>=0) && (group_idx<map.group.ngroup)) {
 		group=&map.group.groups[group_idx];
-		return(script_point_to_value(cx,group->run.center_pnt.x,group->run.center_pnt.y,group->run.center_pnt.z));
+		return(script_point_to_value(cx,&group->run.center_pnt));
 	}
 
-	return(script_point_to_value(cx,0,0,0));
+	pnt.x=pnt.y=pnt.z=0;
+	return(script_point_to_value(cx,&pnt));
 }
 
 /* =======================================================

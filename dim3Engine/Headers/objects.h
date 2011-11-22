@@ -446,9 +446,9 @@ extern void model_run_animation(model_draw *draw,int tick);
 extern void model_calc_animation(model_draw *draw,int tick);
 extern void model_calc_draw_bones(model_draw *draw);
 extern int model_get_current_pose(model_draw *draw);
-extern bool model_find_bone_offset(model_draw *draw,char *pose_name,char *bone_name,int *x,int *y,int *z);
-extern bool model_find_bone_position(model_draw *draw,char *pose_name,char *bone_name,int *x,int *y,int *z);
-extern bool model_find_bone_position_for_current_animation(model_draw *draw,int bone_idx,int *x,int *y,int *z);
+extern bool model_find_bone_offset(model_draw *draw,char *pose_name,char *bone_name,d3pnt *pnt);
+extern bool model_find_bone_position(model_draw *draw,char *pose_name,char *bone_name,d3pnt *pnt);
+extern bool model_find_bone_position_for_current_animation(model_draw *draw,int bone_idx,d3pnt *pnt);
 extern bool model_get_bone_brightness(model_draw *draw,char *pose_name,char *bone_name,float *bright);
 
 extern void model_animation_effect_setup(model_type *mdl);
