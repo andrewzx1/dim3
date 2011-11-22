@@ -196,7 +196,7 @@ JSValueRef js_map_spot_get_position_func(JSContextRef cx,JSObjectRef func,JSObje
 	
 		// get position
 		
-	return(script_point_to_value(cx,spot->pnt.x,spot->pnt.y,spot->pnt.z));
+	return(script_point_to_value(cx,&spot->pnt));
 }
 
 JSValueRef js_map_spot_get_angle_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -212,6 +212,6 @@ JSValueRef js_map_spot_get_angle_func(JSContextRef cx,JSObjectRef func,JSObjectR
 	
 		// get position
 		
-	return(script_angle_to_value(cx,0,spot->ang.y,0));
+	return(script_angle_to_value(cx,&spot->ang));
 }
 

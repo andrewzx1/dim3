@@ -362,7 +362,7 @@ JSValueRef js_map_node_get_distance_func(JSContextRef cx,JSObjectRef func,JSObje
 JSValueRef js_map_node_get_angle_to_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				x,z,y;
-	float			ang_x,ang_z,ang_y;
+	d3ang			ang;
 	node_type		*node;
 	
 	if (!script_check_param_count(cx,func,argc,4,exception)) return(script_null_to_value(cx));
@@ -380,11 +380,11 @@ JSValueRef js_map_node_get_angle_to_func(JSContextRef cx,JSObjectRef func,JSObje
 	
 		// get angles to
 		
-	ang_x=angle_find(y,z,node->pnt.y,node->pnt.z);
-	ang_y=angle_find(x,z,node->pnt.x,node->pnt.z);
-	ang_z=angle_find(x,y,node->pnt.x,node->pnt.y);
+	ang.x=angle_find(y,z,node->pnt.y,node->pnt.z);
+	ang.y=angle_find(x,z,node->pnt.x,node->pnt.z);
+	ang.z=angle_find(x,y,node->pnt.x,node->pnt.y);
 		
-	return(script_angle_to_value(cx,ang_x,ang_y,ang_z));
+	return(script_angle_to_value(cx,&ang));
 }
 
 /* =======================================================
@@ -406,6 +406,6 @@ JSValueRef js_map_node_get_position_func(JSContextRef cx,JSObjectRef func,JSObje
 	
 		// get position
 		
-	return(script_point_to_value(cx,node->pnt.x,node->pnt.y,node->pnt.z));
+	return(script_point_to_value(cx,&node->pnt));
 }
 

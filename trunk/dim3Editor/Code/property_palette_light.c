@@ -74,8 +74,8 @@ void property_palette_fill_light(int light_idx)
 	list_palette_add_string(&property_palette,kLightPropertyName,"Name",light->name,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Light Display");
-	list_palette_add_string(&property_palette,kLightPropertyType,"Type",light_property_type_list[light->setting.type],FALSE);
-	list_palette_add_string(&property_palette,kLightPropertyDirection,"Direction",light_property_direction_list[light->setting.direction],FALSE);
+	list_palette_add_picker_list_int(&property_palette,kLightPropertyType,"Type",(char*)light_property_type_list,-1,name_str_len,0,FALSE,&light->setting.type,FALSE);
+	list_palette_add_picker_list_int(&property_palette,kLightPropertyDirection,"Direction",(char*)light_property_direction_list,-1,name_str_len,0,FALSE,&light->setting.direction,FALSE);
 	list_palette_add_int(&property_palette,kLightPropertyIntensity,"Intensity",&light->setting.intensity,FALSE);
 	list_palette_add_float(&property_palette,kLightPropertyExponent,"Exponent",&light->setting.exponent,FALSE);
 	list_palette_add_pick_color(&property_palette,kLightPropertyColor,"Color",&light->setting.col,FALSE);
@@ -103,14 +103,6 @@ void property_palette_click_light(int light_idx,int id,bool double_click)
 
 		case kLightPropertyName:
 			dialog_property_string_run(list_string_value_string,(void*)light->name,name_str_len,0,0);
-			break;
-
-		case kLightPropertyType:
-			property_pick_list("Pick a Light Type",(char*)light_property_type_list,&light->setting.type);
-			break;
-
-		case kLightPropertyDirection:
-			property_pick_list("Pick a Light Direction",(char*)light_property_direction_list,&light->setting.direction);
 			break;
 
 		case kLightPropertyHalo:

@@ -569,7 +569,7 @@ JSValueRef js_map_object_get_distance_func(JSContextRef cx,JSObjectRef func,JSOb
 JSValueRef js_map_object_get_angle_to_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				x,z,y;
-	float			ang_x,ang_z,ang_y;
+	d3ang			ang;
 	obj_type		*obj;
 	
 	if (!script_check_param_count(cx,func,argc,4,exception)) return(script_null_to_value(cx));
@@ -587,16 +587,16 @@ JSValueRef js_map_object_get_angle_to_func(JSContextRef cx,JSObjectRef func,JSOb
 	
 		// get angles to
 		
-	ang_x=angle_find(y,z,obj->pnt.y,obj->pnt.z);
-	ang_y=angle_find(x,z,obj->pnt.x,obj->pnt.z);
-	ang_z=angle_find(x,y,obj->pnt.x,obj->pnt.y);
+	ang.x=angle_find(y,z,obj->pnt.y,obj->pnt.z);
+	ang.y=angle_find(x,z,obj->pnt.x,obj->pnt.z);
+	ang.z=angle_find(x,y,obj->pnt.x,obj->pnt.y);
 		
-	return(script_angle_to_value(cx,ang_x,ang_y,ang_z));
+	return(script_angle_to_value(cx,&ang));
 }
 
 JSValueRef js_map_object_get_angle_to_id_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	float			ang_x,ang_z,ang_y;
+	d3ang			ang;
 	obj_type		*obj,*obj2;
 	
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
@@ -611,11 +611,11 @@ JSValueRef js_map_object_get_angle_to_id_func(JSContextRef cx,JSObjectRef func,J
 	
 		// get angles to
 		
-	ang_x=angle_find(obj2->pnt.y,obj2->pnt.z,obj->pnt.y,obj->pnt.z);
-	ang_y=angle_find(obj2->pnt.x,obj2->pnt.z,obj->pnt.x,obj->pnt.z);
-	ang_z=angle_find(obj2->pnt.x,obj2->pnt.y,obj->pnt.x,obj->pnt.y);
+	ang.x=angle_find(obj2->pnt.y,obj2->pnt.z,obj->pnt.y,obj->pnt.z);
+	ang.y=angle_find(obj2->pnt.x,obj2->pnt.z,obj->pnt.x,obj->pnt.z);
+	ang.z=angle_find(obj2->pnt.x,obj2->pnt.y,obj->pnt.x,obj->pnt.y);
 		
-	return(script_angle_to_value(cx,ang_x,ang_y,ang_z));
+	return(script_angle_to_value(cx,&ang));
 }
 
 /* =======================================================
@@ -667,11 +667,12 @@ JSValueRef js_map_object_get_position_func(JSContextRef cx,JSObjectRef func,JSOb
 	
 		// get position
 		
-	return(script_point_to_value(cx,obj->pnt.x,obj->pnt.y,obj->pnt.z));
+	return(script_point_to_value(cx,&obj->pnt));
 }
 
 JSValueRef js_map_object_get_angle_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
+	d3ang			ang;
 	obj_type		*obj;
 
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
@@ -682,12 +683,17 @@ JSValueRef js_map_object_get_angle_func(JSContextRef cx,JSObjectRef func,JSObjec
 	if (obj==NULL) return(script_null_to_value(cx));
 	
 		// get angle
+
+	ang.x=angle_add(obj->ang.x,obj->face.ang.x);
+	ang.y=angle_add(obj->ang.y,obj->face.ang.y);
+	ang.z=angle_add(obj->ang.z,obj->face.ang.z);
 		
-	return(script_angle_to_value(cx,angle_add(obj->ang.x,obj->face.ang.x),angle_add(obj->ang.y,obj->face.ang.y),angle_add(obj->ang.z,obj->face.ang.z)));
+	return(script_angle_to_value(cx,&ang));
 }
 
 JSValueRef js_map_object_get_size_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
+	d3pnt			pnt;
 	obj_type		*obj;
 
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
@@ -699,7 +705,11 @@ JSValueRef js_map_object_get_size_func(JSContextRef cx,JSObjectRef func,JSObject
 	
 		// get size
 		
-	return(script_point_to_value(cx,obj->size.x,obj->size.y,obj->size.z));
+	pnt.x=obj->size.x;
+	pnt.y=obj->size.y;
+	pnt.z=obj->size.z;
+
+	return(script_point_to_value(cx,&pnt));
 }
 
 JSValueRef js_map_object_get_health_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)

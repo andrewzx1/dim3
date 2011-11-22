@@ -185,8 +185,7 @@ void alt_property_palette_click_chooser(int chooser_idx,int id,bool double_click
 
 		bzero(&chooser->pieces[idx],sizeof(iface_chooser_piece_type));
 
-		property_pick_list("Pick a Chooser Piece Type",(char*)chooser_type_str,&chooser->pieces[idx].type);
-
+		chooser->pieces[idx].type=chooser_piece_type_text;
 		chooser->pieces[idx].id=-1;
 		chooser->pieces[idx].x=0;
 		chooser->pieces[idx].y=0;
@@ -194,35 +193,15 @@ void alt_property_palette_click_chooser(int chooser_idx,int id,bool double_click
 		chooser->pieces[idx].high=-1;
 		chooser->pieces[idx].clickable=FALSE;
 		chooser->pieces[idx].goto_name[0]=0x0;
+		
+		bzero(&chooser->pieces[idx].data,sizeof(iface_chooser_piece_data_type));
 
-		switch (chooser->pieces[idx].type) {
-
-			case chooser_piece_type_text:
-				chooser->pieces[idx].data.text.size=20;
-				chooser->pieces[idx].data.text.just=0;
-				chooser->pieces[idx].data.text.str[0]=0x0;
-				break;
-
-			case chooser_piece_type_item:
-				chooser->pieces[idx].data.item.file[0]=0x0;
-				break;
-
-			case chooser_piece_type_model:
-				chooser->pieces[idx].data.model.resize=1.0f;
-				chooser->pieces[idx].data.model.model_name[0]=0x0;
-				chooser->pieces[idx].data.model.animate_name[0]=0x0;
-				chooser->pieces[idx].data.model.rot.x=0.0f;
-				chooser->pieces[idx].data.model.rot.y=0.0f;
-				chooser->pieces[idx].data.model.rot.z=0.0f;
-				break;
-
-			case chooser_piece_type_button:
-				chooser->pieces[idx].data.button.name[0]=0x0;
-				break;
-
-		}
-
+		state.cur_chooser_idx=chooser_idx;
 		state.cur_chooser_piece_idx=idx;
+
+		list_palette_set_level(3);
+
+		list_palette_start_picking_mode("Pick a Chooser Piece Type",(char*)chooser_type_str,-1,name_str_len,0,FALSE,FALSE,&chooser->pieces[idx].type,NULL);
 
 		return;
 	}

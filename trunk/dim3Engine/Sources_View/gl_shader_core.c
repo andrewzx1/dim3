@@ -100,10 +100,13 @@ char* gl_core_map_shader_build_vert(int nlight,bool fog,bool bump,bool spec)
 	strcat(buf,"varying vec3 dirNormal;\n");
 	if (fog) strcat(buf,"varying float fogFactor;\n");
 
-	sprintf(strchr(buf,0),"varying vec3 lightVector[%d]",max_shader_light);
-	if (bump) sprintf(strchr(buf,0),",lightVertexVector[%d]",max_shader_light);
-	if (spec) strcat(buf,",eyeVector");
-	strcat(buf,";\n");
+	for (n=0;n!=nlight;n++) {
+		sprintf(strchr(buf,0),"varying vec3 lightVector_%d",n);
+		if (bump) sprintf(strchr(buf,0),",lightVertexVector_%d",n);
+		strcat(buf,";\n");
+	}
+
+	if (spec) strcat(buf,"varying vec3 eyeVector;\n");
 	
 	strcat(buf,"void main(void)\n");
 	strcat(buf,"{\n");
@@ -129,12 +132,12 @@ char* gl_core_map_shader_build_vert(int nlight,bool fog,bool bump,bool spec)
 	}
 	
 	for (n=0;n!=nlight;n++) {
-		sprintf(strchr(buf,0),"lightVector[%d]=dim3Light_%d.position-vtx;\n",n,n);
+		sprintf(strchr(buf,0),"lightVector_%d=dim3Light_%d.position-vtx;\n",n,n);
 		
 		if (bump) {
-			sprintf(strchr(buf,0),"lightVertexVector[%d].x=dot(lightVector[%d],tangentSpaceTangent);\n",n,n);
-			sprintf(strchr(buf,0),"lightVertexVector[%d].y=dot(lightVector[%d],tangentSpaceBinormal);\n",n,n);
-			sprintf(strchr(buf,0),"lightVertexVector[%d].z=dot(lightVector[%d],tangentSpaceNormal);\n",n,n);
+			sprintf(strchr(buf,0),"lightVertexVector_%d.x=dot(lightVector_%d,tangentSpaceTangent);\n",n,n);
+			sprintf(strchr(buf,0),"lightVertexVector_%d.y=dot(lightVector_%d,tangentSpaceBinormal);\n",n,n);
+			sprintf(strchr(buf,0),"lightVertexVector_%d.z=dot(lightVector_%d,tangentSpaceNormal);\n",n,n);
 		}
 	}
 	
@@ -145,8 +148,6 @@ char* gl_core_map_shader_build_vert(int nlight,bool fog,bool bump,bool spec)
 	return(buf);
 }
 
-
-/** supergumba -- old way with over powering specs
 char* gl_core_map_shader_build_frag(int nlight,bool fog,bool bump,bool spec)
 {
 	int				n;
@@ -177,10 +178,13 @@ char* gl_core_map_shader_build_frag(int nlight,bool fog,bool bump,bool spec)
 	strcat(buf,"varying vec3 dirNormal;\n");
 	if (fog) strcat(buf,"varying float fogFactor;\n");
 	
-	sprintf(strchr(buf,0),"varying vec3 lightVector[%d]",max_shader_light);
-	if (bump) sprintf(strchr(buf,0),",lightVertexVector[%d]",max_shader_light);
-	if (spec) strcat(buf,",eyeVector");
-	strcat(buf,";\n");
+	for (n=0;n!=nlight;n++) {
+		sprintf(strchr(buf,0),"varying vec3 lightVector_%d",n);
+		if (bump) sprintf(strchr(buf,0),",lightVertexVector_%d",n);
+		strcat(buf,";\n");
+	}
+
+	if (spec) strcat(buf,"varying vec3 eyeVector;\n");
 	
 	strcat(buf,"void main(void)\n");
 	strcat(buf,"{\n");
@@ -216,7 +220,7 @@ char* gl_core_map_shader_build_frag(int nlight,bool fog,bool bump,bool spec)
 		// the texture lighting
 		
 	for (n=0;n!=nlight;n++) {
-		sprintf(strchr(buf,0),"dist=length(lightVector[%d]);\n",n);
+		sprintf(strchr(buf,0),"dist=length(lightVector_%d);\n",n);
 		sprintf(strchr(buf,0),"if (dist<dim3Light_%d.intensity) {\n",n);
 		sprintf(strchr(buf,0)," if (dot(dirNormal,dim3Light_%d.direction)>=0.0) {\n",n);
 		sprintf(strchr(buf,0),"  att=1.0-(dist*dim3Light_%d.invertIntensity);\n",n);
@@ -225,12 +229,12 @@ char* gl_core_map_shader_build_frag(int nlight,bool fog,bool bump,bool spec)
 		
 			// per-light bump calc
 			
-		if (bump) sprintf(strchr(buf,0),"  bump+=(dot(normalize(lightVertexVector[%d]),bumpMap)*att);\n",n);
+		if (bump) sprintf(strchr(buf,0),"  bump+=(dot(normalize(lightVertexVector_%d),bumpMap)*att);\n",n);
 		
 			// per-light spec count
 		
 		if (spec) {
-			sprintf(strchr(buf,0),"  specHalfVector=normalize(normalize(eyeVector)+normalize(lightVertexVector[%d]));\n",n);
+			sprintf(strchr(buf,0),"  specHalfVector=normalize(normalize(eyeVector)+normalize(lightVertexVector_%d));\n",n);
 			strcat(buf,"  specFactor=max(dot(bumpMap,specHalfVector),0.0);\n");
 			strcat(buf,"  spec+=((specMap*pow(specFactor,dim3ShineFactor))*att);\n");
 		}
@@ -257,129 +261,6 @@ char* gl_core_map_shader_build_frag(int nlight,bool fog,bool bump,bool spec)
 	strcat(buf,"(tex.rgb*ambient)");
 	if (bump) strcat(buf,"*bump)");
 	if (spec) strcat(buf,"+spec)");
-	strcat(buf,";\n");
-
-	if (fog) strcat(buf,"gl_FragColor.rgb=mix(gl_Fog.color.rgb,frag,fogFactor);\n");
-	
-	strcat(buf,"gl_FragColor.a=tex.a*dim3Alpha;\n");
-	strcat(buf,"}\n");
-
-	return(buf);
-}
-*/
-
-char* gl_core_map_shader_build_frag(int nlight,bool fog,bool bump,bool spec)
-{
-	int				n;
-	char			*buf;
-
-		// memory for shader
-
-	buf=(char*)malloc(max_core_shader_data_sz);
-	if (buf==NULL) return(NULL);
-
-	bzero(buf,max_core_shader_data_sz);
-
-		// build frag shader
-		
-	gl_core_shader_build_generic_light_struct(nlight,buf);
-	
-	strcat(buf,"uniform sampler2D dim3Tex");
-	if (bump) strcat(buf,",dim3TexBump");
-	if (spec) strcat(buf,",dim3TexSpecular");
-	strcat(buf,",dim3TexLightMap;\n");
-
-	strcat(buf,"uniform float dim3Alpha,dim3LightMapBoost");
-	if (spec) strcat(buf,",dim3ShineFactor");
-	strcat(buf,";\n");
-	
-	strcat(buf,"uniform vec3 dim3AmbientColor;\n");
-	
-	strcat(buf,"varying vec3 dirNormal;\n");
-	if (fog) strcat(buf,"varying float fogFactor;\n");
-	
-	sprintf(strchr(buf,0),"varying vec3 lightVector[%d]",max_shader_light);
-	if (bump) sprintf(strchr(buf,0),",lightVertexVector[%d]",max_shader_light);
-	if (spec) strcat(buf,",eyeVector");
-	strcat(buf,";\n");
-	
-	strcat(buf,"void main(void)\n");
-	strcat(buf,"{\n");
-	
-	strcat(buf,"float att,dist;\n");
-	strcat(buf,"vec3 ambient=dim3AmbientColor;\n");
-
-		// the light map
-
-	strcat(buf,"vec3 lmap=texture2D(dim3TexLightMap,gl_TexCoord[1].st).rgb;\n");
-	strcat(buf,"ambient+=(lmap+(lmap*dim3LightMapBoost));\n");
-	
-		// the texture map
-		
-	strcat(buf,"vec4 tex=texture2D(dim3Tex,gl_TexCoord[0].st);\n");
-		
-		// the bump map
-		
-	if (bump) {
-		strcat(buf,"vec3 bumpMap=normalize((texture2D(dim3TexBump,gl_TexCoord[0].st).rgb*2.0)-1.0);\n");
-		strcat(buf,"bumpMap.y=-bumpMap.y;\n");
-		strcat(buf,"float bump=dot(vec3(0.0,0.0,0.5),bumpMap);\n");
-	}
-	
-		// the spec map
-		
-	if (spec) {
-		strcat(buf,"vec3 spec=vec3(0.0,0.0,0.0),specHalfVector;\n");
-		strcat(buf,"vec3 specMap=texture2D(dim3TexSpecular,gl_TexCoord[0].st).rgb;\n");
-		strcat(buf,"float specFactor;\n");
-	}
-	
-		// the texture lighting
-		
-	for (n=0;n!=nlight;n++) {
-		sprintf(strchr(buf,0),"dist=length(lightVector[%d]);\n",n);
-		sprintf(strchr(buf,0),"if (dist<dim3Light_%d.intensity) {\n",n);
-		sprintf(strchr(buf,0)," if (dot(dirNormal,dim3Light_%d.direction)>=0.0) {\n",n);
-		sprintf(strchr(buf,0),"  att=1.0-(dist*dim3Light_%d.invertIntensity);\n",n);
-		sprintf(strchr(buf,0),"  att+=pow(att,dim3Light_%d.exponent);\n",n);
-		sprintf(strchr(buf,0),"  if (!dim3Light_%d.inLightMap) ambient+=(dim3Light_%d.color*att);\n",n,n);
-		
-			// per-light bump calc
-			
-		if (bump) sprintf(strchr(buf,0),"  bump+=(dot(normalize(lightVertexVector[%d]),bumpMap)*att);\n",n);
-		
-			// per-light spec count
-		
-		if (spec) {
-			sprintf(strchr(buf,0),"  specHalfVector=normalize(normalize(eyeVector)+normalize(lightVertexVector[%d]));\n",n);
-			strcat(buf,"  specFactor=max(dot(bumpMap,specHalfVector),0.0);\n");
-			strcat(buf,"  spec+=((specMap*pow(specFactor,dim3ShineFactor))*att);\n");
-		}
-		
-		strcat(buf," }\n");
-		strcat(buf,"}\n");
-	}
-	
-		// finish the bump by clamping it
-		
-	if (bump) strcat(buf,"bump=clamp(bump,0.0,1.0);\n");
-
-		// output the fragment
-
-	if (!fog) {
-		strcat(buf,"gl_FragColor.rgb=");
-	}
-	else {
-		strcat(buf,"vec3 frag=");
-	}
-
-	if (spec) strcat(buf,"(");
-	if (bump) strcat(buf,"(");
-	
-	strcat(buf,"tex.rgb");
-	if (bump) strcat(buf,"*bump)");
-	if (spec) strcat(buf,"+spec)");
-	strcat(buf,"*ambient");
 	strcat(buf,";\n");
 
 	if (fog) strcat(buf,"gl_FragColor.rgb=mix(gl_Fog.color.rgb,frag,fogFactor);\n");
@@ -459,7 +340,9 @@ char* gl_core_liquid_shader_build_vert(int nlight)
 	
 	strcat(buf,"varying vec3 dirNormal;\n");
 
-	sprintf(strchr(buf,0),"varying vec3 lightVector[%d];\n",max_shader_light);
+	for (n=0;n!=nlight;n++) {
+		sprintf(strchr(buf,0),"varying vec3 lightVector_%d;\n",n);
+	}
 	
 	strcat(buf,"void main(void)\n");
 	strcat(buf,"{\n");
@@ -473,7 +356,7 @@ char* gl_core_liquid_shader_build_vert(int nlight)
 	strcat(buf,"vec3 vtx=vec3(gl_ModelViewMatrix*gl_Vertex);\n");
 	
 	for (n=0;n!=nlight;n++) {
-		sprintf(strchr(buf,0),"lightVector[%d]=dim3Light_%d.position-vtx;\n",n,n);
+		sprintf(strchr(buf,0),"lightVector_%d=dim3Light_%d.position-vtx;\n",n,n);
 	}
 
 	strcat(buf,"}\n");
@@ -503,7 +386,9 @@ char* gl_core_liquid_shader_build_frag(int nlight)
 	
 	strcat(buf,"varying vec3 dirNormal;\n");
 	
-	sprintf(strchr(buf,0),"varying vec3 lightVector[%d];\n",max_shader_light);
+	for (n=0;n!=nlight;n++) {
+		sprintf(strchr(buf,0),"varying vec3 lightVector_%d;\n",n);
+	}
 	
 	strcat(buf,"void main(void)\n");
 	strcat(buf,"{\n");
@@ -523,7 +408,7 @@ char* gl_core_liquid_shader_build_frag(int nlight)
 		// the texture lighting
 		
 	for (n=0;n!=nlight;n++) {
-		sprintf(strchr(buf,0),"dist=length(lightVector[%d]);\n",n);
+		sprintf(strchr(buf,0),"dist=length(lightVector_%d);\n",n);
 		sprintf(strchr(buf,0),"if (dist<dim3Light_%d.intensity) {\n",n);
 		sprintf(strchr(buf,0)," if (dot(dirNormal,dim3Light_%d.direction)>=0.0) {\n",n);
 		sprintf(strchr(buf,0),"  att=1.0-(dist*dim3Light_%d.invertIntensity);\n",n);
@@ -608,13 +493,16 @@ char* gl_core_model_shader_build_vert(int nlight,bool fog,bool bump,bool spec)
 	if ((bump) || (spec)) strcat(buf,",dim3VertexTangent");
 	strcat(buf,";\n");
 	
-	strcat(buf,"varying vec3 dirNormal;\n");
+	strcat(buf,"varying vec3 dirNormal,tangentSpaceNormal;\n");
 	if (fog) strcat(buf,"varying float fogFactor;\n");
-	
-	sprintf(strchr(buf,0),"varying vec3 tangentSpaceNormal,lightVector[%d]",max_shader_light);
-	if (bump) sprintf(strchr(buf,0),",lightVertexVector[%d]",max_shader_light);
-	if (spec) strcat(buf,",eyeVector");
-	strcat(buf,";\n");
+
+	for (n=0;n!=nlight;n++) {
+		sprintf(strchr(buf,0),"varying vec3 lightVector_%d",n);
+		if (bump) sprintf(strchr(buf,0),",lightVertexVector_%d",n);
+		strcat(buf,";\n");
+	}
+
+	if (spec) strcat(buf,"varying vec3 eyeVector;\n");
 	
 	strcat(buf,"void main(void)\n");
 	strcat(buf,"{\n");
@@ -640,12 +528,12 @@ char* gl_core_model_shader_build_vert(int nlight,bool fog,bool bump,bool spec)
 	}
 	
 	for (n=0;n!=nlight;n++) {
-		sprintf(strchr(buf,0),"lightVector[%d]=dim3Light_%d.position-vtx;\n",n,n);
+		sprintf(strchr(buf,0),"lightVector_%d=dim3Light_%d.position-vtx;\n",n,n);
 		
 		if (bump) {
-			sprintf(strchr(buf,0),"lightVertexVector[%d].x=dot(lightVector[%d],tangentSpaceTangent);\n",n,n);
-			sprintf(strchr(buf,0),"lightVertexVector[%d].y=dot(lightVector[%d],tangentSpaceBinormal);\n",n,n);
-			sprintf(strchr(buf,0),"lightVertexVector[%d].z=dot(lightVector[%d],tangentSpaceNormal);\n",n,n);
+			sprintf(strchr(buf,0),"lightVertexVector_%d.x=dot(lightVector_%d,tangentSpaceTangent);\n",n,n);
+			sprintf(strchr(buf,0),"lightVertexVector_%d.y=dot(lightVector_%d,tangentSpaceBinormal);\n",n,n);
+			sprintf(strchr(buf,0),"lightVertexVector_%d.z=dot(lightVector_%d,tangentSpaceNormal);\n",n,n);
 		}
 	}
 	
@@ -683,13 +571,16 @@ char* gl_core_model_shader_build_frag(int nlight,bool fog,bool bump,bool spec)
 	
 	strcat(buf,"uniform vec3 dim3AmbientColor,dim3DiffuseVector;\n");
 	
-	strcat(buf,"varying vec3 dirNormal;\n");
+	strcat(buf,"varying vec3 dirNormal,tangentSpaceNormal;\n");
 	if (fog) strcat(buf,"varying float fogFactor;\n");
-	
-	sprintf(strchr(buf,0),"varying vec3 tangentSpaceNormal,lightVector[%d]",max_shader_light);
-	if (bump) sprintf(strchr(buf,0),",lightVertexVector[%d]",max_shader_light);
-	if (spec) strcat(buf,",eyeVector");
-	strcat(buf,";\n");
+
+	for (n=0;n!=nlight;n++) {
+		sprintf(strchr(buf,0),"varying vec3 lightVector_%d",n);
+		if (bump) sprintf(strchr(buf,0),",lightVertexVector_%d",n);
+		strcat(buf,";\n");
+	}
+
+	if (spec) strcat(buf,"varying vec3 eyeVector;\n");
 	
 	strcat(buf,"void main(void)\n");
 	strcat(buf,"{\n");
@@ -726,7 +617,7 @@ char* gl_core_model_shader_build_frag(int nlight,bool fog,bool bump,bool spec)
 		// the texture lighting
 		
 	for (n=0;n!=nlight;n++) {
-		sprintf(strchr(buf,0),"dist=length(lightVector[%d]);\n",n);
+		sprintf(strchr(buf,0),"dist=length(lightVector_%d);\n",n);
 		sprintf(strchr(buf,0),"if (dist<dim3Light_%d.intensity) {\n",n);
 		sprintf(strchr(buf,0)," att=1.0-(dist*dim3Light_%d.invertIntensity);\n",n);
 		sprintf(strchr(buf,0)," att+=pow(att,dim3Light_%d.exponent);\n",n);
@@ -735,9 +626,9 @@ char* gl_core_model_shader_build_frag(int nlight,bool fog,bool bump,bool spec)
 		
 			// bump and spec
 			
-		if (bump) sprintf(strchr(buf,0),"  bump+=(dot(normalize(lightVertexVector[%d]),bumpMap)*att);\n",n);
+		if (bump) sprintf(strchr(buf,0),"  bump+=(dot(normalize(lightVertexVector_%d),bumpMap)*att);\n",n);
 		if (spec) {
-			sprintf(strchr(buf,0),"  specHalfVector=normalize(normalize(eyeVector)+normalize(lightVertexVector[%d]));\n",n);
+			sprintf(strchr(buf,0),"  specHalfVector=normalize(normalize(eyeVector)+normalize(lightVertexVector_%d));\n",n);
 			strcat(buf,"  specFactor=max(dot(bumpMap,specHalfVector),0.0);\n");
 			strcat(buf,"  spec+=((specMap*pow(specFactor,dim3ShineFactor))*att);\n");
 		}
@@ -756,7 +647,13 @@ char* gl_core_model_shader_build_frag(int nlight,bool fog,bool bump,bool spec)
 
 		// output the fragment
 
-	strcat(buf,"vec3 frag=");
+	if (!fog) {
+		strcat(buf,"gl_FragColor.rgb=");
+	}
+	else {
+		strcat(buf,"vec3 frag=");
+	}
+
 	if (bump) strcat(buf,"(");
 	if (spec) strcat(buf,"(");
 	strcat(buf,"(tex.rgb*ambient)");
@@ -764,12 +661,7 @@ char* gl_core_model_shader_build_frag(int nlight,bool fog,bool bump,bool spec)
 	if (spec) strcat(buf,"+spec)");
 	strcat(buf,"*diffuse;\n");
 	
-	if (!fog) {
-		strcat(buf,"gl_FragColor.rgb=frag;\n");
-	}
-	else {
-		strcat(buf,"gl_FragColor.rgb=mix(gl_Fog.color.rgb,frag,fogFactor);\n");
-	}
+	if (fog) strcat(buf,"gl_FragColor.rgb=mix(gl_Fog.color.rgb,frag,fogFactor);\n");
 
 	strcat(buf,"gl_FragColor.a=tex.a*dim3Alpha;\n");
 	strcat(buf,"}\n");

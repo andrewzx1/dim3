@@ -35,15 +35,15 @@ and can be sold or given away.
 	        
 ======================================================= */
 
-void model_get_point_position(model_draw_setup *draw_setup,int *x,int *y,int *z)
+void model_get_point_position(model_draw_setup *draw_setup,d3pnt *pnt)
 {
 	int					cx,cy,cz;
 	float				fx,fy,fz;
 	matrix_type			rot_x_mat,rot_z_mat,rot_y_mat,sway_mat;
 	
-	fx=(float)*x;
-	fz=(float)*z;
-	fy=(float)*y;
+	fx=(float)pnt->x;
+	fy=(float)pnt->y;
+	fz=(float)pnt->z;
 	
 		// sway
 		
@@ -68,9 +68,9 @@ void model_get_point_position(model_draw_setup *draw_setup,int *x,int *y,int *z)
 	matrix_vertex_multiply(&rot_z_mat,&fx,&fy,&fz);
 	matrix_vertex_multiply(&rot_y_mat,&fx,&fy,&fz);
 
-	*x=(int)(fx+draw_setup->move.x)+cx;
-	*y=(int)(fy+draw_setup->move.y)+cy;
-	*z=(int)(fz+draw_setup->move.z)+cz;
+	pnt->x=(int)(fx+draw_setup->move.x)+cx;
+	pnt->y=(int)(fy+draw_setup->move.y)+cy;
+	pnt->z=(int)(fz+draw_setup->move.z)+cz;
 }
 
 /* =======================================================
@@ -79,19 +79,19 @@ void model_get_point_position(model_draw_setup *draw_setup,int *x,int *y,int *z)
       
 ======================================================= */
 
-void model_get_draw_bone_position(model_draw_setup *draw_setup,int bone_idx,int *x,int *y,int *z)
+void model_get_draw_bone_position(model_draw_setup *draw_setup,int bone_idx,d3pnt *pnt)
 {
 	model_draw_bone_type		*draw_bone;
 	
 	draw_bone=&draw_setup->bones[bone_idx];
-	*x=(int)draw_bone->fpnt.x;
-	*y=(int)draw_bone->fpnt.y;
-	*z=(int)draw_bone->fpnt.z;
+	pnt->x=(int)draw_bone->fpnt.x;
+	pnt->y=(int)draw_bone->fpnt.y;
+	pnt->z=(int)draw_bone->fpnt.z;
 	
-	model_get_point_position(draw_setup,x,y,z);	
+	model_get_point_position(draw_setup,pnt);	
 }
 
-void model_calc_draw_bone_position(model_type *model,model_draw_setup *draw_setup,int pose_idx,int bone_idx,int *x,int *y,int *z)
+void model_calc_draw_bone_position(model_type *model,model_draw_setup *draw_setup,int pose_idx,int bone_idx,d3pnt *pnt)
 {
 	draw_setup->poses[0].idx_1=pose_idx;
 	draw_setup->poses[0].idx_2=-1;
@@ -100,7 +100,7 @@ void model_calc_draw_bone_position(model_type *model,model_draw_setup *draw_setu
 	
 	model_create_draw_bones(model,draw_setup);
 	
-	model_get_draw_bone_position(draw_setup,bone_idx,x,y,z);
+	model_get_draw_bone_position(draw_setup,bone_idx,pnt);
 }
 
 /* =======================================================
@@ -109,62 +109,65 @@ void model_calc_draw_bone_position(model_type *model,model_draw_setup *draw_setu
       
 ======================================================= */
 
-bool model_get_light_position(model_type *model,model_draw_setup *draw_setup,int idx,int *x,int *y,int *z)
+bool model_get_light_position(model_type *model,model_draw_setup *draw_setup,int idx,d3pnt *pnt)
 {
-	int			bone_idx,px,py,pz;
+	int			bone_idx;
+	d3pnt		bone_pnt;
 	
 		// get bone position
 	
 	bone_idx=model->bone_connect.light_bone_idx[idx];
 	if (bone_idx==-1) return(FALSE);
 	
-	model_get_draw_bone_position(draw_setup,bone_idx,&px,&py,&pz);
+	model_get_draw_bone_position(draw_setup,bone_idx,&bone_pnt);
 	
 		// add in model position
 		
-	*x+=px;
-	*y+=py;
-	*z+=pz;
+	pnt->x+=bone_pnt.x;
+	pnt->y+=bone_pnt.y;
+	pnt->z+=bone_pnt.z;
 	
 	return(TRUE);
 }
 
-bool model_get_halo_position(model_type *model,model_draw_setup *draw_setup,int idx,int *x,int *y,int *z)
+bool model_get_halo_position(model_type *model,model_draw_setup *draw_setup,int idx,d3pnt *pnt)
 {
-	int			bone_idx,px,py,pz;
+	int			bone_idx;
+	d3pnt		bone_pnt;
 	
 		// get bone position
 	
 	bone_idx=model->bone_connect.halo_bone_idx[idx];
 	if (bone_idx==-1) return(FALSE);
 		
-	model_get_draw_bone_position(draw_setup,bone_idx,&px,&py,&pz);
+	model_get_draw_bone_position(draw_setup,bone_idx,&bone_pnt);
 	
 		// add in model position
 		
-	*x+=px;
-	*y+=py;
-	*z+=pz;
+	pnt->x+=bone_pnt.x;
+	pnt->y+=bone_pnt.y;
+	pnt->z+=bone_pnt.z;
 	
 	return(TRUE);
 }
 
-bool model_get_name_position(model_type *model,model_draw_setup *draw_setup,int *x,int *y,int *z)
+bool model_get_name_position(model_type *model,model_draw_setup *draw_setup,d3pnt *pnt)
 {
-	int			bone_idx,px,py,pz;
+	int			bone_idx;
+	d3pnt		bone_pnt;
 	
 		// get bone position
 	
 	bone_idx=model->bone_connect.name_bone_idx;
 	if (bone_idx==-1) return(FALSE);
 		
-	model_get_draw_bone_position(draw_setup,bone_idx,&px,&py,&pz);
+	model_get_draw_bone_position(draw_setup,bone_idx,&bone_pnt);
 	
 		// add in model position
 		
-	*x+=px;
-	*y+=py;
-	*z+=pz;
+	pnt->x+=bone_pnt.x;
+	pnt->y+=bone_pnt.y;
+	pnt->z+=bone_pnt.z;
 	
 	return(TRUE);
 }

@@ -370,12 +370,12 @@ extern void model_translate_draw_vertex(model_type *model,int mesh_idx,int x,int
 
 extern void model_create_draw_normals(model_type *model,int mesh_idx,model_draw_setup *draw_setup,bool normal_only);
 
-extern void model_get_point_position(model_draw_setup *draw_setup,int *x,int *y,int *z);
-extern void model_get_draw_bone_position(model_draw_setup *draw_setup,int bone_idx,int *x,int *y,int *z);
-extern void model_calc_draw_bone_position(model_type *model,model_draw_setup *draw_setup,int pose_idx,int bone_idx,int *x,int *y,int *z);
-extern bool model_get_light_position(model_type *model,model_draw_setup *draw_setup,int idx,int *x,int *y,int *z);
-extern bool model_get_halo_position(model_type *model,model_draw_setup *draw_setup,int idx,int *x,int *y,int *z);
-extern bool model_get_name_position(model_type *model,model_draw_setup *draw_setup,int *x,int *y,int *z);
+extern void model_get_point_position(model_draw_setup *draw_setup,d3pnt *pnt);
+extern void model_get_draw_bone_position(model_draw_setup *draw_setup,int bone_idx,d3pnt *pnt);
+extern void model_calc_draw_bone_position(model_type *model,model_draw_setup *draw_setup,int pose_idx,int bone_idx,d3pnt *pnt);
+extern bool model_get_light_position(model_type *model,model_draw_setup *draw_setup,int idx,d3pnt *pnt);
+extern bool model_get_halo_position(model_type *model,model_draw_setup *draw_setup,int idx,d3pnt *pnt);
+extern bool model_get_name_position(model_type *model,model_draw_setup *draw_setup,d3pnt *pnt);
 
 extern void model_get_size(model_type *model,int *x,int *y,int *z);
 extern void model_get_vertex_extent(model_type *model,int mesh_idx,int *p_minx,int *p_maxx,int *p_minz,int *p_maxz,int *p_miny,int *p_maxy);

@@ -82,18 +82,17 @@ model_draw* particle_draw_get_model(particle_motion *motion)
       
 ======================================================= */
 
-void particle_draw_position(effect_type *effect,int count,int *x,int *y,int *z)
+void particle_draw_position(effect_type *effect,int count,d3pnt *pnt)
 {
-	int						mx,my,mz;
 	float					f_tick;
 	model_draw				*draw;
 	particle_effect_data	*eff_particle;
 
 		// position
 	
-	mx=effect->pnt.x;
-	my=effect->pnt.y;
-	mz=effect->pnt.z;
+	pnt->x=effect->pnt.x;
+	pnt->y=effect->pnt.y;
+	pnt->z=effect->pnt.z;
 
 	eff_particle=&effect->data.particle;
 
@@ -101,21 +100,17 @@ void particle_draw_position(effect_type *effect,int count,int *x,int *y,int *z)
 
 	if (eff_particle->motion.bone_idx!=-1) {
 		draw=particle_draw_get_model(&eff_particle->motion);
-		if (draw!=NULL) model_find_bone_position_for_current_animation(draw,eff_particle->motion.bone_idx,&mx,&my,&mz);
+		if (draw!=NULL) model_find_bone_position_for_current_animation(draw,eff_particle->motion.bone_idx,pnt);
 	}
 
 		// motion
 
 	else {
 		f_tick=((float)count)/10.0f;
-		mx+=(int)(eff_particle->motion.vct.x*f_tick);
-		my+=(int)(eff_particle->motion.vct.y*f_tick);
-		mz+=(int)(eff_particle->motion.vct.z*f_tick);
+		pnt->x+=(int)(eff_particle->motion.vct.x*f_tick);
+		pnt->y+=(int)(eff_particle->motion.vct.y*f_tick);
+		pnt->z+=(int)(eff_particle->motion.vct.z*f_tick);
 	}
-
-	*x=mx;
-	*y=my;
-	*z=mz;
 }
 
 /* =======================================================
@@ -124,7 +119,7 @@ void particle_draw_position(effect_type *effect,int count,int *x,int *y,int *z)
       
 ======================================================= */
 
-int particle_fill_array_quad_single(float *vertex_ptr,int idx,int nvertex,int mx,int my,int mz,d3ang *rot_ang,float pixel_size,matrix_type *pixel_mat,float gravity,float f_count,int particle_count,iface_particle_piece_type *pps,float gx,float gy,float g_size)
+int particle_fill_array_quad_single(float *vertex_ptr,int idx,int nvertex,d3pnt *pnt,d3ang *rot_ang,float pixel_size,matrix_type *pixel_mat,float gravity,float f_count,int particle_count,iface_particle_piece_type *pps,float gx,float gy,float g_size)
 {
 	int					n,k;
 	float				fx,fy,fz,px[4],py[4],pz[4];
@@ -164,14 +159,14 @@ int particle_fill_array_quad_single(float *vertex_ptr,int idx,int nvertex,int mx
 			
 			matrix_vertex_multiply(&rot_mat,&fx,&fy,&fz);
 		
-			fx=(float)(mx+pps->pt.x)+(fx*f_count);
-			fy=(float)(my+pps->pt.y)+((fy*f_count)+gravity);
-			fz=(float)(mz+pps->pt.z)+(fz*f_count);
+			fx=(float)(pnt->x+pps->pt.x)+(fx*f_count);
+			fy=(float)(pnt->y+pps->pt.y)+((fy*f_count)+gravity);
+			fz=(float)(pnt->z+pps->pt.z)+(fz*f_count);
 		}
 		else {							// normal particles
-			fx=(float)(mx+pps->pt.x)+((pps->vct.x)*f_count);
-			fy=(float)(my+pps->pt.y)+(((pps->vct.y)*f_count)+gravity);
-			fz=(float)(mz+pps->pt.z)+((pps->vct.z)*f_count);
+			fx=(float)(pnt->x+pps->pt.x)+((pps->vct.x)*f_count);
+			fy=(float)(pnt->y+pps->pt.y)+(((pps->vct.y)*f_count)+gravity);
+			fz=(float)(pnt->z+pps->pt.z)+((pps->vct.z)*f_count);
 		}
 		
 		pps++;
@@ -248,10 +243,11 @@ int particle_fill_array_quad_single(float *vertex_ptr,int idx,int nvertex,int mx
 void particle_draw(effect_type *effect,int count)
 {
 	int						n,idx,particle_count,nvertex,
-							ntrail,mx,mz,my,pixel_dif;
+							ntrail,pixel_dif;
 	float					gravity,gx,gy,g_size,pixel_sz,f,pc[3],trail_step,
 							alpha,alpha_dif,color_dif,f_count,f_tick;
 	float					*vertex_ptr;
+	d3pnt					pnt;
 	d3ang					*rot_ang,rang;
 	d3col					col,ambient_col;
 	iface_particle_type		*particle;
@@ -265,10 +261,10 @@ void particle_draw(effect_type *effect,int count)
 
 		// position
 	
-	particle_draw_position(effect,count,&mx,&my,&mz);
+	particle_draw_position(effect,count,&pnt);
 
 	if (particle->ambient_factor!=1.0f) {		// get ambient before position change
-		gl_lights_calc_color((float)mx,(float)my,(float)mz,pc);
+		gl_lights_calc_color((float)pnt.x,(float)pnt.y,(float)pnt.z,pc);
 		ambient_col.r=pc[0];
 		ambient_col.g=pc[1];
 		ambient_col.b=pc[2];
@@ -396,7 +392,7 @@ void particle_draw(effect_type *effect,int count)
 
 			// draw pixels
 
-		idx=particle_fill_array_quad_single(vertex_ptr,idx,nvertex,mx,my,mz,rot_ang,pixel_sz,&pixel_mat,gravity,f_count,particle_count,particle->pieces[eff_particle->variation_idx],gx,gy,g_size);
+		idx=particle_fill_array_quad_single(vertex_ptr,idx,nvertex,&pnt,rot_ang,pixel_sz,&pixel_mat,gravity,f_count,particle_count,particle->pieces[eff_particle->variation_idx],gx,gy,g_size);
 
 			// reduce pixel sizes and counts for trails
 			

@@ -137,7 +137,7 @@ void property_palette_fill_mesh(int mesh_idx,int poly_idx)
 		// options
 		
 	list_palette_add_header(&property_palette,0,"Mesh Options");
-	list_palette_add_string(&property_palette,kMeshPropertyHideMode,"Hide",mesh_property_hide_list[mesh->hide_mode],FALSE);
+	list_palette_add_picker_list_int(&property_palette,kMeshPropertyHideMode,"Hide",(char*)mesh_property_hide_list,-1,name_str_len,0,FALSE,&mesh->hide_mode,FALSE);
 	list_palette_add_int(&property_palette,kMeshPropertyHarm,"Harm",&mesh->harm,FALSE);
 	list_palette_add_point(&property_palette,kMeshPropertyRot,"Rotational Center",&mesh->rot_off,FALSE);
 
@@ -164,7 +164,7 @@ void property_palette_fill_mesh(int mesh_idx,int poly_idx)
 		
 	list_palette_add_header(&property_palette,0,"Mesh Base");
 	list_palette_add_checkbox(&property_palette,kMeshPropertyBaseOn,"On",&mesh->msg.base_on,FALSE);
-	list_palette_add_string(&property_palette,kMeshPropertyBaseTeam,"Team",mesh_property_team_list[mesh->msg.base_team],FALSE);
+	list_palette_add_picker_list_int(&property_palette,kMeshPropertyBaseTeam,"Team",(char*)mesh_property_team_list,-1,name_str_len,0,FALSE,&mesh->msg.base_team,FALSE);
 
 		// import
 		
@@ -247,10 +247,6 @@ void property_palette_click_mesh(int mesh_idx,int poly_idx,int id,bool double_cl
 
 			// options
 			
-		case kMeshPropertyHideMode:
-			property_pick_list("Pick a Hide Mode",(char*)mesh_property_hide_list,&mesh->hide_mode);
-			break;
-
 		case kMeshPropertyGroup:
 			property_palette_pick_group(&mesh->group_idx);
 			break;
@@ -263,12 +259,6 @@ void property_palette_click_mesh(int mesh_idx,int poly_idx,int id,bool double_cl
 
 		case kMeshPropertyMessageMapChangeSpotName:
 			dialog_property_string_run(list_string_value_string,(void*)mesh->msg.map_spot_name,name_str_len,0,0);
-			break;
-
-			// base
-			
-		case kMeshPropertyBaseTeam:
-			property_pick_list("Pick a Team",(char*)mesh_property_team_list,&mesh->msg.base_team);
 			break;
 			
 			// import

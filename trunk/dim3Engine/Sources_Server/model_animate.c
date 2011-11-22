@@ -610,7 +610,7 @@ int model_get_current_pose(model_draw *draw)
       
 ======================================================= */
 
-bool model_find_bone_offset(model_draw *draw,char *pose_name,char *bone_name,int *x,int *y,int *z)
+bool model_find_bone_offset(model_draw *draw,char *pose_name,char *bone_name,d3pnt *pnt)
 {
 	int					pose_idx,bone_idx;
 	model_type			*mdl;
@@ -634,25 +634,25 @@ bool model_find_bone_offset(model_draw *draw,char *pose_name,char *bone_name,int
 	
 		// get bone
 
-	model_calc_draw_bone_position(mdl,&draw->setup,pose_idx,bone_idx,x,y,z);
+	model_calc_draw_bone_position(mdl,&draw->setup,pose_idx,bone_idx,pnt);
 
 	return(TRUE);
 }
 
-bool model_find_bone_position(model_draw *draw,char *pose_name,char *bone_name,int *x,int *y,int *z)
+bool model_find_bone_position(model_draw *draw,char *pose_name,char *bone_name,d3pnt *pnt)
 {
-	if (!model_find_bone_offset(draw,pose_name,bone_name,x,y,z)) return(FALSE);
+	if (!model_find_bone_offset(draw,pose_name,bone_name,pnt)) return(FALSE);
 	
-	*x=(*x)+draw->pnt.x;
-	*y=(*y)+draw->pnt.y;
-	*z=(*z)+draw->pnt.z;
+	pnt->x+=draw->pnt.x;
+	pnt->y+=draw->pnt.y;
+	pnt->z+=draw->pnt.z;
 
-	if (draw->no_rot.on) gl_project_fix_rotation(x,y,z);
+	if (draw->no_rot.on) gl_project_fix_rotation(pnt);
 	
 	return(TRUE);
 }
 
-bool model_find_bone_position_for_current_animation(model_draw *draw,int bone_idx,int *x,int *y,int *z)
+bool model_find_bone_position_for_current_animation(model_draw *draw,int bone_idx,d3pnt *pnt)
 {
 	int						animate_idx,animate_pose_move_idx,pose_idx;
 	model_type				*mdl;
@@ -676,33 +676,33 @@ bool model_find_bone_position_for_current_animation(model_draw *draw,int bone_id
 		// calculate bones
 
 	model_create_draw_bones(mdl,&draw->setup);
-	model_get_draw_bone_position(&draw->setup,bone_idx,x,y,z);
+	model_get_draw_bone_position(&draw->setup,bone_idx,pnt);
 
-	*x=(*x)+draw->pnt.x;
-	*y=(*y)+draw->pnt.y;
-	*z=(*z)+draw->pnt.z;
+	pnt->x+=draw->pnt.x;
+	pnt->y+=draw->pnt.y;
+	pnt->z+=draw->pnt.z;
 
 		// fix rotation
 
-	if (draw->no_rot.on) gl_project_fix_rotation(x,y,z);
+	if (draw->no_rot.on) gl_project_fix_rotation(pnt);
 
 	return(TRUE);
 }
 
 bool model_get_bone_brightness(model_draw *draw,char *pose_name,char *bone_name,float *bright)
 {
-	int				x,y,z;
 	float			pc[3];
+	d3pnt			pnt;
 	
 		// get bone position
 		
-	if (!model_find_bone_position(draw,pose_name,bone_name,&x,&y,&z)) return(FALSE);
+	if (!model_find_bone_position(draw,pose_name,bone_name,&pnt)) return(FALSE);
 	
 		// light at position
 
-	gl_lights_calc_color((float)x,(float)y,(float)z,pc);
+	gl_lights_calc_color((float)pnt.x,(float)pnt.y,(float)pnt.z,pc);
 	
-	*bright=(pc[0]+pc[1]+pc[2])/3.0f;
+	*bright=(pc[0]+pc[1]+pc[2])*0.33f;
 	if (*bright<0.0f) *bright=0.0f;
 	
 	return(TRUE);

@@ -433,8 +433,8 @@ void gl_lights_compile_model_add(int tick,model_draw *draw)
 		if (light->on) {
 			memmove(&pnt,&draw->pnt,sizeof(d3pnt));
 			
-			model_get_light_position(mdl,&draw->setup,n,&pnt.x,&pnt.y,&pnt.z);
-			if (draw->no_rot.on) gl_project_fix_rotation(&pnt.x,&pnt.y,&pnt.z);
+			model_get_light_position(mdl,&draw->setup,n,&pnt);
+			if (draw->no_rot.on) gl_project_fix_rotation(&pnt);
 			
 			gl_lights_compile_add(tick,&pnt,light->type,FALSE,light->intensity,light->exponent,light->direction,&light->col);
 		}

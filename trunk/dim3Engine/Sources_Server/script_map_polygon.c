@@ -123,7 +123,7 @@ JSValueRef js_map_polygon_get_hit_point_to_object_func(JSContextRef cx,JSObjectR
 
 	collide_polygon_hit_point_to_object(poly_uid,obj,&pt);
 
-	return(script_point_to_value(cx,pt.x,pt.y,pt.z));
+	return(script_point_to_value(cx,&pt));
 }
 
 JSValueRef js_map_polygon_get_normal_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
@@ -137,7 +137,7 @@ JSValueRef js_map_polygon_get_normal_func(JSContextRef cx,JSObjectRef func,JSObj
 	
 	collide_polygon_get_normal(poly_uid,&normal);
 	
-	return(script_angle_to_value(cx,normal.x,normal.y,normal.z));
+	return(script_vector_to_value(cx,&normal));
 }
 
 JSValueRef js_map_polygon_get_dot_product_to_object_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)

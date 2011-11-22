@@ -89,8 +89,8 @@ void alt_property_palette_fill_hud_text(int hud_text_idx)
 
 	list_palette_add_header(&alt_property_palette,0,"Options");
 	list_palette_add_int(&alt_property_palette,kTextOptionSize,"Text Size",&text->size,FALSE);
-	list_palette_add_string(&alt_property_palette,kTextOptionJust,"Justification",hud_text_just_type_str[text->just],FALSE);
-	list_palette_add_string(&alt_property_palette,kTextOptionSpecial,"Special",hud_text_special_type_str[text->special],FALSE);
+	list_palette_add_picker_list_int(&alt_property_palette,kTextOptionJust,"Justification",(char*)hud_text_just_type_str,-1,name_str_len,0,FALSE,&text->just,FALSE);
+	list_palette_add_picker_list_int(&alt_property_palette,kTextOptionSpecial,"Special",(char*)hud_text_special_type_str,-1,name_str_len,0,FALSE,&text->special,FALSE);
 	list_palette_add_float(&alt_property_palette,kTextOptionAlpha,"Alpha",&text->alpha,FALSE);
 	list_palette_add_pick_color(&alt_property_palette,kTextOptionColor,"Color",&text->color,FALSE);
 
@@ -127,16 +127,6 @@ void alt_property_palette_click_hud_text(int hud_text_idx,int id,bool double_cli
 
 		case kTextSettingsData:
 			dialog_property_string_run(list_string_value_string,(void*)text->data,max_hud_text_str_sz,0,0);
-			break;
-
-			// options
-
-		case kTextOptionJust:
-			property_pick_list("Pick a Justification",(char*)hud_text_just_type_str,&text->just);
-			break;
-
-		case kTextOptionSpecial:
-			property_pick_list("Pick a Special Display",(char*)hud_text_special_type_str,&text->special);
 			break;
 
 	}

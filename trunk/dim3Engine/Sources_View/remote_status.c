@@ -144,9 +144,9 @@ void remote_draw_status(obj_type *obj)
 
 void remote_draw_names_setup(void)
 {
-	int						n,x,y,z,dist;
+	int						n,dist;
 	bool					hit;
-	d3pnt					spt,ept,hpt;
+	d3pnt					pnt,spt,ept,hpt;
 	obj_type				*obj;
 	model_type				*mdl;
 	ray_trace_contact_type	contact;
@@ -181,36 +181,36 @@ void remote_draw_names_setup(void)
 		
 		mdl=server.model_list.models[obj->draw.model_idx];
 
-		x=obj->pnt.x;
-		y=obj->pnt.y;
-		z=obj->pnt.z;
+		pnt.x=obj->pnt.x;
+		pnt.y=obj->pnt.y;
+		pnt.z=obj->pnt.z;
 
-		if (!model_get_name_position(mdl,&obj->draw.setup,&x,&y,&z)) {
-			x=obj->pnt.x;
-			y=(obj->pnt.y-obj->size.y)-(crosshair_max_ray_trace_distance>>1);
-			z=obj->pnt.z;
+		if (!model_get_name_position(mdl,&obj->draw.setup,&pnt)) {
+			pnt.x=obj->pnt.x;
+			pnt.y=(obj->pnt.y-obj->size.y)-(crosshair_max_ray_trace_distance>>1);
+			pnt.z=obj->pnt.z;
 		}
 		
 			// translate and rotate point
 			
-		dist=distance_get(x,y,z,view.render->camera.pnt.x,view.render->camera.pnt.y,view.render->camera.pnt.z);
+		dist=distance_get(pnt.x,pnt.y,pnt.z,view.render->camera.pnt.x,view.render->camera.pnt.y,view.render->camera.pnt.z);
 		if (dist>=remote_name_max_distance) continue;
 
-		obj->draw.remote_name.pnt.x=x;
-		obj->draw.remote_name.pnt.y=y;
-		obj->draw.remote_name.pnt.z=z;
+		obj->draw.remote_name.pnt.x=pnt.x;
+		obj->draw.remote_name.pnt.y=pnt.y;
+		obj->draw.remote_name.pnt.z=pnt.z;
 		
 			// is it behind the z?
 
-		if (!gl_project_in_view_z(x,y,z)) continue;
+		if (!gl_project_in_view_z(pnt.x,pnt.y,pnt.z)) continue;
 				
 			// project names
 
-		gl_project_point(&x,&y,&z);
+		gl_project_point(&pnt.x,&pnt.y,&pnt.z);
 
-		obj->draw.remote_name.proj_pnt.x=x;
-		obj->draw.remote_name.proj_pnt.y=y;
-		obj->draw.remote_name.proj_pnt.z=z;
+		obj->draw.remote_name.proj_pnt.x=pnt.x;
+		obj->draw.remote_name.proj_pnt.y=pnt.y;
+		obj->draw.remote_name.proj_pnt.z=pnt.z;
 		
 			// calculate the fade
 			

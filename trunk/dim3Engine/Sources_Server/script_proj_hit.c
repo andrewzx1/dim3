@@ -253,7 +253,7 @@ JSValueRef js_proj_hit_get_ejectVector(JSContextRef cx,JSObjectRef j_obj,JSStrin
 	if (proj==NULL) return(script_null_to_value(cx));
 
 	projectile_eject_vector(proj,&vct);
-	return(script_angle_to_value(cx,vct.x,vct.y,vct.z));
+	return(script_vector_to_value(cx,&vct));
 }
 
 JSValueRef js_proj_hit_get_reflectVector(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
@@ -265,6 +265,6 @@ JSValueRef js_proj_hit_get_reflectVector(JSContextRef cx,JSObjectRef j_obj,JSStr
 	if (proj==NULL) return(script_null_to_value(cx));
 
 	projectile_reflect_vector(proj,&vct);
-	return(script_angle_to_value(cx,vct.x,vct.y,vct.z));
+	return(script_vector_to_value(cx,&vct));
 }
 

@@ -91,8 +91,8 @@ void property_palette_fill_particle(int particle_idx)
 	list_palette_add_checkbox(&property_palette,kLightPropertyLightMap,"Used in Light Map",&particle->light_setting.light_map,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Particle Light Display");
-	list_palette_add_string(&property_palette,kLightPropertyType,"Type",light_property_type_list[particle->light_setting.type],FALSE);
-	list_palette_add_string(&property_palette,kLightPropertyDirection,"Direction",light_property_direction_list[particle->light_setting.direction],FALSE);
+	list_palette_add_picker_list_int(&property_palette,kLightPropertyType,"Type",(char*)light_property_type_list,-1,name_str_len,0,FALSE,&particle->light_setting.type,FALSE);
+	list_palette_add_picker_list_int(&property_palette,kLightPropertyDirection,"Direction",(char*)light_property_direction_list,-1,name_str_len,0,FALSE,&particle->light_setting.direction,FALSE);
 	list_palette_add_int(&property_palette,kLightPropertyIntensity,"Intensity",&particle->light_setting.intensity,FALSE);
 	list_palette_add_float(&property_palette,kLightPropertyExponent,"Exponent",&particle->light_setting.exponent,FALSE);
 	list_palette_add_pick_color(&property_palette,kLightPropertyColor,"Color",&particle->light_setting.col,FALSE);
@@ -129,14 +129,6 @@ void property_palette_click_particle(int particle_idx,int id,bool double_click)
 			
 			// particle lighting
 			
-		case kLightPropertyType:
-			property_pick_list("Pick a Light Type",(char*)light_property_type_list,&particle->light_setting.type);
-			break;
-
-		case kLightPropertyDirection:
-			property_pick_list("Pick a Light Direction",(char*)light_property_direction_list,&particle->light_setting.direction);
-			break;
-
 		case kLightPropertyHalo:
 			property_palette_pick_halo(particle->light_setting.halo_name);
 			break;

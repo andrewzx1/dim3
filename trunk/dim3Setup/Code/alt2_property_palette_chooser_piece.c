@@ -79,7 +79,7 @@ void alt2_property_palette_fill_chooser_piece(int chooser_idx,int chooser_piece_
 		// settings
 
 	list_palette_add_header(&alt2_property_palette,0,"Settings");
-	list_palette_add_string(&alt2_property_palette,kChooserPieceSettingsType,"Type",chooser_type_str[piece->type],FALSE);
+	list_palette_add_picker_list_int(&alt2_property_palette,kChooserPieceSettingsType,"Type",(char*)chooser_type_str,-1,name_str_len,0,FALSE,&piece->type,FALSE);
 	list_palette_add_int(&alt2_property_palette,kChooserPieceSettingsId,"Id",&piece->id,FALSE);
 	list_palette_add_checkbox(&alt2_property_palette,kChooserPieceSettingsClickable,"Clickable",&piece->clickable,FALSE);
 	list_palette_add_string(&alt2_property_palette,kChooserPieceSettingsGoto,"Goto Chooser",piece->goto_name,FALSE);
@@ -100,7 +100,7 @@ void alt2_property_palette_fill_chooser_piece(int chooser_idx,int chooser_piece_
 			list_palette_add_header(&alt2_property_palette,0,"Text");
 			list_palette_add_string(&alt2_property_palette,kChooserPieceTextStr,"Text",piece->data.text.str,FALSE);
 			list_palette_add_int(&alt2_property_palette,kChooserPieceTextSize,"Size",&piece->data.text.size,FALSE);
-			list_palette_add_string(&alt2_property_palette,kChooserPieceTextJust,"Justification",hud_text_just_type_str[piece->data.text.just],FALSE);
+			list_palette_add_picker_list_int(&alt2_property_palette,kChooserPieceTextJust,"Justification",(char*)hud_text_just_type_str,-1,name_str_len,0,FALSE,&piece->data.text.just,FALSE);
 			break;
 
 		case chooser_piece_type_item:
@@ -144,7 +144,6 @@ void alt2_property_palette_click_chooser_piece(int chooser_idx,int chooser_piece
 
 		case kChooserPieceSettingsType:
 			bzero(&piece->data,sizeof(iface_chooser_piece_data_type));		// need to clear data or it'll crash
-			property_pick_list("Pick a Chooser Piece Type",(char*)chooser_type_str,&piece->type);
 			break;
 
 		case kChooserPieceSettingsGoto:
@@ -155,10 +154,6 @@ void alt2_property_palette_click_chooser_piece(int chooser_idx,int chooser_piece
 
 		case kChooserPieceTextStr:
 			dialog_property_string_run(list_string_value_string,(void*)piece->data.text.str,max_chooser_text_data_sz,0,0);
-			break;
-
-		case kChooserPieceTextJust:
-			property_pick_list("Pick a Justification",(char*)hud_text_just_type_str,&piece->data.text.just);
 			break;
 
 		case kChooserPieceItemFile:

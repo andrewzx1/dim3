@@ -70,7 +70,7 @@ void property_palette_fill_camera(void)
 		// camera settings
 
 	list_palette_add_header(&property_palette,0,"Map Camera Settings");
-	list_palette_add_string(&property_palette,kMapPropertyCameraMode,"Mode",map_property_camera_mode_list[map.camera.mode],FALSE);
+	list_palette_add_picker_list_int(&property_palette,kMapPropertyCameraMode,"Mode",(char*)map_property_camera_mode_list,-1,name_str_len,0,FALSE,&map.camera.mode,FALSE);
 	list_palette_add_angle(&property_palette,kMapPropertyCameraAngle,"Offset Angle",&map.camera.ang,FALSE);
 
 		// camera plane
@@ -107,14 +107,6 @@ void property_palette_click_camera(int id,bool double_click)
 	if (!double_click) return;
 
 	switch (id) {
-
-			// camera settings
-
-		case kMapPropertyCameraMode:
-			property_pick_list("Pick a Camera Mode",(char*)map_property_camera_mode_list,&map.camera.mode);
-			break;
-
-			// camera static settings
 
 		case kMapPropertyCameraStaticAttachNode:
 			property_palette_pick_node(map.camera.c_static.attach_node);

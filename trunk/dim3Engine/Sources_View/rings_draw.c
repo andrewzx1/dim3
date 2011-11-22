@@ -44,7 +44,7 @@ extern setup_type			setup;
       
 ======================================================= */
 
-void ring_draw_position(effect_type *effect,int count,int *x,int *y,int *z)
+void ring_draw_position(effect_type *effect,int count,d3pnt *pnt)
 {
 	float				m_tick;
 	iface_ring_type		*ring;
@@ -55,9 +55,9 @@ void ring_draw_position(effect_type *effect,int count,int *x,int *y,int *z)
 
 	m_tick=((float)count)/10.0f;
 	
-	*x=effect->pnt.x+(int)(ring->vct.x*m_tick);
-	*y=effect->pnt.y+(int)(ring->vct.y*m_tick);
-	*z=effect->pnt.z+(int)(ring->vct.z*m_tick);
+	pnt->x=effect->pnt.x+(int)(ring->vct.x*m_tick);
+	pnt->y=effect->pnt.y+(int)(ring->vct.y*m_tick);
+	pnt->z=effect->pnt.z+(int)(ring->vct.z*m_tick);
 }
 
 /* =======================================================
@@ -68,14 +68,14 @@ void ring_draw_position(effect_type *effect,int count,int *x,int *y,int *z)
 
 void ring_draw(effect_type *effect,int count)
 {
-	int						n,px,py,pz,nvertex,
-							life_tick;
+	int						n,nvertex,life_tick;
 	float					mx,my,mz,fx,fy,fz,
 							vx[4],vy[4],vz[4],tx[4],ty[4],
 							outer_sz,inner_sz,rd,rd2,
 							color_dif,alpha,gx,gy,g_size,
 							f_count,f_tick;
 	float					*pf,*vertex_ptr;
+	d3pnt					pnt;
 	d3col					col;
 	iface_ring_type			*ring;
 	ring_effect_data		*eff_ring;
@@ -119,11 +119,11 @@ void ring_draw(effect_type *effect,int count)
 	
 		// position and ring rotation
 
-	ring_draw_position(effect,count,&px,&py,&pz);
+	ring_draw_position(effect,count,&pnt);
 
-	mx=(float)px;
-	my=(float)py;
-	mz=(float)pz;
+	mx=(float)pnt.x;
+	my=(float)pnt.y;
+	mz=(float)pnt.z;
 
 	fx=f_count*ring->rot.x;
 	fx+=(fx*ring->rot_accel.x);

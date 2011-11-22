@@ -298,25 +298,6 @@ void setup_pump(void)
 
 /* =======================================================
 
-      Supergumba -- testing
-      
-======================================================= */
-
-void test_debug(char *str)
-{
-	FILE				*file;
-	
-	file=fopen("c:\\test_output.txt","a");
-	if (file==NULL) return;
-	
-	fwrite(str,1,strlen(str),file);
-	fwrite("\r\n",1,2,file);
-
-	fclose(file);
-}
-
-/* =======================================================
-
       Setup Main
       
 ======================================================= */

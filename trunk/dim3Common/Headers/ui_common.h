@@ -144,7 +144,6 @@ extern void property_chord_set_values(int value_type,void *value,char *str_x,cha
 
 extern int property_pick_get_list_count(char *list_ptr,int list_item_sz,int list_name_offset);
 
-extern void property_pick_list(char *title,char *list,int *idx);
 extern int property_pick_file_fill_list(char *search_path,char *extension,char *required_file_name);
 extern char* property_pick_file_get_list(void);
 extern void property_pick_file(char *title,char *search_path,char *extension,char *required_file_name,char *file_name);
