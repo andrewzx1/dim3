@@ -32,6 +32,7 @@ and can be sold or given away.
 #include "scripts.h"
 #include "objects.h"
 
+extern iface_type		iface;
 extern map_type			map;
 extern js_type			js;
 
@@ -220,6 +221,17 @@ JSValueRef js_obj_status_freeze_respawn_func(JSContextRef cx,JSObjectRef func,JS
 JSValueRef js_obj_status_tint_view_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	d3col			col;
+
+	if (iface.project.modernize) {
+		if (!script_check_param_count(cx,func,argc,5,exception)) return(script_null_to_value(cx));
+			
+		script_value_to_color(cx,argv[0],&col);
+		view_draw_tint_start(&col,script_value_to_float(cx,argv[1]),script_value_to_int(cx,argv[2]),script_value_to_int(cx,argv[3]),script_value_to_int(cx,argv[4]));
+
+		return(script_null_to_value(cx));
+	}
+	
+	// supergumba:modernize -- delete later
 	
 	if (!script_check_param_count(cx,func,argc,7,exception)) return(script_null_to_value(cx));
 	

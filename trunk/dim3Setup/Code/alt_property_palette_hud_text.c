@@ -82,8 +82,8 @@ void alt_property_palette_fill_hud_text(int hud_text_idx)
 		// position
 
 	list_palette_add_header(&alt_property_palette,0,"Position");
-	list_palette_add_int(&alt_property_palette,kTextPositionX,"X",&text->x,FALSE);
-	list_palette_add_int(&alt_property_palette,kTextPositionY,"Y",&text->y,FALSE);
+	list_palette_add_int(&alt_property_palette,kTextPositionX,"X",&text->pnt.x,FALSE);
+	list_palette_add_int(&alt_property_palette,kTextPositionY,"Y",&text->pnt.y,FALSE);
 
 		// options
 

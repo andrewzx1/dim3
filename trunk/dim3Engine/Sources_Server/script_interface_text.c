@@ -130,13 +130,24 @@ JSValueRef js_interface_text_hide_all_func(JSContextRef cx,JSObjectRef func,JSOb
 JSValueRef js_interface_text_move_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	iface_text_type			*text;
+
+	if (iface.project.modernize) {
+		if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+
+		text=script_find_text_from_name(cx,argv[0],exception);
+		if (text!=NULL) script_value_to_2D_point(cx,argv[1],&text->pnt);
+		
+		return(script_null_to_value(cx));
+	}
+
+	// supergumba:modernize -- delete later
 	
 	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
 	
 	text=script_find_text_from_name(cx,argv[0],exception);
 	if (text!=NULL) {
-		text->x=script_value_to_int(cx,argv[1]);
-		text->y=script_value_to_int(cx,argv[2]);
+		text->pnt.x=script_value_to_int(cx,argv[1]);
+		text->pnt.y=script_value_to_int(cx,argv[2]);
 	}
 
 	return(script_null_to_value(cx));
@@ -144,14 +155,30 @@ JSValueRef js_interface_text_move_func(JSContextRef cx,JSObjectRef func,JSObject
 
 JSValueRef js_interface_text_move_relative_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
+	d3pnt					pnt;
 	iface_text_type			*text;
+
+	if (iface.project.modernize) {
+		if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+
+		text=script_find_text_from_name(cx,argv[0],exception);
+		if (text!=NULL) {
+			script_value_to_2D_point(cx,argv[1],&pnt);
+			text->pnt.x+=pnt.x;
+			text->pnt.y+=pnt.y;
+		}
+		
+		return(script_null_to_value(cx));
+	}
+
+	// supergumba:modernize -- delete later
 	
 	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
 	
 	text=script_find_text_from_name(cx,argv[0],exception);
 	if (text!=NULL) {
-		text->x+=script_value_to_int(cx,argv[1]);
-		text->y+=script_value_to_int(cx,argv[2]);
+		text->pnt.x+=script_value_to_int(cx,argv[1]);
+		text->pnt.y+=script_value_to_int(cx,argv[2]);
 	}
 
 	return(script_null_to_value(cx));
@@ -188,6 +215,17 @@ JSValueRef js_interface_text_set_size_func(JSContextRef cx,JSObjectRef func,JSOb
 JSValueRef js_interface_text_set_color_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	iface_text_type			*text;
+
+	if (iface.project.modernize) {
+		if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+
+		text=script_find_text_from_name(cx,argv[0],exception);
+		if (text!=NULL) script_value_to_color(cx,argv[1],&text->color);
+		
+		return(script_null_to_value(cx));
+	}
+
+	// supergumba:modernize -- delete later
 	
 	if (!script_check_param_count(cx,func,argc,4,exception)) return(script_null_to_value(cx));
 	

@@ -94,10 +94,10 @@ void alt_property_palette_fill_hud_bitmap(int hud_bitmap_idx)
 		// position
 
 	list_palette_add_header(&alt_property_palette,0,"Position");
-	list_palette_add_int(&alt_property_palette,kBitmapPositionX,"X",&bitmap->x,FALSE);
-	list_palette_add_int(&alt_property_palette,kBitmapPositionY,"Y",&bitmap->y,FALSE);
-	list_palette_add_int(&alt_property_palette,kBitmapPositionWid,"Width",&bitmap->x_size,FALSE);
-	list_palette_add_int(&alt_property_palette,kBitmapPositionHigh,"Height",&bitmap->y_size,FALSE);
+	list_palette_add_int(&alt_property_palette,kBitmapPositionX,"X",&bitmap->pnt.x,FALSE);
+	list_palette_add_int(&alt_property_palette,kBitmapPositionY,"Y",&bitmap->pnt.y,FALSE);
+	list_palette_add_int(&alt_property_palette,kBitmapPositionWid,"Width",&bitmap->size.x,FALSE);
+	list_palette_add_int(&alt_property_palette,kBitmapPositionHigh,"Height",&bitmap->size.y,FALSE);
 
 		// options
 

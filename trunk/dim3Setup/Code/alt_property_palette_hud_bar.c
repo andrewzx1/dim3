@@ -82,10 +82,10 @@ void alt_property_palette_fill_hud_bar(int hud_bar_idx)
 		// position
 
 	list_palette_add_header(&alt_property_palette,0,"Position");
-	list_palette_add_int(&alt_property_palette,kBarPositionX,"X",&bar->x,FALSE);
-	list_palette_add_int(&alt_property_palette,kBarPositionY,"Y",&bar->y,FALSE);
-	list_palette_add_int(&alt_property_palette,kBarPositionWid,"Width",&bar->x_size,FALSE);
-	list_palette_add_int(&alt_property_palette,kBarPositionHigh,"Height",&bar->y_size,FALSE);
+	list_palette_add_int(&alt_property_palette,kBarPositionX,"X",&bar->pnt.x,FALSE);
+	list_palette_add_int(&alt_property_palette,kBarPositionY,"Y",&bar->pnt.y,FALSE);
+	list_palette_add_int(&alt_property_palette,kBarPositionWid,"Width",&bar->size.x,FALSE);
+	list_palette_add_int(&alt_property_palette,kBarPositionHigh,"Height",&bar->size.y,FALSE);
 
 		// fill
 

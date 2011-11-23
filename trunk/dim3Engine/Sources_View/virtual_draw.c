@@ -58,16 +58,16 @@ void virtual_stick_draw(iface_virtual_stick_type *stick)
 	
 		// outer stick
 
-	rgt=stick->x+stick->x_size;
-	bot=stick->y+stick->y_size;
+	rgt=stick->pnt.x+stick->size.x;
+	bot=stick->pnt.y+stick->size.y;
 	
 	bitmap=view_images_get_bitmap(stick->outer_image_idx);
-	view_primitive_2D_texture_quad(bitmap->gl_id,&stick->color,1.0f,stick->x,rgt,stick->y,bot,0.0f,1.0f,0.0f,1.0f);
+	view_primitive_2D_texture_quad(bitmap->gl_id,&stick->color,1.0f,stick->pnt.x,rgt,stick->pnt.y,bot,0.0f,1.0f,0.0f,1.0f);
 
 		// inner stick location
 		
-	sx=stick->x_size>>1;
-	sy=stick->y_size>>1;
+	sx=stick->size.x>>1;
+	sy=stick->size.y>>1;
 
 	x=(int)(((float)sx)*stick->touch_x);
 	y=(int)(((float)sy)*stick->touch_y);
@@ -85,11 +85,11 @@ void virtual_stick_draw(iface_virtual_stick_type *stick)
 	x=(int)(vct.x*f_outer_radius);
 	y=(int)(vct.y*f_outer_radius);
 
-	lft=(stick->x+sx)+x;
+	lft=(stick->pnt.x+sx)+x;
 	lft-=(sx>>1);
 	rgt=lft+sx;
 	
-	top=(stick->y+sy)+y;
+	top=(stick->pnt.y+sy)+y;
 	top-=(sy>>1);
 	bot=top+sy;
 	
@@ -110,8 +110,8 @@ void virtual_button_draw(iface_virtual_button_type *button)
 
 	if (!button->use_bitmap) return;
 	
-	rgt=button->x+button->x_size;
-	bot=button->y+button->y_size;
+	rgt=button->pnt.x+button->size.x;
+	bot=button->pnt.y+button->size.y;
 	
 	if (button->down) {
 		bitmap=view_images_get_bitmap(button->down_image_idx);
@@ -120,7 +120,7 @@ void virtual_button_draw(iface_virtual_button_type *button)
 		bitmap=view_images_get_bitmap(button->up_image_idx);
 	}
 	
-	view_primitive_2D_texture_quad(bitmap->gl_id,&button->color,1.0f,button->x,rgt,button->y,bot,0.0f,1.0f,0.0f,1.0f);
+	view_primitive_2D_texture_quad(bitmap->gl_id,&button->color,1.0f,button->pnt.x,rgt,button->pnt.y,bot,0.0f,1.0f,0.0f,1.0f);
 }
 
 /* =======================================================

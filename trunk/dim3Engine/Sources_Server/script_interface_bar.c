@@ -117,13 +117,24 @@ JSValueRef js_interface_bar_hide_all_func(JSContextRef cx,JSObjectRef func,JSObj
 JSValueRef js_interface_bar_move_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	iface_bar_type			*bar;
+
+	if (iface.project.modernize) {
+		if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+
+		bar=script_find_bar_from_name(cx,argv[0],exception);
+		if (bar!=NULL) script_value_to_2D_point(cx,argv[1],&bar->pnt);
+		
+		return(script_null_to_value(cx));
+	}
+
+	// supergumba:modernize -- delete later
 	
 	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
 	
 	bar=script_find_bar_from_name(cx,argv[0],exception);
 	if (bar!=NULL) {
-		bar->x=script_value_to_int(cx,argv[1]);
-		bar->y=script_value_to_int(cx,argv[2]);
+		bar->pnt.x=script_value_to_int(cx,argv[1]);
+		bar->pnt.y=script_value_to_int(cx,argv[2]);
 	}
 
 	return(script_null_to_value(cx));
@@ -137,8 +148,8 @@ JSValueRef js_interface_bar_resize_func(JSContextRef cx,JSObjectRef func,JSObjec
 	
 	bar=script_find_bar_from_name(cx,argv[0],exception);
 	if (bar!=NULL) {
-		bar->x_size=script_value_to_int(cx,argv[1]);
-		bar->y_size=script_value_to_int(cx,argv[2]);
+		bar->size.x=script_value_to_int(cx,argv[1]);
+		bar->size.y=script_value_to_int(cx,argv[2]);
 	}
 
 	return(script_null_to_value(cx));

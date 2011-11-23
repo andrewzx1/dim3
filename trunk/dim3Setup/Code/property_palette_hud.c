@@ -167,10 +167,10 @@ void property_palette_click_hud(int id,bool double_click)
 		idx=iface.bitmap_list.nbitmap;
 		iface.bitmap_list.nbitmap++;
 
-		iface.bitmap_list.bitmaps[idx].x=0;
-		iface.bitmap_list.bitmaps[idx].y=0;
-		iface.bitmap_list.bitmaps[idx].x_size=-1;
-		iface.bitmap_list.bitmaps[idx].y_size=-1;
+		iface.bitmap_list.bitmaps[idx].pnt.x=0;
+		iface.bitmap_list.bitmaps[idx].pnt.y=0;
+		iface.bitmap_list.bitmaps[idx].size.x=-1;
+		iface.bitmap_list.bitmaps[idx].size.y=-1;
 		iface.bitmap_list.bitmaps[idx].alpha=1.0f;
 		iface.bitmap_list.bitmaps[idx].rot=0.0f;
 		strcpy(iface.bitmap_list.bitmaps[idx].name,name);
@@ -248,8 +248,8 @@ void property_palette_click_hud(int id,bool double_click)
 		idx=iface.text_list.ntext;
 		iface.text_list.ntext++;
 
-		iface.text_list.texts[idx].x=0;
-		iface.text_list.texts[idx].y=0;
+		iface.text_list.texts[idx].pnt.x=0;
+		iface.text_list.texts[idx].pnt.y=0;
 		iface.text_list.texts[idx].size=20;
 		iface.text_list.texts[idx].just=tx_left;
 		iface.text_list.texts[idx].special=text_special_none;
@@ -317,10 +317,10 @@ void property_palette_click_hud(int id,bool double_click)
 		idx=iface.bar_list.nbar;
 		iface.bar_list.nbar++;
 
-		iface.bar_list.bars[idx].x=0;
-		iface.bar_list.bars[idx].y=0;
-		iface.bar_list.bars[idx].x_size=20;
-		iface.bar_list.bars[idx].y_size=20;
+		iface.bar_list.bars[idx].pnt.x=0;
+		iface.bar_list.bars[idx].pnt.y=0;
+		iface.bar_list.bars[idx].size.x=20;
+		iface.bar_list.bars[idx].size.y=20;
 		iface.bar_list.bars[idx].fill_alpha=1.0f;
 		iface.bar_list.bars[idx].outline_alpha=1.0f;
 		iface.bar_list.bars[idx].value=0.0f;

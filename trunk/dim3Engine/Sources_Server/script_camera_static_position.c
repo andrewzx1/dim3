@@ -110,10 +110,8 @@ JSValueRef js_camera_static_position_move_func(JSContextRef cx,JSObjectRef func,
 {
 	if (iface.project.modernize) {
 		if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
-		
-		camera.setup.pnt.x=script_value_to_int(cx,argv[0]);
-		camera.setup.pnt.y=script_value_to_int(cx,argv[2]);
-		camera.setup.pnt.z=script_value_to_int(cx,argv[1]);
+
+		script_value_to_point(cx,argv[0],&camera.setup.pnt);
 		
 		return(script_null_to_value(cx));
 	}

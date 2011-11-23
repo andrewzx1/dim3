@@ -69,20 +69,20 @@ void iface_read_settings_bitmap(iface_type *iface,int bitmap_tag)
 	
 	bitmap->show_tick=0;
 
-	bitmap->x=bitmap->y=0;
+	bitmap->pnt.x=bitmap->pnt.y=0;
 	
 	tag=xml_findfirstchild("Position",bitmap_tag);
 	if (tag!=-1) {
-		bitmap->x=xml_get_attribute_int(tag,"x");
-		bitmap->y=xml_get_attribute_int(tag,"y");
+		bitmap->pnt.x=xml_get_attribute_int(tag,"x");
+		bitmap->pnt.y=xml_get_attribute_int(tag,"y");
 	}
 	
-	bitmap->x_size=bitmap->y_size=-1;
+	bitmap->size.x=bitmap->size.y=-1;
 	
 	tag=xml_findfirstchild("Size",bitmap_tag);
 	if (tag!=-1) {
-		bitmap->x_size=xml_get_attribute_int(tag,"width");
-		bitmap->y_size=xml_get_attribute_int(tag,"height");
+		bitmap->size.x=xml_get_attribute_int(tag,"width");
+		bitmap->size.y=xml_get_attribute_int(tag,"height");
 	}
 	
 	bitmap->alpha=1.0f;
@@ -150,12 +150,12 @@ void iface_read_settings_text(iface_type *iface,int text_tag)
 
 	xml_get_attribute_text(text_tag,"name",text->name,name_str_len);
 	
-	text->x=text->y=0;
+	text->pnt.x=text->pnt.y=0;
 	
 	tag=xml_findfirstchild("Position",text_tag);
 	if (tag!=-1) {
-		text->x=xml_get_attribute_int(tag,"x");
-		text->y=xml_get_attribute_int(tag,"y");
+		text->pnt.x=xml_get_attribute_int(tag,"x");
+		text->pnt.y=xml_get_attribute_int(tag,"y");
 	}
 	
 	text->size=iface->font.text_size_small;
@@ -214,20 +214,20 @@ void iface_read_settings_bar(iface_type *iface,int bar_tag)
 		
 	xml_get_attribute_text(bar_tag,"name",bar->name,name_str_len);
 		
-	bar->x=bar->y=0;
+	bar->pnt.x=bar->pnt.y=0;
 	
 	tag=xml_findfirstchild("Position",bar_tag);
 	if (tag!=-1) {
-		bar->x=xml_get_attribute_int(tag,"x");
-		bar->y=xml_get_attribute_int(tag,"y");
+		bar->pnt.x=xml_get_attribute_int(tag,"x");
+		bar->pnt.y=xml_get_attribute_int(tag,"y");
 	}
 	
-	bar->x_size=bar->y_size=-1;
+	bar->size.x=bar->size.y=-1;
 	
 	tag=xml_findfirstchild("Size",bar_tag);
 	if (tag!=-1) {
-		bar->x_size=xml_get_attribute_int(tag,"width");
-		bar->y_size=xml_get_attribute_int(tag,"height");
+		bar->size.x=xml_get_attribute_int(tag,"width");
+		bar->size.y=xml_get_attribute_int(tag,"height");
 	}
 	
 	bar->outline=FALSE;
@@ -303,10 +303,10 @@ void iface_read_settings_virtual_control(iface_type *iface,int virtual_head_tag)
 
 			stick->on=xml_get_attribute_boolean(tag,"on");
 			stick->use_bitmap=xml_get_attribute_boolean(tag,"use_bitmap");
-			stick->x=xml_get_attribute_int(tag,"x");
-			stick->y=xml_get_attribute_int(tag,"y");
-			stick->x_size=xml_get_attribute_int(tag,"x_size");
-			stick->y_size=xml_get_attribute_int(tag,"y_size");
+			stick->pnt.x=xml_get_attribute_int(tag,"x");
+			stick->pnt.y=xml_get_attribute_int(tag,"y");
+			stick->size.x=xml_get_attribute_int(tag,"x_size");
+			stick->size.y=xml_get_attribute_int(tag,"y_size");
 			stick->flip_x=xml_get_attribute_boolean(tag,"x_flip");
 			stick->flip_y=xml_get_attribute_boolean(tag,"y_flip");
 			xml_get_attribute_text(tag,"outer_bitmap",stick->outer_bitmap_name,file_str_len);
@@ -333,10 +333,10 @@ void iface_read_settings_virtual_control(iface_type *iface,int virtual_head_tag)
 			button->on=xml_get_attribute_boolean(tag,"on");
 			button->use_bitmap=xml_get_attribute_boolean(tag,"use_bitmap");
 			button->control_idx=xml_get_attribute_int_default(tag,"control",0);
-			button->x=xml_get_attribute_int(tag,"x");
-			button->y=xml_get_attribute_int(tag,"y");
-			button->x_size=xml_get_attribute_int(tag,"x_size");
-			button->y_size=xml_get_attribute_int(tag,"y_size");
+			button->pnt.x=xml_get_attribute_int(tag,"x");
+			button->pnt.y=xml_get_attribute_int(tag,"y");
+			button->size.x=xml_get_attribute_int(tag,"x_size");
+			button->size.y=xml_get_attribute_int(tag,"y_size");
 			xml_get_attribute_text(tag,"up_bitmap",button->up_bitmap_name,file_str_len);
 			xml_get_attribute_text(tag,"down_bitmap",button->down_bitmap_name,file_str_len);
 			xml_get_attribute_color(tag,"color",&button->color);
@@ -364,7 +364,7 @@ void iface_read_settings_radar(iface_type *iface,int radar_tag)
 	iface->radar.team_tint=FALSE;
 	iface->radar.no_motion_fade=0;
 	
-	iface->radar.x=iface->radar.y=0;
+	iface->radar.pnt.x=iface->radar.pnt.y=0;
 	iface->radar.display_radius=32;
 	iface->radar.view_radius=15000;
 	iface->radar.nicon=0;
@@ -382,8 +382,8 @@ void iface_read_settings_radar(iface_type *iface,int radar_tag)
 
 	tag=xml_findfirstchild("Position",radar_tag);
 	if (tag!=-1) {
-		iface->radar.x=xml_get_attribute_int(tag,"x");
-		iface->radar.y=xml_get_attribute_int(tag,"y");
+		iface->radar.pnt.x=xml_get_attribute_int(tag,"x");
+		iface->radar.pnt.y=xml_get_attribute_int(tag,"y");
 		iface->radar.display_radius=xml_get_attribute_int(tag,"radius");
 	}
 
@@ -1002,13 +1002,13 @@ bool iface_write_settings_interface(iface_type *iface,char *err_str)
 		xml_add_tagend(TRUE);
 	
 		xml_add_tagstart("Position");
-		xml_add_attribute_int("x",bitmap->x);
-		xml_add_attribute_int("y",bitmap->y);
+		xml_add_attribute_int("x",bitmap->pnt.x);
+		xml_add_attribute_int("y",bitmap->pnt.y);
 		xml_add_tagend(TRUE);
 		
 		xml_add_tagstart("Size");
-		xml_add_attribute_int("width",bitmap->x_size);
-		xml_add_attribute_int("height",bitmap->y_size);
+		xml_add_attribute_int("width",bitmap->size.x);
+		xml_add_attribute_int("height",bitmap->size.y);
 		xml_add_tagend(TRUE);
 
 		xml_add_tagstart("Settings");
@@ -1054,8 +1054,8 @@ bool iface_write_settings_interface(iface_type *iface,char *err_str)
 		xml_add_tagend(FALSE);
 	
 		xml_add_tagstart("Position");
-		xml_add_attribute_int("x",text->x);
-		xml_add_attribute_int("y",text->y);
+		xml_add_attribute_int("x",text->pnt.x);
+		xml_add_attribute_int("y",text->pnt.y);
 		xml_add_tagend(TRUE);
 
 		xml_add_tagstart("Settings");
@@ -1093,13 +1093,13 @@ bool iface_write_settings_interface(iface_type *iface,char *err_str)
 		xml_add_tagend(FALSE);
 		
 		xml_add_tagstart("Position");
-		xml_add_attribute_int("x",bar->x);
-		xml_add_attribute_int("y",bar->y);
+		xml_add_attribute_int("x",bar->pnt.x);
+		xml_add_attribute_int("y",bar->pnt.y);
 		xml_add_tagend(TRUE);
 		
 		xml_add_tagstart("Size");
-		xml_add_attribute_int("width",bar->x_size);
-		xml_add_attribute_int("height",bar->y_size);
+		xml_add_attribute_int("width",bar->size.x);
+		xml_add_attribute_int("height",bar->size.y);
 		xml_add_tagend(TRUE);
 		
 		xml_add_tagstart("Outline");
@@ -1146,10 +1146,10 @@ bool iface_write_settings_interface(iface_type *iface,char *err_str)
 		xml_add_tagstart("Stick");
 		xml_add_attribute_boolean("on",stick->on);
 		xml_add_attribute_boolean("use_bitmap",stick->use_bitmap);
-		xml_add_attribute_int("x",stick->x);
-		xml_add_attribute_int("y",stick->y);
-		xml_add_attribute_int("x_size",stick->x_size);
-		xml_add_attribute_int("y_size",stick->y_size);
+		xml_add_attribute_int("x",stick->pnt.x);
+		xml_add_attribute_int("y",stick->pnt.y);
+		xml_add_attribute_int("x_size",stick->size.x);
+		xml_add_attribute_int("y_size",stick->size.y);
 		xml_add_attribute_boolean("x_flip",stick->flip_x);
 		xml_add_attribute_boolean("y_flip",stick->flip_y);
 		xml_add_attribute_text("outer_bitmap",stick->outer_bitmap_name);
@@ -1174,10 +1174,10 @@ bool iface_write_settings_interface(iface_type *iface,char *err_str)
 		xml_add_attribute_boolean("on",button->on);
 		xml_add_attribute_boolean("use_bitmap",button->use_bitmap);
 		xml_add_attribute_int("control",button->control_idx);
-		xml_add_attribute_int("x",button->x);
-		xml_add_attribute_int("y",button->y);
-		xml_add_attribute_int("x_size",button->x_size);
-		xml_add_attribute_int("y_size",button->y_size);
+		xml_add_attribute_int("x",button->pnt.x);
+		xml_add_attribute_int("y",button->pnt.y);
+		xml_add_attribute_int("x_size",button->size.x);
+		xml_add_attribute_int("y_size",button->size.y);
 		xml_add_attribute_text("up_bitmap",button->up_bitmap_name);
 		xml_add_attribute_text("down_bitmap",button->down_bitmap_name);
 		xml_add_attribute_color("color",&button->color);
@@ -1203,8 +1203,8 @@ bool iface_write_settings_interface(iface_type *iface,char *err_str)
 	xml_add_tagend(TRUE);
 
 	xml_add_tagstart("Position");
-	xml_add_attribute_int("x",iface->radar.x);
-	xml_add_attribute_int("y",iface->radar.y);
+	xml_add_attribute_int("x",iface->radar.pnt.x);
+	xml_add_attribute_int("y",iface->radar.pnt.y);
 	xml_add_attribute_int("radius",iface->radar.display_radius);
 	xml_add_tagend(TRUE);
 

@@ -91,12 +91,12 @@ JSValueRef js_interface_radar_get_on(JSContextRef cx,JSObjectRef j_obj,JSStringR
 
 JSValueRef js_interface_radar_get_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_int_to_value(cx,iface.radar.x));
+	return(script_int_to_value(cx,iface.radar.pnt.x));
 }
 
 JSValueRef js_interface_radar_get_y(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_int_to_value(cx,iface.radar.y));
+	return(script_int_to_value(cx,iface.radar.pnt.y));
 }
 
 JSValueRef js_interface_radar_get_displayRadius(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
@@ -124,14 +124,14 @@ bool js_interface_radar_set_on(JSContextRef cx,JSObjectRef j_obj,JSStringRef nam
 
 bool js_interface_radar_set_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	iface.radar.x=script_value_to_int(cx,vp);
+	iface.radar.pnt.x=script_value_to_int(cx,vp);
 	
 	return(TRUE);
 }
 
 bool js_interface_radar_set_y(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	iface.radar.y=script_value_to_int(cx,vp);
+	iface.radar.pnt.y=script_value_to_int(cx,vp);
 	
 	return(TRUE);
 }

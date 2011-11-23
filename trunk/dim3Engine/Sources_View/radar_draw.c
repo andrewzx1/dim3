@@ -79,8 +79,8 @@ void radar_draw(void)
 
 	radar_sz=iface.radar.display_radius;
 
-	lx=iface.radar.x-radar_sz;
-	ty=iface.radar.y-radar_sz;
+	lx=iface.radar.pnt.x-radar_sz;
+	ty=iface.radar.pnt.y-radar_sz;
 	rx=lx+(radar_sz<<1);
 	by=ty+(radar_sz<<1);
 
@@ -161,12 +161,12 @@ void radar_draw(void)
 			// if outside max, stick to edge
 
 		if (dist>max_dist) {
-			x=iface.radar.x+((x*radar_sz)/dist);
-			y=iface.radar.y-((y*radar_sz)/dist);
+			x=iface.radar.pnt.x+((x*radar_sz)/dist);
+			y=iface.radar.pnt.y-((y*radar_sz)/dist);
 		}
 		else {
-			x=iface.radar.x+((x*radar_sz)/max_dist);
-			y=iface.radar.y-((y*radar_sz)/max_dist);
+			x=iface.radar.pnt.x+((x*radar_sz)/max_dist);
+			y=iface.radar.pnt.y-((y*radar_sz)/max_dist);
 		}
 
 			// get alpha

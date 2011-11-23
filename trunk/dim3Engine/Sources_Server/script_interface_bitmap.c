@@ -128,13 +128,24 @@ JSValueRef js_interface_bitmap_hide_all_func(JSContextRef cx,JSObjectRef func,JS
 JSValueRef js_interface_bitmap_move_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	iface_bitmap_type			*bitmap;
+
+	if (iface.project.modernize) {
+		if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+
+		bitmap=script_find_bitmap_from_name(cx,argv[0],exception);
+		if (bitmap!=NULL) script_value_to_2D_point(cx,argv[1],&bitmap->pnt);
+		
+		return(script_null_to_value(cx));
+	}
+
+	// supergumba:modernize -- delete later
 	
 	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
 	
 	bitmap=script_find_bitmap_from_name(cx,argv[0],exception);
 	if (bitmap!=NULL) {
-		bitmap->x=script_value_to_int(cx,argv[1]);
-		bitmap->y=script_value_to_int(cx,argv[2]);
+		bitmap->pnt.x=script_value_to_int(cx,argv[1]);
+		bitmap->pnt.y=script_value_to_int(cx,argv[2]);
 	}
 
 	return(script_null_to_value(cx));
@@ -142,14 +153,30 @@ JSValueRef js_interface_bitmap_move_func(JSContextRef cx,JSObjectRef func,JSObje
 
 JSValueRef js_interface_bitmap_move_relative_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
+	d3pnt						pnt;
 	iface_bitmap_type			*bitmap;
+
+	if (iface.project.modernize) {
+		if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+
+		bitmap=script_find_bitmap_from_name(cx,argv[0],exception);
+		if (bitmap!=NULL) {
+			script_value_to_2D_point(cx,argv[1],&pnt);
+			bitmap->pnt.x+=pnt.x;
+			bitmap->pnt.y+=pnt.y;
+		}
+		
+		return(script_null_to_value(cx));
+	}
+
+	// supergumba:modernize -- delete later
 	
 	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
 	
 	bitmap=script_find_bitmap_from_name(cx,argv[0],exception);
 	if (bitmap!=NULL) {
-		bitmap->x+=script_value_to_int(cx,argv[1]);
-		bitmap->y+=script_value_to_int(cx,argv[2]);
+		bitmap->pnt.x+=script_value_to_int(cx,argv[1]);
+		bitmap->pnt.y+=script_value_to_int(cx,argv[2]);
 	}
 
 	return(script_null_to_value(cx));
@@ -163,8 +190,8 @@ JSValueRef js_interface_bitmap_resize_func(JSContextRef cx,JSObjectRef func,JSOb
 	
 	bitmap=script_find_bitmap_from_name(cx,argv[0],exception);
 	if (bitmap!=NULL) {
-		bitmap->x_size=script_value_to_int(cx,argv[1]);
-		bitmap->y_size=script_value_to_int(cx,argv[2]);
+		bitmap->size.x=script_value_to_int(cx,argv[1]);
+		bitmap->size.y=script_value_to_int(cx,argv[2]);
 	}
 
 	return(script_null_to_value(cx));
