@@ -73,10 +73,10 @@ void alt_property_palette_fill_virtual_control_stick(int virtual_control_stick_i
 	list_palette_add_pick_color(&alt_property_palette,kStickColor,"Color",&stick->color,FALSE);
 	
 	list_palette_add_header(&alt_property_palette,0,"Position");
-	list_palette_add_int(&alt_property_palette,kStickPositionX,"X",&stick->x,FALSE);
-	list_palette_add_int(&alt_property_palette,kStickPositionY,"Y",&stick->y,FALSE);
-	list_palette_add_int(&alt_property_palette,kStickPositionWid,"Width",&stick->x_size,FALSE);
-	list_palette_add_int(&alt_property_palette,kStickPositionHigh,"Height",&stick->y_size,FALSE);
+	list_palette_add_int(&alt_property_palette,kStickPositionX,"X",&stick->pnt.x,FALSE);
+	list_palette_add_int(&alt_property_palette,kStickPositionY,"Y",&stick->pnt.y,FALSE);
+	list_palette_add_int(&alt_property_palette,kStickPositionWid,"Width",&stick->size.x,FALSE);
+	list_palette_add_int(&alt_property_palette,kStickPositionHigh,"Height",&stick->size.y,FALSE);
 
 	list_palette_add_header(&alt_property_palette,0,"Axis");
 	list_palette_add_checkbox(&alt_property_palette,kStickFlipX,"Flip X",&stick->flip_x,FALSE);

@@ -77,10 +77,10 @@ void alt_property_palette_fill_virtual_control_button(int virtual_control_button
 	list_palette_add_pick_color(&alt_property_palette,kButtonColor,"Color",&button->color,FALSE);
 	
 	list_palette_add_header(&alt_property_palette,0,"Position");
-	list_palette_add_int(&alt_property_palette,kButtonPositionX,"X",&button->x,FALSE);
-	list_palette_add_int(&alt_property_palette,kButtonPositionY,"Y",&button->y,FALSE);
-	list_palette_add_int(&alt_property_palette,kButtonPositionWid,"Width",&button->x_size,FALSE);
-	list_palette_add_int(&alt_property_palette,kButtonPositionHigh,"Height",&button->y_size,FALSE);
+	list_palette_add_int(&alt_property_palette,kButtonPositionX,"X",&button->pnt.x,FALSE);
+	list_palette_add_int(&alt_property_palette,kButtonPositionY,"Y",&button->pnt.y,FALSE);
+	list_palette_add_int(&alt_property_palette,kButtonPositionWid,"Width",&button->size.x,FALSE);
+	list_palette_add_int(&alt_property_palette,kButtonPositionHigh,"Height",&button->size.y,FALSE);
 }
 
 /* =======================================================

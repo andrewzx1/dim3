@@ -148,13 +148,13 @@ void hud_bitmaps_draw(void)
 			
 		bitmap_data=view_images_get_bitmap(bitmap->image_idx);
             
-		sx=bitmap->x;
-		sy=bitmap->y;
+		sx=bitmap->pnt.x;
+		sy=bitmap->pnt.y;
 		
-		wid=bitmap->x_size;
+		wid=bitmap->size.x;
 		if (wid==-1) wid=bitmap_data->wid;
 
-		high=bitmap->y_size;
+		high=bitmap->size.y;
 		if (high==-1) high=bitmap_data->high;
 		
 			// setup images
@@ -469,10 +469,10 @@ void hud_texts_draw(void)
 			// draw text
 			
 		if (text->has_return) {
-			hud_texts_draw_return(text->x,text->y,high,text->data,text->just,&text->color,alpha);
+			hud_texts_draw_return(text->pnt.x,text->pnt.y,high,text->data,text->just,&text->color,alpha);
 		}
 		else {
-			gl_text_draw(text->x,text->y,text->data,text->just,FALSE,&text->color,alpha);
+			gl_text_draw(text->pnt.x,text->pnt.y,text->data,text->just,FALSE,&text->color,alpha);
 		}
 	}
 	
@@ -500,8 +500,8 @@ void hud_bars_draw(void)
 		
 			// find size
 			
-		wid=bar->x_size;
-		high=bar->y_size;
+		wid=bar->size.x;
+		high=bar->size.y;
 		
 		if (!bar->vert) {
 			wid=(int)(((float)wid)*bar->value);
@@ -519,19 +519,19 @@ void hud_bars_draw(void)
 			// background
 
 		if (bar->background) {
-			lx=bar->x;
-			rx=lx+bar->x_size;
-			ty=bar->y;
-			by=ty+bar->y_size;
+			lx=bar->pnt.x;
+			rx=lx+bar->size.x;
+			ty=bar->pnt.y;
+			by=ty+bar->size.y;
 
 			view_primitive_2D_color_quad(&bar->background_color,bar->background_alpha,lx,rx,ty,by);
 		}
 
 			// draw bar
 
-		lx=bar->x;
+		lx=bar->pnt.x;
 		rx=lx+wid;
-		by=bar->y+bar->y_size;
+		by=bar->pnt.y+bar->size.y;
 		ty=by-high;
 			
 		if (!bar->vert) {
@@ -545,10 +545,10 @@ void hud_bars_draw(void)
 			
 		if (bar->outline) {
 		
-			lx=bar->x;
-			rx=lx+bar->x_size;
-			ty=bar->y;
-			by=ty+bar->y_size;
+			lx=bar->pnt.x;
+			rx=lx+bar->size.x;
+			ty=bar->pnt.y;
+			by=ty+bar->size.y;
 			
 			glLineWidth((float)view.screen.x_sz/(float)iface.scale_x);
 			view_primitive_2D_line_quad(&bar->outline_color,bar->outline_alpha,lx,rx,ty,by);

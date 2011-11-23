@@ -841,10 +841,10 @@ bool drag_bone_model_wind(d3pnt *start_pnt)
 bool drag_hit_box_handle_model_wind(d3pnt *start_pnt)
 {
 	int						n,k,box_idx,pt_idx,xsz,zsz,ysz,offx,offz,offy,
-							kx,ky,kz,x[8],y[8],z[8];
+							kx,ky,kz;
 	bool					model_hit_box_drag_on;
 	d3rect					mbox;
-	d3pnt					org_pnt,org_cnt,last_pnt,pnt;
+	d3pnt					org_pnt,org_cnt,last_pnt,pnt,edge_pnt[8];
 	d3fpnt					hand_pnt;
 	model_box_type			*box;
 	
@@ -858,12 +858,13 @@ bool drag_hit_box_handle_model_wind(d3pnt *start_pnt)
 		// setup transforms
 		
 	draw_model_gl_setup(0);
+	draw_model_2D_transform_setup();
 
 		// find a click
-		
+
 	box_idx=pt_idx=-1;
 		
-	for (n=0;n<model.nhit_box;n++) {
+	for (n=0;n!=model.nhit_box;n++) {
 		box=&model.hit_boxes[n].box;
 
 		xsz=box->size.x/2;
@@ -873,18 +874,18 @@ bool drag_hit_box_handle_model_wind(d3pnt *start_pnt)
 		ysz=box->size.y;
 		offy=box->offset.y;
 		
-		x[0]=x[1]=x[4]=x[5]=offx-xsz;
-		x[2]=x[3]=x[6]=x[7]=offx+xsz;
-		y[0]=y[1]=y[2]=y[3]=offy-ysz;
-		y[4]=y[5]=y[6]=y[7]=offy;
-		z[0]=z[3]=z[4]=z[7]=offz-zsz;
-		z[1]=z[2]=z[5]=z[6]=offz+zsz;
+		edge_pnt[0].x=edge_pnt[1].x=edge_pnt[4].x=edge_pnt[5].x=offx-xsz;
+		edge_pnt[2].x=edge_pnt[3].x=edge_pnt[6].x=edge_pnt[7].x=offx+xsz;
+		edge_pnt[0].y=edge_pnt[1].y=edge_pnt[2].y=edge_pnt[3].y=offy-ysz;
+		edge_pnt[4].y=edge_pnt[5].y=edge_pnt[6].y=edge_pnt[7].y=offy;
+		edge_pnt[0].z=edge_pnt[3].z=edge_pnt[4].z=edge_pnt[7].z=offz-zsz;
+		edge_pnt[1].z=edge_pnt[2].z=edge_pnt[5].z=edge_pnt[6].z=offz+zsz;
 	
 		for (k=0;k!=8;k++) {
-			model_get_point_position(&draw_setup,&x[k],&y[k],&z[k]);
-			hand_pnt.x=(float)x[k];
-			hand_pnt.y=(float)y[k];
-			hand_pnt.z=(float)z[k];
+			model_get_point_position(&draw_setup,&edge_pnt[k]);
+			hand_pnt.x=(float)edge_pnt[k].x;
+			hand_pnt.y=(float)edge_pnt[k].y;
+			hand_pnt.z=(float)edge_pnt[k].z;
 			if (draw_bone_model_wind_click_box(start_pnt,&hand_pnt)) {
 				box_idx=n;
 				pt_idx=k;

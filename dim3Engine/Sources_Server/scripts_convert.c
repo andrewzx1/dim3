@@ -260,6 +260,23 @@ void script_value_to_point(JSContextRef cx,JSValueRef val,d3pnt *pnt)
 	if (vp!=NULL) pnt->z=script_value_to_int(cx,vp);
 }
 
+void script_value_to_2D_point(JSContextRef cx,JSValueRef val,d3pnt *pnt)
+{
+	JSObjectRef			obj;
+	JSValueRef			vp;
+
+	pnt->x=pnt->y=pnt->z=0;
+
+	obj=JSValueToObject(cx,val,NULL);
+	if (obj==NULL) return;
+
+	vp=script_get_single_property(cx,obj,"x");
+	if (vp!=NULL) pnt->x=script_value_to_int(cx,vp);
+
+	vp=script_get_single_property(cx,obj,"y");
+	if (vp!=NULL) pnt->y=script_value_to_int(cx,vp);
+}
+
 JSValueRef script_point_to_value(JSContextRef cx,d3pnt *pnt)
 {
 	JSObjectRef		j_obj;

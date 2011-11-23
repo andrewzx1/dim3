@@ -32,6 +32,7 @@ and can be sold or given away.
 #include "scripts.h"
 #include "objects.h"
 
+extern iface_type		iface;
 extern map_type			map;
 extern server_type		server;
 extern js_type			js;
@@ -339,7 +340,20 @@ JSValueRef js_map_node_get_name_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 JSValueRef js_map_node_get_distance_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				x,z,y;
+	d3pnt			pnt;
 	node_type		*node;
+
+	if (iface.project.modernize) {
+		if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+			
+		node=script_find_node_from_idx_arg(cx,argv[0],exception);
+		if (node==NULL) return(script_null_to_value(cx));
+		
+		script_value_to_point(cx,argv[1],&pnt);
+		return(script_int_to_value(cx,distance_get(node->pnt.x,node->pnt.y,node->pnt.z,pnt.x,pnt.y,pnt.z)));
+	}
+
+	// supergumba:modernize -- delete later
 	
 	if (!script_check_param_count(cx,func,argc,4,exception)) return(script_null_to_value(cx));
 	

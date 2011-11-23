@@ -608,11 +608,12 @@ typedef struct		{
 					} iface_bitmap_repeat_type;
 					
 typedef struct		{
-						int								x,y,x_size,y_size,image_idx,show_tick;
+						int								image_idx,show_tick;
 						float							alpha,rot;
 						char							name[name_str_len],filename[file_str_len];
 						bool							show,old_show,
 														flash,flip_horz,flip_vert,team_tint;
+						d3pnt							pnt,size;
 						iface_bitmap_repeat_type		repeat;
 						iface_image_animation_type		animate;
 						iface_item_fade_type			fade;
@@ -624,10 +625,11 @@ typedef struct		{
 					} iface_bitmap_list;
 
 typedef struct		{
-						int								x,y,size,just,special;
+						int								size,just,special;
 						float							alpha;
 						char							name[name_str_len],data[max_hud_text_str_sz];
 						bool							show,old_show,has_return;
+						d3pnt							pnt;
 						d3col							color;
 						iface_item_fade_type			fade;
 					} iface_text_type;
@@ -638,11 +640,11 @@ typedef struct		{
 					} iface_text_list;
 					
 typedef struct		{
-						int								x,y,x_size,y_size;
 						float							fill_alpha,outline_alpha,background_alpha,
 														value;
 						char							name[name_str_len];
 						bool							show,old_show,outline,background,vert;
+						d3pnt							pnt,size;
 						d3col							fill_start_color,fill_end_color,
 														outline_color,background_color;
 					} iface_bar_type;
@@ -660,21 +662,22 @@ typedef struct		{
 #define max_virtual_button								8
 
 typedef struct		{
-						int								x,y,x_size,y_size,
-														outer_image_idx,inner_image_idx;
+						int								outer_image_idx,inner_image_idx;
 						float							touch_x,touch_y;
 						bool							on,flip_x,flip_y,use_bitmap;
 						char							outer_bitmap_name[file_str_len],
 														inner_bitmap_name[file_str_len];
+						d3pnt							pnt,size;
 						d3col							color;
 					} iface_virtual_stick_type;
 
 typedef struct		{
-						int								x,y,x_size,y_size,control_idx,
+						int								control_idx,
 														up_image_idx,down_image_idx;
 						bool							on,down,use_bitmap;
 						char							up_bitmap_name[file_str_len],
 														down_bitmap_name[file_str_len];
+						d3pnt							pnt,size;
 						d3col							color;
 					} iface_virtual_button_type;
 
@@ -696,10 +699,11 @@ typedef struct		{
 					} iface_radar_icon_type;
 
 typedef struct		{
-						int								x,y,display_radius,view_radius,
+						int								display_radius,view_radius,
 														background_image_idx,nicon,no_motion_fade;
 						bool							on,rot,team_tint;
 						char							background_bitmap_name[name_str_len];
+						d3pnt							pnt;
 						iface_radar_icon_type			icons[max_radar_icon];
 					} iface_radar_type;
 			

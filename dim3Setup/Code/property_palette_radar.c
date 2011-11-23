@@ -78,8 +78,8 @@ void property_palette_fill_radar(void)
 		// position
 
 	list_palette_add_header(&property_palette,0,"Position");
-	list_palette_add_int(&property_palette,kRadarPropertyPositionX,"X",&iface.radar.x,FALSE);
-	list_palette_add_int(&property_palette,kRadarPropertyPositionY,"Y",&iface.radar.y,FALSE);
+	list_palette_add_int(&property_palette,kRadarPropertyPositionX,"X",&iface.radar.pnt.x,FALSE);
+	list_palette_add_int(&property_palette,kRadarPropertyPositionY,"Y",&iface.radar.pnt.y,FALSE);
 
 		// icons
 

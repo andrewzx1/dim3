@@ -96,10 +96,10 @@ void draw_model_axis(void)
 
 void draw_model_box_view(void)
 {
-	int				n,xsz,zsz,ysz,offx,offz,offy,
-					x[8],y[8],z[8];
+	int				n,xsz,zsz,ysz,offx,offz,offy;
 	float			vertexes[8*3];
 	float			*pv;
+	d3pnt			pnt[8];
 
 		// get box
 
@@ -110,15 +110,15 @@ void draw_model_box_view(void)
     ysz=model.view_box.size.y;
     offy=model.view_box.offset.y;
 	
-	x[0]=x[1]=x[4]=x[5]=offx-xsz;
-	x[2]=x[3]=x[6]=x[7]=offx+xsz;
-	y[0]=y[1]=y[2]=y[3]=offy-ysz;
-	y[4]=y[5]=y[6]=y[7]=offy;
-	z[0]=z[3]=z[4]=z[7]=offz-zsz;
-	z[1]=z[2]=z[5]=z[6]=offz+zsz;
+	pnt[0].x=pnt[1].x=pnt[4].x=pnt[5].x=offx-xsz;
+	pnt[2].x=pnt[3].x=pnt[6].x=pnt[7].x=offx+xsz;
+	pnt[0].y=pnt[1].y=pnt[2].y=pnt[3].y=offy-ysz;
+	pnt[4].y=pnt[5].y=pnt[6].y=pnt[7].y=offy;
+	pnt[0].z=pnt[3].z=pnt[4].z=pnt[7].z=offz-zsz;
+	pnt[1].z=pnt[2].z=pnt[5].z=pnt[6].z=offz+zsz;
 	
 	for (n=0;n!=8;n++) {
-		model_get_point_position(&draw_setup,&x[n],&y[n],&z[n]);
+		model_get_point_position(&draw_setup,&pnt[n]);
 	}
     
 		// draw box
@@ -129,9 +129,9 @@ void draw_model_box_view(void)
 	pv=vertexes;
     
 	for (n=0;n!=4;n++) {
-		*pv++=(float)x[n];
-		*pv++=(float)y[n];
-		*pv++=(float)z[n];
+		*pv++=(float)pnt[n].x;
+		*pv++=(float)pnt[n].y;
+		*pv++=(float)pnt[n].z;
 	}
 
 	glVertexPointer(3,GL_FLOAT,0,vertexes);
@@ -140,9 +140,9 @@ void draw_model_box_view(void)
 	pv=vertexes;
     
 	for (n=4;n!=8;n++) {
-		*pv++=(float)x[n];
-		*pv++=(float)y[n];
-		*pv++=(float)z[n];
+		*pv++=(float)pnt[n].x;
+		*pv++=(float)pnt[n].y;
+		*pv++=(float)pnt[n].z;
 	}
 
 	glVertexPointer(3,GL_FLOAT,0,vertexes);
@@ -151,12 +151,12 @@ void draw_model_box_view(void)
 	pv=vertexes;
 
 	for (n=0;n!=4;n++) {
-		*pv++=(float)x[n];
-		*pv++=(float)y[n];
-		*pv++=(float)z[n];
-		*pv++=(float)x[n+4];
-		*pv++=(float)y[n+4];
-		*pv++=(float)z[n+4];
+		*pv++=(float)pnt[n].x;
+		*pv++=(float)pnt[n].y;
+		*pv++=(float)pnt[n].z;
+		*pv++=(float)pnt[n+4].x;
+		*pv++=(float)pnt[n+4].y;
+		*pv++=(float)pnt[n+4].z;
 	}
 
 	glVertexPointer(3,GL_FLOAT,0,vertexes);
@@ -171,9 +171,9 @@ void draw_model_box_view(void)
 	pv=vertexes;
 
 	for (n=4;n!=8;n++) {
-		*pv++=(float)x[n];
-		*pv++=(float)y[n];
-		*pv++=(float)z[n];
+		*pv++=(float)pnt[n].x;
+		*pv++=(float)pnt[n].y;
+		*pv++=(float)pnt[n].z;
 	}
 
 	glVertexPointer(3,GL_FLOAT,0,vertexes);
@@ -188,10 +188,10 @@ void draw_model_box_view(void)
 
 void draw_model_box_hit_boxes(void)
 {
-	int				n,k,x[8],y[8],z[8];
+	int				n,k;
 	float			vertexes[8*3];
 	float			*pv;
-	d3pnt			pnt,min,max;
+	d3pnt			pnt,min,max,box_pnt[8];
 
 	pnt.x=pnt.y=pnt.z=0;
 	
@@ -201,15 +201,15 @@ void draw_model_box_hit_boxes(void)
 
 		model_hit_box_get_box(&model,n,&pnt,&draw_setup,&min,&max);
 
-		x[0]=x[1]=x[4]=x[5]=min.x;
-		x[2]=x[3]=x[6]=x[7]=max.x;
-		y[0]=y[1]=y[2]=y[3]=min.y;
-		y[4]=y[5]=y[6]=y[7]=max.y;
-		z[0]=z[3]=z[4]=z[7]=min.z;
-		z[1]=z[2]=z[5]=z[6]=max.z;
+		box_pnt[0].x=box_pnt[1].x=box_pnt[4].x=box_pnt[5].x=min.x;
+		box_pnt[2].x=box_pnt[3].x=box_pnt[6].x=box_pnt[7].x=max.x;
+		box_pnt[0].y=box_pnt[1].y=box_pnt[2].y=box_pnt[3].y=min.y;
+		box_pnt[4].y=box_pnt[5].y=box_pnt[6].y=box_pnt[7].y=max.y;
+		box_pnt[0].z=box_pnt[3].z=box_pnt[4].z=box_pnt[7].z=min.z;
+		box_pnt[1].z=box_pnt[2].z=box_pnt[5].z=box_pnt[6].z=max.z;
 		
 		for (k=0;k!=8;k++) {
-			model_get_point_position(&draw_setup,&x[k],&y[k],&z[k]);
+			model_get_point_position(&draw_setup,&box_pnt[k]);
 		}
 	    
 			// draw box
@@ -220,9 +220,9 @@ void draw_model_box_hit_boxes(void)
 		pv=vertexes;
 
 		for (k=0;k!=4;k++) {
-			*pv++=(float)x[k];
-			*pv++=(float)y[k];
-			*pv++=(float)z[k];
+			*pv++=(float)box_pnt[k].x;
+			*pv++=(float)box_pnt[k].y;
+			*pv++=(float)box_pnt[k].z;
 		}
 		
 		glVertexPointer(3,GL_FLOAT,0,vertexes);
@@ -231,9 +231,9 @@ void draw_model_box_hit_boxes(void)
 		pv=vertexes;
 
 		for (k=4;k!=8;k++) {
-			*pv++=(float)x[k];
-			*pv++=(float)y[k];
-			*pv++=(float)z[k];
+			*pv++=(float)box_pnt[k].x;
+			*pv++=(float)box_pnt[k].y;
+			*pv++=(float)box_pnt[k].z;
 		}
 
 		glVertexPointer(3,GL_FLOAT,0,vertexes);
@@ -242,12 +242,12 @@ void draw_model_box_hit_boxes(void)
 		pv=vertexes;
 
 		for (k=0;k!=4;k++) {
-			*pv++=(float)x[k];
-			*pv++=(float)y[k];
-			*pv++=(float)z[k];
-			*pv++=(float)x[k+4];
-			*pv++=(float)y[k+4];
-			*pv++=(float)z[k+4];
+			*pv++=(float)box_pnt[k].x;
+			*pv++=(float)box_pnt[k].y;
+			*pv++=(float)box_pnt[k].z;
+			*pv++=(float)box_pnt[k+4].x;
+			*pv++=(float)box_pnt[k+4].y;
+			*pv++=(float)box_pnt[k+4].z;
 		}
 		
 		glVertexPointer(3,GL_FLOAT,0,vertexes);
@@ -265,9 +265,9 @@ void draw_model_box_hit_boxes(void)
 		pv=vertexes;
 
 		for (k=0;k!=8;k++) {
-			*pv++=(float)x[k];
-			*pv++=(float)y[k];
-			*pv++=(float)z[k];
+			*pv++=(float)box_pnt[k].x;
+			*pv++=(float)box_pnt[k].y;
+			*pv++=(float)box_pnt[k].z;
 		}
 		
 		glVertexPointer(3,GL_FLOAT,0,vertexes);
