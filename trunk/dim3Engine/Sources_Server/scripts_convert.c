@@ -277,6 +277,23 @@ void script_value_to_2D_point(JSContextRef cx,JSValueRef val,d3pnt *pnt)
 	if (vp!=NULL) pnt->y=script_value_to_int(cx,vp);
 }
 
+void script_value_to_2D_float_point(JSContextRef cx,JSValueRef val,d3fpnt *fpnt)
+{
+	JSObjectRef			obj;
+	JSValueRef			vp;
+
+	fpnt->x=fpnt->y=fpnt->z=0.0f;
+
+	obj=JSValueToObject(cx,val,NULL);
+	if (obj==NULL) return;
+
+	vp=script_get_single_property(cx,obj,"x");
+	if (vp!=NULL) fpnt->x=script_value_to_float(cx,vp);
+
+	vp=script_get_single_property(cx,obj,"y");
+	if (vp!=NULL) fpnt->y=script_value_to_float(cx,vp);
+}
+
 JSValueRef script_point_to_value(JSContextRef cx,d3pnt *pnt)
 {
 	JSObjectRef		j_obj;

@@ -299,11 +299,32 @@ JSValueRef js_proj_melee_spawn_from_projectile_bone_func(JSContextRef cx,JSObjec
 
 JSValueRef js_proj_melee_spawn_from_position_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	d3pnt				pt;
+	d3pnt				pnt;
     obj_type			*obj;
 	weapon_type			*weap;
 	proj_type			*proj;
 	proj_setup_type		*proj_setup;
+
+	if (iface.project.modernize) {
+		if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+
+		proj=proj_get_attach(j_obj);
+		if (proj==NULL) return(script_null_to_value(cx));
+		
+		obj=server.obj_list.objs[proj->obj_idx];
+		weap=obj->weap_list.weaps[proj->weap_idx];
+
+		proj_setup=weap->proj_setup_list.proj_setups[proj->proj_setup_idx];
+		if (proj_setup==NULL) return(script_null_to_value(cx));
+
+		script_value_to_point(cx,argv[0],&pnt);
+		
+		melee_add(obj,weap,&pnt,&proj->ang,&proj_setup->melee,-1);
+
+		return(script_null_to_value(cx));
+	}
+
+	// supergumba:modernize -- delete later
 
 	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
 	
@@ -316,11 +337,11 @@ JSValueRef js_proj_melee_spawn_from_position_func(JSContextRef cx,JSObjectRef fu
 	proj_setup=weap->proj_setup_list.proj_setups[proj->proj_setup_idx];
 	if (proj_setup==NULL) return(script_null_to_value(cx));
 	
-	pt.x=script_value_to_int(cx,argv[0]);
-	pt.z=script_value_to_int(cx,argv[1]);
-	pt.y=script_value_to_int(cx,argv[2]);
+	pnt.x=script_value_to_int(cx,argv[0]);
+	pnt.z=script_value_to_int(cx,argv[1]);
+	pnt.y=script_value_to_int(cx,argv[2]);
 	
-	melee_add(obj,weap,&pt,&proj->ang,&proj_setup->melee,-1);
+	melee_add(obj,weap,&pnt,&proj->ang,&proj_setup->melee,-1);
 
 	return(script_null_to_value(cx));
 }
