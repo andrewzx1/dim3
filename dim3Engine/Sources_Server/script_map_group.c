@@ -32,6 +32,7 @@ and can be sold or given away.
 #include "interface.h"
 #include "scripts.h"
 
+extern iface_type		iface;
 extern map_type			map;
 extern js_type			js;
 
@@ -149,7 +150,22 @@ JSValueRef js_map_group_set_texture_func(JSContextRef cx,JSObjectRef func,JSObje
 JSValueRef js_map_group_set_texture_shift_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	int				group_idx;
+	d3fpnt			fpnt;
 	
+	if (iface.project.modernize) {
+		if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+
+		group_idx=script_find_group_from_name(cx,argv[0],exception);
+		if (group_idx!=-1) {
+			script_value_to_2D_float_point(cx,argv[1],&fpnt);
+			group_texture_shift(group_idx,fpnt.x,fpnt.y);
+		}
+
+		return(script_null_to_value(cx));
+	}
+
+	// supergumba:modernize -- delete later
+
 	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
 	
 	group_idx=script_find_group_from_name(cx,argv[0],exception);

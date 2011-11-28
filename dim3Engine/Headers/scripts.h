@@ -75,6 +75,7 @@ extern void script_value_to_vector(JSContextRef cx,JSValueRef val,d3vct *vct);
 extern JSValueRef script_vector_to_value(JSContextRef cx,d3vct *vct);
 extern void script_value_to_point(JSContextRef cx,JSValueRef val,d3pnt *pnt);
 extern void script_value_to_2D_point(JSContextRef cx,JSValueRef val,d3pnt *pnt);
+extern void script_value_to_2D_float_point(JSContextRef cx,JSValueRef val,d3fpnt *pnt);
 extern JSValueRef script_point_to_value(JSContextRef cx,d3pnt *pnt);
 extern void script_value_to_color(JSContextRef cx,JSValueRef val,d3col *col);
 extern JSValueRef script_color_to_value(JSContextRef cx,d3col *col);

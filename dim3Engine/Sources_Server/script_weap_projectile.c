@@ -383,6 +383,24 @@ JSValueRef js_weap_projectile_spawn_from_weapon_bone_offset_angle_func(JSContext
     obj_type				*obj;
 	weapon_type				*weap;
 
+	if (iface.project.modernize) {
+		if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+
+		obj=object_get_attach(j_obj);
+		weap=weapon_get_attach(j_obj);
+
+		script_value_to_string(cx,argv[0],proj_name,name_str_len);
+		script_value_to_angle(cx,argv[1],&off_ang);
+
+		if (!weapon_script_projectile_spawn_weapon_model(obj,weap,proj_name,1,0.0f,&off_ang,err_str)) {
+			*exception=script_create_exception(cx,err_str);
+		}
+
+		return(script_null_to_value(cx));
+	}
+
+	// supergumba:modernize -- delete later
+
 	if (!script_check_param_count(cx,func,argc,4,exception)) return(script_null_to_value(cx));
 	
 	obj=object_get_attach(j_obj);
@@ -481,6 +499,24 @@ JSValueRef js_weap_projectile_spawn_from_object_bone_offset_angle_func(JSContext
 	d3ang					off_ang;
     obj_type				*obj;
 	weapon_type				*weap;
+
+	if (iface.project.modernize) {
+		if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+
+		obj=object_get_attach(j_obj);
+		weap=weapon_get_attach(j_obj);
+
+		script_value_to_string(cx,argv[0],proj_name,name_str_len);
+		script_value_to_angle(cx,argv[1],&off_ang);
+
+		if (!weapon_script_projectile_spawn_object_model(obj,weap,proj_name,1,0.0f,&off_ang,err_str)) {
+			*exception=script_create_exception(cx,err_str);
+		}
+
+		return(script_null_to_value(cx));
+	}
+
+	// supergumba:modernize -- delete later
 	
 	if (!script_check_param_count(cx,func,argc,4,exception)) return(script_null_to_value(cx));
 	
@@ -581,6 +617,24 @@ JSValueRef js_weap_projectile_spawn_from_barrel_offset_angle_func(JSContextRef c
     obj_type				*obj;
 	weapon_type				*weap;
 
+	if (iface.project.modernize) {
+		if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+
+		obj=object_get_attach(j_obj);
+		weap=weapon_get_attach(j_obj);
+
+		script_value_to_string(cx,argv[0],proj_name,name_str_len);
+		script_value_to_angle(cx,argv[1],&off_ang);
+
+		if (!weapon_script_projectile_spawn_weapon_barrel(obj,weap,proj_name,1,0.0f,&off_ang,err_str)) {
+			*exception=script_create_exception(cx,err_str);
+		}
+
+		return(script_null_to_value(cx));
+	}
+
+	// supergumba:modernize -- delete later
+
 	if (!script_check_param_count(cx,func,argc,4,exception)) return(script_null_to_value(cx));
 	
 	obj=object_get_attach(j_obj);
@@ -679,6 +733,24 @@ JSValueRef js_weap_projectile_spawn_from_center_offset_angle_func(JSContextRef c
 	d3ang					off_ang;
     obj_type				*obj;
 	weapon_type				*weap;
+
+	if (iface.project.modernize) {
+		if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+
+		obj=object_get_attach(j_obj);
+		weap=weapon_get_attach(j_obj);
+
+		script_value_to_string(cx,argv[0],proj_name,name_str_len);
+		script_value_to_angle(cx,argv[1],&off_ang);
+
+		if (!weapon_script_projectile_spawn_center(obj,weap,proj_name,1,0.0f,&off_ang,err_str)) {
+			*exception=script_create_exception(cx,err_str);
+		}
+
+		return(script_null_to_value(cx));
+	}
+
+	// supergumba:modernize -- delete later
 
 	if (!script_check_param_count(cx,func,argc,4,exception)) return(script_null_to_value(cx));
 	
