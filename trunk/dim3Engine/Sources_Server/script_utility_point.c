@@ -31,6 +31,7 @@ and can be sold or given away.
 
 #include "scripts.h"
 
+extern iface_type		iface;
 extern js_type			js;
 
 extern void view_script_transform_3D_to_2D(int x,int y,int z,int *x2,int *y2);
@@ -78,69 +79,119 @@ JSObjectRef script_add_utility_point_object(JSContextRef cx,JSObjectRef parent_o
 
 JSValueRef js_utility_point_equal_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	int				x,z,y,to_x,to_z,to_y,slop;
+	int				slop;
+	d3pnt			pnt,to_pnt;
+
+	if (iface.project.modernize) {
+		if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
+
+		script_value_to_point(cx,argv[0],&pnt);
+		script_value_to_point(cx,argv[1],&to_pnt);
+		slop=script_value_to_int(cx,argv[2]);
+	
+		return(script_bool_to_value(cx,!((pnt.x<(to_pnt.x-slop)) || (pnt.x>(to_pnt.x+slop)) || (pnt.y<(to_pnt.y-slop)) || (pnt.y>(to_pnt.y+slop)) || (pnt.z<(to_pnt.z-slop)) || (pnt.z>(to_pnt.z+slop)))));
+	}
+
+	// supergumba:modernize -- delete later
 
 	if (!script_check_param_count(cx,func,argc,7,exception)) return(script_null_to_value(cx));
 
-	x=script_value_to_int(cx,argv[0]);
-	z=script_value_to_int(cx,argv[1]);
-	y=script_value_to_int(cx,argv[2]);
-	to_x=script_value_to_int(cx,argv[3]);
-	to_z=script_value_to_int(cx,argv[4]);
-	to_y=script_value_to_int(cx,argv[5]);
+	pnt.x=script_value_to_int(cx,argv[0]);
+	pnt.z=script_value_to_int(cx,argv[1]);
+	pnt.y=script_value_to_int(cx,argv[2]);
+	to_pnt.x=script_value_to_int(cx,argv[3]);
+	to_pnt.z=script_value_to_int(cx,argv[4]);
+	to_pnt.y=script_value_to_int(cx,argv[5]);
 	slop=script_value_to_int(cx,argv[6]);
 	
-	return(script_bool_to_value(cx,!((x<(to_x-slop)) || (x>(to_x+slop)) || (z<(to_z-slop)) || (z>(to_z+slop)) || (y<(to_y-slop)) || (y>(to_y+slop)))));
+	return(script_bool_to_value(cx,!((pnt.x<(to_pnt.x-slop)) || (pnt.x>(to_pnt.x+slop)) || (pnt.y<(to_pnt.y-slop)) || (pnt.y>(to_pnt.y+slop)) || (pnt.z<(to_pnt.z-slop)) || (pnt.z>(to_pnt.z+slop)))));
 }
 
 JSValueRef js_utility_point_angle_to_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	int				x,z,to_x,to_z;
 	float			ang;
+	d3pnt			pnt,to_pnt;
 	
+	if (iface.project.modernize) {
+		if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+
+		script_value_to_2D_point(cx,argv[0],&pnt);
+		script_value_to_2D_point(cx,argv[1],&to_pnt);
+	
+		ang=angle_find(pnt.x,pnt.z,to_pnt.x,to_pnt.z);
+		return(script_float_to_value(cx,ang));
+	}
+
+	// supergumba:modernize -- delete later
+
 	if (!script_check_param_count(cx,func,argc,4,exception)) return(script_null_to_value(cx));
 
-	x=script_value_to_int(cx,argv[0]);
-	z=script_value_to_int(cx,argv[1]);
-	to_x=script_value_to_int(cx,argv[2]);
-	to_z=script_value_to_int(cx,argv[3]);
+	pnt.x=script_value_to_int(cx,argv[0]);
+	pnt.z=script_value_to_int(cx,argv[1]);
+	to_pnt.x=script_value_to_int(cx,argv[2]);
+	to_pnt.z=script_value_to_int(cx,argv[3]);
 	
-	ang=angle_find(x,z,to_x,to_z);
-    return(script_float_to_value(cx,ang));
+	ang=angle_find(pnt.x,pnt.z,to_pnt.x,to_pnt.z);
+	return(script_float_to_value(cx,ang));
 }
 
 JSValueRef js_utility_point_distance_to_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	int				dist,x,z,y,to_x,to_z,to_y;
+	int				dist;
+	d3pnt			pnt,to_pnt;
 	
+	if (iface.project.modernize) {
+		if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+
+		script_value_to_point(cx,argv[0],&pnt);
+		script_value_to_point(cx,argv[1],&to_pnt);
+	
+		dist=distance_get(pnt.x,pnt.y,pnt.z,to_pnt.x,to_pnt.y,to_pnt.z);
+		return(script_int_to_value(cx,dist));
+	}
+
+	// supergumba:modernize -- delete later
+
 	if (!script_check_param_count(cx,func,argc,6,exception)) return(script_null_to_value(cx));
 
-	x=script_value_to_int(cx,argv[0]);
-	z=script_value_to_int(cx,argv[1]);
-	y=script_value_to_int(cx,argv[2]);
-	to_x=script_value_to_int(cx,argv[3]);
-	to_z=script_value_to_int(cx,argv[4]);
-	to_y=script_value_to_int(cx,argv[5]);
+	pnt.x=script_value_to_int(cx,argv[0]);
+	pnt.z=script_value_to_int(cx,argv[1]);
+	pnt.y=script_value_to_int(cx,argv[2]);
+	to_pnt.x=script_value_to_int(cx,argv[3]);
+	to_pnt.z=script_value_to_int(cx,argv[4]);
+	to_pnt.y=script_value_to_int(cx,argv[5]);
 
-	dist=distance_get(x,y,z,to_x,to_y,to_z);
+	dist=distance_get(pnt.x,pnt.y,pnt.z,to_pnt.x,to_pnt.y,to_pnt.z);
 	return(script_int_to_value(cx,dist));
 }
 
 JSValueRef js_utility_point_transform_3D_to_2D_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	int				x,y,z;
-	d3pnt			pnt;
+	d3pnt			pnt,pnt_2D;
+	
+	if (iface.project.modernize) {
+		if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+
+		script_value_to_point(cx,argv[0],&pnt);
+
+		view_script_transform_3D_to_2D(pnt.x,pnt.y,pnt.z,&pnt_2D.x,&pnt_2D.y);
+		pnt_2D.z=pnt.z;
+
+		return(script_point_to_value(cx,&pnt_2D));
+	}
+
+	// supergumba:modernize -- delete later
 	
 	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
 
-	x=script_value_to_int(cx,argv[0]);
-	z=script_value_to_int(cx,argv[1]);
-	y=script_value_to_int(cx,argv[2]);
+	pnt.x=script_value_to_int(cx,argv[0]);
+	pnt.z=script_value_to_int(cx,argv[1]);
+	pnt.y=script_value_to_int(cx,argv[2]);
 	
-	view_script_transform_3D_to_2D(x,y,z,&pnt.x,&pnt.y);
-	pnt.z=z;
+	view_script_transform_3D_to_2D(pnt.x,pnt.y,pnt.z,&pnt_2D.x,&pnt_2D.y);
+	pnt_2D.z=pnt.z;
 
-	return(script_point_to_value(cx,&pnt));
+	return(script_point_to_value(cx,&pnt_2D));
 }
 
 
