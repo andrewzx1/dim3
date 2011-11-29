@@ -33,6 +33,7 @@ and can be sold or given away.
 #include "scripts.h"
 #include "objects.h"
 
+extern iface_type		iface;
 extern server_type		server;
 extern js_type			js;
 
@@ -209,20 +210,48 @@ JSValueRef js_map_object_nearest_func(JSContextRef cx,JSObjectRef func,JSObjectR
 	int					type,min_dist,max_dist;
 	char				*name_ptr,name[name_str_len];
 	float				ang,ang_sweep;
-	d3pnt				pt;
+	d3pnt				pnt;
 	obj_type			*obj;
+	
+	name_ptr=NULL;
+	type=-1;
+	ang=-1;
+	ang_sweep=360;
+	
+	if (iface.project.modernize) {
+		if (!script_check_param_count(cx,func,argc,7,exception)) return(script_null_to_value(cx));
+		
+		script_value_to_point(cx,argv[0],&pnt);
+		if (!script_is_value_null(cx,argv[1])) {
+			script_value_to_string(cx,argv[1],name,name_str_len);
+			name_ptr=name;
+		}
+		if (!script_is_value_null(cx,argv[2])) type=script_value_to_int(cx,argv[2]);
+		if (!script_is_value_null(cx,argv[3])) ang=script_value_to_float(cx,argv[3]);
+		if (!script_is_value_null(cx,argv[4])) ang_sweep=script_value_to_float(cx,argv[4]);
+		min_dist=script_value_to_int(cx,argv[5]);
+		max_dist=script_value_to_int(cx,argv[6]);
+		
+			// find object
+
+		obj=object_find_nearest(&pnt,name_ptr,type,-1,ang,ang_sweep,min_dist,max_dist,FALSE,-1);
+		if (obj==NULL) return(script_int_to_value(cx,-1));
+		
+		return(script_int_to_value(cx,obj->idx));
+	}
+
+	// supergumba:modernize -- delete later
 	
 	if (!script_check_param_count(cx,func,argc,9,exception)) return(script_null_to_value(cx));
 	
 		// x,z,y
 		
-	pt.x=script_value_to_int(cx,argv[0]);
-	pt.z=script_value_to_int(cx,argv[1]);
-	pt.y=script_value_to_int(cx,argv[2]);
+	pnt.x=script_value_to_int(cx,argv[0]);
+	pnt.z=script_value_to_int(cx,argv[1]);
+	pnt.y=script_value_to_int(cx,argv[2]);
 	
 		// name
 		
-	name_ptr=NULL;
 	if (!script_is_value_null(cx,argv[3])) {
 		script_value_to_string(cx,argv[3],name,name_str_len);
 		name_ptr=name;
@@ -230,15 +259,10 @@ JSValueRef js_map_object_nearest_func(JSContextRef cx,JSObjectRef func,JSObjectR
 	
 		// type
 		
-	type=-1;
-	if (!script_is_value_null(cx,argv[4])) {
-		type=script_value_to_int(cx,argv[4]);
-	}
+	if (!script_is_value_null(cx,argv[4])) type=script_value_to_int(cx,argv[4]);
 
 		// angle and sweep
 	
-	ang=-1;
-	ang_sweep=360;
 	if (!script_is_value_null(cx,argv[5])) ang=script_value_to_float(cx,argv[5]);
 	if (!script_is_value_null(cx,argv[6])) ang_sweep=script_value_to_float(cx,argv[6]);
 	
@@ -249,7 +273,7 @@ JSValueRef js_map_object_nearest_func(JSContextRef cx,JSObjectRef func,JSObjectR
 	
 		// find object
 
-	obj=object_find_nearest(&pt,name_ptr,type,-1,ang,ang_sweep,min_dist,max_dist,FALSE,-1);
+	obj=object_find_nearest(&pnt,name_ptr,type,-1,ang,ang_sweep,min_dist,max_dist,FALSE,-1);
 	if (obj==NULL) return(script_int_to_value(cx,-1));
 	
 	return(script_int_to_value(cx,obj->idx));
@@ -260,20 +284,48 @@ JSValueRef js_map_object_nearest_skip_object_id_func(JSContextRef cx,JSObjectRef
 	int					type,min_dist,max_dist;
 	char				*name_ptr,name[name_str_len];
 	float				ang,ang_sweep;
-	d3pnt				pt;
+	d3pnt				pnt;
 	obj_type			*obj;
+
+	name_ptr=NULL;
+	type=-1;
+	ang=-1;
+	ang_sweep=360;
+	
+	if (iface.project.modernize) {
+		if (!script_check_param_count(cx,func,argc,8,exception)) return(script_null_to_value(cx));
+
+		script_value_to_point(cx,argv[0],&pnt);
+		if (!script_is_value_null(cx,argv[1])) {
+			script_value_to_string(cx,argv[1],name,name_str_len);
+			name_ptr=name;
+		}
+		if (!script_is_value_null(cx,argv[2])) type=script_value_to_int(cx,argv[2]);
+		if (!script_is_value_null(cx,argv[3])) ang=script_value_to_float(cx,argv[3]);
+		if (!script_is_value_null(cx,argv[4])) ang_sweep=script_value_to_float(cx,argv[4]);
+		min_dist=script_value_to_int(cx,argv[5]);
+		max_dist=script_value_to_int(cx,argv[6]);
+		
+			// find object
+
+		obj=object_find_nearest(&pnt,name_ptr,type,-1,ang,ang_sweep,min_dist,max_dist,FALSE,script_value_to_int(cx,argv[7]));
+		if (obj==NULL) return(script_int_to_value(cx,-1));
+		
+		return(script_int_to_value(cx,obj->idx));
+	}
+
+	// supergumba:modernize -- delete later
 	
 	if (!script_check_param_count(cx,func,argc,10,exception)) return(script_null_to_value(cx));
 	
 		// x,z,y
 		
-	pt.x=script_value_to_int(cx,argv[0]);
-	pt.z=script_value_to_int(cx,argv[1]);
-	pt.y=script_value_to_int(cx,argv[2]);
+	pnt.x=script_value_to_int(cx,argv[0]);
+	pnt.z=script_value_to_int(cx,argv[1]);
+	pnt.y=script_value_to_int(cx,argv[2]);
 	
 		// name
 		
-	name_ptr=NULL;
 	if (!script_is_value_null(cx,argv[3])) {
 		script_value_to_string(cx,argv[3],name,name_str_len);
 		name_ptr=name;
@@ -281,15 +333,10 @@ JSValueRef js_map_object_nearest_skip_object_id_func(JSContextRef cx,JSObjectRef
 	
 		// type
 		
-	type=-1;
-	if (!script_is_value_null(cx,argv[4])) {
-		type=script_value_to_int(cx,argv[4]);
-	}
+	if (!script_is_value_null(cx,argv[4])) type=script_value_to_int(cx,argv[4]);
 
 		// angle and sweep
 	
-	ang=-1;
-	ang_sweep=360;
 	if (!script_is_value_null(cx,argv[5])) ang=script_value_to_float(cx,argv[5]);
 	if (!script_is_value_null(cx,argv[6])) ang_sweep=script_value_to_float(cx,argv[6]);
 	
@@ -300,7 +347,7 @@ JSValueRef js_map_object_nearest_skip_object_id_func(JSContextRef cx,JSObjectRef
 	
 		// find object
 
-	obj=object_find_nearest(&pt,name_ptr,type,-1,ang,ang_sweep,min_dist,max_dist,FALSE,script_value_to_int(cx,argv[9]));
+	obj=object_find_nearest(&pnt,name_ptr,type,-1,ang,ang_sweep,min_dist,max_dist,FALSE,script_value_to_int(cx,argv[9]));
 	if (obj==NULL) return(script_int_to_value(cx,-1));
 	
 	return(script_int_to_value(cx,obj->idx));
@@ -310,21 +357,41 @@ JSValueRef js_map_object_nearest_player_func(JSContextRef cx,JSObjectRef func,JS
 {
 	int					min_dist,max_dist;
 	float				ang,ang_sweep;
-	d3pnt				pt;
+	d3pnt				pnt;
 	obj_type			*obj;
+
+	ang=-1;
+	ang_sweep=360;
+
+	if (iface.project.modernize) {
+		if (!script_check_param_count(cx,func,argc,5,exception)) return(script_null_to_value(cx));
+
+		script_value_to_point(cx,argv[0],&pnt);
+		if (!script_is_value_null(cx,argv[1])) ang=script_value_to_float(cx,argv[1]);
+		if (!script_is_value_null(cx,argv[2])) ang_sweep=script_value_to_float(cx,argv[2]);
+		min_dist=script_value_to_int(cx,argv[3]);
+		max_dist=script_value_to_int(cx,argv[4]);
+		
+			// find object
+
+		obj=object_find_nearest(&pnt,NULL,-1,-1,ang,ang_sweep,min_dist,max_dist,TRUE,-1);
+		if (obj==NULL) return(script_int_to_value(cx,-1));
 	
+		return(script_int_to_value(cx,obj->idx));
+	}
+
+	// supergumba:modernize -- delete later
+
 	if (!script_check_param_count(cx,func,argc,7,exception)) return(script_null_to_value(cx));
 	
 		// x,z,y
 		
-	pt.x=script_value_to_int(cx,argv[0]);
-	pt.z=script_value_to_int(cx,argv[1]);
-	pt.y=script_value_to_int(cx,argv[2]);
+	pnt.x=script_value_to_int(cx,argv[0]);
+	pnt.z=script_value_to_int(cx,argv[1]);
+	pnt.y=script_value_to_int(cx,argv[2]);
 
 		// angle and sweep
 	
-	ang=-1;
-	ang_sweep=360;
 	if (!script_is_value_null(cx,argv[3])) ang=script_value_to_float(cx,argv[3]);
 	if (!script_is_value_null(cx,argv[4])) ang_sweep=script_value_to_float(cx,argv[4]);
 	
@@ -335,7 +402,7 @@ JSValueRef js_map_object_nearest_player_func(JSContextRef cx,JSObjectRef func,JS
 	
 		// find object
 
-	obj=object_find_nearest(&pt,NULL,-1,-1,ang,ang_sweep,min_dist,max_dist,TRUE,-1);
+	obj=object_find_nearest(&pnt,NULL,-1,-1,ang,ang_sweep,min_dist,max_dist,TRUE,-1);
 	if (obj==NULL) return(script_int_to_value(cx,-1));
 	
 	return(script_int_to_value(cx,obj->idx));
@@ -345,21 +412,41 @@ JSValueRef js_map_object_nearest_player_skip_object_id_func(JSContextRef cx,JSOb
 {
 	int					min_dist,max_dist;
 	float				ang,ang_sweep;
-	d3pnt				pt;
+	d3pnt				pnt;
 	obj_type			*obj;
+	
+	ang=-1;
+	ang_sweep=360;
+
+	if (iface.project.modernize) {
+		if (!script_check_param_count(cx,func,argc,6,exception)) return(script_null_to_value(cx));
+
+		script_value_to_point(cx,argv[0],&pnt);
+		if (!script_is_value_null(cx,argv[1])) ang=script_value_to_float(cx,argv[1]);
+		if (!script_is_value_null(cx,argv[2])) ang_sweep=script_value_to_float(cx,argv[2]);
+		min_dist=script_value_to_int(cx,argv[3]);
+		max_dist=script_value_to_int(cx,argv[4]);
+		
+			// find object
+
+		obj=object_find_nearest(&pnt,NULL,-1,-1,ang,ang_sweep,min_dist,max_dist,TRUE,script_value_to_int(cx,argv[5]));
+		if (obj==NULL) return(script_int_to_value(cx,-1));
+		
+		return(script_int_to_value(cx,obj->idx));
+	}
+
+	// supergumba:modernize -- delete later
 	
 	if (!script_check_param_count(cx,func,argc,8,exception)) return(script_null_to_value(cx));
 	
 		// x,z,y
 		
-	pt.x=script_value_to_int(cx,argv[0]);
-	pt.z=script_value_to_int(cx,argv[1]);
-	pt.y=script_value_to_int(cx,argv[2]);
+	pnt.x=script_value_to_int(cx,argv[0]);
+	pnt.z=script_value_to_int(cx,argv[1]);
+	pnt.y=script_value_to_int(cx,argv[2]);
 
 		// angle and sweep
 	
-	ang=-1;
-	ang_sweep=360;
 	if (!script_is_value_null(cx,argv[3])) ang=script_value_to_float(cx,argv[3]);
 	if (!script_is_value_null(cx,argv[4])) ang_sweep=script_value_to_float(cx,argv[4]);
 	
@@ -370,7 +457,7 @@ JSValueRef js_map_object_nearest_player_skip_object_id_func(JSContextRef cx,JSOb
 	
 		// find object
 
-	obj=object_find_nearest(&pt,NULL,-1,-1,ang,ang_sweep,min_dist,max_dist,TRUE,script_value_to_int(cx,argv[7]));
+	obj=object_find_nearest(&pnt,NULL,-1,-1,ang,ang_sweep,min_dist,max_dist,TRUE,script_value_to_int(cx,argv[7]));
 	if (obj==NULL) return(script_int_to_value(cx,-1));
 	
 	return(script_int_to_value(cx,obj->idx));
@@ -380,21 +467,41 @@ JSValueRef js_map_object_nearest_player_skip_self_func(JSContextRef cx,JSObjectR
 {
 	int					min_dist,max_dist;
 	float				ang,ang_sweep;
-	d3pnt				pt;
+	d3pnt				pnt;
 	obj_type			*obj;
 	
+	ang=-1;
+	ang_sweep=360;
+
+	if (iface.project.modernize) {
+		if (!script_check_param_count(cx,func,argc,5,exception)) return(script_null_to_value(cx));
+
+		script_value_to_point(cx,argv[0],&pnt);
+		if (!script_is_value_null(cx,argv[1])) ang=script_value_to_float(cx,argv[1]);
+		if (!script_is_value_null(cx,argv[2])) ang_sweep=script_value_to_float(cx,argv[2]);
+		min_dist=script_value_to_int(cx,argv[3]);
+		max_dist=script_value_to_int(cx,argv[4]);
+		
+			// find object
+
+		obj=object_find_nearest(&pnt,NULL,-1,-1,ang,ang_sweep,min_dist,max_dist,TRUE,script_get_attached_object_uid(j_obj));
+		if (obj==NULL) return(script_int_to_value(cx,-1));
+	
+		return(script_int_to_value(cx,obj->idx));
+	}
+
+	// supergumba:modernize -- delete later
+
 	if (!script_check_param_count(cx,func,argc,7,exception)) return(script_null_to_value(cx));
 	
 		// x,z,y
 		
-	pt.x=script_value_to_int(cx,argv[0]);
-	pt.z=script_value_to_int(cx,argv[1]);
-	pt.y=script_value_to_int(cx,argv[2]);
+	pnt.x=script_value_to_int(cx,argv[0]);
+	pnt.z=script_value_to_int(cx,argv[1]);
+	pnt.y=script_value_to_int(cx,argv[2]);
 
 		// angle and sweep
 	
-	ang=-1;
-	ang_sweep=360;
 	if (!script_is_value_null(cx,argv[3])) ang=script_value_to_float(cx,argv[3]);
 	if (!script_is_value_null(cx,argv[4])) ang_sweep=script_value_to_float(cx,argv[4]);
 	
@@ -405,7 +512,7 @@ JSValueRef js_map_object_nearest_player_skip_self_func(JSContextRef cx,JSObjectR
 	
 		// find object
 
-	obj=object_find_nearest(&pt,NULL,-1,-1,ang,ang_sweep,min_dist,max_dist,TRUE,script_get_attached_object_uid(j_obj));
+	obj=object_find_nearest(&pnt,NULL,-1,-1,ang,ang_sweep,min_dist,max_dist,TRUE,script_get_attached_object_uid(j_obj));
 	if (obj==NULL) return(script_int_to_value(cx,-1));
 	
 	return(script_int_to_value(cx,obj->idx));
@@ -415,16 +522,39 @@ JSValueRef js_map_object_nearest_team_func(JSContextRef cx,JSObjectRef func,JSOb
 {
 	int					min_dist,max_dist,team_idx;
 	float				ang,ang_sweep;
-	d3pnt				pt;
+	d3pnt				pnt;
 	obj_type			*obj;
+
+	ang=-1;
+	ang_sweep=360;
+
+	if (iface.project.modernize) {
+		if (!script_check_param_count(cx,func,argc,6,exception)) return(script_null_to_value(cx));
+
+		script_value_to_point(cx,argv[0],&pnt);
+		team_idx=script_value_to_int(cx,argv[1])-sd_team_none;
+		if (!script_is_value_null(cx,argv[2])) ang=script_value_to_float(cx,argv[2]);
+		if (!script_is_value_null(cx,argv[3])) ang_sweep=script_value_to_float(cx,argv[3]);
+		min_dist=script_value_to_int(cx,argv[4]);
+		max_dist=script_value_to_int(cx,argv[5]);
+		
+			// find object
+
+		obj=object_find_nearest(&pnt,NULL,-1,team_idx,ang,ang_sweep,min_dist,max_dist,FALSE,-1);
+		if (obj==NULL) return(script_int_to_value(cx,-1));
+	
+		return(script_int_to_value(cx,obj->idx));
+	}
+
+	// supergumba:modernize -- delete later
 	
 	if (!script_check_param_count(cx,func,argc,8,exception)) return(script_null_to_value(cx));
 	
 		// x,z,y
 		
-	pt.x=script_value_to_int(cx,argv[0]);
-	pt.z=script_value_to_int(cx,argv[1]);
-	pt.y=script_value_to_int(cx,argv[2]);
+	pnt.x=script_value_to_int(cx,argv[0]);
+	pnt.z=script_value_to_int(cx,argv[1]);
+	pnt.y=script_value_to_int(cx,argv[2]);
 	
 		// team
 		
@@ -432,8 +562,6 @@ JSValueRef js_map_object_nearest_team_func(JSContextRef cx,JSObjectRef func,JSOb
 
 		// angle and sweep
 	
-	ang=-1;
-	ang_sweep=360;
 	if (!script_is_value_null(cx,argv[4])) ang=script_value_to_float(cx,argv[4]);
 	if (!script_is_value_null(cx,argv[5])) ang_sweep=script_value_to_float(cx,argv[5]);
 	
@@ -444,7 +572,7 @@ JSValueRef js_map_object_nearest_team_func(JSContextRef cx,JSObjectRef func,JSOb
 	
 		// find object
 
-	obj=object_find_nearest(&pt,NULL,-1,team_idx,ang,ang_sweep,min_dist,max_dist,FALSE,-1);
+	obj=object_find_nearest(&pnt,NULL,-1,team_idx,ang,ang_sweep,min_dist,max_dist,FALSE,-1);
 	if (obj==NULL) return(script_int_to_value(cx,-1));
 	
 	return(script_int_to_value(cx,obj->idx));
@@ -545,8 +673,21 @@ JSValueRef js_map_object_get_team_color_func(JSContextRef cx,JSObjectRef func,JS
 
 JSValueRef js_map_object_get_distance_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	int				x,z,y;
+	d3pnt			pnt;
 	obj_type		*obj;
+
+	if (iface.project.modernize) {
+		if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+		
+		obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
+		if (obj==NULL) return(script_null_to_value(cx));
+		
+		script_value_to_point(cx,argv[1],&pnt);
+			
+		return(script_int_to_value(cx,distance_get(obj->pnt.x,obj->pnt.y,obj->pnt.z,pnt.x,pnt.y,pnt.z)));
+	}
+
+	// supergumba:modernize -- delete later
 	
 	if (!script_check_param_count(cx,func,argc,4,exception)) return(script_null_to_value(cx));
 	
@@ -557,20 +698,39 @@ JSValueRef js_map_object_get_distance_func(JSContextRef cx,JSObjectRef func,JSOb
 	
 		// x,z,y
 		
-	x=script_value_to_int(cx,argv[1]);
-	z=script_value_to_int(cx,argv[2]);
-	y=script_value_to_int(cx,argv[3]);
+	pnt.x=script_value_to_int(cx,argv[1]);
+	pnt.z=script_value_to_int(cx,argv[2]);
+	pnt.y=script_value_to_int(cx,argv[3]);
 	
 		// get distance
 		
-	return(script_int_to_value(cx,distance_get(obj->pnt.x,obj->pnt.y,obj->pnt.z,x,y,z)));
+	return(script_int_to_value(cx,distance_get(obj->pnt.x,obj->pnt.y,obj->pnt.z,pnt.x,pnt.y,pnt.z)));
 }
 
 JSValueRef js_map_object_get_angle_to_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	int				x,z,y;
+	d3pnt			pnt;
 	d3ang			ang;
 	obj_type		*obj;
+
+	if (iface.project.modernize) {
+		if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+		
+		obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
+		if (obj==NULL) return(script_null_to_value(cx));
+
+		script_value_to_point(cx,argv[1],&pnt);
+		
+			// get angles to
+			
+		ang.x=angle_find(pnt.y,pnt.z,obj->pnt.y,obj->pnt.z);
+		ang.y=angle_find(pnt.x,pnt.z,obj->pnt.x,obj->pnt.z);
+		ang.z=angle_find(pnt.x,pnt.y,obj->pnt.x,obj->pnt.y);
+			
+		return(script_angle_to_value(cx,&ang));
+	}
+
+	// supergumba:modernize -- delete later
 	
 	if (!script_check_param_count(cx,func,argc,4,exception)) return(script_null_to_value(cx));
 	
@@ -581,15 +741,15 @@ JSValueRef js_map_object_get_angle_to_func(JSContextRef cx,JSObjectRef func,JSOb
 
 		// x,z,y
 		
-	x=script_value_to_int(cx,argv[1]);
-	z=script_value_to_int(cx,argv[2]);
-	y=script_value_to_int(cx,argv[3]);
+	pnt.x=script_value_to_int(cx,argv[1]);
+	pnt.z=script_value_to_int(cx,argv[2]);
+	pnt.y=script_value_to_int(cx,argv[3]);
 	
 		// get angles to
 		
-	ang.x=angle_find(y,z,obj->pnt.y,obj->pnt.z);
-	ang.y=angle_find(x,z,obj->pnt.x,obj->pnt.z);
-	ang.z=angle_find(x,y,obj->pnt.x,obj->pnt.y);
+	ang.x=angle_find(pnt.y,pnt.z,obj->pnt.y,obj->pnt.z);
+	ang.y=angle_find(pnt.x,pnt.z,obj->pnt.x,obj->pnt.z);
+	ang.z=angle_find(pnt.x,pnt.y,obj->pnt.x,obj->pnt.y);
 		
 	return(script_angle_to_value(cx,&ang));
 }
@@ -808,7 +968,24 @@ JSValueRef js_map_object_was_telefrag_func(JSContextRef cx,JSObjectRef func,JSOb
 
 JSValueRef js_map_object_move_to_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
+	d3pnt			pnt;
 	obj_type		*obj;
+
+	if (iface.project.modernize) {
+		if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+
+		obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
+		if (obj==NULL) return(script_null_to_value(cx));
+
+		script_value_to_point(cx,argv[1],&pnt);
+
+		object_set_position(obj,pnt.x,pnt.y,pnt.z,script_value_to_float(cx,argv[4]),0);
+		object_telefrag_players(obj,FALSE);
+
+		return(script_null_to_value(cx));
+	}
+
+	// supergumba:modernize -- delete later
 
 	if (!script_check_param_count(cx,func,argc,5,exception)) return(script_null_to_value(cx));
 	
@@ -817,9 +994,13 @@ JSValueRef js_map_object_move_to_func(JSContextRef cx,JSObjectRef func,JSObjectR
 	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
 	if (obj==NULL) return(script_null_to_value(cx));
 
+	pnt.x=script_value_to_int(cx,argv[1]);
+	pnt.y=script_value_to_int(cx,argv[3]);
+	pnt.z=script_value_to_int(cx,argv[2]);
+
 		// reposition
 
-	object_set_position(obj,script_value_to_int(cx,argv[1]),script_value_to_int(cx,argv[3]),script_value_to_int(cx,argv[2]),script_value_to_float(cx,argv[4]),0);
+	object_set_position(obj,pnt.x,pnt.y,pnt.z,script_value_to_float(cx,argv[4]),0);
 	object_telefrag_players(obj,FALSE);
 
 	return(script_null_to_value(cx));
@@ -830,6 +1011,21 @@ JSValueRef js_map_object_shove_func(JSContextRef cx,JSObjectRef func,JSObjectRef
 	float			speed;
 	d3ang			ang;
 	obj_type		*obj;
+
+	if (iface.project.modernize) {
+		if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
+
+		obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
+		if (obj==NULL) return(script_null_to_value(cx));
+
+		script_value_to_angle(cx,argv[1],&ang);
+		speed=script_value_to_float(cx,argv[2]);
+
+		object_shove(obj,&ang,speed);
+		return(script_null_to_value(cx));
+	}
+
+	// supergumba:modernize -- delete later
 
 	if (!script_check_param_count(cx,func,argc,5,exception)) return(script_null_to_value(cx));
 	
@@ -856,6 +1052,20 @@ JSValueRef js_map_object_shove_direct_func(JSContextRef cx,JSObjectRef func,JSOb
 {
 	d3vct			vct;
 	obj_type		*obj;
+
+	if (iface.project.modernize) {
+		if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+
+		obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
+		if (obj==NULL) return(script_null_to_value(cx));
+
+		script_value_to_vector(cx,argv[1],&vct);
+
+		object_shove_direct(obj,&vct);
+		return(script_null_to_value(cx));
+	}
+
+	// supergumba:modernize -- delete later
 
 	if (!script_check_param_count(cx,func,argc,4,exception)) return(script_null_to_value(cx));
 	
@@ -1001,6 +1211,32 @@ JSValueRef js_map_object_spawn_func(JSContextRef cx,JSObjectRef func,JSObjectRef
 					script[name_str_len],params[256];
 	d3pnt			pnt;
 	d3ang			ang;
+
+	if (iface.project.modernize) {
+		if (!script_check_param_count(cx,func,argc,5,exception)) return(script_null_to_value(cx));
+
+			// spawn values
+
+		script_value_to_string(cx,argv[0],name,name_str_len);
+		script_value_to_string(cx,argv[1],script,name_str_len);
+		script_value_to_string(cx,argv[2],params,256);
+		script_value_to_point(cx,argv[3],&pnt);
+		script_value_to_angle(cx,argv[4],&ang);
+
+			// spawn
+
+		uid=object_script_spawn(name,script,params,&pnt,&ang,FALSE,err_str);
+		if (uid==-1) {
+			*exception=script_create_exception(cx,err_str);
+			return(script_null_to_value(cx));
+		}
+
+			// return UID
+
+		return(script_int_to_value(cx,uid));
+	}
+
+	// supergumba:modernize -- delete later
 
 	if (!script_check_param_count(cx,func,argc,9,exception)) return(script_null_to_value(cx));
 	
