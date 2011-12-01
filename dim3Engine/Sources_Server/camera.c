@@ -68,8 +68,8 @@ void camera_initialize(void)
 	camera.setup.plane.near_z_offset=-400;
 
 	camera.auto_walk.on=FALSE;
-
 	camera.auto_move.ang_on=FALSE;
+	camera.animate.on=FALSE;
 	
 	memmove(&state_camera,&camera,sizeof(camera_type));
 }
@@ -241,6 +241,56 @@ void camera_auto_move_run(void)
 
 /* =======================================================
 
+      Camera Animation
+      
+======================================================= */
+
+void camera_animate_start(float fov,float aspect_ratio,int msec)
+{
+	camera.animate.on=TRUE;
+
+	camera.animate.start_fov=camera.setup.plane.fov;
+	camera.animate.end_fov=fov;
+
+	camera.animate.start_aspect_ratio=camera.setup.plane.aspect_ratio;
+	camera.animate.end_aspect_ratio=aspect_ratio;
+
+	camera.animate.start_tick=game_time_get();
+	camera.animate.end_tick=camera.animate.start_tick+msec;
+}
+
+void camera_animate_run(void)
+{
+	int			tick;
+	float		f,f_tick,f_tot_tick;
+
+	if (!camera.animate.on) return;
+
+	tick=game_time_get();
+
+		// are we done?
+
+	if (tick>=camera.animate.end_tick) {
+		camera.animate.on=FALSE;
+		camera.setup.plane.fov=camera.animate.end_fov;
+		camera.setup.plane.aspect_ratio=camera.animate.end_aspect_ratio;
+		return;
+	}
+
+		// calculate new ratio
+
+	f_tick=(float)(tick-camera.animate.start_tick);
+	f_tot_tick=(float)(camera.animate.end_tick-camera.animate.start_tick);
+
+	f=camera.animate.end_fov-camera.animate.start_fov;
+	camera.setup.plane.fov=camera.animate.start_fov+((f*f_tick)/f_tot_tick);
+
+	f=camera.animate.end_aspect_ratio-camera.animate.start_aspect_ratio;
+	camera.setup.plane.aspect_ratio=camera.animate.start_aspect_ratio+((f*f_tick)/f_tot_tick);
+}
+
+/* =======================================================
+
       Run Cameras
       
 ======================================================= */
@@ -248,6 +298,7 @@ void camera_auto_move_run(void)
 void camera_run(void)
 {
 	camera_auto_move_run();
+	camera_animate_run();
 
 	switch (camera.setup.mode) {
 	

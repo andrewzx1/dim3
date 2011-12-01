@@ -124,6 +124,7 @@ extern int camera_check_liquid(obj_type *obj,d3pnt *pnt);
 extern void camera_save(void);
 extern void camera_restore(void);
 extern void camera_auto_move_set_ang(d3ang *ang,int life_msec);
+extern void camera_animate_start(float fov,float aspect_ration,int msec);
 extern void camera_run(void);
 extern void camera_fpp_get_position(d3pnt *pnt,d3ang *ang);
 extern void camera_chase_connect(void);

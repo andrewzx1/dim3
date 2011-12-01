@@ -308,6 +308,7 @@ JSValueRef js_event_send_message_func(JSContextRef cx,JSObjectRef func,JSObjectR
 			break;
 			
 		case sd_message_to_course:
+			if (js.course_script_idx==-1) break;
 			script_to=js.script_list.scripts[js.course_script_idx];
 			memmove(&script_to->msg_data.get,&script_from->msg_data.set,(sizeof(script_msg_type)*max_script_msg_data));
 			scripts_post_event_console(js.course_script_idx,-1,sd_event_message,sd_event_message_from_script,id);
@@ -394,6 +395,8 @@ JSValueRef js_event_send_message_to_course_func(JSContextRef cx,JSObjectRef func
 	script_type		*script_from,*script_to;
 
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+
+	if (js.course_script_idx==-1) return(script_null_to_value(cx));
 
 	script_idx=(int)JSObjectGetPrivate(j_obj);
 	script_from=js.script_list.scripts[script_idx];
@@ -662,6 +665,13 @@ JSValueRef js_event_call_course_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 	JSValueRef		rval,args[20];
 
 	if (!script_check_param_at_least_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+
+		// any course script?
+
+	if (js.course_script_idx==-1) {
+		*exception=script_create_exception(cx,"There is no active course script");
+		return(script_null_to_value(cx));
+	}
 	
 		// get arguments
 

@@ -31,7 +31,7 @@ and can be sold or given away.
       
 ======================================================= */
 
-#define dim3_version					"0004"
+#define dim3_version					"0008"
 
 /* =======================================================
 
@@ -233,6 +233,7 @@ extern bool file_paths_setup(file_path_setup_type *file_path_setup);
 
 extern void file_paths_data(file_path_setup_type *file_path_setup,char *path,char *sub_path,char *file_name,char *ext_name);
 extern void file_paths_data_default(file_path_setup_type *file_path_setup,char *path,char *sub_path,char *file_name,char *ext_name);
+extern bool file_paths_data_exist(file_path_setup_type *file_path_setup,char *sub_path,char *file_name,char *ext_name);
 extern void file_paths_app(file_path_setup_type *file_path_setup,char *path,char *sub_path,char *file_name,char *ext_name);
 extern void file_paths_base(file_path_setup_type *file_path_setup,char *path,char *file_name,char *ext_name);
 

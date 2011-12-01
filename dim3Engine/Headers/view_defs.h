@@ -392,11 +392,19 @@ typedef struct		{
 					} camera_auto_move_type;
 
 typedef struct		{
+						int									start_tick,end_tick;
+						float								start_fov,end_fov,
+															start_aspect_ratio,end_aspect_ratio;
+						bool								on;
+					} camera_animate_type;
+
+typedef struct		{
 						int									obj_idx;
 						d3ang								cur_chase_ang;
 						map_camera_type						setup;
 						camera_auto_walk_type				auto_walk;
 						camera_auto_move_type				auto_move;
+						camera_animate_type					animate;
 					} camera_type;
 
 //
