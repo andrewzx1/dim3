@@ -399,13 +399,22 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 	al_music_map_pre_cache();
 
         // run the course script
+		// course scripts are the only
+		// scripts which are NOT required
+		// so check to see if file exists
 
 	progress_next();
+
+	js.course_script_idx=-1;
+
+	if (file_paths_data_exist(&setup.file_path_setup,"Scripts/Courses",map.info.name,"js")) {
 	
-	js.course_script_idx=scripts_add(thing_type_course,"Courses",map.info.name,-1,-1,-1,err_str);
-	if (js.course_script_idx==-1) {
-		progress_shutdown();
-		return(FALSE);
+		js.course_script_idx=scripts_add(thing_type_course,"Courses",map.info.name,-1,-1,-1,err_str);
+		if (js.course_script_idx==-1) {
+			progress_shutdown();
+			return(FALSE);
+		}
+
 	}
 			
 		// send the construct event

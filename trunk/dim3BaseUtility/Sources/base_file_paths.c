@@ -147,7 +147,7 @@ bool file_paths_setup(file_path_setup_type *file_path_setup)
 
 /* =======================================================
 
-      Get File Path
+      Data Directories
             
 ======================================================= */
 
@@ -191,6 +191,15 @@ void file_paths_data(file_path_setup_type *file_path_setup,char *path,char *sub_
 		// if file not found, default to data path
 		
 	sprintf(path,"%s/%s",file_path_setup->path_data,add_path);
+}
+
+bool file_paths_data_exist(file_path_setup_type *file_path_setup,char *sub_path,char *file_name,char *ext_name)
+{
+	char				path[1024];
+	struct stat			sb;
+	
+	file_paths_data(file_path_setup,path,sub_path,file_name,ext_name);
+	return(stat(path,&sb)==0);
 }
 
 void file_paths_data_default(file_path_setup_type *file_path_setup,char *path,char *sub_path,char *file_name,char *ext_name)
@@ -274,7 +283,7 @@ void file_paths_base(file_path_setup_type *file_path_setup,char *path,char *file
 
 /* =======================================================
 
-      Document Directories
+      Document\Support Directories
             
 ======================================================= */
 

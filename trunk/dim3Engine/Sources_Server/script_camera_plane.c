@@ -45,6 +45,7 @@ bool js_camera_plane_set_aspectRatio(JSContextRef cx,JSObjectRef j_obj,JSStringR
 bool js_camera_plane_set_near(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 bool js_camera_plane_set_far(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 bool js_camera_plane_set_nearOffset(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+JSValueRef js_camera_plane_animate_over_time_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 JSStaticValue 		camera_plane_props[]={
 							{"fov",					js_camera_plane_get_fov,				js_camera_plane_set_fov,			kJSPropertyAttributeDontDelete},
@@ -53,6 +54,10 @@ JSStaticValue 		camera_plane_props[]={
 							{"far",					js_camera_plane_get_far,				js_camera_plane_set_far,			kJSPropertyAttributeDontDelete},
 							{"nearOffset",			js_camera_plane_get_nearOffset,			js_camera_plane_set_nearOffset,		kJSPropertyAttributeDontDelete},
 							{0,0,0,0}};
+
+JSStaticFunction	camera_plane_functions[]={
+							{"animateOverTime",		js_camera_plane_animate_over_time_func,			kJSPropertyAttributeDontDelete},
+							{0,0,0}};
 
 JSClassRef			camera_plane_class;
 
@@ -64,7 +69,7 @@ JSClassRef			camera_plane_class;
 
 void script_init_camera_plane_object(void)
 {
-	camera_plane_class=script_create_class("camera_plane_class",camera_plane_props,NULL);
+	camera_plane_class=script_create_class("camera_plane_class",camera_plane_props,camera_plane_functions);
 }
 
 void script_free_camera_plane_object(void)
@@ -148,3 +153,26 @@ bool js_camera_plane_set_nearOffset(JSContextRef cx,JSObjectRef j_obj,JSStringRe
 	
 	return(TRUE);
 }
+
+/* =======================================================
+
+      Functions
+      
+======================================================= */
+
+JSValueRef js_camera_plane_animate_over_time_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+{
+	int				msec;
+	float			fov,aspect_ration;
+
+	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
+	
+	fov=script_value_to_float(cx,argv[0]);
+	aspect_ration=script_value_to_float(cx,argv[1]);
+	msec=script_value_to_int(cx,argv[2]);
+
+	if (msec>0) camera_animate_start(fov,aspect_ration,msec);
+	
+	return(script_null_to_value(cx));
+}
+
