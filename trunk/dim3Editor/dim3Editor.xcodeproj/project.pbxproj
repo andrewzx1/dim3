@@ -212,8 +212,6 @@
 		26F95EE3125AD24D0016127D /* Tool Tesselate Mesh.png in Copy (Tools Icons) */ = {isa = PBXBuildFile; fileRef = 26636B1A125A8EE20090A321 /* Tool Tesselate Mesh.png */; };
 		26F95EE4125AD24D0016127D /* Tool Toggle Mode.png in Copy (Tools Icons) */ = {isa = PBXBuildFile; fileRef = 26636B1B125A8EE20090A321 /* Tool Toggle Mode.png */; };
 		F50AF9AE088601C600F261B1 /* os_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = F50AF9AD088601C600F261B1 /* os_defs.h */; };
-		F522DCC90BBC853C00DFF256 /* Course.js in Sources */ = {isa = PBXBuildFile; fileRef = F522DCBD0BBC853C00DFF256 /* Course.js */; };
-		F522DCD30BBC859300DFF256 /* Course.js in Copy (Defaults) */ = {isa = PBXBuildFile; fileRef = F522DCBD0BBC853C00DFF256 /* Course.js */; };
 		F5239B9E0AFD9C5200241092 /* undo.c in Sources */ = {isa = PBXBuildFile; fileRef = F5239B9D0AFD9C5200241092 /* undo.c */; };
 		F52F19B80946A63100FEFE18 /* selection.c in Sources */ = {isa = PBXBuildFile; fileRef = F52F19B70946A63100FEFE18 /* selection.c */; };
 		F54581BB094F75D200CBE89A /* interface.h in Headers */ = {isa = PBXBuildFile; fileRef = F54581BA094F75D200CBE89A /* interface.h */; };
@@ -318,7 +316,6 @@
 			dstPath = Defaults;
 			dstSubfolderSpec = 7;
 			files = (
-				F522DCD30BBC859300DFF256 /* Course.js in Copy (Defaults) */,
 			);
 			name = "Copy (Defaults)";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -575,7 +572,6 @@
 		26F4B4DA1294CFB600D754CC /* property_palette_mesh.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_mesh.c; path = Code/property_palette_mesh.c; sourceTree = "<group>"; };
 		F50AF9AD088601C600F261B1 /* os_defs.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = os_defs.h; path = ../dim3Common/Headers/os_defs.h; sourceTree = SOURCE_ROOT; };
 		F51ABAD3048DAB0200B78D6A /* dim3editor.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = dim3editor.h; path = Headers/dim3editor.h; sourceTree = "<group>"; };
-		F522DCBD0BBC853C00DFF256 /* Course.js */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.javascript; path = Course.js; sourceTree = "<group>"; };
 		F5239B9D0AFD9C5200241092 /* undo.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = undo.c; path = Code/undo.c; sourceTree = "<group>"; };
 		F52F19B70946A63100FEFE18 /* selection.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = selection.c; path = Code/selection.c; sourceTree = "<group>"; };
 		F54581BA094F75D200CBE89A /* interface.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = interface.h; path = Headers/interface.h; sourceTree = "<group>"; };
@@ -1018,19 +1014,10 @@
 		F522DCBB0BBC853C00DFF256 /* Additional Data */ = {
 			isa = PBXGroup;
 			children = (
-				F522DCBC0BBC853C00DFF256 /* Defaults */,
 				F522DCBE0BBC853C00DFF256 /* Icons */,
 			);
 			name = "Additional Data";
 			path = "Resources/Additional Data";
-			sourceTree = "<group>";
-		};
-		F522DCBC0BBC853C00DFF256 /* Defaults */ = {
-			isa = PBXGroup;
-			children = (
-				F522DCBD0BBC853C00DFF256 /* Course.js */,
-			);
-			path = Defaults;
 			sourceTree = "<group>";
 		};
 		F522DCBE0BBC853C00DFF256 /* Icons */ = {
@@ -1219,7 +1206,6 @@
 				F5AF023309CFB5A0008B576A /* dialog_free_rotate.c in Sources */,
 				F5239B9E0AFD9C5200241092 /* undo.c in Sources */,
 				F571C8770B34DA6300F979B7 /* xml_setup.c in Sources */,
-				F522DCC90BBC853C00DFF256 /* Course.js in Sources */,
 				F57CACA70C38B76200B595F4 /* texture_palette.c in Sources */,
 				26AFB4490D95E0E60004805A /* pieces_mesh.c in Sources */,
 				26DB6D970DDFCE4100BDD008 /* dialog_resize.c in Sources */,

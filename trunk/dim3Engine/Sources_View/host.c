@@ -203,15 +203,6 @@ void host_map_list_initialize(void)
 
 		progress_next();
 
-			// if no JS file, don't put in list
-			// this is probably a backup file
-
-		file_paths_data(&setup.file_path_setup,path,"Scripts/Courses",map_pick_fpd->files[n].file_name,"js");
-		
-		file=fopen(path,"rb");
-		if (file==NULL) continue;
-		fclose(file);
-
 			// get the map info
 
 		if (!map_host_load_info(map_pick_fpd->files[n].file_name,info_name,game_list)) continue;
