@@ -80,57 +80,6 @@ void file_close_window(void)
 
 /* =======================================================
 
-      New Map utilities
-      
-======================================================= */
-
-bool file_create_course_script(char *file_name)
-{
-	int				sz;
-	char			*data,path[1024],sub_path[1024];
-	FILE			*file;
-	struct stat		sb;
-	
-		// read the file
-	
-	os_get_support_file_path(sub_path,"Editor");
-	strcat(sub_path,"/Defaults");
-
-	file_paths_app(&file_path_setup,path,sub_path,"Course","js");
-		
-	if (stat(path,&sb)!=0) return(FALSE);
-	sz=sb.st_size;
-		
-	file=fopen(path,"r");
-	if (file==NULL) return(FALSE);
-    
-	data=(char*)malloc(sz);
-    if (data==NULL) {
-        fclose(file);
-        return(FALSE);
-    }
-	
-	fread(data,1,sz,file);
-	fclose(file);
-	
-		// write the file
-		
-	file_paths_data_default(&file_path_setup,path,"Scripts/Courses",file_name,"js");
-		
-	file=fopen(path,"w");
-	if (file==NULL) {
-		free(data);
-		return(FALSE);
-	}
-	
-	fwrite(data,1,sz,file);
-	fclose(file);
-	
-	return(TRUE);
-}
-
-/* =======================================================
-
       New Map
       
 ======================================================= */
@@ -147,13 +96,6 @@ bool file_new_map(void)
 		// set the map paths
 		
 	map_setup(&file_path_setup,anisotropic_mode_none,setup.mipmap_mode,FALSE,FALSE);
-	
-		// copy the course script
-		
-	if (!file_create_course_script(file_name)) {
-		os_dialog_alert("dim3 Editor could not create the map script","The disk might be locked or a folder might be missing.\n\nIf you are running dim3 directly from the DMG file, then you need to move the files to your harddrive (DMGs are read-only).");
-		return(FALSE);
-	}
 	
 		// start the map
 		

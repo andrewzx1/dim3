@@ -127,7 +127,7 @@ void input_touch_to_virtual_button(d3pnt *pt,bool down)
 		button=&iface.virtual_control.buttons[n];
 		if (!button->on) continue;
 
-		if ((pt->x<button->x) || (pt->x>(button->x+button->x_size)) || (pt->y<button->y) || (pt->y>(button->y+button->y_size))) continue;
+		if ((pt->x<button->pnt.x) || (pt->x>(button->pnt.x+button->size.x)) || (pt->y<button->pnt.y) || (pt->y>(button->pnt.y+button->size.y))) continue;
 		
 		button->down=down;
 
@@ -155,15 +155,15 @@ void input_touch_to_virtual_stick_move(touch_state_type *state)
 		
 	stick=&iface.virtual_control.sticks[state->stick_idx];
 		
-	if ((state->pt.x<stick->x) || (state->pt.x>(stick->x+stick->x_size)) || (state->pt.y<stick->y) || (state->pt.y>(stick->y+stick->y_size))) return;
+	if ((state->pt.x<stick->pnt.x) || (state->pt.x>(stick->pnt.x+stick->size.x)) || (state->pt.y<stick->pnt.y) || (state->pt.y>(stick->pnt.y+stick->size.y))) return;
 	
 		// move within stick
 		
-	sx=stick->x_size>>1;
-	mx=stick->x+sx;
+	sx=stick->size.x>>1;
+	mx=stick->pnt.x+sx;
 	
-	sy=stick->y_size>>1;
-	my=stick->y+sy;
+	sy=stick->size.y>>1;
+	my=stick->pnt.y+sy;
 	
 	stick->touch_x=(float)(state->pt.x-mx)/(float)sx;
 	if (stick->flip_x) stick->touch_x=-stick->touch_x;
@@ -183,7 +183,7 @@ void input_touch_to_virtual_stick_start(touch_state_type *state)
 
 			// in this stick?
 			
-		if ((state->pt.x<stick->x) || (state->pt.x>(stick->x+stick->x_size)) || (state->pt.y<stick->y) || (state->pt.y>(stick->y+stick->y_size))) continue;
+		if ((state->pt.x<stick->pnt.x) || (state->pt.x>(stick->pnt.x+stick->size.x)) || (state->pt.y<stick->pnt.y) || (state->pt.y>(stick->pnt.y+stick->size.y))) continue;
 		
 			// touch is now tied to this stick
 			
