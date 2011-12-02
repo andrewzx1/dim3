@@ -156,10 +156,8 @@ void host_map_list_initialize(void)
 {
 	int							n,nfile,sz;
 	char						*c;
-	char						info_name[name_str_len],game_list[256],
-								path[1024];
+	char						info_name[name_str_len],game_list[256];
 	file_path_directory_type	*map_pick_fpd;
-	FILE						*file;
 
 		// initial setup
 

@@ -346,9 +346,9 @@ JSValueRef script_color_to_value(JSContextRef cx,d3col *col)
 
 	j_obj=JSObjectMake(cx,NULL,NULL);
 
-	script_set_single_property(cx,j_obj,"r",script_float_to_value(cx,col->r),(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
-	script_set_single_property(cx,j_obj,"g",script_float_to_value(cx,col->g),(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
-	script_set_single_property(cx,j_obj,"b",script_float_to_value(cx,col->b),(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
+	script_set_single_property(cx,j_obj,"red",script_float_to_value(cx,col->r),(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
+	script_set_single_property(cx,j_obj,"green",script_float_to_value(cx,col->g),(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
+	script_set_single_property(cx,j_obj,"blue",script_float_to_value(cx,col->b),(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
 	
 	return((JSValueRef)j_obj);
 }

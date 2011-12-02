@@ -822,6 +822,10 @@
 						</FileConfiguration>
 					</File>
 					<File
+						RelativePath="..\..\dim3Engine\Sources_Server\script_color.c"
+						>
+					</File>
+					<File
 						RelativePath="..\..\dim3Engine\Sources_Server\script_data.c"
 						>
 						<FileConfiguration
@@ -833,10 +837,6 @@
 								PreprocessorDefinitions=""
 							/>
 						</FileConfiguration>
-					</File>
-					<File
-						RelativePath="..\..\dim3Engine\Sources_Server\script_dim3.c"
-						>
 					</File>
 					<File
 						RelativePath="..\..\dim3Engine\Sources_Server\script_event.c"
@@ -1777,6 +1777,10 @@
 								PreprocessorDefinitions=""
 							/>
 						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\..\dim3Engine\Sources_Server\script_point_angle_vector.c"
+						>
 					</File>
 					<File
 						RelativePath="..\..\dim3Engine\Sources_Server\script_proj_action.c"

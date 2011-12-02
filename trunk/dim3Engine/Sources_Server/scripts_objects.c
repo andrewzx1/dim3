@@ -83,11 +83,14 @@ void script_initialize_classes(void)
 		// main empty class
 		
 	js.main_empty_class=script_create_class("main_empty_class",NULL,NULL);
+
+		// constructors
+
+	script_init_global_point_angle_vector_object();
+	script_init_global_color_object();
 	
 		// global classes
 		
-	script_init_global_dim3_object();
-
 	script_init_global_script_object();
 
 	script_init_global_map_object();
@@ -232,10 +235,13 @@ void script_release_classes(void)
 		
 	script_free_class(js.main_empty_class);
 
+		// constructors
+
+	script_free_global_point_angle_vector_object();
+	script_free_global_color_object();
+
 		// global classes
 
-	script_free_global_dim3_object();
-		
 	script_free_global_script_object();
 	
 	script_free_global_map_object();
@@ -388,9 +394,10 @@ bool script_add_global_object(script_type *script,char *err_str)
 
 	j_parent_obj=script->global_obj;
 
-	if (iface.project.modernize) {
-		j_parent_obj=script_add_global_dim3_object(script->cx,script->global_obj,script->idx);
-	}
+		// constructors
+
+	script_add_global_point_angle_vector_object(script->cx,j_parent_obj,script->idx);
+	script_add_global_color_object(script->cx,j_parent_obj,script->idx);
 	
 		// script object
 		
@@ -465,20 +472,15 @@ bool script_add_global_object(script_type *script,char *err_str)
 
 bool script_is_prop_global_object(char *name)
 {
-	if (iface.project.modernize) {
-		return(strcmp(name,"dim3")==0);
-	}
-	else {
-		if (strcmp(name,"script")==0) return(TRUE);
-		if (strcmp(name,"camera")==0) return(TRUE);
-		if (strcmp(name,"data")==0) return(TRUE);
-		if (strcmp(name,"iface")==0) return(TRUE);
-		if (strcmp(name,"map")==0) return(TRUE);
-		if (strcmp(name,"sound")==0) return(TRUE);
-		if (strcmp(name,"spawn")==0) return(TRUE);
-		if (strcmp(name,"utility")==0) return(TRUE);
-		if (strcmp(name,"multiplayer")==0) return(TRUE);
-	}
+	if (strcmp(name,"script")==0) return(TRUE);
+	if (strcmp(name,"camera")==0) return(TRUE);
+	if (strcmp(name,"data")==0) return(TRUE);
+	if (strcmp(name,"iface")==0) return(TRUE);
+	if (strcmp(name,"map")==0) return(TRUE);
+	if (strcmp(name,"sound")==0) return(TRUE);
+	if (strcmp(name,"spawn")==0) return(TRUE);
+	if (strcmp(name,"utility")==0) return(TRUE);
+	if (strcmp(name,"multiplayer")==0) return(TRUE);
 
 	return(FALSE);
 }

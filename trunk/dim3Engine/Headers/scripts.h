@@ -108,9 +108,10 @@ extern inline bool script_in_construct(JSObjectRef j_obj);
 // initialize script objects
 //
 
-extern void script_init_global_dim3_object(void);
-
 extern void script_init_global_script_object(void);
+
+extern void script_init_global_point_angle_vector_object(void);
+extern void script_init_global_color_object(void);
 
 extern void script_init_global_map_object(void);
 extern void script_init_map_action_object(void);
@@ -249,9 +250,10 @@ extern void script_init_proj_melee_object(void);
 // free script objects
 //
 
-extern void script_free_global_dim3_object(void);
-
 extern void script_free_global_script_object(void);
+
+extern void script_free_global_point_angle_vector_object(void);
+extern void script_free_global_color_object(void);
 
 extern void script_free_global_map_object(void);
 extern void script_free_map_action_object(void);
@@ -390,9 +392,10 @@ extern void script_free_proj_melee_object(void);
 // add script objects
 //
 
-extern JSObjectRef script_add_global_dim3_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx);
-
 extern JSObjectRef script_add_global_script_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx);
+
+extern JSObjectRef script_add_global_point_angle_vector_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx);
+extern JSObjectRef script_add_global_color_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx);
 
 extern JSObjectRef script_add_global_map_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx);
 extern JSObjectRef script_add_map_action_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx);
