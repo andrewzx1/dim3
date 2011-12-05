@@ -33,6 +33,9 @@ and can be sold or given away.
 
 extern js_type			js;
 
+extern JSClassRef		global_point_angle_vector_class,global_color_class;
+
+
 /* =======================================================
 
       NULL JSValueRef
@@ -298,7 +301,7 @@ JSValueRef script_point_to_value(JSContextRef cx,d3pnt *pnt)
 {
 	JSObjectRef		j_obj;
 
-	j_obj=JSObjectMake(cx,NULL,NULL);
+	j_obj=JSObjectMake(cx,global_point_angle_vector_class,NULL);
 
 	script_set_single_property(cx,j_obj,"x",script_int_to_value(cx,pnt->x),(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
 	script_set_single_property(cx,j_obj,"y",script_int_to_value(cx,pnt->y),(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
@@ -344,7 +347,7 @@ JSValueRef script_color_to_value(JSContextRef cx,d3col *col)
 {
 	JSObjectRef		j_obj;
 
-	j_obj=JSObjectMake(cx,NULL,NULL);
+	j_obj=JSObjectMake(cx,global_color_class,NULL);
 
 	script_set_single_property(cx,j_obj,"red",script_float_to_value(cx,col->r),(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
 	script_set_single_property(cx,j_obj,"green",script_float_to_value(cx,col->g),(kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete));
