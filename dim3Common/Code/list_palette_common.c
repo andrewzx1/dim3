@@ -524,7 +524,7 @@ void list_palette_add_picker_list_int(list_palette_type *list,int id,char *name,
 	item->list.item_sz=list_item_sz;
 	item->list.name_offset=list_name_offset;
 	item->list.include_none=include_none;
-	item->list.file_list=FALSE;
+	item->list.file.file_list=FALSE;
 
 		// setup the value
 
@@ -558,7 +558,7 @@ void list_palette_add_picker_list_string(list_palette_type *list,int id,char *na
 	item->list.item_sz=list_item_sz;
 	item->list.name_offset=list_name_offset;
 	item->list.include_none=include_none;
-	item->list.file_list=FALSE;
+	item->list.file.file_list=FALSE;
 
 		// setup the value
 
@@ -581,8 +581,6 @@ void list_palette_add_picker_file(list_palette_type *list,int id,int button_type
 	item->selected=FALSE;
 	item->disabled=disabled;
 
-	count=property_pick_file_fill_list(search_path,extension,required_file_name);
-
 		// setup the picking list
 
 	item->list.ptr=property_pick_file_get_list();
@@ -590,7 +588,11 @@ void list_palette_add_picker_file(list_palette_type *list,int id,int button_type
 	item->list.item_sz=file_str_len;
 	item->list.name_offset=0;
 	item->list.include_none=TRUE;
-	item->list.file_list=TRUE;
+	
+	item->list.file.file_list=TRUE;
+	strcpy(item->list.file.search_path,search_path);
+	strcpy(item->list.file.extension,extension);
+	strcpy(item->list.file.required_file_name,required_file_name);
 
 		// setup the value
 
@@ -679,6 +681,36 @@ void list_palette_start_picking_mode(char *title,char *list_ptr,int list_count,i
 	list_picker.count=list_count;
 	list_picker.item_sz=list_item_sz;
 	list_picker.name_offset=list_name_offset;
+}
+
+void list_palette_start_picking_item_mode(list_palette_item_type *item)
+{
+	list_picker.on=TRUE;
+
+	sprintf(list_picker.title,"Pick %s",item->name);
+	
+	if (item->list.is_index) {
+		list_picker.picker_idx_ptr=item->value.int_ptr;
+		list_picker.picker_name_ptr=NULL;
+	}
+	else {
+		list_picker.picker_idx_ptr=NULL;
+		list_picker.picker_name_ptr=item->value.str_ptr;
+	}
+	
+		// if this is a file type list,
+		// load up the file
+		
+	if (item->list.file.file_list) {
+		item->list.count=property_pick_file_fill_list(item->list.file.search_path,item->list.file.extension,item->list.file.required_file_name);
+	}
+	
+	list_picker.include_none=item->list.include_none;
+	list_picker.file_list=item->list.file.file_list;
+	list_picker.ptr=item->list.ptr;
+	list_picker.count=item->list.count;
+	list_picker.item_sz=item->list.item_sz;
+	list_picker.name_offset=item->list.name_offset;
 }
 
 void list_palette_fill_picking_mode(list_palette_type *list)
@@ -1791,7 +1823,6 @@ void list_palette_click_scroll_bar(list_palette_type *list)
 bool list_palette_click(list_palette_type *list,d3pnt *pnt,bool double_click)
 {
 	int						item_idx;
-	char					title[256];
 	d3pnt					pt;
 	d3rect					box;
 	d3fpnt					uv_ptr;
@@ -1943,13 +1974,7 @@ bool list_palette_click(list_palette_type *list,d3pnt *pnt,bool double_click)
 
 		case list_item_ctrl_picker:
 			if (!double_click) return(FALSE);
-			sprintf(title,"Pick %s",item->name);
-			if (item->list.is_index) {
-				list_palette_start_picking_mode(title,item->list.ptr,item->list.count,item->list.item_sz,item->list.name_offset,item->list.include_none,item->list.file_list,item->value.int_ptr,NULL);
-			}
-			else {
-				list_palette_start_picking_mode(title,item->list.ptr,item->list.count,item->list.item_sz,item->list.name_offset,item->list.include_none,item->list.file_list,NULL,item->value.str_ptr);
-			}
+			list_palette_start_picking_item_mode(item);
 			return(TRUE);
 
 		case list_item_ctrl_pick_color:

@@ -100,9 +100,15 @@ typedef union		{
 					} list_palette_item_value_type;
 
 typedef struct		{
+						char								search_path[64],extension[8],required_file_name[file_str_len];
+						bool								file_list;
+					} list_palette_item_file_type;
+
+typedef struct		{
 						int									count,item_sz,name_offset;
-						bool								include_none,file_list,is_index;
+						bool								include_none,is_index;
 						char								*ptr;
+						list_palette_item_file_type			file;
 					} list_palette_item_list_type;
 
 typedef struct		{

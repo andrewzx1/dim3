@@ -70,7 +70,7 @@ void property_palette_fill_scenery(int scenery_idx)
 	list_palette_set_sub_title(&property_palette,"Scenery",scenery->model_name);
 
 	list_palette_add_header(&property_palette,0,"Scenery Model");
-	list_palette_add_string(&property_palette,kSceneryPropertyModelName,"Model",scenery->model_name,FALSE);
+	list_palette_add_picker_file(&property_palette,kSceneryPropertyModelName,list_button_none,0,"Model","Models","","Mesh.xml;Model.xml",scenery->model_name,FALSE);
 	list_palette_add_string(&property_palette,kSceneryPropertyAnimationName,"Animation",scenery->animation_name,FALSE);
 	list_palette_add_float(&property_palette,kSceneryPropertyResize,"Resize",&scenery->resize,FALSE);
 
@@ -110,10 +110,6 @@ void property_palette_click_scenery(int scenery_idx,int id,bool double_click)
 	scenery=&map.sceneries[scenery_idx];
 
 	switch (id) {
-
-		case kSceneryPropertyModelName:
-			property_pick_file("Pick a Model","Models",NULL,"Mesh.xml;Model.xml",scenery->model_name);
-			break;
 
 		case kSceneryPropertyAnimationName:
 			dialog_property_string_run(list_string_value_string,(void*)scenery->animation_name,name_str_len,0,0);
