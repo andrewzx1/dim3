@@ -333,7 +333,7 @@ int property_pick_file_fill_list(char *search_path,char *extension,char *require
 
 		// read files
 
-	if (extension!=NULL) {
+	if (extension[0]!=0x0) {
 		fpd=file_paths_read_directory_data(&file_path_setup,search_path,extension);
 	}
 	else {
