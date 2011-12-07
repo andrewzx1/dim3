@@ -942,7 +942,7 @@ void render_model_setup(model_draw *draw,int tick)
 		for (k=0;k!=max_model_texture;k++) {
 			texture_hits[k]=FALSE;
 
-			frame=render_model_get_texture_frame(mdl,draw,n);
+			frame=render_model_get_texture_frame(mdl,draw,k);
 			draw->meshes[n].textures[k].frame=frame;
 
 			draw->meshes[n].textures[k].glow=(texture->frames[frame].glowmap.gl_id!=-1);
