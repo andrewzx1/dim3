@@ -337,7 +337,7 @@ void timers_run(void)
 			switch (timer->mode) {
 			
 				case timer_mode_single:
-					scripts_post_event_console(timer->script_idx,-1,sd_event_wait,0,timer->user_id);
+					scripts_post_event_console(timer->script_idx,timer->override_proj_idx,sd_event_wait,0,timer->user_id);
 					timer->mode=timer_mode_dispose;		// auto-dispose waits
 					break;
 					
@@ -347,7 +347,7 @@ void timers_run(void)
 					break;
 
 				case timer_mode_repeat:
-					scripts_post_event_console(timer->script_idx,-1,sd_event_timer,0,timer->user_id);
+					scripts_post_event_console(timer->script_idx,timer->override_proj_idx,sd_event_timer,0,timer->user_id);
 					break;
 			}
 			

@@ -77,7 +77,7 @@ JSObjectRef script_add_proj_position_object(JSContextRef cx,JSObjectRef parent_o
 JSValueRef js_proj_position_get_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	proj_type			*proj;
-
+	
 	proj=proj_get_attach(j_obj);
 	if (proj==NULL) return(script_null_to_value(cx));
 
