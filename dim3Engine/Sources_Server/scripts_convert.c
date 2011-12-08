@@ -252,7 +252,7 @@ void script_value_to_point(JSContextRef cx,JSValueRef val,d3pnt *pnt)
 
 	obj=JSValueToObject(cx,val,NULL);
 	if (obj==NULL) return;
-
+	
 	vp=script_get_single_property(cx,obj,"x");
 	if (vp!=NULL) pnt->x=script_value_to_int(cx,vp);
 
