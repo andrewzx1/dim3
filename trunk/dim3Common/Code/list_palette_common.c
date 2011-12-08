@@ -569,7 +569,6 @@ void list_palette_add_picker_list_string(list_palette_type *list,int id,char *na
 
 void list_palette_add_picker_file(list_palette_type *list,int id,int button_type,int button_id,char *name,char *search_path,char *extension,char *required_file_name,char *str_ptr,bool disabled)
 {
-	int							count;
 	list_palette_item_type		*item;
 
 	item=list_palette_create_item(list,list_item_ctrl_picker);
@@ -584,7 +583,7 @@ void list_palette_add_picker_file(list_palette_type *list,int id,int button_type
 		// setup the picking list
 
 	item->list.ptr=property_pick_file_get_list();
-	item->list.count=count;
+	item->list.count=-1;
 	item->list.item_sz=file_str_len;
 	item->list.name_offset=0;
 	item->list.include_none=TRUE;
