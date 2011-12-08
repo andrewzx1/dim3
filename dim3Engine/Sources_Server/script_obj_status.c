@@ -43,6 +43,7 @@ JSValueRef js_obj_status_get_moving(JSContextRef cx,JSObjectRef j_obj,JSStringRe
 JSValueRef js_obj_status_get_running(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_status_get_backward(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_status_get_sliding(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_obj_status_get_dodging(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_status_get_stand(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_status_get_air(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_status_get_liquid(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
@@ -58,6 +59,7 @@ JSStaticValue 		obj_status_props[]={
 							{"running",				js_obj_status_get_running,				NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
 							{"backward",			js_obj_status_get_backward,				NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
 							{"sliding",				js_obj_status_get_sliding,				NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
+							{"dodging",				js_obj_status_get_dodging,				NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
 							{"stand",				js_obj_status_get_stand,				NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
 							{"air",					js_obj_status_get_air,					NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
 							{"liquid",				js_obj_status_get_liquid,				NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
@@ -138,6 +140,14 @@ JSValueRef js_obj_status_get_sliding(JSContextRef cx,JSObjectRef j_obj,JSStringR
 
 	obj=object_get_attach(j_obj);
 	return(script_bool_to_value(cx,obj->side_move.moving));
+}
+
+JSValueRef js_obj_status_get_dodging(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
+{
+	obj_type		*obj;
+
+	obj=object_get_attach(j_obj);
+	return(script_bool_to_value(cx,obj->auto_walk.dodge.on));
 }
 
 JSValueRef js_obj_status_get_stand(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
