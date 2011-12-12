@@ -1019,14 +1019,14 @@ JSValueRef js_map_object_move_to_func(JSContextRef cx,JSObjectRef func,JSObjectR
 	obj_type		*obj;
 
 	if (iface.project.modernize) {
-		if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+		if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
 
 		obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
 		if (obj==NULL) return(script_null_to_value(cx));
 
 		script_value_to_point(cx,argv[1],&pnt);
 
-		object_set_position(obj,pnt.x,pnt.y,pnt.z,script_value_to_float(cx,argv[4]),0);
+		object_set_position(obj,pnt.x,pnt.y,pnt.z,script_value_to_float(cx,argv[2]),0);
 		object_telefrag_players(obj,FALSE);
 
 		return(script_null_to_value(cx));
