@@ -79,7 +79,34 @@ JSObjectRef script_add_global_color_object(JSContextRef cx,JSObjectRef parent_ob
 
 JSObjectRef js_global_color_constructor_func(JSContextRef cx,JSObjectRef c_j_obj,size_t argc,const JSValueRef argv[],JSValueRef* exception)
 {
+	JSValueRef		vp;
 	JSObjectRef		j_obj;
+	
+		// creating new color from object
+		
+	if (argc==1) {
+	
+		if (!JSValueIsObject(cx,argv[0])) {
+			script_create_exception(cx,"This constructor requires an object when using one parameter.");
+			return(JSValueToObject(cx,script_null_to_value(cx),NULL));
+		}
+		
+		j_obj=JSObjectMake(cx,global_color_class,NULL);
+		
+		vp=script_get_single_property(cx,((JSObjectRef)argv[0]),"red");
+		if (vp!=NULL) script_set_single_property(cx,j_obj,"red",vp,kJSPropertyAttributeDontDelete);
+		
+		vp=script_get_single_property(cx,((JSObjectRef)argv[0]),"green");
+		if (vp!=NULL) script_set_single_property(cx,j_obj,"green",vp,kJSPropertyAttributeDontDelete);
+		
+		vp=script_get_single_property(cx,((JSObjectRef)argv[0]),"blue");
+		if (vp!=NULL) script_set_single_property(cx,j_obj,"blue",vp,kJSPropertyAttributeDontDelete);
+	
+		return(j_obj);
+	}
+	
+		// creating from parameters
+
 
 	if (!script_check_param_count(cx,NULL,argc,3,exception)) return(NULL);
 

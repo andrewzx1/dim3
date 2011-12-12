@@ -182,6 +182,8 @@ bool js_obj_melee_set_strikeBoneName(JSContextRef cx,JSObjectRef j_obj,JSStringR
 	
 	obj=object_get_attach(j_obj);
 	script_value_to_string(cx,vp,obj->melee.strike_bone_name,name_str_len);
+			fprintf(stdout,"%s=%s\n",obj->name,obj->melee.strike_bone_name);
+
 	
 	return(TRUE);
 }

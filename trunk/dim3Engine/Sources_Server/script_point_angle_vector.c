@@ -85,7 +85,33 @@ JSObjectRef script_add_global_point_angle_vector_object(JSContextRef cx,JSObject
 
 JSObjectRef js_global_point_angle_vector_constructor_func(JSContextRef cx,JSObjectRef c_j_obj,size_t argc,const JSValueRef argv[],JSValueRef* exception)
 {
+	JSValueRef		vp;
 	JSObjectRef		j_obj;
+	
+		// creating new point/angle/vector from object
+		
+	if (argc==1) {
+	
+		if (!JSValueIsObject(cx,argv[0])) {
+			script_create_exception(cx,"This constructor requires an object when using one parameter.");
+			return(JSValueToObject(cx,script_null_to_value(cx),NULL));
+		}
+		
+		j_obj=JSObjectMake(cx,global_point_angle_vector_class,NULL);
+		
+		vp=script_get_single_property(cx,((JSObjectRef)argv[0]),"x");
+		if (vp!=NULL) script_set_single_property(cx,j_obj,"x",vp,kJSPropertyAttributeDontDelete);
+		
+		vp=script_get_single_property(cx,((JSObjectRef)argv[0]),"y");
+		if (vp!=NULL) script_set_single_property(cx,j_obj,"y",vp,kJSPropertyAttributeDontDelete);
+		
+		vp=script_get_single_property(cx,((JSObjectRef)argv[0]),"z");
+		if (vp!=NULL) script_set_single_property(cx,j_obj,"z",vp,kJSPropertyAttributeDontDelete);
+	
+		return(j_obj);
+	}
+	
+		// creating from parameters
 
 	if (!script_check_param_count(cx,NULL,argc,3,exception)) return(NULL);
 

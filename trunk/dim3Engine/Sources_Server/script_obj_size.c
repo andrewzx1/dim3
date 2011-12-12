@@ -32,6 +32,7 @@ and can be sold or given away.
 #include "scripts.h"
 #include "objects.h"
 
+extern iface_type		iface;
 extern js_type			js;
 
 JSValueRef js_obj_size_get_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
@@ -276,6 +277,21 @@ JSValueRef js_obj_size_grow_over_time_change_size_func(JSContextRef cx,JSObjectR
 	d3pnt			size;
 	obj_type		*obj;
 
+	if (iface.project.modernize) {
+		if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
+			
+		resize=script_value_to_float(cx,argv[0]);
+		script_value_to_point(cx,argv[1],&size);
+		msec=script_value_to_int(cx,argv[2]);
+		
+		obj=object_get_attach(j_obj);
+		object_grow_start(obj,msec,resize,&size,NULL);
+
+		return(script_null_to_value(cx));
+	}
+
+	// supergumba:modernize -- delete later
+
 	if (!script_check_param_count(cx,func,argc,5,exception)) return(script_null_to_value(cx));
 	
 	resize=script_value_to_float(cx,argv[0]);
@@ -298,6 +314,21 @@ JSValueRef js_obj_size_grow_over_time_change_offset_func(JSContextRef cx,JSObjec
 	float			resize;
 	d3pnt			offset;
 	obj_type		*obj;
+
+	if (iface.project.modernize) {
+		if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
+			
+		resize=script_value_to_float(cx,argv[0]);
+		script_value_to_point(cx,argv[1],&offset);
+		msec=script_value_to_int(cx,argv[2]);
+		
+		obj=object_get_attach(j_obj);
+		object_grow_start(obj,msec,resize,NULL,&offset);
+
+		return(script_null_to_value(cx));
+	}
+
+	// supergumba:modernize -- delete later
 
 	if (!script_check_param_count(cx,func,argc,5,exception)) return(script_null_to_value(cx));
 	

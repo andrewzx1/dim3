@@ -32,6 +32,7 @@ and can be sold or given away.
 #include "scripts.h"
 #include "objects.h"
 
+extern iface_type		iface;
 extern js_type			js;
 
 JSValueRef js_obj_motion_vector_get_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
@@ -179,6 +180,19 @@ JSValueRef js_obj_motion_vector_shove_direct_func(JSContextRef cx,JSObjectRef fu
 {
 	d3vct			vct;
 	obj_type		*obj;
+	
+	if (iface.project.modernize) {
+		if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+			
+		script_value_to_vector(cx,argv[0],&vct);
+		
+		obj=object_get_attach(j_obj);
+		object_shove_direct(obj,&vct);
+
+		return(script_null_to_value(cx));
+	}
+
+	// supergumba:modernize -- delete later
 	
 	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
 	
@@ -341,6 +355,19 @@ JSValueRef js_obj_motion_vector_walk_to_position_func(JSContextRef cx,JSObjectRe
 {
 	d3pnt			pnt;
 	obj_type		*obj;
+	
+	if (iface.project.modernize) {
+		if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+			
+		script_value_to_point(cx,argv[0],&pnt);
+		
+		obj=object_get_attach(j_obj);
+		object_auto_walk_position_setup(obj,&pnt);
+
+		return(script_null_to_value(cx));
+	}
+
+	// supergumba:modernize -- delete later
 	
 	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
 	
