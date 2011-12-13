@@ -70,6 +70,10 @@ bool server_initialize(char *err_str)
 		strcpy(err_str,"Out of Memory");
 		return(FALSE);
 	}
+	
+		// load project XML
+		
+	iface_read(&iface);
 
 		// start script engine
 		
@@ -77,10 +81,6 @@ bool server_initialize(char *err_str)
 		iface_shutdown(&iface);
 		return(FALSE);
 	}
-	
-		// load project XML
-		
-	iface_read(&iface);
 
 		// game states
 		
