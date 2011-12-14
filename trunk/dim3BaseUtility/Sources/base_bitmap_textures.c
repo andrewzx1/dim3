@@ -317,7 +317,7 @@ void bitmap_texture_clear(texture_type *texture)
 
 	texture->scale.on=FALSE;
 	texture->scale.lock_offset=FALSE;
-	texture->scale.x=texture->scale.y=0.04f;
+	texture->scale.x=texture->scale.y=0.25f;
     
 	frame=texture->frames;
 
@@ -341,7 +341,7 @@ void bitmap_texture_clear(texture_type *texture)
 
 void bitmap_texture_read_xml(texture_type *texture,int main_tag,bool read_scale)
 {
-	int						k,main_image_tag,image_tag,frame_count;
+	int						k,scale_tag,main_image_tag,image_tag,frame_count;
 
 		// settings
 		
@@ -359,11 +359,22 @@ void bitmap_texture_read_xml(texture_type *texture,int main_tag,bool read_scale)
 	xml_get_attribute_text(main_tag,"shader",texture->shader_name,name_str_len);
 	xml_get_attribute_text(main_tag,"material_name",texture->material_name,name_str_len);
 	
+		// scale
+
 	if (read_scale) {
-		texture->scale.x=xml_get_attribute_float_default(main_tag,"txt_scale_x",0.04f);
-		texture->scale.y=xml_get_attribute_float_default(main_tag,"txt_scale_y",0.04f);
-		texture->scale.on=xml_get_attribute_boolean(main_tag,"txt_scale_on");
-		texture->scale.lock_offset=xml_get_attribute_boolean(main_tag,"txt_scale_lock_offset");
+		scale_tag=xml_findfirstchild("Scale",main_tag);
+		if (scale_tag!=-1) {
+			texture->scale.x=xml_get_attribute_float_default(main_tag,"txt_scale_x",0.04f)*6.94f;
+			texture->scale.y=xml_get_attribute_float_default(main_tag,"txt_scale_y",0.04f)*6.04f;
+			texture->scale.on=xml_get_attribute_boolean(main_tag,"txt_scale_on");
+			texture->scale.lock_offset=xml_get_attribute_boolean(main_tag,"txt_scale_lock_offset");
+		}
+		else {
+			texture->scale.x=xml_get_attribute_float_default(scale_tag,"x",0.25f);
+			texture->scale.y=xml_get_attribute_float_default(scale_tag,"y",0.25f);
+			texture->scale.on=xml_get_attribute_boolean(scale_tag,"on");
+			texture->scale.lock_offset=xml_get_attribute_boolean(scale_tag,"lock_offset");
+		}
 	}
 	
 		// images
@@ -408,10 +419,12 @@ void bitmap_texture_write_xml(texture_type *texture,int frame_count,bool write_s
 	xml_add_attribute_text("material_name",texture->material_name);
 	
 	if (write_scale) {
-		xml_add_attribute_float("txt_scale_x",texture->scale.x);
-		xml_add_attribute_float("txt_scale_y",texture->scale.y);
-		xml_add_attribute_boolean("txt_scale_on",texture->scale.on);
-		xml_add_attribute_boolean("txt_scale_lock_offset",texture->scale.lock_offset);
+		xml_add_tagstart("Scale");
+		xml_add_attribute_float("x",texture->scale.x);
+		xml_add_attribute_float("y",texture->scale.y);
+		xml_add_attribute_boolean("on",texture->scale.on);
+		xml_add_attribute_boolean("lock_offset",texture->scale.lock_offset);
+		xml_add_tagend(TRUE);
 	}
 	
 	xml_add_tagend(FALSE);

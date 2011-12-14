@@ -111,8 +111,8 @@ void decode_map_settings_xml(map_type *map,int map_head)
 	
     tag=xml_findfirstchild("Editor",map_head);
     if (tag!=-1) {
-		map->editor_setup.txt_scale_x=xml_get_attribute_float_default(tag,"txt_scale_x",0.04f);
-		map->editor_setup.txt_scale_y=xml_get_attribute_float_default(tag,"txt_scale_y",0.04f);
+		map->editor_setup.txt_scale_x=xml_get_attribute_float_default(tag,"txt_uv_scale_x",0.25f);
+		map->editor_setup.txt_scale_y=xml_get_attribute_float_default(tag,"txt_uv_scale_y",0.25f);
 		map->editor_setup.view_near_dist=xml_get_attribute_int_default(tag,"view_near_dist",400);
 		map->editor_setup.view_far_dist=xml_get_attribute_int_default(tag,"view_far_dist",300000);
 		map->editor_setup.link_always_start=xml_get_attribute_boolean(tag,"link_always_start");

@@ -96,7 +96,7 @@ void property_palette_fill_texture(int texture_idx)
 	list_palette_add_header(&property_palette,0,"Texture Auto UVs");
 	list_palette_add_checkbox(&property_palette,kTexturePropertyScaleOn,"Use Texture Scale",&texture->scale.on,FALSE);
 	list_palette_add_checkbox(&property_palette,kTexturePropertyScaleLockOffset,"Lock Offsets",&texture->scale.lock_offset,FALSE);
-	list_palette_add_uv(&property_palette,kTexturePropertyScale,"Scale",&texture->scale.x,&texture->scale.y,FALSE);
+	list_palette_add_uv(&property_palette,kTexturePropertyScale,"Scale (1000 units)",&texture->scale.x,&texture->scale.y,FALSE);
 }
 
 /* =======================================================
