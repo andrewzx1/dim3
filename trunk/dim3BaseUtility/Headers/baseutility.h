@@ -296,6 +296,8 @@ extern bool xml_get_attribute_2_coord_float_default(int n,char *name,float *x,fl
 extern bool xml_get_attribute_3_coord_int(int n,char *name,int *x,int *y,int *z);
 extern bool xml_get_attribute_3_coord_float(int n,char *name,float *x,float *y,float *z);
 extern bool xml_get_attribute_4_coord_float(int n,char *name,float *r,float *g,float *b,float *a);
+extern int xml_get_attribute_uv_x_array(int n,char *name,d3uv *uvs,int count);
+extern int xml_get_attribute_uv_y_array(int n,char *name,d3uv *uvs,int count);
 extern bool xml_get_attribute_color(int n,char *name,d3col *col);
 
 extern bool xml_add_tagstart(char *name);
@@ -315,6 +317,8 @@ extern void xml_add_attribute_2_coord_float(char *name,float x,float y);
 extern void xml_add_attribute_3_coord_int(char *name,int x,int y,int z);
 extern void xml_add_attribute_3_coord_float(char *name,float x,float y,float z);
 extern void xml_add_attribute_4_coord_float(char *name,float r,float g,float b,float a);
+extern void xml_add_attribute_uv_x_array(char *name,d3uv *uvs,int count);
+extern void xml_add_attribute_uv_y_array(char *name,d3uv *uvs,int count);
 extern void xml_add_attribute_color(char *name,d3col *col);
 
 extern void xml_key_read_int(int setup_tag,char *name,int *value);
@@ -401,7 +405,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						float					x,y;
+						d3uv					uv;
 						bool					on,lock_offset;
 					} texture_scale_type;
 					

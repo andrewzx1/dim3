@@ -83,11 +83,11 @@ bool view_map_vbo_initialize_mesh(map_mesh_type *mesh)
 			*pf++=(float)pnt->y;
 			*pf++=(float)pnt->z;
 			
-			*pf++=poly->main_uv.x[k]+poly->draw.x_shift_offset;
-			*pf++=poly->main_uv.y[k]+poly->draw.y_shift_offset;
+			*pf++=poly->main_uv.uvs[k].x+poly->draw.shift_offset.x;
+			*pf++=poly->main_uv.uvs[k].y+poly->draw.shift_offset.y;
 			
-			*pf++=poly->lmap_uv.x[k];
-			*pf++=poly->lmap_uv.y[k];
+			*pf++=poly->lmap_uv.uvs[k].x;
+			*pf++=poly->lmap_uv.uvs[k].y;
 
 			if (shader_on) {
 				*pf++=poly->tangent_space.tangent.x;
@@ -401,14 +401,14 @@ void view_map_vbo_rebuild_mesh(map_mesh_type *mesh)
 
 		for (n=0;n!=mesh->npoly;n++) {
 
-			x_shift_offset=poly->draw.x_shift_offset;
-			y_shift_offset=poly->draw.y_shift_offset;
+			x_shift_offset=poly->draw.shift_offset.x;
+			y_shift_offset=poly->draw.shift_offset.y;
 
 			for (k=0;k!=poly->ptsz;k++) {
 				pf=(float*)(vp+(3*sizeof(float)));
 				
-				*pf++=poly->main_uv.x[k]+x_shift_offset;
-				*pf=poly->main_uv.y[k]+y_shift_offset;
+				*pf++=poly->main_uv.uvs[k].x+x_shift_offset;
+				*pf=poly->main_uv.uvs[k].y+y_shift_offset;
 				
 				vp+=mesh->vbo.vertex_stride;
 			}

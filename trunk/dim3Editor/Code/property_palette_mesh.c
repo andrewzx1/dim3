@@ -94,7 +94,7 @@ char							mesh_property_hide_list[][name_str_len]={"Never","Single Player","Mul
 int								pal_mesh_index,pal_poly_index;
 d3pnt							pal_mesh_pnt,pal_mesh_size;
 d3vct							pal_mesh_binormal;
-d3fpnt							pal_mesh_uv_offset,pal_mesh_uv_size,
+d3uv							pal_mesh_uv_offset,pal_mesh_uv_size,
 								pal_mesh_prev_uv_offset,pal_mesh_prev_uv_size;
 
 /* =======================================================
@@ -105,7 +105,7 @@ d3fpnt							pal_mesh_uv_offset,pal_mesh_uv_size,
 
 void property_palette_fill_mesh(int mesh_idx,int poly_idx)
 {
-	char					str[32];
+	char					str[256];
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
 	editor_view_type		*view;
@@ -199,14 +199,14 @@ void property_palette_fill_mesh(int mesh_idx,int poly_idx)
 		list_palette_add_checkbox(&property_palette,kMeshPolyPropertyNeverCull,"Never Cull",&poly->flag.never_cull,FALSE);
 		list_palette_add_checkbox(&property_palette,kMeshPolyPropertyObscuring,"Obscuring",&poly->flag.obscuring,FALSE);
 
-		memmove(&pal_mesh_prev_uv_offset,&pal_mesh_uv_offset,sizeof(d3fpnt));		// need to remember previous as list redraw will reset before we get change
-		memmove(&pal_mesh_prev_uv_size,&pal_mesh_uv_size,sizeof(d3fpnt));
+		memmove(&pal_mesh_prev_uv_offset,&pal_mesh_uv_offset,sizeof(d3uv));		// need to remember previous as list redraw will reset before we get change
+		memmove(&pal_mesh_prev_uv_size,&pal_mesh_uv_size,sizeof(d3uv));
 		map_mesh_get_poly_uv_as_box(&map,mesh_idx,poly_idx,(view->uv_layer==uv_layer_light_map),&pal_mesh_uv_offset.x,&pal_mesh_uv_offset.y,&pal_mesh_uv_size.x,&pal_mesh_uv_size.y);
-		
+
 		list_palette_add_header(&property_palette,0,"Poly UVs");
-		list_palette_add_uv(&property_palette,kMeshPolyPropertyOff,"Offset",&pal_mesh_uv_offset.x,&pal_mesh_uv_offset.y,FALSE);
-		list_palette_add_uv(&property_palette,kMeshPolyPropertySize,"Size",&pal_mesh_uv_size.x,&pal_mesh_uv_size.y,FALSE);
-		list_palette_add_uv(&property_palette,kMeshPolyPropertyShift,"Shift",&poly->x_shift,&poly->y_shift,FALSE);
+		list_palette_add_uv(&property_palette,kMeshPolyPropertyOff,"Offset",&pal_mesh_uv_offset,FALSE);
+		list_palette_add_uv(&property_palette,kMeshPolyPropertySize,"Size",&pal_mesh_uv_size,FALSE);
+		list_palette_add_uv(&property_palette,kMeshPolyPropertyShift,"Shift",&poly->shift,FALSE);
 		
 		list_palette_add_header(&property_palette,0,"Poly Tangent Space");
 		list_palette_add_normal_vector(&property_palette,kMeshPolyPropertyTangent,"Tangent",&poly->tangent_space.tangent,FALSE);

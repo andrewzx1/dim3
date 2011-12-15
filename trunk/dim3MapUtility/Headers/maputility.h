@@ -233,12 +233,12 @@ typedef struct		{
 typedef struct		{
 						int									vertex_offset,decal_stencil_idx,
 															txt_frame_offset;
-						float								x_shift_offset,y_shift_offset;
 						bool								bump_ok,shift_on,transparent_on,glow_on;
+						d3uv								shift_offset;
 					} map_mesh_poly_draw_type;
 
 typedef struct		{
-						float								x[8],y[8];
+						d3uv								uvs[8];
 					} map_mesh_poly_uv_type;
 
 typedef struct		{
@@ -247,8 +247,8 @@ typedef struct		{
 
 typedef struct		{
 						int									txt_idx,lmap_txt_idx,ptsz,v[8];
-						float								x_shift,y_shift;
 						char								camera[name_str_len];
+						d3uv								shift;
 						tangent_space_type					tangent_space;
 						map_mesh_poly_uv_type				main_uv,lmap_uv;
 						map_mesh_poly_box_type				box;
@@ -323,8 +323,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						float								x_offset,x_size,
-															y_offset,y_size;
+						d3uv								offset,size;
 					} map_liquid_uv_type;
 
 typedef struct		{
@@ -360,8 +359,8 @@ typedef struct		{
 
 typedef struct		{
 						int									txt_idx,stamp_size;
-						float								x_shift,y_shift;
 						bool								on;
+						d3uv								shift;
 					} map_liquid_overlay_type;
 
 typedef struct		{
@@ -372,9 +371,9 @@ typedef struct		{
 typedef struct		{
 						int									y,depth,lft,rgt,top,bot,group_idx,
 															txt_idx,lmap_txt_idx;
-						float								speed_alter,tint_alpha,
-															x_shift,y_shift;
+						float								speed_alter,tint_alpha;
 						char								camera[name_str_len];
+						d3uv								shift;
 						d3col								col;
 						map_liquid_uv_type					main_uv,lmap_uv;
 						map_liquid_harm_type				harm;
@@ -631,8 +630,7 @@ typedef struct		{
 
 typedef struct		{
 						int									fill;
-						float								x_fact,y_fact,
-															x_scroll_fact,y_scroll_fact;
+						d3uv								size,scroll_factor;
 					} map_background_layer_type;					
 					
 typedef struct		{
@@ -643,16 +641,17 @@ typedef struct		{
 typedef struct		{
 						int									type,radius,dome_y,
 															fill,bottom_fill,north_fill,south_fill,east_fill,west_fill;
-						float								txt_fact,txt_x_shift,txt_y_shift;
+						float								txt_fact;
 						bool								on,dome_mirror;
+						d3uv								txt_shift;
 					} map_sky_type;
 					
 typedef struct		{
 						int									count,inner_radius,outer_radius,
 															high,drop,texture_idx;
-						float								speed,txt_x_fact,txt_y_fact,
-															alpha;
+						float								speed,alpha;
 						bool								on,use_solid_color;
+						d3uv								txt_fact;
 						d3col								col;
 					} map_fog_type;
 
@@ -724,8 +723,8 @@ typedef struct		{
 					
 typedef struct		{
 						int									view_near_dist,view_far_dist;
-						float								txt_scale_x,txt_scale_y;
 						bool								link_always_start;
+						d3uv								txt_scale;
 					} map_editor_setup_type;
 
 //

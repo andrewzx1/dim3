@@ -186,11 +186,11 @@ bool liquid_render_liquid_create_vertex(map_liquid_type *liq,float uv_shift,bool
 		// liquid texture uvs
 		
 	if (is_overlay) {
-		gx_add=f_tick*liq->overlay.x_shift;
+		gx_add=f_tick*liq->overlay.shift.x;
 		k=(int)gx_add;
 		gx_add=gx_add-(float)k;
 		
-		gy_add=f_tick*liq->overlay.y_shift;
+		gy_add=f_tick*liq->overlay.shift.y;
 		k=(int)gy_add;
 		gy_add=gy_add-(float)k;
 
@@ -217,19 +217,19 @@ bool liquid_render_liquid_create_vertex(map_liquid_type *liq,float uv_shift,bool
 		gy2+=gy_add;
 	}
 	else {
-		gx_add=f_tick*liq->x_shift;
+		gx_add=f_tick*liq->shift.x;
 		k=(int)gx_add;
 		gx_add=gx_add-(float)k;
 		
-		gy_add=f_tick*liq->y_shift;
+		gy_add=f_tick*liq->shift.y;
 		k=(int)gy_add;
 		gy_add=gy_add-(float)k;
 
-		gx=liq->main_uv.x_offset+gx_add;
-		gy=liq->main_uv.y_offset+gy_add;
+		gx=liq->main_uv.offset.x+gx_add;
+		gy=liq->main_uv.offset.y+gy_add;
 
-		gx2=gx+liq->main_uv.x_size;
-		gy2=gy+liq->main_uv.y_size;
+		gx2=gx+liq->main_uv.size.x;
+		gy2=gy+liq->main_uv.size.y;
 	}
 	
 		// uv factors
@@ -251,11 +251,11 @@ bool liquid_render_liquid_create_vertex(map_liquid_type *liq,float uv_shift,bool
 	top=liq->top;
 	bot=liq->bot;
 
-	lmap_gx=liq->lmap_uv.x_offset;
-	lmap_gx2=liq->lmap_uv.x_offset+liq->lmap_uv.x_size;
+	lmap_gx=liq->lmap_uv.offset.x;
+	lmap_gx2=liq->lmap_uv.offset.x+liq->lmap_uv.size.x;
 
-	lmap_gy=liq->lmap_uv.y_offset;
-	lmap_gy2=liq->lmap_uv.y_offset+liq->lmap_uv.y_size;
+	lmap_gy=liq->lmap_uv.offset.y;
+	lmap_gy2=liq->lmap_uv.offset.y+liq->lmap_uv.size.y;
 
 	div_count=liquid_wave_get_divisions(liq);
 	

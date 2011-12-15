@@ -566,8 +566,8 @@ void piece_resize_texture(void)
 			if (poly->txt_idx!=txt_idx) continue;
 
 			for (t=0;t!=poly->ptsz;t++) {
-				poly->main_uv.x[t]*=fct_u;
-				poly->main_uv.y[t]*=fct_v;
+				poly->main_uv.uvs[t].x*=fct_u;
+				poly->main_uv.uvs[t].y*=fct_v;
 			}
 		}
 	}

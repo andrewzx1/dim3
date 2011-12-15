@@ -89,13 +89,14 @@ and can be sold or given away.
 
 typedef union		{
 						int									*int_ptr;
-						float								*float_ptr,*u_ptr,*v_ptr;
+						float								*float_ptr;
 						bool								*bool_ptr;
 						char								*str_ptr;
 						char								str[list_max_value_sz];		// supergumba -- remove later
 						d3pnt								*pnt_ptr;
 						d3ang								*ang_ptr;
 						d3vct								*vct_ptr;
+						d3uv								*uv_ptr;
 						d3col								*col_ptr;
 					} list_palette_item_value_type;
 
@@ -210,7 +211,7 @@ extern void list_palette_add_point(list_palette_type *list,int id,char *name,d3p
 extern void list_palette_add_angle(list_palette_type *list,int id,char *name,d3ang *ang_ptr,bool disabled);
 extern void list_palette_add_vector(list_palette_type *list,int id,char *name,d3vct *vct_ptr,bool disabled);
 extern void list_palette_add_normal_vector(list_palette_type *list,int id,char *name,d3vct *vct_ptr,bool disabled);
-extern void list_palette_add_uv(list_palette_type *list,int id,char *name,float *u_ptr,float *v_ptr,bool disabled);
+extern void list_palette_add_uv(list_palette_type *list,int id,char *name,d3uv *uv_ptr,bool disabled);
 extern void list_palette_add_picker_list_int(list_palette_type *list,int id,char *name,char *list_ptr,int list_count,int list_item_sz,int list_name_offset,bool include_none,int *int_ptr,bool disabled);
 extern void list_palette_add_picker_list_string(list_palette_type *list,int id,char *name,char *list_ptr,int list_count,int list_item_sz,int list_name_offset,bool include_none,char *str_ptr,bool disabled);
 extern void list_palette_add_picker_file(list_palette_type *list,int id,int button_type,int button_id,char *name,char *search_path,char *extension,char *required_file_name,char *str_ptr,bool disabled);

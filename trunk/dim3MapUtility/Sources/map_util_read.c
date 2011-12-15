@@ -111,8 +111,8 @@ void decode_map_settings_xml(map_type *map,int map_head)
 	
     tag=xml_findfirstchild("Editor",map_head);
     if (tag!=-1) {
-		map->editor_setup.txt_scale_x=xml_get_attribute_float_default(tag,"txt_uv_scale_x",0.25f);
-		map->editor_setup.txt_scale_y=xml_get_attribute_float_default(tag,"txt_uv_scale_y",0.25f);
+		map->editor_setup.txt_scale.x=xml_get_attribute_float_default(tag,"txt_uv_scale_x",0.25f);
+		map->editor_setup.txt_scale.y=xml_get_attribute_float_default(tag,"txt_uv_scale_y",0.25f);
 		map->editor_setup.view_near_dist=xml_get_attribute_int_default(tag,"view_near_dist",400);
 		map->editor_setup.view_far_dist=xml_get_attribute_int_default(tag,"view_far_dist",300000);
 		map->editor_setup.link_always_start=xml_get_attribute_boolean(tag,"link_always_start");
@@ -153,14 +153,14 @@ void decode_map_settings_xml(map_type *map,int map_head)
     if (main_background_tag!=-1) {
 		map->background.on=xml_get_attribute_boolean(main_background_tag,"on");
 		map->background.front.fill=xml_get_attribute_int(main_background_tag,"front_fill");
-		xml_get_attribute_2_coord_float(main_background_tag,"front_stamp",&map->background.front.x_fact,&map->background.front.y_fact);
-		xml_get_attribute_2_coord_float(main_background_tag,"front_scroll",&map->background.front.x_scroll_fact,&map->background.front.y_scroll_fact);
+		xml_get_attribute_2_coord_float(main_background_tag,"front_stamp",&map->background.front.size.x,&map->background.front.size.y);
+		xml_get_attribute_2_coord_float(main_background_tag,"front_scroll",&map->background.front.scroll_factor.x,&map->background.front.scroll_factor.y);
 		map->background.middle.fill=xml_get_attribute_int(main_background_tag,"middle_fill");
-		xml_get_attribute_2_coord_float(main_background_tag,"middle_stamp",&map->background.middle.x_fact,&map->background.middle.y_fact);
-		xml_get_attribute_2_coord_float(main_background_tag,"middle_scroll",&map->background.middle.x_scroll_fact,&map->background.middle.y_scroll_fact);
+		xml_get_attribute_2_coord_float(main_background_tag,"middle_stamp",&map->background.middle.size.x,&map->background.middle.size.y);
+		xml_get_attribute_2_coord_float(main_background_tag,"middle_scroll",&map->background.middle.scroll_factor.x,&map->background.middle.scroll_factor.y);
 		map->background.back.fill=xml_get_attribute_int(main_background_tag,"back_fill");
-		xml_get_attribute_2_coord_float(main_background_tag,"back_stamp",&map->background.back.x_fact,&map->background.back.y_fact);
-		xml_get_attribute_2_coord_float(main_background_tag,"back_scroll",&map->background.back.x_scroll_fact,&map->background.back.y_scroll_fact);
+		xml_get_attribute_2_coord_float(main_background_tag,"back_stamp",&map->background.back.size.x,&map->background.back.size.y);
+		xml_get_attribute_2_coord_float(main_background_tag,"back_scroll",&map->background.back.scroll_factor.x,&map->background.back.scroll_factor.y);
     }
   
 	main_sky_tag=xml_findfirstchild("Sky",map_head);
@@ -182,7 +182,7 @@ void decode_map_settings_xml(map_type *map,int map_head)
 			map->sky.east_fill=xml_get_attribute_int_default(tag,"east_index",-1);
 			map->sky.west_fill=xml_get_attribute_int_default(tag,"west_index",-1);
 			map->sky.txt_fact=xml_get_attribute_float_default(tag,"factor",1);
-			xml_get_attribute_2_coord_float(tag,"shift",&map->sky.txt_x_shift,&map->sky.txt_y_shift);
+			xml_get_attribute_2_coord_float(tag,"shift",&map->sky.txt_shift.x,&map->sky.txt_shift.y);
 		}
     }
 
@@ -196,8 +196,8 @@ void decode_map_settings_xml(map_type *map,int map_head)
 		map->fog.drop=xml_get_attribute_int(main_fog_tag,"drop");
 		map->fog.texture_idx=xml_get_attribute_int_default(main_fog_tag,"texture_index",-1);
 		map->fog.speed=xml_get_attribute_float(main_fog_tag,"speed");
-		map->fog.txt_x_fact=xml_get_attribute_float(main_fog_tag,"txt_x_fact");
-		map->fog.txt_y_fact=xml_get_attribute_float(main_fog_tag,"txt_y_fact");
+		map->fog.txt_fact.x=xml_get_attribute_float(main_fog_tag,"txt_x_fact");
+		map->fog.txt_fact.y=xml_get_attribute_float(main_fog_tag,"txt_y_fact");
 		xml_get_attribute_color(main_fog_tag,"rgb",&map->fog.col);
 		map->fog.alpha=xml_get_attribute_float(main_fog_tag,"alpha");
 		map->fog.use_solid_color=xml_get_attribute_boolean(main_fog_tag,"use_solid_color");
@@ -658,13 +658,13 @@ bool read_single_mesh_v3(map_type *map,int mesh_idx,int mesh_tag)
 			xml_get_attribute_3_coord_float(poly_tag,"t3",&poly->tangent_space.tangent.x,&poly->tangent_space.tangent.y,&poly->tangent_space.tangent.z);
 			xml_get_attribute_3_coord_float(poly_tag,"n3",&poly->tangent_space.normal.x,&poly->tangent_space.normal.y,&poly->tangent_space.normal.z);
 
-			xml_get_attribute_float_array(poly_tag,"x",poly->main_uv.x,8);
-			xml_get_attribute_float_array(poly_tag,"y",poly->main_uv.y,8);
-			xml_get_attribute_2_coord_float(poly_tag,"shift",&poly->x_shift,&poly->y_shift);
+			xml_get_attribute_uv_x_array(poly_tag,"x",poly->main_uv.uvs,8);
+			xml_get_attribute_uv_y_array(poly_tag,"y",poly->main_uv.uvs,8);
+			xml_get_attribute_2_coord_float(poly_tag,"shift",&poly->shift.x,&poly->shift.y);
 
 			if (poly->lmap_txt_idx!=-1) {
-				xml_get_attribute_float_array(poly_tag,"x_1",poly->lmap_uv.x,8);
-				xml_get_attribute_float_array(poly_tag,"y_1",poly->lmap_uv.y,8);
+				xml_get_attribute_uv_x_array(poly_tag,"x_1",poly->lmap_uv.uvs,8);
+				xml_get_attribute_uv_y_array(poly_tag,"y_1",poly->lmap_uv.uvs,8);
 			}
 
 			poly->flag.climbable=xml_get_attribute_boolean(poly_tag,"climbable");
@@ -706,16 +706,16 @@ void read_single_liquid_v3(map_type *map,int liquid_idx,int liquid_tag)
 		xml_get_attribute_3_coord_int(tag,"v2",&liq->rgt,&liq->y,&liq->bot);
 		liq->depth=xml_get_attribute_int(tag,"depth");
 
-		xml_get_attribute_2_coord_float(tag,"uv_off",&liq->main_uv.x_offset,&liq->main_uv.y_offset);
-		xml_get_attribute_2_coord_float(tag,"uv_size",&liq->main_uv.x_size,&liq->main_uv.y_size);
+		xml_get_attribute_2_coord_float(tag,"uv_off",&liq->main_uv.offset.x,&liq->main_uv.offset.y);
+		xml_get_attribute_2_coord_float(tag,"uv_size",&liq->main_uv.size.x,&liq->main_uv.size.y);
 		if (liq->lmap_txt_idx!=-1) {
-			xml_get_attribute_2_coord_float(tag,"uv_1_off",&liq->lmap_uv.x_offset,&liq->lmap_uv.y_offset);
-			xml_get_attribute_2_coord_float(tag,"uv_1_size",&liq->lmap_uv.x_size,&liq->lmap_uv.y_size);
+			xml_get_attribute_2_coord_float(tag,"uv_1_off",&liq->lmap_uv.offset.x,&liq->lmap_uv.offset.y);
+			xml_get_attribute_2_coord_float(tag,"uv_1_size",&liq->lmap_uv.size.x,&liq->lmap_uv.size.y);
 		}
 
 		xml_get_attribute_color(tag,"rgb",&liq->col);
 		liq->tint_alpha=xml_get_attribute_float(tag,"tint_alpha");
-		xml_get_attribute_2_coord_float(tag,"shift",&liq->x_shift,&liq->y_shift);
+		xml_get_attribute_2_coord_float(tag,"shift",&liq->shift.x,&liq->shift.y);
 		
 		xml_get_attribute_text(tag,"camera",liq->camera,name_str_len);
 		xml_get_attribute_text(tag,"ambient_sound_name",liq->ambient.sound_name,name_str_len);
@@ -790,13 +790,13 @@ void read_single_liquid_v3(map_type *map,int liquid_idx,int liquid_tag)
 		liq->overlay.on=xml_get_attribute_boolean(tag,"on");
 		liq->overlay.txt_idx=xml_get_attribute_int(tag,"txt_idx");
 		liq->overlay.stamp_size=xml_get_attribute_int(tag,"stamp_size");
-		xml_get_attribute_2_coord_float(tag,"shift",&liq->overlay.x_shift,&liq->overlay.y_shift);
+		xml_get_attribute_2_coord_float(tag,"shift",&liq->overlay.shift.x,&liq->overlay.shift.y);
 	}
 	else {
 		liq->overlay.on=FALSE;
 		liq->overlay.txt_idx=-1;
 		liq->overlay.stamp_size=10000;
-		liq->overlay.x_shift=liq->overlay.y_shift=0.0f;
+		liq->overlay.shift.x=liq->overlay.shift.y=0.0f;
 	}
 }
 

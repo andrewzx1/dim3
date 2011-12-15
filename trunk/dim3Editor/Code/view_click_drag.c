@@ -802,8 +802,8 @@ bool view_click_drag_texture_uv(editor_view_type *view_setup,d3pnt *pt,bool enti
 			if ((entire_mesh) || (n==poly_idx)) {
 		
 				for (k=0;k!=poly->ptsz;k++) {
-					poly->main_uv.x[k]+=gx_add;
-					poly->main_uv.y[k]+=gy_add;
+					poly->main_uv.uvs[k].x+=gx_add;
+					poly->main_uv.uvs[k].y+=gy_add;
 				}
 				
 			}

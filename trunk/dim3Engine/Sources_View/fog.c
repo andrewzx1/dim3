@@ -123,7 +123,7 @@ void fog_draw_textured(void)
 	f_ty=(float)(view.render->camera.pnt.y-map.fog.high);
 	f_by=(float)(view.render->camera.pnt.y+map.fog.drop);
 
-	gx_add=map.fog.txt_x_fact/16.0f;
+	gx_add=map.fog.txt_fact.x/16.0f;
 	gx_shift=1.0f/((float)count);
 
 		// create the fog triangle vertexes
@@ -166,7 +166,7 @@ void fog_draw_textured(void)
 			*vertex_ptr++=fz_1;
 
 			*uv_ptr++=gx;
-			*uv_ptr++=map.fog.txt_y_fact;
+			*uv_ptr++=map.fog.txt_fact.y;
 			
 				// triangle 2
 			
@@ -182,14 +182,14 @@ void fog_draw_textured(void)
 			*vertex_ptr++=fz_2;
 
 			*uv_ptr++=gx+gx_add;
-			*uv_ptr++=map.fog.txt_y_fact;
+			*uv_ptr++=map.fog.txt_fact.y;
 			
 			*vertex_ptr++=fx_1;
 			*vertex_ptr++=f_by;
 			*vertex_ptr++=fz_1;
 
 			*uv_ptr++=gx;
-			*uv_ptr++=map.fog.txt_y_fact;
+			*uv_ptr++=map.fog.txt_fact.y;
 
 			r_ang=r_ang_2;
 			gx+=gx_add;

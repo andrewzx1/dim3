@@ -178,8 +178,8 @@ void group_texture_shift(int group_idx,float x_shift,float y_shift)
 		poly=mesh->polys;
 
 		for (k=0;k!=mesh->npoly;k++) {
-			poly->x_shift=x_shift;
-			poly->y_shift=y_shift;
+			poly->shift.x=x_shift;
+			poly->shift.y=y_shift;
 			poly++;
 		}
 

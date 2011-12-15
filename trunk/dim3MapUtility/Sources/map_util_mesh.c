@@ -423,8 +423,8 @@ int map_mesh_add_poly(map_type *map,int mesh_idx,int ptsz,int *x,int *y,int *z,f
 		
 			// add in UV coords
 			
-		poly->main_uv.x[t]=gx[t];
-		poly->main_uv.y[t]=gy[t];
+		poly->main_uv.uvs[t].x=gx[t];
+		poly->main_uv.uvs[t].y=gy[t];
 	}
 	
 		// finish up
@@ -436,8 +436,8 @@ int map_mesh_add_poly(map_type *map,int mesh_idx,int ptsz,int *x,int *y,int *z,f
 	poly->tangent_space.tangent.x=poly->tangent_space.tangent.y=poly->tangent_space.tangent.z=0.0f;
 	poly->tangent_space.normal.x=poly->tangent_space.normal.y=poly->tangent_space.normal.z=0.0f;
 	
-	poly->x_shift=0.0f;
-	poly->y_shift=0.0f;
+	poly->shift.x=0.0f;
+	poly->shift.y=0.0f;
 
 	poly->flag.climbable=FALSE;
 	poly->flag.never_cull=FALSE;
@@ -735,8 +735,8 @@ void map_mesh_calculate_uv_center(map_type *map,int mesh_idx,float *gx,float *gy
 	for (n=0;n!=mesh->npoly;n++) {
 
 		for (k=0;k!=poly->ptsz;k++) {
-			kx+=poly->main_uv.x[k];
-			ky+=poly->main_uv.y[k];
+			kx+=poly->main_uv.uvs[k].x;
+			ky+=poly->main_uv.uvs[k].y;
 		}
 
 		cnt+=poly->ptsz;

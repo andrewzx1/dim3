@@ -1025,12 +1025,12 @@ bool light_map_bitmap_transparency_check(d3pnt *spt,d3vct *vct,map_mesh_type *me
 		f2=sqrtf((fx*fx)+(fz*fz));
 		
 		fx=f2/f1;
-		fx=poly->main_uv.x[lft_idx]+(fx*(poly->main_uv.x[rgt_idx]-poly->main_uv.x[lft_idx]));
+		fx=poly->main_uv.uvs[lft_idx].x+(fx*(poly->main_uv.uvs[rgt_idx].x-poly->main_uv.uvs[lft_idx].x));
 		
 			// find the distances for hit point on y plane
 			
 		fy=(float)(hpt.y-poly->box.min.y)/(float)(poly->box.max.y-poly->box.min.y);
-		fy=poly->main_uv.y[top_idx]+(fy*(poly->main_uv.y[bot_idx]-poly->main_uv.y[top_idx]));
+		fy=poly->main_uv.uvs[top_idx].y+(fy*(poly->main_uv.uvs[bot_idx].y-poly->main_uv.uvs[top_idx].y));
 	}
 	
 		// hits on floor like polygons
@@ -1039,14 +1039,14 @@ bool light_map_bitmap_transparency_check(d3pnt *spt,d3vct *vct,map_mesh_type *me
 	
 			// find points for uv extents
 			
-		min_gx=max_gx=poly->main_uv.x[0];
-		min_gy=max_gy=poly->main_uv.y[0];
+		min_gx=max_gx=poly->main_uv.uvs[0].x;
+		min_gy=max_gy=poly->main_uv.uvs[0].y;
 		
 		for (n=1;n<poly->ptsz;n++) {
-			if (poly->main_uv.x[n]<min_gx) min_gx=poly->main_uv.x[n];
-			if (poly->main_uv.x[n]>max_gx) max_gx=poly->main_uv.x[n];
-			if (poly->main_uv.y[n]<min_gy) min_gy=poly->main_uv.y[n];
-			if (poly->main_uv.y[n]>max_gy) max_gy=poly->main_uv.y[n];
+			if (poly->main_uv.uvs[n].x<min_gx) min_gx=poly->main_uv.uvs[n].x;
+			if (poly->main_uv.uvs[n].x>max_gx) max_gx=poly->main_uv.uvs[n].x;
+			if (poly->main_uv.uvs[n].y<min_gy) min_gy=poly->main_uv.uvs[n].y;
+			if (poly->main_uv.uvs[n].y>max_gy) max_gy=poly->main_uv.uvs[n].y;
 		}
 		
 			// find the hit points in the box
@@ -1832,8 +1832,8 @@ void light_map_set_texture_uv_mesh_poly(light_map_poly_type *lm_poly)
 		gy=(float)(lm_poly->y_shift+(light_map_texture_block_size>>1))/f_pixel_size;
 		
 		for (n=0;n!=poly->ptsz;n++) {
-			poly->lmap_uv.x[n]=gx;
-			poly->lmap_uv.y[n]=gy;
+			poly->lmap_uv.uvs[n].x=gx;
+			poly->lmap_uv.uvs[n].y=gy;
 		}
 		
 		return;
@@ -1842,8 +1842,8 @@ void light_map_set_texture_uv_mesh_poly(light_map_poly_type *lm_poly)
 		// regular light mapping uvs
 		
 	for (n=0;n!=poly->ptsz;n++) {
-		poly->lmap_uv.x[n]=((float)(lm_poly->x[n]+lm_poly->x_shift))/f_pixel_size;
-		poly->lmap_uv.y[n]=((float)(lm_poly->y[n]+lm_poly->y_shift))/f_pixel_size;
+		poly->lmap_uv.uvs[n].x=((float)(lm_poly->x[n]+lm_poly->x_shift))/f_pixel_size;
+		poly->lmap_uv.uvs[n].y=((float)(lm_poly->y[n]+lm_poly->y_shift))/f_pixel_size;
 	}
 }
 
@@ -1866,18 +1866,18 @@ void light_map_set_texture_uv_liquid(light_map_poly_type *lm_poly)
 		// put the UV in the center of the block
 		
 	if (lm_poly->solid_color) {
-		liq->lmap_uv.x_offset=(float)(lm_poly->x_shift+(light_map_texture_block_size>>1))/f_pixel_size;
-		liq->lmap_uv.y_offset=(float)(lm_poly->y_shift+(light_map_texture_block_size>>1))/f_pixel_size;
-		liq->lmap_uv.x_size=liq->lmap_uv.y_size=0.0f;
+		liq->lmap_uv.offset.x=(float)(lm_poly->x_shift+(light_map_texture_block_size>>1))/f_pixel_size;
+		liq->lmap_uv.offset.y=(float)(lm_poly->y_shift+(light_map_texture_block_size>>1))/f_pixel_size;
+		liq->lmap_uv.size.x=liq->lmap_uv.size.y=0.0f;
 		return;
 	}
 	
 		// regular light mapping uvs
 		
-	liq->lmap_uv.x_offset=((float)(lm_poly->x[0]+lm_poly->x_shift))/f_pixel_size;
-	liq->lmap_uv.y_offset=((float)(lm_poly->y[0]+lm_poly->y_shift))/f_pixel_size;
-	liq->lmap_uv.x_size=((float)(lm_poly->x[1]-lm_poly->x[0]))/f_pixel_size;
-	liq->lmap_uv.y_size=((float)(lm_poly->y[3]-lm_poly->y[0]))/f_pixel_size;
+	liq->lmap_uv.offset.x=((float)(lm_poly->x[0]+lm_poly->x_shift))/f_pixel_size;
+	liq->lmap_uv.offset.y=((float)(lm_poly->y[0]+lm_poly->y_shift))/f_pixel_size;
+	liq->lmap_uv.size.x=((float)(lm_poly->x[1]-lm_poly->x[0]))/f_pixel_size;
+	liq->lmap_uv.size.y=((float)(lm_poly->y[3]-lm_poly->y[0]))/f_pixel_size;
 }
 
 void light_map_set_texture_uv(int lm_poly_idx)

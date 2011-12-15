@@ -220,14 +220,14 @@ void piece_add_obj_mesh_uv(void)
             if (c!=NULL) *c=0x0;
             
 			if (uvstr[0]==0x0) {
-				uv_ptr->x[npt]=uv_ptr->y[npt]=0.0f;
+				uv_ptr->uvs[npt].x=uv_ptr->uvs[npt].y=0.0f;
 			}
 			else {
 				uv_idx=atoi(uvstr)-1;
 				
 				uv=uvs+(uv_idx*2);
-                uv_ptr->x[npt]=*uv++;
-                uv_ptr->y[npt]=*uv;
+                uv_ptr->uvs[npt].x=*uv++;
+                uv_ptr->uvs[npt].y=*uv;
             }
 			
             npt++;
@@ -721,6 +721,7 @@ void piece_split_mesh(void)
 {
 	int					n,k,mesh_idx,x[8],y[8],z[8],
 						type,add_mesh_idx,add_poly_idx,poly_idx;
+	float				gx[8],gy[8];
 	bool				first_mesh;
 	d3pnt				*pt;
 	map_mesh_type		*mesh,*copy_mesh;
@@ -765,9 +766,11 @@ void piece_split_mesh(void)
 			x[k]=pt->x;
 			y[k]=pt->y;
 			z[k]=pt->z;
+			gx[k]=poly->main_uv.uvs[k].x;
+			gy[k]=poly->main_uv.uvs[k].y;
 		}
 		
-		poly_idx=map_mesh_add_poly(&map,mesh_idx,poly->ptsz,x,y,z,poly->main_uv.x,poly->main_uv.y,poly->txt_idx);
+		poly_idx=map_mesh_add_poly(&map,mesh_idx,poly->ptsz,x,y,z,gx,gy,poly->txt_idx);
 		
 			// dupe some polygon settings
 			// get original polygon against as memory could
@@ -779,8 +782,8 @@ void piece_split_mesh(void)
 		memmove(&copy_poly->tangent_space,&poly->tangent_space,sizeof(tangent_space_type));
 		memmove(&copy_poly->flag,&poly->flag,sizeof(map_mesh_poly_flag_type));
 		
-		copy_poly->x_shift=poly->x_shift;
-		copy_poly->y_shift=poly->y_shift;
+		copy_poly->shift.x=poly->shift.x;
+		copy_poly->shift.y=poly->shift.y;
 		strcpy(copy_poly->camera,poly->camera);
 		
 			// delete poly from mesh
