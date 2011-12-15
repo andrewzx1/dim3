@@ -418,6 +418,10 @@ void bitmap_texture_write_xml(texture_type *texture,int frame_count,bool write_s
 	xml_add_attribute_text("shader",texture->shader_name);
 	xml_add_attribute_text("material_name",texture->material_name);
 	
+	xml_add_tagend(FALSE);
+
+		// scale
+		
 	if (write_scale) {
 		xml_add_tagstart("Scale");
 		xml_add_attribute_float("x",texture->scale.x);
@@ -426,8 +430,6 @@ void bitmap_texture_write_xml(texture_type *texture,int frame_count,bool write_s
 		xml_add_attribute_boolean("lock_offset",texture->scale.lock_offset);
 		xml_add_tagend(TRUE);
 	}
-	
-	xml_add_tagend(FALSE);
 	
 		// images
 		
