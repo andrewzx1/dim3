@@ -181,8 +181,8 @@ void write_map_settings_xml(map_type *map)
 	xml_add_tagend(TRUE);
 
     xml_add_tagstart("Editor");
-	xml_add_attribute_float("txt_uv_scale_x",map->editor_setup.txt_scale_x);
-	xml_add_attribute_float("txt_uv_scale_y",map->editor_setup.txt_scale_y);
+	xml_add_attribute_float("txt_uv_scale_x",map->editor_setup.txt_scale.x);
+	xml_add_attribute_float("txt_uv_scale_y",map->editor_setup.txt_scale.y);
 	xml_add_attribute_int("view_near_dist",map->editor_setup.view_near_dist);
 	xml_add_attribute_int("view_far_dist",map->editor_setup.view_far_dist);
 	xml_add_attribute_boolean("link_always_start",map->editor_setup.link_always_start);
@@ -217,14 +217,14 @@ void write_map_settings_xml(map_type *map)
     xml_add_tagstart("Background");
 	xml_add_attribute_boolean("on",map->background.on);
     xml_add_attribute_int("front_fill",map->background.front.fill);
-    xml_add_attribute_2_coord_float("front_stamp",map->background.front.x_fact,map->background.front.y_fact);
-    xml_add_attribute_2_coord_float("front_scroll",map->background.front.x_scroll_fact,map->background.front.y_scroll_fact);
+    xml_add_attribute_2_coord_float("front_stamp",map->background.front.size.x,map->background.front.size.y);
+    xml_add_attribute_2_coord_float("front_scroll",map->background.front.scroll_factor.x,map->background.front.scroll_factor.y);
     xml_add_attribute_int("middle_fill",map->background.middle.fill);
-    xml_add_attribute_2_coord_float("middle_stamp",map->background.middle.x_fact,map->background.middle.y_fact);
-    xml_add_attribute_2_coord_float("middle_scroll",map->background.middle.x_scroll_fact,map->background.middle.y_scroll_fact);
+    xml_add_attribute_2_coord_float("middle_stamp",map->background.middle.size.x,map->background.middle.size.y);
+    xml_add_attribute_2_coord_float("middle_scroll",map->background.middle.scroll_factor.x,map->background.middle.scroll_factor.y);
     xml_add_attribute_int("back_fill",map->background.back.fill);
-    xml_add_attribute_2_coord_float("back_stamp",map->background.back.x_fact,map->background.back.y_fact);
-    xml_add_attribute_2_coord_float("back_scroll",map->background.back.x_scroll_fact,map->background.back.y_scroll_fact);
+    xml_add_attribute_2_coord_float("back_stamp",map->background.back.size.x,map->background.back.size.y);
+    xml_add_attribute_2_coord_float("back_scroll",map->background.back.scroll_factor.x,map->background.back.scroll_factor.y);
     xml_add_tagend(TRUE);
     
     xml_add_tagstart("Sky");
@@ -244,7 +244,7 @@ void write_map_settings_xml(map_type *map)
     xml_add_attribute_int("east_index",map->sky.east_fill);
     xml_add_attribute_int("west_index",map->sky.west_fill);
     xml_add_attribute_float("factor",map->sky.txt_fact);
-    xml_add_attribute_2_coord_float("shift",map->sky.txt_x_shift,map->sky.txt_y_shift);
+    xml_add_attribute_2_coord_float("shift",map->sky.txt_shift.x,map->sky.txt_shift.y);
     xml_add_tagend(TRUE);
     xml_add_tagclose("Sky");
 
@@ -257,8 +257,8 @@ void write_map_settings_xml(map_type *map)
 	xml_add_attribute_int("drop",map->fog.drop);
 	xml_add_attribute_int("texture_index",map->fog.texture_idx);
     xml_add_attribute_float("speed",map->fog.speed);
-    xml_add_attribute_float("txt_x_fact",map->fog.txt_x_fact);
-    xml_add_attribute_float("txt_y_fact",map->fog.txt_y_fact);
+    xml_add_attribute_float("txt_x_fact",map->fog.txt_fact.x);
+    xml_add_attribute_float("txt_y_fact",map->fog.txt_fact.y);
 	xml_add_attribute_color("rgb",&map->fog.col);
     xml_add_attribute_float("alpha",map->fog.alpha);
 	xml_add_attribute_boolean("use_solid_color",map->fog.use_solid_color);
@@ -656,12 +656,12 @@ void write_single_mesh(map_mesh_type *mesh)
 		xml_add_attribute_3_coord_float("t3",poly->tangent_space.tangent.x,poly->tangent_space.tangent.y,poly->tangent_space.tangent.z);
 		xml_add_attribute_3_coord_float("n3",poly->tangent_space.normal.x,poly->tangent_space.normal.y,poly->tangent_space.normal.z);
 
-		xml_add_attribute_float_array("x",poly->main_uv.x,poly->ptsz);
-		xml_add_attribute_float_array("y",poly->main_uv.y,poly->ptsz);
-		if ((poly->x_shift!=0) || (poly->y_shift!=0)) xml_add_attribute_2_coord_float("shift",poly->x_shift,poly->y_shift);
+		xml_add_attribute_uv_x_array("x",poly->main_uv.uvs,poly->ptsz);
+		xml_add_attribute_uv_y_array("y",poly->main_uv.uvs,poly->ptsz);
+		if ((poly->shift.x!=0.0f) || (poly->shift.y!=0.0f)) xml_add_attribute_2_coord_float("shift",poly->shift.x,poly->shift.y);
 		if (poly->lmap_txt_idx!=-1) {
-			xml_add_attribute_float_array("x_1",poly->lmap_uv.x,poly->ptsz);
-			xml_add_attribute_float_array("y_1",poly->lmap_uv.y,poly->ptsz);
+			xml_add_attribute_uv_x_array("x_1",poly->lmap_uv.uvs,poly->ptsz);
+			xml_add_attribute_uv_y_array("y_1",poly->lmap_uv.uvs,poly->ptsz);
 		}
 		
 		xml_add_attribute_boolean("climbable",poly->flag.climbable);
@@ -701,16 +701,16 @@ void write_single_liquid(map_liquid_type *liq)
 	xml_add_attribute_3_coord_int("v2",liq->rgt,liq->y,liq->bot);
 	xml_add_attribute_int("depth",liq->depth);
 
-	xml_add_attribute_2_coord_float("uv_off",liq->main_uv.x_offset,liq->main_uv.y_offset);
-	xml_add_attribute_2_coord_float("uv_size",liq->main_uv.x_size,liq->main_uv.y_size);
+	xml_add_attribute_2_coord_float("uv_off",liq->main_uv.offset.x,liq->main_uv.offset.y);
+	xml_add_attribute_2_coord_float("uv_size",liq->main_uv.size.x,liq->main_uv.size.y);
 	if (liq->lmap_txt_idx!=-1) {
-		xml_add_attribute_2_coord_float("uv_1_off",liq->lmap_uv.x_offset,liq->lmap_uv.y_offset);
-		xml_add_attribute_2_coord_float("uv_1_size",liq->lmap_uv.x_size,liq->lmap_uv.y_size);
+		xml_add_attribute_2_coord_float("uv_1_off",liq->lmap_uv.offset.x,liq->lmap_uv.offset.y);
+		xml_add_attribute_2_coord_float("uv_1_size",liq->lmap_uv.size.x,liq->lmap_uv.size.y);
 	}
 
 	xml_add_attribute_color("rgb",&liq->col);
 	xml_add_attribute_float("tint_alpha",liq->tint_alpha);
-	if ((liq->x_shift!=0) || (liq->y_shift!=0)) xml_add_attribute_2_coord_float("shift",liq->x_shift,liq->y_shift);
+	if ((liq->shift.x!=0.0f) || (liq->shift.y!=0.0f)) xml_add_attribute_2_coord_float("shift",liq->shift.x,liq->shift.y);
 
 	if (liq->camera[0]!=0x0) xml_add_attribute_text("camera",liq->camera);
 	if (liq->ambient.sound_name[0]!=0x0) xml_add_attribute_text("ambient_sound_name",liq->ambient.sound_name);
@@ -764,7 +764,7 @@ void write_single_liquid(map_liquid_type *liq)
 	xml_add_attribute_boolean("on",liq->overlay.on);
 	xml_add_attribute_int("txt_idx",liq->overlay.txt_idx);
 	xml_add_attribute_int("stamp_size",liq->overlay.stamp_size);
-	if ((liq->overlay.x_shift!=0) || (liq->overlay.y_shift!=0)) xml_add_attribute_2_coord_float("shift",liq->overlay.x_shift,liq->overlay.y_shift);
+	if ((liq->overlay.shift.x!=0.0f) || (liq->overlay.shift.y!=0.0f)) xml_add_attribute_2_coord_float("shift",liq->overlay.shift.x,liq->overlay.shift.y);
 	xml_add_tagend(TRUE);
 
 	xml_add_tagclose("Liquid");

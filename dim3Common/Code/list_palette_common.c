@@ -481,7 +481,7 @@ void list_palette_add_normal_vector(list_palette_type *list,int id,char *name,d3
 	item->value.vct_ptr=vct_ptr;
 }
 
-void list_palette_add_uv(list_palette_type *list,int id,char *name,float *u_ptr,float *v_ptr,bool disabled)
+void list_palette_add_uv(list_palette_type *list,int id,char *name,d3uv *uv_ptr,bool disabled)
 {
 	list_palette_item_type		*item;
 
@@ -495,8 +495,7 @@ void list_palette_add_uv(list_palette_type *list,int id,char *name,float *u_ptr,
 	item->disabled=disabled;
 
 	strcpy(item->name,name);
-	item->value.u_ptr=u_ptr;
-	item->value.v_ptr=v_ptr;
+	item->value.uv_ptr=uv_ptr;
 }
 
 void list_palette_add_picker_list_int(list_palette_type *list,int id,char *name,char *list_ptr,int list_count,int list_item_sz,int list_name_offset,bool include_none,int *int_ptr,bool disabled)
@@ -1521,7 +1520,7 @@ void list_palette_draw_item(list_palette_type *list,int idx)
 			// uv
 
 		case list_item_ctrl_uv:
-			sprintf(str,"%.2f,%.2f",*item->value.u_ptr,*item->value.v_ptr);
+			sprintf(str,"%.2f,%.2f",item->value.uv_ptr->x,item->value.uv_ptr->y);
 			text_draw(x,y,list_item_font_size,&col,item->name);
 			list_palette_draw_item_string(list,item,str);
 			list_palette_draw_item_button(list,idx);
@@ -1963,11 +1962,11 @@ bool list_palette_click(list_palette_type *list,d3pnt *pnt,bool double_click)
 
 		case list_item_ctrl_uv:
 			if (!double_click) return(FALSE);
-			uv_ptr.x=*item->value.u_ptr;
-			uv_ptr.y=*item->value.v_ptr;
+			uv_ptr.x=item->value.uv_ptr->x;
+			uv_ptr.y=item->value.uv_ptr->y;
 			dialog_property_chord_run(list_chord_value_uv,&uv_ptr);
-			*item->value.u_ptr=uv_ptr.x;
-			*item->value.v_ptr=uv_ptr.y;
+			item->value.uv_ptr->x=uv_ptr.x;
+			item->value.uv_ptr->y=uv_ptr.y;
 			main_wind_draw();
 			return(TRUE);
 

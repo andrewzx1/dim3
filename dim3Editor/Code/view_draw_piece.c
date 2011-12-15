@@ -754,52 +754,52 @@ void view_draw_liquids(editor_view_type *view,bool opaque)
 		*pv++=(float)lx;
 		*pv++=(float)y2;
 		*pv++=(float)tz;
-		*pt++=uv->x_offset;
-		*pt++=uv->y_offset;
+		*pt++=uv->offset.x;
+		*pt++=uv->offset.y;
 
 		*pv++=(float)rx;
 		*pv++=(float)y2;
 		*pv++=(float)tz;
-		*pt++=(uv->x_offset+uv->x_size);
-		*pt++=uv->y_offset;
+		*pt++=(uv->offset.x+uv->size.x);
+		*pt++=uv->offset.y;
 
 		*pv++=(float)rx;
 		*pv++=(float)y2;
 		*pv++=(float)bz;
-		*pt++=(uv->x_offset+uv->x_size);
-		*pt++=(uv->y_offset+uv->y_size);
+		*pt++=(uv->offset.x+uv->size.x);
+		*pt++=(uv->offset.y+uv->size.y);
 
 		*pv++=(float)lx;
 		*pv++=(float)y2;
 		*pv++=(float)bz;
-		*pt++=uv->x_offset;
-		*pt++=(uv->y_offset+uv->y_size);
+		*pt++=uv->offset.x;
+		*pt++=(uv->offset.y+uv->size.y);
 
 			// top
 			
 		*pv++=(float)lx;
 		*pv++=(float)y;
 		*pv++=(float)tz;
-		*pt++=uv->x_offset;
-		*pt++=uv->y_offset;
+		*pt++=uv->offset.x;
+		*pt++=uv->offset.y;
 
 		*pv++=(float)rx;
 		*pv++=(float)y;
 		*pv++=(float)tz;
-		*pt++=(uv->x_offset+uv->x_size);
-		*pt++=uv->y_offset;
+		*pt++=(uv->offset.x+uv->size.x);
+		*pt++=uv->offset.y;
 
 		*pv++=(float)rx;
 		*pv++=(float)y;
 		*pv++=(float)bz;
-		*pt++=(uv->x_offset+uv->x_size);
-		*pt++=(uv->y_offset+uv->y_size);
+		*pt++=(uv->offset.x+uv->size.x);
+		*pt++=(uv->offset.y+uv->size.y);
 
 		*pv++=(float)lx;
 		*pv++=(float)y;
 		*pv++=(float)bz;
-		*pt++=uv->x_offset;
-		*pt++=(uv->y_offset+uv->y_size);
+		*pt++=uv->offset.x;
+		*pt++=(uv->offset.y+uv->size.y);
 
 		glEnable(GL_TEXTURE_2D);
 		glColor4f(1.0f,1.0f,1.0f,1.0f);

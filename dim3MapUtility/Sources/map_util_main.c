@@ -100,8 +100,8 @@ bool map_new(map_type *map,char *name)
 	
 		// editor setup
 
-	map->editor_setup.txt_scale_x=0.25f;
-	map->editor_setup.txt_scale_y=0.25f;
+	map->editor_setup.txt_scale.x=0.25f;
+	map->editor_setup.txt_scale.y=0.25f;
 	map->editor_setup.view_near_dist=400;
 	map->editor_setup.view_far_dist=300000;
 	map->editor_setup.link_always_start=TRUE;
@@ -178,20 +178,20 @@ bool map_new(map_type *map,char *name)
 		
 	map->background.on=FALSE;
 	map->background.front.fill=-1;
-	map->background.front.x_fact=1.0f;
-	map->background.front.y_fact=1.0f;
-	map->background.front.x_scroll_fact=0.0f;
-	map->background.front.y_scroll_fact=0.0f;
+	map->background.front.size.x=1.0f;
+	map->background.front.size.y=1.0f;
+	map->background.front.scroll_factor.x=0.0f;
+	map->background.front.scroll_factor.y=0.0f;
 	map->background.middle.fill=-1;
-	map->background.middle.x_fact=1.0f;
-	map->background.middle.y_fact=1.0f;
-	map->background.middle.x_scroll_fact=0.0f;
-	map->background.middle.y_scroll_fact=0.0f;
+	map->background.middle.size.x=1.0f;
+	map->background.middle.size.y=1.0f;
+	map->background.middle.scroll_factor.x=0.0f;
+	map->background.middle.scroll_factor.y=0.0f;
 	map->background.back.fill=-1;
-	map->background.back.x_fact=1.0f;
-	map->background.back.y_fact=1.0f;
-	map->background.back.x_scroll_fact=0.0f;
-	map->background.back.y_scroll_fact=0.0f;
+	map->background.back.size.x=1.0f;
+	map->background.back.size.y=1.0f;
+	map->background.back.scroll_factor.x=0.0f;
+	map->background.back.scroll_factor.y=0.0f;
 	
 		// sky
 		
@@ -206,9 +206,9 @@ bool map_new(map_type *map,char *name)
     map->sky.radius=43000;
 	map->sky.dome_y=0;
 	map->sky.dome_mirror=FALSE;
-	map->sky.txt_fact=1;
-	map->sky.txt_x_shift=0;
-	map->sky.txt_y_shift=0;
+	map->sky.txt_fact=1.0f;
+	map->sky.txt_shift.x=0.0f;
+	map->sky.txt_shift.y=0.0f;
 	
 		// fog
 		
@@ -220,8 +220,8 @@ bool map_new(map_type *map,char *name)
 	map->fog.drop=7500;
 	map->fog.texture_idx=0;
 	map->fog.speed=0.001f;
-	map->fog.txt_x_fact=8.0f;
-	map->fog.txt_y_fact=1.0f;
+	map->fog.txt_fact.x=8.0f;
+	map->fog.txt_fact.y=1.0f;
 	map->fog.col.r=0.5;
 	map->fog.col.g=0.5;
 	map->fog.col.b=0.5;

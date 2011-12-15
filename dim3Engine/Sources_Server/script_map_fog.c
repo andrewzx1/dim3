@@ -145,12 +145,12 @@ JSValueRef js_map_fog_get_speed(JSContextRef cx,JSObjectRef j_obj,JSStringRef na
 
 JSValueRef js_map_fog_get_textureXFact(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_float_to_value(cx,map.fog.txt_x_fact));
+	return(script_float_to_value(cx,map.fog.txt_fact.x));
 }
 
 JSValueRef js_map_fog_get_textureYFact(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_float_to_value(cx,map.fog.txt_y_fact));
+	return(script_float_to_value(cx,map.fog.txt_fact.y));
 }
 
 JSValueRef js_map_fog_get_alpha(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
@@ -227,14 +227,14 @@ bool js_map_fog_set_speed(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSV
 
 bool js_map_fog_set_textureXFact(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	map.fog.txt_x_fact=script_value_to_float(cx,vp);
+	map.fog.txt_fact.x=script_value_to_float(cx,vp);
 	
 	return(TRUE);
 }
 
 bool js_map_fog_set_textureYFact(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	map.fog.txt_y_fact=script_value_to_float(cx,vp);
+	map.fog.txt_fact.y=script_value_to_float(cx,vp);
 	
 	return(TRUE);
 }

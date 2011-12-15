@@ -145,6 +145,7 @@ JSValueRef js_event_start_timer_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 	char			err_str[256];
 
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+	if (!script_check_fail_in_construct(cx,j_obj,exception)) return(script_null_to_value(cx));
 
 	script_idx=(int)JSObjectGetPrivate(j_obj);
 
@@ -161,6 +162,7 @@ JSValueRef js_event_clear_timer_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 	int				script_idx;
 
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
+	if (!script_check_fail_in_construct(cx,j_obj,exception)) return(script_null_to_value(cx));
 
 	script_idx=(int)JSObjectGetPrivate(j_obj);
 	
@@ -180,6 +182,7 @@ JSValueRef js_event_start_wait_func(JSContextRef cx,JSObjectRef func,JSObjectRef
 	char			err_str[256];
 
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+	if (!script_check_fail_in_construct(cx,j_obj,exception)) return(script_null_to_value(cx));
 	
 	script_idx=(int)JSObjectGetPrivate(j_obj);
 	
@@ -197,6 +200,7 @@ JSValueRef js_event_start_wait_random_func(JSContextRef cx,JSObjectRef func,JSOb
 	char			err_str[256];
 	
 	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
+	if (!script_check_fail_in_construct(cx,j_obj,exception)) return(script_null_to_value(cx));
 	
 	script_idx=(int)JSObjectGetPrivate(j_obj);
 	
@@ -217,6 +221,7 @@ JSValueRef js_event_clear_wait_func(JSContextRef cx,JSObjectRef func,JSObjectRef
 	int				script_idx;
 
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
+	if (!script_check_fail_in_construct(cx,j_obj,exception)) return(script_null_to_value(cx));
 	
 	script_idx=(int)JSObjectGetPrivate(j_obj);
 	
@@ -236,6 +241,7 @@ JSValueRef js_event_chain_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_ob
 	char			chain_func_name[64],err_str[256];
 	
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+	if (!script_check_fail_in_construct(cx,j_obj,exception)) return(script_null_to_value(cx));
 	
 	script_idx=(int)JSObjectGetPrivate(j_obj);
 	script_value_to_string(cx,argv[1],chain_func_name,64);
@@ -253,6 +259,7 @@ JSValueRef js_event_clear_chain_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 	int				script_idx;
 
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
+	if (!script_check_fail_in_construct(cx,j_obj,exception)) return(script_null_to_value(cx));
 
 	script_idx=(int)JSObjectGetPrivate(j_obj);
 	
@@ -275,6 +282,7 @@ JSValueRef js_event_send_message_func(JSContextRef cx,JSObjectRef func,JSObjectR
 	JSValueRef		vp;
 
 	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
+	if (!script_check_fail_in_construct(cx,j_obj,exception)) return(script_null_to_value(cx));
 
 	script_idx=(int)JSObjectGetPrivate(j_obj);
 	script_from=js.script_list.scripts[script_idx];
@@ -332,6 +340,7 @@ JSValueRef js_event_send_message_to_player_func(JSContextRef cx,JSObjectRef func
 	script_type		*script_from,*script_to;
 
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	if (!script_check_fail_in_construct(cx,j_obj,exception)) return(script_null_to_value(cx));
 
 	script_idx=(int)JSObjectGetPrivate(j_obj);
 	script_from=js.script_list.scripts[script_idx];
@@ -352,6 +361,7 @@ JSValueRef js_event_send_message_to_object_by_id_func(JSContextRef cx,JSObjectRe
 	script_type		*script_from,*script_to;
 
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+	if (!script_check_fail_in_construct(cx,j_obj,exception)) return(script_null_to_value(cx));
 	
 	obj=script_find_obj_from_uid_arg(cx,argv[0],exception);
 	if (obj==NULL) return(script_bool_to_value(cx,FALSE));
@@ -374,6 +384,7 @@ JSValueRef js_event_send_message_to_object_by_name_func(JSContextRef cx,JSObject
 	script_type		*script_from,*script_to;
 
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+	if (!script_check_fail_in_construct(cx,j_obj,exception)) return(script_null_to_value(cx));
 	
 	script_value_to_string(cx,argv[0],name,name_str_len);
 	obj=object_find_name(name);
@@ -395,6 +406,7 @@ JSValueRef js_event_send_message_to_course_func(JSContextRef cx,JSObjectRef func
 	script_type		*script_from,*script_to;
 
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	if (!script_check_fail_in_construct(cx,j_obj,exception)) return(script_null_to_value(cx));
 
 	if (js.course_script_idx==-1) return(script_null_to_value(cx));
 
@@ -415,6 +427,7 @@ JSValueRef js_event_send_message_to_game_func(JSContextRef cx,JSObjectRef func,J
 	script_type		*script_from,*script_to;
 
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	if (!script_check_fail_in_construct(cx,j_obj,exception)) return(script_null_to_value(cx));
 
 	script_idx=(int)JSObjectGetPrivate(j_obj);
 	script_from=js.script_list.scripts[script_idx];
@@ -435,6 +448,7 @@ JSValueRef js_event_send_message_to_held_weapon_func(JSContextRef cx,JSObjectRef
 	script_type		*script_from,*script_to;
 
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	if (!script_check_fail_in_construct(cx,j_obj,exception)) return(script_null_to_value(cx));
 
 	script_idx=(int)JSObjectGetPrivate(j_obj);
 	script_from=js.script_list.scripts[script_idx];
@@ -467,6 +481,7 @@ JSValueRef js_event_send_message_to_spawn_weapon_func(JSContextRef cx,JSObjectRe
 	script_type		*script_from,*script_to;
 
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	if (!script_check_fail_in_construct(cx,j_obj,exception)) return(script_null_to_value(cx));
 	
 	script_idx=(int)JSObjectGetPrivate(j_obj);
 	script_from=js.script_list.scripts[script_idx];
@@ -508,6 +523,7 @@ JSValueRef js_event_set_message_data_func(JSContextRef cx,JSObjectRef func,JSObj
 	script_type		*script;
 
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+	if (!script_check_fail_in_construct(cx,j_obj,exception)) return(script_null_to_value(cx));
 	
 	script_idx=(int)JSObjectGetPrivate(j_obj);
 	script=js.script_list.scripts[script_idx];
@@ -548,6 +564,7 @@ JSValueRef js_event_get_message_data_func(JSContextRef cx,JSObjectRef func,JSObj
 	JSValueRef		vp;
 
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	if (!script_check_fail_in_construct(cx,j_obj,exception)) return(script_null_to_value(cx));
 
 	script_idx=(int)JSObjectGetPrivate(j_obj);
 	script=js.script_list.scripts[script_idx];
@@ -597,6 +614,7 @@ JSValueRef js_event_call_object_by_id_func(JSContextRef cx,JSObjectRef func,JSOb
 	obj_type		*obj;
 
 	if (!script_check_param_at_least_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+	if (!script_check_fail_in_construct(cx,j_obj,exception)) return(script_null_to_value(cx));
 	
 		// get arguments
 
@@ -632,6 +650,7 @@ JSValueRef js_event_call_player_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 	obj_type		*obj;
 
 	if (!script_check_param_at_least_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	if (!script_check_fail_in_construct(cx,j_obj,exception)) return(script_null_to_value(cx));
 	
 		// get arguments
 
@@ -665,6 +684,7 @@ JSValueRef js_event_call_course_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 	JSValueRef		rval,args[20];
 
 	if (!script_check_param_at_least_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	if (!script_check_fail_in_construct(cx,j_obj,exception)) return(script_null_to_value(cx));
 
 		// any course script?
 
@@ -703,6 +723,7 @@ JSValueRef js_event_call_game_func(JSContextRef cx,JSObjectRef func,JSObjectRef 
 	JSValueRef		rval,args[20];
 
 	if (!script_check_param_at_least_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	if (!script_check_fail_in_construct(cx,j_obj,exception)) return(script_null_to_value(cx));
 	
 		// get arguments
 
@@ -735,6 +756,9 @@ JSValueRef js_event_call_held_weapon_func(JSContextRef cx,JSObjectRef func,JSObj
 	obj_type		*obj;
 	weapon_type		*weap;
 	script_type		*script;
+
+	if (!script_check_param_at_least_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	if (!script_check_fail_in_construct(cx,j_obj,exception)) return(script_null_to_value(cx));
 
 		// find held weapon
 
@@ -785,6 +809,9 @@ JSValueRef js_event_call_spawn_weapon_func(JSContextRef cx,JSObjectRef func,JSOb
 	weapon_type		*weap;
 	proj_type		*proj;
 	script_type		*script;
+
+	if (!script_check_param_at_least_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	if (!script_check_fail_in_construct(cx,j_obj,exception)) return(script_null_to_value(cx));
 
 		// find weapon that fired
 		// this projectile

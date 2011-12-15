@@ -95,17 +95,17 @@ void map_liquid_reset_uv(map_type *map,int liquid_idx)
 	ltxtz=((float)liq->top)*txt_scale_y;
 	rtxtz=((float)liq->bot)*txt_scale_y;
 
-	liq->main_uv.x_offset=map_get_texture_round_coord(map_get_texture_reduce_coord(ltxtx));
-	liq->main_uv.x_size=map_get_texture_round_coord(rtxtx-ltxtx);
+	liq->main_uv.offset.x=map_get_texture_round_coord(map_get_texture_reduce_coord(ltxtx));
+	liq->main_uv.size.x=map_get_texture_round_coord(rtxtx-ltxtx);
 	
-	liq->main_uv.y_offset=map_get_texture_round_coord(map_get_texture_reduce_coord(ltxtz));
-	liq->main_uv.y_size=map_get_texture_round_coord(rtxtz-ltxtz);
+	liq->main_uv.offset.y=map_get_texture_round_coord(map_get_texture_reduce_coord(ltxtz));
+	liq->main_uv.size.y=map_get_texture_round_coord(rtxtz-ltxtz);
 	
 		// deal with offset locks
 		
 	if (map->textures[liq->txt_idx].scale.lock_offset) {
-		liq->main_uv.x_offset=0.0f;
-		liq->main_uv.y_offset=0.0f;
+		liq->main_uv.offset.x=0.0f;
+		liq->main_uv.offset.y=0.0f;
 	}
 }
 

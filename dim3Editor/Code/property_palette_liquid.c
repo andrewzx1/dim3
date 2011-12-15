@@ -147,7 +147,7 @@ void property_palette_fill_liquid(int liq_idx)
 	list_palette_add_checkbox(&property_palette,kLiquidPropertyOverlayOn,"On",&liq->overlay.on,FALSE);
 	list_palette_add_texture(&property_palette,map.textures,kLiquidPropertyOverlayTexture,"Texture",liq->overlay.txt_idx,FALSE);
 	list_palette_add_int(&property_palette,kLiquidPropertyOverlayStampSize,"Stamp Size",&liq->overlay.stamp_size,FALSE);
-	list_palette_add_uv(&property_palette,kLiquidPropertyOverlayShift,"Shift",&liq->overlay.x_shift,&liq->overlay.y_shift,FALSE);
+	list_palette_add_uv(&property_palette,kLiquidPropertyOverlayShift,"Shift",&liq->overlay.shift,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Liquid Group");
 	if (liq->group_idx==-1) {
@@ -164,15 +164,15 @@ void property_palette_fill_liquid(int liq_idx)
 	list_palette_add_header(&property_palette,0,"Liquid UVs");
 
 	if (view->uv_layer==uv_layer_normal) {
-		list_palette_add_uv(&property_palette,kLiquidPropertyOff,"Offset",&liq->main_uv.x_offset,&liq->main_uv.y_offset,FALSE);
-		list_palette_add_uv(&property_palette,kLiquidPropertySize,"Size",&liq->main_uv.x_size,&liq->main_uv.y_size,FALSE);
+		list_palette_add_uv(&property_palette,kLiquidPropertyOff,"Offset",&liq->main_uv.offset,FALSE);
+		list_palette_add_uv(&property_palette,kLiquidPropertySize,"Size",&liq->main_uv.size,FALSE);
 	}
 	else {
-		list_palette_add_uv(&property_palette,kLiquidPropertyOff,"Offset",&liq->lmap_uv.x_offset,&liq->lmap_uv.y_offset,FALSE);
-		list_palette_add_uv(&property_palette,kLiquidPropertySize,"Size",&liq->lmap_uv.x_size,&liq->lmap_uv.y_size,FALSE);
+		list_palette_add_uv(&property_palette,kLiquidPropertyOff,"Offset",&liq->lmap_uv.offset,FALSE);
+		list_palette_add_uv(&property_palette,kLiquidPropertySize,"Size",&liq->lmap_uv.size,FALSE);
 	}
 	
-	list_palette_add_uv(&property_palette,kLiquidPropertyShift,"Shift",&liq->x_shift,&liq->y_shift,FALSE);
+	list_palette_add_uv(&property_palette,kLiquidPropertyShift,"Shift",&liq->shift,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Liquid Camera");
 	list_palette_add_string(&property_palette,kLiquidPropertyCamera,"Node",liq->camera,FALSE);

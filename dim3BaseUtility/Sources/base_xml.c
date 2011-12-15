@@ -829,6 +829,58 @@ bool xml_get_attribute_4_coord_float(int n,char *name,float *r,float *g,float *b
 	return(TRUE);
 }
 
+int xml_get_attribute_uv_x_array(int n,char *name,d3uv *uvs,int count)
+{
+    int			nvalue;
+	char		*c,*c2,str[5120];
+
+	if (!xml_get_attribute_raw(n,name,str,5120)) return(0);
+	if (str[0]==0x0) return(0);
+    
+    nvalue=0;
+    c=str;
+    
+    while (TRUE) {
+        c2=strchr(c,',');
+        if (c2!=NULL) {
+            *c2=0x0;
+        }
+        uvs[nvalue++].x=strtof(c,NULL);
+        if (c2==NULL) break;
+        c=c2+1;
+		
+		if (nvalue==count) break;
+    }
+    
+	return(nvalue);
+}
+
+int xml_get_attribute_uv_y_array(int n,char *name,d3uv *uvs,int count)
+{
+    int			nvalue;
+	char		*c,*c2,str[5120];
+
+	if (!xml_get_attribute_raw(n,name,str,5120)) return(0);
+	if (str[0]==0x0) return(0);
+    
+    nvalue=0;
+    c=str;
+    
+    while (TRUE) {
+        c2=strchr(c,',');
+        if (c2!=NULL) {
+            *c2=0x0;
+        }
+        uvs[nvalue++].y=strtof(c,NULL);
+        if (c2==NULL) break;
+        c=c2+1;
+		
+		if (nvalue==count) break;
+    }
+    
+	return(nvalue);
+}
+
 bool xml_get_attribute_color(int n,char *name,d3col *col)
 {
 	int			k;
@@ -1153,6 +1205,38 @@ void xml_add_attribute_4_coord_float(char *name,float r,float g,float b,float a)
 	string_convert_float(sa,a);
 	sprintf(txt,"%s,%s,%s,%s",sr,sg,sb,sa);
 	xml_add_attribute_text(name,txt);
+}
+
+void xml_add_attribute_uv_x_array(char *name,d3uv *uvs,int count)
+{
+    int			n;
+	char		txt[5120],a[256];
+
+    txt[0]=0x0;
+    
+    for (n=0;n!=count;n++) {
+		string_convert_float(a,uvs[n].x);
+        if (txt[0]!=0x0) strcat(txt,",");
+        strcat(txt,a);
+    }
+    
+    if (txt[0]!=0x0) xml_add_attribute_text(name,txt);
+}
+
+void xml_add_attribute_uv_y_array(char *name,d3uv *uvs,int count)
+{
+    int			n;
+	char		txt[5120],a[256];
+
+    txt[0]=0x0;
+    
+    for (n=0;n!=count;n++) {
+		string_convert_float(a,uvs[n].y);
+        if (txt[0]!=0x0) strcat(txt,",");
+        strcat(txt,a);
+    }
+    
+    if (txt[0]!=0x0) xml_add_attribute_text(name,txt);
 }
 
 void xml_add_attribute_color(char *name,d3col *col)

@@ -332,10 +332,10 @@ void map_recalc_normals_mesh(map_type *map,map_mesh_type *mesh,int normal_mode,b
 
 			// get the UV scalars (u1-u0), (u2-u0), (v1-v0), (v2-v0)
 
-		u10=poly->main_uv.x[1]-poly->main_uv.x[0];
-		u20=poly->main_uv.x[2]-poly->main_uv.x[0];
-		v10=poly->main_uv.y[1]-poly->main_uv.y[0];
-		v20=poly->main_uv.y[2]-poly->main_uv.y[0];
+		u10=poly->main_uv.uvs[1].x-poly->main_uv.uvs[0].x;
+		u20=poly->main_uv.uvs[2].x-poly->main_uv.uvs[0].x;
+		v10=poly->main_uv.uvs[1].y-poly->main_uv.uvs[0].y;
+		v20=poly->main_uv.uvs[2].y-poly->main_uv.uvs[0].y;
 
 			// calculate the tangent
 			// (v20xp10)-(v10xp20) / (u10*v20)-(v10*u20)

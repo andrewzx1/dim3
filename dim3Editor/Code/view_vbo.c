@@ -100,11 +100,11 @@ void view_vbo_mesh_rebuild(int mesh_idx)
 			*pv++=(float)pnt->y;
 			*pv++=(float)pnt->z;
 
-			*pv++=poly->main_uv.x[k];
-			*pv++=poly->main_uv.y[k];
+			*pv++=poly->main_uv.uvs[k].x;
+			*pv++=poly->main_uv.uvs[k].y;
 
-			*pv++=poly->lmap_uv.x[k];
-			*pv++=poly->lmap_uv.y[k];
+			*pv++=poly->lmap_uv.uvs[k].x;
+			*pv++=poly->lmap_uv.uvs[k].y;
 		}
 
 		poly++;

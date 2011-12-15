@@ -138,12 +138,12 @@ void liquid_reflection_map_bitmap_pixel_get(d3pnt *spt,d3vct *vct,map_mesh_type 
 		f2=sqrtf((fx*fx)+(fz*fz));
 		
 		fx=f2/f1;
-		fx=poly->main_uv.x[lft_idx]+(fx*(poly->main_uv.x[rgt_idx]-poly->main_uv.x[lft_idx]));
+		fx=poly->main_uv.uvs[lft_idx].x+(fx*(poly->main_uv.uvs[rgt_idx].x-poly->main_uv.uvs[lft_idx].x));
 		
 			// find the distances for hit point on y plane
 			
 		fy=(float)(hpt.y-poly->box.min.y)/(float)(poly->box.max.y-poly->box.min.y);
-		fy=poly->main_uv.y[top_idx]+(fy*(poly->main_uv.y[bot_idx]-poly->main_uv.y[top_idx]));
+		fy=poly->main_uv.uvs[top_idx].y+(fy*(poly->main_uv.uvs[bot_idx].y-poly->main_uv.uvs[top_idx].y));
 	}
 	
 		// hits on floor like polygons
@@ -152,14 +152,14 @@ void liquid_reflection_map_bitmap_pixel_get(d3pnt *spt,d3vct *vct,map_mesh_type 
 	
 			// find points for uv extents
 			
-		min_gx=max_gx=poly->main_uv.x[0];
-		min_gy=max_gy=poly->main_uv.y[0];
+		min_gx=max_gx=poly->main_uv.uvs[0].x;
+		min_gy=max_gy=poly->main_uv.uvs[0].y;
 		
 		for (n=1;n<poly->ptsz;n++) {
-			if (poly->main_uv.x[n]<min_gx) min_gx=poly->main_uv.x[n];
-			if (poly->main_uv.x[n]>max_gx) max_gx=poly->main_uv.x[n];
-			if (poly->main_uv.y[n]<min_gy) min_gy=poly->main_uv.y[n];
-			if (poly->main_uv.y[n]>max_gy) max_gy=poly->main_uv.y[n];
+			if (poly->main_uv.uvs[n].x<min_gx) min_gx=poly->main_uv.uvs[n].x;
+			if (poly->main_uv.uvs[n].x>max_gx) max_gx=poly->main_uv.uvs[n].x;
+			if (poly->main_uv.uvs[n].y<min_gy) min_gy=poly->main_uv.uvs[n].y;
+			if (poly->main_uv.uvs[n].y>max_gy) max_gy=poly->main_uv.uvs[n].y;
 		}
 		
 			// find the hit points in the box
@@ -403,8 +403,8 @@ bool liquid_reflection_map_run_for_liquid(int txt_idx,int liq_idx,char *base_pat
 
 	liq->txt_idx=txt_idx;
 	liq->flag.lock_uv=TRUE;
-	liq->main_uv.x_offset=liq->main_uv.y_offset=0.0f;
-	liq->main_uv.x_size=liq->main_uv.y_size=1.0f;
+	liq->main_uv.offset.x=liq->main_uv.offset.y=0.0f;
+	liq->main_uv.size.x=liq->main_uv.size.y=1.0f;
 		
 		// put in texture list
 			

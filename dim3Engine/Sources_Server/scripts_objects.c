@@ -604,7 +604,7 @@ bool script_check_fail_in_construct(JSContextRef cx,JSObjectRef j_obj,JSValueRef
 {
 	if (!script_in_construct(j_obj)) return(TRUE);
 
-	*exception=script_create_exception(cx,"Can not be called in construct event, move to spawn event");
+	*exception=script_create_exception(cx,"This function can not be called in a construct event, move call to spawn event");
 	return(FALSE);
 }
 

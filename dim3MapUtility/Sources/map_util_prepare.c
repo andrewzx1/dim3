@@ -503,9 +503,9 @@ void map_prepare(map_type *map)
 				// setup texture and shifting flags
 
 			poly->draw.txt_frame_offset=0;
-			poly->draw.shift_on=((poly->x_shift!=0.0f) || (poly->y_shift!=0.0f));
-			poly->draw.x_shift_offset=0.0f;
-			poly->draw.y_shift_offset=0.0f;
+			poly->draw.shift_on=((poly->shift.x!=0.0f) || (poly->shift.y!=0.0f));
+			poly->draw.shift_offset.x=0.0f;
+			poly->draw.shift_offset.y=0.0f;
 			mesh->flag.shiftable|=poly->draw.shift_on;
 			
 				// setup camera flag
