@@ -261,6 +261,130 @@ bool map_recalc_normals_determine_vector_in_out(map_mesh_poly_type *poly,d3pnt *
       
 ======================================================= */
 
+void map_recalc_normals_mesh_poly(map_type *map,map_mesh_type *mesh,int poly_idx,int normal_mode,bool only_tangent)
+{
+	int					k,neg_idx,pos_idx;
+	float				u10,u20,v10,v20,f_denom,f_ptsz;
+	bool				flip;
+	d3vct				p10,p20,vlft,vrgt,v_num,normals[8];
+	d3pnt				*pt,*pt_1,*pt_2,min,max;
+	map_mesh_poly_type	*poly;
+	
+	poly=&mesh->polys[poly_idx];
+	
+		// get normal for all vertexes
+
+	for (k=0;k!=poly->ptsz;k++) {
+
+			// get vertexes on each side
+
+		neg_idx=k-1;
+		if (neg_idx<0) neg_idx=poly->ptsz-1;
+
+		pos_idx=k+1;
+		if (pos_idx==poly->ptsz) pos_idx=0;
+
+		pt=&mesh->vertexes[poly->v[k]];
+		pt_1=&mesh->vertexes[poly->v[neg_idx]];
+		pt_2=&mesh->vertexes[poly->v[pos_idx]];
+
+		vector_create(&p10,pt_1->x,pt_1->y,pt_1->z,pt->x,pt->y,pt->z);
+		vector_create(&p20,pt_2->x,pt_2->y,pt_2->z,pt->x,pt->y,pt->z);
+
+			// calculate the normal by the cross
+
+		vector_cross_product(&normals[k],&p10,&p20);
+	}
+
+		// average for normal
+
+	if (!only_tangent) {
+
+		for (k=1;k!=poly->ptsz;k++) {
+			normals[0].x+=normals[k].x;
+			normals[0].y+=normals[k].y;
+			normals[0].z+=normals[k].z;
+		}
+
+		f_ptsz=(float)poly->ptsz;
+		poly->tangent_space.normal.x=normals[0].x/f_ptsz;
+		poly->tangent_space.normal.y=normals[0].y/f_ptsz;
+		poly->tangent_space.normal.z=normals[0].z/f_ptsz;
+
+		vector_normalize(&poly->tangent_space.normal);
+	}
+
+		// work on the tangent
+		// get the side vectors (p1-p0) and (p2-p0)
+
+	pt=&mesh->vertexes[poly->v[0]];
+	pt_1=&mesh->vertexes[poly->v[1]];
+	pt_2=&mesh->vertexes[poly->v[2]];
+
+	vector_create(&p10,pt_1->x,pt_1->y,pt_1->z,pt->x,pt->y,pt->z);
+	vector_create(&p20,pt_2->x,pt_2->y,pt_2->z,pt->x,pt->y,pt->z);
+
+		// calculate the normal by the cross
+
+	if (!only_tangent) vector_cross_product(&poly->tangent_space.normal,&p10,&p20);
+
+		// get the UV scalars (u1-u0), (u2-u0), (v1-v0), (v2-v0)
+
+	u10=poly->main_uv.uvs[1].x-poly->main_uv.uvs[0].x;
+	u20=poly->main_uv.uvs[2].x-poly->main_uv.uvs[0].x;
+	v10=poly->main_uv.uvs[1].y-poly->main_uv.uvs[0].y;
+	v20=poly->main_uv.uvs[2].y-poly->main_uv.uvs[0].y;
+
+		// calculate the tangent
+		// (v20xp10)-(v10xp20) / (u10*v20)-(v10*u20)
+
+	vector_scalar_multiply(&vlft,&p10,v20);
+	vector_scalar_multiply(&vrgt,&p20,v10);
+	vector_subtract(&v_num,&vlft,&vrgt);
+
+	f_denom=(u10*v20)-(v10*u20);
+	if (f_denom!=0.0f) f_denom=1.0f/f_denom;
+	vector_scalar_multiply(&poly->tangent_space.tangent,&v_num,f_denom);
+
+	vector_normalize(&poly->tangent_space.tangent);
+	
+		// skip out now if we are only calculating
+		// tangents.  This step checks for flipped normals
+
+	if (only_tangent) return;
+	
+		// setup mesh boxes
+		
+	map_prepare_mesh_box(mesh);
+	map_prepare_mesh_poly(map,mesh,poly);
+	
+		// check for in-out inversions
+		
+	if (normal_mode==normal_mode_none) normal_mode=map_recalc_normals_get_auto_mode(mesh);
+	
+		// get box and center for all polys connected to
+		// this poly.  Happens in meshes where there
+		// are distinct primitives and helps create better
+		// in-out calculations
+		
+	map_recalc_normals_find_box_for_connected_poly(mesh,poly_idx,&min,&max);
+	
+		// check if we need to invert
+	
+	if (normal_mode==normal_mode_out) {
+		flip=!map_recalc_normals_determine_vector_in_out(poly,&min,&max);
+	}
+	else {
+		flip=map_recalc_normals_determine_vector_in_out(poly,&min,&max);
+	}
+	
+	if (flip) {
+		poly->tangent_space.normal.x=-poly->tangent_space.normal.x;
+		poly->tangent_space.normal.y=-poly->tangent_space.normal.y;
+		poly->tangent_space.normal.z=-poly->tangent_space.normal.z;
+	}
+}
+
 void map_recalc_normals_mesh(map_type *map,map_mesh_type *mesh,int normal_mode,bool only_tangent)
 {
 	int					n,k,neg_idx,pos_idx;

@@ -250,7 +250,7 @@ void render_opaque_mesh_shader(void)
 			}
 
 				// draw polygon
-
+				
 			glDrawElements(GL_TRIANGLE_FAN,poly->ptsz,GL_UNSIGNED_SHORT,(GLvoid*)poly->vbo.index_offset);
 			
 			poly++;

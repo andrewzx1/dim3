@@ -874,6 +874,54 @@ void render_model_glow(model_type *mdl,int mesh_idx,model_draw *draw)
 
 /* =======================================================
 
+      Debug for Testing Normals
+      
+======================================================= */
+
+void render_model_debug_normals(model_type *mdl,int mesh_idx,model_draw *draw)
+{
+	int						n,k,idx;
+	float					*va,*na;
+	d3pnt					pnt1,pnt2;
+	d3col					col;
+	model_mesh_type			*mesh;
+ 	model_poly_type			*poly;
+	
+	glEnable(GL_DEPTH_TEST); 
+	glDepthFunc(GL_LEQUAL);
+	glDepthMask(GL_TRUE);
+	
+	col.r=1.0f;
+	col.g=0.0f;
+	col.b=1.0f;
+
+	mesh=&mdl->meshes[mesh_idx];
+	poly=mesh->polys;
+
+	for (n=0;n!=mesh->npoly;n++) {
+	
+		for (k=0;k!=poly->ptsz;k++) {
+			idx=poly->v[k]*3;
+
+			va=draw->setup.mesh_arrays[mesh_idx].gl_vertex_array+idx;
+			pnt1.x=*va++;
+			pnt1.y=*va++;
+			pnt1.z=*va;
+
+			na=draw->setup.mesh_arrays[mesh_idx].gl_normal_array+idx;
+			pnt2.x=pnt1.x+(int)(100.0f*(*na++));
+			pnt2.y=pnt1.y+(int)(100.0f*(*na++));
+			pnt2.z=pnt1.z+(int)(100.0f*(*na));
+
+			view_primitive_3D_line(&col,1.0f,pnt1.x,pnt1.y,pnt1.z,pnt2.x,pnt2.y,pnt2.z);
+		}
+
+		poly++;
+	}
+}
+
+/* =======================================================
+
       Setup Model and Vertex Lists
       
 ======================================================= */
@@ -1181,6 +1229,10 @@ void render_model_opaque(model_draw *draw)
 		}
 
 		render_model_release_vertex_objects();
+		
+			// debugging for normals
+		
+	//	render_model_debug_normals(mdl,n,draw);
 	}
 }
 
