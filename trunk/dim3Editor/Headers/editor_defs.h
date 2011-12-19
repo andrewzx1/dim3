@@ -386,6 +386,7 @@ typedef struct		{
 #define kCommandPolygonRotateUV					FOUR_CHAR_CODE('pyru')
 #define kCommandPolygonFlipU					FOUR_CHAR_CODE('pyfu')
 #define kCommandPolygonFlipV					FOUR_CHAR_CODE('pyfv')
+#define kCommandPolygonRecalcNormal				FOUR_CHAR_CODE('rpnm')
 #define kCommandPolygonInvertNormal				FOUR_CHAR_CODE('inrm')
 #define kCommandPolygonResetUV					FOUR_CHAR_CODE('pyuv')
 #define kCommandPolygonWholeUV					FOUR_CHAR_CODE('pywv')
@@ -438,7 +439,7 @@ typedef struct		{
 // selections
 //
 
-#define select_max_item							1024
+#define select_max_item							5120
 
 typedef struct		{
                         int						type,main_idx,sub_idx;

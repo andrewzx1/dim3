@@ -351,11 +351,6 @@ void piece_select_more_check_edge(d3pnt *k_pt1,d3pnt *k_pt2)
 		
 		for (k=0;k!=mesh->npoly;k++) {
 		
-			if (select_check(mesh_piece,n,k)) {
-				poly++;
-				continue;
-			}
-		
 			for (t=0;t!=poly->ptsz;t++) {
 				t2=t+1;
 				if (t2==poly->ptsz) t2=0;
@@ -365,6 +360,7 @@ void piece_select_more_check_edge(d3pnt *k_pt1,d3pnt *k_pt2)
 				
 				if (((pt1->x==k_pt1->x) && (pt1->y==k_pt1->y) && (pt1->z==k_pt1->z) && (pt2->x==k_pt2->x) && (pt2->y==k_pt2->y) && (pt2->z==k_pt2->z)) || ((pt1->x==k_pt2->x) && (pt1->y==k_pt2->y) && (pt1->z==k_pt2->z) && (pt2->x==k_pt1->x) && (pt2->y==k_pt1->y) && (pt2->z==k_pt1->z))) {
 					select_add(mesh_piece,n,k);
+					break;
 				}
 			}
 			
@@ -1013,7 +1009,7 @@ void piece_flip_uvs(bool flip_u,bool flip_v)
       
 ======================================================= */
 
-void piece_mesh_recalc_normals(void)
+void piece_mesh_recalc_normals(bool poly_only)
 {
 	int				n,sel_count,type,mesh_idx,poly_idx;
 	
@@ -1021,7 +1017,14 @@ void piece_mesh_recalc_normals(void)
 	
 	for (n=0;n!=sel_count;n++) {
 		select_get(n,&type,&mesh_idx,&poly_idx);
-		if (type==mesh_piece) map_recalc_normals_mesh(&map,&map.mesh.meshes[mesh_idx],normal_mode_none,FALSE);
+		if (type!=mesh_piece) continue;
+		
+		if (poly_only) {
+			map_recalc_normals_mesh_poly(&map,&map.mesh.meshes[mesh_idx],poly_idx,normal_mode_none,FALSE);
+		}
+		else {
+			map_recalc_normals_mesh(&map,&map.mesh.meshes[mesh_idx],normal_mode_none,FALSE);
+		}
 	}
 	
 	main_wind_draw();

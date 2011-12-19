@@ -107,6 +107,19 @@ void matrix_vertex_multiply_ignore_transform(matrix_type *mat,float *x,float *y,
 	*z=(fx*mat->data[2][0])+(fy*mat->data[2][1])+(fz*mat->data[2][2]);
 }
 
+void matrix_vertex_2_multiply_ignore_transform(matrix_type *mat,d3vct *vct)
+{
+	float		fx,fy,fz;
+	
+	fx=vct->x;
+	fy=vct->y;
+	fz=vct->z;
+	
+	vct->x=(fx*mat->data[0][0])+(fy*mat->data[0][1])+(fz*mat->data[0][2]);
+	vct->y=(fx*mat->data[1][0])+(fy*mat->data[1][1])+(fz*mat->data[1][2]);
+	vct->z=(fx*mat->data[2][0])+(fy*mat->data[2][1])+(fz*mat->data[2][2]);
+}
+
 void matrix_angle_multiply(matrix_type *mat,float *x,float *y,float *z)
 {
 	float		fx,fy,fz;

@@ -514,7 +514,7 @@ bool menu_event_run(int cmd)
 			return(TRUE);
 			
 		case kCommandMeshCreateNormals:
-			piece_mesh_recalc_normals();
+			piece_mesh_recalc_normals(FALSE);
 			main_wind_draw();
 			return(TRUE);
 			
@@ -560,6 +560,11 @@ bool menu_event_run(int cmd)
 			
 		case kCommandPolygonFlipV:
 			piece_flip_uvs(FALSE,TRUE);
+			main_wind_draw();
+			return(TRUE);
+			
+		case kCommandPolygonRecalcNormal:
+			piece_mesh_recalc_normals(TRUE);
 			main_wind_draw();
 			return(TRUE);
 			

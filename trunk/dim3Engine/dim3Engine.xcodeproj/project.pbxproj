@@ -1322,6 +1322,8 @@
 		260B3F471411F781006ED023 /* Sources_View */ = {
 			isa = PBXGroup;
 			children = (
+				263A144E149BE25400F31189 /* View */,
+				263A144F149BE27500F31189 /* Render */,
 				260B3F481411F781006ED023 /* al_ambient.c */,
 				260B3F491411F781006ED023 /* al_buffer.c */,
 				260B3F4A1411F781006ED023 /* al_music.c */,
@@ -1374,11 +1376,6 @@
 				260B3F791411F781006ED023 /* radar_draw.c */,
 				260B3F7A1411F781006ED023 /* rain.c */,
 				260B3F7B1411F781006ED023 /* remote_status.c */,
-				260B3F7C1411F781006ED023 /* render_map_liquid.c */,
-				260B3F7D1411F781006ED023 /* render_map_opaque.c */,
-				260B3F7E1411F781006ED023 /* render_map_transparent.c */,
-				260B3F7F1411F781006ED023 /* render_model.c */,
-				260B3F801411F781006ED023 /* render_shadow.c */,
 				260B3F811411F781006ED023 /* rings_draw.c */,
 				260B3F821411F781006ED023 /* score_limit.c */,
 				260B3F831411F781006ED023 /* setup_game.c */,
@@ -1386,17 +1383,6 @@
 				260B3F851411F781006ED023 /* sky.c */,
 				260B3F861411F781006ED023 /* tint.c */,
 				260B3F871411F781006ED023 /* title.c */,
-				260B3F881411F781006ED023 /* view.c */,
-				260B3F891411F781006ED023 /* view_bounds.c */,
-				260B3F8A1411F781006ED023 /* view_draw.c */,
-				260B3F8B1411F781006ED023 /* view_draw_debug.c */,
-				260B3F8C1411F781006ED023 /* view_images.c */,
-				260B3F8D1411F781006ED023 /* view_obscure.c */,
-				260B3F8E1411F781006ED023 /* view_primitive.c */,
-				260B3F8F1411F781006ED023 /* view_run.c */,
-				260B3F901411F781006ED023 /* view_setup.c */,
-				260B3F911411F781006ED023 /* view_vertex_list.c */,
-				260B3F921411F781006ED023 /* view_vertex_object.c */,
 				260B3F931411F781006ED023 /* virtual_draw.c */,
 				260B3F941411F781006ED023 /* zoom_draw.c */,
 			);
@@ -1476,6 +1462,36 @@
 			);
 			name = SDL;
 			path = ../dim3Common/Libraries/SDL;
+			sourceTree = "<group>";
+		};
+		263A144E149BE25400F31189 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				260B3F881411F781006ED023 /* view.c */,
+				260B3F891411F781006ED023 /* view_bounds.c */,
+				260B3F8A1411F781006ED023 /* view_draw.c */,
+				260B3F8B1411F781006ED023 /* view_draw_debug.c */,
+				260B3F8C1411F781006ED023 /* view_images.c */,
+				260B3F8D1411F781006ED023 /* view_obscure.c */,
+				260B3F8E1411F781006ED023 /* view_primitive.c */,
+				260B3F8F1411F781006ED023 /* view_run.c */,
+				260B3F901411F781006ED023 /* view_setup.c */,
+				260B3F911411F781006ED023 /* view_vertex_list.c */,
+				260B3F921411F781006ED023 /* view_vertex_object.c */,
+			);
+			name = View;
+			sourceTree = "<group>";
+		};
+		263A144F149BE27500F31189 /* Render */ = {
+			isa = PBXGroup;
+			children = (
+				260B3F7C1411F781006ED023 /* render_map_liquid.c */,
+				260B3F7D1411F781006ED023 /* render_map_opaque.c */,
+				260B3F7E1411F781006ED023 /* render_map_transparent.c */,
+				260B3F7F1411F781006ED023 /* render_model.c */,
+				260B3F801411F781006ED023 /* render_shadow.c */,
+			);
+			name = Render;
 			sourceTree = "<group>";
 		};
 		26A45D051489AD0A00C02936 /* Script API */ = {
