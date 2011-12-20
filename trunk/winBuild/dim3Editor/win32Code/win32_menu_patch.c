@@ -109,6 +109,7 @@ int				win32_menu_remap[][2]={
 					{kCommandPolygonRotateUV,ID_POLYGON_ROTATE_UV},
 					{kCommandPolygonFlipU,ID_POLYGON_FLIP_U},
 					{kCommandPolygonFlipV,ID_POLYGON_FLIP_V},
+					{kCommandPolygonRecalcNormal,ID_POLYGON_RECALC_NORMAL},
 					{kCommandPolygonInvertNormal,ID_POLYGON_INVERT_NORMAL},
 					{kCommandPolygonResetUV,ID_POLYGON_RESET_UV},
 					{kCommandPolygonWholeUV,ID_POLYGON_WHILE_UV},
