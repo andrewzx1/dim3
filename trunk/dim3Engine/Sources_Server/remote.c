@@ -385,7 +385,10 @@ void remote_update(int net_uid,network_request_remote_update *update)
 	}			
 		
 	draw->mesh_mask=ntohl(update->model_mesh_mask);
-	memmove(&draw->cur_texture_frame,update->model_cur_texture_frame,max_model_texture);
+	
+	for (n=0;n!=max_model_texture;n++) {
+		draw->textures[n].frame=(int)update->model_cur_texture_frame[n];
+	}
 
 		// dynamic bones
 

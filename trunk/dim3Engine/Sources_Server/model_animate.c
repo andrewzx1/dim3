@@ -38,26 +38,37 @@ extern map_type					map;
 
 /* =======================================================
 
-      Model Fills
+      Model Texture Animations
       
 ======================================================= */
 
-void model_change_fill(model_draw *draw,int wfill,int txt)
+void model_texture_change_frame(model_draw *draw,int txt_idx,int frame)
 {
-	int					count;
+	int					frame_count;
 	model_type			*mdl;
-	texture_type		*texture;
     
-    if ((wfill<0) || (wfill>=max_model_texture)) return;
+    if ((txt_idx<0) || (txt_idx>=max_model_texture)) return;
     
 	if (draw->model_idx==-1) return;
 	mdl=server.model_list.models[draw->model_idx];
 	
-	count=model_count_texture_frames(mdl,wfill);
-    texture=&mdl->textures[wfill];
-    if ((txt<0) || (txt>=count)) return;
+	frame_count=model_count_texture_frames(mdl,txt_idx);
+    if ((frame<0) || (frame>=frame_count)) return;
     
-    draw->cur_texture_frame[wfill]=(unsigned char)txt;
+    draw->textures[txt_idx].frame=frame;
+}
+
+void model_texture_change_animation(model_draw *draw,int txt_idx,bool on,bool reverse)
+{
+	model_type			*mdl;
+    
+    if ((txt_idx<0) || (txt_idx>=max_model_texture)) return;
+    
+	if (draw->model_idx==-1) return;
+	mdl=server.model_list.models[draw->model_idx];
+    
+    draw->textures[txt_idx].animation_on=on;
+	if (on) draw->textures[txt_idx].animation_reverse=reverse;
 }
 
 /* =======================================================

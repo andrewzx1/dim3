@@ -284,7 +284,9 @@ void object_clear_draw(model_draw *draw)
 	draw->mesh_mask=0x1;				// default to first mesh
 	
 	for (k=0;k!=max_model_texture;k++) {
-		draw->cur_texture_frame[k]=0;
+		draw->textures[k].animation_on=FALSE;
+		draw->textures[k].animation_reverse=FALSE;
+		draw->textures[k].frame=0;
 	}
 
 		// mesh fades
@@ -888,7 +890,7 @@ void object_multiplayer_setup_model_team_texture(obj_type *obj)
 	texture=mdl->textures;
 
 	for (n=0;n!=max_model_texture;n++) {
-		if (texture->frames[frame].bitmap.gl_id!=-1) draw->cur_texture_frame[n]=frame;
+		if (texture->frames[frame].bitmap.gl_id!=-1) draw->textures[n].frame=frame;
 		texture++;
 	}
 }

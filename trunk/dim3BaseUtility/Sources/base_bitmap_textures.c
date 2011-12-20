@@ -228,13 +228,14 @@ void bitmap_texture_set_glow(texture_type *texture,int tick)
 	texture->glow.current_color=texture->glow.min+(texture->glow.current_color*(texture->glow.max-texture->glow.min));
 }
 
-int bitmap_texture_get_current_frame(texture_type *texture,int tick)
+int bitmap_texture_get_current_frame(texture_type *texture,bool reverse,int tick)
 {
 	int				n;
 	
 	if (texture->animate.total_wait==0) return(0);
 	
 	tick=tick%texture->animate.total_wait;
+	if (reverse) tick=texture->animate.total_wait-tick;
 
 	for (n=0;n!=max_texture_frame;n++) {
 		if (tick<texture->animate.end_tick[n]) return(n);
@@ -257,7 +258,7 @@ void bitmap_texture_setup_animation(texture_type *texture,int texture_count,int 
 			// set the texture frame
 
 		if (texture->animate.on) {
-			texture->animate.current_frame=bitmap_texture_get_current_frame(texture,tick);
+			texture->animate.current_frame=bitmap_texture_get_current_frame(texture,FALSE,tick);
 		}
 		else {
 			texture->animate.current_frame=0;

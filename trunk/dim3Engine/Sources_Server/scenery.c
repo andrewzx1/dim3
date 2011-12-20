@@ -148,7 +148,9 @@ void scenery_start(void)
 			// change texture frames
 			
 		for (k=0;k!=max_map_scenery_model_texture_frame;k++) {
-			obj->draw.cur_texture_frame[k]=(unsigned char)map_scenery->texture_frame[k];
+			obj->draw.textures[k].animation_on=FALSE;
+			obj->draw.textures[k].animation_reverse=FALSE;
+			obj->draw.textures[k].frame=map_scenery->texture_frame[k];
 		}
 			
 			// start scenery animation

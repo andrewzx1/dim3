@@ -542,63 +542,6 @@ void gl_lights_compile(int tick)
 
 /* =======================================================
 
-      Find Closest Light
-      
-======================================================= */
-
-view_light_spot_type* gl_light_find_closest_light(float x,float y,float z)
-{
-	int						n,k;
-	float					f,fx,fy,fz,dist;
-	view_light_spot_type	*lspot;
-
-		// no lights in scene
-
-	if (view.render->light.count==0) return(NULL);
-
-		// find closest light
-	
-	k=-1;
-	dist=-1.0f;
-	
-	for (n=0;n!=view.render->light.count;n++) {
-
-		lspot=&view.render->light.spots[n];
-		
-			// get distance to light spot
-			
-		fx=lspot->f_x-x;
-		fy=lspot->f_y-y;
-		fz=lspot->f_z-z;
-
-		f=sqrtf((fx*fx)+(fy*fy)+(fz*fz));
-		
-			// reject lights outside globe
-			// and in wrong direction
-
-		if (f<=lspot->f_intensity) {
-
-			if (gl_lights_direction_ok(x,y,z,lspot)) {
-		
-					// compare distances
-			
-				if ((f<dist) || (k==-1)) {
-					dist=f;
-					k=n;
-				}
-			}
-		}
-		
-		lspot++;
-	}
-	
-	if (k==-1) return(NULL);
-
-	return(&view.render->light.spots[k]);
-}
-
-/* =======================================================
-
       Calculate Ambient Only Lighting
       
 ======================================================= */
@@ -824,6 +767,88 @@ void gl_lights_calc_color_light_cache_float(int count,int *indexes,bool skip_lig
 	f=(map.ambient.light_color.b+setup.gamma)+b;
 	if (f>1.0f) f=1.0f;
 	*cp=f;
+}
+
+/* =======================================================
+
+      Find Averaged Shadow Light
+      
+======================================================= */
+
+int gl_light_get_averaged_shadow_light(d3pnt *pnt,int count,int *indexes,d3pnt *light_pnt)
+{
+	int						n;
+	float					f,fx,fy,fz,f_dist,f_tot_intensity;
+	float					f_intensity[max_model_light_cache_index];
+	view_light_spot_type	*lspot;
+
+		// no lights in scene
+
+	if (count==0) return(-1);
+	
+		// special check for single light
+		
+	if (count==1) {
+		lspot=&view.render->light.spots[indexes[0]];
+		light_pnt->x=lspot->pnt.x;
+		light_pnt->y=lspot->pnt.y;
+		light_pnt->z=lspot->pnt.z;
+		return(lspot->i_intensity);
+	}
+	
+		// get the intensity for all the lights
+		// hit in the cache
+		
+	f_tot_intensity=0.0f;
+		
+	for (n=0;n!=count;n++) {
+		lspot=&view.render->light.spots[indexes[n]];
+
+			// get distance
+			
+		fx=(float)(lspot->pnt.x-pnt->x);
+		fy=(float)(lspot->pnt.y-pnt->y);
+		fz=(float)(lspot->pnt.z-pnt->z);
+
+		f_dist=sqrtf((fx*fx)+(fy*fy)+(fz*fz));
+		
+			// get the intensity
+			
+		f_intensity[n]=(lspot->f_intensity-f_dist)*lspot->f_inv_intensity;
+		f_intensity[n]+=powf(f_intensity[n],lspot->f_exponent);
+		
+			// added up the total instensity
+			// so we can weight them later
+					
+		f_tot_intensity+=f_intensity[n];
+	}
+	
+		// now we need to weighed average
+		// them together.  We give more
+		// weight to the ones that are
+		// more intense
+		
+	light_pnt->x=0;
+	light_pnt->y=0;
+	light_pnt->z=0;
+	
+	for (n=0;n!=count;n++) {
+		lspot=&view.render->light.spots[indexes[n]];
+		
+		f=f_intensity[n]/f_tot_intensity;
+		
+		light_pnt->x+=(int)(((float)(lspot->pnt.x-pnt->x))*f);
+		light_pnt->y+=(int)(((float)(lspot->pnt.y-pnt->y))*f);
+		light_pnt->z+=(int)(((float)(lspot->pnt.z-pnt->z))*f);
+	}
+	
+		// now average
+		
+	light_pnt->x=pnt->x+(light_pnt->x/count);
+	light_pnt->y=pnt->y+(light_pnt->y/count);
+	light_pnt->z=pnt->z+(light_pnt->z/count);
+	
+	return((int)f_tot_intensity);
 }
 
 /* =======================================================

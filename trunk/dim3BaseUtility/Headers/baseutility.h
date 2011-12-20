@@ -457,6 +457,7 @@ extern bool bitmap_data(bitmap_type *bitmap,unsigned char *data,int wid,int high
 extern bool bitmap_combine(bitmap_type *bitmap,char *bitmap_path,char *bumpmap_path,int anisotropic_mode,int mipmap_mode,bool compress,bool pixelated);
 extern void bitmap_close(bitmap_type *bitmap);
 
+extern int bitmap_texture_get_current_frame(texture_type *texture,bool reverse,int tick);
 extern void bitmap_texture_setup_animation(texture_type *texture,int texture_count,int tick);
 extern void bitmap_texture_recalc_animation(texture_type *texture);
 

@@ -90,24 +90,23 @@ void shadow_shutdown(void)
       
 ======================================================= */
 
-void shadow_get_light_point(d3pnt *pnt,int high,d3pnt *light_pnt,int *light_intensity)
+int shadow_get_light_point(model_draw *draw,d3pnt *light_pnt)
 {
-	view_light_spot_type			*lspot;
+	int					intensity;
 
-		// get closest light
+		// average all the lights
+		// for the shadow projection
 
-	lspot=gl_light_find_closest_light((float)pnt->x,(float)pnt->y,(float)pnt->z);
-	if (lspot!=NULL) {
-		memmove(light_pnt,&lspot->pnt,sizeof(d3pnt));
-		*light_intensity=lspot->i_intensity;
-		return;
-	}
+	intensity=gl_light_get_averaged_shadow_light(&draw->pnt,draw->light_cache.count,draw->light_cache.indexes,light_pnt);
+	if (intensity!=-1) return(intensity);
 
 		// if no light, get light directly above
 
-	memmove(light_pnt,pnt,sizeof(d3pnt));
-	light_pnt->y-=15000;
-	*light_intensity=15000+high;
+	light_pnt->x=draw->pnt.x;
+	light_pnt->y=draw->pnt.y-=15000;
+	light_pnt->z=draw->pnt.z;
+
+	return(15000+draw->size.y);
 }
 
 /* =======================================================
@@ -492,11 +491,10 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 	model_mesh=&mdl->meshes[model_mesh_idx];
 	
 	if (model_mesh->nvertex>=view_shadows_model_vertex_count) return;
-
 	
 		// get light
 
-	shadow_get_light_point(&draw->pnt,draw->size.y,&light_pnt,&light_intensity);
+	light_intensity=shadow_get_light_point(draw,&light_pnt);
 	
 		// adjust light if angle would be it infinite
 		

@@ -305,6 +305,11 @@ typedef struct		{
 					} model_light_cache;
 
 typedef struct		{
+						int								frame;
+						bool							animation_on,animation_reverse;
+					} model_texture_type;
+					
+typedef struct		{
 						int								vertex_count,vertex_mem_sz,vertex_stride,
 														shadow_vertex_mem_sz,shadow_vertex_stride;
 						GLuint							vertex,shadow_vertex;
@@ -322,7 +327,6 @@ typedef struct		{
 														bounce,face_forward,
 														has_opaque,has_transparent,has_glow,
 														built_vertex_list;
-						unsigned char					cur_texture_frame[max_model_mesh];
 						d3pnt							pnt,size,center,offset;
 						d3ang							rot,spin;
 						model_draw_connect				connect;
@@ -336,6 +340,7 @@ typedef struct		{
 						model_draw_no_rot				no_rot;
 						model_draw_remote_name			remote_name;
 						model_light_cache				light_cache;
+						model_texture_type				textures[max_model_texture];
 						model_vbo_type					vbo[max_model_mesh];
 						model_draw_setup				setup;
 					} model_draw;
