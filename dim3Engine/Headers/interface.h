@@ -633,7 +633,7 @@ extern inline bool gl_check_shader_ok(void);
 //
 
 extern void gl_lights_compile(int tick);
-extern view_light_spot_type* gl_light_find_closest_light(float x,float y,float z);
+extern int gl_light_get_averaged_shadow_light(d3pnt *pnt,int count,int *indexes,d3pnt *light_pnt);
 extern void gl_lights_calc_ambient_color(d3col *col);
 extern void gl_lights_calc_diffuse_vector(d3pnt *pnt,int count,int *indexes,d3vct *vct);
 extern void gl_lights_calc_color(float x,float y,float z,float *cf);
@@ -893,7 +893,7 @@ extern void render_map_liquid_transparent(void);
 // shadows
 //
 
-extern void shadow_get_light_point(d3pnt *pnt,int high,d3pnt *light_pnt,int *light_intensity);
+extern int shadow_get_light_point(model_draw *draw,d3pnt *light_pnt);
 extern void shadow_get_bound_box(d3pnt *pnt,int high,d3pnt *light_pnt,int light_intensity,d3pnt *min,d3pnt *max);
 extern void shadow_render_model(model_draw *draw);
 

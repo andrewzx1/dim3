@@ -433,7 +433,8 @@ extern void model_draw_setup_projectile(proj_type *proj);
 extern void model_draw_setup_interface_models(model_type *mdl,model_draw *draw,int x,int y);
 extern void model_get_view_min_max(model_draw *draw,d3pnt *pnt,d3pnt *min,d3pnt *max);
 
-extern void model_change_fill(model_draw *draw,int wfill,int txt);
+extern void model_texture_change_frame(model_draw *draw,int txt_idx,int frame);
+extern void model_texture_change_animation(model_draw *draw,int txt_idx,bool on,bool reverse);
 extern void model_get_current_animation_name(model_draw *draw,char *name);
 extern int model_find_animation_from_draw(model_draw *draw,char *name);
 extern bool model_start_animation(model_draw *draw,char *name,int tick);

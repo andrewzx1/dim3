@@ -219,7 +219,10 @@ void net_client_send_remote_update(obj_type *obj,bool chat_on)
 	}
 	
 	update.model_mesh_mask=htonl(draw->mesh_mask);
-	memmove(update.model_cur_texture_frame,draw->cur_texture_frame,max_model_texture);
+	
+	for (n=0;n!=max_model_texture;n++) {
+		update.model_cur_texture_frame[n]=(unsigned char)draw->textures[n].frame;
+	}
 
 		// dynamic bones
 

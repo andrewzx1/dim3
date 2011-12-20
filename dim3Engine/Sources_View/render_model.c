@@ -46,10 +46,16 @@ inline int render_model_get_texture_frame(model_type *mdl,model_draw *draw,int t
 {
 	texture_type		*texture;
 
+		// regular texture animation
+		
 	texture=&mdl->textures[txt_idx];
 	if (texture->animate.on) return(texture->animate.current_frame);
 	
-	return((int)draw->cur_texture_frame[txt_idx]);
+		// if script based animation is on, replace
+		// frame
+		
+	if (draw->textures[txt_idx].animation_on) draw->textures[txt_idx].frame=bitmap_texture_get_current_frame(texture,draw->textures[txt_idx].animation_reverse,game_time_get());
+	return(draw->textures[txt_idx].frame);
 }
 
 inline float render_model_get_mesh_alpha(model_draw *draw,int mesh_idx)

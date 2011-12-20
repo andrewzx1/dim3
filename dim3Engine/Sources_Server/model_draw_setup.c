@@ -509,7 +509,9 @@ void model_draw_setup_interface_models(model_type *mdl,model_draw *draw,int x,in
 	}
 
 	for (n=0;n!=max_model_texture;n++) {
-		draw->cur_texture_frame[n]=0;
+		draw->textures[n].animation_on=FALSE;
+		draw->textures[n].animation_reverse=FALSE;
+		draw->textures[n].frame=0;
 	}
 }
 

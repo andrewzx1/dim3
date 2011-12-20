@@ -42,7 +42,7 @@ JSValueRef js_model_fill_stopAnimation_func(JSContextRef cx,JSObjectRef func,JSO
 JSStaticFunction	model_fill_functions[]={
 							{"change",				js_model_fill_change_func,				kJSPropertyAttributeDontDelete},
 							{"startAnimation",		js_model_fill_startAnimation_func,		kJSPropertyAttributeDontDelete},
-							{"endAnimation",		js_model_fill_stopAnimation_func,		kJSPropertyAttributeDontDelete},
+							{"stopAnimation",		js_model_fill_stopAnimation_func,		kJSPropertyAttributeDontDelete},
 							{0,0,0}};
 
 JSClassRef			model_fill_class;
@@ -81,7 +81,7 @@ JSValueRef js_model_fill_change_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 	
 	draw=script_find_model_draw(j_obj);
-    model_change_fill(draw,script_value_to_int(cx,argv[0]),script_value_to_int(cx,argv[1]));
+    model_texture_change_frame(draw,script_value_to_int(cx,argv[0]),script_value_to_int(cx,argv[1]));
 
 	return(script_null_to_value(cx));
 }
@@ -90,9 +90,10 @@ JSValueRef js_model_fill_startAnimation_func(JSContextRef cx,JSObjectRef func,JS
 {
     model_draw		*draw;
 	
-	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 	
 	draw=script_find_model_draw(j_obj);
+	model_texture_change_animation(draw,script_value_to_int(cx,argv[0]),TRUE,(!script_value_to_bool(cx,argv[1])));
  
 	return(script_null_to_value(cx));
 }
@@ -101,9 +102,10 @@ JSValueRef js_model_fill_stopAnimation_func(JSContextRef cx,JSObjectRef func,JSO
 {
     model_draw		*draw;
 	
-	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
 	draw=script_find_model_draw(j_obj);
+	model_texture_change_animation(draw,script_value_to_int(cx,argv[0]),FALSE,FALSE);
  
 	return(script_null_to_value(cx));
 }
