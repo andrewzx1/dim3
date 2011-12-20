@@ -910,9 +910,9 @@ void render_model_debug_normals(model_type *mdl,int mesh_idx,model_draw *draw)
 			idx=poly->v[k]*3;
 
 			va=draw->setup.mesh_arrays[mesh_idx].gl_vertex_array+idx;
-			pnt1.x=*va++;
-			pnt1.y=*va++;
-			pnt1.z=*va;
+			pnt1.x=(int)*va++;
+			pnt1.y=(int)*va++;
+			pnt1.z=(int)*va;
 
 			na=draw->setup.mesh_arrays[mesh_idx].gl_normal_array+idx;
 			pnt2.x=pnt1.x+(int)(100.0f*(*na++));

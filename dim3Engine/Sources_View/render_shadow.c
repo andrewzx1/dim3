@@ -97,7 +97,7 @@ int shadow_get_light_point(model_draw *draw,d3pnt *light_pnt)
 		// average all the lights
 		// for the shadow projection
 
-	intensity=gl_light_get_averaged_shadow_light(&draw->pnt,draw->light_cache.count,draw->light_cache.indexes,light_pnt);
+	intensity=gl_light_get_averaged_shadow_light(&draw->pnt,light_pnt);
 	if (intensity!=-1) return(intensity);
 
 		// if no light, get light directly above

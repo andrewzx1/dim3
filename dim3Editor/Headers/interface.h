@@ -416,7 +416,7 @@ extern void view_draw_select(editor_view_type *view);
 extern bool view_pick_list_start(editor_view_type *view,bool in_2D,int count);
 extern void view_pick_list_end(editor_view_type *view,d3pnt *pnt,int *type,int *main_idx,int *sub_idx);
 extern bool view_pick_list_multiple_setup(editor_view_type *view);
-extern int view_pick_list_multiple_pick(editor_view_type *view,d3pnt *start_pnt,d3pnt *end_pnt,int *type,int *main_idx,int *sub_idx,int max_item);
+extern int view_pick_list_multiple_pick(editor_view_type *view,d3pnt *start_pnt,d3pnt *end_pnt,view_picker_type *pick_list);
 extern void view_pick_list_multiple_end(void);
 extern void view_pick_list_add(int type,int main_idx,int sub_idx);
 extern void view_pick_list_add_cube(d3pnt *v_pnts,int type,int main_idx,int sub_idx);

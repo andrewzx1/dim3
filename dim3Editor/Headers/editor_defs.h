@@ -196,12 +196,6 @@ and can be sold or given away.
 #define view_texture_shift_factor				100.0f
 
 //
-// clicking
-//
-
-#define view_max_box_select_item				256
-
-//
 // opengl settings
 //
 

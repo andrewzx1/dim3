@@ -158,7 +158,7 @@ static inline bool gl_lights_collide_with_box(view_light_spot_type *lspot,d3pnt 
 	return(TRUE);
 }
 
-static inline bool gl_lights_direction_ok(float x,float y,float z,view_light_spot_type *lspot)
+static inline bool gl_lights_direction_float_ok(float x,float y,float z,view_light_spot_type *lspot)
 {
 	switch (lspot->direction) {
 
@@ -182,6 +182,36 @@ static inline bool gl_lights_direction_ok(float x,float y,float z,view_light_spo
 
 		case ld_pos_z:
 			return(z>=lspot->f_z);
+
+	}
+
+	return(TRUE);
+}
+
+static inline bool gl_lights_direction_pnt_ok(d3pnt *pnt,view_light_spot_type *lspot)
+{
+	switch (lspot->direction) {
+
+		case ld_all:
+			return(TRUE);
+
+		case ld_neg_x:
+			return(pnt->x<=lspot->pnt.x);
+
+		case ld_pos_x:
+			return(pnt->x>=lspot->pnt.x);
+
+		case ld_neg_y:
+			return(pnt->y<=lspot->pnt.y);
+
+		case ld_pos_y:
+			return(pnt->y>=lspot->pnt.y);
+
+		case ld_neg_z:
+			return(pnt->z<=lspot->pnt.z);
+
+		case ld_pos_z:
+			return(pnt->z>=lspot->pnt.z);
 
 	}
 
@@ -645,7 +675,7 @@ void gl_lights_calc_color(float x,float y,float z,float *cf)
 		f=sqrtf((fx*fx)+(fz*fz)+(fy*fy));
 
 		if (f<=lspot->f_intensity) {
-			if (gl_lights_direction_ok(x,y,z,lspot)) {
+			if (gl_lights_direction_float_ok(x,y,z,lspot)) {
 
 				mult=(lspot->f_intensity-f)*lspot->f_inv_intensity;
 				
@@ -690,7 +720,7 @@ void gl_lights_calc_color_light_cache_byte(int count,int *indexes,bool skip_ligh
 
 		if (f<=lspot->f_intensity) {
 
-			if (gl_lights_direction_ok(x,y,z,lspot)) {
+			if (gl_lights_direction_float_ok(x,y,z,lspot)) {
 
 				mult=(lspot->f_intensity-f)*lspot->f_inv_intensity;
 				
@@ -741,7 +771,7 @@ void gl_lights_calc_color_light_cache_float(int count,int *indexes,bool skip_lig
 
 		if (f<=lspot->f_intensity) {
 
-			if (gl_lights_direction_ok(x,y,z,lspot)) {
+			if (gl_lights_direction_float_ok(x,y,z,lspot)) {
 
 				mult=(lspot->f_intensity-f)*lspot->f_inv_intensity;
 				
@@ -775,34 +805,29 @@ void gl_lights_calc_color_light_cache_float(int count,int *indexes,bool skip_lig
       
 ======================================================= */
 
-int gl_light_get_averaged_shadow_light(d3pnt *pnt,int count,int *indexes,d3pnt *light_pnt)
+int gl_light_get_averaged_shadow_light(d3pnt *pnt,d3pnt *light_pnt)
 {
-	int						n;
+	int						n,hit_idx,count;
 	float					f,fx,fy,fz,f_dist,f_tot_intensity;
-	float					f_intensity[max_model_light_cache_index];
+	float					f_intensity[max_light_spot];
 	view_light_spot_type	*lspot;
 
 		// no lights in scene
 
-	if (count==0) return(-1);
-	
-		// special check for single light
-		
-	if (count==1) {
-		lspot=&view.render->light.spots[indexes[0]];
-		light_pnt->x=lspot->pnt.x;
-		light_pnt->y=lspot->pnt.y;
-		light_pnt->z=lspot->pnt.z;
-		return(lspot->i_intensity);
-	}
+	if (view.render->light.count==0) return(-1);
 	
 		// get the intensity for all the lights
 		// hit in the cache
 		
+	count=0;
+	hit_idx=0;
+
 	f_tot_intensity=0.0f;
 		
-	for (n=0;n!=count;n++) {
-		lspot=&view.render->light.spots[indexes[n]];
+	for (n=0;n!=view.render->light.count;n++) {
+		lspot=&view.render->light.spots[n];
+
+		f_intensity[n]=0;
 
 			// get distance
 			
@@ -811,6 +836,9 @@ int gl_light_get_averaged_shadow_light(d3pnt *pnt,int count,int *indexes,d3pnt *
 		fz=(float)(lspot->pnt.z-pnt->z);
 
 		f_dist=sqrtf((fx*fx)+(fy*fy)+(fz*fz));
+
+		if (f_dist>lspot->f_intensity) continue;
+		if (!gl_lights_direction_pnt_ok(pnt,lspot)) continue;
 		
 			// get the intensity
 			
@@ -821,6 +849,23 @@ int gl_light_get_averaged_shadow_light(d3pnt *pnt,int count,int *indexes,d3pnt *
 			// so we can weight them later
 					
 		f_tot_intensity+=f_intensity[n];
+
+		hit_idx=n;
+		count++;
+	}
+
+		// no hits
+
+	if (count==0) return(-1);
+
+		// special check for single light
+		
+	if (view.render->light.count==1) {
+		lspot=&view.render->light.spots[hit_idx];
+		light_pnt->x=lspot->pnt.x;
+		light_pnt->y=lspot->pnt.y;
+		light_pnt->z=lspot->pnt.z;
+		return(lspot->i_intensity);
 	}
 	
 		// now we need to weighed average
@@ -832,8 +877,10 @@ int gl_light_get_averaged_shadow_light(d3pnt *pnt,int count,int *indexes,d3pnt *
 	light_pnt->y=0;
 	light_pnt->z=0;
 	
-	for (n=0;n!=count;n++) {
-		lspot=&view.render->light.spots[indexes[n]];
+	for (n=0;n!=view.render->light.count;n++) {
+		if (f_intensity[n]==0) continue;
+
+		lspot=&view.render->light.spots[n];
 		
 		f=f_intensity[n]/f_tot_intensity;
 		

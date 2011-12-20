@@ -1238,13 +1238,11 @@ bool view_click_drag_item(editor_view_type *view,d3pnt *pt)
 
 bool view_click_box_select(editor_view_type *view,d3pnt *pt)
 {
-	int				n,x,y,item_count,
-					type[view_max_box_select_item],
-					main_idx[view_max_box_select_item],
-					sub_idx[view_max_box_select_item];
-	bool			shift,moved;
-	d3pnt			old_pt;
-	d3rect			box;
+	int					n,x,y,item_count;
+	bool				shift,moved;
+	d3pnt				old_pt;
+	d3rect				box;
+	view_picker_type	*pick_list;
 		
 	view_get_pixel_box(view,&box);
 	
@@ -1265,6 +1263,11 @@ bool view_click_box_select(editor_view_type *view,d3pnt *pt)
 
 	shift=os_key_shift_down();
 	if (shift) select_duplicate_backup();
+
+		// memory for picks
+
+	pick_list=(view_picker_type*)malloc(sizeof(view_picker_type)*select_max_item);
+	if (pick_list==NULL) return(FALSE);
 	
 		// run the select
 
@@ -1288,7 +1291,7 @@ bool view_click_box_select(editor_view_type *view,d3pnt *pt)
 
 			// select any items
 			
-		item_count=view_pick_list_multiple_pick(view,&state.select_box_start_pnt,&state.select_box_end_pnt,type,main_idx,sub_idx,view_max_box_select_item);
+		item_count=view_pick_list_multiple_pick(view,&state.select_box_start_pnt,&state.select_box_end_pnt,pick_list);
 		
 		if (!shift) {
 			select_clear();
@@ -1299,10 +1302,10 @@ bool view_click_box_select(editor_view_type *view,d3pnt *pt)
 		
 		for (n=0;n!=item_count;n++) {
 			if (state.drag_mode==drag_mode_mesh) {
-				select_add(type[n],main_idx[n],-1);
+				select_add(pick_list[n].type,pick_list[n].main_idx,-1);
 			}
 			else {
-				select_add(type[n],main_idx[n],sub_idx[n]);
+				select_add(pick_list[n].type,pick_list[n].main_idx,pick_list[n].sub_idx);
 			}
 		}
 
@@ -1314,6 +1317,8 @@ bool view_click_box_select(editor_view_type *view,d3pnt *pt)
 		// end picking
 
 	view_pick_list_multiple_end();
+
+	free(pick_list);
 
 		// clear the select box
 

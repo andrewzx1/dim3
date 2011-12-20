@@ -189,7 +189,7 @@ bool view_pick_list_multiple_setup(editor_view_type *view)
 	return(TRUE);
 }
 
-int view_pick_list_multiple_pick(editor_view_type *view,d3pnt *start_pnt,d3pnt *end_pnt,int *type,int *main_idx,int *sub_idx,int max_item)
+int view_pick_list_multiple_pick(editor_view_type *view,d3pnt *start_pnt,d3pnt *end_pnt,view_picker_type *pick_list)
 {
 	int					n,x,y,lx,rx,ty,by,wid,high,col,
 						item_count,p_type,p_main_idx,p_sub_idx;
@@ -284,11 +284,11 @@ int view_pick_list_multiple_pick(editor_view_type *view,d3pnt *start_pnt,d3pnt *
 
 				// add to list
 
-			if (item_count==max_item) break;
+			if (item_count==select_max_item) break;
 
-			type[item_count]=p_type;
-			main_idx[item_count]=p_main_idx;
-			sub_idx[item_count]=p_sub_idx;
+			pick_list[item_count].type=p_type;
+			pick_list[item_count].main_idx=p_main_idx;
+			pick_list[item_count].sub_idx=p_sub_idx;
 
 			item_count++;
 		}
