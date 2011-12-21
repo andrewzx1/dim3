@@ -808,8 +808,8 @@ void gl_lights_calc_color_light_cache_float(int count,int *indexes,bool skip_lig
 int gl_light_get_averaged_shadow_light(d3pnt *pnt,d3pnt *light_pnt)
 {
 	int						n,hit_idx,count;
-	float					f,fx,fy,fz,f_dist,f_tot_intensity;
-	float					f_intensity[max_light_spot];
+	float					f,fx,fy,fz,f_intensity,f_tot_dist;
+	float					f_dist[max_light_spot];
 	view_light_spot_type	*lspot;
 
 		// no lights in scene
@@ -822,12 +822,12 @@ int gl_light_get_averaged_shadow_light(d3pnt *pnt,d3pnt *light_pnt)
 	count=0;
 	hit_idx=0;
 
-	f_tot_intensity=0.0f;
+	f_tot_dist=0.0f;
 		
 	for (n=0;n!=view.render->light.count;n++) {
 		lspot=&view.render->light.spots[n];
 
-		f_intensity[n]=0;
+		f_dist[n]=0;
 
 			// get distance
 			
@@ -835,20 +835,15 @@ int gl_light_get_averaged_shadow_light(d3pnt *pnt,d3pnt *light_pnt)
 		fy=(float)(lspot->pnt.y-pnt->y);
 		fz=(float)(lspot->pnt.z-pnt->z);
 
-		f_dist=sqrtf((fx*fx)+(fy*fy)+(fz*fz));
+		f_dist[n]=sqrtf((fx*fx)+(fy*fy)+(fz*fz));
 
-		if (f_dist>lspot->f_intensity) continue;
+		if (f_dist[n]>lspot->f_intensity) continue;
 		if (!gl_lights_direction_pnt_ok(pnt,lspot)) continue;
 		
-			// get the intensity
-			
-		f_intensity[n]=(lspot->f_intensity-f_dist)*lspot->f_inv_intensity;
-		f_intensity[n]+=powf(f_intensity[n],lspot->f_exponent);
-		
-			// added up the total instensity
+			// added up the total distance
 			// so we can weight them later
 					
-		f_tot_intensity+=f_intensity[n];
+		f_tot_dist+=f_dist[n];
 
 		hit_idx=n;
 		count++;
@@ -860,7 +855,7 @@ int gl_light_get_averaged_shadow_light(d3pnt *pnt,d3pnt *light_pnt)
 
 		// special check for single light
 		
-	if (view.render->light.count==1) {
+	if (count==1) {
 		lspot=&view.render->light.spots[hit_idx];
 		light_pnt->x=lspot->pnt.x;
 		light_pnt->y=lspot->pnt.y;
@@ -877,16 +872,20 @@ int gl_light_get_averaged_shadow_light(d3pnt *pnt,d3pnt *light_pnt)
 	light_pnt->y=0;
 	light_pnt->z=0;
 	
+	f_intensity=0.0f;
+	
 	for (n=0;n!=view.render->light.count;n++) {
-		if (f_intensity[n]==0) continue;
+		if (f_dist[n]==0) continue;
 
 		lspot=&view.render->light.spots[n];
 		
-		f=f_intensity[n]/f_tot_intensity;
+		f=1.0f-(f_dist[n]/f_tot_dist);
 		
 		light_pnt->x+=(int)(((float)(lspot->pnt.x-pnt->x))*f);
 		light_pnt->y+=(int)(((float)(lspot->pnt.y-pnt->y))*f);
 		light_pnt->z+=(int)(((float)(lspot->pnt.z-pnt->z))*f);
+		
+		f_intensity+=lspot->f_intensity*f;
 	}
 	
 		// now average
@@ -895,7 +894,7 @@ int gl_light_get_averaged_shadow_light(d3pnt *pnt,d3pnt *light_pnt)
 	light_pnt->y=pnt->y+(light_pnt->y/count);
 	light_pnt->z=pnt->z+(light_pnt->z/count);
 	
-	return((int)f_tot_intensity);
+	return(((int)f_intensity)/count);
 }
 
 /* =======================================================

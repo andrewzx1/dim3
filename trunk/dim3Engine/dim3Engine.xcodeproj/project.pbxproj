@@ -1322,13 +1322,11 @@
 		260B3F471411F781006ED023 /* Sources_View */ = {
 			isa = PBXGroup;
 			children = (
+				26188CEE14A1A00400EDF154 /* Video */,
+				26188CEF14A1A01100EDF154 /* Audio */,
 				263A144E149BE25400F31189 /* View */,
 				263A144F149BE27500F31189 /* Render */,
-				260B3F481411F781006ED023 /* al_ambient.c */,
-				260B3F491411F781006ED023 /* al_buffer.c */,
-				260B3F4A1411F781006ED023 /* al_music.c */,
-				260B3F4B1411F781006ED023 /* al_play.c */,
-				260B3F4C1411F781006ED023 /* al_setup.c */,
+				26188CF014A1A01C00EDF154 /* GUI */,
 				260B3F4D1411F781006ED023 /* ambients.c */,
 				260B3F4E1411F781006ED023 /* chat.c */,
 				260B3F4F1411F781006ED023 /* chooser_draw.c */,
@@ -1339,50 +1337,27 @@
 				260B3F541411F781006ED023 /* cursor.c */,
 				260B3F551411F781006ED023 /* decals_draw.c */,
 				260B3F561411F781006ED023 /* effects_draw.c */,
-				260B3F571411F781006ED023 /* elemets.c */,
 				260B3F581411F781006ED023 /* error.c */,
 				260B3F591411F781006ED023 /* fade.c */,
-				260B3F5A1411F781006ED023 /* files.c */,
 				260B3F5B1411F781006ED023 /* fog.c */,
-				260B3F5C1411F781006ED023 /* gl_back_render.c */,
-				260B3F5D1411F781006ED023 /* gl_check.c */,
-				260B3F5E1411F781006ED023 /* gl_es_patches.c */,
-				260B3F5F1411F781006ED023 /* gl_frames.c */,
-				260B3F601411F781006ED023 /* gl_light.c */,
-				260B3F611411F781006ED023 /* gl_renderer.c */,
-				260B3F621411F781006ED023 /* gl_shader.c */,
-				260B3F631411F781006ED023 /* gl_shader_core.c */,
-				260B3F641411F781006ED023 /* gl_shader_fullscreen.c */,
-				260B3F651411F781006ED023 /* gl_shader_user.c */,
-				260B3F661411F781006ED023 /* gl_text.c */,
-				260B3F671411F781006ED023 /* gl_texture.c */,
-				260B3F681411F781006ED023 /* gui.c */,
 				260B3F691411F781006ED023 /* halo_draw.c */,
 				260B3F6A1411F781006ED023 /* hand.c */,
-				260B3F6B1411F781006ED023 /* host.c */,
 				260B3F6C1411F781006ED023 /* hud_draw.c */,
 				260B3F6D1411F781006ED023 /* input.c */,
 				260B3F6E1411F781006ED023 /* input_joystick.c */,
 				260B3F6F1411F781006ED023 /* input_keyboard.c */,
 				260B3F701411F781006ED023 /* input_mouse.c */,
 				260B3F711411F781006ED023 /* input_touch.c */,
-				260B3F721411F781006ED023 /* intro.c */,
-				260B3F731411F781006ED023 /* join.c */,
 				260B3F741411F781006ED023 /* menu_draw.c */,
 				260B3F751411F781006ED023 /* network_draw.c */,
 				260B3F761411F781006ED023 /* particles_draw.c */,
 				260B3F771411F781006ED023 /* player_input.c */,
-				260B3F781411F781006ED023 /* progress.c */,
 				260B3F791411F781006ED023 /* radar_draw.c */,
 				260B3F7A1411F781006ED023 /* rain.c */,
 				260B3F7B1411F781006ED023 /* remote_status.c */,
 				260B3F811411F781006ED023 /* rings_draw.c */,
-				260B3F821411F781006ED023 /* score_limit.c */,
-				260B3F831411F781006ED023 /* setup_game.c */,
-				260B3F841411F781006ED023 /* setup_network.c */,
 				260B3F851411F781006ED023 /* sky.c */,
 				260B3F861411F781006ED023 /* tint.c */,
-				260B3F871411F781006ED023 /* title.c */,
 				260B3F931411F781006ED023 /* virtual_draw.c */,
 				260B3F941411F781006ED023 /* zoom_draw.c */,
 			);
@@ -1462,6 +1437,55 @@
 			);
 			name = SDL;
 			path = ../dim3Common/Libraries/SDL;
+			sourceTree = "<group>";
+		};
+		26188CEE14A1A00400EDF154 /* Video */ = {
+			isa = PBXGroup;
+			children = (
+				260B3F5C1411F781006ED023 /* gl_back_render.c */,
+				260B3F5D1411F781006ED023 /* gl_check.c */,
+				260B3F5E1411F781006ED023 /* gl_es_patches.c */,
+				260B3F5F1411F781006ED023 /* gl_frames.c */,
+				260B3F601411F781006ED023 /* gl_light.c */,
+				260B3F611411F781006ED023 /* gl_renderer.c */,
+				260B3F621411F781006ED023 /* gl_shader.c */,
+				260B3F631411F781006ED023 /* gl_shader_core.c */,
+				260B3F641411F781006ED023 /* gl_shader_fullscreen.c */,
+				260B3F651411F781006ED023 /* gl_shader_user.c */,
+				260B3F661411F781006ED023 /* gl_text.c */,
+				260B3F671411F781006ED023 /* gl_texture.c */,
+			);
+			name = Video;
+			sourceTree = "<group>";
+		};
+		26188CEF14A1A01100EDF154 /* Audio */ = {
+			isa = PBXGroup;
+			children = (
+				260B3F481411F781006ED023 /* al_ambient.c */,
+				260B3F491411F781006ED023 /* al_buffer.c */,
+				260B3F4A1411F781006ED023 /* al_music.c */,
+				260B3F4B1411F781006ED023 /* al_play.c */,
+				260B3F4C1411F781006ED023 /* al_setup.c */,
+			);
+			name = Audio;
+			sourceTree = "<group>";
+		};
+		26188CF014A1A01C00EDF154 /* GUI */ = {
+			isa = PBXGroup;
+			children = (
+				260B3F681411F781006ED023 /* gui.c */,
+				260B3F571411F781006ED023 /* elemets.c */,
+				260B3F781411F781006ED023 /* progress.c */,
+				260B3F721411F781006ED023 /* intro.c */,
+				260B3F871411F781006ED023 /* title.c */,
+				260B3F5A1411F781006ED023 /* files.c */,
+				260B3F831411F781006ED023 /* setup_game.c */,
+				260B3F841411F781006ED023 /* setup_network.c */,
+				260B3F6B1411F781006ED023 /* host.c */,
+				260B3F731411F781006ED023 /* join.c */,
+				260B3F821411F781006ED023 /* score_limit.c */,
+			);
+			name = GUI;
 			sourceTree = "<group>";
 		};
 		263A144E149BE25400F31189 /* View */ = {
