@@ -347,14 +347,15 @@ void view_draw(void)
 	obj=server.obj_list.objs[server.player_obj_idx];
 	weap=weapon_find_current(obj);
 
-		// camera render
+		// use the camera render
 
 	view.render=&view_camera_render;
 	
 		// set view camera
 	
 	camera_obj=server.obj_list.objs[camera.obj_idx];
-	camera_get_position(&view.render->camera.pnt,&view.render->camera.ang);
+	memmove(&view.render->camera.pnt,&camera.cur_pos.pnt,sizeof(d3pnt));
+	memmove(&view.render->camera.ang,&camera.cur_pos.ang,sizeof(d3ang));
 
 	view.render->camera.fov=camera.setup.plane.fov;
 	view.render->camera.flip=FALSE;
@@ -409,9 +410,6 @@ void view_draw(void)
 
 bool view_draw_node(node_type *node)
 {
-	d3pnt			pnt;
-	d3ang			ang;
-
 		// switch out to node rendering
 
 	view.render=&view_node_render;
@@ -424,11 +422,9 @@ bool view_draw_node(node_type *node)
 		memmove(&view.render->camera.ang,&node->ang,sizeof(d3ang));
 	}
 	else {
-		camera_get_position(&pnt,&ang);
-
-		view.render->camera.ang.x=angle_find(node->pnt.y,node->pnt.z,pnt.y,pnt.z);
-		view.render->camera.ang.y=angle_find(node->pnt.x,node->pnt.z,pnt.x,pnt.z);
-		view.render->camera.ang.z=angle_find(node->pnt.x,node->pnt.y,pnt.x,pnt.y);
+		view.render->camera.ang.x=angle_find(node->pnt.y,node->pnt.z,camera.cur_pos.pnt.y,camera.cur_pos.pnt.z);
+		view.render->camera.ang.y=angle_find(node->pnt.x,node->pnt.z,camera.cur_pos.pnt.x,camera.cur_pos.pnt.z);
+		view.render->camera.ang.z=angle_find(node->pnt.x,node->pnt.y,camera.cur_pos.pnt.x,camera.cur_pos.pnt.y);
 	}
 
 	view.render->camera.fov=camera.setup.plane.fov;

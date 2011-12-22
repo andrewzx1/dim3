@@ -110,23 +110,31 @@ bool map_new(map_type *map,char *name)
 
 	map->camera.mode=cv_fpp;
 	
-	map->camera.pnt.x=0;
-	map->camera.pnt.y=0;
-	map->camera.pnt.z=0;
+	map->camera.pnt_offset.x=0;
+	map->camera.pnt_offset.y=0;
+	map->camera.pnt_offset.z=0;
 
-	map->camera.ang.x=0.0f;
-	map->camera.ang.y=0.0f;
-	map->camera.ang.z=0.0f;
+	map->camera.ang_offset.x=0.0f;
+	map->camera.ang_offset.y=0.0f;
+	map->camera.ang_offset.z=0.0f;
     
     map->camera.chase.distance=8000;
 	map->camera.chase.track_speed=1.0f;
-    
+
+  	map->camera.chase.track_ang.x=0.0f;
+	map->camera.chase.track_ang.y=0.0f;
+	map->camera.chase.track_ang.z=0.0f;
+  
 	map->camera.chase.slop.x=0.0f;
 	map->camera.chase.slop.y=0.0f;
 	map->camera.chase.slop.z=0.0f;
     
     map->camera.c_static.follow=TRUE;
 	map->camera.c_static.attach_node[0]=0x0;
+
+	map->camera.c_static.pnt.x=0;
+	map->camera.c_static.pnt.y=0;
+	map->camera.c_static.pnt.z=0;
 
 	map->camera.plane.fov=60.0f;
 	map->camera.plane.aspect_ratio=1.0f;

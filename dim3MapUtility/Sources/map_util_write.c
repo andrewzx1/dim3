@@ -474,7 +474,8 @@ void write_map_camera_xml(map_type *map)
 {
     xml_add_tagstart("Camera");
 	xml_add_attribute_list("mode",(char*)camera_mode_str,map->camera.mode);
-	xml_add_attribute_3_coord_float("ang",map->camera.ang.x,map->camera.ang.y,map->camera.ang.z);
+	xml_add_attribute_3_coord_float("ang",map->camera.ang_offset.x,map->camera.ang_offset.y,map->camera.ang_offset.z);
+	xml_add_attribute_3_coord_int("pnt",map->camera.pnt_offset.x,map->camera.pnt_offset.y,map->camera.pnt_offset.z);
 	xml_add_tagend(FALSE);
 
 	xml_add_tagstart("Plane");
@@ -488,6 +489,7 @@ void write_map_camera_xml(map_type *map)
 	xml_add_tagstart("Chase");
 	xml_add_attribute_int("distance",map->camera.chase.distance);
 	xml_add_attribute_float("track_speed",map->camera.chase.track_speed);
+	xml_add_attribute_3_coord_float("track_ang",map->camera.chase.track_ang.x,map->camera.chase.track_ang.y,map->camera.chase.track_ang.z);
 	xml_add_attribute_3_coord_float("slop",map->camera.chase.slop.x,map->camera.chase.slop.y,map->camera.chase.slop.z);
 	xml_add_tagend(TRUE);
 

@@ -34,20 +34,22 @@ and can be sold or given away.
 #include "interface.h"
 
 #define kMapPropertyCameraMode						0
-#define kMapPropertyCameraAngle						1
 
-#define kMapPropertyCameraFOV						10
-#define kMapPropertyCameraAspectRatio				11
-#define kMapPropertyCameraNearZ						12
-#define kMapPropertyCameraFarZ						13
-#define kMapPropertyCameraNearZOffset				14
+#define kMapPropertyCameraAngle						10
+#define kMapPropertyCameraPoint						11
 
-#define kMapPropertyCameraChaseDistance				20
-#define kMapPropertyCameraChaseTrackSpeed			21
-#define kMapPropertyCameraChaseSlop					22
+#define kMapPropertyCameraFOV						20
+#define kMapPropertyCameraAspectRatio				21
+#define kMapPropertyCameraNearZ						22
+#define kMapPropertyCameraFarZ						23
+#define kMapPropertyCameraNearZOffset				24
 
-#define kMapPropertyCameraStaticFollow				30
-#define kMapPropertyCameraStaticAttachNode			31
+#define kMapPropertyCameraChaseDistance				30
+#define kMapPropertyCameraChaseTrackSpeed			31
+#define kMapPropertyCameraChaseSlop					32
+
+#define kMapPropertyCameraStaticFollow				40
+#define kMapPropertyCameraStaticAttachNode			41
 
 extern map_type					map;
 extern editor_state_type		state;
@@ -71,7 +73,12 @@ void property_palette_fill_camera(void)
 
 	list_palette_add_header(&property_palette,0,"Map Camera Settings");
 	list_palette_add_picker_list_int(&property_palette,kMapPropertyCameraMode,"Mode",(char*)map_property_camera_mode_list,-1,name_str_len,0,FALSE,&map.camera.mode,FALSE);
-	list_palette_add_angle(&property_palette,kMapPropertyCameraAngle,"Offset Angle",&map.camera.ang,FALSE);
+
+		// camera settings
+
+	list_palette_add_header(&property_palette,0,"Map Camera Offsets");
+	list_palette_add_angle(&property_palette,kMapPropertyCameraAngle,"Angle Offset",&map.camera.ang_offset,FALSE);
+	list_palette_add_point(&property_palette,kMapPropertyCameraPoint,"Point Offset",&map.camera.pnt_offset,FALSE);
 
 		// camera plane
 

@@ -50,7 +50,7 @@ void camera_chase_connect(void)
 
 	obj=server.obj_list.objs[camera.obj_idx];
 	
-	memmove(&camera.setup.pnt,&obj->pnt,sizeof(d3pnt));
+	memmove(&camera.setup.c_static.pnt,&obj->pnt,sizeof(d3pnt));
 	
 		// current chasing angle
 	
@@ -140,7 +140,7 @@ int camera_chase_get_division(int x,int z,int y)
       
 ======================================================= */
 
-void camera_chase_get_position(d3pnt *pnt,d3ang *ang)
+void camera_chase_calc_position(void)
 {
 	int						n,xadd,yadd,zadd,radius,div,
 							cx,cz,cy;
@@ -221,25 +221,21 @@ void camera_chase_get_position(d3pnt *pnt,d3ang *ang)
 		}
 	}
 	
-        // new camera position
-
-	camera.setup.pnt.x=cx;
-	camera.setup.pnt.y=cy;
-	camera.setup.pnt.z=cz;
-	
-		// return values
+		// the position
 		
-    memmove(pnt,&camera.setup.pnt,sizeof(d3pnt));
+    camera.cur_pos.pnt.x=cx+camera->setup.pnt_offset.x;
+    camera.cur_pos.pnt.y=cy+camera->setup.pnt_offset.y;
+    camera.cur_pos.pnt.z=cz+camera->setup.pnt_offset.z;
 	
 		// looking angles
 	
-	ang->x=(camera.cur_chase_ang.x+camera.setup.ang.x)-obj->view_ang.x;
-
 	weap=weapon_find_current(obj);
-	if (weap!=NULL) ang->x=object_player_look_constrain(obj,weap,ang->x);
 
-	ang->y=angle_add(camera.cur_chase_ang.y,camera.setup.ang.y);
-	ang->z=camera.setup.ang.z;
+	camera.cur_pos.ang.x=(camera.cur_chase_ang.x+camera.setup.ang_offset.x)-obj->view_ang.x;
+	if (weap!=NULL) camera.cur_pos.ang.x=object_player_look_constrain(obj,weap,camera.cur_pos.ang.x);
+
+	camera.cur_pos.ang.y=angle_add(camera.cur_pos.chase_ang.y,camera.setup.ang_offset.y);
+	camera.cur_pos.ang.z=camera.setup.ang_offset.z;
 }
 
 /* =======================================================
@@ -248,7 +244,7 @@ void camera_chase_get_position(d3pnt *pnt,d3ang *ang)
       
 ======================================================= */
 
-void camera_chase_static_get_position(d3pnt *pnt,d3ang *ang)
+void camera_chase_static_get_position(void)
 {
 	float			fx,fy,fz,x_ang,y_ang;
 	obj_type		*obj;
@@ -262,22 +258,22 @@ void camera_chase_static_get_position(d3pnt *pnt,d3ang *ang)
 	fy=0;
 	fz=((float)camera.setup.chase.distance)+camera_chase_width_adjust();
 	
-	x_ang=camera.setup.ang.x;
+	x_ang=map.camera.chase.track_ang.x;
 	if (x_ang>180.0f) x_ang-=360.0f;
 	
-	y_ang=angle_add(camera.setup.ang.y,180.0f);
+	y_ang=angle_add(map.camera.chase.track_ang.y,180.0f);
 	
-	matrix_rotate_zyx(&mat,x_ang,y_ang,camera.setup.ang.z);
+	matrix_rotate_zyx(&mat,x_ang,y_ang,map.camera.chase.track_ang.z);
 	matrix_vertex_multiply(&mat,&fx,&fy,&fz);
 
-	pnt->x=camera.setup.pnt.x=obj->pnt.x+((int)fx);
-	pnt->y=camera.setup.pnt.y=obj->pnt.y+((int)fy);
-	pnt->z=camera.setup.pnt.z=obj->pnt.z+((int)fz);
+	camera.cur_pos.pnt.x=(obj->pnt.x+((int)fx))+map.camera.pnt_offset.x;
+	camera.cur_pos.pnt.y=(obj->pnt.y+((int)fy))+map.camera.pnt_offset.y;
+	camera.cur_pos.pnt.z=(obj->pnt.z+((int)fz))+map.camera.pnt_offset.z;
 	
 		// looking angles
-		
-	ang->x=x_ang;
-	ang->y=y_ang;
-	ang->z=camera.setup.ang.z;
+
+	camera.cur_pos.ang.x=x_ang+map.camera.chase.ang_offset.x;
+	camera.cur_pos.ang.y=angle_add(y_ang,map.camera.chase.ang_offset.y);
+	camera.cur_pos.ang.z=camera.setup.ang.z+map.camera.chase.ang_offset.z;
 }
 

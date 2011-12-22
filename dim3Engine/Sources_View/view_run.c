@@ -107,11 +107,11 @@ void view_run(void)
 
 			// listener position
 			
-		if (camera.setup.mode!=cv_static) {
+		if (camera.setup.mode==cv_fpp) {
 			al_set_listener(&obj->pnt,obj->ang.y);
 		}
 		else {
-			al_set_listener(&camera.setup.pnt,camera.setup.ang.y);
+			al_set_listener(&camera.cur_pos.pnt,camera.cur_pos.ang.y);
 		}
 		
 			// ambients

@@ -376,6 +376,11 @@ typedef struct		{
 //
 
 typedef struct		{
+						d3pnt								pnt,static_pnt;
+						d3ang								ang,static_ang,chase_ang;
+					} camera_current_position_type;
+
+typedef struct		{
 						int									node_seek_idx,node_dest_idx,
 															total_dist,msec,event_id,
 															start_tick,end_tick;
@@ -400,8 +405,8 @@ typedef struct		{
 
 typedef struct		{
 						int									obj_idx;
-						d3ang								cur_chase_ang;
 						map_camera_type						setup;
+						camera_current_position_type		cur_pos;
 						camera_auto_walk_type				auto_walk;
 						camera_auto_move_type				auto_move;
 						camera_animate_type					animate;

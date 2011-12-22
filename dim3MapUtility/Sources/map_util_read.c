@@ -423,7 +423,8 @@ void decode_map_camera_xml(map_type *map,int map_head)
     if (camera_tag==-1) return;
 	
 	map->camera.mode=xml_get_attribute_list(camera_tag,"mode",(char*)camera_mode_str);
-	xml_get_attribute_3_coord_float(camera_tag,"ang",&map->camera.ang.x,&map->camera.ang.y,&map->camera.ang.z);
+	xml_get_attribute_3_coord_float(camera_tag,"ang",&map->camera.ang_offset.x,&map->camera.ang_offset.y,&map->camera.ang_offset.z);
+	xml_get_attribute_3_coord_int(camera_tag,"pnt",&map->camera.pnt_offset.x,&map->camera.pnt_offset.y,&map->camera.pnt_offset.z);
 	
     tag=xml_findfirstchild("Plane",camera_tag);
     if (tag!=-1) {
@@ -438,6 +439,10 @@ void decode_map_camera_xml(map_type *map,int map_head)
     if (tag!=-1) {
 		map->camera.chase.distance=xml_get_attribute_int(tag,"distance");
 		map->camera.chase.track_speed=xml_get_attribute_float(tag,"track_speed");
+		if (!xml_get_attribute_3_coord_float(tag,"track_ang",&map->camera.chase.track_ang.x,&map->camera.chase.track_ang.y,&map->camera.chase.track_ang.z)) {
+			memmove(&map->camera.chase.track_ang,&map->camera.ang_offset,sizeof(d3ang));
+			map->camera.ang_offset.x=map->camera.ang_offset.y=map->camera.ang_offset.z=0.0f;
+		}
 		xml_get_attribute_3_coord_float(tag,"slop",&map->camera.chase.slop.x,&map->camera.chase.slop.y,&map->camera.chase.slop.z);
 	}
 	

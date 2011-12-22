@@ -667,18 +667,19 @@ typedef struct		{
 typedef struct		{
 						int									distance;
 						float								track_speed;
-						d3ang								slop;
+						d3ang								track_ang,slop;
 					} map_camera_setup_chase_type;
 
 typedef struct		{
+						d3pnt								pnt;
 						bool								follow;
 						char								attach_node[name_str_len];
 					} map_camera_setup_static_type;
 
 typedef struct		{
 						int									mode;
-						d3pnt								pnt;
-						d3ang								ang;
+						d3pnt								pnt_offset;
+						d3ang								ang_offset;
 						map_camera_plane_type				plane;
 						map_camera_setup_chase_type			chase;
 						map_camera_setup_static_type		c_static;
