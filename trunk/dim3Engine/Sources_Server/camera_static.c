@@ -55,30 +55,33 @@ void camera_static_connect(void)
       
 ======================================================= */
 
-void camera_static_get_position(d3pnt *pnt,d3ang *ang)
+void camera_static_calc_position(void)
 {
 	obj_type		*obj;
     
 		// get position
 
-	memmove(pnt,&camera.setup.pnt,sizeof(d3pnt));
-
-	if (ang==NULL) return;
+	camera.cur_pos.pnt.x=camera.cur_pos.static_pnt.x+camera.setup.pnt_offset.x;
+	camera.cur_pos.pnt.y=camera.cur_pos.static_pnt.y+camera.setup.pnt_offset.y;
+	camera.cur_pos.pnt.z=camera.cur_pos.static_pnt.z+camera.setup.pnt_offset.z;
 	
 		// if following an object, point camera at object
 
     if (camera.setup.c_static.follow) {
 		obj=server.obj_list.objs[camera.obj_idx];
-        ang->y=angle_find(camera.setup.pnt.x,camera.setup.pnt.z,obj->pnt.x,obj->pnt.z);
-		ang->x=-(180.0f-angle_find(camera.setup.pnt.y,camera.setup.pnt.z,obj->pnt.y,obj->pnt.z));
- 		ang->z=camera.setup.ang.z;
+		camera.cur_pos.ang.x=-(180.0f-angle_find(camera.cur_pos.pnt.y,camera.cur_pos.pnt.z,obj->pnt.y,obj->pnt.z));
+        camera.cur_pos.ang.y=angle_find(camera.cur_pos.pnt.x,camera.cur_pos.pnt.z,obj->pnt.x,obj->pnt.z);
+		camera.cur_pos.ang.z=camera.setup.ang.z;
 		return;
 	}
 
 		// else just use camera offset
 
-	memmove(ang,&camera.setup.ang,sizeof(d3ang));
+	camera.cur_pos.ang.x=camera.cur_pos.static_ang.x+camera.setup.ang_offset.x;
+	camera.cur_pos.ang.y=angle_add(camera.cur_pos.static_ang.y,camera.setup.ang_offset.y);
+	camera.cur_pos.ang.z=camera.cur_pos.static_ang.z+camera.setup.ang_offset.z;
 }
+
 /* =======================================================
 
       Setup Node To Node Walk Values
@@ -145,7 +148,7 @@ bool camera_walk_to_node_by_index_setup(int from_idx,int to_idx,int msec,int eve
 	node=&map.nodes[from_idx];
 
 	dist=map_node_to_node_distance(&map,from_idx,to_idx);
-	dist+=distance_get(camera.setup.pnt.x,camera.setup.pnt.y,camera.setup.pnt.z,node->pnt.x,node->pnt.y,node->pnt.z);
+	dist+=distance_get(camera.cur_pos.static_pnt.x,camera.cur_pos.static_pnt.y,camera.cur_pos.static_pnt.z,node->pnt.x,node->pnt.y,node->pnt.z);
 
 	if (dist==0) {
 		strcpy(err_str,"Camera walk covers no distance");

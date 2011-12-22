@@ -42,18 +42,18 @@ extern setup_type			setup;
       
 ======================================================= */
 
-void camera_fpp_get_position(d3pnt *pnt,d3ang *ang)
+void camera_fpp_calc_position(void)
 {
 	obj_type		*obj;
 
 	obj=server.obj_list.objs[camera.obj_idx];
 	
-    pnt->x=obj->pnt.x;
-    pnt->y=(obj->pnt.y+obj->duck.y_move+obj->liquid.bob_y_move)+obj->size.eye_offset;
-    pnt->z=obj->pnt.z;
+    camera.cur_pos.pnt.x=obj->pnt.x+camera.setup.pnt_offset.x;
+    camera.cur_pos.pnt.y=((obj->pnt.y+obj->duck.y_move+obj->liquid.bob_y_move)+obj->size.eye_offset)+camera.setup.pnt_offset.x;
+    camera.cur_pos.pnt.z=obj->pnt.z+camera.setup.pnt_offset.z;
 
-	ang->x=camera.setup.ang.x-obj->view_ang.x;
-	ang->y=angle_add(obj->ang.y,camera.setup.ang.y);
-    ang->z=camera.setup.ang.z+obj->view_ang.z;
+	camera.cur_pos.ang.x=camera.setup.ang_offset.x-obj->view_ang.x;
+	camera.cur_pos.ang.y=angle_add(obj->ang.y,camera.setup.ang_offset.y);
+    camera.cur_pos.ang.z=camera.setup.ang_offset.z+obj->view_ang.z;
 }
 

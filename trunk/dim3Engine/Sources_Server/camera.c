@@ -97,8 +97,8 @@ void camera_map_setup(void)
 		return;
 	}
 	
-	memmove(&camera.setup.pnt,&map.nodes[node_idx].pnt,sizeof(d3pnt));
-	memmove(&camera.setup.ang,&map.nodes[node_idx].ang,sizeof(d3ang));
+	memmove(&camera.cur_pos.static_pnt,&map.nodes[node_idx].pnt,sizeof(d3pnt));
+	memmove(&camera.cur_pos.static_ang,&map.nodes[node_idx].ang,sizeof(d3ang));
 }
 
 void camera_connect(obj_type *obj)
@@ -111,49 +111,18 @@ void camera_connect(obj_type *obj)
 
 /* =======================================================
 
-      Find Camera Position
+      Find Angle To Current Camera
       
 ======================================================= */
 
-void camera_get_position(d3pnt *pnt,d3ang *ang)
-{
-	switch (camera.setup.mode) {
-	
-		case cv_fpp:
-            camera_fpp_get_position(pnt,ang);
-			break;
-
-		case cv_chase:
-            camera_chase_get_position(pnt,ang);
-			break;
-
-		case cv_static:
-            camera_static_get_position(pnt,ang);
-			break;
-
-		case cv_chase_static:
-            camera_chase_static_get_position(pnt,ang);
-			break;
-
-	}
-}
-
-void camera_get_angle_from(d3pnt *pt,d3ang *ang)
+void camera_get_angle_from(d3pnt *pnt,d3ang *ang)
 {
 	int				dist;
-	d3pnt			pnt;
-	d3ang			temp_ang;
 
-		// get camera position
+	dist=distance_2D_get(0,0,(map.camera.pos.pnt.x-pnt->x),(map.camera.pos.pnt.z-pnt->z));
+	ang->x=-angle_find(0,0,(map.camera.pos.pnt.y-pnt->y),dist);
 
-	camera_get_position(&pnt,&temp_ang);
-
-		// find angle
-
-	dist=distance_2D_get(0,0,(pnt.x-pt->x),(pnt.z-pt->z));
-	ang->x=-angle_find(0,0,(pnt.y-pt->y),dist);
-
-	ang->y=angle_find(pt->x,pt->z,pnt.x,pnt.z);
+	ang->y=angle_find(pnt->x,pnt->z,map.camera.pos.pnt.x,map.camera.pos.pnt.z);
 
 	ang->z=0.0f;
 }
@@ -301,14 +270,25 @@ void camera_run(void)
 	camera_animate_run();
 
 	switch (camera.setup.mode) {
+
+		case cv_fpp:
+            camera_fpp_calc_position();
+			break;
 	
 		case cv_chase:
 			camera_chase_run();
-			return;
+			camera_chase_calc_position();
+			break;
 
  		case cv_static:
 			camera_static_run();
-			return;
-  } 
+			camera_static_calc_position();
+			break;
+
+ 		case cv_chase_static:
+            camera_chase_calc_get_position();
+			break;
+
+	}
 }
 

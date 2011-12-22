@@ -166,8 +166,6 @@ void cinema_action_run_camera(map_cinema_action_type *action)
 {
 	int			node_idx,start_node_idx;
 	char		err_str[256];
-	d3pnt		pnt;
-	d3ang		ang;
 	node_type	*node;
 
 		// any camera action sets camera to static
@@ -184,8 +182,8 @@ void cinema_action_run_camera(map_cinema_action_type *action)
 		
 		node=&map.nodes[node_idx];
 
-		memmove(&camera.setup.pnt,&node->pnt,sizeof(d3pnt));
-		memmove(&camera.setup.ang,&node->ang,sizeof(d3ang));
+		memmove(&camera.cur_pos.pnt,&node->pnt,sizeof(d3pnt));
+		memmove(&camera.cur_pos.ang,&node->ang,sizeof(d3ang));
 		
 		return;
 	}
@@ -197,8 +195,7 @@ void cinema_action_run_camera(map_cinema_action_type *action)
 		node_idx=map_find_node(&map,action->node_name);
 		if (node_idx==-1) return;
 
-		camera_get_position(&pnt,&ang);
-		start_node_idx=map_find_nearest_node_by_point(&map,&pnt);
+		start_node_idx=map_find_nearest_node_by_point(&map,&camera.cur_pos.pnt);
 		if (start_node_idx==-1) return;
 
 		if (!camera_walk_to_node_by_index_setup(start_node_idx,node_idx,(action->end_msec-action->start_msec),-1,FALSE,FALSE,err_str)) console_add_error(err_str);
