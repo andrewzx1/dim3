@@ -286,7 +286,7 @@ int shadow_build_poly_cross_volume_set(d3pnt *light_pnt,d3pnt *volume_min,d3pnt 
 	}
 
 		// testing -- shadow box
-//	/*
+	/*
 	glColor4f(0.0f,1.0f,0.0f,1.0f);
 	glLineWidth(1.0f);
 	glBegin(GL_LINE_LOOP);
@@ -312,7 +312,7 @@ int shadow_build_poly_cross_volume_set(d3pnt *light_pnt,d3pnt *volume_min,d3pnt 
 	glVertex3i(min->x,max->y,max->z);
 	glEnd();
 	glLineWidth(1.0f);
-//	*/
+	*/
 	
 		// check meshes
 		
