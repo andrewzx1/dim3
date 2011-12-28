@@ -98,7 +98,7 @@ JSValueRef js_model_mesh_show_mesh_func(JSContextRef cx,JSObjectRef func,JSObjec
 	model_draw		*draw;
 	
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
-	if (!script_check_fail_in_construct(cx,j_obj,exception)) return(script_null_to_value(cx));
+	if (!script_check_fail_in_construct(cx,func,j_obj,exception)) return(script_null_to_value(cx));
 	
 	draw=script_find_model_draw(j_obj);
 
@@ -115,7 +115,7 @@ JSValueRef js_model_mesh_show_all_mesh_func(JSContextRef cx,JSObjectRef func,JSO
 	model_draw		*draw;
 	
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
-	if (!script_check_fail_in_construct(cx,j_obj,exception)) return(script_null_to_value(cx));
+	if (!script_check_fail_in_construct(cx,func,j_obj,exception)) return(script_null_to_value(cx));
 	
 	draw=script_find_model_draw(j_obj);
 	model_show_all_mesh(draw);
@@ -129,7 +129,7 @@ JSValueRef js_model_mesh_show_only_mesh_func(JSContextRef cx,JSObjectRef func,JS
 	model_draw		*draw;
 	
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
-	if (!script_check_fail_in_construct(cx,j_obj,exception)) return(script_null_to_value(cx));
+	if (!script_check_fail_in_construct(cx,func,j_obj,exception)) return(script_null_to_value(cx));
 
 	draw=script_find_model_draw(j_obj);
 
@@ -147,7 +147,7 @@ JSValueRef js_model_mesh_hide_mesh_func(JSContextRef cx,JSObjectRef func,JSObjec
 	model_draw		*draw;
 	
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
-	if (!script_check_fail_in_construct(cx,j_obj,exception)) return(script_null_to_value(cx));
+	if (!script_check_fail_in_construct(cx,func,j_obj,exception)) return(script_null_to_value(cx));
 	
 	draw=script_find_model_draw(j_obj);
 
@@ -164,7 +164,7 @@ JSValueRef js_model_mesh_hide_all_mesh_func(JSContextRef cx,JSObjectRef func,JSO
 	model_draw		*draw;
 	
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
-	if (!script_check_fail_in_construct(cx,j_obj,exception)) return(script_null_to_value(cx));
+	if (!script_check_fail_in_construct(cx,func,j_obj,exception)) return(script_null_to_value(cx));
 	
 	draw=script_find_model_draw(j_obj);
 	model_hide_all_mesh(draw);

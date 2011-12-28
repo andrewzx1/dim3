@@ -46,7 +46,8 @@ and can be sold or given away.
 
 #define kMapPropertyCameraChaseDistance				30
 #define kMapPropertyCameraChaseTrackSpeed			31
-#define kMapPropertyCameraChaseSlop					32
+#define kMapPropertyCameraChaseTrackAngle			32
+#define kMapPropertyCameraChaseSlop					33
 
 #define kMapPropertyCameraStaticFollow				40
 #define kMapPropertyCameraStaticAttachNode			41
@@ -94,6 +95,7 @@ void property_palette_fill_camera(void)
 	list_palette_add_header(&property_palette,0,"Map Camera Chase");
 	list_palette_add_int(&property_palette,kMapPropertyCameraChaseDistance,"Distance",&map.camera.chase.distance,FALSE);
 	list_palette_add_float(&property_palette,kMapPropertyCameraChaseTrackSpeed,"Track Speed",&map.camera.chase.track_speed,FALSE);
+	list_palette_add_angle(&property_palette,kMapPropertyCameraChaseTrackAngle,"Track Angle",&map.camera.chase.track_ang,FALSE);
 	list_palette_add_angle(&property_palette,kMapPropertyCameraChaseSlop,"Slop",&map.camera.chase.slop,FALSE);
 
 		// camera static

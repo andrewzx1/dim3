@@ -53,7 +53,7 @@ void model_initialize_list(void)
 void model_free_list(void)
 {
 	int				n;
-
+	
 	for (n=0;n!=max_model_list;n++) {
 		if (server.model_list.models[n]==NULL) free(server.model_list.models[n]);
 	}
@@ -118,7 +118,7 @@ int model_load(char *name)
 {
 	int				n,idx;
 	model_type		*mdl;
-
+	
 		// has model been already loaded?
 		// if so, return model and increment reference count
 	
@@ -178,7 +178,7 @@ bool model_draw_load(model_draw *draw,char *item_type,char *item_name,char *err_
 	int					n;
 	bool				ok;
 	model_type			*mdl;
-
+	
 	draw->model_idx=-1;
 	draw->center.x=draw->center.y=draw->center.z=0;
 	draw->size.x=draw->size.y=draw->size.z=0;
@@ -340,6 +340,7 @@ void models_reset(void)
 			if (weap==NULL) continue;
 
 			model_reset_single(&weap->draw);
+			if (weap->dual.on) model_reset_single(&weap->draw_dual);
 		
 			for (i=0;i!=max_proj_setup_list;i++) {
 				proj_setup=weap->proj_setup_list.proj_setups[i];

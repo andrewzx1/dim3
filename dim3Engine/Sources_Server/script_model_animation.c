@@ -167,7 +167,7 @@ JSValueRef js_model_animation_start_func(JSContextRef cx,JSObjectRef func,JSObje
 	model_draw		*draw;
 	
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
-	if (!script_check_fail_in_construct(cx,j_obj,exception)) return(script_null_to_value(cx));
+	if (!script_check_fail_in_construct(cx,func,j_obj,exception)) return(script_null_to_value(cx));
 	
 	draw=script_find_model_draw(j_obj);
 
@@ -185,7 +185,7 @@ JSValueRef js_model_animation_stop_func(JSContextRef cx,JSObjectRef func,JSObjec
 	model_draw		*draw;
 	
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
-	if (!script_check_fail_in_construct(cx,j_obj,exception)) return(script_null_to_value(cx));
+	if (!script_check_fail_in_construct(cx,func,j_obj,exception)) return(script_null_to_value(cx));
 	
 	draw=script_find_model_draw(j_obj);
 	model_stop_animation(draw);
@@ -198,7 +198,7 @@ JSValueRef js_model_animation_stop_all_func(JSContextRef cx,JSObjectRef func,JSO
 	model_draw		*draw;
 	
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
-	if (!script_check_fail_in_construct(cx,j_obj,exception)) return(script_null_to_value(cx));
+	if (!script_check_fail_in_construct(cx,func,j_obj,exception)) return(script_null_to_value(cx));
 	
 	draw=script_find_model_draw(j_obj);
 	model_stop_all_animation(draw);
@@ -212,7 +212,7 @@ JSValueRef js_model_animation_cancel_func(JSContextRef cx,JSObjectRef func,JSObj
 	model_draw		*draw;
 	
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
-	if (!script_check_fail_in_construct(cx,j_obj,exception)) return(script_null_to_value(cx));
+	if (!script_check_fail_in_construct(cx,func,j_obj,exception)) return(script_null_to_value(cx));
 	
 	draw=script_find_model_draw(j_obj);
 
@@ -230,7 +230,7 @@ JSValueRef js_model_animation_change_func(JSContextRef cx,JSObjectRef func,JSObj
 	model_draw		*draw;
 	
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
-	if (!script_check_fail_in_construct(cx,j_obj,exception)) return(script_null_to_value(cx));
+	if (!script_check_fail_in_construct(cx,func,j_obj,exception)) return(script_null_to_value(cx));
 	
 	draw=script_find_model_draw(j_obj);
 
@@ -248,7 +248,7 @@ JSValueRef js_model_animation_interrupt_func(JSContextRef cx,JSObjectRef func,JS
 	model_draw		*draw;
 	
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
-	if (!script_check_fail_in_construct(cx,j_obj,exception)) return(script_null_to_value(cx));
+	if (!script_check_fail_in_construct(cx,func,j_obj,exception)) return(script_null_to_value(cx));
 	
 	draw=script_find_model_draw(j_obj);
 
@@ -266,7 +266,7 @@ JSValueRef js_model_animation_start_then_change_func(JSContextRef cx,JSObjectRef
 	model_draw		*draw;
 	
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
-	if (!script_check_fail_in_construct(cx,j_obj,exception)) return(script_null_to_value(cx));
+	if (!script_check_fail_in_construct(cx,func,j_obj,exception)) return(script_null_to_value(cx));
 	
 	draw=script_find_model_draw(j_obj);
 
@@ -296,7 +296,7 @@ JSValueRef js_model_animation_fade_func(JSContextRef cx,JSObjectRef func,JSObjec
 	model_draw		*draw;
 	
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
-	if (!script_check_fail_in_construct(cx,j_obj,exception)) return(script_null_to_value(cx));
+	if (!script_check_fail_in_construct(cx,func,j_obj,exception)) return(script_null_to_value(cx));
 	
 	draw=script_find_model_draw(j_obj);
 	model_fade_start(draw,script_value_to_int(cx,argv[1]),script_value_to_float(cx,argv[0]));

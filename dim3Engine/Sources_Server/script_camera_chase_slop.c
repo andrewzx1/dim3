@@ -32,6 +32,7 @@ and can be sold or given away.
 #include "interface.h"
 #include "scripts.h"
 
+extern map_type			map;
 extern camera_type		camera;
 extern js_type			js;
 
@@ -79,17 +80,17 @@ JSObjectRef script_add_camera_chase_slop_object(JSContextRef cx,JSObjectRef pare
 
 JSValueRef js_camera_chase_slop_get_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_float_to_value(cx,camera.setup.chase.slop.x));
+	return(script_float_to_value(cx,map.camera.chase.slop.x));
 }
 
 JSValueRef js_camera_chase_slop_get_y(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_float_to_value(cx,camera.setup.chase.slop.y));
+	return(script_float_to_value(cx,map.camera.chase.slop.y));
 }
 
 JSValueRef js_camera_chase_slop_get_z(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_float_to_value(cx,camera.setup.chase.slop.z));
+	return(script_float_to_value(cx,map.camera.chase.slop.z));
 }
 
 /* =======================================================
@@ -100,21 +101,21 @@ JSValueRef js_camera_chase_slop_get_z(JSContextRef cx,JSObjectRef j_obj,JSString
 
 bool js_camera_chase_slop_set_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	camera.setup.chase.slop.x=script_value_to_float(cx,vp);
+	map.camera.chase.slop.x=script_value_to_float(cx,vp);
 	
 	return(TRUE);
 }
 
 bool js_camera_chase_slop_set_y(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	camera.setup.chase.slop.y=script_value_to_float(cx,vp);
+	map.camera.chase.slop.y=script_value_to_float(cx,vp);
 	
 	return(TRUE);
 }
 
 bool js_camera_chase_slop_set_z(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	camera.setup.chase.slop.z=script_value_to_float(cx,vp);
+	map.camera.chase.slop.z=script_value_to_float(cx,vp);
 	
 	return(TRUE);
 }

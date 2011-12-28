@@ -32,6 +32,7 @@ and can be sold or given away.
 #include "interface.h"
 #include "objects.h"
 
+extern map_type				map;
 extern camera_type			camera;
 extern view_type			view;
 extern server_type			server;
@@ -184,7 +185,7 @@ void halo_draw_setup(void)
 			// player
 
 		if (hit) {
-			if ((contact.poly.mesh_idx!=-1) || (camera.setup.mode!=cv_fpp)) {
+			if ((contact.poly.mesh_idx!=-1) || (map.camera.mode!=cv_fpp)) {
 				halo_draw->in_view=FALSE;
 				continue;
 			}

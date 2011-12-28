@@ -132,10 +132,6 @@ bool map_new(map_type *map,char *name)
     map->camera.c_static.follow=TRUE;
 	map->camera.c_static.attach_node[0]=0x0;
 
-	map->camera.c_static.pnt.x=0;
-	map->camera.c_static.pnt.y=0;
-	map->camera.c_static.pnt.z=0;
-
 	map->camera.plane.fov=60.0f;
 	map->camera.plane.aspect_ratio=1.0f;
 	map->camera.plane.near_z=400;

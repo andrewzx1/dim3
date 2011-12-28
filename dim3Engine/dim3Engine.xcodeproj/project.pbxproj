@@ -1252,68 +1252,25 @@
 		260B3E8E1411F781006ED023 /* Sources_Server */ = {
 			isa = PBXGroup;
 			children = (
+				26B5FA4114A7052900057D85 /* Objects */,
+				26B5FA4314A7052E00057D85 /* Weapons */,
+				26B5FA4214A7052C00057D85 /* Projectiles */,
+				26B5FA4414A7053000057D85 /* Models */,
+				26B5FA3F14A7050700057D85 /* Collision */,
+				26B5FA4014A7051C00057D85 /* Camera */,
 				26A45D051489AD0A00C02936 /* Script API */,
-				260B3E8F1411F781006ED023 /* camera.c */,
-				260B3E901411F781006ED023 /* camera_chase.c */,
-				260B3E911411F781006ED023 /* camera_fpp.c */,
-				260B3E921411F781006ED023 /* camera_static.c */,
-				260B3E931411F781006ED023 /* collision_map.c */,
+				26B5FA4514A7054900057D85 /* Scripts */,
 				260B3E941411F781006ED023 /* decals.c */,
 				260B3E951411F781006ED023 /* effects.c */,
 				260B3E961411F781006ED023 /* effects_spawn.c */,
 				260B3E971411F781006ED023 /* game_time.c */,
-				260B3E981411F781006ED023 /* group_change.c */,
-				260B3E991411F781006ED023 /* group_move.c */,
 				260B3E9A1411F781006ED023 /* item.c */,
-				260B3E9B1411F781006ED023 /* map_movement.c */,
-				260B3E9C1411F781006ED023 /* map_multiplayer.c */,
-				260B3E9D1411F781006ED023 /* map_ray_trace.c */,
-				260B3E9E1411F781006ED023 /* map_y_check.c */,
-				260B3E9F1411F781006ED023 /* model.c */,
-				260B3EA01411F781006ED023 /* model_animate.c */,
-				260B3EA11411F781006ED023 /* model_draw_setup.c */,
-				260B3EA21411F781006ED023 /* model_effect.c */,
-				260B3EA31411F781006ED023 /* model_fade.c */,
-				260B3EA41411F781006ED023 /* model_mesh.c */,
-				260B3EA51411F781006ED023 /* obj_action.c */,
-				260B3EA61411F781006ED023 /* obj_auto_walk.c */,
-				260B3EA71411F781006ED023 /* obj_ext_move.c */,
-				260B3EA81411F781006ED023 /* obj_find.c */,
-				260B3EA91411F781006ED023 /* obj_grow.c */,
-				260B3EAA1411F781006ED023 /* obj_held.c */,
-				260B3EAB1411F781006ED023 /* obj_liquid.c */,
-				260B3EAC1411F781006ED023 /* obj_move.c */,
-				260B3EAD1411F781006ED023 /* obj_rigid_body.c */,
-				260B3EAE1411F781006ED023 /* obj_spawn.c */,
-				260B3EAF1411F781006ED023 /* obj_state.c */,
-				260B3EB01411F781006ED023 /* obj_turn.c */,
-				260B3EB11411F781006ED023 /* obj_watch.c */,
-				260B3EB21411F781006ED023 /* objects.c */,
 				260B3EB31411F781006ED023 /* particles.c */,
-				260B3EB41411F781006ED023 /* projectile.c */,
-				260B3EB51411F781006ED023 /* projectile_hit.c */,
-				260B3EB61411F781006ED023 /* projectile_hitscan.c */,
-				260B3EB71411F781006ED023 /* projectile_move.c */,
-				260B3EB81411F781006ED023 /* projectile_setup.c */,
 				260B3EB91411F781006ED023 /* remote.c */,
 				260B3EBA1411F781006ED023 /* rings.c */,
 				260B3EBB1411F781006ED023 /* scenery.c */,
-				260B3F361411F781006ED023 /* scripts.c */,
-				260B3F371411F781006ED023 /* scripts_convert.c */,
-				260B3F381411F781006ED023 /* scripts_data.c */,
-				260B3F391411F781006ED023 /* scripts_defines.c */,
-				260B3F3A1411F781006ED023 /* scripts_events.c */,
-				260B3F3B1411F781006ED023 /* scripts_file.c */,
-				260B3F3C1411F781006ED023 /* scripts_lookup.c */,
-				260B3F3D1411F781006ED023 /* scripts_objects.c */,
-				260B3F3E1411F781006ED023 /* scripts_state.c */,
-				260B3F3F1411F781006ED023 /* scripts_timers.c */,
 				260B3F401411F781006ED023 /* server.c */,
 				260B3F411411F781006ED023 /* server_run.c */,
-				260B3F421411F781006ED023 /* weapon.c */,
-				260B3F431411F781006ED023 /* weapon_melee.c */,
-				260B3F441411F781006ED023 /* weapon_projectile.c */,
-				260B3F451411F781006ED023 /* weapon_select.c */,
 				260B3F461411F781006ED023 /* xml_setup.c */,
 			);
 			path = Sources_Server;
@@ -1647,6 +1604,105 @@
 				260B3F351411F781006ED023 /* script_weap_zoom.c */,
 			);
 			name = "Script API";
+			sourceTree = "<group>";
+		};
+		26B5FA3F14A7050700057D85 /* Collision */ = {
+			isa = PBXGroup;
+			children = (
+				260B3E931411F781006ED023 /* collision_map.c */,
+				260B3E981411F781006ED023 /* group_change.c */,
+				260B3E991411F781006ED023 /* group_move.c */,
+				260B3E9B1411F781006ED023 /* map_movement.c */,
+				260B3E9C1411F781006ED023 /* map_multiplayer.c */,
+				260B3E9D1411F781006ED023 /* map_ray_trace.c */,
+				260B3E9E1411F781006ED023 /* map_y_check.c */,
+			);
+			name = Collision;
+			sourceTree = "<group>";
+		};
+		26B5FA4014A7051C00057D85 /* Camera */ = {
+			isa = PBXGroup;
+			children = (
+				260B3E8F1411F781006ED023 /* camera.c */,
+				260B3E901411F781006ED023 /* camera_chase.c */,
+				260B3E911411F781006ED023 /* camera_fpp.c */,
+				260B3E921411F781006ED023 /* camera_static.c */,
+			);
+			name = Camera;
+			sourceTree = "<group>";
+		};
+		26B5FA4114A7052900057D85 /* Objects */ = {
+			isa = PBXGroup;
+			children = (
+				260B3EB21411F781006ED023 /* objects.c */,
+				260B3EA51411F781006ED023 /* obj_action.c */,
+				260B3EA61411F781006ED023 /* obj_auto_walk.c */,
+				260B3EA71411F781006ED023 /* obj_ext_move.c */,
+				260B3EA81411F781006ED023 /* obj_find.c */,
+				260B3EA91411F781006ED023 /* obj_grow.c */,
+				260B3EAA1411F781006ED023 /* obj_held.c */,
+				260B3EAB1411F781006ED023 /* obj_liquid.c */,
+				260B3EAC1411F781006ED023 /* obj_move.c */,
+				260B3EAD1411F781006ED023 /* obj_rigid_body.c */,
+				260B3EAE1411F781006ED023 /* obj_spawn.c */,
+				260B3EAF1411F781006ED023 /* obj_state.c */,
+				260B3EB01411F781006ED023 /* obj_turn.c */,
+				260B3EB11411F781006ED023 /* obj_watch.c */,
+			);
+			name = Objects;
+			sourceTree = "<group>";
+		};
+		26B5FA4214A7052C00057D85 /* Projectiles */ = {
+			isa = PBXGroup;
+			children = (
+				260B3EB41411F781006ED023 /* projectile.c */,
+				260B3EB51411F781006ED023 /* projectile_hit.c */,
+				260B3EB61411F781006ED023 /* projectile_hitscan.c */,
+				260B3EB71411F781006ED023 /* projectile_move.c */,
+				260B3EB81411F781006ED023 /* projectile_setup.c */,
+			);
+			name = Projectiles;
+			sourceTree = "<group>";
+		};
+		26B5FA4314A7052E00057D85 /* Weapons */ = {
+			isa = PBXGroup;
+			children = (
+				260B3F421411F781006ED023 /* weapon.c */,
+				260B3F431411F781006ED023 /* weapon_melee.c */,
+				260B3F441411F781006ED023 /* weapon_projectile.c */,
+				260B3F451411F781006ED023 /* weapon_select.c */,
+			);
+			name = Weapons;
+			sourceTree = "<group>";
+		};
+		26B5FA4414A7053000057D85 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				260B3E9F1411F781006ED023 /* model.c */,
+				260B3EA01411F781006ED023 /* model_animate.c */,
+				260B3EA11411F781006ED023 /* model_draw_setup.c */,
+				260B3EA21411F781006ED023 /* model_effect.c */,
+				260B3EA31411F781006ED023 /* model_fade.c */,
+				260B3EA41411F781006ED023 /* model_mesh.c */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
+		26B5FA4514A7054900057D85 /* Scripts */ = {
+			isa = PBXGroup;
+			children = (
+				260B3F361411F781006ED023 /* scripts.c */,
+				260B3F371411F781006ED023 /* scripts_convert.c */,
+				260B3F381411F781006ED023 /* scripts_data.c */,
+				260B3F391411F781006ED023 /* scripts_defines.c */,
+				260B3F3A1411F781006ED023 /* scripts_events.c */,
+				260B3F3B1411F781006ED023 /* scripts_file.c */,
+				260B3F3C1411F781006ED023 /* scripts_lookup.c */,
+				260B3F3D1411F781006ED023 /* scripts_objects.c */,
+				260B3F3E1411F781006ED023 /* scripts_state.c */,
+				260B3F3F1411F781006ED023 /* scripts_timers.c */,
+			);
+			name = Scripts;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

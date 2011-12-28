@@ -32,6 +32,7 @@ and can be sold or given away.
 #include "interface.h"
 #include "scripts.h"
 
+extern map_type			map;
 extern camera_type		camera;
 extern js_type			js;
 
@@ -78,12 +79,12 @@ JSObjectRef script_add_camera_chase_object(JSContextRef cx,JSObjectRef parent_ob
 
 JSValueRef js_camera_chase_get_distance(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_int_to_value(cx,camera.setup.chase.distance));
+	return(script_int_to_value(cx,map.camera.chase.distance));
 }
 
 JSValueRef js_camera_chase_get_trackSpeed(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_float_to_value(cx,camera.setup.chase.track_speed));
+	return(script_float_to_value(cx,map.camera.chase.track_speed));
 }
 
 /* =======================================================
@@ -94,14 +95,14 @@ JSValueRef js_camera_chase_get_trackSpeed(JSContextRef cx,JSObjectRef j_obj,JSSt
 
 bool js_camera_chase_set_distance(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	camera.setup.chase.distance=script_value_to_int(cx,vp);
+	map.camera.chase.distance=script_value_to_int(cx,vp);
 	
 	return(TRUE);
 }
 
 bool js_camera_chase_set_trackSpeed(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	camera.setup.chase.track_speed=script_value_to_float(cx,vp);
+	map.camera.chase.track_speed=script_value_to_float(cx,vp);
 	
 	return(TRUE);
 }

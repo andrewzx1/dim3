@@ -64,12 +64,12 @@ void gl_3D_view(void)
 	glLoadIdentity();
 
 #ifndef D3_ROTATE_VIEW
-	ratio=(((float)view.screen.x_sz)/((float)view.screen.y_sz))*camera.setup.plane.aspect_ratio;
+	ratio=(((float)view.screen.x_sz)/((float)view.screen.y_sz))*map.camera.plane.aspect_ratio;
 #else
-	ratio=(((float)view.screen.y_sz)/((float)view.screen.x_sz))*camera.setup.plane.aspect_ratio;
+	ratio=(((float)view.screen.y_sz)/((float)view.screen.x_sz))*map.camera.plane.aspect_ratio;
 #endif
 
-	glu_patch_gluPerspective(view.render->camera.fov,ratio,(float)camera.setup.plane.near_z,(float)camera.setup.plane.far_z);
+	glu_patch_gluPerspective(view.render->camera.fov,ratio,(float)map.camera.plane.near_z,(float)map.camera.plane.far_z);
 	
 		// projection flips
 		
@@ -80,7 +80,7 @@ void gl_3D_view(void)
 		glScalef(-1.0f,-1.0f,-1.0f);
 	}
 	
-	glTranslatef(0.0f,0.0f,(float)(camera.setup.plane.near_z_offset+view.render->camera.z_adjust));
+	glTranslatef(0.0f,0.0f,(float)(map.camera.plane.near_z_offset+view.render->camera.z_adjust));
 
 		// default rotations
 
@@ -92,7 +92,7 @@ void gl_3D_view(void)
 	glRotatef(-90.0f,0.0f,0.0f,1.0f);
 #endif
 	
-	glu_patch_gluLookAt((float)view.render->camera.pnt.x,(float)view.render->camera.pnt.y,(float)(view.render->camera.pnt.z+camera.setup.plane.near_z),(float)view.render->camera.pnt.x,(float)view.render->camera.pnt.y,(float)view.render->camera.pnt.z,0.0f,1.0f,0.0f);
+	glu_patch_gluLookAt((float)view.render->camera.pnt.x,(float)view.render->camera.pnt.y,(float)(view.render->camera.pnt.z+map.camera.plane.near_z),(float)view.render->camera.pnt.x,(float)view.render->camera.pnt.y,(float)view.render->camera.pnt.z,0.0f,1.0f,0.0f);
 }
 
 void gl_3D_rotate(d3pnt *pnt,d3ang *ang)
@@ -118,7 +118,7 @@ void gl_3D_rotate(d3pnt *pnt,d3ang *ang)
 		
 	matrix_rotate_zyx(&mat,ang_x,ang->y,0.0f);
 	fx=fy=0.0f;
-	fz=-((float)camera.setup.plane.near_z);
+	fz=-((float)map.camera.plane.near_z);
 	matrix_vertex_multiply(&mat,&fx,&fy,&fz);
 
 	if (pnt==NULL) {

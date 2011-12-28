@@ -415,10 +415,10 @@ bool particle_chain(effect_type *effect)
 	iface_particle_type		*particle;
 	
 	eff_particle=&effect->data.particle;
-	particle=&iface.particle_list.particles[eff_particle->particle_idx];
 
 		// is there a chain?
 
+	particle=&iface.particle_list.particles[eff_particle->particle_idx];
 	if (particle->chain_idx==-1) return(FALSE);
 
 		// switch to chained particle

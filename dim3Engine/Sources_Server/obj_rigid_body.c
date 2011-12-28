@@ -44,6 +44,7 @@ extern server_type			server;
 
 int object_rigid_body_get_point_y(obj_type *obj,d3pnt *offset,int x_off,int z_off,int y)
 {
+	int			fy,high;
 	d3pnt		pnt;
 	
 	x_off+=offset->x;
@@ -55,7 +56,18 @@ int object_rigid_body_get_point_y(obj_type *obj,d3pnt *offset,int x_off,int z_of
 	pnt.y=y;
 	pnt.z=obj->pnt.z+z_off;
 	
-	return(find_poly_nearest_stand(&pnt,obj->size.y,FALSE));
+	high=object_get_radius(obj)*2;
+	
+	fy=find_poly_nearest_stand(&pnt,high,FALSE);
+	if (fy==-1) fy=y;
+	
+	return(fy);
+}
+
+void object_rigid_body_angle_reset_x(obj_type *obj,model_type *mdl)
+{
+	obj->ang.x*=mdl->rigid_body.x.reset_factor;
+	if (fabsf(obj->ang.x)<1.0f) obj->ang.x=0;
 }
 
 void object_rigid_body_offset_reset_y(obj_type *obj,model_type *mdl)
@@ -66,12 +78,6 @@ void object_rigid_body_offset_reset_y(obj_type *obj,model_type *mdl)
 
 	f=(float)obj->motion.rigid_body_offset_y;
 	obj->motion.rigid_body_offset_y=(int)(f*mdl->rigid_body.y.reset_factor);
-}
-
-void object_rigid_body_angle_reset_x(obj_type *obj,model_type *mdl)
-{
-	obj->ang.x*=mdl->rigid_body.x.reset_factor;
-	if (fabsf(obj->ang.x)<1.0f) obj->ang.x=0;
 }
 
 void object_rigid_body_angle_reset_z(obj_type *obj,model_type *mdl)

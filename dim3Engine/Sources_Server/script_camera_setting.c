@@ -32,6 +32,7 @@ and can be sold or given away.
 #include "interface.h"
 #include "scripts.h"
 
+extern map_type			map;
 extern camera_type		camera;
 extern js_type			js;
 
@@ -80,7 +81,7 @@ JSObjectRef script_add_camera_setting_object(JSContextRef cx,JSObjectRef parent_
 
 JSValueRef js_camera_setting_get_type(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_int_to_value(cx,camera.setup.mode+sd_camera_type_fpp));
+	return(script_int_to_value(cx,map.camera.mode+sd_camera_type_fpp));
 }
 
 JSValueRef js_camera_setting_get_attachObjectId(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
@@ -96,7 +97,7 @@ JSValueRef js_camera_setting_get_attachObjectId(JSContextRef cx,JSObjectRef j_ob
 
 bool js_camera_setting_set_type(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	camera.setup.mode=script_value_to_int(cx,vp)-sd_camera_type_fpp;
+	map.camera.mode=script_value_to_int(cx,vp)-sd_camera_type_fpp;
 	
 	return(TRUE);
 }

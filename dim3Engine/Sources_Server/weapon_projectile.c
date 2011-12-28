@@ -531,7 +531,7 @@ bool weapon_script_projectile_spawn_weapon_model(obj_type *obj,weapon_type *weap
 
 		// if not in fpp, auto-switch to center spawn
 
-	if (camera.setup.mode!=cv_fpp) {
+	if (map.camera.mode!=cv_fpp) {
 		return(weapon_script_projectile_spawn_center(obj,weap,proj_name,count,slop,off_ang,err_str));
 	}
 
@@ -553,7 +553,7 @@ bool weapon_script_projectile_spawn_weapon_barrel(obj_type *obj,weapon_type *wea
 
 		// if not in fpp, auto-switch to center spawn
 
-	if (camera.setup.mode!=cv_fpp) {
+	if (map.camera.mode!=cv_fpp) {
 		return(weapon_script_projectile_spawn_center(obj,weap,proj_name,count,slop,off_ang,err_str));
 	}
 	
@@ -793,7 +793,7 @@ void weapon_recoil_add(obj_type *obj,weapon_type *weap,d3ang *ang)
 {
 		// no recoil if not in fpp
 		
-	if (camera.setup.mode!=cv_fpp) return;
+	if (map.camera.mode!=cv_fpp) return;
 	
 		// add in recoil
 		

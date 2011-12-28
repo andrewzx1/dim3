@@ -370,7 +370,7 @@ void gl_lights_setup_cache(void)
 		// if in FPP, then hand weapon needs
 		// light cache
 
-	if (camera.setup.mode==cv_fpp) {
+	if (map.camera.mode==cv_fpp) {
 
 		obj=server.obj_list.objs[server.player_obj_idx];
 
@@ -379,6 +379,11 @@ void gl_lights_setup_cache(void)
 			if (weap!=NULL) {
 				weap->draw.light_cache.count=0;
 				gl_lights_setup_model(&weap->draw);
+				
+				if ((weap->dual.on) && (weap->dual.active)) {
+					weap->draw_dual.light_cache.count=0;
+					gl_lights_setup_model(&weap->draw_dual);
+				}
 			}
 		}
 
@@ -543,7 +548,10 @@ void gl_lights_compile(int tick)
 		gl_lights_compile_model_add(tick,&obj->draw);
 		if (obj->held_weapon.current_idx!=-1) {
 			weap=weapon_find_current(obj);
-			if (weap!=NULL) gl_lights_compile_model_add(tick,&weap->draw);
+			if (weap!=NULL) {
+				gl_lights_compile_model_add(tick,&weap->draw);
+				if ((weap->dual.on) && (weap->dual.active)) gl_lights_compile_model_add(tick,&weap->draw_dual);
+			}
 		}
 	}
 	

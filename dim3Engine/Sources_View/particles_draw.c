@@ -64,6 +64,7 @@ model_draw* particle_draw_get_model(particle_motion *motion)
 		obj=server.obj_list.objs[motion->obj_idx];
 		weap=obj->weap_list.weaps[motion->weap_idx];
 		if (weap==NULL) return(NULL);
+		if (motion->weap_in_dual) return(&weap->draw_dual);
 		return(&weap->draw);
 	}
 
@@ -100,7 +101,7 @@ void particle_draw_position(effect_type *effect,int count,d3pnt *pnt)
 
 	if (eff_particle->motion.bone_idx!=-1) {
 		draw=particle_draw_get_model(&eff_particle->motion);
-		if (draw!=NULL) model_find_bone_position_for_current_animation(draw,eff_particle->motion.bone_idx,pnt);
+		if (draw!=NULL) model_get_last_draw_bone_position(draw,eff_particle->motion.bone_idx,pnt);
 	}
 
 		// motion
