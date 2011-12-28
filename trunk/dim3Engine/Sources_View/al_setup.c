@@ -41,6 +41,7 @@ audio_buffer_type					audio_buffers[audio_max_buffer];
 audio_play_type						audio_plays[audio_max_play];
 audio_music_song_type				audio_music_song_cache[music_max_song_cache];
 
+extern map_type						map;
 extern camera_type					camera;
 
 /* =======================================================
@@ -112,7 +113,7 @@ void audio_callback(void *userdata,Uint8 *stream,int len)
 		
 			// don't do left-right if not in fpp
 			
-		if (camera.setup.mode!=cv_fpp) {
+		if (map.camera.mode!=cv_fpp) {
 			play->left_fact=vol>>1;
 			play->right_fact=vol>>1;
 			continue;

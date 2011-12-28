@@ -81,6 +81,10 @@ bool server_initialize(char *err_str)
 		iface_shutdown(&iface);
 		return(FALSE);
 	}
+	
+		// model lists
+		
+	model_initialize_list();
 
 		// game states
 		
@@ -99,6 +103,10 @@ void server_shutdown(void)
 		// shutdown script engine
 		
 	scripts_engine_shutdown();
+	
+		// free models
+		
+	model_free_list();
 	
 		// release memory
 	
@@ -119,7 +127,6 @@ bool server_game_start(bool in_file_load,int skill,int simple_save_idx,char *err
 	
 		// initialize lists
 		
-	model_initialize_list();
 	object_initialize_list();
 	
 	scripts_initialize_list();
@@ -195,7 +202,6 @@ void server_game_stop(void)
 		// finish with list frees
 
 	object_free_list();
-	model_free_list();
 
 	timers_free_list();
 	script_global_free_list();

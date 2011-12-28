@@ -646,6 +646,10 @@ bool model_find_bone_offset(model_draw *draw,char *pose_name,char *bone_name,d3p
 		// get bone
 
 	model_calc_draw_bone_position(mdl,&draw->setup,pose_idx,bone_idx,pnt);
+	
+		// handle any flips
+		
+	if (draw->flip_x) pnt->x=-pnt->x;
 
 	return(TRUE);
 }
@@ -663,31 +667,17 @@ bool model_find_bone_position(model_draw *draw,char *pose_name,char *bone_name,d
 	return(TRUE);
 }
 
-bool model_find_bone_position_for_current_animation(model_draw *draw,int bone_idx,d3pnt *pnt)
+bool model_get_last_draw_bone_position(model_draw *draw,int bone_idx,d3pnt *pnt)
 {
-	int						animate_idx,animate_pose_move_idx,pose_idx;
-	model_type				*mdl;
-	model_draw_animation	*animation;
-		
 	if (draw->model_idx==-1) return(FALSE);
 
-	mdl=server.model_list.models[draw->model_idx];
+		// get last calculated position
 
-		// get current pose
-
-	animation=&draw->animations[draw->script_animation_idx];
-
-	animate_idx=animation->animate_idx;
-	animate_pose_move_idx=animation->pose_move_idx;
-
-	if ((animate_idx==-1) || (animate_pose_move_idx==-1)) return(FALSE);
-
-	pose_idx=mdl->animates[animate_idx].pose_moves[animate_pose_move_idx].pose_idx;
-
-		// calculate bones
-
-	model_create_draw_bones(mdl,&draw->setup);
 	model_get_draw_bone_position(&draw->setup,bone_idx,pnt);
+	
+		// handle any flips
+		
+	if (draw->flip_x) pnt->x=-pnt->x;
 
 	pnt->x+=draw->pnt.x;
 	pnt->y+=draw->pnt.y;

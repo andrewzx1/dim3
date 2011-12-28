@@ -287,7 +287,7 @@ extern weapon_type* weapon_find_name(obj_type *obj,char *name);
 extern inline weapon_type* weapon_find_current(obj_type *obj);
 
 extern bool weapon_start_script(obj_type *obj,weapon_type *weap,bool no_construct,char *err_str);
-extern bool weapon_add(obj_type *obj,char *name);
+extern bool weapon_add(obj_type *obj,char *name,char *err_str);
 extern void weapon_dispose(obj_type *obj,int idx);
 
 extern void weapon_attach_fire_crosshair(weapon_type *weap);
@@ -379,7 +379,7 @@ extern void projectile_dispose_all(void);
 extern proj_setup_type* find_proj_setups(weapon_type *weap,char *name);
 
 extern bool proj_setup_start_script(obj_type *obj,weapon_type *weap,proj_setup_type *proj_setup,bool no_construct,char *err_str);
-extern bool proj_setup_create(obj_type *obj,weapon_type *weap,char *name);
+extern bool proj_setup_create(obj_type *obj,weapon_type *weap,char *name,char *err_str);
 extern void proj_setup_dispose(weapon_type *weap,int idx);
 
 extern void proj_setup_attach_mark(proj_setup_type *proj_setup);
@@ -449,7 +449,7 @@ extern void model_calc_draw_bones(model_draw *draw);
 extern int model_get_current_pose(model_draw *draw);
 extern bool model_find_bone_offset(model_draw *draw,char *pose_name,char *bone_name,d3pnt *pnt);
 extern bool model_find_bone_position(model_draw *draw,char *pose_name,char *bone_name,d3pnt *pnt);
-extern bool model_find_bone_position_for_current_animation(model_draw *draw,int bone_idx,d3pnt *pnt);
+extern bool model_get_last_draw_bone_position(model_draw *draw,int bone_idx,d3pnt *pnt);
 extern bool model_get_bone_brightness(model_draw *draw,char *pose_name,char *bone_name,float *bright);
 
 extern void model_animation_effect_setup(model_type *mdl);

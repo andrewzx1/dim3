@@ -103,6 +103,7 @@ model_draw* script_bone_function_setup(JSContextRef cx,JSObjectRef j_obj,JSValue
 			obj=server.obj_list.objs[script->attach.obj_idx];
 			weap=obj->weap_list.weaps[script->attach.weap_idx];
 			model_draw_setup_weapon(obj,weap,FALSE,FALSE);
+			if (weap->dual.in_dual) return(&weap->draw_dual);
 			return(&weap->draw);
 			
 		case thing_type_projectile:
@@ -144,7 +145,7 @@ JSValueRef js_model_bone_find_offset_func(JSContextRef cx,JSObjectRef func,JSObj
 	model_draw			*draw;
 	
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
-	if (!script_check_fail_in_construct(cx,j_obj,exception)) return(script_null_to_value(cx));
+	if (!script_check_fail_in_construct(cx,func,j_obj,exception)) return(script_null_to_value(cx));
 	
 		// get proper draw setup
 		
@@ -171,7 +172,7 @@ JSValueRef js_model_bone_find_position_func(JSContextRef cx,JSObjectRef func,JSO
 	model_draw			*draw;
 	
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
-	if (!script_check_fail_in_construct(cx,j_obj,exception)) return(script_null_to_value(cx));
+	if (!script_check_fail_in_construct(cx,func,j_obj,exception)) return(script_null_to_value(cx));
 	
 		// get proper draw setup
 		
@@ -198,7 +199,7 @@ JSValueRef js_model_bone_get_brightness_func(JSContextRef cx,JSObjectRef func,JS
 	model_draw		*draw;
 	
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
-	if (!script_check_fail_in_construct(cx,j_obj,exception)) return(script_null_to_value(cx));
+	if (!script_check_fail_in_construct(cx,func,j_obj,exception)) return(script_null_to_value(cx));
 	
 		// get proper draw setup
 		
@@ -231,7 +232,7 @@ JSValueRef js_model_bone_set_dynamic_rotate_func(JSContextRef cx,JSObjectRef fun
 	model_draw		*draw;
 	
 	if (!script_check_param_count(cx,func,argc,4,exception)) return(script_null_to_value(cx));
-	if (!script_check_fail_in_construct(cx,j_obj,exception)) return(script_null_to_value(cx));
+	if (!script_check_fail_in_construct(cx,func,j_obj,exception)) return(script_null_to_value(cx));
 	
 		// get proper draw setup
 		
@@ -259,7 +260,7 @@ JSValueRef js_model_bone_set_dynamic_move_func(JSContextRef cx,JSObjectRef func,
 	model_draw		*draw;
 	
 	if (!script_check_param_count(cx,func,argc,4,exception)) return(script_null_to_value(cx));
-	if (!script_check_fail_in_construct(cx,j_obj,exception)) return(script_null_to_value(cx));
+	if (!script_check_fail_in_construct(cx,func,j_obj,exception)) return(script_null_to_value(cx));
 	
 		// get proper draw setup
 		
@@ -287,7 +288,7 @@ JSValueRef js_model_bone_set_dynamic_resize_func(JSContextRef cx,JSObjectRef fun
 	model_draw		*draw;
 	
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
-	if (!script_check_fail_in_construct(cx,j_obj,exception)) return(script_null_to_value(cx));
+	if (!script_check_fail_in_construct(cx,func,j_obj,exception)) return(script_null_to_value(cx));
 	
 		// get proper draw setup
 		

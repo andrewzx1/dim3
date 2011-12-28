@@ -33,6 +33,7 @@ and can be sold or given away.
 #include "objects.h"
 
 extern server_type			server;
+extern map_type				map;
 extern camera_type			camera;
 extern setup_type			setup;
 
@@ -48,12 +49,12 @@ void camera_fpp_calc_position(void)
 
 	obj=server.obj_list.objs[camera.obj_idx];
 	
-    camera.cur_pos.pnt.x=obj->pnt.x+camera.setup.pnt_offset.x;
-    camera.cur_pos.pnt.y=((obj->pnt.y+obj->duck.y_move+obj->liquid.bob_y_move)+obj->size.eye_offset)+camera.setup.pnt_offset.x;
-    camera.cur_pos.pnt.z=obj->pnt.z+camera.setup.pnt_offset.z;
+    camera.cur_pos.pnt.x=obj->pnt.x+map.camera.pnt_offset.x;
+    camera.cur_pos.pnt.y=((obj->pnt.y+obj->duck.y_move+obj->liquid.bob_y_move)+obj->size.eye_offset)+map.camera.pnt_offset.x;
+    camera.cur_pos.pnt.z=obj->pnt.z+map.camera.pnt_offset.z;
 
-	camera.cur_pos.ang.x=camera.setup.ang_offset.x-obj->view_ang.x;
-	camera.cur_pos.ang.y=angle_add(obj->ang.y,camera.setup.ang_offset.y);
-    camera.cur_pos.ang.z=camera.setup.ang_offset.z+obj->view_ang.z;
+	camera.cur_pos.ang.x=map.camera.ang_offset.x-obj->view_ang.x;
+	camera.cur_pos.ang.y=angle_add(obj->ang.y,map.camera.ang_offset.y);
+    camera.cur_pos.ang.z=map.camera.ang_offset.z+obj->view_ang.z;
 }
 

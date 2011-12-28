@@ -139,10 +139,9 @@ bool weapon_start_script(obj_type *obj,weapon_type *weap,bool no_construct,char 
       
 ======================================================= */
 
-bool weapon_add(obj_type *obj,char *name)
+bool weapon_add(obj_type *obj,char *name,char *err_str)
 {
 	int				n,idx;
-	char			err_str[256];
 	bool			ok;
 	weapon_type		*weap;
 	
@@ -157,13 +156,19 @@ bool weapon_add(obj_type *obj,char *name)
 		}
 	}
 	
-	if (idx==-1) return(FALSE);
-
+	if (idx==-1) {
+		strcpy(err_str,"Reached the maximum number of weapons per object");
+		return(FALSE);
+	}
+	
 		// create memory for new weapon
 		
 	weap=(weapon_type*)malloc(sizeof(weapon_type));
-	if (weap==NULL) return(FALSE);
-
+	if (weap==NULL) {
+		strcpy(err_str,"Out of Memory");
+		return(FALSE);
+	}
+	
 		// initialize weapon
 	
 	weap->idx=idx;
@@ -296,6 +301,10 @@ bool weapon_add(obj_type *obj,char *name)
 	ok=FALSE;
 	if (weapon_start_script(obj,weap,FALSE,err_str)) {
 		ok=model_draw_load(&weap->draw,"Weapon",weap->name,err_str);
+		if ((weap->dual.on) && (ok)) {
+			memmove(&weap->draw_dual,&weap->draw,sizeof(model_draw));
+			ok=model_draw_load(&weap->draw_dual,"Weapon",weap->name,err_str);
+		}
 	}
 	
 		// there was an error
@@ -303,8 +312,6 @@ bool weapon_add(obj_type *obj,char *name)
 		// all it's projectile setups
 		
 	if (!ok) {
-		console_add_error(err_str);
-		
 		for (n=0;n!=max_proj_setup_list;n++) {
 			proj_setup_dispose(weap,n);
 		}
@@ -315,11 +322,13 @@ bool weapon_add(obj_type *obj,char *name)
 		return(FALSE);
 	}
 
-		// duplicate draw settings to dual
+		// reset ammo
 		
-	memmove(&weap->draw_dual,&weap->draw,sizeof(model_draw));
-	
 	weapon_reset_ammo(weap);
+	
+		// weapons always auto-spawn
+		
+	scripts_post_event_console(weap->script_idx,-1,sd_event_spawn,sd_event_spawn_init,0);
 	
 	return(TRUE);
 }
@@ -341,7 +350,9 @@ void weapon_dispose(obj_type *obj,int idx)
 		// clear scripts and models
 
 	scripts_dispose(weap->script_idx);
+	
 	model_draw_dispose(&weap->draw);
+	if (weap->dual.on) model_draw_dispose(&weap->draw_dual);
 	
 		// free and empty from list
 		

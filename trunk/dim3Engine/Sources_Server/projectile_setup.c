@@ -85,10 +85,9 @@ bool proj_setup_start_script(obj_type *obj,weapon_type *weap,proj_setup_type *pr
       
 ======================================================= */
 
-bool proj_setup_create(obj_type *obj,weapon_type *weap,char *name)
+bool proj_setup_create(obj_type *obj,weapon_type *weap,char *name,char *err_str)
 {
 	int					n,idx;
-	char				err_str[256];
 	proj_setup_type		*proj_setup;
 	
 		// find a free proj setup
@@ -102,12 +101,18 @@ bool proj_setup_create(obj_type *obj,weapon_type *weap,char *name)
 		}
 	}
 	
-	if (idx==-1) return(FALSE);
-
+	if (idx==-1) {
+		strcpy(err_str,"Reached the maximum number of weapons per object");
+		return(FALSE);
+	}
+	
 		// create memory for new projectile setup
 		
 	proj_setup=(proj_setup_type*)malloc(sizeof(proj_setup_type));
-	if (proj_setup==NULL) return(FALSE);
+	if (proj_setup==NULL) {
+		strcpy(err_str,"Out of Memory");
+		return(FALSE);
+	}
 
 		// initialize projectile setup
 	
@@ -173,8 +178,6 @@ bool proj_setup_create(obj_type *obj,weapon_type *weap,char *name)
 	
 		// there was an error
 		// clean up and remove this projectile setup
-	
-	console_add_error(err_str);
 	
 	free(proj_setup);
 	weap->proj_setup_list.proj_setups[idx]=NULL;

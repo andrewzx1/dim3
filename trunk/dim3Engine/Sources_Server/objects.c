@@ -580,8 +580,6 @@ int object_create(char *name,int type,int bind)
 
 	obj->sight.side_angle=20.0f;
 	obj->sight.look_angle=0.0f;
-	obj->sight.side_division=3;
-	obj->sight.look_division=1;
 	obj->sight.distance=22000;
 	
     obj->bump.on=TRUE;

@@ -45,27 +45,13 @@ camera_type					state_camera;
 
 void camera_initialize(void)
 {
-	camera.setup.mode=cv_fpp;
+	camera.cur_pos.pnt.x=0;
+	camera.cur_pos.pnt.y=0;
+	camera.cur_pos.pnt.z=0;
 	
-	camera.setup.ang.x=0;
-	camera.setup.ang.y=0;
-	camera.setup.ang.z=0;
-    
-    camera.setup.chase.distance=7500;
-	camera.setup.chase.track_speed=1.0f;
-    
-	camera.setup.chase.slop.x=0;
-	camera.setup.chase.slop.y=0;
-	camera.setup.chase.slop.z=0;
-    
-    camera.setup.c_static.follow=TRUE;
-	camera.setup.c_static.attach_node[0]=0x0;
-
-	camera.setup.plane.fov=60;
-	camera.setup.plane.aspect_ratio=1;
-	camera.setup.plane.near_z=400;
-	camera.setup.plane.far_z=300000;
-	camera.setup.plane.near_z_offset=-400;
+	camera.cur_pos.ang.x=0.0f;
+	camera.cur_pos.ang.y=0.0f;
+	camera.cur_pos.ang.z=0.0f;
 
 	camera.auto_walk.on=FALSE;
 	camera.auto_move.ang_on=FALSE;
@@ -78,22 +64,18 @@ void camera_map_setup(void)
 {
 	int				node_idx;
 	char			err_str[256];
-	
-		// move over the map camera
 		
-	memmove(&camera.setup,&map.camera,sizeof(map_camera_type));
-	
 		// if static, attach from node
 		
-	if (camera.setup.mode!=cv_static) return;
+	if (map.camera.mode!=cv_static) return;
 	
 		// find node, go to fpp if missing
 		
-	node_idx=map_find_node(&map,camera.setup.c_static.attach_node);
+	node_idx=map_find_node(&map,map.camera.c_static.attach_node);
 	if (node_idx==-1) {
-		sprintf(err_str,"Can not attach camera to missing node: %s",camera.setup.c_static.attach_node);
+		sprintf(err_str,"Can not attach camera to missing node: %s",map.camera.c_static.attach_node);
 		console_add_error(err_str);
-		camera.setup.mode=cv_fpp;
+		map.camera.mode=cv_fpp;
 		return;
 	}
 	
@@ -119,10 +101,10 @@ void camera_get_angle_from(d3pnt *pnt,d3ang *ang)
 {
 	int				dist;
 
-	dist=distance_2D_get(0,0,(map.camera.pos.pnt.x-pnt->x),(map.camera.pos.pnt.z-pnt->z));
-	ang->x=-angle_find(0,0,(map.camera.pos.pnt.y-pnt->y),dist);
+	dist=distance_2D_get(0,0,(camera.cur_pos.pnt.x-pnt->x),(camera.cur_pos.pnt.z-pnt->z));
+	ang->x=-angle_find(0,0,(camera.cur_pos.pnt.y-pnt->y),dist);
 
-	ang->y=angle_find(pnt->x,pnt->z,map.camera.pos.pnt.x,map.camera.pos.pnt.z);
+	ang->y=angle_find(pnt->x,pnt->z,camera.cur_pos.pnt.x,camera.cur_pos.pnt.z);
 
 	ang->z=0.0f;
 }
@@ -201,9 +183,9 @@ void camera_auto_move_run(void)
 			camera.auto_move.ang_on=FALSE;
 		}
 		else {
-			camera.setup.ang.x+=camera.auto_move.ang.x;
-			camera.setup.ang.y+=camera.auto_move.ang.y;
-			camera.setup.ang.z+=camera.auto_move.ang.z;
+			camera.cur_pos.ang.x+=camera.auto_move.ang.x;
+			camera.cur_pos.ang.y+=camera.auto_move.ang.y;
+			camera.cur_pos.ang.z+=camera.auto_move.ang.z;
 		}
 	}
 }
@@ -218,10 +200,10 @@ void camera_animate_start(float fov,float aspect_ratio,int msec)
 {
 	camera.animate.on=TRUE;
 
-	camera.animate.start_fov=camera.setup.plane.fov;
+	camera.animate.start_fov=map.camera.plane.fov;
 	camera.animate.end_fov=fov;
 
-	camera.animate.start_aspect_ratio=camera.setup.plane.aspect_ratio;
+	camera.animate.start_aspect_ratio=map.camera.plane.aspect_ratio;
 	camera.animate.end_aspect_ratio=aspect_ratio;
 
 	camera.animate.start_tick=game_time_get();
@@ -241,8 +223,8 @@ void camera_animate_run(void)
 
 	if (tick>=camera.animate.end_tick) {
 		camera.animate.on=FALSE;
-		camera.setup.plane.fov=camera.animate.end_fov;
-		camera.setup.plane.aspect_ratio=camera.animate.end_aspect_ratio;
+		map.camera.plane.fov=camera.animate.end_fov;
+		map.camera.plane.aspect_ratio=camera.animate.end_aspect_ratio;
 		return;
 	}
 
@@ -252,10 +234,10 @@ void camera_animate_run(void)
 	f_tot_tick=(float)(camera.animate.end_tick-camera.animate.start_tick);
 
 	f=camera.animate.end_fov-camera.animate.start_fov;
-	camera.setup.plane.fov=camera.animate.start_fov+((f*f_tick)/f_tot_tick);
+	map.camera.plane.fov=camera.animate.start_fov+((f*f_tick)/f_tot_tick);
 
 	f=camera.animate.end_aspect_ratio-camera.animate.start_aspect_ratio;
-	camera.setup.plane.aspect_ratio=camera.animate.start_aspect_ratio+((f*f_tick)/f_tot_tick);
+	map.camera.plane.aspect_ratio=camera.animate.start_aspect_ratio+((f*f_tick)/f_tot_tick);
 }
 
 /* =======================================================
@@ -264,29 +246,45 @@ void camera_animate_run(void)
       
 ======================================================= */
 
-void camera_run(void)
+void camera_server_run(void)
 {
 	camera_auto_move_run();
 	camera_animate_run();
 
-	switch (camera.setup.mode) {
+	switch (map.camera.mode) {
+
+		case cv_chase:
+			camera_chase_run();
+			break;
+
+ 		case cv_static:
+			camera_static_run();
+			break;
+
+	}
+}
+
+void camera_view_draw_run(void)
+{
+	camera_auto_move_run();
+	camera_animate_run();
+
+	switch (map.camera.mode) {
 
 		case cv_fpp:
             camera_fpp_calc_position();
 			break;
 	
 		case cv_chase:
-			camera_chase_run();
 			camera_chase_calc_position();
 			break;
 
  		case cv_static:
-			camera_static_run();
 			camera_static_calc_position();
 			break;
 
  		case cv_chase_static:
-            camera_chase_calc_get_position();
+            camera_chase_static_calc_position();
 			break;
 
 	}

@@ -104,7 +104,7 @@ JSObjectRef script_add_obj_weapon_object(JSContextRef cx,JSObjectRef parent_obj,
 
 JSValueRef js_obj_weapon_add_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	char			name[name_str_len];
+	char			name[name_str_len],err_str[256];
     obj_type		*obj;
 	
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
@@ -120,7 +120,11 @@ JSValueRef js_obj_weapon_add_func(JSContextRef cx,JSObjectRef func,JSObjectRef j
 	
 		// add weapon
 		
-	return(script_bool_to_value(cx,weapon_add(obj,name)));
+	if (!weapon_add(obj,name,err_str)) {
+		*exception=script_create_exception(cx,err_str);
+	}
+	
+	return(script_null_to_value(cx));
 }
 
 /* =======================================================

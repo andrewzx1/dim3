@@ -96,18 +96,22 @@ void draw_weapon_hand(obj_type *obj,weapon_type *weap)
 		// dual wielded weapons
 
 	if ((weap->dual.on) && (weap->dual.active)) {
+	
 		draw=&weap->draw_dual;
-		
-		model_draw_setup_clear(mdl,&draw->setup);
-		model_draw_setup_weapon(obj,weap,FALSE,TRUE);
+		if ((draw->model_idx!=-1) && (draw->on)) {
+			mdl=server.model_list.models[draw->model_idx];
 
-		model_calc_animation(draw,tick);
-		model_calc_draw_bones(draw);
-		
-		render_model_setup(draw,tick);
-		render_model_build_vertex_lists(draw,TRUE);
-		render_model_opaque(draw);
-		render_model_transparent(draw);
+			model_draw_setup_clear(mdl,&draw->setup);
+			model_draw_setup_weapon(obj,weap,FALSE,TRUE);
+
+			model_calc_animation(draw,tick);
+			model_calc_draw_bones(draw);
+			
+			render_model_setup(draw,tick);
+			render_model_build_vertex_lists(draw,TRUE);
+			render_model_opaque(draw);
+			render_model_transparent(draw);
+		}
 	}
 	
 		// restore FOV

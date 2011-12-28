@@ -344,7 +344,7 @@ void server_run(void)
 			
 			map_movements_auto_open();
 			
-			camera_run();
+			camera_server_run();
 			weapon_hand_bounce(obj);
 		
 			particle_map_run();

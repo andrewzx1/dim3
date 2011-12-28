@@ -154,6 +154,17 @@ int effect_spawn(int effecttype,d3pnt *pt,int life_tick)
       
 ======================================================= */
 
+inline void effect_dispose_single(effect_type *effect)
+{
+		// turn off effect
+
+	effect->on=FALSE;
+
+		// dispose any active VBOs
+
+	view_dispose_effect_vertex_object(effect);
+}
+
 void effect_dispose(void)
 {
 	int					n,tick;
@@ -177,12 +188,47 @@ void effect_dispose(void)
 			if (particle_chain(effect)) continue;
 		}
 
-			// turn off effect
+			// dispose effect
+			
+		effect_dispose_single(effect);
+	}
+}
 
-		effect->on=FALSE;
+/* =======================================================
 
-			// dispose any active VBOs
+      Delete Particle Effects With Bone Attachments
+	  to Projectiles.  This is to clear up
+	  bone-attach particles when a projectile is
+	  deleted
+      
+======================================================= */
 
-		view_dispose_effect_vertex_object(effect);
+void effect_bone_attach_particle_dispose(int proj_idx)
+{
+	int						n;
+	effect_type				*effect;
+	particle_effect_data	*eff_particle;
+	
+		// delete all particle effects
+		// that are attached to this projectile
+		// and have bone attachment
+
+	for (n=0;n!=max_effect_list;n++) {
+		effect=server.effect_list.effects[n];
+		if (!effect->on) continue;
+		
+			// is a particle?
+			
+		if (effect->effecttype!=ef_particle) continue;
+		
+			// has bone attachment?
+			
+		eff_particle=&effect->data.particle;
+		if (eff_particle->motion.bone_idx==-1) continue;
+		if (eff_particle->motion.proj_idx!=proj_idx) continue;
+
+			// dispose effect
+			
+		effect_dispose_single(effect);
 	}
 }

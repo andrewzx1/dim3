@@ -253,7 +253,7 @@ void remote_draw_names_setup(void)
 		
 		hit=ray_trace_map_by_point(&spt,&ept,&hpt,&contact);
 		
-		if (camera.setup.mode==cv_fpp) {
+		if (map.camera.mode==cv_fpp) {
 			if (hit) {
 				if (contact.obj.idx!=server.player_obj_idx) {
 					obj->draw.remote_name.on=FALSE;

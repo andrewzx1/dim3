@@ -157,6 +157,7 @@ void model_animation_effect_launch_particle(model_particle_type *particle,d3pnt 
 		motion.obj_idx=connect->obj_idx;
 		motion.weap_idx=connect->weap_idx;
 		motion.proj_idx=connect->proj_idx;
+		motion.weap_in_dual=connect->weap_in_dual;
 		motion.bone_idx=bone_idx;
 	}
 

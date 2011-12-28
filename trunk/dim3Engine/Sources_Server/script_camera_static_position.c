@@ -84,7 +84,7 @@ JSObjectRef script_add_camera_static_position_object(JSContextRef cx,JSObjectRef
 
 JSValueRef js_camera_static_position_get_follow(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_bool_to_value(cx,camera.setup.c_static.follow));
+	return(script_bool_to_value(cx,map.camera.c_static.follow));
 }
 
 /* =======================================================
@@ -95,7 +95,7 @@ JSValueRef js_camera_static_position_get_follow(JSContextRef cx,JSObjectRef j_ob
 
 bool js_camera_static_position_set_follow(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	camera.setup.c_static.follow=script_value_to_bool(cx,vp);
+	map.camera.c_static.follow=script_value_to_bool(cx,vp);
 	
 	return(TRUE);
 }
@@ -111,7 +111,7 @@ JSValueRef js_camera_static_position_move_func(JSContextRef cx,JSObjectRef func,
 	if (iface.project.modernize) {
 		if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 
-		script_value_to_point(cx,argv[0],&camera.setup.pnt);
+		script_value_to_point(cx,argv[0],&camera.cur_pos.pnt);
 		
 		return(script_null_to_value(cx));
 	}
@@ -120,9 +120,9 @@ JSValueRef js_camera_static_position_move_func(JSContextRef cx,JSObjectRef func,
 
 	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
 	
-	camera.setup.pnt.x=script_value_to_int(cx,argv[0]);
-	camera.setup.pnt.y=script_value_to_int(cx,argv[2]);
-	camera.setup.pnt.z=script_value_to_int(cx,argv[1]);
+	camera.cur_pos.pnt.x=script_value_to_int(cx,argv[0]);
+	camera.cur_pos.pnt.y=script_value_to_int(cx,argv[2]);
+	camera.cur_pos.pnt.z=script_value_to_int(cx,argv[1]);
 	
 	return(script_null_to_value(cx));
 }
@@ -140,7 +140,7 @@ JSValueRef js_camera_static_position_move_to_spot_func(JSContextRef cx,JSObjectR
 	}
 	else {
 		spot=&map.spots[idx];
-		memmove(&camera.setup.pnt,&spot->pnt,sizeof(d3pnt));
+		memmove(&camera.cur_pos.pnt,&spot->pnt,sizeof(d3pnt));
 	}
 
 	return(script_null_to_value(cx));

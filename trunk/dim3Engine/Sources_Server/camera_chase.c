@@ -50,13 +50,11 @@ void camera_chase_connect(void)
 
 	obj=server.obj_list.objs[camera.obj_idx];
 	
-	memmove(&camera.setup.c_static.pnt,&obj->pnt,sizeof(d3pnt));
+	memmove(&camera.cur_pos.pnt,&obj->pnt,sizeof(d3pnt));
 	
-		// current chasing angle
-	
-	camera.cur_chase_ang.x=camera.setup.ang.x;
-    camera.cur_chase_ang.y=angle_add(obj->ang.y,camera.setup.ang.y);
-	camera.cur_chase_ang.z=camera.setup.ang.z;
+	camera.cur_pos.chase_ang.x=map.camera.chase.track_ang.x;
+    camera.cur_pos.chase_ang.y=angle_add(obj->ang.y,map.camera.chase.track_ang.y);
+	camera.cur_pos.chase_ang.z=map.camera.chase.track_ang.z;
 }
 
 /* =======================================================
@@ -73,9 +71,9 @@ float camera_chase_width_adjust(void)
 	float		ratio;
 	
 #ifndef D3_ROTATE_VIEW
-	ratio=(((float)view.screen.x_sz)/((float)view.screen.y_sz))*camera.setup.plane.aspect_ratio;
+	ratio=(((float)view.screen.x_sz)/((float)view.screen.y_sz))*map.camera.plane.aspect_ratio;
 #else
-	ratio=(((float)view.screen.y_sz)/((float)view.screen.x_sz))*camera.setup.plane.aspect_ratio;
+	ratio=(((float)view.screen.y_sz)/((float)view.screen.x_sz))*map.camera.plane.aspect_ratio;
 #endif
 
 	return((1.6f-ratio)*13500.0f);
@@ -113,25 +111,8 @@ void camera_chase_run(void)
 
 	obj=server.obj_list.objs[camera.obj_idx];
 	
-	goal_y=angle_add(obj->ang.y,camera.setup.ang.y);
-	camera.cur_chase_ang.y=camera_chase_run_slop(camera.cur_chase_ang.y,goal_y,camera.setup.chase.slop.y,camera.setup.chase.track_speed);
-}
-
-/* =======================================================
-
-      Find Chase Division
-      
-======================================================= */
-
-int camera_chase_get_division(int x,int z,int y)
-{
-	int			k;
-	
-	k=x;
-	if (z>k) k=z;
-	if (y>k) k=y;
-	
-	return(k/chase_camera_division_factor);
+	goal_y=angle_add(obj->ang.y,map.camera.chase.track_ang.y);
+	camera.cur_pos.chase_ang.y=camera_chase_run_slop(camera.cur_pos.chase_ang.y,goal_y,map.camera.chase.slop.y,map.camera.chase.track_speed);
 }
 
 /* =======================================================
@@ -142,40 +123,14 @@ int camera_chase_get_division(int x,int z,int y)
 
 void camera_chase_calc_position(void)
 {
-	int						n,xadd,yadd,zadd,radius,div,
-							cx,cz,cy;
+	int						radius;
 	float					fang,fx,fy,fz;
 	d3pnt					spt,ept,hpt;
 	ray_trace_contact_type	contact;
 	matrix_type				mat;
 	obj_type				*obj;
-	weapon_type				*weap;
 
 	obj=server.obj_list.objs[camera.obj_idx];
-	
-		// get maximum camera offset
-		
-	fx=0;
-	fy=0;
-	fz=((float)camera.setup.chase.distance)+camera_chase_width_adjust();
-	
-	fang=angle_add(camera.cur_chase_ang.x,-obj->view_ang.x);
-	
-	matrix_rotate_zyx(&mat,fang,camera.cur_chase_ang.y,camera.cur_chase_ang.z);
-	matrix_vertex_multiply(&mat,&fx,&fy,&fz);
-	
-	cx=(int)fx+obj->pnt.x;
-	cy=(int)fy+obj->pnt.y;
-	cz=(int)fz+obj->pnt.z;
-    
-        // get camera movement
-        
-	div=camera_chase_get_division(abs(cx-obj->pnt.x),abs(cz-obj->pnt.z),abs(cy-obj->pnt.y));
-	if (div==0) div=1;
-	
-	xadd=(cx-obj->pnt.x)/div;
-	yadd=(cy-obj->pnt.y)/div;
-	zadd=(cz-obj->pnt.z)/div;
 	
 		// get camera starting position
 	
@@ -185,14 +140,29 @@ void camera_chase_calc_position(void)
 	fy=0;
 	fz=(float)(radius>>2);			// always move camera back to protect against hitting walls in front of player
 	
-	fang=angle_add(camera.cur_chase_ang.x,(obj->view_ang.x*2));
+	fang=angle_add(camera.cur_pos.chase_ang.x,(obj->view_ang.x*2));
 	
-	matrix_rotate_zyx(&mat,fang,camera.cur_chase_ang.y,camera.cur_chase_ang.z);
+	matrix_rotate_zyx(&mat,fang,camera.cur_pos.chase_ang.y,camera.cur_pos.chase_ang.z);
 	matrix_vertex_multiply(&mat,&fx,&fy,&fz);
 	
-	cx=(int)fx+obj->pnt.x;
-	cz=(int)fz+obj->pnt.z;
-	cy=(int)fy+(obj->pnt.y-obj->size.y);
+	spt.x=((int)fx)+obj->pnt.x;
+	spt.y=((int)fy)+(obj->pnt.y-obj->size.y);
+	spt.z=((int)fz)+obj->pnt.z;
+	
+		// get camera ending position
+		
+	fx=0;
+	fy=0;
+	fz=((float)map.camera.chase.distance)+camera_chase_width_adjust();
+	
+	fang=angle_add(camera.cur_pos.chase_ang.x,-obj->view_ang.x);
+	
+	matrix_rotate_zyx(&mat,fang,camera.cur_pos.chase_ang.y,camera.cur_pos.chase_ang.z);
+	matrix_vertex_multiply(&mat,&fx,&fy,&fz);
+	
+	ept.x=((int)fx)+obj->pnt.x;
+	ept.y=((int)fy)+obj->pnt.y;
+	ept.z=((int)fz)+obj->pnt.z;
 
 		// setup contacts
 
@@ -202,40 +172,22 @@ void camera_chase_calc_position(void)
 	contact.proj.on=FALSE;
 
 	contact.origin=poly_ray_trace_origin_unknown;
-		
-		// move camera
-		
-	for (n=0;n!=div;n++) {
-		
-		spt.x=cx;
-		spt.y=cy;
-		spt.z=cz;
 
-		ept.x=cx+xadd;
-		ept.y=cy+yadd;
-		ept.z=cz+zadd;
-
-		if (!ray_trace_map_by_point(&spt,&ept,&hpt,&contact)) {
-			cx+=xadd;
-			cz+=zadd;
-		}
-	}
-	
+	ray_trace_map_by_point(&spt,&ept,&hpt,&contact);
+				
 		// the position
 		
-    camera.cur_pos.pnt.x=cx+camera->setup.pnt_offset.x;
-    camera.cur_pos.pnt.y=cy+camera->setup.pnt_offset.y;
-    camera.cur_pos.pnt.z=cz+camera->setup.pnt_offset.z;
+    camera.cur_pos.pnt.x=hpt.x+map.camera.pnt_offset.x;
+    camera.cur_pos.pnt.y=hpt.y+map.camera.pnt_offset.y;
+    camera.cur_pos.pnt.z=hpt.z+map.camera.pnt_offset.z;
 	
 		// looking angles
-	
-	weap=weapon_find_current(obj);
+		// need to reverse X looking angle so it
+		// behaves opposite track X angle
 
-	camera.cur_pos.ang.x=(camera.cur_chase_ang.x+camera.setup.ang_offset.x)-obj->view_ang.x;
-	if (weap!=NULL) camera.cur_pos.ang.x=object_player_look_constrain(obj,weap,camera.cur_pos.ang.x);
-
-	camera.cur_pos.ang.y=angle_add(camera.cur_pos.chase_ang.y,camera.setup.ang_offset.y);
-	camera.cur_pos.ang.z=camera.setup.ang_offset.z;
+	camera.cur_pos.ang.x=(camera.cur_pos.chase_ang.x-map.camera.ang_offset.x)-obj->view_ang.x;
+	camera.cur_pos.ang.y=angle_add(camera.cur_pos.chase_ang.y,map.camera.ang_offset.y);
+	camera.cur_pos.ang.z=map.camera.chase.track_ang.z+map.camera.ang_offset.z;
 }
 
 /* =======================================================
@@ -244,7 +196,7 @@ void camera_chase_calc_position(void)
       
 ======================================================= */
 
-void camera_chase_static_get_position(void)
+void camera_chase_static_calc_position(void)
 {
 	float			fx,fy,fz,x_ang,y_ang;
 	obj_type		*obj;
@@ -256,7 +208,7 @@ void camera_chase_static_get_position(void)
 
 	fx=0;
 	fy=0;
-	fz=((float)camera.setup.chase.distance)+camera_chase_width_adjust();
+	fz=((float)map.camera.chase.distance)+camera_chase_width_adjust();
 	
 	x_ang=map.camera.chase.track_ang.x;
 	if (x_ang>180.0f) x_ang-=360.0f;
@@ -272,8 +224,8 @@ void camera_chase_static_get_position(void)
 	
 		// looking angles
 
-	camera.cur_pos.ang.x=x_ang+map.camera.chase.ang_offset.x;
-	camera.cur_pos.ang.y=angle_add(y_ang,map.camera.chase.ang_offset.y);
-	camera.cur_pos.ang.z=camera.setup.ang.z+map.camera.chase.ang_offset.z;
+	camera.cur_pos.ang.x=x_ang+map.camera.ang_offset.x;
+	camera.cur_pos.ang.y=angle_add(y_ang,map.camera.ang_offset.y);
+	camera.cur_pos.ang.z=map.camera.chase.track_ang.z+map.camera.ang_offset.z;
 }
 

@@ -290,7 +290,7 @@ void model_draw_setup_weapon(obj_type *obj,weapon_type *weap,bool ignore_y_shift
 		// these calcs are sort of loose, but will work
 		// good for lighting and normals
 
-	draw->no_rot.on=((camera.setup.mode==cv_fpp) && (obj->idx==camera.obj_idx));
+	draw->no_rot.on=((map.camera.mode==cv_fpp) && (obj->idx==camera.obj_idx));
 
 	if (draw->no_rot.on) {
 		draw->no_rot.center.x=obj->pnt.x;
@@ -307,6 +307,8 @@ void model_draw_setup_weapon(obj_type *obj,weapon_type *weap,bool ignore_y_shift
 	draw->connect.motion_vct.x=obj->motion.vct.x;
 	draw->connect.motion_vct.y=obj->motion.vct.y;
 	draw->connect.motion_vct.z=obj->motion.vct.z;
+	
+	draw->connect.weap_in_dual=dual_hand;
 
 		// centering
 

@@ -170,8 +170,8 @@ void cinema_action_run_camera(map_cinema_action_type *action)
 
 		// any camera action sets camera to static
 
-	camera.setup.mode=cv_static;
-	camera.setup.c_static.follow=FALSE;
+	map.camera.mode=cv_static;
+	map.camera.c_static.follow=FALSE;
 
 		// camera placement
 

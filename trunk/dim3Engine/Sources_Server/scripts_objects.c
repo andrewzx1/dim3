@@ -568,7 +568,7 @@ bool script_check_param_count(JSContextRef cx,JSObjectRef func,int argc,int need
 		if (vp!=NULL) script_value_to_string(cx,vp,func_name,64);
 	}
 	
-	sprintf(err_str,"Function '%s' requires %d parameters, found %d\n",func_name,need_argc,argc);
+	sprintf(err_str,"Function '%s' requires %d parameters, found %d",func_name,need_argc,argc);
 	*exception=script_create_exception(cx,err_str);
 
 	return(FALSE);
@@ -593,18 +593,31 @@ bool script_check_param_at_least_count(JSContextRef cx,JSObjectRef func,int argc
 		script_value_to_string(cx,vp,func_name,64);
 	}
 	
-	sprintf(err_str,"Function '%s' requires at least %d parameters, found %d\n",func_name,argc,need_argc);
+	sprintf(err_str,"Function '%s' requires at least %d parameters, found %d",func_name,argc,need_argc);
 	
 	*exception=script_create_exception(cx,err_str);
 
 	return(FALSE);
 }
 
-bool script_check_fail_in_construct(JSContextRef cx,JSObjectRef j_obj,JSValueRef *exception)
+bool script_check_fail_in_construct(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,JSValueRef *exception)
 {
-	if (!script_in_construct(j_obj)) return(TRUE);
+	char				func_name[64],err_str[256];
+	JSValueRef			vp;
 
-	*exception=script_create_exception(cx,"This function can not be called in a construct event, move call to spawn event");
+	if (!script_in_construct(j_obj)) return(TRUE);
+	
+	vp=script_get_single_property(cx,func,"name");
+	if (vp==NULL) {
+		strcpy(func_name,"Unknown");
+	}
+	else {
+		script_value_to_string(cx,vp,func_name,64);
+	}
+	
+	sprintf(err_str,"Function '%s' can not be called in a construct event, move call to spawn event",func_name);
+	*exception=script_create_exception(cx,err_str);
+
 	return(FALSE);
 }
 

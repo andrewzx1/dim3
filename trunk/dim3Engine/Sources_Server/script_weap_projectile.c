@@ -283,7 +283,7 @@ bool js_weap_projectile_set_repeat_tick(JSContextRef cx,JSObjectRef j_obj,JSStri
 
 JSValueRef js_weap_projectile_add_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
-	char				str[name_str_len];
+	char				str[name_str_len],err_str[256];
     obj_type			*obj;
 	weapon_type			*weap;
 	
@@ -299,7 +299,11 @@ JSValueRef js_weap_projectile_add_func(JSContextRef cx,JSObjectRef func,JSObject
 
 	script_value_to_string(cx,argv[0],str,name_str_len);
 
-	return(script_bool_to_value(cx,proj_setup_create(obj,weap,str)));
+	if (!proj_setup_create(obj,weap,str,err_str)) {
+		*exception=script_create_exception(cx,err_str);
+	}
+	
+	return(script_null_to_value(cx));
 }
 
 /* =======================================================

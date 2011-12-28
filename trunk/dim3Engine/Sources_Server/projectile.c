@@ -207,6 +207,11 @@ void projectile_set_position(proj_type *proj,d3pnt *pt,d3ang *ang)
 	memmove(&proj->ang,ang,sizeof(d3ang));
 	memmove(&proj->motion.ang,ang,sizeof(d3ang));
 	
+		// make sure draw is setup
+		// for launch effects and spawn animations
+		
+	memmove(&proj->draw.pnt,pnt,sizeof(d3pnt));
+	
 		// initial gravity
 	
 	proj->force.gravity=gravity_start_power;
@@ -248,6 +253,11 @@ void projectile_dispose(proj_type *proj)
 		
 	timers_clear(proj->script_idx,timer_mode_repeat);
 	timers_clear(proj->script_idx,timer_mode_single);
+	
+		// remove any effects attached
+		// to a bone
+		
+	effect_bone_attach_particle_dispose(proj->idx);
 
 		// mark as unused
 

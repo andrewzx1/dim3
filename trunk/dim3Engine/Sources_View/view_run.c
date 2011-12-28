@@ -32,6 +32,7 @@ and can be sold or given away.
 #include "interface.h"
 #include "objects.h"
 
+extern map_type				map;
 extern server_type			server;
 extern view_type			view;
 extern setup_type			setup;
@@ -107,7 +108,7 @@ void view_run(void)
 
 			// listener position
 			
-		if (camera.setup.mode==cv_fpp) {
+		if (map.camera.mode==cv_fpp) {
 			al_set_listener(&obj->pnt,obj->ang.y);
 		}
 		else {

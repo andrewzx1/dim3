@@ -33,7 +33,9 @@ and can be sold or given away.
 #include "ui_common.h"
 #include "interface.h"
 
-#define kGroupParticlePropertyAdd				0
+#define kGroupParticleSettingsName				0
+
+#define kGroupParticlePropertyAdd				10
 
 #define kGroupParticleProperyName				1000
 #define kGroupParticleProperyDelete				2000
@@ -57,7 +59,10 @@ void alt_property_palette_fill_particle_group(int particle_idx)
 
 	list_palette_set_sub_title(&alt_property_palette,"Particle Group",particle->name);
 
-		// regular particles
+	list_palette_add_header(&alt_property_palette,0,"Settings");
+	list_palette_add_string(&alt_property_palette,kGroupParticleSettingsName,"Name",particle->name,FALSE);
+
+		// particles list
 
 	list_palette_add_header_button(&alt_property_palette,kGroupParticlePropertyAdd,"Particles",list_button_plus);
 
@@ -128,6 +133,16 @@ void alt_property_palette_click_particle_group(int particle_idx,int id,bool doub
 		property_palette_pick_particle(particle->group.particles[idx].name);
 
 		return;
+	}
+	
+	switch (id) {
+
+			// settings
+
+		case kGroupParticleSettingsName:
+			dialog_property_string_run(list_string_value_string,(void*)particle->name,name_str_len,0,0);
+			break;
+			
 	}
 }
 

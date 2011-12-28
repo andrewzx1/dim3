@@ -525,7 +525,7 @@ void view_obscure_run(void)
 
 	camera_pnt.x=view.render->camera.pnt.x;
 	camera_pnt.y=view.render->camera.pnt.y;
-	camera_pnt.z=view.render->camera.pnt.z+camera.setup.plane.near_z;
+	camera_pnt.z=view.render->camera.pnt.z+map.camera.plane.near_z;
 
 		// run through and obscure all
 		// meshes, models, and effects

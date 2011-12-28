@@ -405,7 +405,6 @@ typedef struct		{
 
 typedef struct		{
 						int									obj_idx;
-						map_camera_type						setup;
 						camera_current_position_type		cur_pos;
 						camera_auto_walk_type				auto_walk;
 						camera_auto_move_type				auto_move;

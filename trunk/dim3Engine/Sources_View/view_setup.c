@@ -181,7 +181,7 @@ void view_add_liquid_draw_list(int start_mesh_idx)
 		// distance but can be the fog distance if fog is on
 
 	if (!fog_solid_on()) {
-		obscure_dist=camera.setup.plane.far_z-camera.setup.plane.near_z;
+		obscure_dist=map.camera.plane.far_z-map.camera.plane.near_z;
 	}
 	else {
 		obscure_dist=(map.fog.outer_radius>>1)*3;
@@ -263,7 +263,7 @@ void view_setup_objects(int tick)
 		
 		if (obj->hidden) continue;
 		
-		is_camera=((camera.setup.mode==cv_fpp) && (obj->idx==camera.obj_idx));
+		is_camera=((map.camera.mode==cv_fpp) && (obj->idx==camera.obj_idx));
 		
 			// setup model positions
 			

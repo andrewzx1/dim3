@@ -671,7 +671,6 @@ typedef struct		{
 					} map_camera_setup_chase_type;
 
 typedef struct		{
-						d3pnt								pnt;
 						bool								follow;
 						char								attach_node[name_str_len];
 					} map_camera_setup_static_type;
