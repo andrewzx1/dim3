@@ -90,12 +90,12 @@ void vertex_invert_normals(int mesh_idx)
 	
 	for (n=0;n!=nvertex;n++) {
 		
-		if (!vertex_mask_check_sel(mesh_idx,n)) continue;
-
-		vertex->tangent_space.normal.x=-vertex->tangent_space.normal.x;
-		vertex->tangent_space.normal.y=-vertex->tangent_space.normal.y;
-		vertex->tangent_space.normal.z=-vertex->tangent_space.normal.z;
-
+		if (vertex_mask_check_sel(mesh_idx,n)) {
+			vertex->tangent_space.normal.x=-vertex->tangent_space.normal.x;
+			vertex->tangent_space.normal.y=-vertex->tangent_space.normal.y;
+			vertex->tangent_space.normal.z=-vertex->tangent_space.normal.z;
+		}
+		
 		vertex++;
 	}
 }
@@ -121,12 +121,12 @@ void vertex_set_normals(int mesh_idx)
 	
 	for (n=0;n!=nvertex;n++) {
 		
-		if (!vertex_mask_check_sel(mesh_idx,n)) continue;
-			
-		vertex->tangent_space.normal.x=normal.x;
-		vertex->tangent_space.normal.y=normal.y;
-		vertex->tangent_space.normal.z=normal.z;
-
+		if (vertex_mask_check_sel(mesh_idx,n)) {
+			vertex->tangent_space.normal.x=normal.x;
+			vertex->tangent_space.normal.y=normal.y;
+			vertex->tangent_space.normal.z=normal.z;
+		}
+		
 		vertex++;
 	}
 }
@@ -172,17 +172,18 @@ void vertex_set_normals_in_out(int mesh_idx,bool out)
 
 	for (n=0;n!=nvertex;n++) {
 				
-		if (!vertex_mask_check_sel(mesh_idx,n)) continue;
+		if (vertex_mask_check_sel(mesh_idx,n)) {
 
-			// determine if vertex is facing 'out'
-		
-		vector_create(&face_vct,vertex->pnt.x,vertex->pnt.y,vertex->pnt.z,center.x,center.y,center.z);
-		is_out=(vector_dot_product(&vertex->tangent_space.normal,&face_vct)>0.0f);
+				// determine if vertex is facing 'out'
+			
+			vector_create(&face_vct,vertex->pnt.x,vertex->pnt.y,vertex->pnt.z,center.x,center.y,center.z);
+			is_out=(vector_dot_product(&vertex->tangent_space.normal,&face_vct)>0.0f);
 
-		if (is_out!=out) {
-			vertex->tangent_space.normal.x=-vertex->tangent_space.normal.x;
-			vertex->tangent_space.normal.y=-vertex->tangent_space.normal.y;
-			vertex->tangent_space.normal.z=-vertex->tangent_space.normal.z;
+			if (is_out!=out) {
+				vertex->tangent_space.normal.x=-vertex->tangent_space.normal.x;
+				vertex->tangent_space.normal.y=-vertex->tangent_space.normal.y;
+				vertex->tangent_space.normal.z=-vertex->tangent_space.normal.z;
+			}
 		}
 
 		vertex++;

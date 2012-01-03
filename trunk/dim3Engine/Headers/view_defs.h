@@ -391,10 +391,10 @@ typedef struct		{
 					} camera_auto_walk_type;
 
 typedef struct		{
-						int									ang_end_tick;
-						bool								ang_on;
+						int									end_tick;
+						bool								on;
 						d3ang								ang;
-					} camera_auto_move_type;
+					} camera_auto_turn_type;
 
 typedef struct		{
 						int									start_tick,end_tick;
@@ -407,7 +407,7 @@ typedef struct		{
 						int									obj_idx;
 						camera_current_position_type		cur_pos;
 						camera_auto_walk_type				auto_walk;
-						camera_auto_move_type				auto_move;
+						camera_auto_turn_type				auto_turn_angle_offset,auto_turn_chase_angle;
 						camera_animate_type					animate;
 					} camera_type;
 

@@ -264,84 +264,94 @@ int object_find_idx_by_stood_on_object_idx(int stand_obj_idx)
 
 bool object_sight_test_object(obj_type *obj,int test_obj_idx)
 {
-	int						x,y,radius,side_div,look_div;
-	float					side_start,look_start,side_add,look_add;
-	d3pnt					spt,hpt;
-	d3ang					ang;
-	ray_trace_contact_type	contact;
+	int						n,eye_y,sz;
+	float					ang;
+	bool					in_sight,hits[9];
+	d3pnt					spt[9],ept[9],hpt[9],min,max;
+	ray_trace_contact_type	contacts[9],base_contact;
+	obj_type				*test_obj;
 	
+		// get test object
+		
 	if (test_obj_idx==-1) return(FALSE);
-
-		// setup contact
-
-	contact.obj.on=TRUE;
-	contact.proj.on=FALSE;
-
-	contact.obj.ignore_idx=obj->idx;
-	contact.proj.ignore_idx=-1;
-
-	contact.origin=poly_ray_trace_origin_object;
-
-		// set divisions
-
-	side_div=obj->sight.side_division;
-	if (side_div<=0) side_div=1;
-
-	look_div=obj->sight.look_division;
-	if (look_div<=0) look_div=1;
-
-		// get ray angles
-
-	if (side_div==1) {
-		side_start=obj->ang.y;
-		side_add=0.0f;
-	}
-	else {
-		side_start=obj->ang.y-(obj->sight.side_angle/2.0f);
-		side_add=(obj->sight.side_angle/(float)side_div);
-	}
-
-	if (look_div==1) {
-		look_start=obj->ang.x;
-		look_add=0.0f;
-	}
-	else {
-		look_start=obj->ang.x-(obj->sight.look_angle/2.0f);
-		look_add=(obj->sight.look_angle/(float)look_div);
-	}
-
-		// run the ray traces
-
-	ang.x=look_start;
-	ang.z=0.0f;
-
-	for (y=0;y!=look_div;y++) {
-
-		ang.y=side_start;
-
-		for (x=0;x!=side_div;x++) {
-
-				// get starting position
-
-			spt.x=obj->pnt.x;
-			spt.y=obj->pnt.y+obj->size.eye_offset;
-			spt.z=obj->pnt.z;
-
-			radius=object_get_radius(obj);
-			ray_push(&spt,&ang,radius);
-
-				// ray trace
-
-			if (ray_trace_map_by_angle(&spt,&ang,obj->sight.distance,&hpt,&contact)) {
-				if (contact.obj.idx==test_obj_idx) return(TRUE);
-			}
-
-			ang.y=angle_add(ang.y,side_add);		// these angles are constrained 0...360
-		}
-
-		ang.x+=look_add;			// these angles are constrained -x...x
+	
+	test_obj=server.obj_list.objs[test_obj_idx];
+	if (test_obj==NULL) return(FALSE);
+	
+		// check distance first
+		
+	if (distance_get(obj->pnt.x,obj->pnt.y,obj->pnt.z,test_obj->pnt.x,test_obj->pnt.y,test_obj->pnt.z)>obj->sight.distance) return(FALSE);
+	
+		// get min/max for test object
+		
+	sz=test_obj->size.x>>1;
+	min.x=test_obj->pnt.x-sz;
+	max.x=test_obj->pnt.x+sz;
+	
+	sz=test_obj->size.z>>1;
+	min.z=test_obj->pnt.z-sz;
+	max.z=test_obj->pnt.z+sz;
+	
+	min.y=test_obj->pnt.y-test_obj->size.y;
+	max.y=test_obj->pnt.y;
+	
+		// get eye y for object running
+		// sight check
+		
+	eye_y=obj->pnt.y+obj->size.eye_offset;
+	
+		// check if within sight angles
+		
+		// anything that is within the x/y/z
+		// automatically counts
+		
+	in_sight=FALSE;
+	
+	in_sight|=((obj->pnt.x>=min.x) && (obj->pnt.x<=max.x));
+	in_sight|=((eye_y>=min.y) && (eye_y<=max.y));
+	in_sight|=((obj->pnt.z>=min.z) && (obj->pnt.z<=max.z));
+	
+		// otherwise check angles
+		
+	if (!in_sight) {
+		ang=angle_find(obj->pnt.x,obj->pnt.z,test_obj->pnt.x,test_obj->pnt.z);
+		if (angle_dif(ang,obj->ang.y,NULL)>(obj->sight.side_angle*0.5f)) return(FALSE);
+		
+		sz=distance_2D_get(obj->pnt.x,obj->pnt.z,test_obj->pnt.x,test_obj->pnt.z);
+		ang=angle_find(0,obj->pnt.y,sz,test_obj->pnt.y);
+		if (angle_dif(ang,obj->ang.y,NULL)>(obj->sight.look_angle*0.5f)) return(FALSE);
 	}
 
+		// setup the rays
+		
+		// we aim at 8 corners and 1 middle
+		
+	spt[0].x=spt[1].x=spt[2].x=spt[3].x=spt[4].x=spt[5].x=spt[6].x=spt[7].x=spt[8].x=spt[9].x=obj->pnt.x;
+	spt[0].y=spt[1].y=spt[2].y=spt[3].y=spt[4].y=spt[5].y=spt[6].y=spt[7].y=spt[8].y=spt[9].y=eye_y;
+	spt[0].z=spt[1].z=spt[2].z=spt[3].z=spt[4].z=spt[5].z=spt[6].z=spt[7].z=spt[8].z=spt[9].z=obj->pnt.z;
+		
+	ept[0].x=ept[3].x=ept[4].x=ept[7].x=min.x;
+	ept[1].x=ept[2].x=ept[5].x=ept[6].x=max.x;
+	ept[0].y=ept[1].y=ept[4].y=ept[5].y=min.y;
+	ept[2].y=ept[3].y=ept[6].y=ept[7].y=max.y;
+	ept[0].z=ept[1].z=ept[2].z=ept[3].z=min.z;
+	ept[4].z=ept[5].z=ept[6].z=ept[7].z=max.z;
+	
+		// run the rays
+
+	base_contact.obj.on=TRUE;
+	base_contact.proj.on=FALSE;
+
+	base_contact.obj.ignore_idx=obj->idx;
+	base_contact.proj.ignore_idx=-1;
+
+	base_contact.origin=poly_ray_trace_origin_object;
+	
+	ray_trace_map_by_point_array(9,spt,ept,hpt,hits,&base_contact,contacts);
+	
+	for (n=0;n!=9;n++) {
+		if (contacts[n].obj.idx==test_obj_idx) return(TRUE);
+	}
 
 	return(FALSE);
 }

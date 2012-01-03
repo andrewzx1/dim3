@@ -32,6 +32,8 @@ and can be sold or given away.
 #include "interface.h"
 #include "scripts.h"
 
+extern iface_type		iface;
+extern map_type			map;
 extern camera_type		camera;
 extern js_type			js;
 
@@ -84,17 +86,17 @@ JSObjectRef script_add_camera_angle_object(JSContextRef cx,JSObjectRef parent_ob
 
 JSValueRef js_camera_angle_get_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_float_to_value(cx,camera.cur_pos.ang.x));
+	return(script_float_to_value(cx,map.camera.ang_offset.x));
 }
 
 JSValueRef js_camera_angle_get_y(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_float_to_value(cx,camera.cur_pos.ang.y));
+	return(script_float_to_value(cx,map.camera.ang_offset.y));
 }
 
 JSValueRef js_camera_angle_get_z(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
-	return(script_float_to_value(cx,camera.cur_pos.ang.z));
+	return(script_float_to_value(cx,map.camera.ang_offset.z));
 }
 
 /* =======================================================
@@ -105,19 +107,19 @@ JSValueRef js_camera_angle_get_z(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
 
 bool js_camera_angle_set_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	camera.cur_pos.ang.x=script_value_to_float(cx,vp);
+	map.camera.ang_offset.x=script_value_to_float(cx,vp);
 	return(TRUE);
 }
 
 bool js_camera_angle_set_y(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	camera.cur_pos.ang.y=script_value_to_float(cx,vp);
+	map.camera.ang_offset.y=script_value_to_float(cx,vp);
 	return(TRUE);
 }
 
 bool js_camera_angle_set_z(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
 {
-	camera.cur_pos.ang.z=script_value_to_float(cx,vp);
+	map.camera.ang_offset.z=script_value_to_float(cx,vp);
 	return(TRUE);
 }
 
@@ -130,6 +132,18 @@ bool js_camera_angle_set_z(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JS
 JSValueRef js_camera_angle_turn_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	d3ang			ang;
+	
+	if (iface.project.modernize) {
+		if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+			
+		script_value_to_angle(cx,argv[0],&ang);
+		camera_auto_turn_set_angle_offset(&ang,script_value_to_int(cx,argv[1]));
+
+		return(script_null_to_value(cx));
+	}
+	
+	// supergumba:modernize -- delete later
+
 
 	if (!script_check_param_count(cx,func,argc,4,exception)) return(script_null_to_value(cx));
 	
@@ -137,7 +151,7 @@ JSValueRef js_camera_angle_turn_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 	ang.z=script_value_to_float(cx,argv[1]);
 	ang.y=script_value_to_float(cx,argv[2]);
 
-	camera_auto_move_set_ang(&ang,script_value_to_int(cx,argv[3]));
+	camera_auto_turn_set_angle_offset(&ang,script_value_to_int(cx,argv[3]));
 	
 	return(script_null_to_value(cx));
 }

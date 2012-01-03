@@ -137,10 +137,10 @@ void alt_property_palette_fill_animate_pose_move(int animate_idx,int pose_move_i
 		// sound
 
 	list_palette_add_header(&alt_property_palette,0,"Animate Pose Sound");
-	property_palette_add_string_bone(&alt_property_palette,kAnimationPoseMovePropertySoundBone,"Bone",pose_move->sound.bone_idx,FALSE);
 	list_palette_add_string(&alt_property_palette,kAnimationPoseMovePropertySoundName,"Sound",pose_move->sound.name,FALSE);
+	property_palette_add_string_bone(&alt_property_palette,kAnimationPoseMovePropertySoundBone,"Bone",pose_move->sound.bone_idx,FALSE);
 	list_palette_add_float(&alt_property_palette,kAnimationPoseMovePropertySoundPitch,"Pitch",&pose_move->sound.pitch,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kAnimationPoseMovePropertySoundGlobal,"Play Globally",&pose_move->sound.no_position,FALSE);
+	list_palette_add_checkbox(&alt_property_palette,kAnimationPoseMovePropertySoundGlobal,"Play Globally (Player Only)",&pose_move->sound.no_position,FALSE);
 
 		// mesh fades
 

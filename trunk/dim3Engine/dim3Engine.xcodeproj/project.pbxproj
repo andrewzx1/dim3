@@ -423,6 +423,7 @@
 		26184E7213CA0CE6003A9A79 /* CoreAudioKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26184E7113CA0CE6003A9A79 /* CoreAudioKit.framework */; };
 		26184E7613CA0D2E003A9A79 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26184E7513CA0D2E003A9A79 /* IOKit.framework */; };
 		26184E7813CA1022003A9A79 /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26184E7713CA1022003A9A79 /* JavaScriptCore.framework */; };
+		264470E814AF95250099DEE3 /* script_camera_chase_track_angle.c in Sources */ = {isa = PBXBuildFile; fileRef = 264470E714AF95250099DEE3 /* script_camera_chase_track_angle.c */; };
 		2649D14013412B2900573F6F /* gui_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 2649D13513412B2900573F6F /* gui_defs.h */; };
 		2649D14113412B2900573F6F /* input_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 2649D13613412B2900573F6F /* input_defs.h */; };
 		2649D14213412B2900573F6F /* network_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 2649D13713412B2900573F6F /* network_defs.h */; };
@@ -900,6 +901,7 @@
 		26184E7113CA0CE6003A9A79 /* CoreAudioKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudioKit.framework; path = ../../../../System/Library/Frameworks/CoreAudioKit.framework; sourceTree = "<group>"; };
 		26184E7513CA0D2E003A9A79 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = ../../../../System/Library/Frameworks/IOKit.framework; sourceTree = "<group>"; };
 		26184E7713CA1022003A9A79 /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = ../../../../System/Library/Frameworks/JavaScriptCore.framework; sourceTree = "<group>"; };
+		264470E714AF95250099DEE3 /* script_camera_chase_track_angle.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_camera_chase_track_angle.c; sourceTree = "<group>"; };
 		2649D13513412B2900573F6F /* gui_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gui_defs.h; path = Headers/gui_defs.h; sourceTree = "<group>"; };
 		2649D13613412B2900573F6F /* input_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = input_defs.h; path = Headers/input_defs.h; sourceTree = "<group>"; };
 		2649D13713412B2900573F6F /* network_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = network_defs.h; path = Headers/network_defs.h; sourceTree = "<group>"; };
@@ -1284,39 +1286,10 @@
 				263A144E149BE25400F31189 /* View */,
 				263A144F149BE27500F31189 /* Render */,
 				26188CF014A1A01C00EDF154 /* GUI */,
-				260B3F4D1411F781006ED023 /* ambients.c */,
-				260B3F4E1411F781006ED023 /* chat.c */,
-				260B3F4F1411F781006ED023 /* chooser_draw.c */,
-				260B3F501411F781006ED023 /* cinema.c */,
-				260B3F511411F781006ED023 /* console.c */,
-				260B3F521411F781006ED023 /* console_draw.c */,
-				260B3F531411F781006ED023 /* crosshair_draw.c */,
-				260B3F541411F781006ED023 /* cursor.c */,
-				260B3F551411F781006ED023 /* decals_draw.c */,
-				260B3F561411F781006ED023 /* effects_draw.c */,
-				260B3F581411F781006ED023 /* error.c */,
-				260B3F591411F781006ED023 /* fade.c */,
-				260B3F5B1411F781006ED023 /* fog.c */,
-				260B3F691411F781006ED023 /* halo_draw.c */,
-				260B3F6A1411F781006ED023 /* hand.c */,
-				260B3F6C1411F781006ED023 /* hud_draw.c */,
-				260B3F6D1411F781006ED023 /* input.c */,
-				260B3F6E1411F781006ED023 /* input_joystick.c */,
-				260B3F6F1411F781006ED023 /* input_keyboard.c */,
-				260B3F701411F781006ED023 /* input_mouse.c */,
-				260B3F711411F781006ED023 /* input_touch.c */,
-				260B3F741411F781006ED023 /* menu_draw.c */,
-				260B3F751411F781006ED023 /* network_draw.c */,
-				260B3F761411F781006ED023 /* particles_draw.c */,
-				260B3F771411F781006ED023 /* player_input.c */,
-				260B3F791411F781006ED023 /* radar_draw.c */,
-				260B3F7A1411F781006ED023 /* rain.c */,
-				260B3F7B1411F781006ED023 /* remote_status.c */,
-				260B3F811411F781006ED023 /* rings_draw.c */,
-				260B3F851411F781006ED023 /* sky.c */,
-				260B3F861411F781006ED023 /* tint.c */,
-				260B3F931411F781006ED023 /* virtual_draw.c */,
-				260B3F941411F781006ED023 /* zoom_draw.c */,
+				264470E314AED1730099DEE3 /* HUD */,
+				264470E414AED1A00099DEE3 /* Sky */,
+				264470E514AED21D0099DEE3 /* Effects */,
+				264470E614AED2860099DEE3 /* Input */,
 			);
 			path = Sources_View;
 			sourceTree = "<group>";
@@ -1431,6 +1404,7 @@
 			isa = PBXGroup;
 			children = (
 				260B3F681411F781006ED023 /* gui.c */,
+				260B3F541411F781006ED023 /* cursor.c */,
 				260B3F571411F781006ED023 /* elemets.c */,
 				260B3F781411F781006ED023 /* progress.c */,
 				260B3F721411F781006ED023 /* intro.c */,
@@ -1441,6 +1415,7 @@
 				260B3F6B1411F781006ED023 /* host.c */,
 				260B3F731411F781006ED023 /* join.c */,
 				260B3F821411F781006ED023 /* score_limit.c */,
+				260B3F581411F781006ED023 /* error.c */,
 			);
 			name = GUI;
 			sourceTree = "<group>";
@@ -1475,6 +1450,65 @@
 			name = Render;
 			sourceTree = "<group>";
 		};
+		264470E314AED1730099DEE3 /* HUD */ = {
+			isa = PBXGroup;
+			children = (
+				260B3F6A1411F781006ED023 /* hand.c */,
+				260B3F6C1411F781006ED023 /* hud_draw.c */,
+				260B3F791411F781006ED023 /* radar_draw.c */,
+				260B3F751411F781006ED023 /* network_draw.c */,
+				260B3F531411F781006ED023 /* crosshair_draw.c */,
+				260B3F4F1411F781006ED023 /* chooser_draw.c */,
+				260B3F511411F781006ED023 /* console.c */,
+				260B3F521411F781006ED023 /* console_draw.c */,
+				260B3F741411F781006ED023 /* menu_draw.c */,
+				260B3F931411F781006ED023 /* virtual_draw.c */,
+				260B3F941411F781006ED023 /* zoom_draw.c */,
+				260B3F4E1411F781006ED023 /* chat.c */,
+				260B3F501411F781006ED023 /* cinema.c */,
+			);
+			name = HUD;
+			sourceTree = "<group>";
+		};
+		264470E414AED1A00099DEE3 /* Sky */ = {
+			isa = PBXGroup;
+			children = (
+				260B3F4D1411F781006ED023 /* ambients.c */,
+				260B3F5B1411F781006ED023 /* fog.c */,
+				260B3F7A1411F781006ED023 /* rain.c */,
+				260B3F851411F781006ED023 /* sky.c */,
+				260B3F591411F781006ED023 /* fade.c */,
+				260B3F861411F781006ED023 /* tint.c */,
+			);
+			name = Sky;
+			sourceTree = "<group>";
+		};
+		264470E514AED21D0099DEE3 /* Effects */ = {
+			isa = PBXGroup;
+			children = (
+				260B3F551411F781006ED023 /* decals_draw.c */,
+				260B3F561411F781006ED023 /* effects_draw.c */,
+				260B3F761411F781006ED023 /* particles_draw.c */,
+				260B3F811411F781006ED023 /* rings_draw.c */,
+				260B3F691411F781006ED023 /* halo_draw.c */,
+				260B3F7B1411F781006ED023 /* remote_status.c */,
+			);
+			name = Effects;
+			sourceTree = "<group>";
+		};
+		264470E614AED2860099DEE3 /* Input */ = {
+			isa = PBXGroup;
+			children = (
+				260B3F6D1411F781006ED023 /* input.c */,
+				260B3F6E1411F781006ED023 /* input_joystick.c */,
+				260B3F6F1411F781006ED023 /* input_keyboard.c */,
+				260B3F701411F781006ED023 /* input_mouse.c */,
+				260B3F711411F781006ED023 /* input_touch.c */,
+				260B3F771411F781006ED023 /* player_input.c */,
+			);
+			name = Input;
+			sourceTree = "<group>";
+		};
 		26A45D051489AD0A00C02936 /* Script API */ = {
 			isa = PBXGroup;
 			children = (
@@ -1483,6 +1517,7 @@
 				260B3EBC1411F781006ED023 /* script_camera.c */,
 				260B3EBD1411F781006ED023 /* script_camera_angle.c */,
 				260B3EBE1411F781006ED023 /* script_camera_chase.c */,
+				264470E714AF95250099DEE3 /* script_camera_chase_track_angle.c */,
 				260B3EBF1411F781006ED023 /* script_camera_chase_slop.c */,
 				260B3EC01411F781006ED023 /* script_camera_plane.c */,
 				260B3EC11411F781006ED023 /* script_camera_position.c */,
@@ -2219,6 +2254,7 @@
 				26A32EDF1453CFE80005AABD /* model_util_file_model.c in Sources */,
 				26A45D081489AD6C00C02936 /* script_color.c in Sources */,
 				26A45D091489AD6C00C02936 /* script_point_angle_vector.c in Sources */,
+				264470E814AF95250099DEE3 /* script_camera_chase_track_angle.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

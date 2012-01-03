@@ -226,6 +226,7 @@ void vertex_mask_hide_set_sel_vertexes(int mesh_idx)
 	}
 	
 	vertex_mask_clear_sel(mesh_idx);
+	poly_mask_clear_sel(mesh_idx);
 }
 
 void vertex_mask_hide_set_non_sel_vertexes(int mesh_idx)

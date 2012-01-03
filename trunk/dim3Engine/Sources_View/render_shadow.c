@@ -103,10 +103,10 @@ int shadow_get_light_point(model_draw *draw,d3pnt *light_pnt)
 		// if no light, get light directly above
 
 	light_pnt->x=draw->pnt.x;
-	light_pnt->y=draw->pnt.y-=15000;
+	light_pnt->y=draw->pnt.y-15000;
 	light_pnt->z=draw->pnt.z;
 
-	return(15000+draw->size.y);
+	return(18000);
 }
 
 /* =======================================================
@@ -547,14 +547,14 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 		spt->z=(int)*va++;
 		
 			// skip culled vertexes
-			
+		
 		if (*vertex_cull_ptr++==0x0) {
 			vct->x=vct->y=vct->z=0;
 			spt++;
 			vct++;
 			continue;
 		}
-		
+
 			// setup vector
 			
 		vct->x=(float)(spt->x-light_pnt.x);

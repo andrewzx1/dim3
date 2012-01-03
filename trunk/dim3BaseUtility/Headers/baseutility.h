@@ -31,7 +31,7 @@ and can be sold or given away.
       
 ======================================================= */
 
-#define dim3_version					"0009"
+#define dim3_version					"0010"
 
 /* =======================================================
 
@@ -517,18 +517,6 @@ extern bool bitmap_copy(char *srce_path,char *dest_path);
 #define max_net_option							32
 
 //
-// text specials
-//
-
-#define text_special_none						0
-#define text_special_fps						1
-#define text_special_score						2
-#define text_special_place						3
-#define text_special_spread						4
-
-#define text_special_list_def					{"none","fps","score","place","spread",""}
-
-//
 // color and font settings
 //
 
@@ -589,7 +577,6 @@ typedef struct		{
 						bool							loop,loop_back;
 					} iface_image_animation_type;
 
-
 //
 // bitmaps, text, bars
 //
@@ -598,10 +585,26 @@ typedef struct		{
 #define tx_center										1
 #define tx_right										2
 
+#define text_just_list_def								{"left","center","right",""}
+
+#define text_special_none								0
+#define text_special_fps								1
+#define text_special_score								2
+#define text_special_place								3
+#define text_special_spread								4
+
+#define text_special_list_def							{"none","fps","score","place","spread",""}
+
 #define iface_text_mini_wid_factor						0.015f
 #define iface_text_small_wid_factor						0.02f
 #define iface_text_medium_wid_factor					0.025f
 #define iface_text_large_wid_factor						0.038f
+
+#define bar_type_horizontal								0
+#define bar_type_vertical								1
+#define bar_type_pie									2
+
+#define bar_type_list_def								{"horizontal","vertical","pie",""}
 
 typedef struct		{
 						int								start_tick,
@@ -645,15 +648,21 @@ typedef struct		{
 						int								ntext;
 						iface_text_type					*texts;
 					} iface_text_list;
+	
+typedef struct		{
+						int								start_tick,msec;
+					} iface_bar_countdown_type;
 					
 typedef struct		{
+						int								type;
 						float							fill_alpha,outline_alpha,background_alpha,
 														value;
 						char							name[name_str_len];
-						bool							show,old_show,outline,background,vert;
+						bool							show,old_show,outline,background;
 						d3pnt							pnt,size;
 						d3col							fill_start_color,fill_end_color,
 														outline_color,background_color;
+						iface_bar_countdown_type		countdown;
 					} iface_bar_type;
 
 typedef struct		{

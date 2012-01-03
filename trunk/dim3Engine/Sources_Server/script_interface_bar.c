@@ -42,6 +42,7 @@ JSValueRef js_interface_bar_move_func(JSContextRef cx,JSObjectRef func,JSObjectR
 JSValueRef js_interface_bar_resize_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_interface_bar_set_value_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_interface_bar_set_alpha_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_interface_bar_startCountdown_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 JSStaticFunction	interface_bar_functions[]={
 							{"show",				js_interface_bar_show_func,				kJSPropertyAttributeDontDelete},
@@ -51,6 +52,7 @@ JSStaticFunction	interface_bar_functions[]={
 							{"resize",				js_interface_bar_resize_func,			kJSPropertyAttributeDontDelete},
 							{"setValue",			js_interface_bar_set_value_func,		kJSPropertyAttributeDontDelete},
 							{"setAlpha",			js_interface_bar_set_alpha_func,		kJSPropertyAttributeDontDelete},
+							{"startCountdown",		js_interface_bar_startCountdown_func,	kJSPropertyAttributeDontDelete},
 							{0,0,0}};
 
 JSClassRef			interface_bar_class;
@@ -162,7 +164,11 @@ JSValueRef js_interface_bar_set_value_func(JSContextRef cx,JSObjectRef func,JSOb
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 	
 	bar=script_find_bar_from_name(cx,argv[0],exception);
-	if (bar!=NULL) bar->value=script_value_to_float(cx,argv[1]);
+	if (bar!=NULL) {
+		bar->value=script_value_to_float(cx,argv[1]);
+		bar->countdown.start_tick=0;
+		bar->countdown.msec=0;
+	}
 	
 	return(script_null_to_value(cx));
 }
@@ -178,3 +184,20 @@ JSValueRef js_interface_bar_set_alpha_func(JSContextRef cx,JSObjectRef func,JSOb
 	
 	return(script_null_to_value(cx));
 }
+
+JSValueRef js_interface_bar_startCountdown_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+{
+	iface_bar_type			*bar;
+	
+	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
+	
+	bar=script_find_bar_from_name(cx,argv[0],exception);
+	if (bar!=NULL) {
+		bar->value=1.0f;
+		bar->countdown.start_tick=game_time_get();
+		bar->countdown.msec=script_value_to_int(cx,argv[1]);;
+	}
+	
+	return(script_null_to_value(cx));
+}
+

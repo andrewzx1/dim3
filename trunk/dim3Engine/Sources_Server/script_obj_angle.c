@@ -33,6 +33,7 @@ and can be sold or given away.
 #include "objects.h"
 
 extern map_type			map;
+extern server_type		server;
 extern js_type			js;
 
 extern void object_setup_motion(obj_type *obj,float ang,float speed);
@@ -41,7 +42,9 @@ JSValueRef js_obj_angle_get_x(JSContextRef cx,JSObjectRef j_obj,JSStringRef name
 JSValueRef js_obj_angle_get_y(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_angle_get_z(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_angle_rotate_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
-JSValueRef js_obj_angle_rotate_to_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_obj_angle_rotateTo_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_obj_angle_rotateToObject_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_obj_angle_rotateToPlayer_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 JSStaticValue 		obj_angle_props[]={
 							{"x",					js_obj_angle_get_x,					NULL,			kJSPropertyAttributeReadOnly|kJSPropertyAttributeDontDelete},
@@ -50,8 +53,10 @@ JSStaticValue 		obj_angle_props[]={
 							{0,0,0,0}};
 
 JSStaticFunction	obj_angle_functions[]={
-							{"rotate",				js_obj_angle_rotate_func,			kJSPropertyAttributeDontDelete},
-							{"rotateTo",			js_obj_angle_rotate_to_func,		kJSPropertyAttributeDontDelete},
+							{"rotate",				js_obj_angle_rotate_func,				kJSPropertyAttributeDontDelete},
+							{"rotateTo",			js_obj_angle_rotateTo_func,				kJSPropertyAttributeDontDelete},
+							{"rotateToObject",		js_obj_angle_rotateToObject_func,		kJSPropertyAttributeDontDelete},
+							{"rotateToPlayer",		js_obj_angle_rotateToPlayer_func,		kJSPropertyAttributeDontDelete},
 							{0,0,0}};
 
 JSClassRef			obj_angle_class;
@@ -128,7 +133,7 @@ JSValueRef js_obj_angle_rotate_func(JSContextRef cx,JSObjectRef func,JSObjectRef
 	return(script_null_to_value(cx));
 }
 
-JSValueRef js_obj_angle_rotate_to_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+JSValueRef js_obj_angle_rotateTo_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type		*obj;
 	
@@ -140,8 +145,53 @@ JSValueRef js_obj_angle_rotate_to_func(JSContextRef cx,JSObjectRef func,JSObject
 	return(script_null_to_value(cx));
 }
 
+JSValueRef js_obj_angle_rotateToObject_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+{
+	obj_type		*obj,*obj2;
+	
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
+		// objects
+	
+	obj=object_get_attach(j_obj);
+	
+	obj2=script_find_obj_from_uid_arg(cx,argv[0],exception);
+	if (obj2==NULL) return(script_null_to_value(cx));
+	
+		// rotate to
+		// only do x/z if this object is flying
+		
+	obj->ang.y=angle_find(obj->pnt.x,obj->pnt.z,obj2->pnt.x,obj2->pnt.z);
+		
+	if (obj->fly) {
+		obj->ang.x=angle_find(obj->pnt.y,obj->pnt.z,obj2->pnt.y,obj2->pnt.z);
+		obj->ang.z=angle_find(obj->pnt.x,obj->pnt.y,obj2->pnt.x,obj2->pnt.y);
+	}
+		
+	return(script_null_to_value(cx));
+}
 
-
-
-
+JSValueRef js_obj_angle_rotateToPlayer_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+{
+	obj_type		*obj,*obj2;
+	
+	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
+	
+		// objects
+	
+	obj=object_get_attach(j_obj);
+	obj2=server.obj_list.objs[server.player_obj_idx];
+	
+		// rotate to
+		// only do x/z if this object is flying
+		
+	obj->ang.y=angle_find(obj->pnt.x,obj->pnt.z,obj2->pnt.x,obj2->pnt.z);
+		
+	if (obj->fly) {
+		obj->ang.x=angle_find(obj->pnt.y,obj->pnt.z,obj2->pnt.y,obj2->pnt.z);
+		obj->ang.z=angle_find(obj->pnt.x,obj->pnt.y,obj2->pnt.x,obj2->pnt.y);
+	}
+		
+	return(script_null_to_value(cx));
+}
 

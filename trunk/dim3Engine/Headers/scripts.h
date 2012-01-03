@@ -101,6 +101,7 @@ extern int script_find_group_from_name(JSContextRef cx,JSValueRef arg,JSValueRef
 extern int script_find_map_movement_from_name(JSContextRef cx,JSValueRef arg,JSValueRef *exception);
 extern int script_get_attached_object_uid(JSObjectRef j_obj);
 extern model_draw* script_find_model_draw(JSObjectRef j_obj);
+extern inline int script_get_index(JSObjectRef j_obj);
 extern inline bool script_in_event(JSObjectRef j_obj);
 extern inline bool script_in_construct(JSObjectRef j_obj);
 
@@ -136,6 +137,7 @@ extern void script_init_multiplayer_setting_object(void);
 extern void script_init_global_camera_object(void);
 extern void script_init_camera_angle_object(void);
 extern void script_init_camera_chase_object(void);
+extern void script_init_camera_chase_track_angle_object(void);
 extern void script_init_camera_chase_slop_object(void);
 extern void script_init_camera_plane_object(void);
 extern void script_init_camera_position_object(void);
@@ -278,6 +280,7 @@ extern void script_free_multiplayer_setting_object(void);
 extern void script_free_global_camera_object(void);
 extern void script_free_camera_angle_object(void);
 extern void script_free_camera_chase_object(void);
+extern void script_free_camera_chase_track_angle_object(void);
 extern void script_free_camera_chase_slop_object(void);
 extern void script_free_camera_plane_object(void);
 extern void script_free_camera_position_object(void);
@@ -420,6 +423,7 @@ extern JSObjectRef script_add_multiplayer_setting_object(JSContextRef cx,JSObjec
 extern JSObjectRef script_add_global_camera_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx);
 extern JSObjectRef script_add_camera_angle_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx);
 extern JSObjectRef script_add_camera_chase_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx);
+extern JSObjectRef script_add_camera_chase_track_angle_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx);
 extern JSObjectRef script_add_camera_chase_slop_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx);
 extern JSObjectRef script_add_camera_plane_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx);
 extern JSObjectRef script_add_camera_position_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx);
@@ -547,7 +551,7 @@ extern JSValueRef scripts_get_child_variable(int script_idx,char *prop_name,char
 extern JSValueRef scripts_call_child_function(int script_idx,char *func_name,int arg_count,JSValueRef *args,char *err_str);
 extern bool scripts_chain(int script_idx,int override_proj_idx,char *func_name,char *err_str);
 extern void scripts_chain_console(int script_idx,int override_proj_idx,char *func_name);
-extern JSValueRef scripts_direct_call(int script_idx,int override_proj_idx,char *func_name,int arg_count,JSValueRef *args,char *err_str);
+extern JSValueRef scripts_direct_call(int from_script_idx,int to_script_idx,int override_proj_idx,char *func_name,int arg_count,JSValueRef *args,char *err_str);
 
 extern void script_initialize_classes(void);
 extern void script_release_classes(void);

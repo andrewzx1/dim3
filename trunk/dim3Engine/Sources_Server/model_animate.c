@@ -140,6 +140,8 @@ bool model_start_animation(model_draw *draw,char *name,int tick)
 
     draw_animation->mode=am_playing;
 	
+		// catch any initial effects
+		
 	model_animation_effect_launch(draw,idx,0);
     
 	return(TRUE);
@@ -335,7 +337,7 @@ void model_run_animation_single(model_draw *draw,int animation_idx,int tick)
 		nxt_tick=draw_animation->tick+animate->pose_moves[draw_animation->pose_move_idx].msec;
 		
 			// any effects
-
+			
 		model_animation_effect_launch(draw,draw_animation->animate_idx,draw_animation->pose_move_idx);
 	}
 }

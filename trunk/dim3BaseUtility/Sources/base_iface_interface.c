@@ -31,8 +31,9 @@ and can be sold or given away.
 
 extern file_path_setup_type		iface_file_path_setup;
 
-char							just_mode_str[][32]={"left","center","right"},
-								text_special_str[][32]=text_special_list_def;
+char							just_mode_str[][32]=text_just_list_def,
+								text_special_str[][32]=text_special_list_def,
+								bar_type_str[][32]=bar_type_list_def;
 
 /* =======================================================
 
@@ -213,6 +214,7 @@ void iface_read_settings_bar(iface_type *iface,int bar_tag)
 		// read attributes
 		
 	xml_get_attribute_text(bar_tag,"name",bar->name,name_str_len);
+	bar->type=xml_get_attribute_list(bar_tag,"type",(char*)bar_type_str);
 		
 	bar->pnt.x=bar->pnt.y=0;
 	
@@ -263,18 +265,21 @@ void iface_read_settings_bar(iface_type *iface,int bar_tag)
 		xml_get_attribute_color(tag,"end_color",&bar->fill_end_color);
 	}
 	
-	bar->vert=FALSE;
 	bar->show=TRUE;
 	
 	tag=xml_findfirstchild("Settings",bar_tag);
 	if (tag!=-1) {
-		bar->vert=xml_get_attribute_boolean(tag,"vert");
+		if (xml_get_attribute_boolean(tag,"vert")) bar->type=bar_type_vertical;		// supergumba -- temporary to fix old bar types
 		bar->show=!xml_get_attribute_boolean(tag,"hide");
 	}
 	
-		// value starts at 1
+		// value starts at 1.0
+		// and no countdown
 		
-	bar->value=1;
+	bar->value=1.0f;
+	
+	bar->countdown.start_tick=0;
+	bar->countdown.msec=0;
 }
 
 /* =======================================================
@@ -1090,6 +1095,7 @@ bool iface_write_settings_interface(iface_type *iface,char *err_str)
 		
 		xml_add_tagstart("Bar");
 		xml_add_attribute_text("name",bar->name);
+		xml_add_attribute_list("type",(char*)bar_type_str,bar->type);
 		xml_add_tagend(FALSE);
 		
 		xml_add_tagstart("Position");
@@ -1121,7 +1127,6 @@ bool iface_write_settings_interface(iface_type *iface,char *err_str)
 		xml_add_tagend(TRUE);
 		
 		xml_add_tagstart("Settings");
-		xml_add_attribute_boolean("vert",bar->vert);
 		xml_add_attribute_boolean("hide",!bar->show);
 		xml_add_tagend(TRUE);
 		

@@ -46,6 +46,7 @@ JSValueRef js_obj_position_get_y(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
 JSValueRef js_obj_position_get_z(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_position_place_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_position_place_random_spot_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_obj_position_place_random_node_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_position_place_network_spot_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_position_place_random_spot_no_telefrag_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_obj_position_place_network_spot_no_telefrag_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
@@ -64,6 +65,7 @@ JSStaticValue 		obj_position_props[]={
 JSStaticFunction	obj_position_functions[]={
 							{"place",							js_obj_position_place_func,								kJSPropertyAttributeDontDelete},
 							{"placeRandomSpot",					js_obj_position_place_random_spot_func,					kJSPropertyAttributeDontDelete},
+							{"placeRandomNode",					js_obj_position_place_random_node_func,					kJSPropertyAttributeDontDelete},
 							{"placeNetworkSpot",				js_obj_position_place_network_spot_func,				kJSPropertyAttributeDontDelete},
 							{"move",							js_obj_position_move_func,								kJSPropertyAttributeDontDelete},
 							{"reset",							js_obj_position_reset_func,								kJSPropertyAttributeDontDelete},
@@ -180,6 +182,33 @@ JSValueRef js_obj_position_place_random_spot_func(JSContextRef cx,JSObjectRef fu
 		// move player
 	
 	object_set_position(obj,spot->pnt.x,spot->pnt.y,spot->pnt.z,spot->ang.y,0);
+ 	object_telefrag_players(obj,FALSE);
+
+	return(script_null_to_value(cx));
+}
+
+JSValueRef js_obj_position_place_random_node_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+{
+	int				idx;
+	char			name[name_str_len];
+	obj_type		*obj;
+	node_type		*node;
+	
+	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
+	
+	obj=object_get_attach(j_obj);
+	
+		// find random node
+		
+	script_value_to_string(cx,argv[0],name,name_str_len);
+	idx=map_find_random_node(&map,name,-1);
+	if (idx==-1) return(script_null_to_value(cx));
+
+		// move player
+		
+	node=&map.nodes[idx];
+	
+	object_set_position(obj,node->pnt.x,node->pnt.y,node->pnt.z,0.0f,0);
  	object_telefrag_players(obj,FALSE);
 
 	return(script_null_to_value(cx));

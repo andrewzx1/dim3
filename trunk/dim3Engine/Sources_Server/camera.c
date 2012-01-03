@@ -54,7 +54,8 @@ void camera_initialize(void)
 	camera.cur_pos.ang.z=0.0f;
 
 	camera.auto_walk.on=FALSE;
-	camera.auto_move.ang_on=FALSE;
+	camera.auto_turn_angle_offset.on=FALSE;
+	camera.auto_turn_chase_angle.on=FALSE;
 	camera.animate.on=FALSE;
 	
 	memmove(&state_camera,&camera,sizeof(camera_type));
@@ -153,41 +154,62 @@ void camera_restore(void)
 
 /* =======================================================
 
-      Camera Auto Moves
+      Camera Auto Turn
       
 ======================================================= */
 
-void camera_auto_move_set_ang(d3ang *ang,int life_msec)
+void camera_auto_turn_set_angle_offset(d3ang *ang,int life_msec)
 {
 	float			f;
 
 	if (life_msec<=0) return;
 
 	f=((float)life_msec)/10;
-	camera.auto_move.ang.x=ang->x/f;
-	camera.auto_move.ang.y=ang->y/f;
-	camera.auto_move.ang.z=ang->z/f;
+	camera.auto_turn_angle_offset.ang.x=ang->x/f;
+	camera.auto_turn_angle_offset.ang.y=ang->y/f;
+	camera.auto_turn_angle_offset.ang.z=ang->z/f;
 
-	camera.auto_move.ang_on=TRUE;
-	camera.auto_move.ang_end_tick=game_time_get()+life_msec;
+	camera.auto_turn_angle_offset.on=TRUE;
+	camera.auto_turn_angle_offset.end_tick=game_time_get()+life_msec;
 }
 
-void camera_auto_move_run(void)
+void camera_auto_turn_set_chase_angle(d3ang *ang,int life_msec)
+{
+	float			f;
+
+	if (life_msec<=0) return;
+
+	f=((float)life_msec)/10;
+	camera.auto_turn_chase_angle.ang.x=ang->x/f;
+	camera.auto_turn_chase_angle.ang.y=ang->y/f;
+	camera.auto_turn_chase_angle.ang.z=ang->z/f;
+
+	camera.auto_turn_chase_angle.on=TRUE;
+	camera.auto_turn_chase_angle.end_tick=game_time_get()+life_msec;
+}
+
+void camera_auto_turn_run_single(int tick,camera_auto_turn_type *turn,d3ang *ang)
+{
+	if (!turn->on) return;
+	
+	if (tick>=turn->end_tick) {
+		turn->on=FALSE;
+	}
+	else {
+		ang->x+=turn->ang.x;
+		ang->y+=turn->ang.y;
+		ang->z+=turn->ang.z;
+	}
+}
+
+void camera_auto_turn_run(void)
 {
 	int			tick;
 
 	tick=game_time_get();
-
-	if (camera.auto_move.ang_on) {
-		if (tick>=camera.auto_move.ang_end_tick) {
-			camera.auto_move.ang_on=FALSE;
-		}
-		else {
-			camera.cur_pos.ang.x+=camera.auto_move.ang.x;
-			camera.cur_pos.ang.y+=camera.auto_move.ang.y;
-			camera.cur_pos.ang.z+=camera.auto_move.ang.z;
-		}
-	}
+	
+	camera_auto_turn_run_single(tick,&camera.auto_turn_angle_offset,&map.camera.ang_offset);
+	camera_auto_turn_run_single(tick,&camera.auto_turn_chase_angle,&map.camera.chase.track_ang);
 }
 
 /* =======================================================
@@ -248,7 +270,7 @@ void camera_animate_run(void)
 
 void camera_server_run(void)
 {
-	camera_auto_move_run();
+	camera_auto_turn_run();
 	camera_animate_run();
 
 	switch (map.camera.mode) {
@@ -266,9 +288,6 @@ void camera_server_run(void)
 
 void camera_view_draw_run(void)
 {
-	camera_auto_move_run();
-	camera_animate_run();
-
 	switch (map.camera.mode) {
 
 		case cv_fpp:
