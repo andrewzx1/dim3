@@ -146,7 +146,7 @@ void camera_chase_calc_position(void)
 	matrix_vertex_multiply(&mat,&fx,&fy,&fz);
 	
 	spt.x=((int)fx)+obj->pnt.x;
-	spt.y=((int)fy)+(obj->pnt.y-obj->size.y);
+	spt.y=((int)fy)+(obj->pnt.y+obj->size.eye_offset);
 	spt.z=((int)fz)+obj->pnt.z;
 	
 		// get camera ending position
@@ -187,7 +187,7 @@ void camera_chase_calc_position(void)
 
 	camera.cur_pos.ang.x=(camera.cur_pos.chase_ang.x-map.camera.ang_offset.x)-obj->view_ang.x;
 	camera.cur_pos.ang.y=angle_add(camera.cur_pos.chase_ang.y,map.camera.ang_offset.y);
-	camera.cur_pos.ang.z=map.camera.chase.track_ang.z+map.camera.ang_offset.z;
+	camera.cur_pos.ang.z=camera.cur_pos.chase_ang.z+map.camera.ang_offset.z;
 }
 
 /* =======================================================
@@ -219,7 +219,7 @@ void camera_chase_static_calc_position(void)
 	matrix_vertex_multiply(&mat,&fx,&fy,&fz);
 
 	camera.cur_pos.pnt.x=(obj->pnt.x+((int)fx))+map.camera.pnt_offset.x;
-	camera.cur_pos.pnt.y=(obj->pnt.y+((int)fy))+map.camera.pnt_offset.y;
+	camera.cur_pos.pnt.y=((obj->pnt.y+obj->size.eye_offset)+((int)fy))+map.camera.pnt_offset.y;
 	camera.cur_pos.pnt.z=(obj->pnt.z+((int)fz))+map.camera.pnt_offset.z;
 	
 		// looking angles
