@@ -329,6 +329,13 @@ void server_run(void)
 	tick=game_time_get();
 
 	if (tick>=server.time.run_tick) {
+
+			// tasks that do not require
+			// 1/100th of an operation but a specific
+			// tick count
+
+		run_objects_no_slice();
+		run_projectiles_no_slice();
 	
 			// tasks that require 1/100th of
 			// a second operation
@@ -349,13 +356,6 @@ void server_run(void)
 		
 			particle_map_run();
 		}
-
-			// tasks that do not require
-			// 1/100th of an operation but a specific
-			// tick count
-
-		run_objects_no_slice();
-		run_projectiles_no_slice();
 
 			// effects and decal time-outs
 		

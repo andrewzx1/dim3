@@ -412,19 +412,16 @@ bool menu_event_run(int cmd)
 			return(TRUE);
 				
 		case kCommandVertexHideSelected:
-			state.select_mode=select_mode_vertex;
 			vertex_mask_hide_set_sel_vertexes(state.cur_mesh_idx);
 			main_wind_draw();
 			return(TRUE);
 			
 		case kCommandVertexHideNonSelected:
-			state.select_mode=select_mode_vertex;
 			vertex_mask_hide_set_non_sel_vertexes(state.cur_mesh_idx);
 			main_wind_draw();
 			return(TRUE);
 			
 		case kCommandVertexShowAll:
-			state.select_mode=select_mode_vertex;
 			vertex_mask_hide_show_all_vertexes(state.cur_mesh_idx);
 			main_wind_draw();
 			return(TRUE);

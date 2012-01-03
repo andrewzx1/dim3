@@ -124,7 +124,7 @@ void hud_bitmaps_draw(void)
 			// flashing
 
 		if (bitmap->flash) {
-			if (((tick>>9)&0x1)==0x0) continue;		// half-second flash
+			if (((tick>>8)&0x1)==0x0) continue;		// quarter-second flash
 		}
 		
 			// fading?
@@ -485,74 +485,244 @@ void hud_texts_draw(void)
       
 ======================================================= */
 
+float hud_bars_draw_get_value(iface_bar_type *bar)
+{
+	int			tick;
+	
+		// no countdown is just value
+		
+	if (bar->countdown.msec<=0) return(bar->value);
+	
+		// run countdown
+		
+	tick=game_time_get()-bar->countdown.start_tick;
+	if (tick>bar->countdown.msec) return(0.0f);
+	
+	return(((float)tick)/((float)bar->countdown.msec));
+}
+
+void hud_bars_draw_horizontal_vertical(iface_bar_type *bar)
+{
+	int					lx,rx,ty,by,wid,high;
+	d3col				fill_end_color;
+	
+		// find size
+		
+	wid=bar->size.x;
+	high=bar->size.y;
+	
+	if (bar->type==bar_type_horizontal) {
+		wid=(int)(((float)wid)*hud_bars_draw_get_value(bar));
+	}
+	else {
+		high=(int)(((float)high)*hud_bars_draw_get_value(bar));
+	}
+	
+		// find the color
+		
+	fill_end_color.r=bar->fill_start_color.r+((bar->fill_end_color.r-bar->fill_start_color.r)*bar->value);
+	fill_end_color.g=bar->fill_start_color.g+((bar->fill_end_color.g-bar->fill_start_color.g)*bar->value);
+	fill_end_color.b=bar->fill_start_color.b+((bar->fill_end_color.b-bar->fill_start_color.b)*bar->value);
+
+		// background
+
+	if (bar->background) {
+	
+		if (bar->type==bar_type_horizontal) {
+			lx=bar->pnt.x+wid;
+			rx=bar->pnt.x+bar->size.x;
+			ty=bar->pnt.y;
+			by=bar->pnt.y+bar->size.y;
+		}
+		else {
+			lx=bar->pnt.x;
+			rx=bar->pnt.x+bar->size.x;
+			ty=bar->pnt.y+high;
+			by=bar->pnt.y+bar->size.y;
+		}
+
+		if ((lx!=rx) && (ty!=by)) view_primitive_2D_color_quad(&bar->background_color,bar->background_alpha,lx,rx,ty,by);
+	}
+
+		// draw bar
+
+	lx=bar->pnt.x;
+	rx=lx+wid;
+	by=bar->pnt.y+bar->size.y;
+	ty=by-high;
+		
+	if ((lx!=rx) && (ty!=by)) {
+		if (bar->type==bar_type_horizontal) {
+			view_primitive_2D_color_poly(lx,by,&bar->fill_start_color,lx,ty,&bar->fill_start_color,rx,ty,&fill_end_color,rx,by,&fill_end_color,bar->fill_alpha);
+		}
+		else {
+			view_primitive_2D_color_poly(lx,ty,&fill_end_color,rx,ty,&fill_end_color,rx,by,&bar->fill_start_color,lx,by,&bar->fill_start_color,bar->fill_alpha);
+		}
+	}
+	
+		// draw outline
+		
+	if (bar->outline) {
+	
+		lx=bar->pnt.x;
+		rx=lx+bar->size.x;
+		ty=bar->pnt.y;
+		by=ty+bar->size.y;
+		
+		glLineWidth((float)view.screen.x_sz/(float)iface.scale_x);
+		view_primitive_2D_line_quad(&bar->outline_color,bar->outline_alpha,lx,rx,ty,by);
+		glLineWidth(1.0f);
+	}
+}
+
+void hud_bars_draw_pie(iface_bar_type *bar)
+{
+	int				n,value_idx;
+	unsigned char	*cp;
+	unsigned char	sf_uc_r,sf_uc_g,sf_uc_b,f_uc_alpha,
+					ef_uc_r,ef_uc_g,ef_uc_b,
+					b_uc_r,b_uc_g,b_uc_b,b_uc_alpha,
+					colors[72*3*4];
+	float			fx,fy,r_add,rad,radius;
+	float			*vp;
+	float			vertexes[72*3*2];
+	
+		// get center and radius
+		
+	radius=(float)((bar->size.x+bar->size.y)>>2);
+	fx=((float)bar->pnt.x)+radius;
+	fy=((float)bar->pnt.y)+radius;
+	
+		// colors
+		
+	sf_uc_r=(unsigned char)(bar->fill_start_color.r*255.0f);
+	sf_uc_g=(unsigned char)(bar->fill_start_color.g*255.0f);
+	sf_uc_b=(unsigned char)(bar->fill_start_color.b*255.0f);
+	f_uc_alpha=(unsigned char)(bar->fill_alpha*255.0f);
+	
+	ef_uc_r=(unsigned char)(bar->fill_end_color.r*255.0f);
+	ef_uc_g=(unsigned char)(bar->fill_end_color.g*255.0f);
+	ef_uc_b=(unsigned char)(bar->fill_end_color.b*255.0f);
+	
+	b_uc_r=(unsigned char)(bar->background_color.r*255.0f);
+	b_uc_g=(unsigned char)(bar->background_color.g*255.0f);
+	b_uc_b=(unsigned char)(bar->background_color.b*255.0f);
+	b_uc_alpha=(unsigned char)(bar->background_alpha*255.0f);
+	
+		// value position
+		
+	value_idx=(int)(((float)72)*hud_bars_draw_get_value(bar));
+	
+		// draw the pie
+		
+	r_add=(TRIG_PI*2.0f)/72.0f;
+	
+	vp=vertexes;
+	cp=colors;
+	
+	for (n=0;n!=72;n++) {
+
+			// the vertexes
+			
+		rad=r_add*((float)n);		
+		*vp++=fx+(radius*sinf(rad));
+		*vp++=fy-(radius*cosf(rad));
+	
+		if (n!=71) {
+			rad+=r_add;
+		}
+		else {
+			rad=0;
+		}
+		
+		*vp++=fx+(radius*sinf(rad));
+		*vp++=fy-(radius*cosf(rad));
+		
+		*vp++=fx;
+		*vp++=fy;
+		
+			// the colors
+			
+		if (n<value_idx) {
+			*cp++=sf_uc_r;
+			*cp++=sf_uc_g;
+			*cp++=sf_uc_b;
+			*cp++=f_uc_alpha;
+			*cp++=sf_uc_r;
+			*cp++=sf_uc_g;
+			*cp++=sf_uc_b;
+			*cp++=f_uc_alpha;
+			*cp++=ef_uc_r;
+			*cp++=ef_uc_g;
+			*cp++=ef_uc_b;
+			*cp++=f_uc_alpha;
+		}
+		else {
+			*cp++=b_uc_r;
+			*cp++=b_uc_g;
+			*cp++=b_uc_b;
+			*cp++=b_uc_alpha;
+			*cp++=b_uc_r;
+			*cp++=b_uc_g;
+			*cp++=b_uc_b;
+			*cp++=b_uc_alpha;
+			*cp++=b_uc_r;
+			*cp++=b_uc_g;
+			*cp++=b_uc_b;
+			*cp++=b_uc_alpha;
+		}
+	}
+
+		// draw
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+
+	glDisable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_NOTEQUAL,0);
+
+	glDisable(GL_DEPTH_TEST);
+
+	glEnableClientState(GL_COLOR_ARRAY);
+
+	glVertexPointer(2,GL_FLOAT,0,(GLvoid*)vertexes);
+	glColorPointer(4,GL_UNSIGNED_BYTE,0,(GLvoid*)colors);
+
+	glDrawArrays(GL_TRIANGLES,0,(72*3));
+	
+	glDisableClientState(GL_COLOR_ARRAY);
+
+	glDisable(GL_BLEND);
+	glDisable(GL_ALPHA_TEST);
+}
+
 void hud_bars_draw(void)
 {
-	int					n,lx,rx,ty,by,wid,high;
-	d3col				fill_end_color;
+	int					n;
 	iface_bar_type		*bar;
 	
 		// draw bars
 		
 	for (n=0;n!=iface.bar_list.nbar;n++) {
 
+			// is bar hidden?
+			
 		bar=&iface.bar_list.bars[n];
 		if (!bar->show) continue;
 		
-			// find size
-			
-		wid=bar->size.x;
-		high=bar->size.y;
-		
-		if (!bar->vert) {
-			wid=(int)(((float)wid)*bar->value);
-		}
-		else {
-			high=(int)(((float)high)*bar->value);
-		}
-		
-			// find the color
-			
-		fill_end_color.r=bar->fill_start_color.r+((bar->fill_end_color.r-bar->fill_start_color.r)*bar->value);
-		fill_end_color.g=bar->fill_start_color.g+((bar->fill_end_color.g-bar->fill_start_color.g)*bar->value);
-		fill_end_color.b=bar->fill_start_color.b+((bar->fill_end_color.b-bar->fill_start_color.b)*bar->value);
-
-			// background
-
-		if (bar->background) {
-			lx=bar->pnt.x;
-			rx=lx+bar->size.x;
-			ty=bar->pnt.y;
-			by=ty+bar->size.y;
-
-			view_primitive_2D_color_quad(&bar->background_color,bar->background_alpha,lx,rx,ty,by);
-		}
-
 			// draw bar
-
-		lx=bar->pnt.x;
-		rx=lx+wid;
-		by=bar->pnt.y+bar->size.y;
-		ty=by-high;
-			
-		if (!bar->vert) {
-			view_primitive_2D_color_poly(lx,by,&bar->fill_start_color,lx,ty,&bar->fill_start_color,rx,ty,&fill_end_color,rx,by,&fill_end_color,bar->fill_alpha);
-		}
-		else {
-			view_primitive_2D_color_poly(lx,ty,&fill_end_color,rx,ty,&fill_end_color,rx,by,&bar->fill_start_color,lx,by,&bar->fill_start_color,bar->fill_alpha);
-		}
 		
-			// draw outline
-			
-		if (bar->outline) {
+		switch (bar->type) {
 		
-			lx=bar->pnt.x;
-			rx=lx+bar->size.x;
-			ty=bar->pnt.y;
-			by=ty+bar->size.y;
-			
-			glLineWidth((float)view.screen.x_sz/(float)iface.scale_x);
-			view_primitive_2D_line_quad(&bar->outline_color,bar->outline_alpha,lx,rx,ty,by);
-			glLineWidth(1.0f);
+			case bar_type_horizontal:
+			case bar_type_vertical:
+				hud_bars_draw_horizontal_vertical(bar);
+				break;
+				
+			case bar_type_pie:
+				hud_bars_draw_pie(bar);
+				break;
+		
 		}
 	}
 }
@@ -759,8 +929,8 @@ void hud_draw(void)
 	
 		// draw the bitmaps, bars, and text
 		
-	hud_bitmaps_draw();
 	hud_bars_draw();
+	hud_bitmaps_draw();
 	hud_texts_draw();
 	if (setup.metrics_on) hud_metrics_draw();
 	

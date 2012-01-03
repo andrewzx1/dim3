@@ -354,9 +354,14 @@ model_draw* script_find_model_draw(JSObjectRef j_obj)
 
 /* =======================================================
 
-      Event Check
+      Event States
       
 ======================================================= */
+
+int script_get_index(JSObjectRef j_obj)
+{
+	return((int)JSObjectGetPrivate(j_obj));
+}
 
 bool script_in_event(JSObjectRef j_obj)
 {
@@ -379,5 +384,3 @@ bool script_in_construct(JSObjectRef j_obj)
 
 	return(script->event_state.main_event==sd_event_construct);
 }
-
-

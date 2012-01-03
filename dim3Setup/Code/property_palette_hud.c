@@ -316,6 +316,9 @@ void property_palette_click_hud(int id,bool double_click)
 
 		idx=iface.bar_list.nbar;
 		iface.bar_list.nbar++;
+		
+		strcpy(iface.bar_list.bars[idx].name,name);
+		iface.bar_list.bars[idx].type=bar_type_horizontal;
 
 		iface.bar_list.bars[idx].pnt.x=0;
 		iface.bar_list.bars[idx].pnt.y=0;
@@ -324,10 +327,8 @@ void property_palette_click_hud(int id,bool double_click)
 		iface.bar_list.bars[idx].fill_alpha=1.0f;
 		iface.bar_list.bars[idx].outline_alpha=1.0f;
 		iface.bar_list.bars[idx].value=0.0f;
-		strcpy(iface.bar_list.bars[idx].name,name);
 		iface.bar_list.bars[idx].show=TRUE;
 		iface.bar_list.bars[idx].outline=TRUE;
-		iface.bar_list.bars[idx].vert=FALSE;
 
 		iface.bar_list.bars[idx].fill_start_color.r=0.5f;
 		iface.bar_list.bars[idx].fill_start_color.g=0.5f;

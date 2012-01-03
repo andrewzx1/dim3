@@ -55,7 +55,7 @@ extern iface_type				iface;
 extern setup_state_type			state;
 extern list_palette_type		alt_property_palette;
 
-char							hud_text_just_type_str[][32]={"Left","Center","Right",""},
+char							hud_text_just_type_str[][32]=text_just_list_def,
 								hud_text_special_type_str[][32]=text_special_list_def;
 
 /* =======================================================

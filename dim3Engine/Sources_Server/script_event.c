@@ -633,7 +633,7 @@ JSValueRef js_event_call_object_by_id_func(JSContextRef cx,JSObjectRef func,JSOb
 
 		// call function
 
-	rval=scripts_direct_call(obj->script_idx,-1,func_name,arg_count,args,err_str);
+	rval=scripts_direct_call(script_get_index(j_obj),obj->script_idx,-1,func_name,arg_count,args,err_str);
 	if (rval==NULL) {
 		*exception=script_create_exception(cx,err_str);
 		return(script_null_to_value(cx));
@@ -668,7 +668,7 @@ JSValueRef js_event_call_player_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 
 		// call function
 
-	rval=scripts_direct_call(obj->script_idx,-1,func_name,arg_count,args,err_str);
+	rval=scripts_direct_call(script_get_index(j_obj),obj->script_idx,-1,func_name,arg_count,args,err_str);
 	if (rval==NULL) {
 		*exception=script_create_exception(cx,err_str);
 		return(script_null_to_value(cx));
@@ -707,7 +707,7 @@ JSValueRef js_event_call_course_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 
 		// call function
 
-	rval=scripts_direct_call(js.course_script_idx,-1,func_name,arg_count,args,err_str);
+	rval=scripts_direct_call(script_get_index(j_obj),js.course_script_idx,-1,func_name,arg_count,args,err_str);
 	if (rval==NULL) {
 		*exception=script_create_exception(cx,err_str);
 		return(script_null_to_value(cx));
@@ -739,7 +739,7 @@ JSValueRef js_event_call_game_func(JSContextRef cx,JSObjectRef func,JSObjectRef 
 
 		// call function
 
-	rval=scripts_direct_call(js.game_script_idx,-1,func_name,arg_count,args,err_str);
+	rval=scripts_direct_call(script_get_index(j_obj),js.game_script_idx,-1,func_name,arg_count,args,err_str);
 	if (rval==NULL) {
 		*exception=script_create_exception(cx,err_str);
 		return(script_null_to_value(cx));
@@ -791,7 +791,7 @@ JSValueRef js_event_call_held_weapon_func(JSContextRef cx,JSObjectRef func,JSObj
 
 		// call function
 
-	rval=scripts_direct_call(weap->script_idx,-1,func_name,arg_count,args,err_str);
+	rval=scripts_direct_call(script_get_index(j_obj),weap->script_idx,-1,func_name,arg_count,args,err_str);
 	if (rval==NULL) {
 		*exception=script_create_exception(cx,err_str);
 		return(script_null_to_value(cx));
@@ -851,7 +851,7 @@ JSValueRef js_event_call_spawn_weapon_func(JSContextRef cx,JSObjectRef func,JSOb
 
 		// call function
 
-	rval=scripts_direct_call(weap->script_idx,-1,func_name,arg_count,args,err_str);
+	rval=scripts_direct_call(script_get_index(j_obj),weap->script_idx,-1,func_name,arg_count,args,err_str);
 	if (rval==NULL) {
 		*exception=script_create_exception(cx,err_str);
 		return(script_null_to_value(cx));

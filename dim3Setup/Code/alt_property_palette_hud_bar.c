@@ -34,8 +34,8 @@ and can be sold or given away.
 #include "interface.h"
 
 #define kBarSettingsName						0
-#define kBarSettingsShow						1
-#define kBarSettingsVertical					2
+#define kBarSettingsType						1
+#define kBarSettingsShow						2
 
 #define kBarPositionX							3
 #define kBarPositionY							4
@@ -58,6 +58,8 @@ extern iface_type				iface;
 extern setup_state_type			state;
 extern list_palette_type		alt_property_palette;
 
+char							hud_bar_type_str[][32]=bar_type_list_def;
+
 /* =======================================================
 
       Property Palette Fill HUD Bar
@@ -76,8 +78,8 @@ void alt_property_palette_fill_hud_bar(int hud_bar_idx)
 
 	list_palette_add_header(&alt_property_palette,0,"Settings");
 	list_palette_add_string(&alt_property_palette,kBarSettingsName,"Name",bar->name,FALSE);
+	list_palette_add_picker_list_int(&alt_property_palette,kBarSettingsType,"Type",(char*)hud_bar_type_str,-1,name_str_len,0,FALSE,&bar->type,FALSE);
 	list_palette_add_checkbox(&alt_property_palette,kBarSettingsShow,"Show",&bar->show,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kBarSettingsVertical,"Vertical",&bar->vert,FALSE);
 
 		// position
 

@@ -359,7 +359,7 @@ JSValueRef scripts_call_parent_function(int script_idx,char *func_name,int arg_c
 
 		// call the function
 
-	return(scripts_direct_call(script->parent_idx,override_proj_idx,func_name,arg_count,args,err_str));
+	return(scripts_direct_call(script_idx,script->parent_idx,override_proj_idx,func_name,arg_count,args,err_str));
 }
 
 /* =======================================================
@@ -419,7 +419,7 @@ JSValueRef scripts_call_child_function(int script_idx,char *func_name,int arg_co
 
 		// call the function
 
-	return(scripts_direct_call(script->child_idx,override_proj_idx,func_name,arg_count,args,err_str));
+	return(scripts_direct_call(script_idx,script->child_idx,override_proj_idx,func_name,arg_count,args,err_str));
 }
 
 /* =======================================================
@@ -494,54 +494,58 @@ void scripts_chain_console(int script_idx,int override_proj_idx,char *func_name)
       
 ======================================================= */
 
-JSValueRef scripts_direct_call(int script_idx,int override_proj_idx,char *func_name,int arg_count,JSValueRef *args,char *err_str)
+JSValueRef scripts_direct_call(int from_script_idx,int to_script_idx,int override_proj_idx,char *func_name,int arg_count,JSValueRef *args,char *err_str)
 {
 	int				n,old_proj_idx;
 	JSValueRef		rval,exception,argv[5];
 	JSObjectRef		func_obj;
-	script_type		*script;
+	script_type		*to_script;
 	
 		// find script
 		
-	script=js.script_list.scripts[script_idx];
+	to_script=js.script_list.scripts[to_script_idx];
 
 		// enter recursion
 
-	if (!scripts_recursion_in(script,err_str)) return(NULL);
+	if (!scripts_recursion_in(to_script,err_str)) return(NULL);
 
 		// handle any proj_setup/proj swaps
 
 	if (override_proj_idx!=-1) {
-		old_proj_idx=script->attach.proj_idx;
-		script->attach.proj_idx=override_proj_idx;
+		old_proj_idx=to_script->attach.proj_idx;
+		to_script->attach.proj_idx=override_proj_idx;
 	}
 
 		// find function
 
-	func_obj=script_get_single_function(script->cx,script->global_obj,func_name);
+	func_obj=script_get_single_function(to_script->cx,to_script->global_obj,func_name);
 	if (func_obj==NULL) {
 		sprintf(err_str,"Call failed, unknown function: %s",func_name);
 		return(NULL);
 	}
+	
+		// inherit the event
+		
+	memmove(&to_script->event_state,&js.script_list.scripts[from_script_idx]->event_state,sizeof(script_event_state_type));
 
 		// call the function
 		
-	argv[0]=(JSValueRef)script->obj;
+	argv[0]=(JSValueRef)to_script->obj;
 
 	for (n=0;n!=arg_count;n++) { 
 		argv[n+1]=args[n];
 	}
 
-	rval=JSObjectCallAsFunction(script->cx,func_obj,NULL,(arg_count+1),argv,&exception);
-	if (rval==NULL) script_exception_to_string(script->cx,script->event_state.main_event,exception,err_str,256);
+	rval=JSObjectCallAsFunction(to_script->cx,func_obj,NULL,(arg_count+1),argv,&exception);
+	if (rval==NULL) script_exception_to_string(to_script->cx,to_script->event_state.main_event,exception,err_str,256);
 
 		// switch back any saved proj_idx
 
-	if (override_proj_idx!=-1) script->attach.proj_idx=old_proj_idx;
+	if (override_proj_idx!=-1) to_script->attach.proj_idx=old_proj_idx;
 
 		// leave recursion
 
-	scripts_recursion_out(script);
+	scripts_recursion_out(to_script);
 	
 	return(rval);
 }

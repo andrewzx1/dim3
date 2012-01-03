@@ -116,6 +116,7 @@ void script_initialize_classes(void)
 	script_init_global_camera_object();
 	script_init_camera_angle_object();
 	script_init_camera_chase_object();
+	script_init_camera_chase_track_angle_object();
 	script_init_camera_chase_slop_object();
 	script_init_camera_plane_object();
 	script_init_camera_position_object();
@@ -267,6 +268,7 @@ void script_release_classes(void)
 	script_free_global_camera_object();
 	script_free_camera_angle_object();
 	script_free_camera_chase_object();
+	script_free_camera_chase_track_angle_object();
 	script_free_camera_chase_slop_object();
 	script_free_camera_plane_object();
 	script_free_camera_position_object();
@@ -434,6 +436,7 @@ bool script_add_global_object(script_type *script,char *err_str)
 	script_add_camera_position_object(script->cx,j_sub_obj,script->idx);
 	script_add_camera_angle_object(script->cx,j_sub_obj,script->idx);
 	j_sub_obj_2=script_add_camera_chase_object(script->cx,j_sub_obj,script->idx);
+	script_add_camera_chase_track_angle_object(script->cx,j_sub_obj_2,script->idx);
 	script_add_camera_chase_slop_object(script->cx,j_sub_obj_2,script->idx);
 	script_add_camera_static_position_object(script->cx,j_sub_obj,script->idx);
 	script_add_camera_plane_object(script->cx,j_sub_obj,script->idx);
