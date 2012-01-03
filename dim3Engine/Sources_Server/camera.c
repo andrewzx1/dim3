@@ -36,6 +36,7 @@ extern map_type				map;
 
 camera_type					camera;
 camera_type					state_camera;
+map_camera_type				state_map_camera;
 
 /* =======================================================
 
@@ -145,11 +146,13 @@ int camera_check_liquid(obj_type *obj,d3pnt *pnt)
 void camera_save(void)
 {
 	memmove(&state_camera,&camera,sizeof(camera_type));
+	memmove(&state_map_camera,&map.camera,sizeof(map_camera_type));
 }
 
 void camera_restore(void)
 {
 	memmove(&camera,&state_camera,sizeof(camera_type));
+	memmove(&map.camera,&state_map_camera,sizeof(map_camera_type));
 }
 
 /* =======================================================
@@ -164,7 +167,7 @@ void camera_auto_turn_set_angle_offset(d3ang *ang,int life_msec)
 
 	if (life_msec<=0) return;
 
-	f=((float)life_msec)/10;
+	f=((float)life_msec)/10.0f;
 	camera.auto_turn_angle_offset.ang.x=ang->x/f;
 	camera.auto_turn_angle_offset.ang.y=ang->y/f;
 	camera.auto_turn_angle_offset.ang.z=ang->z/f;
@@ -179,7 +182,7 @@ void camera_auto_turn_set_chase_angle(d3ang *ang,int life_msec)
 
 	if (life_msec<=0) return;
 
-	f=((float)life_msec)/10;
+	f=((float)life_msec)/10.0f;
 	camera.auto_turn_chase_angle.ang.x=ang->x/f;
 	camera.auto_turn_chase_angle.ang.y=ang->y/f;
 	camera.auto_turn_chase_angle.ang.z=ang->z/f;

@@ -116,7 +116,7 @@ void gl_3D_rotate(d3pnt *pnt,d3ang *ang)
 
 		// create the look at vector
 		
-	matrix_rotate_zyx(&mat,ang_x,ang->y,0.0f);
+	matrix_rotate_zyx(&mat,ang_x,ang->y,ang->z);
 	fx=fy=0.0f;
 	fz=-((float)map.camera.plane.near_z);
 	matrix_vertex_multiply(&mat,&fx,&fy,&fz);
