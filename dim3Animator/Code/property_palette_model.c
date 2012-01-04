@@ -78,7 +78,7 @@ void property_palette_fill_model(void)
 	int				n;
 	char			name[256],str[256];
 
-	list_palette_set_title(&property_palette,"Model Properties");
+	list_palette_set_title(&property_palette,"Model Properties",NULL,NULL,NULL,NULL,NULL);
 
 		// model options
 		

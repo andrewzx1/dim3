@@ -155,7 +155,7 @@ void alt_property_palette_fill_intro_button(int intro_button_idx)
 	btn=get_intro_button_from_item_idx(intro_button_idx,name);
 	desc=get_intro_button_desc_from_item_idx(intro_button_idx);
 
-	list_palette_set_sub_title(&alt_property_palette,"Intro Button",name);
+	list_palette_set_title(&alt_property_palette,"Intro Button",name,NULL,NULL,NULL,NULL);
 
 		// settings
 	

@@ -60,7 +60,7 @@ void property_palette_fill_group(int group_idx)
 
 	group=&map.group.groups[group_idx];
 
-	list_palette_set_sub_title(&property_palette,"Group",group->name);
+	list_palette_set_title(&property_palette,"Group",group->name,NULL,NULL,NULL,NULL);
 
 		// get some counts
 

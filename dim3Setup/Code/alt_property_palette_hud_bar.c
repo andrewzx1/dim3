@@ -72,7 +72,7 @@ void alt_property_palette_fill_hud_bar(int hud_bar_idx)
 
 	bar=&iface.bar_list.bars[hud_bar_idx];
 
-	list_palette_set_sub_title(&alt_property_palette,"HUD Bar",bar->name);
+	list_palette_set_title(&alt_property_palette,"HUD",NULL,"Bar",bar->name,NULL,NULL);
 
 		// settings
 

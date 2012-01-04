@@ -54,7 +54,7 @@ void alt2_property_palette_fill_group_particle(int particle_idx,int group_partic
 	particle=&iface.particle_list.particles[particle_idx];
 	group_particle=&particle->group.particles[group_particle_idx];
 
-	list_palette_set_sub2_title(&alt2_property_palette,"Group Particle",particle->name,group_particle->name);
+	list_palette_set_title(&alt2_property_palette,"Particles",NULL,"Particle Group",particle->name,"Particle",group_particle->name);
 
 		// settings
 

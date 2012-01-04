@@ -70,7 +70,7 @@ char							pref_mipmap_type_str[][32]=mipmap_mode_setup_list_def;
 
 void property_palette_fill_editor_preference(void)
 {
-	list_palette_set_title(&property_palette,"Editor Preferences");
+	list_palette_set_title(&property_palette,"Editor Preferences",NULL,NULL,NULL,NULL,NULL);
 
 	list_palette_add_header(&property_palette,0,"Editor Engine Launch");
 	list_palette_add_string(&property_palette,kPrefPropertyEngineName,"Engine Name",setup.engine_name,FALSE);

@@ -62,7 +62,7 @@ void property_palette_fill_radar(void)
 {
 	int				n;
 
-	list_palette_set_title(&property_palette,"Radar");
+	list_palette_set_title(&property_palette,"Radar",NULL,NULL,NULL,NULL,NULL);
 
 		// settings
 

@@ -70,7 +70,7 @@ void alt_property_palette_fill_cinema_action(int cinema_idx,int action_idx)
 	cinema=&map.cinema.cinemas[cinema_idx];
 	action=&cinema->actions[action_idx];
 
-	list_palette_set_sub2_title(&alt_property_palette,"Cinema",cinema->name,action_actor_type_str[action->actor_type]);
+	list_palette_set_title(&alt_property_palette,"Cinema",cinema->name,"Action",action_actor_type_str[action->actor_type],NULL,NULL);
 
 		// setup some editing enables
 	

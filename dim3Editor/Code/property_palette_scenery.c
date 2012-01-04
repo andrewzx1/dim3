@@ -67,7 +67,7 @@ void property_palette_fill_scenery(int scenery_idx)
 
 	scenery=&map.sceneries[scenery_idx];
 
-	list_palette_set_sub_title(&property_palette,"Scenery",scenery->model_name);
+	list_palette_set_title(&property_palette,"Scenery",scenery->model_name,NULL,NULL,NULL,NULL);
 
 	list_palette_add_header(&property_palette,0,"Scenery Model");
 	list_palette_add_picker_file(&property_palette,kSceneryPropertyModelName,list_button_none,0,"Model","Models","","Mesh.xml;Model.xml",scenery->model_name,FALSE);

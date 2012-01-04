@@ -68,7 +68,7 @@ void property_palette_fill_texture(int texture_idx)
 
 	texture=&model.textures[texture_idx];
 
-	list_palette_set_sub_title(&property_palette,"Texture",texture->frames[0].name);
+	list_palette_set_title(&property_palette,"Texture",texture->frames[0].name,NULL,NULL,NULL,NULL);
 
 	list_palette_add_header(&property_palette,0,"Texture Settings");
 	list_palette_add_checkbox(&property_palette,kTexturePropertyAnimate,"Animated",&texture->animate.on,FALSE);

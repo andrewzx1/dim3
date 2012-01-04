@@ -52,7 +52,7 @@ void property_palette_fill_halos(void)
 {
 	int						n;
 
-	list_palette_set_title(&property_palette,"Halos");
+	list_palette_set_title(&property_palette,"Halos",NULL,NULL,NULL,NULL,NULL);
 
 	list_palette_add_header_button(&property_palette,kHaloPropertyAdd,"Halos",list_button_plus);
 

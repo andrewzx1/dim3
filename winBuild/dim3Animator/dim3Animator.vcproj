@@ -347,6 +347,18 @@
 					Name="Palettes"
 					>
 					<File
+						RelativePath="..\..\dim3Animator\Code\alt2_property_palette.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Animator\Code\alt2_property_palette_pose_move_particle.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Animator\Code\alt2_property_palette_pose_move_ring.c"
+						>
+					</File>
+					<File
 						RelativePath="..\..\dim3Animator\Code\alt_property_palette.c"
 						>
 					</File>

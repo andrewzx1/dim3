@@ -52,7 +52,7 @@ void property_palette_fill_actions(void)
 {
 	int						n;
 
-	list_palette_set_title(&property_palette,"Actions");
+	list_palette_set_title(&property_palette,"Actions",NULL,NULL,NULL,NULL,NULL);
 
 	list_palette_add_header(&property_palette,0,"Actions");
 	

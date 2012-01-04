@@ -61,7 +61,7 @@ void alt_property_palette_fill_multiplayer_game(int multiplayer_game_idx)
 
 	game=&iface.net_game.games[multiplayer_game_idx];
 
-	list_palette_set_sub_title(&alt_property_palette,"Game",game->name);
+	list_palette_set_title(&alt_property_palette,"Multiplayer",NULL,"Game",game->name,NULL,NULL);
 
 		// settings
 

@@ -60,8 +60,8 @@ void alt_property_palette_fill_virtual_control_stick(int virtual_control_stick_i
 	char						str[256];
 	iface_virtual_stick_type	*stick;
 	
-	sprintf(str,"Stick %d",virtual_control_stick_idx);
-	list_palette_set_sub_title(&alt_property_palette,"Virtual Control",str);
+	sprintf(str,"%d",virtual_control_stick_idx);
+	list_palette_set_title(&alt_property_palette,"Virtual Control",NULL,"Stick",str,NULL,NULL);
 
 	stick=&iface.virtual_control.sticks[virtual_control_stick_idx];
 		

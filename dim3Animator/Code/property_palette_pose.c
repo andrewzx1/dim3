@@ -56,7 +56,7 @@ void property_palette_fill_pose(int pose_idx)
 
 	pose=&model.poses[pose_idx];
 
-	list_palette_set_sub_title(&property_palette,"Pose",pose->name);
+	list_palette_set_title(&property_palette,"Pose",pose->name,NULL,NULL,NULL,NULL);
 
 	list_palette_add_header(&property_palette,0,"Pose Options");
 	list_palette_add_string(&property_palette,kPosePropertyName,"Name",pose->name,FALSE);

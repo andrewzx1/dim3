@@ -150,7 +150,7 @@ void property_palette_fill(void)
 
 	}
 	
-	list_palette_set_title(&property_palette,"No Properties");
+	list_palette_set_title(&property_palette,"No Properties",NULL,NULL,NULL,NULL,NULL);
 }
 
 /* =======================================================

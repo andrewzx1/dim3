@@ -61,8 +61,8 @@ void alt_property_palette_fill_virtual_control_button(int virtual_control_button
 	char						str[256];
 	iface_virtual_button_type	*button;
 	
-	sprintf(str,"Button %d",virtual_control_button_idx);
-	list_palette_set_sub_title(&alt_property_palette,"Virtual Control",str);
+	sprintf(str,"%d",virtual_control_button_idx);
+	list_palette_set_title(&alt_property_palette,"Virtual Control",NULL,"Button",str,NULL,NULL);
 
 		// buttons
 		

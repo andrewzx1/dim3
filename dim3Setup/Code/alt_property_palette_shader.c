@@ -53,7 +53,7 @@ void alt_property_palette_fill_shader(int shader_idx)
 
 	shader=&iface.shader_list.shaders[shader_idx];
 
-	list_palette_set_sub_title(&alt_property_palette,"Shader",shader->name);
+	list_palette_set_title(&alt_property_palette,"Shaders",NULL,"Shader",shader->name,NULL,NULL);
 
 		// settings
 

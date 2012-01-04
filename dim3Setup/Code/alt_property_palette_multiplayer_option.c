@@ -52,7 +52,7 @@ void alt_property_palette_fill_multiplayer_option(int multiplayer_option_idx)
 
 	option=&iface.net_option.options[multiplayer_option_idx];
 
-	list_palette_set_sub_title(&alt_property_palette,"Option",option->name);
+	list_palette_set_title(&alt_property_palette,"Multiplayer",NULL,"Option",option->name,NULL,NULL);
 
 		// settings
 

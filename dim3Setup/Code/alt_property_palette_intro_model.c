@@ -58,7 +58,7 @@ void alt_property_palette_fill_intro_model(int intro_model_idx)
 
 	model=&iface.intro.model_list.models[intro_model_idx];
 
-	list_palette_set_sub_title(&alt_property_palette,"Intro Model",model->model_name);
+	list_palette_set_title(&alt_property_palette,"Intro",NULL,"Model",model->model_name,NULL,NULL);
 
 		// settings
 
