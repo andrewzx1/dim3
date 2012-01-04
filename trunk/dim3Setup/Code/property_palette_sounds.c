@@ -52,7 +52,7 @@ void property_palette_fill_sounds(void)
 {
 	int						n;
 
-	list_palette_set_title(&property_palette,"Sounds");
+	list_palette_set_title(&property_palette,"Sounds",NULL,NULL,NULL,NULL,NULL);
 
 	list_palette_add_header_button(&property_palette,kSoundPropertyAdd,"Sounds",list_button_plus);
 

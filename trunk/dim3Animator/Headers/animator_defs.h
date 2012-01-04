@@ -270,6 +270,8 @@ typedef struct		{
 						int							cur_item,cur_mesh_idx,cur_bone_idx,
 													cur_pose_idx,cur_animate_idx,cur_hit_box_idx,
 													cur_animate_pose_move_idx,cur_pose_bone_move_idx,
+													cur_animate_pose_move_particle_idx,
+													cur_animate_pose_move_ring_idx,
 													texture_edit_idx,drag_bone_mode,select_mode,
 													magnify_z;
 						bool						model_open,texture,mesh,bone,hit_box,

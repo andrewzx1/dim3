@@ -52,7 +52,7 @@ void alt_property_palette_fill_action(int action_idx)
 
 	action=&iface.action_display_list.action_displays[action_idx];
 
-	list_palette_set_sub_title(&alt_property_palette,"Action",action->display_name);
+	list_palette_set_title(&alt_property_palette,"Actions",NULL,"Action",action->display_name,NULL,NULL);
 
 		// settings
 

@@ -95,7 +95,8 @@ void list_palette_shutdown(void)
 
 void list_palette_list_initialize(list_palette_type *list,char *title,bool back_on)
 {
-	strcpy(list->title,title);
+	strcpy(list->titles[0],title);
+	list->titles[1][0]=list->titles[2][0]=0x0;
 
 	list->scroll_page=0;
 	list->total_high=0;
@@ -117,19 +118,46 @@ void list_palette_list_shutdown(list_palette_type *list)
 	if (list->items!=NULL) free(list->items);
 }
 
-void list_palette_set_title(list_palette_type *list,char *title)
+/* =======================================================
+
+      List Palette Titles
+      
+======================================================= */
+
+void list_palette_set_title_single(list_palette_type *list,int idx,char *title,char *name)
 {
-	strcpy(list->title,title);
+	if (title==NULL) {
+		list->titles[idx][0]=0x0;
+		return;
+	}
+
+	if (name!=NULL) {
+		sprintf(list->titles[idx],"%s:%s",title,name);
+		return;
+	}
+	
+	strcpy(list->titles[idx],title);
 }
 
-void list_palette_set_sub_title(list_palette_type *list,char *title,char *item_name)
+void list_palette_set_title(list_palette_type *list,char *title_0,char *name_0,char *title_1,char *name_1,char *title_2,char *name_2)
 {
-	sprintf(list->title,"%s:%s",title,item_name);
+	list_palette_set_title_single(list,0,title_0,name_0);
+	list_palette_set_title_single(list,1,title_1,name_1);
+	list_palette_set_title_single(list,2,title_2,name_2);
 }
 
-void list_palette_set_sub2_title(list_palette_type *list,char *title,char *item_name,char *sub_item_name)
+int list_palette_get_title_high(list_palette_type *list)
 {
-	sprintf(list->title,"%s:%s:%s",title,item_name,sub_item_name);
+	int				n,high;
+
+	high=0;
+
+	for (n=0;n!=3;n++) {
+		if (list->titles[n][0]==0x0) break;
+		high+=list_title_line_high;
+	}
+
+	return(high+5);
 }
 
 /* =======================================================
@@ -207,7 +235,7 @@ list_palette_item_type* list_palette_create_item(list_palette_type *list,int ctr
 	item->x=box.lx+(list_palette_border_sz+4);
 	if (ctrl_type!=list_item_ctrl_header) item->x+=10;
 
-	item->y=box.ty+((list->item_count*list_item_font_high)+list_title_high);
+	item->y=box.ty+((list->item_count*list_item_font_high)+list_palette_get_title_high(list));
 
 	list->total_high+=list_item_font_high;
 
@@ -717,7 +745,8 @@ void list_palette_fill_picking_mode(list_palette_type *list)
 	char				*str_ptr;
 	bool				sel;
 
-	strcpy(list->title,list_picker.title);
+	strcpy(list->titles[0],list_picker.title);
+	list->titles[1][0]=list->titles[2][0]=0x0;
 
 	list_palette_delete_all_items(list);
 
@@ -917,7 +946,7 @@ int list_palette_get_scroll_page_count(list_palette_type *list)
 	
 	list_palette_box(&box);
 	
-	high=list->total_high-(box.by-(box.ty+list_title_high));
+	high=list->total_high-(box.by-(box.ty+list_palette_get_title_high(list)));
 	if (high<=0) return(0);
 	
 	return((high/list_item_scroll_size)+1);
@@ -1135,7 +1164,7 @@ void list_palette_draw_setup(list_palette_type *list)
 
 void list_palette_draw_title(list_palette_type *list)
 {
-	int					lx,rx,ty,by;
+	int					n,y,lx,rx,ty,by,high;
 	float				vertexes[8],colors[16],uvs[8]={0.0f,0.0f,1.0f,0.0f,1.0f,1.0f,0.0f,1.0f};
 	d3rect				box;
 	
@@ -1143,8 +1172,10 @@ void list_palette_draw_title(list_palette_type *list)
 
 		// title background
 
+	high=list_palette_get_title_high(list);
+
 	ty=box.ty;
-	by=ty+list_title_high;
+	by=ty+high;
 
 	vertexes[0]=vertexes[6]=(float)box.lx;
 	vertexes[2]=vertexes[4]=(float)box.rx;
@@ -1178,7 +1209,13 @@ void list_palette_draw_title(list_palette_type *list)
 
 		// text
 	
-	text_draw_center(((box.lx+box.rx)>>1),(by-2),list_title_font_size,NULL,list->title);
+	y=ty+19;
+
+	for (n=0;n!=3;n++) {
+		if (list->titles[0][0]==0x0) break;
+		text_draw_center(((box.lx+box.rx)>>1),y,list_title_font_size,NULL,list->titles[n]);
+		y+=list_title_line_high;
+	}
 	
 		// back arrow
 		
@@ -1190,7 +1227,7 @@ void list_palette_draw_title(list_palette_type *list)
 	lx=box.lx+4;
 #endif
 	rx=lx+32;
-	ty=box.ty+2;
+	ty=box.ty+((high-16)/2);
 	by=ty+32;
 
 	glEnable(GL_ALPHA_TEST);
@@ -1237,7 +1274,7 @@ void list_palette_draw_scrollbar(list_palette_type *list)
 	glEnableClientState(GL_COLOR_ARRAY);
 
 	lx=box.rx-list_palette_scroll_wid;
-	ty=box.ty+list_title_high;
+	ty=box.ty+list_palette_get_title_high(list);
 	by=box.by;
 
 	mx=(lx+box.rx)>>1;
@@ -1379,7 +1416,7 @@ void list_palette_draw_item(list_palette_type *list,int idx)
 		
 	y=item->y-(list->scroll_page*list_item_scroll_size);
 
-	if ((y<(box.ty+list_title_high)) || ((y-list_item_font_high)>box.by)) return;
+	if ((y<(box.ty+list_palette_get_title_high(list))) || ((y-list_item_font_high)>box.by)) return;
 
 		// draw header
 		
@@ -1752,7 +1789,7 @@ bool list_palette_click_back(list_palette_type *list)
 		// do the hold and click
 		
 	list_palette_box(&box);
-	box.by=box.ty+list_title_high;
+	box.by=box.ty+list_palette_get_title_high(list);
 
 	list->back_push_on=TRUE;
 	
@@ -1841,7 +1878,7 @@ bool list_palette_click(list_palette_type *list,d3pnt *pnt,bool double_click)
 	
 		// click in title
 		
-	if (pt.y<list_title_high) {
+	if (pt.y<list_palette_get_title_high(list)) {
 		if (list->back_on) {
 			if (list_palette_click_back(list)) {
 				if (list_picker.on) {
@@ -1870,7 +1907,7 @@ bool list_palette_click(list_palette_type *list,d3pnt *pnt,bool double_click)
 
 		// click in item
 
-	item_idx=((pt.y-list_title_high)+(list->scroll_page*list_item_scroll_size))/list_item_font_high;
+	item_idx=((pt.y-list_palette_get_title_high(list))+(list->scroll_page*list_item_scroll_size))/list_item_font_high;
 	if ((item_idx<0) || (item_idx>=list->item_count)) return(FALSE);
 
 		// is there a button

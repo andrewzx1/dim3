@@ -52,7 +52,7 @@ void property_palette_fill_shaders(void)
 {
 	int						n;
 
-	list_palette_set_title(&property_palette,"Shaders");
+	list_palette_set_title(&property_palette,"Shaders",NULL,NULL,NULL,NULL,NULL);
 
 	list_palette_add_header_button(&property_palette,kShaderPropertyAdd,"Shaders",list_button_plus);
 

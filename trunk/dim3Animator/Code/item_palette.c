@@ -310,6 +310,8 @@ bool item_palette_click(d3pnt *pnt,bool double_click)
 			state.cur_item=item_animate;
 			state.cur_animate_idx=item_palette.item_idx;
 			state.cur_animate_pose_move_idx=-1;
+			state.cur_animate_pose_move_particle_idx=-1;
+			state.cur_animate_pose_move_ring_idx=-1;
 			break;
 
 		case item_pose:

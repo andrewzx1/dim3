@@ -57,7 +57,7 @@ extern list_palette_type		property_palette;
 
 void property_palette_fill_setup(void)
 {
-	list_palette_set_title(&property_palette,"Setup");
+	list_palette_set_title(&property_palette,"Setup",NULL,NULL,NULL,NULL,NULL);
 
 		// options
 

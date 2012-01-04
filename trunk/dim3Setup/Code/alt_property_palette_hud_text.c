@@ -70,7 +70,7 @@ void alt_property_palette_fill_hud_text(int hud_text_idx)
 
 	text=&iface.text_list.texts[hud_text_idx];
 
-	list_palette_set_sub_title(&alt_property_palette,"HUD Text",text->name);
+	list_palette_set_title(&alt_property_palette,"HUD",NULL,"Text",text->name,NULL,NULL);
 
 		// settings
 

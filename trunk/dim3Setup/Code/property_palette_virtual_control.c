@@ -51,7 +51,7 @@ void property_palette_fill_virtual_control(void)
 	int							n;
 	char						str[256];
 	
-	list_palette_set_title(&property_palette,"Virtual Controls");
+	list_palette_set_title(&property_palette,"Virtual Controls",NULL,NULL,NULL,NULL,NULL);
 	
 		// sticks
 

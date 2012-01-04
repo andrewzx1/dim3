@@ -57,7 +57,7 @@ extern list_palette_type		property_palette;
 
 void property_palette_fill_progress(void)
 {
-	list_palette_set_title(&property_palette,"Project Progress");
+	list_palette_set_title(&property_palette,"Project Progress",NULL,NULL,NULL,NULL,NULL);
 
 		// progress
 		

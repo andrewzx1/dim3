@@ -67,7 +67,7 @@ void property_palette_fill_bone(int bone_idx,int pose_idx)
 
 	bone=&model.bones[bone_idx];
 
-	list_palette_set_sub_title(&property_palette,"Bone",bone->name);
+	list_palette_set_title(&property_palette,"Bone",bone->name,NULL,NULL,NULL,NULL);
 
 		// bone
 

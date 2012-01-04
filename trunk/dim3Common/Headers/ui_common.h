@@ -50,7 +50,7 @@ and can be sold or given away.
 #endif
 
 #define list_palette_scroll_wid								15
-#define list_title_high										20
+#define list_title_line_high								15
 
 #define list_item_ctrl_header								0
 #define list_item_ctrl_text									1
@@ -127,7 +127,7 @@ typedef struct		{
 															scroll_page,total_high;
 						bool								back_on,back_push_on,
 															push_on,button_click;
-						char								title[128];
+						char								titles[3][128];
 						list_palette_item_type				*items;
 					} list_palette_type;
 
@@ -190,9 +190,7 @@ extern void list_palette_shutdown(void);
 extern void list_palette_list_initialize(list_palette_type *list,char *title,bool back_on);
 extern void list_palette_list_shutdown(list_palette_type *list);
 extern void list_palette_box(d3rect *box);
-extern void list_palette_set_title(list_palette_type *list,char *title);
-extern void list_palette_set_sub_title(list_palette_type *list,char *title,char *item_name);
-extern void list_palette_set_sub2_title(list_palette_type *list,char *title,char *item_name,char *sub_item_name);
+extern void list_palette_set_title(list_palette_type *list,char *title_0,char *name_0,char *title_1,char *name_1,char *title_2,char *name_2);
 extern int list_palette_get_level(void);
 extern void list_palette_set_level(int level);
 extern void list_palette_add_header(list_palette_type *list,int piece_type,char *name);

@@ -68,7 +68,7 @@ char							map_property_camera_mode_list[][name_str_len]={"FPP","Chase","Static"
 
 void property_palette_fill_camera(void)
 {
-	list_palette_set_title(&property_palette,"Map Camera");
+	list_palette_set_title(&property_palette,"Map Camera",NULL,NULL,NULL,NULL,NULL);
 
 		// camera settings
 

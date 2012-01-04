@@ -101,7 +101,7 @@ void property_palette_fill_settings(void)
 	int					n;
 	char				name[256];
 
-	list_palette_set_title(&property_palette,"Project Settings");
+	list_palette_set_title(&property_palette,"Project Settings",NULL,NULL,NULL,NULL,NULL);
 
 		// project
 		

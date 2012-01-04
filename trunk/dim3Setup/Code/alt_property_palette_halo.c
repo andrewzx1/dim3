@@ -61,7 +61,7 @@ void alt_property_palette_fill_halo(int halo_idx)
 
 	halo=&iface.halo_list.halos[halo_idx];
 
-	list_palette_set_sub_title(&alt_property_palette,"Halo",halo->name);
+	list_palette_set_title(&alt_property_palette,"Halos",NULL,"Halo",halo->name,NULL,NULL);
 
 		// settings
 

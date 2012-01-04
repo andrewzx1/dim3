@@ -77,7 +77,7 @@ void property_palette_fill_intro(void)
 	int				n;
 	char			str[256];
 
-	list_palette_set_title(&property_palette,"Intro");
+	list_palette_set_title(&property_palette,"Intro",NULL,NULL,NULL,NULL,NULL);
 
 		// options
 

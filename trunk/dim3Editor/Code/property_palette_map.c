@@ -80,7 +80,7 @@ void property_palette_fill_map(void)
 	int				n;
 	char			name[256],str[256];
 
-	list_palette_set_title(&property_palette,"Map Settings");
+	list_palette_set_title(&property_palette,"Map Settings",NULL,NULL,NULL,NULL,NULL);
 
 		// info
 

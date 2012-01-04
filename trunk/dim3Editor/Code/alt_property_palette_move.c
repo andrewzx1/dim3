@@ -65,7 +65,7 @@ void alt_property_palette_fill_movement_move(int movement_idx,int move_idx)
 	move=&movement->moves[move_idx];
 
 	sprintf(str,"(%d,%d,%d)",move->mov.x,move->mov.y,move->mov.z);
-	list_palette_set_sub2_title(&alt_property_palette,"Movement",movement->name,str);
+	list_palette_set_title(&alt_property_palette,"Movement",movement->name,"Move",str,NULL,NULL);
 
 	list_palette_add_header(&alt_property_palette,0,"Movement Move Options");
 	list_palette_add_int(&alt_property_palette,kMovePropertyUserID,"Event User Id",&move->user_id,FALSE);

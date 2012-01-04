@@ -75,7 +75,7 @@ void alt_property_palette_fill_ring(int ring_idx)
 
 	ring=&iface.ring_list.rings[ring_idx];
 
-	list_palette_set_sub_title(&alt_property_palette,"Ring",ring->name);
+	list_palette_set_title(&alt_property_palette,"Rings",NULL,"Ring",ring->name,NULL,NULL);
 
 		// settings
 

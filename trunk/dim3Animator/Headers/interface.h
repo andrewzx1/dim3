@@ -168,6 +168,22 @@ extern void alt_property_palette_click_animate_pose_move(int animate_idx,int pos
 extern void alt_property_palette_click_pose_bone_move(int pose_idx,int bone_move_idx,int id,bool double_click);
 
 //
+// alt2 property list palette
+//
+
+extern void alt2_property_palette_initialize(void);
+extern void alt2_property_palette_shutdown(void);
+extern void alt2_property_palette_draw(void);
+extern void alt2_property_palette_scroll_wheel(d3pnt *pnt,int move);
+extern bool alt2_property_palette_click(d3pnt *pnt,bool double_click);
+
+extern void alt2_property_palette_fill_animate_pose_move_particle(int animate_idx,int pose_move_idx,int particle_idx);
+extern void alt2_property_palette_fill_animate_pose_move_ring(int animate_idx,int pose_move_idx,int ring_idx);
+
+extern void alt2_property_palette_click_animate_pose_move_particle(int animate_idx,int pose_move_idx,int particle_idx,int id,bool double_click);
+extern void alt2_property_palette_click_animate_pose_move_ring(int animate_idx,int pose_move_idx,int ring_idx,int id,bool double_click);
+
+//
 // pieces
 //
 

@@ -68,26 +68,11 @@ and can be sold or given away.
 #define kAnimationPoseMovePropertyParticleAdd				30
 #define kAnimationPoseMovePropertyRingAdd					31
 
-#define kAnimationPoseMovePropertyParticleBase				1000
-#define kAnimationPoseMovePropertyParticleMult				100
+#define kAnimationPoseMovePropertyParticle					1000
+#define kAnimationPoseMovePropertyParticleDelete			1100
 
-#define kAnimationPoseMovePropertyParticleDelete			0
-#define kAnimationPoseMovePropertyParticleName				1
-#define kAnimationPoseMovePropertyParticleBone				2
-#define kAnimationPoseMovePropertyParticleMotionFactor		3
-#define kAnimationPoseMovePropertyParticleMotion			4
-#define kAnimationPoseMovePropertyParticleRotate			5
-#define kAnimationPoseMovePropertyParticleStick				6
-#define kAnimationPoseMovePropertyParticleSlop				7
-
-#define kAnimationPoseMovePropertyRingBase					2000
-#define kAnimationPoseMovePropertyRingMult					100
-
-#define kAnimationPoseMovePropertyRingDelete				0
-#define kAnimationPoseMovePropertyRingName					1
-#define kAnimationPoseMovePropertyRingBone					2
-#define kAnimationPoseMovePropertyRingAngle					3
-#define kAnimationPoseMovePropertyRingSlop					4
+#define kAnimationPoseMovePropertyRing						2000
+#define kAnimationPoseMovePropertyRingDelete				2100
 
 extern model_type				model;
 extern animator_state_type		state;
@@ -97,14 +82,13 @@ extern list_palette_type		alt_property_palette;
 
 /* =======================================================
 
-      Alt Property Palette Fill Aniate Pose Move
+      Alt Property Palette Fill Animate Pose Move
       
 ======================================================= */
 
 void alt_property_palette_fill_animate_pose_move(int animate_idx,int pose_move_idx)
 {
-	int						n,id_base;
-	char					str[256];
+	int						n;
 	model_animate_type		*animate;
 	model_pose_move_type	*pose_move;
 
@@ -113,7 +97,7 @@ void alt_property_palette_fill_animate_pose_move(int animate_idx,int pose_move_i
 	animate=&model.animates[animate_idx];
 	pose_move=&animate->pose_moves[pose_move_idx];
 
-	list_palette_set_sub2_title(&alt_property_palette,"Pose Move",animate->name,model.poses[pose_move->pose_idx].name);
+	list_palette_set_title(&alt_property_palette,"Animation",animate->name,"Pose Move",model.poses[pose_move->pose_idx].name,NULL,NULL);
 
 		// options
 
@@ -172,17 +156,7 @@ void alt_property_palette_fill_animate_pose_move(int animate_idx,int pose_move_i
 	list_palette_add_header_button(&alt_property_palette,kAnimationPoseMovePropertyParticleAdd,"Animate Pose Particles",list_button_plus);
 
 	for (n=0;n!=pose_move->particle.count;n++) {
-		id_base=kAnimationPoseMovePropertyParticleBase+(kAnimationPoseMovePropertyParticleMult*n);
-
-		sprintf(str,"Animate Pose Particle %d",n);
-		list_palette_add_header_button(&alt_property_palette,(id_base+kAnimationPoseMovePropertyParticleDelete),str,list_button_minus);
-		list_palette_add_string(&alt_property_palette,(id_base+kAnimationPoseMovePropertyParticleName),"Name",pose_move->particle.particles[n].name,FALSE);
-		property_palette_add_string_bone(&alt_property_palette,(id_base+kAnimationPoseMovePropertyParticleBone),"Bone",pose_move->particle.particles[n].bone_idx,FALSE);
-		list_palette_add_float(&alt_property_palette,(id_base+kAnimationPoseMovePropertyParticleMotionFactor),"Motion Factor",&pose_move->particle.particles[n].motion_factor,FALSE);
-		list_palette_add_checkbox(&alt_property_palette,(id_base+kAnimationPoseMovePropertyParticleMotion),"Follow Model Motion",&pose_move->particle.particles[n].motion,FALSE);
-		list_palette_add_checkbox(&alt_property_palette,(id_base+kAnimationPoseMovePropertyParticleRotate),"Follow Model Rotation",&pose_move->particle.particles[n].rotate,FALSE);
-		list_palette_add_checkbox(&alt_property_palette,(id_base+kAnimationPoseMovePropertyParticleStick),"Follow Model Bone",&pose_move->particle.particles[n].stick,FALSE);
-		list_palette_add_point(&alt_property_palette,(id_base+kAnimationPoseMovePropertyParticleSlop),"Position Slop",&pose_move->particle.particles[n].slop,FALSE);
+		list_palette_add_string_selectable_button(&alt_property_palette,(kAnimationPoseMovePropertyParticle+n),list_button_minus,(kAnimationPoseMovePropertyParticleDelete+n),pose_move->particle.particles[n].name,NULL,((state.cur_animate_idx==animate_idx) && (state.cur_animate_pose_move_idx==pose_move_idx) && (state.cur_animate_pose_move_particle_idx==n)),FALSE);
 	}
 
 		// rings
@@ -190,14 +164,7 @@ void alt_property_palette_fill_animate_pose_move(int animate_idx,int pose_move_i
 	list_palette_add_header_button(&alt_property_palette,kAnimationPoseMovePropertyRingAdd,"Animate Pose Rings",list_button_plus);
 
 	for (n=0;n!=pose_move->ring.count;n++) {
-		id_base=kAnimationPoseMovePropertyRingBase+(kAnimationPoseMovePropertyRingMult*n);
-
-		sprintf(str,"Animate Pose Ring %d",n);
-		list_palette_add_header_button(&alt_property_palette,(id_base+kAnimationPoseMovePropertyRingDelete),str,list_button_minus);
-		list_palette_add_string(&alt_property_palette,(id_base+kAnimationPoseMovePropertyRingName),"Name",pose_move->ring.rings[n].name,FALSE);
-		property_palette_add_string_bone(&alt_property_palette,(id_base+kAnimationPoseMovePropertyRingBone),"Bone",pose_move->ring.rings[n].bone_idx,FALSE);
-		list_palette_add_checkbox(&alt_property_palette,(id_base+kAnimationPoseMovePropertyRingAngle),"Follow Model Angle",&pose_move->ring.rings[n].angle,FALSE);
-		list_palette_add_point(&alt_property_palette,(id_base+kAnimationPoseMovePropertyRingSlop),"Position Slop",&pose_move->ring.rings[n].slop,FALSE);
+		list_palette_add_string_selectable_button(&alt_property_palette,(kAnimationPoseMovePropertyRing+n),list_button_minus,(kAnimationPoseMovePropertyRingDelete+n),pose_move->ring.rings[n].name,NULL,((state.cur_animate_idx==animate_idx) && (state.cur_animate_pose_move_idx==pose_move_idx) && (state.cur_animate_pose_move_ring_idx==n)),FALSE);
 	}
 }
 
@@ -209,7 +176,6 @@ void alt_property_palette_fill_animate_pose_move(int animate_idx,int pose_move_i
 
 void alt_property_palette_click_animate_pose_move(int animate_idx,int pose_move_idx,int id,bool double_click)
 {
-	int						idx;
 	model_animate_type		*animate;
 	model_pose_move_type	*pose_move;
 
@@ -219,70 +185,56 @@ void alt_property_palette_click_animate_pose_move(int animate_idx,int pose_move_
 	pose_move=&animate->pose_moves[pose_move_idx];
 
 		// particles
-
+		
+	if ((id>=kAnimationPoseMovePropertyParticle) && (id<(kAnimationPoseMovePropertyParticle+max_model_animate_particle))) {
+		state.cur_animate_pose_move_particle_idx=id-kAnimationPoseMovePropertyParticle;
+		state.cur_animate_pose_move_ring_idx=-1;
+		if (double_click) list_palette_set_level(3);
+		return;
+	}
+	
+		// particle delete
+		
+	if ((id>=kAnimationPoseMovePropertyParticleDelete) && (id<(kAnimationPoseMovePropertyParticleDelete+max_model_animate_particle))) {
+		state.cur_animate_pose_move_ring_idx=-1;
+		state.cur_animate_pose_move_particle_idx=-1;
+		model_piece_delete_animation_pose_move_particle(animate_idx,pose_move_idx,(id-kAnimationPoseMovePropertyParticleDelete));
+		return;
+	}
+	
+		// particle add
+		
 	if (id==kAnimationPoseMovePropertyParticleAdd) {
+		state.cur_animate_pose_move_ring_idx=-1;
+		state.cur_animate_pose_move_particle_idx=-1;
 		model_piece_add_animation_pose_move_particle(animate_idx,pose_move_idx);
 		return;
 	}
 
-	if ((id>=kAnimationPoseMovePropertyParticleBase) && (id<kAnimationPoseMovePropertyRingBase)) {
-
-		if (!double_click) return;
-
-		id-=kAnimationPoseMovePropertyParticleBase;
-		idx=id/kAnimationPoseMovePropertyParticleMult;
-		id=id%kAnimationPoseMovePropertyParticleMult;
-
-		switch (id) {
-
-			case kAnimationPoseMovePropertyParticleDelete:
-				model_piece_delete_animation_pose_move_particle(animate_idx,pose_move_idx,idx);
-				break;
-
-			case kAnimationPoseMovePropertyParticleName:
-				property_palette_pick_particle(pose_move->particle.particles[idx].name);
-				break;
-
-			case kAnimationPoseMovePropertyParticleBone:
-				property_palette_pick_bone(&pose_move->particle.particles[idx].bone_idx,-1);
-				break;
-
-		}
-
-		return;
-	}
-
 		// rings
-
-	if (id==kAnimationPoseMovePropertyRingAdd) {
-		model_piece_add_animation_pose_move_ring(animate_idx,pose_move_idx);
+		
+	if ((id>=kAnimationPoseMovePropertyRing) && (id<(kAnimationPoseMovePropertyRing+max_model_animate_ring))) {
+		state.cur_animate_pose_move_particle_idx=-1;
+		state.cur_animate_pose_move_ring_idx=id-kAnimationPoseMovePropertyRing;
+		if (double_click) list_palette_set_level(3);
 		return;
 	}
-
-	if (id>=kAnimationPoseMovePropertyRingBase) {
-
-		if (!double_click) return;
-
-		id-=kAnimationPoseMovePropertyRingBase;
-		idx=id/kAnimationPoseMovePropertyRingMult;
-		id=id%kAnimationPoseMovePropertyRingMult;
-
-		switch (id) {
-
-			case kAnimationPoseMovePropertyRingDelete:
-				model_piece_delete_animation_pose_move_ring(animate_idx,pose_move_idx,idx);
-				break;
+	
+		// ring delete
 		
-			case kAnimationPoseMovePropertyRingName:
-				property_palette_pick_ring(pose_move->ring.rings[idx].name);
-				break;
-
-			case kAnimationPoseMovePropertyRingBone:
-				property_palette_pick_bone(&pose_move->ring.rings[idx].bone_idx,-1);
-				break;
-
-		}
-
+	if ((id>=kAnimationPoseMovePropertyRingDelete) && (id<(kAnimationPoseMovePropertyRingDelete+max_model_animate_ring))) {
+		state.cur_animate_pose_move_particle_idx=-1;
+		state.cur_animate_pose_move_ring_idx=-1;
+		model_piece_delete_animation_pose_move_ring(animate_idx,pose_move_idx,(id-kAnimationPoseMovePropertyRingDelete));
+		return;
+	}
+	
+		// ring add
+		
+	if (id==kAnimationPoseMovePropertyRingAdd) {
+		state.cur_animate_pose_move_particle_idx=-1;
+		state.cur_animate_pose_move_ring_idx=-1;
+		model_piece_add_animation_pose_move_ring(animate_idx,pose_move_idx);
 		return;
 	}
 

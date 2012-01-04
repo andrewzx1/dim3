@@ -74,7 +74,7 @@ void property_palette_fill_light_media(void)
 	int				n;
 	char			name[256];
 
-	list_palette_set_title(&property_palette,"Map Light Media Settings");
+	list_palette_set_title(&property_palette,"Map Light Media Settings",NULL,NULL,NULL,NULL,NULL);
 
 		// ambient
 

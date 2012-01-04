@@ -71,7 +71,7 @@ void property_palette_fill_particle(int particle_idx)
 
 	particle=&map.particles[particle_idx];
 
-	list_palette_set_sub_title(&property_palette,"Particle",particle->name);
+	list_palette_set_title(&property_palette,"Particle",particle->name,NULL,NULL,NULL,NULL);
 
 		// particle
 		

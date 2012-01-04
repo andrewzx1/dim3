@@ -101,7 +101,7 @@ char							map_property_sky_type_list[][name_str_len]={"Panoramic","Dome Hemisph
 
 void property_palette_fill_sky_weather(void)
 {
-	list_palette_set_title(&property_palette,"Map Sky & Weather");
+	list_palette_set_title(&property_palette,"Map Sky & Weather",NULL,NULL,NULL,NULL,NULL);
 
 		// sky
 

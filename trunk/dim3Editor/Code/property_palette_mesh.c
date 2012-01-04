@@ -115,7 +115,7 @@ void property_palette_fill_mesh(int mesh_idx,int poly_idx)
 	mesh=&map.mesh.meshes[mesh_idx];
 
 	sprintf(str,"%d",mesh_idx);
-	list_palette_set_sub_title(&property_palette,"Mesh",str);
+	list_palette_set_title(&property_palette,"Mesh",str,NULL,NULL,NULL,NULL);
 
 		// settings
 		

@@ -239,6 +239,8 @@ void model_piece_add_animate(void)
 	state.cur_item=item_animate;
 	state.cur_animate_idx=idx;
 	state.cur_animate_pose_move_idx=-1;
+	state.cur_animate_pose_move_particle_idx=-1;
+	state.cur_animate_pose_move_ring_idx=-1;
 
 	item_palette_scroll_into_view(item_animate,idx);
 	item_palette_state_rebuild();
@@ -261,6 +263,8 @@ void model_piece_duplicate_animate(int animate_idx)
 	state.cur_item=item_animate;
 	state.cur_animate_idx=idx;
 	state.cur_animate_pose_move_idx=-1;
+	state.cur_animate_pose_move_particle_idx=-1;
+	state.cur_animate_pose_move_ring_idx=-1;
 
 	item_palette_scroll_into_view(item_animate,idx);
 	item_palette_state_rebuild();
@@ -282,7 +286,10 @@ void model_piece_delete_animate(int animate_idx)
 	else {
 		state.cur_animate_idx=0;
 	}
+
 	state.cur_animate_pose_move_idx=-1;
+	state.cur_animate_pose_move_particle_idx=-1;
+	state.cur_animate_pose_move_ring_idx=-1;
 
 	item_palette_scroll_into_view(item_model,0);
 	item_palette_state_rebuild();
@@ -331,7 +338,7 @@ void model_piece_delete_animation_pose_move_particle(int animate_idx,int animate
 	animate=&model.animates[animate_idx];
 	pose_move=&animate->pose_moves[animate_pose_move_idx];
 
-	sz=sizeof(model_pose_move_particle_type)*(pose_move->particle.count-(idx+1));
+	sz=sizeof(model_particle_type)*(pose_move->particle.count-(idx+1));
 	if (sz>0) memmove(&pose_move->particle.particles[idx],&pose_move->particle.particles[idx+1],sz);
 
 	pose_move->particle.count--;
@@ -373,7 +380,7 @@ void model_piece_delete_animation_pose_move_ring(int animate_idx,int animate_pos
 	animate=&model.animates[animate_idx];
 	pose_move=&animate->pose_moves[animate_pose_move_idx];
 
-	sz=sizeof(model_pose_move_ring_type)*(pose_move->ring.count-(idx+1));
+	sz=sizeof(model_ring_type)*(pose_move->ring.count-(idx+1));
 	if (sz>0) memmove(&pose_move->ring.rings[idx],&pose_move->ring.rings[idx+1],sz);
 
 	pose_move->ring.count--;

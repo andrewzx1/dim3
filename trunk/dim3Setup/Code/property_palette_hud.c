@@ -64,7 +64,7 @@ void property_palette_fill_hud(void)
 {
 	int				n;
 
-	list_palette_set_title(&property_palette,"HUD");
+	list_palette_set_title(&property_palette,"HUD",NULL,NULL,NULL,NULL,NULL);
 
 		// bitmaps
 

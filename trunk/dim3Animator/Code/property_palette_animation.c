@@ -62,7 +62,7 @@ void property_palette_fill_animation(int animate_idx)
 
 	animate=&model.animates[animate_idx];
 
-	list_palette_set_sub_title(&property_palette,"Animation",animate->name);
+	list_palette_set_title(&property_palette,"Animation",animate->name,NULL,NULL,NULL,NULL);
 
 	list_palette_add_header(&property_palette,0,"Animation Options");
 	list_palette_add_string(&property_palette,kAnimationPropertyName,"Name",animate->name,FALSE);
@@ -128,6 +128,8 @@ void property_palette_click_animation(int animate_idx,int id,bool double_click)
 	if (!double_click) return;
 
 	state.cur_animate_pose_move_idx=-1;
+	state.cur_animate_pose_move_particle_idx=-1;
+	state.cur_animate_pose_move_ring_idx=-1;
 
 	switch (id) {
 

@@ -53,7 +53,7 @@ void property_palette_fill_particles(void)
 {
 	int						n;
 
-	list_palette_set_title(&property_palette,"Particles");
+	list_palette_set_title(&property_palette,"Particles",NULL,NULL,NULL,NULL,NULL);
 
 		// regular particles
 

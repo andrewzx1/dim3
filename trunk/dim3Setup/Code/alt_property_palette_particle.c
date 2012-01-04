@@ -84,7 +84,7 @@ void alt_property_palette_fill_particle(int particle_idx)
 
 	particle=&iface.particle_list.particles[particle_idx];
 
-	list_palette_set_sub_title(&alt_property_palette,"Particle",particle->name);
+	list_palette_set_title(&alt_property_palette,"Particles",NULL,"Particle",particle->name,NULL,NULL);
 
 		// settings
 

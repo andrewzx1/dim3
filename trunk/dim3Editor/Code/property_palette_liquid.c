@@ -104,7 +104,7 @@ void property_palette_fill_liquid(int liq_idx)
 	liq=&map.liquid.liquids[liq_idx];
 
 	sprintf(str,"%d",liq_idx);
-	list_palette_set_sub_title(&property_palette,"Liquid",str);
+	list_palette_set_title(&property_palette,"Liquid",str,NULL,NULL,NULL,NULL);
 
 	list_palette_add_header(&property_palette,0,"Liquid Settings");
 	list_palette_add_checkbox(&property_palette,kLiquidPropertyLockUV,"Lock UV",&liq->flag.lock_uv,FALSE);

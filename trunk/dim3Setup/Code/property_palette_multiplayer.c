@@ -66,7 +66,7 @@ void property_palette_fill_multiplayer(void)
 	int				n;
 	char			str[256];
 
-	list_palette_set_title(&property_palette,"Multiplayer");
+	list_palette_set_title(&property_palette,"Multiplayer",NULL,NULL,NULL,NULL,NULL);
 
 		// options
 
