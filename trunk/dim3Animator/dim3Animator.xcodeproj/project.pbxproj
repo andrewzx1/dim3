@@ -101,6 +101,9 @@
 		262C395712D025F700A94FEE /* item_palette.c in Sources */ = {isa = PBXBuildFile; fileRef = 262C395512D025F700A94FEE /* item_palette.c */; };
 		262C395812D025F700A94FEE /* property_palette.c in Sources */ = {isa = PBXBuildFile; fileRef = 262C395612D025F700A94FEE /* property_palette.c */; };
 		262C397712D026A500A94FEE /* list_palette_common.c in Sources */ = {isa = PBXBuildFile; fileRef = 262C397612D026A500A94FEE /* list_palette_common.c */; };
+		26334A6814B52DF600C25B01 /* alt2_property_palette_pose_move_particle.c in Sources */ = {isa = PBXBuildFile; fileRef = 26334A6514B52DF600C25B01 /* alt2_property_palette_pose_move_particle.c */; };
+		26334A6914B52DF600C25B01 /* alt2_property_palette_pose_move_ring.c in Sources */ = {isa = PBXBuildFile; fileRef = 26334A6614B52DF600C25B01 /* alt2_property_palette_pose_move_ring.c */; };
+		26334A6A14B52DF600C25B01 /* alt2_property_palette.c in Sources */ = {isa = PBXBuildFile; fileRef = 26334A6714B52DF600C25B01 /* alt2_property_palette.c */; };
 		263AB1C112D8343C00954777 /* dos.c in Sources */ = {isa = PBXBuildFile; fileRef = 263AB1C012D8343C00954777 /* dos.c */; };
 		263AB1CB12D8345600954777 /* property_palette_animation.c in Sources */ = {isa = PBXBuildFile; fileRef = 263AB1C412D8345600954777 /* property_palette_animation.c */; };
 		263AB1CC12D8345600954777 /* property_palette_bone.c in Sources */ = {isa = PBXBuildFile; fileRef = 263AB1C512D8345600954777 /* property_palette_bone.c */; };
@@ -339,6 +342,9 @@
 		262C395512D025F700A94FEE /* item_palette.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = item_palette.c; path = Code/item_palette.c; sourceTree = "<group>"; };
 		262C395612D025F700A94FEE /* property_palette.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette.c; path = Code/property_palette.c; sourceTree = "<group>"; };
 		262C397612D026A500A94FEE /* list_palette_common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = list_palette_common.c; path = ../dim3Common/Code/list_palette_common.c; sourceTree = SOURCE_ROOT; };
+		26334A6514B52DF600C25B01 /* alt2_property_palette_pose_move_particle.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = alt2_property_palette_pose_move_particle.c; path = Code/alt2_property_palette_pose_move_particle.c; sourceTree = "<group>"; };
+		26334A6614B52DF600C25B01 /* alt2_property_palette_pose_move_ring.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = alt2_property_palette_pose_move_ring.c; path = Code/alt2_property_palette_pose_move_ring.c; sourceTree = "<group>"; };
+		26334A6714B52DF600C25B01 /* alt2_property_palette.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = alt2_property_palette.c; path = Code/alt2_property_palette.c; sourceTree = "<group>"; };
 		263AB1C012D8343C00954777 /* dos.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dos.c; path = Code/dos.c; sourceTree = "<group>"; };
 		263AB1C412D8345600954777 /* property_palette_animation.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_animation.c; path = Code/property_palette_animation.c; sourceTree = "<group>"; };
 		263AB1C512D8345600954777 /* property_palette_bone.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_bone.c; path = Code/property_palette_bone.c; sourceTree = "<group>"; };
@@ -778,6 +784,9 @@
 				2677B8EA12DBB5280068C921 /* alt_property_palette.c */,
 				26C9371412DD1896005C0708 /* alt_property_palette_pose_move.c */,
 				26C9371312DD1896005C0708 /* alt_property_palette_bone_move.c */,
+				26334A6714B52DF600C25B01 /* alt2_property_palette.c */,
+				26334A6514B52DF600C25B01 /* alt2_property_palette_pose_move_particle.c */,
+				26334A6614B52DF600C25B01 /* alt2_property_palette_pose_move_ring.c */,
 			);
 			name = Palettes;
 			sourceTree = "<group>";
@@ -1024,6 +1033,9 @@
 				260B3D001411F14E006ED023 /* model_util_transform.c in Sources */,
 				26A7A49E145122EE00E074BC /* poly_masks.c in Sources */,
 				26E45E8314527FBA00007E57 /* model_util_file_model.c in Sources */,
+				26334A6814B52DF600C25B01 /* alt2_property_palette_pose_move_particle.c in Sources */,
+				26334A6914B52DF600C25B01 /* alt2_property_palette_pose_move_ring.c in Sources */,
+				26334A6A14B52DF600C25B01 /* alt2_property_palette.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
