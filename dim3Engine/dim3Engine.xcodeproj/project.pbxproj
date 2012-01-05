@@ -1254,26 +1254,16 @@
 		260B3E8E1411F781006ED023 /* Sources_Server */ = {
 			isa = PBXGroup;
 			children = (
+				2626CC6414B3C24600ECB698 /* Server */,
 				26B5FA4114A7052900057D85 /* Objects */,
 				26B5FA4314A7052E00057D85 /* Weapons */,
 				26B5FA4214A7052C00057D85 /* Projectiles */,
 				26B5FA4414A7053000057D85 /* Models */,
+				2626CC6514B3C25300ECB698 /* Effects */,
 				26B5FA3F14A7050700057D85 /* Collision */,
 				26B5FA4014A7051C00057D85 /* Camera */,
 				26A45D051489AD0A00C02936 /* Script API */,
 				26B5FA4514A7054900057D85 /* Scripts */,
-				260B3E941411F781006ED023 /* decals.c */,
-				260B3E951411F781006ED023 /* effects.c */,
-				260B3E961411F781006ED023 /* effects_spawn.c */,
-				260B3E971411F781006ED023 /* game_time.c */,
-				260B3E9A1411F781006ED023 /* item.c */,
-				260B3EB31411F781006ED023 /* particles.c */,
-				260B3EB91411F781006ED023 /* remote.c */,
-				260B3EBA1411F781006ED023 /* rings.c */,
-				260B3EBB1411F781006ED023 /* scenery.c */,
-				260B3F401411F781006ED023 /* server.c */,
-				260B3F411411F781006ED023 /* server_run.c */,
-				260B3F461411F781006ED023 /* xml_setup.c */,
 			);
 			path = Sources_Server;
 			sourceTree = "<group>";
@@ -1396,6 +1386,7 @@
 				260B3F4A1411F781006ED023 /* al_music.c */,
 				260B3F4B1411F781006ED023 /* al_play.c */,
 				260B3F4C1411F781006ED023 /* al_setup.c */,
+				260B3F4D1411F781006ED023 /* ambients.c */,
 			);
 			name = Audio;
 			sourceTree = "<group>";
@@ -1414,10 +1405,32 @@
 				260B3F841411F781006ED023 /* setup_network.c */,
 				260B3F6B1411F781006ED023 /* host.c */,
 				260B3F731411F781006ED023 /* join.c */,
-				260B3F821411F781006ED023 /* score_limit.c */,
 				260B3F581411F781006ED023 /* error.c */,
 			);
 			name = GUI;
+			sourceTree = "<group>";
+		};
+		2626CC6414B3C24600ECB698 /* Server */ = {
+			isa = PBXGroup;
+			children = (
+				260B3E971411F781006ED023 /* game_time.c */,
+				260B3F401411F781006ED023 /* server.c */,
+				260B3F411411F781006ED023 /* server_run.c */,
+				260B3F461411F781006ED023 /* xml_setup.c */,
+			);
+			name = Server;
+			sourceTree = "<group>";
+		};
+		2626CC6514B3C25300ECB698 /* Effects */ = {
+			isa = PBXGroup;
+			children = (
+				260B3E951411F781006ED023 /* effects.c */,
+				260B3E961411F781006ED023 /* effects_spawn.c */,
+				260B3EB31411F781006ED023 /* particles.c */,
+				260B3EBA1411F781006ED023 /* rings.c */,
+				260B3E941411F781006ED023 /* decals.c */,
+			);
+			name = Effects;
 			sourceTree = "<group>";
 		};
 		263A144E149BE25400F31189 /* View */ = {
@@ -1459,6 +1472,7 @@
 				260B3F751411F781006ED023 /* network_draw.c */,
 				260B3F531411F781006ED023 /* crosshair_draw.c */,
 				260B3F4F1411F781006ED023 /* chooser_draw.c */,
+				260B3F821411F781006ED023 /* score_limit.c */,
 				260B3F511411F781006ED023 /* console.c */,
 				260B3F521411F781006ED023 /* console_draw.c */,
 				260B3F741411F781006ED023 /* menu_draw.c */,
@@ -1473,7 +1487,6 @@
 		264470E414AED1A00099DEE3 /* Sky */ = {
 			isa = PBXGroup;
 			children = (
-				260B3F4D1411F781006ED023 /* ambients.c */,
 				260B3F5B1411F781006ED023 /* fog.c */,
 				260B3F7A1411F781006ED023 /* rain.c */,
 				260B3F851411F781006ED023 /* sky.c */,
@@ -1683,6 +1696,9 @@
 				260B3EAF1411F781006ED023 /* obj_state.c */,
 				260B3EB01411F781006ED023 /* obj_turn.c */,
 				260B3EB11411F781006ED023 /* obj_watch.c */,
+				260B3E9A1411F781006ED023 /* item.c */,
+				260B3EBB1411F781006ED023 /* scenery.c */,
+				260B3EB91411F781006ED023 /* remote.c */,
 			);
 			name = Objects;
 			sourceTree = "<group>";
