@@ -519,7 +519,7 @@ bool texture_edit_click(d3pnt *pnt,bool double_click)
 	if ((frame_idx==-1) && (frame_count>1)) {
 		tbox.lx=470;
 		tbox.rx=570;
-		tbox.ty=(texture_edit_item_high*(frame_count-1))+100;
+		tbox.ty=((texture_edit_item_high*(frame_count-1))+100)-texture_edit_scroll_pos;
 		tbox.by=tbox.ty+25;
 
 		if ((pnt->x>=tbox.lx) && (pnt->x<=tbox.rx) && (pnt->y>=tbox.ty) && (pnt->y<=tbox.by)) {
@@ -530,11 +530,11 @@ bool texture_edit_click(d3pnt *pnt,bool double_click)
 		// clicking in item?
 		
 	if (frame_idx==-1) {
-		frame_idx=pnt->y/texture_edit_item_high;
+		frame_idx=(pnt->y+texture_edit_scroll_pos)/texture_edit_item_high;
 		
 		tbox.lx=0;
 		tbox.rx=wid;
-		tbox.ty=(frame_idx*texture_edit_item_high);
+		tbox.ty=(frame_idx*texture_edit_item_high)-texture_edit_scroll_pos;
 		tbox.by=tbox.ty+texture_edit_item_high;
 		
 		if ((frame_idx<0) || (frame_idx>=max_texture_frame)) return(FALSE);
