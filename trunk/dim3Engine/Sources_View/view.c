@@ -557,8 +557,13 @@ void view_loop_draw(void)
 		// squish for open console
 		
 	if (view.console.on) {
-		y_add=(int)(((float)view.screen.y_sz)*console_screen_percent);
-		glViewport(0,y_add,view.screen.x_sz,(view.screen.y_sz-y_add));
+		#ifndef D3_ROTATE_VIEW
+			y_add=(int)(((float)view.screen.y_sz)*console_screen_percent);
+			glViewport(0,y_add,view.screen.x_sz,(view.screen.y_sz-y_add));
+		#else
+			y_add=(int)(((float)view.screen.y_sz)*console_screen_percent);
+			glViewport(y_add,0,(view.screen.y_sz-y_add),view.screen.x_sz);
+		#endif
 	}
 	
 		// draw view
@@ -577,6 +582,10 @@ void view_loop_draw(void)
 	virtual_control_draw();
 #endif
 
+		// metrics
+		
+	metrics_draw();
+
 		// menu
 
 	menu_draw();
@@ -585,7 +594,11 @@ void view_loop_draw(void)
 		// and draw console
 		
 	if (view.console.on) {
-		glViewport(0,0,view.screen.x_sz,view.screen.y_sz);
+		#ifndef D3_ROTATE_VIEW
+			glViewport(0,0,view.screen.x_sz,view.screen.y_sz);
+		#else
+			glViewport(0,0,view.screen.y_sz,view.screen.x_sz);
+		#endif
 		console_draw();
 	}
 

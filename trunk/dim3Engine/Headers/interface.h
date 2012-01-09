@@ -255,9 +255,11 @@ extern void progress_next(void);
 // hud
 //
 
+extern void hud_texts_fps(char *data);
 extern void hud_click(void);
 extern void hud_draw(void);
 extern void network_draw(void);
+extern void metrics_draw(void);
 
 //
 // virtual controls

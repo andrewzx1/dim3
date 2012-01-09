@@ -361,6 +361,8 @@
 		260B44821411FB29006ED023 /* map_util_write.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B44721411FB29006ED023 /* map_util_write.c */; };
 		264356A614576B0F00CA4CFE /* model_util_file_model.c in Sources */ = {isa = PBXBuildFile; fileRef = 264356A514576B0F00CA4CFE /* model_util_file_model.c */; };
 		26920D7B1433F6F500EF55EF /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2638D24013ED0AD600029B18 /* UIKit.framework */; };
+		269EA83214B8BE2F0069CA6C /* script_camera_chase_track_angle.c in Sources */ = {isa = PBXBuildFile; fileRef = 269EA83114B8BE2F0069CA6C /* script_camera_chase_track_angle.c */; };
+		269EA83D14B965DD0069CA6C /* metrics_draw.c in Sources */ = {isa = PBXBuildFile; fileRef = 269EA83C14B965DD0069CA6C /* metrics_draw.c */; };
 		269F18E014341DA30050DF4A /* libpng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 269F18DF14341DA30050DF4A /* libpng.a */; };
 		26A45D121489ADBB00C02936 /* script_color.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A45D101489ADBB00C02936 /* script_color.c */; };
 		26A45D131489ADBB00C02936 /* script_point_angle_vector.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A45D111489ADBB00C02936 /* script_point_angle_vector.c */; };
@@ -804,6 +806,8 @@
 		260B44721411FB29006ED023 /* map_util_write.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = map_util_write.c; sourceTree = "<group>"; };
 		2638D24013ED0AD600029B18 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		264356A514576B0F00CA4CFE /* model_util_file_model.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = model_util_file_model.c; sourceTree = "<group>"; };
+		269EA83114B8BE2F0069CA6C /* script_camera_chase_track_angle.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_camera_chase_track_angle.c; sourceTree = "<group>"; };
+		269EA83C14B965DD0069CA6C /* metrics_draw.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = metrics_draw.c; sourceTree = "<group>"; };
 		269F18DF14341DA30050DF4A /* libpng.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libpng.a; sourceTree = "<group>"; };
 		26A45D101489ADBB00C02936 /* script_color.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_color.c; sourceTree = "<group>"; };
 		26A45D111489ADBB00C02936 /* script_point_angle_vector.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_point_angle_vector.c; sourceTree = "<group>"; };
@@ -1025,6 +1029,7 @@
 				260B41A81411F812006ED023 /* intro.c */,
 				260B41A91411F812006ED023 /* join.c */,
 				260B41AA1411F812006ED023 /* menu_draw.c */,
+				269EA83C14B965DD0069CA6C /* metrics_draw.c */,
 				260B41AB1411F812006ED023 /* network_draw.c */,
 				260B41AC1411F812006ED023 /* particles_draw.c */,
 				260B41AD1411F812006ED023 /* player_input.c */,
@@ -1308,6 +1313,7 @@
 				260B40F31411F812006ED023 /* script_camera_angle.c */,
 				260B40F41411F812006ED023 /* script_camera_chase.c */,
 				260B40F51411F812006ED023 /* script_camera_chase_slop.c */,
+				269EA83114B8BE2F0069CA6C /* script_camera_chase_track_angle.c */,
 				260B40F61411F812006ED023 /* script_camera_plane.c */,
 				260B40F71411F812006ED023 /* script_camera_position.c */,
 				260B40F81411F812006ED023 /* script_camera_setting.c */,
@@ -1971,6 +1977,8 @@
 				264356A614576B0F00CA4CFE /* model_util_file_model.c in Sources */,
 				26A45D121489ADBB00C02936 /* script_color.c in Sources */,
 				26A45D131489ADBB00C02936 /* script_point_angle_vector.c in Sources */,
+				269EA83214B8BE2F0069CA6C /* script_camera_chase_track_angle.c in Sources */,
+				269EA83D14B965DD0069CA6C /* metrics_draw.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
