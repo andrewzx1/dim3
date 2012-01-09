@@ -37,12 +37,6 @@ JSObjectRef js_global_point_angle_vector_constructor_func(JSContextRef cx,JSObje
 
 extern js_type			js;
 
-JSStaticValue 		global_point_angle_vector_props[]={
-							{"x",						NULL,		NULL,		kJSPropertyAttributeDontDelete},
-							{"y",						NULL,		NULL,		kJSPropertyAttributeDontDelete},
-							{"z",						NULL,		NULL,		kJSPropertyAttributeDontDelete},
-							{0,0,0,0}};
-
 JSClassRef			global_point_angle_vector_class;
 
 /* =======================================================
@@ -53,7 +47,7 @@ JSClassRef			global_point_angle_vector_class;
 
 void script_init_global_point_angle_vector_object(void)
 {
-	global_point_angle_vector_class=script_create_class("global_point_angle_vector",global_point_angle_vector_props,NULL);
+	global_point_angle_vector_class=script_create_class("global_point_angle_vector",NULL,NULL);
 }
 
 void script_free_global_point_angle_vector_object(void)

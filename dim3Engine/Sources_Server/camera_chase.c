@@ -161,7 +161,7 @@ void camera_chase_calc_position(void)
 	matrix_vertex_multiply(&mat,&fx,&fy,&fz);
 	
 	ept.x=((int)fx)+obj->pnt.x;
-	ept.y=((int)fy)+obj->pnt.y;
+	ept.y=((int)fy)+(obj->pnt.y+obj->size.eye_offset);
 	ept.z=((int)fz)+obj->pnt.z;
 
 		// setup contacts

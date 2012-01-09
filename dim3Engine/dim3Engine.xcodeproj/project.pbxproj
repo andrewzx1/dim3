@@ -441,6 +441,7 @@
 		269BF265145C800200A20323 /* libmpg123.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 269BF250145C7DB600A20323 /* libmpg123.dylib */; };
 		269BF269145C80FF00A20323 /* libmpg123.dylib in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 269BF250145C7DB600A20323 /* libmpg123.dylib */; };
 		269D27C312DEBB7E00AF5695 /* mac_os_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 269D27C212DEBB7E00AF5695 /* mac_os_defs.h */; };
+		269EA83B14B9617C0069CA6C /* metrics_draw.c in Sources */ = {isa = PBXBuildFile; fileRef = 269EA83A14B9617C0069CA6C /* metrics_draw.c */; };
 		26A32EDF1453CFE80005AABD /* model_util_file_model.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A32EDE1453CFE80005AABD /* model_util_file_model.c */; };
 		26A45D081489AD6C00C02936 /* script_color.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A45D061489AD6C00C02936 /* script_color.c */; };
 		26A45D091489AD6C00C02936 /* script_point_angle_vector.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A45D071489AD6C00C02936 /* script_point_angle_vector.c */; };
@@ -916,6 +917,7 @@
 		267E82851330155B0087DCED /* interface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = interface.h; path = Headers/interface.h; sourceTree = "<group>"; };
 		269BF250145C7DB600A20323 /* libmpg123.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libmpg123.dylib; sourceTree = "<group>"; };
 		269D27C212DEBB7E00AF5695 /* mac_os_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mac_os_defs.h; path = ../dim3Common/Headers/mac_os_defs.h; sourceTree = SOURCE_ROOT; };
+		269EA83A14B9617C0069CA6C /* metrics_draw.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = metrics_draw.c; sourceTree = "<group>"; };
 		26A32EDE1453CFE80005AABD /* model_util_file_model.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = model_util_file_model.c; sourceTree = "<group>"; };
 		26A45D061489AD6C00C02936 /* script_color.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_color.c; sourceTree = "<group>"; };
 		26A45D071489AD6C00C02936 /* script_point_angle_vector.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_point_angle_vector.c; sourceTree = "<group>"; };
@@ -1478,6 +1480,7 @@
 				260B3F741411F781006ED023 /* menu_draw.c */,
 				260B3F931411F781006ED023 /* virtual_draw.c */,
 				260B3F941411F781006ED023 /* zoom_draw.c */,
+				269EA83A14B9617C0069CA6C /* metrics_draw.c */,
 				260B3F4E1411F781006ED023 /* chat.c */,
 				260B3F501411F781006ED023 /* cinema.c */,
 			);
@@ -2271,6 +2274,7 @@
 				26A45D081489AD6C00C02936 /* script_color.c in Sources */,
 				26A45D091489AD6C00C02936 /* script_point_angle_vector.c in Sources */,
 				264470E814AF95250099DEE3 /* script_camera_chase_track_angle.c in Sources */,
+				269EA83B14B9617C0069CA6C /* metrics_draw.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
