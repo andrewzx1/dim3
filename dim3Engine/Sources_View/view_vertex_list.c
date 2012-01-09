@@ -63,9 +63,7 @@ bool view_map_vbo_initialize_mesh(map_mesh_type *mesh)
 		return(FALSE);
 	}
 
-		// vertexes, tangents, normals and color
-		// we run this separate from the UVs
-		// as they are grouped for layers
+		// vertexes, uvs, tangents, normals and color
 		
 	vp=vertex_ptr;
 
