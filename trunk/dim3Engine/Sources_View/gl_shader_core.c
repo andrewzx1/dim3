@@ -641,7 +641,7 @@ char* gl_core_model_shader_build_frag(int nlight,bool fog,bool bump,bool spec)
 		
 	if (bump) strcat(buf,"bump=clamp(bump,0.0,1.0);\n");
 		
-		// the diffuse can't be more than the ambient
+		// the diffuse can't be less than the ambient
 		
 	strcat(buf,"diffuse=max(diffuse,minDiffuse);\n");
 
@@ -656,10 +656,10 @@ char* gl_core_model_shader_build_frag(int nlight,bool fog,bool bump,bool spec)
 
 	if (bump) strcat(buf,"(");
 	if (spec) strcat(buf,"(");
-	strcat(buf,"(tex.rgb*ambient)");
-	if (bump) strcat(buf,"*bump)");
-	if (spec) strcat(buf,"+spec)");
-	strcat(buf,"*diffuse;\n");
+	strcat(buf,"(tex.rgb*ambient)*diffuse");
+	if (bump) strcat(buf,")*bump");
+	if (spec) strcat(buf,")+spec");
+	strcat(buf,";\n");
 	
 	if (fog) strcat(buf,"gl_FragColor.rgb=mix(gl_Fog.color.rgb,frag,fogFactor);\n");
 
