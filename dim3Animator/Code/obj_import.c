@@ -503,8 +503,9 @@ bool import_obj(char *path,bool replace,bool *found_normals,char *err_str)
 				vertex->tangent_space.normal.x/=f_count;
 				vertex->tangent_space.normal.y/=f_count;
 				vertex->tangent_space.normal.z/=f_count;
-				vector_normalize(&vertex->tangent_space.normal);
 			}
+			
+			vector_normalize(&vertex->tangent_space.normal);
 
 			vertex++;
 		}
