@@ -272,7 +272,7 @@ bool model_read_xml(model_type *model)
 			xml_get_attribute_3_coord_int(tag,"c3",&vertex->pnt.x,&vertex->pnt.y,&vertex->pnt.z);
 			xml_get_attribute_3_coord_float(tag,"t3",&vertex->tangent_space.tangent.x,&vertex->tangent_space.tangent.y,&vertex->tangent_space.tangent.z);
 			xml_get_attribute_3_coord_float(tag,"n3",&vertex->tangent_space.normal.x,&vertex->tangent_space.normal.y,&vertex->tangent_space.normal.z);
-			
+
 			vertex->major_bone_idx=model_read_xml_bone(model,tag,"major");
 			vertex->minor_bone_idx=model_read_xml_bone(model,tag,"minor");
 			vertex->bone_factor=xml_get_attribute_float_default(tag,"factor",1.0f);

@@ -190,7 +190,6 @@ void render_model_create_normal_vertexes(model_type *mdl,int mesh_mask,model_dra
 			// need to fix tangent space
 
 		if (draw->no_rot.on) {
-		
 			matrix_rotate_xzy(&mat,draw->no_rot.ang.x,draw->no_rot.ang.y,draw->no_rot.ang.z);
 
 			tl=draw->setup.mesh_arrays[n].gl_tangent_array;

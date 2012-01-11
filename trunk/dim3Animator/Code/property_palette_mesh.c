@@ -77,6 +77,16 @@ void property_palette_fill_mesh(int mesh_idx)
 	list_palette_add_header(&property_palette,0,"Mesh Info");
 	list_palette_add_int(&property_palette,-1,"Vertexes",&mesh->nvertex,TRUE);
 	list_palette_add_int(&property_palette,-1,"Polygons",&mesh->npoly,TRUE);
+	
+		switch(state.select_mode) {
+			case select_mode_polygon:
+				draw_model_selected_poly(mesh_idx);
+				break;
+			case select_mode_vertex:
+				draw_model_selected_vertexes(mesh_idx);
+				break;
+		}
+
 }
 
 /* =======================================================
