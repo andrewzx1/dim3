@@ -1099,7 +1099,7 @@ void render_model_build_vertex_lists(model_draw *draw,bool always_build)
 
 		model_create_draw_vertexes(mdl,n,&draw->setup);
 		if (draw->resize!=1.0f) model_resize_draw_vertex(mdl,n,draw->resize,&draw->setup);
-		if (draw->flip_x) model_flip_draw_vertex(mdl,n,&draw->setup);
+		if ((draw->flip.x) || (draw->flip.z)) model_flip_draw_vertex(mdl,n,&draw->setup,draw->flip.x,draw->flip.z);
 
 			// translate vertex to view
 			
