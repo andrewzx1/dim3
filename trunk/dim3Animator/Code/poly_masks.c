@@ -133,6 +133,22 @@ int poly_mask_count_sel(int mesh_idx)
 	return(cnt);
 }
 
+int poly_mask_get_first_sel(int mesh_idx)
+{
+	int				n;
+	unsigned char	mask;
+	model_mesh_type	*mesh;
+	
+	mesh=&model.meshes[mesh_idx];
+	
+	for (n=0;n!=mesh->npoly;n++) {
+		mask=poly_mask_get(mesh_idx,n);
+		if ((mask&animator_mask_flag_sel)!=0x0) return(n);
+	}
+	
+	return(-1);
+}
+
 /* =======================================================
 
       Hide Masks

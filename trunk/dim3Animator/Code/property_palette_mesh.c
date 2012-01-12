@@ -47,6 +47,8 @@ extern file_path_setup_type		file_path_setup;
 
 extern list_palette_type		property_palette;
 
+int								sel_vertex_idx,sel_poly_idx;
+
 /* =======================================================
 
       Property Palette Fill Mesh
@@ -56,6 +58,8 @@ extern list_palette_type		property_palette;
 void property_palette_fill_mesh(int mesh_idx)
 {
 	model_mesh_type		*mesh;
+	model_vertex_type	*vertex;
+	model_poly_type		*poly;
 	
 	mesh=&model.meshes[mesh_idx];
 
@@ -78,14 +82,23 @@ void property_palette_fill_mesh(int mesh_idx)
 	list_palette_add_int(&property_palette,-1,"Vertexes",&mesh->nvertex,TRUE);
 	list_palette_add_int(&property_palette,-1,"Polygons",&mesh->npoly,TRUE);
 	
-		switch(state.select_mode) {
-			case select_mode_polygon:
-				draw_model_selected_poly(mesh_idx);
-				break;
-			case select_mode_vertex:
-				draw_model_selected_vertexes(mesh_idx);
-				break;
-		}
+	sel_vertex_idx=vertex_mask_get_first_sel(mesh_idx);
+	if (sel_vertex_idx!=-1) {
+		vertex=&mesh->vertexes[sel_vertex_idx];
+		list_palette_add_header(&property_palette,0,"Selected Vertex Info");
+		list_palette_add_int(&property_palette,-1,"Index",&sel_vertex_idx,TRUE);
+		list_palette_add_point(&property_palette,-1,"Position",&vertex->pnt,TRUE);
+		list_palette_add_vector(&property_palette,-1,"Normal",&vertex->tangent_space.normal,TRUE);
+		list_palette_add_vector(&property_palette,-1,"Tangent",&vertex->tangent_space.tangent,TRUE);
+	}
+	
+	sel_poly_idx=poly_mask_get_first_sel(mesh_idx);
+	if (sel_poly_idx!=-1) {
+		poly=&mesh->polys[sel_poly_idx];
+		list_palette_add_header(&property_palette,0,"Selected Poly Info");
+		list_palette_add_int(&property_palette,-1,"Index",&sel_poly_idx,TRUE);
+		list_palette_add_int(&property_palette,-1,"Points",&poly->ptsz,TRUE);
+	}
 
 }
 
