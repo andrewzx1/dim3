@@ -365,7 +365,7 @@ extern void model_create_draw_vertexes(model_type *model,int mesh_idx,model_draw
 extern void model_create_draw_2D_vertexes(model_type *model,int mesh_idx,model_draw_setup *draw_setup,int x_offset,int y_offset,float x_resize,float y_resize);
 
 extern void model_resize_draw_vertex(model_type *model,int mesh_idx,float resize,model_draw_setup *draw_setup);
-extern void model_flip_draw_vertex(model_type *model,int mesh_idx,model_draw_setup *draw_setup);
+extern void model_flip_draw_vertex(model_type *model,int mesh_idx,model_draw_setup *draw_setup,bool flip_x,bool flip_z);
 extern void model_translate_draw_vertex(model_type *model,int mesh_idx,int x,int y,int z,model_draw_setup *draw_setup);
 
 extern void model_create_draw_normals(model_type *model,int mesh_idx,model_draw_setup *draw_setup,bool normal_only);

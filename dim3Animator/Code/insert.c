@@ -45,7 +45,8 @@ extern animator_state_type		state;
 
 void insert_model(char *file_name)
 {
-	int						n,k,t,b_off,v_off,t_off,nvertex,npoly,idx;
+	int						n,k,t,b_off,v_off,t_off,nvertex,npoly,idx,
+							parent_indexes[max_model_bone];
 	char					path[1024],path2[1024],sub_path[1024];
 	model_bone_type			*bone,*ins_bone;
 	model_mesh_type			*mesh,*ins_mesh;
@@ -54,7 +55,7 @@ void insert_model(char *file_name)
 	texture_type			*texture,*ins_texture;
 	
 		// open model
-		
+
 	model_setup(&file_path_setup,anisotropic_mode_none,mipmap_mode_none,FALSE,FALSE);
 	model_open(&ins_model,file_name,TRUE);
 	
@@ -70,8 +71,14 @@ void insert_model(char *file_name)
 		bone=&model.bones[idx];
 		
 		memmove(bone,ins_bone,sizeof(model_bone_type));
-		if (bone->parent_idx!=-1) bone->parent_idx+=b_off;
-		
+		bone->parent_dist.x=bone->parent_dist.y=bone->parent_dist.z=0.0f;
+
+			// remember the bone to fix the indexes
+
+		parent_indexes[idx]=-1;
+		if (bone->parent_idx!=-1) parent_indexes[idx]=bone->parent_idx+b_off;
+		bone->parent_idx=-1;
+	
 			// fix duplicate names
 			
 		for (k=0;k!=b_off;k++) {
@@ -79,8 +86,14 @@ void insert_model(char *file_name)
 				model_bone_create_name(&model,idx);
 			}
 		}
-		
+	
 		ins_bone++;
+	}
+
+		// fix bone parenting
+
+	for (n=b_off;n<model.nbone;n++) {
+		model.bones[n].parent_idx=parent_indexes[n];
 	}
 
 		// model mesh

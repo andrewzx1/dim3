@@ -651,7 +651,8 @@ bool model_find_bone_offset(model_draw *draw,char *pose_name,char *bone_name,d3p
 	
 		// handle any flips
 		
-	if (draw->flip_x) pnt->x=-pnt->x;
+	if (draw->flip.x) pnt->x=-pnt->x;
+	if (draw->flip.z) pnt->z=-pnt->z;
 
 	return(TRUE);
 }
@@ -679,7 +680,8 @@ bool model_get_last_draw_bone_position(model_draw *draw,int bone_idx,d3pnt *pnt)
 	
 		// handle any flips
 		
-	if (draw->flip_x) pnt->x=-pnt->x;
+	if (draw->flip.x) pnt->x=-pnt->x;
+	if (draw->flip.z) pnt->z=-pnt->z;
 
 	pnt->x+=draw->pnt.x;
 	pnt->y+=draw->pnt.y;
