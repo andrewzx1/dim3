@@ -128,10 +128,6 @@ void model_draw_setup_object(obj_type *obj)
 
 	draw->ui_lighting=FALSE;
 	draw->no_shader=FALSE;
-
-		// regular drawing in 3D space
-
-	draw->no_rot.on=FALSE;
 	
 		// no flips
 		
@@ -208,6 +204,7 @@ void model_draw_setup_weapon(obj_type *obj,weapon_type *weap,bool ignore_y_shift
 	int					swap_yadd,weap_mode,
 						move_tick,swap_tick,y_shift;
 	float				fx,fy,fz;
+	matrix_type			mat;
     model_draw			*draw;
 	model_draw_setup	*setup;
 	model_type			*mdl;
@@ -251,28 +248,53 @@ void model_draw_setup_weapon(obj_type *obj,weapon_type *weap,bool ignore_y_shift
 		swap_yadd=((weap->hand.raise_tick-move_tick)*weap->hand.select_shift)/weap->hand.raise_tick;
 	}
 
-		// move weapon in front of player
-	
-	fx=(float)weap->hand.shift.x;
-	fy=0.0f;
-	fz=(float)weap->hand.shift.z;
-	
-		// extra y shifting
-
-	y_shift=weap->hand.shift.y+obj->duck.y_move+obj->liquid.bob_y_move;
+	y_shift=obj->duck.y_move+obj->liquid.bob_y_move;
 	if (!ignore_y_shifts) y_shift+=(swap_yadd+weapon_get_bounce(obj,weap));
-		
-	fy=((float)y_shift)-fy;
-	
-		// bump smoothing
 
-	if (obj->bump.on) fy+=(float)obj->bump.smooth_offset;
-	
-		// position
+		// get weapon position in
+		// front of player
+
+	fx=(float)weap->hand.shift.x;
+	fz=(float)weap->hand.shift.z;
 		
+	fy=(float)(y_shift-weap->hand.shift.y);
+	if (obj->bump.on) fy+=(float)obj->bump.smooth_offset;
+
+	if (dual_hand) fx+=weap->dual.hand_offset;
+
+		// rotate it with the camera
+	
+	matrix_rotate_x(&mat,obj->view_ang.x);
+	matrix_vertex_multiply(&mat,&fx,&fy,&fz);
+	
+	matrix_rotate_y(&mat,angle_add(obj->ang.y,180.0f));
+	matrix_vertex_multiply(&mat,&fx,&fy,&fz);
+	
 	draw->pnt.x=(int)fx+obj->pnt.x;
-	draw->pnt.y=(int)fy+obj->pnt.y;
+	draw->pnt.y=(int)fy+(obj->pnt.y+obj->size.eye_offset);
 	draw->pnt.z=(int)fz+obj->pnt.z;
+
+		// viewing angle
+		
+	draw->setup.ang.x=weap->hand.ang.x-obj->view_ang.x;
+	draw->setup.ang.y=angle_add(obj->ang.y,weap->hand.ang.y);
+	draw->setup.ang.z=weap->hand.ang.z;
+
+	if (dual_hand) draw->setup.ang.y=360.0f-draw->setup.ang.y;
+
+		// recoil
+
+	weapon_recoil_add(obj,weap,&setup->ang);
+
+		// flips
+
+	draw->flip_x=dual_hand;
+
+		// centering
+
+	setup->center.x=draw->center.x;
+	setup->center.y=draw->center.y;
+	setup->center.z=draw->center.z;
 	
 		// don't cull held weapons
 		
@@ -283,24 +305,6 @@ void model_draw_setup_weapon(obj_type *obj,weapon_type *weap,bool ignore_y_shift
 	draw->ui_lighting=FALSE;
 	draw->no_shader=FALSE;
 
-		// weapons need rotation fixes
-		// as they are rendered without rotation in fpp
-		// we need to remember the rotation they would
-		// have been at to fix lighting problems
-		// these calcs are sort of loose, but will work
-		// good for lighting and normals
-
-	draw->no_rot.on=((map.camera.mode==cv_fpp) && (obj->idx==camera.obj_idx));
-
-	if (draw->no_rot.on) {
-		draw->no_rot.center.x=obj->pnt.x;
-		draw->no_rot.center.y=(obj->pnt.y+obj->duck.y_move+obj->liquid.bob_y_move)+obj->size.eye_offset;
-		draw->no_rot.center.z=obj->pnt.z;
-		draw->no_rot.ang.x=angle_add(weap->hand.ang.x,obj->ang.x);
-		draw->no_rot.ang.y=angle_add(angle_add(weap->hand.ang.y,obj->ang.y),180.0f);
-		draw->no_rot.ang.z=angle_add(weap->hand.ang.z,obj->ang.z);
-	}
-
 		// connection settings
 
 	draw->connect.net_sound=(obj->idx==server.player_obj_idx);
@@ -309,39 +313,6 @@ void model_draw_setup_weapon(obj_type *obj,weapon_type *weap,bool ignore_y_shift
 	draw->connect.motion_vct.z=obj->motion.vct.z;
 	
 	draw->connect.weap_in_dual=dual_hand;
-
-		// centering
-
-	setup->center.x=draw->center.x;
-	setup->center.y=draw->center.y;
-	setup->center.z=draw->center.z;
-
-		// angle plus recoil
-		// if a 2D drawing, we need to remember the 2D
-		// angle so we can use that to forge the drawing vertexes
-		
-	if (draw->no_rot.on) {
-		setup->ang.x=weap->hand.ang.x;
-		setup->ang.y=angle_add(weap->hand.ang.y,180.0f);
-		setup->ang.z=weap->hand.ang.z;
-	}
-	else {
-		setup->ang.x=angle_add(weap->hand.ang.x,obj->ang.x);
-		setup->ang.y=angle_add(angle_add(weap->hand.ang.y,obj->ang.y),180.0f);
-		setup->ang.z=angle_add(weap->hand.ang.z,obj->ang.z);
-	}
-
-	weapon_recoil_add(obj,weap,&setup->ang);
-	
-		// dual hand weapons
-		
-	if (dual_hand) {
-		draw->flip_x=TRUE;
-		draw->pnt.x+=weap->dual.hand_offset;
-	}
-	else {
-		draw->flip_x=FALSE;
-	}
 
 		// dynamic bones
 
@@ -390,10 +361,6 @@ void model_draw_setup_projectile(proj_type *proj)
 
 	draw->ui_lighting=FALSE;
 	draw->no_shader=FALSE;
-
-		// regular drawing in 3D space
-
-	draw->no_rot.on=FALSE;
 	
 		// no flips
 		
@@ -462,10 +429,6 @@ void model_draw_setup_interface_models(model_type *mdl,model_draw *draw,int x,in
 	model_draw_setup_clear(mdl,&draw->setup);
 
 	draw->on=TRUE;
-
-	draw->flip_x=FALSE;
-
-	draw->no_rot.on=FALSE;
 	
 		// don't cull interface
 		// normals as there's no
@@ -478,6 +441,7 @@ void model_draw_setup_interface_models(model_type *mdl,model_draw *draw,int x,in
 
 	draw->ui_lighting=TRUE;
 	draw->no_shader=TRUE;
+	draw->flip_x=FALSE;
 	
 	draw->light_cache.count=0;
 
@@ -527,45 +491,25 @@ void model_draw_setup_interface_models(model_type *mdl,model_draw *draw,int x,in
 void model_get_view_min_max(model_draw *draw,d3pnt *pnt,d3pnt *min,d3pnt *max)
 {
 	int					cx,cy,cz,sz;
-	float				fx,fy,fz;
-	matrix_type			mat;
 	
-		// need to move model if no rot on
-
-	memmove(pnt,&draw->pnt,sizeof(d3pnt));
-		
-	if (draw->no_rot.on) {
-		matrix_rotate_y(&mat,draw->no_rot.ang.y);
-
-		fx=(float)(pnt->x-draw->no_rot.center.x);
-		fy=(float)(pnt->y-draw->no_rot.center.y);
-		fz=(float)(pnt->z-draw->no_rot.center.z);
-		
-		matrix_vertex_multiply(&mat,&fx,&fy,&fz);
-		
-		pnt->x=((int)fx)+draw->no_rot.center.x;
-		pnt->y=((int)fy)+draw->no_rot.center.y;
-		pnt->z=((int)fz)+draw->no_rot.center.z;
-	}
-
 		// get model bounds
 
 	sz=draw->size.x>>1;
-	min->x=pnt->x-sz;
-	max->x=pnt->x+sz;
+	min->x=draw->pnt.x-sz;
+	max->x=draw->pnt.x+sz;
 
 	sz=draw->size.z>>1;
-	min->z=pnt->z-sz;
-	max->z=pnt->z+sz;
+	min->z=draw->pnt.z-sz;
+	max->z=draw->pnt.z+sz;
 
-	min->y=pnt->y-draw->size.y;
-	max->y=pnt->y;
+	min->y=draw->pnt.y-draw->size.y;
+	max->y=draw->pnt.y;
 
 		// any rotations
 
-	cx=pnt->x+draw->center.x;
-	cy=pnt->y+draw->center.y;
-	cz=pnt->z+draw->center.z;
+	cx=draw->pnt.x+draw->center.x;
+	cy=draw->pnt.y+draw->center.y;
+	cz=draw->pnt.z+draw->center.z;
 
 	rotate_point(&min->x,&min->y,&min->z,cx,cy,cz,draw->rot.x,draw->rot.y,draw->rot.z);
 	rotate_point(&max->x,&max->y,&max->z,cx,cy,cz,draw->rot.x,draw->rot.y,draw->rot.z);

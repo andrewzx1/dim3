@@ -268,12 +268,6 @@ typedef struct		{
 					} model_draw_connect;
 
 typedef struct		{
-						bool							on;
-						d3pnt							center;
-						d3ang							ang;
-					} model_draw_no_rot;
-
-typedef struct		{
 						int								size;
 						float							fade;
 						bool							on;
@@ -336,7 +330,6 @@ typedef struct		{
 						model_draw_dynamic_bone			dynamic_bones[max_model_dynamic_bone];
 						model_draw_shadow				shadow;
 						model_draw_fade					fade;
-						model_draw_no_rot				no_rot;
 						model_draw_remote_name			remote_name;
 						model_light_cache				light_cache;
 						model_texture_type				textures[max_model_texture];
