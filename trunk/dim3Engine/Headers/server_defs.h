@@ -274,10 +274,6 @@ typedef struct		{
 					} model_draw_no_rot;
 
 typedef struct		{
-						bool							x,z;
-					} model_draw_flip;
-
-typedef struct		{
 						int								size;
 						float							fade;
 						bool							on;
@@ -326,7 +322,7 @@ typedef struct		{
 						char							name[name_str_len];
 						float							alpha,resize,normal[3];
 						bool							on,player,no_culling,
-														ui_lighting,no_shader,
+														flip_x,ui_lighting,no_shader,
 														bounce,face_forward,
 														has_opaque,has_transparent,has_glow,
 														built_vertex_list;
@@ -341,7 +337,6 @@ typedef struct		{
 						model_draw_shadow				shadow;
 						model_draw_fade					fade;
 						model_draw_no_rot				no_rot;
-						model_draw_flip					flip;
 						model_draw_remote_name			remote_name;
 						model_light_cache				light_cache;
 						model_texture_type				textures[max_model_texture];

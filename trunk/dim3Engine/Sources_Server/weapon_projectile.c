@@ -197,8 +197,7 @@ bool weapon_get_projectile_position_angle_weapon_model(obj_type *obj,weapon_type
 
 	model_calc_draw_bone_position(mdl,setup,pose_idx,bone_idx,fire_pnt);
 
-	if (draw->flip.x) fire_pnt->x=-fire_pnt->x;
-	if (draw->flip.z) fire_pnt->z=-fire_pnt->z;
+	if (draw->flip_x) fire_pnt->x=-fire_pnt->x;
 	
 	fire_pnt->x+=draw->pnt.x;
 	fire_pnt->y+=draw->pnt.y;
@@ -212,7 +211,7 @@ bool weapon_get_projectile_position_angle_weapon_model(obj_type *obj,weapon_type
 	fire_ang->y=angle_add(setup->ang.y,angle_add(obj->draw.setup.ang.y,180.0f));
 	fire_ang->z=angle_add(setup->ang.z,obj->draw.setup.ang.z);
 	
-	if (draw->flip.x) fire_ang->y=angle_add(fire_ang->y,180.0f);
+	if (draw->flip_x) fire_ang->y=angle_add(fire_ang->y,180.0f);
 
 	return(TRUE);
 }
@@ -266,8 +265,7 @@ bool weapon_get_projectile_position_angle_weapon_barrel(obj_type *obj,weapon_typ
 
 	model_calc_draw_bone_position(mdl,setup,pose_idx,bone_idx,fire_pnt);
 
-	if (draw->flip.x) fire_pnt->x=-fire_pnt->x;
-	if (draw->flip.z) fire_pnt->z=-fire_pnt->z;
+	if (draw->flip_x) fire_pnt->x=-fire_pnt->x;
 
 	fire_pnt->x+=draw->pnt.x;
 	fire_pnt->y+=draw->pnt.y;
@@ -285,8 +283,7 @@ bool weapon_get_projectile_position_angle_weapon_barrel(obj_type *obj,weapon_typ
 
 	model_get_draw_bone_position(setup,bone_idx,&barrel_pnt);
 
-	if (draw->flip.x) barrel_pnt.x=-barrel_pnt.x;
-	if (draw->flip.z) barrel_pnt.z=-barrel_pnt.z;
+	if (draw->flip_x) barrel_pnt.x=-barrel_pnt.x;
 
 	barrel_pnt.x+=draw->pnt.x;
 	barrel_pnt.y+=draw->pnt.y;
