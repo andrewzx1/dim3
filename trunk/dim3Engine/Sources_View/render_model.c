@@ -73,11 +73,8 @@ inline float render_model_get_mesh_alpha(model_draw *draw,int mesh_idx)
 void render_model_create_color_vertexes(model_type *mdl,int mesh_mask,model_draw *draw)
 {
 	int				n,k;
-	float			fx,fy,fz;
 	float			*vp,*cp;
-	d3fpnt			cnt;
 	d3col			col;
-	matrix_type		mat;
 	model_mesh_type	*mesh;
 
 		// color lists for non-shader paths
@@ -138,72 +135,24 @@ void render_model_create_color_vertexes(model_type *mdl,int mesh_mask,model_draw
 
 			// vertex lighting
 
-			// if it's a no rotation model, we need
-			// to re-apply the rotation so the lighting is
-			// in the right space
-
 		vp=draw->setup.mesh_arrays[n].gl_vertex_array;
 
-		if (!draw->no_rot.on) {
-
-			for (k=0;k!=mesh->nvertex;k++) {
-				gl_lights_calc_color_light_cache_float(draw->light_cache.count,draw->light_cache.indexes,FALSE,*vp,*(vp+1),*(vp+2),cp);
-				cp+=3;
-				vp+=3;
-			}
-
+		for (k=0;k!=mesh->nvertex;k++) {
+			gl_lights_calc_color_light_cache_float(draw->light_cache.count,draw->light_cache.indexes,FALSE,*vp,*(vp+1),*(vp+2),cp);
+			cp+=3;
+			vp+=3;
 		}
-		else {
-			cnt.x=(float)draw->no_rot.center.x;
-			cnt.y=(float)draw->no_rot.center.y;
-			cnt.z=(float)draw->no_rot.center.z;
 
-			matrix_rotate_xzy(&mat,draw->no_rot.ang.x,draw->no_rot.ang.y,draw->no_rot.ang.z);
-
-			for (k=0;k!=mesh->nvertex;k++) {
-				fx=(*vp++)-cnt.x;
-				fy=(*vp++)-cnt.y;
-				fz=(*vp++)-cnt.z;
-				matrix_vertex_multiply(&mat,&fx,&fy,&fz);
-				
-				gl_lights_calc_color_light_cache_float(draw->light_cache.count,draw->light_cache.indexes,FALSE,(fx+cnt.x),(fy+cnt.y),(fz+cnt.z),cp);
-				cp+=3;
-			}
-		}
 	}
 }
 
 void render_model_create_normal_vertexes(model_type *mdl,int mesh_mask,model_draw *draw,bool shader_off)
 {
-	int				n,k,nvertex;
-	float			*tl,*nl;
-	matrix_type		mat;
+	int				n;
 
 	for (n=0;n!=mdl->nmesh;n++) {
 		if ((mesh_mask&(0x1<<n))==0) continue;
-
-			// create the normals for the pose
-
 		model_create_draw_normals(mdl,n,&draw->setup,shader_off);
-
-			// no rotate models (hand weapons)
-			// need to fix tangent space
-
-		if (draw->no_rot.on) {
-			matrix_rotate_xzy(&mat,draw->no_rot.ang.x,draw->no_rot.ang.y,draw->no_rot.ang.z);
-
-			tl=draw->setup.mesh_arrays[n].gl_tangent_array;
-			nl=draw->setup.mesh_arrays[n].gl_normal_array;
-
-			nvertex=mdl->meshes[n].nvertex;
-
-			for (k=0;k!=nvertex;k++) {
-				matrix_vertex_multiply_ignore_transform(&mat,tl,(tl+1),(tl+2));
-				matrix_vertex_multiply_ignore_transform(&mat,nl,(nl+1),(nl+2));
-				tl+=3;
-				nl+=3;
-			}
-		}
 	}
 }
 
@@ -1237,7 +1186,7 @@ void render_model_opaque(model_draw *draw)
 		
 			// debugging for normals
 		
-	//	render_model_debug_normals(mdl,n,draw);
+		render_model_debug_normals(mdl,n,draw);
 	}
 }
 

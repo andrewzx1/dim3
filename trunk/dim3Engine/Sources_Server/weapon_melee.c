@@ -168,8 +168,6 @@ bool melee_strike_position_weapon_model(obj_type *obj,weapon_type *weap,d3pnt *f
 	fire_pnt->y+=weap->draw.pnt.y+obj->duck.y_move;
 	fire_pnt->z+=weap->draw.pnt.z;
 
-	if (weap->draw.no_rot.on) gl_project_fix_rotation(fire_pnt);
-
 	return(TRUE);
 }
 
@@ -226,8 +224,6 @@ bool melee_strike_position_object_model(obj_type *obj,weapon_type *weap,d3pnt *f
 	fire_pnt->y+=obj->draw.pnt.y+obj->duck.y_move;
 	fire_pnt->z+=obj->draw.pnt.z;
 
-	if (obj->draw.no_rot.on) gl_project_fix_rotation(fire_pnt);
-
 	return(TRUE);
 }
 
@@ -276,8 +272,6 @@ bool melee_strike_position_projectile_model(obj_type *obj,weapon_type *weap,proj
 	fire_pnt->x+=proj->draw.pnt.x;
 	fire_pnt->y+=proj->draw.pnt.y;
 	fire_pnt->z+=proj->draw.pnt.z;
-
-	if (proj->draw.no_rot.on) gl_project_fix_rotation(fire_pnt);
 
 	return(TRUE);
 }

@@ -247,7 +247,19 @@ char* gl_core_map_shader_build_frag(int nlight,bool fog,bool bump,bool spec)
 		
 	if (bump) strcat(buf,"bump=clamp(bump,0.0,1.0);\n");
 
+		// make the total ambient out of
+		// ambient * bump,
+		// and make sure pixel ambient is never
+		// less than map ambient
+		
+	strcat(buf,"ambient=max(");
+	if (bump) strcat(buf,"(");
+	strcat(buf,"ambient");
+	if (bump) strcat(buf,"*bump)");
+	strcat(buf,",dim3AmbientColor);\n");
+
 		// output the fragment
+		// and add in the spec
 
 	if (!fog) {
 		strcat(buf,"gl_FragColor.rgb=");
@@ -257,9 +269,7 @@ char* gl_core_map_shader_build_frag(int nlight,bool fog,bool bump,bool spec)
 	}
 
 	if (spec) strcat(buf,"(");
-	if (bump) strcat(buf,"(");
-	strcat(buf,"(tex.rgb*ambient)");
-	if (bump) strcat(buf,"*bump)");
+	strcat(buf,"tex.rgb*ambient");
 	if (spec) strcat(buf,"+spec)");
 	strcat(buf,";\n");
 
@@ -586,7 +596,6 @@ char* gl_core_model_shader_build_frag(int nlight,bool fog,bool bump,bool spec)
 	strcat(buf,"{\n");
 	
 	strcat(buf,"float att,dist;\n");
-	strcat(buf,"float minDiffuse=(dim3AmbientColor.r+dim3AmbientColor.g+dim3AmbientColor.b)*0.33;\n");
 	strcat(buf,"vec3 ambient=dim3AmbientColor;\n");
 	
 		// the texture map
@@ -641,11 +650,17 @@ char* gl_core_model_shader_build_frag(int nlight,bool fog,bool bump,bool spec)
 		
 	if (bump) strcat(buf,"bump=clamp(bump,0.0,1.0);\n");
 		
-		// the diffuse can't be less than the ambient
+		// make the total ambient out of
+		// ambient * diffuse * bump,
+		// and make sure pixel ambient is never
+		// less than map ambient
 		
-	strcat(buf,"diffuse=max(diffuse,minDiffuse);\n");
+	strcat(buf,"ambient=max((ambient*diffuse");
+	if (bump) strcat(buf,"*bump");
+	strcat(buf,"),dim3AmbientColor);\n");
 
 		// output the fragment
+		// and add in the spec
 
 	if (!fog) {
 		strcat(buf,"gl_FragColor.rgb=");
@@ -654,10 +669,8 @@ char* gl_core_model_shader_build_frag(int nlight,bool fog,bool bump,bool spec)
 		strcat(buf,"vec3 frag=");
 	}
 
-	if (bump) strcat(buf,"(");
 	if (spec) strcat(buf,"(");
-	strcat(buf,"(tex.rgb*ambient)*diffuse");
-	if (bump) strcat(buf,")*bump");
+	strcat(buf,"tex.rgb*ambient");
 	if (spec) strcat(buf,")+spec");
 	strcat(buf,";\n");
 	

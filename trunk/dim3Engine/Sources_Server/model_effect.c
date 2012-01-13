@@ -109,8 +109,6 @@ void model_animation_effect_launch_bone_position(model_draw *draw,int animate_id
 		pnt->x+=draw->pnt.x;
 		pnt->y+=draw->pnt.y;
 		pnt->z+=draw->pnt.z;
-
-		if (draw->no_rot.on) gl_project_fix_rotation(pnt);
 	}
 }
 

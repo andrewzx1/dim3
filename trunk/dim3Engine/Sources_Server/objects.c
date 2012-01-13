@@ -227,13 +227,9 @@ void object_clear_draw(model_draw *draw)
 	draw->rot.x=draw->rot.z=draw->rot.y=0.0f;
 	draw->spin.x=draw->spin.z=draw->spin.y=0.0f;
 	draw->spin_tick=0;
-	draw->alpha=1;
-	draw->resize=1;
-	
-		// start with non-no_rot
-		// drawings
-		
-	draw->no_rot.on=FALSE;
+	draw->alpha=1.0f;
+	draw->resize=1.0f;
+	draw->flip_x=FALSE;
 
 		// dynamic bones
 

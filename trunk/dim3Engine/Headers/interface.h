@@ -798,7 +798,6 @@ extern inline void gl_project_poly(int ptsz,int *x,int *y,int *z);
 extern inline float gl_project_get_depth(int x,int y,int z);
 extern inline void gl_unproject_point(float fx,float fy,float fz,int *x,int *y,int *z);
 extern inline void gl_project_to_eye_coordinates(float *x,float *y,float *z);
-extern void gl_project_fix_rotation(d3pnt *pnt);
 
 //
 // view culling

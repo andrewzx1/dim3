@@ -438,7 +438,6 @@ void view_add_model_halo(model_draw *draw,int obj_idx)
 			pnt.z=draw->pnt.z;
 
 			model_get_halo_position(mdl,&draw->setup,n,&pnt);
-			if (draw->no_rot.on) gl_project_fix_rotation(&pnt);
 
 				// check for halo culling
 

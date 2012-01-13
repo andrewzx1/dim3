@@ -663,8 +663,6 @@ bool model_find_bone_position(model_draw *draw,char *pose_name,char *bone_name,d
 	pnt->x+=draw->pnt.x;
 	pnt->y+=draw->pnt.y;
 	pnt->z+=draw->pnt.z;
-
-	if (draw->no_rot.on) gl_project_fix_rotation(pnt);
 	
 	return(TRUE);
 }
@@ -684,10 +682,6 @@ bool model_get_last_draw_bone_position(model_draw *draw,int bone_idx,d3pnt *pnt)
 	pnt->x+=draw->pnt.x;
 	pnt->y+=draw->pnt.y;
 	pnt->z+=draw->pnt.z;
-
-		// fix rotation
-
-	if (draw->no_rot.on) gl_project_fix_rotation(pnt);
 
 	return(TRUE);
 }
