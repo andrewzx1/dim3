@@ -135,8 +135,7 @@ void model_draw_setup_object(obj_type *obj)
 	
 		// no flips
 		
-	draw->flip.x=FALSE;
-	draw->flip.z=FALSE;
+	draw->flip_x=FALSE;
 	
 		// connection settings
 
@@ -337,14 +336,12 @@ void model_draw_setup_weapon(obj_type *obj,weapon_type *weap,bool ignore_y_shift
 		// dual hand weapons
 		
 	if (dual_hand) {
-		draw->flip.x=TRUE;
+		draw->flip_x=TRUE;
 		draw->pnt.x+=weap->dual.hand_offset;
 	}
 	else {
-		draw->flip.x=FALSE;
+		draw->flip_x=FALSE;
 	}
-
-	draw->flip.z=FALSE;		// supergumba -- make true later
 
 		// dynamic bones
 
@@ -400,8 +397,7 @@ void model_draw_setup_projectile(proj_type *proj)
 	
 		// no flips
 		
-	draw->flip.x=FALSE;
-	draw->flip.z=FALSE;
+	draw->flip_x=FALSE;
 	
 		// connection settings
 		
@@ -467,8 +463,7 @@ void model_draw_setup_interface_models(model_type *mdl,model_draw *draw,int x,in
 
 	draw->on=TRUE;
 
-	draw->flip.x=FALSE;
-	draw->flip.z=FALSE;
+	draw->flip_x=FALSE;
 
 	draw->no_rot.on=FALSE;
 	

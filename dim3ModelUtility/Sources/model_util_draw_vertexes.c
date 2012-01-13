@@ -579,25 +579,17 @@ void model_resize_draw_vertex(model_type *model,int mesh_idx,float resize,model_
 	}
 }
 
-void model_flip_draw_vertex(model_type *model,int mesh_idx,model_draw_setup *draw_setup,bool flip_x,bool flip_z)
+void model_flip_draw_vertex(model_type *model,int mesh_idx,model_draw_setup *draw_setup)
 {
 	int			n,nt;
-	float		fx,fz;
 	float		*pv;
 
-	fx=1.0f;
-	if (flip_x) fx=-1.0f;
-
-	fz=1.0f;
-	if (flip_z) fz=-1.0f;
-	
 	nt=model->meshes[mesh_idx].nvertex;
 	pv=draw_setup->mesh_arrays[mesh_idx].gl_vertex_array;
 	
 	for (n=0;n!=nt;n++) {
-		*pv++=(*pv)*fx;
-		*pv++;
-		*pv++=(*pv)*fz;
+		*pv=-(*pv);
+		pv+=3;
 	}
 }
 
