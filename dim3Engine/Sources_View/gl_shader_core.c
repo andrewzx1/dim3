@@ -57,7 +57,7 @@ void gl_core_shader_build_generic_light_struct(int nlight,char *buf)
 	strcat(buf," float invertIntensity;\n");
 	strcat(buf," float exponent;\n");
 	strcat(buf," vec3 direction;\n");
-	strcat(buf," bool inLightMap;\n");
+	strcat(buf," float lightMapMask;\n");
 	strcat(buf,"};\n");
 	
 	strcat(buf,"uniform dim3LightType ");
@@ -225,7 +225,7 @@ char* gl_core_map_shader_build_frag(int nlight,bool fog,bool bump,bool spec)
 		sprintf(strchr(buf,0)," if (dot(dirNormal,dim3Light_%d.direction)>=0.0) {\n",n);
 		sprintf(strchr(buf,0),"  att=1.0-(dist*dim3Light_%d.invertIntensity);\n",n);
 		sprintf(strchr(buf,0),"  att+=pow(att,dim3Light_%d.exponent);\n",n);
-		sprintf(strchr(buf,0),"  if (!dim3Light_%d.inLightMap) ambient+=(dim3Light_%d.color*att);\n",n,n);
+		sprintf(strchr(buf,0),"  ambient+=((dim3Light_%d.color*att)*dim3Light_%d.lightMapMask);\n",n,n);
 		
 			// per-light bump calc
 			
@@ -419,7 +419,7 @@ char* gl_core_liquid_shader_build_frag(int nlight)
 		sprintf(strchr(buf,0)," if (dot(dirNormal,dim3Light_%d.direction)>=0.0) {\n",n);
 		sprintf(strchr(buf,0),"  att=1.0-(dist*dim3Light_%d.invertIntensity);\n",n);
 		sprintf(strchr(buf,0),"  att+=pow(att,dim3Light_%d.exponent);\n",n);
-		sprintf(strchr(buf,0),"  if (!dim3Light_%d.inLightMap) ambient+=(dim3Light_%d.color*att);\n",n,n);
+		sprintf(strchr(buf,0),"  ambient+=((dim3Light_%d.color*att)*dim3Light_%d.lightMapMask);\n",n,n);
 		strcat(buf," }\n");
 		strcat(buf,"}\n");
 	}

@@ -107,10 +107,6 @@ float ray_trace_triangle(d3pnt *spt,d3vct *vct,d3pnt *hpt,d3pnt *tpt_0,d3pnt *tp
 	v2.x=(float)(tpt_2->x-tpt_0->x);
 	v2.y=(float)(tpt_2->y-tpt_0->y);
 	v2.z=(float)(tpt_2->z-tpt_0->z);
-		
-		
-//	ray_trace_create_vector_from_points(&v1,tpt_1->x,tpt_1->y,tpt_1->z,tpt_0->x,tpt_0->y,tpt_0->z);
-//	ray_trace_create_vector_from_points(&v2,tpt_2->x,tpt_2->y,tpt_2->z,tpt_0->x,tpt_0->y,tpt_0->z);
 	
 		// calculate the cross product and
 		// then the inner product to get the
@@ -121,10 +117,6 @@ float ray_trace_triangle(d3pnt *spt,d3vct *vct,d3pnt *hpt,d3pnt *tpt_0,d3pnt *tp
 	perpVector.z=(vct->x*v2.y)-(v2.x*vct->y);
 
 	det=(v1.x*perpVector.x)+(v1.y*perpVector.y)+(v1.z*perpVector.z);
-
-
-//	ray_trace_vector_cross_product(&perpVector,vct,&v2);
-//	det=ray_trace_vector_inner_product(&v1,&perpVector);
 	
 		// is line on the same plane as triangle?
 		
@@ -135,7 +127,7 @@ float ray_trace_triangle(d3pnt *spt,d3vct *vct,d3pnt *hpt,d3pnt *tpt_0,d3pnt *tp
 	invDet=1.0f/det;
 
 		// calculate triangle U and test
-		// using the vectro from spt to tpt_0
+		// using the vector from spt to tpt_0
 		// and the inner product of that result and
 		// the perpVector
 		
@@ -144,9 +136,6 @@ float ray_trace_triangle(d3pnt *spt,d3vct *vct,d3pnt *hpt,d3pnt *tpt_0,d3pnt *tp
 	lineToTrigPointVector.z=(float)(spt->z-tpt_0->z);
 
 	u=invDet*((lineToTrigPointVector.x*perpVector.x)+(lineToTrigPointVector.y*perpVector.y)+(lineToTrigPointVector.z*perpVector.z));
-	
-//	ray_trace_create_vector_from_points(&lineToTrigPointVector,spt->x,spt->y,spt->z,tpt_0->x,tpt_0->y,tpt_0->z);
-//	u=invDet*ray_trace_vector_inner_product(&lineToTrigPointVector,&perpVector);
 	if ((u<0.0f) || (u>1.0f)) return(-1.0f);
 	
 		// calculate triangle V and test
@@ -158,9 +147,6 @@ float ray_trace_triangle(d3pnt *spt,d3vct *vct,d3pnt *hpt,d3pnt *tpt_0,d3pnt *tp
 	lineToTrigPerpVector.z=(lineToTrigPointVector.x*v1.y)-(v1.x*lineToTrigPointVector.y);
 	
 	v=invDet*((vct->x*lineToTrigPerpVector.x)+(vct->y*lineToTrigPerpVector.y)+(vct->z*lineToTrigPerpVector.z));
-
-//	ray_trace_vector_cross_product(&lineToTrigPerpVector,&lineToTrigPointVector,&v1);
-//	v=invDet*ray_trace_vector_inner_product(vct,&lineToTrigPerpVector);
 	if ((v<0.0f) || ((u+v)>1.0f)) return(-1.0f);
 	
 		// get line T for point(t) =  start_point + (vector*t)
@@ -168,8 +154,6 @@ float ray_trace_triangle(d3pnt *spt,d3vct *vct,d3pnt *hpt,d3pnt *tpt_0,d3pnt *tp
 		// -t are on the negative vector behind the point, so ignore
 
 	t=invDet*((v2.x*lineToTrigPerpVector.x)+(v2.y*lineToTrigPerpVector.y)+(v2.z*lineToTrigPerpVector.z));
-
-//	t=invDet*ray_trace_vector_inner_product(&v2,&lineToTrigPerpVector);
 	if (t<0.0f) return(-1.0f);
 	
 		// get point on line of intersection
@@ -182,11 +166,6 @@ float ray_trace_triangle(d3pnt *spt,d3vct *vct,d3pnt *hpt,d3pnt *tpt_0,d3pnt *tp
 		
 	return(t);
 }
-
-
-
-
-
 
 float ray_trace_mesh_polygon(d3pnt *spt,d3vct *vct,d3pnt *hpt,map_mesh_type *mesh,map_mesh_poly_type *poly)
 {
