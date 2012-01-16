@@ -369,6 +369,7 @@ extern void model_flip_draw_vertex(model_type *model,int mesh_idx,model_draw_set
 extern void model_translate_draw_vertex(model_type *model,int mesh_idx,int x,int y,int z,model_draw_setup *draw_setup);
 
 extern void model_create_draw_normals(model_type *model,int mesh_idx,model_draw_setup *draw_setup,bool normal_only);
+extern void model_flip_draw_normals(model_type *model,int mesh_idx,model_draw_setup *draw_setup,bool normal_only);
 
 extern void model_get_point_position(model_draw_setup *draw_setup,d3pnt *pnt);
 extern void model_get_draw_bone_position(model_draw_setup *draw_setup,int bone_idx,d3pnt *pnt);

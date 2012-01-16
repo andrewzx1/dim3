@@ -153,6 +153,7 @@ void render_model_create_normal_vertexes(model_type *mdl,int mesh_mask,model_dra
 	for (n=0;n!=mdl->nmesh;n++) {
 		if ((mesh_mask&(0x1<<n))==0) continue;
 		model_create_draw_normals(mdl,n,&draw->setup,shader_off);
+		if (draw->flip_x) model_flip_draw_normals(mdl,n,&draw->setup,shader_off);
 	}
 }
 
@@ -1186,7 +1187,7 @@ void render_model_opaque(model_draw *draw)
 		
 			// debugging for normals
 		
-		render_model_debug_normals(mdl,n,draw);
+	//	render_model_debug_normals(mdl,n,draw);
 	}
 }
 

@@ -1109,6 +1109,7 @@ void view_draw_lights_sounds_particles(editor_view_type *view)
 	for (n=0;n!=map.nparticle;n++) {
 		if (view_clip_point(view,&map.particles[n].pnt)) continue;
 		view_draw_sprite(&map.particles[n].pnt,NULL,particle_bitmap.gl_id);
+		if ((select_check(particle_piece,n,-1)) && (map.particles[n].light_setting.on)) view_draw_circle(&map.particles[n].pnt,&map.particles[n].light_setting.col,map.particles[n].light_setting.intensity);
 	}
 }
 
