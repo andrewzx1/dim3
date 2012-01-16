@@ -203,4 +203,32 @@ void model_create_draw_normals(model_type *model,int mesh_idx,model_draw_setup *
 	}
 }
 
+void model_flip_draw_normals(model_type *model,int mesh_idx,model_draw_setup *draw_setup,bool normal_only)
+{
+	int						n;
+	float					*pt,*pn;
+	model_mesh_type			*mesh;
+	
+	mesh=&model->meshes[mesh_idx];
+	
+		// flip normals
+
+	pn=draw_setup->mesh_arrays[mesh_idx].gl_normal_array;
+
+	for (n=0;n!=mesh->nvertex;n++) {
+		*pn=-(*pn);
+		pn+=3;
+	}
+	
+	if (normal_only) return;
+	
+		// flip tangents
+		
+	pt=draw_setup->mesh_arrays[mesh_idx].gl_tangent_array;
+	
+	for (n=0;n!=mesh->nvertex;n++) {
+		*pt=-(*pt);
+		pt+=3;
+	}
+}
 

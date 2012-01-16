@@ -988,7 +988,6 @@ bool collide_object_check_obscured(obj_type *obj)
 	return(collide_box_to_map(&obj->pnt,&box_sz,&motion,TRUE,obj->idx,FALSE,-1,FALSE,&temp_contact));
 }
 
-
 /* =======================================================
 
       Project-Map Collisions
