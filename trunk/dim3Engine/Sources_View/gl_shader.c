@@ -128,13 +128,13 @@ void gl_shader_cache_dynamic_variable_locations(shader_type *shader)
 		sprintf(var_name,"dim3Light_%d.intensity",n);
 		shader->var_locs.dim3Lights[n].intensity=glGetUniformLocationARB(shader->program_obj,var_name);
 		sprintf(var_name,"dim3Light_%d.invertIntensity",n);
-		shader->var_locs.dim3Lights[n].inv_intensity=glGetUniformLocationARB(shader->program_obj,var_name);
+		shader->var_locs.dim3Lights[n].invertIntensity=glGetUniformLocationARB(shader->program_obj,var_name);
 		sprintf(var_name,"dim3Light_%d.exponent",n);
 		shader->var_locs.dim3Lights[n].exponent=glGetUniformLocationARB(shader->program_obj,var_name);
 		sprintf(var_name,"dim3Light_%d.direction",n);
 		shader->var_locs.dim3Lights[n].direction=glGetUniformLocationARB(shader->program_obj,var_name);
-		sprintf(var_name,"dim3Light_%d.inLightMap",n);
-		shader->var_locs.dim3Lights[n].inLightMap=glGetUniformLocationARB(shader->program_obj,var_name);
+		sprintf(var_name,"dim3Light_%d.lightMapMask",n);
+		shader->var_locs.dim3Lights[n].lightMapMask=glGetUniformLocationARB(shader->program_obj,var_name);
 	}
 }
 
@@ -403,7 +403,8 @@ void gl_shader_ambient_hilite_override(shader_type *shader,bool hilite)
 
 void gl_shader_set_light_variables(shader_type *shader,int core_shader_group,bool is_core,view_light_list_type *light_list)
 {
-	int								n,k,count,in_light_map,max_light;
+	int								n,k,count,max_light;
+	float							light_map_mask;
 	view_light_spot_type			*lspot;
 	shader_cached_var_light_loc		*loc_light;
 	shader_current_var_light_value	*cur_light;
@@ -468,9 +469,9 @@ void gl_shader_set_light_variables(shader_type *shader,int core_shader_group,boo
 				glUniform1fARB(loc_light->intensity,0.0f);
 			}
 			
-			if (cur_light->inv_intensity!=0.0f) {
-				cur_light->inv_intensity=0.0f;
-				glUniform1fARB(loc_light->inv_intensity,0.0f);
+			if (cur_light->invertIntensity!=0.0f) {
+				cur_light->invertIntensity=0.0f;
+				glUniform1fARB(loc_light->invertIntensity,0.0f);
 			}
 
 			continue;
@@ -505,10 +506,10 @@ void gl_shader_set_light_variables(shader_type *shader,int core_shader_group,boo
 			}
 		}
 		
-		if (loc_light->inv_intensity!=-1) {
-			if (cur_light->inv_intensity!=lspot->f_inv_intensity) {
-				cur_light->inv_intensity=lspot->f_inv_intensity;
-				glUniform1fARB(loc_light->inv_intensity,lspot->f_inv_intensity);
+		if (loc_light->invertIntensity!=-1) {
+			if (cur_light->invertIntensity!=lspot->f_inv_intensity) {
+				cur_light->invertIntensity=lspot->f_inv_intensity;
+				glUniform1fARB(loc_light->invertIntensity,lspot->f_inv_intensity);
 			}
 		}
 
@@ -526,11 +527,11 @@ void gl_shader_set_light_variables(shader_type *shader,int core_shader_group,boo
 			}
 		}
 
-		if (loc_light->inLightMap!=-1) {
-			in_light_map=(lspot->light_map?1:0);
-			if (cur_light->light_map!=in_light_map) {
-				cur_light->light_map=in_light_map;
-				glUniform1iARB(loc_light->inLightMap,in_light_map);
+		if (loc_light->lightMapMask!=-1) {
+			light_map_mask=(lspot->light_map?1.0f:0.0f);
+			if (cur_light->lightMapMask!=light_map_mask) {
+				cur_light->lightMapMask=light_map_mask;
+				glUniform1fARB(loc_light->lightMapMask,light_map_mask);
 			}
 		}
 	}
@@ -647,9 +648,9 @@ void gl_shader_draw_scene_code_start(shader_type *shader)
 	shader->var_values.diffuse_boost=-1.0f;
 
 	for (n=0;n!=max_shader_light;n++) {
-		shader->var_values.lights[n].light_map=-1;
+		shader->var_values.lights[n].lightMapMask=-1.0f;
 		shader->var_values.lights[n].intensity=-1.0f;
-		shader->var_values.lights[n].inv_intensity=-1.0f;
+		shader->var_values.lights[n].invertIntensity=-1.0f;
 		shader->var_values.lights[n].exponent=-1.0f;
 		shader->var_values.lights[n].position.x=-1.0f;
 		shader->var_values.lights[n].position.y=-1.0f;
