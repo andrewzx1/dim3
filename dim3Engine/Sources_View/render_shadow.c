@@ -493,9 +493,8 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 	map_mesh_poly_type			*map_poly;
 	model_mesh_type				*model_mesh;
     model_poly_type				*model_poly;
-	
+
 	model_mesh=&mdl->meshes[model_mesh_idx];
-	
 	if (model_mesh->nvertex>=view_shadows_model_vertex_count) return;
 	
 		// get light
@@ -663,7 +662,9 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 
 			if (shadow_render_model_poly_bounds_check_skip(&bound_min,&bound_max,model_poly)) continue;
 
-				// triangle indexes
+				// polygon indexes
+				// supergumba -- might be faster to mass draw polygons instead of skipping out
+				// on whats that aren't hit as plane hits will get them all
 				
 			for (i=0;i!=model_poly->ptsz;i++) {
 				indexes[i]=(unsigned short)model_poly->v[i];

@@ -99,6 +99,7 @@ float ray_trace_triangle(d3pnt *spt,d3vct *vct,d3pnt *hpt,d3pnt *tpt_0,d3pnt *tp
 	d3vct				perpVector,lineToTrigPointVector,lineToTrigPerpVector,v1,v2;
 	
 		// get triangle vectors
+		// tpt_0 is inbetween tpt_1 and tpt_2
 
 	v1.x=(float)(tpt_1->x-tpt_0->x);
 	v1.y=(float)(tpt_1->y-tpt_0->y);
@@ -165,6 +166,45 @@ float ray_trace_triangle(d3pnt *spt,d3vct *vct,d3pnt *hpt,d3pnt *tpt_0,d3pnt *tp
 		// return t
 		
 	return(t);
+}
+
+void ray_trace_plane(d3pnt *spt,d3vct *vct,d3pnt *hpt,d3pnt *ppt_0,d3pnt *ppt_1,d3pnt *ppt_2)
+{
+	float			t,ka,kb,kc,kd;
+	d3fpnt			f0,f1,f2;
+
+		// get plane equation for polygon
+		// ppt_0 is inbetween ppt_1 and ppt_2
+
+	f0.x=(float)ppt_0->x;
+	f0.y=(float)ppt_0->y;
+	f0.z=(float)ppt_0->z;
+
+	f1.x=(float)ppt_1->x;
+	f1.y=(float)ppt_1->y;
+	f1.z=(float)ppt_1->z;
+
+	f2.x=(float)ppt_2->x;
+	f2.y=(float)ppt_2->y;
+	f2.z=(float)ppt_2->z;
+
+	ka=(f1.y*(f0.z-f2.z))+(f0.y*(f2.z-f1.z))+(f2.y*(f1.z-f0.z));
+	kb=(f1.z*(f0.x-f2.x))+(f0.z*(f2.x-f1.x))+(f2.z*(f1.x-f0.x));
+	kc=(f1.x*(f0.y-f2.y))+(f0.x*(f2.y-f1.y))+(f2.x*(f1.y-f0.y));
+	kd=((-f1.x)*((f0.y*f2.z)-(f2.y*f0.z)))-(f0.x*((f2.y*f1.z)-(f1.y*f2.z)))-(f2.x*((f1.y*f0.z)-(f0.y*f1.z)));
+
+		// insert the ray line equation and
+		// solve for the t
+
+	t=(-((ka*(float)spt->x)+(kb*(float)spt->y)+(kc*(float)spt->z)+kd)/((ka*vct->x)+(kb*vct->y)+(kc*vct->z)));
+
+		// get the hit point
+		// this routine always hits the plane
+		// no matter which direction the ray is
+
+	hpt->x=spt->x+(int)(vct->x*t);
+	hpt->y=spt->y+(int)(vct->y*t);
+	hpt->z=spt->z+(int)(vct->z*t);
 }
 
 float ray_trace_mesh_polygon(d3pnt *spt,d3vct *vct,d3pnt *hpt,map_mesh_type *mesh,map_mesh_poly_type *poly)
@@ -1234,12 +1274,87 @@ void ray_trace_map_by_point_array_no_contact(int cnt,d3pnt *spt,d3pnt *ept,d3pnt
       
 ======================================================= */
 
+
 bool ray_trace_mesh_poly_plane_by_vector(int cnt,d3pnt *spt,d3vct *vct,d3pnt *hpt,int mesh_idx,int poly_idx)
+{
+	int						n;
+	float					t,ka,kb,kc,kd;
+	d3pnt					*pnt,*sp,*hp;
+	d3vct					*vp;
+	d3fpnt					f0,f1,f2;
+	map_mesh_type			*mesh;
+	map_mesh_poly_type		*poly;
+	
+		// get polygon
+		
+	mesh=&map.mesh.meshes[mesh_idx];
+	poly=&mesh->polys[poly_idx];
+
+		// run the plane-ray intersection inside
+		// this function so we only setup the
+		// plane equation once
+
+		// get plane equation for polygon
+
+	pnt=&mesh->vertexes[poly->v[0]];
+	f0.x=(float)pnt->x;
+	f0.y=(float)pnt->y;
+	f0.z=(float)pnt->z;
+
+	pnt=&mesh->vertexes[poly->v[1]];
+	f1.x=(float)pnt->x;
+	f1.y=(float)pnt->y;
+	f1.z=(float)pnt->z;
+
+	pnt=&mesh->vertexes[poly->v[poly->ptsz-1]];
+	f2.x=(float)pnt->x;
+	f2.y=(float)pnt->y;
+	f2.z=(float)pnt->z;
+
+	ka=(f1.y*(f0.z-f2.z))+(f0.y*(f2.z-f1.z))+(f2.y*(f1.z-f0.z));
+	kb=(f1.z*(f0.x-f2.x))+(f0.z*(f2.x-f1.x))+(f2.z*(f1.x-f0.x));
+	kc=(f1.x*(f0.y-f2.y))+(f0.x*(f2.y-f1.y))+(f2.x*(f1.y-f0.y));
+	kd=((-f1.x)*((f0.y*f2.z)-(f2.y*f0.z)))-(f0.x*((f2.y*f1.z)-(f1.y*f2.z)))-(f2.x*((f1.y*f0.z)-(f0.y*f1.z)));
+
+		// run through the rays
+
+	sp=spt;
+	vp=vct;
+	hp=hpt;
+
+	for (n=0;n!=cnt;n++) {
+
+			// solve the ray/plane for t
+			// we always hit the plane here
+			// as we assume infinite
+
+		t=(-((ka*(float)sp->x)+(kb*(float)sp->y)+(kc*(float)sp->z)+kd)/((ka*vp->x)+(kb*vp->y)+(kc*vp->z)));
+
+			// get the hit point
+
+		hp->x=sp->x+(int)(vp->x*t);
+		hp->y=sp->y+(int)(vp->y*t);
+		hp->z=sp->z+(int)(vp->z*t);
+
+		sp++;
+		vp++;
+		hp++;
+	}
+
+	return(TRUE);		// supergumba -- don't need this any longer
+}
+
+
+
+
+	// supergumba -- old method, delete later
+bool ray_trace_mesh_poly_plane_by_vector_2(int cnt,d3pnt *spt,d3vct *vct,d3pnt *hpt,int mesh_idx,int poly_idx)
 {
 	int						n,k,trig_count;
 	float					fy;
 	bool					hits;
-	d3pnt					*pt,*pp,*sp,*hp,*tpt_0;
+	d3pnt					*pt,*pp,*sp,*hp,*tpt_0,
+							*ppt_0,*ppt_1,*ppt_2;
 	d3pnt					plane_vp[8];
 	d3vct					*vp;
 	map_mesh_type			*mesh;
@@ -1249,7 +1364,33 @@ bool ray_trace_mesh_poly_plane_by_vector(int cnt,d3pnt *spt,d3vct *vct,d3pnt *hp
 		
 	mesh=&map.mesh.meshes[mesh_idx];
 	poly=&mesh->polys[poly_idx];
-	
+
+	// supergumba, speed this up by moving the plane
+	// equation into this after we make sure it works right
+	// calling the normal plane ray intersection
+/*
+	sp=spt;
+	vp=vct;
+	hp=hpt;
+
+	ppt_0=&mesh->vertexes[poly->v[0]];
+	ppt_1=&mesh->vertexes[poly->v[1]];
+	ppt_2=&mesh->vertexes[poly->v[poly->ptsz-1]];
+
+	for (n=0;n!=cnt;n++) {
+		ray_trace_plane(sp,vp,hp,ppt_0,ppt_1,ppt_2);
+
+	//	hp->x=sp->x+vp->x;
+	//	hp->y=sp->y+vp->y;
+	//	hp->z=sp->z+vp->z;
+
+		sp++;
+		vp++;
+		hp++;
+	}
+
+	return(TRUE);
+*/
 		// special check for flat
 		// polys as this is an easy calc
 		
