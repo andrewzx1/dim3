@@ -181,13 +181,9 @@ void view_create_model_vertex_object(model_draw *draw)
 
 		glGenBuffers(1,&draw->vbo[n].shadow_vertex);
 
-			// get the shadow vertex size
+			// get the shadow vertex buffer
 
-		stride+=(3*sizeof(float));								// 3 vertexes
-		stride+=(4*sizeof(unsigned char));						// 4 colors
-
-		draw->vbo[n].shadow_vertex_stride=stride;
-		draw->vbo[n].shadow_vertex_mem_sz=(stride*vertex_cnt);
+		draw->vbo[n].shadow_vertex_mem_sz=((3*sizeof(float))*vertex_cnt);
 
 		glBindBuffer(GL_ARRAY_BUFFER,draw->vbo[n].shadow_vertex);
 		glBufferData(GL_ARRAY_BUFFER,draw->vbo[n].shadow_vertex_mem_sz,NULL,GL_DYNAMIC_DRAW);

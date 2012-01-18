@@ -1139,10 +1139,6 @@ void render_model_opaque(model_draw *draw)
 	model_type				*mdl;
 	view_light_list_type	light_list;
 	
-		// count model
-		
-	view.count.model++;
-
 		// any opaque?
 
 	if ((draw->model_idx==-1) || (!draw->on)) return;

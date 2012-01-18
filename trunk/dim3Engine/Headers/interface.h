@@ -324,6 +324,7 @@ extern bool map_stand_check_object(obj_type *obj);
 
 extern bool ray_trace_initialize(char *err_str);
 extern void ray_trace_shutdown(void);
+extern float ray_trace_mesh_polygon(d3pnt *spt,d3vct *vct,d3pnt *hpt,map_mesh_type *mesh,map_mesh_poly_type *poly);
 extern ray_trace_check_item_type* ray_trace_get_last_item_list(int *item_count);
 extern void ray_push(d3pnt *pt,d3ang *ang,int dist);
 extern void ray_push_to_end(d3pnt *pt,d3pnt *ept,int dist);
@@ -331,8 +332,7 @@ extern bool ray_trace_map_by_angle(d3pnt *spt,d3ang *ang,int dist,d3pnt *hpt,ray
 extern bool ray_trace_map_by_point(d3pnt *spt,d3pnt *ept,d3pnt *hpt,ray_trace_contact_type *contact);
 extern void ray_trace_map_by_point_array(int cnt,d3pnt *spt,d3pnt *ept,d3pnt *hpt,bool *hits,ray_trace_contact_type *base_contact,ray_trace_contact_type *contacts);
 extern void ray_trace_map_by_point_array_no_contact(int cnt,d3pnt *spt,d3pnt *ept,d3pnt *hpt,bool *hits,ray_trace_contact_type *base_contact);
-extern bool ray_trace_mesh_poly_plane_by_vector(int cnt,d3pnt *spt,d3vct *vct,d3pnt *hpt,int mesh_idx,int poly_idx);
-extern float ray_trace_mesh_polygon(d3pnt *spt,d3vct *vct,d3pnt *hpt,map_mesh_type *mesh,map_mesh_poly_type *poly);
+extern void ray_trace_mesh_poly_plane_by_vector(int cnt,d3fpnt *spt,d3vct *vct,d3fpnt *hpt,int mesh_idx,int poly_idx);
 
 //
 // effects
@@ -896,7 +896,7 @@ extern void render_map_liquid_transparent(void);
 //
 
 extern int shadow_get_light_point(model_draw *draw,d3pnt *light_pnt);
-extern void shadow_get_bound_box(d3pnt *pnt,int high,d3pnt *light_pnt,int light_intensity,d3pnt *min,d3pnt *max);
+extern bool shadow_get_volume(d3pnt *pnt,int high,d3pnt *light_pnt,int light_intensity,d3pnt *min,d3pnt *max);
 extern void shadow_render_model(model_draw *draw);
 
 //

@@ -244,7 +244,7 @@ bool view_cull_model(model_draw *draw)
 	if (draw->draw_dist>=((float)obscure_dist)) return(FALSE);
 
 		// check bounding box
-	
+		
 	model_get_view_complex_bounding_box(server.model_list.models[draw->model_idx],&draw->pnt,&draw->setup.ang,px,py,pz);
 	return(view_cull_check_complex_boundbox(px,py,pz));
 }
@@ -279,7 +279,7 @@ bool view_model_shadow(model_draw *draw)
 
 	model_get_view_complex_bounding_volume(server.model_list.models[draw->model_idx],&draw->pnt,&draw->setup.ang,&min,&max);
 	light_intensity=shadow_get_light_point(draw,&light_pnt);
-	shadow_get_bound_box(&draw->pnt,draw->size.y,&light_pnt,light_intensity,&min,&max);
+	shadow_get_volume(&draw->pnt,draw->size.y,&light_pnt,light_intensity,&min,&max);
 
 	return(view_cull_check_boundbox_2(&min,&max));
 }

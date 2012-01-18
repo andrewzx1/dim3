@@ -528,7 +528,7 @@ void gl_shader_set_light_variables(shader_type *shader,int core_shader_group,boo
 		}
 
 		if (loc_light->lightMapMask!=-1) {
-			light_map_mask=(lspot->light_map?1.0f:0.0f);
+			light_map_mask=(lspot->light_map?0.0f:1.0f);
 			if (cur_light->lightMapMask!=light_map_mask) {
 				cur_light->lightMapMask=light_map_mask;
 				glUniform1fARB(loc_light->lightMapMask,light_map_mask);

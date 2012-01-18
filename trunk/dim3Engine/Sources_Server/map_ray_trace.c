@@ -1274,13 +1274,13 @@ void ray_trace_map_by_point_array_no_contact(int cnt,d3pnt *spt,d3pnt *ept,d3pnt
       
 ======================================================= */
 
-
-bool ray_trace_mesh_poly_plane_by_vector(int cnt,d3pnt *spt,d3vct *vct,d3pnt *hpt,int mesh_idx,int poly_idx)
+void ray_trace_mesh_poly_plane_by_vector(int cnt,d3fpnt *spt,d3vct *vct,d3fpnt *hpt,int mesh_idx,int poly_idx)
 {
 	int						n;
 	float					t,ka,kb,kc,kd;
-	d3pnt					*pnt,*sp,*hp;
+	d3pnt					*pnt;
 	d3vct					*vp;
+	d3fpnt					*sp,*hp;
 	d3fpnt					f0,f1,f2;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
@@ -1328,178 +1328,19 @@ bool ray_trace_mesh_poly_plane_by_vector(int cnt,d3pnt *spt,d3vct *vct,d3pnt *hp
 			// we always hit the plane here
 			// as we assume infinite
 
-		t=(-((ka*(float)sp->x)+(kb*(float)sp->y)+(kc*(float)sp->z)+kd)/((ka*vp->x)+(kb*vp->y)+(kc*vp->z)));
+		t=(-((ka*sp->x)+(kb*sp->y)+(kc*sp->z)+kd)/((ka*vp->x)+(kb*vp->y)+(kc*vp->z)));
 
 			// get the hit point
 
-		hp->x=sp->x+(int)(vp->x*t);
-		hp->y=sp->y+(int)(vp->y*t);
-		hp->z=sp->z+(int)(vp->z*t);
+		hp->x=sp->x+(vp->x*t);
+		hp->y=sp->y+(vp->y*t);
+		hp->z=sp->z+(vp->z*t);
 
 		sp++;
 		vp++;
 		hp++;
 	}
-
-	return(TRUE);		// supergumba -- don't need this any longer
 }
 
 
-
-
-	// supergumba -- old method, delete later
-bool ray_trace_mesh_poly_plane_by_vector_2(int cnt,d3pnt *spt,d3vct *vct,d3pnt *hpt,int mesh_idx,int poly_idx)
-{
-	int						n,k,trig_count;
-	float					fy;
-	bool					hits;
-	d3pnt					*pt,*pp,*sp,*hp,*tpt_0,
-							*ppt_0,*ppt_1,*ppt_2;
-	d3pnt					plane_vp[8];
-	d3vct					*vp;
-	map_mesh_type			*mesh;
-	map_mesh_poly_type		*poly;
-	
-		// get polygon
-		
-	mesh=&map.mesh.meshes[mesh_idx];
-	poly=&mesh->polys[poly_idx];
-
-	// supergumba, speed this up by moving the plane
-	// equation into this after we make sure it works right
-	// calling the normal plane ray intersection
-/*
-	sp=spt;
-	vp=vct;
-	hp=hpt;
-
-	ppt_0=&mesh->vertexes[poly->v[0]];
-	ppt_1=&mesh->vertexes[poly->v[1]];
-	ppt_2=&mesh->vertexes[poly->v[poly->ptsz-1]];
-
-	for (n=0;n!=cnt;n++) {
-		ray_trace_plane(sp,vp,hp,ppt_0,ppt_1,ppt_2);
-
-	//	hp->x=sp->x+vp->x;
-	//	hp->y=sp->y+vp->y;
-	//	hp->z=sp->z+vp->z;
-
-		sp++;
-		vp++;
-		hp++;
-	}
-
-	return(TRUE);
-*/
-		// special check for flat
-		// polys as this is an easy calc
-		
-	sp=spt;
-	hp=hpt;
-	vp=vct;
-
-	if (poly->box.flat) {
-	
-		for (n=0;n!=cnt;n++) {
-		
-				// skip unused vertexes
-				// whose polys are culled
-				
-			if ((vp->x==0) && (vp->y==0) && (vp->z==0)) {
-				hp->x=sp->x;
-				hp->y=sp->y;
-				hp->z=sp->z;
-				sp++;
-				hp++;
-				vp++;
-				continue;
-			}
-			
-				// calc against flat surface
-			
-			fy=fabsf((float)(poly->box.mid.y-sp->y)/((float)vp->y));
-			
-			hp->x=sp->x+(int)(((float)vp->x)*fy);
-			hp->y=poly->box.mid.y;
-			hp->z=sp->z+(int)(((float)vp->z)*fy);
-			
-			sp++;
-			hp++;
-			vp++;
-		}
-	
-		return(TRUE);
-	}
-	
-		// setup the plane
-		// by enlarging the poly
-
-	pp=plane_vp;
-	
-	for (n=0;n!=poly->ptsz;n++) {
-		pt=&mesh->vertexes[poly->v[n]];
-		pp->x=((pt->x-poly->box.mid.x)*100)+poly->box.mid.x;
-		pp->y=((pt->y-poly->box.mid.y)*100)+poly->box.mid.y;
-		pp->z=((pt->z-poly->box.mid.z)*100)+poly->box.mid.z;
-		pp++;
-	}
-
-		// we split the plane into
-		// triangles, and the first triangle
-		// is always position 0, so pre-calc it
-		// here
-
-	tpt_0=&plane_vp[0];
-	
-	trig_count=poly->ptsz-2;
-	
-		// run the ray array
-		
-	hits=FALSE;
-
-	sp=spt;
-	hp=hpt;
-	vp=vct;
-
-	for (n=0;n!=cnt;n++) {
-		
-			// default ray hit
-		
-		hp->x=sp->x;
-		hp->y=sp->y;
-		hp->z=sp->z;
-		
-			// skip unused vertexes
-			// whose polys are culled
-			
-		if ((vp->x==0) && (vp->y==0) && (vp->z==0)) {
-			sp++;
-			hp++;
-			vp++;
-			continue;
-		}
-	
-			// run through all the triangles
-			// of the plane, we've already
-			// calculated point 0
-			
-		for (k=0;k<trig_count;k++) {
-			
-				// check for hit
-				// this is one plane so the first
-				// hit is always the right hit
-				
-			if (ray_trace_triangle(sp,vp,hp,tpt_0,&plane_vp[k+1],&plane_vp[k+2])!=-1.0f) {
-				hits=TRUE;
-				break;
-			}
-		}
-
-		sp++;
-		hp++;
-		vp++;
-	}
-
-	return(hits);
-}
 
