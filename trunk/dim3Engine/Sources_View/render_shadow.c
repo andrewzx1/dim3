@@ -485,6 +485,7 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 	d3vct						*vct;
 	d3pnt						bound_min,bound_max,light_pnt;
 	d3fpnt						*spt,*hpt;
+	d3fpnt						f_light_pnt;
 	map_mesh_type				*map_mesh;
 	map_mesh_poly_type			*map_poly;
 	model_mesh_type				*model_mesh;
@@ -516,20 +517,23 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 	vct=shadow_vct;
 
 	f_light_intensity=(float)light_intensity;
+	f_light_pnt.x=(float)light_pnt.x;
+	f_light_pnt.y=(float)light_pnt.y;
+	f_light_pnt.z=(float)light_pnt.z;
 
 	va=draw->setup.mesh_arrays[model_mesh_idx].gl_vertex_array;
 			
 	for (n=0;n!=model_mesh->nvertex;n++) {
 	
-		spt->x=(int)*va++;
-		spt->y=(int)*va++;
-		spt->z=(int)*va++;
+		spt->x=*va++;
+		spt->y=*va++;
+		spt->z=*va++;
 
 			// setup vector
 			
-		vct->x=(float)(spt->x-light_pnt.x);
-		vct->y=(float)(spt->y-light_pnt.y);
-		vct->z=(float)(spt->z-light_pnt.z);
+		vct->x=spt->x-f_light_pnt.x;
+		vct->y=spt->y-f_light_pnt.y;
+		vct->z=spt->z-f_light_pnt.z;
 
 		vector_normalize(vct);
 		vct->x*=f_light_intensity;

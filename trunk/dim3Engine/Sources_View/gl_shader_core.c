@@ -650,10 +650,20 @@ char* gl_core_model_shader_build_frag(int nlight,bool fog,bool bump,bool spec)
 		// ambient * diffuse * bump,
 		// and make sure pixel ambient is never
 		// less than map ambient
-		
-	strcat(buf,"ambient=clamp((ambient*diffuse");
-	if (bump) strcat(buf,"*bump");
-	strcat(buf,"),(dim3AmbientColor*0.9),vec3(1.0));\n");
+
+	strcat(buf,"diffuse=");
+	if (bump) strcat(buf,"(");
+	strcat(buf,"diffuse");
+	if (bump) strcat(buf,"*bump)");
+	strcat(buf,"+0.5;\n");
+
+	strcat(buf,"ambient=ambient*diffuse;\n");
+
+
+// supergumba
+//	strcat(buf,"ambient=clamp((ambient*diffuse");
+//	if (bump) strcat(buf,"*bump");
+//	strcat(buf,"),(dim3AmbientColor*0.9),vec3(1.0));\n");
 
 		// output the fragment
 		// and add in the spec
