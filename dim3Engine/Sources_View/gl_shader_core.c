@@ -242,6 +242,11 @@ char* gl_core_map_shader_build_frag(int nlight,bool fog,bool bump,bool spec)
 		strcat(buf," }\n");
 		strcat(buf,"}\n");
 	}
+
+		// finish the spec by making sure
+		// it's dimmed in dark areas
+		
+	if (spec) strcat(buf,"spec=min(spec,1.0)*((ambient.r+ambient.g+ambient.b)*0.33);\n");
 	
 		// make the total ambient out of
 		// ambient * bump,

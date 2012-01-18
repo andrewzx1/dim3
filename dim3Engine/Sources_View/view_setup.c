@@ -273,8 +273,13 @@ void view_setup_objects(int tick)
 		
 		model_calc_animation(&obj->draw,tick);
 		model_calc_draw_bones(&obj->draw);
+		
+			// setup model in view
+			
+		render_model_setup(&obj->draw,tick);
 
-			// detect if model or shadow is in view
+			// detect if model or shadow is culled
+			// by the view window
 			
 		flag=0x0;
 		
@@ -302,11 +307,8 @@ void view_setup_objects(int tick)
 
 		view_add_draw_list(view_render_type_object,n,obj->draw.draw_dist,flag);
 
-		view.count.model++;
-	
-			// setup model in view
-		
-		render_model_setup(&obj->draw,tick);
+		if ((flag&view_list_item_flag_model_in_view)!=0x0) view.count.model++;
+		if ((flag&view_list_item_flag_shadow_in_view)!=0x0) view.count.shadow++;
 		
 			// setup held weapon model
 			// if player
@@ -315,7 +317,7 @@ void view_setup_objects(int tick)
 			weap=weapon_find_current(obj);
 			if (weap!=NULL) {
 				model_draw_setup_weapon(obj,weap,FALSE,FALSE);
-				view.count.model++;
+				if (weap->draw.on) view.count.model++;
 			}
 		}
 	}
