@@ -276,6 +276,9 @@ bool model_read_xml(model_type *model)
 			vertex->major_bone_idx=model_read_xml_bone(model,tag,"major");
 			vertex->minor_bone_idx=model_read_xml_bone(model,tag,"minor");
 			vertex->bone_factor=xml_get_attribute_float_default(tag,"factor",1.0f);
+			
+			vector_normalize(&vertex->tangent_space.tangent);
+			vector_normalize(&vertex->tangent_space.normal);
 		
 			vertex++;
 			tag=xml_findnextchild(tag);
