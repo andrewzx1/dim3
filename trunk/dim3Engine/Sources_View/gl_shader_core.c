@@ -251,7 +251,7 @@ char* gl_core_map_shader_build_frag(int nlight,bool fog,bool bump,bool spec)
 		// make the total ambient out of
 		// ambient * bump,
 		// and make sure pixel ambient is never
-		// less than map ambient
+		// less than 10% of the map ambient
 		
 	strcat(buf,"ambient=clamp(");
 	if (bump) strcat(buf,"(");
@@ -646,24 +646,16 @@ char* gl_core_model_shader_build_frag(int nlight,bool fog,bool bump,bool spec)
 		strcat(buf,"}\n");
 	}
 	
-		// make the total ambient out of
-		// ambient * diffuse * bump,
-		// and make sure pixel ambient is never
-		// less than map ambient
+		// create the total diffuse
+		// out of (diffuse*bump)+boost
+		// and make sure it doesn't over boost
+		// to white
 
 	strcat(buf,"diffuse=");
 	if (bump) strcat(buf,"(");
 	strcat(buf,"diffuse");
 	if (bump) strcat(buf,"*bump)");
-	strcat(buf,"+0.5;\n");
-
-	strcat(buf,"ambient=ambient*diffuse;\n");
-
-
-// supergumba
-//	strcat(buf,"ambient=clamp((ambient*diffuse");
-//	if (bump) strcat(buf,"*bump");
-//	strcat(buf,"),(dim3AmbientColor*0.9),vec3(1.0));\n");
+	strcat(buf,"+dim3DiffuseBoost;\n");
 
 		// output the fragment
 		// and add in the spec
@@ -676,7 +668,7 @@ char* gl_core_model_shader_build_frag(int nlight,bool fog,bool bump,bool spec)
 	}
 
 	if (spec) strcat(buf,"(");
-	strcat(buf,"tex.rgb*ambient");
+	strcat(buf,"tex.rgb*(ambient*diffuse)");
 	if (spec) strcat(buf,")+spec");
 	strcat(buf,";\n");
 	
