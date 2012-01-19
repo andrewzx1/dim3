@@ -260,6 +260,10 @@ void view_draw_scene_render(obj_type *obj,weapon_type *weap)
 	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
 	gl_setup_project();
 
+		// reset all the texture binds
+
+	gl_texture_frame_start();
+
 		// draw background and sky
 	
 	sky_draw_background();

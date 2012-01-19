@@ -90,6 +90,15 @@ void gl_texture_shutdown(void)
       
 ======================================================= */
 
+void gl_texture_frame_start(void)
+{
+	int			n;
+
+	for (n=0;n!=4;n++) {
+		gl_texture_current_binds[n]=-1;
+	}
+}
+
 void gl_texture_bind(int unit,GLuint txt_id)
 {
 	if (gl_texture_current_binds[unit]==txt_id) return;

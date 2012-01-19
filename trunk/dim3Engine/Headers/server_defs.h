@@ -252,12 +252,9 @@ typedef struct		{
 					} model_draw_dynamic_bone;
 
 typedef struct		{
-						int								texture_idx,high,
-														px[4],pz[4];
-						float							alpha;
+						int								light_intensity;
 						bool							on;
-						d3pnt							pnt;
-						d3ang							ang;
+						d3pnt							light_pnt;
 					} model_draw_shadow;
 
 typedef struct		{

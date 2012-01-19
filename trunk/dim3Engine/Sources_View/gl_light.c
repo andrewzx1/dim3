@@ -811,11 +811,13 @@ void gl_lights_calc_color_light_cache_float(int count,int *indexes,bool skip_lig
       
 ======================================================= */
 
-int gl_light_get_averaged_shadow_light(d3pnt *pnt,d3pnt *light_pnt)
+int gl_light_get_averaged_shadow_light(d3pnt *pnt,d3pnt *size,d3pnt *light_pnt)
 {
 	int						n,hit_idx,count;
 	float					f,fx,fy,fz,f_intensity,f_tot_dist;
 	float					f_dist[max_light_spot];
+	d3pnt					spt,hpt;
+	ray_trace_contact_type	contact;
 	view_light_spot_type	*lspot;
 
 		// no lights in scene
@@ -845,6 +847,20 @@ int gl_light_get_averaged_shadow_light(d3pnt *pnt,d3pnt *light_pnt)
 
 		if (f_dist[n]>lspot->f_intensity) continue;
 		if (!gl_lights_direction_pnt_ok(pnt,lspot)) continue;
+
+			// ray trace to light
+
+		contact.obj.on=FALSE;
+		contact.proj.on=FALSE;
+		contact.origin=poly_ray_trace_origin_object;
+
+		spt.x=pnt->x;
+		spt.y=pnt->y-(size->y>>1);
+		spt.z=pnt->z;
+
+		if (ray_trace_map_by_point(&spt,&lspot->pnt,&hpt,&contact)) {
+			if (contact.poly.mesh_idx!=-1) continue;
+		}
 		
 			// added up the total distance
 			// so we can weight them later
