@@ -340,6 +340,10 @@ void view_setup_projectiles(int tick)
 		model_calc_animation(&proj->draw,tick);
 		model_calc_draw_bones(&proj->draw);
 		
+			// setup model in view
+			
+		render_model_setup(&proj->draw,tick);
+		
 			// find model and shadows in view
 			
 		flag=0x0;
@@ -362,10 +366,6 @@ void view_setup_projectiles(int tick)
 		view_add_draw_list(view_render_type_projectile,n,proj->draw.draw_dist,flag);
 
 		view.count.model++;
-		
-			// setup model in view
-			
-		render_model_setup(&proj->draw,tick);
 	}
 }
 

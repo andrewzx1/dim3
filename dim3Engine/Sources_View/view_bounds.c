@@ -251,9 +251,8 @@ bool view_cull_model(model_draw *draw)
 
 bool view_model_shadow(model_draw *draw)
 {
-	int				light_intensity,
-					obscure_dist,dist;
-	d3pnt			min,max,light_pnt;
+	int				obscure_dist,dist;
+	d3pnt			min,max;
 
 		// no model to draw
 
@@ -278,8 +277,7 @@ bool view_model_shadow(model_draw *draw)
 		// get shadow volume
 
 	model_get_view_complex_bounding_volume(server.model_list.models[draw->model_idx],&draw->pnt,&draw->setup.ang,&min,&max);
-	light_intensity=shadow_get_light_point(draw,&light_pnt);
-	shadow_get_volume(&draw->pnt,draw->size.y,&light_pnt,light_intensity,&min,&max);
+	shadow_get_volume(&draw->pnt,draw->size.y,&draw->shadow.light_pnt,draw->shadow.light_intensity,&min,&max);
 
 	return(view_cull_check_boundbox_2(&min,&max));
 }

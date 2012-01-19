@@ -1274,13 +1274,13 @@ void ray_trace_map_by_point_array_no_contact(int cnt,d3pnt *spt,d3pnt *ept,d3pnt
       
 ======================================================= */
 
-void ray_trace_mesh_poly_plane_by_vector(int cnt,d3fpnt *spt,d3vct *vct,d3fpnt *hpt,int mesh_idx,int poly_idx)
+void ray_trace_mesh_poly_plane_by_vector_to_buffer(int cnt,d3fpnt *spt,d3vct *vct,float *pf,int mesh_idx,int poly_idx)
 {
 	int						n;
 	float					t,ka,kb,kc,kd;
 	d3pnt					*pnt;
 	d3vct					*vp;
-	d3fpnt					*sp,*hp;
+	d3fpnt					*sp;
 	d3fpnt					f0,f1,f2;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
@@ -1320,7 +1320,6 @@ void ray_trace_mesh_poly_plane_by_vector(int cnt,d3fpnt *spt,d3vct *vct,d3fpnt *
 
 	sp=spt;
 	vp=vct;
-	hp=hpt;
 
 	for (n=0;n!=cnt;n++) {
 
@@ -1332,13 +1331,12 @@ void ray_trace_mesh_poly_plane_by_vector(int cnt,d3fpnt *spt,d3vct *vct,d3fpnt *
 
 			// get the hit point
 
-		hp->x=sp->x+(vp->x*t);
-		hp->y=sp->y+(vp->y*t);
-		hp->z=sp->z+(vp->z*t);
+		*pf++=sp->x+(vp->x*t);
+		*pf++=sp->y+(vp->y*t);
+		*pf++=sp->z+(vp->z*t);
 
 		sp++;
 		vp++;
-		hp++;
 	}
 }
 

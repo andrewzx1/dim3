@@ -1011,6 +1011,35 @@ void render_model_setup(model_draw *draw,int tick)
 			poly++;
 		}
 	}
+
+		// setup any shadow lights
+
+	if (!draw->shadow.on) return;
+
+		// average all the lights
+		// for the shadow projection
+
+	draw->shadow.light_intensity=gl_light_get_averaged_shadow_light(&draw->pnt,&draw->size,&draw->shadow.light_pnt);
+
+	if (draw->shadow.light_intensity!=-1) {
+
+			// adjust light if angle would be it infinite
+			
+		if ((draw->shadow.light_pnt.y>=(draw->pnt.y-(draw->size.y+view_shadows_infinite_light_shift))) && (draw->shadow.light_pnt.y<=(draw->pnt.y+view_shadows_infinite_light_shift))) {
+			draw->shadow.light_pnt.y=(draw->pnt.y-draw->size.y)-view_shadows_infinite_light_shift;
+		}
+	}
+
+		// no average light, shadows
+		// are cast down
+
+	else {
+		draw->shadow.light_intensity=18000;
+
+		draw->shadow.light_pnt.x=draw->pnt.x;
+		draw->shadow.light_pnt.y=draw->pnt.y-15000;
+		draw->shadow.light_pnt.z=draw->pnt.z;
+	}
 }
 
 void render_model_build_vertex_lists(model_draw *draw,bool always_build)

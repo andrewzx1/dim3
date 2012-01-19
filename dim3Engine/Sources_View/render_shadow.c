@@ -78,31 +78,6 @@ void shadow_shutdown(void)
 
 /* =======================================================
 
-      Shadow Light
-      
-======================================================= */
-
-int shadow_get_light_point(model_draw *draw,d3pnt *light_pnt)
-{
-	int					intensity;
-
-		// average all the lights
-		// for the shadow projection
-
-	intensity=gl_light_get_averaged_shadow_light(&draw->pnt,light_pnt);
-	if (intensity!=-1) return(intensity);
-
-		// if no light, get light directly above
-
-	light_pnt->x=draw->pnt.x;
-	light_pnt->y=draw->pnt.y-15000;
-	light_pnt->z=draw->pnt.z;
-
-	return(18000);
-}
-
-/* =======================================================
-
       Build Shadow Bound Box For Obscuring
       
 ======================================================= */
@@ -360,7 +335,7 @@ int shadow_build_poly_cross_volume_set(d3pnt *light_pnt,d3pnt *volume_min,d3pnt 
 	return(cnt);
 }
 
-int shadow_build_poly_set_model(model_type *mdl,model_draw *draw,d3pnt *light_pnt,int light_intensity)
+int shadow_build_poly_set_model(model_type *mdl,model_draw *draw)
 {
 	d3pnt			volume_min,volume_max,min,max;
 	
@@ -372,11 +347,11 @@ int shadow_build_poly_set_model(model_type *mdl,model_draw *draw,d3pnt *light_pn
 		
 	memmove(&min,&volume_min,sizeof(d3pnt));
 	memmove(&max,&volume_max,sizeof(d3pnt));
-	shadow_get_volume(&draw->pnt,draw->size.y,light_pnt,light_intensity,&min,&max);
+	shadow_get_volume(&draw->pnt,draw->size.y,&draw->shadow.light_pnt,draw->shadow.light_intensity,&min,&max);
 	
 		// get the polys that cross that volume
 		
-	return(shadow_build_poly_cross_volume_set(light_pnt,&volume_min,&volume_max,&min,&max,-1));	
+	return(shadow_build_poly_cross_volume_set(&draw->shadow.light_pnt,&volume_min,&volume_max,&min,&max,-1));	
 }
 
 /* =======================================================
@@ -476,15 +451,14 @@ void shadow_render_stencil_poly_draw(int ptsz,float *vertexes,int stencil_idx)
 void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *draw)
 {
 	int							n,k,i,map_mesh_idx,map_poly_idx,
-								map_poly_count,
-								light_intensity;
+								map_poly_count;
 	unsigned short				indexes[8];
 	float						alpha,f_light_intensity,stencil_poly_vertexes[8*3];
 	float						*pf,*va;
 	unsigned char				*vertex_ptr;
 	d3vct						*vct;
-	d3pnt						bound_min,bound_max,light_pnt;
-	d3fpnt						*spt,*hpt;
+	d3pnt						bound_min,bound_max;
+	d3fpnt						*spt;
 	d3fpnt						f_light_pnt;
 	map_mesh_type				*map_mesh;
 	map_mesh_poly_type			*map_poly;
@@ -494,19 +468,9 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 	model_mesh=&mdl->meshes[model_mesh_idx];
 	if (model_mesh->nvertex>=view_shadows_model_vertex_count) return;
 	
-		// get light
-
-	light_intensity=shadow_get_light_point(draw,&light_pnt);
-	
-		// adjust light if angle would be it infinite
-		
-	if ((light_pnt.y>=(draw->pnt.y-(draw->size.y+view_shadows_infinite_light_shift))) && (light_pnt.y<=(draw->pnt.y+view_shadows_infinite_light_shift))) {
-		light_pnt.y=(draw->pnt.y-draw->size.y)-view_shadows_infinite_light_shift;
-	}
-	
 		// find all polys the shadow ray hits
 
-	map_poly_count=shadow_build_poly_set_model(mdl,draw,&light_pnt,light_intensity);
+	map_poly_count=shadow_build_poly_set_model(mdl,draw);
 	if (map_poly_count==0) return;
 
 		// setup the rays
@@ -516,10 +480,10 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 	spt=shadow_spt;
 	vct=shadow_vct;
 
-	f_light_intensity=(float)light_intensity;
-	f_light_pnt.x=(float)light_pnt.x;
-	f_light_pnt.y=(float)light_pnt.y;
-	f_light_pnt.z=(float)light_pnt.z;
+	f_light_intensity=(float)draw->shadow.light_intensity;
+	f_light_pnt.x=(float)draw->shadow.light_pnt.x;
+	f_light_pnt.y=(float)draw->shadow.light_pnt.y;
+	f_light_pnt.z=(float)draw->shadow.light_pnt.z;
 
 	va=draw->setup.mesh_arrays[model_mesh_idx].gl_vertex_array;
 			
@@ -563,15 +527,11 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 		map_mesh_idx=shadow_poly_ptrs[n].mesh_idx;
 		map_poly_idx=shadow_poly_ptrs[n].poly_idx;
 
-			// ray trace the vertexes
-
-		ray_trace_mesh_poly_plane_by_vector(model_mesh->nvertex,shadow_spt,shadow_vct,shadow_hpt,map_mesh_idx,map_poly_idx);
+		map_mesh=&map.mesh.meshes[map_mesh_idx];
+		map_poly=&map_mesh->polys[map_poly_idx];
 				
 			// stencil in the polygon shadow is crossing
 			
-		map_mesh=&map.mesh.meshes[map_mesh_idx];
-		map_poly=&map_mesh->polys[map_poly_idx];
-		
 		shadow_render_stencil_poly_setup(map_mesh,map_poly,stencil_poly_vertexes);
 		shadow_render_stencil_poly_draw(map_poly->ptsz,stencil_poly_vertexes,1);
 
@@ -585,10 +545,12 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 			return;
 		}
 		
-			// build the vertex and color list
+			// build the vertex list
 	
 		pf=(float*)vertex_ptr;
+		ray_trace_mesh_poly_plane_by_vector_to_buffer(model_mesh->nvertex,shadow_spt,shadow_vct,pf,map_mesh_idx,map_poly_idx);
 
+/* supergumba, get rid of shadow_hpt after this works
 		hpt=shadow_hpt;
 		
 		for (k=0;k!=model_mesh->nvertex;k++) {
@@ -598,12 +560,12 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 
 			hpt++;
 		}
-		
+		*/
 		view_unmap_model_shadow_vertex_object();
 		
 			// the color
 			
-		alpha=1.0f-((float)distance_get(draw->pnt.x,draw->pnt.y,draw->pnt.z,light_pnt.x,light_pnt.y,light_pnt.z))/f_light_intensity;
+		alpha=1.0f-((float)distance_get(draw->pnt.x,draw->pnt.y,draw->pnt.z,draw->shadow.light_pnt.x,draw->shadow.light_pnt.y,draw->shadow.light_pnt.z))/f_light_intensity;
 		glColor4f(0.0f,0.0f,0.0f,alpha);
 
 			// setup arrays
@@ -636,8 +598,6 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 			if (shadow_render_model_poly_bounds_check_skip(&bound_min,&bound_max,model_poly)) continue;
 
 				// polygon indexes
-				// supergumba -- might be faster to mass draw polygons instead of skipping out
-				// on whats that aren't hit as plane hits will get them all
 				
 			for (i=0;i!=model_poly->ptsz;i++) {
 				indexes[i]=(unsigned short)model_poly->v[i];

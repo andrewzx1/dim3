@@ -113,7 +113,7 @@ and can be sold or given away.
 													"Add Scenery", \
 													"Add Node", \
 													"Add Imported Mesh", \
-													"Add Imported Mesh UV", \
+													"Replace UVs on an Existing Mesh", \
 													"Add Imported Height Map", \
 													"Add Grid", \
 													"Add Polygon", \

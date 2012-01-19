@@ -332,7 +332,7 @@ extern bool ray_trace_map_by_angle(d3pnt *spt,d3ang *ang,int dist,d3pnt *hpt,ray
 extern bool ray_trace_map_by_point(d3pnt *spt,d3pnt *ept,d3pnt *hpt,ray_trace_contact_type *contact);
 extern void ray_trace_map_by_point_array(int cnt,d3pnt *spt,d3pnt *ept,d3pnt *hpt,bool *hits,ray_trace_contact_type *base_contact,ray_trace_contact_type *contacts);
 extern void ray_trace_map_by_point_array_no_contact(int cnt,d3pnt *spt,d3pnt *ept,d3pnt *hpt,bool *hits,ray_trace_contact_type *base_contact);
-extern void ray_trace_mesh_poly_plane_by_vector(int cnt,d3fpnt *spt,d3vct *vct,d3fpnt *hpt,int mesh_idx,int poly_idx);
+extern void ray_trace_mesh_poly_plane_by_vector_to_buffer(int cnt,d3fpnt *spt,d3vct *vct,float *pf,int mesh_idx,int poly_idx);
 
 //
 // effects
@@ -636,7 +636,7 @@ extern inline bool gl_check_shader_ok(void);
 //
 
 extern void gl_lights_compile(int tick);
-extern int gl_light_get_averaged_shadow_light(d3pnt *pnt,d3pnt *light_pnt);
+extern int gl_light_get_averaged_shadow_light(d3pnt *pnt,d3pnt *size,d3pnt *light_pnt);
 extern void gl_lights_calc_ambient_color(d3col *col);
 extern void gl_lights_calc_diffuse_vector(d3pnt *pnt,int count,int *indexes,d3vct *vct);
 extern void gl_lights_calc_color(float x,float y,float z,float *cf);
@@ -825,6 +825,7 @@ extern void view_obscure_run(void);
 
 extern void gl_texture_initialize(void);
 extern void gl_texture_shutdown(void);
+extern void gl_texture_frame_start(void);
 extern inline void gl_texture_bind(int unit,GLuint txt_id);
 extern inline void gl_texture_clear(int unit);
 extern inline void gl_texture_opaque_start(void);
@@ -895,7 +896,6 @@ extern void render_map_liquid_transparent(void);
 // shadows
 //
 
-extern int shadow_get_light_point(model_draw *draw,d3pnt *light_pnt);
 extern bool shadow_get_volume(d3pnt *pnt,int high,d3pnt *light_pnt,int light_intensity,d3pnt *min,d3pnt *max);
 extern void shadow_render_model(model_draw *draw);
 
