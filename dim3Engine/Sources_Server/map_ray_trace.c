@@ -1334,7 +1334,7 @@ void ray_trace_mesh_poly_plane_by_vector_to_buffer(int cnt,d3fpnt *spt,d3vct *vc
 		*pf++=sp->x+(vp->x*t);
 		*pf++=sp->y+(vp->y*t);
 		*pf++=sp->z+(vp->z*t);
-
+		
 		sp++;
 		vp++;
 	}
