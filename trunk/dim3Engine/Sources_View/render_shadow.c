@@ -458,7 +458,7 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 	unsigned char				*vertex_ptr;
 	d3vct						*vct;
 	d3pnt						bound_min,bound_max;
-	d3fpnt						*spt;
+	d3fpnt						*spt,*hpt;
 	d3fpnt						f_light_pnt;
 	map_mesh_type				*map_mesh;
 	map_mesh_poly_type			*map_poly;
