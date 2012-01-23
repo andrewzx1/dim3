@@ -97,6 +97,34 @@ void map_prepare_mesh_poly_slope_ang(map_mesh_type *mesh,map_mesh_poly_type *pol
 	poly->slope.ang_y=angle_find(bx,bz,tx,tz);
 }
 
+void map_prepare_mesh_poly_plane(map_mesh_type *mesh,map_mesh_poly_type *poly)
+{
+	d3pnt			*pnt;
+	d3fpnt			f0,f1,f2;
+	
+		// get plane equation for polygon
+
+	pnt=&mesh->vertexes[poly->v[0]];
+	f0.x=(float)pnt->x;
+	f0.y=(float)pnt->y;
+	f0.z=(float)pnt->z;
+
+	pnt=&mesh->vertexes[poly->v[1]];
+	f1.x=(float)pnt->x;
+	f1.y=(float)pnt->y;
+	f1.z=(float)pnt->z;
+
+	pnt=&mesh->vertexes[poly->v[poly->ptsz-1]];
+	f2.x=(float)pnt->x;
+	f2.y=(float)pnt->y;
+	f2.z=(float)pnt->z;
+
+	poly->plane.ka=(f1.y*(f0.z-f2.z))+(f0.y*(f2.z-f1.z))+(f2.y*(f1.z-f0.z));
+	poly->plane.kb=(f1.z*(f0.x-f2.x))+(f0.z*(f2.x-f1.x))+(f2.z*(f1.x-f0.x));
+	poly->plane.kc=(f1.x*(f0.y-f2.y))+(f0.x*(f2.y-f1.y))+(f2.x*(f1.y-f0.y));
+	poly->plane.kd=((-f1.x)*((f0.y*f2.z)-(f2.y*f0.z)))-(f0.x*((f2.y*f1.z)-(f1.y*f2.z)))-(f2.x*((f1.y*f0.z)-(f0.y*f1.z)));
+}
+
 void map_prepare_mesh_poly(map_type *map,map_mesh_type *mesh,map_mesh_poly_type *poly)
 {
 	int				n,ptsz,y,lx,rx,lz,rz,dist;
@@ -240,6 +268,10 @@ void map_prepare_mesh_poly(map_type *map,map_mesh_type *mesh,map_mesh_poly_type 
 		if (poly->line.l_by==-1) poly->line.l_by=poly->box.max.y;
 		if (poly->line.r_by==-1) poly->line.r_by=poly->box.max.y;
 	}
+	
+		// get the plane equation for ray-plane intersections
+		
+	map_prepare_mesh_poly_plane(mesh,poly);
 }
 
 bool map_prepare_mesh_poly_bump_check_floor_hit(map_mesh_type *mesh,d3pnt *p1,d3pnt *p2)

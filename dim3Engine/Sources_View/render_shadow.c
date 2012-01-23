@@ -529,6 +529,10 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 
 		map_mesh=&map.mesh.meshes[map_mesh_idx];
 		map_poly=&map_mesh->polys[map_poly_idx];
+		
+			// ray trace the polygons
+			
+		ray_trace_mesh_poly_plane_by_vector(model_mesh->nvertex,shadow_spt,shadow_vct,shadow_hpt,map_mesh_idx,map_poly_idx);
 				
 			// stencil in the polygon shadow is crossing
 			
@@ -548,9 +552,6 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 			// build the vertex list
 	
 		pf=(float*)vertex_ptr;
-		ray_trace_mesh_poly_plane_by_vector_to_buffer(model_mesh->nvertex,shadow_spt,shadow_vct,pf,map_mesh_idx,map_poly_idx);
-
-/* supergumba, get rid of shadow_hpt after this works
 		hpt=shadow_hpt;
 		
 		for (k=0;k!=model_mesh->nvertex;k++) {
@@ -560,7 +561,7 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 
 			hpt++;
 		}
-		*/
+		
 		view_unmap_model_shadow_vertex_object();
 		
 			// the color
