@@ -225,6 +225,10 @@ typedef struct		{
 typedef struct		{
 						float								y,ang_y,move_x,move_z;
 					} map_mesh_poly_slope_type;
+					
+typedef struct		{
+						float								ka,kb,kc,kd;
+					} map_mesh_poly_plane_type;
 
 typedef struct		{
 						bool								climbable,never_cull,obscuring;
@@ -254,6 +258,7 @@ typedef struct		{
 						map_mesh_poly_box_type				box;
 						map_mesh_poly_line_type				line;
 						map_mesh_poly_slope_type			slope;
+						map_mesh_poly_plane_type			plane;
 						map_mesh_poly_flag_type				flag;
 						map_mesh_poly_draw_type				draw;
 						map_mesh_poly_vbo_type				vbo;

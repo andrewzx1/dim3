@@ -1274,52 +1274,28 @@ void ray_trace_map_by_point_array_no_contact(int cnt,d3pnt *spt,d3pnt *ept,d3pnt
       
 ======================================================= */
 
-void ray_trace_mesh_poly_plane_by_vector_to_buffer(int cnt,d3fpnt *spt,d3vct *vct,float *pf,int mesh_idx,int poly_idx)
+void ray_trace_mesh_poly_plane_by_vector(int cnt,d3fpnt *spt,d3vct *vct,d3fpnt *hpt,int mesh_idx,int poly_idx)
 {
 	int						n;
 	float					t,ka,kb,kc,kd;
-	d3pnt					*pnt;
 	d3vct					*vp;
-	d3fpnt					*sp;
-	d3fpnt					f0,f1,f2;
-	map_mesh_type			*mesh;
+	d3fpnt					*sp,*hp;
 	map_mesh_poly_type		*poly;
 	
-		// get polygon
+		// get polygon plane equation
 		
-	mesh=&map.mesh.meshes[mesh_idx];
-	poly=&mesh->polys[poly_idx];
+	poly=&map.mesh.meshes[mesh_idx].polys[poly_idx];
 
-		// run the plane-ray intersection inside
-		// this function so we only setup the
-		// plane equation once
-
-		// get plane equation for polygon
-
-	pnt=&mesh->vertexes[poly->v[0]];
-	f0.x=(float)pnt->x;
-	f0.y=(float)pnt->y;
-	f0.z=(float)pnt->z;
-
-	pnt=&mesh->vertexes[poly->v[1]];
-	f1.x=(float)pnt->x;
-	f1.y=(float)pnt->y;
-	f1.z=(float)pnt->z;
-
-	pnt=&mesh->vertexes[poly->v[poly->ptsz-1]];
-	f2.x=(float)pnt->x;
-	f2.y=(float)pnt->y;
-	f2.z=(float)pnt->z;
-
-	ka=(f1.y*(f0.z-f2.z))+(f0.y*(f2.z-f1.z))+(f2.y*(f1.z-f0.z));
-	kb=(f1.z*(f0.x-f2.x))+(f0.z*(f2.x-f1.x))+(f2.z*(f1.x-f0.x));
-	kc=(f1.x*(f0.y-f2.y))+(f0.x*(f2.y-f1.y))+(f2.x*(f1.y-f0.y));
-	kd=((-f1.x)*((f0.y*f2.z)-(f2.y*f0.z)))-(f0.x*((f2.y*f1.z)-(f1.y*f2.z)))-(f2.x*((f1.y*f0.z)-(f0.y*f1.z)));
+	ka=poly->plane.ka;
+	kb=poly->plane.kb;
+	kc=poly->plane.kc;
+	kd=poly->plane.kd;
 
 		// run through the rays
 
 	sp=spt;
 	vp=vct;
+	hp=hpt;
 
 	for (n=0;n!=cnt;n++) {
 
@@ -1331,12 +1307,13 @@ void ray_trace_mesh_poly_plane_by_vector_to_buffer(int cnt,d3fpnt *spt,d3vct *vc
 
 			// get the hit point
 
-		*pf++=sp->x+(vp->x*t);
-		*pf++=sp->y+(vp->y*t);
-		*pf++=sp->z+(vp->z*t);
+		hp->x=sp->x+(vp->x*t);
+		hp->y=sp->y+(vp->y*t);
+		hp->z=sp->z+(vp->z*t);
 		
 		sp++;
 		vp++;
+		hp++;
 	}
 }
 
