@@ -149,9 +149,11 @@ void piece_add_obj_mesh_uv(void)
     }
 		
 	if (npoly!=mesh->npoly) {
-		textdecode_close();
-		os_dialog_alert("Import Failed","The imported OBJ must have the same number of polygons as the selected mesh.");
-		return;
+		sprintf(txt,"The imported OBJ has %d polys and the selected mesh has %d polys.\nDo you want to continue?",npoly,mesh->npoly);
+		if (os_dialog_confirm("Import Warning",txt,FALSE)!=0) {
+			textdecode_close();
+			return;
+		}
     }
 	
 		// get the UVs
