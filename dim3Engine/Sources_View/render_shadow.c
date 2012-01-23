@@ -37,7 +37,6 @@ extern view_type		view;
 extern setup_type		setup;
 
 d3fpnt					*shadow_spt,*shadow_hpt;
-d3vct					*shadow_vct;
 poly_pointer_type		*shadow_poly_ptrs;
 
 /* =======================================================
@@ -56,9 +55,6 @@ bool shadow_initialize(void)
 	shadow_hpt=(d3fpnt*)malloc(sizeof(d3fpnt)*view_shadows_model_vertex_count);
 	if (shadow_hpt==NULL) return(FALSE);
 	
-	shadow_vct=(d3vct*)malloc(sizeof(d3vct)*view_shadows_model_vertex_count);
-	if (shadow_vct==NULL) return(FALSE);
-	
 		// memory for map poly ptrs
 	
 	shadow_poly_ptrs=(poly_pointer_type*)malloc(view_shadows_map_poly_count*sizeof(poly_pointer_type));
@@ -72,7 +68,6 @@ void shadow_shutdown(void)
 	free(shadow_poly_ptrs);
 
 	free(shadow_spt);
-	free(shadow_vct);
 	free(shadow_hpt);
 }
 
@@ -456,10 +451,9 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 	float						alpha,f_light_intensity,stencil_poly_vertexes[8*3];
 	float						*pf,*va;
 	unsigned char				*vertex_ptr;
-	d3vct						*vct;
+	d3vct						vct;
 	d3pnt						bound_min,bound_max;
 	d3fpnt						*spt,*hpt;
-	d3fpnt						f_light_pnt;
 	map_mesh_type				*map_mesh;
 	map_mesh_poly_type			*map_poly;
 	model_mesh_type				*model_mesh;
@@ -473,39 +467,34 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 	map_poly_count=shadow_build_poly_set_model(mdl,draw);
 	if (map_poly_count==0) return;
 
-		// setup the rays
+		// get the projection vector
+		// we make just one to speed up these
+		// calculations
+
+	f_light_intensity=(float)draw->shadow.light_intensity;
+
+	vct.x=(float)(draw->pnt.x-draw->shadow.light_pnt.x);
+	vct.y=(float)((draw->pnt.y-(draw->size.y>>1))-draw->shadow.light_pnt.y);
+	vct.z=(float)(draw->pnt.z-draw->shadow.light_pnt.z);
+	
+	vector_normalize(&vct);
+	vct.x*=f_light_intensity;
+	vct.y*=f_light_intensity;
+	vct.z*=f_light_intensity;
+
+		// setup the ray starts
 		// clip them at the light intensity
 		// distance
 
 	spt=shadow_spt;
-	vct=shadow_vct;
-
-	f_light_intensity=(float)draw->shadow.light_intensity;
-	f_light_pnt.x=(float)draw->shadow.light_pnt.x;
-	f_light_pnt.y=(float)draw->shadow.light_pnt.y;
-	f_light_pnt.z=(float)draw->shadow.light_pnt.z;
 
 	va=draw->setup.mesh_arrays[model_mesh_idx].gl_vertex_array;
 			
 	for (n=0;n!=model_mesh->nvertex;n++) {
-	
 		spt->x=*va++;
 		spt->y=*va++;
 		spt->z=*va++;
-
-			// setup vector
-			
-		vct->x=spt->x-f_light_pnt.x;
-		vct->y=spt->y-f_light_pnt.y;
-		vct->z=spt->z-f_light_pnt.z;
-
-		vector_normalize(vct);
-		vct->x*=f_light_intensity;
-		vct->y*=f_light_intensity;
-		vct->z*=f_light_intensity;
-				
 		spt++;
-		vct++;
 	}
 	
 		// start stenciling
@@ -532,7 +521,7 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 		
 			// ray trace the polygons
 			
-		ray_trace_mesh_poly_plane_by_vector(model_mesh->nvertex,shadow_spt,shadow_vct,shadow_hpt,map_mesh_idx,map_poly_idx);
+		ray_trace_mesh_poly_plane_by_vector(model_mesh->nvertex,&vct,shadow_spt,shadow_hpt,map_mesh_idx,map_poly_idx);
 				
 			// stencil in the polygon shadow is crossing
 			

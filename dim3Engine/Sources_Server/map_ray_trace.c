@@ -1274,11 +1274,10 @@ void ray_trace_map_by_point_array_no_contact(int cnt,d3pnt *spt,d3pnt *ept,d3pnt
       
 ======================================================= */
 
-void ray_trace_mesh_poly_plane_by_vector(int cnt,d3fpnt *spt,d3vct *vct,d3fpnt *hpt,int mesh_idx,int poly_idx)
+void ray_trace_mesh_poly_plane_by_vector(int cnt,d3vct *vct,d3fpnt *spt,d3fpnt *hpt,int mesh_idx,int poly_idx)
 {
 	int						n;
-	float					t,ka,kb,kc,kd;
-	d3vct					*vp;
+	float					t,ka,kb,kc,kd,denom;
 	d3fpnt					*sp,*hp;
 	map_mesh_poly_type		*poly;
 	
@@ -1291,10 +1290,15 @@ void ray_trace_mesh_poly_plane_by_vector(int cnt,d3fpnt *spt,d3vct *vct,d3fpnt *
 	kc=poly->plane.kc;
 	kd=poly->plane.kd;
 
+		// pre-calc the denominator
+		// as all vectors are the same
+
+	denom=(ka*vct->x)+(kb*vct->y)+(kc*vct->z);
+	if (denom==0.0f) denom=0.01f;
+
 		// run through the rays
 
 	sp=spt;
-	vp=vct;
 	hp=hpt;
 
 	for (n=0;n!=cnt;n++) {
@@ -1303,19 +1307,18 @@ void ray_trace_mesh_poly_plane_by_vector(int cnt,d3fpnt *spt,d3vct *vct,d3fpnt *
 			// we always hit the plane here
 			// as we assume infinite
 
-		t=(-((ka*sp->x)+(kb*sp->y)+(kc*sp->z)+kd)/((ka*vp->x)+(kb*vp->y)+(kc*vp->z)));
+			// move the negate to the hit point
+			// find instead of here
+
+		t=((ka*sp->x)+(kb*sp->y)+(kc*sp->z)+kd)/denom;
 
 			// get the hit point
 
-		hp->x=sp->x+(vp->x*t);
-		hp->y=sp->y+(vp->y*t);
-		hp->z=sp->z+(vp->z*t);
+		hp->x=sp->x-(vct->x*t);
+		hp->y=sp->y-(vct->y*t);
+		hp->z=sp->z-(vct->z*t);
 		
 		sp++;
-		vp++;
 		hp++;
 	}
 }
-
-
-
