@@ -243,6 +243,8 @@ void render_opaque_mesh_shader(void)
 			gl_lights_build_poly_light_list(mesh_idx,poly,&light_list);
 			gl_shader_draw_execute(core_shader_group_map,texture,poly->txt_idx,frame,poly->lmap_txt_idx,1.0f,&light_list,(7*sizeof(float)),(10*sizeof(float)),mesh->vbo.vertex_stride);
 
+			if ((mesh_idx==0) && (k==229)) fprintf(stdout,"cache=%d; nlight=%d\n",mesh->light_cache.count,light_list.nlight);
+
 				// fix texture if any back rendering
 
 			if (gl_back_render_get_texture(poly->camera,&gl_id,&alpha)) {

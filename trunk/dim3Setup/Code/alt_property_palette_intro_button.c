@@ -65,13 +65,13 @@ iface_intro_button_type* get_intro_button_from_item_idx(int item_idx,char *name)
 	if ((item_idx>=item_intro_button_simple_save_start) && (item_idx<(item_intro_button_simple_save_start+max_simple_save_spot))) {
 		idx=item_idx-item_intro_button_simple_save_start;
 		if (name!=NULL) sprintf(name,"Simple Save %d",idx);
-		return(&iface.intro.simple_save[idx].button_start);
+		return(&iface.intro.simple_save_list.saves[idx].button_start);
 	}
 
 	if ((item_idx>=item_intro_button_simple_save_erase) && (item_idx<(item_intro_button_simple_save_erase+max_simple_save_spot))) {
 		idx=item_idx-item_intro_button_simple_save_erase;
 		if (name!=NULL) sprintf(name,"Simple Erase %d",idx);
-		return(&iface.intro.simple_save[idx].button_erase);
+		return(&iface.intro.simple_save_list.saves[idx].button_erase);
 	}
 
 	switch (item_idx) {
@@ -134,7 +134,19 @@ iface_intro_simple_save_desc_type* get_intro_button_desc_from_item_idx(int item_
 
 	if ((item_idx>=item_intro_button_simple_save_start) && (item_idx<(item_intro_button_simple_save_start+max_simple_save_spot))) {
 		idx=item_idx-item_intro_button_simple_save_start;
-		return(&iface.intro.simple_save[idx].desc);
+		return(&iface.intro.simple_save_list.saves[idx].desc);
+	}
+
+	return(NULL);
+}
+
+iface_intro_simple_save_progress_type* get_intro_button_progress_from_item_idx(int item_idx)
+{
+	int				idx;
+
+	if ((item_idx>=item_intro_button_simple_save_start) && (item_idx<(item_intro_button_simple_save_start+max_simple_save_spot))) {
+		idx=item_idx-item_intro_button_simple_save_start;
+		return(&iface.intro.simple_save_list.saves[idx].progress);
 	}
 
 	return(NULL);
@@ -148,12 +160,14 @@ iface_intro_simple_save_desc_type* get_intro_button_desc_from_item_idx(int item_
 
 void alt_property_palette_fill_intro_button(int intro_button_idx)
 {
-	char								name[64];
-	iface_intro_button_type				*btn;
-	iface_intro_simple_save_desc_type	*desc;
+	char									name[64];
+	iface_intro_button_type					*btn;
+	iface_intro_simple_save_desc_type		*desc;
+	iface_intro_simple_save_progress_type	*progress;
 
 	btn=get_intro_button_from_item_idx(intro_button_idx,name);
 	desc=get_intro_button_desc_from_item_idx(intro_button_idx);
+	progress=get_intro_button_progress_from_item_idx(intro_button_idx);
 
 	list_palette_set_title(&alt_property_palette,"Intro Button",name,NULL,NULL,NULL,NULL);
 
@@ -184,6 +198,14 @@ void alt_property_palette_fill_intro_button(int intro_button_idx)
 		list_palette_add_int(&alt_property_palette,kButtonDescPositionX,"X",&desc->x,FALSE);
 		list_palette_add_int(&alt_property_palette,kButtonDescPositionY,"Y",&desc->y,FALSE);
 		list_palette_add_int(&alt_property_palette,kButtonDescTextSize,"Text Size",&desc->text_size,FALSE);
+	}
+
+		// progress
+
+	if (progress!=NULL) {
+		list_palette_add_header(&alt_property_palette,0,"Save Progress");
+		list_palette_add_int(&alt_property_palette,kButtonProgressPositionX,"X",&progress->x,FALSE);
+		list_palette_add_int(&alt_property_palette,kButtonProgressPositionY,"Y",&progress->y,FALSE);
 	}
 }
 

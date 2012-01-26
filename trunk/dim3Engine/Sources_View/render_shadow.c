@@ -36,6 +36,7 @@ extern server_type		server;
 extern view_type		view;
 extern setup_type		setup;
 
+bool					*shadow_hits;
 d3fpnt					*shadow_spt,*shadow_hpt;
 poly_pointer_type		*shadow_poly_ptrs;
 
@@ -48,7 +49,10 @@ poly_pointer_type		*shadow_poly_ptrs;
 bool shadow_initialize(void)
 {
 		// memory for ray tracing lists
-		
+	
+	shadow_hits=(bool*)malloc(sizeof(bool)*view_shadows_model_vertex_count);
+	if (shadow_hits==NULL) return(FALSE);
+	
 	shadow_spt=(d3fpnt*)malloc(sizeof(d3fpnt)*view_shadows_model_vertex_count);
 	if (shadow_spt==NULL) return(FALSE);
 	
@@ -65,10 +69,11 @@ bool shadow_initialize(void)
 
 void shadow_shutdown(void)
 {
-	free(shadow_poly_ptrs);
-
+	free(shadow_hits);
 	free(shadow_spt);
 	free(shadow_hpt);
+
+	free(shadow_poly_ptrs);
 }
 
 /* =======================================================
@@ -445,12 +450,13 @@ void shadow_render_stencil_poly_draw(int ptsz,float *vertexes,int stencil_idx)
 
 void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *draw)
 {
-	int							n,k,i,map_mesh_idx,map_poly_idx,
+	int							n,k,i,idx,map_mesh_idx,map_poly_idx,
 								map_poly_count;
 	unsigned short				indexes[8];
 	float						alpha,f_light_intensity,stencil_poly_vertexes[8*3];
 	float						*pf,*va;
 	unsigned char				*vertex_ptr;
+	bool						skip;
 	d3vct						vct;
 	d3pnt						bound_min,bound_max;
 	d3fpnt						*spt,*hpt;
@@ -521,7 +527,7 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 		
 			// ray trace the polygons
 			
-		ray_trace_mesh_poly_plane_by_vector(model_mesh->nvertex,&vct,shadow_spt,shadow_hpt,map_mesh_idx,map_poly_idx);
+		ray_trace_mesh_poly_plane_by_vector(model_mesh->nvertex,&vct,shadow_spt,shadow_hpt,shadow_hits,map_mesh_idx,map_poly_idx);
 				
 			// stencil in the polygon shadow is crossing
 			
@@ -588,10 +594,21 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 			if (shadow_render_model_poly_bounds_check_skip(&bound_min,&bound_max,model_poly)) continue;
 
 				// polygon indexes
+				// skip any poly that didn't hit on the ray
+			
+			skip=FALSE;
 				
 			for (i=0;i!=model_poly->ptsz;i++) {
-				indexes[i]=(unsigned short)model_poly->v[i];
+				idx=model_poly->v[i];
+				if (!shadow_hits[idx]) {
+					skip=TRUE;
+					break;
+				}
+
+				indexes[i]=(unsigned short)idx;
 			}
+
+			if (skip) continue;
 
 			glDrawElements(GL_TRIANGLE_FAN,model_poly->ptsz,GL_UNSIGNED_SHORT,(GLvoid*)indexes);
 

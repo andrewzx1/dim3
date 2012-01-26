@@ -59,7 +59,7 @@ and can be sold or given away.
 
 #define max_sort_poly										2048			// maximum number of transparent polys in a single scene
 
-#define max_map_light_cache_index							8
+#define max_map_light_cache_index							32
 
 #define max_editor_view										8
 
