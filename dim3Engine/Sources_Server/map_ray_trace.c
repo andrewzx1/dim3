@@ -1274,10 +1274,11 @@ void ray_trace_map_by_point_array_no_contact(int cnt,d3pnt *spt,d3pnt *ept,d3pnt
       
 ======================================================= */
 
-void ray_trace_mesh_poly_plane_by_vector(int cnt,d3vct *vct,d3fpnt *spt,d3fpnt *hpt,int mesh_idx,int poly_idx)
+void ray_trace_mesh_poly_plane_by_vector(int cnt,d3vct *vct,d3fpnt *spt,d3fpnt *hpt,bool *hits,int mesh_idx,int poly_idx)
 {
 	int						n;
 	float					t,ka,kb,kc,kd,denom;
+	bool					*hit;
 	d3fpnt					*sp,*hp;
 	map_mesh_poly_type		*poly;
 	
@@ -1301,6 +1302,8 @@ void ray_trace_mesh_poly_plane_by_vector(int cnt,d3vct *vct,d3fpnt *spt,d3fpnt *
 	sp=spt;
 	hp=hpt;
 
+	hit=hits;
+
 	for (n=0;n!=cnt;n++) {
 
 			// solve the ray/plane for t
@@ -1317,6 +1320,8 @@ void ray_trace_mesh_poly_plane_by_vector(int cnt,d3vct *vct,d3fpnt *spt,d3fpnt *
 		hp->x=sp->x-(vct->x*t);
 		hp->y=sp->y-(vct->y*t);
 		hp->z=sp->z-(vct->z*t);
+
+		*hit++=((t>=1.0f) && (t<=0.0f));
 		
 		sp++;
 		hp++;

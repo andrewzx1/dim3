@@ -239,10 +239,10 @@ void intro_open_add_button(iface_intro_button_type *btn,char *name,int id)
 
 void intro_open(void)
 {
-	int						n,x,y;
-	bool					start_music;
-	char					name[256],err_str[256];
-	iface_intro_model_type	*intro_model;
+	int							n,x,y;
+	bool						start_music;
+	char						name[256],err_str[256];
+	iface_intro_model_type		*intro_model;
 
 		// intro UI
 		
@@ -277,11 +277,11 @@ void intro_open(void)
 	
 	for (n=0;n!=max_simple_save_spot;n++) {
 		sprintf(name,"button_simple_start_%d",n);
-		intro_open_add_button(&iface.intro.simple_save[n].button_start,name,(intro_simple_save_button_start+n));
+		intro_open_add_button(&iface.intro.simple_save_list.saves[n].button_start,name,(intro_simple_save_button_start+n));
 		sprintf(name,"button_simple_erase_%d",n);
-		intro_open_add_button(&iface.intro.simple_save[n].button_erase,name,(intro_simple_save_button_erase+n));
+		intro_open_add_button(&iface.intro.simple_save_list.saves[n].button_erase,name,(intro_simple_save_button_erase+n));
 
-		if (iface.intro.simple_save[n].button_start.on) element_text_add("",(intro_simple_save_text_desc+n),iface.intro.simple_save[n].desc.x,iface.intro.simple_save[n].desc.y,iface.intro.simple_save[n].desc.text_size,tx_center,FALSE,FALSE);
+		if (iface.intro.simple_save_list.saves[n].button_start.on) element_text_add("",(intro_simple_save_text_desc+n),iface.intro.simple_save_list.saves[n].desc.x,iface.intro.simple_save_list.saves[n].desc.y,iface.intro.simple_save_list.saves[n].desc.text_size,tx_center,FALSE,FALSE);
 	}
 	
 		// simple save options

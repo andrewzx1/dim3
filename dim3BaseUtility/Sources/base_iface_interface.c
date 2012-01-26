@@ -470,7 +470,7 @@ void iface_read_settings_menu(iface_type *iface,int menu_tag)
       
 ======================================================= */
 
-void iface_read_settings_intro_button(int tag,iface_intro_button_type *btn,iface_intro_simple_save_desc_type *desc)
+void iface_read_settings_intro_button(int tag,iface_intro_button_type *btn,iface_intro_simple_save_desc_type *desc,iface_intro_simple_save_progress_type *progress)
 {
 	if (tag==-1) return;
 	
@@ -487,6 +487,11 @@ void iface_read_settings_intro_button(int tag,iface_intro_button_type *btn,iface
 		desc->x=xml_get_attribute_int(tag,"desc_x");
 		desc->y=xml_get_attribute_int(tag,"desc_y");
 		desc->text_size=xml_get_attribute_int_default(tag,"desc_text_size",20);
+	}
+
+	if (progress!=NULL) {
+		progress->x=xml_get_attribute_int(tag,"progress_x");
+		progress->y=xml_get_attribute_int(tag,"progress_y");
 	}
 }
 
@@ -561,7 +566,7 @@ void iface_read_settings_interface(iface_type *iface)
 {
 	int							n,interface_head_tag,scale_tag,
 								bitmap_head_tag,bitmap_tag,text_head_tag,text_tag,bar_head_tag,bar_tag,
-								virtual_head_tag,radar_head_tag,menu_head_tag,menu_tag,title_tag,
+								virtual_head_tag,radar_head_tag,menu_head_tag,menu_tag,title_tag,simple_save_tag,
 								intro_head_tag,intro_model_head_tag,intro_model_tag,intro_confirm_tag,
 								color_tag,font_tag,progress_tag,chat_tag,fade_tag,button_tag,sound_tag,
 								proj_tag,setup_tag;
@@ -787,28 +792,40 @@ void iface_read_settings_interface(iface_type *iface)
 			}
 		}
 
+			// simple save settings
+
+		simple_save_tag=xml_findfirstchild("Simple_Save",intro_head_tag);
+		if (simple_save_tag!=-1) {
+			iface->intro.simple_save_list.progress.max=xml_get_attribute_int(simple_save_tag,"progress_max");
+			iface->intro.simple_save_list.progress.x_add=xml_get_attribute_int(simple_save_tag,"progress_x_add");
+			iface->intro.simple_save_list.progress.y_add=xml_get_attribute_int(simple_save_tag,"progress_y_add");
+			iface->intro.simple_save_list.progress.wid=xml_get_attribute_int(simple_save_tag,"progress_wid");
+			iface->intro.simple_save_list.progress.high=xml_get_attribute_int(simple_save_tag,"progress_high");
+			xml_get_attribute_text(simple_save_tag,"progress_bitmap_name",iface->intro.simple_save_list.progress.bitmap_name,name_str_len);
+		}
+
 			// buttons
 			
 		button_tag=xml_findfirstchild("Buttons",intro_head_tag);
 		if (button_tag!=-1) {
-			iface_read_settings_intro_button(xml_findfirstchild("Game_New",button_tag),&iface->intro.button_game_new,NULL);
-			iface_read_settings_intro_button(xml_findfirstchild("Game_Load",button_tag),&iface->intro.button_game_load,NULL);
-			iface_read_settings_intro_button(xml_findfirstchild("Game_Setup",button_tag),&iface->intro.button_game_setup,NULL);
-			iface_read_settings_intro_button(xml_findfirstchild("Game_New_Easy",button_tag),&iface->intro.button_game_new_easy,NULL);
-			iface_read_settings_intro_button(xml_findfirstchild("Game_New_Medium",button_tag),&iface->intro.button_game_new_medium,NULL);
-			iface_read_settings_intro_button(xml_findfirstchild("Game_New_Hard",button_tag),&iface->intro.button_game_new_hard,NULL);
-			iface_read_settings_intro_button(xml_findfirstchild("Game_New_Cancel",button_tag),&iface->intro.button_game_new_cancel,NULL);
-			iface_read_settings_intro_button(xml_findfirstchild("Multiplayer_Host",button_tag),&iface->intro.button_multiplayer_host,NULL);
-			iface_read_settings_intro_button(xml_findfirstchild("Multiplayer_Join",button_tag),&iface->intro.button_multiplayer_join,NULL);
-			iface_read_settings_intro_button(xml_findfirstchild("Multiplayer_Setup",button_tag),&iface->intro.button_multiplayer_setup,NULL);
-			iface_read_settings_intro_button(xml_findfirstchild("Credit",button_tag),&iface->intro.button_credit,NULL);
-			iface_read_settings_intro_button(xml_findfirstchild("Quit",button_tag),&iface->intro.button_quit,NULL);
+			iface_read_settings_intro_button(xml_findfirstchild("Game_New",button_tag),&iface->intro.button_game_new,NULL,NULL);
+			iface_read_settings_intro_button(xml_findfirstchild("Game_Load",button_tag),&iface->intro.button_game_load,NULL,NULL);
+			iface_read_settings_intro_button(xml_findfirstchild("Game_Setup",button_tag),&iface->intro.button_game_setup,NULL,NULL);
+			iface_read_settings_intro_button(xml_findfirstchild("Game_New_Easy",button_tag),&iface->intro.button_game_new_easy,NULL,NULL);
+			iface_read_settings_intro_button(xml_findfirstchild("Game_New_Medium",button_tag),&iface->intro.button_game_new_medium,NULL,NULL);
+			iface_read_settings_intro_button(xml_findfirstchild("Game_New_Hard",button_tag),&iface->intro.button_game_new_hard,NULL,NULL);
+			iface_read_settings_intro_button(xml_findfirstchild("Game_New_Cancel",button_tag),&iface->intro.button_game_new_cancel,NULL,NULL);
+			iface_read_settings_intro_button(xml_findfirstchild("Multiplayer_Host",button_tag),&iface->intro.button_multiplayer_host,NULL,NULL);
+			iface_read_settings_intro_button(xml_findfirstchild("Multiplayer_Join",button_tag),&iface->intro.button_multiplayer_join,NULL,NULL);
+			iface_read_settings_intro_button(xml_findfirstchild("Multiplayer_Setup",button_tag),&iface->intro.button_multiplayer_setup,NULL,NULL);
+			iface_read_settings_intro_button(xml_findfirstchild("Credit",button_tag),&iface->intro.button_credit,NULL,NULL);
+			iface_read_settings_intro_button(xml_findfirstchild("Quit",button_tag),&iface->intro.button_quit,NULL,NULL);
 			
 			for (n=0;n!=max_simple_save_spot;n++) {
 				sprintf(name,"Simple_Start_%d",n);
-				iface_read_settings_intro_button(xml_findfirstchild(name,button_tag),&iface->intro.simple_save[n].button_start,&iface->intro.simple_save[n].desc);
+				iface_read_settings_intro_button(xml_findfirstchild(name,button_tag),&iface->intro.simple_save_list.saves[n].button_start,&iface->intro.simple_save_list.saves[n].desc,&iface->intro.simple_save_list.saves[n].progress);
 				sprintf(name,"Simple_Erase_%d",n);
-				iface_read_settings_intro_button(xml_findfirstchild(name,button_tag),&iface->intro.simple_save[n].button_erase,NULL);
+				iface_read_settings_intro_button(xml_findfirstchild(name,button_tag),&iface->intro.simple_save_list.saves[n].button_erase,NULL,NULL);
 			}
 		}
 		
@@ -928,7 +945,7 @@ void iface_refresh_settings_interface_hud_only(iface_type *iface)
       
 ======================================================= */
 
-void iface_write_settings_interface_intro_button(char *name,iface_intro_button_type *btn,iface_intro_simple_save_desc_type *desc)
+void iface_write_settings_interface_intro_button(char *name,iface_intro_button_type *btn,iface_intro_simple_save_desc_type *desc,iface_intro_simple_save_progress_type *progress)
 {
 	xml_add_tagstart(name);
 	
@@ -945,6 +962,11 @@ void iface_write_settings_interface_intro_button(char *name,iface_intro_button_t
 		xml_add_attribute_int("desc_x",desc->x);
 		xml_add_attribute_int("desc_y",desc->y);
 		xml_add_attribute_int("desc_text_size",desc->text_size);
+	}
+
+	if (progress!=NULL) {
+		xml_add_attribute_int("progress_x",progress->x);
+		xml_add_attribute_int("progress_y",progress->y);
 	}
 
 	xml_add_tagend(TRUE);
@@ -1409,29 +1431,40 @@ bool iface_write_settings_interface(iface_type *iface,char *err_str)
 
 	xml_add_tagclose("Models");
 
+		// simple save
+
+	xml_add_tagstart("Simple_Save");
+	xml_add_attribute_int("progress_max",iface->intro.simple_save_list.progress.max);
+	xml_add_attribute_int("progress_x_add",iface->intro.simple_save_list.progress.x_add);
+	xml_add_attribute_int("progress_y_add",iface->intro.simple_save_list.progress.y_add);
+	xml_add_attribute_int("progress_wid",iface->intro.simple_save_list.progress.wid);
+	xml_add_attribute_int("progress_high",iface->intro.simple_save_list.progress.high);
+	xml_add_attribute_text("progress_bitmap_name",iface->intro.simple_save_list.progress.bitmap_name);
+	xml_add_tagend(TRUE);
+
 		// intro buttons
 
 	xml_add_tagstart("Buttons");
 	xml_add_tagend(FALSE);
 
-	iface_write_settings_interface_intro_button("Game_New",&iface->intro.button_game_new,NULL);
-	iface_write_settings_interface_intro_button("Game_Load",&iface->intro.button_game_load,NULL);
-	iface_write_settings_interface_intro_button("Game_Setup",&iface->intro.button_game_setup,NULL);
-	iface_write_settings_interface_intro_button("Game_New_Easy",&iface->intro.button_game_new_easy,NULL);
-	iface_write_settings_interface_intro_button("Game_New_Medium",&iface->intro.button_game_new_medium,NULL);
-	iface_write_settings_interface_intro_button("Game_New_Hard",&iface->intro.button_game_new_hard,NULL);
-	iface_write_settings_interface_intro_button("Game_New_Cancel",&iface->intro.button_game_new_cancel,NULL);
-	iface_write_settings_interface_intro_button("Multiplayer_Host",&iface->intro.button_multiplayer_host,NULL);
-	iface_write_settings_interface_intro_button("Multiplayer_Join",&iface->intro.button_multiplayer_join,NULL);
-	iface_write_settings_interface_intro_button("Multiplayer_Setup",&iface->intro.button_multiplayer_setup,NULL);
-	iface_write_settings_interface_intro_button("Credit",&iface->intro.button_credit,NULL);
-	iface_write_settings_interface_intro_button("Quit",&iface->intro.button_quit,NULL);
+	iface_write_settings_interface_intro_button("Game_New",&iface->intro.button_game_new,NULL,NULL);
+	iface_write_settings_interface_intro_button("Game_Load",&iface->intro.button_game_load,NULL,NULL);
+	iface_write_settings_interface_intro_button("Game_Setup",&iface->intro.button_game_setup,NULL,NULL);
+	iface_write_settings_interface_intro_button("Game_New_Easy",&iface->intro.button_game_new_easy,NULL,NULL);
+	iface_write_settings_interface_intro_button("Game_New_Medium",&iface->intro.button_game_new_medium,NULL,NULL);
+	iface_write_settings_interface_intro_button("Game_New_Hard",&iface->intro.button_game_new_hard,NULL,NULL);
+	iface_write_settings_interface_intro_button("Game_New_Cancel",&iface->intro.button_game_new_cancel,NULL,NULL);
+	iface_write_settings_interface_intro_button("Multiplayer_Host",&iface->intro.button_multiplayer_host,NULL,NULL);
+	iface_write_settings_interface_intro_button("Multiplayer_Join",&iface->intro.button_multiplayer_join,NULL,NULL);
+	iface_write_settings_interface_intro_button("Multiplayer_Setup",&iface->intro.button_multiplayer_setup,NULL,NULL);
+	iface_write_settings_interface_intro_button("Credit",&iface->intro.button_credit,NULL,NULL);
+	iface_write_settings_interface_intro_button("Quit",&iface->intro.button_quit,NULL,NULL);
 	
 	for (n=0;n!=max_simple_save_spot;n++) {
 		sprintf(name,"Simple_Start_%d",n);
-		iface_write_settings_interface_intro_button(name,&iface->intro.simple_save[n].button_start,&iface->intro.simple_save[n].desc);
+		iface_write_settings_interface_intro_button(name,&iface->intro.simple_save_list.saves[n].button_start,&iface->intro.simple_save_list.saves[n].desc,&iface->intro.simple_save_list.saves[n].progress);
 		sprintf(name,"Simple_Erase_%d",n);
-		iface_write_settings_interface_intro_button(name,&iface->intro.simple_save[n].button_erase,NULL);
+		iface_write_settings_interface_intro_button(name,&iface->intro.simple_save_list.saves[n].button_erase,NULL,NULL);
 	}
 
 	xml_add_tagclose("Buttons");

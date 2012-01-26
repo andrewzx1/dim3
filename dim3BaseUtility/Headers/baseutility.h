@@ -848,9 +848,25 @@ typedef struct		{
 					} iface_intro_simple_save_desc_type;
 
 typedef struct		{
-						iface_intro_button_type				button_start,button_erase;
-						iface_intro_simple_save_desc_type	desc;
+						int								x,y,x_add,y_add,
+														wid,high;
+					} iface_intro_simple_save_progress_type;
+
+typedef struct		{
+						iface_intro_button_type							button_start,button_erase;
+						iface_intro_simple_save_desc_type				desc;
+						iface_intro_simple_save_progress_type			progress;
 					} iface_intro_simple_save_type;
+
+typedef struct		{
+						int												max,x_add,y_add,wid,high;
+						char											bitmap_name[name_str_len];
+					} iface_intro_simple_save_progress_setting_type;
+
+typedef struct		{
+						iface_intro_simple_save_progress_setting_type	progress;
+						iface_intro_simple_save_type					saves[max_simple_save_spot];
+					} iface_intro_simple_save_list;
 
 typedef struct		{
 						int								x,y;
@@ -880,8 +896,8 @@ typedef struct		{
 														button_game_new_easy,button_game_new_medium,button_game_new_hard,button_game_new_cancel,
 														button_multiplayer_host,button_multiplayer_join,button_multiplayer_setup,
 														button_credit,button_quit;
-						iface_intro_simple_save_type	simple_save[max_simple_save_spot];
 						iface_intro_confirm_type		confirm;
+						iface_intro_simple_save_list	simple_save_list;
 						iface_intro_model_list			model_list;
 					} iface_intro_type;
 
