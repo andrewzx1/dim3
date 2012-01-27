@@ -186,6 +186,19 @@ bool shadow_get_volume(d3pnt *pnt,int high,d3pnt *light_pnt,int light_intensity,
 	base_contact.origin=poly_ray_trace_origin_object;
 
 	ray_trace_map_by_point_array_no_contact(8,spt,ept,hpt,hits,&base_contact);
+
+		// testing -- projection debug
+/*
+	glLineWidth(1.0f);
+
+	glColor4f(1.0f,0.0f,0.0f,1.0f);
+	glBegin(GL_LINES);
+	for (n=0;n!=8;n++) {
+		glVertex3i(spt[n].x,spt[n].y,spt[n].z);
+		glVertex3i(ept[n].x,ept[n].y,ept[n].z);
+	}
+	glEnd();
+*/
 	
 		// if the light intensity is high, then
 		// we need to clip no hits back to the original
@@ -221,41 +234,42 @@ bool shadow_get_volume(d3pnt *pnt,int high,d3pnt *light_pnt,int light_intensity,
 	return(TRUE);
 }
 
-int shadow_build_poly_cross_volume_set(d3pnt *light_pnt,d3pnt *volume_min,d3pnt *volume_max,d3pnt *min,d3pnt *max,int skip_mesh_idx)
+int shadow_build_poly_cross_volume_set(d3pnt *light_pnt,d3pnt *model_min,d3pnt *model_max,d3pnt *min,d3pnt *max,int skip_mesh_idx)
 {
 	int					n,k,cnt;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 	
 		// force box to be constrained
-		// against item and make sure it's not
+		// against model to make sure it's not
 		// too large
 
-	if (((volume_min->x+volume_max->x)>>1)<light_pnt->x) {
-		max->x=volume_max->x;
+	if (((model_min->x+model_max->x)>>1)<light_pnt->x) {
+		max->x=model_max->x;
 	}
 	else {
-		min->x=volume_min->x;
-	}
-	
-	if (((volume_min->y+volume_max->y)>>1)<light_pnt->y) {
-		max->y=volume_max->y;
-	}
-	else {
-		min->y=volume_min->y;
-	}
-	
-	if (((volume_min->z+volume_max->z)>>1)<light_pnt->z) {
-		max->z=volume_max->z;
-	}
-	else {
-		min->z=volume_min->z;
+		min->x=model_min->x;
 	}
 
-		// testing -- shadow box
+	if (((model_min->y+model_max->y)>>1)<light_pnt->y) {
+		max->y=model_max->y;
+	}
+	else {
+		min->y=model_min->y;
+	}
+
+	if (((model_min->z+model_max->z)>>1)<light_pnt->z) {
+		max->z=model_max->z;
+	}
+	else {
+		min->z=model_min->z;
+	}
+
+		// testing -- volume debugs
 	/*
-	glColor4f(0.0f,1.0f,0.0f,1.0f);
 	glLineWidth(1.0f);
+
+	glColor4f(0.0f,1.0f,0.0f,1.0f);
 	glBegin(GL_LINE_LOOP);
 	glVertex3i(min->x,min->y,min->z);
 	glVertex3i(max->x,min->y,min->z);
@@ -278,7 +292,50 @@ int shadow_build_poly_cross_volume_set(d3pnt *light_pnt,d3pnt *volume_min,d3pnt 
 	glVertex3i(min->x,min->y,max->z);
 	glVertex3i(min->x,max->y,max->z);
 	glEnd();
-	glLineWidth(1.0f);
+
+	glColor4f(1.0f,1.0f,0.0f,1.0f);
+	glBegin(GL_LINE_LOOP);
+	glVertex3i(model_min->x,model_min->y,model_min->z);
+	glVertex3i(model_max->x,model_min->y,model_min->z);
+	glVertex3i(model_max->x,model_min->y,model_max->z);
+	glVertex3i(model_min->x,model_min->y,model_max->z);
+	glEnd();
+	glBegin(GL_LINE_LOOP);
+	glVertex3i(model_min->x,model_max->y,model_min->z);
+	glVertex3i(model_max->x,model_max->y,model_min->z);
+	glVertex3i(model_max->x,model_max->y,model_max->z);
+	glVertex3i(model_min->x,model_max->y,model_max->z);
+	glEnd();
+	glBegin(GL_LINES);
+	glVertex3i(model_min->x,model_min->y,model_min->z);
+	glVertex3i(model_min->x,model_max->y,model_min->z);
+	glVertex3i(model_max->x,model_min->y,model_min->z);
+	glVertex3i(model_max->x,model_max->y,model_min->z);
+	glVertex3i(model_max->x,model_min->y,model_max->z);
+	glVertex3i(model_max->x,model_max->y,model_max->z);
+	glVertex3i(model_min->x,model_min->y,model_max->z);
+	glVertex3i(model_min->x,model_max->y,model_max->z);
+	glEnd();
+
+	glColor4f(0.0f,1.0f,1.0f,1.0f);
+	glBegin(GL_LINES);
+	glVertex3i(model_min->x,model_min->y,model_min->z);
+	glVertex3i(light_pnt->x,light_pnt->y,light_pnt->z);
+	glVertex3i(model_min->x,model_min->y,model_max->z);
+	glVertex3i(light_pnt->x,light_pnt->y,light_pnt->z);
+	glVertex3i(model_max->x,model_min->y,model_min->z);
+	glVertex3i(light_pnt->x,light_pnt->y,light_pnt->z);
+	glVertex3i(model_max->x,model_min->y,model_max->z);
+	glVertex3i(light_pnt->x,light_pnt->y,light_pnt->z);
+	glVertex3i(model_min->x,model_max->y,model_min->z);
+	glVertex3i(light_pnt->x,light_pnt->y,light_pnt->z);
+	glVertex3i(model_min->x,model_max->y,model_max->z);
+	glVertex3i(light_pnt->x,light_pnt->y,light_pnt->z);
+	glVertex3i(model_max->x,model_max->y,model_min->z);
+	glVertex3i(light_pnt->x,light_pnt->y,light_pnt->z);
+	glVertex3i(model_max->x,model_max->y,model_max->z);
+	glVertex3i(light_pnt->x,light_pnt->y,light_pnt->z);
+	glEnd();
 	*/
 	
 		// check meshes
@@ -337,21 +394,21 @@ int shadow_build_poly_cross_volume_set(d3pnt *light_pnt,d3pnt *volume_min,d3pnt 
 
 int shadow_build_poly_set_model(model_type *mdl,model_draw *draw)
 {
-	d3pnt			volume_min,volume_max,min,max;
+	d3pnt			model_min,model_max,shadow_min,shadow_max;
 	
 		// get bounding box of model
 		
-	model_get_view_complex_bounding_volume(mdl,&draw->pnt,&draw->setup.ang,&volume_min,&volume_max);
+	model_get_view_complex_bounding_volume(mdl,&draw->pnt,&draw->setup.ang,&model_min,&model_max);
 	
 		// get the shadow volume
 		
-	memmove(&min,&volume_min,sizeof(d3pnt));
-	memmove(&max,&volume_max,sizeof(d3pnt));
-	shadow_get_volume(&draw->pnt,draw->size.y,&draw->shadow.light_pnt,draw->shadow.light_intensity,&min,&max);
+	memmove(&shadow_min,&model_min,sizeof(d3pnt));
+	memmove(&shadow_max,&model_max,sizeof(d3pnt));
+	shadow_get_volume(&draw->pnt,draw->size.y,&draw->shadow.light_pnt,draw->shadow.light_intensity,&shadow_min,&shadow_max);
 	
 		// get the polys that cross that volume
 		
-	return(shadow_build_poly_cross_volume_set(&draw->shadow.light_pnt,&volume_min,&volume_max,&min,&max,-1));	
+	return(shadow_build_poly_cross_volume_set(&draw->shadow.light_pnt,&model_min,&model_max,&shadow_min,&shadow_max,-1));	
 }
 
 /* =======================================================

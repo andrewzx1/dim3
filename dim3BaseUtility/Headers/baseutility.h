@@ -1253,7 +1253,7 @@ typedef struct		{
 //
 
 typedef struct		{
-						int								save_id;
+						int								save_id,points;
 						char							desc[64];
 					} iface_simple_save_type;
 

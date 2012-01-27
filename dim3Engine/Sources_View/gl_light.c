@@ -814,8 +814,9 @@ void gl_lights_calc_color_light_cache_float(int count,int *indexes,bool skip_lig
 int gl_light_get_averaged_shadow_light(d3pnt *pnt,d3pnt *size,d3pnt *light_pnt)
 {
 	int						n,hit_idx,count;
-	float					f,fx,fy,fz,f_intensity,f_tot_dist;
-	float					f_dist[max_light_spot];
+	float					f,fx,fy,fz,
+							f_tot_intensity,f_weight_intensity;
+	float					f_intensity[max_light_spot];
 	d3pnt					spt,hpt;
 	ray_trace_contact_type	contact;
 	view_light_spot_type	*lspot;
@@ -830,12 +831,12 @@ int gl_light_get_averaged_shadow_light(d3pnt *pnt,d3pnt *size,d3pnt *light_pnt)
 	count=0;
 	hit_idx=0;
 
-	f_tot_dist=0.0f;
+	f_tot_intensity=0.0f;
 		
 	for (n=0;n!=view.render->light.count;n++) {
 		lspot=&view.render->light.spots[n];
 
-		f_dist[n]=0;
+		f_intensity[n]=0.0f;
 
 			// get distance
 			
@@ -843,9 +844,9 @@ int gl_light_get_averaged_shadow_light(d3pnt *pnt,d3pnt *size,d3pnt *light_pnt)
 		fy=(float)(lspot->pnt.y-pnt->y);
 		fz=(float)(lspot->pnt.z-pnt->z);
 
-		f_dist[n]=sqrtf((fx*fx)+(fy*fy)+(fz*fz));
+		f=sqrtf((fx*fx)+(fy*fy)+(fz*fz));
 
-		if (f_dist[n]>lspot->f_intensity) continue;
+		if (f>lspot->f_intensity) continue;
 		if (!gl_lights_direction_pnt_ok(pnt,lspot)) continue;
 
 			// ray trace to light
@@ -861,11 +862,16 @@ int gl_light_get_averaged_shadow_light(d3pnt *pnt,d3pnt *size,d3pnt *light_pnt)
 		if (ray_trace_map_by_point(&spt,&lspot->pnt,&hpt,&contact)) {
 			if (contact.poly.mesh_idx!=-1) continue;
 		}
+
+			// it's a hit, get intensity
+
+		f_intensity[n]=(lspot->f_intensity-f)*lspot->f_inv_intensity;
+		f_intensity[n]+=powf(f_intensity[n],lspot->f_exponent);
 		
-			// added up the total distance
+			// added up the total intensity
 			// so we can weight them later
 					
-		f_tot_dist+=f_dist[n];
+		f_tot_intensity+=f_intensity[n];
 
 		hit_idx=n;
 		count++;
@@ -889,34 +895,32 @@ int gl_light_get_averaged_shadow_light(d3pnt *pnt,d3pnt *size,d3pnt *light_pnt)
 		// them together.  We give more
 		// weight to the ones that are
 		// more intense
+
+		// we also need to rerun the instensities
+		// because the other routines expect
+		// intensity at light, not at model
 		
 	light_pnt->x=0;
 	light_pnt->y=0;
 	light_pnt->z=0;
-	
-	f_intensity=0.0f;
+
+	f_weight_intensity=0.0f;
 	
 	for (n=0;n!=view.render->light.count;n++) {
-		if (f_dist[n]==0) continue;
+		if (f_intensity[n]==0.0f) continue;
 
 		lspot=&view.render->light.spots[n];
 		
-		f=1.0f-(f_dist[n]/f_tot_dist);
+		f=f_intensity[n]/f_tot_intensity;
 		
-		light_pnt->x+=(int)(((float)(lspot->pnt.x-pnt->x))*f);
-		light_pnt->y+=(int)(((float)(lspot->pnt.y-pnt->y))*f);
-		light_pnt->z+=(int)(((float)(lspot->pnt.z-pnt->z))*f);
-		
-		f_intensity+=lspot->f_intensity*f;
+		light_pnt->x+=(int)(((float)lspot->pnt.x)*f);
+		light_pnt->y+=(int)(((float)lspot->pnt.y)*f);
+		light_pnt->z+=(int)(((float)lspot->pnt.z)*f);
+
+		f_weight_intensity+=(lspot->f_intensity*f);
 	}
 	
-		// now average
-		
-	light_pnt->x=pnt->x+(light_pnt->x/count);
-	light_pnt->y=pnt->y+(light_pnt->y/count);
-	light_pnt->z=pnt->z+(light_pnt->z/count);
-	
-	return(((int)f_intensity)/count);
+	return((int)f_weight_intensity);
 }
 
 /* =======================================================

@@ -1034,10 +1034,10 @@ void render_model_setup(model_draw *draw,int tick)
 		// are cast down
 
 	else {
-		draw->shadow.light_intensity=18000;
+		draw->shadow.light_intensity=20000+draw->size.y;
 
 		draw->shadow.light_pnt.x=draw->pnt.x;
-		draw->shadow.light_pnt.y=draw->pnt.y-15000;
+		draw->shadow.light_pnt.y=(draw->pnt.y-draw->size.y)-10000;
 		draw->shadow.light_pnt.z=draw->pnt.z;
 	}
 }
