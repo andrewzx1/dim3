@@ -844,28 +844,29 @@ typedef struct		{
 					} iface_intro_button_type;
 
 typedef struct		{
-						int								x,y,text_size;
-					} iface_intro_simple_save_desc_type;
+						int								x,y;
+					} iface_intro_position_type;
 
 typedef struct		{
-						int								x,y,x_add,y_add,
-														wid,high;
-					} iface_intro_simple_save_progress_type;
-
-typedef struct		{
-						iface_intro_button_type							button_start,button_erase;
-						iface_intro_simple_save_desc_type				desc;
-						iface_intro_simple_save_progress_type			progress;
+						iface_intro_button_type					button_start,button_erase;
+						iface_intro_position_type				desc,progress;
 					} iface_intro_simple_save_type;
 
 typedef struct		{
-						int												max,x_add,y_add,wid,high;
-						char											bitmap_name[name_str_len];
-					} iface_intro_simple_save_progress_setting_type;
+						int										text_size;
+					} iface_intro_simple_save_desc_type;
 
 typedef struct		{
-						iface_intro_simple_save_progress_setting_type	progress;
-						iface_intro_simple_save_type					saves[max_simple_save_spot];
+						int										max_point,max_bitmap,
+																x_add,y_add,wid,high;
+						char									bitmap_name[name_str_len];
+						bool									on;
+					} iface_intro_simple_save_progress_type;
+
+typedef struct		{
+						iface_intro_simple_save_desc_type		desc;
+						iface_intro_simple_save_progress_type	progress;
+						iface_intro_simple_save_type			saves[max_simple_save_spot];
 					} iface_intro_simple_save_list;
 
 typedef struct		{

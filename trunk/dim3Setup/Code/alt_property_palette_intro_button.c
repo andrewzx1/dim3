@@ -46,7 +46,9 @@ and can be sold or given away.
 
 #define kButtonDescPositionX					30
 #define kButtonDescPositionY					31
-#define kButtonDescTextSize						32
+
+#define kButtonProgressPositionX				40
+#define kButtonProgressPositionY				41
 
 extern iface_type				iface;
 extern setup_state_type			state;
@@ -128,7 +130,7 @@ iface_intro_button_type* get_intro_button_from_item_idx(int item_idx,char *name)
 	return(NULL);
 }
 
-iface_intro_simple_save_desc_type* get_intro_button_desc_from_item_idx(int item_idx)
+iface_intro_position_type* get_intro_button_desc_from_item_idx(int item_idx)
 {
 	int				idx;
 
@@ -140,7 +142,7 @@ iface_intro_simple_save_desc_type* get_intro_button_desc_from_item_idx(int item_
 	return(NULL);
 }
 
-iface_intro_simple_save_progress_type* get_intro_button_progress_from_item_idx(int item_idx)
+iface_intro_position_type* get_intro_button_progress_from_item_idx(int item_idx)
 {
 	int				idx;
 
@@ -160,10 +162,9 @@ iface_intro_simple_save_progress_type* get_intro_button_progress_from_item_idx(i
 
 void alt_property_palette_fill_intro_button(int intro_button_idx)
 {
-	char									name[64];
-	iface_intro_button_type					*btn;
-	iface_intro_simple_save_desc_type		*desc;
-	iface_intro_simple_save_progress_type	*progress;
+	char							name[64];
+	iface_intro_button_type			*btn;
+	iface_intro_position_type		*desc,*progress;
 
 	btn=get_intro_button_from_item_idx(intro_button_idx,name);
 	desc=get_intro_button_desc_from_item_idx(intro_button_idx);
@@ -194,16 +195,15 @@ void alt_property_palette_fill_intro_button(int intro_button_idx)
 		// description
 
 	if (desc!=NULL) {
-		list_palette_add_header(&alt_property_palette,0,"Save Description");
+		list_palette_add_header(&alt_property_palette,0,"Description");
 		list_palette_add_int(&alt_property_palette,kButtonDescPositionX,"X",&desc->x,FALSE);
 		list_palette_add_int(&alt_property_palette,kButtonDescPositionY,"Y",&desc->y,FALSE);
-		list_palette_add_int(&alt_property_palette,kButtonDescTextSize,"Text Size",&desc->text_size,FALSE);
 	}
 
 		// progress
 
 	if (progress!=NULL) {
-		list_palette_add_header(&alt_property_palette,0,"Save Progress");
+		list_palette_add_header(&alt_property_palette,0,"Progress Bitmaps");
 		list_palette_add_int(&alt_property_palette,kButtonProgressPositionX,"X",&progress->x,FALSE);
 		list_palette_add_int(&alt_property_palette,kButtonProgressPositionY,"Y",&progress->y,FALSE);
 	}

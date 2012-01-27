@@ -281,7 +281,7 @@ void intro_open(void)
 		sprintf(name,"button_simple_erase_%d",n);
 		intro_open_add_button(&iface.intro.simple_save_list.saves[n].button_erase,name,(intro_simple_save_button_erase+n));
 
-		if (iface.intro.simple_save_list.saves[n].button_start.on) element_text_add("",(intro_simple_save_text_desc+n),iface.intro.simple_save_list.saves[n].desc.x,iface.intro.simple_save_list.saves[n].desc.y,iface.intro.simple_save_list.saves[n].desc.text_size,tx_center,FALSE,FALSE);
+		if (iface.intro.simple_save_list.saves[n].button_start.on) element_text_add("",(intro_simple_save_text_desc+n),iface.intro.simple_save_list.saves[n].desc.x,iface.intro.simple_save_list.saves[n].desc.y,iface.intro.simple_save_list.desc.text_size,tx_center,FALSE,FALSE);
 	}
 	
 		// simple save options
