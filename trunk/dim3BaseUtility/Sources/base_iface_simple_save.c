@@ -51,6 +51,7 @@ void simple_save_xml_read(iface_type *iface)
 	for (n=0;n!=max_simple_save_spot;n++) {
 		save->save_id=-1;
 		save->desc[0]=0x0;
+		save->points=0;
 		save++;
 	}
 	
@@ -77,6 +78,7 @@ void simple_save_xml_read(iface_type *iface)
 			
 			save->save_id=xml_get_attribute_int(tag,"id");
 			xml_get_attribute_text(tag,"desc",save->desc,64);
+			save->points=xml_get_attribute_int(tag,"points");
 
 			tag=xml_findnextchild(tag);
         }
@@ -116,6 +118,7 @@ void simple_save_xml_write(iface_type *iface,char *err_str)
 			xml_add_attribute_int("idx",n);
 			xml_add_attribute_int("id",save->save_id);
 			xml_add_attribute_text("desc",save->desc);
+			xml_add_attribute_int("points",save->points);
 			xml_add_tagend(TRUE);
 		}
 		

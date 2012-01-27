@@ -61,7 +61,7 @@ and can be sold or given away.
 //
 
 #define max_rain_density						5120
-#define max_model_light_cache_index				8
+#define max_model_shader_light					4				// needs to reflect max_shader_light in view_defs.h
 
 //
 // binding types
@@ -291,7 +291,7 @@ typedef struct		{
 
 typedef struct		{
 						int								count,
-														indexes[max_model_light_cache_index];
+														indexes[max_model_shader_light];
 					} model_light_cache;
 
 typedef struct		{

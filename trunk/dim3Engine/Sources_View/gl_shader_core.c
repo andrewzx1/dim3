@@ -921,6 +921,10 @@ shader_type* gl_core_shader_find_ptr(int nlight,int core_shader_group,texture_ty
 	int				which_varient;
 	
 	which_varient=gl_core_shader_find_for_mode(core_shader_group,texture);
+// supergumba
+//	fprintf(stdout,"Core Shader: %d, Group: %d, Light: %d, Bump: %d, Spec:%d\n",which_varient,core_shader_group,nlight,(texture->frames[0].bumpmap.gl_id!=-1),(texture->frames[0].specularmap.gl_id!=-1));
+//	fflush(stdout);
+
 	return(&core_shaders[nlight][which_varient]);
 }
 

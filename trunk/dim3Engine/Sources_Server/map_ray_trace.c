@@ -1321,7 +1321,10 @@ void ray_trace_mesh_poly_plane_by_vector(int cnt,d3vct *vct,d3fpnt *spt,d3fpnt *
 		hp->y=sp->y-(vct->y*t);
 		hp->z=sp->z-(vct->z*t);
 
-		*hit++=((t>=1.0f) && (t<=0.0f));
+			// hits have to deal with the
+			// t being negative
+
+		*hit++=((t>=-1.0f) && (t<=0.0f));
 		
 		sp++;
 		hp++;

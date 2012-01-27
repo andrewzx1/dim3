@@ -57,6 +57,8 @@ and can be sold or given away.
 #define intro_simple_save_button_erase			200
 #define intro_simple_save_text_desc				300
 
+#define intro_simple_save_progress_bitmap		1000
+
 // intro modes
 
 #define intro_mode_normal						0
@@ -82,7 +84,7 @@ bitmap_type					intro_bitmap;
 
 void intro_show_hide_for_mode(void)
 {
-	int					n;
+	int					n,k,id,bitmap_count;
 	char				str[256];
 
 		// new game
@@ -185,6 +187,16 @@ void intro_show_hide_for_mode(void)
 		else {
 			element_text_change((intro_simple_save_text_desc+n),"New");
 		}
+
+		if (iface.intro.simple_save_list.progress.on) {
+
+			id=intro_simple_save_progress_bitmap+(n*iface.intro.simple_save_list.progress.max_bitmap);
+			bitmap_count=(iface.intro.simple_save_list.progress.max_bitmap*iface.simple_save_list.saves[n].points)/iface.intro.simple_save_list.progress.max_point;
+
+			for (k=0;k!=iface.intro.simple_save_list.progress.max_bitmap;k++) {
+				element_hide((id+k),(bitmap_count<=k));
+			}
+		}
 	}
 	
 	element_hide(intro_button_game_new_easy_id,TRUE);
@@ -239,10 +251,11 @@ void intro_open_add_button(iface_intro_button_type *btn,char *name,int id)
 
 void intro_open(void)
 {
-	int							n,x,y;
-	bool						start_music;
-	char						name[256],err_str[256];
-	iface_intro_model_type		*intro_model;
+	int								n,k,x,y,id;
+	bool							start_music;
+	char							name[256],err_str[256],path[1024];
+	iface_intro_model_type			*intro_model;
+	iface_intro_simple_save_type	*intro_simple_save;
 
 		// intro UI
 		
@@ -275,16 +288,45 @@ void intro_open(void)
 	intro_open_add_button(&iface.intro.button_credit,"button_credit",intro_button_credit_id);
 	intro_open_add_button(&iface.intro.button_quit,"button_quit",intro_button_quit_id);
 	
-	for (n=0;n!=max_simple_save_spot;n++) {
-		sprintf(name,"button_simple_start_%d",n);
-		intro_open_add_button(&iface.intro.simple_save_list.saves[n].button_start,name,(intro_simple_save_button_start+n));
-		sprintf(name,"button_simple_erase_%d",n);
-		intro_open_add_button(&iface.intro.simple_save_list.saves[n].button_erase,name,(intro_simple_save_button_erase+n));
+		// simple saves
 
-		if (iface.intro.simple_save_list.saves[n].button_start.on) element_text_add("",(intro_simple_save_text_desc+n),iface.intro.simple_save_list.saves[n].desc.x,iface.intro.simple_save_list.saves[n].desc.y,iface.intro.simple_save_list.desc.text_size,tx_center,FALSE,FALSE);
+	for (n=0;n!=max_simple_save_spot;n++) {
+
+			// all simple save items are controlled
+			// by main start button
+
+		intro_simple_save=&iface.intro.simple_save_list.saves[n];
+		if (!intro_simple_save->button_start.on) continue;
+
+			// buttons
+
+		sprintf(name,"button_simple_start_%d",n);
+		intro_open_add_button(&intro_simple_save->button_start,name,(intro_simple_save_button_start+n));
+		sprintf(name,"button_simple_erase_%d",n);
+		intro_open_add_button(&intro_simple_save->button_erase,name,(intro_simple_save_button_erase+n));
+
+			// description
+
+		element_text_add("",(intro_simple_save_text_desc+n),intro_simple_save->desc.x,intro_simple_save->desc.y,iface.intro.simple_save_list.desc.text_size,tx_center,FALSE,FALSE);
+
+			// simple save progress
+
+		if (iface.intro.simple_save_list.progress.on) {
+			
+			x=intro_simple_save->progress.x;
+			y=intro_simple_save->progress.y;
+			id=intro_simple_save_progress_bitmap+(n*iface.intro.simple_save_list.progress.max_bitmap);
+			
+			for (k=0;k!=iface.intro.simple_save_list.progress.max_bitmap;k++) {
+				file_paths_data(&setup.file_path_setup,path,"Bitmaps/Interface",iface.intro.simple_save_list.progress.bitmap_name,"png");
+				element_bitmap_add(path,(id+k),x,y,iface.intro.simple_save_list.progress.wid,iface.intro.simple_save_list.progress.high,FALSE);
+				x+=iface.intro.simple_save_list.progress.x_add;
+				y+=iface.intro.simple_save_list.progress.y_add;
+			}
+		}
 	}
 	
-		// simple save options
+		// simple save confirm
 		
 	x=iface.intro.confirm.x;
 	y=iface.intro.confirm.y;
