@@ -470,7 +470,7 @@ void iface_read_settings_menu(iface_type *iface,int menu_tag)
       
 ======================================================= */
 
-void iface_read_settings_intro_button(int tag,iface_intro_button_type *btn,iface_intro_simple_save_desc_type *desc,iface_intro_simple_save_progress_type *progress)
+void iface_read_settings_intro_button(int tag,iface_intro_button_type *btn,iface_intro_position_type *desc,iface_intro_position_type *progress)
 {
 	if (tag==-1) return;
 	
@@ -486,7 +486,6 @@ void iface_read_settings_intro_button(int tag,iface_intro_button_type *btn,iface
 	if (desc!=NULL) {
 		desc->x=xml_get_attribute_int(tag,"desc_x");
 		desc->y=xml_get_attribute_int(tag,"desc_y");
-		desc->text_size=xml_get_attribute_int_default(tag,"desc_text_size",20);
 	}
 
 	if (progress!=NULL) {
@@ -796,7 +795,10 @@ void iface_read_settings_interface(iface_type *iface)
 
 		simple_save_tag=xml_findfirstchild("Simple_Save",intro_head_tag);
 		if (simple_save_tag!=-1) {
-			iface->intro.simple_save_list.progress.max=xml_get_attribute_int(simple_save_tag,"progress_max");
+			iface->intro.simple_save_list.desc.text_size=xml_get_attribute_int(simple_save_tag,"desc_text_size");
+			iface->intro.simple_save_list.progress.on=xml_get_attribute_boolean(simple_save_tag,"progress_on");
+			iface->intro.simple_save_list.progress.max_point=xml_get_attribute_int(simple_save_tag,"progress_max_point");
+			iface->intro.simple_save_list.progress.max_bitmap=xml_get_attribute_int(simple_save_tag,"progress_max_bitmap");
 			iface->intro.simple_save_list.progress.x_add=xml_get_attribute_int(simple_save_tag,"progress_x_add");
 			iface->intro.simple_save_list.progress.y_add=xml_get_attribute_int(simple_save_tag,"progress_y_add");
 			iface->intro.simple_save_list.progress.wid=xml_get_attribute_int(simple_save_tag,"progress_wid");
@@ -945,7 +947,7 @@ void iface_refresh_settings_interface_hud_only(iface_type *iface)
       
 ======================================================= */
 
-void iface_write_settings_interface_intro_button(char *name,iface_intro_button_type *btn,iface_intro_simple_save_desc_type *desc,iface_intro_simple_save_progress_type *progress)
+void iface_write_settings_interface_intro_button(char *name,iface_intro_button_type *btn,iface_intro_position_type *desc,iface_intro_position_type *progress)
 {
 	xml_add_tagstart(name);
 	
@@ -961,7 +963,6 @@ void iface_write_settings_interface_intro_button(char *name,iface_intro_button_t
 	if (desc!=NULL) {
 		xml_add_attribute_int("desc_x",desc->x);
 		xml_add_attribute_int("desc_y",desc->y);
-		xml_add_attribute_int("desc_text_size",desc->text_size);
 	}
 
 	if (progress!=NULL) {
@@ -1434,7 +1435,10 @@ bool iface_write_settings_interface(iface_type *iface,char *err_str)
 		// simple save
 
 	xml_add_tagstart("Simple_Save");
-	xml_add_attribute_int("progress_max",iface->intro.simple_save_list.progress.max);
+	xml_add_attribute_int("desc_text_size",iface->intro.simple_save_list.desc.text_size);
+	xml_add_attribute_boolean("progress_on",iface->intro.simple_save_list.progress.on);
+	xml_add_attribute_int("progress_max_point",iface->intro.simple_save_list.progress.max_point);
+	xml_add_attribute_int("progress_max_bitmap",iface->intro.simple_save_list.progress.max_bitmap);
 	xml_add_attribute_int("progress_x_add",iface->intro.simple_save_list.progress.x_add);
 	xml_add_attribute_int("progress_y_add",iface->intro.simple_save_list.progress.y_add);
 	xml_add_attribute_int("progress_wid",iface->intro.simple_save_list.progress.wid);

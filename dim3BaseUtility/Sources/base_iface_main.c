@@ -336,7 +336,11 @@ void iface_default_settings(iface_type *iface)
 	iface_default_settings_button(&iface->intro.button_credit,0,192,TRUE);
 	iface_default_settings_button(&iface->intro.button_quit,0,224,TRUE);
 
-	iface->intro.simple_save_list.progress.max=5;
+	iface->intro.simple_save_list.desc.text_size=20;
+	
+	iface->intro.simple_save_list.progress.on=FALSE;
+	iface->intro.simple_save_list.progress.max_point=100;
+	iface->intro.simple_save_list.progress.max_bitmap=5;
 	iface->intro.simple_save_list.progress.x_add=16;
 	iface->intro.simple_save_list.progress.y_add=0;
 	iface->intro.simple_save_list.progress.wid=-1;
@@ -348,7 +352,6 @@ void iface_default_settings(iface_type *iface)
 		iface_default_settings_button(&iface->intro.simple_save_list.saves[n].button_erase,40,(n*32),FALSE);
 		iface->intro.simple_save_list.saves[n].desc.x=80;
 		iface->intro.simple_save_list.saves[n].desc.y=(n*32);
-		iface->intro.simple_save_list.saves[n].desc.text_size=20;
 		iface->intro.simple_save_list.saves[n].progress.x=120;
 		iface->intro.simple_save_list.saves[n].progress.y=(n*32);
 	}
