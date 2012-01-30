@@ -866,10 +866,6 @@ void gl_shader_draw_execute(int core_shader_group,texture_type *texture,int txt_
 		is_core=TRUE;
 	}
 	else {
-// supergumba
-//		fprintf(stdout,"USER shader picked: %d\n",texture->shader_idx);
-//		fflush(stdout);
-
 		shader=&user_shaders[texture->shader_idx];
 		is_core=FALSE;
 	}

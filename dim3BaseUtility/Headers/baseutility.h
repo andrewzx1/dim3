@@ -859,7 +859,8 @@ typedef struct		{
 typedef struct		{
 						int										max_point,max_bitmap,
 																x_add,y_add,wid,high;
-						char									bitmap_name[name_str_len];
+						char									bitmap_name[name_str_len],
+																bitmap_disable_name[name_str_len];
 						bool									on;
 					} iface_intro_simple_save_progress_type;
 
