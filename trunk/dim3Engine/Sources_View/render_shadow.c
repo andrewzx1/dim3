@@ -489,7 +489,7 @@ void shadow_render_stencil_poly_draw(int ptsz,float *vertexes,int stencil_idx)
 	glDepthFunc(GL_LEQUAL);
 
 	glVertexPointer(3,GL_FLOAT,0,(GLvoid*)vertexes);
-
+	
 	glColorMask(GL_FALSE,GL_FALSE,GL_FALSE,GL_FALSE);
 	glStencilOp(GL_KEEP,GL_KEEP,GL_REPLACE);
 	glStencilFunc(GL_ALWAYS,stencil_idx,0xFF);

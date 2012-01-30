@@ -346,6 +346,7 @@ void iface_default_settings(iface_type *iface)
 	iface->intro.simple_save_list.progress.wid=-1;
 	iface->intro.simple_save_list.progress.high=-1;
 	iface->intro.simple_save_list.progress.bitmap_name[0]=0x0;
+	iface->intro.simple_save_list.progress.bitmap_disable_name[0]=0x0;
 	
 	for (n=0;n!=max_simple_save_spot;n++) {
 		iface_default_settings_button(&iface->intro.simple_save_list.saves[n].button_start,0,(n*32),FALSE);

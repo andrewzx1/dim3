@@ -33,44 +33,45 @@ and can be sold or given away.
 #include "ui_common.h"
 #include "interface.h"
 
-#define kIntroPropertyMusic							0
+#define kIntroPropertyMusic								0
 
-#define kIntroPropertyTitleName						1
-#define kIntroPropertyTitleSound					2
-#define kIntroPropertyTitleLifeMsec					3
+#define kIntroPropertyTitleName							1
+#define kIntroPropertyTitleSound						2
+#define kIntroPropertyTitleLifeMsec						3
 
-#define kIntroPropertyButtonGameNew					10
-#define kIntroPropertyButtonGameLoad				11
-#define kIntroPropertyButtonGameSetup				12
-#define kIntroPropertyButtonGameNewEasy				13
-#define kIntroPropertyButtonGameNewMedium			14
-#define kIntroPropertyButtonGameNewHard				15
-#define kIntroPropertyButtonGameNewCancel			16
-#define kIntroPropertyButtonMultiplayerHost			17
-#define kIntroPropertyButtonMultiplayerJoin			18
-#define kIntroPropertyButtonMultiplayerSetup		19
-#define kIntroPropertyButtonCredit					20
-#define kIntroPropertyButtonQuit					21
+#define kIntroPropertyButtonGameNew						10
+#define kIntroPropertyButtonGameLoad					11
+#define kIntroPropertyButtonGameSetup					12
+#define kIntroPropertyButtonGameNewEasy					13
+#define kIntroPropertyButtonGameNewMedium				14
+#define kIntroPropertyButtonGameNewHard					15
+#define kIntroPropertyButtonGameNewCancel				16
+#define kIntroPropertyButtonMultiplayerHost				17
+#define kIntroPropertyButtonMultiplayerJoin				18
+#define kIntroPropertyButtonMultiplayerSetup			19
+#define kIntroPropertyButtonCredit						20
+#define kIntroPropertyButtonQuit						21
 
-#define kIntroPropertySimpleSaveDescTextSize		30
-#define kIntroPropertySimpleSaveProgressOn			31
-#define kIntroPropertySimpleSaveProgressMaxPoint	32
-#define kIntroPropertySimpleSaveProgressMaxBitmap	33
-#define kIntroPropertySimpleSaveProgressXAdd		34
-#define kIntroPropertySimpleSaveProgressYAdd		35
-#define kIntroPropertySimpleSaveProgressWid			36
-#define kIntroPropertySimpleSaveProgressHigh		37
-#define kIntroPropertySimpleSaveProgressBitmap		38
+#define kIntroPropertySimpleSaveDescTextSize			30
+#define kIntroPropertySimpleSaveProgressOn				31
+#define kIntroPropertySimpleSaveProgressMaxPoint		32
+#define kIntroPropertySimpleSaveProgressMaxBitmap		33
+#define kIntroPropertySimpleSaveProgressWid				34
+#define kIntroPropertySimpleSaveProgressHigh			35
+#define kIntroPropertySimpleSaveProgressXAdd			36
+#define kIntroPropertySimpleSaveProgressYAdd			37
+#define kIntroPropertySimpleSaveProgressBitmap			38
+#define kIntroPropertySimpleSaveProgressBitmapDisable	39
 
-#define kIntroPropertyConfirmX						40
-#define kIntroPropertyConfirmY						41
+#define kIntroPropertyConfirmX							40
+#define kIntroPropertyConfirmY							41
 
-#define kIntroPropertyButtonSimpleSaveStart			50
-#define kIntroPropertyButtonSimpleSaveErase			60
+#define kIntroPropertyButtonSimpleSaveStart				50
+#define kIntroPropertyButtonSimpleSaveErase				60
 
-#define kIntroPropertyModelAdd						100
-#define kIntroPropertyModelName						1000
-#define kIntroPropertyModelDelete					2000
+#define kIntroPropertyModelAdd							100
+#define kIntroPropertyModelName							1000
+#define kIntroPropertyModelDelete						2000
 
 extern iface_type				iface;
 extern setup_state_type			state;
@@ -138,11 +139,12 @@ void property_palette_fill_intro(void)
 	list_palette_add_checkbox(&property_palette,kIntroPropertySimpleSaveProgressOn,"Progress On",&iface.intro.simple_save_list.progress.on,FALSE);
 	list_palette_add_int(&property_palette,kIntroPropertySimpleSaveProgressMaxPoint,"Progress Max Points",&iface.intro.simple_save_list.progress.max_point,FALSE);
 	list_palette_add_int(&property_palette,kIntroPropertySimpleSaveProgressMaxBitmap,"Progress Max Bitmaps",&iface.intro.simple_save_list.progress.max_bitmap,FALSE);
-	list_palette_add_int(&property_palette,kIntroPropertySimpleSaveProgressXAdd,"Progress X Add",&iface.intro.simple_save_list.progress.x_add,FALSE);
-	list_palette_add_int(&property_palette,kIntroPropertySimpleSaveProgressYAdd,"Progress Y Add",&iface.intro.simple_save_list.progress.y_add,FALSE);
 	list_palette_add_int(&property_palette,kIntroPropertySimpleSaveProgressXAdd,"Width",&iface.intro.simple_save_list.progress.wid,FALSE);
 	list_palette_add_int(&property_palette,kIntroPropertySimpleSaveProgressYAdd,"Height",&iface.intro.simple_save_list.progress.high,FALSE);
-	list_palette_add_string(&property_palette,kIntroPropertySimpleSaveProgressBitmap,"Bitmap",iface.intro.simple_save_list.progress.bitmap_name,FALSE);
+	list_palette_add_int(&property_palette,kIntroPropertySimpleSaveProgressXAdd,"Progress X Add",&iface.intro.simple_save_list.progress.x_add,FALSE);
+	list_palette_add_int(&property_palette,kIntroPropertySimpleSaveProgressYAdd,"Progress Y Add",&iface.intro.simple_save_list.progress.y_add,FALSE);
+	list_palette_add_string(&property_palette,kIntroPropertySimpleSaveProgressBitmap,"Enabled Bitmap",iface.intro.simple_save_list.progress.bitmap_name,FALSE);
+	list_palette_add_string(&property_palette,kIntroPropertySimpleSaveProgressBitmapDisable,"Disabled Bitmap",iface.intro.simple_save_list.progress.bitmap_disable_name,FALSE);
 	
 		// confirm
 		
@@ -277,7 +279,11 @@ void property_palette_click_intro(int id,bool double_click)
 			break;
 			
 		case kIntroPropertySimpleSaveProgressBitmap:
-			property_pick_file("Pick a Progress Bitmap","Bitmaps/Interface","png",NULL,iface.intro.simple_save_list.progress.bitmap_name);
+			property_pick_file("Pick a Progress Enabled Bitmap","Bitmaps/Interface","png",NULL,iface.intro.simple_save_list.progress.bitmap_name);
+			break;
+			
+		case kIntroPropertySimpleSaveProgressBitmapDisable:
+			property_pick_file("Pick a Progress Disabled Bitmap","Bitmaps/Interface","png",NULL,iface.intro.simple_save_list.progress.bitmap_disable_name);
 			break;
 
 	}

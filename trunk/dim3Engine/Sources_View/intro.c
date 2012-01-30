@@ -84,7 +84,7 @@ bitmap_type					intro_bitmap;
 
 void intro_show_hide_for_mode(void)
 {
-	int					n,k,id,bitmap_count;
+	int					n,bitmap_count;
 	char				str[256];
 
 		// new game
@@ -189,13 +189,8 @@ void intro_show_hide_for_mode(void)
 		}
 
 		if (iface.intro.simple_save_list.progress.on) {
-
-			id=intro_simple_save_progress_bitmap+(n*iface.intro.simple_save_list.progress.max_bitmap);
 			bitmap_count=(iface.intro.simple_save_list.progress.max_bitmap*iface.simple_save_list.saves[n].points)/iface.intro.simple_save_list.progress.max_point;
-
-			for (k=0;k!=iface.intro.simple_save_list.progress.max_bitmap;k++) {
-				element_hide((id+k),(bitmap_count<=k));
-			}
+			element_set_value((intro_simple_save_progress_bitmap+n),bitmap_count);
 		}
 	}
 	
@@ -251,9 +246,10 @@ void intro_open_add_button(iface_intro_button_type *btn,char *name,int id)
 
 void intro_open(void)
 {
-	int								n,k,x,y,id;
+	int								n,x,y;
 	bool							start_music;
-	char							name[256],err_str[256],path[1024];
+	char							name[256],err_str[256],
+									path[1024],disable_path[1024];
 	iface_intro_model_type			*intro_model;
 	iface_intro_simple_save_type	*intro_simple_save;
 
@@ -312,17 +308,9 @@ void intro_open(void)
 			// simple save progress
 
 		if (iface.intro.simple_save_list.progress.on) {
-			
-			x=intro_simple_save->progress.x;
-			y=intro_simple_save->progress.y;
-			id=intro_simple_save_progress_bitmap+(n*iface.intro.simple_save_list.progress.max_bitmap);
-			
-			for (k=0;k!=iface.intro.simple_save_list.progress.max_bitmap;k++) {
-				file_paths_data(&setup.file_path_setup,path,"Bitmaps/Interface",iface.intro.simple_save_list.progress.bitmap_name,"png");
-				element_bitmap_add(path,(id+k),x,y,iface.intro.simple_save_list.progress.wid,iface.intro.simple_save_list.progress.high,FALSE);
-				x+=iface.intro.simple_save_list.progress.x_add;
-				y+=iface.intro.simple_save_list.progress.y_add;
-			}
+			file_paths_data(&setup.file_path_setup,path,"Bitmaps/Interface",iface.intro.simple_save_list.progress.bitmap_name,"png");
+			file_paths_data(&setup.file_path_setup,disable_path,"Bitmaps/Interface",iface.intro.simple_save_list.progress.bitmap_disable_name,"png");
+			element_count_add(path,disable_path,(intro_simple_save_progress_bitmap+n),intro_simple_save->progress.x,intro_simple_save->progress.y,iface.intro.simple_save_list.progress.wid,iface.intro.simple_save_list.progress.high,iface.intro.simple_save_list.progress.x_add,iface.intro.simple_save_list.progress.y_add,0,iface.intro.simple_save_list.progress.max_bitmap);
 		}
 	}
 	

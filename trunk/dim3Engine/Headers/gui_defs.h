@@ -53,7 +53,8 @@ and can be sold or given away.
 #define element_type_text_box					11
 #define element_type_info_field					12
 #define element_type_model						13
-#define element_type_frame						14
+#define element_type_count						14
+#define element_type_frame						15
 
 //
 // GUI position mode
@@ -176,6 +177,12 @@ typedef struct		{
 						model_draw				*draw;
 					} element_model_type;
 
+typedef struct		{
+						int						max_count,
+												image_idx,image_disable_idx,
+												x_add,y_add;
+					} element_count_type;
+
 typedef union		{
 						element_button_type		button;
 						element_text_type		text;
@@ -185,6 +192,7 @@ typedef union		{
 						element_tab_type		tab;
 						element_text_box_type	text_box;
 						element_model_type		model;
+						element_count_type		count;
 					} element_setup_type;
 
 typedef struct		{

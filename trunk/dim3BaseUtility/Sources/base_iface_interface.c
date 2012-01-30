@@ -804,6 +804,7 @@ void iface_read_settings_interface(iface_type *iface)
 			iface->intro.simple_save_list.progress.wid=xml_get_attribute_int(simple_save_tag,"progress_wid");
 			iface->intro.simple_save_list.progress.high=xml_get_attribute_int(simple_save_tag,"progress_high");
 			xml_get_attribute_text(simple_save_tag,"progress_bitmap_name",iface->intro.simple_save_list.progress.bitmap_name,name_str_len);
+			xml_get_attribute_text(simple_save_tag,"progress_bitmap_disable_name",iface->intro.simple_save_list.progress.bitmap_disable_name,name_str_len);
 		}
 
 			// buttons
@@ -1444,6 +1445,7 @@ bool iface_write_settings_interface(iface_type *iface,char *err_str)
 	xml_add_attribute_int("progress_wid",iface->intro.simple_save_list.progress.wid);
 	xml_add_attribute_int("progress_high",iface->intro.simple_save_list.progress.high);
 	xml_add_attribute_text("progress_bitmap_name",iface->intro.simple_save_list.progress.bitmap_name);
+	xml_add_attribute_text("progress_bitmap_disable_name",iface->intro.simple_save_list.progress.bitmap_disable_name);
 	xml_add_tagend(TRUE);
 
 		// intro buttons

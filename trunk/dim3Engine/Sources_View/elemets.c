@@ -149,6 +149,10 @@ void element_release_control_memory(void)
 				element_free_model(element);
 				break;
 		
+			case element_type_count:
+				view_images_free_single(element->setup.count.image_idx);
+				view_images_free_single(element->setup.count.image_disable_idx);
+				break;
 		}
 		
 		element++;
@@ -846,6 +850,49 @@ void element_model_add(char *name,char *animate,float resize,d3pnt *offset,d3ang
 	SDL_mutexV(element_thread_lock);
 }
 
+void element_count_add(char *path,char *disable_path,int id,int x,int y,int wid,int high,int x_add,int y_add,int count,int max_count)
+{
+	element_type	*element;
+	bitmap_type		*bitmap;
+
+	SDL_mutexP(element_thread_lock);
+	
+	element=&elements[nelement];
+	nelement++;
+	
+	element->id=id;
+	element->type=element_type_count;
+	
+	element->setup.count.image_idx=view_images_load_single(path,FALSE,TRUE);
+	element->setup.count.image_disable_idx=view_images_load_single(disable_path,FALSE,TRUE);
+	
+	element->x=x;
+	element->y=y;
+	
+	if ((wid==-1) || (high==-1)) {
+		bitmap=view_images_get_bitmap(element->setup.count.image_idx);
+		element->wid=bitmap->wid;
+		element->high=bitmap->high;
+	}
+	else {
+		element->wid=wid;
+		element->high=high;
+	}
+	
+	element->value=count;
+	
+	element->selectable=FALSE;
+	element->enabled=TRUE;
+	element->hidden=FALSE;
+	element->framed=FALSE;
+	
+	element->setup.count.x_add=x_add;
+	element->setup.count.y_add=y_add;
+	element->setup.count.max_count=max_count;
+
+	SDL_mutexV(element_thread_lock);
+}
+
 void element_frame_add(char *title,int id,int x,int y,int wid,int high)
 {
 	element_type	*element;
@@ -949,6 +996,7 @@ void element_get_box(element_type *element,int *lft,int *rgt,int *top,int *bot)
 		case element_type_table:
 		case element_type_tab:
 		case element_type_text_box:
+		case element_type_count:
 		case element_type_frame:
 			*lft=element->x;
 			*rgt=(*lft)+element->wid;
@@ -993,7 +1041,7 @@ void element_get_box(element_type *element,int *lft,int *rgt,int *top,int *bot)
 			*top=element->y-element->high;
 			*bot=element->y;
 			return;
-			
+
 	}
 	
 	*lft=*rgt=*top=*bot=-1;
@@ -1103,7 +1151,7 @@ void element_draw_button(element_type *element,int sel_id)
 
 /* =======================================================
 
-      Bitmap Element
+      Bitmap and Count Element
       
 ======================================================= */
 
@@ -1123,6 +1171,33 @@ void element_draw_bitmap(element_type *element)
 		
 	if (element->framed) {
 		view_primitive_2D_line_quad(&iface.color.control.outline,1.0f,lft,rgt,top,bot);
+	}
+}
+
+void element_draw_count(element_type *element)
+{
+	int				n,lft,rgt,top,bot;
+	GLuint			gl_id;
+	
+	element_get_box(element,&lft,&rgt,&top,&bot);
+
+		// the count images
+		
+	for (n=0;n!=element->setup.count.max_count;n++) {
+	
+		if (n<element->value) {
+			gl_id=view_images_get_gl_id(element->setup.count.image_idx);
+		}
+		else {
+			gl_id=view_images_get_gl_id(element->setup.count.image_disable_idx);
+		}
+		
+		view_primitive_2D_texture_quad(gl_id,NULL,1.0f,lft,rgt,top,bot,0.0f,1.0f,0.0f,1.0f);
+		
+		lft+=element->setup.count.x_add;
+		rgt+=element->setup.count.x_add;
+		top+=element->setup.count.y_add;
+		bot+=element->setup.count.y_add;
 	}
 }
 
@@ -3062,6 +3137,9 @@ void element_draw_lock(bool cursor_hilite)
 				break;
 			case element_type_model:
 				element_draw_model(element);
+				break;
+			case element_type_count:
+				element_draw_count(element);
 				break;
 			case element_type_frame:
 				element_draw_frame(element);

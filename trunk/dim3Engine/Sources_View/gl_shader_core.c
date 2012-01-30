@@ -271,13 +271,16 @@ char* gl_core_map_shader_build_frag(int nlight,bool fog,bool bump,bool spec)
 
 	if (spec) strcat(buf,"(");
 	strcat(buf,"tex.rgb*ambient");
-	if (spec) strcat(buf,"+spec)");
+	if (spec) strcat(buf,")+spec");
 	strcat(buf,";\n");
 
 	if (fog) strcat(buf,"gl_FragColor.rgb=mix(gl_Fog.color.rgb,frag,fogFactor);\n");
 	
 	strcat(buf,"gl_FragColor.a=tex.a*dim3Alpha;\n");
 	strcat(buf,"}\n");
+	
+	// supergumba
+	// if ((nlight==0) && (bump) && (spec) && (!fog)) fprintf(stdout,buf);
 
 	return(buf);
 }
@@ -921,10 +924,6 @@ shader_type* gl_core_shader_find_ptr(int nlight,int core_shader_group,texture_ty
 	int				which_varient;
 	
 	which_varient=gl_core_shader_find_for_mode(core_shader_group,texture);
-// supergumba
-//	fprintf(stdout,"Core Shader: %d, Group: %d, Light: %d, Bump: %d, Spec:%d\n",which_varient,core_shader_group,nlight,(texture->frames[0].bumpmap.gl_id!=-1),(texture->frames[0].specularmap.gl_id!=-1));
-//	fflush(stdout);
-
 	return(&core_shaders[nlight][which_varient]);
 }
 
