@@ -81,6 +81,10 @@ char* gl_core_map_shader_build_vert(int nlight,bool fog,bool bump,bool spec)
 	int				n;
 	char			*buf;
 
+		// no lights mean no spec
+
+	if (nlight==0) spec=FALSE;
+
 		// memory for shader
 
 	buf=(char*)malloc(max_core_shader_data_sz);
@@ -152,6 +156,10 @@ char* gl_core_map_shader_build_frag(int nlight,bool fog,bool bump,bool spec)
 {
 	int				n;
 	char			*buf;
+
+		// no lights mean no spec
+
+	if (nlight==0) spec=FALSE;
 
 		// memory for shader
 
@@ -490,6 +498,10 @@ char* gl_core_model_shader_build_vert(int nlight,bool fog,bool bump,bool spec)
 	int				n;
 	char			*buf;
 
+		// no lights mean no spec
+
+	if (nlight==0) spec=FALSE;
+
 		// memory for shader
 
 	buf=(char*)malloc(max_core_shader_data_sz);
@@ -562,6 +574,10 @@ char* gl_core_model_shader_build_frag(int nlight,bool fog,bool bump,bool spec)
 {
 	int				n;
 	char			*buf;
+
+		// no lights mean no spec
+
+	if (nlight==0) spec=FALSE;
 
 		// memory for shader
 
