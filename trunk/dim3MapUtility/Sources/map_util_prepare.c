@@ -114,15 +114,15 @@ void map_prepare_mesh_poly_plane(map_mesh_type *mesh,map_mesh_poly_type *poly)
 	f1.y=(float)pnt->y;
 	f1.z=(float)pnt->z;
 
-	pnt=&mesh->vertexes[poly->v[poly->ptsz-1]];
+	pnt=&mesh->vertexes[poly->v[2]];
 	f2.x=(float)pnt->x;
 	f2.y=(float)pnt->y;
 	f2.z=(float)pnt->z;
-
+	
 	poly->plane.ka=(f1.y*(f0.z-f2.z))+(f0.y*(f2.z-f1.z))+(f2.y*(f1.z-f0.z));
 	poly->plane.kb=(f1.z*(f0.x-f2.x))+(f0.z*(f2.x-f1.x))+(f2.z*(f1.x-f0.x));
 	poly->plane.kc=(f1.x*(f0.y-f2.y))+(f0.x*(f2.y-f1.y))+(f2.x*(f1.y-f0.y));
-	poly->plane.kd=((-f1.x)*((f0.y*f2.z)-(f2.y*f0.z)))-(f0.x*((f2.y*f1.z)-(f1.y*f2.z)))-(f2.x*((f1.y*f0.z)-(f0.y*f1.z)));
+	poly->plane.kd=-((f1.x*((f0.y*f2.z)-(f2.y*f0.z)))+(f0.x*((f2.y*f1.z)-(f1.y*f2.z)))+(f2.x*((f1.y*f0.z)-(f0.y*f1.z))));
 }
 
 void map_prepare_mesh_poly(map_type *map,map_mesh_type *mesh,map_mesh_poly_type *poly)

@@ -1282,10 +1282,12 @@ void ray_trace_mesh_poly_plane_by_vector(int cnt,d3vct *vct,d3fpnt *spt,d3fpnt *
 	d3fpnt					*sp,*hp;
 	map_mesh_poly_type		*poly;
 	
-		// get polygon plane equation
+		// get the polys
 		
 	poly=&map.mesh.meshes[mesh_idx].polys[poly_idx];
 
+		// get polygon plane equation
+		
 	ka=poly->plane.ka;
 	kb=poly->plane.kb;
 	kc=poly->plane.kc;
@@ -1295,8 +1297,13 @@ void ray_trace_mesh_poly_plane_by_vector(int cnt,d3vct *vct,d3fpnt *spt,d3fpnt *
 		// as all vectors are the same
 
 	denom=(ka*vct->x)+(kb*vct->y)+(kc*vct->z);
-	if (denom==0.0f) denom=0.01f;
-
+	if (denom!=0.0f) {
+		denom=1.0f/denom;
+	}
+	else {
+		denom=0.0f;
+	}
+	
 		// run through the rays
 
 	sp=spt;
@@ -1313,7 +1320,7 @@ void ray_trace_mesh_poly_plane_by_vector(int cnt,d3vct *vct,d3fpnt *spt,d3fpnt *
 			// move the negate to the hit point
 			// find instead of here
 
-		t=((ka*sp->x)+(kb*sp->y)+(kc*sp->z)+kd)/denom;
+		t=((ka*sp->x)+(kb*sp->y)+(kc*sp->z)+kd)*denom;
 
 			// get the hit point
 
