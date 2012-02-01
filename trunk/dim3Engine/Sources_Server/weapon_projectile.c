@@ -205,9 +205,9 @@ bool weapon_get_projectile_position_angle_weapon_model(obj_type *obj,weapon_type
 	
 		// fire angle
 
-	fire_ang->x=angle_add(setup->ang.x,obj->draw.setup.ang.x);
-	fire_ang->y=angle_add(setup->ang.y,angle_add(obj->draw.setup.ang.y,180.0f));
-	fire_ang->z=angle_add(setup->ang.z,obj->draw.setup.ang.z);
+	fire_ang->x=setup->ang.x;
+	fire_ang->y=setup->ang.y;
+	fire_ang->z=setup->ang.z;
 	
 	if (draw->flip_x) fire_ang->y=angle_add(fire_ang->y,180.0f);
 
