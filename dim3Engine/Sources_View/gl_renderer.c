@@ -158,7 +158,7 @@ bool gl_initialize(int screen_wid,int screen_high,int fsaa_mode,char *err_str)
 	sdl_flags=SDL_WINDOW_OPENGL|SDL_WINDOW_SHOWN;
 	if (!gl_in_window_mode()) sdl_flags|=(SDL_WINDOW_FULLSCREEN|SDL_WINDOW_BORDERLESS);
 	
-	sdl_wind=SDL_CreateWindow("dim3",SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,view.screen.x_sz,view.screen.y_sz,sdl_flags);
+	sdl_wind=SDL_CreateWindow("dim3",SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,screen_wid,screen_high,sdl_flags);
 	if (sdl_wind==NULL) {
 		sprintf(err_str,"SDL: Could not create window (Error: %s)",SDL_GetError());
 		return(FALSE);

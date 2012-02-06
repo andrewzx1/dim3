@@ -134,33 +134,23 @@ void gl_back_render_map_end(void)
 
 GLuint gl_back_render_create_texture(void)
 {
-	GLuint				gl_id;
+	float			max;
+	GLuint			gl_id;
 	
 	glGenTextures(1,&gl_id);
 	gl_texture_bind(0,gl_id);
 	
 	glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,back_render_texture_pixel_size,back_render_texture_pixel_size,0,GL_RGBA,GL_UNSIGNED_BYTE,0);
 
-		// animsotropic modes
+		// animsotropic
 		
-	switch (setup.anisotropic_mode) {
 	
-		case anisotropic_mode_none:
-			glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MAX_ANISOTROPY_EXT,1.0);
-			break;
-			
-		case anisotropic_mode_low:
-			glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MAX_ANISOTROPY_EXT,2.0);
-			break;
-			
-		case anisotropic_mode_medium:
-			glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MAX_ANISOTROPY_EXT,4.0);
-			break;
-			
-		case anisotropic_mode_high:
-			glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MAX_ANISOTROPY_EXT,8.0);
-			break;
-			
+	if (!setup.anisotropic) {
+		glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MAX_ANISOTROPY_EXT,1.0);
+	}
+	else {
+		glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT,&max);
+		glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MAX_ANISOTROPY_EXT,max);
 	}
 
 		// mipmap modes

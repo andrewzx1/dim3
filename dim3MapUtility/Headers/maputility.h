@@ -805,7 +805,7 @@ typedef struct		{
 // functions
 //
 
-extern void map_setup(file_path_setup_type *file_path_setup,int anisotropic_mode,int mipmap_mode,bool in_engine,bool shader_on);
+extern void map_setup(file_path_setup_type *file_path_setup,bool anisotropic,int mipmap_mode,bool in_engine,bool shader_on);
 extern bool map_new(map_type *map,char *name);
 extern bool map_open(map_type *map,char *name);
 extern bool map_reload(map_type *map);

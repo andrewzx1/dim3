@@ -30,8 +30,8 @@ and can be sold or given away.
 //
 
 typedef struct		{
-						int						anisotropic_mode,mipmap_mode;
-						bool					in_engine,shader_on;
+						int						mipmap_mode;
+						bool					anisotropic,in_engine,shader_on;
 						file_path_setup_type	file_path_setup;
                     } modelutility_settings_type;
 

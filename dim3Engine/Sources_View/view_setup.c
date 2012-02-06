@@ -253,9 +253,11 @@ void view_add_mesh_liquid_draw_list(void)
 void view_setup_objects(int tick)
 {
 	int					n,flag;
-	bool				is_camera;
+	bool				is_camera,shadow_on;
 	obj_type			*obj;
 	weapon_type			*weap;
+	
+	shadow_on=setup.shadow_on;
 	
 	for (n=0;n!=max_obj_list;n++) {
 		obj=server.obj_list.objs[n];
@@ -284,12 +286,12 @@ void view_setup_objects(int tick)
 		flag=0x0;
 		
 		if ((is_camera) && (!view.render->force_camera_obj)) {
-			flag|=view_list_item_flag_shadow_in_view;
+			if (shadow_on) flag|=view_list_item_flag_shadow_in_view;
 		}
 		else {
 			if (view_cull_model(&obj->draw)) flag|=view_list_item_flag_model_in_view;
 
-			if (obj->draw.shadow.on) {
+			if ((shadow_on) && (obj->draw.shadow.on)) {
 				if ((flag&view_list_item_flag_model_in_view)!=0x0) {		// model in view means shadow is automatically in view
 					flag|=view_list_item_flag_shadow_in_view;
 				}
@@ -326,7 +328,10 @@ void view_setup_objects(int tick)
 void view_setup_projectiles(int tick)
 {
 	int					n,flag;
+	bool				shadow_on;
 	proj_type			*proj;
+	
+	shadow_on=setup.shadow_on;
 	
 	for (n=0;n!=max_proj_list;n++) {
 		proj=server.proj_list.projs[n];
@@ -350,7 +355,7 @@ void view_setup_projectiles(int tick)
 		
 		if (view_cull_model(&proj->draw)) flag|=view_list_item_flag_model_in_view;
 
-		if (proj->draw.shadow.on) {
+		if ((shadow_on) && (proj->draw.shadow.on)) {
 			if ((flag&view_list_item_flag_model_in_view)!=0x0) {		// model in view means shadow is automatically in view
 				flag|=view_list_item_flag_shadow_in_view;
 			}

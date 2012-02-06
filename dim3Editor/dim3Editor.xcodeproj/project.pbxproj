@@ -91,16 +91,15 @@
 		260B3DB81411F22A006ED023 /* map_util_spots.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B3DA51411F22A006ED023 /* map_util_spots.c */; };
 		260B3DB91411F22A006ED023 /* map_util_texture.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B3DA61411F22A006ED023 /* map_util_texture.c */; };
 		260B3DBA1411F22A006ED023 /* map_util_write.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B3DA71411F22A006ED023 /* map_util_write.c */; };
-		260B43C91411FA5D006ED023 /* libPNG.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 260B43C51411FA5D006ED023 /* libPNG.dylib */; };
 		260B43CA1411FA5D006ED023 /* png.h in Headers */ = {isa = PBXBuildFile; fileRef = 260B43C61411FA5D006ED023 /* png.h */; };
 		260B43CB1411FA5D006ED023 /* pngconf.h in Headers */ = {isa = PBXBuildFile; fileRef = 260B43C71411FA5D006ED023 /* pngconf.h */; };
 		260B43CC1411FA5D006ED023 /* pnglibconf.h in Headers */ = {isa = PBXBuildFile; fileRef = 260B43C81411FA5D006ED023 /* pnglibconf.h */; };
-		260B43CD1411FA62006ED023 /* libPNG.dylib in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 260B43C51411FA5D006ED023 /* libPNG.dylib */; };
 		260C1471129C777100B6D5B5 /* property_palette_node.c in Sources */ = {isa = PBXBuildFile; fileRef = 260C146E129C777100B6D5B5 /* property_palette_node.c */; };
 		260C1472129C777100B6D5B5 /* property_palette_particle.c in Sources */ = {isa = PBXBuildFile; fileRef = 260C146F129C777100B6D5B5 /* property_palette_particle.c */; };
 		260C1473129C777100B6D5B5 /* property_palette_scenery.c in Sources */ = {isa = PBXBuildFile; fileRef = 260C1470129C777100B6D5B5 /* property_palette_scenery.c */; };
 		260D584C1295E85E00D0D14F /* property_palette_liquid.c in Sources */ = {isa = PBXBuildFile; fileRef = 260D584A1295E85E00D0D14F /* property_palette_liquid.c */; };
 		260D584D1295E85E00D0D14F /* property_palette_spot.c in Sources */ = {isa = PBXBuildFile; fileRef = 260D584B1295E85E00D0D14F /* property_palette_spot.c */; };
+		261833CB14DDEB42004DD37A /* libPNG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 261833CA14DDEB42004DD37A /* libPNG.a */; };
 		261CEB8112D156D800D1D8BF /* dialog_obj_import.c in Sources */ = {isa = PBXBuildFile; fileRef = 261CEB8012D156D800D1D8BF /* dialog_obj_import.c */; };
 		26232DD313065713008DC42B /* osx_dialog.h in Headers */ = {isa = PBXBuildFile; fileRef = 26232DD213065713008DC42B /* osx_dialog.h */; };
 		262C38D212D0211200A94FEE /* ui_common.h in Headers */ = {isa = PBXBuildFile; fileRef = 262C38D112D0211200A94FEE /* ui_common.h */; };
@@ -343,7 +342,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				260B43CD1411FA62006ED023 /* libPNG.dylib in Copy Frameworks */,
 			);
 			name = "Copy Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -452,7 +450,6 @@
 		260B3DA51411F22A006ED023 /* map_util_spots.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = map_util_spots.c; sourceTree = "<group>"; };
 		260B3DA61411F22A006ED023 /* map_util_texture.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = map_util_texture.c; sourceTree = "<group>"; };
 		260B3DA71411F22A006ED023 /* map_util_write.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = map_util_write.c; sourceTree = "<group>"; };
-		260B43C51411FA5D006ED023 /* libPNG.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libPNG.dylib; sourceTree = "<group>"; };
 		260B43C61411FA5D006ED023 /* png.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = png.h; sourceTree = "<group>"; };
 		260B43C71411FA5D006ED023 /* pngconf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pngconf.h; sourceTree = "<group>"; };
 		260B43C81411FA5D006ED023 /* pnglibconf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pnglibconf.h; sourceTree = "<group>"; };
@@ -461,6 +458,7 @@
 		260C1470129C777100B6D5B5 /* property_palette_scenery.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_scenery.c; path = Code/property_palette_scenery.c; sourceTree = "<group>"; };
 		260D584A1295E85E00D0D14F /* property_palette_liquid.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_liquid.c; path = Code/property_palette_liquid.c; sourceTree = "<group>"; };
 		260D584B1295E85E00D0D14F /* property_palette_spot.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_spot.c; path = Code/property_palette_spot.c; sourceTree = "<group>"; };
+		261833CA14DDEB42004DD37A /* libPNG.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libPNG.a; sourceTree = "<group>"; };
 		261CEB8012D156D800D1D8BF /* dialog_obj_import.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_obj_import.c; path = Code/dialog_obj_import.c; sourceTree = "<group>"; };
 		26232DD213065713008DC42B /* osx_dialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = osx_dialog.h; path = ../dim3Common/Headers/osx_dialog.h; sourceTree = SOURCE_ROOT; };
 		262C38D112D0211200A94FEE /* ui_common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ui_common.h; path = ../dim3Common/Headers/ui_common.h; sourceTree = SOURCE_ROOT; };
@@ -599,7 +597,7 @@
 				F5A4325D055602DF002DF965 /* OpenGL.framework in Frameworks */,
 				260B3C6C1411EFA3006ED023 /* Foundation.framework in Frameworks */,
 				260B3C6E1411EFAA006ED023 /* AppKit.framework in Frameworks */,
-				260B43C91411FA5D006ED023 /* libPNG.dylib in Frameworks */,
+				261833CB14DDEB42004DD37A /* libPNG.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -858,7 +856,7 @@
 		260B43C41411FA5D006ED023 /* PNG */ = {
 			isa = PBXGroup;
 			children = (
-				260B43C51411FA5D006ED023 /* libPNG.dylib */,
+				261833CA14DDEB42004DD37A /* libPNG.a */,
 				260B43C61411FA5D006ED023 /* png.h */,
 				260B43C71411FA5D006ED023 /* pngconf.h */,
 				260B43C81411FA5D006ED023 /* pnglibconf.h */,

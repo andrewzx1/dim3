@@ -95,7 +95,7 @@ bool file_new_map(void)
 	
 		// set the map paths
 		
-	map_setup(&file_path_setup,anisotropic_mode_none,setup.mipmap_mode,FALSE,FALSE);
+	map_setup(&file_path_setup,FALSE,setup.mipmap_mode,FALSE,FALSE);
 	
 		// start the map
 		
@@ -153,7 +153,7 @@ bool file_open_map(void)
 	sprintf(str,"Loading %s...",file_name);
 	progress_start("Loading...",11);
 	
-	map_setup(&file_path_setup,anisotropic_mode_none,setup.mipmap_mode,FALSE,FALSE);
+	map_setup(&file_path_setup,FALSE,setup.mipmap_mode,FALSE,FALSE);
 	progress_next();
 	
 	ok=map_open(&map,file_name);

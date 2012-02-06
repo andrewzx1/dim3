@@ -97,7 +97,6 @@ int							setup_tab_value,setup_action_scroll_pos,
 
 char						setup_tab_list[5][name_str_len],
 							setup_screen_size_list[max_screen_size+1][32],
-							setup_anisotropic_mode_list[][32]=anisotropic_mode_setup_list_def,
 							setup_mipmap_mode_list[][32]=mipmap_mode_setup_list_def,
 							setup_fsaa_mode_list[][32]=setup_fsaa_mode_list_def,
 							setup_control_names[][32]=control_names,
@@ -167,11 +166,11 @@ void setup_game_video_pane(void)
 	
 	element_checkbox_add("Decals",setup.decal_on,ctrl_decal_on_id,x,y,TRUE);
 	y+=control_y_add;
-	element_checkbox_add("Shadow",setup.shadow_on,ctrl_shadow_on_id,x,y,TRUE);
+	element_checkbox_add("Shadows",setup.shadow_on,ctrl_shadow_on_id,x,y,TRUE);
 	y+=control_y_add;
 
 	if (gl_check_texture_anisotropic_filter_ok()) {
-		element_combo_add("Anisotropic Filtering",(char*)setup_anisotropic_mode_list,setup.anisotropic_mode,ctrl_anisotropic_id,x,y,TRUE);
+		element_checkbox_add("Anisotropic Filtering",setup.anisotropic,ctrl_anisotropic_id,x,y,TRUE);
 		y+=control_y_add;
 	}
 	
@@ -606,7 +605,7 @@ void setup_game_close(void)
 		display_reset=(setup_backup.screen_wid!=setup.screen_wid);
 		display_reset=display_reset || (setup_backup.screen_high!=setup.screen_high);
 		display_reset=display_reset || (setup_backup.fsaa_mode!=setup.fsaa_mode);
-		display_reset=display_reset || (setup_backup.anisotropic_mode!=setup.anisotropic_mode);
+		display_reset=display_reset || (setup_backup.anisotropic!=setup.anisotropic);
 		display_reset=display_reset || (setup_backup.mipmap_mode!=setup.mipmap_mode);
 	
 		if (display_reset) {
@@ -711,7 +710,7 @@ void setup_game_handle_click(int id)
 			break;
 
 		case ctrl_anisotropic_id:
-			setup.anisotropic_mode=element_get_value(ctrl_anisotropic_id);
+			setup.anisotropic=element_get_value(ctrl_anisotropic_id);
 			break;
 			
 		case ctrl_mipmap_id:
