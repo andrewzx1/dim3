@@ -105,6 +105,7 @@ void view_memory_release(void)
       
 ======================================================= */
 
+#ifndef D3_SDL_1_3
 void view_create_screen_size_list(void)
 {
 	int				n,k,i,nscreen_size;
@@ -171,6 +172,70 @@ void view_create_screen_size_list(void)
 	
 	render_info.nscreen_size=k;
 }
+#else
+void view_create_screen_size_list(void)
+{
+	int				n,k,i,nmode;
+	float			ratio;
+	bool			hit;
+	SDL_DisplayMode	mode;
+	
+	nmode=SDL_GetNumDisplayModes(0);
+	
+		// if no modes, then 640x480 is the only mode
+		
+	if (nmode==0) {
+		render_info.screen_sizes[0].wid=640;
+		render_info.screen_sizes[0].high=480;
+		render_info.nscreen_size=1;
+		return;
+	}
+	
+		// create screen list
+		
+	k=0;
+	
+	for (n=(nmode-1);n>=0;n--) {
+	
+		SDL_GetDisplayMode(0,n,&mode);
+
+			// knock out any less than 640x480 or when height >= width
+
+		if (mode.w<640) continue;
+		if (mode.h<480) continue;
+		if (mode.h>=mode.w) continue;
+
+			// is this screen already in list?
+
+		hit=FALSE;
+
+		for (i=0;i!=k;i++) {
+			if ((render_info.screen_sizes[i].wid==mode.w) && (render_info.screen_sizes[i].high==mode.h)) {
+				hit=TRUE;
+				break;
+			}
+		}
+
+			// add to list if ratio is equal or
+			// better than 4:3 (0.75) and not less
+			// then 1:85:1 (0.54)
+
+		if (!hit) {
+			ratio=(float)mode.h/(float)mode.w;
+			if ((ratio>=0.54) && (ratio<=0.75f)) {
+				render_info.screen_sizes[k].wid=mode.w;
+				render_info.screen_sizes[k].high=mode.h;
+
+				k++;
+				if (k>=max_screen_size) break;
+			}
+		}
+	}
+	
+	render_info.nscreen_size=k;
+}
+
+#endif
 
 /* =======================================================
 
@@ -187,7 +252,6 @@ bool view_initialize_display(char *err_str)
 		// if not, go back to default
 		
 	if (setup.screen_wid!=-1) {
-		
 		ok=FALSE;
 			
 		for (n=0;n!=render_info.nscreen_size;n++) {
@@ -211,7 +275,7 @@ bool view_initialize_display(char *err_str)
 		// fix some OpenGL settings if not supported by card
 
 	if (!gl_check_fsaa_ok()) setup.fsaa_mode=fsaa_mode_none;
-	if (!gl_check_texture_anisotropic_filter_ok()) setup.anisotropic_mode=anisotropic_mode_none;
+	if (!gl_check_texture_anisotropic_filter_ok()) setup.anisotropic=FALSE;
 
 		// shadows
 

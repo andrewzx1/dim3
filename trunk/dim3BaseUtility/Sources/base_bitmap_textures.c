@@ -35,27 +35,17 @@ and can be sold or given away.
       
 ======================================================= */
 
-void bitmap_texture_set_anisotropic_mode(int gl_bindtype,int anisotropic_mode)
+void bitmap_texture_set_anisotropic_mode(int gl_bindtype,bool anisotropic)
 {
-	switch (anisotropic_mode) {
+	float			max;
 	
-		case anisotropic_mode_none:
-			glTexParameterf(gl_bindtype,GL_TEXTURE_MAX_ANISOTROPY_EXT,1.0);
-			break;
-			
-		case anisotropic_mode_low:
-			glTexParameterf(gl_bindtype,GL_TEXTURE_MAX_ANISOTROPY_EXT,2.0);
-			break;
-			
-		case anisotropic_mode_medium:
-			glTexParameterf(gl_bindtype,GL_TEXTURE_MAX_ANISOTROPY_EXT,4.0);
-			break;
-			
-		case anisotropic_mode_high:
-			glTexParameterf(gl_bindtype,GL_TEXTURE_MAX_ANISOTROPY_EXT,8.0);
-			break;
-			
+	if (!anisotropic) {
+		glTexParameterf(gl_bindtype,GL_TEXTURE_MAX_ANISOTROPY_EXT,1.0);
+		return;
 	}
+	
+	glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT,&max);
+	glTexParameterf(gl_bindtype,GL_TEXTURE_MAX_ANISOTROPY_EXT,max);
 }
 
 void bitmap_texture_set_mipmap_filter(int gl_bindtype,int mipmap_mode,bool pixelated)
@@ -116,7 +106,7 @@ void bitmap_texture_set_mipmap_filter(int gl_bindtype,int mipmap_mode,bool pixel
       
 ======================================================= */
 
-bool bitmap_texture_open(bitmap_type *bitmap,unsigned char *data,int anisotropic_mode,int mipmap_mode,bool compress,bool rectangle,bool pixelated)
+bool bitmap_texture_open(bitmap_type *bitmap,unsigned char *data,bool anisotropic,int mipmap_mode,bool compress,bool rectangle,bool pixelated)
 {
 	int					gl_txtformat,gl_txttype,gl_bindtype;
 	GLuint				gl_id;
@@ -142,7 +132,7 @@ bool bitmap_texture_open(bitmap_type *bitmap,unsigned char *data,int anisotropic
 		// storage and settings
 	
 	bitmap_texture_set_mipmap_filter(gl_bindtype,mipmap_mode,pixelated);
-	bitmap_texture_set_anisotropic_mode(gl_bindtype,anisotropic_mode);
+	bitmap_texture_set_anisotropic_mode(gl_bindtype,anisotropic);
 	
 		// texture type
 		// opengl es doesn't support compression

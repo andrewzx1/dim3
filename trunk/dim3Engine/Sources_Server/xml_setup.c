@@ -47,7 +47,7 @@ void setup_xml_default(void)
 	setup.screen_wid=-1;
 	setup.screen_high=-1;
 	
-	setup.anisotropic_mode=anisotropic_mode_none;
+	setup.anisotropic=TRUE;
 	setup.mipmap_mode=mipmap_mode_trilinear;
 	setup.fsaa_mode=fsaa_mode_none;
 	
@@ -137,7 +137,7 @@ bool setup_xml_read_path(char *path)
 	xml_key_read_int(setup_tag,"Screen_Width",&setup.screen_wid);
 	xml_key_read_int(setup_tag,"Screen_Height",&setup.screen_high);
 	xml_key_read_float(setup_tag,"Gamma",&setup.gamma);
-    xml_key_read_int(setup_tag,"Anisotropic_Mode",&setup.anisotropic_mode);
+    xml_key_read_boolean(setup_tag,"Anisotropic",&setup.anisotropic);
     xml_key_read_int(setup_tag,"Mipmap_Mode",&setup.mipmap_mode);
 	xml_key_read_int(setup_tag,"FSAA_Mode",&setup.fsaa_mode);
 	xml_key_read_boolean(setup_tag,"Decal_On",&setup.decal_on);
@@ -306,7 +306,7 @@ bool setup_xml_write(void)
     xml_key_write_int("Screen_Width",setup.screen_wid);
     xml_key_write_int("Screen_Height",setup.screen_high);
 	xml_key_write_float("Gamma",setup.gamma);
-	xml_key_write_int("Anisotropic_Mode",setup.anisotropic_mode);
+	xml_key_write_boolean("Anisotropic",setup.anisotropic);
     xml_key_write_int("Mipmap_Mode",setup.mipmap_mode);
 	xml_key_write_int("FSAA_Mode",setup.fsaa_mode);
 	xml_key_write_boolean("Decal_On",setup.decal_on);
@@ -443,7 +443,7 @@ void setup_restore(void)
 	setup.decal_on=FALSE;
 	setup.shadow_on=FALSE;
 	
-	setup.anisotropic_mode=anisotropic_mode_none;
+	setup.anisotropic=FALSE;
 	setup.mipmap_mode=mipmap_mode_none;
 	setup.fsaa_mode=fsaa_mode_none;
 	

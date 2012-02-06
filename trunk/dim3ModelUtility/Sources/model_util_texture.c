@@ -102,7 +102,7 @@ void model_textures_read(model_type *model)
 					sprintf(name,"%s_n",frame->name);
 					file_paths_data(&modelutility_settings.file_path_setup,path2,sub_path,name,"png");
 					
-					bitmap_combine(&frame->bitmap,path,path2,modelutility_settings.anisotropic_mode,modelutility_settings.mipmap_mode,texture->compress,texture->pixelated);
+					bitmap_combine(&frame->bitmap,path,path2,modelutility_settings.anisotropic,modelutility_settings.mipmap_mode,texture->compress,texture->pixelated);
 				}
 				
 					// else load all maps
@@ -110,26 +110,26 @@ void model_textures_read(model_type *model)
 				else {
 
 					file_paths_data(&modelutility_settings.file_path_setup,path,sub_path,frame->name,"png");
-					bitmap_open(&frame->bitmap,path,modelutility_settings.anisotropic_mode,modelutility_settings.mipmap_mode,texture->compress,FALSE,texture->pixelated,FALSE);
+					bitmap_open(&frame->bitmap,path,modelutility_settings.anisotropic,modelutility_settings.mipmap_mode,texture->compress,FALSE,texture->pixelated,FALSE);
 
 						// bumpmap
 
 					sprintf(name,"%s_n",frame->name);
 					file_paths_data(&modelutility_settings.file_path_setup,path,sub_path,name,"png");	// compress messes up normals
-					bitmap_open(&frame->bumpmap,path,modelutility_settings.anisotropic_mode,modelutility_settings.mipmap_mode,FALSE,FALSE,texture->pixelated,FALSE);
+					bitmap_open(&frame->bumpmap,path,modelutility_settings.anisotropic,modelutility_settings.mipmap_mode,FALSE,FALSE,texture->pixelated,FALSE);
 					
 						// specular map
 
 					sprintf(name,"%s_s",frame->name);
 					file_paths_data(&modelutility_settings.file_path_setup,path,sub_path,name,"png");
-					bitmap_open(&frame->specularmap,path,modelutility_settings.anisotropic_mode,modelutility_settings.mipmap_mode,texture->compress,FALSE,texture->pixelated,FALSE);
+					bitmap_open(&frame->specularmap,path,modelutility_settings.anisotropic,modelutility_settings.mipmap_mode,texture->compress,FALSE,texture->pixelated,FALSE);
 				}
 				
 					// glow map
 
 				sprintf(name,"%s_g",frame->name);
 				file_paths_data(&modelutility_settings.file_path_setup,path,sub_path,name,"png");
-				bitmap_open(&frame->glowmap,path,modelutility_settings.anisotropic_mode,modelutility_settings.mipmap_mode,texture->compress,FALSE,texture->pixelated,TRUE);
+				bitmap_open(&frame->glowmap,path,modelutility_settings.anisotropic,modelutility_settings.mipmap_mode,texture->compress,FALSE,texture->pixelated,TRUE);
 			}
 			
 			frame++;

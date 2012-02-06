@@ -47,10 +47,6 @@ extern bool					game_loop_quit;
 extern char					setup_control_names[][32];
 extern setup_type			setup;
 
-#ifndef D3_SDL_1_3
-	#define SDL_SCANCODE_CAPSLOCK	SDLK_CAPSLOCK
-#endif
-
 /* =======================================================
 
       Input Start and Stop
@@ -74,7 +70,6 @@ void input_initialize(bool in_window)
 	SDL_EventState(SDL_JOYBUTTONDOWN,SDL_IGNORE);
 	SDL_EventState(SDL_JOYBUTTONUP,SDL_IGNORE);
 	SDL_EventState(SDL_SYSWMEVENT,SDL_IGNORE);
-	SDL_EventState(SDL_VIDEORESIZE,SDL_IGNORE);
 	SDL_EventState(SDL_USEREVENT,SDL_IGNORE);
 
 		// initialize mouse, joysticks, and touch
@@ -333,13 +328,21 @@ bool input_event_pump(void)
 				// keyboard events
 				
 		#else
-
+		
 			case SDL_KEYDOWN:
-				input_event_key(event.key.keysym.sym,TRUE);
+				#ifndef D3_SDL_1_3
+					input_event_key(event.key.keysym.sym,TRUE);
+				#else
+					input_event_key(event.key.keysym.scancode,TRUE);
+				#endif
 				break;
 
 			case SDL_KEYUP:
-				input_event_key(event.key.keysym.sym,FALSE);
+				#ifndef D3_SDL_1_3
+					input_event_key(event.key.keysym.sym,FALSE);
+				#else
+					input_event_key(event.key.keysym.scancode,FALSE);
+				#endif
 				break;
 				
 				// mouse events

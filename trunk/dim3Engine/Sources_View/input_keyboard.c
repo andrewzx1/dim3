@@ -198,11 +198,22 @@ char input_get_text_input_key(void)
 		return('a'+(key-SDL_SCANCODE_A));
 	}
 	
+#ifndef D3_SDL_1_3
 	if ((key>=SDL_SCANCODE_0) && (key<=SDL_SCANCODE_9)) {
 		if (!shifted) return('0'+(char)(key-SDL_SCANCODE_0));
 		if (key==SDL_SCANCODE_0) return(')');
 		return(text_input_shift_numbs[key-SDL_SCANCODE_1]);
 	}
+#else
+	if ((key>=SDL_SCANCODE_1) && (key<=SDL_SCANCODE_0)) {
+		if (key==SDL_SCANCODE_0) {
+			if (shifted) return(')');
+			return('0');
+		}
+		if (shifted) return(text_input_shift_numbs[key-SDL_SCANCODE_1]);
+		return('1'+(char)(key-SDL_SCANCODE_1));
+	}
+#endif
 	
 		// couple misc characters
 		

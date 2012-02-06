@@ -348,17 +348,6 @@ extern void xml_key_write_color(char *name,d3col *value);
 #define alpha_mode_transparent					2
 
 //
-// anisotropic modes
-//
-
-#define anisotropic_mode_none					0
-#define anisotropic_mode_low					1
-#define anisotropic_mode_medium					2
-#define anisotropic_mode_high					3
-
-#define anisotropic_mode_setup_list_def			{"None","Low","Medium","High",""}
-
-//
 // mipmap modes
 //
 
@@ -451,10 +440,10 @@ typedef struct		{
 //
 
 extern void bitmap_new(bitmap_type *bitmap);
-extern bool bitmap_open(bitmap_type *bitmap,char *path,int anisotropic_mode,int mipmap_mode,bool compress,bool rectangle,bool pixelated,bool scrub_black_to_alpha);
+extern bool bitmap_open(bitmap_type *bitmap,char *path,bool anisotropic,int mipmap_mode,bool compress,bool rectangle,bool pixelated,bool scrub_black_to_alpha);
 extern bool bitmap_color(bitmap_type *bitmap,d3col *col);
-extern bool bitmap_data(bitmap_type *bitmap,unsigned char *data,int wid,int high,bool alpha_channel,int anisotropic_mode,int mipmap_mode,bool compress,bool rectangle);
-extern bool bitmap_combine(bitmap_type *bitmap,char *bitmap_path,char *bumpmap_path,int anisotropic_mode,int mipmap_mode,bool compress,bool pixelated);
+extern bool bitmap_data(bitmap_type *bitmap,unsigned char *data,int wid,int high,bool alpha_channel,bool anisotropic,int mipmap_mode,bool compress,bool rectangle);
+extern bool bitmap_combine(bitmap_type *bitmap,char *bitmap_path,char *bumpmap_path,bool anisotropic,int mipmap_mode,bool compress,bool pixelated);
 extern void bitmap_close(bitmap_type *bitmap);
 
 extern int bitmap_texture_get_current_frame(texture_type *texture,bool reverse,int tick);

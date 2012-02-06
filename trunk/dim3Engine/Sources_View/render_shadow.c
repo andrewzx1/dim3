@@ -709,4 +709,3 @@ void shadow_render_model(model_draw *draw)
 		if ((draw->render_mesh_mask&(0x1<<n))!=0) shadow_render_model_mesh(mdl,n,draw);
 	}
 }
-

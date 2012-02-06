@@ -44,8 +44,7 @@
 		260B3C541411EE24006ED023 /* file_cocoa.m in Sources */ = {isa = PBXBuildFile; fileRef = 260B3C521411EE24006ED023 /* file_cocoa.m */; };
 		260B3C591411EE85006ED023 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 260B3C581411EE85006ED023 /* AppKit.framework */; };
 		260B3C5B1411EE9A006ED023 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 260B3C5A1411EE9A006ED023 /* Foundation.framework */; };
-		260B43AF1411F9C0006ED023 /* libPNG.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 260B43AB1411F9C0006ED023 /* libPNG.dylib */; };
-		260B43B01411F9CA006ED023 /* libPNG.dylib in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 260B43AB1411F9C0006ED023 /* libPNG.dylib */; };
+		261833D614DDEBB6004DD37A /* libPNG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 261833D514DDEBB6004DD37A /* libPNG.a */; };
 		2643487B13E617F600920D9B /* alt_property_palette_virtual_control_button.c in Sources */ = {isa = PBXBuildFile; fileRef = 2643487813E617F500920D9B /* alt_property_palette_virtual_control_button.c */; };
 		2643487C13E617F600920D9B /* alt_property_palette_virtual_control_stick.c in Sources */ = {isa = PBXBuildFile; fileRef = 2643487913E617F600920D9B /* alt_property_palette_virtual_control_stick.c */; };
 		2643488913E651F800920D9B /* property_palette_virtual_control.c in Sources */ = {isa = PBXBuildFile; fileRef = 2643488813E651F800920D9B /* property_palette_virtual_control.c */; };
@@ -126,7 +125,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				260B43B01411F9CA006ED023 /* libPNG.dylib in Copy Frameworks */,
 			);
 			name = "Copy Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -200,10 +198,10 @@
 		260B3C521411EE24006ED023 /* file_cocoa.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = file_cocoa.m; sourceTree = "<group>"; };
 		260B3C581411EE85006ED023 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = ../../../../System/Library/Frameworks/AppKit.framework; sourceTree = "<group>"; };
 		260B3C5A1411EE9A006ED023 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = ../../../../System/Library/Frameworks/Foundation.framework; sourceTree = "<group>"; };
-		260B43AB1411F9C0006ED023 /* libPNG.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libPNG.dylib; sourceTree = "<group>"; };
 		260B43AC1411F9C0006ED023 /* png.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = png.h; sourceTree = "<group>"; };
 		260B43AD1411F9C0006ED023 /* pngconf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pngconf.h; sourceTree = "<group>"; };
 		260B43AE1411F9C0006ED023 /* pnglibconf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pnglibconf.h; sourceTree = "<group>"; };
+		261833D514DDEBB6004DD37A /* libPNG.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libPNG.a; sourceTree = "<group>"; };
 		2643487813E617F500920D9B /* alt_property_palette_virtual_control_button.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = alt_property_palette_virtual_control_button.c; path = Code/alt_property_palette_virtual_control_button.c; sourceTree = "<group>"; };
 		2643487913E617F600920D9B /* alt_property_palette_virtual_control_stick.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = alt_property_palette_virtual_control_stick.c; path = Code/alt_property_palette_virtual_control_stick.c; sourceTree = "<group>"; };
 		2643488813E651F800920D9B /* property_palette_virtual_control.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_virtual_control.c; path = Code/property_palette_virtual_control.c; sourceTree = "<group>"; };
@@ -296,7 +294,7 @@
 				269FED7E132848A10030B0B5 /* OpenGL.framework in Frameworks */,
 				260B3C591411EE85006ED023 /* AppKit.framework in Frameworks */,
 				260B3C5B1411EE9A006ED023 /* Foundation.framework in Frameworks */,
-				260B43AF1411F9C0006ED023 /* libPNG.dylib in Frameworks */,
+				261833D614DDEBB6004DD37A /* libPNG.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -378,7 +376,7 @@
 		260B43AA1411F9C0006ED023 /* PNG */ = {
 			isa = PBXGroup;
 			children = (
-				260B43AB1411F9C0006ED023 /* libPNG.dylib */,
+				261833D514DDEBB6004DD37A /* libPNG.a */,
 				260B43AC1411F9C0006ED023 /* png.h */,
 				260B43AD1411F9C0006ED023 /* pngconf.h */,
 				260B43AE1411F9C0006ED023 /* pnglibconf.h */,
