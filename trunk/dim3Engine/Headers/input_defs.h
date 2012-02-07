@@ -47,7 +47,7 @@ and can be sold or given away.
 												"Left Shift","Z","X","C","V","B","N","M",",",".","/","Right Shift", \
 												"Left Control","Left Option/Alt","Left Command/Window","Space","Right Command/Window","Right Option/Alt","Right Command", \
 												"Home","Page Up","Delete","End","Page Down", \
-												"Left","Up","Down","Right", \
+												"LeftArrow","UpArrow","DownArrow","RightArrow", \
 												"Clear","Keypad =","Keypad /","Keypad *", \
 												"Keypad 7","Keypad 8","Keypad 9","Keypad -", \
 												"Keypad 4","Keypad 5","Keypad 6","Keypad +", \
