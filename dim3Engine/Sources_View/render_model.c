@@ -1014,7 +1014,7 @@ void render_model_setup(model_draw *draw,int tick)
 
 		// setup any shadow lights
 
-	if (!draw->shadow.on) return;
+	if ((!setup.shadow_on) || (!draw->shadow.on)) return;
 
 		// average all the lights
 		// for the shadow projection

@@ -1270,6 +1270,141 @@ void ray_trace_map_by_point_array_no_contact(int cnt,d3pnt *spt,d3pnt *ept,d3pnt
 
 /* =======================================================
 
+      Map Blocking
+      
+======================================================= */
+
+bool ray_trace_map_blocking(d3pnt *spt,d3pnt *ept,int origin)
+{
+	int							n,k,poly_count;
+	short						*poly_idx;
+	d3pnt						pt,min,max;
+	d3vct						vct;
+	map_mesh_type				*mesh;
+	map_mesh_poly_type			*poly;
+	
+		// get bounds for all vectors
+		// and use those as a collision check
+		// this is rough, but going through all
+		// the meshes is actually longer than
+		// dealing with a few missed hits
+
+	ray_trace_get_ray_bounds(1,spt,ept,&min,&max);
+	
+		// create vector from points
+
+	vct.x=(float)(ept->x-spt->x);
+	vct.y=(float)(ept->y-spt->y);
+	vct.z=(float)(ept->z-spt->z);
+
+		// check all meshes
+
+	for (n=0;n!=map.mesh.nmesh;n++) {
+
+		mesh=&map.mesh.meshes[n];
+		if (!ray_trace_mesh_bound_check(mesh,&min,&max)) continue;
+
+			// halo checks
+
+		if (origin==poly_ray_trace_origin_halo) {
+			if (mesh->flag.no_halo_obscure) continue;
+		}
+		
+			// simple collisions
+			
+		if (mesh->flag.simple_collision) {
+			if (ray_trace_mesh_box(spt,&vct,&pt,mesh)!=-1.0f) return(TRUE);
+			continue;
+		}
+		
+			// complex collisions
+		
+		poly_count=mesh->poly_list.all_count;
+		poly_idx=mesh->poly_list.all_idxs;
+			
+		for (k=0;k!=poly_count;k++) {
+
+			poly=&mesh->polys[poly_idx[k]];
+			if (!ray_trace_mesh_poly_bound_check(poly,&min,&max)) continue;
+
+			if (ray_trace_mesh_polygon(spt,&vct,&pt,mesh,poly)!=-1.0f) return(TRUE);
+		}
+				
+	}
+	
+	return(FALSE);
+}
+
+/* =======================================================
+
+      Ray Trace Shadow Poly
+      
+======================================================= */
+
+inline float ray_trace_shadow_plane(d3pnt *spt,d3vct *vct,d3pnt *hpt,int ptsz,d3pnt *plane)
+{
+	int			n,trig_count;
+	
+		// run through all the triangles of the polygon
+		// any hit counts, we are never
+		// looking for close hits
+		
+	trig_count=ptsz-2;
+	
+	for (n=0;n<trig_count;n++) {
+		if (ray_trace_triangle(spt,vct,hpt,&plane[0],&plane[n+1],&plane[n+2])!=-1.0f) return(TRUE);
+	}
+	
+	return(FALSE);
+}
+
+void ray_trace_shadow_to_mesh_poly(int cnt,d3vct *vct,d3pnt *spt,d3pnt *hpt,bool *hits,int mesh_idx,int poly_idx)
+{
+	int						n;
+	bool					*hit;
+	d3pnt					*pt,*pp,*sp,*hp,
+							plane_vp[8];
+	map_mesh_type			*mesh;
+	map_mesh_poly_type		*poly;
+	
+		// get polygon
+		
+	mesh=&map.mesh.meshes[mesh_idx];
+	poly=&mesh->polys[poly_idx];
+	
+		// setup the plane
+		// by enlarging the poly
+
+	pp=plane_vp;
+	
+	for (n=0;n!=poly->ptsz;n++) {
+		pt=&mesh->vertexes[poly->v[n]];
+		pp->x=((pt->x-poly->box.mid.x)*100)+poly->box.mid.x;
+		pp->y=((pt->y-poly->box.mid.y)*100)+poly->box.mid.y;
+		pp->z=((pt->z-poly->box.mid.z)*100)+poly->box.mid.z;
+		pp++;
+	}
+	
+		// run the ray array
+		
+	sp=spt;
+	hp=hpt;
+	hit=hits;
+
+	for (n=0;n!=cnt;n++) {
+		hp->x=sp->x;
+		hp->y=sp->y;
+		hp->z=sp->z;
+
+		*hit++=ray_trace_shadow_plane(sp,vct,hp,poly->ptsz,plane_vp);
+
+		sp++;
+		hp++;
+	}
+}
+
+/* =======================================================
+
       Ray Trace Plane
       
 ======================================================= */
