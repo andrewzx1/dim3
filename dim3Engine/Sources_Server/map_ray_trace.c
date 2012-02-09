@@ -168,6 +168,81 @@ float ray_trace_triangle(d3pnt *spt,d3vct *vct,d3pnt *hpt,d3pnt *tpt_0,d3pnt *tp
 	return(t);
 }
 
+float ray_trace_triangle_f(d3fpnt *spt,d3vct *vct,d3fpnt *hpt,d3fpnt *tpt_0,d3fpnt *tpt_1,d3fpnt *tpt_2)
+{
+	float				det,invDet,t,u,v;
+	d3vct				perpVector,lineToTrigPointVector,lineToTrigPerpVector,v1,v2;
+	
+		// get triangle vectors
+		// tpt_0 is inbetween tpt_1 and tpt_2
+
+	v1.x=tpt_1->x-tpt_0->x;
+	v1.y=tpt_1->y-tpt_0->y;
+	v1.z=tpt_1->z-tpt_0->z;
+
+	v2.x=tpt_2->x-tpt_0->x;
+	v2.y=tpt_2->y-tpt_0->y;
+	v2.z=tpt_2->z-tpt_0->z;
+	
+		// calculate the cross product and
+		// then the inner product to get the
+		// determinate
+		
+	perpVector.x=(vct->y*v2.z)-(v2.y*vct->z);
+	perpVector.y=(vct->z*v2.x)-(v2.z*vct->x);
+	perpVector.z=(vct->x*v2.y)-(v2.x*vct->y);
+
+	det=(v1.x*perpVector.x)+(v1.y*perpVector.y)+(v1.z*perpVector.z);
+	
+		// is line on the same plane as triangle?
+		
+	if ((det>-0.00001f) && (det<0.00001f)) return(-1.0f);
+
+		// get the inverse determinate
+
+	invDet=1.0f/det;
+
+		// calculate triangle U and test
+		// using the vector from spt to tpt_0
+		// and the inner product of that result and
+		// the perpVector
+		
+	lineToTrigPointVector.x=spt->x-tpt_0->x;
+	lineToTrigPointVector.y=spt->y-tpt_0->y;
+	lineToTrigPointVector.z=spt->z-tpt_0->z;
+
+	u=invDet*((lineToTrigPointVector.x*perpVector.x)+(lineToTrigPointVector.y*perpVector.y)+(lineToTrigPointVector.z*perpVector.z));
+	if ((u<0.0f) || (u>1.0f)) return(-1.0f);
+	
+		// calculate triangle V and test
+		// using the cross product of lineToTrigPointVector
+		// and v1 and the inner product of that result and vct
+
+	lineToTrigPerpVector.x=(lineToTrigPointVector.y*v1.z)-(v1.y*lineToTrigPointVector.z);
+	lineToTrigPerpVector.y=(lineToTrigPointVector.z*v1.x)-(v1.z*lineToTrigPointVector.x);
+	lineToTrigPerpVector.z=(lineToTrigPointVector.x*v1.y)-(v1.x*lineToTrigPointVector.y);
+	
+	v=invDet*((vct->x*lineToTrigPerpVector.x)+(vct->y*lineToTrigPerpVector.y)+(vct->z*lineToTrigPerpVector.z));
+	if ((v<0.0f) || ((u+v)>1.0f)) return(-1.0f);
+	
+		// get line T for point(t) =  start_point + (vector*t)
+		// use the inner product of v2 and lineToTrigPerpVector
+		// -t are on the negative vector behind the point, so ignore
+
+	t=invDet*((v2.x*lineToTrigPerpVector.x)+(v2.y*lineToTrigPerpVector.y)+(v2.z*lineToTrigPerpVector.z));
+	if (t<0.0f) return(-1.0f);
+	
+		// get point on line of intersection
+		
+	hpt->x=spt->x+(vct->x*t);
+	hpt->y=spt->y+(vct->y*t);
+	hpt->z=spt->z+(vct->z*t);
+	
+		// return t
+		
+	return(t);
+}
+
 void ray_trace_plane(d3pnt *spt,d3vct *vct,d3pnt *hpt,d3pnt *ppt_0,d3pnt *ppt_1,d3pnt *ppt_2)
 {
 	float			t,ka,kb,kc,kd;
@@ -1341,28 +1416,12 @@ bool ray_trace_map_blocking(d3pnt *spt,d3pnt *ept,int origin)
       
 ======================================================= */
 
-inline float ray_trace_shadow_plane(d3pnt *spt,d3vct *vct,d3pnt *hpt,int ptsz,d3pnt *plane)
+void ray_trace_shadow_to_mesh_poly(int cnt,d3vct *vct,d3fpnt *spt,d3fpnt *hpt,bool *hits,int mesh_idx,int poly_idx)
 {
-	int			n,trig_count;
-	
-		// run through all the triangles of the polygon
-		// any hit counts, we are never
-		// looking for close hits
-		
-	trig_count=ptsz-2;
-	
-	for (n=0;n<trig_count;n++) {
-		if (ray_trace_triangle(spt,vct,hpt,&plane[0],&plane[n+1],&plane[n+2])!=-1.0f) return(TRUE);
-	}
-	
-	return(FALSE);
-}
-
-void ray_trace_shadow_to_mesh_poly(int cnt,d3vct *vct,d3pnt *spt,d3pnt *hpt,bool *hits,int mesh_idx,int poly_idx)
-{
-	int						n;
+	int						n,k,trig_count;
 	bool					*hit;
-	d3pnt					*pt,*pp,*sp,*hp,
+	d3pnt					*pt;
+	d3fpnt					*pp,*sp,*hp,
 							plane_vp[8];
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
@@ -1379,9 +1438,9 @@ void ray_trace_shadow_to_mesh_poly(int cnt,d3vct *vct,d3pnt *spt,d3pnt *hpt,bool
 	
 	for (n=0;n!=poly->ptsz;n++) {
 		pt=&mesh->vertexes[poly->v[n]];
-		pp->x=((pt->x-poly->box.mid.x)*100)+poly->box.mid.x;
-		pp->y=((pt->y-poly->box.mid.y)*100)+poly->box.mid.y;
-		pp->z=((pt->z-poly->box.mid.z)*100)+poly->box.mid.z;
+		pp->x=(float)(((pt->x-poly->box.mid.x)*100)+poly->box.mid.x);
+		pp->y=(float)(((pt->y-poly->box.mid.y)*100)+poly->box.mid.y);
+		pp->z=(float)(((pt->z-poly->box.mid.z)*100)+poly->box.mid.z);
 		pp++;
 	}
 	
@@ -1396,10 +1455,24 @@ void ray_trace_shadow_to_mesh_poly(int cnt,d3vct *vct,d3pnt *spt,d3pnt *hpt,bool
 		hp->y=sp->y;
 		hp->z=sp->z;
 
-		*hit++=ray_trace_shadow_plane(sp,vct,hp,poly->ptsz,plane_vp);
+			// run through all the triangles of the polygon
+			// any hit counts, we are never
+			// looking for close hits
+
+		*hit=FALSE;
+			
+		trig_count=poly->ptsz-2;
+		
+		for (k=0;k<trig_count;k++) {
+			if (ray_trace_triangle_f(sp,vct,hp,&plane_vp[0],&plane_vp[k+1],&plane_vp[k+2])!=-1.0f) {
+				*hit=TRUE;
+				break;
+			}
+		}
 
 		sp++;
 		hp++;
+		hit++;
 	}
 }
 
