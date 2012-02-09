@@ -583,8 +583,8 @@ void shadow_render_model_mesh(model_type *mdl,int model_mesh_idx,model_draw *dra
 		map_poly=&map_mesh->polys[map_poly_idx];
 		
 			// ray trace the polygons
-			
-		ray_trace_mesh_poly_plane_by_vector(model_mesh->nvertex,&vct,shadow_spt,shadow_hpt,shadow_hits,map_mesh_idx,map_poly_idx);
+
+		ray_trace_shadow_to_mesh_poly(model_mesh->nvertex,&vct,shadow_spt,shadow_hpt,shadow_hits,map_mesh_idx,map_poly_idx);
 				
 			// stencil in the polygon shadow is crossing
 			
