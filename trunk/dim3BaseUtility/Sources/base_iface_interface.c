@@ -799,10 +799,11 @@ void iface_read_settings_interface(iface_type *iface)
 			iface->intro.simple_save_list.progress.on=xml_get_attribute_boolean(simple_save_tag,"progress_on");
 			iface->intro.simple_save_list.progress.max_point=xml_get_attribute_int(simple_save_tag,"progress_max_point");
 			iface->intro.simple_save_list.progress.max_bitmap=xml_get_attribute_int(simple_save_tag,"progress_max_bitmap");
-			iface->intro.simple_save_list.progress.x_add=xml_get_attribute_int(simple_save_tag,"progress_x_add");
-			iface->intro.simple_save_list.progress.y_add=xml_get_attribute_int(simple_save_tag,"progress_y_add");
 			iface->intro.simple_save_list.progress.wid=xml_get_attribute_int(simple_save_tag,"progress_wid");
 			iface->intro.simple_save_list.progress.high=xml_get_attribute_int(simple_save_tag,"progress_high");
+			iface->intro.simple_save_list.progress.bitmap_add=xml_get_attribute_int(simple_save_tag,"progress_bitmap_add");
+			iface->intro.simple_save_list.progress.horizontal=xml_get_attribute_boolean(simple_save_tag,"progress_horizontal");
+			iface->intro.simple_save_list.progress.wrap_count=xml_get_attribute_int(simple_save_tag,"progress_wrap_count");
 			xml_get_attribute_text(simple_save_tag,"progress_bitmap_name",iface->intro.simple_save_list.progress.bitmap_name,name_str_len);
 			xml_get_attribute_text(simple_save_tag,"progress_bitmap_disable_name",iface->intro.simple_save_list.progress.bitmap_disable_name,name_str_len);
 		}
@@ -1440,10 +1441,11 @@ bool iface_write_settings_interface(iface_type *iface,char *err_str)
 	xml_add_attribute_boolean("progress_on",iface->intro.simple_save_list.progress.on);
 	xml_add_attribute_int("progress_max_point",iface->intro.simple_save_list.progress.max_point);
 	xml_add_attribute_int("progress_max_bitmap",iface->intro.simple_save_list.progress.max_bitmap);
-	xml_add_attribute_int("progress_x_add",iface->intro.simple_save_list.progress.x_add);
-	xml_add_attribute_int("progress_y_add",iface->intro.simple_save_list.progress.y_add);
 	xml_add_attribute_int("progress_wid",iface->intro.simple_save_list.progress.wid);
 	xml_add_attribute_int("progress_high",iface->intro.simple_save_list.progress.high);
+	xml_add_attribute_int("progress_bitmap_add",iface->intro.simple_save_list.progress.bitmap_add);
+	xml_add_attribute_boolean("progress_horizontal",iface->intro.simple_save_list.progress.horizontal);
+	xml_add_attribute_int("progress_wrap_count",iface->intro.simple_save_list.progress.wrap_count);
 	xml_add_attribute_text("progress_bitmap_name",iface->intro.simple_save_list.progress.bitmap_name);
 	xml_add_attribute_text("progress_bitmap_disable_name",iface->intro.simple_save_list.progress.bitmap_disable_name);
 	xml_add_tagend(TRUE);

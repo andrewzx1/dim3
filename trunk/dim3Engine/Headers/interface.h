@@ -215,7 +215,7 @@ extern void element_color_add(char *str,int value,int id,int x,int y,bool select
 extern void element_text_box_add(char *data,int id,int x,int y,int wid,int high);
 extern void element_info_field_add(char *str,char *value_str,int id,int x,int y);
 extern void element_model_add(char *name,char *animate,float resize,d3pnt *offset,d3ang *rot,int id,int x,int y);
-extern void element_count_add(char *path,char *disable_path,int id,int x,int y,int wid,int high,int x_add,int y_add,int count,int max_count);
+extern void element_count_add(char *path,char *disable_path,int id,int x,int y,int wid,int high,int bitmap_add,bool horizontal,int wrap_count,int count,int max_count);
 extern void element_frame_add(char *title,int id,int x,int y,int wid,int high);
 extern int element_get_selected(void);
 extern int element_get_value(int id);

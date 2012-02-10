@@ -58,13 +58,14 @@ and can be sold or given away.
 #define kIntroPropertySimpleSaveProgressMaxBitmap		33
 #define kIntroPropertySimpleSaveProgressWid				34
 #define kIntroPropertySimpleSaveProgressHigh			35
-#define kIntroPropertySimpleSaveProgressXAdd			36
-#define kIntroPropertySimpleSaveProgressYAdd			37
-#define kIntroPropertySimpleSaveProgressBitmap			38
-#define kIntroPropertySimpleSaveProgressBitmapDisable	39
+#define kIntroPropertySimpleSaveProgressAdd				36
+#define kIntroPropertySimpleSaveProgressHorizontal		37
+#define kIntroPropertySimpleSaveProgressWrapCount		38
+#define kIntroPropertySimpleSaveProgressBitmap			39
+#define kIntroPropertySimpleSaveProgressBitmapDisable	40
 
-#define kIntroPropertyConfirmX							40
-#define kIntroPropertyConfirmY							41
+#define kIntroPropertyConfirmX							45
+#define kIntroPropertyConfirmY							46
 
 #define kIntroPropertyButtonSimpleSaveStart				50
 #define kIntroPropertyButtonSimpleSaveErase				60
@@ -139,10 +140,11 @@ void property_palette_fill_intro(void)
 	list_palette_add_checkbox(&property_palette,kIntroPropertySimpleSaveProgressOn,"Progress On",&iface.intro.simple_save_list.progress.on,FALSE);
 	list_palette_add_int(&property_palette,kIntroPropertySimpleSaveProgressMaxPoint,"Progress Max Points",&iface.intro.simple_save_list.progress.max_point,FALSE);
 	list_palette_add_int(&property_palette,kIntroPropertySimpleSaveProgressMaxBitmap,"Progress Max Bitmaps",&iface.intro.simple_save_list.progress.max_bitmap,FALSE);
-	list_palette_add_int(&property_palette,kIntroPropertySimpleSaveProgressXAdd,"Width",&iface.intro.simple_save_list.progress.wid,FALSE);
-	list_palette_add_int(&property_palette,kIntroPropertySimpleSaveProgressYAdd,"Height",&iface.intro.simple_save_list.progress.high,FALSE);
-	list_palette_add_int(&property_palette,kIntroPropertySimpleSaveProgressXAdd,"Progress X Add",&iface.intro.simple_save_list.progress.x_add,FALSE);
-	list_palette_add_int(&property_palette,kIntroPropertySimpleSaveProgressYAdd,"Progress Y Add",&iface.intro.simple_save_list.progress.y_add,FALSE);
+	list_palette_add_int(&property_palette,kIntroPropertySimpleSaveProgressWid,"Width",&iface.intro.simple_save_list.progress.wid,FALSE);
+	list_palette_add_int(&property_palette,kIntroPropertySimpleSaveProgressHigh,"Height",&iface.intro.simple_save_list.progress.high,FALSE);
+	list_palette_add_int(&property_palette,kIntroPropertySimpleSaveProgressAdd,"Progress Bitmap Add",&iface.intro.simple_save_list.progress.bitmap_add,FALSE);
+	list_palette_add_checkbox(&property_palette,kIntroPropertySimpleSaveProgressHorizontal,"Progress Horizontal",&iface.intro.simple_save_list.progress.horizontal,FALSE);
+	list_palette_add_int(&property_palette,kIntroPropertySimpleSaveProgressWrapCount,"Progress Wrap Count",&iface.intro.simple_save_list.progress.wrap_count,FALSE);
 	list_palette_add_string(&property_palette,kIntroPropertySimpleSaveProgressBitmap,"Enabled Bitmap",iface.intro.simple_save_list.progress.bitmap_name,FALSE);
 	list_palette_add_string(&property_palette,kIntroPropertySimpleSaveProgressBitmapDisable,"Disabled Bitmap",iface.intro.simple_save_list.progress.bitmap_disable_name,FALSE);
 	
