@@ -180,7 +180,8 @@ typedef struct		{
 typedef struct		{
 						int						max_count,
 												image_idx,image_disable_idx,
-												x_add,y_add;
+												bitmap_add,wrap_count;
+						bool					horizontal;
 					} element_count_type;
 
 typedef union		{

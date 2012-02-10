@@ -850,7 +850,7 @@ void element_model_add(char *name,char *animate,float resize,d3pnt *offset,d3ang
 	SDL_mutexV(element_thread_lock);
 }
 
-void element_count_add(char *path,char *disable_path,int id,int x,int y,int wid,int high,int x_add,int y_add,int count,int max_count)
+void element_count_add(char *path,char *disable_path,int id,int x,int y,int wid,int high,int bitmap_add,bool horizontal,int wrap_count,int count,int max_count)
 {
 	element_type	*element;
 	bitmap_type		*bitmap;
@@ -886,8 +886,9 @@ void element_count_add(char *path,char *disable_path,int id,int x,int y,int wid,
 	element->hidden=FALSE;
 	element->framed=FALSE;
 	
-	element->setup.count.x_add=x_add;
-	element->setup.count.y_add=y_add;
+	element->setup.count.bitmap_add=bitmap_add;
+	element->setup.count.horizontal=horizontal;
+	element->setup.count.wrap_count=wrap_count;
 	element->setup.count.max_count=max_count;
 
 	SDL_mutexV(element_thread_lock);
@@ -1176,12 +1177,21 @@ void element_draw_bitmap(element_type *element)
 
 void element_draw_count(element_type *element)
 {
-	int				n,lft,rgt,top,bot;
+	int				n,lft,rgt,top,bot,
+					org_lft,org_rgt,org_top,org_bot,
+					row_count;
 	GLuint			gl_id;
 	
 	element_get_box(element,&lft,&rgt,&top,&bot);
+	
+	org_lft=lft;
+	org_rgt=rgt;
+	org_top=top;
+	org_bot=bot;
 
 		// the count images
+		
+	row_count=element->setup.count.wrap_count;
 		
 	for (n=0;n!=element->setup.count.max_count;n++) {
 	
@@ -1194,10 +1204,38 @@ void element_draw_count(element_type *element)
 		
 		view_primitive_2D_texture_quad(gl_id,NULL,1.0f,lft,rgt,top,bot,0.0f,1.0f,0.0f,1.0f);
 		
-		lft+=element->setup.count.x_add;
-		rgt+=element->setup.count.x_add;
-		top+=element->setup.count.y_add;
-		bot+=element->setup.count.y_add;
+		if (element->setup.count.horizontal) {
+			if (row_count!=-1) {
+				row_count--;
+				if (row_count==0) {
+					row_count=element->setup.count.wrap_count;
+					lft=org_lft;
+					rgt=org_rgt;
+					top+=element->setup.count.bitmap_add;
+					bot+=element->setup.count.bitmap_add;
+					continue;
+				}
+			}
+			
+			lft+=element->setup.count.bitmap_add;
+			rgt+=element->setup.count.bitmap_add;
+		}
+		else {
+			if (row_count!=-1) {
+				row_count--;
+				if (row_count==0) {
+					row_count=element->setup.count.wrap_count;
+					top=org_top;
+					bot=org_bot;
+					lft+=element->setup.count.bitmap_add;
+					rgt+=element->setup.count.bitmap_add;
+					continue;
+				}
+			}
+			
+			top+=element->setup.count.bitmap_add;
+			bot+=element->setup.count.bitmap_add;
+		}
 	}
 }
 

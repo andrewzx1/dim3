@@ -310,7 +310,7 @@ void intro_open(void)
 		if (iface.intro.simple_save_list.progress.on) {
 			file_paths_data(&setup.file_path_setup,path,"Bitmaps/Interface",iface.intro.simple_save_list.progress.bitmap_name,"png");
 			file_paths_data(&setup.file_path_setup,disable_path,"Bitmaps/Interface",iface.intro.simple_save_list.progress.bitmap_disable_name,"png");
-			element_count_add(path,disable_path,(intro_simple_save_progress_bitmap+n),intro_simple_save->progress.x,intro_simple_save->progress.y,iface.intro.simple_save_list.progress.wid,iface.intro.simple_save_list.progress.high,iface.intro.simple_save_list.progress.x_add,iface.intro.simple_save_list.progress.y_add,0,iface.intro.simple_save_list.progress.max_bitmap);
+			element_count_add(path,disable_path,(intro_simple_save_progress_bitmap+n),intro_simple_save->progress.x,intro_simple_save->progress.y,iface.intro.simple_save_list.progress.wid,iface.intro.simple_save_list.progress.high,iface.intro.simple_save_list.progress.bitmap_add,iface.intro.simple_save_list.progress.horizontal,iface.intro.simple_save_list.progress.wrap_count,0,iface.intro.simple_save_list.progress.max_bitmap);
 		}
 	}
 	
@@ -438,6 +438,7 @@ void intro_click_simple_save_erase_ok(void)
 		
 	save=&iface.simple_save_list.saves[intro_simple_save_idx];
 	save->save_id=-1;
+	save->points=0;
 	save->desc[0]=0x0;
 	
 	simple_save_xml_write(&iface,err_str);

@@ -341,10 +341,11 @@ void iface_default_settings(iface_type *iface)
 	iface->intro.simple_save_list.progress.on=FALSE;
 	iface->intro.simple_save_list.progress.max_point=100;
 	iface->intro.simple_save_list.progress.max_bitmap=5;
-	iface->intro.simple_save_list.progress.x_add=16;
-	iface->intro.simple_save_list.progress.y_add=0;
 	iface->intro.simple_save_list.progress.wid=-1;
 	iface->intro.simple_save_list.progress.high=-1;
+	iface->intro.simple_save_list.progress.bitmap_add=16;
+	iface->intro.simple_save_list.progress.horizontal=TRUE;
+	iface->intro.simple_save_list.progress.wrap_count=-1;
 	iface->intro.simple_save_list.progress.bitmap_name[0]=0x0;
 	iface->intro.simple_save_list.progress.bitmap_disable_name[0]=0x0;
 	
