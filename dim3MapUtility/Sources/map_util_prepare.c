@@ -519,6 +519,7 @@ void map_prepare(map_type *map)
 
 		mesh->flag.shiftable=FALSE;
 		mesh->flag.poly_has_camera=FALSE;
+		mesh->flag.lighting_small=FALSE;
 		
 			// run through the mesh polygons
 			
@@ -586,6 +587,10 @@ void map_prepare(map_type *map)
 			// setup boxes
 
 		map_prepare_mesh_box(mesh);
+
+			// calculate size optimizatins
+
+		mesh->flag.lighting_small=((mesh->box.max.x-mesh->box.min.x)<max_map_mesh_size_lighting_small)||((mesh->box.max.y-mesh->box.min.y)<max_map_mesh_size_lighting_small)||((mesh->box.max.z-mesh->box.min.z)<max_map_mesh_size_lighting_small);
 		
 		mesh++;
 	}

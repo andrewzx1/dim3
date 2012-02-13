@@ -504,7 +504,7 @@ void render_model_opaque_normal(model_type *mdl,int mesh_idx,model_draw *draw)
 	gl_texture_opaque_end();
 }
 
-void render_model_opaque_shader(model_type *mdl,int mesh_idx,model_draw *draw,view_light_list_type *light_list)
+void render_model_opaque_shader(model_type *mdl,int mesh_idx,model_draw *draw,view_glsl_light_list_type *light_list)
 {
 	int						n,v_idx,frame,txt_idx,stride;
 	unsigned char			*cull_ptr;
@@ -671,7 +671,7 @@ void render_model_transparent_normal(model_type *mdl,int mesh_idx,model_draw *dr
 	gl_texture_transparent_end();
 }
 
-void render_model_transparent_shader(model_type *mdl,int mesh_idx,model_draw *draw,view_light_list_type *light_list)
+void render_model_transparent_shader(model_type *mdl,int mesh_idx,model_draw *draw,view_glsl_light_list_type *light_list)
 {
 	int						n,v_idx,frame,txt_idx,stride;
 	bool					cur_additive,is_additive;
@@ -1163,10 +1163,10 @@ void render_model_build_vertex_lists(model_draw *draw,bool always_build)
 
 void render_model_opaque(model_draw *draw)
 {
-	int						n;
-	bool					shader_on;
-	model_type				*mdl;
-	view_light_list_type	light_list;
+	int							n;
+	bool						shader_on;
+	model_type					*mdl;
+	view_glsl_light_list_type	light_list;
 	
 		// any opaque?
 
@@ -1181,7 +1181,7 @@ void render_model_opaque(model_draw *draw)
 		
 	shader_on=view_shader_on()&&(!draw->no_shader);
 
-	if (shader_on) gl_lights_build_model_light_list(mdl,draw,&light_list);
+	if (shader_on) gl_lights_build_model_glsl_light_list(mdl,draw,&light_list);
 
 		// draw opaque materials
 	
@@ -1218,10 +1218,10 @@ void render_model_opaque(model_draw *draw)
 
 void render_model_transparent(model_draw *draw)
 {
-	int						n;
-	bool					shader_on;
-	model_type				*mdl;
-	view_light_list_type	light_list;
+	int							n;
+	bool						shader_on;
+	model_type					*mdl;
+	view_glsl_light_list_type	light_list;
 
 		// any transparent?
 
@@ -1236,7 +1236,7 @@ void render_model_transparent(model_draw *draw)
 		
 	shader_on=view_shader_on()&&(!draw->no_shader);
 
-	if (shader_on) gl_lights_build_model_light_list(mdl,draw,&light_list);
+	if (shader_on) gl_lights_build_model_glsl_light_list(mdl,draw,&light_list);
 
 		// draw transparent materials
 

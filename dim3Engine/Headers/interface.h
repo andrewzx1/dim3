@@ -645,9 +645,10 @@ extern void gl_lights_calc_diffuse_vector(d3pnt *pnt,int count,int *indexes,d3vc
 extern void gl_lights_calc_color(float x,float y,float z,float *cf);
 extern void gl_lights_calc_color_light_cache_byte(int count,int *indexes,bool skip_light_map,float x,float y,float z,unsigned char *cp);
 extern void gl_lights_calc_color_light_cache_float(int count,int *indexes,bool skip_light_map,float x,float y,float z,float *cp);
-extern void gl_lights_build_poly_light_list(int mesh_idx,map_mesh_poly_type *poly,view_light_list_type *light_list);
-extern void gl_lights_build_liquid_light_list(map_liquid_type *liq,view_light_list_type *light_list);
-extern void gl_lights_build_model_light_list(model_type *mdl,model_draw *draw,view_light_list_type *light_list);
+extern void gl_lights_build_mesh_glsl_light_list(map_mesh_type *mesh,view_glsl_light_list_type *light_list);
+extern void gl_lights_build_poly_glsl_light_list(map_mesh_type *mesh,map_mesh_poly_type *poly,view_glsl_light_list_type *light_list);
+extern void gl_lights_build_liquid_glsl_light_list(map_liquid_type *liq,view_glsl_light_list_type *light_list);
+extern void gl_lights_build_model_glsl_light_list(model_type *mdl,model_draw *draw,view_glsl_light_list_type *light_list);
 
 //
 // vbos
@@ -734,7 +735,7 @@ extern void gl_shader_draw_start(void);
 extern void gl_shader_draw_reset_normal_tangent_attrib(void);
 extern void gl_shader_draw_end(void);
 extern void gl_shader_texture_override(GLuint gl_id,float alpha);
-extern void gl_shader_draw_execute(int core_shader_group,texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,view_light_list_type *light_list,int tangent_offset,int normal_offset,int stride);
+extern void gl_shader_draw_execute(int core_shader_group,texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,view_glsl_light_list_type *light_list,int tangent_offset,int normal_offset,int stride);
 
 //
 // core shaders

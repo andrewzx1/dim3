@@ -929,12 +929,37 @@ int gl_light_get_averaged_shadow_light(d3pnt *pnt,d3pnt *size,d3pnt *light_pnt)
       
 ======================================================= */
 
-void gl_lights_build_poly_light_list(int mesh_idx,map_mesh_poly_type *poly,view_light_list_type *light_list)
+void gl_lights_build_mesh_glsl_light_list(map_mesh_type *mesh,view_glsl_light_list_type *light_list)
+{
+	int					n;
+
+		// misc settings, mostly for models
+
+	light_list->diffuse_vct.x=light_list->diffuse_vct.y=light_list->diffuse_vct.z=0.0f;
+	light_list->diffuse_boost=0.0f;
+
+		// highlighting
+
+	light_list->hilite=setup.debug_on;
+	
+		// this setup is for small meshes
+		// that are small enough so we don't
+		// have to recalc lights for each
+		// polygon
+
+	light_list->nlight=mesh->light_cache.count;
+	if (light_list->nlight>max_shader_light) light_list->nlight=max_shader_light;
+		
+	for (n=0;n!=light_list->nlight;n++) {
+		light_list->light_idx[n]=mesh->light_cache.indexes[n];
+	}
+}
+
+void gl_lights_build_poly_glsl_light_list(map_mesh_type *mesh,map_mesh_poly_type *poly,view_glsl_light_list_type *light_list)
 {
 	int						n,k,count,far_idx;
 	float					f,fx,fy,fz,far_dist,
 							list_dist[max_shader_light];
-	map_mesh_type			*mesh;
 	view_light_spot_type	*lspot;
 
 		// misc settings, mostly for models
@@ -947,9 +972,6 @@ void gl_lights_build_poly_light_list(int mesh_idx,map_mesh_poly_type *poly,view_
 	light_list->hilite=setup.debug_on;
 	
 		// meshes already have a reduced light list
-		
-	mesh=&map.mesh.meshes[mesh_idx];
-	
 		// if the mesh already has <= max_shader_light
 		// lights, just use them
 
@@ -1013,7 +1035,7 @@ void gl_lights_build_poly_light_list(int mesh_idx,map_mesh_poly_type *poly,view_
 	light_list->nlight=count;
 }
 
-void gl_lights_build_liquid_light_list(map_liquid_type *liq,view_light_list_type *light_list)
+void gl_lights_build_liquid_glsl_light_list(map_liquid_type *liq,view_glsl_light_list_type *light_list)
 {
 	int				n;
 
@@ -1029,13 +1051,14 @@ void gl_lights_build_liquid_light_list(map_liquid_type *liq,view_light_list_type
 		// lights
 
 	light_list->nlight=liq->light_cache.count;
+	if (light_list->nlight>max_shader_light) light_list->nlight=max_shader_light;
 		
 	for (n=0;n!=light_list->nlight;n++) {
 		light_list->light_idx[n]=liq->light_cache.indexes[n];
 	}
 }
 
-void gl_lights_build_model_light_list(model_type *mdl,model_draw *draw,view_light_list_type *light_list)
+void gl_lights_build_model_glsl_light_list(model_type *mdl,model_draw *draw,view_glsl_light_list_type *light_list)
 {
 	int				n;
 
@@ -1048,6 +1071,7 @@ void gl_lights_build_model_light_list(model_type *mdl,model_draw *draw,view_ligh
 		// lights
 
 	light_list->nlight=draw->light_cache.count;
+	if (light_list->nlight>max_shader_light) light_list->nlight=max_shader_light;
 		
 	for (n=0;n!=light_list->nlight;n++) {
 		light_list->light_idx[n]=draw->light_cache.indexes[n];

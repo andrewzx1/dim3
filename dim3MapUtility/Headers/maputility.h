@@ -59,11 +59,16 @@ and can be sold or given away.
 
 #define max_sort_poly										2048			// maximum number of transparent polys in a single scene
 
-#define max_map_light_cache_index							32
-
 #define max_editor_view										8
 
 #define max_music_preload									5
+
+//
+// lights
+//
+
+#define max_map_light_cache_index							32
+#define max_map_mesh_size_lighting_small					50000
 
 //
 // strings
@@ -280,7 +285,8 @@ typedef struct		{
 															never_obscure,never_cull,rot_independent,
 															no_light_map,skip_light_map_trace,
 															no_halo_obscure,
-															shiftable,poly_has_camera;
+															shiftable,poly_has_camera,
+															lighting_small;
 					} map_mesh_flag_type;
 
 typedef struct		{

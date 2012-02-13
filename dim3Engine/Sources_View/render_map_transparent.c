@@ -295,13 +295,13 @@ void render_transparent_mesh_normal(void)
 
 void render_transparent_mesh_shader(void)
 {
-	int						n,mesh_idx,cur_mesh_idx,
-							frame;
-	bool					in_additive;
-	texture_type			*texture;
-	map_mesh_type			*mesh;
-	map_mesh_poly_type		*poly;
-	view_light_list_type	light_list;
+	int							n,mesh_idx,cur_mesh_idx,
+								frame;
+	bool						in_additive;
+	texture_type				*texture;
+	map_mesh_type				*mesh;
+	map_mesh_poly_type			*poly;
+	view_glsl_light_list_type	light_list;
 
 		// enable arrays
 		
@@ -324,8 +324,8 @@ void render_transparent_mesh_shader(void)
 		mesh=&map.mesh.meshes[mesh_idx];
 		poly=&mesh->polys[trans_sort.list[n].poly_idx];
 
-			// the mesh vbo
-			// only change when mesh is changing
+			// check for a changing mesh,
+			// and reset some drawing operations
 			
 		if (cur_mesh_idx!=mesh_idx) {
 		
@@ -334,6 +334,8 @@ void render_transparent_mesh_shader(void)
 				view_unbind_mesh_liquid_index_object();
 			}
 			
+				// mesh VBO
+
 			cur_mesh_idx=mesh_idx;
 			
 			view_bind_mesh_liquid_vertex_object(&mesh->vbo);
@@ -348,6 +350,13 @@ void render_transparent_mesh_shader(void)
 			glTexCoordPointer(2,GL_FLOAT,mesh->vbo.vertex_stride,(GLvoid*)(3*sizeof(float)));
 			
 			gl_shader_draw_reset_normal_tangent_attrib();
+
+				// small meshes don't create light lists
+				// per-poly, instead just use the mesh list
+
+			if (mesh->flag.lighting_small) {
+				gl_lights_build_mesh_glsl_light_list(mesh,&light_list);
+			}
 		}
 		
 			// textures
@@ -366,7 +375,7 @@ void render_transparent_mesh_shader(void)
 
 			// draw the polygon
 
-		gl_lights_build_poly_light_list(mesh_idx,poly,&light_list);
+		if (!mesh->flag.lighting_small) gl_lights_build_poly_glsl_light_list(mesh,poly,&light_list);
 		gl_shader_draw_execute(core_shader_group_map,texture,poly->txt_idx,frame,poly->lmap_txt_idx,1.0f,&light_list,(7*sizeof(float)),(10*sizeof(float)),mesh->vbo.vertex_stride);
 
 		glDrawElements(GL_TRIANGLE_FAN,poly->ptsz,GL_UNSIGNED_SHORT,(GLvoid*)poly->vbo.index_offset);
