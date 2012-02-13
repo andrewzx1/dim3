@@ -218,7 +218,7 @@ typedef struct		{
 						bool								hilite;
 						float								diffuse_boost;
 						d3vct								diffuse_vct;
-					} view_light_list_type;
+					} view_glsl_light_list_type;
 
 //
 // join UI structures

@@ -66,7 +66,7 @@ void gl_shader_draw_start(void) {}
 void gl_shader_draw_reset_normal_tangent_attrib(void) {}
 void gl_shader_draw_end(void) {}
 void gl_shader_texture_override(GLuint gl_id,float alpha) {}
-void gl_shader_draw_execute(int core_shader_group,texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,view_light_list_type *light_list,int tangent_offset,int normal_offset,int stride) {}
+void gl_shader_draw_execute(int core_shader_group,texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,view_glsl_light_list_type *light_list,int tangent_offset,int normal_offset,int stride) {}
 
 #else
 
@@ -401,7 +401,7 @@ void gl_shader_ambient_hilite_override(shader_type *shader,bool hilite)
 	glUniform3fARB(shader->var_locs.dim3AmbientColor,col.r,col.g,col.b);
 }
 
-void gl_shader_set_light_variables(shader_type *shader,int core_shader_group,bool is_core,view_light_list_type *light_list)
+void gl_shader_set_light_variables(shader_type *shader,int core_shader_group,bool is_core,view_glsl_light_list_type *light_list)
 {
 	int								n,k,count,max_light;
 	float							light_map_mask;
@@ -537,7 +537,7 @@ void gl_shader_set_light_variables(shader_type *shader,int core_shader_group,boo
 	}
 }
 
-void gl_shader_set_diffuse_variables(shader_type *shader,view_light_list_type *light_list)
+void gl_shader_set_diffuse_variables(shader_type *shader,view_glsl_light_list_type *light_list)
 {
 		// diffuse vector
 
@@ -854,7 +854,7 @@ void gl_shader_texture_override(GLuint gl_id,float alpha)
       
 ======================================================= */
 
-void gl_shader_draw_execute(int core_shader_group,texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,view_light_list_type *light_list,int tangent_offset,int normal_offset,int stride)
+void gl_shader_draw_execute(int core_shader_group,texture_type *texture,int txt_idx,int frame,int lmap_txt_idx,float alpha,view_glsl_light_list_type *light_list,int tangent_offset,int normal_offset,int stride)
 {
 	bool						is_core;
 	shader_type					*shader;

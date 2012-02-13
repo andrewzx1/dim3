@@ -494,11 +494,11 @@ bool liquid_render_liquid_create_vertex(map_liquid_type *liq,float uv_shift,bool
 
 void liquid_render_liquid_shader(map_liquid_type *liq,int txt_idx,int lmap_txt_idx,bool back_rendering)
 {
-	int						frame;
-	float					alpha;
-	GLuint					gl_id;
-	texture_type			*texture;
-	view_light_list_type	light_list;
+	int							frame;
+	float						alpha;
+	GLuint						gl_id;
+	texture_type				*texture;
+	view_glsl_light_list_type	light_list;
 
 		// setup texture
 
@@ -529,7 +529,7 @@ void liquid_render_liquid_shader(map_liquid_type *liq,int txt_idx,int lmap_txt_i
 
 		// shader lights and tangents
 
-	gl_lights_build_liquid_light_list(liq,&light_list);
+	gl_lights_build_liquid_glsl_light_list(liq,&light_list);
 
 	gl_shader_draw_start();
 	gl_shader_draw_reset_normal_tangent_attrib();

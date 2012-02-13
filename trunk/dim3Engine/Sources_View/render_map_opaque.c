@@ -163,13 +163,13 @@ void render_opaque_mesh_normal(void)
 
 void render_opaque_mesh_shader(void)
 {
-	int						n,k,mesh_idx,frame;
-	float					alpha;
-	GLuint					gl_id;
-	texture_type			*texture;
-	map_mesh_type			*mesh;
-	map_mesh_poly_type		*poly;
-	view_light_list_type	light_list;
+	int							n,k,mesh_idx,frame;
+	float						alpha;
+	GLuint						gl_id;
+	texture_type				*texture;
+	map_mesh_type				*mesh;
+	map_mesh_poly_type			*poly;
+	view_glsl_light_list_type	light_list;
 
 		// enable arrays
 		
@@ -211,6 +211,13 @@ void render_opaque_mesh_shader(void)
 
 		gl_shader_draw_reset_normal_tangent_attrib();
 
+			// small meshes don't create light lists
+			// per-poly, instead just use the mesh list
+
+		if (mesh->flag.lighting_small) {
+			gl_lights_build_mesh_glsl_light_list(mesh,&light_list);
+		}
+
 			// draw the polys
 
 		poly=mesh->polys;
@@ -240,7 +247,7 @@ void render_opaque_mesh_shader(void)
 			texture=&map.textures[poly->txt_idx];
 			frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
 
-			gl_lights_build_poly_light_list(mesh_idx,poly,&light_list);
+			if (!mesh->flag.lighting_small) gl_lights_build_poly_glsl_light_list(mesh,poly,&light_list);
 			gl_shader_draw_execute(core_shader_group_map,texture,poly->txt_idx,frame,poly->lmap_txt_idx,1.0f,&light_list,(7*sizeof(float)),(10*sizeof(float)),mesh->vbo.vertex_stride);
 
 				// fix texture if any back rendering
