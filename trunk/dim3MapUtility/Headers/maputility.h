@@ -284,9 +284,7 @@ typedef struct		{
 															lock_uv,lock_move,
 															never_obscure,never_cull,rot_independent,
 															no_light_map,skip_light_map_trace,
-															no_halo_obscure,
-															shiftable,poly_has_camera,
-															lighting_small;
+															no_halo_obscure;
 					} map_mesh_flag_type;
 
 typedef struct		{
@@ -295,6 +293,11 @@ typedef struct		{
 						char								map_name[file_str_len],
 															map_spot_name[name_str_len];
 					} map_mesh_message_type;
+
+typedef struct		{
+						bool								shiftable,poly_has_camera,
+															has_obscure_poly,lighting_small;
+					} map_mesh_precalc_flag_type;
 
 typedef struct		{
 						bool								moved,cur_ambient_only,
@@ -321,6 +324,7 @@ typedef struct		{
 						map_mesh_poly_list					poly_list;
 						map_mesh_box_type					box;
 						map_mesh_flag_type					flag;
+						map_mesh_precalc_flag_type			precalc_flag;
 						map_mesh_message_type				msg;
 						map_mesh_draw_type					draw;
 						map_mesh_copy_type					copy;

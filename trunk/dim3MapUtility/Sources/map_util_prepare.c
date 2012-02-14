@@ -517,9 +517,10 @@ void map_prepare(map_type *map)
 
 			// default some flags
 
-		mesh->flag.shiftable=FALSE;
-		mesh->flag.poly_has_camera=FALSE;
-		mesh->flag.lighting_small=FALSE;
+		mesh->precalc_flag.shiftable=FALSE;
+		mesh->precalc_flag.poly_has_camera=FALSE;
+		mesh->precalc_flag.has_obscure_poly=FALSE;
+		mesh->precalc_flag.lighting_small=FALSE;
 		
 			// run through the mesh polygons
 			
@@ -539,11 +540,13 @@ void map_prepare(map_type *map)
 			poly->draw.shift_on=((poly->shift.x!=0.0f) || (poly->shift.y!=0.0f));
 			poly->draw.shift_offset.x=0.0f;
 			poly->draw.shift_offset.y=0.0f;
-			mesh->flag.shiftable|=poly->draw.shift_on;
+			mesh->precalc_flag.shiftable|=poly->draw.shift_on;
 			
-				// setup camera flag
+				// setup camera and obscure flags
 				
-			if (poly->camera[0]!=0x0) mesh->flag.poly_has_camera=TRUE;
+			if (poly->camera[0]!=0x0) mesh->precalc_flag.poly_has_camera=TRUE;
+			if (poly->flag.obscuring) mesh->precalc_flag.has_obscure_poly=TRUE;
+				
 			
 				// count wall like polys
 				
@@ -590,7 +593,7 @@ void map_prepare(map_type *map)
 
 			// calculate size optimizatins
 
-		mesh->flag.lighting_small=((mesh->box.max.x-mesh->box.min.x)<max_map_mesh_size_lighting_small)||((mesh->box.max.y-mesh->box.min.y)<max_map_mesh_size_lighting_small)||((mesh->box.max.z-mesh->box.min.z)<max_map_mesh_size_lighting_small);
+		mesh->precalc_flag.lighting_small=((mesh->box.max.x-mesh->box.min.x)<max_map_mesh_size_lighting_small)||((mesh->box.max.y-mesh->box.min.y)<max_map_mesh_size_lighting_small)||((mesh->box.max.z-mesh->box.min.z)<max_map_mesh_size_lighting_small);
 		
 		mesh++;
 	}

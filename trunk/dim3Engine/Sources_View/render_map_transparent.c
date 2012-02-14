@@ -297,7 +297,7 @@ void render_transparent_mesh_shader(void)
 {
 	int							n,mesh_idx,cur_mesh_idx,
 								frame;
-	bool						in_additive;
+	bool						in_additive,lighting_small;
 	texture_type				*texture;
 	map_mesh_type				*mesh;
 	map_mesh_poly_type			*poly;
@@ -315,6 +315,7 @@ void render_transparent_mesh_shader(void)
 
 	in_additive=FALSE;
 	cur_mesh_idx=-1;
+	lighting_small=FALSE;
 	
 	gl_shader_draw_start();
 		
@@ -353,10 +354,11 @@ void render_transparent_mesh_shader(void)
 
 				// small meshes don't create light lists
 				// per-poly, instead just use the mesh list
+				// if the mesh list always has less than
+				// max shader lights, just use that
 
-			if (mesh->flag.lighting_small) {
-				gl_lights_build_mesh_glsl_light_list(mesh,&light_list);
-			}
+			lighting_small=((mesh->precalc_flag.lighting_small) || (mesh->light_cache.count<=max_shader_light));
+			if (lighting_small) gl_lights_build_mesh_glsl_light_list(mesh,&light_list);
 		}
 		
 			// textures
@@ -375,7 +377,7 @@ void render_transparent_mesh_shader(void)
 
 			// draw the polygon
 
-		if (!mesh->flag.lighting_small) gl_lights_build_poly_glsl_light_list(mesh,poly,&light_list);
+		if (!lighting_small) gl_lights_build_poly_glsl_light_list(mesh,poly,&light_list);
 		gl_shader_draw_execute(core_shader_group_map,texture,poly->txt_idx,frame,poly->lmap_txt_idx,1.0f,&light_list,(7*sizeof(float)),(10*sizeof(float)),mesh->vbo.vertex_stride);
 
 		glDrawElements(GL_TRIANGLE_FAN,poly->ptsz,GL_UNSIGNED_SHORT,(GLvoid*)poly->vbo.index_offset);

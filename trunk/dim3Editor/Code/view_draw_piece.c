@@ -562,6 +562,8 @@ void view_draw_meshes_texture(editor_view_type *view,bool opaque)
 					old_gl_id=texture->frames[0].bitmap.gl_id;
 					glBindTexture(GL_TEXTURE_2D,old_gl_id);
 				}
+
+				if ((poly->flag.obscuring) && (view->cull)) glColor4f(0.0f,1.0f,0.0f,1.0f);		// obscured polygons are tinted in green
 			}
 			else {
 				glDisable(GL_TEXTURE_2D);
@@ -577,6 +579,9 @@ void view_draw_meshes_texture(editor_view_type *view,bool opaque)
 			if (culled) {
 				glEnable(GL_TEXTURE_2D);
 				glColor4f(1.0f,1.0f,1.0f,1.0f);
+			}
+			else {
+				if ((poly->flag.obscuring) && (view->cull)) glColor4f(1.0f,1.0f,1.0f,1.0f);
 			}
 		}
 	}

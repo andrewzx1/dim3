@@ -82,13 +82,16 @@ bool view_obscure_initialize(void)
 	mesh=map.mesh.meshes;
 
 	for (n=0;n!=map.mesh.nmesh;n++) {
-		poly=mesh->polys;
 
-		for (k=0;k!=mesh->npoly;k++) {
-			if (poly->flag.obscuring) cnt++;
-			poly++;
+		if (mesh->precalc_flag.has_obscure_poly) {
+			poly=mesh->polys;
+
+			for (k=0;k!=mesh->npoly;k++) {
+				if (poly->flag.obscuring) cnt++;
+				poly++;
+			}
 		}
-		
+
 		mesh++;
 	}
 
@@ -166,6 +169,8 @@ bool view_obscure_create_obscuring_poly_list(void)
 
 		mesh_idx=view.render->draw_list.items[n].idx;
 		mesh=&map.mesh.meshes[mesh_idx];
+
+		if (!mesh->precalc_flag.has_obscure_poly) continue;
 		
 		poly=mesh->polys;
 
@@ -173,25 +178,13 @@ bool view_obscure_create_obscuring_poly_list(void)
 		
 				// only use obscuring polys
 				
-			if (!poly->flag.obscuring) {
-				poly++;
-				continue;
+			if (poly->flag.obscuring) {
+				poly_ptr->mesh_idx=mesh_idx;
+				poly_ptr->poly_idx=k;
+				poly_ptr->dist=view_cull_distance_to_view_center(poly->box.mid.x,poly->box.mid.y,poly->box.mid.z);
+				poly_ptr->skip=FALSE;
+				poly_ptr++;
 			}
-			
-				// skip polys clipped by normals
-				
-			if (((poly->tangent_space.normal.x*(float)(poly->box.mid.x-view.render->camera.pnt.x))+(poly->tangent_space.normal.y*(float)(poly->box.mid.y-view.render->camera.pnt.y))+(poly->tangent_space.normal.z*(float)(poly->box.mid.z-view.render->camera.pnt.z)))>map.optimize.cull_angle) {
-				poly++;
-				continue;
-			}
-			
-				// add poly to list
-
-			poly_ptr->mesh_idx=mesh_idx;
-			poly_ptr->poly_idx=k;
-			poly_ptr->dist=view_cull_distance_to_view_center(poly->box.mid.x,poly->box.mid.y,poly->box.mid.z);
-			poly_ptr->skip=FALSE;
-			poly_ptr++;
 
 			poly++;
 		}
@@ -236,9 +229,8 @@ void view_obscure_remove_mesh_from_obscuring_poly_list(int mesh_idx)
 bool view_obscure_check_box(d3pnt *camera_pnt,int skip_mesh_idx,d3pnt *min,d3pnt *max,int dist)
 {
 	int						n,k,x,y,z,kx,ky,kz,ray_cnt,hit_cnt,last_mesh_idx;
-	float					hit_t;
 	unsigned char			*hit;
-	d3pnt					mid,div,div_add,ray_min,ray_max,hpt;
+	d3pnt					mid,div,div_add,ray_min,ray_max;
 	d3vct					*vct;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
@@ -479,11 +471,9 @@ bool view_obscure_check_box(d3pnt *camera_pnt,int skip_mesh_idx,d3pnt *min,d3pnt
 				continue;
 			}
 		
-				// run the ray trace
+				// run the blocking ray trace
 
-			hit_t=ray_trace_mesh_polygon(camera_pnt,&view_obscure_vcts[k],&hpt,mesh,poly);
-			if (hit_t==-1.0f) continue;			// no hit
-			if (hit_t>=1.0f) continue;			// hit on or past vertex, skip these
+			if (!ray_trace_mesh_polygon_blocking(camera_pnt,&view_obscure_vcts[k],mesh,poly)) continue;
 
 				// was a hit, mark it
 

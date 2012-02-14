@@ -380,7 +380,7 @@ void view_map_vbo_rebuild_mesh(map_mesh_type *mesh)
 		// recalculate the uvs if this
 		// mesh has shiftable uvs
 
-	if (mesh->flag.shiftable) {
+	if (mesh->precalc_flag.shiftable) {
 	
 		if (vertex_ptr==NULL) {
 			view_bind_mesh_liquid_vertex_object(&mesh->vbo);
