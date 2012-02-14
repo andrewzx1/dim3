@@ -326,6 +326,7 @@ extern bool map_stand_check_object(obj_type *obj);
 extern bool ray_trace_initialize(char *err_str);
 extern void ray_trace_shutdown(void);
 extern float ray_trace_mesh_polygon(d3pnt *spt,d3vct *vct,d3pnt *hpt,map_mesh_type *mesh,map_mesh_poly_type *poly);
+extern float ray_trace_mesh_polygon_blocking(d3pnt *spt,d3vct *vct,map_mesh_type *mesh,map_mesh_poly_type *poly);
 extern ray_trace_check_item_type* ray_trace_get_last_item_list(int *item_count);
 extern void ray_push(d3pnt *pt,d3ang *ang,int dist);
 extern void ray_push_to_end(d3pnt *pt,d3pnt *ept,int dist);

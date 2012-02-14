@@ -89,7 +89,7 @@ ray_trace_check_item_type* ray_trace_get_last_item_list(int *item_count)
 
 /* =======================================================
 
-      Ray Trace Triangles and Polygons
+      Ray Trace Triangles
       
 ======================================================= */
 
@@ -243,54 +243,81 @@ float ray_trace_triangle_f(d3fpnt *spt,d3vct *vct,d3fpnt *hpt,d3fpnt *tpt_0,d3fp
 	return(t);
 }
 
-void ray_trace_plane(d3pnt *spt,d3vct *vct,d3pnt *hpt,d3pnt *ppt_0,d3pnt *ppt_1,d3pnt *ppt_2)
+bool ray_trace_triangle_blocking(d3pnt *spt,d3vct *vct,d3pnt *tpt_0,d3pnt *tpt_1,d3pnt *tpt_2)
 {
-	float			t,ka,kb,kc,kd;
-	d3fpnt			f0,f1,f2;
+	float				det,invDet,t,u,v;
+	d3vct				perpVector,lineToTrigPointVector,lineToTrigPerpVector,v1,v2;
+	
+		// get triangle vectors
+		// tpt_0 is inbetween tpt_1 and tpt_2
 
-		// get plane equation for polygon
-		// ppt_0 is inbetween ppt_1 and ppt_2
+	v1.x=(float)(tpt_1->x-tpt_0->x);
+	v1.y=(float)(tpt_1->y-tpt_0->y);
+	v1.z=(float)(tpt_1->z-tpt_0->z);
 
-	f0.x=(float)ppt_0->x;
-	f0.y=(float)ppt_0->y;
-	f0.z=(float)ppt_0->z;
+	v2.x=(float)(tpt_2->x-tpt_0->x);
+	v2.y=(float)(tpt_2->y-tpt_0->y);
+	v2.z=(float)(tpt_2->z-tpt_0->z);
+	
+		// calculate the cross product and
+		// then the inner product to get the
+		// determinate
+		
+	perpVector.x=(vct->y*v2.z)-(v2.y*vct->z);
+	perpVector.y=(vct->z*v2.x)-(v2.z*vct->x);
+	perpVector.z=(vct->x*v2.y)-(v2.x*vct->y);
 
-	f1.x=(float)ppt_1->x;
-	f1.y=(float)ppt_1->y;
-	f1.z=(float)ppt_1->z;
+	det=(v1.x*perpVector.x)+(v1.y*perpVector.y)+(v1.z*perpVector.z);
+	
+		// is line on the same plane as triangle?
+		
+	if ((det>-0.00001f) && (det<0.00001f)) return(FALSE);
 
-	f2.x=(float)ppt_2->x;
-	f2.y=(float)ppt_2->y;
-	f2.z=(float)ppt_2->z;
+		// get the inverse determinate
 
-	ka=(f1.y*(f0.z-f2.z))+(f0.y*(f2.z-f1.z))+(f2.y*(f1.z-f0.z));
-	kb=(f1.z*(f0.x-f2.x))+(f0.z*(f2.x-f1.x))+(f2.z*(f1.x-f0.x));
-	kc=(f1.x*(f0.y-f2.y))+(f0.x*(f2.y-f1.y))+(f2.x*(f1.y-f0.y));
-	kd=((-f1.x)*((f0.y*f2.z)-(f2.y*f0.z)))-(f0.x*((f2.y*f1.z)-(f1.y*f2.z)))-(f2.x*((f1.y*f0.z)-(f0.y*f1.z)));
+	invDet=1.0f/det;
 
-		// insert the ray line equation and
-		// solve for the t
+		// calculate triangle U and test
+		// using the vector from spt to tpt_0
+		// and the inner product of that result and
+		// the perpVector
+		
+	lineToTrigPointVector.x=(float)(spt->x-tpt_0->x);
+	lineToTrigPointVector.y=(float)(spt->y-tpt_0->y);
+	lineToTrigPointVector.z=(float)(spt->z-tpt_0->z);
 
-	t=(-((ka*(float)spt->x)+(kb*(float)spt->y)+(kc*(float)spt->z)+kd)/((ka*vct->x)+(kb*vct->y)+(kc*vct->z)));
+	u=invDet*((lineToTrigPointVector.x*perpVector.x)+(lineToTrigPointVector.y*perpVector.y)+(lineToTrigPointVector.z*perpVector.z));
+	if ((u<0.0f) || (u>1.0f)) return(FALSE);
+	
+		// calculate triangle V and test
+		// using the cross product of lineToTrigPointVector
+		// and v1 and the inner product of that result and vct
 
-		// get the hit point
-		// this routine always hits the plane
-		// no matter which direction the ray is
+	lineToTrigPerpVector.x=(lineToTrigPointVector.y*v1.z)-(v1.y*lineToTrigPointVector.z);
+	lineToTrigPerpVector.y=(lineToTrigPointVector.z*v1.x)-(v1.z*lineToTrigPointVector.x);
+	lineToTrigPerpVector.z=(lineToTrigPointVector.x*v1.y)-(v1.x*lineToTrigPointVector.y);
+	
+	v=invDet*((vct->x*lineToTrigPerpVector.x)+(vct->y*lineToTrigPerpVector.y)+(vct->z*lineToTrigPerpVector.z));
+	if ((v<0.0f) || ((u+v)>1.0f)) return(FALSE);
+	
+		// get line T for point(t) =  start_point + (vector*t)
+		// use the inner product of v2 and lineToTrigPerpVector
+		// -t are on the negative vector behind the point, so ignore
 
-	hpt->x=spt->x+(int)(vct->x*t);
-	hpt->y=spt->y+(int)(vct->y*t);
-	hpt->z=spt->z+(int)(vct->z*t);
+	t=invDet*((v2.x*lineToTrigPerpVector.x)+(v2.y*lineToTrigPerpVector.y)+(v2.z*lineToTrigPerpVector.z));
+	return(t>=0.0f);
 }
+
+/* =======================================================
+
+      Ray Trace Polys and Boxes
+      
+======================================================= */
 
 float ray_trace_mesh_polygon(d3pnt *spt,d3vct *vct,d3pnt *hpt,map_mesh_type *mesh,map_mesh_poly_type *poly)
 {
 	int			n,trig_count;
 	float		hit_t;
-	d3pnt		*tpt_0;
-	
-		// first vertex is always 0
-
-	tpt_0=&mesh->vertexes[poly->v[0]];
 	
 		// run through all the triangles of the polygon
 		// since this is a single polygon, the
@@ -299,11 +326,28 @@ float ray_trace_mesh_polygon(d3pnt *spt,d3vct *vct,d3pnt *hpt,map_mesh_type *mes
 	trig_count=poly->ptsz-2;
 	
 	for (n=0;n<trig_count;n++) {
-		hit_t=ray_trace_triangle(spt,vct,hpt,tpt_0,&mesh->vertexes[poly->v[n+1]],&mesh->vertexes[poly->v[n+2]]);
+		hit_t=ray_trace_triangle(spt,vct,hpt,&mesh->vertexes[poly->v[0]],&mesh->vertexes[poly->v[n+1]],&mesh->vertexes[poly->v[n+2]]);
 		if (hit_t!=-1.0f) return(hit_t);
 	}
 	
 	return(-1.0f);
+}
+
+float ray_trace_mesh_polygon_blocking(d3pnt *spt,d3vct *vct,map_mesh_type *mesh,map_mesh_poly_type *poly)
+{
+	int			n,trig_count;
+	
+		// run through all the triangles of the polygon
+		// since this is a single polygon, the
+		// first hit is always the correct hit
+		
+	trig_count=poly->ptsz-2;
+	
+	for (n=0;n<trig_count;n++) {
+		if (ray_trace_triangle_blocking(spt,vct,&mesh->vertexes[poly->v[0]],&mesh->vertexes[poly->v[n+1]],&mesh->vertexes[poly->v[n+2]])) return(TRUE);
+	}
+	
+	return(FALSE);
 }
 
 float ray_trace_quad(d3pnt *spt,d3vct *vct,d3pnt *hpt,int ptsz,int *x,int *y,int *z)
@@ -434,6 +478,51 @@ float ray_trace_rotated_box(d3pnt *spt,d3vct *vct,d3pnt *hpt,int x,int z,int lx,
 float ray_trace_mesh_box(d3pnt *spt,d3vct *vct,d3pnt *hpt,map_mesh_type *mesh)
 {
 	return(ray_trace_rotated_box(spt,vct,hpt,mesh->box.mid.x,mesh->box.mid.z,mesh->box.min.x,mesh->box.max.x,mesh->box.min.z,mesh->box.max.z,mesh->box.min.y,mesh->box.max.y,0.0f));
+}
+
+/* =======================================================
+
+      Ray Trace Planes
+      
+======================================================= */
+
+void ray_trace_plane(d3pnt *spt,d3vct *vct,d3pnt *hpt,d3pnt *ppt_0,d3pnt *ppt_1,d3pnt *ppt_2)
+{
+	float			t,ka,kb,kc,kd;
+	d3fpnt			f0,f1,f2;
+
+		// get plane equation for polygon
+		// ppt_0 is inbetween ppt_1 and ppt_2
+
+	f0.x=(float)ppt_0->x;
+	f0.y=(float)ppt_0->y;
+	f0.z=(float)ppt_0->z;
+
+	f1.x=(float)ppt_1->x;
+	f1.y=(float)ppt_1->y;
+	f1.z=(float)ppt_1->z;
+
+	f2.x=(float)ppt_2->x;
+	f2.y=(float)ppt_2->y;
+	f2.z=(float)ppt_2->z;
+
+	ka=(f1.y*(f0.z-f2.z))+(f0.y*(f2.z-f1.z))+(f2.y*(f1.z-f0.z));
+	kb=(f1.z*(f0.x-f2.x))+(f0.z*(f2.x-f1.x))+(f2.z*(f1.x-f0.x));
+	kc=(f1.x*(f0.y-f2.y))+(f0.x*(f2.y-f1.y))+(f2.x*(f1.y-f0.y));
+	kd=((-f1.x)*((f0.y*f2.z)-(f2.y*f0.z)))-(f0.x*((f2.y*f1.z)-(f1.y*f2.z)))-(f2.x*((f1.y*f0.z)-(f0.y*f1.z)));
+
+		// insert the ray line equation and
+		// solve for the t
+
+	t=(-((ka*(float)spt->x)+(kb*(float)spt->y)+(kc*(float)spt->z)+kd)/((ka*vct->x)+(kb*vct->y)+(kc*vct->z)));
+
+		// get the hit point
+		// this routine always hits the plane
+		// no matter which direction the ray is
+
+	hpt->x=spt->x+(int)(vct->x*t);
+	hpt->y=spt->y+(int)(vct->y*t);
+	hpt->z=spt->z+(int)(vct->z*t);
 }
 
 /* =======================================================

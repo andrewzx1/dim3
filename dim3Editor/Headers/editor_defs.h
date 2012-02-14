@@ -102,7 +102,7 @@ and can be sold or given away.
 													"Click To Add Node Link", \
 													"Click To Remove Node Link", \
 													"Show Normals", \
-													"Culling", \
+													"Show Obscured (Green) and Culled (Gray) Polygons", \
 													"Edit Map Script", \
 													"Run Map In Engine", \
 													"", \

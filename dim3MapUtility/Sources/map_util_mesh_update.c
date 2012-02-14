@@ -870,7 +870,7 @@ void map_mesh_poly_run_shifts(map_type *map,int tick)
 
 			// shiftable?
 
-		if (!mesh->flag.shiftable) {
+		if (!mesh->precalc_flag.shiftable) {
 			mesh++;
 			continue;
 		}
