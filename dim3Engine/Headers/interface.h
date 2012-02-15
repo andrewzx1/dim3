@@ -633,6 +633,7 @@ extern inline bool gl_check_fsaa_ok(void);
 extern inline bool gl_check_texture_anisotropic_filter_ok(void);
 extern inline bool gl_check_texture_generate_mipmaps_ok(void);
 extern inline bool gl_check_texture_rectangle_ok(void);
+extern inline bool gl_check_textured_point_ok(void);
 extern inline bool gl_check_shader_ok(void);
 
 //
