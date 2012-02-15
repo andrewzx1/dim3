@@ -593,7 +593,7 @@ void map_prepare(map_type *map)
 
 			// calculate size optimizatins
 
-		mesh->precalc_flag.lighting_small=((mesh->box.max.x-mesh->box.min.x)<max_map_mesh_size_lighting_small)||((mesh->box.max.y-mesh->box.min.y)<max_map_mesh_size_lighting_small)||((mesh->box.max.z-mesh->box.min.z)<max_map_mesh_size_lighting_small);
+		mesh->precalc_flag.lighting_small=!(((mesh->box.max.x-mesh->box.min.x)>max_map_mesh_size_lighting_small)||((mesh->box.max.y-mesh->box.min.y)>max_map_mesh_size_lighting_small)||((mesh->box.max.z-mesh->box.min.z)>max_map_mesh_size_lighting_small));
 		
 		mesh++;
 	}
