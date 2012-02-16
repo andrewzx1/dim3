@@ -94,9 +94,12 @@ void gl_shader_set_instance_variables(shader_type *shader)
 	
 	var=glGetUniformLocationARB(shader->program_obj,"dim3TexSpecular");
 	if (var!=-1) glUniform1iARB(var,2);
+
+	var=glGetUniformLocationARB(shader->program_obj,"dim3TexGlow");
+	if (var!=-1) glUniform1iARB(var,3);
 	
 	var=glGetUniformLocationARB(shader->program_obj,"dim3TexLightMap");
-	if (var!=-1) glUniform1iARB(var,3);
+	if (var!=-1) glUniform1iARB(var,4);
 	
 		// cancel program
 		
@@ -113,6 +116,7 @@ void gl_shader_cache_dynamic_variable_locations(shader_type *shader)
 	shader->var_locs.dim3AmbientColor=glGetUniformLocationARB(shader->program_obj,"dim3AmbientColor");
 	shader->var_locs.dim3LightMapBoost=glGetUniformLocationARB(shader->program_obj,"dim3LightMapBoost");
 	shader->var_locs.dim3ShineFactor=glGetUniformLocationARB(shader->program_obj,"dim3ShineFactor");
+	shader->var_locs.dim3GlowFactor=glGetUniformLocationARB(shader->program_obj,"dim3GlowFactor");
 	shader->var_locs.dim3Alpha=glGetUniformLocationARB(shader->program_obj,"dim3Alpha");
 	shader->var_locs.dim3DiffuseVector=glGetUniformLocationARB(shader->program_obj,"dim3DiffuseVector");
 	shader->var_locs.dim3DiffuseBoost=glGetUniformLocationARB(shader->program_obj,"dim3DiffuseBoost");
@@ -644,6 +648,7 @@ void gl_shader_draw_scene_code_start(shader_type *shader)
 	shader->var_values.nlight=-1;
 	shader->var_values.alpha=-1.0f;
 	shader->var_values.shine_factor=-1.0f;
+	shader->var_values.glow_factor=-1.0f;
 	shader->var_values.diffuse_vct.x=shader->var_values.diffuse_vct.y=shader->var_values.diffuse_vct.z=-1.0f;
 	shader->var_values.diffuse_boost=-1.0f;
 
@@ -696,6 +701,9 @@ void gl_shader_draw_start(void)
 		// make all textures replace
 		
 	glColor4f(1.0f,0.0f,1.0f,1.0f);
+
+	glActiveTexture(GL_TEXTURE4);
+	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_REPLACE);
 
 	glActiveTexture(GL_TEXTURE3);
 	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_REPLACE);
@@ -759,6 +767,10 @@ void gl_shader_draw_end(void)
 	if (gl_shader_current!=NULL) glUseProgramObjectARB(0);
 	
 		// turn off any used textures
+
+	glActiveTexture(GL_TEXTURE4);
+	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
+	glDisable(GL_TEXTURE_2D);
 		
 	glActiveTexture(GL_TEXTURE3);
 	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_MODULATE);
@@ -801,7 +813,20 @@ void gl_shader_set_texture(shader_type *shader,int core_shader_group,texture_typ
 				gl_id=map.textures[lmap_txt_idx].frames[0].bitmap.gl_id;
 			}
 		}
-		if (gl_id!=-1) gl_texture_bind(3,gl_id);
+		if (gl_id!=-1) gl_texture_bind(4,gl_id);
+	}
+
+		// glow map
+
+	gl_id=texture->frames[frame].glowmap.gl_id;
+
+	if (gl_id!=-1) {
+		gl_texture_bind(3,gl_id);
+		
+		if (shader->var_values.glow_factor!=texture->glow.current_color) {
+			shader->var_values.glow_factor=texture->glow.current_color;
+			if (shader->var_locs.dim3GlowFactor!=-1) glUniform1fARB(shader->var_locs.dim3GlowFactor,texture->glow.current_color);
+		}
 	}
 	
 		// spec map

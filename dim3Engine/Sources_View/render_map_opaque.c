@@ -41,6 +41,27 @@ extern bitmap_type		lmap_black_bitmap,lmap_white_bitmap;
 
 /* =======================================================
 
+      Mesh-Poly Culling
+      
+======================================================= */
+
+bool render_check_poly_cull(map_mesh_type *mesh,map_mesh_poly_type *poly)
+{
+		// check for never cull flags
+
+	if (mesh->flag.never_cull) return(FALSE);
+	if (poly->flag.never_cull) return(FALSE);
+	if (map.optimize.never_cull) return(FALSE);
+
+		// skip polys with away facing normals
+		// do dot product between normal and vector
+		// from poly mid-eye point
+
+	return(((poly->tangent_space.normal.x*(float)(poly->box.mid.x-view.render->camera.pnt.x))+(poly->tangent_space.normal.y*(float)(poly->box.mid.y-view.render->camera.pnt.y))+(poly->tangent_space.normal.z*(float)(poly->box.mid.z-view.render->camera.pnt.z)))>map.optimize.cull_angle);
+}
+
+/* =======================================================
+
       Opaque Map Rendering Types
       
 ======================================================= */
@@ -48,24 +69,34 @@ extern bitmap_type		lmap_black_bitmap,lmap_white_bitmap;
 void render_opaque_mesh_normal(void)
 {
 	int						n,k,frame;
+	bool					had_glow;
 	GLuint					gl_id,lmap_gl_id;
 	texture_type			*texture;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
 	
 		// enable arrays
+		// both these are used for regular
+		// polygons and glowing polygons
 		
-	glEnableClientState(GL_COLOR_ARRAY);
-
 	glClientActiveTexture(GL_TEXTURE1);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	
 	glClientActiveTexture(GL_TEXTURE0);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	
-	gl_texture_opaque_light_map_start();
 
-		// run through draw list
+		// we do glows separately
+		// when on the normal path
+
+	had_glow=FALSE;
+
+		// run through the draw list
+		// color array only used for
+		// non-glowing polygons
+	
+	glEnableClientState(GL_COLOR_ARRAY);
+
+	gl_texture_opaque_light_map_start();
 
 	for (n=0;n!=view.render->draw_list.count;n++) {
 
@@ -103,16 +134,20 @@ void render_opaque_mesh_normal(void)
 				poly++;
 				continue;
 			}
-		
-				// skip polys with away facing normals
-				// do dot product between normal and vector
-				// from poly mid-eye point
 
-			if ((!mesh->flag.never_cull) && (!poly->flag.never_cull) && (!map.optimize.never_cull)) {
-				if (((poly->tangent_space.normal.x*(float)(poly->box.mid.x-view.render->camera.pnt.x))+(poly->tangent_space.normal.y*(float)(poly->box.mid.y-view.render->camera.pnt.y))+(poly->tangent_space.normal.z*(float)(poly->box.mid.z-view.render->camera.pnt.z)))>map.optimize.cull_angle) {
-					poly++;
-					continue;
-				}
+				// skip glows and flag
+
+			if (poly->draw.glow_on) {
+				had_glow=TRUE;
+				poly++;
+				continue;
+			}
+		
+				// skip culling
+
+			if (render_check_poly_cull(mesh,poly)) {
+				poly++;
+				continue;
 			}
 
 				// get textures
@@ -148,17 +183,94 @@ void render_opaque_mesh_normal(void)
 		view_unbind_mesh_liquid_index_object();
 	}
 
-		// disable arrays
+		// clear normal draw state
 
 	gl_texture_opaque_light_map_end();
-	
+
+	glDisableClientState(GL_COLOR_ARRAY);
+
+		// if we had any glows,
+		// then render them here
+
+	if (had_glow) {
+		
+		gl_texture_glow_start();
+
+		for (n=0;n!=view.render->draw_list.count;n++) {
+
+			if (view.render->draw_list.items[n].type!=view_render_type_mesh) continue;
+
+				// skip meshes with no opaques
+				// or no glows
+
+			mesh=&map.mesh.meshes[view.render->draw_list.items[n].idx];
+			if (!mesh->draw.has_opaque) continue;
+			if (!mesh->draw.has_glow) continue;
+			
+				// the mesh vbo
+				
+			view_bind_mesh_liquid_vertex_object(&mesh->vbo);
+			view_bind_mesh_liquid_index_object(&mesh->vbo);
+			
+			glVertexPointer(3,GL_FLOAT,mesh->vbo.vertex_stride,(GLvoid*)0);
+
+			glClientActiveTexture(GL_TEXTURE1);
+			glTexCoordPointer(2,GL_FLOAT,mesh->vbo.vertex_stride,(GLvoid*)(3*sizeof(float)));
+
+			glClientActiveTexture(GL_TEXTURE0);
+			glTexCoordPointer(2,GL_FLOAT,mesh->vbo.vertex_stride,(GLvoid*)(3*sizeof(float)));
+
+				// draw the polys
+
+			poly=mesh->polys;
+
+			for (k=0;k!=mesh->npoly;k++) {
+
+					// skip transparent polys or
+					// polys without glows
+
+				if ((poly->draw.transparent_on) || (!poly->draw.glow_on)) {
+					poly++;
+					continue;
+				}
+			
+					// skip culling
+
+				if (render_check_poly_cull(mesh,poly)) {
+					poly++;
+					continue;
+				}
+
+					// get texture
+
+				texture=&map.textures[poly->txt_idx];
+				frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
+
+					// draw glow
+
+				gl_texture_glow_set(texture->frames[frame].bitmap.gl_id,texture->frames[frame].glowmap.gl_id,texture->glow.current_color);
+				
+				glDrawElements(GL_TRIANGLE_FAN,poly->ptsz,GL_UNSIGNED_SHORT,(GLvoid*)poly->vbo.index_offset);
+				
+				poly++;
+			}
+			
+			view_unbind_mesh_liquid_vertex_object();
+			view_unbind_mesh_liquid_index_object();
+		}
+		
+			// turn off glow
+			
+		gl_texture_glow_end();
+	}
+
+		// disable arrays
+
 	glClientActiveTexture(GL_TEXTURE1);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	
 	glClientActiveTexture(GL_TEXTURE0);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-
-	glDisableClientState(GL_COLOR_ARRAY);
 }
 
 void render_opaque_mesh_shader(void)
@@ -233,15 +345,11 @@ void render_opaque_mesh_shader(void)
 				continue;
 			}
 		
-				// skip polys with away facing normals
-				// do dot product between normal and vector
-				// from poly mid-eye point
+				// skip culling
 
-			if ((!mesh->flag.never_cull) && (!poly->flag.never_cull) && (!map.optimize.never_cull)) {
-				if (((poly->tangent_space.normal.x*(float)(poly->box.mid.x-view.render->camera.pnt.x))+(poly->tangent_space.normal.y*(float)(poly->box.mid.y-view.render->camera.pnt.y))+(poly->tangent_space.normal.z*(float)(poly->box.mid.z-view.render->camera.pnt.z)))>map.optimize.cull_angle) {
-					poly++;
-					continue;
-				}
+			if (render_check_poly_cull(mesh,poly)) {
+				poly++;
+				continue;
 			}
 
 				// setup shader
@@ -271,117 +379,6 @@ void render_opaque_mesh_shader(void)
 	}
 		
 	gl_shader_draw_end();
-
-		// disable arrays
-
-	glClientActiveTexture(GL_TEXTURE1);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-	
-	glClientActiveTexture(GL_TEXTURE0);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-}
-
-void render_opaque_mesh_glow(void)
-{
-	int						n,k,frame;
-	bool					first_hit;
-	texture_type			*texture;
-	map_mesh_type			*mesh;
-	map_mesh_poly_type		*poly;
-
-		// enable arrays
-		
-	glClientActiveTexture(GL_TEXTURE1);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	
-	glClientActiveTexture(GL_TEXTURE0);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	
-		// run through draw list
-
-	first_hit=TRUE;
-
-	for (n=0;n!=view.render->draw_list.count;n++) {
-
-		if (view.render->draw_list.items[n].type!=view_render_type_mesh) continue;
-
-			// skip meshes with no opaques
-			// or no glows
-
-		mesh=&map.mesh.meshes[view.render->draw_list.items[n].idx];
-		if (!mesh->draw.has_opaque) continue;
-		if (!mesh->draw.has_glow) continue;
-		
-			// turn on glow setup
-			
-		if (first_hit) {
-			gl_texture_glow_start();
-			glDepthMask(GL_FALSE);
-			first_hit=FALSE;
-		}
-		
-			// the mesh vbo
-			
-		view_bind_mesh_liquid_vertex_object(&mesh->vbo);
-		view_bind_mesh_liquid_index_object(&mesh->vbo);
-		
-		glVertexPointer(3,GL_FLOAT,mesh->vbo.vertex_stride,(GLvoid*)0);
-
-		glClientActiveTexture(GL_TEXTURE1);
-		glTexCoordPointer(2,GL_FLOAT,mesh->vbo.vertex_stride,(GLvoid*)(3*sizeof(float)));
-
-		glClientActiveTexture(GL_TEXTURE0);
-		glTexCoordPointer(2,GL_FLOAT,mesh->vbo.vertex_stride,(GLvoid*)(3*sizeof(float)));
-
-			// draw the polys
-
-		poly=mesh->polys;
-
-		for (k=0;k!=mesh->npoly;k++) {
-
-				// skip transparent polys or
-				// polys without glows
-
-			if ((poly->draw.transparent_on) || (!poly->draw.glow_on)) {
-				poly++;
-				continue;
-			}
-		
-				// skip polys with away facing normals
-				// do dot product between normal and vector
-				// from poly mid-eye point
-
-			if ((!mesh->flag.never_cull) && (!poly->flag.never_cull) && (!map.optimize.never_cull)) {
-				if (((poly->tangent_space.normal.x*(float)(poly->box.mid.x-view.render->camera.pnt.x))+(poly->tangent_space.normal.y*(float)(poly->box.mid.y-view.render->camera.pnt.y))+(poly->tangent_space.normal.z*(float)(poly->box.mid.z-view.render->camera.pnt.z)))>map.optimize.cull_angle) {
-					poly++;
-					continue;
-				}
-			}
-
-				// get texture
-
-			texture=&map.textures[poly->txt_idx];
-			frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
-
-				// draw glow
-
-			gl_texture_glow_set(texture->frames[frame].bitmap.gl_id,texture->frames[frame].glowmap.gl_id,texture->glow.current_color);
-			
-			glDrawElements(GL_TRIANGLE_FAN,poly->ptsz,GL_UNSIGNED_SHORT,(GLvoid*)poly->vbo.index_offset);
-			
-			poly++;
-		}
-		
-		view_unbind_mesh_liquid_vertex_object();
-		view_unbind_mesh_liquid_index_object();
-	}
-	
-		// turn off glow if we used it
-		
-	if (!first_hit) {
-		glDepthMask(GL_TRUE);
-		gl_texture_glow_end();
-	}
 
 		// disable arrays
 
@@ -513,8 +510,6 @@ void render_map_mesh_opaque(void)
 	else {
 		render_opaque_mesh_normal();
 	}
-
-	render_opaque_mesh_glow();
 
 		// debug shows obscuring
 		// polygons in green

@@ -886,6 +886,7 @@ extern inline unsigned long view_images_get_gl_id(int idx);
 // map rendering
 //
 
+extern inline bool render_check_poly_cull(map_mesh_type *mesh,map_mesh_poly_type *poly);
 extern void render_map_mesh_opaque(void);
 extern void render_map_mesh_transparent(void);
 

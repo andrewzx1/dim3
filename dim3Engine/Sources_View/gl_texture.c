@@ -342,6 +342,7 @@ void gl_texture_transparent_light_map_set(GLuint txt_id,GLuint lmap_txt_id,float
       
 ======================================================= */
 
+// supergumba -- can probably delete this later
 void gl_texture_glow_start(void)
 {
 		// texture unit 0
