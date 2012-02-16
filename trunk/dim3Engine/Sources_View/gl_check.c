@@ -90,8 +90,6 @@ void gl_check_initialize(void)
 	gl_check_value_texture_rectangle=(strstr(render_info.ext_string,"GL_ARB_texture_rectangle")!=NULL);
 	gl_check_value_textured_point=(strstr(render_info.ext_string,"GL_ARB_point_sprite")!=NULL);
 
-	fprintf(stdout,"point=%s\n",gl_check_value_textured_point?"true":"false");
-
 #ifndef D3_OPENGL_ES
 	gl_check_value_shader=gl_check_initialize_shader();
 #else
