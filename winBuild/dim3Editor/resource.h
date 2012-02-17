@@ -38,18 +38,16 @@
 #define ID_VIEW_SPLIT_VERTICAL				318
 #define ID_VIEW_REMOVE_PANEL				319
 
-#define ID_MAP_CINEMA						400
-#define ID_MAP_GROUP						401
-#define ID_MAP_MOVEMENT						402
-#define ID_MAP_RAISE_Y						403
-#define ID_MAP_LOWER_Y						404
-#define ID_MAP_CENTER						405
-#define ID_MAP_RESET_UV						406
-#define ID_MAP_RECALC_NORMAL				408
-#define ID_MAP_CLEAR_LIGHT_MAP				409
-#define ID_MAP_BUILD_LIGHT_MAP				410
-#define ID_MAP_BUILD_LIQUID_REFLECTION_MAP	411
-#define ID_MAP_RUN							412
+#define ID_MAP_RAISE_Y						400
+#define ID_MAP_LOWER_Y						401
+#define ID_MAP_CENTER						402
+#define ID_MAP_RESET_UV						403
+#define ID_MAP_RECALC_NORMAL				404
+#define ID_MAP_SORT_MESH_POLYS				405
+#define ID_MAP_CLEAR_LIGHT_MAP				406
+#define ID_MAP_BUILD_LIGHT_MAP				407
+#define ID_MAP_BUILD_LIQUID_REFLECTION_MAP	408
+#define ID_MAP_RUN							409
 
 #define ID_MESH_COMBINE						500
 #define ID_MESH_SPLIT						501

@@ -546,4 +546,3 @@ void map_recalc_normals(map_type *map,bool only_tangent)
 		mesh++;
 	}
 }
-

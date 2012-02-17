@@ -355,18 +355,6 @@ bool menu_event_run(int cmd)
 			
 			// map menu
 
-		case kCommandMapAddCinema:
-			piece_create_cinema();
-			return(TRUE);
-
-		case kCommandMapAddGroup:
-			piece_create_group();
-			return(TRUE);
-
-		case kCommandMapAddMovement:
-			piece_create_movement();
-			return(TRUE);
-			
 		case kCommandMapRaiseY:
 			map_mesh_move_all(0,-1440,0);
 			main_wind_draw();
@@ -387,9 +375,16 @@ bool menu_event_run(int cmd)
 			main_wind_draw();
 			return(TRUE);
 
-		case kCommandMapCreateNormals:
+		case kCommandMapResetNormals:
 			os_set_wait_cursor();
 			map_recalc_normals(&map,FALSE);
+			os_set_arrow_cursor();
+			main_wind_draw();
+			return(TRUE);
+
+		case kCommandMapSortMeshPolys:
+			os_set_wait_cursor();
+			map_mesh_sort_polys(&map);
 			os_set_arrow_cursor();
 			main_wind_draw();
 			return(TRUE);

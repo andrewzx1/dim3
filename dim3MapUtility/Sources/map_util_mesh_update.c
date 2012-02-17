@@ -1351,3 +1351,13 @@ void map_mesh_single_uv(map_type *map,int mesh_idx)
 	}
 }
 
+/* =======================================================
+
+      Sort Polys Within a Mesh
+      
+======================================================= */
+
+void map_mesh_sort_polys(map_type *map)
+{
+	// supergumba -- todo
+}
