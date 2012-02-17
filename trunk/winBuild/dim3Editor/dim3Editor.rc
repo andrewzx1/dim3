@@ -60,17 +60,13 @@ BEGIN
     END
     POPUP "Map"
     BEGIN
-        MENUITEM "Add Cinema...",						ID_MAP_CINEMA
-        MENUITEM "Add Group...",						ID_MAP_GROUP
-        MENUITEM "Add Movement...",						ID_MAP_MOVEMENT
-		MENUITEM SEPARATOR
         MENUITEM "Raise Y\tCtrl+Alt+Shift+Y",			ID_MAP_RAISE_Y
         MENUITEM "Lower Y\tCtrl+Alt+Y",					ID_MAP_LOWER_Y
         MENUITEM "Center",								ID_MAP_CENTER
 		MENUITEM SEPARATOR
         MENUITEM "Reset UVs",							ID_MAP_RESET_UV
-		MENUITEM SEPARATOR
         MENUITEM "Recalc Normals",						ID_MAP_RECALC_NORMAL
+        MENUITEM "Sort Mesh Polygons",					ID_MAP_SORT_MESH_POLYS
 		MENUITEM SEPARATOR
         MENUITEM "Clear Light Maps",					ID_MAP_CLEAR_LIGHT_MAP
         MENUITEM "Build Light Maps...",					ID_MAP_BUILD_LIGHT_MAP

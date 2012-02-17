@@ -98,7 +98,7 @@ void list_palette_list_initialize(list_palette_type *list,char *title,bool back_
 	strcpy(list->titles[0],title);
 	list->titles[1][0]=list->titles[2][0]=0x0;
 
-	list->scroll_page=0;
+	list->scroll_offset=0;
 	list->total_high=0;
 	
 	list->back_on=back_on;
@@ -939,7 +939,7 @@ void list_palette_get_current_picker_value(list_palette_item_type *item,char *st
       
 ======================================================= */
 
-int list_palette_get_scroll_page_count(list_palette_type *list)
+int list_palette_get_scroll_offset_max(list_palette_type *list)
 {
 	int				high;
 	d3rect			box;
@@ -949,7 +949,48 @@ int list_palette_get_scroll_page_count(list_palette_type *list)
 	high=list->total_high-(box.by-(box.ty+list_palette_get_title_high(list)));
 	if (high<=0) return(0);
 	
-	return((high/list_item_scroll_size)+1);
+	return(high);
+}
+
+void list_palette_get_scroll_thumb_position(list_palette_type *list,int *thumb_ty,int *thumb_by)
+{
+	int				scroll_max,high,div,thumb_size;
+	d3rect			box;
+
+	list_palette_box(&box);
+	scroll_max=list_palette_get_scroll_offset_max(list);
+
+	box.ty+=list_palette_get_title_high(list);
+	high=box.by-box.ty;
+
+	thumb_size=0;
+
+	div=list->total_high/high;
+	if ((list->total_high%high)!=0) div++;
+	if (div!=0) thumb_size=high/div;
+
+	*thumb_ty=box.ty+((thumb_size*list->scroll_offset)/scroll_max);
+	if (*thumb_ty<box.ty) *thumb_ty=box.ty;
+		
+	*thumb_by=(*thumb_ty)+thumb_size;
+	if (*thumb_by>box.by) *thumb_by=box.by;
+}
+
+int list_palette_get_scroll_thumb_page_offset(list_palette_type *list)
+{
+	int				scroll_max,high,div;
+	d3rect			box;
+
+	list_palette_box(&box);
+	scroll_max=list_palette_get_scroll_offset_max(list);
+
+	box.ty+=list_palette_get_title_high(list);
+	high=box.by-box.ty;
+
+	div=list->total_high/high;
+	if ((list->total_high%high)!=0) div++;
+
+	return(scroll_max/div);
 }
 
 /* =======================================================
@@ -967,7 +1008,7 @@ void list_palette_draw_item_color_box(list_palette_type *list,list_palette_item_
 	list_palette_box(&box);
 
 	x=box.rx-(list_item_font_high+(list_palette_scroll_wid+4));
-	y=item->y-(list->scroll_page*list_item_scroll_size);
+	y=item->y-list->scroll_offset;
 
 	vertexes[0]=vertexes[6]=(float)x;
 	vertexes[2]=vertexes[4]=(float)(x+list_item_font_high);
@@ -1001,7 +1042,7 @@ void list_palette_draw_item_check_box(list_palette_type *list,list_palette_item_
 	lx=box.rx-(list_item_font_high+(list_palette_scroll_wid+2));
 	rx=lx+(list_item_font_high-2);
 
-	y=item->y-(list->scroll_page*list_item_scroll_size);
+	y=item->y-list->scroll_offset;
 	ty=(y-list_item_font_high)+2;
 	by=y;
 
@@ -1053,7 +1094,7 @@ void list_palette_draw_item_string(list_palette_type *list,list_palette_item_typ
 	rx=box.rx-(list_palette_scroll_wid+4);
 	if (item->button_type!=list_button_none) rx-=(list_item_font_high+2);
 	
-	y=item->y-(list->scroll_page*list_item_scroll_size);
+	y=item->y-list->scroll_offset;
 
 	if (!item->disabled) {
 		text_draw_right(rx,y,list_item_font_size,NULL,str);
@@ -1079,7 +1120,7 @@ void list_palette_draw_item_button(list_palette_type *list,int idx)
 
 	rx=box.rx-(list_palette_scroll_wid+1);
 	lx=rx-16;
-	ty=(item->y-list_item_font_high)-(list->scroll_page*list_item_scroll_size);
+	ty=(item->y-list_item_font_high)-list->scroll_offset;
 	by=ty+16;
 
 	glEnable(GL_ALPHA_TEST);
@@ -1263,7 +1304,8 @@ void list_palette_draw_title(list_palette_type *list)
 
 void list_palette_draw_scrollbar(list_palette_type *list)
 {
-	int					lx,mx,ty,by,thumb_ty,thumb_by,page_count;
+	int					lx,mx,ty,by,thumb_ty,thumb_by,
+						scroll_max;
 	float				vertexes[8],colors[16];
 	d3rect				box;
 
@@ -1309,15 +1351,11 @@ void list_palette_draw_scrollbar(list_palette_type *list)
 
 		// scroll bar thumb
 
-	page_count=list_palette_get_scroll_page_count(list);
+	scroll_max=list_palette_get_scroll_offset_max(list);
 
-	if ((list->item_count!=0) && (page_count!=0)) {
+	if ((list->item_count!=0) && (scroll_max!=0)) {
 		
-		thumb_ty=ty+(((by-ty)*list->scroll_page)/(page_count+1));
-		if (thumb_ty<ty) thumb_ty=ty;
-		
-		thumb_by=ty+(((by-ty)*(list->scroll_page+1))/(page_count+1));
-		if (thumb_by>by) thumb_by=by;
+		list_palette_get_scroll_thumb_position(list,&thumb_ty,&thumb_by);
 
 		vertexes[0]=vertexes[6]=(float)(lx+1);
 		vertexes[2]=vertexes[4]=(float)(box.rx-1);
@@ -1414,7 +1452,7 @@ void list_palette_draw_item(list_palette_type *list,int idx)
 
 		// early exits
 		
-	y=item->y-(list->scroll_page*list_item_scroll_size);
+	y=item->y-list->scroll_offset;
 
 	if ((y<(box.ty+list_palette_get_title_high(list))) || ((y-list_item_font_high)>box.by)) return;
 
@@ -1474,7 +1512,7 @@ void list_palette_draw_item(list_palette_type *list,int idx)
 		// draw item
 		
 	x=item->x;
-	y=item->y-(list->scroll_page*list_item_scroll_size);
+	y=item->y-list->scroll_offset;
 
 	switch (item->ctrl_type) {
 
@@ -1605,7 +1643,7 @@ void list_palette_draw(list_palette_type *list)
 		// check if scrolling is bad,
 		// usually when a page was switched
 		
-	if (list->scroll_page>list_palette_get_scroll_page_count(list)) list->scroll_page=0;
+	if (list->scroll_offset>list_palette_get_scroll_offset_max(list)) list->scroll_offset=0;
 
 		// items
 
@@ -1632,22 +1670,22 @@ void list_palette_draw(list_palette_type *list)
 
 void list_palette_scroll_up(list_palette_type *list)
 {
-	if (list->scroll_page>0) {
-		list->scroll_page--;
-		main_wind_draw();
-	}
+	list->scroll_offset-=list_wheel_scroll_size;
+	if (list->scroll_offset<0) list->scroll_offset=0;
+	
+	main_wind_draw();
 }
 
 void list_palette_scroll_down(list_palette_type *list)
 {
-	int				page_count;
+	int				scroll_max;
 	
-	page_count=list_palette_get_scroll_page_count(list);
+	list->scroll_offset+=list_wheel_scroll_size;
+	scroll_max=list_palette_get_scroll_offset_max(list);
 	
-	if (list->scroll_page<page_count) {
-		list->scroll_page++;
-		main_wind_draw();
-	}
+	if (list->scroll_offset>scroll_max) list->scroll_offset=scroll_max;
+		
+	main_wind_draw();
 }
 
 void list_palette_scroll_wheel(list_palette_type *list,d3pnt *pnt,int move)
@@ -1660,7 +1698,7 @@ void list_palette_scroll_wheel(list_palette_type *list,d3pnt *pnt,int move)
 
 void list_palette_scroll_item_into_view(list_palette_type *list,int item_type,int item_idx)
 {
-	int							n,y,page_count;
+	int							n,y,scroll_max;
 	bool						hit;
 	list_palette_item_type		*item;
 
@@ -1690,11 +1728,11 @@ void list_palette_scroll_item_into_view(list_palette_type *list,int item_type,in
 		// bring it into view
 		// somewhere near the top if possible
 
-	list->scroll_page=(y/list_item_scroll_size)-1;
+	list->scroll_offset=y;
 
-	if (list->scroll_page<0) list->scroll_page=0;
-	page_count=list_palette_get_scroll_page_count(list);
-	if (list->scroll_page>page_count) list->scroll_page=page_count;
+	if (list->scroll_offset<0) list->scroll_offset=0;
+	scroll_max=list_palette_get_scroll_offset_max(list);
+	if (list->scroll_offset>scroll_max) list->scroll_offset=scroll_max;
 }
 
 /* =======================================================
@@ -1724,7 +1762,7 @@ bool list_palette_click_item(list_palette_type *list,int item_idx)
 	list->push_on=TRUE;
 	list->push_idx=item_idx;
 	
-	y=item->y-(list->scroll_page*list_item_scroll_size);
+	y=item->y-list->scroll_offset;
 	
 	main_wind_draw();
 
@@ -1817,8 +1855,11 @@ bool list_palette_click_back(list_palette_type *list)
 
 void list_palette_click_scroll_bar(list_palette_type *list)
 {
-	int						old_page,page,page_count,
-							page_size,y,offset_y,thumb_y;
+	int						scroll_offset,old_scroll_offset,
+							scroll_max,thumb_page_offset,
+							thumb_size,thumb_y,
+							thumb_ty,thumb_by;
+	bool					first_drag;
 	d3pnt					pt,org_pt;
 	d3rect					box;
 	
@@ -1826,32 +1867,60 @@ void list_palette_click_scroll_bar(list_palette_type *list)
 
 		// scrolling sizes
 		
-	page_count=list_palette_get_scroll_page_count(list);
-	if (page_count==0) return;
+	scroll_max=list_palette_get_scroll_offset_max(list);
+	if (scroll_max==0) return;
 	
-	page_size=((box.by-box.ty)/(page_count+1));
+	list_palette_get_scroll_thumb_position(list,&thumb_ty,&thumb_by);
+	thumb_size=thumb_by-thumb_ty;
 
 		// scrolling
-		
-	old_page=list->scroll_page;
-	os_get_cursor(&org_pt);
 
-	thumb_y=box.ty+(((box.by-box.ty)*list->scroll_page)/(page_count+1));
-	offset_y=thumb_y-org_pt.y;
+	first_drag=FALSE;
+		
+	old_scroll_offset=list->scroll_offset;
+	os_get_cursor(&org_pt);
 	
 	while (!os_track_mouse_location(&pt,NULL)) {
+
+			// any movements?
+
+		if (pt.y==org_pt.y) continue;
 		
-		y=(pt.y-org_pt.y)-offset_y;
-		page=old_page+(y/page_size);
-		if (page<0) page=0;
-		if (page>page_count) page=page_count;
+			// mark as first drag and move
+
+		scroll_offset=old_scroll_offset+(pt.y-org_pt.y);
+		if (scroll_offset<0) scroll_offset=0;
+		if (scroll_offset>scroll_max) scroll_offset=scroll_max;
 		
-		if (page!=list->scroll_page) {
-			list->scroll_page=page;
+		if (scroll_offset!=list->scroll_offset) {
+			first_drag=TRUE;
+			list->scroll_offset=scroll_offset;
 			main_wind_draw();
 		}
 		
 		usleep(10000);
+	}
+
+	if (first_drag) return;
+
+		// if no drag, then do up/down click
+
+	thumb_y=(thumb_ty+thumb_by)>>1;
+	thumb_page_offset=list_palette_get_scroll_thumb_page_offset(list);
+
+	if (org_pt.y<thumb_y) {
+		scroll_offset=old_scroll_offset-thumb_page_offset;
+		if (scroll_offset>=0) {
+			list->scroll_offset=scroll_offset;
+			main_wind_draw();
+		}
+	}
+	else {
+		scroll_offset=old_scroll_offset+thumb_page_offset;
+		if (scroll_offset<=scroll_max) {
+			list->scroll_offset=scroll_offset;
+			main_wind_draw();
+		}
 	}
 }
 
@@ -1907,7 +1976,7 @@ bool list_palette_click(list_palette_type *list,d3pnt *pnt,bool double_click)
 
 		// click in item
 
-	item_idx=((pt.y-list_palette_get_title_high(list))+(list->scroll_page*list_item_scroll_size))/list_item_font_high;
+	item_idx=((pt.y-list_palette_get_title_high(list))+list->scroll_offset)/list_item_font_high;
 	if ((item_idx<0) || (item_idx>=list->item_count)) return(FALSE);
 
 		// is there a button

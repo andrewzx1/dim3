@@ -37,7 +37,8 @@ and can be sold or given away.
 #define list_title_font_size								14.0f
 #define list_item_font_size									12.0f
 #define list_item_font_high									14
-#define list_item_scroll_size								(list_item_font_high*5)
+
+#define list_wheel_scroll_size								14
 
 #ifndef D3_SETUP
 	#define list_palette_border_sz							10
@@ -124,7 +125,7 @@ typedef struct		{
 typedef struct		{
 						int									item_count,item_sort_start_idx,push_idx,
 															item_id,item_type,item_idx,
-															scroll_page,total_high;
+															scroll_offset,total_high;
 						bool								back_on,back_push_on,
 															push_on,button_click;
 						char								titles[3][128];
