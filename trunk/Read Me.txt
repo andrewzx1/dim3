@@ -45,10 +45,10 @@ You can get these by downloading the current win32 version of dim3.
 For iOS Compile:
 -----------------
 
-/iPadBuild/Libraries/JavaScriptCore (Javascript static lib and headers)
-/iPadBuild/Libraries/PNG (PNG static lib and headers)
-/iPadBuild/Libraries/MPG123 (mpg123 static lib and headers)
-/iPadBuild/Libraries/SDL (SDL static lib and headers)
+/iOSBuild/Common/Libraries/JavaScriptCore (Javascript static lib and headers)
+/iOSBuild/Common/Libraries/PNG (PNG static lib and headers)
+/iOSBuild/Common/Libraries/MPG123 (mpg123 static lib and headers)
+/iOSBuild/Common/Libraries/SDL (SDL static lib and headers)
 
 A pre-compiled archive of these can be found at: http://www.klinksoftware.net/download/iPad_Libraries.zip
 
