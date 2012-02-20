@@ -1359,5 +1359,63 @@ void map_mesh_single_uv(map_type *map,int mesh_idx)
 
 void map_mesh_sort_polys(map_type *map)
 {
-	// supergumba -- todo
+	int						n,k,t,sz,nmesh,npoly,
+							txt_idx,poly_idx;
+	bool					skip;
+	map_mesh_type			*mesh;
+	map_mesh_poly_type		*poly,bk_poly;
+
+	nmesh=map->mesh.nmesh;
+
+	for (n=0;n!=nmesh;n++) {
+
+		mesh=&map->mesh.meshes[n];
+		npoly=mesh->npoly;
+
+			// ignore meshes with
+			// the same texture on all polygons
+
+		skip=TRUE;
+		txt_idx=mesh->polys[0].txt_idx;
+
+		for (k=1;k<npoly;k++) {
+			if (mesh->polys[k].txt_idx!=txt_idx) {
+				skip=FALSE;
+				break;
+			}
+		}
+
+		if (skip) continue;
+
+			// sort the polygons by
+			// texture index
+
+		for (k=1;k<npoly;k++) {
+
+			poly=&mesh->polys[k];
+			txt_idx=poly->txt_idx;
+
+				// find position in mesh
+
+			poly_idx=-1;
+
+			for (t=0;t<k;t++) {
+				if (mesh->polys[t].txt_idx>txt_idx) {
+					poly_idx=t;
+					break;
+				}
+			}
+
+			if ((poly_idx==-1) || (poly_idx==k)) continue;
+
+				// move poly
+
+			sz=(k-poly_idx)*sizeof(map_mesh_poly_type);
+			if (sz==0) continue;
+
+			memmove(&bk_poly,poly,sizeof(map_mesh_poly_type));
+			memmove(&mesh->polys[poly_idx+1],&mesh->polys[poly_idx],sz);
+			memmove(&mesh->polys[poly_idx],&bk_poly,sizeof(map_mesh_poly_type));
+		}
+	}
 }
