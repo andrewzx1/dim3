@@ -81,6 +81,8 @@ bool tool_get_highlight_state(int tool_idx)
 {
 	switch (tool_idx) {
 
+			// left side
+
 		case 0:
 			return(state.texture);
 
@@ -120,8 +122,19 @@ bool tool_get_highlight_state(int tool_idx)
 		case 12:
 			return(state.drag_bone_mode==drag_bone_mode_stretch);
 
-		case 13:
-			return(state.playing);
+			// right side
+
+		case 14:
+			return(state.play_mode==play_mode_stop);
+
+		case 15:
+			return(state.play_mode==play_mode_normal);
+
+		case 16:
+			return(state.play_mode==play_mode_blend);
+
+		case 17:
+			return(state.play_mode==play_mode_slow);
 			
 	}
 
@@ -138,6 +151,8 @@ void tool_click(int tool_idx)
 {
 	switch (tool_idx) {
 	
+			// left side
+
 		case 0:
 			state.texture=!state.texture;
 			break;
@@ -193,8 +208,22 @@ void tool_click(int tool_idx)
 			state.drag_bone_mode=drag_bone_mode_stretch;
 			break;
 			
-		case 13:
-			main_wind_play(!state.playing,FALSE);
+			// right side
+
+		case 14:
+			main_wind_play(play_mode_stop);
+			break;
+
+		case 15:
+			main_wind_play(play_mode_normal);
+			break;
+
+		case 16:
+			if (dialog_play_blend_animation_run()) main_wind_play(play_mode_blend);
+			break;
+
+		case 17:
+			main_wind_play(play_mode_slow);
 			break;
 	}
 	

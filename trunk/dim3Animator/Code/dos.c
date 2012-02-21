@@ -83,8 +83,7 @@ void file_reset_state(void)
 	state.cur_pose_bone_move_idx=-1;
 	state.cur_hit_box_idx=-1;
 
-	state.playing=FALSE;
-	state.play_animate_blend=FALSE;
+	state.play_mode=play_mode_stop;
 	
 	state.texture_edit_idx=-1;
 	state.in_preference=FALSE;
@@ -103,7 +102,7 @@ void file_reset_state(void)
 		state.show_mesh[n]=FALSE;
 	}
 	
-	main_wind_play(FALSE,FALSE);
+	main_wind_play(play_mode_stop);
 
 	undo_clear();
 	menu_update();

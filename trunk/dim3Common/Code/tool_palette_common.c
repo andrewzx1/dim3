@@ -165,7 +165,7 @@ void tool_palette_draw_icon(int x,int y,unsigned long gl_id,bool is_highlight,bo
 
 void tool_palette_draw(void)
 {
-	int				n,x,pixel_sz;
+	int				n,k,x,pixel_sz;
 	float			vertexes[8];
 	d3rect			wbox,tbox;
 	
@@ -216,7 +216,11 @@ void tool_palette_draw(void)
 			// splitter?
 			
 		if (tool_bitmaps_file_name[n][0]==0x0) {
-			x=tbox.rx-(((tool_count-1)-n)*pixel_sz);
+			x=tbox.rx;
+			for (k=(n+1);k<tool_count;k++) {
+				x-=pixel_sz;
+				if (tool_bitmaps_separator[k]=='1') x-=tool_palette_seperator_size;
+			}
 			continue;
 		}
 		
@@ -288,7 +292,7 @@ bool tool_palette_click_mouse_down(int push_idx,int lx,int ty)
 
 int tool_palette_click_find_index(d3pnt *pnt,int *px)
 {
-	int				n,x,pixel_sz;
+	int				n,k,x,pixel_sz;
 	d3rect			tbox;
 	
 	tool_palette_box(&tbox);
@@ -301,7 +305,11 @@ int tool_palette_click_find_index(d3pnt *pnt,int *px)
 			// splitter?
 			
 		if (tool_bitmaps_file_name[n][0]==0x0) {
-			x=tbox.rx-(((tool_count-1)-n)*pixel_sz);
+			x=tbox.rx;
+			for (k=(n+1);k<tool_count;k++) {
+				x-=pixel_sz;
+				if (tool_bitmaps_separator[k]=='1') x-=tool_palette_seperator_size;
+			}
 			continue;
 		}
 		

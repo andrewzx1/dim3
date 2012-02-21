@@ -228,7 +228,7 @@ void model_piece_add_animate(void)
 		return;
 	}
 	
-	main_wind_play(FALSE,FALSE);
+	main_wind_play(play_mode_stop);
 	
 	idx=model_animate_add(&model);
 	if (idx==-1) {
@@ -252,7 +252,7 @@ void model_piece_duplicate_animate(int animate_idx)
 {
 	int				idx;
 
-	main_wind_play(FALSE,FALSE);
+	main_wind_play(play_mode_stop);
 
 	idx=model_animate_duplicate(&model,state.cur_animate_idx);
 	if (idx==-1) {
@@ -274,7 +274,7 @@ void model_piece_duplicate_animate(int animate_idx)
 
 void model_piece_delete_animate(int animate_idx)
 {
-	main_wind_play(FALSE,FALSE);
+	main_wind_play(play_mode_stop);
 
 	model_animate_delete(&model,animate_idx);
 

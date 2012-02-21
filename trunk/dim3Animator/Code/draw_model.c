@@ -91,7 +91,7 @@ void model_texture_set(int txt_idx)
 	
 		// get texture ids
 		
-	if (state.playing) {
+	if (state.play_mode!=play_mode_stop) {
 		gl_id=texture->frames[texture->animate.current_frame].bitmap.gl_id;
 	}
 	else {
@@ -185,7 +185,7 @@ void draw_model(int mesh_idx)
 	
 		// setup the current texture frames
 		
-	if (state.playing) {
+	if (state.play_mode!=play_mode_stop) {
 		model_setup_animated_textures(&model,time_get());
 	}
 	

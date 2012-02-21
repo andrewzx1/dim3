@@ -98,7 +98,12 @@ void item_palette_fill(void)
 	list_palette_sort_mark_start(&item_palette);
 
 	for (n=0;n!=map.nspot;n++) {
-		list_palette_add_item(&item_palette,spot_piece,n,map.spots[n].name,((item_palette.item_type==spot_piece)&&(n==item_palette.item_idx)),FALSE);
+		if (map.spots[n].name[0]!=0x0) {
+			list_palette_add_item(&item_palette,spot_piece,n,map.spots[n].name,((item_palette.item_type==spot_piece)&&(n==item_palette.item_idx)),FALSE);
+		}
+		else {
+			list_palette_add_item(&item_palette,spot_piece,n,"[none]",((item_palette.item_type==spot_piece)&&(n==item_palette.item_idx)),FALSE);
+		}
 	}
 
 	list_palette_sort(&item_palette);

@@ -233,7 +233,7 @@ void draw_model_info(void)
 	y+=15;
 
 	pose_idx=state.cur_pose_idx;
-	if ((state.playing) && (state.cur_animate_idx!=-1)) pose_idx=model.animates[state.cur_animate_idx].pose_moves[state.blend[0].pose_move_idx].pose_idx;
+	if ((state.play_mode!=play_mode_stop) && (state.cur_animate_idx!=-1)) pose_idx=model.animates[state.cur_animate_idx].pose_moves[state.blend[0].pose_move_idx].pose_idx;
 	
 	if (pose_idx!=-1) {
 		sprintf(str,"Pose: %s",model.poses[pose_idx].name);

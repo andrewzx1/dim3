@@ -36,7 +36,7 @@ extern void main_wind_close(void);
 extern void main_wind_gl_setup(void);
 extern void main_wind_draw(void);
 extern void main_wind_draw_no_swap(void);
-extern void main_wind_play(bool play,bool blend);
+extern void main_wind_play(int play_mode);
 extern void main_wind_click(d3pnt *pnt,bool double_click);
 extern void main_wind_scroll_wheel(d3pnt *pnt,int delta);
 extern void main_wind_mouse_move(d3pnt *pnt);

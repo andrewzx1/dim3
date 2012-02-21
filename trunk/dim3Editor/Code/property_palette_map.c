@@ -78,7 +78,7 @@ extern list_palette_type		property_palette;
 void property_palette_fill_map(void)
 {
 	int				n;
-	char			name[256],str[256];
+	char			name[256];
 
 	list_palette_set_title(&property_palette,"Map Settings",NULL,NULL,NULL,NULL,NULL);
 
@@ -122,8 +122,7 @@ void property_palette_fill_map(void)
 	list_palette_add_header(&property_palette,0,"Map Parameters");
 	for (n=0;n!=10;n++) {
 		sprintf(name,"Param %d",n);
-		property_get_parameter(n,map.settings.params,str);
-		list_palette_add_string(&property_palette,(kMapPropertyParamsStart+n),name,str,FALSE);
+		list_palette_add_parameter(&property_palette,(kMapPropertyParamsStart+n),name,map.settings.params,n,FALSE);
 	}
 
 		// editor setup
@@ -153,22 +152,7 @@ void property_palette_fill_map(void)
 
 void property_palette_click_map(int id,bool double_click)
 {
-	int				param_idx;
-	char			str[256];
-
 	if (!double_click) return;
-
-		// parameters
-
-	if ((id>=kMapPropertyParamsStart) && (id<=kMapPropertyParamsEnd)) {
-		param_idx=(id-kMapPropertyParamsStart);
-		
-		property_get_parameter(param_idx,map.settings.params,str);
-		dialog_property_string_run(list_string_value_string,(void*)str,256,0,0);
-		property_set_parameter(param_idx,map.settings.params,str);
-
-		return;
-	}
 	
 		// regular properties
 
