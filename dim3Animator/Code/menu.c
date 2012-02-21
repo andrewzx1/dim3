@@ -133,19 +133,19 @@ bool menu_event_run(int cmd)
 			// file menu
 
 		case kCommandFileNew:
-			main_wind_play(FALSE,FALSE);
+			main_wind_play(play_mode_stop);
 			file_new_model();
 			return(TRUE);
 
 		case kCommandFileOpen:
-			main_wind_play(FALSE,FALSE);
+			main_wind_play(play_mode_stop);
 			file_open_model();
 			return(TRUE);
 			
 		case kCommandFileClose:
 			if (!menu_save_changes_dialog()) return(TRUE);
 			file_close_model();
-			main_wind_play(FALSE,FALSE);
+			main_wind_play(play_mode_stop);
 			menu_update();
 			return(TRUE);
 			
@@ -295,17 +295,17 @@ bool menu_event_run(int cmd)
 			return(TRUE);
 			
 		case kCommandImportOBJ:
-			main_wind_play(FALSE,FALSE);
+			main_wind_play(play_mode_stop);
 			file_import_mesh_obj(FALSE);
 			return(TRUE);
 			
 		case kCommandReplaceOBJ:
-			main_wind_play(FALSE,FALSE);
+			main_wind_play(play_mode_stop);
 			file_import_mesh_obj(TRUE);
 			return(TRUE);
 			
 		case kCommandInsertXML:
-			main_wind_play(FALSE,FALSE);
+			main_wind_play(play_mode_stop);
 			file_insert_mesh_dim3_model();
 			return(TRUE);
 			
@@ -515,18 +515,18 @@ bool menu_event_run(int cmd)
             
 		case kCommandResetTimeAnimate:
 			if (state.cur_animate_idx==-1) return(TRUE);
-			main_wind_play(FALSE,FALSE);
+			main_wind_play(play_mode_stop);
 
 			dialog_animation_reset_time_run(state.cur_animate_idx);
 			return(TRUE);
 			
 		case kCommandPlayAnimate:
-			main_wind_play(!state.playing,FALSE);
+			main_wind_play(play_mode_normal);
 			return(TRUE);
 			
 		case kCommandPlayBlendAnimate:
 			if (dialog_play_blend_animation_run()) {
-				main_wind_play(TRUE,TRUE);
+				main_wind_play(play_mode_blend);
 			}
 			return(TRUE);
 						

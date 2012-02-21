@@ -113,7 +113,7 @@
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
 				WholeProgramOptimization="false"
-				AdditionalIncludeDirectories=".;..\Libraries;..\Libraries\GLEW;..\Libraries\ZLib;..\Libraries\SDL;..\Libraries\PNG;..\..\dim3Setup\Code;..\..\dim3Setup\Headers;..\..\dim3Common\Headers;..\..\dim3BaseUtility\Headers;..\..\dim3BaseUtility\Sources;..\Common\Code;..\Common\Headers"
+				AdditionalIncludeDirectories=".;..\Common\Libraries;..\Common\Libraries\GLEW;..\Common\Libraries\ZLib;..\Common\Libraries\SDL;..\Common\Libraries\PNG;..\..\dim3Setup\Code;..\..\dim3Setup\Headers;..\..\dim3Common\Headers;..\..\dim3BaseUtility\Headers;..\..\dim3BaseUtility\Sources;..\Common\Code;..\Common\Headers"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;D3_PCH;D3_SETUP"
 				StringPooling="true"
 				ExceptionHandling="0"
@@ -187,15 +187,15 @@
 				Name="glew"
 				>
 				<File
-					RelativePath="..\Libraries\GLEW\glew.h"
+					RelativePath="..\Common\Libraries\GLEW\glew.h"
 					>
 				</File>
 				<File
-					RelativePath="..\Libraries\GLEW\glew32.lib"
+					RelativePath="..\Common\Libraries\GLEW\glew32.lib"
 					>
 				</File>
 				<File
-					RelativePath="..\Libraries\GLEW\wglew.h"
+					RelativePath="..\Common\Libraries\GLEW\wglew.h"
 					>
 				</File>
 			</Filter>
@@ -227,11 +227,19 @@
 				Name="png"
 				>
 				<File
-					RelativePath="..\Libraries\PNG\libpng15.lib"
+					RelativePath="..\Common\Libraries\PNG\libpng15.lib"
 					>
 				</File>
 				<File
-					RelativePath="..\Libraries\ZLib\zlib1.lib"
+					RelativePath="..\Common\Libraries\PNG\png.h"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\Libraries\ZLib\zlib.h"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\Libraries\ZLib\zlib1.lib"
 					>
 				</File>
 			</Filter>

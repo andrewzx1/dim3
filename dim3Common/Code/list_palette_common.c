@@ -373,6 +373,26 @@ void list_palette_add_string(list_palette_type *list,int id,char *name,char *val
 	list_palette_add_string_selectable(list,id,name,value,FALSE,disabled);
 }
 
+void list_palette_add_parameter(list_palette_type *list,int id,char *name,char *params,int param_idx,bool disabled)
+{
+	list_palette_item_type		*item;
+	
+	item=list_palette_create_item(list,list_item_ctrl_param);
+
+	item->type=-1;
+	item->idx=-1;
+	item->id=id;
+
+	item->selected=FALSE;
+	item->disabled=disabled;
+
+	strcpy(item->name,name);
+
+	item->limit.str_len=256;
+	item->limit.param_idx=param_idx;
+	item->value.str_ptr=params;
+}
+
 void list_palette_add_int(list_palette_type *list,int id,char *name,int *int_ptr,bool disabled)
 {
 	list_palette_item_type		*item;
@@ -1539,6 +1559,15 @@ void list_palette_draw_item(list_palette_type *list,int idx)
 			list_palette_draw_item_button(list,idx);
 			break;
 
+			// param
+
+		case list_item_ctrl_param:
+			text_draw(x,y,list_item_font_size,&col,item->name);
+			property_get_parameter(item->limit.param_idx,item->value.str_ptr,str);
+			list_palette_draw_item_string(list,item,str);
+			list_palette_draw_item_button(list,idx);
+			break;
+
 			// int
 
 		case list_item_ctrl_int:
@@ -1927,6 +1956,7 @@ void list_palette_click_scroll_bar(list_palette_type *list)
 bool list_palette_click(list_palette_type *list,d3pnt *pnt,bool double_click)
 {
 	int						item_idx;
+	char					str[256];
 	d3pnt					pt;
 	d3rect					box;
 	d3fpnt					uv_ptr;
@@ -2023,6 +2053,14 @@ bool list_palette_click(list_palette_type *list,d3pnt *pnt,bool double_click)
 		// handle click editing
 
 	switch (item->ctrl_type) {
+
+		case list_item_ctrl_param:
+			if (!double_click) return(FALSE);
+			property_get_parameter(item->limit.param_idx,item->value.str_ptr,str);
+			dialog_property_string_run(list_string_value_string,(void*)str,256,0,0);
+			property_set_parameter(item->limit.param_idx,item->value.str_ptr,str);
+			main_wind_draw();
+			return(TRUE);
 		
 		case list_item_ctrl_int:
 			if (!double_click) return(FALSE);

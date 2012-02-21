@@ -57,16 +57,17 @@ and can be sold or given away.
 #define list_item_ctrl_text									1
 #define list_item_ctrl_color								2
 #define list_item_ctrl_string								3
-#define list_item_ctrl_int									4
-#define list_item_ctrl_float								5
-#define list_item_ctrl_checkbox								6
-#define list_item_ctrl_point								7
-#define list_item_ctrl_angle								8
-#define list_item_ctrl_vector								9
-#define list_item_ctrl_normal_vector						10
-#define list_item_ctrl_uv									11
-#define list_item_ctrl_picker								12
-#define list_item_ctrl_pick_color							13
+#define list_item_ctrl_param								4
+#define list_item_ctrl_int									5
+#define list_item_ctrl_float								6
+#define list_item_ctrl_checkbox								7
+#define list_item_ctrl_point								8
+#define list_item_ctrl_angle								9
+#define list_item_ctrl_vector								10
+#define list_item_ctrl_normal_vector						11
+#define list_item_ctrl_uv									12
+#define list_item_ctrl_picker								13
+#define list_item_ctrl_pick_color							14
 
 #define list_string_value_string							0
 #define list_string_value_int								1
@@ -102,6 +103,10 @@ typedef union		{
 					} list_palette_item_value_type;
 
 typedef struct		{
+						int									param_idx,str_len;
+					} list_palette_item_limit_type;
+
+typedef struct		{
 						char								search_path[64],extension[8],required_file_name[file_str_len];
 						bool								file_list;
 					} list_palette_item_file_type;
@@ -119,6 +124,7 @@ typedef struct		{
 						bool								selected,disabled;
 						char								name[name_str_len];
 						list_palette_item_value_type		value;
+						list_palette_item_limit_type		limit;
 						list_palette_item_list_type			list;
 					} list_palette_item_type;
 
@@ -202,6 +208,7 @@ extern void list_palette_add_color(list_palette_type *list,int piece_type,int pi
 extern void list_palette_add_string_selectable(list_palette_type *list,int id,char *name,char *value,bool selected,bool disabled);
 extern void list_palette_add_string_selectable_button(list_palette_type *list,int id,int button_type,int button_id,char *name,char *value,bool selected,bool disabled);
 extern void list_palette_add_string(list_palette_type *list,int id,char *name,char *value,bool disabled);
+extern void list_palette_add_parameter(list_palette_type *list,int id,char *name,char *params,int param_idx,bool disabled);
 extern void list_palette_add_int(list_palette_type *list,int id,char *name,int *int_ptr,bool disabled);
 extern void list_palette_add_float(list_palette_type *list,int id,char *name,float *float_ptr,bool disabled);
 extern void list_palette_add_checkbox(list_palette_type *list,int id,char *name,bool *bool_ptr,bool disabled);

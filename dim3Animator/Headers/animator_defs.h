@@ -30,7 +30,7 @@ and can be sold or given away.
 //
 
 #define tool_button_size				32
-#define tool_count						14
+#define tool_count						20
 
 
 #define tool_file_names					{ \
@@ -47,10 +47,16 @@ and can be sold or given away.
 											"Tool Select Vertex With Bone", \
 											"Tool Rotate Mode", \
 											"Tool Move Mode", \
-											"Tool Play" \
+											"", \
+											"Tool Play Stop", \
+											"Tool Play", \
+											"Tool Play Blend", \
+											"Tool Play Slow", \
+											"Tool Play Previous", \
+											"Tool Play Next" \
 										}
 
-#define tool_separators					{"00001001001101"}
+#define tool_separators					{"00001001001100010010"}
 
 #define tool_tip_names					{ \
 											"Show Textured Model", \
@@ -66,7 +72,13 @@ and can be sold or given away.
 											"Select Attached Vertexes When Selecting Bones", \
 											"Bone Rotate Mode", \
 											"Bone Move Mode", \
-											"Play Animation" \
+											"", \
+											"Stop Playing Animation", \
+											"Play Animation", \
+											"Play Multiple Blended Animations", \
+											"Play Animation Slowly", \
+											"Previous Pose in Animation", \
+											"Next Pose in Animation" \
 										}
 
 //
@@ -245,6 +257,15 @@ and can be sold or given away.
 #define draw_model_normal_len			50.0f
 
 //
+// play types
+//
+
+#define play_mode_stop					0
+#define play_mode_normal				1
+#define play_mode_blend					2
+#define play_mode_slow					3
+
+//
 // setups
 //
 
@@ -273,12 +294,10 @@ typedef struct		{
 													cur_animate_pose_move_particle_idx,
 													cur_animate_pose_move_ring_idx,
 													texture_edit_idx,drag_bone_mode,select_mode,
-													magnify_z;
+													play_mode,magnify_z;
 						bool						model_open,texture,mesh,bone,hit_box,
-													normal,view_box,bone_names,
-													playing,play_animate_blend,sel_vertex_with_bone,
-													drag_sel_on,in_preference,
-													show_mesh[max_model_mesh];
+													normal,view_box,bone_names,sel_vertex_with_bone,
+													drag_sel_on,in_preference,show_mesh[max_model_mesh];
 						char						file_name[256];
 						d3pnt						shift;
 						d3ang						ang;

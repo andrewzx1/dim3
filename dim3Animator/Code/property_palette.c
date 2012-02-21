@@ -145,7 +145,7 @@ void property_palette_draw(void)
 
 void property_palette_reset(void)
 {
-	property_palette.scroll_page=0;
+	property_palette.scroll_offset=0;
 }
 
 /* =======================================================

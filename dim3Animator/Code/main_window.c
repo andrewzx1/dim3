@@ -202,7 +202,7 @@ void main_wind_draw_play(void)
 	
 		// if no current animation, just do no pose for animated textures
 		
-	if ((state.cur_animate_idx==-1) && (!state.play_animate_blend)) {
+	if ((state.cur_animate_idx==-1) && (state.play_mode!=play_mode_blend)) {
 		main_wind_draw();
 		return;
 	}
@@ -215,7 +215,7 @@ void main_wind_draw_play(void)
 		
 	cur_tick=time_get();
 	
-	if (!state.play_animate_blend) {
+	if (state.play_mode!=play_mode_blend) {
 		main_wind_draw_play_calc_animation(cur_tick,state.cur_animate_idx,0,TRUE);
 	}
 	else {
@@ -244,7 +244,7 @@ void main_wind_draw_no_swap(void)
 		
 	if (state.model_open) {
 		if (state.texture_edit_idx==-1) {
-			if (!state.playing) {
+			if (state.play_mode==play_mode_stop) {
 				draw_model_wind_pose(state.cur_mesh_idx,state.cur_pose_idx);
 			}
 			else {
@@ -283,13 +283,13 @@ void main_wind_draw(void)
       
 ======================================================= */
 
-void main_wind_play(bool play,bool blend)
+void main_wind_play(int play_mode)
 {
 	int					n,tick;
 	
 		// good animation?
 		
-	if (play) {
+	if (play_mode!=play_mode_stop) {
 		if (state.cur_animate_idx==-1) return;
 		if (model.animates[state.cur_animate_idx].npose_move==0) return;
 	}
@@ -297,12 +297,10 @@ void main_wind_play(bool play,bool blend)
 		// always turn off animation until setup is complete
 		// as animation is on a timer
 		
-	state.playing=FALSE;
+	state.play_mode=play_mode_stop;
 	
 		// setup animation
 		
-	state.play_animate_blend=blend;
-	
 	time_start();
 	tick=time_get();
 
@@ -313,7 +311,7 @@ void main_wind_play(bool play,bool blend)
 	
 		// turn on/off animation
 		
-	state.playing=play;
+	state.play_mode=play_mode;
 	
 	if (state.model_open) main_wind_draw();
 }
@@ -326,7 +324,7 @@ void main_wind_play(bool play,bool blend)
 
 void main_wind_click(d3pnt *pnt,bool double_click)
 {
-	bool			old_playing;
+	int				old_play_mode;
 	d3rect			tbox;
 
 		// tool palette
@@ -366,8 +364,8 @@ void main_wind_click(d3pnt *pnt,bool double_click)
 		// turn off animation as it glitches
 		// up the win32 timers
 
-	old_playing=state.playing;
-	state.playing=FALSE;
+	old_play_mode=state.play_mode;
+	state.play_mode=play_mode_stop;
 
 	if (state.texture_edit_idx==-1) {
 		model_wind_click(pnt);
@@ -376,7 +374,7 @@ void main_wind_click(d3pnt *pnt,bool double_click)
 		texture_edit_click(pnt,double_click);
 	}
 
-	state.playing=old_playing;
+	state.play_mode=old_play_mode;
 }
 
 /* =======================================================

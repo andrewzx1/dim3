@@ -149,7 +149,7 @@ LRESULT CALLBACK animator_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lPara
 
 void CALLBACK wnd_timer_proc(HWND hwnd,UINT msg,UINT_PTR id,DWORD tick)
 {
-	if ((state.model_open) && (state.playing)) main_wind_draw();
+	if ((state.model_open) && (state.play_mode!=play_mode_stop)) main_wind_draw();
 }
 
 /* =======================================================

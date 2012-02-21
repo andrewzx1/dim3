@@ -48,7 +48,7 @@
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories="..\Libraries;..\Libraries\GLEW;..\Libraries\ZLib;..\Libraries\SDL;..\Libraries\MPG123;..\Libraries\JavaScriptCore;..\Libraries\PNG;..\..\dim3Engine\Headers;..\..\dim3Common\Headers;..\..\dim3BaseUtility\Headers;..\..\dim3BaseUtility\Sources;..\..\dim3ModelUtility\Headers;..\..\dim3ModelUtility\Sources;..\..\dim3MapUtility\Headers;..\..\dim3MapUtility\Sources"
+				AdditionalIncludeDirectories="..\Common\Libraries;..\Common\Libraries\GLEW;..\Common\Libraries\ZLib;..\Common\Libraries\SDL;..\Common\Libraries\MPG123;..\Common\Libraries\JavaScriptCore;..\Common\Libraries\PNG;..\..\dim3Engine\Headers;..\..\dim3Common\Headers;..\..\dim3BaseUtility\Headers;..\..\dim3BaseUtility\Sources;..\..\dim3ModelUtility\Headers;..\..\dim3ModelUtility\Sources;..\..\dim3MapUtility\Headers;..\..\dim3MapUtility\Sources"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;D3_PCH;D3_ENGINE"
 				StringPooling="true"
 				ExceptionHandling="0"
@@ -154,15 +154,15 @@
 				Name="glew"
 				>
 				<File
-					RelativePath="..\Libraries\GLEW\glew.h"
+					RelativePath="..\Common\Libraries\GLEW\glew.h"
 					>
 				</File>
 				<File
-					RelativePath="..\Libraries\GLEW\glew32.lib"
+					RelativePath="..\Common\Libraries\GLEW\glew32.lib"
 					>
 				</File>
 				<File
-					RelativePath="..\Libraries\GLEW\wglew.h"
+					RelativePath="..\Common\Libraries\GLEW\wglew.h"
 					>
 				</File>
 			</Filter>
@@ -170,15 +170,15 @@
 				Name="SDL"
 				>
 				<File
-					RelativePath="..\Libraries\SDL\SDL.h"
+					RelativePath="..\Common\Libraries\SDL\SDL.h"
 					>
 				</File>
 				<File
-					RelativePath="..\Libraries\SDL\SDL.lib"
+					RelativePath="..\Common\Libraries\SDL\SDL.lib"
 					>
 				</File>
 				<File
-					RelativePath="..\Libraries\SDL\SDLmain.lib"
+					RelativePath="..\Common\Libraries\SDL\SDLmain.lib"
 					>
 				</File>
 			</Filter>
@@ -186,39 +186,35 @@
 				Name="JS"
 				>
 				<File
-					RelativePath="..\Libraries\JavaScriptCore\JavaScript.h"
+					RelativePath="..\Common\Libraries\JavaScriptCore\JavaScript.h"
 					>
 				</File>
 				<File
-					RelativePath="..\Libraries\JavaScriptCore\JavaScriptCore.lib"
+					RelativePath="..\Common\Libraries\JavaScriptCore\JavaScriptCore.lib"
 					>
 				</File>
 				<File
-					RelativePath="..\Libraries\JavaScriptCore\JSBase.h"
+					RelativePath="..\Common\Libraries\JavaScriptCore\JSBase.h"
 					>
 				</File>
 				<File
-					RelativePath="..\Libraries\JavaScriptCore\JSContextRef.h"
+					RelativePath="..\Common\Libraries\JavaScriptCore\JSContextRef.h"
 					>
 				</File>
 				<File
-					RelativePath="..\Libraries\JavaScriptCore\JSObjectRef.h"
+					RelativePath="..\Common\Libraries\JavaScriptCore\JSObjectRef.h"
 					>
 				</File>
 				<File
-					RelativePath="..\Libraries\JavaScriptCore\JSStringRef.h"
+					RelativePath="..\Common\Libraries\JavaScriptCore\JSStringRef.h"
 					>
 				</File>
 				<File
-					RelativePath="..\Libraries\JavaScriptCore\JSValueRef.h"
+					RelativePath="..\Common\Libraries\JavaScriptCore\JSValueRef.h"
 					>
 				</File>
 				<File
-					RelativePath="..\Libraries\JavaScriptCore\stdbool.h"
-					>
-				</File>
-				<File
-					RelativePath="..\Libraries\JavaScriptCore\WebKitAvailability.h"
+					RelativePath="..\Common\Libraries\JavaScriptCore\WebKitAvailability.h"
 					>
 				</File>
 			</Filter>
@@ -226,15 +222,11 @@
 				Name="mpg123"
 				>
 				<File
-					RelativePath="..\Libraries\MPG123\libmpg123.lib"
+					RelativePath="..\Common\Libraries\MPG123\libmpg123.lib"
 					>
 				</File>
 				<File
-					RelativePath="..\Libraries\MPG123\mpg123.h"
-					>
-				</File>
-				<File
-					RelativePath="..\Libraries\MPG123\mpg123.h.in"
+					RelativePath="..\Common\Libraries\MPG123\mpg123.h"
 					>
 				</File>
 			</Filter>
@@ -242,31 +234,19 @@
 				Name="PNG"
 				>
 				<File
-					RelativePath="..\Libraries\PNG\libpng15.lib"
+					RelativePath="..\Common\Libraries\PNG\libpng15.lib"
 					>
 				</File>
 				<File
-					RelativePath="..\Libraries\PNG\png.h"
+					RelativePath="..\Common\Libraries\PNG\png.h"
 					>
 				</File>
 				<File
-					RelativePath="..\Libraries\PNG\pngconf.h"
+					RelativePath="..\Common\Libraries\ZLib\zlib.h"
 					>
 				</File>
 				<File
-					RelativePath="..\Libraries\PNG\pnglibconf.h"
-					>
-				</File>
-				<File
-					RelativePath="..\Libraries\ZLib\zconf.h"
-					>
-				</File>
-				<File
-					RelativePath="..\Libraries\ZLib\zlib.h"
-					>
-				</File>
-				<File
-					RelativePath="..\Libraries\ZLib\zlib1.lib"
+					RelativePath="..\Common\Libraries\ZLib\zlib1.lib"
 					>
 				</File>
 			</Filter>

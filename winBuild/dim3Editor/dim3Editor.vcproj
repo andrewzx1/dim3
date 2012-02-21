@@ -52,7 +52,7 @@
 				EnableIntrinsicFunctions="true"
 				FavorSizeOrSpeed="1"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories=".;..\Libraries;..\Libraries\GLEW;..\Libraries\ZLib;..\Libraries\SDL;..\Libraries\PNG;..\..\dim3Editor\Code;..\..\dim3Editor\Headers;..\..\dim3Common\Headers;..\Common;..\Common\Code;..\Common\Headers;..\..\dim3BaseUtility\Headers;..\..\dim3BaseUtility\Sources;..\..\dim3ModelUtility\Headers;..\..\dim3ModelUtility\Sources;..\..\dim3MapUtility\Headers;..\..\dim3MapUtility\Sources"
+				AdditionalIncludeDirectories=".;..\Common\Libraries;..\Common\Libraries\GLEW;..\Common\Libraries\ZLib;..\Common\Libraries\SDL;..\Common\Libraries\PNG;..\..\dim3Editor\Code;..\..\dim3Editor\Headers;..\..\dim3Common\Headers;..\Common;..\Common\Code;..\Common\Headers;..\..\dim3BaseUtility\Headers;..\..\dim3BaseUtility\Sources;..\..\dim3ModelUtility\Headers;..\..\dim3ModelUtility\Sources;..\..\dim3MapUtility\Headers;..\..\dim3MapUtility\Sources"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;D3_PCH;D3_EDITOR"
 				StringPooling="true"
 				ExceptionHandling="0"
@@ -155,15 +155,15 @@
 				Name="glew"
 				>
 				<File
-					RelativePath="..\Libraries\GLEW\glew.h"
+					RelativePath="..\Common\Libraries\GLEW\glew.h"
 					>
 				</File>
 				<File
-					RelativePath="..\Libraries\GLEW\glew32.lib"
+					RelativePath="..\Common\Libraries\GLEW\glew32.lib"
 					>
 				</File>
 				<File
-					RelativePath="..\Libraries\GLEW\wglew.h"
+					RelativePath="..\Common\Libraries\GLEW\wglew.h"
 					>
 				</File>
 			</Filter>
@@ -171,11 +171,19 @@
 				Name="PNG"
 				>
 				<File
-					RelativePath="..\Libraries\PNG\libpng15.lib"
+					RelativePath="..\Common\Libraries\PNG\libpng15.lib"
 					>
 				</File>
 				<File
-					RelativePath="..\Libraries\ZLib\zlib1.lib"
+					RelativePath="..\Common\Libraries\PNG\png.h"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\Libraries\ZLib\zlib.h"
+					>
+				</File>
+				<File
+					RelativePath="..\Common\Libraries\ZLib\zlib1.lib"
 					>
 				</File>
 			</Filter>

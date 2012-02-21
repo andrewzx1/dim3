@@ -500,10 +500,10 @@ void select_model_wind_mesh(d3pnt *start_pnt)
 
 			// redraw
 		
-		if (!state.playing) main_wind_draw();
+		if (state.play_mode==play_mode_stop) main_wind_draw();
 	}
 	
-	if (!state.playing) main_wind_draw();
+	if (state.play_mode==play_mode_stop) main_wind_draw();
 
 	free(old_vertexes);
 	if (state.cur_mesh_idx==0) free(old_bones);
@@ -522,7 +522,7 @@ void select_model_wind(d3pnt *start_pnt)
 	
 		// no playing while selecting
 		
-	main_wind_play(FALSE,FALSE);
+	main_wind_play(play_mode_stop);
 	
 		// get the draw vertexes
 		// need to save off array as drawing will reuse
@@ -626,11 +626,11 @@ void change_model_wind(d3pnt *start_pnt,bool shift_on,bool rotate_on,bool size_o
 			state.magnify_z=old_magnify_z+((last_pnt.y-start_pnt->y)*2);
 		}
 		
-		if (!state.playing) main_wind_draw();
+		if (state.play_mode==play_mode_stop) main_wind_draw();
 	
 	}
 	
-	if (!state.playing) main_wind_draw();
+	if (state.play_mode==play_mode_stop) main_wind_draw();
 }
 
 /* =======================================================
@@ -663,7 +663,7 @@ bool drag_bone_model_wind(d3pnt *start_pnt)
 	
 	if (model.nbone==0) return(FALSE);
 	
-	main_wind_play(FALSE,FALSE);
+	main_wind_play(play_mode_stop);
 	
 		// setup the draw pose
 		
@@ -848,7 +848,7 @@ bool drag_hit_box_handle_model_wind(d3pnt *start_pnt)
 	d3fpnt					hand_pnt;
 	model_box_type			*box;
 	
-	main_wind_play(FALSE,FALSE);
+	main_wind_play(play_mode_stop);
 	
 		// setup the draw pose
 		
