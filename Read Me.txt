@@ -5,9 +5,9 @@ They are listed below:
 For OS X Compile:
 -----------------
 
-/dim3Common/Libraries/PNG.framework (PNG lib and headers)
-/dim3Common/Libraries/MPG123 (mpg123 lib and headers)
-/dim3Common/Libraries/SDL (SDL lib and headers)
+/OSXBuild/Common/Libraries/PNG.framework (PNG lib and headers)
+/OSXBuild/Common/Libraries/MPG123 (mpg123 lib and headers)
+/OSXBuild/Common/Libraries/SDL (SDL lib and headers)
 
 A pre-compiled archive of these can be found at: http://www.klinksoftware.net/download/OSX_Libraries.zip
 
@@ -17,13 +17,13 @@ The OS X compile requires no additional external libraries.
 For Win32 Compile:
 ------------------
 
-/winBuild/Libraries/dim3 (leave empty, compile writes libraries here)
-/winBuild/Libraries/GLEW (GLEW lib and headers)
-/winBuild/Libraries/JavaScriptCore (Webkit JS lib and headers)
-/winBuild/Libraries/PNG (PNG lib and headers)
-/winBuild/Libraries/MPG123 (mpg123 lib and headers)
-/winBuild/Libraries/SDL (SDL lib and headers)
-/winBuild/Libraries/ZLib (ZLib lib and headers)
+/winBuild/Common/Libraries/dim3 (leave empty, compile writes libraries here)
+/winBuild/Common/Libraries/GLEW (GLEW lib and headers)
+/winBuild/Common/Libraries/JavaScriptCore (Webkit JS lib and headers)
+/winBuild/Common/Libraries/PNG (PNG lib and headers)
+/winBuild/Common/Libraries/MPG123 (mpg123 lib and headers)
+/winBuild/Common/Libraries/SDL (SDL lib and headers)
+/winBuild/Common/Libraries/ZLib (ZLib lib and headers)
 
 A pre-compiled archive of these can be found at: http://www.klinksoftware.net/download/Win32_Libraries.zip
 
@@ -63,8 +63,8 @@ the run script in the engine build, this copies the data folder into the executa
 
 The Projects:
 
-The OS X Xcode projects are in each directory.
-The iOS compile is in the iPadBuild directory.
+The OS X projects are in the OSXBuild directory.
+The iOS projects is in the iOSBuild directory.
 The win32 projects are in the winbuild directory.
 
 ============================================================================================
