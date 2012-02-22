@@ -194,11 +194,20 @@ void main_wind_draw_play_calc_animation(int cur_tick,int animate_idx,int blend_i
 		draw_setup.move.y=pose_move_2->mov.y+((pose_move_1->mov.y-pose_move_2->mov.y)*pose_factor);
 		draw_setup.move.z=pose_move_2->mov.z+((pose_move_1->mov.z-pose_move_2->mov.z)*pose_factor);
 	}
+
+		// if this is the first pose, reset
+		// the selected poses
+
+	if (blend_idx==0) {
+		state.cur_animate_pose_move_idx=pose_move_1_idx;
+		state.cur_pose_idx=animate->pose_moves[pose_move_1_idx].pose_idx;
+	}
 }
 
 void main_wind_draw_play(void)
 {
-	int					n,cur_tick;
+	int					n,cur_tick,
+						old_pose_move_idx;
 	
 		// if no current animation, just do no pose for animated textures
 		
@@ -211,10 +220,16 @@ void main_wind_draw_play(void)
 		
 	model_draw_setup_clear(&model,&draw_setup);
 	
-		// calc the pose
+		// get the current animation tick
+		// and divide by 4 if we are in slow play
 		
 	cur_tick=time_get();
+	if (state.play_mode==play_mode_slow) cur_tick=cur_tick>>2;
 	
+		// calculate the animation
+
+	old_pose_move_idx=state.blend[0].pose_move_idx;
+
 	if (state.play_mode!=play_mode_blend) {
 		main_wind_draw_play_calc_animation(cur_tick,state.cur_animate_idx,0,TRUE);
 	}
@@ -225,7 +240,16 @@ void main_wind_draw_play(void)
 			}
 		}
 	}
-		
+
+		// if prev/next animation type
+		// stop if pose has changed
+
+	if ((state.play_mode==play_mode_prev) || (state.play_mode==play_mode_next)) {
+		if (old_pose_move_idx!=state.blend[0].pose_move_idx) {
+			main_wind_play(play_mode_stop);
+		}
+	}
+
 		// global draw setup
 	
 	draw_model_wind(state.cur_mesh_idx);
@@ -285,7 +309,7 @@ void main_wind_draw(void)
 
 void main_wind_play(int play_mode)
 {
-	int					n,tick;
+	int					n,tick,pose_move_idx;
 	
 		// good animation?
 		
@@ -298,6 +322,23 @@ void main_wind_play(int play_mode)
 		// as animation is on a timer
 		
 	state.play_mode=play_mode_stop;
+
+		// if it's next or previous, we
+		// need to start on current selection
+
+	pose_move_idx=0;
+
+	switch (play_mode) {
+
+		case play_mode_prev:
+			pose_move_idx=state.cur_animate_pose_move_idx-1;
+			if (pose_move_idx<0) pose_move_idx=model.animates[state.cur_animate_idx].npose_move-1;
+			break;
+
+		case play_mode_next:
+			pose_move_idx=state.cur_animate_pose_move_idx;
+			break;
+	}
 	
 		// setup animation
 		
@@ -305,7 +346,7 @@ void main_wind_play(int play_mode)
 	tick=time_get();
 
 	for (n=0;n!=max_model_blend_animation;n++) {
-		state.blend[n].pose_move_idx=0;
+		state.blend[n].pose_move_idx=pose_move_idx;
 		state.blend[n].tick=tick;
 	}
 	
