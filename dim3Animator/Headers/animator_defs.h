@@ -264,6 +264,8 @@ and can be sold or given away.
 #define play_mode_normal				1
 #define play_mode_blend					2
 #define play_mode_slow					3
+#define play_mode_prev					4
+#define play_mode_next					5
 
 //
 // setups

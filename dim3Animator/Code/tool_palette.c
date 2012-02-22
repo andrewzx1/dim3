@@ -136,6 +136,12 @@ bool tool_get_highlight_state(int tool_idx)
 		case 17:
 			return(state.play_mode==play_mode_slow);
 			
+		case 18:
+			return(state.play_mode==play_mode_prev);
+			
+		case 19:
+			return(state.play_mode==play_mode_next);
+			
 	}
 
 	return(FALSE);
@@ -224,6 +230,14 @@ void tool_click(int tool_idx)
 
 		case 17:
 			main_wind_play(play_mode_slow);
+			break;
+
+		case 18:
+			main_wind_play(play_mode_prev);
+			break;
+
+		case 19:
+			main_wind_play(play_mode_next);
 			break;
 	}
 	

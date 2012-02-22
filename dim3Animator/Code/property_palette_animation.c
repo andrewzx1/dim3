@@ -102,6 +102,7 @@ void property_palette_click_animation(int animate_idx,int id,bool double_click)
 		
 	if ((id>=kAnimationPropertyPoseMove) && (id<kAnimationPropertyPoseMoveDelete)) {
 		state.cur_animate_pose_move_idx=id-kAnimationPropertyPoseMove;
+		state.cur_pose_idx=animate->pose_moves[state.cur_animate_pose_move_idx].pose_idx;
 		if (double_click) list_palette_set_level(2);
 		return;
 	}
