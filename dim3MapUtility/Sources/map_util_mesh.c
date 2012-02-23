@@ -109,8 +109,8 @@ int map_mesh_add(map_type *map)
 	mesh->poly_list.wall_idxs=NULL;
 	mesh->poly_list.floor_count=0;
 	mesh->poly_list.floor_idxs=NULL;
-	mesh->poly_list.all_count=0;
-	mesh->poly_list.all_idxs=NULL;
+	mesh->poly_list.obscure_count=0;
+	mesh->poly_list.obscure_idxs=NULL;
 
 	mesh->npoly=0;
 	mesh->polys=NULL;
@@ -135,7 +135,7 @@ bool map_mesh_delete(map_type *map,int mesh_idx)
 
 	if (mesh->poly_list.wall_idxs!=NULL) free(mesh->poly_list.wall_idxs);
 	if (mesh->poly_list.floor_idxs!=NULL) free(mesh->poly_list.floor_idxs);
-	if (mesh->poly_list.all_idxs!=NULL) free(mesh->poly_list.all_idxs);
+	if (mesh->poly_list.obscure_idxs!=NULL) free(mesh->poly_list.obscure_idxs);
 	if (mesh->polys!=NULL) free(mesh->polys);
 
 		// detele the mesh
