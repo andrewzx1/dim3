@@ -121,7 +121,7 @@ OSStatus main_wind_event_handler(EventHandlerCallRef eventhandler,EventRef event
 				case kEventWindowClose:
 					if (!menu_save_changes_dialog()) return(noErr);
 					file_close_model();
-					main_wind_play(FALSE,FALSE);
+					main_wind_play(play_mode_stop);
 					menu_update();
 					return(noErr);
 					
@@ -205,7 +205,7 @@ OSStatus main_wind_event_handler(EventHandlerCallRef eventhandler,EventRef event
 
 void main_wind_event_timer(EventLoopTimerRef inTimer,void *inUserData)
 {
-	if (state.playing) main_wind_draw();
+	if (state.play_mode!=play_mode_stop) main_wind_draw();
 }
 
 /* =======================================================
