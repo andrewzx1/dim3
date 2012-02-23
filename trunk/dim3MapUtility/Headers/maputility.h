@@ -270,8 +270,8 @@ typedef struct		{
 					} map_mesh_poly_type;
 
 typedef struct		{
-						int									all_count,wall_count,floor_count;
-						short								*all_idxs,*wall_idxs,*floor_idxs;
+						int									wall_count,floor_count,obscure_count;
+						short								*wall_idxs,*floor_idxs,*obscure_idxs;
 					} map_mesh_poly_list;
 					
 typedef struct		{

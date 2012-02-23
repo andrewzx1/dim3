@@ -504,8 +504,8 @@ void map_prepare_mesh_box(map_mesh_type *mesh)
 
 void map_prepare(map_type *map)
 {
-	int					n,k,wall_like_count;
-	short				*wall_sptr,*floor_sptr,*all_sptr;
+	int					n,k,wall_like_count,obscure_count;
+	short				*wall_sptr,*floor_sptr,*obscure_sptr;
 	map_mesh_type		*mesh;
 	map_mesh_poly_type	*poly;
 	
@@ -525,6 +525,7 @@ void map_prepare(map_type *map)
 			// run through the mesh polygons
 			
 		wall_like_count=0;
+		obscure_count=0;
 
 		poly=mesh->polys;
 		
@@ -545,8 +546,10 @@ void map_prepare(map_type *map)
 				// setup camera and obscure flags
 				
 			if (poly->camera[0]!=0x0) mesh->precalc_flag.poly_has_camera=TRUE;
-			if (poly->flag.obscuring) mesh->precalc_flag.has_obscure_poly=TRUE;
-				
+			if (poly->flag.obscuring) {
+				mesh->precalc_flag.has_obscure_poly=TRUE;
+				obscure_count++;
+			}
 			
 				// count wall like polys
 				
@@ -556,19 +559,19 @@ void map_prepare(map_type *map)
 		}
 		
 			// setup poly lists
-			
+		
 		mesh->poly_list.wall_count=wall_like_count;
 		mesh->poly_list.wall_idxs=(short*)malloc(sizeof(short)*mesh->poly_list.wall_count);
 		
 		mesh->poly_list.floor_count=mesh->npoly-wall_like_count;
 		mesh->poly_list.floor_idxs=(short*)malloc(sizeof(short)*mesh->poly_list.floor_count);
-		
-		mesh->poly_list.all_count=mesh->npoly;
-		mesh->poly_list.all_idxs=(short*)malloc(sizeof(short)*mesh->poly_list.all_count);
+
+		mesh->poly_list.obscure_count=obscure_count;
+		mesh->poly_list.obscure_idxs=(short*)malloc(sizeof(short)*mesh->poly_list.obscure_count);
 		
 		wall_sptr=mesh->poly_list.wall_idxs;
 		floor_sptr=mesh->poly_list.floor_idxs;
-		all_sptr=mesh->poly_list.all_idxs;
+		obscure_sptr=mesh->poly_list.obscure_idxs;
 		
 		poly=mesh->polys;
 		
@@ -579,7 +582,7 @@ void map_prepare(map_type *map)
 			else {
 				*floor_sptr++=(short)k;
 			}
-			*all_sptr++=(short)k;
+			if (poly->flag.obscuring) *obscure_sptr++=(short)k;
 			poly++;
 		}
 		

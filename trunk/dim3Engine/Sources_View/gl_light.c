@@ -817,8 +817,6 @@ int gl_light_get_averaged_shadow_light(d3pnt *pnt,d3pnt *size,d3pnt *light_pnt)
 	float					f,fx,fy,fz,
 							f_tot_intensity,f_weight_intensity;
 	float					f_intensity[max_light_spot];
-	d3pnt					spt,hpt;
-	ray_trace_contact_type	contact;
 	view_light_spot_type	*lspot;
 
 		// no lights in scene
@@ -848,22 +846,6 @@ int gl_light_get_averaged_shadow_light(d3pnt *pnt,d3pnt *size,d3pnt *light_pnt)
 
 		if (f>lspot->f_intensity) continue;
 		if (!gl_lights_direction_pnt_ok(pnt,lspot)) continue;
-
-			// ray trace to light
-
-		contact.obj.on=FALSE;
-		contact.proj.on=FALSE;
-		contact.origin=poly_ray_trace_origin_object;
-
-		spt.x=pnt->x;
-		spt.y=pnt->y-(size->y>>1);
-		spt.z=pnt->z;
-
-		if (ray_trace_map_by_point(&spt,&lspot->pnt,&hpt,&contact)) {
-			if (contact.poly.mesh_idx!=-1) continue;
-		}
-
-			// it's a hit, get intensity
 
 		f_intensity[n]=(lspot->f_intensity-f)*lspot->f_inv_intensity;
 		f_intensity[n]+=powf(f_intensity[n],lspot->f_exponent);

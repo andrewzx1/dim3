@@ -969,8 +969,7 @@ void ray_trace_map_items(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *hit_
 
 void ray_trace_map_all(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *hit_t,ray_trace_contact_type *contact)
 {
-	int							n,k,hit_box_idx,poly_count;
-	short						*poly_idx;
+	int							n,k,hit_box_idx;
 	float						t;
 	d3pnt						pt,min,max;
 	obj_type					*obj;
@@ -1073,12 +1072,9 @@ void ray_trace_map_all(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *hit_t,
 		
 			// complex collisions
 		
-		poly_count=mesh->poly_list.all_count;
-		poly_idx=mesh->poly_list.all_idxs;
-			
-		for (k=0;k!=poly_count;k++) {
+		for (k=0;k!=mesh->npoly;k++) {
 
-			poly=&mesh->polys[poly_idx[k]];
+			poly=&mesh->polys[k];
 			if (!ray_trace_mesh_poly_bound_check(poly,&min,&max)) continue;
 
 			t=ray_trace_mesh_polygon(spt,vct,&pt,mesh,poly);
@@ -1093,7 +1089,7 @@ void ray_trace_map_all(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *hit_t,
 			ray_trace_contact_clear(contact);
 			
 			contact->poly.mesh_idx=n;
-			contact->poly.poly_idx=poly_idx[k];
+			contact->poly.poly_idx=k;
 		}
 				
 	}
@@ -1159,8 +1155,7 @@ void ray_push_to_end(d3pnt *pt,d3pnt *ept,int dist)
 
 void ray_trace_map_item_list_setup(int cnt,d3pnt *spts,d3pnt *epts,ray_trace_contact_type *contact)
 {
-	int							n,k,poly_count;
-	short						*poly_idx;
+	int							n,k;
 	d3pnt						min,max;
 	obj_type					*obj;
 	proj_type					*proj;
@@ -1248,19 +1243,16 @@ void ray_trace_map_item_list_setup(int cnt,d3pnt *spts,d3pnt *epts,ray_trace_con
 
 			// complex collisions
 			
-		poly_count=mesh->poly_list.all_count;
-		poly_idx=mesh->poly_list.all_idxs;
-			
-		for (k=0;k!=poly_count;k++) {
+		for (k=0;k!=mesh->npoly;k++) {
 
-			poly=&mesh->polys[poly_idx[k]];
+			poly=&mesh->polys[k];
 			if (!ray_trace_mesh_poly_bound_check(poly,&min,&max)) continue;
 
 				// add to item list
 
 			item->type=ray_trace_check_item_mesh_poly;
 			item->index=n;
-			item->index_2=poly_idx[k];
+			item->index_2=k;
 
 			item++;
 			ray_item_count++;
@@ -1440,8 +1432,7 @@ void ray_trace_map_by_point_array_no_contact(int cnt,d3pnt *spt,d3pnt *ept,d3pnt
 
 bool ray_trace_map_blocking(d3pnt *spt,d3pnt *ept,int origin)
 {
-	int							n,k,poly_count;
-	short						*poly_idx;
+	int							n,k;
 	d3pnt						pt,min,max;
 	d3vct						vct;
 	map_mesh_type				*mesh;
@@ -1483,12 +1474,9 @@ bool ray_trace_map_blocking(d3pnt *spt,d3pnt *ept,int origin)
 		
 			// complex collisions
 		
-		poly_count=mesh->poly_list.all_count;
-		poly_idx=mesh->poly_list.all_idxs;
-			
-		for (k=0;k!=poly_count;k++) {
+		for (k=0;k!=mesh->npoly;k++) {
 
-			poly=&mesh->polys[poly_idx[k]];
+			poly=&mesh->polys[k];
 			if (!ray_trace_mesh_poly_bound_check(poly,&min,&max)) continue;
 
 			if (ray_trace_mesh_polygon(spt,&vct,&pt,mesh,poly)!=-1.0f) return(TRUE);

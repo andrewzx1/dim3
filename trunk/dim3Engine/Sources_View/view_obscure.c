@@ -155,6 +155,7 @@ void view_obscure_release(void)
 bool view_obscure_create_obscuring_poly_list(void)
 {
 	int						n,k,mesh_idx;
+	short					*poly_idx;
 	view_obscure_poly_type	*poly_ptr;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
@@ -172,21 +173,16 @@ bool view_obscure_create_obscuring_poly_list(void)
 
 		if (!mesh->precalc_flag.has_obscure_poly) continue;
 		
-		poly=mesh->polys;
+		poly_idx=mesh->poly_list.obscure_idxs;
 
-		for (k=0;k!=mesh->npoly;k++) {
+		for (k=0;k!=mesh->poly_list.obscure_count;k++) {
+			poly=&mesh->polys[poly_idx[k]];
 		
-				// only use obscuring polys
-				
-			if (poly->flag.obscuring) {
-				poly_ptr->mesh_idx=mesh_idx;
-				poly_ptr->poly_idx=k;
-				poly_ptr->dist=view_cull_distance_to_view_center(poly->box.mid.x,poly->box.mid.y,poly->box.mid.z);
-				poly_ptr->skip=FALSE;
-				poly_ptr++;
-			}
-
-			poly++;
+			poly_ptr->mesh_idx=mesh_idx;
+			poly_ptr->poly_idx=k;
+			poly_ptr->dist=view_cull_distance_to_view_center(poly->box.mid.x,poly->box.mid.y,poly->box.mid.z);
+			poly_ptr->skip=FALSE;
+			poly_ptr++;
 		}
 	}
 
@@ -281,75 +277,117 @@ bool view_obscure_check_box(d3pnt *camera_pnt,int skip_mesh_idx,d3pnt *min,d3pnt
 
 	vct=view_obscure_vcts;
 
-		// top and bottom
+		// top
 
-	for (x=0;x<=div.x;x++) {
-		kx=min->x+(x*div_add.x);
+	if (camera_pnt->y<min->y) {
+		for (x=0;x<=div.x;x++) {
+			kx=min->x+(x*div_add.x);
 
-		for (z=0;z<=div.z;z++) {
-			kz=min->z+(z*div_add.z);
+			for (z=0;z<=div.z;z++) {
+				kz=min->z+(z*div_add.z);
 
-			if (camera_pnt->y<=mid.y) {
 				vct->x=(float)(kx-camera_pnt->x);
 				vct->y=(float)(min->y-camera_pnt->y);
 				vct->z=(float)(kz-camera_pnt->z);
+
+				vct++;
+				ray_cnt++;
 			}
-			else {
+		}
+	}
+
+		// bottom
+
+	if (camera_pnt->y>max->y) {
+		for (x=0;x<=div.x;x++) {
+			kx=min->x+(x*div_add.x);
+
+			for (z=0;z<=div.z;z++) {
+				kz=min->z+(z*div_add.z);
+
 				vct->x=(float)(kx-camera_pnt->x);
 				vct->y=(float)(max->y-camera_pnt->y);
 				vct->z=(float)(kz-camera_pnt->z);
-			}
 
-			vct++;
-			ray_cnt++;
+				vct++;
+				ray_cnt++;
+			}
 		}
 	}
 
-		// left and right
+		// left
 
-	for (y=0;y<=div.y;y++) {
-		ky=min->y+(y*div_add.y);
-
-		for (z=0;z<=div.z;z++) {
-			kz=min->z+(z*div_add.z);
-
-			if (camera_pnt->x<=mid.x) {
-				vct->x=(float)(min->x-camera_pnt->x);
-				vct->y=(float)(ky-camera_pnt->y);
-				vct->z=(float)(kz-camera_pnt->z);
-			}
-			else {
-				vct->x=(float)(max->x-camera_pnt->x);
-				vct->y=(float)(ky-camera_pnt->y);
-				vct->z=(float)(kz-camera_pnt->z);
-			}
-
-			vct++;
-			ray_cnt++;
-		}
-	}
-
-		// front and back
-
-	for (x=0;x<=div.x;x++) {
-		kx=min->x+(x*div_add.x);
-
+	if (camera_pnt->x<min->x) {
 		for (y=0;y<=div.y;y++) {
 			ky=min->y+(y*div_add.y);
 
-			if (camera_pnt->z<=mid.z) {
+			for (z=0;z<=div.z;z++) {
+				kz=min->z+(z*div_add.z);
+
+				vct->x=(float)(min->x-camera_pnt->x);
+				vct->y=(float)(ky-camera_pnt->y);
+				vct->z=(float)(kz-camera_pnt->z);
+
+				vct++;
+				ray_cnt++;
+			}
+		}
+	}
+
+		// right
+
+	if (camera_pnt->x>max->x) {
+		for (y=0;y<=div.y;y++) {
+			ky=min->y+(y*div_add.y);
+
+			for (z=0;z<=div.z;z++) {
+				kz=min->z+(z*div_add.z);
+
+				vct->x=(float)(max->x-camera_pnt->x);
+				vct->y=(float)(ky-camera_pnt->y);
+				vct->z=(float)(kz-camera_pnt->z);
+
+				vct++;
+				ray_cnt++;
+			}
+		}
+	}
+
+		// front
+
+	if (camera_pnt->z<min->z) {
+		for (x=0;x<=div.x;x++) {
+			kx=min->x+(x*div_add.x);
+
+			for (y=0;y<=div.y;y++) {
+				ky=min->y+(y*div_add.y);
+
 				vct->x=(float)(kx-camera_pnt->x);
 				vct->y=(float)(ky-camera_pnt->y);
 				vct->z=(float)(min->z-camera_pnt->z);
+
+				vct++;
+				ray_cnt++;
 			}
-			else {
+		}
+	}
+
+		// back
+
+	if (camera_pnt->z>max->z) {
+		for (x=0;x<=div.x;x++) {
+			kx=min->x+(x*div_add.x);
+
+			for (y=0;y<=div.y;y++) {
+				ky=min->y+(y*div_add.y);
+
 				vct->x=(float)(kx-camera_pnt->x);
 				vct->y=(float)(ky-camera_pnt->y);
 				vct->z=(float)(max->z-camera_pnt->z);
-			}
 
-			vct++;
-			ray_cnt++;
+				vct++;
+				ray_cnt++;
+			}
 		}
 	}
 
