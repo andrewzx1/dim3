@@ -103,6 +103,16 @@
 		26334A6814B52DF600C25B01 /* alt2_property_palette_pose_move_particle.c in Sources */ = {isa = PBXBuildFile; fileRef = 26334A6514B52DF600C25B01 /* alt2_property_palette_pose_move_particle.c */; };
 		26334A6914B52DF600C25B01 /* alt2_property_palette_pose_move_ring.c in Sources */ = {isa = PBXBuildFile; fileRef = 26334A6614B52DF600C25B01 /* alt2_property_palette_pose_move_ring.c */; };
 		26334A6A14B52DF600C25B01 /* alt2_property_palette.c in Sources */ = {isa = PBXBuildFile; fileRef = 26334A6714B52DF600C25B01 /* alt2_property_palette.c */; };
+		2638AEBA14F5B023000511EC /* Tool Play Blend.png in Resources */ = {isa = PBXBuildFile; fileRef = 2638AEB514F5B023000511EC /* Tool Play Blend.png */; };
+		2638AEBB14F5B023000511EC /* Tool Play Next.png in Resources */ = {isa = PBXBuildFile; fileRef = 2638AEB614F5B023000511EC /* Tool Play Next.png */; };
+		2638AEBC14F5B023000511EC /* Tool Play Previous.png in Resources */ = {isa = PBXBuildFile; fileRef = 2638AEB714F5B023000511EC /* Tool Play Previous.png */; };
+		2638AEBD14F5B023000511EC /* Tool Play Slow.png in Resources */ = {isa = PBXBuildFile; fileRef = 2638AEB814F5B023000511EC /* Tool Play Slow.png */; };
+		2638AEBE14F5B023000511EC /* Tool Play Stop.png in Resources */ = {isa = PBXBuildFile; fileRef = 2638AEB914F5B023000511EC /* Tool Play Stop.png */; };
+		2638AEBF14F5B03B000511EC /* Tool Play Blend.png in Copy (Tool Icons) */ = {isa = PBXBuildFile; fileRef = 2638AEB514F5B023000511EC /* Tool Play Blend.png */; };
+		2638AEC014F5B03D000511EC /* Tool Play Next.png in Copy (Tool Icons) */ = {isa = PBXBuildFile; fileRef = 2638AEB614F5B023000511EC /* Tool Play Next.png */; };
+		2638AEC114F5B041000511EC /* Tool Play Previous.png in Copy (Tool Icons) */ = {isa = PBXBuildFile; fileRef = 2638AEB714F5B023000511EC /* Tool Play Previous.png */; };
+		2638AEC214F5B044000511EC /* Tool Play Slow.png in Copy (Tool Icons) */ = {isa = PBXBuildFile; fileRef = 2638AEB814F5B023000511EC /* Tool Play Slow.png */; };
+		2638AEC314F5B047000511EC /* Tool Play Stop.png in Copy (Tool Icons) */ = {isa = PBXBuildFile; fileRef = 2638AEB914F5B023000511EC /* Tool Play Stop.png */; };
 		263AB1C112D8343C00954777 /* dos.c in Sources */ = {isa = PBXBuildFile; fileRef = 263AB1C012D8343C00954777 /* dos.c */; };
 		263AB1CB12D8345600954777 /* property_palette_animation.c in Sources */ = {isa = PBXBuildFile; fileRef = 263AB1C412D8345600954777 /* property_palette_animation.c */; };
 		263AB1CC12D8345600954777 /* property_palette_bone.c in Sources */ = {isa = PBXBuildFile; fileRef = 263AB1C512D8345600954777 /* property_palette_bone.c */; };
@@ -196,6 +206,8 @@
 			dstPath = Tools;
 			dstSubfolderSpec = 7;
 			files = (
+				2638AEC214F5B044000511EC /* Tool Play Slow.png in Copy (Tool Icons) */,
+				2638AEC014F5B03D000511EC /* Tool Play Next.png in Copy (Tool Icons) */,
 				2625B76412E6899600F51669 /* Tool Bones.png in Copy (Tool Icons) */,
 				2625B76512E6899600F51669 /* Tool Boxes.png in Copy (Tool Icons) */,
 				26CFA06A13206F7C00DB808F /* Tool Edit Mesh.png in Copy (Tool Icons) */,
@@ -211,6 +223,9 @@
 				2625B76E12E6899600F51669 /* Tool Show First Mesh.png in Copy (Tool Icons) */,
 				26FF98FF13B2A9A200CCB836 /* Tool Select Vertex With Bone.png in Copy (Tool Icons) */,
 				2625B76F12E6899600F51669 /* Tool Textured.png in Copy (Tool Icons) */,
+				2638AEBF14F5B03B000511EC /* Tool Play Blend.png in Copy (Tool Icons) */,
+				2638AEC114F5B041000511EC /* Tool Play Previous.png in Copy (Tool Icons) */,
+				2638AEC314F5B047000511EC /* Tool Play Stop.png in Copy (Tool Icons) */,
 			);
 			name = "Copy (Tool Icons)";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -343,6 +358,11 @@
 		26334A6514B52DF600C25B01 /* alt2_property_palette_pose_move_particle.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = alt2_property_palette_pose_move_particle.c; path = Code/alt2_property_palette_pose_move_particle.c; sourceTree = "<group>"; };
 		26334A6614B52DF600C25B01 /* alt2_property_palette_pose_move_ring.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = alt2_property_palette_pose_move_ring.c; path = Code/alt2_property_palette_pose_move_ring.c; sourceTree = "<group>"; };
 		26334A6714B52DF600C25B01 /* alt2_property_palette.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = alt2_property_palette.c; path = Code/alt2_property_palette.c; sourceTree = "<group>"; };
+		2638AEB514F5B023000511EC /* Tool Play Blend.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Play Blend.png"; path = "Tools/Tool Play Blend.png"; sourceTree = "<group>"; };
+		2638AEB614F5B023000511EC /* Tool Play Next.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Play Next.png"; path = "Tools/Tool Play Next.png"; sourceTree = "<group>"; };
+		2638AEB714F5B023000511EC /* Tool Play Previous.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Play Previous.png"; path = "Tools/Tool Play Previous.png"; sourceTree = "<group>"; };
+		2638AEB814F5B023000511EC /* Tool Play Slow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Play Slow.png"; path = "Tools/Tool Play Slow.png"; sourceTree = "<group>"; };
+		2638AEB914F5B023000511EC /* Tool Play Stop.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Play Stop.png"; path = "Tools/Tool Play Stop.png"; sourceTree = "<group>"; };
 		263AB1C012D8343C00954777 /* dos.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dos.c; path = Code/dos.c; sourceTree = "<group>"; };
 		263AB1C412D8345600954777 /* property_palette_animation.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_animation.c; path = Code/property_palette_animation.c; sourceTree = "<group>"; };
 		263AB1C512D8345600954777 /* property_palette_bone.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_bone.c; path = Code/property_palette_bone.c; sourceTree = "<group>"; };
@@ -755,6 +775,11 @@
 				2625B74F12E6896500F51669 /* Tool Show First Mesh.png */,
 				26FF98FD13B2A99D00CCB836 /* Tool Select Vertex With Bone.png */,
 				2625B75012E6896500F51669 /* Tool Textured.png */,
+				2638AEB514F5B023000511EC /* Tool Play Blend.png */,
+				2638AEB614F5B023000511EC /* Tool Play Next.png */,
+				2638AEB714F5B023000511EC /* Tool Play Previous.png */,
+				2638AEB814F5B023000511EC /* Tool Play Slow.png */,
+				2638AEB914F5B023000511EC /* Tool Play Stop.png */,
 			);
 			name = Tools;
 			sourceTree = "<group>";
@@ -897,6 +922,11 @@
 				26FF98FE13B2A99D00CCB836 /* Tool Select Vertex With Bone.png in Resources */,
 				26459B6813DC9D1900D7DD73 /* Back.png in Resources */,
 				26F70B2F144B47F000F791F7 /* dim3 Animator.xib in Resources */,
+				2638AEBA14F5B023000511EC /* Tool Play Blend.png in Resources */,
+				2638AEBB14F5B023000511EC /* Tool Play Next.png in Resources */,
+				2638AEBC14F5B023000511EC /* Tool Play Previous.png in Resources */,
+				2638AEBD14F5B023000511EC /* Tool Play Slow.png in Resources */,
+				2638AEBE14F5B023000511EC /* Tool Play Stop.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
