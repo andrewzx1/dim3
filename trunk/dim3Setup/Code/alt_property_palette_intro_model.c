@@ -63,7 +63,7 @@ void alt_property_palette_fill_intro_model(int intro_model_idx)
 		// settings
 
 	list_palette_add_header(&alt_property_palette,0,"Settings");
-	list_palette_add_string(&alt_property_palette,kModelSettingsName,"Model",model->model_name,FALSE);
+	list_palette_add_picker_file(&alt_property_palette,kModelSettingsName,list_button_none,0,"Model","Models","","Mesh.xml;Model.xml",model->model_name,FALSE);
 	list_palette_add_string(&alt_property_palette,kModelSettingsAnimate,"Animation",model->animate_name,FALSE);
 
 		// position
@@ -96,10 +96,6 @@ void alt_property_palette_click_intro_model(int intro_model_idx,int id,bool doub
 	switch (id) {
 
 			// settings
-
-		case kModelSettingsName:
-			property_pick_file("Pick a Model","Models",NULL,"Mesh.xml;Model.xml",model->model_name);
-			break;
 
 		case kModelSettingsAnimate:
 			dialog_property_string_run(list_string_value_string,(void*)model->animate_name,name_str_len,0,0);

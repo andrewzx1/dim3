@@ -88,7 +88,7 @@ void alt_property_palette_fill_hud_bitmap(int hud_bitmap_idx)
 
 	list_palette_add_header(&alt_property_palette,0,"Settings");
 	list_palette_add_string(&alt_property_palette,kBitmapSettingsName,"Name",bitmap->name,FALSE);
-	list_palette_add_string(&alt_property_palette,kBitmapSettingsFileName,"File",bitmap->filename,FALSE);
+	list_palette_add_picker_file(&alt_property_palette,kBitmapSettingsFileName,list_button_none,0,"Bitmap","Bitmaps/Interface","png","",bitmap->filename,FALSE);
 	list_palette_add_checkbox(&alt_property_palette,kBitmapSettingsShow,"Show",&bitmap->show,FALSE);
 
 		// position
@@ -156,10 +156,6 @@ void alt_property_palette_click_hud_bitmap(int hud_bitmap_idx,int id,bool double
 
 		case kBitmapSettingsName:
 			dialog_property_string_run(list_string_value_string,(void*)bitmap->name,name_str_len,0,0);
-			break;
-
-		case kBitmapSettingsFileName:
-			property_pick_file("Pick a Interface Bitmap","Bitmaps/Interface","png",NULL,bitmap->filename);
 			break;
 
 	}

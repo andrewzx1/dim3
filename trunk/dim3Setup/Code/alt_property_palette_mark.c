@@ -75,7 +75,7 @@ void alt_property_palette_fill_mark(int mark_idx)
 
 	list_palette_add_header(&alt_property_palette,0,"Settings");
 	list_palette_add_string(&alt_property_palette,kMarkSettingsName,"Name",mark->name,FALSE);
-	list_palette_add_string(&alt_property_palette,kMarkSettingsFileName,"Bitmap",mark->bitmap_name,FALSE);
+	list_palette_add_picker_file(&alt_property_palette,kMarkSettingsFileName,list_button_none,0,"Bitmap","Bitmaps/Marks","png","",mark->bitmap_name,FALSE);
 
 		// options
 
@@ -124,10 +124,6 @@ void alt_property_palette_click_mark(int mark_idx,int id,bool double_click)
 
 		case kMarkSettingsName:
 			dialog_property_string_run(list_string_value_string,(void*)mark->name,name_str_len,0,0);
-			break;
-
-		case kMarkSettingsFileName:
-			property_pick_file("Pick a Mark Bitmap","Bitmaps/Marks","png",NULL,mark->bitmap_name);
 			break;
 
 	}

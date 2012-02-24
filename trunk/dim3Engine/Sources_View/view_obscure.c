@@ -40,7 +40,8 @@ and can be sold or given away.
 
 typedef struct		{
 						int						mesh_idx,poly_idx,
-												dist;
+												trig_count,dist;
+						d3fpnt					pnts[8];
 						bool					skip;
 					} view_obscure_poly_type;
 
@@ -75,7 +76,7 @@ bool view_obscure_initialize(void)
 
 	if (!map.optimize.ray_trace_obscure) return(TRUE);
 
-		// count polys
+		// count obscuring polygons
 
 	cnt=0;
 
@@ -97,12 +98,12 @@ bool view_obscure_initialize(void)
 
 	if (cnt==0) return(TRUE);
 
-		// one more poly for marker
+		// one more triangle for marker
 		// at end
 
 	cnt++;
 
-		// memory for polys
+		// memory for triangles
 
 	view_obscure_polys=(view_obscure_poly_type*)malloc(cnt*sizeof(view_obscure_poly_type));
 	if (view_obscure_polys==NULL) return(FALSE);
@@ -154,8 +155,9 @@ void view_obscure_release(void)
 
 bool view_obscure_create_obscuring_poly_list(void)
 {
-	int						n,k,mesh_idx;
+	int						n,k,t,mesh_idx;
 	short					*poly_idx;
+	d3pnt					*pnt;
 	view_obscure_poly_type	*poly_ptr;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
@@ -173,15 +175,30 @@ bool view_obscure_create_obscuring_poly_list(void)
 
 		if (!mesh->precalc_flag.has_obscure_poly) continue;
 		
+			// when building the list, descontruct
+			// the polys into triangles and pre-convert
+			// to float to speed this up
+
 		poly_idx=mesh->poly_list.obscure_idxs;
 
 		for (k=0;k!=mesh->poly_list.obscure_count;k++) {
 			poly=&mesh->polys[poly_idx[k]];
-		
+
 			poly_ptr->mesh_idx=mesh_idx;
 			poly_ptr->poly_idx=k;
+			
+			poly_ptr->trig_count=poly->ptsz-2;
+
+			for (t=0;t!=poly->ptsz;t++) {
+				pnt=&mesh->vertexes[poly->v[t]];
+				poly_ptr->pnts[t].x=(float)pnt->x;
+				poly_ptr->pnts[t].y=(float)pnt->y;
+				poly_ptr->pnts[t].z=(float)pnt->z;
+			}
+		
 			poly_ptr->dist=view_cull_distance_to_view_center(poly->box.mid.x,poly->box.mid.y,poly->box.mid.z);
 			poly_ptr->skip=FALSE;
+
 			poly_ptr++;
 		}
 	}
@@ -224,9 +241,11 @@ void view_obscure_remove_mesh_from_obscuring_poly_list(int mesh_idx)
 
 bool view_obscure_check_box(d3pnt *camera_pnt,int skip_mesh_idx,d3pnt *min,d3pnt *max,int dist)
 {
-	int						n,k,x,y,z,kx,ky,kz,ray_cnt,hit_cnt,last_mesh_idx;
+	int						n,k,t,x,y,z,kx,ky,kz,ray_cnt,hit_cnt,last_mesh_idx;
 	unsigned char			*hit;
+	bool					ray_hit;
 	d3pnt					mid,div,div_add,ray_min,ray_max;
+	d3fpnt					camera_pnt_f;
 	d3vct					*vct;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
@@ -420,6 +439,12 @@ bool view_obscure_check_box(d3pnt *camera_pnt,int skip_mesh_idx,d3pnt *min,d3pnt
 	if (min->z<ray_min.z) ray_min.z=min->z;
 	if (max->z>ray_max.z) ray_max.z=max->z;
 
+		// float camera
+
+	camera_pnt_f.x=(float)camera_pnt->x;
+	camera_pnt_f.y=(float)camera_pnt->y;
+	camera_pnt_f.z=(float)camera_pnt->z;
+
 		// remember what the last mesh was
 		// we do this so we can check when a mesh
 		// changes to see if we can completely
@@ -427,7 +452,7 @@ bool view_obscure_check_box(d3pnt *camera_pnt,int skip_mesh_idx,d3pnt *min,d3pnt
 
 	last_mesh_idx=-1;
 
-		// check rays
+		// check rays against polygons
 
 	poly_ptr=view_obscure_polys;
 
@@ -511,12 +536,21 @@ bool view_obscure_check_box(d3pnt *camera_pnt,int skip_mesh_idx,d3pnt *min,d3pnt
 		
 				// run the blocking ray trace
 
-			if (!ray_trace_mesh_polygon_blocking(camera_pnt,&view_obscure_vcts[k],mesh,poly)) continue;
+			ray_hit=TRUE;
+
+			for (t=0;t!=poly_ptr->trig_count;t++) {
+				if (!ray_trace_triangle_blocking_f(&camera_pnt_f,&view_obscure_vcts[k],&poly_ptr->pnts[0],&poly_ptr->pnts[t+1],&poly_ptr->pnts[t+2])) {
+					ray_hit=FALSE;
+					break;
+				}
+			}
 
 				// was a hit, mark it
 
-			*(view_obscure_hits+k)=0x1;
-			hit_cnt++;
+			if (ray_hit) {
+				*(view_obscure_hits+k)=0x1;
+				hit_cnt++;
+			}
 		}
 
 			// are we obscured?

@@ -243,7 +243,7 @@ float ray_trace_triangle_f(d3fpnt *spt,d3vct *vct,d3fpnt *hpt,d3fpnt *tpt_0,d3fp
 	return(t);
 }
 
-bool ray_trace_triangle_blocking(d3pnt *spt,d3vct *vct,d3pnt *tpt_0,d3pnt *tpt_1,d3pnt *tpt_2)
+bool ray_trace_triangle_blocking_f(d3fpnt *spt,d3vct *vct,d3fpnt *tpt_0,d3fpnt *tpt_1,d3fpnt *tpt_2)
 {
 	float				det,invDet,t,u,v;
 	d3vct				perpVector,lineToTrigPointVector,lineToTrigPerpVector,v1,v2;
@@ -251,13 +251,13 @@ bool ray_trace_triangle_blocking(d3pnt *spt,d3vct *vct,d3pnt *tpt_0,d3pnt *tpt_1
 		// get triangle vectors
 		// tpt_0 is inbetween tpt_1 and tpt_2
 
-	v1.x=(float)(tpt_1->x-tpt_0->x);
-	v1.y=(float)(tpt_1->y-tpt_0->y);
-	v1.z=(float)(tpt_1->z-tpt_0->z);
+	v1.x=tpt_1->x-tpt_0->x;
+	v1.y=tpt_1->y-tpt_0->y;
+	v1.z=tpt_1->z-tpt_0->z;
 
-	v2.x=(float)(tpt_2->x-tpt_0->x);
-	v2.y=(float)(tpt_2->y-tpt_0->y);
-	v2.z=(float)(tpt_2->z-tpt_0->z);
+	v2.x=tpt_2->x-tpt_0->x;
+	v2.y=tpt_2->y-tpt_0->y;
+	v2.z=tpt_2->z-tpt_0->z;
 	
 		// calculate the cross product and
 		// then the inner product to get the
@@ -282,9 +282,9 @@ bool ray_trace_triangle_blocking(d3pnt *spt,d3vct *vct,d3pnt *tpt_0,d3pnt *tpt_1
 		// and the inner product of that result and
 		// the perpVector
 		
-	lineToTrigPointVector.x=(float)(spt->x-tpt_0->x);
-	lineToTrigPointVector.y=(float)(spt->y-tpt_0->y);
-	lineToTrigPointVector.z=(float)(spt->z-tpt_0->z);
+	lineToTrigPointVector.x=spt->x-tpt_0->x;
+	lineToTrigPointVector.y=spt->y-tpt_0->y;
+	lineToTrigPointVector.z=spt->z-tpt_0->z;
 
 	u=invDet*((lineToTrigPointVector.x*perpVector.x)+(lineToTrigPointVector.y*perpVector.y)+(lineToTrigPointVector.z*perpVector.z));
 	if ((u<0.0f) || (u>1.0f)) return(FALSE);
@@ -331,23 +331,6 @@ float ray_trace_mesh_polygon(d3pnt *spt,d3vct *vct,d3pnt *hpt,map_mesh_type *mes
 	}
 	
 	return(-1.0f);
-}
-
-float ray_trace_mesh_polygon_blocking(d3pnt *spt,d3vct *vct,map_mesh_type *mesh,map_mesh_poly_type *poly)
-{
-	int			n,trig_count;
-	
-		// run through all the triangles of the polygon
-		// since this is a single polygon, the
-		// first hit is always the correct hit
-		
-	trig_count=poly->ptsz-2;
-	
-	for (n=0;n<trig_count;n++) {
-		if (ray_trace_triangle_blocking(spt,vct,&mesh->vertexes[poly->v[0]],&mesh->vertexes[poly->v[n+1]],&mesh->vertexes[poly->v[n+2]])) return(TRUE);
-	}
-	
-	return(FALSE);
 }
 
 float ray_trace_quad(d3pnt *spt,d3vct *vct,d3pnt *hpt,int ptsz,int *x,int *y,int *z)

@@ -67,7 +67,7 @@ void alt_property_palette_fill_halo(int halo_idx)
 
 	list_palette_add_header(&alt_property_palette,0,"Settings");
 	list_palette_add_string(&alt_property_palette,kHaloSettingsName,"Name",halo->name,FALSE);
-	list_palette_add_string(&alt_property_palette,kHaloSettingsFileName,"Bitmap",halo->bitmap_name,FALSE);
+	list_palette_add_picker_file(&alt_property_palette,kHaloSettingsFileName,list_button_none,0,"Bitmap","Bitmaps/Halos","png","",halo->bitmap_name,FALSE);
 
 		// distance
 
@@ -114,10 +114,6 @@ void alt_property_palette_click_halo(int halo_idx,int id,bool double_click)
 
 		case kHaloSettingsName:
 			dialog_property_string_run(list_string_value_string,(void*)halo->name,name_str_len,0,0);
-			break;
-
-		case kHaloSettingsFileName:
-			property_pick_file("Pick a Halo Bitmap","Bitmaps/Halos","png",NULL,halo->bitmap_name);
 			break;
 
 	}

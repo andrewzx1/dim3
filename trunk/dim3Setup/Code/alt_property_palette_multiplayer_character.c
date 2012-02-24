@@ -62,7 +62,7 @@ void alt_property_palette_fill_multiplayer_character(int multiplayer_character_i
 
 	list_palette_add_header(&alt_property_palette,0,"Settings");
 	list_palette_add_string(&alt_property_palette,kMPCharacterPropertySettingsName,"Name",character->name,FALSE);
-	list_palette_add_string(&alt_property_palette,kMPCharacterPropertySettingsModelName,"Model Name",character->model_name,FALSE);
+	list_palette_add_picker_file(&alt_property_palette,kMPCharacterPropertySettingsModelName,list_button_none,0,"Model","Models","","Mesh.xml;Model.xml",character->model_name,FALSE);
 	list_palette_add_string(&alt_property_palette,kMPCharacterPropertySettingsParam,"Parameters",character->param,FALSE);
 
 		// options
@@ -92,10 +92,6 @@ void alt_property_palette_click_multiplayer_character(int multiplayer_character_
 
 		case kMPCharacterPropertySettingsName:
 			dialog_property_string_run(list_string_value_string,(void*)character->name,name_str_len,0,0);
-			break;
-
-		case kMPCharacterPropertySettingsModelName:
-			property_pick_file("Pick a Model","Models",NULL,"Mesh.xml;Model.xml",character->model_name);
 			break;
 
 		case kMPCharacterPropertySettingsParam:

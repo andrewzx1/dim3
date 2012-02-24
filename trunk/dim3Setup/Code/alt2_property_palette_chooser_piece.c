@@ -105,12 +105,12 @@ void alt2_property_palette_fill_chooser_piece(int chooser_idx,int chooser_piece_
 
 		case chooser_piece_type_item:
 			list_palette_add_header(&alt2_property_palette,0,"Item");
-			list_palette_add_string(&alt2_property_palette,kChooserPieceItemFile,"Bitmap",piece->data.item.file,FALSE);
+			list_palette_add_picker_file(&alt2_property_palette,kChooserPieceItemFile,list_button_none,0,"Bitmap","Chooser","png","",piece->data.item.file,FALSE);
 			break;
 
 		case chooser_piece_type_model:
 			list_palette_add_header(&alt2_property_palette,0,"Model");
-			list_palette_add_string(&alt2_property_palette,kChooserPieceModelModelName,"Model",piece->data.model.model_name,FALSE);
+			list_palette_add_picker_file(&alt2_property_palette,kChooserPieceModelModelName,list_button_none,0,"Model","Models","","Mesh.xml;Model.xml",piece->data.model.model_name,FALSE);
 			list_palette_add_string(&alt2_property_palette,kChooserPieceModelAnimateName,"Animation",piece->data.model.animate_name,FALSE);
 			list_palette_add_float(&alt2_property_palette,kChooserPieceModelResize,"Resize",&piece->data.model.resize,FALSE);
 			list_palette_add_angle(&alt2_property_palette,kChooserPieceModelRot,"Rotate",&piece->data.model.rot,FALSE);
@@ -154,14 +154,6 @@ void alt2_property_palette_click_chooser_piece(int chooser_idx,int chooser_piece
 
 		case kChooserPieceTextStr:
 			dialog_property_string_run(list_string_value_string,(void*)piece->data.text.str,max_chooser_text_data_sz,0,0);
-			break;
-
-		case kChooserPieceItemFile:
-			property_pick_file("Pick a Chooser Bitmap","Chooser","png",NULL,piece->data.item.file);
-			break;
-
-		case kChooserPieceModelModelName:
-			property_pick_file("Pick a Model","Models",NULL,"Mesh.xml;Model.xml",piece->data.model.model_name);
 			break;
 
 		case kChooserPieceModelAnimateName:

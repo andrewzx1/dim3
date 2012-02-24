@@ -58,7 +58,7 @@ void alt_property_palette_fill_crosshair(int crosshair_idx)
 
 	list_palette_add_header(&alt_property_palette,0,"Settings");
 	list_palette_add_string(&alt_property_palette,kCrosshairSettingsName,"Name",crosshair->name,FALSE);
-	list_palette_add_string(&alt_property_palette,kCrosshairSettingsFileName,"Bitmap",crosshair->bitmap_name,FALSE);
+	list_palette_add_picker_file(&alt_property_palette,kCrosshairSettingsFileName,list_button_none,0,"Bitmap","Bitmaps/Crosshairs","png","",crosshair->bitmap_name,FALSE);
 }
 
 /* =======================================================
@@ -81,10 +81,6 @@ void alt_property_palette_click_crosshair(int crosshair_idx,int id,bool double_c
 
 		case kCrosshairSettingsName:
 			dialog_property_string_run(list_string_value_string,(void*)crosshair->name,name_str_len,0,0);
-			break;
-
-		case kCrosshairSettingsFileName:
-			property_pick_file("Pick a Crosshair Bitmap","Bitmaps/Crosshairs","png",NULL,crosshair->bitmap_name);
 			break;
 
 	}

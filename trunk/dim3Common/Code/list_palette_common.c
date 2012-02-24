@@ -680,16 +680,6 @@ void list_palette_add_shader(list_palette_type *list,int id,char *name,char *sha
 	list_palette_add_string(list,id,name,shader_name,disabled);
 }
 
-void list_palette_add_string_tag(list_palette_type *list,int id,char *name,unsigned long tag,bool disabled)
-{
-	char		str[32];
-	
-	memmove(str,&tag,4);
-	str[4]=0x0;
-
-	list_palette_add_string(list,id,name,str,disabled);
-}
-
 /* =======================================================
 
       List Delete Items

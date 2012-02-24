@@ -63,8 +63,8 @@ void alt_property_palette_fill_shader(int shader_idx)
 		// code
 
 	list_palette_add_header(&alt_property_palette,0,"Code");
-	list_palette_add_string(&alt_property_palette,kShaderCodeVertName,"Vertex",shader->vert_name,FALSE);
-	list_palette_add_string(&alt_property_palette,kShaderCodeFragName,"Fragment",shader->frag_name,FALSE);
+	list_palette_add_picker_file(&alt_property_palette,kShaderCodeVertName,list_button_none,0,"Vertex","Shaders","vert","",shader->vert_name,FALSE);
+	list_palette_add_picker_file(&alt_property_palette,kShaderCodeFragName,list_button_none,0,"Fragment","Shaders","frag","",shader->frag_name,FALSE);
 }
 
 /* =======================================================
@@ -87,16 +87,6 @@ void alt_property_palette_click_shader(int shader_idx,int id,bool double_click)
 
 		case kShaderSettingsName:
 			dialog_property_string_run(list_string_value_string,(void*)shader->name,name_str_len,0,0);
-			break;
-
-			// code
-
-		case kShaderCodeVertName:
-			property_pick_file("Pick a Vertex Shader","Shaders","vert",NULL,shader->vert_name);
-			break;
-
-		case kShaderCodeFragName:
-			property_pick_file("Pick a Fragment Shader","Shaders","frag",NULL,shader->frag_name);
 			break;
 
 	}
