@@ -68,7 +68,7 @@ void property_palette_fill_radar(void)
 
 	list_palette_add_header(&property_palette,0,"Settings");
 	list_palette_add_checkbox(&property_palette,kRadarPropertySettingsOn,"On",&iface.radar.on,FALSE);
-	list_palette_add_string(&property_palette,kRadarPropertySettingsBackground,"Background",iface.radar.background_bitmap_name,FALSE);
+	list_palette_add_picker_file(&property_palette,kRadarPropertySettingsBackground,list_button_none,0,"Background","Bitmaps/Radar","png","",iface.radar.background_bitmap_name,FALSE);
 	list_palette_add_int(&property_palette,kRadarPropertySettingsDisplayRadius,"Display Radius",&iface.radar.display_radius,FALSE);
 	list_palette_add_int(&property_palette,kRadarPropertySettingsViewRadius,"View Radius",&iface.radar.view_radius,FALSE);
 	list_palette_add_int(&property_palette,kRadarPropertySettingsNoMotionFade,"No Motion Fade Milliseconds",&iface.radar.no_motion_fade,FALSE);
@@ -158,13 +158,5 @@ void property_palette_click_radar(int id,bool double_click)
 	if (!double_click) return;
 
 	state.cur_radar_icon_idx=-1;
-
-	switch (id) {
-
-		case kRadarPropertySettingsBackground:
-			property_pick_file("Pick a Background Bitmap","Bitmaps/Radar","png",NULL,iface.radar.background_bitmap_name);
-			break;
-
-	}
 }
 

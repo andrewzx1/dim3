@@ -68,8 +68,8 @@ void alt_property_palette_fill_virtual_control_stick(int virtual_control_stick_i
 	list_palette_add_header(&alt_property_palette,0,"Settings");
 	list_palette_add_checkbox(&alt_property_palette,kStickOn,"On",&stick->on,FALSE);
 	list_palette_add_checkbox(&alt_property_palette,kStickUseBitmap,"Use Bitmap",&stick->use_bitmap,FALSE);
-	list_palette_add_string(&alt_property_palette,kStickOuterBitmap,"Outer Bitmap",stick->outer_bitmap_name,FALSE);
-	list_palette_add_string(&alt_property_palette,kStickInnerBitmap,"Inner Bitmap",stick->inner_bitmap_name,FALSE);
+	list_palette_add_picker_file(&alt_property_palette,kStickOuterBitmap,list_button_none,0,"Outer Bitmap","Bitmaps/Virtual","png","",stick->outer_bitmap_name,FALSE);
+	list_palette_add_picker_file(&alt_property_palette,kStickInnerBitmap,list_button_none,0,"Inner Bitmap","Bitmaps/Virtual","png","",stick->inner_bitmap_name,FALSE);
 	list_palette_add_pick_color(&alt_property_palette,kStickColor,"Color",&stick->color,FALSE);
 	
 	list_palette_add_header(&alt_property_palette,0,"Position");
@@ -91,22 +91,5 @@ void alt_property_palette_fill_virtual_control_stick(int virtual_control_stick_i
 
 void alt_property_palette_click_virtual_control_stick(int virtual_control_stick_idx,int id,bool double_click)
 {
-	iface_virtual_stick_type	*stick;
-
-	if (!double_click) return;
-
-	stick=&iface.virtual_control.sticks[virtual_control_stick_idx];
-
-	switch (id) {
-	
-		case kStickOuterBitmap:
-			property_pick_file("Pick a Outer Stick Bitmap","Bitmaps/Virtual","png",NULL,stick->outer_bitmap_name);
-			break;
-			
-		case kStickInnerBitmap:
-			property_pick_file("Pick a Inner Stick Bitmap","Bitmaps/Virtual","png",NULL,stick->inner_bitmap_name);
-			break;
-	
-	}
 }
 

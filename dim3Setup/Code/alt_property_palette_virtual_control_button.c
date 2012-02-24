@@ -71,9 +71,9 @@ void alt_property_palette_fill_virtual_control_button(int virtual_control_button
 	list_palette_add_header(&alt_property_palette,0,"Settings");
 	list_palette_add_checkbox(&alt_property_palette,kButtonOn,"On",&button->on,FALSE);
 	list_palette_add_checkbox(&alt_property_palette,kButtonUseBitmap,"Use Bitmap",&button->use_bitmap,FALSE);
-	list_palette_add_string(&alt_property_palette,kButtonControl,"Action",control_name_str[button->control_idx],FALSE);
-	list_palette_add_string(&alt_property_palette,kButtonUpBitmap,"Up Bitmap",button->up_bitmap_name,FALSE);
-	list_palette_add_string(&alt_property_palette,kButtonDownBitmap,"Down Bitmap",button->down_bitmap_name,FALSE);
+	list_palette_add_picker_list_int(&alt_property_palette,kButtonControl,"Action",(char*)control_name_str,-1,32,0,FALSE,&button->control_idx,FALSE);
+	list_palette_add_picker_file(&alt_property_palette,kButtonUpBitmap,list_button_none,0,"Up Bitmap","Bitmaps/Virtual","png","",button->up_bitmap_name,FALSE);
+	list_palette_add_picker_file(&alt_property_palette,kButtonDownBitmap,list_button_none,0,"Down Bitmap","Bitmaps/Virtual","png","",button->down_bitmap_name,FALSE);
 	list_palette_add_pick_color(&alt_property_palette,kButtonColor,"Color",&button->color,FALSE);
 	
 	list_palette_add_header(&alt_property_palette,0,"Position");
@@ -91,26 +91,5 @@ void alt_property_palette_fill_virtual_control_button(int virtual_control_button
 
 void alt_property_palette_click_virtual_control_button(int virtual_control_button_idx,int id,bool double_click)
 {
-	iface_virtual_button_type	*button;
-
-	if (!double_click) return;
-
-	button=&iface.virtual_control.buttons[virtual_control_button_idx];
-
-	switch (id) {
-
-		case kButtonControl:
-			property_palette_pick_control(&button->control_idx);
-			break;
-			 
-		case kButtonUpBitmap:
-			property_pick_file("Pick a Up Button Bitmap","Bitmaps/Virtual","png",NULL,button->up_bitmap_name);
-			break;
-			
-		case kButtonDownBitmap:
-			property_pick_file("Pick a Down Button Bitmap","Bitmaps/Virtual","png",NULL,button->down_bitmap_name);
-			break;
-			
-	}
 }
 

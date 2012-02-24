@@ -94,12 +94,13 @@ void property_palette_fill_intro(void)
 		// options
 
 	list_palette_add_header(&property_palette,0,"Options");
-	list_palette_add_string(&property_palette,kIntroPropertyMusic,"Music",iface.intro.music,FALSE);
+	list_palette_add_picker_file(&property_palette,kIntroPropertyMusic,list_button_none,0,"Music","Music","mp3","",iface.intro.music,FALSE);
+
 	
 		// title
 
 	list_palette_add_header(&property_palette,0,"Title");
-	list_palette_add_string(&property_palette,kIntroPropertyTitleName,"Name",iface.intro.title.name,FALSE);
+	list_palette_add_picker_file(&property_palette,kIntroPropertyTitleName,list_button_none,0,"Bitmap","Titles","png","",iface.intro.title.name,FALSE);
 	list_palette_add_string(&property_palette,kIntroPropertyTitleSound,"Sound",iface.intro.title.sound,FALSE);
 	list_palette_add_int(&property_palette,kIntroPropertyTitleLifeMsec,"Life Millsec",&iface.intro.title.life_msec,FALSE);
 
@@ -145,9 +146,9 @@ void property_palette_fill_intro(void)
 	list_palette_add_int(&property_palette,kIntroPropertySimpleSaveProgressAdd,"Progress Bitmap Add",&iface.intro.simple_save_list.progress.bitmap_add,FALSE);
 	list_palette_add_checkbox(&property_palette,kIntroPropertySimpleSaveProgressHorizontal,"Progress Horizontal",&iface.intro.simple_save_list.progress.horizontal,FALSE);
 	list_palette_add_int(&property_palette,kIntroPropertySimpleSaveProgressWrapCount,"Progress Wrap Count",&iface.intro.simple_save_list.progress.wrap_count,FALSE);
-	list_palette_add_string(&property_palette,kIntroPropertySimpleSaveProgressBitmap,"Enabled Bitmap",iface.intro.simple_save_list.progress.bitmap_name,FALSE);
-	list_palette_add_string(&property_palette,kIntroPropertySimpleSaveProgressBitmapDisable,"Disabled Bitmap",iface.intro.simple_save_list.progress.bitmap_disable_name,FALSE);
-	
+	list_palette_add_picker_file(&property_palette,kIntroPropertySimpleSaveProgressBitmap,list_button_none,0,"Enabled Bitmap","Bitmaps/Interface","png","",iface.intro.simple_save_list.progress.bitmap_name,FALSE);
+	list_palette_add_picker_file(&property_palette,kIntroPropertySimpleSaveProgressBitmapDisable,list_button_none,0,"Disabled Bitmap","Bitmaps/Interface","png","",iface.intro.simple_save_list.progress.bitmap_disable_name,FALSE);
+
 		// confirm
 		
 	list_palette_add_header(&property_palette,0,"Confirm");
@@ -268,24 +269,8 @@ void property_palette_click_intro(int id,bool double_click)
 
 	switch (id) {
 
-		case kIntroPropertyMusic:
-			property_pick_file("Pick a MP3","Music","mp3",NULL,iface.intro.music);
-			break;
-
-		case kIntroPropertyTitleName:
-			property_pick_file("Pick a Title","Titles","png",NULL,iface.intro.title.name);
-			break;
-			
 		case kIntroPropertyTitleSound:
 			property_palette_pick_sound(iface.intro.title.sound,TRUE);
-			break;
-			
-		case kIntroPropertySimpleSaveProgressBitmap:
-			property_pick_file("Pick a Progress Enabled Bitmap","Bitmaps/Interface","png",NULL,iface.intro.simple_save_list.progress.bitmap_name);
-			break;
-			
-		case kIntroPropertySimpleSaveProgressBitmapDisable:
-			property_pick_file("Pick a Progress Disabled Bitmap","Bitmaps/Interface","png",NULL,iface.intro.simple_save_list.progress.bitmap_disable_name);
 			break;
 
 	}

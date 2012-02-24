@@ -90,7 +90,7 @@ void alt_property_palette_fill_particle(int particle_idx)
 
 	list_palette_add_header(&alt_property_palette,0,"Settings");
 	list_palette_add_string(&alt_property_palette,kParticleSettingsName,"Name",particle->name,FALSE);
-	list_palette_add_string(&alt_property_palette,kParticleSettingsBitmapName,"Bitmap",particle->bitmap_name,FALSE);
+	list_palette_add_picker_file(&alt_property_palette,kParticleSettingsBitmapName,list_button_none,0,"Bitmap","Bitmaps/Particles","png","",particle->bitmap_name,FALSE);
 	list_palette_add_string(&alt_property_palette,kParticleSettingsChainName,"Chain Particle",particle->chain_name,FALSE);
 	list_palette_add_int(&alt_property_palette,kParticleSettingsCount,"Count",&particle->count,FALSE);
 	list_palette_add_int(&alt_property_palette,kParticleSettingsLife,"Life Milliseconds",&particle->life_msec,FALSE);
@@ -160,10 +160,6 @@ void alt_property_palette_click_particle(int particle_idx,int id,bool double_cli
 
 		case kParticleSettingsName:
 			dialog_property_string_run(list_string_value_string,(void*)particle->name,name_str_len,0,0);
-			break;
-
-		case kParticleSettingsBitmapName:
-			property_pick_file("Pick a Particle Bitmap","Bitmaps/Particles","png",NULL,particle->bitmap_name);
 			break;
 
 		case kParticleSettingsChainName:

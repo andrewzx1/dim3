@@ -81,7 +81,7 @@ void alt_property_palette_fill_ring(int ring_idx)
 
 	list_palette_add_header(&alt_property_palette,0,"Settings");
 	list_palette_add_string(&alt_property_palette,kRingSettingsName,"Name",ring->name,FALSE);
-	list_palette_add_string(&alt_property_palette,kRingSettingsBitmapName,"Bitmap",ring->bitmap_name,FALSE);
+	list_palette_add_picker_file(&alt_property_palette,kRingSettingsBitmapName,list_button_none,0,"Bitmap","Bitmaps/Rings","png","",ring->bitmap_name,FALSE);
 	list_palette_add_int(&alt_property_palette,kRingSettingsLife,"Life Milliseconds",&ring->life_msec,FALSE);
 
 		// ring
@@ -139,10 +139,6 @@ void alt_property_palette_click_ring(int ring_idx,int id,bool double_click)
 
 		case kRingSettingsName:
 			dialog_property_string_run(list_string_value_string,(void*)ring->name,name_str_len,0,0);
-			break;
-
-		case kRingSettingsBitmapName:
-			property_pick_file("Pick a Ring Bitmap","Bitmaps/Rings","png",NULL,ring->bitmap_name);
 			break;
 
 	}

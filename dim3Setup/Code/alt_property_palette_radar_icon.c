@@ -61,7 +61,7 @@ void alt_property_palette_fill_radar_icon(int radar_icon_idx)
 
 	list_palette_add_header(&alt_property_palette,0,"Settings");
 	list_palette_add_string(&alt_property_palette,kRadarIconSettingsName,"Name",icon->name,FALSE);
-	list_palette_add_string(&alt_property_palette,kRadarIconSettingsBitmapName,"Bitmap",icon->bitmap_name,FALSE);
+	list_palette_add_picker_file(&alt_property_palette,kRadarIconSettingsBitmapName,list_button_none,0,"Bitmap","Bitmaps/Radar","png","",icon->bitmap_name,FALSE);
 
 		// options
 
@@ -90,10 +90,6 @@ void alt_property_palette_click_radar_icon(int radar_icon_idx,int id,bool double
 
 		case kRadarIconSettingsName:
 			dialog_property_string_run(list_string_value_string,(void*)icon->name,name_str_len,0,0);
-			break;
-
-		case kRadarIconSettingsBitmapName:
-			property_pick_file("Pick a Icon Bitmap","Bitmaps/Radar","png",NULL,icon->bitmap_name);
 			break;
 
 	}
