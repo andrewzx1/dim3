@@ -125,18 +125,18 @@ void model_create_draw_vertexes_normal(model_type *model,int mesh_idx,model_draw
 		// rotations
 		
 	cx=(float)draw_setup->center.x;
-	cz=(float)draw_setup->center.z;
 	cy=(float)draw_setup->center.y;
+	cz=(float)draw_setup->center.z;
 	
 	matrix_rotate_x(&rot_x_mat,draw_setup->ang.x);
-	matrix_rotate_z(&rot_z_mat,draw_setup->ang.z);
 	matrix_rotate_y(&rot_y_mat,draw_setup->ang.y);
+	matrix_rotate_z(&rot_z_mat,draw_setup->ang.z);
 	
 		// movements
 		
 	mov_x=draw_setup->move.x+cx;	// restore the center movement
-    mov_z=draw_setup->move.z+cz;
-    mov_y=draw_setup->move.y+cy;
+	mov_y=draw_setup->move.y+cy;
+	mov_z=draw_setup->move.z+cz;
 	
 		// sways
 		

@@ -312,14 +312,25 @@ void view_setup_objects(int tick)
 		if ((flag&view_list_item_flag_model_in_view)!=0x0) view.count.model++;
 		if ((flag&view_list_item_flag_shadow_in_view)!=0x0) view.count.shadow++;
 		
-			// setup held weapon model
-			// if player
+			// if the player, setup the held
+			// weapon (and dual if necessary)
 
 		if ((obj->idx==server.player_obj_idx) && (obj->held_weapon.current_idx!=-1)) {
 			weap=weapon_find_current(obj);
 			if (weap!=NULL) {
+
+					// regular weapon
+
 				model_draw_setup_weapon(obj,weap,FALSE,FALSE);
 				if (weap->draw.on) view.count.model++;
+				
+					// dual weapon
+
+				if ((weap->dual.on) && (weap->dual.active)) {
+					model_draw_setup_weapon(obj,weap,FALSE,TRUE);
+					if (weap->draw_dual.on) view.count.model++;
+				}
+
 			}
 		}
 	}

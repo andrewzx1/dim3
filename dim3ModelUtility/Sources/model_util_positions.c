@@ -37,8 +37,7 @@ and can be sold or given away.
 
 void model_get_point_position(model_draw_setup *draw_setup,d3pnt *pnt)
 {
-	int					cx,cy,cz;
-	float				fx,fy,fz;
+	float				cx,cy,cz,fx,fy,fz;
 	matrix_type			rot_x_mat,rot_z_mat,rot_y_mat,sway_mat;
 	
 	fx=(float)pnt->x;
@@ -52,25 +51,25 @@ void model_get_point_position(model_draw_setup *draw_setup,d3pnt *pnt)
 		
 		// rotate
 		
-	cx=draw_setup->center.x;
-	cy=draw_setup->center.y;
-	cz=draw_setup->center.z;
-		
-	fx-=(float)cx;
-	fy-=(float)cy;
-	fz-=(float)cz;
-	
-	matrix_rotate_x(&rot_x_mat,draw_setup->ang.x);
-	matrix_rotate_z(&rot_z_mat,draw_setup->ang.z);
-	matrix_rotate_y(&rot_y_mat,draw_setup->ang.y);
-		
-	matrix_vertex_multiply(&rot_x_mat,&fx,&fy,&fz);
-	matrix_vertex_multiply(&rot_z_mat,&fx,&fy,&fz);
-	matrix_vertex_multiply(&rot_y_mat,&fx,&fy,&fz);
+	cx=(float)draw_setup->center.x;
+	cy=(float)draw_setup->center.y;
+	cz=(float)draw_setup->center.z;
 
-	pnt->x=(int)(fx+draw_setup->move.x)+cx;
-	pnt->y=(int)(fy+draw_setup->move.y)+cy;
-	pnt->z=(int)(fz+draw_setup->move.z)+cz;
+	matrix_rotate_x(&rot_x_mat,draw_setup->ang.x);
+	matrix_rotate_y(&rot_y_mat,draw_setup->ang.y);
+	matrix_rotate_z(&rot_z_mat,draw_setup->ang.z);
+		
+	fx-=cx;
+	fy-=cy;
+	fz-=cz;
+		
+	matrix_vertex_multiply_ignore_transform(&rot_x_mat,&fx,&fy,&fz);
+	matrix_vertex_multiply_ignore_transform(&rot_z_mat,&fx,&fy,&fz);
+	matrix_vertex_multiply_ignore_transform(&rot_y_mat,&fx,&fy,&fz);
+
+	pnt->x=(int)((fx+cx)+draw_setup->move.x);
+	pnt->y=(int)((fy+cy)+draw_setup->move.y);
+	pnt->z=(int)((fz+cz)+draw_setup->move.z);
 }
 
 /* =======================================================
