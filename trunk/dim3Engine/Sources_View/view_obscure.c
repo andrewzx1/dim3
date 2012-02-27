@@ -39,11 +39,16 @@ and can be sold or given away.
 #define view_obscure_skip_range			50000
 
 typedef struct		{
-						int						mesh_idx,poly_idx,
-												trig_count,dist;
+						int						poly_idx,trig_count,dist;
 						d3fpnt					pnts[8];
-						bool					skip;
+						bool					skip_ray_collision;
 					} view_obscure_poly_type;
+
+typedef struct		{
+						int						mesh_idx,npoly;
+						bool					skip_obscured,skip_ray_collision;
+						view_obscure_poly_type	*polys;
+					} view_obscure_mesh_type;
 
 extern map_type				map;
 extern camera_type			camera;
@@ -52,9 +57,10 @@ extern server_type			server;
 extern iface_type			iface;
 extern setup_type			setup;
 
+int							view_obscure_max_mesh_count,view_obscure_check_mesh_count;
 unsigned char				*view_obscure_hits;
 d3vct						*view_obscure_vcts;
-view_obscure_poly_type		*view_obscure_polys;
+view_obscure_mesh_type		*view_obscure_meshes;
 
 /* =======================================================
 
@@ -64,13 +70,15 @@ view_obscure_poly_type		*view_obscure_polys;
 
 bool view_obscure_initialize(void)
 {
-	int					n,k,cnt,ray_count;
+	int					n,max_poly,ray_count;
 	map_mesh_type		*mesh;
-	map_mesh_poly_type	*poly;
 
 		// is view obscuring on?
 
-	view_obscure_polys=NULL;
+	view_obscure_max_mesh_count=0;
+	view_obscure_check_mesh_count=0;
+
+	view_obscure_meshes=NULL;
 	view_obscure_vcts=NULL;
 	view_obscure_hits=NULL;
 
@@ -78,35 +86,40 @@ bool view_obscure_initialize(void)
 
 		// count obscuring polygons
 
-	cnt=0;
+	max_poly=0;
 
 	mesh=map.mesh.meshes;
 
 	for (n=0;n!=map.mesh.nmesh;n++) {
 
 		if (mesh->precalc_flag.has_obscure_poly) {
-			poly=mesh->polys;
-
-			for (k=0;k!=mesh->npoly;k++) {
-				if (poly->flag.obscuring) cnt++;
-				poly++;
-			}
+			view_obscure_max_mesh_count++;
+			if (mesh->poly_list.obscure_count>max_poly) max_poly=mesh->poly_list.obscure_count;
 		}
 
 		mesh++;
 	}
 
-	if (cnt==0) return(TRUE);
+	if ((view_obscure_max_mesh_count==0) || (max_poly==0)) return(TRUE);
 
-		// one more triangle for marker
-		// at end
+		// memory for meshes
 
-	cnt++;
+	view_obscure_meshes=(view_obscure_mesh_type*)malloc(view_obscure_max_mesh_count*sizeof(view_obscure_mesh_type));
+	if (view_obscure_meshes==NULL) return(FALSE);
 
-		// memory for triangles
+		// memory for polys
 
-	view_obscure_polys=(view_obscure_poly_type*)malloc(cnt*sizeof(view_obscure_poly_type));
-	if (view_obscure_polys==NULL) return(FALSE);
+	for (n=0;n!=view_obscure_max_mesh_count;n++) {
+		view_obscure_meshes[n].polys=NULL;
+	}
+
+	for (n=0;n!=view_obscure_max_mesh_count;n++) {
+		view_obscure_meshes[n].polys=(view_obscure_poly_type*)malloc(max_poly*sizeof(view_obscure_poly_type));
+		if (view_obscure_meshes[n].polys==NULL) {
+			view_obscure_release();
+			return(FALSE);
+		}
+	}
 
 		// memory for rays and hits
 		// rays have grid divisions on each side
@@ -118,17 +131,13 @@ bool view_obscure_initialize(void)
 
 	view_obscure_vcts=(d3vct*)malloc(ray_count*sizeof(d3vct));
 	if (view_obscure_vcts==NULL) {
-		free(view_obscure_polys);
-		view_obscure_polys=NULL;
+		view_obscure_release();
 		return(FALSE);
 	}
 
 	view_obscure_hits=(unsigned char*)malloc(ray_count*sizeof(unsigned char));
 	if (view_obscure_hits==NULL) {
-		free(view_obscure_vcts);
-		free(view_obscure_polys);
-		view_obscure_polys=NULL;
-		view_obscure_hits=NULL;
+		view_obscure_release();
 		return(FALSE);
 	}
 
@@ -137,8 +146,16 @@ bool view_obscure_initialize(void)
 
 void view_obscure_release(void)
 {
-	if (view_obscure_polys!=NULL) free(view_obscure_polys);
-	view_obscure_polys=NULL;
+	int				n;
+
+	if (view_obscure_meshes!=NULL) {
+		for (n=0;n!=view_obscure_max_mesh_count;n++) {
+			if (view_obscure_meshes[n].polys!=NULL) free(view_obscure_meshes[n].polys);
+		}
+
+		free(view_obscure_meshes);
+		view_obscure_meshes=NULL;
+	}
 
 	if (view_obscure_vcts!=NULL) free(view_obscure_vcts);
 	view_obscure_vcts=NULL;
@@ -158,14 +175,17 @@ bool view_obscure_create_obscuring_poly_list(void)
 	int						n,k,t,mesh_idx;
 	short					*poly_idx;
 	d3pnt					*pnt;
-	view_obscure_poly_type	*poly_ptr;
+	view_obscure_mesh_type	*obs_mesh;
+	view_obscure_poly_type	*obs_poly;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
 
-		// build the obscure polygons
+	view_obscure_check_mesh_count=0;
+
+		// build the obscure mesh/polygons
 		// to ray trace against
 
-	poly_ptr=view_obscure_polys;
+	obs_mesh=view_obscure_meshes;
 
 	for (n=0;n!=view.render->draw_list.count;n++) {
 		if (view.render->draw_list.items[n].type!=view_render_type_mesh) continue;
@@ -173,9 +193,21 @@ bool view_obscure_create_obscuring_poly_list(void)
 		mesh_idx=view.render->draw_list.items[n].idx;
 		mesh=&map.mesh.meshes[mesh_idx];
 
+			// had any obscure polys?
+
 		if (!mesh->precalc_flag.has_obscure_poly) continue;
+
+			// add the mesh
+
+		obs_mesh->mesh_idx=mesh_idx;
+		obs_mesh->skip_obscured=FALSE;
+		obs_mesh->skip_ray_collision=FALSE;
+
+		obs_mesh->npoly=0;
+
+		obs_poly=obs_mesh->polys;
 		
-			// when building the list, descontruct
+			// when building the poly list, descontruct
 			// the polys into triangles and pre-convert
 			// to float to speed this up
 
@@ -184,52 +216,51 @@ bool view_obscure_create_obscuring_poly_list(void)
 		for (k=0;k!=mesh->poly_list.obscure_count;k++) {
 			poly=&mesh->polys[poly_idx[k]];
 
-			poly_ptr->mesh_idx=mesh_idx;
-			poly_ptr->poly_idx=poly_idx[k];
+			obs_poly->poly_idx=poly_idx[k];
 
-			poly_ptr->trig_count=poly->ptsz-2;
+			obs_poly->trig_count=poly->ptsz-2;
 
 			for (t=0;t!=poly->ptsz;t++) {
 				pnt=&mesh->vertexes[poly->v[t]];
-				poly_ptr->pnts[t].x=(float)pnt->x;
-				poly_ptr->pnts[t].y=(float)pnt->y;
-				poly_ptr->pnts[t].z=(float)pnt->z;
+				obs_poly->pnts[t].x=(float)pnt->x;
+				obs_poly->pnts[t].y=(float)pnt->y;
+				obs_poly->pnts[t].z=(float)pnt->z;
 			}
 		
-			poly_ptr->dist=view_cull_distance_to_view_center(poly->box.mid.x,poly->box.mid.y,poly->box.mid.z);
-			poly_ptr->skip=FALSE;
+			obs_poly->dist=view_cull_distance_to_view_center(poly->box.mid.x,poly->box.mid.y,poly->box.mid.z);
+			obs_poly->skip_ray_collision=FALSE;
 
-			poly_ptr++;
+			obs_mesh->npoly++;
+
+			obs_poly++;
+		}
+
+			// next mesh if we actually
+			// added polys
+
+		if (obs_mesh->npoly!=0) {
+			obs_mesh++;
+			view_obscure_check_mesh_count++;
 		}
 	}
 
-		// end marker
-
-	poly_ptr->mesh_idx=-1;
-
-	return(poly_ptr!=view_obscure_polys);
+	return(view_obscure_check_mesh_count!=0);
 }
 
 void view_obscure_remove_mesh_from_obscuring_poly_list(int mesh_idx)
 {
-	view_obscure_poly_type	*poly_ptr;
+	int						n;
+	view_obscure_mesh_type	*obs_mesh;
 
-	poly_ptr=view_obscure_polys;
+	obs_mesh=view_obscure_meshes;
 
-	while (TRUE) {
-		if (poly_ptr->mesh_idx==-1) break;
-
-		if (mesh_idx==poly_ptr->mesh_idx) {
-
-			while (mesh_idx==poly_ptr->mesh_idx) {
-				poly_ptr->skip=TRUE;
-				poly_ptr++;
-			}
-
+	for (n=0;n!=view_obscure_check_mesh_count;n++) {
+		if (obs_mesh->mesh_idx==mesh_idx) {
+			obs_mesh->skip_obscured=TRUE;
 			return;
 		}
 
-		poly_ptr++;
+		obs_mesh++;
 	}
 }
 
@@ -241,7 +272,7 @@ void view_obscure_remove_mesh_from_obscuring_poly_list(int mesh_idx)
 
 bool view_obscure_check_box(d3pnt *camera_pnt,int skip_mesh_idx,d3pnt *min,d3pnt *max,int dist)
 {
-	int						n,k,t,x,y,z,kx,ky,kz,ray_cnt,hit_cnt,last_mesh_idx;
+	int						n,k,j,t,x,y,z,kx,ky,kz,ray_cnt,hit_cnt;
 	unsigned char			*hit;
 	bool					ray_hit;
 	d3pnt					mid,div,div_add,ray_min,ray_max;
@@ -249,7 +280,8 @@ bool view_obscure_check_box(d3pnt *camera_pnt,int skip_mesh_idx,d3pnt *min,d3pnt
 	d3vct					*vct;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
-	view_obscure_poly_type	*poly_ptr;
+	view_obscure_mesh_type	*obs_mesh;
+	view_obscure_poly_type	*obs_poly;
 
 		// if camera is inside this box, do
 		// not obscure
@@ -445,119 +477,102 @@ bool view_obscure_check_box(d3pnt *camera_pnt,int skip_mesh_idx,d3pnt *min,d3pnt
 	camera_pnt_f.y=(float)camera_pnt->y;
 	camera_pnt_f.z=(float)camera_pnt->z;
 
-		// remember what the last mesh was
-		// we do this so we can check when a mesh
-		// changes to see if we can completely
-		// eliminate meshes from comparison
+		// check rays against meshes
 
-	last_mesh_idx=-1;
+	obs_mesh=view_obscure_meshes;
 
-		// check rays against polygons
+	for (n=0;n!=view_obscure_check_mesh_count;n++) {
 
-	poly_ptr=view_obscure_polys;
+			// skipped mesh?
 
-	while (TRUE) {
-
-			// last poly?
-
-		if (poly_ptr->mesh_idx==-1) break;
-
-			// skipped poly?
-
-		if (poly_ptr->skip) {
-			poly_ptr++;
+		if (obs_mesh->skip_obscured) {
+			obs_mesh++;
 			continue;
 		}
 
 			// if we are comparing meshes, don't
-			// compare against itself, and then
-			// skip all polys for this mesh
+			// compare against itself
 
-		if (skip_mesh_idx==poly_ptr->mesh_idx) {
-
-			while (skip_mesh_idx==poly_ptr->mesh_idx) {
-				poly_ptr++;
-			}
-
-			last_mesh_idx=-1;
+		if (skip_mesh_idx==obs_mesh->mesh_idx) {
+			obs_mesh++;
 			continue;
 		}
 
-			// are we in a new mesh?  Check all the rays
-			// against the mesh, and skip all polys if
+			// Check all the rays
+			// against the mesh, and skip mesh if
 			// there isn't a collision
 
-		mesh=&map.mesh.meshes[poly_ptr->mesh_idx];
+		mesh=&map.mesh.meshes[obs_mesh->mesh_idx];
 
-		if (last_mesh_idx!=poly_ptr->mesh_idx) {
-			last_mesh_idx=poly_ptr->mesh_idx;
-
-			if ((ray_max.x<mesh->box.min.x) || (ray_min.x>mesh->box.max.x) || (ray_max.y<mesh->box.min.y) || (ray_min.y>mesh->box.max.y) || (ray_max.z<mesh->box.min.z) || (ray_min.z>mesh->box.max.z)) {
-
-				while (last_mesh_idx==poly_ptr->mesh_idx) {
-					poly_ptr++;
-				}
-
-				last_mesh_idx=-1;
-				continue;
-			}
-		}
-		
-			// distance poly elimination
-			
-		if (poly_ptr->dist>dist) {
-			poly_ptr++;
+		if ((ray_max.x<mesh->box.min.x) || (ray_min.x>mesh->box.max.x) || (ray_max.y<mesh->box.min.y) || (ray_min.y>mesh->box.max.y) || (ray_max.z<mesh->box.min.z) || (ray_min.z>mesh->box.max.z)) {
+			obs_mesh++;
 			continue;
 		}
 
-			// min-max poly elimination
-			
-		poly=&mesh->polys[poly_ptr->poly_idx];
+			// run the polys
+
+		obs_poly=obs_mesh->polys;
+
+		for (k=0;k!=obs_mesh->npoly;k++) {
 		
-		if ((ray_max.x<poly->box.min.x) || (ray_min.x>poly->box.max.x) || (ray_max.y<poly->box.min.y) || (ray_min.y>poly->box.max.y) || (ray_max.z<poly->box.min.z) || (ray_min.z>poly->box.max.z)) {
-			poly_ptr++;
-			continue;
-		}
-		
-			// check the box
-			// skipping checking rays that
-			// all already obscured
-
-		hit_cnt=0;
-
-		for (k=0;k!=ray_cnt;k++) {
-
-				// did we already hit this ray?
-
-			if (*(view_obscure_hits+k)==0x1) {
-				hit_cnt++;
+				// distance poly elimination
+				
+			if (obs_poly->dist>dist) {
+				obs_poly++;
 				continue;
 			}
-		
-				// run the blocking ray trace
 
-			ray_hit=FALSE;
+				// min-max poly elimination
+				
+			poly=&mesh->polys[obs_poly->poly_idx];
+			
+			if ((ray_max.x<poly->box.min.x) || (ray_min.x>poly->box.max.x) || (ray_max.y<poly->box.min.y) || (ray_min.y>poly->box.max.y) || (ray_max.z<poly->box.min.z) || (ray_min.z>poly->box.max.z)) {
+				obs_poly++;
+				continue;
+			}
+			
+				// check the box
+				// skipping checking rays that
+				// all already obscured
 
-			for (t=0;t!=poly_ptr->trig_count;t++) {
-				if (ray_trace_triangle_blocking_f(&camera_pnt_f,&view_obscure_vcts[k],&poly_ptr->pnts[0],&poly_ptr->pnts[t+1],&poly_ptr->pnts[t+2])) {
-					ray_hit=TRUE;
-					break;
+			hit_cnt=0;
+
+			for (j=0;j!=ray_cnt;j++) {
+
+					// did we already hit this ray?
+
+				if (*(view_obscure_hits+j)==0x1) {
+					hit_cnt++;
+					continue;
+				}
+			
+					// run the blocking ray trace
+
+				ray_hit=FALSE;
+
+				for (t=0;t!=obs_poly->trig_count;t++) {
+					if (ray_trace_triangle_blocking_f(&camera_pnt_f,&view_obscure_vcts[j],&obs_poly->pnts[0],&obs_poly->pnts[t+1],&obs_poly->pnts[t+2])) {
+						ray_hit=TRUE;
+						break;
+					}
+				}
+
+					// was a hit, mark it
+
+				if (ray_hit) {
+					*(view_obscure_hits+j)=0x1;
+					hit_cnt++;
 				}
 			}
 
-				// was a hit, mark it
+				// are we obscured?
 
-			if (ray_hit) {
-				*(view_obscure_hits+k)=0x1;
-				hit_cnt++;
-			}
+			if (hit_cnt==ray_cnt) return(FALSE);
+
+			obs_poly++;
 		}
 
-			// are we obscured?
-
-		if (hit_cnt==ray_cnt) return(FALSE);
-
-		poly_ptr++;
+		obs_mesh++;
 	}
 
 	return(TRUE);
@@ -576,7 +591,7 @@ void view_obscure_run(void)
 	
 		// view obscure on?
 
-	if (view_obscure_polys==NULL) return;
+	if (view_obscure_meshes==NULL) return;
 
 		// build the obscure polygons
 		// to ray trace against

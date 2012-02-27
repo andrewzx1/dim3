@@ -285,7 +285,15 @@ bool weapon_add(obj_type *obj,char *name,char *err_str)
 	weap->draw.connect.motion_vct.x=0.0f;
 	weap->draw.connect.motion_vct.y=0.0f;
 	weap->draw.connect.motion_vct.z=0.0f;
-	
+
+	weap->draw_dual.connect.obj_idx=obj->idx;
+	weap->draw_dual.connect.weap_idx=idx;
+	weap->draw_dual.connect.proj_idx=-1;
+	weap->draw_dual.connect.net_sound=FALSE;
+	weap->draw_dual.connect.motion_vct.x=0.0f;
+	weap->draw_dual.connect.motion_vct.y=0.0f;
+	weap->draw_dual.connect.motion_vct.z=0.0f;
+
 		// add to list
 		
 	obj->weap_list.weaps[idx]=weap;
