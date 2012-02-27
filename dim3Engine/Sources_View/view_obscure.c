@@ -185,8 +185,8 @@ bool view_obscure_create_obscuring_poly_list(void)
 			poly=&mesh->polys[poly_idx[k]];
 
 			poly_ptr->mesh_idx=mesh_idx;
-			poly_ptr->poly_idx=k;
-			
+			poly_ptr->poly_idx=poly_idx[k];
+
 			poly_ptr->trig_count=poly->ptsz-2;
 
 			for (t=0;t!=poly->ptsz;t++) {
@@ -536,11 +536,11 @@ bool view_obscure_check_box(d3pnt *camera_pnt,int skip_mesh_idx,d3pnt *min,d3pnt
 		
 				// run the blocking ray trace
 
-			ray_hit=TRUE;
+			ray_hit=FALSE;
 
 			for (t=0;t!=poly_ptr->trig_count;t++) {
-				if (!ray_trace_triangle_blocking_f(&camera_pnt_f,&view_obscure_vcts[k],&poly_ptr->pnts[0],&poly_ptr->pnts[t+1],&poly_ptr->pnts[t+2])) {
-					ray_hit=FALSE;
+				if (ray_trace_triangle_blocking_f(&camera_pnt_f,&view_obscure_vcts[k],&poly_ptr->pnts[0],&poly_ptr->pnts[t+1],&poly_ptr->pnts[t+2])) {
+					ray_hit=TRUE;
 					break;
 				}
 			}
