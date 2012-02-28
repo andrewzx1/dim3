@@ -104,7 +104,7 @@ void projectile_hit(proj_type *proj)
 		
 			// push object
 			
-		if (proj_setup->push.on) object_push(hurt_obj,&proj->ang,proj_setup->push.force,TRUE);
+		if (proj_setup->push.on) object_push(hurt_obj,&proj->pnt,-1,proj_setup->push.force,TRUE);
     }
 	
 		// decals
