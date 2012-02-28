@@ -790,7 +790,7 @@ void list_palette_fill_picking_mode(list_palette_type *list)
 			// ~ marks disabled
 
 		if (str_ptr[0]=='~') {
-			list_palette_add_string(list,-1,(char*)&str_ptr[1],"(Circular Reference)",TRUE);
+			list_palette_add_item(list,-1,n,(char*)&str_ptr[1],sel,TRUE);
 			continue;
 		}
 
@@ -1529,8 +1529,12 @@ void list_palette_draw_item(list_palette_type *list,int idx)
 			// text or header
 
 		case list_item_ctrl_header:
-		case list_item_ctrl_text:
 			text_draw(x,y,list_item_font_size,NULL,item->name);
+			list_palette_draw_item_button(list,idx);
+			break;
+
+		case list_item_ctrl_text:
+			text_draw(x,y,list_item_font_size,&col,item->name);
 			list_palette_draw_item_button(list,idx);
 			break;
 

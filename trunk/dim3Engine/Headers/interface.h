@@ -295,6 +295,7 @@ extern bool collide_object_to_map_bump(obj_type *obj,d3pnt *motion,int *bump_y_m
 extern bool collide_object_to_mesh(obj_type *obj,int mesh_idx);
 extern bool collide_object_to_object(obj_type *obj,d3pnt *motion,obj_type *chk_obj,bool skip_pickup);
 extern int collide_object_for_object_stand(obj_type *obj);
+extern int collide_object_for_object_under(obj_type *obj);
 extern bool collide_object_to_sphere(d3pnt *sphere_pnt,int radius,obj_type *obj);
 extern bool collide_object_check_obscured(obj_type *obj);
 

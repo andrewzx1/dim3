@@ -61,16 +61,16 @@ and can be sold or given away.
 typedef struct		{
 						int								parent_idx;
 						bool							touch;
-						d3vct							fpnt;
-						d3vct							parent_dist;
-						d3vct							rot;
+						d3fpnt							fpnt;
+						d3fpnt							parent_dist;
+						d3ang							rot;
 						matrix_type						rot_mat;
 					} model_draw_bone_type;
 
 typedef struct		{
 						float							resize;
-						d3vct							parent_dist_add;
-						d3vct							rot_add;
+						d3fpnt							parent_dist_add;
+						d3ang							rot_add;
 					} model_draw_alter_bone_type;
 
 typedef struct		{
@@ -88,7 +88,7 @@ typedef struct		{
 
 typedef struct		{
 						d3pnt							center;
-						d3vct							move;
+						d3fpnt							move;
 						d3ang							ang;
 						d3ang							sway;
 						model_draw_pose_type			poses[max_model_blend_animation];

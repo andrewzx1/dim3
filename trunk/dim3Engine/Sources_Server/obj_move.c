@@ -508,7 +508,9 @@ void object_motion_set_script_property(obj_type *obj,d3pnt *motion)
 
 void object_move_y_up(obj_type *obj,int ymove)
 {
-	int				fy,up_move;
+	int				idx,fy,up_move;
+	d3pnt			motion;
+	obj_type		*hit_obj;
 	
 	obj->air_mode=am_up;
 	
@@ -519,6 +521,21 @@ void object_move_y_up(obj_type *obj,int ymove)
 		obj->pnt.y+=fy;
 		ymove+=fy;
 		if (ymove>=0) return;
+	}
+
+		// check if we are pushing
+		// any objects up
+
+	motion.x=motion.z=0;
+	motion.y=ymove;
+	object_move_with_standing_object(obj,&motion,TRUE);
+
+		// pin upward against objects
+
+	idx=collide_object_for_object_under(obj);
+	if (idx!=-1) {
+		hit_obj=server.obj_list.objs[idx];
+		ymove=hit_obj->pnt.y-(obj->pnt.y-obj->size.y);
 	}
 
 		// go upwards
@@ -777,7 +794,7 @@ void object_move_fly(obj_type *obj)
 	
 			// move objects standing on this object
 	
-		if ((motion.x!=0) || (motion.x!=0)) object_move_with_standing_object(obj,&motion);
+		if ((motion.x!=0) || (motion.x!=0)) object_move_with_standing_object(obj,&motion,FALSE);
 	}
 
 		// bounces
@@ -838,7 +855,7 @@ void object_move_swim(obj_type *obj)
 
 			// move objects standing on this object
 
-		if ((motion.x!=0) || (motion.z!=0)) object_move_with_standing_object(obj,&motion);
+		if ((motion.x!=0) || (motion.z!=0)) object_move_with_standing_object(obj,&motion,FALSE);
 	}
 
 		// bounces
@@ -1005,7 +1022,7 @@ void object_move_normal(obj_type *obj)
 
 				// move objects standing on object
 
-			object_move_with_standing_object(obj,&motion);
+			object_move_with_standing_object(obj,&motion,FALSE);
 
 				// objects with automatic bouncing
 

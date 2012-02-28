@@ -875,7 +875,7 @@ bool collide_object_to_object(obj_type *obj,d3pnt *motion,obj_type *chk_obj,bool
 
 int collide_object_for_object_stand(obj_type *obj)
 {
-	int			n,uid,y,ty,ydist;
+	int			n,idx,y,ty,ydist;
 	d3pnt		motion;
 	obj_type	*stand_obj;
 
@@ -890,7 +890,7 @@ int collide_object_for_object_stand(obj_type *obj)
 	
 		// find stand on object
 	
-	uid=-1;
+	idx=-1;
 	
 	for (n=0;n!=max_obj_list;n++) {
 		stand_obj=server.obj_list.objs[n];
@@ -902,12 +902,50 @@ int collide_object_for_object_stand(obj_type *obj)
 		if (ty>ydist) continue;
 
 		if (collide_object_to_object(obj,&motion,stand_obj,TRUE)) {
-			uid=stand_obj->idx;
+			idx=stand_obj->idx;
 			ydist=ty;
 		}
 	}
 
-	return(uid);	
+	return(idx);	
+}
+
+int collide_object_for_object_under(obj_type *obj)
+{
+	int			n,idx,y,ty,ydist;
+	d3pnt		motion;
+	obj_type	*above_obj;
+
+	y=obj->pnt.y-obj->size.y;
+	ydist=floor_slop;
+	
+		// under are 1 point
+		// above the standing on object
+		
+	motion.x=motion.z=0;
+	motion.y=-1;
+	
+		// find any object above
+		// and colliding
+	
+	idx=-1;
+	
+	for (n=0;n!=max_obj_list;n++) {
+		above_obj=server.obj_list.objs[n];
+		if (above_obj==NULL) continue;
+	
+		if ((above_obj->idx==obj->idx) || (above_obj->hidden) || (!above_obj->contact.object_on) || (above_obj->pickup.on)) continue;
+		
+		ty=abs(above_obj->pnt.y-y);
+		if (ty>ydist) continue;
+
+		if (collide_object_to_object(obj,&motion,above_obj,TRUE)) {
+			idx=above_obj->idx;
+			ydist=ty;
+		}
+	}
+
+	return(idx);	
 }
 
 bool collide_object_to_sphere(d3pnt *sphere_pnt,int radius,obj_type *obj)

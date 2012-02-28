@@ -35,6 +35,7 @@ and can be sold or given away.
 
 extern model_type				model;
 extern animator_state_type		state;
+extern iface_type				iface;
 
 /* =======================================================
 
@@ -326,7 +327,7 @@ void model_piece_add_animation_pose_move_particle(int animate_idx,int animate_po
 	particle->motion=particle->rotate=particle->stick=FALSE;
 	particle->slop.x=particle->slop.y=particle->slop.z=0;
 
-	property_palette_pick_particle(pose_move->particle.particles[idx].name);
+	list_palette_start_picking_mode("Pick a Particle",(char*)iface.particle_list.particles,iface.particle_list.nparticle,sizeof(iface_particle_type),(int)offsetof(iface_particle_type,name),FALSE,FALSE,NULL,particle->name);
 }
 
 void model_piece_delete_animation_pose_move_particle(int animate_idx,int animate_pose_move_idx,int idx)
@@ -367,8 +368,8 @@ void model_piece_add_animation_pose_move_ring(int animate_idx,int animate_pose_m
 	ring->bone_idx=-1;
 	ring->angle=FALSE;
 	ring->slop.x=ring->slop.y=ring->slop.z=0;
-	
-	property_palette_pick_ring(pose_move->ring.rings[idx].name);
+
+	list_palette_start_picking_mode("Pick a Ring",(char*)iface.ring_list.rings,iface.ring_list.nring,sizeof(iface_ring_type),(int)offsetof(iface_ring_type,name),FALSE,FALSE,NULL,ring->name);
 }
 
 void model_piece_delete_animation_pose_move_ring(int animate_idx,int animate_pose_move_idx,int idx)

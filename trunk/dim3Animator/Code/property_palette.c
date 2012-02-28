@@ -282,21 +282,7 @@ void property_palette_add_string_bone(void *list,int id,char *name,int bone_idx,
       
 ======================================================= */
 
-void property_palette_pick_sound(char *name,bool include_none)
-{
-	list_palette_start_picking_mode("Pick a Sound",(char*)iface.sound_list.sounds,iface.sound_list.nsound,sizeof(iface_sound_type),(int)offsetof(iface_sound_type,name),include_none,FALSE,NULL,name);
-}
-
-void property_palette_pick_particle(char *name)
-{
-	list_palette_start_picking_mode("Pick a Particle",(char*)iface.particle_list.particles,iface.particle_list.nparticle,sizeof(iface_particle_type),(int)offsetof(iface_particle_type,name),FALSE,FALSE,NULL,name);
-}
-
-void property_palette_pick_ring(char *name)
-{
-	list_palette_start_picking_mode("Pick a Ring",(char*)iface.ring_list.rings,iface.ring_list.nring,sizeof(iface_ring_type),(int)offsetof(iface_ring_type,name),FALSE,FALSE,NULL,name);
-}
-
+// supergumba -- remove and replace all these
 void property_palette_pick_mesh(int *mesh_idx)
 {
 	list_palette_start_picking_mode("Pick a Mesh",(char*)model.meshes,model.nmesh,sizeof(model_mesh_type),(int)offsetof(model_mesh_type,name),TRUE,FALSE,mesh_idx,NULL);
@@ -326,9 +312,3 @@ void property_palette_pick_pose(int *pose_idx)
 {
 	list_palette_start_picking_mode("Pick a Pose",(char*)model.poses,model.npose,sizeof(model_pose_type),(int)offsetof(model_pose_type,name),TRUE,FALSE,pose_idx,NULL);
 }
-
-void property_palette_pick_shader(char *name)
-{
-	list_palette_start_picking_mode("Pick a Shader",(char*)iface.shader_list.shaders,iface.shader_list.nshader,sizeof(iface_shader_type),(int)offsetof(iface_shader_type,name),TRUE,FALSE,NULL,name);
-}
-
