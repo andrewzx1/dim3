@@ -158,7 +158,7 @@ extern void object_move_with_mesh(int mesh_idx,d3pnt *motion);
 extern void object_rotate_with_mesh(int mesh_idx,float rot_y);
 extern bool object_push_object_allowed(obj_type *obj,obj_type *push_obj);
 extern bool object_push_with_object(obj_type *obj,d3pnt *motion);
-extern void object_move_with_standing_object(obj_type *obj,d3pnt *motion);
+extern void object_move_with_standing_object(obj_type *obj,d3pnt *motion,bool y_only);
 extern void object_rotate_with_standing_object(obj_type *obj,float rot_y);
 
 extern float object_liquid_alter_speed(obj_type *obj);

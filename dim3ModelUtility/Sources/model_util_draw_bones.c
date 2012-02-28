@@ -542,6 +542,8 @@ void model_create_draw_bones(model_type *model,model_draw_setup *draw_setup)
 		}
 	}
 
+		// now finish out the blended average
+
 	for (n=0;n!=nbone;n++) {
 	
 			// if no moves for this bone in the blended animation, then pick default bone

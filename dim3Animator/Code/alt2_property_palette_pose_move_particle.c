@@ -44,6 +44,7 @@ and can be sold or given away.
 extern model_type				model;
 extern animator_state_type		state;
 extern file_path_setup_type		file_path_setup;
+extern iface_type				iface;
 
 extern list_palette_type		alt2_property_palette;
 
@@ -66,8 +67,7 @@ void alt2_property_palette_fill_animate_pose_move_particle(int animate_idx,int p
 	particle=&pose_move->particle.particles[particle_idx];
 
 	list_palette_set_title(&alt2_property_palette,"Animation",animate->name,"Pose Move",model.poses[pose_move->pose_idx].name,"Particle",particle->name);
-
-	list_palette_add_string(&alt2_property_palette,kAnimationPoseMovePropertyParticleName,"Name",particle->name,FALSE);
+	list_palette_add_picker_list_string(&alt2_property_palette,kAnimationPoseMovePropertyParticleName,"Name",(char*)iface.particle_list.particles,iface.particle_list.nparticle,sizeof(iface_particle_type),(int)offsetof(iface_particle_type,name),TRUE,particle->name,FALSE);
 	property_palette_add_string_bone(&alt2_property_palette,kAnimationPoseMovePropertyParticleBone,"Bone",particle->bone_idx,FALSE);
 	list_palette_add_float(&alt2_property_palette,kAnimationPoseMovePropertyParticleMotionFactor,"Motion Factor",&particle->motion_factor,FALSE);
 	list_palette_add_checkbox(&alt2_property_palette,kAnimationPoseMovePropertyParticleMotion,"Follow Model Motion",&particle->motion,FALSE);
@@ -97,10 +97,6 @@ void alt2_property_palette_click_animate_pose_move_particle(int animate_idx,int 
 	if (!double_click) return;
 
 	switch (id) {
-
-		case kAnimationPoseMovePropertyParticleName:
-			property_palette_pick_particle(particle->name);
-			break;
 
 		case kAnimationPoseMovePropertyParticleBone:
 			property_palette_pick_bone(&particle->bone_idx,-1);

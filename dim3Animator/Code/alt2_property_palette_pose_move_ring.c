@@ -41,6 +41,7 @@ and can be sold or given away.
 extern model_type				model;
 extern animator_state_type		state;
 extern file_path_setup_type		file_path_setup;
+extern iface_type				iface;
 
 extern list_palette_type		alt2_property_palette;
 
@@ -63,8 +64,7 @@ void alt2_property_palette_fill_animate_pose_move_ring(int animate_idx,int pose_
 	ring=&pose_move->ring.rings[ring_idx];
 
 	list_palette_set_title(&alt2_property_palette,"Animation",animate->name,"Pose Move",model.poses[pose_move->pose_idx].name,"Ring",ring->name);
-
-	list_palette_add_string(&alt2_property_palette,kAnimationPoseMovePropertyRingName,"Name",ring->name,FALSE);
+	list_palette_add_picker_list_string(&alt2_property_palette,kAnimationPoseMovePropertyRingName,"Name",(char*)iface.ring_list.rings,iface.ring_list.nring,sizeof(iface_ring_type),(int)offsetof(iface_ring_type,name),TRUE,ring->name,FALSE);
 	property_palette_add_string_bone(&alt2_property_palette,kAnimationPoseMovePropertyRingBone,"Bone",ring->bone_idx,FALSE);
 	list_palette_add_checkbox(&alt2_property_palette,kAnimationPoseMovePropertyRingAngle,"Follow Model Angle",&ring->angle,FALSE);
 	list_palette_add_point(&alt2_property_palette,kAnimationPoseMovePropertyRingSlop,"Position Slop",&ring->slop,FALSE);
@@ -91,10 +91,6 @@ void alt2_property_palette_click_animate_pose_move_ring(int animate_idx,int pose
 	if (!double_click) return;
 
 	switch (id) {
-
-		case kAnimationPoseMovePropertyRingName:
-			property_palette_pick_ring(ring->name);
-			break;
 
 		case kAnimationPoseMovePropertyRingBone:
 			property_palette_pick_bone(&ring->bone_idx,-1);

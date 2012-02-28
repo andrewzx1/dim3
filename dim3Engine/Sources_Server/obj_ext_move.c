@@ -219,7 +219,7 @@ bool object_push_with_object(obj_type *obj,d3pnt *motion)
 	return(TRUE);
 }
 
-void object_move_with_standing_object(obj_type *obj,d3pnt *motion)
+void object_move_with_standing_object(obj_type *obj,d3pnt *motion,bool y_only)
 {
 	int			n;
 	d3pnt		move_motion;
@@ -232,10 +232,17 @@ void object_move_with_standing_object(obj_type *obj,d3pnt *motion)
 		if (obj_check->contact.stand_obj_idx!=obj->idx) continue;
 		if (obj_check->suspend) continue;
 		
-		move_motion.x=motion->x;
-		move_motion.y=0;
-		move_motion.z=motion->z;
-		
+		if (!y_only) {
+			move_motion.x=motion->x;
+			move_motion.y=0;
+			move_motion.z=motion->z;
+		}
+		else {
+			move_motion.x=0;
+			move_motion.y=motion->y;
+			move_motion.z=0;
+		}
+
 		object_move_with_motion(obj_check,&move_motion,-1);
 	}
 }

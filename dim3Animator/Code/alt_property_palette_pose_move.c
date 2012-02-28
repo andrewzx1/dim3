@@ -77,6 +77,7 @@ and can be sold or given away.
 extern model_type				model;
 extern animator_state_type		state;
 extern file_path_setup_type		file_path_setup;
+extern iface_type				iface;
 
 extern list_palette_type		alt_property_palette;
 
@@ -121,7 +122,7 @@ void alt_property_palette_fill_animate_pose_move(int animate_idx,int pose_move_i
 		// sound
 
 	list_palette_add_header(&alt_property_palette,0,"Animate Pose Sound");
-	list_palette_add_string(&alt_property_palette,kAnimationPoseMovePropertySoundName,"Sound",pose_move->sound.name,FALSE);
+	list_palette_add_picker_list_string(&alt_property_palette,kAnimationPoseMovePropertySoundName,"Sound",(char*)iface.sound_list.sounds,iface.sound_list.nsound,sizeof(iface_sound_type),(int)offsetof(iface_sound_type,name),TRUE,pose_move->sound.name,FALSE);
 	property_palette_add_string_bone(&alt_property_palette,kAnimationPoseMovePropertySoundBone,"Bone",pose_move->sound.bone_idx,FALSE);
 	list_palette_add_float(&alt_property_palette,kAnimationPoseMovePropertySoundPitch,"Pitch",&pose_move->sound.pitch,FALSE);
 	list_palette_add_checkbox(&alt_property_palette,kAnimationPoseMovePropertySoundGlobal,"Play Globally (Player Only)",&pose_move->sound.no_position,FALSE);
@@ -266,10 +267,6 @@ void alt_property_palette_click_animate_pose_move(int animate_idx,int pose_move_
 
 		case kAnimationPoseMovePropertySoundBone:
 			property_palette_pick_bone(&pose_move->sound.bone_idx,-1);
-			break;
-
-		case kAnimationPoseMovePropertySoundName:
-			property_palette_pick_sound(pose_move->sound.name,TRUE);
 			break;
 
 			// mesh fade
