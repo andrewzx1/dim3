@@ -780,10 +780,10 @@ void object_input_freeze(obj_type *obj,bool freeze)
       
 ======================================================= */
 
-void object_push(obj_type *obj,d3ang *ang,int force,bool external_force)
+void object_push(obj_type *obj,d3pnt *pnt,int radius,int force,bool external_force)
 {
-	int				weight;
-	float			speed,xmove,zmove,ymove,temp_z;
+	int				y,dist,weight;
+	d3vct			vct;
 	
 		// can't push hidden, suspended, or no-contact objects
 	
@@ -795,22 +795,33 @@ void object_push(obj_type *obj,d3ang *ang,int force,bool external_force)
 		if (!obj->contact.object_on) return;
 	}
 	
-		// push power
+		// object y point
+		
+	y=obj->pnt.y-(obj->size.y>>1);
+	
+		// reduce force by distance
+		
+	if (radius!=-1) {
+		dist=distance_get(obj->pnt.x,y,obj->pnt.z,pnt->x,pnt->y,pnt->z);
+		force=force-((force*dist)/radius);
+	}
+	
+		// reduce force by weight
 	
 	weight=obj->size.weight;
 	if (weight<100) weight=100;
 	if (weight>1000) weight=1000;
 	
-	speed=(float)((force*500)/weight)*(2-map.physics.resistance);
+	force=(force*500)/weight;
 	
 		// push vector
 		
-	angle_get_movement_float(ang->y,speed,&xmove,&zmove);
-	angle_get_movement_float(ang->x,speed,&ymove,&temp_z);
+	vector_create(&vct,obj->pnt.x,y,obj->pnt.z,pnt->x,pnt->y,pnt->z);		// should be normalized
+	vector_scalar_multiply(&vct,&vct,(float)force);
 	
-	obj->force.vct.x+=xmove;
-	obj->force.vct.z+=zmove;
-	obj->force.vct.y+=ymove;
+	obj->force.vct.x+=vct.x;
+	obj->force.vct.y+=vct.y;
+	obj->force.vct.z+=vct.z;
 	
 		// reset gravity
 		

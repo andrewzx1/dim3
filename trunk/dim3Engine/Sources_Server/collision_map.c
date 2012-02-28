@@ -1048,9 +1048,8 @@ bool collide_projectile_to_sphere(d3pnt *sphere_pnt,int radius,proj_type *proj)
 
 void collide_objects_push(d3pnt *push_pnt,int radius,int force)
 {
-	int			n,yhit;
+	int			n;
 	d3pnt		box_sz;
-	d3ang		ang;
 	obj_type	*obj;
 	
 		// check objects
@@ -1058,6 +1057,8 @@ void collide_objects_push(d3pnt *push_pnt,int radius,int force)
 	for (n=0;n!=max_obj_list;n++) {
 		obj=server.obj_list.objs[n];
 		if (obj==NULL) continue;
+		
+			// can't push certain objects
 
 		if ((obj->hidden) || (obj->suspend) || (!obj->contact.object_on)) continue;
 		
@@ -1071,13 +1072,7 @@ void collide_objects_push(d3pnt *push_pnt,int radius,int force)
 		
 			// add push
 				
-		yhit=obj->pnt.y-(obj->size.y/2);
-		
-		ang.x=angle_find(push_pnt->y,push_pnt->z,yhit,obj->pnt.z);
-		ang.y=angle_find(push_pnt->x,push_pnt->z,obj->pnt.x,obj->pnt.z);
-		ang.z=0;
-		
-		object_push(obj,&ang,force,FALSE);
+		object_push(obj,push_pnt,radius,force,FALSE);
 	}
 }
 
