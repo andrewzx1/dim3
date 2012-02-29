@@ -282,12 +282,6 @@ void property_palette_add_string_bone(void *list,int id,char *name,int bone_idx,
       
 ======================================================= */
 
-// supergumba -- remove and replace all these
-void property_palette_pick_mesh(int *mesh_idx)
-{
-	list_palette_start_picking_mode("Pick a Mesh",(char*)model.meshes,model.nmesh,sizeof(model_mesh_type),(int)offsetof(model_mesh_type,name),TRUE,FALSE,mesh_idx,NULL);
-}
-
 void property_palette_pick_bone(int *bone_idx,int circular_check_bone_idx)
 {
 	int				n;
@@ -308,7 +302,3 @@ void property_palette_pick_bone(int *bone_idx,int circular_check_bone_idx)
 	list_palette_start_picking_mode("Pick a Bone",(char*)property_bone_list,model.nbone,(name_str_len+1),0,TRUE,FALSE,bone_idx,NULL);
 }
 
-void property_palette_pick_pose(int *pose_idx)
-{
-	list_palette_start_picking_mode("Pick a Pose",(char*)model.poses,model.npose,sizeof(model_pose_type),(int)offsetof(model_pose_type,name),TRUE,FALSE,pose_idx,NULL);
-}

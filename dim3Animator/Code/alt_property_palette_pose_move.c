@@ -103,7 +103,7 @@ void alt_property_palette_fill_animate_pose_move(int animate_idx,int pose_move_i
 		// options
 
 	list_palette_add_header(&alt_property_palette,0,"Animate Pose Options");
-	list_palette_add_string(&alt_property_palette,kAnimatePoseMovePropertyPose,"Pose",model.poses[pose_move->pose_idx].name,FALSE);
+	list_palette_add_picker_list_int(&alt_property_palette,kAnimatePoseMovePropertyPose,"Pose",(char*)model.poses,model.npose,sizeof(model_pose_type),(int)offsetof(model_pose_type,name),TRUE,&pose_move->pose_idx,FALSE);
 	list_palette_add_int(&alt_property_palette,kAnimatePoseMovePropertyMilliseconds,"Milliseconds",&pose_move->msec,FALSE);
 	list_palette_add_float(&alt_property_palette,kAnimatePoseMovePropertyAcceleration,"Acceleration",&pose_move->acceleration,FALSE);
 
@@ -130,7 +130,7 @@ void alt_property_palette_fill_animate_pose_move(int animate_idx,int pose_move_i
 		// mesh fades
 
 	list_palette_add_header(&alt_property_palette,0,"Animate Pose Mesh Fade");
-	property_palette_add_string_mesh(&alt_property_palette,kAnimationPoseMovePropertyFadeMesh,"Mesh",pose_move->mesh_fade.mesh_idx,FALSE);
+	list_palette_add_picker_list_int(&alt_property_palette,kAnimationPoseMovePropertyFadeMesh,"Mesh",(char*)model.meshes,model.nmesh,sizeof(model_mesh_type),(int)offsetof(model_mesh_type,name),TRUE,&pose_move->mesh_fade.mesh_idx,FALSE);
 	list_palette_add_int(&alt_property_palette,kAnimationPoseMovePropertyFadeIn,"Fade In Milliseconds",&pose_move->mesh_fade.fade_in_msec,FALSE);
 	list_palette_add_int(&alt_property_palette,kAnimationPoseMovePropertyFadeLife,"Fade Life Milliseconds",&pose_move->mesh_fade.fade_life_msec,FALSE);
 	list_palette_add_int(&alt_property_palette,kAnimationPoseMovePropertyFadeOut,"Fade Out Milliseconds",&pose_move->mesh_fade.fade_out_msec,FALSE);
@@ -257,22 +257,10 @@ void alt_property_palette_click_animate_pose_move(int animate_idx,int pose_move_
 
 	switch (id) {
 
-			// options
-
-		case kAnimatePoseMovePropertyPose:
-			property_palette_pick_pose(&pose_move->pose_idx);
-			break;
-
 			// sound
 
 		case kAnimationPoseMovePropertySoundBone:
 			property_palette_pick_bone(&pose_move->sound.bone_idx,-1);
-			break;
-
-			// mesh fade
-
-		case kAnimationPoseMovePropertyFadeMesh:
-			property_palette_pick_mesh(&pose_move->mesh_fade.mesh_idx);
 			break;
 
 			// mesh flash

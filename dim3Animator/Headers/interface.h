@@ -125,9 +125,7 @@ extern bool property_palette_click(d3pnt *pnt,bool double_click);
 extern void property_palette_add_string_mesh(void *list,int id,char *name,int mesh_idx,bool disabled);
 extern void property_palette_add_string_bone(void *list,int id,char *name,int bone_idx,bool disabled);
 
-extern void property_palette_pick_mesh(int *mesh_idx);
 extern void property_palette_pick_bone(int *bone_idx,int circular_check_bone_idx);
-extern void property_palette_pick_pose(int *pose_idx);
 
 extern void property_palette_fill_texture(int texture_idx);
 extern void property_palette_fill_animator_preference(void);
