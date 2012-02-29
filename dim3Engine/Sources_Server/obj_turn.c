@@ -178,6 +178,7 @@ void object_fix_motion(obj_type *obj)
 
 void object_face(obj_type *obj)
 {
+	int				dist,py,ty;
 	float			to_ang;
 	obj_type		*track_obj;
 
@@ -194,7 +195,13 @@ void object_face(obj_type *obj)
 	track_obj=server.obj_list.objs[obj->face.obj_idx];
 	
 	if (obj->fly) {
-		to_ang=angle_find(obj->pnt.y,obj->pnt.z,track_obj->pnt.y,track_obj->pnt.z);
+	
+		py=obj->pnt.y-(obj->size.y>>1);
+		ty=track_obj->pnt.y-(track_obj->size.y>>1);
+
+		dist=distance_2D_get(obj->pnt.x,obj->pnt.z,track_obj->pnt.x,track_obj->pnt.z);
+		to_ang=angle_find(py,0,ty,dist)-180.0f;
+
 		to_ang=angle_add(to_ang,-obj->ang.x);
 		if (obj->face.ang.x!=to_ang) obj->face.ang.x=angle_turn_toward(obj->face.ang.x,to_ang,obj->turn.walk_speed);
 	}
