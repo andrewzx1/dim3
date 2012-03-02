@@ -118,7 +118,7 @@ void gl_3D_rotate(d3pnt *pnt,d3ang *ang)
 		
 	matrix_rotate_zyx(&mat,ang_x,ang->y,ang->z);
 	fx=fy=0.0f;
-	fz=-((float)map.camera.plane.near_z);
+	fz=-400.0f;			// the default near z
 	matrix_vertex_multiply(&mat,&fx,&fy,&fz);
 
 	if (pnt==NULL) {
