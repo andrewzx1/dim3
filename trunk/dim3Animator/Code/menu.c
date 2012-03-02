@@ -76,8 +76,6 @@ void menu_update(void)
 		os_menu_enable_item(app_menu_pose,0,TRUE);
 		os_menu_enable_item(app_menu_animate,0,TRUE);
 	}
-	
-	os_menu_redraw();
 }
 
 /* =======================================================

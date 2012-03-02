@@ -97,8 +97,6 @@ void menu_fix_enable(void)
 			os_menu_enable_item(app_menu_vertex,0,FALSE);
 		}
 	}
-	
-	os_menu_redraw();
 }
 
 /* =======================================================
@@ -141,8 +139,6 @@ void menu_update_view(void)
 	else {
 		os_menu_enable_item(app_menu_view,26,FALSE);
 	}
-
-	os_menu_redraw();
 }
 
 /* =======================================================
