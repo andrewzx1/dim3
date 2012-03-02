@@ -209,6 +209,7 @@ void os_menu_enable_item(int menu_idx,int item_idx,bool enable)
 		else {
 			EnableMenuItem(GetMenu(wnd),(menu_idx-129),MF_BYPOSITION|MF_GRAYED);
 		}
+		DrawMenuBar(wnd);
 		return;
 	}
 
@@ -236,11 +237,6 @@ void os_menu_check_item(int menu_idx,int item_idx,bool check)
 	else {
 		CheckMenuItem(menu,(item_idx-1),MF_BYPOSITION|MF_UNCHECKED);
 	}
-}
-
-void os_menu_redraw(void)
-{
-	DrawMenuBar(wnd);
 }
 
 /* =======================================================

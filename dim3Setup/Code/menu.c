@@ -42,7 +42,6 @@ extern iface_type				iface;
 
 void menu_update(void)
 {
-	os_menu_redraw();
 }
 
 /* =======================================================
