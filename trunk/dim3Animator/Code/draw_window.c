@@ -33,14 +33,14 @@ and can be sold or given away.
 #include "interface.h"
 #include "ui_common.h"
 
-extern bool					list_palette_open;
+extern model_type				model;
+extern model_draw_setup			draw_setup;
+extern animator_state_type		state;
 
-extern model_type			model;
-extern model_draw_setup		draw_setup;
-extern animator_state_type	state;
+extern list_palette_type		property_palette;
 
-double						tran_mod_matrix[16],tran_proj_matrix[16],tran_vport[4];
-d3rect						tran_wbox;
+double							tran_mod_matrix[16],tran_proj_matrix[16],tran_vport[4];
+d3rect							tran_wbox;
 
 /* =======================================================
 
@@ -55,7 +55,7 @@ void model_wind_get_box(d3rect *box)
 	os_get_window_box(&wbox);
 	
 	box->lx=0;
-	if (list_palette_open) {
+	if (list_palette_is_open(&property_palette)) {
 		box->rx=wbox.rx-list_palette_tree_sz;
 	}
 	else {

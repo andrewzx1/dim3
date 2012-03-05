@@ -38,7 +38,7 @@ extern editor_state_type	state;
 extern editor_setup_type	setup;
 
 extern int					txt_palette_cur_page;
-extern bool					list_palette_open;
+extern list_palette_type	property_palette;
 
 /* =======================================================
 
@@ -70,7 +70,7 @@ int texture_palette_pixel_size(void)
 	
 	rx=wbox.rx;
 	
-	if (list_palette_open) {
+	if (list_palette_is_open(&property_palette)) {
 		rx-=list_palette_tree_sz;
 	}
 	else {
@@ -91,7 +91,7 @@ void texture_palette_box(d3rect *box)
 	
 	rx=wbox.rx;
 	
-	if (list_palette_open) {
+	if (list_palette_is_open(&property_palette)) {
 		rx-=list_palette_tree_sz;
 	}
 	else {

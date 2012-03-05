@@ -129,10 +129,11 @@ typedef struct		{
 					} list_palette_item_type;
 
 typedef struct		{
-						int									item_count,item_sort_start_idx,push_idx,
+						int									level,item_count,
+															item_sort_start_idx,push_idx,
 															item_id,item_type,item_idx,
 															scroll_offset,total_high;
-						bool								back_on,back_push_on,
+						bool								open,back_push_on,
 															push_on,button_click;
 						char								titles[3][128];
 						list_palette_item_type				*items;
@@ -194,12 +195,13 @@ extern void progress_next_title(char *title);
 
 extern void list_palette_initialize(char *app_name);
 extern void list_palette_shutdown(void);
-extern void list_palette_list_initialize(list_palette_type *list,char *title,bool back_on);
+extern void list_palette_list_initialize(list_palette_type *list,char *title);
 extern void list_palette_list_shutdown(list_palette_type *list);
-extern void list_palette_box(d3rect *box);
+extern void list_palette_box(list_palette_type *list,d3rect *box);
 extern void list_palette_set_title(list_palette_type *list,char *title_0,char *name_0,char *title_1,char *name_1,char *title_2,char *name_2);
-extern int list_palette_get_level(void);
-extern void list_palette_set_level(int level);
+extern int list_palette_get_level(list_palette_type *list);
+extern void list_palette_set_level(list_palette_type *list,int level);
+extern bool list_palette_is_open(list_palette_type *list);
 extern void list_palette_add_header(list_palette_type *list,int piece_type,char *name);
 extern void list_palette_add_header_count(list_palette_type *list,int piece_type,char *name,int count);
 extern void list_palette_add_header_button(list_palette_type *list,int id,char *name,int button_type);
@@ -224,7 +226,7 @@ extern void list_palette_add_picker_file(list_palette_type *list,int id,int butt
 extern void list_palette_add_texture(list_palette_type *list,texture_type *textures,int id,char *name,int txt_idx,bool disabled);
 extern void list_palette_add_shader(list_palette_type *list,int id,char *name,char *shader_name,bool disabled);
 extern void list_palette_delete_all_items(list_palette_type *list);
-extern void list_palette_start_picking_mode(char *title,char *list_ptr,int list_count,int list_item_sz,int list_name_offset,bool include_none,bool file_list,int *idx_ptr,char *name_ptr);
+extern void list_palette_start_picking_mode(list_palette_type *list,char *title,char *list_ptr,int list_count,int list_item_sz,int list_name_offset,bool include_none,bool file_list,int *idx_ptr,char *name_ptr);
 extern void list_palette_sort_mark_start(list_palette_type *list);
 extern void list_palette_sort(list_palette_type *list);
 extern void list_palette_draw(list_palette_type *list);

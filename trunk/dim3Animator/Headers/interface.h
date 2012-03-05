@@ -26,6 +26,13 @@ and can be sold or given away.
 *********************************************************************/
 
 //
+// main app
+//
+
+extern bool main_app_initialize(void);
+extern void main_app_shutdown(void);
+
+//
 // main window
 //
 

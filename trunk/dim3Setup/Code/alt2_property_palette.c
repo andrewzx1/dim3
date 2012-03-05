@@ -46,7 +46,7 @@ extern setup_state_type			state;
 
 void alt2_property_palette_initialize(void)
 {
-	list_palette_list_initialize(&alt2_property_palette,"No Properties",TRUE);
+	list_palette_list_initialize(&alt2_property_palette,"No Properties");
 
 	alt2_property_palette.item_type=0;
 	alt2_property_palette.item_idx=-1;
@@ -109,7 +109,7 @@ void alt2_property_palette_fill(void)
 
 void alt2_property_palette_draw(void)
 {
-	if (list_palette_get_level()!=3) return;
+	if (list_palette_get_level(&alt2_property_palette)!=3) return;
 
 	alt2_property_palette_fill();
 	list_palette_draw(&alt2_property_palette);
@@ -123,7 +123,7 @@ void alt2_property_palette_draw(void)
 
 void alt2_property_palette_scroll_wheel(d3pnt *pnt,int move)
 {
-	if (list_palette_get_level()==3) list_palette_scroll_wheel(&alt2_property_palette,pnt,move);
+	if (list_palette_get_level(&alt2_property_palette)==3) list_palette_scroll_wheel(&alt2_property_palette,pnt,move);
 }
 
 /* =======================================================
@@ -134,7 +134,7 @@ void alt2_property_palette_scroll_wheel(d3pnt *pnt,int move)
 
 bool alt2_property_palette_click(d3pnt *pnt,bool double_click)
 {
-	if (list_palette_get_level()!=3) return(FALSE);
+	if (list_palette_get_level(&alt2_property_palette)!=3) return(FALSE);
 	
 		// click
 

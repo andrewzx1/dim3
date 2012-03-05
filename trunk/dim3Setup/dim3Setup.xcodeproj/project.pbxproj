@@ -107,6 +107,7 @@
 		26D82FCD134FB5A800CC229F /* alt_property_palette_hud_bar.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D82FCA134FB5A800CC229F /* alt_property_palette_hud_bar.c */; };
 		26D82FCE134FB5A800CC229F /* alt_property_palette_hud_bitmap.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D82FCB134FB5A800CC229F /* alt_property_palette_hud_bitmap.c */; };
 		26D82FCF134FB5A800CC229F /* alt_property_palette_hud_text.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D82FCC134FB5A800CC229F /* alt_property_palette_hud_text.c */; };
+		26D8394E1502D730004EF99F /* main_app.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D8394D1502D730004EF99F /* main_app.c */; };
 		26E300F5144B6F9600BB4BD5 /* dim3 Setup.xib in Resources */ = {isa = PBXBuildFile; fileRef = 26E300F4144B6F9600BB4BD5 /* dim3 Setup.xib */; };
 		26EB2AB2135CE09700C85532 /* alt_property_palette_action.c in Sources */ = {isa = PBXBuildFile; fileRef = 26EB2AAD135CE09700C85532 /* alt_property_palette_action.c */; };
 		26EB2AB3135CE09700C85532 /* alt_property_palette_crosshair.c in Sources */ = {isa = PBXBuildFile; fileRef = 26EB2AAE135CE09700C85532 /* alt_property_palette_crosshair.c */; };
@@ -273,6 +274,7 @@
 		26D82FCA134FB5A800CC229F /* alt_property_palette_hud_bar.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = alt_property_palette_hud_bar.c; path = Code/alt_property_palette_hud_bar.c; sourceTree = "<group>"; };
 		26D82FCB134FB5A800CC229F /* alt_property_palette_hud_bitmap.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = alt_property_palette_hud_bitmap.c; path = Code/alt_property_palette_hud_bitmap.c; sourceTree = "<group>"; };
 		26D82FCC134FB5A800CC229F /* alt_property_palette_hud_text.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = alt_property_palette_hud_text.c; path = Code/alt_property_palette_hud_text.c; sourceTree = "<group>"; };
+		26D8394D1502D730004EF99F /* main_app.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = main_app.c; path = Code/main_app.c; sourceTree = "<group>"; };
 		26E300F4144B6F9600BB4BD5 /* dim3 Setup.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = "dim3 Setup.xib"; path = "Resources/dim3 Setup.xib"; sourceTree = "<group>"; };
 		26EB2AAD135CE09700C85532 /* alt_property_palette_action.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = alt_property_palette_action.c; path = Code/alt_property_palette_action.c; sourceTree = "<group>"; };
 		26EB2AAE135CE09700C85532 /* alt_property_palette_crosshair.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = alt_property_palette_crosshair.c; path = Code/alt_property_palette_crosshair.c; sourceTree = "<group>"; };
@@ -437,6 +439,7 @@
 		269FEC9B132840360030B0B5 /* Windows */ = {
 			isa = PBXGroup;
 			children = (
+				26D8394D1502D730004EF99F /* main_app.c */,
 				26F773BB1328867F007C3EBD /* main_window.c */,
 				26F773CA1328872A007C3EBD /* menu.c */,
 			);
@@ -616,7 +619,7 @@
 		269FEC7D13283F970030B0B5 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0420;
+				LastUpgradeCheck = 0430;
 			};
 			buildConfigurationList = 269FEC8013283F970030B0B5 /* Build configuration list for PBXProject "dim3Setup" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -750,6 +753,7 @@
 				260B3C531411EE24006ED023 /* bitmap_cocoa.m in Sources */,
 				260B3C541411EE24006ED023 /* file_cocoa.m in Sources */,
 				26D31D3314635BBE00DAB820 /* property_palette_progress.c in Sources */,
+				26D8394E1502D730004EF99F /* main_app.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -759,10 +763,16 @@
 		269FEC7F13283F970030B0B5 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = i386;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEPLOYMENT_POSTPROCESSING = YES;
+				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				MACH_O_TYPE = mh_execute;
+				MACOSX_DEPLOYMENT_TARGET = 10.5;
 				SDKROOT = macosx10.6;
+				VALID_ARCHS = i386;
 			};
 			name = Release;
 		};

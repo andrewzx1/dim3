@@ -37,6 +37,8 @@ extern model_type				model;
 extern model_draw_setup			draw_setup;
 extern animator_state_type		state;
 
+extern list_palette_type		property_palette;
+
 // supergumba -- this code repeats draw setups and only uses the
 //               view picker for poly hits, fix all this
 
@@ -756,7 +758,7 @@ bool drag_bone_model_wind(d3pnt *start_pnt)
 
 		if (state.sel_vertex_with_bone) vertex_mask_set_sel_bone(state.cur_mesh_idx,state.cur_bone_idx);
 
-		list_palette_set_level(1);
+		list_palette_set_level(&property_palette,1);
 
 		main_wind_draw();
 

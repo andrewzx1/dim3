@@ -95,7 +95,7 @@ void property_palette_click_particles(int id,bool double_click)
 	if ((id>=kParticleProperyName) && (id<(kParticleProperyName+max_iface_particle))) {
 		state.cur_particle_idx=id-kParticleProperyName;
 		state.cur_group_particle_idx=-1;
-		if (double_click) list_palette_set_level(2);
+		if (double_click) list_palette_set_level(&property_palette,2);
 		return;
 	}
 	

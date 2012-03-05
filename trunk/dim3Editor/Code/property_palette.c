@@ -39,7 +39,6 @@ extern editor_setup_type		setup;
 extern iface_type				iface;
 extern file_path_setup_type		file_path_setup;
 
-extern bool						list_palette_open;
 extern list_palette_type		item_palette;
 
 char							list_texture_names[max_map_texture][name_str_len];
@@ -54,7 +53,7 @@ list_palette_type				property_palette;
 
 void property_palette_initialize(void)
 {
-	list_palette_list_initialize(&property_palette,"Item Properties",TRUE);
+	list_palette_list_initialize(&property_palette,"Item Properties");
 
 	property_palette.item_type=0;
 	property_palette.item_idx=-1;
@@ -67,33 +66,18 @@ void property_palette_shutdown(void)
 
 /* =======================================================
 
-      Property Palette Fill
+      Property Palette Fills
       
 ======================================================= */
 
-void property_palette_fill(void)
+void property_palette_fill_level_0(void)
+{
+	property_palette_fill_main();
+}
+
+void property_palette_fill_level_1(void)
 {
 	int					sel_type,main_idx,sub_idx;
-
-		// delete the properties
-
-	list_palette_delete_all_items(&property_palette);
-
-		// if texture window is up,
-		// put in texture properties
-
-	if (state.texture_edit_idx!=-1) {
-		property_palette_fill_texture(state.texture_edit_idx);
-		return;
-	}
-
-		// if preference window is up,
-		// put in preferences
-
-	if (state.in_preference) {
-		property_palette_fill_editor_preference();
-		return;
-	}
 
 		// fill in the properties for
 		// the currently selected item
@@ -189,6 +173,20 @@ void property_palette_fill(void)
 	}
 }
 
+void property_palette_fill_level_2(void)
+{
+		// selection properties
+
+	if (state.cur_cinema_idx!=-1) {
+		alt_property_palette_fill_cinema_action(state.cur_cinema_idx,state.cur_cinema_action_idx);
+	}
+	else {
+		if (state.cur_movement_idx!=-1) {
+			alt_property_palette_fill_movement_move(state.cur_movement_idx,state.cur_movement_move_idx);
+		}
+	}
+}
+
 /* =======================================================
 
       Property Palette Draw
@@ -197,9 +195,42 @@ void property_palette_fill(void)
 
 void property_palette_draw(void)
 {
-	if (list_palette_get_level()!=1) return;
+		// delete the properties
+
+	list_palette_delete_all_items(&property_palette);
+
+		// if texture window is up,
+		// put in texture properties
+
+	if (state.texture_edit_idx!=-1) {
+		property_palette_fill_texture(state.texture_edit_idx);
+		list_palette_draw(&property_palette);
+		return;
+	}
+
+		// if preference window is up,
+		// put in preferences
+
+	if (state.in_preference) {
+		property_palette_fill_editor_preference();
+		list_palette_draw(&property_palette);
+		return;
+	}
+
+		// fill the property list
+		
+	switch (list_palette_get_level(&property_palette)) {
+		case 0:
+			property_palette_fill_level_0();
+			break;
+		case 1:
+			property_palette_fill_level_1();
+			break;
+		case 2:
+			property_palette_fill_level_2();
+			break;
+	}
 	
-	property_palette_fill();
 	list_palette_draw(&property_palette);
 }
 
@@ -222,53 +253,24 @@ void property_palette_reset(void)
 
 void property_palette_scroll_wheel(d3pnt *pnt,int move)
 {
-	if (list_palette_get_level()==1) list_palette_scroll_wheel(&property_palette,pnt,move);
+	if (list_palette_get_level(&property_palette)==1) list_palette_scroll_wheel(&property_palette,pnt,move);
 }
 
 /* =======================================================
 
-      Property Palette Click
+      Property Palette Click For Levels
       
 ======================================================= */
 
-bool property_palette_click(d3pnt *pnt,bool double_click)
+void property_palette_click_level_0(d3pnt *pnt,bool double_click)
+{
+	property_palette_click_main(property_palette.item_id,double_click);
+}
+	
+void property_palette_click_level_1(d3pnt *pnt,bool double_click)
 {
 	int					sel_type,main_idx,sub_idx;
-	bool				old_open;
 	
-	if (list_palette_get_level()!=1) return(FALSE);
-
-		// check if open changes
-	
-	old_open=list_palette_open;
-
-		// click
-
-	if (!list_palette_click(&property_palette,pnt,double_click)) {
-		if (old_open!=list_palette_open) main_wind_draw();
-		return(TRUE);
-	}
-
-		// click editing
-
-	if (property_palette.item_id==-1) return(TRUE);
-
-		// if texture window is up, texture properties
-
-	if (state.texture_edit_idx!=-1) {
-		property_palette_click_texture(state.texture_edit_idx,property_palette.item_id,double_click);
-		main_wind_draw();
-		return(TRUE);
-	}
-
-		// if preference window is up, preference properties
-
-	if (state.in_preference) {
-		property_palette_click_editor_preference(property_palette.item_id,double_click);
-		main_wind_draw();
-		return(TRUE);
-	}
-
 		// special check for non-selection property lists
 		// and check state changes
 
@@ -277,19 +279,16 @@ bool property_palette_click(d3pnt *pnt,bool double_click)
 		case cinema_piece:
 			state.cur_cinema_idx=item_palette.item_idx;
 			property_palette_click_cinema(item_palette.item_idx,property_palette.item_id,double_click);
-			main_wind_draw();
-			return(TRUE);
+			return;
 
 		case group_piece:
 			property_palette_click_group(item_palette.item_idx,property_palette.item_id,double_click);
-			main_wind_draw();
-			return(TRUE);
+			return;
 
 		case movement_piece:
 			state.cur_movement_idx=item_palette.item_idx;
 			property_palette_click_movement(item_palette.item_idx,property_palette.item_id,double_click);
-			main_wind_draw();
-			return(TRUE);
+			return;
 
 	}
 
@@ -323,9 +322,7 @@ bool property_palette_click(d3pnt *pnt,bool double_click)
 
 		}
 
-		main_wind_draw();
-
-		return(TRUE);
+		return;
 	}
 
 		// selection properties
@@ -366,10 +363,94 @@ bool property_palette_click(d3pnt *pnt,bool double_click)
 			break;
 
 	}
+}
+
+void property_palette_click_level_2(d3pnt *pnt,bool double_click)
+{
+		// selection properties
+
+	if (state.cur_cinema_idx!=-1) {
+		alt_property_palette_click_cinema_action(state.cur_cinema_idx,state.cur_cinema_action_idx,property_palette.item_id,double_click);
+	}
+	else {
+		if (state.cur_movement_idx!=-1) {
+			alt_property_palette_click_movement_move(state.cur_movement_idx,state.cur_movement_move_idx,property_palette.item_id,double_click);
+		}
+	}
+}
+
+/* =======================================================
+
+      Property Palette Click MainLine
+      
+======================================================= */
+
+void property_palette_click(d3pnt *pnt,bool double_click)
+{
+	bool				old_open;
+	
+		// check if open changes
+	
+	old_open=list_palette_is_open(&property_palette);
+
+		// click
+
+	if (!list_palette_click(&property_palette,pnt,double_click)) {
+		if (old_open!=list_palette_is_open(&property_palette)) main_wind_draw();
+		return;
+	}
+		
+		// if texture window is up, texture properties
+
+	if (state.texture_edit_idx!=-1) {
+		property_palette_click_texture(state.texture_edit_idx,property_palette.item_id,double_click);
+		main_wind_draw();
+		return;
+	}
+
+		// if preference window is up, preference properties
+
+	if (state.in_preference) {
+		property_palette_click_editor_preference(property_palette.item_id,double_click);
+		main_wind_draw();
+		return;
+	}
+
+		// click editing
+
+	if (property_palette.item_id==-1) return;
+
+		// if texture window is up, texture properties
+
+	if (state.texture_edit_idx!=-1) {
+		property_palette_click_texture(state.texture_edit_idx,property_palette.item_id,double_click);
+		main_wind_draw();
+		return;
+	}
+
+		// if preference window is up, preference properties
+
+	if (state.in_preference) {
+		property_palette_click_editor_preference(property_palette.item_id,double_click);
+		main_wind_draw();
+		return;
+	}
+	
+		// click by level
+		
+	switch (list_palette_get_level(&property_palette)) {
+		case 0:
+			property_palette_click_level_0(pnt,double_click);
+			break;
+		case 1:
+			property_palette_click_level_1(pnt,double_click);
+			break;
+		case 2:
+			property_palette_click_level_2(pnt,double_click);
+			break;
+	}
 	
 	main_wind_draw();
-
-	return(TRUE);
 }
 
 /* =======================================================
@@ -380,27 +461,27 @@ bool property_palette_click(d3pnt *pnt,bool double_click)
 
 void property_palette_pick_group(int *group_idx)
 {
-	list_palette_start_picking_mode("Pick a Group",(char*)map.group.groups,map.group.ngroup,sizeof(group_type),(int)offsetof(group_type,name),TRUE,FALSE,group_idx,NULL);
+	list_palette_start_picking_mode(&property_palette,"Pick a Group",(char*)map.group.groups,map.group.ngroup,sizeof(group_type),(int)offsetof(group_type,name),TRUE,FALSE,group_idx,NULL);
 }
 
 void property_palette_pick_spot(char *name)
 {
-	list_palette_start_picking_mode("Pick a Spot",(char*)map.spots,map.nspot,sizeof(spot_type),(int)offsetof(spot_type,name),TRUE,FALSE,NULL,name);
+	list_palette_start_picking_mode(&property_palette,"Pick a Spot",(char*)map.spots,map.nspot,sizeof(spot_type),(int)offsetof(spot_type,name),TRUE,FALSE,NULL,name);
 }
 
 void property_palette_pick_sound(char *name,bool include_none)
 {
-	list_palette_start_picking_mode("Pick a Sound",(char*)iface.sound_list.sounds,iface.sound_list.nsound,sizeof(iface_sound_type),(int)offsetof(iface_sound_type,name),include_none,FALSE,NULL,name);
+	list_palette_start_picking_mode(&property_palette,"Pick a Sound",(char*)iface.sound_list.sounds,iface.sound_list.nsound,sizeof(iface_sound_type),(int)offsetof(iface_sound_type,name),include_none,FALSE,NULL,name);
 }
 
 void property_palette_pick_halo(char *name)
 {
-	list_palette_start_picking_mode("Pick a Halo",(char*)iface.halo_list.halos,iface.halo_list.nhalo,sizeof(iface_halo_type),(int)offsetof(iface_halo_type,name),TRUE,FALSE,NULL,name);
+	list_palette_start_picking_mode(&property_palette,"Pick a Halo",(char*)iface.halo_list.halos,iface.halo_list.nhalo,sizeof(iface_halo_type),(int)offsetof(iface_halo_type,name),TRUE,FALSE,NULL,name);
 }
 
 void property_palette_pick_particle(char *name)
 {
-	list_palette_start_picking_mode("Pick a Particle",(char*)iface.particle_list.particles,iface.particle_list.nparticle,sizeof(iface_particle_type),(int)offsetof(iface_particle_type,name),FALSE,FALSE,NULL,name);
+	list_palette_start_picking_mode(&property_palette,"Pick a Particle",(char*)iface.particle_list.particles,iface.particle_list.nparticle,sizeof(iface_particle_type),(int)offsetof(iface_particle_type,name),FALSE,FALSE,NULL,name);
 }
 
 void property_palette_pick_node(char *name)
@@ -439,24 +520,24 @@ void property_palette_pick_node(char *name)
 		list_pos++;
 	}
 	
-	list_palette_start_picking_mode("Pick a Node",list_ptr,count,name_str_len,0,TRUE,FALSE,NULL,name);
+	list_palette_start_picking_mode(&property_palette,"Pick a Node",list_ptr,count,name_str_len,0,TRUE,FALSE,NULL,name);
 	
 	free(list_ptr);
 }
 
 void property_palette_pick_movement(char *name)
 {
-	list_palette_start_picking_mode("Pick a Movement",(char*)map.movement.movements,map.movement.nmovement,sizeof(movement_type),(int)offsetof(movement_type,name),TRUE,FALSE,NULL,name);
+	list_palette_start_picking_mode(&property_palette,"Pick a Movement",(char*)map.movement.movements,map.movement.nmovement,sizeof(movement_type),(int)offsetof(movement_type,name),TRUE,FALSE,NULL,name);
 }
 
 void property_palette_pick_hud_text(char *name)
 {
-	list_palette_start_picking_mode("Pick a HUD Text",(char*)iface.text_list.texts,iface.text_list.ntext,sizeof(iface_text_type),(int)offsetof(iface_text_type,name),FALSE,FALSE,NULL,name);
+	list_palette_start_picking_mode(&property_palette,"Pick a HUD Text",(char*)iface.text_list.texts,iface.text_list.ntext,sizeof(iface_text_type),(int)offsetof(iface_text_type,name),FALSE,FALSE,NULL,name);
 }
 
 void property_palette_pick_hud_bitmap(char *name)
 {
-	list_palette_start_picking_mode("Pick a HUD Bitmap",(char*)iface.bitmap_list.bitmaps,iface.bitmap_list.nbitmap,sizeof(iface_bitmap_type),(int)offsetof(iface_bitmap_type,name),FALSE,FALSE,NULL,name);
+	list_palette_start_picking_mode(&property_palette,"Pick a HUD Bitmap",(char*)iface.bitmap_list.bitmaps,iface.bitmap_list.nbitmap,sizeof(iface_bitmap_type),(int)offsetof(iface_bitmap_type,name),FALSE,FALSE,NULL,name);
 }
 
 void property_palette_pick_texture(char *title,int *txt_idx)
@@ -473,15 +554,15 @@ void property_palette_pick_texture(char *title,int *txt_idx)
 	}
 	
 	if (title==NULL) {
-		list_palette_start_picking_mode("Pick a Texture",(char*)list_texture_names,max_map_texture,name_str_len,0,TRUE,FALSE,txt_idx,NULL);
+		list_palette_start_picking_mode(&property_palette,"Pick a Texture",(char*)list_texture_names,max_map_texture,name_str_len,0,TRUE,FALSE,txt_idx,NULL);
 	}
 	else {
-		list_palette_start_picking_mode(title,(char*)list_texture_names,max_map_texture,name_str_len,0,TRUE,FALSE,txt_idx,NULL);
+		list_palette_start_picking_mode(&property_palette,title,(char*)list_texture_names,max_map_texture,name_str_len,0,TRUE,FALSE,txt_idx,NULL);
 	}
 }
 
 void property_palette_pick_shader(char *name)
 {
-	list_palette_start_picking_mode("Pick a Shader",(char*)iface.shader_list.shaders,iface.shader_list.nshader,sizeof(iface_shader_type),(int)offsetof(iface_shader_type,name),TRUE,FALSE,NULL,name);
+	list_palette_start_picking_mode(&property_palette,"Pick a Shader",(char*)iface.shader_list.shaders,iface.shader_list.nshader,sizeof(iface_shader_type),(int)offsetof(iface_shader_type,name),TRUE,FALSE,NULL,name);
 }
 

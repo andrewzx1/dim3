@@ -37,6 +37,8 @@ extern file_path_setup_type		file_path_setup;
 extern map_type					map;
 extern editor_state_type		state;
 
+extern list_palette_type		property_palette;
+
 /* =======================================================
 
       Check if Piece Creation OK
@@ -119,7 +121,7 @@ void piece_create_spot(void)
 		// set to property level
 		// and pick script
 
-	list_palette_set_level(1);
+	list_palette_set_level(&property_palette,1);
 	property_pick_file("Pick a Script","Scripts/Objects","js",NULL,spot->script);
 	
 	main_wind_draw();
@@ -182,7 +184,7 @@ void piece_create_scenery(void)
 		// switch to property list
 		// and get model
 
-	list_palette_set_level(1);
+	list_palette_set_level(&property_palette,1);
 	property_pick_file("Pick a Model","Models",NULL,"Mesh.xml;Model.xml",scenery->model_name);
 	
 	main_wind_draw();

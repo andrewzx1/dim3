@@ -183,7 +183,7 @@ void property_palette_click_intro(int id,bool double_click)
 	if ((id>=kIntroPropertyButtonGameNew) && (id<=kIntroPropertyButtonQuit)) {
 		state.cur_intro_button_idx=(id-kIntroPropertyButtonGameNew)+item_intro_button_game_new;
 		state.cur_intro_model_idx=-1;
-		if (double_click) list_palette_set_level(2);
+		if (double_click) list_palette_set_level(&property_palette,2);
 		return;
 	}
 
@@ -192,14 +192,14 @@ void property_palette_click_intro(int id,bool double_click)
 	if ((id>=kIntroPropertyButtonSimpleSaveStart) && (id<(kIntroPropertyButtonSimpleSaveStart+max_simple_save_spot))) {
 		state.cur_intro_button_idx=(id-kIntroPropertyButtonSimpleSaveStart)+item_intro_button_simple_save_start;
 		state.cur_intro_model_idx=-1;
-		if (double_click) list_palette_set_level(2);
+		if (double_click) list_palette_set_level(&property_palette,2);
 		return;
 	}
 
 	if ((id>=kIntroPropertyButtonSimpleSaveErase) && (id<(kIntroPropertyButtonSimpleSaveErase+max_simple_save_spot))) {
 		state.cur_intro_button_idx=(id-kIntroPropertyButtonSimpleSaveErase)+item_intro_button_simple_save_erase;
 		state.cur_intro_model_idx=-1;
-		if (double_click) list_palette_set_level(2);
+		if (double_click) list_palette_set_level(&property_palette,2);
 		return;
 	}
 
@@ -208,7 +208,7 @@ void property_palette_click_intro(int id,bool double_click)
 	if ((id>=kIntroPropertyModelName) && (id<(kIntroPropertyModelName+max_hud_intro_model))) {
 		state.cur_intro_button_idx=-1;
 		state.cur_intro_model_idx=id-kIntroPropertyModelName;
-		if (double_click) list_palette_set_level(2);
+		if (double_click) list_palette_set_level(&property_palette,2);
 		return;
 	}
 
@@ -253,7 +253,7 @@ void property_palette_click_intro(int id,bool double_click)
 
 		state.cur_intro_model_idx=idx;
 		
-		list_palette_set_level(2);
+		list_palette_set_level(&property_palette,2);
 		property_pick_file("Pick a Model","Models",NULL,"Mesh.xml;Model.xml",iface.intro.model_list.models[idx].model_name);
 
 		return;

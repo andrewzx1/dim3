@@ -75,9 +75,9 @@ void texture_edit_switch(int texture_idx)
 		state.texture_edit_idx=texture_idx;
 	}
 
-	list_palette_set_level((state.texture_edit_idx==-1)?0:1);
+	property_palette_reset();
+	list_palette_set_level(&property_palette,0);
 	
-	texture_edit_scroll_pos=0;
 	texture_edit_frame_click_idx=-1;
 
 	main_wind_draw();
@@ -94,7 +94,7 @@ void texture_edit_get_box(d3rect *box)
 	d3rect				lbox;
 
 	os_get_window_box(box);
-	list_palette_box(&lbox);
+	list_palette_box(&property_palette,&lbox);
 	
 	box->ty+=tool_palette_pixel_size();
 	box->by-=texture_palette_pixel_size();

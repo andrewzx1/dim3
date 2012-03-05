@@ -42,6 +42,7 @@ and can be sold or given away.
 #include "ui_common.h"
 
 extern file_path_setup_type		file_path_setup;
+extern list_palette_type		property_palette;
 
 char							property_file_list[file_paths_max_directory_file][file_str_len];
 
@@ -381,7 +382,7 @@ void property_pick_file(char *title,char *search_path,char *extension,char *requ
 
 		// run the list picker
 
-	list_palette_start_picking_mode(title,(char*)property_file_list,count,file_str_len,0,TRUE,TRUE,NULL,file_name);
+	list_palette_start_picking_mode(&property_palette,title,(char*)property_file_list,count,file_str_len,0,TRUE,TRUE,NULL,file_name);
 }
 
 /* =======================================================

@@ -46,7 +46,7 @@ extern setup_state_type			state;
 
 void alt_property_palette_initialize(void)
 {
-	list_palette_list_initialize(&alt_property_palette,"No Properties",TRUE);
+	list_palette_list_initialize(&alt_property_palette,"No Properties");
 
 	alt_property_palette.item_type=0;
 	alt_property_palette.item_idx=-1;
@@ -218,7 +218,7 @@ void alt_property_palette_fill(void)
 
 void alt_property_palette_draw(void)
 {
-	if (list_palette_get_level()!=2) return;
+	if (list_palette_get_level(&alt_property_palette)!=2) return;
 	
 	alt_property_palette_fill();
 	list_palette_draw(&alt_property_palette);
@@ -232,7 +232,7 @@ void alt_property_palette_draw(void)
 
 void alt_property_palette_scroll_wheel(d3pnt *pnt,int move)
 {
-	if (list_palette_get_level()==2) list_palette_scroll_wheel(&alt_property_palette,pnt,move);
+	if (list_palette_get_level(&alt_property_palette)==2) list_palette_scroll_wheel(&alt_property_palette,pnt,move);
 }
 
 /* =======================================================
@@ -243,7 +243,7 @@ void alt_property_palette_scroll_wheel(d3pnt *pnt,int move)
 
 bool alt_property_palette_click(d3pnt *pnt,bool double_click)
 {
-	if (list_palette_get_level()!=2) return(FALSE);
+	if (list_palette_get_level(&alt_property_palette)!=2) return(FALSE);
 	
 		// click
 

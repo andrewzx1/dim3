@@ -49,7 +49,7 @@ list_palette_type				property_palette;
 
 void property_palette_initialize(void)
 {
-	list_palette_list_initialize(&property_palette,"No Properties",TRUE);
+	list_palette_list_initialize(&property_palette,"No Properties");
 
 	property_palette.item_type=0;
 	property_palette.item_idx=-1;
@@ -161,7 +161,7 @@ void property_palette_fill(void)
 
 void property_palette_draw(void)
 {
-	if (list_palette_get_level()!=1) return;
+	if (list_palette_get_level(&property_palette)!=1) return;
 	
 	property_palette_fill();
 	list_palette_draw(&property_palette);
@@ -186,7 +186,7 @@ void property_palette_reset(void)
 
 void property_palette_scroll_wheel(d3pnt *pnt,int move)
 {
-	if (list_palette_get_level()==1) list_palette_scroll_wheel(&property_palette,pnt,move);
+	if (list_palette_get_level(&property_palette)==1) list_palette_scroll_wheel(&property_palette,pnt,move);
 }
 
 /* =======================================================
@@ -197,7 +197,7 @@ void property_palette_scroll_wheel(d3pnt *pnt,int move)
 
 bool property_palette_click(d3pnt *pnt,bool double_click)
 {
-	if (list_palette_get_level()!=1) return(FALSE);
+	if (list_palette_get_level(&property_palette)!=1) return(FALSE);
 
 		// click
 
@@ -298,16 +298,16 @@ bool property_palette_click(d3pnt *pnt,bool double_click)
 
 void property_palette_pick_sound(char *name,bool include_none)
 {
-	list_palette_start_picking_mode("Pick a Sound",(char*)iface.sound_list.sounds,iface.sound_list.nsound,sizeof(iface_sound_type),(int)offsetof(iface_sound_type,name),include_none,FALSE,NULL,name);
+	list_palette_start_picking_mode(&property_palette,"Pick a Sound",(char*)iface.sound_list.sounds,iface.sound_list.nsound,sizeof(iface_sound_type),(int)offsetof(iface_sound_type,name),include_none,FALSE,NULL,name);
 }
 
 void property_palette_pick_particle(char *name)
 {
-	list_palette_start_picking_mode("Pick a Particle",(char*)iface.particle_list.particles,iface.particle_list.nparticle,sizeof(iface_particle_type),(int)offsetof(iface_particle_type,name),FALSE,FALSE,NULL,name);
+	list_palette_start_picking_mode(&property_palette,"Pick a Particle",(char*)iface.particle_list.particles,iface.particle_list.nparticle,sizeof(iface_particle_type),(int)offsetof(iface_particle_type,name),FALSE,FALSE,NULL,name);
 }
 
 void property_palette_pick_control(int *control_idx)
 {
-	list_palette_start_picking_mode("Pick a Control Action",(char*)control_name_str,ncontrol,32,0,FALSE,FALSE,control_idx,NULL);
+	list_palette_start_picking_mode(&property_palette,"Pick a Control Action",(char*)control_name_str,ncontrol,32,0,FALSE,FALSE,control_idx,NULL);
 }
 

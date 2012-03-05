@@ -79,7 +79,7 @@ void property_palette_click_rings(int id,bool double_click)
 		
 	if ((id>=kRingProperyName) && (id<(kRingProperyName+max_iface_ring))) {
 		state.cur_ring_idx=id-kRingProperyName;
-		if (double_click) list_palette_set_level(2);
+		if (double_click) list_palette_set_level(&property_palette,2);
 		return;
 	}
 	

@@ -79,7 +79,7 @@ void property_palette_click_shaders(int id,bool double_click)
 		
 	if ((id>=kShaderProperyName) && (id<(kShaderProperyName+max_iface_user_shader))) {
 		state.cur_shader_idx=id-kShaderProperyName;
-		if (double_click) list_palette_set_level(2);
+		if (double_click) list_palette_set_level(&property_palette,2);
 		return;
 	}
 	

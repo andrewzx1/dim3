@@ -46,7 +46,7 @@ list_palette_type				item_palette;
 
 void item_palette_initialize(void)
 {
-	list_palette_list_initialize(&item_palette,"Project Items",FALSE);
+	list_palette_list_initialize(&item_palette,"Project Items");
 
 	item_palette.item_type=0;
 	item_palette.item_idx=-1;
@@ -125,7 +125,7 @@ void item_palette_fill(void)
 
 void item_palette_draw(void)
 {
-	if (list_palette_get_level()!=0) return;
+	if (list_palette_get_level(&item_palette)!=0) return;
 	
 	item_palette_fill();
 	list_palette_draw(&item_palette);
@@ -150,7 +150,7 @@ bool item_palette_delete(void)
 
 void item_palette_scroll_wheel(d3pnt *pnt,int move)
 {
-	if (list_palette_get_level()==0) list_palette_scroll_wheel(&item_palette,pnt,move);
+	if (list_palette_get_level(&item_palette)==0) list_palette_scroll_wheel(&item_palette,pnt,move);
 }
 
 /* =======================================================
@@ -161,7 +161,7 @@ void item_palette_scroll_wheel(d3pnt *pnt,int move)
 
 bool item_palette_click(d3pnt *pnt,bool double_click)
 {
-	if (list_palette_get_level()!=0) return(FALSE);
+	if (list_palette_get_level(&item_palette)!=0) return(FALSE);
 	
 		// click
 
@@ -175,7 +175,7 @@ bool item_palette_click(d3pnt *pnt,bool double_click)
 
 		// if double click, edit
 
-	if (double_click) list_palette_set_level(1);
+	if (double_click) list_palette_set_level(&item_palette,1);
 
 	main_wind_draw();
 	

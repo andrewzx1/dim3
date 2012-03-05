@@ -79,7 +79,7 @@ void property_palette_click_crosshairs(int id,bool double_click)
 		
 	if ((id>=kCrosshairProperyName) && (id<(kCrosshairProperyName+max_iface_crosshair))) {
 		state.cur_crosshair_idx=id-kCrosshairProperyName;
-		if (double_click) list_palette_set_level(2);
+		if (double_click) list_palette_set_level(&property_palette,2);
 		return;
 	}
 	

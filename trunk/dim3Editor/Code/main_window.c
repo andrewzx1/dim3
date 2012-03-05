@@ -55,6 +55,7 @@ void main_wind_initialize(void)
 	
 	tool_palette_initialize("Editor");
 	list_palette_initialize("Editor");
+	file_palette_initialize();
 	item_palette_initialize();
 	property_palette_initialize();
 	alt_property_palette_initialize();
@@ -86,6 +87,7 @@ void main_wind_shutdown(void)
 	
 	alt_property_palette_shutdown();
 	property_palette_shutdown();
+	file_palette_shutdown();
 	item_palette_shutdown();
 	list_palette_shutdown();
 	
@@ -171,9 +173,10 @@ void main_wind_draw_no_swap(void)
 
 		tool_palette_draw();
 		texture_palette_draw(map.textures);
-		item_palette_draw();
+		file_palette_draw();
+	//	item_palette_draw();			// supergumba
 		property_palette_draw();
-		alt_property_palette_draw();
+	//	alt_property_palette_draw();		// supergumba
 
 		tool_tip_draw();
 	}
@@ -212,17 +215,31 @@ void main_wind_click(d3pnt *pnt,bool double_click)
 		texture_palette_click(map.textures,pnt,double_click);
 		return;
 	}
-
-		// item, property and alt property palettes
-		
-	list_palette_box(&tbox);
+	
+		// file palettes
+	
+		/* supergumba	
+	list_palette_box(&file_palette,&tbox);
 
 	if ((pnt->x>=tbox.lx) && (pnt->x<=tbox.rx) && (pnt->y>=tbox.ty) && (pnt->y<tbox.by)) {
+		file_palette_click(pnt,double_click);
+		return;
+	}
+	*/
+		// item, property and alt property palettes
+		
+	list_palette_box(&property_palette,&tbox);
+
+	if ((pnt->x>=tbox.lx) && (pnt->x<=tbox.rx) && (pnt->y>=tbox.ty) && (pnt->y<tbox.by)) {
+		property_palette_click(pnt,double_click);
+		
+		/* supergumba -- delete this
 		if (!item_palette_click(pnt,double_click)) {
 			if (!property_palette_click(pnt,double_click)) {
 				alt_property_palette_click(pnt,double_click);
 			}
 		}
+		*/
 		return;
 	}
 
@@ -246,9 +263,18 @@ void main_wind_scroll_wheel(d3pnt *pnt,int delta)
 {
 	d3rect				tbox;
 	
+		// scroll wheel in file palette
+/* supergumba
+	list_palette_box(&file_palette,&tbox);
+
+	if ((pnt->x>=tbox.lx) && (pnt->x<=tbox.rx) && (pnt->y>=tbox.ty) && (pnt->y<tbox.by)) {
+		file_palette_scroll_wheel(pnt,delta);
+		return;
+	}
+*/	
 		// scroll wheel in item, property, or alt property palette
 
-	list_palette_box(&tbox);
+	list_palette_box(&property_palette,&tbox);
 
 	if ((pnt->x>=tbox.lx) && (pnt->x<=tbox.rx) && (pnt->y>=tbox.ty) && (pnt->y<tbox.by)) {
 		item_palette_scroll_wheel(pnt,delta);

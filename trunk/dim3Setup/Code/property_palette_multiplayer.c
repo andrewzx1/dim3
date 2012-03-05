@@ -139,7 +139,7 @@ void property_palette_click_multiplayer(int id,bool double_click)
 		state.cur_multiplayer_character_idx=id-kMPPropertyCharacterName;
 		state.cur_multiplayer_game_idx=-1;
 		state.cur_multiplayer_option_idx=-1;
-		if (double_click) list_palette_set_level(2);
+		if (double_click) list_palette_set_level(&property_palette,2);
 		return;
 	}
 
@@ -147,7 +147,7 @@ void property_palette_click_multiplayer(int id,bool double_click)
 		state.cur_multiplayer_character_idx=-1;
 		state.cur_multiplayer_game_idx=id-kMPPropertyGameName;
 		state.cur_multiplayer_option_idx=-1;
-		if (double_click) list_palette_set_level(2);
+		if (double_click) list_palette_set_level(&property_palette,2);
 		return;
 	}
 
@@ -155,7 +155,7 @@ void property_palette_click_multiplayer(int id,bool double_click)
 		state.cur_multiplayer_character_idx=-1;
 		state.cur_multiplayer_game_idx=-1;
 		state.cur_multiplayer_option_idx=id-kMPPropertyOptionName;
-		if (double_click) list_palette_set_level(2);
+		if (double_click) list_palette_set_level(&property_palette,2);
 		return;
 	}
 

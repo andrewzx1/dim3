@@ -151,7 +151,7 @@ void alt_property_palette_click_chooser(int chooser_idx,int id,bool double_click
 
 	if ((id>=kChooserPropertyChooserItemName) && (id<(kChooserPropertyChooserItemName+max_chooser_piece))) {
 		state.cur_chooser_piece_idx=id-kChooserPropertyChooserItemName;
-		if (double_click) list_palette_set_level(3);
+		if (double_click) list_palette_set_level(&alt_property_palette,3);
 		return;
 	}
 
@@ -199,9 +199,9 @@ void alt_property_palette_click_chooser(int chooser_idx,int id,bool double_click
 		state.cur_chooser_idx=chooser_idx;
 		state.cur_chooser_piece_idx=idx;
 
-		list_palette_set_level(3);
+		list_palette_set_level(&alt_property_palette,3);
 
-		list_palette_start_picking_mode("Pick a Chooser Piece Type",(char*)chooser_type_str,-1,name_str_len,0,FALSE,FALSE,&chooser->pieces[idx].type,NULL);
+		list_palette_start_picking_mode(&alt_property_palette,"Pick a Chooser Piece Type",(char*)chooser_type_str,-1,name_str_len,0,FALSE,FALSE,&chooser->pieces[idx].type,NULL);
 
 		return;
 	}

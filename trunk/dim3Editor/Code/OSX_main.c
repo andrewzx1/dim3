@@ -385,43 +385,19 @@ void menu_start(void)
 
 int main(int argc,char *argv[])
 {
-		// initialize
-		
-	os_glue_start();
-	os_set_arrow_cursor();
-    
-	state.map_opened=FALSE;
-	if (!file_paths_setup(&file_path_setup)) {
-		os_dialog_alert("Error","No data folder found");
-		os_glue_end();
-		return(0);
-	}
-	
-	if (!iface_initialize(&iface,&file_path_setup)) {
-		os_dialog_alert("Error","Out of memory");
-		os_glue_end();
-		return(0);
-	}
-
-	iface_read(&iface);
-		
-	setup_xml_read();
-
 	menu_start();
 	
-	undo_initialize();
-	menu_fix_enable();
-	
+		// initialize
+		
+	if (!main_app_initialize()) return(0);
+
 		// main loop
 		
-	file_open_map();
 	main_loop();
-	file_close_map();
 	
 		// shutdown
 		
-	iface_shutdown(&iface);
-	os_glue_end();
+	main_app_shutdown();
 	
     return(0);
 }

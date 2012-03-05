@@ -123,7 +123,7 @@ void property_palette_click_movement(int movement_idx,int id,bool double_click)
 
 	if ((id>=kMovementPropertyMove) && (id<kMovementPropertyMoveDelete)) {
 		state.cur_movement_move_idx=id-kMovementPropertyMove;
-		if (double_click) list_palette_set_level(2);
+		if (double_click) list_palette_set_level(&property_palette,2);
 		return;
 	}
 
@@ -131,7 +131,7 @@ void property_palette_click_movement(int movement_idx,int id,bool double_click)
 
 	if (id==kMovementPropertyMoveAdd) {
 		state.cur_movement_move_idx=map_movement_move_add(&map,movement_idx);
-		list_palette_set_level(2);
+		list_palette_set_level(&property_palette,2);
 		return;
 	}
 
