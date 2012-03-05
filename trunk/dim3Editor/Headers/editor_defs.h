@@ -167,17 +167,19 @@ and can be sold or given away.
 #define map_camera_piece						1
 #define map_light_media_piece					2
 #define map_sky_weather_piece					3
-#define mesh_piece								4
-#define liquid_piece							5
-#define node_piece								6
-#define spot_piece								7
-#define scenery_piece							8
-#define light_piece								9
-#define sound_piece								10
-#define particle_piece							11
-#define group_piece								12
-#define movement_piece							13
-#define cinema_piece							14
+
+#define mesh_piece								10
+#define liquid_piece							11
+#define node_piece								12
+#define spot_piece								13
+#define scenery_piece							14
+#define light_piece								15
+#define sound_piece								16
+#define particle_piece							17
+
+#define group_piece								20
+#define movement_piece							21
+#define cinema_piece							22
 
 //
 // movement scales
@@ -465,6 +467,7 @@ typedef struct		{
 						int						vertex_mode,drag_mode,grid_mode,node_mode,
 												handle_mode,view_select_idx,drag_handle_idx,
 												texture_edit_idx,
+												cur_no_sel_piece_idx,cur_group_idx,
 												cur_cinema_idx,cur_cinema_action_idx,
 												cur_movement_idx,cur_movement_move_idx;
 						bool					map_opened,

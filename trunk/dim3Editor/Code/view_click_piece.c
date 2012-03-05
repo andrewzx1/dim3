@@ -779,11 +779,12 @@ void view_click_piece(editor_view_type *view,d3pnt *pt,bool double_click)
 	}
 	
 		// redraw and reset palettes and menus
+
+	state.in_preference=FALSE;
 		
 	menu_fix_enable();
 	
 	texture_palette_reset();
-	item_palette_reset();
 	property_palette_reset();
 
 	list_palette_set_level(&property_palette,1);

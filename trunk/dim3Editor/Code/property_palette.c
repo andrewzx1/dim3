@@ -39,8 +39,6 @@ extern editor_setup_type		setup;
 extern iface_type				iface;
 extern file_path_setup_type		file_path_setup;
 
-extern list_palette_type		item_palette;
-
 char							list_texture_names[max_map_texture][name_str_len];
 
 list_palette_type				property_palette;
@@ -83,21 +81,20 @@ void property_palette_fill_level_1(void)
 		// the currently selected item
 
 		// special check for non-selection property lists
-
-	switch (item_palette.item_type) {
-
-		case cinema_piece:
-			property_palette_fill_cinema(item_palette.item_idx);
-			return;
+	
+	switch (state.cur_no_sel_piece_idx) {
 
 		case group_piece:
-			property_palette_fill_group(item_palette.item_idx);
+			property_palette_fill_group(state.cur_group_idx);
 			return;
-
+	
 		case movement_piece:
-			property_palette_fill_movement(item_palette.item_idx);
+			property_palette_fill_movement(state.cur_movement_idx);
 			return;
 
+		case cinema_piece:
+			property_palette_fill_cinema(state.cur_cinema_idx);
+			return;
 	}
 
 		// check selection
@@ -110,7 +107,7 @@ void property_palette_fill_level_1(void)
 
 	if (main_idx==-1) {
 
-		switch (item_palette.item_type) {
+		switch (state.cur_no_sel_piece_idx) {
 			
 			case map_setting_piece:
 				property_palette_fill_map();
@@ -177,13 +174,15 @@ void property_palette_fill_level_2(void)
 {
 		// selection properties
 
-	if (state.cur_cinema_idx!=-1) {
-		alt_property_palette_fill_cinema_action(state.cur_cinema_idx,state.cur_cinema_action_idx);
-	}
-	else {
-		if (state.cur_movement_idx!=-1) {
-			alt_property_palette_fill_movement_move(state.cur_movement_idx,state.cur_movement_move_idx);
-		}
+	switch (state.cur_no_sel_piece_idx) {
+
+		case movement_piece:
+			property_palette_fill_movement_move(state.cur_movement_idx,state.cur_movement_move_idx);
+			break;
+
+		case cinema_piece:
+			property_palette_fill_cinema_action(state.cur_cinema_idx,state.cur_cinema_action_idx);
+			break;
 	}
 }
 
@@ -240,9 +239,40 @@ void property_palette_draw(void)
       
 ======================================================= */
 
+void property_palette_scroll_into_view(int item_type,int item_idx)
+{
+		// can only scroll into view
+		// on map items page
+
+	if (!list_palette_get_level(&property_palette)!=0) return;
+
+	property_palette_fill_level_0();
+	list_palette_scroll_item_into_view(&property_palette,item_type,item_idx);
+
+	main_wind_draw();
+}
+
 void property_palette_reset(void)
 {
-	property_palette.scroll_offset=0;
+	int				sel_type,main_idx,sub_idx;
+
+	state.cur_no_sel_piece_idx=map_setting_piece;
+
+	state.cur_group_idx=-1;
+	state.cur_movement_idx=-1;
+	state.cur_movement_move_idx=-1;
+	state.cur_cinema_idx=-1;
+	state.cur_cinema_action_idx=-1;
+
+	if (select_count()==0) {
+		property_palette_scroll_into_view(map_setting_piece,0);
+		return;
+	}
+	
+	select_get(0,&sel_type,&main_idx,&sub_idx);
+	if ((sel_type==mesh_piece) || (sel_type==liquid_piece)) return;
+
+	property_palette_scroll_into_view(sel_type,main_idx);
 }
 
 /* =======================================================
@@ -253,7 +283,98 @@ void property_palette_reset(void)
 
 void property_palette_scroll_wheel(d3pnt *pnt,int move)
 {
-	if (list_palette_get_level(&property_palette)==1) list_palette_scroll_wheel(&property_palette,pnt,move);
+	list_palette_scroll_wheel(&property_palette,pnt,move);
+}
+
+/* =======================================================
+
+      Property Palette Delete
+      
+======================================================= */
+
+bool property_palette_delete(void)
+{
+	int					n,k;
+	bool				del_ok;
+	
+		// can only delete on map
+		// item list
+
+	if (list_palette_get_level(&property_palette)!=0) return(FALSE);
+
+		// anything to delete?
+
+	switch (state.cur_no_sel_piece_idx) {
+
+			// delete group
+			
+		case group_piece:
+			
+				// check if this group is used within a movement
+				
+			del_ok=TRUE;
+			
+			for (n=0;n!=map.movement.nmovement;n++) {
+				if ((map.movement.movements[n].group_idx==state.cur_group_idx) || (map.movement.movements[n].reverse_group_idx==state.cur_group_idx)) {
+					del_ok=FALSE;
+					break;
+				}
+			}
+			
+			if (!del_ok) {
+				os_dialog_alert("Delete Group","This group is being used in a movement, it can not be deleted");
+				return(TRUE);
+			}
+				
+				// delete group
+				
+			if (os_dialog_confirm("Delete Group","Is it okay to delete this group?",FALSE)!=0) return(FALSE);
+			map_group_delete(&map,state.cur_group_idx);
+			property_palette_reset();
+			return(TRUE);
+
+			// delete movement
+			
+		case movement_piece:
+		
+				// check if movement is used within a cinema
+				
+			del_ok=TRUE;
+			
+			for (n=0;n!=map.cinema.ncinema;n++) {
+				for (k=0;k!=map.cinema.cinemas[n].naction;k++) {
+					if (map.cinema.cinemas[n].actions[k].actor_type==cinema_actor_movement) {
+						if (strcasecmp(map.cinema.cinemas[n].actions[k].actor_name,map.movement.movements[state.cur_movement_idx].name)==0) {
+							del_ok=FALSE;
+							break;
+						}
+					}
+				}
+			}
+			
+			if (!del_ok) {
+				os_dialog_alert("Delete Movement","This movement is being used in a cinema, it can not be deleted");
+				return(TRUE);
+			}
+			
+				// delete movement
+				
+			if (os_dialog_confirm("Delete Movement","Is it okay to delete this movement?",FALSE)!=0) return(FALSE);
+			map_movement_delete(&map,state.cur_movement_idx);
+			property_palette_reset();
+			return(TRUE);
+
+			// delete cinema
+			
+		case cinema_piece:
+			if (os_dialog_confirm("Delete Cinema","Is it okay to delete this cinema?",FALSE)!=0) return(FALSE);
+			map_cinema_delete(&map,state.cur_cinema_idx);
+			property_palette_reset();
+			return(TRUE);
+
+	}
+
+	return(FALSE);
 }
 
 /* =======================================================
@@ -264,7 +385,7 @@ void property_palette_scroll_wheel(d3pnt *pnt,int move)
 
 void property_palette_click_level_0(d3pnt *pnt,bool double_click)
 {
-	property_palette_click_main(property_palette.item_id,double_click);
+	property_palette_click_main(double_click);
 }
 	
 void property_palette_click_level_1(d3pnt *pnt,bool double_click)
@@ -274,22 +395,19 @@ void property_palette_click_level_1(d3pnt *pnt,bool double_click)
 		// special check for non-selection property lists
 		// and check state changes
 
-	switch (item_palette.item_type) {
-
-		case cinema_piece:
-			state.cur_cinema_idx=item_palette.item_idx;
-			property_palette_click_cinema(item_palette.item_idx,property_palette.item_id,double_click);
-			return;
+	switch (state.cur_no_sel_piece_idx) {
 
 		case group_piece:
-			property_palette_click_group(item_palette.item_idx,property_palette.item_id,double_click);
+			property_palette_click_group(state.cur_group_idx,property_palette.item_id,double_click);
 			return;
 
 		case movement_piece:
-			state.cur_movement_idx=item_palette.item_idx;
-			property_palette_click_movement(item_palette.item_idx,property_palette.item_id,double_click);
+			property_palette_click_movement(state.cur_movement_idx,property_palette.item_id,double_click);
 			return;
 
+		case cinema_piece:
+			property_palette_click_cinema(state.cur_cinema_idx,property_palette.item_id,double_click);
+			return;
 	}
 
 		// get the selection
@@ -302,7 +420,7 @@ void property_palette_click_level_1(d3pnt *pnt,bool double_click)
 
 	if (main_idx==-1) {
 
-		switch (item_palette.item_type) {
+		switch (state.cur_no_sel_piece_idx) {
 			
 			case map_setting_piece:
 				property_palette_click_map(property_palette.item_id,double_click);
@@ -369,13 +487,15 @@ void property_palette_click_level_2(d3pnt *pnt,bool double_click)
 {
 		// selection properties
 
-	if (state.cur_cinema_idx!=-1) {
-		alt_property_palette_click_cinema_action(state.cur_cinema_idx,state.cur_cinema_action_idx,property_palette.item_id,double_click);
-	}
-	else {
-		if (state.cur_movement_idx!=-1) {
-			alt_property_palette_click_movement_move(state.cur_movement_idx,state.cur_movement_move_idx,property_palette.item_id,double_click);
-		}
+	switch (state.cur_no_sel_piece_idx) {
+
+		case movement_piece:
+			property_palette_click_movement_move(state.cur_movement_idx,state.cur_movement_move_idx,property_palette.item_id,double_click);
+			return;
+
+		case cinema_piece:
+			property_palette_click_cinema_action(state.cur_cinema_idx,state.cur_cinema_action_idx,property_palette.item_id,double_click);
+			break;
 	}
 }
 
@@ -400,26 +520,6 @@ void property_palette_click(d3pnt *pnt,bool double_click)
 		return;
 	}
 		
-		// if texture window is up, texture properties
-
-	if (state.texture_edit_idx!=-1) {
-		property_palette_click_texture(state.texture_edit_idx,property_palette.item_id,double_click);
-		main_wind_draw();
-		return;
-	}
-
-		// if preference window is up, preference properties
-
-	if (state.in_preference) {
-		property_palette_click_editor_preference(property_palette.item_id,double_click);
-		main_wind_draw();
-		return;
-	}
-
-		// click editing
-
-	if (property_palette.item_id==-1) return;
-
 		// if texture window is up, texture properties
 
 	if (state.texture_edit_idx!=-1) {

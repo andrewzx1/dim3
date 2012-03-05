@@ -1161,7 +1161,6 @@ void piece_key(char ch)
 		
 	if ((ch==D3_KEY_BACKSPACE) || (ch==D3_KEY_DELETE)) {
 		piece_delete();
-		item_palette_reset();
 		property_palette_reset();
 		main_wind_draw();
 		menu_fix_enable();
