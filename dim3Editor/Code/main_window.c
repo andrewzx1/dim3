@@ -39,7 +39,7 @@ file_path_setup_type			file_path_setup;
 iface_type						iface;
 editor_state_type				state;
 
-extern list_palette_type		item_palette,property_palette,alt_property_palette;
+extern list_palette_type		property_palette;
 
 /* =======================================================
 
@@ -56,9 +56,7 @@ void main_wind_initialize(void)
 	tool_palette_initialize("Editor");
 	list_palette_initialize("Editor");
 	file_palette_initialize();
-	item_palette_initialize();
 	property_palette_initialize();
-	alt_property_palette_initialize();
 
 	tool_tip_initialize();
 
@@ -85,10 +83,8 @@ void main_wind_shutdown(void)
 {
 	view_shutdown();
 	
-	alt_property_palette_shutdown();
 	property_palette_shutdown();
 	file_palette_shutdown();
-	item_palette_shutdown();
 	list_palette_shutdown();
 	
 	tool_palette_shutdown();
@@ -174,9 +170,7 @@ void main_wind_draw_no_swap(void)
 		tool_palette_draw();
 		texture_palette_draw(map.textures);
 		file_palette_draw();
-	//	item_palette_draw();			// supergumba
 		property_palette_draw();
-	//	alt_property_palette_draw();		// supergumba
 
 		tool_tip_draw();
 	}
@@ -232,14 +226,6 @@ void main_wind_click(d3pnt *pnt,bool double_click)
 
 	if ((pnt->x>=tbox.lx) && (pnt->x<=tbox.rx) && (pnt->y>=tbox.ty) && (pnt->y<tbox.by)) {
 		property_palette_click(pnt,double_click);
-		
-		/* supergumba -- delete this
-		if (!item_palette_click(pnt,double_click)) {
-			if (!property_palette_click(pnt,double_click)) {
-				alt_property_palette_click(pnt,double_click);
-			}
-		}
-		*/
 		return;
 	}
 
@@ -277,9 +263,7 @@ void main_wind_scroll_wheel(d3pnt *pnt,int delta)
 	list_palette_box(&property_palette,&tbox);
 
 	if ((pnt->x>=tbox.lx) && (pnt->x<=tbox.rx) && (pnt->y>=tbox.ty) && (pnt->y<tbox.by)) {
-		item_palette_scroll_wheel(pnt,delta);
 		property_palette_scroll_wheel(pnt,delta);
-		alt_property_palette_scroll_wheel(pnt,delta);
 		return;
 	}
 

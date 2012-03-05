@@ -114,7 +114,6 @@ void piece_create_spot(void)
 	select_clear();
 	select_add(spot_piece,index,-1);
 
-	item_palette_reset();
 	property_palette_reset();
 	menu_update_view();
 
@@ -177,7 +176,6 @@ void piece_create_scenery(void)
 	select_clear();
 	select_add(scenery_piece,index,-1);
 
-	item_palette_reset();
 	property_palette_reset();
 	menu_update_view();
 
@@ -237,7 +235,6 @@ void piece_create_light(void)
 	select_clear();
 	select_add(light_piece,index,-1);
 
-	item_palette_reset();
 	property_palette_reset();
 	menu_update_view();
 	
@@ -284,7 +281,6 @@ void piece_create_sound(void)
 	select_clear();
 	select_add(sound_piece,index,-1);
 
-	item_palette_reset();
 	property_palette_reset();
 	menu_update_view();
 	
@@ -335,7 +331,6 @@ void piece_create_particle(void)
 	select_clear();
 	select_add(particle_piece,index,-1);
 
-	item_palette_reset();
 	property_palette_reset();
 	menu_update_view();
 	
@@ -390,7 +385,6 @@ void piece_create_node(void)
 	select_clear();
 	select_add(node_piece,index,-1);
 
-	item_palette_reset();
 	property_palette_reset();
 	menu_update_view();
 	
@@ -495,7 +489,14 @@ void piece_create_cinema(void)
 		return;
 	}
 
-	item_palette_select(cinema_piece,cinema_idx);
+	state.cur_no_sel_piece_idx=cinema_piece;
+	state.cur_group_idx=-1;
+	state.cur_movement_idx=-1;
+	state.cur_movement_move_idx=-1;
+	state.cur_cinema_idx=cinema_idx;
+	state.cur_cinema_action_idx=-1;
+
+	property_palette_scroll_into_view(cinema_piece,cinema_idx);
 
 	dialog_property_string_run(list_string_value_string,(void*)map.cinema.cinemas[cinema_idx].name,name_str_len,0,0);
 	
@@ -512,7 +513,14 @@ void piece_create_group(void)
 		return;
 	}
 
-	item_palette_select(group_piece,group_idx);
+	state.cur_no_sel_piece_idx=group_piece;
+	state.cur_group_idx=group_idx;
+	state.cur_movement_idx=-1;
+	state.cur_movement_move_idx=-1;
+	state.cur_cinema_idx=-1;
+	state.cur_cinema_action_idx=-1;
+
+	property_palette_scroll_into_view(group_piece,group_idx);
 
 	dialog_property_string_run(list_string_value_string,(void*)map.group.groups[group_idx].name,name_str_len,0,0);
 	
@@ -529,7 +537,14 @@ void piece_create_movement(void)
 		return;
 	}
 
-	item_palette_select(movement_piece,movement_idx);
+	state.cur_no_sel_piece_idx=movement_piece;
+	state.cur_group_idx=-1;
+	state.cur_movement_idx=movement_idx;
+	state.cur_movement_move_idx=-1;
+	state.cur_cinema_idx=-1;
+	state.cur_cinema_action_idx=-1;
+
+	property_palette_scroll_into_view(movement_piece,movement_idx);
 
 	dialog_property_string_run(list_string_value_string,(void*)map.movement.movements[movement_idx].name,name_str_len,0,0);
 	

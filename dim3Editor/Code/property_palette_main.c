@@ -179,7 +179,7 @@ void property_palette_fill_main(void)
       
 ======================================================= */
 
-void property_palette_click_main(int id,bool double_click)
+void property_palette_click_main(bool double_click)
 {
 		// add buttons
 
@@ -224,12 +224,15 @@ void property_palette_click_main(int id,bool double_click)
 
 	if (property_palette.item_idx==-1) return;
 
-		// alt window items
+		// no selection states
+	
+	state.cur_no_sel_piece_idx=property_palette.item_type;
 
-	state.cur_cinema_idx=-1;
-	state.cur_cinema_action_idx=-1;
+	state.cur_group_idx=-1;
 	state.cur_movement_idx=-1;
 	state.cur_movement_move_idx=-1;
+	state.cur_cinema_idx=-1;
+	state.cur_cinema_action_idx=-1;
 
 		// turn off preferences
 
@@ -249,19 +252,23 @@ void property_palette_click_main(int id,bool double_click)
 			break;
 
 		case group_piece:
-			select_add_group(property_palette.item_idx);
+			state.cur_no_sel_piece_idx=group_piece;
+			state.cur_group_idx=property_palette.item_idx;
+			select_add_group(state.cur_group_idx);
 			break;
 
 		case movement_piece:
+			state.cur_no_sel_piece_idx=movement_piece;
 			state.cur_movement_idx=property_palette.item_idx;
 			state.cur_movement_move_idx=-1;
-			select_add_movement(property_palette.item_idx);
+			select_add_movement(state.cur_movement_idx);
 			break;
 
 		case cinema_piece:
+			state.cur_no_sel_piece_idx=cinema_piece;
 			state.cur_cinema_idx=property_palette.item_idx;
 			state.cur_cinema_action_idx=-1;
-			select_add_cinema(property_palette.item_idx);
+			select_add_cinema(state.cur_cinema_idx);
 			break;
 
 		default:

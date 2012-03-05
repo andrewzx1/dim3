@@ -111,20 +111,6 @@ extern void file_palette_scroll_wheel(d3pnt *pnt,int move);
 extern bool file_palette_click(d3pnt *pnt,bool double_click);
 
 //
-// item list palette
-//
-
-extern void item_palette_initialize(void);
-extern void item_palette_shutdown(void);
-extern void item_palette_draw(void);
-extern void item_palette_scroll_into_view(int item_type,int item_idx);
-extern void item_palette_reset(void);
-extern void item_palette_select(int sel_type,int sel_idx);
-extern bool item_palette_delete(void);
-extern void item_palette_scroll_wheel(d3pnt *pnt,int move);
-extern bool item_palette_click(d3pnt *pnt,bool double_click);
-
-//
 // property list palette
 //
 
@@ -149,7 +135,7 @@ extern void property_palette_fill_node(int node_idx);
 
 extern void property_palette_click_texture(int texture_idx,int id,bool double_click);
 extern void property_palette_click_editor_preference(int id,bool double_click);
-extern void property_palette_click_main(int id,bool double_click);
+extern void property_palette_click_main(bool double_click);
 extern void property_palette_click_map(int id,bool double_click);
 extern void property_palette_click_camera(int id,bool double_click);
 extern void property_palette_click_light_media(int id,bool double_click);
@@ -169,7 +155,9 @@ extern void property_palette_click_node(int node_idx,int id,bool double_click);
 extern void property_palette_initialize(void);
 extern void property_palette_shutdown(void);
 extern void property_palette_draw(void);
+extern void property_palette_scroll_into_view(int item_type,int item_idx);
 extern void property_palette_reset(void);
+extern bool property_palette_delete(void);
 extern void property_palette_scroll_wheel(d3pnt *pnt,int move);
 extern void property_palette_click(d3pnt *pnt,bool double_click);
 extern void property_palette_pick_group(int *group_idx);
@@ -184,21 +172,11 @@ extern void property_palette_pick_hud_bitmap(char *name);
 extern void property_palette_pick_texture(char *title,int *txt_idx);
 extern void property_palette_pick_shader(char *name);
 
-//
-// alt property list palette
-//
+extern void property_palette_fill_cinema_action(int cinema_idx,int action_idx);
+extern void property_palette_fill_movement_move(int movement_idx,int move_idx);
 
-extern void alt_property_palette_initialize(void);
-extern void alt_property_palette_shutdown(void);
-extern void alt_property_palette_draw(void);
-extern void alt_property_palette_scroll_wheel(d3pnt *pnt,int move);
-extern bool alt_property_palette_click(d3pnt *pnt,bool double_click);
-
-extern void alt_property_palette_fill_cinema_action(int cinema_idx,int action_idx);
-extern void alt_property_palette_fill_movement_move(int movement_idx,int move_idx);
-
-extern void alt_property_palette_click_cinema_action(int cinema_idx,int action_idx,int id,bool double_click);
-extern void alt_property_palette_click_movement_move(int movement_idx,int move_idx,int id,bool double_click);
+extern void property_palette_click_cinema_action(int cinema_idx,int action_idx,int id,bool double_click);
+extern void property_palette_click_movement_move(int movement_idx,int move_idx,int id,bool double_click);
 
 //
 // dos

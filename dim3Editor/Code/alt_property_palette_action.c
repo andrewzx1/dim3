@@ -2,7 +2,7 @@
 
 Module: dim3 Editor
 Author: Brian Barnes
- Usage: Alt Property Palette Cinema Action
+ Usage: Property Palette Cinema Action
 
 ***************************** License ********************************
 
@@ -49,17 +49,17 @@ extern editor_state_type		state;
 extern editor_setup_type		setup;
 extern file_path_setup_type		file_path_setup;
 
-extern list_palette_type		alt_property_palette;
+extern list_palette_type		property_palette;
 
 extern char						action_actor_type_str[][32],action_action_type_str[][32];
 
 /* =======================================================
 
-      Alt Property Palette Fill Cinema Action
+      Property Palette Fill Cinema Action
       
 ======================================================= */
 
-void alt_property_palette_fill_cinema_action(int cinema_idx,int action_idx)
+void property_palette_fill_cinema_action(int cinema_idx,int action_idx)
 {
 	bool					has_actor,has_animation,has_node,is_fade;
 	map_cinema_type			*cinema;
@@ -70,7 +70,7 @@ void alt_property_palette_fill_cinema_action(int cinema_idx,int action_idx)
 	cinema=&map.cinema.cinemas[cinema_idx];
 	action=&cinema->actions[action_idx];
 
-	list_palette_set_title(&alt_property_palette,"Cinema",cinema->name,"Action",action_actor_type_str[action->actor_type],NULL,NULL);
+	list_palette_set_title(&property_palette,"Cinema",cinema->name,"Action",action_actor_type_str[action->actor_type],NULL,NULL);
 
 		// setup some editing enables
 	
@@ -81,61 +81,61 @@ void alt_property_palette_fill_cinema_action(int cinema_idx,int action_idx)
 
 		// the properties
 
-	list_palette_add_header(&alt_property_palette,0,"Cinema Action Timing");
-	list_palette_add_int(&alt_property_palette,kCinemaActionPropertyTimeStart,"Time Start",&action->start_msec,FALSE);
-	list_palette_add_int(&alt_property_palette,kCinemaActionPropertyTimeEnd,"Time End",&action->end_msec,FALSE);
+	list_palette_add_header(&property_palette,0,"Cinema Action Timing");
+	list_palette_add_int(&property_palette,kCinemaActionPropertyTimeStart,"Time Start",&action->start_msec,FALSE);
+	list_palette_add_int(&property_palette,kCinemaActionPropertyTimeEnd,"Time End",&action->end_msec,FALSE);
 
-	list_palette_add_header(&alt_property_palette,0,"Cinema Action Actor");
-	list_palette_add_picker_list_int(&alt_property_palette,kCinemaActionPropertyAction,"Action",(char*)action_action_type_str,-1,name_str_len,0,FALSE,&action->action,FALSE);
+	list_palette_add_header(&property_palette,0,"Cinema Action Actor");
+	list_palette_add_picker_list_int(&property_palette,kCinemaActionPropertyAction,"Action",(char*)action_action_type_str,-1,name_str_len,0,FALSE,&action->action,FALSE);
 	if (!is_fade) {
-		list_palette_add_picker_list_int(&alt_property_palette,kCinemaActionPropertyActorType,"Type",(char*)action_actor_type_str,-1,name_str_len,0,FALSE,&action->actor_type,FALSE);
+		list_palette_add_picker_list_int(&property_palette,kCinemaActionPropertyActorType,"Type",(char*)action_actor_type_str,-1,name_str_len,0,FALSE,&action->actor_type,FALSE);
 	}
 	else {
-		list_palette_add_string(&alt_property_palette,kCinemaActionPropertyActorName,"Type","n/a",TRUE);
+		list_palette_add_string(&property_palette,kCinemaActionPropertyActorName,"Type","n/a",TRUE);
 	}
 	if (has_actor) {
-		list_palette_add_string(&alt_property_palette,kCinemaActionPropertyActorName,"Name",action->actor_name,FALSE);
+		list_palette_add_string(&property_palette,kCinemaActionPropertyActorName,"Name",action->actor_name,FALSE);
 	}
 	else {
-		list_palette_add_string(&alt_property_palette,kCinemaActionPropertyActorName,"Name","n/a",TRUE);
+		list_palette_add_string(&property_palette,kCinemaActionPropertyActorName,"Name","n/a",TRUE);
 	}
 	if (has_animation) {
-		list_palette_add_string(&alt_property_palette,kCinemaActionPropertyAnimation,"Animation",action->animation_name,FALSE);
-		list_palette_add_string(&alt_property_palette,kCinemaActionPropertyNextAnimation,"Next Animation",action->next_animation_name,FALSE);
+		list_palette_add_string(&property_palette,kCinemaActionPropertyAnimation,"Animation",action->animation_name,FALSE);
+		list_palette_add_string(&property_palette,kCinemaActionPropertyNextAnimation,"Next Animation",action->next_animation_name,FALSE);
 	}
 	else {
-		list_palette_add_string(&alt_property_palette,kCinemaActionPropertyAnimation,"Animation","n/a",TRUE);
-		list_palette_add_string(&alt_property_palette,kCinemaActionPropertyNextAnimation,"Next Animation","n/a",TRUE);
+		list_palette_add_string(&property_palette,kCinemaActionPropertyAnimation,"Animation","n/a",TRUE);
+		list_palette_add_string(&property_palette,kCinemaActionPropertyNextAnimation,"Next Animation","n/a",TRUE);
 	}
 	if ((has_node) && (!is_fade)) {
-		list_palette_add_string(&alt_property_palette,kCinemaActionPropertyNode,"Node",action->node_name,FALSE);
+		list_palette_add_string(&property_palette,kCinemaActionPropertyNode,"Node",action->node_name,FALSE);
 	}
 	else {
-		list_palette_add_string(&alt_property_palette,kCinemaActionPropertyNode,"Node","n/a",TRUE);
+		list_palette_add_string(&property_palette,kCinemaActionPropertyNode,"Node","n/a",TRUE);
 	}
 
-	list_palette_add_header(&alt_property_palette,0,"Cinema Action Options");
+	list_palette_add_header(&property_palette,0,"Cinema Action Options");
 	if (action->actor_type==cinema_actor_movement) {
-		list_palette_add_checkbox(&alt_property_palette,kCinemaActionPropertyReverseMove,"Reverse Move",&action->move_reverse,FALSE);
+		list_palette_add_checkbox(&property_palette,kCinemaActionPropertyReverseMove,"Reverse Move",&action->move_reverse,FALSE);
 	}
 	else {
-		list_palette_add_string(&alt_property_palette,kCinemaActionPropertyReverseMove,"Reverse Move","n/a",TRUE);
+		list_palette_add_string(&property_palette,kCinemaActionPropertyReverseMove,"Reverse Move","n/a",TRUE);
 	}
 	if (action->actor_type==cinema_actor_hud_text) {
-		list_palette_add_string(&alt_property_palette,kCinemaActionPropertyText,"Display Text",action->text_str,FALSE);
+		list_palette_add_string(&property_palette,kCinemaActionPropertyText,"Display Text",action->text_str,FALSE);
 	}
 	else {
-		list_palette_add_string(&alt_property_palette,kCinemaActionPropertyText,"Display Text","n/a",TRUE);
+		list_palette_add_string(&property_palette,kCinemaActionPropertyText,"Display Text","n/a",TRUE);
 	}
 }
 
 /* =======================================================
 
-      Alt Property Palette Click Cinema Action
+      Property Palette Click Cinema Action
       
 ======================================================= */
 
-void alt_property_palette_click_cinema_action(int cinema_idx,int action_idx,int id,bool double_click)
+void property_palette_click_cinema_action(int cinema_idx,int action_idx,int id,bool double_click)
 {
 	map_cinema_action_type	*action;
 

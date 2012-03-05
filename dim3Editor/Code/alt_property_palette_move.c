@@ -2,7 +2,7 @@
 
 Module: dim3 Editor
 Author: Brian Barnes
- Usage: Alt Property Palette Movement Move
+ Usage: Property Palette Movement Move
 
 ***************************** License ********************************
 
@@ -45,15 +45,15 @@ extern editor_state_type		state;
 extern editor_setup_type		setup;
 extern file_path_setup_type		file_path_setup;
 
-extern list_palette_type		alt_property_palette;
+extern list_palette_type		property_palette;
 
 /* =======================================================
 
-      Alt Property Palette Fill Movement Move
+      Property Palette Fill Movement Move
       
 ======================================================= */
 
-void alt_property_palette_fill_movement_move(int movement_idx,int move_idx)
+void property_palette_fill_movement_move(int movement_idx,int move_idx)
 {
 	char				str[32];
 	movement_type		*movement;
@@ -65,28 +65,28 @@ void alt_property_palette_fill_movement_move(int movement_idx,int move_idx)
 	move=&movement->moves[move_idx];
 
 	sprintf(str,"(%d,%d,%d)",move->mov.x,move->mov.y,move->mov.z);
-	list_palette_set_title(&alt_property_palette,"Movement",movement->name,"Move",str,NULL,NULL);
+	list_palette_set_title(&property_palette,"Movement",movement->name,"Move",str,NULL,NULL);
 
-	list_palette_add_header(&alt_property_palette,0,"Movement Move Options");
-	list_palette_add_int(&alt_property_palette,kMovePropertyUserID,"Event User Id",&move->user_id,FALSE);
-	list_palette_add_int(&alt_property_palette,kMovePropertyMillisecond,"Millisecond Time",&move->msec,FALSE);
+	list_palette_add_header(&property_palette,0,"Movement Move Options");
+	list_palette_add_int(&property_palette,kMovePropertyUserID,"Event User Id",&move->user_id,FALSE);
+	list_palette_add_int(&property_palette,kMovePropertyMillisecond,"Millisecond Time",&move->msec,FALSE);
 
-	list_palette_add_header(&alt_property_palette,0,"Movement Move Position");
-	list_palette_add_point(&alt_property_palette,kMovePropertyMove,"Move",&move->mov,FALSE);
-	list_palette_add_angle(&alt_property_palette,kMovePropertyRot,"Rot",&move->rot,FALSE);
+	list_palette_add_header(&property_palette,0,"Movement Move Position");
+	list_palette_add_point(&property_palette,kMovePropertyMove,"Move",&move->mov,FALSE);
+	list_palette_add_angle(&property_palette,kMovePropertyRot,"Rot",&move->rot,FALSE);
 	
-	list_palette_add_header(&alt_property_palette,0,"Movement Move Sound");
-	list_palette_add_string(&alt_property_palette,kMovePropertySoundName,"Sound",move->sound_name,FALSE);
-	list_palette_add_float(&alt_property_palette,kMovePropertySoundPitch,"Pitch",&move->sound_pitch,FALSE);
+	list_palette_add_header(&property_palette,0,"Movement Move Sound");
+	list_palette_add_string(&property_palette,kMovePropertySoundName,"Sound",move->sound_name,FALSE);
+	list_palette_add_float(&property_palette,kMovePropertySoundPitch,"Pitch",&move->sound_pitch,FALSE);
 }
 
 /* =======================================================
 
-      Alt Property Palette Click Movement Move
+      Property Palette Click Movement Move
       
 ======================================================= */
 
-void alt_property_palette_click_movement_move(int movement_idx,int move_idx,int id,bool double_click)
+void property_palette_click_movement_move(int movement_idx,int move_idx,int id,bool double_click)
 {
 	movement_move_type	*move;
 

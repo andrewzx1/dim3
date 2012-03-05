@@ -734,7 +734,7 @@ void view_key(char ch)
 		// on selected item tree
 
 	if ((ch==D3_KEY_BACKSPACE) || (ch==D3_KEY_DELETE)) {
-		if (item_palette_delete()) {
+		if (property_palette_delete()) {
 			main_wind_draw();
 			return;
 		}
