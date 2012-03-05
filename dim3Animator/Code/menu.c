@@ -38,6 +38,8 @@ extern model_draw_setup			draw_setup;
 extern file_path_setup_type		file_path_setup;
 extern animator_state_type		state;
 
+extern list_palette_type		property_palette;
+
 /* =======================================================
 
       Menu Enable/Disable
@@ -154,7 +156,7 @@ bool menu_event_run(int cmd)
 		case kCommandFilePreference:
 			state.in_preference=!state.in_preference;
 			property_palette_reset();
-			list_palette_set_level(1);
+			list_palette_set_level(&property_palette,1);
 			main_wind_draw();
 			return(TRUE);
 

@@ -360,41 +360,28 @@ void menu_start(void)
 
 int main(int argc,char *argv[])
 {
-	os_glue_start();
-	os_set_arrow_cursor();
-	
-		// setup and read XML
+	menu_start();
+
+		// initialize
 		
-	if (!file_paths_setup(&file_path_setup)) {
-		os_dialog_alert("Error","No data folder found");
-		os_glue_end();
-		return(0);
-	}
+	if (!main_app_initialize()) return(0);
 	
-	if (!iface_initialize(&iface,&file_path_setup)) {
-		os_dialog_alert("Error","Out of Memory");
-		os_glue_end();
-		return(0);
-	}
-	
-	iface_read(&iface);
-	
-		// run setup
+		// always open the window
 		
 	main_wind_open();
-	menu_start();
-	
 	main_wind_draw();
+	
+		// run loop
 	
 	main_loop();
 	
-	main_wind_close();
+		// close the window
 		
+	main_wind_close();
+	
 		// shutdown
 		
-	iface_shutdown(&iface);
-
-	os_glue_end();
+	main_app_shutdown();
     
     return(0);
 }

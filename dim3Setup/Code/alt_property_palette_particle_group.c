@@ -92,7 +92,7 @@ void alt_property_palette_click_particle_group(int particle_idx,int id,bool doub
 		
 	if ((id>=kGroupParticleProperyName) && (id<(kGroupParticleProperyName+max_particle_group))) {
 		state.cur_group_particle_idx=id-kGroupParticleProperyName;
-		if (double_click) list_palette_set_level(3);
+		if (double_click) list_palette_set_level(&alt_property_palette,3);
 		return;
 	}
 	
@@ -129,7 +129,7 @@ void alt_property_palette_click_particle_group(int particle_idx,int id,bool doub
 		particle->group.particles[idx].name[0]=0x0;
 		particle->group.particles[idx].shift=0;
 
-		list_palette_set_level(3);
+		list_palette_set_level(&alt_property_palette,3);
 		property_palette_pick_particle(particle->group.particles[idx].name);
 
 		return;

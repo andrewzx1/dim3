@@ -80,7 +80,7 @@ void property_palette_click_chooser(int id,bool double_click)
 	if ((id>=kChooserPropertyChooserName) && (id<(kChooserPropertyChooserName+max_iface_chooser))) {
 		state.cur_chooser_idx=id-kChooserPropertyChooserName;
 		state.cur_chooser_piece_idx=-1;
-		if (double_click) list_palette_set_level(2);
+		if (double_click) list_palette_set_level(&property_palette,2);
 		return;
 	}
 

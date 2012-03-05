@@ -26,6 +26,13 @@ and can be sold or given away.
 *********************************************************************/
 
 //
+// main app
+//
+
+extern bool main_app_initialize(void);
+extern void main_app_shutdown(void);
+
+//
 // main window
 //
 
@@ -94,6 +101,16 @@ extern void texture_palette_put_selected_texture(int txt_idx);
 extern void texture_palette_reset(void);
 
 //
+// file list palette
+//
+
+extern void file_palette_initialize(void);
+extern void file_palette_shutdown(void);
+extern void file_palette_draw(void);
+extern void file_palette_scroll_wheel(d3pnt *pnt,int move);
+extern bool file_palette_click(d3pnt *pnt,bool double_click);
+
+//
 // item list palette
 //
 
@@ -113,6 +130,7 @@ extern bool item_palette_click(d3pnt *pnt,bool double_click);
 
 extern void property_palette_fill_texture(int texture_idx);
 extern void property_palette_fill_editor_preference(void);
+extern void property_palette_fill_main(void);
 extern void property_palette_fill_map(void);
 extern void property_palette_fill_camera(void);
 extern void property_palette_fill_light_media(void);
@@ -131,6 +149,7 @@ extern void property_palette_fill_node(int node_idx);
 
 extern void property_palette_click_texture(int texture_idx,int id,bool double_click);
 extern void property_palette_click_editor_preference(int id,bool double_click);
+extern void property_palette_click_main(int id,bool double_click);
 extern void property_palette_click_map(int id,bool double_click);
 extern void property_palette_click_camera(int id,bool double_click);
 extern void property_palette_click_light_media(int id,bool double_click);
@@ -152,7 +171,7 @@ extern void property_palette_shutdown(void);
 extern void property_palette_draw(void);
 extern void property_palette_reset(void);
 extern void property_palette_scroll_wheel(d3pnt *pnt,int move);
-extern bool property_palette_click(d3pnt *pnt,bool double_click);
+extern void property_palette_click(d3pnt *pnt,bool double_click);
 extern void property_palette_pick_group(int *group_idx);
 extern void property_palette_pick_spot(char *name);
 extern void property_palette_pick_sound(char *name,bool include_none);

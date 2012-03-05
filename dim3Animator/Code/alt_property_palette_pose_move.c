@@ -190,7 +190,7 @@ void alt_property_palette_click_animate_pose_move(int animate_idx,int pose_move_
 	if ((id>=kAnimationPoseMovePropertyParticle) && (id<(kAnimationPoseMovePropertyParticle+max_model_animate_particle))) {
 		state.cur_animate_pose_move_particle_idx=id-kAnimationPoseMovePropertyParticle;
 		state.cur_animate_pose_move_ring_idx=-1;
-		if (double_click) list_palette_set_level(3);
+		if (double_click) list_palette_set_level(&alt_property_palette,3);
 		return;
 	}
 	
@@ -217,7 +217,7 @@ void alt_property_palette_click_animate_pose_move(int animate_idx,int pose_move_
 	if ((id>=kAnimationPoseMovePropertyRing) && (id<(kAnimationPoseMovePropertyRing+max_model_animate_ring))) {
 		state.cur_animate_pose_move_particle_idx=-1;
 		state.cur_animate_pose_move_ring_idx=id-kAnimationPoseMovePropertyRing;
-		if (double_click) list_palette_set_level(3);
+		if (double_click) list_palette_set_level(&alt_property_palette,3);
 		return;
 	}
 	

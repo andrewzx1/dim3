@@ -87,7 +87,7 @@ void property_palette_click_pose(int pose_idx,int id,bool double_click)
 
 	if (id>=kPosePropertyBoneMove) {
 		state.cur_pose_bone_move_idx=id-kPosePropertyBoneMove;
-		if (double_click) list_palette_set_level(2);
+		if (double_click) list_palette_set_level(&property_palette,2);
 		return;
 	}
 

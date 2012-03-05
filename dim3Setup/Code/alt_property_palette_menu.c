@@ -91,7 +91,7 @@ void alt_property_palette_click_menu(int menu_idx,int id,bool double_click)
 
 	if ((id>=kMenuPropertyMenuItemName) && (id<(kMenuPropertyMenuItemName+max_menu_item))) {
 		state.cur_menu_item_idx=id-kMenuPropertyMenuItemName;
-		if (double_click) list_palette_set_level(3);
+		if (double_click) list_palette_set_level(&alt_property_palette,3);
 		return;
 	}
 

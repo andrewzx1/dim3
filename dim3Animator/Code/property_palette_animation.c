@@ -103,7 +103,7 @@ void property_palette_click_animation(int animate_idx,int id,bool double_click)
 	if ((id>=kAnimationPropertyPoseMove) && (id<kAnimationPropertyPoseMoveDelete)) {
 		state.cur_animate_pose_move_idx=id-kAnimationPropertyPoseMove;
 		state.cur_pose_idx=animate->pose_moves[state.cur_animate_pose_move_idx].pose_idx;
-		if (double_click) list_palette_set_level(2);
+		if (double_click) list_palette_set_level(&property_palette,2);
 		return;
 	}
 	
@@ -119,8 +119,8 @@ void property_palette_click_animation(int animate_idx,int id,bool double_click)
 		
 	if (id==kAnimationPropertyPoseAdd) {
 		state.cur_animate_pose_move_idx=model_animate_pose_insert(&model,animate_idx,state.cur_animate_pose_move_idx,0);
-		list_palette_set_level(2);
-		list_palette_start_picking_mode("Pick a Pose",(char*)model.poses,model.npose,sizeof(model_pose_type),(int)offsetof(model_pose_type,name),FALSE,FALSE,&model.animates[animate_idx].pose_moves[state.cur_animate_pose_move_idx].pose_idx,NULL);
+		list_palette_set_level(&property_palette,2);
+		list_palette_start_picking_mode(&property_palette,"Pick a Pose",(char*)model.poses,model.npose,sizeof(model_pose_type),(int)offsetof(model_pose_type,name),FALSE,FALSE,&model.animates[animate_idx].pose_moves[state.cur_animate_pose_move_idx].pose_idx,NULL);
 		return;
 	}
 	

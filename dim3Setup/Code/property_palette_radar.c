@@ -108,7 +108,7 @@ void property_palette_click_radar(int id,bool double_click)
 
 	if ((id>=kRadarPropertyIconName) && (id<(kRadarPropertyIconName+max_radar_icon))) {
 		state.cur_radar_icon_idx=id-kRadarPropertyIconName;
-		if (double_click) list_palette_set_level(2);
+		if (double_click) list_palette_set_level(&property_palette,2);
 		return;
 	}
 

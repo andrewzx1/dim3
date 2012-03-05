@@ -44,8 +44,6 @@ extern model_draw_setup			draw_setup;
 extern animator_state_type		state;
 extern file_path_setup_type		file_path_setup;
 
-extern bool						list_palette_open;
-
 list_palette_type				item_palette;
 
 /* =======================================================
@@ -56,7 +54,7 @@ list_palette_type				item_palette;
 
 void item_palette_initialize(void)
 {
-	list_palette_list_initialize(&item_palette,"Model Items",FALSE);
+	list_palette_list_initialize(&item_palette,"Model Items");
 
 	item_palette.item_type=0;
 	item_palette.item_idx=-1;
@@ -148,7 +146,7 @@ void item_palette_fill(void)
 
 void item_palette_draw(void)
 {
-	if (list_palette_get_level()!=0) return;
+	if (list_palette_get_level(&item_palette)!=0) return;
 	
 	item_palette_fill();
 	list_palette_draw(&item_palette);
@@ -228,7 +226,7 @@ bool item_palette_delete(void)
 
 void item_palette_scroll_wheel(d3pnt *pnt,int move)
 {
-	if (list_palette_get_level()==0) list_palette_scroll_wheel(&item_palette,pnt,move);
+	if (list_palette_get_level(&item_palette)==0) list_palette_scroll_wheel(&item_palette,pnt,move);
 }
 
 /* =======================================================
@@ -241,16 +239,16 @@ bool item_palette_click(d3pnt *pnt,bool double_click)
 {
 	bool					old_open;
 
-	if (list_palette_get_level()!=0) return(FALSE);
+	if (list_palette_get_level(&item_palette)!=0) return(FALSE);
 	
 		// check if open changes
 	
-	old_open=list_palette_open;
+	old_open=list_palette_is_open(&item_palette);
 
 		// click
 
 	if (!list_palette_click(&item_palette,pnt,double_click)) {
-		if (old_open!=list_palette_open) item_palette_state_rebuild();
+		if (old_open!=list_palette_is_open(&item_palette)) item_palette_state_rebuild();
 		return(TRUE);
 	}
 	
@@ -340,7 +338,7 @@ bool item_palette_click(d3pnt *pnt,bool double_click)
 		// netural pose has no properties
 
 	if (item_palette.item_type==item_neutral_pose) {
-		list_palette_set_level(0);
+		list_palette_set_level(&item_palette,0);
 		main_wind_draw();
 		return(TRUE);
 	}
@@ -350,7 +348,7 @@ bool item_palette_click(d3pnt *pnt,bool double_click)
 
 	if (double_click) {
 		property_palette_reset();
-		list_palette_set_level(1);
+		list_palette_set_level(&item_palette,1);
 	}
 
 	main_wind_draw();

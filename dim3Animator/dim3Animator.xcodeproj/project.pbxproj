@@ -149,6 +149,7 @@
 		26D15D9C1329EA9200F9EC7B /* OSX_dialog_property_chord.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D15D951329EA9200F9EC7B /* OSX_dialog_property_chord.c */; };
 		26D15D9E1329EA9200F9EC7B /* OSX_dialog_property_string.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D15D971329EA9200F9EC7B /* OSX_dialog_property_string.c */; };
 		26D15D9F1329EA9200F9EC7B /* OSX_dialog_utility_common.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D15D981329EA9200F9EC7B /* OSX_dialog_utility_common.c */; };
+		26D839461502D62B004EF99F /* main_app.c in Sources */ = {isa = PBXBuildFile; fileRef = 26D839451502D62B004EF99F /* main_app.c */; };
 		26E45E8314527FBA00007E57 /* model_util_file_model.c in Sources */ = {isa = PBXBuildFile; fileRef = 26E45E8214527FBA00007E57 /* model_util_file_model.c */; };
 		26EE4951126B84F8001D0025 /* animator_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 26EE4950126B84F8001D0025 /* animator_defs.h */; };
 		26EE498E126B87A4001D0025 /* texture_palette_common.c in Sources */ = {isa = PBXBuildFile; fileRef = 26EE498D126B87A4001D0025 /* texture_palette_common.c */; };
@@ -397,6 +398,7 @@
 		26D15D951329EA9200F9EC7B /* OSX_dialog_property_chord.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = OSX_dialog_property_chord.c; path = ../dim3Common/Code/OSX_dialog_property_chord.c; sourceTree = SOURCE_ROOT; };
 		26D15D971329EA9200F9EC7B /* OSX_dialog_property_string.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = OSX_dialog_property_string.c; path = ../dim3Common/Code/OSX_dialog_property_string.c; sourceTree = SOURCE_ROOT; };
 		26D15D981329EA9200F9EC7B /* OSX_dialog_utility_common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = OSX_dialog_utility_common.c; path = ../dim3Common/Code/OSX_dialog_utility_common.c; sourceTree = SOURCE_ROOT; };
+		26D839451502D62B004EF99F /* main_app.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = main_app.c; path = Code/main_app.c; sourceTree = "<group>"; };
 		26E45E8214527FBA00007E57 /* model_util_file_model.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = model_util_file_model.c; sourceTree = "<group>"; };
 		26EE4950126B84F8001D0025 /* animator_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = animator_defs.h; path = Headers/animator_defs.h; sourceTree = "<group>"; };
 		26EE498D126B87A4001D0025 /* texture_palette_common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = texture_palette_common.c; path = ../dim3Common/Code/texture_palette_common.c; sourceTree = SOURCE_ROOT; };
@@ -472,6 +474,7 @@
 		0123D84A00C09EE17F000001 /* Windows */ = {
 			isa = PBXGroup;
 			children = (
+				26D839451502D62B004EF99F /* main_app.c */,
 				261CE8E212D02A9A00D1D8BF /* main_window.c */,
 				26CAEC7912D675C500310691 /* texture_edit_common.c */,
 				262C380112CFA5AE00A94FEE /* text_common.c */,
@@ -1064,6 +1067,7 @@
 				26334A6814B52DF600C25B01 /* alt2_property_palette_pose_move_particle.c in Sources */,
 				26334A6914B52DF600C25B01 /* alt2_property_palette_pose_move_ring.c in Sources */,
 				26334A6A14B52DF600C25B01 /* alt2_property_palette.c in Sources */,
+				26D839461502D62B004EF99F /* main_app.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -39,6 +39,8 @@ extern bool						list_palette_open;
 extern model_type				model;
 extern animator_state_type		state;
 
+extern list_palette_type		property_palette;
+
 /* =======================================================
 
       Texture Palette Settings
@@ -69,7 +71,7 @@ int texture_palette_pixel_size(void)
 	
 	rx=wbox.rx;
 	
-	if (list_palette_open) {
+	if (list_palette_is_open(&property_palette)) {
 		rx-=list_palette_tree_sz;
 	}
 	else {
@@ -90,7 +92,7 @@ void texture_palette_box(d3rect *box)
 	
 	rx=wbox.rx;
 	
-	if (list_palette_open) {
+	if (list_palette_is_open(&property_palette)) {
 		rx-=list_palette_tree_sz;
 	}
 	else {

@@ -43,8 +43,6 @@ and can be sold or given away.
 
 extern file_path_setup_type		file_path_setup;
 
-int								list_palette_level;
-bool							list_palette_open;
 bitmap_type						list_bitmaps[5];
 
 list_palette_picker_type		list_picker;
@@ -60,14 +58,6 @@ void list_palette_initialize(char *app_name)
 	int				n;
 	char			sub_path[1024],path[1024];
 	char			btn_names[5][32]={"Back","Edit","Plus","Minus","Set"};
-
-		// start open
-
-	list_palette_open=TRUE;
-	
-		// start level 0
-		
-	list_palette_level=0;
 
 		// list picker off
 
@@ -93,7 +83,7 @@ void list_palette_shutdown(void)
 	}
 }
 
-void list_palette_list_initialize(list_palette_type *list,char *title,bool back_on)
+void list_palette_list_initialize(list_palette_type *list,char *title)
 {
 	strcpy(list->titles[0],title);
 	list->titles[1][0]=list->titles[2][0]=0x0;
@@ -101,7 +91,9 @@ void list_palette_list_initialize(list_palette_type *list,char *title,bool back_
 	list->scroll_offset=0;
 	list->total_high=0;
 	
-	list->back_on=back_on;
+	list->level=0;
+	
+	list->open=TRUE;
 	list->back_push_on=FALSE;
 
 	list->push_on=FALSE;
@@ -162,19 +154,24 @@ int list_palette_get_title_high(list_palette_type *list)
 
 /* =======================================================
 
-      List Palette Levels
+      List Palette Levels and Open State
       
 ======================================================= */
 
-int list_palette_get_level(void)
+int list_palette_get_level(list_palette_type *list)
 {
-	return(list_palette_level);
+	return(list->level);
 }
 
-void list_palette_set_level(int level)
+void list_palette_set_level(list_palette_type *list,int level)
 {
 	list_picker.on=FALSE;		// level change always turns off picker
-	list_palette_level=level;
+	list->level=level;
+}
+
+bool list_palette_is_open(list_palette_type *list)
+{
+	return(list->open);
 }
 
 /* =======================================================
@@ -183,7 +180,7 @@ void list_palette_set_level(int level)
       
 ======================================================= */
 
-void list_palette_box(d3rect *box)
+void list_palette_box(list_palette_type *list,d3rect *box)
 {
 #ifndef D3_SETUP
 	int				pixel_sz;
@@ -198,7 +195,7 @@ void list_palette_box(d3rect *box)
 	box->ty=wbox.ty;
 	box->by=wbox.by;
 #else
-	if (list_palette_open) {
+	if (list->open) {
 		pixel_sz=list_palette_tree_sz;
 	}
 	else {
@@ -230,7 +227,7 @@ list_palette_item_type* list_palette_create_item(list_palette_type *list,int ctr
 	item->button_type=list_button_none;
 	item->disabled=FALSE;
 	
-	list_palette_box(&box);
+	list_palette_box(list,&box);
 
 	item->x=box.lx+(list_palette_border_sz+4);
 	if (ctrl_type!=list_item_ctrl_header) item->x+=10;
@@ -698,7 +695,7 @@ void list_palette_delete_all_items(list_palette_type *list)
       
 ======================================================= */
 
-void list_palette_start_picking_mode(char *title,char *list_ptr,int list_count,int list_item_sz,int list_name_offset,bool include_none,bool file_list,int *idx_ptr,char *name_ptr)
+void list_palette_start_picking_mode(list_palette_type *list,char *title,char *list_ptr,int list_count,int list_item_sz,int list_name_offset,bool include_none,bool file_list,int *idx_ptr,char *name_ptr)
 {
 	list_picker.on=TRUE;
 	list_picker.picker_idx_ptr=idx_ptr;
@@ -954,7 +951,7 @@ int list_palette_get_scroll_offset_max(list_palette_type *list)
 	int				high;
 	d3rect			box;
 	
-	list_palette_box(&box);
+	list_palette_box(list,&box);
 	
 	high=list->total_high-(box.by-(box.ty+list_palette_get_title_high(list)));
 	if (high<=0) return(0);
@@ -967,7 +964,7 @@ void list_palette_get_scroll_thumb_position(list_palette_type *list,int *thumb_t
 	int				scroll_max,high,div,thumb_size;
 	d3rect			box;
 
-	list_palette_box(&box);
+	list_palette_box(list,&box);
 	scroll_max=list_palette_get_scroll_offset_max(list);
 
 	box.ty+=list_palette_get_title_high(list);
@@ -991,7 +988,7 @@ int list_palette_get_scroll_thumb_page_offset(list_palette_type *list)
 	int				scroll_max,high,div;
 	d3rect			box;
 
-	list_palette_box(&box);
+	list_palette_box(list,&box);
 	scroll_max=list_palette_get_scroll_offset_max(list);
 
 	box.ty+=list_palette_get_title_high(list);
@@ -1015,7 +1012,7 @@ void list_palette_draw_item_color_box(list_palette_type *list,list_palette_item_
 	float				vertexes[8];
 	d3rect				box;
 	
-	list_palette_box(&box);
+	list_palette_box(list,&box);
 
 	x=box.rx-(list_item_font_high+(list_palette_scroll_wid+4));
 	y=item->y-list->scroll_offset;
@@ -1047,7 +1044,7 @@ void list_palette_draw_item_check_box(list_palette_type *list,list_palette_item_
 	float				vertexes[8];
 	d3rect				box;
 	
-	list_palette_box(&box);
+	list_palette_box(list,&box);
 
 	lx=box.rx-(list_item_font_high+(list_palette_scroll_wid+2));
 	rx=lx+(list_item_font_high-2);
@@ -1099,7 +1096,7 @@ void list_palette_draw_item_string(list_palette_type *list,list_palette_item_typ
 	d3col				col;
 	d3rect				box;
 	
-	list_palette_box(&box);
+	list_palette_box(list,&box);
 
 	rx=box.rx-(list_palette_scroll_wid+4);
 	if (item->button_type!=list_button_none) rx-=(list_item_font_high+2);
@@ -1123,7 +1120,7 @@ void list_palette_draw_item_button(list_palette_type *list,int idx)
 	d3rect					box;
 	list_palette_item_type *item;
 	
-	list_palette_box(&box);
+	list_palette_box(list,&box);
 
 	item=&list->items[idx];
 	if (item->button_type==list_button_none) return;
@@ -1175,7 +1172,7 @@ void list_palette_draw_setup(list_palette_type *list)
 	float					vertexes[8];
 	d3rect					wbox,box;
 
-	list_palette_box(&box);
+	list_palette_box(list,&box);
 	
 		// viewport setup
 		
@@ -1219,7 +1216,7 @@ void list_palette_draw_title(list_palette_type *list)
 	float				vertexes[8],colors[16],uvs[8]={0.0f,0.0f,1.0f,0.0f,1.0f,1.0f,0.0f,1.0f};
 	d3rect				box;
 	
-	list_palette_box(&box);
+	list_palette_box(list,&box);
 
 		// title background
 
@@ -1270,7 +1267,7 @@ void list_palette_draw_title(list_palette_type *list)
 	
 		// back arrow
 		
-	if ((!list->back_on) && (!list_picker.on)) return;
+	if ((list->level==0) || (list_picker.on)) return;
 	
 #ifndef D3_SETUP
 	lx=box.lx+12;
@@ -1319,7 +1316,7 @@ void list_palette_draw_scrollbar(list_palette_type *list)
 	float				vertexes[8],colors[16];
 	d3rect				box;
 
-	list_palette_box(&box);
+	list_palette_box(list,&box);
 	
 		// scroll bar background
 
@@ -1404,7 +1401,7 @@ void list_palette_draw_border(list_palette_type *list)
 	float				vertexes[8],colors[16];
 	d3rect				box;
 	
-	list_palette_box(&box);
+	list_palette_box(list,&box);
 
 	lx=box.lx;
 	rx=box.lx+list_palette_border_sz;
@@ -1456,7 +1453,7 @@ void list_palette_draw_item(list_palette_type *list,int idx)
 	d3rect						box;
 	list_palette_item_type		*item;
 
-	list_palette_box(&box);
+	list_palette_box(list,&box);
 	
 	item=&list->items[idx];
 
@@ -1780,7 +1777,7 @@ bool list_palette_click_item(list_palette_type *list,int item_idx)
 
 		// do the hold and click
 		
-	list_palette_box(&box);
+	list_palette_box(list,&box);
 
 	list->push_on=TRUE;
 	list->push_idx=item_idx;
@@ -1849,7 +1846,7 @@ bool list_palette_click_back(list_palette_type *list)
 
 		// do the hold and click
 		
-	list_palette_box(&box);
+	list_palette_box(list,&box);
 	box.by=box.ty+list_palette_get_title_high(list);
 
 	list->back_push_on=TRUE;
@@ -1886,7 +1883,7 @@ void list_palette_click_scroll_bar(list_palette_type *list)
 	d3pnt					pt,org_pt;
 	d3rect					box;
 	
-	list_palette_box(&box);
+	list_palette_box(list,&box);
 
 		// scrolling sizes
 		
@@ -1956,7 +1953,7 @@ bool list_palette_click(list_palette_type *list,d3pnt *pnt,bool double_click)
 	d3fpnt					uv_ptr;
 	list_palette_item_type	*item;
 
-	list_palette_box(&box);
+	list_palette_box(list,&box);
 
 	pt.x=pnt->x-box.lx;
 	pt.y=pnt->y-box.ty;
@@ -1964,7 +1961,7 @@ bool list_palette_click(list_palette_type *list,d3pnt *pnt,bool double_click)
 		// click in close border
 
 	if (pt.x<=list_palette_border_sz) {
-		list_palette_open=!list_palette_open;
+		list->open=!list->open;
 		main_wind_draw();
 		return(FALSE);
 	}
@@ -1972,13 +1969,13 @@ bool list_palette_click(list_palette_type *list,d3pnt *pnt,bool double_click)
 		// click in title
 		
 	if (pt.y<list_palette_get_title_high(list)) {
-		if (list->back_on) {
+		if ((list->level!=0) && (!list_picker.on)) {
 			if (list_palette_click_back(list)) {
 				if (list_picker.on) {
 					list_picker.on=FALSE;
 				}
 				else {
-					list_palette_set_level(list_palette_level-1);
+					list_palette_set_level(list,(list->level-1));
 				}
 				main_wind_draw();
 			}

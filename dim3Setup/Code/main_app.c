@@ -2,7 +2,7 @@
 
 Module: dim3 Setup
 Author: Brian Barnes
- Usage: Property Palette Actions
+ Usage: Main App Routines
 
 ***************************** License ********************************
 
@@ -33,45 +33,47 @@ and can be sold or given away.
 #include "ui_common.h"
 #include "interface.h"
 
-#define kActionPropertyAdd						0
-#define kActionProperyName						1000
-
 extern iface_type				iface;
-extern setup_state_type			state;
-extern list_palette_type		property_palette;
-
-char							control_name_str[][32]=control_names;
+extern file_path_setup_type		file_path_setup;
 
 /* =======================================================
 
-      Property Palette Fill Actions
-      
+      Initialize and Shutdown
+	        
 ======================================================= */
 
-void property_palette_fill_actions(void)
+bool main_app_initialize(void)
 {
-	int						n;
-
-	list_palette_set_title(&property_palette,"Actions",NULL,NULL,NULL,NULL,NULL);
-
-	list_palette_add_header(&property_palette,0,"Actions");
+	os_glue_start();
+	os_set_arrow_cursor();
 	
-	for (n=0;n!=ncontrol;n++) {
-		list_palette_add_string_selectable(&property_palette,(kActionProperyName+n),control_name_str[n],NULL,(state.cur_action_idx==n),FALSE);
+		// setup file paths
+		
+	if (!file_paths_setup(&file_path_setup)) {
+		os_dialog_alert("Error","No data folder found");
+		os_glue_end();
+		return(FALSE);
 	}
+	
+		// load interface and setup files
+	
+	if (!iface_initialize(&iface,&file_path_setup)) {
+		os_dialog_alert("Error","Out of Memory");
+		os_glue_end();
+		return(FALSE);
+	}
+	
+	iface_read(&iface);
+	
+	return(TRUE);
 }
 
-/* =======================================================
-
-      Property Palette Click Actions
-      
-======================================================= */
-
-void property_palette_click_actions(int id,bool double_click)
+void main_app_shutdown(void)
 {
-		// edit action
+		// close interface and
+		// end glue
 		
-	state.cur_action_idx=id-kActionProperyName;
-	if (double_click) list_palette_set_level(&property_palette,2);
+	iface_shutdown(&iface);
+	os_glue_end();
 }
 

@@ -39,8 +39,6 @@ extern animator_state_type		state;
 extern file_path_setup_type		file_path_setup;
 extern iface_type				iface;
 
-extern bool						list_palette_open;
-
 char							property_bone_list[max_model_bone][name_str_len+1];
 
 list_palette_type				property_palette;
@@ -53,7 +51,7 @@ list_palette_type				property_palette;
 
 void property_palette_initialize(void)
 {
-	list_palette_list_initialize(&property_palette,"No Properties",TRUE);
+	list_palette_list_initialize(&property_palette,"No Properties");
 
 	property_palette.item_type=0;
 	property_palette.item_idx=-1;
@@ -131,7 +129,7 @@ void property_palette_fill(void)
 
 void property_palette_draw(void)
 {
-	if (list_palette_get_level()!=1) return;
+	if (list_palette_get_level(&property_palette)!=1) return;
 	
 	property_palette_fill();
 	list_palette_draw(&property_palette);
@@ -156,7 +154,7 @@ void property_palette_reset(void)
 
 void property_palette_scroll_wheel(d3pnt *pnt,int move)
 {
-	if (list_palette_get_level()==1) list_palette_scroll_wheel(&property_palette,pnt,move);
+	if (list_palette_get_level(&property_palette)==1) list_palette_scroll_wheel(&property_palette,pnt,move);
 }
 
 /* =======================================================
@@ -169,16 +167,16 @@ bool property_palette_click(d3pnt *pnt,bool double_click)
 {
 	bool				old_open;
 	
-	if (list_palette_get_level()!=1) return(FALSE);
+	if (list_palette_get_level(&property_palette)!=1) return(FALSE);
 
 		// check if open changes
 	
-	old_open=list_palette_open;
+	old_open=list_palette_is_open(&property_palette);
 
 		// click
 
 	if (!list_palette_click(&property_palette,pnt,double_click)) {
-		if (old_open!=list_palette_open) item_palette_state_rebuild();
+		if (old_open!=list_palette_is_open(&property_palette)) item_palette_state_rebuild();
 		return(TRUE);
 	}
 
@@ -299,6 +297,6 @@ void property_palette_pick_bone(int *bone_idx,int circular_check_bone_idx)
 		strcpy(property_bone_list[n],model.bones[n].name);
 	}
 
-	list_palette_start_picking_mode("Pick a Bone",(char*)property_bone_list,model.nbone,(name_str_len+1),0,TRUE,FALSE,bone_idx,NULL);
+	list_palette_start_picking_mode(&property_palette,"Pick a Bone",(char*)property_bone_list,model.nbone,(name_str_len+1),0,TRUE,FALSE,bone_idx,NULL);
 }
 

@@ -2,7 +2,7 @@
 
 Module: dim3 Editor
 Author: Brian Barnes
- Usage: Item Palette
+ Usage: File Palette
 
 ***************************** License ********************************
 
@@ -50,7 +50,7 @@ extern file_path_setup_type		file_path_setup;
 
 extern list_palette_type		property_palette;
 
-list_palette_type				item_palette;
+list_palette_type				file_palette;
 
 /* =======================================================
 
@@ -58,25 +58,25 @@ list_palette_type				item_palette;
       
 ======================================================= */
 
-void item_palette_initialize(void)
+void file_palette_initialize(void)
 {
-	list_palette_list_initialize(&item_palette,"Map Items");
+	list_palette_list_initialize(&file_palette,"Maps");
 
-	item_palette.item_type=0;
-	item_palette.item_idx=-1;
+	file_palette.item_type=0;
+	file_palette.item_idx=-1;
 }
 
-void item_palette_shutdown(void)
+void file_palette_shutdown(void)
 {
-	list_palette_list_shutdown(&item_palette);
+	list_palette_list_shutdown(&file_palette);
 }
 
 /* =======================================================
 
-      Item Palette Fill
+      File Palette Fill
       
 ======================================================= */
-
+/*
 void item_palette_fill(void)
 {
 	int			n;
@@ -192,199 +192,55 @@ void item_palette_fill(void)
 
 	list_palette_sort(&item_palette);
 }
-
+*/
 /* =======================================================
 
-      Item Palette Draw
+      File Palette Draw
       
 ======================================================= */
 
-void item_palette_draw(void)
+void file_palette_draw(void)
 {
-	if (list_palette_get_level(&item_palette)!=0) return;
+/*
+	if (list_palette_get_level(&file_palette)!=0) return;
 	
 	item_palette_fill();
 	list_palette_draw(&item_palette);
+	*/
 }
 
 /* =======================================================
 
-      Item Palette Reset For Selection Change
+      File Palette Scroll Wheel
       
 ======================================================= */
 
-void item_palette_scroll_into_view(int item_type,int item_idx)
+void file_palette_scroll_wheel(d3pnt *pnt,int move)
 {
-	item_palette_fill();
-	list_palette_scroll_item_into_view(&item_palette,item_type,item_idx);
-}
-
-void item_palette_reset(void)
-{
-	int				sel_type,main_idx,sub_idx;
-
-	if (select_count()==0) {
-		item_palette.item_type=map_setting_piece;
-		item_palette.item_idx=-1;
-
-		item_palette_scroll_into_view(map_setting_piece,0);
-		return;
-	}
-	
-	select_get(0,&sel_type,&main_idx,&sub_idx);
-	if ((sel_type==mesh_piece) || (sel_type==liquid_piece)) {
-		item_palette.item_type=-1;
-		item_palette.item_idx=-1;
-		return;
-	}
-
-	item_palette.item_type=sel_type;
-	item_palette.item_idx=main_idx;
-
-	item_palette_scroll_into_view(sel_type,main_idx);
-
-		// alt window items
-
-	state.cur_cinema_idx=-1;
-	state.cur_cinema_action_idx=-1;
-	state.cur_movement_idx=-1;
-	state.cur_movement_move_idx=-1;
-
-		// reset windows
-
-	property_palette_reset();
-}
-
-void item_palette_select(int sel_type,int sel_idx)
-{
-	item_palette.item_type=sel_type;
-	item_palette.item_idx=sel_idx;
-	
-	item_palette_scroll_into_view(sel_type,sel_idx);
-
-	main_wind_draw();
+//	if (list_palette_get_level(&file_palette)==0) list_palette_scroll_wheel(&item_palette,pnt,move);
 }
 
 /* =======================================================
 
-      Item Palette Delete
+      File Palette Click
       
 ======================================================= */
 
-bool item_palette_delete(void)
-{
-	int					n,k;
-	bool				del_ok;
-	
-		// anything to delete?
-
-	if ((item_palette.item_type==-1) || (item_palette.item_idx==-1)) return(FALSE);
-
-	switch (item_palette.item_type) {
-
-			// delete group
-			
-		case group_piece:
-			
-				// check if this group is used within a movement
-				
-			del_ok=TRUE;
-			
-			for (n=0;n!=map.movement.nmovement;n++) {
-				if ((map.movement.movements[n].group_idx==item_palette.item_idx) || (map.movement.movements[n].reverse_group_idx==item_palette.item_idx)) {
-					del_ok=FALSE;
-					break;
-				}
-			}
-			
-			if (!del_ok) {
-				os_dialog_alert("Delete Group","This group is being used in a movement, it can not be deleted");
-				return(TRUE);
-			}
-				
-				// delete group
-				
-			if (os_dialog_confirm("Delete Group","Is it okay to delete this group?",FALSE)!=0) return(FALSE);
-			map_group_delete(&map,item_palette.item_idx);
-			item_palette_reset();
-			return(TRUE);
-
-			// delete movement
-			
-		case movement_piece:
-		
-				// check if movement is used within a cinema
-				
-			del_ok=TRUE;
-			
-			for (n=0;n!=map.cinema.ncinema;n++) {
-				for (k=0;k!=map.cinema.cinemas[n].naction;k++) {
-					if (map.cinema.cinemas[n].actions[k].actor_type==cinema_actor_movement) {
-						if (strcasecmp(map.cinema.cinemas[n].actions[k].actor_name,map.movement.movements[item_palette.item_idx].name)==0) {
-							del_ok=FALSE;
-							break;
-						}
-					}
-				}
-			}
-			
-			if (!del_ok) {
-				os_dialog_alert("Delete Movement","This movement is being used in a cinema, it can not be deleted");
-				return(TRUE);
-			}
-			
-				// delete movement
-				
-			if (os_dialog_confirm("Delete Movement","Is it okay to delete this movement?",FALSE)!=0) return(FALSE);
-			map_movement_delete(&map,item_palette.item_idx);
-			item_palette_reset();
-			return(TRUE);
-
-			// delete cinema
-			
-		case cinema_piece:
-			if (os_dialog_confirm("Delete Cinema","Is it okay to delete this cinema?",FALSE)!=0) return(FALSE);
-			map_cinema_delete(&map,item_palette.item_idx);
-			item_palette_reset();
-			return(TRUE);
-
-	}
-
-	return(FALSE);
-}
-
-/* =======================================================
-
-      Item Palette Scroll Wheel
-      
-======================================================= */
-
-void item_palette_scroll_wheel(d3pnt *pnt,int move)
-{
-	if (list_palette_get_level(&item_palette)==0) list_palette_scroll_wheel(&item_palette,pnt,move);
-}
-
-/* =======================================================
-
-      Item Palette Click
-      
-======================================================= */
-
-bool item_palette_click(d3pnt *pnt,bool double_click)
+bool file_palette_click(d3pnt *pnt,bool double_click)
 {
 /*
 	bool					old_open;
 	
-	if (list_palette_get_level(&item_palette)!=0) return(FALSE);
+	if (list_palette_get_level(&file_palette)!=0) return(FALSE);
 
 		// check if open changes
 	
-	old_open=list_palette_open;
+	old_open=list_palette_is_open(&file_palette);
 
 		// click
 
-	if (!list_palette_click(&item_palette,pnt,double_click)) {
-		if (old_open!=list_palette_open) main_wind_draw();
+	if (!list_palette_click(&file_palette,pnt,double_click)) {
+		if (old_open!=list_palette_is_open(&file_palette)) main_wind_draw();
 		return(TRUE);
 	}
 
@@ -503,7 +359,7 @@ bool item_palette_click(d3pnt *pnt,bool double_click)
 		
 	if (double_click) {
 		property_palette_reset();
-		list_palette_set_level(&item_palette,1);
+		list_palette_set_level(&file_palette,1);
 	}
 
 	main_wind_draw();
