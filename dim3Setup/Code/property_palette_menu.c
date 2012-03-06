@@ -44,11 +44,11 @@ extern list_palette_type		property_palette;
 
 /* =======================================================
 
-      Property Palette Fill Menu
+      Property Palette Fill Menus
       
 ======================================================= */
 
-void property_palette_fill_menu(void)
+void property_palette_fill_menus(void)
 {
 	int				n;
 	char			str[256];
@@ -74,7 +74,7 @@ void property_palette_fill_menu(void)
       
 ======================================================= */
 
-void property_palette_click_menu(int id,bool double_click)
+void property_palette_click_menus(int id,bool double_click)
 {
 	int					idx,sz;
 

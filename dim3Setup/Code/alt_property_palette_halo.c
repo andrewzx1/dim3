@@ -2,7 +2,7 @@
 
 Module: dim3 Setup
 Author: Brian Barnes
- Usage: Alt Property Palette Halo
+ Usage: Property Palette Halo
 
 ***************************** License ********************************
 
@@ -47,7 +47,7 @@ and can be sold or given away.
 
 extern iface_type				iface;
 extern setup_state_type			state;
-extern list_palette_type		alt_property_palette;
+extern list_palette_type		property_palette;
 
 /* =======================================================
 
@@ -55,43 +55,43 @@ extern list_palette_type		alt_property_palette;
       
 ======================================================= */
 
-void alt_property_palette_fill_halo(int halo_idx)
+void property_palette_fill_halo(int halo_idx)
 {
 	iface_halo_type			*halo;
 
 	halo=&iface.halo_list.halos[halo_idx];
 
-	list_palette_set_title(&alt_property_palette,"Halos",NULL,"Halo",halo->name,NULL,NULL);
+	list_palette_set_title(&property_palette,"Halos",NULL,"Halo",halo->name,NULL,NULL);
 
 		// settings
 
-	list_palette_add_header(&alt_property_palette,0,"Settings");
-	list_palette_add_string(&alt_property_palette,kHaloSettingsName,"Name",halo->name,FALSE);
-	list_palette_add_picker_file(&alt_property_palette,kHaloSettingsFileName,list_button_none,0,"Bitmap","Bitmaps/Halos","png","",halo->bitmap_name,FALSE);
+	list_palette_add_header(&property_palette,0,"Settings");
+	list_palette_add_string(&property_palette,kHaloSettingsName,"Name",halo->name,FALSE);
+	list_palette_add_picker_file(&property_palette,kHaloSettingsFileName,list_button_none,0,"Bitmap","Bitmaps/Halos","png","",halo->bitmap_name,FALSE);
 
 		// distance
 
-	list_palette_add_header(&alt_property_palette,0,"Distance");
-	list_palette_add_int(&alt_property_palette,kHaloDistanceMin,"Minimum",&halo->min_dist,FALSE);
-	list_palette_add_int(&alt_property_palette,kHaloDistanceMax,"Maximum",&halo->max_dist,FALSE);
+	list_palette_add_header(&property_palette,0,"Distance");
+	list_palette_add_int(&property_palette,kHaloDistanceMin,"Minimum",&halo->min_dist,FALSE);
+	list_palette_add_int(&property_palette,kHaloDistanceMax,"Maximum",&halo->max_dist,FALSE);
 
 		// size
 
-	list_palette_add_header(&alt_property_palette,0,"Size");
-	list_palette_add_int(&alt_property_palette,kHaloSizeMin,"Minimum",&halo->min_size,FALSE);
-	list_palette_add_int(&alt_property_palette,kHaloSizeMax,"Maximum",&halo->max_size,FALSE);
+	list_palette_add_header(&property_palette,0,"Size");
+	list_palette_add_int(&property_palette,kHaloSizeMin,"Minimum",&halo->min_size,FALSE);
+	list_palette_add_int(&property_palette,kHaloSizeMax,"Maximum",&halo->max_size,FALSE);
 
 		// alpha
 
-	list_palette_add_header(&alt_property_palette,0,"Alpha");
-	list_palette_add_float(&alt_property_palette,kHaloAlphaMin,"Minimum",&halo->min_alpha,FALSE);
-	list_palette_add_float(&alt_property_palette,kHaloAlphaMax,"Maximum",&halo->max_alpha,FALSE);
+	list_palette_add_header(&property_palette,0,"Alpha");
+	list_palette_add_float(&property_palette,kHaloAlphaMin,"Minimum",&halo->min_alpha,FALSE);
+	list_palette_add_float(&property_palette,kHaloAlphaMax,"Maximum",&halo->max_alpha,FALSE);
 
 		// options
 
-	list_palette_add_header(&alt_property_palette,0,"Options");
-	list_palette_add_checkbox(&alt_property_palette,kHaloOptionNoClipObject,"No Clip Object",&halo->no_clip_object,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kHaloOptionNoClipSelf,"No Clip Self",&halo->no_clip_self,FALSE);
+	list_palette_add_header(&property_palette,0,"Options");
+	list_palette_add_checkbox(&property_palette,kHaloOptionNoClipObject,"No Clip Object",&halo->no_clip_object,FALSE);
+	list_palette_add_checkbox(&property_palette,kHaloOptionNoClipSelf,"No Clip Self",&halo->no_clip_self,FALSE);
 }
 
 /* =======================================================
@@ -100,7 +100,7 @@ void alt_property_palette_fill_halo(int halo_idx)
       
 ======================================================= */
 
-void alt_property_palette_click_halo(int halo_idx,int id,bool double_click)
+void property_palette_click_halo(int halo_idx,int id,bool double_click)
 {
 	iface_halo_type			*halo;
 

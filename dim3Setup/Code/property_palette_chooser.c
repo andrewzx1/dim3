@@ -44,11 +44,11 @@ extern list_palette_type		property_palette;
 
 /* =======================================================
 
-      Property Palette Fill Chooser
+      Property Palette Fill Choosers
       
 ======================================================= */
 
-void property_palette_fill_chooser(void)
+void property_palette_fill_choosers(void)
 {
 	int				n;
 
@@ -71,7 +71,7 @@ void property_palette_fill_chooser(void)
       
 ======================================================= */
 
-void property_palette_click_chooser(int id,bool double_click)
+void property_palette_click_choosers(int id,bool double_click)
 {
 	int					idx,sz;
 

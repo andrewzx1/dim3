@@ -2,7 +2,7 @@
 
 Module: dim3 Setup
 Author: Brian Barnes
- Usage: Alt Property Palette Particle Group
+ Usage: Property Palette Particle Group
 
 ***************************** License ********************************
 
@@ -42,7 +42,7 @@ and can be sold or given away.
 
 extern iface_type				iface;
 extern setup_state_type			state;
-extern list_palette_type		alt_property_palette;
+extern list_palette_type		property_palette;
 
 /* =======================================================
 
@@ -50,29 +50,29 @@ extern list_palette_type		alt_property_palette;
       
 ======================================================= */
 
-void alt_property_palette_fill_particle_group(int particle_idx)
+void property_palette_fill_particle_group(int particle_idx)
 {
 	int						n;
 	iface_particle_type		*particle;
 
 	particle=&iface.particle_list.particles[particle_idx];
 
-	list_palette_set_title(&alt_property_palette,"Particles",NULL,"Particle Group",particle->name,NULL,NULL);
+	list_palette_set_title(&property_palette,"Particles",NULL,"Particle Group",particle->name,NULL,NULL);
 
-	list_palette_add_header(&alt_property_palette,0,"Settings");
-	list_palette_add_string(&alt_property_palette,kGroupParticleSettingsName,"Name",particle->name,FALSE);
+	list_palette_add_header(&property_palette,0,"Settings");
+	list_palette_add_string(&property_palette,kGroupParticleSettingsName,"Name",particle->name,FALSE);
 
 		// particles list
 
-	list_palette_add_header_button(&alt_property_palette,kGroupParticlePropertyAdd,"Particles",list_button_plus);
+	list_palette_add_header_button(&property_palette,kGroupParticlePropertyAdd,"Particles",list_button_plus);
 
-	list_palette_sort_mark_start(&alt_property_palette);
+	list_palette_sort_mark_start(&property_palette);
 	
 	for (n=0;n!=particle->group.count;n++) {
-		list_palette_add_string_selectable_button(&alt_property_palette,(kGroupParticleProperyName+n),list_button_minus,(kGroupParticleProperyDelete+n),particle->group.particles[n].name,NULL,(state.cur_group_particle_idx==n),FALSE);
+		list_palette_add_string_selectable_button(&property_palette,(kGroupParticleProperyName+n),list_button_minus,(kGroupParticleProperyDelete+n),particle->group.particles[n].name,NULL,(state.cur_group_particle_idx==n),FALSE);
 	}
 
-	list_palette_sort(&alt_property_palette);
+	list_palette_sort(&property_palette);
 }
 
 /* =======================================================
@@ -81,7 +81,7 @@ void alt_property_palette_fill_particle_group(int particle_idx)
       
 ======================================================= */
 
-void alt_property_palette_click_particle_group(int particle_idx,int id,bool double_click)
+void property_palette_click_particle_group(int particle_idx,int id,bool double_click)
 {
 	int						idx,sz;
 	iface_particle_type		*particle;
@@ -92,7 +92,7 @@ void alt_property_palette_click_particle_group(int particle_idx,int id,bool doub
 		
 	if ((id>=kGroupParticleProperyName) && (id<(kGroupParticleProperyName+max_particle_group))) {
 		state.cur_group_particle_idx=id-kGroupParticleProperyName;
-		if (double_click) list_palette_set_level(&alt_property_palette,3);
+		if (double_click) list_palette_set_level(&property_palette,3);
 		return;
 	}
 	
@@ -129,7 +129,7 @@ void alt_property_palette_click_particle_group(int particle_idx,int id,bool doub
 		particle->group.particles[idx].name[0]=0x0;
 		particle->group.particles[idx].shift=0;
 
-		list_palette_set_level(&alt_property_palette,3);
+		list_palette_set_level(&property_palette,3);
 		property_palette_pick_particle(particle->group.particles[idx].name);
 
 		return;

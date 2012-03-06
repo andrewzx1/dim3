@@ -2,7 +2,7 @@
 
 Module: dim3 Setup
 Author: Brian Barnes
- Usage: Alt Property Palette Shader
+ Usage: Property Palette Shader
 
 ***************************** License ********************************
 
@@ -39,7 +39,7 @@ and can be sold or given away.
 
 extern iface_type				iface;
 extern setup_state_type			state;
-extern list_palette_type		alt_property_palette;
+extern list_palette_type		property_palette;
 
 /* =======================================================
 
@@ -47,24 +47,24 @@ extern list_palette_type		alt_property_palette;
       
 ======================================================= */
 
-void alt_property_palette_fill_shader(int shader_idx)
+void property_palette_fill_shader(int shader_idx)
 {
 	iface_shader_type			*shader;
 
 	shader=&iface.shader_list.shaders[shader_idx];
 
-	list_palette_set_title(&alt_property_palette,"Shaders",NULL,"Shader",shader->name,NULL,NULL);
+	list_palette_set_title(&property_palette,"Shaders",NULL,"Shader",shader->name,NULL,NULL);
 
 		// settings
 
-	list_palette_add_header(&alt_property_palette,0,"Settings");
-	list_palette_add_string(&alt_property_palette,kShaderSettingsName,"Name",shader->name,FALSE);
+	list_palette_add_header(&property_palette,0,"Settings");
+	list_palette_add_string(&property_palette,kShaderSettingsName,"Name",shader->name,FALSE);
 
 		// code
 
-	list_palette_add_header(&alt_property_palette,0,"Code");
-	list_palette_add_picker_file(&alt_property_palette,kShaderCodeVertName,list_button_none,0,"Vertex","Shaders","vert","",shader->vert_name,FALSE);
-	list_palette_add_picker_file(&alt_property_palette,kShaderCodeFragName,list_button_none,0,"Fragment","Shaders","frag","",shader->frag_name,FALSE);
+	list_palette_add_header(&property_palette,0,"Code");
+	list_palette_add_picker_file(&property_palette,kShaderCodeVertName,list_button_none,0,"Vertex","Shaders","vert","",shader->vert_name,FALSE);
+	list_palette_add_picker_file(&property_palette,kShaderCodeFragName,list_button_none,0,"Fragment","Shaders","frag","",shader->frag_name,FALSE);
 }
 
 /* =======================================================
@@ -73,7 +73,7 @@ void alt_property_palette_fill_shader(int shader_idx)
       
 ======================================================= */
 
-void alt_property_palette_click_shader(int shader_idx,int id,bool double_click)
+void property_palette_click_shader(int shader_idx,int id,bool double_click)
 {
 	iface_shader_type			*shader;
 

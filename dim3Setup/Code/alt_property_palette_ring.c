@@ -2,7 +2,7 @@
 
 Module: dim3 Setup
 Author: Brian Barnes
- Usage: Alt Property Palette Ring
+ Usage: Property Palette Ring
 
 ***************************** License ********************************
 
@@ -61,7 +61,7 @@ and can be sold or given away.
 
 extern iface_type				iface;
 extern setup_state_type			state;
-extern list_palette_type		alt_property_palette;
+extern list_palette_type		property_palette;
 
 /* =======================================================
 
@@ -69,54 +69,54 @@ extern list_palette_type		alt_property_palette;
       
 ======================================================= */
 
-void alt_property_palette_fill_ring(int ring_idx)
+void property_palette_fill_ring(int ring_idx)
 {
 	iface_ring_type			*ring;
 
 	ring=&iface.ring_list.rings[ring_idx];
 
-	list_palette_set_title(&alt_property_palette,"Rings",NULL,"Ring",ring->name,NULL,NULL);
+	list_palette_set_title(&property_palette,"Rings",NULL,"Ring",ring->name,NULL,NULL);
 
 		// settings
 
-	list_palette_add_header(&alt_property_palette,0,"Settings");
-	list_palette_add_string(&alt_property_palette,kRingSettingsName,"Name",ring->name,FALSE);
-	list_palette_add_picker_file(&alt_property_palette,kRingSettingsBitmapName,list_button_none,0,"Bitmap","Bitmaps/Rings","png","",ring->bitmap_name,FALSE);
-	list_palette_add_int(&alt_property_palette,kRingSettingsLife,"Life Milliseconds",&ring->life_msec,FALSE);
+	list_palette_add_header(&property_palette,0,"Settings");
+	list_palette_add_string(&property_palette,kRingSettingsName,"Name",ring->name,FALSE);
+	list_palette_add_picker_file(&property_palette,kRingSettingsBitmapName,list_button_none,0,"Bitmap","Bitmaps/Rings","png","",ring->bitmap_name,FALSE);
+	list_palette_add_int(&property_palette,kRingSettingsLife,"Life Milliseconds",&ring->life_msec,FALSE);
 
 		// ring
 
-	list_palette_add_header(&alt_property_palette,0,"Ring");
-	list_palette_add_int(&alt_property_palette,kRingRingStartOuterSize,"Start Outer Size",&ring->start_outer_size,FALSE);
-	list_palette_add_int(&alt_property_palette,kRingRingEndOuterSize,"End Outer Size",&ring->end_outer_size,FALSE);
-	list_palette_add_int(&alt_property_palette,kRingRingStartInnerSize,"Start Inner Size",&ring->start_inner_size,FALSE);
-	list_palette_add_int(&alt_property_palette,kRingRingEndInnerSize,"End Inner Size",&ring->end_inner_size,FALSE);
-	list_palette_add_float(&alt_property_palette,kRingRingStartAlpha,"Start Alpha",&ring->start_alpha,FALSE);
-	list_palette_add_float(&alt_property_palette,kRingRingEndAlpha,"End Alpha",&ring->end_alpha,FALSE);
-	list_palette_add_pick_color(&alt_property_palette,kRingRingStartColor,"Start Color",&ring->start_color,FALSE);
-	list_palette_add_pick_color(&alt_property_palette,kRingRingEndColor,"End Color",&ring->end_color,FALSE);
+	list_palette_add_header(&property_palette,0,"Ring");
+	list_palette_add_int(&property_palette,kRingRingStartOuterSize,"Start Outer Size",&ring->start_outer_size,FALSE);
+	list_palette_add_int(&property_palette,kRingRingEndOuterSize,"End Outer Size",&ring->end_outer_size,FALSE);
+	list_palette_add_int(&property_palette,kRingRingStartInnerSize,"Start Inner Size",&ring->start_inner_size,FALSE);
+	list_palette_add_int(&property_palette,kRingRingEndInnerSize,"End Inner Size",&ring->end_inner_size,FALSE);
+	list_palette_add_float(&property_palette,kRingRingStartAlpha,"Start Alpha",&ring->start_alpha,FALSE);
+	list_palette_add_float(&property_palette,kRingRingEndAlpha,"End Alpha",&ring->end_alpha,FALSE);
+	list_palette_add_pick_color(&property_palette,kRingRingStartColor,"Start Color",&ring->start_color,FALSE);
+	list_palette_add_pick_color(&property_palette,kRingRingEndColor,"End Color",&ring->end_color,FALSE);
 
 		// motion
 
-	list_palette_add_header(&alt_property_palette,0,"Motion");
-	list_palette_add_vector(&alt_property_palette,kRingMotionMove,"Move",&ring->vct,FALSE);
-	list_palette_add_angle(&alt_property_palette,kRingMotionRot,"Rotation",&ring->ang,FALSE);
-	list_palette_add_angle(&alt_property_palette,kRingMotionRotAdd,"Rotation Add",&ring->rot,FALSE);
-	list_palette_add_vector(&alt_property_palette,kRingMotionRotAccel,"Rotation Accel",&ring->rot_accel,FALSE);
+	list_palette_add_header(&property_palette,0,"Motion");
+	list_palette_add_vector(&property_palette,kRingMotionMove,"Move",&ring->vct,FALSE);
+	list_palette_add_angle(&property_palette,kRingMotionRot,"Rotation",&ring->ang,FALSE);
+	list_palette_add_angle(&property_palette,kRingMotionRotAdd,"Rotation Add",&ring->rot,FALSE);
+	list_palette_add_vector(&property_palette,kRingMotionRotAccel,"Rotation Accel",&ring->rot_accel,FALSE);
 
 		// options
 
-	list_palette_add_header(&alt_property_palette,0,"Options");
-	list_palette_add_checkbox(&alt_property_palette,kRingOptionBlendAdd,"Additive Blend",&ring->blend_add,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kRingOptionTeamTint,"Team Tint",&ring->team_tint,FALSE);
+	list_palette_add_header(&property_palette,0,"Options");
+	list_palette_add_checkbox(&property_palette,kRingOptionBlendAdd,"Additive Blend",&ring->blend_add,FALSE);
+	list_palette_add_checkbox(&property_palette,kRingOptionTeamTint,"Team Tint",&ring->team_tint,FALSE);
 
 		// animation
 
-	list_palette_add_header(&alt_property_palette,0,"Animation");
-	list_palette_add_int(&alt_property_palette,kRingImageCount,"Count",&ring->animate.image_count,FALSE);
-	list_palette_add_int(&alt_property_palette,kRingImageMillisecond,"Display Milliseconds",&ring->animate.msec,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kRingImageLoop,"Loop",&ring->animate.loop,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kRingImageLoopBack,"Loop Back",&ring->animate.loop_back,FALSE);
+	list_palette_add_header(&property_palette,0,"Animation");
+	list_palette_add_int(&property_palette,kRingImageCount,"Count",&ring->animate.image_count,FALSE);
+	list_palette_add_int(&property_palette,kRingImageMillisecond,"Display Milliseconds",&ring->animate.msec,FALSE);
+	list_palette_add_checkbox(&property_palette,kRingImageLoop,"Loop",&ring->animate.loop,FALSE);
+	list_palette_add_checkbox(&property_palette,kRingImageLoopBack,"Loop Back",&ring->animate.loop_back,FALSE);
 }
 
 /* =======================================================
@@ -125,7 +125,7 @@ void alt_property_palette_fill_ring(int ring_idx)
       
 ======================================================= */
 
-void alt_property_palette_click_ring(int ring_idx,int id,bool double_click)
+void property_palette_click_ring(int ring_idx,int id,bool double_click)
 {
 	iface_ring_type			*ring;
 

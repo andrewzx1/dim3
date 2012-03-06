@@ -2,7 +2,7 @@
 
 Module: dim3 Setup
 Author: Brian Barnes
- Usage: Alt2 Property Palette Menu Item
+ Usage: Property Palette Menu Item
 
 ***************************** License ********************************
 
@@ -42,7 +42,7 @@ and can be sold or given away.
 
 extern iface_type				iface;
 extern setup_state_type			state;
-extern list_palette_type		alt2_property_palette;
+extern list_palette_type		property_palette;
 
 /* =======================================================
 
@@ -50,7 +50,7 @@ extern list_palette_type		alt2_property_palette;
       
 ======================================================= */
 
-void alt2_property_palette_fill_menu_item(int menu_idx,int menu_item_idx)
+void property_palette_fill_menu_item(int menu_idx,int menu_item_idx)
 {
 	iface_menu_type				*menu;
 	iface_menu_item_type		*item;
@@ -58,20 +58,20 @@ void alt2_property_palette_fill_menu_item(int menu_idx,int menu_item_idx)
 	menu=&iface.menu_list.menus[menu_idx];
 	item=&menu->items[menu_item_idx];
 
-	list_palette_set_title(&alt2_property_palette,"Menus",NULL,"Menu",menu->name,"Item",item->data);
+	list_palette_set_title(&property_palette,"Menus",NULL,"Menu",menu->name,"Item",item->data);
 
 		// settings
 
-	list_palette_add_header(&alt2_property_palette,0,"Settings");
-	list_palette_add_string(&alt2_property_palette,kMenuItemPropertySettingsData,"Data",item->data,FALSE);
-	list_palette_add_int(&alt2_property_palette,kMenuItemPropertySettingsID,"Id",&item->item_id,FALSE);
+	list_palette_add_header(&property_palette,0,"Settings");
+	list_palette_add_string(&property_palette,kMenuItemPropertySettingsData,"Data",item->data,FALSE);
+	list_palette_add_int(&property_palette,kMenuItemPropertySettingsID,"Id",&item->item_id,FALSE);
 
 		// options
 
-	list_palette_add_header(&alt2_property_palette,0,"Options");
-	list_palette_add_string(&alt2_property_palette,kMenuItemPropertyOptionsSubMenu,"Goto SubMenu",item->sub_menu,FALSE);
-	list_palette_add_checkbox(&alt2_property_palette,kMenuItemPropertyOptionsMultiplayerDisable,"Multiplayer Disable",&item->multiplayer_disable,FALSE);
-	list_palette_add_checkbox(&alt2_property_palette,kMenuItemPropertyOptionsQuit,"Quit",&item->quit,FALSE);
+	list_palette_add_header(&property_palette,0,"Options");
+	list_palette_add_string(&property_palette,kMenuItemPropertyOptionsSubMenu,"Goto SubMenu",item->sub_menu,FALSE);
+	list_palette_add_checkbox(&property_palette,kMenuItemPropertyOptionsMultiplayerDisable,"Multiplayer Disable",&item->multiplayer_disable,FALSE);
+	list_palette_add_checkbox(&property_palette,kMenuItemPropertyOptionsQuit,"Quit",&item->quit,FALSE);
 }
 
 /* =======================================================
@@ -80,7 +80,7 @@ void alt2_property_palette_fill_menu_item(int menu_idx,int menu_item_idx)
       
 ======================================================= */
 
-void alt2_property_palette_click_menu_item(int menu_idx,int menu_item_idx,int id,bool double_click)
+void property_palette_click_menu_item(int menu_idx,int menu_item_idx,int id,bool double_click)
 {
 	iface_menu_item_type		*item;
 

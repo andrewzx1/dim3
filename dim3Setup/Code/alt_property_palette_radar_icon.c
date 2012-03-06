@@ -2,7 +2,7 @@
 
 Module: dim3 Setup
 Author: Brian Barnes
- Usage: Alt Property Palette Radar Icon
+ Usage: Property Palette Radar Icon
 
 ***************************** License ********************************
 
@@ -41,7 +41,7 @@ and can be sold or given away.
 
 extern iface_type				iface;
 extern setup_state_type			state;
-extern list_palette_type		alt_property_palette;
+extern list_palette_type		property_palette;
 
 /* =======================================================
 
@@ -49,25 +49,25 @@ extern list_palette_type		alt_property_palette;
       
 ======================================================= */
 
-void alt_property_palette_fill_radar_icon(int radar_icon_idx)
+void property_palette_fill_radar_icon(int radar_icon_idx)
 {
 	iface_radar_icon_type		*icon;
 
 	icon=&iface.radar.icons[radar_icon_idx];
 
-	list_palette_set_title(&alt_property_palette,"Radar",NULL,"Icon",icon->name,NULL,NULL);
+	list_palette_set_title(&property_palette,"Radar",NULL,"Icon",icon->name,NULL,NULL);
 
 		// settings
 
-	list_palette_add_header(&alt_property_palette,0,"Settings");
-	list_palette_add_string(&alt_property_palette,kRadarIconSettingsName,"Name",icon->name,FALSE);
-	list_palette_add_picker_file(&alt_property_palette,kRadarIconSettingsBitmapName,list_button_none,0,"Bitmap","Bitmaps/Radar","png","",icon->bitmap_name,FALSE);
+	list_palette_add_header(&property_palette,0,"Settings");
+	list_palette_add_string(&property_palette,kRadarIconSettingsName,"Name",icon->name,FALSE);
+	list_palette_add_picker_file(&property_palette,kRadarIconSettingsBitmapName,list_button_none,0,"Bitmap","Bitmaps/Radar","png","",icon->bitmap_name,FALSE);
 
 		// options
 
-	list_palette_add_header(&alt_property_palette,0,"Options");
-	list_palette_add_int(&alt_property_palette,kRadarIconOptionSize,"Size",&icon->size,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kRadarIconOptionRotate,"Rotate",&icon->rot,FALSE);
+	list_palette_add_header(&property_palette,0,"Options");
+	list_palette_add_int(&property_palette,kRadarIconOptionSize,"Size",&icon->size,FALSE);
+	list_palette_add_checkbox(&property_palette,kRadarIconOptionRotate,"Rotate",&icon->rot,FALSE);
 }
 
 /* =======================================================
@@ -76,7 +76,7 @@ void alt_property_palette_fill_radar_icon(int radar_icon_idx)
       
 ======================================================= */
 
-void alt_property_palette_click_radar_icon(int radar_icon_idx,int id,bool double_click)
+void property_palette_click_radar_icon(int radar_icon_idx,int id,bool double_click)
 {
 	iface_radar_icon_type		*icon;
 

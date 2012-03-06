@@ -2,7 +2,7 @@
 
 Module: dim3 Setup
 Author: Brian Barnes
- Usage: Alt Property Palette HUD Text
+ Usage: Property Palette HUD Text
 
 ***************************** License ********************************
 
@@ -53,7 +53,7 @@ and can be sold or given away.
 
 extern iface_type				iface;
 extern setup_state_type			state;
-extern list_palette_type		alt_property_palette;
+extern list_palette_type		property_palette;
 
 char							hud_text_just_type_str[][32]=text_just_list_def,
 								hud_text_special_type_str[][32]=text_special_list_def;
@@ -64,43 +64,43 @@ char							hud_text_just_type_str[][32]=text_just_list_def,
       
 ======================================================= */
 
-void alt_property_palette_fill_hud_text(int hud_text_idx)
+void property_palette_fill_hud_text(int hud_text_idx)
 {
 	iface_text_type				*text;
 
 	text=&iface.text_list.texts[hud_text_idx];
 
-	list_palette_set_title(&alt_property_palette,"HUD",NULL,"Text",text->name,NULL,NULL);
+	list_palette_set_title(&property_palette,"HUD",NULL,"Text",text->name,NULL,NULL);
 
 		// settings
 
-	list_palette_add_header(&alt_property_palette,0,"Settings");
-	list_palette_add_string(&alt_property_palette,kTextSettingsName,"Name",text->name,FALSE);
-	list_palette_add_string(&alt_property_palette,kTextSettingsData,"Data",text->data,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kTextSettingsShow,"Show",&text->show,FALSE);
+	list_palette_add_header(&property_palette,0,"Settings");
+	list_palette_add_string(&property_palette,kTextSettingsName,"Name",text->name,FALSE);
+	list_palette_add_string(&property_palette,kTextSettingsData,"Data",text->data,FALSE);
+	list_palette_add_checkbox(&property_palette,kTextSettingsShow,"Show",&text->show,FALSE);
 
 		// position
 
-	list_palette_add_header(&alt_property_palette,0,"Position");
-	list_palette_add_int(&alt_property_palette,kTextPositionX,"X",&text->pnt.x,FALSE);
-	list_palette_add_int(&alt_property_palette,kTextPositionY,"Y",&text->pnt.y,FALSE);
+	list_palette_add_header(&property_palette,0,"Position");
+	list_palette_add_int(&property_palette,kTextPositionX,"X",&text->pnt.x,FALSE);
+	list_palette_add_int(&property_palette,kTextPositionY,"Y",&text->pnt.y,FALSE);
 
 		// options
 
-	list_palette_add_header(&alt_property_palette,0,"Options");
-	list_palette_add_int(&alt_property_palette,kTextOptionSize,"Text Size",&text->size,FALSE);
-	list_palette_add_picker_list_int(&alt_property_palette,kTextOptionJust,"Justification",(char*)hud_text_just_type_str,-1,name_str_len,0,FALSE,&text->just,FALSE);
-	list_palette_add_picker_list_int(&alt_property_palette,kTextOptionSpecial,"Special",(char*)hud_text_special_type_str,-1,name_str_len,0,FALSE,&text->special,FALSE);
-	list_palette_add_float(&alt_property_palette,kTextOptionAlpha,"Alpha",&text->alpha,FALSE);
-	list_palette_add_pick_color(&alt_property_palette,kTextOptionColor,"Color",&text->color,FALSE);
+	list_palette_add_header(&property_palette,0,"Options");
+	list_palette_add_int(&property_palette,kTextOptionSize,"Text Size",&text->size,FALSE);
+	list_palette_add_picker_list_int(&property_palette,kTextOptionJust,"Justification",(char*)hud_text_just_type_str,-1,name_str_len,0,FALSE,&text->just,FALSE);
+	list_palette_add_picker_list_int(&property_palette,kTextOptionSpecial,"Special",(char*)hud_text_special_type_str,-1,name_str_len,0,FALSE,&text->special,FALSE);
+	list_palette_add_float(&property_palette,kTextOptionAlpha,"Alpha",&text->alpha,FALSE);
+	list_palette_add_pick_color(&property_palette,kTextOptionColor,"Color",&text->color,FALSE);
 
 		// fade
 
-	list_palette_add_header(&alt_property_palette,0,"Fade");
-	list_palette_add_checkbox(&alt_property_palette,kTextFadeOn,"On",&text->fade.on,FALSE);
-	list_palette_add_int(&alt_property_palette,kTextFadeInTick,"Fade In Milliseconds",&text->fade.fade_in_tick,FALSE);
-	list_palette_add_int(&alt_property_palette,kTextFadeLifeTick,"Life Milliseconds",&text->fade.life_tick,FALSE);
-	list_palette_add_int(&alt_property_palette,kTextFadeOutTick,"Fade Out Milliseconds",&text->fade.fade_out_tick,FALSE);
+	list_palette_add_header(&property_palette,0,"Fade");
+	list_palette_add_checkbox(&property_palette,kTextFadeOn,"On",&text->fade.on,FALSE);
+	list_palette_add_int(&property_palette,kTextFadeInTick,"Fade In Milliseconds",&text->fade.fade_in_tick,FALSE);
+	list_palette_add_int(&property_palette,kTextFadeLifeTick,"Life Milliseconds",&text->fade.life_tick,FALSE);
+	list_palette_add_int(&property_palette,kTextFadeOutTick,"Fade Out Milliseconds",&text->fade.fade_out_tick,FALSE);
 }
 
 /* =======================================================
@@ -109,7 +109,7 @@ void alt_property_palette_fill_hud_text(int hud_text_idx)
       
 ======================================================= */
 
-void alt_property_palette_click_hud_text(int hud_text_idx,int id,bool double_click)
+void property_palette_click_hud_text(int hud_text_idx,int id,bool double_click)
 {
 	iface_text_type				*text;
 

@@ -300,10 +300,6 @@
 					Name="Palettes"
 					>
 					<File
-						RelativePath="..\..\dim3Setup\Code\alt2_property_palette.c"
-						>
-					</File>
-					<File
 						RelativePath="..\..\dim3Setup\Code\alt2_property_palette_chooser_piece.c"
 						>
 					</File>
@@ -313,10 +309,6 @@
 					</File>
 					<File
 						RelativePath="..\..\dim3Setup\Code\alt2_property_palette_menu_item.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Setup\Code\alt_property_palette.c"
 						>
 					</File>
 					<File
@@ -408,10 +400,6 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\dim3Setup\Code\item_palette.c"
-						>
-					</File>
-					<File
 						RelativePath="..\..\dim3Common\Code\list_palette_common.c"
 						>
 					</File>
@@ -445,6 +433,10 @@
 					</File>
 					<File
 						RelativePath="..\..\dim3Setup\Code\property_palette_intro.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Setup\Code\property_palette_main.c"
 						>
 					</File>
 					<File

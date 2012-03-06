@@ -2,7 +2,7 @@
 
 Module: dim3 Setup
 Author: Brian Barnes
- Usage: Alt Property Palette Sound
+ Usage: Property Palette Sound
 
 ***************************** License ********************************
 
@@ -40,7 +40,7 @@ and can be sold or given away.
 
 extern iface_type				iface;
 extern setup_state_type			state;
-extern list_palette_type		alt_property_palette;
+extern list_palette_type		property_palette;
 
 /* =======================================================
 
@@ -48,21 +48,21 @@ extern list_palette_type		alt_property_palette;
       
 ======================================================= */
 
-void alt_property_palette_fill_sound(int sound_idx)
+void property_palette_fill_sound(int sound_idx)
 {
 	iface_sound_type			*sound;
 
 	sound=&iface.sound_list.sounds[sound_idx];
 
-	list_palette_set_title(&alt_property_palette,"Sounds",NULL,"Sound",sound->name,NULL,NULL);
+	list_palette_set_title(&property_palette,"Sounds",NULL,"Sound",sound->name,NULL,NULL);
 
 		// settings
 
-	list_palette_add_header(&alt_property_palette,0,"Settings");
-	list_palette_add_string(&alt_property_palette,kSoundSettingsName,"Name",sound->name,FALSE);
-	list_palette_add_picker_file(&alt_property_palette,kSoundSettingsFileName,list_button_none,0,"Wave","Sounds","wav","",sound->file_name,FALSE);
-	list_palette_add_int(&alt_property_palette,kSoundSettingsMinDist,"Min Distance",&sound->min_dist,FALSE);
-	list_palette_add_int(&alt_property_palette,kSoundSettingsMaxDist,"Max Distance",&sound->max_dist,FALSE);
+	list_palette_add_header(&property_palette,0,"Settings");
+	list_palette_add_string(&property_palette,kSoundSettingsName,"Name",sound->name,FALSE);
+	list_palette_add_picker_file(&property_palette,kSoundSettingsFileName,list_button_none,0,"Wave","Sounds","wav","",sound->file_name,FALSE);
+	list_palette_add_int(&property_palette,kSoundSettingsMinDist,"Min Distance",&sound->min_dist,FALSE);
+	list_palette_add_int(&property_palette,kSoundSettingsMaxDist,"Max Distance",&sound->max_dist,FALSE);
 }
 
 /* =======================================================
@@ -71,7 +71,7 @@ void alt_property_palette_fill_sound(int sound_idx)
       
 ======================================================= */
 
-void alt_property_palette_click_sound(int sound_idx,int id,bool double_click)
+void property_palette_click_sound(int sound_idx,int id,bool double_click)
 {
 	iface_sound_type			*sound;
 

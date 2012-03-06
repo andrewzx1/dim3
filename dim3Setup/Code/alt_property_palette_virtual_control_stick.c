@@ -2,7 +2,7 @@
 
 Module: dim3 Setup
 Author: Brian Barnes
- Usage: Alt Property Palette Virtual Control Sticks
+ Usage: Property Palette Virtual Control Sticks
 
 ***************************** License ********************************
 
@@ -47,7 +47,7 @@ and can be sold or given away.
 
 extern iface_type				iface;
 extern setup_state_type			state;
-extern list_palette_type		alt_property_palette;
+extern list_palette_type		property_palette;
 
 /* =======================================================
 
@@ -55,32 +55,32 @@ extern list_palette_type		alt_property_palette;
       
 ======================================================= */
 
-void alt_property_palette_fill_virtual_control_stick(int virtual_control_stick_idx)
+void property_palette_fill_virtual_control_stick(int virtual_control_stick_idx)
 {
 	char						str[256];
 	iface_virtual_stick_type	*stick;
 	
 	sprintf(str,"%d",virtual_control_stick_idx);
-	list_palette_set_title(&alt_property_palette,"Virtual Control",NULL,"Stick",str,NULL,NULL);
+	list_palette_set_title(&property_palette,"Virtual Control",NULL,"Stick",str,NULL,NULL);
 
 	stick=&iface.virtual_control.sticks[virtual_control_stick_idx];
 		
-	list_palette_add_header(&alt_property_palette,0,"Settings");
-	list_palette_add_checkbox(&alt_property_palette,kStickOn,"On",&stick->on,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kStickUseBitmap,"Use Bitmap",&stick->use_bitmap,FALSE);
-	list_palette_add_picker_file(&alt_property_palette,kStickOuterBitmap,list_button_none,0,"Outer Bitmap","Bitmaps/Virtual","png","",stick->outer_bitmap_name,FALSE);
-	list_palette_add_picker_file(&alt_property_palette,kStickInnerBitmap,list_button_none,0,"Inner Bitmap","Bitmaps/Virtual","png","",stick->inner_bitmap_name,FALSE);
-	list_palette_add_pick_color(&alt_property_palette,kStickColor,"Color",&stick->color,FALSE);
+	list_palette_add_header(&property_palette,0,"Settings");
+	list_palette_add_checkbox(&property_palette,kStickOn,"On",&stick->on,FALSE);
+	list_palette_add_checkbox(&property_palette,kStickUseBitmap,"Use Bitmap",&stick->use_bitmap,FALSE);
+	list_palette_add_picker_file(&property_palette,kStickOuterBitmap,list_button_none,0,"Outer Bitmap","Bitmaps/Virtual","png","",stick->outer_bitmap_name,FALSE);
+	list_palette_add_picker_file(&property_palette,kStickInnerBitmap,list_button_none,0,"Inner Bitmap","Bitmaps/Virtual","png","",stick->inner_bitmap_name,FALSE);
+	list_palette_add_pick_color(&property_palette,kStickColor,"Color",&stick->color,FALSE);
 	
-	list_palette_add_header(&alt_property_palette,0,"Position");
-	list_palette_add_int(&alt_property_palette,kStickPositionX,"X",&stick->pnt.x,FALSE);
-	list_palette_add_int(&alt_property_palette,kStickPositionY,"Y",&stick->pnt.y,FALSE);
-	list_palette_add_int(&alt_property_palette,kStickPositionWid,"Width",&stick->size.x,FALSE);
-	list_palette_add_int(&alt_property_palette,kStickPositionHigh,"Height",&stick->size.y,FALSE);
+	list_palette_add_header(&property_palette,0,"Position");
+	list_palette_add_int(&property_palette,kStickPositionX,"X",&stick->pnt.x,FALSE);
+	list_palette_add_int(&property_palette,kStickPositionY,"Y",&stick->pnt.y,FALSE);
+	list_palette_add_int(&property_palette,kStickPositionWid,"Width",&stick->size.x,FALSE);
+	list_palette_add_int(&property_palette,kStickPositionHigh,"Height",&stick->size.y,FALSE);
 
-	list_palette_add_header(&alt_property_palette,0,"Axis");
-	list_palette_add_checkbox(&alt_property_palette,kStickFlipX,"Flip X",&stick->flip_x,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kStickFlipY,"Flip Y",&stick->flip_y,FALSE);
+	list_palette_add_header(&property_palette,0,"Axis");
+	list_palette_add_checkbox(&property_palette,kStickFlipX,"Flip X",&stick->flip_x,FALSE);
+	list_palette_add_checkbox(&property_palette,kStickFlipY,"Flip Y",&stick->flip_y,FALSE);
 }
 
 /* =======================================================
@@ -89,7 +89,7 @@ void alt_property_palette_fill_virtual_control_stick(int virtual_control_stick_i
       
 ======================================================= */
 
-void alt_property_palette_click_virtual_control_stick(int virtual_control_stick_idx,int id,bool double_click)
+void property_palette_click_virtual_control_stick(int virtual_control_stick_idx,int id,bool double_click)
 {
 }
 

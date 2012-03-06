@@ -2,7 +2,7 @@
 
 Module: dim3 Setup
 Author: Brian Barnes
- Usage: Alt Property Palette Crosshair
+ Usage: Property Palette Crosshair
 
 ***************************** License ********************************
 
@@ -38,7 +38,7 @@ and can be sold or given away.
 
 extern iface_type				iface;
 extern setup_state_type			state;
-extern list_palette_type		alt_property_palette;
+extern list_palette_type		property_palette;
 
 /* =======================================================
 
@@ -46,19 +46,19 @@ extern list_palette_type		alt_property_palette;
       
 ======================================================= */
 
-void alt_property_palette_fill_crosshair(int crosshair_idx)
+void property_palette_fill_crosshair(int crosshair_idx)
 {
 	iface_crosshair_type		*crosshair;
 
 	crosshair=&iface.crosshair_list.crosshairs[crosshair_idx];
 
-	list_palette_set_title(&alt_property_palette,"Crosshairs",NULL,"Crosshair",crosshair->name,NULL,NULL);
+	list_palette_set_title(&property_palette,"Crosshairs",NULL,"Crosshair",crosshair->name,NULL,NULL);
 
 		// settings
 
-	list_palette_add_header(&alt_property_palette,0,"Settings");
-	list_palette_add_string(&alt_property_palette,kCrosshairSettingsName,"Name",crosshair->name,FALSE);
-	list_palette_add_picker_file(&alt_property_palette,kCrosshairSettingsFileName,list_button_none,0,"Bitmap","Bitmaps/Crosshairs","png","",crosshair->bitmap_name,FALSE);
+	list_palette_add_header(&property_palette,0,"Settings");
+	list_palette_add_string(&property_palette,kCrosshairSettingsName,"Name",crosshair->name,FALSE);
+	list_palette_add_picker_file(&property_palette,kCrosshairSettingsFileName,list_button_none,0,"Bitmap","Bitmaps/Crosshairs","png","",crosshair->bitmap_name,FALSE);
 }
 
 /* =======================================================
@@ -67,7 +67,7 @@ void alt_property_palette_fill_crosshair(int crosshair_idx)
       
 ======================================================= */
 
-void alt_property_palette_click_crosshair(int crosshair_idx,int id,bool double_click)
+void property_palette_click_crosshair(int crosshair_idx,int id,bool double_click)
 {
 	iface_crosshair_type		*crosshair;
 

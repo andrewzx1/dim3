@@ -2,7 +2,7 @@
 
 Module: dim3 Setup
 Author: Brian Barnes
- Usage: Alt Property Palette Multiplayer Character
+ Usage: Property Palette Multiplayer Character
 
 ***************************** License ********************************
 
@@ -42,7 +42,7 @@ and can be sold or given away.
 
 extern iface_type				iface;
 extern setup_state_type			state;
-extern list_palette_type		alt_property_palette;
+extern list_palette_type		property_palette;
 
 /* =======================================================
 
@@ -50,26 +50,26 @@ extern list_palette_type		alt_property_palette;
       
 ======================================================= */
 
-void alt_property_palette_fill_multiplayer_character(int multiplayer_character_idx)
+void property_palette_fill_multiplayer_character(int multiplayer_character_idx)
 {
 	iface_character_item_type		*character;
 
 	character=&iface.character.characters[multiplayer_character_idx];
 
-	list_palette_set_title(&alt_property_palette,"Multiplayer",NULL,"Character",character->name,NULL,NULL);
+	list_palette_set_title(&property_palette,"Multiplayer",NULL,"Character",character->name,NULL,NULL);
 
 		// settings
 
-	list_palette_add_header(&alt_property_palette,0,"Settings");
-	list_palette_add_string(&alt_property_palette,kMPCharacterPropertySettingsName,"Name",character->name,FALSE);
-	list_palette_add_picker_file(&alt_property_palette,kMPCharacterPropertySettingsModelName,list_button_none,0,"Model","Models","","Mesh.xml;Model.xml",character->model_name,FALSE);
-	list_palette_add_string(&alt_property_palette,kMPCharacterPropertySettingsParam,"Parameters",character->param,FALSE);
+	list_palette_add_header(&property_palette,0,"Settings");
+	list_palette_add_string(&property_palette,kMPCharacterPropertySettingsName,"Name",character->name,FALSE);
+	list_palette_add_picker_file(&property_palette,kMPCharacterPropertySettingsModelName,list_button_none,0,"Model","Models","","Mesh.xml;Model.xml",character->model_name,FALSE);
+	list_palette_add_string(&property_palette,kMPCharacterPropertySettingsParam,"Parameters",character->param,FALSE);
 
 		// options
 
-	list_palette_add_header(&alt_property_palette,0,"UI Drawing");
-	list_palette_add_float(&alt_property_palette,kMPCharacterPropertyOptionsResize,"Resize",&character->interface_resize,FALSE);
-	list_palette_add_point(&alt_property_palette,kMPCharacterPropertyOptionsOffset,"Offset",&character->interface_offset,FALSE);
+	list_palette_add_header(&property_palette,0,"UI Drawing");
+	list_palette_add_float(&property_palette,kMPCharacterPropertyOptionsResize,"Resize",&character->interface_resize,FALSE);
+	list_palette_add_point(&property_palette,kMPCharacterPropertyOptionsOffset,"Offset",&character->interface_offset,FALSE);
 }
 
 /* =======================================================
@@ -78,7 +78,7 @@ void alt_property_palette_fill_multiplayer_character(int multiplayer_character_i
       
 ======================================================= */
 
-void alt_property_palette_click_multiplayer_character(int multiplayer_character_idx,int id,bool double_click)
+void property_palette_click_multiplayer_character(int multiplayer_character_idx,int id,bool double_click)
 {
 	iface_character_item_type		*character;
 

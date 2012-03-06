@@ -2,7 +2,7 @@
 
 Module: dim3 Setup
 Author: Brian Barnes
- Usage: Alt Property Palette HUD Bitmap
+ Usage: Property Palette HUD Bitmap
 
 ***************************** License ********************************
 
@@ -68,7 +68,7 @@ and can be sold or given away.
 
 extern iface_type				iface;
 extern setup_state_type			state;
-extern list_palette_type		alt_property_palette;
+extern list_palette_type		property_palette;
 
 /* =======================================================
 
@@ -76,64 +76,64 @@ extern list_palette_type		alt_property_palette;
       
 ======================================================= */
 
-void alt_property_palette_fill_hud_bitmap(int hud_bitmap_idx)
+void property_palette_fill_hud_bitmap(int hud_bitmap_idx)
 {
 	iface_bitmap_type			*bitmap;
 
 	bitmap=&iface.bitmap_list.bitmaps[hud_bitmap_idx];
 
-	list_palette_set_title(&alt_property_palette,"HUD",NULL,"Bitmap",bitmap->name,NULL,NULL);
+	list_palette_set_title(&property_palette,"HUD",NULL,"Bitmap",bitmap->name,NULL,NULL);
 
 		// settings
 
-	list_palette_add_header(&alt_property_palette,0,"Settings");
-	list_palette_add_string(&alt_property_palette,kBitmapSettingsName,"Name",bitmap->name,FALSE);
-	list_palette_add_picker_file(&alt_property_palette,kBitmapSettingsFileName,list_button_none,0,"Bitmap","Bitmaps/Interface","png","",bitmap->filename,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kBitmapSettingsShow,"Show",&bitmap->show,FALSE);
+	list_palette_add_header(&property_palette,0,"Settings");
+	list_palette_add_string(&property_palette,kBitmapSettingsName,"Name",bitmap->name,FALSE);
+	list_palette_add_picker_file(&property_palette,kBitmapSettingsFileName,list_button_none,0,"Bitmap","Bitmaps/Interface","png","",bitmap->filename,FALSE);
+	list_palette_add_checkbox(&property_palette,kBitmapSettingsShow,"Show",&bitmap->show,FALSE);
 
 		// position
 
-	list_palette_add_header(&alt_property_palette,0,"Position");
-	list_palette_add_int(&alt_property_palette,kBitmapPositionX,"X",&bitmap->pnt.x,FALSE);
-	list_palette_add_int(&alt_property_palette,kBitmapPositionY,"Y",&bitmap->pnt.y,FALSE);
-	list_palette_add_int(&alt_property_palette,kBitmapPositionWid,"Width",&bitmap->size.x,FALSE);
-	list_palette_add_int(&alt_property_palette,kBitmapPositionHigh,"Height",&bitmap->size.y,FALSE);
+	list_palette_add_header(&property_palette,0,"Position");
+	list_palette_add_int(&property_palette,kBitmapPositionX,"X",&bitmap->pnt.x,FALSE);
+	list_palette_add_int(&property_palette,kBitmapPositionY,"Y",&bitmap->pnt.y,FALSE);
+	list_palette_add_int(&property_palette,kBitmapPositionWid,"Width",&bitmap->size.x,FALSE);
+	list_palette_add_int(&property_palette,kBitmapPositionHigh,"Height",&bitmap->size.y,FALSE);
 
 		// options
 
-	list_palette_add_header(&alt_property_palette,0,"Options");
-	list_palette_add_float(&alt_property_palette,kBitmapOptionAlpha,"Alpha",&bitmap->alpha,FALSE);
-	list_palette_add_float(&alt_property_palette,kBitmapOptionRotate,"Rotate",&bitmap->rot,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kBitmapOptionFlash,"Flash",&bitmap->flash,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kBitmapOptionFlipHorz,"Flip Horizontal",&bitmap->flip_horz,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kBitmapOptionFlipVert,"Flip Vertical",&bitmap->flip_vert,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kBitmapOptionTeamTint,"Team Tint",&bitmap->team_tint,FALSE);
+	list_palette_add_header(&property_palette,0,"Options");
+	list_palette_add_float(&property_palette,kBitmapOptionAlpha,"Alpha",&bitmap->alpha,FALSE);
+	list_palette_add_float(&property_palette,kBitmapOptionRotate,"Rotate",&bitmap->rot,FALSE);
+	list_palette_add_checkbox(&property_palette,kBitmapOptionFlash,"Flash",&bitmap->flash,FALSE);
+	list_palette_add_checkbox(&property_palette,kBitmapOptionFlipHorz,"Flip Horizontal",&bitmap->flip_horz,FALSE);
+	list_palette_add_checkbox(&property_palette,kBitmapOptionFlipVert,"Flip Vertical",&bitmap->flip_vert,FALSE);
+	list_palette_add_checkbox(&property_palette,kBitmapOptionTeamTint,"Team Tint",&bitmap->team_tint,FALSE);
 
 		// repeat
 
-	list_palette_add_header(&alt_property_palette,0,"Repeat");
-	list_palette_add_checkbox(&alt_property_palette,kBitmapRepeatOn,"On",&bitmap->repeat.on,FALSE);
-	list_palette_add_int(&alt_property_palette,kBitmapRepeatXAdd,"X Add",&bitmap->repeat.x_add,FALSE);
-	list_palette_add_int(&alt_property_palette,kBitmapRepeatYAdd,"Y Add",&bitmap->repeat.y_add,FALSE);
-	list_palette_add_int(&alt_property_palette,kBitmapRepeatColumn,"Column Count",&bitmap->repeat.col,FALSE);
-	list_palette_add_int(&alt_property_palette,kBitmapRepeatRow,"Row Count",&bitmap->repeat.row,FALSE);
-	list_palette_add_int(&alt_property_palette,kBitmapRepeatCount,"Count",&bitmap->repeat.count,FALSE);
+	list_palette_add_header(&property_palette,0,"Repeat");
+	list_palette_add_checkbox(&property_palette,kBitmapRepeatOn,"On",&bitmap->repeat.on,FALSE);
+	list_palette_add_int(&property_palette,kBitmapRepeatXAdd,"X Add",&bitmap->repeat.x_add,FALSE);
+	list_palette_add_int(&property_palette,kBitmapRepeatYAdd,"Y Add",&bitmap->repeat.y_add,FALSE);
+	list_palette_add_int(&property_palette,kBitmapRepeatColumn,"Column Count",&bitmap->repeat.col,FALSE);
+	list_palette_add_int(&property_palette,kBitmapRepeatRow,"Row Count",&bitmap->repeat.row,FALSE);
+	list_palette_add_int(&property_palette,kBitmapRepeatCount,"Count",&bitmap->repeat.count,FALSE);
 
 		// fade
 
-	list_palette_add_header(&alt_property_palette,0,"Fade");
-	list_palette_add_checkbox(&alt_property_palette,kBitmapFadeOn,"On",&bitmap->fade.on,FALSE);
-	list_palette_add_int(&alt_property_palette,kBitmapFadeInTick,"Fade In Milliseconds",&bitmap->fade.fade_in_tick,FALSE);
-	list_palette_add_int(&alt_property_palette,kBitmapFadeLifeTick,"Life Milliseconds",&bitmap->fade.life_tick,FALSE);
-	list_palette_add_int(&alt_property_palette,kBitmapFadeOutTick,"Fade Out Milliseconds",&bitmap->fade.fade_out_tick,FALSE);
+	list_palette_add_header(&property_palette,0,"Fade");
+	list_palette_add_checkbox(&property_palette,kBitmapFadeOn,"On",&bitmap->fade.on,FALSE);
+	list_palette_add_int(&property_palette,kBitmapFadeInTick,"Fade In Milliseconds",&bitmap->fade.fade_in_tick,FALSE);
+	list_palette_add_int(&property_palette,kBitmapFadeLifeTick,"Life Milliseconds",&bitmap->fade.life_tick,FALSE);
+	list_palette_add_int(&property_palette,kBitmapFadeOutTick,"Fade Out Milliseconds",&bitmap->fade.fade_out_tick,FALSE);
 
 		// animation
 
-	list_palette_add_header(&alt_property_palette,0,"Animation");
-	list_palette_add_int(&alt_property_palette,kBitmapImageCount,"Count",&bitmap->animate.image_count,FALSE);
-	list_palette_add_int(&alt_property_palette,kBitmapImageMillisecond,"Display Milliseconds",&bitmap->animate.msec,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kBitmapImageLoop,"Loop",&bitmap->animate.loop,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kBitmapImageLoopBack,"Loop Back",&bitmap->animate.loop_back,FALSE);
+	list_palette_add_header(&property_palette,0,"Animation");
+	list_palette_add_int(&property_palette,kBitmapImageCount,"Count",&bitmap->animate.image_count,FALSE);
+	list_palette_add_int(&property_palette,kBitmapImageMillisecond,"Display Milliseconds",&bitmap->animate.msec,FALSE);
+	list_palette_add_checkbox(&property_palette,kBitmapImageLoop,"Loop",&bitmap->animate.loop,FALSE);
+	list_palette_add_checkbox(&property_palette,kBitmapImageLoopBack,"Loop Back",&bitmap->animate.loop_back,FALSE);
 }
 
 /* =======================================================
@@ -142,7 +142,7 @@ void alt_property_palette_fill_hud_bitmap(int hud_bitmap_idx)
       
 ======================================================= */
 
-void alt_property_palette_click_hud_bitmap(int hud_bitmap_idx,int id,bool double_click)
+void property_palette_click_hud_bitmap(int hud_bitmap_idx,int id,bool double_click)
 {
 	iface_bitmap_type			*bitmap;
 

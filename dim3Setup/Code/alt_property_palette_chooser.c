@@ -2,7 +2,7 @@
 
 Module: dim3 Setup
 Author: Brian Barnes
- Usage: Alt Property Palette Chooser
+ Usage: Property Palette Chooser
 
 ***************************** License ********************************
 
@@ -53,17 +53,17 @@ and can be sold or given away.
 
 extern iface_type				iface;
 extern setup_state_type			state;
-extern list_palette_type		alt_property_palette;
+extern list_palette_type		property_palette;
 
 char							chooser_type_str[][32]={"Text","Item","Model","Button",""};
 
 /* =======================================================
 
-      Alt Property Palette Fill Chooser
+      Property Palette Fill Chooser
       
 ======================================================= */
 
-void alt_property_palette_fill_chooser(int chooser_idx)
+void property_palette_fill_chooser(int chooser_idx)
 {
 	int						n;
 	char					str[1024];
@@ -71,35 +71,35 @@ void alt_property_palette_fill_chooser(int chooser_idx)
 
 	chooser=&iface.chooser_list.choosers[chooser_idx];
 
-	list_palette_set_title(&alt_property_palette,"Choosers",NULL,"Chooser",chooser->name,NULL,NULL);
+	list_palette_set_title(&property_palette,"Choosers",NULL,"Chooser",chooser->name,NULL,NULL);
 
 		// settings
 
-	list_palette_add_header(&alt_property_palette,0,"Settings");
-	list_palette_add_string(&alt_property_palette,kChooserPropertyName,"Name",chooser->name,FALSE);
-	list_palette_add_string(&alt_property_palette,kChooserPropertyTemplateName,"Template",chooser->template_name,FALSE);
+	list_palette_add_header(&property_palette,0,"Settings");
+	list_palette_add_string(&property_palette,kChooserPropertyName,"Name",chooser->name,FALSE);
+	list_palette_add_string(&property_palette,kChooserPropertyTemplateName,"Template",chooser->template_name,FALSE);
 
 		// frame
 
-	list_palette_add_header(&alt_property_palette,0,"Frame");
-	list_palette_add_checkbox(&alt_property_palette,kChooserPropertyFrameOn,"On",&chooser->frame.on,FALSE);
-	list_palette_add_int(&alt_property_palette,kChooserPropertyFrameX,"X",&chooser->frame.x,FALSE);
-	list_palette_add_int(&alt_property_palette,kChooserPropertyFrameY,"Y",&chooser->frame.y,FALSE);
-	list_palette_add_int(&alt_property_palette,kChooserPropertyFrameWid,"Wid",&chooser->frame.wid,FALSE);
-	list_palette_add_int(&alt_property_palette,kChooserPropertyFrameHigh,"High",&chooser->frame.high,FALSE);
-	list_palette_add_string(&alt_property_palette,kChooserPropertyFrameTitle,"Title",chooser->frame.title,FALSE);
+	list_palette_add_header(&property_palette,0,"Frame");
+	list_palette_add_checkbox(&property_palette,kChooserPropertyFrameOn,"On",&chooser->frame.on,FALSE);
+	list_palette_add_int(&property_palette,kChooserPropertyFrameX,"X",&chooser->frame.x,FALSE);
+	list_palette_add_int(&property_palette,kChooserPropertyFrameY,"Y",&chooser->frame.y,FALSE);
+	list_palette_add_int(&property_palette,kChooserPropertyFrameWid,"Wid",&chooser->frame.wid,FALSE);
+	list_palette_add_int(&property_palette,kChooserPropertyFrameHigh,"High",&chooser->frame.high,FALSE);
+	list_palette_add_string(&property_palette,kChooserPropertyFrameTitle,"Title",chooser->frame.title,FALSE);
 
 		// keys
 
-	list_palette_add_header(&alt_property_palette,0,"Keys");
-	list_palette_add_int(&alt_property_palette,kChooserPropertyOKID,"OK Id",&chooser->key.ok_id,FALSE);
-	list_palette_add_int(&alt_property_palette,kChooserPropertyCancelID,"Cancel Id",&chooser->key.cancel_id,FALSE);
+	list_palette_add_header(&property_palette,0,"Keys");
+	list_palette_add_int(&property_palette,kChooserPropertyOKID,"OK Id",&chooser->key.ok_id,FALSE);
+	list_palette_add_int(&property_palette,kChooserPropertyCancelID,"Cancel Id",&chooser->key.cancel_id,FALSE);
 
 		// chooser items
 
-	list_palette_add_header_button(&alt_property_palette,kChooserPropertyChooserItemAdd,"Items",list_button_plus);
+	list_palette_add_header_button(&property_palette,kChooserPropertyChooserItemAdd,"Items",list_button_plus);
 
-	list_palette_sort_mark_start(&alt_property_palette);
+	list_palette_sort_mark_start(&property_palette);
 	
 	for (n=0;n!=chooser->npiece;n++) {
 
@@ -128,19 +128,19 @@ void alt_property_palette_fill_chooser(int chooser_idx)
 
 		strcat(str,")");
 
-		list_palette_add_string_selectable_button(&alt_property_palette,(kChooserPropertyChooserItemName+n),list_button_minus,(kChooserPropertyChooserItemDelete+n),str,NULL,(state.cur_chooser_piece_idx==n),FALSE);
+		list_palette_add_string_selectable_button(&property_palette,(kChooserPropertyChooserItemName+n),list_button_minus,(kChooserPropertyChooserItemDelete+n),str,NULL,(state.cur_chooser_piece_idx==n),FALSE);
 	}
 
-	list_palette_sort(&alt_property_palette);
+	list_palette_sort(&property_palette);
 }
 
 /* =======================================================
 
-      Alt Property Palette Click Chooser
+      Property Palette Click Chooser
       
 ======================================================= */
 
-void alt_property_palette_click_chooser(int chooser_idx,int id,bool double_click)
+void property_palette_click_chooser(int chooser_idx,int id,bool double_click)
 {
 	int						idx,sz;
 	iface_chooser_type		*chooser;
@@ -151,7 +151,7 @@ void alt_property_palette_click_chooser(int chooser_idx,int id,bool double_click
 
 	if ((id>=kChooserPropertyChooserItemName) && (id<(kChooserPropertyChooserItemName+max_chooser_piece))) {
 		state.cur_chooser_piece_idx=id-kChooserPropertyChooserItemName;
-		if (double_click) list_palette_set_level(&alt_property_palette,3);
+		if (double_click) list_palette_set_level(&property_palette,3);
 		return;
 	}
 
@@ -199,9 +199,9 @@ void alt_property_palette_click_chooser(int chooser_idx,int id,bool double_click
 		state.cur_chooser_idx=chooser_idx;
 		state.cur_chooser_piece_idx=idx;
 
-		list_palette_set_level(&alt_property_palette,3);
+		list_palette_set_level(&property_palette,3);
 
-		list_palette_start_picking_mode(&alt_property_palette,"Pick a Chooser Piece Type",(char*)chooser_type_str,-1,name_str_len,0,FALSE,FALSE,&chooser->pieces[idx].type,NULL);
+		list_palette_start_picking_mode(&property_palette,"Pick a Chooser Piece Type",(char*)chooser_type_str,-1,name_str_len,0,FALSE,FALSE,&chooser->pieces[idx].type,NULL);
 
 		return;
 	}
