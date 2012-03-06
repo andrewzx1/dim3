@@ -355,22 +355,6 @@
 					Name="Palettes"
 					>
 					<File
-						RelativePath="..\..\dim3Animator\Code\alt2_property_palette_pose_move_particle.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Animator\Code\alt2_property_palette_pose_move_ring.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Animator\Code\alt_property_palette_bone_move.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Animator\Code\alt_property_palette_pose_move.c"
-						>
-					</File>
-					<File
 						RelativePath="..\..\dim3Common\Code\list_palette_common.c"
 						>
 					</File>
@@ -395,6 +379,10 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\dim3Animator\Code\property_palette_bone_move.c"
+						>
+					</File>
+					<File
 						RelativePath="..\..\dim3Animator\Code\property_palette_hit_box.c"
 						>
 					</File>
@@ -412,6 +400,18 @@
 					</File>
 					<File
 						RelativePath="..\..\dim3Animator\Code\property_palette_pose.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Animator\Code\property_palette_pose_move.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Animator\Code\property_palette_pose_move_particle.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Animator\Code\property_palette_pose_move_ring.c"
 						>
 					</File>
 					<File

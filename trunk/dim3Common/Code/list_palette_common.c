@@ -45,8 +45,6 @@ extern file_path_setup_type		file_path_setup;
 
 bitmap_type						list_bitmaps[5];
 
-list_palette_picker_type		list_picker;
-
 /* =======================================================
 
       Item Palette Setup
@@ -58,10 +56,6 @@ void list_palette_initialize(char *app_name)
 	int				n;
 	char			sub_path[1024],path[1024];
 	char			btn_names[5][32]={"Back","Edit","Plus","Minus","Set"};
-
-		// list picker off
-
-	list_picker.on=FALSE;
 
 		// load buttons
 
@@ -92,6 +86,7 @@ void list_palette_list_initialize(list_palette_type *list,char *title)
 	list->total_high=0;
 	
 	list->level=0;
+	list->picker.on=FALSE;
 	
 	list->open=TRUE;
 	list->back_push_on=FALSE;
@@ -165,7 +160,7 @@ int list_palette_get_level(list_palette_type *list)
 
 void list_palette_set_level(list_palette_type *list,int level)
 {
-	list_picker.on=FALSE;		// level change always turns off picker
+	list->picker.on=FALSE;		// level change always turns off picker
 	list->level=level;
 }
 
@@ -697,38 +692,38 @@ void list_palette_delete_all_items(list_palette_type *list)
 
 void list_palette_start_picking_mode(list_palette_type *list,char *title,char *list_ptr,int list_count,int list_item_sz,int list_name_offset,bool include_none,bool file_list,int *idx_ptr,char *name_ptr)
 {
-	list_picker.on=TRUE;
-	list_picker.picker_idx_ptr=idx_ptr;
-	list_picker.picker_name_ptr=name_ptr;
+	list->picker.on=TRUE;
+	list->picker.picker_idx_ptr=idx_ptr;
+	list->picker.picker_name_ptr=name_ptr;
 
-	strcpy(list_picker.title,title);
+	strcpy(list->picker.title,title);
 
 		// if list count is -1, then calculate
 		// it from the first blank string
 
 	if (list_count==-1) list_count=property_pick_get_list_count(list_ptr,list_item_sz,list_name_offset);
 
-	list_picker.include_none=include_none;
-	list_picker.file_list=file_list;
-	list_picker.ptr=list_ptr;
-	list_picker.count=list_count;
-	list_picker.item_sz=list_item_sz;
-	list_picker.name_offset=list_name_offset;
+	list->picker.include_none=include_none;
+	list->picker.file_list=file_list;
+	list->picker.ptr=list_ptr;
+	list->picker.count=list_count;
+	list->picker.item_sz=list_item_sz;
+	list->picker.name_offset=list_name_offset;
 }
 
-void list_palette_start_picking_item_mode(list_palette_item_type *item)
+void list_palette_start_picking_item_mode(list_palette_type *list,list_palette_item_type *item)
 {
-	list_picker.on=TRUE;
+	list->picker.on=TRUE;
 
-	sprintf(list_picker.title,"Pick %s",item->name);
+	sprintf(list->picker.title,"Pick %s",item->name);
 	
 	if (item->list.is_index) {
-		list_picker.picker_idx_ptr=item->value.int_ptr;
-		list_picker.picker_name_ptr=NULL;
+		list->picker.picker_idx_ptr=item->value.int_ptr;
+		list->picker.picker_name_ptr=NULL;
 	}
 	else {
-		list_picker.picker_idx_ptr=NULL;
-		list_picker.picker_name_ptr=item->value.str_ptr;
+		list->picker.picker_idx_ptr=NULL;
+		list->picker.picker_name_ptr=item->value.str_ptr;
 	}
 	
 		// if this is a file type list,
@@ -738,12 +733,12 @@ void list_palette_start_picking_item_mode(list_palette_item_type *item)
 		item->list.count=property_pick_file_fill_list(item->list.file.search_path,item->list.file.extension,item->list.file.required_file_name);
 	}
 	
-	list_picker.include_none=item->list.include_none;
-	list_picker.file_list=item->list.file.file_list;
-	list_picker.ptr=item->list.ptr;
-	list_picker.count=item->list.count;
-	list_picker.item_sz=item->list.item_sz;
-	list_picker.name_offset=item->list.name_offset;
+	list->picker.include_none=item->list.include_none;
+	list->picker.file_list=item->list.file.file_list;
+	list->picker.ptr=item->list.ptr;
+	list->picker.count=item->list.count;
+	list->picker.item_sz=item->list.item_sz;
+	list->picker.name_offset=item->list.name_offset;
 }
 
 void list_palette_fill_picking_mode(list_palette_type *list)
@@ -752,21 +747,21 @@ void list_palette_fill_picking_mode(list_palette_type *list)
 	char				*str_ptr;
 	bool				sel;
 
-	strcpy(list->titles[0],list_picker.title);
+	strcpy(list->titles[0],list->picker.title);
 	list->titles[1][0]=list->titles[2][0]=0x0;
 
 	list_palette_delete_all_items(list);
 
 		// none item
 
-	if (list_picker.include_none) {
+	if (list->picker.include_none) {
 
 		sel=FALSE;
-		if (list_picker.picker_idx_ptr!=NULL) {
-			sel=(*list_picker.picker_idx_ptr==-1);
+		if (list->picker.picker_idx_ptr!=NULL) {
+			sel=(*list->picker.picker_idx_ptr==-1);
 		}
-		if (list_picker.picker_name_ptr!=NULL) {
-			sel=(*list_picker.picker_name_ptr==0x0);
+		if (list->picker.picker_name_ptr!=NULL) {
+			sel=(*list->picker.picker_name_ptr==0x0);
 		}
 
 		list_palette_add_item(list,-1,-1,"None",sel,FALSE);
@@ -774,8 +769,8 @@ void list_palette_fill_picking_mode(list_palette_type *list)
 
 		// other items
 
-	for (n=0;n!=list_picker.count;n++) {
-		str_ptr=list_picker.ptr+((list_picker.item_sz*n)+list_picker.name_offset);
+	for (n=0;n!=list->picker.count;n++) {
+		str_ptr=list->picker.ptr+((list->picker.item_sz*n)+list->picker.name_offset);
 
 			// @ marks headers
 
@@ -794,11 +789,11 @@ void list_palette_fill_picking_mode(list_palette_type *list)
 			// regular clickable items
 
 		sel=FALSE;
-		if (list_picker.picker_idx_ptr!=NULL) {
-			sel=(*list_picker.picker_idx_ptr==n);
+		if (list->picker.picker_idx_ptr!=NULL) {
+			sel=(*list->picker.picker_idx_ptr==n);
 		}
-		if (list_picker.picker_name_ptr!=NULL) {
-			sel=(strcasecmp(list_picker.picker_name_ptr,str_ptr)==0);
+		if (list->picker.picker_name_ptr!=NULL) {
+			sel=(strcasecmp(list->picker.picker_name_ptr,str_ptr)==0);
 		}
 
 		list_palette_add_item(list,-1,n,str_ptr,sel,FALSE);
@@ -812,17 +807,17 @@ void list_palette_choose_picking_mode(list_palette_type *list,int item_idx,bool 
 
 		// are we in the list picker?
 
-	if (!list_picker.on) return;
+	if (!list->picker.on) return;
 	if (!double_click) return;
 
 		// turn off list picker
 
-	list_picker.on=FALSE;
+	list->picker.on=FALSE;
 
 		// integer list pickers just get index
 
-	if (list_picker.picker_idx_ptr!=NULL) {
-		*list_picker.picker_idx_ptr=list->item_idx;
+	if (list->picker.picker_idx_ptr!=NULL) {
+		*list->picker.picker_idx_ptr=list->item_idx;
 		main_wind_draw();
 		return;
 	}
@@ -830,15 +825,15 @@ void list_palette_choose_picking_mode(list_palette_type *list,int item_idx,bool 
 		// blank string picker
 
 	if (list->item_idx==-1) {
-		*list_picker.picker_name_ptr=0x0;
+		*list->picker.picker_name_ptr=0x0;
 		main_wind_draw();
 		return;
 	}
 
 		// if not file picker, just grab the name
 
-	if (!list_picker.file_list) {
-		strcpy(list_picker.picker_name_ptr,list->items[item_idx].name);
+	if (!list->picker.file_list) {
+		strcpy(list->picker.picker_name_ptr,list->items[item_idx].name);
 		main_wind_draw();
 		return;
 	}
@@ -860,10 +855,10 @@ void list_palette_choose_picking_mode(list_palette_type *list,int item_idx,bool 
 		// now add in the directory + file name
 
 	if (dir[0]==0x0) {
-		strcpy(list_picker.picker_name_ptr,list->items[item_idx].name);
+		strcpy(list->picker.picker_name_ptr,list->items[item_idx].name);
 	}
 	else {
-		sprintf(list_picker.picker_name_ptr,"%s/%s",dir,list->items[item_idx].name);
+		sprintf(list->picker.picker_name_ptr,"%s/%s",dir,list->items[item_idx].name);
 	}
 
 	main_wind_draw();
@@ -1267,7 +1262,7 @@ void list_palette_draw_title(list_palette_type *list)
 	
 		// back arrow
 		
-	if ((list->level==0) || (list_picker.on)) return;
+	if ((list->level==0) || (list->picker.on)) return;
 	
 #ifndef D3_SETUP
 	lx=box.lx+12;
@@ -1658,7 +1653,7 @@ void list_palette_draw(list_palette_type *list)
 		// in list picker?
 		// if so replace content with list
 
-	if (list_picker.on) list_palette_fill_picking_mode(list);
+	if (list->picker.on) list_palette_fill_picking_mode(list);
 	
 		// check if scrolling is bad,
 		// usually when a page was switched
@@ -1710,7 +1705,7 @@ void list_palette_scroll_down(list_palette_type *list)
 
 void list_palette_scroll_wheel(list_palette_type *list,d3pnt *pnt,int move)
 {
-	if (list_picker.on) list_palette_fill_picking_mode(list);
+	if (list->picker.on) list_palette_fill_picking_mode(list);
 
 	if (move>0) list_palette_scroll_up(list);
 	if (move<0) list_palette_scroll_down(list);
@@ -1722,7 +1717,7 @@ void list_palette_scroll_item_into_view(list_palette_type *list,int item_type,in
 	bool						hit;
 	list_palette_item_type		*item;
 
-	if (list_picker.on) return;
+	if (list->picker.on) return;
 
 		// find item
 
@@ -1969,10 +1964,10 @@ bool list_palette_click(list_palette_type *list,d3pnt *pnt,bool double_click)
 		// click in title
 		
 	if (pt.y<list_palette_get_title_high(list)) {
-		if ((list->level!=0) && (!list_picker.on)) {
+		if ((list->level!=0) && (!list->picker.on)) {
 			if (list_palette_click_back(list)) {
-				if (list_picker.on) {
-					list_picker.on=FALSE;
+				if (list->picker.on) {
+					list->picker.on=FALSE;
 				}
 				else {
 					list_palette_set_level(list,(list->level-1));
@@ -1993,7 +1988,7 @@ bool list_palette_click(list_palette_type *list,d3pnt *pnt,bool double_click)
 		// in list picker?
 		// if so replace content with list
 
-	if (list_picker.on) list_palette_fill_picking_mode(list);
+	if (list->picker.on) list_palette_fill_picking_mode(list);
 
 		// click in item
 
@@ -2004,7 +1999,7 @@ bool list_palette_click(list_palette_type *list,d3pnt *pnt,bool double_click)
 
 	list->button_click=FALSE;
 
-	if (!list_picker.on) {
+	if (!list->picker.on) {
 
 		if (list->items[item_idx].button_type!=list_button_none) {
 			if (pt.x>=(((box.rx-box.lx)-list_palette_scroll_wid)-list_item_font_high)) {
@@ -2020,7 +2015,7 @@ bool list_palette_click(list_palette_type *list,d3pnt *pnt,bool double_click)
 		// if a header or an id of -1, only click if there's
 		// a button
 
-	if (!list_picker.on) {
+	if (!list->picker.on) {
 		if (item->ctrl_type==list_item_ctrl_header) {
 			if (!list->button_click) return(FALSE);
 		}
@@ -2036,7 +2031,7 @@ bool list_palette_click(list_palette_type *list,d3pnt *pnt,bool double_click)
 
 		// handle clicking in list picker
 
-	if (list_picker.on) {
+	if (list->picker.on) {
 		list_palette_choose_picking_mode(list,item_idx,double_click);
 		return(TRUE);
 	}
@@ -2107,7 +2102,7 @@ bool list_palette_click(list_palette_type *list,d3pnt *pnt,bool double_click)
 
 		case list_item_ctrl_picker:
 			if (!double_click) return(FALSE);
-			list_palette_start_picking_item_mode(item);
+			list_palette_start_picking_item_mode(list,item);
 			return(TRUE);
 
 		case list_item_ctrl_pick_color:

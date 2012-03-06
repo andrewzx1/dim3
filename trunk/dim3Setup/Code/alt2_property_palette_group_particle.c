@@ -2,7 +2,7 @@
 
 Module: dim3 Setup
 Author: Brian Barnes
- Usage: Alt2 Property Palette Group Particle
+ Usage: Property Palette Group Particle
 
 ***************************** License ********************************
 
@@ -38,7 +38,7 @@ and can be sold or given away.
 
 extern iface_type				iface;
 extern setup_state_type			state;
-extern list_palette_type		alt2_property_palette;
+extern list_palette_type		property_palette;
 
 /* =======================================================
 
@@ -46,7 +46,7 @@ extern list_palette_type		alt2_property_palette;
       
 ======================================================= */
 
-void alt2_property_palette_fill_group_particle(int particle_idx,int group_particle_idx)
+void property_palette_fill_group_particle(int particle_idx,int group_particle_idx)
 {
 	iface_particle_type					*particle;
 	iface_particle_group_piece_type			*group_particle;
@@ -54,13 +54,13 @@ void alt2_property_palette_fill_group_particle(int particle_idx,int group_partic
 	particle=&iface.particle_list.particles[particle_idx];
 	group_particle=&particle->group.particles[group_particle_idx];
 
-	list_palette_set_title(&alt2_property_palette,"Particles",NULL,"Particle Group",particle->name,"Particle",group_particle->name);
+	list_palette_set_title(&property_palette,"Particles",NULL,"Particle Group",particle->name,"Particle",group_particle->name);
 
 		// settings
 
-	list_palette_add_header(&alt2_property_palette,0,"Settings");
-	list_palette_add_string(&alt2_property_palette,kGroupParticleSettingsName,"Particle",group_particle->name,FALSE);
-	list_palette_add_int(&alt2_property_palette,kGroupParticleSettingsShift,"Shift",&group_particle->shift,FALSE);
+	list_palette_add_header(&property_palette,0,"Settings");
+	list_palette_add_string(&property_palette,kGroupParticleSettingsName,"Particle",group_particle->name,FALSE);
+	list_palette_add_int(&property_palette,kGroupParticleSettingsShift,"Shift",&group_particle->shift,FALSE);
 }
 
 /* =======================================================
@@ -69,7 +69,7 @@ void alt2_property_palette_fill_group_particle(int particle_idx,int group_partic
       
 ======================================================= */
 
-void alt2_property_palette_click_group_particle(int particle_idx,int group_particle_idx,int id,bool double_click)
+void property_palette_click_group_particle(int particle_idx,int group_particle_idx,int id,bool double_click)
 {
 	iface_particle_group_piece_type			*group_particle;
 

@@ -52,7 +52,7 @@ and can be sold or given away.
 
 extern iface_type				iface;
 extern setup_state_type			state;
-extern list_palette_type		alt_property_palette;
+extern list_palette_type		property_palette;
 
 /* =======================================================
 
@@ -160,7 +160,7 @@ iface_intro_position_type* get_intro_button_progress_from_item_idx(int item_idx)
       
 ======================================================= */
 
-void alt_property_palette_fill_intro_button(int intro_button_idx)
+void property_palette_fill_intro_button(int intro_button_idx)
 {
 	char							name[64];
 	iface_intro_button_type			*btn;
@@ -170,42 +170,42 @@ void alt_property_palette_fill_intro_button(int intro_button_idx)
 	desc=get_intro_button_desc_from_item_idx(intro_button_idx);
 	progress=get_intro_button_progress_from_item_idx(intro_button_idx);
 
-	list_palette_set_title(&alt_property_palette,"Intro Button",name,NULL,NULL,NULL,NULL);
+	list_palette_set_title(&property_palette,"Intro Button",name,NULL,NULL,NULL,NULL);
 
 		// settings
 	
-	list_palette_add_header(&alt_property_palette,0,"Settings");
-	list_palette_add_checkbox(&alt_property_palette,kButtonOptionOn,"On",&btn->on,FALSE);
+	list_palette_add_header(&property_palette,0,"Settings");
+	list_palette_add_checkbox(&property_palette,kButtonOptionOn,"On",&btn->on,FALSE);
 	
 		// position
 
-	list_palette_add_header(&alt_property_palette,0,"Position");
-	list_palette_add_int(&alt_property_palette,kButtonPositionX,"X",&btn->x,FALSE);
-	list_palette_add_int(&alt_property_palette,kButtonPositionY,"Y",&btn->y,FALSE);
-	list_palette_add_int(&alt_property_palette,kButtonPositionWid,"Width",&btn->wid,FALSE);
-	list_palette_add_int(&alt_property_palette,kButtonPositionHigh,"Height",&btn->high,FALSE);
+	list_palette_add_header(&property_palette,0,"Position");
+	list_palette_add_int(&property_palette,kButtonPositionX,"X",&btn->x,FALSE);
+	list_palette_add_int(&property_palette,kButtonPositionY,"Y",&btn->y,FALSE);
+	list_palette_add_int(&property_palette,kButtonPositionWid,"Width",&btn->wid,FALSE);
+	list_palette_add_int(&property_palette,kButtonPositionHigh,"Height",&btn->high,FALSE);
 
 		// mobile override
 
-	list_palette_add_header(&alt_property_palette,0,"Mobile Override");
-	list_palette_add_checkbox(&alt_property_palette,kButtonMobileSkip,"Hide if Mobile",&btn->mobile_hide,FALSE);
-	list_palette_add_int(&alt_property_palette,kButtonMobilePositionX,"X",&btn->mobile_x,FALSE);
-	list_palette_add_int(&alt_property_palette,kButtonMobilePositionY,"Y",&btn->mobile_y,FALSE);
+	list_palette_add_header(&property_palette,0,"Mobile Override");
+	list_palette_add_checkbox(&property_palette,kButtonMobileSkip,"Hide if Mobile",&btn->mobile_hide,FALSE);
+	list_palette_add_int(&property_palette,kButtonMobilePositionX,"X",&btn->mobile_x,FALSE);
+	list_palette_add_int(&property_palette,kButtonMobilePositionY,"Y",&btn->mobile_y,FALSE);
 
 		// description
 
 	if (desc!=NULL) {
-		list_palette_add_header(&alt_property_palette,0,"Description");
-		list_palette_add_int(&alt_property_palette,kButtonDescPositionX,"X",&desc->x,FALSE);
-		list_palette_add_int(&alt_property_palette,kButtonDescPositionY,"Y",&desc->y,FALSE);
+		list_palette_add_header(&property_palette,0,"Description");
+		list_palette_add_int(&property_palette,kButtonDescPositionX,"X",&desc->x,FALSE);
+		list_palette_add_int(&property_palette,kButtonDescPositionY,"Y",&desc->y,FALSE);
 	}
 
 		// progress
 
 	if (progress!=NULL) {
-		list_palette_add_header(&alt_property_palette,0,"Progress Bitmaps");
-		list_palette_add_int(&alt_property_palette,kButtonProgressPositionX,"X",&progress->x,FALSE);
-		list_palette_add_int(&alt_property_palette,kButtonProgressPositionY,"Y",&progress->y,FALSE);
+		list_palette_add_header(&property_palette,0,"Progress Bitmaps");
+		list_palette_add_int(&property_palette,kButtonProgressPositionX,"X",&progress->x,FALSE);
+		list_palette_add_int(&property_palette,kButtonProgressPositionY,"Y",&progress->y,FALSE);
 	}
 }
 
@@ -215,7 +215,7 @@ void alt_property_palette_fill_intro_button(int intro_button_idx)
       
 ======================================================= */
 
-void alt_property_palette_click_intro_button(int intro_button_idx,int id,bool double_click)
+void property_palette_click_intro_button(int intro_button_idx,int id,bool double_click)
 {
 }
 

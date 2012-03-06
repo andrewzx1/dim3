@@ -129,6 +129,14 @@ typedef struct		{
 					} list_palette_item_type;
 
 typedef struct		{
+						int									count,item_sz,name_offset;
+						int									*picker_idx_ptr;
+						bool								on,include_none,file_list;
+						char								title[128];
+						char								*ptr,*picker_name_ptr;
+					} list_palette_picker_type;
+
+typedef struct		{
 						int									level,item_count,
 															item_sort_start_idx,push_idx,
 															item_id,item_type,item_idx,
@@ -136,16 +144,9 @@ typedef struct		{
 						bool								open,back_push_on,
 															push_on,button_click;
 						char								titles[3][128];
+						list_palette_picker_type			picker;
 						list_palette_item_type				*items;
 					} list_palette_type;
-
-typedef struct		{
-						int									count,item_sz,name_offset;
-						int									*picker_idx_ptr;
-						bool								on,include_none,file_list;
-						char								title[128];
-						char								*ptr,*picker_name_ptr;
-					} list_palette_picker_type;
 
 //
 // property utilities

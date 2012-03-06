@@ -2,7 +2,7 @@
 
 Module: dim3 Setup
 Author: Brian Barnes
- Usage: Alt Property Palette Mark
+ Usage: Property Palette Mark
 
 ***************************** License ********************************
 
@@ -55,7 +55,7 @@ and can be sold or given away.
 
 extern iface_type				iface;
 extern setup_state_type			state;
-extern list_palette_type		alt_property_palette;
+extern list_palette_type		property_palette;
 
 /* =======================================================
 
@@ -63,45 +63,45 @@ extern list_palette_type		alt_property_palette;
       
 ======================================================= */
 
-void alt_property_palette_fill_mark(int mark_idx)
+void property_palette_fill_mark(int mark_idx)
 {
 	iface_mark_type			*mark;
 
 	mark=&iface.mark_list.marks[mark_idx];
 
-	list_palette_set_title(&alt_property_palette,"Marks",NULL,"Mark",mark->name,NULL,NULL);
+	list_palette_set_title(&property_palette,"Marks",NULL,"Mark",mark->name,NULL,NULL);
 
 		// settings
 
-	list_palette_add_header(&alt_property_palette,0,"Settings");
-	list_palette_add_string(&alt_property_palette,kMarkSettingsName,"Name",mark->name,FALSE);
-	list_palette_add_picker_file(&alt_property_palette,kMarkSettingsFileName,list_button_none,0,"Bitmap","Bitmaps/Marks","png","",mark->bitmap_name,FALSE);
+	list_palette_add_header(&property_palette,0,"Settings");
+	list_palette_add_string(&property_palette,kMarkSettingsName,"Name",mark->name,FALSE);
+	list_palette_add_picker_file(&property_palette,kMarkSettingsFileName,list_button_none,0,"Bitmap","Bitmaps/Marks","png","",mark->bitmap_name,FALSE);
 
 		// options
 
-	list_palette_add_header(&alt_property_palette,0,"Options");
-	list_palette_add_checkbox(&alt_property_palette,kMarkOptionNoRotate,"No Rotate",&mark->no_rotate,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kMarkOptionNoTransparent,"Ignore Transaparent Polys",&mark->no_transparent,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kMarkOptionNoOpaque,"Ignore Opaque Polys",&mark->no_opaque,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kMarkOptionHilite,"High Light",&mark->hilite,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kMarkOptionBlendAdd,"Additive Blending",&mark->blend_add,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kMarkOptionTeamTint,"Team Tinting",&mark->team_tint,FALSE);
-	list_palette_add_pick_color(&alt_property_palette,kMarkOptionColor,"Color",&mark->color,FALSE);
+	list_palette_add_header(&property_palette,0,"Options");
+	list_palette_add_checkbox(&property_palette,kMarkOptionNoRotate,"No Rotate",&mark->no_rotate,FALSE);
+	list_palette_add_checkbox(&property_palette,kMarkOptionNoTransparent,"Ignore Transaparent Polys",&mark->no_transparent,FALSE);
+	list_palette_add_checkbox(&property_palette,kMarkOptionNoOpaque,"Ignore Opaque Polys",&mark->no_opaque,FALSE);
+	list_palette_add_checkbox(&property_palette,kMarkOptionHilite,"High Light",&mark->hilite,FALSE);
+	list_palette_add_checkbox(&property_palette,kMarkOptionBlendAdd,"Additive Blending",&mark->blend_add,FALSE);
+	list_palette_add_checkbox(&property_palette,kMarkOptionTeamTint,"Team Tinting",&mark->team_tint,FALSE);
+	list_palette_add_pick_color(&property_palette,kMarkOptionColor,"Color",&mark->color,FALSE);
 
 		// fade
 
-	list_palette_add_header(&alt_property_palette,0,"Fade");
-	list_palette_add_int(&alt_property_palette,kMarkFadeInTick,"Fade In Milliseconds",&mark->fade_in_msec,FALSE);
-	list_palette_add_int(&alt_property_palette,kMarkFadeLifeTick,"Life Milliseconds",&mark->life_msec,FALSE);
-	list_palette_add_int(&alt_property_palette,kMarkFadeOutTick,"Fade Out Milliseconds",&mark->fade_out_msec,FALSE);
+	list_palette_add_header(&property_palette,0,"Fade");
+	list_palette_add_int(&property_palette,kMarkFadeInTick,"Fade In Milliseconds",&mark->fade_in_msec,FALSE);
+	list_palette_add_int(&property_palette,kMarkFadeLifeTick,"Life Milliseconds",&mark->life_msec,FALSE);
+	list_palette_add_int(&property_palette,kMarkFadeOutTick,"Fade Out Milliseconds",&mark->fade_out_msec,FALSE);
 
 		// animation
 
-	list_palette_add_header(&alt_property_palette,0,"Animation");
-	list_palette_add_int(&alt_property_palette,kMarkImageCount,"Count",&mark->animate.image_count,FALSE);
-	list_palette_add_int(&alt_property_palette,kMarkImageMillisecond,"Display Milliseconds",&mark->animate.msec,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kMarkImageLoop,"Loop",&mark->animate.loop,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kMarkImageLoopBack,"Loop Back",&mark->animate.loop_back,FALSE);
+	list_palette_add_header(&property_palette,0,"Animation");
+	list_palette_add_int(&property_palette,kMarkImageCount,"Count",&mark->animate.image_count,FALSE);
+	list_palette_add_int(&property_palette,kMarkImageMillisecond,"Display Milliseconds",&mark->animate.msec,FALSE);
+	list_palette_add_checkbox(&property_palette,kMarkImageLoop,"Loop",&mark->animate.loop,FALSE);
+	list_palette_add_checkbox(&property_palette,kMarkImageLoopBack,"Loop Back",&mark->animate.loop_back,FALSE);
 }
 
 /* =======================================================
@@ -110,7 +110,7 @@ void alt_property_palette_fill_mark(int mark_idx)
       
 ======================================================= */
 
-void alt_property_palette_click_mark(int mark_idx,int id,bool double_click)
+void property_palette_click_mark(int mark_idx,int id,bool double_click)
 {
 	iface_mark_type			*mark;
 

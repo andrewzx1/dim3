@@ -2,7 +2,7 @@
 
 Module: dim3 Setup
 Author: Brian Barnes
- Usage: Alt Property Palette Multiplayer Game
+ Usage: Property Palette Multiplayer Game
 
 ***************************** License ********************************
 
@@ -47,7 +47,7 @@ and can be sold or given away.
 
 extern iface_type				iface;
 extern setup_state_type			state;
-extern list_palette_type		alt_property_palette;
+extern list_palette_type		property_palette;
 
 /* =======================================================
 
@@ -55,40 +55,40 @@ extern list_palette_type		alt_property_palette;
       
 ======================================================= */
 
-void alt_property_palette_fill_multiplayer_game(int multiplayer_game_idx)
+void property_palette_fill_multiplayer_game(int multiplayer_game_idx)
 {
 	iface_net_game_type		*game;
 
 	game=&iface.net_game.games[multiplayer_game_idx];
 
-	list_palette_set_title(&alt_property_palette,"Multiplayer",NULL,"Game",game->name,NULL,NULL);
+	list_palette_set_title(&property_palette,"Multiplayer",NULL,"Game",game->name,NULL,NULL);
 
 		// settings
 
-	list_palette_add_header(&alt_property_palette,0,"Settings");
-	list_palette_add_string(&alt_property_palette,kMPGamePropertySettingsName,"Name",game->name,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kMPGamePropertySettingsTeam,"Requires Teams",&game->use_teams,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kMPGamePropertySettingsMonster,"Include Monsters",&game->monsters,FALSE);
+	list_palette_add_header(&property_palette,0,"Settings");
+	list_palette_add_string(&property_palette,kMPGamePropertySettingsName,"Name",game->name,FALSE);
+	list_palette_add_checkbox(&property_palette,kMPGamePropertySettingsTeam,"Requires Teams",&game->use_teams,FALSE);
+	list_palette_add_checkbox(&property_palette,kMPGamePropertySettingsMonster,"Include Monsters",&game->monsters,FALSE);
 
 		// bots
 
-	list_palette_add_header(&alt_property_palette,0,"Scripts");
-	list_palette_add_string(&alt_property_palette,kMPGamePropertyScriptPlayerScript,"Player",game->script.player_script,FALSE);
-	list_palette_add_string(&alt_property_palette,kMPGamePropertyScriptBotScript,"Bot",game->script.bot_script,FALSE);
+	list_palette_add_header(&property_palette,0,"Scripts");
+	list_palette_add_string(&property_palette,kMPGamePropertyScriptPlayerScript,"Player",game->script.player_script,FALSE);
+	list_palette_add_string(&property_palette,kMPGamePropertyScriptBotScript,"Bot",game->script.bot_script,FALSE);
 	
 		// spawn
 
-	list_palette_add_header(&alt_property_palette,0,"Spawning");
-	list_palette_add_string(&alt_property_palette,kMPGamePropertySpawnSpotName,"Spot Name",game->spawn.spot_name,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kMPGamePropertySpawnForceTeam,"Force Team Spots",&game->spawn.force_team_spot,FALSE);
+	list_palette_add_header(&property_palette,0,"Spawning");
+	list_palette_add_string(&property_palette,kMPGamePropertySpawnSpotName,"Spot Name",game->spawn.spot_name,FALSE);
+	list_palette_add_checkbox(&property_palette,kMPGamePropertySpawnForceTeam,"Force Team Spots",&game->spawn.force_team_spot,FALSE);
 	
 		// score
 
-	list_palette_add_header(&alt_property_palette,0,"Scoring");
-	list_palette_add_int(&alt_property_palette,kMPGamePropertyScoreKill,"Kill",&game->score.kill,FALSE);
-	list_palette_add_int(&alt_property_palette,kMPGamePropertyScoreDeath,"Death",&game->score.death,FALSE);
-	list_palette_add_int(&alt_property_palette,kMPGamePropertyScoreSuicide,"Suicide",&game->score.suicide,FALSE);
-	list_palette_add_int(&alt_property_palette,kMPGamePropertyScoreGoal,"Goal",&game->score.goal,FALSE);
+	list_palette_add_header(&property_palette,0,"Scoring");
+	list_palette_add_int(&property_palette,kMPGamePropertyScoreKill,"Kill",&game->score.kill,FALSE);
+	list_palette_add_int(&property_palette,kMPGamePropertyScoreDeath,"Death",&game->score.death,FALSE);
+	list_palette_add_int(&property_palette,kMPGamePropertyScoreSuicide,"Suicide",&game->score.suicide,FALSE);
+	list_palette_add_int(&property_palette,kMPGamePropertyScoreGoal,"Goal",&game->score.goal,FALSE);
 }
 
 /* =======================================================
@@ -97,7 +97,7 @@ void alt_property_palette_fill_multiplayer_game(int multiplayer_game_idx)
       
 ======================================================= */
 
-void alt_property_palette_click_multiplayer_game(int multiplayer_game_idx,int id,bool double_click)
+void property_palette_click_multiplayer_game(int multiplayer_game_idx,int id,bool double_click)
 {
 	iface_net_game_type		*game;
 

@@ -2,7 +2,7 @@
 
 Module: dim3 Setup
 Author: Brian Barnes
- Usage: Alt Property Palette Multiplayer Option
+ Usage: Property Palette Multiplayer Option
 
 ***************************** License ********************************
 
@@ -38,7 +38,7 @@ and can be sold or given away.
 
 extern iface_type				iface;
 extern setup_state_type			state;
-extern list_palette_type		alt_property_palette;
+extern list_palette_type		property_palette;
 
 /* =======================================================
 
@@ -46,19 +46,19 @@ extern list_palette_type		alt_property_palette;
       
 ======================================================= */
 
-void alt_property_palette_fill_multiplayer_option(int multiplayer_option_idx)
+void property_palette_fill_multiplayer_option(int multiplayer_option_idx)
 {
 	iface_net_option_type		*option;
 
 	option=&iface.net_option.options[multiplayer_option_idx];
 
-	list_palette_set_title(&alt_property_palette,"Multiplayer",NULL,"Option",option->name,NULL,NULL);
+	list_palette_set_title(&property_palette,"Multiplayer",NULL,"Option",option->name,NULL,NULL);
 
 		// settings
 
-	list_palette_add_header(&alt_property_palette,0,"Settings");
-	list_palette_add_string(&alt_property_palette,kMPOptionPropertySettingsName,"Name",option->name,FALSE);
-	list_palette_add_string(&alt_property_palette,kMPOptionPropertySettingsDescript,"Description",option->descript,FALSE);
+	list_palette_add_header(&property_palette,0,"Settings");
+	list_palette_add_string(&property_palette,kMPOptionPropertySettingsName,"Name",option->name,FALSE);
+	list_palette_add_string(&property_palette,kMPOptionPropertySettingsDescript,"Description",option->descript,FALSE);
 }
 
 /* =======================================================
@@ -67,7 +67,7 @@ void alt_property_palette_fill_multiplayer_option(int multiplayer_option_idx)
       
 ======================================================= */
 
-void alt_property_palette_click_multiplayer_option(int multiplayer_option_idx,int id,bool double_click)
+void property_palette_click_multiplayer_option(int multiplayer_option_idx,int id,bool double_click)
 {
 	iface_net_option_type		*option;
 

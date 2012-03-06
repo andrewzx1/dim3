@@ -2,7 +2,7 @@
 
 Module: dim3 Setup
 Author: Brian Barnes
- Usage: Alt Property Palette HUD Bar
+ Usage: Property Palette HUD Bar
 
 ***************************** License ********************************
 
@@ -56,7 +56,7 @@ and can be sold or given away.
 
 extern iface_type				iface;
 extern setup_state_type			state;
-extern list_palette_type		alt_property_palette;
+extern list_palette_type		property_palette;
 
 char							hud_bar_type_str[][32]=bar_type_list_def;
 
@@ -66,49 +66,49 @@ char							hud_bar_type_str[][32]=bar_type_list_def;
       
 ======================================================= */
 
-void alt_property_palette_fill_hud_bar(int hud_bar_idx)
+void property_palette_fill_hud_bar(int hud_bar_idx)
 {
 	iface_bar_type				*bar;
 
 	bar=&iface.bar_list.bars[hud_bar_idx];
 
-	list_palette_set_title(&alt_property_palette,"HUD",NULL,"Bar",bar->name,NULL,NULL);
+	list_palette_set_title(&property_palette,"HUD",NULL,"Bar",bar->name,NULL,NULL);
 
 		// settings
 
-	list_palette_add_header(&alt_property_palette,0,"Settings");
-	list_palette_add_string(&alt_property_palette,kBarSettingsName,"Name",bar->name,FALSE);
-	list_palette_add_picker_list_int(&alt_property_palette,kBarSettingsType,"Type",(char*)hud_bar_type_str,-1,name_str_len,0,FALSE,&bar->type,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kBarSettingsShow,"Show",&bar->show,FALSE);
+	list_palette_add_header(&property_palette,0,"Settings");
+	list_palette_add_string(&property_palette,kBarSettingsName,"Name",bar->name,FALSE);
+	list_palette_add_picker_list_int(&property_palette,kBarSettingsType,"Type",(char*)hud_bar_type_str,-1,name_str_len,0,FALSE,&bar->type,FALSE);
+	list_palette_add_checkbox(&property_palette,kBarSettingsShow,"Show",&bar->show,FALSE);
 
 		// position
 
-	list_palette_add_header(&alt_property_palette,0,"Position");
-	list_palette_add_int(&alt_property_palette,kBarPositionX,"X",&bar->pnt.x,FALSE);
-	list_palette_add_int(&alt_property_palette,kBarPositionY,"Y",&bar->pnt.y,FALSE);
-	list_palette_add_int(&alt_property_palette,kBarPositionWid,"Width",&bar->size.x,FALSE);
-	list_palette_add_int(&alt_property_palette,kBarPositionHigh,"Height",&bar->size.y,FALSE);
+	list_palette_add_header(&property_palette,0,"Position");
+	list_palette_add_int(&property_palette,kBarPositionX,"X",&bar->pnt.x,FALSE);
+	list_palette_add_int(&property_palette,kBarPositionY,"Y",&bar->pnt.y,FALSE);
+	list_palette_add_int(&property_palette,kBarPositionWid,"Width",&bar->size.x,FALSE);
+	list_palette_add_int(&property_palette,kBarPositionHigh,"Height",&bar->size.y,FALSE);
 
 		// fill
 
-	list_palette_add_header(&alt_property_palette,0,"Fill");
-	list_palette_add_pick_color(&alt_property_palette,kBarFillStartColor,"Start Color",&bar->fill_start_color,FALSE);
-	list_palette_add_pick_color(&alt_property_palette,kBarFillEndColor,"End Color",&bar->fill_end_color,FALSE);
-	list_palette_add_float(&alt_property_palette,kBarFillAlpha,"Alpha",&bar->fill_alpha,FALSE);
+	list_palette_add_header(&property_palette,0,"Fill");
+	list_palette_add_pick_color(&property_palette,kBarFillStartColor,"Start Color",&bar->fill_start_color,FALSE);
+	list_palette_add_pick_color(&property_palette,kBarFillEndColor,"End Color",&bar->fill_end_color,FALSE);
+	list_palette_add_float(&property_palette,kBarFillAlpha,"Alpha",&bar->fill_alpha,FALSE);
 
 		// outline
 
-	list_palette_add_header(&alt_property_palette,0,"Outline");
-	list_palette_add_checkbox(&alt_property_palette,kBarSettingsOutline,"On",&bar->outline,FALSE);
-	list_palette_add_pick_color(&alt_property_palette,kBarOutlineColor,"Color",&bar->outline_color,FALSE);
-	list_palette_add_float(&alt_property_palette,kBarOutlineAlpha,"Alpha",&bar->outline_alpha,FALSE);
+	list_palette_add_header(&property_palette,0,"Outline");
+	list_palette_add_checkbox(&property_palette,kBarSettingsOutline,"On",&bar->outline,FALSE);
+	list_palette_add_pick_color(&property_palette,kBarOutlineColor,"Color",&bar->outline_color,FALSE);
+	list_palette_add_float(&property_palette,kBarOutlineAlpha,"Alpha",&bar->outline_alpha,FALSE);
 
 		// background
 
-	list_palette_add_header(&alt_property_palette,0,"Background");
-	list_palette_add_checkbox(&alt_property_palette,kBarSettingsBackground,"On",&bar->background,FALSE);
-	list_palette_add_pick_color(&alt_property_palette,kBarBackgroundColor,"Color",&bar->background_color,FALSE);
-	list_palette_add_float(&alt_property_palette,kBarBackgroundAlpha,"Alpha",&bar->background_alpha,FALSE);
+	list_palette_add_header(&property_palette,0,"Background");
+	list_palette_add_checkbox(&property_palette,kBarSettingsBackground,"On",&bar->background,FALSE);
+	list_palette_add_pick_color(&property_palette,kBarBackgroundColor,"Color",&bar->background_color,FALSE);
+	list_palette_add_float(&property_palette,kBarBackgroundAlpha,"Alpha",&bar->background_alpha,FALSE);
 }
 
 /* =======================================================
@@ -117,7 +117,7 @@ void alt_property_palette_fill_hud_bar(int hud_bar_idx)
       
 ======================================================= */
 
-void alt_property_palette_click_hud_bar(int hud_bar_idx,int id,bool double_click)
+void property_palette_click_hud_bar(int hud_bar_idx,int id,bool double_click)
 {
 	iface_bar_type				*bar;
 

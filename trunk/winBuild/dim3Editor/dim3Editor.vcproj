@@ -438,14 +438,6 @@
 					Name="Palettes"
 					>
 					<File
-						RelativePath="..\..\dim3Editor\Code\alt_property_palette_action.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Editor\Code\alt_property_palette_move.c"
-						>
-					</File>
-					<File
 						RelativePath="..\..\dim3Editor\Code\file_palette.c"
 						>
 					</File>
@@ -455,6 +447,10 @@
 					</File>
 					<File
 						RelativePath="..\..\dim3Editor\Code\property_palette.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Editor\Code\property_palette_action.c"
 						>
 					</File>
 					<File
@@ -495,6 +491,10 @@
 					</File>
 					<File
 						RelativePath="..\..\dim3Editor\Code\property_palette_mesh.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Editor\Code\property_palette_move.c"
 						>
 					</File>
 					<File

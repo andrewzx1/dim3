@@ -2,7 +2,7 @@
 
 Module: dim3 Setup
 Author: Brian Barnes
- Usage: Alt Property Palette Intro Model
+ Usage: Property Palette Intro Model
 
 ***************************** License ********************************
 
@@ -44,7 +44,7 @@ and can be sold or given away.
 
 extern iface_type				iface;
 extern setup_state_type			state;
-extern list_palette_type		alt_property_palette;
+extern list_palette_type		property_palette;
 
 /* =======================================================
 
@@ -52,31 +52,31 @@ extern list_palette_type		alt_property_palette;
       
 ======================================================= */
 
-void alt_property_palette_fill_intro_model(int intro_model_idx)
+void property_palette_fill_intro_model(int intro_model_idx)
 {
 	iface_intro_model_type				*model;
 
 	model=&iface.intro.model_list.models[intro_model_idx];
 
-	list_palette_set_title(&alt_property_palette,"Intro",NULL,"Model",model->model_name,NULL,NULL);
+	list_palette_set_title(&property_palette,"Intro",NULL,"Model",model->model_name,NULL,NULL);
 
 		// settings
 
-	list_palette_add_header(&alt_property_palette,0,"Settings");
-	list_palette_add_picker_file(&alt_property_palette,kModelSettingsName,list_button_none,0,"Model","Models","","Mesh.xml;Model.xml",model->model_name,FALSE);
-	list_palette_add_string(&alt_property_palette,kModelSettingsAnimate,"Animation",model->animate_name,FALSE);
+	list_palette_add_header(&property_palette,0,"Settings");
+	list_palette_add_picker_file(&property_palette,kModelSettingsName,list_button_none,0,"Model","Models","","Mesh.xml;Model.xml",model->model_name,FALSE);
+	list_palette_add_string(&property_palette,kModelSettingsAnimate,"Animation",model->animate_name,FALSE);
 
 		// position
 
-	list_palette_add_header(&alt_property_palette,0,"Position");
-	list_palette_add_int(&alt_property_palette,kModelPositionX,"X",&model->x,FALSE);
-	list_palette_add_int(&alt_property_palette,kModelPositionY,"Y",&model->y,FALSE);
+	list_palette_add_header(&property_palette,0,"Position");
+	list_palette_add_int(&property_palette,kModelPositionX,"X",&model->x,FALSE);
+	list_palette_add_int(&property_palette,kModelPositionY,"Y",&model->y,FALSE);
 
 		// options
 
-	list_palette_add_header(&alt_property_palette,0,"Options");
-	list_palette_add_float(&alt_property_palette,kModelOptionResize,"Resize",&model->resize,FALSE);
-	list_palette_add_angle(&alt_property_palette,kModelOptionRot,"Rotate",&model->rot,FALSE);
+	list_palette_add_header(&property_palette,0,"Options");
+	list_palette_add_float(&property_palette,kModelOptionResize,"Resize",&model->resize,FALSE);
+	list_palette_add_angle(&property_palette,kModelOptionRot,"Rotate",&model->rot,FALSE);
 }
 
 /* =======================================================
@@ -85,7 +85,7 @@ void alt_property_palette_fill_intro_model(int intro_model_idx)
       
 ======================================================= */
 
-void alt_property_palette_click_intro_model(int intro_model_idx,int id,bool double_click)
+void property_palette_click_intro_model(int intro_model_idx,int id,bool double_click)
 {
 	iface_intro_model_type				*model;
 

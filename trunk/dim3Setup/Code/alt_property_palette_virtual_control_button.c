@@ -2,7 +2,7 @@
 
 Module: dim3 Setup
 Author: Brian Barnes
- Usage: Alt Property Palette Virtual Control
+ Usage: Property Palette Virtual Control
 
 ***************************** License ********************************
 
@@ -46,7 +46,7 @@ and can be sold or given away.
 
 extern iface_type				iface;
 extern setup_state_type			state;
-extern list_palette_type		alt_property_palette;
+extern list_palette_type		property_palette;
 
 extern char						control_name_str[][32];
 
@@ -56,31 +56,31 @@ extern char						control_name_str[][32];
       
 ======================================================= */
 
-void alt_property_palette_fill_virtual_control_button(int virtual_control_button_idx)
+void property_palette_fill_virtual_control_button(int virtual_control_button_idx)
 {
 	char						str[256];
 	iface_virtual_button_type	*button;
 	
 	sprintf(str,"%d",virtual_control_button_idx);
-	list_palette_set_title(&alt_property_palette,"Virtual Control",NULL,"Button",str,NULL,NULL);
+	list_palette_set_title(&property_palette,"Virtual Control",NULL,"Button",str,NULL,NULL);
 
 		// buttons
 		
 	button=&iface.virtual_control.buttons[virtual_control_button_idx];
 		
-	list_palette_add_header(&alt_property_palette,0,"Settings");
-	list_palette_add_checkbox(&alt_property_palette,kButtonOn,"On",&button->on,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kButtonUseBitmap,"Use Bitmap",&button->use_bitmap,FALSE);
-	list_palette_add_picker_list_int(&alt_property_palette,kButtonControl,"Action",(char*)control_name_str,-1,32,0,FALSE,&button->control_idx,FALSE);
-	list_palette_add_picker_file(&alt_property_palette,kButtonUpBitmap,list_button_none,0,"Up Bitmap","Bitmaps/Virtual","png","",button->up_bitmap_name,FALSE);
-	list_palette_add_picker_file(&alt_property_palette,kButtonDownBitmap,list_button_none,0,"Down Bitmap","Bitmaps/Virtual","png","",button->down_bitmap_name,FALSE);
-	list_palette_add_pick_color(&alt_property_palette,kButtonColor,"Color",&button->color,FALSE);
+	list_palette_add_header(&property_palette,0,"Settings");
+	list_palette_add_checkbox(&property_palette,kButtonOn,"On",&button->on,FALSE);
+	list_palette_add_checkbox(&property_palette,kButtonUseBitmap,"Use Bitmap",&button->use_bitmap,FALSE);
+	list_palette_add_picker_list_int(&property_palette,kButtonControl,"Action",(char*)control_name_str,-1,32,0,FALSE,&button->control_idx,FALSE);
+	list_palette_add_picker_file(&property_palette,kButtonUpBitmap,list_button_none,0,"Up Bitmap","Bitmaps/Virtual","png","",button->up_bitmap_name,FALSE);
+	list_palette_add_picker_file(&property_palette,kButtonDownBitmap,list_button_none,0,"Down Bitmap","Bitmaps/Virtual","png","",button->down_bitmap_name,FALSE);
+	list_palette_add_pick_color(&property_palette,kButtonColor,"Color",&button->color,FALSE);
 	
-	list_palette_add_header(&alt_property_palette,0,"Position");
-	list_palette_add_int(&alt_property_palette,kButtonPositionX,"X",&button->pnt.x,FALSE);
-	list_palette_add_int(&alt_property_palette,kButtonPositionY,"Y",&button->pnt.y,FALSE);
-	list_palette_add_int(&alt_property_palette,kButtonPositionWid,"Width",&button->size.x,FALSE);
-	list_palette_add_int(&alt_property_palette,kButtonPositionHigh,"Height",&button->size.y,FALSE);
+	list_palette_add_header(&property_palette,0,"Position");
+	list_palette_add_int(&property_palette,kButtonPositionX,"X",&button->pnt.x,FALSE);
+	list_palette_add_int(&property_palette,kButtonPositionY,"Y",&button->pnt.y,FALSE);
+	list_palette_add_int(&property_palette,kButtonPositionWid,"Width",&button->size.x,FALSE);
+	list_palette_add_int(&property_palette,kButtonPositionHigh,"Height",&button->size.y,FALSE);
 }
 
 /* =======================================================
@@ -89,7 +89,7 @@ void alt_property_palette_fill_virtual_control_button(int virtual_control_button
       
 ======================================================= */
 
-void alt_property_palette_click_virtual_control_button(int virtual_control_button_idx,int id,bool double_click)
+void property_palette_click_virtual_control_button(int virtual_control_button_idx,int id,bool double_click)
 {
 }
 

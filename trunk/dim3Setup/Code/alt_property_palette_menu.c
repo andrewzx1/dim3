@@ -2,7 +2,7 @@
 
 Module: dim3 Setup
 Author: Brian Barnes
- Usage: Alt Property Palette Menu
+ Usage: Property Palette Menu
 
 ***************************** License ********************************
 
@@ -42,45 +42,45 @@ and can be sold or given away.
 
 extern iface_type				iface;
 extern setup_state_type			state;
-extern list_palette_type		alt_property_palette;
+extern list_palette_type		property_palette;
 
 /* =======================================================
 
-      Alt Property Palette Fill Menu
+      Property Palette Fill Menu
       
 ======================================================= */
 
-void alt_property_palette_fill_menu(int menu_idx)
+void property_palette_fill_menu(int menu_idx)
 {
 	int					n;
 	iface_menu_type		*menu;
 
 	menu=&iface.menu_list.menus[menu_idx];
 
-	list_palette_set_title(&alt_property_palette,"Menus",NULL,"Menu",menu->name,NULL,NULL);
+	list_palette_set_title(&property_palette,"Menus",NULL,"Menu",menu->name,NULL,NULL);
 
 		// settings
 
-	list_palette_add_header(&alt_property_palette,0,"Settings");
-	list_palette_add_string(&alt_property_palette,kMenuPropertyName,"Name",menu->name,FALSE);
+	list_palette_add_header(&property_palette,0,"Settings");
+	list_palette_add_string(&property_palette,kMenuPropertyName,"Name",menu->name,FALSE);
 
 		// menu items
 		// do NOT sort these as they have a natural order
 
-	list_palette_add_header_button(&alt_property_palette,kMenuPropertyMenuItemAdd,"Items",list_button_plus);
+	list_palette_add_header_button(&property_palette,kMenuPropertyMenuItemAdd,"Items",list_button_plus);
 	
 	for (n=0;n!=menu->nitem;n++) {
-		list_palette_add_string_selectable_button(&alt_property_palette,(kMenuPropertyMenuItemName+n),list_button_minus,(kMenuPropertyMenuItemDelete+n),menu->items[n].data,NULL,(state.cur_menu_item_idx==n),FALSE);
+		list_palette_add_string_selectable_button(&property_palette,(kMenuPropertyMenuItemName+n),list_button_minus,(kMenuPropertyMenuItemDelete+n),menu->items[n].data,NULL,(state.cur_menu_item_idx==n),FALSE);
 	}
 }
 
 /* =======================================================
 
-      Alt Property Palette Click Menu
+      Property Palette Click Menu
       
 ======================================================= */
 
-void alt_property_palette_click_menu(int menu_idx,int id,bool double_click)
+void property_palette_click_menu(int menu_idx,int id,bool double_click)
 {
 	int					idx,sz;
 	iface_menu_type		*menu;
@@ -91,7 +91,7 @@ void alt_property_palette_click_menu(int menu_idx,int id,bool double_click)
 
 	if ((id>=kMenuPropertyMenuItemName) && (id<(kMenuPropertyMenuItemName+max_menu_item))) {
 		state.cur_menu_item_idx=id-kMenuPropertyMenuItemName;
-		if (double_click) list_palette_set_level(&alt_property_palette,3);
+		if (double_click) list_palette_set_level(&property_palette,3);
 		return;
 	}
 

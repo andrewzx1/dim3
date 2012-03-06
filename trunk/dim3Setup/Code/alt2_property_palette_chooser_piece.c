@@ -2,7 +2,7 @@
 
 Module: dim3 Setup
 Author: Brian Barnes
- Usage: Alt2 Property Palette Chooser Piece
+ Usage: Property Palette Chooser Piece
 
 ***************************** License ********************************
 
@@ -55,7 +55,7 @@ and can be sold or given away.
 
 extern iface_type				iface;
 extern setup_state_type			state;
-extern list_palette_type		alt2_property_palette;
+extern list_palette_type		property_palette;
 
 extern char						chooser_type_str[][32],
 								hud_text_just_type_str[][32];
@@ -66,7 +66,7 @@ extern char						chooser_type_str[][32],
       
 ======================================================= */
 
-void alt2_property_palette_fill_chooser_piece(int chooser_idx,int chooser_piece_idx)
+void property_palette_fill_chooser_piece(int chooser_idx,int chooser_piece_idx)
 {
 	iface_chooser_type				*chooser;
 	iface_chooser_piece_type		*piece;
@@ -74,51 +74,51 @@ void alt2_property_palette_fill_chooser_piece(int chooser_idx,int chooser_piece_
 	chooser=&iface.chooser_list.choosers[chooser_idx];
 	piece=&chooser->pieces[chooser_piece_idx];
 
-	list_palette_set_title(&alt2_property_palette,"Choosers",NULL,"Chooser",chooser->name,"Item",chooser_type_str[piece->type]);
+	list_palette_set_title(&property_palette,"Choosers",NULL,"Chooser",chooser->name,"Item",chooser_type_str[piece->type]);
 
 		// settings
 
-	list_palette_add_header(&alt2_property_palette,0,"Settings");
-	list_palette_add_picker_list_int(&alt2_property_palette,kChooserPieceSettingsType,"Type",(char*)chooser_type_str,-1,name_str_len,0,FALSE,&piece->type,FALSE);
-	list_palette_add_int(&alt2_property_palette,kChooserPieceSettingsId,"Id",&piece->id,FALSE);
-	list_palette_add_checkbox(&alt2_property_palette,kChooserPieceSettingsClickable,"Clickable",&piece->clickable,FALSE);
-	list_palette_add_string(&alt2_property_palette,kChooserPieceSettingsGoto,"Goto Chooser",piece->goto_name,FALSE);
+	list_palette_add_header(&property_palette,0,"Settings");
+	list_palette_add_picker_list_int(&property_palette,kChooserPieceSettingsType,"Type",(char*)chooser_type_str,-1,name_str_len,0,FALSE,&piece->type,FALSE);
+	list_palette_add_int(&property_palette,kChooserPieceSettingsId,"Id",&piece->id,FALSE);
+	list_palette_add_checkbox(&property_palette,kChooserPieceSettingsClickable,"Clickable",&piece->clickable,FALSE);
+	list_palette_add_string(&property_palette,kChooserPieceSettingsGoto,"Goto Chooser",piece->goto_name,FALSE);
 
 		// position
 
-	list_palette_add_header(&alt2_property_palette,0,"Position");
-	list_palette_add_int(&alt2_property_palette,kChooserPiecePositionX,"X",&piece->x,FALSE);
-	list_palette_add_int(&alt2_property_palette,kChooserPiecePositionY,"Y",&piece->y,FALSE);
-	list_palette_add_int(&alt2_property_palette,kChooserPiecePositionWid,"Width",&piece->wid,FALSE);
-	list_palette_add_int(&alt2_property_palette,kChooserPiecePositionHigh,"Height",&piece->high,FALSE);
+	list_palette_add_header(&property_palette,0,"Position");
+	list_palette_add_int(&property_palette,kChooserPiecePositionX,"X",&piece->x,FALSE);
+	list_palette_add_int(&property_palette,kChooserPiecePositionY,"Y",&piece->y,FALSE);
+	list_palette_add_int(&property_palette,kChooserPiecePositionWid,"Width",&piece->wid,FALSE);
+	list_palette_add_int(&property_palette,kChooserPiecePositionHigh,"Height",&piece->high,FALSE);
 
 		// types
 
 	switch (piece->type) {
 
 		case chooser_piece_type_text:
-			list_palette_add_header(&alt2_property_palette,0,"Text");
-			list_palette_add_string(&alt2_property_palette,kChooserPieceTextStr,"Text",piece->data.text.str,FALSE);
-			list_palette_add_int(&alt2_property_palette,kChooserPieceTextSize,"Size",&piece->data.text.size,FALSE);
-			list_palette_add_picker_list_int(&alt2_property_palette,kChooserPieceTextJust,"Justification",(char*)hud_text_just_type_str,-1,name_str_len,0,FALSE,&piece->data.text.just,FALSE);
+			list_palette_add_header(&property_palette,0,"Text");
+			list_palette_add_string(&property_palette,kChooserPieceTextStr,"Text",piece->data.text.str,FALSE);
+			list_palette_add_int(&property_palette,kChooserPieceTextSize,"Size",&piece->data.text.size,FALSE);
+			list_palette_add_picker_list_int(&property_palette,kChooserPieceTextJust,"Justification",(char*)hud_text_just_type_str,-1,name_str_len,0,FALSE,&piece->data.text.just,FALSE);
 			break;
 
 		case chooser_piece_type_item:
-			list_palette_add_header(&alt2_property_palette,0,"Item");
-			list_palette_add_picker_file(&alt2_property_palette,kChooserPieceItemFile,list_button_none,0,"Bitmap","Chooser","png","",piece->data.item.file,FALSE);
+			list_palette_add_header(&property_palette,0,"Item");
+			list_palette_add_picker_file(&property_palette,kChooserPieceItemFile,list_button_none,0,"Bitmap","Chooser","png","",piece->data.item.file,FALSE);
 			break;
 
 		case chooser_piece_type_model:
-			list_palette_add_header(&alt2_property_palette,0,"Model");
-			list_palette_add_picker_file(&alt2_property_palette,kChooserPieceModelModelName,list_button_none,0,"Model","Models","","Mesh.xml;Model.xml",piece->data.model.model_name,FALSE);
-			list_palette_add_string(&alt2_property_palette,kChooserPieceModelAnimateName,"Animation",piece->data.model.animate_name,FALSE);
-			list_palette_add_float(&alt2_property_palette,kChooserPieceModelResize,"Resize",&piece->data.model.resize,FALSE);
-			list_palette_add_angle(&alt2_property_palette,kChooserPieceModelRot,"Rotate",&piece->data.model.rot,FALSE);
+			list_palette_add_header(&property_palette,0,"Model");
+			list_palette_add_picker_file(&property_palette,kChooserPieceModelModelName,list_button_none,0,"Model","Models","","Mesh.xml;Model.xml",piece->data.model.model_name,FALSE);
+			list_palette_add_string(&property_palette,kChooserPieceModelAnimateName,"Animation",piece->data.model.animate_name,FALSE);
+			list_palette_add_float(&property_palette,kChooserPieceModelResize,"Resize",&piece->data.model.resize,FALSE);
+			list_palette_add_angle(&property_palette,kChooserPieceModelRot,"Rotate",&piece->data.model.rot,FALSE);
 			break;
 
 		case chooser_piece_type_button:
-			list_palette_add_header(&alt2_property_palette,0,"Button");
-			list_palette_add_string(&alt2_property_palette,kChooserPieceButtonText,"Text",piece->data.button.name,FALSE);
+			list_palette_add_header(&property_palette,0,"Button");
+			list_palette_add_string(&property_palette,kChooserPieceButtonText,"Text",piece->data.button.name,FALSE);
 			break;
 
 	}
@@ -130,7 +130,7 @@ void alt2_property_palette_fill_chooser_piece(int chooser_idx,int chooser_piece_
       
 ======================================================= */
 
-void alt2_property_palette_click_chooser_piece(int chooser_idx,int chooser_piece_idx,int id,bool double_click)
+void property_palette_click_chooser_piece(int chooser_idx,int chooser_piece_idx,int id,bool double_click)
 {
 	iface_chooser_piece_type		*piece;
 
