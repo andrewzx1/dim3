@@ -2,7 +2,7 @@
 
 Module: dim3 Animator
 Author: Brian Barnes
- Usage: Alt Property Palette Animate Pose Move
+ Usage: Property Palette Animate Pose Move
 
 ***************************** License ********************************
 
@@ -79,15 +79,15 @@ extern animator_state_type		state;
 extern file_path_setup_type		file_path_setup;
 extern iface_type				iface;
 
-extern list_palette_type		alt_property_palette;
+extern list_palette_type		property_palette;
 
 /* =======================================================
 
-      Alt Property Palette Fill Animate Pose Move
+      Property Palette Fill Animate Pose Move
       
 ======================================================= */
 
-void alt_property_palette_fill_animate_pose_move(int animate_idx,int pose_move_idx)
+void property_palette_fill_animate_pose_move(int animate_idx,int pose_move_idx)
 {
 	int						n;
 	model_animate_type		*animate;
@@ -98,84 +98,84 @@ void alt_property_palette_fill_animate_pose_move(int animate_idx,int pose_move_i
 	animate=&model.animates[animate_idx];
 	pose_move=&animate->pose_moves[pose_move_idx];
 
-	list_palette_set_title(&alt_property_palette,"Animation",animate->name,"Pose Move",model.poses[pose_move->pose_idx].name,NULL,NULL);
+	list_palette_set_title(&property_palette,"Animation",animate->name,"Pose Move",model.poses[pose_move->pose_idx].name,NULL,NULL);
 
 		// options
 
-	list_palette_add_header(&alt_property_palette,0,"Animate Pose Options");
-	list_palette_add_picker_list_int(&alt_property_palette,kAnimatePoseMovePropertyPose,"Pose",(char*)model.poses,model.npose,sizeof(model_pose_type),(int)offsetof(model_pose_type,name),TRUE,&pose_move->pose_idx,FALSE);
-	list_palette_add_int(&alt_property_palette,kAnimatePoseMovePropertyMilliseconds,"Milliseconds",&pose_move->msec,FALSE);
-	list_palette_add_float(&alt_property_palette,kAnimatePoseMovePropertyAcceleration,"Acceleration",&pose_move->acceleration,FALSE);
+	list_palette_add_header(&property_palette,0,"Animate Pose Options");
+	list_palette_add_picker_list_int(&property_palette,kAnimatePoseMovePropertyPose,"Pose",(char*)model.poses,model.npose,sizeof(model_pose_type),(int)offsetof(model_pose_type,name),TRUE,&pose_move->pose_idx,FALSE);
+	list_palette_add_int(&property_palette,kAnimatePoseMovePropertyMilliseconds,"Milliseconds",&pose_move->msec,FALSE);
+	list_palette_add_float(&property_palette,kAnimatePoseMovePropertyAcceleration,"Acceleration",&pose_move->acceleration,FALSE);
 
 		// position
 
-	list_palette_add_header(&alt_property_palette,0,"Animate Pose Position");
-	list_palette_add_vector(&alt_property_palette,kAnimatePoseMovePropertyMove,"Move",&pose_move->mov,FALSE);
-	list_palette_add_vector(&alt_property_palette,kAnimatePoseMovePropertySway,"Sway",&pose_move->sway,FALSE);
+	list_palette_add_header(&property_palette,0,"Animate Pose Position");
+	list_palette_add_vector(&property_palette,kAnimatePoseMovePropertyMove,"Move",&pose_move->mov,FALSE);
+	list_palette_add_vector(&property_palette,kAnimatePoseMovePropertySway,"Sway",&pose_move->sway,FALSE);
 
 		// loop
 
-	list_palette_add_header(&alt_property_palette,0,"Animate Pose Loop");
-	list_palette_add_string_selectable_button(&alt_property_palette,kAnimatePoseMovePropertyLoopStart,list_button_set,kAnimatePoseMovePropertyLoopStart,"Set Pose As Loop Start",NULL,FALSE,FALSE);
-	list_palette_add_string_selectable_button(&alt_property_palette,kAnimatePoseMovePropertyLoopEnd,list_button_set,kAnimatePoseMovePropertyLoopEnd,"Set Pose As Loop End",NULL,FALSE,FALSE);
+	list_palette_add_header(&property_palette,0,"Animate Pose Loop");
+	list_palette_add_string_selectable_button(&property_palette,kAnimatePoseMovePropertyLoopStart,list_button_set,kAnimatePoseMovePropertyLoopStart,"Set Pose As Loop Start",NULL,FALSE,FALSE);
+	list_palette_add_string_selectable_button(&property_palette,kAnimatePoseMovePropertyLoopEnd,list_button_set,kAnimatePoseMovePropertyLoopEnd,"Set Pose As Loop End",NULL,FALSE,FALSE);
 
 		// sound
 
-	list_palette_add_header(&alt_property_palette,0,"Animate Pose Sound");
-	list_palette_add_picker_list_string(&alt_property_palette,kAnimationPoseMovePropertySoundName,"Sound",(char*)iface.sound_list.sounds,iface.sound_list.nsound,sizeof(iface_sound_type),(int)offsetof(iface_sound_type,name),TRUE,pose_move->sound.name,FALSE);
-	property_palette_add_string_bone(&alt_property_palette,kAnimationPoseMovePropertySoundBone,"Bone",pose_move->sound.bone_idx,FALSE);
-	list_palette_add_float(&alt_property_palette,kAnimationPoseMovePropertySoundPitch,"Pitch",&pose_move->sound.pitch,FALSE);
-	list_palette_add_checkbox(&alt_property_palette,kAnimationPoseMovePropertySoundGlobal,"Play Globally (Player Only)",&pose_move->sound.no_position,FALSE);
+	list_palette_add_header(&property_palette,0,"Animate Pose Sound");
+	list_palette_add_picker_list_string(&property_palette,kAnimationPoseMovePropertySoundName,"Sound",(char*)iface.sound_list.sounds,iface.sound_list.nsound,sizeof(iface_sound_type),(int)offsetof(iface_sound_type,name),TRUE,pose_move->sound.name,FALSE);
+	property_palette_add_string_bone(&property_palette,kAnimationPoseMovePropertySoundBone,"Bone",pose_move->sound.bone_idx,FALSE);
+	list_palette_add_float(&property_palette,kAnimationPoseMovePropertySoundPitch,"Pitch",&pose_move->sound.pitch,FALSE);
+	list_palette_add_checkbox(&property_palette,kAnimationPoseMovePropertySoundGlobal,"Play Globally (Player Only)",&pose_move->sound.no_position,FALSE);
 
 		// mesh fades
 
-	list_palette_add_header(&alt_property_palette,0,"Animate Pose Mesh Fade");
-	list_palette_add_picker_list_int(&alt_property_palette,kAnimationPoseMovePropertyFadeMesh,"Mesh",(char*)model.meshes,model.nmesh,sizeof(model_mesh_type),(int)offsetof(model_mesh_type,name),TRUE,&pose_move->mesh_fade.mesh_idx,FALSE);
-	list_palette_add_int(&alt_property_palette,kAnimationPoseMovePropertyFadeIn,"Fade In Milliseconds",&pose_move->mesh_fade.fade_in_msec,FALSE);
-	list_palette_add_int(&alt_property_palette,kAnimationPoseMovePropertyFadeLife,"Fade Life Milliseconds",&pose_move->mesh_fade.fade_life_msec,FALSE);
-	list_palette_add_int(&alt_property_palette,kAnimationPoseMovePropertyFadeOut,"Fade Out Milliseconds",&pose_move->mesh_fade.fade_out_msec,FALSE);
+	list_palette_add_header(&property_palette,0,"Animate Pose Mesh Fade");
+	list_palette_add_picker_list_int(&property_palette,kAnimationPoseMovePropertyFadeMesh,"Mesh",(char*)model.meshes,model.nmesh,sizeof(model_mesh_type),(int)offsetof(model_mesh_type,name),TRUE,&pose_move->mesh_fade.mesh_idx,FALSE);
+	list_palette_add_int(&property_palette,kAnimationPoseMovePropertyFadeIn,"Fade In Milliseconds",&pose_move->mesh_fade.fade_in_msec,FALSE);
+	list_palette_add_int(&property_palette,kAnimationPoseMovePropertyFadeLife,"Fade Life Milliseconds",&pose_move->mesh_fade.fade_life_msec,FALSE);
+	list_palette_add_int(&property_palette,kAnimationPoseMovePropertyFadeOut,"Fade Out Milliseconds",&pose_move->mesh_fade.fade_out_msec,FALSE);
 
 		// flash
 
-	list_palette_add_header(&alt_property_palette,0,"Animate Pose Flash");
-	property_palette_add_string_bone(&alt_property_palette,kAnimationPoseMovePropertyFlashBone,"Bone",pose_move->flash.bone_idx,FALSE);
-	list_palette_add_int(&alt_property_palette,kAnimationPoseMovePropertyFlashIntensity,"Intensity",&pose_move->flash.intensity,FALSE);
-	list_palette_add_int(&alt_property_palette,kAnimationPoseMovePropertyFlashFlash,"Flash Milliseconds",&pose_move->flash.flash_msec,FALSE);
-	list_palette_add_int(&alt_property_palette,kAnimationPoseMovePropertyFlashFade,"Fade Milliseconds",&pose_move->flash.fade_msec,FALSE);
-	list_palette_add_float(&alt_property_palette,kAnimationPoseMovePropertyFlashExponent,"Exponent",&pose_move->flash.exponent,FALSE);
-	list_palette_add_pick_color(&alt_property_palette,kAnimationPoseMovePropertyFlashColor,"Color",&pose_move->flash.col,FALSE);
+	list_palette_add_header(&property_palette,0,"Animate Pose Flash");
+	property_palette_add_string_bone(&property_palette,kAnimationPoseMovePropertyFlashBone,"Bone",pose_move->flash.bone_idx,FALSE);
+	list_palette_add_int(&property_palette,kAnimationPoseMovePropertyFlashIntensity,"Intensity",&pose_move->flash.intensity,FALSE);
+	list_palette_add_int(&property_palette,kAnimationPoseMovePropertyFlashFlash,"Flash Milliseconds",&pose_move->flash.flash_msec,FALSE);
+	list_palette_add_int(&property_palette,kAnimationPoseMovePropertyFlashFade,"Fade Milliseconds",&pose_move->flash.fade_msec,FALSE);
+	list_palette_add_float(&property_palette,kAnimationPoseMovePropertyFlashExponent,"Exponent",&pose_move->flash.exponent,FALSE);
+	list_palette_add_pick_color(&property_palette,kAnimationPoseMovePropertyFlashColor,"Color",&pose_move->flash.col,FALSE);
 
 		// shake
 
-	list_palette_add_header(&alt_property_palette,0,"Animate Pose Shake");
-	list_palette_add_int(&alt_property_palette,kAnimationPoseMovePropertyShakeDistance,"Distance",&pose_move->shake.distance,FALSE);
-	list_palette_add_int(&alt_property_palette,kAnimationPoseMovePropertyShakeSize,"Size",&pose_move->shake.size,FALSE);
-	list_palette_add_int(&alt_property_palette,kAnimationPoseMovePropertyShakeLife,"Life Milliseconds",&pose_move->shake.life_msec,FALSE);
+	list_palette_add_header(&property_palette,0,"Animate Pose Shake");
+	list_palette_add_int(&property_palette,kAnimationPoseMovePropertyShakeDistance,"Distance",&pose_move->shake.distance,FALSE);
+	list_palette_add_int(&property_palette,kAnimationPoseMovePropertyShakeSize,"Size",&pose_move->shake.size,FALSE);
+	list_palette_add_int(&property_palette,kAnimationPoseMovePropertyShakeLife,"Life Milliseconds",&pose_move->shake.life_msec,FALSE);
 
 		// particles
 
-	list_palette_add_header_button(&alt_property_palette,kAnimationPoseMovePropertyParticleAdd,"Animate Pose Particles",list_button_plus);
+	list_palette_add_header_button(&property_palette,kAnimationPoseMovePropertyParticleAdd,"Animate Pose Particles",list_button_plus);
 
 	for (n=0;n!=pose_move->particle.count;n++) {
-		list_palette_add_string_selectable_button(&alt_property_palette,(kAnimationPoseMovePropertyParticle+n),list_button_minus,(kAnimationPoseMovePropertyParticleDelete+n),pose_move->particle.particles[n].name,NULL,((state.cur_animate_idx==animate_idx) && (state.cur_animate_pose_move_idx==pose_move_idx) && (state.cur_animate_pose_move_particle_idx==n)),FALSE);
+		list_palette_add_string_selectable_button(&property_palette,(kAnimationPoseMovePropertyParticle+n),list_button_minus,(kAnimationPoseMovePropertyParticleDelete+n),pose_move->particle.particles[n].name,NULL,((state.cur_animate_idx==animate_idx) && (state.cur_animate_pose_move_idx==pose_move_idx) && (state.cur_animate_pose_move_particle_idx==n)),FALSE);
 	}
 
 		// rings
 
-	list_palette_add_header_button(&alt_property_palette,kAnimationPoseMovePropertyRingAdd,"Animate Pose Rings",list_button_plus);
+	list_palette_add_header_button(&property_palette,kAnimationPoseMovePropertyRingAdd,"Animate Pose Rings",list_button_plus);
 
 	for (n=0;n!=pose_move->ring.count;n++) {
-		list_palette_add_string_selectable_button(&alt_property_palette,(kAnimationPoseMovePropertyRing+n),list_button_minus,(kAnimationPoseMovePropertyRingDelete+n),pose_move->ring.rings[n].name,NULL,((state.cur_animate_idx==animate_idx) && (state.cur_animate_pose_move_idx==pose_move_idx) && (state.cur_animate_pose_move_ring_idx==n)),FALSE);
+		list_palette_add_string_selectable_button(&property_palette,(kAnimationPoseMovePropertyRing+n),list_button_minus,(kAnimationPoseMovePropertyRingDelete+n),pose_move->ring.rings[n].name,NULL,((state.cur_animate_idx==animate_idx) && (state.cur_animate_pose_move_idx==pose_move_idx) && (state.cur_animate_pose_move_ring_idx==n)),FALSE);
 	}
 }
 
 /* =======================================================
 
-      Alt Property Palette Click Animate Pose Move
+      Property Palette Click Animate Pose Move
       
 ======================================================= */
 
-void alt_property_palette_click_animate_pose_move(int animate_idx,int pose_move_idx,int id,bool double_click)
+void property_palette_click_animate_pose_move(int animate_idx,int pose_move_idx,int id,bool double_click)
 {
 	model_animate_type		*animate;
 	model_pose_move_type	*pose_move;
@@ -190,7 +190,7 @@ void alt_property_palette_click_animate_pose_move(int animate_idx,int pose_move_
 	if ((id>=kAnimationPoseMovePropertyParticle) && (id<(kAnimationPoseMovePropertyParticle+max_model_animate_particle))) {
 		state.cur_animate_pose_move_particle_idx=id-kAnimationPoseMovePropertyParticle;
 		state.cur_animate_pose_move_ring_idx=-1;
-		if (double_click) list_palette_set_level(&alt_property_palette,3);
+		if (double_click) list_palette_set_level(&property_palette,3);
 		return;
 	}
 	
@@ -217,7 +217,7 @@ void alt_property_palette_click_animate_pose_move(int animate_idx,int pose_move_
 	if ((id>=kAnimationPoseMovePropertyRing) && (id<(kAnimationPoseMovePropertyRing+max_model_animate_ring))) {
 		state.cur_animate_pose_move_particle_idx=-1;
 		state.cur_animate_pose_move_ring_idx=id-kAnimationPoseMovePropertyRing;
-		if (double_click) list_palette_set_level(&alt_property_palette,3);
+		if (double_click) list_palette_set_level(&property_palette,3);
 		return;
 	}
 	

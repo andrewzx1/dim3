@@ -56,10 +56,7 @@ void main_wind_initialize(void)
 	
 	tool_palette_initialize("Animator");
 	list_palette_initialize("Animator");
-	item_palette_initialize();
 	property_palette_initialize();
-	alt_property_palette_initialize();
-	alt2_property_palette_initialize();
 	
 	tool_tip_initialize();
 
@@ -78,10 +75,7 @@ void main_wind_shutdown(void)
 	
 		// shutdown palettes
 		
-	alt2_property_palette_shutdown();
-	alt_property_palette_shutdown();
 	property_palette_shutdown();
-	item_palette_shutdown();
 	list_palette_shutdown();
 	
 	tool_palette_shutdown();
@@ -283,10 +277,7 @@ void main_wind_draw_no_swap(void)
 		// palettes
 		
 	if (state.model_open) {
-		item_palette_draw();
 		property_palette_draw();
-		alt_property_palette_draw();
-		alt2_property_palette_draw();
 		
 		tool_palette_draw();
 		texture_palette_draw(model.textures);
@@ -391,13 +382,7 @@ void main_wind_click(d3pnt *pnt,bool double_click)
 	list_palette_box(&property_palette,&tbox);
 
 	if ((pnt->x>=tbox.lx) && (pnt->x<=tbox.rx) && (pnt->y>=tbox.ty) && (pnt->y<tbox.by)) {
-		if (!item_palette_click(pnt,double_click)) {
-			if (!property_palette_click(pnt,double_click)) {
-				if (!alt_property_palette_click(pnt,double_click)) {
-					alt2_property_palette_click(pnt,double_click);
-				}
-			}
-		}
+		property_palette_click(pnt,double_click);
 		return;
 	}
 
@@ -433,10 +418,7 @@ void main_wind_scroll_wheel(d3pnt *pnt,int delta)
 	list_palette_box(&property_palette,&tbox);
 
 	if ((pnt->x>=tbox.lx) && (pnt->x<=tbox.rx) && (pnt->y>=tbox.ty) && (pnt->y<tbox.by)) {
-		item_palette_scroll_wheel(pnt,delta);
 		property_palette_scroll_wheel(pnt,delta);
-		alt_property_palette_scroll_wheel(pnt,delta);
-		alt2_property_palette_scroll_wheel(pnt,delta);
 		return;
 	}
 
@@ -527,7 +509,7 @@ void main_wind_key(char ch)
 		// on selected item tree
 
 	if ((ch==D3_KEY_BACKSPACE) || (ch==D3_KEY_DELETE)) {
-		if (item_palette_delete()) {
+		if (property_palette_delete()) {
 			main_wind_draw();
 			return;
 		}

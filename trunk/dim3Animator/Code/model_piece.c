@@ -58,8 +58,7 @@ void model_piece_add_mesh(void)
 	state.cur_item=item_mesh;
 	state.cur_mesh_idx=idx;
 
-	item_palette_scroll_into_view(item_mesh,idx);
-	item_palette_state_rebuild();
+	property_palette_scroll_into_view(item_mesh,idx);
 
 	dialog_property_string_run(list_string_value_string,(void*)model.meshes[idx].name,name_str_len,0,0);
 }
@@ -77,8 +76,7 @@ void model_piece_duplicate_mesh(int mesh_idx)
 	state.cur_item=item_mesh;
 	state.cur_mesh_idx=idx;
 
-	item_palette_scroll_into_view(item_mesh,idx);
-	item_palette_state_rebuild();
+	property_palette_scroll_into_view(item_mesh,idx);
 
 	dialog_property_string_run(list_string_value_string,(void*)model.meshes[idx].name,name_str_len,0,0);
 }
@@ -95,8 +93,7 @@ void model_piece_delete_mesh(int mesh_idx)
 	state.cur_item=item_model;
 	state.cur_mesh_idx=0;
 
-	item_palette_scroll_into_view(item_model,0);
-	item_palette_state_rebuild();
+	property_palette_scroll_into_view(item_model,0);
 }
 
 /* =======================================================
@@ -123,8 +120,7 @@ void model_piece_add_bone(void)
 	state.cur_bone_idx=idx;
 	state.cur_pose_idx=-1;		// reset to neutral pose so user doesn't get confused by bone movement
 
-	item_palette_scroll_into_view(item_bone,idx);
-	item_palette_state_rebuild();
+	property_palette_scroll_into_view(item_bone,idx);
 	
 	dialog_property_string_run(list_string_value_string,(void*)model.bones[idx].name,name_str_len,0,0);
 }
@@ -138,8 +134,7 @@ void model_piece_delete_bone(int bone_idx)
 	state.cur_bone_idx=-1;
 	state.cur_pose_bone_move_idx=-1;
 
-	item_palette_scroll_into_view(item_model,0);
-	item_palette_state_rebuild();
+	property_palette_scroll_into_view(item_model,0);
 }
 
 /* =======================================================
@@ -167,8 +162,7 @@ void model_piece_add_pose(void)
 	state.cur_pose_idx=idx;
 	state.cur_pose_bone_move_idx=-1;
 
-	item_palette_scroll_into_view(item_pose,idx);
-	item_palette_state_rebuild();
+	property_palette_scroll_into_view(item_pose,idx);
 	
 	dialog_property_string_run(list_string_value_string,(void*)model.poses[idx].name,name_str_len,0,0);
 }
@@ -187,8 +181,7 @@ void model_piece_duplicate_pose(int pose_idx)
 	state.cur_pose_idx=idx;
 	state.cur_pose_bone_move_idx=-1;
 
-	item_palette_scroll_into_view(item_pose,idx);
-	item_palette_state_rebuild();
+	property_palette_scroll_into_view(item_pose,idx);
 
 	dialog_property_string_run(list_string_value_string,(void*)model.poses[idx].name,name_str_len,0,0);
 }
@@ -212,8 +205,7 @@ void model_piece_delete_pose(int pose_idx)
 	}
 	state.cur_pose_bone_move_idx=-1;
 
-	item_palette_scroll_into_view(item_model,0);
-	item_palette_state_rebuild();
+	property_palette_scroll_into_view(item_model,0);
 }
 
 /* =======================================================
@@ -245,8 +237,7 @@ void model_piece_add_animate(void)
 	state.cur_animate_pose_move_particle_idx=-1;
 	state.cur_animate_pose_move_ring_idx=-1;
 
-	item_palette_scroll_into_view(item_animate,idx);
-	item_palette_state_rebuild();
+	property_palette_scroll_into_view(item_animate,idx);
 	
 	dialog_property_string_run(list_string_value_string,(void*)model.animates[idx].name,name_str_len,0,0);
 }
@@ -269,8 +260,7 @@ void model_piece_duplicate_animate(int animate_idx)
 	state.cur_animate_pose_move_particle_idx=-1;
 	state.cur_animate_pose_move_ring_idx=-1;
 
-	item_palette_scroll_into_view(item_animate,idx);
-	item_palette_state_rebuild();
+	property_palette_scroll_into_view(item_animate,idx);
 
 	dialog_property_string_run(list_string_value_string,(void*)model.animates[idx].name,name_str_len,0,0);
 }
@@ -294,8 +284,7 @@ void model_piece_delete_animate(int animate_idx)
 	state.cur_animate_pose_move_particle_idx=-1;
 	state.cur_animate_pose_move_ring_idx=-1;
 
-	item_palette_scroll_into_view(item_model,0);
-	item_palette_state_rebuild();
+	property_palette_scroll_into_view(item_model,0);
 }
 
 /* =======================================================
@@ -409,8 +398,7 @@ void model_piece_add_hit_box(void)
 	state.cur_item=item_hit_box;
 	state.cur_hit_box_idx=idx;
 
-	item_palette_scroll_into_view(item_hit_box,idx);
-	item_palette_state_rebuild();
+	property_palette_scroll_into_view(item_hit_box,idx);
 
 	dialog_property_string_run(list_string_value_string,(void*)model.hit_boxes[idx].name,name_str_len,0,0);
 }
@@ -422,6 +410,5 @@ void model_piece_delete_hit_box(int hit_box_idx)
 	state.cur_item=item_model;
 	state.cur_hit_box_idx=-1;
 
-	item_palette_scroll_into_view(item_model,0);
-	item_palette_state_rebuild();
+	property_palette_scroll_into_view(item_model,0);
 }

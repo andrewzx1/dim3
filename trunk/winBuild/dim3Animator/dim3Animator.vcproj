@@ -355,10 +355,6 @@
 					Name="Palettes"
 					>
 					<File
-						RelativePath="..\..\dim3Animator\Code\alt2_property_palette.c"
-						>
-					</File>
-					<File
 						RelativePath="..\..\dim3Animator\Code\alt2_property_palette_pose_move_particle.c"
 						>
 					</File>
@@ -367,19 +363,11 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\dim3Animator\Code\alt_property_palette.c"
-						>
-					</File>
-					<File
 						RelativePath="..\..\dim3Animator\Code\alt_property_palette_bone_move.c"
 						>
 					</File>
 					<File
 						RelativePath="..\..\dim3Animator\Code\alt_property_palette_pose_move.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Animator\Code\item_palette.c"
 						>
 					</File>
 					<File
@@ -408,6 +396,10 @@
 					</File>
 					<File
 						RelativePath="..\..\dim3Animator\Code\property_palette_hit_box.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Animator\Code\property_palette_main.c"
 						>
 					</File>
 					<File

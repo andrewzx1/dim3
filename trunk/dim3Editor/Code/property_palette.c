@@ -235,22 +235,9 @@ void property_palette_draw(void)
 
 /* =======================================================
 
-      Property Palette Reset For Selection Change
+      Property Palette Scrolling
       
 ======================================================= */
-
-void property_palette_scroll_into_view(int item_type,int item_idx)
-{
-		// can only scroll into view
-		// on map items page
-
-	if (!list_palette_get_level(&property_palette)!=0) return;
-
-	property_palette_fill_level_0();
-	list_palette_scroll_item_into_view(&property_palette,item_type,item_idx);
-
-	main_wind_draw();
-}
 
 void property_palette_reset(void)
 {
@@ -275,11 +262,18 @@ void property_palette_reset(void)
 	property_palette_scroll_into_view(sel_type,main_idx);
 }
 
-/* =======================================================
+void property_palette_scroll_into_view(int item_type,int item_idx)
+{
+		// can only scroll into view
+		// on map items page
 
-      Property Palette Scroll Wheel
-      
-======================================================= */
+	if (!list_palette_get_level(&property_palette)!=0) return;
+
+	property_palette_fill_level_0();
+	list_palette_scroll_item_into_view(&property_palette,item_type,item_idx);
+
+	main_wind_draw();
+}
 
 void property_palette_scroll_wheel(d3pnt *pnt,int move)
 {
@@ -383,12 +377,12 @@ bool property_palette_delete(void)
       
 ======================================================= */
 
-void property_palette_click_level_0(d3pnt *pnt,bool double_click)
+void property_palette_click_level_0(bool double_click)
 {
 	property_palette_click_main(double_click);
 }
 	
-void property_palette_click_level_1(d3pnt *pnt,bool double_click)
+void property_palette_click_level_1(bool double_click)
 {
 	int					sel_type,main_idx,sub_idx;
 	
@@ -483,7 +477,7 @@ void property_palette_click_level_1(d3pnt *pnt,bool double_click)
 	}
 }
 
-void property_palette_click_level_2(d3pnt *pnt,bool double_click)
+void property_palette_click_level_2(bool double_click)
 {
 		// selection properties
 
@@ -540,13 +534,13 @@ void property_palette_click(d3pnt *pnt,bool double_click)
 		
 	switch (list_palette_get_level(&property_palette)) {
 		case 0:
-			property_palette_click_level_0(pnt,double_click);
+			property_palette_click_level_0(double_click);
 			break;
 		case 1:
-			property_palette_click_level_1(pnt,double_click);
+			property_palette_click_level_1(double_click);
 			break;
 		case 2:
-			property_palette_click_level_2(pnt,double_click);
+			property_palette_click_level_2(double_click);
 			break;
 	}
 	
