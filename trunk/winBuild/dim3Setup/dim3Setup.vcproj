@@ -416,7 +416,7 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\dim3Setup\Code\property_palette_chooser.c"
+						RelativePath="..\..\dim3Setup\Code\property_palette_choosers.c"
 						>
 					</File>
 					<File
@@ -444,7 +444,7 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\dim3Setup\Code\property_palette_menu.c"
+						RelativePath="..\..\dim3Setup\Code\property_palette_menus.c"
 						>
 					</File>
 					<File
