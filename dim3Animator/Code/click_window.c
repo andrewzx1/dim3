@@ -754,7 +754,7 @@ bool drag_bone_model_wind(d3pnt *start_pnt)
 			
 		state.cur_item=item_bone;
 		state.cur_bone_idx=k;
-		item_palette_scroll_into_view(item_bone,state.cur_bone_idx);
+		property_palette_scroll_into_view(item_bone,state.cur_bone_idx);
 
 		if (state.sel_vertex_with_bone) vertex_mask_set_sel_bone(state.cur_mesh_idx,state.cur_bone_idx);
 

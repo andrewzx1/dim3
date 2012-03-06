@@ -68,30 +68,13 @@ void property_palette_shutdown(void)
       
 ======================================================= */
 
-void property_palette_fill(void)
+void property_palette_fill_level_0(void)
 {
-		// delete the properties
+	property_palette_fill_main();
+}
 
-	list_palette_delete_all_items(&property_palette);
-
-		// if texture window is up,
-		// put in texture properties
-
-	if (state.texture_edit_idx!=-1) {
-		property_palette_fill_texture(state.texture_edit_idx);
-		return;
-	}
-
-		// if preference window is up,
-		// put in preference properties
-
-	if (state.in_preference) {
-		property_palette_fill_animator_preference();
-		return;
-	}
-
-		// selection properties
-
+void property_palette_fill_level_1(void)
+{
 	switch (state.cur_item) {
 
 		case item_model:
@@ -121,6 +104,43 @@ void property_palette_fill(void)
 	}
 }
 
+void property_palette_fill_level_2(void)
+{
+	switch (state.cur_item) {
+
+		case item_animate:
+			property_palette_fill_animate_pose_move(state.cur_animate_idx,state.cur_animate_pose_move_idx);
+			break;
+
+		case item_pose:
+			property_palette_fill_pose_bone_move(state.cur_pose_idx,state.cur_pose_bone_move_idx);
+			break;
+
+	}
+}
+
+void property_palette_fill_level_3(void)
+{
+	switch (state.cur_item) {
+
+		case item_animate:
+			if ((state.cur_animate_idx==-1) || (state.cur_animate_pose_move_idx==-1)) break;
+
+			if (state.cur_animate_pose_move_particle_idx!=-1) {
+				property_palette_fill_animate_pose_move_particle(state.cur_animate_idx,state.cur_animate_pose_move_idx,state.cur_animate_pose_move_particle_idx);
+				break;
+			}
+
+			if (state.cur_animate_pose_move_ring_idx!=-1) {
+				property_palette_fill_animate_pose_move_ring(state.cur_animate_idx,state.cur_animate_pose_move_idx,state.cur_animate_pose_move_ring_idx);
+				break;
+			}
+
+			break;
+
+	}
+}
+
 /* =======================================================
 
       Property Palette Draw
@@ -129,15 +149,51 @@ void property_palette_fill(void)
 
 void property_palette_draw(void)
 {
-	if (list_palette_get_level(&property_palette)!=1) return;
-	
-	property_palette_fill();
+		// delete the properties
+
+	list_palette_delete_all_items(&property_palette);
+
+		// if texture window is up,
+		// put in texture properties
+
+	if (state.texture_edit_idx!=-1) {
+		property_palette_fill_texture(state.texture_edit_idx);
+		list_palette_draw(&property_palette);
+		return;
+	}
+
+		// if preference window is up,
+		// put in preference properties
+
+	if (state.in_preference) {
+		property_palette_fill_animator_preference();
+		list_palette_draw(&property_palette);
+		return;
+	}
+
+		// fill by level
+
+	switch (list_palette_get_level(&property_palette)) {
+		case 0:
+			property_palette_fill_level_0();
+			break;
+		case 1:
+			property_palette_fill_level_1();
+			break;
+		case 2:
+			property_palette_fill_level_2();
+			break;
+		case 3:
+			property_palette_fill_level_3();
+			break;
+	}
+
 	list_palette_draw(&property_palette);
 }
 
 /* =======================================================
 
-      Property Palette Reset Scroll
+      Property Palette Scrolling
       
 ======================================================= */
 
@@ -146,62 +202,83 @@ void property_palette_reset(void)
 	property_palette.scroll_offset=0;
 }
 
-/* =======================================================
+void property_palette_scroll_into_view(int item_type,int item_idx)
+{
+		// can only scroll into view
+		// on main page
 
-      Property Palette Scroll Wheel
-      
-======================================================= */
+	if (list_palette_get_level(&property_palette)!=0) return;
+
+	property_palette_fill_level_0();
+	list_palette_scroll_item_into_view(&property_palette,item_type,item_idx);
+}
 
 void property_palette_scroll_wheel(d3pnt *pnt,int move)
 {
-	if (list_palette_get_level(&property_palette)==1) list_palette_scroll_wheel(&property_palette,pnt,move);
+	list_palette_scroll_wheel(&property_palette,pnt,move);
 }
 
 /* =======================================================
 
-      Property Palette Click
+      Property Palette Delete
       
 ======================================================= */
 
-bool property_palette_click(d3pnt *pnt,bool double_click)
+bool property_palette_delete(void)
 {
-	bool				old_open;
-	
-	if (list_palette_get_level(&property_palette)!=1) return(FALSE);
+		// only delete on first level
 
-		// check if open changes
-	
-	old_open=list_palette_is_open(&property_palette);
+	if (list_palette_get_level(&property_palette)!=0) return(FALSE);
 
-		// click
+		// anything to delete?
 
-	if (!list_palette_click(&property_palette,pnt,double_click)) {
-		if (old_open!=list_palette_is_open(&property_palette)) item_palette_state_rebuild();
-		return(TRUE);
+	if ((property_palette.item_type==-1) || (property_palette.item_idx==-1)) return(FALSE);
+
+	switch (property_palette.item_type) {
+
+		case item_mesh:
+			if (os_dialog_confirm("Delete Mesh","Is it okay to delete this mesh?",FALSE)!=0) return(FALSE);
+			model_piece_delete_mesh(property_palette.item_idx);
+			return(TRUE);
+
+		case item_bone:
+			if (os_dialog_confirm("Delete Bone","Is it okay to delete this bone?",FALSE)!=0) return(FALSE);
+			model_piece_delete_bone(property_palette.item_idx);
+			return(TRUE);
+
+		case item_pose:
+			if (os_dialog_confirm("Delete Pose","Is it okay to delete this pose?",FALSE)!=0) return(FALSE);
+			model_piece_delete_pose(property_palette.item_idx);
+			return(TRUE);
+
+		case item_animate:
+			if (os_dialog_confirm("Delete Animation","Is it okay to delete this animation?",FALSE)!=0) return(FALSE);
+			model_piece_delete_animate(property_palette.item_idx);
+			return(TRUE);
+
+		case item_hit_box:
+			if (os_dialog_confirm("Delete Hit Box","Is it okay to delete this hit box?",FALSE)!=0) return(FALSE);
+			model_piece_delete_hit_box(property_palette.item_idx);
+			return(TRUE);
+
 	}
 
-		// click editing
+	return(FALSE);
+}
 
-	if (property_palette.item_id==-1) return(TRUE);
+/* =======================================================
 
-		// if texture window is up, texture properties
+      Property Palette Click For Levels
+      
+======================================================= */
 
-	if (state.texture_edit_idx!=-1) {
-		property_palette_click_texture(state.texture_edit_idx,property_palette.item_id,double_click);
-		main_wind_draw();
-		return(TRUE);
-	}
+void property_palette_click_level_0(bool double_click)
+{
+	property_palette_click_main(double_click);
+}
 
-		// if preference window is up, preference properties
-
-	if (state.in_preference) {
-		property_palette_click_animator_preference(property_palette.item_id,double_click);
-		main_wind_draw();
-		return(TRUE);
-	}
-
-		// selection properties
-
+void property_palette_click_level_1(bool double_click)
+{
 	switch (state.cur_item) {
 
 		case item_model:
@@ -229,15 +306,100 @@ bool property_palette_click(d3pnt *pnt,bool double_click)
 			break;
 
 	}
+}
 
-	main_wind_draw();
+void property_palette_click_level_2(bool double_click)
+{
+	switch (state.cur_item) {
 
-		// need to reset in case
-		// the alt window has open/closed
+		case item_animate:
+			property_palette_click_animate_pose_move(state.cur_animate_idx,state.cur_animate_pose_move_idx,property_palette.item_id,double_click);
+			break;
 
-	item_palette_state_rebuild();
+		case item_pose:
+			property_palette_click_pose_bone_move(state.cur_pose_idx,state.cur_pose_bone_move_idx,property_palette.item_id,double_click);
+			break;
+
+	}
+}
+
+void property_palette_click_level_3(bool double_click)
+{
+	switch (state.cur_item) {
+
+		case item_animate:
+			if ((state.cur_animate_idx==-1) || (state.cur_animate_pose_move_idx==-1)) break;
+
+			if (state.cur_animate_pose_move_particle_idx!=-1) {
+				property_palette_click_animate_pose_move_particle(state.cur_animate_idx,state.cur_animate_pose_move_idx,state.cur_animate_pose_move_particle_idx,property_palette.item_id,double_click);
+				break;
+			}
+
+			if (state.cur_animate_pose_move_ring_idx!=-1) {
+				property_palette_click_animate_pose_move_ring(state.cur_animate_idx,state.cur_animate_pose_move_idx,state.cur_animate_pose_move_ring_idx,property_palette.item_id,double_click);
+				break;
+			}
+
+			break;
+
+	}
+}
+
+/* =======================================================
+
+      Property Palette Click MainLine
+      
+======================================================= */
+
+void property_palette_click(d3pnt *pnt,bool double_click)
+{
+	bool				old_open;
+
+		// check if open changes
 	
-	return(TRUE);
+	old_open=list_palette_is_open(&property_palette);
+
+		// click
+
+	if (!list_palette_click(&property_palette,pnt,double_click)) {
+		if (old_open!=list_palette_is_open(&property_palette)) main_wind_draw();
+		return;
+	}
+
+		// if texture window is up, texture properties
+
+	if (state.texture_edit_idx!=-1) {
+		property_palette_click_texture(state.texture_edit_idx,property_palette.item_id,double_click);
+		main_wind_draw();
+		return;
+	}
+
+		// if preference window is up, preference properties
+
+	if (state.in_preference) {
+		property_palette_click_animator_preference(property_palette.item_id,double_click);
+		main_wind_draw();
+		return;
+	}
+
+		// click by level
+
+	switch (list_palette_get_level(&property_palette)) {
+		case 0:
+			property_palette_click_level_0(double_click);
+			break;
+		case 1:
+			property_palette_click_level_1(double_click);
+			break;
+		case 2:
+			property_palette_click_level_2(double_click);
+			break;
+		case 3:
+			property_palette_click_level_3(double_click);
+			break;
+	}
+	
+	main_wind_draw();
 }
 
 /* =======================================================
