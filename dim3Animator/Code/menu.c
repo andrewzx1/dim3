@@ -156,7 +156,7 @@ bool menu_event_run(int cmd)
 		case kCommandFilePreference:
 			state.in_preference=!state.in_preference;
 			property_palette_reset();
-			list_palette_set_level(&property_palette,1);
+			list_palette_set_level(&property_palette,0);
 			main_wind_draw();
 			return(TRUE);
 
