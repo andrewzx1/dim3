@@ -21,7 +21,7 @@ Any non-engine product (games, etc) created with this code is free
 from any and all payment and/or royalties to the author of dim3,
 and can be sold or given away.
 
-(c) 2000-2011 Klink! Software www.klinksoftware.com
+(c) 2000-2012 Klink! Software www.klinksoftware.com
  
 *********************************************************************/
 
@@ -209,12 +209,13 @@ void cinemas_action_shift(int cinema_idx,int action_idx,int shift)
       
 ======================================================= */
 
-void property_palette_click_cinema(int cinema_idx,int id,bool double_click)
+void property_palette_click_cinema(bool double_click)
 {
-	int					action_idx,shift;
+	int					id,action_idx,shift;
 	map_cinema_type		*cinema;
 
-	cinema=&map.cinema.cinemas[cinema_idx];
+	id=property_palette.item_pane.click.id;
+	cinema=&map.cinema.cinemas[state.cur_cinema_idx];
 
 		// click action
 
@@ -227,7 +228,7 @@ void property_palette_click_cinema(int cinema_idx,int id,bool double_click)
 		// add action
 
 	if (id==kCinemaPropertyActionAdd) {
-		state.cur_cinema_action_idx=map_cinema_add_action(&map,cinema_idx);
+		state.cur_cinema_action_idx=map_cinema_add_action(&map,state.cur_cinema_idx);
 		list_palette_set_level(&property_palette,2);
 		dialog_property_string_run(list_string_value_positive_int,(void*)&cinema->actions[state.cur_cinema_action_idx].start_msec,0,0,0);
 		return;
@@ -237,14 +238,14 @@ void property_palette_click_cinema(int cinema_idx,int id,bool double_click)
 
 	if (id>=kCinemaPropertyActionDelete) {
 		state.cur_cinema_action_idx=-1;
-		map_cinema_delete_action(&map,cinema_idx,(id-kCinemaPropertyActionDelete));
+		map_cinema_delete_action(&map,state.cur_cinema_idx,(id-kCinemaPropertyActionDelete));
 		return;
 	}
 
 		// sort action
 
 	if (id==kCinemaPropertySort) {
-		cinemas_action_sort(cinema_idx);
+		cinemas_action_sort(state.cur_cinema_idx);
 		return;
 	}
 
@@ -262,7 +263,7 @@ void property_palette_click_cinema(int cinema_idx,int id,bool double_click)
 		shift=0;
 		dialog_property_string_run(list_string_value_int,(void*)&shift,0,0,0);
 		
-		cinemas_action_shift(cinema_idx,action_idx,shift);
+		cinemas_action_shift(state.cur_cinema_idx,action_idx,shift);
 		return;
 	}
 

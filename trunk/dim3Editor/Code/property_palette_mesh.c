@@ -21,7 +21,7 @@ Any non-engine product (games, etc) created with this code is free
 from any and all payment and/or royalties to the author of dim3,
 and can be sold or given away.
 
-(c) 2000-2011 Klink! Software www.klinksoftware.com
+(c) 2000-2012 Klink! Software www.klinksoftware.com
  
 *********************************************************************/
 
@@ -231,7 +231,7 @@ void property_palette_fill_mesh(int mesh_idx,int poly_idx)
       
 ======================================================= */
 
-void property_palette_click_mesh(int mesh_idx,int poly_idx,int id,bool double_click)
+void property_palette_click_mesh(int mesh_idx,int poly_idx,bool double_click)
 {
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
@@ -243,7 +243,7 @@ void property_palette_click_mesh(int mesh_idx,int poly_idx,int id,bool double_cl
 
 	mesh=&map.mesh.meshes[mesh_idx];
 
-	switch (id) {
+	switch (property_palette.item_pane.click.id) {
 
 			// options
 			
@@ -280,7 +280,7 @@ void property_palette_click_mesh(int mesh_idx,int poly_idx,int id,bool double_cl
 		view=view_get_current_view();
 		poly=&mesh->polys[poly_idx];
 
-		switch (id) {
+		switch (property_palette.item_pane.click.id) {
 
 			case kMeshPolyPropertyOff:
 			case kMeshPolyPropertySize:

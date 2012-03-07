@@ -21,7 +21,7 @@ Any non-engine product (games, etc) created with this code is free
 from any and all payment and/or royalties to the author of dim3,
 and can be sold or given away.
 
-(c) 2000-2011 Klink! Software www.klinksoftware.com
+(c) 2000-2012 Klink! Software www.klinksoftware.com
  
 *********************************************************************/
 
@@ -101,7 +101,7 @@ void property_palette_fill_scenery(int scenery_idx)
       
 ======================================================= */
 
-void property_palette_click_scenery(int scenery_idx,int id,bool double_click)
+void property_palette_click_scenery(int scenery_idx,bool double_click)
 {
 	map_scenery_type			*scenery;
 
@@ -109,7 +109,7 @@ void property_palette_click_scenery(int scenery_idx,int id,bool double_click)
 
 	scenery=&map.sceneries[scenery_idx];
 
-	switch (id) {
+	switch (property_palette.item_pane.click.id) {
 
 		case kSceneryPropertyAnimationName:
 			dialog_property_string_run(list_string_value_string,(void*)scenery->animation_name,name_str_len,0,0);

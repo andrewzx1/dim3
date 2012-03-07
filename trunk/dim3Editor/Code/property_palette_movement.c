@@ -21,7 +21,7 @@ Any non-engine product (games, etc) created with this code is free
 from any and all payment and/or royalties to the author of dim3,
 and can be sold or given away.
 
-(c) 2000-2011 Klink! Software www.klinksoftware.com
+(c) 2000-2012 Klink! Software www.klinksoftware.com
  
 *********************************************************************/
 
@@ -113,11 +113,13 @@ void property_palette_fill_movement(int movement_idx)
       
 ======================================================= */
 
-void property_palette_click_movement(int movement_idx,int id,bool double_click)
+void property_palette_click_movement(bool double_click)
 {
+	int					id;
 	movement_type		*movement;
 
-	movement=&map.movement.movements[movement_idx];
+	id=property_palette.item_pane.click.id;
+	movement=&map.movement.movements[state.cur_movement_idx];
 
 		// click move
 
@@ -130,7 +132,7 @@ void property_palette_click_movement(int movement_idx,int id,bool double_click)
 		// add move
 
 	if (id==kMovementPropertyMoveAdd) {
-		state.cur_movement_move_idx=map_movement_move_add(&map,movement_idx);
+		state.cur_movement_move_idx=map_movement_move_add(&map,state.cur_movement_idx);
 		list_palette_set_level(&property_palette,2);
 		return;
 	}
@@ -139,7 +141,7 @@ void property_palette_click_movement(int movement_idx,int id,bool double_click)
 
 	if (id>=kMovementPropertyMoveDelete) {
 		state.cur_movement_move_idx=-1;
-		map_movement_move_delete(&map,movement_idx,(id-kMovementPropertyMoveDelete));
+		map_movement_move_delete(&map,state.cur_movement_idx,(id-kMovementPropertyMoveDelete));
 		return;
 	}
 

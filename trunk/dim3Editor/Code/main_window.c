@@ -21,7 +21,7 @@ Any non-engine product (games, etc) created with this code is free
 from any and all payment and/or royalties to the author of dim3,
 and can be sold or given away.
 
-(c) 2000-2011 Klink! Software www.klinksoftware.com
+(c) 2000-2012 Klink! Software www.klinksoftware.com
  
 *********************************************************************/
 
@@ -213,7 +213,7 @@ void main_wind_click(d3pnt *pnt,bool double_click)
 		// file palettes
 	
 		/* supergumba	
-	list_palette_box(&file_palette,&tbox);
+	list_palette_total_box(&file_palette,&tbox);
 
 	if ((pnt->x>=tbox.lx) && (pnt->x<=tbox.rx) && (pnt->y>=tbox.ty) && (pnt->y<tbox.by)) {
 		file_palette_click(pnt,double_click);
@@ -222,7 +222,7 @@ void main_wind_click(d3pnt *pnt,bool double_click)
 	*/
 		// item, property and alt property palettes
 		
-	list_palette_box(&property_palette,&tbox);
+	list_palette_total_box(&property_palette,&tbox);
 
 	if ((pnt->x>=tbox.lx) && (pnt->x<=tbox.rx) && (pnt->y>=tbox.ty) && (pnt->y<tbox.by)) {
 		property_palette_click(pnt,double_click);
@@ -251,7 +251,7 @@ void main_wind_scroll_wheel(d3pnt *pnt,int delta)
 	
 		// scroll wheel in file palette
 /* supergumba
-	list_palette_box(&file_palette,&tbox);
+	list_palette_total_box(&file_palette,&tbox);
 
 	if ((pnt->x>=tbox.lx) && (pnt->x<=tbox.rx) && (pnt->y>=tbox.ty) && (pnt->y<tbox.by)) {
 		file_palette_scroll_wheel(pnt,delta);
@@ -260,7 +260,7 @@ void main_wind_scroll_wheel(d3pnt *pnt,int delta)
 */	
 		// scroll wheel in item, property, or alt property palette
 
-	list_palette_box(&property_palette,&tbox);
+	list_palette_total_box(&property_palette,&tbox);
 
 	if ((pnt->x>=tbox.lx) && (pnt->x<=tbox.rx) && (pnt->y>=tbox.ty) && (pnt->y<tbox.by)) {
 		property_palette_scroll_wheel(pnt,delta);

@@ -21,7 +21,7 @@ Any non-engine product (games, etc) created with this code is free
 from any and all payment and/or royalties to the author of dim3,
 and can be sold or given away.
 
-(c) 2000-2011 Klink! Software www.klinksoftware.com
+(c) 2000-2012 Klink! Software www.klinksoftware.com
  
 *********************************************************************/
 
@@ -163,16 +163,15 @@ void view_setup_default_views(void)
 void view_get_pixel_box(editor_view_type *view,d3rect *box)
 {
 	float			wid,high;
-	d3rect			wbox,lbox;
+	d3rect			wbox;
 	
 		// get viewport
 		
 	os_get_window_box(&wbox);
-	list_palette_box(&property_palette,&lbox);
 	
 	wbox.ty+=tool_palette_pixel_size();
 	wbox.by-=texture_palette_pixel_size();
-	wbox.rx=lbox.lx;
+	wbox.rx-=list_palette_width(&property_palette);
 	
 	wid=(float)(wbox.rx-wbox.lx);
 	high=(float)(wbox.by-wbox.ty);

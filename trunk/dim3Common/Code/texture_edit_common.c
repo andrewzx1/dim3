@@ -21,7 +21,7 @@ Any non-engine product (games, etc) created with this code is free
 from any and all payment and/or royalties to the author of dim3,
 and can be sold or given away.
 
-(c) 2000-2011 Klink! Software www.klinksoftware.com
+(c) 2000-2012 Klink! Software www.klinksoftware.com
  
 *********************************************************************/
 
@@ -91,14 +91,11 @@ void texture_edit_switch(int texture_idx)
 
 void texture_edit_get_box(d3rect *box)
 {
-	d3rect				lbox;
-
 	os_get_window_box(box);
-	list_palette_box(&property_palette,&lbox);
 	
 	box->ty+=tool_palette_pixel_size();
 	box->by-=texture_palette_pixel_size();
-	box->rx=lbox.lx-1;
+	box->rx-=(list_palette_width(&property_palette)+1);
 }
 
 void texture_edit_draw_bitmap(d3rect *box,char *name,unsigned long gl_id)

@@ -21,7 +21,7 @@ Any non-engine product (games, etc) created with this code is free
 from any and all payment and/or royalties to the author of dim3,
 and can be sold or given away.
 
-(c) 2000-2011 Klink! Software www.klinksoftware.com
+(c) 2000-2012 Klink! Software www.klinksoftware.com
  
 *********************************************************************/
 
@@ -62,8 +62,8 @@ void file_palette_initialize(void)
 {
 	list_palette_list_initialize(&file_palette,"Maps");
 
-	file_palette.item_type=0;
-	file_palette.item_idx=-1;
+	file_palette.item_pane.item_type=0;
+	file_palette.item_pane.item_idx=-1;
 }
 
 void file_palette_shutdown(void)

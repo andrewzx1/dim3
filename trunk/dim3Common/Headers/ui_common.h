@@ -21,7 +21,7 @@ Any non-engine product (games, etc) created with this code is free
 from any and all payment and/or royalties to the author of dim3,
 and can be sold or given away.
 
-(c) 2000-2011 Klink! Software www.klinksoftware.com
+(c) 2000-2012 Klink! Software www.klinksoftware.com
  
 *********************************************************************/
 
@@ -137,15 +137,25 @@ typedef struct		{
 					} list_palette_picker_type;
 
 typedef struct		{
+						int									id;
+					} list_palette_click_type;
+
+typedef struct		{
 						int									level,item_count,
 															item_sort_start_idx,push_idx,
-															item_id,item_type,item_idx,
+															item_type,item_idx,
 															scroll_offset,total_high;
-						bool								open,back_push_on,
+						bool								back_push_on,
 															push_on,button_click;
 						char								titles[3][128];
-						list_palette_picker_type			picker;
+						list_palette_click_type				click;
 						list_palette_item_type				*items;
+					} list_palette_pane_type;
+
+typedef struct		{
+						bool								open;
+						list_palette_pane_type				item_pane,picker_pane;
+						list_palette_picker_type			picker;
 					} list_palette_type;
 
 //
@@ -198,7 +208,8 @@ extern void list_palette_initialize(char *app_name);
 extern void list_palette_shutdown(void);
 extern void list_palette_list_initialize(list_palette_type *list,char *title);
 extern void list_palette_list_shutdown(list_palette_type *list);
-extern void list_palette_box(list_palette_type *list,d3rect *box);
+extern int list_palette_width(list_palette_type *list);
+extern void list_palette_total_box(list_palette_type *list,d3rect *box);
 extern void list_palette_set_title(list_palette_type *list,char *title_0,char *name_0,char *title_1,char *name_1,char *title_2,char *name_2);
 extern int list_palette_get_level(list_palette_type *list);
 extern void list_palette_set_level(list_palette_type *list,int level);
@@ -231,8 +242,6 @@ extern void list_palette_start_picking_mode(list_palette_type *list,char *title,
 extern void list_palette_sort_mark_start(list_palette_type *list);
 extern void list_palette_sort(list_palette_type *list);
 extern void list_palette_draw(list_palette_type *list);
-extern void list_palette_scroll_up(list_palette_type *list);
-extern void list_palette_scroll_down(list_palette_type *list);
 extern void list_palette_scroll_wheel(list_palette_type *list,d3pnt *pnt,int move);
 extern void list_palette_scroll_item_into_view(list_palette_type *list,int item_type,int item_idx);
 extern bool list_palette_click(list_palette_type *list,d3pnt *pnt,bool double_click);

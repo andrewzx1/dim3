@@ -21,7 +21,7 @@ Any non-engine product (games, etc) created with this code is free
 from any and all payment and/or royalties to the author of dim3,
 and can be sold or given away.
 
-(c) 2000-2011 Klink! Software www.klinksoftware.com
+(c) 2000-2012 Klink! Software www.klinksoftware.com
  
 *********************************************************************/
 
@@ -135,7 +135,7 @@ void property_palette_fill_cinema_action(int cinema_idx,int action_idx)
       
 ======================================================= */
 
-void property_palette_click_cinema_action(int cinema_idx,int action_idx,int id,bool double_click)
+void property_palette_click_cinema_action(int cinema_idx,int action_idx,bool double_click)
 {
 	map_cinema_action_type	*action;
 
@@ -144,7 +144,7 @@ void property_palette_click_cinema_action(int cinema_idx,int action_idx,int id,b
 
 	action=&map.cinema.cinemas[cinema_idx].actions[action_idx];
 
-	switch (id) {
+	switch (property_palette.item_pane.click.id) {
 	
 		case kCinemaActionPropertyActorName:
 			switch (action->actor_type) {

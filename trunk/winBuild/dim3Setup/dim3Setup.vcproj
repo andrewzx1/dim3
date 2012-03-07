@@ -300,106 +300,6 @@
 					Name="Palettes"
 					>
 					<File
-						RelativePath="..\..\dim3Setup\Code\alt2_property_palette_chooser_piece.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Setup\Code\alt2_property_palette_group_particle.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Setup\Code\alt2_property_palette_menu_item.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Setup\Code\alt_property_palette_action.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Setup\Code\alt_property_palette_chooser.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Setup\Code\alt_property_palette_crosshair.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Setup\Code\alt_property_palette_halo.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Setup\Code\alt_property_palette_hud_bar.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Setup\Code\alt_property_palette_hud_bitmap.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Setup\Code\alt_property_palette_hud_text.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Setup\Code\alt_property_palette_intro_button.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Setup\Code\alt_property_palette_intro_model.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Setup\Code\alt_property_palette_mark.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Setup\Code\alt_property_palette_menu.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Setup\Code\alt_property_palette_multiplayer_character.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Setup\Code\alt_property_palette_multiplayer_game.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Setup\Code\alt_property_palette_multiplayer_option.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Setup\Code\alt_property_palette_particle.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Setup\Code\alt_property_palette_particle_group.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Setup\Code\alt_property_palette_radar_icon.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Setup\Code\alt_property_palette_ring.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Setup\Code\alt_property_palette_shader.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Setup\Code\alt_property_palette_sound.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Setup\Code\alt_property_palette_virtual_control_button.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Setup\Code\alt_property_palette_virtual_control_stick.c"
-						>
-					</File>
-					<File
 						RelativePath="..\..\dim3Common\Code\list_palette_common.c"
 						>
 					</File>
@@ -412,7 +312,19 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\dim3Setup\Code\property_palette_action.c"
+						>
+					</File>
+					<File
 						RelativePath="..\..\dim3Setup\Code\property_palette_actions.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Setup\Code\property_palette_chooser.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Setup\Code\property_palette_chooser_piece.c"
 						>
 					</File>
 					<File
@@ -420,7 +332,19 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\dim3Setup\Code\property_palette_crosshair.c"
+						>
+					</File>
+					<File
 						RelativePath="..\..\dim3Setup\Code\property_palette_crosshairs.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Setup\Code\property_palette_group_particle.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Setup\Code\property_palette_halo.c"
 						>
 					</File>
 					<File
@@ -432,7 +356,27 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\dim3Setup\Code\property_palette_hud_bar.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Setup\Code\property_palette_hud_bitmap.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Setup\Code\property_palette_hud_text.c"
+						>
+					</File>
+					<File
 						RelativePath="..\..\dim3Setup\Code\property_palette_intro.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Setup\Code\property_palette_intro_button.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Setup\Code\property_palette_intro_model.c"
 						>
 					</File>
 					<File
@@ -440,7 +384,19 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\dim3Setup\Code\property_palette_mark.c"
+						>
+					</File>
+					<File
 						RelativePath="..\..\dim3Setup\Code\property_palette_marks.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Setup\Code\property_palette_menu.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Setup\Code\property_palette_menu_item.c"
 						>
 					</File>
 					<File
@@ -449,6 +405,26 @@
 					</File>
 					<File
 						RelativePath="..\..\dim3Setup\Code\property_palette_multiplayer.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Setup\Code\property_palette_multiplayer_character.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Setup\Code\property_palette_multiplayer_game.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Setup\Code\property_palette_multiplayer_option.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Setup\Code\property_palette_particle.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Setup\Code\property_palette_particle_group.c"
 						>
 					</File>
 					<File
@@ -464,6 +440,14 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\dim3Setup\Code\property_palette_radar_icon.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Setup\Code\property_palette_ring.c"
+						>
+					</File>
+					<File
 						RelativePath="..\..\dim3Setup\Code\property_palette_rings.c"
 						>
 					</File>
@@ -476,7 +460,15 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\dim3Setup\Code\property_palette_shader.c"
+						>
+					</File>
+					<File
 						RelativePath="..\..\dim3Setup\Code\property_palette_shaders.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Setup\Code\property_palette_sound.c"
 						>
 					</File>
 					<File
@@ -485,6 +477,14 @@
 					</File>
 					<File
 						RelativePath="..\..\dim3Setup\Code\property_palette_virtual_control.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Setup\Code\property_palette_virtual_control_button.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Setup\Code\property_palette_virtual_control_stick.c"
 						>
 					</File>
 					<File
