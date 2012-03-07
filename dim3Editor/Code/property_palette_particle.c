@@ -21,7 +21,7 @@ Any non-engine product (games, etc) created with this code is free
 from any and all payment and/or royalties to the author of dim3,
 and can be sold or given away.
 
-(c) 2000-2011 Klink! Software www.klinksoftware.com
+(c) 2000-2012 Klink! Software www.klinksoftware.com
  
 *********************************************************************/
 
@@ -111,7 +111,7 @@ void property_palette_fill_particle(int particle_idx)
       
 ======================================================= */
 
-void property_palette_click_particle(int particle_idx,int id,bool double_click)
+void property_palette_click_particle(int particle_idx,bool double_click)
 {
 	map_particle_type		*particle;
 
@@ -119,7 +119,7 @@ void property_palette_click_particle(int particle_idx,int id,bool double_click)
 
 	particle=&map.particles[particle_idx];
 
-	switch (id) {
+	switch (property_palette.item_pane.click.id) {
 
 			// particle
 			

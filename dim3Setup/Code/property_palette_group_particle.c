@@ -2,7 +2,7 @@
 
 Module: dim3 Setup
 Author: Brian Barnes
- Usage: Property Palette Crosshair
+ Usage: Property Palette Group Particle
 
 ***************************** License ********************************
 
@@ -21,7 +21,7 @@ Any non-engine product (games, etc) created with this code is free
 from any and all payment and/or royalties to the author of dim3,
 and can be sold or given away.
 
-(c) 2000-2011 Klink! Software www.klinksoftware.com
+(c) 2000-2012 Klink! Software www.klinksoftware.com
  
 *********************************************************************/
 
@@ -33,8 +33,8 @@ and can be sold or given away.
 #include "ui_common.h"
 #include "interface.h"
 
-#define kCrosshairSettingsName					0
-#define kCrosshairSettingsFileName				1
+#define kGroupParticleSettingsName		0
+#define kGroupParticleSettingsShift		1
 
 extern iface_type				iface;
 extern setup_state_type			state;
@@ -42,45 +42,45 @@ extern list_palette_type		property_palette;
 
 /* =======================================================
 
-      Property Palette Fill Crosshair
+      Property Palette Fill Group Particle
       
 ======================================================= */
 
-void property_palette_fill_crosshair(int crosshair_idx)
+void property_palette_fill_group_particle(int particle_idx,int group_particle_idx)
 {
-	iface_crosshair_type		*crosshair;
+	iface_particle_type					*particle;
+	iface_particle_group_piece_type			*group_particle;
 
-	crosshair=&iface.crosshair_list.crosshairs[crosshair_idx];
+	particle=&iface.particle_list.particles[particle_idx];
+	group_particle=&particle->group.particles[group_particle_idx];
 
-	list_palette_set_title(&property_palette,"Crosshairs",NULL,"Crosshair",crosshair->name,NULL,NULL);
+	list_palette_set_title(&property_palette,"Particles",NULL,"Particle Group",particle->name,"Particle",group_particle->name);
 
 		// settings
 
 	list_palette_add_header(&property_palette,0,"Settings");
-	list_palette_add_string(&property_palette,kCrosshairSettingsName,"Name",crosshair->name,FALSE);
-	list_palette_add_picker_file(&property_palette,kCrosshairSettingsFileName,list_button_none,0,"Bitmap","Bitmaps/Crosshairs","png","",crosshair->bitmap_name,FALSE);
+	list_palette_add_string(&property_palette,kGroupParticleSettingsName,"Particle",group_particle->name,FALSE);
+	list_palette_add_int(&property_palette,kGroupParticleSettingsShift,"Shift",&group_particle->shift,FALSE);
 }
 
 /* =======================================================
 
-      Property Palette Click Crosshair
+      Property Palette Click Group Particle
       
 ======================================================= */
 
-void property_palette_click_crosshair(int crosshair_idx,int id,bool double_click)
+void property_palette_click_group_particle(int particle_idx,int group_particle_idx,int id,bool double_click)
 {
-	iface_crosshair_type		*crosshair;
+	iface_particle_group_piece_type			*group_particle;
 
 	if (!double_click) return;
 
-	crosshair=&iface.crosshair_list.crosshairs[crosshair_idx];
+	group_particle=&iface.particle_list.particles[particle_idx].group.particles[group_particle_idx];
 
 	switch (id) {
 
-			// settings
-
-		case kCrosshairSettingsName:
-			dialog_property_string_run(list_string_value_string,(void*)crosshair->name,name_str_len,0,0);
+		case kGroupParticleSettingsName:
+			property_palette_pick_particle(group_particle->name);
 			break;
 
 	}

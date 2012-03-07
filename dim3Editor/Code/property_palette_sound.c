@@ -21,7 +21,7 @@ Any non-engine product (games, etc) created with this code is free
 from any and all payment and/or royalties to the author of dim3,
 and can be sold or given away.
 
-(c) 2000-2011 Klink! Software www.klinksoftware.com
+(c) 2000-2012 Klink! Software www.klinksoftware.com
  
 *********************************************************************/
 
@@ -79,7 +79,7 @@ void property_palette_fill_sound(int sound_idx)
       
 ======================================================= */
 
-void property_palette_click_sound(int sound_idx,int id,bool double_click)
+void property_palette_click_sound(int sound_idx,bool double_click)
 {
 	map_sound_type		*sound;
 
@@ -87,7 +87,7 @@ void property_palette_click_sound(int sound_idx,int id,bool double_click)
 
 	sound=&map.sounds[sound_idx];
 
-	switch (id) {
+	switch (property_palette.item_pane.click.id) {
 
 		case kSoundPropertyName:
 			property_palette_pick_sound(sound->name,FALSE);

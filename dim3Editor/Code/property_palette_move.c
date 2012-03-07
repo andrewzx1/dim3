@@ -21,7 +21,7 @@ Any non-engine product (games, etc) created with this code is free
 from any and all payment and/or royalties to the author of dim3,
 and can be sold or given away.
 
-(c) 2000-2011 Klink! Software www.klinksoftware.com
+(c) 2000-2012 Klink! Software www.klinksoftware.com
  
 *********************************************************************/
 
@@ -86,7 +86,7 @@ void property_palette_fill_movement_move(int movement_idx,int move_idx)
       
 ======================================================= */
 
-void property_palette_click_movement_move(int movement_idx,int move_idx,int id,bool double_click)
+void property_palette_click_movement_move(int movement_idx,int move_idx,bool double_click)
 {
 	movement_move_type	*move;
 
@@ -95,7 +95,7 @@ void property_palette_click_movement_move(int movement_idx,int move_idx,int id,b
 
 	move=&map.movement.movements[movement_idx].moves[move_idx];
 
-	switch (id) {
+	switch (property_palette.item_pane.click.id) {
 	
 		case kMovePropertySoundName:
 			property_palette_pick_sound(move->sound_name,FALSE);

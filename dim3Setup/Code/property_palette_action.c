@@ -2,7 +2,7 @@
 
 Module: dim3 Setup
 Author: Brian Barnes
- Usage: Property Palette Multiplayer Option
+ Usage: Property Palette Action
 
 ***************************** License ********************************
 
@@ -21,7 +21,7 @@ Any non-engine product (games, etc) created with this code is free
 from any and all payment and/or royalties to the author of dim3,
 and can be sold or given away.
 
-(c) 2000-2011 Klink! Software www.klinksoftware.com
+(c) 2000-2012 Klink! Software www.klinksoftware.com
  
 *********************************************************************/
 
@@ -33,8 +33,8 @@ and can be sold or given away.
 #include "ui_common.h"
 #include "interface.h"
 
-#define kMPOptionPropertySettingsName			0
-#define kMPOptionPropertySettingsDescript		1
+#define kActionSettingsName						0
+#define kActionSettingsShow						1
 
 extern iface_type				iface;
 extern setup_state_type			state;
@@ -42,49 +42,43 @@ extern list_palette_type		property_palette;
 
 /* =======================================================
 
-      Property Palette Fill Multiplayer Option
+      Property Palette Fill Action
       
 ======================================================= */
 
-void property_palette_fill_multiplayer_option(int multiplayer_option_idx)
+void property_palette_fill_action(int action_idx)
 {
-	iface_net_option_type		*option;
+	iface_action_display_type		*action;
 
-	option=&iface.net_option.options[multiplayer_option_idx];
+	action=&iface.action_display_list.action_displays[action_idx];
 
-	list_palette_set_title(&property_palette,"Multiplayer",NULL,"Option",option->name,NULL,NULL);
+	list_palette_set_title(&property_palette,"Actions",NULL,"Action",action->display_name,NULL,NULL);
 
 		// settings
 
 	list_palette_add_header(&property_palette,0,"Settings");
-	list_palette_add_string(&property_palette,kMPOptionPropertySettingsName,"Name",option->name,FALSE);
-	list_palette_add_string(&property_palette,kMPOptionPropertySettingsDescript,"Description",option->descript,FALSE);
+	list_palette_add_string(&property_palette,kActionSettingsName,"Name",action->display_name,FALSE);
+	list_palette_add_checkbox(&property_palette,kActionSettingsShow,"Show",&action->show,FALSE);
 }
 
 /* =======================================================
 
-      Property Palette Click Multiplayer Option
+      Property Palette Click Action
       
 ======================================================= */
 
-void property_palette_click_multiplayer_option(int multiplayer_option_idx,int id,bool double_click)
+void property_palette_click_action(int action_idx,int id,bool double_click)
 {
-	iface_net_option_type		*option;
-
-	option=&iface.net_option.options[multiplayer_option_idx];
+	iface_action_display_type		*action;
 
 	if (!double_click) return;
 
+	action=&iface.action_display_list.action_displays[action_idx];
+
 	switch (id) {
-			
-			// settings
 
-		case kMPOptionPropertySettingsName:
-			dialog_property_string_run(list_string_value_string,(void*)option->name,name_str_len,0,0);
-			break;
-
-		case kMPOptionPropertySettingsDescript:
-			dialog_property_string_run(list_string_value_string,(void*)option->descript,name_str_len,0,0);
+		case kActionSettingsName:
+			dialog_property_string_run(list_string_value_string,(void*)action->display_name,name_str_len,0,0);
 			break;
 
 	}

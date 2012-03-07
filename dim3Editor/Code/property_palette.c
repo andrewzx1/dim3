@@ -21,7 +21,7 @@ Any non-engine product (games, etc) created with this code is free
 from any and all payment and/or royalties to the author of dim3,
 and can be sold or given away.
 
-(c) 2000-2011 Klink! Software www.klinksoftware.com
+(c) 2000-2012 Klink! Software www.klinksoftware.com
  
 *********************************************************************/
 
@@ -53,8 +53,8 @@ void property_palette_initialize(void)
 {
 	list_palette_list_initialize(&property_palette,"Item Properties");
 
-	property_palette.item_type=0;
-	property_palette.item_idx=-1;
+	property_palette.item_pane.item_type=0;
+	property_palette.item_pane.item_idx=-1;
 }
 
 void property_palette_shutdown(void)
@@ -392,15 +392,15 @@ void property_palette_click_level_1(bool double_click)
 	switch (state.cur_no_sel_piece_idx) {
 
 		case group_piece:
-			property_palette_click_group(state.cur_group_idx,property_palette.item_id,double_click);
+			property_palette_click_group(double_click);
 			return;
 
 		case movement_piece:
-			property_palette_click_movement(state.cur_movement_idx,property_palette.item_id,double_click);
+			property_palette_click_movement(double_click);
 			return;
 
 		case cinema_piece:
-			property_palette_click_cinema(state.cur_cinema_idx,property_palette.item_id,double_click);
+			property_palette_click_cinema(double_click);
 			return;
 	}
 
@@ -417,19 +417,19 @@ void property_palette_click_level_1(bool double_click)
 		switch (state.cur_no_sel_piece_idx) {
 			
 			case map_setting_piece:
-				property_palette_click_map(property_palette.item_id,double_click);
+				property_palette_click_map(double_click);
 				break;
 
 			case map_camera_piece:
-				property_palette_click_camera(property_palette.item_id,double_click);
+				property_palette_click_camera(double_click);
 				break;
 
 			case map_light_media_piece:
-				property_palette_click_light_media(property_palette.item_id,double_click);
+				property_palette_click_light_media(double_click);
 				break;
 
 			case map_sky_weather_piece:
-				property_palette_click_sky_weather(property_palette.item_id,double_click);
+				property_palette_click_sky_weather(double_click);
 				break;
 
 		}
@@ -443,35 +443,35 @@ void property_palette_click_level_1(bool double_click)
 
 		case mesh_piece:
 			if (state.drag_mode!=drag_mode_polygon) sub_idx=-1;
-			property_palette_click_mesh(main_idx,sub_idx,property_palette.item_id,double_click);
+			property_palette_click_mesh(main_idx,sub_idx,double_click);
 			break;
 
 		case liquid_piece:
-			property_palette_click_liquid(main_idx,property_palette.item_id,double_click);
+			property_palette_click_liquid(main_idx,double_click);
 			break;
 
 		case spot_piece:
-			property_palette_click_spot(main_idx,property_palette.item_id,double_click);
+			property_palette_click_spot(main_idx,double_click);
 			break;
 
 		case light_piece:
-			property_palette_click_light(main_idx,property_palette.item_id,double_click);
+			property_palette_click_light(main_idx,double_click);
 			break;
 
 		case sound_piece:
-			property_palette_click_sound(main_idx,property_palette.item_id,double_click);
+			property_palette_click_sound(main_idx,double_click);
 			break;
 
 		case particle_piece:
-			property_palette_click_particle(main_idx,property_palette.item_id,double_click);
+			property_palette_click_particle(main_idx,double_click);
 			break;
 
 		case scenery_piece:
-			property_palette_click_scenery(main_idx,property_palette.item_id,double_click);
+			property_palette_click_scenery(main_idx,double_click);
 			break;
 
 		case node_piece:
-			property_palette_click_node(main_idx,property_palette.item_id,double_click);
+			property_palette_click_node(main_idx,double_click);
 			break;
 
 	}
@@ -484,11 +484,11 @@ void property_palette_click_level_2(bool double_click)
 	switch (state.cur_no_sel_piece_idx) {
 
 		case movement_piece:
-			property_palette_click_movement_move(state.cur_movement_idx,state.cur_movement_move_idx,property_palette.item_id,double_click);
+			property_palette_click_movement_move(state.cur_movement_idx,state.cur_movement_move_idx,double_click);
 			return;
 
 		case cinema_piece:
-			property_palette_click_cinema_action(state.cur_cinema_idx,state.cur_cinema_action_idx,property_palette.item_id,double_click);
+			property_palette_click_cinema_action(state.cur_cinema_idx,state.cur_cinema_action_idx,double_click);
 			break;
 	}
 }
@@ -517,7 +517,7 @@ void property_palette_click(d3pnt *pnt,bool double_click)
 		// if texture window is up, texture properties
 
 	if (state.texture_edit_idx!=-1) {
-		property_palette_click_texture(state.texture_edit_idx,property_palette.item_id,double_click);
+		property_palette_click_texture(state.texture_edit_idx,property_palette.item_pane.click.id,double_click);
 		main_wind_draw();
 		return;
 	}
@@ -525,7 +525,7 @@ void property_palette_click(d3pnt *pnt,bool double_click)
 		// if preference window is up, preference properties
 
 	if (state.in_preference) {
-		property_palette_click_editor_preference(property_palette.item_id,double_click);
+		property_palette_click_editor_preference(property_palette.item_pane.click.id,double_click);
 		main_wind_draw();
 		return;
 	}

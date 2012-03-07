@@ -21,7 +21,7 @@ Any non-engine product (games, etc) created with this code is free
 from any and all payment and/or royalties to the author of dim3,
 and can be sold or given away.
 
-(c) 2000-2011 Klink! Software www.klinksoftware.com
+(c) 2000-2012 Klink! Software www.klinksoftware.com
  
 *********************************************************************/
 
@@ -91,7 +91,7 @@ void property_palette_fill_light(int light_idx)
       
 ======================================================= */
 
-void property_palette_click_light(int light_idx,int id,bool double_click)
+void property_palette_click_light(int light_idx,bool double_click)
 {
 	map_light_type		*light;
 
@@ -99,7 +99,7 @@ void property_palette_click_light(int light_idx,int id,bool double_click)
 
 	light=&map.lights[light_idx];
 
-	switch (id) {
+	switch (property_palette.item_pane.click.id) {
 
 		case kLightPropertyName:
 			dialog_property_string_run(list_string_value_string,(void*)light->name,name_str_len,0,0);

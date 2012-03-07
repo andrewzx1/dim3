@@ -21,7 +21,7 @@ Any non-engine product (games, etc) created with this code is free
 from any and all payment and/or royalties to the author of dim3,
 and can be sold or given away.
 
-(c) 2000-2011 Klink! Software www.klinksoftware.com
+(c) 2000-2012 Klink! Software www.klinksoftware.com
  
 *********************************************************************/
 
@@ -111,11 +111,11 @@ void property_palette_fill_camera(void)
       
 ======================================================= */
 
-void property_palette_click_camera(int id,bool double_click)
+void property_palette_click_camera(bool double_click)
 {
 	if (!double_click) return;
 
-	switch (id) {
+	switch (property_palette.item_pane.click.id) {
 
 		case kMapPropertyCameraStaticAttachNode:
 			property_palette_pick_node(map.camera.c_static.attach_node);

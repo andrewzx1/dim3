@@ -2,7 +2,7 @@
 
 Module: dim3 Setup
 Author: Brian Barnes
- Usage: Property Palette Radar Icon
+ Usage: Property Palette Shader
 
 ***************************** License ********************************
 
@@ -21,7 +21,7 @@ Any non-engine product (games, etc) created with this code is free
 from any and all payment and/or royalties to the author of dim3,
 and can be sold or given away.
 
-(c) 2000-2011 Klink! Software www.klinksoftware.com
+(c) 2000-2012 Klink! Software www.klinksoftware.com
  
 *********************************************************************/
 
@@ -33,11 +33,9 @@ and can be sold or given away.
 #include "ui_common.h"
 #include "interface.h"
 
-#define kRadarIconSettingsName					0
-#define kRadarIconSettingsBitmapName			1
-
-#define kRadarIconOptionSize					2
-#define kRadarIconOptionRotate					3
+#define kShaderSettingsName						0
+#define kShaderCodeVertName						1
+#define kShaderCodeFragName						2
 
 extern iface_type				iface;
 extern setup_state_type			state;
@@ -45,51 +43,50 @@ extern list_palette_type		property_palette;
 
 /* =======================================================
 
-      Property Palette Fill Radar Icon
+      Property Palette Fill Shader
       
 ======================================================= */
 
-void property_palette_fill_radar_icon(int radar_icon_idx)
+void property_palette_fill_shader(int shader_idx)
 {
-	iface_radar_icon_type		*icon;
+	iface_shader_type			*shader;
 
-	icon=&iface.radar.icons[radar_icon_idx];
+	shader=&iface.shader_list.shaders[shader_idx];
 
-	list_palette_set_title(&property_palette,"Radar",NULL,"Icon",icon->name,NULL,NULL);
+	list_palette_set_title(&property_palette,"Shaders",NULL,"Shader",shader->name,NULL,NULL);
 
 		// settings
 
 	list_palette_add_header(&property_palette,0,"Settings");
-	list_palette_add_string(&property_palette,kRadarIconSettingsName,"Name",icon->name,FALSE);
-	list_palette_add_picker_file(&property_palette,kRadarIconSettingsBitmapName,list_button_none,0,"Bitmap","Bitmaps/Radar","png","",icon->bitmap_name,FALSE);
+	list_palette_add_string(&property_palette,kShaderSettingsName,"Name",shader->name,FALSE);
 
-		// options
+		// code
 
-	list_palette_add_header(&property_palette,0,"Options");
-	list_palette_add_int(&property_palette,kRadarIconOptionSize,"Size",&icon->size,FALSE);
-	list_palette_add_checkbox(&property_palette,kRadarIconOptionRotate,"Rotate",&icon->rot,FALSE);
+	list_palette_add_header(&property_palette,0,"Code");
+	list_palette_add_picker_file(&property_palette,kShaderCodeVertName,list_button_none,0,"Vertex","Shaders","vert","",shader->vert_name,FALSE);
+	list_palette_add_picker_file(&property_palette,kShaderCodeFragName,list_button_none,0,"Fragment","Shaders","frag","",shader->frag_name,FALSE);
 }
 
 /* =======================================================
 
-      Property Palette Click Radar Icon
+      Property Palette Click Shader
       
 ======================================================= */
 
-void property_palette_click_radar_icon(int radar_icon_idx,int id,bool double_click)
+void property_palette_click_shader(int shader_idx,int id,bool double_click)
 {
-	iface_radar_icon_type		*icon;
+	iface_shader_type			*shader;
 
 	if (!double_click) return;
 
-	icon=&iface.radar.icons[radar_icon_idx];
+	shader=&iface.shader_list.shaders[shader_idx];
 
 	switch (id) {
-			
+
 			// settings
 
-		case kRadarIconSettingsName:
-			dialog_property_string_run(list_string_value_string,(void*)icon->name,name_str_len,0,0);
+		case kShaderSettingsName:
+			dialog_property_string_run(list_string_value_string,(void*)shader->name,name_str_len,0,0);
 			break;
 
 	}
