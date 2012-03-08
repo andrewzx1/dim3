@@ -120,7 +120,7 @@ typedef struct		{
 
 typedef struct		{
 						int									x,y,ctrl_type,button_type,
-															id,button_id,type,count,idx;
+															id,idx,button_id,count;
 						bool								selected,disabled;
 						char								name[name_str_len];
 						list_palette_item_value_type		value;
@@ -137,13 +137,13 @@ typedef struct		{
 					} list_palette_picker_type;
 
 typedef struct		{
-						int									id;
+						int									id,idx;
+						list_palette_item_type				*item;
 					} list_palette_click_type;
 
 typedef struct		{
 						int									level,item_count,
 															item_sort_start_idx,push_idx,
-															item_type,item_idx,
 															scroll_offset,total_high;
 						bool								back_push_on,
 															push_on,button_click;
@@ -214,11 +214,11 @@ extern void list_palette_set_title(list_palette_type *list,char *title_0,char *n
 extern int list_palette_get_level(list_palette_type *list);
 extern void list_palette_set_level(list_palette_type *list,int level);
 extern bool list_palette_is_open(list_palette_type *list);
-extern void list_palette_add_header(list_palette_type *list,int piece_type,char *name);
-extern void list_palette_add_header_count(list_palette_type *list,int piece_type,char *name,int count);
+extern void list_palette_add_header(list_palette_type *list,int id,char *name);
+extern void list_palette_add_header_count(list_palette_type *list,int id,char *name,int count);
 extern void list_palette_add_header_button(list_palette_type *list,int id,char *name,int button_type);
-extern void list_palette_add_item(list_palette_type *list,int piece_type,int piece_idx,char *name,bool selected,bool disabled);
-extern void list_palette_add_color(list_palette_type *list,int piece_type,int piece_idx,d3col *col_ptr,bool selected,bool disabled);
+extern void list_palette_add_item(list_palette_type *list,int id,int idx,char *name,bool selected,bool disabled);
+extern void list_palette_add_color(list_palette_type *list,int id,int idx,d3col *col_ptr,bool selected,bool disabled);
 extern void list_palette_add_string_selectable(list_palette_type *list,int id,char *name,char *value,bool selected,bool disabled);
 extern void list_palette_add_string_selectable_button(list_palette_type *list,int id,int button_type,int button_id,char *name,char *value,bool selected,bool disabled);
 extern void list_palette_add_string(list_palette_type *list,int id,char *name,char *value,bool disabled);
@@ -243,7 +243,7 @@ extern void list_palette_sort_mark_start(list_palette_type *list);
 extern void list_palette_sort(list_palette_type *list);
 extern void list_palette_draw(list_palette_type *list);
 extern void list_palette_scroll_wheel(list_palette_type *list,d3pnt *pnt,int move);
-extern void list_palette_scroll_item_into_view(list_palette_type *list,int item_type,int item_idx);
+extern void list_palette_scroll_item_into_view(list_palette_type *list,int item_id,int item_idx);
 extern bool list_palette_click(list_palette_type *list,d3pnt *pnt,bool double_click);
 
 //

@@ -92,11 +92,14 @@ void property_palette_fill_animation(int animate_idx)
       
 ======================================================= */
 
-void property_palette_click_animation(int animate_idx,int id,bool double_click)
+void property_palette_click_animation(int animate_idx,bool double_click)
 {
+	int						id;
 	model_animate_type		*animate;
 
 	animate=&model.animates[animate_idx];
+
+	id=property_palette.item_pane.click.id;
 	
 		// pose moves
 		

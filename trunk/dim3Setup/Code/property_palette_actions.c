@@ -67,11 +67,11 @@ void property_palette_fill_actions(void)
       
 ======================================================= */
 
-void property_palette_click_actions(int id,bool double_click)
+void property_palette_click_actions(bool double_click)
 {
 		// edit action
 		
-	state.cur_action_idx=id-kActionProperyName;
+	state.cur_action_idx=property_palette.item_pane.click.id-kActionProperyName;
 	if (double_click) list_palette_set_level(&property_palette,2);
 }
 

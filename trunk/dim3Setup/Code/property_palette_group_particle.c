@@ -69,7 +69,7 @@ void property_palette_fill_group_particle(int particle_idx,int group_particle_id
       
 ======================================================= */
 
-void property_palette_click_group_particle(int particle_idx,int group_particle_idx,int id,bool double_click)
+void property_palette_click_group_particle(int particle_idx,int group_particle_idx,bool double_click)
 {
 	iface_particle_group_piece_type			*group_particle;
 
@@ -77,7 +77,7 @@ void property_palette_click_group_particle(int particle_idx,int group_particle_i
 
 	group_particle=&iface.particle_list.particles[particle_idx].group.particles[group_particle_idx];
 
-	switch (id) {
+	switch (property_palette.item_pane.click.id) {
 
 		case kGroupParticleSettingsName:
 			property_palette_pick_particle(group_particle->name);

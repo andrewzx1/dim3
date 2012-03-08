@@ -107,7 +107,7 @@ void property_palette_fill_bone(int bone_idx,int pose_idx)
       
 ======================================================= */
 
-void property_palette_click_bone(int bone_idx,int pose_idx,int id,bool double_click)
+void property_palette_click_bone(int bone_idx,int pose_idx,bool double_click)
 {
 	model_bone_type			*bone;
 	model_bone_move_type	*bone_move;
@@ -116,7 +116,7 @@ void property_palette_click_bone(int bone_idx,int pose_idx,int id,bool double_cl
 
 	bone=&model.bones[bone_idx];
 
-	switch (id) {
+	switch (property_palette.item_pane.click.id) {
 
 			// bone
 

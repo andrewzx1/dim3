@@ -55,7 +55,7 @@ void property_palette_fill_main(void)
 {
 	int			n;
 
-	list_palette_delete_all_items(&property_palette);
+	list_palette_set_title(&property_palette,"Model",NULL,NULL,NULL,NULL,NULL);
 
 		// map
 
@@ -128,7 +128,7 @@ void property_palette_click_main(bool double_click)
 {
 		// adding
 
-	switch (property_palette.item_id) {
+	switch (property_palette.item_pane.click.id) {
 
 		case kModelPropertyMeshAdd:
 			model_piece_add_mesh();
@@ -154,11 +154,11 @@ void property_palette_click_main(bool double_click)
 
 		// regular clicks
 
-	if (property_palette.item_idx==-1) return;
+	if (property_palette.item_pane.click.idx==-1) return;
 
 		// handle click
 
-	switch (property_palette.item_type) {
+	switch (property_palette.item_pane.click.id) {
 
 		case item_model:
 			state.cur_item=item_model;
@@ -166,12 +166,12 @@ void property_palette_click_main(bool double_click)
 
 		case item_mesh:
 			state.cur_item=item_mesh;
-			state.cur_mesh_idx=property_palette.item_idx;
+			state.cur_mesh_idx=property_palette.item_pane.click.idx;
 			break;
 
 		case item_animate:
 			state.cur_item=item_animate;
-			state.cur_animate_idx=property_palette.item_idx;
+			state.cur_animate_idx=property_palette.item_pane.click.idx;
 			state.cur_animate_pose_move_idx=-1;
 			state.cur_animate_pose_move_particle_idx=-1;
 			state.cur_animate_pose_move_ring_idx=-1;
@@ -179,7 +179,7 @@ void property_palette_click_main(bool double_click)
 
 		case item_pose:
 			state.cur_item=item_pose;
-			state.cur_pose_idx=property_palette.item_idx;
+			state.cur_pose_idx=property_palette.item_pane.click.idx;
 			state.cur_pose_bone_move_idx=-1;
 			break;
 			
@@ -191,18 +191,18 @@ void property_palette_click_main(bool double_click)
 
 		case item_bone:
 			state.cur_item=item_bone;
-			state.cur_bone_idx=property_palette.item_idx;
+			state.cur_bone_idx=property_palette.item_pane.click.idx;
 			break;
 
 		case item_hit_box:
 			state.cur_item=item_hit_box;
-			state.cur_hit_box_idx=property_palette.item_idx;
+			state.cur_hit_box_idx=property_palette.item_pane.click.idx;
 			break;
 	}
 
 		// netural pose has no properties
 
-	if (property_palette.item_type==item_neutral_pose) {
+	if (property_palette.item_pane.click.id==item_neutral_pose) {
 		list_palette_set_level(&property_palette,0);
 		return;
 	}

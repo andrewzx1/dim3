@@ -85,7 +85,7 @@ void property_palette_fill_progress(void)
       
 ======================================================= */
 
-void property_palette_click_progress(int id,bool double_click)
+void property_palette_click_progress(bool double_click)
 {
 }
 

@@ -117,10 +117,12 @@ void property_palette_fill_hud(void)
       
 ======================================================= */
 
-void property_palette_click_hud(int id,bool double_click)
+void property_palette_click_hud(bool double_click)
 {
-	int					idx,sz;
+	int					id,idx,sz;
 	char				name[name_str_len];
+
+	id=property_palette.item_pane.click.id;
 
 		// select bitmap
 

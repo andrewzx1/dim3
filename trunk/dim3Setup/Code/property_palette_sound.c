@@ -71,7 +71,7 @@ void property_palette_fill_sound(int sound_idx)
       
 ======================================================= */
 
-void property_palette_click_sound(int sound_idx,int id,bool double_click)
+void property_palette_click_sound(int sound_idx,bool double_click)
 {
 	iface_sound_type			*sound;
 
@@ -79,7 +79,7 @@ void property_palette_click_sound(int sound_idx,int id,bool double_click)
 
 	sound=&iface.sound_list.sounds[sound_idx];
 
-	switch (id) {
+	switch (property_palette.item_pane.click.id) {
 
 			// settings
 

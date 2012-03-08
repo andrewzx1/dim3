@@ -142,7 +142,7 @@ void property_palette_fill_hud_bitmap(int hud_bitmap_idx)
       
 ======================================================= */
 
-void property_palette_click_hud_bitmap(int hud_bitmap_idx,int id,bool double_click)
+void property_palette_click_hud_bitmap(int hud_bitmap_idx,bool double_click)
 {
 	iface_bitmap_type			*bitmap;
 
@@ -150,7 +150,7 @@ void property_palette_click_hud_bitmap(int hud_bitmap_idx,int id,bool double_cli
 
 	bitmap=&iface.bitmap_list.bitmaps[hud_bitmap_idx];
 
-	switch (id) {
+	switch (property_palette.item_pane.click.id) {
 
 			// settings
 

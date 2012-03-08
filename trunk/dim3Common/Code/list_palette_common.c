@@ -95,8 +95,9 @@ void list_palette_list_initialize_single_pane(list_palette_pane_type *pane)
 	pane->push_on=FALSE;
 	pane->push_idx=-1;
 
-	pane->item_type=-1;
-	pane->item_idx=-1;
+	pane->click.id=-1;
+	pane->click.idx=-1;
+	pane->click.item=NULL;
 
 	pane->items=(list_palette_item_type*)malloc(list_max_item_count*sizeof(list_palette_item_type));
 }
@@ -212,18 +213,26 @@ void list_palette_total_box(list_palette_type *list,d3rect *box)
 	
 	os_get_window_box(&wbox);
 
+#ifndef D3_SETUP
 	if (list->open) {
 		wid=list_palette_tree_sz;
 	}
 	else {
 		wid=list_palette_border_sz;
 	}
+#else
+	wid=list_palette_tree_sz;
+#endif
 
 	box->lx=wbox.rx-wid;
 	if (list->picker.on) box->lx-=list_palette_tree_sz;
 	box->rx=wbox.rx;
 
+#ifndef D3_SETUP
 	box->ty=wbox.ty+(tool_palette_pixel_size()+1);
+#else
+	box->ty=wbox.ty;
+#endif
 	box->by=wbox.by;
 }
 
@@ -245,7 +254,11 @@ void list_palette_item_box(list_palette_type *list,d3rect *box)
 	if (list->picker.on) box->lx-=list_palette_tree_sz;
 	box->rx=box->lx+wid;
 
+#ifndef D3_SETUP
 	box->ty=wbox.ty+(tool_palette_pixel_size()+1);
+#else
+	box->ty=wbox.ty;
+#endif
 	box->by=wbox.by;
 }
 
@@ -257,7 +270,11 @@ void list_palette_picker_box(list_palette_type *list,d3rect *box)
 
 	box->lx=wbox.rx-list_palette_tree_sz;
 	box->rx=wbox.rx;
+#ifndef D3_SETUP
 	box->ty=wbox.ty+(tool_palette_pixel_size()+1);
+#else
+	box->ty=wbox.ty;
+#endif
 	box->by=wbox.by;
 }
 
@@ -291,15 +308,14 @@ list_palette_item_type* list_palette_create_item(list_palette_type *list,int ctr
 	return(item);
 }
 
-void list_palette_add_header(list_palette_type *list,int piece_type,char *name)
+void list_palette_add_header(list_palette_type *list,int id,char *name)
 {
 	list_palette_item_type		*item;
 
 	item=list_palette_create_item(list,list_item_ctrl_header);
 
-	item->type=piece_type;
+	item->id=id;
 	item->idx=-1;
-	item->id=-1;
 	item->count=-1;
 
 	item->selected=FALSE;
@@ -307,15 +323,14 @@ void list_palette_add_header(list_palette_type *list,int piece_type,char *name)
 	strcpy(item->name,name);
 }
 
-void list_palette_add_header_count(list_palette_type *list,int piece_type,char *name,int count)
+void list_palette_add_header_count(list_palette_type *list,int id,char *name,int count)
 {
 	list_palette_item_type		*item;
 
 	item=list_palette_create_item(list,list_item_ctrl_header);
 
-	item->type=piece_type;
+	item->id=id;
 	item->idx=-1;
-	item->id=-1;
 	item->count=count;
 
 	item->selected=FALSE;
@@ -329,9 +344,8 @@ void list_palette_add_header_button(list_palette_type *list,int id,char *name,in
 
 	item=list_palette_create_item(list,list_item_ctrl_header);
 
-	item->type=-1;
-	item->idx=-1;
 	item->id=-1;
+	item->idx=-1;
 	item->button_id=id;
 	item->count=-1;
 	item->button_type=button_type;
@@ -341,15 +355,14 @@ void list_palette_add_header_button(list_palette_type *list,int id,char *name,in
 	strcpy(item->name,name);
 }
 
-void list_palette_add_item(list_palette_type *list,int piece_type,int piece_idx,char *name,bool selected,bool disabled)
+void list_palette_add_item(list_palette_type *list,int id,int idx,char *name,bool selected,bool disabled)
 {
 	list_palette_item_type		*item;
 
 	item=list_palette_create_item(list,list_item_ctrl_text);
 
-	item->type=piece_type;
-	item->idx=piece_idx;
-	item->id=-1;
+	item->id=id;
+	item->idx=idx;
 
 	item->selected=selected;
 	item->disabled=disabled;
@@ -357,15 +370,14 @@ void list_palette_add_item(list_palette_type *list,int piece_type,int piece_idx,
 	strcpy(item->name,name);
 }
 
-void list_palette_add_color(list_palette_type *list,int piece_type,int piece_idx,d3col *col_ptr,bool selected,bool disabled)
+void list_palette_add_color(list_palette_type *list,int id,int idx,d3col *col_ptr,bool selected,bool disabled)
 {
 	list_palette_item_type		*item;
 
 	item=list_palette_create_item(list,list_item_ctrl_color);
 
-	item->type=piece_type;
-	item->idx=piece_idx;
-	item->id=-1;
+	item->id=id;
+	item->idx=idx;
 
 	item->selected=selected;
 	item->disabled=disabled;
@@ -379,9 +391,8 @@ void list_palette_add_string_selectable(list_palette_type *list,int id,char *nam
 	
 	item=list_palette_create_item(list,list_item_ctrl_string);
 
-	item->type=-1;
-	item->idx=-1;
 	item->id=id;
+	item->idx=-1;
 
 	item->selected=selected;
 	item->disabled=disabled;
@@ -428,9 +439,8 @@ void list_palette_add_parameter(list_palette_type *list,int id,char *name,char *
 	
 	item=list_palette_create_item(list,list_item_ctrl_param);
 
-	item->type=-1;
-	item->idx=-1;
 	item->id=id;
+	item->idx=-1;
 
 	item->selected=FALSE;
 	item->disabled=disabled;
@@ -448,9 +458,8 @@ void list_palette_add_int(list_palette_type *list,int id,char *name,int *int_ptr
 
 	item=list_palette_create_item(list,list_item_ctrl_int);
 
-	item->type=-1;
-	item->idx=-1;
 	item->id=id;
+	item->idx=-1;
 
 	item->selected=FALSE;
 	item->disabled=disabled;
@@ -465,9 +474,8 @@ void list_palette_add_float(list_palette_type *list,int id,char *name,float *flo
 
 	item=list_palette_create_item(list,list_item_ctrl_float);
 
-	item->type=-1;
-	item->idx=-1;
 	item->id=id;
+	item->idx=-1;
 
 	item->selected=FALSE;
 	item->disabled=disabled;
@@ -482,9 +490,8 @@ void list_palette_add_checkbox(list_palette_type *list,int id,char *name,bool *b
 
 	item=list_palette_create_item(list,list_item_ctrl_checkbox);
 
-	item->type=-1;
-	item->idx=-1;
 	item->id=id;
+	item->idx=-1;
 
 	item->selected=FALSE;
 	item->disabled=disabled;
@@ -499,9 +506,8 @@ void list_palette_add_pick_color(list_palette_type *list,int id,char *name,d3col
 
 	item=list_palette_create_item(list,list_item_ctrl_pick_color);
 
-	item->type=-1;
-	item->idx=-1;
 	item->id=id;
+	item->idx=-1;
 
 	item->selected=FALSE;
 	item->disabled=disabled;
@@ -516,9 +522,8 @@ void list_palette_add_point(list_palette_type *list,int id,char *name,d3pnt *pnt
 
 	item=list_palette_create_item(list,list_item_ctrl_point);
 
-	item->type=-1;
-	item->idx=-1;
 	item->id=id;
+	item->idx=-1;
 
 	item->selected=FALSE;
 	item->disabled=disabled;
@@ -533,9 +538,8 @@ void list_palette_add_angle(list_palette_type *list,int id,char *name,d3ang *ang
 
 	item=list_palette_create_item(list,list_item_ctrl_angle);
 
-	item->type=-1;
-	item->idx=-1;
 	item->id=id;
+	item->idx=-1;
 
 	item->selected=FALSE;
 	item->disabled=disabled;
@@ -550,9 +554,8 @@ void list_palette_add_vector(list_palette_type *list,int id,char *name,d3vct *vc
 
 	item=list_palette_create_item(list,list_item_ctrl_vector);
 
-	item->type=-1;
-	item->idx=-1;
 	item->id=id;
+	item->idx=-1;
 
 	item->selected=FALSE;
 	item->disabled=disabled;
@@ -567,9 +570,8 @@ void list_palette_add_normal_vector(list_palette_type *list,int id,char *name,d3
 
 	item=list_palette_create_item(list,list_item_ctrl_normal_vector);
 
-	item->type=-1;
-	item->idx=-1;
 	item->id=id;
+	item->idx=-1;
 
 	item->selected=FALSE;
 	item->disabled=disabled;
@@ -584,9 +586,8 @@ void list_palette_add_uv(list_palette_type *list,int id,char *name,d3uv *uv_ptr,
 
 	item=list_palette_create_item(list,list_item_ctrl_uv);
 
-	item->type=-1;
-	item->idx=-1;
 	item->id=id;
+	item->idx=-1;
 
 	item->selected=FALSE;
 	item->disabled=disabled;
@@ -601,9 +602,8 @@ void list_palette_add_picker_list_int(list_palette_type *list,int id,char *name,
 
 	item=list_palette_create_item(list,list_item_ctrl_picker);
 
-	item->type=-1;
-	item->idx=-1;
 	item->id=id;
+	item->idx=-1;
 
 	item->selected=FALSE;
 	item->disabled=disabled;
@@ -635,9 +635,8 @@ void list_palette_add_picker_list_string(list_palette_type *list,int id,char *na
 
 	item=list_palette_create_item(list,list_item_ctrl_picker);
 
-	item->type=-1;
-	item->idx=-1;
 	item->id=id;
+	item->idx=-1;
 
 	item->selected=FALSE;
 	item->disabled=disabled;
@@ -669,9 +668,8 @@ void list_palette_add_picker_file(list_palette_type *list,int id,int button_type
 
 	item=list_palette_create_item(list,list_item_ctrl_picker);
 
-	item->type=-1;
-	item->idx=-1;
 	item->id=id;
+	item->idx=-1;
 
 	item->selected=FALSE;
 	item->disabled=disabled;
@@ -1769,7 +1767,7 @@ void list_palette_scroll_wheel(list_palette_type *list,d3pnt *pnt,int move)
 	}
 }
 
-void list_palette_pane_scroll_item_into_view(list_palette_pane_type *pane,d3rect *box,int item_type,int item_idx)
+void list_palette_pane_scroll_item_into_view(list_palette_pane_type *pane,d3rect *box,int item_id,int item_idx)
 {
 	int							n,y,scroll_max;
 	bool						hit;
@@ -1786,7 +1784,7 @@ void list_palette_pane_scroll_item_into_view(list_palette_pane_type *pane,d3rect
 
 		y+=list_item_font_high;
 
-		if ((item->type==item_type) && (item->idx==item_idx)) {
+		if ((item->id==item_id) && (item->idx==item_idx)) {
 			hit=TRUE;
 			break;
 		}
@@ -1806,12 +1804,12 @@ void list_palette_pane_scroll_item_into_view(list_palette_pane_type *pane,d3rect
 	if (pane->scroll_offset>scroll_max) pane->scroll_offset=scroll_max;
 }
 
-void list_palette_scroll_item_into_view(list_palette_type *list,int item_type,int item_idx)
+void list_palette_scroll_item_into_view(list_palette_type *list,int item_id,int item_idx)
 {
 	d3rect			box;
 
 	list_palette_item_box(list,&box);
-	list_palette_pane_scroll_item_into_view(&list->item_pane,&box,item_type,item_idx);
+	list_palette_pane_scroll_item_into_view(&list->item_pane,&box,item_id,item_idx);
 }
 
 /* =======================================================
@@ -1826,6 +1824,10 @@ bool list_palette_pane_click_item(list_palette_pane_type *pane,d3rect *box,int i
 	bool					out_box;
 	d3pnt					pt;
 	list_palette_item_type	*item;
+
+		// no clicked item
+
+	pane->click.item=NULL;
 
 		// get clicked item
 
@@ -1881,15 +1883,15 @@ bool list_palette_pane_click_item(list_palette_pane_type *pane,d3rect *box,int i
 
 		// pass back clicked item
 		
-	pane->item_type=item->type;
-	pane->item_idx=item->idx;
-
 	if (!pane->button_click) {
 		pane->click.id=item->id;
 	}
 	else {
 		pane->click.id=item->button_id;
 	}
+
+	pane->click.idx=item->idx;
+	pane->click.item=item;
 
 	return(TRUE);
 }
@@ -2086,7 +2088,7 @@ bool list_palette_click(list_palette_type *list,d3pnt *pnt,bool double_click)
 		if ((pnt->x>=box.lx) && (pnt->x<=box.rx)) {
 			if (!list_palette_pane_click(list,&list->picker_pane,&box,pnt)) return(FALSE);
 
-			list_palette_choose_picking_mode(list,list->item_pane.item_idx,double_click);
+			list_palette_choose_picking_mode(list,list->item_pane.click.idx,double_click);
 			return(TRUE);
 		}
 	}
@@ -2104,11 +2106,10 @@ bool list_palette_click(list_palette_type *list,d3pnt *pnt,bool double_click)
 
 		// any items clicked?
 
-	if (list->item_pane.item_idx==-1) return(FALSE);
+	item=list->item_pane.click.item;
+	if (item==NULL) return(FALSE);
 
 		// change the data
-
-	item=&list->item_pane.items[list->item_pane.item_idx];
 
 	switch (item->ctrl_type) {
 

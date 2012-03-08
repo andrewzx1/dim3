@@ -53,8 +53,9 @@ void property_palette_initialize(void)
 {
 	list_palette_list_initialize(&property_palette,"Item Properties");
 
-	property_palette.item_pane.item_type=0;
-	property_palette.item_pane.item_idx=-1;
+	property_palette.item_pane.click.id=0;
+	property_palette.item_pane.click.idx=-1;
+	property_palette.item_pane.click.item=NULL;
 }
 
 void property_palette_shutdown(void)
@@ -77,12 +78,25 @@ void property_palette_fill_level_1(void)
 {
 	int					sel_type,main_idx,sub_idx;
 
-		// fill in the properties for
-		// the currently selected item
-
 		// special check for non-selection property lists
 	
-	switch (state.cur_no_sel_piece_idx) {
+	switch (state.cur_no_sel_piece_type) {
+
+		case map_setting_piece:
+			property_palette_fill_map();
+			return;
+
+		case map_camera_piece:
+			property_palette_fill_camera();
+			return;
+
+		case map_light_media_piece:
+			property_palette_fill_light_media();
+			return;
+
+		case map_sky_weather_piece:
+			property_palette_fill_sky_weather();
+			return;
 
 		case group_piece:
 			property_palette_fill_group(state.cur_group_idx);
@@ -102,33 +116,7 @@ void property_palette_fill_level_1(void)
 	main_idx=-1;
 	
 	if (select_count()!=0)  select_get(0,&sel_type,&main_idx,&sub_idx);
-	
-		// no selection, map properties
-
-	if (main_idx==-1) {
-
-		switch (state.cur_no_sel_piece_idx) {
-			
-			case map_setting_piece:
-				property_palette_fill_map();
-				return;
-
-			case map_camera_piece:
-				property_palette_fill_camera();
-				return;
-
-			case map_light_media_piece:
-				property_palette_fill_light_media();
-				return;
-
-			case map_sky_weather_piece:
-				property_palette_fill_sky_weather();
-				return;
-
-		}
-
-		return;
-	}
+	if (main_idx==-1) return;
 
 		// selection properties
 
@@ -174,7 +162,7 @@ void property_palette_fill_level_2(void)
 {
 		// selection properties
 
-	switch (state.cur_no_sel_piece_idx) {
+	switch (state.cur_no_sel_piece_type) {
 
 		case movement_piece:
 			property_palette_fill_movement_move(state.cur_movement_idx,state.cur_movement_move_idx);
@@ -243,7 +231,16 @@ void property_palette_reset(void)
 {
 	int				sel_type,main_idx,sub_idx;
 
-	state.cur_no_sel_piece_idx=map_setting_piece;
+		// if no select, change nothing
+
+	if (select_count()==0) {
+		property_palette_scroll_into_view(map_setting_piece,0);
+		return;
+	}
+	
+		// clear out non-selection indexes
+
+	state.cur_no_sel_piece_type=map_setting_piece;
 
 	state.cur_group_idx=-1;
 	state.cur_movement_idx=-1;
@@ -251,18 +248,15 @@ void property_palette_reset(void)
 	state.cur_cinema_idx=-1;
 	state.cur_cinema_action_idx=-1;
 
-	if (select_count()==0) {
-		property_palette_scroll_into_view(map_setting_piece,0);
-		return;
-	}
-	
 	select_get(0,&sel_type,&main_idx,&sub_idx);
 	if ((sel_type==mesh_piece) || (sel_type==liquid_piece)) return;
+
+	state.cur_no_sel_piece_type=sel_type;
 
 	property_palette_scroll_into_view(sel_type,main_idx);
 }
 
-void property_palette_scroll_into_view(int item_type,int item_idx)
+void property_palette_scroll_into_view(int item_id,int item_idx)
 {
 		// can only scroll into view
 		// on map items page
@@ -270,7 +264,7 @@ void property_palette_scroll_into_view(int item_type,int item_idx)
 	if (!list_palette_get_level(&property_palette)!=0) return;
 
 	property_palette_fill_level_0();
-	list_palette_scroll_item_into_view(&property_palette,item_type,item_idx);
+	list_palette_scroll_item_into_view(&property_palette,item_id,item_idx);
 
 	main_wind_draw();
 }
@@ -298,7 +292,7 @@ bool property_palette_delete(void)
 
 		// anything to delete?
 
-	switch (state.cur_no_sel_piece_idx) {
+	switch (state.cur_no_sel_piece_type) {
 
 			// delete group
 			
@@ -389,7 +383,7 @@ void property_palette_click_level_1(bool double_click)
 		// special check for non-selection property lists
 		// and check state changes
 
-	switch (state.cur_no_sel_piece_idx) {
+	switch (state.cur_no_sel_piece_type) {
 
 		case group_piece:
 			property_palette_click_group(double_click);
@@ -414,7 +408,7 @@ void property_palette_click_level_1(bool double_click)
 
 	if (main_idx==-1) {
 
-		switch (state.cur_no_sel_piece_idx) {
+		switch (state.cur_no_sel_piece_type) {
 			
 			case map_setting_piece:
 				property_palette_click_map(double_click);
@@ -481,7 +475,7 @@ void property_palette_click_level_2(bool double_click)
 {
 		// selection properties
 
-	switch (state.cur_no_sel_piece_idx) {
+	switch (state.cur_no_sel_piece_type) {
 
 		case movement_piece:
 			property_palette_click_movement_move(state.cur_movement_idx,state.cur_movement_move_idx,double_click);

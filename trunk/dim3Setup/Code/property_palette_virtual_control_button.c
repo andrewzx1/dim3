@@ -89,7 +89,7 @@ void property_palette_fill_virtual_control_button(int virtual_control_button_idx
       
 ======================================================= */
 
-void property_palette_click_virtual_control_button(int virtual_control_button_idx,int id,bool double_click)
+void property_palette_click_virtual_control_button(int virtual_control_button_idx,bool double_click)
 {
 }
 

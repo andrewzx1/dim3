@@ -130,7 +130,7 @@ void property_palette_fill_chooser_piece(int chooser_idx,int chooser_piece_idx)
       
 ======================================================= */
 
-void property_palette_click_chooser_piece(int chooser_idx,int chooser_piece_idx,int id,bool double_click)
+void property_palette_click_chooser_piece(int chooser_idx,int chooser_piece_idx,bool double_click)
 {
 	iface_chooser_piece_type		*piece;
 
@@ -138,7 +138,7 @@ void property_palette_click_chooser_piece(int chooser_idx,int chooser_piece_idx,
 
 	piece=&iface.chooser_list.choosers[chooser_idx].pieces[chooser_piece_idx];
 
-	switch (id) {
+	switch (property_palette.item_pane.click.id) {
 
 			// settings
 

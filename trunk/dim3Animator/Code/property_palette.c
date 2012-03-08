@@ -53,8 +53,9 @@ void property_palette_initialize(void)
 {
 	list_palette_list_initialize(&property_palette,"No Properties");
 
-	property_palette.item_type=0;
-	property_palette.item_idx=-1;
+	property_palette.item_pane.click.id=0;
+	property_palette.item_pane.click.idx=-1;
+	property_palette.item_pane.click.item=NULL;
 }
 
 void property_palette_shutdown(void)
@@ -199,7 +200,7 @@ void property_palette_draw(void)
 
 void property_palette_reset(void)
 {
-	property_palette.scroll_offset=0;
+	property_palette.item_pane.scroll_offset=0;
 }
 
 void property_palette_scroll_into_view(int item_type,int item_idx)
@@ -232,33 +233,33 @@ bool property_palette_delete(void)
 
 		// anything to delete?
 
-	if ((property_palette.item_type==-1) || (property_palette.item_idx==-1)) return(FALSE);
+	if ((property_palette.item_pane.click.id==-1) || (property_palette.item_pane.click.idx==-1)) return(FALSE);
 
-	switch (property_palette.item_type) {
+	switch (property_palette.item_pane.click.id) {
 
 		case item_mesh:
 			if (os_dialog_confirm("Delete Mesh","Is it okay to delete this mesh?",FALSE)!=0) return(FALSE);
-			model_piece_delete_mesh(property_palette.item_idx);
+			model_piece_delete_mesh(property_palette.item_pane.click.idx);
 			return(TRUE);
 
 		case item_bone:
 			if (os_dialog_confirm("Delete Bone","Is it okay to delete this bone?",FALSE)!=0) return(FALSE);
-			model_piece_delete_bone(property_palette.item_idx);
+			model_piece_delete_bone(property_palette.item_pane.click.idx);
 			return(TRUE);
 
 		case item_pose:
 			if (os_dialog_confirm("Delete Pose","Is it okay to delete this pose?",FALSE)!=0) return(FALSE);
-			model_piece_delete_pose(property_palette.item_idx);
+			model_piece_delete_pose(property_palette.item_pane.click.idx);
 			return(TRUE);
 
 		case item_animate:
 			if (os_dialog_confirm("Delete Animation","Is it okay to delete this animation?",FALSE)!=0) return(FALSE);
-			model_piece_delete_animate(property_palette.item_idx);
+			model_piece_delete_animate(property_palette.item_pane.click.idx);
 			return(TRUE);
 
 		case item_hit_box:
 			if (os_dialog_confirm("Delete Hit Box","Is it okay to delete this hit box?",FALSE)!=0) return(FALSE);
-			model_piece_delete_hit_box(property_palette.item_idx);
+			model_piece_delete_hit_box(property_palette.item_pane.click.idx);
 			return(TRUE);
 
 	}
@@ -282,27 +283,27 @@ void property_palette_click_level_1(bool double_click)
 	switch (state.cur_item) {
 
 		case item_model:
-			property_palette_click_model(property_palette.item_id,double_click);
+			property_palette_click_model(double_click);
 			break;
 
 		case item_mesh:
-			property_palette_click_mesh(state.cur_mesh_idx,property_palette.item_id,double_click);
+			property_palette_click_mesh(state.cur_mesh_idx,double_click);
 			break;
 
 		case item_animate:
-			property_palette_click_animation(state.cur_animate_idx,property_palette.item_id,double_click);
+			property_palette_click_animation(state.cur_animate_idx,double_click);
 			break;
 
 		case item_pose:
-			property_palette_click_pose(state.cur_pose_idx,property_palette.item_id,double_click);
+			property_palette_click_pose(state.cur_pose_idx,double_click);
 			break;
 
 		case item_bone:
-			property_palette_click_bone(state.cur_bone_idx,state.cur_pose_idx,property_palette.item_id,double_click);
+			property_palette_click_bone(state.cur_bone_idx,state.cur_pose_idx,double_click);
 			break;
 
 		case item_hit_box:
-			property_palette_click_hit_box(state.cur_hit_box_idx,property_palette.item_id,double_click);
+			property_palette_click_hit_box(state.cur_hit_box_idx,double_click);
 			break;
 
 	}
@@ -313,11 +314,11 @@ void property_palette_click_level_2(bool double_click)
 	switch (state.cur_item) {
 
 		case item_animate:
-			property_palette_click_animate_pose_move(state.cur_animate_idx,state.cur_animate_pose_move_idx,property_palette.item_id,double_click);
+			property_palette_click_animate_pose_move(state.cur_animate_idx,state.cur_animate_pose_move_idx,double_click);
 			break;
 
 		case item_pose:
-			property_palette_click_pose_bone_move(state.cur_pose_idx,state.cur_pose_bone_move_idx,property_palette.item_id,double_click);
+			property_palette_click_pose_bone_move(state.cur_pose_idx,state.cur_pose_bone_move_idx,double_click);
 			break;
 
 	}
@@ -331,12 +332,12 @@ void property_palette_click_level_3(bool double_click)
 			if ((state.cur_animate_idx==-1) || (state.cur_animate_pose_move_idx==-1)) break;
 
 			if (state.cur_animate_pose_move_particle_idx!=-1) {
-				property_palette_click_animate_pose_move_particle(state.cur_animate_idx,state.cur_animate_pose_move_idx,state.cur_animate_pose_move_particle_idx,property_palette.item_id,double_click);
+				property_palette_click_animate_pose_move_particle(state.cur_animate_idx,state.cur_animate_pose_move_idx,state.cur_animate_pose_move_particle_idx,double_click);
 				break;
 			}
 
 			if (state.cur_animate_pose_move_ring_idx!=-1) {
-				property_palette_click_animate_pose_move_ring(state.cur_animate_idx,state.cur_animate_pose_move_idx,state.cur_animate_pose_move_ring_idx,property_palette.item_id,double_click);
+				property_palette_click_animate_pose_move_ring(state.cur_animate_idx,state.cur_animate_pose_move_idx,state.cur_animate_pose_move_ring_idx,double_click);
 				break;
 			}
 
@@ -369,7 +370,7 @@ void property_palette_click(d3pnt *pnt,bool double_click)
 		// if texture window is up, texture properties
 
 	if (state.texture_edit_idx!=-1) {
-		property_palette_click_texture(state.texture_edit_idx,property_palette.item_id,double_click);
+		property_palette_click_texture(state.texture_edit_idx,property_palette.item_pane.click.id,double_click);
 		main_wind_draw();
 		return;
 	}
@@ -377,7 +378,7 @@ void property_palette_click(d3pnt *pnt,bool double_click)
 		// if preference window is up, preference properties
 
 	if (state.in_preference) {
-		property_palette_click_animator_preference(property_palette.item_id,double_click);
+		property_palette_click_animator_preference(property_palette.item_pane.click.id,double_click);
 		main_wind_draw();
 		return;
 	}

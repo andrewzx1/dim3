@@ -136,24 +136,24 @@ extern void property_palette_fill_hit_box(int hit_box_idx);
 extern void property_palette_click_texture(int texture_idx,int id,bool double_click);
 extern void property_palette_click_animator_preference(int id,bool double_click);
 extern void property_palette_click_main(bool double_click);
-extern void property_palette_click_model(int id,bool double_click);
-extern void property_palette_click_mesh(int mesh_idx,int id,bool double_click);
-extern void property_palette_click_animation(int animation_idx,int id,bool double_click);
-extern void property_palette_click_pose(int pose_idx,int id,bool double_click);
-extern void property_palette_click_bone(int bone_idx,int pose_idx,int id,bool double_click);
-extern void property_palette_click_hit_box(int hit_box_idx,int id,bool double_click);
+extern void property_palette_click_model(bool double_click);
+extern void property_palette_click_mesh(int mesh_idx,bool double_click);
+extern void property_palette_click_animation(int animation_idx,bool double_click);
+extern void property_palette_click_pose(int pose_idx,bool double_click);
+extern void property_palette_click_bone(int bone_idx,int pose_idx,bool double_click);
+extern void property_palette_click_hit_box(int hit_box_idx,bool double_click);
 
 extern void property_palette_fill_animate_pose_move(int animate_idx,int pose_move_idx);
 extern void property_palette_fill_pose_bone_move(int pose_idx,int bone_move_idx);
 
-extern void property_palette_click_animate_pose_move(int animate_idx,int pose_move_idx,int id,bool double_click);
-extern void property_palette_click_pose_bone_move(int pose_idx,int bone_move_idx,int id,bool double_click);
+extern void property_palette_click_animate_pose_move(int animate_idx,int pose_move_idx,bool double_click);
+extern void property_palette_click_pose_bone_move(int pose_idx,int bone_move_idx,bool double_click);
 
 extern void property_palette_fill_animate_pose_move_particle(int animate_idx,int pose_move_idx,int particle_idx);
 extern void property_palette_fill_animate_pose_move_ring(int animate_idx,int pose_move_idx,int ring_idx);
 
-extern void property_palette_click_animate_pose_move_particle(int animate_idx,int pose_move_idx,int particle_idx,int id,bool double_click);
-extern void property_palette_click_animate_pose_move_ring(int animate_idx,int pose_move_idx,int ring_idx,int id,bool double_click);
+extern void property_palette_click_animate_pose_move_particle(int animate_idx,int pose_move_idx,int particle_idx,bool double_click);
+extern void property_palette_click_animate_pose_move_ring(int animate_idx,int pose_move_idx,int ring_idx,bool double_click);
 
 //
 // pieces

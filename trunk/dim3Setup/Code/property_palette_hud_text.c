@@ -109,7 +109,7 @@ void property_palette_fill_hud_text(int hud_text_idx)
       
 ======================================================= */
 
-void property_palette_click_hud_text(int hud_text_idx,int id,bool double_click)
+void property_palette_click_hud_text(int hud_text_idx,bool double_click)
 {
 	iface_text_type				*text;
 
@@ -117,7 +117,7 @@ void property_palette_click_hud_text(int hud_text_idx,int id,bool double_click)
 
 	text=&iface.text_list.texts[hud_text_idx];
 
-	switch (id) {
+	switch (property_palette.item_pane.click.id) {
 
 			// settings
 

@@ -100,7 +100,7 @@ void property_palette_fill_halo(int halo_idx)
       
 ======================================================= */
 
-void property_palette_click_halo(int halo_idx,int id,bool double_click)
+void property_palette_click_halo(int halo_idx,bool double_click)
 {
 	iface_halo_type			*halo;
 
@@ -108,7 +108,7 @@ void property_palette_click_halo(int halo_idx,int id,bool double_click)
 
 	halo=&iface.halo_list.halos[halo_idx];
 
-	switch (id) {
+	switch (property_palette.item_pane.click.id) {
 
 			// settings
 

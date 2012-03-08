@@ -82,7 +82,7 @@ void property_palette_fill_animate_pose_move_particle(int animate_idx,int pose_m
       
 ======================================================= */
 
-void property_palette_click_animate_pose_move_particle(int animate_idx,int pose_move_idx,int particle_idx,int id,bool double_click)
+void property_palette_click_animate_pose_move_particle(int animate_idx,int pose_move_idx,int particle_idx,bool double_click)
 {
 	model_animate_type		*animate;
 	model_pose_move_type	*pose_move;
@@ -96,7 +96,7 @@ void property_palette_click_animate_pose_move_particle(int animate_idx,int pose_
 
 	if (!double_click) return;
 
-	switch (id) {
+	switch (property_palette.item_pane.click.id) {
 
 		case kAnimationPoseMovePropertyParticleBone:
 			property_palette_pick_bone(&particle->bone_idx,-1);

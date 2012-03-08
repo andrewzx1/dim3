@@ -80,12 +80,14 @@ void property_palette_fill_menu(int menu_idx)
       
 ======================================================= */
 
-void property_palette_click_menu(int menu_idx,int id,bool double_click)
+void property_palette_click_menu(int menu_idx,bool double_click)
 {
-	int					idx,sz;
+	int					id,idx,sz;
 	iface_menu_type		*menu;
 
 	menu=&iface.menu_list.menus[menu_idx];
+
+	id=property_palette.item_pane.click.id;
 
 		// select item
 

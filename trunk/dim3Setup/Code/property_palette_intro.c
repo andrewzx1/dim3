@@ -174,9 +174,11 @@ void property_palette_fill_intro(void)
       
 ======================================================= */
 
-void property_palette_click_intro(int id,bool double_click)
+void property_palette_click_intro(bool double_click)
 {
-	int					idx,sz;
+	int					id,idx,sz;
+
+	id=property_palette.item_pane.click.id;
 
 		// select button
 

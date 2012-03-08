@@ -215,7 +215,7 @@ void property_palette_fill_intro_button(int intro_button_idx)
       
 ======================================================= */
 
-void property_palette_click_intro_button(int intro_button_idx,int id,bool double_click)
+void property_palette_click_intro_button(int intro_button_idx,bool double_click)
 {
 }
 

@@ -117,15 +117,15 @@ void property_palette_fill_hud_bar(int hud_bar_idx)
       
 ======================================================= */
 
-void property_palette_click_hud_bar(int hud_bar_idx,int id,bool double_click)
+void property_palette_click_hud_bar(int hud_bar_idx,bool double_click)
 {
-	iface_bar_type				*bar;
+	iface_bar_type			*bar;
 
 	if (!double_click) return;
 
 	bar=&iface.bar_list.bars[hud_bar_idx];
 
-	switch (id) {
+	switch (property_palette.item_pane.click.id) {
 
 			// settings
 

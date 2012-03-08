@@ -86,9 +86,11 @@ void property_palette_fill_particles(void)
       
 ======================================================= */
 
-void property_palette_click_particles(int id,bool double_click)
+void property_palette_click_particles(bool double_click)
 {
-	int					idx,sz;
+	int					id,idx,sz;
+
+	id=property_palette.item_pane.click.id;
 
 		// particle edit
 		

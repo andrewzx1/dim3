@@ -146,7 +146,7 @@ void property_palette_fill_particle(int particle_idx)
       
 ======================================================= */
 
-void property_palette_click_particle(int particle_idx,int id,bool double_click)
+void property_palette_click_particle(int particle_idx,bool double_click)
 {
 	iface_particle_type			*particle;
 
@@ -154,7 +154,7 @@ void property_palette_click_particle(int particle_idx,int id,bool double_click)
 
 	particle=&iface.particle_list.particles[particle_idx];
 
-	switch (id) {
+	switch (property_palette.item_pane.click.id) {
 
 			// settings
 

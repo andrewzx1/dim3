@@ -81,12 +81,14 @@ void property_palette_fill_particle_group(int particle_idx)
       
 ======================================================= */
 
-void property_palette_click_particle_group(int particle_idx,int id,bool double_click)
+void property_palette_click_particle_group(int particle_idx,bool double_click)
 {
-	int						idx,sz;
+	int						id,idx,sz;
 	iface_particle_type		*particle;
 
 	particle=&iface.particle_list.particles[particle_idx];
+
+	id=property_palette.item_pane.click.id;
 
 		// particle group edit
 		
