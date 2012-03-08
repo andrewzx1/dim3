@@ -73,7 +73,7 @@ void property_palette_fill_shader(int shader_idx)
       
 ======================================================= */
 
-void property_palette_click_shader(int shader_idx,int id,bool double_click)
+void property_palette_click_shader(int shader_idx,bool double_click)
 {
 	iface_shader_type			*shader;
 
@@ -81,7 +81,7 @@ void property_palette_click_shader(int shader_idx,int id,bool double_click)
 
 	shader=&iface.shader_list.shaders[shader_idx];
 
-	switch (id) {
+	switch (property_palette.item_pane.click.id) {
 
 			// settings
 

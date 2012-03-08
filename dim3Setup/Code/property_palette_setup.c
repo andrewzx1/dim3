@@ -87,7 +87,7 @@ void property_palette_fill_setup(void)
       
 ======================================================= */
 
-void property_palette_click_setup(int id,bool double_click)
+void property_palette_click_setup(bool double_click)
 {
 }
 

@@ -82,7 +82,7 @@ void property_palette_fill_pose_bone_move(int pose_idx,int bone_move_idx)
       
 ======================================================= */
 
-void property_palette_click_pose_bone_move(int pose_idx,int bone_move_idx,int id,bool double_click)
+void property_palette_click_pose_bone_move(int pose_idx,int bone_move_idx,bool double_click)
 {
 	model_bone_move_type	*bone_move;
 
@@ -91,7 +91,7 @@ void property_palette_click_pose_bone_move(int pose_idx,int bone_move_idx,int id
 
 	if (!double_click) return;
 
-	switch (id) {
+	switch (property_palette.item_pane.click.id) {
 
 		case kPoseBoneMovePropertyConstraintBone:
 			property_palette_pick_bone(&bone_move->constraint.bone_idx,-1);

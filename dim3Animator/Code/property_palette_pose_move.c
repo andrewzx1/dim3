@@ -175,8 +175,9 @@ void property_palette_fill_animate_pose_move(int animate_idx,int pose_move_idx)
       
 ======================================================= */
 
-void property_palette_click_animate_pose_move(int animate_idx,int pose_move_idx,int id,bool double_click)
+void property_palette_click_animate_pose_move(int animate_idx,int pose_move_idx,bool double_click)
 {
+	int						id;
 	model_animate_type		*animate;
 	model_pose_move_type	*pose_move;
 
@@ -184,6 +185,8 @@ void property_palette_click_animate_pose_move(int animate_idx,int pose_move_idx,
 
 	animate=&model.animates[animate_idx];
 	pose_move=&animate->pose_moves[pose_move_idx];
+
+	id=property_palette.item_pane.click.id;
 
 		// particles
 		

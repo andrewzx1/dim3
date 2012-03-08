@@ -156,7 +156,7 @@ extern void property_palette_initialize(void);
 extern void property_palette_shutdown(void);
 extern void property_palette_draw(void);
 extern void property_palette_reset(void);
-extern void property_palette_scroll_into_view(int item_type,int item_idx);
+extern void property_palette_scroll_into_view(int item_id,int item_idx);
 extern void property_palette_scroll_wheel(d3pnt *pnt,int move);
 extern bool property_palette_delete(void);
 extern void property_palette_click(d3pnt *pnt,bool double_click);

@@ -77,11 +77,14 @@ void property_palette_fill_pose(int pose_idx)
       
 ======================================================= */
 
-void property_palette_click_pose(int pose_idx,int id,bool double_click)
+void property_palette_click_pose(int pose_idx,bool double_click)
 {
+	int						id;
 	model_pose_type			*pose;
 
 	pose=&model.poses[pose_idx];
+
+	id=property_palette.item_pane.click.id;
 
 		// bone moves
 

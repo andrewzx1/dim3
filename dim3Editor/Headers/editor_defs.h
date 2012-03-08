@@ -467,7 +467,7 @@ typedef struct		{
 						int						vertex_mode,drag_mode,grid_mode,node_mode,
 												handle_mode,view_select_idx,drag_handle_idx,
 												texture_edit_idx,
-												cur_no_sel_piece_idx,cur_group_idx,
+												cur_no_sel_piece_type,cur_group_idx,
 												cur_cinema_idx,cur_cinema_action_idx,
 												cur_movement_idx,cur_movement_move_idx;
 						bool					map_opened,

@@ -78,8 +78,12 @@ void property_palette_fill_virtual_control(void)
       
 ======================================================= */
 
-void property_palette_click_virtual_control(int id,bool double_click)
+void property_palette_click_virtual_control(bool double_click)
 {
+	int				id;
+
+	id=property_palette.item_pane.click.id;
+
 		// select sticks
 
 	if ((id>=kVirutalControlStick) && (id<(kVirutalControlStick+max_virtual_stick))) {

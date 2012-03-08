@@ -67,7 +67,7 @@ void property_palette_fill_multiplayer_option(int multiplayer_option_idx)
       
 ======================================================= */
 
-void property_palette_click_multiplayer_option(int multiplayer_option_idx,int id,bool double_click)
+void property_palette_click_multiplayer_option(int multiplayer_option_idx,bool double_click)
 {
 	iface_net_option_type		*option;
 
@@ -75,7 +75,7 @@ void property_palette_click_multiplayer_option(int multiplayer_option_idx,int id
 
 	if (!double_click) return;
 
-	switch (id) {
+	switch (property_palette.item_pane.click.id) {
 			
 			// settings
 

@@ -140,12 +140,14 @@ void property_palette_fill_chooser(int chooser_idx)
       
 ======================================================= */
 
-void property_palette_click_chooser(int chooser_idx,int id,bool double_click)
+void property_palette_click_chooser(int chooser_idx,bool double_click)
 {
-	int						idx,sz;
+	int						id,idx,sz;
 	iface_chooser_type		*chooser;
 
 	chooser=&iface.chooser_list.choosers[chooser_idx];
+
+	id=property_palette.item_pane.click.id;
 
 		// select piece
 

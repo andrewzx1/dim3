@@ -71,9 +71,11 @@ void property_palette_fill_crosshairs(void)
       
 ======================================================= */
 
-void property_palette_click_crosshairs(int id,bool double_click)
+void property_palette_click_crosshairs(bool double_click)
 {
-	int				idx,sz;
+	int				id,idx,sz;
+
+	id=property_palette.item_pane.click.id;
 
 		// crosshair edit
 		

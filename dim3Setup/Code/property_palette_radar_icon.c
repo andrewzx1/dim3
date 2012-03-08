@@ -76,7 +76,7 @@ void property_palette_fill_radar_icon(int radar_icon_idx)
       
 ======================================================= */
 
-void property_palette_click_radar_icon(int radar_icon_idx,int id,bool double_click)
+void property_palette_click_radar_icon(int radar_icon_idx,bool double_click)
 {
 	iface_radar_icon_type		*icon;
 
@@ -84,7 +84,7 @@ void property_palette_click_radar_icon(int radar_icon_idx,int id,bool double_cli
 
 	icon=&iface.radar.icons[radar_icon_idx];
 
-	switch (id) {
+	switch (property_palette.item_pane.click.id) {
 			
 			// settings
 

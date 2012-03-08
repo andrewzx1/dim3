@@ -48,8 +48,6 @@ extern editor_state_type		state;
 extern editor_setup_type		setup;
 extern file_path_setup_type		file_path_setup;
 
-extern list_palette_type		property_palette;
-
 list_palette_type				file_palette;
 
 /* =======================================================
@@ -62,8 +60,9 @@ void file_palette_initialize(void)
 {
 	list_palette_list_initialize(&file_palette,"Maps");
 
-	file_palette.item_pane.item_type=0;
-	file_palette.item_pane.item_idx=-1;
+	file_palette.item_pane.click.id=0;
+	file_palette.item_pane.click.idx=-1;
+	file_palette.item_pane.click.item=NULL;
 }
 
 void file_palette_shutdown(void)
@@ -358,7 +357,6 @@ bool file_palette_click(d3pnt *pnt,bool double_click)
 		// open the property window for double-click
 		
 	if (double_click) {
-		property_palette_reset();
 		list_palette_set_level(&file_palette,1);
 	}
 

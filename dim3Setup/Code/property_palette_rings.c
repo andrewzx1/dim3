@@ -71,9 +71,11 @@ void property_palette_fill_rings(void)
       
 ======================================================= */
 
-void property_palette_click_rings(int id,bool double_click)
+void property_palette_click_rings(bool double_click)
 {
-	int					idx,sz;
+	int					id,idx,sz;
+
+	id=property_palette.item_pane.click.id;
 
 		// ring edit
 		

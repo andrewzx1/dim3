@@ -67,7 +67,7 @@ void property_palette_fill_action(int action_idx)
       
 ======================================================= */
 
-void property_palette_click_action(int action_idx,int id,bool double_click)
+void property_palette_click_action(int action_idx,bool double_click)
 {
 	iface_action_display_type		*action;
 
@@ -75,7 +75,7 @@ void property_palette_click_action(int action_idx,int id,bool double_click)
 
 	action=&iface.action_display_list.action_displays[action_idx];
 
-	switch (id) {
+	switch (property_palette.item_pane.click.id) {
 
 		case kActionSettingsName:
 			dialog_property_string_run(list_string_value_string,(void*)action->display_name,name_str_len,0,0);

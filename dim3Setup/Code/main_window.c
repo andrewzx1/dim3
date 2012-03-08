@@ -133,7 +133,7 @@ void main_wind_click(d3pnt *pnt,bool double_click)
 	
 		// item, property and alt property palettes
 		
-	list_palette_box(&property_palette,&tbox);
+	list_palette_total_box(&property_palette,&tbox);
 
 	if ((pnt->x>=tbox.lx) && (pnt->x<=tbox.rx) && (pnt->y>=tbox.ty) && (pnt->y<tbox.by)) {
 		property_palette_click(pnt,double_click);
@@ -153,7 +153,7 @@ void main_wind_scroll_wheel(d3pnt *pnt,int delta)
 
 		// scroll wheel in item, property, or alt property palette
 
-	list_palette_box(&property_palette,&tbox);
+	list_palette_total_box(&property_palette,&tbox);
 
 	if ((pnt->x>=tbox.lx) && (pnt->x<=tbox.rx) && (pnt->y>=tbox.ty) && (pnt->y<tbox.by)) {
 		property_palette_scroll_wheel(pnt,delta);

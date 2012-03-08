@@ -97,7 +97,7 @@ void property_palette_fill_multiplayer_game(int multiplayer_game_idx)
       
 ======================================================= */
 
-void property_palette_click_multiplayer_game(int multiplayer_game_idx,int id,bool double_click)
+void property_palette_click_multiplayer_game(int multiplayer_game_idx,bool double_click)
 {
 	iface_net_game_type		*game;
 
@@ -105,7 +105,7 @@ void property_palette_click_multiplayer_game(int multiplayer_game_idx,int id,boo
 
 	if (!double_click) return;
 
-	switch (id) {
+	switch (property_palette.item_pane.click.id) {
 			
 			// settings
 

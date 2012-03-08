@@ -78,7 +78,7 @@ void property_palette_fill_multiplayer_character(int multiplayer_character_idx)
       
 ======================================================= */
 
-void property_palette_click_multiplayer_character(int multiplayer_character_idx,int id,bool double_click)
+void property_palette_click_multiplayer_character(int multiplayer_character_idx,bool double_click)
 {
 	iface_character_item_type		*character;
 
@@ -86,7 +86,7 @@ void property_palette_click_multiplayer_character(int multiplayer_character_idx,
 
 	character=&iface.character.characters[multiplayer_character_idx];
 
-	switch (id) {
+	switch (property_palette.item_pane.click.id) {
 
 			// settings
 

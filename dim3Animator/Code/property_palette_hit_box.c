@@ -71,7 +71,7 @@ void property_palette_fill_hit_box(int hit_box_idx)
       
 ======================================================= */
 
-void property_palette_click_hit_box(int hit_box_idx,int id,bool double_click)
+void property_palette_click_hit_box(int hit_box_idx,bool double_click)
 {
 	model_hit_box_type			*hit_box;
 	
@@ -79,7 +79,7 @@ void property_palette_click_hit_box(int hit_box_idx,int id,bool double_click)
 
 	hit_box=&model.hit_boxes[hit_box_idx];
 
-	switch (id) {
+	switch (property_palette.item_pane.click.id) {
 
 		case kHitBoxPropertyName:
 			dialog_property_string_run(list_string_value_string,(void*)hit_box->name,name_str_len,0,0);

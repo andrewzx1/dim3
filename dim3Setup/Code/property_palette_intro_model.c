@@ -85,7 +85,7 @@ void property_palette_fill_intro_model(int intro_model_idx)
       
 ======================================================= */
 
-void property_palette_click_intro_model(int intro_model_idx,int id,bool double_click)
+void property_palette_click_intro_model(int intro_model_idx,bool double_click)
 {
 	iface_intro_model_type				*model;
 
@@ -93,7 +93,7 @@ void property_palette_click_intro_model(int intro_model_idx,int id,bool double_c
 
 	model=&iface.intro.model_list.models[intro_model_idx];
 
-	switch (id) {
+	switch (property_palette.item_pane.click.id) {
 
 			// settings
 

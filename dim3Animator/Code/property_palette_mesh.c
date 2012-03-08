@@ -108,7 +108,7 @@ void property_palette_fill_mesh(int mesh_idx)
       
 ======================================================= */
 
-void property_palette_click_mesh(int mesh_idx,int id,bool double_click)
+void property_palette_click_mesh(int mesh_idx,bool double_click)
 {
 	int						n;
 	d3pnt					move_pnt;
@@ -122,7 +122,7 @@ void property_palette_click_mesh(int mesh_idx,int id,bool double_click)
 
 		// regular clicks
 
-	switch (id) {
+	switch (property_palette.item_pane.click.id) {
 
 		case kMeshPropertyName:
 			dialog_property_string_run(list_string_value_string,(void*)mesh->name,name_str_len,0,0);

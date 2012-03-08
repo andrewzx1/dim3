@@ -489,7 +489,7 @@ void piece_create_cinema(void)
 		return;
 	}
 
-	state.cur_no_sel_piece_idx=cinema_piece;
+	state.cur_no_sel_piece_type=cinema_piece;
 	state.cur_group_idx=-1;
 	state.cur_movement_idx=-1;
 	state.cur_movement_move_idx=-1;
@@ -513,7 +513,7 @@ void piece_create_group(void)
 		return;
 	}
 
-	state.cur_no_sel_piece_idx=group_piece;
+	state.cur_no_sel_piece_type=group_piece;
 	state.cur_group_idx=group_idx;
 	state.cur_movement_idx=-1;
 	state.cur_movement_move_idx=-1;
@@ -537,7 +537,7 @@ void piece_create_movement(void)
 		return;
 	}
 
-	state.cur_no_sel_piece_idx=movement_piece;
+	state.cur_no_sel_piece_type=movement_piece;
 	state.cur_group_idx=-1;
 	state.cur_movement_idx=movement_idx;
 	state.cur_movement_move_idx=-1;

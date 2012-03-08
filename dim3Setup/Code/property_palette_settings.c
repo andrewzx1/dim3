@@ -208,9 +208,13 @@ void property_palette_fill_settings(void)
       
 ======================================================= */
 
-void property_palette_click_settings(int id,bool double_click)
+void property_palette_click_settings(bool double_click)
 {
+	int				id;
+
 	if (!double_click) return;
+
+	id=property_palette.item_pane.click.id;
 
 		// fonts
 

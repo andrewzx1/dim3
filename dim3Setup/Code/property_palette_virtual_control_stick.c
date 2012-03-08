@@ -89,7 +89,7 @@ void property_palette_fill_virtual_control_stick(int virtual_control_stick_idx)
       
 ======================================================= */
 
-void property_palette_click_virtual_control_stick(int virtual_control_stick_idx,int id,bool double_click)
+void property_palette_click_virtual_control_stick(int virtual_control_stick_idx,bool double_click)
 {
 }
 

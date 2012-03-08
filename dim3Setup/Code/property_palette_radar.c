@@ -100,9 +100,11 @@ void property_palette_fill_radar(void)
       
 ======================================================= */
 
-void property_palette_click_radar(int id,bool double_click)
+void property_palette_click_radar(bool double_click)
 {
-	int					idx,sz;
+	int					id,idx,sz;
+
+	id=property_palette.item_pane.click.id;
 
 		// select icon
 

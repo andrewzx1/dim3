@@ -129,9 +129,11 @@ void property_palette_fill_multiplayer(void)
       
 ======================================================= */
 
-void property_palette_click_multiplayer(int id,bool double_click)
+void property_palette_click_multiplayer(bool double_click)
 {
-	int					n,idx,sz;
+	int					n,id,idx,sz;
+
+	id=property_palette.item_pane.click.id;
 
 		// selects
 

@@ -50,6 +50,8 @@ extern list_palette_type		property_palette;
 
 void property_palette_fill_main(void)
 {
+	list_palette_set_title(&property_palette,"Project",NULL,NULL,NULL,NULL,NULL);
+
 	list_palette_add_header(&property_palette,item_interface,"Project");
 
 	list_palette_add_item(&property_palette,item_interface_settings,0,"Settings",(state.cur_item==item_interface_settings),FALSE);
@@ -82,7 +84,7 @@ void property_palette_click_main(bool double_click)
 {
 		// select item
 
-	state.cur_item=property_palette.item_type;
+	state.cur_item=property_palette.item_pane.click.id;
 
 		// if double click, edit
 

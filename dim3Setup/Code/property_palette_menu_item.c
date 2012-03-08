@@ -80,7 +80,7 @@ void property_palette_fill_menu_item(int menu_idx,int menu_item_idx)
       
 ======================================================= */
 
-void property_palette_click_menu_item(int menu_idx,int menu_item_idx,int id,bool double_click)
+void property_palette_click_menu_item(int menu_idx,int menu_item_idx,bool double_click)
 {
 	iface_menu_item_type		*item;
 
@@ -88,7 +88,7 @@ void property_palette_click_menu_item(int menu_idx,int menu_item_idx,int id,bool
 
 	item=&iface.menu_list.menus[menu_idx].items[menu_item_idx];
 
-	switch (id) {
+	switch (property_palette.item_pane.click.id) {
 			
 			// settings
 
