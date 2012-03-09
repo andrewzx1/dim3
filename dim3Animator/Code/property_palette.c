@@ -51,7 +51,7 @@ list_palette_type				property_palette;
 
 void property_palette_initialize(void)
 {
-	list_palette_list_initialize(&property_palette,"No Properties");
+	list_palette_list_initialize(&property_palette,"No Properties",FALSE,FALSE,FALSE);
 
 	property_palette.item_pane.click.id=0;
 	property_palette.item_pane.click.idx=-1;
