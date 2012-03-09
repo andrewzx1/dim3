@@ -189,7 +189,7 @@ void win32_main_wind_open(void)
 
 	cbox.left=0;
 	cbox.top=0;
-	cbox.right=list_palette_tree_sz;
+	cbox.right=list_palette_tree_sz*2;
 	cbox.bottom=(wbox.bottom-wbox.top)-150;
 	
 	wstyle=WS_OVERLAPPEDWINDOW|WS_CLIPSIBLINGS|WS_CLIPCHILDREN|WS_MAXIMIZE;

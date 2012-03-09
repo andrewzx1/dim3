@@ -51,7 +51,7 @@ list_palette_type				property_palette;
 
 void property_palette_initialize(void)
 {
-	list_palette_list_initialize(&property_palette,"Item Properties");
+	list_palette_list_initialize(&property_palette,"Item Properties",FALSE,FALSE,FALSE);
 
 	property_palette.item_pane.click.id=0;
 	property_palette.item_pane.click.idx=-1;
@@ -240,20 +240,18 @@ void property_palette_reset(void)
 	
 		// clear out non-selection indexes
 
-	state.cur_no_sel_piece_type=map_setting_piece;
-
 	state.cur_group_idx=-1;
 	state.cur_movement_idx=-1;
 	state.cur_movement_move_idx=-1;
 	state.cur_cinema_idx=-1;
 	state.cur_cinema_action_idx=-1;
 
-	select_get(0,&sel_type,&main_idx,&sub_idx);
-	if ((sel_type==mesh_piece) || (sel_type==liquid_piece)) return;
+		// set the type
 
+	select_get(0,&sel_type,&main_idx,&sub_idx);
 	state.cur_no_sel_piece_type=sel_type;
 
-	property_palette_scroll_into_view(sel_type,main_idx);
+	if ((sel_type!=mesh_piece) && (sel_type!=liquid_piece)) property_palette_scroll_into_view(sel_type,main_idx);
 }
 
 void property_palette_scroll_into_view(int item_id,int item_idx)

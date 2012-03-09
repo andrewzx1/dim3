@@ -129,15 +129,13 @@ typedef struct		{
 					} list_palette_item_type;
 
 typedef struct		{
-						int									count,item_sz,name_offset;
 						int									*picker_idx_ptr;
-						bool								on,include_none,file_list;
-						char								title[128];
-						char								*ptr,*picker_name_ptr;
+						bool								on,file_list,catch_last_click;
+						char								*picker_name_ptr;
 					} list_palette_picker_type;
 
 typedef struct		{
-						int									id,idx;
+						int									id,idx,item_idx;
 						list_palette_item_type				*item;
 					} list_palette_click_type;
 
@@ -153,7 +151,12 @@ typedef struct		{
 					} list_palette_pane_type;
 
 typedef struct		{
+						bool								left,never_hide_picker,never_open;
+					} list_palette_flag_type;
+
+typedef struct		{
 						bool								open;
+						list_palette_flag_type				flag;
 						list_palette_pane_type				item_pane,picker_pane;
 						list_palette_picker_type			picker;
 					} list_palette_type;
@@ -206,7 +209,7 @@ extern void progress_next_title(char *title);
 
 extern void list_palette_initialize(char *app_name);
 extern void list_palette_shutdown(void);
-extern void list_palette_list_initialize(list_palette_type *list,char *title);
+extern void list_palette_list_initialize(list_palette_type *list,char *title,bool left,bool never_hide_picker,bool never_open);
 extern void list_palette_list_shutdown(list_palette_type *list);
 extern int list_palette_width(list_palette_type *list);
 extern void list_palette_total_box(list_palette_type *list,d3rect *box);
