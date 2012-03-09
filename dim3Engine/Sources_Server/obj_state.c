@@ -600,9 +600,45 @@ void object_melee_hit(obj_type *obj,obj_type *melee_obj,weapon_type *melee_weap,
 
 /* =======================================================
 
-      Health Recover and Heal Object
+      Health Utilities
       
 ======================================================= */
+
+void object_health_add(obj_type *obj,int value)
+{
+	obj_health		*health;
+	
+    health=&obj->status.health;
+	
+    health->value+=value;
+    if (health->value>health->max_value) health->value=health->max_value;
+}
+
+void object_health_remove(obj_type *obj,int value)
+{
+	obj_health		*health,*armor;
+	
+    health=&obj->status.health;
+	armor=&obj->status.armor;
+	
+	if (armor->value>0) {
+		armor->value-=value;
+		value=0;
+		
+		if (armor->value<0) {
+			value=-obj->status.armor.value;
+			armor->value=0;
+		}
+	}
+	
+	if (value==0) return;
+	
+    health->value-=value;
+    if (health->value<0) {
+		health->value=0;
+		obj->death_trigger=TRUE;
+	}
+}
 
 bool object_heal(obj_type *obj,int heal)
 {

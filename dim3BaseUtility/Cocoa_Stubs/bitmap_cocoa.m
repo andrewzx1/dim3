@@ -36,21 +36,24 @@ and can be sold or given away.
 bool cocoa_bitmap_text_font_exist(char *name)
 {
 	bool				ok;
-	CFStringRef			font_name;
+	NSAutoreleasePool	*pool;
+	NSString			*font_name;
 #ifndef D3_OS_IPHONE
 	NSArray				*fonts;
 #endif
 
-	font_name=CFStringCreateWithCString(kCFAllocatorDefault,name,kCFStringEncodingMacRoman);
+	pool=[[NSAutoreleasePool alloc] init];
+
+	font_name=[[NSString alloc] initWithUTF8String:name];
 	
 #ifndef D3_OS_IPHONE
 	fonts=[[NSFontManager sharedFontManager] availableFontFamilies];
-	ok=([fonts containsObject:(NSString*)font_name]==YES);
+	ok=([fonts containsObject:font_name]==YES);
 #else
-	ok=([UIFont fontWithName:(NSString*)font_name size:12.0f]!=nil);
+	ok=([UIFont fontWithName:font_name size:12.0f]!=nil);
 #endif
-
-	CFRelease(font_name);
+	
+	[pool release];
 	
 	return(ok);
 }
