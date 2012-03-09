@@ -117,6 +117,8 @@ extern void object_setup_hit(obj_type *obj,obj_type *from_obj,weapon_type *from_
 extern void object_click(obj_type *obj,obj_type *from_obj);
 extern void object_damage(obj_type *obj,obj_type *source_obj,weapon_type *source_weap,proj_type *source_proj,d3pnt *melee_hit_pt,int damage);
 extern void object_melee_hit(obj_type *obj,obj_type *melee_obj,weapon_type *melee_weap,melee_type *melee,d3pnt *sphere_pnt);
+extern void object_health_add(obj_type *obj,int value);
+extern void object_health_remove(obj_type *obj,int value);
 extern bool object_heal(obj_type *obj,int heal);
 extern void object_health_recover(obj_type *obj);
 extern bool object_heal_armor(obj_type *obj,int heal);

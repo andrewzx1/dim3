@@ -29,12 +29,14 @@ and can be sold or given away.
 
 void cocoa_file_get_application_support_path(char *path)
 {
-	NSArray			*paths;
-	CFStringRef		path_str;
+	NSAutoreleasePool	*pool;
+	NSArray				*paths;
 	
 		// iOS applications need to write
 		// to the application/document directory
 		// OS X writes to the application support
+		
+	pool=[[NSAutoreleasePool alloc] init];
 		
 #ifdef D3_OS_IPHONE
 	paths=NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask,TRUE);
@@ -42,6 +44,8 @@ void cocoa_file_get_application_support_path(char *path)
 	paths=NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory,NSUserDomainMask,TRUE);
 #endif
 
-	path_str=(CFStringRef)[paths objectAtIndex:0];
-	CFStringGetCString(path_str,path,1024,kCFStringEncodingMacRoman);
+	strncpy(path,[[paths objectAtIndex:0] UTF8String],1024);
+	path[1023]=0x0;
+	
+	[pool release];
 }

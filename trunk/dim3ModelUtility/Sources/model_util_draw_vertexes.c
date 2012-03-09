@@ -134,9 +134,21 @@ void model_create_draw_vertexes_normal(model_type *model,int mesh_idx,model_draw
 	
 		// movements
 		
-	mov_x=draw_setup->move.x+cx;	// restore the center movement
-	mov_y=draw_setup->move.y+cy;
-	mov_z=draw_setup->move.z+cz;
+		// we need to change these with the rotations
+		// and we add in the center restore to speed
+		// up these calculations
+		
+	mov_x=draw_setup->move.x;
+	mov_y=draw_setup->move.y;
+	mov_z=draw_setup->move.z;
+	
+	matrix_vertex_multiply_ignore_transform(&rot_x_mat,&mov_x,&mov_y,&mov_z);
+	matrix_vertex_multiply_ignore_transform(&rot_z_mat,&mov_x,&mov_y,&mov_z);
+	matrix_vertex_multiply_ignore_transform(&rot_y_mat,&mov_x,&mov_y,&mov_z);
+
+	mov_x+=cx;
+	mov_y+=cy;
+	mov_z+=cz;
 	
 		// sways
 		
@@ -190,9 +202,19 @@ void model_create_draw_vertexes_no_xzrot(model_type *model,int mesh_idx,model_dr
 	
 		// movements
 		
-	mov_x=draw_setup->move.x+cx;	// restore the center movement
-    mov_z=draw_setup->move.z+cz;
-    mov_y=draw_setup->move.y+cy;
+		// we need to change these with the rotations
+		// and we add in the center restore to speed
+		// up these calculations
+		
+	mov_x=draw_setup->move.x;
+	mov_y=draw_setup->move.y;
+	mov_z=draw_setup->move.z;
+	
+	matrix_vertex_multiply_ignore_transform(&rot_y_mat,&mov_x,&mov_y,&mov_z);
+
+	mov_x+=cx;
+	mov_y+=cy;
+	mov_z+=cz;
 	
 		// sways
 		
@@ -246,9 +268,21 @@ void model_create_draw_vertexes_no_sway(model_type *model,int mesh_idx,model_dra
 	
 		// movements
 		
-	mov_x=draw_setup->move.x+cx;	// restore the center movement
-    mov_z=draw_setup->move.z+cz;
-    mov_y=draw_setup->move.y+cy;
+		// we need to change these with the rotations
+		// and we add in the center restore to speed
+		// up these calculations
+		
+	mov_x=draw_setup->move.x;
+	mov_y=draw_setup->move.y;
+	mov_z=draw_setup->move.z;
+	
+	matrix_vertex_multiply_ignore_transform(&rot_x_mat,&mov_x,&mov_y,&mov_z);
+	matrix_vertex_multiply_ignore_transform(&rot_z_mat,&mov_x,&mov_y,&mov_z);
+	matrix_vertex_multiply_ignore_transform(&rot_y_mat,&mov_x,&mov_y,&mov_z);
+
+	mov_x+=cx;
+	mov_y+=cy;
+	mov_z+=cz;
 	
 		// run through the vertexes
 		
@@ -297,9 +331,19 @@ void model_create_draw_vertexes_no_sway_xzrot(model_type *model,int mesh_idx,mod
 	
 		// movements
 		
-	mov_x=draw_setup->move.x+cx;	// restore the center movement
-    mov_z=draw_setup->move.z+cz;
-    mov_y=draw_setup->move.y+cy;
+		// we need to change these with the rotations
+		// and we add in the center restore to speed
+		// up these calculations
+		
+	mov_x=draw_setup->move.x;
+	mov_y=draw_setup->move.y;
+	mov_z=draw_setup->move.z;
+	
+	matrix_vertex_multiply_ignore_transform(&rot_y_mat,&mov_x,&mov_y,&mov_z);
+
+	mov_x+=cx;
+	mov_y+=cy;
+	mov_z+=cz;
 	
 		// run through the vertexes
 		

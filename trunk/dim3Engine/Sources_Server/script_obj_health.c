@@ -305,15 +305,11 @@ bool js_obj_health_set_armor_start(JSContextRef cx,JSObjectRef j_obj,JSStringRef
 JSValueRef js_obj_health_add_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type		*obj;
-	obj_health		*health;
 	
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
 	obj=object_get_attach(j_obj);
-    health=&obj->status.health;
-	
-    health->value+=script_value_to_int(cx,argv[0]);
-    if (health->value>health->max_value) health->value=health->max_value;
+	object_health_add(obj,script_value_to_int(cx,argv[0]));
 
 	return(script_null_to_value(cx));
 }
@@ -321,20 +317,13 @@ JSValueRef js_obj_health_add_func(JSContextRef cx,JSObjectRef func,JSObjectRef j
 JSValueRef js_obj_health_remove_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {
 	obj_type		*obj;
-	obj_health		*health;
 	
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
 	obj=object_get_attach(j_obj);
-    health=&obj->status.health;
 	
 	obj->damage_obj_idx=-1;			// self-inflicted damage
-	
-    health->value-=script_value_to_int(cx,argv[0]);
-    if (health->value<0) {
-		health->value=0;
-		obj->death_trigger=TRUE;
-	}
+	object_health_remove(obj,script_value_to_int(cx,argv[0]));
 
 	return(script_null_to_value(cx));
 }
@@ -350,12 +339,7 @@ JSValueRef js_obj_health_remove_from_object_func(JSContextRef cx,JSObjectRef fun
     health=&obj->status.health;
 	
 	obj->damage_obj_idx=script_value_to_int(cx,argv[1]);
-	
-    health->value-=script_value_to_int(cx,argv[0]);
-    if (health->value<0) {
-		health->value=0;
-		obj->death_trigger=TRUE;
-	}
+	object_health_remove(obj,script_value_to_int(cx,argv[0]));
 
 	return(script_null_to_value(cx));
 }
