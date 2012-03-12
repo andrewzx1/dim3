@@ -64,7 +64,6 @@ extern list_palette_type		property_palette;
 void property_palette_fill_texture(int texture_idx)
 {
 	int					n;
-	char				name[32];
 	texture_type		*texture;
 
 	texture=&model.textures[texture_idx];
@@ -78,7 +77,7 @@ void property_palette_fill_texture(int texture_idx)
 	list_palette_add_checkbox(&property_palette,kTexturePropertyCompress,"Compressed",&texture->compress,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Texture Options");
-	list_palette_add_picker_list_string(&property_palette,kTexturePropertyShader,"Shader",(char*)iface.shader_list.shaders,iface.shader_list.nshader,sizeof(iface_shader_type),(int)offsetof(iface_shader_type,name),TRUE,texture->shader_name,FALSE);
+	list_palette_add_picker_list_string(&property_palette,kTexturePropertyShader,"Shader Override",(char*)iface.shader_list.shaders,iface.shader_list.nshader,sizeof(iface_shader_type),(int)offsetof(iface_shader_type,name),TRUE,texture->shader_name,FALSE);
 	list_palette_add_int(&property_palette,kTexturePropertyGlowRate,"Glow Rate",&texture->glow.rate,FALSE);
 	list_palette_add_float(&property_palette,kTexturePropertyGlowMin,"Glow Min",&texture->glow.min,FALSE);
 	list_palette_add_float(&property_palette,kTexturePropertyGlowMax,"Glow Max",&texture->glow.max,FALSE);
@@ -87,8 +86,12 @@ void property_palette_fill_texture(int texture_idx)
 
 	list_palette_add_header(&property_palette,0,"Texture Frame Waits");
 	for (n=0;n!=max_texture_frame;n++) {
-		sprintf(name,"Frame %d Wait Time",n);
-		list_palette_add_int(&property_palette,(kTexturePropertyFrameWaitStart+n),name,&texture->animate.wait[n],FALSE);
+		if (texture->frames[n].name[0]!=0x0) {
+			list_palette_add_int(&property_palette,(kTexturePropertyFrameWaitStart+n),texture->frames[n].name,&texture->animate.wait[n],FALSE);
+		}
+		else {
+			list_palette_add_int(&property_palette,(kTexturePropertyFrameWaitStart+n),"(empty)",&texture->animate.wait[n],FALSE);
+		}
 	}
 }
 

@@ -678,8 +678,8 @@ void list_palette_add_picker_list_int(list_palette_type *list,int id,char *name,
 	item->list.count=list_count;
 	item->list.item_sz=list_item_sz;
 	item->list.name_offset=list_name_offset;
-	item->list.include_none=include_none;
 	item->list.file.file_list=FALSE;
+	item->list.include_none=include_none;
 
 		// setup the value
 
@@ -711,8 +711,8 @@ void list_palette_add_picker_list_string(list_palette_type *list,int id,char *na
 	item->list.count=list_count;
 	item->list.item_sz=list_item_sz;
 	item->list.name_offset=list_name_offset;
-	item->list.include_none=include_none;
 	item->list.file.file_list=FALSE;
+	item->list.include_none=include_none;
 
 		// setup the value
 
@@ -756,34 +756,6 @@ void list_palette_add_picker_file(list_palette_type *list,int id,int button_type
 
 	item->button_type=button_type;
 	item->button_id=button_id;
-}
-
-void list_palette_add_texture(list_palette_type *list,texture_type *textures,int id,char *name,int txt_idx,bool disabled)
-{
-	char		str[name_str_len];
-
-	str[0]=0x0;
-
-	if (txt_idx!=-1) {
-		if (textures[txt_idx].frames[0].name[0]==0x0) {
-			strcpy(str,"(none)");
-		}
-		else {
-			strcpy(str,textures[txt_idx].frames[0].name);
-		}
-	}
-	
-	list_palette_add_string(list,id,name,str,disabled);
-}
-
-void list_palette_add_shader(list_palette_type *list,int id,char *name,char *shader_name,bool disabled)
-{
-	if (shader_name[0]==0x0) {
-		list_palette_add_string(list,id,name,"Default",disabled);
-		return;
-	}
-	
-	list_palette_add_string(list,id,name,shader_name,disabled);
 }
 
 /* =======================================================
@@ -1479,13 +1451,19 @@ void list_palette_pane_draw_scrollbar(list_palette_pane_type *pane,d3rect *box)
 	glDrawArrays(GL_LINES,0,2);
 }
 
-void list_palette_draw_border(d3rect *box)
+void list_palette_draw_border(d3rect *box,bool left)
 {
 	int					lx,rx;
 	float				vertexes[8],colors[16];
 	
-	lx=box->lx;
-	rx=box->lx+list_palette_border_sz;
+	if (!left) {
+		lx=box->lx;
+		rx=box->lx+list_palette_border_sz;
+	}
+	else {
+		lx=box->rx-list_palette_border_sz;
+		rx=box->rx;
+	}
 
 	vertexes[0]=vertexes[6]=(float)lx;
 	vertexes[2]=vertexes[4]=(float)rx;
@@ -1744,7 +1722,7 @@ void list_palette_pane_draw_item(list_palette_pane_type *pane,d3rect *box,int id
 	}
 }
 
-void list_palette_pane_draw(list_palette_pane_type *pane,d3rect *box,bool draw_border)
+void list_palette_pane_draw(list_palette_pane_type *pane,d3rect *box,bool draw_border,bool left)
 {
 	int					n;
 
@@ -1763,7 +1741,7 @@ void list_palette_pane_draw(list_palette_pane_type *pane,d3rect *box,bool draw_b
 
 	list_palette_pane_draw_scrollbar(pane,box);
 	list_palette_pane_draw_title(pane,box);
-	if (draw_border) list_palette_draw_border(box);
+	if (draw_border) list_palette_draw_border(box,left);
 
 	glDisable(GL_ALPHA_TEST);
 }
@@ -1776,7 +1754,7 @@ void list_palette_draw(list_palette_type *list)
 
 	list_palette_item_box(list,&box);
 	list_palette_pane_draw_setup(&list->item_pane,&box);
-	list_palette_pane_draw(&list->item_pane,&box,(!list->flag.never_open));
+	list_palette_pane_draw(&list->item_pane,&box,(!list->flag.never_open),list->flag.left);
 	
 	if (list->picker.on) list_palette_pane_disable(&box);
 
@@ -1785,7 +1763,7 @@ void list_palette_draw(list_palette_type *list)
 	if (list->picker.on) {
 		list_palette_picker_box(list,&box);
 		list_palette_pane_draw_setup(&list->picker_pane,&box);
-		list_palette_pane_draw(&list->picker_pane,&box,FALSE);
+		list_palette_pane_draw(&list->picker_pane,&box,FALSE,FALSE);
 	}
 	else {
 		if (list->flag.never_hide_picker) {

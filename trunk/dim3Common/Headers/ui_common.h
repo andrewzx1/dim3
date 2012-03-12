@@ -113,7 +113,7 @@ typedef struct		{
 
 typedef struct		{
 						int									count,item_sz,name_offset;
-						bool								include_none,is_index;
+						bool								is_index,include_none;
 						char								*ptr;
 						list_palette_item_file_type			file;
 					} list_palette_item_list_type;
@@ -238,8 +238,6 @@ extern void list_palette_add_uv(list_palette_type *list,int id,char *name,d3uv *
 extern void list_palette_add_picker_list_int(list_palette_type *list,int id,char *name,char *list_ptr,int list_count,int list_item_sz,int list_name_offset,bool include_none,int *int_ptr,bool disabled);
 extern void list_palette_add_picker_list_string(list_palette_type *list,int id,char *name,char *list_ptr,int list_count,int list_item_sz,int list_name_offset,bool include_none,char *str_ptr,bool disabled);
 extern void list_palette_add_picker_file(list_palette_type *list,int id,int button_type,int button_id,char *name,char *search_path,char *extension,char *required_file_name,char *str_ptr,bool disabled);
-extern void list_palette_add_texture(list_palette_type *list,texture_type *textures,int id,char *name,int txt_idx,bool disabled);
-extern void list_palette_add_shader(list_palette_type *list,int id,char *name,char *shader_name,bool disabled);
 extern void list_palette_delete_all_items(list_palette_type *list);
 extern void list_palette_start_picking_mode(list_palette_type *list,char *title,char *list_ptr,int list_count,int list_item_sz,int list_name_offset,bool include_none,bool file_list,int *idx_ptr,char *name_ptr);
 extern void list_palette_sort_mark_start(list_palette_type *list);

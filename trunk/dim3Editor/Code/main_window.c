@@ -39,7 +39,7 @@ file_path_setup_type			file_path_setup;
 iface_type						iface;
 editor_state_type				state;
 
-extern list_palette_type		property_palette;
+extern list_palette_type		file_palette,property_palette;
 
 /* =======================================================
 
@@ -212,14 +212,13 @@ void main_wind_click(d3pnt *pnt,bool double_click)
 	
 		// file palettes
 	
-		/* supergumba	
 	list_palette_total_box(&file_palette,&tbox);
 
 	if ((pnt->x>=tbox.lx) && (pnt->x<=tbox.rx) && (pnt->y>=tbox.ty) && (pnt->y<tbox.by)) {
 		file_palette_click(pnt,double_click);
 		return;
 	}
-	*/
+
 		// item, property and alt property palettes
 		
 	list_palette_total_box(&property_palette,&tbox);
@@ -250,14 +249,14 @@ void main_wind_scroll_wheel(d3pnt *pnt,int delta)
 	d3rect				tbox;
 	
 		// scroll wheel in file palette
-/* supergumba
+
 	list_palette_total_box(&file_palette,&tbox);
 
 	if ((pnt->x>=tbox.lx) && (pnt->x<=tbox.rx) && (pnt->y>=tbox.ty) && (pnt->y<tbox.by)) {
 		file_palette_scroll_wheel(pnt,delta);
 		return;
 	}
-*/	
+
 		// scroll wheel in item, property, or alt property palette
 
 	list_palette_total_box(&property_palette,&tbox);
