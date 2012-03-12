@@ -60,7 +60,12 @@ int select_find(int type,int main_idx,int sub_idx)
 			if (select_item->type==type) return(n);
 		}
 		else {
-			if ((select_item->type==type) && (select_item->main_idx==main_idx) && (select_item->sub_idx==sub_idx)) return(n);
+			if (select_item->sub_idx!=-1) {
+				if ((select_item->type==type) && (select_item->main_idx==main_idx) && (select_item->sub_idx==sub_idx)) return(n);
+			}
+			else {
+				if ((select_item->type==type) && (select_item->main_idx==main_idx)) return(n);
+			}
 		}
 		select_item++;
 	}

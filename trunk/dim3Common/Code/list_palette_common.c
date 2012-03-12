@@ -818,6 +818,11 @@ void list_palette_start_picking_mode(list_palette_type *list,char *title,char *l
 	list->picker.picker_name_ptr=name_ptr;
 
 	list->picker.file_list=file_list;
+	
+		// flip off any regular pane
+		// click items
+		
+	list->item_pane.click.id=-1;
 
 		// if list count is -1, then calculate
 		// it from the first blank string
@@ -887,7 +892,7 @@ void list_palette_start_picking_mode(list_palette_type *list,char *title,char *l
 void list_palette_start_picking_item_mode(list_palette_type *list,list_palette_item_type *item)
 {
 	char				title[256];
-	unsigned char		*list_ptr;
+	char				*list_ptr;
 
 		// if a file list, build the files
 
@@ -895,7 +900,7 @@ void list_palette_start_picking_item_mode(list_palette_type *list,list_palette_i
 
 	if (item->list.file.file_list) {
 		item->list.count=property_pick_file_fill_list(item->list.file.search_path,item->list.file.extension,item->list.file.required_file_name);
-		list_ptr=(unsigned char*)property_file_list;
+		list_ptr=(char*)property_file_list;
 	}
 
 	sprintf(title,"Pick %s",item->name);
@@ -1776,15 +1781,18 @@ void list_palette_draw(list_palette_type *list)
 	if (list->picker.on) list_palette_pane_disable(&box);
 
 		// picker pane
-
-	list_palette_picker_box(list,&box);
-
+		
 	if (list->picker.on) {
+		list_palette_picker_box(list,&box);
 		list_palette_pane_draw_setup(&list->picker_pane,&box);
 		list_palette_pane_draw(&list->picker_pane,&box,FALSE);
 	}
 	else {
-		if (list->flag.never_hide_picker) list_palette_pane_disable(&box);
+		if (list->flag.never_hide_picker) {
+			list_palette_picker_box(list,&box);
+			list_palette_pane_draw_setup(&list->picker_pane,&box);
+			list_palette_pane_disable(&box);
+		}
 	}
 }
 

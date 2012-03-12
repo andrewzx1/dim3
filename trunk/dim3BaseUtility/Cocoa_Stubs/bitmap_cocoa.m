@@ -36,13 +36,10 @@ and can be sold or given away.
 bool cocoa_bitmap_text_font_exist(char *name)
 {
 	bool				ok;
-	NSAutoreleasePool	*pool;
 	NSString			*font_name;
 #ifndef D3_OS_IPHONE
 	NSArray				*fonts;
 #endif
-
-	pool=[[NSAutoreleasePool alloc] init];
 
 	font_name=[[NSString alloc] initWithUTF8String:name];
 	
@@ -53,7 +50,7 @@ bool cocoa_bitmap_text_font_exist(char *name)
 	ok=([UIFont fontWithName:font_name size:12.0f]!=nil);
 #endif
 	
-	[pool release];
+	[font_name release];
 	
 	return(ok);
 }

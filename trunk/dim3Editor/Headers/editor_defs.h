@@ -333,6 +333,7 @@ typedef struct		{
 #define kCommandViewShowHideSpots				FOUR_CHAR_CODE('shss')
 #define kCommandViewShowHideLights				FOUR_CHAR_CODE('shls')
 #define kCommandViewShowHideNodes				FOUR_CHAR_CODE('shnd')
+#define kCommandViewShowHideMovements			FOUR_CHAR_CODE('shmv')
 #define kCommandViewSplitHorizontal				FOUR_CHAR_CODE('sphz')
 #define kCommandViewSplitVertical				FOUR_CHAR_CODE('spvt')
 #define kCommandViewRemoveSplit					FOUR_CHAR_CODE('sprm')
@@ -472,8 +473,9 @@ typedef struct		{
 												cur_movement_idx,cur_movement_move_idx;
 						bool					map_opened,
 												free_look,select_add,auto_texture,select_box_on,
-												show_liquid,show_normals,show_node,show_object,
-												show_lightsoundparticle,in_preference;
+												show_liquid,show_normals,show_movements,
+												show_node,show_object,show_lightsoundparticle,
+												in_preference;
 						d3pnt					select_box_start_pnt,select_box_end_pnt;
 					} editor_state_type;
 					

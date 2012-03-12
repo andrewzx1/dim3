@@ -33,11 +33,11 @@ and can be sold or given away.
 #include "ui_common.h"
 #include "interface.h"
 
-#define kModelPropertyMeshAdd				0
-#define kModelPropertyAnimateAdd			1
-#define kModelPropertyPoseAdd				2
-#define kModelPropertyBoneAdd				3
-#define kModelPropertyHitBoxAdd				4
+#define kModelPropertyMeshAdd				100		// need to be greater than item numbers
+#define kModelPropertyAnimateAdd			101
+#define kModelPropertyPoseAdd				102
+#define kModelPropertyBoneAdd				103
+#define kModelPropertyHitBoxAdd				104
 
 extern model_type				model;
 extern animator_state_type		state;

@@ -975,6 +975,106 @@ void view_draw_meshes_normals(editor_view_type *view)
 
 /* =======================================================
 
+      Walk View Movements
+      
+======================================================= */
+
+void view_draw_movements(editor_view_type *view)
+{
+	int					n,k,cnt;
+	d3pnt				group_pnt,pnt;
+	map_mesh_type		*mesh;
+	movement_type		*movement;
+	movement_move_type	*move;
+	
+	if (!state.show_movements) return;
+
+	glDisable(GL_TEXTURE_2D);
+	glEnable(GL_BLEND);
+	glDisable(GL_ALPHA_TEST);
+	
+	glLineWidth(2.0f);
+	glPointSize(10.0f);
+	
+	glColor4f(0.0f,0.0f,1.0f,1.0f);
+
+		// draw movements
+	
+	movement=map.movement.movements;
+
+	for (n=0;n!=map.movement.nmovement;n++) {
+	
+			// get movement group start
+			
+		group_pnt.x=group_pnt.y=group_pnt.z=0;
+		
+		cnt=0;
+		mesh=map.mesh.meshes;
+			
+		for (k=0;k!=map.mesh.nmesh;k++) {
+			if (mesh->group_idx==movement->group_idx) {
+				group_pnt.x+=mesh->box.mid.x;
+				group_pnt.y+=mesh->box.mid.y;
+				group_pnt.z+=mesh->box.mid.z;
+				cnt++;
+			}
+			mesh++;
+		}
+		
+		if (cnt==0) continue;
+		
+		group_pnt.x/=cnt;
+		group_pnt.y/=cnt;
+		group_pnt.z/=cnt;
+		
+			// the lines
+
+		move=movement->moves;
+		
+		memmove(&pnt,&group_pnt,sizeof(d3pnt));
+			
+		glBegin(GL_LINES);
+		
+		for (k=0;k!=movement->nmove;k++) {
+			glVertex3i(pnt.x,pnt.y,pnt.z);
+			pnt.x+=move->mov.x;
+			pnt.y+=move->mov.y;
+			pnt.z+=move->mov.z;
+			glVertex3i(pnt.x,pnt.y,pnt.z);
+			move++;
+		}
+				
+		glEnd();
+		
+			// the points
+
+		move=movement->moves;
+		
+		memmove(&pnt,&group_pnt,sizeof(d3pnt));
+			
+		glBegin(GL_POINTS);
+		
+		glVertex3i(pnt.x,pnt.y,pnt.z);
+		
+		for (k=0;k!=movement->nmove;k++) {
+			pnt.x+=move->mov.x;
+			pnt.y+=move->mov.y;
+			pnt.z+=move->mov.z;
+			glVertex3i(pnt.x,pnt.y,pnt.z);
+			move++;
+		}
+				
+		glEnd();
+		
+		movement++;
+	}
+	
+	glLineWidth(1.0f);
+	glColor4f(0.0f,0.0f,0.0f,1.0f);
+}
+
+/* =======================================================
+
       Walk View Nodes, Scenery, etc Drawing
       
 ======================================================= */
@@ -1147,6 +1247,8 @@ void view_draw_view(editor_view_type *view)
 	view_draw_spots_scenery(view);
 	view_draw_lights_sounds_particles(view);
 	view_draw_liquids(view,TRUE);
+	
+	view_draw_movements(view);
 	
 		// draw opaque mesh lines
 		// push view forward to better z-buffer lines

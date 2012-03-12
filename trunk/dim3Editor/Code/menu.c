@@ -125,21 +125,22 @@ void menu_update_view(void)
 	os_menu_check_item(app_menu_view,20,state.show_object);
 	os_menu_check_item(app_menu_view,21,state.show_lightsoundparticle);
 	os_menu_check_item(app_menu_view,22,state.show_node);
+	os_menu_check_item(app_menu_view,23,state.show_movements);
 	
 	if (map.editor_views.count<max_editor_view) {
-		os_menu_enable_item(app_menu_view,24,TRUE);
 		os_menu_enable_item(app_menu_view,25,TRUE);
-	}
-	else {
-		os_menu_enable_item(app_menu_view,24,FALSE);
-		os_menu_enable_item(app_menu_view,25,FALSE);
-	}
-	
-	if (map.editor_views.count>1) {
 		os_menu_enable_item(app_menu_view,26,TRUE);
 	}
 	else {
+		os_menu_enable_item(app_menu_view,25,FALSE);
 		os_menu_enable_item(app_menu_view,26,FALSE);
+	}
+	
+	if (map.editor_views.count>1) {
+		os_menu_enable_item(app_menu_view,27,TRUE);
+	}
+	else {
+		os_menu_enable_item(app_menu_view,27,FALSE);
 	}
 }
 
@@ -329,6 +330,12 @@ bool menu_event_run(int cmd)
 		case kCommandViewShowHideNodes:
 			select_remove_type(node_piece);
 			state.show_node=!state.show_node;
+			menu_update_view();
+			main_wind_draw();
+			break;
+			
+		case kCommandViewShowHideMovements:
+			state.show_movements=!state.show_movements;
 			menu_update_view();
 			main_wind_draw();
 			break;

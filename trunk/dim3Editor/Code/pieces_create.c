@@ -548,6 +548,8 @@ void piece_create_movement(void)
 
 	dialog_property_string_run(list_string_value_string,(void*)map.movement.movements[movement_idx].name,name_str_len,0,0);
 	
+	state.show_movements=TRUE;
+	
 	main_wind_draw();
 }
 
