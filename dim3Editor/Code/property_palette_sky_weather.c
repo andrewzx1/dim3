@@ -113,12 +113,14 @@ void property_palette_fill_sky_weather(void)
 	list_palette_add_checkbox(&property_palette,kMapPropertyDomeMirror,"Mirror Dome",&map.sky.dome_mirror,FALSE);
 	list_palette_add_float(&property_palette,kMapPropertyTextureRepeat,"Texture Repeat",&map.sky.txt_fact,FALSE);
 	list_palette_add_uv(&property_palette,kMapPropertyTextureShift,"Texture Shift",&map.sky.txt_shift,FALSE);
-	list_palette_add_texture(&property_palette,map.textures,kMapPropertyTextureFill,"Fill/Cube Top Fill",map.sky.fill,FALSE);
-	list_palette_add_texture(&property_palette,map.textures,kMapPropertyTextureBottomFill,"Cube Bottom Fill",map.sky.bottom_fill,FALSE);
-	list_palette_add_texture(&property_palette,map.textures,kMapPropertyTextureNorthFill,"Cube North Fill",map.sky.north_fill,FALSE);
-	list_palette_add_texture(&property_palette,map.textures,kMapPropertyTextureSouthFill,"Cube South Fill",map.sky.south_fill,FALSE);
-	list_palette_add_texture(&property_palette,map.textures,kMapPropertyTextureEastFill,"Cube East Fill",map.sky.east_fill,FALSE);
-	list_palette_add_texture(&property_palette,map.textures,kMapPropertyTextureWestFill,"Cube West Fill",map.sky.west_fill,FALSE);
+	
+	list_palette_add_header(&property_palette,0,"Map Sky Textures");
+	list_palette_add_picker_list_int(&property_palette,kMapPropertyTextureFill,"Fill/Cube Top Fill",(char*)map.textures,max_map_texture,sizeof(texture_type),(int)offsetof(texture_type,frames[0].name),TRUE,&map.sky.fill,FALSE);
+	list_palette_add_picker_list_int(&property_palette,kMapPropertyTextureBottomFill,"Cube Bottom Fill",(char*)map.textures,max_map_texture,sizeof(texture_type),(int)offsetof(texture_type,frames[0].name),TRUE,&map.sky.bottom_fill,FALSE);
+	list_palette_add_picker_list_int(&property_palette,kMapPropertyTextureNorthFill,"Cube North Fill",(char*)map.textures,max_map_texture,sizeof(texture_type),(int)offsetof(texture_type,frames[0].name),TRUE,&map.sky.north_fill,FALSE);
+	list_palette_add_picker_list_int(&property_palette,kMapPropertyTextureSouthFill,"Cube South Fill",(char*)map.textures,max_map_texture,sizeof(texture_type),(int)offsetof(texture_type,frames[0].name),TRUE,&map.sky.south_fill,FALSE);
+	list_palette_add_picker_list_int(&property_palette,kMapPropertyTextureEastFill,"Cube East Fill",(char*)map.textures,max_map_texture,sizeof(texture_type),(int)offsetof(texture_type,frames[0].name),TRUE,&map.sky.east_fill,FALSE);
+	list_palette_add_picker_list_int(&property_palette,kMapPropertyTextureWestFill,"Cube West Fill",(char*)map.textures,max_map_texture,sizeof(texture_type),(int)offsetof(texture_type,frames[0].name),TRUE,&map.sky.west_fill,FALSE);
 
 		// background
 
@@ -126,13 +128,13 @@ void property_palette_fill_sky_weather(void)
 	list_palette_add_checkbox(&property_palette,kMapPropertyBackgroundOn,"On",&map.background.on,FALSE);
 	list_palette_add_uv(&property_palette,kMapPropertyBackgroundFrontStamp,"Front Stamp",&map.background.front.size,FALSE);
 	list_palette_add_uv(&property_palette,kMapPropertyBackgroundFrontShift,"Front Scroll",&map.background.front.scroll_factor,FALSE);
-	list_palette_add_texture(&property_palette,map.textures,kMapPropertyBackgroundFrontFill,"Front Fill",map.background.front.fill,FALSE);
+	list_palette_add_picker_list_int(&property_palette,kMapPropertyBackgroundFrontFill,"Front Fill",(char*)map.textures,max_map_texture,sizeof(texture_type),(int)offsetof(texture_type,frames[0].name),TRUE,&map.background.front.fill,FALSE);
 	list_palette_add_uv(&property_palette,kMapPropertyBackgroundMiddleStamp,"Middle Stamp",&map.background.middle.size,FALSE);
 	list_palette_add_uv(&property_palette,kMapPropertyBackgroundMiddleShift,"Middle Scroll",&map.background.middle.scroll_factor,FALSE);
-	list_palette_add_texture(&property_palette,map.textures,kMapPropertyBackgroundMiddleFill,"Middle Fill",map.background.middle.fill,FALSE);
+	list_palette_add_picker_list_int(&property_palette,kMapPropertyBackgroundMiddleFill,"Middle Fill",(char*)map.textures,max_map_texture,sizeof(texture_type),(int)offsetof(texture_type,frames[0].name),TRUE,&map.background.middle.fill,FALSE);
 	list_palette_add_uv(&property_palette,kMapPropertyBackgroundBackStamp,"Back Stamp",&map.background.back.size,FALSE);
 	list_palette_add_uv(&property_palette,kMapPropertyBackgroundBackShift,"Back Scroll",&map.background.back.scroll_factor,FALSE);
-	list_palette_add_texture(&property_palette,map.textures,kMapPropertyBackgroundBackFill,"Back Fill",map.background.back.fill,FALSE);
+	list_palette_add_picker_list_int(&property_palette,kMapPropertyBackgroundBackFill,"Back Fill",(char*)map.textures,max_map_texture,sizeof(texture_type),(int)offsetof(texture_type,frames[0].name),TRUE,&map.background.back.fill,FALSE);
 
 		// fog general
 
@@ -150,7 +152,7 @@ void property_palette_fill_sky_weather(void)
 		// fog textured
 
 	list_palette_add_header(&property_palette,0,"Map Fog Textured");
-	list_palette_add_texture(&property_palette,map.textures,kMapPropertyFogTextureIndex,"Fill",map.fog.texture_idx,FALSE);
+	list_palette_add_picker_list_int(&property_palette,kMapPropertyFogTextureIndex,"Fill",(char*)map.textures,max_map_texture,sizeof(texture_type),(int)offsetof(texture_type,frames[0].name),TRUE,&map.fog.texture_idx,FALSE);
 	list_palette_add_int(&property_palette,kMapPropertyFogCount,"Layer Count",&map.fog.count,FALSE);
 	list_palette_add_int(&property_palette,kMapPropertyFogHigh,"Height",&map.fog.high,FALSE);
 	list_palette_add_int(&property_palette,kMapPropertyFogDrop,"Y Drop",&map.fog.drop,FALSE);
@@ -186,56 +188,5 @@ void property_palette_fill_sky_weather(void)
 
 void property_palette_click_sky_weather(bool double_click)
 {
-	if (!double_click) return;
-
-	switch (property_palette.item_pane.click.id) {
-
-			// map sky
-
-		case kMapPropertyTextureFill:
-			property_palette_pick_texture(NULL,&map.sky.fill);
-			break;
-
-		case kMapPropertyTextureBottomFill:
-			property_palette_pick_texture(NULL,&map.sky.bottom_fill);
-			break;
-
-		case kMapPropertyTextureNorthFill:
-			property_palette_pick_texture(NULL,&map.sky.north_fill);
-			break;
-
-		case kMapPropertyTextureSouthFill:
-			property_palette_pick_texture(NULL,&map.sky.south_fill);
-			break;
-
-		case kMapPropertyTextureEastFill:
-			property_palette_pick_texture(NULL,&map.sky.east_fill);
-			break;
-
-		case kMapPropertyTextureWestFill:
-			property_palette_pick_texture(NULL,&map.sky.west_fill);
-			break;
-
-			// map background
-
-		case kMapPropertyBackgroundFrontFill:
-			property_palette_pick_texture(NULL,&map.background.front.fill);
-			break;
-
-		case kMapPropertyBackgroundMiddleFill:
-			property_palette_pick_texture(NULL,&map.background.middle.fill);
-			break;
-
-		case kMapPropertyBackgroundBackFill:
-			property_palette_pick_texture(NULL,&map.background.back.fill);
-			break;
-
-			// fog textured
-
-		case kMapPropertyFogTextureIndex:
-			property_palette_pick_texture(NULL,&map.fog.texture_idx);
-			break;
-
-	}
 }
 

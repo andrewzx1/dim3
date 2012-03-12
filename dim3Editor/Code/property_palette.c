@@ -650,9 +650,3 @@ void property_palette_pick_texture(char *title,int *txt_idx)
 		list_palette_start_picking_mode(&property_palette,title,(char*)list_texture_names,max_map_texture,name_str_len,0,TRUE,FALSE,txt_idx,NULL);
 	}
 }
-
-void property_palette_pick_shader(char *name)
-{
-	list_palette_start_picking_mode(&property_palette,"Pick a Shader",(char*)iface.shader_list.shaders,iface.shader_list.nshader,sizeof(iface_shader_type),(int)offsetof(iface_shader_type,name),TRUE,FALSE,NULL,name);
-}
-

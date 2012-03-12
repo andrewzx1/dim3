@@ -63,6 +63,8 @@ void file_palette_initialize(void)
 	file_palette.item_pane.click.id=0;
 	file_palette.item_pane.click.idx=-1;
 	file_palette.item_pane.click.item=NULL;
+
+	file_palette.open=FALSE;
 }
 
 void file_palette_shutdown(void)
@@ -75,123 +77,30 @@ void file_palette_shutdown(void)
       File Palette Fill
       
 ======================================================= */
-/*
-void item_palette_fill(void)
+
+void file_palette_fill(void)
 {
 	int			n;
 
-	list_palette_delete_all_items(&item_palette);
+		// maps
 
-		// map
-
-	list_palette_add_header(&item_palette,spot_piece,"Map");
-	list_palette_add_item(&item_palette,map_setting_piece,0,"Settings",(item_palette.item_type==map_setting_piece),FALSE);
-	list_palette_add_item(&item_palette,map_camera_piece,0,"Camera",(item_palette.item_type==map_camera_piece),FALSE);
-	list_palette_add_item(&item_palette,map_light_media_piece,0,"Light & Media",(item_palette.item_type==map_light_media_piece),FALSE);
-	list_palette_add_item(&item_palette,map_sky_weather_piece,0,"Sky & Weather",(item_palette.item_type==map_sky_weather_piece),FALSE);
-
-		// spots
-
-	list_palette_add_header_button(&item_palette,kPropertyAddSpot,"Spots",list_button_plus);
-	list_palette_sort_mark_start(&item_palette);
+	list_palette_add_header_button(&file_palette,kPropertyAddSpot,"Maps",list_button_plus);
+	/*
+	list_palette_sort_mark_start(&file_palette);
 
 	for (n=0;n!=map.nspot;n++) {
 		if (map.spots[n].name[0]!=0x0) {
-			list_palette_add_item(&item_palette,spot_piece,n,map.spots[n].name,((item_palette.item_type==spot_piece)&&(n==item_palette.item_idx)),FALSE);
+			list_palette_add_item(&file_palette,spot_piece,n,map.spots[n].name,((file_palette.item_type==spot_piece)&&(n==item_palette.item_idx)),FALSE);
 		}
 		else {
-			list_palette_add_item(&item_palette,spot_piece,n,"[none]",((item_palette.item_type==spot_piece)&&(n==item_palette.item_idx)),FALSE);
+			list_palette_add_item(&file_palette,spot_piece,n,"[none]",((file_palette.item_type==spot_piece)&&(n==item_palette.item_idx)),FALSE);
 		}
 	}
 
-	list_palette_sort(&item_palette);
-
-		// lights
-
-	list_palette_add_header_button(&item_palette,kPropertyAddLight,"Lights",list_button_plus);
-
-	for (n=0;n!=map.nlight;n++) {
-		list_palette_add_color(&item_palette,light_piece,n,&map.lights[n].setting.col,((item_palette.item_type==light_piece)&&(n==item_palette.item_idx)),FALSE);
-	}
-
-		// sounds
-
-	list_palette_add_header_button(&item_palette,kPropertyAddSound,"Sounds",list_button_plus);
-	list_palette_sort_mark_start(&item_palette);
-
-	for (n=0;n!=map.nsound;n++) {
-		list_palette_add_item(&item_palette,sound_piece,n,map.sounds[n].name,((item_palette.item_type==sound_piece)&&(n==item_palette.item_idx)),FALSE);
-	}
-
-	list_palette_sort(&item_palette);
-
-		// particles
-
-	list_palette_add_header_button(&item_palette,kPropertyAddParticle,"Particles",list_button_plus);
-	list_palette_sort_mark_start(&item_palette);
-
-	for (n=0;n!=map.nparticle;n++) {
-		list_palette_add_item(&item_palette,particle_piece,n,map.particles[n].name,((item_palette.item_type==particle_piece)&&(n==item_palette.item_idx)),FALSE);
-	}
-
-	list_palette_sort(&item_palette);
-
-		// sceneries
-
-	list_palette_add_header_button(&item_palette,kPropertyAddScenery,"Scenery",list_button_plus);
-	list_palette_sort_mark_start(&item_palette);
-
-	for (n=0;n!=map.nscenery;n++) {
-		list_palette_add_item(&item_palette,scenery_piece,n,map.sceneries[n].model_name,((item_palette.item_type==scenery_piece)&&(n==item_palette.item_idx)),FALSE);
-	}
-
-	list_palette_sort(&item_palette);
-
-		// nodes
-
-	list_palette_add_header_button(&item_palette,kPropertyAddNode,"Nodes",list_button_plus);
-	list_palette_sort_mark_start(&item_palette);
-
-	for (n=0;n!=map.nnode;n++) {
-		if (map.nodes[n].name[0]!=0x0) list_palette_add_item(&item_palette,node_piece,n,map.nodes[n].name,((item_palette.item_type==node_piece)&&(n==item_palette.item_idx)),FALSE);
-	}
-
-	list_palette_sort(&item_palette);
-
-		// groups
-
-	list_palette_add_header_button(&item_palette,kPropertyAddGroup,"Groups",list_button_plus);
-	list_palette_sort_mark_start(&item_palette);
-
-	for (n=0;n!=map.group.ngroup;n++) {
-		list_palette_add_item(&item_palette,group_piece,n,map.group.groups[n].name,((item_palette.item_type==group_piece)&&(n==item_palette.item_idx)),FALSE);
-	}
-
-	list_palette_sort(&item_palette);
-
-		// movements
-
-	list_palette_add_header_button(&item_palette,kPropertyAddMovement,"Movements",list_button_plus);
-	list_palette_sort_mark_start(&item_palette);
-
-	for (n=0;n!=map.movement.nmovement;n++) {
-		list_palette_add_item(&item_palette,movement_piece,n,map.movement.movements[n].name,((item_palette.item_type==movement_piece)&&(n==item_palette.item_idx)),FALSE);
-	}
-
-	list_palette_sort(&item_palette);
-
-		// cinemas
-
-	list_palette_add_header_button(&item_palette,kPropertyAddCinema,"Cinemas",list_button_plus);
-	list_palette_sort_mark_start(&item_palette);
-
-	for (n=0;n!=map.cinema.ncinema;n++) {
-		list_palette_add_item(&item_palette,cinema_piece,n,map.cinema.cinemas[n].name,((item_palette.item_type==cinema_piece)&&(n==item_palette.item_idx)),FALSE);
-	}
-
-	list_palette_sort(&item_palette);
-}
+	list_palette_sort(&file_palette);
 */
+}
+
 /* =======================================================
 
       File Palette Draw
@@ -200,12 +109,10 @@ void item_palette_fill(void)
 
 void file_palette_draw(void)
 {
-/*
-	if (list_palette_get_level(&file_palette)!=0) return;
-	
-	item_palette_fill();
-	list_palette_draw(&item_palette);
-	*/
+	list_palette_delete_all_items(&file_palette);
+
+	file_palette_fill();
+	list_palette_draw(&file_palette);
 }
 
 /* =======================================================
@@ -216,7 +123,7 @@ void file_palette_draw(void)
 
 void file_palette_scroll_wheel(d3pnt *pnt,int move)
 {
-//	if (list_palette_get_level(&file_palette)==0) list_palette_scroll_wheel(&item_palette,pnt,move);
+	list_palette_scroll_wheel(&file_palette,pnt,move);
 }
 
 /* =======================================================
@@ -225,13 +132,10 @@ void file_palette_scroll_wheel(d3pnt *pnt,int move)
       
 ======================================================= */
 
-bool file_palette_click(d3pnt *pnt,bool double_click)
+void file_palette_click(d3pnt *pnt,bool double_click)
 {
-/*
-	bool					old_open;
+	bool				old_open;
 	
-	if (list_palette_get_level(&file_palette)!=0) return(FALSE);
-
 		// check if open changes
 	
 	old_open=list_palette_is_open(&file_palette);
@@ -240,127 +144,17 @@ bool file_palette_click(d3pnt *pnt,bool double_click)
 
 	if (!list_palette_click(&file_palette,pnt,double_click)) {
 		if (old_open!=list_palette_is_open(&file_palette)) main_wind_draw();
-		return(TRUE);
+		return;
 	}
 
-		// add buttons
+		// ignore everything but double-clicks
 
-	switch (item_palette.item_id) {
+	if (!double_click) return(FALSE);
 
-		case kPropertyAddSpot:
-			piece_create_spot();
-			break;
+		// open new map
 
-		case kPropertyAddLight:
-			piece_create_light();
-			break;
-
-		case kPropertyAddSound:
-			piece_create_sound();
-			break;
-
-		case kPropertyAddParticle:
-			piece_create_particle();
-			break;
-
-		case kPropertyAddScenery:
-			piece_create_scenery();
-			break;
-
-		case kPropertyAddNode:
-			piece_create_node();
-			break;
-
-		case kPropertyAddGroup:
-			piece_create_group();
-			break;
-
-		case kPropertyAddMovement:
-			piece_create_movement();
-			break;
-
-		case kPropertyAddCinema:
-			piece_create_cinema();
-			break;
-	}
-
-	if (item_palette.item_idx==-1) return(TRUE);
-
-		// alt window items
-
-	state.cur_cinema_idx=-1;
-	state.cur_cinema_action_idx=-1;
-	state.cur_movement_idx=-1;
-	state.cur_movement_move_idx=-1;
-
-		// turn off preferences
-
-	state.in_preference=FALSE;
-
-		// handle click
-
-	select_clear();
-
-	switch (item_palette.item_type) {
-
-		case map_setting_piece:
-		case map_camera_piece:
-		case map_light_media_piece:
-		case map_sky_weather_piece:
-			select_clear();
-			break;
-
-		case group_piece:
-			select_add_group(item_palette.item_idx);
-			break;
-
-		case movement_piece:
-			state.cur_movement_idx=item_palette.item_idx;
-			state.cur_movement_move_idx=-1;
-			select_add_movement(item_palette.item_idx);
-			break;
-
-		case cinema_piece:
-			state.cur_cinema_idx=item_palette.item_idx;
-			state.cur_cinema_action_idx=-1;
-			select_add_cinema(item_palette.item_idx);
-			break;
-
-		default:
-			select_add(item_palette.item_type,item_palette.item_idx,-1);
-			break;
-
-	}
-
-	if (double_click) view_goto_select();
-
-		// turn on any hidden items
-
-	switch (item_palette.item_type) {
-
-		case spot_piece:
-		case scenery_piece:
-			state.show_object=TRUE;
-			break;
-
-		case light_piece:
-		case sound_piece:
-		case particle_piece:
-			state.show_lightsoundparticle=TRUE;
-			break;
-
-		case node_piece:
-			state.show_node=TRUE;
-			break;
-	}
-	
-		// open the property window for double-click
-		
-	if (double_click) {
-		list_palette_set_level(&file_palette,1);
-	}
 
 	main_wind_draw();
-	*/
+
 	return(TRUE);
 }

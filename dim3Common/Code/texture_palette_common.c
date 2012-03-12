@@ -91,7 +91,7 @@ void texture_palette_draw(texture_type *txt_list)
 
 	if (texture_palette_page_list_width()!=0) {
 	
-		x=0;
+		x=tbox.lx;
 		ty=tbox.ty;
 		by=ty+(pixel_sz>>1);
 
@@ -100,7 +100,7 @@ void texture_palette_draw(texture_type *txt_list)
 				// time to move down?
 				
 			if (n==(page_list_count>>1)) {
-				x=0;
+				x=tbox.lx;
 				ty=by;
 				by=tbox.ty+pixel_sz;
 			}
@@ -167,7 +167,7 @@ void texture_palette_draw(texture_type *txt_list)
 
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	
-	x=texture_palette_page_list_width();
+	x=tbox.lx+texture_palette_page_list_width();
 	ty=tbox.ty+1;
 	by=(ty+pixel_sz)-1;
 		
@@ -212,7 +212,7 @@ void texture_palette_draw(texture_type *txt_list)
 	
 		// lines
 		
-	x=texture_palette_page_list_width();
+	x=tbox.lx+texture_palette_page_list_width();
 	
 	glColor4f(0.0f,0.0f,0.0f,1.0f);
 		
@@ -243,7 +243,7 @@ void texture_palette_draw(texture_type *txt_list)
 	if (sel==-1) return;
 	if ((sel<(txt_palette_cur_page*per_page_count)) || (sel>=((txt_palette_cur_page+1)*per_page_count))) return;
 	
-	x=((sel-(txt_palette_cur_page*per_page_count))*pixel_sz)+texture_palette_page_list_width();
+	x=((sel-(txt_palette_cur_page*per_page_count))*pixel_sz)+(tbox.lx+texture_palette_page_list_width());
 	
 	vertexes[0]=vertexes[6]=(float)x;
 	vertexes[2]=vertexes[4]=(float)(x+pixel_sz);
@@ -277,6 +277,7 @@ void texture_palette_click(texture_type *txt_list,d3pnt *pnt,bool double_click)
 	
 		// move within palette
 		
+	pnt->x-=tbox.lx;
 	pnt->y-=tbox.ty;
 	
 		// texture page change

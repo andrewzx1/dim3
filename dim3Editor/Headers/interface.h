@@ -108,7 +108,7 @@ extern void file_palette_initialize(void);
 extern void file_palette_shutdown(void);
 extern void file_palette_draw(void);
 extern void file_palette_scroll_wheel(d3pnt *pnt,int move);
-extern bool file_palette_click(d3pnt *pnt,bool double_click);
+extern void file_palette_click(d3pnt *pnt,bool double_click);
 
 //
 // property list palette
@@ -170,7 +170,6 @@ extern void property_palette_pick_movement(char *name);
 extern void property_palette_pick_hud_text(char *name);
 extern void property_palette_pick_hud_bitmap(char *name);
 extern void property_palette_pick_texture(char *title,int *txt_idx);
-extern void property_palette_pick_shader(char *name);
 
 extern void property_palette_fill_cinema_action(int cinema_idx,int action_idx);
 extern void property_palette_fill_movement_move(int movement_idx,int move_idx);

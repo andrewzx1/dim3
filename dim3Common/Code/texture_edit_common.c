@@ -46,7 +46,7 @@ and can be sold or given away.
 int								texture_edit_scroll_pos,
 								texture_edit_frame_click_idx;
 
-extern list_palette_type		item_palette,property_palette;
+extern list_palette_type		file_palette,property_palette;
 
 #ifdef D3_EDITOR
 	extern map_type				map;
@@ -93,9 +93,10 @@ void texture_edit_get_box(d3rect *box)
 {
 	os_get_window_box(box);
 	
+	box->lx+=list_palette_width(&file_palette);
+	box->rx-=(list_palette_width(&property_palette)+1);
 	box->ty+=tool_palette_pixel_size();
 	box->by-=texture_palette_pixel_size();
-	box->rx-=(list_palette_width(&property_palette)+1);
 }
 
 void texture_edit_draw_bitmap(d3rect *box,char *name,unsigned long gl_id)

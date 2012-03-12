@@ -145,7 +145,7 @@ void property_palette_fill_liquid(int liq_idx)
 
 	list_palette_add_header(&property_palette,0,"Liquid Overlay");
 	list_palette_add_checkbox(&property_palette,kLiquidPropertyOverlayOn,"On",&liq->overlay.on,FALSE);
-	list_palette_add_texture(&property_palette,map.textures,kLiquidPropertyOverlayTexture,"Texture",liq->overlay.txt_idx,FALSE);
+	list_palette_add_picker_list_int(&property_palette,kLiquidPropertyOverlayTexture,"Texture",(char*)map.textures,max_map_texture,sizeof(texture_type),(int)offsetof(texture_type,frames[0].name),TRUE,&liq->overlay.txt_idx,FALSE);
 	list_palette_add_int(&property_palette,kLiquidPropertyOverlayStampSize,"Stamp Size",&liq->overlay.stamp_size,FALSE);
 	list_palette_add_uv(&property_palette,kLiquidPropertyOverlayShift,"Shift",&liq->overlay.shift,FALSE);
 
@@ -230,12 +230,6 @@ void property_palette_click_liquid(int liq_idx,bool double_click)
 
 		case kLiquidPropertySoundName:
 			property_palette_pick_sound(liq->ambient.sound_name,TRUE);
-			break;
-
-			// overlay
-			
-		case kLiquidPropertyOverlayTexture:
-			property_palette_pick_texture(NULL,&liq->overlay.txt_idx);
 			break;
 
 			// group

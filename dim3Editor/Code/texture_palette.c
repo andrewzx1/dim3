@@ -38,7 +38,7 @@ extern editor_state_type	state;
 extern editor_setup_type	setup;
 
 extern int					txt_palette_cur_page;
-extern list_palette_type	property_palette;
+extern list_palette_type	file_palette,property_palette;
 
 /* =======================================================
 
@@ -63,43 +63,28 @@ int texture_palette_page_list_width(void)
 
 int texture_palette_pixel_size(void)
 {
-	int				rx;
+	int				lx,rx;
 	d3rect			wbox;
 	
 	os_get_window_box(&wbox);
 	
-	rx=wbox.rx;
+	lx=wbox.lx+list_palette_width(&file_palette);
+	rx=wbox.rx-list_palette_width(&property_palette);
 	
-	if (list_palette_is_open(&property_palette)) {
-		rx-=list_palette_tree_sz;
-	}
-	else {
-		rx-=list_palette_border_sz;
-	}
-
-	return((rx-(wbox.lx+texture_palette_page_list_width()))/texture_palette_per_page_count());
+	return((rx-(lx+texture_palette_page_list_width()))/texture_palette_per_page_count());
 }
 
 void texture_palette_box(d3rect *box)
 {
-	int				rx,pixel_sz;
+	int				pixel_sz;
 	d3rect			wbox;
 	
 	pixel_sz=texture_palette_pixel_size();
 	
 	os_get_window_box(&wbox);
 	
-	rx=wbox.rx;
-	
-	if (list_palette_is_open(&property_palette)) {
-		rx-=list_palette_tree_sz;
-	}
-	else {
-		rx-=list_palette_border_sz;
-	}
-	
-	box->lx=wbox.lx;
-	box->rx=rx;
+	box->lx=wbox.lx+list_palette_width(&file_palette);
+	box->rx=wbox.rx-list_palette_width(&property_palette);
 	box->ty=wbox.by-pixel_sz;
 	box->by=(box->ty+pixel_sz)+1;
 }
