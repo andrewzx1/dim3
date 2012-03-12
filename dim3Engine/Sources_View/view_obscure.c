@@ -302,11 +302,16 @@ bool view_obscure_check_box(d3pnt *camera_pnt,int skip_mesh_idx,d3pnt *min,d3pnt
 	div_add.x=k/div.x;
 
 	k=max->y-min->y;
-	div.y=k/view_obscure_split_div;
-	if (div.y<2) div.y=2;
-	if (div.y>view_obscure_max_split) div.y=view_obscure_max_split;
+	if (k==0) {
+		div.y=1;
+	}
+	else {
+		div.y=k/view_obscure_split_div;
+		if (div.y<2) div.y=2;
+		if (div.y>view_obscure_max_split) div.y=view_obscure_max_split;
+	}
 	div_add.y=k/div.y;
-
+	
 	k=max->z-min->z;
 	div.z=k/view_obscure_split_div;
 	if (div.z<2) div.z=2;
@@ -581,9 +586,10 @@ bool view_obscure_check_box(d3pnt *camera_pnt,int skip_mesh_idx,d3pnt *min,d3pnt
 void view_obscure_run(void)
 {
 	int						n,dist,remove_count,org_count,
-							mesh_idx;
+							mesh_idx,liq_idx;
 	d3pnt					min,max,camera_pnt;
 	map_mesh_type			*mesh;
+	map_liquid_type			*liq;
 	obj_type				*obj;
 	proj_type				*proj;
 	model_type				*mdl;
@@ -605,7 +611,7 @@ void view_obscure_run(void)
 	camera_pnt.z=view.render->camera.pnt.z+map.camera.plane.near_z;
 
 		// run through and obscure all
-		// meshes, models, and effects
+		// meshes, liquids, models, and effects
 
 	remove_count=0;
 	org_count=view.render->draw_list.count;
@@ -636,6 +642,26 @@ void view_obscure_run(void)
 					view_obscure_remove_mesh_from_obscuring_poly_list(mesh_idx);
 					remove_count++;
 					view.count.mesh--;
+				}
+				break;
+				
+				// liquids
+				
+			case view_render_type_liquid:
+				liq_idx=view.render->draw_list.items[n].idx;
+				liq=&map.liquid.liquids[liq_idx];
+				if (liq->flag.never_obscure) break;
+				
+				min.x=liq->lft;
+				max.x=liq->rgt;
+				min.y=max.y=liq->y;
+				min.z=liq->top;
+				max.z=liq->bot;
+
+				if (!view_obscure_check_box(&camera_pnt,mesh_idx,&min,&max,dist)) {
+					view.render->draw_list.items[n].type=view_render_type_none;
+					remove_count++;
+					view.count.liquid--;
 				}
 				break;
 

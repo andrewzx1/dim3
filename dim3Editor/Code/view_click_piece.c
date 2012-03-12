@@ -787,7 +787,7 @@ void view_click_piece(editor_view_type *view,d3pnt *pt,bool double_click)
 	texture_palette_reset();
 	property_palette_reset();
 
-	list_palette_set_level(&property_palette,1);
+	if (type!=-1) list_palette_set_level(&property_palette,1);
 
 	main_wind_draw();
 

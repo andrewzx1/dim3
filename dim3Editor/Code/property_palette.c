@@ -230,13 +230,6 @@ void property_palette_draw(void)
 void property_palette_reset(void)
 {
 	int				sel_type,main_idx,sub_idx;
-
-		// if no select, change nothing
-
-	if (select_count()==0) {
-		property_palette_scroll_into_view(map_setting_piece,0);
-		return;
-	}
 	
 		// clear out non-selection indexes
 
@@ -246,11 +239,22 @@ void property_palette_reset(void)
 	state.cur_cinema_idx=-1;
 	state.cur_cinema_action_idx=-1;
 
+		// if no select, change nothing
+
+	if (select_count()==0) {
+		state.cur_no_sel_piece_type=-1;
+		list_palette_set_level(&property_palette,0);
+		property_palette_scroll_into_view(map_setting_piece,0);
+		return;
+	}
+	
 		// set the type
 
 	select_get(0,&sel_type,&main_idx,&sub_idx);
 	state.cur_no_sel_piece_type=sel_type;
-
+	
+	list_palette_set_level(&property_palette,1);
+	
 	if ((sel_type!=mesh_piece) && (sel_type!=liquid_piece)) property_palette_scroll_into_view(sel_type,main_idx);
 }
 
