@@ -147,6 +147,11 @@ bool tool_get_highlight_state(int tool_idx)
 	return(FALSE);
 }
 
+bool tool_get_disabled_state(int tool_idx)
+{
+	return(!state.model_open);
+}
+
 /* =======================================================
 
       Tool Palette Button Clicks

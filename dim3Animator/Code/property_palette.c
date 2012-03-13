@@ -56,6 +56,8 @@ void property_palette_initialize(void)
 	property_palette.item_pane.click.id=0;
 	property_palette.item_pane.click.idx=-1;
 	property_palette.item_pane.click.item=NULL;
+
+	property_palette.open=FALSE;
 }
 
 void property_palette_shutdown(void)
@@ -153,6 +155,14 @@ void property_palette_draw(void)
 		// delete the properties
 
 	list_palette_delete_all_items(&property_palette);
+
+		// nothing to do if no model
+
+	if (!state.model_open) {
+		list_palette_set_title(&property_palette,"No Properties",NULL,NULL,NULL,NULL,NULL);
+		list_palette_draw(&property_palette);
+		return;
+	}
 
 		// if texture window is up,
 		// put in texture properties
@@ -366,6 +376,10 @@ void property_palette_click(d3pnt *pnt,bool double_click)
 		if (old_open!=list_palette_is_open(&property_palette)) main_wind_draw();
 		return;
 	}
+
+		// no clicks if no model
+
+	if (!state.model_open) return;
 
 		// if texture window is up, texture properties
 

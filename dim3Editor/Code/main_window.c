@@ -158,22 +158,22 @@ void main_wind_draw_no_swap(void)
 
 		// draw window
 
-	if (state.map_opened) {
-
+	if (state.map_open) {
 		if (state.texture_edit_idx==-1) {
 			view_draw();
 		}
 		else {
 			texture_edit_draw();
 		}
-
-		tool_palette_draw();
-		texture_palette_draw(map.textures);
-		file_palette_draw();
-		property_palette_draw();
-
-		tool_tip_draw();
 	}
+	
+	tool_palette_draw();
+	texture_palette_draw(map.textures);
+	
+	file_palette_draw();
+	property_palette_draw();
+
+	tool_tip_draw();
 }
 
 void main_wind_draw(void)
@@ -219,7 +219,7 @@ void main_wind_click(d3pnt *pnt,bool double_click)
 		return;
 	}
 
-		// item, property and alt property palettes
+		// property palette
 		
 	list_palette_total_box(&property_palette,&tbox);
 
@@ -229,6 +229,8 @@ void main_wind_click(d3pnt *pnt,bool double_click)
 	}
 
 		// view clicks
+
+	if (!state.map_open) return;
 
 	if (state.texture_edit_idx==-1) {
 		view_click(pnt,double_click);
@@ -284,7 +286,7 @@ void main_wind_scroll_wheel(d3pnt *pnt,int delta)
 
 void main_wind_mouse_move(d3pnt *pnt)
 {
-	if (!state.map_opened) return;
+	if (!state.map_open) return;
 
 	tool_palette_mouse_move(pnt);
 }

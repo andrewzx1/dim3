@@ -46,7 +46,7 @@ extern list_palette_type		property_palette;
 
 void menu_fix_enable(void)
 {
-	if (!state.map_opened) {
+	if (!state.map_open) {
 		os_menu_enable_item(app_menu_file,1,TRUE);
 		os_menu_enable_item(app_menu_file,2,TRUE);
 		os_menu_enable_item(app_menu_file,3,FALSE);
@@ -146,23 +146,6 @@ void menu_update_view(void)
 
 /* =======================================================
 
-      Save Changes
-      
-======================================================= */
-
-bool menu_save_changes_dialog(void)
-{
-	int			choice;
-	
-	choice=os_dialog_confirm("Save Changes?","Do you want to save the changes to this map?",TRUE);
-	if (choice==1) return(FALSE);
-	
-	if (choice==0) file_save_map();
-	return(TRUE);
-}
-
-/* =======================================================
-
       Menu Events
       
 ======================================================= */
@@ -188,10 +171,7 @@ bool menu_event_run(int cmd)
 			return(TRUE);
 			
 		case kCommandFileClose:
-			if (state.map_opened) {
-				if (!menu_save_changes_dialog()) return(TRUE);
-				file_close_map();
-			}
+			file_close_map();
 			return(TRUE);
 
 		case kCommandFileSave:
@@ -206,11 +186,9 @@ bool menu_event_run(int cmd)
             return(TRUE);
 
 		case kCommandFileQuit:
-			if (state.map_opened) {
-				if (!menu_save_changes_dialog()) return(TRUE);
-				file_close_map();
+			if (file_close_map()) {
+				os_application_quit();
 			}
-			os_application_quit();
 			return(TRUE);
 			
 			// edit menu

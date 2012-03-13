@@ -38,8 +38,6 @@ extern void main_app_shutdown(void);
 
 extern void main_wind_initialize(void);
 extern void main_wind_shutdown(void);
-extern void main_wind_open(void);
-extern void main_wind_close(void);
 extern void main_wind_gl_setup(void);
 extern void main_wind_draw(void);
 extern void main_wind_draw_no_swap(void);
@@ -63,7 +61,6 @@ extern bool setup_xml_write(void);
 //
 
 extern void menu_update(void);
-extern bool menu_save_changes_dialog(void);
 extern bool menu_event_run(int cmd);
 
 //
@@ -73,7 +70,7 @@ extern bool menu_event_run(int cmd);
 extern void file_new_model(void);
 extern void file_open_model(void);
 extern bool file_save_model(void);
-extern void file_close_model(void);
+extern bool file_close_model(void);
 extern void file_import_mesh_obj(bool replace);
 extern void file_insert_mesh_dim3_model(void);
 
@@ -104,6 +101,16 @@ extern int texture_palette_page_list_width(void);
 extern void texture_palette_box(d3rect *box);
 extern int texture_palette_get_selected_texture(void);
 extern void texture_palette_draw(texture_type *txt_list);
+
+//
+// file palette
+//
+
+extern void file_palette_initialize(void);
+extern void file_palette_shutdown(void);
+extern void file_palette_draw(void);
+extern void file_palette_scroll_wheel(d3pnt *pnt,int move);
+extern void file_palette_click(d3pnt *pnt,bool double_click);
 
 //
 // property palette

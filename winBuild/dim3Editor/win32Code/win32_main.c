@@ -126,10 +126,7 @@ LRESULT CALLBACK editor_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam)
 			break;
 
 		case WM_CLOSE:
-			if (state.map_opened) {
-				if (!menu_save_changes_dialog()) return(0);
-				file_close_map();
-			}
+			if (!file_close_map()) return(0);
 			os_application_quit();
 			break;
 
@@ -146,21 +143,6 @@ LRESULT CALLBACK editor_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam)
       Start/Stop Window
       
 ======================================================= */
-
-void main_wind_open(void)
-{
-		// win32 applications always leave the window open so "new" can be used
-		// from the menu
-}
-
-void main_wind_close(void)
-{
-		// win32 keeps window open so menu can be
-		// used so we need to reset here
-
-	os_set_title_window("dim3 Editor");
-	main_wind_draw();
-}
 
 void win32_main_wind_open(void)
 {
@@ -312,7 +294,7 @@ int APIENTRY WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmdLine
 {
 	hinst=hInstance;
 
-	state.map_opened=FALSE;
+	state.map_open=FALSE;
 	
 		// initialize
 
@@ -336,18 +318,10 @@ int APIENTRY WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmdLine
 
 	setup_xml_read();
 
-		// open window
+		// main loop
 
 	win32_main_wind_open();
-
-		// open map
-
-	file_open_map();
-
 	editor_pump();
-
-		// close window
-
 	win32_main_wind_close();
 
 		// shutdown

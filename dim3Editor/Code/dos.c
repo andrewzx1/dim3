@@ -69,12 +69,11 @@ void file_reset_window(void)
 
 void file_close_window(void)
 {
-	state.map_opened=FALSE;
+	state.map_open=FALSE;
 
 	state.texture_edit_idx=-1;
 	state.in_preference=FALSE;
 
-	main_wind_close();
 	menu_fix_enable();
 }
 
@@ -104,9 +103,9 @@ bool file_new_map(void)
 		
     map_new(&map,file_name);
 	
-	state.map_opened=TRUE;
+	state.map_open=TRUE;
+	strcpy(state.map_file_name,file_name);
   	
-    main_wind_open();
 	os_set_title_window(file_name);
 	view_setup_default_views();
 	
@@ -136,7 +135,7 @@ bool file_open_map(void)
 		// open the map
 		
 	if (!dialog_file_open_run("Open a Map","Maps","xml",NULL,file_name)) {
-		state.map_opened=FALSE;
+		state.map_open=FALSE;
 		menu_fix_enable();
 		return(FALSE);
 	}
@@ -147,7 +146,6 @@ bool file_open_map(void)
 	
 	select_clear();
 	
-	main_wind_open();
 	os_set_title_window(file_name);
 
 	sprintf(str,"Loading %s...",file_name);
@@ -195,7 +193,8 @@ bool file_open_map(void)
 	
 		// set flags as opened
 		
-	state.map_opened=TRUE;
+	state.map_open=TRUE;
+	strcpy(state.map_file_name,file_name);
 	
 	file_reset_window();
 	
@@ -237,10 +236,24 @@ void file_save_map(void)
       
 ======================================================= */
 
-void file_close_map(void)
+bool file_close_map(void)
 {
-	if (!state.map_opened) return;
+	int			choice;
+
+		// if no map open, just return
+		// that close is OK
+
+	if (!state.map_open) return(TRUE);
+
+		// confirm save
 	
+	choice=os_dialog_confirm("Save Changes?","Do you want to save the changes to this map?",TRUE);
+	if (choice==1) return(FALSE);
+	
+	if (choice==0) file_save_map();
+
+		// close map
+
 	os_set_wait_cursor();
 
 		// delete VBOs
@@ -259,5 +272,7 @@ void file_close_map(void)
 	file_close_window();
 	
 	os_set_arrow_cursor();
+
+	return(TRUE);
 }
 

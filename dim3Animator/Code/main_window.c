@@ -39,7 +39,7 @@ file_path_setup_type			file_path_setup;
 iface_type						iface;
 animator_state_type				state;
 
-extern list_palette_type		item_palette,property_palette,alt_property_palette;
+extern list_palette_type		file_palette,property_palette;
 extern animator_setup_type		setup;
 
 /* =======================================================
@@ -56,6 +56,7 @@ void main_wind_initialize(void)
 	
 	tool_palette_initialize("Animator");
 	list_palette_initialize("Animator");
+	file_palette_initialize();
 	property_palette_initialize();
 	
 	tool_tip_initialize();
@@ -75,6 +76,7 @@ void main_wind_shutdown(void)
 	
 		// shutdown palettes
 		
+	file_palette_shutdown();
 	property_palette_shutdown();
 	list_palette_shutdown();
 	
@@ -276,14 +278,13 @@ void main_wind_draw_no_swap(void)
 
 		// palettes
 		
-	if (state.model_open) {
-		property_palette_draw();
+	tool_palette_draw();
+	texture_palette_draw(model.textures);
+	
+	file_palette_draw();
+	property_palette_draw();
 		
-		tool_palette_draw();
-		texture_palette_draw(model.textures);
-		
-		tool_tip_draw();
-	}
+	tool_tip_draw();
 }
 
 void main_wind_draw(void)
@@ -377,7 +378,16 @@ void main_wind_click(d3pnt *pnt,bool double_click)
 		return;
 	}
 
-		// item, property and alt property palettes
+		// file palette
+
+	list_palette_total_box(&file_palette,&tbox);
+
+	if ((pnt->x>=tbox.lx) && (pnt->x<=tbox.rx) && (pnt->y>=tbox.ty) && (pnt->y<tbox.by)) {
+		file_palette_click(pnt,double_click);
+		return;
+	}
+
+		// property palette
 
 	list_palette_total_box(&property_palette,&tbox);
 
@@ -389,6 +399,8 @@ void main_wind_click(d3pnt *pnt,bool double_click)
 		// model clicks
 		// turn off animation as it glitches
 		// up the win32 timers
+
+	if (!state.model_open) return;
 
 	old_play_mode=state.play_mode;
 	state.play_mode=play_mode_stop;
@@ -412,8 +424,17 @@ void main_wind_click(d3pnt *pnt,bool double_click)
 void main_wind_scroll_wheel(d3pnt *pnt,int delta)
 {
 	d3rect				tbox;
+
+		// scroll wheel in file palette
+
+	list_palette_total_box(&file_palette,&tbox);
+
+	if ((pnt->x>=tbox.lx) && (pnt->x<=tbox.rx) && (pnt->y>=tbox.ty) && (pnt->y<tbox.by)) {
+		file_palette_scroll_wheel(pnt,delta);
+		return;
+	}
 	
-		// scroll wheel in item, property, or alt property palette
+		// scroll wheel in property palette
 
 	list_palette_total_box(&property_palette,&tbox);
 

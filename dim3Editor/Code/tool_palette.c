@@ -150,6 +150,11 @@ bool tool_get_highlight_state(int tool_idx)
 	return(FALSE);
 }
 
+bool tool_get_disabled_state(int tool_idx)
+{
+	return(!state.map_open);
+}
+
 /* =======================================================
 
       Tool Palette Button Clicks
@@ -159,6 +164,10 @@ bool tool_get_highlight_state(int tool_idx)
 void tool_click(int tool_idx)
 {
 	editor_view_type		*view;
+
+		// nothing to do if map closed
+
+	if (!state.map_open) return;
 
 		// if in texture view, any tool click
 		// leaves it

@@ -310,6 +310,41 @@ void list_palette_picker_box(list_palette_type *list,d3rect *box)
 	box->by=wbox.by;
 }
 
+void list_palette_border_box(list_palette_type *list,d3rect *box)
+{
+	d3rect			wbox;
+	
+	os_get_window_box(&wbox);
+
+	if (list->open) {
+		if (!list->flag.left) {
+			box->lx=wbox.rx-list_palette_tree_sz;
+			box->rx=box->lx+list_palette_border_sz;
+		}
+		else {
+			box->lx=list_palette_tree_sz-list_palette_border_sz;
+			box->rx=box->lx+list_palette_border_sz;
+		}
+	}
+	else {
+		if (!list->flag.left) {
+			box->lx=wbox.rx-list_palette_border_sz;
+			box->rx=wbox.rx;
+		}
+		else {
+			box->lx=0;
+			box->rx=list_palette_border_sz;
+		}
+	}
+
+#ifndef D3_SETUP
+	box->ty=wbox.ty+(tool_palette_pixel_size()+1);
+#else
+	box->ty=wbox.ty;
+#endif
+	box->by=wbox.by;
+}
+
 /* =======================================================
 
       List Add Items
@@ -1179,7 +1214,7 @@ void list_palette_pane_draw_item_string(list_palette_pane_type *pane,d3rect *box
 	text_draw_right(rx,y,list_item_font_size,&col,str);
 }
 
-void list_palette_pane_draw_item_button(list_palette_pane_type *pane,d3rect *box,int idx)
+void list_palette_pane_draw_item_button(list_palette_pane_type *pane,d3rect *box,bool left,int idx)
 {
 	int						lx,rx,ty,by;
 	float					vertexes[8],uvs[8]={0.0f,0.0f,1.0f,0.0f,1.0f,1.0f,0.0f,1.0f};
@@ -1189,6 +1224,7 @@ void list_palette_pane_draw_item_button(list_palette_pane_type *pane,d3rect *box
 	if (item->button_type==list_button_none) return;
 
 	rx=box->rx-(list_palette_scroll_wid+1);
+	if (left) rx-=list_palette_border_sz;
 	lx=rx-16;
 	ty=((box->ty+item->y)-list_item_font_high)-pane->scroll_offset;
 	by=ty+16;
@@ -1368,9 +1404,9 @@ void list_palette_pane_draw_title(list_palette_pane_type *pane,d3rect *box)
 	glDisable(GL_ALPHA_TEST);
 }
 
-void list_palette_pane_draw_scrollbar(list_palette_pane_type *pane,d3rect *box)
+void list_palette_pane_draw_scrollbar(list_palette_pane_type *pane,d3rect *box,bool left)
 {
-	int					lx,mx,ty,by,thumb_ty,thumb_by,
+	int					lx,rx,mx,ty,by,thumb_ty,thumb_by,
 						scroll_max;
 	float				vertexes[8],colors[16];
 	
@@ -1379,10 +1415,12 @@ void list_palette_pane_draw_scrollbar(list_palette_pane_type *pane,d3rect *box)
 	glEnableClientState(GL_COLOR_ARRAY);
 
 	lx=box->rx-list_palette_scroll_wid;
+	if (left) lx-=list_palette_border_sz;
+	rx=lx+list_palette_scroll_wid;
 	ty=box->ty+list_palette_pane_get_title_high(pane);
 	by=box->by;
 
-	mx=(lx+box->rx)>>1;
+	mx=(lx+rx)>>1;
 
 	vertexes[0]=vertexes[6]=(float)lx;
 	vertexes[2]=vertexes[4]=(float)mx;
@@ -1398,7 +1436,7 @@ void list_palette_pane_draw_scrollbar(list_palette_pane_type *pane,d3rect *box)
 	glDrawArrays(GL_QUADS,0,4);
 
 	vertexes[0]=vertexes[6]=(float)mx;
-	vertexes[2]=vertexes[4]=(float)box->rx;
+	vertexes[2]=vertexes[4]=(float)rx;
 	vertexes[1]=vertexes[3]=(float)ty;
 	vertexes[5]=vertexes[7]=(float)by;
 
@@ -1421,7 +1459,7 @@ void list_palette_pane_draw_scrollbar(list_palette_pane_type *pane,d3rect *box)
 		list_palette_get_scroll_thumb_position(pane,box,&thumb_ty,&thumb_by);
 
 		vertexes[0]=vertexes[6]=(float)(lx+1);
-		vertexes[2]=vertexes[4]=(float)(box->rx-1);
+		vertexes[2]=vertexes[4]=(float)(rx-1);
 		vertexes[1]=vertexes[3]=(float)(thumb_ty+1);
 		vertexes[5]=vertexes[7]=(float)(thumb_by-1);
 
@@ -1431,7 +1469,7 @@ void list_palette_pane_draw_scrollbar(list_palette_pane_type *pane,d3rect *box)
 		glDrawArrays(GL_QUADS,0,4);
 
 		vertexes[0]=vertexes[6]=(float)(lx+1);
-		vertexes[2]=vertexes[4]=(float)box->rx;
+		vertexes[2]=vertexes[4]=(float)rx;
 		vertexes[1]=vertexes[3]=(float)(thumb_ty+1);
 		vertexes[5]=vertexes[7]=(float)thumb_by;
 
@@ -1519,9 +1557,9 @@ void list_palette_pane_disable(d3rect *box)
       
 ======================================================= */
 
-void list_palette_pane_draw_item(list_palette_pane_type *pane,d3rect *box,int idx)
+void list_palette_pane_draw_item(list_palette_pane_type *pane,d3rect *box,bool left,int idx)
 {
-	int							x,y;
+	int							x,y,lx,rx;
 	float						vertexes[8];
 	bool						selected;
 	char						str[256];
@@ -1537,10 +1575,17 @@ void list_palette_pane_draw_item(list_palette_pane_type *pane,d3rect *box,int id
 	if ((y<(box->ty+list_palette_pane_get_title_high(pane))) || ((y-list_item_font_high)>box->by)) return;
 
 		// draw header
-		
+
+	lx=box->lx;
+	rx=box->rx-list_palette_scroll_wid;
+	if (left) {
+		lx-=list_palette_border_sz;
+		rx-=list_palette_border_sz;
+	}
+
 	if (item->ctrl_type==list_item_ctrl_header) {
-		vertexes[0]=vertexes[6]=(float)box->lx;
-		vertexes[2]=vertexes[4]=(float)(box->rx-list_palette_scroll_wid);
+		vertexes[0]=vertexes[6]=(float)lx;
+		vertexes[2]=vertexes[4]=(float)rx;
 		vertexes[1]=vertexes[3]=(float)(y-list_item_font_high);
 		vertexes[5]=vertexes[7]=(float)y;
 
@@ -1567,8 +1612,8 @@ void list_palette_pane_draw_item(list_palette_pane_type *pane,d3rect *box,int id
 		}
 
 		if (selected) {
-			vertexes[0]=vertexes[6]=(float)box->lx;
-			vertexes[2]=vertexes[4]=(float)(box->rx-list_palette_scroll_wid);
+			vertexes[0]=vertexes[6]=(float)lx;
+			vertexes[2]=vertexes[4]=(float)rx;
 			vertexes[1]=vertexes[3]=(float)((y-list_item_font_high)+1);
 			vertexes[5]=vertexes[7]=(float)y;
 
@@ -1591,7 +1636,7 @@ void list_palette_pane_draw_item(list_palette_pane_type *pane,d3rect *box,int id
 
 		// draw item
 		
-	x=box->lx+item->x;
+	x=lx+item->x;
 	y=(box->ty+item->y)-pane->scroll_offset;
 
 	switch (item->ctrl_type) {
@@ -1600,12 +1645,12 @@ void list_palette_pane_draw_item(list_palette_pane_type *pane,d3rect *box,int id
 
 		case list_item_ctrl_header:
 			text_draw(x,y,list_item_font_size,NULL,item->name);
-			list_palette_pane_draw_item_button(pane,box,idx);
+			list_palette_pane_draw_item_button(pane,box,left,idx);
 			break;
 
 		case list_item_ctrl_text:
 			text_draw(x,y,list_item_font_size,&col,item->name);
-			list_palette_pane_draw_item_button(pane,box,idx);
+			list_palette_pane_draw_item_button(pane,box,left,idx);
 			break;
 
 			// color
@@ -1620,7 +1665,7 @@ void list_palette_pane_draw_item(list_palette_pane_type *pane,d3rect *box,int id
 		case list_item_ctrl_string:
 			text_draw(x,y,list_item_font_size,&col,item->name);
 			list_palette_pane_draw_item_string(pane,box,item,item->value.str);
-			list_palette_pane_draw_item_button(pane,box,idx);
+			list_palette_pane_draw_item_button(pane,box,left,idx);
 			break;
 
 			// param
@@ -1629,7 +1674,7 @@ void list_palette_pane_draw_item(list_palette_pane_type *pane,d3rect *box,int id
 			text_draw(x,y,list_item_font_size,&col,item->name);
 			property_get_parameter(item->limit.param_idx,item->value.str_ptr,str);
 			list_palette_pane_draw_item_string(pane,box,item,str);
-			list_palette_pane_draw_item_button(pane,box,idx);
+			list_palette_pane_draw_item_button(pane,box,left,idx);
 			break;
 
 			// int
@@ -1638,7 +1683,7 @@ void list_palette_pane_draw_item(list_palette_pane_type *pane,d3rect *box,int id
 			sprintf(str,"%d",*item->value.int_ptr);
 			text_draw(x,y,list_item_font_size,&col,item->name);
 			list_palette_pane_draw_item_string(pane,box,item,str);
-			list_palette_pane_draw_item_button(pane,box,idx);
+			list_palette_pane_draw_item_button(pane,box,left,idx);
 			break;
 
 			// float
@@ -1647,7 +1692,7 @@ void list_palette_pane_draw_item(list_palette_pane_type *pane,d3rect *box,int id
 			sprintf(str,"%.2f",*item->value.float_ptr);
 			text_draw(x,y,list_item_font_size,&col,item->name);
 			list_palette_pane_draw_item_string(pane,box,item,str);
-			list_palette_pane_draw_item_button(pane,box,idx);
+			list_palette_pane_draw_item_button(pane,box,left,idx);
 			break;
 
 			// checkbox
@@ -1663,7 +1708,7 @@ void list_palette_pane_draw_item(list_palette_pane_type *pane,d3rect *box,int id
 			sprintf(str,"%d,%d,%d",item->value.pnt_ptr->x,item->value.pnt_ptr->y,item->value.pnt_ptr->z);
 			text_draw(x,y,list_item_font_size,&col,item->name);
 			list_palette_pane_draw_item_string(pane,box,item,str);
-			list_palette_pane_draw_item_button(pane,box,idx);
+			list_palette_pane_draw_item_button(pane,box,left,idx);
 			break;
 
 			// angle
@@ -1672,7 +1717,7 @@ void list_palette_pane_draw_item(list_palette_pane_type *pane,d3rect *box,int id
 			sprintf(str,"%.2f,%.2f,%.2f",item->value.ang_ptr->x,item->value.ang_ptr->y,item->value.ang_ptr->z);
 			text_draw(x,y,list_item_font_size,&col,item->name);
 			list_palette_pane_draw_item_string(pane,box,item,str);
-			list_palette_pane_draw_item_button(pane,box,idx);
+			list_palette_pane_draw_item_button(pane,box,left,idx);
 			break;
 
 			// vector
@@ -1682,7 +1727,7 @@ void list_palette_pane_draw_item(list_palette_pane_type *pane,d3rect *box,int id
 			sprintf(str,"%.2f,%.2f,%.2f",item->value.vct_ptr->x,item->value.vct_ptr->y,item->value.vct_ptr->z);
 			text_draw(x,y,list_item_font_size,&col,item->name);
 			list_palette_pane_draw_item_string(pane,box,item,str);
-			list_palette_pane_draw_item_button(pane,box,idx);
+			list_palette_pane_draw_item_button(pane,box,left,idx);
 			break;
 
 			// uv
@@ -1691,7 +1736,7 @@ void list_palette_pane_draw_item(list_palette_pane_type *pane,d3rect *box,int id
 			sprintf(str,"%.2f,%.2f",item->value.uv_ptr->x,item->value.uv_ptr->y);
 			text_draw(x,y,list_item_font_size,&col,item->name);
 			list_palette_pane_draw_item_string(pane,box,item,str);
-			list_palette_pane_draw_item_button(pane,box,idx);
+			list_palette_pane_draw_item_button(pane,box,left,idx);
 			break;
 
 			// a list
@@ -1700,7 +1745,7 @@ void list_palette_pane_draw_item(list_palette_pane_type *pane,d3rect *box,int id
 			list_palette_get_current_picker_value(item,str);
 			text_draw(x,y,list_item_font_size,&col,item->name);
 			list_palette_pane_draw_item_string(pane,box,item,str);
-			list_palette_pane_draw_item_button(pane,box,idx);
+			list_palette_pane_draw_item_button(pane,box,left,idx);
 			break;
 
 			// pick color
@@ -1734,12 +1779,12 @@ void list_palette_pane_draw(list_palette_pane_type *pane,d3rect *box,bool draw_b
 		// items
 
 	for (n=0;n!=pane->item_count;n++) {
-		list_palette_pane_draw_item(pane,box,n);
+		list_palette_pane_draw_item(pane,box,left,n);
 	}
 	
 		// list pieces
 
-	list_palette_pane_draw_scrollbar(pane,box);
+	list_palette_pane_draw_scrollbar(pane,box,left);
 	list_palette_pane_draw_title(pane,box);
 	if (draw_border) list_palette_draw_border(box,left);
 
@@ -2063,7 +2108,7 @@ void list_palette_pane_click_scroll_bar(list_palette_pane_type *pane,d3rect *box
 
 bool list_palette_pane_click(list_palette_type *list,list_palette_pane_type *pane,d3rect *box,d3pnt *pnt)
 {
-	int						item_idx;
+	int						x,item_idx;
 	d3pnt					pt;
 	list_palette_item_type	*item;
 
@@ -2087,7 +2132,10 @@ bool list_palette_pane_click(list_palette_type *list,list_palette_pane_type *pan
 	
 		// click in scroll bar
 		
-	if (pt.x>=((box->rx-box->lx)-list_palette_scroll_wid)) {
+	x=(box->rx-box->lx)-list_palette_scroll_wid;
+	if (list->flag.left) x-=list_palette_border_sz;
+
+	if (pt.x>=x) {
 		list_palette_pane_click_scroll_bar(pane,box);
 		return(FALSE);
 	}
@@ -2132,9 +2180,9 @@ bool list_palette_click(list_palette_type *list,d3pnt *pnt,bool double_click)
 
 		// click in close border
 
-	list_palette_item_box(list,&box);
+	list_palette_border_box(list,&box);
 
-	if ((pnt->x-box.lx)<=list_palette_border_sz) {
+	if ((pnt->x>=box.lx) && (pnt->x<=box.rx)) {
 		list->open=!list->open;
 		main_wind_draw();
 		return(FALSE);

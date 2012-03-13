@@ -51,11 +51,13 @@ list_palette_type				property_palette;
 
 void property_palette_initialize(void)
 {
-	list_palette_list_initialize(&property_palette,"Item Properties",FALSE,FALSE,FALSE);
+	list_palette_list_initialize(&property_palette,"No Properties",FALSE,FALSE,FALSE);
 
 	property_palette.item_pane.click.id=0;
 	property_palette.item_pane.click.idx=-1;
 	property_palette.item_pane.click.item=NULL;
+
+	property_palette.open=FALSE;
 }
 
 void property_palette_shutdown(void)
@@ -185,6 +187,14 @@ void property_palette_draw(void)
 		// delete the properties
 
 	list_palette_delete_all_items(&property_palette);
+
+		// can't do anything if no map
+
+	if (!state.map_open) {
+		list_palette_set_title(&property_palette,"No Properties",NULL,NULL,NULL,NULL,NULL);
+		list_palette_draw(&property_palette);
+		return;
+	}
 
 		// if texture window is up,
 		// put in texture properties
@@ -509,6 +519,10 @@ void property_palette_click(d3pnt *pnt,bool double_click)
 		if (old_open!=list_palette_is_open(&property_palette)) main_wind_draw();
 		return;
 	}
+
+		// can't do anything if no map
+
+	if (!state.map_open) return;
 		
 		// if texture window is up, texture properties
 

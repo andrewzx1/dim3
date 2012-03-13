@@ -471,11 +471,12 @@ typedef struct		{
 												cur_no_sel_piece_type,cur_group_idx,
 												cur_cinema_idx,cur_cinema_action_idx,
 												cur_movement_idx,cur_movement_move_idx;
-						bool					map_opened,
+						bool					map_open,
 												free_look,select_add,auto_texture,select_box_on,
 												show_liquid,show_normals,show_movements,
 												show_node,show_object,show_lightsoundparticle,
 												in_preference;
+						char					map_file_name[file_str_len];
 						d3pnt					select_box_start_pnt,select_box_end_pnt;
 					} editor_state_type;
 					
