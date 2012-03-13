@@ -355,6 +355,10 @@
 					Name="Palettes"
 					>
 					<File
+						RelativePath="..\..\dim3Animator\Code\file_palette.c"
+						>
+					</File>
+					<File
 						RelativePath="..\..\dim3Common\Code\list_palette_common.c"
 						>
 					</File>

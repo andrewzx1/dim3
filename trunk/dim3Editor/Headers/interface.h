@@ -36,8 +36,6 @@ extern void main_app_shutdown(void);
 // main window
 //
 
-extern void main_wind_open(void);
-extern void main_wind_close(void);
 extern void main_wind_initialize(void);
 extern void main_wind_shutdown(void);
 extern void main_wind_gl_setup(void);
@@ -63,7 +61,6 @@ extern bool setup_xml_write(void);
 
 extern void menu_fix_enable(void);
 extern void menu_update_view(void);
-extern bool menu_save_changes_dialog(void);
 extern bool menu_event_run(int cmd);
 
 //
@@ -184,7 +181,7 @@ extern void property_palette_click_movement_move(int movement_idx,int move_idx,b
 extern bool file_new_map(void);
 extern bool file_open_map(void);
 extern void file_save_map(void);
-extern void file_close_map(void);
+extern bool file_close_map(void);
 
 //
 // launching

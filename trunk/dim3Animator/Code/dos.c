@@ -107,7 +107,7 @@ void file_reset_state(void)
 	undo_clear();
 	menu_update();
 
-	os_set_title_window(state.file_name);
+	os_set_title_window(state.model_file_name);
 }
 
 /* =======================================================
@@ -127,21 +127,20 @@ void file_new_model(void)
 	
 	if (!dialog_file_new_run("New Model",fname)) return;
 	
-	strcpy(state.file_name,fname);
+	strcpy(state.model_file_name,fname);
 	
 		// create model
 
 	os_set_wait_cursor();
 		
 	model_setup(&file_path_setup,FALSE,mipmap_mode_none,FALSE,FALSE);
-	model_new(&model,state.file_name);
+	model_new(&model,state.model_file_name);
 	
 	model.nmesh=1;
 	strcpy(model.meshes[0].name,"Default");
 	
 	model.view_box.size.x=model.view_box.size.y=model.view_box.size.z=100;
 
-	main_wind_open();
 	os_select_window();
 	
 	os_set_wait_cursor();
@@ -151,7 +150,7 @@ void file_new_model(void)
 	file_paths_data_default(&file_path_setup,base_path,"Models",NULL,NULL);
 		
 	strcat(base_path,"/");
-	strcat(base_path,state.file_name);
+	strcat(base_path,state.model_file_name);
 	os_create_directory(base_path);
 	
 	sprintf(path,"%s/Textures",base_path);
@@ -160,7 +159,6 @@ void file_new_model(void)
         // write the XML
 	
 	if (!model_save(&model,err_str)) {
-		main_wind_close();
 		os_set_arrow_cursor();
 		os_dialog_alert("dim3 Animator could not save model.",err_str);
 		return;
@@ -198,7 +196,6 @@ void file_open_model(void)
 		
 	os_set_wait_cursor();
 	
- 	main_wind_open();
 	os_select_window();
    
 	model_setup(&file_path_setup,FALSE,mipmap_mode_none,FALSE,FALSE);
@@ -206,7 +203,6 @@ void file_open_model(void)
 		os_dialog_alert("Animator","There was a problem loading the model file.");
 		state.model_open=FALSE;
 		file_reset_state();
-		main_wind_close();
 		os_set_arrow_cursor();
 		return;
 	}
@@ -216,7 +212,7 @@ void file_open_model(void)
 		// finish
 		
 	state.model_open=TRUE;
-	strcpy(state.file_name,file_name);
+	strcpy(state.model_file_name,file_name);
 	
 	file_reset_state();
 	main_wind_draw();
@@ -249,11 +245,23 @@ bool file_save_model(void)
       
 ======================================================= */
 
-void file_close_model(void)
+bool file_close_model(void)
 {
-	int				n;
+	int			n,choice;
 	
-	if (!state.model_open) return;
+		// if no model open, just
+		// return OK to close
+
+	if (!state.model_open) return(TRUE);
+
+		// check for save
+
+	choice=os_dialog_confirm("Save Changes?","Do you want to save the changes to this model?",TRUE);
+	if (choice==1) return(FALSE);
+	
+	if (choice==0) file_save_model();
+
+		// close model
 	
 	model_close(&model);
 	
@@ -279,7 +287,7 @@ void file_close_model(void)
 
 	state.model_open=FALSE;
 
-	main_wind_close();
+	return(TRUE);
 }
 
 /* =======================================================

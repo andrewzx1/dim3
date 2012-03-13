@@ -91,6 +91,17 @@ void texture_palette_box(d3rect *box)
 
 /* =======================================================
 
+      Texture Palette Disabled
+      
+======================================================= */
+
+bool texture_palette_get_disabled_state(void)
+{
+	return(!state.map_open);
+}
+
+/* =======================================================
+
       Get and Put Selection Texture
       
 ======================================================= */
@@ -192,4 +203,5 @@ void texture_palette_reset(void)
 	sel=texture_palette_get_selected_texture();
 	if (sel!=-1) txt_palette_cur_page=sel/(setup.big_texture?16:32);
 }
+
 

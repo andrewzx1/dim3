@@ -96,23 +96,6 @@ void prepare_model(void)
 
 /* =======================================================
 
-      Save Changes
-      
-======================================================= */
-
-bool menu_save_changes_dialog(void)
-{
-	int			choice;
-	
-	choice=os_dialog_confirm("Save Changes?","Do you want to save the changes to this model?",TRUE);
-	if (choice==1) return(FALSE);
-	
-	if (choice==0) file_save_model();
-	return(TRUE);
-}
-
-/* =======================================================
-
       Menu Events
       
 ======================================================= */
@@ -143,9 +126,8 @@ bool menu_event_run(int cmd)
 			return(TRUE);
 			
 		case kCommandFileClose:
-			if (!menu_save_changes_dialog()) return(TRUE);
-			file_close_model();
 			main_wind_play(play_mode_stop);
+			if (!file_close_model()) return(TRUE);
 			menu_update();
 			return(TRUE);
 			
@@ -161,11 +143,9 @@ bool menu_event_run(int cmd)
 			return(TRUE);
 
 		case kCommandFileQuit:
-			if (state.model_open) {
-				if (!menu_save_changes_dialog()) return(TRUE);
-				file_close_model();
+			if (file_close_model()) {
+				os_application_quit();
 			}
-			os_application_quit();
 			return(TRUE);
 			
 			// edit menu

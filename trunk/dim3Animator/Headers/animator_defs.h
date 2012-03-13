@@ -300,7 +300,7 @@ typedef struct		{
 						bool						model_open,texture,mesh,bone,hit_box,
 													normal,view_box,bone_names,sel_vertex_with_bone,
 													drag_sel_on,in_preference,show_mesh[max_model_mesh];
-						char						file_name[256];
+						char						model_file_name[256];
 						d3pnt						shift;
 						d3ang						ang;
 						d3rect						drag_sel_box;

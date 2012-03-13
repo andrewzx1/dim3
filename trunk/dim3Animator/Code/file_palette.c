@@ -1,6 +1,6 @@
 /****************************** File *********************************
 
-Module: dim3 Editor
+Module: dim3 Animator
 Author: Brian Barnes
  Usage: File Palette
 
@@ -26,21 +26,21 @@ and can be sold or given away.
 *********************************************************************/
 
 #ifdef D3_PCH
-	#include "dim3editor.h"
+	#include "dim3animator.h"
 #endif
 
 #include "glue.h"
 #include "ui_common.h"
 #include "interface.h"
 
-#define kPropertyMapAdd			0
-#define kPropertyMap			100
+#define kPropertyModelAdd			0
+#define kPropertyModel				100
 
-extern editor_state_type		state;
+extern animator_state_type		state;
 extern file_path_setup_type		file_path_setup;
 
-bool							file_palette_reset_maps;
 list_palette_type				file_palette;
+bool							file_palette_reset_models;
 
 /* =======================================================
 
@@ -50,7 +50,7 @@ list_palette_type				file_palette;
 
 void file_palette_initialize(void)
 {
-	list_palette_list_initialize(&file_palette,"Maps",TRUE,FALSE,FALSE);
+	list_palette_list_initialize(&file_palette,"Models",TRUE,FALSE,FALSE);
 
 	file_palette.item_pane.click.id=0;
 	file_palette.item_pane.click.idx=-1;
@@ -58,9 +58,9 @@ void file_palette_initialize(void)
 
 	file_palette.open=TRUE;
 
-		// set maps to get loaded
+		// set models to get loaded
 
-	file_palette_reset_maps=TRUE;
+	file_palette_reset_models=TRUE;
 }
 
 void file_palette_shutdown(void)
@@ -82,18 +82,18 @@ void file_palette_fill(void)
 
 		// already filled?
 
-	if (!file_palette_reset_maps) return;
+	if (!file_palette_reset_models) return;
 
 	list_palette_delete_all_items(&file_palette);
-	file_palette_reset_maps=FALSE;
+	file_palette_reset_models=FALSE;
 
 		// load the files
 
-	fpd=file_paths_read_directory_data(&file_path_setup,"Maps","xml");
+	fpd=file_paths_read_directory_data_dir(&file_path_setup,"Models","Mesh.xml;Model.xml");
 
 		// fill the list
 
-	list_palette_add_header_button(&file_palette,kPropertyMapAdd,"Maps",list_button_plus);
+	list_palette_add_header_button(&file_palette,kPropertyModelAdd,"Models",list_button_plus);
 
 	list_palette_sort_mark_start(&file_palette);
 
@@ -101,9 +101,9 @@ void file_palette_fill(void)
 		if (fpd->files[n].is_dir) continue;
 
 		sel=FALSE;
-		if (state.map_open) sel=strcmp(state.map_file_name,fpd->files[n].file_name);
+		if (state.model_open) sel=strcmp(state.model_file_name,fpd->files[n].file_name);
 
-		list_palette_add_item(&file_palette,kPropertyMap,n,fpd->files[n].file_name,sel,FALSE);
+		list_palette_add_item(&file_palette,kPropertyModel,n,fpd->files[n].file_name,sel,FALSE);
 	}
 
 	list_palette_sort(&file_palette);
@@ -159,7 +159,7 @@ void file_palette_click(d3pnt *pnt,bool double_click)
 
 	if (!double_click) return;
 
-		// open new map
+		// open new model
 
 
 	main_wind_draw();

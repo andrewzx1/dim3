@@ -126,10 +126,7 @@ LRESULT CALLBACK animator_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lPara
 			break;
 
 		case WM_CLOSE:
-			if (state.model_open) {
-				if (!menu_save_changes_dialog()) return(0);
-				file_close_model();
-			}
+			if (!file_close_model()) return(0);
 			os_application_quit();
 			break;
 
@@ -157,21 +154,6 @@ void CALLBACK wnd_timer_proc(HWND hwnd,UINT msg,UINT_PTR id,DWORD tick)
       Start/Stop Window
       
 ======================================================= */
-
-void main_wind_open(void)
-{
-	// win32 applications always leave the window open so "new" can be used
-	// from the menu
-}
-
-void main_wind_close(void)
-{
-		// win32 keeps window open so menu can be
-		// used so we need to reset here
-
-	os_set_title_window("dim3 Animator");
-	main_wind_draw();
-}
 
 void win32_main_wind_open(void)
 {
@@ -355,18 +337,10 @@ int APIENTRY WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmdLine
 
 	setup_xml_read();
 
-		// open window
+		// main loop
 
 	win32_main_wind_open();
-
-		// run animator
-	
-	file_open_model();
 	animator_pump();
-	file_close_model();
-
-		// close window
-
 	win32_main_wind_close();
 
 		// shutdown

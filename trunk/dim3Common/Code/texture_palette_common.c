@@ -39,6 +39,7 @@ and can be sold or given away.
 
 int							txt_palette_cur_page;
 
+extern bool texture_palette_get_disabled_state(void);
 extern int texture_palette_get_selected_texture(void);
 extern void texture_palette_put_selected_texture(int txt_idx);
 
@@ -53,7 +54,7 @@ void texture_palette_draw(texture_type *txt_list)
 	int					n,k,x,ty,by,sel,idx,
 						page_list_count,per_page_count,pixel_sz;
 	float				vertexes[8],uvs[8]={0.0f,0.0f,1.0f,0.0f,1.0f,1.0f,0.0f,1.0f};
-	bool				has_texture;
+	bool				has_texture,is_disabled;
 	d3rect				wbox,tbox;
 	texture_type		*texture;
 	
@@ -86,6 +87,8 @@ void texture_palette_draw(texture_type *txt_list)
 	page_list_count=texture_palette_page_list_count();
 	per_page_count=texture_palette_per_page_count();
 	pixel_sz=texture_palette_pixel_size();
+
+	is_disabled=texture_palette_get_disabled_state();
 	
 		// texture page switch
 
@@ -132,11 +135,13 @@ void texture_palette_draw(texture_type *txt_list)
 				
 			has_texture=FALSE;
 			idx=n*per_page_count;
-			
-			for (k=idx;k!=(idx+per_page_count);k++) {
-				if (txt_list[k].frames[0].bitmap.gl_id!=-1) {
-					has_texture=TRUE;
-					break;
+
+			if (!is_disabled) {
+				for (k=idx;k!=(idx+per_page_count);k++) {
+					if (txt_list[k].frames[0].bitmap.gl_id!=-1) {
+						has_texture=TRUE;
+						break;
+					}
 				}
 			}
 			
@@ -158,48 +163,54 @@ void texture_palette_draw(texture_type *txt_list)
 
 		// textures
 		
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_NOTEQUAL,0);
-	
-	glColor4f(1.0f,1.0f,1.0f,1.0f);
-
-	glEnable(GL_TEXTURE_2D);
-
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	
-	x=tbox.lx+texture_palette_page_list_width();
 	ty=tbox.ty+1;
 	by=(ty+pixel_sz)-1;
+
+	if (!is_disabled) {
 		
-	for (n=0;n!=per_page_count;n++) {
-		texture=&txt_list[n+(txt_palette_cur_page*per_page_count)];
+		x=tbox.lx+texture_palette_page_list_width();
 		
-			// the textures
+		glEnable(GL_ALPHA_TEST);
+		glAlphaFunc(GL_NOTEQUAL,0);
+		
+		glColor4f(1.0f,1.0f,1.0f,1.0f);
+
+		glEnable(GL_TEXTURE_2D);
+
+		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 			
-		if (texture->frames[0].bitmap.gl_id!=-1) {
-			glBindTexture(GL_TEXTURE_2D,texture->frames[0].bitmap.gl_id);
+		for (n=0;n!=per_page_count;n++) {
+			texture=&txt_list[n+(txt_palette_cur_page*per_page_count)];
+			
+				// the textures
+				
+			if (texture->frames[0].bitmap.gl_id!=-1) {
+				glBindTexture(GL_TEXTURE_2D,texture->frames[0].bitmap.gl_id);
 
-			vertexes[0]=vertexes[6]=(float)x;
-			vertexes[2]=vertexes[4]=(float)(x+pixel_sz);
-			vertexes[1]=vertexes[3]=(float)ty;
-			vertexes[5]=vertexes[7]=(float)by;
+				vertexes[0]=vertexes[6]=(float)x;
+				vertexes[2]=vertexes[4]=(float)(x+pixel_sz);
+				vertexes[1]=vertexes[3]=(float)ty;
+				vertexes[5]=vertexes[7]=(float)by;
 
-			glVertexPointer(2,GL_FLOAT,0,vertexes);
-			glTexCoordPointer(2,GL_FLOAT,0,uvs);
+				glVertexPointer(2,GL_FLOAT,0,vertexes);
+				glTexCoordPointer(2,GL_FLOAT,0,uvs);
 
-			glDrawArrays(GL_QUADS,0,4);
+				glDrawArrays(GL_QUADS,0,4);
+			}
+			
+			x+=pixel_sz;
 		}
+
+		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 		
-		x+=pixel_sz;
+		glDisable(GL_TEXTURE_2D);
+		glDisable(GL_ALPHA_TEST);
 	}
 
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-	
-	glDisable(GL_TEXTURE_2D);
-	glDisable(GL_ALPHA_TEST);
-	
 		// right fill
 	
+	x=(tbox.lx+texture_palette_page_list_width())+(per_page_count*pixel_sz);
+
 	vertexes[0]=vertexes[6]=(float)x;
 	vertexes[2]=vertexes[4]=(float)tbox.rx;
 	vertexes[1]=vertexes[3]=(float)ty;
@@ -267,6 +278,10 @@ void texture_palette_click(texture_type *txt_list,d3pnt *pnt,bool double_click)
 	int				nsel,page,
 					page_list_count,per_page_count,pixel_sz;
 	d3rect			tbox;
+
+		// no click if disabled
+
+	if (texture_palette_get_disabled_state()) return;
 					
 		// settings
 		
