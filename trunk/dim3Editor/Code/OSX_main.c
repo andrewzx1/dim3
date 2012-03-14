@@ -150,10 +150,8 @@ OSStatus main_wind_event_callback(EventHandlerCallRef eventhandler,EventRef even
 					return(noErr);
 				
 				case kEventWindowClose:
-					if (state.map_opened) {
-						if (!menu_save_changes_dialog()) return(noErr);
-						file_close_map();
-					}
+					if (!file_close_map()) return(noErr);
+					os_application_quit();
 					return(noErr);
 					
 			}
@@ -393,7 +391,9 @@ int main(int argc,char *argv[])
 
 		// main loop
 		
+	main_wind_open();
 	main_loop();
+	main_wind_close();
 	
 		// shutdown
 		

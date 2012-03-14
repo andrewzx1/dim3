@@ -119,10 +119,8 @@ OSStatus main_wind_event_handler(EventHandlerCallRef eventhandler,EventRef event
 					return(noErr);
 					
 				case kEventWindowClose:
-					if (!menu_save_changes_dialog()) return(noErr);
-					file_close_model();
 					main_wind_play(play_mode_stop);
-					menu_update();
+					if (!file_close_model()) return(noErr);
 					return(noErr);
 					
                 case kEventWindowCursorChange:
@@ -377,7 +375,9 @@ int main(int argc,char *argv[])
 	
 		// main loop
 		
+	main_wind_open();
 	main_loop();
+	main_wind_close();
 	
 		// shutdown
 		

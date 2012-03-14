@@ -73,10 +73,6 @@ bool main_app_initialize(void)
 		
 	setup_xml_read();
 	
-		// open initial model
-		
-    file_open_model();
-	
 	return(TRUE);
 }
 
