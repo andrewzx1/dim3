@@ -50,7 +50,7 @@ bool main_app_initialize(void)
 	
 		// no map
 		
- 	state.map_opened=FALSE;
+ 	state.map_open=FALSE;
    
 		// setup file paths
 		
@@ -76,10 +76,6 @@ bool main_app_initialize(void)
 		
 	undo_initialize();
 	menu_fix_enable();
-	
-		// open initial map
-		
-	file_open_map();
 	
 	return(TRUE);
 }
