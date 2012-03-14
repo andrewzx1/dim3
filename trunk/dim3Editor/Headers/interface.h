@@ -179,7 +179,7 @@ extern void property_palette_click_movement_move(int movement_idx,int move_idx,b
 //
 
 extern bool file_new_map(void);
-extern bool file_open_map(void);
+extern bool file_open_map(char *file_name);
 extern void file_save_map(void);
 extern bool file_close_map(void);
 

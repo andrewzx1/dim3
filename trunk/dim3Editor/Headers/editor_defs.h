@@ -304,9 +304,6 @@ typedef struct		{
 
 #define kCommandAbout							FOUR_CHAR_CODE('abot')
 
-#define kCommandFileNew							FOUR_CHAR_CODE('new ')
-#define kCommandFileOpen						FOUR_CHAR_CODE('open')
-#define kCommandFileClose						FOUR_CHAR_CODE('clse')
 #define kCommandFileSave						FOUR_CHAR_CODE('save')
 #define kCommandFilePreference					FOUR_CHAR_CODE('pref')
 #define kCommandFileQuit						FOUR_CHAR_CODE('quit')

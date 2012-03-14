@@ -5,12 +5,9 @@
 #define IDR_MAIN_MENU						10
 #define IDR_ACCELERATOR						11
 
-#define ID_FILE_NEW							100
-#define ID_FILE_OPEN						101
-#define ID_FILE_CLOSE						102
-#define ID_FILE_SAVE						103
-#define ID_FILE_PREFERENCE					104
-#define ID_FILE_EXIT						105
+#define ID_FILE_SAVE						100
+#define ID_FILE_PREFERENCE					101
+#define ID_FILE_EXIT						102
 
 #define ID_FILE_UNDO						200
 #define ID_FILE_DELETE						201

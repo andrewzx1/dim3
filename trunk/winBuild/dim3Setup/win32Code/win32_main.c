@@ -141,21 +141,6 @@ LRESULT CALLBACK setup_wnd_proc(HWND hWnd,UINT msg,WPARAM wParam,LPARAM lParam)
       
 ======================================================= */
 
-void main_wind_open(void)
-{
-	// win32 applications always leave the window open so "new" can be used
-	// from the menu
-}
-
-void main_wind_close(void)
-{
-		// win32 keeps window open so menu can be
-		// used so we need to reset here
-
-	os_set_title_window("dim3 Setup");
-	main_wind_draw();
-}
-
 void win32_main_wind_open(void)
 {
 	int						x,y,wid,high,wstyle,format;
@@ -308,39 +293,17 @@ int APIENTRY WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmdLine
 	
 		// initialize
 
-	os_glue_start();
-	
-	if (!file_paths_setup(&file_path_setup)) {
-		os_dialog_alert("Error","No data folder");
-		os_glue_end();
-		return(0);
-	}
+	if (!main_app_initialize()) return(0);
 
-	if (!iface_initialize(&iface,&file_path_setup)) {
-		os_dialog_alert("Error","Out of memory");
-		os_glue_end();
-		return(0);
-	}
-
-	iface_read(&iface);
-
-		// open window
+		// main loop
 
 	win32_main_wind_open();
-
-		// run setup
-	
 	setup_pump();
-
-		// close window
-
 	win32_main_wind_close();
 
-		// save and close
+		// shutdown
 
-	iface_shutdown(&iface);
-
-	os_glue_end();
+	main_app_shutdown();
 
 	return(0);
 }

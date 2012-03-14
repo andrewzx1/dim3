@@ -31,9 +31,6 @@ and can be sold or given away.
 	// remapping for menu items
 
 int				win32_menu_remap[][2]={
-					{kCommandFileNew,ID_FILE_NEW},
-					{kCommandFileOpen,ID_FILE_OPEN},
-					{kCommandFileClose,ID_FILE_CLOSE},
 					{kCommandFileSave,ID_FILE_SAVE},
 					{kCommandFilePreference,ID_FILE_PREFERENCE},
 					{kCommandFileQuit,ID_FILE_EXIT},

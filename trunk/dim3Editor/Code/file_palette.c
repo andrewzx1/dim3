@@ -38,9 +38,11 @@ and can be sold or given away.
 
 extern editor_state_type		state;
 extern file_path_setup_type		file_path_setup;
+extern list_palette_type		property_palette;
 
-bool							file_palette_reset_maps;
 list_palette_type				file_palette;
+
+void file_palette_fill(void);		// forward reference
 
 /* =======================================================
 
@@ -58,9 +60,9 @@ void file_palette_initialize(void)
 
 	file_palette.open=TRUE;
 
-		// set maps to get loaded
+		// preload map list
 
-	file_palette_reset_maps=TRUE;
+	file_palette_fill();
 }
 
 void file_palette_shutdown(void)
@@ -80,12 +82,7 @@ void file_palette_fill(void)
 	bool							sel;
 	file_path_directory_type		*fpd;
 
-		// already filled?
-
-	if (!file_palette_reset_maps) return;
-
 	list_palette_delete_all_items(&file_palette);
-	file_palette_reset_maps=FALSE;
 
 		// load the files
 
@@ -101,7 +98,7 @@ void file_palette_fill(void)
 		if (fpd->files[n].is_dir) continue;
 
 		sel=FALSE;
-		if (state.map_open) sel=strcmp(state.map_file_name,fpd->files[n].file_name);
+		if (state.map_open) sel=(strcmp(state.map_file_name,fpd->files[n].file_name)==0);
 
 		list_palette_add_item(&file_palette,kPropertyMap,n,fpd->files[n].file_name,sel,FALSE);
 	}
@@ -119,7 +116,6 @@ void file_palette_fill(void)
 
 void file_palette_draw(void)
 {
-	file_palette_fill();
 	list_palette_draw(&file_palette);
 }
 
@@ -143,6 +139,7 @@ void file_palette_scroll_wheel(d3pnt *pnt,int move)
 void file_palette_click(d3pnt *pnt,bool double_click)
 {
 	bool				old_open;
+	char				file_name[file_str_len];
 	
 		// check if open changes
 	
@@ -155,14 +152,24 @@ void file_palette_click(d3pnt *pnt,bool double_click)
 		return;
 	}
 
-		// ignore everything but double-clicks
+		// add
 
-	if (!double_click) return;
+	if (file_palette.item_pane.click.id==kPropertyMapAdd) {
+		file_new_map();
+		file_palette_fill();
+		return;
+	}
 
-		// open new map
+		// open map
 
+	if (file_palette.item_pane.click.id!=kPropertyMap) return;
+
+	strncpy(file_name,file_palette.item_pane.click.item->name,file_str_len);
+	file_name[file_str_len-1]=0x0;
+
+	file_open_map(file_name);
+
+	file_palette_fill();
 
 	main_wind_draw();
-
-	return;
 }

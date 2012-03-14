@@ -2,7 +2,7 @@
 
 Module: dim3 Animator
 Author: Brian Barnes
- Usage: Menus
+ Usage: Dos
 
 ***************************** License ********************************
 
@@ -30,12 +30,15 @@ and can be sold or given away.
 #endif
 
 #include "glue.h"
+#include "ui_common.h"
 #include "interface.h"
 
 extern model_type				model;
 extern model_draw_setup			draw_setup;
 extern file_path_setup_type		file_path_setup;
 extern animator_state_type		state;
+
+extern list_palette_type		file_palette,property_palette;
 
 /* =======================================================
 
@@ -46,7 +49,23 @@ extern animator_state_type		state;
 void file_reset_state(void)
 {
 	int				n;
+
+		// if there is an open model,
+		// change the palette opens
+
+	if (state.model_open) {
+		os_set_title_window(state.model_file_name);
+
+		file_palette.open=FALSE;
+		property_palette.open=TRUE;
+		property_palette_reset();
+	}
+	else {
+		os_set_title_window("dim3 Editor");
+	}
 	
+		// setup state
+
 	state.texture=TRUE;
 	state.mesh=FALSE;
 	state.bone=FALSE;
@@ -83,7 +102,9 @@ void file_reset_state(void)
 	state.cur_pose_bone_move_idx=-1;
 	state.cur_hit_box_idx=-1;
 
-	state.play_mode=play_mode_stop;
+		// clear selections and states
+
+	main_wind_play(play_mode_stop);
 	
 	state.texture_edit_idx=-1;
 	state.in_preference=FALSE;
@@ -101,13 +122,16 @@ void file_reset_state(void)
 	for (n=0;n!=max_model_mesh;n++) {
 		state.show_mesh[n]=FALSE;
 	}
-	
-	main_wind_play(play_mode_stop);
 
 	undo_clear();
 	menu_update();
 
-	os_set_title_window(state.model_file_name);
+		// make sure window is
+		// seleted
+
+    os_select_window();
+
+	main_wind_draw();
 }
 
 /* =======================================================
@@ -116,25 +140,29 @@ void file_reset_state(void)
       
 ======================================================= */
 
-void file_new_model(void)
+bool file_new_model(void)
 {
-	char		fname[256],err_str[256],
+	char		file_name[256],err_str[256],
 				base_path[1024],path[1024];
+
+		// close model
+
+	if (!file_close_model()) return(FALSE);
 	
 		// get name
 	
-	strcpy(fname,"NewModel");
-	
-	if (!dialog_file_new_run("New Model",fname)) return;
-	
-	strcpy(state.model_file_name,fname);
-	
+	strcpy(file_name,"NewModel");
+	if (!dialog_file_new_run("New Model",file_name)) {
+		file_reset_state();
+		return(FALSE);
+	}
+
 		// create model
 
 	os_set_wait_cursor();
 		
 	model_setup(&file_path_setup,FALSE,mipmap_mode_none,FALSE,FALSE);
-	model_new(&model,state.model_file_name);
+	model_new(&model,file_name);
 	
 	model.nmesh=1;
 	strcpy(model.meshes[0].name,"Default");
@@ -150,7 +178,7 @@ void file_new_model(void)
 	file_paths_data_default(&file_path_setup,base_path,"Models",NULL,NULL);
 		
 	strcat(base_path,"/");
-	strcat(base_path,state.model_file_name);
+	strcat(base_path,file_name);
 	os_create_directory(base_path);
 	
 	sprintf(path,"%s/Textures",base_path);
@@ -161,7 +189,8 @@ void file_new_model(void)
 	if (!model_save(&model,err_str)) {
 		os_set_arrow_cursor();
 		os_dialog_alert("dim3 Animator could not save model.",err_str);
-		return;
+		file_reset_state();
+		return(FALSE);
 	}
 	
 	os_set_arrow_cursor();
@@ -169,9 +198,11 @@ void file_new_model(void)
 		// finish
 		
 	state.model_open=TRUE;
+	strcpy(state.model_file_name,file_name);
 	
 	file_reset_state();
-	main_wind_draw();
+	
+	return(TRUE);
 }
 
 /* =======================================================
@@ -180,17 +211,11 @@ void file_new_model(void)
       
 ======================================================= */
 
-void file_open_model(void)
+bool file_open_model(char *file_name)
 {
-	char		file_name[256];
-	
-	os_set_arrow_cursor();
+		// close model
 
-    if (!dialog_file_open_run("Open a Model","Models",NULL,"Mesh.xml;Model.xml",file_name)) {
-		state.model_open=FALSE;
-		file_reset_state();
-		return;
-	}
+	if (!file_close_model()) return(FALSE);
 	
 		// open model
 		
@@ -200,11 +225,10 @@ void file_open_model(void)
    
 	model_setup(&file_path_setup,FALSE,mipmap_mode_none,FALSE,FALSE);
 	if (!model_open(&model,file_name,TRUE)) {
-		os_dialog_alert("Animator","There was a problem loading the model file.");
-		state.model_open=FALSE;
-		file_reset_state();
 		os_set_arrow_cursor();
-		return;
+		os_dialog_alert("Animator","There was a problem loading the model file.");
+		file_reset_state();
+		return(FALSE);
 	}
     	
 	os_set_arrow_cursor();
@@ -215,7 +239,8 @@ void file_open_model(void)
 	strcpy(state.model_file_name,file_name);
 	
 	file_reset_state();
-	main_wind_draw();
+
+	return(TRUE);
 }
 
 /* =======================================================
@@ -285,7 +310,10 @@ bool file_close_model(void)
 	
 	model.bone_connect.name_bone_idx=-1;
 
+		// reset state
+
 	state.model_open=FALSE;
+	file_reset_state();
 
 	return(TRUE);
 }
