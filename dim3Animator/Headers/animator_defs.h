@@ -98,9 +98,6 @@ and can be sold or given away.
 
 #define kCommandAbout					FOUR_CHAR_CODE('abot')
 
-#define kCommandFileNew					FOUR_CHAR_CODE('newB')
-#define kCommandFileOpen				FOUR_CHAR_CODE('opnB')
-#define kCommandFileClose				FOUR_CHAR_CODE('clse')
 #define kCommandFileSave				FOUR_CHAR_CODE('savB')
 #define kCommandFilePreference			FOUR_CHAR_CODE('pref')
 #define kCommandFileQuit				FOUR_CHAR_CODE('quit')

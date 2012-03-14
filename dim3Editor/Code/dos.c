@@ -38,43 +38,51 @@ extern file_path_setup_type		file_path_setup;
 extern editor_setup_type		setup;
 extern editor_state_type		state;
 
+extern list_palette_type		file_palette,property_palette;
+
 /* =======================================================
 
-      Reset and Close Windows
+      Reset Windows
             
 ======================================================= */
 
-void file_reset_window(void)
+void file_reset_state(void)
 {
+		// if there is an open map,
+		// change the palette opens
+
+	if (state.map_open) {
+		os_set_title_window(state.map_file_name);
+
+		file_palette.open=FALSE;
+		property_palette.open=TRUE;
+		property_palette_reset();
+	}
+	else {
+		os_set_title_window("dim3 Editor");
+	}
+
         // no selection
         
 	select_clear();
-	
-		// redraw
+	undo_clear();
 	
  	state.texture_edit_idx=-1;
 	state.in_preference=FALSE;
-	state.cur_cinema_idx=-1;
-	state.cur_movement_idx=-1;
+
+		// reset the UI
 
 	tool_default();
 	menu_update_view();
 	menu_fix_enable();
 	texture_palette_reset();
 	
+		// make sure window is
+		// seleted
+
     os_select_window();
     
 	main_wind_draw();
-}
-
-void file_close_window(void)
-{
-	state.map_open=FALSE;
-
-	state.texture_edit_idx=-1;
-	state.in_preference=FALSE;
-
-	menu_fix_enable();
 }
 
 /* =======================================================
@@ -87,6 +95,10 @@ bool file_new_map(void)
 {
 	char		file_name[256];
 	
+		// close existing map
+
+	if (!file_close_map()) return(FALSE);
+
 		// get the map name
 		
 	strcpy(file_name,"NewMap");
@@ -96,26 +108,28 @@ bool file_new_map(void)
 		
 	map_setup(&file_path_setup,FALSE,setup.mipmap_mode,FALSE,FALSE);
 	
-		// start the map
-		
-	select_clear();
-	undo_clear();
+		// create the map
 		
     map_new(&map,file_name);
-	
-	state.map_open=TRUE;
-	strcpy(state.map_file_name,file_name);
-  	
-	os_set_title_window(file_name);
 	view_setup_default_views();
 	
 		// start models
 		
 	view_models_start();
 		
-		// redraw the window
-    
-	file_reset_window();
+		// set flags as opened
+
+ 	state.map_open=TRUE;
+	strcpy(state.map_file_name,file_name);
+
+		// save the map so it
+		// appears in the list
+
+	file_save_map();
+
+		// reset the state
+
+	file_reset_state();
 	
 	return(TRUE);
 }
@@ -126,28 +140,20 @@ bool file_new_map(void)
       
 ======================================================= */
 
-bool file_open_map(void)
+bool file_open_map(char *file_name)
 {
 	int			n;
-	char		str[256],file_name[file_str_len];
+	char		str[256];
 	bool		ok;
-	
-		// open the map
-		
-	if (!dialog_file_open_run("Open a Map","Maps","xml",NULL,file_name)) {
-		state.map_open=FALSE;
-		menu_fix_enable();
-		return(FALSE);
-	}
+
+		// close existing map
+
+	if (!file_close_map()) return(FALSE);
 	
 		// open the map
 		
 	os_set_wait_cursor();
 	
-	select_clear();
-	
-	os_set_title_window(file_name);
-
 	sprintf(str,"Loading %s...",file_name);
 	progress_start("Loading...",11);
 	
@@ -169,7 +175,8 @@ bool file_open_map(void)
     os_set_arrow_cursor();
 	
 	if (!ok) {
-		file_close_window();
+		state.map_open=FALSE;
+		file_reset_state();
 		return(FALSE);
 	}
 
@@ -182,11 +189,6 @@ bool file_open_map(void)
 		
 	if (map.editor_views.count==0) 	view_setup_default_views();
 	
-		// clear selection
-		
-	select_clear();
-	undo_clear();
-	
 		// start models
 		
 	view_models_start();
@@ -195,8 +197,10 @@ bool file_open_map(void)
 		
 	state.map_open=TRUE;
 	strcpy(state.map_file_name,file_name);
-	
-	file_reset_window();
+
+		// reset the state
+
+	file_reset_state();
 	
 	return(TRUE);
 }
@@ -265,11 +269,10 @@ bool file_close_map(void)
 	map_close(&map);
 	view_models_close();
 
-		// clear undo
+		// reset state
 	
-	undo_clear();
-
-	file_close_window();
+	state.map_open=FALSE;
+	file_reset_state();
 	
 	os_set_arrow_cursor();
 

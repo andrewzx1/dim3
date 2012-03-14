@@ -38,9 +38,11 @@ and can be sold or given away.
 
 extern animator_state_type		state;
 extern file_path_setup_type		file_path_setup;
+extern list_palette_type		property_palette;
 
 list_palette_type				file_palette;
-bool							file_palette_reset_models;
+
+void file_palette_fill(void);			// forward reference
 
 /* =======================================================
 
@@ -58,9 +60,9 @@ void file_palette_initialize(void)
 
 	file_palette.open=TRUE;
 
-		// set models to get loaded
+		// preload model list
 
-	file_palette_reset_models=TRUE;
+	file_palette_fill();
 }
 
 void file_palette_shutdown(void)
@@ -80,12 +82,7 @@ void file_palette_fill(void)
 	bool							sel;
 	file_path_directory_type		*fpd;
 
-		// already filled?
-
-	if (!file_palette_reset_models) return;
-
 	list_palette_delete_all_items(&file_palette);
-	file_palette_reset_models=FALSE;
 
 		// load the files
 
@@ -101,7 +98,7 @@ void file_palette_fill(void)
 		if (fpd->files[n].is_dir) continue;
 
 		sel=FALSE;
-		if (state.model_open) sel=strcmp(state.model_file_name,fpd->files[n].file_name);
+		if (state.model_open) sel=(strcmp(state.model_file_name,fpd->files[n].file_name)==0);
 
 		list_palette_add_item(&file_palette,kPropertyModel,n,fpd->files[n].file_name,sel,FALSE);
 	}
@@ -119,7 +116,6 @@ void file_palette_fill(void)
 
 void file_palette_draw(void)
 {
-	file_palette_fill();
 	list_palette_draw(&file_palette);
 }
 
@@ -143,6 +139,7 @@ void file_palette_scroll_wheel(d3pnt *pnt,int move)
 void file_palette_click(d3pnt *pnt,bool double_click)
 {
 	bool				old_open;
+	char				file_name[file_str_len];
 	
 		// check if open changes
 	
@@ -155,14 +152,27 @@ void file_palette_click(d3pnt *pnt,bool double_click)
 		return;
 	}
 
-		// ignore everything but double-clicks
+		// add
 
-	if (!double_click) return;
+	if (file_palette.item_pane.click.id==kPropertyModelAdd) {
+		file_new_model();
+		file_palette_fill();
+		return;
+	}
 
-		// open new model
+		// open model
+	
+	if (file_palette.item_pane.click.id!=kPropertyModel) return;
 
+	main_wind_play(play_mode_stop);
+
+	strncpy(file_name,file_palette.item_pane.click.item->name,file_str_len);
+	file_name[file_str_len-1]=0x0;
+
+	file_open_model(file_name);
+
+	file_palette_fill();
 
 	main_wind_draw();
-
-	return;
 }
+

@@ -47,11 +47,8 @@ extern list_palette_type		property_palette;
 void menu_fix_enable(void)
 {
 	if (!state.map_open) {
-		os_menu_enable_item(app_menu_file,1,TRUE);
-		os_menu_enable_item(app_menu_file,2,TRUE);
+		os_menu_enable_item(app_menu_file,1,FALSE);
 		os_menu_enable_item(app_menu_file,3,FALSE);
-		os_menu_enable_item(app_menu_file,5,FALSE);
-		os_menu_enable_item(app_menu_file,7,FALSE);
 	
 		os_menu_enable_item(app_menu_edit,0,FALSE);
 		os_menu_enable_item(app_menu_view,0,FALSE);
@@ -64,11 +61,8 @@ void menu_fix_enable(void)
 	
 			// file menu
 			
-		os_menu_enable_item(app_menu_file,1,FALSE);
-		os_menu_enable_item(app_menu_file,2,FALSE);
+		os_menu_enable_item(app_menu_file,1,TRUE);
 		os_menu_enable_item(app_menu_file,3,TRUE);
-		os_menu_enable_item(app_menu_file,5,TRUE);
-		os_menu_enable_item(app_menu_file,7,TRUE);
 	
 			// other menus
 			
@@ -162,18 +156,6 @@ bool menu_event_run(int cmd)
             
 			// file menu
 			
-		case kCommandFileNew:
-			file_new_map();
-			return(TRUE);
-			
-		case kCommandFileOpen:
-			file_open_map();
-			return(TRUE);
-			
-		case kCommandFileClose:
-			file_close_map();
-			return(TRUE);
-
 		case kCommandFileSave:
 			file_save_map();
 			return(TRUE);

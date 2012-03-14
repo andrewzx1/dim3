@@ -403,10 +403,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\dim3Editor\Code\menu.c"
-					>
-				</File>
-				<File
 					RelativePath="..\..\dim3Editor\Code\nodes.c"
 					>
 				</File>
@@ -602,7 +598,15 @@
 					Name="Windows"
 					>
 					<File
+						RelativePath="..\..\dim3Editor\Code\main_app.c"
+						>
+					</File>
+					<File
 						RelativePath="..\..\dim3Editor\Code\main_window.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Editor\Code\menu.c"
 						>
 					</File>
 					<File

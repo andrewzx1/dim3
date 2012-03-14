@@ -1921,9 +1921,9 @@ void list_palette_scroll_item_into_view(list_palette_type *list,int item_id,int 
       
 ======================================================= */
 
-bool list_palette_pane_click_item(list_palette_pane_type *pane,d3rect *box,int item_idx)
+bool list_palette_pane_click_item(list_palette_type *list,list_palette_pane_type *pane,d3rect *box,int item_idx)
 {
-	int						y;
+	int						lx,rx,y;
 	bool					out_box;
 	d3pnt					pt;
 	list_palette_item_type	*item;
@@ -1943,6 +1943,11 @@ bool list_palette_pane_click_item(list_palette_pane_type *pane,d3rect *box,int i
 	pane->push_on=TRUE;
 	pane->push_idx=item_idx;
 	
+	lx=(box->rx-list_palette_scroll_wid)-list_item_font_high;
+	if (list->flag.left) lx-=list_palette_border_sz;
+	rx=box->rx-list_palette_scroll_wid;
+	if (list->flag.left) rx-=list_palette_border_sz;
+
 	y=(box->ty+item->y)-pane->scroll_offset;
 	
 	main_wind_draw();
@@ -1950,7 +1955,7 @@ bool list_palette_pane_click_item(list_palette_pane_type *pane,d3rect *box,int i
 	while (!os_track_mouse_location(&pt,NULL)) {
 	
 		out_box=FALSE;
-		out_box=out_box||(pt.x>=(box->rx-list_palette_scroll_wid));
+		out_box=out_box||(pt.x>=rx);
 		out_box=out_box||(pt.y<(y-list_item_font_high));
 		out_box=out_box||(pt.y>=y);
 		
@@ -1958,7 +1963,7 @@ bool list_palette_pane_click_item(list_palette_pane_type *pane,d3rect *box,int i
 			out_box=out_box||(pt.x<box->lx);
 		}
 		else {
-			out_box=out_box||(pt.x<((box->rx-list_palette_scroll_wid)-list_item_font_high));
+			out_box=out_box||(pt.x<lx);
 		}
 		
 		if (out_box) {
@@ -2150,9 +2155,10 @@ bool list_palette_pane_click(list_palette_type *list,list_palette_pane_type *pan
 	pane->button_click=FALSE;
 
 	if (pane->items[item_idx].button_type!=list_button_none) {
-		if (pt.x>=(((box->rx-box->lx)-list_palette_scroll_wid)-list_item_font_high)) {
-			pane->button_click=TRUE;
-		}
+		x=((box->rx-box->lx)-list_palette_scroll_wid)-list_item_font_high;
+		if (list->flag.left) x-=list_palette_border_sz;
+
+		if (pt.x>=x) pane->button_click=TRUE;
 	}
 
 		// get clicked item
@@ -2168,7 +2174,7 @@ bool list_palette_pane_click(list_palette_type *list,list_palette_pane_type *pan
 
 		// run the click
 
-	return(list_palette_pane_click_item(pane,box,item_idx));
+	return(list_palette_pane_click_item(list,pane,box,item_idx));
 }
 
 bool list_palette_click(list_palette_type *list,d3pnt *pnt,bool double_click)

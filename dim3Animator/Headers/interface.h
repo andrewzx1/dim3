@@ -67,8 +67,8 @@ extern bool menu_event_run(int cmd);
 // dos
 //
 
-extern void file_new_model(void);
-extern void file_open_model(void);
+extern bool file_new_model(void);
+extern bool file_open_model(char *file_name);
 extern bool file_save_model(void);
 extern bool file_close_model(void);
 extern void file_import_mesh_obj(bool replace);

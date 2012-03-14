@@ -293,30 +293,10 @@ void test_debug(char *str)
 int APIENTRY WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmdLine,int nCmdShow)
 {
 	hinst=hInstance;
-
-	state.map_open=FALSE;
 	
 		// initialize
 
-	os_glue_start();
-	
-	if (!file_paths_setup(&file_path_setup)) {
-		os_dialog_alert("Error","No data folder");
-		os_glue_end();
-		return(0);
-	}
-
-	if (!iface_initialize(&iface,&file_path_setup)) {
-		os_dialog_alert("Error","Out of memory");
-		os_glue_end();
-		return(0);
-	}
-
-	iface_read(&iface);
-	
-		// settings
-
-	setup_xml_read();
+	if (!main_app_initialize()) return(0);
 
 		// main loop
 
@@ -326,8 +306,7 @@ int APIENTRY WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmdLine
 
 		// shutdown
 
-	iface_shutdown(&iface);
-	os_glue_end();
+	main_app_shutdown();
 
 	return(0);
 }

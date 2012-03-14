@@ -500,6 +500,10 @@
 					Name="Windows"
 					>
 					<File
+						RelativePath="..\..\dim3Setup\Code\main_app.c"
+						>
+					</File>
+					<File
 						RelativePath="..\..\dim3Setup\Code\main_window.c"
 						>
 					</File>

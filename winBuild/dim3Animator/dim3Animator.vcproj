@@ -312,10 +312,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\..\dim3Animator\Code\menu.c"
-					>
-				</File>
-				<File
 					RelativePath="..\..\dim3Animator\Code\model_picker.c"
 					>
 				</File>
@@ -467,7 +463,15 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\dim3Animator\Code\main_app.c"
+						>
+					</File>
+					<File
 						RelativePath="..\..\dim3Animator\Code\main_window.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Animator\Code\menu.c"
 						>
 					</File>
 				</Filter>

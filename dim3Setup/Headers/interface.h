@@ -38,8 +38,6 @@ extern void main_app_shutdown(void);
 
 extern void main_wind_initialize(void);
 extern void main_wind_shutdown(void);
-extern void main_wind_open(void);
-extern void main_wind_close(void);
 extern void main_wind_gl_setup(void);
 extern void main_wind_draw_no_swap(void);
 extern void main_wind_draw(void);

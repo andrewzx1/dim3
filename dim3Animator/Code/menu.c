@@ -49,11 +49,9 @@ extern list_palette_type		property_palette;
 void menu_update(void)
 {
 	if (!state.model_open) {
-		os_menu_enable_item(app_menu_file,1,TRUE);
-		os_menu_enable_item(app_menu_file,2,TRUE);
-		os_menu_enable_item(app_menu_file,3,FALSE);
-		os_menu_enable_item(app_menu_file,5,FALSE);
-    
+		os_menu_enable_item(app_menu_file,1,FALSE);
+ 		os_menu_enable_item(app_menu_file,3,FALSE);
+   
 		os_menu_enable_item(app_menu_edit,0,FALSE);
 		os_menu_enable_item(app_menu_model,0,FALSE);
 		os_menu_enable_item(app_menu_view,0,FALSE);
@@ -64,10 +62,8 @@ void menu_update(void)
 		os_menu_enable_item(app_menu_animate,0,FALSE);
 	}
 	else {
-		os_menu_enable_item(app_menu_file,1,FALSE);
-		os_menu_enable_item(app_menu_file,2,FALSE);
+		os_menu_enable_item(app_menu_file,1,TRUE);
 		os_menu_enable_item(app_menu_file,3,TRUE);
-		os_menu_enable_item(app_menu_file,5,TRUE);
 	
 		os_menu_enable_item(app_menu_edit,0,TRUE);
 		os_menu_enable_item(app_menu_model,0,TRUE);
@@ -115,22 +111,6 @@ bool menu_event_run(int cmd)
 		
 			// file menu
 
-		case kCommandFileNew:
-			main_wind_play(play_mode_stop);
-			file_new_model();
-			return(TRUE);
-
-		case kCommandFileOpen:
-			main_wind_play(play_mode_stop);
-			file_open_model();
-			return(TRUE);
-			
-		case kCommandFileClose:
-			main_wind_play(play_mode_stop);
-			if (!file_close_model()) return(TRUE);
-			menu_update();
-			return(TRUE);
-			
 		case kCommandFileSave:
 			file_save_model();
 			return(TRUE);

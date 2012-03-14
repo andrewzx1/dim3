@@ -37,7 +37,7 @@ extern model_type				model;
 extern model_draw_setup			draw_setup;
 extern animator_state_type		state;
 
-extern list_palette_type		property_palette;
+extern list_palette_type		file_palette,property_palette;
 
 double							tran_mod_matrix[16],tran_proj_matrix[16],tran_vport[4];
 d3rect							tran_wbox;
@@ -54,13 +54,8 @@ void model_wind_get_box(d3rect *box)
 	
 	os_get_window_box(&wbox);
 	
-	box->lx=0;
-	if (list_palette_is_open(&property_palette)) {
-		box->rx=wbox.rx-list_palette_tree_sz;
-	}
-	else {
-		box->rx=wbox.rx-list_palette_border_sz;
-	}
+	box->lx=list_palette_width(&file_palette);
+	box->rx=wbox.rx-list_palette_width(&property_palette);
 	box->ty=tool_palette_pixel_size();
 	box->by=(wbox.by-wbox.ty)-texture_palette_pixel_size();
 }
