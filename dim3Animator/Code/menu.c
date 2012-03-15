@@ -50,7 +50,6 @@ void menu_update(void)
 {
 	if (!state.model_open) {
 		os_menu_enable_item(app_menu_file,1,FALSE);
- 		os_menu_enable_item(app_menu_file,3,FALSE);
    
 		os_menu_enable_item(app_menu_edit,0,FALSE);
 		os_menu_enable_item(app_menu_model,0,FALSE);
@@ -63,7 +62,6 @@ void menu_update(void)
 	}
 	else {
 		os_menu_enable_item(app_menu_file,1,TRUE);
-		os_menu_enable_item(app_menu_file,3,TRUE);
 	
 		os_menu_enable_item(app_menu_edit,0,TRUE);
 		os_menu_enable_item(app_menu_model,0,TRUE);

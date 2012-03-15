@@ -366,17 +366,11 @@ int main(int argc,char *argv[])
 		
 	if (!main_app_initialize()) return(0);
 	
-		// always open the window
+		// main loop
 		
 	main_wind_open();
 	main_wind_draw();
-	
-		// run loop
-	
 	main_loop();
-	
-		// close the window
-		
 	main_wind_close();
 	
 		// shutdown

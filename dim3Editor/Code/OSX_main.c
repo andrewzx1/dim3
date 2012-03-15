@@ -392,6 +392,7 @@ int main(int argc,char *argv[])
 		// main loop
 		
 	main_wind_open();
+	main_wind_draw();
 	main_loop();
 	main_wind_close();
 	

@@ -48,7 +48,6 @@ void menu_fix_enable(void)
 {
 	if (!state.map_open) {
 		os_menu_enable_item(app_menu_file,1,FALSE);
-		os_menu_enable_item(app_menu_file,3,FALSE);
 	
 		os_menu_enable_item(app_menu_edit,0,FALSE);
 		os_menu_enable_item(app_menu_view,0,FALSE);
@@ -62,7 +61,6 @@ void menu_fix_enable(void)
 			// file menu
 			
 		os_menu_enable_item(app_menu_file,1,TRUE);
-		os_menu_enable_item(app_menu_file,3,TRUE);
 	
 			// other menus
 			
