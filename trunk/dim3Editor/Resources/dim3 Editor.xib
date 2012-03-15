@@ -198,123 +198,6 @@
             <object class="IBHIMenu" key="NSSubmenu" id="718677121">
               <string key="NSTitle">File</string>
               <array class="NSMutableArray" key="NSMenuItems">
-                <object class="IBHIMenuItem" id="124719940">
-                  <reference key="NSMenu" ref="718677121"/>
-                  <string key="NSTitle">New</string>
-                  <string key="NSKeyEquiv">n</string>
-                  <int key="NSKeyEquivModMask">1048576</int>
-                  <int key="NSMnemonicLoc">2147483647</int>
-                  <reference key="NSOnImage" ref="30500971"/>
-                  <reference key="NSMixedImage" ref="228858472"/>
-                  <string key="title">New</string>
-                  <string key="keyEquivalent">n</string>
-                  <integer value="0" key="disabled"/>
-                  <integer value="0" key="checked"/>
-                  <integer value="0" key="submenuParentChoosable"/>
-                  <integer value="0" key="dynamic"/>
-                  <integer value="0" key="notPreviousAlternate"/>
-                  <integer value="0" key="hidden"/>
-                  <integer value="0" key="ignoreMeta"/>
-                  <integer value="0" key="sectionHeader"/>
-                  <integer value="0" key="customDraw"/>
-                  <integer value="0" key="autoRepeat"/>
-                  <integer value="0" key="autoDisable"/>
-                  <integer value="1" key="updateSingleItem"/>
-                  <integer value="0" key="includeInCmdKeyMatching"/>
-                  <integer value="1048576" key="keyEquivalentModifierMask"/>
-                  <integer value="1852143392" key="command"/>
-                  <nil key="helpTagText"/>
-                  <nil key="helpTagExtendedText"/>
-                  <integer value="0" key="helpTagDisplaySide"/>
-                </object>
-                <object class="IBHIMenuItem" id="21790184">
-                  <reference key="NSMenu" ref="718677121"/>
-                  <string key="NSTitle">Open ...</string>
-                  <string key="NSKeyEquiv">o</string>
-                  <int key="NSKeyEquivModMask">1048576</int>
-                  <int key="NSMnemonicLoc">2147483647</int>
-                  <reference key="NSOnImage" ref="30500971"/>
-                  <reference key="NSMixedImage" ref="228858472"/>
-                  <string key="title">Open ...</string>
-                  <string key="keyEquivalent">o</string>
-                  <integer value="0" key="disabled"/>
-                  <integer value="0" key="checked"/>
-                  <integer value="0" key="submenuParentChoosable"/>
-                  <integer value="0" key="dynamic"/>
-                  <integer value="0" key="notPreviousAlternate"/>
-                  <integer value="0" key="hidden"/>
-                  <integer value="0" key="ignoreMeta"/>
-                  <integer value="0" key="sectionHeader"/>
-                  <integer value="0" key="customDraw"/>
-                  <integer value="0" key="autoRepeat"/>
-                  <integer value="0" key="autoDisable"/>
-                  <integer value="1" key="updateSingleItem"/>
-                  <integer value="0" key="includeInCmdKeyMatching"/>
-                  <integer value="1048576" key="keyEquivalentModifierMask"/>
-                  <integer value="1869636974" key="command"/>
-                  <nil key="helpTagText"/>
-                  <nil key="helpTagExtendedText"/>
-                  <integer value="0" key="helpTagDisplaySide"/>
-                </object>
-                <object class="IBHIMenuItem" id="698409015">
-                  <reference key="NSMenu" ref="718677121"/>
-                  <string key="NSTitle">Close</string>
-                  <string key="NSKeyEquiv">w</string>
-                  <int key="NSKeyEquivModMask">1048576</int>
-                  <int key="NSMnemonicLoc">2147483647</int>
-                  <reference key="NSOnImage" ref="30500971"/>
-                  <reference key="NSMixedImage" ref="228858472"/>
-                  <string key="title">Close</string>
-                  <string key="keyEquivalent">w</string>
-                  <integer value="0" key="disabled"/>
-                  <integer value="0" key="checked"/>
-                  <integer value="0" key="submenuParentChoosable"/>
-                  <integer value="0" key="dynamic"/>
-                  <integer value="0" key="notPreviousAlternate"/>
-                  <integer value="0" key="hidden"/>
-                  <integer value="0" key="ignoreMeta"/>
-                  <integer value="0" key="sectionHeader"/>
-                  <integer value="0" key="customDraw"/>
-                  <integer value="0" key="autoRepeat"/>
-                  <integer value="0" key="autoDisable"/>
-                  <integer value="1" key="updateSingleItem"/>
-                  <integer value="0" key="includeInCmdKeyMatching"/>
-                  <integer value="1048576" key="keyEquivalentModifierMask"/>
-                  <integer value="1668051813" key="command"/>
-                  <nil key="helpTagText"/>
-                  <nil key="helpTagExtendedText"/>
-                  <integer value="0" key="helpTagDisplaySide"/>
-                </object>
-                <object class="IBHIMenuItem" id="387315297">
-                  <reference key="NSMenu" ref="718677121"/>
-                  <bool key="NSIsSeparator">YES</bool>
-                  <string key="NSTitle"/>
-                  <string key="NSKeyEquiv"/>
-                  <int key="NSKeyEquivModMask">1048576</int>
-                  <int key="NSMnemonicLoc">2147483647</int>
-                  <reference key="NSOnImage" ref="30500971"/>
-                  <reference key="NSMixedImage" ref="228858472"/>
-                  <string key="title"/>
-                  <string key="keyEquivalent"/>
-                  <integer value="0" key="disabled"/>
-                  <integer value="0" key="checked"/>
-                  <integer value="0" key="submenuParentChoosable"/>
-                  <integer value="0" key="dynamic"/>
-                  <integer value="0" key="notPreviousAlternate"/>
-                  <integer value="0" key="hidden"/>
-                  <integer value="0" key="ignoreMeta"/>
-                  <integer value="0" key="sectionHeader"/>
-                  <integer value="0" key="customDraw"/>
-                  <integer value="0" key="autoRepeat"/>
-                  <integer value="0" key="autoDisable"/>
-                  <integer value="1" key="updateSingleItem"/>
-                  <integer value="0" key="includeInCmdKeyMatching"/>
-                  <integer value="1048576" key="keyEquivalentModifierMask"/>
-                  <integer value="0" key="command"/>
-                  <nil key="helpTagText"/>
-                  <nil key="helpTagExtendedText"/>
-                  <integer value="0" key="helpTagDisplaySide"/>
-                </object>
                 <object class="IBHIMenuItem" id="1011444804">
                   <reference key="NSMenu" ref="718677121"/>
                   <string key="NSTitle">Save</string>
@@ -10077,10 +9960,6 @@ Y29tA</string>
             <reference key="object" ref="718677121"/>
             <array class="NSMutableArray" key="children">
               <reference ref="1011444804"/>
-              <reference ref="124719940"/>
-              <reference ref="387315297"/>
-              <reference ref="698409015"/>
-              <reference ref="21790184"/>
             </array>
             <reference key="parent" ref="398091584"/>
           </object>
@@ -10678,26 +10557,6 @@ Y29tA</string>
           <object class="IBObjectRecord">
             <int key="objectID">198</int>
             <reference key="object" ref="1011444804"/>
-            <reference key="parent" ref="718677121"/>
-          </object>
-          <object class="IBObjectRecord">
-            <int key="objectID">194</int>
-            <reference key="object" ref="124719940"/>
-            <reference key="parent" ref="718677121"/>
-          </object>
-          <object class="IBObjectRecord">
-            <int key="objectID">197</int>
-            <reference key="object" ref="387315297"/>
-            <reference key="parent" ref="718677121"/>
-          </object>
-          <object class="IBObjectRecord">
-            <int key="objectID">196</int>
-            <reference key="object" ref="698409015"/>
-            <reference key="parent" ref="718677121"/>
-          </object>
-          <object class="IBObjectRecord">
-            <int key="objectID">195</int>
-            <reference key="object" ref="21790184"/>
             <reference key="parent" ref="718677121"/>
           </object>
           <object class="IBObjectRecord">
@@ -11315,7 +11174,7 @@ Y29tA</string>
         <string key="16660.IBPluginDependency">com.apple.InterfaceBuilder.CarbonPlugin</string>
         <string key="16661.IBPluginDependency">com.apple.InterfaceBuilder.CarbonPlugin</string>
         <string key="189.IBEditorWindowLastContentRect">{{179, 932}, {241, 63}}</string>
-        <string key="193.IBEditorWindowLastContentRect">{{179, 882}, {131, 93}}</string>
+        <string key="193.IBEditorWindowLastContentRect">{{179, 952}, {104, 23}}</string>
         <string key="201.IBEditorWindowLastContentRect">{{179, 852}, {157, 103}}</string>
         <string key="209.IBEditorWindowLastContentRect">{{179, 672}, {307, 243}}</string>
         <string key="265.IBEditorWindowLastContentRect">{{179, 452}, {265, 483}}</string>
