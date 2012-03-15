@@ -72,7 +72,7 @@ void property_palette_fill_pose_bone_move(int pose_idx,int bone_move_idx)
 	list_palette_add_checkbox(&property_palette,kPoseBoneMovePropertySkipBlended,"Skip Blending",&bone_move->skip_blended,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Pose Bone Move Constraint");
-	property_palette_add_string_bone(&property_palette,kPoseBoneMovePropertyConstraintBone,"Constraint Bone",bone_move->constraint.bone_idx,FALSE);
+	list_palette_add_picker_list_int(&property_palette,kPoseBoneMovePropertyConstraintBone,"Constraint Bone",(char*)model.bones,model.nbone,sizeof(model_bone_type),(int)offsetof(model_bone_type,name),TRUE,&bone_move->constraint.bone_idx,FALSE);
 	list_palette_add_point(&property_palette,kPoseBoneMovePropertyConstraintOffset,"Constaint Offset",&bone_move->constraint.offset,FALSE);
 }
 
@@ -84,19 +84,5 @@ void property_palette_fill_pose_bone_move(int pose_idx,int bone_move_idx)
 
 void property_palette_click_pose_bone_move(int pose_idx,int bone_move_idx,bool double_click)
 {
-	model_bone_move_type	*bone_move;
-
-	if (bone_move_idx==-1) return;
-	bone_move=&model.poses[pose_idx].bone_moves[bone_move_idx];
-
-	if (!double_click) return;
-
-	switch (property_palette.item_pane.click.id) {
-
-		case kPoseBoneMovePropertyConstraintBone:
-			property_palette_pick_bone(&bone_move->constraint.bone_idx,-1);
-			break;
-
-	}
 }
 

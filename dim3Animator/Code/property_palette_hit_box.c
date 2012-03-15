@@ -60,7 +60,7 @@ void property_palette_fill_hit_box(int hit_box_idx)
 
 	list_palette_add_header(&property_palette,0,"Hit Box Options");
 	list_palette_add_string(&property_palette,kHitBoxPropertyName,"Name",hit_box->name,FALSE);
-	property_palette_add_string_bone(&property_palette,kHitBoxPropertyBone,"Bone",hit_box->bone_idx,FALSE);
+	list_palette_add_picker_list_int(&property_palette,kHitBoxPropertyBone,"Bone",(char*)model.bones,model.nbone,sizeof(model_bone_type),(int)offsetof(model_bone_type,name),TRUE,&hit_box->bone_idx,FALSE);
 	list_palette_add_point(&property_palette,kHitBoxPropertyOffset,"Offset",&hit_box->box.offset,FALSE);
 	list_palette_add_point(&property_palette,kHitBoxPropertySize,"Size",&hit_box->box.size,FALSE);
 }
@@ -83,10 +83,6 @@ void property_palette_click_hit_box(int hit_box_idx,bool double_click)
 
 		case kHitBoxPropertyName:
 			dialog_property_string_run(list_string_value_string,(void*)hit_box->name,name_str_len,0,0);
-			break;
-
-		case kHitBoxPropertyBone:
-			property_palette_pick_bone(&hit_box->bone_idx,-1);
 			break;
 
 	}

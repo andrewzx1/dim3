@@ -123,7 +123,7 @@ void property_palette_fill_animate_pose_move(int animate_idx,int pose_move_idx)
 
 	list_palette_add_header(&property_palette,0,"Animate Pose Sound");
 	list_palette_add_picker_list_string(&property_palette,kAnimationPoseMovePropertySoundName,"Sound",(char*)iface.sound_list.sounds,iface.sound_list.nsound,sizeof(iface_sound_type),(int)offsetof(iface_sound_type,name),TRUE,pose_move->sound.name,FALSE);
-	property_palette_add_string_bone(&property_palette,kAnimationPoseMovePropertySoundBone,"Bone",pose_move->sound.bone_idx,FALSE);
+	list_palette_add_picker_list_int(&property_palette,kAnimationPoseMovePropertySoundBone,"Bone",(char*)model.bones,model.nbone,sizeof(model_bone_type),(int)offsetof(model_bone_type,name),TRUE,&pose_move->sound.bone_idx,FALSE);
 	list_palette_add_float(&property_palette,kAnimationPoseMovePropertySoundPitch,"Pitch",&pose_move->sound.pitch,FALSE);
 	list_palette_add_checkbox(&property_palette,kAnimationPoseMovePropertySoundGlobal,"Play Globally (Player Only)",&pose_move->sound.no_position,FALSE);
 
@@ -138,7 +138,7 @@ void property_palette_fill_animate_pose_move(int animate_idx,int pose_move_idx)
 		// flash
 
 	list_palette_add_header(&property_palette,0,"Animate Pose Flash");
-	property_palette_add_string_bone(&property_palette,kAnimationPoseMovePropertyFlashBone,"Bone",pose_move->flash.bone_idx,FALSE);
+	list_palette_add_picker_list_int(&property_palette,kAnimationPoseMovePropertyFlashBone,"Bone",(char*)model.bones,model.nbone,sizeof(model_bone_type),(int)offsetof(model_bone_type,name),TRUE,&pose_move->flash.bone_idx,FALSE);
 	list_palette_add_int(&property_palette,kAnimationPoseMovePropertyFlashIntensity,"Intensity",&pose_move->flash.intensity,FALSE);
 	list_palette_add_int(&property_palette,kAnimationPoseMovePropertyFlashFlash,"Flash Milliseconds",&pose_move->flash.flash_msec,FALSE);
 	list_palette_add_int(&property_palette,kAnimationPoseMovePropertyFlashFade,"Fade Milliseconds",&pose_move->flash.fade_msec,FALSE);
@@ -252,27 +252,6 @@ void property_palette_click_animate_pose_move(int animate_idx,int pose_move_idx,
 	if (id==kAnimatePoseMovePropertyLoopEnd) {
 		model_animate_set_loop_end(&model,animate_idx,pose_move_idx);
 		return;
-	}
-
-		// double click items
-
-	if (!double_click) return;
-
-	switch (id) {
-
-			// sound
-
-		case kAnimationPoseMovePropertySoundBone:
-			property_palette_pick_bone(&pose_move->sound.bone_idx,-1);
-			break;
-
-			// mesh flash
-
-		case kAnimationPoseMovePropertyFlashBone:
-			property_palette_pick_bone(&pose_move->flash.bone_idx,-1);
-			break;
-
-
 	}
 }
 

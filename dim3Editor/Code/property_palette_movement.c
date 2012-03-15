@@ -76,18 +76,8 @@ void property_palette_fill_movement(int movement_idx)
 	list_palette_add_int(&property_palette,kMovementPropertyAutoOpenDistance,"Auto-Open Distance",&movement->auto_open_distance,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Movement Groups");
-	if (movement->group_idx==-1) {
-		list_palette_add_string(&property_palette,kMovementPropertyGroup,"Group","",FALSE);
-	}
-	else {
-		list_palette_add_string(&property_palette,kMovementPropertyGroup,"Group",map.group.groups[movement->group_idx].name,FALSE);
-	}
-	if (movement->reverse_group_idx==-1) {
-		list_palette_add_string(&property_palette,kMovementPropertyReverseGroup,"Reverse Group","",FALSE);
-	}
-	else {
-		list_palette_add_string(&property_palette,kMovementPropertyReverseGroup,"Reverse Group",map.group.groups[movement->reverse_group_idx].name,FALSE);
-	}
+	list_palette_add_picker_list_int(&property_palette,kMovementPropertyGroup,"Group",(char*)map.group.groups,map.group.ngroup,sizeof(group_type),(int)offsetof(group_type,name),TRUE,&movement->group_idx,FALSE);
+	list_palette_add_picker_list_int(&property_palette,kMovementPropertyReverseGroup,"Reverse Group",(char*)map.group.groups,map.group.ngroup,sizeof(group_type),(int)offsetof(group_type,name),TRUE,&movement->reverse_group_idx,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Movement Settings");
 	list_palette_add_checkbox(&property_palette,kMovementPropertyAutoStart,"Auto-Start",&movement->auto_start,FALSE);
@@ -155,14 +145,6 @@ void property_palette_click_movement(bool double_click)
 
 		case kMovementPropertyName:
 			dialog_property_string_run(list_string_value_string,(void*)movement->name,name_str_len,0,0);
-			break;
-
-		case kMovementPropertyGroup:
-			property_palette_pick_group(&movement->group_idx);
-			break;
-
-		case kMovementPropertyReverseGroup:
-			property_palette_pick_group(&movement->reverse_group_idx);
 			break;
 
 	}

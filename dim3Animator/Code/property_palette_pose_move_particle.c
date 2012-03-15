@@ -68,7 +68,7 @@ void property_palette_fill_animate_pose_move_particle(int animate_idx,int pose_m
 
 	list_palette_set_title(&property_palette,"Animation",animate->name,"Pose Move",model.poses[pose_move->pose_idx].name,"Particle",particle->name);
 	list_palette_add_picker_list_string(&property_palette,kAnimationPoseMovePropertyParticleName,"Name",(char*)iface.particle_list.particles,iface.particle_list.nparticle,sizeof(iface_particle_type),(int)offsetof(iface_particle_type,name),TRUE,particle->name,FALSE);
-	property_palette_add_string_bone(&property_palette,kAnimationPoseMovePropertyParticleBone,"Bone",particle->bone_idx,FALSE);
+	list_palette_add_picker_list_int(&property_palette,kAnimationPoseMovePropertyParticleBone,"Bone",(char*)model.bones,model.nbone,sizeof(model_bone_type),(int)offsetof(model_bone_type,name),TRUE,&particle->bone_idx,FALSE);
 	list_palette_add_float(&property_palette,kAnimationPoseMovePropertyParticleMotionFactor,"Motion Factor",&particle->motion_factor,FALSE);
 	list_palette_add_checkbox(&property_palette,kAnimationPoseMovePropertyParticleMotion,"Follow Model Motion",&particle->motion,FALSE);
 	list_palette_add_checkbox(&property_palette,kAnimationPoseMovePropertyParticleRotate,"Follow Model Rotation",&particle->rotate,FALSE);
@@ -84,24 +84,5 @@ void property_palette_fill_animate_pose_move_particle(int animate_idx,int pose_m
 
 void property_palette_click_animate_pose_move_particle(int animate_idx,int pose_move_idx,int particle_idx,bool double_click)
 {
-	model_animate_type		*animate;
-	model_pose_move_type	*pose_move;
-	model_particle_type		*particle;
-
-	if (particle_idx==-1) return;
-
-	animate=&model.animates[animate_idx];
-	pose_move=&animate->pose_moves[pose_move_idx];
-	particle=&pose_move->particle.particles[particle_idx];
-
-	if (!double_click) return;
-
-	switch (property_palette.item_pane.click.id) {
-
-		case kAnimationPoseMovePropertyParticleBone:
-			property_palette_pick_bone(&particle->bone_idx,-1);
-			break;
-
-	}
 }
 

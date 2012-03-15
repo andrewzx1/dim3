@@ -51,6 +51,7 @@ and can be sold or given away.
 extern map_type					map;
 extern editor_state_type		state;
 extern editor_setup_type		setup;
+extern iface_type				iface;
 
 extern list_palette_type		property_palette;
 
@@ -79,7 +80,7 @@ void property_palette_fill_particle(int particle_idx)
 	list_palette_add_checkbox(&property_palette,kParticleOn,"On",&particle->on,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Particle Type");
-	list_palette_add_string(&property_palette,kParticlePropertyName,"Name",particle->name,FALSE);
+	list_palette_add_picker_list_string(&property_palette,kParticlePropertyName,"Name",(char*)iface.particle_list.particles,iface.particle_list.nparticle,sizeof(iface_particle_type),(int)offsetof(iface_particle_type,name),TRUE,particle->name,FALSE);
 	list_palette_add_int(&property_palette,kParticlePropertySpawnTick,"Spawn Tick",&particle->spawn_tick,FALSE);
 	list_palette_add_int(&property_palette,kParticlePropertySlopTick,"Slop Tick",&particle->slop_tick,FALSE);
 	list_palette_add_checkbox(&property_palette,kParticlePropertySingleSpawn,"Single Spawn",&particle->single_spawn,FALSE);
@@ -96,7 +97,7 @@ void property_palette_fill_particle(int particle_idx)
 	list_palette_add_int(&property_palette,kLightPropertyIntensity,"Intensity",&particle->light_setting.intensity,FALSE);
 	list_palette_add_float(&property_palette,kLightPropertyExponent,"Exponent",&particle->light_setting.exponent,FALSE);
 	list_palette_add_pick_color(&property_palette,kLightPropertyColor,"Color",&particle->light_setting.col,FALSE);
-	list_palette_add_string(&property_palette,kLightPropertyHalo,"Halo",particle->light_setting.halo_name,FALSE);
+	list_palette_add_picker_list_string(&property_palette,kLightPropertyHalo,"Halo",(char*)iface.halo_list.halos,iface.halo_list.nhalo,sizeof(iface_halo_type),(int)offsetof(iface_halo_type,name),TRUE,particle->light_setting.halo_name,FALSE);
 	
 	pal_particle_index=particle_idx;
 	
@@ -113,26 +114,5 @@ void property_palette_fill_particle(int particle_idx)
 
 void property_palette_click_particle(int particle_idx,bool double_click)
 {
-	map_particle_type		*particle;
-
-	if (!double_click) return;
-
-	particle=&map.particles[particle_idx];
-
-	switch (property_palette.item_pane.click.id) {
-
-			// particle
-			
-		case kParticlePropertyName:
-			property_palette_pick_particle(particle->name);
-			break;
-			
-			// particle lighting
-			
-		case kLightPropertyHalo:
-			property_palette_pick_halo(particle->light_setting.halo_name);
-			break;
-
-	}
 }
 

@@ -46,6 +46,7 @@ and can be sold or given away.
 extern map_type					map;
 extern editor_state_type		state;
 extern editor_setup_type		setup;
+extern iface_type				iface;
 
 extern list_palette_type		property_palette;
 
@@ -79,7 +80,7 @@ void property_palette_fill_light(int light_idx)
 	list_palette_add_int(&property_palette,kLightPropertyIntensity,"Intensity",&light->setting.intensity,FALSE);
 	list_palette_add_float(&property_palette,kLightPropertyExponent,"Exponent",&light->setting.exponent,FALSE);
 	list_palette_add_pick_color(&property_palette,kLightPropertyColor,"Color",&light->setting.col,FALSE);
-	list_palette_add_string(&property_palette,kLightPropertyHalo,"Halo",light->setting.halo_name,FALSE);
+	list_palette_add_picker_list_string(&property_palette,kLightPropertyHalo,"Halo",(char*)iface.halo_list.halos,iface.halo_list.nhalo,sizeof(iface_halo_type),(int)offsetof(iface_halo_type,name),TRUE,light->setting.halo_name,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Light Info");
 	list_palette_add_point(&property_palette,-1,"Position",&light->pnt,TRUE);
@@ -103,10 +104,6 @@ void property_palette_click_light(int light_idx,bool double_click)
 
 		case kLightPropertyName:
 			dialog_property_string_run(list_string_value_string,(void*)light->name,name_str_len,0,0);
-			break;
-
-		case kLightPropertyHalo:
-			property_palette_pick_halo(light->setting.halo_name);
 			break;
 
 	}

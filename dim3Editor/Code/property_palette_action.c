@@ -48,6 +48,7 @@ extern map_type					map;
 extern editor_state_type		state;
 extern editor_setup_type		setup;
 extern file_path_setup_type		file_path_setup;
+extern iface_type				iface;
 
 extern list_palette_type		property_palette;
 
@@ -93,12 +94,42 @@ void property_palette_fill_cinema_action(int cinema_idx,int action_idx)
 	else {
 		list_palette_add_string(&property_palette,kCinemaActionPropertyActorName,"Type","n/a",TRUE);
 	}
+
+		// actors
+
 	if (has_actor) {
-		list_palette_add_string(&property_palette,kCinemaActionPropertyActorName,"Name",action->actor_name,FALSE);
+
+		switch (action->actor_type) {
+
+			case cinema_actor_object:
+				break;
+
+			case cinema_actor_movement:
+				break;
+
+			case cinema_actor_particle:
+				list_palette_add_picker_list_string(&property_palette,kCinemaActionPropertyActorName,"Name",(char*)iface.particle_list.particles,iface.particle_list.nparticle,sizeof(iface_particle_type),(int)offsetof(iface_particle_type,name),TRUE,action->actor_name,FALSE);
+				break;
+
+			case cinema_actor_sound:
+				list_palette_add_picker_list_string(&property_palette,kCinemaActionPropertyActorName,"Name",(char*)iface.sound_list.sounds,iface.sound_list.nsound,sizeof(iface_sound_type),(int)offsetof(iface_sound_type,name),TRUE,action->actor_name,FALSE);
+				break;
+
+			case cinema_actor_hud_text:
+				break;
+
+			case cinema_actor_hud_bitmap:
+				break;
+
+		}
+
 	}
 	else {
 		list_palette_add_string(&property_palette,kCinemaActionPropertyActorName,"Name","n/a",TRUE);
 	}
+
+		// animations
+
 	if (has_animation) {
 		list_palette_add_string(&property_palette,kCinemaActionPropertyAnimation,"Animation",action->animation_name,FALSE);
 		list_palette_add_string(&property_palette,kCinemaActionPropertyNextAnimation,"Next Animation",action->next_animation_name,FALSE);
@@ -107,6 +138,9 @@ void property_palette_fill_cinema_action(int cinema_idx,int action_idx)
 		list_palette_add_string(&property_palette,kCinemaActionPropertyAnimation,"Animation","n/a",TRUE);
 		list_palette_add_string(&property_palette,kCinemaActionPropertyNextAnimation,"Next Animation","n/a",TRUE);
 	}
+
+		// nodes
+
 	if ((has_node) && (!is_fade)) {
 		list_palette_add_string(&property_palette,kCinemaActionPropertyNode,"Node",action->node_name,FALSE);
 	}
@@ -155,14 +189,6 @@ void property_palette_click_cinema_action(int cinema_idx,int action_idx,bool dou
 
 				case cinema_actor_movement:
 					property_palette_pick_movement(action->actor_name);
-					break;
-
-				case cinema_actor_particle:
-					property_palette_pick_particle(action->actor_name);
-					break;
-
-				case cinema_actor_sound:
-					property_palette_pick_sound(action->actor_name,FALSE);
 					break;
 
 				case cinema_actor_hud_text:

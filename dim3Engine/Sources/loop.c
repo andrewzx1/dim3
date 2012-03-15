@@ -119,6 +119,44 @@ void loop_game_run(void)
       
 ======================================================= */
 
+	// phone/pad versions react differently
+	// to these events by going saving
+	// the state and turning off the game
+
+#if defined(D3_OS_IPHONE) || defined(D3_OS_ANDRIOD)
+
+void loop_app_active(void)
+{
+		// don't do anything if
+		// we aren't running the game
+
+	if (server.state!=gs_running) return;
+
+		// going inactive?
+
+	if (game_app_active) {
+		if (input_app_active()) return;
+		fprintf(stdout,"Activating\n");
+		game_file_resume();
+		return;
+	}
+
+		// becoming active?
+
+	if (!input_app_active()) return;
+
+	fprintf(stdout,"Suspending\n");
+	game_file_suspend();
+// supergumba		
+//	if (server.map_open) map_end();
+//	if (server.game_open) game_end();
+}
+
+#else
+
+	// regular computers just
+	// pause the game
+
 void loop_app_active(void)
 {
 		// only windowed versions can go inactive
@@ -159,6 +197,8 @@ void loop_app_active(void)
 
 	if ((net_setup.mode!=net_mode_host) && (net_setup.mode!=net_mode_host_dedicated)) game_time_pause_end();
 }
+
+#endif
 
 /* =======================================================
 
