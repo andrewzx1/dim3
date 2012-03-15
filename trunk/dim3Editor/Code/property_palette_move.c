@@ -44,6 +44,7 @@ extern map_type					map;
 extern editor_state_type		state;
 extern editor_setup_type		setup;
 extern file_path_setup_type		file_path_setup;
+extern iface_type				iface;
 
 extern list_palette_type		property_palette;
 
@@ -76,7 +77,7 @@ void property_palette_fill_movement_move(int movement_idx,int move_idx)
 	list_palette_add_angle(&property_palette,kMovePropertyRot,"Rot",&move->rot,FALSE);
 	
 	list_palette_add_header(&property_palette,0,"Movement Move Sound");
-	list_palette_add_string(&property_palette,kMovePropertySoundName,"Sound",move->sound_name,FALSE);
+	list_palette_add_picker_list_string(&property_palette,kMovePropertySoundName,"Sound",(char*)iface.sound_list.sounds,iface.sound_list.nsound,sizeof(iface_sound_type),(int)offsetof(iface_sound_type,name),TRUE,move->sound_name,FALSE);
 	list_palette_add_float(&property_palette,kMovePropertySoundPitch,"Pitch",&move->sound_pitch,FALSE);
 }
 
@@ -88,18 +89,4 @@ void property_palette_fill_movement_move(int movement_idx,int move_idx)
 
 void property_palette_click_movement_move(int movement_idx,int move_idx,bool double_click)
 {
-	movement_move_type	*move;
-
-	if (!double_click) return;
-	if (move_idx==-1) return;
-
-	move=&map.movement.movements[movement_idx].moves[move_idx];
-
-	switch (property_palette.item_pane.click.id) {
-	
-		case kMovePropertySoundName:
-			property_palette_pick_sound(move->sound_name,FALSE);
-			break;
-
-	}
 }

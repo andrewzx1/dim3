@@ -156,10 +156,10 @@ void property_palette_draw(void)
 
 	list_palette_delete_all_items(&property_palette);
 
-		// nothing to do if no model
+		// if no model, do preferences
 
 	if (!state.model_open) {
-		list_palette_set_title(&property_palette,"No Properties",NULL,NULL,NULL,NULL,NULL);
+		property_palette_fill_animator_preference();
 		list_palette_draw(&property_palette);
 		return;
 	}
@@ -415,65 +415,5 @@ void property_palette_click(d3pnt *pnt,bool double_click)
 	}
 	
 	main_wind_draw();
-}
-
-/* =======================================================
-
-      Property Palette String Utilities
-      
-======================================================= */
-
-void property_palette_add_string_mesh(void *list,int id,char *name,int mesh_idx,bool disabled)
-{
-	list_palette_type			*p_list;
-
-	p_list=(list_palette_type*)list;
-
-	if (mesh_idx==-1) {
-		list_palette_add_string(p_list,id,name,"",FALSE);
-		return;
-	}
-	
-	list_palette_add_string(p_list,id,name,model.meshes[mesh_idx].name,disabled);
-}
-
-void property_palette_add_string_bone(void *list,int id,char *name,int bone_idx,bool disabled)
-{
-	list_palette_type			*p_list;
-
-	p_list=(list_palette_type*)list;
-
-	if (bone_idx==-1) {
-		list_palette_add_string(p_list,id,name,"",FALSE);
-		return;
-	}
-	
-	list_palette_add_string(p_list,id,name,model.bones[bone_idx].name,disabled);
-}
-
-/* =======================================================
-
-      Property Palette List Utilities
-      
-======================================================= */
-
-void property_palette_pick_bone(int *bone_idx,int circular_check_bone_idx)
-{
-	int				n;
-
-	for (n=0;n!=model.nbone;n++) {
-
-		if (circular_check_bone_idx!=-1) {
-			if ((n==circular_check_bone_idx) || (model_check_bone_circular(&model,&model.bones[circular_check_bone_idx]))) {
-				property_bone_list[n][0]='~';
-				strcpy((char*)&property_bone_list[n][1],model.bones[n].name);
-				continue;
-			}
-		}
-
-		strcpy(property_bone_list[n],model.bones[n].name);
-	}
-
-	list_palette_start_picking_mode(&property_palette,"Pick a Bone",(char*)property_bone_list,model.nbone,(name_str_len+1),0,TRUE,FALSE,bone_idx,NULL);
 }
 

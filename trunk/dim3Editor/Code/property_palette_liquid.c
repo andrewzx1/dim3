@@ -80,6 +80,7 @@ and can be sold or given away.
 extern map_type					map;
 extern editor_state_type		state;
 extern editor_setup_type		setup;
+extern iface_type				iface;
 
 extern list_palette_type		property_palette;
 extern char						map_property_light_map_size_list[][name_str_len];
@@ -116,7 +117,7 @@ void property_palette_fill_liquid(int liq_idx)
 	list_palette_add_pick_color(&property_palette,kLiquidPropertyColor,"Color",&liq->col,FALSE);
 	list_palette_add_float(&property_palette,kLiquidPropertyTintAlpha,"Tint Alpha",&liq->tint_alpha,FALSE);
 	list_palette_add_float(&property_palette,kLiquidPropertySpeedAlter,"Speed Alter",&liq->speed_alter,FALSE);
-	list_palette_add_string(&property_palette,kLiquidPropertySoundName,"Sound",liq->ambient.sound_name,FALSE);
+	list_palette_add_picker_list_string(&property_palette,kLiquidPropertySoundName,"Sound",(char*)iface.sound_list.sounds,iface.sound_list.nsound,sizeof(iface_sound_type),(int)offsetof(iface_sound_type,name),TRUE,liq->ambient.sound_name,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Liquid Tides");
 	list_palette_add_int(&property_palette,kLiquidPropertyTideSize,"Size",&liq->tide.high,FALSE);
@@ -150,12 +151,7 @@ void property_palette_fill_liquid(int liq_idx)
 	list_palette_add_uv(&property_palette,kLiquidPropertyOverlayShift,"Shift",&liq->overlay.shift,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Liquid Group");
-	if (liq->group_idx==-1) {
-		list_palette_add_string(&property_palette,kLiquidPropertyGroup,"Group","",FALSE);
-	}
-	else {
-		list_palette_add_string(&property_palette,kLiquidPropertyGroup,"Group",map.group.groups[liq->group_idx].name,FALSE);
-	}
+	list_palette_add_picker_list_int(&property_palette,kLiquidPropertyGroup,"Group",(char*)map.group.groups,map.group.ngroup,sizeof(group_type),(int)offsetof(group_type,name),TRUE,&liq->group_idx,FALSE);
 
 		// polygon like settings
 		
@@ -228,16 +224,6 @@ void property_palette_click_liquid(int liq_idx,bool double_click)
 	
 			// options
 
-		case kLiquidPropertySoundName:
-			property_palette_pick_sound(liq->ambient.sound_name,TRUE);
-			break;
-
-			// group
-			
-		case kLiquidPropertyGroup:
-			property_palette_pick_group(&liq->group_idx);
-			break;
-			
 		case kLiquidPropertyCamera:
 			property_palette_pick_node(liq->camera);
 			break;

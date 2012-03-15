@@ -76,7 +76,7 @@ extern list_palette_type		property_palette;
 void property_palette_fill_model(void)
 {
 	int				n;
-	char			name[256],str[256];
+	char			name[256];
 
 	list_palette_set_title(&property_palette,"Model Properties",NULL,NULL,NULL,NULL,NULL);
 
@@ -92,24 +92,18 @@ void property_palette_fill_model(void)
 	list_palette_add_point(&property_palette,kModelPropertyViewBoxSize,"View Box Size",&model.view_box.size,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Model Name Bone");
-	str[0]=0x0;
-	if (model.bone_connect.name_bone_idx!=-1) strcpy(str,model.bones[model.bone_connect.name_bone_idx].name);
-	list_palette_add_string(&property_palette,kModelPropertyNameBone,"Bone",str,FALSE);
+	list_palette_add_picker_list_int(&property_palette,kModelPropertyNameBone,"Bone",(char*)model.bones,model.nbone,sizeof(model_bone_type),(int)offsetof(model_bone_type,name),TRUE,&model.bone_connect.name_bone_idx,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Model Light Bones");
 	for (n=0;n!=max_model_light;n++) {
 		sprintf(name,"Bone %d",n);
-		str[0]=0x0;
-		if (model.bone_connect.light_bone_idx[n]!=-1) strcpy(str,model.bones[model.bone_connect.light_bone_idx[n]].name);
-		list_palette_add_string(&property_palette,(kModelPropertyLightBoneStart+n),name,str,FALSE);
+		list_palette_add_picker_list_int(&property_palette,(kModelPropertyLightBoneStart+n),name,(char*)model.bones,model.nbone,sizeof(model_bone_type),(int)offsetof(model_bone_type,name),TRUE,&model.bone_connect.light_bone_idx[n],FALSE);
 	}
 
 	list_palette_add_header(&property_palette,0,"Model Halo Bones");
 	for (n=0;n!=max_model_halo;n++) {
 		sprintf(name,"Bone %d",n);
-		str[0]=0x0;
-		if (model.bone_connect.halo_bone_idx[n]!=-1) strcpy(str,model.bones[model.bone_connect.halo_bone_idx[n]].name);
-		list_palette_add_string(&property_palette,(kModelPropertyHaloBoneStart+n),name,str,FALSE);
+		list_palette_add_picker_list_int(&property_palette,(kModelPropertyHaloBoneStart+n),name,(char*)model.bones,model.nbone,sizeof(model_bone_type),(int)offsetof(model_bone_type,name),TRUE,&model.bone_connect.halo_bone_idx[n],FALSE);
 	}
 
 	list_palette_add_header(&property_palette,0,"Model Rigid Body");
@@ -139,35 +133,5 @@ void property_palette_fill_model(void)
 
 void property_palette_click_model(bool double_click)
 {
-	int					id,idx;
-
-	if (!double_click) return;
-
-	id=property_palette.item_pane.click.id;
-
-		// light and halo bones
-
-	if ((id>=kModelPropertyLightBoneStart) && (id<=kModelPropertyLightBoneEnd)) {
-		idx=id-kModelPropertyLightBoneStart;
-		property_palette_pick_bone(&model.bone_connect.light_bone_idx[idx],-1);
-		return;
-	}
-
-	if ((id>=kModelPropertyHaloBoneStart) && (id<=kModelPropertyHaloBoneEnd)) {
-		idx=id-kModelPropertyHaloBoneStart;
-		property_palette_pick_bone(&model.bone_connect.halo_bone_idx[idx],-1);
-		return;
-	}
-
-
-		// regular ids
-
-	switch (id) {
-
-		case kModelPropertyNameBone:
-			property_palette_pick_bone(&model.bone_connect.name_bone_idx,-1);
-			break;
-
-	}
 }
 

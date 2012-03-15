@@ -36,6 +36,7 @@ and can be sold or given away.
 extern file_path_setup_type		file_path_setup;
 extern map_type					map;
 extern editor_state_type		state;
+extern iface_type				iface;
 
 extern list_palette_type		property_palette;
 
@@ -287,8 +288,8 @@ void piece_create_sound(void)
 	main_wind_draw();
 	
 		// pick sound
-		
-	property_palette_pick_sound(snd->name,FALSE);
+
+	list_palette_start_picking_mode(&property_palette,"Pick a Sound",(char*)iface.sound_list.sounds,iface.sound_list.nsound,sizeof(iface_sound_type),(int)offsetof(iface_sound_type,name),FALSE,FALSE,NULL,snd->name);
 }
 
 /* =======================================================
@@ -337,8 +338,8 @@ void piece_create_particle(void)
 	main_wind_draw();
 	
 		// pick particle
-		
-	property_palette_pick_particle(prt->name);
+
+	list_palette_start_picking_mode(&property_palette,"Pick a Particle",(char*)iface.particle_list.particles,iface.particle_list.nparticle,sizeof(iface_particle_type),(int)offsetof(iface_particle_type,name),FALSE,FALSE,NULL,prt->name);
 }
 
 /* =======================================================

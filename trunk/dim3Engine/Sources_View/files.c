@@ -39,11 +39,6 @@ and can be sold or given away.
 #define file_button_cancel_id			3
 #define file_directory_id				4
 
-extern bool game_file_save(char *err_str);
-extern bool game_file_quick_save(char *err_str);
-extern bool game_file_load(char *file_name,char *err_str);
-extern void game_time_pause_end(void);
-
 extern server_type			server;
 extern iface_type			iface;
 extern setup_type			setup;
@@ -386,7 +381,7 @@ void file_input(void)
 	}
 	
 	if (input_action_get_state_single(nc_quick_save)) {
-		if (!game_file_save(err_str)) console_add_error(err_str);
+		if (!game_file_save(FALSE,err_str)) console_add_error(err_str);
 		return;
 	}
 }
@@ -408,7 +403,7 @@ void file_click(void)
 	switch (id) {
 	
 		case file_button_save_id:
-			if (!game_file_save(err_str)) console_add_error(err_str);
+			if (!game_file_save(FALSE,err_str)) console_add_error(err_str);
 			server.next_state=gs_running;
 			break;
 			
@@ -420,7 +415,7 @@ void file_click(void)
 
 			server.next_state=gs_running;
 
-			if (game_file_load(file_name,err_str)) {
+			if (game_file_load(file_name,FALSE,err_str)) {
 				game_time_pause_end();
 				break;
 			}

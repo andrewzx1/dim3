@@ -56,6 +56,7 @@ and can be sold or given away.
 extern map_type					map;
 extern editor_state_type		state;
 extern editor_setup_type		setup;
+extern iface_type				iface;
 
 extern list_palette_type		property_palette;
 
@@ -81,7 +82,7 @@ void property_palette_fill_light_media(void)
 	list_palette_add_header(&property_palette,0,"Map Ambient");
 	list_palette_add_pick_color(&property_palette,kMapPropertyAmbientColor,"Color",&map.ambient.light_color,FALSE);
 	list_palette_add_float(&property_palette,kMapPropertyAmbientLightMapBoost,"Light Map Boost",&map.ambient.light_map_boost,FALSE);
-	list_palette_add_string(&property_palette,kMapPropertyAmbientSound,"Sound",map.ambient.sound_name,FALSE);
+	list_palette_add_picker_list_string(&property_palette,kMapPropertyAmbientSound,"Sound",(char*)iface.sound_list.sounds,iface.sound_list.nsound,sizeof(iface_sound_type),(int)offsetof(iface_sound_type,name),TRUE,map.ambient.sound_name,FALSE);
 	list_palette_add_float(&property_palette,kMapPropertyAmbientSoundPitch,"Sound Pitch",&map.ambient.sound_pitch,FALSE);
 
 		// light map
@@ -99,7 +100,7 @@ void property_palette_fill_light_media(void)
 	list_palette_add_picker_list_int(&property_palette,kMapPropertyMediaType,"Startup Type",(char*)map_property_media_type_list,-1,name_str_len,0,FALSE,&map.media.type,FALSE);
 	list_palette_add_int(&property_palette,kMapPropertyMediaEventId,"Event Id",&map.media.event_id,FALSE);
 	list_palette_add_string(&property_palette,kMapPropertyMediaName,"Startup Name",map.media.name,FALSE);
-	list_palette_add_string(&property_palette,kMapPropertyMediaTitleSound,"Startup Title Sound",map.media.title_sound_name,FALSE);
+	list_palette_add_picker_list_string(&property_palette,kMapPropertyMediaTitleSound,"Startup Title Sound",(char*)iface.sound_list.sounds,iface.sound_list.nsound,sizeof(iface_sound_type),(int)offsetof(iface_sound_type,name),TRUE,map.media.title_sound_name,FALSE);
 
 		// music
 
@@ -138,20 +139,10 @@ void property_palette_click_light_media(bool double_click)
 
 	switch (id) {
 
-			// ambients
-
-		case kMapPropertyAmbientSound:
-			property_palette_pick_sound(map.ambient.sound_name,TRUE);
-			break;
-
 			// map media
 
 		case kMapPropertyMediaName:
 			dialog_property_string_run(list_string_value_string,(void*)map.media.name,name_str_len,0,0);
-			break;
-
-		case kMapPropertyMediaTitleSound:
-			property_palette_pick_sound(map.media.title_sound_name,TRUE);
 			break;
 
 			// map music

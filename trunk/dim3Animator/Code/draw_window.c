@@ -159,7 +159,7 @@ void draw_model_2D_transform(d3fpnt *pnt,d3pnt *tran_pnt)
 	model_wind_get_box(&mbox);
 	
 	gluProject(pnt->x,pnt->y,pnt->z,tran_mod_matrix,tran_proj_matrix,(GLint*)tran_vport,&dx,&dy,&dz);
-	tran_pnt->x=(int)dx;
+	tran_pnt->x=((int)dx)-mbox.lx;
 	tran_pnt->y=(tran_wbox.by-((int)dy))-mbox.ty;
 }
 

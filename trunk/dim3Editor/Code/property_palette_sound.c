@@ -40,6 +40,7 @@ and can be sold or given away.
 extern map_type					map;
 extern editor_state_type		state;
 extern editor_setup_type		setup;
+extern iface_type				iface;
 
 extern list_palette_type		property_palette;
 
@@ -63,7 +64,7 @@ void property_palette_fill_sound(int sound_idx)
 	list_palette_add_checkbox(&property_palette,kSoundPropertyOn,"On",&sound->on,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Sound Audio");
-	list_palette_add_string(&property_palette,kSoundPropertyName,"Sound",sound->name,FALSE);
+	list_palette_add_picker_list_string(&property_palette,kSoundPropertyName,"Sound",(char*)iface.sound_list.sounds,iface.sound_list.nsound,sizeof(iface_sound_type),(int)offsetof(iface_sound_type,name),TRUE,sound->name,FALSE);
 	list_palette_add_float(&property_palette,kSoundPropertyPitch,"Pitch",&sound->pitch,FALSE);
 	
 	pal_sound_index=sound_idx;
@@ -81,18 +82,5 @@ void property_palette_fill_sound(int sound_idx)
 
 void property_palette_click_sound(int sound_idx,bool double_click)
 {
-	map_sound_type		*sound;
-
-	if (!double_click) return;
-
-	sound=&map.sounds[sound_idx];
-
-	switch (property_palette.item_pane.click.id) {
-
-		case kSoundPropertyName:
-			property_palette_pick_sound(sound->name,FALSE);
-			break;
-
-	}
 }
 

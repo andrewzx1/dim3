@@ -188,10 +188,10 @@ void property_palette_draw(void)
 
 	list_palette_delete_all_items(&property_palette);
 
-		// can't do anything if no map
+		// if no map, do preferences
 
 	if (!state.map_open) {
-		list_palette_set_title(&property_palette,"No Properties",NULL,NULL,NULL,NULL,NULL);
+		property_palette_fill_editor_preference();
 		list_palette_draw(&property_palette);
 		return;
 	}
@@ -563,29 +563,9 @@ void property_palette_click(d3pnt *pnt,bool double_click)
       
 ======================================================= */
 
-void property_palette_pick_group(int *group_idx)
-{
-	list_palette_start_picking_mode(&property_palette,"Pick a Group",(char*)map.group.groups,map.group.ngroup,sizeof(group_type),(int)offsetof(group_type,name),TRUE,FALSE,group_idx,NULL);
-}
-
 void property_palette_pick_spot(char *name)
 {
 	list_palette_start_picking_mode(&property_palette,"Pick a Spot",(char*)map.spots,map.nspot,sizeof(spot_type),(int)offsetof(spot_type,name),TRUE,FALSE,NULL,name);
-}
-
-void property_palette_pick_sound(char *name,bool include_none)
-{
-	list_palette_start_picking_mode(&property_palette,"Pick a Sound",(char*)iface.sound_list.sounds,iface.sound_list.nsound,sizeof(iface_sound_type),(int)offsetof(iface_sound_type,name),include_none,FALSE,NULL,name);
-}
-
-void property_palette_pick_halo(char *name)
-{
-	list_palette_start_picking_mode(&property_palette,"Pick a Halo",(char*)iface.halo_list.halos,iface.halo_list.nhalo,sizeof(iface_halo_type),(int)offsetof(iface_halo_type,name),TRUE,FALSE,NULL,name);
-}
-
-void property_palette_pick_particle(char *name)
-{
-	list_palette_start_picking_mode(&property_palette,"Pick a Particle",(char*)iface.particle_list.particles,iface.particle_list.nparticle,sizeof(iface_particle_type),(int)offsetof(iface_particle_type,name),FALSE,FALSE,NULL,name);
 }
 
 void property_palette_pick_node(char *name)

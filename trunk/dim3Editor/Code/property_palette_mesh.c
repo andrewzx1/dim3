@@ -142,12 +142,7 @@ void property_palette_fill_mesh(int mesh_idx,int poly_idx)
 	list_palette_add_point(&property_palette,kMeshPropertyRot,"Rotational Center",&mesh->rot_off,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Mesh Group");
-	if (mesh->group_idx==-1) {
-		list_palette_add_string(&property_palette,kMeshPropertyGroup,"Group","",FALSE);
-	}
-	else {
-		list_palette_add_string(&property_palette,kMeshPropertyGroup,"Group",map.group.groups[mesh->group_idx].name,FALSE);
-	}
+	list_palette_add_picker_list_int(&property_palette,kMeshPropertyGroup,"Group",(char*)map.group.groups,map.group.ngroup,sizeof(group_type),(int)offsetof(group_type,name),TRUE,&mesh->group_idx,FALSE);
 
 		// messages
 		
@@ -245,12 +240,6 @@ void property_palette_click_mesh(int mesh_idx,int poly_idx,bool double_click)
 
 	switch (property_palette.item_pane.click.id) {
 
-			// options
-			
-		case kMeshPropertyGroup:
-			property_palette_pick_group(&mesh->group_idx);
-			break;
-			
 			// messages
 
 		case kMeshPropertyMessageMapChangeName:

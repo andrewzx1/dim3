@@ -65,7 +65,7 @@ void property_palette_fill_animate_pose_move_ring(int animate_idx,int pose_move_
 
 	list_palette_set_title(&property_palette,"Animation",animate->name,"Pose Move",model.poses[pose_move->pose_idx].name,"Ring",ring->name);
 	list_palette_add_picker_list_string(&property_palette,kAnimationPoseMovePropertyRingName,"Name",(char*)iface.ring_list.rings,iface.ring_list.nring,sizeof(iface_ring_type),(int)offsetof(iface_ring_type,name),TRUE,ring->name,FALSE);
-	property_palette_add_string_bone(&property_palette,kAnimationPoseMovePropertyRingBone,"Bone",ring->bone_idx,FALSE);
+	list_palette_add_picker_list_int(&property_palette,kAnimationPoseMovePropertyRingBone,"Bone",(char*)model.bones,model.nbone,sizeof(model_bone_type),(int)offsetof(model_bone_type,name),TRUE,&ring->bone_idx,FALSE);
 	list_palette_add_checkbox(&property_palette,kAnimationPoseMovePropertyRingAngle,"Follow Model Angle",&ring->angle,FALSE);
 	list_palette_add_point(&property_palette,kAnimationPoseMovePropertyRingSlop,"Position Slop",&ring->slop,FALSE);
 }
@@ -78,24 +78,5 @@ void property_palette_fill_animate_pose_move_ring(int animate_idx,int pose_move_
 
 void property_palette_click_animate_pose_move_ring(int animate_idx,int pose_move_idx,int ring_idx,bool double_click)
 {
-	model_animate_type		*animate;
-	model_pose_move_type	*pose_move;
-	model_ring_type			*ring;
-
-	if (ring_idx==-1) return;
-
-	animate=&model.animates[animate_idx];
-	pose_move=&animate->pose_moves[pose_move_idx];
-	ring=&pose_move->ring.rings[ring_idx];
-
-	if (!double_click) return;
-
-	switch (property_palette.item_pane.click.id) {
-
-		case kAnimationPoseMovePropertyRingBone:
-			property_palette_pick_bone(&ring->bone_idx,-1);
-			break;
-
-	}
 }
 
