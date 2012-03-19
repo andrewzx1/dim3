@@ -32,7 +32,8 @@ and can be sold or given away.
 #include "interface.h"
 #include "scripts.h"
 
-extern bool					game_app_active,game_loop_quit;
+extern int					app_state;
+extern bool					game_loop_quit;
 
 extern server_type			server;
 extern map_type				map;
@@ -371,7 +372,7 @@ void menu_draw(void)
 
 		// cursor
 
-	if ((view.menu.active) && (game_app_active)) cursor_draw();
+	if ((view.menu.active) && (app_state==as_active)) cursor_draw();
 }
 
 

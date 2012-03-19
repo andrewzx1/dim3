@@ -33,7 +33,7 @@ and can be sold or given away.
 #include "network.h"
 #include "objects.h"
 
-extern bool					game_app_active;
+extern int					app_state;
 
 extern map_type				map;
 extern server_type			server;
@@ -130,14 +130,22 @@ void loop_app_active(void)
 		// don't do anything if
 		// we aren't running the game
 
-	if (server.state!=gs_running) return;
+	if (server.state!=gs_running) return;		// supergumba -- no, we have to always pause
 
 		// going inactive?
 
-	if (game_app_active) {
+	if (app_state==as_active) {
 		if (input_app_active()) return;
-		fprintf(stdout,"Activating\n");
-		game_file_resume();
+
+		fprintf(stdout,"Suspending\n");
+	//	game_file_suspend();
+
+	//	if (server.map_open) map_end();
+	//	if (server.game_open) game_end();
+		
+		app_state=as_suspended;
+
+
 		return;
 	}
 
@@ -145,11 +153,8 @@ void loop_app_active(void)
 
 	if (!input_app_active()) return;
 
-	fprintf(stdout,"Suspending\n");
-	game_file_suspend();
-// supergumba		
-//	if (server.map_open) map_end();
-//	if (server.game_open) game_end();
+		fprintf(stdout,"Activating\n");
+		game_file_resume();
 }
 
 #else
@@ -165,10 +170,10 @@ void loop_app_active(void)
 
 		// going inactive?
 
-	if (game_app_active) {
+	if (app_state==as_active) {
 		if (input_app_active()) return;
 
-		game_app_active=FALSE;
+		app_state=as_inactive;
 
 		input_clear();
 		input_mouse_pause();
@@ -186,7 +191,7 @@ void loop_app_active(void)
 
 	if (!input_app_active()) return;
 
-	game_app_active=TRUE;
+	app_state=as_active;
 	
 	input_clear();
 	input_mouse_resume();
@@ -366,6 +371,9 @@ bool loop_main(char *err_str)
 	if (input_event_pump()) {
 		loop_app_active();
 	}
+	fprintf(stdout,"in loop %d\n",game_time_get());
+	if (app_state==as_suspended) return(TRUE);
+	
 	
 		// calculate timing
 		

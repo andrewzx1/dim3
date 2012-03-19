@@ -219,6 +219,8 @@ void view_draw_scene_build(void)
 	gl_3D_view();
 	gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
 	gl_setup_project();
+	
+	view_cull_setup_frustum_clipping_planes();
 
 		// setup draw lists
 

@@ -26,6 +26,14 @@ and can be sold or given away.
 *********************************************************************/
 
 //
+// app states
+//
+
+#define as_active								0
+#define as_inactive								1
+#define as_suspended							2
+
+//
 // game states
 //
 

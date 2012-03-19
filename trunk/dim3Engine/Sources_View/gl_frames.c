@@ -31,7 +31,7 @@ and can be sold or given away.
 
 #include "interface.h"
 
-extern bool					game_app_active;
+extern int					app_state;
 
 extern map_type				map;
 extern view_type			view;
@@ -235,7 +235,7 @@ void gl_frame_swap(void)
 {
 		// is this app deactivated?
 
-	if (!game_app_active) {
+	if (app_state==as_inactive) {
 		gl_2D_view_screen();
 
 		glEnable(GL_BLEND);
@@ -281,22 +281,17 @@ void gl_project_point(int *x,int *y,int *z)
 
 #ifndef D3_ROTATE_VIEW
 	glu_patch_gluProject((float)*x,(float)*y,(float)*z,mod_matrix,proj_matrix,vport,&dx,&dy,&dz);
-#else
-	glu_patch_gluProject((float)*x,(float)*y,(float)*z,mod_matrix,proj_matrix,vport,&dy,&dx,&dz);
-#endif
-
+	
 	*x=(int)dx;
 	*y=(int)dy;
 	*z=(int)dz;
-}
-
-void gl_project_poly(int ptsz,int *x,int *y,int *z)
-{
-	int			i;
-
-	for (i=0;i<ptsz;i++) {
-		gl_project_point(&x[i],&y[i],&z[i]);
-	}
+#else
+	glu_patch_gluProject((float)*x,(float)*y,(float)*z,mod_matrix,proj_matrix,vport,&dy,&dx,&dz);
+	
+	*x=(int)(vport[3]-dx);
+	*y=(int)dy;
+	*z=(int)dz;
+#endif
 }
 
 float gl_project_get_depth(int x,int y,int z)
@@ -305,21 +300,6 @@ float gl_project_get_depth(int x,int y,int z)
 
 	glu_patch_gluProject((float)x,(float)y,(float)z,mod_matrix,proj_matrix,vport,&dx,&dy,&dz);	
 	return((float)dz);
-}
-
-void gl_unproject_point(float fx,float fy,float fz,int *x,int *y,int *z)
-{
-	float		dx,dy,dz;
-	
-#ifndef D3_ROTATE_VIEW
-	glu_patch_gluUnProject(fx,fy,fz,mod_matrix,proj_matrix,vport,&dx,&dy,&dz);
-#else
-	glu_patch_gluUnProject(fy,fx,fz,mod_matrix,proj_matrix,vport,&dx,&dy,&dz);
-#endif
-
-	*x=(int)dx;
-	*y=(int)dy;
-	*z=(int)dz;
 }
 
 void gl_project_to_eye_coordinates(float *x,float *y,float *z)
