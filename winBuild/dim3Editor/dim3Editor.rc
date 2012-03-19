@@ -49,6 +49,7 @@ BEGIN
         MENUITEM "Spots, Scenery\tCtrl+Shift+2",		ID_VIEW_SPOT_SCENERY
         MENUITEM "Lights, Sounds, Particles\tCtrl+Shift+3",		ID_VIEW_LIGHT_SOUND_PARTICLE
         MENUITEM "Nodes",								ID_VIEW_NODES
+		MENUITEM "Movements",							ID_VIEW_MOVEMENTS
 		MENUITEM SEPARATOR
         MENUITEM "Split Panel Horizontal",				ID_VIEW_SPLIT_HORIZONTAL
         MENUITEM "Split Panel Vertical",				ID_VIEW_SPLIT_VERTICAL

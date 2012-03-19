@@ -371,9 +371,8 @@ bool loop_main(char *err_str)
 	if (input_event_pump()) {
 		loop_app_active();
 	}
-	fprintf(stdout,"in loop %d\n",game_time_get());
+
 	if (app_state==as_suspended) return(TRUE);
-	
 	
 		// calculate timing
 		
