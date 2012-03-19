@@ -57,6 +57,7 @@ int				win32_menu_remap[][2]={
 					{kCommandViewShowHideSpots,ID_VIEW_SPOT_SCENERY},
 					{kCommandViewShowHideLights,ID_VIEW_LIGHT_SOUND_PARTICLE},
 					{kCommandViewShowHideNodes,ID_VIEW_NODES},
+					{kCommandViewShowHideMovements,ID_VIEW_MOVEMENTS},
 					{kCommandViewSplitHorizontal,ID_VIEW_SPLIT_HORIZONTAL},
 					{kCommandViewSplitVertical,ID_VIEW_SPLIT_VERTICAL},
 					{kCommandViewRemoveSplit,ID_VIEW_REMOVE_PANEL},
