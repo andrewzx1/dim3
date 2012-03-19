@@ -810,15 +810,14 @@ extern void gl_3D_view_interface_model(void);
 extern inline void gl_setup_project(void);
 extern inline bool gl_project_in_view_z(int x,int y,int z);
 extern inline  void gl_project_point(int *x,int *y,int *z);
-extern inline void gl_project_poly(int ptsz,int *x,int *y,int *z);
 extern inline float gl_project_get_depth(int x,int y,int z);
-extern inline void gl_unproject_point(float fx,float fy,float fz,int *x,int *y,int *z);
 extern inline void gl_project_to_eye_coordinates(float *x,float *y,float *z);
 
 //
 // view culling
 //
 
+extern void view_cull_setup_frustum_clipping_planes(void);
 extern int view_cull_distance_to_view_center(int x,int y,int z);
 extern bool view_cull_mesh(map_mesh_type *mesh);
 extern bool view_cull_liquid(map_liquid_type *liq);

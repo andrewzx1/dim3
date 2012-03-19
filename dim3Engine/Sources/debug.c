@@ -33,8 +33,6 @@ and can be sold or given away.
 #include "scripts.h"
 #include "objects.h"
 
-extern bool					game_app_active;
-
 extern render_info_type		render_info;
 extern map_type				map;
 extern view_type			view;
@@ -168,8 +166,6 @@ void debug_dump(void)
 		// app
 		
 	debug_dump_header(file,"App");
-
-	debug_dump_info_enable(file,"Game State",game_app_active);
 
 		// engine
 

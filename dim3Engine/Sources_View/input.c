@@ -259,6 +259,21 @@ bool input_event_window(int event)
 {
 	switch (event) {
 	
+#if defined(D3_OS_IPHONE) || defined(D3_OS_ANDRIOD)
+
+			// going inactive on a pad/phone
+	
+		case SDL_WINDOWEVENT_MAXIMIZED:
+			input_app_active_flag=TRUE;
+			return(TRUE);
+			
+		case SDL_WINDOWEVENT_MINIMIZED:
+			input_app_active_flag=FALSE;
+			return(TRUE);
+
+#else
+			// going inactive on a pad/phone
+	
 		case SDL_WINDOWEVENT_FOCUS_GAINED:
 			input_app_active_flag=TRUE;
 			return(TRUE);
@@ -266,7 +281,9 @@ bool input_event_window(int event)
 		case SDL_WINDOWEVENT_FOCUS_LOST:
 			input_app_active_flag=FALSE;
 			return(TRUE);
-			
+
+#endif
+
 	}
 	
 	return(FALSE);

@@ -32,7 +32,7 @@ and can be sold or given away.
 #include "interface.h"
 #include "objects.h"
 
-extern bool					game_app_active;
+extern int					app_state;
 
 extern server_type			server;
 extern view_type			view;
@@ -3086,7 +3086,7 @@ void element_draw_lock(bool cursor_hilite)
 
 	id=-1;
 
-	if ((cursor_hilite) && (game_app_active)) {
+	if ((cursor_hilite) && (app_state==as_active)) {
 
 			// find hilited item
 

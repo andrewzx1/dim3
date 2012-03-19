@@ -39,121 +39,124 @@ extern server_type			server;
 extern iface_type			iface;
 extern setup_type			setup;
 
+float						view_cull_frustum[6][4];
+
 /* =======================================================
 
-      Bounding Boxes in View
+      Frustum/Bound Box Clipping
       
 ======================================================= */
 
-bool view_cull_check_complex_boundbox(int *cbx,int *cby,int *cbz)
+void view_cull_setup_frustum_clipping_planes(void)
 {
-	int			n,pt_count,
-				px[14],py[14],pz[14];
-	bool		above_z,behind_z,lft,rgt,top,bot;
-	
-		// check if points are behind z
+	int			n;
+	float		f,proj_matrix[16],mod_matrix[16],clip[16];
+
+		// combine the matrixes
+
+	glGetFloatv(GL_PROJECTION_MATRIX,proj_matrix);
+	glGetFloatv(GL_MODELVIEW_MATRIX,mod_matrix);
+
+	clip[0]=(mod_matrix[0]*proj_matrix[0])+(mod_matrix[1]*proj_matrix[4])+(mod_matrix[2]*proj_matrix[8])+(mod_matrix[3]*proj_matrix[12]);
+	clip[1]=(mod_matrix[0]*proj_matrix[1])+(mod_matrix[1]*proj_matrix[5])+(mod_matrix[2]*proj_matrix[9])+(mod_matrix[3]*proj_matrix[13]);
+	clip[2]=(mod_matrix[0]*proj_matrix[2])+(mod_matrix[1]*proj_matrix[6])+(mod_matrix[2]*proj_matrix[10])+(mod_matrix[3]*proj_matrix[14]);
+	clip[3]=(mod_matrix[0]*proj_matrix[3])+(mod_matrix[1]*proj_matrix[7])+(mod_matrix[2]*proj_matrix[11])+(mod_matrix[3]*proj_matrix[15]);
+
+	clip[4]=(mod_matrix[4]*proj_matrix[0])+(mod_matrix[5]*proj_matrix[4])+(mod_matrix[6]*proj_matrix[8])+(mod_matrix[7]*proj_matrix[12]);
+	clip[5]=(mod_matrix[4]*proj_matrix[1])+(mod_matrix[5]*proj_matrix[5])+(mod_matrix[6]*proj_matrix[9])+(mod_matrix[7]*proj_matrix[13]);
+	clip[6]=(mod_matrix[4]*proj_matrix[2])+(mod_matrix[5]*proj_matrix[6])+(mod_matrix[6]*proj_matrix[10])+(mod_matrix[7]*proj_matrix[14]);
+	clip[7]=(mod_matrix[4]*proj_matrix[3])+(mod_matrix[5]*proj_matrix[7])+(mod_matrix[6]*proj_matrix[11])+(mod_matrix[7]*proj_matrix[15]);
+
+	clip[8]=(mod_matrix[8]*proj_matrix[0])+(mod_matrix[9]*proj_matrix[4])+(mod_matrix[10]*proj_matrix[8])+(mod_matrix[11]*proj_matrix[12]);
+	clip[9]=(mod_matrix[8]*proj_matrix[1])+(mod_matrix[9]*proj_matrix[5])+(mod_matrix[10]*proj_matrix[9])+(mod_matrix[11]*proj_matrix[13]);
+	clip[10]=(mod_matrix[8]*proj_matrix[2])+(mod_matrix[9]*proj_matrix[6])+(mod_matrix[10]*proj_matrix[10])+(mod_matrix[11]*proj_matrix[14]);
+	clip[11]=(mod_matrix[8]*proj_matrix[3])+(mod_matrix[9]*proj_matrix[7])+(mod_matrix[10]*proj_matrix[11])+(mod_matrix[11]*proj_matrix[15]);
+
+	clip[12]=(mod_matrix[12]*proj_matrix[0])+(mod_matrix[13]*proj_matrix[4])+(mod_matrix[14]*proj_matrix[8])+(mod_matrix[15]*proj_matrix[12]);
+	clip[13]=(mod_matrix[12]*proj_matrix[1])+(mod_matrix[13]*proj_matrix[5])+(mod_matrix[14]*proj_matrix[9])+(mod_matrix[15]*proj_matrix[13]);
+	clip[14]=(mod_matrix[12]*proj_matrix[2])+(mod_matrix[13]*proj_matrix[6])+(mod_matrix[14]*proj_matrix[10])+(mod_matrix[15]*proj_matrix[14]);
+	clip[15]=(mod_matrix[12]*proj_matrix[3])+(mod_matrix[13]*proj_matrix[7])+(mod_matrix[14]*proj_matrix[11])+(mod_matrix[15]*proj_matrix[15]);
+
+		// left plane
 		
-	above_z=FALSE;
-	behind_z=FALSE;
+	view_cull_frustum[0][0]=clip[3]+clip[0];
+	view_cull_frustum[0][1]=clip[7]+clip[4];
+	view_cull_frustum[0][2]=clip[11]+clip[8];
+	view_cull_frustum[0][3]=clip[15]+clip[12];
+
+		// right plane
+		
+	view_cull_frustum[1][0]=clip[3]-clip[0];
+	view_cull_frustum[1][1]=clip[7]-clip[4];
+	view_cull_frustum[1][2]=clip[11]-clip[8];
+	view_cull_frustum[1][3]=clip[15]-clip[12];
+
+		// top plane
+		
+	view_cull_frustum[2][0]=clip[3]-clip[1];
+	view_cull_frustum[2][1]=clip[7]-clip[5];
+	view_cull_frustum[2][2]=clip[11]-clip[9];
+	view_cull_frustum[2][3]=clip[15]-clip[13];
+
+		// bottom plane
+		
+	view_cull_frustum[3][0]=clip[3]+clip[1];
+	view_cull_frustum[3][1]=clip[7]+clip[5];
+	view_cull_frustum[3][2]=clip[11]+clip[9];
+	view_cull_frustum[3][3]=clip[15]+clip[13];
+
+		// near plane
+		
+	view_cull_frustum[4][0]=clip[3]+clip[2];
+	view_cull_frustum[4][1]=clip[7]+clip[6];
+	view_cull_frustum[4][2]=clip[11]+clip[10];
+	view_cull_frustum[4][3]=clip[15]+clip[14];
+
+		// far plane
+		
+	view_cull_frustum[5][0]=clip[3]-clip[2];
+	view_cull_frustum[5][1]=clip[7]-clip[6];
+	view_cull_frustum[5][2]=clip[11]-clip[10];
+	view_cull_frustum[5][3]=clip[15]-clip[14];
 	
-	for (n=0;n!=8;n++) {
-		if (gl_project_in_view_z(cbx[n],cby[n],cbz[n])) {
-			above_z=TRUE;
-		}
-		else {
-			behind_z=TRUE;
-		}
+		// normalize the ABCD plane
+		
+	for (n=0;n!=6;n++) {
+		f=sqrtf((view_cull_frustum[n][0]*view_cull_frustum[n][0])+(view_cull_frustum[n][1]*view_cull_frustum[n][1])+(view_cull_frustum[n][2]*view_cull_frustum[n][2]));
+		view_cull_frustum[n][0]/=f;
+		view_cull_frustum[n][1]/=f;
+		view_cull_frustum[n][2]/=f;
+		view_cull_frustum[n][3]/=f;
 	}
-	
-	if (!above_z) return(FALSE);
-	
-		// create additional points to
-		// deal with meshes that are split
-		// behind and above the z
-		
-	pt_count=8;
-	
-	memmove(px,cbx,(sizeof(int)*8));
-	memmove(py,cby,(sizeof(int)*8));
-	memmove(pz,cbz,(sizeof(int)*8));
-	
-	if ((above_z) && (behind_z)) {
-		px[8]=(px[0]+px[1]+px[2]+px[3])>>2;
-		py[8]=(py[0]+py[1]+py[2]+py[3])>>2;
-		pz[8]=(pz[0]+pz[1]+pz[2]+pz[3])>>2;
-
-		px[9]=(px[0]+px[1]+px[5]+px[4])>>2;
-		py[9]=(py[0]+py[1]+py[5]+py[4])>>2;
-		pz[9]=(pz[0]+pz[1]+pz[5]+pz[4])>>2;
-
-		px[10]=(px[1]+px[2]+px[6]+px[5])>>2;
-		py[10]=(py[1]+py[2]+py[6]+py[5])>>2;
-		pz[10]=(pz[1]+pz[2]+pz[6]+pz[5])>>2;
-
-		px[11]=(px[3]+px[2]+px[6]+px[7])>>2;
-		py[11]=(py[3]+py[2]+py[6]+py[7])>>2;
-		pz[11]=(pz[3]+pz[2]+pz[6]+pz[7])>>2;
-
-		px[12]=(px[0]+px[3]+px[7]+px[4])>>2;
-		py[12]=(py[0]+py[3]+py[7]+py[4])>>2;
-		pz[12]=(pz[0]+pz[3]+pz[7]+pz[4])>>2;
-
-		px[13]=(px[4]+px[5]+px[6]+px[7])>>2;
-		py[13]=(py[4]+py[5]+py[6]+py[7])>>2;
-		pz[13]=(pz[4]+pz[5]+pz[6]+pz[7])>>2;
-		
-		pt_count=14;
-	}
-
-		// project to screen
-
-	gl_project_poly(pt_count,px,py,pz);
-	
-		// are points grouped completely
-		// off one side of the screen?
-		
-	lft=rgt=top=bot=TRUE;
-
-	for (n=0;n!=pt_count;n++) {
-		lft=lft&&(px[n]<0);
-		rgt=rgt&&(px[n]>=view.screen.x_sz);
-		top=top&&(py[n]<0);
-		bot=bot&&(py[n]>=view.screen.y_sz);
-	}
-
-	return(!(lft||rgt||top||bot));
 }
 
-bool view_cull_check_boundbox(int x,int z,int ex,int ez,int ty,int by)
+bool view_cull_boundbox_in_frustum(d3pnt *min,d3pnt *max)
 {
-	int				px[8],py[8],pz[8];
-	
-	px[0]=px[3]=px[4]=px[7]=x;
-	px[1]=px[2]=px[5]=px[6]=ex;
+	int				n;
+	d3fpnt			f_min,f_max;
+   
+	f_min.x=(float)min->x;
+	f_min.y=(float)min->y;
+	f_min.z=(float)min->z;
 
-	pz[0]=pz[1]=pz[4]=pz[5]=z;
-	pz[2]=pz[3]=pz[6]=pz[7]=ez;
+	f_max.x=(float)max->x;
+	f_max.y=(float)max->y;
+	f_max.z=(float)max->z;
 
-	py[0]=py[1]=py[2]=py[3]=ty;
-	py[4]=py[5]=py[6]=py[7]=by;
-	
-	return(view_cull_check_complex_boundbox(px,py,pz));
-}
+	for (n=0;n!=6;n++) {
+		if (((view_cull_frustum[n][0]*f_min.x)+(view_cull_frustum[n][1]*f_min.y)+(view_cull_frustum[n][2]*f_min.z)+view_cull_frustum[n][3])>0.0f) continue;
+		if (((view_cull_frustum[n][0]*f_max.x)+(view_cull_frustum[n][1]*f_min.y)+(view_cull_frustum[n][2]*f_min.z)+view_cull_frustum[n][3])>0.0f) continue;
+		if (((view_cull_frustum[n][0]*f_min.x)+(view_cull_frustum[n][1]*f_max.y)+(view_cull_frustum[n][2]*f_min.z)+view_cull_frustum[n][3])>0.0f) continue;
+		if (((view_cull_frustum[n][0]*f_max.x)+(view_cull_frustum[n][1]*f_max.y)+(view_cull_frustum[n][2]*f_min.z)+view_cull_frustum[n][3])>0.0f) continue;
+		if (((view_cull_frustum[n][0]*f_min.x)+(view_cull_frustum[n][1]*f_min.y)+(view_cull_frustum[n][2]*f_max.z)+view_cull_frustum[n][3])>0.0f) continue;
+		if (((view_cull_frustum[n][0]*f_max.x)+(view_cull_frustum[n][1]*f_min.y)+(view_cull_frustum[n][2]*f_max.z)+view_cull_frustum[n][3])>0.0f) continue;
+		if (((view_cull_frustum[n][0]*f_min.x)+(view_cull_frustum[n][1]*f_max.y)+(view_cull_frustum[n][2]*f_max.z)+view_cull_frustum[n][3])>0.0f) continue;
+		if (((view_cull_frustum[n][0]*f_max.x)+(view_cull_frustum[n][1]*f_max.y)+(view_cull_frustum[n][2]*f_max.z)+view_cull_frustum[n][3])>0.0f) continue;
 
-bool view_cull_check_boundbox_2(d3pnt *min,d3pnt *max)
-{
-	int				px[8],py[8],pz[8];
-	
-	px[0]=px[3]=px[4]=px[7]=min->x;
-	px[1]=px[2]=px[5]=px[6]=max->x;
+		return(FALSE);
+	}
 
-	pz[0]=pz[1]=pz[4]=pz[5]=min->z;
-	pz[2]=pz[3]=pz[6]=pz[7]=max->z;
-
-	py[0]=py[1]=py[2]=py[3]=min->y;
-	py[4]=py[5]=py[6]=py[7]=max->y;
-	
-	return(view_cull_check_complex_boundbox(px,py,pz));
+	return(TRUE);
 }
 
 /* =======================================================
@@ -193,14 +196,15 @@ bool view_cull_mesh(map_mesh_type *mesh)
 
 	if (map_mesh_calculate_distance(mesh,&view.render->camera.pnt)>obscure_dist) return(FALSE);
 
-		// check bounding box
-
-	return(view_cull_check_boundbox_2(&mesh->box.min,&mesh->box.max));
+		// clip against view frustum
+	
+	return(view_cull_boundbox_in_frustum(&mesh->box.min,&mesh->box.max));
 }
 
 bool view_cull_liquid(map_liquid_type *liq)
 {
 	int				obscure_dist;
+	d3pnt			min,max;
 
 		// check obscure distance
 
@@ -213,15 +217,22 @@ bool view_cull_liquid(map_liquid_type *liq)
 		
 	if (map_liquid_calculate_distance(liq,&view.render->camera.pnt)>obscure_dist) return(FALSE);
 
-		// check bounding box
-
-	return(view_cull_check_boundbox(liq->lft,liq->top,liq->rgt,liq->bot,liq->y,liq->y));
+		// clip against view frustum
+		
+	min.x=liq->lft;
+	min.y=liq->y;
+	min.z=liq->top;
+	max.x=liq->rgt;
+	max.y=liq->y;
+	max.z=liq->bot;
+	
+	return(view_cull_boundbox_in_frustum(&min,&max));
 }
 
 bool view_cull_model(model_draw *draw)
 {
-	int				px[8],py[8],pz[8],
-					obscure_dist;
+	int				obscure_dist;
+	d3pnt			min,max;
 
 		// no model
 
@@ -245,8 +256,8 @@ bool view_cull_model(model_draw *draw)
 
 		// check bounding box
 		
-	model_get_view_complex_bounding_box(server.model_list.models[draw->model_idx],&draw->pnt,&draw->setup.ang,px,py,pz);
-	return(view_cull_check_complex_boundbox(px,py,pz));
+	model_get_view_complex_bounding_volume(server.model_list.models[draw->model_idx],&draw->pnt,&draw->setup.ang,&min,&max);
+	return(view_cull_boundbox_in_frustum(&min,&max));
 }
 
 bool view_model_shadow(model_draw *draw)
@@ -278,8 +289,7 @@ bool view_model_shadow(model_draw *draw)
 
 	model_get_view_complex_bounding_volume(server.model_list.models[draw->model_idx],&draw->pnt,&draw->setup.ang,&min,&max);
 	shadow_get_volume(&draw->pnt,draw->size.y,&draw->shadow.light_pnt,draw->shadow.light_intensity,&min,&max);
-
-	return(view_cull_check_boundbox_2(&min,&max));
+	return(view_cull_boundbox_in_frustum(&min,&max));
 }
 
 bool view_cull_effect(effect_type *effect,d3pnt *center_pnt)
@@ -315,7 +325,7 @@ bool view_cull_effect(effect_type *effect,d3pnt *center_pnt)
 	
 		// check bounds
 		
-	return(view_cull_check_boundbox_2(&min,&max));
+	return(view_cull_boundbox_in_frustum(&min,&max));
 }
 
 bool view_cull_halo(d3pnt *pnt)

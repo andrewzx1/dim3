@@ -31,7 +31,7 @@ and can be sold or given away.
 
 #include "interface.h"
 
-bool						game_app_active,game_loop_quit;
+bool						app_state,game_loop_quit;
 
 extern iface_type			iface;
 extern setup_type			setup;
@@ -51,8 +51,6 @@ void app_check_editor_link(void) {}
 #else
 void app_check_editor_link(void)
 {
-
-
 	int				len;
 	char			path[1024];
 	unsigned char	uc_len;
@@ -158,7 +156,7 @@ int main(int argc,char *argv[])
 	app_start_ok=app_start(err_str);
 	if (app_start_ok) {
 
-		game_app_active=TRUE;
+		app_state=as_active;
 		game_loop_quit=FALSE;
 
 		while (!game_loop_quit) {
