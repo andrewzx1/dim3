@@ -127,6 +127,7 @@ void loop_game_run(void)
 
 void loop_app_active(void)
 {
+/*
 		// don't do anything if
 		// we aren't running the game
 
@@ -155,7 +156,44 @@ void loop_app_active(void)
 
 		fprintf(stdout,"Activating\n");
 		game_file_resume();
+		*/
 }
+
+void patch_applicationwillresignactive(void)
+{	
+	fprintf(stdout,"WILL RESIGN\n");
+	fflush(stdout);
+	app_state=as_suspended;
+}
+
+void patch_applicationdidenterbackground(void)
+{
+	int			n;
+	
+	fprintf(stdout,"ENTER BACKGROUND\n");
+	fflush(stdout);
+	
+	for (n=0;n!=10;n++) {
+		SDL_Delay(100);
+		fprintf(stdout,"  delay %d\n",n);
+		fflush(stdout);
+	}
+}
+
+void patch_applicationwillenterforeground(void)
+{
+	fprintf(stdout,"ENTER FOREGROUND\n");
+	fflush(stdout);
+}
+
+
+void patch_applicationdidbecomeactive(void)
+{
+	fprintf(stdout,"DID ACTIVE\n");
+	fflush(stdout);
+}
+
+
 
 #else
 
@@ -365,12 +403,17 @@ void loop_state_next_open(void)
 
 bool loop_main(char *err_str)
 {
+//	fprintf(stdout,"1: %d\n",game_time_get());		// supergumba
+//	fflush(stdout);
+	
 		// pump the input
 		// if there's an activation change, handle it
 		
 	if (input_event_pump()) {
 		loop_app_active();
 	}
+//	fprintf(stdout,"2\n");		// supergumba
+//	fflush(stdout);
 
 	if (app_state==as_suspended) return(TRUE);
 	
@@ -418,6 +461,8 @@ bool loop_main(char *err_str)
 			
 		}
 	}
+//	fprintf(stdout,"3\n");		// supergumba
+//	fflush(stdout);
 	
 	return(TRUE);
 }
