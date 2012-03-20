@@ -106,8 +106,16 @@ void property_palette_fill_level_1(void)
 			property_palette_fill_settings();
 			return;
 
-		case item_interface_intro:
-			property_palette_fill_intro();
+		case item_interface_title_page:
+			property_palette_fill_title_page();
+			return;
+
+		case item_interface_singleplayer:
+			property_palette_fill_singleplayer();
+			return;
+
+		case item_interface_multiplayer:
+			property_palette_fill_multiplayer();
 			return;
 
 		case item_interface_setup:
@@ -128,10 +136,6 @@ void property_palette_fill_level_1(void)
 
 		case item_interface_radar:
 			property_palette_fill_radar();
-			return;
-
-		case item_interface_multiplayer:
-			property_palette_fill_multiplayer();
 			return;
 
 		case item_interface_menu:
@@ -181,13 +185,13 @@ void property_palette_fill_level_2(void)
 {
 	switch (state.cur_item) {
 
-		case item_interface_intro:
+		case item_interface_title_page:
 			if (state.cur_intro_button_idx!=-1) {
-				property_palette_fill_intro_button(state.cur_intro_button_idx);
+				property_palette_fill_title_page_button(state.cur_intro_button_idx);
 				return;
 			}
 			if (state.cur_intro_model_idx!=-1) {
-				property_palette_fill_intro_model(state.cur_intro_model_idx);
+				property_palette_fill_title_page_model(state.cur_intro_model_idx);
 				return;
 			}
 			break;
@@ -435,8 +439,16 @@ void property_palette_click_level_1(bool double_click)
 			property_palette_click_settings(double_click);
 			break;
 
-		case item_interface_intro:
-			property_palette_click_intro(double_click);
+		case item_interface_title_page:
+			property_palette_click_title_page(double_click);
+			break;
+
+		case item_interface_singleplayer:
+			property_palette_click_singleplayer(double_click);
+			break;
+
+		case item_interface_multiplayer:
+			property_palette_click_multiplayer(double_click);
 			break;
 
 		case item_interface_setup:
@@ -457,10 +469,6 @@ void property_palette_click_level_1(bool double_click)
 
 		case item_interface_radar:
 			property_palette_click_radar(double_click);
-			break;
-
-		case item_interface_multiplayer:
-			property_palette_click_multiplayer(double_click);
 			break;
 
 		case item_interface_menu:
@@ -510,13 +518,13 @@ void property_palette_click_level_2(bool double_click)
 {
 	switch (state.cur_item) {
 
-		case item_interface_intro:
+		case item_interface_title_page:
 			if (state.cur_intro_button_idx!=-1) {
-				property_palette_click_intro_button(state.cur_intro_button_idx,double_click);
+				property_palette_click_title_page_button(state.cur_intro_button_idx,double_click);
 				break;
 			}
 			if (state.cur_intro_model_idx!=-1) {
-				property_palette_click_intro_model(state.cur_intro_model_idx,double_click);
+				property_palette_click_title_page_model(state.cur_intro_model_idx,double_click);
 				break;
 			}
 			break;

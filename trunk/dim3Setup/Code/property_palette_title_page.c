@@ -2,7 +2,7 @@
 
 Module: dim3 Setup
 Author: Brian Barnes
- Usage: Property Palette Intro
+ Usage: Property Palette Title Page
 
 ***************************** License ********************************
 
@@ -80,29 +80,28 @@ extern list_palette_type		property_palette;
 
 /* =======================================================
 
-      Property Palette Fill Intro
+      Property Palette Fill Title Page
       
 ======================================================= */
 
-void property_palette_fill_intro(void)
+void property_palette_fill_title_page(void)
 {
 	int				n;
 	char			str[256];
 
-	list_palette_set_title(&property_palette,"Intro",NULL,NULL,NULL,NULL,NULL);
-
-		// options
-
-	list_palette_add_header(&property_palette,0,"Options");
-	list_palette_add_picker_file(&property_palette,kIntroPropertyMusic,list_button_none,0,"Music","Music","mp3","",iface.intro.music,FALSE);
-
+	list_palette_set_title(&property_palette,"Title Page",NULL,NULL,NULL,NULL,NULL);
 	
 		// title
 
-	list_palette_add_header(&property_palette,0,"Title");
+	list_palette_add_header(&property_palette,0,"Initial PopUp Title");
 	list_palette_add_picker_file(&property_palette,kIntroPropertyTitleName,list_button_none,0,"Bitmap","Titles","png","",iface.intro.title.name,FALSE);
 	list_palette_add_string(&property_palette,kIntroPropertyTitleSound,"Sound",iface.intro.title.sound,FALSE);
 	list_palette_add_int(&property_palette,kIntroPropertyTitleLifeMsec,"Life Millsec",&iface.intro.title.life_msec,FALSE);
+
+		// options
+
+	list_palette_add_header(&property_palette,0,"Settings");
+	list_palette_add_picker_file(&property_palette,kIntroPropertyMusic,list_button_none,0,"Music","Music","mp3","",iface.intro.music,FALSE);
 
 		// buttons
 
@@ -170,11 +169,11 @@ void property_palette_fill_intro(void)
 
 /* =======================================================
 
-      Property Palette Click Intro
+      Property Palette Click Title Page
       
 ======================================================= */
 
-void property_palette_click_intro(bool double_click)
+void property_palette_click_title_page(bool double_click)
 {
 	int					id,idx,sz;
 
