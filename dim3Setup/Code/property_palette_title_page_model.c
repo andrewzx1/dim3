@@ -2,7 +2,7 @@
 
 Module: dim3 Setup
 Author: Brian Barnes
- Usage: Property Palette Intro Model
+ Usage: Property Palette Title Page Model
 
 ***************************** License ********************************
 
@@ -48,17 +48,17 @@ extern list_palette_type		property_palette;
 
 /* =======================================================
 
-      Property Palette Fill Intro Model
+      Property Palette Fill Title Page Model
       
 ======================================================= */
 
-void property_palette_fill_intro_model(int intro_model_idx)
+void property_palette_fill_title_page_model(int intro_model_idx)
 {
 	iface_intro_model_type				*model;
 
 	model=&iface.intro.model_list.models[intro_model_idx];
 
-	list_palette_set_title(&property_palette,"Intro",NULL,"Model",model->model_name,NULL,NULL);
+	list_palette_set_title(&property_palette,"Title Page",NULL,"Model",model->model_name,NULL,NULL);
 
 		// settings
 
@@ -81,11 +81,11 @@ void property_palette_fill_intro_model(int intro_model_idx)
 
 /* =======================================================
 
-      Property Palette Click Intro Model
+      Property Palette Click Title Page Model
       
 ======================================================= */
 
-void property_palette_click_intro_model(int intro_model_idx,bool double_click)
+void property_palette_click_title_page_model(int intro_model_idx,bool double_click)
 {
 	iface_intro_model_type				*model;
 

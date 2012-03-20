@@ -2,7 +2,7 @@
 
 Module: dim3 Setup
 Author: Brian Barnes
- Usage: Alt Property Palette Intro Button
+ Usage: Property Palette Title Page Button
 
 ***************************** License ********************************
 
@@ -56,11 +56,11 @@ extern list_palette_type		property_palette;
 
 /* =======================================================
 
-      Property Palette Intro Button Utilities
+      Property Palette Title Page Button Utilities
       
 ======================================================= */
 
-iface_intro_button_type* get_intro_button_from_item_idx(int item_idx,char *name)
+iface_intro_button_type* get_title_page_button_from_item_idx(int item_idx,char *name)
 {
 	int				idx;
 
@@ -130,7 +130,7 @@ iface_intro_button_type* get_intro_button_from_item_idx(int item_idx,char *name)
 	return(NULL);
 }
 
-iface_intro_position_type* get_intro_button_desc_from_item_idx(int item_idx)
+iface_intro_position_type* get_title_page_button_desc_from_item_idx(int item_idx)
 {
 	int				idx;
 
@@ -142,7 +142,7 @@ iface_intro_position_type* get_intro_button_desc_from_item_idx(int item_idx)
 	return(NULL);
 }
 
-iface_intro_position_type* get_intro_button_progress_from_item_idx(int item_idx)
+iface_intro_position_type* get_title_page_button_progress_from_item_idx(int item_idx)
 {
 	int				idx;
 
@@ -156,21 +156,21 @@ iface_intro_position_type* get_intro_button_progress_from_item_idx(int item_idx)
 
 /* =======================================================
 
-      Property Palette Fill Intro Button
+      Property Palette Fill Title Page Button
       
 ======================================================= */
 
-void property_palette_fill_intro_button(int intro_button_idx)
+void property_palette_fill_title_page_button(int intro_button_idx)
 {
 	char							name[64];
 	iface_intro_button_type			*btn;
 	iface_intro_position_type		*desc,*progress;
 
-	btn=get_intro_button_from_item_idx(intro_button_idx,name);
-	desc=get_intro_button_desc_from_item_idx(intro_button_idx);
-	progress=get_intro_button_progress_from_item_idx(intro_button_idx);
+	btn=get_title_page_button_from_item_idx(intro_button_idx,name);
+	desc=get_title_page_button_desc_from_item_idx(intro_button_idx);
+	progress=get_title_page_button_progress_from_item_idx(intro_button_idx);
 
-	list_palette_set_title(&property_palette,"Intro Button",name,NULL,NULL,NULL,NULL);
+	list_palette_set_title(&property_palette,"Title Page Button",name,NULL,NULL,NULL,NULL);
 
 		// settings
 	
@@ -211,11 +211,11 @@ void property_palette_fill_intro_button(int intro_button_idx)
 
 /* =======================================================
 
-      Property Palette Click Intro Buttons
+      Property Palette Click Title Page Buttons
       
 ======================================================= */
 
-void property_palette_click_intro_button(int intro_button_idx,bool double_click)
+void property_palette_click_title_page_button(int intro_button_idx,bool double_click)
 {
 }
 

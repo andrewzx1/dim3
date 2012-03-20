@@ -368,18 +368,6 @@
 						>
 					</File>
 					<File
-						RelativePath="..\..\dim3Setup\Code\property_palette_intro.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Setup\Code\property_palette_intro_button.c"
-						>
-					</File>
-					<File
-						RelativePath="..\..\dim3Setup\Code\property_palette_intro_model.c"
-						>
-					</File>
-					<File
 						RelativePath="..\..\dim3Setup\Code\property_palette_main.c"
 						>
 					</File>
@@ -468,11 +456,27 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\dim3Setup\Code\property_palette_singleplayer.c"
+						>
+					</File>
+					<File
 						RelativePath="..\..\dim3Setup\Code\property_palette_sound.c"
 						>
 					</File>
 					<File
 						RelativePath="..\..\dim3Setup\Code\property_palette_sounds.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Setup\Code\property_palette_title_page.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Setup\Code\property_palette_title_page_button.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Setup\Code\property_palette_title_page_model.c"
 						>
 					</File>
 					<File
