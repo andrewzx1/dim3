@@ -39,6 +39,8 @@ and can be sold or given away.
 #define kIntroPropertyTitleSound						2
 #define kIntroPropertyTitleLifeMsec						3
 
+#define kIntroPropertyClickSound						4
+
 #define kIntroPropertyButtonGameNew						10
 #define kIntroPropertyButtonGameLoad					11
 #define kIntroPropertyButtonGameSetup					12
@@ -70,6 +72,8 @@ and can be sold or given away.
 #define kIntroPropertyButtonSimpleSaveStart				50
 #define kIntroPropertyButtonSimpleSaveErase				60
 
+#define kIntroPropertyFont								70
+
 #define kIntroPropertyModelAdd							100
 #define kIntroPropertyModelName							1000
 #define kIntroPropertyModelDelete						2000
@@ -87,20 +91,29 @@ extern list_palette_type		property_palette;
 void property_palette_fill_title_page(void)
 {
 	int				n;
-	char			str[256];
+	char			name[256],str[256];
 
 	list_palette_set_title(&property_palette,"Title Page",NULL,NULL,NULL,NULL,NULL);
 	
 		// title
 
-	list_palette_add_header(&property_palette,0,"Initial PopUp Title");
+	list_palette_add_header(&property_palette,0,"Initial PopUp Logo");
 	list_palette_add_picker_file(&property_palette,kIntroPropertyTitleName,list_button_none,0,"Bitmap","Titles","png","",iface.intro.title.name,FALSE);
 	list_palette_add_string(&property_palette,kIntroPropertyTitleSound,"Sound",iface.intro.title.sound,FALSE);
 	list_palette_add_int(&property_palette,kIntroPropertyTitleLifeMsec,"Life Millsec",&iface.intro.title.life_msec,FALSE);
 
-		// options
+		// fonts
+		
+	list_palette_add_header(&property_palette,0,"Font");
+	for (n=0;n!=max_iface_font_variant;n++) {
+		sprintf(name,"Interface Font %d",n);
+		list_palette_add_string(&property_palette,(kIntroPropertyFont+n),name,iface.font.interface_name[n],FALSE);
+	}
 
-	list_palette_add_header(&property_palette,0,"Settings");
+		// sound
+		
+	list_palette_add_header(&property_palette,0,"Sound");
+	list_palette_add_picker_list_string(&property_palette,kIntroPropertyClickSound,"Click",(char*)iface.sound_list.sounds,iface.sound_list.nsound,sizeof(iface_sound_type),(int)offsetof(iface_sound_type,name),TRUE,iface.click_sound,FALSE);
 	list_palette_add_picker_file(&property_palette,kIntroPropertyMusic,list_button_none,0,"Music","Music","mp3","",iface.intro.music,FALSE);
 
 		// buttons
@@ -119,6 +132,13 @@ void property_palette_fill_title_page(void)
 	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonCredit,"Credit",NULL,(state.cur_intro_button_idx==item_intro_button_credit),FALSE);
 	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonQuit,"Quit",NULL,(state.cur_intro_button_idx==item_intro_button_quit),FALSE);
 
+		// simple save settings
+		
+	list_palette_add_header(&property_palette,0,"Simple Save Settings");
+	list_palette_add_int(&property_palette,kIntroPropertySimpleSaveDescTextSize,"Description Text Size",&iface.intro.simple_save_list.desc.text_size,FALSE);
+	list_palette_add_int(&property_palette,kIntroPropertyConfirmX,"Erase Confirm Dialog X",&iface.intro.confirm.x,FALSE);
+	list_palette_add_int(&property_palette,kIntroPropertyConfirmY,"Erase Confirm Dialog Y",&iface.intro.confirm.y,FALSE);
+
 		// simple save buttons
 		
 	list_palette_add_header(&property_palette,0,"Simple Save Buttons");
@@ -135,24 +155,17 @@ void property_palette_fill_title_page(void)
 	
 		// simple save settings
 		
-	list_palette_add_header(&property_palette,0,"Simple Save Settings");
-	list_palette_add_int(&property_palette,kIntroPropertySimpleSaveDescTextSize,"Description Text Size",&iface.intro.simple_save_list.desc.text_size,FALSE);
-	list_palette_add_checkbox(&property_palette,kIntroPropertySimpleSaveProgressOn,"Progress On",&iface.intro.simple_save_list.progress.on,FALSE);
-	list_palette_add_int(&property_palette,kIntroPropertySimpleSaveProgressMaxPoint,"Progress Max Points",&iface.intro.simple_save_list.progress.max_point,FALSE);
-	list_palette_add_int(&property_palette,kIntroPropertySimpleSaveProgressMaxBitmap,"Progress Max Bitmaps",&iface.intro.simple_save_list.progress.max_bitmap,FALSE);
-	list_palette_add_int(&property_palette,kIntroPropertySimpleSaveProgressWid,"Width",&iface.intro.simple_save_list.progress.wid,FALSE);
-	list_palette_add_int(&property_palette,kIntroPropertySimpleSaveProgressHigh,"Height",&iface.intro.simple_save_list.progress.high,FALSE);
-	list_palette_add_int(&property_palette,kIntroPropertySimpleSaveProgressAdd,"Progress Bitmap Add",&iface.intro.simple_save_list.progress.bitmap_add,FALSE);
-	list_palette_add_checkbox(&property_palette,kIntroPropertySimpleSaveProgressHorizontal,"Progress Horizontal",&iface.intro.simple_save_list.progress.horizontal,FALSE);
-	list_palette_add_int(&property_palette,kIntroPropertySimpleSaveProgressWrapCount,"Progress Wrap Count",&iface.intro.simple_save_list.progress.wrap_count,FALSE);
+	list_palette_add_header(&property_palette,0,"Simple Save Progress");
+	list_palette_add_checkbox(&property_palette,kIntroPropertySimpleSaveProgressOn,"On",&iface.intro.simple_save_list.progress.on,FALSE);
+	list_palette_add_int(&property_palette,kIntroPropertySimpleSaveProgressMaxPoint,"Max Points",&iface.intro.simple_save_list.progress.max_point,FALSE);
+	list_palette_add_int(&property_palette,kIntroPropertySimpleSaveProgressMaxBitmap,"Max Bitmaps",&iface.intro.simple_save_list.progress.max_bitmap,FALSE);
+	list_palette_add_int(&property_palette,kIntroPropertySimpleSaveProgressWid,"Bitmap Width",&iface.intro.simple_save_list.progress.wid,FALSE);
+	list_palette_add_int(&property_palette,kIntroPropertySimpleSaveProgressHigh,"Bitmap Height",&iface.intro.simple_save_list.progress.high,FALSE);
+	list_palette_add_int(&property_palette,kIntroPropertySimpleSaveProgressAdd,"Bitmap Add",&iface.intro.simple_save_list.progress.bitmap_add,FALSE);
+	list_palette_add_checkbox(&property_palette,kIntroPropertySimpleSaveProgressHorizontal,"Horizontal",&iface.intro.simple_save_list.progress.horizontal,FALSE);
+	list_palette_add_int(&property_palette,kIntroPropertySimpleSaveProgressWrapCount,"Wrap Count",&iface.intro.simple_save_list.progress.wrap_count,FALSE);
 	list_palette_add_picker_file(&property_palette,kIntroPropertySimpleSaveProgressBitmap,list_button_none,0,"Enabled Bitmap","Bitmaps/Interface","png","",iface.intro.simple_save_list.progress.bitmap_name,FALSE);
 	list_palette_add_picker_file(&property_palette,kIntroPropertySimpleSaveProgressBitmapDisable,list_button_none,0,"Disabled Bitmap","Bitmaps/Interface","png","",iface.intro.simple_save_list.progress.bitmap_disable_name,FALSE);
-
-		// confirm
-		
-	list_palette_add_header(&property_palette,0,"Confirm");
-	list_palette_add_int(&property_palette,kIntroPropertyConfirmX,"X",&iface.intro.confirm.x,FALSE);
-	list_palette_add_int(&property_palette,kIntroPropertyConfirmY,"Y",&iface.intro.confirm.y,FALSE);
 
 		// models
 
@@ -267,6 +280,15 @@ void property_palette_click_title_page(bool double_click)
 
 	state.cur_intro_button_idx=-1;
 	state.cur_intro_model_idx=-1;
+
+		// fonts
+
+	if ((id>=kIntroPropertyFont) && (id<(kIntroPropertyFont+max_iface_font_variant))) {
+		dialog_property_string_run(list_string_value_string,(void*)iface.font.interface_name[id-kIntroPropertyFont],name_str_len,0,0);
+		return;
+	}
+
+		// regular clicks
 
 	switch (id) {
 
