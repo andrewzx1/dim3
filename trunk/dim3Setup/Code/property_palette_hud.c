@@ -38,6 +38,8 @@ and can be sold or given away.
 #define kHUDPropertyChatLastAddLifeSeconds		2
 #define kHUDPropertyChatNextLifeSeconds			3
 
+#define kHUDPropertyFont						10
+
 #define kHUDPropertyBitmapAdd					1000
 #define kHUDPropertyBitmapName					2000
 #define kHUDPropertyBitmapDelete				3000
@@ -63,8 +65,17 @@ extern list_palette_type		property_palette;
 void property_palette_fill_hud(void)
 {
 	int				n;
+	char			name[256];
 
 	list_palette_set_title(&property_palette,"HUD",NULL,NULL,NULL,NULL,NULL);
+
+		// fonts
+		
+	list_palette_add_header(&property_palette,0,"Font");
+	for (n=0;n!=max_iface_font_variant;n++) {
+		sprintf(name,"HUD Font %d",n);
+		list_palette_add_string(&property_palette,(kHUDPropertyFont+n),name,iface.font.hud_name[n],FALSE);
+	}
 
 		// bitmaps
 
@@ -348,5 +359,15 @@ void property_palette_click_hud(bool double_click)
 
 		return;
 	}
+
+	if (!double_click) return;
+
+		// fonts
+
+	if ((id>=kHUDPropertyFont) && (id<(kHUDPropertyFont+max_iface_font_variant))) {
+		dialog_property_string_run(list_string_value_string,(void*)iface.font.hud_name[id-kHUDPropertyFont],name_str_len,0,0);
+		return;
+	}
+
 }
 

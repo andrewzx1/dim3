@@ -40,11 +40,6 @@ and can be sold or given away.
 #define kSettingsScaleX							5
 #define kSettingsScaleY							6
 
-#define kSettingsInterfaceFont					10
-#define kSettingsHUDFont						20
-
-#define kSettingsClickSound						30
-
 #define kSettingsColorBackground				40
 #define kSettingsColorDefaultTint				41
 
@@ -98,9 +93,6 @@ extern list_palette_type		property_palette;
 
 void property_palette_fill_settings(void)
 {
-	int					n;
-	char				name[256];
-
 	list_palette_set_title(&property_palette,"Project Settings",NULL,NULL,NULL,NULL,NULL);
 
 		// project
@@ -115,23 +107,6 @@ void property_palette_fill_settings(void)
 	list_palette_add_header(&property_palette,0,"Scale");
 	list_palette_add_int(&property_palette,kSettingsScaleX,"X",&iface.scale_x,FALSE);
 	list_palette_add_int(&property_palette,kSettingsScaleY,"Y",&iface.scale_y,FALSE);
-
-		// fonts
-		
-	list_palette_add_header(&property_palette,0,"Font");
-	for (n=0;n!=max_iface_font_variant;n++) {
-		sprintf(name,"Interface Font %d",n);
-		list_palette_add_string(&property_palette,(kSettingsInterfaceFont+n),name,iface.font.interface_name[n],FALSE);
-	}
-	for (n=0;n!=max_iface_font_variant;n++) {
-		sprintf(name,"HUD Font %d",n);
-		list_palette_add_string(&property_palette,(kSettingsHUDFont+n),name,iface.font.hud_name[n],FALSE);
-	}
-
-		// sound
-		
-	list_palette_add_header(&property_palette,0,"Sound");
-	list_palette_add_string(&property_palette,kSettingsClickSound,"Click",iface.click_sound,FALSE);
 
 		// color
 		
@@ -216,18 +191,6 @@ void property_palette_click_settings(bool double_click)
 
 	id=property_palette.item_pane.click.id;
 
-		// fonts
-
-	if ((id>=kSettingsInterfaceFont) && (id<(kSettingsInterfaceFont+max_iface_font_variant))) {
-		dialog_property_string_run(list_string_value_string,(void*)iface.font.interface_name[id-kSettingsInterfaceFont],name_str_len,0,0);
-		return;
-	}
-
-	if ((id>=kSettingsHUDFont) && (id<(kSettingsHUDFont+max_iface_font_variant))) {
-		dialog_property_string_run(list_string_value_string,(void*)iface.font.hud_name[id-kSettingsHUDFont],name_str_len,0,0);
-		return;
-	}
-
 		// regular items
 
 	switch (id) {
@@ -237,12 +200,6 @@ void property_palette_click_settings(bool double_click)
 		case kSettingsProjectName:
 			dialog_property_string_run(list_string_value_string,(void*)iface.project.name,name_str_len,0,0);
 			break;
-
-			// sound
-			
-		case kSettingsClickSound:
-			property_palette_pick_sound(iface.click_sound,FALSE);
-			break;			
 
 	}
 }
