@@ -82,7 +82,7 @@ void property_palette_fill_chooser_piece(int chooser_idx,int chooser_piece_idx)
 	list_palette_add_picker_list_int(&property_palette,kChooserPieceSettingsType,"Type",(char*)chooser_type_str,-1,name_str_len,0,FALSE,&piece->type,FALSE);
 	list_palette_add_int(&property_palette,kChooserPieceSettingsId,"Id",&piece->id,FALSE);
 	list_palette_add_checkbox(&property_palette,kChooserPieceSettingsClickable,"Clickable",&piece->clickable,FALSE);
-	list_palette_add_string(&property_palette,kChooserPieceSettingsGoto,"Goto Chooser",piece->goto_name,FALSE);
+	list_palette_add_string(&property_palette,kChooserPieceSettingsGoto,"Goto Chooser",piece->goto_name,name_str_len,FALSE);
 
 		// position
 
@@ -98,7 +98,7 @@ void property_palette_fill_chooser_piece(int chooser_idx,int chooser_piece_idx)
 
 		case chooser_piece_type_text:
 			list_palette_add_header(&property_palette,0,"Text");
-			list_palette_add_string(&property_palette,kChooserPieceTextStr,"Text",piece->data.text.str,FALSE);
+			list_palette_add_string(&property_palette,kChooserPieceTextStr,"Text",piece->data.text.str,max_chooser_text_data_sz,FALSE);
 			list_palette_add_int(&property_palette,kChooserPieceTextSize,"Size",&piece->data.text.size,FALSE);
 			list_palette_add_picker_list_int(&property_palette,kChooserPieceTextJust,"Justification",(char*)hud_text_just_type_str,-1,name_str_len,0,FALSE,&piece->data.text.just,FALSE);
 			break;
@@ -111,14 +111,14 @@ void property_palette_fill_chooser_piece(int chooser_idx,int chooser_piece_idx)
 		case chooser_piece_type_model:
 			list_palette_add_header(&property_palette,0,"Model");
 			list_palette_add_picker_file(&property_palette,kChooserPieceModelModelName,list_button_none,0,"Model","Models","","Mesh.xml;Model.xml",piece->data.model.model_name,FALSE);
-			list_palette_add_string(&property_palette,kChooserPieceModelAnimateName,"Animation",piece->data.model.animate_name,FALSE);
+			list_palette_add_string(&property_palette,kChooserPieceModelAnimateName,"Animation",piece->data.model.animate_name,name_str_len,FALSE);
 			list_palette_add_float(&property_palette,kChooserPieceModelResize,"Resize",&piece->data.model.resize,FALSE);
 			list_palette_add_angle(&property_palette,kChooserPieceModelRot,"Rotate",&piece->data.model.rot,FALSE);
 			break;
 
 		case chooser_piece_type_button:
 			list_palette_add_header(&property_palette,0,"Button");
-			list_palette_add_string(&property_palette,kChooserPieceButtonText,"Text",piece->data.button.name,FALSE);
+			list_palette_add_string(&property_palette,kChooserPieceButtonText,"Text",piece->data.button.name,max_chooser_text_data_sz,FALSE);
 			break;
 
 	}
@@ -144,24 +144,6 @@ void property_palette_click_chooser_piece(int chooser_idx,int chooser_piece_idx,
 
 		case kChooserPieceSettingsType:
 			bzero(&piece->data,sizeof(iface_chooser_piece_data_type));		// need to clear data or it'll crash
-			break;
-
-		case kChooserPieceSettingsGoto:
-			dialog_property_string_run(list_string_value_string,(void*)piece->goto_name,name_str_len,0,0);
-			break;
-
-			// types
-
-		case kChooserPieceTextStr:
-			dialog_property_string_run(list_string_value_string,(void*)piece->data.text.str,max_chooser_text_data_sz,0,0);
-			break;
-
-		case kChooserPieceModelAnimateName:
-			dialog_property_string_run(list_string_value_string,(void*)piece->data.model.animate_name,name_str_len,0,0);
-			break;
-
-		case kChooserPieceButtonText:
-			dialog_property_string_run(list_string_value_string,(void*)piece->data.button.name,max_chooser_button_text_sz,0,0);
 			break;
 
 	}

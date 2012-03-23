@@ -52,12 +52,12 @@ void property_palette_fill_action(int action_idx)
 
 	action=&iface.action_display_list.action_displays[action_idx];
 
-	list_palette_set_title(&property_palette,"Actions",NULL,"Action",action->display_name,NULL,NULL);
+	list_palette_set_title(&property_palette,"Control Actions",NULL,"Action",action->display_name,NULL,NULL);
 
 		// settings
 
 	list_palette_add_header(&property_palette,0,"Settings");
-	list_palette_add_string(&property_palette,kActionSettingsName,"Name",action->display_name,FALSE);
+	list_palette_add_string(&property_palette,kActionSettingsName,"Name",action->display_name,name_str_len,FALSE);
 	list_palette_add_checkbox(&property_palette,kActionSettingsShow,"Show",&action->show,FALSE);
 }
 
@@ -69,18 +69,5 @@ void property_palette_fill_action(int action_idx)
 
 void property_palette_click_action(int action_idx,bool double_click)
 {
-	iface_action_display_type		*action;
-
-	if (!double_click) return;
-
-	action=&iface.action_display_list.action_displays[action_idx];
-
-	switch (property_palette.item_pane.click.id) {
-
-		case kActionSettingsName:
-			dialog_property_string_run(list_string_value_string,(void*)action->display_name,name_str_len,0,0);
-			break;
-
-	}
 }
 

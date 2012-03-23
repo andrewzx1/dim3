@@ -565,7 +565,8 @@ void iface_read_settings_interface(iface_type *iface)
 {
 	int							n,interface_head_tag,scale_tag,
 								bitmap_head_tag,bitmap_tag,text_head_tag,text_tag,bar_head_tag,bar_tag,
-								virtual_head_tag,radar_head_tag,menu_head_tag,menu_tag,title_tag,simple_save_tag,
+								virtual_head_tag,radar_head_tag,menu_head_tag,menu_tag,title_tag,
+								simple_save_tag,score_tag,
 								intro_head_tag,intro_model_head_tag,intro_model_tag,intro_confirm_tag,
 								color_tag,font_tag,progress_tag,chat_tag,fade_tag,button_tag,sound_tag,
 								proj_tag,setup_tag;
@@ -774,9 +775,9 @@ void iface_read_settings_interface(iface_type *iface)
 			
 		title_tag=xml_findfirstchild("Title",intro_head_tag);
 		if (title_tag!=-1) {
-			xml_get_attribute_text(title_tag,"name",iface->intro.title.name,name_str_len);
-			xml_get_attribute_text(title_tag,"sound",iface->intro.title.sound,name_str_len);
-			iface->intro.title.life_msec=xml_get_attribute_int(title_tag,"life_msec");
+			xml_get_attribute_text(title_tag,"name",iface->logo.name,name_str_len);
+			xml_get_attribute_text(title_tag,"sound",iface->logo.sound,name_str_len);
+			iface->logo.life_msec=xml_get_attribute_int(title_tag,"life_msec");
 		}
 
 			// models
@@ -806,6 +807,19 @@ void iface_read_settings_interface(iface_type *iface)
 			iface->intro.simple_save_list.progress.wrap_count=xml_get_attribute_int(simple_save_tag,"progress_wrap_count");
 			xml_get_attribute_text(simple_save_tag,"progress_bitmap_name",iface->intro.simple_save_list.progress.bitmap_name,name_str_len);
 			xml_get_attribute_text(simple_save_tag,"progress_bitmap_disable_name",iface->intro.simple_save_list.progress.bitmap_disable_name,name_str_len);
+		}
+
+			// score settings
+
+		score_tag=xml_findfirstchild("Score",intro_head_tag);
+		if (score_tag!=-1) {
+			iface->intro.score.on=xml_get_attribute_boolean(score_tag,"on");
+			iface->intro.score.x=xml_get_attribute_int(score_tag,"x");
+			iface->intro.score.y=xml_get_attribute_int(score_tag,"y");
+			iface->intro.score.wid=xml_get_attribute_int(score_tag,"width");
+			iface->intro.score.high=xml_get_attribute_int(score_tag,"height");
+			iface->intro.score.text_size=xml_get_attribute_int(score_tag,"text_size");
+			xml_get_attribute_color(score_tag,"color",&iface->intro.score.col);
 		}
 
 			// buttons
@@ -1407,9 +1421,9 @@ bool iface_write_settings_interface(iface_type *iface,char *err_str)
 		// titles
 
 	xml_add_tagstart("Title");
-	xml_add_attribute_text("name",iface->intro.title.name);
-	xml_add_attribute_text("sound",iface->intro.title.sound);
-	xml_add_attribute_int("life_msec",iface->intro.title.life_msec);
+	xml_add_attribute_text("name",iface->logo.name);
+	xml_add_attribute_text("sound",iface->logo.sound);
+	xml_add_attribute_int("life_msec",iface->logo.life_msec);
 	xml_add_tagend(TRUE);
 
 		// intro models
@@ -1448,6 +1462,18 @@ bool iface_write_settings_interface(iface_type *iface,char *err_str)
 	xml_add_attribute_int("progress_wrap_count",iface->intro.simple_save_list.progress.wrap_count);
 	xml_add_attribute_text("progress_bitmap_name",iface->intro.simple_save_list.progress.bitmap_name);
 	xml_add_attribute_text("progress_bitmap_disable_name",iface->intro.simple_save_list.progress.bitmap_disable_name);
+	xml_add_tagend(TRUE);
+
+		// score
+
+	xml_add_tagstart("Score");
+	xml_add_attribute_boolean("on",iface->intro.score.on);
+	xml_add_attribute_int("x",iface->intro.score.x);
+	xml_add_attribute_int("y",iface->intro.score.y);
+	xml_add_attribute_int("width",iface->intro.score.wid);
+	xml_add_attribute_int("height",iface->intro.score.high);
+	xml_add_attribute_int("text_size",iface->intro.score.text_size);
+	xml_add_attribute_color("color",&iface->intro.score.col);
 	xml_add_tagend(TRUE);
 
 		// intro buttons

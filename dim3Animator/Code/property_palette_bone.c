@@ -100,7 +100,7 @@ void property_palette_fill_bone(int bone_idx,int pose_idx)
 		// bone
 
 	list_palette_add_header(&property_palette,0,"Bone Options");
-	list_palette_add_string(&property_palette,kBonePropertyName,"Name",bone->name,FALSE);
+	list_palette_add_string(&property_palette,kBonePropertyName,"Name",bone->name,name_str_len,FALSE);
 	list_palette_add_point(&property_palette,kBonePropertyPosition,"Position",&bone->pnt,FALSE);
 
 	property_palette_fill_bone_create_circular_list(bone->parent_idx,bone_idx);
@@ -139,20 +139,5 @@ void property_palette_fill_bone(int bone_idx,int pose_idx)
 
 void property_palette_click_bone(int bone_idx,int pose_idx,bool double_click)
 {
-	model_bone_type			*bone;
-	
-	if (!double_click) return;
-
-	bone=&model.bones[bone_idx];
-
-	switch (property_palette.item_pane.click.id) {
-
-			// bone
-
-		case kBonePropertyName:
-			dialog_property_string_run(list_string_value_string,(void*)bone->name,name_str_len,0,0);
-			break;
-
-	}
 }
 

@@ -66,20 +66,20 @@ void property_palette_fill_multiplayer_game(int multiplayer_game_idx)
 		// settings
 
 	list_palette_add_header(&property_palette,0,"Settings");
-	list_palette_add_string(&property_palette,kMPGamePropertySettingsName,"Name",game->name,FALSE);
+	list_palette_add_string(&property_palette,kMPGamePropertySettingsName,"Name",game->name,name_str_len,FALSE);
 	list_palette_add_checkbox(&property_palette,kMPGamePropertySettingsTeam,"Requires Teams",&game->use_teams,FALSE);
 	list_palette_add_checkbox(&property_palette,kMPGamePropertySettingsMonster,"Include Monsters",&game->monsters,FALSE);
 
 		// bots
 
 	list_palette_add_header(&property_palette,0,"Scripts");
-	list_palette_add_string(&property_palette,kMPGamePropertyScriptPlayerScript,"Player",game->script.player_script,FALSE);
-	list_palette_add_string(&property_palette,kMPGamePropertyScriptBotScript,"Bot",game->script.bot_script,FALSE);
+	list_palette_add_string(&property_palette,kMPGamePropertyScriptPlayerScript,"Player",game->script.player_script,file_str_len,FALSE);
+	list_palette_add_string(&property_palette,kMPGamePropertyScriptBotScript,"Bot",game->script.bot_script,file_str_len,FALSE);
 	
 		// spawn
 
 	list_palette_add_header(&property_palette,0,"Spawning");
-	list_palette_add_string(&property_palette,kMPGamePropertySpawnSpotName,"Spot Name",game->spawn.spot_name,FALSE);
+	list_palette_add_string(&property_palette,kMPGamePropertySpawnSpotName,"Spot Name",game->spawn.spot_name,name_str_len,FALSE);
 	list_palette_add_checkbox(&property_palette,kMPGamePropertySpawnForceTeam,"Force Team Spots",&game->spawn.force_team_spot,FALSE);
 	
 		// score
@@ -99,36 +99,5 @@ void property_palette_fill_multiplayer_game(int multiplayer_game_idx)
 
 void property_palette_click_multiplayer_game(int multiplayer_game_idx,bool double_click)
 {
-	iface_net_game_type		*game;
-
-	game=&iface.net_game.games[multiplayer_game_idx];
-
-	if (!double_click) return;
-
-	switch (property_palette.item_pane.click.id) {
-			
-			// settings
-
-		case kMPGamePropertySettingsName:
-			dialog_property_string_run(list_string_value_string,(void*)game->name,name_str_len,0,0);
-			break;
-			
-			// bots
-
-		case kMPGamePropertyScriptPlayerScript:
-			dialog_property_string_run(list_string_value_string,(void*)game->script.player_script,file_str_len,0,0);
-			break;
-			
-		case kMPGamePropertyScriptBotScript:
-			dialog_property_string_run(list_string_value_string,(void*)game->script.bot_script,file_str_len,0,0);
-			break;
-			
-			// spawn
-
-		case kMPGamePropertySpawnSpotName:
-			dialog_property_string_run(list_string_value_string,(void*)game->spawn.spot_name,name_str_len,0,0);
-			break;
-
-	}
 }
 

@@ -332,6 +332,10 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\dim3Setup\Code\property_palette_color.c"
+						>
+					</File>
+					<File
 						RelativePath="..\..\dim3Setup\Code\property_palette_crosshair.c"
 						>
 					</File>
@@ -365,6 +369,10 @@
 					</File>
 					<File
 						RelativePath="..\..\dim3Setup\Code\property_palette_hud_text.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Setup\Code\property_palette_logo.c"
 						>
 					</File>
 					<File
@@ -622,6 +630,10 @@
 				</File>
 				<File
 					RelativePath="..\..\dim3BaseUtility\Sources\base_iface_ring.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3BaseUtility\Sources\base_iface_score.c"
 					>
 				</File>
 				<File

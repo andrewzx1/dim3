@@ -57,8 +57,8 @@ void property_palette_fill_multiplayer_option(int multiplayer_option_idx)
 		// settings
 
 	list_palette_add_header(&property_palette,0,"Settings");
-	list_palette_add_string(&property_palette,kMPOptionPropertySettingsName,"Name",option->name,FALSE);
-	list_palette_add_string(&property_palette,kMPOptionPropertySettingsDescript,"Description",option->descript,FALSE);
+	list_palette_add_string(&property_palette,kMPOptionPropertySettingsName,"Name",option->name,name_str_len,FALSE);
+	list_palette_add_string(&property_palette,kMPOptionPropertySettingsDescript,"Description",option->descript,name_str_len,FALSE);
 }
 
 /* =======================================================
@@ -69,24 +69,5 @@ void property_palette_fill_multiplayer_option(int multiplayer_option_idx)
 
 void property_palette_click_multiplayer_option(int multiplayer_option_idx,bool double_click)
 {
-	iface_net_option_type		*option;
-
-	option=&iface.net_option.options[multiplayer_option_idx];
-
-	if (!double_click) return;
-
-	switch (property_palette.item_pane.click.id) {
-			
-			// settings
-
-		case kMPOptionPropertySettingsName:
-			dialog_property_string_run(list_string_value_string,(void*)option->name,name_str_len,0,0);
-			break;
-
-		case kMPOptionPropertySettingsDescript:
-			dialog_property_string_run(list_string_value_string,(void*)option->descript,name_str_len,0,0);
-			break;
-
-	}
 }
 

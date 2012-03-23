@@ -59,13 +59,13 @@ void property_palette_fill_pose(int pose_idx)
 	list_palette_set_title(&property_palette,"Pose",pose->name,NULL,NULL,NULL,NULL);
 
 	list_palette_add_header(&property_palette,0,"Pose Options");
-	list_palette_add_string(&property_palette,kPosePropertyName,"Name",pose->name,FALSE);
+	list_palette_add_string(&property_palette,kPosePropertyName,"Name",pose->name,name_str_len,FALSE);
 
 	list_palette_add_header_count(&property_palette,0,"Pose Bone Moves",model.nbone);
 	list_palette_sort_mark_start(&property_palette);
 
 	for (n=0;n!=model.nbone;n++) {
-		list_palette_add_string_selectable(&property_palette,(kPosePropertyBoneMove+n),model.bones[n].name,NULL,((state.cur_pose_idx==pose_idx)&&(state.cur_pose_bone_move_idx==n)),FALSE);
+		list_palette_add_string_selectable(&property_palette,(kPosePropertyBoneMove+n),model.bones[n].name,NULL,-1,((state.cur_pose_idx==pose_idx)&&(state.cur_pose_bone_move_idx==n)),FALSE);
 	}
 
 	list_palette_sort(&property_palette);
@@ -79,33 +79,12 @@ void property_palette_fill_pose(int pose_idx)
 
 void property_palette_click_pose(int pose_idx,bool double_click)
 {
-	int						id;
-	model_pose_type			*pose;
-
-	pose=&model.poses[pose_idx];
-
-	id=property_palette.item_pane.click.id;
-
 		// bone moves
 
-	if (id>=kPosePropertyBoneMove) {
-		state.cur_pose_bone_move_idx=id-kPosePropertyBoneMove;
+	if (property_palette.item_pane.click.id>=kPosePropertyBoneMove) {
+		state.cur_pose_bone_move_idx=property_palette.item_pane.click.id-kPosePropertyBoneMove;
 		if (double_click) list_palette_set_level(&property_palette,2);
 		return;
-	}
-
-		// regular values
-
-	if (!double_click) return;
-
-	state.cur_pose_bone_move_idx=-1;
-
-	switch (id) {
-
-		case kPosePropertyName:
-			dialog_property_string_run(list_string_value_string,(void*)pose->name,name_str_len,0,0);
-			break;
-
 	}
 }
 

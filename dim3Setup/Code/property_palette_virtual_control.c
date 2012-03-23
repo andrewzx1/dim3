@@ -59,7 +59,7 @@ void property_palette_fill_virtual_control(void)
 
 	for (n=0;n!=max_virtual_stick;n++) {
 		sprintf(str,"Stick %d",n);
-		list_palette_add_string_selectable(&property_palette,(kVirutalControlStick+n),str,NULL,(state.cur_virtual_control_stick_idx==n),FALSE);
+		list_palette_add_string_selectable(&property_palette,(kVirutalControlStick+n),str,NULL,-1,(state.cur_virtual_control_stick_idx==n),FALSE);
 	}
 
 		// buttons
@@ -68,7 +68,7 @@ void property_palette_fill_virtual_control(void)
 
 	for (n=0;n!=max_virtual_button;n++) {
 		sprintf(str,"Button %d",n);
-		list_palette_add_string_selectable(&property_palette,(kVirutalControlButton+n),str,NULL,(state.cur_virtual_control_button_idx==n),FALSE);
+		list_palette_add_string_selectable(&property_palette,(kVirutalControlButton+n),str,NULL,-1,(state.cur_virtual_control_button_idx==n),FALSE);
 	}
 }
 

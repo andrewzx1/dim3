@@ -74,7 +74,7 @@ void property_palette_fill_mark(int mark_idx)
 		// settings
 
 	list_palette_add_header(&property_palette,0,"Settings");
-	list_palette_add_string(&property_palette,kMarkSettingsName,"Name",mark->name,FALSE);
+	list_palette_add_string(&property_palette,kMarkSettingsName,"Name",mark->name,name_str_len,FALSE);
 	list_palette_add_picker_file(&property_palette,kMarkSettingsFileName,list_button_none,0,"Bitmap","Bitmaps/Marks","png","",mark->bitmap_name,FALSE);
 
 		// options
@@ -112,20 +112,5 @@ void property_palette_fill_mark(int mark_idx)
 
 void property_palette_click_mark(int mark_idx,bool double_click)
 {
-	iface_mark_type			*mark;
-
-	if (!double_click) return;
-
-	mark=&iface.mark_list.marks[mark_idx];
-
-	switch (property_palette.item_pane.click.id) {
-
-			// settings
-
-		case kMarkSettingsName:
-			dialog_property_string_run(list_string_value_string,(void*)mark->name,name_str_len,0,0);
-			break;
-
-	}
 }
 

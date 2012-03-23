@@ -57,7 +57,7 @@ void property_palette_fill_crosshair(int crosshair_idx)
 		// settings
 
 	list_palette_add_header(&property_palette,0,"Settings");
-	list_palette_add_string(&property_palette,kCrosshairSettingsName,"Name",crosshair->name,FALSE);
+	list_palette_add_string(&property_palette,kCrosshairSettingsName,"Name",crosshair->name,name_str_len,FALSE);
 	list_palette_add_picker_file(&property_palette,kCrosshairSettingsFileName,list_button_none,0,"Bitmap","Bitmaps/Crosshairs","png","",crosshair->bitmap_name,FALSE);
 }
 
@@ -69,20 +69,5 @@ void property_palette_fill_crosshair(int crosshair_idx)
 
 void property_palette_click_crosshair(int crosshair_idx,bool double_click)
 {
-	iface_crosshair_type		*crosshair;
-
-	if (!double_click) return;
-
-	crosshair=&iface.crosshair_list.crosshairs[crosshair_idx];
-
-	switch (property_palette.item_pane.click.id) {
-
-			// settings
-
-		case kCrosshairSettingsName:
-			dialog_property_string_run(list_string_value_string,(void*)crosshair->name,name_str_len,0,0);
-			break;
-
-	}
 }
 

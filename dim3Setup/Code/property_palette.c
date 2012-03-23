@@ -55,7 +55,7 @@ void property_palette_initialize(void)
 	property_palette.item_pane.click.idx=-1;
 	property_palette.item_pane.click.item=NULL;
 
-	state.cur_item=item_interface_settings;
+	state.cur_item=item_interface_project;
 	state.cur_intro_button_idx=-1;
 	state.cur_intro_model_idx=-1;
 	state.cur_hud_bitmap_idx=-1;
@@ -102,8 +102,16 @@ void property_palette_fill_level_1(void)
 {
 	switch (state.cur_item) {
 
-		case item_interface_settings:
-			property_palette_fill_settings();
+		case item_interface_project:
+			property_palette_fill_project();
+			return;
+
+		case item_interface_color:
+			property_palette_fill_color();
+			return;
+
+		case item_interface_logo:
+			property_palette_fill_logo();
 			return;
 
 		case item_interface_title_page:
@@ -435,8 +443,16 @@ void property_palette_click_level_1(bool double_click)
 {
 	switch (state.cur_item) {
 
-		case item_interface_settings:
-			property_palette_click_settings(double_click);
+		case item_interface_project:
+			property_palette_click_project(double_click);
+			break;
+
+		case item_interface_color:
+			property_palette_click_color(double_click);
+			break;
+
+		case item_interface_logo:
+			property_palette_click_logo(double_click);
 			break;
 
 		case item_interface_title_page:
@@ -718,26 +734,5 @@ void property_palette_click(d3pnt *pnt,bool double_click)
 	}
 
 	main_wind_draw();
-}
-
-/* =======================================================
-
-      Property Palette Utilities
-      
-======================================================= */
-
-void property_palette_pick_sound(char *name,bool include_none)
-{
-	list_palette_start_picking_mode(&property_palette,"Pick a Sound",(char*)iface.sound_list.sounds,iface.sound_list.nsound,sizeof(iface_sound_type),(int)offsetof(iface_sound_type,name),include_none,FALSE,NULL,name);
-}
-
-void property_palette_pick_particle(char *name)
-{
-	list_palette_start_picking_mode(&property_palette,"Pick a Particle",(char*)iface.particle_list.particles,iface.particle_list.nparticle,sizeof(iface_particle_type),(int)offsetof(iface_particle_type,name),FALSE,FALSE,NULL,name);
-}
-
-void property_palette_pick_control(int *control_idx)
-{
-	list_palette_start_picking_mode(&property_palette,"Pick a Control Action",(char*)control_name_str,ncontrol,32,0,FALSE,FALSE,control_idx,NULL);
 }
 

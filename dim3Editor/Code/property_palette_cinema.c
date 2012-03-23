@@ -74,7 +74,7 @@ void property_palette_fill_cinema(int cinema_idx)
 	list_palette_set_title(&property_palette,"Cinema",cinema->name,NULL,NULL,NULL,NULL);
 
 	list_palette_add_header(&property_palette,0,"Cinema Options");
-	list_palette_add_string(&property_palette,kCinemaPropertyName,"Name",cinema->name,FALSE);
+	list_palette_add_string(&property_palette,kCinemaPropertyName,"Name",cinema->name,name_str_len,FALSE);
 	list_palette_add_int(&property_palette,kCinemaPropertyLength,"Total Length",&cinema->len_msec,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Cinema Settings");
@@ -83,8 +83,8 @@ void property_palette_fill_cinema(int cinema_idx)
 	list_palette_add_checkbox(&property_palette,kCinemaPropertyNoCancel,"No Cancel",&cinema->no_cancel,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Cinema Operations");
-	list_palette_add_string_selectable_button(&property_palette,kCinemaPropertySort,list_button_set,kCinemaPropertySort,"Sort Actions",NULL,FALSE,FALSE);
-	list_palette_add_string_selectable_button(&property_palette,kCinemaPropertyShift,list_button_set,kCinemaPropertyShift,"Shift Actions After Selection",NULL,FALSE,FALSE);
+	list_palette_add_string_selectable_button(&property_palette,kCinemaPropertySort,list_button_set,kCinemaPropertySort,"Sort Actions",FALSE,FALSE);
+	list_palette_add_string_selectable_button(&property_palette,kCinemaPropertyShift,list_button_set,kCinemaPropertyShift,"Shift Actions After Selection",FALSE,FALSE);
 
 	list_palette_add_header_button(&property_palette,kCinemaPropertyActionAdd,"Cinema Actions",list_button_plus);
 
@@ -112,7 +112,7 @@ void property_palette_fill_cinema(int cinema_idx)
 		
 		strcat(str,str2);
 
-		list_palette_add_string_selectable_button(&property_palette,(kCinemaPropertyAction+n),list_button_minus,(kCinemaPropertyActionDelete+n),str,NULL,(state.cur_cinema_action_idx==n),FALSE);
+		list_palette_add_string_selectable_button(&property_palette,(kCinemaPropertyAction+n),list_button_minus,(kCinemaPropertyActionDelete+n),str,(state.cur_cinema_action_idx==n),FALSE);
 	
 		action++;
 	}
@@ -265,20 +265,6 @@ void property_palette_click_cinema(bool double_click)
 		
 		cinemas_action_shift(state.cur_cinema_idx,action_idx,shift);
 		return;
-	}
-
-		// regular items
-
-	if (!double_click) return;
-
-	state.cur_cinema_action_idx=-1;
-
-	switch (id) {
-
-		case kCinemaPropertyName:
-			dialog_property_string_run(list_string_value_string,(void*)cinema->name,name_str_len,0,0);
-			break;
-
 	}
 }
 

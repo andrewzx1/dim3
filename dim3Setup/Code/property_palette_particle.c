@@ -89,9 +89,9 @@ void property_palette_fill_particle(int particle_idx)
 		// settings
 
 	list_palette_add_header(&property_palette,0,"Settings");
-	list_palette_add_string(&property_palette,kParticleSettingsName,"Name",particle->name,FALSE);
+	list_palette_add_string(&property_palette,kParticleSettingsName,"Name",particle->name,name_str_len,FALSE);
 	list_palette_add_picker_file(&property_palette,kParticleSettingsBitmapName,list_button_none,0,"Bitmap","Bitmaps/Particles","png","",particle->bitmap_name,FALSE);
-	list_palette_add_string(&property_palette,kParticleSettingsChainName,"Chain Particle",particle->chain_name,FALSE);
+	list_palette_add_picker_list_string(&property_palette,kParticleSettingsChainName,"Chain Particle",(char*)iface.particle_list.particles,iface.particle_list.nparticle,sizeof(iface_particle_type),(int)offsetof(iface_particle_type,name),FALSE,particle->chain_name,FALSE);
 	list_palette_add_int(&property_palette,kParticleSettingsCount,"Count",&particle->count,FALSE);
 	list_palette_add_int(&property_palette,kParticleSettingsLife,"Life Milliseconds",&particle->life_msec,FALSE);
 
@@ -148,24 +148,5 @@ void property_palette_fill_particle(int particle_idx)
 
 void property_palette_click_particle(int particle_idx,bool double_click)
 {
-	iface_particle_type			*particle;
-
-	if (!double_click) return;
-
-	particle=&iface.particle_list.particles[particle_idx];
-
-	switch (property_palette.item_pane.click.id) {
-
-			// settings
-
-		case kParticleSettingsName:
-			dialog_property_string_run(list_string_value_string,(void*)particle->name,name_str_len,0,0);
-			break;
-
-		case kParticleSettingsChainName:
-			property_palette_pick_particle(particle->chain_name);
-			break;
-
-	}
 }
 

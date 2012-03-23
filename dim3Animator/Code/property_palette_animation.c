@@ -65,7 +65,7 @@ void property_palette_fill_animation(int animate_idx)
 	list_palette_set_title(&property_palette,"Animation",animate->name,NULL,NULL,NULL,NULL);
 
 	list_palette_add_header(&property_palette,0,"Animation Options");
-	list_palette_add_string(&property_palette,kAnimationPropertyName,"Name",animate->name,FALSE);
+	list_palette_add_string(&property_palette,kAnimationPropertyName,"Name",animate->name,name_str_len,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Animation Settings");
 	list_palette_add_checkbox(&property_palette,kAnimationPropertyLoop,"Looping",&animate->loop,FALSE);
@@ -82,7 +82,7 @@ void property_palette_fill_animation(int animate_idx)
 			if (n==animate->loop_start) strcat(str," (loop start)");
 			if (n==animate->loop_end) strcat(str," (loop end)");
 		}
-		list_palette_add_string_selectable_button(&property_palette,(kAnimationPropertyPoseMove+n),list_button_minus,(kAnimationPropertyPoseMoveDelete+n),str,NULL,((state.cur_animate_idx==animate_idx) && (state.cur_animate_pose_move_idx==n)),FALSE);
+		list_palette_add_string_selectable_button(&property_palette,(kAnimationPropertyPoseMove+n),list_button_minus,(kAnimationPropertyPoseMoveDelete+n),str,((state.cur_animate_idx==animate_idx) && (state.cur_animate_pose_move_idx==n)),FALSE);
 	}
 }
 
@@ -125,22 +125,6 @@ void property_palette_click_animation(int animate_idx,bool double_click)
 		list_palette_set_level(&property_palette,2);
 		list_palette_start_picking_mode(&property_palette,"Pick a Pose",(char*)model.poses,model.npose,sizeof(model_pose_type),(int)offsetof(model_pose_type,name),FALSE,FALSE,&model.animates[animate_idx].pose_moves[state.cur_animate_pose_move_idx].pose_idx,NULL);
 		return;
-	}
-	
-		// regular click
-
-	if (!double_click) return;
-
-	state.cur_animate_pose_move_idx=-1;
-	state.cur_animate_pose_move_particle_idx=-1;
-	state.cur_animate_pose_move_ring_idx=-1;
-
-	switch (id) {
-
-		case kAnimationPropertyName:
-			dialog_property_string_run(list_string_value_string,(void*)animate->name,name_str_len,0,0);
-			break;
-
 	}
 }
 

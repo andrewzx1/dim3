@@ -102,7 +102,7 @@ void property_palette_fill_camera(void)
 
 	list_palette_add_header(&property_palette,0,"Map Camera Static");
 	list_palette_add_checkbox(&property_palette,kMapPropertyCameraStaticFollow,"Follow Player",&map.camera.c_static.follow,FALSE);
-	list_palette_add_string(&property_palette,kMapPropertyCameraStaticAttachNode,"Attach Node",map.camera.c_static.attach_node,FALSE);
+	list_palette_add_string(&property_palette,kMapPropertyCameraStaticAttachNode,"Attach Node",map.camera.c_static.attach_node,name_str_len,FALSE);
 }
 
 /* =======================================================

@@ -152,8 +152,8 @@ void property_palette_fill_mesh(int mesh_idx,int poly_idx)
 	list_palette_add_checkbox(&property_palette,kMeshPropertyMessageExit,"Exit On",&mesh->msg.exit_on,FALSE);
 	list_palette_add_int(&property_palette,kMeshPropertyMessageExitId,"Exit ID",&mesh->msg.exit_id,FALSE);
 	list_palette_add_checkbox(&property_palette,kMeshPropertyMessageMapChange,"Map Change On",&mesh->msg.map_change_on,FALSE);
-	list_palette_add_string(&property_palette,kMeshPropertyMessageMapChangeName,"Map Name",mesh->msg.map_name,FALSE);
-	list_palette_add_string(&property_palette,kMeshPropertyMessageMapChangeSpotName,"Map Spot Name",mesh->msg.map_spot_name,FALSE);
+	list_palette_add_string(&property_palette,kMeshPropertyMessageMapChangeName,"Map Name",mesh->msg.map_name,name_str_len,FALSE);
+	list_palette_add_string(&property_palette,kMeshPropertyMessageMapChangeSpotName,"Map Spot Name",mesh->msg.map_spot_name,name_str_len,FALSE);
 	
 		// bases
 		
@@ -164,8 +164,8 @@ void property_palette_fill_mesh(int mesh_idx,int poly_idx)
 		// import
 		
 	list_palette_add_header(&property_palette,0,"Mesh Import");
-	list_palette_add_string(&property_palette,kMeshPropertyImportOBJName,"OBJ Name",mesh->import.obj_name,FALSE);
-	list_palette_add_string(&property_palette,kMeshPropertyImportGroupName,"Group Name",mesh->import.group_name,FALSE);
+	list_palette_add_string(&property_palette,kMeshPropertyImportOBJName,"OBJ Name",mesh->import.obj_name,name_str_len,FALSE);
+	list_palette_add_string(&property_palette,kMeshPropertyImportGroupName,"Group Name",mesh->import.group_name,name_str_len,FALSE);
 	
 		// info
 
@@ -210,7 +210,7 @@ void property_palette_fill_mesh(int mesh_idx,int poly_idx)
 		list_palette_add_normal_vector(&property_palette,kMeshPolyPropertyNormal,"Normal",&poly->tangent_space.normal,FALSE);
 
 		list_palette_add_header(&property_palette,0,"Poly Camera");
-		list_palette_add_string(&property_palette,kMeshPolyPropertyCamera,"Node",poly->camera,FALSE);
+		list_palette_add_string(&property_palette,kMeshPolyPropertyCamera,"Node",poly->camera,name_str_len,FALSE);
 		
 		pal_poly_index=poly_idx;
 		
@@ -234,39 +234,12 @@ void property_palette_click_mesh(int mesh_idx,int poly_idx,bool double_click)
 
 	if (!double_click) return;
 
-		// mesh settings
-
-	mesh=&map.mesh.meshes[mesh_idx];
-
-	switch (property_palette.item_pane.click.id) {
-
-			// messages
-
-		case kMeshPropertyMessageMapChangeName:
-			dialog_property_string_run(list_string_value_string,(void*)mesh->msg.map_name,name_str_len,0,0);
-			break;
-
-		case kMeshPropertyMessageMapChangeSpotName:
-			dialog_property_string_run(list_string_value_string,(void*)mesh->msg.map_spot_name,name_str_len,0,0);
-			break;
-			
-			// import
-			
-		case kMeshPropertyImportOBJName:
-			dialog_property_string_run(list_string_value_string,(void*)mesh->import.obj_name,name_str_len,0,0);
-			break;
-			
-		case kMeshPropertyImportGroupName:
-			dialog_property_string_run(list_string_value_string,(void*)mesh->import.group_name,name_str_len,0,0);
-			break;
-
-	}
-
 		// polygon settings
 
 	if (poly_idx!=-1) {
 
 		view=view_get_current_view();
+		mesh=&map.mesh.meshes[mesh_idx];
 		poly=&mesh->polys[poly_idx];
 
 		switch (property_palette.item_pane.click.id) {

@@ -92,7 +92,7 @@ void property_palette_fill_cinema_action(int cinema_idx,int action_idx)
 		list_palette_add_picker_list_int(&property_palette,kCinemaActionPropertyActorType,"Type",(char*)action_actor_type_str,-1,name_str_len,0,FALSE,&action->actor_type,FALSE);
 	}
 	else {
-		list_palette_add_string(&property_palette,kCinemaActionPropertyActorName,"Type","n/a",TRUE);
+		list_palette_add_na_blank(&property_palette,kCinemaActionPropertyActorName,"Type");
 	}
 
 		// actors
@@ -125,27 +125,27 @@ void property_palette_fill_cinema_action(int cinema_idx,int action_idx)
 
 	}
 	else {
-		list_palette_add_string(&property_palette,kCinemaActionPropertyActorName,"Name","n/a",TRUE);
+		list_palette_add_na_blank(&property_palette,kCinemaActionPropertyActorName,"Name");
 	}
 
 		// animations
 
 	if (has_animation) {
-		list_palette_add_string(&property_palette,kCinemaActionPropertyAnimation,"Animation",action->animation_name,FALSE);
-		list_palette_add_string(&property_palette,kCinemaActionPropertyNextAnimation,"Next Animation",action->next_animation_name,FALSE);
+		list_palette_add_string(&property_palette,kCinemaActionPropertyAnimation,"Animation",action->animation_name,name_str_len,FALSE);
+		list_palette_add_string(&property_palette,kCinemaActionPropertyNextAnimation,"Next Animation",action->next_animation_name,name_str_len,FALSE);
 	}
 	else {
-		list_palette_add_string(&property_palette,kCinemaActionPropertyAnimation,"Animation","n/a",TRUE);
-		list_palette_add_string(&property_palette,kCinemaActionPropertyNextAnimation,"Next Animation","n/a",TRUE);
+		list_palette_add_na_blank(&property_palette,kCinemaActionPropertyAnimation,"Animation");
+		list_palette_add_na_blank(&property_palette,kCinemaActionPropertyNextAnimation,"Next Animation");
 	}
 
 		// nodes
 
 	if ((has_node) && (!is_fade)) {
-		list_palette_add_string(&property_palette,kCinemaActionPropertyNode,"Node",action->node_name,FALSE);
+		list_palette_add_string(&property_palette,kCinemaActionPropertyNode,"Node",action->node_name,name_str_len,FALSE);
 	}
 	else {
-		list_palette_add_string(&property_palette,kCinemaActionPropertyNode,"Node","n/a",TRUE);
+		list_palette_add_na_blank(&property_palette,kCinemaActionPropertyNode,"Node");
 	}
 
 	list_palette_add_header(&property_palette,0,"Cinema Action Options");
@@ -153,13 +153,13 @@ void property_palette_fill_cinema_action(int cinema_idx,int action_idx)
 		list_palette_add_checkbox(&property_palette,kCinemaActionPropertyReverseMove,"Reverse Move",&action->move_reverse,FALSE);
 	}
 	else {
-		list_palette_add_string(&property_palette,kCinemaActionPropertyReverseMove,"Reverse Move","n/a",TRUE);
+		list_palette_add_na_blank(&property_palette,kCinemaActionPropertyReverseMove,"Reverse Move");
 	}
 	if (action->actor_type==cinema_actor_hud_text) {
-		list_palette_add_string(&property_palette,kCinemaActionPropertyText,"Display Text",action->text_str,FALSE);
+		list_palette_add_string(&property_palette,kCinemaActionPropertyText,"Display Text",action->text_str,256,FALSE);
 	}
 	else {
-		list_palette_add_string(&property_palette,kCinemaActionPropertyText,"Display Text","n/a",TRUE);
+		list_palette_add_na_blank(&property_palette,kCinemaActionPropertyText,"Display Text");
 	}
 }
 
@@ -203,20 +203,8 @@ void property_palette_click_cinema_action(int cinema_idx,int action_idx,bool dou
 
 			break;
 
-		case kCinemaActionPropertyAnimation:
-			dialog_property_string_run(list_string_value_string,(void*)action->animation_name,name_str_len,0,0);
-			break;
-
-		case kCinemaActionPropertyNextAnimation:
-			dialog_property_string_run(list_string_value_string,(void*)action->next_animation_name,name_str_len,0,0);
-			break;
-
 		case kCinemaActionPropertyNode:
 			property_palette_pick_node(action->node_name);
-			break;
-
-		case kCinemaActionPropertyText:
-			dialog_property_string_run(list_string_value_string,(void*)action->text_str,256,0,0);
 			break;
 
 	}

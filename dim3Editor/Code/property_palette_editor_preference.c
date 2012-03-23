@@ -73,7 +73,7 @@ void property_palette_fill_editor_preference(void)
 	list_palette_set_title(&property_palette,"Editor Preferences",NULL,NULL,NULL,NULL,NULL);
 
 	list_palette_add_header(&property_palette,0,"Editor Engine Launch");
-	list_palette_add_string(&property_palette,kPrefPropertyEngineName,"Engine Name",setup.engine_name,FALSE);
+	list_palette_add_string(&property_palette,kPrefPropertyEngineName,"Engine Name",setup.engine_name,name_str_len,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Editor Settings");
 	list_palette_add_checkbox(&property_palette,kPrefPropertyFreeLook,"Free Look",&setup.free_look,FALSE);
@@ -113,17 +113,6 @@ void property_palette_fill_editor_preference(void)
 
 void property_palette_click_editor_preference(int id,bool double_click)
 {
-	if (double_click) {
-
-		switch (id) {
-
-			case kPrefPropertyEngineName:
-				dialog_property_string_run(list_string_value_string,(void*)setup.engine_name,name_str_len,0,0);
-				break;
-
-		}
-	}
-
 		// write prefs
 
 	setup_xml_write();

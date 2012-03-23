@@ -72,7 +72,7 @@ void property_palette_fill_movement(int movement_idx)
 	list_palette_set_title(&property_palette,"Movement",movement->name,NULL,NULL,NULL,NULL);
 
 	list_palette_add_header(&property_palette,0,"Movement Options");
-	list_palette_add_string(&property_palette,kMovementPropertyName,"Name",movement->name,FALSE);
+	list_palette_add_string(&property_palette,kMovementPropertyName,"Name",movement->name,name_str_len,FALSE);
 	list_palette_add_int(&property_palette,kMovementPropertyAutoOpenDistance,"Auto-Open Distance",&movement->auto_open_distance,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Movement Groups");
@@ -92,7 +92,7 @@ void property_palette_fill_movement(int movement_idx)
 
 	for (n=0;n!=movement->nmove;n++) {
 		sprintf(str,"(%d,%d,%d)(%d,%d,%d)@%d",move->mov.x,move->mov.y,move->mov.z,(int)move->rot.x,(int)move->rot.y,(int)move->rot.z,move->msec);
-		list_palette_add_string_selectable_button(&property_palette,(kMovementPropertyMove+n),list_button_minus,(kMovementPropertyMoveDelete+n),str,NULL,(state.cur_movement_move_idx==n),FALSE);
+		list_palette_add_string_selectable_button(&property_palette,(kMovementPropertyMove+n),list_button_minus,(kMovementPropertyMoveDelete+n),str,(state.cur_movement_move_idx==n),FALSE);
 		move++;
 	}
 }
@@ -133,20 +133,6 @@ void property_palette_click_movement(bool double_click)
 		state.cur_movement_move_idx=-1;
 		map_movement_move_delete(&map,state.cur_movement_idx,(id-kMovementPropertyMoveDelete));
 		return;
-	}
-
-		// regular items
-
-	if (!double_click) return;
-
-	state.cur_movement_move_idx=-1;
-
-	switch (id) {
-
-		case kMovementPropertyName:
-			dialog_property_string_run(list_string_value_string,(void*)movement->name,name_str_len,0,0);
-			break;
-
 	}
 }
 

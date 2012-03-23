@@ -64,7 +64,7 @@ void property_palette_fill_title_page_model(int intro_model_idx)
 
 	list_palette_add_header(&property_palette,0,"Settings");
 	list_palette_add_picker_file(&property_palette,kModelSettingsName,list_button_none,0,"Model","Models","","Mesh.xml;Model.xml",model->model_name,FALSE);
-	list_palette_add_string(&property_palette,kModelSettingsAnimate,"Animation",model->animate_name,FALSE);
+	list_palette_add_string(&property_palette,kModelSettingsAnimate,"Animation",model->animate_name,name_str_len,FALSE);
 
 		// position
 
@@ -87,20 +87,5 @@ void property_palette_fill_title_page_model(int intro_model_idx)
 
 void property_palette_click_title_page_model(int intro_model_idx,bool double_click)
 {
-	iface_intro_model_type				*model;
-
-	if (!double_click) return;
-
-	model=&iface.intro.model_list.models[intro_model_idx];
-
-	switch (property_palette.item_pane.click.id) {
-
-			// settings
-
-		case kModelSettingsAnimate:
-			dialog_property_string_run(list_string_value_string,(void*)model->animate_name,name_str_len,0,0);
-			break;
-
-	}
 }
 

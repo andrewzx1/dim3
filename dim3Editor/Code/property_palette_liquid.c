@@ -130,7 +130,7 @@ void property_palette_fill_liquid(int liq_idx)
 	list_palette_add_int(&property_palette,kLiquidPropertyWaveLength,"Length",&liq->wave.length,FALSE);
 	list_palette_add_int(&property_palette,kLiquidPropertyWaveHigh,"High",&liq->wave.high,FALSE);
 	list_palette_add_int(&property_palette,kLiquidPropertyWavePeriodMSec,"Period msec",&liq->wave.period_msec,FALSE);
-	list_palette_add_string_selectable_button(&property_palette,kLiquidPropertyWaveReset,list_button_set,kLiquidPropertyWaveReset,"Resize Liquid To Fit Wave Length",NULL,FALSE,FALSE);
+	list_palette_add_string_selectable_button(&property_palette,kLiquidPropertyWaveReset,list_button_set,kLiquidPropertyWaveReset,"Resize Liquid To Fit Wave Length",FALSE,FALSE);
 	
 	list_palette_add_header(&property_palette,0,"Liquid Harm");
 	list_palette_add_int(&property_palette,kLiquidPropertyHarm,"In Damage",&liq->harm.in_harm,FALSE);
@@ -171,7 +171,7 @@ void property_palette_fill_liquid(int liq_idx)
 	list_palette_add_uv(&property_palette,kLiquidPropertyShift,"Shift",&liq->shift,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Liquid Camera");
-	list_palette_add_string(&property_palette,kLiquidPropertyCamera,"Node",liq->camera,FALSE);
+	list_palette_add_string(&property_palette,kLiquidPropertyCamera,"Node",liq->camera,name_str_len,FALSE);
 	
 		// info
 	

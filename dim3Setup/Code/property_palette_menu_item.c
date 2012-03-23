@@ -63,13 +63,13 @@ void property_palette_fill_menu_item(int menu_idx,int menu_item_idx)
 		// settings
 
 	list_palette_add_header(&property_palette,0,"Settings");
-	list_palette_add_string(&property_palette,kMenuItemPropertySettingsData,"Data",item->data,FALSE);
+	list_palette_add_string(&property_palette,kMenuItemPropertySettingsData,"Data",item->data,max_menu_item_data_sz,FALSE);
 	list_palette_add_int(&property_palette,kMenuItemPropertySettingsID,"Id",&item->item_id,FALSE);
 
 		// options
 
 	list_palette_add_header(&property_palette,0,"Options");
-	list_palette_add_string(&property_palette,kMenuItemPropertyOptionsSubMenu,"Goto SubMenu",item->sub_menu,FALSE);
+	list_palette_add_string(&property_palette,kMenuItemPropertyOptionsSubMenu,"Goto SubMenu",item->sub_menu,name_str_len,FALSE);
 	list_palette_add_checkbox(&property_palette,kMenuItemPropertyOptionsMultiplayerDisable,"Multiplayer Disable",&item->multiplayer_disable,FALSE);
 	list_palette_add_checkbox(&property_palette,kMenuItemPropertyOptionsQuit,"Quit",&item->quit,FALSE);
 }
@@ -82,26 +82,5 @@ void property_palette_fill_menu_item(int menu_idx,int menu_item_idx)
 
 void property_palette_click_menu_item(int menu_idx,int menu_item_idx,bool double_click)
 {
-	iface_menu_item_type		*item;
-
-	if (!double_click) return;
-
-	item=&iface.menu_list.menus[menu_idx].items[menu_item_idx];
-
-	switch (property_palette.item_pane.click.id) {
-			
-			// settings
-
-		case kMenuItemPropertySettingsData:
-			dialog_property_string_run(list_string_value_string,(void*)item->data,max_menu_item_data_sz,0,0);
-			break;
-
-			// options
-
-		case kMenuItemPropertyOptionsSubMenu:
-			dialog_property_string_run(list_string_value_string,(void*)item->sub_menu,name_str_len,0,0);
-			break;
-
-	}
 }
 

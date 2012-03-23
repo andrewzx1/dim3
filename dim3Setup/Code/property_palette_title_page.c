@@ -33,13 +33,8 @@ and can be sold or given away.
 #include "ui_common.h"
 #include "interface.h"
 
-#define kIntroPropertyMusic								0
-
-#define kIntroPropertyTitleName							1
-#define kIntroPropertyTitleSound						2
-#define kIntroPropertyTitleLifeMsec						3
-
-#define kIntroPropertyClickSound						4
+#define kIntroPropertyClickSound						0
+#define kIntroPropertyMusic								1
 
 #define kIntroPropertyButtonGameNew						10
 #define kIntroPropertyButtonGameLoad					11
@@ -74,6 +69,14 @@ and can be sold or given away.
 
 #define kIntroPropertyFont								70
 
+#define kIntroPropertyScoreOn							80
+#define kIntroPropertyScoreX							81
+#define kIntroPropertyScoreY							82
+#define kIntroPropertyScoreWid							83
+#define kIntroPropertyScoreHigh							84
+#define kIntroPropertyScoreTextSize						85
+#define kIntroPropertyScoreColor						86
+
 #define kIntroPropertyModelAdd							100
 #define kIntroPropertyModelName							1000
 #define kIntroPropertyModelDelete						2000
@@ -94,20 +97,13 @@ void property_palette_fill_title_page(void)
 	char			name[256],str[256];
 
 	list_palette_set_title(&property_palette,"Title Page",NULL,NULL,NULL,NULL,NULL);
-	
-		// title
-
-	list_palette_add_header(&property_palette,0,"Initial PopUp Logo");
-	list_palette_add_picker_file(&property_palette,kIntroPropertyTitleName,list_button_none,0,"Bitmap","Titles","png","",iface.intro.title.name,FALSE);
-	list_palette_add_string(&property_palette,kIntroPropertyTitleSound,"Sound",iface.intro.title.sound,FALSE);
-	list_palette_add_int(&property_palette,kIntroPropertyTitleLifeMsec,"Life Millsec",&iface.intro.title.life_msec,FALSE);
 
 		// fonts
 		
 	list_palette_add_header(&property_palette,0,"Font");
 	for (n=0;n!=max_iface_font_variant;n++) {
 		sprintf(name,"Interface Font %d",n);
-		list_palette_add_string(&property_palette,(kIntroPropertyFont+n),name,iface.font.interface_name[n],FALSE);
+		list_palette_add_string(&property_palette,(kIntroPropertyFont+n),name,iface.font.interface_name[n],name_str_len,FALSE);
 	}
 
 		// sound
@@ -119,18 +115,18 @@ void property_palette_fill_title_page(void)
 		// buttons
 
 	list_palette_add_header(&property_palette,0,"Regular Buttons");
-	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonGameNew,"Game New",NULL,(state.cur_intro_button_idx==item_intro_button_game_new),FALSE);
-	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonGameLoad,"Game Load",NULL,(state.cur_intro_button_idx==item_intro_button_game_load),FALSE);
-	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonGameSetup,"Game Setup",NULL,(state.cur_intro_button_idx==item_intro_button_game_setup),FALSE);
-	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonGameNewEasy,"Game New Easy",NULL,(state.cur_intro_button_idx==item_intro_button_game_new_easy),FALSE);
-	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonGameNewMedium,"Game New Medium",NULL,(state.cur_intro_button_idx==item_intro_button_game_new_medium),FALSE);
-	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonGameNewHard,"Game New Hard",NULL,(state.cur_intro_button_idx==item_intro_button_game_new_hard),FALSE);
-	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonGameNewCancel,"Game New Cancel",NULL,(state.cur_intro_button_idx==item_intro_button_game_new_cancel),FALSE);
-	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonMultiplayerHost,"Multiplayer Host",NULL,(state.cur_intro_button_idx==item_intro_button_multiplayer_host),FALSE);
-	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonMultiplayerJoin,"Multiplayer Join",NULL,(state.cur_intro_button_idx==item_intro_button_multiplayer_join),FALSE);
-	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonMultiplayerSetup,"Multiplayer Setup",NULL,(state.cur_intro_button_idx==item_intro_button_multiplayer_setup),FALSE);
-	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonCredit,"Credit",NULL,(state.cur_intro_button_idx==item_intro_button_credit),FALSE);
-	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonQuit,"Quit",NULL,(state.cur_intro_button_idx==item_intro_button_quit),FALSE);
+	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonGameNew,"Game New",NULL,-1,(state.cur_intro_button_idx==item_intro_button_game_new),FALSE);
+	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonGameLoad,"Game Load",NULL,-1,(state.cur_intro_button_idx==item_intro_button_game_load),FALSE);
+	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonGameSetup,"Game Setup",NULL,-1,(state.cur_intro_button_idx==item_intro_button_game_setup),FALSE);
+	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonGameNewEasy,"Game New Easy",NULL,-1,(state.cur_intro_button_idx==item_intro_button_game_new_easy),FALSE);
+	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonGameNewMedium,"Game New Medium",NULL,-1,(state.cur_intro_button_idx==item_intro_button_game_new_medium),FALSE);
+	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonGameNewHard,"Game New Hard",NULL,-1,(state.cur_intro_button_idx==item_intro_button_game_new_hard),FALSE);
+	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonGameNewCancel,"Game New Cancel",NULL,-1,(state.cur_intro_button_idx==item_intro_button_game_new_cancel),FALSE);
+	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonMultiplayerHost,"Multiplayer Host",NULL,-1,(state.cur_intro_button_idx==item_intro_button_multiplayer_host),FALSE);
+	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonMultiplayerJoin,"Multiplayer Join",NULL,-1,(state.cur_intro_button_idx==item_intro_button_multiplayer_join),FALSE);
+	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonMultiplayerSetup,"Multiplayer Setup",NULL,-1,(state.cur_intro_button_idx==item_intro_button_multiplayer_setup),FALSE);
+	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonCredit,"Credit",NULL,-1,(state.cur_intro_button_idx==item_intro_button_credit),FALSE);
+	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonQuit,"Quit",NULL,-1,(state.cur_intro_button_idx==item_intro_button_quit),FALSE);
 
 		// simple save settings
 		
@@ -144,13 +140,13 @@ void property_palette_fill_title_page(void)
 	list_palette_add_header(&property_palette,0,"Simple Save Buttons");
 	for (n=0;n!=max_simple_save_spot;n++) {
 		sprintf(str,"Simple Save Start %d",n);
-		list_palette_add_string_selectable(&property_palette,(kIntroPropertyButtonSimpleSaveStart+n),str,NULL,(state.cur_intro_button_idx==(item_intro_button_simple_save_start+n)),FALSE);
+		list_palette_add_string_selectable(&property_palette,(kIntroPropertyButtonSimpleSaveStart+n),str,NULL,-1,(state.cur_intro_button_idx==(item_intro_button_simple_save_start+n)),FALSE);
 	}
 
 	list_palette_add_header(&property_palette,0,"Simple Save Erase Buttons");
 	for (n=0;n!=max_simple_save_spot;n++) {
 		sprintf(str,"Simple Save Erase %d",n);
-		list_palette_add_string_selectable(&property_palette,(kIntroPropertyButtonSimpleSaveErase+n),str,NULL,(state.cur_intro_button_idx==(item_intro_button_simple_save_erase+n)),FALSE);
+		list_palette_add_string_selectable(&property_palette,(kIntroPropertyButtonSimpleSaveErase+n),str,NULL,-1,(state.cur_intro_button_idx==(item_intro_button_simple_save_erase+n)),FALSE);
 	}
 	
 		// simple save settings
@@ -167,6 +163,17 @@ void property_palette_fill_title_page(void)
 	list_palette_add_picker_file(&property_palette,kIntroPropertySimpleSaveProgressBitmap,list_button_none,0,"Enabled Bitmap","Bitmaps/Interface","png","",iface.intro.simple_save_list.progress.bitmap_name,FALSE);
 	list_palette_add_picker_file(&property_palette,kIntroPropertySimpleSaveProgressBitmapDisable,list_button_none,0,"Disabled Bitmap","Bitmaps/Interface","png","",iface.intro.simple_save_list.progress.bitmap_disable_name,FALSE);
 
+		// score
+		
+	list_palette_add_header(&property_palette,0,"Scores");
+	list_palette_add_checkbox(&property_palette,kIntroPropertyScoreOn,"On",&iface.intro.score.on,FALSE);
+	list_palette_add_int(&property_palette,kIntroPropertyScoreX,"X",&iface.intro.score.x,FALSE);
+	list_palette_add_int(&property_palette,kIntroPropertyScoreY,"Y",&iface.intro.score.y,FALSE);
+	list_palette_add_int(&property_palette,kIntroPropertyScoreWid,"Width",&iface.intro.score.wid,FALSE);
+	list_palette_add_int(&property_palette,kIntroPropertyScoreHigh,"Height",&iface.intro.score.high,FALSE);
+	list_palette_add_int(&property_palette,kIntroPropertyScoreTextSize,"Text Suze",&iface.intro.score.text_size,FALSE);
+	list_palette_add_pick_color(&property_palette,kIntroPropertyScoreColor,"Color",&iface.intro.score.col,FALSE);
+
 		// models
 
 	list_palette_add_header_button(&property_palette,kIntroPropertyModelAdd,"Models",list_button_plus);
@@ -174,7 +181,7 @@ void property_palette_fill_title_page(void)
 	list_palette_sort_mark_start(&property_palette);
 	
 	for (n=0;n!=iface.intro.model_list.nmodel;n++) {
-		list_palette_add_string_selectable_button(&property_palette,(kIntroPropertyModelName+n),list_button_minus,(kIntroPropertyModelDelete+n),iface.intro.model_list.models[n].model_name,NULL,(state.cur_intro_model_idx==n),FALSE);
+		list_palette_add_string_selectable_button(&property_palette,(kIntroPropertyModelName+n),list_button_minus,(kIntroPropertyModelDelete+n),iface.intro.model_list.models[n].model_name,(state.cur_intro_model_idx==n),FALSE);
 	}
 
 	list_palette_sort(&property_palette);
@@ -271,31 +278,6 @@ void property_palette_click_title_page(bool double_click)
 		property_pick_file("Pick a Model","Models",NULL,"Mesh.xml;Model.xml",iface.intro.model_list.models[idx].model_name);
 
 		return;
-	}
-
-		// regular picks, always
-		// disable selection
-
-	if (!double_click) return;
-
-	state.cur_intro_button_idx=-1;
-	state.cur_intro_model_idx=-1;
-
-		// fonts
-
-	if ((id>=kIntroPropertyFont) && (id<(kIntroPropertyFont+max_iface_font_variant))) {
-		dialog_property_string_run(list_string_value_string,(void*)iface.font.interface_name[id-kIntroPropertyFont],name_str_len,0,0);
-		return;
-	}
-
-		// regular clicks
-
-	switch (id) {
-
-		case kIntroPropertyTitleSound:
-			property_palette_pick_sound(iface.intro.title.sound,TRUE);
-			break;
-
 	}
 }
 

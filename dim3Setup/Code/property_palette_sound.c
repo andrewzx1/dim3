@@ -59,7 +59,7 @@ void property_palette_fill_sound(int sound_idx)
 		// settings
 
 	list_palette_add_header(&property_palette,0,"Settings");
-	list_palette_add_string(&property_palette,kSoundSettingsName,"Name",sound->name,FALSE);
+	list_palette_add_string(&property_palette,kSoundSettingsName,"Name",sound->name,name_str_len,FALSE);
 	list_palette_add_picker_file(&property_palette,kSoundSettingsFileName,list_button_none,0,"Wave","Sounds","wav","",sound->file_name,FALSE);
 	list_palette_add_int(&property_palette,kSoundSettingsMinDist,"Min Distance",&sound->min_dist,FALSE);
 	list_palette_add_int(&property_palette,kSoundSettingsMaxDist,"Max Distance",&sound->max_dist,FALSE);
@@ -73,20 +73,5 @@ void property_palette_fill_sound(int sound_idx)
 
 void property_palette_click_sound(int sound_idx,bool double_click)
 {
-	iface_sound_type			*sound;
-
-	if (!double_click) return;
-
-	sound=&iface.sound_list.sounds[sound_idx];
-
-	switch (property_palette.item_pane.click.id) {
-
-			// settings
-
-		case kSoundSettingsName:
-			dialog_property_string_run(list_string_value_string,(void*)sound->name,name_str_len,0,0);
-			break;
-
-	}
 }
 

@@ -76,8 +76,8 @@ void property_palette_fill_chooser(int chooser_idx)
 		// settings
 
 	list_palette_add_header(&property_palette,0,"Settings");
-	list_palette_add_string(&property_palette,kChooserPropertyName,"Name",chooser->name,FALSE);
-	list_palette_add_string(&property_palette,kChooserPropertyTemplateName,"Template",chooser->template_name,FALSE);
+	list_palette_add_string(&property_palette,kChooserPropertyName,"Name",chooser->name,name_str_len,FALSE);
+	list_palette_add_string(&property_palette,kChooserPropertyTemplateName,"Template",chooser->template_name,name_str_len,FALSE);
 
 		// frame
 
@@ -87,7 +87,7 @@ void property_palette_fill_chooser(int chooser_idx)
 	list_palette_add_int(&property_palette,kChooserPropertyFrameY,"Y",&chooser->frame.y,FALSE);
 	list_palette_add_int(&property_palette,kChooserPropertyFrameWid,"Wid",&chooser->frame.wid,FALSE);
 	list_palette_add_int(&property_palette,kChooserPropertyFrameHigh,"High",&chooser->frame.high,FALSE);
-	list_palette_add_string(&property_palette,kChooserPropertyFrameTitle,"Title",chooser->frame.title,FALSE);
+	list_palette_add_string(&property_palette,kChooserPropertyFrameTitle,"Title",chooser->frame.title,max_chooser_frame_text_sz,FALSE);
 
 		// keys
 
@@ -206,33 +206,6 @@ void property_palette_click_chooser(int chooser_idx,bool double_click)
 		list_palette_start_picking_mode(&property_palette,"Pick a Chooser Piece Type",(char*)chooser_type_str,-1,name_str_len,0,FALSE,FALSE,&chooser->pieces[idx].type,NULL);
 
 		return;
-	}
-
-		// regular picks, always
-		// disable selection
-
-	if (!double_click) return;
-
-	state.cur_chooser_piece_idx=-1;
-
-	switch (id) {
-
-			// settings
-
-		case kChooserPropertyName:
-			dialog_property_string_run(list_string_value_string,(void*)chooser->name,name_str_len,0,0);
-			break;
-
-		case kChooserPropertyTemplateName:
-			dialog_property_string_run(list_string_value_string,(void*)chooser->template_name,name_str_len,0,0);
-			break;
-
-			// frame
-
-		case kChooserPropertyFrameTitle:
-			dialog_property_string_run(list_string_value_string,(void*)chooser->frame.title,max_chooser_frame_text_sz,0,0);
-			break;
-
 	}
 }
 
