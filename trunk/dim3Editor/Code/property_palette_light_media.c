@@ -99,17 +99,17 @@ void property_palette_fill_light_media(void)
 	list_palette_add_header(&property_palette,0,"Map Media");
 	list_palette_add_picker_list_int(&property_palette,kMapPropertyMediaType,"Startup Type",(char*)map_property_media_type_list,-1,name_str_len,0,FALSE,&map.media.type,FALSE);
 	list_palette_add_int(&property_palette,kMapPropertyMediaEventId,"Event Id",&map.media.event_id,FALSE);
-	list_palette_add_string(&property_palette,kMapPropertyMediaName,"Startup Name",map.media.name,FALSE);
+	list_palette_add_string(&property_palette,kMapPropertyMediaName,"Startup Name",map.media.name,name_str_len,FALSE);
 	list_palette_add_picker_list_string(&property_palette,kMapPropertyMediaTitleSound,"Startup Title Sound",(char*)iface.sound_list.sounds,iface.sound_list.nsound,sizeof(iface_sound_type),(int)offsetof(iface_sound_type,name),TRUE,map.media.title_sound_name,FALSE);
 
 		// music
 
 	list_palette_add_header(&property_palette,0,"Map Music");
-	list_palette_add_string(&property_palette,kMapPropertyMusicName,"Name",map.music.name,FALSE);
+	list_palette_add_string(&property_palette,kMapPropertyMusicName,"Name",map.music.name,name_str_len,FALSE);
 	list_palette_add_int(&property_palette,kMapPropertyMusicFadeTime,"Fade In Time",&map.music.fade_msec,FALSE);
 	for (n=0;n!=max_music_preload;n++) {
 		sprintf(name,"Preload Name %d",n);
-		list_palette_add_string(&property_palette,(kMapPropertyMusicPreloadName+n),name,map.music.preload_name[n],FALSE);
+		list_palette_add_string(&property_palette,(kMapPropertyMusicPreloadName+n),name,map.music.preload_name[n],name_str_len,FALSE);
 	}
 }
 
@@ -121,36 +121,5 @@ void property_palette_fill_light_media(void)
 
 void property_palette_click_light_media(bool double_click)
 {
-	int				id,music_idx;
-
-	if (!double_click) return;
-
-	id=property_palette.item_pane.click.id;
-
-		// preload music
-
-	if ((id>=kMapPropertyMusicPreloadName) && (id<(kMapPropertyMusicPreloadName+max_music_preload))) {
-		music_idx=(id-kMapPropertyMusicPreloadName);
-		dialog_property_string_run(list_string_value_string,(void*)map.music.preload_name[music_idx],name_str_len,0,0);
-		return;
-	}
-	
-		// regular properties
-
-	switch (id) {
-
-			// map media
-
-		case kMapPropertyMediaName:
-			dialog_property_string_run(list_string_value_string,(void*)map.media.name,name_str_len,0,0);
-			break;
-
-			// map music
-
-		case kMapPropertyMusicName:
-			dialog_property_string_run(list_string_value_string,(void*)map.music.name,name_str_len,0,0);
-			break;
-
-	}
 }
 

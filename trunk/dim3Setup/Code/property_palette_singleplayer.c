@@ -304,27 +304,6 @@ void property_palette_click_singleplayer(bool double_click)
 			dialog_property_string_run(list_string_value_string,(void*)iface.net_bot.bots[n].name,name_str_len,0,0);
 		}
 	}
-
-		// regular picks, always
-		// disable selection
-
-	state.cur_multiplayer_character_idx=-1;
-	state.cur_multiplayer_game_idx=-1;
-	state.cur_multiplayer_option_idx=-1;
-
-	switch (id) {
-
-			// news
-
-		case kMPPropertyNewsHost:
-			dialog_property_string_run(list_string_value_string,(void*)iface.net_news.host,name_str_len,0,0);
-			break;
-
-		case kMPPropertyNewsURL:
-			dialog_property_string_run(list_string_value_string,(void*)iface.net_news.url,name_str_len,0,0);
-			break;
-
-	}
 	*/
 }
 

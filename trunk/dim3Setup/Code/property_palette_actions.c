@@ -52,12 +52,12 @@ void property_palette_fill_actions(void)
 {
 	int						n;
 
-	list_palette_set_title(&property_palette,"Actions",NULL,NULL,NULL,NULL,NULL);
+	list_palette_set_title(&property_palette,"Control Actions",NULL,NULL,NULL,NULL,NULL);
 
-	list_palette_add_header(&property_palette,0,"Actions");
+	list_palette_add_header(&property_palette,0,"Control Actions");
 	
 	for (n=0;n!=ncontrol;n++) {
-		list_palette_add_string_selectable(&property_palette,(kActionProperyName+n),control_name_str[n],NULL,(state.cur_action_idx==n),FALSE);
+		list_palette_add_string_selectable(&property_palette,(kActionProperyName+n),control_name_str[n],NULL,-1,(state.cur_action_idx==n),FALSE);
 	}
 }
 

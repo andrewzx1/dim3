@@ -72,7 +72,7 @@ void property_palette_fill_spot(int spot_idx)
 	list_palette_set_title(&property_palette,"Spot",spot->name,NULL,NULL,NULL,NULL);
 
 	list_palette_add_header(&property_palette,0,"Spot Settings");
-	list_palette_add_string(&property_palette,kSpotPropertyName,"Name",spot->name,FALSE);
+	list_palette_add_string(&property_palette,kSpotPropertyName,"Name",spot->name,name_str_len,FALSE);
 	list_palette_add_picker_list_int(&property_palette,kSpotPropertyType,"Type",(char*)spot_property_type_list,-1,name_str_len,0,FALSE,&spot->type,FALSE);
 
 	if (spot->script[0]!=0x0) {
@@ -120,18 +120,6 @@ void property_palette_click_spot(int spot_idx,bool double_click)
 	if (id==kSpotPropertyScriptEdit) {
 		launch_spot_script_editor(spot);
 		return;
-	}
-
-	if (!double_click) return;
-
-		// regular properties
-
-	switch (id) {
-
-		case kSpotPropertyName:
-			dialog_property_string_run(list_string_value_string,(void*)spot->name,name_str_len,0,0);
-			break;
-
 	}
 }
 

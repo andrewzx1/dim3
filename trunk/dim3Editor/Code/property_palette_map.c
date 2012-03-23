@@ -85,9 +85,9 @@ void property_palette_fill_map(void)
 		// info
 
 	list_palette_add_header(&property_palette,0,"Map Info");
-	list_palette_add_string(&property_palette,-1,"Name",map.info.name,TRUE);
-	list_palette_add_string(&property_palette,kMapPropertyInfoTitle,"Title",map.info.title,FALSE);
-	list_palette_add_string(&property_palette,kMapPropertyInfoAuthor,"Author",map.info.author,FALSE);
+	list_palette_add_string(&property_palette,-1,"Name",map.info.name,name_str_len,TRUE);
+	list_palette_add_string(&property_palette,kMapPropertyInfoTitle,"Title",map.info.title,name_str_len,FALSE);
+	list_palette_add_string(&property_palette,kMapPropertyInfoAuthor,"Author",map.info.author,name_str_len,FALSE);
 
 		// settings
 
@@ -104,7 +104,7 @@ void property_palette_fill_map(void)
 		// network
 
 	list_palette_add_header(&property_palette,0,"Map Networking");
-	list_palette_add_string(&property_palette,kMapPropertyNetworkGameList,"Net Game List","...",FALSE);
+	list_palette_add_string(&property_palette,kMapPropertyNetworkGameList,"Net Game List",map.settings.network_game_list,256,FALSE);
 
 		// optimizations
 
@@ -152,28 +152,5 @@ void property_palette_fill_map(void)
 
 void property_palette_click_map(bool double_click)
 {
-	if (!double_click) return;
-	
-		// regular properties
-
-	switch (property_palette.item_pane.click.id) {
-
-			// info
-
-		case kMapPropertyInfoTitle:
-			dialog_property_string_run(list_string_value_string,(void*)map.info.title,name_str_len,0,0);
-			break;
-
-		case kMapPropertyInfoAuthor:
-			dialog_property_string_run(list_string_value_string,(void*)map.info.author,name_str_len,0,0);
-			break;
-
-			// networking
-
-		case kMapPropertyNetworkGameList:
-			dialog_property_string_run(list_string_value_string,(void*)map.settings.network_game_list,256,0,0);
-			break;
-
-	}
 }
 

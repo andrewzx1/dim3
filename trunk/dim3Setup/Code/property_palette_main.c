@@ -54,7 +54,9 @@ void property_palette_fill_main(void)
 
 	list_palette_add_header(&property_palette,item_interface,"Project");
 
-	list_palette_add_item(&property_palette,item_interface_settings,0,"Settings",(state.cur_item==item_interface_settings),FALSE);
+	list_palette_add_item(&property_palette,item_interface_project,0,"Project",(state.cur_item==item_interface_project),FALSE);
+	list_palette_add_item(&property_palette,item_interface_color,0,"Color",(state.cur_item==item_interface_color),FALSE);
+	list_palette_add_item(&property_palette,item_interface_logo,0,"Logo",(state.cur_item==item_interface_logo),FALSE);
 	list_palette_add_item(&property_palette,item_interface_title_page,0,"Title Page",(state.cur_item==item_interface_title_page),FALSE);
 	list_palette_add_item(&property_palette,item_interface_singleplayer,0,"Singleplayer",(state.cur_item==item_interface_singleplayer),FALSE);
 	list_palette_add_item(&property_palette,item_interface_multiplayer,0,"Multiplayer",(state.cur_item==item_interface_multiplayer),FALSE);
@@ -71,7 +73,7 @@ void property_palette_fill_main(void)
 	list_palette_add_item(&property_palette,item_interface_halo,0,"Halos",(state.cur_item==item_interface_halo),FALSE);
 	list_palette_add_item(&property_palette,item_interface_mark,0,"Marks",(state.cur_item==item_interface_mark),FALSE);
 	list_palette_add_item(&property_palette,item_interface_crosshair,0,"Crosshairs",(state.cur_item==item_interface_crosshair),FALSE);
-	list_palette_add_item(&property_palette,item_interface_action,0,"Actions",(state.cur_item==item_interface_action),FALSE);
+	list_palette_add_item(&property_palette,item_interface_action,0,"Control Actions",(state.cur_item==item_interface_action),FALSE);
 	list_palette_add_item(&property_palette,item_interface_shader,0,"Shaders",(state.cur_item==item_interface_shader),FALSE);
 }
 

@@ -84,14 +84,14 @@ void property_palette_fill_group(int group_idx)
 		// fill items
 
 	list_palette_add_header(&property_palette,0,"Group Options");
-	list_palette_add_string(&property_palette,kGroupPropertyName,"Name",group->name,FALSE);
+	list_palette_add_string(&property_palette,kGroupPropertyName,"Name",group->name,name_str_len,FALSE);
 	
 	list_palette_add_header(&property_palette,0,"Group Info");
 	list_palette_add_int(&property_palette,-1,"Mesh Count",&pal_mesh_count,TRUE);
 	list_palette_add_int(&property_palette,-1,"Liquid Count",&pal_liquid_count,TRUE);
 	
 	list_palette_add_header(&property_palette,0,"Group Clear");
-	list_palette_add_string_selectable_button(&property_palette,kGroupPropertyClear,list_button_set,kGroupPropertyClear,"Clear Group Mesh and Liquids",NULL,FALSE,FALSE);
+	list_palette_add_string_selectable_button(&property_palette,kGroupPropertyClear,list_button_set,kGroupPropertyClear,"Clear Group Mesh and Liquids",FALSE,FALSE);
 }
 
 /* =======================================================
@@ -102,30 +102,11 @@ void property_palette_fill_group(int group_idx)
 
 void property_palette_click_group(bool double_click)
 {
-	int					id;
-	group_type			*group;
-
-	id=property_palette.item_pane.click.id;
-
 		// group clear
 
-	if (id==kGroupPropertyClear) {
+	if (property_palette.item_pane.click.id==kGroupPropertyClear) {
 		group_clear(state.cur_group_idx,FALSE);
 		return;
-	}
-
-		// regular clicks
-
-	if (!double_click) return;
-
-	group=&map.group.groups[state.cur_group_idx];
-		
-	switch (id) {
-
-		case kGroupPropertyName:
-			dialog_property_string_run(list_string_value_string,(void*)group->name,name_str_len,0,0);
-			break;
-
 	}
 }
 

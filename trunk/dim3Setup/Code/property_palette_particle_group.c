@@ -60,7 +60,7 @@ void property_palette_fill_particle_group(int particle_idx)
 	list_palette_set_title(&property_palette,"Particles",NULL,"Particle Group",particle->name,NULL,NULL);
 
 	list_palette_add_header(&property_palette,0,"Settings");
-	list_palette_add_string(&property_palette,kGroupParticleSettingsName,"Name",particle->name,FALSE);
+	list_palette_add_string(&property_palette,kGroupParticleSettingsName,"Name",particle->name,name_str_len,FALSE);
 
 		// particles list
 
@@ -132,19 +132,9 @@ void property_palette_click_particle_group(int particle_idx,bool double_click)
 		particle->group.particles[idx].shift=0;
 
 		list_palette_set_level(&property_palette,3);
-		property_palette_pick_particle(particle->group.particles[idx].name);
+		list_palette_start_picking_mode(&property_palette,"Pick a Particle",(char*)iface.particle_list.particles,iface.particle_list.nparticle,sizeof(iface_particle_type),(int)offsetof(iface_particle_type,name),FALSE,FALSE,NULL,particle->group.particles[idx].name);
 
 		return;
-	}
-	
-	switch (id) {
-
-			// settings
-
-		case kGroupParticleSettingsName:
-			dialog_property_string_run(list_string_value_string,(void*)particle->name,name_str_len,0,0);
-			break;
-			
 	}
 }
 

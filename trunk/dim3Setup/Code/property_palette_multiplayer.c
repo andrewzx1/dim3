@@ -71,8 +71,8 @@ void property_palette_fill_multiplayer(void)
 		// options
 
 	list_palette_add_header(&property_palette,0,"News");
-	list_palette_add_string(&property_palette,kMPPropertyNewsHost,"Host",iface.net_news.host,FALSE);
-	list_palette_add_string(&property_palette,kMPPropertyNewsURL,"URL",iface.net_news.url,FALSE);
+	list_palette_add_string(&property_palette,kMPPropertyNewsHost,"Host",iface.net_news.host,64,FALSE);
+	list_palette_add_string(&property_palette,kMPPropertyNewsURL,"URL",iface.net_news.url,256,FALSE);
 	list_palette_add_int(&property_palette,kMPPropertyNewsPort,"Port",&iface.net_news.port,FALSE);
 
 		// bots
@@ -83,7 +83,7 @@ void property_palette_fill_multiplayer(void)
 	list_palette_add_header(&property_palette,0,"Bot Names");
 	for (n=0;n!=max_net_bot;n++) {
 		sprintf(str,"Bot %d",(n+1));
-		list_palette_add_string(&property_palette,(kMPPropertyBotName+n),str,iface.net_bot.bots[n].name,FALSE);
+		list_palette_add_string(&property_palette,(kMPPropertyBotName+n),str,iface.net_bot.bots[n].name,name_str_len,FALSE);
 	}
 
 		// characters
@@ -304,27 +304,6 @@ void property_palette_click_multiplayer(bool double_click)
 		if (id==(kMPPropertyBotName+n)) {
 			dialog_property_string_run(list_string_value_string,(void*)iface.net_bot.bots[n].name,name_str_len,0,0);
 		}
-	}
-
-		// regular picks, always
-		// disable selection
-
-	state.cur_multiplayer_character_idx=-1;
-	state.cur_multiplayer_game_idx=-1;
-	state.cur_multiplayer_option_idx=-1;
-
-	switch (id) {
-
-			// news
-
-		case kMPPropertyNewsHost:
-			dialog_property_string_run(list_string_value_string,(void*)iface.net_news.host,name_str_len,0,0);
-			break;
-
-		case kMPPropertyNewsURL:
-			dialog_property_string_run(list_string_value_string,(void*)iface.net_news.url,name_str_len,0,0);
-			break;
-
 	}
 }
 

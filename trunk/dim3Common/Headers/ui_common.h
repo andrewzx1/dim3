@@ -43,11 +43,11 @@ and can be sold or given away.
 #ifndef D3_SETUP
 	#define list_palette_border_sz							10
 	#define list_palette_tree_sz							250
-	#define list_value_clip_size							25
+	#define list_value_clip_size							15
 #else
 	#define list_palette_border_sz							0
 	#define list_palette_tree_sz							400
-	#define list_value_clip_size							35
+	#define list_value_clip_size							25
 #endif
 
 #define list_palette_scroll_wid								15
@@ -58,16 +58,17 @@ and can be sold or given away.
 #define list_item_ctrl_color								2
 #define list_item_ctrl_string								3
 #define list_item_ctrl_param								4
-#define list_item_ctrl_int									5
-#define list_item_ctrl_float								6
-#define list_item_ctrl_checkbox								7
-#define list_item_ctrl_point								8
-#define list_item_ctrl_angle								9
-#define list_item_ctrl_vector								10
-#define list_item_ctrl_normal_vector						11
-#define list_item_ctrl_uv									12
-#define list_item_ctrl_picker								13
-#define list_item_ctrl_pick_color							14
+#define list_item_ctrl_na_blank								5
+#define list_item_ctrl_int									6
+#define list_item_ctrl_float								7
+#define list_item_ctrl_checkbox								8
+#define list_item_ctrl_point								9
+#define list_item_ctrl_angle								10
+#define list_item_ctrl_vector								11
+#define list_item_ctrl_normal_vector						12
+#define list_item_ctrl_uv									13
+#define list_item_ctrl_picker								14
+#define list_item_ctrl_pick_color							15
 
 #define list_string_value_string							0
 #define list_string_value_int								1
@@ -94,7 +95,6 @@ typedef union		{
 						float								*float_ptr;
 						bool								*bool_ptr;
 						char								*str_ptr;
-						char								str[list_max_value_sz];		// supergumba -- remove later
 						d3pnt								*pnt_ptr;
 						d3ang								*ang_ptr;
 						d3vct								*vct_ptr;
@@ -222,10 +222,11 @@ extern void list_palette_add_header_count(list_palette_type *list,int id,char *n
 extern void list_palette_add_header_button(list_palette_type *list,int id,char *name,int button_type);
 extern void list_palette_add_item(list_palette_type *list,int id,int idx,char *name,bool selected,bool disabled);
 extern void list_palette_add_color(list_palette_type *list,int id,int idx,d3col *col_ptr,bool selected,bool disabled);
-extern void list_palette_add_string_selectable(list_palette_type *list,int id,char *name,char *value,bool selected,bool disabled);
-extern void list_palette_add_string_selectable_button(list_palette_type *list,int id,int button_type,int button_id,char *name,char *value,bool selected,bool disabled);
-extern void list_palette_add_string(list_palette_type *list,int id,char *name,char *value,bool disabled);
+extern void list_palette_add_string_selectable(list_palette_type *list,int id,char *name,char *str_ptr,int str_len,bool selected,bool disabled);
+extern void list_palette_add_string_selectable_button(list_palette_type *list,int id,int button_type,int button_id,char *name,bool selected,bool disabled);
+extern void list_palette_add_string(list_palette_type *list,int id,char *name,char *str_ptr,int str_len,bool disabled);
 extern void list_palette_add_parameter(list_palette_type *list,int id,char *name,char *params,int param_idx,bool disabled);
+extern void list_palette_add_na_blank(list_palette_type *list,int id,char *name);
 extern void list_palette_add_int(list_palette_type *list,int id,char *name,int *int_ptr,bool disabled);
 extern void list_palette_add_float(list_palette_type *list,int id,char *name,float *float_ptr,bool disabled);
 extern void list_palette_add_checkbox(list_palette_type *list,int id,char *name,bool *bool_ptr,bool disabled);

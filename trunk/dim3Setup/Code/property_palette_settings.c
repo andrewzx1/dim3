@@ -2,7 +2,7 @@
 
 Module: dim3 Setup
 Author: Brian Barnes
- Usage: Property Palette Settings
+ Usage: Property Palette Project
 
 ***************************** License ********************************
 
@@ -40,46 +40,8 @@ and can be sold or given away.
 #define kSettingsScaleX							5
 #define kSettingsScaleY							6
 
-#define kSettingsColorBackground				40
-#define kSettingsColorDefaultTint				41
-
-#define kSettingsColorMenuBackground			50
-#define kSettingsColorMenuText					51
-#define kSettingsColorMenuMouseOver				52
-#define kSettingsColorMenuOutline				53
-
-#define kSettingsColorDialogBackground			60
-#define kSettingsColorDialogHeader				61
-#define kSettingsColorDialogOutline				62
-#define kSettingsColorDialogTitle				63
-
-#define kSettingsColorTabBackground				70
-#define kSettingsColorTabDimmed					71
-#define kSettingsColorTabOutline				72
-#define kSettingsColorTabText					73
-#define kSettingsColorTabTextMouseOver			74
-#define kSettingsColorTabTextDimmed				75
-
-#define kSettingsColorControlLabel				80
-#define kSettingsColorControlText				81
-#define kSettingsColorControlFill				82
-#define kSettingsColorControlHeader				83
-#define kSettingsColorControlOutline			84
-#define kSettingsColorControlMouseOver			85
-#define kSettingsColorControlHilite				86
-#define kSettingsColorControlDisabled			87
-
-#define kSettingsColorScrollBarBackground		90
-#define kSettingsColorScrollBarThumb			91
-
-#define kSettingsColorButtonFill				100
-#define kSettingsColorButtonText				101
-#define kSettingsColorButtonOutline				102
-
-#define kSettingColorSystemMetric				110
-
-#define kSettingsFaseTitleMilliseconds			120
-#define kSettingsFaseMapMilliseconds			121
+#define kSettingsFaseTitleMilliseconds			7
+#define kSettingsFaseMapMilliseconds			8
 
 extern iface_type				iface;
 extern setup_state_type			state;
@@ -87,18 +49,18 @@ extern list_palette_type		property_palette;
 
 /* =======================================================
 
-      Property Palette Fill Settings
+      Property Palette Fill Project
       
 ======================================================= */
 
-void property_palette_fill_settings(void)
+void property_palette_fill_project(void)
 {
 	list_palette_set_title(&property_palette,"Project Settings",NULL,NULL,NULL,NULL,NULL);
 
 		// project
 		
 	list_palette_add_header(&property_palette,0,"Project");
-	list_palette_add_string(&property_palette,kSettingsProjectName,"Name",iface.project.name,FALSE);
+	list_palette_add_string(&property_palette,kSettingsProjectName,"Name",iface.project.name,name_str_len,FALSE);
 	list_palette_add_checkbox(&property_palette,kSettingsProjectModernize,"Modernize",&iface.project.modernize,FALSE);
 	list_palette_add_checkbox(&property_palette,kSettingsProjectSkill,"Skill",&iface.project.skill,FALSE);
 
@@ -107,68 +69,6 @@ void property_palette_fill_settings(void)
 	list_palette_add_header(&property_palette,0,"Scale");
 	list_palette_add_int(&property_palette,kSettingsScaleX,"X",&iface.scale_x,FALSE);
 	list_palette_add_int(&property_palette,kSettingsScaleY,"Y",&iface.scale_y,FALSE);
-
-		// color
-		
-	list_palette_add_header(&property_palette,0,"Main Colors");
-	list_palette_add_pick_color(&property_palette,kSettingsColorBackground,"Background",&iface.color.background,FALSE);
-	list_palette_add_pick_color(&property_palette,kSettingsColorDefaultTint,"Default Tint",&iface.color.default_tint,FALSE);
-	
-		// menu color
-		
-	list_palette_add_header(&property_palette,0,"Menu Colors");
-	list_palette_add_pick_color(&property_palette,kSettingsColorMenuBackground,"Background",&iface.color.menu.background,FALSE);
-	list_palette_add_pick_color(&property_palette,kSettingsColorMenuText,"Text",&iface.color.menu.text,FALSE);
-	list_palette_add_pick_color(&property_palette,kSettingsColorMenuMouseOver,"Mouse Over",&iface.color.menu.mouse_over,FALSE);
-	list_palette_add_pick_color(&property_palette,kSettingsColorMenuOutline,"Outline",&iface.color.menu.outline,FALSE);
-
-		// dialog color
-		
-	list_palette_add_header(&property_palette,0,"Dialog Colors");
-	list_palette_add_pick_color(&property_palette,kSettingsColorDialogBackground,"Dialog Background",&iface.color.dialog.background,FALSE);
-	list_palette_add_pick_color(&property_palette,kSettingsColorDialogHeader,"Dialog Header",&iface.color.dialog.header,FALSE);
-	list_palette_add_pick_color(&property_palette,kSettingsColorDialogOutline,"Dialog Outline",&iface.color.dialog.outline,FALSE);
-	list_palette_add_pick_color(&property_palette,kSettingsColorDialogTitle,"Dialog Title",&iface.color.dialog.title,FALSE);
-	
-			// tab color
-		
-	list_palette_add_header(&property_palette,0,"Tab Colors");
-	list_palette_add_pick_color(&property_palette,kSettingsColorTabBackground,"Tab Background",&iface.color.tab.background,FALSE);
-	list_palette_add_pick_color(&property_palette,kSettingsColorTabDimmed,"Tab Dimmed",&iface.color.tab.dimmed,FALSE);
-	list_palette_add_pick_color(&property_palette,kSettingsColorTabOutline,"Tab Outline",&iface.color.tab.outline,FALSE);
-	list_palette_add_pick_color(&property_palette,kSettingsColorTabText,"Tab Text",&iface.color.tab.text,FALSE);
-	list_palette_add_pick_color(&property_palette,kSettingsColorTabTextMouseOver,"Tab Text Mouse Over",&iface.color.tab.text_mouse_over,FALSE);
-	list_palette_add_pick_color(&property_palette,kSettingsColorTabTextDimmed,"Tab Text Dimmed",&iface.color.tab.text_dimmed,FALSE);
-	
-		// control color
-		
-	list_palette_add_header(&property_palette,0,"Control Colors");
-	list_palette_add_pick_color(&property_palette,kSettingsColorControlLabel,"Control Label",&iface.color.control.label,FALSE);
-	list_palette_add_pick_color(&property_palette,kSettingsColorControlText,"Control Text",&iface.color.control.text,FALSE);
-	list_palette_add_pick_color(&property_palette,kSettingsColorControlFill,"Control Fill",&iface.color.control.fill,FALSE);
-	list_palette_add_pick_color(&property_palette,kSettingsColorControlHeader,"Control Header",&iface.color.control.header,FALSE);
-	list_palette_add_pick_color(&property_palette,kSettingsColorControlOutline,"Control Outline",&iface.color.control.outline,FALSE);
-	list_palette_add_pick_color(&property_palette,kSettingsColorControlMouseOver,"Control Mouse Over",&iface.color.control.mouse_over,FALSE);
-	list_palette_add_pick_color(&property_palette,kSettingsColorControlHilite,"Control Highlight",&iface.color.control.hilite,FALSE);
-	list_palette_add_pick_color(&property_palette,kSettingsColorControlDisabled,"Control Disabled",&iface.color.control.disabled,FALSE);
-
-		// scrollbar color
-		
-	list_palette_add_header(&property_palette,0,"Scrollbar Colors");
-	list_palette_add_pick_color(&property_palette,kSettingsColorScrollBarBackground,"ScrollBar Background",&iface.color.scrollbar.background,FALSE);
-	list_palette_add_pick_color(&property_palette,kSettingsColorScrollBarThumb,"ScrollBar Thumb",&iface.color.scrollbar.thumb,FALSE);
-	
-		// button color
-		
-	list_palette_add_header(&property_palette,0,"Button Colors");
-	list_palette_add_pick_color(&property_palette,kSettingsColorButtonFill,"Button Fill",&iface.color.button.fill,FALSE);
-	list_palette_add_pick_color(&property_palette,kSettingsColorButtonText,"Button Text",&iface.color.button.text,FALSE);
-	list_palette_add_pick_color(&property_palette,kSettingsColorButtonOutline,"Button Outline",&iface.color.button.outline,FALSE);
-
-		// system color
-		
-	list_palette_add_header(&property_palette,0,"System Colors");
-	list_palette_add_pick_color(&property_palette,kSettingColorSystemMetric,"Metrics",&iface.color.system.metric,FALSE);
 	
 		// fades
 		
@@ -179,28 +79,11 @@ void property_palette_fill_settings(void)
 
 /* =======================================================
 
-      Property Palette Click Settings
+      Property Palette Click Project
       
 ======================================================= */
 
-void property_palette_click_settings(bool double_click)
+void property_palette_click_project(bool double_click)
 {
-	int				id;
-
-	if (!double_click) return;
-
-	id=property_palette.item_pane.click.id;
-
-		// regular items
-
-	switch (id) {
-	
-			// project
-
-		case kSettingsProjectName:
-			dialog_property_string_run(list_string_value_string,(void*)iface.project.name,name_str_len,0,0);
-			break;
-
-	}
 }
 

@@ -72,7 +72,7 @@ void property_palette_fill_light(int light_idx)
 	list_palette_add_checkbox(&property_palette,kLightPropertyLightMap,"Used in Light Map",&light->setting.light_map,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Light Naming");
-	list_palette_add_string(&property_palette,kLightPropertyName,"Name",light->name,FALSE);
+	list_palette_add_string(&property_palette,kLightPropertyName,"Name",light->name,name_str_len,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Light Display");
 	list_palette_add_picker_list_int(&property_palette,kLightPropertyType,"Type",(char*)light_property_type_list,-1,name_str_len,0,FALSE,&light->setting.type,FALSE);
@@ -94,18 +94,5 @@ void property_palette_fill_light(int light_idx)
 
 void property_palette_click_light(int light_idx,bool double_click)
 {
-	map_light_type		*light;
-
-	if (!double_click) return;
-
-	light=&map.lights[light_idx];
-
-	switch (property_palette.item_pane.click.id) {
-
-		case kLightPropertyName:
-			dialog_property_string_run(list_string_value_string,(void*)light->name,name_str_len,0,0);
-			break;
-
-	}
 }
 

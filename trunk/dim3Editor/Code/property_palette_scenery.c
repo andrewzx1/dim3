@@ -71,7 +71,7 @@ void property_palette_fill_scenery(int scenery_idx)
 
 	list_palette_add_header(&property_palette,0,"Scenery Model");
 	list_palette_add_picker_file(&property_palette,kSceneryPropertyModelName,list_button_none,0,"Model","Models","","Mesh.xml;Model.xml",scenery->model_name,FALSE);
-	list_palette_add_string(&property_palette,kSceneryPropertyAnimationName,"Animation",scenery->animation_name,FALSE);
+	list_palette_add_string(&property_palette,kSceneryPropertyAnimationName,"Animation",scenery->animation_name,name_str_len,FALSE);
 	list_palette_add_float(&property_palette,kSceneryPropertyResize,"Resize",&scenery->resize,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Scenery Settings");
@@ -103,18 +103,5 @@ void property_palette_fill_scenery(int scenery_idx)
 
 void property_palette_click_scenery(int scenery_idx,bool double_click)
 {
-	map_scenery_type			*scenery;
-
-	if (!double_click) return;
-
-	scenery=&map.sceneries[scenery_idx];
-
-	switch (property_palette.item_pane.click.id) {
-
-		case kSceneryPropertyAnimationName:
-			dialog_property_string_run(list_string_value_string,(void*)scenery->animation_name,name_str_len,0,0);
-			break;
-
-	}
 }
 

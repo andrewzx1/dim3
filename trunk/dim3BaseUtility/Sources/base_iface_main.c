@@ -348,6 +348,14 @@ void iface_default_settings(iface_type *iface)
 	iface->intro.simple_save_list.progress.wrap_count=-1;
 	iface->intro.simple_save_list.progress.bitmap_name[0]=0x0;
 	iface->intro.simple_save_list.progress.bitmap_disable_name[0]=0x0;
+
+	iface->intro.score.on=FALSE;
+	iface->intro.score.x=0;
+	iface->intro.score.y=0;
+	iface->intro.score.wid=150;
+	iface->intro.score.high=200;
+	iface->intro.score.text_size=20;
+	iface->intro.score.col.r=iface->intro.score.col.g=iface->intro.score.col.b=1.0f;
 	
 	for (n=0;n!=max_simple_save_spot;n++) {
 		iface_default_settings_button(&iface->intro.simple_save_list.saves[n].button_start,0,(n*32),FALSE);
@@ -364,9 +372,10 @@ void iface_default_settings(iface_type *iface)
 	iface->intro.model_list.nmodel=0;
 	
 	iface->intro.music[0]=0x0;
-	iface->intro.title.name[0]=0x0;
-	iface->intro.title.sound[0]=0x0;
-	iface->intro.title.life_msec=2000;
+
+	iface->logo.name[0]=0x0;
+	iface->logo.sound[0]=0x0;
+	iface->logo.life_msec=2000;
 
 		// player models
 

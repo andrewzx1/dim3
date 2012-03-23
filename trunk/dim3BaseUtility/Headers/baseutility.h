@@ -31,7 +31,7 @@ and can be sold or given away.
       
 ======================================================= */
 
-#define dim3_version					"0010"
+#define dim3_version					"0012"
 
 /* =======================================================
 
@@ -819,21 +819,30 @@ typedef struct		{
 														hilite_color_start,hilite_color_end,
 														outline_color;
 					} iface_progress_type;
-					
+
+//
+// logo
+//
+
+typedef struct		{
+						int								life_msec;
+						char							name[name_str_len],sound[name_str_len];
+					} iface_logo_type;
+
 //
 // intro
 //
 
-#define max_simple_save_spot							5
+#define max_simple_save_spot									5
 
 typedef struct		{
-						int								x,y,mobile_x,mobile_y,
-														wid,high,element_id;
-						bool							on,mobile_hide;
+						int										x,y,mobile_x,mobile_y,
+																wid,high,element_id;
+						bool									on,mobile_hide;
 					} iface_intro_button_type;
 
 typedef struct		{
-						int								x,y;
+						int										x,y;
 					} iface_intro_position_type;
 
 typedef struct		{
@@ -860,36 +869,38 @@ typedef struct		{
 					} iface_intro_simple_save_list;
 
 typedef struct		{
-						int								x,y;
+						int										x,y;
 					} iface_intro_confirm_type;
+
+typedef struct		{
+						int										x,y,
+																wid,high,text_size;
+						bool									on;
+						d3col									col;
+					} iface_intro_score_type;
 			
 typedef struct		{
-						int								x,y;
-						float							resize;
-						char							model_name[name_str_len],animate_name[name_str_len];
-						d3ang							rot;
+						int										x,y;
+						float									resize;
+						char									model_name[name_str_len],animate_name[name_str_len];
+						d3ang									rot;
 					} iface_intro_model_type;
 					
 typedef struct		{
-						int								nmodel;
-						iface_intro_model_type			models[max_hud_intro_model];
+						int										nmodel;
+						iface_intro_model_type					models[max_hud_intro_model];
 					} iface_intro_model_list;
 
 typedef struct		{
-						int								life_msec;
-						char							name[name_str_len],sound[name_str_len];
-					} iface_intro_title_type;
-					
-typedef struct		{
-						char							music[name_str_len];
-						iface_intro_title_type			title;
-						iface_intro_button_type			button_game_new,button_game_load,button_game_setup,
-														button_game_new_easy,button_game_new_medium,button_game_new_hard,button_game_new_cancel,
-														button_multiplayer_host,button_multiplayer_join,button_multiplayer_setup,
-														button_credit,button_quit;
-						iface_intro_confirm_type		confirm;
-						iface_intro_simple_save_list	simple_save_list;
-						iface_intro_model_list			model_list;
+						char									music[name_str_len];
+						iface_intro_button_type					button_game_new,button_game_load,button_game_setup,
+																button_game_new_easy,button_game_new_medium,button_game_new_hard,button_game_new_cancel,
+																button_multiplayer_host,button_multiplayer_join,button_multiplayer_setup,
+																button_credit,button_quit;
+						iface_intro_confirm_type				confirm;
+						iface_intro_score_type					score;
+						iface_intro_simple_save_list			simple_save_list;
+						iface_intro_model_list					model_list;
 					} iface_intro_type;
 
 //
@@ -1252,6 +1263,21 @@ typedef struct		{
 					} iface_simple_save_list;
 
 //
+// score structures
+//
+
+#define max_score_count									10
+
+typedef struct		{
+						int								score;
+						char							name[64];
+					} iface_score_type;
+
+typedef struct		{
+						iface_score_type				scores[max_score_count];
+					} iface_score_list;
+
+//
 // chat structures
 //
 
@@ -1350,6 +1376,7 @@ typedef struct		{
 						iface_color_type				color;
 						iface_font_type					font;
 						iface_progress_type				progress;
+						iface_logo_type					logo;
 						iface_intro_type				intro;
 						iface_setup_type				setup;
 						iface_fade_type					fade;
@@ -1370,6 +1397,7 @@ typedef struct		{
 						iface_radar_type				radar;
 						iface_chat_type					chat;
 						iface_simple_save_list			simple_save_list;
+						iface_score_list				score_list;
 						iface_character_type			character;
 						iface_net_bots_type				net_bot;
 						iface_net_games_type			net_game;
@@ -1404,6 +1432,9 @@ extern void iface_read_settings_project_name(file_path_setup_type *path_setup);
 
 extern void simple_save_xml_read(iface_type *iface);
 extern void simple_save_xml_write(iface_type *iface,char *err_str);
+
+extern void score_xml_read(iface_type *iface);
+extern void score_xml_write(iface_type *iface,char *err_str);
 
 /* =======================================================
 

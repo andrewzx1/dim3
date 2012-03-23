@@ -62,7 +62,7 @@ void property_palette_fill_menu(int menu_idx)
 		// settings
 
 	list_palette_add_header(&property_palette,0,"Settings");
-	list_palette_add_string(&property_palette,kMenuPropertyName,"Name",menu->name,FALSE);
+	list_palette_add_string(&property_palette,kMenuPropertyName,"Name",menu->name,name_str_len,FALSE);
 
 		// menu items
 		// do NOT sort these as they have a natural order
@@ -135,21 +135,6 @@ void property_palette_click_menu(int menu_idx,bool double_click)
 		state.cur_menu_item_idx=idx;
 
 		return;
-	}
-
-		// regular picks, always
-		// disable selection
-
-	if (!double_click) return;
-
-	state.cur_menu_item_idx=-1;
-
-	switch (id) {
-
-		case kMenuPropertyName:
-			dialog_property_string_run(list_string_value_string,(void*)menu->name,name_str_len,0,0);
-			break;
-
 	}
 }
 

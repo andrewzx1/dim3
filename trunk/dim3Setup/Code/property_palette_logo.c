@@ -2,7 +2,7 @@
 
 Module: dim3 Setup
 Author: Brian Barnes
- Usage: Property Palette Shader
+ Usage: Property Palette Logo
 
 ***************************** License ********************************
 
@@ -33,9 +33,9 @@ and can be sold or given away.
 #include "ui_common.h"
 #include "interface.h"
 
-#define kShaderSettingsName						0
-#define kShaderCodeVertName						1
-#define kShaderCodeFragName						2
+#define kIntroPropertyTitleName						0
+#define kIntroPropertyTitleSound					1
+#define kIntroPropertyTitleLifeMsec					2
 
 extern iface_type				iface;
 extern setup_state_type			state;
@@ -43,37 +43,29 @@ extern list_palette_type		property_palette;
 
 /* =======================================================
 
-      Property Palette Fill Shader
+      Property Palette Fill Logo
       
 ======================================================= */
 
-void property_palette_fill_shader(int shader_idx)
+void property_palette_fill_logo(void)
 {
-	iface_shader_type			*shader;
+	list_palette_set_title(&property_palette,"Logo",NULL,NULL,NULL,NULL,NULL);
+	
+		// logo
 
-	shader=&iface.shader_list.shaders[shader_idx];
-
-	list_palette_set_title(&property_palette,"Shaders",NULL,"Shader",shader->name,NULL,NULL);
-
-		// settings
-
-	list_palette_add_header(&property_palette,0,"Settings");
-	list_palette_add_string(&property_palette,kShaderSettingsName,"Name",shader->name,name_str_len,FALSE);
-
-		// code
-
-	list_palette_add_header(&property_palette,0,"Code");
-	list_palette_add_picker_file(&property_palette,kShaderCodeVertName,list_button_none,0,"Vertex","Shaders","vert","",shader->vert_name,FALSE);
-	list_palette_add_picker_file(&property_palette,kShaderCodeFragName,list_button_none,0,"Fragment","Shaders","frag","",shader->frag_name,FALSE);
+	list_palette_add_header(&property_palette,0,"Logo");
+	list_palette_add_picker_file(&property_palette,kIntroPropertyTitleName,list_button_none,0,"Bitmap","Titles","png","",iface.logo.name,FALSE);
+	list_palette_add_picker_list_string(&property_palette,kIntroPropertyTitleSound,"Sound",(char*)iface.sound_list.sounds,iface.sound_list.nsound,sizeof(iface_sound_type),(int)offsetof(iface_sound_type,name),TRUE,iface.logo.sound,FALSE);
+	list_palette_add_int(&property_palette,kIntroPropertyTitleLifeMsec,"Life Millsec",&iface.logo.life_msec,FALSE);
 }
 
 /* =======================================================
 
-      Property Palette Click Shader
+      Property Palette Click Logo
       
 ======================================================= */
 
-void property_palette_click_shader(int shader_idx,bool double_click)
+void property_palette_click_logo(bool double_click)
 {
 }
 

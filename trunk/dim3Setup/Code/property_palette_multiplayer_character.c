@@ -61,9 +61,9 @@ void property_palette_fill_multiplayer_character(int multiplayer_character_idx)
 		// settings
 
 	list_palette_add_header(&property_palette,0,"Settings");
-	list_palette_add_string(&property_palette,kMPCharacterPropertySettingsName,"Name",character->name,FALSE);
+	list_palette_add_string(&property_palette,kMPCharacterPropertySettingsName,"Name",character->name,name_str_len,FALSE);
 	list_palette_add_picker_file(&property_palette,kMPCharacterPropertySettingsModelName,list_button_none,0,"Model","Models","","Mesh.xml;Model.xml",character->model_name,FALSE);
-	list_palette_add_string(&property_palette,kMPCharacterPropertySettingsParam,"Parameters",character->param,FALSE);
+	list_palette_add_string(&property_palette,kMPCharacterPropertySettingsParam,"Parameters",character->param,name_str_len,FALSE);
 
 		// options
 
@@ -80,24 +80,5 @@ void property_palette_fill_multiplayer_character(int multiplayer_character_idx)
 
 void property_palette_click_multiplayer_character(int multiplayer_character_idx,bool double_click)
 {
-	iface_character_item_type		*character;
-
-	if (!double_click) return;
-
-	character=&iface.character.characters[multiplayer_character_idx];
-
-	switch (property_palette.item_pane.click.id) {
-
-			// settings
-
-		case kMPCharacterPropertySettingsName:
-			dialog_property_string_run(list_string_value_string,(void*)character->name,name_str_len,0,0);
-			break;
-
-		case kMPCharacterPropertySettingsParam:
-			dialog_property_string_run(list_string_value_string,(void*)character->param,name_str_len,0,0);
-			break;
-
-	}
 }
 

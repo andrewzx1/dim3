@@ -62,7 +62,7 @@ void property_palette_fill_node(int node_idx)
 	list_palette_set_title(&property_palette,"Node",node->name,NULL,NULL,NULL,NULL);
 
 	list_palette_add_header(&property_palette,0,"Node Identity");
-	list_palette_add_string(&property_palette,kNodePropertyName,"Name",node->name,FALSE);
+	list_palette_add_string(&property_palette,kNodePropertyName,"Name",node->name,name_str_len,FALSE);
 	list_palette_add_int(&property_palette,kNodePropertyEventID,"Event ID",&node->event_id,FALSE);
 	list_palette_add_float(&property_palette,kNodePropertyAlpha,"Alpha",&node->alpha,FALSE);
 
@@ -85,18 +85,5 @@ void property_palette_fill_node(int node_idx)
 
 void property_palette_click_node(int node_idx,bool double_click)
 {
-	node_type			*node;
-
-	if (!double_click) return;
-
-	node=&map.nodes[node_idx];
-
-	switch (property_palette.item_pane.click.id) {
-
-		case kNodePropertyName:
-			dialog_property_string_run(list_string_value_string,(void*)node->name,name_str_len,0,0);
-			break;
-
-	}
 }
 

@@ -77,7 +77,7 @@ void property_palette_fill_hud_bar(int hud_bar_idx)
 		// settings
 
 	list_palette_add_header(&property_palette,0,"Settings");
-	list_palette_add_string(&property_palette,kBarSettingsName,"Name",bar->name,FALSE);
+	list_palette_add_string(&property_palette,kBarSettingsName,"Name",bar->name,name_str_len,FALSE);
 	list_palette_add_picker_list_int(&property_palette,kBarSettingsType,"Type",(char*)hud_bar_type_str,-1,name_str_len,0,FALSE,&bar->type,FALSE);
 	list_palette_add_checkbox(&property_palette,kBarSettingsShow,"Show",&bar->show,FALSE);
 
@@ -119,20 +119,5 @@ void property_palette_fill_hud_bar(int hud_bar_idx)
 
 void property_palette_click_hud_bar(int hud_bar_idx,bool double_click)
 {
-	iface_bar_type			*bar;
-
-	if (!double_click) return;
-
-	bar=&iface.bar_list.bars[hud_bar_idx];
-
-	switch (property_palette.item_pane.click.id) {
-
-			// settings
-
-		case kBarSettingsName:
-			dialog_property_string_run(list_string_value_string,(void*)bar->name,name_str_len,0,0);
-			break;
-
-	}
 }
 

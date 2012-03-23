@@ -75,8 +75,8 @@ void property_palette_fill_hud_text(int hud_text_idx)
 		// settings
 
 	list_palette_add_header(&property_palette,0,"Settings");
-	list_palette_add_string(&property_palette,kTextSettingsName,"Name",text->name,FALSE);
-	list_palette_add_string(&property_palette,kTextSettingsData,"Data",text->data,FALSE);
+	list_palette_add_string(&property_palette,kTextSettingsName,"Name",text->name,name_str_len,FALSE);
+	list_palette_add_string(&property_palette,kTextSettingsData,"Data",text->data,max_hud_text_str_sz,FALSE);
 	list_palette_add_checkbox(&property_palette,kTextSettingsShow,"Show",&text->show,FALSE);
 
 		// position
@@ -111,24 +111,5 @@ void property_palette_fill_hud_text(int hud_text_idx)
 
 void property_palette_click_hud_text(int hud_text_idx,bool double_click)
 {
-	iface_text_type				*text;
-
-	if (!double_click) return;
-
-	text=&iface.text_list.texts[hud_text_idx];
-
-	switch (property_palette.item_pane.click.id) {
-
-			// settings
-
-		case kTextSettingsName:
-			dialog_property_string_run(list_string_value_string,(void*)text->name,name_str_len,0,0);
-			break;
-
-		case kTextSettingsData:
-			dialog_property_string_run(list_string_value_string,(void*)text->data,max_hud_text_str_sz,0,0);
-			break;
-
-	}
 }
 

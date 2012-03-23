@@ -69,12 +69,10 @@ extern void property_palette_scroll_wheel(d3pnt *pnt,int move);
 extern bool property_palette_delete(void);
 extern void property_palette_click(d3pnt *pnt,bool double_click);
 
-extern void property_palette_pick_sound(char *name,bool include_none);
-extern void property_palette_pick_particle(char *name);
-extern void property_palette_pick_control(int *control_idx);
-
 extern void property_palette_fill_main(void);
-extern void property_palette_fill_settings(void);
+extern void property_palette_fill_project(void);
+extern void property_palette_fill_color(void);
+extern void property_palette_fill_logo(void);
 extern void property_palette_fill_title_page(void);
 extern void property_palette_fill_singleplayer(void);
 extern void property_palette_fill_multiplayer(void);
@@ -95,7 +93,9 @@ extern void property_palette_fill_actions(void);
 extern void property_palette_fill_shaders(void);
 
 extern void property_palette_click_main(bool double_click);
-extern void property_palette_click_settings(bool double_click);
+extern void property_palette_click_project(bool double_click);
+extern void property_palette_click_color(bool double_click);
+extern void property_palette_click_logo(bool double_click);
 extern void property_palette_click_title_page(bool double_click);
 extern void property_palette_click_singleplayer(bool double_click);
 extern void property_palette_click_multiplayer(bool double_click);

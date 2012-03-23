@@ -82,7 +82,7 @@ void property_palette_fill_texture(int texture_idx)
 	list_palette_add_float(&property_palette,kTexturePropertyGlowMin,"Glow Min",&texture->glow.min,FALSE);
 	list_palette_add_float(&property_palette,kTexturePropertyGlowMax,"Glow Max",&texture->glow.max,FALSE);
 	list_palette_add_float(&property_palette,kTexturePropertyShineFactor,"Shine Factor",&texture->shine_factor,FALSE);
-	list_palette_add_string(&property_palette,kTexturePropertyMaterialName,"Material Name",texture->material_name,FALSE);
+	list_palette_add_string(&property_palette,kTexturePropertyMaterialName,"Material Name",texture->material_name,name_str_len,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Texture Frame Waits");
 	for (n=0;n!=max_texture_frame;n++) {
@@ -103,18 +103,5 @@ void property_palette_fill_texture(int texture_idx)
 
 void property_palette_click_texture(int texture_idx,int id,bool double_click)
 {
-	texture_type		*texture;
-
-	if (!double_click) return;
-
-	texture=&model.textures[texture_idx];
-
-	switch (id) {
-
-		case kTexturePropertyMaterialName:
-			dialog_property_string_run(list_string_value_string,(void*)texture->material_name,name_str_len,0,0);
-			break;
-
-	}
 }
 

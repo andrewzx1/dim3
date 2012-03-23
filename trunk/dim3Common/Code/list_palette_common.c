@@ -479,7 +479,7 @@ void list_palette_add_color(list_palette_type *list,int id,int idx,d3col *col_pt
 	item->value.col_ptr=col_ptr;
 }
 
-void list_palette_add_string_selectable(list_palette_type *list,int id,char *name,char *value,bool selected,bool disabled)
+void list_palette_add_string_selectable(list_palette_type *list,int id,char *name,char *str_ptr,int str_len,bool selected,bool disabled)
 {
 	list_palette_item_type		*item;
 	
@@ -493,27 +493,17 @@ void list_palette_add_string_selectable(list_palette_type *list,int id,char *nam
 
 	strcpy(item->name,name);
 
-	if (value==NULL) {
-		item->value.str[0]=0x0;
-		return;
-	}
-	
-	if (strlen(value)>=list_value_clip_size) {
-		strncpy(item->value.str,value,list_value_clip_size);
-		strcpy((char*)&item->value.str[list_value_clip_size],"...");
-	}
-	else {
-		strcpy(item->value.str,value);
-	}
+	item->limit.str_len=str_len;
+	item->value.str_ptr=str_ptr;
 }
 
-void list_palette_add_string_selectable_button(list_palette_type *list,int id,int button_type,int button_id,char *name,char *value,bool selected,bool disabled)
+void list_palette_add_string_selectable_button(list_palette_type *list,int id,int button_type,int button_id,char *name,bool selected,bool disabled)
 {
 	list_palette_item_type		*item;
 
 		// add item
 
-	list_palette_add_string_selectable(list,id,name,value,selected,disabled);
+	list_palette_add_string_selectable(list,id,name,NULL,-1,selected,disabled);
 
 		// put in the button
 
@@ -522,9 +512,9 @@ void list_palette_add_string_selectable_button(list_palette_type *list,int id,in
 	item->button_id=button_id;
 }
 
-void list_palette_add_string(list_palette_type *list,int id,char *name,char *value,bool disabled)
+void list_palette_add_string(list_palette_type *list,int id,char *name,char *str_ptr,int str_len,bool disabled)
 {
-	list_palette_add_string_selectable(list,id,name,value,FALSE,disabled);
+	list_palette_add_string_selectable(list,id,name,str_ptr,str_len,FALSE,disabled);
 }
 
 void list_palette_add_parameter(list_palette_type *list,int id,char *name,char *params,int param_idx,bool disabled)
@@ -544,6 +534,21 @@ void list_palette_add_parameter(list_palette_type *list,int id,char *name,char *
 	item->limit.str_len=256;
 	item->limit.param_idx=param_idx;
 	item->value.str_ptr=params;
+}
+
+void list_palette_add_na_blank(list_palette_type *list,int id,char *name)
+{
+	list_palette_item_type		*item;
+	
+	item=list_palette_pane_create_item(&list->item_pane,list_item_ctrl_na_blank);
+
+	item->id=id;
+	item->idx=-1;
+
+	item->selected=FALSE;
+	item->disabled=TRUE;
+
+	strcpy(item->name,name);
 }
 
 void list_palette_add_int(list_palette_type *list,int id,char *name,int *int_ptr,bool disabled)
@@ -1197,7 +1202,22 @@ void list_palette_pane_draw_item_check_box(list_palette_pane_type *pane,d3rect *
 void list_palette_pane_draw_item_string(list_palette_pane_type *pane,d3rect *box,list_palette_item_type *item,char *str)
 {
 	int					rx,y;
+	char				str2[list_value_clip_size+8];
 	d3col				col;
+
+	if (str==NULL) return;
+
+		// clip string
+
+	if (strlen(str)>=list_value_clip_size) {
+		strncpy(str2,str,list_value_clip_size);
+		strcpy((char*)&str2[list_value_clip_size],"...");
+	}
+	else {
+		strcpy(str2,str);
+	}
+
+		// draw
 
 	rx=box->rx-(list_palette_scroll_wid+4);
 	if (item->button_type!=list_button_none) rx-=(list_item_font_high+2);
@@ -1205,13 +1225,13 @@ void list_palette_pane_draw_item_string(list_palette_pane_type *pane,d3rect *box
 	y=(box->ty+item->y)-pane->scroll_offset;
 
 	if (!item->disabled) {
-		text_draw_right(rx,y,list_item_font_size,NULL,str);
+		text_draw_right(rx,y,list_item_font_size,NULL,str2);
 		return;
 	}
 
 	col.r=col.g=0.0f;
 	col.b=1.0f;
-	text_draw_right(rx,y,list_item_font_size,&col,str);
+	text_draw_right(rx,y,list_item_font_size,&col,str2);
 }
 
 void list_palette_pane_draw_item_button(list_palette_pane_type *pane,d3rect *box,bool left,int idx)
@@ -1664,7 +1684,7 @@ void list_palette_pane_draw_item(list_palette_pane_type *pane,d3rect *box,bool l
 
 		case list_item_ctrl_string:
 			text_draw(x,y,list_item_font_size,&col,item->name);
-			list_palette_pane_draw_item_string(pane,box,item,item->value.str);
+			list_palette_pane_draw_item_string(pane,box,item,item->value.str_ptr);
 			list_palette_pane_draw_item_button(pane,box,left,idx);
 			break;
 
@@ -1675,6 +1695,13 @@ void list_palette_pane_draw_item(list_palette_pane_type *pane,d3rect *box,bool l
 			property_get_parameter(item->limit.param_idx,item->value.str_ptr,str);
 			list_palette_pane_draw_item_string(pane,box,item,str);
 			list_palette_pane_draw_item_button(pane,box,left,idx);
+			break;
+
+			// na blank
+
+		case list_item_ctrl_na_blank:
+			text_draw(x,y,list_item_font_size,&col,item->name);
+			list_palette_pane_draw_item_string(pane,box,item,"n/a");
 			break;
 
 			// int
@@ -2241,10 +2268,17 @@ bool list_palette_click(list_palette_type *list,d3pnt *pnt,bool double_click)
 
 	switch (item->ctrl_type) {
 
+		case list_item_ctrl_string:
+			if (!double_click) return(FALSE);
+			if (item->value.str_ptr==NULL) return(TRUE);
+			dialog_property_string_run(list_string_value_string,(void*)item->value.str_ptr,item->limit.str_len,0,0);
+			main_wind_draw();
+			return(TRUE);
+
 		case list_item_ctrl_param:
 			if (!double_click) return(FALSE);
 			property_get_parameter(item->limit.param_idx,item->value.str_ptr,str);
-			dialog_property_string_run(list_string_value_string,(void*)str,256,0,0);
+			dialog_property_string_run(list_string_value_string,(void*)str,item->limit.str_len,0,0);
 			property_set_parameter(item->limit.param_idx,item->value.str_ptr,str);
 			main_wind_draw();
 			return(TRUE);
