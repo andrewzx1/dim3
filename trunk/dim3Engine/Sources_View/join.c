@@ -489,7 +489,7 @@ void join_create_pane(void)
 		// tabs
 		
 	tab_idx=0;
-	if (iface.net_news.host[0]==0x0) {
+	if (iface.multiplayer.news.host[0]==0x0) {
 		tab_idx=1;
 		if (join_tab_value==join_pane_news) join_tab_value=join_pane_lan;
 	}

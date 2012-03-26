@@ -286,18 +286,18 @@ bool game_multiplayer_bots_create(char *err_str)
 
 		// are bots allowed in this game?
 
-	if (!iface.net_bot.on) return(TRUE);
+	if (!iface.multiplayer.bot_list.on) return(TRUE);
 
 		// spawn bots
 		
-	net_game=&iface.net_game.games[net_setup.game_idx];
+	net_game=&iface.multiplayer.net_game.games[net_setup.game_idx];
 
 	for (n=0;n!=setup.network.bot.count;n++) {
 	
 			// setup a fake spot for object spawning
 			
-		if (iface.net_bot.bots[n].name[0]!=0x0) {
-			strcpy(name,iface.net_bot.bots[n].name);
+		if (iface.multiplayer.bot_list.bots[n].name[0]!=0x0) {
+			strcpy(name,iface.multiplayer.bot_list.bots[n].name);
 		}
 		else {
 			sprintf(name,"Bot %d",(n+1));

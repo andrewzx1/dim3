@@ -318,7 +318,7 @@ void network_score_draw(void)
 		// draw player and team scores
 		// if this game is team type
 
-	use_teams=iface.net_game.games[net_setup.game_idx].use_teams;
+	use_teams=iface.multiplayer.net_game.games[net_setup.game_idx].use_teams;
 
 	if (!use_teams) {
 		win_idx=network_score_players_draw(use_teams);
@@ -333,7 +333,7 @@ void network_score_draw(void)
 		
 	col.r=col.g=col.b=1.0f;
 
-	sprintf(str,"%s at %s",iface.net_game.games[net_setup.game_idx].name,map.info.name);
+	sprintf(str,"%s at %s",iface.multiplayer.net_game.games[net_setup.game_idx].name,map.info.name);
 		
 	gl_text_start(font_hud_index,iface.font.text_size_large);
 	gl_text_draw((iface.scale_x>>1),y,str,tx_center,TRUE,&col,1.0f);

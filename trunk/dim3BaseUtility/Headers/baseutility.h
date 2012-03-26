@@ -1285,48 +1285,28 @@ typedef struct		{
 						int								x,y,
 														last_add_life_sec,next_life_sec;
 					} iface_chat_type;
-					
+
 //
-// network structures
+// singleplayer structures
 //
-
-typedef struct		{
-						char							name[name_str_len],model_name[name_str_len],
-														param[name_str_len];
-						float							interface_resize;
-						d3pnt							interface_offset;
-					} iface_character_item_type;
-
-typedef struct		{
-						int								ncharacter;
-						iface_character_item_type		characters[max_character];
-					} iface_character_type;
-	
-typedef struct		{
-						char							name[name_str_len];
-					} iface_net_bot_type;
-
-typedef struct		{
-						bool							on;
-						iface_net_bot_type				bots[max_net_bot];
-					} iface_net_bots_type;
 
 typedef struct		{
 						char							name[name_str_len],descript[64];
-					} iface_net_option_type;
+					} iface_sp_option_type;
 
 typedef struct		{
 						int								noption;
-						iface_net_option_type			options[max_net_option];
-					} iface_net_options_type;
-					
+						iface_sp_option_type			options[max_net_option];
+					} iface_sp_option_list_type;
+
 typedef struct		{
-						int								port;
-						char							host[64],url[256];
-					} iface_net_news_type;
+						int								skill;
+						bool							map_pick;
+						iface_sp_option_list_type		option_list;
+					} iface_singleplayer_type;
 
 //
-// network game setup
+// multiplayer structures
 //
 
 typedef struct		{
@@ -1356,6 +1336,49 @@ typedef struct		{
 						iface_net_game_type				games[max_net_game];
 					} iface_net_games_type;
 
+typedef struct		{
+						char							name[name_str_len],descript[64];
+					} iface_mp_option_type;
+
+typedef struct		{
+						int								noption;
+						iface_mp_option_type			options[max_net_option];
+					} iface_mp_option_list_type;
+					
+typedef struct		{
+						char							name[name_str_len],model_name[name_str_len],
+														param[name_str_len];
+						float							interface_resize;
+						d3pnt							interface_offset;
+					} iface_mp_character_type;
+
+typedef struct		{
+						int								ncharacter;
+						iface_mp_character_type			characters[max_character];
+					} iface_mp_character_list_type;
+	
+typedef struct		{
+						char							name[name_str_len];
+					} iface_mp_bot_type;
+
+typedef struct		{
+						bool							on;
+						iface_mp_bot_type				bots[max_net_bot];
+					} iface_mp_bot_list_type;
+
+typedef struct		{
+						int								port;
+						char							host[64],url[256];
+					} iface_mp_news_type;
+
+typedef struct		{
+						iface_net_games_type			net_game;
+						iface_mp_option_list_type		option_list;
+						iface_mp_character_list_type	character_list;
+						iface_mp_bot_list_type			bot_list;
+						iface_mp_news_type				news;
+					} iface_multiplayer_type;
+
 //
 // project setup
 //
@@ -1380,6 +1403,8 @@ typedef struct		{
 						iface_intro_type				intro;
 						iface_setup_type				setup;
 						iface_fade_type					fade;
+						iface_singleplayer_type			singleplayer;
+						iface_multiplayer_type			multiplayer;
 						iface_bitmap_list				bitmap_list;
 						iface_text_list					text_list;
 						iface_bar_list					bar_list;
@@ -1398,11 +1423,6 @@ typedef struct		{
 						iface_chat_type					chat;
 						iface_simple_save_list			simple_save_list;
 						iface_score_list				score_list;
-						iface_character_type			character;
-						iface_net_bots_type				net_bot;
-						iface_net_games_type			net_game;
-						iface_net_options_type			net_option;
-						iface_net_news_type				net_news;
 					} iface_type;
 					
 extern bool iface_initialize(iface_type *iface,file_path_setup_type *path_setup);

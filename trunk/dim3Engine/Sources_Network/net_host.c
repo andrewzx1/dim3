@@ -198,7 +198,7 @@ void net_host_info_request(unsigned long ip_addr,int port)
 	strcpy(info.host_ip_resolve,net_setup.host.ip_resolve);
 
 	strcpy(info.proj_name,iface.project.name);
-	strcpy(info.game_name,iface.net_game.games[net_setup.game_idx].name);
+	strcpy(info.game_name,iface.multiplayer.net_game.games[net_setup.game_idx].name);
 	strcpy(info.map_name,map.info.name);
 
 	info.score_limit=htons((short)net_setup.score_limit);

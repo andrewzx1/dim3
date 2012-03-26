@@ -97,7 +97,7 @@ void object_score_update(obj_type *obj)
 
 		// update score
 
-	net_game=&iface.net_game.games[net_setup.game_idx];
+	net_game=&iface.multiplayer.net_game.games[net_setup.game_idx];
 	obj->score.score=(obj->score.kill*net_game->score.kill)+(obj->score.death*net_game->score.death)+(obj->score.suicide*net_game->score.suicide)+(obj->score.goal*net_game->score.goal);
 
 		// update placing information

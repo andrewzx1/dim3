@@ -377,26 +377,24 @@ void iface_default_settings(iface_type *iface)
 	iface->logo.sound[0]=0x0;
 	iface->logo.life_msec=2000;
 
-		// player models
-
-	iface->character.ncharacter=0;
-
 		// multiplayer
 
-	iface->net_game.ngame=1;
-	strcpy(iface->net_game.games[0].name,"Deathmatch");
+	iface->multiplayer.net_game.ngame=1;
+	strcpy(iface->multiplayer.net_game.games[0].name,"Deathmatch");
 
-	iface->net_option.noption=0;
+	iface->multiplayer.option_list.noption=0;
 		
-	iface->net_bot.on=TRUE;
+	iface->multiplayer.character_list.ncharacter=0;
+
+	iface->multiplayer.bot_list.on=TRUE;
 
 	for (n=0;n!=max_net_bot;n++) {
-		iface->net_bot.bots[n].name[0]=0x0;
+		iface->multiplayer.bot_list.bots[n].name[0]=0x0;
 	}
 	
-	iface->net_news.host[0]=0x0;
-	iface->net_news.port=80;
-	iface->net_news.url[0]=0x0;
+	iface->multiplayer.news.host[0]=0x0;
+	iface->multiplayer.news.port=80;
+	iface->multiplayer.news.url[0]=0x0;
 }
 
 /* =======================================================
