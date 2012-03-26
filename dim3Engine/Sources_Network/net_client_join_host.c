@@ -54,8 +54,8 @@ int net_client_find_game(char *game_name)
 {
 	int			n;
 
-	for (n=0;n!=iface.net_game.ngame;n++) {
-		if (strcasecmp(iface.net_game.games[n].name,game_name)==0) return(n);
+	for (n=0;n!=iface.multiplayer.net_game.ngame;n++) {
+		if (strcasecmp(iface.multiplayer.net_game.games[n].name,game_name)==0) return(n);
 	}
 
 	return(-1);

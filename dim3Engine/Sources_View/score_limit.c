@@ -109,7 +109,7 @@ void score_limit_check_scores(void)
 
 		// team checks?
 		
-	if (iface.net_game.games[net_setup.game_idx].use_teams) {
+	if (iface.multiplayer.net_game.games[net_setup.game_idx].use_teams) {
 		
 		red_score=blue_score=0;
 

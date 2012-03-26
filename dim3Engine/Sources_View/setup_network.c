@@ -80,8 +80,8 @@ void setup_network_fill_character_table(void)
 
 	c=(char*)setup_character_list;
 	
-	for (n=0;n!=iface.character.ncharacter;n++) {
-		sprintf(c,"%s",iface.character.characters[n].name);
+	for (n=0;n!=iface.multiplayer.character_list.ncharacter;n++) {
+		sprintf(c,"%s",iface.multiplayer.character_list.characters[n].name);
 		c+=128;
 	}
 
@@ -114,7 +114,7 @@ void setup_network_player_pane(void)
 	int							x,y,wid,high,margin,padding,
 								control_y_add,control_y_sz;
 	element_column_type			cols[1];
-	iface_character_item_type	*hud_character;
+	iface_mp_character_type		*mp_character;
 
 	margin=element_get_tab_margin();
 	padding=element_get_padding();
@@ -124,7 +124,7 @@ void setup_network_player_pane(void)
 	
 	x=(int)(((float)iface.scale_x)*0.24f);
 	
-	if (iface.character.ncharacter!=0) {
+	if (iface.multiplayer.character_list.ncharacter!=0) {
 		y=((margin+element_get_tab_control_high())+padding)+control_y_add;
 	}
 	else {
@@ -141,7 +141,7 @@ void setup_network_player_pane(void)
 	
 		// is there a character control?
 
-	if (iface.character.ncharacter==0) return;
+	if (iface.multiplayer.character_list.ncharacter==0) return;
 	
 		// character table
 		
@@ -168,9 +168,8 @@ void setup_network_player_pane(void)
 	x=(int)(((float)iface.scale_x)*0.81f);
 	y=(int)(((float)iface.scale_y)*0.78f);
 	
-	hud_character=&iface.character.characters[setup.network.character_idx];
-
-	element_model_add(hud_character->model_name,"Idle",hud_character->interface_resize,&hud_character->interface_offset,NULL,ctrl_character_model_id,x,y);
+	mp_character=&iface.multiplayer.character_list.characters[setup.network.character_idx];
+	element_model_add(mp_character->model_name,"Idle",mp_character->interface_resize,&mp_character->interface_offset,NULL,ctrl_character_model_id,x,y);
 }
 
 void setup_network_host_pane(void)
@@ -429,7 +428,7 @@ void setup_network_host_delete(void)
 
 void setup_network_handle_click(int id)
 {
-	iface_character_item_type	*hud_character;
+	iface_mp_character_type		*mp_character;
 
 	switch (id) {
 
@@ -486,8 +485,8 @@ void setup_network_handle_click(int id)
 			
 		case ctrl_character_id:
 			setup.network.character_idx=element_get_value(ctrl_character_id);
-			hud_character=&iface.character.characters[setup.network.character_idx];
-			element_replace_model(ctrl_character_model_id,hud_character->model_name,"Idle",hud_character->interface_resize,&hud_character->interface_offset,NULL);
+			mp_character=&iface.multiplayer.character_list.characters[setup.network.character_idx];
+			element_replace_model(ctrl_character_model_id,mp_character->model_name,"Idle",mp_character->interface_resize,&mp_character->interface_offset,NULL);
 			break;
 
 		case ctrl_network_host_id:

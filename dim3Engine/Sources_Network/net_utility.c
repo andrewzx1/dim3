@@ -105,7 +105,7 @@ void net_load_news(void)
 	
 		// any news to load?
 		
-	if (iface.net_news.host[0]==0x0) return;
+	if (iface.multiplayer.news.host[0]==0x0) return;
 	
 		// skip if already loaded
 		
@@ -117,7 +117,7 @@ void net_load_news(void)
 	
 		// get response
 		
-	data=net_get_http_file(iface.net_news.host,iface.net_news.port,iface.net_news.url,err_str);
+	data=net_get_http_file(iface.multiplayer.news.host,iface.multiplayer.news.port,iface.multiplayer.news.url,err_str);
 	if (data==NULL) {
 	
 			// build error message

@@ -355,10 +355,10 @@ void host_game_pane(void)
 	
 		// game type
 
-	for (n=0;n!=iface.net_game.ngame;n++) {
-		strcpy(net_game_types[n],iface.net_game.games[n].name);
+	for (n=0;n!=iface.multiplayer.net_game.ngame;n++) {
+		strcpy(net_game_types[n],iface.multiplayer.net_game.games[n].name);
 	}
-	net_game_types[iface.net_game.ngame][0]=0x0;
+	net_game_types[iface.multiplayer.net_game.ngame][0]=0x0;
 
 	x=(int)(((float)iface.scale_x)*0.25f);
 	y=((margin+element_get_tab_control_high())+padding)+control_y_add;
@@ -393,7 +393,7 @@ void host_game_pane(void)
 	
 		// fill table with maps
 
-	host_fill_map_table(iface.net_game.games[setup.network.game_type].name);
+	host_fill_map_table(iface.multiplayer.net_game.games[setup.network.game_type].name);
 	host_map_list_to_table();
 
 	element_set_value(host_table_id,host_first_map_idx);
@@ -404,20 +404,20 @@ void host_options_pane(void)
 {
 	int							n,k,x,y,control_y_add,control_y_sz;
 	bool						on;
-	iface_net_option_type		*option;
+	iface_mp_option_type		*mp_option;
 
 		// panel sizes
 
 	control_y_add=element_get_control_high();
-	control_y_sz=(control_y_add*(3+iface.net_option.noption))+element_get_padding();
-	if (iface.net_bot.on) control_y_sz+=(control_y_add*2);
+	control_y_sz=(control_y_add*(3+iface.multiplayer.option_list.noption))+element_get_padding();
+	if (iface.multiplayer.bot_list.on) control_y_sz+=(control_y_add*2);
 	
 	x=(int)(((float)iface.scale_x)*0.45f);
 	y=((iface.scale_y>>1)+(element_get_button_high()>>1))-(control_y_sz>>1);
 	
 		// bots
 
-	if (iface.net_bot.on) {
+	if (iface.multiplayer.bot_list.on) {
 
 		element_number_add("Bot Count",setup.network.bot.count,host_game_bot_count_id,x,y,0,15);
 		y+=control_y_add;
@@ -441,23 +441,23 @@ void host_options_pane(void)
 
 	y+=element_get_padding();
 
-	option=iface.net_option.options;
+	mp_option=iface.multiplayer.option_list.options;
 
-	for (n=0;n!=iface.net_option.noption;n++) {
+	for (n=0;n!=iface.multiplayer.option_list.noption;n++) {
 
 		on=FALSE;
 
 		for (k=0;k!=setup.network.option.count;k++) {
-			if (strcasecmp(option->name,setup.network.option.options[k].name)==0) {
+			if (strcasecmp(mp_option->name,setup.network.option.options[k].name)==0) {
 				on=TRUE;
 				break;
 			}
 		}
 
-		element_checkbox_add(option->descript,on,(host_game_option_base+n),x,y,TRUE);
+		element_checkbox_add(mp_option->descript,on,(host_game_option_base+n),x,y,TRUE);
 		y+=control_y_add;
 
-		option++;
+		mp_option++;
 	}
 }
 
@@ -628,8 +628,8 @@ void host_game_setup(void)
 	net_setup.option_flags=0x0;
 	
 	for (n=0;n!=setup.network.option.count;n++) {
-		for (k=0;k!=iface.net_option.noption;k++) {
-			if (strcasecmp(setup.network.option.options[n].name,iface.net_option.options[k].name)==0) {
+		for (k=0;k!=iface.multiplayer.option_list.noption;k++) {
+			if (strcasecmp(setup.network.option.options[n].name,iface.multiplayer.option_list.options[k].name)==0) {
 				net_setup.option_flags=net_setup.option_flags|(0x1<<k);
 				break;
 			}
@@ -721,7 +721,7 @@ void host_game(void)
 void host_handle_click(int id)
 {
 	int							n,idx;
-	iface_net_option_type		*option;
+	iface_mp_option_type		*mp_option;
 
 		// special option clicks
 		// rebuild the options list
@@ -729,16 +729,16 @@ void host_handle_click(int id)
 	if (id>=host_game_option_base) {
 	
 		setup.network.option.count=0;
-		option=iface.net_option.options;
+		mp_option=iface.multiplayer.option_list.options;
 
-		for (n=0;n!=iface.net_option.noption;n++) {
+		for (n=0;n!=iface.multiplayer.option_list.noption;n++) {
 
 			if (element_get_value(host_game_option_base+n)!=0) {
-				strcpy(setup.network.option.options[setup.network.option.count].name,option->name);
+				strcpy(setup.network.option.options[setup.network.option.count].name,mp_option->name);
 				setup.network.option.count++;
 			}
 
-			option++;
+			mp_option++;
 		}
 
 		return;
@@ -761,7 +761,7 @@ void host_handle_click(int id)
 			idx=element_get_value(host_game_type_id);
 			if (idx!=setup.network.game_type) {
 				setup.network.game_type=idx;
-				host_fill_map_table(iface.net_game.games[idx].name);
+				host_fill_map_table(iface.multiplayer.net_game.games[idx].name);
 				host_map_list_to_table();
 				element_set_value(host_table_id,host_first_map_idx);
 				element_make_selection_visible(host_table_id);

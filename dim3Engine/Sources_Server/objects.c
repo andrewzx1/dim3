@@ -432,7 +432,7 @@ void object_get_tint(obj_type *obj,d3col *tint)
 		// then get team tint
 
 	if (net_setup.mode!=net_mode_none) {
-		if (iface.net_game.games[net_setup.game_idx].use_teams) {
+		if (iface.multiplayer.net_game.games[net_setup.game_idx].use_teams) {
 			object_team_get_tint(obj->team_idx,tint);
 			return;
 		}
@@ -753,7 +753,7 @@ bool object_start_script(obj_type *obj,bool no_construct,char *err_str)
 	script_name[0]=0x0;
 
 	if ((obj->type==object_type_player) || (obj->type==object_type_remote)) {
-		if (net_setup.mode!=net_mode_none) strcpy(script_name,iface.net_game.games[net_setup.game_idx].script.player_script);
+		if (net_setup.mode!=net_mode_none) strcpy(script_name,iface.multiplayer.net_game.games[net_setup.game_idx].script.player_script);
 		if (script_name[0]==0x0) strcpy(script_name,"Player");
 	}
 	else {
@@ -837,7 +837,7 @@ void object_multiplayer_setup(obj_type *obj)
 
 		// team setup
 
-	net_game=&iface.net_game.games[net_setup.game_idx];
+	net_game=&iface.multiplayer.net_game.games[net_setup.game_idx];
 
 	obj->team_idx=net_team_none;
 

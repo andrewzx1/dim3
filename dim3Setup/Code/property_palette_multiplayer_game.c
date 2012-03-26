@@ -59,7 +59,7 @@ void property_palette_fill_multiplayer_game(int multiplayer_game_idx)
 {
 	iface_net_game_type		*game;
 
-	game=&iface.net_game.games[multiplayer_game_idx];
+	game=&iface.multiplayer.net_game.games[multiplayer_game_idx];
 
 	list_palette_set_title(&property_palette,"Multiplayer",NULL,"Game",game->name,NULL,NULL);
 

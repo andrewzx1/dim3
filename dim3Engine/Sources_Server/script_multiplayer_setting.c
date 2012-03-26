@@ -94,21 +94,21 @@ JSValueRef js_multiplayer_setting_get_type(JSContextRef cx,JSObjectRef j_obj,JSS
 {
  	if (net_setup.mode==net_mode_none) return(script_null_to_value(cx));
 
-	return(script_string_to_value(cx,iface.net_game.games[net_setup.game_idx].name));
+	return(script_string_to_value(cx,iface.multiplayer.net_game.games[net_setup.game_idx].name));
 }
 
 JSValueRef js_multiplayer_setting_get_teamPlay(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
  	if (net_setup.mode==net_mode_none) return(script_bool_to_value(cx,FALSE));
 	
-	return(script_bool_to_value(cx,iface.net_game.games[net_setup.game_idx].use_teams));
+	return(script_bool_to_value(cx,iface.multiplayer.net_game.games[net_setup.game_idx].use_teams));
 }
 
 JSValueRef js_multiplayer_setting_get_monsters(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
  	if (net_setup.mode==net_mode_none) return(script_bool_to_value(cx,FALSE));
 	
-	return(script_bool_to_value(cx,iface.net_game.games[net_setup.game_idx].monsters));
+	return(script_bool_to_value(cx,iface.multiplayer.net_game.games[net_setup.game_idx].monsters));
 }
 
 /* =======================================================
@@ -133,8 +133,8 @@ JSValueRef js_multiplayer_setting_check_option_func(JSContextRef cx,JSObjectRef 
 
 	script_value_to_string(cx,argv[0],name,name_str_len);
 
-	for (n=0;n!=iface.net_option.noption;n++) {
-		if (strcasecmp(name,iface.net_option.options[n].name)==0) {
+	for (n=0;n!=iface.multiplayer.option_list.noption;n++) {
+		if (strcasecmp(name,iface.multiplayer.option_list.options[n].name)==0) {
 			on=((net_setup.option_flags&(0x1<<n))!=0x0);
 			return(script_bool_to_value(cx,on));
 		}

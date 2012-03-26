@@ -46,7 +46,9 @@ void iface_read_settings_multiplayer(iface_type *iface)
 								bot_head_tag,bot_tag,news_tag;
 	char						path[1024];
 	iface_net_game_type			*game;
-	iface_character_item_type	*iface_character;
+	iface_mp_option_type		*mp_option;
+	iface_mp_character_type		*mp_character;
+	iface_mp_bot_type			*mp_bot;
 
 		// check multiplayer file first, if it doesn't
 		// exist look in interface.xml
@@ -73,12 +75,12 @@ void iface_read_settings_multiplayer(iface_type *iface)
 	games_head_tag=xml_findfirstchild("Games",multiplayer_head_tag);
 	if (games_head_tag!=-1) {
 		
-		iface->net_game.ngame=0;
+		iface->multiplayer.net_game.ngame=0;
 		
 		game_tag=xml_findfirstchild("Game",games_head_tag);
 		while (game_tag!=-1) {
 		
-			game=&iface->net_game.games[iface->net_game.ngame];
+			game=&iface->multiplayer.net_game.games[iface->multiplayer.net_game.ngame];
 		
 			xml_get_attribute_text(game_tag,"type",game->name,name_str_len);
 			game->use_teams=xml_get_attribute_boolean(game_tag,"use_teams");
@@ -104,8 +106,8 @@ void iface_read_settings_multiplayer(iface_type *iface)
 				game->score.goal=xml_get_attribute_int(tag,"goal");
 			}
 			
-			iface->net_game.ngame++;
-			if (iface->net_game.ngame==max_net_game) break;
+			iface->multiplayer.net_game.ngame++;
+			if (iface->multiplayer.net_game.ngame==max_net_game) break;
 
 			game_tag=xml_findnextchild(game_tag);
 		}
@@ -116,16 +118,18 @@ void iface_read_settings_multiplayer(iface_type *iface)
 	options_head_tag=xml_findfirstchild("Options",multiplayer_head_tag);
 	if (options_head_tag!=-1) {
 		
-		iface->net_option.noption=0;
+		iface->multiplayer.option_list.noption=0;
 		
 		option_tag=xml_findfirstchild("Option",options_head_tag);
 		while (option_tag!=-1) {
-		
-			xml_get_attribute_text(option_tag,"name",iface->net_option.options[iface->net_option.noption].name,name_str_len);
-			xml_get_attribute_text(option_tag,"description",iface->net_option.options[iface->net_option.noption].descript,64);
 			
-			iface->net_option.noption++;
-			if (iface->net_option.noption==max_net_option) break;
+			mp_option=&iface->multiplayer.option_list.options[iface->multiplayer.option_list.noption];
+	
+			xml_get_attribute_text(option_tag,"name",mp_option->name,name_str_len);
+			xml_get_attribute_text(option_tag,"description",mp_option->descript,64);
+			
+			iface->multiplayer.option_list.noption++;
+			if (iface->multiplayer.option_list.noption==max_net_option) break;
 
 			option_tag=xml_findnextchild(option_tag);
 		}
@@ -136,19 +140,19 @@ void iface_read_settings_multiplayer(iface_type *iface)
     character_head_tag=xml_findfirstchild("Characters",multiplayer_head_tag);
     if (character_head_tag!=-1) {
 
-		iface->character.ncharacter=0;
+		iface->multiplayer.character_list.ncharacter=0;
 		character_item_tag=xml_findfirstchild("Character",character_head_tag);
 		
 		while (character_item_tag!=-1) {
-			iface_character=&iface->character.characters[iface->character.ncharacter];
+			mp_character=&iface->multiplayer.character_list.characters[iface->multiplayer.character_list.ncharacter];
 			
-			xml_get_attribute_text(character_item_tag,"name",iface_character->name,name_str_len);
-			xml_get_attribute_text(character_item_tag,"model",iface_character->model_name,name_str_len);
-			xml_get_attribute_text(character_item_tag,"parameter",iface_character->param,name_str_len);
-			iface_character->interface_resize=xml_get_attribute_float_default(character_item_tag,"interface_resize",1.0f);
-			xml_get_attribute_3_coord_int(character_item_tag,"interface_offset",&iface_character->interface_offset.x,&iface_character->interface_offset.y,&iface_character->interface_offset.z);
+			xml_get_attribute_text(character_item_tag,"name",mp_character->name,name_str_len);
+			xml_get_attribute_text(character_item_tag,"model",mp_character->model_name,name_str_len);
+			xml_get_attribute_text(character_item_tag,"parameter",mp_character->param,name_str_len);
+			mp_character->interface_resize=xml_get_attribute_float_default(character_item_tag,"interface_resize",1.0f);
+			xml_get_attribute_3_coord_int(character_item_tag,"interface_offset",&mp_character->interface_offset.x,&mp_character->interface_offset.y,&mp_character->interface_offset.z);
 			
-			iface->character.ncharacter++;
+			iface->multiplayer.character_list.ncharacter++;
 			character_item_tag=xml_findnextchild(character_item_tag);
 		}
 	}
@@ -158,13 +162,16 @@ void iface_read_settings_multiplayer(iface_type *iface)
     bot_head_tag=xml_findfirstchild("Bots",multiplayer_head_tag);
     if (bot_head_tag!=-1) {
 
-		iface->net_bot.on=!xml_get_attribute_boolean(bot_head_tag,"hide");
+		iface->multiplayer.bot_list.on=!xml_get_attribute_boolean(bot_head_tag,"hide");
 	
 		cnt=0;
 		bot_tag=xml_findfirstchild("Bot",bot_head_tag);
 		
 		while (bot_tag!=-1) {
-			xml_get_attribute_text(bot_tag,"name",iface->net_bot.bots[cnt].name,name_str_len);
+			mp_bot=&iface->multiplayer.bot_list.bots[cnt];
+
+			xml_get_attribute_text(bot_tag,"name",mp_bot->name,name_str_len);
+
 			cnt++;
 			bot_tag=xml_findnextchild(bot_tag);
 		}
@@ -174,9 +181,9 @@ void iface_read_settings_multiplayer(iface_type *iface)
 		
     news_tag=xml_findfirstchild("News",multiplayer_head_tag);
     if (news_tag!=-1) {
-		xml_get_attribute_text(news_tag,"host",iface->net_news.host,64);
-		iface->net_news.port=xml_get_attribute_int_default(news_tag,"port",80);
-		xml_get_attribute_text(news_tag,"url",iface->net_news.url,256);
+		xml_get_attribute_text(news_tag,"host",iface->multiplayer.news.host,64);
+		iface->multiplayer.news.port=xml_get_attribute_int_default(news_tag,"port",80);
+		xml_get_attribute_text(news_tag,"url",iface->multiplayer.news.url,256);
 	}
 
 	xml_close_file();
@@ -194,7 +201,9 @@ bool iface_write_settings_multiplayer(iface_type *iface,char *err_str)
 	char						path[1024];
 	bool						ok;
 	iface_net_game_type			*game;
-	iface_character_item_type	*iface_character;
+	iface_mp_option_type		*mp_option;
+	iface_mp_character_type		*mp_character;
+	iface_mp_bot_type			*mp_bot;
 	
 		// start new file
 		
@@ -210,9 +219,9 @@ bool iface_write_settings_multiplayer(iface_type *iface,char *err_str)
 	xml_add_tagstart("Games");
 	xml_add_tagend(FALSE);
 	
-	game=iface->net_game.games;
+	game=iface->multiplayer.net_game.games;
 
-	for (n=0;n!=iface->net_game.ngame;n++) {
+	for (n=0;n!=iface->multiplayer.net_game.ngame;n++) {
 	
 		xml_add_tagstart("Game");
 		xml_add_attribute_text("type",game->name);
@@ -249,11 +258,15 @@ bool iface_write_settings_multiplayer(iface_type *iface,char *err_str)
 	xml_add_tagstart("Options");
 	xml_add_tagend(FALSE);
 
-	for (n=0;n!=iface->net_option.noption;n++) {
+	mp_option=iface->multiplayer.option_list.options;
+
+	for (n=0;n!=iface->multiplayer.option_list.noption;n++) {
 		xml_add_tagstart("Option");
-		xml_add_attribute_text("name",iface->net_option.options[n].name);
-		xml_add_attribute_text("description",iface->net_option.options[n].descript);
+		xml_add_attribute_text("name",mp_option->name);
+		xml_add_attribute_text("description",mp_option->descript);
 		xml_add_tagend(TRUE);
+
+		mp_option++;
 	}
 
 	xml_add_tagclose("Options");
@@ -263,18 +276,18 @@ bool iface_write_settings_multiplayer(iface_type *iface,char *err_str)
 	xml_add_tagstart("Characters");
 	xml_add_tagend(FALSE);
 
-	iface_character=iface->character.characters;
+	mp_character=iface->multiplayer.character_list.characters;
 
-	for (n=0;n!=iface->character.ncharacter;n++) {
+	for (n=0;n!=iface->multiplayer.character_list.ncharacter;n++) {
 		xml_add_tagstart("Character");
-		xml_add_attribute_text("name",iface_character->name);
-		xml_add_attribute_text("model",iface_character->model_name);
-		xml_add_attribute_text("parameter",iface_character->param);
-		xml_add_attribute_float("interface_resize",iface_character->interface_resize);
-		xml_add_attribute_3_coord_int("interface_offset",iface_character->interface_offset.x,iface_character->interface_offset.y,iface_character->interface_offset.z);
+		xml_add_attribute_text("name",mp_character->name);
+		xml_add_attribute_text("model",mp_character->model_name);
+		xml_add_attribute_text("parameter",mp_character->param);
+		xml_add_attribute_float("interface_resize",mp_character->interface_resize);
+		xml_add_attribute_3_coord_int("interface_offset",mp_character->interface_offset.x,mp_character->interface_offset.y,mp_character->interface_offset.z);
 		xml_add_tagend(TRUE);
 
-		iface_character++;
+		mp_character++;
 	}
 
 	xml_add_tagclose("Characters");
@@ -282,15 +295,19 @@ bool iface_write_settings_multiplayer(iface_type *iface,char *err_str)
 		// bot names
 
 	xml_add_tagstart("Bots");
-	xml_add_attribute_boolean("hide",!iface->net_bot.on);
+	xml_add_attribute_boolean("hide",!iface->multiplayer.bot_list.on);
 	xml_add_tagend(FALSE);
 
+	mp_bot=iface->multiplayer.bot_list.bots;
+
 	for (n=0;n!=max_net_bot;n++) {
-		if (iface->net_bot.bots[n].name[0]==0x0) continue;
+		if (mp_bot->name[0]==0x0) continue;
 
 		xml_add_tagstart("Bot");
-		xml_add_attribute_text("name",iface->net_bot.bots[n].name);
+		xml_add_attribute_text("name",mp_bot->name);
 		xml_add_tagend(TRUE);
+
+		mp_bot++;
 	}
 
 	xml_add_tagclose("Bots");
@@ -298,9 +315,9 @@ bool iface_write_settings_multiplayer(iface_type *iface,char *err_str)
 		// news
 		
 	xml_add_tagstart("News");
-	xml_add_attribute_text("host",iface->net_news.host);
-	xml_add_attribute_int("port",iface->net_news.port);
-	xml_add_attribute_text("url",iface->net_news.url);
+	xml_add_attribute_text("host",iface->multiplayer.news.host);
+	xml_add_attribute_int("port",iface->multiplayer.news.port);
+	xml_add_attribute_text("url",iface->multiplayer.news.url);
 	xml_add_tagend(TRUE);
 
 	xml_add_tagclose("Multiplayer");

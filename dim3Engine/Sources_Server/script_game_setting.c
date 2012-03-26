@@ -83,7 +83,7 @@ JSValueRef js_game_setting_get_type(JSContextRef cx,JSObjectRef j_obj,JSStringRe
 {
 	if (net_setup.mode==net_mode_none) return(script_null_to_value(cx));
 	
-	return(script_string_to_value(cx,iface.net_game.games[net_setup.game_idx].name));
+	return(script_string_to_value(cx,iface.multiplayer.net_game.games[net_setup.game_idx].name));
 }
 
 JSValueRef js_game_setting_get_multiplayer(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)

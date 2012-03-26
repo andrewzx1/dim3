@@ -212,30 +212,30 @@ JSValueRef js_obj_setting_get_characterName(JSContextRef cx,JSObjectRef j_obj,JS
 {
 	obj_type		*obj;
 
-	if (iface.character.ncharacter==0) return(script_null_to_value(cx));
+	if (iface.multiplayer.character_list.ncharacter==0) return(script_null_to_value(cx));
 
 	obj=object_get_attach(j_obj);
-	return(script_string_to_value(cx,iface.character.characters[obj->character_idx].name));
+	return(script_string_to_value(cx,iface.multiplayer.character_list.characters[obj->character_idx].name));
 }
 
 JSValueRef js_obj_setting_get_characterModel(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	obj_type		*obj;
 	
-	if (iface.character.ncharacter==0) return(script_null_to_value(cx));
+	if (iface.multiplayer.character_list.ncharacter==0) return(script_null_to_value(cx));
 
 	obj=object_get_attach(j_obj);
-	return(script_string_to_value(cx,iface.character.characters[obj->character_idx].model_name));
+	return(script_string_to_value(cx,iface.multiplayer.character_list.characters[obj->character_idx].model_name));
 }
 
 JSValueRef js_obj_setting_get_characterParameter(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
 {
 	obj_type		*obj;
 
-	if (iface.character.ncharacter==0) return(script_null_to_value(cx));
+	if (iface.multiplayer.character_list.ncharacter==0) return(script_null_to_value(cx));
 
 	obj=object_get_attach(j_obj);
-	return(script_string_to_value(cx,iface.character.characters[obj->character_idx].param));
+	return(script_string_to_value(cx,iface.multiplayer.character_list.characters[obj->character_idx].param));
 }
 
 JSValueRef js_obj_setting_get_team(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)

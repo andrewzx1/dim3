@@ -48,17 +48,17 @@ extern list_palette_type		property_palette;
 
 void property_palette_fill_multiplayer_option(int multiplayer_option_idx)
 {
-	iface_net_option_type		*option;
+	iface_mp_option_type		*mp_option;
 
-	option=&iface.net_option.options[multiplayer_option_idx];
+	mp_option=&iface.multiplayer.option_list.options[multiplayer_option_idx];
 
-	list_palette_set_title(&property_palette,"Multiplayer",NULL,"Option",option->name,NULL,NULL);
+	list_palette_set_title(&property_palette,"Multiplayer",NULL,"Option",mp_option->name,NULL,NULL);
 
 		// settings
 
 	list_palette_add_header(&property_palette,0,"Settings");
-	list_palette_add_string(&property_palette,kMPOptionPropertySettingsName,"Name",option->name,name_str_len,FALSE);
-	list_palette_add_string(&property_palette,kMPOptionPropertySettingsDescript,"Description",option->descript,name_str_len,FALSE);
+	list_palette_add_string(&property_palette,kMPOptionPropertySettingsName,"Name",mp_option->name,name_str_len,FALSE);
+	list_palette_add_string(&property_palette,kMPOptionPropertySettingsDescript,"Description",mp_option->descript,name_str_len,FALSE);
 }
 
 /* =======================================================
