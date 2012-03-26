@@ -59,7 +59,7 @@ void property_palette_fill_halos(void)
 	list_palette_sort_mark_start(&property_palette);
 	
 	for (n=0;n!=iface.halo_list.nhalo;n++) {
-		list_palette_add_string_selectable_button(&property_palette,(kHaloProperyName+n),list_button_minus,(kHaloProperyDelete+n),iface.halo_list.halos[n].name,NULL,(state.cur_halo_idx==n),FALSE);
+		list_palette_add_string_selectable_button(&property_palette,(kHaloProperyName+n),list_button_minus,(kHaloProperyDelete+n),iface.halo_list.halos[n].name,(state.cur_halo_idx==n),FALSE);
 	}
 
 	list_palette_sort(&property_palette);

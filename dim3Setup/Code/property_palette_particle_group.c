@@ -69,7 +69,7 @@ void property_palette_fill_particle_group(int particle_idx)
 	list_palette_sort_mark_start(&property_palette);
 	
 	for (n=0;n!=particle->group.count;n++) {
-		list_palette_add_string_selectable_button(&property_palette,(kGroupParticleProperyName+n),list_button_minus,(kGroupParticleProperyDelete+n),particle->group.particles[n].name,NULL,(state.cur_group_particle_idx==n),FALSE);
+		list_palette_add_string_selectable_button(&property_palette,(kGroupParticleProperyName+n),list_button_minus,(kGroupParticleProperyDelete+n),particle->group.particles[n].name,(state.cur_group_particle_idx==n),FALSE);
 	}
 
 	list_palette_sort(&property_palette);

@@ -62,7 +62,7 @@ void property_palette_fill_particles(void)
 	list_palette_sort_mark_start(&property_palette);
 	
 	for (n=0;n!=iface.particle_list.nparticle;n++) {
-		if (!iface.particle_list.particles[n].group.on) list_palette_add_string_selectable_button(&property_palette,(kParticleProperyName+n),list_button_minus,(kParticleProperyDelete+n),iface.particle_list.particles[n].name,NULL,(state.cur_particle_idx==n),FALSE);
+		if (!iface.particle_list.particles[n].group.on) list_palette_add_string_selectable_button(&property_palette,(kParticleProperyName+n),list_button_minus,(kParticleProperyDelete+n),iface.particle_list.particles[n].name,(state.cur_particle_idx==n),FALSE);
 	}
 
 	list_palette_sort(&property_palette);
@@ -74,7 +74,7 @@ void property_palette_fill_particles(void)
 	list_palette_sort_mark_start(&property_palette);
 	
 	for (n=0;n!=iface.particle_list.nparticle;n++) {
-		if (iface.particle_list.particles[n].group.on) list_palette_add_string_selectable_button(&property_palette,(kParticleProperyName+n),list_button_minus,(kParticleProperyDelete+n),iface.particle_list.particles[n].name,NULL,(state.cur_particle_idx==n),FALSE);
+		if (iface.particle_list.particles[n].group.on) list_palette_add_string_selectable_button(&property_palette,(kParticleProperyName+n),list_button_minus,(kParticleProperyDelete+n),iface.particle_list.particles[n].name,(state.cur_particle_idx==n),FALSE);
 	}
 
 	list_palette_sort(&property_palette);

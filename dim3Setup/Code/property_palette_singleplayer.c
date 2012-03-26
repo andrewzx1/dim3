@@ -294,16 +294,6 @@ void property_palette_click_singleplayer(bool double_click)
 
 		return;
 	}
-
-		// bot names
-
-	if (!double_click) return;
-
-	for (n=0;n!=max_net_bot;n++) {
-		if (id==(kMPPropertyBotName+n)) {
-			dialog_property_string_run(list_string_value_string,(void*)iface.net_bot.bots[n].name,name_str_len,0,0);
-		}
-	}
 	*/
 }
 

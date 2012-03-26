@@ -356,6 +356,7 @@
 		260B44801411FB29006ED023 /* map_util_spots.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B44701411FB29006ED023 /* map_util_spots.c */; };
 		260B44811411FB29006ED023 /* map_util_texture.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B44711411FB29006ED023 /* map_util_texture.c */; };
 		260B44821411FB29006ED023 /* map_util_write.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B44721411FB29006ED023 /* map_util_write.c */; };
+		262DD2B6151E328C0078FEA4 /* base_iface_score.c in Sources */ = {isa = PBXBuildFile; fileRef = 262DD2B5151E328C0078FEA4 /* base_iface_score.c */; };
 		264356A614576B0F00CA4CFE /* model_util_file_model.c in Sources */ = {isa = PBXBuildFile; fileRef = 264356A514576B0F00CA4CFE /* model_util_file_model.c */; };
 		26920D7B1433F6F500EF55EF /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2638D24013ED0AD600029B18 /* UIKit.framework */; };
 		269CD61115004CB200F8EC07 /* libpng-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 269CD60D15004CB200F8EC07 /* libpng-iOS.a */; };
@@ -738,6 +739,7 @@
 		260B44701411FB29006ED023 /* map_util_spots.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = map_util_spots.c; sourceTree = "<group>"; };
 		260B44711411FB29006ED023 /* map_util_texture.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = map_util_texture.c; sourceTree = "<group>"; };
 		260B44721411FB29006ED023 /* map_util_write.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = map_util_write.c; sourceTree = "<group>"; };
+		262DD2B5151E328C0078FEA4 /* base_iface_score.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = base_iface_score.c; sourceTree = "<group>"; };
 		2638D24013ED0AD600029B18 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		264356A514576B0F00CA4CFE /* model_util_file_model.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = model_util_file_model.c; sourceTree = "<group>"; };
 		269CD60D15004CB200F8EC07 /* libpng-iOS.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "libpng-iOS.a"; sourceTree = "<group>"; };
@@ -1208,6 +1210,7 @@
 				260B43F51411FB18006ED023 /* base_iface_ring.c */,
 				260B43F61411FB18006ED023 /* base_iface_shader.c */,
 				260B43F71411FB18006ED023 /* base_iface_simple_save.c */,
+				262DD2B5151E328C0078FEA4 /* base_iface_score.c */,
 				260B43F81411FB18006ED023 /* base_iface_sound.c */,
 				260B43F91411FB18006ED023 /* base_lines.c */,
 				260B43FA1411FB18006ED023 /* base_math_acceleration.c */,
@@ -1979,6 +1982,7 @@
 				26A45D131489ADBB00C02936 /* script_point_angle_vector.c in Sources */,
 				269EA83214B8BE2F0069CA6C /* script_camera_chase_track_angle.c in Sources */,
 				269EA83D14B965DD0069CA6C /* metrics_draw.c in Sources */,
+				262DD2B6151E328C0078FEA4 /* base_iface_score.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
