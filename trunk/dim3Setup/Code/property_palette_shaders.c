@@ -59,7 +59,7 @@ void property_palette_fill_shaders(void)
 	list_palette_sort_mark_start(&property_palette);
 	
 	for (n=0;n!=iface.shader_list.nshader;n++) {
-		list_palette_add_string_selectable_button(&property_palette,(kShaderProperyName+n),list_button_minus,(kShaderProperyDelete+n),iface.shader_list.shaders[n].name,NULL,(state.cur_shader_idx==n),FALSE);
+		list_palette_add_string_selectable_button(&property_palette,(kShaderProperyName+n),list_button_minus,(kShaderProperyDelete+n),iface.shader_list.shaders[n].name,(state.cur_shader_idx==n),FALSE);
 	}
 
 	list_palette_sort(&property_palette);

@@ -128,7 +128,7 @@ void property_palette_fill_chooser(int chooser_idx)
 
 		strcat(str,")");
 
-		list_palette_add_string_selectable_button(&property_palette,(kChooserPropertyChooserItemName+n),list_button_minus,(kChooserPropertyChooserItemDelete+n),str,NULL,(state.cur_chooser_piece_idx==n),FALSE);
+		list_palette_add_string_selectable_button(&property_palette,(kChooserPropertyChooserItemName+n),list_button_minus,(kChooserPropertyChooserItemDelete+n),str,(state.cur_chooser_piece_idx==n),FALSE);
 	}
 
 	list_palette_sort(&property_palette);

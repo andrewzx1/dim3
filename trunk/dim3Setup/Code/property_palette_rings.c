@@ -59,7 +59,7 @@ void property_palette_fill_rings(void)
 	list_palette_sort_mark_start(&property_palette);
 	
 	for (n=0;n!=iface.ring_list.nring;n++) {
-		list_palette_add_string_selectable_button(&property_palette,(kRingProperyName+n),list_button_minus,(kRingProperyDelete+n),iface.ring_list.rings[n].name,NULL,(state.cur_ring_idx==n),FALSE);
+		list_palette_add_string_selectable_button(&property_palette,(kRingProperyName+n),list_button_minus,(kRingProperyDelete+n),iface.ring_list.rings[n].name,(state.cur_ring_idx==n),FALSE);
 	}
 
 	list_palette_sort(&property_palette);

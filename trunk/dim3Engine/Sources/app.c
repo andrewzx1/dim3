@@ -92,9 +92,9 @@ bool app_start(char *err_str)
 
 			// is there a title?
 
-		if (iface.intro.title.name[0]!=0x0) {
+		if (iface.logo.name[0]!=0x0) {
 
-			if (!title_setup("Titles",iface.intro.title.name,iface.intro.title.sound,iface.intro.title.life_msec,-1,err_str)) return(FALSE);
+			if (!title_setup("Titles",iface.logo.name,iface.logo.sound,iface.logo.life_msec,-1,err_str)) return(FALSE);
 
 			server.state=gs_title;
 			server.last_state=gs_intro;

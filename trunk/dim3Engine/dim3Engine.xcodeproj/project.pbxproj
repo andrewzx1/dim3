@@ -438,6 +438,7 @@
 		26184E7213CA0CE6003A9A79 /* CoreAudioKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26184E7113CA0CE6003A9A79 /* CoreAudioKit.framework */; };
 		26184E7613CA0D2E003A9A79 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26184E7513CA0D2E003A9A79 /* IOKit.framework */; };
 		26184E7813CA1022003A9A79 /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26184E7713CA1022003A9A79 /* JavaScriptCore.framework */; };
+		262DD2B0151E32200078FEA4 /* base_iface_score.c in Sources */ = {isa = PBXBuildFile; fileRef = 262DD2AF151E32200078FEA4 /* base_iface_score.c */; };
 		264470E814AF95250099DEE3 /* script_camera_chase_track_angle.c in Sources */ = {isa = PBXBuildFile; fileRef = 264470E714AF95250099DEE3 /* script_camera_chase_track_angle.c */; };
 		2649D14013412B2900573F6F /* gui_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 2649D13513412B2900573F6F /* gui_defs.h */; };
 		2649D14113412B2900573F6F /* input_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 2649D13613412B2900573F6F /* input_defs.h */; };
@@ -925,6 +926,7 @@
 		26184E7113CA0CE6003A9A79 /* CoreAudioKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudioKit.framework; path = ../../../../System/Library/Frameworks/CoreAudioKit.framework; sourceTree = "<group>"; };
 		26184E7513CA0D2E003A9A79 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = ../../../../System/Library/Frameworks/IOKit.framework; sourceTree = "<group>"; };
 		26184E7713CA1022003A9A79 /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = ../../../../System/Library/Frameworks/JavaScriptCore.framework; sourceTree = "<group>"; };
+		262DD2AF151E32200078FEA4 /* base_iface_score.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = base_iface_score.c; sourceTree = "<group>"; };
 		264470E714AF95250099DEE3 /* script_camera_chase_track_angle.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_camera_chase_track_angle.c; sourceTree = "<group>"; };
 		2649D13513412B2900573F6F /* gui_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gui_defs.h; path = Headers/gui_defs.h; sourceTree = "<group>"; };
 		2649D13613412B2900573F6F /* input_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = input_defs.h; path = Headers/input_defs.h; sourceTree = "<group>"; };
@@ -1132,6 +1134,7 @@
 				260B3DD91411F67B006ED023 /* base_iface_ring.c */,
 				260B3DDA1411F67B006ED023 /* base_iface_shader.c */,
 				260B3DDB1411F67B006ED023 /* base_iface_simple_save.c */,
+				262DD2AF151E32200078FEA4 /* base_iface_score.c */,
 				260B3DDC1411F67B006ED023 /* base_iface_sound.c */,
 				260B3DDD1411F67B006ED023 /* base_lines.c */,
 				260B3DDE1411F67B006ED023 /* base_math_acceleration.c */,
@@ -2317,6 +2320,7 @@
 				26A45D091489AD6C00C02936 /* script_point_angle_vector.c in Sources */,
 				264470E814AF95250099DEE3 /* script_camera_chase_track_angle.c in Sources */,
 				269EA83B14B9617C0069CA6C /* metrics_draw.c in Sources */,
+				262DD2B0151E32200078FEA4 /* base_iface_score.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

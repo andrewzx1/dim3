@@ -104,6 +104,7 @@
 		26232DD313065713008DC42B /* osx_dialog.h in Headers */ = {isa = PBXBuildFile; fileRef = 26232DD213065713008DC42B /* osx_dialog.h */; };
 		262C38D212D0211200A94FEE /* ui_common.h in Headers */ = {isa = PBXBuildFile; fileRef = 262C38D112D0211200A94FEE /* ui_common.h */; };
 		262C397012D0268500A94FEE /* list_palette_common.c in Sources */ = {isa = PBXBuildFile; fileRef = 262C396F12D0268500A94FEE /* list_palette_common.c */; };
+		262DD2AC151E31CC0078FEA4 /* base_iface_score.c in Sources */ = {isa = PBXBuildFile; fileRef = 262DD2AB151E31CC0078FEA4 /* base_iface_score.c */; };
 		263ADA6B14296509009EE0E0 /* view_vbo.c in Sources */ = {isa = PBXBuildFile; fileRef = 263ADA6A14296509009EE0E0 /* view_vbo.c */; };
 		263C5EBE122045E3008935B9 /* view_handle.c in Sources */ = {isa = PBXBuildFile; fileRef = 263C5EBD122045E3008935B9 /* view_handle.c */; };
 		2642872B12EE8C740078851E /* Set.png in Copy (Lists Icons) */ = {isa = PBXBuildFile; fileRef = 2642872912EE8C640078851E /* Set.png */; };
@@ -464,6 +465,7 @@
 		26232DD213065713008DC42B /* osx_dialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = osx_dialog.h; path = ../dim3Common/Headers/osx_dialog.h; sourceTree = SOURCE_ROOT; };
 		262C38D112D0211200A94FEE /* ui_common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ui_common.h; path = ../dim3Common/Headers/ui_common.h; sourceTree = SOURCE_ROOT; };
 		262C396F12D0268500A94FEE /* list_palette_common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = list_palette_common.c; path = ../dim3Common/Code/list_palette_common.c; sourceTree = SOURCE_ROOT; };
+		262DD2AB151E31CC0078FEA4 /* base_iface_score.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = base_iface_score.c; sourceTree = "<group>"; };
 		263ADA6A14296509009EE0E0 /* view_vbo.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = view_vbo.c; path = Code/view_vbo.c; sourceTree = "<group>"; };
 		263C5EBD122045E3008935B9 /* view_handle.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = view_handle.c; path = Code/view_handle.c; sourceTree = "<group>"; };
 		2642872912EE8C640078851E /* Set.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Set.png; sourceTree = "<group>"; };
@@ -759,6 +761,7 @@
 				260B3D251411F217006ED023 /* base_iface_ring.c */,
 				260B3D261411F217006ED023 /* base_iface_shader.c */,
 				260B3D271411F217006ED023 /* base_iface_simple_save.c */,
+				262DD2AB151E31CC0078FEA4 /* base_iface_score.c */,
 				260B3D281411F217006ED023 /* base_iface_sound.c */,
 				260B3D291411F217006ED023 /* base_lines.c */,
 				260B3D2A1411F217006ED023 /* base_math_acceleration.c */,
@@ -1342,6 +1345,7 @@
 				26F026F71503EC8B004688BF /* property_palette_main.c in Sources */,
 				268E6B071506F0DE00B85F4E /* property_palette_action.c in Sources */,
 				268E6B081506F0DE00B85F4E /* property_palette_move.c in Sources */,
+				262DD2AC151E31CC0078FEA4 /* base_iface_score.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
