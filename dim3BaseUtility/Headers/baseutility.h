@@ -1300,8 +1300,7 @@ typedef struct		{
 					} iface_sp_option_list_type;
 
 typedef struct		{
-						int								skill;
-						bool							map_pick;
+						bool							skill,map_pick;
 						iface_sp_option_list_type		option_list;
 					} iface_singleplayer_type;
 
@@ -1312,29 +1311,29 @@ typedef struct		{
 typedef struct		{
 						char							player_script[file_str_len],
 														bot_script[file_str_len];
-					} iface_net_game_script_type;
+					} iface_mp_game_script_type;
 
 typedef struct		{
 						char							spot_name[name_str_len];
 						bool							force_team_spot;
-					} iface_net_game_spawn_type;
+					} iface_mp_game_spawn_type;
 
 typedef struct		{
 						int								kill,death,suicide,goal;
-					} iface_net_game_score_type;
+					} iface_mp_game_score_type;
 					
 typedef struct		{
 						char							name[name_str_len];
 						bool							use_teams,monsters;
-						iface_net_game_script_type		script;
-						iface_net_game_spawn_type		spawn;
-						iface_net_game_score_type		score;
-					} iface_net_game_type;
+						iface_mp_game_script_type		script;
+						iface_mp_game_spawn_type		spawn;
+						iface_mp_game_score_type		score;
+					} iface_mp_game_type;
 
 typedef struct		{
 						int								ngame;
-						iface_net_game_type				games[max_net_game];
-					} iface_net_games_type;
+						iface_mp_game_type				games[max_net_game];
+					} iface_mp_game_list_type;
 
 typedef struct		{
 						char							name[name_str_len],descript[64];
@@ -1372,7 +1371,7 @@ typedef struct		{
 					} iface_mp_news_type;
 
 typedef struct		{
-						iface_net_games_type			net_game;
+						iface_mp_game_list_type			game_list;
 						iface_mp_option_list_type		option_list;
 						iface_mp_character_list_type	character_list;
 						iface_mp_bot_list_type			bot_list;

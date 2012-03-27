@@ -57,38 +57,38 @@ extern list_palette_type		property_palette;
 
 void property_palette_fill_multiplayer_game(int multiplayer_game_idx)
 {
-	iface_net_game_type		*game;
+	iface_mp_game_type		*mp_game;
 
-	game=&iface.multiplayer.net_game.games[multiplayer_game_idx];
+	mp_game=&iface.multiplayer.game_list.games[multiplayer_game_idx];
 
-	list_palette_set_title(&property_palette,"Multiplayer",NULL,"Game",game->name,NULL,NULL);
+	list_palette_set_title(&property_palette,"Multiplayer",NULL,"Game",mp_game->name,NULL,NULL);
 
 		// settings
 
 	list_palette_add_header(&property_palette,0,"Settings");
-	list_palette_add_string(&property_palette,kMPGamePropertySettingsName,"Name",game->name,name_str_len,FALSE);
-	list_palette_add_checkbox(&property_palette,kMPGamePropertySettingsTeam,"Requires Teams",&game->use_teams,FALSE);
-	list_palette_add_checkbox(&property_palette,kMPGamePropertySettingsMonster,"Include Monsters",&game->monsters,FALSE);
+	list_palette_add_string(&property_palette,kMPGamePropertySettingsName,"Name",mp_game->name,name_str_len,FALSE);
+	list_palette_add_checkbox(&property_palette,kMPGamePropertySettingsTeam,"Requires Teams",&mp_game->use_teams,FALSE);
+	list_palette_add_checkbox(&property_palette,kMPGamePropertySettingsMonster,"Include Monsters",&mp_game->monsters,FALSE);
 
 		// bots
 
 	list_palette_add_header(&property_palette,0,"Scripts");
-	list_palette_add_string(&property_palette,kMPGamePropertyScriptPlayerScript,"Player",game->script.player_script,file_str_len,FALSE);
-	list_palette_add_string(&property_palette,kMPGamePropertyScriptBotScript,"Bot",game->script.bot_script,file_str_len,FALSE);
+	list_palette_add_string(&property_palette,kMPGamePropertyScriptPlayerScript,"Player",mp_game->script.player_script,file_str_len,FALSE);
+	list_palette_add_string(&property_palette,kMPGamePropertyScriptBotScript,"Bot",mp_game->script.bot_script,file_str_len,FALSE);
 	
 		// spawn
 
 	list_palette_add_header(&property_palette,0,"Spawning");
-	list_palette_add_string(&property_palette,kMPGamePropertySpawnSpotName,"Spot Name",game->spawn.spot_name,name_str_len,FALSE);
-	list_palette_add_checkbox(&property_palette,kMPGamePropertySpawnForceTeam,"Force Team Spots",&game->spawn.force_team_spot,FALSE);
+	list_palette_add_string(&property_palette,kMPGamePropertySpawnSpotName,"Spot Name",mp_game->spawn.spot_name,name_str_len,FALSE);
+	list_palette_add_checkbox(&property_palette,kMPGamePropertySpawnForceTeam,"Force Team Spots",&mp_game->spawn.force_team_spot,FALSE);
 	
 		// score
 
 	list_palette_add_header(&property_palette,0,"Scoring");
-	list_palette_add_int(&property_palette,kMPGamePropertyScoreKill,"Kill",&game->score.kill,FALSE);
-	list_palette_add_int(&property_palette,kMPGamePropertyScoreDeath,"Death",&game->score.death,FALSE);
-	list_palette_add_int(&property_palette,kMPGamePropertyScoreSuicide,"Suicide",&game->score.suicide,FALSE);
-	list_palette_add_int(&property_palette,kMPGamePropertyScoreGoal,"Goal",&game->score.goal,FALSE);
+	list_palette_add_int(&property_palette,kMPGamePropertyScoreKill,"Kill",&mp_game->score.kill,FALSE);
+	list_palette_add_int(&property_palette,kMPGamePropertyScoreDeath,"Death",&mp_game->score.death,FALSE);
+	list_palette_add_int(&property_palette,kMPGamePropertyScoreSuicide,"Suicide",&mp_game->score.suicide,FALSE);
+	list_palette_add_int(&property_palette,kMPGamePropertyScoreGoal,"Goal",&mp_game->score.goal,FALSE);
 }
 
 /* =======================================================

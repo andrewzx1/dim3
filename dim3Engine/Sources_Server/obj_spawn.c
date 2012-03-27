@@ -278,7 +278,7 @@ bool game_multiplayer_bots_create(char *err_str)
 	int						n,uid;
 	char					name[name_str_len];
 	spot_type				spot;
-	iface_net_game_type		*net_game;
+	iface_mp_game_type		*mp_game;
 	
 		// only hosts have multiplayer bots
 		
@@ -290,7 +290,7 @@ bool game_multiplayer_bots_create(char *err_str)
 
 		// spawn bots
 		
-	net_game=&iface.multiplayer.net_game.games[net_setup.game_idx];
+	mp_game=&iface.multiplayer.game_list.games[net_setup.game_idx];
 
 	for (n=0;n!=setup.network.bot.count;n++) {
 	
@@ -305,7 +305,7 @@ bool game_multiplayer_bots_create(char *err_str)
 		
 		strcpy(spot.name,name);
 		spot.type=spot_type_bot;
-		strcpy(spot.script,net_game->script.bot_script);
+		strcpy(spot.script,mp_game->script.bot_script);
 		spot.params[0]=0x0;
 		
 		uid=object_start(&spot,name,object_type_bot_multiplayer,bt_game,err_str);

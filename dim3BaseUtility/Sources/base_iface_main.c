@@ -377,10 +377,16 @@ void iface_default_settings(iface_type *iface)
 	iface->logo.sound[0]=0x0;
 	iface->logo.life_msec=2000;
 
+		// singleplayer
+
+	iface->singleplayer.skill=FALSE;
+	iface->singleplayer.map_pick=FALSE;
+	iface->singleplayer.option_list.noption=0;
+
 		// multiplayer
 
-	iface->multiplayer.net_game.ngame=1;
-	strcpy(iface->multiplayer.net_game.games[0].name,"Deathmatch");
+	iface->multiplayer.game_list.ngame=1;
+	strcpy(iface->multiplayer.game_list.games[0].name,"Deathmatch");
 
 	iface->multiplayer.option_list.noption=0;
 		
@@ -584,6 +590,7 @@ void iface_read(iface_type *iface)
 {
 	iface_read_settings_interface(iface);
 	iface_read_settings_chooser(iface);
+	iface_read_settings_singleplayer(iface);
 	iface_read_settings_multiplayer(iface);
 	iface_read_settings_particle(iface);
 	iface_read_settings_ring(iface);
@@ -604,6 +611,7 @@ bool iface_write(iface_type *iface,char *err_str)
 {
 	if (!iface_write_settings_interface(iface,err_str)) return(FALSE);
 	if (!iface_write_settings_chooser(iface,err_str)) return(FALSE);
+	if (!iface_write_settings_singleplayer(iface,err_str)) return(FALSE);
 	if (!iface_write_settings_multiplayer(iface,err_str)) return(FALSE);
 	if (!iface_write_settings_particle(iface,err_str)) return(FALSE);
 	if (!iface_write_settings_ring(iface,err_str)) return(FALSE);

@@ -45,7 +45,7 @@ void iface_read_settings_multiplayer(iface_type *iface)
 								character_head_tag,character_item_tag,
 								bot_head_tag,bot_tag,news_tag;
 	char						path[1024];
-	iface_net_game_type			*game;
+	iface_mp_game_type			*mp_game;
 	iface_mp_option_type		*mp_option;
 	iface_mp_character_type		*mp_character;
 	iface_mp_bot_type			*mp_bot;
@@ -75,39 +75,39 @@ void iface_read_settings_multiplayer(iface_type *iface)
 	games_head_tag=xml_findfirstchild("Games",multiplayer_head_tag);
 	if (games_head_tag!=-1) {
 		
-		iface->multiplayer.net_game.ngame=0;
+		iface->multiplayer.game_list.ngame=0;
 		
 		game_tag=xml_findfirstchild("Game",games_head_tag);
 		while (game_tag!=-1) {
 		
-			game=&iface->multiplayer.net_game.games[iface->multiplayer.net_game.ngame];
+			mp_game=&iface->multiplayer.game_list.games[iface->multiplayer.game_list.ngame];
 		
-			xml_get_attribute_text(game_tag,"type",game->name,name_str_len);
-			game->use_teams=xml_get_attribute_boolean(game_tag,"use_teams");
-			game->monsters=xml_get_attribute_boolean(game_tag,"monsters");
+			xml_get_attribute_text(game_tag,"type",mp_game->name,name_str_len);
+			mp_game->use_teams=xml_get_attribute_boolean(game_tag,"use_teams");
+			mp_game->monsters=xml_get_attribute_boolean(game_tag,"monsters");
 			
 			tag=xml_findfirstchild("Script",game_tag);
 			if (tag!=-1) {
-				xml_get_attribute_text(tag,"player",game->script.player_script,file_str_len);
-				xml_get_attribute_text(tag,"bot",game->script.bot_script,file_str_len);
+				xml_get_attribute_text(tag,"player",mp_game->script.player_script,file_str_len);
+				xml_get_attribute_text(tag,"bot",mp_game->script.bot_script,file_str_len);
 			}
 			
 			tag=xml_findfirstchild("Spawn",game_tag);
 			if (tag!=-1) {
-				xml_get_attribute_text(tag,"spot_name",game->spawn.spot_name,name_str_len);
-				game->spawn.force_team_spot=xml_get_attribute_boolean(tag,"force_team_spot");
+				xml_get_attribute_text(tag,"spot_name",mp_game->spawn.spot_name,name_str_len);
+				mp_game->spawn.force_team_spot=xml_get_attribute_boolean(tag,"force_team_spot");
 			}
 			
 			tag=xml_findfirstchild("Score",game_tag);
 			if (tag!=-1) {
-				game->score.kill=xml_get_attribute_int(tag,"kill");
-				game->score.death=xml_get_attribute_int(tag,"death");
-				game->score.suicide=xml_get_attribute_int(tag,"suicide");
-				game->score.goal=xml_get_attribute_int(tag,"goal");
+				mp_game->score.kill=xml_get_attribute_int(tag,"kill");
+				mp_game->score.death=xml_get_attribute_int(tag,"death");
+				mp_game->score.suicide=xml_get_attribute_int(tag,"suicide");
+				mp_game->score.goal=xml_get_attribute_int(tag,"goal");
 			}
 			
-			iface->multiplayer.net_game.ngame++;
-			if (iface->multiplayer.net_game.ngame==max_net_game) break;
+			iface->multiplayer.game_list.ngame++;
+			if (iface->multiplayer.game_list.ngame==max_net_game) break;
 
 			game_tag=xml_findnextchild(game_tag);
 		}
@@ -200,7 +200,7 @@ bool iface_write_settings_multiplayer(iface_type *iface,char *err_str)
 	int							n;
 	char						path[1024];
 	bool						ok;
-	iface_net_game_type			*game;
+	iface_mp_game_type			*mp_game;
 	iface_mp_option_type		*mp_option;
 	iface_mp_character_type		*mp_character;
 	iface_mp_bot_type			*mp_bot;
@@ -219,36 +219,36 @@ bool iface_write_settings_multiplayer(iface_type *iface,char *err_str)
 	xml_add_tagstart("Games");
 	xml_add_tagend(FALSE);
 	
-	game=iface->multiplayer.net_game.games;
+	mp_game=iface->multiplayer.game_list.games;
 
-	for (n=0;n!=iface->multiplayer.net_game.ngame;n++) {
+	for (n=0;n!=iface->multiplayer.game_list.ngame;n++) {
 	
 		xml_add_tagstart("Game");
-		xml_add_attribute_text("type",game->name);
-		xml_add_attribute_boolean("use_teams",game->use_teams);
-		xml_add_attribute_boolean("monsters",game->monsters);
+		xml_add_attribute_text("type",mp_game->name);
+		xml_add_attribute_boolean("use_teams",mp_game->use_teams);
+		xml_add_attribute_boolean("monsters",mp_game->monsters);
 		xml_add_tagend(FALSE);
 		
 		xml_add_tagstart("Script");
-		xml_add_attribute_text("player",game->script.player_script);
-		xml_add_attribute_text("bot",game->script.bot_script);
+		xml_add_attribute_text("player",mp_game->script.player_script);
+		xml_add_attribute_text("bot",mp_game->script.bot_script);
 		xml_add_tagend(TRUE);
 			
 		xml_add_tagstart("Spawn");
-		xml_add_attribute_text("spot_name",game->spawn.spot_name);
-		xml_add_attribute_boolean("force_team_spot",game->spawn.force_team_spot);
+		xml_add_attribute_text("spot_name",mp_game->spawn.spot_name);
+		xml_add_attribute_boolean("force_team_spot",mp_game->spawn.force_team_spot);
 		xml_add_tagend(TRUE);
 			
 		xml_add_tagstart("Score");
-		xml_add_attribute_int("kill",game->score.kill);
-		xml_add_attribute_int("death",game->score.death);
-		xml_add_attribute_int("suicide",game->score.suicide);
-		xml_add_attribute_int("goal",game->score.goal);
+		xml_add_attribute_int("kill",mp_game->score.kill);
+		xml_add_attribute_int("death",mp_game->score.death);
+		xml_add_attribute_int("suicide",mp_game->score.suicide);
+		xml_add_attribute_int("goal",mp_game->score.goal);
 		xml_add_tagend(TRUE);
 
 		xml_add_tagclose("Game");
 		
-		game++;
+		mp_game++;
 	}
 
 	xml_add_tagclose("Games");

@@ -74,8 +74,8 @@ void property_palette_fill_multiplayer(void)
 
 	list_palette_sort_mark_start(&property_palette);
 	
-	for (n=0;n!=iface.multiplayer.net_game.ngame;n++) {
-		list_palette_add_string_selectable_button(&property_palette,(kMPPropertyGameName+n),list_button_minus,(kMPPropertyGameDelete+n),iface.multiplayer.net_game.games[n].name,(state.cur_multiplayer_game_idx==n),FALSE);
+	for (n=0;n!=iface.multiplayer.game_list.ngame;n++) {
+		list_palette_add_string_selectable_button(&property_palette,(kMPPropertyGameName+n),list_button_minus,(kMPPropertyGameDelete+n),iface.multiplayer.game_list.games[n].name,(state.cur_multiplayer_game_idx==n),FALSE);
 	}
 
 	list_palette_sort(&property_palette);
@@ -132,7 +132,7 @@ void property_palette_fill_multiplayer(void)
 void property_palette_click_multiplayer(bool double_click)
 {
 	int							id,idx,sz;
-	iface_net_game_type			*game;
+	iface_mp_game_type			*mp_game;
 	iface_mp_option_type		*mp_option;
 	iface_mp_character_type		*mp_character;
 
@@ -173,10 +173,10 @@ void property_palette_click_multiplayer(bool double_click)
 
 		idx=id-kMPPropertyGameDelete;
 
-		sz=(iface.multiplayer.net_game.ngame-idx)-1;
-		if (sz>0) memmove(&iface.multiplayer.net_game.games[idx],&iface.multiplayer.net_game.games[idx+1],(sz*sizeof(iface_net_game_type)));
+		sz=(iface.multiplayer.game_list.ngame-idx)-1;
+		if (sz>0) memmove(&iface.multiplayer.game_list.games[idx],&iface.multiplayer.game_list.games[idx+1],(sz*sizeof(iface_mp_game_type)));
 
-		iface.multiplayer.net_game.ngame--;
+		iface.multiplayer.game_list.ngame--;
 
 		return;
 	}
@@ -218,32 +218,32 @@ void property_palette_click_multiplayer(bool double_click)
 		state.cur_multiplayer_game_idx=-1;
 		state.cur_multiplayer_option_idx=-1;
 
-		if (iface.multiplayer.net_game.ngame>=max_net_game) {
+		if (iface.multiplayer.game_list.ngame>=max_net_game) {
 			os_dialog_alert("Add Multiplayer Game","Reached the maximum number of multiplayer games");
 			return;
 		}
 
-		idx=iface.multiplayer.net_game.ngame;
-		iface.multiplayer.net_game.ngame++;
+		idx=iface.multiplayer.game_list.ngame;
+		iface.multiplayer.game_list.ngame++;
 
-		game=&iface.multiplayer.net_game.games[idx];
+		mp_game=&iface.multiplayer.game_list.games[idx];
 		
-		game->name[0]=0x0;
-		dialog_property_string_run(list_string_value_string,(void*)game->name,name_str_len,0,0);
+		mp_game->name[0]=0x0;
+		dialog_property_string_run(list_string_value_string,(void*)mp_game->name,name_str_len,0,0);
 
-		game->use_teams=FALSE;
-		game->monsters=FALSE;
+		mp_game->use_teams=FALSE;
+		mp_game->monsters=FALSE;
 		
-		strcpy(game->script.player_script,"Player");
-		strcpy(game->script.bot_script,"Bot DM");
+		strcpy(mp_game->script.player_script,"Player");
+		strcpy(mp_game->script.bot_script,"Bot DM");
 		
-		strcpy(game->spawn.spot_name,"Spawn");
-		game->spawn.force_team_spot=FALSE;
+		strcpy(mp_game->spawn.spot_name,"Spawn");
+		mp_game->spawn.force_team_spot=FALSE;
 		
-		game->score.kill=1;
-		game->score.death=0;
-		game->score.suicide=-1;
-		game->score.goal=1;
+		mp_game->score.kill=1;
+		mp_game->score.death=0;
+		mp_game->score.suicide=-1;
+		mp_game->score.goal=1;
 
 		state.cur_multiplayer_game_idx=idx;
 
@@ -256,7 +256,7 @@ void property_palette_click_multiplayer(bool double_click)
 		state.cur_multiplayer_option_idx=-1;
 
 		if (iface.multiplayer.option_list.noption>=max_net_option) {
-			os_dialog_alert("Add Multiplayer Option","Reached the maximum number of net options");
+			os_dialog_alert("Add Multiplayer Option","Reached the maximum number of multiplayer options");
 			return;
 		}
 
