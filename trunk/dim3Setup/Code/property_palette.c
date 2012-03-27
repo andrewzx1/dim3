@@ -68,6 +68,7 @@ void property_palette_initialize(void)
 	state.cur_menu_item_idx=-1;
 	state.cur_chooser_idx=-1;
 	state.cur_chooser_piece_idx=-1;
+	state.cur_singleplayer_option_idx=-1;
 	state.cur_multiplayer_character_idx=-1;
 	state.cur_multiplayer_game_idx=-1;
 	state.cur_multiplayer_option_idx=-1;
@@ -233,6 +234,13 @@ void property_palette_fill_level_2(void)
 		case item_interface_radar:
 			if (state.cur_radar_icon_idx!=-1) {
 				property_palette_fill_radar_icon(state.cur_radar_icon_idx);
+				return;
+			}
+			break;
+
+		case item_interface_singleplayer:
+			if (state.cur_singleplayer_option_idx!=-1) {
+				property_palette_fill_singleplayer_option(state.cur_singleplayer_option_idx);
 				return;
 			}
 			break;
@@ -574,6 +582,13 @@ void property_palette_click_level_2(bool double_click)
 		case item_interface_radar:
 			if (state.cur_radar_icon_idx!=-1) {
 				property_palette_click_radar_icon(state.cur_radar_icon_idx,double_click);
+				break;
+			}
+			break;
+
+		case item_interface_singleplayer:
+			if (state.cur_singleplayer_option_idx!=-1) {
+				property_palette_click_singleplayer_option(state.cur_singleplayer_option_idx,double_click);
 				break;
 			}
 			break;

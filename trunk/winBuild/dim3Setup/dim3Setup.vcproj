@@ -468,6 +468,10 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\dim3Setup\Code\property_palette_singleplayer_option.c"
+						>
+					</File>
+					<File
 						RelativePath="..\..\dim3Setup\Code\property_palette_sound.c"
 						>
 					</File>
@@ -642,6 +646,10 @@
 				</File>
 				<File
 					RelativePath="..\..\dim3BaseUtility\Sources\base_iface_simple_save.c"
+					>
+				</File>
+				<File
+					RelativePath="..\..\dim3BaseUtility\Sources\base_iface_singleplayer.c"
 					>
 				</File>
 				<File

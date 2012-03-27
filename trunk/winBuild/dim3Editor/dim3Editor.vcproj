@@ -287,6 +287,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\dim3BaseUtility\Sources\base_iface_singleplayer.c"
+					>
+				</File>
+				<File
 					RelativePath="..\..\dim3BaseUtility\Sources\base_iface_sound.c"
 					>
 				</File>

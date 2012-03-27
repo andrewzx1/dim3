@@ -89,7 +89,7 @@ void object_score_recalc_place(void)
 
 void object_score_update(obj_type *obj)
 {
-	iface_net_game_type			*net_game;
+	iface_mp_game_type			*mp_game;
 
 		// only run rules for players or multiplayer bots
 
@@ -97,8 +97,8 @@ void object_score_update(obj_type *obj)
 
 		// update score
 
-	net_game=&iface.multiplayer.net_game.games[net_setup.game_idx];
-	obj->score.score=(obj->score.kill*net_game->score.kill)+(obj->score.death*net_game->score.death)+(obj->score.suicide*net_game->score.suicide)+(obj->score.goal*net_game->score.goal);
+	mp_game=&iface.multiplayer.game_list.games[net_setup.game_idx];
+	obj->score.score=(obj->score.kill*mp_game->score.kill)+(obj->score.death*mp_game->score.death)+(obj->score.suicide*mp_game->score.suicide)+(obj->score.goal*mp_game->score.goal);
 
 		// update placing information
 		

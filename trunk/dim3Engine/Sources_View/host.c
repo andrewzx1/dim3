@@ -355,10 +355,10 @@ void host_game_pane(void)
 	
 		// game type
 
-	for (n=0;n!=iface.multiplayer.net_game.ngame;n++) {
-		strcpy(net_game_types[n],iface.multiplayer.net_game.games[n].name);
+	for (n=0;n!=iface.multiplayer.game_list.ngame;n++) {
+		strcpy(net_game_types[n],iface.multiplayer.game_list.games[n].name);
 	}
-	net_game_types[iface.multiplayer.net_game.ngame][0]=0x0;
+	net_game_types[iface.multiplayer.game_list.ngame][0]=0x0;
 
 	x=(int)(((float)iface.scale_x)*0.25f);
 	y=((margin+element_get_tab_control_high())+padding)+control_y_add;
@@ -393,7 +393,7 @@ void host_game_pane(void)
 	
 		// fill table with maps
 
-	host_fill_map_table(iface.multiplayer.net_game.games[setup.network.game_type].name);
+	host_fill_map_table(iface.multiplayer.game_list.games[setup.network.game_type].name);
 	host_map_list_to_table();
 
 	element_set_value(host_table_id,host_first_map_idx);
@@ -761,7 +761,7 @@ void host_handle_click(int id)
 			idx=element_get_value(host_game_type_id);
 			if (idx!=setup.network.game_type) {
 				setup.network.game_type=idx;
-				host_fill_map_table(iface.multiplayer.net_game.games[idx].name);
+				host_fill_map_table(iface.multiplayer.game_list.games[idx].name);
 				host_map_list_to_table();
 				element_set_value(host_table_id,host_first_map_idx);
 				element_make_selection_visible(host_table_id);

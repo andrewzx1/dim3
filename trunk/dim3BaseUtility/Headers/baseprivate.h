@@ -72,6 +72,7 @@ void bitmap_texture_close(bitmap_type *bitmap);
 extern void iface_read_settings_interface(iface_type *iface);
 extern void iface_refresh_settings_interface_hud_only(iface_type *iface);
 extern void iface_read_settings_chooser(iface_type *iface);
+extern void iface_read_settings_singleplayer(iface_type *iface);
 extern void iface_read_settings_multiplayer(iface_type *iface);
 extern void iface_read_settings_particle(iface_type *iface);
 extern void iface_read_settings_ring(iface_type *iface);
@@ -84,6 +85,7 @@ extern void iface_read_settings_shader(iface_type *iface);
 
 extern bool iface_write_settings_interface(iface_type *iface,char *err_str);
 extern bool iface_write_settings_chooser(iface_type *iface,char *err_str);
+extern bool iface_write_settings_singleplayer(iface_type *iface,char *err_str);
 extern bool iface_write_settings_multiplayer(iface_type *iface,char *err_str);
 extern bool iface_write_settings_particle(iface_type *iface,char *err_str);
 extern bool iface_write_settings_ring(iface_type *iface,char *err_str);

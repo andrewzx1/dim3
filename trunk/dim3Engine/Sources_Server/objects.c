@@ -432,7 +432,7 @@ void object_get_tint(obj_type *obj,d3col *tint)
 		// then get team tint
 
 	if (net_setup.mode!=net_mode_none) {
-		if (iface.multiplayer.net_game.games[net_setup.game_idx].use_teams) {
+		if (iface.multiplayer.game_list.games[net_setup.game_idx].use_teams) {
 			object_team_get_tint(obj->team_idx,tint);
 			return;
 		}
@@ -753,7 +753,7 @@ bool object_start_script(obj_type *obj,bool no_construct,char *err_str)
 	script_name[0]=0x0;
 
 	if ((obj->type==object_type_player) || (obj->type==object_type_remote)) {
-		if (net_setup.mode!=net_mode_none) strcpy(script_name,iface.multiplayer.net_game.games[net_setup.game_idx].script.player_script);
+		if (net_setup.mode!=net_mode_none) strcpy(script_name,iface.multiplayer.game_list.games[net_setup.game_idx].script.player_script);
 		if (script_name[0]==0x0) strcpy(script_name,"Player");
 	}
 	else {
@@ -830,24 +830,24 @@ void object_attach_click_crosshair_down(obj_type *obj)
 
 void object_multiplayer_setup(obj_type *obj)
 {
-	iface_net_game_type			*net_game;
+	iface_mp_game_type			*mp_game;
 
 	if (net_setup.mode==net_mode_none) return;
 	if ((obj->type!=object_type_player) && (obj->type!=object_type_remote) && (obj->type!=object_type_bot_multiplayer)) return;
 
 		// team setup
 
-	net_game=&iface.multiplayer.net_game.games[net_setup.game_idx];
+	mp_game=&iface.multiplayer.game_list.games[net_setup.game_idx];
 
 	obj->team_idx=net_team_none;
 
-	if (net_game->use_teams) object_set_even_team(obj);
+	if (mp_game->use_teams) object_set_even_team(obj);
 
 		// spawn spot
 
 	obj->spawn_spot_name[0]=0x0;
 
-	if ((net_game->spawn.force_team_spot) && (obj->team_idx!=net_team_none)) {
+	if ((mp_game->spawn.force_team_spot) && (obj->team_idx!=net_team_none)) {
 		if (obj->team_idx==net_team_red) {
 			strcpy(obj->spawn_spot_name,"Red");
 		}
@@ -856,7 +856,7 @@ void object_multiplayer_setup(obj_type *obj)
 		}
 	}
 	else {
-		strcpy(obj->spawn_spot_name,net_game->spawn.spot_name);
+		strcpy(obj->spawn_spot_name,mp_game->spawn.spot_name);
 	}
 	
 	if (obj->spawn_spot_name[0]==0x0) strcpy(obj->spawn_spot_name,"Start");
