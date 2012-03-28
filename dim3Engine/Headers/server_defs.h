@@ -39,15 +39,16 @@ and can be sold or given away.
 
 #define gs_running								0
 #define gs_intro								1
-#define gs_setup_game							2
-#define gs_setup_network						3
-#define gs_join									4
-#define gs_host									5
-#define gs_file									6
-#define gs_chooser								7
-#define gs_title								8
-#define gs_error								9
-#define gs_score_limit							10
+#define gs_singleplayer_option					2
+#define gs_setup_game							3
+#define gs_setup_network						4
+#define gs_join									5
+#define gs_host									6
+#define gs_file									7
+#define gs_chooser								8
+#define gs_title								9
+#define gs_error								10
+#define gs_score_limit							11
 
 //
 // lists
@@ -1116,7 +1117,8 @@ typedef struct		{
  
  typedef struct		{
 						int								state,next_state,last_state,
-														skill,simple_save_idx,player_obj_idx;
+														skill,option_flags,
+														simple_save_idx,player_obj_idx;
 						bool							game_open,map_open;
 						server_map_change_type			map_change;
 						server_time_type				time;

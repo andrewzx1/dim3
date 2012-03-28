@@ -62,7 +62,6 @@ void property_palette_fill_project(void)
 	list_palette_add_header(&property_palette,0,"Project");
 	list_palette_add_string(&property_palette,kSettingsProjectName,"Name",iface.project.name,name_str_len,FALSE);
 	list_palette_add_checkbox(&property_palette,kSettingsProjectModernize,"Modernize",&iface.project.modernize,FALSE);
-	list_palette_add_checkbox(&property_palette,kSettingsProjectSkill,"Skill",&iface.project.skill,FALSE);
 
 		// scale
 		

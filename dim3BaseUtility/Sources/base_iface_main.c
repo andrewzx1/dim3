@@ -178,7 +178,6 @@ void iface_default_settings(iface_type *iface)
 	
 	iface->project.name[0]=0x0;
 	iface->project.modernize=TRUE;
-	iface->project.skill=FALSE;
 	
 		// scale
 

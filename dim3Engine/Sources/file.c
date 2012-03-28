@@ -34,7 +34,8 @@ and can be sold or given away.
 #include "scripts.h"
 
 typedef struct		{
-						int					tick,skill,player_obj_idx,simple_save_idx;
+						int					tick,skill,option_flags,
+											simple_save_idx,player_obj_idx;
 						char				version[16],map_name[name_str_len];
 					} file_save_header;					
 
@@ -291,8 +292,9 @@ bool game_file_save(bool suspend_save,char *err_str)
 
 	head.tick=tick;
 	head.skill=server.skill;
-	head.player_obj_idx=server.player_obj_idx;
+	head.option_flags=server.option_flags;
 	head.simple_save_idx=server.simple_save_idx;
+	head.player_obj_idx=server.player_obj_idx;
 	
 	strcpy(head.version,dim3_version);
 	strcpy(head.map_name,map.info.name);
@@ -548,7 +550,7 @@ bool game_file_load(char *file_name,bool resume_load,char *err_str)
 	if (!server.game_open) {
 
 		scripts_lock_events();
-		ok=game_start(TRUE,head.skill,head.simple_save_idx,err_str);
+		ok=game_start(TRUE,head.skill,head.option_flags,head.simple_save_idx,err_str);
 		scripts_unlock_events();
 		
 		if (!ok) {

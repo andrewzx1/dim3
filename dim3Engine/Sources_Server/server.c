@@ -119,7 +119,7 @@ void server_shutdown(void)
       
 ======================================================= */
 
-bool server_game_start(bool in_file_load,int skill,int simple_save_idx,char *err_str)
+bool server_game_start(bool in_file_load,int skill,int option_flags,int simple_save_idx,char *err_str)
 {
 		// get HUD items back to original state
 		
@@ -136,6 +136,7 @@ bool server_game_start(bool in_file_load,int skill,int simple_save_idx,char *err
 		// setup skill and simple save index
 
 	server.skill=skill;
+	server.option_flags=option_flags;
 	server.simple_save_idx=simple_save_idx;
 	
 		// run game script
