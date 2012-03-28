@@ -268,6 +268,10 @@ void loop_state_run(void)
 		case gs_intro:
 			intro_run();
 			return;
+
+		case gs_singleplayer_option:
+			singleplayer_option_run();
+			return;
 			
 		case gs_setup_game:
 			setup_game_run();
@@ -318,6 +322,10 @@ void loop_state_last_close(void)
 			intro_close();
 			return;
 
+		case gs_singleplayer_option:
+			singleplayer_option_close();
+			return;
+
 		case gs_setup_game:
 			setup_game_close();
 			return;
@@ -363,6 +371,10 @@ void loop_state_next_open(void)
 
 		case gs_intro:
 			intro_open();
+			return;
+
+		case gs_singleplayer_option:
+			singleplayer_option_open();
 			return;
 
 		case gs_setup_game:

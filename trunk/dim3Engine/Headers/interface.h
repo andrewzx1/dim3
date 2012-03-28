@@ -36,7 +36,7 @@ extern void app_end(void);
 // game
 //
 
-extern bool game_start(bool in_file_load,int skill,int simple_save_idx,char *err_str);
+extern bool game_start(bool in_file_load,int skill,int option_flags,int simple_save_idx,char *err_str);
 extern void game_end(void);
 extern void game_reset(void);
 extern bool game_file_reload_ok(void);
@@ -62,7 +62,7 @@ extern void map_set_ambient(char *name,float pitch);
 
 extern bool server_initialize(char *err_str);
 extern void server_shutdown(void);
-extern bool server_game_start(bool in_file_load,int skill,int simple_save_idx,char *err_str);
+extern bool server_game_start(bool in_file_load,int skill,int option_flags,int simple_save_idx,char *err_str);
 extern void server_game_stop(void);
 
 extern void server_loop(void);
@@ -430,7 +430,12 @@ extern void menu_draw_start(char *name);
 
 extern void intro_open(void);
 extern void intro_close(void);
+extern void intro_start_game(int skill,int option_flags,int simple_save_idx);
 extern void intro_run(void);
+
+extern void singleplayer_option_open(void);
+extern void singleplayer_option_close(void);
+extern void singleplayer_option_run(void);
 
 extern void setup_game_open(void);
 extern void setup_game_close(void);

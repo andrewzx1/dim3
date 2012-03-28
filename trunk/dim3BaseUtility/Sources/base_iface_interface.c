@@ -885,7 +885,6 @@ void iface_read_settings_interface(iface_type *iface)
 	if (proj_tag!=-1) {
 		xml_get_attribute_text(proj_tag,"name",iface->project.name,name_str_len);
 		iface->project.modernize=xml_get_attribute_boolean(proj_tag,"modernize");
-		iface->project.skill=xml_get_attribute_boolean(proj_tag,"skill");
 	}
 
 	xml_close_file();
@@ -1535,7 +1534,6 @@ bool iface_write_settings_interface(iface_type *iface,char *err_str)
 	xml_add_tagstart("Project");
 	xml_add_attribute_text("name",iface->project.name);
 	xml_add_attribute_boolean("modernize",iface->project.modernize);
-	xml_add_attribute_boolean("skill",iface->project.skill);
 	xml_add_tagend(TRUE);
 
 		// close interface

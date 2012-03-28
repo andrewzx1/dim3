@@ -47,7 +47,7 @@ extern void net_host_game_end(void);
       
 ======================================================= */
 
-bool game_start(bool in_file_load,int skill,int simple_save_idx,char *err_str)
+bool game_start(bool in_file_load,int skill,int option_flags,int simple_save_idx,char *err_str)
 {
 		// pause time
 		
@@ -63,7 +63,7 @@ bool game_start(bool in_file_load,int skill,int simple_save_idx,char *err_str)
 
 		// start server
 		
-	if (!server_game_start(in_file_load,skill,simple_save_idx,err_str)) return(FALSE);
+	if (!server_game_start(in_file_load,skill,option_flags,simple_save_idx,err_str)) return(FALSE);
 
 		// start view
 		

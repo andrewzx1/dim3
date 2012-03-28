@@ -682,7 +682,7 @@ void join_game(void)
 	
 		// start game
 	
-	if (!game_start(FALSE,skill_medium,0,err_str)) {
+	if (!game_start(FALSE,skill_medium,0,0,err_str)) {
 		error_setup(err_str,"Network Game Canceled");
 		server.next_state=gs_error;
 		return;

@@ -1654,6 +1654,18 @@
 						>
 					</File>
 					<File
+						RelativePath="..\..\dim3Engine\Sources_Server\script_singleplayer.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Engine\Sources_Server\script_singleplayer_high_score.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Engine\Sources_Server\script_singleplayer_setting.c"
+						>
+					</File>
+					<File
 						RelativePath="..\..\dim3Engine\Sources_Server\script_sound.c"
 						>
 						<FileConfiguration
@@ -3231,6 +3243,10 @@
 								PreprocessorDefinitions=""
 							/>
 						</FileConfiguration>
+					</File>
+					<File
+						RelativePath="..\..\dim3Engine\Sources_View\singleplayer_option.c"
+						>
 					</File>
 					<File
 						RelativePath="..\..\dim3Engine\Sources_View\title.c"

@@ -1384,7 +1384,7 @@ typedef struct		{
 
 typedef struct		{
 						char							name[name_str_len];
-						bool							modernize,skill;
+						bool							modernize;
 					} iface_project_type;
 
 //

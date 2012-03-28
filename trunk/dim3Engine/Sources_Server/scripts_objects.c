@@ -108,6 +108,10 @@ void script_initialize_classes(void)
 	script_init_map_light_object();
 	script_init_map_polygon_object();
 
+	script_init_global_singleplayer_object();
+	script_init_singleplayer_setting_object();
+	script_init_singleplayer_high_score_object();
+
 	script_init_global_multiplayer_object();
 	script_init_multiplayer_bot_object();
 	script_init_multiplayer_score_object();
@@ -259,6 +263,10 @@ void script_release_classes(void)
 	script_free_map_spot_object();
 	script_free_map_light_object();
 	script_free_map_polygon_object();
+
+	script_free_global_singleplayer_object();
+	script_free_singleplayer_setting_object();
+	script_free_singleplayer_high_score_object();
 
 	script_free_global_multiplayer_object();
 	script_free_multiplayer_bot_object();
@@ -421,6 +429,12 @@ bool script_add_global_object(script_type *script,char *err_str)
 	script_add_map_movement_object(script->cx,j_sub_obj,script->idx);
 	script_add_map_light_object(script->cx,j_sub_obj,script->idx);
 	script_add_map_polygon_object(script->cx,j_sub_obj,script->idx);
+
+		// single object
+		
+	j_sub_obj=script_add_global_singleplayer_object(script->cx,j_parent_obj,script->idx);
+	script_add_singleplayer_setting_object(script->cx,j_sub_obj,script->idx);
+	script_add_singleplayer_high_score_object(script->cx,j_sub_obj,script->idx);
 
 		// multiplayer object
 		

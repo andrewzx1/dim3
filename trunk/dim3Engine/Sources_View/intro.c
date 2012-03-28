@@ -33,25 +33,22 @@ and can be sold or given away.
 
 // intro elements
 
+// supergumba -- clean all this up
+
 #define intro_button_game_new_id				0
 #define intro_button_game_load_id				1
 #define intro_button_game_setup_id				2
 
-#define intro_button_game_new_easy_id			10
-#define intro_button_game_new_medium_id			11
-#define intro_button_game_new_hard_id			12
-#define intro_button_game_new_cancel_id			13
+#define intro_button_multiplayer_host_id		10
+#define intro_button_multiplayer_join_id		11
+#define intro_button_multiplayer_setup_id		12
 
-#define intro_button_multiplayer_host_id		20
-#define intro_button_multiplayer_join_id		21
-#define intro_button_multiplayer_setup_id		22
+#define intro_button_credit_id					20
+#define intro_button_quit_id					21
 
-#define intro_button_credit_id					30
-#define intro_button_quit_id					31
-
-#define intro_simple_save_erase_frame			40
-#define intro_simple_save_erase_ok				41
-#define intro_simple_save_erase_cancel			42
+#define intro_simple_save_erase_frame			30
+#define intro_simple_save_erase_ok				31
+#define intro_simple_save_erase_cancel			32
 
 #define intro_simple_save_button_start			100
 #define intro_simple_save_button_erase			200
@@ -62,8 +59,7 @@ and can be sold or given away.
 // intro modes
 
 #define intro_mode_normal						0
-#define intro_mode_new_game						1
-#define intro_mode_simple_save_erase			2
+#define intro_mode_simple_save_erase			1
 
 extern bool					game_loop_quit;
 
@@ -86,37 +82,6 @@ void intro_show_hide_for_mode(void)
 {
 	int					n,bitmap_count;
 	char				str[256];
-
-		// new game
-		
-	if (intro_mode==intro_mode_new_game) {
-	
-		element_hide(intro_button_game_new_id,TRUE);
-		element_hide(intro_button_game_load_id,TRUE);
-		element_hide(intro_button_game_setup_id,TRUE);
-		element_hide(intro_button_multiplayer_host_id,TRUE);
-		element_hide(intro_button_multiplayer_join_id,TRUE);
-		element_hide(intro_button_multiplayer_setup_id,TRUE);
-		element_hide(intro_button_credit_id,TRUE);
-		element_hide(intro_button_quit_id,TRUE);
-		
-		for (n=0;n!=max_simple_save_spot;n++) {
-			element_hide((intro_simple_save_button_start+n),TRUE);
-			element_hide((intro_simple_save_button_erase+n),TRUE);
-			element_hide((intro_simple_save_text_desc+n),TRUE);
-		}
-		
-		element_hide(intro_simple_save_erase_frame,TRUE);
-		element_hide(intro_simple_save_erase_ok,TRUE);
-		element_hide(intro_simple_save_erase_cancel,TRUE);
-		
-		element_hide(intro_button_game_new_easy_id,FALSE);
-		element_hide(intro_button_game_new_medium_id,FALSE);
-		element_hide(intro_button_game_new_hard_id,FALSE);
-		element_hide(intro_button_game_new_cancel_id,FALSE);
-		
-		return;
-	}
 	
 		// simple save erase
 		
@@ -143,11 +108,6 @@ void intro_show_hide_for_mode(void)
 		element_hide(intro_simple_save_erase_frame,FALSE);
 		element_hide(intro_simple_save_erase_ok,FALSE);
 		element_hide(intro_simple_save_erase_cancel,FALSE);
-		
-		element_hide(intro_button_game_new_easy_id,TRUE);
-		element_hide(intro_button_game_new_medium_id,TRUE);
-		element_hide(intro_button_game_new_hard_id,TRUE);
-		element_hide(intro_button_game_new_cancel_id,TRUE);
 		
 		return;
 	}
@@ -193,11 +153,6 @@ void intro_show_hide_for_mode(void)
 			element_set_value((intro_simple_save_progress_bitmap+n),bitmap_count);
 		}
 	}
-	
-	element_hide(intro_button_game_new_easy_id,TRUE);
-	element_hide(intro_button_game_new_medium_id,TRUE);
-	element_hide(intro_button_game_new_hard_id,TRUE);
-	element_hide(intro_button_game_new_cancel_id,TRUE);
 	
 	element_hide(intro_simple_save_erase_frame,TRUE);
 	element_hide(intro_simple_save_erase_ok,TRUE);
@@ -271,11 +226,6 @@ void intro_open(void)
 	intro_open_add_button(&iface.intro.button_game_new,"button_game_new",intro_button_game_new_id);
 	intro_open_add_button(&iface.intro.button_game_load,"button_game_load",intro_button_game_load_id);
 	intro_open_add_button(&iface.intro.button_game_setup,"button_game_setup",intro_button_game_setup_id);
-
-	intro_open_add_button(&iface.intro.button_game_new_easy,"button_game_new_easy",intro_button_game_new_easy_id);
-	intro_open_add_button(&iface.intro.button_game_new_medium,"button_game_new_medium",intro_button_game_new_medium_id);
-	intro_open_add_button(&iface.intro.button_game_new_hard,"button_game_new_hard",intro_button_game_new_hard_id);
-	intro_open_add_button(&iface.intro.button_game_new_cancel,"button_game_new_cancel",intro_button_game_new_cancel_id);
 	
 	intro_open_add_button(&iface.intro.button_multiplayer_host,"button_multiplayer_host",intro_button_multiplayer_host_id);
 	intro_open_add_button(&iface.intro.button_multiplayer_join,"button_multiplayer_join",intro_button_multiplayer_join_id);
@@ -376,11 +326,11 @@ void intro_close(void)
 
 /* =======================================================
 
-      Intro Actions
+      Start a Game
       
 ======================================================= */
 
-void intro_click_game(int skill,int simple_save_idx)
+void intro_start_game(int skill,int option_flags,int simple_save_idx)
 {
 	char			err_str[256];
 	
@@ -396,7 +346,7 @@ void intro_click_game(int skill,int simple_save_idx)
 
 		// start game
 
-	if (!game_start(FALSE,skill,simple_save_idx,err_str)) {
+	if (!game_start(FALSE,skill,option_flags,simple_save_idx,err_str)) {
 		error_setup(err_str,"Game Start Canceled");
 		server.next_state=gs_error;
 		return;
@@ -409,6 +359,36 @@ void intro_click_game(int skill,int simple_save_idx)
 	}
 }
 
+/* =======================================================
+
+      Intro Actions
+      
+======================================================= */
+
+bool intro_click_has_singleplayer_options(void)
+{
+	if (iface.singleplayer.skill) return(TRUE);
+	if (iface.singleplayer.map_pick) return(TRUE);
+	return(iface.singleplayer.option_list.noption!=0);
+}
+
+void intro_click_game(int simple_save_idx)
+{
+		// if we have any options, then
+		// go to options dialog
+
+	if (intro_click_has_singleplayer_options()) {
+		intro_simple_save_idx=simple_save_idx;
+		server.next_state=gs_singleplayer_option;
+		return;
+	}
+
+		// otherwise, just start the
+		// game
+
+	intro_start_game(skill_medium,0,simple_save_idx);
+}
+
 void intro_click_load(void)
 {
 	net_setup.mode=net_mode_none;
@@ -419,7 +399,7 @@ void intro_click_load(void)
 
 void intro_click_simple_save_start(int idx)
 {
-	intro_click_game(skill_medium,idx);
+	intro_start_game(skill_medium,0,idx);
 }
 
 void intro_click_simple_save_erase(int idx)
@@ -449,6 +429,7 @@ void intro_click_simple_save_erase_ok(void)
 	intro_show_hide_for_mode();
 }
 
+
 /* =======================================================
 
       Intro Input
@@ -470,7 +451,7 @@ void intro_click(void)
 		// simple save start
 		
 	if ((id>=intro_simple_save_button_start) && (id<(intro_simple_save_button_start+max_simple_save_spot))) {
-		intro_click_simple_save_start(id-intro_simple_save_button_start);
+		intro_click_game(id-intro_simple_save_button_start);
 		return;
 	}
 
@@ -486,13 +467,7 @@ void intro_click(void)
 	switch (id) {
 	
 		case intro_button_game_new_id:
-			if (iface.project.skill) {
-				intro_mode=intro_mode_new_game;
-				intro_show_hide_for_mode();
-			}
-			else {
-				intro_click_game(skill_medium,0);
-			}
+			intro_click_game(0);
 			break;
 
 		case intro_button_game_load_id:
@@ -501,25 +476,6 @@ void intro_click(void)
 
 		case intro_button_game_setup_id:
 			server.next_state=gs_setup_game;
-			break;
-
-			// new game buttons
-
-		case intro_button_game_new_easy_id:
-			intro_click_game(skill_easy,0);
-			break;
-
-		case intro_button_game_new_medium_id:
-			intro_click_game(skill_medium,0);
-			break;
-
-		case intro_button_game_new_hard_id:
-			intro_click_game(skill_hard,0);
-			break;
-
-		case intro_button_game_new_cancel_id:
-			intro_mode=intro_mode_normal;
-			intro_show_hide_for_mode();
 			break;
 			
 			// simple save buttons
@@ -577,7 +533,7 @@ void intro_key(void)
 		// escape quits new game
 		// or simple save
 		
-	if ((intro_mode==intro_mode_new_game) || (intro_mode==intro_mode_simple_save_erase)) {
+	if (intro_mode==intro_mode_simple_save_erase) {
 		intro_mode=intro_mode_normal;
 		intro_show_hide_for_mode();
 		return;

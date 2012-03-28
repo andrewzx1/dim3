@@ -118,7 +118,7 @@ bool app_start(char *err_str)
 
 	net_setup.mode=net_mode_none;
 		
-	if (!game_start(FALSE,skill_medium,0,err_str)) {
+	if (!game_start(FALSE,skill_medium,0,0,err_str)) {
 		view_shutdown();
 		server_shutdown();
 		return(FALSE);
