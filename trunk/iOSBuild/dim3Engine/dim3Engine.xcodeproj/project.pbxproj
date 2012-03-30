@@ -378,6 +378,10 @@
 		26A6846913DE44AF007513D1 /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 26A6843413DE40BD007513D1 /* icon.png */; };
 		26D6C0E013E2442D0087FFD4 /* libstdc++.6.0.9.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 26D6C0DF13E2442D0087FFD4 /* libstdc++.6.0.9.dylib */; };
 		26D6C0E213E244400087FFD4 /* libicucore.A.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 26D6C0E113E244400087FFD4 /* libicucore.A.dylib */; };
+		26FF68AA1523D5B800FACC3B /* base_iface_singleplayer.c in Sources */ = {isa = PBXBuildFile; fileRef = 26FF68A91523D5B800FACC3B /* base_iface_singleplayer.c */; };
+		26FF68C01523D66B00FACC3B /* script_singleplayer_high_score.c in Sources */ = {isa = PBXBuildFile; fileRef = 26FF68BD1523D66B00FACC3B /* script_singleplayer_high_score.c */; };
+		26FF68C11523D66B00FACC3B /* script_singleplayer_setting.c in Sources */ = {isa = PBXBuildFile; fileRef = 26FF68BE1523D66B00FACC3B /* script_singleplayer_setting.c */; };
+		26FF68C21523D66B00FACC3B /* script_singleplayer.c in Sources */ = {isa = PBXBuildFile; fileRef = 26FF68BF1523D66B00FACC3B /* script_singleplayer.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -841,6 +845,10 @@
 		26A6846813DE446E007513D1 /* view_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = view_defs.h; path = ../../dim3Engine/Headers/view_defs.h; sourceTree = "<group>"; };
 		26D6C0DF13E2442D0087FFD4 /* libstdc++.6.0.9.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.6.0.9.dylib"; path = "usr/lib/libstdc++.6.0.9.dylib"; sourceTree = SDKROOT; };
 		26D6C0E113E244400087FFD4 /* libicucore.A.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.A.dylib; path = usr/lib/libicucore.A.dylib; sourceTree = SDKROOT; };
+		26FF68A91523D5B800FACC3B /* base_iface_singleplayer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = base_iface_singleplayer.c; sourceTree = "<group>"; };
+		26FF68BD1523D66B00FACC3B /* script_singleplayer_high_score.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_singleplayer_high_score.c; sourceTree = "<group>"; };
+		26FF68BE1523D66B00FACC3B /* script_singleplayer_setting.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_singleplayer_setting.c; sourceTree = "<group>"; };
+		26FF68BF1523D66B00FACC3B /* script_singleplayer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_singleplayer.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1205,6 +1213,7 @@
 				260B43F01411FB18006ED023 /* base_iface_interface.c */,
 				260B43F11411FB18006ED023 /* base_iface_main.c */,
 				260B43F21411FB18006ED023 /* base_iface_mark.c */,
+				26FF68A91523D5B800FACC3B /* base_iface_singleplayer.c */,
 				260B43F31411FB18006ED023 /* base_iface_multiplayer.c */,
 				260B43F41411FB18006ED023 /* base_iface_particle.c */,
 				260B43F51411FB18006ED023 /* base_iface_ring.c */,
@@ -1359,6 +1368,9 @@
 				260B411D1411F812006ED023 /* script_model_rotate.c */,
 				260B411E1411F812006ED023 /* script_model_shadow.c */,
 				260B411F1411F812006ED023 /* script_model_spin.c */,
+				26FF68BF1523D66B00FACC3B /* script_singleplayer.c */,
+				26FF68BE1523D66B00FACC3B /* script_singleplayer_setting.c */,
+				26FF68BD1523D66B00FACC3B /* script_singleplayer_high_score.c */,
 				260B41201411F812006ED023 /* script_multiplayer.c */,
 				260B41211411F812006ED023 /* script_multiplayer_bot.c */,
 				260B41221411F812006ED023 /* script_multiplayer_score.c */,
@@ -1983,6 +1995,10 @@
 				269EA83214B8BE2F0069CA6C /* script_camera_chase_track_angle.c in Sources */,
 				269EA83D14B965DD0069CA6C /* metrics_draw.c in Sources */,
 				262DD2B6151E328C0078FEA4 /* base_iface_score.c in Sources */,
+				26FF68AA1523D5B800FACC3B /* base_iface_singleplayer.c in Sources */,
+				26FF68C01523D66B00FACC3B /* script_singleplayer_high_score.c in Sources */,
+				26FF68C11523D66B00FACC3B /* script_singleplayer_setting.c in Sources */,
+				26FF68C21523D66B00FACC3B /* script_singleplayer.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

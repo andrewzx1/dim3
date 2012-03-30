@@ -438,6 +438,7 @@
 		26184E7213CA0CE6003A9A79 /* CoreAudioKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26184E7113CA0CE6003A9A79 /* CoreAudioKit.framework */; };
 		26184E7613CA0D2E003A9A79 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26184E7513CA0D2E003A9A79 /* IOKit.framework */; };
 		26184E7813CA1022003A9A79 /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26184E7713CA1022003A9A79 /* JavaScriptCore.framework */; };
+		262579141525325A00C371C3 /* singleplayer_option.c in Sources */ = {isa = PBXBuildFile; fileRef = 262579131525325A00C371C3 /* singleplayer_option.c */; };
 		262DD2B0151E32200078FEA4 /* base_iface_score.c in Sources */ = {isa = PBXBuildFile; fileRef = 262DD2AF151E32200078FEA4 /* base_iface_score.c */; };
 		264470E814AF95250099DEE3 /* script_camera_chase_track_angle.c in Sources */ = {isa = PBXBuildFile; fileRef = 264470E714AF95250099DEE3 /* script_camera_chase_track_angle.c */; };
 		2649D14013412B2900573F6F /* gui_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 2649D13513412B2900573F6F /* gui_defs.h */; };
@@ -459,6 +460,10 @@
 		26A45D091489AD6C00C02936 /* script_point_angle_vector.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A45D071489AD6C00C02936 /* script_point_angle_vector.c */; };
 		26E1844513CEA27800812348 /* dim3 Engine.app in Copy Application */ = {isa = PBXBuildFile; fileRef = F5CD87F70557721D0023AD9B /* dim3 Engine.app */; };
 		26EE3E1713DA7F78000ABAF1 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26EE3E1613DA7F78000ABAF1 /* AudioUnit.framework */; };
+		26FF68A41523D5A200FACC3B /* base_iface_singleplayer.c in Sources */ = {isa = PBXBuildFile; fileRef = 26FF68A31523D5A200FACC3B /* base_iface_singleplayer.c */; };
+		26FF68B61523D61B00FACC3B /* script_singleplayer_high_score.c in Sources */ = {isa = PBXBuildFile; fileRef = 26FF68B31523D61B00FACC3B /* script_singleplayer_high_score.c */; };
+		26FF68B71523D61B00FACC3B /* script_singleplayer_setting.c in Sources */ = {isa = PBXBuildFile; fileRef = 26FF68B41523D61B00FACC3B /* script_singleplayer_setting.c */; };
+		26FF68B81523D61B00FACC3B /* script_singleplayer.c in Sources */ = {isa = PBXBuildFile; fileRef = 26FF68B51523D61B00FACC3B /* script_singleplayer.c */; };
 		F50AF8A40885FBA200F261B1 /* os_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = F50AF8A30885FBA200F261B1 /* os_defs.h */; };
 		F52E82410C1632E6003D4818 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F52E82400C1632E6003D4818 /* OpenGL.framework */; };
 		F5B01DA908F867E600AE5F87 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F5B01DA808F867E600AE5F87 /* Cocoa.framework */; };
@@ -926,6 +931,7 @@
 		26184E7113CA0CE6003A9A79 /* CoreAudioKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudioKit.framework; path = ../../../../System/Library/Frameworks/CoreAudioKit.framework; sourceTree = "<group>"; };
 		26184E7513CA0D2E003A9A79 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = ../../../../System/Library/Frameworks/IOKit.framework; sourceTree = "<group>"; };
 		26184E7713CA1022003A9A79 /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = ../../../../System/Library/Frameworks/JavaScriptCore.framework; sourceTree = "<group>"; };
+		262579131525325A00C371C3 /* singleplayer_option.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = singleplayer_option.c; sourceTree = "<group>"; };
 		262DD2AF151E32200078FEA4 /* base_iface_score.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = base_iface_score.c; sourceTree = "<group>"; };
 		264470E714AF95250099DEE3 /* script_camera_chase_track_angle.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_camera_chase_track_angle.c; sourceTree = "<group>"; };
 		2649D13513412B2900573F6F /* gui_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = gui_defs.h; path = Headers/gui_defs.h; sourceTree = "<group>"; };
@@ -946,6 +952,10 @@
 		26A45D061489AD6C00C02936 /* script_color.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_color.c; sourceTree = "<group>"; };
 		26A45D071489AD6C00C02936 /* script_point_angle_vector.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_point_angle_vector.c; sourceTree = "<group>"; };
 		26EE3E1613DA7F78000ABAF1 /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = ../../../../System/Library/Frameworks/AudioUnit.framework; sourceTree = "<group>"; };
+		26FF68A31523D5A200FACC3B /* base_iface_singleplayer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = base_iface_singleplayer.c; sourceTree = "<group>"; };
+		26FF68B31523D61B00FACC3B /* script_singleplayer_high_score.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_singleplayer_high_score.c; sourceTree = "<group>"; };
+		26FF68B41523D61B00FACC3B /* script_singleplayer_setting.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_singleplayer_setting.c; sourceTree = "<group>"; };
+		26FF68B51523D61B00FACC3B /* script_singleplayer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_singleplayer.c; sourceTree = "<group>"; };
 		F50AF8A30885FBA200F261B1 /* os_defs.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = os_defs.h; path = ../dim3Common/Headers/os_defs.h; sourceTree = SOURCE_ROOT; };
 		F52E82400C1632E6003D4818 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
 		F5B01DA808F867E600AE5F87 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
@@ -1129,6 +1139,7 @@
 				260B3DD41411F67B006ED023 /* base_iface_interface.c */,
 				260B3DD51411F67B006ED023 /* base_iface_main.c */,
 				260B3DD61411F67B006ED023 /* base_iface_mark.c */,
+				26FF68A31523D5A200FACC3B /* base_iface_singleplayer.c */,
 				260B3DD71411F67B006ED023 /* base_iface_multiplayer.c */,
 				260B3DD81411F67B006ED023 /* base_iface_particle.c */,
 				260B3DD91411F67B006ED023 /* base_iface_ring.c */,
@@ -1435,6 +1446,7 @@
 				260B3F571411F781006ED023 /* elemets.c */,
 				260B3F781411F781006ED023 /* progress.c */,
 				260B3F721411F781006ED023 /* intro.c */,
+				262579131525325A00C371C3 /* singleplayer_option.c */,
 				260B3F871411F781006ED023 /* title.c */,
 				260B3F5A1411F781006ED023 /* files.c */,
 				260B3F831411F781006ED023 /* setup_game.c */,
@@ -1611,6 +1623,9 @@
 				260B3EE71411F781006ED023 /* script_model_rotate.c */,
 				260B3EE81411F781006ED023 /* script_model_shadow.c */,
 				260B3EE91411F781006ED023 /* script_model_spin.c */,
+				26FF68B51523D61B00FACC3B /* script_singleplayer.c */,
+				26FF68B41523D61B00FACC3B /* script_singleplayer_setting.c */,
+				26FF68B31523D61B00FACC3B /* script_singleplayer_high_score.c */,
 				260B3EEA1411F781006ED023 /* script_multiplayer.c */,
 				260B3EEB1411F781006ED023 /* script_multiplayer_bot.c */,
 				260B3EEC1411F781006ED023 /* script_multiplayer_score.c */,
@@ -2321,6 +2336,11 @@
 				264470E814AF95250099DEE3 /* script_camera_chase_track_angle.c in Sources */,
 				269EA83B14B9617C0069CA6C /* metrics_draw.c in Sources */,
 				262DD2B0151E32200078FEA4 /* base_iface_score.c in Sources */,
+				26FF68A41523D5A200FACC3B /* base_iface_singleplayer.c in Sources */,
+				26FF68B61523D61B00FACC3B /* script_singleplayer_high_score.c in Sources */,
+				26FF68B71523D61B00FACC3B /* script_singleplayer_setting.c in Sources */,
+				26FF68B81523D61B00FACC3B /* script_singleplayer.c in Sources */,
+				262579141525325A00C371C3 /* singleplayer_option.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

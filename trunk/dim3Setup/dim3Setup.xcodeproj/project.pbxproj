@@ -55,6 +55,7 @@
 		2643488913E651F800920D9B /* property_palette_virtual_control.c in Sources */ = {isa = PBXBuildFile; fileRef = 2643488813E651F800920D9B /* property_palette_virtual_control.c */; };
 		26459B6E13DC9D5600D7DD73 /* Back.png in Resources */ = {isa = PBXBuildFile; fileRef = 26459B6D13DC9D5600D7DD73 /* Back.png */; };
 		26459B6F13DC9D6400D7DD73 /* Back.png in Copy (List Icons) */ = {isa = PBXBuildFile; fileRef = 26459B6D13DC9D5600D7DD73 /* Back.png */; };
+		265EB0761523D4E500642128 /* base_iface_singleplayer.c in Sources */ = {isa = PBXBuildFile; fileRef = 265EB0751523D4E500642128 /* base_iface_singleplayer.c */; };
 		26784D3013B940F400B5D8C3 /* property_palette_setup.c in Sources */ = {isa = PBXBuildFile; fileRef = 26784D2F13B940F400B5D8C3 /* property_palette_setup.c */; };
 		268382A1133D4F3D0035315B /* property_palette_actions.c in Sources */ = {isa = PBXBuildFile; fileRef = 2683829A133D4F3D0035315B /* property_palette_actions.c */; };
 		268382A2133D4F3D0035315B /* property_palette_crosshairs.c in Sources */ = {isa = PBXBuildFile; fileRef = 2683829B133D4F3D0035315B /* property_palette_crosshairs.c */; };
@@ -119,6 +120,7 @@
 		26F773BC1328867F007C3EBD /* main_window.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F773BB1328867F007C3EBD /* main_window.c */; };
 		26F773C81328871E007C3EBD /* OSX_glue.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F773C71328871E007C3EBD /* OSX_glue.c */; };
 		26F773CB1328872A007C3EBD /* menu.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F773CA1328872A007C3EBD /* menu.c */; };
+		26FF68B01523D5DF00FACC3B /* property_palette_singleplayer_option.c in Sources */ = {isa = PBXBuildFile; fileRef = 26FF68AF1523D5DF00FACC3B /* property_palette_singleplayer_option.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -215,6 +217,7 @@
 		2643488813E651F800920D9B /* property_palette_virtual_control.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_virtual_control.c; path = Code/property_palette_virtual_control.c; sourceTree = "<group>"; };
 		26459B6D13DC9D5600D7DD73 /* Back.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Back.png; path = "Resources/Additional Data/Icons/Lists/Back.png"; sourceTree = "<group>"; };
 		265E98F61440E0C300622047 /* mac_os_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = mac_os_defs.h; path = ../dim3Common/Headers/mac_os_defs.h; sourceTree = "<group>"; };
+		265EB0751523D4E500642128 /* base_iface_singleplayer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = base_iface_singleplayer.c; sourceTree = "<group>"; };
 		26784D2F13B940F400B5D8C3 /* property_palette_setup.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_setup.c; path = Code/property_palette_setup.c; sourceTree = "<group>"; };
 		2683829A133D4F3D0035315B /* property_palette_actions.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_actions.c; path = Code/property_palette_actions.c; sourceTree = "<group>"; };
 		2683829B133D4F3D0035315B /* property_palette_crosshairs.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_crosshairs.c; path = Code/property_palette_crosshairs.c; sourceTree = "<group>"; };
@@ -288,6 +291,7 @@
 		26F773BB1328867F007C3EBD /* main_window.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = main_window.c; path = Code/main_window.c; sourceTree = "<group>"; };
 		26F773C71328871E007C3EBD /* OSX_glue.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = OSX_glue.c; path = ../dim3Common/Code/OSX_glue.c; sourceTree = SOURCE_ROOT; };
 		26F773CA1328872A007C3EBD /* menu.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = menu.c; path = Code/menu.c; sourceTree = "<group>"; };
+		26FF68AF1523D5DF00FACC3B /* property_palette_singleplayer_option.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_singleplayer_option.c; path = Code/property_palette_singleplayer_option.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -344,6 +348,7 @@
 				260B3C0C1411EC71006ED023 /* base_iface_interface.c */,
 				260B3C0D1411EC71006ED023 /* base_iface_main.c */,
 				260B3C0E1411EC71006ED023 /* base_iface_mark.c */,
+				265EB0751523D4E500642128 /* base_iface_singleplayer.c */,
 				260B3C0F1411EC71006ED023 /* base_iface_multiplayer.c */,
 				260B3C101411EC71006ED023 /* base_iface_particle.c */,
 				260B3C111411EC71006ED023 /* base_iface_ring.c */,
@@ -486,6 +491,7 @@
 				268E6B4015083A3F00B85F4E /* property_palette_virtual_control_stick.c */,
 				268E6B3F15083A3F00B85F4E /* property_palette_virtual_control_button.c */,
 				268E6B3B15083A3F00B85F4E /* property_palette_radar_icon.c */,
+				26FF68AF1523D5DF00FACC3B /* property_palette_singleplayer_option.c */,
 				268E6B3615083A3F00B85F4E /* property_palette_multiplayer_character.c */,
 				268E6B3715083A3F00B85F4E /* property_palette_multiplayer_game.c */,
 				268E6B3815083A3F00B85F4E /* property_palette_multiplayer_option.c */,
@@ -762,6 +768,8 @@
 				262DD29F151E311C0078FEA4 /* base_iface_score.c in Sources */,
 				262DD2BD151E35660078FEA4 /* property_palette_color.c in Sources */,
 				262DD2BE151E35660078FEA4 /* property_palette_logo.c in Sources */,
+				265EB0761523D4E500642128 /* base_iface_singleplayer.c in Sources */,
+				26FF68B01523D5DF00FACC3B /* property_palette_singleplayer_option.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

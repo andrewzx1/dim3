@@ -212,6 +212,7 @@
 		26F95EE2125AD24D0016127D /* Tool Split Mesh.png in Copy (Tools Icons) */ = {isa = PBXBuildFile; fileRef = 26636B19125A8EE20090A321 /* Tool Split Mesh.png */; };
 		26F95EE3125AD24D0016127D /* Tool Tesselate Mesh.png in Copy (Tools Icons) */ = {isa = PBXBuildFile; fileRef = 26636B1A125A8EE20090A321 /* Tool Tesselate Mesh.png */; };
 		26F95EE4125AD24D0016127D /* Tool Toggle Mode.png in Copy (Tools Icons) */ = {isa = PBXBuildFile; fileRef = 26636B1B125A8EE20090A321 /* Tool Toggle Mode.png */; };
+		26FF68A01523D58000FACC3B /* base_iface_singleplayer.c in Sources */ = {isa = PBXBuildFile; fileRef = 26FF689F1523D58000FACC3B /* base_iface_singleplayer.c */; };
 		F50AF9AE088601C600F261B1 /* os_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = F50AF9AD088601C600F261B1 /* os_defs.h */; };
 		F5239B9E0AFD9C5200241092 /* undo.c in Sources */ = {isa = PBXBuildFile; fileRef = F5239B9D0AFD9C5200241092 /* undo.c */; };
 		F52F19B80946A63100FEFE18 /* selection.c in Sources */ = {isa = PBXBuildFile; fileRef = F52F19B70946A63100FEFE18 /* selection.c */; };
@@ -572,6 +573,7 @@
 		26F026F61503EC8A004688BF /* property_palette_main.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_main.c; path = Code/property_palette_main.c; sourceTree = "<group>"; };
 		26F1D2C113035B0A00CDAE6B /* property_palette_editor_preference.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_editor_preference.c; path = Code/property_palette_editor_preference.c; sourceTree = "<group>"; };
 		26F4B4DA1294CFB600D754CC /* property_palette_mesh.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = property_palette_mesh.c; path = Code/property_palette_mesh.c; sourceTree = "<group>"; };
+		26FF689F1523D58000FACC3B /* base_iface_singleplayer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = base_iface_singleplayer.c; sourceTree = "<group>"; };
 		F50AF9AD088601C600F261B1 /* os_defs.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = os_defs.h; path = ../dim3Common/Headers/os_defs.h; sourceTree = SOURCE_ROOT; };
 		F51ABAD3048DAB0200B78D6A /* dim3editor.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = dim3editor.h; path = Headers/dim3editor.h; sourceTree = "<group>"; };
 		F5239B9D0AFD9C5200241092 /* undo.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = undo.c; path = Code/undo.c; sourceTree = "<group>"; };
@@ -756,6 +758,7 @@
 				260B3D201411F217006ED023 /* base_iface_interface.c */,
 				260B3D211411F217006ED023 /* base_iface_main.c */,
 				260B3D221411F217006ED023 /* base_iface_mark.c */,
+				26FF689F1523D58000FACC3B /* base_iface_singleplayer.c */,
 				260B3D231411F217006ED023 /* base_iface_multiplayer.c */,
 				260B3D241411F217006ED023 /* base_iface_particle.c */,
 				260B3D251411F217006ED023 /* base_iface_ring.c */,
@@ -1346,6 +1349,7 @@
 				268E6B071506F0DE00B85F4E /* property_palette_action.c in Sources */,
 				268E6B081506F0DE00B85F4E /* property_palette_move.c in Sources */,
 				262DD2AC151E31CC0078FEA4 /* base_iface_score.c in Sources */,
+				26FF68A01523D58000FACC3B /* base_iface_singleplayer.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
