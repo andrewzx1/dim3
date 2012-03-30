@@ -158,6 +158,7 @@
 		26F1D2601303566500CDAE6B /* xml_setup.c in Sources */ = {isa = PBXBuildFile; fileRef = 26F1D25E1303566500CDAE6B /* xml_setup.c */; };
 		26F70B2F144B47F000F791F7 /* dim3 Animator.xib in Resources */ = {isa = PBXBuildFile; fileRef = 26F70B2E144B47F000F791F7 /* dim3 Animator.xib */; };
 		26FB8E9A15105019008EF926 /* file_palette.c in Sources */ = {isa = PBXBuildFile; fileRef = 26FB8E9915105019008EF926 /* file_palette.c */; };
+		26FF68991523D56400FACC3B /* base_iface_singleplayer.c in Sources */ = {isa = PBXBuildFile; fileRef = 26FF68981523D56400FACC3B /* base_iface_singleplayer.c */; };
 		26FF98FE13B2A99D00CCB836 /* Tool Select Vertex With Bone.png in Resources */ = {isa = PBXBuildFile; fileRef = 26FF98FD13B2A99D00CCB836 /* Tool Select Vertex With Bone.png */; };
 		26FF98FF13B2A9A200CCB836 /* Tool Select Vertex With Bone.png in Copy (Tool Icons) */ = {isa = PBXBuildFile; fileRef = 26FF98FD13B2A99D00CCB836 /* Tool Select Vertex With Bone.png */; };
 		F503D2570981A35B00DEDC74 /* draw_model.c in Sources */ = {isa = PBXBuildFile; fileRef = F503D2560981A35B00DEDC74 /* draw_model.c */; };
@@ -407,6 +408,7 @@
 		26F1D25E1303566500CDAE6B /* xml_setup.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = xml_setup.c; path = Code/xml_setup.c; sourceTree = "<group>"; };
 		26F70B2E144B47F000F791F7 /* dim3 Animator.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = "dim3 Animator.xib"; path = "Resources/dim3 Animator.xib"; sourceTree = "<group>"; };
 		26FB8E9915105019008EF926 /* file_palette.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = file_palette.c; path = Code/file_palette.c; sourceTree = "<group>"; };
+		26FF68981523D56400FACC3B /* base_iface_singleplayer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = base_iface_singleplayer.c; sourceTree = "<group>"; };
 		26FF98FD13B2A99D00CCB836 /* Tool Select Vertex With Bone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Tool Select Vertex With Bone.png"; path = "Tools/Tool Select Vertex With Bone.png"; sourceTree = "<group>"; };
 		F503D2560981A35B00DEDC74 /* draw_model.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = draw_model.c; path = Code/draw_model.c; sourceTree = "<group>"; };
 		F503D25E0981A3DC00DEDC74 /* draw_mesh_bone.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = draw_mesh_bone.c; path = Code/draw_mesh_bone.c; sourceTree = "<group>"; };
@@ -631,6 +633,7 @@
 				260B3C8E1411F13E006ED023 /* base_iface_interface.c */,
 				260B3C8F1411F13E006ED023 /* base_iface_main.c */,
 				260B3C901411F13E006ED023 /* base_iface_mark.c */,
+				26FF68981523D56400FACC3B /* base_iface_singleplayer.c */,
 				260B3C911411F13E006ED023 /* base_iface_multiplayer.c */,
 				260B3C921411F13E006ED023 /* base_iface_particle.c */,
 				260B3C931411F13E006ED023 /* base_iface_ring.c */,
@@ -1068,6 +1071,7 @@
 				268E6B161506F12F00B85F4E /* property_palette_pose_move.c in Sources */,
 				26FB8E9A15105019008EF926 /* file_palette.c in Sources */,
 				262DD2A5151E318A0078FEA4 /* base_iface_score.c in Sources */,
+				26FF68991523D56400FACC3B /* base_iface_singleplayer.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

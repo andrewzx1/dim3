@@ -171,7 +171,7 @@ void property_palette_fill_title_page(void)
 	list_palette_add_int(&property_palette,kIntroPropertyScoreY,"Y",&iface.intro.score.y,FALSE);
 	list_palette_add_int(&property_palette,kIntroPropertyScoreWid,"Width",&iface.intro.score.wid,FALSE);
 	list_palette_add_int(&property_palette,kIntroPropertyScoreHigh,"Height",&iface.intro.score.high,FALSE);
-	list_palette_add_int(&property_palette,kIntroPropertyScoreTextSize,"Text Suze",&iface.intro.score.text_size,FALSE);
+	list_palette_add_int(&property_palette,kIntroPropertyScoreTextSize,"Text Size",&iface.intro.score.text_size,FALSE);
 	list_palette_add_pick_color(&property_palette,kIntroPropertyScoreColor,"Color",&iface.intro.score.col,FALSE);
 
 		// models
