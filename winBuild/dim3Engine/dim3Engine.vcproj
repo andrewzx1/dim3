@@ -3968,6 +3968,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\..\dim3BaseUtility\Sources\base_iface_score.c"
+					>
+				</File>
+				<File
 					RelativePath="..\..\dim3BaseUtility\Sources\base_iface_shader.c"
 					>
 				</File>
