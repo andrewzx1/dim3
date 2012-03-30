@@ -311,6 +311,10 @@ void intro_open(void)
 			al_music_play(iface.intro.music,err_str);
 		}
 	}
+
+		// high scores
+
+	if (iface.intro.score.on) score_xml_read(&iface);
 }
 
 void intro_close(void)
@@ -322,6 +326,43 @@ void intro_close(void)
 		// shutdown UI
 		
 	gui_shutdown();
+}
+
+/* =======================================================
+
+      High Scores
+      
+======================================================= */
+
+void intro_draw_high_score(void)
+{
+	int					n,x,y,wid,yadd;
+	char				str[32];
+	iface_score_type	*score;
+
+	if (!iface.intro.score.on) return;
+
+	x=iface.intro.score.x;
+	y=iface.intro.score.y;
+
+	wid=iface.intro.score.wid;
+	yadd=iface.intro.score.high/max_score_count;
+
+	score=iface.score_list.scores;
+
+	gl_text_start(font_interface_index,iface.intro.score.text_size);
+
+	for (n=0;n!=max_score_count;n++) {
+		gl_text_draw(x,y,score->name,tx_left,FALSE,&iface.intro.score.col,1.0f);
+
+		sprintf(str,"%,d",score->score);
+		gl_text_draw((x+wid),y,score->name,tx_right,FALSE,&iface.intro.score.col,1.0f);
+
+		y+=yadd;
+		score++;
+	}
+
+	gl_text_end();
 }
 
 /* =======================================================
@@ -554,6 +595,7 @@ void intro_key(void)
 void intro_run(void)
 {
 	gui_draw(1.0f,TRUE);
+	intro_draw_high_score();
 	intro_click();
 	intro_key();
 }
