@@ -207,7 +207,7 @@ void gl_text_end(void)
       
 ======================================================= */
 
-void gl_text_draw(int x,int y,char *txt,int just,bool vcenter,d3col *col,float alpha)
+void gl_text_draw_internal(int x,int y,char *txt,int just,bool vcenter,d3col *col,float alpha)
 {
 	int						n,txtlen,ch,xoff,yoff,cnt;
 	float					f_lft,f_rgt,f_top,f_bot,f_wid,f_high,
@@ -329,5 +329,13 @@ void gl_text_draw(int x,int y,char *txt,int just,bool vcenter,d3col *col,float a
 	}
 
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+}
+
+void gl_text_draw(int x,int y,char *txt,int just,bool vcenter,d3col *col,float alpha)
+{
+	d3col			shadow_col={0.3f,0.3f,0.3f};
+	
+	gl_text_draw_internal((x+1),(y+1),txt,just,vcenter,&shadow_col,0.5f);
+	gl_text_draw_internal(x,y,txt,just,vcenter,col,alpha);
 }
 

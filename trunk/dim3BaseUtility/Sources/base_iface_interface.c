@@ -33,7 +33,8 @@ extern file_path_setup_type		iface_file_path_setup;
 
 char							just_mode_str[][32]=text_just_list_def,
 								text_special_str[][32]=text_special_list_def,
-								bar_type_str[][32]=bar_type_list_def;
+								bar_type_str[][32]=bar_type_list_def,
+								score_format_str[][32]=score_format_list_def;
 
 /* =======================================================
 
@@ -819,6 +820,7 @@ void iface_read_settings_interface(iface_type *iface)
 			iface->intro.score.wid=xml_get_attribute_int(score_tag,"width");
 			iface->intro.score.high=xml_get_attribute_int(score_tag,"height");
 			iface->intro.score.text_size=xml_get_attribute_int(score_tag,"text_size");
+			iface->intro.score.format=xml_get_attribute_list(score_tag,"format",(char*)score_format_str);
 			xml_get_attribute_color(score_tag,"color",&iface->intro.score.col);
 		}
 
@@ -829,10 +831,6 @@ void iface_read_settings_interface(iface_type *iface)
 			iface_read_settings_intro_button(xml_findfirstchild("Game_New",button_tag),&iface->intro.button_game_new,NULL,NULL);
 			iface_read_settings_intro_button(xml_findfirstchild("Game_Load",button_tag),&iface->intro.button_game_load,NULL,NULL);
 			iface_read_settings_intro_button(xml_findfirstchild("Game_Setup",button_tag),&iface->intro.button_game_setup,NULL,NULL);
-			iface_read_settings_intro_button(xml_findfirstchild("Game_New_Easy",button_tag),&iface->intro.button_game_new_easy,NULL,NULL);
-			iface_read_settings_intro_button(xml_findfirstchild("Game_New_Medium",button_tag),&iface->intro.button_game_new_medium,NULL,NULL);
-			iface_read_settings_intro_button(xml_findfirstchild("Game_New_Hard",button_tag),&iface->intro.button_game_new_hard,NULL,NULL);
-			iface_read_settings_intro_button(xml_findfirstchild("Game_New_Cancel",button_tag),&iface->intro.button_game_new_cancel,NULL,NULL);
 			iface_read_settings_intro_button(xml_findfirstchild("Multiplayer_Host",button_tag),&iface->intro.button_multiplayer_host,NULL,NULL);
 			iface_read_settings_intro_button(xml_findfirstchild("Multiplayer_Join",button_tag),&iface->intro.button_multiplayer_join,NULL,NULL);
 			iface_read_settings_intro_button(xml_findfirstchild("Multiplayer_Setup",button_tag),&iface->intro.button_multiplayer_setup,NULL,NULL);
@@ -1472,6 +1470,7 @@ bool iface_write_settings_interface(iface_type *iface,char *err_str)
 	xml_add_attribute_int("width",iface->intro.score.wid);
 	xml_add_attribute_int("height",iface->intro.score.high);
 	xml_add_attribute_int("text_size",iface->intro.score.text_size);
+	xml_add_attribute_list("format",(char*)score_format_str,iface->intro.score.format);
 	xml_add_attribute_color("color",&iface->intro.score.col);
 	xml_add_tagend(TRUE);
 
@@ -1483,10 +1482,6 @@ bool iface_write_settings_interface(iface_type *iface,char *err_str)
 	iface_write_settings_interface_intro_button("Game_New",&iface->intro.button_game_new,NULL,NULL);
 	iface_write_settings_interface_intro_button("Game_Load",&iface->intro.button_game_load,NULL,NULL);
 	iface_write_settings_interface_intro_button("Game_Setup",&iface->intro.button_game_setup,NULL,NULL);
-	iface_write_settings_interface_intro_button("Game_New_Easy",&iface->intro.button_game_new_easy,NULL,NULL);
-	iface_write_settings_interface_intro_button("Game_New_Medium",&iface->intro.button_game_new_medium,NULL,NULL);
-	iface_write_settings_interface_intro_button("Game_New_Hard",&iface->intro.button_game_new_hard,NULL,NULL);
-	iface_write_settings_interface_intro_button("Game_New_Cancel",&iface->intro.button_game_new_cancel,NULL,NULL);
 	iface_write_settings_interface_intro_button("Multiplayer_Host",&iface->intro.button_multiplayer_host,NULL,NULL);
 	iface_write_settings_interface_intro_button("Multiplayer_Join",&iface->intro.button_multiplayer_join,NULL,NULL);
 	iface_write_settings_interface_intro_button("Multiplayer_Setup",&iface->intro.button_multiplayer_setup,NULL,NULL);

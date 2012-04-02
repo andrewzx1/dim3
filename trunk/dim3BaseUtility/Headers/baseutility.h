@@ -835,6 +835,11 @@ typedef struct		{
 
 #define max_simple_save_spot									5
 
+#define intro_score_format_number								0
+#define intro_score_format_time									1
+
+#define score_format_list_def									{"Number","Time",""}
+
 typedef struct		{
 						int										x,y,mobile_x,mobile_y,
 																wid,high,element_id;
@@ -874,7 +879,8 @@ typedef struct		{
 
 typedef struct		{
 						int										x,y,
-																wid,high,text_size;
+																wid,high,text_size,
+																format;
 						bool									on;
 						d3col									col;
 					} iface_intro_score_type;
@@ -894,7 +900,6 @@ typedef struct		{
 typedef struct		{
 						char									music[name_str_len];
 						iface_intro_button_type					button_game_new,button_game_load,button_game_setup,
-																button_game_new_easy,button_game_new_medium,button_game_new_hard,button_game_new_cancel,
 																button_multiplayer_host,button_multiplayer_join,button_multiplayer_setup,
 																button_credit,button_quit;
 						iface_intro_confirm_type				confirm;
@@ -1454,6 +1459,7 @@ extern void simple_save_xml_write(iface_type *iface,char *err_str);
 
 extern void score_xml_read(iface_type *iface);
 extern void score_xml_write(iface_type *iface,char *err_str);
+extern int score_add(iface_type *iface,char *name,int score);
 
 /* =======================================================
 

@@ -116,6 +116,22 @@ void singleplayer_option_map_list_release(void)
 	if (singleplayer_option_table_map_list!=NULL) free(singleplayer_option_table_map_list);
 }
 
+void singleplayer_option_map_list_get_name(int idx,char *name)
+{
+	char			*c;
+
+	name[0]=0x0;
+
+	c=singleplayer_option_table_map_list+(idx*128);
+		
+	c=strchr(c,';');
+	if (c!=NULL) {
+		strcpy(name,(c+1));
+		c=strchr(name,';');
+		if (c!=NULL) *c=0x0;
+	}
+}
+
 /* =======================================================
 
       Singleplayer Option Open and Close
@@ -128,22 +144,12 @@ void singleplayer_option_open(void)
 							padding,control_y_add;
 	element_column_type		cols[1];
 	iface_sp_option_type	*sp_option;
-	iface_intro_model_type	*intro_model;
 
 	singleplayer_option_map_list_initialize();
 
 		// intro UI
 		
-	gui_initialize("Bitmaps/Backgrounds","main");
-
-		// models
-
-	intro_model=iface.intro.model_list.models;
-
-	for (n=0;n!=iface.intro.model_list.nmodel;n++) {
-		element_model_add(intro_model->model_name,intro_model->animate_name,intro_model->resize,NULL,&intro_model->rot,-1,intro_model->x,intro_model->y);
-		intro_model++;
-	}
+	gui_initialize("Bitmaps/Backgrounds","default");
 
 		// get height
 
@@ -191,6 +197,8 @@ void singleplayer_option_open(void)
 		element_table_add(cols,NULL,singleplayer_option_map_table_id,1,(x+padding),(by-padding),(wid-(padding*2)),singleplayer_option_table_high,FALSE,element_table_bitmap_data);
 	
 		singleplayer_option_map_list_fill();
+		
+		element_set_value(singleplayer_option_map_table_id,0);
 	}
 
 		// buttons
@@ -225,7 +233,8 @@ void singleplayer_option_close(void)
 
 void singleplayer_option_click(void)
 {
-	int				n,id,skill,option_flags;
+	int				n,id,idx,skill,option_flags;
+	char			map_name[name_str_len];
 	
 		// element being clicked?
 		
@@ -246,10 +255,25 @@ void singleplayer_option_click(void)
 			for (n=0;n!=iface.singleplayer.option_list.noption;n++) {
 				if (element_get_value(singleplayer_option_option_start_id+n)!=0) option_flags|=(0x1<<n);
 			}
+			
+				// picked map?
+				
+			map_name[0]=0x0;
+			
+			if (iface.singleplayer.map_pick) {
+				idx=element_get_value(singleplayer_option_map_table_id);
+				if (idx!=-1) singleplayer_option_map_list_get_name(idx,map_name);
+			}
 
 				// start game
 
-			intro_start_game(skill,option_flags,intro_simple_save_idx);
+			if (map_name[0]==0x0) {
+				intro_start_game(skill,option_flags,NULL,intro_simple_save_idx);
+			}
+			else {
+				intro_start_game(skill,option_flags,map_name,intro_simple_save_idx);
+			}
+			
 			break;
 
 		case singleplayer_option_button_cancel_id:

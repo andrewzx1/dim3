@@ -133,7 +133,7 @@ typedef struct		{
 
 typedef struct		{
 						int						size,just;
-						bool					alert;
+						d3col					col;
 					} element_text_type;
 
 typedef struct		{

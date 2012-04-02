@@ -40,7 +40,7 @@ extern setup_type		setup;
 JSValueRef js_singleplayer_high_score_add_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 JSStaticFunction	singleplayer_high_score_functions[]={
-							{"getObject",			js_singleplayer_high_score_add_func,		kJSPropertyAttributeDontDelete},
+							{"add",			js_singleplayer_high_score_add_func,		kJSPropertyAttributeDontDelete},
 							{0,0,0}};
 
 JSClassRef			singleplayer_high_score_class;

@@ -399,7 +399,7 @@ void element_bitmap_add(char *path,int id,int x,int y,int wid,int high,bool fram
 	SDL_mutexV(element_thread_lock);
 }
 
-void element_text_add(char *str,int id,int x,int y,int size,int just,bool selectable,bool alert)
+void element_text_add(char *str,int id,int x,int y,int size,int just,d3col *col,bool selectable)
 {
 	int				wid,high;
 	char			*c,*c2;
@@ -418,7 +418,13 @@ void element_text_add(char *str,int id,int x,int y,int size,int just,bool select
 	
 	element->setup.text.size=size;
 	element->setup.text.just=just;
-	element->setup.text.alert=alert;
+	
+	if (col==NULL) {
+		memmove(&element->setup.text.col,&iface.color.control.label,sizeof(d3col));
+	}
+	else {
+		memmove(&element->setup.text.col,col,sizeof(d3col));
+	}
 
 	element->selectable=selectable;
 	element->enabled=TRUE;
@@ -1253,21 +1259,15 @@ void element_draw_text(element_type *element,int sel_id)
 
 		// get text color
 
-	if (element->setup.text.alert) {
-		col.r=1.0f;
-		col.g=col.b=0.0f;
+	if (!element->enabled) {
+		memmove(&col,&iface.color.control.disabled,sizeof(d3col));
 	}
 	else {
-		if (!element->enabled) {
-			memmove(&col,&iface.color.control.disabled,sizeof(d3col));
+		if ((element->id!=-1) && (element->id==sel_id)) {
+			memmove(&col,&iface.color.control.mouse_over,sizeof(d3col));
 		}
 		else {
-			if ((element->id!=-1) && (element->id==sel_id)) {
-				memmove(&col,&iface.color.control.mouse_over,sizeof(d3col));
-			}
-			else {
-				memmove(&col,&iface.color.control.label,sizeof(d3col));
-			}
+			memmove(&col,&element->setup.text.col,sizeof(d3col));
 		}
 	}
 

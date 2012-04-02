@@ -75,7 +75,8 @@ and can be sold or given away.
 #define kIntroPropertyScoreWid							83
 #define kIntroPropertyScoreHigh							84
 #define kIntroPropertyScoreTextSize						85
-#define kIntroPropertyScoreColor						86
+#define kIntroPropertyScoreFormat						86
+#define kIntroPropertyScoreColor						87
 
 #define kIntroPropertyModelAdd							100
 #define kIntroPropertyModelName							1000
@@ -84,6 +85,8 @@ and can be sold or given away.
 extern iface_type				iface;
 extern setup_state_type			state;
 extern list_palette_type		property_palette;
+
+extern char						score_format_str[][32];
 
 /* =======================================================
 
@@ -118,10 +121,6 @@ void property_palette_fill_title_page(void)
 	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonGameNew,"Game New",NULL,-1,(state.cur_intro_button_idx==item_intro_button_game_new),FALSE);
 	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonGameLoad,"Game Load",NULL,-1,(state.cur_intro_button_idx==item_intro_button_game_load),FALSE);
 	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonGameSetup,"Game Setup",NULL,-1,(state.cur_intro_button_idx==item_intro_button_game_setup),FALSE);
-	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonGameNewEasy,"Game New Easy",NULL,-1,(state.cur_intro_button_idx==item_intro_button_game_new_easy),FALSE);
-	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonGameNewMedium,"Game New Medium",NULL,-1,(state.cur_intro_button_idx==item_intro_button_game_new_medium),FALSE);
-	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonGameNewHard,"Game New Hard",NULL,-1,(state.cur_intro_button_idx==item_intro_button_game_new_hard),FALSE);
-	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonGameNewCancel,"Game New Cancel",NULL,-1,(state.cur_intro_button_idx==item_intro_button_game_new_cancel),FALSE);
 	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonMultiplayerHost,"Multiplayer Host",NULL,-1,(state.cur_intro_button_idx==item_intro_button_multiplayer_host),FALSE);
 	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonMultiplayerJoin,"Multiplayer Join",NULL,-1,(state.cur_intro_button_idx==item_intro_button_multiplayer_join),FALSE);
 	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonMultiplayerSetup,"Multiplayer Setup",NULL,-1,(state.cur_intro_button_idx==item_intro_button_multiplayer_setup),FALSE);
@@ -172,6 +171,7 @@ void property_palette_fill_title_page(void)
 	list_palette_add_int(&property_palette,kIntroPropertyScoreWid,"Width",&iface.intro.score.wid,FALSE);
 	list_palette_add_int(&property_palette,kIntroPropertyScoreHigh,"Height",&iface.intro.score.high,FALSE);
 	list_palette_add_int(&property_palette,kIntroPropertyScoreTextSize,"Text Size",&iface.intro.score.text_size,FALSE);
+	list_palette_add_picker_list_int(&property_palette,kIntroPropertyScoreFormat,"Format",(char*)score_format_str,-1,name_str_len,0,FALSE,&iface.intro.score.format,FALSE);
 	list_palette_add_pick_color(&property_palette,kIntroPropertyScoreColor,"Color",&iface.intro.score.col,FALSE);
 
 		// models

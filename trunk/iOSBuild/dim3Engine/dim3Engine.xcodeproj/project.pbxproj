@@ -358,6 +358,7 @@
 		260B44821411FB29006ED023 /* map_util_write.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B44721411FB29006ED023 /* map_util_write.c */; };
 		262DD2B6151E328C0078FEA4 /* base_iface_score.c in Sources */ = {isa = PBXBuildFile; fileRef = 262DD2B5151E328C0078FEA4 /* base_iface_score.c */; };
 		264356A614576B0F00CA4CFE /* model_util_file_model.c in Sources */ = {isa = PBXBuildFile; fileRef = 264356A514576B0F00CA4CFE /* model_util_file_model.c */; };
+		2647C977152767B3002FEA4B /* singleplayer_option.c in Sources */ = {isa = PBXBuildFile; fileRef = 2647C976152767B3002FEA4B /* singleplayer_option.c */; };
 		26920D7B1433F6F500EF55EF /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2638D24013ED0AD600029B18 /* UIKit.framework */; };
 		269CD61115004CB200F8EC07 /* libpng-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 269CD60D15004CB200F8EC07 /* libpng-iOS.a */; };
 		269CD61415004CD000F8EC07 /* libmpg123-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 269CD61215004CD000F8EC07 /* libmpg123-iOS.a */; };
@@ -746,6 +747,7 @@
 		262DD2B5151E328C0078FEA4 /* base_iface_score.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = base_iface_score.c; sourceTree = "<group>"; };
 		2638D24013ED0AD600029B18 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		264356A514576B0F00CA4CFE /* model_util_file_model.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = model_util_file_model.c; sourceTree = "<group>"; };
+		2647C976152767B3002FEA4B /* singleplayer_option.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = singleplayer_option.c; sourceTree = "<group>"; };
 		269CD60D15004CB200F8EC07 /* libpng-iOS.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "libpng-iOS.a"; sourceTree = "<group>"; };
 		269CD60E15004CB200F8EC07 /* png.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = png.h; sourceTree = "<group>"; };
 		269CD60F15004CB200F8EC07 /* pngconf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pngconf.h; sourceTree = "<group>"; };
@@ -1056,6 +1058,7 @@
 				260B41B81411F812006ED023 /* score_limit.c */,
 				260B41B91411F812006ED023 /* setup_game.c */,
 				260B41BA1411F812006ED023 /* setup_network.c */,
+				2647C976152767B3002FEA4B /* singleplayer_option.c */,
 				260B41BB1411F812006ED023 /* sky.c */,
 				260B41BC1411F812006ED023 /* tint.c */,
 				260B41BD1411F812006ED023 /* title.c */,
@@ -1999,6 +2002,7 @@
 				26FF68C01523D66B00FACC3B /* script_singleplayer_high_score.c in Sources */,
 				26FF68C11523D66B00FACC3B /* script_singleplayer_setting.c in Sources */,
 				26FF68C21523D66B00FACC3B /* script_singleplayer.c in Sources */,
+				2647C977152767B3002FEA4B /* singleplayer_option.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

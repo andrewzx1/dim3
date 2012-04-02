@@ -159,46 +159,54 @@ void loop_app_active(void)
 		*/
 }
 
-void patch_applicationwillresignactive(void)
+void SDL_iOSEvent_WillTerminate(void)
 {
-	int			n;
-	
+	// supergumba -- to do
+
+}
+
+void SDL_iOSEvent_DidReceiveMemoryWarning(void)
+{
+	// supergumba -- to do
+}
+
+void SDL_iOSEvent_WillResignActive(void)
+{
 	fprintf(stdout,"WILL RESIGN\n");
 	fflush(stdout);
-	app_state=as_suspended;
 	
-	for (n=0;n!=5;n++) {
-		SDL_Delay(100);
-		fprintf(stdout,"  Background Delay %d\n",n);
-		fflush(stdout);
-	}
+	app_state=as_suspended;
+
+	input_clear();
+	input_mouse_pause();
+		
+	SDL_PauseAudio(1);
 }
 
-void patch_applicationdidenterbackground(void)
+void SDL_iOSEvent_DidEnterBackground(void)
 {
-	int			n;
-	
 	fprintf(stdout,"ENTER BACKGROUND\n");
 	fflush(stdout);
-	
-	for (n=0;n!=5;n++) {
-		SDL_Delay(100);
-		fprintf(stdout,"  Background Delay %d\n",n);
-		fflush(stdout);
-	}
 }
 
-void patch_applicationwillenterforeground(void)
+void SDL_iOSEvent_WillEnterForeground(void)
 {
 	fprintf(stdout,"ENTER FOREGROUND\n");
 	fflush(stdout);
 }
 
 
-void patch_applicationdidbecomeactive(void)
+void SDL_iOSEvent_DidBecomeActive(void)
 {
 	fprintf(stdout,"DID ACTIVE\n");
 	fflush(stdout);
+	
+	app_state=as_active;
+	
+	input_clear();
+	input_mouse_resume();
+	
+	SDL_PauseAudio(0);
 }
 
 
@@ -430,7 +438,10 @@ bool loop_main(char *err_str)
 		loop_app_active();
 	}
 
-	if (app_state==as_suspended) return(TRUE);
+	if (app_state==as_suspended) {
+		usleep(1000);
+		return(TRUE);
+	}
 	
 		// calculate timing
 		

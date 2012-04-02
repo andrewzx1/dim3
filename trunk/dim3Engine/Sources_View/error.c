@@ -48,8 +48,9 @@ extern js_type				js;
 
 void error_open(void)
 {
-	int					x,y,wid,high,control_y_add;
-	char				tab_list[][name_str_len]={"Error"};
+	int				x,y,wid,high,control_y_add;
+	char			tab_list[][name_str_len]={"Error"};
+	d3col			col;
 
 		// setup gui
 		
@@ -62,16 +63,19 @@ void error_open(void)
 		// the text
 		
 	control_y_add=element_get_control_high();
+	
+	col.r=1.0f;
+	col.g=col.b=0.0f;
 
 	x=iface.scale_x/2;
 	y=(iface.scale_y/2)-control_y_add;
-	element_text_add("[Error]",-1,x,y,iface.font.text_size_large,tx_center,FALSE,TRUE);
+	element_text_add("[Error]",-1,x,y,iface.font.text_size_large,tx_center,&col,FALSE);
 
 	y+=control_y_add;
-	element_text_add(view.error.str,-1,x,y,iface.font.text_size_mini,tx_center,FALSE,FALSE);
+	element_text_add(view.error.str,-1,x,y,iface.font.text_size_mini,tx_center,NULL,FALSE);
 	
 	y+=control_y_add;
-	element_text_add(view.error.str_2,-1,x,y,iface.font.text_size_mini,tx_center,FALSE,FALSE);
+	element_text_add(view.error.str_2,-1,x,y,iface.font.text_size_mini,tx_center,NULL,FALSE);
 	
 		// buttons
 		

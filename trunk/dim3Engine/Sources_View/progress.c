@@ -61,7 +61,7 @@ void progress_initialize(char *map_name,int max)
 	}
 	
 	if (!bitmap_ok) {
-		file_paths_data(&setup.file_path_setup,path,"Bitmaps/Backgrounds","load","png");
+		view_file_paths_bitmap_check_wide(path,"Bitmaps/Backgrounds","load");
 		bitmap_open(&progress_background_bitmap,path,FALSE,mipmap_mode_none,FALSE,gl_check_texture_rectangle_ok(),FALSE,FALSE);
 	}
 
