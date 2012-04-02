@@ -323,10 +323,6 @@ void iface_default_settings(iface_type *iface)
 	iface_default_settings_button(&iface->intro.button_game_new,0,0,TRUE);
 	iface_default_settings_button(&iface->intro.button_game_load,0,32,TRUE);
 	iface_default_settings_button(&iface->intro.button_game_setup,0,64,TRUE);
-	iface_default_settings_button(&iface->intro.button_game_new_easy,128,0,TRUE);
-	iface_default_settings_button(&iface->intro.button_game_new_medium,128,32,TRUE);
-	iface_default_settings_button(&iface->intro.button_game_new_hard,128,64,TRUE);
-	iface_default_settings_button(&iface->intro.button_game_new_cancel,128,96,TRUE);
 
 	iface_default_settings_button(&iface->intro.button_multiplayer_host,0,96,TRUE);
 	iface_default_settings_button(&iface->intro.button_multiplayer_join,0,128,TRUE);
@@ -354,6 +350,7 @@ void iface_default_settings(iface_type *iface)
 	iface->intro.score.wid=150;
 	iface->intro.score.high=200;
 	iface->intro.score.text_size=20;
+	iface->intro.score.format=intro_score_format_number;
 	iface->intro.score.col.r=iface->intro.score.col.g=iface->intro.score.col.b=1.0f;
 	
 	for (n=0;n!=max_simple_save_spot;n++) {

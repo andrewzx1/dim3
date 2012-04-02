@@ -165,7 +165,7 @@ void chooser_create_elements(void)
 
 				case chooser_piece_type_text:
 					chooser_text_substitute(piece->data.text.str,str,max_chooser_text_data_sz);
-					element_text_add(str,template_piece->id,template_piece->x,template_piece->y,template_piece->data.text.size,template_piece->data.text.just,template_piece->clickable,FALSE);
+					element_text_add(str,template_piece->id,template_piece->x,template_piece->y,template_piece->data.text.size,template_piece->data.text.just,NULL,template_piece->clickable);
 					break;
 
 				case chooser_piece_type_item:
@@ -205,7 +205,7 @@ void chooser_create_elements(void)
 
 			case chooser_piece_type_text:
 				chooser_text_substitute(piece->data.text.str,str,max_chooser_text_data_sz);
-				element_text_add(str,piece->id,piece->x,piece->y,piece->data.text.size,piece->data.text.just,piece->clickable,FALSE);
+				element_text_add(str,piece->id,piece->x,piece->y,piece->data.text.size,piece->data.text.just,NULL,piece->clickable);
 				break;
 
 			case chooser_piece_type_item:

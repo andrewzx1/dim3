@@ -288,7 +288,7 @@ void setup_network_open(void)
 {	
 		// setup gui
 		
-	gui_initialize(NULL,NULL);
+	gui_initialize("Bitmaps/Backgrounds","default");
 
 		// start with first tab
 		

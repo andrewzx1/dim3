@@ -90,22 +90,6 @@ iface_intro_button_type* get_title_page_button_from_item_idx(int item_idx,char *
 			if (name!=NULL) strcpy(name,"Game Setup");
 			return(&iface.intro.button_game_setup);
 
-		case item_intro_button_game_new_easy:
-			if (name!=NULL) strcpy(name,"Game New Easy");
-			return(&iface.intro.button_game_new_easy);
-
-		case item_intro_button_game_new_medium:
-			if (name!=NULL) strcpy(name,"Game New Medium");
-			return(&iface.intro.button_game_new_medium);
-
-		case item_intro_button_game_new_hard:
-			if (name!=NULL) strcpy(name,"Game New Hard");
-			return(&iface.intro.button_game_new_hard);
-
-		case item_intro_button_game_new_cancel:
-			if (name!=NULL) strcpy(name,"Game New Cancel");
-			return(&iface.intro.button_game_new_cancel);
-
 		case item_intro_button_multiplayer_host:
 			if (name!=NULL) strcpy(name,"Multiplayer Host");
 			return(&iface.intro.button_multiplayer_host);

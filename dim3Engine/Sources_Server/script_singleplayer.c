@@ -53,6 +53,6 @@ void script_free_global_singleplayer_object(void)
 
 JSObjectRef script_add_global_singleplayer_object(JSContextRef cx,JSObjectRef parent_obj,int script_idx)
 {
-	return(script_create_child_object(cx,parent_obj,singleplayer_class,"multiplayer",script_idx));
+	return(script_create_child_object(cx,parent_obj,singleplayer_class,"singleplayer",script_idx));
 }
 

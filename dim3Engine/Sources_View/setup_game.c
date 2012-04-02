@@ -549,7 +549,7 @@ void setup_game_open(void)
 {
 		// setup gui
 		
-	gui_initialize(NULL,NULL);
+	gui_initialize("Bitmaps/Backgrounds","default");
 
 		// remember if we came here
 		// from within the game

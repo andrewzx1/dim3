@@ -518,7 +518,7 @@ void join_create_pane(void)
 	x=(element_get_x_position(join_button_rescan_id)+wid)+element_get_padding();
 	y-=element_get_padding();
 	
-	element_text_add("",join_status_id,x,y,iface.font.text_size_small,tx_left,FALSE,FALSE);
+	element_text_add("",join_status_id,x,y,iface.font.text_size_small,tx_left,NULL,FALSE);
 
 		// specific pane controls
 		
@@ -576,7 +576,7 @@ void join_open(void)
 	
 		// setup gui
 		
-	gui_initialize(NULL,NULL);
+	gui_initialize("Bitmaps/Backgrounds","default");
 	
 		// start with first tab
 		

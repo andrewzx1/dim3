@@ -71,18 +71,14 @@ and can be sold or given away.
 #define item_intro_button_game_new				0
 #define item_intro_button_game_load				1
 #define item_intro_button_game_setup			2
-#define item_intro_button_game_new_easy			3
-#define item_intro_button_game_new_medium		4
-#define item_intro_button_game_new_hard			5
-#define item_intro_button_game_new_cancel		6
-#define item_intro_button_multiplayer_host		7
-#define item_intro_button_multiplayer_join		8
-#define item_intro_button_multiplayer_setup		9
-#define item_intro_button_credit				10
-#define item_intro_button_quit					11
+#define item_intro_button_multiplayer_host		3
+#define item_intro_button_multiplayer_join		4
+#define item_intro_button_multiplayer_setup		5
+#define item_intro_button_credit				6
+#define item_intro_button_quit					7
 
-#define item_intro_button_simple_save_start		20
-#define item_intro_button_simple_save_erase		30
+#define item_intro_button_simple_save_start		10
+#define item_intro_button_simple_save_erase		20
 
 //
 // setup state

@@ -212,7 +212,7 @@ extern int element_get_button_high(void);
 extern void element_button_text_add(char *name,int id,int x,int y,int wid,int high,int x_pos,int y_pos);
 extern void element_button_bitmap_add(char *path,char *path2,int id,int x,int y,int wid,int high,int x_pos,int y_pos);
 extern void element_bitmap_add(char *path,int id,int x,int y,int wid,int high,bool framed);
-extern void element_text_add(char *str,int id,int x,int y,int size,int just,bool selectable,bool alert);
+extern void element_text_add(char *str,int id,int x,int y,int size,int just,d3col *col,bool selectable);
 extern void element_text_field_add(char *str,char *value_str,int max_value_str_sz,int id,int x,int y,bool selectable);
 extern void element_number_add(char *str,int value,int id,int x,int y,int min,int max);
 extern void element_checkbox_add(char *str,int value,int id,int x,int y,bool selectable);
@@ -430,7 +430,7 @@ extern void menu_draw_start(char *name);
 
 extern void intro_open(void);
 extern void intro_close(void);
-extern void intro_start_game(int skill,int option_flags,int simple_save_idx);
+extern void intro_start_game(int skill,int option_flags,char *map_name,int simple_save_idx);
 extern void intro_run(void);
 
 extern void singleplayer_option_open(void);

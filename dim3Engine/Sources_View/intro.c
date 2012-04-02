@@ -64,6 +64,7 @@ and can be sold or given away.
 extern bool					game_loop_quit;
 
 extern server_type			server;
+extern map_type				map;
 extern iface_type			iface;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
@@ -195,18 +196,75 @@ void intro_open_add_button(iface_intro_button_type *btn,char *name,int id)
 
 /* =======================================================
 
+      Intro Score Formats
+      
+======================================================= */
+
+void intro_format_score(int score,char *str)
+{
+	int			n,k,comma_add,cnt,len,
+				min,sec;
+	char		str2[256];
+	
+	if (iface.intro.score.format==intro_score_format_number) {
+		sprintf(str2,"%d",score);
+		
+		k=0;
+		
+		len=strlen(str2);
+		comma_add=len/3;
+		if ((len%3)==0) comma_add--;
+		
+		if (comma_add<=0) {
+			strcpy(str,str2);
+			return;
+		}
+		
+		cnt=0;
+		k=len+comma_add;
+		
+		str[k--]=0x0;
+		
+		for (n=(len-1);n>=0;n--) {
+			str[k--]=str2[n];
+			cnt++;
+			if ((cnt==3) && (k>0)) {
+				str[k--]=',';
+				cnt=0;
+			}
+		}
+	
+		return;
+	}
+	
+	if (iface.intro.score.format==intro_score_format_time) {
+	
+		min=score/(1000*60);
+		sec=(score%(1000*60))/1000;
+		
+		sprintf(str,"%d:%.2d",min,sec);
+
+		return;
+	}
+	
+	sprintf(str,"%d",score);
+}
+
+/* =======================================================
+
       Intro Open and Close
       
 ======================================================= */
 
 void intro_open(void)
 {
-	int								n,x,y;
+	int								n,x,y,yadd,wid,num_wid;
 	bool							start_music;
-	char							name[256],err_str[256],
+	char							name[32],str[256],err_str[256],
 									path[1024],disable_path[1024];
 	iface_intro_model_type			*intro_model;
 	iface_intro_simple_save_type	*intro_simple_save;
+	iface_score_type				*score;
 
 		// intro UI
 		
@@ -253,7 +311,7 @@ void intro_open(void)
 
 			// description
 
-		element_text_add("",(intro_simple_save_text_desc+n),intro_simple_save->desc.x,intro_simple_save->desc.y,iface.intro.simple_save_list.desc.text_size,tx_center,FALSE,FALSE);
+		element_text_add("",(intro_simple_save_text_desc+n),intro_simple_save->desc.x,intro_simple_save->desc.y,iface.intro.simple_save_list.desc.text_size,tx_center,NULL,FALSE);
 
 			// simple save progress
 
@@ -276,6 +334,37 @@ void intro_open(void)
 		// read in simple saves
 		
 	simple_save_xml_read(&iface);
+	
+		// high scores
+
+	if (iface.intro.score.on) {
+	
+		score_xml_read(&iface);
+		
+		x=iface.intro.score.x;
+		y=iface.intro.score.y;
+
+		wid=iface.intro.score.wid;
+		yadd=iface.intro.score.high/max_score_count;
+		
+		num_wid=iface.intro.score.text_size*3;
+
+		score=iface.score_list.scores;
+		
+		for (n=0;n!=max_score_count;n++) {
+		
+			sprintf(str,"%d.",(n+1));
+			element_text_add(str,-1,x,y,iface.intro.score.text_size,tx_right,&iface.intro.score.col,FALSE);
+			
+			element_text_add(score->name,-1,(x+num_wid),y,iface.intro.score.text_size,tx_left,&iface.intro.score.col,FALSE);
+
+			intro_format_score(score->score,str);
+			element_text_add(str,-1,(x+wid),y,iface.intro.score.text_size,tx_right,&iface.intro.score.col,FALSE);
+
+			y+=yadd;
+			score++;
+		}
+	}
 	
 		// correct panel
 
@@ -311,10 +400,6 @@ void intro_open(void)
 			al_music_play(iface.intro.music,err_str);
 		}
 	}
-
-		// high scores
-
-	if (iface.intro.score.on) score_xml_read(&iface);
 }
 
 void intro_close(void)
@@ -330,48 +415,11 @@ void intro_close(void)
 
 /* =======================================================
 
-      High Scores
-      
-======================================================= */
-
-void intro_draw_high_score(void)
-{
-	int					n,x,y,wid,yadd;
-	char				str[32];
-	iface_score_type	*score;
-
-	if (!iface.intro.score.on) return;
-
-	x=iface.intro.score.x;
-	y=iface.intro.score.y;
-
-	wid=iface.intro.score.wid;
-	yadd=iface.intro.score.high/max_score_count;
-
-	score=iface.score_list.scores;
-
-	gl_text_start(font_interface_index,iface.intro.score.text_size);
-
-	for (n=0;n!=max_score_count;n++) {
-		gl_text_draw(x,y,score->name,tx_left,FALSE,&iface.intro.score.col,1.0f);
-
-		sprintf(str,"%,d",score->score);
-		gl_text_draw((x+wid),y,score->name,tx_right,FALSE,&iface.intro.score.col,1.0f);
-
-		y+=yadd;
-		score++;
-	}
-
-	gl_text_end();
-}
-
-/* =======================================================
-
       Start a Game
       
 ======================================================= */
 
-void intro_start_game(int skill,int option_flags,int simple_save_idx)
+void intro_start_game(int skill,int option_flags,char *map_name,int simple_save_idx)
 {
 	char			err_str[256];
 	
@@ -392,6 +440,14 @@ void intro_start_game(int skill,int option_flags,int simple_save_idx)
 		server.next_state=gs_error;
 		return;
 	}
+	
+		// check for map override
+		
+	if (map_name!=NULL) {
+		strcpy(map.info.name,map_name);
+	}
+	
+		// open map
 
 	if (!map_start(FALSE,FALSE,err_str)) {
 		error_setup(err_str,"Game Start Canceled");
@@ -427,7 +483,7 @@ void intro_click_game(int simple_save_idx)
 		// otherwise, just start the
 		// game
 
-	intro_start_game(skill_medium,0,simple_save_idx);
+	intro_start_game(skill_medium,0,NULL,simple_save_idx);
 }
 
 void intro_click_load(void)
@@ -440,7 +496,7 @@ void intro_click_load(void)
 
 void intro_click_simple_save_start(int idx)
 {
-	intro_start_game(skill_medium,0,idx);
+	intro_start_game(skill_medium,0,NULL,idx);
 }
 
 void intro_click_simple_save_erase(int idx)
@@ -595,7 +651,6 @@ void intro_key(void)
 void intro_run(void)
 {
 	gui_draw(1.0f,TRUE);
-	intro_draw_high_score();
 	intro_click();
 	intro_key();
 }

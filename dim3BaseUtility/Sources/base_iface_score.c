@@ -127,3 +127,48 @@ void score_xml_write(iface_type *iface,char *err_str)
     xml_close_file();
 }
 
+/* =======================================================
+
+      Add Score
+      
+======================================================= */
+
+int score_add(iface_type *iface,char *name,int high_score)
+{
+	int					n,idx,sz;
+	char				err_str[256];
+	iface_score_type	*score;
+	
+		// read score file
+		
+	score_xml_read(iface);
+	
+		// find place for score
+		
+	idx=-1;
+	score=iface->score_list.scores;
+	
+	for (n=0;n!=max_score_count;n++) {
+		if (high_score>score->score) {
+			idx=n;
+			break;
+		}
+		score++;
+	}
+	
+	if (idx==-1) return(-1);
+	
+		// add score
+		
+	sz=(max_score_count-idx)-1;
+	if (sz>0) memmove(&score[idx+1],&score[idx],(sz*sizeof(iface_score_type)));
+	
+	strcpy(iface->score_list.scores[idx].name,name);
+	iface->score_list.scores[idx].score=high_score;
+		
+		// write back score file
+	
+	score_xml_write(iface,err_str);
+	
+	return(idx);			// return the place
+}
