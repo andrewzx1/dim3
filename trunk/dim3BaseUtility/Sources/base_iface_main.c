@@ -381,6 +381,8 @@ void iface_default_settings(iface_type *iface)
 
 		// multiplayer
 
+	iface->multiplayer.on=FALSE;
+
 	iface->multiplayer.game_list.ngame=1;
 	strcpy(iface->multiplayer.game_list.games[0].name,"Deathmatch");
 

@@ -1376,6 +1376,7 @@ typedef struct		{
 					} iface_mp_news_type;
 
 typedef struct		{
+						bool							on;
 						iface_mp_game_list_type			game_list;
 						iface_mp_option_list_type		option_list;
 						iface_mp_character_list_type	character_list;

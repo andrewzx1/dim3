@@ -33,15 +33,17 @@ and can be sold or given away.
 #include "ui_common.h"
 #include "interface.h"
 
-#define kMPPropertyNewsHost						0
-#define kMPPropertyNewsURL						1
-#define kMPPropertyNewsPort						2
+#define kMPPropertyOn							0
 
-#define kMPPropertyBotOn						3
+#define kMPPropertyNewsHost						1
+#define kMPPropertyNewsURL						2
+#define kMPPropertyNewsPort						3
 
-#define kMPPropertyCharacterAdd					4
-#define kMPPropertyGameAdd						5
-#define kMPPropertyOptionAdd					6
+#define kMPPropertyBotOn						4
+
+#define kMPPropertyCharacterAdd					5
+#define kMPPropertyGameAdd						6
+#define kMPPropertyOptionAdd					7
 
 #define kMPPropertyBotName						100
 #define kMPPropertyCharacterName				200
@@ -67,6 +69,11 @@ void property_palette_fill_multiplayer(void)
 	char			str[256];
 
 	list_palette_set_title(&property_palette,"Multiplayer",NULL,NULL,NULL,NULL,NULL);
+
+		// settings
+
+	list_palette_add_header(&property_palette,0,"Settings");
+	list_palette_add_checkbox(&property_palette,kMPPropertyOn,"On",&iface.multiplayer.on,FALSE);
 
 		// games
 
