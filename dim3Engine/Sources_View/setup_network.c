@@ -64,29 +64,7 @@ extern int					setup_tab_index[5];
 extern char					setup_tab_list[5][name_str_len];
 
 int							setup_network_tab_value,setup_network_host_scroll_pos;
-char						setup_host_list[max_setup_network_host+1][128],
-							setup_character_list[max_character+1][128];
-
-/* =======================================================
-
-      Character Table
-      
-======================================================= */
-
-void setup_network_fill_character_table(void)
-{
-	int							n;
-	char						*c;
-
-	c=(char*)setup_character_list;
-	
-	for (n=0;n!=iface.multiplayer.character_list.ncharacter;n++) {
-		sprintf(c,"%s",iface.multiplayer.character_list.characters[n].name);
-		c+=128;
-	}
-
-	element_set_table_data(ctrl_character_id,(char*)setup_character_list);
-}
+char						setup_host_list[max_setup_network_host+1][128];
 
 /* =======================================================
 
@@ -158,7 +136,7 @@ void setup_network_player_pane(void)
 
 		// fill and select table
 
-	setup_network_fill_character_table();
+//	setup_network_fill_character_table();
 
 	element_set_value(ctrl_character_id,setup.network.character_idx);
 	element_make_selection_visible(ctrl_character_id);

@@ -39,7 +39,7 @@ extern file_path_setup_type		iface_file_path_setup;
 
 void iface_read_settings_multiplayer(iface_type *iface)
 {
-	int							cnt,multiplayer_head_tag,
+	int							cnt,multiplayer_head_tag,settings_tag,
 								games_head_tag,game_tag,tag,
 								options_head_tag,option_tag,
 								character_head_tag,character_item_tag,
@@ -68,6 +68,13 @@ void iface_read_settings_multiplayer(iface_type *iface)
     if (multiplayer_head_tag==-1) {
 		xml_close_file();
 		return;
+	}
+
+		// settings
+		
+    settings_tag=xml_findfirstchild("Settings",multiplayer_head_tag);
+    if (settings_tag!=-1) {
+		iface->multiplayer.on=xml_get_attribute_boolean(settings_tag,"on");
 	}
 
 		// network games
@@ -213,6 +220,12 @@ bool iface_write_settings_multiplayer(iface_type *iface,char *err_str)
 
 	xml_add_tagstart("Multiplayer");
 	xml_add_tagend(FALSE);
+
+		// settings
+
+	xml_add_tagstart("Settings");
+	xml_add_attribute_boolean("on",iface->multiplayer.on);
+	xml_add_tagend(TRUE);
 
 		// network games
 

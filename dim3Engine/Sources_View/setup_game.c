@@ -35,7 +35,8 @@ and can be sold or given away.
 #define setup_pane_audio					1
 #define setup_pane_control					2
 #define setup_pane_action					3
-#define setup_pane_debug					4
+#define setup_pane_player					4
+#define setup_pane_debug					5
 
 #define ctrl_screen_size_id					0
 #define ctrl_fsaa_id						1
@@ -60,7 +61,13 @@ and can be sold or given away.
 #define ctrl_joystick_speed_id				47
 #define ctrl_joystick_accel_id				48
 
-#define ctrl_action_id						60
+#define ctrl_action_id						50
+
+#define ctrl_network_name_id				60
+#define ctrl_network_show_names_id			61
+#define ctrl_color_id						62
+#define ctrl_character_id					63
+#define ctrl_character_model_id				64
 
 #define ctrl_debug_engine_windowed_id		70
 #define ctrl_debug_editor_windowed_id		71
@@ -92,7 +99,7 @@ extern iface_type			iface;
 extern setup_type			setup;
 
 int							setup_tab_value,setup_action_scroll_pos,
-							setup_tab_index[5],
+							setup_tab_index[6],
 							setup_key_control_to_action_index_list[ncontrol];
 
 char						setup_tab_list[5][name_str_len],
@@ -100,11 +107,33 @@ char						setup_tab_list[5][name_str_len],
 							setup_mipmap_mode_list[][32]=mipmap_mode_setup_list_def,
 							setup_fsaa_mode_list[][32]=setup_fsaa_mode_list_def,
 							setup_control_names[][32]=control_names,
-							setup_action_list[ncontrol+1][128];
+							setup_action_list[ncontrol+1][128],
+							setup_character_list[max_character+1][128];
 							
 bool						setup_action_set_flag,
 							setup_in_game,setup_close_save_flag;
 setup_type					setup_backup;
+
+/* =======================================================
+
+      Character Table
+      
+======================================================= */
+
+void setup_network_fill_character_table(void)
+{
+	int							n;
+	char						*c;
+
+	c=(char*)setup_character_list;
+	
+	for (n=0;n!=iface.multiplayer.character_list.ncharacter;n++) {
+		sprintf(c,"%s",iface.multiplayer.character_list.characters[n].name);
+		c+=128;
+	}
+
+	element_set_table_data(ctrl_character_id,(char*)setup_character_list);
+}
 
 /* =======================================================
 
@@ -312,6 +341,69 @@ void setup_game_action_pane(void)
 	element_enable(setup_action_clear_button,FALSE);
 }
 
+void setup_game_player_pane(void)
+{
+	int							x,y,wid,high,margin,padding,
+								control_y_add,control_y_sz;
+	element_column_type			cols[1];
+	iface_mp_character_type		*mp_character;
+
+	margin=element_get_tab_margin();
+	padding=element_get_padding();
+
+	control_y_add=element_get_control_high();
+	control_y_sz=control_y_add*3;
+	
+	x=(int)(((float)iface.scale_x)*0.24f);
+	
+	if (iface.multiplayer.character_list.ncharacter!=0) {
+		y=((margin+element_get_tab_control_high())+padding)+control_y_add;
+	}
+	else {
+		y=(iface.scale_y>>1)-(control_y_sz>>1);
+	}
+	
+		// names and colors
+		
+	element_text_field_add("Name",setup.network.name,name_str_len,ctrl_network_name_id,x,y,TRUE);
+	y+=control_y_add;
+	element_checkbox_add("Show Names",setup.network.show_names,ctrl_network_show_names_id,x,y,TRUE);
+	y+=control_y_add;
+	element_color_add("Color",setup.network.tint_color_idx,ctrl_color_id,x,y,TRUE);
+	
+		// is there a character control?
+
+	if (iface.multiplayer.character_list.ncharacter==0) return;
+	
+		// character table
+		
+	x=margin+padding;
+	y+=padding;
+
+	wid=(int)(((float)iface.scale_x)*0.80f)-((margin+padding)*2);
+	high=(int)(((float)iface.scale_y)*0.84f)-y;
+
+	strcpy(cols[0].name,"Characters");
+	cols[0].percent_size=1.0f;
+
+	element_table_add(cols,NULL,ctrl_character_id,1,x,y,wid,high,FALSE,element_table_bitmap_none);
+
+		// fill and select table
+
+	setup_network_fill_character_table();
+
+	element_set_value(ctrl_character_id,setup.network.character_idx);
+	element_make_selection_visible(ctrl_character_id);
+	
+		// character model
+
+	x=(int)(((float)iface.scale_x)*0.81f);
+	y=(int)(((float)iface.scale_y)*0.78f);
+	
+	mp_character=&iface.multiplayer.character_list.characters[setup.network.character_idx];
+	element_model_add(mp_character->model_name,"Idle",mp_character->interface_resize,&mp_character->interface_offset,NULL,ctrl_character_model_id,x,y);
+}
+
 void setup_game_debug_pane(void)
 {
 	int			x,y,control_y_add,control_y_sz;
@@ -369,6 +461,11 @@ void setup_game_create_pane(void)
 		setup_tab_index[ntab]=setup_pane_action;
 		ntab++;
 	}
+	if (iface.multiplayer.on) {
+		strcpy(setup_tab_list[ntab],"Multiplayer");
+		setup_tab_index[ntab]=setup_pane_player;
+		ntab++;
+	}
 	if (iface.setup.game_debug) {
 		strcpy(setup_tab_list[ntab],"Debug");
 		setup_tab_index[ntab]=setup_pane_debug;
@@ -409,6 +506,9 @@ void setup_game_create_pane(void)
 			break;
 		case setup_pane_action:
 			setup_game_action_pane();
+			break;
+		case setup_pane_player:
+			setup_game_player_pane();
 			break;
 		case setup_pane_debug:
 			setup_game_debug_pane();
@@ -648,7 +748,8 @@ void setup_game_default(void)
 
 void setup_game_handle_click(int id)
 {
-	int			idx;
+	int							idx;
+	iface_mp_character_type		*mp_character;
 	
 	switch (id) {
 	
@@ -781,6 +882,26 @@ void setup_game_handle_click(int id)
 			
 		case ctrl_action_id:
 			setup_game_action_enable_buttons();
+			break;
+
+			// player pane
+
+		case ctrl_network_name_id:
+			element_get_value_string(ctrl_network_name_id,setup.network.name);
+			break;
+
+		case ctrl_network_show_names_id:
+			setup.network.show_names=element_get_value(ctrl_network_show_names_id);
+			break;
+
+		case ctrl_color_id:
+			setup.network.tint_color_idx=element_get_value(ctrl_color_id);
+			break;
+			
+		case ctrl_character_id:
+			setup.network.character_idx=element_get_value(ctrl_character_id);
+			mp_character=&iface.multiplayer.character_list.characters[setup.network.character_idx];
+			element_replace_model(ctrl_character_model_id,mp_character->model_name,"Idle",mp_character->interface_resize,&mp_character->interface_offset,NULL);
 			break;
 
 			// debug pane

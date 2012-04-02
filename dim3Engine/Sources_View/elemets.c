@@ -2570,6 +2570,7 @@ void element_draw_tab(element_type *element,int sel_id,int x,int y)
 					lx,rx,ty,by,margin;
 	int				tab_draw_list[max_element_tab];
 	d3col			col;
+	d3col			shadow_col={0.3f,0.3f,0.3f};
 	
 	high=gl_text_get_char_height(iface.font.text_size_medium);
 		
@@ -2657,6 +2658,8 @@ void element_draw_tab(element_type *element,int sel_id,int x,int y)
 	rx=iface.scale_x-margin;
 	ty=high+margin;
 	by=iface.scale_y-margin;
+
+	view_primitive_2D_color_quad(&shadow_col,0.5f,(lx+5),(rx+5),(ty+5),(by+5));
 	
 	view_primitive_2D_color_quad(&iface.color.tab.background,1.0f,lx,rx,by,ty);
 	
@@ -3016,9 +3019,11 @@ void element_draw_model(element_type *element)
 
 void element_draw_frame(element_type *element)
 {
-	int			lft,rgt,top,bot,high,head_top,y;
+	int			lft,rgt,top,bot,high,
+				head_top,y;
 	bool		is_header;
 	d3col		col,col2;
+	d3col		shadow_col={0.3f,0.3f,0.3f};
 	
 		// header?
 		
@@ -3031,6 +3036,15 @@ void element_draw_frame(element_type *element)
 	top=element->y;
 	bot=top+element->high;
 	
+	high=gl_text_get_char_height(iface.font.text_size_medium);
+
+	head_top=top;
+	if (is_header) head_top-=(high+(high/2));
+
+		// shadow
+
+	view_primitive_2D_color_quad(&shadow_col,0.5f,(lft+2),(rgt+2),(head_top+2),(bot+2));
+	
 		// inside frame
 
 	view_primitive_2D_color_quad(&iface.color.dialog.background,1.0f,lft,rgt,top,bot);
@@ -3038,9 +3052,6 @@ void element_draw_frame(element_type *element)
 		// header
 		
 	if (is_header) {
-		high=gl_text_get_char_height(iface.font.text_size_medium);
-		head_top=top-(high+(high/2));
-		
 		y=(head_top+top)>>1;
 
 		memmove(&col,&iface.color.dialog.header,sizeof(d3col));
