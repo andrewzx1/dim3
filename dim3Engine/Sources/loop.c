@@ -41,6 +41,8 @@ extern view_type			view;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
 
+bool	supergumba_temp_callback_set=FALSE;
+
 /* =======================================================
 
       Main Game Loop Run
@@ -125,40 +127,6 @@ void loop_game_run(void)
 
 #if defined(D3_OS_IPHONE) || defined(D3_OS_ANDRIOD)
 
-void loop_app_active(void)
-{
-/*
-		// don't do anything if
-		// we aren't running the game
-
-	if (server.state!=gs_running) return;		// supergumba -- no, we have to always pause
-
-		// going inactive?
-
-	if (app_state==as_active) {
-		if (input_app_active()) return;
-
-		fprintf(stdout,"Suspending\n");
-	//	game_file_suspend();
-
-	//	if (server.map_open) map_end();
-	//	if (server.game_open) game_end();
-		
-		app_state=as_suspended;
-
-
-		return;
-	}
-
-		// becoming active?
-
-	if (!input_app_active()) return;
-
-		fprintf(stdout,"Activating\n");
-		game_file_resume();
-		*/
-}
-
 void SDL_iOSEvent_WillTerminate(void)
 {
 	// supergumba -- to do
@@ -208,6 +176,77 @@ void SDL_iOSEvent_DidBecomeActive(void)
 	
 	SDL_PauseAudio(0);
 }
+
+int ios_event_callback(SDL_Event *event,void *userdata)
+{
+	fprintf(stdout,"event=%d\n",event->type);
+	fflush(stdout);
+	
+	switch (event->type) {
+		case SDL_IOS_WILLTERMINATE:
+			SDL_iOSEvent_WillTerminate();
+			return(1);
+			
+		case SDL_IOS_DIDRECEIVEMEMORYWARNING:
+			SDL_iOSEvent_DidReceiveMemoryWarning();
+			return(1);
+			
+		case SDL_IOS_WILLRESIGNACTIVE:
+			SDL_iOSEvent_WillResignActive();
+			return(1);
+			
+		case SDL_IOS_DIDBECOMEACTIVE:
+			SDL_iOSEvent_DidBecomeActive();
+			return(1);
+			
+		case SDL_IOS_DIDENTERBACKGROUND:
+			SDL_iOSEvent_DidEnterBackground();
+			return(1);
+			
+		case SDL_IOS_WILLENTERFOREGROUND:
+			SDL_iOSEvent_WillEnterForeground();
+			return(1);
+			
+	}
+	
+	return(0);
+}
+
+void loop_app_active(void)
+{
+	
+/*
+		// don't do anything if
+		// we aren't running the game
+
+	if (server.state!=gs_running) return;		// supergumba -- no, we have to always pause
+
+		// going inactive?
+
+	if (app_state==as_active) {
+		if (input_app_active()) return;
+
+		fprintf(stdout,"Suspending\n");
+	//	game_file_suspend();
+
+	//	if (server.map_open) map_end();
+	//	if (server.game_open) game_end();
+		
+		app_state=as_suspended;
+
+
+		return;
+	}
+
+		// becoming active?
+
+	if (!input_app_active()) return;
+
+		fprintf(stdout,"Activating\n");
+		game_file_resume();
+		*/
+}
+
 
 
 
@@ -431,6 +470,13 @@ void loop_state_next_open(void)
 
 bool loop_main(char *err_str)
 {
+	// supergumba -- testing new SDL
+	/*
+	if (!supergumba_temp_callback_set) {
+		supergumba_temp_callback_set=TRUE;
+		SDL_SetEventCallback(ios_event_callback,0);
+	}
+	*/
 		// pump the input
 		// if there's an activation change, handle it
 		

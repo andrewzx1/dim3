@@ -3043,7 +3043,7 @@ void element_draw_frame(element_type *element)
 
 		// shadow
 
-	view_primitive_2D_color_quad(&shadow_col,0.5f,(lft+2),(rgt+2),(head_top+2),(bot+2));
+	view_primitive_2D_color_quad(&shadow_col,0.5f,(lft+5),(rgt+5),(head_top+5),(bot+5));
 	
 		// inside frame
 
