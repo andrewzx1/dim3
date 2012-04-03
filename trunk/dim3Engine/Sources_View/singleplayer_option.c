@@ -252,6 +252,8 @@ void singleplayer_option_click(void)
 				// get setup
 
 			skill=element_get_value(singleplayer_option_skill_id);
+			
+			option_flags=0x0;
 			for (n=0;n!=iface.singleplayer.option_list.noption;n++) {
 				if (element_get_value(singleplayer_option_option_start_id+n)!=0) option_flags|=(0x1<<n);
 			}
