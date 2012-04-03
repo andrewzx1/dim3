@@ -81,13 +81,11 @@ void setup_xml_default(void)
 	setup.network.dedicated=FALSE;
 	setup.network.map_rotation=FALSE;
 	
-	setup.network.host.count=0;
-	
 	setup.network.bot.count=0;
 	setup.network.bot.skill=2;
 	
-	setup.network.map.count=0;
-	setup.network.option.count=0;
+	setup.network.map_list.count=0;
+	setup.network.option_list.count=0;
 
 	setup.network.game_type=0;
 	setup.network.score_limit=20;
@@ -112,11 +110,10 @@ void setup_xml_default(void)
 
 bool setup_xml_read_path(char *path)
 {
-	int							n,k,naction,nhost,
-								setup_tag,actions_tag,hosts_tag,maps_tag,options_tag,tag;
+	int							n,k,naction,
+								setup_tag,actions_tag,maps_tag,options_tag,tag;
 	char						tag_name[32];
 	setup_action_type			*action;
-	setup_network_host_type		*host;
 	
 		// read file
 		
@@ -200,36 +197,16 @@ bool setup_xml_read_path(char *path)
         }
 	}
 
-		// hosts
-
-    hosts_tag=xml_findfirstchild("Hosts",setup_tag);
-    if (hosts_tag!=-1) {
-	
-		nhost=xml_countchildren(hosts_tag);
-		tag=xml_findfirstchild("Host",hosts_tag);
-		
-		setup.network.host.count=nhost;
-		host=setup.network.host.hosts;
-		
-        for (n=0;n!=nhost;n++) {
-			xml_get_attribute_text(tag,"name",host->name,64);
-			xml_get_attribute_text(tag,"ip",host->ip,256);
-
-			tag=xml_findnextchild(tag);
-			host++;
-        }
-	}
-
  		// maps
 		
     maps_tag=xml_findfirstchild("Maps",setup_tag);
     if (maps_tag!=-1) {
 	
-		setup.network.map.count=xml_countchildren(maps_tag);
+		setup.network.map_list.count=xml_countchildren(maps_tag);
 		tag=xml_findfirstchild("Map",maps_tag);
 		
-        for (n=0;n!=setup.network.map.count;n++) {
-			xml_get_attribute_text(tag,"name",setup.network.map.maps[n].name,name_str_len);
+        for (n=0;n!=setup.network.map_list.count;n++) {
+			xml_get_attribute_text(tag,"name",setup.network.map_list.maps[n].name,name_str_len);
 			tag=xml_findnextchild(tag);
  		}
 	}
@@ -239,11 +216,11 @@ bool setup_xml_read_path(char *path)
     options_tag=xml_findfirstchild("Options",setup_tag);
     if (options_tag!=-1) {
 	
-		setup.network.option.count=xml_countchildren(options_tag);
+		setup.network.option_list.count=xml_countchildren(options_tag);
 		tag=xml_findfirstchild("Option",options_tag);
 		
-        for (n=0;n!=setup.network.option.count;n++) {
-			xml_get_attribute_text(tag,"name",setup.network.option.options[n].name,name_str_len);
+        for (n=0;n!=setup.network.option_list.count;n++) {
+			xml_get_attribute_text(tag,"name",setup.network.option_list.options[n].name,name_str_len);
 			tag=xml_findnextchild(tag);
  		}
 	}
@@ -292,7 +269,6 @@ bool setup_xml_write(void)
 	char						path[1024],tag_name[32],err_str[256];
 	bool						ok;
 	setup_action_type			*action;
-	setup_network_host_type		*host;
 	
 		// start the setup file
 		
@@ -368,31 +344,14 @@ bool setup_xml_write(void)
 
     xml_add_tagclose("Actions");
 	
-		// hosts
-
-    xml_add_tagstart("Hosts");
-    xml_add_tagend(FALSE);
-	
-	host=setup.network.host.hosts;
-		
-	for (n=0;n!=setup.network.host.count;n++) {
-		xml_add_tagstart("Host");
-		xml_add_attribute_text("name",host->name);
-		xml_add_attribute_text("ip",host->ip);
-	    xml_add_tagend(TRUE);
-		host++;
-	}
-
-    xml_add_tagclose("Hosts");
-
 		// maps
 		
     xml_add_tagstart("Maps");
     xml_add_tagend(FALSE);
 	
-	for (n=0;n!=setup.network.map.count;n++) {
+	for (n=0;n!=setup.network.map_list.count;n++) {
 		xml_add_tagstart("Map");
-		xml_add_attribute_text("name",setup.network.map.maps[n].name);
+		xml_add_attribute_text("name",setup.network.map_list.maps[n].name);
 		xml_add_tagend(TRUE);
 	}
 
@@ -403,9 +362,9 @@ bool setup_xml_write(void)
     xml_add_tagstart("Options");
     xml_add_tagend(FALSE);
 	
-	for (n=0;n!=setup.network.option.count;n++) {
+	for (n=0;n!=setup.network.option_list.count;n++) {
 		xml_add_tagstart("Option");
-		xml_add_attribute_text("name",setup.network.option.options[n].name);
+		xml_add_attribute_text("name",setup.network.option_list.options[n].name);
 		xml_add_tagend(TRUE);
 	}
 

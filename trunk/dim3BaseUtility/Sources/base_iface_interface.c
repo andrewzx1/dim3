@@ -833,7 +833,6 @@ void iface_read_settings_interface(iface_type *iface)
 			iface_read_settings_intro_button(xml_findfirstchild("Game_Setup",button_tag),&iface->intro.button_game_setup,NULL,NULL);
 			iface_read_settings_intro_button(xml_findfirstchild("Multiplayer_Host",button_tag),&iface->intro.button_multiplayer_host,NULL,NULL);
 			iface_read_settings_intro_button(xml_findfirstchild("Multiplayer_Join",button_tag),&iface->intro.button_multiplayer_join,NULL,NULL);
-			iface_read_settings_intro_button(xml_findfirstchild("Multiplayer_Setup",button_tag),&iface->intro.button_multiplayer_setup,NULL,NULL);
 			iface_read_settings_intro_button(xml_findfirstchild("Credit",button_tag),&iface->intro.button_credit,NULL,NULL);
 			iface_read_settings_intro_button(xml_findfirstchild("Quit",button_tag),&iface->intro.button_quit,NULL,NULL);
 			
@@ -1484,7 +1483,6 @@ bool iface_write_settings_interface(iface_type *iface,char *err_str)
 	iface_write_settings_interface_intro_button("Game_Setup",&iface->intro.button_game_setup,NULL,NULL);
 	iface_write_settings_interface_intro_button("Multiplayer_Host",&iface->intro.button_multiplayer_host,NULL,NULL);
 	iface_write_settings_interface_intro_button("Multiplayer_Join",&iface->intro.button_multiplayer_join,NULL,NULL);
-	iface_write_settings_interface_intro_button("Multiplayer_Setup",&iface->intro.button_multiplayer_setup,NULL,NULL);
 	iface_write_settings_interface_intro_button("Credit",&iface->intro.button_credit,NULL,NULL);
 	iface_write_settings_interface_intro_button("Quit",&iface->intro.button_quit,NULL,NULL);
 	

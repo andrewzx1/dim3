@@ -84,46 +84,36 @@ typedef struct		{
 //
 
 typedef struct		{
-						char						name[64],ip[256];
-					} setup_network_host_type;
-					
-typedef struct		{
-						int							count;
-						setup_network_host_type		hosts[max_setup_network_host];
-					} setup_network_hosts_type;
-					
-typedef struct		{
-						int							count,skill;
+						int								count,skill;
 					} setup_network_bot_type;
 
 typedef struct		{
-						char						name[name_str_len];
+						char							name[name_str_len];
 					} setup_network_map_type;
 
 typedef struct		{
-						int							count;
-						setup_network_map_type		maps[max_setup_network_map];
-					} setup_network_maps_type;
+						int								count;
+						setup_network_map_type			maps[max_setup_network_map];
+					} setup_network_map_list_type;
 					
 typedef struct		{
-						char						name[name_str_len];
+						char							name[name_str_len];
 					} setup_network_option_type;
 
 typedef struct		{
-						int							count;
-						setup_network_option_type	options[max_setup_network_option];
-					} setup_network_options_type;
+						int								count;
+						setup_network_option_type		options[max_setup_network_option];
+					} setup_network_option_list_type;
 					
 typedef struct		{
-						int							game_type,score_limit,
-													respawn_secs,game_reset_secs,
-													character_idx,tint_color_idx;
-						char						name[name_str_len];
-						bool						show_names,dedicated,map_rotation;
-						setup_network_hosts_type	host;
-						setup_network_maps_type		map;
-						setup_network_bot_type		bot;
-						setup_network_options_type	option;
+						int								game_type,score_limit,
+														respawn_secs,game_reset_secs,
+														character_idx,tint_color_idx;
+						char							name[name_str_len];
+						bool							show_names,dedicated,map_rotation;
+						setup_network_bot_type			bot;
+						setup_network_map_list_type		map_list;
+						setup_network_option_list_type	option_list;
 					} setup_network_type;
 
 //
@@ -131,10 +121,10 @@ typedef struct		{
 //
 
 typedef struct		{
-						char						map[256];
-						bool						on;
-						d3pnt						pt;
-						d3ang						ang;
+						char							map[256];
+						bool							on;
+						d3pnt							pt;
+						d3ang							ang;
 					} setup_editor_override_type;
 
 //
@@ -142,20 +132,20 @@ typedef struct		{
 //
 					
 typedef struct		{
-						int							screen_wid,screen_high,
-													mipmap_mode,fsaa_mode;
-						float						gamma,sound_volume,music_volume;
-						bool						anisotropic,decal_on,lightmap_on,shadow_on,
-													always_run,toggle_run,invert_look,mouse_smooth,
-													music_on,auto_aim,window,window_editor,
-													no_hud,no_draw_weapon,metrics_on,debug_on,
-													ignore_fps_lock,disable_shaders;
-						setup_path_type				path;
-						setup_axis_type				mouse,joystick;
-						setup_action_list_type		action_list;
-						setup_network_type			network;
-						file_path_setup_type		file_path_setup;
-						setup_editor_override_type	editor_override;
+						int								screen_wid,screen_high,
+														mipmap_mode,fsaa_mode;
+						float							gamma,sound_volume,music_volume;
+						bool							anisotropic,decal_on,lightmap_on,shadow_on,
+														always_run,toggle_run,invert_look,mouse_smooth,
+														music_on,auto_aim,window,window_editor,
+														no_hud,no_draw_weapon,metrics_on,debug_on,
+														ignore_fps_lock,disable_shaders;
+						setup_path_type					path;
+						setup_axis_type					mouse,joystick;
+						setup_action_list_type			action_list;
+						setup_network_type				network;
+						file_path_setup_type			file_path_setup;
+						setup_editor_override_type		editor_override;
 					} setup_type;
 
 //
@@ -163,6 +153,6 @@ typedef struct		{
 //
 
 typedef struct		{
-						char						title[256],descript[256];
-						bool						is_error;
+						char							title[256],descript[256];
+						bool							is_error;
 					} fatal_error_type;

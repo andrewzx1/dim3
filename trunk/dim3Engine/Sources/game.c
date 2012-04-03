@@ -126,9 +126,9 @@ void game_reset(void)
 		// switch to next map
 
 	net_setup.host.current_map_idx++;
-	if (net_setup.host.current_map_idx>=setup.network.map.count) net_setup.host.current_map_idx=0;
+	if (net_setup.host.current_map_idx>=setup.network.map_list.count) net_setup.host.current_map_idx=0;
 
-	strcpy(map.info.name,setup.network.map.maps[net_setup.host.current_map_idx].name);
+	strcpy(map.info.name,setup.network.map_list.maps[net_setup.host.current_map_idx].name);
 	map.info.player_start_name[0]=0x0;
 
 	if (!map_rebuild_changes(err_str)) {

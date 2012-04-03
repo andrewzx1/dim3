@@ -563,67 +563,6 @@ void property_palette_click(d3pnt *pnt,bool double_click)
       
 ======================================================= */
 
-void property_palette_pick_spot(char *name)
-{
-	list_palette_start_picking_mode(&property_palette,"Pick a Spot",(char*)map.spots,map.nspot,sizeof(spot_type),(int)offsetof(spot_type,name),TRUE,FALSE,NULL,name);
-}
-
-void property_palette_pick_node(char *name)
-{
-	int				n,count,mem_sz,list_pos,idx;
-	char			*list_ptr,*list;
-	
-		// only pick from nodes with names
-		
-	count=0;
-	
-	for (n=0;n!=map.nnode;n++) {
-		if (map.nodes[n].name[0]!=0x0) count++;
-	}
-	
-	if (count==0) {
-		mem_sz=name_str_len;
-	}
-	else {
-		mem_sz=count*name_str_len;
-	}
-	
-	list_ptr=(char*)malloc(mem_sz);
-	if (list_ptr==NULL) return;
-	
-	idx=-1;
-	list_pos=0;
-	
-	for (n=0;n!=map.nnode;n++) {
-		if (map.nodes[n].name[0]==0x0) continue;
-		
-		list=list_ptr+(list_pos*name_str_len);
-		strcpy(list,map.nodes[n].name);
-			
-		if (strcmp(map.nodes[n].name,name)==0) idx=list_pos;
-		list_pos++;
-	}
-	
-	list_palette_start_picking_mode(&property_palette,"Pick a Node",list_ptr,count,name_str_len,0,TRUE,FALSE,NULL,name);
-	
-	free(list_ptr);
-}
-
-void property_palette_pick_movement(char *name)
-{
-	list_palette_start_picking_mode(&property_palette,"Pick a Movement",(char*)map.movement.movements,map.movement.nmovement,sizeof(movement_type),(int)offsetof(movement_type,name),TRUE,FALSE,NULL,name);
-}
-
-void property_palette_pick_hud_text(char *name)
-{
-	list_palette_start_picking_mode(&property_palette,"Pick a HUD Text",(char*)iface.text_list.texts,iface.text_list.ntext,sizeof(iface_text_type),(int)offsetof(iface_text_type,name),FALSE,FALSE,NULL,name);
-}
-
-void property_palette_pick_hud_bitmap(char *name)
-{
-	list_palette_start_picking_mode(&property_palette,"Pick a HUD Bitmap",(char*)iface.bitmap_list.bitmaps,iface.bitmap_list.nbitmap,sizeof(iface_bitmap_type),(int)offsetof(iface_bitmap_type,name),FALSE,FALSE,NULL,name);
-}
-
 void property_palette_pick_texture(char *title,int *txt_idx)
 {
 	int				n;

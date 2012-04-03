@@ -123,7 +123,6 @@ void property_palette_fill_title_page(void)
 	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonGameSetup,"Game Setup",NULL,-1,(state.cur_intro_button_idx==item_intro_button_game_setup),FALSE);
 	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonMultiplayerHost,"Multiplayer Host",NULL,-1,(state.cur_intro_button_idx==item_intro_button_multiplayer_host),FALSE);
 	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonMultiplayerJoin,"Multiplayer Join",NULL,-1,(state.cur_intro_button_idx==item_intro_button_multiplayer_join),FALSE);
-	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonMultiplayerSetup,"Multiplayer Setup",NULL,-1,(state.cur_intro_button_idx==item_intro_button_multiplayer_setup),FALSE);
 	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonCredit,"Credit",NULL,-1,(state.cur_intro_button_idx==item_intro_button_credit),FALSE);
 	list_palette_add_string_selectable(&property_palette,kIntroPropertyButtonQuit,"Quit",NULL,-1,(state.cur_intro_button_idx==item_intro_button_quit),FALSE);
 

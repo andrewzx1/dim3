@@ -40,8 +40,6 @@ extern iface_type			iface;
 extern setup_type			setup;
 
 int							net_proj_hash;
-char						*net_news;
-setup_network_hosts_type	net_news_hosts;
 
 /* =======================================================
 
@@ -60,15 +58,10 @@ void net_initialize(void)
 		// hash and news not loaded yet
 		
 	net_proj_hash=0;
-	net_news=NULL;
 }
 
 void net_shutdown(void)
 {
-		// free news
-		
-	if (net_news!=NULL) free(net_news);
-	
 #ifdef D3_OS_WINDOWS
 	WSACleanup();
 #endif
@@ -96,35 +89,23 @@ int net_get_project_hash(void)
 	return(net_proj_hash);
 }
 
-void net_load_news(void)
+void net_load_news(join_server_host_list_type *join_host_list,char *news)
 {
-	int			sz;
-	char		err_str[256];
-	char		*news_ptr,*hosts_ptr,*host_start_ptr,
-				*c,*data;
+	int						sz;
+	char					err_str[256];
+	char					*news_ptr,*hosts_ptr,*host_start_ptr,
+							*c,*data;
+	join_server_host_type	*host;
 	
 		// any news to load?
 		
 	if (iface.multiplayer.news.host[0]==0x0) return;
 	
-		// skip if already loaded
-		
-	if (net_news!=NULL) return;
-
-		// always start with no hosts in case of error
-
-	net_news_hosts.count=0;
-	
 		// get response
 		
 	data=net_get_http_file(iface.multiplayer.news.host,iface.multiplayer.news.port,iface.multiplayer.news.url,err_str);
 	if (data==NULL) {
-	
-			// build error message
-			
-		net_news=malloc(512);
-		if (net_news!=NULL) sprintf(net_news,"News Read Failure\n%s",err_str);
-
+		sprintf(news,"News Read Failure\n%s",err_str);
 		return;
 	}
 
@@ -145,8 +126,7 @@ void net_load_news(void)
 		// get the news
 
 	if (news_ptr==NULL) {
-		net_news=malloc(8);
-		if (net_news!=NULL) *net_news=0x0;
+		*news=0x0;
 	}
 	else {
 		if (host_start_ptr==NULL) {
@@ -156,53 +136,48 @@ void net_load_news(void)
 			sz=(int)(host_start_ptr-news_ptr);
 		}
 
-		net_news=malloc(sz+1);
-		if (net_news==NULL) return;
+		if (sz>=max_join_server_news_len) sz=max_join_server_news_len-1;
 
-		memmove(net_news,news_ptr,sz);
-		*(net_news+sz)=0x0;
+		memmove(news,news_ptr,sz);
+		*(news+sz)=0x0;
 	}
 
 		// get the hosts lists
 
-	net_news_hosts.count=0;
 	if (hosts_ptr==NULL) return;
 
-	while (TRUE) {
-		strncpy(net_news_hosts.hosts[net_news_hosts.count].name,hosts_ptr,64);
-		net_news_hosts.hosts[net_news_hosts.count].name[63]=0x0;
+	while (join_host_list->count<max_join_server_host) {
 
-		c=strchr(net_news_hosts.hosts[net_news_hosts.count].name,'\t');
+		host=&join_host_list->hosts[join_host_list->count];
+
+			// get the name
+
+		strncpy(host->name,hosts_ptr,64);
+		host->name[63]=0x0;
+
+		c=strchr(host->name,'\t');
 		if (c!=NULL) *c=0x0;
+
+			// get the IP
 
 		hosts_ptr=strchr(hosts_ptr,'\t');
 		if (hosts_ptr==NULL) break;
 
-		strncpy(net_news_hosts.hosts[net_news_hosts.count].ip,hosts_ptr,256);
-		net_news_hosts.hosts[net_news_hosts.count].ip[255]=0x0;
+		strncpy(host->ip,hosts_ptr,256);
+		host->ip[255]=0x0;
 
-		c=strchr(net_news_hosts.hosts[net_news_hosts.count].ip,'\r');
+		c=strchr(host->ip,'\r');
 		if (c!=NULL) *c=0x0;
-		c=strchr(net_news_hosts.hosts[net_news_hosts.count].ip,'\n');
+		c=strchr(host->ip,'\n');
 		if (c!=NULL) *c=0x0;
 
-		net_news_hosts.count++;
+		join_host_list->count++;
 		
 		hosts_ptr=strchr(hosts_ptr,'\n');
 		if (hosts_ptr==NULL) break;
 
 		hosts_ptr++;
 	}
-}
-
-char* net_get_news(void)
-{
-	return(net_news);
-}
-
-setup_network_hosts_type* net_news_get_hosts(void)
-{
-	return(&net_news_hosts);
 }
 
 /* =======================================================
