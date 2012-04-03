@@ -441,10 +441,6 @@ extern void setup_game_open(void);
 extern void setup_game_close(void);
 extern void setup_game_run(void);
 
-extern void setup_network_open(void);
-extern void setup_network_close(void);
-extern void setup_network_run(void);
-
 extern void join_open(void);
 extern void join_close(void);
 extern void join_run(void);

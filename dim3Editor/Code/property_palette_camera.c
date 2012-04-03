@@ -102,7 +102,7 @@ void property_palette_fill_camera(void)
 
 	list_palette_add_header(&property_palette,0,"Map Camera Static");
 	list_palette_add_checkbox(&property_palette,kMapPropertyCameraStaticFollow,"Follow Player",&map.camera.c_static.follow,FALSE);
-	list_palette_add_string(&property_palette,kMapPropertyCameraStaticAttachNode,"Attach Node",map.camera.c_static.attach_node,name_str_len,FALSE);
+	list_palette_add_picker_list_string(&property_palette,kMapPropertyCameraStaticAttachNode,"Attach Node",(char*)map.nodes,map.nnode,sizeof(node_type),(int)offsetof(node_type,name),TRUE,map.camera.c_static.attach_node,FALSE);
 }
 
 /* =======================================================
@@ -113,14 +113,5 @@ void property_palette_fill_camera(void)
 
 void property_palette_click_camera(bool double_click)
 {
-	if (!double_click) return;
-
-	switch (property_palette.item_pane.click.id) {
-
-		case kMapPropertyCameraStaticAttachNode:
-			property_palette_pick_node(map.camera.c_static.attach_node);
-			break;
-	
-	}
 }
 

@@ -171,7 +171,7 @@ void property_palette_fill_liquid(int liq_idx)
 	list_palette_add_uv(&property_palette,kLiquidPropertyShift,"Shift",&liq->shift,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Liquid Camera");
-	list_palette_add_string(&property_palette,kLiquidPropertyCamera,"Node",liq->camera,name_str_len,FALSE);
+	list_palette_add_picker_list_string(&property_palette,kLiquidPropertyCamera,"Attach Node",(char*)map.nodes,map.nnode,sizeof(node_type),(int)offsetof(node_type,name),TRUE,liq->camera,FALSE);
 	
 		// info
 	
@@ -201,7 +201,6 @@ void property_palette_click_liquid(int liq_idx,bool double_click)
 {
 	int						id;
 	map_liquid_type			*liq;
-	editor_view_type		*view;
 
 	liq=&map.liquid.liquids[liq_idx];
 
@@ -212,22 +211,6 @@ void property_palette_click_liquid(int liq_idx,bool double_click)
 	if (id==kLiquidPropertyWaveReset) {
 		piece_liquid_reset_size(liq);
 		return;
-	}
-
-		// regular clicks
-
-	if (!double_click) return;
-
-	view=view_get_current_view();
-
-	switch (id) {
-	
-			// options
-
-		case kLiquidPropertyCamera:
-			property_palette_pick_node(liq->camera);
-			break;
-
 	}
 }
 

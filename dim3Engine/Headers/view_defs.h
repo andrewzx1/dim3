@@ -240,25 +240,33 @@ typedef struct		{
 // join UI structures
 //
 
+#define max_join_server_host								64
+#define max_join_server_news_len							5120
+
 typedef struct		{
 						int									score;
 						bool								bot;
 						char								name[name_str_len];
-					} join_server_info_player;
+					} join_server_host_player;
 
 typedef struct		{
 						int									count,max_count;
-						join_server_info_player				players[join_info_max_players];
-					} join_server_info_player_list;
+						join_server_host_player				players[join_info_max_players];
+					} join_server_host_player_list_type;
 
 typedef struct		{
 						int									ping_msec,
 															score_limit,option_flags,
 															respawn_secs,game_reset_secs;
-						char								ip[256],name[name_str_len],
+						char								ip[256],name[64],
 															game_name[name_str_len],map_name[name_str_len];
-						join_server_info_player_list		player_list;
-					} join_server_info;
+						join_server_host_player_list_type	player_list;
+					} join_server_host_type;
+
+typedef struct		{
+						int									count;
+						join_server_host_type				hosts[max_join_server_host];
+					} join_server_host_list_type;
 
 //
 // halo structures

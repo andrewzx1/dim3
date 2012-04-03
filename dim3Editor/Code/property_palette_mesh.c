@@ -210,7 +210,7 @@ void property_palette_fill_mesh(int mesh_idx,int poly_idx)
 		list_palette_add_normal_vector(&property_palette,kMeshPolyPropertyNormal,"Normal",&poly->tangent_space.normal,FALSE);
 
 		list_palette_add_header(&property_palette,0,"Poly Camera");
-		list_palette_add_string(&property_palette,kMeshPolyPropertyCamera,"Node",poly->camera,name_str_len,FALSE);
+		list_palette_add_picker_list_string(&property_palette,kMeshPolyPropertyCamera,"Node",(char*)map.nodes,map.nnode,sizeof(node_type),(int)offsetof(node_type,name),TRUE,poly->camera,FALSE);
 		
 		pal_poly_index=poly_idx;
 		
@@ -248,10 +248,6 @@ void property_palette_click_mesh(int mesh_idx,int poly_idx,bool double_click)
 			case kMeshPolyPropertySize:
 				map_mesh_set_poly_uv_as_box(&map,mesh_idx,poly_idx,(view->uv_layer==uv_layer_light_map),pal_mesh_prev_uv_offset.x,pal_mesh_prev_uv_offset.y,pal_mesh_prev_uv_size.x,pal_mesh_prev_uv_size.y);
 				view_vbo_mesh_rebuild(mesh_idx);
-				break;
-				
-			case kMeshPolyPropertyCamera:
-				property_palette_pick_node(poly->camera);
 				break;
 
 		}

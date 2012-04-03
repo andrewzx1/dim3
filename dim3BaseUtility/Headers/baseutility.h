@@ -900,7 +900,7 @@ typedef struct		{
 typedef struct		{
 						char									music[name_str_len];
 						iface_intro_button_type					button_game_new,button_game_load,button_game_setup,
-																button_multiplayer_host,button_multiplayer_join,button_multiplayer_setup,
+																button_multiplayer_host,button_multiplayer_join,
 																button_credit,button_quit;
 						iface_intro_confirm_type				confirm;
 						iface_intro_score_type					score;

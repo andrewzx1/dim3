@@ -324,10 +324,6 @@ void loop_state_run(void)
 			setup_game_run();
 			return;
 			
-		case gs_setup_network:
-			setup_network_run();
-			return;
-			
 		case gs_join:
 			join_run();
 			return;
@@ -377,10 +373,6 @@ void loop_state_last_close(void)
 			setup_game_close();
 			return;
 			
-		case gs_setup_network:
-			setup_network_close();
-			return;
-			
 		case gs_join:
 			join_close();
 			return;
@@ -426,10 +418,6 @@ void loop_state_next_open(void)
 
 		case gs_setup_game:
 			setup_game_open();
-			return;
-			
-		case gs_setup_network:
-			setup_network_open();
 			return;
 			
 		case gs_join:

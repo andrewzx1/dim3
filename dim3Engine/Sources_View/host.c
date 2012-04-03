@@ -259,11 +259,11 @@ void host_map_list_to_table(void)
 	if (!setup.network.map_rotation) {
 
 		host_first_map_idx=-1;
-		if (setup.network.map.count==0) return;
+		if (setup.network.map_list.count==0) return;
 
 		for (n=0;n!=host_table_map_count;n++) {
 			host_map_list_get_name(n,name);
-			if (strcmp(setup.network.map.maps[0].name,name)==0) {
+			if (strcmp(setup.network.map_list.maps[0].name,name)==0) {
 				host_first_map_idx=n;
 				return;
 			}
@@ -286,8 +286,8 @@ void host_map_list_to_table(void)
 
 		checked=FALSE;
 
-		for (k=0;k!=setup.network.map.count;k++) {
-			if (strcasecmp(setup.network.map.maps[k].name,name)==0) {
+		for (k=0;k!=setup.network.map_list.count;k++) {
+			if (strcasecmp(setup.network.map_list.maps[k].name,name)==0) {
 				checked=TRUE;
 				break;
 			}
@@ -308,7 +308,7 @@ void host_map_table_to_list(void)
 	int				n,idx,count;
 	char			name[256];
 
-	setup.network.map.count=0;
+	setup.network.map_list.count=0;
 
 		// single map?
 
@@ -318,8 +318,8 @@ void host_map_table_to_list(void)
 
 		host_map_list_get_name(idx,name);
 
-		setup.network.map.count=1;
-		strcpy(setup.network.map.maps[0].name,name);
+		setup.network.map_list.count=1;
+		strcpy(setup.network.map_list.maps[0].name,name);
 
 		return;
 	}
@@ -332,10 +332,10 @@ void host_map_table_to_list(void)
 		if (!element_get_table_checkbox(host_table_id,n)) continue;
 	
 		host_map_list_get_name(n,name);
-		strcpy(setup.network.map.maps[count++].name,name);
+		strcpy(setup.network.map_list.maps[count++].name,name);
 	}
 
-	setup.network.map.count=count;
+	setup.network.map_list.count=count;
 }
 
 /* =======================================================
@@ -447,8 +447,8 @@ void host_options_pane(void)
 
 		on=FALSE;
 
-		for (k=0;k!=setup.network.option.count;k++) {
-			if (strcasecmp(mp_option->name,setup.network.option.options[k].name)==0) {
+		for (k=0;k!=setup.network.option_list.count;k++) {
+			if (strcasecmp(mp_option->name,setup.network.option_list.options[k].name)==0) {
 				on=TRUE;
 				break;
 			}
@@ -627,9 +627,9 @@ void host_game_setup(void)
 		
 	net_setup.option_flags=0x0;
 	
-	for (n=0;n!=setup.network.option.count;n++) {
+	for (n=0;n!=setup.network.option_list.count;n++) {
 		for (k=0;k!=iface.multiplayer.option_list.noption;k++) {
-			if (strcasecmp(setup.network.option.options[n].name,iface.multiplayer.option_list.options[k].name)==0) {
+			if (strcasecmp(setup.network.option_list.options[n].name,iface.multiplayer.option_list.options[k].name)==0) {
 				net_setup.option_flags=net_setup.option_flags|(0x1<<k);
 				break;
 			}
@@ -656,7 +656,7 @@ void host_game(void)
 		// setup map
 		
 	map.info.name[0]=0x0;
-	strcpy(map.info.host_name,setup.network.map.maps[net_setup.host.current_map_idx].name);
+	strcpy(map.info.host_name,setup.network.map_list.maps[net_setup.host.current_map_idx].name);
 	
 		// start game
 	
@@ -728,14 +728,14 @@ void host_handle_click(int id)
 
 	if (id>=host_game_option_base) {
 	
-		setup.network.option.count=0;
+		setup.network.option_list.count=0;
 		mp_option=iface.multiplayer.option_list.options;
 
 		for (n=0;n!=iface.multiplayer.option_list.noption;n++) {
 
 			if (element_get_value(host_game_option_base+n)!=0) {
-				strcpy(setup.network.option.options[setup.network.option.count].name,mp_option->name);
-				setup.network.option.count++;
+				strcpy(setup.network.option_list.options[setup.network.option_list.count].name,mp_option->name);
+				setup.network.option_list.count++;
 			}
 
 			mp_option++;
@@ -771,7 +771,7 @@ void host_handle_click(int id)
 
 		case host_table_id:
 			host_map_table_to_list();
-			element_enable(host_button_host_id,(setup.network.map.count!=0));
+			element_enable(host_button_host_id,(setup.network.map_list.count!=0));
 			break;
 
 // supergumba -- not fully implemented yet

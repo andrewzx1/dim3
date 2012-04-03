@@ -98,10 +98,6 @@ iface_intro_button_type* get_title_page_button_from_item_idx(int item_idx,char *
 			if (name!=NULL) strcpy(name,"Multiplayer Join");
 			return(&iface.intro.button_multiplayer_join);
 
-		case item_intro_button_multiplayer_setup:
-			if (name!=NULL) strcpy(name,"Multiplayer Setup");
-			return(&iface.intro.button_multiplayer_setup);
-
 		case item_intro_button_credit:
 			if (name!=NULL) strcpy(name,"Credits");
 			return(&iface.intro.button_credit);

@@ -41,7 +41,6 @@ and can be sold or given away.
 
 #define intro_button_multiplayer_host_id		10
 #define intro_button_multiplayer_join_id		11
-#define intro_button_multiplayer_setup_id		12
 
 #define intro_button_credit_id					20
 #define intro_button_quit_id					21
@@ -93,7 +92,6 @@ void intro_show_hide_for_mode(void)
 		element_enable(intro_button_game_setup_id,FALSE);
 		element_enable(intro_button_multiplayer_host_id,FALSE);
 		element_enable(intro_button_multiplayer_join_id,FALSE);
-		element_enable(intro_button_multiplayer_setup_id,FALSE);
 		element_enable(intro_button_credit_id,FALSE);
 		element_enable(intro_button_quit_id,FALSE);
 		
@@ -120,7 +118,6 @@ void intro_show_hide_for_mode(void)
 	element_hide(intro_button_game_setup_id,FALSE);
 	element_hide(intro_button_multiplayer_host_id,FALSE);
 	element_hide(intro_button_multiplayer_join_id,FALSE);
-	element_hide(intro_button_multiplayer_setup_id,FALSE);
 	element_hide(intro_button_credit_id,FALSE);
 	element_hide(intro_button_quit_id,FALSE);
 	
@@ -129,7 +126,6 @@ void intro_show_hide_for_mode(void)
 	element_enable(intro_button_game_setup_id,TRUE);
 	element_enable(intro_button_multiplayer_host_id,TRUE);
 	element_enable(intro_button_multiplayer_join_id,TRUE);
-	element_enable(intro_button_multiplayer_setup_id,TRUE);
 	element_enable(intro_button_credit_id,TRUE);
 	element_enable(intro_button_quit_id,TRUE);
 	
@@ -284,11 +280,8 @@ void intro_open(void)
 	intro_open_add_button(&iface.intro.button_game_new,"button_game_new",intro_button_game_new_id);
 	intro_open_add_button(&iface.intro.button_game_load,"button_game_load",intro_button_game_load_id);
 	intro_open_add_button(&iface.intro.button_game_setup,"button_game_setup",intro_button_game_setup_id);
-	
 	intro_open_add_button(&iface.intro.button_multiplayer_host,"button_multiplayer_host",intro_button_multiplayer_host_id);
 	intro_open_add_button(&iface.intro.button_multiplayer_join,"button_multiplayer_join",intro_button_multiplayer_join_id);
-	intro_open_add_button(&iface.intro.button_multiplayer_setup,"button_multiplayer_setup",intro_button_multiplayer_setup_id);
-
 	intro_open_add_button(&iface.intro.button_credit,"button_credit",intro_button_credit_id);
 	intro_open_add_button(&iface.intro.button_quit,"button_quit",intro_button_quit_id);
 	
@@ -594,10 +587,6 @@ void intro_click(void)
 
 		case intro_button_multiplayer_join_id:
 			server.next_state=gs_join;
-			break;
-			
-		case intro_button_multiplayer_setup_id:
-			server.next_state=gs_setup_network;
 			break;
 
 			// credit and quit

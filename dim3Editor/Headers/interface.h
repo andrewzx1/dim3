@@ -157,11 +157,6 @@ extern void property_palette_scroll_into_view(int item_id,int item_idx);
 extern void property_palette_scroll_wheel(d3pnt *pnt,int move);
 extern bool property_palette_delete(void);
 extern void property_palette_click(d3pnt *pnt,bool double_click);
-extern void property_palette_pick_spot(char *name);
-extern void property_palette_pick_node(char *name);
-extern void property_palette_pick_movement(char *name);
-extern void property_palette_pick_hud_text(char *name);
-extern void property_palette_pick_hud_bitmap(char *name);
 extern void property_palette_pick_texture(char *title,int *txt_idx);
 
 extern void property_palette_fill_cinema_action(int cinema_idx,int action_idx);
