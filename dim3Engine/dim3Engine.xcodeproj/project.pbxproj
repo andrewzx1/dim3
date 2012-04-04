@@ -350,7 +350,6 @@
 		260B40991411F781006ED023 /* rings_draw.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B3F811411F781006ED023 /* rings_draw.c */; };
 		260B409A1411F781006ED023 /* score_limit.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B3F821411F781006ED023 /* score_limit.c */; };
 		260B409B1411F781006ED023 /* setup_game.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B3F831411F781006ED023 /* setup_game.c */; };
-		260B409C1411F781006ED023 /* setup_network.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B3F841411F781006ED023 /* setup_network.c */; };
 		260B409D1411F781006ED023 /* sky.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B3F851411F781006ED023 /* sky.c */; };
 		260B409E1411F781006ED023 /* tint.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B3F861411F781006ED023 /* tint.c */; };
 		260B409F1411F781006ED023 /* title.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B3F871411F781006ED023 /* title.c */; };
@@ -843,7 +842,6 @@
 		260B3F811411F781006ED023 /* rings_draw.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = rings_draw.c; sourceTree = "<group>"; };
 		260B3F821411F781006ED023 /* score_limit.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = score_limit.c; sourceTree = "<group>"; };
 		260B3F831411F781006ED023 /* setup_game.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = setup_game.c; sourceTree = "<group>"; };
-		260B3F841411F781006ED023 /* setup_network.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = setup_network.c; sourceTree = "<group>"; };
 		260B3F851411F781006ED023 /* sky.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sky.c; sourceTree = "<group>"; };
 		260B3F861411F781006ED023 /* tint.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tint.c; sourceTree = "<group>"; };
 		260B3F871411F781006ED023 /* title.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = title.c; sourceTree = "<group>"; };
@@ -1450,7 +1448,6 @@
 				260B3F871411F781006ED023 /* title.c */,
 				260B3F5A1411F781006ED023 /* files.c */,
 				260B3F831411F781006ED023 /* setup_game.c */,
-				260B3F841411F781006ED023 /* setup_network.c */,
 				260B3F6B1411F781006ED023 /* host.c */,
 				260B3F731411F781006ED023 /* join.c */,
 				260B3F581411F781006ED023 /* error.c */,
@@ -2313,7 +2310,6 @@
 				260B40991411F781006ED023 /* rings_draw.c in Sources */,
 				260B409A1411F781006ED023 /* score_limit.c in Sources */,
 				260B409B1411F781006ED023 /* setup_game.c in Sources */,
-				260B409C1411F781006ED023 /* setup_network.c in Sources */,
 				260B409D1411F781006ED023 /* sky.c in Sources */,
 				260B409E1411F781006ED023 /* tint.c in Sources */,
 				260B409F1411F781006ED023 /* title.c in Sources */,

@@ -102,7 +102,7 @@ int							setup_tab_value,setup_action_scroll_pos,
 							setup_tab_index[6],
 							setup_key_control_to_action_index_list[ncontrol];
 
-char						setup_tab_list[5][name_str_len],
+char						setup_tab_list[6][name_str_len],
 							setup_screen_size_list[max_screen_size+1][32],
 							setup_mipmap_mode_list[][32]=mipmap_mode_setup_list_def,
 							setup_fsaa_mode_list[][32]=setup_fsaa_mode_list_def,
