@@ -2020,6 +2020,7 @@ void element_draw_scroll_controls(element_type *element,int header_high,bool up_
 {
 	int				lft,rgt,top,bot,ty,by,
 					ctrl_sz;
+	float			alpha;
 	d3col			col,col2,col3;
 	
 		// element size
@@ -2044,29 +2045,29 @@ void element_draw_scroll_controls(element_type *element,int header_high,bool up_
 
 		// top scroll bar
 
-	if (up_ok) {
-		ty=top;
-		by=top+ctrl_sz;
+	alpha=up_ok?1.0f:0.1f;
 
-		view_primitive_2D_color_poly(lft,ty,&col2,rgt,ty,&col2,rgt,by,&col,lft,by,&col,1.0f);
-		view_primitive_2D_line_quad(&iface.color.control.outline,1.0f,lft,rgt,ty,by);
+	ty=top;
+	by=top+ctrl_sz;
 
-		view_primitive_2D_color_trig(&iface.color.control.hilite,1.0f,(lft+5),(rgt-5),(ty+5),(by-5),0);
-		view_primitive_2D_line_trig(&col3,1.0f,(lft+5),(rgt-5),(ty+5),(by-5),0);
-	}
+	view_primitive_2D_color_poly(lft,ty,&col2,rgt,ty,&col2,rgt,by,&col,lft,by,&col,alpha);
+	view_primitive_2D_line_quad(&iface.color.control.outline,alpha,lft,rgt,ty,by);
+
+	view_primitive_2D_color_trig(&iface.color.control.hilite,alpha,(lft+5),(rgt-5),(ty+5),(by-5),0);
+	view_primitive_2D_line_trig(&col3,alpha,(lft+5),(rgt-5),(ty+5),(by-5),0);
 
 		// bottom scroll bar
 
-	if (down_ok) {
-		ty=bot-ctrl_sz;
-		by=bot;
+	alpha=down_ok?1.0f:0.1f;
 
-		view_primitive_2D_color_poly(lft,ty,&col,rgt,ty,&col,rgt,by,&col2,lft,by,&col2,1.0f);
-		view_primitive_2D_line_quad(&iface.color.control.outline,1.0f,lft,rgt,ty,by);
+	ty=bot-ctrl_sz;
+	by=bot;
 
-		view_primitive_2D_color_trig(&iface.color.control.hilite,1.0f,(lft+5),(rgt-5),(ty+5),(by-5),2);
-		view_primitive_2D_line_trig(&col3,1.0f,(lft+5),(rgt-5),(ty+5),(by-5),2);
-	}
+	view_primitive_2D_color_poly(lft,ty,&col,rgt,ty,&col,rgt,by,&col2,lft,by,&col2,alpha);
+	view_primitive_2D_line_quad(&iface.color.control.outline,alpha,lft,rgt,ty,by);
+
+	view_primitive_2D_color_trig(&iface.color.control.hilite,alpha,(lft+5),(rgt-5),(ty+5),(by-5),2);
+	view_primitive_2D_line_trig(&col3,alpha,(lft+5),(rgt-5),(ty+5),(by-5),2);
 }
 
 /* =======================================================
@@ -2373,7 +2374,9 @@ void element_draw_table_line_data(element_type *element,int x,int y,int row,int 
 
 void element_draw_table(element_type *element,int sel_id)
 {
-	int				n,x,y,ky,wid,high,cnt,lft,rgt,top,bot,mid,row_high;
+	int				n,x,y,ky,wid,high,cnt,
+					lft,rgt,top,bot,mid,row_high,
+					lx,rx,ty,by;
 	char			*c;
 	bool			up_ok,down_ok;
 	d3col			col,col2;
@@ -2386,7 +2389,7 @@ void element_draw_table(element_type *element,int sel_id)
 	
 		// get element counts
 		
-	cnt=((element->high-(high+4))/row_high)-1;
+	cnt=((element->high-(high+4))/row_high);
 	
 		// header fill
 		
@@ -2414,7 +2417,19 @@ void element_draw_table(element_type *element,int sel_id)
 		// items
 		
 	if (element->data!=NULL) {
+
+			// scissor so we can draw partically
+			// obscured rows
+
+		element_get_box(element,&lx,&rx,&ty,&by);
+		gl_interface_to_screen_coords(&lx,&ty);
+		gl_interface_to_screen_coords(&rx,&by);
+
+		glEnable(GL_SCISSOR_TEST);
+		glScissor(lx,(view.screen.y_sz-by),(rx-lx),(by-ty));
 	
+			// draw the data lines
+
 		y=(element->y+4)+(high+1);
 		
 		c=element->data+(element->offset*128);
@@ -2468,6 +2483,8 @@ void element_draw_table(element_type *element,int sel_id)
 			c+=128;
 			y+=row_high;
 		}
+
+		glDisable(GL_SCISSOR_TEST);
 	}
 
 		// scroll controls

@@ -808,6 +808,7 @@ extern void gl_3D_rotate(d3pnt *pnt,d3ang *ang);
 extern void gl_2D_view_screen(void);
 extern void gl_2D_view_interface(void);
 extern void gl_3D_view_interface_model(void);
+extern void gl_interface_to_screen_coords(int *x,int *y);
 extern inline void gl_setup_project(void);
 extern inline bool gl_project_in_view_z(int x,int y,int z);
 extern inline  void gl_project_point(int *x,int *y,int *z);

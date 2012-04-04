@@ -33,19 +33,21 @@ and can be sold or given away.
 #include "network.h"
 #include "objects.h"
 
-#define join_pane_news					0
-#define join_pane_lan					1
-#define join_pane_internet				2
+#define join_pane_hosts					0
+#define join_pane_news					1
 
 #define join_tab_id						0
 
-#define join_button_join_id				1
-#define join_button_cancel_id			2
-#define join_button_rescan_id			3
-#define join_table_id					4
-#define join_status_id					5
+#define join_button_join_id				10
+#define join_button_cancel_id			11
+#define join_button_rescan_id			12
 
-#define join_news_id					6
+#define join_lan_table_id				20
+#define join_wan_table_id				21
+
+#define join_status_id					30
+
+#define join_news_id					40
 
 extern map_type				map;
 extern server_type			server;
@@ -98,7 +100,7 @@ char* join_create_list(void)
 
 void join_ping_thread_done(void)
 {
-	element_table_busy(join_table_id,NULL,-1,-1);
+//	element_table_busy(join_table_id,NULL,-1,-1);
 	element_enable(join_button_rescan_id,TRUE);
 }
 
@@ -159,7 +161,7 @@ bool join_ping_thread_add_host_to_table(int start_tick,network_reply_info *reply
 		// update table
 
 	row_data=join_create_list();
-	element_set_table_data(join_table_id,row_data);
+//	element_set_table_data(join_table_id,row_data);
 	free(row_data);
 
 	SDL_mutexV(join_thread_lock);
@@ -221,7 +223,7 @@ void join_ping_thread_lan_run(void)
 			usleep(100000);
 		}
 		
-		element_table_busy(join_table_id,"Looking for LAN Clients",(time_get()-join_thread_lan_start_tick),max_tick);
+//		element_table_busy(join_table_id,"Looking for LAN Clients",(time_get()-join_thread_lan_start_tick),max_tick);
 	}
 	
 	net_close_socket(&broadcast_sock);
@@ -235,7 +237,7 @@ int join_ping_thread_lan(void *arg)
 	
 		// reset the UI
 		
-	element_table_busy(join_table_id,NULL,1,1);
+//	element_table_busy(join_table_id,NULL,1,1);
 	join_ping_thread_done();
 	
 	return(0);
@@ -323,7 +325,7 @@ void join_ping_thread_internet_run(void)
 			sprintf(str,"Querying %s",host->ip);
 		}
 		
-		element_table_busy(join_table_id,str,n,join_host_list.count);
+//		element_table_busy(join_table_id,str,n,join_host_list.count);
 
 			// ping host
 
@@ -339,7 +341,7 @@ int join_ping_thread_internet(void *arg)
 	
 		// reset the UI
 		
-	element_table_busy(join_table_id,NULL,1,1);
+//	element_table_busy(join_table_id,NULL,1,1);
 	join_ping_thread_done();
 	
 	return(0);
@@ -353,14 +355,24 @@ int join_ping_thread_internet(void *arg)
 
 void join_ping_thread_start(void)
 {
+	char		temp[10][128]={"abc\t123\t123\t123","def","ghi","jkl","mno","pqr","stu","vwx","yz",""};
+
+	element_set_table_data(join_lan_table_id,(char*)temp);
+	element_table_busy(join_lan_table_id,NULL,-1,-1);
+
+	element_set_table_data(join_wan_table_id,(char*)temp);
+	element_table_busy(join_wan_table_id,NULL,-1,-1);
+
+	return;
+
 		// empty join list
 		
 	join_thread_quit=FALSE;
 	
 		// table is busy
 		
-	element_set_table_data(join_table_id,NULL);
-	element_table_busy(join_table_id,NULL,0,1);
+//	element_set_table_data(join_table_id,NULL);
+//	element_table_busy(join_table_id,NULL,0,1);
 	
 		// table update locks
 		
@@ -371,12 +383,12 @@ void join_ping_thread_start(void)
 	join_thread_started=TRUE;
 	
 #ifndef D3_SDL_1_3
-	if (element_get_value(join_tab_id)==join_pane_lan) {
-		join_thread=SDL_CreateThread(join_ping_thread_lan,NULL);
-	}
-	else {
-		join_thread=SDL_CreateThread(join_ping_thread_internet,NULL);
-	}
+//	if (element_get_value(join_tab_id)==join_pane_lan) {
+//		join_thread=SDL_CreateThread(join_ping_thread_lan,NULL);
+//	}
+//	else {
+//		join_thread=SDL_CreateThread(join_ping_thread_internet,NULL);
+//	}
 #else
 	if (element_get_value(join_tab_id)==join_pane_lan) {
 		join_thread=SDL_CreateThread(join_ping_thread_lan,"join",NULL);
@@ -389,6 +401,7 @@ void join_ping_thread_start(void)
 
 void join_ping_thread_end(void)
 {
+	return;
 	if (!join_thread_started) return;
 	
 	join_thread_quit=TRUE;
@@ -430,7 +443,7 @@ void join_news_pane(void)
 	element_text_box_add(join_news,join_news_id,x,y,wid,high);
 }
 
-void join_lan_internet_pane(bool lan)
+void join_lan_internet_hosts(void)
 {
 	int						x,y,wid,high,margin,padding;
 	element_column_type		cols[4];
@@ -442,7 +455,7 @@ void join_lan_internet_pane(bool lan)
 	element_enable(join_button_join_id,FALSE);
 	element_text_change(join_status_id,"");
 	
-		// hosts table
+		// hosts tables
 		
 	margin=element_get_tab_margin();
 	padding=element_get_padding();
@@ -453,7 +466,9 @@ void join_lan_internet_pane(bool lan)
 	wid=iface.scale_x-((margin+padding)*2);
 	high=(int)(((float)iface.scale_y)*0.84f)-y;
 
-	strcpy(cols[0].name,"Name");
+	if (!iface.multiplayer.local_only) high=(high/2)-5;
+
+	strcpy(cols[0].name,"LAN Host");
 	cols[0].percent_size=0.45f;
 	strcpy(cols[1].name,"Game");
 	cols[1].percent_size=0.37f;
@@ -462,8 +477,14 @@ void join_lan_internet_pane(bool lan)
 	strcpy(cols[3].name,"Ping");
 	cols[3].percent_size=0.8f;
 
-	element_table_add(cols,NULL,join_table_id,4,x,y,wid,high,FALSE,element_table_bitmap_data);
-	element_table_busy(join_table_id,NULL,0,1);
+	element_table_add(cols,NULL,join_lan_table_id,4,x,y,wid,high,FALSE,element_table_bitmap_data);
+
+	if (!iface.multiplayer.local_only) {
+		y+=(high+5);
+		strcpy(cols[0].name,"Internet Host");
+
+		element_table_add(cols,NULL,join_wan_table_id,4,x,y,wid,high,FALSE,element_table_bitmap_data);
+	}
 
 		// start the thread to build the table
 		
@@ -472,8 +493,8 @@ void join_lan_internet_pane(bool lan)
 
 void join_create_pane(void)
 {
-	int						x,y,wid,high,tab_idx,pane;
-	char					tab_list[][32]={"News","LAN","Internet"};
+	int						x,y,wid,high,pane;
+	char					tab_list[][32]={"Hosts","News"};
 	
 		// turn off any scanning threads
 		
@@ -484,14 +505,13 @@ void join_create_pane(void)
 	element_clear();
 	
 		// tabs
-		
-	tab_idx=0;
-	if (iface.multiplayer.news.host[0]==0x0) {
-		tab_idx=1;
-		if (join_tab_value==join_pane_news) join_tab_value=join_pane_lan;
+
+	if (!iface.multiplayer.local_only) {
+		element_tab_add((char*)tab_list,join_tab_value,join_tab_id,2);
 	}
-	
-	element_tab_add((char*)(tab_list[tab_idx]),join_tab_value,join_tab_id,(3-tab_idx));
+	else {
+		element_tab_add((char*)tab_list,join_tab_value,join_tab_id,1);
+	}
 	
 		// buttons
 		
@@ -522,14 +542,11 @@ void join_create_pane(void)
 	pane=element_get_value(join_tab_id);
 		
 	switch (pane) {
+		case join_pane_hosts:
+			join_lan_internet_hosts();
+			break;
 		case join_pane_news:
 			join_news_pane();
-			break;
-		case join_pane_lan:
-			join_lan_internet_pane(TRUE);
-			break;
-		case join_pane_internet:
-			join_lan_internet_pane(FALSE);
 			break;
 	}
 }
@@ -551,15 +568,16 @@ void join_open(void)
 		// get the project hash and news
 
 	net_create_project_hash();
-	net_load_news(&join_host_list,join_news);
-	
+//	net_load_news(&join_host_list,join_news);
+	join_news[0]=0x0;		// supergumba, testing
+
 		// setup gui
 		
 	gui_initialize("Bitmaps/Backgrounds","default");
 	
 		// start with first tab
 		
-	join_tab_value=join_pane_news;
+	join_tab_value=join_pane_hosts;
 	join_thread_started=FALSE;
 	
 		// create panes
@@ -600,7 +618,11 @@ void join_activity_complete(bool single,char *msg)
 	element_enable(join_button_join_id,single);
 	element_enable(join_button_cancel_id,TRUE);
 	
-	if (!single) element_set_value(join_table_id,-1);
+	if (!single) {		// supergumba -- might need to get rid of this
+		element_set_value(join_lan_table_id,-1);
+		element_set_value(join_wan_table_id,-1);
+	}
+
 	if (msg!=NULL) element_text_change(join_status_id,msg);
 	
 	gui_draw(1.0f,FALSE);
@@ -622,7 +644,7 @@ void join_game(void)
 
 		// get selected host
 
-	idx=element_get_value(join_table_id);
+	idx=element_get_value(join_lan_table_id);
 	host=&join_host_list.hosts[idx];
 
 		// reject if server is full
@@ -761,8 +783,15 @@ void join_click(void)
 			join_ping_thread_start();
 			break;
 
-		case join_table_id:
-			enable=(element_get_value(join_table_id)!=-1);
+		case join_lan_table_id:
+			enable=(element_get_value(join_lan_table_id)!=-1);
+			element_set_value(join_wan_table_id,-1);
+			element_enable(join_button_join_id,enable);
+			break;
+
+		case join_wan_table_id:
+			enable=(element_get_value(join_wan_table_id)!=-1);
+			element_set_value(join_lan_table_id,-1);
 			element_enable(join_button_join_id,enable);
 			break;
 	}
