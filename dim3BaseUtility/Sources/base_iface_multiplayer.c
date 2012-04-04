@@ -75,6 +75,7 @@ void iface_read_settings_multiplayer(iface_type *iface)
     settings_tag=xml_findfirstchild("Settings",multiplayer_head_tag);
     if (settings_tag!=-1) {
 		iface->multiplayer.on=xml_get_attribute_boolean(settings_tag,"on");
+		iface->multiplayer.local_only=xml_get_attribute_boolean(settings_tag,"local_only");
 	}
 
 		// network games
@@ -225,6 +226,7 @@ bool iface_write_settings_multiplayer(iface_type *iface,char *err_str)
 
 	xml_add_tagstart("Settings");
 	xml_add_attribute_boolean("on",iface->multiplayer.on);
+	xml_add_attribute_boolean("local_only",iface->multiplayer.local_only);
 	xml_add_tagend(TRUE);
 
 		// network games

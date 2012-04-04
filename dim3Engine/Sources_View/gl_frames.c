@@ -259,6 +259,18 @@ void gl_frame_swap(void)
 
 /* =======================================================
 
+      Interface to Screen Coordinates
+      
+======================================================= */
+
+void gl_interface_to_screen_coords(int *x,int *y)
+{
+	*x=(view.screen.x_sz*(*x))/iface.scale_x;
+	*y=(view.screen.y_sz*(*y))/iface.scale_y;
+}
+
+/* =======================================================
+
       Projection Points
       
 ======================================================= */
