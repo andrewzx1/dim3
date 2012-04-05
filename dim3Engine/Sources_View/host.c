@@ -157,6 +157,7 @@ void host_map_list_initialize(void)
 	int							n,nfile,sz;
 	char						*c;
 	char						info_name[name_str_len],game_list[256];
+	bool						singleplayer_map_picker;
 	file_path_directory_type	*map_pick_fpd;
 
 		// initial setup
@@ -203,7 +204,7 @@ void host_map_list_initialize(void)
 
 			// get the map info
 
-		if (!map_host_load_info(map_pick_fpd->files[n].file_name,info_name,game_list)) continue;
+		if (!map_host_load_info(map_pick_fpd->files[n].file_name,info_name,&singleplayer_map_picker,game_list)) continue;
 
 		strcpy(c,map_pick_fpd->files[n].file_name);
 		c+=file_str_len;

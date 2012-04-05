@@ -609,7 +609,7 @@ typedef struct		{
 					} map_info_type;
 
 typedef struct		{
-						char								network_game_list[256],params[param_str_len];
+						char								params[param_str_len];
 					} map_settings_type;
 
 typedef struct		{
@@ -617,6 +617,14 @@ typedef struct		{
 															resistance,slope_min_ang,slope_max_ang,
 															slope_max_speed,slope_min_gravity;
 					} map_physics_type;
+
+typedef struct		{
+						bool								map_picker;
+					} map_singleplayer_type;
+
+typedef struct		{
+						char								game_list[256];
+					} map_multiplayer_type;
 
 typedef struct		{
 						int									model,shadow,effect;
@@ -774,6 +782,10 @@ typedef struct		{
 															start_game_tick;
 													
 						map_info_type						info;
+
+						map_settings_type					settings;
+						map_singleplayer_type				singleplayer;
+						map_multiplayer_type				multiplayer;
 						
 						map_ambient_type					ambient;
 						map_background_type					background;
@@ -783,7 +795,6 @@ typedef struct		{
 
 						map_physics_type					physics;
 						
-						map_settings_type					settings;
 						map_optimize_type					optimize;
 						map_camera_type						camera;
 						map_media_type						media;
@@ -834,7 +845,7 @@ extern void map_center(map_type *map);
 extern int map_count_texture_frames(map_type *map,int txt);
 extern void map_setup_animated_textures(map_type *map,int tick);
 
-extern bool map_host_load_info(char *map_name,char *info_name,char *game_list);
+extern bool map_host_load_info(char *map_name,char *info_name,bool *singleplayer_map_picker,char *game_list);
 
 extern bool map_create_vertex_lists(map_type *map);
 extern void map_dispose_vertex_lists(map_type *map);

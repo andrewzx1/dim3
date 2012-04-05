@@ -64,7 +64,7 @@ void decode_map_settings_xml(map_type *map,int map_head)
     if (tag!=-1) {
         xml_get_attribute_text(tag,"name",map->info.title,name_str_len);
         xml_get_attribute_text(tag,"author",map->info.author,name_str_len);
-    }
+   }
     
     tag=xml_findfirstchild("Settings",map_head);
     if (tag!=-1) {
@@ -76,9 +76,6 @@ void decode_map_settings_xml(map_type *map,int map_head)
 		map->physics.slope_max_ang=xml_get_attribute_float_default(tag,"slope_max_ang",45.0f);
 		map->physics.slope_max_speed=xml_get_attribute_float_default(tag,"slope_max_speed",250.0f);
 		map->physics.slope_min_gravity=xml_get_attribute_float_default(tag,"slope_min_gravity",200.0f);
-
-		xml_get_attribute_text(tag,"network_game_list",map->settings.network_game_list,256);
-		xml_get_attribute_text(tag,"params",map->settings.params,param_str_len);
 	}
 	
     tag=xml_findfirstchild("Optimize",map_head);
@@ -91,10 +88,15 @@ void decode_map_settings_xml(map_type *map,int map_head)
 		map->optimize.obscure_dist.shadow=xml_get_attribute_int(tag,"shadow_obscure_distance");
 		map->optimize.obscure_dist.effect=xml_get_attribute_int(tag,"effect_obscure_distance");
 	}
+
+    tag=xml_findfirstchild("Singleplayer",map_head);
+    if (tag!=-1) {
+ 		map->singleplayer.map_picker=xml_get_attribute_boolean(tag,"map_picker");
+   }
 	
     tag=xml_findfirstchild("Network",map_head);
     if (tag!=-1) {
-        xml_get_attribute_text(tag,"game_list",map->settings.network_game_list,256);
+        xml_get_attribute_text(tag,"game_list",map->multiplayer.game_list,256);
 		xml_get_attribute_text(tag,"params",map->settings.params,param_str_len);
 	}
 	
@@ -497,7 +499,7 @@ void read_map_editor_views_xml(map_type *map,int map_head)
       
 ======================================================= */
     
-bool map_host_load_info(char *map_name,char *info_name,char *game_list)
+bool map_host_load_info(char *map_name,char *info_name,bool *singleplayer_map_picker,char *game_list)
 {
 	int				map_head,tag;
 	char			path[1024];
@@ -524,6 +526,15 @@ bool map_host_load_info(char *map_name,char *info_name,char *game_list)
     }
 	
 	if (info_name[0]==0x0) strcpy(info_name,map_name);
+
+		// get singleplayer map picker
+
+	*singleplayer_map_picker=FALSE;
+
+    tag=xml_findfirstchild("Singleplayer",map_head);
+    if (tag!=-1) {
+        *singleplayer_map_picker=xml_get_attribute_boolean(tag,"map_picker");
+	}
 
 		// get game list
 		
