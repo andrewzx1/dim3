@@ -36,14 +36,17 @@ and can be sold or given away.
 #define kMapPropertyInfoTitle				0
 #define kMapPropertyInfoAuthor				1
 
-#define kMapPropertyGravity					2
-#define kMapPropertyGravityMaxPower			3
-#define kMapPropertyGravityMaxSpeed			4
-#define kMapPropertyResistance				5
-#define kMapPropertySlopeMinAngle			6
-#define kMapPropertySlopeMaxAngle			7
-#define kMapPropertySlopeMaxSpeed			8
-#define kMapPropertySlopeMinGravity			9
+#define kMapPropertySingleplayerMapPick		2
+#define kMapPropertyMultiplayerGameList		3
+
+#define kMapPropertyGravity					10
+#define kMapPropertyGravityMaxPower			11
+#define kMapPropertyGravityMaxSpeed			12
+#define kMapPropertyResistance				13
+#define kMapPropertySlopeMinAngle			14
+#define kMapPropertySlopeMaxAngle			15
+#define kMapPropertySlopeMaxSpeed			16
+#define kMapPropertySlopeMinGravity			17
 
 #define kMapPropertyNetworkGameList			20
 
@@ -101,10 +104,15 @@ void property_palette_fill_map(void)
 	list_palette_add_float(&property_palette,kMapPropertySlopeMaxSpeed,"Slope Max Speed",&map.physics.slope_max_speed,FALSE);
 	list_palette_add_float(&property_palette,kMapPropertySlopeMinGravity,"Slope Min Gravity",&map.physics.slope_min_gravity,FALSE);
 
-		// network
+		// single player
 
-	list_palette_add_header(&property_palette,0,"Map Networking");
-	list_palette_add_string(&property_palette,kMapPropertyNetworkGameList,"Net Game List",map.settings.network_game_list,256,FALSE);
+	list_palette_add_header(&property_palette,0,"Singleplayer");
+	list_palette_add_checkbox(&property_palette,kMapPropertySingleplayerMapPick,"Include in Map Picker",&map.singleplayer.map_picker,FALSE);
+
+		// multiplayer
+
+	list_palette_add_header(&property_palette,0,"Multiplayer");
+	list_palette_add_string(&property_palette,kMapPropertyMultiplayerGameList,"Game List",map.multiplayer.game_list,256,FALSE);
 
 		// optimizations
 

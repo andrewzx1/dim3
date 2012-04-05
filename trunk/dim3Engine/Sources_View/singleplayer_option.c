@@ -70,6 +70,7 @@ void singleplayer_option_map_list_fill(void)
 	int							n,nfile,sz;
 	char						*c;
 	char						info_name[name_str_len],game_list[256];
+	bool						singleplayer_map_picker;
 	file_path_directory_type	*map_pick_fpd;
 
 		// need to make sure map paths are correct
@@ -97,7 +98,8 @@ void singleplayer_option_map_list_fill(void)
 	c=singleplayer_option_table_map_list;
 	
 	for (n=0;n!=nfile;n++) {
-		if (!map_host_load_info(map_pick_fpd->files[n].file_name,info_name,game_list)) continue;
+		if (!map_host_load_info(map_pick_fpd->files[n].file_name,info_name,&singleplayer_map_picker,game_list)) continue;
+		if (!singleplayer_map_picker) continue;
 
 		sprintf(c,"Bitmaps/Icons_Map;%s;%s",map_pick_fpd->files[n].file_name,info_name);
 		c+=128;
@@ -159,7 +161,7 @@ void singleplayer_option_open(void)
 	high=50+(padding*4);
 
 	if (iface.singleplayer.skill) high+=control_y_add;
-	if (iface.singleplayer.map_pick) high+=(singleplayer_option_table_high+(padding*2));
+	if (iface.singleplayer.map_pick) high+=(singleplayer_option_table_high+padding);
 	high+=(control_y_add*iface.singleplayer.option_list.noption);
 	
 		// dialog and frame
@@ -194,7 +196,7 @@ void singleplayer_option_open(void)
 		strcpy(cols[0].name,"Map");
 		cols[0].percent_size=1.0f;
 
-		element_table_add(cols,NULL,singleplayer_option_map_table_id,1,(x+padding),(by-padding),(wid-(padding*2)),singleplayer_option_table_high,FALSE,element_table_bitmap_data);
+		element_table_add(cols,NULL,singleplayer_option_map_table_id,1,(x+padding),(by-(padding*2)),(wid-(padding*2)),singleplayer_option_table_high,FALSE,element_table_bitmap_data);
 	
 		singleplayer_option_map_list_fill();
 		

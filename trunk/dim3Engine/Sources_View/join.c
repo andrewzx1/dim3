@@ -57,11 +57,10 @@ extern network_setup_type	net_setup;
 
 int							join_tab_value,join_thread_lan_start_tick;
 char						*join_table_data,*join_news;
-bool						join_thread_started,join_thread_quit;
-SDL_Thread					*join_thread;
-SDL_mutex					*join_thread_lock;
+bool						join_thread_started,join_thread_quit,join_run_wan;
+SDL_Thread					*join_lan_thread,*join_wan_thread;
 
-join_server_host_list_type	join_host_list;
+join_server_host_list_type	*join_host_lan_list,*join_host_wan_list;
 			
 /* =======================================================
 
@@ -69,7 +68,7 @@ join_server_host_list_type	join_host_list;
       
 ======================================================= */
 
-char* join_create_list(void)
+void join_create_list(join_server_host_list_type *list,int table_id)
 {
 	int						n,sz;
 	char					*c,*row_data;
@@ -77,27 +76,35 @@ char* join_create_list(void)
 	
 		// create row data
 		
-	sz=(join_host_list.count+1)*128;
+	sz=(list->count+1)*128;
 	
 	row_data=malloc(sz);
 	bzero(row_data,sz);
 	
 		// build table
 	
-	host=join_host_list.hosts;
+	host=list->hosts;
 	c=row_data;
 	
-	for (n=0;n!=join_host_list.count;n++) {
-		snprintf(c,128,"Bitmaps/Icons_Map;%s;%s\t%s @ %s\t%d/%d\t%dms",host->map_name,host->name,host->game_name,host->map_name,host->player_list.count,host->player_list.max_count,host->ping_msec);
+	for (n=0;n!=list->count;n++) {
+		if (host->pinged) {
+			snprintf(c,128,"Bitmaps/Icons_Map;%s;%s\t%s @ %s\t%d/%d\t%dms",host->map_name,host->name,host->game_name,host->map_name,host->player_list.count,host->player_list.max_count,host->ping_msec);
+		}
+		else {
+			snprintf(c,128,"Bitmaps/Icons_Map;;%s\tWaiting...",host->name);
+		}
 		c[127]=0x0;
 		
 		c+=128;
 		host++;
 	}
-	
-	return(row_data);
+
+	element_set_table_data(table_id,row_data);
+
+	free(row_data);
 }
 
+// supergumba -- might not need this
 void join_ping_thread_done(void)
 {
 //	element_table_busy(join_table_id,NULL,-1,-1);
@@ -110,21 +117,13 @@ void join_ping_thread_done(void)
       
 ======================================================= */
 
-bool join_ping_thread_add_host_to_table(int start_tick,network_reply_info *reply_info)
+bool join_ping_thread_update_host(join_server_host_type *host,int start_tick,network_reply_info *reply_info)
 {
 	int						n,cnt;
-	char					*row_data;
-	join_server_host_type	*host;
 
 		// only add if same project
 
 	if (strcasecmp(reply_info->proj_name,iface.project.name)!=0) return(FALSE);
-
-		// add to list
-
-	SDL_mutexP(join_thread_lock);
-
-	host=&join_host_list.hosts[join_host_list.count++];
 
 		// host
 
@@ -158,15 +157,31 @@ bool join_ping_thread_add_host_to_table(int start_tick,network_reply_info *reply
 
 	host->ping_msec=time_get()-start_tick;
 
-		// update table
-
-	row_data=join_create_list();
-//	element_set_table_data(join_table_id,row_data);
-	free(row_data);
-
-	SDL_mutexV(join_thread_lock);
+	host->pinged=TRUE;
 
 	return(TRUE);
+}
+
+bool join_ping_thread_add_host(join_server_host_list_type *list,int start_tick,network_reply_info *reply_info)
+{
+	join_server_host_type	*host;
+
+		// only add if same project
+
+	if (strcasecmp(reply_info->proj_name,iface.project.name)!=0) return(FALSE);
+
+		// add to list
+
+	host=&list->hosts[list->count];
+
+		// update
+
+	if (join_ping_thread_update_host(host,start_tick,reply_info)) {
+		list->count++;
+		return(TRUE);
+	}
+
+	return(FALSE);
 }
 
 /* =======================================================
@@ -175,7 +190,7 @@ bool join_ping_thread_add_host_to_table(int start_tick,network_reply_info *reply
       
 ======================================================= */
 
-void join_ping_thread_lan_run(void)
+int join_ping_thread_lan(void *arg)
 {
 	int					max_tick,action,net_uid;
 	unsigned char		msg[net_max_msg_size];
@@ -185,6 +200,8 @@ void join_ping_thread_lan_run(void)
 		// create a socket and send out a broadcast
 		// to all addresses on this subnet, looking for
 		// replies from a dim3 server
+
+	/*
 		
 	broadcast_sock=net_open_udp_socket();
 	if (broadcast_sock==D3_NULL_SOCKET) return;
@@ -214,6 +231,7 @@ void join_ping_thread_lan_run(void)
 		if (net_recvfrom_mesage(broadcast_sock,NULL,NULL,&action,&net_uid,msg,NULL)) {
 			if (action==net_action_reply_info) {
 				good_reply=join_ping_thread_add_host_to_table(join_thread_lan_start_tick,(network_reply_info*)msg);
+				if (good_reply) join_create_list(join_host_lan_list,join_lan_table_id);
 			}
 		}
 		
@@ -223,23 +241,14 @@ void join_ping_thread_lan_run(void)
 			usleep(100000);
 		}
 		
-//		element_table_busy(join_table_id,"Looking for LAN Clients",(time_get()-join_thread_lan_start_tick),max_tick);
+		element_table_busy(join_lan_table_id,"Looking for LAN Clients",(time_get()-join_thread_lan_start_tick),max_tick);
 	}
 	
 	net_close_socket(&broadcast_sock);
-}
+*/
+	element_table_busy(join_lan_table_id,NULL,-1,-1);
+	element_enable(join_button_rescan_id,TRUE);
 
-int join_ping_thread_lan(void *arg)
-{
-		// run the lan search thread
-		
-	join_ping_thread_lan_run();
-	
-		// reset the UI
-		
-//	element_table_busy(join_table_id,NULL,1,1);
-	join_ping_thread_done();
-	
 	return(0);
 }
 
@@ -249,13 +258,17 @@ int join_ping_thread_lan(void *arg)
       
 ======================================================= */
 
-void join_ping_thread_internet_server(char *ip)
+void join_ping_thread_wan_host(join_server_host_type *host)
 {
 	int						action,net_uid,msec,max_tick;
 	unsigned long			ip_addr,recv_ip_addr;
 	unsigned char			msg[net_max_msg_size];
 	bool					got_reply;
 	d3socket				sock;
+
+	host->pinged=TRUE;
+	return;
+
 
 	msec=time_get();
 	
@@ -266,7 +279,7 @@ void join_ping_thread_internet_server(char *ip)
 	
 	net_socket_blocking(sock,FALSE);
 	
-	ip_addr=inet_addr(ip);
+	ip_addr=inet_addr(host->ip);
 	if (ip_addr==INADDR_NONE) return;
 	
 	if (!net_sendto_msg(sock,ip_addr,net_port_host,net_action_request_info,net_uid_constant_none,NULL,0)) {
@@ -298,10 +311,11 @@ void join_ping_thread_internet_server(char *ip)
 
 		// add to list
 
-	join_ping_thread_add_host_to_table(msec,(network_reply_info*)msg);
+	join_ping_thread_update_host(host,msec,(network_reply_info*)msg);
+	join_create_list(join_host_wan_list,join_wan_table_id);
 }
 
-void join_ping_thread_internet_run(void)
+int join_ping_thread_wan(void *arg)
 {
 	int							n;
 	char						str[256];
@@ -310,13 +324,13 @@ void join_ping_thread_internet_run(void)
 		// run ping until finished or
 		// join page ends
 
-	for (n=0;n!=join_host_list.count;n++) {
+	for (n=0;n!=join_host_wan_list->count;n++) {
 	
-		if (join_thread_quit) return;
+		if (join_thread_quit) break;
 
 			// progress
 
-		host=&join_host_list.hosts[n];
+		host=&join_host_wan_list->hosts[n];
 		
 		if (host->name[0]!=0x0) {
 			sprintf(str,"Querying %s",host->name);
@@ -325,25 +339,16 @@ void join_ping_thread_internet_run(void)
 			sprintf(str,"Querying %s",host->ip);
 		}
 		
-//		element_table_busy(join_table_id,str,n,join_host_list.count);
+		element_table_busy(join_wan_table_id,str,n,join_host_wan_list->count);
 
 			// ping host
 
-		join_ping_thread_internet_server(host->ip);
+		join_ping_thread_wan_host(host);
 	}
-}
 
-int join_ping_thread_internet(void *arg)
-{
-		// run the internet search thread
-		
-	join_ping_thread_internet_run();
-	
-		// reset the UI
-		
-//	element_table_busy(join_table_id,NULL,1,1);
-	join_ping_thread_done();
-	
+	element_table_busy(join_wan_table_id,NULL,-1,-1);
+	element_enable(join_button_rescan_id,TRUE);
+
 	return(0);
 }
 
@@ -355,60 +360,48 @@ int join_ping_thread_internet(void *arg)
 
 void join_ping_thread_start(void)
 {
-	char		temp[10][128]={"abc\t123\t123\t123","def","ghi","jkl","mno","pqr","stu","vwx","yz",""};
-
-	element_set_table_data(join_lan_table_id,(char*)temp);
-	element_table_busy(join_lan_table_id,NULL,-1,-1);
-
-	element_set_table_data(join_wan_table_id,(char*)temp);
-	element_table_busy(join_wan_table_id,NULL,-1,-1);
-
-	return;
-
 		// empty join list
 		
 	join_thread_quit=FALSE;
+
+		// wan table OK
+
+	join_run_wan=FALSE;
+	if (!iface.multiplayer.local_only) {
+		join_run_wan=join_host_wan_list->count!=0;
+	}
 	
-		// table is busy
-		
-//	element_set_table_data(join_table_id,NULL);
-//	element_table_busy(join_table_id,NULL,0,1);
-	
-		// table update locks
-		
-	join_thread_lock=SDL_CreateMutex();
+		// tables are busy
+		// local table is always cleared
+
+	join_host_lan_list->count=0;
+
+	element_set_table_data(join_lan_table_id,NULL);
+	element_table_busy(join_lan_table_id,NULL,0,1);
+
+	if (join_run_wan) element_table_busy(join_wan_table_id,NULL,0,1);
 
 		// start pinging hosts
 		
 	join_thread_started=TRUE;
-	
+
 #ifndef D3_SDL_1_3
-//	if (element_get_value(join_tab_id)==join_pane_lan) {
-//		join_thread=SDL_CreateThread(join_ping_thread_lan,NULL);
-//	}
-//	else {
-//		join_thread=SDL_CreateThread(join_ping_thread_internet,NULL);
-//	}
+	join_lan_thread=SDL_CreateThread(join_ping_thread_lan,NULL);
+	if (join_run_wan) join_wan_thread=SDL_CreateThread(join_ping_thread_wan,NULL);
 #else
-//	if (element_get_value(join_tab_id)==join_pane_lan) {
-//		join_thread=SDL_CreateThread(join_ping_thread_lan,"join",NULL);
-//	}
-//	else {
-//		join_thread=SDL_CreateThread(join_ping_thread_internet,"join",NULL);
-//	}
+	join_lan_thread=SDL_CreateThread(join_ping_thread_lan,"join_lan",NULL);
+	if (join_run_wan) join_wan_thread=SDL_CreateThread(join_ping_thread_wan,"join_wan",NULL);
 #endif
 }
 
 void join_ping_thread_end(void)
 {
-	return;
 	if (!join_thread_started) return;
 	
 	join_thread_quit=TRUE;
 	
-	SDL_WaitThread(join_thread,NULL);
-	
-	SDL_DestroyMutex(join_thread_lock);
+	SDL_WaitThread(join_lan_thread,NULL);
+	if (join_run_wan) SDL_WaitThread(join_wan_thread,NULL);
 	
 	join_thread_started=FALSE;
 }
@@ -468,7 +461,7 @@ void join_lan_internet_hosts(void)
 
 	if (!iface.multiplayer.local_only) high=(high/2)-5;
 
-	strcpy(cols[0].name,"LAN Host");
+	strcpy(cols[0].name,"Local Host");
 	cols[0].percent_size=0.45f;
 	strcpy(cols[1].name,"Game");
 	cols[1].percent_size=0.37f;
@@ -477,13 +470,19 @@ void join_lan_internet_hosts(void)
 	strcpy(cols[3].name,"Ping");
 	cols[3].percent_size=0.8f;
 
+		// lan list
+
 	element_table_add(cols,NULL,join_lan_table_id,4,x,y,wid,high,FALSE,element_table_bitmap_data);
+
+		// wan list
 
 	if (!iface.multiplayer.local_only) {
 		y+=(high+5);
 		strcpy(cols[0].name,"Internet Host");
 
 		element_table_add(cols,NULL,join_wan_table_id,4,x,y,wid,high,FALSE,element_table_bitmap_data);
+
+		join_create_list(join_host_wan_list,join_wan_table_id);
 	}
 
 		// start the thread to build the table
@@ -559,17 +558,50 @@ void join_create_pane(void)
 
 void join_open(void)
 {
-		// current no hosts to query
+	int				n;
 
-	join_host_list.count=0;
+		// news data
 
 	join_news=(char*)malloc(max_join_server_news_len);
+	join_news[0]=0x0;
 
-		// get the project hash and news
+		// host lists
+
+	join_host_lan_list=(join_server_host_list_type*)malloc(sizeof(join_server_host_list_type));
+	join_host_wan_list=(join_server_host_list_type*)malloc(sizeof(join_server_host_list_type));
+
+	join_host_lan_list->count=0;
+	join_host_wan_list->count=0;
+
+		// get the project hash
 
 	net_create_project_hash();
-//	net_load_news(&join_host_list,join_news);
-	join_news[0]=0x0;		// supergumba, testing
+
+		// if internet hosts, then get
+		// news and master host list
+
+	if (!iface.multiplayer.local_only) {
+
+			// load the news
+
+	//	net_load_news(&join_host_list,join_news);
+
+		strcpy(join_news,"Here's some news!");		// supergumba, testing
+
+		join_host_wan_list->count=3;
+		strcpy(join_host_wan_list->hosts[0].name,"Test 1");
+		strcpy(join_host_wan_list->hosts[0].ip,"10.0.0.1");
+		strcpy(join_host_wan_list->hosts[1].name,"Test 2");
+		strcpy(join_host_wan_list->hosts[1].ip,"10.0.0.2");
+		strcpy(join_host_wan_list->hosts[2].name,"Test 3");
+		strcpy(join_host_wan_list->hosts[2].ip,"10.0.0.3");
+
+			// nothing queried yet
+
+		for (n=0;n!=join_host_wan_list->count;n++) {
+			join_host_wan_list->hosts[n].pinged=FALSE;
+		}
+	}
 
 		// setup gui
 		
@@ -587,9 +619,18 @@ void join_open(void)
 
 void join_close(void)
 {
-	free(join_news);
+		// stop any pinging
 
 	join_ping_thread_end();
+
+		// free lists
+
+	free(join_news);
+	free(join_host_lan_list);
+	free(join_host_wan_list);
+
+		// shutdown gui
+	
 	gui_shutdown();
 }
 
@@ -645,7 +686,15 @@ void join_game(void)
 		// get selected host
 
 	idx=element_get_value(join_lan_table_id);
-	host=&join_host_list.hosts[idx];
+	if (idx!=-1) {
+		host=&join_host_lan_list->hosts[idx];
+	}
+	else {
+		if (iface.multiplayer.local_only) return;
+		
+		idx=element_get_value(join_wan_table_id);
+		host=&join_host_wan_list->hosts[idx];
+	}
 
 		// reject if server is full
 

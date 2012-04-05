@@ -77,8 +77,10 @@ bool map_new(map_type *map,char *name)
 	
 		// settings
 
-	map->settings.network_game_list[0]=0x0;
 	map->settings.params[0]=0x0;
+
+	map->singleplayer.map_picker=TRUE;
+	map->multiplayer.game_list[0]=0x0;
 	
 		// optimization
 		

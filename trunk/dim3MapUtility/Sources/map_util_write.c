@@ -144,7 +144,7 @@ void write_map_settings_xml(map_type *map)
     xml_add_tagstart("Info");
     xml_add_attribute_text("name",map->info.title);
     xml_add_attribute_text("author",map->info.author);
-    xml_add_tagend(TRUE);
+	xml_add_tagend(TRUE);
     
     xml_add_tagstart("Settings");
     xml_add_attribute_float("gravity",map->physics.gravity);
@@ -167,8 +167,12 @@ void write_map_settings_xml(map_type *map)
     xml_add_attribute_int("effect_obscure_distance",map->optimize.obscure_dist.effect);
 	xml_add_tagend(TRUE);
 	
+    xml_add_tagstart("Singleplayer");
+	xml_add_attribute_boolean("map_picker",map->singleplayer.map_picker);
+	xml_add_tagend(TRUE);
+
     xml_add_tagstart("Network");
-	xml_add_attribute_text("game_list",map->settings.network_game_list);
+	xml_add_attribute_text("game_list",map->multiplayer.game_list);
 	xml_add_attribute_text("params",map->settings.params);
 	xml_add_tagend(TRUE);
 
