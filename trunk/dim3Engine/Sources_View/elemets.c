@@ -2422,11 +2422,7 @@ void element_draw_table(element_type *element,int sel_id)
 			// obscured rows
 
 		element_get_box(element,&lx,&rx,&ty,&by);
-		gl_interface_to_screen_coords(&lx,&ty);
-		gl_interface_to_screen_coords(&rx,&by);
-
-		glEnable(GL_SCISSOR_TEST);
-		glScissor(lx,(view.screen.y_sz-by),(rx-lx),(by-ty));
+		gl_2D_scissor_start(lx,rx,ty,by);
 	
 			// draw the data lines
 
@@ -2484,7 +2480,7 @@ void element_draw_table(element_type *element,int sel_id)
 			y+=row_high;
 		}
 
-		glDisable(GL_SCISSOR_TEST);
+		gl_2D_scissor_end();
 	}
 
 		// scroll controls

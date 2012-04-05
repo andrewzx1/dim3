@@ -263,10 +263,25 @@ void gl_frame_swap(void)
       
 ======================================================= */
 
-void gl_interface_to_screen_coords(int *x,int *y)
+void gl_2D_scissor_start(int lx,int rx,int ty,int by)
 {
-	*x=(view.screen.x_sz*(*x))/iface.scale_x;
-	*y=(view.screen.y_sz*(*y))/iface.scale_y;
+	lx=(view.screen.x_sz*(lx))/iface.scale_x;
+	rx=(view.screen.x_sz*(rx))/iface.scale_x;
+	ty=(view.screen.y_sz*(ty))/iface.scale_y;
+	by=(view.screen.y_sz*(by))/iface.scale_y;
+
+	glEnable(GL_SCISSOR_TEST);
+	
+#ifndef D3_ROTATE_VIEW
+	glScissor(lx,(view.screen.y_sz-by),(rx-lx),(by-ty));
+#else
+	glScissor((view.screen.y_sz-by),lx,(by-ty),(rx-lx));
+#endif
+}
+
+void gl_2D_scissor_end(void)
+{
+	glDisable(GL_SCISSOR_TEST);
 }
 
 /* =======================================================
