@@ -346,9 +346,9 @@ void menu_draw(void)
 		
 			// background
 			
-		back_col2.r=back_col.r*element_gradient_factor;
-		back_col2.g=back_col.g*element_gradient_factor;
-		back_col2.b=back_col.b*element_gradient_factor;
+		back_col2.r=back_col.r*element_gradient_factor_background;
+		back_col2.g=back_col.g*element_gradient_factor_background;
+		back_col2.b=back_col.b*element_gradient_factor_background;
 		
 		top=y-half_high;
 		bot=y+half_high;

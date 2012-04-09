@@ -260,7 +260,7 @@ typedef struct		{
 															respawn_secs,game_reset_secs;
 						char								ip[256],name[64],
 															game_name[name_str_len],map_name[name_str_len];
-						bool								pinged;
+						bool								pinged,unreachable;
 						join_server_host_player_list_type	player_list;
 					} join_server_host_type;
 

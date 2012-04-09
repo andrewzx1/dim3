@@ -98,9 +98,9 @@ and can be sold or given away.
 													"Auto-Texture Mesh", \
 													"Rotate Mode", \
 													"Move Mode", \
-													"Click To Select Nodes", \
-													"Click To Add Node Link", \
-													"Click To Remove Node Link", \
+													"Click Form Normal Node Selection", \
+													"Click Node To Add Link From Selected Node", \
+													"Click Node To Remove Link From Selected Node", \
 													"Show Normals", \
 													"Show Obscured (Green) and Culled (Gray) Polygons", \
 													"Edit Map Script", \

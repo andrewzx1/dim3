@@ -64,8 +64,8 @@ void tool_tip_setup(d3pnt *pnt,char *str,bool right)
 		
 	strcpy(tool_tip_str,str);
 
-	wid=text_width(tool_tip_font_size,str);
-	high=(int)tool_tip_font_size;
+	wid=text_width(tool_tip_font_size,str)+4;
+	high=(int)(tool_tip_font_size+2);
 
 	if (!right) {
 		tool_tip_box.lx=pnt->x;
@@ -148,6 +148,6 @@ void tool_tip_draw(void)
 	
 		// the tip
 
-	text_draw((tool_tip_box.lx+2),(tool_tip_box.by-2),tool_tip_font_size,NULL,tool_tip_str);
+	text_draw((tool_tip_box.lx+4),(tool_tip_box.by-2),tool_tip_font_size,NULL,tool_tip_str);
 }
 

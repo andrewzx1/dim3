@@ -49,7 +49,7 @@ touch_state_type			touch_states[max_touch_state];
 
 /* =======================================================
 
-      Joystick Initialize
+      Touch Initialize
       
 ======================================================= */
 
@@ -80,6 +80,17 @@ void input_touch_initialize(void)
 
 void input_touch_shutdown(void)
 {
+}
+
+/* =======================================================
+
+      Check If Touch Input OK
+      
+======================================================= */
+
+bool input_touch_check_ok(void)
+{
+	return(TRUE);
 }
 
 /* =======================================================
@@ -420,6 +431,7 @@ bool input_touch_gui_is_click_down(void)
 
 void input_touch_initialize(void) {}
 void input_touch_shutdown(void) {}
+bool input_touch_check_ok(void) { return(FALSE); }
 void input_touch_clear(void) {}
 void input_touch_event_up(int finger_id) {}
 void input_touch_event_down(int touch_id,int finger_id,int x,int y) {}

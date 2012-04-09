@@ -49,6 +49,7 @@ bool js_map_setting_set_resistance(JSContextRef cx,JSObjectRef j_obj,JSStringRef
 JSValueRef js_map_get_parameter_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_map_set_ambient_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_map_clear_ambient_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_map_get_time_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 JSStaticValue 		map_setting_props[]={
 							{"gravity",				js_map_setting_get_gravity,				js_map_setting_set_gravity,			kJSPropertyAttributeDontDelete},
@@ -62,6 +63,7 @@ JSStaticFunction	map_setting_functions[]={
 							{"getParameter",		js_map_get_parameter_func,				kJSPropertyAttributeDontDelete},
 							{"setAmbient",			js_map_set_ambient_func,				kJSPropertyAttributeDontDelete},
 							{"clearAmbient",		js_map_clear_ambient_func,				kJSPropertyAttributeDontDelete},
+							{"getTime",				js_map_get_time_func,					kJSPropertyAttributeDontDelete},
 							{0,0,0}};
 
 JSClassRef			map_setting_class;
@@ -196,5 +198,12 @@ JSValueRef js_map_clear_ambient_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 	
 	map_clear_ambient();
 	return(script_null_to_value(cx));
+}
+
+JSValueRef js_map_get_time_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+{
+	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
+	
+    return(script_int_to_value(cx,(game_time_get()-server.time.map_start_tick)));
 }
 

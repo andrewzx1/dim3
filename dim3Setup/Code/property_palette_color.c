@@ -128,12 +128,6 @@ void property_palette_fill_color(void)
 	list_palette_add_pick_color(&property_palette,kSettingsColorControlMouseOver,"Control Mouse Over",&iface.color.control.mouse_over,FALSE);
 	list_palette_add_pick_color(&property_palette,kSettingsColorControlHilite,"Control Highlight",&iface.color.control.hilite,FALSE);
 	list_palette_add_pick_color(&property_palette,kSettingsColorControlDisabled,"Control Disabled",&iface.color.control.disabled,FALSE);
-
-		// scrollbar color
-		
-	list_palette_add_header(&property_palette,0,"Scrollbar Colors");
-	list_palette_add_pick_color(&property_palette,kSettingsColorScrollBarBackground,"ScrollBar Background",&iface.color.scrollbar.background,FALSE);
-	list_palette_add_pick_color(&property_palette,kSettingsColorScrollBarThumb,"ScrollBar Thumb",&iface.color.scrollbar.thumb,FALSE);
 	
 		// button color
 		

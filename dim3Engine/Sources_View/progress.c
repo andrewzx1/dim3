@@ -93,6 +93,7 @@ void progress_shutdown(void)
 void progress_next(void)
 {
 	int				lft,rgt,top,bot,mid,rgt2;
+	d3col			col;
 
 	progress_current++;
 	
@@ -123,9 +124,13 @@ void progress_next(void)
 	bot=iface.progress.by;
 
 	mid=(top+bot)>>1;
+	
+	col.r=iface.progress.background_color.r*element_gradient_factor_foreground;
+	col.g=iface.progress.background_color.g*element_gradient_factor_foreground;
+	col.b=iface.progress.background_color.b*element_gradient_factor_foreground;
 
-	view_primitive_2D_color_poly(lft,top,&iface.progress.base_color_end,rgt,top,&iface.progress.base_color_end,rgt,mid,&iface.progress.base_color_start,lft,mid,&iface.progress.base_color_start,1.0f);
-	view_primitive_2D_color_poly(lft,mid,&iface.progress.base_color_start,rgt,mid,&iface.progress.base_color_start,rgt,bot,&iface.progress.base_color_end,lft,bot,&iface.progress.base_color_end,1.0f);
+	view_primitive_2D_color_poly(lft,top,&col,rgt,top,&col,rgt,mid,&iface.progress.background_color,lft,mid,&iface.progress.background_color,1.0f);
+	view_primitive_2D_color_poly(lft,mid,&iface.progress.background_color,rgt,mid,&iface.progress.background_color,rgt,bot,&col,lft,bot,&col,1.0f);
 	
 		// draw the progress foreground
 	
@@ -136,9 +141,13 @@ void progress_next(void)
 		else {
 			rgt2=lft+(((rgt-lft)*progress_current)/progress_max);
 		}
+		
+		col.r=iface.progress.hilite_color.r*element_gradient_factor_foreground;
+		col.g=iface.progress.hilite_color.g*element_gradient_factor_foreground;
+		col.b=iface.progress.hilite_color.b*element_gradient_factor_foreground;
 
-		view_primitive_2D_color_poly(lft,top,&iface.progress.hilite_color_start,rgt2,top,&iface.progress.hilite_color_start,rgt2,mid,&iface.progress.hilite_color_end,lft,mid,&iface.progress.hilite_color_end,1.0f);
-		view_primitive_2D_color_poly(lft,mid,&iface.progress.hilite_color_end,rgt2,mid,&iface.progress.hilite_color_end,rgt2,bot,&iface.progress.hilite_color_start,lft,bot,&iface.progress.hilite_color_start,1.0f);
+		view_primitive_2D_color_poly(lft,top,&iface.progress.hilite_color,rgt2,top,&iface.progress.hilite_color,rgt2,mid,&col,lft,mid,&col,1.0f);
+		view_primitive_2D_color_poly(lft,mid,&col,rgt2,mid,&col,rgt2,bot,&iface.progress.hilite_color,lft,bot,&iface.progress.hilite_color,1.0f);
 	}
 
 		// progress outline

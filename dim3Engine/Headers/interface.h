@@ -605,6 +605,7 @@ extern bool input_joystick_get_button(int button);
 
 extern void input_touch_initialize(void);
 extern void input_touch_shutdown(void);
+extern bool input_touch_check_ok(void);
 extern void input_touch_clear(void);
 extern bool input_touch_get_state(int idx);
 extern void input_touch_get_point(int idx,int *x,int *y);
