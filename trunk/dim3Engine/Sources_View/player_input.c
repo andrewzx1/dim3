@@ -602,26 +602,49 @@ void player_get_6_way_input(obj_type *obj,float *mouse_x,float *mouse_y,bool *go
 		*mouse_x=*mouse_y=0.0f;
 	}
 
+		// keyboard
+		
 	*go_forward=input_action_get_state(nc_move_forward);
 	*go_backward=input_action_get_state(nc_move_backward);
 	*go_side_left=input_action_get_state(nc_sidestep_left);
 	*go_side_right=input_action_get_state(nc_sidestep_right);
+	
+		// touch
+		
+		// if one virtual joystick, treat as forward/backwards + turn
+		// if two, treat as dual stick controls
+		
+	if (input_touch_check_ok()) {
+	
+		if ((iface.virtual_control.sticks[0].on) && (!iface.virtual_control.sticks[1].on)) {
+			(*mouse_x)+=input_touch_get_axis(0);
+
+			(*go_forward)|=input_touch_get_axis_as_button_min(1);
+			(*go_backward)|=input_touch_get_axis_as_button_max(1);
+		}
+		else {
+			if ((iface.virtual_control.sticks[0].on) && (iface.virtual_control.sticks[1].on)) {
+				(*mouse_x)-=input_touch_get_axis(2);
+				(*mouse_y)+=input_touch_get_axis(3);
+
+				(*go_forward)|=input_touch_get_axis_as_button_min(1);
+				(*go_backward)|=input_touch_get_axis_as_button_max(1);
+				(*go_side_left)|=input_touch_get_axis_as_button_min(0);
+				(*go_side_right)|=input_touch_get_axis_as_button_max(0);
+			}
+		}
+	}
+		
+		// joystick
 
 	if (input_check_joystick_ok()) {
 		(*mouse_x)-=input_joystick_get_axis(2);
-		(*mouse_x)-=input_touch_get_axis(2);
-		
 		(*mouse_y)+=input_joystick_get_axis(3);
-		(*mouse_y)+=input_touch_get_axis(3);
 
 		(*go_forward)|=input_joystick_get_axis_as_button_min(1);
-		(*go_forward)|=input_touch_get_axis_as_button_min(1);
 		(*go_backward)|=input_joystick_get_axis_as_button_max(1);
-		(*go_backward)|=input_touch_get_axis_as_button_max(1);
 		(*go_side_left)|=input_joystick_get_axis_as_button_min(0);
-		(*go_side_left)|=input_touch_get_axis_as_button_min(0);
 		(*go_side_right)|=input_joystick_get_axis_as_button_max(0);
-		(*go_side_right)|=input_touch_get_axis_as_button_max(0);
 	}
 
 	if (input_action_get_state(nc_turn_left)) (*mouse_x)-=obj->turn.key_speed;
@@ -645,20 +668,29 @@ void player_get_6_way_input(obj_type *obj,float *mouse_x,float *mouse_y,bool *go
 
 void player_get_4_way_input(bool *go_left,bool *go_right,bool *go_up,bool *go_down)
 {
+		// keyboard
+		
 	*go_left=input_action_get_state(nc_turn_left);
 	*go_right=input_action_get_state(nc_turn_right);
 	*go_up=input_action_get_state(nc_up);
 	*go_down=input_action_get_state(nc_down);
+	
+		// touch
+		
+	if (input_touch_check_ok()) {
+		(*go_left)|=input_touch_get_axis_as_button_min(0);
+		(*go_right)|=input_touch_get_axis_as_button_max(0);
+		(*go_up)|=input_touch_get_axis_as_button_min(1);
+		(*go_down)|=input_touch_get_axis_as_button_max(1);
+	}
 
+		// joystick
+		
 	if (input_check_joystick_ok()) {
 		(*go_left)|=input_joystick_get_axis_as_button_min(0);
-		(*go_left)|=input_touch_get_axis_as_button_min(0);
 		(*go_right)|=input_joystick_get_axis_as_button_max(0);
-		(*go_right)|=input_touch_get_axis_as_button_max(0);
 		(*go_up)|=input_joystick_get_axis_as_button_min(1);
-		(*go_up)|=input_touch_get_axis_as_button_min(1);
 		(*go_down)|=input_joystick_get_axis_as_button_max(1);
-		(*go_down)|=input_touch_get_axis_as_button_max(1);
 	}
 
 	if (*go_right) *go_left=FALSE;

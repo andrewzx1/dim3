@@ -218,7 +218,7 @@ void setup_game_audio_pane(void)
 	control_y_add=element_get_control_high();
 	control_y_sz=control_y_add*2;
 	
-	x=(int)(((float)iface.scale_x)*0.4f);
+	x=(int)(((float)iface.scale_x)*0.38f);
 	y=((iface.scale_y>>1)+(element_get_button_high()>>1))-(control_y_sz>>1);
 	
 	element_slider_add("Sound Volume",setup.sound_volume,0.0f,1.0f,ctrl_sound_volume_id,x,y,TRUE);
@@ -354,12 +354,12 @@ void setup_game_player_pane(void)
 	control_y_add=element_get_control_high();
 	control_y_sz=control_y_add*3;
 	
-	x=(int)(((float)iface.scale_x)*0.24f);
-	
 	if (iface.multiplayer.character_list.ncharacter!=0) {
+		x=(int)(((float)iface.scale_x)*0.24f);
 		y=((margin+element_get_tab_control_high())+padding)+control_y_add;
 	}
 	else {
+		x=(int)(((float)iface.scale_x)*0.38f);
 		y=(iface.scale_y>>1)-(control_y_sz>>1);
 	}
 	

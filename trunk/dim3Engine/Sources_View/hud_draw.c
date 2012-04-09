@@ -387,6 +387,21 @@ void hud_texts_spread(char *data)
 	sprintf(data,"%d",spread);
 }
 
+void hud_texts_map_timer(char *data)
+{
+	int				tick,min,sec,millisec;
+	
+	tick=game_time_get()-server.time.map_start_tick;
+	
+	min=tick/(1000*60);
+	tick=tick%(1000*60);
+	
+	sec=tick/1000;
+	millisec=(tick%1000)/100;
+
+	sprintf(data,"%d:%.2d.%d",min,sec,millisec);
+}
+
 /* =======================================================
 
       Draw HUD Text
@@ -462,6 +477,10 @@ void hud_texts_draw(void)
 				
 			case text_special_spread:
 				hud_texts_spread(text->data);
+				break;
+				
+			case text_special_map_timer:
+				hud_texts_map_timer(text->data);
 				break;
 
 		}

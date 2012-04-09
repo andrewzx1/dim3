@@ -1075,8 +1075,8 @@
 		260B3DBF1411F28B006ED023 /* dim3BaseUtility */ = {
 			isa = PBXGroup;
 			children = (
-				260B3DC21411F67B006ED023 /* Cocoa_Stubs */,
 				260B3DC51411F67B006ED023 /* Headers */,
+				260B3DC21411F67B006ED023 /* Cocoa_Stubs */,
 				260B3DC91411F67B006ED023 /* Sources */,
 			);
 			name = dim3BaseUtility;

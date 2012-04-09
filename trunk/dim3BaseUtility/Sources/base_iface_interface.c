@@ -692,8 +692,6 @@ void iface_read_settings_interface(iface_type *iface)
 		xml_get_attribute_color(color_tag,"control_mouse_over",&iface->color.control.mouse_over);
 		xml_get_attribute_color(color_tag,"control_hilite",&iface->color.control.hilite);
 		xml_get_attribute_color(color_tag,"control_disabled",&iface->color.control.disabled);
-		xml_get_attribute_color(color_tag,"scrollbar_background",&iface->color.scrollbar.background);
-		xml_get_attribute_color(color_tag,"scrollbar_thumb",&iface->color.scrollbar.thumb);
 		xml_get_attribute_color(color_tag,"button_fill",&iface->color.button.fill);
 		xml_get_attribute_color(color_tag,"button_text",&iface->color.button.text);
 		xml_get_attribute_color(color_tag,"button_outline",&iface->color.button.outline);
@@ -738,10 +736,8 @@ void iface_read_settings_interface(iface_type *iface)
 		iface->progress.by=xml_get_attribute_int(progress_tag,"bottom_y");
 		iface->progress.outline=xml_get_attribute_boolean(progress_tag,"outline");
 		iface->progress.overlay=xml_get_attribute_boolean(progress_tag,"overlay");
-		xml_get_attribute_color(progress_tag,"base_color_start",&iface->progress.base_color_start);
-		xml_get_attribute_color(progress_tag,"base_color_end",&iface->progress.base_color_end);
-		xml_get_attribute_color(progress_tag,"hilite_color_start",&iface->progress.hilite_color_start);
-		xml_get_attribute_color(progress_tag,"hilite_color_end",&iface->progress.hilite_color_end);
+		xml_get_attribute_color(progress_tag,"background_color",&iface->progress.background_color);
+		xml_get_attribute_color(progress_tag,"hilite_color",&iface->progress.hilite_color);
 		xml_get_attribute_color(progress_tag,"outline_color",&iface->progress.outline_color);
 	}
 	
@@ -862,9 +858,8 @@ void iface_read_settings_interface(iface_type *iface)
 		iface->setup.game_audio=xml_get_attribute_boolean(setup_tag,"game_audio");
 		iface->setup.game_control=xml_get_attribute_boolean(setup_tag,"game_control");
 		iface->setup.game_action=xml_get_attribute_boolean(setup_tag,"game_action");
+		iface->setup.game_player=xml_get_attribute_boolean(setup_tag,"game_player");
 		iface->setup.game_debug=xml_get_attribute_boolean(setup_tag,"game_debug");
-		iface->setup.net_player=xml_get_attribute_boolean(setup_tag,"net_player");
-		iface->setup.net_host=xml_get_attribute_boolean(setup_tag,"net_host");
 		iface->setup.no_resolution_switch=xml_get_attribute_boolean(setup_tag,"no_resolution_switch");
 		iface->setup.allow_auto_aim=xml_get_attribute_boolean(setup_tag,"allow_auto_aim");
 	}
@@ -1344,8 +1339,6 @@ bool iface_write_settings_interface(iface_type *iface,char *err_str)
 	xml_add_attribute_color("control_mouse_over",&iface->color.control.mouse_over);
 	xml_add_attribute_color("control_hilite",&iface->color.control.hilite);
 	xml_add_attribute_color("control_disabled",&iface->color.control.disabled);
-	xml_add_attribute_color("scrollbar_background",&iface->color.scrollbar.background);
-	xml_add_attribute_color("scrollbar_thumb",&iface->color.scrollbar.thumb);
 	xml_add_attribute_color("button_fill",&iface->color.button.fill);
 	xml_add_attribute_color("button_text",&iface->color.button.text);
 	xml_add_attribute_color("button_outline",&iface->color.button.outline);
@@ -1385,10 +1378,8 @@ bool iface_write_settings_interface(iface_type *iface,char *err_str)
 	xml_add_attribute_int("bottom_y",iface->progress.by);
 	xml_add_attribute_boolean("outline",iface->progress.outline);
 	xml_add_attribute_boolean("overlay",iface->progress.overlay);
-	xml_add_attribute_color("base_color_start",&iface->progress.base_color_start);
-	xml_add_attribute_color("base_color_end",&iface->progress.base_color_end);
-	xml_add_attribute_color("hilite_color_start",&iface->progress.hilite_color_start);
-	xml_add_attribute_color("hilite_color_end",&iface->progress.hilite_color_end);
+	xml_add_attribute_color("background_color",&iface->progress.background_color);
+	xml_add_attribute_color("hilite_color",&iface->progress.hilite_color);
 	xml_add_attribute_color("outline_color",&iface->progress.outline_color);
 	xml_add_tagend(TRUE);
 
@@ -1509,9 +1500,8 @@ bool iface_write_settings_interface(iface_type *iface,char *err_str)
 	xml_add_attribute_boolean("game_audio",iface->setup.game_audio);
 	xml_add_attribute_boolean("game_control",iface->setup.game_control);
 	xml_add_attribute_boolean("game_action",iface->setup.game_action);
+	xml_add_attribute_boolean("game_player",iface->setup.game_player);
 	xml_add_attribute_boolean("game_debug",iface->setup.game_debug);
-	xml_add_attribute_boolean("net_player",iface->setup.net_player);
-	xml_add_attribute_boolean("net_host",iface->setup.net_host);
 	xml_add_attribute_boolean("no_resolution_switch",iface->setup.no_resolution_switch);
 	xml_add_attribute_boolean("allow_auto_aim",iface->setup.allow_auto_aim);
 	xml_add_tagend(TRUE);

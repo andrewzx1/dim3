@@ -39,11 +39,9 @@ and can be sold or given away.
 #define kSettingsProgressBottom					3
 #define kSettingsProgressOutline				4
 #define kSettingsProgressOverlay				5
-#define kSettingsProgressBaseColorStart			6
-#define kSettingsProgressBaseColorEnd			7
-#define kSettingsProgressHiliteColorStart		8
-#define kSettingsProgressHiliteColorEnd			9
-#define kSettingsProgressOutlineColor			10
+#define kSettingsProgressBackgroundColor		6
+#define kSettingsProgressHiliteColor			7
+#define kSettingsProgressOutlineColor			8
 
 extern iface_type				iface;
 extern setup_state_type			state;
@@ -72,10 +70,8 @@ void property_palette_fill_progress(void)
 	list_palette_add_checkbox(&property_palette,kSettingsProgressOverlay,"Overlay",&iface.progress.overlay,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Colors");
-	list_palette_add_pick_color(&property_palette,kSettingsProgressBaseColorStart,"Base Color Start",&iface.progress.base_color_start,FALSE);
-	list_palette_add_pick_color(&property_palette,kSettingsProgressBaseColorEnd,"Base Color End",&iface.progress.base_color_end,FALSE);
-	list_palette_add_pick_color(&property_palette,kSettingsProgressHiliteColorStart,"Highlight Color Start",&iface.progress.hilite_color_start,FALSE);
-	list_palette_add_pick_color(&property_palette,kSettingsProgressHiliteColorEnd,"Highlight Color End",&iface.progress.hilite_color_end,FALSE);
+	list_palette_add_pick_color(&property_palette,kSettingsProgressBackgroundColor,"Background",&iface.progress.background_color,FALSE);
+	list_palette_add_pick_color(&property_palette,kSettingsProgressHiliteColor,"Highlight Color",&iface.progress.hilite_color,FALSE);
 	list_palette_add_pick_color(&property_palette,kSettingsProgressOutlineColor,"Outline Color",&iface.progress.outline_color,FALSE);
 }
 

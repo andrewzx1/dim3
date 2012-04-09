@@ -50,7 +50,7 @@ For iOS Compile:
 /iOSBuild/Common/Libraries/MPG123 (mpg123 static lib and headers)
 /iOSBuild/Common/Libraries/SDL (SDL static lib and headers)
 
-A pre-compiled archive of these can be found at: http://www.klinksoftware.net/download/iPad_Libraries.zip
+A pre-compiled archive of these can be found at: http://www.klinksoftware.net/download/iOS_Libraries.zip
 
 The iPhone compile requires no additional external libraries.
 

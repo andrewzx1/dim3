@@ -1106,7 +1106,8 @@ typedef struct		{
 						int								run_tick,
 														network_update_tick,
 														network_group_synch_tick,
-														network_latency_ping_tick;
+														network_latency_ping_tick,
+														map_start_tick;
 						bool							paused;
 					} server_time_type;
 

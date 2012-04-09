@@ -1536,8 +1536,8 @@
 		26A6846A13DE452C007513D1 /* BaseUtility */ = {
 			isa = PBXGroup;
 			children = (
-				260B43DE1411FB18006ED023 /* Cocoa_Stubs */,
 				260B43E11411FB18006ED023 /* Headers */,
+				260B43DE1411FB18006ED023 /* Cocoa_Stubs */,
 				260B43E51411FB18006ED023 /* Sources */,
 			);
 			name = BaseUtility;

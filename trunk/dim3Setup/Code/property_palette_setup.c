@@ -40,10 +40,8 @@ and can be sold or given away.
 #define kSetupPropertyGameAudio				11
 #define kSetupPropertyGameControl			12
 #define kSetupPropertyGameAction			13
-#define kSetupPropertyGameDebug				14
-
-#define kSetupPropertyNetPlayer				20
-#define kSetupPropertyNetHost				21
+#define kSetupPropertyGamePlayer			14
+#define kSetupPropertyGameDebug				15
 
 extern iface_type				iface;
 extern setup_state_type			state;
@@ -72,13 +70,8 @@ void property_palette_fill_setup(void)
 	list_palette_add_checkbox(&property_palette,kSetupPropertyGameAudio,"Audio Tab",&iface.setup.game_audio,FALSE);
 	list_palette_add_checkbox(&property_palette,kSetupPropertyGameControl,"Control Tab",&iface.setup.game_control,FALSE);
 	list_palette_add_checkbox(&property_palette,kSetupPropertyGameAction,"Action Tab",&iface.setup.game_action,FALSE);
+	list_palette_add_checkbox(&property_palette,kSetupPropertyGamePlayer,"Player Tab",&iface.setup.game_player,FALSE);
 	list_palette_add_checkbox(&property_palette,kSetupPropertyGameDebug,"Debug Tab",&iface.setup.game_debug,FALSE);
-
-		// net setup
-
-	list_palette_add_header(&property_palette,0,"Net Setup");
-	list_palette_add_checkbox(&property_palette,kSetupPropertyNetPlayer,"Player Tab",&iface.setup.net_player,FALSE);
-	list_palette_add_checkbox(&property_palette,kSetupPropertyNetHost,"Host Tab",&iface.setup.net_host,FALSE);
 }
 
 /* =======================================================

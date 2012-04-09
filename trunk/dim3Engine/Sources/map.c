@@ -532,7 +532,11 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 		
 	input_clear();
 	
+		// unpause game and start map timer
+		
 	game_time_pause_end();
+	
+	server.time.map_start_tick=game_time_get();
 	
 		// start any map open media
 		

@@ -226,9 +226,8 @@ void iface_default_settings(iface_type *iface)
 	iface->setup.game_audio=TRUE;
 	iface->setup.game_control=TRUE;
 	iface->setup.game_action=TRUE;
+	iface->setup.game_player=TRUE;
 	iface->setup.game_debug=FALSE;
-	iface->setup.net_player=TRUE;
-	iface->setup.net_host=TRUE;		
 	iface->setup.no_resolution_switch=FALSE;
 	iface->setup.allow_auto_aim=FALSE;
 	
@@ -266,9 +265,6 @@ void iface_default_settings(iface_type *iface)
 	iface->color.control.hilite.g=0.3f;
 	iface->color.control.disabled.r=iface->color.control.disabled.g=iface->color.control.disabled.b=0.3f;
 
-	iface->color.scrollbar.background.r=iface->color.scrollbar.background.g=iface->color.scrollbar.background.b=0.7f;
-	iface->color.scrollbar.thumb.r=iface->color.scrollbar.thumb.g=iface->color.scrollbar.thumb.b=0.5f;
-
 	iface->color.button.fill.r=iface->color.button.fill.g=iface->color.button.fill.b=0.6f;
 	iface->color.button.text.r=iface->color.button.text.g=iface->color.button.text.b=0.0f;
 	iface->color.button.outline.r=iface->color.button.outline.g=iface->color.button.outline.b=0.0f;
@@ -296,14 +292,10 @@ void iface_default_settings(iface_type *iface)
 	iface->progress.by=470;
 	iface->progress.outline=TRUE;
 	iface->progress.overlay=FALSE;
-	iface->progress.base_color_start.r=0.4f;
-	iface->progress.base_color_start.g=iface->progress.base_color_start.b=0.0f;
-	iface->progress.base_color_end.r=1.0f;
-	iface->progress.base_color_end.g=iface->progress.base_color_end.b=0.0f;
-	iface->progress.hilite_color_start.g=0.4f;
-	iface->progress.hilite_color_start.r=iface->progress.hilite_color_start.b=0.0f;
-	iface->progress.hilite_color_end.g=1.0f;
-	iface->progress.hilite_color_end.r=iface->progress.hilite_color_end.b=0.0f;
+	iface->progress.background_color.r=0.4f;
+	iface->progress.background_color.g=iface->progress.background_color.b=0.0f;
+	iface->progress.hilite_color.g=0.4f;
+	iface->progress.hilite_color.r=iface->progress.hilite_color.b=0.0f;
 	iface->progress.outline_color.r=iface->progress.outline_color.g=iface->progress.outline_color.b=1.0f;
 	
 		// chat

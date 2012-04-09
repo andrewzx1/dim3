@@ -39,15 +39,10 @@ and can be sold or given away.
 #define kIntroPropertyButtonGameNew						10
 #define kIntroPropertyButtonGameLoad					11
 #define kIntroPropertyButtonGameSetup					12
-#define kIntroPropertyButtonGameNewEasy					13
-#define kIntroPropertyButtonGameNewMedium				14
-#define kIntroPropertyButtonGameNewHard					15
-#define kIntroPropertyButtonGameNewCancel				16
-#define kIntroPropertyButtonMultiplayerHost				17
-#define kIntroPropertyButtonMultiplayerJoin				18
-#define kIntroPropertyButtonMultiplayerSetup			19
-#define kIntroPropertyButtonCredit						20
-#define kIntroPropertyButtonQuit						21
+#define kIntroPropertyButtonMultiplayerHost				13
+#define kIntroPropertyButtonMultiplayerJoin				14
+#define kIntroPropertyButtonCredit						15
+#define kIntroPropertyButtonQuit						16
 
 #define kIntroPropertySimpleSaveDescTextSize			30
 #define kIntroPropertySimpleSaveProgressOn				31

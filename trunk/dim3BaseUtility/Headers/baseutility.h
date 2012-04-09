@@ -528,10 +528,6 @@ typedef struct		{
 					} iface_color_control_type;
 
 typedef struct		{
-						d3col							background,thumb;
-					} iface_color_scrollbar_type;
-
-typedef struct		{
 						d3col							fill,text,outline;
 					} iface_color_button_type;
 
@@ -546,7 +542,6 @@ typedef struct		{
 						iface_color_dialog_type			dialog;
 						iface_color_tab_type			tab;
 						iface_color_control_type		control;
-						iface_color_scrollbar_type		scrollbar;
 						iface_color_button_type			button;
 						iface_color_system_type			system;
 					} iface_color_type;
@@ -581,8 +576,9 @@ typedef struct		{
 #define text_special_score								2
 #define text_special_place								3
 #define text_special_spread								4
+#define text_special_map_timer							5
 
-#define text_special_list_def							{"none","fps","score","place","spread",""}
+#define text_special_list_def							{"none","fps","score","place","spread","map_timer",""}
 
 #define iface_text_mini_wid_factor						0.015f
 #define iface_text_small_wid_factor						0.02f
@@ -815,8 +811,7 @@ typedef struct		{
 typedef struct		{
 						int								lx,rx,ty,by;
 						bool							outline,overlay;
-						d3col							base_color_start,base_color_end,
-														hilite_color_start,hilite_color_end,
+						d3col							background_color,hilite_color,
 														outline_color;
 					} iface_progress_type;
 
@@ -914,8 +909,7 @@ typedef struct		{
 
 typedef struct		{
 						bool							game_video,game_audio,game_control,
-														game_action,game_debug,
-														net_player,net_host,
+														game_action,game_player,game_debug,
 														no_resolution_switch,allow_auto_aim;							
 					} iface_setup_type;
 
