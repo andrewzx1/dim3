@@ -41,8 +41,6 @@ and can be sold or given away.
 
 #define singleplayer_option_option_start_id		100
 
-#define singleplayer_option_table_high			310
-
 extern int					intro_simple_save_idx;
 
 extern server_type			server;
@@ -142,8 +140,8 @@ void singleplayer_option_map_list_get_name(int idx,char *name)
 
 void singleplayer_option_open(void)
 {
-	int						n,x,y,bx,by,wid,high,
-							padding,control_y_add;
+	int						n,x,y,bx,by,wid,high,table_high,
+							butt_wid,butt_high,padding,control_y_add;
 	element_column_type		cols[1];
 	iface_sp_option_type	*sp_option;
 
@@ -157,12 +155,19 @@ void singleplayer_option_open(void)
 
 	padding=element_get_padding();
 	control_y_add=element_get_control_high();
+	
+	butt_wid=element_get_button_short_wid();
+	butt_high=element_get_button_high();
 
-	high=50+(padding*4);
+	if (iface.singleplayer.map_pick) {
+		high=iface.scale_y-50;
+	}
+	else {
+		high=50+(padding*4);
 
-	if (iface.singleplayer.skill) high+=control_y_add;
-	if (iface.singleplayer.map_pick) high+=(singleplayer_option_table_high+padding);
-	high+=(control_y_add*iface.singleplayer.option_list.noption);
+		if (iface.singleplayer.skill) high+=control_y_add;
+		high+=(control_y_add*iface.singleplayer.option_list.noption);
+	}
 	
 		// dialog and frame
 
@@ -195,8 +200,10 @@ void singleplayer_option_open(void)
 	if (iface.singleplayer.map_pick) {
 		strcpy(cols[0].name,"Map");
 		cols[0].percent_size=1.0f;
+		
+		table_high=(high-(by-y))-(butt_high+(padding*1));
 
-		element_table_add(cols,NULL,singleplayer_option_map_table_id,1,(x+padding),(by-(padding*2)),(wid-(padding*2)),singleplayer_option_table_high,FALSE,element_table_bitmap_data);
+		element_table_add(cols,NULL,singleplayer_option_map_table_id,1,(x+padding),(by-(padding*2)),(wid-(padding*2)),table_high,FALSE,element_table_bitmap_data);
 	
 		singleplayer_option_map_list_fill();
 		
@@ -208,8 +215,8 @@ void singleplayer_option_open(void)
 	bx=(x+wid)-padding;
 	by=(y+high)-padding;
 
-	element_button_text_add("Play",singleplayer_option_button_ok_id,bx,by,100,50,element_pos_right,element_pos_bottom);
-	element_button_text_add("Cancel",singleplayer_option_button_cancel_id,((bx-100)-padding),by,100,50,element_pos_right,element_pos_bottom);
+	element_button_text_add("Play",singleplayer_option_button_ok_id,bx,by,butt_wid,butt_high,element_pos_right,element_pos_bottom);
+	element_button_text_add("Cancel",singleplayer_option_button_cancel_id,((bx-butt_wid)-padding),by,butt_wid,butt_high,element_pos_right,element_pos_bottom);
 	
 		// in key state
 	
@@ -253,7 +260,8 @@ void singleplayer_option_click(void)
 
 				// get setup
 
-			skill=element_get_value(singleplayer_option_skill_id);
+			skill=skill_medium;
+			if (iface.singleplayer.skill) skill=element_get_value(singleplayer_option_skill_id);
 			
 			option_flags=0x0;
 			for (n=0;n!=iface.singleplayer.option_list.noption;n++) {

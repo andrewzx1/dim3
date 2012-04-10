@@ -35,7 +35,7 @@ and can be sold or given away.
 // tools
 //
 
-#define tool_count								37
+#define tool_count								38
 #define tool_button_size						32
 
 #define tool_file_names							{ \
@@ -57,6 +57,7 @@ and can be sold or given away.
 													"Tool Rotate Mode", \
 													"Tool Move Mode", \
 													"Tool Node Select", \
+													"Tool Node Duplicate", \
 													"Tool Node Link", \
 													"Tool Node Remove Link", \
 													"Tool Normals", \
@@ -78,7 +79,7 @@ and can be sold or given away.
 													"Tool Liquid", \
 											}
 											
-#define tool_separators						{"0001010010010011010010100000000000000"}
+#define tool_separators						{"00010100100100110100010100000000000000"}
 
 #define tool_tip_names							{ \
 													"Move Vertexes and Meshes Freely", \
@@ -98,7 +99,8 @@ and can be sold or given away.
 													"Auto-Texture Mesh", \
 													"Rotate Mode", \
 													"Move Mode", \
-													"Click Form Normal Node Selection", \
+													"Click Node To Select", \
+													"Click Node To Duplicate, Drag and Auto-Link", \
 													"Click Node To Add Link From Selected Node", \
 													"Click Node To Remove Link From Selected Node", \
 													"Show Normals", \
@@ -149,8 +151,9 @@ and can be sold or given away.
 //
 
 #define node_mode_select						0
-#define node_mode_link							1
-#define node_mode_remove_link					2
+#define node_mode_duplicate						1
+#define node_mode_link							2
+#define node_mode_remove_link					3
 
 //
 // handle modes

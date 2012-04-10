@@ -316,6 +316,7 @@ extern bool import_obj(char *path,char *err_str);
 //
 
 extern bool node_link_click(int node_idx);
+extern int node_duplicate_and_drag(int org_node_idx);
 extern void node_path_rebuild(void);
 
 //

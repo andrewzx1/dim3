@@ -133,16 +133,18 @@ bool tool_get_highlight_state(int tool_idx)
 		case 17:
 			return(state.node_mode==node_mode_select);
 		case 18:
-			return(state.node_mode==node_mode_link);
+			return(state.node_mode==node_mode_duplicate);
 		case 19:
+			return(state.node_mode==node_mode_link);
+		case 20:
 			return(state.node_mode==node_mode_remove_link);
 			
 			// normals and culling
 
-		case 20:
+		case 21:
 			view=view_get_current_view();
 			return(state.show_normals);
-		case 21:
+		case 22:
 			view=view_get_current_view();
 			return(view->cull);
 	}
@@ -266,10 +268,16 @@ void tool_click(int tool_idx)
 		case 18:
 			state.show_node=TRUE;
 			menu_update_view();
-			state.node_mode=node_mode_link;
+			state.node_mode=node_mode_duplicate;
 			break;
 			
 		case 19:
+			state.show_node=TRUE;
+			menu_update_view();
+			state.node_mode=node_mode_link;
+			break;
+			
+		case 20:
 			state.show_node=TRUE;
 			menu_update_view();
 			state.node_mode=node_mode_remove_link;
@@ -277,72 +285,72 @@ void tool_click(int tool_idx)
 			
 			// normals
 			
-		case 20:
+		case 21:
 			state.show_normals=!state.show_normals;
 			break;
 			
-		case 21:
+		case 22:
 			view=view_get_current_view();
 			view_cull(!view->cull);
 			break;
 			
 			// script and run buttons
 			
-		case 22:
+		case 23:
 			launch_map_script_editor();
 			break;
 			
-		case 23:
+		case 24:
 			launch_engine();
 			break;
 			
 			// pieces create
 			
-		case 25:
+		case 26:
 			piece_create_spot();
 			break;
 			
-		case 26:
+		case 27:
 			piece_create_light();
 			break;
 			
-		case 27:
+		case 28:
 			piece_create_sound();
 			break;
 			
-		case 28:
+		case 29:
 			piece_create_particle();
 			break;
 			
-		case 29:
+		case 30:
 			piece_create_scenery();
 			break;
 			
-		case 30:
+		case 31:
 			piece_create_node();
 			break;
 			
-		case 31:
+		case 32:
 			piece_add_obj_mesh();
 			break;
 			
-		case 32:
+		case 33:
 			piece_add_obj_mesh_uv();
 			break;
 			
-		case 33:
+		case 34:
 			piece_add_height_map_mesh();
 			break;
 			
-		case 34:
+		case 35:
 			piece_add_grid_mesh();
 			break;
 			
-		case 35:
+		case 36:
 			piece_add_polygon_mesh();
 			break;
 			
-		case 36:
+		case 37:
 			piece_create_liquid();
 			break;
 			
