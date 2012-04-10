@@ -97,7 +97,7 @@ and can be sold or given away.
 #define element_control_draw_long_width			0.4f
 
 #define element_table_max_image					16
-#define element_table_bitmap_size				55
+#define element_table_bitmap_size				0.07f
 #define element_table_max_check					128
 #define element_table_check_column_size			0.18f
 

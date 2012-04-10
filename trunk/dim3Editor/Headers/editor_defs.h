@@ -188,7 +188,7 @@ and can be sold or given away.
 // movement scales
 //
 
-#define move_mouse_scale						30
+#define move_mouse_scale						40
 #define move_mouse_turn_reduce_scale			5.0f
 
 #define move_scroll_wheel_scale					300

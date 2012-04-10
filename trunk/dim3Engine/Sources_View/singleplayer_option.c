@@ -160,7 +160,7 @@ void singleplayer_option_open(void)
 	butt_high=element_get_button_high();
 
 	if (iface.singleplayer.map_pick) {
-		high=iface.scale_y-50;
+		high=iface.scale_y-(50+control_y_add);
 	}
 	else {
 		high=50+(padding*4);
