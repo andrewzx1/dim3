@@ -2088,7 +2088,7 @@ int element_get_table_row_count(element_type *element)
 static inline int element_get_table_row_high(element_type *element)
 {
 	if (element->setup.table.bitmap_mode==element_table_bitmap_none) return(gl_text_get_char_height(iface.font.text_size_medium)+4);
-	return(element_table_bitmap_size+4);
+	return((int)(((float)iface.scale_x)*element_table_bitmap_size)+4);
 }
 
 void element_click_table(element_type *element,int x,int y)
@@ -2270,7 +2270,7 @@ unsigned long element_draw_table_get_image_gl_id(element_type *element,int row_i
 
 void element_draw_table_line_data(element_type *element,int x,int y,int row,int wid,int row_high,d3col *txt_col,char *data)
 {
-	int				n,dx,dy,tx,col_wid;
+	int				n,dx,dy,tx,col_wid,bitmap_sz;
 	unsigned long	gl_id;
 	char			*c,*c2,txt[256];
 	bool			first_col,checked;
@@ -2316,13 +2316,15 @@ void element_draw_table_line_data(element_type *element,int x,int y,int row,int 
 
 		if ((element->setup.table.bitmap_mode!=element_table_bitmap_none) && (first_col)) {
 
+			bitmap_sz=(int)(((float)iface.scale_x)*element_table_bitmap_size);
+
 				// draw bitmap
 
 			gl_id=element_draw_table_get_image_gl_id(element,row);
 
 			if (gl_id!=-1) {
-				view_primitive_2D_texture_quad(gl_id,NULL,1.0f,dx,(dx+element_table_bitmap_size),(y+2),((y+2)+element_table_bitmap_size),0.0f,1.0f,0.0f,1.0f);
-				view_primitive_2D_line_quad(&iface.color.control.outline,1.0f,dx,(dx+element_table_bitmap_size),(y+2),((y+2)+element_table_bitmap_size));
+				view_primitive_2D_texture_quad(gl_id,NULL,1.0f,dx,(dx+bitmap_sz),(y+2),((y+2)+bitmap_sz),0.0f,1.0f,0.0f,1.0f);
+				view_primitive_2D_line_quad(&iface.color.control.outline,1.0f,dx,(dx+bitmap_sz),(y+2),((y+2)+bitmap_sz));
 			}
 
 				// missing graphic
@@ -2332,13 +2334,13 @@ void element_draw_table_line_data(element_type *element,int x,int y,int row,int 
 				col.r=col.g=col.b=0.6f;
 				col2.r=col2.g=col2.b=0.4f;
 
-				view_primitive_2D_color_poly(dx,(y+2),&col,(dx+element_table_bitmap_size),(y+2),&col,(dx+element_table_bitmap_size),((y+2)+element_table_bitmap_size),&col2,dx,((y+2)+element_table_bitmap_size),&col2,1.0f);
-				view_primitive_2D_line_quad(&iface.color.control.outline,1.0f,dx,(dx+element_table_bitmap_size),(y+2),((y+2)+element_table_bitmap_size));
+				view_primitive_2D_color_poly(dx,(y+2),&col,(dx+bitmap_sz),(y+2),&col,(dx+bitmap_sz),((y+2)+bitmap_sz),&col2,dx,((y+2)+bitmap_sz),&col2,1.0f);
+				view_primitive_2D_line_quad(&iface.color.control.outline,1.0f,dx,(dx+bitmap_sz),(y+2),((y+2)+bitmap_sz));
 
 				col.r=col.g=col.b=1.0f;
 
 				gl_text_start(font_interface_index,iface.font.text_size_large);
-				gl_text_draw((dx+(element_table_bitmap_size>>1)),(y+(element_table_bitmap_size>>1)),"?",tx_center,TRUE,&col,1.0f);
+				gl_text_draw((dx+(bitmap_sz>>1)),(y+(bitmap_sz>>1)),"?",tx_center,TRUE,&col,1.0f);
 				gl_text_end();
 			}
 
@@ -2352,7 +2354,7 @@ void element_draw_table_line_data(element_type *element,int x,int y,int row,int 
 				}
 			}
 
-			tx+=(element_table_bitmap_size+4);
+			tx+=(bitmap_sz+4);
 		}
 
 		first_col=FALSE;
