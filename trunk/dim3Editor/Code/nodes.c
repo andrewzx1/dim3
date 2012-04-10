@@ -157,6 +157,46 @@ bool node_link_click(int node_idx)
 
 /* =======================================================
 
+      Duplicate and Drag Nodes
+      
+======================================================= */
+
+int node_duplicate_and_drag(int org_node_idx)
+{
+	int				n,node_idx,k1,k2;
+	
+		// no more nodes
+		
+	if (map.nnode==max_node) {
+		os_dialog_alert("Can Not Create Node","You've reached the maximum number of nodes for a map.");
+		return(-1);
+	}
+	
+		// duplicate current node
+		
+	node_idx=map.nnode;
+
+	memmove(&map.nodes[map.nnode],&map.nodes[org_node_idx],sizeof(node_type));
+
+	for (n=0;n!=max_node_link;n++) {
+		map.nodes[map.nnode].link[n]=-1;
+	}
+
+	map.nnode++;
+	
+		// link them
+		
+	k1=node_link_get_free_link(org_node_idx);
+	k2=node_link_get_free_link(node_idx);
+	
+	map.nodes[org_node_idx].link[k1]=node_idx;
+	map.nodes[node_idx].link[k2]=org_node_idx;
+
+	return(node_idx);
+}
+
+/* =======================================================
+
       Rebuild Node Paths
       
 ======================================================= */

@@ -1600,10 +1600,10 @@ void element_draw_checkbox_control(int x,int y,int wid,bool checked,bool enabled
 
 	gl_text_start(font_interface_index,iface.font.text_size_medium);
 	if (checked) {
-		gl_text_draw((rgt-(wid>>2)),(y-2),"on",tx_center,TRUE,&iface.color.control.label,1.0f);
+		gl_text_draw((rgt-(wid>>2)),(y-1),"on",tx_center,TRUE,&iface.color.control.label,1.0f);
 	}
 	else {
-		gl_text_draw((lft+(wid>>2)),(y-2),"off",tx_center,TRUE,&iface.color.control.label,1.0f);
+		gl_text_draw((lft+(wid>>2)),(y-1),"off",tx_center,TRUE,&iface.color.control.label,1.0f);
 	}
 	gl_text_end();
 

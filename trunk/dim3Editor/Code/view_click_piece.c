@@ -705,7 +705,7 @@ void view_click_piece_map_pick_start(editor_view_type *view)
 
 void view_click_piece(editor_view_type *view,d3pnt *pt,bool double_click)
 {
-	int				type,main_idx,sub_idx;
+	int				type,main_idx,sub_idx,org_node_idx;
 	d3rect			box;
 
 		// convert point to view
@@ -749,14 +749,28 @@ void view_click_piece(editor_view_type *view,d3pnt *pt,bool double_click)
 		piece_mesh_poly_invert_normals(&map.mesh.meshes[main_idx].polys[sub_idx]);
 	}
 	
-		// if a node, check link
-		// connections
+		// if a node, run special node
+		// click types
 		
-	if ((type==node_piece) && (state.node_mode!=node_mode_select)) {
-		if (node_link_click(main_idx)) {
-			main_wind_draw();
-			return;
+	if (type==node_piece) {
+	
+		switch (state.node_mode) {
+		
+			case node_mode_duplicate:
+				org_node_idx=main_idx;
+				main_idx=node_duplicate_and_drag(main_idx);
+				if (main_idx==-1) return;
+				break;
+		
+			case node_mode_link:
+			case node_mode_remove_link:
+				if (node_link_click(main_idx)) {
+					main_wind_draw();
+					return;
+				}
+				break;
 		}
+		
 	}
 	
 		// drag selects or toggle selection
@@ -799,7 +813,20 @@ void view_click_piece(editor_view_type *view,d3pnt *pt,bool double_click)
 
 		// item (spots, lights, sounds, etc) drags
 
-	if (view_click_drag_item(view,pt)) return;
+	if (view_click_drag_item(view,pt)) {
+		
+			// special check for node piece,
+			// if we are duplicate dragging, reselect
+			// old node so it's easy to click again
+			
+		if ((type==node_piece) && (state.node_mode==node_mode_duplicate)) {
+			select_clear();
+			select_add(node_piece,org_node_idx,-1);
+			main_wind_draw();
+		}
+		
+		return;
+	}
 	
 		// liquid drags
 		

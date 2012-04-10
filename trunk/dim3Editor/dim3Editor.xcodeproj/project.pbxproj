@@ -102,6 +102,8 @@
 		261833CB14DDEB42004DD37A /* libPNG.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 261833CA14DDEB42004DD37A /* libPNG.a */; };
 		261CEB8112D156D800D1D8BF /* dialog_obj_import.c in Sources */ = {isa = PBXBuildFile; fileRef = 261CEB8012D156D800D1D8BF /* dialog_obj_import.c */; };
 		26232DD313065713008DC42B /* osx_dialog.h in Headers */ = {isa = PBXBuildFile; fileRef = 26232DD213065713008DC42B /* osx_dialog.h */; };
+		262BFC961533BB51006C1CF6 /* Tool Node Duplicate.png in Resources */ = {isa = PBXBuildFile; fileRef = 262BFC951533BB51006C1CF6 /* Tool Node Duplicate.png */; };
+		262BFC971533BB8A006C1CF6 /* Tool Node Duplicate.png in Copy (Tools Icons) */ = {isa = PBXBuildFile; fileRef = 262BFC951533BB51006C1CF6 /* Tool Node Duplicate.png */; };
 		262C38D212D0211200A94FEE /* ui_common.h in Headers */ = {isa = PBXBuildFile; fileRef = 262C38D112D0211200A94FEE /* ui_common.h */; };
 		262C397012D0268500A94FEE /* list_palette_common.c in Sources */ = {isa = PBXBuildFile; fileRef = 262C396F12D0268500A94FEE /* list_palette_common.c */; };
 		262DD2AC151E31CC0078FEA4 /* base_iface_score.c in Sources */ = {isa = PBXBuildFile; fileRef = 262DD2AB151E31CC0078FEA4 /* base_iface_score.c */; };
@@ -294,6 +296,7 @@
 				26F95ED3125AD24D0016127D /* Tool Free Look.png in Copy (Tools Icons) */,
 				26F95ED4125AD24D0016127D /* Tool Large Grid.png in Copy (Tools Icons) */,
 				26F95ED6125AD24D0016127D /* Tool Move Mode.png in Copy (Tools Icons) */,
+				262BFC971533BB8A006C1CF6 /* Tool Node Duplicate.png in Copy (Tools Icons) */,
 				26F95ED7125AD24D0016127D /* Tool Move Points Together.png in Copy (Tools Icons) */,
 				26F95ED8125AD24D0016127D /* Tool Move Points.png in Copy (Tools Icons) */,
 				26F95ED9125AD24D0016127D /* Tool No Grid.png in Copy (Tools Icons) */,
@@ -464,6 +467,7 @@
 		261833CA14DDEB42004DD37A /* libPNG.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libPNG.a; sourceTree = "<group>"; };
 		261CEB8012D156D800D1D8BF /* dialog_obj_import.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = dialog_obj_import.c; path = Code/dialog_obj_import.c; sourceTree = "<group>"; };
 		26232DD213065713008DC42B /* osx_dialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = osx_dialog.h; path = ../dim3Common/Headers/osx_dialog.h; sourceTree = SOURCE_ROOT; };
+		262BFC951533BB51006C1CF6 /* Tool Node Duplicate.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Tool Node Duplicate.png"; sourceTree = "<group>"; };
 		262C38D112D0211200A94FEE /* ui_common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ui_common.h; path = ../dim3Common/Headers/ui_common.h; sourceTree = SOURCE_ROOT; };
 		262C396F12D0268500A94FEE /* list_palette_common.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = list_palette_common.c; path = ../dim3Common/Code/list_palette_common.c; sourceTree = SOURCE_ROOT; };
 		262DD2AB151E31CC0078FEA4 /* base_iface_score.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = base_iface_score.c; sourceTree = "<group>"; };
@@ -925,6 +929,7 @@
 				26636B0F125A8EE20090A321 /* Tool Move Points.png */,
 				26636B10125A8EE20090A321 /* Tool No Grid.png */,
 				26636B11125A8EE20090A321 /* Tool Node Link.png */,
+				262BFC951533BB51006C1CF6 /* Tool Node Duplicate.png */,
 				26636B12125A8EE20090A321 /* Tool Node Remove Link.png */,
 				26636B13125A8EE20090A321 /* Tool Node Select.png */,
 				26636B14125A8EE20090A321 /* Tool Normals.png */,
@@ -1181,6 +1186,7 @@
 				F5A4322C055602DF002DF965 /* dim3 Editor.icns in Resources */,
 				26459B6513DBDA8800D7DD73 /* Back.png in Resources */,
 				26E30100144B6FDE00BB4BD5 /* dim3 Editor.xib in Resources */,
+				262BFC961533BB51006C1CF6 /* Tool Node Duplicate.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
