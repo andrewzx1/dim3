@@ -861,7 +861,7 @@ extern inline void gl_texture_transparent_light_map_end(void);
 extern inline void gl_texture_transparent_light_map_set(GLuint txt_id,GLuint lmap_txt_id,float alpha);
 extern inline void gl_texture_glow_start(void);
 extern inline void gl_texture_glow_end(void);
-extern inline void gl_texture_glow_set(GLuint txt_id,GLuint glow_id,float glow_color);
+extern inline void gl_texture_glow_set(GLuint glow_id,float glow_color);
 extern inline void gl_texture_decal_start(void);
 extern inline void gl_texture_decal_end(void);
 extern inline void gl_texture_decal_set(GLuint txt_id,float r,float g,float b,float alpha);
