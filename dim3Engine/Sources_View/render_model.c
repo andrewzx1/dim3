@@ -435,6 +435,7 @@ void render_model_release_vertex_objects(void)
 void render_model_opaque_normal(model_type *mdl,int mesh_idx,model_draw *draw)
 {
 	int						n,v_idx,frame,txt_idx;
+	bool					had_glow;
 	unsigned char			*cull_ptr;
 	model_mesh_type			*mesh;
 	model_poly_type			*poly;
@@ -456,6 +457,11 @@ void render_model_opaque_normal(model_type *mdl,int mesh_idx,model_draw *draw)
 	glDepthMask(GL_TRUE);
 
 	gl_texture_opaque_start();
+
+		// check for glows to
+		// see if we need to do another pass
+
+	had_glow=FALSE;
 
 		// run through the polys
 
@@ -483,6 +489,10 @@ void render_model_opaque_normal(model_type *mdl,int mesh_idx,model_draw *draw)
 			poly++;
 			continue;
 		}
+
+			// does this require a glow pass?
+
+		had_glow=had_glow||draw_mesh->textures[txt_idx].glow;
 	
 			// set texture
 
@@ -502,6 +512,55 @@ void render_model_opaque_normal(model_type *mdl,int mesh_idx,model_draw *draw)
 	}
 
 	gl_texture_opaque_end();
+
+		// if we had any glows,
+		// then do a second pass
+
+	if (had_glow) {
+
+		glDepthMask(GL_FALSE);
+
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_ONE,GL_ONE);
+
+		gl_texture_glow_start();
+
+			// run through the polys
+
+		v_idx=0;
+		poly=mesh->polys;
+
+		for (n=0;n!=mesh->npoly;n++) {
+
+				// is this poly texture glow
+
+			txt_idx=poly->txt_idx;
+
+			if (!draw_mesh->textures[txt_idx].glow) {
+				v_idx+=poly->ptsz;
+				poly++;
+				continue;
+			}
+
+				// get texture
+
+			frame=draw_mesh->textures[txt_idx].frame;
+			texture=&mdl->textures[txt_idx];
+
+			gl_texture_glow_set(texture->frames[frame].glowmap.gl_id,texture->glow.current_color);
+
+				// draw poly
+			
+			glDrawArrays(GL_TRIANGLE_FAN,v_idx,poly->ptsz);
+			
+			v_idx+=poly->ptsz;
+			poly++;
+
+			view.count.model_poly++;
+		}
+		
+		gl_texture_glow_end();
+	}
 }
 
 void render_model_opaque_shader(model_type *mdl,int mesh_idx,model_draw *draw,view_glsl_light_list_type *light_list)
@@ -764,67 +823,6 @@ void render_model_transparent_shader(model_type *mdl,int mesh_idx,model_draw *dr
 	if (cur_additive) glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 			
 	gl_shader_draw_end();
-}
-
-void render_model_glow(model_type *mdl,int mesh_idx,model_draw *draw)
-{
-	int						n,v_idx,frame,txt_idx;
-	model_mesh_type			*mesh;
- 	model_poly_type			*poly;
-	model_draw_mesh_type	*draw_mesh;
-    texture_type			*texture;
-	
-	mesh=&mdl->meshes[mesh_idx];
-	draw_mesh=&draw->meshes[mesh_idx];
-
-		// setup drawing
-
-	glDisable(GL_BLEND);
-
-	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_NOTEQUAL,0);
-
-	glEnable(GL_DEPTH_TEST); 
-	glDepthFunc(GL_LEQUAL);
-	glDepthMask(GL_FALSE);
-
-	gl_texture_glow_start();
-
-		// run through the polys
-
-	v_idx=0;
-	poly=mesh->polys;
-
-	for (n=0;n!=mesh->npoly;n++) {
-
-			// is this poly texture glow
-
-		txt_idx=poly->txt_idx;
-
-		if (!draw_mesh->textures[txt_idx].glow) {
-			v_idx+=poly->ptsz;
-			poly++;
-			continue;
-		}
-
-			// get texture
-
-		frame=draw_mesh->textures[txt_idx].frame;
-		texture=&mdl->textures[txt_idx];
-
-		gl_texture_glow_set(texture->frames[frame].bitmap.gl_id,texture->frames[frame].glowmap.gl_id,texture->glow.current_color);
-
-			// draw poly
-		
-		glDrawArrays(GL_TRIANGLE_FAN,v_idx,poly->ptsz);
-		
-		v_idx+=poly->ptsz;
-		poly++;
-
-		view.count.model_poly++;
-	}
-	
-	gl_texture_glow_end();
 }
 
 /* =======================================================
@@ -1200,12 +1198,6 @@ void render_model_opaque(model_draw *draw)
 		}
 		else {
 			render_model_opaque_shader(mdl,n,draw,&light_list);
-		}
-		
-			// render glow segments
-
-		if (draw->has_glow) {
-			if (draw->meshes[n].has_glow) render_model_glow(mdl,n,draw);
 		}
 
 		render_model_release_vertex_objects();

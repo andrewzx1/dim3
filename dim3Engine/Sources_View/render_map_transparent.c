@@ -191,14 +191,12 @@ void render_transparent_mesh_normal(void)
 	glClientActiveTexture(GL_TEXTURE0);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
-		// we do glows separately
-		// when on the normal path
+		// check for glows to
+		// see if we need to do another pass
 
 	had_glow=FALSE;
 
 		// run through the draw list
-		// color array only used for
-		// non-glowing polygons
 
 	in_additive=FALSE;
 	cur_mesh_idx=-1;
@@ -213,12 +211,9 @@ void render_transparent_mesh_normal(void)
 		mesh=&map.mesh.meshes[mesh_idx];
 		poly=&mesh->polys[trans_sort.list[n].poly_idx];
 
-			// skip glows
+			// does this require a glow pass?
 
-		if (poly->draw.glow_on) {
-			had_glow=TRUE;
-			continue;
-		}
+		had_glow=poly->draw.glow_on;
 
 			// the mesh vbo
 			// only change when mesh is changing
@@ -298,12 +293,20 @@ void render_transparent_mesh_normal(void)
 
 	glDisableClientState(GL_COLOR_ARRAY);
 
+	glClientActiveTexture(GL_TEXTURE1);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+
 		// if we had any glows,
-		// then render them here
+		// then do a second pass
 
 	if (had_glow) {
 
 		cur_mesh_idx=-1;
+
+		glDepthMask(GL_FALSE);
+
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_ONE,GL_ONE);
 			
 		gl_texture_glow_start();
 
@@ -332,9 +335,6 @@ void render_transparent_mesh_normal(void)
 				
 				glVertexPointer(3,GL_FLOAT,mesh->vbo.vertex_stride,(GLvoid*)0);
 
-				glClientActiveTexture(GL_TEXTURE1);
-				glTexCoordPointer(2,GL_FLOAT,mesh->vbo.vertex_stride,(GLvoid*)(3*sizeof(float)));
-
 				glClientActiveTexture(GL_TEXTURE0);
 				glTexCoordPointer(2,GL_FLOAT,mesh->vbo.vertex_stride,(GLvoid*)(3*sizeof(float)));
 			}
@@ -346,7 +346,7 @@ void render_transparent_mesh_normal(void)
 
 				// draw glow
 
-			gl_texture_glow_set(texture->frames[frame].bitmap.gl_id,texture->frames[frame].glowmap.gl_id,texture->glow.current_color);
+			gl_texture_glow_set(texture->frames[frame].glowmap.gl_id,texture->glow.current_color);
 			
 			glDrawElements(GL_TRIANGLE_FAN,poly->ptsz,GL_UNSIGNED_SHORT,(GLvoid*)poly->vbo.index_offset);
 			
@@ -365,9 +365,6 @@ void render_transparent_mesh_normal(void)
 
 		// disable arrays
 
-	glClientActiveTexture(GL_TEXTURE1);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-	
 	glClientActiveTexture(GL_TEXTURE0);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 }
