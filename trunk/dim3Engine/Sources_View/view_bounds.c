@@ -134,7 +134,7 @@ bool view_cull_boundbox_in_frustum(d3pnt *min,d3pnt *max)
 {
 	int				n;
 	d3fpnt			f_min,f_max;
-   
+	
 	f_min.x=(float)min->x;
 	f_min.y=(float)min->y;
 	f_min.z=(float)min->z;
