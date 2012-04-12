@@ -36,6 +36,8 @@ extern server_type		server;
 extern view_type		view;
 extern setup_type		setup;
 
+extern bitmap_type			lmap_black_bitmap;
+
 /* =======================================================
 
       Texture and Alpha Utilities
@@ -397,6 +399,12 @@ bool render_model_initialize_vertex_objects(model_type *mdl,int mesh_idx,model_d
 
 	glVertexPointer(3,GL_FLOAT,stride,(GLvoid*)0);
 
+	if (!shader_on) {
+		glClientActiveTexture(GL_TEXTURE2);
+		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+		glTexCoordPointer(2,GL_FLOAT,stride,(GLvoid*)(3*sizeof(float)));
+	}
+
 	glClientActiveTexture(GL_TEXTURE1);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2,GL_FLOAT,stride,(GLvoid*)(3*sizeof(float)));
@@ -418,6 +426,9 @@ void render_model_release_vertex_objects(void)
 	view_unbind_model_vertex_object();
 
 	glDisableClientState(GL_COLOR_ARRAY);
+
+	glClientActiveTexture(GL_TEXTURE2);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 		
 	glClientActiveTexture(GL_TEXTURE1);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -435,8 +446,9 @@ void render_model_release_vertex_objects(void)
 void render_model_opaque_normal(model_type *mdl,int mesh_idx,model_draw *draw)
 {
 	int						n,v_idx,frame,txt_idx;
-	bool					had_glow;
+	float					glow_color;
 	unsigned char			*cull_ptr;
+	GLuint					glow_gl_id;
 	model_mesh_type			*mesh;
 	model_poly_type			*poly;
 	model_draw_mesh_type	*draw_mesh;
@@ -456,12 +468,7 @@ void render_model_opaque_normal(model_type *mdl,int mesh_idx,model_draw *draw)
 	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_TRUE);
 
-	gl_texture_opaque_start();
-
-		// check for glows to
-		// see if we need to do another pass
-
-	had_glow=FALSE;
+	gl_texture_model_fixed_start();
 
 		// run through the polys
 
@@ -490,16 +497,21 @@ void render_model_opaque_normal(model_type *mdl,int mesh_idx,model_draw *draw)
 			continue;
 		}
 
-			// does this require a glow pass?
-
-		had_glow=had_glow||draw_mesh->textures[txt_idx].glow;
-	
-			// set texture
+			// get texture
 
 		frame=draw_mesh->textures[txt_idx].frame;
 		texture=&mdl->textures[txt_idx];
 
-		gl_texture_opaque_set(texture->frames[frame].bitmap.gl_id);
+		if (draw_mesh->textures[txt_idx].glow) {
+			glow_gl_id=texture->frames[frame].glowmap.gl_id;
+			glow_color=texture->glow.current_color;
+		}
+		else {
+			glow_gl_id=lmap_black_bitmap.gl_id;
+			glow_color=0.0f;
+		}
+
+		gl_texture_model_fixed_set(texture->frames[frame].bitmap.gl_id,glow_gl_id,glow_color,1.0f);
 
 			// draw poly
 			
@@ -511,56 +523,7 @@ void render_model_opaque_normal(model_type *mdl,int mesh_idx,model_draw *draw)
 		view.count.model_poly++;
 	}
 
-	gl_texture_opaque_end();
-
-		// if we had any glows,
-		// then do a second pass
-
-	if (had_glow) {
-
-		glDepthMask(GL_FALSE);
-
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_ONE,GL_ONE);
-
-		gl_texture_glow_start();
-
-			// run through the polys
-
-		v_idx=0;
-		poly=mesh->polys;
-
-		for (n=0;n!=mesh->npoly;n++) {
-
-				// is this poly texture glow
-
-			txt_idx=poly->txt_idx;
-
-			if (!draw_mesh->textures[txt_idx].glow) {
-				v_idx+=poly->ptsz;
-				poly++;
-				continue;
-			}
-
-				// get texture
-
-			frame=draw_mesh->textures[txt_idx].frame;
-			texture=&mdl->textures[txt_idx];
-
-			gl_texture_glow_set(texture->frames[frame].glowmap.gl_id,texture->glow.current_color);
-
-				// draw poly
-			
-			glDrawArrays(GL_TRIANGLE_FAN,v_idx,poly->ptsz);
-			
-			v_idx+=poly->ptsz;
-			poly++;
-
-			view.count.model_poly++;
-		}
-		
-		gl_texture_glow_end();
-	}
+	gl_texture_model_fixed_end();
 }
 
 void render_model_opaque_shader(model_type *mdl,int mesh_idx,model_draw *draw,view_glsl_light_list_type *light_list)
@@ -651,7 +614,9 @@ void render_model_opaque_shader(model_type *mdl,int mesh_idx,model_draw *draw,vi
 void render_model_transparent_normal(model_type *mdl,int mesh_idx,model_draw *draw)
 {
 	int						n,v_idx,frame,txt_idx;
+	float					glow_color;
 	bool					cur_additive,is_additive;
+	GLuint					glow_gl_id;
 	model_mesh_type			*mesh;
 	model_poly_type			*poly;
  	model_draw_mesh_type	*draw_mesh;
@@ -672,7 +637,7 @@ void render_model_transparent_normal(model_type *mdl,int mesh_idx,model_draw *dr
 	glDepthFunc(GL_LEQUAL);
 	glDepthMask(GL_FALSE);
 	
-	gl_texture_transparent_start();
+	gl_texture_model_fixed_start();
 
 		// minimize state changes
 
@@ -700,6 +665,17 @@ void render_model_transparent_normal(model_type *mdl,int mesh_idx,model_draw *dr
 		frame=draw_mesh->textures[txt_idx].frame;
 		texture=&mdl->textures[txt_idx];
 
+		if (draw_mesh->textures[txt_idx].glow) {
+			glow_gl_id=texture->frames[frame].glowmap.gl_id;
+			glow_color=texture->glow.current_color;
+		}
+		else {
+			glow_gl_id=lmap_black_bitmap.gl_id;
+			glow_color=0.0f;
+		}
+
+		gl_texture_model_fixed_set(texture->frames[frame].bitmap.gl_id,glow_gl_id,glow_color,draw_mesh->alpha);
+
 			// blending changes
 			
 		is_additive=(mesh->blend_add) || (texture->additive);
@@ -713,8 +689,6 @@ void render_model_transparent_normal(model_type *mdl,int mesh_idx,model_draw *dr
 			}
 		}
 
-		gl_texture_transparent_set(texture->frames[frame].bitmap.gl_id,draw_mesh->alpha);
-
 			// draw poly
 			
 		glDrawArrays(GL_TRIANGLE_FAN,v_idx,poly->ptsz);
@@ -727,7 +701,7 @@ void render_model_transparent_normal(model_type *mdl,int mesh_idx,model_draw *dr
 	
 	if (cur_additive) glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
-	gl_texture_transparent_end();
+	gl_texture_model_fixed_end();
 }
 
 void render_model_transparent_shader(model_type *mdl,int mesh_idx,model_draw *draw,view_glsl_light_list_type *light_list)

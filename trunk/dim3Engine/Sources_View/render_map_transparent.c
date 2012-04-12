@@ -175,26 +175,28 @@ void render_transparent_sort(void)
 void render_transparent_mesh_normal(void)
 {
 	int						n,frame,mesh_idx,cur_mesh_idx;
-	bool					in_additive,had_glow;
-	GLuint					gl_id,lmap_gl_id;
+	float					glow_color;
+	bool					in_additive;
+	GLuint					gl_id,lmap_gl_id,glow_gl_id;
 	texture_type			*texture;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
 
 		// enable arrays
-		// both these are used for regular
-		// polygons and glowing polygons
+
+	glEnableClientState(GL_COLOR_ARRAY);
+
+	glClientActiveTexture(GL_TEXTURE3);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+	glClientActiveTexture(GL_TEXTURE2);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 		
 	glClientActiveTexture(GL_TEXTURE1);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	
 	glClientActiveTexture(GL_TEXTURE0);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-
-		// check for glows to
-		// see if we need to do another pass
-
-	had_glow=FALSE;
 
 		// run through the draw list
 
@@ -203,17 +205,13 @@ void render_transparent_mesh_normal(void)
 
 	glEnableClientState(GL_COLOR_ARRAY);
 
-	gl_texture_transparent_light_map_start();
+	gl_texture_map_fixed_start();
 
 	for (n=0;n!=trans_sort.count;n++) {
 	
 		mesh_idx=trans_sort.list[n].mesh_idx;
 		mesh=&map.mesh.meshes[mesh_idx];
 		poly=&mesh->polys[trans_sort.list[n].poly_idx];
-
-			// does this require a glow pass?
-
-		had_glow=poly->draw.glow_on;
 
 			// the mesh vbo
 			// only change when mesh is changing
@@ -232,16 +230,22 @@ void render_transparent_mesh_normal(void)
 			
 			glVertexPointer(3,GL_FLOAT,mesh->vbo.vertex_stride,(GLvoid*)0);
 
-			glClientActiveTexture(GL_TEXTURE1);
+			glClientActiveTexture(GL_TEXTURE3);
 			glTexCoordPointer(2,GL_FLOAT,mesh->vbo.vertex_stride,(GLvoid*)(3*sizeof(float)));
 
-			glClientActiveTexture(GL_TEXTURE0);
+			glClientActiveTexture(GL_TEXTURE2);
+			glTexCoordPointer(2,GL_FLOAT,mesh->vbo.vertex_stride,(GLvoid*)(3*sizeof(float)));
+
+			glClientActiveTexture(GL_TEXTURE1);
 			glTexCoordPointer(2,GL_FLOAT,mesh->vbo.vertex_stride,(GLvoid*)(5*sizeof(float)));
+
+			glClientActiveTexture(GL_TEXTURE0);
+			glTexCoordPointer(2,GL_FLOAT,mesh->vbo.vertex_stride,(GLvoid*)(3*sizeof(float)));
 
 			glColorPointer(4,GL_UNSIGNED_BYTE,mesh->vbo.vertex_stride,(GLvoid*)(7*sizeof(float)));
 		}
 
-			// textures
+			// get textures
 
 		texture=&map.textures[poly->txt_idx];
 		frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
@@ -260,6 +264,17 @@ void render_transparent_mesh_normal(void)
 			}
 		}
 
+		if (poly->draw.glow_on) {
+			glow_gl_id=texture->frames[frame].glowmap.gl_id;
+			glow_color=texture->glow.current_color;
+		}
+		else {
+			glow_gl_id=lmap_black_bitmap.gl_id;
+			glow_color=0.0f;
+		}
+
+			// additive or regular transparencies
+
 		if (texture->additive!=in_additive) {
 			glBlendFunc(GL_SRC_ALPHA,GL_ONE);
 			in_additive=TRUE;
@@ -271,7 +286,7 @@ void render_transparent_mesh_normal(void)
 
 			// draw the polygon
 
-		gl_texture_transparent_light_map_set(gl_id,lmap_gl_id,1.0f);
+		gl_texture_map_fixed_set(gl_id,lmap_gl_id,glow_gl_id,glow_color,1.0f);
 		
 		glDrawElements(GL_TRIANGLE_FAN,poly->ptsz,GL_UNSIGNED_SHORT,(GLvoid*)poly->vbo.index_offset);
 	}
@@ -286,85 +301,22 @@ void render_transparent_mesh_normal(void)
 		view_unbind_mesh_liquid_index_object();
 	}
 
-		// clear normal draw state
+		// clear fixed state
 		
-	gl_texture_transparent_light_map_end();
+	gl_texture_map_fixed_end();
 	if (in_additive) glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 
 	glDisableClientState(GL_COLOR_ARRAY);
 
-	glClientActiveTexture(GL_TEXTURE1);
+	glClientActiveTexture(GL_TEXTURE3);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	
+	glClientActiveTexture(GL_TEXTURE2);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
-		// if we had any glows,
-		// then do a second pass
-
-	if (had_glow) {
-
-		cur_mesh_idx=-1;
-
-		glDepthMask(GL_FALSE);
-
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_ONE,GL_ONE);
-			
-		gl_texture_glow_start();
-
-		for (n=0;n!=trans_sort.count;n++) {
-		
-			mesh_idx=trans_sort.list[n].mesh_idx;
-			mesh=&map.mesh.meshes[mesh_idx];
-			poly=&mesh->polys[trans_sort.list[n].poly_idx];
-			
-			if (!poly->draw.glow_on) continue;
-			
-				// the mesh vbo
-				// only change when mesh is changing
-				
-			if (cur_mesh_idx!=mesh_idx) {
-			
-				if (cur_mesh_idx!=-1) {
-					view_unbind_mesh_liquid_vertex_object();
-					view_unbind_mesh_liquid_index_object();
-				}
-				
-				cur_mesh_idx=mesh_idx;
-				
-				view_bind_mesh_liquid_vertex_object(&mesh->vbo);
-				view_bind_mesh_liquid_index_object(&mesh->vbo);
-				
-				glVertexPointer(3,GL_FLOAT,mesh->vbo.vertex_stride,(GLvoid*)0);
-
-				glClientActiveTexture(GL_TEXTURE0);
-				glTexCoordPointer(2,GL_FLOAT,mesh->vbo.vertex_stride,(GLvoid*)(3*sizeof(float)));
-			}
-			
-				// textures
-
-			texture=&map.textures[poly->txt_idx];
-			frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
-
-				// draw glow
-
-			gl_texture_glow_set(texture->frames[frame].glowmap.gl_id,texture->glow.current_color);
-			
-			glDrawElements(GL_TRIANGLE_FAN,poly->ptsz,GL_UNSIGNED_SHORT,(GLvoid*)poly->vbo.index_offset);
-			
-			view.count.mesh_poly++;
-		}
-		
-			// if we setup a mesh, end the vbo
-			
-		if (cur_mesh_idx!=-1) {
-			view_unbind_mesh_liquid_vertex_object();
-			view_unbind_mesh_liquid_index_object();
-		}
-
-		gl_texture_glow_end();
-	}
-
-		// disable arrays
-
+	glClientActiveTexture(GL_TEXTURE1);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	
 	glClientActiveTexture(GL_TEXTURE0);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 }
