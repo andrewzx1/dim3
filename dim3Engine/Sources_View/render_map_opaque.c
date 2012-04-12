@@ -39,11 +39,6 @@ extern view_type		view;
 
 extern bitmap_type		lmap_black_bitmap,lmap_white_bitmap;
 
-// supergumba -- testing
-extern void gl_texture_opaque_light_map_start_2(void);
-extern void gl_texture_opaque_light_map_end_2(void);
-extern void gl_texture_opaque_light_map_set_2(GLuint txt_id,GLuint lmap_txt_id,GLuint glow_id,float glow_color);
-
 /* =======================================================
 
       Mesh-Poly Culling
@@ -71,213 +66,6 @@ bool render_check_poly_cull(map_mesh_type *mesh,map_mesh_poly_type *poly)
       
 ======================================================= */
 
-void render_opaque_mesh_normal_2(void)
-{
-	int						n,k,frame;
-	bool					had_glow;
-	GLuint					gl_id,lmap_gl_id;
-	texture_type			*texture;
-	map_mesh_type			*mesh;
-	map_mesh_poly_type		*poly;
-	
-		// enable arrays
-		
-	glClientActiveTexture(GL_TEXTURE1);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	
-	glClientActiveTexture(GL_TEXTURE0);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-
-	glEnableClientState(GL_COLOR_ARRAY);
-
-		// check for glows to
-		// see if we need to do another pass
-
-	had_glow=FALSE;
-
-		// run through the draw list
-
-	gl_texture_opaque_light_map_start();
-
-	for (n=0;n!=view.render->draw_list.count;n++) {
-
-		if (view.render->draw_list.items[n].type!=view_render_type_mesh) continue;
-
-			// skip meshes with no opaques
-
-		mesh=&map.mesh.meshes[view.render->draw_list.items[n].idx];
-		if (!mesh->draw.has_opaque) continue;
-		
-			// the mesh vbo
-			
-		view_bind_mesh_liquid_vertex_object(&mesh->vbo);
-		view_bind_mesh_liquid_index_object(&mesh->vbo);
-		
-		glVertexPointer(3,GL_FLOAT,mesh->vbo.vertex_stride,(GLvoid*)0);
-
-		glClientActiveTexture(GL_TEXTURE1);
-		glTexCoordPointer(2,GL_FLOAT,mesh->vbo.vertex_stride,(GLvoid*)(3*sizeof(float)));
-
-		glClientActiveTexture(GL_TEXTURE0);
-		glTexCoordPointer(2,GL_FLOAT,mesh->vbo.vertex_stride,(GLvoid*)(5*sizeof(float)));
-
-		glColorPointer(4,GL_UNSIGNED_BYTE,mesh->vbo.vertex_stride,(GLvoid*)(7*sizeof(float)));
-
-			// draw the polys
-
-		poly=mesh->polys;
-
-		for (k=0;k!=mesh->npoly;k++) {
-
-				// skip transparent polys
-
-			if (poly->draw.transparent_on) {
-				poly++;
-				continue;
-			}
-		
-				// skip culling
-
-			if (render_check_poly_cull(mesh,poly)) {
-				poly++;
-				continue;
-			}
-
-				// does this require a glow pass?
-
-			had_glow=had_glow||poly->draw.glow_on;
-
-				// get textures
-				
-			texture=&map.textures[poly->txt_idx];
-			frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
-
-			if ((mesh->flag.hilite) || (setup.debug_on)) {
-				lmap_gl_id=lmap_white_bitmap.gl_id;
-			}
-			else {
-				if (poly->lmap_txt_idx==-1) {
-					lmap_gl_id=lmap_black_bitmap.gl_id;
-				}
-				else {
-					lmap_gl_id=map.textures[poly->lmap_txt_idx].frames[0].bitmap.gl_id;
-				}
-			}
-
-			if (!gl_back_render_get_texture(poly->camera,&gl_id,NULL)) gl_id=texture->frames[frame].bitmap.gl_id;
-
-			gl_texture_opaque_light_map_set(gl_id,lmap_gl_id);
-
-				// draw polygon
-
-			glDrawElements(GL_TRIANGLE_FAN,poly->ptsz,GL_UNSIGNED_SHORT,(GLvoid*)poly->vbo.index_offset);
-			
-			poly++;
-			view.count.mesh_poly++;
-		}
-		
-		view_unbind_mesh_liquid_vertex_object();
-		view_unbind_mesh_liquid_index_object();
-	}
-
-		// clear state only needed
-		// for regular draw pass
-
-	gl_texture_opaque_light_map_end();
-
-	glDisableClientState(GL_COLOR_ARRAY);
-
-	glClientActiveTexture(GL_TEXTURE1);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-
-		// if we had any glows,
-		// then do a second pass
-
-	if (had_glow) {
-
-		glDepthMask(GL_FALSE);
-
-		glEnable(GL_BLEND);
-		glBlendFunc(GL_ONE,GL_ONE);
-		
-		gl_texture_glow_start();
-
-		for (n=0;n!=view.render->draw_list.count;n++) {
-
-			if (view.render->draw_list.items[n].type!=view_render_type_mesh) continue;
-
-				// skip meshes with no opaques
-				// or no glows
-
-			mesh=&map.mesh.meshes[view.render->draw_list.items[n].idx];
-			if (!mesh->draw.has_opaque) continue;
-			if (!mesh->draw.has_glow) continue;
-			
-				// the mesh vbo
-				
-			view_bind_mesh_liquid_vertex_object(&mesh->vbo);
-			view_bind_mesh_liquid_index_object(&mesh->vbo);
-			
-			glVertexPointer(3,GL_FLOAT,mesh->vbo.vertex_stride,(GLvoid*)0);
-
-			glClientActiveTexture(GL_TEXTURE0);
-			glTexCoordPointer(2,GL_FLOAT,mesh->vbo.vertex_stride,(GLvoid*)(3*sizeof(float)));
-
-				// draw the polys
-
-			poly=mesh->polys;
-
-			for (k=0;k!=mesh->npoly;k++) {
-
-					// skip transparent polys or
-					// polys without glows
-
-				if ((poly->draw.transparent_on) || (!poly->draw.glow_on)) {
-					poly++;
-					continue;
-				}
-			
-					// skip culling
-
-				if (render_check_poly_cull(mesh,poly)) {
-					poly++;
-					continue;
-				}
-
-					// get texture
-
-				texture=&map.textures[poly->txt_idx];
-				frame=(texture->animate.current_frame+poly->draw.txt_frame_offset)&max_texture_frame_mask;
-
-					// draw glow
-
-				gl_texture_glow_set(texture->frames[frame].glowmap.gl_id,texture->glow.current_color);
-				
-				glDrawElements(GL_TRIANGLE_FAN,poly->ptsz,GL_UNSIGNED_SHORT,(GLvoid*)poly->vbo.index_offset);
-				
-				poly++;
-			}
-			
-			view_unbind_mesh_liquid_vertex_object();
-			view_unbind_mesh_liquid_index_object();
-		}
-		
-			// turn off glow
-
-		gl_texture_glow_end();
-	}
-
-		// disable arrays
-
-	glClientActiveTexture(GL_TEXTURE0);
-	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-}
-
-
-
-
-
-// supergumba -- testing new methods
 void render_opaque_mesh_normal(void)
 {
 	int						n,k,frame;
@@ -286,12 +74,14 @@ void render_opaque_mesh_normal(void)
 	texture_type			*texture;
 	map_mesh_type			*mesh;
 	map_mesh_poly_type		*poly;
-	
+
 		// enable arrays
+
+	glEnableClientState(GL_COLOR_ARRAY);
 
 	glClientActiveTexture(GL_TEXTURE3);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-	
+
 	glClientActiveTexture(GL_TEXTURE2);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 		
@@ -300,12 +90,10 @@ void render_opaque_mesh_normal(void)
 	
 	glClientActiveTexture(GL_TEXTURE0);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-
-	glEnableClientState(GL_COLOR_ARRAY);
-
+	
 		// run through the draw list
 
-	gl_texture_opaque_light_map_start_2();
+	gl_texture_map_fixed_start();
 
 	for (n=0;n!=view.render->draw_list.count;n++) {
 
@@ -389,7 +177,7 @@ void render_opaque_mesh_normal(void)
 
 				// draw polygon
 
-			gl_texture_opaque_light_map_set_2(gl_id,lmap_gl_id,glow_gl_id,glow_color);
+			gl_texture_map_fixed_set(gl_id,lmap_gl_id,glow_gl_id,glow_color,1.0f);
 			glDrawElements(GL_TRIANGLE_FAN,poly->ptsz,GL_UNSIGNED_SHORT,(GLvoid*)poly->vbo.index_offset);
 			
 			poly++;
@@ -400,42 +188,24 @@ void render_opaque_mesh_normal(void)
 		view_unbind_mesh_liquid_index_object();
 	}
 
-		// clear state only needed
-		// for regular draw pass
+		// clear fixed state
 
-	gl_texture_opaque_light_map_end_2();
+	gl_texture_map_fixed_end();
 
 	glDisableClientState(GL_COLOR_ARRAY);
-	
+
 	glClientActiveTexture(GL_TEXTURE3);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-
+	
 	glClientActiveTexture(GL_TEXTURE2);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
 	glClientActiveTexture(GL_TEXTURE1);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-
+	
 	glClientActiveTexture(GL_TEXTURE0);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 void render_opaque_mesh_shader(void)
 {
