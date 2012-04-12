@@ -71,7 +71,7 @@ bool render_check_poly_cull(map_mesh_type *mesh,map_mesh_poly_type *poly)
       
 ======================================================= */
 
-void render_opaque_mesh_normal(void)
+void render_opaque_mesh_normal_2(void)
 {
 	int						n,k,frame;
 	bool					had_glow;
@@ -278,7 +278,7 @@ void render_opaque_mesh_normal(void)
 
 
 // supergumba -- testing new methods
-void render_opaque_mesh_normal_2(void)
+void render_opaque_mesh_normal(void)
 {
 	int						n,k,frame;
 	float					glow_color;
@@ -289,6 +289,9 @@ void render_opaque_mesh_normal_2(void)
 	
 		// enable arrays
 
+	glClientActiveTexture(GL_TEXTURE3);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	
 	glClientActiveTexture(GL_TEXTURE2);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 		
@@ -320,11 +323,17 @@ void render_opaque_mesh_normal_2(void)
 		
 		glVertexPointer(3,GL_FLOAT,mesh->vbo.vertex_stride,(GLvoid*)0);
 
-		glClientActiveTexture(GL_TEXTURE1);
+		glClientActiveTexture(GL_TEXTURE3);
 		glTexCoordPointer(2,GL_FLOAT,mesh->vbo.vertex_stride,(GLvoid*)(3*sizeof(float)));
 
-		glClientActiveTexture(GL_TEXTURE0);
+		glClientActiveTexture(GL_TEXTURE2);
+		glTexCoordPointer(2,GL_FLOAT,mesh->vbo.vertex_stride,(GLvoid*)(3*sizeof(float)));
+		
+		glClientActiveTexture(GL_TEXTURE1);
 		glTexCoordPointer(2,GL_FLOAT,mesh->vbo.vertex_stride,(GLvoid*)(5*sizeof(float)));
+
+		glClientActiveTexture(GL_TEXTURE0);
+		glTexCoordPointer(2,GL_FLOAT,mesh->vbo.vertex_stride,(GLvoid*)(3*sizeof(float)));
 
 		glColorPointer(4,GL_UNSIGNED_BYTE,mesh->vbo.vertex_stride,(GLvoid*)(7*sizeof(float)));
 
@@ -397,6 +406,9 @@ void render_opaque_mesh_normal_2(void)
 	gl_texture_opaque_light_map_end_2();
 
 	glDisableClientState(GL_COLOR_ARRAY);
+	
+	glClientActiveTexture(GL_TEXTURE3);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
 	glClientActiveTexture(GL_TEXTURE2);
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
