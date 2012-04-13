@@ -172,7 +172,7 @@ void render_transparent_sort(void)
       
 ======================================================= */
 
-void render_transparent_mesh_normal(void)
+void render_transparent_mesh_fixed(void)
 {
 	int						n,frame,mesh_idx,cur_mesh_idx;
 	float					glow_color;
@@ -469,7 +469,7 @@ void render_map_mesh_transparent(void)
 		render_transparent_mesh_shader();
 	}
 	else {
-		render_transparent_mesh_normal();
+		render_transparent_mesh_fixed();
 	}
 
 		// put depth mask back

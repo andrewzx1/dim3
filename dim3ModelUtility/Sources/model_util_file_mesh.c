@@ -251,15 +251,24 @@ void model_decode_v2_mesh_xml(model_type *model,int model_head)
 		
     ui_tag=xml_findfirstchild("UI",model_head);
 	if (ui_tag!=-1) {
-		model->ui.min_diffuse=xml_get_attribute_float(ui_tag,"min_diffuse");
-		xml_get_attribute_3_coord_float(ui_tag,"diffuse_vector",&model->ui.diffuse_vct.x,&model->ui.diffuse_vct.y,&model->ui.diffuse_vct.z);
+		model->ui.fixed.min_diffuse=xml_get_attribute_float(ui_tag,"min_diffuse");
+		xml_get_attribute_3_coord_float(ui_tag,"diffuse_vector",&model->ui.fixed.diffuse_vct.x,&model->ui.fixed.diffuse_vct.y,&model->ui.fixed.diffuse_vct.z);
 	}
 	else {
-		model->ui.min_diffuse=0.75f;
+		model->ui.fixed.min_diffuse=0.75f;
 
-		model->ui.diffuse_vct.x=0.0f;
-		model->ui.diffuse_vct.y=-1.0f;
-		model->ui.diffuse_vct.z=0.0f;
+		model->ui.fixed.diffuse_vct.x=0.0f;
+		model->ui.fixed.diffuse_vct.y=-1.0f;
+		model->ui.fixed.diffuse_vct.z=0.0f;
+
+		model->ui.shader.light_intensity=10000;
+		model->ui.shader.light_exponent=1.0f;
+		model->ui.shader.light_offset.x=0;
+		model->ui.shader.light_offset.y=-5000;
+		model->ui.shader.light_offset.z=0;
+		model->ui.shader.light_color.r=1.0f;
+		model->ui.shader.light_color.g=1.0f;
+		model->ui.shader.light_color.b=1.0f;
 	}
 	
 		// meshes

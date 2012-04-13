@@ -321,7 +321,7 @@ typedef struct		{
 						char							name[name_str_len];
 						float							alpha,resize,normal[3];
 						bool							on,player,no_culling,
-														flip_x,ui_lighting,no_shader,
+														flip_x,ui_lighting,
 														bounce,face_forward,
 														has_opaque,has_transparent,has_glow,
 														built_vertex_list;
