@@ -578,6 +578,33 @@ void gl_lights_compile(int tick)
 
 /* =======================================================
 
+      Special Cache for UI Lighted Models
+      
+======================================================= */
+
+void gl_lights_model_ui_compile(model_type *mdl,d3pnt *pnt)
+{
+	int					n;
+	map_light_type		*lit;
+	map_particle_type	*particle;
+	obj_type			*obj;
+	weapon_type			*weap;
+	proj_type			*proj;
+	effect_type			*effect;
+
+	d3pnt				lit_pnt;
+	
+	view.render->light.count=0;
+
+	lit_pnt.x=pnt->x+mdl->ui.shader.light_offset.x;
+	lit_pnt.x=pnt->y+mdl->ui.shader.light_offset.y;
+	lit_pnt.x=pnt->z+mdl->ui.shader.light_offset.z;
+
+	gl_lights_compile_add(0,&lit_pnt,lt_normal,FALSE,mdl->ui.shader.light_intensity,mdl->ui.shader.light_exponent,ld_all,&mdl->ui.shader.light_color);
+}
+
+/* =======================================================
+
       Calculate Ambient Only Lighting
       
 ======================================================= */

@@ -653,6 +653,7 @@ extern inline bool gl_check_shader_ok(void);
 //
 
 extern void gl_lights_compile(int tick);
+extern void gl_lights_model_ui_compile(model_type *mdl,d3pnt *pnt);
 extern int gl_light_get_averaged_shadow_light(d3pnt *pnt,d3pnt *size,d3pnt *light_pnt);
 extern void gl_lights_calc_ambient_color(d3col *col);
 extern void gl_lights_calc_diffuse_vector(d3pnt *pnt,int count,int *indexes,d3vct *vct);

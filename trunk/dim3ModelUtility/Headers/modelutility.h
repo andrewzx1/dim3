@@ -275,8 +275,20 @@ typedef struct		{
 //
 
 typedef struct		{
+						int								light_intensity;
+						float							light_exponent;
+						d3pnt							light_offset;
+						d3col							light_color;
+					} model_ui_shader_type;
+
+typedef struct		{
 						float							min_diffuse;
 						d3vct							diffuse_vct;
+					} model_ui_fixed_type;
+
+typedef struct		{
+						model_ui_fixed_type				fixed;
+						model_ui_shader_type			shader;
 					} model_ui_type;
 
 //

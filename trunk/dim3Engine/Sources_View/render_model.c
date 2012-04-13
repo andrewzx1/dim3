@@ -177,10 +177,10 @@ void render_model_diffuse_color_vertexes(model_type *mdl,int mesh_mask,model_dra
 		min_diffuse=(ambient_col.r+ambient_col.g+ambient_col.b)*(0.33f*gl_diffuse_ambient_factor);
 	}
 	else {
-		diffuse_vct.x=mdl->ui.diffuse_vct.x;
-		diffuse_vct.y=mdl->ui.diffuse_vct.y;
-		diffuse_vct.z=mdl->ui.diffuse_vct.z;
-		min_diffuse=mdl->ui.min_diffuse;
+		diffuse_vct.x=mdl->ui.fixed.diffuse_vct.x;
+		diffuse_vct.y=mdl->ui.fixed.diffuse_vct.y;
+		diffuse_vct.z=mdl->ui.fixed.diffuse_vct.z;
+		min_diffuse=mdl->ui.fixed.min_diffuse;
 	}
 	
 	boost=mdl->diffuse_boost;
@@ -443,7 +443,7 @@ void render_model_release_vertex_objects(void)
       
 ======================================================= */
 
-void render_model_opaque_normal(model_type *mdl,int mesh_idx,model_draw *draw)
+void render_model_opaque_fixed(model_type *mdl,int mesh_idx,model_draw *draw)
 {
 	int						n,v_idx,frame,txt_idx;
 	float					glow_color;
@@ -589,7 +589,7 @@ void render_model_opaque_shader(model_type *mdl,int mesh_idx,model_draw *draw,vi
 			// set hilite and tint on per
 			// mesh basis
 					
-		light_list->hilite=((mesh->no_lighting)||(draw->ui_lighting));
+		light_list->hilite=(mesh->no_lighting);
 		if (!mesh->diffuse) {
 			light_list->diffuse_boost=1.0f;
 		}
@@ -611,7 +611,7 @@ void render_model_opaque_shader(model_type *mdl,int mesh_idx,model_draw *draw,vi
 	gl_shader_draw_end();
 }
 
-void render_model_transparent_normal(model_type *mdl,int mesh_idx,model_draw *draw)
+void render_model_transparent_fixed(model_type *mdl,int mesh_idx,model_draw *draw)
 {
 	int						n,v_idx,frame,txt_idx;
 	float					glow_color;
@@ -775,7 +775,7 @@ void render_model_transparent_shader(model_type *mdl,int mesh_idx,model_draw *dr
 			// set hilite and diffuse on a per
 			// mesh basis
 		
-		light_list->hilite=((mesh->no_lighting)||(draw->ui_lighting));
+		light_list->hilite=(mesh->no_lighting);
 		if (!mesh->diffuse) {
 			light_list->diffuse_boost=1.0f;
 		}
@@ -1150,10 +1150,17 @@ void render_model_opaque(model_draw *draw)
 	mdl=server.model_list.models[draw->model_idx];
 
 		// start glsl lighting
+
+		// if we are drawing this model in the UI,
+		// then if shaders are on we have to create
+		// a fake set of lights for the rendering
 		
 	shader_on=view_shader_on()&&(!draw->no_shader);
 
-	if (shader_on) gl_lights_build_model_glsl_light_list(mdl,draw,&light_list);
+	if (shader_on) {
+		if (draw->ui_lighting) gl_lights_model_ui_compile(mdl,&draw->pnt);
+		gl_lights_build_model_glsl_light_list(mdl,draw,&light_list);
+	}
 
 		// draw opaque materials
 	
@@ -1168,7 +1175,7 @@ void render_model_opaque(model_draw *draw)
 			// render opaque segments
 
 		if (!shader_on) {
-			render_model_opaque_normal(mdl,n,draw);
+			render_model_opaque_fixed(mdl,n,draw);
 		}
 		else {
 			render_model_opaque_shader(mdl,n,draw,&light_list);
@@ -1200,7 +1207,7 @@ void render_model_transparent(model_draw *draw)
 	
 		// start lighting
 		
-	shader_on=view_shader_on()&&(!draw->no_shader);
+	shader_on=view_shader_on();
 
 	if (shader_on) gl_lights_build_model_glsl_light_list(mdl,draw,&light_list);
 
@@ -1216,8 +1223,8 @@ void render_model_transparent(model_draw *draw)
 
 			// draw transparent mesh
 
-		if ((!shader_on) || (draw->no_shader)) {
-			render_model_transparent_normal(mdl,n,draw);
+		if (!shader_on) {
+			render_model_transparent_fixed(mdl,n,draw);
 		}
 		else {
 			render_model_transparent_shader(mdl,n,draw,&light_list);
