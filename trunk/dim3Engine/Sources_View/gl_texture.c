@@ -299,7 +299,7 @@ void gl_texture_model_fixed_start(void)
 	glActiveTexture(GL_TEXTURE1);
 	glEnable(GL_TEXTURE_2D);
 	
-	gl_texture_bind(2,lmap_black_bitmap.gl_id);					// needs a texture to function properly
+	gl_texture_bind(1,lmap_black_bitmap.gl_id);					// needs a texture to function properly
 
 	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
 
@@ -316,7 +316,7 @@ void gl_texture_model_fixed_start(void)
 		// texture unit 2
 		// contains texture modulated with lighting
 	
-	glActiveTexture(GL_TEXTURE3);
+	glActiveTexture(GL_TEXTURE2);
 	glEnable(GL_TEXTURE_2D);
 
 	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_MODULATE);
