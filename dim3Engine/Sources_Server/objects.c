@@ -1074,16 +1074,26 @@ int object_script_spawn(char *name,char *script,char *params,d3pnt *pnt,d3ang *a
 		
 		return(-1);
 	}
+	
+	obj=server.obj_list.objs[idx];
 
 		// hide object
 
 	if (hide) {
-		obj=server.obj_list.objs[idx];
-
 		obj->hidden=TRUE;
 		obj->contact.object_on=FALSE;
 		obj->contact.projectile_on=FALSE;
 		obj->contact.force_on=FALSE;
+	}
+	
+		// force a spawn call
+		
+	if (!object_spawn(obj,obj_err_str)) {
+		sprintf(err_str,"Object Spawn Failed: %s",obj_err_str);
+		console_add_error(err_str);
+		
+		object_dispose_single(idx);
+		return(-1);
 	}
 
 		// return index

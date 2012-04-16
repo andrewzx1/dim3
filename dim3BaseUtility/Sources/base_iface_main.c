@@ -178,6 +178,7 @@ void iface_default_settings(iface_type *iface)
 	
 	iface->project.name[0]=0x0;
 	iface->project.modernize=TRUE;
+	iface->project.no_shaders=FALSE;
 	
 		// scale
 
@@ -389,6 +390,12 @@ void iface_default_settings(iface_type *iface)
 	iface->multiplayer.news.host[0]=0x0;
 	iface->multiplayer.news.port=80;
 	iface->multiplayer.news.url[0]=0x0;
+	
+		// preloaded models
+		
+	for (n=0;n!=max_preload_model;n++) {
+		iface->preload_model.names[n][0]=0x0;
+	}
 }
 
 /* =======================================================

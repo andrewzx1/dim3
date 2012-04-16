@@ -567,7 +567,7 @@ void iface_read_settings_interface(iface_type *iface)
 	int							n,interface_head_tag,scale_tag,
 								bitmap_head_tag,bitmap_tag,text_head_tag,text_tag,bar_head_tag,bar_tag,
 								virtual_head_tag,radar_head_tag,menu_head_tag,menu_tag,title_tag,
-								simple_save_tag,score_tag,
+								simple_save_tag,score_tag,preload_tag,preload_models_tag,preload_model_tag,
 								intro_head_tag,intro_model_head_tag,intro_model_tag,intro_confirm_tag,
 								color_tag,font_tag,progress_tag,chat_tag,fade_tag,button_tag,sound_tag,
 								proj_tag,setup_tag;
@@ -870,6 +870,25 @@ void iface_read_settings_interface(iface_type *iface)
 	if (sound_tag!=-1) {
 		xml_get_attribute_text(sound_tag,"click",iface->click_sound,name_str_len);
 	}
+	
+		// preload models
+		
+	preload_tag=xml_findfirstchild("Preload",interface_head_tag);
+	if (preload_tag!=-1) {
+	
+		preload_models_tag=xml_findfirstchild("Models",preload_tag);
+		if (preload_models_tag!=-1) {
+		
+			preload_model_tag=xml_findfirstchild("Model",preload_models_tag);
+			
+			n=0;
+			
+			while (preload_model_tag!=-1) {
+				xml_get_attribute_text(preload_model_tag,"name",iface->preload_model.names[n++],name_str_len);
+				preload_model_tag=xml_findnextchild(preload_model_tag);
+			}
+		}
+	}
 
 		// project setup
 		
@@ -877,6 +896,7 @@ void iface_read_settings_interface(iface_type *iface)
 	if (proj_tag!=-1) {
 		xml_get_attribute_text(proj_tag,"name",iface->project.name,name_str_len);
 		iface->project.modernize=xml_get_attribute_boolean(proj_tag,"modernize");
+		iface->project.no_shaders=xml_get_attribute_boolean(proj_tag,"no_shaders");
 	}
 
 	xml_close_file();
@@ -1511,12 +1531,31 @@ bool iface_write_settings_interface(iface_type *iface,char *err_str)
 	xml_add_tagstart("Sound");
 	xml_add_attribute_text("click",iface->click_sound);
 	xml_add_tagend(TRUE);
+	
+		// preload models
+		
+	xml_add_tagstart("Preload");
+	xml_add_tagend(FALSE);
+	
+	xml_add_tagstart("Models");
+	xml_add_tagend(FALSE);
+	
+	for (n=0;n!=max_preload_model;n++) {
+		xml_add_tagstart("Model");
+		xml_add_attribute_text("name",iface->preload_model.names[n]);
+		xml_add_tagend(TRUE);
+	}
+	
+	xml_add_tagclose("Models");
+	
+	xml_add_tagclose("Preload");
 
 		// project setup
 		
 	xml_add_tagstart("Project");
 	xml_add_attribute_text("name",iface->project.name);
 	xml_add_attribute_boolean("modernize",iface->project.modernize);
+	xml_add_attribute_boolean("no_shaders",iface->project.no_shaders);
 	xml_add_tagend(TRUE);
 
 		// close interface

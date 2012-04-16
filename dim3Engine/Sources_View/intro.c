@@ -596,6 +596,7 @@ void intro_click(void)
 			break;
 
 		case intro_button_quit_id:
+			intro_close();
 			game_loop_quit=TRUE;
 			break;
 	}

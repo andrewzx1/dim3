@@ -124,10 +124,9 @@ void model_draw_setup_object(obj_type *obj)
 		
 	draw->no_culling=FALSE;
 
-		// regular lighting and shaders
+		// ui regular lighting
 
 	draw->ui_lighting=FALSE;
-	draw->no_shader=FALSE;
 	
 		// no flips
 		
@@ -300,10 +299,9 @@ void model_draw_setup_weapon(obj_type *obj,weapon_type *weap,bool ignore_y_shift
 		
 	draw->no_culling=TRUE;
 
-		// regular lighting and shaders
+		// ui lighting
 
 	draw->ui_lighting=FALSE;
-	draw->no_shader=FALSE;
 
 		// connection settings
 
@@ -357,10 +355,9 @@ void model_draw_setup_projectile(proj_type *proj)
 		
 	draw->no_culling=FALSE;
 
-		// regular lighting and shaders
+		// ui lighting
 
 	draw->ui_lighting=FALSE;
-	draw->no_shader=FALSE;
 	
 		// no flips
 		
@@ -436,11 +433,9 @@ void model_draw_setup_interface_models(model_type *mdl,model_draw *draw,int x,in
 		
 	draw->no_culling=TRUE;
 
-		// always hilite these
-		// and never draw shaders
+		// turn on ui lighting
 
 	draw->ui_lighting=TRUE;
-	draw->no_shader=TRUE;
 	draw->flip_x=FALSE;
 	
 	draw->light_cache.count=0;

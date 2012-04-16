@@ -578,33 +578,6 @@ void gl_lights_compile(int tick)
 
 /* =======================================================
 
-      Special Cache for UI Lighted Models
-      
-======================================================= */
-
-void gl_lights_model_ui_compile(model_type *mdl,d3pnt *pnt)
-{
-	int					n;
-	map_light_type		*lit;
-	map_particle_type	*particle;
-	obj_type			*obj;
-	weapon_type			*weap;
-	proj_type			*proj;
-	effect_type			*effect;
-
-	d3pnt				lit_pnt;
-	
-	view.render->light.count=0;
-
-	lit_pnt.x=pnt->x+mdl->ui.shader.light_offset.x;
-	lit_pnt.x=pnt->y+mdl->ui.shader.light_offset.y;
-	lit_pnt.x=pnt->z+mdl->ui.shader.light_offset.z;
-
-	gl_lights_compile_add(0,&lit_pnt,lt_normal,FALSE,mdl->ui.shader.light_intensity,mdl->ui.shader.light_exponent,ld_all,&mdl->ui.shader.light_color);
-}
-
-/* =======================================================
-
       Calculate Ambient Only Lighting
       
 ======================================================= */
@@ -943,9 +916,11 @@ void gl_lights_build_mesh_glsl_light_list(map_mesh_type *mesh,view_glsl_light_li
 	int					n;
 
 		// misc settings, mostly for models
+		
+	light_list->ui_light.on=FALSE;
 
-	light_list->diffuse_vct.x=light_list->diffuse_vct.y=light_list->diffuse_vct.z=0.0f;
-	light_list->diffuse_boost=0.0f;
+	light_list->diffuse.vct.x=light_list->diffuse.vct.y=light_list->diffuse.vct.z=0.0f;
+	light_list->diffuse.boost=0.0f;
 
 		// highlighting
 
@@ -972,9 +947,11 @@ void gl_lights_build_poly_glsl_light_list(map_mesh_type *mesh,map_mesh_poly_type
 	view_light_spot_type	*lspot;
 
 		// misc settings, mostly for models
+		
+	light_list->ui_light.on=FALSE;
 
-	light_list->diffuse_vct.x=light_list->diffuse_vct.y=light_list->diffuse_vct.z=0.0f;
-	light_list->diffuse_boost=0.0f;
+	light_list->diffuse.vct.x=light_list->diffuse.vct.y=light_list->diffuse.vct.z=0.0f;
+	light_list->diffuse.boost=0.0f;
 
 		// highlighting
 
@@ -1049,9 +1026,11 @@ void gl_lights_build_liquid_glsl_light_list(map_liquid_type *liq,view_glsl_light
 	int				n;
 
 		// misc settings, mostly for models
+		
+	light_list->ui_light.on=FALSE;
 
-	light_list->diffuse_vct.x=light_list->diffuse_vct.y=light_list->diffuse_vct.z=0.0f;
-	light_list->diffuse_boost=0.0f;
+	light_list->diffuse.vct.x=light_list->diffuse.vct.y=light_list->diffuse.vct.z=0.0f;
+	light_list->diffuse.boost=0.0f;
 
 		// highlighting
 
@@ -1070,12 +1049,41 @@ void gl_lights_build_liquid_glsl_light_list(map_liquid_type *liq,view_glsl_light
 void gl_lights_build_model_glsl_light_list(model_type *mdl,model_draw *draw,view_glsl_light_list_type *light_list)
 {
 	int				n;
-
+	
+		// special check for UI lighted models
+		
+	if (draw->ui_lighting) {
+		light_list->hilite=FALSE;
+		
+		light_list->nlight=1;
+		
+		light_list->diffuse.vct.x=(float)mdl->ui.shader.light_offset.x;
+		light_list->diffuse.vct.y=(float)mdl->ui.shader.light_offset.y;
+		light_list->diffuse.vct.z=(float)mdl->ui.shader.light_offset.z;
+		vector_normalize(&light_list->diffuse.vct);
+		
+		light_list->diffuse.boost=0.0f;
+		
+		light_list->ui_light.on=TRUE;
+		light_list->ui_light.intensity=mdl->ui.shader.light_intensity;
+		light_list->ui_light.exponent=mdl->ui.shader.light_exponent;
+		light_list->ui_light.pnt.x=draw->pnt.x+mdl->ui.shader.light_offset.x;
+		light_list->ui_light.pnt.y=draw->pnt.x+mdl->ui.shader.light_offset.y;
+		light_list->ui_light.pnt.z=draw->pnt.x+mdl->ui.shader.light_offset.z;
+		memmove(&light_list->ui_light.col,&mdl->ui.shader.light_col,sizeof(d3col));
+		
+		return;
+	}
+	
+		// regular lighting
+		
+	light_list->ui_light.on=FALSE;
+	
 		// misc settings, mostly for models
 
 	light_list->hilite=FALSE;
-	gl_lights_calc_diffuse_vector(&draw->pnt,draw->light_cache.count,draw->light_cache.indexes,&light_list->diffuse_vct);
-	light_list->diffuse_boost=0.0f;
+	gl_lights_calc_diffuse_vector(&draw->pnt,draw->light_cache.count,draw->light_cache.indexes,&light_list->diffuse.vct);
+	light_list->diffuse.boost=0.0f;
 
 		// lights
 

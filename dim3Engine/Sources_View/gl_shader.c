@@ -408,7 +408,7 @@ void gl_shader_ambient_hilite_override(shader_type *shader,bool hilite)
 void gl_shader_set_light_variables(shader_type *shader,int core_shader_group,bool is_core,view_glsl_light_list_type *light_list)
 {
 	int								n,k,count,max_light;
-	float							light_map_mask;
+	float							f_intensity,light_map_mask;
 	view_light_spot_type			*lspot;
 	shader_cached_var_light_loc		*loc_light;
 	shader_current_var_light_value	*cur_light;
@@ -417,6 +417,25 @@ void gl_shader_set_light_variables(shader_type *shader,int core_shader_group,boo
 		// skip all this as core shaders ignore lights
 
 	if ((is_core) && (light_list->nlight==0)) return;
+	
+		// anything UI lite always replaces
+		
+	if (light_list->ui_light.on) {
+	
+		loc_light=&shader->var_locs.dim3Lights[0];
+	
+		f_intensity=(float)light_list->ui_light.intensity;
+	
+		glUniform3fARB(loc_light->position,light_list->ui_light.pnt.x,light_list->ui_light.pnt.y,light_list->ui_light.pnt.z);
+		glUniform3fARB(loc_light->color,light_list->ui_light.col.r,light_list->ui_light.col.g,light_list->ui_light.col.b);
+		glUniform1fARB(loc_light->intensity,f_intensity);
+		glUniform1fARB(loc_light->invertIntensity,(1.0f/f_intensity));
+		glUniform1fARB(loc_light->exponent,light_list->ui_light.exponent);
+		glUniform3fvARB(loc_light->direction,3,light_shader_direction[ld_all]);
+		glUniform1fARB(loc_light->lightMapMask,1.0f);
+	
+		return;
+	}
 	
 		// have lights changed?
 		
@@ -546,18 +565,18 @@ void gl_shader_set_diffuse_variables(shader_type *shader,view_glsl_light_list_ty
 		// diffuse vector
 
 	if (shader->var_locs.dim3DiffuseVector!=-1) {
-		if ((shader->var_values.diffuse_vct.x!=light_list->diffuse_vct.x) || (shader->var_values.diffuse_vct.y!=light_list->diffuse_vct.y) || (shader->var_values.diffuse_vct.z!=light_list->diffuse_vct.z)) {
-			memmove(&shader->var_values.diffuse_vct,&light_list->diffuse_vct,sizeof(d3vct));
-			glUniform3fARB(shader->var_locs.dim3DiffuseVector,light_list->diffuse_vct.x,light_list->diffuse_vct.y,light_list->diffuse_vct.z);
+		if ((shader->var_values.diffuse_vct.x!=light_list->diffuse.vct.x) || (shader->var_values.diffuse_vct.y!=light_list->diffuse.vct.y) || (shader->var_values.diffuse_vct.z!=light_list->diffuse.vct.z)) {
+			memmove(&shader->var_values.diffuse_vct,&light_list->diffuse.vct,sizeof(d3vct));
+			glUniform3fARB(shader->var_locs.dim3DiffuseVector,light_list->diffuse.vct.x,light_list->diffuse.vct.y,light_list->diffuse.vct.z);
 		}
 	}
 	
 		// diffuse boost
 
 	if (shader->var_locs.dim3DiffuseBoost!=-1) {
-		if (shader->var_values.diffuse_boost!=light_list->diffuse_boost) {
-			shader->var_values.diffuse_boost=light_list->diffuse_boost;
-			glUniform1fARB(shader->var_locs.dim3DiffuseBoost,light_list->diffuse_boost);
+		if (shader->var_values.diffuse_boost!=light_list->diffuse.boost) {
+			shader->var_values.diffuse_boost=light_list->diffuse.boost;
+			glUniform1fARB(shader->var_locs.dim3DiffuseBoost,light_list->diffuse.boost);
 		}
 	}
 }

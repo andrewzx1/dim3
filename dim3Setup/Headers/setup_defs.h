@@ -63,6 +63,7 @@ and can be sold or given away.
 #define item_interface_crosshair				19
 #define item_interface_action					20
 #define item_interface_shader					21
+#define item_interface_preload_models			22
 
 //
 // intro button types

@@ -67,6 +67,7 @@ model_draw* element_load_model(char *name,char *animate,float resize,d3pnt *offs
 	}
 
 	draw->resize=resize;
+	draw->shadow.on=FALSE;
 	
 	if (offset==NULL) {
 		draw->offset.x=draw->offset.y=draw->offset.z=0;
@@ -3005,6 +3006,11 @@ void element_draw_model(element_type *element)
 	glDepthFunc(GL_LEQUAL);
 
 	glColor4f(1.0f,1.0f,1.0f,1.0f);
+	
+		// force shaders
+		// if being used
+		
+	if (view_shader_on()) gl_shader_draw_scene_start();
 
 		// setup drawing
 

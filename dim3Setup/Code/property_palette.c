@@ -186,6 +186,10 @@ void property_palette_fill_level_1(void)
 		case item_interface_shader:
 			property_palette_fill_shaders();
 			return;
+			
+		case item_interface_preload_models:
+			property_palette_fill_preload_models();
+			return;
 
 	}
 }
@@ -533,6 +537,10 @@ void property_palette_click_level_1(bool double_click)
 
 		case item_interface_shader:
 			property_palette_click_shaders(double_click);
+			break;
+			
+		case item_interface_preload_models:
+			property_palette_click_preload_models(double_click);
 			break;
 
 	}

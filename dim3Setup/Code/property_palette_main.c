@@ -75,6 +75,7 @@ void property_palette_fill_main(void)
 	list_palette_add_item(&property_palette,item_interface_crosshair,0,"Crosshairs",(state.cur_item==item_interface_crosshair),FALSE);
 	list_palette_add_item(&property_palette,item_interface_action,0,"Control Actions",(state.cur_item==item_interface_action),FALSE);
 	list_palette_add_item(&property_palette,item_interface_shader,0,"Shaders",(state.cur_item==item_interface_shader),FALSE);
+	list_palette_add_item(&property_palette,item_interface_preload_models,0,"Preload Models",(state.cur_item==item_interface_preload_models),FALSE);
 }
 
 /* =======================================================

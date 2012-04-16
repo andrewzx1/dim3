@@ -35,7 +35,8 @@ and can be sold or given away.
 
 #define kSettingsProjectName					0
 #define kSettingsProjectModernize				1
-#define kSettingsProjectSkill					2
+#define kSettingsProjectNoShaders				2
+#define kSettingsProjectSkill					3
 
 #define kSettingsScaleX							5
 #define kSettingsScaleY							6
@@ -62,6 +63,7 @@ void property_palette_fill_project(void)
 	list_palette_add_header(&property_palette,0,"Project");
 	list_palette_add_string(&property_palette,kSettingsProjectName,"Name",iface.project.name,name_str_len,FALSE);
 	list_palette_add_checkbox(&property_palette,kSettingsProjectModernize,"Modernize",&iface.project.modernize,FALSE);
+	list_palette_add_checkbox(&property_palette,kSettingsProjectNoShaders,"No Shaders",&iface.project.no_shaders,FALSE);
 
 		// scale
 		

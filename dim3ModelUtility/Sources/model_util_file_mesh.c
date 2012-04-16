@@ -266,9 +266,9 @@ void model_decode_v2_mesh_xml(model_type *model,int model_head)
 		model->ui.shader.light_offset.x=0;
 		model->ui.shader.light_offset.y=-5000;
 		model->ui.shader.light_offset.z=0;
-		model->ui.shader.light_color.r=1.0f;
-		model->ui.shader.light_color.g=1.0f;
-		model->ui.shader.light_color.b=1.0f;
+		model->ui.shader.light_col.r=1.0f;
+		model->ui.shader.light_col.g=1.0f;
+		model->ui.shader.light_col.b=1.0f;
 	}
 	
 		// meshes

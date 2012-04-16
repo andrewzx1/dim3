@@ -439,7 +439,7 @@ void debug_dump(void)
 		debug_info_table_str(file,mdl->name,25);
 		debug_info_table_int(file,nvertex,10);
 		debug_info_table_int(file,npoly,10);
-		debug_info_table_int(file,mdl->reference_count,10);
+		debug_info_table_int(file,mdl->load.reference_count,10);
 		debug_info_return(file);
 	}
 

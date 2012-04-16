@@ -34,6 +34,7 @@ and can be sold or given away.
 
 extern server_type		server;
 extern setup_type		setup;
+extern iface_type		iface;
 
 /* =======================================================
 
@@ -57,19 +58,6 @@ void model_free_list(void)
 	for (n=0;n!=max_model_list;n++) {
 		if (server.model_list.models[n]==NULL) free(server.model_list.models[n]);
 	}
-}
-
-int model_count_list(void)
-{
-	int				n,count;
-
-	count=0;
-
-	for (n=0;n!=max_model_list;n++) {
-		if (server.model_list.models[n]!=NULL) count++;
-	}
-
-	return(count);
 }
 
 /* =======================================================
@@ -124,7 +112,7 @@ int model_load(char *name)
 	
 	idx=model_find_index(name);
 	if (idx!=-1) {
-		server.model_list.models[idx]->reference_count++;
+		server.model_list.models[idx]->load.reference_count++;
 		return(idx);
 	}
 
@@ -148,7 +136,7 @@ int model_load(char *name)
 	if (mdl==NULL) return(-1);
 
 		// load model
-
+		
 	model_setup(&setup.file_path_setup,setup.anisotropic,setup.mipmap_mode,TRUE,view_shader_on());
 
 	if (!model_open(mdl,name,TRUE)) {
@@ -164,7 +152,8 @@ int model_load(char *name)
 
 		// start reference count at 1
 
-	mdl->reference_count=1;
+	mdl->load.reference_count=1;
+	mdl->load.preloaded=FALSE;
 
 		// put in model list
 
@@ -245,8 +234,8 @@ void model_dispose(int idx)
 
 		// decrement reference count
 
-	mdl->reference_count--;
-	if (mdl->reference_count>0) return;
+	mdl->load.reference_count--;
+	if (mdl->load.reference_count>0) return;
 
 		// dispose model
 
@@ -292,7 +281,7 @@ void model_reset_single(model_draw *draw)
 		// reference count
 
 	if (draw->model_idx!=-1) {
-		server.model_list.models[draw->model_idx]->reference_count++;
+		server.model_list.models[draw->model_idx]->load.reference_count++;
 	}
 
 		// try to load it
@@ -321,10 +310,17 @@ void models_reset(void)
 		// will need to reset all model
 		// reference counts, we don't know
 		// where they are left off after load
+		
+		// special check for preloaded models
+		// so we don't end up losing their
+		// one preload count
 
 	for (n=0;n!=max_model_list;n++) {
 		mdl=server.model_list.models[n];
-		if (mdl!=NULL) mdl->reference_count=0;
+		if (mdl!=NULL) {
+			mdl->load.reference_count=0;
+			if (mdl->load.preloaded) mdl->load.reference_count++;
+		}
 	}
 
 		// fix model indexes
@@ -365,8 +361,39 @@ void models_reset(void)
 	for (n=0;n!=max_model_list;n++) {
 		mdl=server.model_list.models[n];
 		if (mdl!=NULL) {
-			if (mdl->reference_count<=0) model_dispose(n);
+			if (mdl->load.reference_count<=0) model_dispose(n);
 		}
 	}
 }
+
+/* =======================================================
+
+      Model PreLoading
+      
+======================================================= */
+
+void model_preload_start(void)
+{
+	int			n,idx;
+	
+	for (n=0;n!=max_preload_model;n++) {
+		if (iface.preload_model.names[n][0]==0x0) continue;
+		
+		idx=model_load(iface.preload_model.names[n]);
+		if (idx!=-1) server.model_list.models[idx]->load.preloaded=TRUE;
+	}
+}
+
+void model_preload_free(void)
+{
+	int			n,idx;
+	
+	for (n=0;n!=max_preload_model;n++) {
+		if (iface.preload_model.names[n][0]==0x0) continue;
+		
+		idx=model_find_index(iface.preload_model.names[n]);
+		if (idx!=-1) model_dispose(idx);
+	}
+}
+
 

@@ -230,10 +230,23 @@ typedef struct		{
 					} view_light_spot_type;
 
 typedef struct		{
+						float								boost;
+						d3vct								vct;
+					} view_glsl_light_list_diffuse_type;
+
+typedef struct		{
+						int									intensity;
+						float								exponent;
+						bool								on;
+						d3pnt								pnt;
+						d3col								col;
+					} view_glsl_light_list_ui_light_type;
+
+typedef struct		{
 						int									nlight,light_idx[max_shader_light];
 						bool								hilite;
-						float								diffuse_boost;
-						d3vct								diffuse_vct;
+						view_glsl_light_list_diffuse_type	diffuse;
+						view_glsl_light_list_ui_light_type	ui_light;
 					} view_glsl_light_list_type;
 
 //
