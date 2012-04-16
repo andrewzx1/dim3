@@ -52,11 +52,10 @@ and can be sold or given away.
 
 #define kMapPropertyNormalCull				30
 #define kMapPropertyCullAngle				31
-#define kMapPropertyDisableShaders			32
-#define kMapPropertyRayTraceObscure			33
-#define kMapPropertyModelObscureDistance	34
-#define kMapPropertyShadowObscureDistance	35
-#define kMapPropertyEffectObscureDistance	36
+#define kMapPropertyRayTraceObscure			32
+#define kMapPropertyModelObscureDistance	33
+#define kMapPropertyShadowObscureDistance	34
+#define kMapPropertyEffectObscureDistance	35
 
 #define kMapPropertyEditorTextureFactor		40
 #define kMapPropertyEditorViewNearZ			41
@@ -119,7 +118,6 @@ void property_palette_fill_map(void)
 	list_palette_add_header(&property_palette,0,"Map Optimizations");
 	list_palette_add_checkbox(&property_palette,kMapPropertyNormalCull,"Never Cull",&map.optimize.never_cull,FALSE);
 	list_palette_add_float(&property_palette,kMapPropertyCullAngle,"Cull Angle",&map.optimize.cull_angle,FALSE);
-	list_palette_add_checkbox(&property_palette,kMapPropertyDisableShaders,"Disable Shaders",&map.optimize.no_shaders,FALSE);
 	list_palette_add_checkbox(&property_palette,kMapPropertyRayTraceObscure,"Ray Trace Obscure",&map.optimize.ray_trace_obscure,FALSE);
 	list_palette_add_int(&property_palette,kMapPropertyModelObscureDistance,"Model Obscure Distance",&map.optimize.obscure_dist.model,FALSE);
 	list_palette_add_int(&property_palette,kMapPropertyShadowObscureDistance,"Shadow Obscure Distance",&map.optimize.obscure_dist.shadow,FALSE);

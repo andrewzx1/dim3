@@ -1379,12 +1379,22 @@ typedef struct		{
 					} iface_multiplayer_type;
 
 //
+// preload models setup
+//
+
+#define max_preload_model				16
+
+typedef struct		{
+						char							names[max_preload_model][name_str_len];
+					} iface_preload_model_type;
+
+//
 // project setup
 //
 
 typedef struct		{
 						char							name[name_str_len];
-						bool							modernize;
+						bool							modernize,no_shaders;
 					} iface_project_type;
 
 //
@@ -1420,6 +1430,7 @@ typedef struct		{
 						iface_shader_list				shader_list;
 						iface_radar_type				radar;
 						iface_chat_type					chat;
+						iface_preload_model_type		preload_model;
 						iface_simple_save_list			simple_save_list;
 						iface_score_list				score_list;
 					} iface_type;

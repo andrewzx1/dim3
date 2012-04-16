@@ -91,6 +91,7 @@ extern void property_palette_fill_marks(void);
 extern void property_palette_fill_crosshairs(void);
 extern void property_palette_fill_actions(void);
 extern void property_palette_fill_shaders(void);
+extern void property_palette_fill_preload_models(void);
 
 extern void property_palette_click_main(bool double_click);
 extern void property_palette_click_project(bool double_click);
@@ -114,6 +115,7 @@ extern void property_palette_click_marks(bool double_click);
 extern void property_palette_click_crosshairs(bool double_click);
 extern void property_palette_click_actions(bool double_click);
 extern void property_palette_click_shaders(bool double_click);
+extern void property_palette_click_preload_models(bool double_click);
 
 extern void property_palette_fill_title_page_button(int intro_button_idx);
 extern void property_palette_fill_title_page_model(int intro_model_idx);

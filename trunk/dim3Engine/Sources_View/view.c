@@ -432,6 +432,10 @@ bool view_initialize(char *err_str)
 	
 	chat_clear_messages();
 	
+		// preloaded models
+		
+	model_preload_start();
+	
 		// draw and input timing
 		// we use raw timing so input and
 		// view can work through pauses
@@ -448,6 +452,10 @@ bool view_initialize(char *err_str)
 
 void view_shutdown(void)
 {
+		// clear all preloaded models
+		
+	model_preload_free();
+	
 		// shutdown view
 
 	input_shutdown();
@@ -527,7 +535,7 @@ void view_game_reset_timing(void)
 
 bool view_shader_on(void)
 {
-	return((!setup.disable_shaders) && (gl_check_shader_ok()) && (!map.optimize.no_shaders));
+	return((!setup.disable_shaders) && (gl_check_shader_ok()) && (!iface.project.no_shaders));
 }
 
 /* =======================================================

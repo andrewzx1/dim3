@@ -125,7 +125,7 @@ void property_palette_fill_model(void)
 	list_palette_add_int(&property_palette,-1,"Light Intensity",&model.ui.shader.light_intensity,FALSE);
 	list_palette_add_float(&property_palette,-1,"Light Exponent",&model.ui.shader.light_exponent,FALSE);
 	list_palette_add_point(&property_palette,-1,"Light Offset",&model.ui.shader.light_offset,FALSE);
-	list_palette_add_pick_color(&property_palette,-1,"Light Color",&model.ui.shader.light_color,FALSE);
+	list_palette_add_pick_color(&property_palette,-1,"Light Color",&model.ui.shader.light_col,FALSE);
 
 	list_palette_add_header(&property_palette,0,"Model Import");
 	list_palette_add_float(&property_palette,kModelPropertyImportScale,"Scale",&model.import.factor,FALSE);

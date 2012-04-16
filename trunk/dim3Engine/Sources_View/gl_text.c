@@ -335,7 +335,7 @@ void gl_text_draw(int x,int y,char *txt,int just,bool vcenter,d3col *col,float a
 {
 	d3col			shadow_col={0.3f,0.3f,0.3f};
 	
-	gl_text_draw_internal((x+1),(y+1),txt,just,vcenter,&shadow_col,0.5f);
+	gl_text_draw_internal((x+1),(y+1),txt,just,vcenter,&shadow_col,(alpha*0.5f));
 	gl_text_draw_internal(x,y,txt,just,vcenter,col,alpha);
 }
 

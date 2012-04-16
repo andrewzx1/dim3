@@ -421,13 +421,15 @@ extern void scenery_start(void);
 
 extern void model_initialize_list(void);
 extern void model_free_list(void);
-extern int model_count_list(void);
 
 extern model_type* model_find(char *name);
 extern int model_find_index(char *name);
 extern bool model_draw_load(model_draw *draw,char *item_type,char *item_name,char *err_str);
 extern void model_draw_dispose(model_draw *draw);
 extern void models_reset(void);
+
+extern void model_preload_start(void);
+extern void model_preload_free(void);
 
 extern void model_draw_setup_object(obj_type *obj);
 extern void model_draw_setup_weapon(obj_type *obj,weapon_type *weap,bool ignore_y_shifts,bool dual_hand);

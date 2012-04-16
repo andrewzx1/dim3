@@ -363,7 +363,7 @@ bool render_model_initialize_vertex_objects(model_type *mdl,int mesh_idx,model_d
 
 		// also remember some offsets for later pointer work
 		
-	shader_on=view_shader_on()&&(!draw->no_shader);
+	shader_on=view_shader_on();
 		
 	mesh=&mdl->meshes[mesh_idx];
 
@@ -591,10 +591,10 @@ void render_model_opaque_shader(model_type *mdl,int mesh_idx,model_draw *draw,vi
 					
 		light_list->hilite=(mesh->no_lighting);
 		if (!mesh->diffuse) {
-			light_list->diffuse_boost=1.0f;
+			light_list->diffuse.boost=1.0f;
 		}
 		else {
-			light_list->diffuse_boost=mdl->diffuse_boost;
+			light_list->diffuse.boost=mdl->diffuse_boost;
 		}
 
 			// run the shader
@@ -777,10 +777,10 @@ void render_model_transparent_shader(model_type *mdl,int mesh_idx,model_draw *dr
 		
 		light_list->hilite=(mesh->no_lighting);
 		if (!mesh->diffuse) {
-			light_list->diffuse_boost=1.0f;
+			light_list->diffuse.boost=1.0f;
 		}
 		else {
-			light_list->diffuse_boost=mdl->diffuse_boost;
+			light_list->diffuse.boost=mdl->diffuse_boost;
 		}
 
 			// draw poly
@@ -1060,7 +1060,7 @@ void render_model_build_vertex_lists(model_draw *draw,bool always_build)
 		// setup the colors and normals
 		// shaders don't need color list
 
-	shader_off=((!view_shader_on()) || (draw->no_shader));
+	shader_off=!view_shader_on();
 	
 	render_model_create_normal_vertexes(mdl,draw->render_mesh_mask,draw,shader_off);
 	
@@ -1155,10 +1155,9 @@ void render_model_opaque(model_draw *draw)
 		// then if shaders are on we have to create
 		// a fake set of lights for the rendering
 		
-	shader_on=view_shader_on()&&(!draw->no_shader);
+	shader_on=view_shader_on();
 
 	if (shader_on) {
-		if (draw->ui_lighting) gl_lights_model_ui_compile(mdl,&draw->pnt);
 		gl_lights_build_model_glsl_light_list(mdl,draw,&light_list);
 	}
 
