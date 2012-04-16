@@ -426,7 +426,7 @@ void gl_shader_set_light_variables(shader_type *shader,int core_shader_group,boo
 	
 		f_intensity=(float)light_list->ui_light.intensity;
 	
-		glUniform3fARB(loc_light->position,light_list->ui_light.pnt.x,light_list->ui_light.pnt.y,light_list->ui_light.pnt.z);
+		glUniform3fARB(loc_light->position,(GLfloat)light_list->ui_light.pnt.x,(GLfloat)light_list->ui_light.pnt.y,(GLfloat)light_list->ui_light.pnt.z);
 		glUniform3fARB(loc_light->color,light_list->ui_light.col.r,light_list->ui_light.col.g,light_list->ui_light.col.b);
 		glUniform1fARB(loc_light->intensity,f_intensity);
 		glUniform1fARB(loc_light->invertIntensity,(1.0f/f_intensity));

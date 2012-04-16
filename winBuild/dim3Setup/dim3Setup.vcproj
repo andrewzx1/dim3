@@ -712,6 +712,10 @@
 					RelativePath="..\..\dim3BaseUtility\Sources\base_zip.c"
 					>
 				</File>
+				<File
+					RelativePath="..\..\dim3Setup\Code\property_palette_preload_models.c"
+					>
+				</File>
 			</Filter>
 		</Filter>
 	</Files>
