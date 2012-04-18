@@ -54,9 +54,14 @@ A pre-compiled archive of these can be found at: http://www.klinksoftware.net/do
 
 The iPhone compile requires no additional external libraries.
 
-NOTE that you must include the data directory inside the application to run it.  Check out
+NOTE: You must include the data directory inside the application to run it.  Check out
 the run script in the engine build, this copies the data folder into the executable.
 
+NOTE: The iOS build ONLY builds for devices, NOT for the simulator.  The emulated OpenGL is too
+slow on the simulator and it's a bad representation of a running game.
+
+NOTE: There is currently a patch I have for SDL because it doesn't fully support iOS events currently,
+which means you will need to rely on my SDL build for now.
 
 
 ============================================================================================
