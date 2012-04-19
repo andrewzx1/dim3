@@ -64,7 +64,7 @@ void object_liquid_contact(obj_type *obj)
 	
 	for (n=0;n!=nliquid;n++) {
 		liq=&map.liquid.liquids[n];
-	
+		
 		if (rgt<liq->lft) continue;
 		if (lft>liq->rgt) continue;
 		if (bot<liq->top) continue;
@@ -136,6 +136,11 @@ void object_liquid(obj_type *obj)
         if (old_liquid_mode!=lm_out) scripts_post_event_console(obj->script_idx,-1,sd_event_liquid,sd_event_liquid_out,0);
         return;
     }
+	
+		// we can't go right from out
+		// to floating without a in message
+		
+	if ((obj->liquid.mode==lm_float) && (old_liquid_mode==lm_out)) obj->liquid.mode=lm_in;
 
 		// setup bobbing
 
