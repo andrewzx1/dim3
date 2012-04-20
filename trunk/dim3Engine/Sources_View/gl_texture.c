@@ -319,6 +319,8 @@ void gl_texture_model_fixed_start(void)
 	glActiveTexture(GL_TEXTURE2);
 	glEnable(GL_TEXTURE_2D);
 
+	glTexEnvi(GL_TEXTURE_ENV,GL_TEXTURE_ENV_MODE,GL_COMBINE);
+
 	glTexEnvi(GL_TEXTURE_ENV,GL_COMBINE_RGB,GL_MODULATE);
 	glTexEnvi(GL_TEXTURE_ENV,GL_SOURCE0_RGB,GL_PREVIOUS);
 	glTexEnvi(GL_TEXTURE_ENV,GL_OPERAND0_RGB,GL_SRC_COLOR);
@@ -356,7 +358,7 @@ void gl_texture_model_fixed_end(void)
 
 void gl_texture_model_fixed_set(GLuint txt_id,GLuint glow_txt_id,float glow_color,float alpha)
 {
-	GLfloat			col4[4];
+	GLfloat			alpha_col4[4],glow_col4[4];
 
 		// set the textures
 
@@ -368,11 +370,11 @@ void gl_texture_model_fixed_set(GLuint txt_id,GLuint glow_txt_id,float glow_colo
 	if (alpha!=gl_texture_current_alpha) {
 		gl_texture_current_alpha=alpha;
 
-		col4[0]=col4[1]=col4[2]=1.0f;
-		col4[3]=alpha;
+		alpha_col4[0]=alpha_col4[1]=alpha_col4[2]=1.0f;
+		alpha_col4[3]=alpha;
 		
 		glActiveTexture(GL_TEXTURE2);
-		glTexEnvfv(GL_TEXTURE_ENV,GL_TEXTURE_ENV_COLOR,col4);
+		glTexEnvfv(GL_TEXTURE_ENV,GL_TEXTURE_ENV_COLOR,alpha_col4);
 	}
 	
 		// set the glow color
@@ -380,11 +382,11 @@ void gl_texture_model_fixed_set(GLuint txt_id,GLuint glow_txt_id,float glow_colo
 	if (glow_color!=gl_texture_current_glow_color) {
 		gl_texture_current_glow_color=glow_color;
 
-		col4[0]=col4[1]=col4[2]=glow_color;
-		col4[3]=1.0f;
+		glow_col4[0]=glow_col4[1]=glow_col4[2]=glow_color;
+		glow_col4[3]=1.0f;
 		
 		glActiveTexture(GL_TEXTURE0);
-		glTexEnvfv(GL_TEXTURE_ENV,GL_TEXTURE_ENV_COLOR,col4);
+		glTexEnvfv(GL_TEXTURE_ENV,GL_TEXTURE_ENV_COLOR,glow_col4);
 	}
 }
 
