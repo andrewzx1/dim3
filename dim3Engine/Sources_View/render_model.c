@@ -621,7 +621,7 @@ void render_model_transparent_fixed(model_type *mdl,int mesh_idx,model_draw *dra
 	model_poly_type			*poly;
  	model_draw_mesh_type	*draw_mesh;
     texture_type			*texture;
-	
+
 	mesh=&mdl->meshes[mesh_idx];
 	draw_mesh=&draw->meshes[mesh_idx];
 
