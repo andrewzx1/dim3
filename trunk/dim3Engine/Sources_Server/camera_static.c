@@ -98,10 +98,10 @@ void camera_walk_to_node_setup_speed_turn(void)
 		
 	node=&map.nodes[camera.auto_walk.node_seek_idx];
 
-	memmove(&camera.auto_walk.start_pnt,&camera.cur_pos.pnt,sizeof(d3pnt));
+	memmove(&camera.auto_walk.start_pnt,&camera.cur_pos.static_pnt,sizeof(d3pnt));
 	memmove(&camera.auto_walk.end_pnt,&node->pnt,sizeof(d3pnt));
 	
-	memmove(&camera.auto_walk.start_ang,&camera.cur_pos.ang,sizeof(d3ang));
+	memmove(&camera.auto_walk.start_ang,&camera.cur_pos.static_ang,sizeof(d3ang));
 	memmove(&camera.auto_walk.end_ang,&node->ang,sizeof(d3ang));
 	
 		// find the amount of ticks this
@@ -277,16 +277,16 @@ void camera_static_run(void)
 
 			// set the current walk pnt
 		
-		camera.cur_pos.pnt.x=camera.auto_walk.start_pnt.x+(((camera.auto_walk.end_pnt.x-camera.auto_walk.start_pnt.x)*tick)/tot_tick);
-		camera.cur_pos.pnt.y=camera.auto_walk.start_pnt.y+(((camera.auto_walk.end_pnt.y-camera.auto_walk.start_pnt.y)*tick)/tot_tick);
-		camera.cur_pos.pnt.z=camera.auto_walk.start_pnt.z+(((camera.auto_walk.end_pnt.z-camera.auto_walk.start_pnt.z)*tick)/tot_tick);
+		camera.cur_pos.static_pnt.x=camera.auto_walk.start_pnt.x+(((camera.auto_walk.end_pnt.x-camera.auto_walk.start_pnt.x)*tick)/tot_tick);
+		camera.cur_pos.static_pnt.y=camera.auto_walk.start_pnt.y+(((camera.auto_walk.end_pnt.y-camera.auto_walk.start_pnt.y)*tick)/tot_tick);
+		camera.cur_pos.static_pnt.z=camera.auto_walk.start_pnt.z+(((camera.auto_walk.end_pnt.z-camera.auto_walk.start_pnt.z)*tick)/tot_tick);
 
 			// get the look angle if not following
 
 		if (!map.camera.c_static.follow) {
-			camera.cur_pos.ang.x=camera_walk_to_node_move_angle(camera.auto_walk.start_ang.x,camera.auto_walk.end_ang.x,tick,tot_tick);
-			camera.cur_pos.ang.y=camera_walk_to_node_move_angle(camera.auto_walk.start_ang.y,camera.auto_walk.end_ang.y,tick,tot_tick);
-			camera.cur_pos.ang.z=camera_walk_to_node_move_angle(camera.auto_walk.start_ang.z,camera.auto_walk.end_ang.z,tick,tot_tick);
+			camera.cur_pos.static_ang.x=camera_walk_to_node_move_angle(camera.auto_walk.start_ang.x,camera.auto_walk.end_ang.x,tick,tot_tick);
+			camera.cur_pos.static_ang.y=camera_walk_to_node_move_angle(camera.auto_walk.start_ang.y,camera.auto_walk.end_ang.y,tick,tot_tick);
+			camera.cur_pos.static_ang.z=camera_walk_to_node_move_angle(camera.auto_walk.start_ang.z,camera.auto_walk.end_ang.z,tick,tot_tick);
 		}
 		
 		return;
@@ -295,8 +295,8 @@ void camera_static_run(void)
 		// finish by setting everything
 		// to end node to eliminate any slop
 		
-	memmove(&camera.cur_pos.pnt,&camera.auto_walk.end_pnt,sizeof(d3pnt));
-	if (!map.camera.c_static.follow) memmove(&camera.cur_pos.ang,&node->ang,sizeof(d3ang));
+	memmove(&camera.cur_pos.static_pnt,&camera.auto_walk.end_pnt,sizeof(d3pnt));
+	if (!map.camera.c_static.follow) memmove(&camera.cur_pos.static_ang,&node->ang,sizeof(d3ang));
 	
 		// move on to next node
 		
