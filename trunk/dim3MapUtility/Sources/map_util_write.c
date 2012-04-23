@@ -164,6 +164,8 @@ void write_map_settings_xml(map_type *map)
     xml_add_attribute_int("model_obscure_distance",map->optimize.obscure_dist.model);
     xml_add_attribute_int("shadow_obscure_distance",map->optimize.obscure_dist.shadow);
     xml_add_attribute_int("effect_obscure_distance",map->optimize.obscure_dist.effect);
+    xml_add_attribute_int("shadow_poly_min_area",map->optimize.shadow_poly_min_area);
+    xml_add_attribute_boolean("shadow_floor_only",map->optimize.shadow_floor_only);
 	xml_add_tagend(TRUE);
 	
     xml_add_tagstart("Singleplayer");

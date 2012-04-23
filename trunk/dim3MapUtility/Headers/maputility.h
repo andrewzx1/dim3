@@ -242,7 +242,8 @@ typedef struct		{
 typedef struct		{
 						int									vertex_offset,decal_stencil_idx,
 															txt_frame_offset;
-						bool								bump_ok,shift_on,transparent_on,glow_on;
+						bool								bump_ok,shadow_ok,
+															shift_on,transparent_on,glow_on;
 						d3uv								shift_offset;
 					} map_mesh_poly_draw_type;
 
@@ -295,7 +296,7 @@ typedef struct		{
 					} map_mesh_message_type;
 
 typedef struct		{
-						bool								shiftable,poly_has_camera,
+						bool								shiftable,poly_has_camera,shadow_ok,
 															has_obscure_poly,lighting_small;
 					} map_mesh_precalc_flag_type;
 
@@ -631,8 +632,10 @@ typedef struct		{
 					} map_optimize_obscure_dist_type;
 
 typedef struct		{
+						int									shadow_poly_min_area;
 						float								cull_angle;
-						bool								never_cull,ray_trace_obscure;
+						bool								never_cull,ray_trace_obscure,
+															shadow_floor_only;
 						map_optimize_obscure_dist_type		obscure_dist;
 					} map_optimize_type;					
 

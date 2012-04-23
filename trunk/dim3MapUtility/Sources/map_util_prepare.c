@@ -125,6 +125,31 @@ void map_prepare_mesh_poly_plane(map_mesh_type *mesh,map_mesh_poly_type *poly)
 	poly->plane.kd=-((f1.x*((f0.y*f2.z)-(f2.y*f0.z)))+(f0.x*((f2.y*f1.z)-(f1.y*f2.z)))+(f2.x*((f1.y*f0.z)-(f0.y*f1.z))));
 }
 
+void map_prepare_mesh_poly_shadow(map_type *map,map_mesh_type *mesh,map_mesh_poly_type *poly)
+{
+	int			d,area;
+
+	if (!poly->box.wall_like) {
+		area=(poly->box.max.x-poly->box.min.x)*(poly->box.max.z-poly->box.min.z);
+	}
+	else {
+
+			// floor only drawing?
+
+		if (map->optimize.shadow_floor_only) {
+			poly->draw.shadow_ok=FALSE;
+			return;
+		}
+
+		d=distance_2D_get(poly->box.min.x,poly->box.min.z,poly->box.max.x,poly->box.max.z);
+		area=d*(poly->box.max.y-poly->box.min.y);
+	}
+
+		// is poly greater than min area?
+
+	poly->draw.shadow_ok=area>map->optimize.shadow_poly_min_area;
+}
+
 void map_prepare_mesh_poly(map_type *map,map_mesh_type *mesh,map_mesh_poly_type *poly)
 {
 	int				n,ptsz,y,lx,rx,lz,rz,dist;
@@ -272,6 +297,10 @@ void map_prepare_mesh_poly(map_type *map,map_mesh_type *mesh,map_mesh_poly_type 
 		// get the plane equation for ray-plane intersections
 		
 	map_prepare_mesh_poly_plane(mesh,poly);
+
+		// determine if shadows can project on this polygon
+
+	map_prepare_mesh_poly_shadow(map,mesh,poly);
 }
 
 bool map_prepare_mesh_poly_bump_check_floor_hit(map_mesh_type *mesh,d3pnt *p1,d3pnt *p2)
@@ -521,6 +550,7 @@ void map_prepare(map_type *map)
 		mesh->precalc_flag.poly_has_camera=FALSE;
 		mesh->precalc_flag.has_obscure_poly=FALSE;
 		mesh->precalc_flag.lighting_small=FALSE;
+		mesh->precalc_flag.shadow_ok=TRUE;
 		
 			// run through the mesh polygons
 			
@@ -541,7 +571,9 @@ void map_prepare(map_type *map)
 			poly->draw.shift_on=((poly->shift.x!=0.0f) || (poly->shift.y!=0.0f));
 			poly->draw.shift_offset.x=0.0f;
 			poly->draw.shift_offset.y=0.0f;
+
 			mesh->precalc_flag.shiftable|=poly->draw.shift_on;
+			mesh->precalc_flag.shadow_ok|=poly->draw.shadow_ok;
 			
 				// setup camera and obscure flags
 				
