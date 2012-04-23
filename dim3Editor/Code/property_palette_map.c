@@ -56,6 +56,7 @@ and can be sold or given away.
 #define kMapPropertyModelObscureDistance	33
 #define kMapPropertyShadowObscureDistance	34
 #define kMapPropertyEffectObscureDistance	35
+#define kMapPropertyShadowPolyMinArea		36
 
 #define kMapPropertyEditorTextureFactor		40
 #define kMapPropertyEditorViewNearZ			41
@@ -122,6 +123,7 @@ void property_palette_fill_map(void)
 	list_palette_add_int(&property_palette,kMapPropertyModelObscureDistance,"Model Obscure Distance",&map.optimize.obscure_dist.model,FALSE);
 	list_palette_add_int(&property_palette,kMapPropertyShadowObscureDistance,"Shadow Obscure Distance",&map.optimize.obscure_dist.shadow,FALSE);
 	list_palette_add_int(&property_palette,kMapPropertyEffectObscureDistance,"Effect Obscure Distance",&map.optimize.obscure_dist.effect,FALSE);
+//	list_palette_add_int(&property_palette,kMapPropertyShadowPolyMinArea,"Shadow Poly Min Area",&map.optimize.shadow_poly_min_area,FALSE);
 
 		// parameters
 
