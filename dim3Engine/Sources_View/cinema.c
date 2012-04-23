@@ -182,8 +182,8 @@ void cinema_action_run_camera(map_cinema_action_type *action)
 		
 		node=&map.nodes[node_idx];
 
-		memmove(&camera.cur_pos.pnt,&node->pnt,sizeof(d3pnt));
-		memmove(&camera.cur_pos.ang,&node->ang,sizeof(d3ang));
+		memmove(&camera.cur_pos.static_pnt,&node->pnt,sizeof(d3pnt));
+		memmove(&camera.cur_pos.static_ang,&node->ang,sizeof(d3ang));
 		
 		return;
 	}
