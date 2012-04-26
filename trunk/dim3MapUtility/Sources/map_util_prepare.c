@@ -127,10 +127,13 @@ void map_prepare_mesh_poly_plane(map_mesh_type *mesh,map_mesh_poly_type *poly)
 
 void map_prepare_mesh_poly_shadow(map_type *map,map_mesh_type *mesh,map_mesh_poly_type *poly)
 {
-	int			d,area;
-
+	int			d;
+	
+	poly->draw.shadow_ok=TRUE;
+	
 	if (!poly->box.wall_like) {
-		area=(poly->box.max.x-poly->box.min.x)*(poly->box.max.z-poly->box.min.z);
+		if (map->optimize.shadow_poly_min_area==0) return;
+		poly->draw.shadow_ok=((poly->box.max.x-poly->box.min.x)>=map->optimize.shadow_poly_min_area) || ((poly->box.max.z-poly->box.min.z)>=map->optimize.shadow_poly_min_area);
 	}
 	else {
 
@@ -140,14 +143,12 @@ void map_prepare_mesh_poly_shadow(map_type *map,map_mesh_type *mesh,map_mesh_pol
 			poly->draw.shadow_ok=FALSE;
 			return;
 		}
+		
+		if (map->optimize.shadow_poly_min_area==0) return;
 
 		d=distance_2D_get(poly->box.min.x,poly->box.min.z,poly->box.max.x,poly->box.max.z);
-		area=d*(poly->box.max.y-poly->box.min.y);
+		poly->draw.shadow_ok=(d>=map->optimize.shadow_poly_min_area) || ((poly->box.max.y-poly->box.min.y)>=map->optimize.shadow_poly_min_area);
 	}
-
-		// is poly greater than min area?
-
-	poly->draw.shadow_ok=area>map->optimize.shadow_poly_min_area;
 }
 
 void map_prepare_mesh_poly(map_type *map,map_mesh_type *mesh,map_mesh_poly_type *poly)

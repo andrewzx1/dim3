@@ -360,6 +360,10 @@ int shadow_build_poly_cross_volume_set(d3pnt *light_pnt,d3pnt *model_min,d3pnt *
 		for (k=0;k!=mesh->npoly;k++) {
 			poly=&mesh->polys[k];
 			
+				// skip out optimized shadows
+			
+			if (!poly->draw.shadow_ok) continue;
+			
 				// skip all transparent polys
 				
 			if (poly->draw.transparent_on) continue;
