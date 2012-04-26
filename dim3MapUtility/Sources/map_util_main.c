@@ -90,7 +90,7 @@ bool map_new(map_type *map,char *name)
 	map->optimize.obscure_dist.model=0;
 	map->optimize.obscure_dist.shadow=0;
 	map->optimize.obscure_dist.effect=0;
-	map->optimize.shadow_poly_min_area=10000;
+	map->optimize.shadow_poly_min_area=0;
 	map->optimize.shadow_floor_only=FALSE;
 
 		// light maps
