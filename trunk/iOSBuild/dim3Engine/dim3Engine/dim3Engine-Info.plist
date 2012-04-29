@@ -11,11 +11,43 @@
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleIconFile</key>
-	<string></string>
+	<string>icon-iphone.png</string>
 	<key>CFBundleIconFiles</key>
 	<array>
 		<string>icon.png</string>
+		<string>icon-iphone.png</string>
+		<string>Default-Portrait~ipad.png</string>
+		<string>Default-Portrait~ipad.png</string>
+		<string>Default@2x.png</string>
+		<string>icon@2x.png</string>
+		<string>icon copy.png</string>
+		<string>icon-iphone@2x.png</string>
+		<string>icon-ipad.png</string>
+		<string>icon-ipad@2x.png</string>
+		<string>Default-Portrait@2x~ipad.png</string>
+		<string>Default-Landscape@2x~ipad.png</string>
 	</array>
+	<key>CFBundleIcons</key>
+	<dict>
+		<key>CFBundlePrimaryIcon</key>
+		<dict>
+			<key>CFBundleIconFiles</key>
+			<array>
+				<string>icon.png</string>
+				<string>icon-iphone.png</string>
+				<string>Default-Portrait~ipad.png</string>
+				<string>Default-Portrait~ipad.png</string>
+				<string>Default@2x.png</string>
+				<string>icon@2x.png</string>
+				<string>icon copy.png</string>
+				<string>icon-iphone@2x.png</string>
+				<string>icon-ipad.png</string>
+				<string>icon-ipad@2x.png</string>
+				<string>Default-Portrait@2x~ipad.png</string>
+				<string>Default-Landscape@2x~ipad.png</string>
+			</array>
+		</dict>
+	</dict>
 	<key>CFBundleIdentifier</key>
 	<string>com.klinksoftware.dim3</string>
 	<key>CFBundleInfoDictionaryVersion</key>
@@ -38,6 +70,10 @@
 	<string></string>
 	<key>UIStatusBarHidden</key>
 	<true/>
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
 		<string>UIInterfaceOrientationLandscapeRight</string>
