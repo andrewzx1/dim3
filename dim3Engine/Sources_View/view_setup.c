@@ -276,9 +276,10 @@ void view_setup_objects(int tick)
 		model_calc_animation(&obj->draw,tick);
 		model_calc_draw_bones(&obj->draw);
 		
-			// setup model in view
+			// set shadow lights and volumes
+			// so we can cull them
 			
-		render_model_setup(&obj->draw,tick);
+		if ((shadow_on) && (obj->draw.shadow.on)) shadow_render_model_setup_lights(&obj->draw);
 
 			// detect if model or shadow is culled
 			// by the view window
@@ -286,7 +287,7 @@ void view_setup_objects(int tick)
 		flag=0x0;
 		
 		if ((is_camera) && (!view.render->force_camera_obj)) {
-			if (shadow_on) flag|=view_list_item_flag_shadow_in_view;
+			if ((shadow_on) && (obj->draw.shadow.on)) flag|=view_list_item_flag_shadow_in_view;
 		}
 		else {
 			if (view_cull_model(&obj->draw)) flag|=view_list_item_flag_model_in_view;
@@ -304,6 +305,10 @@ void view_setup_objects(int tick)
 			// not in view, skip out
 	
 		if (flag==0x0) continue;
+			
+			// setup model rendering
+			
+		render_model_setup(&obj->draw,tick);
 		
 			// add to draw list
 
@@ -356,11 +361,13 @@ void view_setup_projectiles(int tick)
 		model_calc_animation(&proj->draw,tick);
 		model_calc_draw_bones(&proj->draw);
 		
-			// setup model in view
+			// set shadow lights and volumes
+			// so we can cull them
 			
-		render_model_setup(&proj->draw,tick);
-		
-			// find model and shadows in view
+		if ((shadow_on) && (proj->draw.shadow.on)) shadow_render_model_setup_lights(&proj->draw);
+
+			// detect if model or shadow is culled
+			// by the view window
 			
 		flag=0x0;
 		
@@ -376,6 +383,10 @@ void view_setup_projectiles(int tick)
 		}
 	
 		if (flag==0x0) continue;
+		
+			// setup model rendering
+			
+		render_model_setup(&proj->draw,tick);
 
 			// add to draw list
 

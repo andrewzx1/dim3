@@ -505,6 +505,40 @@ void shadow_render_stencil_poly_draw(int ptsz,float *vertexes,int stencil_idx)
 
 /* =======================================================
 
+      Render Model Shadows Setup
+      
+======================================================= */
+
+void shadow_render_model_setup_lights(model_draw *draw)
+{
+		// average all the lights
+		// for the shadow projection
+
+	draw->shadow.light_intensity=gl_light_get_averaged_shadow_light(&draw->pnt,&draw->size,&draw->shadow.light_pnt);
+
+	if (draw->shadow.light_intensity!=-1) {
+
+			// adjust light if angle would be it infinite
+			
+		if ((draw->shadow.light_pnt.y>=(draw->pnt.y-(draw->size.y+view_shadows_infinite_light_shift))) && (draw->shadow.light_pnt.y<=(draw->pnt.y+view_shadows_infinite_light_shift))) {
+			draw->shadow.light_pnt.y=(draw->pnt.y-draw->size.y)-view_shadows_infinite_light_shift;
+		}
+	}
+
+		// no average light, shadows
+		// are cast down
+
+	else {
+		draw->shadow.light_intensity=18000+draw->size.y;
+
+		draw->shadow.light_pnt.x=draw->pnt.x;
+		draw->shadow.light_pnt.y=(draw->pnt.y-draw->size.y)-15000;
+		draw->shadow.light_pnt.z=draw->pnt.z;
+	}
+}
+
+/* =======================================================
+
       Render Model Shadows
       
 ======================================================= */

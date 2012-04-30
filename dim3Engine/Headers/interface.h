@@ -908,6 +908,7 @@ extern void render_map_liquid_transparent(void);
 //
 
 extern bool shadow_get_volume(d3pnt *pnt,int high,d3pnt *light_pnt,int light_intensity,d3pnt *min,d3pnt *max);
+extern void shadow_render_model_setup_lights(model_draw *draw);
 extern void shadow_render_model(model_draw *draw);
 
 //
