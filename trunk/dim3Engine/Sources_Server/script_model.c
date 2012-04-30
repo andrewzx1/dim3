@@ -181,6 +181,7 @@ bool js_model_set_alpha(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSVal
 	model_draw		*draw;
 
 	draw=script_find_model_draw(j_obj);
+	
 	draw->alpha=script_value_to_float(cx,vp);
 	
 	return(TRUE);

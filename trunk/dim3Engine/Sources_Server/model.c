@@ -196,6 +196,9 @@ bool model_draw_load(model_draw *draw,char *item_type,char *item_name,char *err_
 		draw->on=FALSE;
 	}
 	
+		// setup flags telling which textures
+		// are used by which mesh
+	
 		// initialize draw memory
 		
 	if (mdl!=NULL) model_draw_setup_initialize(mdl,&draw->setup,TRUE);

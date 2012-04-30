@@ -38,7 +38,7 @@ extern setup_type			setup;
 #define max_touch_state		4		// supergumba move
 
 typedef struct		{
-						int						id,stick_idx;
+						int						id,button_idx,stick_idx;
 						bool					on;
 						d3pnt					pt;
 					} touch_state_type;
@@ -129,7 +129,7 @@ void input_touch_clear(void)
       
 ======================================================= */
 
-void input_touch_to_virtual_button(d3pnt *pt,bool down)
+int input_touch_to_virtual_button_start(d3pnt *pt)
 {
 	int							n;
 	iface_virtual_button_type	*button;
@@ -140,11 +140,23 @@ void input_touch_to_virtual_button(d3pnt *pt,bool down)
 
 		if ((pt->x<button->pnt.x) || (pt->x>(button->pnt.x+button->size.x)) || (pt->y<button->pnt.y) || (pt->y>(button->pnt.y+button->size.y))) continue;
 		
-		button->down=down;
-
-		input_action_set_touch_trigger_state(button->control_idx,down);
-		return;
+		button->down=TRUE;
+		input_action_set_touch_trigger_state(button->control_idx,TRUE);
+		
+		return(n);
 	}
+	
+	return(-1);
+}
+
+void input_touch_to_virtual_button_release(int button_idx)
+{
+	iface_virtual_button_type	*button;
+	
+	button=&iface.virtual_control.buttons[button_idx];
+	
+	button->down=FALSE;
+	input_action_set_touch_trigger_state(button->control_idx,FALSE);
 }
 
 /* =======================================================
@@ -162,11 +174,7 @@ void input_touch_to_virtual_stick_move(touch_state_type *state)
 		
 	if (state->stick_idx==-1) return;
 	
-		// still in stick?
-		
 	stick=&iface.virtual_control.sticks[state->stick_idx];
-		
-	if ((state->pt.x<stick->pnt.x) || (state->pt.x>(stick->pnt.x+stick->size.x)) || (state->pt.y<stick->pnt.y) || (state->pt.y>(stick->pnt.y+stick->size.y))) return;
 	
 		// move within stick
 		
@@ -177,13 +185,19 @@ void input_touch_to_virtual_stick_move(touch_state_type *state)
 	my=stick->pnt.y+sy;
 	
 	stick->touch_x=(float)(state->pt.x-mx)/(float)sx;
-	if (stick->flip_x) stick->touch_x=-stick->touch_x;
+	if (stick->touch_x<-1.0f) stick->touch_x=-1.0f;
+	if (stick->touch_x>1.0f) stick->touch_x=1.0f;
+	
 
 	stick->touch_y=(float)(state->pt.y-my)/(float)sy;
+	if (stick->touch_y<-1.0f) stick->touch_y=-1.0f;
+	if (stick->touch_y>1.0f) stick->touch_y=1.0f;
+	
+	if (stick->flip_x) stick->touch_x=-stick->touch_x;
 	if (stick->flip_y) stick->touch_y=-stick->touch_y;
 }
 
-void input_touch_to_virtual_stick_start(touch_state_type *state)
+int input_touch_to_virtual_stick_start(touch_state_type *state)
 {
 	int							n;
 	iface_virtual_stick_type	*stick;
@@ -196,21 +210,21 @@ void input_touch_to_virtual_stick_start(touch_state_type *state)
 			
 		if ((state->pt.x<stick->pnt.x) || (state->pt.x>(stick->pnt.x+stick->size.x)) || (state->pt.y<stick->pnt.y) || (state->pt.y>(stick->pnt.y+stick->size.y))) continue;
 		
-			// touch is now tied to this stick
+			// move the stick
 			
-		state->stick_idx=n;
 		input_touch_to_virtual_stick_move(state);
-		return;
+		
+		return(n);
 	}
+	
+	return(-1);
 }
 
-void input_touch_to_virtual_stick_release(touch_state_type *state)
+void input_touch_to_virtual_stick_release(int stick_idx)
 {
 	iface_virtual_stick_type	*stick;
 
-	if (state->stick_idx==-1) return;
-	
-	stick=&iface.virtual_control.sticks[state->stick_idx];
+	stick=&iface.virtual_control.sticks[stick_idx];
 	stick->touch_x=0.0f;
 	stick->touch_y=0.0f;
 }
@@ -243,8 +257,8 @@ void input_touch_state_add_up(int id)
 		if (state->on) {
 			if (state->id==id) {
 				state->on=FALSE;
-				input_touch_to_virtual_button(&state->pt,FALSE);
-				input_touch_to_virtual_stick_release(state);
+				if (state->button_idx!=-1) input_touch_to_virtual_button_release(state->button_idx);
+				if (state->stick_idx!=-1) input_touch_to_virtual_stick_release(state->stick_idx);
 				return;
 			}
 		}
@@ -294,9 +308,12 @@ void input_touch_state_add_down(int id,d3pnt *pt)
 	state->stick_idx=-1;
 	state->pt.x=pt->x;
 	state->pt.y=pt->y;
+	
+		// in a button or a stick?
 
-	input_touch_to_virtual_button(&state->pt,TRUE);
-	input_touch_to_virtual_stick_start(state);
+	state->stick_idx=-1;
+	state->button_idx=input_touch_to_virtual_button_start(&state->pt);
+	if (state->button_idx==-1) state->stick_idx=input_touch_to_virtual_stick_start(state);
 }
 
 /* =======================================================

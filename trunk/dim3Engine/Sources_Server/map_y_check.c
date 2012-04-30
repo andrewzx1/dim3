@@ -40,6 +40,7 @@ extern map_type			map;
 extern server_type		server;
 
 bool					pin_movement_hits[256];
+float					pin_cosf_table[16],pin_sinf_table[16];
 d3pnt					pin_movement_spt[256],pin_movement_ept[256],pin_movement_hpt[256];
 ray_trace_contact_type	pin_movement_contacts[256];
 
@@ -81,9 +82,10 @@ int find_poly_nearest_stand(d3pnt *pnt,int my,bool ignore_higher)
 
 int pin_build_ray_set_obj(obj_type *obj,int ty,int by)
 {
-	int				n,k,x,z,radius,radius_sub,
+	int				n,k,x,z,radius,
 					circle_count,ray_count;
-	float			rad,rad_add,f_radius;
+	float			rad,rad_add,f_radius,f_radius_sub,
+					f_cos,f_sin;
 
 		// get radius
 		
@@ -103,32 +105,32 @@ int pin_build_ray_set_obj(obj_type *obj,int ty,int by)
 	if (circle_count<4) circle_count=4;
 	if (circle_count>15) circle_count=15;
 
-	radius_sub=radius/circle_count;
-
-		// loop in radians
-
-	rad_add=(TRIG_PI*2.0f)/16.0f;
+	f_radius_sub=(float)radius/(float)circle_count;
 
 		// create circles
 
 	ray_count=0;
+	
+	rad=0.0f;
+	rad_add=(TRIG_PI*2.0f)/16.0f;
 
-	for (n=0;n!=circle_count;n++) {
-
-		rad=0.0f;
+	for (k=0;k!=16;k++) {
+		f_sin=sinf(rad);
+		f_cos=cosf(rad);
+		
 		f_radius=(float)radius;
-
-		for (k=0;k!=16;k++) {
-			pin_movement_spt[ray_count].x=pin_movement_ept[ray_count].x=x+(int)(f_radius*sinf(rad));
-			pin_movement_spt[ray_count].z=pin_movement_ept[ray_count].z=z-(int)(f_radius*cosf(rad));
+	
+		for (n=0;n!=circle_count;n++) {
+			pin_movement_spt[ray_count].x=pin_movement_ept[ray_count].x=x+(int)(f_radius*f_sin);
+			pin_movement_spt[ray_count].z=pin_movement_ept[ray_count].z=z-(int)(f_radius*f_cos);
 			pin_movement_spt[ray_count].y=ty;
 			pin_movement_ept[ray_count].y=by;
 			ray_count++;
 
-			rad+=rad_add;
+			f_radius-=f_radius_sub;
 		}
-
-		radius-=radius_sub;
+		
+		rad+=rad_add;
 	}
 
 		// always add one for center
