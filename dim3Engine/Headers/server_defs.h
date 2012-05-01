@@ -953,9 +953,9 @@ typedef struct		{
 //
 
 typedef struct		{
-						int						vertex_mem_sz;
+						int						vertex_mem_sz,index_mem_sz;
 						bool					active;
-						GLuint					vertex;
+						GLuint					vertex,index;
 					} effect_vbo_type;
 
 typedef struct		{

@@ -147,7 +147,7 @@ void ring_draw(effect_type *effect,int count)
 
 	nvertex=36*6;
 
-	view_create_effect_vertex_object(effect,((nvertex*(3+2))*sizeof(float)));
+	view_create_effect_vertex_object(effect,((nvertex*(3+2))*sizeof(float)),-1);
 
 	view_bind_effect_vertex_object(effect);
 	vertex_ptr=(float*)view_map_effect_vertex_object();

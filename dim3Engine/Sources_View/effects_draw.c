@@ -206,7 +206,7 @@ void effect_draw_lightning(effect_type *effect)
 		// effect vbos are dynamic, so it'll auto construct
 		// the first time called
 
-	view_create_effect_vertex_object(effect,(((nline*3)*2)*sizeof(float)));
+	view_create_effect_vertex_object(effect,(((nline*3)*2)*sizeof(float)),-1);
 
 	view_bind_effect_vertex_object(effect);
 	vertex_ptr=(float*)view_map_effect_vertex_object();

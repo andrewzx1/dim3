@@ -116,7 +116,7 @@ bool view_map_vbo_initialize_mesh(map_mesh_type *mesh)
 
 	view_bind_mesh_liquid_index_object(&mesh->vbo);
 	
-	index_ptr=view_map_mesh_liquid_index_object(&mesh->vbo);
+	index_ptr=view_map_mesh_liquid_index_object();
 	if (index_ptr==NULL) {
 		view_unbind_mesh_liquid_index_object();
 		return(FALSE);
@@ -165,7 +165,7 @@ bool view_map_vbo_initialize_liquid(map_liquid_type *liq)
 
 	view_bind_mesh_liquid_index_object(&liq->vbo);
 	
-	index_ptr=view_map_mesh_liquid_index_object(&liq->vbo);
+	index_ptr=view_map_mesh_liquid_index_object();
 	if (index_ptr==NULL) {
 		view_unbind_mesh_liquid_index_object();
 		return(FALSE);
