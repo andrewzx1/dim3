@@ -53,10 +53,10 @@ extern camera_type					camera;
 void audio_callback(void *userdata,Uint8 *stream,int len)
 {
 	int						n,k,pos,stream_len,dist,vol,
-							data,left_channel,right_channel;
+							data,left_channel,right_channel,
+							last_play_idx;
 	short					*s_stream;
 	float					ang,f_ang;
-	bool					has_play;
 	audio_buffer_type		*buffer;
 	audio_play_type			*play;
 	audio_music_song_type	*song;
@@ -64,8 +64,11 @@ void audio_callback(void *userdata,Uint8 *stream,int len)
 		// calculate pitch and left/right channel multiplications
 		// here.  We use a x/1024 factor to save on having to do
 		// any int -> float conversions
+		
+		// we also keep track of last part of the array
+		// that was playable so we can skip over when building wave
 
-	has_play=FALSE;
+	last_play_idx=0;
 
 	for (n=0;n!=audio_max_play;n++) {
 
@@ -78,9 +81,9 @@ void audio_callback(void *userdata,Uint8 *stream,int len)
 
 		play->mix=FALSE;
 
-			// we have at least one audio_music_song_idx,audio_music_alt_song_idxsound
+			// last good index
 
-		has_play=TRUE;
+		last_play_idx=n+1;
 
 			// get the buffer and stream add
 
@@ -140,7 +143,7 @@ void audio_callback(void *userdata,Uint8 *stream,int len)
 
 		// if no plays or music, skip audio mix
 
-	if (!has_play) {
+	if (last_play_idx==0) {
 		if (audio_music_paused) return;
 		if ((audio_music_song_idx==-1) && (audio_music_alt_song_idx==-1)) return;
 	}
@@ -156,115 +159,121 @@ void audio_callback(void *userdata,Uint8 *stream,int len)
 		right_channel=0;
 
 			// mix plays
+			
+		if (last_play_idx!=0) {
 
-		for (n=0;n!=audio_max_play;n++) {
+			for (n=0;n!=last_play_idx;n++) {
 
-			play=&audio_plays[n];
-			if (!play->used) continue;
+				play=&audio_plays[n];
+				if (!play->used) continue;
 
-				// get buffer for mixing
-				
-			buffer=&audio_buffers[play->buffer_idx];
-
-				// do we mix this stream?
-				
-			if (play->mix) {
-
-					// get stream data
+					// get buffer for mixing
 					
-				pos=(int)play->stream_pos;
-				data=(int)(*(buffer->data+pos));
-	
-					// create the channels
+				buffer=&audio_buffers[play->buffer_idx];
 
-				left_channel+=((data*play->left_fact)>>10);
-				right_channel+=((data*play->right_fact)>>10);
-			}
-			
-				// move onto next position in stream
-				// or loop or stop sound
+					// do we mix this stream?
+					
+				if (play->mix) {
 
-			play->stream_pos+=play->stream_add;
-
-			if (play->stream_pos>=buffer->f_sample_len) {
-
-				if (play->loop) {
-					play->stream_pos=play->stream_pos-buffer->f_sample_len;
-				}
-				else {
-					play->used=FALSE;
-				}
-
-			}
-		}
-
-			// global volume adjustment
-
-		left_channel=((left_channel*audio_global_sound_volume)>>10);
-		right_channel=((right_channel*audio_global_sound_volume)>>10);
+						// get stream data
+						
+					pos=(int)play->stream_pos;
+					data=(int)(*(buffer->data+pos));
 		
-			// add in the music
+						// create the channels
 
-		if ((audio_music_song_idx!=-1) && (!audio_music_paused)) {
-			song=&audio_music_song_cache[audio_music_song_idx];
-			
-			pos=(int)song->stream_pos;
-
-			data=(int)(*(song->data+pos));
-			left_channel+=((data*song->volume)>>10);
-			
-			data=(int)(*(song->data+(pos+1)));
-			right_channel+=((data*song->volume)>>10);
-
-			song->stream_pos+=song->freq_factor;		// in stereo
-
-				// time to loop?
-
-			if (song->stream_pos>=song->f_sample_len) {
-				if (audio_music_loop) {
-					song->stream_pos=song->stream_pos-song->f_sample_len;
+					left_channel+=((data*play->left_fact)>>10);
+					right_channel+=((data*play->right_fact)>>10);
 				}
-				else {
-					song->stream_pos=0.0f;
-					audio_music_song_idx=-1;
+				
+					// move onto next position in stream
+					// or loop or stop sound
+
+				play->stream_pos+=play->stream_add;
+
+				if (play->stream_pos>=buffer->f_sample_len) {
+
+					if (play->loop) {
+						play->stream_pos=play->stream_pos-buffer->f_sample_len;
+					}
+					else {
+						play->used=FALSE;
+					}
+
 				}
 			}
+
+				// global volume adjustment
+
+			left_channel=((left_channel*audio_global_sound_volume)>>10);
+			right_channel=((right_channel*audio_global_sound_volume)>>10);
 		}
 		
-			// add in the alt music (for cross fades)
+			// music
+		
+		if (!audio_music_paused) {
+				
+				// add in the music
 
-		if ((audio_music_alt_song_idx!=-1) && (!audio_music_paused)) {
-			song=&audio_music_song_cache[audio_music_alt_song_idx];
-			
-			pos=(int)song->stream_pos;
+			if (audio_music_song_idx!=-1) {
+				song=&audio_music_song_cache[audio_music_song_idx];
+				
+				pos=(int)song->stream_pos;
 
-			data=(int)(*(song->data+pos));
-			left_channel+=((data*song->volume)>>10);
-			
-			data=(int)(*(song->data+(pos+1)));
-			right_channel+=((data*song->volume)>>10);
+				data=(int)(*(song->data+pos));
+				left_channel+=((data*song->volume)>>10);
+				
+				data=(int)(*(song->data+(pos+1)));
+				right_channel+=((data*song->volume)>>10);
 
-			song->stream_pos+=song->freq_factor;		// in stereo
+				song->stream_pos+=song->freq_factor;		// in stereo
 
-				// time to loop?
+					// time to loop?
 
-			if (song->stream_pos>=song->f_sample_len) {
-				if (audio_music_loop) {
-					song->stream_pos=song->stream_pos-song->f_sample_len;
+				if (song->stream_pos>=song->f_sample_len) {
+					if (audio_music_loop) {
+						song->stream_pos=song->stream_pos-song->f_sample_len;
+					}
+					else {
+						song->stream_pos=0.0f;
+						audio_music_song_idx=-1;
+					}
 				}
-				else {
-					song->stream_pos=0.0f;
-					audio_music_alt_song_idx=-1;
+			}
+			
+				// add in the alt music (for cross fades)
+
+			if (audio_music_alt_song_idx!=-1) {
+				song=&audio_music_song_cache[audio_music_alt_song_idx];
+				
+				pos=(int)song->stream_pos;
+
+				data=(int)(*(song->data+pos));
+				left_channel+=((data*song->volume)>>10);
+				
+				data=(int)(*(song->data+(pos+1)));
+				right_channel+=((data*song->volume)>>10);
+
+				song->stream_pos+=song->freq_factor;		// in stereo
+
+					// time to loop?
+
+				if (song->stream_pos>=song->f_sample_len) {
+					if (audio_music_loop) {
+						song->stream_pos=song->stream_pos-song->f_sample_len;
+					}
+					else {
+						song->stream_pos=0.0f;
+						audio_music_alt_song_idx=-1;
+					}
 				}
 			}
 		}
 
 			// fix any overflow
-
-		if (left_channel<-32768) left_channel=-32768;
-		if (left_channel>32768) left_channel=32768;
-		if (right_channel<-32768) right_channel=-32768;
-		if (right_channel>32768) right_channel=32768;
+			
+		left_channel=((left_channel+0x7FFF)&0xFFFF)-0x7FFF;
+		right_channel=((right_channel+0x7FFF)&0xFFFF)-0x7FFF;
 
 			// send channels to stream
 

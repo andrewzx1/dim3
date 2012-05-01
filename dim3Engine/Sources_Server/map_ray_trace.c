@@ -68,7 +68,7 @@ void ray_trace_shutdown(void)
       
 ======================================================= */
 
-void ray_trace_contact_clear(ray_trace_contact_type *contact)
+inline void ray_trace_contact_clear(ray_trace_contact_type *contact)
 {
 	contact->poly.mesh_idx=-1;
 	contact->obj.idx=-1;
@@ -81,7 +81,7 @@ void ray_trace_contact_clear(ray_trace_contact_type *contact)
       
 ======================================================= */
 
-ray_trace_check_item_type* ray_trace_get_last_item_list(int *item_count)
+inline ray_trace_check_item_type* ray_trace_get_last_item_list(int *item_count)
 {
 	*item_count=ray_item_count;
 	return(ray_item_list);
@@ -1339,8 +1339,13 @@ void ray_trace_map_by_point_array(int cnt,d3pnt *spt,d3pnt *ept,d3pnt *hpt,bool 
 	
 			// create contact from base
 			
-		memmove(&contacts[n],base_contact,sizeof(ray_trace_contact_type));
 		ray_trace_contact_clear(&contacts[n]);
+		
+		contacts[n].origin=base_contact->origin;
+		contacts[n].obj.on=base_contact->obj.on;
+		contacts[n].obj.ignore_idx=base_contact->obj.ignore_idx;
+		contacts[n].proj.on=base_contact->proj.on;
+		contacts[n].proj.ignore_idx=base_contact->proj.ignore_idx;
 	
 			// create vector from points
 
