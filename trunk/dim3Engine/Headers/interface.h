@@ -675,7 +675,7 @@ extern inline unsigned char* view_map_mesh_liquid_vertex_object(map_vbo_type *vb
 extern inline void view_unmap_mesh_liquid_vertex_object(void);
 extern inline void view_unbind_mesh_liquid_vertex_object(void);
 extern inline void view_bind_mesh_liquid_index_object(map_vbo_type *vbo);
-extern inline unsigned short* view_map_mesh_liquid_index_object(map_vbo_type *vbo);
+extern inline unsigned short* view_map_mesh_liquid_index_object(void);
 extern inline void view_unmap_mesh_liquid_index_object(void);
 extern inline void view_unbind_mesh_liquid_index_object(void);
 
@@ -712,12 +712,16 @@ extern inline void view_unmap_rain_vertex_object(void);
 extern inline void view_unbind_rain_vertex_object(void);
 
 extern void view_clear_effect_vertex_object(effect_type *effect);
-extern void view_create_effect_vertex_object(effect_type *effect,int vertex_mem_sz);
+extern void view_create_effect_vertex_object(effect_type *effect,int vertex_mem_sz,int index_mem_sz);
 extern void view_dispose_effect_vertex_object(effect_type *effect);
 extern inline void view_bind_effect_vertex_object(effect_type *effect);
 extern inline unsigned char* view_map_effect_vertex_object(void);
 extern inline void view_unmap_effect_vertex_object(void);
 extern inline void view_unbind_effect_vertex_object(void);
+extern inline void view_bind_effect_index_object(effect_type *effect);
+extern inline unsigned short* view_map_effect_index_object(void);
+extern inline void view_unmap_effect_index_object(void);
+extern inline void view_unbind_effect_index_object(void);
 
 extern void view_primitive_2D_tint_screen(void);
 extern void view_primitive_2D_color_poly(int x0,int y0,d3col *col0,int x1,int y1,d3col *col1,int x2,int y2,d3col *col2,int x3,int y3,d3col *col3,float alpha);

@@ -100,7 +100,7 @@ void view_bind_mesh_liquid_index_object(map_vbo_type *vbo)
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,vbo->index);
 }
 
-unsigned short* view_map_mesh_liquid_index_object(map_vbo_type *vbo)
+unsigned short* view_map_mesh_liquid_index_object(void)
 {
 	return((unsigned short*)glMapBuffer(GL_ELEMENT_ARRAY_BUFFER,GL_WRITE_ONLY));
 }
@@ -381,15 +381,18 @@ void view_clear_effect_vertex_object(effect_type *effect)
 	effect->vbo.active=FALSE;
 }
 
-void view_create_effect_vertex_object(effect_type *effect,int vertex_mem_sz)
+void view_create_effect_vertex_object(effect_type *effect,int vertex_mem_sz,int index_mem_sz)
 {
 		// is it already active?
 
 	if (effect->vbo.active) return;
 
-		// start it
+		// mark VBO as active
 
 	effect->vbo.active=TRUE;
+
+		// create the vertex buffer
+
 	glGenBuffers(1,&effect->vbo.vertex);
 
 	effect->vbo.vertex_mem_sz=vertex_mem_sz;
@@ -397,6 +400,23 @@ void view_create_effect_vertex_object(effect_type *effect,int vertex_mem_sz)
 	glBindBuffer(GL_ARRAY_BUFFER,effect->vbo.vertex);
 	glBufferData(GL_ARRAY_BUFFER,vertex_mem_sz,NULL,GL_DYNAMIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER,0);
+
+		// is there an index buffer?
+
+	if (index_mem_sz==-1) {
+		effect->vbo.index_mem_sz=-1;
+		return;
+	}
+
+		// init the index buffer
+
+	glGenBuffers(1,&effect->vbo.index);
+
+	effect->vbo.index_mem_sz=index_mem_sz;
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,effect->vbo.index);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER,index_mem_sz,NULL,GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);
 }
 
 void view_dispose_effect_vertex_object(effect_type *effect)
@@ -405,10 +425,14 @@ void view_dispose_effect_vertex_object(effect_type *effect)
 
 	if (!effect->vbo.active) return;
 
-		// dispose it
+		// dispose vertex
 
 	effect->vbo.active=FALSE;
 	glDeleteBuffers(1,&effect->vbo.vertex);
+
+		// dispose index
+
+	if (effect->vbo.index_mem_sz!=-1) glDeleteBuffers(1,&effect->vbo.index);
 }
 
 void view_bind_effect_vertex_object(effect_type *effect)
@@ -431,4 +455,22 @@ void view_unbind_effect_vertex_object(void)
 	glBindBuffer(GL_ARRAY_BUFFER,0);
 }
 
+void view_bind_effect_index_object(effect_type *effect)
+{
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,effect->vbo.index);
+}
 
+unsigned short* view_map_effect_index_object(void)
+{
+	return((unsigned short*)glMapBuffer(GL_ELEMENT_ARRAY_BUFFER,GL_WRITE_ONLY));
+}
+
+void view_unmap_effect_index_object(void)
+{
+	glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
+}
+
+void view_unbind_effect_index_object(void)
+{
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,0);
+}

@@ -173,7 +173,7 @@ int particle_fill_array_quad_single(float *vertex_ptr,int idx,int nvertex,d3pnt 
 		
 		pps++;
 
-			// 0-1-3
+			// the quad
 
 		*pf++=(px[0]+fx);
 		*pf++=(py[0]+fy);
@@ -181,22 +181,6 @@ int particle_fill_array_quad_single(float *vertex_ptr,int idx,int nvertex,d3pnt 
 		
 		*pf++=gx;
 		*pf++=gy;
-
-		*pf++=(px[1]+fx);
-		*pf++=(py[1]+fy);
-		*pf++=(pz[1]+fz);
-		
-		*pf++=gx+g_size;
-		*pf++=gy;
-
-		*pf++=(px[3]+fx);
-		*pf++=(py[3]+fy);
-		*pf++=(pz[3]+fz);
-		
-		*pf++=gx;
-		*pf++=gy+g_size;
-
-			// 1-2-3
 
 		*pf++=(px[1]+fx);
 		*pf++=(py[1]+fy);
@@ -244,11 +228,13 @@ int particle_fill_array_quad_single(float *vertex_ptr,int idx,int nvertex,d3pnt 
 
 void particle_draw(effect_type *effect,int count)
 {
-	int						n,idx,particle_count,nvertex,
+	int						n,idx,particle_count,ntot_count,nvertex,nindex,
 							ntrail,pixel_dif;
 	float					gravity,gx,gy,g_size,pixel_sz,f,pc[3],trail_step,
 							alpha,alpha_dif,color_dif,f_count,f_tick;
 	float					*vertex_ptr;
+	unsigned short			*index_ptr;
+	unsigned short			v_idx;
 	d3pnt					pnt;
 	d3ang					*rot_ang,rang;
 	d3col					col,ambient_col;
@@ -366,8 +352,12 @@ void particle_draw(effect_type *effect,int count)
 		// effect vbos are dynamic, so it'll auto construct
 		// the first time called
 
-	nvertex=(particle->count*(particle->trail_count+1))*6;
-	view_create_effect_vertex_object(effect,((nvertex*(3+2))*sizeof(float)));
+	ntot_count=particle->count*(particle->trail_count+1);
+
+	nvertex=ntot_count*4;
+	nindex=ntot_count*6;
+
+	view_create_effect_vertex_object(effect,((nvertex*(3+2))*sizeof(float)),(nindex*sizeof(unsigned short)));
 
 	view_bind_effect_vertex_object(effect);
 	vertex_ptr=(float*)view_map_effect_vertex_object();
@@ -405,7 +395,32 @@ void particle_draw(effect_type *effect,int count)
 		// unmap vertex object
 
 	view_unmap_effect_vertex_object();
-	
+
+		// create the indexes
+
+	view_bind_effect_index_object(effect);
+	index_ptr=(unsigned short*)view_map_effect_index_object();
+	if (index_ptr==NULL) {
+		view_unbind_effect_vertex_object();
+		return;
+	}
+
+	v_idx=0;
+
+	for (n=0;n!=ntot_count;n++) {
+		*index_ptr++=v_idx;
+		*index_ptr++=v_idx+1;
+		*index_ptr++=v_idx+3;
+
+		*index_ptr++=v_idx+1;
+		*index_ptr++=v_idx+2;
+		*index_ptr++=v_idx+3;
+
+		v_idx+=4;
+	}
+
+	view_unmap_effect_index_object();
+
 		// draw arrays
 		
 	gl_texture_simple_start();
@@ -432,7 +447,7 @@ void particle_draw(effect_type *effect,int count)
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2,GL_FLOAT,((3+2)*sizeof(float)),(GLvoid*)(3*sizeof(float)));
 
-	glDrawArrays(GL_TRIANGLES,0,nvertex);
+	glDrawElements(GL_TRIANGLES,nindex,GL_UNSIGNED_SHORT,(GLvoid*)0);
 
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
@@ -440,8 +455,9 @@ void particle_draw(effect_type *effect,int count)
 	
 	gl_texture_simple_end();
 
-		// unbind vertex object
+		// unbind vertex/index object
 		
+	view_unbind_effect_index_object();
 	view_unbind_effect_vertex_object();
 }
 
