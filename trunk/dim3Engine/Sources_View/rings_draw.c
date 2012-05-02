@@ -68,13 +68,14 @@ void ring_draw_position(effect_type *effect,int count,d3pnt *pnt)
 
 void ring_draw(effect_type *effect,int count)
 {
-	int						n,nvertex,life_tick;
+	int						n,nvertex,nindex,life_tick;
+	unsigned short			v_idx;
 	float					mx,my,mz,fx,fy,fz,
-							vx[4],vy[4],vz[4],tx[4],ty[4],
-							outer_sz,inner_sz,rd,rd2,
+							outer_sz,inner_sz,rd,
 							color_dif,alpha,gx,gy,g_size,
 							f_count,f_tick;
 	float					*pf,*vertex_ptr;
+	unsigned short			*index_ptr;
 	d3pnt					pnt;
 	d3col					col;
 	iface_ring_type			*ring;
@@ -145,9 +146,10 @@ void ring_draw(effect_type *effect,int count)
 		// effect vbos are dynamic, so it'll auto construct
 		// the first time called
 
-	nvertex=36*6;
+	nvertex=36*2;
+	nindex=36*6;
 
-	view_create_effect_vertex_object(effect,((nvertex*(3+2))*sizeof(float)),-1);
+	view_create_effect_vertex_object(effect,((nvertex*(3+2))*sizeof(float)),(nindex*sizeof(float)));
 
 	view_bind_effect_vertex_object(effect);
 	vertex_ptr=(float*)view_map_effect_vertex_object();
@@ -156,15 +158,14 @@ void ring_draw(effect_type *effect,int count)
 		return;
 	}
 
-		// set ring arrays
+		// create the ring vertexes
 
 	pf=vertex_ptr;
 
 	for (n=0;n!=360;n+=10) {
 		rd=((float)n)*ANG_to_RAD;
-		rd2=((float)(n+10))*ANG_to_RAD;
 
-			// vertex 0
+			// outer
 
 		fx=cosf(rd)*outer_sz;
 		fy=-(sinf(rd)*outer_sz);
@@ -174,48 +175,14 @@ void ring_draw(effect_type *effect,int count)
 		matrix_vertex_multiply(&mat_z,&fx,&fy,&fz);
 		matrix_vertex_multiply(&mat_y,&fx,&fy,&fz);
 
-		vx[0]=mx+fx;
-		vy[0]=my+fy;
-		vz[0]=mz+fz;
+		*pf++=mx+fx;
+		*pf++=my+fy;
+		*pf++=mz+fz;
 
-		tx[0]=gx+(g_size*((fx+outer_sz)/(outer_sz*2.0f)));
-		ty[0]=gy+(g_size*((fy+outer_sz)/(outer_sz*2.0f)));
+		*pf++=gx+(g_size*((fx+outer_sz)/(outer_sz*2.0f)));
+		*pf++=gy+(g_size*((fy+outer_sz)/(outer_sz*2.0f)));
 
-			// vertex 1
-
-		fx=cosf(rd2)*outer_sz;
-		fy=-(sinf(rd2)*outer_sz);
-		fz=0.0f;
-		
-		matrix_vertex_multiply(&mat_x,&fx,&fy,&fz);
-		matrix_vertex_multiply(&mat_z,&fx,&fy,&fz);
-		matrix_vertex_multiply(&mat_y,&fx,&fy,&fz);
-
-		vx[1]=mx+fx;
-		vy[1]=my+fy;
-		vz[1]=mz+fz;
-
-		tx[1]=gx+(g_size*((fx+outer_sz)/(outer_sz*2.0f)));
-		ty[1]=gy+(g_size*((fy+outer_sz)/(outer_sz*2.0f)));
-
-			// vertex 2
-
-		fx=cosf(rd2)*inner_sz;
-		fy=-(sinf(rd2)*inner_sz);
-		fz=0.0f;
-
-		matrix_vertex_multiply(&mat_x,&fx,&fy,&fz);
-		matrix_vertex_multiply(&mat_z,&fx,&fy,&fz);
-		matrix_vertex_multiply(&mat_y,&fx,&fy,&fz);
-
-		vx[2]=mx+fx;
-		vy[2]=my+fy;
-		vz[2]=mz+fz;
-
-		tx[2]=gx+(g_size*((fx+outer_sz)/(outer_sz*2.0f)));
-		ty[2]=gy+(g_size*((fy+outer_sz)/(outer_sz*2.0f)));
-		
-			// vertex 3
+			// inner
 
 		fx=cosf(rd)*inner_sz;
 		fy=-(sinf(rd)*inner_sz);
@@ -225,63 +192,51 @@ void ring_draw(effect_type *effect,int count)
 		matrix_vertex_multiply(&mat_z,&fx,&fy,&fz);
 		matrix_vertex_multiply(&mat_y,&fx,&fy,&fz);
 
-		vx[3]=mx+fx;
-		vy[3]=my+fy;
-		vz[3]=mz+fz;
+		*pf++=mx+fx;
+		*pf++=my+fy;
+		*pf++=mz+fz;
 
-		tx[3]=gx+(g_size*((fx+outer_sz)/(outer_sz*2.0f)));
-		ty[3]=gy+(g_size*((fy+outer_sz)/(outer_sz*2.0f)));
-		
-			// 0-1-3 trig
-
-		*pf++=vx[0];
-		*pf++=vy[0];
-		*pf++=vz[0];
-
-		*pf++=tx[0];
-		*pf++=ty[0];
-
-		*pf++=vx[1];
-		*pf++=vy[1];
-		*pf++=vz[1];
-
-		*pf++=tx[1];
-		*pf++=ty[1];
-
-		*pf++=vx[3];
-		*pf++=vy[3];
-		*pf++=vz[3];
-
-		*pf++=tx[3];
-		*pf++=ty[3];
-
-			// 1-2-3 trig
-
-		*pf++=vx[1];
-		*pf++=vy[1];
-		*pf++=vz[1];
-
-		*pf++=tx[1];
-		*pf++=ty[1];
-
-		*pf++=vx[2];
-		*pf++=vy[2];
-		*pf++=vz[2];
-
-		*pf++=tx[2];
-		*pf++=ty[2];
-
-		*pf++=vx[3];
-		*pf++=vy[3];
-		*pf++=vz[3];
-
-		*pf++=tx[3];
-		*pf++=ty[3];
+		*pf++=gx+(g_size*((fx+outer_sz)/(outer_sz*2.0f)));
+		*pf++=gy+(g_size*((fy+outer_sz)/(outer_sz*2.0f)));
 	}
 
 		// unmap vertex object
 
 	view_unmap_effect_vertex_object();
+
+		// create the indexes
+		// last one needs to wrap around to beginning
+
+	view_bind_effect_index_object(effect);
+	index_ptr=(unsigned short*)view_map_effect_index_object();
+	if (index_ptr==NULL) {
+		view_unbind_effect_vertex_object();
+		return;
+	}
+
+	v_idx=0;
+
+	for (n=0;n!=35;n++) {
+		*index_ptr++=v_idx;
+		*index_ptr++=v_idx+2;
+		*index_ptr++=v_idx+1;
+
+		*index_ptr++=v_idx+1;
+		*index_ptr++=v_idx+2;
+		*index_ptr++=v_idx+3;
+
+		v_idx+=2;
+	}
+
+	*index_ptr++=v_idx;
+	*index_ptr++=0;
+	*index_ptr++=v_idx+1;
+
+	*index_ptr++=v_idx+1;
+	*index_ptr++=0;
+	*index_ptr++=1;
+
+	view_unmap_effect_index_object();
 
 		// draw ring
 		
@@ -309,7 +264,7 @@ void ring_draw(effect_type *effect,int count)
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glTexCoordPointer(2,GL_FLOAT,((3+2)*sizeof(float)),(GLvoid*)(3*sizeof(float)));
 
-	glDrawArrays(GL_TRIANGLES,0,nvertex);
+	glDrawElements(GL_TRIANGLES,nindex,GL_UNSIGNED_SHORT,(GLvoid*)0);
 
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	
@@ -317,8 +272,9 @@ void ring_draw(effect_type *effect,int count)
 	
 	gl_texture_simple_end();
 
-		// unbind vertex object
+		// unbind vertex/index object
 		
+	view_unbind_effect_index_object();
 	view_unbind_effect_vertex_object();
 }
 
