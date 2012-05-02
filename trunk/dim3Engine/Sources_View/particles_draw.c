@@ -217,7 +217,7 @@ int particle_fill_array_quad_single(float *vertex_ptr,int idx,int nvertex,d3pnt 
 		if (gy>=1) gy=0;
 	}
 	
-	return(idx+(particle_count*6));
+	return(idx+(particle_count*4));
 }
 
 /* =======================================================

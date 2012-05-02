@@ -34,14 +34,13 @@ and can be sold or given away.
 #include "objects.h"
 
 extern int					app_state;
+extern bool					game_loop_quit;
 
 extern map_type				map;
 extern server_type			server;
 extern view_type			view;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
-
-bool	supergumba_temp_callback_set=FALSE;
 
 /* =======================================================
 
@@ -129,13 +128,12 @@ void loop_game_run(void)
 
 void SDL_iOSEvent_WillTerminate(void)
 {
-	// supergumba -- to do
-
+	game_loop_quit=true;
 }
 
 void SDL_iOSEvent_DidReceiveMemoryWarning(void)
 {
-	// supergumba -- to do
+	// nothing to do as resigning always cleans everything up
 }
 
 void SDL_iOSEvent_WillResignActive(void)
@@ -177,11 +175,8 @@ void SDL_iOSEvent_DidBecomeActive(void)
 	SDL_PauseAudio(0);
 }
 
-int ios_event_callback(SDL_Event *event,void *userdata)
+int loop_event_callback(SDL_Event *event,void *userdata)
 {
-	fprintf(stdout,"event=%d\n",event->type);
-	fflush(stdout);
-	
 	switch (event->type) {
 		case SDL_IOS_WILLTERMINATE:
 			SDL_iOSEvent_WillTerminate();
@@ -214,41 +209,8 @@ int ios_event_callback(SDL_Event *event,void *userdata)
 
 void loop_app_active(void)
 {
-	
-/*
-		// don't do anything if
-		// we aren't running the game
-
-	if (server.state!=gs_running) return;		// supergumba -- no, we have to always pause
-
-		// going inactive?
-
-	if (app_state==as_active) {
-		if (input_app_active()) return;
-
-		fprintf(stdout,"Suspending\n");
-	//	game_file_suspend();
-
-	//	if (server.map_open) map_end();
-	//	if (server.game_open) game_end();
-		
-		app_state=as_suspended;
-
-
-		return;
-	}
-
-		// becoming active?
-
-	if (!input_app_active()) return;
-
-		fprintf(stdout,"Activating\n");
-		game_file_resume();
-		*/
+	// loop_app_active is just blank here
 }
-
-
-
 
 #else
 
@@ -458,13 +420,6 @@ void loop_state_next_open(void)
 
 bool loop_main(char *err_str)
 {
-	// supergumba -- testing new SDL
-	/*
-	if (!supergumba_temp_callback_set) {
-		supergumba_temp_callback_set=TRUE;
-		SDL_SetEventCallback(ios_event_callback,0);
-	}
-	*/
 		// pump the input
 		// if there's an activation change, handle it
 		

@@ -220,9 +220,10 @@ and can be sold or given away.
 #define crosshair_max_ray_trace_distance		60000
 
 //
-// dynamic bones
+// model defines
 //
 
+#define max_model_shadow_vbo_count				3
 #define max_model_dynamic_bone					4
 
 //
@@ -309,8 +310,8 @@ typedef struct		{
 					
 typedef struct		{
 						int								vertex_count,vertex_mem_sz,vertex_stride,
-														shadow_vertex_mem_sz;
-						GLuint							vertex,shadow_vertex;
+														shadow_vertex_mem_sz,shadow_current_idx;
+						GLuint							vertex,shadow_vertexes[max_model_shadow_vbo_count];
 					} model_vbo_type;
 
 typedef struct		{
