@@ -366,7 +366,7 @@ void particle_draw(effect_type *effect,int count)
 		return;
 	}
 
-		// setup the arrays
+		// setup the vertexes
 
 	particle_count=particle->count;
 	ntrail=particle->trail_count+1;

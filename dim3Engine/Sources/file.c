@@ -47,6 +47,7 @@ extern iface_type		iface;
 extern js_type			js;
 extern setup_type		setup;
 
+bool					game_file_has_suspended_save;
 unsigned long			game_file_sz,game_file_pos;
 char					game_file_last_save_name[256];
 unsigned char			*game_file_data;
@@ -63,6 +64,7 @@ extern void rain_reset(void);
 void game_file_initialize(void)
 {
 	game_file_last_save_name[0]=0x0;
+	game_file_has_suspended_save=FALSE;
 }
 
 /* =======================================================
@@ -515,11 +517,11 @@ bool game_file_load(char *file_name,bool resume_load,char *err_str)
 	
 		// load and expand
 		
-	strcpy(fname,file_name);
-	c=strrchr(fname,'.');
-	if (c!=NULL) *c=0x0;			// remove any extensions
-	
 	if (!resume_load) {
+		strcpy(fname,file_name);
+		c=strrchr(fname,'.');
+		if (c!=NULL) *c=0x0;			// remove any extensions
+	
 		file_paths_app_data(&setup.file_path_setup,path,"Saved Games",fname,"sav");
 	}
 	else {
@@ -924,7 +926,7 @@ bool game_file_load(char *file_name,bool resume_load,char *err_str)
         // this is now the current saved
 		// game
 
-	strcpy(game_file_last_save_name,file_name);
+	if (!resume_load) strcpy(game_file_last_save_name,file_name);
 		
 		// fix all the timing
 		// and state information
@@ -971,11 +973,32 @@ bool game_file_reload(char *err_str)
 
 void game_file_suspend(void)
 {
+	char			err_str[256];
 
+		// if there is a game running, shut it down and save it
 
+	if (server.game_open) {
+		
+		if (server.map_open) {
+			if (game_file_save(TRUE,err_str)) {
+				game_file_has_suspended_save=TRUE;
+			}
+		
+			map_end();
+		}
+		
+		game_end();
+	}
 }
 
 void game_file_resume(void)
 {
+	char			err_str[256];
 
+		// if there was a game, resume it
+
+	if (game_file_has_suspended_save) {
+		game_file_load(NULL,TRUE,err_str);
+		game_file_has_suspended_save=FALSE;
+	}
 }
