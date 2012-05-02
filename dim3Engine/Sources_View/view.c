@@ -52,6 +52,8 @@ extern bool shadow_initialize(void);
 extern void shadow_shutdown(void);
 extern void menu_draw(void);
 
+extern int loop_event_callback(SDL_Event *event,void *userdata);
+
 /* =======================================================
 
       View Memory
@@ -405,6 +407,14 @@ bool view_initialize(char *err_str)
 	al_set_volume(setup.sound_volume);
 	al_music_set_volume(setup.music_volume);
 	al_music_set_state(setup.music_on);
+	
+		// if iOS, then make sure to
+		// setup event capture so we can respond to
+		// correct events
+		
+#if defined(D3_OS_IPHONE) || defined(D3_OS_ANDRIOD)
+	SDL_SetEventCallback(loop_event_callback,0);
+#endif
 	
 		// intialize the view bitmap lists
 		

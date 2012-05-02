@@ -123,7 +123,7 @@ void view_unbind_mesh_liquid_index_object(void)
 
 void view_create_model_vertex_object(model_draw *draw)
 {
-	int					n,k,vertex_cnt,stride;
+	int					n,k,t,vertex_cnt,stride;
 	bool				shader_on;
 	model_type			*mdl;
 	model_mesh_type		*mesh;
@@ -178,22 +178,26 @@ void view_create_model_vertex_object(model_draw *draw)
 			// any shadows?
 
 		if (!draw->shadow.on) continue;
-
-		glGenBuffers(1,&draw->vbo[n].shadow_vertex);
-
-			// get the shadow vertex buffer
-
+		
+			// shadows have multiple vertexes
+			// so we don't have blocking problems
+			
+		draw->vbo[n].shadow_current_idx=0;
 		draw->vbo[n].shadow_vertex_mem_sz=((3*sizeof(float))*vertex_cnt);
+		
+		for (t=0;t!=max_model_shadow_vbo_count;t++) {
+			glGenBuffers(1,&draw->vbo[n].shadow_vertexes[t]);
 
-		glBindBuffer(GL_ARRAY_BUFFER,draw->vbo[n].shadow_vertex);
-		glBufferData(GL_ARRAY_BUFFER,draw->vbo[n].shadow_vertex_mem_sz,NULL,GL_DYNAMIC_DRAW);
-		glBindBuffer(GL_ARRAY_BUFFER,0);
+			glBindBuffer(GL_ARRAY_BUFFER,draw->vbo[n].shadow_vertexes[t]);
+			glBufferData(GL_ARRAY_BUFFER,draw->vbo[n].shadow_vertex_mem_sz,NULL,GL_DYNAMIC_DRAW);
+			glBindBuffer(GL_ARRAY_BUFFER,0);
+		}
 	}
 }
 
 void view_dispose_model_vertex_object(model_draw *draw)
 {
-	int					n;
+	int					n,t;
 	model_type			*mdl;
 	
 		// each mesh has own VBO
@@ -201,8 +205,17 @@ void view_dispose_model_vertex_object(model_draw *draw)
 	mdl=server.model_list.models[draw->model_idx];
 
 	for (n=0;n!=mdl->nmesh;n++) {
+	
+			// model vertexes
+			
 		glDeleteBuffers(1,&draw->vbo[n].vertex);
-		if (draw->shadow.on) glDeleteBuffers(1,&draw->vbo[n].shadow_vertex);
+		if (!draw->shadow.on) continue;
+		
+			// shadow vertexes
+		
+		for (t=0;t!=max_model_shadow_vbo_count;t++) {
+			glDeleteBuffers(1,&draw->vbo[n].shadow_vertexes[t]);
+		}
 	}
 }
 
@@ -228,7 +241,14 @@ void view_unbind_model_vertex_object(void)
 
 void view_bind_model_shadow_vertex_object(model_draw *draw,int mesh_idx)
 {
-	glBindBuffer(GL_ARRAY_BUFFER,draw->vbo[mesh_idx].shadow_vertex);
+		// bind current shadow vertex
+		
+	glBindBuffer(GL_ARRAY_BUFFER,draw->vbo[mesh_idx].shadow_vertexes[draw->vbo[mesh_idx].shadow_current_idx]);
+	
+		// and use the next one next time
+		
+	draw->vbo[mesh_idx].shadow_current_idx++;
+	if (draw->vbo[mesh_idx].shadow_current_idx==max_model_shadow_vbo_count) draw->vbo[mesh_idx].shadow_current_idx=0;
 }
 
 unsigned char* view_map_model_shadow_vertex_object(void)
