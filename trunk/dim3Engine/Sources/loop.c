@@ -88,7 +88,7 @@ void loop_game_run(void)
 		// if state has changed to intro,
 		// then we must be exiting a running
 		// game
-		
+			
 	if (server.next_state==gs_intro) {
 		map_end();
 		game_end();
@@ -138,9 +138,6 @@ void SDL_iOSEvent_DidReceiveMemoryWarning(void)
 
 void SDL_iOSEvent_WillResignActive(void)
 {
-	fprintf(stdout,"WILL RESIGN\n");
-	fflush(stdout);
-	
 	app_state=as_suspended;
 
 	input_clear();
@@ -151,28 +148,28 @@ void SDL_iOSEvent_WillResignActive(void)
 
 void SDL_iOSEvent_DidEnterBackground(void)
 {
-	fprintf(stdout,"ENTER BACKGROUND\n");
-	fflush(stdout);
+	if (server.state!=gs_intro) {
+		if (server.map_open) map_end();
+		if (server.game_open) game_end();
+	}
 }
 
 void SDL_iOSEvent_WillEnterForeground(void)
 {
-	fprintf(stdout,"ENTER FOREGROUND\n");
-	fflush(stdout);
+	if (server.state!=gs_intro) {
+		server.state=gs_intro;
+		intro_open();
+	}
 }
-
 
 void SDL_iOSEvent_DidBecomeActive(void)
 {
-	fprintf(stdout,"DID ACTIVE\n");
-	fflush(stdout);
-	
-	app_state=as_active;
-	
 	input_clear();
 	input_mouse_resume();
 	
 	SDL_PauseAudio(0);
+	
+	app_state=as_active;
 }
 
 int loop_event_callback(SDL_Event *event,void *userdata)
@@ -420,17 +417,22 @@ void loop_state_next_open(void)
 
 bool loop_main(char *err_str)
 {
+		// iOS suspended state
+		
+	if (app_state==as_suspended) {
+		input_event_pump();
+		usleep(1000);
+		return(TRUE);
+	}
+
 		// pump the input
 		// if there's an activation change, handle it
 		
 	if (input_event_pump()) {
 		loop_app_active();
 	}
-
-	if (app_state==as_suspended) {
-		usleep(1000);
-		return(TRUE);
-	}
+	
+	if (app_state==as_suspended) return(TRUE);
 	
 		// calculate timing
 		

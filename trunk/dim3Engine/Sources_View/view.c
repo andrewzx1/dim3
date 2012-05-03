@@ -590,10 +590,6 @@ void view_loop_input(void)
 	if (raw_tick<view.time.input_tick) return;
 
 	view.time.input_tick=raw_tick+input_tick_rate;
-	
-		// pump input
-		
-	input_event_pump();
 
 		// player input
 	

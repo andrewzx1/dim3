@@ -181,10 +181,6 @@ void score_limit_run(void)
 	view_primitive_2D_color_quad(&iface.color.background,1.0f,0,iface.scale_x,0,iface.scale_y);
 	network_score_draw();
 	gl_frame_swap();
-
-		// pump input
-		
-	input_event_pump();
 	
 		// hosts can cancel at anytime
 		// or after timeout
