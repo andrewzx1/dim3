@@ -514,16 +514,8 @@ void ray_trace_plane(d3pnt *spt,d3vct *vct,d3pnt *hpt,d3pnt *ppt_0,d3pnt *ppt_1,
       
 ======================================================= */
 
-void ray_trace_get_ray_bounds(int cnt,d3pnt *spts,d3pnt *epts,d3pnt *min,d3pnt *max)
+inline void ray_trace_get_single_ray_bounds(d3pnt *spt,d3pnt *ept,d3pnt *min,d3pnt *max)
 {
-	int				n;
-	d3pnt			*spt,*ept;
-	
-		// find bounds box for all rays
-		
-	spt=spts;
-	ept=epts;
-	
 	if (spt->x<ept->x) {
 		min->x=spt->x;
 		max->x=ept->x;
@@ -549,26 +541,6 @@ void ray_trace_get_ray_bounds(int cnt,d3pnt *spts,d3pnt *epts,d3pnt *min,d3pnt *
 	else {
 		min->z=ept->z;
 		max->z=spt->z;
-	}
-
-	for (n=1;n<cnt;n++) {
-		spt++;
-		ept++;
-
-		if (spt->x<min->x) min->x=spt->x;
-		if (ept->x<min->x) min->x=ept->x;
-		if (spt->x>max->x) max->x=spt->x;
-		if (ept->x>max->x) max->x=ept->x;
-
-		if (spt->y<min->y) min->y=spt->y;
-		if (ept->y<min->y) min->y=ept->y;
-		if (spt->y>max->y) max->y=spt->y;
-		if (ept->y>max->y) max->y=ept->y;
-
-		if (spt->z<min->z) min->z=spt->z;
-		if (ept->z<min->z) min->z=ept->z;
-		if (spt->z>max->z) max->z=spt->z;
-		if (ept->z>max->z) max->z=ept->z;
 	}
 }
 
@@ -960,13 +932,13 @@ void ray_trace_map_all(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *hit_t,
 	map_mesh_type				*mesh;
 	map_mesh_poly_type			*poly;
 	
-		// get bounds for all vectors
+		// get bounds for vector
 		// and use those as a collision check
 		// this is rough, but going through all
 		// the meshes is actually longer than
 		// dealing with a few missed hits
 
-	ray_trace_get_ray_bounds(1,spt,ept,&min,&max);
+	ray_trace_get_single_ray_bounds(spt,ept,&min,&max);
 
 		// check objects
 
@@ -1136,10 +1108,9 @@ void ray_push_to_end(d3pnt *pt,d3pnt *ept,int dist)
       
 ======================================================= */
 
-void ray_trace_map_item_list_setup(int cnt,d3pnt *spts,d3pnt *epts,ray_trace_contact_type *contact)
+void ray_trace_map_item_list_setup(int cnt,d3pnt *bounds_min,d3pnt *bounds_max,d3pnt *spts,d3pnt *epts,ray_trace_contact_type *contact)
 {
 	int							n,k;
-	d3pnt						min,max;
 	obj_type					*obj;
 	proj_type					*proj;
 	map_mesh_type				*mesh;
@@ -1149,14 +1120,6 @@ void ray_trace_map_item_list_setup(int cnt,d3pnt *spts,d3pnt *epts,ray_trace_con
 	ray_item_count=0;
 	item=ray_item_list;
 
-		// get bounds for all vectors
-		// and use those as a collision check
-		// this is rough, but going through all
-		// the meshes is actually longer than
-		// dealing with a few missed hits
-
-	ray_trace_get_ray_bounds(cnt,spts,epts,&min,&max);
-
 		// check objects
 
 	if (contact->obj.on) {
@@ -1165,7 +1128,7 @@ void ray_trace_map_item_list_setup(int cnt,d3pnt *spts,d3pnt *epts,ray_trace_con
 			obj=server.obj_list.objs[n];
 			if (obj==NULL) continue;
 			
-			if (ray_trace_object_bound_check(obj,&min,&max,contact)) {
+			if (ray_trace_object_bound_check(obj,bounds_min,bounds_max,contact)) {
 				item->type=ray_trace_check_item_object;
 				item->index=n;
 
@@ -1185,7 +1148,7 @@ void ray_trace_map_item_list_setup(int cnt,d3pnt *spts,d3pnt *epts,ray_trace_con
 			proj=server.proj_list.projs[n];
 			if (!proj->on) continue;
 
-			if (ray_trace_projectile_bound_check(proj,&min,&max,contact)) {
+			if (ray_trace_projectile_bound_check(proj,bounds_min,bounds_max,contact)) {
 				item->type=ray_trace_check_item_projectile;
 				item->index=n;
 
@@ -1202,7 +1165,7 @@ void ray_trace_map_item_list_setup(int cnt,d3pnt *spts,d3pnt *epts,ray_trace_con
 	for (n=0;n!=map.mesh.nmesh;n++) {
 
 		mesh=&map.mesh.meshes[n];
-		if (!ray_trace_mesh_bound_check(mesh,&min,&max)) continue;
+		if (!ray_trace_mesh_bound_check(mesh,bounds_min,bounds_max)) continue;
 
 			// halo checks
 
@@ -1229,7 +1192,7 @@ void ray_trace_map_item_list_setup(int cnt,d3pnt *spts,d3pnt *epts,ray_trace_con
 		for (k=0;k!=mesh->npoly;k++) {
 
 			poly=&mesh->polys[k];
-			if (!ray_trace_mesh_poly_bound_check(poly,&min,&max)) continue;
+			if (!ray_trace_mesh_poly_bound_check(poly,bounds_min,bounds_max)) continue;
 
 				// add to item list
 
@@ -1323,7 +1286,7 @@ bool ray_trace_map_by_point(d3pnt *spt,d3pnt *ept,d3pnt *hpt,ray_trace_contact_t
 	return((hit_t>=0.0f) && (hit_t<=1.0f));
 }
 
-void ray_trace_map_by_point_array(int cnt,d3pnt *spt,d3pnt *ept,d3pnt *hpt,bool *hits,ray_trace_contact_type *base_contact,ray_trace_contact_type *contacts)
+void ray_trace_map_by_point_array(int cnt,d3pnt *bounds_min,d3pnt *bounds_max,d3pnt *spt,d3pnt *ept,d3pnt *hpt,bool *hits,ray_trace_contact_type *base_contact,ray_trace_contact_type *contacts)
 {
 	int							n;
 	float						hit_t;
@@ -1331,7 +1294,7 @@ void ray_trace_map_by_point_array(int cnt,d3pnt *spt,d3pnt *ept,d3pnt *hpt,bool 
 	
 		// setup item list
 		
-	ray_trace_map_item_list_setup(cnt,spt,ept,base_contact);
+	ray_trace_map_item_list_setup(cnt,bounds_min,bounds_max,spt,ept,base_contact);
 	
 		// run the ray array
 		
@@ -1369,7 +1332,7 @@ void ray_trace_map_by_point_array(int cnt,d3pnt *spt,d3pnt *ept,d3pnt *hpt,bool 
 	}
 }
 
-void ray_trace_map_by_point_array_no_contact(int cnt,d3pnt *spt,d3pnt *ept,d3pnt *hpt,bool *hits,ray_trace_contact_type *base_contact)
+void ray_trace_map_by_point_array_no_contact(int cnt,d3pnt *bounds_min,d3pnt *bounds_max,d3pnt *spt,d3pnt *ept,d3pnt *hpt,bool *hits,ray_trace_contact_type *base_contact)
 {
 	int							n;
 	float						hit_t;
@@ -1378,7 +1341,7 @@ void ray_trace_map_by_point_array_no_contact(int cnt,d3pnt *spt,d3pnt *ept,d3pnt
 	
 		// setup item list
 		
-	ray_trace_map_item_list_setup(cnt,spt,ept,base_contact);
+	ray_trace_map_item_list_setup(cnt,bounds_min,bounds_max,spt,ept,base_contact);
 
 		// not returning contacts or hits
 		// so use temporary contact
@@ -1426,13 +1389,13 @@ bool ray_trace_map_blocking(d3pnt *spt,d3pnt *ept,int origin)
 	map_mesh_type				*mesh;
 	map_mesh_poly_type			*poly;
 	
-		// get bounds for all vectors
+		// get bounds for vector
 		// and use those as a collision check
 		// this is rough, but going through all
 		// the meshes is actually longer than
 		// dealing with a few missed hits
 
-	ray_trace_get_ray_bounds(1,spt,ept,&min,&max);
+	ray_trace_get_single_ray_bounds(spt,ept,&min,&max);
 	
 		// create vector from points
 
