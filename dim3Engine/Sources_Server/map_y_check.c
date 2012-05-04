@@ -34,13 +34,13 @@ and can be sold or given away.
 #include "scripts.h"
 #include "objects.h"
 
-#define map_collide_pin_radius_len			100
+#define map_collide_pin_radius_len			300
 
 extern map_type			map;
 extern server_type		server;
 
 bool					pin_movement_hits[256];
-float					pin_cosf_table[16],pin_sinf_table[16];
+d3fpnt					pin_trig_table[2][16];
 d3pnt					pin_movement_spt[256],pin_movement_ept[256],pin_movement_hpt[256];
 ray_trace_contact_type	pin_movement_contacts[256];
 
@@ -80,12 +80,38 @@ int find_poly_nearest_stand(d3pnt *pnt,int my,bool ignore_higher)
       
 ======================================================= */
 
-int pin_build_ray_set_obj(obj_type *obj,int ty,int by)
+void pin_build_trig_table(void)
+{
+	int				n;
+	float			rad,rad_shift,rad_add;
+
+		// this precreates the circular rays
+		// that pin up/down movement.  They are
+		// constructed of a number of circles, or which
+		// we slightly offset every other one
+		// as to better hit thin polygons
+
+	rad=0.0f;
+	rad_shift=(TRIG_PI*2.0f)/(16.0f*3.0f);
+	rad_add=(TRIG_PI*2.0f)/16.0f;
+
+	for (n=0;n!=16;n++) {
+		pin_trig_table[0][n].x=sinf(rad);
+		pin_trig_table[0][n].z=cosf(rad);
+		
+		pin_trig_table[1][n].x=sinf(rad+rad_shift);
+		pin_trig_table[1][n].z=cosf(rad+rad_shift);
+		
+		rad+=rad_add;
+	}
+}
+
+int pin_build_ray_set_obj(obj_type *obj,int ty,int by,d3pnt *bounds_min,d3pnt *bounds_max)
 {
 	int				n,k,x,z,radius,
 					circle_count,ray_count;
-	float			rad,rad_add,f_radius,f_radius_sub,
-					f_cos,f_sin;
+	float			f_radius,f_radius_sub;
+	d3fpnt			*pin_trig;
 
 		// get radius
 		
@@ -102,44 +128,49 @@ int pin_build_ray_set_obj(obj_type *obj,int ty,int by)
 		// of 16 points each)
 
 	circle_count=radius/map_collide_pin_radius_len;
-	if (circle_count<4) circle_count=4;
+	if (circle_count<2) circle_count=2;
 	if (circle_count>15) circle_count=15;
 
 	f_radius_sub=(float)radius/(float)circle_count;
 
-		// create circles
-
-	ray_count=0;
-	
-	rad=0.0f;
-	rad_add=(TRIG_PI*2.0f)/16.0f;
-
-	for (k=0;k!=16;k++) {
-		f_sin=sinf(rad);
-		f_cos=cosf(rad);
-		
-		f_radius=(float)radius;
-	
-		for (n=0;n!=circle_count;n++) {
-			pin_movement_spt[ray_count].x=pin_movement_ept[ray_count].x=x+(int)(f_radius*f_sin);
-			pin_movement_spt[ray_count].z=pin_movement_ept[ray_count].z=z-(int)(f_radius*f_cos);
-			pin_movement_spt[ray_count].y=ty;
-			pin_movement_ept[ray_count].y=by;
-			ray_count++;
-
-			f_radius-=f_radius_sub;
-		}
-		
-		rad+=rad_add;
-	}
-
 		// always add one for center
 	
-	pin_movement_spt[ray_count].x=pin_movement_ept[ray_count].x=x;
-	pin_movement_spt[ray_count].z=pin_movement_ept[ray_count].z=z;
-	pin_movement_spt[ray_count].y=ty;
-	pin_movement_ept[ray_count].y=by;
-	ray_count++;
+	pin_movement_spt[0].x=pin_movement_ept[0].x=x;
+	pin_movement_spt[0].z=pin_movement_ept[0].z=z;
+	pin_movement_spt[0].y=ty;
+	pin_movement_ept[0].y=by;
+
+		// create circles
+
+	ray_count=1;
+	
+	f_radius=(float)radius;
+
+	for (n=0;n!=circle_count;n++) {
+
+		pin_trig=pin_trig_table[n&0x1];
+
+		for (k=0;k!=16;k++) {
+			pin_movement_spt[ray_count].x=pin_movement_ept[ray_count].x=x+(int)(f_radius*pin_trig->x);
+			pin_movement_spt[ray_count].z=pin_movement_ept[ray_count].z=z-(int)(f_radius*pin_trig->z);
+			pin_movement_spt[ray_count].y=ty;
+			pin_movement_ept[ray_count].y=by;
+
+			pin_trig++;
+			ray_count++;
+		}
+
+		f_radius-=f_radius_sub;
+	}
+
+		// and the min/max ray bounds
+
+	bounds_min->x=x-radius;
+	bounds_max->x=x+radius;
+	bounds_min->y=ty;
+	bounds_max->y=by;
+	bounds_min->z=z-radius;
+	bounds_max->z=z+radius;
 
 	return(ray_count);
 }
@@ -182,6 +213,7 @@ int pin_downward_movement_point(d3pnt *pnt,int my,poly_pointer_type *stand_poly)
 int pin_downward_movement_obj(obj_type *obj,int my)
 {
 	int						n,cy,ray_count,ty,by;
+	d3pnt					bounds_min,bounds_max;
 	ray_trace_contact_type	base_contact;
 	
 		// setup contact
@@ -196,11 +228,11 @@ int pin_downward_movement_obj(obj_type *obj,int my)
 
 	ty=obj->pnt.y-my;
 	by=obj->pnt.y+my;
-	ray_count=pin_build_ray_set_obj(obj,ty,by);
+	ray_count=pin_build_ray_set_obj(obj,ty,by,&bounds_min,&bounds_max);
 
 		// run the rays
 		
-	ray_trace_map_by_point_array(ray_count,pin_movement_spt,pin_movement_ept,pin_movement_hpt,pin_movement_hits,&base_contact,pin_movement_contacts);
+	ray_trace_map_by_point_array(ray_count,&bounds_min,&bounds_max,pin_movement_spt,pin_movement_ept,pin_movement_hpt,pin_movement_hits,&base_contact,pin_movement_contacts);
 	
 		// find the highest point
 		
@@ -292,6 +324,7 @@ int pin_upward_movement_point(d3pnt *pnt,int my,poly_pointer_type *head_poly)
 int pin_upward_movement_obj(obj_type *obj,int my)
 {
 	int						n,cy,y_sz,ray_count,ty,by;
+	d3pnt					bounds_min,bounds_max;
 	ray_trace_contact_type	base_contact;
 
 		// setup contact
@@ -308,11 +341,11 @@ int pin_upward_movement_obj(obj_type *obj,int my)
 	ty=(obj->pnt.y-y_sz)-my;
 	by=(obj->pnt.y-y_sz)+my;
 
-	ray_count=pin_build_ray_set_obj(obj,ty,by);
+	ray_count=pin_build_ray_set_obj(obj,ty,by,&bounds_min,&bounds_max);
 
 		// run the rays
 		
-	ray_trace_map_by_point_array(ray_count,pin_movement_spt,pin_movement_ept,pin_movement_hpt,pin_movement_hits,&base_contact,pin_movement_contacts);
+	ray_trace_map_by_point_array(ray_count,&bounds_min,&bounds_max,pin_movement_spt,pin_movement_ept,pin_movement_hpt,pin_movement_hits,&base_contact,pin_movement_contacts);
 	
 		// find the lowest point
 		

@@ -119,16 +119,24 @@ void singleplayer_option_map_list_release(void)
 void singleplayer_option_map_list_get_name(int idx,char *name)
 {
 	char			*c;
+	char			str[128];
 
 	name[0]=0x0;
+
+		// get the name from between the ;; markers
 
 	c=singleplayer_option_table_map_list+(idx*128);
 		
 	c=strchr(c,';');
 	if (c!=NULL) {
-		strcpy(name,(c+1));
-		c=strchr(name,';');
+		strncpy(str,(c+1),128);
+		str[127]=0x0;
+
+		c=strchr(str,';');
 		if (c!=NULL) *c=0x0;
+
+		strncpy(name,str,name_str_len);
+		name[name_str_len-1]=0x0;
 	}
 }
 

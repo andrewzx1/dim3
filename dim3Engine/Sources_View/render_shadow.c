@@ -146,18 +146,20 @@ bool shadow_get_volume(d3pnt *pnt,int high,d3pnt *light_pnt,int light_intensity,
 	int							n;
 	float						f_dist;
 	bool						hits[8];
-	d3pnt						spt[8],ept[8],hpt[8],*sp,*ep;
+	d3pnt						spt[8],ept[8],hpt[8],
+								bounds_min,bounds_max;
+	d3pnt						*sp,*ep;
 	d3vct						ray_move;
 	ray_trace_contact_type		base_contact;
 
-	spt[0].x=spt[1].x=spt[4].x=spt[5].x=min->x;
-	spt[2].x=spt[3].x=spt[6].x=spt[7].x=max->x;
+	spt[0].x=spt[1].x=spt[4].x=spt[5].x=bounds_min.x=min->x;
+	spt[2].x=spt[3].x=spt[6].x=spt[7].x=bounds_max.x=max->x;
 	
-	spt[0].y=spt[1].y=spt[2].y=spt[3].y=min->y;
-	spt[4].y=spt[5].y=spt[6].y=spt[7].y=max->y;
+	spt[0].y=spt[1].y=spt[2].y=spt[3].y=bounds_min.y=min->y;
+	spt[4].y=spt[5].y=spt[6].y=spt[7].y=bounds_max.y=max->y;
 
-	spt[1].z=spt[2].z=spt[5].z=spt[6].z=min->z;
-	spt[0].z=spt[3].z=spt[4].z=spt[7].z=max->z;
+	spt[1].z=spt[2].z=spt[5].z=spt[6].z=bounds_min.z=min->z;
+	spt[0].z=spt[3].z=spt[4].z=spt[7].z=bounds_max.z=max->z;
 
 		// ray trace bounding box
 		
@@ -172,6 +174,13 @@ bool shadow_get_volume(d3pnt *pnt,int high,d3pnt *light_pnt,int light_intensity,
 		ep->x=light_pnt->x-(int)(ray_move.x*f_dist);
 		ep->y=light_pnt->y-(int)(ray_move.y*f_dist);
 		ep->z=light_pnt->z-(int)(ray_move.z*f_dist);
+
+		if (ep->x<bounds_min.x) bounds_min.x=ep->x;
+		if (ep->x>bounds_max.x) bounds_max.x=ep->x;
+		if (ep->y<bounds_min.y) bounds_min.y=ep->y;
+		if (ep->y>bounds_max.y) bounds_max.y=ep->y;
+		if (ep->z<bounds_min.z) bounds_min.z=ep->z;
+		if (ep->z>bounds_max.z) bounds_max.z=ep->z;
 		
 		sp++;
 		ep++;
@@ -185,7 +194,7 @@ bool shadow_get_volume(d3pnt *pnt,int high,d3pnt *light_pnt,int light_intensity,
 
 	base_contact.origin=poly_ray_trace_origin_object;
 
-	ray_trace_map_by_point_array_no_contact(8,spt,ept,hpt,hits,&base_contact);
+	ray_trace_map_by_point_array_no_contact(8,&bounds_min,&bounds_max,spt,ept,hpt,hits,&base_contact);
 
 		// testing -- projection debug
 /*

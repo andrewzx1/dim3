@@ -75,6 +75,10 @@ bool server_initialize(char *err_str)
 		iface_shutdown(&iface);
 		return(FALSE);
 	}
+
+		// initialize some tables
+
+	pin_build_trig_table();
 	
 		// model lists
 		

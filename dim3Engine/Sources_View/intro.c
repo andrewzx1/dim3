@@ -415,7 +415,7 @@ void intro_close(void)
 void intro_start_game(int skill,int option_flags,char *map_name,int simple_save_idx)
 {
 	char			err_str[256];
-	
+
 	al_music_stop();
 	
 		// goto running state

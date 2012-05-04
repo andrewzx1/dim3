@@ -320,6 +320,7 @@ extern void collide_polygon_get_normal(int poly_uid,d3vct *normal);
 extern float collide_polygon_dot_product_to_object(int poly_uid,obj_type *obj);
 
 extern int find_poly_nearest_stand(d3pnt *pnt,int my,bool ignore_higher);
+extern void pin_build_trig_table(void);
 extern int pin_downward_movement_point(d3pnt *pnt,int my,poly_pointer_type *stand_poly);
 extern int pin_downward_movement_obj(obj_type *obj,int my);
 extern int pin_downward_movement_proj(proj_type *proj,int my);
@@ -342,8 +343,8 @@ extern void ray_push(d3pnt *pt,d3ang *ang,int dist);
 extern void ray_push_to_end(d3pnt *pt,d3pnt *ept,int dist);
 extern bool ray_trace_map_by_angle(d3pnt *spt,d3ang *ang,int dist,d3pnt *hpt,ray_trace_contact_type *contact);
 extern bool ray_trace_map_by_point(d3pnt *spt,d3pnt *ept,d3pnt *hpt,ray_trace_contact_type *contact);
-extern void ray_trace_map_by_point_array(int cnt,d3pnt *spt,d3pnt *ept,d3pnt *hpt,bool *hits,ray_trace_contact_type *base_contact,ray_trace_contact_type *contacts);
-extern void ray_trace_map_by_point_array_no_contact(int cnt,d3pnt *spt,d3pnt *ept,d3pnt *hpt,bool *hits,ray_trace_contact_type *base_contact);
+extern void ray_trace_map_by_point_array(int cnt,d3pnt *bounds_min,d3pnt *bounds_max,d3pnt *spt,d3pnt *ept,d3pnt *hpt,bool *hits,ray_trace_contact_type *base_contact,ray_trace_contact_type *contacts);
+extern void ray_trace_map_by_point_array_no_contact(int cnt,d3pnt *bounds_min,d3pnt *bounds_max,d3pnt *spt,d3pnt *ept,d3pnt *hpt,bool *hits,ray_trace_contact_type *base_contact);
 extern bool ray_trace_map_blocking(d3pnt *spt,d3pnt *ept,int origin);
 extern void ray_trace_shadow_to_mesh_poly(int cnt,d3vct *vct,d3fpnt *spt,d3fpnt *hpt,bool *hits,int mesh_idx,int poly_idx);
 extern void ray_trace_mesh_poly_plane_by_vector(int cnt,d3vct *vct,d3fpnt *spt,d3fpnt *hpt,bool *hits,int mesh_idx,int poly_idx);

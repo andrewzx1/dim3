@@ -267,7 +267,8 @@ bool object_sight_test_object(obj_type *obj,int test_obj_idx)
 	int						n,eye_y,sz;
 	float					ang;
 	bool					in_sight,hits[9];
-	d3pnt					spt[9],ept[9],hpt[9],min,max;
+	d3pnt					spt[9],ept[9],hpt[9],
+							min,max,bounds_min,bounds_max;
 	ray_trace_contact_type	contacts[9],base_contact;
 	obj_type				*test_obj;
 	
@@ -326,16 +327,25 @@ bool object_sight_test_object(obj_type *obj,int test_obj_idx)
 		
 		// we aim at 8 corners and 1 middle
 		
-	spt[0].x=spt[1].x=spt[2].x=spt[3].x=spt[4].x=spt[5].x=spt[6].x=spt[7].x=spt[8].x=spt[9].x=obj->pnt.x;
-	spt[0].y=spt[1].y=spt[2].y=spt[3].y=spt[4].y=spt[5].y=spt[6].y=spt[7].y=spt[8].y=spt[9].y=eye_y;
-	spt[0].z=spt[1].z=spt[2].z=spt[3].z=spt[4].z=spt[5].z=spt[6].z=spt[7].z=spt[8].z=spt[9].z=obj->pnt.z;
+	spt[0].x=spt[1].x=spt[2].x=spt[3].x=spt[4].x=spt[5].x=spt[6].x=spt[7].x=spt[8].x=obj->pnt.x;
+	spt[0].y=spt[1].y=spt[2].y=spt[3].y=spt[4].y=spt[5].y=spt[6].y=spt[7].y=spt[8].y=eye_y;
+	spt[0].z=spt[1].z=spt[2].z=spt[3].z=spt[4].z=spt[5].z=spt[6].z=spt[7].z=spt[8].z=obj->pnt.z;
 		
-	ept[0].x=ept[3].x=ept[4].x=ept[7].x=min.x;
-	ept[1].x=ept[2].x=ept[5].x=ept[6].x=max.x;
-	ept[0].y=ept[1].y=ept[4].y=ept[5].y=min.y;
-	ept[2].y=ept[3].y=ept[6].y=ept[7].y=max.y;
-	ept[0].z=ept[1].z=ept[2].z=ept[3].z=min.z;
-	ept[4].z=ept[5].z=ept[6].z=ept[7].z=max.z;
+	ept[0].x=ept[3].x=ept[4].x=ept[7].x=bounds_min.x=min.x;
+	ept[1].x=ept[2].x=ept[5].x=ept[6].x=bounds_max.x=max.x;
+	ept[0].y=ept[1].y=ept[4].y=ept[5].y=bounds_min.y=min.y;
+	ept[2].y=ept[3].y=ept[6].y=ept[7].y=bounds_max.y=max.y;
+	ept[0].z=ept[1].z=ept[2].z=ept[3].z=bounds_min.z=min.z;
+	ept[4].z=ept[5].z=ept[6].z=ept[7].z=bounds_max.z=max.z;
+
+		// get the ray bounds
+
+	if (obj->pnt.x<bounds_min.x) bounds_min.x=obj->pnt.x;
+	if (obj->pnt.x>bounds_max.x) bounds_max.x=obj->pnt.x;
+	if (eye_y<bounds_min.y) bounds_min.y=eye_y;
+	if (eye_y>bounds_max.y) bounds_max.y=eye_y;
+	if (obj->pnt.z<bounds_min.z) bounds_min.z=obj->pnt.z;
+	if (obj->pnt.z>bounds_max.z) bounds_max.z=obj->pnt.z;
 	
 		// run the rays
 
@@ -347,7 +357,7 @@ bool object_sight_test_object(obj_type *obj,int test_obj_idx)
 
 	base_contact.origin=poly_ray_trace_origin_object;
 	
-	ray_trace_map_by_point_array(9,spt,ept,hpt,hits,&base_contact,contacts);
+	ray_trace_map_by_point_array(9,&bounds_min,&bounds_max,spt,ept,hpt,hits,&base_contact,contacts);
 	
 	for (n=0;n!=9;n++) {
 		if (contacts[n].obj.idx==test_obj_idx) return(TRUE);
