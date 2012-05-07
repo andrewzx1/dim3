@@ -432,6 +432,7 @@ void object_motion_slope_alter_movement_single(int *mv,float slope_y,float slope
 
 void object_motion_slope_alter_movement(obj_type *obj,d3pnt *motion)
 {
+	poly_pointer_type	stand_poly;
 	map_mesh_poly_type	*mesh_poly;
 
 		// if standing on an object or
@@ -449,11 +450,10 @@ void object_motion_slope_alter_movement(obj_type *obj,d3pnt *motion)
 		mesh_poly=&map.mesh.meshes[obj->contact.stand_poly.mesh_idx].polys[obj->contact.stand_poly.poly_idx];
 	}
 	else {
-		pin_downward_movement_obj(obj,(floor_slop>>1));
-		if (obj->contact.stand_poly.mesh_idx==-1) return;
+		pin_downward_movement_point(&obj->pnt,(floor_slop>>1),&stand_poly);
+		if (stand_poly.mesh_idx==-1) return;
 		
-		mesh_poly=&map.mesh.meshes[obj->contact.stand_poly.mesh_idx].polys[obj->contact.stand_poly.poly_idx];
-		obj->contact.stand_poly.mesh_idx=-1;
+		mesh_poly=&map.mesh.meshes[stand_poly.mesh_idx].polys[stand_poly.poly_idx];
 	}
 
 		// ignore wall or flat polygons
@@ -1033,9 +1033,8 @@ void object_move_normal(obj_type *obj)
 
 		else {
 			if (bump_y_move!=0) {
-				bump_y_move=pin_downward_movement_obj(obj,bump_y_move);
-				obj->pnt.y+=bump_y_move;
-				obj->bump.smooth_offset-=bump_y_move;
+				obj->pnt.y-=bump_y_move;
+				obj->bump.smooth_offset+=bump_y_move;
 			}
 		}
 	}
