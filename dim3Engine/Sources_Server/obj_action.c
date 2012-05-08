@@ -686,7 +686,7 @@ bool object_exit_vehicle(obj_type *vehicle_obj,bool ignore_errors,char *err_str)
 {
 	int						x,z,y,radius;
 	bool					empty;
-	d3pnt					spt,ept,hpt;
+	d3pnt					spt,ept;
 	obj_type				*orig_obj;
 	obj_vehicle				*vehicle;
 	ray_trace_contact_type	contact;
@@ -753,7 +753,7 @@ bool object_exit_vehicle(obj_type *vehicle_obj,bool ignore_errors,char *err_str)
 
 		contact.origin=poly_ray_trace_origin_object;
 		
-		empty=!ray_trace_map_by_point(&spt,&ept,&hpt,&contact);
+		empty=!ray_trace_map_by_point(&spt,&ept,&contact);
 		
 		if ((!empty) && (!ignore_errors)) {
 			if (err_str!=NULL) strcpy(err_str,"No space in map to exit");

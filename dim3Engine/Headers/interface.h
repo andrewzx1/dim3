@@ -337,17 +337,13 @@ extern bool map_stand_check_object(obj_type *obj);
 extern bool ray_trace_initialize(char *err_str);
 extern void ray_trace_shutdown(void);
 extern bool ray_trace_triangle_blocking_f(d3fpnt *spt,d3vct *vct,d3fpnt *tpt_0,d3fpnt *tpt_1,d3fpnt *tpt_2);
-extern float ray_trace_mesh_polygon(d3pnt *spt,d3vct *vct,d3pnt *hpt,map_mesh_type *mesh,map_mesh_poly_type *poly);
 extern ray_trace_check_item_type* ray_trace_get_last_item_list(int *item_count);
 extern void ray_push(d3pnt *pt,d3ang *ang,int dist);
 extern void ray_push_to_end(d3pnt *pt,d3pnt *ept,int dist);
-extern bool ray_trace_map_by_angle(d3pnt *spt,d3ang *ang,int dist,d3pnt *hpt,ray_trace_contact_type *contact);
-extern bool ray_trace_map_by_point(d3pnt *spt,d3pnt *ept,d3pnt *hpt,ray_trace_contact_type *contact);
-extern void ray_trace_map_by_point_array(int cnt,d3pnt *bounds_min,d3pnt *bounds_max,d3pnt *spt,d3pnt *ept,d3pnt *hpt,bool *hits,ray_trace_contact_type *base_contact,ray_trace_contact_type *contacts);
-extern void ray_trace_map_by_point_array_no_contact(int cnt,d3pnt *bounds_min,d3pnt *bounds_max,d3pnt *spt,d3pnt *ept,d3pnt *hpt,bool *hits,ray_trace_contact_type *base_contact);
-extern bool ray_trace_map_blocking(d3pnt *spt,d3pnt *ept,int origin);
+extern bool ray_trace_map_by_angle(d3pnt *spt,d3ang *ang,int dist,ray_trace_contact_type *contact);
+extern bool ray_trace_map_by_point(d3pnt *spt,d3pnt *ept,ray_trace_contact_type *contact);
+extern void ray_trace_map_by_point_array(int cnt,d3pnt *bounds_min,d3pnt *bounds_max,d3pnt *spt,d3pnt *ept,ray_trace_contact_type *base_contact,ray_trace_contact_type *contacts);
 extern void ray_trace_shadow_to_mesh_poly(int cnt,d3vct *vct,d3fpnt *spt,d3fpnt *hpt,bool *hits,int mesh_idx,int poly_idx);
-extern void ray_trace_mesh_poly_plane_by_vector(int cnt,d3vct *vct,d3fpnt *spt,d3fpnt *hpt,bool *hits,int mesh_idx,int poly_idx);
 
 //
 // effects

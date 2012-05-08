@@ -59,7 +59,7 @@ void crosshair_show_alt(obj_type *obj)
 bool crosshair_get_location(obj_type *obj,weapon_type *weap,int *kx,int *ky,int *hit_obj_idx,int *dist)
 {
 	int						tx,ty,tz;
-	d3pnt					fpt,hpt;
+	d3pnt					fpt;
 	d3ang					ang;
 	ray_trace_contact_type	contact;
 
@@ -90,7 +90,7 @@ bool crosshair_get_location(obj_type *obj,weapon_type *weap,int *kx,int *ky,int 
 
 	contact.origin=poly_ray_trace_origin_object;
 
-	ray_trace_map_by_angle(&fpt,&ang,crosshair_max_ray_trace_distance,&hpt,&contact);
+	ray_trace_map_by_angle(&fpt,&ang,crosshair_max_ray_trace_distance,&contact);
 
 	if (hit_obj_idx!=NULL) *hit_obj_idx=contact.obj.idx;
 	
@@ -106,16 +106,16 @@ bool crosshair_get_location(obj_type *obj,weapon_type *weap,int *kx,int *ky,int 
 		gl_3D_rotate(&view.render->camera.pnt,&view.render->camera.ang);
 		gl_setup_project();
 		
-		tx=hpt.x;
-		ty=hpt.y;
-		tz=hpt.z;
+		tx=contact.hpt.x;
+		ty=contact.hpt.y;
+		tz=contact.hpt.z;
 		
 		gl_project_point(&tx,&ty,&tz);
 		
 		*kx=tx;
 		*ky=view.screen.y_sz-ty;
 		
-		if (dist!=NULL) *dist=distance_get(view.render->camera.pnt.x,view.render->camera.pnt.y,view.render->camera.pnt.z,hpt.x,hpt.y,hpt.z);
+		if (dist!=NULL) *dist=distance_get(view.render->camera.pnt.x,view.render->camera.pnt.y,view.render->camera.pnt.z,contact.hpt.x,contact.hpt.y,contact.hpt.z);
 	}
 	
 	return(TRUE);

@@ -146,7 +146,7 @@ void remote_draw_names_setup(void)
 {
 	int						n,dist;
 	bool					hit;
-	d3pnt					pnt,spt,ept,hpt;
+	d3pnt					pnt,spt,ept;
 	obj_type				*obj;
 	model_type				*mdl;
 	ray_trace_contact_type	contact;
@@ -251,7 +251,7 @@ void remote_draw_names_setup(void)
 
 		contact.obj.ignore_idx=obj->idx;
 		
-		hit=ray_trace_map_by_point(&spt,&ept,&hpt,&contact);
+		hit=ray_trace_map_by_point(&spt,&ept,&contact);
 		
 		if (map.camera.mode==cv_fpp) {
 			if (hit) {

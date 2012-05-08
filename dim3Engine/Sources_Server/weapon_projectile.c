@@ -75,7 +75,7 @@ void weapon_setup_fire(weapon_type *weap,int method)
 
 bool weapon_add_projectile(obj_type *obj,weapon_type *weap,proj_setup_type *proj_setup,d3pnt *pt,d3ang *ang)
 {
-	d3pnt					spt,ept,hpt;
+	d3pnt					spt,ept;
 	proj_type				*proj;
 	ray_trace_contact_type	contact;
 	
@@ -126,11 +126,11 @@ bool weapon_add_projectile(obj_type *obj,weapon_type *weap,proj_setup_type *proj
 
 	contact.origin=poly_ray_trace_origin_projectile;
 	
-	if (ray_trace_map_by_point(&spt,&ept,&hpt,&contact)) {
+	if (ray_trace_map_by_point(&spt,&ept,&contact)) {
 
-		proj->pnt.x=hpt.x;
-		proj->pnt.y=hpt.y;
-		proj->pnt.z=hpt.z;
+		proj->pnt.x=contact.hpt.x;
+		proj->pnt.y=contact.hpt.y;
+		proj->pnt.z=contact.hpt.z;
 		
 		proj->contact.hit_poly.mesh_idx=contact.poly.mesh_idx;
 		proj->contact.hit_poly.poly_idx=contact.poly.poly_idx;

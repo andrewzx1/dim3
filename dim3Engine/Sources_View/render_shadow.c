@@ -145,12 +145,11 @@ bool shadow_get_volume(d3pnt *pnt,int high,d3pnt *light_pnt,int light_intensity,
 {
 	int							n;
 	float						f_dist;
-	bool						hits[8];
-	d3pnt						spt[8],ept[8],hpt[8],
+	d3pnt						spt[8],ept[8],
 								bounds_min,bounds_max;
 	d3pnt						*sp,*ep;
 	d3vct						ray_move;
-	ray_trace_contact_type		base_contact;
+	ray_trace_contact_type		base_contact,contacts[8];
 
 	spt[0].x=spt[1].x=spt[4].x=spt[5].x=bounds_min.x=min->x;
 	spt[2].x=spt[3].x=spt[6].x=spt[7].x=bounds_max.x=max->x;
@@ -194,7 +193,7 @@ bool shadow_get_volume(d3pnt *pnt,int high,d3pnt *light_pnt,int light_intensity,
 
 	base_contact.origin=poly_ray_trace_origin_object;
 
-	ray_trace_map_by_point_array_no_contact(8,&bounds_min,&bounds_max,spt,ept,hpt,hits,&base_contact);
+	ray_trace_map_by_point_array(8,&bounds_min,&bounds_max,spt,ept,&base_contact,contacts);
 
 		// testing -- projection debug
 /*
@@ -217,27 +216,27 @@ bool shadow_get_volume(d3pnt *pnt,int high,d3pnt *light_pnt,int light_intensity,
 	if (light_intensity>=view_shadows_clip_infinite_distance) {
 	
 		for (n=0;n!=8;n++) {
-			if (!hits[n]) {
-				hpt[n].x=spt[n].x;
-				hpt[n].y=spt[n].y;
-				hpt[n].z=spt[n].z;
+			if (!contacts[n].hit) {
+				contacts[n].hpt.x=spt[n].x;
+				contacts[n].hpt.y=spt[n].y;
+				contacts[n].hpt.z=spt[n].z;
 			}
 		}
 	}
 	
 		// set the volume
 
-	min->x=max->x=hpt[0].x;
-	min->y=max->y=hpt[0].y;
-	min->z=max->z=hpt[0].z;
+	min->x=max->x=contacts[0].hpt.x;
+	min->y=max->y=contacts[0].hpt.y;
+	min->z=max->z=contacts[0].hpt.z;
 	
 	for (n=1;n!=8;n++) {
-		if (hpt[n].x<min->x) min->x=hpt[n].x;
-		if (hpt[n].x>max->x) max->x=hpt[n].x;
-		if (hpt[n].y<min->y) min->y=hpt[n].y;
-		if (hpt[n].y>max->y) max->y=hpt[n].y;
-		if (hpt[n].z<min->z) min->z=hpt[n].z;
-		if (hpt[n].z>max->z) max->z=hpt[n].z;
+		if (contacts[n].hpt.x<min->x) min->x=contacts[n].hpt.x;
+		if (contacts[n].hpt.x>max->x) max->x=contacts[n].hpt.x;
+		if (contacts[n].hpt.y<min->y) min->y=contacts[n].hpt.y;
+		if (contacts[n].hpt.y>max->y) max->y=contacts[n].hpt.y;
+		if (contacts[n].hpt.z<min->z) min->z=contacts[n].hpt.z;
+		if (contacts[n].hpt.z>max->z) max->z=contacts[n].hpt.z;
 	}
 
 	return(TRUE);

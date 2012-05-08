@@ -80,7 +80,7 @@ void halo_draw_setup(void)
 	int						n,x,y,z,radius,pixel_sz,dist,d;
 	float					alpha;
 	bool					hit;
-	d3pnt					spt,ept,hpt;
+	d3pnt					spt,ept;
 	obj_type				*obj;
 	halo_draw_type			*halo_draw;
 	iface_halo_type			*halo;
@@ -179,7 +179,7 @@ void halo_draw_setup(void)
 			ray_push_to_end(&spt,&ept,radius);
 		}
 
-		hit=ray_trace_map_by_point(&spt,&ept,&hpt,&contact);
+		hit=ray_trace_map_by_point(&spt,&ept,&contact);
 
 			// check hit and ignore hitting the projecting
 			// player
