@@ -297,7 +297,7 @@ void object_player_turn_direct(obj_type *obj,float ang)
 
 void object_player_turn_auto_aim(obj_type *obj)
 {
-	d3pnt					pnt,hpt;
+	d3pnt					pnt;
 	d3ang					ang;
 	weapon_type				*weap;
 	ray_trace_contact_type	contact;
@@ -328,7 +328,7 @@ void object_player_turn_auto_aim(obj_type *obj)
 	contact.proj.on=FALSE;
 	contact.origin=poly_ray_trace_origin_object;
 
-	ray_trace_map_by_angle(&pnt,&ang,auto_aim_max_ray_trace_distance,&hpt,&contact);
+	ray_trace_map_by_angle(&pnt,&ang,auto_aim_max_ray_trace_distance,&contact);
 	if (contact.obj.idx!=-1) return;
 
 		// turn towards near objects
@@ -338,7 +338,7 @@ void object_player_turn_auto_aim(obj_type *obj)
 
 	ang.y=angle_add(obj->ang.y,-auto_aim_max_catch_angle);
 
-	ray_trace_map_by_angle(&pnt,&ang,auto_aim_max_ray_trace_distance,&hpt,&contact);
+	ray_trace_map_by_angle(&pnt,&ang,auto_aim_max_ray_trace_distance,&contact);
 	if (contact.obj.idx!=-1) {
 		if (obj->turn.ang_add.y<=0.0f) {
 			obj->ang.y=angle_add(obj->ang.y,-(obj->turn.walk_speed*auto_aim_turn_speed_factor));
@@ -350,7 +350,7 @@ void object_player_turn_auto_aim(obj_type *obj)
 
 	ang.y=angle_add(obj->ang.y,auto_aim_max_catch_angle);
 
-	ray_trace_map_by_angle(&pnt,&ang,auto_aim_max_ray_trace_distance,&hpt,&contact);
+	ray_trace_map_by_angle(&pnt,&ang,auto_aim_max_ray_trace_distance,&contact);
 	if (contact.obj.idx!=-1) {
 		if (obj->turn.ang_add.y>=0.0f) {
 			obj->ang.y=angle_add(obj->ang.y,(obj->turn.walk_speed*auto_aim_turn_speed_factor));

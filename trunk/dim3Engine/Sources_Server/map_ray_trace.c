@@ -68,11 +68,17 @@ void ray_trace_shutdown(void)
       
 ======================================================= */
 
-inline void ray_trace_contact_clear(ray_trace_contact_type *contact)
+inline void ray_trace_contact_clear(d3pnt *ept,ray_trace_contact_type *contact)
 {
+	contact->hit=FALSE;
+
 	contact->poly.mesh_idx=-1;
 	contact->obj.idx=-1;
 	contact->proj.idx=-1;
+
+	contact->hpt.x=ept->x;
+	contact->hpt.y=ept->y;
+	contact->hpt.z=ept->z;
 }
 
 /* =======================================================
@@ -699,19 +705,9 @@ bool ray_trace_object_bound_check(obj_type *obj,d3pnt *min,d3pnt *max,ray_trace_
 {
 	int			x,z,radius;
 	
-		// object a hit candidate?
-
-	if ((obj->hidden) || (obj->pickup.on) || (!obj->contact.object_on) || (obj->idx==contact->obj.ignore_idx)) return(FALSE);
-	
-	if ((contact->origin==poly_ray_trace_origin_object) && (!obj->contact.object_on)) return(FALSE);
-	if ((contact->origin==poly_ray_trace_origin_projectile) && (!obj->contact.projectile_on)) return(FALSE);
-	
-		// rough y vector box check
-		
-	if (max->y<(obj->pnt.y-obj->size.y)) return(FALSE);
-	if (min->y>obj->pnt.y) return(FALSE);
-	
 		// rough x/z vector box checks
+		// run this compare first as it's
+		// a better chance for elimination
 		
 	x=obj->pnt.x;
 	z=obj->pnt.z;
@@ -722,6 +718,21 @@ bool ray_trace_object_bound_check(obj_type *obj,d3pnt *min,d3pnt *max,ray_trace_
 	if (min->x>(x+radius)) return(FALSE);
 	if (max->z<(z-radius)) return(FALSE);
 	if (min->z>(z+radius)) return(FALSE);
+	
+		// rough y vector box check
+		// run this next
+		
+	if (max->y<(obj->pnt.y-obj->size.y)) return(FALSE);
+	if (min->y>obj->pnt.y) return(FALSE);
+	
+		// finally check the flags, I
+		// suspect these situations will be
+		// the least cause of eliminations
+
+	if ((obj->hidden) || (obj->pickup.on) || (!obj->contact.object_on) || (obj->idx==contact->obj.ignore_idx)) return(FALSE);
+	
+	if ((contact->origin==poly_ray_trace_origin_object) && (!obj->contact.object_on)) return(FALSE);
+	if ((contact->origin==poly_ray_trace_origin_projectile) && (!obj->contact.projectile_on)) return(FALSE);
 	
 	return(TRUE);
 }
@@ -763,17 +774,10 @@ float ray_trace_projectile(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,proj_type
 bool ray_trace_projectile_bound_check(proj_type *proj,d3pnt *min,d3pnt *max,ray_trace_contact_type *contact)
 {
 	int			x,z,radius;
-	
-		// is projectile a hit candidate?
 
-	if (proj->idx==contact->proj.ignore_idx) return(FALSE);
-	
-		// rough y vector box check
-		
-	if (max->y<(proj->pnt.y-proj->size.y)) return(FALSE);
-	if (min->y>proj->pnt.y) return(FALSE);
-	
 		// rough x/z vector box checks
+		// run this compare first as it's
+		// a better chance for elimination
 		
 	x=proj->pnt.x;
 	z=proj->pnt.z;
@@ -784,8 +788,15 @@ bool ray_trace_projectile_bound_check(proj_type *proj,d3pnt *min,d3pnt *max,ray_
 	if (min->x>(x+radius)) return(FALSE);
 	if (max->z<(z-radius)) return(FALSE);
 	if (min->z>(z+radius)) return(FALSE);
+	
+		// rough y vector box check
+		
+	if (max->y<(proj->pnt.y-proj->size.y)) return(FALSE);
+	if (min->y>proj->pnt.y) return(FALSE);
+	
+		// check flags last
 
-	return(TRUE);
+	return(proj->idx!=contact->proj.ignore_idx);
 }
 
 /* =======================================================
@@ -794,16 +805,24 @@ bool ray_trace_projectile_bound_check(proj_type *proj,d3pnt *min,d3pnt *max,ray_
       
 ======================================================= */
 
-void ray_trace_map_items(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *hit_t,ray_trace_contact_type *contact)
+void ray_trace_map_items(d3pnt *spt,d3pnt *ept,d3vct *vct,ray_trace_contact_type *base_contact,ray_trace_contact_type *contact)
 {
 	int							n,hit_box_idx;
-	float						t;
+	float						t,hit_t;
 	d3pnt						pt;
 	obj_type					*obj;
 	proj_type					*proj;
 	map_mesh_type				*mesh;
 	map_mesh_poly_type			*poly;
 	ray_trace_check_item_type	*item;
+
+		// clear all contact hits
+
+	ray_trace_contact_clear(ept,contact);
+
+		// default is past end of line
+		
+	hit_t=1.0f;
 	
 		// check all hit candidates
 
@@ -818,21 +837,21 @@ void ray_trace_map_items(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *hit_
 
 				t=ray_trace_object(spt,ept,vct,&pt,&hit_box_idx,obj);
 				if (t==-1.0f) break;
+				if (t>hit_t) break;
 				
-					// closer hit?
-					
-				if (t>=(*hit_t)) break;
-				
-				*hit_t=t;
-				hpt->x=pt.x;
-				hpt->y=pt.y;
-				hpt->z=pt.z;
-			
-				ray_trace_contact_clear(contact);
+				hit_t=t;
+
+				contact->hpt.x=pt.x;
+				contact->hpt.y=pt.y;
+				contact->hpt.z=pt.z;
+
+				contact->hit=TRUE;
 
 				contact->obj.idx=obj->idx;
+				contact->proj.idx=-1;
+				contact->poly.mesh_idx=-1;
 				
-				ray_trace_object_set_hitbox(obj,hit_box_idx,contact);
+				ray_trace_object_set_hitbox(obj,hit_box_idx,base_contact);
 				break;
 
 			case ray_trace_check_item_projectile:
@@ -840,19 +859,19 @@ void ray_trace_map_items(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *hit_
 				
 				t=ray_trace_projectile(spt,ept,vct,&pt,proj);
 				if (t==-1.0f) break;
+				if (t>hit_t) break;
 					
-					// closer hit?
-						
-				if (t>=(*hit_t)) break;
-					
-				*hit_t=t;
-				hpt->x=pt.x;
-				hpt->y=pt.y;
-				hpt->z=pt.z;
-				
-				ray_trace_contact_clear(contact);
+				hit_t=t;
 
+				contact->hpt.x=pt.x;
+				contact->hpt.y=pt.y;
+				contact->hpt.z=pt.z;
+
+				contact->hit=TRUE;
+				
+				contact->obj.idx=-1;
 				contact->proj.idx=proj->idx;
+				contact->poly.mesh_idx=-1;
 				break;
 
 			case ray_trace_check_item_mesh_poly:
@@ -876,17 +895,18 @@ void ray_trace_map_items(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *hit_
 					
 				t=ray_trace_mesh_polygon(spt,vct,&pt,mesh,poly);
 				if (t==-1.0f) break;
-					
-					// closer hit?
+				if (t>hit_t) break;
 				
-				if (t>=(*hit_t)) break;
-				
-				*hit_t=t;
-				hpt->x=pt.x;
-				hpt->y=pt.y;
-				hpt->z=pt.z;
-				
-				ray_trace_contact_clear(contact);
+				hit_t=t;
+
+				contact->hpt.x=pt.x;
+				contact->hpt.y=pt.y;
+				contact->hpt.z=pt.z;
+
+				contact->hit=TRUE;
+
+				contact->obj.idx=-1;
+				contact->proj.idx=-1;
 				contact->poly.mesh_idx=item->index;
 				contact->poly.poly_idx=item->index_2;
 
@@ -900,38 +920,42 @@ void ray_trace_map_items(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *hit_
 					
 				t=ray_trace_mesh_box(spt,vct,&pt,mesh);
 				if (t==-1.0f) break;
-					
-					// closer hit?
+				if (t>hit_t) break;
 				
-				if (t>=(*hit_t)) break;
-				
-				*hit_t=t;
-				hpt->x=pt.x;
-				hpt->y=pt.y;
-				hpt->z=pt.z;
-				
-				ray_trace_contact_clear(contact);
+				hit_t=t;
+
+				contact->hpt.x=pt.x;
+				contact->hpt.y=pt.y;
+				contact->hpt.z=pt.z;
+
+				contact->hit=TRUE;
+
+				contact->obj.idx=-1;
+				contact->proj.idx=-1;
 				contact->poly.mesh_idx=item->index;
 				contact->poly.poly_idx=0;
 				break;
 				
-
 		}
 		
 		item++;
 	}
 }
 
-void ray_trace_map_all(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *hit_t,ray_trace_contact_type *contact)
+void ray_trace_map_all(d3pnt *spt,d3pnt *ept,d3vct *vct,ray_trace_contact_type *contact)
 {
 	int							n,k,hit_box_idx;
-	float						t;
+	float						t,hit_t;
 	d3pnt						pt,min,max;
 	obj_type					*obj;
 	proj_type					*proj;
 	map_mesh_type				*mesh;
 	map_mesh_poly_type			*poly;
-	
+
+		// clear all contact hits
+
+	ray_trace_contact_clear(ept,contact);
+
 		// get bounds for vector
 		// and use those as a collision check
 		// this is rough, but going through all
@@ -939,6 +963,10 @@ void ray_trace_map_all(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *hit_t,
 		// dealing with a few missed hits
 
 	ray_trace_get_single_ray_bounds(spt,ept,&min,&max);
+
+		// default is past end of line
+		
+	hit_t=1.0f;
 
 		// check objects
 
@@ -952,16 +980,19 @@ void ray_trace_map_all(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *hit_t,
 			
 			t=ray_trace_object(spt,ept,vct,&pt,&hit_box_idx,obj);
 			if (t==-1.0f) continue;
-			if (t>=(*hit_t)) continue;
+			if (t>hit_t) continue;
 			
-			*hit_t=t;
-			hpt->x=pt.x;
-			hpt->y=pt.y;
-			hpt->z=pt.z;
-		
-			ray_trace_contact_clear(contact);
+			hit_t=t;
+
+			contact->hpt.x=pt.x;
+			contact->hpt.y=pt.y;
+			contact->hpt.z=pt.z;
+
+			contact->hit=TRUE;
 
 			contact->obj.idx=obj->idx;
+			contact->proj.idx=-1;
+			contact->poly.mesh_idx=-1;
 			
 			ray_trace_object_set_hitbox(obj,hit_box_idx,contact);
 		}
@@ -979,16 +1010,19 @@ void ray_trace_map_all(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *hit_t,
 			
 			t=ray_trace_projectile(spt,ept,vct,&pt,proj);
 			if (t==-1.0f) continue;
-			if (t>=(*hit_t)) continue;
+			if (t>hit_t) continue;
 				
-			*hit_t=t;
-			hpt->x=pt.x;
-			hpt->y=pt.y;
-			hpt->z=pt.z;
-			
-			ray_trace_contact_clear(contact);
+			hit_t=t;
 
+			contact->hpt.x=pt.x;
+			contact->hpt.y=pt.y;
+			contact->hpt.z=pt.z;
+
+			contact->hit=TRUE;
+
+			contact->obj.idx=-1;
 			contact->proj.idx=proj->idx;
+			contact->poly.mesh_idx=-1;
 		}
 	}
 
@@ -1010,15 +1044,18 @@ void ray_trace_map_all(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *hit_t,
 		if (mesh->flag.simple_collision) {
 			t=ray_trace_mesh_box(spt,vct,&pt,mesh);
 			if (t==-1.0f) continue;
-			if (t>=(*hit_t)) continue;
+			if (t>hit_t) continue;
 		
-			*hit_t=t;
-			hpt->x=pt.x;
-			hpt->y=pt.y;
-			hpt->z=pt.z;
+			hit_t=t;
+
+			contact->hpt.x=pt.x;
+			contact->hpt.y=pt.y;
+			contact->hpt.z=pt.z;
+
+			contact->hit=TRUE;
 			
-			ray_trace_contact_clear(contact);
-			
+			contact->obj.idx=-1;
+			contact->proj.idx=-1;
 			contact->poly.mesh_idx=n;
 			contact->poly.poly_idx=0;
 		
@@ -1034,21 +1071,23 @@ void ray_trace_map_all(d3pnt *spt,d3pnt *ept,d3vct *vct,d3pnt *hpt,float *hit_t,
 
 			t=ray_trace_mesh_polygon(spt,vct,&pt,mesh,poly);
 			if (t==-1.0f) continue;
-			if (t>=(*hit_t)) continue;
+			if (t>hit_t) continue;
 			
-			*hit_t=t;
-			hpt->x=pt.x;
-			hpt->y=pt.y;
-			hpt->z=pt.z;
+			hit_t=t;
+
+			contact->hpt.x=pt.x;
+			contact->hpt.y=pt.y;
+			contact->hpt.z=pt.z;
+
+			contact->hit=TRUE;
 			
-			ray_trace_contact_clear(contact);
-			
+			contact->obj.idx=-1;
+			contact->proj.idx=-1;
 			contact->poly.mesh_idx=n;
 			contact->poly.poly_idx=k;
 		}
 				
 	}
-
 }
 
 /* =======================================================
@@ -1215,17 +1254,12 @@ void ray_trace_map_item_list_setup(int cnt,d3pnt *bounds_min,d3pnt *bounds_max,d
       
 ======================================================= */
 
-bool ray_trace_map_by_angle(d3pnt *spt,d3ang *ang,int dist,d3pnt *hpt,ray_trace_contact_type *contact)
+bool ray_trace_map_by_angle(d3pnt *spt,d3ang *ang,int dist,ray_trace_contact_type *contact)
 {
-	float						hit_t;
-	d3pnt						ept;
-	d3vct						vct;
-	matrix_type					mat;
+	d3pnt				ept;
+	d3vct				vct;
+	matrix_type			mat;
 		
-		// clear the contact
-		
-	ray_trace_contact_clear(contact);
-	
 		// get vector
 		
 	vct.x=0.0f;
@@ -1240,113 +1274,39 @@ bool ray_trace_map_by_angle(d3pnt *spt,d3ang *ang,int dist,d3pnt *hpt,ray_trace_
 	ept.x=spt->x+(int)vct.x;
 	ept.y=spt->y+(int)vct.y;
 	ept.z=spt->z+(int)vct.z;
-	
-		// default is past end of line
-		
-	hit_t=2.0f;
-	
-	hpt->x=ept.x;
-	hpt->y=ept.y;
-	hpt->z=ept.z;
 		
 		// ray trace map
 
-	ray_trace_map_all(spt,&ept,&vct,hpt,&hit_t,contact);
+	ray_trace_map_all(spt,&ept,&vct,contact);
 	
-	return((hit_t>=0.0f) && (hit_t<=1.0f));
+	return(contact->hit);
 }
 
-bool ray_trace_map_by_point(d3pnt *spt,d3pnt *ept,d3pnt *hpt,ray_trace_contact_type *contact)
+bool ray_trace_map_by_point(d3pnt *spt,d3pnt *ept,ray_trace_contact_type *contact)
 {
-	float						hit_t;
-	d3vct						vct;
+	d3vct			vct;
 		
-		// clear the contact
-		
-	ray_trace_contact_clear(contact);
-	
 		// create vector from points
 
 	vct.x=(float)(ept->x-spt->x);
 	vct.y=(float)(ept->y-spt->y);
 	vct.z=(float)(ept->z-spt->z);
-	
-		// default is past end of line
-		
-	hit_t=2.0f;
-	
-	hpt->x=ept->x;
-	hpt->y=ept->y;
-	hpt->z=ept->z;
 	
 		// check against map
 
-	ray_trace_map_all(spt,ept,&vct,hpt,&hit_t,contact);
+	ray_trace_map_all(spt,ept,&vct,contact);
 	
-	return((hit_t>=0.0f) && (hit_t<=1.0f));
+	return(contact->hit);
 }
 
-void ray_trace_map_by_point_array(int cnt,d3pnt *bounds_min,d3pnt *bounds_max,d3pnt *spt,d3pnt *ept,d3pnt *hpt,bool *hits,ray_trace_contact_type *base_contact,ray_trace_contact_type *contacts)
+void ray_trace_map_by_point_array(int cnt,d3pnt *bounds_min,d3pnt *bounds_max,d3pnt *spt,d3pnt *ept,ray_trace_contact_type *base_contact,ray_trace_contact_type *contacts)
 {
-	int							n;
-	float						hit_t;
-	d3vct						vct;
+	int				n;
+	d3vct			vct;
 	
 		// setup item list
 		
 	ray_trace_map_item_list_setup(cnt,bounds_min,bounds_max,spt,ept,base_contact);
-	
-		// run the ray array
-		
-	for (n=0;n!=cnt;n++) {
-	
-			// create contact from base
-			
-		ray_trace_contact_clear(&contacts[n]);
-		
-		contacts[n].origin=base_contact->origin;
-		contacts[n].obj.on=base_contact->obj.on;
-		contacts[n].obj.ignore_idx=base_contact->obj.ignore_idx;
-		contacts[n].proj.on=base_contact->proj.on;
-		contacts[n].proj.ignore_idx=base_contact->proj.ignore_idx;
-	
-			// create vector from points
-
-		vct.x=(float)(ept[n].x-spt[n].x);
-		vct.y=(float)(ept[n].y-spt[n].y);
-		vct.z=(float)(ept[n].z-spt[n].z);
-		
-			// default is past end of line
-			
-		hit_t=2.0f;
-		
-		hpt[n].x=ept[n].x;
-		hpt[n].y=ept[n].y;
-		hpt[n].z=ept[n].z;
-		
-			// check against map
-
-		ray_trace_map_items(&spt[n],&ept[n],&vct,&hpt[n],&hit_t,&contacts[n]);
-		
-		hits[n]=(hit_t>=0.0f) && (hit_t<=1.0f);
-	}
-}
-
-void ray_trace_map_by_point_array_no_contact(int cnt,d3pnt *bounds_min,d3pnt *bounds_max,d3pnt *spt,d3pnt *ept,d3pnt *hpt,bool *hits,ray_trace_contact_type *base_contact)
-{
-	int							n;
-	float						hit_t;
-	d3vct						vct;
-	ray_trace_contact_type		contact;
-	
-		// setup item list
-		
-	ray_trace_map_item_list_setup(cnt,bounds_min,bounds_max,spt,ept,base_contact);
-
-		// not returning contacts or hits
-		// so use temporary contact
-		
-	memmove(&contact,base_contact,sizeof(ray_trace_contact_type));
 	
 		// run the ray array
 		
@@ -1358,84 +1318,10 @@ void ray_trace_map_by_point_array_no_contact(int cnt,d3pnt *bounds_min,d3pnt *bo
 		vct.y=(float)(ept[n].y-spt[n].y);
 		vct.z=(float)(ept[n].z-spt[n].z);
 		
-			// default is past end of line
-			
-		hit_t=2.0f;
-		
-		hpt[n].x=ept[n].x;
-		hpt[n].y=ept[n].y;
-		hpt[n].z=ept[n].z;
-		
 			// check against map
 
-		ray_trace_contact_clear(&contact);
-		ray_trace_map_items(&spt[n],&ept[n],&vct,&hpt[n],&hit_t,&contact);
-		
-		hits[n]=(hit_t>=0.0f) && (hit_t<=1.0f);
+		ray_trace_map_items(&spt[n],&ept[n],&vct,base_contact,&contacts[n]);
 	}
-}
-
-/* =======================================================
-
-      Map Blocking
-      
-======================================================= */
-
-bool ray_trace_map_blocking(d3pnt *spt,d3pnt *ept,int origin)
-{
-	int							n,k;
-	d3pnt						pt,min,max;
-	d3vct						vct;
-	map_mesh_type				*mesh;
-	map_mesh_poly_type			*poly;
-	
-		// get bounds for vector
-		// and use those as a collision check
-		// this is rough, but going through all
-		// the meshes is actually longer than
-		// dealing with a few missed hits
-
-	ray_trace_get_single_ray_bounds(spt,ept,&min,&max);
-	
-		// create vector from points
-
-	vct.x=(float)(ept->x-spt->x);
-	vct.y=(float)(ept->y-spt->y);
-	vct.z=(float)(ept->z-spt->z);
-
-		// check all meshes
-
-	for (n=0;n!=map.mesh.nmesh;n++) {
-
-		mesh=&map.mesh.meshes[n];
-		if (!ray_trace_mesh_bound_check(mesh,&min,&max)) continue;
-
-			// halo checks
-
-		if (origin==poly_ray_trace_origin_halo) {
-			if (mesh->flag.no_halo_obscure) continue;
-		}
-		
-			// simple collisions
-			
-		if (mesh->flag.simple_collision) {
-			if (ray_trace_mesh_box(spt,&vct,&pt,mesh)!=-1.0f) return(TRUE);
-			continue;
-		}
-		
-			// complex collisions
-		
-		for (k=0;k!=mesh->npoly;k++) {
-
-			poly=&mesh->polys[k];
-			if (!ray_trace_mesh_poly_bound_check(poly,&min,&max)) continue;
-
-			if (ray_trace_mesh_polygon(spt,&vct,&pt,mesh,poly)!=-1.0f) return(TRUE);
-		}
-				
-	}
-	
-	return(FALSE);
 }
 
 /* =======================================================
@@ -1504,72 +1390,3 @@ void ray_trace_shadow_to_mesh_poly(int cnt,d3vct *vct,d3fpnt *spt,d3fpnt *hpt,bo
 	}
 }
 
-/* =======================================================
-
-      Ray Trace Plane
-      
-======================================================= */
-
-void ray_trace_mesh_poly_plane_by_vector(int cnt,d3vct *vct,d3fpnt *spt,d3fpnt *hpt,bool *hits,int mesh_idx,int poly_idx)
-{
-	int						n;
-	float					t,ka,kb,kc,kd,denom;
-	bool					*hit;
-	d3fpnt					*sp,*hp;
-	map_mesh_poly_type		*poly;
-	
-		// get the polys
-		
-	poly=&map.mesh.meshes[mesh_idx].polys[poly_idx];
-
-		// get polygon plane equation
-		
-	ka=poly->plane.ka;
-	kb=poly->plane.kb;
-	kc=poly->plane.kc;
-	kd=poly->plane.kd;
-
-		// pre-calc the denominator
-		// as all vectors are the same
-
-	denom=(ka*vct->x)+(kb*vct->y)+(kc*vct->z);
-	if (denom!=0.0f) {
-		denom=1.0f/denom;
-	}
-	else {
-		denom=0.0f;
-	}
-	
-		// run through the rays
-
-	sp=spt;
-	hp=hpt;
-
-	hit=hits;
-
-	for (n=0;n!=cnt;n++) {
-
-			// solve the ray/plane for t
-			// we always hit the plane here
-			// as we assume infinite
-
-			// move the negate to the hit point
-			// find instead of here
-
-		t=((ka*sp->x)+(kb*sp->y)+(kc*sp->z)+kd)*denom;
-
-			// get the hit point
-
-		hp->x=sp->x-(vct->x*t);
-		hp->y=sp->y-(vct->y*t);
-		hp->z=sp->z-(vct->z*t);
-
-			// hits have to deal with the
-			// t being negative
-
-		*hit++=((t>=-1.0f) && (t<=0.0f));
-		
-		sp++;
-		hp++;
-	}
-}

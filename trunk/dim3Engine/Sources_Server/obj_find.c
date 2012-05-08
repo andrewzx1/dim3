@@ -266,8 +266,8 @@ bool object_sight_test_object(obj_type *obj,int test_obj_idx)
 {
 	int						n,eye_y,sz;
 	float					ang;
-	bool					in_sight,hits[9];
-	d3pnt					spt[9],ept[9],hpt[9],
+	bool					in_sight;
+	d3pnt					spt[9],ept[9],
 							min,max,bounds_min,bounds_max;
 	ray_trace_contact_type	contacts[9],base_contact;
 	obj_type				*test_obj;
@@ -357,7 +357,7 @@ bool object_sight_test_object(obj_type *obj,int test_obj_idx)
 
 	base_contact.origin=poly_ray_trace_origin_object;
 	
-	ray_trace_map_by_point_array(9,&bounds_min,&bounds_max,spt,ept,hpt,hits,&base_contact,contacts);
+	ray_trace_map_by_point_array(9,&bounds_min,&bounds_max,spt,ept,&base_contact,contacts);
 	
 	for (n=0;n!=9;n++) {
 		if (contacts[n].obj.idx==test_obj_idx) return(TRUE);

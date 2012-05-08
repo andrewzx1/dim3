@@ -47,7 +47,7 @@ extern network_setup_type	net_setup;
 
 void projectile_hitscan(obj_type *obj,weapon_type *weap,proj_setup_type *proj_setup,d3pnt *pt,d3ang *ang)
 {
-	d3pnt					spt,hpt;
+	d3pnt					spt;
 	proj_type				*proj,*hit_proj;
 	ray_trace_contact_type	contact;
 	
@@ -84,13 +84,13 @@ void projectile_hitscan(obj_type *obj,weapon_type *weap,proj_setup_type *proj_se
 
 	contact.origin=poly_ray_trace_origin_projectile;
 	
-	ray_trace_map_by_angle(&spt,ang,proj_setup->hitscan.max_dist,&hpt,&contact);
+	ray_trace_map_by_angle(&spt,ang,proj_setup->hitscan.max_dist,&contact);
 
 		// reset position and contacts
 		
-	proj->pnt.x=hpt.x;
-	proj->pnt.y=hpt.y;
-	proj->pnt.z=hpt.z;
+	proj->pnt.x=contact.hpt.x;
+	proj->pnt.y=contact.hpt.y;
+	proj->pnt.z=contact.hpt.z;
 	
 	memmove(&proj->contact.hit_poly,&contact.poly,sizeof(poly_pointer_type));
 	proj->contact.liquid_idx=-1;

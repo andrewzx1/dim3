@@ -106,7 +106,7 @@ void view_draw_debug_info(char *name,char *info,d3pnt *pnt,d3pnt *size,d3ang *an
 	int						x,y,z,dist,font_size;
 	char					str[256];
 	d3col					col;
-	d3pnt					spt,ept,hpt;
+	d3pnt					spt,ept;
 	ray_trace_contact_type	contact;
 
 		// get size and fade
@@ -137,7 +137,7 @@ void view_draw_debug_info(char *name,char *info,d3pnt *pnt,d3pnt *size,d3ang *an
 
 	contact.origin=poly_ray_trace_origin_object;
 
-	if (ray_trace_map_by_point(&spt,&ept,&hpt,&contact)) return;
+	if (ray_trace_map_by_point(&spt,&ept,&contact)) return;
 
 		// project the mid point
 

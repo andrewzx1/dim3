@@ -22,7 +22,6 @@ from any and all payment and/or royalties to the author of dim3,
 and can be sold or given away.
 
 (c) 2000-2012 Klink! Software www.klinksoftware.com
- /Users/bbarnes/dim3Code/dim3Engine/Sources_Server/map_y_check.c:46: warning: 'n' may be used uninitialized in this function
 
 *********************************************************************/
 
@@ -39,9 +38,8 @@ and can be sold or given away.
 extern map_type			map;
 extern server_type		server;
 
-bool					pin_movement_hits[256];
 d3fpnt					pin_trig_table[2][16];
-d3pnt					pin_movement_spt[256],pin_movement_ept[256],pin_movement_hpt[256];
+d3pnt					pin_movement_spt[256],pin_movement_ept[256];
 ray_trace_contact_type	pin_movement_contacts[256];
 
 /* =======================================================
@@ -52,7 +50,7 @@ ray_trace_contact_type	pin_movement_contacts[256];
 
 int find_poly_nearest_stand(d3pnt *pnt,int my,bool ignore_higher)
 {
-	d3pnt					spt,ept,hpt;
+	d3pnt					spt,ept;
 	ray_trace_contact_type	contact;
 
 	spt.x=pnt->x;
@@ -69,7 +67,7 @@ int find_poly_nearest_stand(d3pnt *pnt,int my,bool ignore_higher)
 
 	contact.origin=poly_ray_trace_origin_unknown;
 
-	if (ray_trace_map_by_point(&spt,&ept,&hpt,&contact)) return(hpt.y);
+	if (ray_trace_map_by_point(&spt,&ept,&contact)) return(contact.hpt.y);
 
 	return(-1);
 }
@@ -183,7 +181,7 @@ int pin_build_ray_set_obj(obj_type *obj,int ty,int by,d3pnt *bounds_min,d3pnt *b
 
 int pin_downward_movement_point(d3pnt *pnt,int my,poly_pointer_type *stand_poly)
 {
-	d3pnt					spt,ept,hpt;
+	d3pnt					spt,ept;
 	ray_trace_contact_type	contact;
 
 	spt.x=pnt->x;
@@ -199,10 +197,10 @@ int pin_downward_movement_point(d3pnt *pnt,int my,poly_pointer_type *stand_poly)
 
 	contact.origin=poly_ray_trace_origin_unknown;
 
-	if (ray_trace_map_by_point(&spt,&ept,&hpt,&contact)) {
+	if (ray_trace_map_by_point(&spt,&ept,&contact)) {
 		stand_poly->mesh_idx=contact.poly.mesh_idx;
 		stand_poly->poly_idx=contact.poly.poly_idx;
-		return(hpt.y);
+		return(contact.hpt.y);
 	}
 
 	stand_poly->mesh_idx=-1;
@@ -232,7 +230,7 @@ int pin_downward_movement_obj(obj_type *obj,int my)
 
 		// run the rays
 		
-	ray_trace_map_by_point_array(ray_count,&bounds_min,&bounds_max,pin_movement_spt,pin_movement_ept,pin_movement_hpt,pin_movement_hits,&base_contact,pin_movement_contacts);
+	ray_trace_map_by_point_array(ray_count,&bounds_min,&bounds_max,pin_movement_spt,pin_movement_ept,&base_contact,pin_movement_contacts);
 	
 		// find the highest point
 		
@@ -243,12 +241,12 @@ int pin_downward_movement_obj(obj_type *obj,int my)
 		
 			// check poly collisions
 			
-		if (pin_movement_hits[n]) {
+		if (pin_movement_contacts[n].hit) {
 		
-			if ((cy==-1) || (pin_movement_hpt[n].y<cy)) {
+			if ((cy==-1) || (pin_movement_contacts[n].hpt.y<cy)) {
 				obj->contact.stand_poly.mesh_idx=pin_movement_contacts[n].poly.mesh_idx;
 				obj->contact.stand_poly.poly_idx=pin_movement_contacts[n].poly.poly_idx;
-				cy=pin_movement_hpt[n].y;
+				cy=pin_movement_contacts[n].hpt.y;
 			}
 			
 		}
@@ -261,7 +259,7 @@ int pin_downward_movement_obj(obj_type *obj,int my)
 
 int pin_downward_movement_proj(proj_type *proj,int my)
 {
-	d3pnt					spt,ept,hpt;
+	d3pnt					spt,ept;
 	ray_trace_contact_type	contact;
 
 	spt.x=proj->pnt.x;
@@ -277,10 +275,10 @@ int pin_downward_movement_proj(proj_type *proj,int my)
 
 	contact.origin=poly_ray_trace_origin_projectile;
 
-	if (ray_trace_map_by_point(&spt,&ept,&hpt,&contact)) {
+	if (ray_trace_map_by_point(&spt,&ept,&contact)) {
 		proj->contact.hit_poly.mesh_idx=contact.poly.mesh_idx;
 		proj->contact.hit_poly.poly_idx=contact.poly.poly_idx;
-		return(hpt.y);
+		return(contact.hpt.y);
 	}
 
 	return(proj->pnt.y+my);
@@ -294,7 +292,7 @@ int pin_downward_movement_proj(proj_type *proj,int my)
 
 int pin_upward_movement_point(d3pnt *pnt,int my,poly_pointer_type *head_poly)
 {
-	d3pnt					spt,ept,hpt;
+	d3pnt					spt,ept;
 	ray_trace_contact_type	contact;
 
 	spt.x=pnt->x;
@@ -310,10 +308,10 @@ int pin_upward_movement_point(d3pnt *pnt,int my,poly_pointer_type *head_poly)
 
 	contact.origin=poly_ray_trace_origin_unknown;
 
-	if (ray_trace_map_by_point(&spt,&ept,&hpt,&contact)) {
+	if (ray_trace_map_by_point(&spt,&ept,&contact)) {
 		head_poly->mesh_idx=contact.poly.mesh_idx;
 		head_poly->poly_idx=contact.poly.poly_idx;
-		return(hpt.y);
+		return(contact.hpt.y);
 	}
 
 	head_poly->mesh_idx=-1;
@@ -345,7 +343,7 @@ int pin_upward_movement_obj(obj_type *obj,int my)
 
 		// run the rays
 		
-	ray_trace_map_by_point_array(ray_count,&bounds_min,&bounds_max,pin_movement_spt,pin_movement_ept,pin_movement_hpt,pin_movement_hits,&base_contact,pin_movement_contacts);
+	ray_trace_map_by_point_array(ray_count,&bounds_min,&bounds_max,pin_movement_spt,pin_movement_ept,&base_contact,pin_movement_contacts);
 	
 		// find the lowest point
 		
@@ -356,12 +354,12 @@ int pin_upward_movement_obj(obj_type *obj,int my)
 		
 			// check poly collisions
 			
-		if (pin_movement_hits[n]) {
+		if (pin_movement_contacts[n].hit) {
 		
-			if ((cy==-1) || (pin_movement_hpt[n].y>cy)) {
+			if ((cy==-1) || (pin_movement_contacts[n].hpt.y>cy)) {
 				obj->contact.head_poly.mesh_idx=pin_movement_contacts[n].poly.mesh_idx;
 				obj->contact.head_poly.poly_idx=pin_movement_contacts[n].poly.poly_idx;
-				cy=pin_movement_hpt[n].y;
+				cy=pin_movement_contacts[n].hpt.y;
 			}			
 		}
 	}
@@ -373,7 +371,7 @@ int pin_upward_movement_obj(obj_type *obj,int my)
 
 int pin_upward_movement_proj(proj_type *proj,int my)
 {
-	d3pnt					spt,ept,hpt;
+	d3pnt					spt,ept;
 	ray_trace_contact_type	contact;
 
 	spt.x=proj->pnt.x;
@@ -389,10 +387,10 @@ int pin_upward_movement_proj(proj_type *proj,int my)
 
 	contact.origin=poly_ray_trace_origin_projectile;
 
-	if (ray_trace_map_by_point(&spt,&ept,&hpt,&contact)) {
+	if (ray_trace_map_by_point(&spt,&ept,&contact)) {
 		proj->contact.hit_poly.mesh_idx=contact.poly.mesh_idx;
 		proj->contact.hit_poly.poly_idx=contact.poly.poly_idx;
-		return(hpt.y);
+		return(contact.hpt.y);
 	}
 
 	return(proj->pnt.y-my);

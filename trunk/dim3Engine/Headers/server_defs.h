@@ -1083,6 +1083,8 @@ typedef struct		{
 
 typedef struct		{
 						int								origin;
+						bool							hit;
+						d3pnt							hpt;
 						ray_trace_obj_proj_type			obj,proj;
 						poly_pointer_type				poly;
 					} ray_trace_contact_type;

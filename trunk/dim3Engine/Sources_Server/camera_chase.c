@@ -125,7 +125,7 @@ void camera_chase_calc_position(void)
 {
 	int						radius;
 	float					fang,fx,fy,fz;
-	d3pnt					spt,ept,hpt;
+	d3pnt					spt,ept;
 	ray_trace_contact_type	contact;
 	matrix_type				mat;
 	obj_type				*obj;
@@ -173,13 +173,13 @@ void camera_chase_calc_position(void)
 
 	contact.origin=poly_ray_trace_origin_unknown;
 
-	ray_trace_map_by_point(&spt,&ept,&hpt,&contact);
+	ray_trace_map_by_point(&spt,&ept,&contact);
 				
 		// the position
 		
-    camera.cur_pos.pnt.x=hpt.x+map.camera.pnt_offset.x;
-    camera.cur_pos.pnt.y=hpt.y+map.camera.pnt_offset.y;
-    camera.cur_pos.pnt.z=hpt.z+map.camera.pnt_offset.z;
+    camera.cur_pos.pnt.x=contact.hpt.x+map.camera.pnt_offset.x;
+    camera.cur_pos.pnt.y=contact.hpt.y+map.camera.pnt_offset.y;
+    camera.cur_pos.pnt.z=contact.hpt.z+map.camera.pnt_offset.z;
 	
 		// looking angles
 		// need to reverse X looking angle so it

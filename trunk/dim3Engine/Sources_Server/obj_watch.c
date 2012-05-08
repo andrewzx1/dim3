@@ -47,7 +47,7 @@ bool object_watch_restrict(obj_type *obj,obj_type *watch_obj)
 {
 	float					ang_y,ang_dif;
 	bool					cwise;
-	d3pnt					spt,ept,hpt;
+	d3pnt					spt,ept;
 	ray_trace_contact_type	contact;
 		
 		// within angle
@@ -78,7 +78,7 @@ bool object_watch_restrict(obj_type *obj,obj_type *watch_obj)
 	ept.y=watch_obj->pnt.y-(watch_obj->size.y>>1);
 	ept.z=watch_obj->pnt.z;
 
-	return(!ray_trace_map_by_point(&spt,&ept,&hpt,&contact));
+	return(!ray_trace_map_by_point(&spt,&ept,&contact));
 }
 
 void object_watch(obj_type *obj)

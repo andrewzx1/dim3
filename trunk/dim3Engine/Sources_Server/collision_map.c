@@ -1123,7 +1123,7 @@ void collide_objects_push(d3pnt *push_pnt,int radius,int force)
 int collide_polygon_find_faced_by_object(obj_type *obj)
 {
 	int						sz,xadd,zadd;
-	d3pnt					spt,ept,hpt;
+	d3pnt					spt,ept;
 	ray_trace_contact_type	contact;
 
 		// setup ray trace
@@ -1146,7 +1146,7 @@ int collide_polygon_find_faced_by_object(obj_type *obj)
 
 		// run trace
 
-	if (!ray_trace_map_by_point(&spt,&ept,&hpt,&contact)) return(-1);
+	if (!ray_trace_map_by_point(&spt,&ept,&contact)) return(-1);
 
 		// return polygon contact
 
