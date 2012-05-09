@@ -407,8 +407,9 @@ typedef struct		{
 					} obj_status;
 			
 typedef struct		{
-						int						obj_idx,proj_idx,stand_obj_idx,liquid_idx,
-												collision_mode;
+						int						obj_idx,proj_idx,
+												stand_obj_idx,head_obj_idx,
+												liquid_idx,collision_mode;
 						bool					object_on,projectile_on,force_on,
 												melee,pushable;
 						poly_pointer_type		hit_poly,stand_poly,head_poly;

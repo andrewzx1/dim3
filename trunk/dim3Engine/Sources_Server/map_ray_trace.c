@@ -433,8 +433,8 @@ float ray_trace_rotated_box(d3pnt *spt,d3vct *vct,d3pnt *hpt,int x,int z,int lx,
 	
 		// max y side
 		
-	px[0]=px[3]=lx+5;
-	px[1]=px[2]=rx-5;
+	px[0]=px[3]=lx;
+	px[1]=px[2]=rx;
 	py[0]=py[1]=py[2]=py[3]=by;
 	pz[0]=pz[1]=tz;
 	pz[2]=pz[3]=bz;

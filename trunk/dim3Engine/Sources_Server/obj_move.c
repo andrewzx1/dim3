@@ -508,9 +508,8 @@ void object_motion_set_script_property(obj_type *obj,d3pnt *motion)
 
 void object_move_y_up(obj_type *obj,int ymove)
 {
-	int				idx,fy,up_move;
+	int				fy,up_move;
 	d3pnt			motion;
-	obj_type		*hit_obj;
 	
 	obj->air_mode=am_up;
 	
@@ -531,13 +530,13 @@ void object_move_y_up(obj_type *obj,int ymove)
 	object_move_with_standing_object(obj,&motion,TRUE);
 
 		// pin upward against objects
-
+/*
 	idx=collide_object_for_object_under(obj);
 	if (idx!=-1) {
 		hit_obj=server.obj_list.objs[idx];
 		ymove=hit_obj->pnt.y-(obj->pnt.y-obj->size.y);
 	}
-
+*/
 		// go upwards
 		
 	up_move=pin_upward_movement_obj(obj,ymove);
@@ -561,8 +560,7 @@ void object_move_y_up(obj_type *obj,int ymove)
 
 void object_move_y_fall(obj_type *obj)
 {
-	int				y,fy,ymove,idx;
-	obj_type		*hit_obj;
+	int				y,fy,ymove;
 
 		// check standing on polygons
 
@@ -603,17 +601,13 @@ void object_move_y_fall(obj_type *obj)
 	
 		// check standing on objects
 
-	idx=collide_object_for_object_stand(obj);
-	if (idx!=-1) {
-		hit_obj=server.obj_list.objs[idx];
-		
-		obj->contact.obj_idx=idx;
-		obj->pnt.y=hit_obj->pnt.y-hit_obj->size.y;
-		obj->air_mode=am_ground;
-		
-			// stand on contact touch
+	if (obj->contact.stand_obj_idx!=-1) {
+
+			// stands count as regular contacts
 			
-		obj->contact.stand_obj_idx=hit_obj->idx;
+		obj->contact.obj_idx=obj->contact.stand_obj_idx;
+		obj->air_mode=am_ground;
+
 		return;
 	}
 	

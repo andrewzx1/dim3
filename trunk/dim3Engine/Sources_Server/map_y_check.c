@@ -213,6 +213,7 @@ int pin_downward_movement_obj(obj_type *obj,int my)
 	int						n,cy,ray_count,ty,by;
 	d3pnt					bounds_min,bounds_max;
 	ray_trace_contact_type	base_contact;
+	obj_type				*stand_obj;
 	
 		// setup contact
 		
@@ -234,7 +235,9 @@ int pin_downward_movement_obj(obj_type *obj,int my)
 	
 		// find the highest point
 		
+	obj->contact.stand_obj_idx=-1;
 	obj->contact.stand_poly.mesh_idx=-1;
+	
 	cy=-1;
 	
 	for (n=0;n!=ray_count;n++) {
@@ -244,8 +247,19 @@ int pin_downward_movement_obj(obj_type *obj,int my)
 		if (pin_movement_contacts[n].hit) {
 		
 			if ((cy==-1) || (pin_movement_contacts[n].hpt.y<cy)) {
+			
+					// always collide with poly
+
 				obj->contact.stand_poly.mesh_idx=pin_movement_contacts[n].poly.mesh_idx;
 				obj->contact.stand_poly.poly_idx=pin_movement_contacts[n].poly.poly_idx;
+				
+					// only stand on object if touching it
+				
+				if (pin_movement_contacts[n].obj.idx!=-1) {
+					stand_obj=server.obj_list.objs[pin_movement_contacts[n].obj.idx];
+					if (pin_movement_contacts[n].hpt.y==(stand_obj->pnt.y-stand_obj->size.y)) obj->contact.stand_obj_idx=pin_movement_contacts[n].obj.idx;
+				}
+				
 				cy=pin_movement_contacts[n].hpt.y;
 			}
 			
@@ -324,10 +338,12 @@ int pin_upward_movement_obj(obj_type *obj,int my)
 	int						n,cy,y_sz,ray_count,ty,by;
 	d3pnt					bounds_min,bounds_max;
 	ray_trace_contact_type	base_contact;
+	obj_type				*head_obj;
 
 		// setup contact
 		
-	base_contact.obj.on=FALSE;
+	base_contact.obj.on=TRUE;
+	base_contact.obj.ignore_idx=obj->idx;
 	base_contact.proj.on=FALSE;
 
 	base_contact.origin=poly_ray_trace_origin_unknown;
@@ -347,7 +363,9 @@ int pin_upward_movement_obj(obj_type *obj,int my)
 	
 		// find the lowest point
 		
+	obj->contact.head_obj_idx=-1;
 	obj->contact.head_poly.mesh_idx=-1;
+	
 	cy=-1;
 	
 	for (n=0;n!=ray_count;n++) {
@@ -357,8 +375,19 @@ int pin_upward_movement_obj(obj_type *obj,int my)
 		if (pin_movement_contacts[n].hit) {
 		
 			if ((cy==-1) || (pin_movement_contacts[n].hpt.y>cy)) {
+			
+					// always collide with poly
+					
 				obj->contact.head_poly.mesh_idx=pin_movement_contacts[n].poly.mesh_idx;
 				obj->contact.head_poly.poly_idx=pin_movement_contacts[n].poly.poly_idx;
+				
+					// only head on object if touching it
+				
+				if (pin_movement_contacts[n].obj.idx!=-1) {
+					head_obj=server.obj_list.objs[pin_movement_contacts[n].obj.idx];
+					if (pin_movement_contacts[n].hpt.y==head_obj->pnt.y) obj->contact.head_obj_idx=pin_movement_contacts[n].obj.idx;
+				}
+				
 				cy=pin_movement_contacts[n].hpt.y;
 			}			
 		}
