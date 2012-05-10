@@ -298,6 +298,8 @@ extern void zoom_draw(obj_type *obj,weapon_type *weap);
 // collisions
 //
 
+extern void collide_setup(void);
+
 extern bool collide_contact_is_wall_hit(poly_pointer_type *hit_poly);
 extern bool collide_object_to_map(obj_type *obj,d3pnt *motion);
 extern bool collide_object_to_map_bump(obj_type *obj,d3pnt *motion,int *bump_y_move);

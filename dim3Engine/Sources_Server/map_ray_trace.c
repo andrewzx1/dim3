@@ -35,6 +35,10 @@ and can be sold or given away.
 extern map_type				map;
 extern server_type			server;
 
+extern int					collide_obj_count,collide_proj_count,
+							collide_obj_list[max_obj_list],
+							collide_proj_list[max_proj_list];
+
 int							ray_item_count;
 ray_trace_check_item_type	*ray_item_list;
 
@@ -972,8 +976,8 @@ void ray_trace_map_all(d3pnt *spt,d3pnt *ept,d3vct *vct,ray_trace_contact_type *
 
 	if (contact->obj.on) {
 	
-		for (n=0;n!=max_obj_list;n++) {
-			obj=server.obj_list.objs[n];
+		for (n=0;n!=collide_obj_count;n++) {
+			obj=server.obj_list.objs[collide_obj_list[n]];
 			if (obj==NULL) continue;
 
 			if (!ray_trace_object_bound_check(obj,&min,&max,contact)) continue;
@@ -1002,8 +1006,8 @@ void ray_trace_map_all(d3pnt *spt,d3pnt *ept,d3vct *vct,ray_trace_contact_type *
 		
 	if (contact->proj.on) {
 	
-		for (n=0;n!=max_proj_list;n++) {
-			proj=server.proj_list.projs[n];
+		for (n=0;n!=collide_proj_count;n++) {
+			proj=server.proj_list.projs[collide_proj_list[n]];
 			if (!proj->on) continue;
 
 			if (!ray_trace_projectile_bound_check(proj,&min,&max,contact)) continue;
@@ -1163,13 +1167,13 @@ void ray_trace_map_item_list_setup(int cnt,d3pnt *bounds_min,d3pnt *bounds_max,d
 
 	if (contact->obj.on) {
 	
-		for (n=0;n!=max_obj_list;n++) {
-			obj=server.obj_list.objs[n];
+		for (n=0;n!=collide_obj_count;n++) {
+			obj=server.obj_list.objs[collide_obj_list[n]];
 			if (obj==NULL) continue;
 			
 			if (ray_trace_object_bound_check(obj,bounds_min,bounds_max,contact)) {
 				item->type=ray_trace_check_item_object;
-				item->index=n;
+				item->index=obj->idx;
 
 				item++;
 				ray_item_count++;
@@ -1183,13 +1187,13 @@ void ray_trace_map_item_list_setup(int cnt,d3pnt *bounds_min,d3pnt *bounds_max,d
 		
 	if (contact->proj.on) {
 	
-		for (n=0;n!=max_proj_list;n++) {
-			proj=server.proj_list.projs[n];
+		for (n=0;n!=collide_proj_count;n++) {
+			proj=server.proj_list.projs[collide_proj_list[n]];
 			if (!proj->on) continue;
 
 			if (ray_trace_projectile_bound_check(proj,bounds_min,bounds_max,contact)) {
 				item->type=ray_trace_check_item_projectile;
-				item->index=n;
+				item->index=proj->idx;
 
 				item++;
 				ray_item_count++;

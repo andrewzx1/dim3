@@ -2,7 +2,7 @@
 
 Module: dim3 Engine
 Author: Brian Barnes
- Usage: Map Y Collision Checking
+ Usage: Map Y Collisions
 
 ***************************** License ********************************
 
@@ -39,8 +39,8 @@ extern map_type			map;
 extern server_type		server;
 
 d3fpnt					pin_trig_table[2][16];
-d3pnt					pin_movement_spt[256],pin_movement_ept[256];
-ray_trace_contact_type	pin_movement_contacts[256];
+d3pnt					pin_movement_spt[129],pin_movement_ept[129];
+ray_trace_contact_type	pin_movement_contacts[129];
 
 /* =======================================================
 
@@ -122,12 +122,12 @@ int pin_build_ray_set_obj(obj_type *obj,int start_y,int end_y,d3pnt *bounds_min,
 
 		// how many concentric circles
 		// always leave one more spot
-		// for center ray (only do at most 15 circles
+		// for center ray (only do at most 8 circles
 		// of 16 points each)
 
 	circle_count=radius/map_collide_pin_radius_len;
 	if (circle_count<2) circle_count=2;
-	if (circle_count>15) circle_count=15;
+	if (circle_count>8) circle_count=8;
 
 	f_radius_sub=(float)radius/(float)circle_count;
 

@@ -2349,19 +2349,6 @@
 					Name="Collision"
 					>
 					<File
-						RelativePath="..\..\dim3Engine\Sources_Server\collision_map.c"
-						>
-						<FileConfiguration
-							Name="Release|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								AdditionalIncludeDirectories=""
-								PreprocessorDefinitions=""
-							/>
-						</FileConfiguration>
-					</File>
-					<File
 						RelativePath="..\..\dim3Engine\Sources_Server\group_change.c"
 						>
 						<FileConfiguration
@@ -2388,6 +2375,18 @@
 						</FileConfiguration>
 					</File>
 					<File
+						RelativePath="..\..\dim3Engine\Sources_Server\map_collide_setup.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Engine\Sources_Server\map_collide_xz.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Engine\Sources_Server\map_collide_y.c"
+						>
+					</File>
+					<File
 						RelativePath="..\..\dim3Engine\Sources_Server\map_movement.c"
 						>
 						<FileConfiguration
@@ -2406,19 +2405,6 @@
 					</File>
 					<File
 						RelativePath="..\..\dim3Engine\Sources_Server\map_ray_trace.c"
-						>
-						<FileConfiguration
-							Name="Release|Win32"
-							>
-							<Tool
-								Name="VCCLCompilerTool"
-								AdditionalIncludeDirectories=""
-								PreprocessorDefinitions=""
-							/>
-						</FileConfiguration>
-					</File>
-					<File
-						RelativePath="..\..\dim3Engine\Sources_Server\map_y_check.c"
 						>
 						<FileConfiguration
 							Name="Release|Win32"

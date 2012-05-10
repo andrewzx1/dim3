@@ -2,7 +2,7 @@
 
 Module: dim3 Engine
 Author: Brian Barnes
- Usage: Map Collisions
+ Usage: Map XZ Collisions
 
 ***************************** License ********************************
 
@@ -36,6 +36,10 @@ and can be sold or given away.
 extern map_type			map;
 extern view_type		view;
 extern server_type		server;
+
+extern int				collide_obj_count,collide_proj_count,
+						collide_obj_list[max_obj_list],
+						collide_proj_list[max_proj_list];
 
 /* =======================================================
 
@@ -536,10 +540,10 @@ bool collide_box_to_map(d3pnt *pt,d3pnt *box_sz,d3pnt *motion,bool check_objs,in
 
 	if (check_objs) {
 
-		for (n=0;n!=max_obj_list;n++) {
-			if (n==skip_obj_idx) continue;
+		for (n=0;n!=collide_obj_count;n++) {
+			if (collide_obj_list[n]==skip_obj_idx) continue;
 
-			chk_obj=server.obj_list.objs[n];
+			chk_obj=server.obj_list.objs[collide_obj_list[n]];
 			if (chk_obj==NULL) continue;
 			
 			if (!is_proj) {
@@ -550,7 +554,7 @@ bool collide_box_to_map(d3pnt *pt,d3pnt *box_sz,d3pnt *motion,bool check_objs,in
 			}
 			
 			if (collide_circle_check_object(&circle_pnt,radius,&min,&max,TRUE,&cur_dist,chk_obj,&cur_hit_pnt)) {
-				contact->obj_idx=n;
+				contact->obj_idx=chk_obj->idx;
 				contact->proj_idx=-1;
 				contact->hit_poly.mesh_idx=-1;
 				contact->hit_poly.poly_idx=-1;
@@ -562,15 +566,15 @@ bool collide_box_to_map(d3pnt *pt,d3pnt *box_sz,d3pnt *motion,bool check_objs,in
 		// check projectiles
 
 	if (check_projs) {
-		for (n=0;n!=max_proj_list;n++) {
-			if (n==skip_proj_idx) continue;
+		for (n=0;n!=collide_proj_count;n++) {
+			if (collide_proj_list[n]==skip_proj_idx) continue;
 
-			chk_proj=server.proj_list.projs[n];
+			chk_proj=server.proj_list.projs[collide_proj_list[n]];
 			if (!chk_proj->on) continue;
 
 			if (collide_circle_check_projectile(&circle_pnt,radius,&min,&max,&cur_dist,chk_proj,&cur_hit_pnt)) {
 				contact->obj_idx=-1;
-				contact->proj_idx=n;
+				contact->proj_idx=chk_proj->idx;
 				contact->hit_poly.mesh_idx=-1;
 				contact->hit_poly.poly_idx=-1;
 			}
@@ -778,8 +782,8 @@ bool collide_object_to_map_bump(obj_type *obj,d3pnt *motion,int *bump_y_move)
 
 		// check objects
 
-	for (n=0;n!=max_obj_list;n++) {
-		chk_obj=server.obj_list.objs[n];
+	for (n=0;n!=collide_obj_count;n++) {
+		chk_obj=server.obj_list.objs[collide_obj_list[n]];
 		if (chk_obj==NULL) continue;
 
 		if (chk_obj==obj) continue;
@@ -1017,8 +1021,8 @@ void collide_objects_push(d3pnt *push_pnt,int radius,int force)
 	
 		// check objects
 		
-	for (n=0;n!=max_obj_list;n++) {
-		obj=server.obj_list.objs[n];
+	for (n=0;n!=collide_obj_count;n++) {
+		obj=server.obj_list.objs[collide_obj_list[n]];
 		if (obj==NULL) continue;
 		
 			// can't push certain objects
