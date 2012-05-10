@@ -529,14 +529,6 @@ void object_move_y_up(obj_type *obj,int ymove)
 	motion.y=ymove;
 	object_move_with_standing_object(obj,&motion,TRUE);
 
-		// pin upward against objects
-/*
-	idx=collide_object_for_object_under(obj);
-	if (idx!=-1) {
-		hit_obj=server.obj_list.objs[idx];
-		ymove=hit_obj->pnt.y-(obj->pnt.y-obj->size.y);
-	}
-*/
 		// go upwards
 		
 	up_move=pin_upward_movement_obj(obj,ymove);
