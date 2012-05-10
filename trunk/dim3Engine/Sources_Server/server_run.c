@@ -343,6 +343,8 @@ void server_run(void)
 		while (tick>=server.time.run_tick) {
 			server.time.run_tick+=10;
 
+			collide_setup();
+
 			group_moves_run(TRUE);
 			cinema_run();
 			
