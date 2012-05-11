@@ -51,11 +51,9 @@ texture_font_type					txt_font;
 
 void text_initialize(void)
 {
-	int				n;
-
-	for (n=0;n!=max_iface_font_variant;n++) {
-		strcpy(txt_font.name[n],"Arial");
-	}
+	strcpy(txt_font.name[0],"Arial");
+	strcpy(txt_font.name[1],"Helvetica");
+	strcpy(txt_font.name[2],"Verdana");
 
 	bitmap_text_initialize(&txt_font);
 
