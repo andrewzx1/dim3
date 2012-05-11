@@ -228,9 +228,14 @@ bool collide_circle_check_object_cylinder(d3pnt *circle_pnt,int radius,d3pnt *mi
 	if (max->y<=(obj->pnt.y-obj->size.y)) return(FALSE);
 	if (min->y>=obj->pnt.y) return(FALSE);
 
-		// radius check
+		// get radius
 
 	chk_radius=object_get_radius(obj);
+
+		// rough xz check
+
+	if (((obj->pnt.x-chk_radius)>=max->x) || ((obj->pnt.x+chk_radius)<=min->x)) return(FALSE);
+	if (((obj->pnt.z-chk_radius)>=max->z) || ((obj->pnt.z+chk_radius)<=min->z)) return(FALSE);
 
 		// if distance between center points
 		// is greater than radius+chk_radius,
@@ -281,6 +286,11 @@ bool collide_circle_check_object_box(d3pnt *circle_pnt,int radius,d3pnt *min,d3p
 		
 	obj_min.z=obj->pnt.z-z_sz;
 	obj_max.z=obj->pnt.z+z_sz;
+
+		// rough xz check
+
+	if ((obj_min.x>=max->x) || (obj_max.x<=min->x)) return(FALSE);
+	if ((obj_min.z>=max->z) || (obj_max.z<=min->z)) return(FALSE);
 		
 		// check for hit
 			
@@ -336,9 +346,14 @@ bool collide_circle_check_projectile(d3pnt *circle_pnt,int radius,d3pnt *min,d3p
 	if (max->y<=(proj->pnt.y-proj->size.y)) return(FALSE);
 	if (min->y>=proj->pnt.y) return(FALSE);
 
-		// radius check
+		// get radius
 
 	chk_radius=projectile_get_radius(proj);
+
+		// rough xz check
+
+	if (((proj->pnt.x-chk_radius)>=max->x) || ((proj->pnt.x+chk_radius)<=min->x)) return(FALSE);
+	if (((proj->pnt.z-chk_radius)>=max->z) || ((proj->pnt.z+chk_radius)<=min->z)) return(FALSE);
 
 		// if distance between center points
 		// is greater than radius+chk_radius,
@@ -378,10 +393,12 @@ bool collide_circle_check_mesh(d3pnt *circle_pnt,int radius,d3pnt *min,d3pnt *ma
 	mesh=&map.mesh.meshes[mesh_idx];
 	
 		// check mesh bounds
+		// check xz first as it's a more
+		// likely elimination target
 
 	if ((mesh->box.min.x>=max->x) || (mesh->box.max.x<=min->x)) return(FALSE);
-	if ((mesh->box.min.y>=max->y) || (mesh->box.max.y<=min->y)) return(FALSE);
 	if ((mesh->box.min.z>=max->z) || (mesh->box.max.z<=min->z)) return(FALSE);
+	if ((mesh->box.min.y>=max->y) || (mesh->box.max.y<=min->y)) return(FALSE);
 	
 		// check pass through
 		
@@ -431,8 +448,8 @@ bool collide_circle_check_mesh(d3pnt *circle_pnt,int radius,d3pnt *min,d3pnt *ma
 			// check poly bounds
 
 		if ((poly->box.min.x>=max->x) || (poly->box.max.x<=min->x)) continue;
-		if ((poly->box.min.y>=max->y) || (poly->box.max.y<=min->y)) continue;
 		if ((poly->box.min.z>=max->z) || (poly->box.max.z<=min->z)) continue;
+		if ((poly->box.min.y>=max->y) || (poly->box.max.y<=min->y)) continue;
 
 			// collide with line
 

@@ -342,7 +342,7 @@ extern void ray_push(d3pnt *pt,d3ang *ang,int dist);
 extern void ray_push_to_end(d3pnt *pt,d3pnt *ept,int dist);
 extern bool ray_trace_map_by_angle(d3pnt *spt,d3ang *ang,int dist,ray_trace_contact_type *contact);
 extern bool ray_trace_map_by_point(d3pnt *spt,d3pnt *ept,ray_trace_contact_type *contact);
-extern void ray_trace_map_by_point_array(int cnt,d3pnt *bounds_min,d3pnt *bounds_max,d3pnt *spt,d3pnt *ept,ray_trace_contact_type *base_contact,ray_trace_contact_type *contacts);
+extern void ray_trace_map_by_point_array(int cnt,d3pnt *bounds_min,d3pnt *bounds_max,d3pnt *spts,d3pnt *epts,ray_trace_contact_type *base_contact,ray_trace_contact_type *contacts);
 extern void ray_trace_shadow_to_mesh_poly(int cnt,d3vct *vct,d3fpnt *spt,d3fpnt *hpt,bool *hits,int mesh_idx,int poly_idx);
 
 //

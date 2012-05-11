@@ -288,14 +288,13 @@ void bitmap_text_size_internal(texture_font_size_type *d3_size_font,char *name,i
 
 bool bitmap_text_font_exist(char *name)
 {
-	bool			ok;
 	HFONT			font;
 
 	font=CreateFont(-12,0,0,0,FW_MEDIUM,0,0,0,0,OUT_OUTLINE_PRECIS,0,ANTIALIASED_QUALITY,0,name);
-	ok=(font!=NULL);
-	DeleteObject(font);
+	if (font==NULL) return(FALSE);
 
-	return(ok);
+	DeleteObject(font);
+	return(TRUE);
 }
 
 void bitmap_text_size_internal(texture_font_size_type *d3_size_font,char *name,int size,int bitmap_wid,int bitmap_high)

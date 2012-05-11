@@ -154,13 +154,10 @@ void view_add_mesh_draw_list(int start_mesh_idx)
 
 		mesh=&map.mesh.meshes[n];
 		if (!mesh->flag.on) continue;
-			
-		if (!mesh->flag.never_obscure) {
+
+			// check if bound box is within view
 				
-				// check if bound box is within view
-				
-			if (!view_cull_mesh(mesh)) continue;
-		}
+		if (!view_cull_mesh(mesh)) continue;
 
 			// sort meshes into drawing list
 
@@ -198,25 +195,22 @@ void view_add_liquid_draw_list(int start_mesh_idx)
 			
 		if (liq->flag.no_draw) continue;
 		
-		if (!liq->flag.never_obscure) {
-		
-				// skip liquids with away facing normals
-				// do dot product between normal and vector
-				// from liq mid-eye point
-				// liquid normal is always facing up (0,-1,0)
-				// so this calculation is realitively easy
-				
-			if ((!liq->flag.never_cull) && (!map.optimize.never_cull)) {
-				mx=(liq->lft+liq->rgt)>>1;
-				mz=(liq->top+liq->bot)>>1;
-				
-				if ((-1.0f*(float)(liq->y-view.render->camera.pnt.y))>map.optimize.cull_angle) continue;
-			}
-
-				// eliminate liquids outside of view
-
-			if (!view_cull_liquid(liq)) continue;
+			// skip liquids with away facing normals
+			// do dot product between normal and vector
+			// from liq mid-eye point
+			// liquid normal is always facing up (0,-1,0)
+			// so this calculation is realitively easy
+			
+		if ((!liq->flag.never_cull) && (!map.optimize.never_cull)) {
+			mx=(liq->lft+liq->rgt)>>1;
+			mz=(liq->top+liq->bot)>>1;
+			
+			if ((-1.0f*(float)(liq->y-view.render->camera.pnt.y))>map.optimize.cull_angle) continue;
 		}
+
+			// eliminate liquids outside of view
+
+		if (!view_cull_liquid(liq)) continue;
 		
 			// sort liquids into drawing list
 
