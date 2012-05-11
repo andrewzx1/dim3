@@ -27,7 +27,6 @@
 		260B41DE1411F812006ED023 /* camera_chase.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B40C61411F812006ED023 /* camera_chase.c */; };
 		260B41DF1411F812006ED023 /* camera_fpp.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B40C71411F812006ED023 /* camera_fpp.c */; };
 		260B41E01411F812006ED023 /* camera_static.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B40C81411F812006ED023 /* camera_static.c */; };
-		260B41E11411F812006ED023 /* collision_map.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B40C91411F812006ED023 /* collision_map.c */; };
 		260B41E21411F812006ED023 /* decals.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B40CA1411F812006ED023 /* decals.c */; };
 		260B41E31411F812006ED023 /* effects.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B40CB1411F812006ED023 /* effects.c */; };
 		260B41E41411F812006ED023 /* effects_spawn.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B40CC1411F812006ED023 /* effects_spawn.c */; };
@@ -38,7 +37,6 @@
 		260B41E91411F812006ED023 /* map_movement.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B40D11411F812006ED023 /* map_movement.c */; };
 		260B41EA1411F812006ED023 /* map_multiplayer.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B40D21411F812006ED023 /* map_multiplayer.c */; };
 		260B41EB1411F812006ED023 /* map_ray_trace.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B40D31411F812006ED023 /* map_ray_trace.c */; };
-		260B41EC1411F812006ED023 /* map_y_check.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B40D41411F812006ED023 /* map_y_check.c */; };
 		260B41ED1411F812006ED023 /* model.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B40D51411F812006ED023 /* model.c */; };
 		260B41EE1411F812006ED023 /* model_animate.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B40D61411F812006ED023 /* model_animate.c */; };
 		260B41EF1411F812006ED023 /* model_draw_setup.c in Sources */ = {isa = PBXBuildFile; fileRef = 260B40D71411F812006ED023 /* model_draw_setup.c */; };
@@ -365,6 +363,9 @@
 		262DD2B6151E328C0078FEA4 /* base_iface_score.c in Sources */ = {isa = PBXBuildFile; fileRef = 262DD2B5151E328C0078FEA4 /* base_iface_score.c */; };
 		264356A614576B0F00CA4CFE /* model_util_file_model.c in Sources */ = {isa = PBXBuildFile; fileRef = 264356A514576B0F00CA4CFE /* model_util_file_model.c */; };
 		2647C977152767B3002FEA4B /* singleplayer_option.c in Sources */ = {isa = PBXBuildFile; fileRef = 2647C976152767B3002FEA4B /* singleplayer_option.c */; };
+		268936B7155CC99000147273 /* map_collide_setup.c in Sources */ = {isa = PBXBuildFile; fileRef = 268936B4155CC99000147273 /* map_collide_setup.c */; };
+		268936B8155CC99000147273 /* map_collide_xz.c in Sources */ = {isa = PBXBuildFile; fileRef = 268936B5155CC99000147273 /* map_collide_xz.c */; };
+		268936B9155CC99000147273 /* map_collide_y.c in Sources */ = {isa = PBXBuildFile; fileRef = 268936B6155CC99000147273 /* map_collide_y.c */; };
 		26920D7B1433F6F500EF55EF /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2638D24013ED0AD600029B18 /* UIKit.framework */; };
 		269CD61115004CB200F8EC07 /* libpng-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 269CD60D15004CB200F8EC07 /* libpng-iOS.a */; };
 		269CD61415004CD000F8EC07 /* libmpg123-iOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 269CD61215004CD000F8EC07 /* libmpg123-iOS.a */; };
@@ -413,7 +414,6 @@
 		260B40C61411F812006ED023 /* camera_chase.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = camera_chase.c; sourceTree = "<group>"; };
 		260B40C71411F812006ED023 /* camera_fpp.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = camera_fpp.c; sourceTree = "<group>"; };
 		260B40C81411F812006ED023 /* camera_static.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = camera_static.c; sourceTree = "<group>"; };
-		260B40C91411F812006ED023 /* collision_map.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = collision_map.c; sourceTree = "<group>"; };
 		260B40CA1411F812006ED023 /* decals.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = decals.c; sourceTree = "<group>"; };
 		260B40CB1411F812006ED023 /* effects.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = effects.c; sourceTree = "<group>"; };
 		260B40CC1411F812006ED023 /* effects_spawn.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = effects_spawn.c; sourceTree = "<group>"; };
@@ -424,7 +424,6 @@
 		260B40D11411F812006ED023 /* map_movement.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = map_movement.c; sourceTree = "<group>"; };
 		260B40D21411F812006ED023 /* map_multiplayer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = map_multiplayer.c; sourceTree = "<group>"; };
 		260B40D31411F812006ED023 /* map_ray_trace.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = map_ray_trace.c; sourceTree = "<group>"; };
-		260B40D41411F812006ED023 /* map_y_check.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = map_y_check.c; sourceTree = "<group>"; };
 		260B40D51411F812006ED023 /* model.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = model.c; sourceTree = "<group>"; };
 		260B40D61411F812006ED023 /* model_animate.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = model_animate.c; sourceTree = "<group>"; };
 		260B40D71411F812006ED023 /* model_draw_setup.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = model_draw_setup.c; sourceTree = "<group>"; };
@@ -761,6 +760,9 @@
 		2638D24013ED0AD600029B18 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		264356A514576B0F00CA4CFE /* model_util_file_model.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = model_util_file_model.c; sourceTree = "<group>"; };
 		2647C976152767B3002FEA4B /* singleplayer_option.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = singleplayer_option.c; sourceTree = "<group>"; };
+		268936B4155CC99000147273 /* map_collide_setup.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = map_collide_setup.c; sourceTree = "<group>"; };
+		268936B5155CC99000147273 /* map_collide_xz.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = map_collide_xz.c; sourceTree = "<group>"; };
+		268936B6155CC99000147273 /* map_collide_y.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = map_collide_y.c; sourceTree = "<group>"; };
 		269CD60D15004CB200F8EC07 /* libpng-iOS.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = "libpng-iOS.a"; sourceTree = "<group>"; };
 		269CD60E15004CB200F8EC07 /* png.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = png.h; sourceTree = "<group>"; };
 		269CD60F15004CB200F8EC07 /* pngconf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = pngconf.h; sourceTree = "<group>"; };
@@ -944,7 +946,6 @@
 				260B40C61411F812006ED023 /* camera_chase.c */,
 				260B40C71411F812006ED023 /* camera_fpp.c */,
 				260B40C81411F812006ED023 /* camera_static.c */,
-				260B40C91411F812006ED023 /* collision_map.c */,
 				260B40CA1411F812006ED023 /* decals.c */,
 				260B40CB1411F812006ED023 /* effects.c */,
 				260B40CC1411F812006ED023 /* effects_spawn.c */,
@@ -952,10 +953,12 @@
 				260B40CE1411F812006ED023 /* group_change.c */,
 				260B40CF1411F812006ED023 /* group_move.c */,
 				260B40D01411F812006ED023 /* item.c */,
+				268936B4155CC99000147273 /* map_collide_setup.c */,
+				268936B5155CC99000147273 /* map_collide_xz.c */,
+				268936B6155CC99000147273 /* map_collide_y.c */,
 				260B40D11411F812006ED023 /* map_movement.c */,
 				260B40D21411F812006ED023 /* map_multiplayer.c */,
 				260B40D31411F812006ED023 /* map_ray_trace.c */,
-				260B40D41411F812006ED023 /* map_y_check.c */,
 				260B40D51411F812006ED023 /* model.c */,
 				260B40D61411F812006ED023 /* model_animate.c */,
 				260B40D71411F812006ED023 /* model_draw_setup.c */,
@@ -1692,7 +1695,6 @@
 				260B41DE1411F812006ED023 /* camera_chase.c in Sources */,
 				260B41DF1411F812006ED023 /* camera_fpp.c in Sources */,
 				260B41E01411F812006ED023 /* camera_static.c in Sources */,
-				260B41E11411F812006ED023 /* collision_map.c in Sources */,
 				260B41E21411F812006ED023 /* decals.c in Sources */,
 				260B41E31411F812006ED023 /* effects.c in Sources */,
 				260B41E41411F812006ED023 /* effects_spawn.c in Sources */,
@@ -1703,7 +1705,6 @@
 				260B41E91411F812006ED023 /* map_movement.c in Sources */,
 				260B41EA1411F812006ED023 /* map_multiplayer.c in Sources */,
 				260B41EB1411F812006ED023 /* map_ray_trace.c in Sources */,
-				260B41EC1411F812006ED023 /* map_y_check.c in Sources */,
 				260B41ED1411F812006ED023 /* model.c in Sources */,
 				260B41EE1411F812006ED023 /* model_animate.c in Sources */,
 				260B41EF1411F812006ED023 /* model_draw_setup.c in Sources */,
@@ -2031,6 +2032,9 @@
 				26FF68C11523D66B00FACC3B /* script_singleplayer_setting.c in Sources */,
 				26FF68C21523D66B00FACC3B /* script_singleplayer.c in Sources */,
 				2647C977152767B3002FEA4B /* singleplayer_option.c in Sources */,
+				268936B7155CC99000147273 /* map_collide_setup.c in Sources */,
+				268936B8155CC99000147273 /* map_collide_xz.c in Sources */,
+				268936B9155CC99000147273 /* map_collide_y.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
