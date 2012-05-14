@@ -515,7 +515,7 @@ void object_move_y_up(obj_type *obj,int ymove)
 	
 		// have any floors come up from below
 
-	fy=pin_downward_movement_obj(obj,floor_slop);
+	fy=pin_downward_movement_obj(obj,FALSE,floor_slop);
 	if (fy<0) {
 		obj->pnt.y+=fy;
 		ymove+=fy;
@@ -553,13 +553,19 @@ void object_move_y_up(obj_type *obj,int ymove)
 void object_move_y_fall(obj_type *obj)
 {
 	int				y,fy,ymove;
+	bool			old_touch_stand;
 
 		// check standing on polygons
 
 	y=obj->pnt.y;
 		
-	fy=pin_downward_movement_obj(obj,floor_slop);
+	fy=pin_downward_movement_obj(obj,TRUE,floor_slop);
 	fy+=y;
+	
+		// deal with changes to standing
+		
+	old_touch_stand=obj->touch.stand;
+	obj->touch.stand=FALSE;
 
 		// deal with polygon contacts
 		
@@ -567,9 +573,7 @@ void object_move_y_fall(obj_type *obj)
 	
 			// clear any stand touch
 			
-		if (obj->touch.stand) {
-			obj->touch.obj_idx=-1;
-		}
+		if (old_touch_stand) obj->touch.obj_idx=-1;
 		
 			// below or on the floor?
 
@@ -597,15 +601,17 @@ void object_move_y_fall(obj_type *obj)
 
 			// stands count as regular contacts
 			
+		obj->touch.stand=TRUE;
 		obj->contact.obj_idx=obj->contact.stand_obj_idx;
-		obj->air_mode=am_ground;
-
-		return;
-	}
-	
-		// no touch
 		
-	obj->touch.stand=FALSE;
+			// below or on the object?
+
+		if (y>=fy) {
+			obj->air_mode=am_ground;
+			obj->pnt.y=fy;
+			return;
+		}
+	}
 	
 		// find air mode
 		
@@ -643,7 +649,7 @@ void object_move_y_down(obj_type *obj,int ymove)
 	
 		// moving down
 		
-	fy=pin_downward_movement_obj(obj,ymove);
+	fy=pin_downward_movement_obj(obj,TRUE,ymove);
 	obj->pnt.y+=fy;
 	
 	if (obj->air_mode==am_falling) obj->fall.dist+=fy;
@@ -686,7 +692,7 @@ void object_move_y_fly(obj_type *obj,int ymove)
 		
 	if (ymove<=0) return;
 	
-	obj->pnt.y+=pin_downward_movement_obj(obj,ymove);
+	obj->pnt.y+=pin_downward_movement_obj(obj,TRUE,ymove);
 }
 
 /* =======================================================

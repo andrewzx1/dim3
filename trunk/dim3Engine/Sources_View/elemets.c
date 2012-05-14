@@ -1982,26 +1982,28 @@ int element_click_scroll_controls(element_type *element,int header_high,int x,in
 	int				lft,rgt,top,bot,ctrl_sz;
 	
 		// element size
+		// click size is a little bigger than
+		// actual draw size
 
 	ctrl_sz=(int)(((float)iface.scale_x)*element_scroll_control_size);
+	ctrl_sz+=8;
 		
 	element_get_box(element,&lft,&rgt,&top,&bot);
 	
-	lft=(rgt-ctrl_sz)-4;
-	rgt-=4;
-	top=top+(header_high+8);
-	bot-=4;
+	lft=(rgt-ctrl_sz)-8;
+	top+=header_high;
 
 		// top scroll bar
 
 	if (up_ok) {
-		if ((x>=lft) && (x<=rgt) && (y>=top) && (y<=(top+ctrl_sz))) return(-1);
+		
+		if ((x>=(rgt-ctrl_sz)) && (x<=rgt) && (y>=top) && (y<=(top+ctrl_sz))) return(-1);
 	}
 
 		// bottom scroll bar
 
 	if (down_ok) {
-		if ((x>=lft) && (x<=rgt) && (y>=(bot-ctrl_sz)) && (y<=bot)) return(1);
+		if ((x>=(rgt-ctrl_sz)) && (x<=rgt) && (y>=(bot-ctrl_sz)) && (y<=bot)) return(1);
 	}
 
 	return(0);

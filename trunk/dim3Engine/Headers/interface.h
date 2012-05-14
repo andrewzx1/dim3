@@ -322,7 +322,7 @@ extern float collide_polygon_dot_product_to_object(int poly_uid,obj_type *obj);
 extern int find_poly_nearest_stand(d3pnt *pnt,int my,bool ignore_higher);
 extern void pin_build_trig_table(void);
 extern int pin_downward_movement_point(d3pnt *pnt,int my,poly_pointer_type *stand_poly);
-extern int pin_downward_movement_obj(obj_type *obj,int my);
+extern int pin_downward_movement_obj(obj_type *obj,bool set_obj_contact,int my);
 extern int pin_downward_movement_proj(proj_type *proj,int my);
 extern int pin_upward_movement_point(d3pnt *pnt,int my,poly_pointer_type *head_poly);
 extern int pin_upward_movement_obj(obj_type *obj,int my);

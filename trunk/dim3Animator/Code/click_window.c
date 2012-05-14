@@ -1003,16 +1003,16 @@ void model_wind_click(d3pnt *pnt)
 	bool			shift_on,rotate_on,size_on;
 	d3rect			mbox;
 
+		// check mesh show
+
+	if (model_wind_click_mesh_show(pnt)) return;
+
 		// get click within window
 
 	model_wind_get_box(&mbox);
 		
 	pnt->x-=mbox.lx;
 	pnt->y-=mbox.ty;
-
-		// check mesh show
-
-	if (model_wind_click_mesh_show(pnt)) return;
 	
 		// handle the clicks
 		

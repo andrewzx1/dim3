@@ -49,7 +49,7 @@ d3socket net_get_http_file_connect(char *host_name,int port,int secs,char *err_s
 	socklen_t			len;
 	struct sockaddr		name;
 	struct sockaddr_in	addr;
-
+	
 		// get IP address from host name
 		
 	hent=gethostbyname(host_name);

@@ -160,6 +160,7 @@ and can be sold or given away.
 
 #define collision_mode_cylinder					0
 #define collision_mode_box						1
+#define collision_mode_simple					2
 
 //
 // animation modes
@@ -868,7 +869,7 @@ typedef struct		{
 						char					name[name_str_len],spawn_spot_name[name_str_len],
 												spot_script[file_str_len],spot_params[param_str_len];
 						bool					hidden,suspend,fly,slope_gravity,
-												side_step,crawl,single_speed,no_slide,
+												side_step,crawl,floating,single_speed,no_slide,
 												open_doors,hide_all_weapons,
 												find_on,in_collide_event,in_construct_event,
 												quick_reverse,death_trigger,death_telefrag;

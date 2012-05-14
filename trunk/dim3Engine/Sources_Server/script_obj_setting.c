@@ -67,6 +67,7 @@ JSValueRef js_obj_setting_get_sideStep(JSContextRef cx,JSObjectRef j_obj,JSStrin
 JSValueRef js_obj_setting_get_jump(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_setting_get_duck(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_setting_get_crawl(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
+JSValueRef js_obj_setting_get_floating(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_setting_get_singleSpeed(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_setting_get_bumpUp(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
 JSValueRef js_obj_setting_get_slopeGravity(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception);
@@ -99,6 +100,7 @@ bool js_obj_setting_set_sideStep(JSContextRef cx,JSObjectRef j_obj,JSStringRef n
 bool js_obj_setting_set_jump(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 bool js_obj_setting_set_duck(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 bool js_obj_setting_set_crawl(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
+bool js_obj_setting_set_floating(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 bool js_obj_setting_set_singleSpeed(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 bool js_obj_setting_set_bumpUp(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
 bool js_obj_setting_set_slopeGravity(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception);
@@ -144,6 +146,7 @@ JSStaticValue 		obj_setting_props[]={
 							{"jump",					js_obj_setting_get_jump,					js_obj_setting_set_jump,					kJSPropertyAttributeDontDelete},
 							{"duck",					js_obj_setting_get_duck,					js_obj_setting_set_duck,					kJSPropertyAttributeDontDelete},
 							{"crawl",					js_obj_setting_get_crawl,					js_obj_setting_set_crawl,					kJSPropertyAttributeDontDelete},
+							{"floating",				js_obj_setting_get_floating,				js_obj_setting_set_floating,				kJSPropertyAttributeDontDelete},
 							{"singleSpeed",				js_obj_setting_get_singleSpeed,				js_obj_setting_set_singleSpeed,				kJSPropertyAttributeDontDelete},
 							{"bumpUp",					js_obj_setting_get_bumpUp,					js_obj_setting_set_bumpUp,					kJSPropertyAttributeDontDelete},
 							{"slopeGravity",			js_obj_setting_get_slopeGravity,			js_obj_setting_set_slopeGravity,			kJSPropertyAttributeDontDelete},
@@ -428,6 +431,14 @@ JSValueRef js_obj_setting_get_crawl(JSContextRef cx,JSObjectRef j_obj,JSStringRe
 
 	obj=object_get_attach(j_obj);
 	return(script_bool_to_value(cx,obj->crawl));
+}
+
+JSValueRef js_obj_setting_get_floating(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
+{
+	obj_type		*obj;
+
+	obj=object_get_attach(j_obj);
+	return(script_bool_to_value(cx,obj->floating));
 }
 
 JSValueRef js_obj_setting_get_singleSpeed(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef *exception)
@@ -741,6 +752,16 @@ bool js_obj_setting_set_crawl(JSContextRef cx,JSObjectRef j_obj,JSStringRef name
 	
 	obj=object_get_attach(j_obj);
 	obj->crawl=script_value_to_bool(cx,vp);
+	
+	return(TRUE);
+}
+
+bool js_obj_setting_set_floating(JSContextRef cx,JSObjectRef j_obj,JSStringRef name,JSValueRef vp,JSValueRef *exception)
+{
+	obj_type		*obj;
+	
+	obj=object_get_attach(j_obj);
+	obj->floating=script_value_to_bool(cx,vp);
 	
 	return(TRUE);
 }

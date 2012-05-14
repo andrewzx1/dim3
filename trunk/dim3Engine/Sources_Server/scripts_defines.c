@@ -126,6 +126,7 @@ script_define_type			script_dim3_defines[]={
 								
 								{sd_collision_mode_cylinder,					"",		"DIM3_COLLISION_MODE_CYLINDER"},
 								{sd_collision_mode_box,							"",		"DIM3_COLLISION_MODE_BOX"},
+								{sd_collision_mode_simple,						"",		"DIM3_COLLISION_MODE_SIMPLE"},
 
 									// main events
 									

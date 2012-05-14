@@ -101,7 +101,7 @@ and can be sold or given away.
 #define element_table_max_check					128
 #define element_table_check_column_size			0.18f
 
-#define element_scroll_control_size				0.04f
+#define element_scroll_control_size				0.045f
 
 #define element_control_button_short_width		0.15f
 #define element_control_button_long_width		0.25f

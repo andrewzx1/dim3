@@ -208,6 +208,7 @@ and can be sold or given away.
 
 #define sd_collision_mode_cylinder						1180
 #define sd_collision_mode_box							1181
+#define sd_collision_mode_simple						1182
 
 //
 // main events constants
