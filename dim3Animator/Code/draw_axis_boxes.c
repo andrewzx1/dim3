@@ -57,7 +57,7 @@ void draw_model_axis(void)
 	glVertexPointer(3,GL_FLOAT,0,vertexes);
 
 	glColor4f(1.0f,0.0f,0.0f,1.0f);
-	glDrawArrays(GL_LINES,0,4);
+	glDrawArrays(GL_LINES,0,2);
 	
 		// y axis
 		
@@ -71,7 +71,7 @@ void draw_model_axis(void)
 	glVertexPointer(3,GL_FLOAT,0,vertexes);
 
 	glColor4f(0.0f,1.0f,0.0f,1.0f);
-	glDrawArrays(GL_LINES,0,4);
+	glDrawArrays(GL_LINES,0,2);
 
 		// z axis
 		
@@ -85,7 +85,7 @@ void draw_model_axis(void)
 	glVertexPointer(3,GL_FLOAT,0,vertexes);
 
 	glColor4f(0.0f,0.0f,1.0f,1.0f);
-	glDrawArrays(GL_LINES,0,4);
+	glDrawArrays(GL_LINES,0,2);
 }
 
 /* =======================================================

@@ -329,6 +329,7 @@ bool collide_circle_check_object(d3pnt *circle_pnt,int radius,d3pnt *min,d3pnt *
 			return(collide_circle_check_object_cylinder(circle_pnt,radius,min,max,skip_pickup,p_cur_dist,obj,cur_hit_pnt));
 					
 		case collision_mode_box:
+		case collision_mode_simple:
 			return(collide_circle_check_object_box(circle_pnt,radius,min,max,skip_pickup,p_cur_dist,obj,cur_hit_pnt));
 			
 	}
@@ -509,7 +510,7 @@ bool collide_circle_check_mesh(d3pnt *circle_pnt,int radius,d3pnt *min,d3pnt *ma
 
 /* =======================================================
 
-      Generic Collision Routines
+      Generic Regular Collision Routines
       
 ======================================================= */
 
@@ -685,6 +686,129 @@ bool collide_box_to_sphere(d3pnt *sphere_pnt,int radius,d3pnt *pt,d3pnt *box_sz)
 
 /* =======================================================
 
+      Generic Simple Collision Routines
+      
+======================================================= */
+
+bool collide_box_to_map_simple(d3pnt *pt,d3pnt *box_sz,d3pnt *motion,bool check_objs,int skip_obj_idx,bool check_projs,int skip_proj_idx,bool is_proj,obj_contact *contact)
+{
+	int						n,x_sz,z_sz;
+	d3pnt					pnt,min,max;
+	obj_type				*chk_obj;
+	proj_type				*chk_proj;
+	map_mesh_type			*chk_mesh;
+
+		// get the box center
+
+	pnt.x=pt->x+motion->x;
+	pnt.y=pt->y;
+	pnt.z=pt->z+motion->z;
+
+		// find min and max for box
+
+	min.x=pnt.x-box_sz->x;
+	max.x=pnt.x+box_sz->x;
+	min.z=pnt.z-box_sz->z;
+	max.z=pnt.z+box_sz->z;
+
+	min.y=pt->y-box_sz->y;
+	max.y=pt->y;
+
+		// collide against map
+		// simple hits are always box to box hits
+		// any hit stops all motion
+
+	contact->obj_idx=-1;
+	contact->proj_idx=-1;
+	contact->hit_poly.mesh_idx=-1;
+	contact->hit_poly.poly_idx=-1;
+	
+		// check objects
+
+	if (check_objs) {
+
+		for (n=0;n!=collide_obj_count;n++) {
+			if (collide_obj_list[n]==skip_obj_idx) continue;
+
+			chk_obj=server.obj_list.objs[collide_obj_list[n]];
+			if (chk_obj==NULL) continue;
+			
+			if (!is_proj) {
+				if (!chk_obj->contact.object_on) continue;
+			}
+			else {
+				if (!chk_obj->contact.projectile_on) continue;
+			}
+			
+			x_sz=chk_obj->size.x>>1;
+			if ((max.x<(chk_obj->pnt.x-x_sz)) || (min.x>(chk_obj->pnt.x+x_sz))) continue;
+			z_sz=chk_obj->size.z>>1;
+			if ((max.z<(chk_obj->pnt.z-z_sz)) || (min.z>(chk_obj->pnt.z+z_sz))) continue;
+			if ((max.y<(chk_obj->pnt.y-chk_obj->size.y)) || (min.y>chk_obj->pnt.y)) continue;
+			
+			if ((chk_obj->hidden) || (chk_obj->pickup.on) || (!chk_obj->contact.object_on)) continue;
+			
+			contact->obj_idx=chk_obj->idx;
+			contact->proj_idx=-1;
+			contact->hit_poly.mesh_idx=-1;
+			contact->hit_poly.poly_idx=-1;
+			
+			motion->x=motion->z=0;
+			return(TRUE);
+		}
+
+	}
+
+		// check projectiles
+
+	if (check_projs) {
+		for (n=0;n!=collide_proj_count;n++) {
+			if (collide_proj_list[n]==skip_proj_idx) continue;
+
+			chk_proj=server.proj_list.projs[collide_proj_list[n]];
+			if (!chk_proj->on) continue;
+
+			x_sz=chk_proj->size.x>>1;
+			if ((max.x<(chk_proj->pnt.x-x_sz)) || (min.x>(chk_proj->pnt.x+x_sz))) continue;
+			z_sz=chk_proj->size.z>>1;
+			if ((max.z<(chk_proj->pnt.z-z_sz)) || (min.z>(chk_proj->pnt.z+z_sz))) continue;
+			if ((max.y<(chk_proj->pnt.y-chk_proj->size.y)) || (min.y>chk_proj->pnt.y)) continue;
+
+			contact->obj_idx=-1;
+			contact->proj_idx=chk_proj->idx;
+			contact->hit_poly.mesh_idx=-1;
+			contact->hit_poly.poly_idx=-1;
+			
+			motion->x=motion->z=0;
+			return(TRUE);
+		}
+	}
+
+		// check meshes
+
+	for (n=0;n!=map.mesh.nmesh;n++) {
+		chk_mesh=&map.mesh.meshes[n];
+		
+		if (chk_mesh->flag.pass_through) return(FALSE);
+		
+		if ((max.x<chk_mesh->box.min.x) || (min.x>chk_mesh->box.max.x)) continue;
+		if ((max.z<chk_mesh->box.min.z) || (min.z>chk_mesh->box.max.z)) continue;
+		if ((max.y<chk_mesh->box.min.y) || (min.y>chk_mesh->box.max.y)) continue;
+
+		contact->obj_idx=-1;
+		contact->proj_idx=-1;
+		contact->hit_poly.mesh_idx=n;
+		contact->hit_poly.poly_idx=0;
+		
+		motion->x=motion->z=0;
+		return(TRUE);
+	}
+
+	return(FALSE);
+}
+
+/* =======================================================
+
       Object Collisions
       
 ======================================================= */
@@ -697,7 +821,19 @@ bool collide_object_to_map(obj_type *obj,d3pnt *motion)
 	model_draw			*draw;
 	model_type			*model;
 	model_hit_box_type	*hit_box;
+	
+		// simple mode?
+		
+	if (obj->contact.collision_mode==collision_mode_simple) {
+		box_sz.x=obj->size.x;
+		box_sz.z=obj->size.z;
 
+		box_sz.y=obj->size.y;
+		if (obj->duck.mode!=dm_stand) box_sz.y-=obj->duck.y_move;
+
+		return(collide_box_to_map_simple(&obj->pnt,&box_sz,motion,obj->contact.object_on,obj->idx,FALSE,-1,FALSE,&obj->contact));
+	}
+	
 		// are we using hit box hits?
 
 	hit_box_hit=FALSE;

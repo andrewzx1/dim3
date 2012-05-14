@@ -60,6 +60,8 @@ void object_liquid_contact(obj_type *obj)
 	top=obj->pnt.z-sz;
 	bot=obj->pnt.z+sz;
 
+	y=obj->pnt.y;
+
 	nliquid=map.liquid.nliquid;
 	
 	for (n=0;n!=nliquid;n++) {
@@ -69,8 +71,6 @@ void object_liquid_contact(obj_type *obj)
 		if (lft>liq->rgt) continue;
 		if (bot<liq->top) continue;
 		if (top>liq->bot) continue;
-
-		y=obj->pnt.y;
 		
 		if ((y>=liq->y) && (y<(liq->y+liq->depth))) {
 
@@ -85,7 +85,12 @@ void object_liquid_contact(obj_type *obj)
 				// find liquid mode
 
 			if ((liq->y>=f_ty) && (liq->y<=f_by)) {
-				obj->liquid.mode=lm_float;
+				if (obj->floating) {
+					obj->liquid.mode=lm_float;
+				}
+				else {
+					obj->liquid.mode=lm_in;
+				}
 			}
 			else {
  				if (eye_y>liq->y) {
@@ -138,9 +143,11 @@ void object_liquid(obj_type *obj)
     }
 	
 		// we can't go right from out
-		// to floating without a in message
+		// to floating or under without a in message
 		
-	if ((obj->liquid.mode==lm_float) && (old_liquid_mode==lm_out)) obj->liquid.mode=lm_in;
+	if (old_liquid_mode==lm_out) {
+		if ((obj->liquid.mode==lm_float) || (obj->liquid.mode==lm_under)) obj->liquid.mode=lm_in;
+	}
 
 		// setup bobbing
 

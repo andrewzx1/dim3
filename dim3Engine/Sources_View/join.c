@@ -591,14 +591,6 @@ void join_open(void)
 
 		net_load_news(join_host_wan_list,join_news);
 
-		join_host_wan_list->count=3;		// supergumba -- testing
-		strcpy(join_host_wan_list->hosts[0].name,"Test 1");
-		strcpy(join_host_wan_list->hosts[0].ip,"10.0.0.1");
-		strcpy(join_host_wan_list->hosts[1].name,"Test 2");
-		strcpy(join_host_wan_list->hosts[1].ip,"10.0.0.2");
-		strcpy(join_host_wan_list->hosts[2].name,"Test 3");
-		strcpy(join_host_wan_list->hosts[2].ip,"10.0.0.3");
-
 			// nothing queried yet
 
 		for (n=0;n!=join_host_wan_list->count;n++) {

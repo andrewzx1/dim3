@@ -520,6 +520,7 @@ int object_create(char *name,int type,int bind)
 	obj->fly=FALSE;
 	obj->single_speed=FALSE;
 	obj->side_step=TRUE;
+	obj->floating=TRUE;
 	obj->quick_reverse=TRUE;
 	obj->no_slide=FALSE;
 	obj->crawl=TRUE;
