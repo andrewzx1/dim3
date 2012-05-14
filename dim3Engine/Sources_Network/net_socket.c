@@ -81,12 +81,10 @@ void net_socket_blocking(d3socket sock,bool blocking)
 	fcntl(sock,F_SETFL,opt);
 
 #else
-
 	u_long		opt;
 
-	opt=blocking?1:0;
+	opt=blocking?0:1;
 	ioctlsocket(sock,FIONBIO,&opt);
-
 #endif
 }
 

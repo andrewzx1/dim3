@@ -106,7 +106,7 @@ int net_client_join_host_start(obj_type *obj,int *tick_offset,char *deny_reason,
 	reply_ok=TRUE;
 	action=-1;
 	
-	wait_tick=time_get()+(client_timeout_wait_seconds*1000);
+	wait_tick=time_get()+client_timeout_wait_msec;
 
 	while (wait_tick>time_get()) {
 		reply_ok=net_recvfrom_mesage(client_socket,NULL,NULL,&action,&net_uid,msg,NULL);

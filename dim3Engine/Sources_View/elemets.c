@@ -643,7 +643,7 @@ void element_table_add(element_column_type* cols,char *row_data,int id,int ncolu
 	element->id=id;
 	element->type=element_type_table;
 	
-	element->setup.table.busy_count=element->setup.table.busy_total_count=-1;
+	element->setup.table.busy=FALSE;
 	
 	element->x=x;
 	element->y=y;
@@ -765,7 +765,7 @@ void element_color_add(char *str,int value,int id,int x,int y,bool selectable)
 	SDL_mutexV(element_thread_lock);
 }
 
-void element_text_box_add(char *data,int id,int x,int y,int wid,int high)
+void element_text_box_add(char *data,int id,int x,int y,int wid,int high,bool error_display)
 {
 	int				sz;
 	element_type	*element;
@@ -790,6 +790,7 @@ void element_text_box_add(char *data,int id,int x,int y,int wid,int high)
 	element->value=-1;
 	element->offset=0;
 	
+	element->setup.text_box.error_display=error_display;
 	element->setup.text_box.scroll_up_ok=element->setup.text_box.scroll_down_ok=FALSE;
 	
 	if (data==NULL) {
@@ -964,21 +965,12 @@ void element_hide(int id,bool hide)
 	if (element!=NULL) element->hidden=hide;
 }
 
-void element_table_busy(int id,char *str,int count,int total_count)
+void element_table_busy(int id,bool busy)
 {
 	element_type		*element;
 	
 	element=element_find(id);
-	if (element!=NULL) {
-		if (str==NULL) {
-			element->setup.table.busy_str[0]=0x0;
-		}
-		else {
-			strcpy(element->setup.table.busy_str,str);
-		}
-		element->setup.table.busy_count=count;
-		element->setup.table.busy_total_count=total_count;
-	}
+	if (element!=NULL) element->setup.table.busy=busy;
 }
 
 void element_text_change(int id,char *str)
@@ -2378,10 +2370,43 @@ void element_draw_table_line_data(element_type *element,int x,int y,int row,int 
 	}
 }
 
+void element_draw_table_busy(element_type *element)
+{
+	int				n,idx,lft,rgt,top,bot,high;
+	float			start_perc,end_perc;
+
+	element_get_box(element,&lft,&rgt,&top,&bot);
+
+	high=gl_text_get_char_height(iface.font.text_size_medium)*2;
+	
+	bot-=10;
+	top=bot-high;
+	lft+=10;
+	rgt=lft+high;
+
+		// selected arc
+
+	idx=(game_time_get_raw()>>7)&0xF;
+
+		// spinning busy wheel
+
+	for (n=0;n!=16;n++) {
+		start_perc=((float)n)/16.0f;
+		end_perc=((float)(n+1))/16.0f;
+
+		if (n==idx) {
+			view_primitive_2D_color_arc(&iface.progress.hilite_color,1.0f,lft,rgt,top,bot,start_perc,end_perc);
+		}
+		else {
+			view_primitive_2D_color_arc(&iface.progress.background_color,1.0f,lft,rgt,top,bot,start_perc,end_perc);
+		}
+	}
+}
+
 void element_draw_table(element_type *element,int sel_id)
 {
 	int				n,x,y,ky,wid,high,cnt,
-					lft,rgt,top,bot,mid,row_high,
+					lft,rgt,top,bot,row_high,
 					lx,rx,ty,by;
 	char			*c;
 	bool			up_ok,down_ok;
@@ -2498,53 +2523,7 @@ void element_draw_table(element_type *element,int sel_id)
 	
 		// busy
 		
-	if (element->setup.table.busy_count==-1) return;
-	
-	element_get_box(element,&lft,&rgt,&top,&bot);
-	
-	bot-=10;
-	top=bot-(high+5);
-	lft+=10;
-	rgt-=10;
-
-	mid=(top+bot)>>1;
-	
-		// background
-		
-	
-	col.r=iface.progress.background_color.r*element_gradient_factor_foreground;
-	col.g=iface.progress.background_color.g*element_gradient_factor_foreground;
-	col.b=iface.progress.background_color.b*element_gradient_factor_foreground;
-
-	view_primitive_2D_color_poly(lft,top,&col,rgt,top,&col,rgt,mid,&iface.progress.background_color,lft,mid,&iface.progress.background_color,1.0f);
-	view_primitive_2D_color_poly(lft,mid,&iface.progress.background_color,rgt,mid,&iface.progress.background_color,rgt,bot,&col,lft,bot,&col,1.0f);
-	
-		// progress
-	
-	if (element->setup.table.busy_count!=0) {
-	
-		x=rgt;
-		
-		if (element->setup.table.busy_count<element->setup.table.busy_total_count) {
-			x=lft+(((rgt-lft)*element->setup.table.busy_count)/element->setup.table.busy_total_count);
-		}
-		
-		col.r=iface.progress.hilite_color.r*element_gradient_factor_foreground;
-		col.g=iface.progress.hilite_color.g*element_gradient_factor_foreground;
-		col.b=iface.progress.hilite_color.b*element_gradient_factor_foreground;
-
-		view_primitive_2D_color_poly(lft,top,&iface.progress.hilite_color,x,top,&iface.progress.hilite_color,x,mid,&col,lft,mid,&col,1.0f);
-		view_primitive_2D_color_poly(lft,mid,&col,x,mid,&col,x,bot,&iface.progress.hilite_color,lft,bot,&iface.progress.hilite_color,1.0f);
-	}
-	
-	if (element->setup.table.busy_str[0]!=0x0) {
-		col.r=col.g=col.b=0.0f;
-		gl_text_start(font_interface_index,iface.font.text_size_medium);
-		gl_text_draw(((lft+rgt)>>1),(((top+bot)>>1)-2),element->setup.table.busy_str,tx_center,TRUE,&col,1.0f);
-		gl_text_end();
-	}
-	
-	view_primitive_2D_line_quad(&iface.color.control.outline,1.0f,lft,rgt,top,bot);
+	if (element->setup.table.busy) element_draw_table_busy(element);
 }
 
 /* =======================================================
@@ -2807,6 +2786,10 @@ void element_click_text_box(element_type *element,int x,int y)
 {
 	int				high,page_count,scroll_dir;
 
+		// no click if error display
+
+	if (element->setup.text_box.error_display) return;
+
 		// run the scroll click
 
 	scroll_dir=element_click_scroll_controls(element,0,x,y,element->setup.text_box.scroll_up_ok,element->setup.text_box.scroll_down_ok);
@@ -2824,6 +2807,7 @@ void element_draw_text_box(element_type *element)
 					line_count,line_offset;
 	char			*c,str[256];
 	bool			line_break;
+	d3col			col;
 	
 	element_get_box(element,&lft,&rgt,&top,&bot);
 	
@@ -2848,6 +2832,16 @@ void element_draw_text_box(element_type *element)
 		
 	if (element->data==NULL) return;
 
+		// the color
+
+	if (!element->setup.text_box.error_display) {
+		memmove(&col,&iface.color.control.text,sizeof(d3col));
+	}
+	else {
+		col.r=1.0f;
+		col.g=col.b=0.1f;
+	}
+
 		// draw text
 		
 	x=lft+5;
@@ -2870,7 +2864,7 @@ void element_draw_text_box(element_type *element)
 		if (*c==0x0) {
 			if ((y<bot) && (line_offset==0)) {
 				str[idx]=0x0;
-				gl_text_draw(lft,y,str,tx_left,FALSE,&iface.color.control.text,1.0f);
+				gl_text_draw(lft,y,str,tx_left,FALSE,&col,1.0f);
 			}
 			line_count++;
 			break;
@@ -2914,7 +2908,7 @@ void element_draw_text_box(element_type *element)
 		
 		if (line_break) {
 		
-			if ((y<bot) && (line_offset==0)) gl_text_draw(x,y,str,tx_left,FALSE,&iface.color.control.text,1.0f);
+			if ((y<bot) && (line_offset==0)) gl_text_draw(x,y,str,tx_left,FALSE,&col,1.0f);
 		
 			idx=0;
 			last_space_idx=-1;
@@ -2948,7 +2942,7 @@ void element_draw_text_box(element_type *element)
 	
 		// scrollbar
 
-	element_draw_scroll_controls(element,0,element->setup.text_box.scroll_up_ok,element->setup.text_box.scroll_down_ok);
+	if (!element->setup.text_box.error_display) element_draw_scroll_controls(element,0,element->setup.text_box.scroll_up_ok,element->setup.text_box.scroll_down_ok);
 	
 		// outline
 

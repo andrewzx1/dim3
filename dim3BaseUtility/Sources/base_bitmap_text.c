@@ -34,9 +34,14 @@ and can be sold or given away.
 #endif
 
 #ifdef D3_OS_LINUX
- #include <ft2build.h>
- #include FT_FREETYPE_H
- #include <fontconfig/fontconfig.h>
+	#include <ft2build.h>
+	#include FT_FREETYPE_H
+	#include <fontconfig/fontconfig.h>
+#endif
+
+#ifdef D3_OS_WINDOWS
+	char			bitmap_enum_name[256];
+	bool			bitmap_enum_ok;
 #endif
 
 /* =======================================================
@@ -286,15 +291,33 @@ void bitmap_text_size_internal(texture_font_size_type *d3_size_font,char *name,i
 
 #ifdef D3_OS_WINDOWS
 
+int CALLBACK bitmap_text_font_callback(const LOGFONT *lfont,const TEXTMETRIC *ltme,DWORD font_type,LPARAM lparam)
+{
+	if (strcasecmp(lfont->lfFaceName,bitmap_enum_name)==0) {
+		bitmap_enum_ok=TRUE;
+		return(0);
+	}
+
+	return(1);
+}
+
 bool bitmap_text_font_exist(char *name)
 {
-	HFONT			font;
+	char			str[32];
+	LOGFONT			lfont;
 
-	font=CreateFont(-12,0,0,0,FW_MEDIUM,0,0,0,0,OUT_OUTLINE_PRECIS,0,ANTIALIASED_QUALITY,0,name);
-	if (font==NULL) return(FALSE);
+	strcpy(bitmap_enum_name,name);
+	bitmap_enum_ok=FALSE;
 
-	DeleteObject(font);
-	return(TRUE);
+	str[0]=0x0;
+
+	lfont.lfCharSet=DEFAULT_CHARSET;
+	lfont.lfFaceName[0]=0x0;
+	lfont.lfPitchAndFamily=0;
+
+	EnumFontFamiliesEx(GetDC(NULL),&lfont,bitmap_text_font_callback,0,0);
+
+	return(bitmap_enum_ok);
 }
 
 void bitmap_text_size_internal(texture_font_size_type *d3_size_font,char *name,int size,int bitmap_wid,int bitmap_high)
