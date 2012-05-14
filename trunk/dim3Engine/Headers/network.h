@@ -34,7 +34,7 @@ extern void net_shutdown(void);
 
 extern void net_create_project_hash(void);
 extern int net_get_project_hash(void);
-extern void net_load_news(join_server_host_list_type *join_host_list,char *news);
+extern bool net_load_news(join_server_host_list_type *join_host_list,char *news);
 
 extern void net_get_host_name(char *name);
 extern void net_get_host_ip(char *ip_name,char *ip_resolve);

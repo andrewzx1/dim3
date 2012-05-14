@@ -89,7 +89,7 @@ int net_get_project_hash(void)
 	return(net_proj_hash);
 }
 
-void net_load_news(join_server_host_list_type *join_host_list,char *news)
+bool net_load_news(join_server_host_list_type *join_host_list,char *news)
 {
 	int						sz;
 	char					err_str[256];
@@ -99,14 +99,14 @@ void net_load_news(join_server_host_list_type *join_host_list,char *news)
 	
 		// any news to load?
 		
-	if (iface.multiplayer.news.host[0]==0x0) return;
+	if (iface.multiplayer.news.host[0]==0x0) return(FALSE);
 	
 		// get response
 		
 	data=net_get_http_file(iface.multiplayer.news.host,iface.multiplayer.news.port,iface.multiplayer.news.url,err_str);
 	if (data==NULL) {
 		sprintf(news,"News Read Failure\n%s",err_str);
-		return;
+		return(FALSE);
 	}
 
 		// find the news and hosts lists
@@ -144,7 +144,7 @@ void net_load_news(join_server_host_list_type *join_host_list,char *news)
 
 		// get the hosts lists
 
-	if (hosts_ptr==NULL) return;
+	if (hosts_ptr==NULL) return(TRUE);
 
 	while (join_host_list->count<max_join_server_host) {
 
@@ -178,6 +178,8 @@ void net_load_news(join_server_host_list_type *join_host_list,char *news)
 
 		hosts_ptr++;
 	}
+
+	return(TRUE);
 }
 
 /* =======================================================

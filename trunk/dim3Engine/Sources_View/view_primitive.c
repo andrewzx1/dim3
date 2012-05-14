@@ -195,6 +195,55 @@ void view_primitive_2D_color_trig(d3col *col,float alpha,int lft,int rgt,int top
 	glDisable(GL_ALPHA_TEST);
 }
 
+void view_primitive_2D_color_arc(d3col *col,float alpha,int lft,int rgt,int top,int bot,float start_perc,float end_perc)
+{
+	float			mx,my,fx,fy,start_rad,end_rad;
+	float			vertexes[6];
+
+		// get angles
+
+	mx=(float)((lft+rgt)>>1);
+	my=(float)((top+bot)>>1);
+
+	fx=(float)((rgt-lft)>>1);
+	fy=(float)((bot-top)>>1);
+
+	start_rad=(TRIG_PI*2.0f)*start_perc;
+	end_rad=(TRIG_PI*2.0f)*end_perc;
+
+	vertexes[0]=mx;
+	vertexes[1]=my;
+
+	vertexes[2]=mx+(fx*sinf(start_rad));
+	vertexes[3]=my-(fy*cosf(start_rad));
+
+	vertexes[4]=mx+(fx*sinf(end_rad));
+	vertexes[5]=my-(fy*cosf(end_rad));
+
+		// setup draw
+		
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+
+	glDisable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_NOTEQUAL,0);
+
+	glDisable(GL_DEPTH_TEST);
+
+	glColor4f(col->r,col->g,col->b,alpha);
+
+		// draw the trig
+		
+	glVertexPointer(2,GL_FLOAT,0,(GLvoid*)vertexes);
+
+	glDrawArrays(GL_TRIANGLES,0,3);
+	
+		// finish draw
+
+	glDisable(GL_BLEND);
+	glDisable(GL_ALPHA_TEST);
+}
+
 /* =======================================================
 
       2D Lines

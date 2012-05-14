@@ -157,10 +157,9 @@ typedef struct		{
 					} element_image_type;
 
 typedef struct		{
-						int						ncolumn,next_image_idx,bitmap_mode,
-												busy_count,busy_total_count;
+						int						ncolumn,next_image_idx,bitmap_mode;
 						char					busy_str[256],checks[element_table_max_check];
-						bool					checkbox;
+						bool					checkbox,busy;
 						element_column_type		cols[max_element_column];
 						element_image_type		images[element_table_max_image];
 					} element_table_type;
@@ -172,7 +171,7 @@ typedef struct		{
 
 typedef struct		{
 						int						line_count;
-						bool					scroll_up_ok,scroll_down_ok;
+						bool					error_display,scroll_up_ok,scroll_down_ok;
 					} element_text_box_type;
 
 typedef struct		{

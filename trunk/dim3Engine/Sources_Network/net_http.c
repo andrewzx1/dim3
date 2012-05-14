@@ -46,10 +46,10 @@ d3socket net_get_http_file_connect(char *host_name,int port,int secs,char *err_s
 	char				*ip;
 	d3socket			sock;
 	struct hostent		*hent;
-	socklen_t			len;
-	struct sockaddr		name;
 	struct sockaddr_in	addr;
-	
+	fd_set				fd;
+	struct timeval		timeout;
+
 		// get IP address from host name
 		
 	hent=gethostbyname(host_name);
@@ -92,7 +92,7 @@ d3socket net_get_http_file_connect(char *host_name,int port,int secs,char *err_s
 #ifndef D3_OS_WINDOWS
 		in_progress=(errno==EINPROGRESS);
 #else
-		in_progress=(WSAGetLastError()==WSAEINPROGRESS);
+		in_progress=(WSAGetLastError()==WSAEWOULDBLOCK);
 #endif
 
 		if (!in_progress) {
@@ -101,29 +101,36 @@ d3socket net_get_http_file_connect(char *host_name,int port,int secs,char *err_s
 			return(D3_NULL_SOCKET);
 		}
 	}
-	
-		// we figure out if we've connected
-		// when we can get the peer name
+
+		// if we can write to socket,
+		// then we've connected
 
 	count=secs*1000;
 	connect_ok=FALSE;
 	
 	while (count>0) {
-	
-		len=sizeof(name);
-		if (getpeername(sock,&name,&len)==0) {
+
+		timeout.tv_sec=0;
+		timeout.tv_usec=0;
+
+		FD_ZERO(&fd);
+		FD_SET(sock,&fd);
+
+		#ifndef D3_OS_WINDOWS
+			select((sock+1),NULL,&fd,NULL,&timeout);
+		#else
+			select(0,NULL,&fd,NULL,&timeout);
+		#endif
+
+		if (FD_ISSET(sock,&fd)) {
 			connect_ok=TRUE;
 			break;
 		}
-	
+
 		usleep(1000);
 		count--;
 	}
 
-		// put socket back into blocking mode
-
-	net_socket_blocking(sock,TRUE);
-	
 		// return connection state
 
 	if (!connect_ok) {
@@ -131,6 +138,10 @@ d3socket net_get_http_file_connect(char *host_name,int port,int secs,char *err_s
 		sprintf(err_str,"Networking: No connection to %s:%d",ip,port);
 		return(D3_NULL_SOCKET);
 	}
+
+		// put socket back into blocking mode
+
+	net_socket_blocking(sock,TRUE);
 	
 	return(sock);
 }

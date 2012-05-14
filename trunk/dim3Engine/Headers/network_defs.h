@@ -72,7 +72,7 @@ and can be sold or given away.
 // client defines
 //
 
-#define client_timeout_wait_seconds						5
+#define client_timeout_wait_msec						2500
 #define client_message_per_loop_count					10
 
 #define client_communication_update_msec_rate			50
