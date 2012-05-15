@@ -32,6 +32,7 @@ and can be sold or given away.
 #include "interface.h"
 #include "objects.h"
 
+extern app_type			app;
 extern server_type		server;
 extern setup_type		setup;
 extern iface_type		iface;
@@ -139,12 +140,12 @@ int model_load(char *name)
 		
 	model_setup(&setup.file_path_setup,setup.anisotropic,setup.mipmap_mode,TRUE,view_shader_on());
 
-	if (!model_open(mdl,name,TRUE)) {
+	if (!model_open(mdl,name,(!app.dedicated_host))) {
 		free(mdl);
 		return(-1);
 	}
 
-	gl_shader_attach_model(mdl);
+	if (!app.dedicated_host) gl_shader_attach_model(mdl);
 
 		// setup some animation indexes to avoid name lookups
 
@@ -216,7 +217,9 @@ bool model_draw_load(model_draw *draw,char *item_type,char *item_name,char *err_
 
 		// create the VBO
 
-	if (draw->model_idx!=-1) view_create_model_vertex_object(draw);
+	if (!app.dedicated_host) {
+		if (draw->model_idx!=-1) view_create_model_vertex_object(draw);
+	}
 
 	return(ok);
 }
@@ -259,7 +262,7 @@ void model_draw_dispose(model_draw *draw)
 
 		// dispose VBO
 
-	view_dispose_model_vertex_object(draw);
+	if (!app.dedicated_host) view_dispose_model_vertex_object(draw);
 	
 		// clear draw memory
 		

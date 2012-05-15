@@ -91,8 +91,7 @@ extern bool view_reset_display(char *err_str);
 extern int setup_find_action_in_setup(int action_idx);
 extern bool setup_xml_reset(void);
 
-extern bool					game_loop_quit;
-
+extern app_type				app;
 extern render_info_type		render_info;
 extern server_type			server;
 extern iface_type			iface;
@@ -710,7 +709,7 @@ void setup_game_close(void)
 	
 		if (display_reset) {
 			if (!view_reset_display(err_str)) {
-				game_loop_quit=TRUE;			// fatal error resetting display
+				app.loop_quit=TRUE;			// fatal error resetting display
 				return;
 			}
 

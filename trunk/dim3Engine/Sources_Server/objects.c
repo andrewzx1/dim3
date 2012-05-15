@@ -463,7 +463,7 @@ bool object_networkable(obj_type *obj)
 		// this process is the host
 
 	if (obj->type==object_type_bot_map) {
-		return((net_setup.mode==net_mode_host) || (net_setup.mode==net_mode_host_dedicated));
+		return(net_setup.mode==net_mode_host);
 	}
 	
 	return(FALSE);

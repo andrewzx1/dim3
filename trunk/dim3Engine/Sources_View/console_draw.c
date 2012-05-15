@@ -32,8 +32,7 @@ and can be sold or given away.
 #include "interface.h"
 #include "scripts.h"
 
-extern bool						game_loop_quit;
-
+extern app_type					app;
 extern view_type				view;
 extern server_type				server;
 extern iface_type				iface;
@@ -129,7 +128,7 @@ bool console_builtin_commands(void)
 		// console quit
 		
 	if ((strcasecmp(console_input_str,"quit")==0) || (strcasecmp(console_input_str,"exit")==0)) {
-		game_loop_quit=TRUE;
+		app.loop_quit=TRUE;
 		return(TRUE);
 	}
 	

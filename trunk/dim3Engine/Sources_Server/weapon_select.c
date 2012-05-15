@@ -538,10 +538,15 @@ void weapon_zoom_key(obj_type *obj,weapon_type *weap)
       
 ======================================================= */
 
-void weapon_run_hand(obj_type *obj)
+void weapon_player_run_hand(void)
 {
     int					weap_mode,tick,swap_tick;
+	obj_type			*obj;
 	weapon_type			*weap;
+
+		// get player object
+
+	obj=server.obj_list.objs[server.player_obj_idx];
 	
 		// is player object in
 		// right state?
@@ -605,10 +610,15 @@ void weapon_run_hand(obj_type *obj)
       
 ======================================================= */
 
-void weapon_hand_bounce(obj_type *obj)
+void weapon_player_hand_bounce(void)
 {
 	float		speed;
+	obj_type	*obj;
 	weapon_type	*weap;
+
+		// get player
+
+	obj=server.obj_list.objs[server.player_obj_idx];
 	
 		// get values
 		

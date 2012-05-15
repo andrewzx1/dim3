@@ -60,8 +60,7 @@ and can be sold or given away.
 #define intro_mode_normal						0
 #define intro_mode_simple_save_erase			1
 
-extern bool					game_loop_quit;
-
+extern app_type				app;
 extern server_type			server;
 extern map_type				map;
 extern iface_type			iface;
@@ -597,7 +596,7 @@ void intro_click(void)
 
 		case intro_button_quit_id:
 			intro_close();
-			game_loop_quit=TRUE;
+			app.loop_quit=TRUE;
 			break;
 	}
 }
@@ -629,7 +628,7 @@ void intro_key(void)
 		// or entire game
 		
 	intro_close();
-	game_loop_quit=TRUE;
+	app.loop_quit=TRUE;
 }
 
 /* =======================================================

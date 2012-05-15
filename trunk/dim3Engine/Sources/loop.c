@@ -32,10 +32,9 @@ and can be sold or given away.
 #include "interface.h"
 #include "network.h"
 #include "objects.h"
+#include "scripts.h"
 
-extern int					app_state;
-extern bool					game_loop_quit;
-
+extern app_type				app;
 extern map_type				map;
 extern server_type			server;
 extern view_type			view;
@@ -48,21 +47,20 @@ extern network_setup_type	net_setup;
       
 ======================================================= */
 
-void loop_game_run(void)
+void loop_server_run(void)
 {
 		// networking
 
-	if ((net_setup.mode==net_mode_host) || (net_setup.mode==net_mode_host_dedicated)) {
-		net_host_process_messages();
-	}
+	if (net_setup.mode==net_mode_host) net_host_process_messages();
 		
 	if (net_setup.mode!=net_mode_none) {
 		if (!net_client_process_messages()) return;
 	}
 	
-		// run game
+		// run server
 
-	server_loop();
+	timers_run();
+	server_run();
 	
 		// sending network updates
 
@@ -75,15 +73,13 @@ void loop_game_run(void)
 		// check for score limits
 		
 	score_limit_check_scores();
-	
+}
+
+void loop_view_run()
+{
 		// view input
 
-		// it's possible we could exit here, so
-		// make sure to jump out if state changes
-
-	if (net_setup.mode!=net_mode_host_dedicated) {
-		view_loop_input();
-	}
+	view_loop_input();
 
 		// if state has changed to intro,
 		// then we must be exiting a running
@@ -101,13 +97,8 @@ void loop_game_run(void)
 
 		// draw the view
 
-	if (net_setup.mode==net_mode_host_dedicated) {
-		view_loop_draw_dedicated_host();
-	}
-	else {
-		view_run();
-		view_loop_draw();
-	}
+	view_run();
+	view_loop_draw();
 	
 		// calculate fps
 
@@ -128,7 +119,7 @@ void loop_game_run(void)
 
 void SDL_iOSEvent_WillTerminate(void)
 {
-	game_loop_quit=true;
+	app.loop_quit=true;
 }
 
 void SDL_iOSEvent_DidReceiveMemoryWarning(void)
@@ -138,7 +129,7 @@ void SDL_iOSEvent_DidReceiveMemoryWarning(void)
 
 void SDL_iOSEvent_WillResignActive(void)
 {
-	app_state=as_suspended;
+	app.state=as_suspended;
 
 	input_clear();
 	input_mouse_pause();
@@ -169,7 +160,7 @@ void SDL_iOSEvent_DidBecomeActive(void)
 	
 	SDL_PauseAudio(0);
 	
-	app_state=as_active;
+	app.state=as_active;
 }
 
 int loop_event_callback(SDL_Event *event,void *userdata)
@@ -222,10 +213,10 @@ void loop_app_active(void)
 
 		// going inactive?
 
-	if (app_state==as_active) {
+	if (app.state==as_active) {
 		if (input_app_active()) return;
 
-		app_state=as_inactive;
+		app.state=as_inactive;
 
 		input_clear();
 		input_mouse_pause();
@@ -234,7 +225,7 @@ void loop_app_active(void)
 
 			// don't pause if this game is a host
 
-		if ((net_setup.mode!=net_mode_host) && (net_setup.mode!=net_mode_host_dedicated)) game_time_pause_start();
+		if (net_setup.mode!=net_mode_host) game_time_pause_start();
 
 		return;
 	}
@@ -243,7 +234,7 @@ void loop_app_active(void)
 
 	if (!input_app_active()) return;
 
-	app_state=as_active;
+	app.state=as_active;
 	
 	input_clear();
 	input_mouse_resume();
@@ -252,7 +243,7 @@ void loop_app_active(void)
 
 		// host games weren't paused
 
-	if ((net_setup.mode!=net_mode_host) && (net_setup.mode!=net_mode_host_dedicated)) game_time_pause_end();
+	if (net_setup.mode!=net_mode_host) game_time_pause_end();
 }
 
 #endif
@@ -268,7 +259,8 @@ void loop_state_run(void)
 	switch (server.state) {
 	
 		case gs_running:
-			loop_game_run();
+			loop_server_run();
+			loop_view_run();
 			return;
 
 		case gs_intro:
@@ -411,7 +403,7 @@ void loop_state_next_open(void)
 
 /* =======================================================
 
-      Main App Loop Run
+      Main Loop
       
 ======================================================= */
 
@@ -419,7 +411,7 @@ bool loop_main(char *err_str)
 {
 		// iOS suspended state
 		
-	if (app_state==as_suspended) {
+	if (app.state==as_suspended) {
 		input_event_pump();
 		usleep(1000);
 		return(TRUE);
@@ -432,7 +424,7 @@ bool loop_main(char *err_str)
 		loop_app_active();
 	}
 	
-	if (app_state==as_suspended) return(TRUE);
+	if (app.state==as_suspended) return(TRUE);
 	
 		// calculate timing
 		
@@ -481,3 +473,48 @@ bool loop_main(char *err_str)
 	
 	return(TRUE);
 }
+
+/* =======================================================
+
+      Dedicated Loop
+      
+======================================================= */
+
+bool loop_main_dedicated(char *err_str)
+{
+		// calculate timing
+		
+	game_time_calculate();
+	
+		// dedicated hosts can only
+		// run servers or wait on score
+		// limits (that reset game to new map)
+		
+	switch(server.state) {
+
+			// regular server running
+
+		case gs_running:
+			loop_server_run();
+			break;
+
+			// score limit wait
+
+		case gs_score_limit:
+			if (game_time_get_raw()>score_limit_get_resume_tick()) {
+				server.next_state=gs_running;
+				if (!game_host_reset(err_str)) return(FALSE);
+			}
+			break;
+
+	}
+
+		// since this is just a host
+		// let's sleep a bit so it doesn't
+		// consume all the CPU (10 milliseconds)
+
+	usleep(10000);
+	
+	return(TRUE);
+}
+

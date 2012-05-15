@@ -31,23 +31,23 @@ and can be sold or given away.
 
 #include "interface.h"
 
-bool						app_state,game_loop_quit;
-
 extern iface_type			iface;
+extern app_type				app;
 extern setup_type			setup;
 
 extern bool dim3_osx_appstore_main(void);
-extern bool loop_main(char *err_str);
 
 /* =======================================================
 
-      Check for Editor Link Files
-	  If self contained, then there's no editor launch
+      Check for Editor Launch
       
 ======================================================= */
 
 #if defined(D3_OS_IPHONE) || defined(D3_OS_ANDRIOD)
-void app_check_editor_link(void) {}
+void app_check_editor_link(void)
+{
+	app.editor_override.on=FALSE;
+}
 #else
 void app_check_editor_link(void)
 {
@@ -56,7 +56,7 @@ void app_check_editor_link(void)
 	unsigned char	uc_len;
 	FILE			*file;
 	
-	setup.editor_override.on=FALSE;
+	app.editor_override.on=FALSE;
 
 		// attempt to open editor link file
 		
@@ -69,12 +69,12 @@ void app_check_editor_link(void)
 
 	fread(&uc_len,1,1,file);
 	len=(int)uc_len;
-	fread(setup.editor_override.map,1,len,file);
+	fread(app.editor_override.map,1,len,file);
 
 		// position
 
-	fread(&setup.editor_override.pt,1,sizeof(d3pnt),file);
-	fread(&setup.editor_override.ang,1,sizeof(d3ang),file);
+	fread(&app.editor_override.pt,1,sizeof(d3pnt),file);
+	fread(&app.editor_override.ang,1,sizeof(d3ang),file);
 
 	fclose(file);
 	
@@ -84,14 +84,80 @@ void app_check_editor_link(void)
 
 		// mark editor override
 
-	setup.editor_override.on=TRUE;
+	app.editor_override.on=TRUE;
 }
 #endif
 
 /* =======================================================
 
+      Check for Dedicated Hosting Launch
+      
+======================================================= */
+
+#if defined(D3_OS_IPHONE) || defined(D3_OS_ANDRIOD)
+void app_check_dedicated_host(int argc,char *argv[])
+{
+	app.dedicated_host=FALSE;
+}
+#else
+void app_check_dedicated_host(int argc,char *argv[])
+{
+	int				n;
+
+	app.dedicated_host=FALSE;
+
+	for (n=0;n!=argc;n++) {
+		if (strcasecmp(argv[n],"-dedicated")==0) {
+			app.dedicated_host=TRUE;
+			break;
+		}
+	}
+}
+#endif
+
+/* =======================================================
+
+      Dedicated Host Kill Signals
+      
+======================================================= */
+
+#ifdef D3_OS_WINDOWS
+
+	// windows signals
+
+BOOL WINAPI app_win32_signal(DWORD ctrl_type) 
+{
+	switch(ctrl_type) {
+		case CTRL_C_EVENT:
+		case CTRL_CLOSE_EVENT:
+		case CTRL_BREAK_EVENT:
+		case CTRL_LOGOFF_EVENT:
+		case CTRL_SHUTDOWN_EVENT:
+			app.loop_quit=TRUE;
+			return(TRUE);
+	}
+
+	return(FALSE);
+} 
+
+void app_register_kill_signals(void)
+{
+	SetConsoleCtrlHandler((PHANDLER_ROUTINE)app_win32_signal,TRUE);
+}
+
+#else
+
+	// OS X and linux signals
+
+void app_register_kill_signals(void)
+{
+}
+	
+#endif
+
+/* =======================================================
+
       Report Errors
-	  If self-contained, just send report to stdout
       
 ======================================================= */
 
@@ -130,7 +196,7 @@ void app_report_error(char *err_str)
 
 int main(int argc,char *argv[])
 {
-	bool			app_start_ok;
+	bool			app_start_ok,app_run_ok;
 	char			err_str[256];
 	
 		// setup paths
@@ -146,21 +212,57 @@ int main(int argc,char *argv[])
 
 		// check if editor is launching engine and
 		// if a map needs to be auto-loaded
-		
+	
 	app_check_editor_link();
 
-		// run dim3
+		// check if we are in dedicated
+		// hosting mode
+
+	app_check_dedicated_host(argc,argv);
+
+		// setup app state and if dedicated,
+		// then setup kill signals
+
+	app.state=as_active;
+	app.loop_quit=FALSE;
+
+	if (app.dedicated_host) app_register_kill_signals();
+
+		// start the app
 		
 	err_str[0]=0x0;
 	
 	app_start_ok=app_start(err_str);
 	if (app_start_ok) {
 
-		app_state=as_active;
-		game_loop_quit=FALSE;
+			// pick starting run
 
-		while (!game_loop_quit) {
-			if (!loop_main(err_str)) break;
+		if (app.dedicated_host) {
+			app_run_ok=app_run_dedicated_host(err_str);
+		}
+		else {
+			if (app.editor_override.on) {
+				app_run_ok=app_run_editor_launch(err_str);
+			}
+			else {
+				app_run_ok=app_run_intro(err_str);
+			}
+		}
+
+			// main loop
+
+		if (app_run_ok) {
+
+			while (!app.loop_quit) {
+
+				if (app.dedicated_host) {
+					if (!loop_main_dedicated(err_str)) break;
+				}
+				else {
+					if (!loop_main(err_str)) break;
+				}
+
+			}
 		}
 
 		app_end();
@@ -168,7 +270,14 @@ int main(int argc,char *argv[])
 	
 		// report any errors
 		
-	if (err_str[0]!=0x0) app_report_error(err_str);
+	if (err_str[0]!=0x0) {
+		if (app.dedicated_host) {
+			fprintf(stdout,"Fatal Error: %s\n",err_str);
+		}
+		else {
+			app_report_error(err_str);
+		}
+	}
 	
 	return(0);
 }

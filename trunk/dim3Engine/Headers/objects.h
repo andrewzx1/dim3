@@ -318,8 +318,8 @@ extern void weapon_zoom_exit(obj_type *obj,weapon_type *weap);
 extern void weapon_zoom_off(obj_type *obj,weapon_type *weap);
 extern void weapon_zoom_key(obj_type *obj,weapon_type *weap);
 
-extern void weapon_run_hand(obj_type *obj);
-extern void weapon_hand_bounce(obj_type *obj);
+extern void weapon_player_run_hand(void);
+extern void weapon_player_hand_bounce(void);
 extern int weapon_get_bounce(obj_type *obj,weapon_type *weap);
 
 extern void weapon_setup_fire(weapon_type *weap,int method);

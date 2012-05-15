@@ -30,17 +30,16 @@ and can be sold or given away.
 #endif
 
 #include "interface.h"
+#include "objects.h"
 #include "network.h"
 
 extern iface_type			iface;
 extern server_type			server;
+extern map_type				map;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
 
-extern bool server_initialize(char *err_str);
-extern void server_shutdown(void);
-extern bool view_initialize(char *err_str);
-extern void view_shutdown(void);
+app_type					app;
 
 /* =======================================================
 
@@ -75,62 +74,18 @@ bool app_start(char *err_str)
 	if (!server_initialize(err_str)) return(FALSE);
 
 		// initialize view
+		// if not running in dedicated host mode
 	
-	if (!view_initialize(err_str)) {
-		server_shutdown();
-		return(FALSE);
-	}
+	if (!app.dedicated_host) {
 
-	console_initialize();
-
-		// if no editor launch,
-		// start in intro or title media
-		// we hard-set the state here as there
-		// is no previous state
-		
-	if (!setup.editor_override.on) {
-
-			// is there a title?
-
-		if (iface.logo.name[0]!=0x0) {
-
-			if (!title_setup("Titles",iface.logo.name,iface.logo.sound,iface.logo.life_msec,-1,err_str)) return(FALSE);
-
-			server.state=gs_title;
-			server.last_state=gs_intro;
-
-			title_open();
-			return(TRUE);
+		if (!view_initialize(err_str)) {
+			server_shutdown();
+			return(FALSE);
 		}
 
-			// if not go right to intro
-
-		server.state=gs_intro;
-
-		intro_open();
-
-		return(TRUE);
+		console_initialize();
 	}
-	
-		// launch directly into map
-		
-	server.state=gs_running;
 
-	net_setup.mode=net_mode_none;
-		
-	if (!game_start(FALSE,skill_medium,0,0,err_str)) {
-		view_shutdown();
-		server_shutdown();
-		return(FALSE);
-	}
-	
-	if (!map_start(FALSE,TRUE,err_str)) {
-		game_end();
-		view_shutdown();
-		server_shutdown();
-		return(FALSE);
-	}
-	
 	return(TRUE);
 }
 
@@ -145,7 +100,7 @@ void app_end(void)
 	
 		// shutdown view
 		
-	view_shutdown();
+	if (!app.dedicated_host) view_shutdown();
 	
 		// shutdown server
 		
@@ -158,5 +113,119 @@ void app_end(void)
 		// OS network shutdown
 		
 	net_shutdown();
+}
+
+/* =======================================================
+
+      App Start and End
+      
+======================================================= */
+
+bool app_run_intro(char *err_str)
+{
+		// start in intro or title media
+		// we hard-set the state here as there
+		// is no previous state
+		
+		// is there a title?
+
+	if (iface.logo.name[0]!=0x0) {
+
+		if (!title_setup("Titles",iface.logo.name,iface.logo.sound,iface.logo.life_msec,-1,err_str)) return(FALSE);
+
+		server.state=gs_title;
+		server.last_state=gs_intro;
+
+		title_open();
+		return(TRUE);
+	}
+
+		// if not go right to intro
+
+	server.state=gs_intro;
+
+	intro_open();
+
+	return(TRUE);
+}
+	
+bool app_run_editor_launch(char *err_str)
+{
+		// launch directly into map
+		
+	server.state=gs_running;
+	net_setup.mode=net_mode_none;
+		
+	if (!game_start(FALSE,skill_medium,0,0,err_str)) return(FALSE);
+	
+	if (!map_start(FALSE,TRUE,err_str)) {
+		game_end();
+		return(FALSE);
+	}
+	
+	return(TRUE);
+}
+
+bool app_run_dedicated_host(char *err_str)
+{
+		// launch directly into hosting
+		// setup hosting flags and IPs
+		
+	net_host_game_setup();
+
+	net_setup.mode=net_mode_host;
+	net_setup.client.latency=0;
+	net_setup.client.host_ip_addr=0;
+
+		// setup map
+		
+	map.info.name[0]=0x0;
+	strcpy(map.info.host_name,setup.network.map_list.maps[net_setup.host.current_map_idx].name);
+	
+		// start game
+	
+	if (!game_start(FALSE,skill_medium,0,0,err_str)) {
+		net_host_game_end();
+		return(FALSE);
+	}
+	
+		// add any multiplayer bots
+		
+	if (!game_multiplayer_bots_create(err_str)) {
+		game_end();
+		net_host_game_end();
+		return(FALSE);
+	}
+	
+		// start the map
+		
+	if (!map_start(FALSE,TRUE,err_str)) {
+		game_end();
+		net_host_game_end();
+		return(FALSE);
+	}
+
+		// start hosting
+
+	if (!net_host_game_start(err_str)) {
+		map_end();
+		game_end();
+		net_host_game_end();
+		return(FALSE);
+	}
+
+		// dedicated hosting, no local
+		// player to add, only add
+		// multiplayer bots to host
+
+	net_host_join_multiplayer_bots();
+
+		// game is running
+
+	console_add("Running...");
+	
+	server.next_state=gs_running;
+
+	return(TRUE);
 }
 

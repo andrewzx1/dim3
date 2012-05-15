@@ -34,6 +34,7 @@ and can be sold or given away.
 #include "scripts.h"
 #include "objects.h"
 
+extern app_type				app;
 extern map_type				map;
 extern server_type			server;
 extern js_type				js;
@@ -264,8 +265,7 @@ void run_objects_no_slice(void)
 	
 		// weapons in hand
 		
-	obj=server.obj_list.objs[server.player_obj_idx];
-	weapon_run_hand(obj);
+	if (!app.dedicated_host) weapon_player_run_hand();
 }
 
 /* =======================================================
@@ -318,11 +318,6 @@ void run_projectiles_no_slice(void)
 void server_run(void)
 {
 	int				tick;
-	obj_type		*obj;
-
-		// get player object
-		
-	obj=server.obj_list.objs[server.player_obj_idx];
 	
 		// time to run tasks
 
@@ -353,9 +348,11 @@ void server_run(void)
 			
 			map_movements_auto_open();
 			
-			camera_server_run();
-			weapon_hand_bounce(obj);
-		
+			if (!app.dedicated_host) {
+				camera_server_run();
+				weapon_player_hand_bounce();
+			}
+
 			particle_map_run();
 		}
 

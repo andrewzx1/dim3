@@ -35,6 +35,7 @@ and can be sold or given away.
 
 extern char team_colors[][16];
 
+extern app_type				app;
 extern map_type				map;
 extern server_type			server;
 extern network_setup_type	net_setup;
@@ -484,10 +485,10 @@ void net_host_player_remote_route_msg(net_queue_msg_type *msg)
 
 	}
 		
-			// since this is the host, we need to pass on
-			// the messages to the remotes on the host
+		// since this is the host, we need to pass on
+		// the messages to the remotes on the host
 			
-	if (net_setup.mode!=net_mode_host_dedicated) remote_route_message(msg);
+	if (!app.dedicated_host) remote_route_message(msg);
 }
 
 /* =======================================================

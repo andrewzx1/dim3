@@ -31,6 +31,7 @@ and can be sold or given away.
 
 #include "interface.h"
 
+extern app_type				app;
 extern map_type				map;
 extern server_type			server;
 extern iface_type			iface;
@@ -49,6 +50,10 @@ void progress_initialize(char *map_name,int max)
 {
 	char			path[1024];
 	bool			bitmap_ok;
+
+		// ignore if dedicated host
+
+	if (app.dedicated_host) return;
 	
 		// check for map progress background,
 		// otherwise use default
@@ -80,6 +85,12 @@ void progress_initialize(char *map_name,int max)
 
 void progress_shutdown(void)
 {
+		// ignore if dedicated host
+
+	if (app.dedicated_host) return;
+
+		// close bitmaps
+
 	bitmap_close(&progress_background_bitmap);
 	if (iface.progress.overlay) bitmap_close(&progress_overlay_bitmap);
 }
@@ -94,6 +105,12 @@ void progress_next(void)
 {
 	int				lft,rgt,top,bot,mid,rgt2;
 	d3col			col;
+
+		// ignore if dedicated host
+
+	if (app.dedicated_host) return;
+
+		// next progress
 
 	progress_current++;
 	

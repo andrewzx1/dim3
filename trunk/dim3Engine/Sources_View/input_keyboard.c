@@ -31,9 +31,8 @@ and can be sold or given away.
 
 #include "interface.h"
 
+extern app_type				app;
 extern setup_type			setup;
-
-extern bool					game_loop_quit;
 
 int							text_input_keys[text_input_keys_count];
 char						text_input_shift_numbs[10]={'!','@','#','$','%','^','&','*','(',')'};
@@ -116,7 +115,7 @@ void input_event_key(int key_idx,bool down)
 	if (key_idx==SDL_SCANCODE_Q) {
 		mod=SDL_GetModState();
 		if (((mod&KMOD_LMETA)!=0) || ((mod&KMOD_RMETA))) {
-			game_loop_quit=TRUE;
+			app.loop_quit=TRUE;
 		}
 	}
 #endif

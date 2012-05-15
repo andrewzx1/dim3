@@ -32,8 +32,7 @@ and can be sold or given away.
 #include "interface.h"
 #include "objects.h"
 
-extern int					app_state;
-
+extern app_type				app;
 extern server_type			server;
 extern view_type			view;
 extern iface_type			iface;
@@ -3122,7 +3121,7 @@ void element_draw_lock(bool cursor_hilite)
 
 	id=-1;
 
-	if ((cursor_hilite) && (app_state==as_active)) {
+	if ((cursor_hilite) && (app.state==as_active)) {
 
 			// find hilited item
 

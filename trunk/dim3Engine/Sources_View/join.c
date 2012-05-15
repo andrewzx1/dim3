@@ -226,7 +226,7 @@ int join_ping_thread_lan(void *arg)
 		// now wait for any replies
 	
 	join_thread_lan_start_tick=time_get();
-	max_tick=client_timeout_wait_msec;
+	max_tick=client_query_timeout_wait_msec;
 	
 		// put socket in non-blocking so UI runs
 		
@@ -292,7 +292,7 @@ bool join_ping_thread_wan_host(join_server_host_type *host,int msec,unsigned cha
 	
 	got_reply=FALSE;
 	
-	max_tick=client_timeout_wait_msec;
+	max_tick=client_query_timeout_wait_msec;
 	
 	while (((msec+max_tick)>time_get()) && (!join_thread_quit)) {
 		if (net_recvfrom_mesage(sock,&recv_ip_addr,NULL,&action,&net_uid,msg,NULL)) {

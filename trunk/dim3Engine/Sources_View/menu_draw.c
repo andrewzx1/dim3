@@ -32,9 +32,7 @@ and can be sold or given away.
 #include "interface.h"
 #include "scripts.h"
 
-extern int					app_state;
-extern bool					game_loop_quit;
-
+extern app_type				app;
 extern server_type			server;
 extern map_type				map;
 extern view_type			view;
@@ -55,7 +53,7 @@ void menu_draw_start(char *name)
 
 		// if not hosting, pause
 
-	if ((net_setup.mode!=net_mode_host) && (net_setup.mode!=net_mode_host_dedicated)) game_time_pause_start();
+	if (net_setup.mode!=net_mode_host) game_time_pause_start();
 
 		// clear input and stop sounds
 
@@ -110,7 +108,7 @@ void menu_draw_end(bool fade)
 	
 		// if not hosting, unpause
 
-	if ((net_setup.mode!=net_mode_host) && (net_setup.mode!=net_mode_host_dedicated)) game_time_pause_end();
+	if (net_setup.mode!=net_mode_host) game_time_pause_end();
 }
 
 /* =======================================================
@@ -189,8 +187,8 @@ bool menu_select(void)
 		
 	if (item->quit) {
 
-		if (setup.editor_override.on) {			// if in editor override, just quit
-			game_loop_quit=TRUE;
+		if (app.editor_override.on) {			// if in editor override, just quit
+			app.loop_quit=TRUE;
 		}
 		else {
 			server.next_state=gs_intro;
@@ -372,7 +370,7 @@ void menu_draw(void)
 
 		// cursor
 
-	if ((view.menu.active) && (app_state==as_active)) cursor_draw();
+	if ((view.menu.active) && (app.state==as_active)) cursor_draw();
 }
 
 

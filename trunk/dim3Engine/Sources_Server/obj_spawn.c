@@ -34,6 +34,7 @@ and can be sold or given away.
 #include "scripts.h"
 #include "objects.h"
 
+extern app_type				app;
 extern map_type				map;
 extern server_type			server;
 extern iface_type			iface;
@@ -115,9 +116,9 @@ bool object_spawn_position(obj_type *obj,int sub_event,char *err_str)
 			// if editor override then try to start at editor
 			// cursor position
 
-		if ((setup.editor_override.on) && (!map.editor_setup.link_always_start) && (obj->idx==server.player_obj_idx)) {
-			setup.editor_override.on=FALSE;
-			object_set_position(obj,setup.editor_override.pt.x,(setup.editor_override.pt.y-obj->size.eye_offset),setup.editor_override.pt.z,setup.editor_override.ang.y,0);
+		if ((app.editor_override.on) && (!map.editor_setup.link_always_start) && (obj->idx==server.player_obj_idx)) {
+			app.editor_override.on=FALSE;
+			object_set_position(obj,app.editor_override.pt.x,(app.editor_override.pt.y-obj->size.eye_offset),app.editor_override.pt.z,app.editor_override.ang.y,0);
 			return(TRUE);
 		}
 
@@ -282,7 +283,7 @@ bool game_multiplayer_bots_create(char *err_str)
 	
 		// only hosts have multiplayer bots
 		
-	if ((net_setup.mode!=net_mode_host) && (net_setup.mode!=net_mode_host_dedicated)) return(TRUE);
+	if (net_setup.mode!=net_mode_host) return(TRUE);
 
 		// are bots allowed in this game?
 

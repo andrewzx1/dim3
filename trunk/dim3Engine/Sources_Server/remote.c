@@ -34,6 +34,7 @@ and can be sold or given away.
 #include "scripts.h"
 #include "objects.h"
 
+extern app_type				app;
 extern map_type				map;
 extern view_type			view;
 extern server_type			server;
@@ -41,8 +42,6 @@ extern iface_type			iface;
 extern js_type				js;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
-
-extern bool					game_loop_quit;
 
 /* =======================================================
 
@@ -813,12 +812,14 @@ void remote_network_send_updates(void)
 
 		// update the player
 
-	obj=server.obj_list.objs[server.player_obj_idx];
-	net_client_send_remote_update(obj,view.chat.type_on);
+	if (!app.dedicated_host) {
+		obj=server.obj_list.objs[server.player_obj_idx];
+		net_client_send_remote_update(obj,view.chat.type_on);
+	}
 
 		// update any co-op bots if hosting
 
-	if ((net_setup.mode==net_mode_host) || (net_setup.mode==net_mode_host_dedicated)) {
+	if (net_setup.mode==net_mode_host) {
 	
 		monsters=iface.multiplayer.game_list.games[net_setup.game_idx].monsters;
 

@@ -35,6 +35,7 @@ and can be sold or given away.
 
 extern bool map_movements_cinema_start(int movement_idx,bool reverse,char *err_str);
 
+extern app_type					app;
 extern server_type				server;
 extern view_type				view;
 extern map_type					map;
@@ -551,7 +552,7 @@ void cinema_run(void)
 			scripts_post_event_console(js.game_script_idx,-1,sd_event_interface,sd_event_interface_cinema_done,view.cinema.event_id);
 			scripts_post_event_console(js.course_script_idx,-1,sd_event_interface,sd_event_interface_cinema_done,view.cinema.event_id);
 
-			if (net_setup.mode!=net_mode_host_dedicated) {
+			if (!app.dedicated_host) {
 				obj=server.obj_list.objs[server.player_obj_idx];
 				scripts_post_event_console(obj->script_idx,-1,sd_event_interface,sd_event_interface_cinema_done,view.cinema.event_id);
 			}

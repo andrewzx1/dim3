@@ -31,8 +31,7 @@ and can be sold or given away.
 
 #include "interface.h"
 
-extern int					app_state;
-
+extern app_type				app;
 extern map_type				map;
 extern view_type			view;
 extern server_type			server;
@@ -235,7 +234,7 @@ void gl_frame_swap(void)
 {
 		// is this app deactivated?
 
-	if (app_state==as_inactive) {
+	if (app.state==as_inactive) {
 		gl_2D_view_screen();
 
 		glEnable(GL_BLEND);

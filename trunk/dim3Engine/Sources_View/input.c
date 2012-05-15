@@ -43,8 +43,9 @@ input_action_type			input_actions[256];
 
 SDL_Joystick				*input_joy;
 
-extern bool					game_loop_quit;
 extern char					setup_control_names[][32];
+
+extern app_type				app;
 extern setup_type			setup;
 
 /* =======================================================
@@ -396,7 +397,7 @@ bool input_event_pump(void)
 				// quit event
 				
 			case SDL_QUIT:
-				game_loop_quit=TRUE;
+				app.loop_quit=TRUE;
 				break;
 				
 		}
