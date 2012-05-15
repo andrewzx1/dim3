@@ -2803,7 +2803,8 @@ void element_click_text_box(element_type *element,int x,int y)
 
 void element_draw_text_box(element_type *element)
 {
-	int				lft,rgt,top,bot,x,y,wid,high,idx,last_space_idx,
+	int				lft,rgt,top,bot,x,y,wid,high,
+					wrap_wid,idx,last_space_idx,
 					line_count,line_offset;
 	char			*c,str[256];
 	bool			line_break;
@@ -2841,6 +2842,10 @@ void element_draw_text_box(element_type *element)
 		col.r=1.0f;
 		col.g=col.b=0.1f;
 	}
+	
+		// wrap width
+		
+	wrap_wid=element->wid-((int)(((float)iface.scale_x)*element_scroll_control_size)+8);
 
 		// draw text
 		
@@ -2890,7 +2895,7 @@ void element_draw_text_box(element_type *element)
 		
 		wid=gl_text_get_string_width(font_interface_index,iface.font.text_size_medium,str);
 		
-		if (wid>=(element->wid-10)) {
+		if (wid>=wrap_wid) {
 			line_break=TRUE;
 			
 			if (last_space_idx!=-1) {

@@ -163,7 +163,7 @@ bool net_load_news(join_server_host_list_type *join_host_list,char *news)
 		hosts_ptr=strchr(hosts_ptr,'\t');
 		if (hosts_ptr==NULL) break;
 
-		strncpy(host->ip,hosts_ptr,256);
+		strncpy(host->ip,(hosts_ptr+1),256);
 		host->ip[255]=0x0;
 
 		c=strchr(host->ip,'\r');

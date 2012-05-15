@@ -266,29 +266,26 @@ int join_ping_thread_lan(void *arg)
       
 ======================================================= */
 
-void join_ping_thread_wan_host(join_server_host_type *host)
+bool join_ping_thread_wan_host(join_server_host_type *host,int msec,unsigned char *msg)
 {
-	int						action,net_uid,msec,max_tick;
+	int						action,net_uid,max_tick;
 	unsigned long			ip_addr,recv_ip_addr;
-	unsigned char			msg[net_max_msg_size];
 	bool					got_reply;
 	d3socket				sock;
-
-	msec=time_get();
 	
 		// send request info to host
 
 	sock=net_open_udp_socket();
-	if (sock==D3_NULL_SOCKET) return;
+	if (sock==D3_NULL_SOCKET) return(FALSE);
 	
 	net_socket_blocking(sock,FALSE);
 	
 	ip_addr=inet_addr(host->ip);
-	if (ip_addr==INADDR_NONE) return;
-	
+	if (ip_addr!=INADDR_NONE) return(FALSE);
+
 	if (!net_sendto_msg(sock,ip_addr,net_port_host,net_action_request_info,net_uid_constant_none,NULL,0)) {
 		net_close_socket(&sock);
-		return;
+		return(FALSE);
 	}
 
 		// get the reply
@@ -311,28 +308,37 @@ void join_ping_thread_wan_host(join_server_host_type *host)
 		
 	net_close_socket(&sock);
 	
-		// update list
-
-	if (got_reply) {
-		join_ping_thread_update_host(host,msec,(network_reply_info*)msg);
-	}
-	else {
-		join_ping_thread_update_host(host,msec,NULL);
-	}
-
-	join_create_list(join_host_wan_list,join_wan_table_id);
+	return(TRUE);
 }
 
 int join_ping_thread_wan(void *arg)
 {
-	int							n;
+	int						n,msec;
+	unsigned char			msg[net_max_msg_size];
+	join_server_host_type	*host;
 	
 		// run ping until finished or
 		// join page ends
-
+		
 	for (n=0;n!=join_host_wan_list->count;n++) {
 		if (join_thread_quit) break;
-		join_ping_thread_wan_host(&join_host_wan_list->hosts[n]);
+		
+			// ping the host
+			
+		host=&join_host_wan_list->hosts[n];
+			
+		msec=time_get();
+
+		if (join_ping_thread_wan_host(host,msec,msg)) {
+			join_ping_thread_update_host(host,msec,(network_reply_info*)msg);
+		}
+		else {
+			join_ping_thread_update_host(host,msec,NULL);
+		}
+		
+			// update list
+
+		join_create_list(join_host_wan_list,join_wan_table_id);
 	}
 
 	element_table_busy(join_wan_table_id,FALSE);
