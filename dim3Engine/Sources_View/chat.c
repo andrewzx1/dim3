@@ -31,6 +31,7 @@ and can be sold or given away.
 
 #include "interface.h"
 
+extern app_type				app;
 extern view_type			view;
 extern iface_type			iface;
 
@@ -52,6 +53,14 @@ void chat_add_message(char *name,char *str,d3col *col)
 {
 	int					idx;
 	view_chat_line_type	*line;
+
+		// if a dedicated host,
+		// then just stdout chats
+
+	if (app.dedicated_host) {
+		fprintf(stdout,"%s:%s\n",name,str);
+		return;
+	}
 	
 		// need to remove a line?
 		

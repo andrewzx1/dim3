@@ -38,6 +38,7 @@ server_type					server;
 iface_type					iface;
 js_type						js;
 
+extern app_type				app;
 extern setup_type			setup;
 extern network_setup_type	net_setup;
 
@@ -163,8 +164,8 @@ bool server_game_start(bool in_file_load,int skill,int option_flags,int simple_s
 
 			// editor map override?
 			
-		if (setup.editor_override.on) {
-			strcpy(map.info.name,setup.editor_override.map);
+		if (app.editor_override.on) {
+			strcpy(map.info.name,app.editor_override.map);
 		}
 		
 			// can't start a game without a map
@@ -177,7 +178,7 @@ bool server_game_start(bool in_file_load,int skill,int option_flags,int simple_s
 
 		// create game player object
 
-	if (net_setup.mode!=net_mode_host_dedicated) {
+	if (!app.dedicated_host) {
 		server.player_obj_idx=game_player_create(err_str);
 		if (server.player_obj_idx==-1) {
 			scripts_dispose(js.game_script_idx);
@@ -207,14 +208,3 @@ void server_game_stop(void)
 	scripts_free_list();
 }
 
-/* =======================================================
-
-      Server Loop
-      
-======================================================= */
-
-void server_loop(void)
-{
-	timers_run();
-	server_run();
-}

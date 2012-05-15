@@ -31,8 +31,7 @@ and can be sold or given away.
 
 #include "interface.h"
 
-extern int					app_state;
-
+extern app_type				app;
 extern server_type			server;
 extern iface_type			iface;
 extern setup_type			setup;
@@ -192,7 +191,7 @@ void gui_draw(float background_alpha,bool cursor)
 
 		// no cursor if no active
 
-	if ((cursor) && (app_state==as_active)) cursor_draw();
+	if ((cursor) && (app.state==as_active)) cursor_draw();
 
 		// end frame
 
@@ -255,7 +254,7 @@ int gui_click(void)
 
 		// no clicking if paused
 
-	if (app_state!=as_active) return(-1);
+	if (app.state!=as_active) return(-1);
 
 		// get click location
 
@@ -285,7 +284,7 @@ int gui_keyboard(void)
 
 		// no keys if paused
 
-	if (app_state!=as_active) return(-1);
+	if (app.state!=as_active) return(-1);
 
 		// key press?
 

@@ -34,6 +34,7 @@ and can be sold or given away.
 #include "scripts.h"
 #include "objects.h"
 
+extern app_type				app;
 extern map_type				map;
 extern server_type			server;
 extern setup_type			setup;
@@ -67,7 +68,7 @@ bool game_start(bool in_file_load,int skill,int option_flags,int simple_save_idx
 
 		// start view
 		
-	view_game_start();
+	if (!app.dedicated_host) view_game_start();
 
 		// game in running state
 		
@@ -92,14 +93,13 @@ void game_end(void)
 			net_client_join_host_end();
 			break;
 		case net_mode_host:
-		case net_mode_host_dedicated:
 			net_host_game_end();
 			break;
 	}
 	
 		// stop view
 		
-	view_game_stop();
+	if (!app.dedicated_host) view_game_stop();
 
 		// stop server
 		
@@ -116,10 +116,9 @@ void game_end(void)
       
 ======================================================= */
 
-void game_reset(void)
+bool game_host_reset(char *err_str)
 {
 	int							n;
-	char						err_str[256];
 	obj_type					*obj,*player_obj;
 	network_request_game_reset	reset;
 	
@@ -133,9 +132,7 @@ void game_reset(void)
 
 	if (!map_rebuild_changes(err_str)) {
 		game_end();
-		error_setup(err_str,"Hosting Game Canceled");
-		server.next_state=gs_error;
-		return;
+		return(FALSE);
 	}
 
 		// all objects will be re-spawned when the new map
@@ -173,6 +170,8 @@ void game_reset(void)
 
 	player_obj=server.obj_list.objs[server.player_obj_idx];
 	net_host_player_send_message_others(player_obj->remote.net_uid,net_action_request_game_reset,(unsigned char*)&reset,sizeof(network_request_game_reset));
+
+	return(TRUE);
 }
 
 

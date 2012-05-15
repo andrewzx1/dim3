@@ -31,6 +31,7 @@ and can be sold or given away.
 
 #include "interface.h"
 
+extern app_type				app;
 extern iface_type			iface;
 extern view_type			view;
 extern setup_type			setup;
@@ -68,6 +69,17 @@ void console_add_line(char *txt,d3col *col)
 	char					*c,*c2;
 	bool					first_line;
 	view_console_line_type	*cline;
+
+		// if dedicated host, just push
+		// out to stdout
+
+	if (app.dedicated_host) {
+		fprintf(stdout,txt);
+		fprintf(stdout,"\n");
+		return;
+	}
+
+		// otherwise put in console list
 
 	c=txt;
 	first_line=TRUE;
@@ -162,7 +174,7 @@ void console_add_error(char *txt)
 		// if in debug mode, all errors
 		// pop open the console
 		
-	if (iface.setup.game_debug) {
+	if ((!app.dedicated_host) && (iface.setup.game_debug)) {
 		view.console.on=TRUE;
 		input_clear_text_input();
 	}

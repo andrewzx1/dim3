@@ -80,6 +80,10 @@ extern bool net_queue_check_message(net_queue_type *queue,net_queue_msg_type *ms
 extern bool net_host_initialize(char *err_str);
 extern void net_host_shutdown(void);
 
+extern void net_host_game_setup(void);
+extern bool net_host_game_start(char *err_str);
+extern void net_host_game_end(void);
+
 extern bool net_host_join_local_player(char *err_str);
 extern void net_host_join_multiplayer_bots(void);
 

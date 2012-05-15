@@ -258,6 +258,10 @@
 				Name="Engine Headers"
 				>
 				<File
+					RelativePath="..\..\dim3Engine\Headers\app_defs.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\dim3Engine\Headers\dim3engine.h"
 					>
 				</File>

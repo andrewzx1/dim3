@@ -33,6 +33,7 @@ and can be sold or given away.
 #include "scripts.h"
 #include "objects.h"
 
+extern app_type				app;
 extern map_type				map;
 extern view_type			view;
 extern server_type			server;
@@ -61,7 +62,7 @@ void map_media_start(map_media_type *media)
 	
 		// no media when launched from editor
 
-	if (setup.editor_override.on) return;
+	if (app.editor_override.on) return;
 
 		// no media if last change was a skip change
 
@@ -256,7 +257,7 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 
 		// start progress
 		
-	progress_initialize(map.info.name,(21+max_map_texture));
+	progress_initialize(map.info.name,(20+max_map_texture));
 	
 	strcpy(current_map_name,map.info.name);		// remember for close
 	
@@ -275,11 +276,15 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 		return(FALSE);
 	}
 
-	map_textures_read_setup(&map);
-	
-	for (n=0;n!=max_map_texture;n++) {
-		progress_next();
-		map_textures_read_texture(&map,n);
+		// load map textures
+
+	if (!app.dedicated_host) {
+		map_textures_read_setup(&map);
+		
+		for (n=0;n!=max_map_texture;n++) {
+			progress_next();
+			map_textures_read_texture(&map,n);
+		}
 	}
 
 		// don't run blank maps
@@ -291,13 +296,21 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 		return(FALSE);
 	}
 	
-		// attach shaders and camera
+		// attach camera and shaders
+		// to map and setup any full screen
+		// shaders and node-based back renders
+		// finally, pre-calc any map music
 
 	progress_next();
 
 	camera_map_setup();
 	
-	gl_shader_attach_map();
+	if (!app.dedicated_host) {
+		gl_shader_attach_map();
+		gl_fs_shader_map_start();
+		gl_back_render_map_start();
+		al_music_map_pre_cache();
+	}
 
 		// prepare map surfaces
 	
@@ -310,10 +323,12 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 
 	progress_next();
 
-	if (!render_transparent_create_sort_list()) {
-		progress_shutdown();
-		strcpy(err_str,"Out of memory");
-		return(FALSE);
+	if (!app.dedicated_host) {
+		if (!render_transparent_create_sort_list()) {
+			progress_shutdown();
+			strcpy(err_str,"Out of memory");
+			return(FALSE);
+		}
 	}
 
 	progress_next();
@@ -326,27 +341,35 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 
 	progress_next();
 
-	if (!view_map_vbo_initialize()) {
-		progress_shutdown();
-		strcpy(err_str,"Out of memory");
-		return(FALSE);
+	if (!app.dedicated_host) {
+		if (!view_map_vbo_initialize()) {
+			progress_shutdown();
+			strcpy(err_str,"Out of memory");
+			return(FALSE);
+		}
 	}
 	
 		// sky, fog, rain
 
 	progress_next();
 
-	sky_draw_init();
-	fog_draw_init();
-	rain_draw_init();
+	if (!app.dedicated_host) {
+		sky_draw_init();
+		fog_draw_init();
+		rain_draw_init();
+
+		map.rain.reset=TRUE;
+	}
 
 		// start map ambients
 		// and clear all proj, effects, decals, etc
 		
 	progress_next();
 
-	map_start_ambient();
-	if (map.ambient.sound_name[0]!=0x0) map_set_ambient(map.ambient.sound_name,map.ambient.sound_pitch);
+	if (!app.dedicated_host) {
+		map_start_ambient();
+		if (map.ambient.sound_name[0]!=0x0) map_set_ambient(map.ambient.sound_name,map.ambient.sound_pitch);
+	}
 
 	progress_next();
 
@@ -379,24 +402,13 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 
 	progress_next();
 
-	if (!view_obscure_initialize()) {
-		progress_shutdown();
-		strcpy(err_str,"Out of memory");
-		return(FALSE);
+	if (!app.dedicated_host) {
+		if (!view_obscure_initialize()) {
+			progress_shutdown();
+			strcpy(err_str,"Out of memory");
+			return(FALSE);
+		}
 	}
-	
-		// reset rain
-		
-	map.rain.reset=TRUE;
-	
-		// setup FS shaders
-		
-	gl_fs_shader_map_start();
-	
-		// any music pre-cache
-		
-	progress_next();
-	al_music_map_pre_cache();
 
         // run the course script
 		// course scripts are the only
@@ -463,7 +475,7 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 
 	progress_next();
 
-	if (net_setup.mode!=net_mode_host_dedicated) {
+	if (!app.dedicated_host) {
 
 		player_clear_input();
 		
@@ -485,8 +497,6 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 	map_lookups_setup();
 	map_mesh_polygon_draw_flag_setup();
 	
-	gl_back_render_map_start();
-	
 		// map start event
 		// skip if we are reloading this map
 		// to restore a saved game
@@ -497,7 +507,7 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 		scripts_post_event_console(js.game_script_idx,-1,sd_event_map,sd_event_map_open,0);
 		scripts_post_event_console(js.course_script_idx,-1,sd_event_map,sd_event_map_open,0);
 
-		if (net_setup.mode!=net_mode_host_dedicated) scripts_post_event_console(obj->script_idx,-1,sd_event_map,sd_event_map_open,0);
+		if (!app.dedicated_host) scripts_post_event_console(obj->script_idx,-1,sd_event_map,sd_event_map_open,0);
 	}
 	
 		// finish up
@@ -526,11 +536,11 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 	view.time.run_tick=tick;
 	js.timer_tick=tick;
 
-	view_clear_fps();
+	if (!app.dedicated_host) view_clear_fps();
 
 		// clear all input
 		
-	input_clear();
+	if (!app.dedicated_host) input_clear();
 	
 		// unpause game and start map timer
 		
@@ -539,14 +549,14 @@ bool map_start(bool in_file_load,bool skip_media,char *err_str)
 	server.time.map_start_tick=game_time_get();
 	
 		// start any map open media
-		
-	if (!skip_media) map_media_start(&map.media);
-	map_music_start(&map.music);
-
-		// start any map fades
-
-	if (!skip_media) view_fade_start();
+		// and fades
 	
+	if (!app.dedicated_host) {
+		if (!skip_media) map_media_start(&map.media);
+		map_music_start(&map.music);
+		if (!skip_media) view_fade_start();
+	}
+
 	return(TRUE);
 }
 
@@ -555,10 +565,12 @@ void map_end(void)
 	obj_type		*obj;
 	
 		// stop all sounds
-		
-	map_end_ambient();
-	al_music_stop();
-	al_stop_all_sources();
+	
+	if (!app.dedicated_host) {
+		map_end_ambient();
+		al_music_stop();
+		al_stop_all_sources();
+	}
 
 		// pause timing
 		
@@ -575,25 +587,23 @@ void map_end(void)
 	scripts_post_event_console(js.game_script_idx,-1,sd_event_map,sd_event_map_close,0);
 	scripts_post_event_console(js.course_script_idx,-1,sd_event_map,sd_event_map_close,0);
 
-	if (net_setup.mode!=net_mode_host_dedicated) {
+	if (!app.dedicated_host) {
 		obj=server.obj_list.objs[server.player_obj_idx];
 		scripts_post_event_console(obj->script_idx,-1,sd_event_map,sd_event_map_close,0);
 	}
 
 		// clear all back buffers
+		// release obscuring memory
+		// and shutdown weather and skies
 
-	gl_fs_shader_map_end();
-	gl_back_render_map_end();
-
-		// view obscuring
-
-	view_obscure_release();
-
-		// finish with sky, fog, rain
-
-	sky_draw_release();
-	fog_draw_release();
-	rain_draw_release();
+	if (!app.dedicated_host) {
+		gl_fs_shader_map_end();
+		gl_back_render_map_end();
+		view_obscure_release();
+		sky_draw_release();
+		fog_draw_release();
+		rain_draw_release();
+	}
 
 		// remove all projectiles
 	
@@ -615,8 +625,11 @@ void map_end(void)
 	
 		// free group, portal segment, vertex and light lists
 		
-	view_map_vbo_release();
-	render_transparent_dispose_sort_list();
+	if (!app.dedicated_host) {
+		view_map_vbo_release();
+		render_transparent_dispose_sort_list();
+	}
+
 	map_group_dispose_unit_list(&map);
 	
 		// close map

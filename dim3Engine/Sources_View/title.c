@@ -36,6 +36,7 @@ and can be sold or given away.
 #define title_fade_mode_out		1
 #define title_fade_mode_none	2
 
+extern app_type				app;
 extern server_type			server;
 extern iface_type			iface;
 extern setup_type			setup;
@@ -90,7 +91,7 @@ void title_close(void)
 	scripts_post_event_console(js.game_script_idx,-1,sd_event_interface,sd_event_interface_title_done,title_event_id);
 	scripts_post_event_console(js.course_script_idx,-1,sd_event_interface,sd_event_interface_title_done,title_event_id);
 
-	if ((server.game_open) && (net_setup.mode!=net_mode_host_dedicated)) {
+	if ((!app.dedicated_host) && (server.game_open)) {
 		obj=server.obj_list.objs[server.player_obj_idx];
 		scripts_post_event_console(obj->script_idx,-1,sd_event_interface,sd_event_interface_title_done,title_event_id);
 	}

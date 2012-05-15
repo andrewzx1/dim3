@@ -56,10 +56,6 @@ and can be sold or given away.
 
 #define host_game_option_base			100
 
-extern void net_host_game_setup(void);
-extern bool net_host_game_start(char *err_str);
-extern void net_host_game_end(void);
-
 extern map_type				map;
 extern server_type			server;
 extern iface_type			iface;
@@ -372,13 +368,6 @@ void host_game_pane(void)
 	element_checkbox_add("Map Rotation",setup.network.map_rotation,host_map_rotation_id,x,y,TRUE);
 	y+=padding;
 
-		// dedicated checkbox
-
-// supergumba -- not fully implemented yet
-	setup.network.dedicated=FALSE;
-//	element_checkbox_add("Dedicated",setup.network.dedicated,host_dedicated_id,x,y,TRUE);
-//	y+=padding;
-
 		// hosts table
 		
 	x=margin+padding;
@@ -650,7 +639,7 @@ void host_game(void)
 		
 	net_host_game_setup();
 
-	net_setup.mode=setup.network.dedicated?net_mode_host_dedicated:net_mode_host;
+	net_setup.mode=net_mode_host;
 	net_setup.client.latency=0;
 	net_setup.client.host_ip_addr=0;
 

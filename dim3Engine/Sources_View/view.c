@@ -689,32 +689,6 @@ void view_loop_draw(void)
 
 /* =======================================================
 
-      Dedicated Host View Draw
-      
-======================================================= */
-
-void view_loop_draw_dedicated_host(void)
-{
-	int				raw_tick;
-
-		// time for dedicate host draw
-		// use raw ticks so it works through pauses
-
-	raw_tick=game_time_get_raw();
-	if (raw_tick<view.time.draw_tick) return;
-
-	view.time.draw_tick=raw_tick+view.time.draw_time;
-
-		// draw dedicated host screen
-
-	gl_frame_clear(FALSE);
-	network_draw();
-	menu_draw();
-	gl_frame_swap();
-}
-
-/* =======================================================
-
       View Draw for Screen Captures
       
 ======================================================= */

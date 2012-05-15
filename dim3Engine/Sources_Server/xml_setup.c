@@ -78,7 +78,6 @@ void setup_xml_default(void)
 	setup.network.character_idx=0;
 	setup.network.tint_color_idx=0;
 	setup.network.show_names=TRUE;
-	setup.network.dedicated=FALSE;
 	setup.network.map_rotation=FALSE;
 	
 	setup.network.bot.count=0;
@@ -161,7 +160,6 @@ bool setup_xml_read_path(char *path)
 	xml_key_read_int(setup_tag,"Host_Game_Reset_Secs",&setup.network.game_reset_secs);
 	xml_key_read_int(setup_tag,"Host_Respawn_Secs",&setup.network.respawn_secs);
 	xml_key_read_boolean(setup_tag,"Network_Show_Names",&setup.network.show_names);
-	xml_key_read_boolean(setup_tag,"Network_Dedicated",&setup.network.dedicated);
 	xml_key_read_boolean(setup_tag,"Network_Map_Rotation",&setup.network.map_rotation);
 	xml_key_read_boolean(setup_tag,"Window",&setup.window);
 	xml_key_read_boolean(setup_tag,"Window_Editor",&setup.window_editor);
@@ -309,7 +307,6 @@ bool setup_xml_write(void)
 	xml_key_write_int("Host_Game_Reset_Secs",setup.network.game_reset_secs);
 	xml_key_write_int("Host_Respawn_Secs",setup.network.respawn_secs);
 	xml_key_write_boolean("Network_Show_Names",setup.network.show_names);
-	xml_key_write_boolean("Network_Dedicated",setup.network.dedicated);
 	xml_key_write_boolean("Network_Map_Rotation",setup.network.map_rotation);
 	xml_key_write_boolean("Window",setup.window);
 	xml_key_write_boolean("Window_Editor",setup.window_editor);

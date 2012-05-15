@@ -31,6 +31,16 @@ and can be sold or given away.
 
 extern bool app_start(char *err_str);
 extern void app_end(void);
+extern bool app_run_intro(char *err_str);
+extern bool app_run_editor_launch(char *err_str);
+extern bool app_run_dedicated_host(char *err_str);
+
+//
+// main loop
+//
+
+extern bool loop_main(char *err_str);
+extern bool loop_main_dedicated(char *err_str);
 
 //
 // game
@@ -38,7 +48,7 @@ extern void app_end(void);
 
 extern bool game_start(bool in_file_load,int skill,int option_flags,int simple_save_idx,char *err_str);
 extern void game_end(void);
-extern void game_reset(void);
+extern bool game_host_reset(char *err_str);
 extern bool game_file_reload_ok(void);
 extern bool game_file_reload(char *err_str);
 
@@ -65,7 +75,7 @@ extern void server_shutdown(void);
 extern bool server_game_start(bool in_file_load,int skill,int option_flags,int simple_save_idx,char *err_str);
 extern void server_game_stop(void);
 
-extern void server_loop(void);
+extern void server_run(void);
 
 //
 // view
@@ -82,7 +92,6 @@ extern bool view_file_paths_bitmap_check_wide(char *path,char *dir,char *name);
 extern void view_loop_input(void);
 extern void view_run(void);
 extern void view_loop_draw(void);
-extern void view_loop_draw_dedicated_host(void);
 extern void view_clear_fps(void);
 extern void view_calculate_fps(void);
 
@@ -473,6 +482,7 @@ extern void score_limit_check_scores(void);
 extern void score_limit_open(void);
 extern void score_limit_close(void);
 extern int score_limit_get_resume_time(void);
+extern int score_limit_get_resume_tick(void);
 extern void score_limit_run(void);
 
 //

@@ -31,6 +31,7 @@ and can be sold or given away.
 
 #include "interface.h"
 
+extern app_type				app;
 extern view_type			view;
 extern setup_type			setup;
 extern iface_type			iface;
@@ -54,7 +55,7 @@ bool gl_in_window_mode(void)
 #if defined(D3_OS_IPHONE) || defined(D3_OS_ANDRIOD)
 	return(FALSE);
 #else
-	return((setup.window) || ((setup.editor_override.on) && (setup.window_editor)));
+	return((setup.window) || ((app.editor_override.on) && (setup.window_editor)));
 #endif
 }
 

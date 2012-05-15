@@ -2,7 +2,7 @@
 
 Module: dim3 Engine
 Author: Brian Barnes
- Usage: Main Header
+ Usage: App Definitions Header
 
 ***************************** License ********************************
 
@@ -26,43 +26,31 @@ and can be sold or given away.
 *********************************************************************/
 
 //
-// System Includes
+// fatal error struct
 //
 
-#include "os_defs.h"
+typedef struct		{
+						char							title[256],descript[256];
+						bool							is_error;
+					} fatal_error_type;
 
 //
-// Open Source Libraries
+// editor overrides
 //
 
-#include "SDL.h"
-#include "png.h"
-#include "mpg123.h"
+typedef struct		{
+						char							map[256];
+						bool							on;
+						d3pnt							pt;
+						d3ang							ang;
+					} app_editor_override_type;
 
 //
-// Utility Headers
+// app struct
 //
-
-#include "baseutility.h"
-#include "baseprivate.h"
-
-#include "modelutility.h"
-#include "modelprivate.h"
-
-#include "maputility.h"
-#include "mapprivate.h"
-
-//
-// Application Headers
-//
-
-#include "app_defs.h"
-#include "setup_defs.h"
-#include "script_defs.h"
-#include "server_defs.h"
-#include "view_defs.h"
-#include "network_defs.h"
-#include "gui_defs.h"
-#include "sound_defs.h"
-#include "input_defs.h"
-
+					
+typedef struct		{
+						int								state;
+						bool							dedicated_host,loop_quit;
+						app_editor_override_type		editor_override;
+					} app_type;

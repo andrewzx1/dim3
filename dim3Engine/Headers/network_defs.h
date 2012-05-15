@@ -72,7 +72,8 @@ and can be sold or given away.
 // client defines
 //
 
-#define client_timeout_wait_msec						2500
+#define client_query_timeout_wait_msec					2500
+#define client_join_timeout_wait_msec					5000
 #define client_message_per_loop_count					10
 
 #define client_communication_update_msec_rate			50
@@ -88,7 +89,6 @@ and can be sold or given away.
 #define net_mode_none									0
 #define net_mode_client									1
 #define net_mode_host									2
-#define net_mode_host_dedicated							3
 
 //
 // queue defines

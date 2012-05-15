@@ -36,8 +36,6 @@ and can be sold or given away.
 #include "scripts.h"
 #include "objects.h"
 
-extern bool					game_loop_quit;
-
 extern server_type			server;
 extern map_type				map;
 extern iface_type			iface;
@@ -96,7 +94,7 @@ void score_limit_check_scores(void)
 		// only check score limits
 		// during network games on the host
 
-	if ((net_setup.mode!=net_mode_host) && (net_setup.mode!=net_mode_host_dedicated)) return;
+	if (net_setup.mode!=net_mode_host) return;
 
 		// is limit already on?
 
@@ -169,6 +167,11 @@ int score_limit_get_resume_time(void)
 	return(secs);
 }
 
+int score_limit_get_resume_tick(void)
+{
+	return(score_limit_start_tick+(net_setup.game_reset_secs*1000));
+}
+
 /* =======================================================
 
       Run Score Limit
@@ -177,6 +180,8 @@ int score_limit_get_resume_time(void)
 
 void score_limit_run(void)
 {
+	char			err_str[256];
+
 	gl_frame_clear(FALSE);
 	view_primitive_2D_color_quad(&iface.color.background,1.0f,0,iface.scale_x,0,iface.scale_y);
 	network_score_draw();
@@ -185,10 +190,16 @@ void score_limit_run(void)
 		// hosts can cancel at anytime
 		// or after timeout
 	
-	if ((net_setup.mode==net_mode_host) || (net_setup.mode==net_mode_host_dedicated)) {
-		if ((game_time_get_raw()>(score_limit_start_tick+(net_setup.game_reset_secs*1000))) || (input_action_get_state_single(nc_menu))) {
+	if (net_setup.mode==net_mode_host) {
+		if ((game_time_get_raw()>score_limit_get_resume_tick()) || (input_action_get_state_single(nc_menu))) {
+
 			server.next_state=gs_running;
-			game_reset();
+
+			if (!game_host_reset(err_str)) {
+				error_setup(err_str,"Hosting Game Canceled");
+				server.next_state=gs_error;
+				return;
+			}
 		}
 		return;
 	}

@@ -110,22 +110,11 @@ typedef struct		{
 														respawn_secs,game_reset_secs,
 														character_idx,tint_color_idx;
 						char							name[name_str_len];
-						bool							show_names,dedicated,map_rotation;
+						bool							show_names,map_rotation;
 						setup_network_bot_type			bot;
 						setup_network_map_list_type		map_list;
 						setup_network_option_list_type	option_list;
 					} setup_network_type;
-
-//
-// setup editor overrides
-//
-
-typedef struct		{
-						char							map[256];
-						bool							on;
-						d3pnt							pt;
-						d3ang							ang;
-					} setup_editor_override_type;
 
 //
 // setup struct
@@ -145,14 +134,4 @@ typedef struct		{
 						setup_action_list_type			action_list;
 						setup_network_type				network;
 						file_path_setup_type			file_path_setup;
-						setup_editor_override_type		editor_override;
 					} setup_type;
-
-//
-// fatal error struct
-//
-
-typedef struct		{
-						char							title[256],descript[256];
-						bool							is_error;
-					} fatal_error_type;

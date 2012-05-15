@@ -297,17 +297,14 @@ void network_score_draw(void)
 		
 	if ((view.menu.active) || (view.menu.fade_in) || (view.menu.fade_out)) return;
 
-		// always draw if a dedicated host,
-		// the game is at it's score limit,
+		// draw if the game is at it's score limit,
 		// the player is dead or score display
 		// is on
 		
-	if (net_setup.mode!=net_mode_host_dedicated) {
-		if (server.state!=gs_score_limit) {
-			if (!view.score.on) {
-				player_obj=server.obj_list.objs[server.player_obj_idx];
-				if (player_obj->status.health.value!=0) return;
-			}
+	if (server.state!=gs_score_limit) {
+		if (!view.score.on) {
+			player_obj=server.obj_list.objs[server.player_obj_idx];
+			if (player_obj->status.health.value!=0) return;
 		}
 	}
 	
@@ -373,10 +370,6 @@ void network_chat_draw(void)
 	char					txt[max_view_chat_str_len+name_str_len+4];
 	view_chat_line_type		*line;
 	d3col					col;
-
-		// dedicated hosts don't chat
-
-	if (net_setup.mode==net_mode_host_dedicated) return;
 
 		// draw position
 
