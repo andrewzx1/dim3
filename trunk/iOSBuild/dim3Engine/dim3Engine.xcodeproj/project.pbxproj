@@ -863,6 +863,7 @@
 		26AE7E75154DFB9A00D9E56A /* Default-Portrait~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Default-Portrait~ipad.png"; path = "Resources/Default-Portrait~ipad.png"; sourceTree = "<group>"; };
 		26D6C0DF13E2442D0087FFD4 /* libstdc++.6.0.9.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libstdc++.6.0.9.dylib"; path = "usr/lib/libstdc++.6.0.9.dylib"; sourceTree = SDKROOT; };
 		26D6C0E113E244400087FFD4 /* libicucore.A.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libicucore.A.dylib; path = usr/lib/libicucore.A.dylib; sourceTree = SDKROOT; };
+		26F0C44415632CEA00AFE368 /* app_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = app_defs.h; path = ../../dim3Engine/Headers/app_defs.h; sourceTree = "<group>"; };
 		26FF68A91523D5B800FACC3B /* base_iface_singleplayer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = base_iface_singleplayer.c; sourceTree = "<group>"; };
 		26FF68BD1523D66B00FACC3B /* script_singleplayer_high_score.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_singleplayer_high_score.c; sourceTree = "<group>"; };
 		26FF68BE1523D66B00FACC3B /* script_singleplayer_setting.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_singleplayer_setting.c; sourceTree = "<group>"; };
@@ -1544,6 +1545,7 @@
 				26A6845C13DE446E007513D1 /* dim3engine.h */,
 				26A6845B13DE4457007513D1 /* os_defs.h */,
 				26A6845813DE4457007513D1 /* iphone_os_defs.h */,
+				26F0C44415632CEA00AFE368 /* app_defs.h */,
 				26A6845D13DE446E007513D1 /* gui_defs.h */,
 				26A6845E13DE446E007513D1 /* input_defs.h */,
 				26A6845F13DE446E007513D1 /* interface.h */,

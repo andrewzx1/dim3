@@ -359,7 +359,8 @@ void cinema_action_run_sound(map_cinema_action_type *action)
 	int				buffer_idx,node_idx;
 	char			err_str[256];
 
-
+	if (app.dedicated_host) return;
+	
 	buffer_idx=al_find_buffer(action->actor_name);
 	if (buffer_idx==-1) {
 		sprintf(err_str,"Unknown sound in cinema: %s",action->actor_name);

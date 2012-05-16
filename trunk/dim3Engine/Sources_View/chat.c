@@ -58,7 +58,7 @@ void chat_add_message(char *name,char *str,d3col *col)
 		// then just stdout chats
 
 	if (app.dedicated_host) {
-		fprintf(stdout,"%s:%s\n",name,str);
+		fprintf(stdout,"%s: %s\n",name,str);
 		return;
 	}
 	

@@ -498,6 +498,8 @@ void remote_sound(network_request_remote_sound *sound)
 	float				pitch;
 	d3pnt				pnt;
 	
+	if (app.dedicated_host) return;
+	
 	pnt.x=ntohl(sound->pnt_x);
 	pnt.y=ntohl(sound->pnt_y);
 	pnt.z=ntohl(sound->pnt_z);

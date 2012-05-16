@@ -33,6 +33,7 @@ and can be sold or given away.
 #include "network.h"
 #include "objects.h"
 
+extern app_type					app;
 extern server_type				server;
 extern view_type				view;
 extern map_type					map;
@@ -220,15 +221,17 @@ void model_animation_effect_launch(model_draw *draw,int animate_idx,int pose_idx
 
 		// sounds
 		
-	if (pose_move->sound.buffer_idx!=-1) {
+	if (pose_move->sound.name[0]!=0x0) {
 		model_animation_effect_launch_bone_position(draw,animate_idx,pose_move->pose_idx,pose_move->sound.bone_idx,&pnt);
 
 		global=pose_move->sound.no_position;		// only use global sounds if launched by player
 		if (!draw->player) global=FALSE;
 
-		al_play_source(pose_move->sound.buffer_idx,&pnt,pose_move->sound.pitch,FALSE,FALSE,global,draw->player);
-		object_watch_sound_alert(&pnt,draw->connect.obj_idx,pose_move->sound.name);	// sound watches
-
+		if ((!app.dedicated_host) && (pose_move->sound.buffer_idx!=-1)) {
+			al_play_source(pose_move->sound.buffer_idx,&pnt,pose_move->sound.pitch,FALSE,FALSE,global,draw->player);
+			object_watch_sound_alert(&pnt,draw->connect.obj_idx,pose_move->sound.name);	// sound watches
+		}
+		
 		if ((net_setup.mode!=net_mode_none) && (draw->connect.net_sound)) {
 			if (draw->connect.obj_idx!=-1) net_client_send_sound(server.obj_list.objs[draw->connect.obj_idx],&pnt,pose_move->sound.pitch,pose_move->sound.name);
 		}
