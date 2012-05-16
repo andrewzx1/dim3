@@ -34,6 +34,7 @@ and can be sold or given away.
 #include "scripts.h"
 #include "objects.h"
 
+extern app_type				app;
 extern iface_type			iface;
 extern js_type				js;
 extern setup_type			setup;
@@ -146,14 +147,16 @@ void script_sound_play(JSContextRef cx,JSObjectRef j_obj,char *name,d3pnt *pt,fl
 	
 		// play sound
 		
-	buffer_idx=al_find_buffer(name);
-	if (buffer_idx==-1) {
-		*exception=js_sound_name_exception(cx,name);
-		return;
+	if (!app.dedicated_host) {
+		buffer_idx=al_find_buffer(name);
+		if (buffer_idx==-1) {
+			*exception=js_sound_name_exception(cx,name);
+			return;
+		}
+
+		al_play_source(buffer_idx,pt,pitch,FALSE,FALSE,global,player);
 	}
-
-	al_play_source(buffer_idx,pt,pitch,FALSE,FALSE,global,player);
-
+	
 		// run sound watches
 
 	if (sound_obj_idx!=-1) object_watch_sound_alert(pt,sound_obj_idx,name);
@@ -275,7 +278,7 @@ JSValueRef js_sound_start_music_func(JSContextRef cx,JSObjectRef func,JSObjectRe
 
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
-	if (setup.music_on) {
+	if ((setup.music_on) && (!app.dedicated_host)) {
 	
 		script_value_to_string(cx,argv[0],name,name_str_len);
 
@@ -291,7 +294,7 @@ JSValueRef js_sound_stop_music_func(JSContextRef cx,JSObjectRef func,JSObjectRef
 {
 	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
 	
-	if (setup.music_on) al_music_stop();
+	if ((setup.music_on) && (!app.dedicated_host)) al_music_stop();
 
 	return(script_null_to_value(cx));
 }
@@ -300,7 +303,7 @@ JSValueRef js_sound_set_music_looping_func(JSContextRef cx,JSObjectRef func,JSOb
 {
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
-	al_music_set_loop(script_value_to_bool(cx,argv[0]));
+	if ((setup.music_on) && (!app.dedicated_host)) al_music_set_loop(script_value_to_bool(cx,argv[0]));
 
 	return(script_null_to_value(cx));
 }
@@ -312,7 +315,7 @@ JSValueRef js_sound_fade_in_music_func(JSContextRef cx,JSObjectRef func,JSObject
 	
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 	
-	if (setup.music_on) {
+	if ((setup.music_on) && (!app.dedicated_host)) {
 
 		script_value_to_string(cx,argv[0],name,name_str_len);
 		msec=script_value_to_int(cx,argv[1]);
@@ -331,7 +334,7 @@ JSValueRef js_sound_fade_out_music_func(JSContextRef cx,JSObjectRef func,JSObjec
 	
 	if (!script_check_param_count(cx,func,argc,1,exception)) return(script_null_to_value(cx));
 	
-	if (setup.music_on) {
+	if ((setup.music_on) && (!app.dedicated_host)) {
 
 		msec=script_value_to_int(cx,argv[0]);
 		al_music_fade_out(msec);
@@ -347,7 +350,7 @@ JSValueRef js_sound_fade_out_fade_in_music_func(JSContextRef cx,JSObjectRef func
 	
 	if (!script_check_param_count(cx,func,argc,3,exception)) return(script_null_to_value(cx));
 	
-	if (setup.music_on) {
+	if ((setup.music_on) && (!app.dedicated_host)) {
 
 		script_value_to_string(cx,argv[0],name,name_str_len);
 		fade_out_msec=script_value_to_int(cx,argv[1]);
@@ -368,7 +371,7 @@ JSValueRef js_sound_cross_fade_music_func(JSContextRef cx,JSObjectRef func,JSObj
 	
 	if (!script_check_param_count(cx,func,argc,2,exception)) return(script_null_to_value(cx));
 	
-	if (setup.music_on) {
+	if ((setup.music_on) && (!app.dedicated_host)) {
 
 		script_value_to_string(cx,argv[0],name,name_str_len);
 		cross_msec=script_value_to_int(cx,argv[1]);

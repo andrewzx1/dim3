@@ -33,6 +33,7 @@ and can be sold or given away.
 #include "scripts.h"
 #include "objects.h"
 
+extern app_type			app;
 extern map_type			map;
 extern server_type		server;
 extern camera_type		camera;
@@ -111,13 +112,15 @@ void map_movements_start(int movement_idx,int move_idx,int obj_idx)
 		
 	if (move->sound_name[0]==0x0) return;
 	
-	buffer_idx=al_find_buffer(move->sound_name);
-	if (buffer_idx==-1) return;
+	if (!app.dedicated_host) {
+		buffer_idx=al_find_buffer(move->sound_name);
+		if (buffer_idx==-1) return;
 
-	map_movements_get_center(movement,&pt);
+		map_movements_get_center(movement,&pt);
+		
+		al_play_source(buffer_idx,&pt,move->sound_pitch,FALSE,FALSE,FALSE,FALSE);
+	}
 	
-	al_play_source(buffer_idx,&pt,move->sound_pitch,FALSE,FALSE,FALSE,FALSE);
-
 		// sound watches
 
 	object_watch_sound_alert(&pt,-1,move->sound_name);

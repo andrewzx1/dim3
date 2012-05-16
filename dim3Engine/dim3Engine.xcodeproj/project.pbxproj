@@ -460,6 +460,7 @@
 		26A45D091489AD6C00C02936 /* script_point_angle_vector.c in Sources */ = {isa = PBXBuildFile; fileRef = 26A45D071489AD6C00C02936 /* script_point_angle_vector.c */; };
 		26E1844513CEA27800812348 /* dim3 Engine.app in Copy Application */ = {isa = PBXBuildFile; fileRef = F5CD87F70557721D0023AD9B /* dim3 Engine.app */; };
 		26EE3E1713DA7F78000ABAF1 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26EE3E1613DA7F78000ABAF1 /* AudioUnit.framework */; };
+		26F0C43F1563297300AFE368 /* app_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 26F0C43E1563297300AFE368 /* app_defs.h */; };
 		26FF68A41523D5A200FACC3B /* base_iface_singleplayer.c in Sources */ = {isa = PBXBuildFile; fileRef = 26FF68A31523D5A200FACC3B /* base_iface_singleplayer.c */; };
 		26FF68B61523D61B00FACC3B /* script_singleplayer_high_score.c in Sources */ = {isa = PBXBuildFile; fileRef = 26FF68B31523D61B00FACC3B /* script_singleplayer_high_score.c */; };
 		26FF68B71523D61B00FACC3B /* script_singleplayer_setting.c in Sources */ = {isa = PBXBuildFile; fileRef = 26FF68B41523D61B00FACC3B /* script_singleplayer_setting.c */; };
@@ -952,6 +953,7 @@
 		26A45D061489AD6C00C02936 /* script_color.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_color.c; sourceTree = "<group>"; };
 		26A45D071489AD6C00C02936 /* script_point_angle_vector.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_point_angle_vector.c; sourceTree = "<group>"; };
 		26EE3E1613DA7F78000ABAF1 /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = ../../../../System/Library/Frameworks/AudioUnit.framework; sourceTree = "<group>"; };
+		26F0C43E1563297300AFE368 /* app_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = app_defs.h; path = Headers/app_defs.h; sourceTree = "<group>"; };
 		26FF68A31523D5A200FACC3B /* base_iface_singleplayer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = base_iface_singleplayer.c; sourceTree = "<group>"; };
 		26FF68B31523D61B00FACC3B /* script_singleplayer_high_score.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_singleplayer_high_score.c; sourceTree = "<group>"; };
 		26FF68B41523D61B00FACC3B /* script_singleplayer_setting.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = script_singleplayer_setting.c; sourceTree = "<group>"; };
@@ -996,6 +998,7 @@
 				F5C5EA7E091323C400F94729 /* dim3engine.h */,
 				F50AF8A30885FBA200F261B1 /* os_defs.h */,
 				269D27C212DEBB7E00AF5695 /* mac_os_defs.h */,
+				26F0C43E1563297300AFE368 /* app_defs.h */,
 				2649D13C13412B2900573F6F /* server_defs.h */,
 				2649D13F13412B2900573F6F /* view_defs.h */,
 				2649D13D13412B2900573F6F /* setup_defs.h */,
@@ -1900,6 +1903,7 @@
 				261833B414DDE4F9004DD37A /* SDL_version.h in Headers */,
 				261833B514DDE4F9004DD37A /* SDL_video.h in Headers */,
 				261833B614DDE4F9004DD37A /* SDL.h in Headers */,
+				26F0C43F1563297300AFE368 /* app_defs.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
