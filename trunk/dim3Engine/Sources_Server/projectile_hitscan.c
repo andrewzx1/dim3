@@ -50,7 +50,7 @@ void projectile_hitscan(obj_type *obj,weapon_type *weap,proj_setup_type *proj_se
 	d3pnt					spt;
 	proj_type				*proj,*hit_proj;
 	ray_trace_contact_type	contact;
-	
+
 		// setup projectile
 		
 	proj=projectile_create(obj,weap,proj_setup);

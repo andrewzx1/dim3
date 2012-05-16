@@ -33,6 +33,7 @@ and can be sold or given away.
 #include "objects.h"
 #include "scripts.h"
 
+extern app_type				app;
 extern map_type				map;
 extern server_type			server;
 extern view_type			view;
@@ -466,11 +467,13 @@ void projectile_eject_vector(proj_type *proj,d3vct *vct)
 	poly_pointer_type	*poly;
 	map_mesh_poly_type	*mesh_poly;
 
-	poly=&proj->contact.hit_poly;
+		// if it hit anything other than a polygon
+		// or we are in dedicated mode (no camera),
+		// then just eject it backwards
 
-		// if it hit anything other than a polygon, just eject backwards
+	poly=&proj->contact.hit_poly;
 		
-	if (poly->mesh_idx==-1) {
+	if ((poly->mesh_idx==-1) || (app.dedicated_host)) {
 		projectile_set_motion(proj,1000,proj->motion.ang.y,proj->motion.ang.x,&motion);
 	
 		vct->x=-(float)motion.x;
@@ -514,6 +517,7 @@ void projectile_eject_vector(proj_type *proj,d3vct *vct)
 	vct->x=(float)motion.x;
 	vct->y=0;
 	vct->z=(float)motion.z;
+
 	vector_normalize(vct);
 }
 

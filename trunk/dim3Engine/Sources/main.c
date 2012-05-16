@@ -149,8 +149,14 @@ void app_register_kill_signals(void)
 
 	// OS X and linux signals
 
+void app_osx_signal(int sig)
+{
+	app.loop_quit=TRUE;
+}
+
 void app_register_kill_signals(void)
 {
+	signal(SIGINT,app_osx_signal);
 }
 	
 #endif

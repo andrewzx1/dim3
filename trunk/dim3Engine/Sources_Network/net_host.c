@@ -387,6 +387,10 @@ int net_host_thread(void *arg)
 		host_complete=TRUE;
 		return(0);
 	}
+	
+		// we'll let the socket block for us
+	
+	net_socket_blocking(host_socket,TRUE);
 		
 		// bind -- use any IP on this machine to
 		// get traffic
@@ -400,11 +404,8 @@ int net_host_thread(void *arg)
 		// host is OK, free thread to run independantly
 		
 	host_complete=TRUE;
-	
+
 		// begin waiting for messages
-		// we'll let the socket block for us
-	
-	net_socket_blocking(host_socket,TRUE);
 	
 	while (TRUE) {
 	

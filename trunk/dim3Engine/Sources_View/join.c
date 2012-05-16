@@ -278,10 +278,10 @@ bool join_ping_thread_wan_host(join_server_host_type *host,int msec,unsigned cha
 	sock=net_open_udp_socket();
 	if (sock==D3_NULL_SOCKET) return(FALSE);
 	
-	net_socket_blocking(sock,FALSE);
-	
 	ip_addr=inet_addr(host->ip);
-	if (ip_addr!=INADDR_NONE) return(FALSE);
+	if (ip_addr==INADDR_NONE) return(FALSE);
+	
+	net_socket_blocking(sock,FALSE);
 
 	if (!net_sendto_msg(sock,ip_addr,net_port_host,net_action_request_info,net_uid_constant_none,NULL,0)) {
 		net_close_socket(&sock);
@@ -292,7 +292,7 @@ bool join_ping_thread_wan_host(join_server_host_type *host,int msec,unsigned cha
 	
 	got_reply=FALSE;
 	
-	max_tick=client_query_timeout_wait_msec;
+	max_tick=client_query_timeout_wait_msec+2000;
 	
 	while (((msec+max_tick)>time_get()) && (!join_thread_quit)) {
 		if (net_recvfrom_mesage(sock,&recv_ip_addr,NULL,&action,&net_uid,msg,NULL)) {
@@ -308,7 +308,7 @@ bool join_ping_thread_wan_host(join_server_host_type *host,int msec,unsigned cha
 		
 	net_close_socket(&sock);
 	
-	return(TRUE);
+	return(got_reply);
 }
 
 int join_ping_thread_wan(void *arg)
@@ -607,7 +607,7 @@ void join_open(void)
 		if (!net_load_news(join_host_wan_list,join_news)) join_mode=join_mode_lan_error;
 
 //		join_host_wan_list->count=1;		// supergumba
-//		strcpy(join_host_wan_list->hosts[0].name,"Test 1");
+//		strcpy(join_host_wan_list->hosts[0].name,"LocalHost");
 //		strcpy(join_host_wan_list->hosts[0].ip,"127.0.0.1");
 
 			// nothing queried yet
