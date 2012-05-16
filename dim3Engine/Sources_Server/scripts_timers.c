@@ -293,7 +293,7 @@ void timers_run(void)
 
 		// also, we can only mark timers as disposed and clean up
 		// at the end so we don't dangle any pointers
-		
+
 	ntimer=0;
 
 	for (n=0;n!=max_timer_list;n++) {
@@ -333,7 +333,7 @@ void timers_run(void)
 			if (timer->count>0) continue;
 			
 				// fire timer
-				
+
 			switch (timer->mode) {
 			
 				case timer_mode_single:
@@ -350,7 +350,7 @@ void timers_run(void)
 					scripts_post_event_console(timer->script_idx,timer->override_proj_idx,sd_event_timer,0,timer->user_id);
 					break;
 			}
-			
+		
 				// repeat timer
 				
 			timer->count=timer->freq;

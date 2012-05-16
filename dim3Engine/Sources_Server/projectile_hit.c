@@ -76,7 +76,7 @@ void projectile_hit(proj_type *proj)
     obj_type			*obj,*hurt_obj;
     weapon_type			*weap;
 	proj_setup_type		*proj_setup;
-	
+
 		// call projectile hit
 
 	scripts_post_event_console(proj->script_idx,proj->idx,sd_event_hit,0,0);

@@ -75,6 +75,7 @@ void console_add_line(char *txt,d3col *col)
 
 	if (app.dedicated_host) {
 		fprintf(stdout,"%s\n",txt);
+		fflush(stdout);
 		return;
 	}
 

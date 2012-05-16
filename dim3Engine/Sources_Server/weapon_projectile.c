@@ -417,7 +417,7 @@ bool weapon_script_projectile_spawn(obj_type *obj,weapon_type *weap,char *proj_n
 	float				r_slop;
 	d3ang				proj_ang;
 	proj_setup_type		*proj_setup;
-	
+
 		// fail under liquid?
 
 	if ((weap->fail_in_liquid) && (obj->liquid.mode==lm_under)) return(TRUE);

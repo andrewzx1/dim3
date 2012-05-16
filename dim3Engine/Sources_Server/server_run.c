@@ -331,7 +331,7 @@ void server_run(void)
 
 		run_objects_no_slice();
 		run_projectiles_no_slice();
-	
+
 			// tasks that require 1/100th of
 			// a second operation
 			

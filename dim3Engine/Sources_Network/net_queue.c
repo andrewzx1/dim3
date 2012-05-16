@@ -84,7 +84,7 @@ bool net_queue_feed(d3socket sock,net_queue_type *queue)
 	
 		// read data until there is no more or
 		// the queue is full
-		
+
 	err=FALSE;
 		
 	while (net_receive_ready(sock)) {

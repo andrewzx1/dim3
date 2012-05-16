@@ -168,6 +168,8 @@ bool app_run_editor_launch(char *err_str)
 
 bool app_run_dedicated_host(char *err_str)
 {
+	char			str[256];
+
 		// launch directly into hosting
 		// setup hosting flags and IPs
 		
@@ -222,7 +224,8 @@ bool app_run_dedicated_host(char *err_str)
 
 		// game is running
 
-	console_add("Running...");
+	sprintf(str,"Running on %s...",net_setup.host.ip_resolve);
+	console_add(str);
 	
 	server.next_state=gs_running;
 
