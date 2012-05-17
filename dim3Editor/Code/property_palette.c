@@ -557,29 +557,3 @@ void property_palette_click(d3pnt *pnt,bool double_click)
 	main_wind_draw();
 }
 
-/* =======================================================
-
-      Property Palette List Utilities
-      
-======================================================= */
-
-void property_palette_pick_texture(char *title,int *txt_idx)
-{
-	int				n;
-	
-	for (n=0;n!=max_map_texture;n++) {
-		if (map.textures[n].frames[0].name[0]==0x0) {
-			strcpy((char*)list_texture_names[n],"(none)");
-		}
-		else {
-			strcpy((char*)list_texture_names[n],map.textures[n].frames[0].name);
-		}
-	}
-	
-	if (title==NULL) {
-		list_palette_start_picking_mode(&property_palette,"Pick a Texture",(char*)list_texture_names,max_map_texture,name_str_len,0,TRUE,FALSE,txt_idx,NULL);
-	}
-	else {
-		list_palette_start_picking_mode(&property_palette,title,(char*)list_texture_names,max_map_texture,name_str_len,0,TRUE,FALSE,txt_idx,NULL);
-	}
-}
