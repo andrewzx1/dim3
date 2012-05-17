@@ -133,10 +133,35 @@ void piece_add_obj_replace_delete_existing(void)
       
 ======================================================= */
 
+void import_texture_copy(char *path,char *name,char *sub_name)
+{
+    char			*c,dest_name[256],srce_path[1024],dest_path[1024];
+
+	strcpy(srce_path,path);
+	
+	if (sub_name!=NULL) {
+		c=strrchr(srce_path,'.');
+		if (c==NULL) return;
+		
+		*c=0x0;
+		strcat(srce_path,sub_name);
+		strcat(srce_path,".png");
+	}
+	
+	strcpy(dest_name,name);
+	
+	if (sub_name!=NULL) strcat(dest_name,sub_name);
+	
+	file_paths_data_default(&file_path_setup,dest_path,"Bitmaps/Textures",dest_name,"png");
+	bitmap_copy(srce_path,dest_path);
+}
+
 void import_texture_fill_materials(obj_import_state_type *import_state)
 {
-	int				n,k,txt_idx;
-	char			txt[256],material_name[256],str[256];
+	int				n,k,txt_idx,free_txt_idx;
+	char			txt[256],material_name[256],file_name[256],
+					title[256],path[1024],err_str[256];
+	char			*c;
 	texture_type	*texture;
 	
 	import_state->nmaterial=0;
@@ -174,6 +199,8 @@ void import_texture_fill_materials(obj_import_state_type *import_state)
 		}
 		
 			// does texture already exist
+
+		free_txt_idx=-1;
 			
 		if (txt_idx==-1) {
 		
@@ -181,7 +208,9 @@ void import_texture_fill_materials(obj_import_state_type *import_state)
 			
 			for (k=0;k!=max_map_texture;k++) {
 			
-					// a free texture
+					// see if we've already loaded this
+					// texture, otherwise mark the first
+					// free textures
 					
 				if (texture->frames[0].bitmap.gl_id!=-1) {
 					if (strcasecmp(texture->material_name,material_name)==0) {
@@ -189,24 +218,74 @@ void import_texture_fill_materials(obj_import_state_type *import_state)
 						break;
 					}
 				}
-				
+				else {
+					if (free_txt_idx==-1) free_txt_idx=k;
+				}
+
 				texture++;
 			}
 		}
 		
 			// any more spots?
 			
-		if (txt_idx==-1) {
+		if ((txt_idx==-1) || (free_txt_idx==-1)) {
 			if (import_state->nmaterial>=import_max_material) break;
 		}
 		
 			// if not, pick one
 		
 		if (txt_idx==-1) {
-			sprintf(str,"Choose a texture for material %s",material_name);
+
+				// load texture and remember name
 			
+			texture=&map.textures[free_txt_idx];
+			strcpy(texture->material_name,material_name);
+			
+				// pick a bitmap
+
 			txt_idx=0;
-			property_palette_pick_texture(str,&txt_idx);
+				
+			sprintf(title,"Select a PNG for Material: %s",material_name);
+			
+			if (os_load_file(title,path,"png")) {
+			
+					// is it good?
+				
+				if (bitmap_check(path,err_str)) {
+			
+						// get the actual file name
+						
+					c=strrchr(path,'/');
+					if (c==NULL) c=strrchr(path,'\\');
+					if (c==NULL) {
+						strcpy(file_name,"unknown");
+					}
+					else {
+						strcpy(file_name,(c+1));
+						c=strrchr(file_name,'.');
+						if (c!=NULL) *c=0x0;
+					}
+			
+						// copy bitmaps to map folder
+						// copy selected bitmap and any addition _n, _s, or _g files
+						
+					strcpy(texture->frames[0].name,file_name);
+						
+					import_texture_copy(path,texture->frames[0].name,NULL);
+					import_texture_copy(path,texture->frames[0].name,"_n");
+					import_texture_copy(path,texture->frames[0].name,"_s");
+					import_texture_copy(path,texture->frames[0].name,"_g");
+					
+						// open the textures
+						
+					map_refresh_textures(&map);
+
+					txt_idx=free_txt_idx;
+				}
+				else {
+					os_dialog_alert("Bad PNG",err_str);
+				}
+			}
 		}
 		
 			// setup material
