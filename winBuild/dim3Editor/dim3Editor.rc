@@ -70,6 +70,8 @@ BEGIN
 		MENUITEM SEPARATOR
         MENUITEM "Build Liquid Reflection Maps...",		ID_MAP_BUILD_LIQUID_REFLECTION_MAP
 		MENUITEM SEPARATOR
+        MENUITEM "Auto Generator Map...",				ID_MAP_AUTO_GENERATE
+		MENUITEM SEPARATOR
         MENUITEM "Run...\tCtrl+R",						ID_MAP_RUN
     END
     POPUP "Mesh"

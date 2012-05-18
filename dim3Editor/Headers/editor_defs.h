@@ -347,6 +347,7 @@ typedef struct		{
 #define kCommandClearLightMaps					FOUR_CHAR_CODE('clmp')
 #define kCommandBuildLightMaps					FOUR_CHAR_CODE('lmap')
 #define kCommandBuildLiquidReflectionMaps		FOUR_CHAR_CODE('lrmp')
+#define kCommandAutoGenerate					FOUR_CHAR_CODE('auto')
 #define kCommandRun								FOUR_CHAR_CODE('mrun')
 
 #define kCommandMeshCombine						FOUR_CHAR_CODE('pcmb')

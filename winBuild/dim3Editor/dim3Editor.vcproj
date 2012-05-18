@@ -359,6 +359,10 @@
 				Name="Headers"
 				>
 				<File
+					RelativePath="..\..\dim3Editor\Headers\auto_generator_defs.h"
+					>
+				</File>
+				<File
 					RelativePath="..\..\dim3Editor\Headers\dim3editor.h"
 					>
 				</File>
@@ -627,6 +631,26 @@
 					</File>
 					<File
 						RelativePath="..\..\dim3Common\Code\texture_edit_common.c"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="Auto Generator"
+					>
+					<File
+						RelativePath="..\..\dim3Editor\Code\auto_generate.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Editor\Code\auto_generate_setup.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Editor\Code\auto_generate_story.c"
+						>
+					</File>
+					<File
+						RelativePath="..\..\dim3Editor\Code\auto_generate_utility.c"
 						>
 					</File>
 				</Filter>
