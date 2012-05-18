@@ -371,6 +371,10 @@ bool menu_event_run(int cmd)
 			liquid_reflection_maps_create();
 			return(TRUE);
 
+		case kCommandAutoGenerate:
+			auto_generate_map();
+			return(TRUE);
+
 		case kCommandRun:
 			launch_engine();
 			return(TRUE);

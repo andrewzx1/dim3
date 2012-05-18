@@ -59,3 +59,5 @@ and can be sold or given away.
 //
 
 #include "editor_defs.h"
+#include "auto_generator_defs.h"
+

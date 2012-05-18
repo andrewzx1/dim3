@@ -197,6 +197,12 @@ extern void light_maps_clear(void);
 extern bool liquid_reflection_maps_create(void);
 
 //
+// auto-generate
+//
+
+extern void auto_generate_map(void);
+
+//
 // selection routines
 //
 

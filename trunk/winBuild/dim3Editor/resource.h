@@ -45,7 +45,8 @@
 #define ID_MAP_CLEAR_LIGHT_MAP				406
 #define ID_MAP_BUILD_LIGHT_MAP				407
 #define ID_MAP_BUILD_LIQUID_REFLECTION_MAP	408
-#define ID_MAP_RUN							409
+#define ID_MAP_AUTO_GENERATE				409
+#define ID_MAP_RUN							410
 
 #define ID_MESH_COMBINE						500
 #define ID_MESH_SPLIT						501

@@ -71,6 +71,7 @@ int				win32_menu_remap[][2]={
 					{kCommandClearLightMaps,ID_MAP_CLEAR_LIGHT_MAP},
 					{kCommandBuildLightMaps,ID_MAP_BUILD_LIGHT_MAP},
 					{kCommandBuildLiquidReflectionMaps,ID_MAP_BUILD_LIQUID_REFLECTION_MAP},
+					{kCommandAutoGenerate,ID_MAP_AUTO_GENERATE},
 					{kCommandRun,ID_MAP_RUN},
 
 					{kCommandMeshCombine,ID_MESH_COMBINE},

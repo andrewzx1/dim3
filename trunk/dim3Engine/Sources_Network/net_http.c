@@ -65,12 +65,12 @@ d3socket net_get_http_file_connect(char *host_name,int port,int secs,char *err_s
 		
 	addr.sin_family=AF_INET;
 	addr.sin_port=htons((short)port);
-	
-	if (inet_aton(ip,&addr.sin_addr)==0) {
+	addr.sin_addr.s_addr=inet_addr(ip);
+	if (addr.sin_addr.s_addr==INADDR_NONE) {
 		sprintf(err_str,"Networking: Could not create address for %s",ip);
 		return(D3_NULL_SOCKET);
 	}
-	
+
 		// create socket and put in non-blocking
 		
 	sock=socket(AF_INET,SOCK_STREAM,0);
