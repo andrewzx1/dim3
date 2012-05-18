@@ -109,11 +109,15 @@ void net_socket_enable_broadcast(d3socket sock)
 
 bool net_ip_to_address(char *ip,unsigned long *ip_addr,char *err_str)
 {
-	*ip_addr=ntohl(inet_addr(ip));
-	if ((*ip_addr)!=INADDR_NONE) return(TRUE);
+	struct sockaddr_in	addr;
 
-	sprintf(err_str,"Networking: Could not create address for %s",ip);
-	return(FALSE);
+	if (inet_aton(ip,&addr.sin_addr)==0) {
+		sprintf(err_str,"Networking: Could not create address for %s",ip);
+		return(FALSE);
+	}
+	
+	*ip_addr=ntohl(addr.sin_addr.s_addr);
+	return(TRUE);
 }
 
 /* =======================================================

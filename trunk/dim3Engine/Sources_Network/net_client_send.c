@@ -187,6 +187,10 @@ void net_client_send_remote_update(obj_type *obj,bool chat_on)
 	update.fp_ang_x=htonf(obj->ang.x);
 	update.fp_ang_y=htonf(obj->ang.y);
 	update.fp_ang_z=htonf(obj->ang.z);
+	
+	update.fp_face_ang_x=htonf(obj->face.ang.x);
+	update.fp_face_ang_y=htonf(obj->face.ang.y);
+	update.fp_face_ang_z=htonf(obj->face.ang.z);
 
 	update.offset_x=htons((short)draw->offset.x);
 	update.offset_y=htons((short)draw->offset.y);

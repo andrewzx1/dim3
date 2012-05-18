@@ -2262,6 +2262,33 @@ unsigned long element_draw_table_get_image_gl_id(element_type *element,int row_i
 	return(view_images_get_gl_id(element->setup.table.images[idx].image_idx));
 }
 
+void element_draw_table_line_data_text(int x,int y,int row_high,d3col *txt_col,char *txt)
+{
+	int				dy,high;
+	char			*c;
+	
+	high=gl_text_get_char_height(iface.font.text_size_medium);
+	
+	gl_text_start(font_interface_index,iface.font.text_size_medium);
+	
+		// any returns?
+		
+	c=strchr(txt,'\n');
+	if (c==NULL) {
+		dy=y+((row_high>>1)-3);
+		gl_text_draw(x,(dy+2),txt,tx_left,TRUE,txt_col,1.0f);
+	}
+	else {
+		*c=0x0;
+		
+		dy=y+(high+8);
+		gl_text_draw(x,dy,txt,tx_left,FALSE,txt_col,1.0f);
+		gl_text_draw(x,(dy+(high+2)),(c+1),tx_left,FALSE,txt_col,1.0f);
+	}
+		
+	gl_text_end();
+}
+
 void element_draw_table_line_data(element_type *element,int x,int y,int row,int wid,int row_high,d3col *txt_col,char *data)
 {
 	int				n,dx,dy,tx,col_wid,bitmap_sz;
@@ -2355,9 +2382,7 @@ void element_draw_table_line_data(element_type *element,int x,int y,int row,int 
 		
 			// draw text
 			
-		gl_text_start(font_interface_index,iface.font.text_size_medium);
-		gl_text_draw(tx,(dy+2),txt,tx_left,TRUE,txt_col,1.0f);
-		gl_text_end();
+		element_draw_table_line_data_text(tx,y,row_high,txt_col,txt);
 		
 			// get next data
 			
@@ -2378,10 +2403,10 @@ void element_draw_table_busy(element_type *element)
 
 	high=gl_text_get_char_height(iface.font.text_size_medium)*2;
 	
-	bot-=10;
-	top=bot-high;
-	lft+=10;
-	rgt=lft+high;
+	bot-=5;
+	top=bot-(high+5);
+	rgt-=5;
+	lft=rgt-(high+5);
 
 		// selected arc
 
@@ -2394,10 +2419,10 @@ void element_draw_table_busy(element_type *element)
 		end_perc=((float)(n+1))/16.0f;
 
 		if (n==idx) {
-			view_primitive_2D_color_arc(&iface.progress.hilite_color,1.0f,lft,rgt,top,bot,start_perc,end_perc);
+			view_primitive_2D_color_arc(&iface.progress.hilite_color,0.7f,lft,rgt,top,bot,start_perc,end_perc);
 		}
 		else {
-			view_primitive_2D_color_arc(&iface.progress.background_color,1.0f,lft,rgt,top,bot,start_perc,end_perc);
+			view_primitive_2D_color_arc(&iface.progress.background_color,0.5f,lft,rgt,top,bot,start_perc,end_perc);
 		}
 	}
 }

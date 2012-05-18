@@ -332,6 +332,7 @@ typedef struct		{
 typedef struct		{
 						int								flags,pnt_x,pnt_y,pnt_z,
 														fp_ang_x,fp_ang_y,fp_ang_z,
+														fp_face_ang_x,fp_face_ang_y,fp_face_ang_z,
 														fp_predict_move_x,fp_predict_move_y,fp_predict_move_z,
 														fp_predict_turn_y,model_mesh_mask;
 						short							offset_x,offset_y,offset_z,

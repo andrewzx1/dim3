@@ -41,7 +41,6 @@ and can be sold or given away.
 d3socket net_get_http_file_connect(char *host_name,int port,int secs,char *err_str)
 {
 	int					err,count;
-	unsigned long		ns_addr;
 	bool				in_progress,connect_ok;
 	char				*ip;
 	d3socket			sock;
@@ -62,17 +61,15 @@ d3socket net_get_http_file_connect(char *host_name,int port,int secs,char *err_s
 	
 		// get host address
 		
-	ns_addr=inet_addr(ip);
-	if (ns_addr==INADDR_NONE) {
-		sprintf(err_str,"Networking: Could not create address for %s",ip);
-		return(D3_NULL_SOCKET);
-	}
-
 	memset(&addr,0x0,sizeof(struct sockaddr_in));
 		
 	addr.sin_family=AF_INET;
 	addr.sin_port=htons((short)port);
-	addr.sin_addr.s_addr=ns_addr;
+	
+	if (inet_aton(ip,&addr.sin_addr)==0) {
+		sprintf(err_str,"Networking: Could not create address for %s",ip);
+		return(D3_NULL_SOCKET);
+	}
 	
 		// create socket and put in non-blocking
 		

@@ -273,7 +273,7 @@ int pin_downward_movement_obj(obj_type *obj,bool set_obj_contact,int my)
 				
 				if ((pin_movement_contacts[n].obj.idx!=-1) && (set_obj_contact)) {
 					stand_obj=server.obj_list.objs[pin_movement_contacts[n].obj.idx];
-					obj->contact.stand_obj_idx=pin_movement_contacts[n].obj.idx;
+					if ((obj->pnt.y-my)<(stand_obj->pnt.y-stand_obj->size.y)) obj->contact.stand_obj_idx=pin_movement_contacts[n].obj.idx;
 				}
 				
 				cy=pin_movement_contacts[n].hpt.y;
