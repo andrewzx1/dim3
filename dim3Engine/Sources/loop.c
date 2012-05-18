@@ -513,7 +513,7 @@ bool loop_main_dedicated(char *err_str)
 		// let's sleep a bit so it doesn't
 		// consume all the CPU (10 milliseconds)
 
-	usleep(10000);
+	usleep(1000);
 	
 	return(TRUE);
 }

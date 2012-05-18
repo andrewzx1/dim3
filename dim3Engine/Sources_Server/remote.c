@@ -118,7 +118,7 @@ bool remote_add(network_reply_join_remote *remote,bool send_event)
 
 		// send event to player
 
-	if (send_event) {
+	if ((send_event) && (!app.dedicated_host)) {
 		player_obj=server.obj_list.objs[server.player_obj_idx];
 		scripts_post_event_console(player_obj->script_idx,-1,sd_event_remote,sd_event_remote_join,obj->idx);
 	}
@@ -139,7 +139,7 @@ void remote_remove(int net_uid,bool send_event)
 		// do it before dispose so player can
 		// read the object if it wants to
 
-	if (send_event) {
+	if ((send_event) && (!app.dedicated_host)) {
 		player_obj=server.obj_list.objs[server.player_obj_idx];
 		scripts_post_event_console(player_obj->script_idx,-1,sd_event_remote,sd_event_remote_leave,obj->idx);
 	}
@@ -209,6 +209,8 @@ void remote_game_reset(network_request_game_reset *reset)
 	}
 
 		// respawn the player
+		
+	if (app.dedicated_host) return;
 
 	player_obj=server.obj_list.objs[server.player_obj_idx];
 	
@@ -276,12 +278,14 @@ void remote_death(int net_uid,network_request_remote_death *death)
 
 			// send death/suicide remote event
 
-		player_obj=server.obj_list.objs[server.player_obj_idx];
-		if ((obj->damage_obj_idx==-1) || (obj->damage_obj_idx==obj->idx)) {
-			scripts_post_event_console(player_obj->script_idx,-1,sd_event_remote,sd_event_remote_suicide,obj->idx);
-		}
-		else {
-			scripts_post_event_console(player_obj->script_idx,-1,sd_event_remote,sd_event_remote_death,obj->idx);
+		if (!app.dedicated_host) {
+			player_obj=server.obj_list.objs[server.player_obj_idx];
+			if ((obj->damage_obj_idx==-1) || (obj->damage_obj_idx==obj->idx)) {
+				scripts_post_event_console(player_obj->script_idx,-1,sd_event_remote,sd_event_remote_suicide,obj->idx);
+			}
+			else {
+				scripts_post_event_console(player_obj->script_idx,-1,sd_event_remote,sd_event_remote_death,obj->idx);
+			}
 		}
 	}
 
@@ -294,9 +298,11 @@ void remote_death(int net_uid,network_request_remote_death *death)
 		object_telefrag(telefrag_obj,obj);
 			
 			// send telefrag remote event
-				
-		player_obj=server.obj_list.objs[server.player_obj_idx];
-		scripts_post_event_console(player_obj->script_idx,-1,sd_event_remote,sd_event_remote_telefrag,telefrag_obj->idx);
+			
+		if (!app.dedicated_host) {
+			player_obj=server.obj_list.objs[server.player_obj_idx];
+			scripts_post_event_console(player_obj->script_idx,-1,sd_event_remote,sd_event_remote_telefrag,telefrag_obj->idx);
+		}
 	}
 		
 		// change the score
@@ -342,6 +348,10 @@ void remote_update(int net_uid,network_request_remote_update *update)
 	obj->ang.x=ntohf(update->fp_ang_x);
 	obj->ang.y=ntohf(update->fp_ang_y);
 	obj->ang.z=ntohf(update->fp_ang_z);
+	
+	obj->face.ang.x=ntohf(update->fp_face_ang_x);
+	obj->face.ang.y=ntohf(update->fp_face_ang_y);
+	obj->face.ang.z=ntohf(update->fp_face_ang_z);
 	
 	draw->offset.x=(signed short)ntohs(update->offset_x);
 	draw->offset.y=(signed short)ntohs(update->offset_y);

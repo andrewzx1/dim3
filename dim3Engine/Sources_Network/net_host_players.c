@@ -192,6 +192,10 @@ int net_host_player_add(unsigned long ip_addr,int port,bool local,char *name,cha
 
 	SDL_mutexV(net_host_player_lock);
 	
+		// if dedicated, note in logs
+		
+	if (app.dedicated_host) fprintf(stdout,"Joined: %s\n",player->name);
+	
 	return(player->connect.net_uid);
 }
 
@@ -276,6 +280,10 @@ void net_host_player_remove(int net_uid)
 	net_host_player_count--;
 	
 	SDL_mutexV(net_host_player_lock);
+	
+		// if dedicated, note in logs
+		
+	if (app.dedicated_host) fprintf(stdout,"Left: %s\n",name);
 }
 
 /* =======================================================
@@ -454,6 +462,9 @@ void net_host_player_create_info_player_list(network_reply_info_player_list *pla
 
 void net_host_player_remote_route_msg(net_queue_msg_type *msg)
 {
+		// push messages to other clients
+		// and respond to player specific messages
+		
 	switch (msg->action) {
 	
 		case net_action_request_leave:
@@ -485,10 +496,9 @@ void net_host_player_remote_route_msg(net_queue_msg_type *msg)
 
 	}
 		
-		// since this is the host, we need to pass on
-		// the messages to the remotes on the host
+		// pass on message to remote on this server
 			
-	if (!app.dedicated_host) remote_route_message(msg);
+	remote_route_message(msg);
 }
 
 /* =======================================================

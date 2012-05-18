@@ -454,6 +454,7 @@ extern void join_run(void);
 extern void host_open(void);
 extern void host_close(void);
 extern void host_run(void);
+extern void host_game_setup(void);
 
 extern void file_open(void);
 extern void file_close(void);

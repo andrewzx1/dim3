@@ -426,22 +426,26 @@ float ray_trace_rotated_box(d3pnt *spt,d3vct *vct,d3pnt *hpt,int x,int z,int lx,
 	t[3]=ray_trace_quad(spt,vct,&pt[3],4,px,py,pz);
 	
 		// min y side
+		// we need to push in past
+		// the other walls or we get unecessary hits
+		// when pushed against a wall
 		
-	px[0]=px[3]=lx;
-	px[1]=px[2]=rx;
+	px[0]=px[3]=lx+1;
+	px[1]=px[2]=rx-1;
 	py[0]=py[1]=py[2]=py[3]=ty;
-	pz[0]=pz[1]=tz;
-	pz[2]=pz[3]=bz;
+	pz[0]=pz[1]=tz+1;
+	pz[2]=pz[3]=bz-1;
 	if (rang!=0.0f) rotate_2D_polygon(4,px,pz,x,z,rang);
 	t[4]=ray_trace_quad(spt,vct,&pt[4],4,px,py,pz);
 	
 		// max y side
+		// same push in here
 		
-	px[0]=px[3]=lx;
-	px[1]=px[2]=rx;
+	px[0]=px[3]=lx+1;
+	px[1]=px[2]=rx-1;
 	py[0]=py[1]=py[2]=py[3]=by;
-	pz[0]=pz[1]=tz;
-	pz[2]=pz[3]=bz;
+	pz[0]=pz[1]=tz+1;
+	pz[2]=pz[3]=bz-1;
 	if (rang!=0.0f) rotate_2D_polygon(4,px,pz,x,z,rang);
 	t[5]=ray_trace_quad(spt,vct,&pt[5],4,px,py,pz);
 	

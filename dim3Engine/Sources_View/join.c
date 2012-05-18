@@ -94,14 +94,14 @@ void join_create_list(join_server_host_list_type *list,int table_id)
 	for (n=0;n!=list->count;n++) {
 		if (host->pinged) {
 			if (!host->unreachable) {
-				snprintf(c,128,"Bitmaps/Icons_Map;%s;%s\t%s @ %s\t%d/%d\t%dms",host->map_name,host->name,host->game_name,host->map_name,host->player_list.count,host->player_list.max_count,host->ping_msec);
+				snprintf(c,128,"Bitmaps/Icons_Map;%s;%s\n%s\tType:%s\nMap:%s\t%d/%d\t%dms",host->map_name,host->name,host->ip,host->game_name,host->map_name,host->player_list.count,host->player_list.max_count,host->ping_msec);
 			}
 			else {
-				snprintf(c,128,"Bitmaps/Icons_Map;;%s\tUnreachable\t--\t--",host->name);
+				snprintf(c,128,"Bitmaps/Icons_Map;;%s\n%s\tUnreachable\t--\t--",host->name,host->ip);
 			}
 		}
 		else {
-			snprintf(c,128,"Bitmaps/Icons_Map;;%s\tQuerying...\t--\t--",host->name);
+			snprintf(c,128,"Bitmaps/Icons_Map;;%s\n%s\tQuerying...\t--\t--",host->name,host->ip);
 		}
 		c[127]=0x0;
 		
@@ -228,7 +228,7 @@ int join_ping_thread_lan(void *arg)
 	join_thread_lan_start_tick=time_get();
 	max_tick=client_query_timeout_wait_msec;
 	
-		// put socket in non-blocking so UI runs
+		// non-blocking socket
 		
 	net_socket_blocking(broadcast_sock,FALSE);
 	
@@ -271,28 +271,31 @@ bool join_ping_thread_wan_host(join_server_host_type *host,int msec,unsigned cha
 	int						action,net_uid,max_tick;
 	unsigned long			ip_addr,recv_ip_addr;
 	bool					got_reply;
+	struct sockaddr_in		addr;
 	d3socket				sock;
 	
-		// send request info to host
+		// get socket, translate IP
+		// and call host
 
 	sock=net_open_udp_socket();
 	if (sock==D3_NULL_SOCKET) return(FALSE);
 	
-	ip_addr=inet_addr(host->ip);
-	if (ip_addr==INADDR_NONE) return(FALSE);
-	
-	net_socket_blocking(sock,FALSE);
+	if (inet_aton(host->ip,&addr.sin_addr)==0) return(FALSE);
 
-	if (!net_sendto_msg(sock,ip_addr,net_port_host,net_action_request_info,net_uid_constant_none,NULL,0)) {
+	if (!net_sendto_msg(sock,ntohl(addr.sin_addr.s_addr),net_port_host,net_action_request_info,net_uid_constant_none,NULL,0)) {
 		net_close_socket(&sock);
 		return(FALSE);
 	}
+	
+		// non-blocking socket
+		
+	net_socket_blocking(sock,FALSE);
 
 		// get the reply
 	
 	got_reply=FALSE;
 	
-	max_tick=client_query_timeout_wait_msec+2000;
+	max_tick=client_query_timeout_wait_msec;
 	
 	while (((msec+max_tick)>time_get()) && (!join_thread_quit)) {
 		if (net_recvfrom_mesage(sock,&recv_ip_addr,NULL,&action,&net_uid,msg,NULL)) {
@@ -464,13 +467,13 @@ void join_lan_internet_hosts(void)
 	}
 
 	strcpy(cols[0].name,"Local Host");
-	cols[0].percent_size=0.36f;
+	cols[0].percent_size=0.4f;
 	strcpy(cols[1].name,"Game");
-	cols[1].percent_size=0.40f;
+	cols[1].percent_size=0.35f;
 	strcpy(cols[2].name,"Players");
 	cols[2].percent_size=0.10f;
 	strcpy(cols[3].name,"Ping");
-	cols[3].percent_size=0.14f;
+	cols[3].percent_size=0.15f;
 
 		// lan list
 
@@ -570,6 +573,25 @@ void join_create_pane(void)
 
 /* =======================================================
 
+      Join Reset WAN Queries
+      
+======================================================= */
+
+void join_reset_for_rescan(void)
+{
+	int				n;
+	
+	if (join_mode!=join_mode_wan_lan) return;
+
+	for (n=0;n!=join_host_wan_list->count;n++) {
+		join_host_wan_list->hosts[n].pinged=FALSE;
+	}
+	
+	join_create_list(join_host_wan_list,join_wan_table_id);
+}
+
+/* =======================================================
+
       Join Operations
       
 ======================================================= */
@@ -605,10 +627,6 @@ void join_open(void)
 			// load the news
 
 		if (!net_load_news(join_host_wan_list,join_news)) join_mode=join_mode_lan_error;
-
-//		join_host_wan_list->count=1;		// supergumba
-//		strcpy(join_host_wan_list->hosts[0].name,"LocalHost");
-//		strcpy(join_host_wan_list->hosts[0].ip,"127.0.0.1");
 
 			// nothing queried yet
 
@@ -842,6 +860,7 @@ void join_click(void)
 			
 		case join_button_rescan_id:
 			element_enable(join_button_rescan_id,FALSE);
+			join_reset_for_rescan();
 			join_ping_thread_end();
 			join_ping_thread_start();
 			break;

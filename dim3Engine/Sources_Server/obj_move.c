@@ -567,15 +567,27 @@ void object_move_y_fall(obj_type *obj)
 	old_touch_stand=obj->touch.stand;
 	obj->touch.stand=FALSE;
 
-		// deal with polygon contacts
+		// polygon contacts clear any
+		// old stand touches
 		
 	if (obj->contact.stand_poly.mesh_idx!=-1) {
-	
-			// clear any stand touch
-			
 		if (old_touch_stand) obj->touch.obj_idx=-1;
+	}
+	
+		// stands count as regular
+		// touches
+
+	if (obj->contact.stand_obj_idx!=-1) {
+		obj->touch.stand=TRUE;
+		obj->contact.obj_idx=obj->contact.stand_obj_idx;
+	}
+	
+		// check for floors/objects stopping
+		// the movement or landing on top
 		
-			// below or on the floor?
+	if ((obj->contact.stand_poly.mesh_idx!=-1) || (obj->contact.stand_obj_idx!=-1)) {
+
+			// below or on?
 
 		if (y>=fy) {
 			obj->air_mode=am_ground;
@@ -583,32 +595,16 @@ void object_move_y_fall(obj_type *obj)
 			return;
 		}
 		
-			// above the polygon
+			// above
+			// check if next drop will put us
+			// past the obsticle
 
 		ymove=(int)obj->force.vct.y;
-		if ((y>(fy-floor_slop)) || ((y+ymove)>fy)) {		// next floor or slop will go past floor
+		if ((y>(fy-floor_slop)) || ((y+ymove)>fy)) {
 			if (ymove>=0) {
 				obj->air_mode=am_ground;
 				obj->pnt.y=fy;
 			}
-			return;
-		}
-	}
-	
-		// check standing on objects
-
-	if (obj->contact.stand_obj_idx!=-1) {
-
-			// stands count as regular contacts
-			
-		obj->touch.stand=TRUE;
-		obj->contact.obj_idx=obj->contact.stand_obj_idx;
-		
-			// below or on the object?
-
-		if (y>=fy) {
-			obj->air_mode=am_ground;
-			obj->pnt.y=fy;
 			return;
 		}
 	}
@@ -970,7 +966,6 @@ void object_move_normal(obj_type *obj)
 	bump_y_move=0;
 
 	if ((obj->bump.on) && (obj->air_mode==am_ground)) {
-
 		if (collide_object_to_map_bump(obj,&motion,&bump_y_move)) {
 
 			bump_y_move=pin_upward_movement_obj(obj,bump_y_move);

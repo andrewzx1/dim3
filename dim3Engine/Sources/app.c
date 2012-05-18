@@ -173,11 +173,14 @@ bool app_run_dedicated_host(char *err_str)
 		// launch directly into hosting
 		// setup hosting flags and IPs
 		
+	host_game_setup();
 	net_host_game_setup();
 
 	net_setup.mode=net_mode_host;
 	net_setup.client.latency=0;
 	net_setup.client.host_ip_addr=0;
+	
+	net_create_project_hash();
 
 		// setup map
 		
