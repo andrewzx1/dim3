@@ -220,16 +220,20 @@ bool net_recvfrom_mesage(d3socket sock,unsigned long *ip_addr,int *port,int *act
 		
 	if (len<0) {
 	
-		// ignore would block errors as we
-		// are almost always out of blocking
+			// ignore would block errors as we
+			// are almost always out of blocking
 		
+#ifndef D3_OS_WINDOWS
 		if (errno==EWOULDBLOCK) {
+#else
+		if (WSAGetLastError()==WSAEWOULDBLOCK) {
+#endif
 			*action=-1;
 			return(TRUE);
 		}
 		
 			// other errors mean socket has closed
-			
+		
 		return(FALSE);
 	}
 	

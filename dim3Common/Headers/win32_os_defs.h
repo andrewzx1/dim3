@@ -98,7 +98,6 @@ typedef int						socklen_t;
 #define log2(a)					(log(a)/log(2))
 
 #define D3_NULL_SOCKET			INVALID_SOCKET
-#define EWOULDBLOCK				WSAEWOULDBLOCK
 
 #define WindowRef				HWND
 

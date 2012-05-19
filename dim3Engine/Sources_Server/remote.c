@@ -186,9 +186,9 @@ void remote_predict_move(obj_type *obj)
 	
 		// reduce movements
 		
-	obj->remote.predict.move.x*=0.9f;
-	obj->remote.predict.move.y*=0.9f;
-	obj->remote.predict.move.z*=0.9f;
+	obj->remote.predict.move.x=(int)((float)obj->remote.predict.move.x*0.9f);
+	obj->remote.predict.move.y=(int)((float)obj->remote.predict.move.y*0.9f);
+	obj->remote.predict.move.z=(int)((float)obj->remote.predict.move.z*0.9f);
 }
 
 /* =======================================================
