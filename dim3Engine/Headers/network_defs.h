@@ -76,7 +76,7 @@ and can be sold or given away.
 #define client_join_timeout_wait_msec					5000
 #define client_message_per_loop_count					10
 
-#define client_communication_update_msec_rate			50
+#define client_communication_update_msec_rate			25
 #define client_communication_group_synch_msec_rate		10000
 #define client_communication_latency_ping_msec_rate		5000
 

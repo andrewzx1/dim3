@@ -269,7 +269,7 @@ int join_ping_thread_lan(void *arg)
 bool join_ping_thread_wan_host(join_server_host_type *host,int msec,unsigned char *msg)
 {
 	int						action,net_uid,max_tick;
-	unsigned long			ip_addr,recv_ip_addr;
+	unsigned long			ip_addr,nip_addr,recv_ip_addr;
 	bool					got_reply;
 	d3socket				sock;
 	
@@ -279,14 +279,16 @@ bool join_ping_thread_wan_host(join_server_host_type *host,int msec,unsigned cha
 	sock=net_open_udp_socket();
 	if (sock==D3_NULL_SOCKET) return(FALSE);
 	
-	ip_addr=inet_addr(host->ip);
-	if (ip_addr==INADDR_NONE) return(FALSE);
+	nip_addr=inet_addr(host->ip);
+	if (nip_addr==INADDR_NONE) return(FALSE);
+	
+	ip_addr=ntohl(nip_addr);
 
-	if (!net_sendto_msg(sock,ntohl(ip_addr),net_port_host,net_action_request_info,net_uid_constant_none,NULL,0)) {
+	if (!net_sendto_msg(sock,ip_addr,net_port_host,net_action_request_info,net_uid_constant_none,NULL,0)) {
 		net_close_socket(&sock);
 		return(FALSE);
 	}
-	
+
 		// non-blocking socket
 		
 	net_socket_blocking(sock,FALSE);

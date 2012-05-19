@@ -63,11 +63,16 @@ void loop_server_run(void)
 	server_run();
 	
 		// sending network updates
+		// only clients send group synchs
+		// and latency pings
 
 	if (net_setup.mode!=net_mode_none) {
 		remote_network_send_updates();
-		remote_network_send_group_synch();
-		remote_network_send_latency_ping();
+		
+		if (net_setup.mode!=net_mode_host) {
+			remote_network_send_group_synch();
+			remote_network_send_latency_ping();
+		}
 	}
 	
 		// check for score limits

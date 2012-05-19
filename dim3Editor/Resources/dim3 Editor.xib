@@ -2,15 +2,17 @@
 <archive type="com.apple.InterfaceBuilder3.Carbon.XIB" version="8.00">
   <data>
     <int key="IBDocument.SystemTarget">1050</int>
-    <string key="IBDocument.SystemVersion">11D50</string>
+    <string key="IBDocument.SystemVersion">11E53</string>
     <string key="IBDocument.InterfaceBuilderVersion">907</string>
-    <string key="IBDocument.AppKitVersion">1138.32</string>
-    <string key="IBDocument.HIToolboxVersion">568.00</string>
+    <string key="IBDocument.AppKitVersion">1138.47</string>
+    <string key="IBDocument.HIToolboxVersion">569.00</string>
     <object class="NSMutableDictionary" key="IBDocument.PluginVersions">
       <string key="NS.key.0">com.apple.InterfaceBuilder.CarbonPlugin</string>
       <string key="NS.object.0">907</string>
     </object>
-    <array class="NSMutableArray" key="IBDocument.EditedObjectIDs"/>
+    <array class="NSMutableArray" key="IBDocument.EditedObjectIDs">
+      <integer value="209"/>
+    </array>
     <array key="IBDocument.PluginDependencies">
       <string>com.apple.InterfaceBuilder.CarbonPlugin</string>
     </array>
@@ -1670,6 +1672,66 @@
                   <integer value="0" key="includeInCmdKeyMatching"/>
                   <integer value="1048576" key="keyEquivalentModifierMask"/>
                   <integer value="1819438448" key="command"/>
+                  <nil key="helpTagText"/>
+                  <nil key="helpTagExtendedText"/>
+                  <integer value="0" key="helpTagDisplaySide"/>
+                </object>
+                <object class="IBHIMenuItem" id="22500621">
+                  <reference key="NSMenu" ref="364485497"/>
+                  <bool key="NSIsDisabled">YES</bool>
+                  <bool key="NSIsSeparator">YES</bool>
+                  <string key="NSTitle"/>
+                  <string key="NSKeyEquiv"/>
+                  <int key="NSKeyEquivModMask">1048576</int>
+                  <int key="NSMnemonicLoc">2147483647</int>
+                  <reference key="NSOnImage" ref="30500971"/>
+                  <reference key="NSMixedImage" ref="228858472"/>
+                  <string key="title"/>
+                  <string key="keyEquivalent"/>
+                  <integer value="1" key="disabled"/>
+                  <integer value="0" key="checked"/>
+                  <integer value="0" key="submenuParentChoosable"/>
+                  <integer value="0" key="dynamic"/>
+                  <integer value="1" key="notPreviousAlternate"/>
+                  <integer value="0" key="hidden"/>
+                  <integer value="0" key="ignoreMeta"/>
+                  <integer value="0" key="sectionHeader"/>
+                  <integer value="0" key="customDraw"/>
+                  <integer value="0" key="autoRepeat"/>
+                  <integer value="0" key="autoDisable"/>
+                  <integer value="0" key="updateSingleItem"/>
+                  <integer value="0" key="includeInCmdKeyMatching"/>
+                  <integer value="1048576" key="keyEquivalentModifierMask"/>
+                  <integer value="0" key="command"/>
+                  <nil key="helpTagText"/>
+                  <nil key="helpTagExtendedText"/>
+                  <integer value="0" key="helpTagDisplaySide"/>
+                </object>
+                <object class="IBHIMenuItem" id="983624201">
+                  <reference key="NSMenu" ref="364485497"/>
+                  <string key="NSTitle">Auto Generate Map...</string>
+                  <string key="NSKeyEquiv"/>
+                  <int key="NSKeyEquivModMask">1048576</int>
+                  <int key="NSMnemonicLoc">2147483647</int>
+                  <reference key="NSOnImage" ref="30500971"/>
+                  <reference key="NSMixedImage" ref="228858472"/>
+                  <string key="title">Auto Generate Map...</string>
+                  <string key="keyEquivalent"/>
+                  <integer value="0" key="disabled"/>
+                  <integer value="0" key="checked"/>
+                  <integer value="0" key="submenuParentChoosable"/>
+                  <integer value="0" key="dynamic"/>
+                  <integer value="1" key="notPreviousAlternate"/>
+                  <integer value="0" key="hidden"/>
+                  <integer value="0" key="ignoreMeta"/>
+                  <integer value="0" key="sectionHeader"/>
+                  <integer value="0" key="customDraw"/>
+                  <integer value="0" key="autoRepeat"/>
+                  <integer value="0" key="autoDisable"/>
+                  <integer value="0" key="updateSingleItem"/>
+                  <integer value="0" key="includeInCmdKeyMatching"/>
+                  <integer value="1048576" key="keyEquivalentModifierMask"/>
+                  <integer value="1635087471" key="command"/>
                   <nil key="helpTagText"/>
                   <nil key="helpTagExtendedText"/>
                   <integer value="0" key="helpTagDisplaySide"/>
@@ -9981,6 +10043,8 @@ Y29tA</string>
               <reference ref="9813531"/>
               <reference ref="410385994"/>
               <reference ref="1028584087"/>
+              <reference ref="983624201"/>
+              <reference ref="22500621"/>
             </array>
             <reference key="parent" ref="452227377"/>
           </object>
@@ -11154,6 +11218,16 @@ Y29tA</string>
             <reference key="object" ref="861667474"/>
             <reference key="parent" ref="769945313"/>
           </object>
+          <object class="IBObjectRecord">
+            <int key="objectID">16662</int>
+            <reference key="object" ref="983624201"/>
+            <reference key="parent" ref="364485497"/>
+          </object>
+          <object class="IBObjectRecord">
+            <int key="objectID">16663</int>
+            <reference key="object" ref="22500621"/>
+            <reference key="parent" ref="364485497"/>
+          </object>
         </array>
       </object>
       <dictionary class="NSMutableDictionary" key="flattenedProperties">
@@ -11173,10 +11247,12 @@ Y29tA</string>
         <string key="16659.IBPluginDependency">com.apple.InterfaceBuilder.CarbonPlugin</string>
         <string key="16660.IBPluginDependency">com.apple.InterfaceBuilder.CarbonPlugin</string>
         <string key="16661.IBPluginDependency">com.apple.InterfaceBuilder.CarbonPlugin</string>
+        <string key="16662.IBPluginDependency">com.apple.InterfaceBuilder.CarbonPlugin</string>
+        <string key="16663.IBPluginDependency">com.apple.InterfaceBuilder.CarbonPlugin</string>
         <string key="189.IBEditorWindowLastContentRect">{{179, 932}, {241, 63}}</string>
         <string key="193.IBEditorWindowLastContentRect">{{179, 952}, {104, 23}}</string>
         <string key="201.IBEditorWindowLastContentRect">{{179, 852}, {157, 103}}</string>
-        <string key="209.IBEditorWindowLastContentRect">{{179, 672}, {307, 243}}</string>
+        <string key="209.IBEditorWindowLastContentRect">{{179, 642}, {307, 273}}</string>
         <string key="265.IBEditorWindowLastContentRect">{{179, 452}, {265, 483}}</string>
         <string key="29.IBEditorWindowLastContentRect">{{0, 832}, {179, 163}}</string>
         <string key="293.IBEditorWindowLastContentRect">{{315, 485}, {480, 165}}</string>
@@ -11201,7 +11277,7 @@ Y29tA</string>
       <nil key="activeLocalization"/>
       <dictionary class="NSMutableDictionary" key="localizations"/>
       <nil key="sourceID"/>
-      <int key="maxID">16661</int>
+      <int key="maxID">16663</int>
     </object>
     <object class="IBClassDescriber" key="IBDocument.Classes"/>
     <int key="IBDocument.localizationMode">0</int>
