@@ -109,6 +109,11 @@
 		262DD2AC151E31CC0078FEA4 /* base_iface_score.c in Sources */ = {isa = PBXBuildFile; fileRef = 262DD2AB151E31CC0078FEA4 /* base_iface_score.c */; };
 		263ADA6B14296509009EE0E0 /* view_vbo.c in Sources */ = {isa = PBXBuildFile; fileRef = 263ADA6A14296509009EE0E0 /* view_vbo.c */; };
 		263C5EBE122045E3008935B9 /* view_handle.c in Sources */ = {isa = PBXBuildFile; fileRef = 263C5EBD122045E3008935B9 /* view_handle.c */; };
+		263D10D0156760A700A03C7D /* auto_generate_setup.c in Sources */ = {isa = PBXBuildFile; fileRef = 263D10CC156760A700A03C7D /* auto_generate_setup.c */; };
+		263D10D1156760A700A03C7D /* auto_generate_story.c in Sources */ = {isa = PBXBuildFile; fileRef = 263D10CD156760A700A03C7D /* auto_generate_story.c */; };
+		263D10D2156760A700A03C7D /* auto_generate_utility.c in Sources */ = {isa = PBXBuildFile; fileRef = 263D10CE156760A700A03C7D /* auto_generate_utility.c */; };
+		263D10D3156760A700A03C7D /* auto_generate.c in Sources */ = {isa = PBXBuildFile; fileRef = 263D10CF156760A700A03C7D /* auto_generate.c */; };
+		263D10D5156760B100A03C7D /* auto_generator_defs.h in Headers */ = {isa = PBXBuildFile; fileRef = 263D10D4156760B100A03C7D /* auto_generator_defs.h */; };
 		2642872B12EE8C740078851E /* Set.png in Copy (Lists Icons) */ = {isa = PBXBuildFile; fileRef = 2642872912EE8C640078851E /* Set.png */; };
 		26452F11127F9B3100043C34 /* view_movement.c in Sources */ = {isa = PBXBuildFile; fileRef = 26452F0F127F9B3100043C34 /* view_movement.c */; };
 		26452F12127F9B3100043C34 /* view.c in Sources */ = {isa = PBXBuildFile; fileRef = 26452F10127F9B3100043C34 /* view.c */; };
@@ -473,6 +478,11 @@
 		262DD2AB151E31CC0078FEA4 /* base_iface_score.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = base_iface_score.c; sourceTree = "<group>"; };
 		263ADA6A14296509009EE0E0 /* view_vbo.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = view_vbo.c; path = Code/view_vbo.c; sourceTree = "<group>"; };
 		263C5EBD122045E3008935B9 /* view_handle.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = view_handle.c; path = Code/view_handle.c; sourceTree = "<group>"; };
+		263D10CC156760A700A03C7D /* auto_generate_setup.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = auto_generate_setup.c; path = Code/auto_generate_setup.c; sourceTree = "<group>"; };
+		263D10CD156760A700A03C7D /* auto_generate_story.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = auto_generate_story.c; path = Code/auto_generate_story.c; sourceTree = "<group>"; };
+		263D10CE156760A700A03C7D /* auto_generate_utility.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = auto_generate_utility.c; path = Code/auto_generate_utility.c; sourceTree = "<group>"; };
+		263D10CF156760A700A03C7D /* auto_generate.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = auto_generate.c; path = Code/auto_generate.c; sourceTree = "<group>"; };
+		263D10D4156760B100A03C7D /* auto_generator_defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = auto_generator_defs.h; path = Headers/auto_generator_defs.h; sourceTree = "<group>"; };
 		2642872912EE8C640078851E /* Set.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Set.png; sourceTree = "<group>"; };
 		26452F0F127F9B3100043C34 /* view_movement.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = view_movement.c; path = Code/view_movement.c; sourceTree = "<group>"; };
 		26452F10127F9B3100043C34 /* view.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = view.c; path = Code/view.c; sourceTree = "<group>"; };
@@ -619,6 +629,7 @@
 			children = (
 				F51ABAD3048DAB0200B78D6A /* dim3editor.h */,
 				26899FA80F1EBF25007860EB /* editor_defs.h */,
+				263D10D4156760B100A03C7D /* auto_generator_defs.h */,
 				F50AF9AD088601C600F261B1 /* os_defs.h */,
 				26459B5B13DBC5A200D7DD73 /* mac_os_defs.h */,
 				26C5F0AF126130D0000B0F9E /* glue.h */,
@@ -668,6 +679,7 @@
 				26E4677412EB4C8400867C53 /* Palettes */,
 				F5E8EBA808A1C1EF00F06B82 /* Pieces */,
 				F508860900E8413C01000001 /* View */,
+				263D10CB1567608200A03C7D /* Auto Generator */,
 				F5A98817094BF740005E55AE /* Dialogs */,
 				F503BCC9011B901401000001 /* Main */,
 			);
@@ -884,6 +896,17 @@
 				20286C2AFDCF999611CA2CEA /* Sources */,
 			);
 			name = Editor;
+			sourceTree = "<group>";
+		};
+		263D10CB1567608200A03C7D /* Auto Generator */ = {
+			isa = PBXGroup;
+			children = (
+				263D10CF156760A700A03C7D /* auto_generate.c */,
+				263D10CC156760A700A03C7D /* auto_generate_setup.c */,
+				263D10CD156760A700A03C7D /* auto_generate_story.c */,
+				263D10CE156760A700A03C7D /* auto_generate_utility.c */,
+			);
+			name = "Auto Generator";
 			sourceTree = "<group>";
 		};
 		26636ADA125A8ED10090A321 /* Items */ = {
@@ -1118,6 +1141,7 @@
 				260B43CA1411FA5D006ED023 /* png.h in Headers */,
 				260B43CB1411FA5D006ED023 /* pngconf.h in Headers */,
 				260B43CC1411FA5D006ED023 /* pnglibconf.h in Headers */,
+				263D10D5156760B100A03C7D /* auto_generator_defs.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1356,6 +1380,10 @@
 				268E6B081506F0DE00B85F4E /* property_palette_move.c in Sources */,
 				262DD2AC151E31CC0078FEA4 /* base_iface_score.c in Sources */,
 				26FF68A01523D58000FACC3B /* base_iface_singleplayer.c in Sources */,
+				263D10D0156760A700A03C7D /* auto_generate_setup.c in Sources */,
+				263D10D1156760A700A03C7D /* auto_generate_story.c in Sources */,
+				263D10D2156760A700A03C7D /* auto_generate_utility.c in Sources */,
+				263D10D3156760A700A03C7D /* auto_generate.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
