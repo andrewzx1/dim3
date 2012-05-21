@@ -53,6 +53,7 @@ void ag_random_seed(void)
 	seed=TickCount();
 #endif
 
+	seed=150;		// supergumba
 	srandom(seed);
 }
 
@@ -249,7 +250,15 @@ void ag_generate_spots_add_single(char *name,int spot_obj_type,char *script_name
 			// decriment count just in case there
 			// are no other rooms
 
-		if (!ag_state.shapes[ag_state.rooms[idx].shape_idx].spawn_spots) {
+		room=&ag_state.rooms[idx];
+
+		if (room->shape_idx==-1)  {
+			count--;
+			idx++;
+			continue;
+		}
+
+		if (!ag_state.shapes[room->shape_idx].spawn_spots) {
 			count--;
 			idx++;
 			continue;

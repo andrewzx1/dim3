@@ -44,7 +44,7 @@ extern int ag_shape_get_connector_index(ag_shape_type *shape,int v1_idx,int v2_i
       
 ======================================================= */
 
-bool ag_room_touch_other_room(int room_idx,bool *floor_flags)
+bool ag_room_story_touch_other_room(int room_idx,bool *floor_flags)
 {
 	int				n;
 	ag_room_type	*room,*chk_room;
@@ -63,8 +63,10 @@ bool ag_room_touch_other_room(int room_idx,bool *floor_flags)
 		if (n==room_idx) continue;
 
 			// skip single floor rooms
+			// or additional connector rooms
 
 		chk_room=&ag_state.rooms[n];
+		if (chk_room->shape_idx==-1) continue;
 		if (ag_state.shapes[chk_room->shape_idx].single_floor) continue;
 
 			// check for collisions
@@ -85,13 +87,10 @@ bool ag_room_touch_other_room(int room_idx,bool *floor_flags)
 	return(floor_flags[ag_floor_left]||floor_flags[ag_floor_right]||floor_flags[ag_floor_top]||floor_flags[ag_floor_bottom]);
 }
 
-bool ag_room_equal_floor_touch(bool *floor_flags_1,bool *floor_flags_2)
+bool ag_room_story_equal_floor_touch(bool top,bool bottom,bool *floor_flags)
 {
-	int					n;
-
-	for (n=0;n!=4;n++) {
-		if ((floor_flags_1[n]) && (floor_flags_2[n])) return(TRUE);
-	}
+	if (floor_flags[ag_floor_top] && top) return(TRUE);
+	if (floor_flags[ag_floor_bottom] && bottom) return(TRUE);		// supergumba -- redo this
 
 	return(FALSE);
 }
@@ -104,7 +103,8 @@ bool ag_room_equal_floor_touch(bool *floor_flags_1,bool *floor_flags_2)
 
 void ag_generate_additional_stories(void)
 {
-	int					n,k,t,t2,x,z,ty,by,high,high2,
+	int					n,k,t,t2,x,z,ty,by,
+						ty2,by2,high,high2,
 						mesh_idx,connect_idx;
 	int					px[4],py[4],pz[4];
 	float				gx[4],gy[4];
@@ -122,13 +122,15 @@ void ag_generate_additional_stories(void)
 	for (n=0;n!=ag_state.nroom;n++) {
 
 			// skip single floors
+			// or additional connector rooms
 
 		room=&ag_state.rooms[n];
+		if (room->shape_idx==-1) continue;
 		if (ag_state.shapes[room->shape_idx].single_floor) continue;
 
 			// is it touching another room?
 
-		if (!ag_room_touch_other_room(n,floor_flags)) continue;
+		if (!ag_room_story_touch_other_room(n,floor_flags)) continue;
 
 			// get height
 
@@ -174,8 +176,8 @@ void ag_generate_additional_stories(void)
 			// the second floor needs to be slightly above
 			// so doors still have tops
 
-		ty=room->min.y-(high2*2);
-		by=ty+high2;
+		ty2=room->min.y-(high2*2);
+		by2=ty2+high2;
 
 			// build in the floor
 			// we put in a floor for every side
@@ -187,7 +189,7 @@ void ag_generate_additional_stories(void)
 
 			shape_poly=&shape->polys[k];
 
-			if (!ag_room_equal_floor_touch(shape_poly->floor_flags,floor_flags)) continue;
+			if (!ag_room_story_equal_floor_touch(shape_poly->top,shape_poly->bottom,floor_flags)) continue;
 
 				// the ceiling
 
@@ -197,7 +199,7 @@ void ag_generate_additional_stories(void)
 
 				px[t]=(int)(((float)x)*size->x)+room->min.x;
 				pz[t]=(int)(((float)z)*size->z)+room->min.z;
-				py[t]=ty;
+				py[t]=ty2;
 
 				gx[t]=((float)x)/100.0f;
 				gy[t]=((float)z)/100.0f;
@@ -208,7 +210,7 @@ void ag_generate_additional_stories(void)
 				// the floor
 
 			for (t=0;t!=shape_poly->npt;t++) {
-				py[t]=by;
+				py[t]=by2;
 			}
 
 			map_mesh_add_poly(&map,mesh_idx,shape_poly->npt,px,py,pz,gx,gy,ag_texture_additional_floor);
@@ -223,8 +225,8 @@ void ag_generate_additional_stories(void)
 				px[1]=px[2]=(int)(((float)shape->vertexes[shape_poly->v[t2]].x)*size->x)+room->min.x;
 				pz[0]=pz[3]=(int)(((float)shape->vertexes[shape_poly->v[t]].z)*size->z)+room->min.z;
 				pz[1]=pz[2]=(int)(((float)shape->vertexes[shape_poly->v[t2]].z)*size->z)+room->min.z;
-				py[0]=py[1]=ty;
-				py[2]=py[3]=by;
+				py[0]=py[1]=ty2;
+				py[2]=py[3]=by2;
 
 				gx[0]=gx[3]=0.0f;
 				gx[1]=gx[2]=1.0f;

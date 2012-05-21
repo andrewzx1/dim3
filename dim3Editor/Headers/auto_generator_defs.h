@@ -61,7 +61,7 @@ and can be sold or given away.
 
 typedef struct		{
 						int						npt,v[4];
-						bool					floor_flags[4];
+						bool					top,bottom;
 					} ag_shape_poly_type;
 
 typedef struct		{
