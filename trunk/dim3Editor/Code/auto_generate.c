@@ -179,6 +179,8 @@ int ag_shape_has_connector_type(ag_room_type *room,int connect_type)
 	int				n;
 	ag_shape_type	*shape;
 
+	if (room->shape_idx==-1) return(-1);
+
 	shape=&ag_state.shapes[room->shape_idx];
 
 	for (n=0;n!=shape->nconnector;n++) {
@@ -462,14 +464,6 @@ void ag_add_room(int shape_idx,int connect_idx,d3pnt *pnt,d3vct *size)
 	
 		map_mesh_add_poly(&map,mesh_idx,shape_poly->npt,px,py,pz,gx,gy,ag_texture_floor);
 
-		if (shape->single_floor) {
-			for (k=0;k!=shape_poly->npt;k++) {
-				py[k]=room->min.y;
-			}
-
-			map_mesh_add_poly(&map,mesh_idx,shape_poly->npt,px,py,pz,gx,gy,ag_texture_ceiling);
-		}
-
 		shape_poly++;
 	}
 }
@@ -492,7 +486,7 @@ void ag_add_extra_corridor_room(d3pnt *min,d3pnt *max,int wall_sz)
 	room=&ag_state.rooms[ag_state.nroom];
 	ag_state.nroom++;
 
-	room->shape_idx=0;
+	room->shape_idx=-1;
 	room->mesh_idx=mesh_idx;
 
 	memmove(&room->min,min,sizeof(d3pnt));
@@ -754,6 +748,55 @@ bool ag_generate_extra_corridors(void)
 
 /* =======================================================
 
+      Add Ceilings
+      
+======================================================= */
+
+void ag_generate_ceilings(void)
+{
+	int					n,k,t,x,z;
+	int					px[4],py[4],pz[4];
+	float				gx[4],gy[4];
+	ag_room_type		*room;
+	ag_shape_type		*shape;
+	ag_shape_poly_type	*shape_poly;
+
+		// we need min max, so prepare the polys
+
+	for (n=0;n!=ag_state.nroom;n++) {
+
+		room=&ag_state.rooms[n];
+		if (room->shape_idx==-1) continue;		// extra corridors, already have ceilings
+
+		shape=&ag_state.shapes[room->shape_idx];
+
+			// add the ceiling
+
+		shape_poly=shape->polys;
+
+		for (k=0;k!=shape->npoly;k++) {
+
+			for (t=0;t!=shape_poly->npt;t++) {
+				x=shape->vertexes[shape_poly->v[t]].x;
+				z=shape->vertexes[shape_poly->v[t]].z;
+
+				px[t]=(int)(((float)x)*room->size.x)+room->min.x;
+				pz[t]=(int)(((float)z)*room->size.z)+room->min.z;
+				py[t]=room->min.y;
+
+				gx[t]=((float)x)/100.0f;
+				gy[t]=((float)z)/100.0f;
+			}
+		
+			map_mesh_add_poly(&map,room->mesh_idx,shape_poly->npt,px,py,pz,gx,gy,ag_texture_ceiling);
+
+			shape_poly++;
+		}
+	}
+}
+
+/* =======================================================
+
       Generate Map
       
 ======================================================= */
@@ -860,6 +903,10 @@ bool ag_generate_run(char *path,char *err_str)
 	for (n=0;n!=ag_state.size.story_count;n++) {
 		ag_generate_additional_stories();
 	}
+
+		// add ceilings
+
+//	ag_generate_ceilings();		// supergumba -- temporary while testing
 
 		// mirroring
 
