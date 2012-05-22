@@ -134,6 +134,7 @@ bool ag_read_settings(char *path,char *err_str)
 						polys_tag,poly_tag,
 						connectors_tag,connector_tag;
 	ag_shape_type		*shape;
+	ag_shape_poly_type	*shape_poly;
 
 		// decode the file
 
@@ -221,19 +222,22 @@ bool ag_read_settings(char *path,char *err_str)
 			shape->npoly=xml_countchildren(polys_tag);
 			poly_tag=xml_findfirstchild("poly",polys_tag);
 
+			shape_poly=shape->polys;
+
 			for (k=0;k!=shape->npoly;k++) {
-				shape->polys[k].npt=xml_get_attribute_int_array(poly_tag,"v",shape->polys[k].v,4);
+				shape_poly->npt=xml_get_attribute_int_array(poly_tag,"v",shape_poly->v,4);
 					
 					// determine top or bottom
 					// for polygon
 
-				shape->polys[k].top=shape->polys[k].bottom=FALSE;
+				shape_poly->top=shape_poly->bottom=FALSE;
 
-				for (t=0;t!=shape->polys[k].npt;t++) {
-					if (shape->vertexes[shape->polys[k].v[t]].y<50) shape->polys[k].top=TRUE;
-					if (shape->vertexes[shape->polys[k].v[t]].y>50) shape->polys[k].bottom=TRUE;
+				for (t=0;t!=shape_poly->npt;t++) {
+					if (shape->vertexes[shape_poly->v[t]].z<50) shape_poly->top=TRUE;
+					if (shape->vertexes[shape_poly->v[t]].z>50) shape_poly->bottom=TRUE;
 				}
 
+				shape_poly++;
 				poly_tag=xml_findnextchild(poly_tag);
 			}
 		}
