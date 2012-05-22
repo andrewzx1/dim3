@@ -41,10 +41,12 @@ and can be sold or given away.
 #define ag_connector_type_min_z					2
 #define ag_connector_type_max_z					3
 
-#define ag_floor_left							0
-#define ag_floor_right							1
-#define ag_floor_top							2
-#define ag_floor_bottom							3
+#define ag_story_place_none						0
+#define ag_story_place_left						1
+#define ag_story_place_right					2
+#define ag_story_place_top						3
+#define ag_story_place_bottom					4
+#define ag_story_place_all						5
 
 //
 // textures

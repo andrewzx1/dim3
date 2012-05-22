@@ -293,12 +293,16 @@ char* net_get_http_file_get(d3socket sock,char *err_str)
 	
 	*(data+rcv_size)=0x0;
 
-		// did we ever get content?
+		// if we didn't get a content length,
+		// determine it from size
 
 	if (content_length==-1) {
-		strcpy(err_str,"Unable to retrieve file");
-		free(data);
-		return(NULL);
+		content_length=rcv_size-content_offset;
+		if (content_length<=0) {
+			strcpy(err_str,"Unable to retrieve file");
+			free(data);
+			return(NULL);
+		}
 	}
 
 		// get the content data

@@ -40,20 +40,19 @@ extern int ag_shape_get_connector_index(ag_shape_type *shape,int v1_idx,int v2_i
 
 /* =======================================================
 
-      Auto Generate Room Utilities
+      Auto Generate Story Utilities
       
 ======================================================= */
 
-bool ag_room_story_touch_other_room(int room_idx,bool *floor_flags)
+int ag_room_story_calculate_place(int room_idx)
 {
 	int				n;
+	bool			left,right,top,bottom;
 	ag_room_type	*room,*chk_room;
 
 		// clear floor flags
 
-	for (n=0;n!=4;n++) {
-		floor_flags[n]=FALSE;
-	}
+	left=right=top=bottom=FALSE;
 
 		// find connected items
 
@@ -71,28 +70,32 @@ bool ag_room_story_touch_other_room(int room_idx,bool *floor_flags)
 
 			// check for collisions
 
-		if (((chk_room->min.z>=room->min.z) && (chk_room->min.z<=room->max.z)) || ((chk_room->max.z>=room->min.z) && (chk_room->max.z<=room->max.z))) {
-			if (chk_room->min.x==room->max.x) floor_flags[ag_floor_right]=TRUE;
-			if (chk_room->max.x==room->min.x) floor_flags[ag_floor_left]=TRUE;
+		if (((chk_room->min.z>=room->min.z) && (chk_room->min.z<room->max.z)) || ((chk_room->max.z>room->min.z) && (chk_room->max.z<=room->max.z))) {
+			if (chk_room->min.x==room->max.x) right=TRUE;
+			if (chk_room->max.x==room->min.x) left=TRUE;
 		}
 
-		if (((chk_room->min.x>=room->min.x) && (chk_room->min.x<=room->max.x)) || ((chk_room->max.x>=room->min.x) && (chk_room->max.x<=room->max.x))) {
-			if (chk_room->min.z==room->max.z) floor_flags[ag_floor_bottom]=TRUE;
-			if (chk_room->max.z==room->min.z) floor_flags[ag_floor_top]=TRUE;
+		if (((chk_room->min.x>=room->min.x) && (chk_room->min.x<room->max.x)) || ((chk_room->max.x>room->min.x) && (chk_room->max.x<=room->max.x))) {
+			if (chk_room->min.z==room->max.z) bottom=TRUE;
+			if (chk_room->max.z==room->min.z) top=TRUE;
 		}
 	}
 
 		// any floor flags set?
 
-	return(floor_flags[ag_floor_left]||floor_flags[ag_floor_right]||floor_flags[ag_floor_top]||floor_flags[ag_floor_bottom]);
-}
+	if ((!left) && (!right) && (!top) && (!bottom)) return(ag_story_place_none);
 
-bool ag_room_story_equal_floor_touch(bool top,bool bottom,bool *floor_flags)
-{
-	if (floor_flags[ag_floor_top] && top) return(TRUE);
-	if (floor_flags[ag_floor_bottom] && bottom) return(TRUE);		// supergumba -- redo this
+		// specific floor places
 
-	return(FALSE);
+	if ((left) && (!right) && (!top) && (!bottom)) return(ag_story_place_left);
+	if ((!left) && (right) && (!top) && (!bottom)) return(ag_story_place_right);
+	if ((!left) && (!right) && (top) && (!bottom)) return(ag_story_place_top);
+	if ((!left) && (!right) && (!top) && (bottom)) return(ag_story_place_bottom);
+
+		// more than one direction means
+		// complete floor coverage
+
+	return(ag_story_place_all);
 }
 
 /* =======================================================
@@ -103,12 +106,12 @@ bool ag_room_story_equal_floor_touch(bool top,bool bottom,bool *floor_flags)
 
 void ag_generate_additional_stories(void)
 {
-	int					n,k,t,t2,x,z,ty,by,
+	int					n,k,t,t2,x,z,x2,z2,ty,by,
 						ty2,by2,high,high2,
-						mesh_idx,connect_idx;
+						place,mesh_idx,connect_idx;
 	int					px[4],py[4],pz[4];
 	float				gx[4],gy[4];
-	bool				floor_flags[4];
+	bool				flip;
 	d3vct				*size;
 	ag_shape_type		*shape;
 	ag_shape_poly_type	*shape_poly;
@@ -128,9 +131,10 @@ void ag_generate_additional_stories(void)
 		if (room->shape_idx==-1) continue;
 		if (ag_state.shapes[room->shape_idx].single_floor) continue;
 
-			// is it touching another room?
+			// where is the story place?
 
-		if (!ag_room_story_touch_other_room(n,floor_flags)) continue;
+		place=ag_room_story_calculate_place(n);
+		if (place==ag_story_place_none) continue;
 
 			// get height
 
@@ -182,6 +186,8 @@ void ag_generate_additional_stories(void)
 			// build in the floor
 			// we put in a floor for every side
 			// that has a connection to another room
+			// or if more than one, then a wrap around
+			// story
 
 		mesh_idx=map_mesh_add(&map);
 
@@ -189,13 +195,43 @@ void ag_generate_additional_stories(void)
 
 			shape_poly=&shape->polys[k];
 
-			if (!ag_room_story_equal_floor_touch(shape_poly->top,shape_poly->bottom,floor_flags)) continue;
+				// determine which place we are
+				// creating second story for
+
+			switch (place) {
+				case ag_story_place_all:
+					flip=FALSE;
+					break;
+				case ag_story_place_left:
+					if (!shape_poly->top) continue;
+					flip=TRUE;
+					break;
+				case ag_story_place_right:
+					if (!shape_poly->bottom) continue;
+					flip=TRUE;
+					break;
+				case ag_story_place_top:
+					if (!shape_poly->top) continue;
+					flip=FALSE;
+					break;
+				case ag_story_place_bottom:
+					if (!shape_poly->bottom) continue;
+					flip=FALSE;
+					break;
+			}
 
 				// the ceiling
 
 			for (t=0;t!=shape_poly->npt;t++) {
-				x=shape->vertexes[shape_poly->v[t]].x;
-				z=shape->vertexes[shape_poly->v[t]].z;
+
+				if (!flip) {
+					x=shape->vertexes[shape_poly->v[t]].x;
+					z=shape->vertexes[shape_poly->v[t]].z;
+				}
+				else {
+					x=shape->vertexes[shape_poly->v[t]].z;
+					z=shape->vertexes[shape_poly->v[t]].x;
+				}
 
 				px[t]=(int)(((float)x)*size->x)+room->min.x;
 				pz[t]=(int)(((float)z)*size->z)+room->min.z;
@@ -221,10 +257,23 @@ void ag_generate_additional_stories(void)
 				t2=t+1;
 				if (t2==shape_poly->npt) t2=0;
 
-				px[0]=px[3]=(int)(((float)shape->vertexes[shape_poly->v[t]].x)*size->x)+room->min.x;
-				px[1]=px[2]=(int)(((float)shape->vertexes[shape_poly->v[t2]].x)*size->x)+room->min.x;
-				pz[0]=pz[3]=(int)(((float)shape->vertexes[shape_poly->v[t]].z)*size->z)+room->min.z;
-				pz[1]=pz[2]=(int)(((float)shape->vertexes[shape_poly->v[t2]].z)*size->z)+room->min.z;
+				if (!flip) {
+					x=shape->vertexes[shape_poly->v[t]].x;
+					z=shape->vertexes[shape_poly->v[t]].z;
+					x2=shape->vertexes[shape_poly->v[t2]].x;
+					z2=shape->vertexes[shape_poly->v[t2]].z;
+				}
+				else {
+					x=shape->vertexes[shape_poly->v[t]].z;
+					z=shape->vertexes[shape_poly->v[t]].x;
+					x2=shape->vertexes[shape_poly->v[t2]].z;
+					z2=shape->vertexes[shape_poly->v[t2]].x;
+				}
+
+				px[0]=px[3]=(int)(((float)x)*size->x)+room->min.x;
+				px[1]=px[2]=(int)(((float)x2)*size->x)+room->min.x;
+				pz[0]=pz[3]=(int)(((float)z)*size->z)+room->min.z;
+				pz[1]=pz[2]=(int)(((float)z2)*size->z)+room->min.z;
 				py[0]=py[1]=ty2;
 				py[2]=py[3]=by2;
 
