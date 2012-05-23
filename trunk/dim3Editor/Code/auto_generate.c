@@ -444,7 +444,7 @@ void ag_add_room(int shape_idx,int connect_idx,d3pnt *pnt,d3vct *size)
 		}
 	}
 
-		// add floors and ceilings
+		// add floors
 
 	shape_poly=shape->polys;
 
@@ -466,6 +466,11 @@ void ag_add_room(int shape_idx,int connect_idx,d3pnt *pnt,d3vct *size)
 
 		shape_poly++;
 	}
+
+		// if a non-single floor room, move
+		// the min up to get over the small area up top
+
+	if (!shape->single_floor) room->min.y-=(int)(10.0f*size->y);
 }
 
 void ag_add_extra_corridor_room(d3pnt *min,d3pnt *max,int wall_sz)
@@ -906,7 +911,7 @@ bool ag_generate_run(char *path,char *err_str)
 
 		// add ceilings
 
-//	ag_generate_ceilings();		// supergumba -- temporary while testing
+	ag_generate_ceilings();
 
 		// mirroring
 
