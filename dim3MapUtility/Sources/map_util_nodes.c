@@ -211,6 +211,49 @@ int map_find_random_node(map_type *map,char *name,int skip_idx)
 	return(-1);
 }
 
+int map_find_random_forward_node(map_type *map,char *name,int skip_idx,d3pnt *pnt,d3ang *ang)
+{
+	int				n,nnode,count;
+	short			node_indexes[max_node];
+	float			ang_y;
+	node_type		*node;
+	
+		// gather up all nodes
+		// that match
+
+	count=0;
+	nnode=map->nnode;
+	
+	for (n=0;n!=nnode;n++) {
+
+			// skip node
+
+		if (n==skip_idx) continue;
+
+			// node names
+
+		node=&map->nodes[n];
+		if (strcmp(node->name,name)!=0) continue;
+
+			// forward
+
+		ang_y=angle_find(pnt->x,pnt->z,node->pnt.x,node->pnt.z);
+		if ((ang_y>90.0f) && (ang_y<180.0f)) continue;
+
+			// found a node!
+
+		node_indexes[count++]=(short)n;
+	}
+
+		// any matches?
+
+	if (count==0) return(-1);
+
+		// get random node
+	
+	return((int)node_indexes[random_int(count)]);
+}
+
 /* =======================================================
 
       Next In Path

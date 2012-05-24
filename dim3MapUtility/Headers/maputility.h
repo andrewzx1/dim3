@@ -865,6 +865,7 @@ extern int map_find_node(map_type *map,char *name);
 extern int map_find_nearest_node_by_point(map_type *map,d3pnt *pnt);
 extern int map_find_nearest_node_in_path(map_type *map,int from_idx,char *name,int *dist);
 extern int map_find_random_node(map_type *map,char *name,int skip_idx);
+extern int map_find_random_forward_node(map_type *map,char *name,int skip_idx,d3pnt *pnt,d3ang *ang);
 extern int map_find_next_node_in_path(map_type *map,int from_idx,int to_idx);
 
 extern int map_mesh_add(map_type *map);
