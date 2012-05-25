@@ -46,6 +46,7 @@ extern void object_dispose_single(int idx);
 extern void object_dispose_2(int bind);
 extern void object_dispose_all(void);
 
+extern int object_script_count(void);
 extern int object_script_spawn(char *name,char *script,char *params,d3pnt *pnt,d3ang *ang,bool hide,char *err_str);
 extern bool object_script_remove(int idx,char *err_str);
 
