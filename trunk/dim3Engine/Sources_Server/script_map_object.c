@@ -76,6 +76,7 @@ JSValueRef js_map_object_set_hidden_func(JSContextRef cx,JSObjectRef func,JSObje
 JSValueRef js_map_object_set_model_light_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_map_object_set_model_halo_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_map_object_set_model_mesh_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_map_object_get_count_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_map_object_spawn_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_map_object_remove_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
@@ -119,6 +120,7 @@ JSStaticFunction	map_object_functions[]={
 							{"setModelLight",				js_map_object_set_model_light_func,					kJSPropertyAttributeDontDelete},
 							{"setModelHalo",				js_map_object_set_model_halo_func,					kJSPropertyAttributeDontDelete},
 							{"setModelMesh",				js_map_object_set_model_mesh_func,					kJSPropertyAttributeDontDelete},
+							{"getCount",					js_map_object_get_count_func,						kJSPropertyAttributeDontDelete},
 							{"spawn",						js_map_object_spawn_func,							kJSPropertyAttributeDontDelete},
 							{"remove",						js_map_object_remove_func,							kJSPropertyAttributeDontDelete},
 							{0,0,0}};
@@ -1250,6 +1252,12 @@ JSValueRef js_map_object_set_model_mesh_func(JSContextRef cx,JSObjectRef func,JS
       Spawning and Removing
       
 ======================================================= */
+
+JSValueRef js_map_object_get_count_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+{
+	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
+	return(script_int_to_value(cx,object_script_count()));
+}
 
 JSValueRef js_map_object_spawn_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
 {

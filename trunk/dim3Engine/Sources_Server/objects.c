@@ -1044,6 +1044,25 @@ void object_dispose_all(void)
 
 /* =======================================================
 
+      Script Count Objects
+      
+======================================================= */
+
+int object_script_count(void)
+{
+	int				n,count;
+
+	count=0;
+
+	for (n=0;n!=max_obj_list;n++) {
+		if (server.obj_list.objs[n]!=NULL) count++;
+	}
+
+	return(count);
+}
+
+/* =======================================================
+
       Script Object Spawn/Remove
       
 ======================================================= */

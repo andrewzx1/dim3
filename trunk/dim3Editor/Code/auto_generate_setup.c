@@ -230,11 +230,11 @@ bool ag_read_settings(char *path,char *err_str)
 					// determine top or bottom
 					// for polygon
 
-				shape_poly->top=shape_poly->bottom=FALSE;
+				shape_poly->top=shape_poly->bottom=TRUE;
 
 				for (t=0;t!=shape_poly->npt;t++) {
-					if (shape->vertexes[shape_poly->v[t]].z<50) shape_poly->top=TRUE;
-					if (shape->vertexes[shape_poly->v[t]].z>50) shape_poly->bottom=TRUE;
+					if (shape->vertexes[shape_poly->v[t]].z>=50) shape_poly->top=FALSE;
+					if (shape->vertexes[shape_poly->v[t]].z<=50) shape_poly->bottom=FALSE;
 				}
 
 				shape_poly++;
