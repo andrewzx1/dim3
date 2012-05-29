@@ -802,13 +802,82 @@ void ag_generate_ceilings(void)
 
 /* =======================================================
 
+      Room Positioning
+      
+======================================================= */
+
+int ag_generate_position_room_first(d3pnt *pnt)
+{
+	int			shape_idx;
+
+	shape_idx=ag_random_int(ag_state.nshape);
+
+	pnt->x=map_max_size>>1;
+	pnt->z=map_max_size>>1;
+	pnt->y=10000;
+			
+	return(shape_idx);
+}
+
+void ag_generate_position_room_connection(int *p_shape_idx,int *p_connect_idx,d3pnt *pnt,d3vct *size)
+{
+	int			shape_idx,connect_idx,try_count;
+
+		// might need to try a couple times to find
+		// a proper fit
+
+	try_count=0;
+
+	while (try_count!=4) {
+		shape_idx=ag_random_int(ag_state.nshape);
+
+			// get the connector
+			// we always try prefered connectors
+			// first, then move on to non-prefered
+
+		connect_idx=ag_get_room_position(shape_idx,pnt,size,ag_state.option.mirror,TRUE);
+		if (connect_idx==-1) connect_idx=ag_get_room_position(shape_idx,pnt,size,ag_state.option.mirror,FALSE);
+		if (connect_idx!=-1) break;
+
+			// try again
+
+		try_count++;
+	}
+
+	*p_shape_idx=shape_idx;
+	*p_connect_idx=connect_idx;
+}
+
+int ag_generate_position_room_grid(int room_idx,int room_count,d3pnt *pnt,d3vct *size)
+{
+	int				x,z,x_start,z_start,shape_idx,grid_sz;
+
+	shape_idx=ag_random_int(ag_state.nshape);
+
+	grid_sz=(int)sqrtf((float)room_count);
+
+	x=(room_idx%grid_sz);
+	z=(room_idx/grid_sz);
+
+	x_start=(map_max_size>>1)-(grid_sz*(int)(100.0f*size->x));
+	z_start=(map_max_size>>1)-(grid_sz*(int)(100.0f*size->z));
+
+	pnt->x=x_start+(x*(int)(100.0f*size->x));
+	pnt->z=z_start+(z*(int)(100.0f*size->z));
+	pnt->y=10000;
+
+	return(shape_idx);
+}
+
+/* =======================================================
+
       Generate Map
       
 ======================================================= */
 
 bool ag_generate_run(char *path,char *err_str)
 {
-	int				n,room_count,try_count,
+	int				n,room_count,
 					shape_idx,connect_idx;
 	d3pnt			pnt;
 	d3vct			size;
@@ -844,47 +913,36 @@ bool ag_generate_run(char *path,char *err_str)
 		size.x=size.z=(float)ag_state.size.room_sz;
 		size.y=(float)ag_state.size.room_high;
 
-			// if this is the first room, put it at the
-			// center of the map.
-			// give it the default size, all other rooms will
-			// gain their size from connecting to this room
+			// if this is a grid type, then
+			// tightly pack the rooms together
 
-		if (n==0) {
-			shape_idx=ag_random_int(ag_state.nshape);
-
-			pnt.x=map_max_size>>1;
-			pnt.z=map_max_size>>1;
-			pnt.y=10000;
-			
-			connect_idx=-1;
+		if (ag_state.option.grid) {
+			shape_idx=ag_generate_position_room_grid(n,room_count,&pnt,&size);
 		}
 
-			// otherwise, pick any room and randomly
-			// connect it to an existing room
-			// might need to try a couple times to find
-			// a proper fit
+			// room connection type, where we
+			// connect each new room to a previous
+			// room's connection
 
 		else {
 
-			try_count=0;
+				// if this is the first room, put it at the
+				// center of the map.
+				// give it the default size, all other rooms will
+				// gain their size from connecting to this room
 
-			while (try_count!=4) {
-				shape_idx=ag_random_int(ag_state.nshape);
-
-					// get the connector
-					// we always try prefered connectors
-					// first, then move on to non-prefered
-
-				connect_idx=ag_get_room_position(shape_idx,&pnt,&size,ag_state.option.mirror,TRUE);
-				if (connect_idx==-1) connect_idx=ag_get_room_position(shape_idx,&pnt,&size,ag_state.option.mirror,FALSE);
-				if (connect_idx!=-1) break;
-
-					// try again
-
-				try_count++;
+			if (n==0) {
+				shape_idx=ag_generate_position_room_first(&pnt);
+				connect_idx=-1;
 			}
 
-			if (connect_idx==-1) break;
+				// otherwise, pick any room and randomly
+				// connect it to an existing room
+
+			else {
+				ag_generate_position_room_connection(&shape_idx,&connect_idx,&pnt,&size);
+				if (connect_idx==-1) break;
+			}
 		}
 
 			// add the room
@@ -911,7 +969,7 @@ bool ag_generate_run(char *path,char *err_str)
 
 		// add ceilings
 
-	ag_generate_ceilings();
+//	ag_generate_ceilings();	// supergumba
 
 		// mirroring
 

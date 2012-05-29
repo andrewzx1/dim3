@@ -176,6 +176,7 @@ bool ag_read_settings(char *path,char *err_str)
 
 	ag_state.option.mirror=xml_get_attribute_boolean(option_tag,"mirror");
 	ag_state.option.auto_connect=xml_get_attribute_boolean(option_tag,"auto_connect");
+	ag_state.option.grid=xml_get_attribute_boolean(option_tag,"grid");
 
 		// shapes
 

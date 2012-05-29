@@ -41,6 +41,7 @@ and can be sold or given away.
 #define max_timer_list									1024
 #define max_global_list									1024
 
+#define js_max_parent_count								3
 #define js_max_recursive_count							5
 
 //

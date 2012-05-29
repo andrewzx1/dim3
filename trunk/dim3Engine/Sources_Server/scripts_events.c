@@ -121,7 +121,7 @@ void scripts_unlock_events(void)
 bool scripts_recursion_in(script_type *script,char *err_str)
 {
 	if (script->recursive.count==js_max_recursive_count) {
-		sprintf(err_str,"[%s] Script has recursed to deep",script->name);
+		sprintf(err_str,"[%s] Script has passed the maximum number of recursions: %d",script->name,js_max_recursive_count);
 		return(FALSE);
 	}
 
@@ -243,8 +243,8 @@ bool scripts_post_event_on_attach(int script_idx,int override_proj_idx,int main_
 
 bool scripts_post_event(int script_idx,int override_proj_idx,int main_event,int sub_event,int id,char *err_str)
 {
-	int						event_idx;
-	script_type				*script,*parent_script;
+	int						event_idx,parent_cnt;
+	script_type				*script,*call_script;
 	
 		// ignore if no script
 
@@ -260,18 +260,24 @@ bool scripts_post_event(int script_idx,int override_proj_idx,int main_event,int 
 
 	event_idx=main_event-event_main_id_start;
 
-		// try event on this script
+		// call through script chain
 
-	if (script->event_attach_list.func[event_idx]!=NULL) return(scripts_post_event_on_attach(script_idx,override_proj_idx,main_event,sub_event,id,err_str));	
+	parent_cnt=0;
 
-		// now try parent
+	while (TRUE) {
 
-	if (script->parent_idx==-1) return(TRUE);
+		call_script=js.script_list.scripts[script_idx];
+		if (call_script->event_attach_list.func[event_idx]!=NULL) return(scripts_post_event_on_attach(script_idx,override_proj_idx,main_event,sub_event,id,err_str));
 
-	parent_script=js.script_list.scripts[script->parent_idx];
-	if (parent_script->event_attach_list.func[event_idx]==NULL) return(TRUE);
+		script_idx=call_script->parent_idx;
+		if (script_idx==-1) return(TRUE);
 
-	return(scripts_post_event_on_attach(parent_script->idx,override_proj_idx,main_event,sub_event,id,err_str));
+		parent_cnt++;
+		if (parent_cnt==js_max_parent_count) {
+			sprintf(err_str,"[%s] Script has passed the maximum number of implementations (parents): %d",script->name,js_max_parent_count);
+			return(FALSE);
+		}
+	}
 }
 
 void scripts_post_event_console(int script_idx,int override_proj_idx,int main_event,int sub_event,int id)
@@ -427,6 +433,53 @@ JSValueRef scripts_call_child_function(int script_idx,char *func_name,int arg_co
 
 /* =======================================================
 
+      Generic Script Call Function
+      
+======================================================= */
+
+JSValueRef scripts_generic_function_call(int script_idx,char *call_type_str,int arg_count,JSValueRef *argv,char *func_name,char *err_str)
+{
+	int				org_script_idx,parent_cnt;
+	JSObjectRef		func_obj;
+	JSValueRef		rval,exception;
+	script_type		*call_script;
+
+	org_script_idx=script_idx;
+	parent_cnt=0;
+
+	while (TRUE) {
+
+		call_script=js.script_list.scripts[script_idx];
+		
+			// does function exist, if so, call it
+
+		func_obj=script_get_single_function(call_script->cx,call_script->global_obj,func_name);
+		if (func_obj!=NULL) {
+			rval=JSObjectCallAsFunction(call_script->cx,func_obj,NULL,arg_count,argv,&exception);
+			if (rval==NULL) script_exception_to_string(call_script->cx,call_script->event_state.main_event,exception,err_str,256);
+			return(rval);
+		}
+
+			// move onto parent
+
+		script_idx=call_script->parent_idx;
+		if (script_idx==-1) {
+			sprintf(err_str,"%s failed, unknown or non-callable function: %s",call_type_str,func_name);
+			return(NULL);
+		}
+
+		parent_cnt++;
+		if (parent_cnt==js_max_parent_count) {
+			sprintf(err_str,"[%s] Script has passed the maximum number of implementations (parents): %d",js.script_list.scripts[org_script_idx]->name,js_max_parent_count);
+			return(NULL);
+		}
+	}
+
+	return(NULL);
+}
+
+/* =======================================================
+
       Script Chains
       
 ======================================================= */
@@ -434,8 +487,7 @@ JSValueRef scripts_call_child_function(int script_idx,char *func_name,int arg_co
 bool scripts_chain(int script_idx,int override_proj_idx,char *func_name,char *err_str)
 {
 	int				old_proj_idx;
-	JSValueRef		rval,exception,argv[2];
-	JSObjectRef		func_obj;
+	JSValueRef		rval,argv[2];
 	script_type		*script;
 	
 		// no error
@@ -445,14 +497,6 @@ bool scripts_chain(int script_idx,int override_proj_idx,char *func_name,char *er
 		// find script
 		
 	script=js.script_list.scripts[script_idx];
-	
-		// is the chain a good function?
-		
-	func_obj=script_get_single_function(script->cx,script->global_obj,func_name);
-	if (func_obj==NULL) {
-		sprintf(err_str,"Timer: Chaining failed, unknown or non-callable function: %s",func_name);
-		return(FALSE);
-	}
 
 		// enter recursion
 
@@ -470,8 +514,7 @@ bool scripts_chain(int script_idx,int override_proj_idx,char *func_name,char *er
 	argv[0]=(JSValueRef)script->obj;
 	argv[1]=script_int_to_value(script->cx,game_time_get());
 
-	rval=JSObjectCallAsFunction(script->cx,func_obj,NULL,2,argv,&exception);
-	if (rval==NULL) script_exception_to_string(script->cx,script->event_state.main_event,exception,err_str,256);
+	rval=scripts_generic_function_call(script_idx,"Chaining",2,argv,func_name,err_str);
 
 		// switch back any saved proj_idx
 
@@ -500,8 +543,7 @@ void scripts_chain_console(int script_idx,int override_proj_idx,char *func_name)
 JSValueRef scripts_direct_call(int from_script_idx,int to_script_idx,int override_proj_idx,char *func_name,int arg_count,JSValueRef *args,char *err_str)
 {
 	int				n,old_proj_idx;
-	JSValueRef		rval,exception,argv[5];
-	JSObjectRef		func_obj;
+	JSValueRef		rval,argv[32];
 	script_type		*to_script;
 	
 		// find script
@@ -518,14 +560,6 @@ JSValueRef scripts_direct_call(int from_script_idx,int to_script_idx,int overrid
 		old_proj_idx=to_script->attach.proj_idx;
 		to_script->attach.proj_idx=override_proj_idx;
 	}
-
-		// find function
-
-	func_obj=script_get_single_function(to_script->cx,to_script->global_obj,func_name);
-	if (func_obj==NULL) {
-		sprintf(err_str,"Call failed, unknown function: %s",func_name);
-		return(NULL);
-	}
 	
 		// inherit the event
 		
@@ -535,12 +569,13 @@ JSValueRef scripts_direct_call(int from_script_idx,int to_script_idx,int overrid
 		
 	argv[0]=(JSValueRef)to_script->obj;
 
+	if (arg_count>31) arg_count=31;
+
 	for (n=0;n!=arg_count;n++) { 
 		argv[n+1]=args[n];
 	}
 
-	rval=JSObjectCallAsFunction(to_script->cx,func_obj,NULL,(arg_count+1),argv,&exception);
-	if (rval==NULL) script_exception_to_string(to_script->cx,to_script->event_state.main_event,exception,err_str,256);
+	rval=scripts_generic_function_call(to_script_idx,"Direct call",(arg_count+1),argv,func_name,err_str);
 
 		// switch back any saved proj_idx
 
