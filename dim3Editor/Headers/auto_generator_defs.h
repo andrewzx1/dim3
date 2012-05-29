@@ -96,7 +96,7 @@ typedef struct		{
 					} ag_size_type;
 
 typedef struct		{
-						bool					mirror,auto_connect;
+						bool					mirror,auto_connect,grid;
 					} ag_option_type;
 
 typedef struct		{
