@@ -168,36 +168,37 @@ void SDL_iOSEvent_DidBecomeActive(void)
 	app.state=as_active;
 }
 
-int loop_event_callback(SDL_Event *event,void *userdata)
+int loop_event_callback(void *userdata,SDL_Event *event)
 {
 	switch (event->type) {
+	
 		case SDL_IOS_WILLTERMINATE:
 			SDL_iOSEvent_WillTerminate();
-			return(1);
+			return(0);
 			
 		case SDL_IOS_DIDRECEIVEMEMORYWARNING:
 			SDL_iOSEvent_DidReceiveMemoryWarning();
-			return(1);
+			return(0);
 			
 		case SDL_IOS_WILLRESIGNACTIVE:
 			SDL_iOSEvent_WillResignActive();
-			return(1);
+			return(0);
 			
 		case SDL_IOS_DIDBECOMEACTIVE:
 			SDL_iOSEvent_DidBecomeActive();
-			return(1);
+			return(0);
 			
 		case SDL_IOS_DIDENTERBACKGROUND:
 			SDL_iOSEvent_DidEnterBackground();
-			return(1);
+			return(0);
 			
 		case SDL_IOS_WILLENTERFOREGROUND:
 			SDL_iOSEvent_WillEnterForeground();
-			return(1);
+			return(0);
 			
 	}
 	
-	return(0);
+	return(1);
 }
 
 void loop_app_active(void)
