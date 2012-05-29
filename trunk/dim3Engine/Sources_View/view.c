@@ -52,7 +52,7 @@ extern bool shadow_initialize(void);
 extern void shadow_shutdown(void);
 extern void menu_draw(void);
 
-extern int loop_event_callback(SDL_Event *event,void *userdata);
+extern int loop_event_callback(void *userdata,SDL_Event *event);
 
 /* =======================================================
 
@@ -413,7 +413,7 @@ bool view_initialize(char *err_str)
 		// correct events
 		
 #if defined(D3_OS_IPHONE) || defined(D3_OS_ANDRIOD)
-	SDL_SetEventCallback(loop_event_callback,0);
+	SDL_SetEventFilter(loop_event_callback,0);
 #endif
 	
 		// intialize the view bitmap lists
