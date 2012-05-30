@@ -197,21 +197,69 @@ void effect_dispose(void)
 /* =======================================================
 
       Delete Particle Effects With Bone Attachments
-	  to Projectiles.  This is to clear up
-	  bone-attach particles when a projectile is
-	  deleted
+	  This is to clear up bone-attach particles when
+	  an object or a projectile is deleted
       
 ======================================================= */
 
-void effect_bone_attach_particle_dispose(int proj_idx)
+void effect_object_bone_attach_particle_dispose(int obj_idx)
 {
 	int						n;
 	effect_type				*effect;
 	particle_effect_data	*eff_particle;
-	
-		// delete all particle effects
-		// that are attached to this projectile
-		// and have bone attachment
+
+	for (n=0;n!=max_effect_list;n++) {
+		effect=server.effect_list.effects[n];
+		if (!effect->on) continue;
+		
+			// is a particle?
+			
+		if (effect->effecttype!=ef_particle) continue;
+		
+			// has bone attachment?
+			
+		eff_particle=&effect->data.particle;
+		if (eff_particle->motion.bone_idx==-1) continue;
+		if (eff_particle->motion.obj_idx!=obj_idx) continue;
+
+			// dispose effect
+			
+		effect_dispose_single(effect);
+	}
+}
+
+void effect_weapon_bone_attach_particle_dispose(int obj_idx,int weap_idx)
+{
+	int						n;
+	effect_type				*effect;
+	particle_effect_data	*eff_particle;
+
+	for (n=0;n!=max_effect_list;n++) {
+		effect=server.effect_list.effects[n];
+		if (!effect->on) continue;
+		
+			// is a particle?
+			
+		if (effect->effecttype!=ef_particle) continue;
+		
+			// has bone attachment?
+			
+		eff_particle=&effect->data.particle;
+		if (eff_particle->motion.bone_idx==-1) continue;
+		if (eff_particle->motion.obj_idx!=obj_idx) continue;
+		if (eff_particle->motion.weap_idx!=weap_idx) continue;
+
+			// dispose effect
+			
+		effect_dispose_single(effect);
+	}
+}
+
+void effect_projectile_bone_attach_particle_dispose(int proj_idx)
+{
+	int						n;
+	effect_type				*effect;
+	particle_effect_data	*eff_particle;
 
 	for (n=0;n!=max_effect_list;n++) {
 		effect=server.effect_list.effects[n];

@@ -257,7 +257,7 @@ void projectile_dispose(proj_type *proj)
 		// remove any effects attached
 		// to a bone
 		
-	effect_bone_attach_particle_dispose(proj->idx);
+	effect_projectile_bone_attach_particle_dispose(proj->idx);
 
 		// mark as unused
 

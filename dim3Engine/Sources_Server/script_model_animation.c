@@ -45,6 +45,7 @@ JSValueRef js_model_animation_change_func(JSContextRef cx,JSObjectRef func,JSObj
 JSValueRef js_model_animation_interrupt_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_model_animation_start_then_change_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 JSValueRef js_model_animation_fade_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
+JSValueRef js_model_animation_cancel_attached_particles_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception);
 
 extern js_type			js;
 
@@ -55,14 +56,15 @@ JSStaticValue 		model_animation_props[]={
 							{0,0,0,0}};
 
 JSStaticFunction	model_animation_functions[]={
-							{"start",					js_model_animation_start_func,					kJSPropertyAttributeDontDelete},
-							{"stop",					js_model_animation_stop_func,					kJSPropertyAttributeDontDelete},
-							{"stopAll",					js_model_animation_stop_all_func,				kJSPropertyAttributeDontDelete},
-							{"cancel",					js_model_animation_cancel_func,					kJSPropertyAttributeDontDelete},
-							{"change",					js_model_animation_change_func,					kJSPropertyAttributeDontDelete},
-							{"interrupt",				js_model_animation_interrupt_func,				kJSPropertyAttributeDontDelete},
-							{"startThenChange",			js_model_animation_start_then_change_func,		kJSPropertyAttributeDontDelete},
-							{"fade",					js_model_animation_fade_func,					kJSPropertyAttributeDontDelete},
+							{"start",					js_model_animation_start_func,						kJSPropertyAttributeDontDelete},
+							{"stop",					js_model_animation_stop_func,						kJSPropertyAttributeDontDelete},
+							{"stopAll",					js_model_animation_stop_all_func,					kJSPropertyAttributeDontDelete},
+							{"cancel",					js_model_animation_cancel_func,						kJSPropertyAttributeDontDelete},
+							{"change",					js_model_animation_change_func,						kJSPropertyAttributeDontDelete},
+							{"interrupt",				js_model_animation_interrupt_func,					kJSPropertyAttributeDontDelete},
+							{"startThenChange",			js_model_animation_start_then_change_func,			kJSPropertyAttributeDontDelete},
+							{"fade",					js_model_animation_fade_func,						kJSPropertyAttributeDontDelete},
+							{"cancelAttachedParticles",	js_model_animation_cancel_attached_particles_func,	kJSPropertyAttributeDontDelete},
 							{0,0,0}};
 
 JSClassRef			model_animation_class;
@@ -300,6 +302,44 @@ JSValueRef js_model_animation_fade_func(JSContextRef cx,JSObjectRef func,JSObjec
 	
 	draw=script_find_model_draw(j_obj);
 	model_fade_start(draw,script_value_to_int(cx,argv[1]),script_value_to_float(cx,argv[0]));
+	
+	return(script_null_to_value(cx));
+}
+
+/* =======================================================
+
+      Effect Cancels
+      
+======================================================= */
+
+JSValueRef js_model_animation_cancel_attached_particles_func(JSContextRef cx,JSObjectRef func,JSObjectRef j_obj,size_t argc,const JSValueRef argv[],JSValueRef *exception)
+{
+	int					script_idx;
+	script_type			*script;
+	
+	if (!script_check_param_count(cx,func,argc,0,exception)) return(script_null_to_value(cx));
+	if (!script_check_fail_in_construct(cx,func,j_obj,exception)) return(script_null_to_value(cx));
+	
+	script_idx=(int)JSObjectGetPrivate(j_obj);
+	script=js.script_list.scripts[script_idx];
+	
+		// get correct type for canceling particles
+		
+	switch (script->attach.thing_type) {
+	
+		case thing_type_object:
+			effect_object_bone_attach_particle_dispose(script->attach.obj_idx);
+			break;
+			
+		case thing_type_weapon:
+			effect_weapon_bone_attach_particle_dispose(script->attach.obj_idx,script->attach.weap_idx);
+			break;
+			
+		case thing_type_projectile:
+			if (script->attach.proj_idx!=-1) effect_projectile_bone_attach_particle_dispose(script->attach.proj_idx);
+			break;
+
+	}
 	
 	return(script_null_to_value(cx));
 }
