@@ -293,8 +293,6 @@ int scripts_add_single(int thing_type,char *sub_dir,char *name,int obj_idx,int w
 		js.script_list.scripts[idx]=NULL;
 		return(-1);
 	}
-	
-	
 		
 	return(idx);
 }
@@ -319,8 +317,8 @@ int scripts_add(int thing_type,char *sub_dir,char *name,int obj_idx,int weap_idx
 	if (script->implement_name[0]!=0x0) {
 	
 			// start the parent script
-			
-		parent_script_idx=scripts_add_single(thing_type,script->sub_dir,script->implement_name,obj_idx,weap_idx,proj_setup_idx,err_str);
+	
+		parent_script_idx=scripts_add(thing_type,script->sub_dir,script->implement_name,obj_idx,weap_idx,proj_setup_idx,err_str);
 		if (parent_script_idx==-1) return(-1);
 
 			// set the parent and the child
@@ -334,10 +332,6 @@ int scripts_add(int thing_type,char *sub_dir,char *name,int obj_idx,int weap_idx
 			// turn into attached scripts.  supergumba -- remove in the future
 			
 		script->event_attach_list.on=TRUE;
-		
-			// setup the events
-			
-		scripts_setup_events(parent_script);
 	}
 
 	return(script_idx);

@@ -112,6 +112,115 @@ int text_width(float txt_size,char *str)
       
 ======================================================= */
 
+/* supergumba -- Wendell test
+void text_draw(int x,int y,float txt_size,d3col *col,char *str)
+{
+	int			n,len,ch,xoff,yoff,cnt;
+	float		f_lx,f_rx,f_ty,f_by,
+				gx_lft,gx_rgt,gy_top,gy_bot;
+	float		*pv,*pt;
+	char		*c;
+
+		// get text length
+
+	len=strlen(str);
+	if (len==0) return;
+	
+        // setup drawing
+		
+	glDisable(GL_DEPTH_TEST);
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
+	
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_NOTEQUAL,0);
+
+		// no wrapping
+
+  	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_CLAMP);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_CLAMP);
+		
+		// create the quads
+
+	f_lx=(float)x;
+	f_by=(float)y;
+	f_ty=f_by-txt_size;
+	
+	c=str;
+
+	glColor4f(1,1,0,1);
+	
+	pv=txt_vertexes;
+	pt=txt_uvs;
+
+	cnt=0;
+	
+	for (n=0;n!=len;n++) {
+	
+		ch=(int)*c++;
+		if ((ch<'!') || (ch>'z')) {
+			f_lx+=(txt_size*0.34f);
+			continue;
+		}
+
+		ch-='!';
+
+			// the UVs
+			
+		yoff=ch/txt_font.size_24.char_per_line;
+		xoff=ch-(yoff*txt_font.size_24.char_per_line);
+
+		gx_lft=((float)xoff)*txt_font.size_24.gl_xoff;
+		gx_rgt=gx_lft+txt_font.size_24.gl_xadd;
+		gy_top=((float)yoff)*txt_font.size_24.gl_yoff;
+		gy_bot=gy_top+txt_font.size_24.gl_yadd;
+
+			// the vertexes
+
+		f_rx=f_lx+txt_size;
+
+		*pv++=f_lx;
+		*pv++=f_ty;
+
+		*pt++=gx_lft;
+		*pt++=gy_top;
+
+		*pv++=f_rx;
+		*pv++=f_ty;
+
+		*pt++=gx_rgt;
+		*pt++=gy_top;
+
+		*pv++=f_rx;
+		*pv++=f_by;
+
+		*pt++=gx_rgt;
+		*pt++=gy_bot;
+
+		*pv++=f_lx;
+		*pv++=f_by;
+
+		*pt++=gx_lft;
+		*pt++=gy_bot;
+
+		cnt+=4;
+
+		f_lx+=(txt_size*txt_font.size_24.char_size[ch]);
+	}
+
+	glVertexPointer(2,GL_FLOAT,0,txt_vertexes);
+
+	glDrawArrays(GL_QUADS,0,cnt);
+
+		// fix wrapping back to default
+
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
+}
+
+*/
+
 void text_draw(int x,int y,float txt_size,d3col *col,char *str)
 {
 	int			n,len,ch,xoff,yoff,cnt;
