@@ -348,6 +348,9 @@ void input_touch_scrub_point(d3pnt *pt,int touch_id,int x,int y)
 	
 	fy=((float)x)/((float)touch->xres);
 	pt->y=view.screen.y_sz-(int)(fy*((float)view.screen.y_sz));
+	
+	pt->x-=(int)(((float)view.screen.x_sz)*0.025f);			// x-y adjustments for touch events
+	pt->y-=(int)(((float)view.screen.y_sz)*0.025f);
 #endif
 }
 
