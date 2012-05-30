@@ -31,7 +31,7 @@ and can be sold or given away.
       
 ======================================================= */
 
-#define dim3_version					"0013"
+#define dim3_version					"0015"
 
 /* =======================================================
 
@@ -1394,7 +1394,8 @@ typedef struct		{
 
 typedef struct		{
 						char							name[name_str_len];
-						bool							modernize,no_shaders;
+						bool							modernize,no_shaders,
+														load_requires_click;
 					} iface_project_type;
 
 //

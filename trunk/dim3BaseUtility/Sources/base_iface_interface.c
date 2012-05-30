@@ -897,6 +897,7 @@ void iface_read_settings_interface(iface_type *iface)
 		xml_get_attribute_text(proj_tag,"name",iface->project.name,name_str_len);
 		iface->project.modernize=xml_get_attribute_boolean(proj_tag,"modernize");
 		iface->project.no_shaders=xml_get_attribute_boolean(proj_tag,"no_shaders");
+		iface->project.load_requires_click=xml_get_attribute_boolean(proj_tag,"load_requires_click");
 	}
 
 	xml_close_file();
@@ -1556,6 +1557,7 @@ bool iface_write_settings_interface(iface_type *iface,char *err_str)
 	xml_add_attribute_text("name",iface->project.name);
 	xml_add_attribute_boolean("modernize",iface->project.modernize);
 	xml_add_attribute_boolean("no_shaders",iface->project.no_shaders);
+	xml_add_attribute_boolean("load_requires_click",iface->project.load_requires_click);
 	xml_add_tagend(TRUE);
 
 		// close interface

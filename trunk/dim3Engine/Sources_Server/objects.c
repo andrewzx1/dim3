@@ -1010,6 +1010,11 @@ void object_dispose_single(int idx)
 	scripts_dispose(obj->script_idx);
 	model_draw_dispose(&obj->draw);
 
+		// remove any particles attached
+		// to bones
+		
+	effect_object_bone_attach_particle_dispose(idx);
+
 		// free and empty from list
 
 	free(obj);
